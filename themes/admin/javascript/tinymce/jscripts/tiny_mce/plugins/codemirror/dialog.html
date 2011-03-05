@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>{#codemirror_dlg.title}</title>
+
+    <script type="text/javascript" src="../../../../../codemirror/js/codemirror.js"></script>
+    <script type="text/javascript" src="../../../../../codemirror/codemirror.TinyMCE.js"></script>
+
+    <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+    <script type="text/javascript" src="js/dialog.js"></script>
+    
+	<link type="text/css" rel="stylesheet" href="../../../../../codemirror/css/codemirror.css" />
+
+  </head>
+
+  <body>
+    <form name="source" onsubmit="CodeDialog.insert();return false;">
+      <textarea id="code" name="code" cols="100" rows="15"></textarea>
+    </form>
+
+    <div class="mceActionPanel">
+      <div style="float: left">
+        <input type="button" id="insert" name="insert" value="{#insert}" onclick="CodeDialog.insert();" />
+      </div>
+
+      <div style="float: right">
+        <input type="button" id="cancel" name="cancel" value="{#cancel}" onclick="tinyMCEPopup.close();" />
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Quickstart, Ionize in 4 steps : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Quickstart : Ionize in 4 steps
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+
+<h1>QuickStart : Ionize in 4 steps</h1>
+
+<p>Just after installing Ionize, the first question is mainly : "And now ?"</p>
+<p>4 first steps will help you to start your website :</p>
+<ol>
+	<li>Creating a <a href="../overview/concepts.html" title="what's an Ionize theme ?">theme</a>,</li>
+	<li>Creating a page view,</li>
+	<li>Activate the view,</li>
+	<li>Link this page to you content</li>
+</ol>
+
+
+
+<h2>1. Creating your theme</h2>
+
+<p>All themes are located in the folder: <dfn>/themes/</dfn>.</p>
+<p>To create your own theme : </p>
+<ul>
+	<li>Copy or rename the folder <dfn>default</dfn>. No spaces or special chars are allowed in the folder name.</li>
+	<li>Select this theme in the <var>Settings->Themes</var> panel of Ionize and save.</li>
+	<li>Start editing the files in the <dfn>views</dfn> folder.</li>
+</ul>
+
+<p class="important"><strong>Important:</strong> The 3 folders in red (<kbd>config, helpers, views</kbd>) must be present in your theme folder.</p>
+
+<h2>2. Creating a page view</h2>
+<p>You're now able to start to create your own views.</p>
+
+<p>In the folder <dfn>/themes/</dfn><kbd>my_theme/</kbd><dfn>views/</dfn>, create the file called "<var>my_page.php</var>" and add the following code inside :</p>
+
+<pre>
+// This will display the page title
+&lt;ion:title tag="h2" />
+
+// Here, we will loops through the articles linked to the page
+&lt;ion:articles>
+
+	// Displays the article title
+	&lt;h3>&lt;ion:title />&lt;/h3>
+	
+	// Displays the article content
+	&lt;ion:content />
+
+&lt;/ion:articles>
+
+</pre>
+
+
+
+<h2>3. Activate your view in Ionize</h2>
+<p>A view can be used in 3 ways :</p>
+<ul>
+	<li>For pages</li>
+	<li>For articles</li>
+	<li>To be used as partial in another view.</li>
+</ul>
+<p>Page and articles views must be activated so Ionize can add them to the "view" list in the page and article panels.</p>
+
+<p>In Ionize, go to : <dfn>Settings > Themes...</dfn></p>
+
+<p><img src="../images/ionize_view_activation.jpg" /></p>
+
+<p>
+	This panel shows the views PHP files. <br/>
+	For each view, you can enter a logical name, which will be in the view list of the page edition panel, and set the type ("article" or "page").
+</p>
+
+
+<h2>4. Link a view to your content</h2>
+
+
+<p>First of all create a page in Ionize :</p>
+
+<p><img src="../images/ionize_create_page.jpg" /></p>
+
+<p>Then select your view in the view list :</p>
+
+<p><img src="../images/ionize_link_view_to_page.jpg" /></p>
+
+
+<p>You're done!</p>
+
+<p>Once your views are activated, they will be available for people who will edit the content.</p>
+
+
+<h2>And now ?</h2>
+
+<p>Add data to your page view : Have a look to the tag reference</p>
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="ionize_panel.html">Discover the Ionize panel</a>
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="users.html">Users and Groups</a></p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

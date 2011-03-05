@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Language Tags : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Language Tags
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+<h1>Language Tags</h1>
+
+
+
+<h2>translation</h2>
+
+<p>Returns : </p>
+<ol>
+	<li>the <dfn>static term translation</dfn>, for the current language.</li>
+	<li>or <kbd>#your_term</kbd> if the translation isn't found.</li>
+</ol>
+
+<pre>
+&lt;ion:translation item="your_term" />
+</pre>
+
+<h3>Attributes</h3>
+
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Attribute</th>
+	<th>Optional</th>
+	<th>Values</th>
+</tr>
+<tr>
+	<td class="td"><kbd>item</kbd></td>
+	<td class="td">no</td>
+	<td class="td">The index name of the translated term, as displayed in the <var>Content > Translation</var> panel of Ionize.</td>
+</tr>
+</table>
+
+
+<h2>languages</h2>
+
+<p>Iterator for languages.</p>
+<p>Commonly used to display the languages navigation menu.</p>
+
+<pre>
+<dfn>&lt;!-- Code --></dfn>
+&lt;ion:languages tag="ul" class="langs" id="my_langs" active_class="active" />
+
+<dfn>&lt;-- HTML Result on the "About" page with 2 languages : "English" as default language and "Français" --> </dfn>
+&lt;ul id="my_langs" class="langs" active_calss="current" >
+
+    &lt;li class="curent">&lt;a href="http://my_domain/en/about">English&lt;/a>&lt;/li>
+    &lt;li>&lt;a href="http://my_domain/fr/a-propos">French&lt;/a>&lt;/li>
+
+&lt;/ul>
+</pre>
+
+<h3>Attributes</h3>
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Attribute</th>
+	<th>Optional</th>
+	<th>Values</th>
+</tr>
+<tr>
+	<td class="td">active_class</td>
+	<td class="td">yes</td>
+	<td class="td">Will output this class for the current displayed language content.</td>
+</tr>
+<tr>
+	<td class="td">tag</td>
+	<td class="td">yes</td>
+	<td class="td">Puts the results into the given tag</td>
+</tr>
+<tr>
+	<td class="td">id</td>
+	<td class="td">yes</td>
+	<td class="td">Adds the HTML <strong>id</strong> attribute to the produced tag.</td>
+</tr>
+<tr>
+	<td class="td">class</td>
+	<td class="td">yes</td>
+	<td class="td">Adds the HTML <strong>class</strong> attribute to the produced tag.</td>
+</tr>
+<tr>
+	<td class="td">helper</td>
+	<td class="td">yes</td>
+	<td class="td">
+		<strong>&lt;Name of the helper>:&lt;function></strong> to use to display the language menu.<br/>
+		This is another way to implement your own helper to display the language navigation.<br/>
+		If your helper file is called <kbd>my_language_menu.php</kbd> and your helper function is named <kbd>my_language_func()</kbd>, you will write :
+		&lt;ion:languages helper="my_language_menu:my_language_func" />
+	</td>
+</tr>
+<tr>
+	<td class="td">no_helper</td>
+	<td class="td">yes</td>
+	<td class="td">
+		<strong>true / false</strong>. Default to false.<br/>
+		Forces the tag to not use the helper.<br/>
+		In this case, the children tags must be used.
+	</td>
+</tr>
+</table>
+
+
+
+<h3>Children tags</h3>
+
+<p>These children tags can only be used only if the attribute <strong>"no_helper"</strong> is set.</p>
+
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Tag</th>
+	<th>Returns</th>
+</tr>
+<tr>
+	<td class="td"><strong>&lt;ion:code /></strong></td>
+	<td class="td">Lang code, as set in Ionize.</td>
+</tr>
+<tr>
+	<td class="td"><strong>&lt;ion:name /></strong></td>
+	<td class="td">Lang name, as set in Ionize.</td>
+</tr>
+<tr>
+	<td class="td"><strong>&lt;ion:url /></strong></td>
+	<td class="td">Complete URL to the current content in the looped language.</td>
+</tr>
+</table>
+
+
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="navigation_tags.html">Navigation Tags</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="shared_tags.html">Shared Tags : Page, Article, Media</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

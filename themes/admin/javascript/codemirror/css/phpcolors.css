@@ -1,0 +1,111 @@
+/*
+Copyright (c) 2008-2009 Yahoo! Inc. All rights reserved.
+The copyrights embodied in the content of this file are licensed by
+Yahoo! Inc. under the BSD (revised) open source license
+
+@author Dan Vlad Dascalescu <dandv@yahoo-inc.com>
+
+html {
+  cursor: text;
+}
+
+.editbox {
+  margin: .4em;
+  padding: 0;
+  font-family: monospace;
+  font-size: 10pt;
+}
+*/
+
+/*We should define specific styles for every element of the syntax.
+  the setting below will cause some annoying color to show through if we missed
+  defining a style for a token. This is also the "color" of the whitespace and
+  of the cursor.
+
+pre.code, .editbox {
+  color: red;
+}
+
+.editbox p {
+  margin: 0;
+}
+*/
+
+span.php-punctuation {
+  color: #b3b3b3;
+}
+
+span.php-keyword {
+  color: #307ad0;
+  font-weight: bold;
+}
+
+span.php-operator {
+  color: #b3b3b3;
+}
+
+/* __FILE__ etc.; http://php.net/manual/en/reserved.php */
+span.php-compile-time-constant {
+  color: #776088;
+}
+
+/* output of get_defined_constants(). Differs from http://php.net/manual/en/reserved.constants.php */
+span.php-predefined-constant {
+  color: #e5e5e5;
+}
+
+/* PHP reserved "language constructs"... echo() etc.; http://php.net/manual/en/reserved.php */
+span.php-reserved-language-construct {
+  color: #e74857;
+}
+
+/* PHP built-in functions: glob(), chr() etc.; output of get_defined_functions()["internal"] */
+span.php-predefined-function {
+  color: #e44854;
+}
+
+/* PHP predefined classes: PDO, Exception etc.; output of get_declared_classes() and different from http://php.net/manual/en/reserved.classes.php */
+span.php-predefined-class {
+  color: #ff9900;
+}
+
+span.php-atom {
+  color: #228811;
+}
+
+/* class, interface, namespace or function names, but not $variables */
+span.php-t_string {
+  color: #b3b3b3;
+}
+
+span.php-variable {
+  color: #f4dd96;
+}
+
+
+span.js-localvariable {
+  color: #6cb7cd;
+}
+
+span.php-comment {
+  color:#8cd18f;
+  font-stretch: condensed;
+}
+
+span.php-string-single-quoted {
+  color: #b3b3b3;
+}
+/* double quoted strings allow interpolation */
+span.php-string-double-quoted {
+  color: #b3b3b3;
+}
+
+span.syntax-error {
+  color: white;
+  background-color: #bd0202;
+}
+
+span.deprecated {
+  color: #4c4c4c;
+  font-size: smaller;
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Introduction to Views : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Introduction to Views
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+
+<h1>Introduction to Views</h1>
+
+<p>Views are a part of the website theme. They will be used by the website to display the content.</p>
+<p>Views are located in the folder: <dfn>/themes/</dfn><var>your_theme/</var><dfn>views/</dfn>.</p>
+
+<p>A view has the <kbd>.php</kbd> extension.</p>
+
+
+
+<h2>Views and Tags</h2>
+
+<p>A view displays the website content through <strong>tags.</strong> We can also say that tags are used in views to display content from the database.</p>
+<p>Tags are coded in libraries called "<strong>Tag Managers</strong>". You will certainly not need to edit these libraries, but if you wish to know more about tags, like how to create your own tags, have a look at the "Libraries Reference".
+
+<p>Pages and articles are displayed according to their defined views. In a view, some tags can use other views to display data.</p>
+
+
+
+<h2>Kind of views</h2>
+
+<p>They are 3 kind of views :</p>
+
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>View type</th>
+	<th>Description</th>
+</tr>
+<tr>
+	<td class="td"><strong>Page views</strong></td>
+	<td class="td">
+		Linked to one page through Ionize.<br/>
+		Used to display all pages elements :
+		<ul>
+			<li>Pages meta data : Website title, page title</li>
+			<li>Medias linked to the page</li>
+			<li>Partials views, like header or footer</li>
+		</ul>
+	</td>
+</tr>
+<tr>
+	<td class="td"><strong>Article views</strong></td>
+	<td class="td">
+		Linked to one article or to the "Article's views" of one page.<br/>
+		Used to display all articles fields.
+	</td>
+</tr>
+<tr>
+	<td class="td"><strong>Partial views</strong></td>
+	<td class="td">
+		These views are used as partial block in other views, for repeating content.<br/>
+		For example, if the header of the website is always the same, you will create an "header.php" view and include it in a page view.
+	</td>
+</tr>
+</table>
+
+
+<h2>Activate pages and articles views</h2>
+
+<p>Pages and Articles views need to be activated in order to use them in the Page and Article panels of Ionize (to link these views to pages or articles).</p>
+
+<p>In Ionize, go to : <dfn>Settings > Themes...</dfn></p>
+
+<p><img src="../images/ionize_view_activation.jpg" /></p>
+
+<p>
+	This panel shows the views PHP files. <br/>
+	For each view, you can enter a logical name, which will be in the view list of the page edition panel, and set the type ("article" or "page").
+</p>
+
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="static_translations.html">Static translations</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="page_views.html">Page views</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+
+
+/**************************************************************
+
+	Sortable Table
+	v 1.4
+
+**************************************************************/
+
+table {
+	width: 100%;
+}
+
+th {
+/*	padding: 4px !important;*/
+}
+
+tr {
+
+	padding: 4px;
+}
+
+tr.altRow {
+	background-color: #fff;
+}
+tr.alt {
+	background  :#f2f2f2;
+}
+
+td {
+	padding: 0 2px;
+}
+
+.rightAlign {
+	text-align: right;
+}
+
+
+
+.sortedASC {
+	background: url(images/icon-table-sort-asc.png) no-repeat 2px 6px;
+	padding-left:16px !important;
+}
+
+.sortedDESC {
+	background: url(images/icon-table-sort-desc.png) no-repeat 2px 6px;
+	padding-left:16px !important;
+}
+
+.tableHeaderOver {
+	cursor: pointer;
+	color: #354158;
+}
+
+
+/*tr.selected {
+	background-color: gold;
+	color: #fff;
+}*/
+
+tr.over {
+	background-color: #354158;
+	color: #fff;
+	cursor: pointer;
+}
+
+tr.hide {
+	display: none;
+}
+
+/***************************/
+.tableFilter {
+	border: 1px solid #ccc;
+	padding: 2px;
+	margin: 5px 0 10px 0;
+}
+
+.tableFilter input {
+	border: 1px solid #ccc;
+}
+
+.tableFilter select {
+	border: 1px solid #ccc;
+}
+
+
+/*************************************************************/

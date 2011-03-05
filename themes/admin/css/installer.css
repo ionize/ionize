@@ -1,0 +1,296 @@
+/*
+
+CSS for Ionize Install module
+
+*/
+
+
+/* Reset */
+ul,ol,dl,li,dt,dd,h1,h2,h3,h4,h5,h6,pre,form,body,html,p,blockquote,fieldset,input,object,iframe { margin: 0; padding: 0; }
+a img,:link img,:visited img { border: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+:focus { outline: none; }
+
+/* Structure */
+
+body {
+	text-align: left;
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 62.5%;
+	line-height: 18px;
+	color: #000;
+	background-color: #d9d9d9;
+}
+
+.error {
+	background-color: #fff;
+	color: #c00;
+	display: block;
+	padding:10px;
+	margin-bottom:10px;
+}
+.highlight {
+	color:#096995;
+}
+.highlight2 {
+	color:#db8100;
+}
+
+#page {
+	width:600px;
+	margin:40px auto 0px auto;
+}
+
+#content {
+	padding:0px 40px 20px 40px;
+	background: url('../images/installer_content_bg.jpg') repeat-y bottom left;
+	overflow: hidden;
+}
+#content-top, #content-bottom {	height:17px;}
+
+#content-top {
+	background: url('../images/installer_content_top.gif') no-repeat top left;
+}
+#content-bottom {
+	background: url('../images/installer_content_bottom.gif') no-repeat top left;
+}
+
+#lang {
+	float:right;
+}
+#lang img{
+	cursor: pointer;
+	margin:15px 0 0 5px;
+}
+
+/* Navigation */
+ul#nav {
+	list-style-type: none;
+	margin: 0;
+	padding: 0 0 50px 0;
+}
+ul#nav li:first-child {
+	margin-left:0;
+}
+ul#nav li {
+	font-size: 1.1em;
+	margin-bottom: 6px;
+	padding: 3px 0;
+	text-align: center;
+	float:left;
+	margin-left:8px;
+}
+ul#nav li a{
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	background: #eee;
+	color:#777;
+	border: 1px solid #ddd;
+	padding:6px 15px;
+}
+ul#nav li a:hover,
+ul#nav li a.done:hover {
+	background-color: #fff;
+	color:#1e85b8;
+}
+ul#nav li a.active{
+	background: #fff;
+	font-weight: bold;
+	color:#1e85b8;
+}
+ul#nav li a.done{
+	background: url(../images/icon_16_ok.png) no-repeat bottom right;;
+	background-color: #fff;
+	font-weight: normal;
+	color:#789a32;
+	color:#ccc;
+}
+ul#nav li a.inactive:hover{
+	background: #fff;
+	color:#777;
+	background: #eee;
+}
+
+/* Typography */
+
+h1 {
+	margin-top: 10px;
+	padding:0 6px 5px 6px;
+	font-weight: normal;
+	color: #1E85B8;
+}
+h2 {
+	color:#1E85B8;
+	padding:0 0 3px 0;
+	margin: 10px 8px 20px 8px;
+	border-bottom: solid 1px #ddd;
+	font-size: 14px;
+}
+h3, h4 {
+	margin: 0 0 10px 0;
+	padding: 0 0 3px 0;
+	font-weight: normal;
+}
+	
+h2:before {
+	content: " ";
+}
+
+h3 {
+	margin-top:10px !important;
+	font-size: 12px;
+	border-bottom: solid 1px #555;
+}
+
+h4 {
+	font-size: 11px;
+}
+
+a {
+	color: #098ED1;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+a:hover {
+	
+}
+
+p {
+	margin: 0;
+	padding: 0 8px 9px 8px;
+	color:#555;
+	font-size: 1.2em;
+}
+p.version {
+	text-align: right;
+	color:#888;
+	font-style: italic;
+	margin-top: -25px;
+	margin-bottom: 20px;
+}
+
+/* List Elements */
+ul {
+	list-style: outside;
+	margin: 0 0 9px 12px;
+	padding:0 0 0 10px;
+	list-style-type: disc;
+}
+ul li {
+	color:#555;
+	font-size: 1.1em;
+}
+
+/* Dividers */
+hr {
+	background-color: #ddd;
+	color: #ccc;
+	height: 1px;
+	border: 0px;
+}
+
+/* Forms */
+form {
+	margin: 10px 0 20px 0;
+}
+dl {
+	padding:5px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	margin-bottom: 3px;
+}
+dl.list {
+	padding:0;
+	margin-top: 0;
+	margin-bottom: 0;
+	border: none;
+}
+dl.first {
+	margin-top: 10px;
+}
+dl.focus {
+	background-color: #fff;
+	/*
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+	*/
+}
+dl dt {
+	clear:left;
+	float:left;
+	width:150px;
+	text-align:right;
+	padding-top: 2px;
+}
+dl dt.large {
+	width:230px;
+	padding-right:5px;
+}
+dl dt.left {
+	text-align:left;
+}
+dl dd {
+/*	margin-bottom:3px;*/
+}
+
+input.button,
+.button.left,
+.button.right {
+	margin-top: 10px;
+}
+
+.w10 {	width:10px !important; }
+.w20 {	width:20px !important; }
+.w30 {	width:30px !important; }
+.w40 {	width:40px !important; }
+.w50 {	width:50px !important; }
+.w60 {	width:60px !important; }
+.w80 {	width:80px !important; }
+.w100 {	width:100px !important; }
+.w120 {	width:120px !important; }
+.w140 {	width:140px !important; }
+.w160 {	width:160px !important; }
+.w180 {	width:180px !important; }
+.w200 {	width:220px !important; }
+.w220 {	width:220px !important; }
+.w240 {	width:240px !important; }
+.w260 {	width:260px !important; }
+.w280 {	width:280px !important; }
+.w300 {	width:300px !important; }
+.w320 {	width:320px !important; }
+.w340 {	width:340px !important; }
+.w360 {	width:360px !important; }
+.w380 {	width:380px !important; }
+.w400 {	width:400px !important; }
+.w500 {	width:500px !important; }
+.w600 {	width:600px !important; }
+
+.h10 {	height:10px !important; }
+.h15 {	height:15px !important; }
+.h18 {	height:18px !important; }
+.h20 {	height:20px !important; }
+.h30 {	height:30px !important; }
+.h40 {	height:40px !important; }
+.h50 {	height:50px !important; }
+.h60 {	height:60px !important; }
+.h80 {	height:80px !important; }
+.h100 {	height:100px !important; }
+.h120 {	height:120px !important; }
+.h140 {	height:140px !important; }
+.h160 {	height:160px !important; }
+.h180 {	height:180px !important; }
+.h200 {	height:220px !important; }
+.h220 {	height:220px !important; }
+.h240 {	height:240px !important; }
+.h260 {	height:260px !important; }
+.h280 {	height:280px !important; }
+.h300 {	height:300px !important; }
+.h320 {	height:320px !important; }
+.h340 {	height:340px !important; }
+.h360 {	height:360px !important; }
+.h380 {	height:380px !important; }
+.h400 {	height:400px !important; }

@@ -1,0 +1,79 @@
+
+Ionize's FancyUpload Module
+Installation instruction
+
+You can also find these instrauction in the ionize documentation : 
+http://www.ionizecms.com/files/ionize_0.9.4_doc_webdesigner.pdf
+
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+The FancyUpload module gives your user the ability to upload files to your server, in a given folder.
+You can define which group of users have the right to upload.
+Used in combination with the login tags, it gives you a powerful and easy way to provide an upload function to your website.
+
+
+
+Installation
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+1.Go to Modules > Administration
+2.Click on the right link : “Install”
+
+
+
+Configuration
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+The admin configuration panel is quite simple :
+
+1. Select the destination folder (which must be in your base files folder), 
+2. Select the max file size(should be <= to the max upload size allowed by the server),
+3. Add or not a prefix to each uploaded file (the prefix will be the username of the user who do the upload)
+4. Set the authorized group
+
+When setting up the “Alert to admin”, an email will be sent to the given address after each users upload.
+When setup the authorized group, the group of the uploading user is checked before the uploads starts. If the user has not the required level, the upload fails.
+
+
+
+How to display the upload form ?
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+To display the FancyUpload upload form, just add the tag <ion:fancyupload /> in one of your view :
+
+	<div class="article"> 
+		<!-- Article's content (title and text) -->
+		<ion:title tag="h2" /> 
+		<ion:content />
+	
+		<!-- Max upload information get from module config file -->
+		<p><ion:translation term="module_fancyupload_max_upload_size" /> : <span><ion:config item="fancyupload_max_upload" /> Mo</span></p> 
+		
+		<!-- Module's upload form -->
+		<ion:fancyupload /> 
+	</div>
+
+Important : After creating your upload view, you'll need to declare the view in order to link it to an article in Ionize.
+
+
+Restrict access to users
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+The idea : 	Make the upload page only visible for logged users.
+Why : 		To avoid spam bot form send.
+How : 		By restricting access to the upload form to logged users.
+
+Even the module checks if the user has the right to upload, the upload form stays visible for all users.
+It could be nice to hide the page containing the upload module and to show it only to the connected users. 
+Have a look at the Login tag for more information about this functionality.
+
+1. Restrict upload page access to one users group.
+   In the page, limit the authorization to the “Users” group :
+
+2. In the header view (for example) used in your pages, add the following lines : 
+   
+   <ion:login form_view="access/login_form" logged_view="access/login_info" /> 
+
+3. When the user is not connected, the above tag will output the view located in : /themes/<your_theme>/views/access/login_form.
+   When connected, it will outputs the view located in /themes/<your_theme>/views/access/login_info.
+   Once he is logged on, the user will see the upload menu item and have access to the upload page.

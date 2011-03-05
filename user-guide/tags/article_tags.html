@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Article Tags : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Article Tags
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+<h1>Article Tags</h1>
+
+<p>All tags described here must be used into the <dfn>&lt;ion:articles /></dfn> iterator tag or in an article view.</p>
+
+
+<h2>articles</h2>
+
+<p>Iterator tags for articles.</p>
+
+<h3>Attributes</h3>
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Attribute</th>
+	<th>Optional</th>
+	<th>Values</th>
+</tr>
+<tr>
+	<td class="td">type</td>
+	<td class="td">yes</td>
+	<td class="td">
+		Type name.<br/>
+		Only returns articles from the given type.<br/>
+		<strong>Important : type=""</strong> will return the articles which doesn't have a type.
+	</td>
+</tr>
+<tr>
+	<td class="td">num</td>
+	<td class="td">yes</td>
+	<td class="td">
+		Number of article to return.<br/>
+		Not compatible with use of pagination.
+	</td>
+</tr>
+<tr>
+	<td class="td">order_by</td>
+	<td class="td">yes</td>
+	<td class="td">
+		"SQL order by" clause<br/>
+		<strong>Example</strong> : <dfn>'date DESC'</dfn> will order the articles by date descending
+	</td>
+</tr>
+<tr>
+	<td class="td">pagination</td>
+	<td class="td">yes</td>
+	<td class="td">
+		<strong>true / false</strong><br/>
+		Use of pagination.<br/>
+		If pagination tag is used to show the pagination links, this attribute must be set to use pagination in this set of articles.
+	</td>
+</tr>
+<tr>
+	<td class="td">scope</td>
+	<td class="td">yes</td>
+	<td class="td">
+		<strong>global / parent</strong><br/>
+		The global scope will return articles from all website.<br/>
+		Parent scope will return articles from current parent page (all child pages articles).
+	</td>
+</tr>
+<tr>
+	<td class="td">filter</td>
+	<td class="td">yes</td>
+	<td class="td">
+		Logical filtering of the articles on their base data.<br/>
+		Base data are : title, type, author
+	</td>
+</tr>
+<tr>
+	<td class="td">from</td>
+	<td class="td">yes</td>
+	<td class="td">
+		One or more page URL, separated by coma.<br/>
+		Returns all articles from the given pages URLs.
+	</td>
+</tr>
+</table>
+
+
+<h2>article</h2>
+<p>Container for one article.</p>
+<p>This tag is commonly used to use a specific the article view as partial to display the article content (See example above)</p>
+<p>If you only wish to display a list of articles within your page view, it is not mandatory to use this tag.</p>
+
+
+<h2>id_article</h2>
+<p>
+	Returns the article internal ID.<br/> 
+	Can be very useful to name some HTML elements (like an image gallery) if multiple occurrences or this element are displayed on the same page.
+</p>
+
+<pre>
+&lt;ion:id_article />
+</pre>
+
+
+
+<h2>title, subtitle</h2>
+<p>See : <a href="../tags/shared_tags.html">Shared Tags</a></p>
+
+
+<h2>view</h2>
+<p>Returns the view used by the article, relative to the <var>/themes/your_theme/views/</var> folder or nothing if no view is linked to the article.</p>
+
+<pre>
+<dfn>&lt;!-- Example of return : default/last_article --></dfn>
+&lt;ion:view />
+</pre>
+
+
+
+<h2>author</h2>
+<p>Returns the article author's name.</p>
+
+<pre>
+<dfn>&lt;!-- Example of return : Ukyo --></dfn>
+&lt;ion:author />
+</pre>
+
+
+<h2>author_email</h2>
+<p>Returns the article author's email.</p>
+
+<pre>
+<dfn>&lt;!-- Example of return : my_email@my_domain.tld --></dfn>
+&lt;ion:author_email />
+</pre>
+
+
+<h2>date</h2>
+<p>Element date, based on defined Ionize date.</p>
+<p>If no publication date is defined in Ionize, this tag will return the creation date of the element.</p>
+<p>If the format attribute is not set, returns the date with the format :  Y-m-d H:i:s .</p>
+
+<p>Example of standard return : 2010-03-29 20:14:55</p>
+
+<p>If one of the following format is used, the corresponding translation will be searched in the <var>/themes/your_theme/language/xxx/date_lang.php</var> file :</p>
+<ul>
+	<li><strong>D</strong> : Name of the day, on 3 chars.</li>
+	<li><strong>l</strong> : Name of the day, long.</li>
+	<li><strong>F</strong> : Name of the month, long</li>
+	<li><strong>M</strong> : Name of the month, on 3 chars</li>
+</ul>
+
+<p>That means the day and month names will be displayed in the according language, as translated in each translation file.</p>
+
+<pre>
+<dfn>&lt;!-- Will display : "Mon" if the article's date is monday and the current lang english --></dfn>
+&lt;ion:date format="D" />
+</pre>
+
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Attribute</th>
+	<th>Optional</th>
+	<th>Values</th>
+</tr>
+<tr>
+	<td class="td">format</td>
+	<td class="td">yes</td>
+	<td class="td">
+		PHP output format<br/>
+		If set, returns the date using this format string.
+	</td>
+</tr>
+</tr>
+	<td class="td">tag</td>
+	<td class="td">yes</td>
+	<td class="td">Puts the results into the given tag</td>
+</tr>
+<tr>
+	<td class="td">id</td>
+	<td class="td">yes</td>
+	<td class="td">Adds the HTML <strong>id</strong> attributes to the produced tag.</td>
+</tr>
+<tr>
+	<td class="td">class</td>
+	<td class="td">yes</td>
+	<td class="td">Adds the HTML <strong>class</strong> attributes to the produced tag.</td>
+</tr>
+</table>
+
+
+
+<h2>content</h2>
+
+<p>Returns the current article text content.</p>
+
+<pre>
+<dfn>&lt;!-- Display the first paragraph of the content text in a span HTML tag --></dfn>
+&lt;ion:content paragraph="1" tag="span" />
+</pre>
+
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Attribute</th>
+	<th>Optional</th>
+	<th>Values</th>
+</tr>
+<tr>
+	<td class="td">paragraph</td>
+	<td class="td">yes</td>
+	<td class="td">
+		Limit the content to the defined number of paragraph.
+	</td>
+</tr>
+</tr>
+	<td class="td">tag</td>
+	<td class="td">yes</td>
+	<td class="td">Puts the results into the given tag</td>
+</tr>
+<tr>
+	<td class="td">id</td>
+	<td class="td">yes</td>
+	<td class="td">Adds the HTML <strong>id</strong> attributes to the produced tag.</td>
+</tr>
+<tr>
+	<td class="td">class</td>
+	<td class="td">yes</td>
+	<td class="td">Adds the HTML <strong>class</strong> attributes to the produced tag.</td>
+</tr>
+</table>
+
+
+<h2>url</h2>
+
+<p>Returns :</p>
+<ul>
+	<li>The absolute URL to the article or</li>
+	<li>The link set through Ionize if this article is a link to something else (a page, an article, an external URL)</li>
+</ul>
+
+<pre>
+<dfn>&lt;!-- Display the first paragraph of the content text in a span HTML tag --></dfn>
+&lt;h2>&lt;a href="&lt;ion:url />">&lt;ion:title />&lt;/a>&lt;/h2>
+</pre>
+
+<p class="important">
+	If more than one language are defined and set to “online” in Ionize, the returned URL will automatically include the current language code.
+</p>
+<p class="important">
+	In edition mode : If you're connected to Ionize as an editor, the URL will include the language code if more than one languages are set. The offline languages code are also included.
+</p>
+
+
+
+<h2>categories</h2>
+
+<p>Returns the articles categories list, with or without link to the category filtering.</p>
+
+
+<h2>readmore</h2>
+
+<p>Return the link to the article or to the link to which links the article (page, external URL).</p>
+
+<pre>
+&lt;ion:readmore term="static_translated_term" tag="p" id="my_id" class="my_class" />
+</pre>
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="shared_tags.html">Shared Tags : Page, Article, Media</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="media_tags.html">Media Tags</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

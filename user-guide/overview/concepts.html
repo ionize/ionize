@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Ionize Main Concepts : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Main Concepts
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+
+<h1>Main Concepts</h1>
+
+<p>Ionize organizes content by language, menus, pages and articles.<br/>
+The entry point is the language, which will be detected when the user enter the website.</p>
+<p>If no language was found, the default one will be loaded (the one defined during the install process).
+
+<h2>Website</h2>
+<p>A website made with Ionize is composed of : </p>
+<ul>
+	<li>One or more languages</li>
+	<li>Content, stored in database (pages, articles)</li>
+	<li>One theme, containing display items</li>
+	<li>Media files : pictures, videos, music, etc.</li>
+</ul>
+
+<p>Ionize allow the management of <strong>one website by installation</strong> (one folder).<br/>
+Several themes can be used, but only one will be displayed.</p>
+
+<h2>Theme</h2>
+<p>A theme defines how the content of the website will be displayed.</p>
+<p>A theme is a folder containing all the website views, assets (CSS, javascript, design pictures) and optional widgets used by the website.<br/>
+Themes are located in subfolders of the folder <dfn>/themes</dfn>.
+<p>The website has one theme.</p>
+
+
+<h2>View</h2>
+<p>A <dfn>view</dfn> is simply a web page, or a page fragment, like a header, footer, sidebar, etc.</p>
+<p>A view  is used to display data. This could also be called a “template”, but Ionize uses the CodeIgniter “view” terminology.<br/>
+Common views are articles and page views.</p>
+<p>One view can be used to display a page bu can also be called by another view, as partial content.</p>
+<p>Views are located in the folder <dfn>/themes/your_theme_name/views</dfn>.
+<p>Views extension is <kbd>.php</kbd>.</p>
+
+<h2>Tag</h2>
+<p>A tag is a template language element used to display data easily.<br/>
+Tags are used in views.</p>
+<p>All tags start with the "<kbd>ion</kbd>" prefix.</p>
+
+<p>Example of tag usage:</p>
+
+<pre>
+&lt;ion:articles num="3" >
+
+	&lt;ion:title tag="h2" />
+	
+	&lt;ion:content paragraph="1" />
+
+&lt;ion:articles />	
+</pre>
+
+<p>This tag will display 3 articles, with content limited to the first paragraph.<br/>
+Each article's title will be enclosed by a H3 HTML tag.</p>
+
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="features.html">Ionize Features</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="folders.html">Folders organization</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<sql>
+
+	<query>
+		ALTER TABLE ion_sessions CHANGE user_data user_data TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+	</query>
+	
+	<query>
+		ALTER TABLE ion_sessions CHANGE user_agent user_agent TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE media_lang CHANGE `alt` `alt` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE extend_field CHANGE `value` `value` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE extend_field CHANGE description description VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL; 
+	</query>
+
+	<query>
+		ALTER TABLE users CHANGE username username VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE users ADD salt VARCHAR(50) NOT NULL;
+	</query>
+
+
+</sql>
