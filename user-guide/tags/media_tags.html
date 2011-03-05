@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Media Tags : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Media Tags
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+<h1>Media Tags</h1>
+
+<p>All tags described here must be used into the <dfn>&lt;ion:medias /></dfn> iterator tag.</p>
+
+
+<h2>medias</h2>
+
+<p>Iterator tags for medias.</p>
+
+<pre>
+&lt;ion:medias type="picture/video/music/file" [ limit="3" range="2,3"] >
+
+&nbsp;&nbsp;&nbsp;&nbsp;<dfn>&lt;!-- Display pictures --></dfn>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;img src="&lt;ion:src [folder="small"] />" alt="&lt;ion:alt />" title="&lt;ion:title /> | &lt;ion:copyright />" />
+
+&nbsp;&nbsp;&nbsp;&nbsp;<dfn>&lt;!-- Display files with link to the file and description --></dfn>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="&lt;ion:link />" title="&lt;ion:title />">&lt;ion:title />&lt;/a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ion:description />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/p>
+
+&lt;/ion:medias>
+</pre>
+
+
+<h3>Attributes</h3>
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Attribute</th>
+	<th>Optional</th>
+	<th>Values</th>
+</tr>
+<tr>
+	<td class="td">type</td>
+	<td class="td">no</td>
+	<td class="td">picture, video, music, file
+	</td>
+</tr>
+<tr>
+	<td class="td">extension</td>
+	<td class="td">yes</td>
+	<td class="td">
+		The file extension to filter on.<br/>
+		Example : extension="pdf"
+	</td>
+</tr>
+<tr>
+	<td class="td">limit</td>
+	<td class="td">yes</td>
+	<td class="td">
+		Integer.<br/> 
+		Limits the displayed media to the given number.
+	</td>
+</tr>
+<tr>
+	<td class="td">range</td>
+	<td class="td">yes</td>
+	<td class="td">
+		Start and stop index, coma separated. Start at 0.< br/>
+		Example : range="1,3" displays the media sfrom the second one to the fourth one.
+	</td>
+</tr>
+</table>
+
+
+<h2>src</h2>
+<p>Returns the path to the media.</p>
+
+<pre>
+&lt;ion:src [ folder="media_folder" ] />
+</pre>
+
+<h3>Attributes</h3>
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Attribute</th>
+	<th>Optional</th>
+	<th>Values</th>
+</tr>
+<tr>
+	<td class="td">folder</td>
+	<td class="td">yes</td>
+	<td class="td">
+		Can only be used with <strong>type="image"</strong>.<br/>
+		Returns the URL to the corresponding thumb folder.<br/>
+		Thumbs folders must be declared in : <var>Settings > Advanced Settings > New picture thumbnail.</var>
+	</td>
+</tr>
+</table>
+
+
+<h2>link</h2>
+
+<p>Returns the absolute URL to the media.</p>
+
+<pre>
+&lt;ion:link [ tag="span" id="my_id" class="my_class" ] />
+</pre>
+
+
+<h2>id_media</h2>
+
+<p>Returns the internal database media ID (integer value). Unique for each media.</p>
+
+<pre>
+<dfn>&lt;!-- Media ID --></dfn>
+&lt;ion:id_media />
+</pre>
+
+
+
+<h2>file_name</h2>
+
+<p>Returns the file name, with extension. Example : <var>my_picture.jpg</var>.</p>
+
+<pre>
+<dfn>&lt;!-- File name --></dfn>
+&lt;ion:file_name [ tag="span" id="my_id" class="my_class" ] />
+</pre>
+
+
+
+<h2>path</h2>
+
+<p>Returns the media complete path, excluding the base URL of your website, without first "/".</p>
+<p>Example : <var>files/pictures/sunrise/my_sunrise.jpg</var>.</p>
+
+<pre>
+<dfn>&lt;!-- File path --></dfn>
+&lt;ion:path />
+</pre>
+
+
+
+<h2>base_path</h2>
+
+<p>Returns the media base path, excluding the base URL of your website, without first "/", with trailing "/"</p>
+<p>Example : <var>files/pictures/sunrise/</var>.</p>
+
+<pre>
+<dfn>&lt;!-- Base path --></dfn>
+&lt;ion:base_path />
+</pre>
+
+
+
+
+<h2>alt, title, description, copyright</h2>
+
+<p>Returns media meta data.</p>
+
+<pre>
+<dfn>&lt;!-- Alternative text --></dfn>
+&lt;ion:alt [ tag="span" id="my_id" class="my_class" ] />
+
+<dfn>&lt;!-- Media title --></dfn>
+&lt;ion:title [ tag="span" id="my_id" class="my_class" ] />
+
+<dfn>&lt;!-- Description --></dfn>
+&lt;ion:description [ tag="span" id="my_id" class="my_class" ] />
+
+<dfn>&lt;!-- Copyright --></dfn>
+&lt;ion:copyright [ tag="span" id="my_id" class="my_class" ] />
+
+</pre>
+
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="article_tags.html">Article Tags</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="special_tags.html">Special Tags</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+span.xml-doctype {
+  color: #555;
+}
+
+span.xml-tagname {
+  color: #a3d3fe;
+/*  color: #6b95f6;*/
+}
+
+span.xml-attribute {
+  color: #FFBD40;
+}
+
+span.xml-punctuation {
+  color: #a3d3fe;
+/*  color:#6b95f6;*/
+}
+
+span.xml-attname {
+  color: #ddd;
+}
+
+span.xml-comment {
+  color:#8cd18f;
+  font-stretch: condensed;
+}
+
+span.xml-cdata {
+  color: #48A;
+}
+
+span.xml-processing {
+  color: #af110d;
+}
+
+span.xml-entity {
+  color: #A22;
+}
+
+span.xml-error {
+ color: #F00 !important;
+}
+
+span.xml-text {
+  color: #bbb;
+}

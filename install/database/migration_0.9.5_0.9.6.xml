@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+<sql>
+
+	<query>
+		CREATE TABLE IF NOT EXISTS page_article (
+			id_page INT(11) UNSIGNED NOT NULL,
+			id_article INT(11) UNSIGNED NOT NULL,
+			online tinyint(1) UNSIGNED NOT NULL default 0,
+			view varchar(50) default NULL,
+		  	ordering int(11) default 0,
+			id_type int(11) UNSIGNED NULL,
+			PRIMARY KEY  (id_page, id_article)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+	</query>
+
+	<query>
+		INSERT INTO page_article (
+			SELECT 
+				id_page, 
+				id_article,
+				online,
+				`view`, 
+				ordering ,
+				id_type
+			from article
+		);
+	</query>
+
+	<query>
+		ALTER TABLE `article` ADD `flag` SMALLINT NOT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `article`
+		  DROP `online`,
+		  DROP `ordering`,
+		  DROP `id_page`,
+		  DROP `view`;
+	</query>
+
+	<query>
+		UPDATE setting SET content='mootools-filemamager' where name='filemanager';
+	</query>
+
+	<query>
+		UPDATE setting SET content='0.9.6' where name='ionize_version';
+	</query>
+
+	<query>
+		DELETE FROM setting WHERE name='media_thumb_size';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'media_thumb_size', '120', '');
+	</query>
+
+	<query>
+		DELETE FROM setting WHERE name='display_connected_label';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'display_connected_label', '1', '');
+	</query>
+
+	<query>
+		DELETE FROM setting WHERE name='tinybuttons1';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image', '');
+	</query>
+
+	<query>
+		DELETE FROM setting WHERE name='tinybuttons2';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', '');
+	</query>
+
+	<query>
+		DELETE FROM setting WHERE name='tinybuttons3';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', '');
+	</query>
+
+	<query>
+		DELETE FROM setting WHERE name='displayed_admin_languages';
+	</query>
+	<query>
+		INSERT INTO setting VALUES(30, 'displayed_admin_languages', 'en,fr', NULL);
+	</query>
+
+	<query>
+		INSERT INTO setting VALUES('', 'date_format', '%Y.%m.%d', NULL);
+	</query>
+
+
+
+</sql>

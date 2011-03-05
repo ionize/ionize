@@ -1,0 +1,99 @@
+/* Ionize MCE inline popup style */
+
+/* Reset */
+.ionizeMce, .ionizeMce div, .ionizeMce span, .ionizeMce a {vertical-align:baseline; text-align:left; position:absolute; border:0; padding:0; margin:0; background:transparent; font-family:"lucida grande",tahoma,verdana,arial,sans-serif; font-size:11px; color:#000; text-decoration:none; font-weight:normal; width:auto; height:auto; overflow:hidden; display:block}
+
+/* General */
+.ionizeMce {
+	position:absolute; 
+	direction:ltr;
+	box-shadow: rgba(0, 0, 0, 0.5) 0 0 10px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.5) 0 0 10px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.5) 0 0 10px;
+	
+}
+.ionizeMce .mceWrapper {position:static}
+.mceEventBlocker {position:fixed; left:0; top:0; background:url(img/horizontal.gif) no-repeat 0 -75px; width:100%; height:100%}
+.ionizeMce .mcePlaceHolder {border:1px solid #000; background:#888; top:0; left:0; opacity:0.5; -ms-filter:'alpha(opacity=50)'; filter:alpha(opacity=50)}
+.ionizeMce_modalBlocker {position:fixed; left:0; top:0; width:100%; height:100%; background:#000; opacity:0.6; -ms-filter:'alpha(opacity=60)'; filter:alpha(opacity=60); display:none}
+
+/* Top */
+.ionizeMce .mceTop, .ionizeMce .mceTop div {top:0; width:100%; height:26px}
+.ionizeMce .mceTop .mceLeft {width:6px; background:url(img/corners.gif)}
+.ionizeMce .mceTop .mceCenter {right:6px; width:100%; height:26px; background:url(img/horizontal.gif) 12px 0; clip:rect(auto auto auto 12px)}
+.ionizeMce .mceTop .mceRight {right:0; width:6px; height:26px; background:url(img/corners.gif) -12px 0}
+.ionizeMce .mceTop span {width:100%; text-align:center; vertical-align:middle; line-height:26px; font-weight:bold}
+.ionizeMce .mceFocus .mceTop .mceLeft {background:url(img/corners.gif) -6px 0}
+.ionizeMce .mceFocus .mceTop .mceCenter {background:url(img/horizontal.gif) 0 -26px}
+.ionizeMce .mceFocus .mceTop .mceRight {background:url(img/corners.gif) -18px 0}
+.ionizeMce .mceFocus .mceTop span {color:#141414; font-size:12px;text-align: left;margin-left:12px;}
+
+/* Middle */
+.ionizeMce .mceMiddle, .ionizeMce .mceMiddle div {top:0}
+.ionizeMce .mceMiddle {width:100%; height:100%; clip:rect(26px auto auto auto)}
+.ionizeMce .mceMiddle .mceLeft {left:0; width:5px; height:100%; background:url(img/vertical.gif) 0 0}
+.ionizeMce .mceMiddle span {top:26px; left:5px; width:100%; height:100%; background:#FFF}
+.ionizeMce .mceMiddle .mceRight {right:0; width:5px; height:100%; background:url(img/vertical.gif)}
+
+/* Bottom */
+.ionizeMce .mceBottom, .ionizeMce .mceBottom div {height:6px}
+.ionizeMce .mceBottom {left:0; bottom:0; width:100%}
+.ionizeMce .mceBottom div {top:0}
+.ionizeMce .mceBottom .mceLeft {left:0; width:5px;  }
+.ionizeMce .mceBottom .mceCenter {left:5px; width:100%;  }
+.ionizeMce .mceBottom .mceRight {right:0; width:5px; }
+.ionizeMce .mceBottom span {display:none}
+.ionizeMce .mceStatusbar .mceBottom, .ionizeMce .mceStatusbar .mceBottom div {height:23px}
+.ionizeMce .mceStatusbar .mceBottom .mceLeft {background:url(img/corners.gif) -29px 0}
+.ionizeMce .mceStatusbar .mceBottom .mceCenter {background:url(img/horizontal.gif) 0 -52px}
+.ionizeMce .mceStatusbar .mceBottom .mceRight {background:url(img/corners.gif) -24px 0}
+.ionizeMce .mceStatusbar .mceBottom span {display:block; left:7px; font-family:Arial, Verdana; font-size:11px; line-height:23px}
+
+/* Actions */
+.ionizeMce a {width:16px; height:16px; top:5px;}
+.ionizeMce .mceClose {right:6px; background:url(img/buttons.png) -48px 0}
+.ionizeMce .mceMin {display:none; right:68px; background:url(img/buttons.png) 0 0}
+.ionizeMce .mceMed {display:none; right:37px; background:url(img/buttons.png) -16px 0}
+.ionizeMce .mceMax {display:none; right:37px; background:url(img/buttons.png) -32px 0}
+.ionizeMce .mceMove {display:none;width:100%;cursor:move;background:url(img/corners.gif) no-repeat -100px -100px}
+.ionizeMce .mceMovable .mceMove {display:block}
+.ionizeMce .mceFocus .mceClose {right:6px; background:url(img/buttons.png) -48px -16px}
+.ionizeMce .mceFocus .mceMin {right:68px; background:url(img/buttons.png) 0 -16px}
+.ionizeMce .mceFocus .mceMed {right:37px; background:url(img/buttons.png) -16px -16px}
+.ionizeMce .mceFocus .mceMax {right:37px; background:url(img/buttons.png) -32px -16px}
+.ionizeMce .mceFocus .mceClose:hover {right:6px; background:url(img/buttons.png) -48px -32px}
+.ionizeMce .mceFocus .mceClose:hover {right:6px; background:url(img/buttons.png) -48px -32px}
+.ionizeMce .mceFocus .mceMin:hover {right:68px; background:url(img/buttons.png) 0 -32px}
+.ionizeMce .mceFocus .mceMed:hover {right:37px; background:url(img/buttons.png) -16px -32px}
+.ionizeMce .mceFocus .mceMax:hover {right:37px; background:url(img/buttons.png) -32px -32px}
+
+/* Resize */
+.ionizeMce .mceResize {top:auto; left:auto; display:none; width:5px; height:5px; }
+.ionizeMce .mceResizable .mceResize {display:block}
+.ionizeMce .mceResizable .mceMin, .ionizeMce .mceMax {display:none}
+.ionizeMce .mceMinimizable .mceMin {display:block}
+.ionizeMce .mceMaximizable .mceMax {display:block}
+.ionizeMce .mceMaximized .mceMed {display:block}
+.ionizeMce .mceMaximized .mceMax {display:none}
+.ionizeMce a.mceResizeN {top:0; left:0; width:100%; cursor:n-resize}
+.ionizeMce a.mceResizeNW {top:0; left:0; cursor:nw-resize}
+.ionizeMce a.mceResizeNE {top:0; right:0; cursor:ne-resize}
+.ionizeMce a.mceResizeW {top:0; left:0; height:100%; cursor:w-resize;}
+.ionizeMce a.mceResizeE {top:0; right:0; height:100%; cursor:e-resize}
+.ionizeMce a.mceResizeS {bottom:0; left:0; width:100%; cursor:s-resize}
+.ionizeMce a.mceResizeSW {bottom:0; left:0; cursor:sw-resize}
+.ionizeMce a.mceResizeSE {bottom:0; right:0; cursor:se-resize}
+
+/* Alert/Confirm */
+.ionizeMce .mceButton {color:#fff; bottom:10px; width:94px; height:26px; background:url(img/button.png) 0 0; line-height:26px; vertical-align:middle; text-align:center; outline:0}
+.ionizeMce .mceButton.mceOk {background-position: 0 -52px;} 
+.ionizeMce .mceButton.mceCancel {background-position: 0 0;} 
+.ionizeMce .mceMiddle .mceIcon {left:15px; top:35px; width:32px; height:32px}
+.ionizeMce .mceAlert .mceMiddle span, .ionizeMce .mceConfirm .mceMiddle span {background:transparent;left:60px; top:35px; width:320px; height:50px; font-weight:bold; overflow:auto; white-space:normal}
+.ionizeMce a:hover {font-weight:bold;}
+.ionizeMce .mceAlert .mceMiddle, .ionizeMce .mceConfirm .mceMiddle {background:#f2f2f2}
+.ionizeMce .mceAlert .mceOk {left:50%; top:auto; margin-left: -40px}
+.ionizeMce .mceAlert .mceIcon {background:url(img/alert.gif)}
+.ionizeMce .mceConfirm .mceOk {left:50%; top:auto; margin-left: -100px}
+.ionizeMce .mceConfirm .mceCancel {left:50%; top:auto}
+.ionizeMce .mceConfirm .mceIcon {background:url(img/confirm.gif)} 

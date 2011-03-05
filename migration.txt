@@ -1,0 +1,140 @@
+======================================================================
+
+   Ionize MIGRATION NOTES
+   
+   These migration notes will help you migrate your website 
+   to the last version of Ionize.
+
+======================================================================
+
+
+IMPORTANT : SAVE YOUR DATABASE BEFORE MIGRATION.
+			We will not be responsible of any data lost.
+
+
+From 0.9.5 to 0.9.6
+=======================================
+
+1.1 If you start with keeping the folder : /application/config/
+
+	- In application/config/config.php :
+
+	  - Add the following lines to the file : application/config/config.php :
+        $config['admin_url'] = 'admin';
+    
+      - Change the following values : 
+        $config['sess_cookie_name'] = 'ionize';
+        $config['sess_encrypt_cookie'] = false;
+    
+    - Copy the file /application/config/routes.php from 0.9.6 version to your installation
+    
+      
+1.2 If you start with a fresh folder : /application/config/
+
+    - Copy the line containing your encryption key from you old /application/config/config.php to the new one :
+      Notes : 'xxx' is your encryption key, do not write 'xxx' !
+      
+      $config['encryption_key'] = 'xxx';
+    
+2.  Launch http://your-website.tld/install/
+
+
+
+From 0.9.4 to 0.9.5
+=======================================
+
+1. 	Launch http://your-website.tld/install/
+
+2. 	Errors after migration
+
+	Error :
+		Error in definition of tag "link", the associated callable cannot be called.
+	
+	Solution :
+		In your views, in the <ion:article > tag, replace <ion:link /> by <ion:url />
+		In your views, in the <ion:navigation > tag, replace <ion:link /> by <ion:url />
+		In your views, in the <ion:languages > tag, the <ion:url /> will display the full localized URL to the page, for each language.
+
+
+
+From 0.93 to 0.94
+=======================================
+
+1. 	Launch http://your-website.tld/install/
+
+
+
+From 0.92 to 0.93
+=======================================
+
+1. 	Execute the script /install/database/migration_0.92_0.93.sql on your database.
+
+
+2. 	In your views, replace the following tags by the new one
+
+	<ion:lang /> : <ion:current_lang />
+	<ion:lang_url /> : <ion:base_url lang="true" />
+	<ion:subtitle1 /> : <ion:subtitle />
+	<ion:class_active /> : <ion:active_class />
+	<ion:pictures /> : <ion:medias type="picture" />
+	<ion:videos /> : <ion:medias type="video" />
+	<ion:musics /> : <ion:medias type="music" />
+	<ion:files /> : <ion:medias type="file" />
+
+	<ion:subtitle2 />
+	When used, you have to create an extended field in Ionize (on the page or article, depending of your use)
+	and to call this extended field from the dedicated tag : 
+
+	<ion:subtitle2 /> : <ion:field type="page" name="subtitle2" />
+
+
+
+From 0.90 to 0.92
+=======================================
+
+1. 	Execute the script : /install/database/migration_0.90_0.92.sql
+
+2. 	Replace by the new folder : 
+   
+	/application/controller by the new one
+	/application/helpers
+	/application/libraries
+	/application/models
+	
+3. 	Replace by the new folder : 
+
+	/themes/admin
+
+4. 	Copy the file /config/ionize.php in your /config folder
+
+5 	Replace in your views : 
+	
+	OLD TAG						NEW TAG
+
+	<ion:class_active />		<ion:active_class />
+	
+	Page
+	<ion:last_articles />		<ion:articles />
+	<ion:lang />				<ion:current_lang />
+	
+	Articles
+	<ion:lang_url />			<ion:url lang="true"/>
+	<ion:pictures />			<ion:medias type="picture" />
+
+	Archives links
+	<ion:lang_url />			<ion:url lang="true"/>
+	<ion:nb_articles />			<ion:nb />
+
+
+	Attribute
+	with						filter
+
+
+6. 	Errors after migration :
+
+	Error :
+		An error was encoured : Tag missing: "last_articles", scope: "".
+
+	Solution :
+		Replace your tags <ion:last_articles /> by the tag <ion:articles /> in your views
+

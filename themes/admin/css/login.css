@@ -1,0 +1,84 @@
+/** Ionize Style
+ *  Login view
+ */
+ 
+body {
+	margin:0;
+	font-family:"Arial", sans-serif !important;
+	font-size:1em;
+	background-color:#f2f2f2;
+}
+.content {
+	position:relative;
+}
+#footer p {
+	text-align: center !important;
+}
+#loginWindow {
+	margin:100px auto 0 auto;
+	padding:90px 0 0 0;
+	width:466px;
+	height:166px;
+	position: relative;
+	background:url(../images/application_login_window_bg.jpg) no-repeat top left;
+}
+
+#version {
+	color:#c2d0e0;
+	font-size: 10px;
+	position: absolute;
+	bottom:30px;
+	left: 46px;
+}
+
+label {
+	display:block;
+	font-size: 1em;
+	margin:5px 0 0 0 !important;
+	color:#fff;
+}
+form {
+	padding: 0 0 0 30px;
+	margin: 0 0 0 220px;
+	width: auto !important;
+}
+form .inputtext {
+	text-align: left;
+	border:1px solid #fff;
+	font-family:  "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size:0.83em;
+	background-color:#fff;
+	padding:2px;
+	width:150px;
+}
+form div {
+	margin-bottom:5px;
+}
+
+.submit {
+	margin-top:8px !important;
+}
+
+form input.checkbox {
+	width:auto;
+	margin:10px 8px 2px 0px;
+}
+.error {
+	position:absolute;
+	width:180px;
+	margin-top:20px;
+	left:50px;
+	color:#fad864;
+	font-size: 0.83em;
+}
+small {
+	font-size:10px;
+}
+a:link{
+	color:#fff;
+	text-decoration: none;
+}
+a:hover {
+	color:#fff;
+	text-decoration: underline;
+}

@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Articles : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Articles
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+<h1>Articles</h1>
+
+<p>Articles contains the textual content.</p>
+<p>An article can be a simple one, a blog post with publication dates or an images gallery, depending on the way its content is displayed in the linked view.</p>
+<p>An article can have one or more parent page, but can also be orphan. In this case, it can't be displayed.</p>
+
+
+<h2>Creating one article</h2>
+
+<p>They are several way to create an article : </p>
+<ul>
+	<li>Trough the <strong>Articles panel</strong> : Click on the <strong>Create Article</strong> button. In this case, the article will be orphan and displayed on the <strong>Dashboard</strong> in the <strong>Orphan Articles</strong> list.</li>
+	<li>In the <strong><a href="./ionize_panel.html">Structure panel</a></strong> : Fly with the mouse over one page and click on the <strong>Create Article</strong> icon. The article will be created with this page as parent.</li>
+</ul>
+
+
+<p><img src="../images/ionize_create_article.jpg" /></p>
+
+
+<h2>Articles and parents pages</h2>
+
+<p>Articles can be linked to parents page by drag and drop its name:</p>
+
+<ul>
+	<li>From the <strong>Structure tree</strong> to another page,</li>
+	<li>From the <strong>Articles panel</strong> articles list to a page in the <strong>Structure tree</strong>,</li>
+	<li>By dragging a page from the <strong>Structure tree</strong> to the <strong>Parents</strong> when editing an article,</li>
+	<li>From the <strong>Dashboard</strong> articles lists.</li>
+</ul>
+
+<h2>Articles fields</h2>
+
+<p>Here is a description of the default fields of articles.</p>
+<p>These fields can be set through the Ionize article edition panel and through the article options panel.</p>
+
+<table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
+<tr>
+	<th>Field</th>
+	<th>Can be translated</th>
+	<th>Description</th>
+</tr>
+<tr>
+	<td class="td"><strong>Title</strong></td>
+	<td class="td">Yes</td>
+	<td class="td">Article's title</td>
+</tr>
+<tr>
+	<td class="td"><strong>URL</strong></td>
+	<td class="td">No</td>
+	<td class="td">Article's URL, built when typing the title. Can be changed. <kbd>Article's URL must be unique for the whole website.</kbd></td>
+</tr>
+<tr>
+	<td class="td"><strong>Windows title</strong></td>
+	<td class="td">Yes</td>
+	<td class="td">Browser's window title, displayed when the article is standalone displayed, for example when displaying one post of a blog style page.</td>
+</tr>
+<tr>
+	<td class="td"><strong>Content online</strong></td>
+	<td class="td">Yes</td>
+	<td class="td">Is the content of this article online for this language ?</td>
+</tr>
+<tr>
+	<td class="td"><strong>Indexed</strong></td>
+	<td class="td">No</td>
+	<td class="td">Will the content of this article be indexed for search functionality ?</td>
+</tr>
+<tr>
+	<td class="td"><strong>Link</strong></td>
+	<td class="td">No</td>
+	<td class="td">Internal page link or external complete URL the articles links to.</td>
+</tr>
+<tr>
+	<td class="td"><strong>Marker</strong></td>
+	<td class="td">No</td>
+	<td class="td">Color flag for Ionize's editors internal organization.</td>
+</tr>
+<tr>
+	<td class="td"><strong>Categories</strong></td>
+	<td class="td">No</td>
+	<td class="td">Categories the articles is linked to.</td>
+</tr>
+<tr>
+	<td class="td"><strong>Publish date</strong></td>
+	<td class="td">No</td>
+	<td class="td">
+		If the current date is before the publish date, the article will not be displayed on the website.<br/>
+		If set, the date displayed by the article's <dfn>&lt;ion:date /></dfn> will be the publish date instead of the creation date.
+	</td>
+</tr>
+<tr>
+	<td class="td"><strong>Unpublish date</strong></td>
+	<td class="td">No</td>
+	<td class="td">If the current date is after the publish date, the article will not be displayed on the website.</td>
+</tr>
+</table>
+
+
+<h2>Displaying articles in views</h2>
+
+The <dfn>&lt;articles /></dfn> is an iterator tag which allows to loop through articles : 
+
+<pre>
+&lt;ion:articles>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<dfn>&lt;!-- Displays the article's title in a H2 HTML tag, only if the title is set --></dfn>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ion:title tag="h2" />
+
+&nbsp;&nbsp;&nbsp;&nbsp;<dfn>&lt;!-- Displays the article's title in a H3 HTML tag, only if the subtitle is set --></dfn>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ion:subtitle tag="h3" />
+
+&nbsp;&nbsp;&nbsp;&nbsp;<dfn>&lt;!-- The article's text content--></dfn>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ion:content />
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;hr />
+
+&lt;/ion:articles>
+
+
+// HTML Result : 
+
+&lt;h2>My article&lt;h2>
+&lt;h3>Article's subtitle, if any&lt;h3>
+&lt;p>The article's content text&lt;/p>
+&lt;hr />
+
+&lt;h2>Another article&lt;h2>
+&lt;p>The other article's content&lt;/p>
+&lt;hr />
+</pre>
+
+<p>Look at the Ionize articles tags documentation to see complete features.</p>
+
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="pages.html">Pages</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="media.html">Media</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

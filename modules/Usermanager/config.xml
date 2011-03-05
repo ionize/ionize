@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>Usermanager</name>
+	<description>User manager for the website.</description>
+	<uri_segment>usermanager</uri_segment>
+	<has_admin>true</has_admin>
+	<database>
+		<table name="users_info" if_not_exists="true" engine="InnoDB" default_charset="utf8" collate="utf8_unicode_ci" auto_increment="1">
+			<primary_key>id</primary_key>
+			<column name="id" type="int" length="11" attributes="UNSIGNED" zerofill="NOT NULL" auto_increment="true" ></column>
+			<column name="id_user" type="int" length="11" attributes="UNSIGNED" zerofill="NOT NULL"></column>
+			<column name="title" type="int" length="1" attributes="UNSIGNED"></column><!-- 0: male, 1: female-->
+			<column name="firstname" type="varchar" length="255" zerofill="NOT NULL"></column>
+			<column name="company" type="varchar" length="255"></column>
+			<column name="position" type="varchar" length="255"></column>
+			<column name="street" type="varchar" length="255"></column>
+			<column name="housenumber" type="varchar" length="10"></column>
+			<column name="zip" type="varchar" length="8"></column>
+			<column name="city" type="varchar" length="255"></column>
+			<column name="picture" type="int" length="1" attributes="UNSIGNED"></column>
+			<column name="newsletter" type="int" length="1" attributes="UNSIGNED"></column>
+			<column name="infomails" type="int" length="1" attributes="UNSIGNED"></column>
+			<column name="terms" type="int" length="1" attributes="UNSIGNED"></column>
+			<column name="about_me" type="text"></column>
+			<column name="my_references" type="text"></column>
+			<column name="website" type="varchar" length="255"></column>
+			<column name="experience" type="text"></column>
+			<column name="company_profile" type="int" length="1" attributes="UNSIGNED" zerofile="NOT NULL"></column><!-- 0: no, 1: yes-->
+			<column name="contact_person" type="varchar" length="255"></column>
+			<column name="logo" type="int" length="1" attributes="UNSIGNED"></column>
+			<column name="xing" type="varchar" length="255"></column>
+			<column name="linkedin" type="varchar" length="255"></column>
+			<column name="twitter" type="varchar" length="255"></column>
+			<column name="facebook" type="varchar" length="255"></column>
+		</table>
+	</database>
+</module>

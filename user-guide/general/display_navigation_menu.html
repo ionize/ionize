@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Display the navigation menu : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Display the navigation menu
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+<h1>Display the navigation menu</h1>
+
+<p>The navigation menu HTMl output is done through a tag and a dedicated helper.</p>
+
+<p>Ionize provides 2 types of menu :</p>
+<ul>
+	<li>One level navigation menu,</li>
+	<li>Tree navigation menu</li>
+</ul>
+
+<p>These 2 menus are using unordered HTML list, UL and LI.</p>
+
+<h3>About helpers and the navigation helper</h3>
+
+<p>Helpers are PHP functions stored in the <dfn>/application/helpers/</dfn> and in the <dfn>/themes/</dfn><var>your_theme/</var><dfn>helpers/</dfn> folders.</p>
+<p>They are part of the CodeIgniter framework, used by Ionize.</p>
+<p>By default, Ionize comes with a navigation helper located in <dfn>/application/helpers/</dfn><kbd>navigation_helper.php</kbd></p>
+<p>This helper can be replaced by your one.</p>
+<p>Simply copy the above file in your theme helpers folder and modify it to fit your needs.</p>
+
+<p class="important">Take care to copy all the helpers functions into your own helper, even you modify just one of them.</p>
+
+<h2>Displaying navigation</h2>
+
+<p>To get one menu content (pages) in views, Ionize comes with 2 tags : </p>
+
+<p><strong>navigation</strong> : This tag provides a one level navigation.</p>
+<p><strong>tree_navigation</strong> : Displays the complete tree of pages.</p>
+
+
+
+
+<h3>Displaying one level navigation</h3>
+
+<p>This is done by using the <dfn>&lt;ion:navigation /></dfn> tag.</p>
+<p>This tag uses the function <dfn>get_navigation()</dfn> from the navigation helper.</p>
+<p>Displaying one level means displaying the pages which are at this level for the current parent.</p>
+
+<p><img alt="Navigation levels in Ionize" src="../images/ionize_navigation_levels.jpg" /></p>
+
+<h4>Navigation code in views</h4>
+<p>This example will display the level 0 of the menu called <var>menu_name</var>.</p>
+
+<pre>
+&lt;-- Code in view -->
+&lt;ion:navigation level="0" tag="ul" id="my_nav" class="nav" active_class="active" menu="menu_name" />
+
+&lt;-- HTML Result --> 
+&lt;ul id="my_nav" class="nav">
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li class="active">&lt;a href="home">Home&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li>&lt;a href="services">Our Services&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li>&lt;a href="about">About us&lt;/a>&lt;/li>
+&lt;/ul>
+</pre>
+
+
+<h3>Displaying the tree navigation</h3>
+
+<p>This is done by using the <dfn>&lt;ion:tree_navigation /></dfn> tag.</p>
+
+<h4>Navigation code in views</h4>
+
+<pre>
+&lt;-- Code in view -->
+&lt;ion:tree_navigation level="0" tag="ul" id="my_nav" class="nav" active_class="active" />
+
+&lt;-- HTML Result --> 
+&lt;ul id="my_nav" class="nav">
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li>&lt;a href="home">Home&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li class="active">&lt;a href="services">Our Services&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li class="active">&lt;a class="active" href="webdesign">Webdesign&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li>&lt;a href="coding">Coding&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li>&lt;a href="about">About us&lt;/a>&lt;/li>
+&lt;/ul>
+</pre>
+
+
+<h2>Disable the Helper</h2>
+
+<p class="important">This function will be implemented in the next version for the navigation menu.</p>
+
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="display_language_menu.html">Display the language menu</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="article_types.html">Articles and Types</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

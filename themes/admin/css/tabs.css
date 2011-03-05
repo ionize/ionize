@@ -1,0 +1,105 @@
+/*
+
+Ionize Content Tab CSS
+
+Usage : 
+Content Editing tabs
+
+Copyright:
+	Copyright (c) 2009 Ionize Dev Team.
+	
+License:
+	MIT-style license.
+
+*/
+
+
+/* Form Elements
+---------------------------------------------------------------- */
+
+/* Small tabs */
+.tab.small {
+	border-bottom: solid 1px #e3ded1;
+	height:1.8em;
+	margin:0;
+}
+
+.tab-content.small {
+	height:1.8em;
+}
+.tab-content.small li {
+	height:1.9em;
+	margin-left:0px;
+	margin-right:8px;
+}
+
+.tab-content.small li a {
+	padding:0.1em 1.1em 0.1em 1.1em;
+	font-weight:normal;
+}
+.tab-content.small li.active a{
+	padding-bottom:0.1em;
+
+}
+
+/* Normal tabs */
+.tab {
+	border-bottom: solid 1px #e3ded1;
+	height:24px;
+	margin:10px 0 10px 0;
+	padding:0;
+	display:block;
+/*	background-color:#df2;*/
+}
+
+.tab-content {
+	height:2em;
+	list-style:none;
+	padding:0 0 0px 0;
+}
+.tab-content li.right {
+	float:right;
+	margin-left:0;
+	margin-right: 8px;
+}
+.tab-content li {
+	background-color:#f2f2f2;
+	cursor:pointer;
+	float:left;
+	height:24px;
+	margin-left:8px;
+}
+.tab-content li.unactive {
+	opacity:0.3;
+}
+.tab-content li.icon a {
+	padding:0.3em 1.1em 0em 1.1em;
+}
+.tab-content li.dl a {
+	padding-right: 1.6em;
+	background:url(../images/bg_tab_default_lang.png) no-repeat top right;
+}
+
+.tab-content li a {
+	display:block;
+	color:#7a8189;
+	text-decoration:none;
+	font-size:11px;
+	border: solid 1px #e3ded1;
+	border-bottom: none;
+	padding:0.3em 1.1em 0.2em 1.1em;
+}
+.tab-content li.active a{
+	background-color:#fff;
+	font-weight:bold;
+	padding-bottom:0.3em;
+}
+.tab-content li.active a {
+	color:#36607d;
+}
+.tab-content a:hover {
+	background-color:#fff;
+	color:#36607d;
+}
+
+

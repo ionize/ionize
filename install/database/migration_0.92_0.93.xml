@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<sql>
+
+	<query>
+		ALTER TABLE extend_field ADD `value` varchar(3000) NULL;
+	</query>
+	
+	<query>
+		ALTER TABLE extend_field ADD `default_value` varchar(255) NULL;
+	</query>
+	
+	<query>
+		ALTER TABLE `article_lang` CHANGE `subtitle1` `subtitle` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+	</query>
+	
+	<query>
+		ALTER TABLE `page_lang` CHANGE `subtitle1` `subtitle` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;
+	</query>
+	
+	<query>
+		ALTER TABLE `article_lang` CHANGE `subtitle2` `meta_title` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+	</query>
+	
+	<query>
+		ALTER TABLE `page_lang` CHANGE `subtitle2` `meta_title` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;
+	</query>
+	
+</sql>

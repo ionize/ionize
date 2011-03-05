@@ -1,0 +1,70 @@
+/* This file extends the CSS data for the editable area(iframe) of TinyMCE */
+
+
+body, td, pre, p, ul, ol {
+	font-size:11px;
+}
+
+body {
+	background-color:#fff;
+	margin:0;
+}
+
+h2,h3,h4,h5,h6 {
+	margin:0;
+	background-color:#f3f3f3;
+}
+h2 {padding:5px 10px 5px 10px;font-size:1.3em;}
+h3 {padding:5px 10px 5px 10px;font-size:1.2em;}
+h4 {padding:5px 10px 5px 10px;font-size:1.1em;}
+h5 {padding:5px 10px 5px 10px;font-size:1.0em}
+h6 {padding:3px 10px 3px 10px;font-size:0.9em}
+
+
+ul, ol {
+	background-color:#f3f3f3;
+	margin:0;
+	padding:0 0 10px 20px;
+}
+ul li, ol li {
+	margin: 0 15px 0 10px !important;
+	line-height: 1.2;
+}
+p {
+	background-color:#f3f3f3;
+	margin:0;
+	padding:10px 15px 10px 10px !important;
+	text-align:justify;
+	color:#000;
+	font-weight: normal;
+	font-size: 1em;
+	line-height: 1.2;
+	font-size-adjust: none;
+	font-stretch: normal;
+}
+
+em {
+	display:block;
+	color:#8c8a88;
+	font-size:11px;
+	margin:0;
+	padding:0;
+}
+
+img {
+	border:1px solid #000;
+	margin:5px;
+}
+
+pre {
+	font-family: "Courier New", Courier, monospace;
+	border: solid 1px #ccc;
+	background-color:#f3f3f3;
+	padding:10px !important;
+
+}
+table.mceItemTable {
+	width: 100%;
+}
+
+

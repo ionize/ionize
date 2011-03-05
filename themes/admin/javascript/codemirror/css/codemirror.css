@@ -1,0 +1,149 @@
+/*
+ * Ionize CodeMirror Editor stylesheet
+ *
+ */
+
+/* Reset Content */
+.CodeMirror-wrapping { background-color: #fff; }
+
+
+/* Line numbers */
+.CodeMirror-line-numbers {
+	width: 2.2em;
+	color: #aaa;
+	background-color: #eee;
+	text-align: right;
+	padding-right: .3em;
+	font-size: 9pt;
+	font-family: monospace;
+	padding-top: .4em;
+}
+
+.CodeMirror-line-numbers div{
+	line-height:normal;
+}
+#code { width: 100%; }
+
+/* Menu */
+.CodeMirror-menu{
+	margin:0 0 0.5em 2.6em;
+	height:28px;
+}
+.CodeMirror-menu input {
+	margin: 2px 2px;
+	padding: 2px 2px;
+	float:left;
+	display: block;
+	border-style: solid;
+	border-width: 1px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+	background-image: url(../img/button-bg.png);
+	background-position: left top;
+	background-repeat: repeat-x;
+	border-color: #B2B2B2;
+	height: 20px !important;
+	line-height: 20px;
+}
+
+/* Buttons */
+.CodeMirror-menu .cmButton {
+	border-style: solid;
+	border-width: 1px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+	background-image: url(../img/button-bg.png);
+	background-position: left top;
+	background-repeat: repeat-x;
+	cursor: default;
+	display: block;
+	height: 20px;
+	width: 20px;
+	margin: 2px 2px;
+	padding: 1px 2px;
+	background-color: #E9E8E8;
+	border-color: #B2B2B2;
+	float:left;
+}
+.CodeMirror-menu .cmButton.wide {
+	width:auto;
+}
+.CodeMirror-menu a.cmButton:hover {
+	border-style: solid;
+	border-width: 1px;
+	background-position: 0 -10px;
+	border-color: #777;
+	background-color: #d5d5d5 !important;
+	color:#098ED1;
+}
+
+.CodeMirror-menu .cmIcon {
+	height:20px;
+	width: 20px;
+	display: block;
+	-moz-background-clip: border;
+	-moz-background-origin: padding;
+	-moz-background-size: auto auto;
+	background-attachment: scroll;
+	background-color: transparent;
+	background-image: url('../img/icons.png');
+	background-position: 20px 20px;
+	background-repeat: no-repeat;
+	color:#000;
+}
+.CodeMirror-menu .cmIcon.wide {
+	width:auto;
+	line-height: 19px;
+	padding: 0 2px;
+}
+.CodeMirror-menu .cmSeparator {
+	width:10px;
+	display:block;
+	height:20px;
+	float: left;
+}
+
+
+
+/* Theme */
+.CodeMirror-menu span.cm_bold { background-position: 0 0 !important;}
+.CodeMirror-menu span.cm_italic { background-position: -60px 0 !important;}
+.CodeMirror-menu span.cm_underline { background-position: -140px 0 !important;}
+.CodeMirror-menu span.cm_strikethrough { background-position: -120px 0 !important;}
+.CodeMirror-menu span.cm_undo { background-position: -160px 0 !important;}
+.CodeMirror-menu span.cm_redo { background-position: -100px 0 !important;}
+.CodeMirror-menu span.cm_cleanup { background-position: -40px 0 !important;}
+.CodeMirror-menu span.cm_bullist { background-position: -20px 0 !important;}
+.CodeMirror-menu span.cm_numlist { background-position: -80px 0 !important;}
+.CodeMirror-menu span.cm_justifyleft { background-position: -460px 0 !important;}
+.CodeMirror-menu span.cm_justifyright { background-position: -480px 0 !important;}
+.CodeMirror-menu span.cm_justifycenter { background-position: -420px 0 !important;}
+.CodeMirror-menu span.cm_justifyfull { background-position: -440px 0 !important;}
+.CodeMirror-menu span.cm_anchor { background-position: -200px 0 !important;}
+.CodeMirror-menu span.cm_indent { background-position: -400px 0 !important;}
+.CodeMirror-menu span.cm_outdent { background-position: -540px 0 !important;}
+.CodeMirror-menu span.cm_link { background-position: -500px 0 !important;}
+.CodeMirror-menu span.cm_unlink { background-position: -640px 0 !important;}
+.CodeMirror-menu span.cm_sub { background-position: -600px 0 !important;}
+.CodeMirror-menu span.cm_sup { background-position: -620px 0 !important;}
+.CodeMirror-menu span.cm_removeformat { background-position: -580px 0 !important;}
+.CodeMirror-menu span.cm_newdocument { background-position: -520px 0 !important;}
+.CodeMirror-menu span.cm_image { background-position: -380px 0 !important;}
+.CodeMirror-menu span.cm_help { background-position: -340px 0 !important;}
+.CodeMirror-menu span.cm_code { background-position: -260px 0 !important;}
+.CodeMirror-menu span.cm_hr { background-position: -360px 0 !important;}
+.CodeMirror-menu span.cm_visualaid { background-position: -660px 0 !important;}
+.CodeMirror-menu span.cm_charmap { background-position: -240px 0 !important;}
+.CodeMirror-menu span.cm_paste { background-position: -560px 0 !important;}
+.CodeMirror-menu span.cm_copy { background-position: -700px 0 !important;}
+.CodeMirror-menu span.cm_cut { background-position: -680px 0 !important;}
+.CodeMirror-menu span.cm_blockquote { background-position: -220px 0 !important;}
+
+.CodeMirror-menu span.cm_table { background-position: -580px -20px !important;}
+
+
+

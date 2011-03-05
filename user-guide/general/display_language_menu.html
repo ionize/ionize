@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Display the languages menu : Ionize User Guide</title>
+
+<style type='text/css' media='all'>@import url('../userguide.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='../userguide.css' />
+
+<script type="text/javascript" src="../nav/nav.js"></script>
+<script type="text/javascript" src="../nav/prototype.lite.js"></script>
+<script type="text/javascript" src="../nav/moo.fx.js"></script>
+<script type="text/javascript" src="../nav/user_guide_menu.js"></script>
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+<meta name='author' content='Ionize Dev Team' />
+<meta name='description' content='Ionize User Guide' />
+
+</head>
+<body>
+
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner"><script type="text/javascript">create_menu('../');</script></div></div>
+<div id="nav2" onclick="myHeight.toggle();"><a name="top"></a><a href="javascript:void(0);"><img src="../images/nav_toggle_darker.jpg" width="154" height="43" border="0" title="Toggle Table of Contents" alt="Toggle Table of Contents" /></a></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<!-- START BREADCRUMB -->
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td id="breadcrumb">
+<a href="http://www.ionizecms.com/">Ionize Home</a> &nbsp;&#8250;&nbsp;
+<a href="../index.html">User Guide Home</a> &nbsp;&#8250;&nbsp;
+Display the languages menu
+</td>
+<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="ionizecms.com/user-guide" />Search User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+</tr>
+</table>
+<!-- END BREADCRUMB -->
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+<h1>Displaying the languages menu</h1>
+
+
+<p>Displaying the language menu is done through the &lt;ion:languages /> tag and a dedicated helper.</p>
+
+<p>This tag will display the websites languages name and link to the current content for the selected language.</p>
+
+<p>The default language navigation helper is a PHP function stored in the <dfn>/application/helpers/navigation_helper.php</dfn> file : <dfn>get_language_navigation()</dfn></p>
+
+<p>This helper will output an unordered HTML list (UL and LI)</p>
+
+
+<pre>
+<dfn>&lt;-- Code in view --></dfn>
+&lt;ion:languages tag="ul" id="my_lang_nav" class="nav" active_class="active" />
+
+<dfn>&lt;-- HTML Result on the Home page with 2 languages : "English" as default language and "Français" --> </dfn>
+&lt;ul id="my_lang_nav" class="nav">
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li class="active">&lt;a href="http://yourdomain.tld/<strong>home</strong>">English&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li>&lt;a href="http://yourdomain.tld/<strong>fr/home</strong>">Français&lt;/a>&lt;/li>
+&lt;/ul>
+
+<dfn>&lt;-- HTML Result on the Services page (internal) with 2 languages : "English" as default language and "Français" --> </dfn>
+&lt;ul id="my_lang_nav" class="nav">
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li class="active">&lt;a href="http://yourdomain.tld/<strong>en/our_services</strong>">English&lt;/a>&lt;/li>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;li>&lt;a href="http://yourdomain.tld/<strong>fr/nos_services</strong>">Français&lt;/a>&lt;/li>
+&lt;/ul>
+</pre>
+
+
+<h2>Use your own Helper</h2>
+
+<p>The default helper can be replaced by your one :</p>
+<ul>
+	<li>Create the folder : <dfn>/themes/</dfn><var>your_theme/</var><dfn>helpers/</dfn>,</li>
+	<li>Copy the helper file <dfn>/application/helpers/navigation_helper.php</dfn> into the created folder,</li>
+	<li>Modify the <dfn>get_language_navigation()</dfn> function.</li>
+</ul>
+
+<p class="important">Take care to copy all the helpers functions into your own helper, even you modify just one of them. Ionize will use your theme helper is it exists and will not load the default one.</p>
+
+
+<h3>Why not directly modify the default helper ?</h3>
+
+<p>You can do that.</p>
+<p>But in case of Ionize upgrade, you will have to take care to not overwrite your helper (and of course to think about).</p>
+<p>Creating a theme helper will always keep the "core" of Ionize clearly separated from your theme.</p>
+
+
+
+<h2>Disable the Helper</h2>
+
+<pre>
+<dfn>&lt;!-- Code --></dfn>
+&lt;ion:languages tag="ul" class="langs" id="my_langs" <strong>no_helper="true"</strong> >
+
+	&lt;li>&lt;a href="&lt;ion:url />">&lt;ion:name />&lt;/a>&lt;/li>
+
+&lt;/ion:languages>
+</pre>
+
+<p class="important">
+	If you disable the helper, you'll need to use the languages children tags.
+	See : <a href="../tags/language_tags.html">Language Tags</a>
+</p>
+
+
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+Previous Topic:&nbsp;&nbsp;<a href="../general/article_views.html">Article Views</a>
+&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+<a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Next Topic:&nbsp;&nbsp;<a href="../general/display_navigation_menu.html">Display the navigation menu</a>
+</p>
+<p><a href="http://www.ionizecms.com/">Ionize website</a></p>
+</div>
+
+</body>
+</html>

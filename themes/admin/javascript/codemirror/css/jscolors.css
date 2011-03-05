@@ -1,0 +1,39 @@
+span.js-punctuation {
+  color: #bbb;
+}
+
+span.js-operator {
+  color: #bbb;
+}
+
+span.js-keyword {
+  color: #f655b5;
+}
+
+span.js-atom {
+  color: #228811;
+}
+
+span.js-variable {
+  color: #ffb141;
+}
+
+span.js-variabledef {
+  color: #ffb141;
+}
+
+span.js-localvariable {
+  color: #5db9de;
+}
+
+span.js-property {
+  color: #4b9cf2;
+}
+
+span.js-comment {
+  color:#8cd18f;
+}
+
+span.js-string {
+  color: #bbb;
+}

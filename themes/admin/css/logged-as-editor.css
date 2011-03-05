@@ -1,0 +1,28 @@
+/*
+
+Ionize Editor mode CSS
+
+Used by Base_Controller->render() to display the "connected" marker on the website side
+when the user is connected to the Admin panel as Editor.
+
+
+*/
+
+#ionizeLoggedAsEditorFlag{
+	width:80px;
+	height:80px;
+	position: fixed;
+	z-index: 1001;
+	top:0;
+	left:0;
+	background: url(../images/flag_edit_mode.png) no-repeat top left;
+	cursor: pointer;
+}
+#ionizeLoggedAsEditorFlag a{
+	display:block;
+	width:80px;
+	height:80px;
+	border:none;
+	text-decoration: none;
+	background: none;	
+}
