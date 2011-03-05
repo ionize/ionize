@@ -55,6 +55,10 @@ INSERT INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', '');
 DELETE FROM setting WHERE name='displayed_admin_languages';
 INSERT INTO setting VALUES('', 'displayed_admin_languages', 'en,fr', NULL);
 
+<<<<<<< HEAD
 INSERT INTO setting VALUES('', 'date_format', '%Y.%m.%d', NULL);
+=======
+INSERT INTO setting VALUES('', 'date_format', '%d.%m.%Y', NULL);
+>>>>>>> cdbed9d6ffc32f4cf7d05db79c4f1234206c8ba5
 
 

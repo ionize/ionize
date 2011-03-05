@@ -445,7 +445,10 @@
 		<query>INSERT INTO setting VALUES(28, 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);</query>
 		<query>INSERT INTO setting VALUES(29, 'tinybuttons3', 'tablecontrols', NULL);</query>
 		<query>INSERT INTO setting VALUES(30, 'displayed_admin_languages', 'en,fr', NULL);</query>
+<<<<<<< HEAD
 		<query>INSERT INTO setting VALUES(31, 'date_format', '%Y.%m.%d', NULL);</query>
+=======
+>>>>>>> cdbed9d6ffc32f4cf7d05db79c4f1234206c8ba5
 
 	
 

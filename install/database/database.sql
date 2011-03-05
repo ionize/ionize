@@ -404,7 +404,11 @@ INSERT INTO setting VALUES (2, 'website_email', '', NULL);
 INSERT INTO setting VALUES (3, 'files_path', 'files', NULL);
 INSERT INTO setting VALUES (4, 'cache', '0', NULL);
 INSERT INTO setting VALUES (5, 'cache_time', '150', NULL);
+<<<<<<< HEAD
 INSERT INTO setting VALUES (6, 'theme', 'default', NULL);
+=======
+INSERT INTO setting VALUES (6, 'theme', 'hand_made', NULL);
+>>>>>>> cdbed9d6ffc32f4cf7d05db79c4f1234206c8ba5
 INSERT INTO setting VALUES (7, 'theme_admin', 'admin', NULL);
 INSERT INTO setting VALUES (8, 'create_dir_use_ftp', '', NULL);
 INSERT INTO setting VALUES (9, 'ftp_host', '', NULL);
@@ -430,7 +434,10 @@ INSERT INTO setting VALUES(27, 'tinybuttons1', 'pdw_toggle,|,bold,italic,striket
 INSERT INTO setting VALUES(28, 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);
 INSERT INTO setting VALUES(29, 'tinybuttons3', 'tablecontrols', NULL);
 INSERT INTO setting VALUES(30, 'displayed_admin_languages', 'en,fr', NULL);
+<<<<<<< HEAD
 INSERT INTO setting VALUES(31, 'date_format', '%Y.%m.%d', NULL);
+=======
+>>>>>>> cdbed9d6ffc32f4cf7d05db79c4f1234206c8ba5
 
 INSERT INTO menu (id_menu, name, title) VALUES 
 (1 , 'main', 'Main menu'),
