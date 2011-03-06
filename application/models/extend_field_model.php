@@ -69,7 +69,7 @@ class Extend_field_model extends Base_model
 		$extend_fields = $this->get_list($where);
 		
 		// Current element extend field
-		$this->db->where(array('parent'=>$parent, $this->elements_table.'.id_parent' => $id_parent));
+		$this->db->where(array('extend_field.parent'=>$parent, $this->elements_table.'.id_parent' => $id_parent));
 		$this->db->join($this->elements_table, $this->elements_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
 
 		$query = $this->db->get($this->table);

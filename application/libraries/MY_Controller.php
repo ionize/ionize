@@ -127,6 +127,9 @@ class MY_Controller extends Controller
      */
     public function output($view)
     {
+    	// Unique ID, useful for DOM Element displayed in windows.
+    	$this->template['UNIQ'] = (uniqid());
+
     	Theme::output($view, $this->template);
     }
 

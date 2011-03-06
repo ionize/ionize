@@ -404,11 +404,11 @@ class Base_model extends Model
 		// Main data select			
 		$this->db->select($this->table.'.*', false);
 
-		// Limit ?
-//		if ($limit !== false)
-//			(is_array($limit)) ? $this->db->limit($limit[1], $limit[0]) : $this->db->limit($limit);
 
 		// Where ?
+
+// TODO : Test with where_in
+
 		if (is_array($where) )
 		{
 			$this->db->where($where);
@@ -461,83 +461,6 @@ class Base_model extends Model
 		return $data;
 	}
 
-
-
-//// HERE
-//// HERE
-//// HERE
-//// HERE
-//// HERE
-//// HERE
-
-	function get_lang_list2($where=false, $lang=NULL, $limit=false, $like=false)
-	{
-		$data = array();
-
-		// Make sure we have only one time each element
-		$this->db->distinct();
-	
-		// Lang data
-		if ( ! is_null($lang))
-		{
-			$this->db->select($this->lang_table.'.*');
-			$this->db->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
-			$this->db->where($this->lang_table.'.lang', $lang);
-		}
-		
-		foreach($cond as $key => $condition)
-		{
-			switch ($key)
-			{
-				case 'limit' :
-					(is_array($condition)) ? $this->db->limit($condition[1], $condition[0]) : $this->db->limit($condition);
-					break;
-
-				case 'like' :
-					$this->db->like($like);
-					break;
-					
-				case 'where' :
-					foreach ($condition as $key => $value)
-					{
-						$protect = true;
-
-						if (substr($key, -2) == 'in') $protect = false;
-						
-						if (strpos($key, '.') > 0) $this->db->where($key, $value, $protect);
-						else $this->db->where($this->table.'.'.$key, $value, $protect);
-					}
-					break;
-					
-				case 'where in' :
-					$this->db->where_in($key, $condition);
-					break;
-			}
-		}
-		
-		// Query the table
-		$query = $this->db->get($this->table);
-
-		if($query->num_rows() > 0)
-		{
-			$data = $query->result_array();
-			$query->free_result();
-
-			// Add linked medias to the "media" index of the data array		
-			if (in_array($this->table, $this->with_media_table))
-				$this->add_linked_media($data, $this->table, $lang);
-					
-			// Add extended fields if necessary
-			$this->add_extend_fields($data, $this->table, $lang);
-			
-			// Add URLs for each language
-			if ($this->table == 'page' OR $this->table == 'article')
-				$this->add_lang_urls($data, $this->table, $lang);
-		}
-
-		return $data;
-
-	}
 
 	// ------------------------------------------------------------------------
 
@@ -701,7 +624,7 @@ class Base_model extends Model
 		$child_lang_table = $child_table.'_lang';
 
 		$this->db->from($link_table);
-		$this->db->where($cond);
+		$this->db->where($this->correct_ambiguous_conditions($cond,$link_table) );
 		$this->db->where('lang', $lang);
 		
 		$this->db->join($child_table, $child_table.'.'.$child_pk_name.' = '.$link_table.'.'.$child_pk_name);
@@ -885,7 +808,7 @@ class Base_model extends Model
 		if ($this->got_extend_fields_def == false)
 		{
 			// Store the extend fields definition
-			$this->extend_fields_def = $CI->extend_field_model->get_list(array('parent' => $parent));
+			$this->extend_fields_def = $CI->extend_field_model->get_list(array('extend_field.parent' => $parent));
 			
 			// Set this to true so we don't get the extend field def a second time for an object of same kind
 			$this->got_extend_fields_def = true;
@@ -1305,7 +1228,7 @@ class Base_model extends Model
 			}
 			
 			// Get the extend fields details, filtered on parents ID
-			$this->db->where(array('parent'=>$parent));
+			$this->db->where(array('extend_field.parent'=>$parent));
 			$this->db->where_in($ids);
 			$this->db->join($this->extend_fields_table, $this->extend_field_table.'.id_'.$this->extend_field_table.' = ' .$this->extend_fields_table.'.id_'.$this->extend_field_table, 'inner');			
 
@@ -1627,6 +1550,8 @@ class Base_model extends Model
 	 */
 	public function insert($data = null)
 	{
+		$data = $this->clean_data($data);
+		
 		$this->db->insert($this->table, $data);
 		
 		return $this->db->insert_id();
@@ -1811,6 +1736,34 @@ class Base_model extends Model
 		}
 		return $cleaned_data;
 	}
+	
+	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Correct ambiguous target fields in SQL conditions
+	 *
+	 * @param	Array	condition array
+	 * @param	String	Table name
+	 *
+	 * @return	Array	Corrected condition array
+	 *
+	 */
+	function correct_ambiguous_conditions($array, $table)
+	{
+		if (is_array($array))
+		{
+			foreach ($array as $key => $val)
+			{
+				unset($array[$key]);
+				$key = $table.'.'.$key;
+				$array[$key] = $val;
+			}
+			return $array;
+		}
+	}
+	
 }
 
 

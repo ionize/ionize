@@ -215,7 +215,7 @@ $lang['ionize_label_name'] = 'Name';
 $lang['ionize_label_id'] = 'ID';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_permanent_url'] = 'Permanent URL';
-$lang['ionize_label_template'] = 'View';
+$lang['ionize_label_view'] = 'View';
 $lang['ionize_label_article_template'] = 'Articles view';
 
 $lang['ionize_label_title'] = 'Title';
@@ -298,6 +298,7 @@ $lang['ionize_button_save_settings'] = 'Save settings';
 |--------------------------------------------------------------------------
 */
 
+$lang['ionize_message_element_not_found'] = 'This element wasn\'t found !';
 $lang['ionize_confirm_element_delete'] = 'Do you want to definitely delete this element ?';
 $lang['ionize_message_missing_params'] = 'Missing settings';
 $lang['ionize_message_operation_ok'] = 'Operation OK';
@@ -670,6 +671,9 @@ $lang['ionize_title_new_article'] = 'New article';
 $lang['ionize_title_edit_article'] = 'Article edition';
 $lang['ionize_title_comments'] = 'Comments';
 $lang['ionize_title_duplicate_article'] = 'Duplicate article';
+$lang['ionize_title_duplicate_source_context'] = 'Source article';
+$lang['ionize_title_duplicate_destination'] = 'Destination';
+
 $lang['ionize_title_article_context'] = 'Article context';
 $lang['ionize_title_content'] = 'Content';
 

@@ -780,10 +780,6 @@ class Article_model extends Base_model
 			// Set the creation date to today
 			$article['created'] = date('Y-m-d H:i:s');
 			
-			// Set the article to offline
-			$article['online'] = 0;
-			
-			
 			// Get articles ordering in the new page
 			$existing_ordering = $this->get_articles_ordering($data['id_page']);
 			
@@ -793,14 +789,23 @@ class Article_model extends Base_model
 				case 'first' :
 					
 					$this->shift_article_ordering($data['id_page']);
-					$data['ordering'] = 1;
+					$order = 1;
 					break;
 					
 				case 'last' :
 					
-					$data['ordering'] = count($existing_ordering) + 1 ;
+					$order = count($existing_ordering) + 1 ;
 					break;
 			}
+			
+			// Context data
+			$article_context = array
+			(
+				'id_page' => $data['id_page'],
+				'view' => $data['view'],
+				'id_type' => $data['id_type'],
+				'ordering' => $order
+			);
 			
 			// Merge the data to the article array			
 			$article = array_merge($article, $data);
@@ -818,13 +823,10 @@ class Article_model extends Base_model
 			 */
 			if ($id_copy)
 			{
+				$article_context['id_article'] = $id_copy;
+				
 				// Join table with page
-				$this->db->insert($this->parent_table, array(
-					'id_page' => $article['id_page'],
-					'id_article' => $id_copy,
-					'view' => $article['view'],
-					'id_type' => $article['id_type']
-				));
+				$this->db->insert($this->parent_table, $article_context);
 
 				// Medias
 				$this->db->where('id_article', $id_source);
@@ -841,6 +843,7 @@ class Article_model extends Base_model
 					}
 				}				
 				
+				// Lang
 				$this->db->where('id_article', $id_source);
 				$query = $this->db->get('article_lang');
 
@@ -906,15 +909,9 @@ class Article_model extends Base_model
 				
 				return $id_copy;
 			}
-			else
-			{
-				return false;
-			}
 		}
-		else
-		{
-			return false;
-		}
+		
+		return FALSE;
 	}
 
 

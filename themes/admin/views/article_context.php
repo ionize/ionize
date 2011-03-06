@@ -50,7 +50,7 @@ $page_title = ($page['title'] != '') ? $page['title'] : $page['name'];
 	<?php if (isset($article_views)) :?>
 		<dl class="small">
 			<dt>
-				<label for="view"><?= lang('ionize_label_template') ?></label>
+				<label for="view"><?= lang('ionize_label_view') ?></label>
 			</dt>
 			<dd>
 				<?= $article_views ?>

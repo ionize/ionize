@@ -128,7 +128,7 @@ var initializeWindows = function(){
 	 * @param	object		Window extended options
 	 *
 	 */
-	MUI.formWindow = function(id, form, title, wUrl, wOptions)
+	MUI.formWindow = function(id, form, title, wUrl, wOptions, data)
 	{
 		// Cleans URLs
 		wUrl = MUI.cleanUrl(wUrl);
@@ -138,6 +138,8 @@ var initializeWindows = function(){
 			id: 'w' + id,
 			title: (Lang.get(title) == null) ? title : Lang.get(title),
 			loadMethod: 'xhr',
+			method:'post',
+			data: data,
 			contentURL: admin_url + wUrl,
 			onContentLoaded: function(c)
 			{

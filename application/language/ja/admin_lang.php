@@ -191,7 +191,7 @@ $lang['ionize_label_name'] = '名称';
 $lang['ionize_label_id'] = 'ID';
 $lang['ionize_label_parent'] = '親';
 $lang['ionize_label_permanent_url'] = '固定URL';
-$lang['ionize_label_template'] = '参照';
+$lang['ionize_label_view'] = '参照';
 $lang['ionize_label_article_template'] = '記事参照';
 
 $lang['ionize_label_title'] = 'タイトル';

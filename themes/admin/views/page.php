@@ -74,7 +74,7 @@
 				<?php if ($id_page !='' && isset($views)) :?>
 					<dl class="small">
 						<dt>
-							<label for="view"><?= lang('ionize_label_template') ?></label>
+							<label for="view"><?= lang('ionize_label_view') ?></label>
 						</dt>
 						<dd>
 							<?= $views ?>
@@ -436,7 +436,7 @@
 			<?php if (isset($views)) :?>
 				<dl>
 					<dt>
-						<label for="view"><?= lang('ionize_label_template') ?></label>
+						<label for="view"><?= lang('ionize_label_view') ?></label>
 					</dt>
 					<dd>
 						<?= $views ?>

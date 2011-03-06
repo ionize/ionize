@@ -190,7 +190,7 @@ $lang['ionize_label_name'] = 'Nome';
 $lang['ionize_label_id'] = 'ID';
 $lang['ionize_label_parent'] = 'Pai';
 $lang['ionize_label_permanent_url'] = 'URL Permanente';
-$lang['ionize_label_template'] = 'Vista';
+$lang['ionize_label_view'] = 'Vista';
 $lang['ionize_label_article_template'] = 'Vista Artigos';
 
 $lang['ionize_label_title'] = 'Titulo';

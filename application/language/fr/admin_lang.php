@@ -212,7 +212,7 @@ $lang['ionize_label_name'] = 'Nom';
 $lang['ionize_label_id'] = 'Identifiant';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_permanent_url'] = 'Permanent URL';
-$lang['ionize_label_template'] = 'Vue';
+$lang['ionize_label_view'] = 'Vue';
 $lang['ionize_label_article_template'] = 'Vue articles';
 
 $lang['ionize_label_title'] = 'Titre';

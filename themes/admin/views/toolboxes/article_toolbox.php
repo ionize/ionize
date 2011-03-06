@@ -47,8 +47,13 @@
 		$('articleDuplicateButton').addEvent('click', function(e)
 		{
 			var url = $('name').value;
-
-			MUI.formWindow('DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:520, height:200});
+			
+			// Article's current context (page)
+			var rel = ($('rel').value).split(".");
+			
+			var data = {'id_page': rel[0]};
+			
+			MUI.formWindow(	'DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:520, height:280}, data);
 		});
 	}
 		

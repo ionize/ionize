@@ -466,7 +466,7 @@
 		item.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.formWindow('DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:450, height:200});
+			MUI.formWindow('DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:520, height:280});
 		});
 	});
 

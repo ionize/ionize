@@ -409,27 +409,16 @@ class Article extends MY_admin
 		{
 			$article = $this->article_model->get($id_article);
 
-			if( ! empty($article) ) {
-	
+			if( ! empty($article) )
+			{
+				// Page context of the current edited article
 				$article['id_page'] = $id_page;
-
+				
+				// Merge article's data with template
 				$this->template = array_merge($this->template, $article);
 
 				// Linked pages list
 				$this->template['pages_list'] = $this->article_model->get_pages_list($id_article);
-
-				// Dropdown article views (templates)
-				/*
-				if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
-					require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
-	
-				$datas = isset($views['article']) ? $views['article'] : array() ;
-				if(count($datas) > 0)
-				{
-					$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
-					$this->template['article_views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select"');
-				}
-				*/
 
 				// Categories
 				$categories = $this->category_model->get_categories_select();
@@ -697,27 +686,84 @@ class Article extends MY_admin
 	
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * Duplicates one article
+	 * Called by /views/toolboxes/article_toolbox
+	 *
+	 * @param	int		Source article ID
+	 * 
+	 * TODO :	Check if the article exists and display an error window if not.
+	 *			JS Callbacks of MUI.formWindow() needs to be implemented
+	 *
+	 */
 	function duplicate($id, $name)
 	{
 		// Source article
-		$source = $this->article_model->get($id, Settings::get_lang('default'));
+		$cond = array
+		(
+			'id_page' => $this->input->post('id_page'),
+			'id_article' => $id
+		);
 		
-		$this->template['id_article'] = $id;
-		$this->template['name'] = $name;
-		$this->template['title'] = ($source['title'] != '') ? $source['title'] : $source['name'];
-	
-		// Dropdown menus
-		$datas = $this->menu_model->get_select();
-		$this->template['menus'] =	form_dropdown('dup_id_menu', $datas, '1', 'id="dup_id_menu" class="select"');
+		if ($this->input->post('id_page'))
+			$source_article = array_shift($this->article_model->get_linked_lang_items('page', 'article', $cond, Settings::get_lang('default')) );
+		else
+		{
+			unset($cond['id_page']);
+			$source_article = $this->article_model->get($cond, Settings::get_lang('default'));
+		}
 
-		// Dropdown parents
-		$datas = $this->page_model->get_lang_list(array('id_menu' => '1'), Settings::get_lang('default'));
-		$parents = array();
-		($parents_array = $this->structure->get_parent_select($datas) ) ? $parents += $parents_array : '';
-		$this->template['parent_select'] = form_dropdown('dup_id_page', $parents, false, 'id="dup_id_page" class="select"');
+		// Context page, if any
+		$this->template['page'] = $this->page_model->get(array('id_page' => $this->input->post('id_page')), Settings::get_lang('default'));
+
 		
-		$this->output('article_duplicate');
+		// Dropdowns Views
+		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
+			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
+
+		$views = isset($views['article']) ? $views['article'] : array() ;
+		if(count($views) > 0)
+		{
+			if ( ! isset($source_article['view'])) $source_article['view'] = false;
+			$views = array('' => lang('ionize_select_default_view')) + $views; 
+
+			$this->template['views'] = form_dropdown('article_view', $views, $source_article['view'], 'class="select w160"');
+		}
+
+		$this->template['all_views'] = $views;
+
+
+		// All articles type to template
+		$types = $this->article_type_model->get_types_select();
+		$types = array('' => lang('ionize_select_no_type')) + $types; 
+		$this->template['all_types'] = $types;
+		if ( ! isset($source_article['id_type'])) $source_article['id_type'] = false;
+
+				
+		
+//		if ( ! empty($source))
+//		{
+			$this->template = array_merge($this->template, $source_article);
+
+			$this->template['name'] = $source_article['name'];
+			$this->template['title'] = ($source_article['title'] != '') ? $source_article['title'] : $source_article['name'];
+
+			// Dropdown menus
+			$datas = $this->menu_model->get_select();
+			$this->template['menus'] =	form_dropdown('dup_id_menu', $datas, '1', 'id="dup_id_menu" class="select"');
+	
+			// Dropdown parents
+			$datas = $this->page_model->get_lang_list(array('id_menu' => '1'), Settings::get_lang('default'));
+			$parents = array();
+			($parents_array = $this->structure->get_parent_select($datas) ) ? $parents += $parents_array : '';
+			$this->template['parent_select'] = form_dropdown('dup_id_page', $parents, false, 'id="dup_id_page" class="select"');
+			
+			$this->output('article_duplicate');
+//		}
+//		else
+//		{
+//			$this->error(lang('ionize_message_element_not_found'));
+//		}		
 	}
 
 
@@ -740,9 +786,12 @@ class Article extends MY_admin
 			 *
 			 */
 			$user = $this->connect->get_current_user();
+			
 			$data = array(
 				'name' => url_title($this->input->post('dup_url')),
 				'id_page' => $this->input->post('dup_id_page'),
+				'view' => $this->input->post('view'),
+				'id_type' => $this->input->post('id_type'),
 				'updater' => $user['username'],
 				'author' => $user['username']
 			);
@@ -750,7 +799,7 @@ class Article extends MY_admin
 			// Duplicate the article base data and get the new ID
 			$id_new_article = $this->article_model->duplicate($this->input->post('id_article'), $data, $this->input->post('ordering_select') );
 		
-			if ($id_new_article !== false)
+			if ($id_new_article !== FALSE)
 			{
 				/* Update the content structure tree
 				 * The data var is merged to the default lang data_lang var,
@@ -758,11 +807,12 @@ class Article extends MY_admin
 				 */
 				$menu = $this->menu_model->get_from_page($this->input->post('dup_id_page'));
 				
-				$article = $this->article_model->get($id_new_article, Settings::get_lang('default'));
+				$article = array_shift($this->article_model->get_linked_lang_items('page', 'article', array('id_article'=>$id_new_article), Settings::get_lang('default')) );
 
 				$this->data = $article;
 				$this->data['title'] = htmlspecialchars_decode($article['title'], ENT_QUOTES);
 				$this->data['id_article'] = $id_new_article;
+				$this->data['id_page'] = $this->input->post('dup_id_page');
 				$this->data['element'] = 'article';
 				$this->data['menu'] = $menu;
 				$this->data['online'] = 0;
@@ -770,7 +820,7 @@ class Article extends MY_admin
 				// Panels Update array
 				$this->update[] = array(
 					'element' => 'mainPanel',
-					'url' => admin_url() . 'article/edit/'.$id_new_article,
+					'url' => admin_url() . 'article/edit/'.$this->data['id_page'].'.'.$id_new_article,
 					'title' => lang('ionize_title_edit_article')
 				);
 				

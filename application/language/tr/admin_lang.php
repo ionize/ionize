@@ -188,7 +188,7 @@ $lang['ionize_label_name'] =				'İsim';
 $lang['ionize_label_id'] =					'ID';
 $lang['ionize_label_parent'] =				'Parent';
 $lang['ionize_label_permanent_url'] =		'Kalıcı URL';
-$lang['ionize_label_template'] =				'Görünüm';
+$lang['ionize_label_view'] =				'Görünüm';
 $lang['ionize_label_article_template'] =		'Makale Görünümü';
 
 $lang['ionize_label_title'] =		'Başlık';

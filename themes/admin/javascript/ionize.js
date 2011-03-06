@@ -2428,12 +2428,15 @@ ION.Notify = new Class({
 	setMessage: function(msg)
 	{
 		this.box.empty();
+		
 		if (typeof(msg) == 'object')
 		{
 			this.box.adopt(msg);
 		}
 		else
 		{
+			if (Lang.get(msg) != '' ) msg = Lang.get(msg);
+			
 			this.box.set('html', msg);
 		}
 	}
