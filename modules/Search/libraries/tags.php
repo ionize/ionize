@@ -49,6 +49,7 @@ class Search_Tags
 	 * Returns the search form view
 	 *
 	 * @usage	<ion:searchform />
+	 *		<ion:searchform show="true"/>
 	 *
 	 */
 	public static function searchform(FTL_Binding $tag)
@@ -57,7 +58,12 @@ class Search_Tags
 	
 		// If the realm data was posted, the form will not be displayed
 		// Useful when results should be displayed on the same page as the search form
-		if ($realm = $CI->input->post('realm'))
+		/**
+		 * This was my problem, actually, I wanted control on when the form is
+		 * displayed. This version works as intended.
+		 */
+		$show = (isset($tag->attr['show']) ) ? $tag->attr['show'] : false;
+		if ($show === false)
 		{
 			return '';
 		}
