@@ -397,6 +397,32 @@ function auto_link($str, $type = 'both', $popup = FALSE)
 }
 
 
+/**
+ * Returns the HTTP answer for one URL or FALSE if the URL wasn't found
+ *
+ */
+if( ! function_exists('check_url'))
+{
+	function check_url($url)
+	{
+		$url = prep_url($url);
+		$c = curl_init();
+		curl_setopt($c, CURLOPT_URL, $url);
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($c, CURLOPT_NOBODY, true);
+		$output = @curl_exec($c);
+		
+		if($output !== FALSE)
+		{
+			$httpCode = curl_getinfo($c, CURLINFO_HTTP_CODE);
+			curl_close($c);				
+			return $httpCode;
+		}
+		return FALSE;
+	}
+}
+
 
 
 /* End of file MY_url_helper.php */

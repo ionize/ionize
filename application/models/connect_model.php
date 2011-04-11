@@ -78,8 +78,8 @@ class Connect_model extends CI_Model
 	 *        Like array('email' => 'the email') or just the username
 	 * @return object
 	 */
-	public function find_user($identification)
-	{		
+	public function find_user($identification, $with_group = TRUE)
+	{
 		if( ! is_array($identification))
 		{
 			$identification = array('username' => $identification);
@@ -91,7 +91,16 @@ class Connect_model extends CI_Model
 			$this->error = $this->connect->set_error_message('connect_parameter_error', 'Connect_model::find_user()');
 		}
 
-		$identification = array_merge($identification, array('limit' => 1));
+		$fields = $this->db->list_fields($this->users_table);
+		
+		foreach($identification as $key => $data)
+		{
+			if ( ! in_array($key, $fields))
+				unset($identification[$key]);
+		}
+
+
+		array_merge($identification, array('limit' => 1));
 
 		$result = $this->get_users($identification);
 
@@ -100,7 +109,15 @@ class Connect_model extends CI_Model
 			return false;
 		}
 
-		return array_shift($result);
+		$user = array_shift($result);
+		
+		if ($with_group == FALSE)
+		{
+			unset($user['group']);
+		}
+
+		return $user;
+
 	}
 	
 	
@@ -126,6 +143,8 @@ class Connect_model extends CI_Model
 			}
 		}
 
+		$cond = $this->correct_ambiguous_conditions($cond);
+		
 		$this->db->join($this->groups_table, $this->users_table.'.'.$this->groups_pk.' = '.$this->groups_table.'.'.$this->groups_pk, 'left');
 		
 		$query = $this->db->get_where($this->users_table, $cond);
@@ -136,7 +155,7 @@ class Connect_model extends CI_Model
 		{
 			$result[] = $this->split_user_group($row);
 		}
-
+		
 		return $result;
 	}
 	
@@ -305,7 +324,7 @@ class Connect_model extends CI_Model
 	{
 		$g_data = array();
 
-		foreach(array($this->groups_pk, 'slug', 'level', 'group_name') as $col)
+		foreach(array($this->groups_pk, 'slug', 'level', 'group_name', 'description') as $col)
 		{
 			$g_data[$col] = $data[$col];
 			unset($data[$col]);
@@ -327,34 +346,41 @@ class Connect_model extends CI_Model
 	 * @param  int|string|array  String = slug, int = group_id
 	 * @return void
 	 */
-	public function set_group($group = null)
+	public function set_group($user, $group = null)
 	{		
 		if(is_numeric($group))
 		{
-			$this->group_id = $group;
+			$user[$this->groups_pk] = $group;
 		}
 		elseif(is_array($group))
 		{
-			$this->group_id = $group[$this->groups_pk];
+			$user[$this->groups_pk] = $group[$this->groups_pk];
 		}
 		else
 		{
 			if( ! empty($group) && $g = $this->find_group(array('slug' => $group)))
 			{
-				$this->group_id = $g[$this->groups_pk];
+				$user[$this->groups_pk] = $g[$this->groups_pk];
 			}
 			else
 			{
 				// just assign the lowest level of access, subquery
-				$this->db
-					->select('slug')
-					->from($this->groups_table)->order_by('level', 'asc');
+				$sql = "SELECT ".$this->groups_pk."
+						FROM ".$this->groups_table."
+						WHERE LEVEL = (
+							SELECT max(LEVEL )
+							FROM ".$this->groups_table.")";
+						
+				$group = $this->db->query($sql)->row_array();
 				
-				$this->group_id =& $query;
+				$user[$this->groups_pk] = $group[$this->groups_pk];
 			}
 		}
 		
-		return $this->group_id;
+		$this->db->where($this->users_pk, $user[$this->users_pk])
+				->update($this->users_table, array($this->groups_pk => $user[$this->groups_pk]));
+				
+		return $user[$this->groups_pk];
 	}
 	
 	
@@ -391,6 +417,30 @@ class Connect_model extends CI_Model
 		{
 			return $this->db->where('ip_address', $this->input->ip_address())
 					->update($this->tracker_table, $tracker);
+		}
+	}
+
+
+	function correct_ambiguous_conditions($array)
+	{
+		if (is_array($array))
+		{
+			foreach ($array as $key => $val)
+			{
+				if ($key == $this->users_pk)
+				{
+					unset($array[$key]);
+					$key = $this->users_table.'.'.$key;
+					$array[$key] = $val;
+				}
+				if ($key == $this->groups_pk)
+				{
+					unset($array[$key]);
+					$key = $this->groups_table.'.'.$key;
+					$array[$key] = $val;
+				}
+			}
+			return $array;
 		}
 	}
 

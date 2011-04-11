@@ -237,11 +237,81 @@ dl dd {
 /*	margin-bottom:3px;*/
 }
 
+label {
+	font-size: 11px;
+	margin: 0 10px;
+}
+input, textarea, select {
+	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size:11px;
+}
+input.required, textarea.required, select.required{
+	border-color: #b00;
+	border-color: #666;
+}
+textarea{
+	border:1px solid #bbb;
+	padding:3px;
+	margin:0;
+}
+.select {
+	border:1px solid #bbb;
+	padding:3px;
+}
+#options select {
+	max-width: 150px;
+}
+.inputtext {
+	border:1px solid #bbb;
+	padding:4px;
+}
+.inputtext:focus,
+textarea:focus {
+	background-color: #fdfced;
+}
+
 input.button,
 .button.left,
 .button.right {
 	margin-top: 10px;
 }
+/* Submit & button */
+.button,
+.submit {
+/*	-moz-border-radius:4px;*/
+	font-family:Arial,Helvetica,sans-serif;
+	border:1px solid #fff;
+	margin:0px;
+	color:#FFFFFF;
+	cursor:pointer;
+	font-size:11px;
+	padding:2px 6px;
+	height: 24px;
+	vertical-align: middle;
+}
+
+
+/* Yes button, No button */
+.button.yes { background:url(../images/button-yes-bg.jpg) no-repeat 0 50%; }
+.button.yes:hover { background:url(../images/button-yes-bg.jpg) no-repeat -200px 50%; }
+
+.button.no { background:url(../images/button-no-bg.jpg) no-repeat 0 50% #bbb;}
+.button.no:hover { background:url(../images/button-no-bg.jpg) no-repeat -200px 50%;}
+
+.button.left {float:left;}
+.button.right {float:right;}
+/*.button {float:right;margin:0 2px;}*/
+.button {margin:0 2px;}
+
+
+/* Standard button and submit button */
+.button { background:url(../images/button-bg.jpg) no-repeat 0 50%; }
+.button:hover {	background:url(../images/button-bg.jpg) no-repeat -200px 50%; }
+
+.submit { background:url(../images/submit-bg.jpg) no-repeat 0 50%; }
+.submit:hover {	background:url(../images/submit-bg.jpg) no-repeat -200px 50%; }
+
+
 
 .w10 {	width:10px !important; }
 .w20 {	width:20px !important; }

@@ -136,7 +136,7 @@ var initializeWindows = function(){
 		var options  = 
 		{
 			id: 'w' + id,
-			title: (Lang.get(title) == null) ? title : Lang.get(title),
+			title: ($type(Lang.get(title)) == '') ? title : Lang.get(title),
 			loadMethod: 'xhr',
 			method:'post',
 			data: data,
@@ -144,9 +144,9 @@ var initializeWindows = function(){
 			onContentLoaded: function(c)
 			{
 				// Get the form action URL and adds 'true' so the transport is set to XHR
-				var formUrl = $(form).getProperty('action') + '/true';
+				var formUrl = $(form).getProperty('action');
 
-				// Set the form submit button action and send the DOMElement to update with the according URL
+				// Set the form submit button action and send the DOM Element to update with the according URL
 				MUI.setFormSubmit(form, ('bSave' + id), formUrl);
 
 				// Add the cancel event if cancel button exists
@@ -166,25 +166,30 @@ var initializeWindows = function(){
 					bSave.addEvent('click', function(e)
 					{
 						var e = new Event(e).stop();
-						MUI.closeWindow($('w' + id));
+						
+						// closeFunc is needed for IE8
+						var closeFunc = function()
+						{
+							MUI.closeWindow($('w' + id));
+						}
+						closeFunc.delay(50);
 					});
 				}
 				
 				// Window resize
-				if (wOptions.resize == true)
+				if ($type(wOptions) != false && wOptions.resize == true)
 				{
-					var s = $('w' + id + '_content').getSize();
-					$('w' + id).retrieve('instance').resize({height: s.y + 10, width: s.x, centered:true });
+					MUI.windowResize(id);
 				}
 			},
-			y: 80,
+			y: 70,
 			padding: { top: 12, right: 12, bottom: 10, left: 12 },
 			maximizable: false,
 			contentBgColor: '#fff'			
 		};
 		
 		// Extends the window options
-		if (wOptions) {$extend(options, wOptions);}
+		if ($type(wOptions) != false) {$extend(options, wOptions);}
 		
 		// Window creation
 		new MUI.Window(options);
@@ -195,7 +200,7 @@ var initializeWindows = function(){
 	 * Usefull for editing a list
 	 *
 	 */
-	MUI.dataWindow = function(id, title, wUrl, wOptions)
+	MUI.dataWindow = function(id, title, wUrl, wOptions, data)
 	{
 		// Cleans URLs
 		wUrl = MUI.cleanUrl(wUrl);
@@ -203,17 +208,52 @@ var initializeWindows = function(){
 		var options  = 
 		{
 			id: 'w' + id,
-			title: (Lang.get(title) == null) ? title : Lang.get(title),
+			title: (typeof(Lang.get(title)) == 'undefined') ? title : Lang.get(title),
 			loadMethod: 'xhr',
 			contentURL: admin_url + wUrl,
+			method:'post',
+			data: data,
 			evalResponse: true,
 			width: 310,
 			height: 130,
 			y: 80,
 			padding: { top: 12, right: 12, bottom: 10, left: 12 },
 			maximizable: false,
-			contentBgColor: '#fff'			
+			contentBgColor: '#fff',
+			onContentLoaded: function(c)
+			{
+				// Window resize
+				if ($type(wOptions) != false && wOptions.resize == true)
+				{
+					MUI.windowResize(id);
+				}
+			}			
 		};
+		
+		// Memorize and restore Size & Position
+		if (wOptions && wOptions.memorizeSize == true)
+		{
+			if (Cookie.read('w' + id))
+			{
+				var cookie = new Hash.Cookie('w' + id, {duration: 365});
+				
+				$extend(wOptions, 
+				{
+					'width': cookie.get('width'),
+					'height': cookie.get('height'),
+					'y': cookie.get('top'),
+					'x': cookie.get('left')
+				});
+			}
+	
+			wOptions.onResize = function()
+			{
+				var cookie = new Hash.Cookie(this.windowEl.id, {duration: 365});
+				cookie.erase();
+				cookie.extend(this.windowEl.getCoordinates());
+			}
+		}
+
 		
 		// Extends the window options
 		if (wOptions) {$extend(options, wOptions);}
@@ -234,7 +274,7 @@ var initializeWindows = function(){
 
 
 		// Message HTML Element & window content container		
-		var wMessage = new Element('div', {'class':'message'}).set('text', wMsg);
+		var wMessage = new Element('div', {'class':'message'}).set('html', wMsg);
 		var wContent = new Element('div').adopt(wMessage, button);
 
 		// Window options
@@ -286,17 +326,24 @@ var initializeWindows = function(){
 			 * Check if callback is an  URL or a JS callback function
 			 * No RegExp check on URL because some URL can be passed without "http://"
 			 * if fact you wish to use a regexp : var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-			 * An URL is suposing containing "/"
+			 * An URL is supposing containing "/"
 			 * Case URL : 		Form sending
 			 * Case Callback : 	Execution of callback function
 			 *
 			 */
 			
 			// URL case
-			if ( (callback + '').indexOf('/') > -1  &&  (callback + '').indexOf('/') < 6)
+			if ( (callback + '').indexOf('/') > -1 )
 			{
-				// Send the standard form object
-				MUI.sendForm(callback);
+				if ($type(callback) != 'function')
+				{
+					// Send the standard form object
+					MUI.sendForm(callback);
+				}
+				else
+				{
+					callback();
+				}
 			}
 			// Callback case
 			else
@@ -312,6 +359,49 @@ var initializeWindows = function(){
 	
 		// Buttons container
 		return new Element('div', {'class':'buttons'}).adopt(btnYes, btnNo)
+	}
+	
+	/**
+	 * Resizes one window based on its content
+	 *
+	 * @param	String		Windows ID, without the Mocha prefix (w)
+	 *
+	 */
+	MUI.windowResize = function(id, size)
+	{
+		// windows content size
+		var cs = false;
+		var gotSize = $('w' + id + '_content').getSize();
+
+		if ($type(size) =='object')
+		{
+			cs = {};
+			if ($type(size.width) != false) { cs['x'] = size.width; } else { cs['x'] = gotSize.x };
+			if ($type(size.height) != false) { cs['y'] = size.height; } else { cs['y'] = gotSize.y };
+		}
+		else
+		{
+			cs = gotSize;
+		}
+		
+		// main panel content size
+		var mps = $('mainPanel').getSize();
+
+		if ((cs.y + 80) < mps.y)
+		{
+//			setTimeout(function()
+//			{
+				$('w' + id).retrieve('instance').resize({height: cs.y + 10, width: cs.x, centered:false, top:70 });
+//			}, 70);
+		}
+		else
+		{
+//			setTimeout(function()
+//			{
+				$('w' + id).retrieve('instance').resize({height: mps.y - 30, width: cs.x, centered:false, top:70 });						
+//			}, 70);
+		}
+	
 	}
 	
 	MUI.myChain.callChain();

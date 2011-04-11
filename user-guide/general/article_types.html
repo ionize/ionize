@@ -29,7 +29,7 @@
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td><h1>Ionize User Guide Version 0.9.7</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -90,9 +90,21 @@ Article and Types
 <h2>Using type in views</h2>
 
 <pre>
-&lt;ion:articles type="main-article">
+<dfn>&lt;!-- Loops through articles which have the type "main-article" --></dfn>
+&lt;ion:articles <strong>type="main-article"</strong>>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;ion:article />		
 &lt;/ion:articles>
+
+<dfn>&lt;!-- Loops through articles which have no type --></dfn>
+&lt;ion:articles <strong>type=""</strong>>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ion:article />		
+&lt;/ion:articles>
+
+<dfn>&lt;!-- Loops through all articles --></dfn>
+&lt;ion:articles>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ion:article />		
+&lt;/ion:articles>
+
 </pre>
 
 

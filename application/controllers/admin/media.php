@@ -26,6 +26,8 @@ class Media extends MY_admin
 
 	protected static $DEFAULT_EXPIRE = 604800;
 	protected static $DEFAULT_TYPE = 'text/html';
+	
+	protected static $MP3_ID3 = array('album', 'artist', 'title', 'year');
 
 
 	/**
@@ -38,10 +40,10 @@ class Media extends MY_admin
 
 		// Models
 		$this->load->model('media_model');
-		if (Settings::get('use_extend_fields') == '1')
-		{
+//		if (Settings::get('use_extend_fields') == '1')
+//		{
 			$this->load->model('extend_field_model', '', true);
-		}
+//		}
 
 		// Librairies
 		$this->load->library('image_lib');
@@ -123,6 +125,8 @@ class Media extends MY_admin
 			'upload' => TRUE,
 			'destroy' => TRUE,
 			'thumbSize' => (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120,
+			'pictureMaxWidth' => (Settings::get('picture_max_width') !='') ? Settings::get('picture_max_width') : FALSE,
+			'pictureMaxHeight' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : FALSE,
 			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024
 		);
 
@@ -143,7 +147,7 @@ class Media extends MY_admin
 				$uploadAuthData = ( !empty($_POST['uploadAuthData'])) ? $_POST['uploadAuthData'] : FALSE;
 			
 				// Get all DB saved CI sessions in order to check the tokken
-				$query = $this->db->get('ion_sessions');
+				$query = $this->db->get(config_item('sess_table_name'));
 				
 				if ($query->num_rows() > 0 && $uploadAuthData !== FALSE)
 				{
@@ -326,16 +330,11 @@ class Media extends MY_admin
 		// Clean the first '/'
 		$path = preg_replace('/^[\/]/', '', $path);
 
-
-		/*
-		 * Database insert
-		 */
+		// DB Insert
 		$id = $this->media_model->insert_media($type, $path);
 
-		/*
-		 * Thumbnail creation for picture media type
-		 */
-		if ($type == 'picture')
+		// Thumbnail creation for picture media type (if the picture isn't in a thumb folder)
+		if ($type == 'picture' && (strpos($path, '/thumb_') == FALSE))
 		{
 			try 
 			{
@@ -349,9 +348,19 @@ class Media extends MY_admin
 			}
 		}
 
-		/*
-		 * Parent linking
-		 */
+		// Tag ID3 if MP3
+		if ($type == 'music' && $this->is($path, 'mp3'))
+		{
+			$data = array();
+			$this->media_model->feed_template($id, $data);
+			$this->media_model->feed_lang_template($id, $data);
+
+			$this->set_ID3($data, $this->get_ID3($path));
+// trace($data);			
+			$this->media_model->save($data, $data);
+		}
+		
+		// Parent linking
 		$data = '';		
 		if (!$this->media_model->attach_media($type, $parent, $id_parent, $id)) 
 		{
@@ -539,7 +548,13 @@ class Media extends MY_admin
 		$this->media_model->feed_template($id, $this->template);
 
 		$this->media_model->feed_lang_template($id, $this->template);
-			
+		
+		// Get the mp3 tags
+		if ( $this->is($this->template['path'], 'mp3') )
+		{
+			$this->set_ID3($this->template, $this->get_ID3($this->template['path']));
+		}
+
 		// Get the thumbs to check each thumb status
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
 
@@ -548,10 +563,10 @@ class Media extends MY_admin
 		 *
 		 */
 		$this->template['extend_fields'] = array();
-		if (Settings::get('use_extend_fields') == '1')
-		{
+//		if (Settings::get('use_extend_fields') == '1')
+//		{
 			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('media', $id);
-		}
+//		}
 
 		$this->output('media_edit');	
 	}
@@ -598,8 +613,31 @@ class Media extends MY_admin
 		$this->id = $this->media_model->save($data, $lang_data);
 
 		// Save extend fields data
-		if (Settings::get('use_extend_fields') == '1')
+//		if (Settings::get('use_extend_fields') == '1')
 			$this->extend_field_model->save_data('media', $this->id, $_POST);
+
+		
+		$media = $this->media_model->get($this->id, Settings::get_lang('default'));
+
+		// Save ID3 to file if MP3
+		if ( $this->is($media['path'], 'mp3') )
+		{
+			$tags = array
+			(
+				'artist' => array($media['copyright']),
+				'title' => array($media['title']),
+				'album' => array($media['container'])
+			);
+			
+			if ($date = strtotime($media['date']) )
+			{
+				$tags['year'][] = (String) date('Y', $date);
+			}
+
+			$this->write_ID3($media['path'], $tags);
+			
+		}	
+
 
 		
 		if ( $this->id !== false )
@@ -948,6 +986,86 @@ class Media extends MY_admin
 		{
 			throw new Exception(lang('ionize_exception_getimagesize'));
 		}
+	}
+	
+
+	// ------------------------------------------------------------------------
+
+	private function get_ID3($path)
+	{
+		$tags = array_fill_keys(self::$MP3_ID3, '');
+	
+		if ( is_file(FCPATH.$path) )
+		{
+			require_once(APPPATH.'libraries/getid3/getid3.php');
+
+			// Initialize getID3 engine
+			$getID3 = new getID3;
+
+			// Analyze file and store returned data in $ThisFileInfo
+			$id3 = $getID3->analyze(FCPATH.$path);
+
+			foreach(self::$MP3_ID3 as $index)
+			{
+				$tags[$index] = ( ! empty($id3['tags_html']['id3v2'][$index][0])) ? $id3['tags_html']['id3v2'][$index][0] : '';
+			}
+		}
+		
+		return $tags;
+	}
+	
+	private function set_ID3(&$data, $tags)
+	{
+		// Displayed datas
+		$data['copyright'] = $tags['artist'];
+		$data['date'] = date('Y.m.d H:m:s', strtotime($tags['year']));
+
+		$data['container'] = $tags['album'];
+		
+		// Title
+		foreach(Settings::get_languages() as $lang)
+		{
+			$data[$lang['lang']]['title'] = $tags['title'];
+			$data[$lang['lang']]['alt'] = $data[$lang['lang']]['description'] = $tags['artist'] . ' - ' . $tags['album'] . ' : ' . $tags['title'];
+		}
+	}
+	
+	private function write_ID3($path, $tags)
+	{
+		if ( is_file(FCPATH.$path) )
+		{
+			require_once(APPPATH.'libraries/getid3/getid3.php');
+
+			$getID3 = new getID3;
+			$getID3->setOption(array('encoding'=>'UTF-8'));
+			getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.php', __FILE__, true);
+
+
+			$tagwriter = new getid3_writetags;
+			$tagwriter->filename = $path;
+			$tagwriter->tag_encoding = 'UTF-8';
+			$tagwriter->tagformats = array('id3v1', 'id3v2.3');
+			$tagwriter->overwrite_tags = TRUE;
+			$tagwriter->tag_data = $tags;
+			
+			$tagwriter->WriteTags();
+
+			if (!empty($tagwriter->warnings))
+			{
+				return FALSE;
+			}
+			return TRUE;
+		}
+		return FALSE;		
+	}
+	
+	
+	private function is($path, $ext)
+	{
+		if (pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == $ext)
+			return TRUE;
+			
+		return FALSE;
 	}
 	
 }

@@ -81,5 +81,10 @@ if ( ! function_exists('tag_limiter'))
 	}
 }
 
+
+// ------------------------------------------------------------------------
+
+
+
 /* End of file MY_text_helper.php */
 /* Location: ./application/helpers/MY_text_helper.php */

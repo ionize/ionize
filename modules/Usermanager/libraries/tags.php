@@ -10,6 +10,8 @@ class Usermanager_Tags
 	 *
 	 * 									  "register" 		// Shows the register view
 	 *
+	 * 									  "activate" 		// Shows the activation view and activates one account
+	 *
 	 * 									  "profile" 		// Shows the profile view
 	 *
 	 * 									  "user" 	[id_user="<int>"] [attr="is_editor"] 		[is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown
@@ -58,6 +60,7 @@ class Usermanager_Tags
 	 * 									  		 	[attr="profile_url"] 			// Returns an absolute URL to the current users profile
 	 * 									  		 	[attr="register_url"] 			// Returns an absolute URL to the registration form
 	 * 									  		 	[attr="login_url"] 				// Returns an absolute URL to the login form
+	 * 									  		 	[attr="activation_url"] 		// Returns an absolute URL to the account activation page.
 	 * 									  		 	[attr="url"] 					// Returns an absolute URL to itself (used for forms, as they always point to the same page)
 	 * 									  		 	[attr="login_field_name"] 		// Returns the login-field-name/-id. Either E-Mail or Username, depending on your config
 	 * 									  		 	[attr="login_field_label"] 		// Returns the login-field-label Either E-Mail or Username, depending on your config

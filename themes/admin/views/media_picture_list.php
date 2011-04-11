@@ -19,7 +19,10 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 
 	<?php
 	
-	$path = str_replace($file_path, '', $media['path']);
+//	$path = str_replace($file_path, '', $media['path']);
+	
+	$path = substr($media['path'], strpos($media['path'], '/') + 1);
+	
 	$thumbUrl =	$thumb_base_url.$path;
 
 	// Get picture thumb size	

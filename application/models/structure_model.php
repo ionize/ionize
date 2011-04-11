@@ -78,8 +78,10 @@ class Structure_model extends Model
 		$this->db->select('article.*', false);
 		$this->db->select('article_lang.title');
 		$this->db->select('page_article.*');
+		$this->db->select('article_type.id_type, article_type.type_flag');
 		$this->db->join('page_article', 'page_article.id_article = article.id_article', 'inner');			
 		$this->db->join('article_lang', 'article_lang.id_article = article.id_article', 'inner');			
+		$this->db->join('article_type', 'article_type.id_type = page_article.id_type', 'left outer');			
 		$this->db->where('article_lang.lang', Settings::get_lang('default'));
 
 		$query = $this->db->get('article');

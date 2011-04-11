@@ -47,7 +47,7 @@ $config['groups_table_pk'] 	= 'id_group';
 | Login directly after registration
 |
 */
-$config['verify_user'] = false;
+$config['verify_user'] = true;
 
 
 /*

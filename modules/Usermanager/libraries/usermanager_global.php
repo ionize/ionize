@@ -43,6 +43,13 @@ class Usermanager_Global {
 		return base_url().$ci->settings->get_lang()."/".$config['usermanager_login_url'];
 	}
 
+	public function activation_url($tag)
+	{
+		include APPPATH . '../modules/Usermanager/config/config.php';
+		$ci = &get_instance();
+		return base_url().$ci->settings->get_lang()."/".$config['usermanager_activation_url'];
+	}
+
 	public function url($tag)
 	{
 		return (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];

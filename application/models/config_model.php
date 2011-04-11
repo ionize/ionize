@@ -137,5 +137,7 @@ class Config_model extends Base_model
 		}
 		return FALSE;
 	}
-
 }
+
+/* End of file config_model.php */
+/* Location: ./application/models/config_model.php */

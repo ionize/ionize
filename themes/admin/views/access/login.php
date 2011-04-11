@@ -93,7 +93,7 @@
 		
 				<div class="action">
 					<!-- <?=form_checkbox('remember_me', 1)?> <?=lang('ionize_login_remember')?> -->
-					<button type="submit" name="submit" class="submit"><?=lang('ionize_login')?></button>
+					<button type="submit" name="send" class="submit"><?=lang('ionize_login')?></button>
 					<!-- <p class="fake_label"><small><?=anchor('user/forgot', lang('ionize_forgot_password'))?></small></p> -->
 				</div>
 		

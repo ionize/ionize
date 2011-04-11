@@ -28,7 +28,7 @@
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td><h1>Ionize User Guide Version 0.9.7</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -57,14 +57,16 @@ Navigation Tags
 
 <h1>Navigation Tags</h1>
 
+<p>Navigation tags use helpers to display the navigation. These standard helpers can be customized or unactivated.</p>
 
 
 <h2>navigation</h2>
 
 <p>Coupled to a helper function, displays one level of one menu navigation.</p>
 
-<p>Used helper : <dfn>get_navigation()</dfn></p>
+<p>Default used helper : <dfn>/application/helpers</dfn>/<kbd>navigation_helper.php</kbd>/<var>get_navigation()</var></p>
 
+<h3>Basic example</h3>
 <pre>
 <dfn>&lt;!-- Sample code --></dfn>
 &lt;ion:navigation level="0" active_class="active" menu="my_menu" tag="ul" id="my_nav" class="nav" />
@@ -76,6 +78,17 @@ Navigation Tags
    &lt;li>&lt;a href="http://my_domain.tld/about/">About our company&lt;/a>&lt;/li>
 &lt;/ul>
 </pre>
+
+<h3>Without helper (child tags must be used)</h3>
+<pre>
+&lt;ion:navigation level="0" active_class=' class="active"' menu="my_menu" tag="ul" id="my_nav" class="nav" <strong>no_helper="true"</strong>>
+
+	&lt;li&lt;ion:active_class/>>&lt;a href="&lt;ion:url/>">&lt;ion:title/>&lt;/a>&lt;/li>
+
+&lt;/ion:navigation>
+</pre>
+
+
 
 <h3>Attributes</h3>
 <table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
@@ -93,7 +106,7 @@ Navigation Tags
 	<td class="td">menu</td>
 	<td class="td">yes</td>
 	<td class="td">
-		The wished displayed menu.<br/>
+		The wished displayed menu. See <a href="../general/menus.html">Ionize Menus Documentation</a> for more information about menus.<br/>
 		Default value : <strong>main</strong>
 	</td>
 </tr>
@@ -122,6 +135,15 @@ Navigation Tags
 		&lt;ion:languages helper="my_navigation_menu:my_navigation_func" />
 	</td>
 </tr>
+<tr>
+	<td class="td">display_hidden</td>
+	<td class="td">yes</td>
+	<td class="td">
+		<strong>true / false</strong><br/>
+		Default : <strong>false</strong><br/>
+		If set to <strong>true</strong>, displays the navigation elements even the "Display in Navigation" is not checked in Ionize.
+	</td>
+</tr>
 </table>
 
 
@@ -129,7 +151,7 @@ Navigation Tags
 
 <p>A tree based navigation menu, as a unordered HTML list (&lt;ul>...&lt;/ul>).</p>
 
-<p>Coupled to the helper : <dfn>get_tree_navigation()</dfn></p>
+<p>Default used helper : <dfn>/application/helpers</dfn>/<kbd>navigation_helper.php</kbd>/<var>get_tree_navigation()</var></p>
 
 <pre>
 <dfn>&lt;!-- Sample code --></dfn>
@@ -198,6 +220,15 @@ Navigation Tags
 		This is another way to implement your own helper to display the navigation.<br/>
 		If your helper file is called <kbd>my_navigation_menu.php</kbd> and your helper function is named <kbd>my_navigation_func()</kbd>, you will write :
 		&lt;ion:languages helper="my_navigation_menu:my_navigation_func" />
+	</td>
+</tr>
+<tr>
+	<td class="td">display_hidden</td>
+	<td class="td">yes</td>
+	<td class="td">
+		<strong>true / false</strong><br/>
+		Default : <strong>false</strong><br/>
+		If set to <strong>true</strong>, displays the navigation elements even the "Display in Navigation" is not checked in Ionize.
 	</td>
 </tr>
 </table>

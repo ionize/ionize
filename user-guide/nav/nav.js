@@ -61,7 +61,7 @@ function create_menu(basepath)
 			'<li><a href="'+base+'general/articles_from_another_page.html">Display articles from another page</a></li>' +
 			// Here
 			'<li><a href="'+base+'general/display_media.html">Display medias</a></li>' +
-			'<li><a href="'+base+'general/extended_fields.html">Extend the data model</a></li>' +
+			'<li><a href="'+base+'general/extend_the_data_model.html">Extend the data model</a></li>' +
 			'<li><a href="'+base+'general/php_in_views.html">Add PHP to views</a></li>' +
 		'</ul>' +
 

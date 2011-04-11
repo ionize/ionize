@@ -321,19 +321,27 @@ class Translation extends MY_admin
 		// Theme folder
 		$path = FCPATH.'themes/'.Settings::get('theme');
 
-		$result = array();
+		// Modules
+//		require(APPPATH.'config/modules.php');
+//		$installed_modules = $modules;
+
+
 
 		// Read the template language directory
 		foreach(Settings::get_languages() as $language)
 		{
+			$lang_files = array();
 			$lang_code = $language['lang'];
+			$items[$lang_code] = array();
 			
 			// Translation file name. look like [theme_name]_lang.php
 			$file = $path.'/language/'.$lang_code.'/'.Settings::get('theme').'_lang.php';
 
 			// Include the file if it exists
 			if (file_exists($file))
-			{			
+			{
+//				array_push($lang_files, $file);
+						
 				include($file);
 
 				if (isset($lang))
@@ -342,7 +350,29 @@ class Translation extends MY_admin
 					
 					unset($lang);
 				}
-			}				
+
+			}
+			// Modules languages files : Including. Can be empty
+/*			foreach($installed_modules as $module)
+			{
+				$lang_file = MODPATH.$module.'/language/'.$lang_code.'/'.strtolower($module).'_lang.php';
+				array_push($lang_files, $lang_file);
+			}
+trace($lang_files);		
+			foreach($lang_files as $l)
+			{
+				if (is_file($l) && '.'.end(explode('.', $l)) == EXT )
+				{
+					include $l;
+					if ( ! empty($lang))
+					{
+						$items[$lang_code] = array_merge($items[$lang_code], $lang);
+						unset($lang);
+					}
+				}
+			}
+*/			
+						
 		}
 		return $items;
 	}	

@@ -81,6 +81,21 @@ initializeMenu = function(){
 		});
 	}
 
+
+	// Content : Elements Types
+	if ($('elementsLink')){ 
+		$('elementsLink').addEvent('click', function(e){
+			new Event(e).stop();
+			MUI.updateContent({
+				element: $('mainPanel'),
+				title: Lang.get('ionize_menu_content_elements'),
+				url : admin_url + 'element_definition/index'
+			});
+		});
+	}
+
+
+
 	// Content : Extended fields
 	if ($('extendfieldsLink')){ 
 		$('extendfieldsLink').addEvent('click', function(e){

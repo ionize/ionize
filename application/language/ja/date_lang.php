@@ -1,7 +1,7 @@
 <?php
 
 /* 
- * PHP day date format 'D' tranlations
+ * PHP day date format 'D' translations
  * Lowercase. For other day date format (Ucase, etc.) use the "manip" tag attribute
  * Ex : <articles:date format="D" manip="ucase" />
  */
@@ -14,7 +14,7 @@ $lang['sat'] = '土';
 $lang['sun'] = '日';
 
 /* 
- * PHP day date format 'l' tranlations
+ * PHP day date format 'l' translations
  */
 $lang['monday'] = '月曜日';
 $lang['tuesday'] = '火曜日';
@@ -25,7 +25,7 @@ $lang['saturday'] = '土曜日';
 $lang['sunday'] = '日曜日';
 
 /* 
- * PHP month date format 'M' tranlations
+ * PHP month date format 'M' translations
  */
 $lang['jan'] = '1';
 $lang['feb'] = '2';
@@ -41,7 +41,7 @@ $lang['nov'] = '11';
 $lang['dec'] = '12';
 
 /* 
- * PHP month date format 'F' tranlations
+ * PHP month date format 'F' translations
  */
 $lang['january'] = '1月';
 $lang['february'] = '2月';

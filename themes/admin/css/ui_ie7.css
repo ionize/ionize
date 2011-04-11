@@ -1,0 +1,108 @@
+
+ul {
+	list-style: none;
+}
+
+#maincolumn {
+	width: auto;
+	padding-right:0px;
+	overflow: hidden;
+}
+#maincolumn.sidecolumn {
+	margin-right:310px;
+}
+#mainPanel_pad {
+	overflow-x: hidden;
+}
+
+#sidecolumn {
+	height:auto;
+	overflow: auto;
+	width:295px;
+	float:right;
+	margin-left:20px;
+	padding:0 0 0 15px;
+	position:static;
+}
+#sidecolumn #options{
+	width:auto;
+}
+#sidecolumn .tabcontent{
+	position:relative;
+}
+#sidecolumn .tabcontent textarea{
+	position:relative;
+	display: block;
+}
+
+/* Tree Correction */
+.tree li {
+	overflow: hidden;
+	position: relative;
+}
+.tree ul {
+	margin-bottom:-2px;
+}
+.tree li.file {
+	margin-bottom:-2px;
+}
+.tree li a.title {
+/*	background-color: #fd2;*/
+	height:18px;
+	position: absolute;
+	top:0;
+	
+}
+
+.tree li .action{
+	width:46px;
+	z-index:10;
+}
+
+/* Pictuer List */
+.picture {
+	width: 120px;
+	height: 140px;
+}
+
+/* Tooltip */
+.tooltip {
+	background: #000;
+}
+
+
+
+
+/* Panel Header, Light buttons */
+.toolbar-button,
+.light-button {
+	display:inline;
+	overflow: visible;
+	height: 22px;
+}
+div.toolbox.divider { /* Have to specify div here for IE6's sake */
+	display:inline;
+}
+#mainPanel_headerToolbox {
+	float:right;
+	width:80%;
+}
+
+/* Form Correction */
+.panel dt, .mocha dt {
+  width: 150px;
+}
+.panel dd, .mocha dd {
+  width: auto;
+  margin-left: 200px;
+}
+input.submit {
+	overflow: visible;
+	display:inline;
+}
+
+
+/* Others */
+label.flag {
+  padding: 0 6px 6px 0;
+}

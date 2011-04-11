@@ -40,25 +40,23 @@ function getTree($items, $first = false, $id_item=false, $root_id = '')
 		// Name
 		$tree .= '<li id="page_'.$item['id_page'].'" class="folder'.$root.$home.' page'.$item['id_page'].' page '.$status.'" rel="'.$item['id_page'].'">'
 		
-		.'<span class="action">'
-			// Online / Offline
-			.'<span class="icon"><a title="'.lang('ionize_button_switch_online').'" class="status '.$status.' page'.$item['id_page'].'" rel="'.$item['id_page'].'"></a></span>'
-
-			// Delete button
-//			.'<span class="icon"><a title="'.lang('ionize_button_delete').'" class="delete" rel="'.$item['id_page'].'"></a></span>'
-
-			// Add article 
-			.'<span class="icon"><a class="addArticle article" title="'.lang('ionize_title_create_article').'" rel="'.$item['id_page'].'"></a></span>'
-		.'</span>'
-		
 		/*
 		 * ID : 	pl'.$item['id_page'] : 				used by callback to update name
 		 * class : 	article'.$article['id_article'] : 	used to delete element
 		 * rel :	$item['id_page'] :					used for drag / drop functionnality
-		 *												by : ION.Tree.makeLinkDraggable()
 		 *
 		 */
-		.'<span><a class="title page'.$item['id_page'].' '.$status.'" rel="'.$item['id_page'].'" title="'.$title.'">'.$title.'</a></span>';
+		.'<span><a class="title page'.$item['id_page'].' '.$status.'" rel="'.$item['id_page'].'" title="'.$title.'">'.$title.'</a></span>'
+
+
+		.'<span class="action">'
+			// Online / Offline
+			.'<span class="icon"><a title="'.lang('ionize_button_switch_online').'" class="status '.$status.' page'.$item['id_page'].'" rel="'.$item['id_page'].'"></a></span>'
+
+			// Add article 
+			.'<span class="icon"><a class="addArticle article" title="'.lang('ionize_title_create_article').'" rel="'.$item['id_page'].'"></a></span>'
+		.'</span>';
+		
 		
 		// Get folders
 		if (!empty($item['children']))
@@ -71,40 +69,39 @@ function getTree($items, $first = false, $id_item=false, $root_id = '')
 			
 			foreach($item['articles'] as $article)
 			{
-				// Online status
 				$status = ( $article['online'] == '1' ) ? ' online ' : ' offline ';
 				
 				$title = (trim($article['title']) != '') ? $article['title'] : $article['name'];
-
+				$title = character_limiter($title, 40);
 				$class = ($article['indexed'] == 1) ? ' doc ' : ' sticky ';
 				
 				$rel = $article['id_page'].'.'.$article['id_article'];
 				
 				$flat_rel = $article['id_page'].'x'.$article['id_article'];
 				
+				$flag = ($article['flag'] != 0) ? $article['flag'] : $article['type_flag'];
+				
 				/*
 				 * class : article'.$article['id_article'] : used to delete element
 				 *
 				 */
 				$tree.= '<li id="article_'.$flat_rel.'" class="file'.$class.$status.' article'.$article['id_article'].' article'.$flat_rel.'" rel="'. $rel .'">'
+
+					// Edit link. 
+					// rel : needed for drag / drop functionnality. ID article in this case
+					.'<span class="title_item"><a class="title article'.$article['id_article'].' article'.$flat_rel.' '.$status.'"  title="'.$title.'" rel="'.$rel.'"><span class="flag flag'. $flag .'"></span>'. $title .'</a></span>'
 				
+
 					.'<span class="action">'
 						// Online / Offline
 						// rel : needed for swith online/offline in the page context
 						.'<span class="icon"><a class="status '.$status.' article'.$article['id_article'].' article'.$flat_rel.'" rel="'. $rel .'"></a></span>'
 
-					// Delete icon
-//						.'<span class="icon"><a class="delete" rel="'.$article['id_article'].'"></a></span>'
-
-					// Unlink icon
+						// Unlink icon
 						.'<span class="icon"><a class="unlink" rel="' . $rel . '"></a></span>'
 					
-
 					.'</span>'
 					
-					// Edit link. 
-					// rel : needed for drag / drop functionnality. ID article in this case
-					.'<span><a class="title article'.$article['id_article'].' article'.$flat_rel.' '.$status.'"  title="'.$title.'" rel="'.$rel.'"><span class="flag flag'. $article['flag'] .'"></span>'. $title .'</a></span>'
 					
 				.'</li>';
 			}
@@ -124,12 +121,13 @@ function getTree($items, $first = false, $id_item=false, $root_id = '')
 
 <!-- Menus -->
 <?php foreach($menus as $menu) :?>
-	
-	<h3 class="treetitle" rel="<?= $menu['id_menu'] ?>"><?= $menu['title'] ?>
+
+	<h3 class="treetitle" rel="<?= $menu['id_menu'] ?>">
 		<span class="action">
 			<a title="" class="icon edit right ml5"></a>
 			<a title="<?= lang('ionize_help_add_page_to_menu') ?>" class="icon right ml5 add_page" rel="<?= $menu['id_menu'] ?>"></a>
 		</span>
+		<?= $menu['title'] ?>
 	</h3>
 	<?= getTree($menu['items'], true, $menu['name'].'Tree') ?>
 

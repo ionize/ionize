@@ -74,6 +74,28 @@ class Extend_field extends MY_admin
 		$this->output('extend_field');
 	}
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Prints out the empty extend field form
+	 * called by edition form window
+	 *
+	 * @param	string	parent. Element from which we edit the categories list
+	 * @param	string	parent ID
+	 *
+	 */
+	function create()
+	{
+		$this->extend_field_model->feed_blank_template($this->template);
+		
+		// Pass the parent informations to the template
+		$this->template['parent'] = $parent;
+		$this->template['id_parent'] = $id_parent;
+		
+		$this->output('extend_field');
+	}
+
 	
 	// ------------------------------------------------------------------------
 
@@ -90,8 +112,8 @@ class Extend_field extends MY_admin
 		$this->extend_field_model->feed_template($id, $this->template);
 
 		// Pass the parent informations to the template
-		$this->template['parent'] = $parent;
-		$this->template['id_parent'] = $id_parent;
+//		$this->template['parent'] = $parent;
+//		$this->template['id_parent'] = $id_parent;
 		
 		$this->output('extend_field');
 	}
@@ -102,20 +124,37 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Returns all the extend fields for one kind of parent
+	 * Used by Admin panel to display the extend fields list
+	 * Called by XHR by views/extend_fields.php
 	 *
 	 * @param	String		Parent type. Can be 'article', 'page', etc.
 	 * @return 	Array		Array of extend fields
 	 *
 	 */
-	function get_extend_fields($parent = FALSE)
+	function get_extend_fields($parent = NULL)
 	{
 		// Get data formed to feed the category select box
 		$where = array(
-			'parent' => $parent
+			'order_by' => 'ordering ASC',
+			'id_element_definition' => '0'
 		);
 		
+		if ( ! is_null($parent))
+		{
+			$where['parent'] = $parent;
+		}
+		else
+		{
+			$where['parent'] = '';		
+		}
+		
 		// Returns the extends list ordered by 'ordering' 
-		return $this->extend_field_model->get_list($where, 'ordering ASC');
+		$extend_fields = $this->extend_field_model->get_list($where);
+
+		$this->template['parent'] = ( ! is_null($parent)) ? $parent : FALSE;
+		$this->template['extend_fields'] = $extend_fields;
+		
+    	$this->output('extend_fields_table');
 	}
 
 	
@@ -128,7 +167,6 @@ class Extend_field extends MY_admin
 	 * @param 		String		Page type. Can be 'page, 'article', etc...
 	 * @returns		String		HTML table of extended fields
 	 *							See /themes/admin/extend_fields_table.php for output view
-	 */
 	function get_element_extend_fields_table($parent = FALSE)
 	{
 		if ($parent !== FALSE)
@@ -139,6 +177,7 @@ class Extend_field extends MY_admin
 	    	$this->output('extend_fields_table');
 	    }
 	}
+	 */
 	
 	
 	// ------------------------------------------------------------------------
@@ -166,17 +205,30 @@ class Extend_field extends MY_admin
 	
 				/*
 				 * JSON Update array
-				 * If parent is defined in form, the categories selectbox of the parent will be updated
 				 *
 				 */
+// trace($_POST);
+
+				$dom_element = 'extend_fields';
+				$url = 'extend_field/get_extend_fields';
+				
 				if ($this->input->post('parent') !='')
 				{
-					$this->update[] = array(
-						'element' => 'extend_fields_'.$this->input->post('parent'),
-						'url' =>  'extend_field/get_element_extend_fields_table/'.$this->input->post('parent')
-					);
+					$dom_element .= '_' . $this->input->post('parent');
+					$url .= '/' . $this->input->post('parent');
 				}
-				
+
+				$this->callback = array
+				(
+					array(
+						'fn' => 'MUI.updateElement',
+						'args' => array(
+							'element' => $dom_element,
+							'url' => $url
+						)
+					)
+				);
+					
 				$this->success(lang('ionize_message_extend_field_saved'));
 			}
 		}

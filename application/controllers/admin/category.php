@@ -68,7 +68,7 @@ class Category extends MY_admin
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
 		
-		$this->template['categories'] = $this->category_model->get_list($where=false, $orderby='ordering ASC');
+		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
 		$this->output('category');
 	}
@@ -87,7 +87,6 @@ class Category extends MY_admin
 	 *
 	 * @return string	HTML categories select box
 	 *
-	 */
 	function get_categories($parent = FALSE, $id_parent = FALSE)
 	{
 		// Pass the parent informations to the template
@@ -100,10 +99,31 @@ class Category extends MY_admin
 		
 	
 		// Categories list
-		$this->template['categories'] = $this->category_model->get_list($where = FALSE, $orderby='ordering ASC');
+		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
 		$this->output('categories');
 	}
+	 */
+	
+	
+	/**
+	 * Return categories list
+	 *
+	 */
+	function get_list()
+	{
+
+		// New category form feed
+		$this->category_model->feed_blank_template($this->template);
+		$this->category_model->feed_blank_lang_template($this->template);
+		
+	
+		// Categories list
+		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
+
+		$this->output('category_list');
+	}
+
 
 
 	// ------------------------------------------------------------------------	
@@ -155,7 +175,7 @@ class Category extends MY_admin
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
 		
-		$this->template['categories'] = $this->category_model->get_list($where = FALSE, $orderby='ordering ASC');
+		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
 		$this->output('category');
 	}
@@ -185,7 +205,7 @@ class Category extends MY_admin
 				$this->id = $this->category_model->save($this->data, $this->lang_data);
 				
 				// Get data for answer
-				$data = $this->category_model->get($this->id, Settings::get_lang('default'));
+//				$data = $this->category_model->get($this->id, Settings::get_lang('default'));
 				
 				
 				/*
@@ -202,13 +222,13 @@ class Category extends MY_admin
 				}
 				
 				// Finally, update the categories list (categories item manager)
-				$data['type'] = 'category';
-				$data['rel'] = $this->id;
+//				$data['type'] = 'category';
+//				$data['rel'] = $this->id;
 				
 				$this->callback = array(
 					array(
-						'fn' => 'ION.updateSimpleItem',
-						'args' => $data
+						'fn' => 'ION.HTML',
+						'args' => array('category/get_list', '', array('update' => 'categoriesContainer'))
 					),
 					array(
 						'fn' => 'ION.clearFormInput',
@@ -245,6 +265,9 @@ class Category extends MY_admin
 				// Delete join between parent and the deleted category
 				if ( $parent !== FALSE && $id_parent !== FALSE )
 					$this->category_model->delete_joined_key('category', $id, $parent, $id_parent);
+				
+				// Delete lang data
+				$this->category_model->delete(array('id_category' => $id), 'category_lang');
 				
 				$parent_url = ($parent && $id_parent) ? '/' . $parent . '/' . $id_parent : '';
 				

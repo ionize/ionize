@@ -19,7 +19,11 @@
 			<dt><label><?=lang('ionize_label_max_upload_size')?></label></dt>
 			<dd><?= ini_get('upload_max_filesize') ?></dd>
 		</dl>
-
+		<dl class="small compact">
+			<dt>&nbsp;</dt>
+			<dd><a href="<?=base_url() . config_item('admin_url')?>/desktop/get/phpinfo" target="_blank">Complete PHP Info</a></dd>
+		</dl>
+		
 	</div>
 
 	<div id="options">
@@ -373,7 +377,7 @@
 				</dd>
 			</dl>
 	
-			<dl>
+			<dl class="mb10">
 				<dt>
 					<label for="files_path" title="<?=lang('ionize_help_setting_files_path')?>"><?=lang('ionize_label_files_path')?></label>
 				</dt>
@@ -408,12 +412,29 @@
 				</dd>
 			</dl>
 	
-			<dl class="last">
+			<dl class="mb10">
 				<dt>
 					<label for="media_type_file" title="<?=lang('ionize_help_setting_media_type_file')?>"><?=lang('ionize_label_media_type_file')?></label>
 				</dt>
 				<dd>
 					<input name="media_type_file" id="media_type_file" class="inputtext w240" type="text" value="<?= Settings::get('media_type_file') ?>"/>
+				</dd>
+			</dl>
+
+			<dl class="last">
+				<dt>
+					<label for="picture_max_width" title="<?=lang('ionize_help_setting_picture_max_width')?>"><?=lang('ionize_label_setting_picture_max_width')?></label>
+				</dt>
+				<dd>
+					<input name="picture_max_width" id="picture_max_width" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_width') ?>"/>
+				</dd>
+			</dl>
+			<dl class="last">
+				<dt>
+					<label for="picture_max_height" title="<?=lang('ionize_help_setting_picture_max_height')?>"><?=lang('ionize_label_setting_picture_max_height')?></label>
+				</dt>
+				<dd>
+					<input name="picture_max_height" id="picture_max_height" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_height') ?>"/>
 				</dd>
 			</dl>
 
@@ -553,19 +574,6 @@
 				
 		<?php endif ;?>	
 
-		<!-- extend fields -->
-		<h3 class="toggler1"><?=lang('ionize_title_extend_fields')?></h3>
-		
-		<div class="element1">
-			<dl class="last">
-				<dt>
-					<label for="use_extend_fields"><?=lang('ionize_label_extend_fields_activate')?></label>
-				</dt>
-				<dd>
-					<input <?php if (Settings::get('use_extend_fields') == '1'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="use_extend_fields" id="use_extend_fields" value="1" />
-				</dd>
-			</dl>
-		</div>
 		
 		<!-- Form antispam key -->
 		<h3 class="toggler1"><?=lang('ionize_title_form_antispam_key')?></h3>
@@ -601,6 +609,9 @@
 		</form>
 	
 	</div>
+	
+	
+
 	
 
 </div> <!-- /maincolumn -->

@@ -59,7 +59,7 @@ class Usermanager_Action
 		{
 			if ($ci->connect->logged_in())
 			{
-				$ci->connect->logout();
+				$ci->connect->logout(base_url());
 			}
 		}
 
@@ -110,21 +110,30 @@ class Usermanager_Action
 						"password" => $ci->input->post('password'),
 						"id_group" => $ci->input->post('id_group'),
 						'join_date' => date('Y-m-d H:i:s')
-						//'salt' => $ci->connect->get_salt()
 					);
 					// Save new user only if it doesn't exist
 					if ( ! $ci->base_model->exists(array('username' => $usr['username']), "users"))
 					{
+						
 						if ( ! $ci->base_model->exists(array('email' => $usr['email']), "users"))
 						{
 							if (!$ci->connect->register($usr))
 							{
 								$ci->usermanager_functions->additional_err['register'] = $ci->connect->error;
-								//$data = $ci->usermanager_functions->prepare_register_output();
-							} else {
+							}
+							else
+							{
+								// Save the user	
 								$id = $ci->db->insert_id();
 								$ci->usermanager_user->set_custom_fields($id);
 								$ci->users_model->save_meta($id, $_POST);
+
+								// Store the activation key for email usage
+								$usr = $ci->connect->get_user($usr['username']);
+								$activation_key = $ci->connect->calc_activation_key($usr);
+								$tag->locals->vars['activation_key'] = $activation_key;
+								
+								// Send a mail
 								if (!isset($ci->email))
 									$ci->load->library('email');
 								$ci->email->from(Settings::get("site_email"), Settings::get("site_title"));
@@ -132,6 +141,16 @@ class Usermanager_Action
 								$ci->email->subject(Settings::get("site_title")." - ".lang("module_usermanager_email_registration_title"));
 								$ci->email->message($tag->parse_as_nested(file_get_contents(MODPATH.'Usermanager/views/mail_register'.EXT)));
 								$ci->email->send();
+
+
+								// Auto Login the user
+								// uncomment if you want the user to be logged after registration
+								// unset($usr['id_group']);
+								// unset($usr['join_date']);
+								// unset($usr['screen_name']);
+								// $ci->connect->login($usr);
+															
+								// Success message
 								$ci->usermanager_functions->additional_success['profile'] = lang("module_usermanager_text_registered") . " <a href='".base_url().$config['usermanager_login_url']."'>".lang("module_usermanager_text_registered_here")."</a>.";
 							}
 						}
@@ -144,6 +163,8 @@ class Usermanager_Action
 					{
 						$ci->usermanager_functions->additional_err['register'] = $config['usermanager_email_as_username'] == true ? lang("module_usermanager_error_email_exists") : lang("module_usermanager_error_username_exists");
 					}
+					
+					
 				}
 				catch(Exception $e)
 				{
@@ -168,14 +189,16 @@ class Usermanager_Action
 						{
 							$user = $ci->usermanager_user->get_current_user();
 							$pwd = $ci->connect->decrypt($user['password'], $user);
+							
 							if ($user != false && $ci->input->post('password') === $pwd && $pwd)
 							{
 								$ci->connect->logout();
 								$ci->usermanager_user->delete_user($user['id_user']);
 								// Don't use $output, as we want to use a completely different view file
 								$ci->usermanager_functions->additional_success['profile'] = lang("module_usermanager_text_user_deleted");
-								//$data = $ci->usermanager_functions->prepare_profile_output();
-							} else {
+							}
+							else
+							{
 								$ci->usermanager_functions->additional_err['register'] = lang("module_usermanager_error_password_for_delete");
 							}
 						}
@@ -230,6 +253,77 @@ class Usermanager_Action
 			$ci->usermanager_user->check_for_missing_tables($user['id_user']);
 		}
 
+
+		/*
+		 * PASSWORD BACK
+		 */
+		if ($ci->input->post('form_name') === "restore_password")
+		{
+			// Check if user exists
+			if ( $ci->base_model->exists(array('email' => $ci->input->post('email')), "users"))
+			{
+				// Get the user
+				$ci->load->model('connect_model');
+				$user = $ci->connect_model->find_user(array('email' => $ci->input->post('email')), FALSE);
+				
+				// New password
+				$random_password = $ci->connect->get_random_password(8);
+				
+				// Save the user with this new password
+				$user['salt'] = $ci->connect->get_salt();
+				$user['password'] = $ci->connect->encrypt($random_password, $user);
+
+				$ci->db->where("id_user", $user['id_user']);
+				$ci->db->update("users", $user);
+				$activation_key = $ci->connect->calc_activation_key($user);
+			
+				// Send Mail
+				$tag->locals->vars['password'] = $random_password;
+				$tag->locals->vars['username'] = $user['username'];
+				$tag->locals->vars['screen_name'] = $user['screen_name'];
+
+				if (!isset($ci->email))
+					$ci->load->library('email');
+				$ci->email->from(Settings::get("site_email"), Settings::get("site_title"));
+				$ci->email->to($ci->input->post('email')); 
+				$ci->email->subject(Settings::get("site_title")." - ".lang("module_usermanager_email_restore_password_title_new_login"));
+				$ci->email->message($tag->parse_as_nested(file_get_contents(MODPATH.'Usermanager/views/mail_restore_password'.EXT)));
+				$ci->email->send();
+
+				$ci->usermanager_functions->additional_success['restore_password'] = "ok";
+			}
+			else
+			{
+				$ci->usermanager_functions->additional_err['restore'] = lang('module_usermanager_error_bad_login_information');
+		
+			}
+		}
+
+		/*
+		 * ACTIVATION
+		 */
+		$uris = explode('/', uri_string());
+		if (in_array($config['usermanager_activation_url'], $uris))
+		{
+			$activation_code = array_pop($uris);
+			$username = array_pop($uris);
+
+			if ( ! $ci->connect->activate($username, $activation_code))
+			{
+				$ci->usermanager_functions->additional_err['activated'] = $ci->connect->error;
+			}
+			else
+			{
+				// Get the user and log him in.
+				$user = $ci->connect->get_user($username);
+				
+				$ci->connect->login($user, $ci->connect->decrypt($user['password'], $user));
+				
+				// This text is not displayed for the moment. Should add a query tag...
+				$ci->usermanager_functions->additional_success['activated'] = lang('module_usermanager_text_user_activated');
+			}
+		}
+
 		/*
 		 * RANDOM FIELDS
 		 */
@@ -267,6 +361,16 @@ class Usermanager_Action
 		return $tag->parse_as_nested(file_get_contents(MODPATH.'Usermanager/views/tag_profile'.EXT)/*, $data*/);
 	}
 
+/*
+	public function activate($tag)
+	{
+	
+		
+	
+		
+	}
+*/
+
 	public function user($tag)
 	{
 		$ci =  &get_instance();
@@ -275,6 +379,9 @@ class Usermanager_Action
 
 		switch ($tag->attr['attr'])
 		{
+			case "activation_key":
+				return $ci->usermanager_user->get_activation_key($tag);
+				break;
 			case "is_editor":
 				return $ci->usermanager_user->is_editor($tag);
 				break;
@@ -283,6 +390,9 @@ class Usermanager_Action
 				break;
 			case "get_picture":
 				return $ci->usermanager_user->get_picture($tag);
+				break;
+			case "activate":
+				return $ci->usermanager_user->activate($tag);
 				break;
 			default:
 				return $ci->usermanager_user->get_field($tag);
@@ -308,6 +418,9 @@ class Usermanager_Action
 				break;
 			case "login_url":
 				return $ci->usermanager_global->login_url($tag);
+				break;
+			case "activation_url":
+				return $ci->usermanager_global->activation_url($tag);
 				break;
 			case "url":
 				return $ci->usermanager_global->url($tag);
@@ -381,5 +494,6 @@ class Usermanager_Action
 			default:
 				return $ci->usermanager_post->get_field($tag);
 		}
-	}*/
+	}
+	*/
 }

@@ -259,8 +259,16 @@ class Base_Controller extends MY_Controller
 		 *
 		 */
 		Settings::set('menus', $this->menu_model->get_list());
+		
 		  
-
+		/*
+		 * Installed modules
+		 *
+		 */
+		require(APPPATH.'config/modules.php');
+		$installed_modules = $modules;
+		
+		
 		/*
 		 * Language
 		 *
@@ -311,19 +319,28 @@ class Base_Controller extends MY_Controller
 		$lang_folder = Theme::get_theme_path().'language/'.Settings::get_lang().'/';
 
 		// Core languages files : Including except "admin_lang.php"
-		$lang_files = glob(APPPATH.'language/'.Settings::get_lang().'/[!admin]*_lang.php');
+		$lang_files = glob(APPPATH.'language/'.Settings::get_lang().'/*_lang.php', GLOB_BRACE);
+		foreach($lang_files as $key => $lang_file)
+		{
+			if ($lang_file == APPPATH.'language/'.Settings::get_lang().'/admin_lang.php')
+			{
+				unset($lang_files[$key]);
+			}
+		}
 
-		// Theme languages files : Including. Can be empty
-		$lf = glob(Theme::get_theme_path().'language/'.Settings::get_lang().'/*_lang.php');
-		if ( !empty($lf))
-			$lang_files = array_merge((Array)$lang_files, $lf);
 		
+		// Theme languages files : Including. Can be empty
+		$lf = glob(FCPATH.Theme::get_theme_path().'language/'.Settings::get_lang().'/*_lang.php');
+		if ( !empty($lf))
+			$lang_files = array_merge($lf, (Array)$lang_files);
+
+
 		// Modules languages files : Including. Can be empty
-		$mla = glob(MODPATH.'*/language/'.Settings::get_lang().'/*_lang.php');
-		if ( !empty($mla))
-			$lang_files = array_merge((Array)$lang_files, $mla);
-
-
+		foreach($installed_modules as $module)
+		{
+			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
+			array_push($lang_files, $lang_file);
+		}
 
 		// Add the module path to the Finder
 		$modules = glob(MODPATH.'*');
@@ -332,10 +349,12 @@ class Base_Controller extends MY_Controller
 		{
 			foreach ($modules as $module)
 			{
-				Finder::add_path($module.'/');
+				if (is_dir($module))
+					Finder::add_path($module.'/');
 			}
 		}
-		
+
+
 		// Widgets languages translations loading
 		// Now done by the Widget library
 
@@ -350,7 +369,21 @@ class Base_Controller extends MY_Controller
 					include $l;
 					if ( ! empty($lang))
 					{
-						$this->lang->language = array_merge($this->lang->language, $lang);
+						foreach($lang as $key => $translation)
+						{
+							// If the term doesn't exists
+							if ( ! isset($this->lang->language[$key]))
+							{
+								$this->lang->language[$key] = $translation;
+							}
+							else
+							{
+								// Only replace by default (theme vs. module) if the translation is empty
+								if (empty($this->lang->language[$key]))
+									$this->lang->language[$key] = $translation;
+							}
+						}
+//						$this->lang->language = array_merge($this->lang->language, $lang);
 						unset($lang);
 					}
 				}

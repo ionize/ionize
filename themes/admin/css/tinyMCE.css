@@ -66,5 +66,7 @@ pre {
 table.mceItemTable {
 	width: 100%;
 }
-
+script {
+	border:solid dashed #000;
+}
 

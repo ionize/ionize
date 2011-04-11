@@ -101,8 +101,8 @@ class Page extends MY_admin
 		if(count($datas) > 0)
 		{
 			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
-			$this->template['article_views'] = form_dropdown('article_views', $datas, false, 'class="select w160"');
-			$this->template['article_list_views'] = form_dropdown('article_list_views', $datas, false, 'class="select w160"');
+			$this->template['article_views'] = form_dropdown('article_view', $datas, false, 'class="select w160"');
+			$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, false, 'class="select w160"');
 		}
 
 		// Access groups : authorizations
@@ -115,10 +115,10 @@ class Page extends MY_admin
 		 *
 		 */
 		$this->template['extend_fields'] = array();
-		if (Settings::get('use_extend_fields') == '1')
-		{
+//		if (Settings::get('use_extend_fields') == '1')
+//		{
 			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page');
-		}
+//		}
 
 		$this->output('page');
 	}
@@ -184,12 +184,12 @@ class Page extends MY_admin
 			}
 			
 			// All articles views to template
-			$this->template['all_article_views'] = $datas;
+//			$this->template['all_article_views'] = $datas;
 			
 			// All articles type to template
-			$datas = $this->article_type_model->get_types_select();
-			$datas = array('' => lang('ionize_select_no_type')) + $datas; 
-			$this->template['all_article_types'] = $datas;
+//			$datas = $this->article_type_model->get_types_select();
+//			$datas = array('' => lang('ionize_select_no_type')) + $datas; 
+//			$this->template['all_article_types'] = $datas;
 
 			
 			/*
@@ -215,10 +215,10 @@ class Page extends MY_admin
 			 *
 			 */
 			$this->template['extend_fields'] = array();
-			if (Settings::get('use_extend_fields') == '1')
-			{
+//			if (Settings::get('use_extend_fields') == '1')
+//			{
 				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
-			}
+//			}
 			
 			/*
 			 * Lang data
@@ -228,15 +228,12 @@ class Page extends MY_admin
 			/*
 			 * Linked articles
 			 */
-			$articles = $this->article_model->get_lang_list(array('id_page'=>$id), Settings::get_lang('default'));
+//			$articles = $this->article_model->get_lang_list(array('id_page'=>$id), Settings::get_lang('default'));
 			
 			// Add lang content to each article
-			$this->article_model->add_lang_data($articles);
+//			$this->article_model->add_lang_data($articles);
 			
-			// Add view logical name to article list (from theme/config/views.php file)
-//			$this->article_model->add_view_name($articles, $views);
-
-			$this->template['articles'] = $articles;
+//			$this->template['articles'] = $articles;
 			
 			/*
 			 * Output the view
@@ -291,7 +288,7 @@ class Page extends MY_admin
 					$this->page_model->correct_integrity($this->data, $this->lang_data);
 
 				// Save extends fields data
-				if (Settings::get('use_extend_fields') == '1')
+//				if (Settings::get('use_extend_fields') == '1')
 					$this->extend_field_model->save_data('page', $this->id, $_POST);
 						
 				// Save linked access groups authorizations
@@ -423,6 +420,133 @@ class Page extends MY_admin
 
 
 	/**
+	 * Adds a link to a page
+	 *
+	 * Receives : 
+	 * $_POST['link_type'] : 	type of the link
+	 * $_POST['link_rel'] : 	REL to the link (can be a page or an article)
+	 * $_POST['receiver_rel'] : REL of the receiver's article
+	 * $_POST['url'] : 			URL of the external link
+	 *
+	 */
+	function add_link()
+	{
+		// Page which received the link
+		$id_page = $this->input->post('receiver_rel');
+		$link_type = $this->input->post('link_type');
+		$link_id = $this->input->post('link_rel');
+
+		// Link name (default lang title, for display)
+		$title = NULL;
+		
+		if ($link_type == 'page')
+		{
+			$link = $this->page_model->get(array('id_page' => $link_id), Settings::get_lang('default'));
+			$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+		}
+		if ($link_type == 'article')
+		{
+			$link_rel = explode('.', $link_id);
+			$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+			$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+		}
+		if ($link_type == 'external')
+		{
+			$link_rel = '';
+			$title = prep_url($this->input->post('url'));
+		}
+		
+		$data = array(
+			'link_id' => $link_id,
+			'link_type' => $link_type,
+			'link' => $title
+		);
+		
+		// Save the link
+		$this->page_model->update(array('id_page' => $id_page), $data);
+
+		// Test the external link
+		if ($link_type == 'external')
+		{
+			$check = check_url($title);
+			
+			if($check === false)
+			{
+				$this->callback[] = array
+				(
+					'fn' => 'MUI.notification',
+					'args' => array	(
+						'error',
+						lang('ionize_message_url_not_found')
+					)
+				);
+			}
+			elseif($check == 404)
+			{
+				$this->callback[] = array
+				(
+					'fn' => 'MUI.notification',
+					'args' => array	(
+						'error',
+						lang('ionize_message_url_got_404')
+					)
+				);
+			}
+		}
+
+		$this->callback[] = array
+		(
+			'fn' => 'ION.updateLinkInfo',
+			'args' => array
+			(
+				'type'=> $link_type,
+				'id'=> $link_id,
+				'text'=> $title
+			)
+		);
+
+		$this->response();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	function remove_link()
+	{
+		$id_page = $this->input->post('receiver_rel');
+		
+		if ($id_page)
+		{
+			$context = array(
+				'link_type' => '',
+				'link_id' => '',
+				'link' => ''
+			);
+
+			// Save the context		
+			$this->page_model->update(array('id_page' => $id_page), $context);
+
+			$this->callback[] = array
+			(
+				'fn' => 'ION.updateLinkInfo',
+				'args' => array
+				(
+					'type'=> '',
+					'id'=> '',
+					'text'=> ''
+				)
+			);
+
+			$this->response();
+		}		
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Deletes one page
 	 * @note	For the moment, this method doesn't delete the linked articles, wich will stay in database as phantom
 	 *
@@ -547,10 +671,15 @@ class Page extends MY_admin
 			$this->lang_data[$language['lang']]['online'] = $this->input->post('online_'.$language['lang']);
 		}
 
+		unset($this->data['link']);
+		unset($this->data['link_type']);
+		unset($this->data['link_id']);
+					
+
+
 		/*
 		 * Links
 		 *
-		 */
 		if ($this->data['link'] != lang('ionize_label_drop_link_here'))
 		{
 			// External Link cleaning : We assume an external link has a "." in its URL
@@ -590,6 +719,7 @@ class Page extends MY_admin
 				$this->lang_data[$language['lang']]['link'] = '';
 			}
 		}
+		 */
 	}
 
 	

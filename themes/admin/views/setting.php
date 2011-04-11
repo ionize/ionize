@@ -13,20 +13,23 @@
 	<!-- Title & Meta keywords & Meta description -->
 	<fieldset id="blocks">
 
-		<!-- Languages tabs -->
-		<div class="tab">
-			<ul class="tab-content">
-				<?php foreach(Settings::get_languages() as $language) :?>
-					<li id="tab-<?=$language['lang']?>"><a><span><?=$language['name']?></span></a></li>
+		<!-- Tabs -->
+		<div id="langTab" class="mainTabs">
+			<ul class="tab-menu">
+				<?php foreach(Settings::get_languages() as $l) :?>
+					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
 				<?php endforeach ;?>
 			</ul>
+			<div class="clear"></div>
 		</div>
 
+
+		<div id="langTabContent">
 		<!-- Tabs content blocks -->
 
 		<?php foreach(Settings::get_languages() as $language) :?>
 			
-			<div id="block-<?=$language['lang']?>" class="block data">
+			<div class="tabcontent">
 			
 				<!-- Title -->
 				<dl>
@@ -59,7 +62,7 @@
 			</div>
 
 		<?php endforeach ;?>
-
+		</div>
 	</fieldset>
 
 </div> <!-- /maincolumn -->
@@ -87,16 +90,10 @@
 	 */
 	MUI.initLabelHelpLinks('#settingsForm');
 
-	// Article data Tab Events
-	<?php foreach(Settings::get_languages() as $language) :?>
-		$('tab-<?=$language["lang"]?>').addEvent('click', function(){ ION.displayBlock('.data', '<?=$language["lang"]?>'); });
-	<?php endforeach ;?>
-	
-	// Display the first language tab
-	<?php
-		$languages = Settings::get_languages();
-		$l = $languages[0];
-	?>
-	ION.displayBlock('.data', '<?=$l["lang"]?>');
+	/** 
+	 * Tabs init
+	 *
+	 */
+	new TabSwapper({tabsContainer: 'langTab', sectionsContainer: 'langTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'categoryTab<?= $UNIQ ?>' });
 
 </script>

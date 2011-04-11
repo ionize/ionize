@@ -83,7 +83,6 @@ class FTL_Parser{
 	public function parse($text)
 	{
 		$tree = $this->generate_tree($text);
-		
 		return $this->render($tree);
 	}
 	

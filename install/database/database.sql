@@ -130,6 +130,8 @@ CREATE TABLE IF NOT EXISTS extend_field (
 	translated char(1) default '0',
 	`value` text NULL,
 	default_value varchar(255) NULL,
+	global tinyint(1) UNSIGNED NOT NULL default '0',
+	parents varchar(300) NOT NULL default '',
 	PRIMARY KEY  (id_extend_field),
 	KEY i_extend_field_parent (parent)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1;
@@ -139,6 +141,7 @@ CREATE TABLE IF NOT EXISTS extend_field (
 CREATE TABLE IF NOT EXISTS extend_fields (
 	id_extend_fields INT(11) UNSIGNED NOT NULL auto_increment,
 	id_extend_field INT(11) UNSIGNED NOT NULL,
+	parent varchar(50) NOT NULL default '',
 	id_parent int(11) UNSIGNED NOT NULL,
 	lang char(3) NOT NULL default '',
 	content text,
@@ -419,7 +422,7 @@ INSERT INTO setting VALUES (18, 'media_type_picture', 'jpg,jpeg,gif,png', NULL);
 INSERT INTO setting VALUES (19, 'media_type_music', 'mp3', NULL);
 INSERT INTO setting VALUES (20, 'media_type_video', 'flv,fv4', NULL);
 INSERT INTO setting VALUES (21, 'media_type_file', 'txt,doc,pdf', NULL);
-INSERT INTO setting VALUES(22, 'ionize_version', '0.9.6', NULL);
+INSERT INTO setting VALUES(22, 'ionize_version', '0.9.7', NULL);
 INSERT INTO setting VALUES(23, 'show_help_tips', '1', NULL);
 
 INSERT INTO setting VALUES(24, 'display_connected_label', '1', NULL);

@@ -181,8 +181,11 @@ var FileManager = new Class({
 		
 		this.scroller = new Scroller(this.browser);
 		
+//		this.addMenuButton('uploadUrl');
+
 		this.addMenuButton('create');
 		if (this.options.selectable) this.addMenuButton('open');
+		
 		
 		// Information panel about one folder / file
 		this.info = new Element('div', {'class': 'filemanager-infos'}).inject(this.el);
@@ -412,6 +415,85 @@ var FileManager = new Class({
 			}
 		});
 	},
+	
+	
+	/**
+	 * Upload form URL : Show upload form
+	 *
+	 */
+	uploadUrl: function(e)
+	{
+		e.stop();
+
+		this.deselect();
+		this.details.empty();
+
+		var self = this;
+
+		this.info.getElement('img').set({
+			src: this.options.assetBasePath + 'icon_16_up.png'
+		});
+		this.info.getElement('h1').set('text', this.language['uploadUrl']);
+
+		// Main URL upload panel
+		this.body = new Element('div', {'class': 'filemanager-body'});
+		this.formUploadUrl = new Element('form', {name:'uploadUrl', method:'post'});
+		var submit = new Element('button', {type:'button', 'class':'clear ml0'}).set('text', this.language['upload']) ;
+		var addUrl = new Element('button', {type:'button', 'class':'clear ml0'}).set('text', this.language['addUrl']) ;
+		
+		submit.addEvent('click', function(item){ self.postUploadUrl(); }, this);
+		addUrl.addEvent('click', function(item){ self.addUploadUrlField(); }, this);
+
+		this.formUploadUrl.inject(this.body, 'top');
+		addUrl.inject(this.body, 'top');
+		submit.inject(this.body, 'bottom');
+
+		// Add panel to Details
+		this.details.adopt(this.body);
+		
+		this.addUploadUrlField();
+		
+	},
+	
+	
+	postUploadUrl: function(e)
+	{
+		var self = this;
+
+		var data = {};
+
+		(this.formUploadUrl.getElements('input')).each(function(item)
+		{
+			console.log(item.name);
+			
+			data[item.name] = item.value;
+		});
+
+		
+		if (this.Request) this.Request.cancel();
+
+		this.Request = new FileManager.Request(
+		{
+			url: this.options.url + '/uploadUrl',
+			onSuccess: (function(j)
+			{
+// Here
+				
+			}).bind(this),
+			data: data
+		}, this).post();
+	},
+
+	addUploadUrlField: function()
+	{
+		var id = (this.formUploadUrl.getElements('div')).length;
+		var div = new Element('div', {'class':'clear mt10 h20'});
+		div.adopt(
+			new Element('input', {type:'text', style:'width:70%', 'class':'inputtext left mr5', name:'url' + id}),
+			new Element('input', {type:'text', style:'width:25%', 'class':'inputtext left', name:'name' + id})
+		);
+		div.inject(this.formUploadUrl, 'bottom');
+	},
 
 	/**
 	 * 
@@ -593,7 +675,7 @@ var FileManager = new Class({
 					e.stop();
 					$clear(timer);
 					timer = self.relayClick.delay(0, el);
-				},
+				}
 			});
 			
 			var bIcons = new Element('span', {'class': 'browser-icons'});
@@ -660,7 +742,10 @@ var FileManager = new Class({
 			// Put the DOM browserlist element to els
 			els[file.mime == 'text/directory' ? 1 : 0].push(el);
 			if (file.name == '..') el.setOpacity(0.7);
-			el.injectTop(new Element('li').adopt(bIcons).inject(this.browser)).store('parent', el.getParent());
+//			el.injectTop(new Element('li').adopt(bIcons).inject(this.browser)).store('parent', el.getParent());
+			bIcons.inject(el, 'top');
+			el.injectTop(new Element('li').inject(this.browser)).store('parent', el.getParent());
+
 			icons = $$(icons).appearOn(el.getParent('li'), 1);
 		}, this);
 

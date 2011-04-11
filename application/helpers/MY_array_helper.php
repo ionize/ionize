@@ -80,15 +80,16 @@ if ( ! function_exists('multisort'))
  *                   	array('type'=>'horse', 'name'=>'ed','sex'=>'m', 'breed'=>'clydesdale'),
  *                   	$std);
  * 
- * echo recursiveArraySearch($array, '25', 'age');        	// returns 5
- * echo recursiveArraySearch($array, '25', 'name');    		// returns false
- * echo recursiveArraySearch($array, 'simpleValue');    	// returns 2
- * echo recursiveArraySearch($array, 'fido');            	// returns 1
+ * echo array_recursive_search($array, '25', 'age');        	// returns 5
+ * echo array_recursive_search($array, '25', 'name');    		// returns false
+ * echo array_recursive_search($array, 'simpleValue');    	// returns 2
+ * echo array_recursive_search($array, 'fido');            	// returns 1
  *
  */
-if ( ! function_exists('recursiveArraySearch'))
+
+if ( ! function_exists('array_recursive_search'))
 {
-	function recursiveArraySearch($haystack, $needle, $index = null)
+	function array_recursive_search($haystack, $needle, $index = null)
 	{
 	    $aIt     = new RecursiveArrayIterator($haystack);
 	    $it    = new RecursiveIteratorIterator($aIt);
@@ -106,6 +107,27 @@ if ( ! function_exists('recursiveArraySearch'))
 	}
 }
 
+if ( ! function_exists('array_get'))
+{
+	function array_get($wished, $array, $searched, $index)
+	{
+		$aIt = new RecursiveArrayIterator($array);
+		$it = new RecursiveIteratorIterator($aIt);
+		
+		while($it->valid())
+		{
+			if (((isset($index) AND ($it->key() == $index)) OR (!isset($index))) AND ($it->current() == $searched))
+			{
+				$c = $aIt->current();
+				return $c[$wished];
+			}
+		
+			$it->next();
+		}
+		
+		return FALSE;
+	}
+}
 
 /* End of file MY_array_helper.php */
 /* Location: ./application/helpers/MY_array_helper.php */

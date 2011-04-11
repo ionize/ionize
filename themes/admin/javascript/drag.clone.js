@@ -78,7 +78,7 @@ Drag.Clone = new Class({
 		
 		if ($type(this.options.droppables) == 'string')
 		{
-			this.options.droppables = (this.options.droppables).split(",");
+			this.options.droppables = (this.options.droppables).replace(' ', '').split(",");
 		}
 	},
 
@@ -100,6 +100,7 @@ Drag.Clone = new Class({
 //				this.clone.set('opacity', this.options.opacity || 0);
 				this.snapped(this.clone);
 			}.bind(this),
+			onDrag: this.dragged.bind(this),
 			onDrop: this.dropped.bind(this),
 			onEnter: this.entered.bind(this),
 			onLeave: this.leaved.bind(this),
@@ -143,6 +144,7 @@ Drag.Clone = new Class({
 		this.fireEvent('complete', this.element);
 	},
 	
+	dragged: function(element, event) { this.fireEvent('drag', [element, event]); },
 	dropped: function(element, droppable, event) { this.fireEvent('drop', [element, droppable, event]); },
 	snapped: function(element) {this.fireEvent('snap', element); },
 	entered: function(element, droppable) { this.fireEvent('enter', [element, droppable]); },

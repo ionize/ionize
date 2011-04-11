@@ -78,8 +78,8 @@ var MUI = MochaUI = new Hash({
 
 	path: {			
 		source:  'scripts/source/', // Path to MochaUI source JavaScript
-		themes:  'themes/',         // Path to MochaUI Themes
-		plugins: 'plugins/'         // Path to Plugins
+		themes:  base_url + 'themes/admin/javascript/mocha/themes/',         // Path to MochaUI Themes
+		plugins: base_url + 'themes/admin/javascript/mocha/plugins/'         // Path to Plugins
 	},
 	
 	// Returns the path to the current theme directory
@@ -1121,11 +1121,13 @@ MUI.extend({
 	
 });
 
+/*
 if (Browser.Engine.webkit) {
     new MUI.Require({
         js: [MUI.path.plugins + 'mochaui/Window/WebKitShadower.js']
     });
 }
+*/
 /*
 ---
 

@@ -50,6 +50,7 @@ class TagManager
 	(
 		'debug' =>				'tag_debug',
 		'field' =>				'tag_field',
+		'list' =>				'tag_list',
 		'config' => 			'tag_config',
 		'base_url' =>			'tag_base_url',
 		'partial' => 			'tag_partial',
@@ -66,7 +67,9 @@ class TagManager
 		'set' =>				'tag_set',
 		'get' =>				'tag_get',
 		'php' =>				'tag_php',
-		'jslang' =>				'tag_jslang'
+		'jslang' =>				'tag_jslang',
+		
+		'global:get' =>			'tag_global_get'
 	);
 
 
@@ -349,12 +352,14 @@ class TagManager
 		if ( ! empty($tag->attr[$attr]))
 		{
 			$ar = explode(':', $tag->attr[$attr]);
-			
+
 			// If no explode result, simply return the attribute value
 			// In this case, the tag doesn't ask for a dynamic value, but just gives a value
 			// (no ":" separator)
 			if (!isset($ar[1]))
+			{
 				return $tag->attr[$attr];
+			}
 	
 			// Here, there is a field to get
 			if (isset($tag->locals->$ar[0]))
@@ -400,6 +405,13 @@ class TagManager
 		// For safety, return false
 		return false;
 	}
+
+/*
+	public function tag_global_get($tag)
+	{
+		$get = (isset($tag->attr['get']) ) ? $tag->attr['get'] : false;
+	}
+*/
 
 
 	// ------------------------------------------------------------------------
@@ -600,10 +612,12 @@ class TagManager
 	public function tag_get($tag)
 	{
 		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : null;
+		$scope = ( !empty ($tag->attr['scope'])) ? $tag->attr['scope'] : 'locals';
 
-		if ( ! is_null($var) && !empty($tag->globals->{$var}))
+		if ( ! is_null($var) && !empty($tag->{$scope}->vars[$var]))
 		{
-			return $tag->globals->{$var};
+//			return $tag->globals->{$var};
+			return $tag->{$scope}->vars[$var];
 		}
 		
 		return '';
@@ -657,8 +671,83 @@ class TagManager
 
 	
 	// ------------------------------------------------------------------------
-
 	
+	
+	public function tag_list($tag)
+	{
+		$objects = (isset($tag->attr['objects']) ) ? $tag->attr['objects'] : FALSE;
+		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
+		$field = (isset($tag->attr['field']) ) ? $tag->attr['field'] : FALSE;
+		$separator = (isset($tag->attr['separator']) ) ? $tag->attr['separator'] : ',';
+		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
+		$prefix = (isset($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
+		$filters = NULL;
+
+		if ($objects != FALSE)
+		{
+			if ($from == FALSE)
+			{
+				$from = $this->get_parent_tag($tag);
+			}
+
+			$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
+	
+			if ( ! is_null($obj) && $field != FALSE)
+			{
+				if ( ! empty($obj[$objects]))
+				{
+					// Set the prefix
+					if ($prefix == 'base_url')
+					{
+						$prefix = base_url();
+					}
+					// Prepare filtering
+					if ($filter)
+					{
+						$filters = array();
+						$operators = array ('!=', '=');
+						
+						$filter_list = explode(',', str_replace(' ', '', $filter));
+						
+						foreach ($operators as $op)
+						{
+							foreach($filter_list as $key => $fl)
+							{
+								$fr = explode($op, $fl);
+								if ( $fr[0] !== $fl )
+								{
+									$filters[] = array($fr[0], $op, $fr[1]);
+									unset($filter_list[$key]);
+								}
+							}
+						}
+					}
+					
+					$fields = array();
+					foreach($filters as $filter)
+					{
+						$fields += array_filter($obj[$objects], create_function('$row', 'return $row["'.$filter[0].'"]'.$filter[1].'="'.$filter[2].'";'));
+					}
+
+					$return = array();
+					foreach($fields as $key => $row)
+					{
+						if ( ! empty($row[$field]))
+						{
+							$return[] = $prefix.$row[$field];
+						}
+					}
+					return self::wrap($tag, implode($separator, $return));
+				}
+			}
+		}
+		
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Get one field from a data array
 	 * Used to get extended fields values
@@ -674,49 +763,56 @@ class TagManager
 	public function tag_field($tag)
 	{
 		// Object type : page, article, media
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : false;
+		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
 		
 		// Name of the field to get
-		$name = (isset($tag->attr['name']) ) ? $tag->attr['name'] : false;
+		$name = (isset($tag->attr['name']) ) ? $tag->attr['name'] : FALSE;
 		
 		// Format of the returned field (useful for dates)
-		$format = (isset($tag->attr['format']) ) ? $tag->attr['format'] : false;
+		$format = (isset($tag->attr['format']) ) ? $tag->attr['format'] : FALSE;
 		
 		// Force to get the field name from core. To be used when the field has the same name as one core field
-		$force_core = (isset($tag->attr['core']) && $tag->attr['core'] == true ) ? true : false;
+		$force_core = (isset($tag->attr['core']) && $tag->attr['core'] == TRUE ) ? TRUE : FALSE;
 
-		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : null;
+		// Current tag parent tag
+		if ($from == FALSE && $force_core == FALSE )
+		{
+			$from = $this->get_parent_tag($tag);
+		}
 
-		if ( ! is_null($obj) && $name != false)
+		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
+
+		if ( ! is_null($obj) && $name != FALSE)
 		{
 			$value = '';
-			
+
 			// If force core field value, return it.
-			if ($force_core === true && !empty($obj[$name]))
+			if ($force_core === TRUE && !empty($obj[$name]))
 			{
-				return self::enclose($tag, $obj[$name]);
+				return self::wrap($tag, $obj[$name]);
 			}
 			
 			// Try to get the extend field value			
 			if ( ! empty($obj[$this->extend_field_prefix.$name]))
 			{
-				// If "format" attrbute is defined, suppose the field is a date ...
+				// If "format" attribute is defined, suppose the field is a date ...
 				if ($format && $obj[$this->extend_field_prefix.$name] != '')
 				{
-					return self::enclose($tag, (self::format_date($tag, $obj[$this->extend_field_prefix.$name])));
+					return self::wrap($tag, (self::format_date($tag, $obj[$this->extend_field_prefix.$name])));
 				}
 
-				return self::enclose($tag, $obj[$this->extend_field_prefix.$name]);
+				return self::wrap($tag, $obj[$this->extend_field_prefix.$name]);
 			}
 			// Else, get the core field value
 			else if (!empty($obj[$name]))
 			{
-				return self::enclose($tag, $obj[$name]);
+				return self::wrap($tag, $obj[$name]);
 			}
 		}
 		
-		// Return empty value to avoid errors
+		// Error
 		return '';
+		return self::show_tag_error($tag->name, '<b>The "from" attribute is mandatory</b>');
 	}
 	
 	
@@ -972,7 +1068,7 @@ class TagManager
 	 */
 	public function tag_site_title($tag)
 	{
-		return $this->enclose($tag, Settings::get('site_title'));
+		return $this->wrap($tag, Settings::get('site_title'));
 	}
 
 
@@ -1033,17 +1129,13 @@ class TagManager
 
 
 	/**
-	 * Enclose a tag value depending on the enclosing HTML tag
+	 * Wraps a tag value depending on the given HTML tag
 	 *
 	 * @example : <ion:page:title tag="<h1>" class="class" id="id" 
 	 *
 	 */
-	protected function enclose($tag, $value)
+	protected function wrap($tag, $value)
 	{
-//		$html_tag = isset($tag->attr['tag']) ? $tag->attr['tag'] : false;
-//		$class = isset($tag->attr['class']) ? ' class="' . $tag->attr['class'] . '"' : false;
-//		$id = isset($tag->attr['id']) ? ' id="' . $tag->attr['id'] . '"' : false;
-
 		$prefix = $suffix = '';
 		
 		$html_tag = self::get_attribute($tag, 'tag');
@@ -1056,31 +1148,18 @@ class TagManager
 		// helper
 		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : FALSE;
 		
-		if ($helper !== FALSE)
-		{
-			$helper = explode(':', $helper);
-			
-			$helper_name = ( ! empty($helper[0])) ? $helper[0] : FALSE;
-			$helper_func = ( ! empty($helper[1])) ? $helper[1] : FALSE;
-			
-			if($helper_name !== FALSE && $helper_func !== FALSE)
-			{
-				$CI =& get_instance();
-				
-				$CI->load->helper($helper_name);
-				
-				if (function_exists($helper_func))
-					$value = call_user_func($helper_func, $value);
-				else
-					return self::show_tag_error($tag->name, 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
-			}
-		}
+		// php func ?
+		// $php_func = ( ! empty($tag->attr['function'])) ? $tag->attr['function'] : FALSE;
 		
-		
-		
+
 		// Process the value through the passed in function name.
 		if ( ! empty($tag->attr['function'])) $value = self::php_process($value, $tag->attr['function'] );
-		
+
+		if ($helper !== FALSE)
+		{
+			$value = self::helper_process($value, $helper);
+		}
+
 		if ($html_tag !== false)
 		{
 			$prefix = '<' . $html_tag . $id . $class . '>';
@@ -1107,22 +1186,83 @@ class TagManager
 		
 		if ($date)
 		{
-			$format = isset($tag->attr['format']) ? $tag->attr['format'] : 'Y-m-d H:i:s';		
-			
-			// Get date in the wished format
-			$date = (String) date($format, $date);
+			$format = ( !empty($tag->attr['format'])) ? $tag->attr['format'] : 'Y-m-d H:i:s';		
+			$str = '';
 
-			/*
-			 * Get translation, if mandatory
-			 * Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
-			 *
-			 */
-			if (preg_match('/D|l|F|M/', $format) && strlen($format) == 1)
-				$date = lang(strtolower($date));
+			if ($format != 'Y-m-d H:i:s' && lang('dateformat_'.$format) != '#dateformat_'.$format )
+			{
+				$format = lang('dateformat_'.$format);
+				$segments = explode(' ', $format);
 
-			return $date;
+				foreach($segments as $key => $segment)
+				{
+				//	if (substr($segment, 0, 1) != '#')
+				//	{
+						$tmp = (String) date($segment, $date);
+
+						if (preg_match('/D|l|F|M/', $segment))
+						{
+							$tmp = lang(strtolower($tmp));
+						}
+				//	}
+				//	else
+				//	{
+				//		$tmp = substr($segment, 1);
+				//	}
+					$segments[$key] = $tmp;
+				}
+				$str = implode(' ', $segments);
+			}
+			else
+			{
+				// Get date in the wished format
+				$str = (String) date($format, $date);
+	
+				/*
+				 * Get translation, if mandatory
+				 * Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
+				 *
+				 */
+				if (preg_match('/D|l|F|M/', $format) && strlen($format) == 1)
+					$str = lang(strtolower($str));		
+			}
+
+			return $str;
 		}
 		return $tag->expand();
+	}
+
+
+	// ------------------------------------------------------------------------
+	
+	
+	
+	/**
+	 * Return the parent tag name or 'page' if not found
+	 *
+	 */
+	protected static function get_parent_tag($tag)
+	{
+		$tag_name = 'page';
+		
+		// Get the tag path
+		$tag_path = explode(':', $tag->nesting());
+
+		// Remove the current tag from the path
+		array_pop($tag_path);
+		
+		// If no parent, the default parent is 'page'
+		$obj_tag = (count($tag_path) > 0) ? array_pop($tag_path) : $tag_name;
+		
+		if ($obj_tag == 'partial') $obj_tag = $tag_name;
+		
+		// Parent name. Removes plural from parent tag name if any.
+		if (substr($obj_tag, -1) == 's')
+			$tag_name = substr($obj_tag, 0, -1);
+		else
+			$tag_name = $obj_tag;
+		
+		return $tag_name;
 	}
 
 
@@ -1155,7 +1295,39 @@ class TagManager
 		return $value;
 	}
 
-	
+	/**
+	 * Process the input through the called functions and return the result
+	 * 
+	 * @param	Mixed				The value to process
+	 * @param	String / Array		String or array of PHP functions
+	 *
+	 * @return	Mixed				The processed result
+	 */
+	protected static function helper_process($value, $helper)
+	{
+		$helper = explode(':', $helper);
+
+		$helper_name = ( ! empty($helper[0])) ? $helper[0] : FALSE;
+		$helper_func = ( ! empty($helper[1])) ? $helper[1] : FALSE;
+		
+		$helper_args = ( ! empty($helper[2])) ? explode(",", $helper[2]) : array();
+		
+		if($helper_name !== FALSE && $helper_func !== FALSE)
+		{
+			$CI =& get_instance();
+			
+			$CI->load->helper($helper_name);
+			
+			array_unshift($helper_args, $value);
+
+			if (function_exists($helper_func))
+				$value = call_user_func_array($helper_func, $helper_args);
+			else
+				return self::show_tag_error($tag->name, 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
+		}
+		
+		return $value;	
+	}	
 	// ------------------------------------------------------------------------
 
 

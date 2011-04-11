@@ -3,8 +3,7 @@
 $views = array (
   'page' => 
   array (
-    'my_special_page' => 'My Special Page',
-    'page' => 'Page',
+    'page' => 'Page'
   ),
 );
 

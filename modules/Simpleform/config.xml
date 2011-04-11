@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>Simpleform</name>
+	<description>Add a simple form to your website</description>
+	<uri_segment>simpleform</uri_segment>
+	<has_admin>false</has_admin>
+</module>

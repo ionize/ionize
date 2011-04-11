@@ -159,7 +159,8 @@ class Usermanager_User {
 		$ret = "";
 		if ($tag->attr['attr'] === "username" && $config['usermanager_email_as_username'])
 			$tag->attr['attr'] = "email";
-		if ($config['usermanager_user_model'][$tag->attr['attr']] && $config['usermanager_user_model'][$tag->attr['attr']]['special_field'] != "restricted")
+		
+		if (isset($config['usermanager_user_model'][$tag->attr['attr']]) && $config['usermanager_user_model'][$tag->attr['attr']]['special_field'] != "restricted")
 		{
 			// Don't use default value if it's a checkbox and we're in validation process:
 			if (!($config['usermanager_user_model'][$tag->attr['attr']]['special_field'] === 'checkbox' && isset($tag->attr["from_post_data"]) && $tag->attr["from_post_data"] === $ci->input->post('form_name')))
@@ -265,6 +266,41 @@ class Usermanager_User {
 
 		return $config['usermanager_picture'][$tag->attr['field']]['default'][$dimensions];
 	}
+
+	/**
+	 * Return the activation key stored in locals vars.
+	 * The activation key should be set in locals before calling this function
+	 * 
+	 */
+	public function get_activation_key($tag)
+	{
+		if ( ! empty($tag->locals->vars['activation_key']))
+		{
+			return $tag->locals->vars['activation_key'];
+		}
+		
+		return '';
+	}
+
+	public function activate($tag)
+	{
+		$ci =  &get_instance();
+		if (!isset($ci->usermanager_functions))
+			$ci->load->library('usermanager_functions');
+
+		if (isset($tag->attr['has_success']))
+		{
+			if (!empty($ci->usermanager_functions->additional_success) && $tag->attr['has_success'] == '1')
+				return $tag->expand();
+			
+			if (empty($ci->usermanager_functions->additional_success) && $tag->attr['has_success'] == '0')
+				return $tag->expand();
+		}
+		
+		return '';
+	}
+	
+
 
 	/*
 	 * Private functions

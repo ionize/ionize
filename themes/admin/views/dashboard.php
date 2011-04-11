@@ -133,7 +133,7 @@
 							if (!empty($page['page']))
 							{
 								$page_title = (! empty($page['page']['title'])) ? $page['page']['title'] : $page['page']['name'];
-								$pages[] = '<a class="pagetitle" rel="'.$page['id_page'].'" >' . $page_title . '</a>';
+								$pages[] = '<a class="page" rel="'.$page['id_page'].'" >' . $page_title . '</a>';
 							}
 						}					
 						$pages_link = implode(', ', $pages);
@@ -185,7 +185,7 @@
 					?>
 
 					<tr>
-						<td><a href="javascript:MUI.updateContent({'element': $('mainPanel'),'loadMethod': 'xhr','url': 'page/edit/<?= $page['id_page'] ?>','title': Lang.get('ionize_title_edit_page') + ' : ' + '<?= $title ?>'});" title="<?= lang('ionize_label_edit') ?>"><?= $title ?></a></td>
+						<td><a title="<?= lang('ionize_label_edit') ?>" rel="<?= $page['id_page'] ?>" class="page"><?= $title ?></a></td>
 						<td><?= $page['author'] ?></td>
 						<td><?= $page['updater'] ?></td>
 						<td><?= humanize_mdate($page['created'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
@@ -291,13 +291,16 @@
 		});
 		
 		// Make draggable to tree
-		ION.makeLinkDraggable(item, 'article');
+//		ION.makeLinkDraggable(item, 'article');
+		ION.addDragDrop(item, '.dropArticleInPage,.dropArticleAsLink,.folder', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
 	});
 
 
 
 	// Pages edit
-	$$('#articleList .pagetitle').each(function(item, idx)
+	var pages = ($$('#articleList a.page')).extend($$('#orphanPagesList a.page'));
+
+	pages.each(function(item, idx)
 	{
 		var id = item.getProperty('rel');
 		var title = item.get('text');

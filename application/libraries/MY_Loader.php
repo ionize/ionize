@@ -78,9 +78,8 @@ class MY_Loader extends CI_Loader{
 		{
 //			show_error('The library name you are loading is the name of a resource that is already being used: '.$name);
 			$CI->$name = Lib($library, $params);
+			$CI->_ci_classes[strtolower($name)] = $CI->$name;
 		}
-
-//		$CI->$name = Lib($library, $params);
 	}
 
 	// --------------------------------------------------------------------
@@ -116,6 +115,13 @@ class MY_Loader extends CI_Loader{
 	{
 		$CI =& get_instance();
 
+// Why show the user a message ? Simply do nothing should be more appropriate.
+		if(isset($CI->$name))
+		{
+			return;
+//			show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
+		}
+
 		if (is_array($model))
 		{
 			foreach($model as $name => $babe)
@@ -138,12 +144,6 @@ class MY_Loader extends CI_Loader{
 			$name = end(explode('/', $model));
 		}
 
-// Why show the user a message ? Simply do nothing should be more appropriate.
-		if(isset($CI->$name))
-		{
-//			return;
-			show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
-		}
 
 		if (in_array($name, $this->_ci_models, TRUE))
 		{

@@ -68,7 +68,7 @@
 					<label for="lang_copy_from" title="<?= lang('ionize_help_copy_all_content') ?>"><?= lang('ionize_label_copy_all_content') ?></label>
 				</dt>
 				<dd>
-					<div class="w100 h50 left">
+					<div class="w100 left">
 						<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
 							<?php foreach(Settings::get_languages() as $language) :?>
 								<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
@@ -106,17 +106,12 @@
 
 			<p><?=lang('ionize_notify_advanced_language')?></p>
 	
-			<dl class="small">
-				<dt>&#160;</dt>
-				<dd>
-					<form name="cleanLangForm" id="cleanLangForm" method="post">
-		
-						<input id="submit_clean" type="submit" class="submit" value="<?= lang('ionize_button_clean_lang_tables') ?>" />
-						<label title="<?= lang('ionize_help_clean_lang_tables') ?>"></label>
-						
-					</form>
-				</dd>
-			</dl>
+			<form name="cleanLangForm" id="cleanLangForm" method="post">
+
+				<input id="submit_clean" type="submit" class="submit" value="<?= lang('ionize_button_clean_lang_tables') ?>" />
+				<label title="<?= lang('ionize_help_clean_lang_tables') ?>"></label>
+				
+			</form>
 
 		</div>
 
@@ -145,11 +140,12 @@
 		<input name="current_default_lang" id="current_default_lang" type="hidden" value="<?= Settings::get_lang('default'); ?>"/>
 
 
-		<h3><?=lang('ionize_title_existing_languages')?></h3>
+		<h3 class="toggler1"><?=lang('ionize_title_existing_languages')?></h3>
 		
+		<div class="element1">
 
 		<!-- Sortable UL -->
-		<ul id="langContainer" class="sortable">
+		<ul id="langContainer" class="sortable pb20">
 
 			<?php foreach($languages as $lang) :?>
 
@@ -213,7 +209,25 @@
 
 			<?php endforeach ;?>
 
-			</ul>
+		</ul>
+		</div>
+		
+		<!-- URLs -->
+		<h3 class="toggler1"><?=lang('ionize_title_lang_urls')?></h3>
+		
+		<div class="element1">
+	
+			<dl class="last">
+				<dt>
+					<label for="force_lang_urls"><?=lang('ionize_label_force_lang_urls')?></label>
+				</dt>
+				<dd>
+					<input <?php if (Settings::get('force_lang_urls') == '1'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="force_lang_urls" id="force_lang_urls" value="1" />
+				</dd>
+			</dl>
+	
+		</div>
+
 
 		</form>
 
@@ -247,7 +261,8 @@
 	MUI.initToolbox('lang_toolbox');
 
 				
-	MUI.initAccordion('.toggler', 'div.element');
+	MUI.initAccordion('.toggler', 'div.element', true);
+	MUI.initAccordion('.toggler1', 'div.element1', true);
 	
 
 	/**

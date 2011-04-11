@@ -14,7 +14,7 @@ License:
 ---------------------------------------------------------------- */
 
 html, body {
-	overflow: hidden;
+/*	overflow: hidden;*/
 }
 
 body {
@@ -25,24 +25,32 @@ body {
 	position: relative;
 	min-width: 750px; /* Helps keep header content from wrapping */
 	height: 100%;
+min-height: 100%;
 	overflow: hidden;
 	cursor: default; /* Fix for issue in IE7. IE7 wants to use the I-bar text cursor */
 }
 #desktopHeader {
-	background: #5b6577;
+/*	background: #3e4c5f;*/
+	background: url(../images/application_header_bg.gif) repeat-x;
+}
+#desktopBar {
+	background: url(../images/application_header_logo.jpg) no-repeat;
+	background-position: left 0;
 }
 #desktopTitlebarWrapper {
 	position: relative;	
-	height: 62px;
-/*	overflow: hidden;*/
-	background: url(../images/application_header_bg.gif) repeat-x;
+	height: 32px;
+/*	background: url(../images/application_header_bg.gif) repeat-x;*/
 }
 #desktopTitlebar {
 	padding: 6px 8px 6px 8px;
-	height: 55px;
 	height: 50px;
-	background: url(../images/application_header_logo.jpg) no-repeat;
+
+	height: 30px;
+	padding: 6px 8px 0 0;
+/*	background: url(../images/application_header_logo.jpg) no-repeat;
 	background-position: left 0;
+*/
 }
 #desktopTitlebar h1.applicationTitle {
 	display: none;
@@ -141,8 +149,7 @@ div.toolbox.divider2 { /* Have to specify div here for IE6's sake */
 /* Navbar */
 #desktopNavbar {
 	height: 30px;
-	margin: 0px 0 0 180px;
-	padding-top: 26px;
+	padding: 0px 0 0 180px;
 }
 #desktopNavbar ul {	
 	padding: 0;
@@ -152,14 +159,12 @@ div.toolbox.divider2 { /* Have to specify div here for IE6's sake */
 }
 #desktopNavbar li {
 	float: left;
-	height:30px;
 }
 #desktopNavbar a {
 	display: block;
 }	
 #desktopNavbar ul li a {
-/*	padding: 6px 10px 5px 10px;	*/
-	padding: 5px 10px 0px 10px;	
+	padding: 5px 10px 0 10px;	
 	color: #D4DCE4;
 	height: 24px;
 	font-weight: normal;
@@ -177,7 +182,6 @@ div.toolbox.divider2 { /* Have to specify div here for IE6's sake */
 	border: solid 1px #5B6577;
 	background: #fff url(../images/bg-dropdown.gif) repeat-y;
 	position: absolute;
-/*	width: 174px;*/
 	width: 15em;
 	left: -999em;
 	z-index: 8000;
@@ -192,7 +196,7 @@ div.toolbox.divider2 { /* Have to specify div here for IE6's sake */
 	margin: -22px 0 0 174px;
 }
 #desktopNavbar li ul li {
-	height: auto;
+/*	height: auto;*/
 }
 #desktopNavbar li ul li .check {
 	position: absolute;
@@ -207,9 +211,7 @@ div.toolbox.divider2 { /* Have to specify div here for IE6's sake */
 }
 #desktopNavbar li ul li a {
 	position: relative;
-/*	padding: 1px 9px 1px 25px;*/
 	padding: 1px 1em 1px 2em;
-/*	width: 140px;*/
 	width: 12em;
 	height: auto;
 	color: #3f3f3f;
@@ -741,11 +743,10 @@ div.mochaToolbarWrapper.bottom {
 	font-size:0.9em;
 	padding-bottom: 6px;
 	line-height: 15px;
-	
 }
 
 
-/* Compontents
+/* Components
 ---------------------------------------------------------------- */
 
 /* Toolbar Tabs */
@@ -866,11 +867,15 @@ div.mochaToolbarWrapper.bottom {
 
 /* Folder Tree */
 .treetitle {
-	margin-right:15px;	
+	margin-right:15px;
+	position: relative;
 }
 .treetitle .action {
 	display:none;
-	float: right;
+/*	float: right;*/
+	position: absolute;
+	right:0;
+	top:0;
 }
 .treetitle:hover .action {
 	display:block;
@@ -897,21 +902,19 @@ div.mochaToolbarWrapper.bottom {
 	list-style-type: none;
 	white-space: nowrap;
 	position: relative;
-	top: 0;
-	left: 0;	
+	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }
 .tree li.highlight {
 	background-color: #e1e3e4;
-	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
-}
-.tree li.result {
-	background-color: #ef8;
-	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }
 .tree li a {
 /*	color: #3185BE;*/
 	text-decoration: none;
 }
+.tree li a.title {
+	display:block;
+}
+
 .tree li img {
 	vertical-align: middle;
 	width: 16px;
@@ -919,16 +922,10 @@ div.mochaToolbarWrapper.bottom {
 	overflow: hidden;
 	border:none;
 }
-.tree li span {
-/*	padding-left: 5px;*/
-	/*
-	float:left;
-	display:block;
-	*/
-}
 .tree li .action{
 	position: absolute;
 	right: 0;
+	top:0;
 	height:18px;
 	background-color: #e1e3e4;
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
@@ -977,6 +974,29 @@ div.mochaToolbarWrapper.bottom {
 	background-position: right 1px;
 	background-repeat: no-repeat;
 }
+
+/* Last file child node line  */
+.tree li.file:last-child div.node { background-position: -18px 50%; }
+
+/* First root folder plus / minus icons */
+.tree > li.folder:first-child > div.plus:first-child{ background-position: -234px 50%;}
+.tree > li.folder:first-child > div.minus:first-child{ background-position: -216px 50%;}
+.tree > li.folder:last-child > div.plus:first-child{ background-position: -54px 50%;}
+.tree > li.folder:last-child > div.minus:first-child{ background-position: -36px 50%;}
+
+/* last root folder first line empty */
+.tree > li.folder:last-child li div:first-child{ background-position: -306px 50%;}
+
+/* Files line nodes 
+
+All of these are not working.
+
+.tree li.file div.line:nth-last-of-type(1){ background-position: -108px 50%; };
+.tree li.file div.line:nth-of-type(1){ background-position: -108px 50%; };
+.tree li.file div[class~=line]:last-child{ background-position: -108px 50%; };
+.tree li.file div.line:last-child { background-position: -108px 50%; };
+
+*/
 
 .dragtreeli .action {
 	display:none;
@@ -1038,12 +1058,13 @@ div.mochaToolbarWrapper.bottom {
 /* Clears */
 .clear {
 	clear: both;
-	height: 0;
+/*	height: 0;*/
 }
 *html .clear {
-	height: 1%;
+/*	height: 1%;
 	font-size: 1px;
 	line-height: 1px;
+*/
 	overflow: hidden;
 	visibility: hidden;
 }

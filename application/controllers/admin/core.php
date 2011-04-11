@@ -44,6 +44,10 @@ class Core extends MY_Admin {
 	 */
 	function get_structure()
 	{
+		// Text Helper
+		$this->load->helper('text_helper');
+		
+	
 		// Structure model
 		$this->load->model('menu_model', '', true);
 		$this->load->model('structure_model', '', true);
@@ -58,7 +62,7 @@ class Core extends MY_Admin {
 		$articles = $this->structure_model->get_articles();
 
 		// Menus : All menus
-		$menus = $this->menu_model->get_list($where=false, 'ordering ASC');
+		$menus = $this->menu_model->get_list(array('order_by'=>'ordering ASC'));
 
 		foreach($menus as &$menu)
 		{

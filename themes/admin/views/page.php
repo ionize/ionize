@@ -6,8 +6,10 @@
 	<input type="hidden" name="id_menu" value="<?= $id_menu ?>" />
 	<input type="hidden" name="created" value="<?= $created ?>" />
 	<input type="hidden" name="id_page" id="id_page" value="<?= $id_page ?>" />
+	<input type="hidden" name="rel" id="rel" value="<?= $id_page ?>" />
 	<input type="hidden" name="name" id="name" value="<?= $name ?>" />
 	<input type="hidden" id="origin_id_parent" value="<?= $id_parent ?>" />
+
 	
 	<?php if ($id_page != '') :?>
 		<input type="hidden" name="online" value="<?= $online ?>" class="online<?= $id_page ?>" />
@@ -27,15 +29,22 @@
 					</dd>
 				</dl>
 		
+				<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
+					<dl class="small compact">
+						<dt><label><?= lang('ionize_label_date') ?></label></dt>
+						<dd><?= humanize_mdate($logical_date, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($logical_date, '%H:%m:%s') ?></span></dd>
+					</dl>
+				<?php endif ;?>
+
 				<dl class="compact small">
 					<dt><label><?= lang('ionize_label_created') ?></label></dt>
-					<dd><?= humanize_mdate($created, Settings::get('date_format'). ' %H:%m:%s') ?></dd>
+					<dd><?= humanize_mdate($created, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($created, '%H:%m:%s') ?></span></dd>
 				</dl>
 		
-				<?php if (humanize_mdate($updated, Settings::get('date_format'). ' %H:%m:%s') != '') :?>
+				<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
 					<dl class="compact small">
 						<dt><label><?= lang('ionize_label_updated') ?></label></dt>
-						<dd><?= humanize_mdate($updated, Settings::get('date_format'). ' %H:%m:%s') ?></dd>
+						<dd><?= humanize_mdate($updated, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($updated, '%H:%m:%s') ?></span></dd>
 					</dl>
 				<?php endif ;?>
 
@@ -47,7 +56,7 @@
 		<?php endif ;?>
 
 
-		<div id="options">
+		<div id="options" class="mt20">
 
 			<!-- Options -->
 			<h3 class="toggler"><?= lang('ionize_title_options') ?></h3>
@@ -107,8 +116,9 @@
 				<?php endif ;?>
 				
 
+				<?php if ($id_page != '') :?>
 				<!-- Internal / External link -->
-				<dl class="small last">
+				<dl class="small last dropArticleAsLink dropPageAsLink">
 					<dt>
 						<label for="link" title="<?= lang('ionize_help_page_link') ?>"><?= lang('ionize_label_link') ?></label>
 						<br/>
@@ -124,6 +134,7 @@
 						<a id="link_remove"><?= lang('ionize_label_remove_link') ?></a><br/>
 					</dd>
 				</dl>
+				<?php endif ;?>
 
 			</div>
 			
@@ -197,6 +208,14 @@
 			<div class="element">
 				<dl class="small">
 					<dt>
+						<label for="logical_date"><?= lang('ionize_label_date') ?></label>
+					</dt>
+					<dd>
+						<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+					</dd>
+				</dl>
+				<dl class="small">
+					<dt>
 						<label for="publish_on" title="<?= lang('ionize_help_publish_on') ?>"><?= lang('ionize_label_publish_on') ?></label>
 					</dt>
 					<dd>
@@ -227,20 +246,26 @@
 						<label title="<?= lang('ionize_help_page_meta') ?>"><?= lang('ionize_label_meta_description') ?></label>
 					</dt>
 					<dd>
-						<div class="tab small">
-							<ul class="tab-content small">
+					
+						<!-- Tabs -->
+						<div id="metaDescriptionTab" class="mainTabs small gray">
+							<ul class="tab-menu">
 								<?php foreach(Settings::get_languages() as $language) :?>
-									<li id="tab-<?= $language['lang'] ?>-description"><a><span><?= ucfirst(substr($language['name'],0,3)) ?></span></a></li>
+									<li><a><?= ucfirst($language['lang']) ?></a></li>
 								<?php endforeach ;?>
 							</ul>
+							<div class="clear"></div>
 						</div>
+						<div id="metaDescriptionTabContent" class="w160">
 						
-						<?php foreach(Settings::get_languages() as $language) :?>
-							<div id="block-<?= $language['lang'] ?>-description" class="block description small">
-								<textarea id="meta_description_<?= $language['lang'] ?>" name="meta_description_<?= $language['lang'] ?>" class="w140 h80"><?= ${$language['lang']}['meta_description'] ?></textarea>
-							</div>
-						<?php endforeach ;?>
+							<?php foreach(Settings::get_languages() as $language) :?>
+								<div class="tabcontent">
+									<textarea id="meta_description_<?= $language['lang'] ?>" name="meta_description_<?= $language['lang'] ?>" class="h80" style="border-top:none;width:142px;"><?= ${$language['lang']}['meta_description'] ?></textarea>
+								</div>
+							<?php endforeach ;?>
 						
+						</div>
+
 					</dd>
 				</dl>
 			
@@ -250,20 +275,25 @@
 						<label title="<?= lang('ionize_help_page_meta') ?>"><?= lang('ionize_label_meta_keywords') ?></label>
 					</dt>
 					<dd>
-						<div class="tab small">
-							<ul class="tab-content small">
+						<!-- Tabs -->
+						<div id="metaKeywordsTab" class="mainTabs small gray">
+							<ul class="tab-menu">
 								<?php foreach(Settings::get_languages() as $language) :?>
-									<li id="tab-<?= $language['lang'] ?>-keywords"><a><span><?= ucfirst(substr($language['name'],0,3)) ?></span></a></li>
+									<li><a><?= ucfirst($language['lang']) ?></a></li>
 								<?php endforeach ;?>
 							</ul>
+							<div class="clear"></div>
 						</div>
+						<div id="metaKeywordsTabContent" class="w160">
 						
-						<?php foreach(Settings::get_languages() as $language) :?>
-							<div id="block-<?= $language['lang'] ?>-keywords" class="block keywords small">
-								<textarea id="meta_keywords_<?= $language['lang'] ?>" name="meta_keywords_<?= $language['lang'] ?>" class="w140 h40"><?= ${$language['lang']}['meta_keywords'] ?></textarea>
-							</div>
-						<?php endforeach ;?>
+							<?php foreach(Settings::get_languages() as $language) :?>
+								<div class="tabcontent">
+									<textarea id="meta_keywords_<?= $language['lang'] ?>" name="meta_keywords_<?= $language['lang'] ?>" class="h40" style="border-top:none;width:142px;"><?= ${$language['lang']}['meta_keywords'] ?></textarea>
+								</div>
+							<?php endforeach ;?>
 						
+						</div>
+
 					</dd>
 				</dl>
 			
@@ -300,7 +330,7 @@
 						<label for="lang_copy_from" title="<?= lang('ionize_help_copy_content') ?>"><?= lang('ionize_label_copy_content') ?></label>
 					</dt>
 					<dd>
-						<div class="w100 h50 left">
+						<div class="w100 left">
 							<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
 								<?php foreach(Settings::get_languages() as $language) :?>
 									<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
@@ -349,35 +379,37 @@
 				<dl class="small compact">
 					<dt><label for="permanent_url"><?= lang('ionize_label_permanent_url') ?></label></dt>
 					<dd>
-						<div class="tab small">
-							<ul class="tab-content small">
+						<!-- Tabs -->
+						<div id="permanentUrlTab" class="mainTabs small gray">
+							<ul class="tab-menu">
 								<?php foreach(Settings::get_languages() as $language) :?>
-									<li id="tab-<?= $language['lang'] ?>-permanent_url"><a><span><?= ucfirst(substr($language['name'],0,3)) ?></span></a></li>
+									<li><a><?= ucfirst($language['lang']) ?></a></li>
 								<?php endforeach ;?>
 							</ul>
+							<div class="clear"></div>
 						</div>
+						<div id="permanentUrlTabContent" class="w160">
 						
-						<?php foreach(Settings::get_languages() as $language) :?>
+							<?php foreach(Settings::get_languages() as $language) :?>
+								<?php
+									$lang = (count(Settings::get_online_languages()) > 1) ? $language['lang'].'/' : '';
+								?>
+								<div class="tabcontent">
+									<textarea id="permanent_url_<?= $language['lang'] ?>" name="permanent_url_<?= $language['lang'] ?>" class="h40" style="border-top:none;width:142px;" onclick="javascript:this.select();" readonly="readonly"><?= base_url().$lang ?><?= ${$language['lang']}['url'] ?></textarea>
+								</div>
+							<?php endforeach ;?>
 						
-							<?php
-							
-							$lang = (count(Settings::get_online_languages()) > 1) ? $language['lang'].'/' : '';
-							
-							?>
-						
-							<div id="block-<?= $language['lang'] ?>-permanent_url" class="block permanent_url small">
-								<textarea id="permanent_url_<?= $language['lang'] ?>" class="w140 h80" onclick="javascript:this.select();" readonly="readonly"><?= base_url().$lang ?><?= ${$language['lang']}['url'] ?></textarea>
-							</div>
-						<?php endforeach ;?>
-						
+						</div>
+
 					</dd>
 				</dl>
 				
-				<!-- Technical info -->
+				<!-- Technical info 
 				<dl class="small compact">
 					<dt><label for="">Ordering</label></dt>
 					<dd><?= $ordering ?></dd>
 				</dl>
+				-->
 
 				<?php endif ;?>
 			
@@ -390,7 +422,7 @@
 
 
 
-	<div id="maincolumn">
+	<div id="maincolumn" class="">
 		
 		<fieldset>
 				
@@ -407,13 +439,14 @@
 
 			<h2 class="main page" id="main-title"><?= $title ?></h2>
 
+			
 
 		<?php else :?>
 			
 			<h2 class="main page" id="main-title"><?= lang('ionize_title_new_page') ?></h2>
 			
 			<!-- Menu -->
-			<dl>
+			<dl class="mt20">
 				<dt>
 					<label for="id_menu"><?= lang('ionize_label_menu') ?></label>
 				</dt>
@@ -470,7 +503,6 @@
 		<?php endif ;?>
 
 			<!-- extend fields goes here... -->
-			<?php if (Settings::get('use_extend_fields') == '1') :?>
 				<?php foreach($extend_fields as $extend_field) :?>
 				
 					<?php if ($extend_field['translated'] != '1') :?>
@@ -573,43 +605,54 @@
 							
 					<?php endif ;?>
 				<?php endforeach ;?>
-			<?php endif ;?>
 
 		</fieldset>
 
 
-		<fieldset id="blocks">
+		<fieldset class="mt10 clear">
 	
+
 			<!-- Tabs -->
-			<div class="tab">
-				<ul class="tab-content">
+			<div id="pageTab" class="mainTabs">
+				
+				<ul class="tab-menu">
 					
 					<?php foreach(Settings::get_languages() as $language) :?>
-						<li id="tab-<?= $language['lang'] ?>"<?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($language['name']) ?></span></a></li>
+						<li <?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><?= ucfirst($language['name']) ?></a></li>
 					<?php endforeach ;?>
-
-					<li id="tab-files" class="right<?php if( empty($id_page)) :?> unactive<?php endif ;?>"><a><span><?= lang('ionize_label_files') ?></span></a></li>
-					<li id="tab-music" class="right<?php if( empty($id_page)) :?> unactive<?php endif ;?>"><a><span><?= lang('ionize_label_music') ?></span></a></li>
-					<li id="tab-videos" class="right<?php if( empty($id_page)) :?> unactive<?php endif ;?>"><a><span><?= lang('ionize_label_videos') ?></span></a></li>
-					<li id="tab-pictures" class="right<?php if( empty($id_page)) :?> unactive<?php endif ;?>"><a><span><?= lang('ionize_label_pictures') ?></span></a></li>
+					
+					<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="fileTab"><a><?= lang('ionize_label_files') ?></a></li>
+					<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="musicTab"><a><?= lang('ionize_label_music') ?></a></li>
+					<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="videoTab"><a><?= lang('ionize_label_videos') ?></a></li>
+					<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?= lang('ionize_label_pictures') ?></a></li>
 
 				</ul>
+				<div class="clear"></div>
+			
 			</div>
-	
+
+
+			<div id="pageTabContent">
+			
+
 			<!-- Text block -->
 			<?php foreach(Settings::get_languages() as $language) :?>
 		
 				<?php $lang = $language['lang']; ?>
 				
-				<div id="block-<?= $lang ?>" class="block data">
+				<div class="tabcontent">
 		
+					<p class="clear h15">
+						<a class="right icon copy copyLang" rel="<?= $lang ?>" title="<?= lang('ionize_label_copy_to_other_languages') ?>"></a>
+					</p>
+
 					<!-- title -->
 					<dl class="first">
 						<dt>
 							<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
 						</dt>
 						<dd>
-							<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['title'] ?>"/>
+							<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['title'] ?>" title="<?= lang('ionize_label_title') ?>"/>
 						</dd>
 					</dl>
 
@@ -619,7 +662,7 @@
 							<label for="url_<?= $lang ?>" title="<?= lang('ionize_help_page_url') ?>"><?= lang('ionize_label_url') ?></label>
 						</dt>
 						<dd>
-							<input id="url_<?= $lang ?>" name="url_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['url'] ?>"/>
+							<input id="url_<?= $lang ?>" name="url_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['url'] ?>" title="<?= lang('ionize_help_page_url') ?>" />
 							<?php if(!empty($id_page)) :?>
 								<a href="<?= base_url()?><?= ${$lang}['url'] ?>" target="_blank" title="<?= lang('ionize_label_see_online') ?>"><img src="<?= base_url()?><?= Theme::get_theme_path() ?>images/icon_16_right.png" /></a>
 							<?php endif; ?>
@@ -669,7 +712,6 @@
 
 
 					<!-- extend fields goes here... -->
-					<?php if (Settings::get('use_extend_fields') == '1') :?>
 						<?php foreach($extend_fields as $extend_field) :?>
 							<?php if ($extend_field['translated'] == '1') :?>
 							
@@ -765,7 +807,6 @@
 									
 							<?php endif ;?>
 						<?php endforeach ;?>
-					<?php endif ;?>
 
 				</div>
 				
@@ -773,12 +814,12 @@
 
 
 			<!-- Files -->
-			<div id="block-files" class="block data">
+			<div class="tabcontent">
 			
-				<p>
-					<a class="fmButton right"><img src="<?= theme_url() ?>images/icon_16_plus.png" /> <?= lang('ionize_label_attach_media') ?></a>
-					<a class="right pr5" href="javascript:mediaManager.loadMediaList('file')"><img src="<?= theme_url() ?>images/icon_16_files.png" /> <?= lang('ionize_label_reload_media_list') ?></a>
-					<a class="pr5" href="javascript:mediaManager.detachMediaByType('file')"><img src="<?= theme_url() ?>images/icon_16_delete.png" />  <?= lang('ionize_label_detach_all_files') ?></a>
+				<p class="h20">
+<!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button> -->
+					<button class="right light-button files" onclick="javascript:mediaManager.loadMediaList('file');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
+					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('file');return false;"><?= lang('ionize_label_detach_all_files') ?></button>
 				</p>
 				
 				<ul id="fileContainer">
@@ -788,12 +829,12 @@
 			</div>
 
 			<!-- Music -->
-			<div id="block-music" class="block data">
+			<div class="tabcontent">
 				
-				<p>
-					<a class="fmButton right"><img src="<?= theme_url() ?>images/icon_16_plus.png" /> <?= lang('ionize_label_attach_media') ?></a>
-					<a class="right pr5" href="javascript:mediaManager.loadMediaList('music')"><img src="<?= theme_url() ?>images/icon_16_music.png" /> <?= lang('ionize_label_reload_media_list') ?></a>
-					<a class="pr5" href="javascript:mediaManager.detachMediaByType('music')"><img src="<?= theme_url() ?>images/icon_16_delete.png" />  <?= lang('ionize_label_detach_all_musics') ?></a>
+				<p class="h20"> 
+<!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button> -->
+					<button class="right light-button music" onclick="javascript:mediaManager.loadMediaList('music');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
+					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('music');return false;"><?= lang('ionize_label_detach_all_musics') ?></button>
 				</p>
 				
 				<ul id="musicContainer">
@@ -803,12 +844,12 @@
 			</div>
 
 			<!-- Videos -->
-			<div id="block-videos" class="block data">
+			<div class="tabcontent">
 			
-				<p>
-					<a class="fmButton right"><img src="<?= theme_url() ?>images/icon_16_plus.png" /> <?= lang('ionize_label_attach_media') ?></a>
-					<a class="right pr5" href="javascript:mediaManager.loadMediaList('video')"><img src="<?= theme_url() ?>images/icon_16_video.png" /> <?= lang('ionize_label_reload_media_list') ?></a>
-					<a class="pr5" href="javascript:mediaManager.detachMediaByType('video')"><img src="<?= theme_url() ?>images/icon_16_delete.png" />  <?= lang('ionize_label_detach_all_videos') ?></a>
+				<p class="h20">
+<!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button>-->
+					<button class="right light-button video" onclick="javascript:mediaManager.loadMediaList('video');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
+					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('video');return false;"><?= lang('ionize_label_detach_all_videos') ?></button>
 				</p>
 
 				<ul id="videoContainer">
@@ -818,13 +859,14 @@
 			</div>
 
 			<!-- Pictures -->
-			<div id="block-pictures" class="block data">
+			<div class="tabcontent">
 			
-				<p>
-					<a class="fmButton right"><img src="<?= theme_url() ?>images/icon_16_plus.png" /> <?= lang('ionize_label_attach_media') ?></a>
-					<a class="right pr5" href="javascript:mediaManager.loadMediaList('picture')"><img src="<?= theme_url() ?>images/icon_16_imagelist.png" /> <?= lang('ionize_label_reload_media_list') ?></a>
-					<a class="pr5" href="javascript:mediaManager.detachMediaByType('picture')"><img src="<?= theme_url() ?>images/icon_16_delete.png" />  <?= lang('ionize_label_detach_all_pictures') ?></a>
-					<a href="javascript:mediaManager.initThumbsForParent()"><img src="<?= theme_url() ?>images/icon_16_refresh.png" /> <?= lang('ionize_label_init_all_thumbs') ?></a>
+				<p class="h20">
+<!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button>-->
+					<button class="right light-button pictures" onclick="javascript:mediaManager.loadMediaList('picture');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
+					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('picture');return false;"><?= lang('ionize_label_detach_all_pictures') ?></button>
+					<button class="left light-button refresh" onclick="javascript:mediaManager.initThumbsForParent();return false;"><?= lang('ionize_label_init_all_thumbs') ?></button>
+
 				</p>
 			
 				<ul id="pictureContainer">
@@ -832,8 +874,16 @@
 				</ul>
 
 			</div>
+			
+			</div>
 
 		</fieldset>
+		
+		
+
+
+
+
 		
 		
 		<!-- Articles -->
@@ -841,116 +891,38 @@
 
 			<fieldset id="articles" class="mt20">
 			
-				<!-- Tabs -->
-				<div class="tab">
-					<ul class="tab-content">
-	
-						<li id="tab-articles"><a><span><?= lang('ionize_label_articles') ?></span></a></li>
-	
+				<div id="childsTab" class="mainTabs">
+					<ul class="tab-menu">
+						
+						<li class="selected"><a><?= lang('ionize_label_articles') ?></a></li>
+
 					</ul>
+					<div class="clear"></div>
 				</div>
 
-				<!-- Articles list -->
-				<div id="block-articles" class="block articles">
+				<div id="childsTabContent" class="dropArticleInPage" rel="<?= $id_page ?>">
 				
-					<p>
+					<!-- Articles List -->
+					<div class="tabcontent">
 
-						<a id="articleCreate" class="right" href="<?= admin_url() ?>article/create/<?= $id_page ?>"><img src="<?= theme_url() ?>images/icon_16_add_article.png" /> <?= lang('ionize_label_add_article') ?></a>
+						<p>
+<!--						<input id="articleCreate" type="button" class="light-button plus right" value="<?= lang('ionize_label_add_article') ?>" rel="<?= $id_page ?>" />-->
 
-						<!-- Droppable to link one article to this page -->
-						<input type="text" id="new_article" class="inputtext w120 italic droppable empty nofocus" alt="<?= lang('ionize_label_drop_article_here') ?>"></input>
-						<label title="<?= lang('ionize_help_page_drop_article_here') ?>"></label>
+							<button class="right light-button helpme type"><?= lang('ionize_label_help_articles_types') ?></button>
 
-					</p>
-					
-					<br />
-				
-					<ul id="articleList<?= $id_page ?>">
-					
-						<?php
-			
-							$nbLang = count(Settings::get_languages());
-							$flag_width = (25 * $nbLang);
-
-						?>
-					
-					
-						<?php foreach ($articles as $article) :?>
+							<!-- Droppable to link one article to this page -->
+							<input type="text" id="new_article" class="inputtext w120 italic droppable empty nofocus" alt="<?= lang('ionize_label_drop_article_here') ?>"></input>
+							<label title="<?= lang('ionize_help_page_drop_article_here') ?>"></label>
 						
-							<?php
-							
-							$title = ($article['title'] != '') ? $article['title'] : $article['name'];
-							
-							$rel = $article['id_page'] . '.' . $article['id_article'];
-							
-							$flat_rel = $article['id_page'] . 'x' .  $article['id_article'];
-							
-							$status = (!$article['online']) ? 'offline' : 'online' ;
+						</p>
+						<br />
 
-							// Content for each existing language
-							$content_html = '';
-							
-							// Array of status
-							$content = array();
-							
-							foreach($article['langs'] as $lang)
-							{
-								if ($lang['content'] != '') $content[] = '<img class="left pl5 pt3" src="'. theme_url() . 'images/world_flags/flag_' . $lang['lang'] . '.gif" />';
-							}
-							
-							// HTML
-							$content_html = implode('', $content);
-							
-							?>
-	
-							<li class="sortme article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>">
-								
-								<!-- Unlink icon -->
-								<a class="icon right unlink" rel="<?= $rel ?>" title="<?= lang('ionize_label_unlink') ?>"></a>
-								
-								<!-- Status icon -->
-								<a class="icon right pr5 status article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>"></a>
-								
-								<!-- Flags : Available content for language -->
-								<span style="width:<?=$flag_width?>px;display:block;height:16px;" class="right mr20 ml20"><?= $content_html ?></span>
-
-								<!-- Article Settings 
-								<a class="right ml20 article_setting" rel="<?= $rel ?>" title="<?= lang('ionize_help_article_context') ?>"><?= lang('ionize_label_article_edit_context') ?></a>
-								-->
-								
-								<!-- Type -->
-								<span class="right ml20 type-block" rel="<?= $rel ?>">
-									
-									<select id="type<?= $flat_rel ?>" class="select w120 type" style="padding:0;" rel="<?= $rel ?>">
-										<?php foreach($all_article_types as $idx => $type) :?>
-											<option <?php if ($article['id_type'] == $idx) :?>selected="selected"<?php endif; ?>  value="<?= $idx ?>"><?= $type ?></option>
-										<?php endforeach ;?>
-									</select>
-
-								</span>
-
-								<!-- Used view -->
-								<span class="right">
-								
-									<select id="view<?= $flat_rel ?>" class="select w120 view" style="padding:0;" rel="<?= $rel ?>">
-										<?php foreach($all_article_views as $idx => $view) :?>
-											<option <?php if ($article['view'] == $idx) :?>selected="selected"<?php endif; ?> value="<?= $idx ?>"><?= $view ?></option>
-										<?php endforeach ;?>
-									</select>
-								
-								</span>
-								
-								<!-- Drag icon -->
-								<a class="icon left pr5 drag" />
-								
-								<!-- Title (draggable) -->
-								<a style="overflow:hidden;height:16px;display:block;" class=" pl5 pr10 article article<?= $flat_rel ?> <?= $status ;?>" title="<?= lang('ionize_label_edit') ?> / <?= lang('ionize_label_drag_to_page') ?>" rel="<?= $rel ?>"><span class="flag flag<?= $article['flag'] ?>"></span><?= $title ?></a>
-							</li>
 						
-						<?php endforeach ;?>
+						<div id="articleListContainer"></div>
+						
 					
-					</ul>
-				
+					</div> <!-- / tabcontent -->
+
 				</div>
 		
 			</fieldset>
@@ -972,21 +944,14 @@
 
 <script type="text/javascript">
 
-
 	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element');
+	MUI.initAccordion('.toggler', 'div.element', true);
 
 
-	/** 
-	 * TinyMCE control add on first language only
-	 */
-	if ($$('.tinyTextarea'))
-	{
-//		tinyMCE.init(tinyMCEParam);
-	}
+	ION.initHelp('#articles .type.helpme', 'article_type', Lang.get('ionize_title_help_articles_types'));
 
 	/**
 	 * Init help tips on label
@@ -1008,16 +973,33 @@
 	ION.initDroppable();
 
 
+	/**
+	 * Copy Lang data to other languages dynamically
+	 *
+	 */
+	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'meta_title'));
+
 	// Remove link event
 	if ($('link_remove'))
 	{
-		$('link_remove').addEvent('click', function()
+		$('link_remove').addEvent('click', function(e)
 		{
-			ION.removeLink();
+			e.stop();
+			ION.removeElementLink();
+		});
+
+		// External link Add
+		$('link').addEvent('blur', function(e)
+		{
+			if (ION.checkUrl(this.value))
+			{
+				// type of receiver, url, ID of textarea which receive the link after save.
+				ION.addExternalLink('page', this.value, 'link');
+			}
 		});
 	}
 	
-	
+
 	// Add edit link to the link (if internal)
 	<?php if ($link != '') :?>
 	
@@ -1050,7 +1032,7 @@
 	
 	
 	// Auto-generate Main title
-	$$('.data .title').each(function(input, idx)
+	$$('.tabcontent .title').each(function(input, idx)
 	{
 		input.addEvent('keyup', function(e)
 		{
@@ -1067,6 +1049,13 @@
 
 		<?php endforeach ;?>
 	<?php endif; ?>
+
+
+	// Tabs
+	var pageTab = new TabSwapper({tabsContainer: 'pageTab', sectionsContainer: 'pageTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'mainTab' });
+	new TabSwapper({tabsContainer: 'metaDescriptionTab', sectionsContainer: 'metaDescriptionTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaDescriptionTab'	});
+	new TabSwapper({tabsContainer: 'metaKeywordsTab', sectionsContainer: 'metaKeywordsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaKeywordsTab' });
+	new TabSwapper({tabsContainer: 'permanentUrlTab', sectionsContainer: 'permanentUrlTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'permanentUrlTab' });
 	
 
 	// Copy content
@@ -1087,40 +1076,7 @@
  		MUI.sendData(url, data);
 	});
 
-	
-	/**
-	 * Articles view / type select for articles list
-	 *
-	 */
-	$$('#articleList<?= $id_page ?> .type').each(function(item, idx)
-	{
-		ION.initArticleTypeEvent(item);
-	});
 
-	$$('#articleList<?= $id_page ?> .view').each(function(item, idx)
-	{
-		ION.initArticleViewEvent(item);
-	});
-	
-	/**
-	 * Makes article title draggable
-	 *
-	 */
-	$$('#articleList<?= $id_page ?> .article').each(function(item, idx)
-	{
-		var id_article = item.getProperty('rel');
-		var title = item.get('text');
-		
-		// Drag / Drop
-		ION.makeLinkDraggable(item, 'article');
-		
-		// Edit link
-		item.addEvent('click', function(e) {
-			e.stop();
-			MUI.updateContent({'element': $('mainPanel'),'loadMethod': 'xhr','url': admin_url + 'article/edit/' + id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
-		});
-	});
-	
 	
 	/** 
 	 * Calendars
@@ -1128,131 +1084,36 @@
 	 */
 	datePicker.attach();
 	
-	
-	/** 
-	 * Show current tabs
-	 */
- 	ION.displayLangBlock('.data', '<?= Settings::get_lang('first') ?>');
-	ION.displayBlock('.description', '<?= Settings::get_lang('first') ?>' + '-description');
-	ION.displayBlock('.keywords', '<?= Settings::get_lang('first') ?>' + '-keywords');
-	ION.displayBlock('.permanent_url', '<?= Settings::get_lang('first') ?>' + '-permanent_url');
-	if ($('tab-articles'))
-	{
-		ION.displayBlock('.articles', 'articles');
-	}
-	
-	/** 
-	 * Add events to tabs
-	 * - Lang Tab Events 
-	 * - Options Tab Events
-	 * - Wysiwyg buttons
-	 */
-	<?php foreach(Settings::get_languages() as $lang) :?>
-		$('tab-<?= $lang["lang"] ?>').addEvent('click', function()
-		{
-			ION.displayLangBlock('.data', '<?= $lang["lang"] ?>'); 
-			ION.setOpenTabToCookie('.data', '<?= $lang["lang"] ?>');
-		});
-		$('tab-<?= $lang["lang"] ?>-description').addEvent('click', function(){ ION.displayBlock('.description', '<?= $lang["lang"] ?>-description'); });
-		$('tab-<?= $lang["lang"] ?>-keywords').addEvent('click', function(){ ION.displayBlock('.keywords', '<?= $lang["lang"] ?>-keywords'); });
-		
-		if ($('tab-<?= $lang["lang"] ?>-permanent_url'))
-		{
-			$('tab-<?= $lang["lang"] ?>-permanent_url').addEvent('click', function(){ ION.displayBlock('.permanent_url', '<?= $lang["lang"] ?>-permanent_url'); });
-		}
-	<?php endforeach ;?>
-	
+//	ION.addClearField('logical_date');
 
-	/** 
-	 * MediaManager
-	 * The Media Manager manage pictures, music, videos, and other files add / remove / sorting
-	 *
-	 */
 	<?php if (!empty($id_page)) :?>
-		var mediaManager = new IonizeMediaManager(
-		{
-			baseUrl: base_url,
-			adminUrl: admin_url,
-			parent:'page', 
-			idParent:'<?= $id_page ?>', 
-			pictureContainer:'pictureContainer', 
-			musicContainer:'musicContainer', 
-			videoContainer:'videoContainer',
-			fileContainer:'fileContainer',
-//			imageButton:'.imagemanager',
-			fileButton:'.fmButton',
-			wait:'waitPicture',
-			mode:'<?= Settings::get('filemanager') ?>',
-			thumbSize: <?= (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,		
-			pictureArray:Array('<?= str_replace(',', "','", Settings::get('media_type_picture')) ?>'),
-			musicArray:Array('<?= str_replace(',', "','", Settings::get('media_type_music')) ?>'),
-			videoArray:Array('<?= str_replace(',', "','", Settings::get('media_type_video')) ?>'),
-			fileArray:Array('<?= str_replace(',', "','", Settings::get('media_type_file')) ?>')
-		});
-	
-	
-		/** 
-		 * Media tabs events
-		 */
-		$('tab-files').addEvent('click', function(){ 
-			ION.displayBlock('.data', 'files');
-			ION.setOpenTabToCookie('.data', 'files');
-			if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('file'); this.store('loaded', true);}
-		});
-		$('tab-music').addEvent('click', function(){ 
-			ION.displayBlock('.data', 'music'); 
-			ION.setOpenTabToCookie('.data', 'music');
-			if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('music'); this.store('loaded', true);}
-		});
-		$('tab-videos').addEvent('click', function(){ 
-			ION.displayBlock('.data', 'videos'); 
-			ION.setOpenTabToCookie('.data', 'videos');
-			if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('video'); this.store('loaded', true);}
-		});
-		
-		$('tab-pictures').addEvent('click', function() {
-			ION.displayBlock('.data', 'pictures');
-			ION.setOpenTabToCookie('.data', 'pictures');
-			if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('picture'); this.store('loaded', true);}
-		});
-	
-		// Displays the tab regarding to the one in cookie
-		ION.diplayCookieTab();
 
-	<?php endif ;?>
-
-	
-	if ($('tab-articles'))
-	{
-		/**
-		 * Article create button link
-		 */
-		var item = $('articleCreate');
-		if (item != null)
-		{
-			var url = item.getProperty('href');
-	
-			item.addEvent('click', function(e)
-			{
-				var e = new Event(e).stop();
-				
-				MUI.updateContent({
-					'element': $('mainPanel'),
-					'loadMethod': 'xhr',
-					'url': url,
-					'title': Lang.get('ionize_title_create_article')
-				});
-			});
-		}
-	
-		
-		/**
-		 * Article list itemManager
+		/*
+		 * Articles List
 		 *
 		 */
-		articleManager = new ION.ArticleManager({container: 'articleList<?= $id_page ?>', 'id_parent':'<?= $id_page ?>'});
-	}
+		ION.HTML(admin_url + 'article/get_list', {'id_page':'<?= $id_page ?>'}, {'update': 'articleListContainer'});
 
+		/**
+		 * Get Content Tabs & Elements
+		 * 1. ION.getContentElements calls element_definition/get_definitions_from_parent : returns the elements definitions wich have elements for the current parent.
+		 * 2. ION.getContentElements calls element/get_elements_from_definition : returns the elements for each definition
+		 */
+		$('desktop').store('tabSwapper', pageTab);
+		ION.getContentElements('page', '<?= $id_page ?>');
 
+		
+		/**
+		 * Loads media only when clicking the tab
+		 *
+		 */
+		mediaManager.initParent('page', '<?= $id_page ?>');
+
+		mediaManager.loadMediaList('file');
+		mediaManager.loadMediaList('music');
+		mediaManager.loadMediaList('video');
+		mediaManager.loadMediaList('picture');
+
+	<?php endif ;?>
 
 </script>

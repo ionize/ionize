@@ -3,17 +3,23 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title><?= Settings::get('site_name') ? Settings::get('site_name').' | ' : '' ?>Administration</title>
-
 <meta http-equiv="imagetoolbar" content="no" />
 <link rel="shortcut icon" href="<?= theme_url() ?>images/favicon.ico" type="image/x-icon" />
 
-<!-- Mocha adapted CSS -->
 <link rel="stylesheet" href="<?= theme_url() ?>css/content.css" type="text/css" />
 <link rel="stylesheet" href="<?= theme_url() ?>css/ui.css" type="text/css" />
-
-<!-- Ionize CSS -->
 <link rel="stylesheet" href="<?= theme_url() ?>css/form.css" type="text/css" />
 <link rel="stylesheet" href="<?= theme_url() ?>css/content-addon.css" type="text/css" />
+<!--
+<link rel="stylesheet" href="<?= theme_url() ?>css/mocha_test/Core.css" type="text/css" />
+<link rel="stylesheet" href="<?= theme_url() ?>css/mocha_test/Dock.css" type="text/css" />
+<link rel="stylesheet" href="<?= theme_url() ?>css/mocha_test/Layout.css" type="text/css" />
+<link rel="stylesheet" href="<?= theme_url() ?>css/mocha_test/Tab.css" type="text/css" />
+<link rel="stylesheet" href="<?= theme_url() ?>css/mocha_test/Window.css" type="text/css" />
+-->
+
+
+<!--[if IE 7]><link rel="stylesheet" href="<?= theme_url() ?>css/ui_ie7.css" /><![endif]-->
 
 <!-- External librairies CSS -->
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/datepicker/css/dashboard/datepicker_dashboard.css" />
@@ -26,8 +32,8 @@
 
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-1.2.4-core-nc.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-1.2.4.4-more-yc.js"></script>
-
 <script type="text/javascript" src="<?= theme_url() ?>javascript/drag.clone.js"></script>
+
 
 <!-- Base URL & languages translations available for javascript -->
 <script type="text/javascript">
@@ -80,10 +86,11 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/SortableTable/SortableTable.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/codemirror/js/codemirror.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/codemirror/codemirror.views.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/TabSwapper.js"></script>
 
 <!-- Text editor -->
 <?php if( Settings::get('texteditor') == '' || Settings::get('texteditor') == 'tinymce' ) :?>
-	<script type="text/javascript" src="<?= theme_url() ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="<?= theme_url() ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce_src.js"></script>
 <!--	<script type="text/javascript" src="<?= theme_url() ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce_gzip.js"></script>-->
 <?php elseif( Settings::get('texteditor') == 'ckeditor' ) :?>
 	<script type="text/javascript" src="<?= theme_url() ?>javascript/ckeditor/ckeditor.js"></script>
@@ -113,16 +120,44 @@
 	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
 	<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Css/FileManager.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Css/Additions.css" />
+
+
+
+
 	
 	<script type="text/javascript">	
 	
 		// filemanager must be set
 		var filemanager = '';
-
 	</script>
 
 <?php endif ;?>
 
+<script type="text/javascript">
+
+	/** 
+	 * Global MediaManager
+	 *
+	 */
+	var mediaManager = new IonizeMediaManager(
+	{
+		baseUrl: base_url,
+		adminUrl: admin_url,
+		pictureContainer:'pictureContainer', 
+		musicContainer:'musicContainer', 
+		videoContainer:'videoContainer',
+		fileContainer:'fileContainer',
+		fileButton:'.fmButton',
+		wait:'waitPicture',
+		mode:'<?= Settings::get('filemanager') ?>',
+		thumbSize: <?= (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,		
+		pictureArray:Array('<?= str_replace(',', "','", Settings::get('media_type_picture')) ?>'),
+		musicArray:Array('<?= str_replace(',', "','", Settings::get('media_type_music')) ?>'),
+		videoArray:Array('<?= str_replace(',', "','", Settings::get('media_type_video')) ?>'),
+		fileArray:Array('<?= str_replace(',', "','", Settings::get('media_type_file')) ?>')
+	});
+
+</script>
 
 
 <!-- Text editor initialization -->
@@ -163,57 +198,14 @@
 			var tinyCSS = '<?= theme_url().'css/tinyMCE.css' ?>';
 		<?php endif ;?>
 
-		// Base init
-//		tinyMCE_GZ.init();
+		var tinyButtons1 = '<?= Settings::get('tinybuttons1'); ?>';
+		var tinyButtons2 = '<?= Settings::get('tinybuttons2'); ?>';
+		var tinyButtons3 = '<?= Settings::get('tinybuttons3'); ?>';
 
-		var tinyMCEParam = {
-			mode : 'textareas',
-			theme : 'advanced',
-			skin: 'ionizeMce',
-			language : '<?= Settings::get_lang() ?>',
-			entity_encoding : 'raw',
-			editor_selector : 'tinyTextarea',
-			height:'450',
-			width:'100%',
-			dialog_type : 'modal',
-			inlinepopups_skin: 'ionizeMce',
-			extended_valid_elements  : "ion:*, a[href</<ion:*]",
-			verify_html : false,
-			relative_urls : false,
-			auto_cleanup_word : false,
-			plugins : 'pdw,inlinepopups,codemirror,safari,nonbreaking,media,preelementfix,preview,directionality,paste,fullscreen,template,table,<?php if( Settings::get('filemanager') == 'filemanager' ) :?>filemanager,imagemanager<?php else :?> <?php endif ;?>,advimage,advlink',
-			flash_menu : 'false',
-	/*
-			apply_source_formatting:true,
-			remove_linebreaks: true,
-	*/
-			theme_advanced_toolbar_location : 'top',
-			theme_advanced_toolbar_align : 'left',
-			theme_advanced_resizing : true,
-			theme_advanced_resizing_use_cookie : false,
-			theme_advanced_path_location : 'bottom',
-			theme_advanced_blockformats : 'p,h2,h3,h4,h5,pre,div',
-			theme_advanced_disable : 'help',
-			theme_advanced_buttons1 : '<?= Settings::get('tinybuttons1'); ?>',
-			theme_advanced_buttons2 : '<?= Settings::get('tinybuttons2'); ?>',
-			theme_advanced_buttons3 : '<?= Settings::get('tinybuttons3'); ?>',
-			content_css : tinyCSS,
-
-            // PDW Toggle Toolbars settings
-            pdw_toggle_on : 1,
-            pdw_toggle_toolbars : '2,3'
-
-			<?php if( Settings::get('filemanager') == 'kcfinder' ) :?>
-				,file_browser_callback : 'openKCFinder'
-			<?php endif ;?>
-			
-			<?php if( Settings::get('filemanager') == 'mootools-filemanager' ) :?>
-			
-				,file_browser_callback: 'openFilemanager'
-			
-			<?php endif ;?>
-		};
-
+		/*
+		 * TinyMCE openFilemanager callback
+		 *
+		 */
 		<?php if( Settings::get('filemanager') == 'mootools-filemanager' ) :?>
 
 			function openFilemanager(field, url, type, win)
@@ -316,11 +308,10 @@
 		// If users uses tiny HTML templates, add them to the init object.
 		if (getTinyTemplates != false)
 		{
-			tinyMCEParam.template_templates = getTinyTemplates('<?= base_url() ?>themes/<?= Settings::get('theme') ?>/assets/templates/');
+//			tinyMCEParam.template_templates = getTinyTemplates('<?= base_url() ?>themes/<?= Settings::get('theme') ?>/assets/templates/');
 		}
 		
-
-		tinyMCE.init(tinyMCEParam);
+//		tinyMCE.init();
 
 	</script>
 <?php elseif( Settings::get('texteditor') == 'ckeditor' ) :?>
@@ -441,7 +432,6 @@
 			function(){initializeWindows();},
 			function(){initializeColumns();}	
 		).callChain();	
-	
 	});
 
 </script>
@@ -462,97 +452,106 @@
 <div id="desktop">
 
 	<div id="desktopHeader" class="hide">
+		<div id="desktopBar">
+			<div id="desktopTitlebarWrapper">
+				<div id="desktopTitlebar">
+					
+					<h1 class="applicationTitle">ionize <?php echo($this->config->item('version')) ;?></h1>
+					<a id="logoAnchor"></a>
+					
+					<div id="topNav">
+						<ul class="menu-right">
+							<li><?= lang('ionize_logged_as') ?> : <?= $current_user['screen_name'] ?></li>
+							<li><a href="<?= base_url() ?>" target="_blank"><?= lang('ionize_website') ?></a></li>
+							<li><a href="<?= admin_url() ?>user/logout"><?= lang('ionize_logout') ?></a></li>
+							<li>
+								<?php foreach(Settings::get('displayed_admin_languages') as $lang) :?>
+									<a href="<?= base_url().$lang ?>/<?= config_item('admin_url')?>"><img src="<?= theme_url() ?>images/world_flags/flag_<?= $lang ?>.gif" alt="<?= $lang ?>" /></a>
+								<?php endforeach ;?>
+							</li>
+						</ul>
+					</div>
+				</div><!-- /desktopTitlebar -->
+			</div>
 
-		<div id="desktopTitlebarWrapper">
-			<div id="desktopTitlebar">
-				
-				<h1 class="applicationTitle">ionize <?php echo($this->config->item('version')) ;?></h1>
-				<a id="logoAnchor"></a>
-				
-				<div id="topNav">
-					<ul class="menu-right">
-						<li><?= lang('ionize_logged_as') ?> : <?= $current_user['screen_name'] ?></li>
-						<li><a href="<?= base_url() ?>" target="_blank"><?= lang('ionize_website') ?></a></li>
-						<li><a href="<?= admin_url() ?>user/logout"><?= lang('ionize_logout') ?></a></li>
-						<li>
-							<?php foreach(Settings::get('displayed_admin_languages') as $lang) :?>
-								<a href="<?= base_url().$lang ?>/<?= config_item('admin_url')?>"><img src="<?= theme_url() ?>images/world_flags/flag_<?= $lang ?>.gif" alt="<?= $lang ?>" /></a>
+
+			<div id="desktopNavbar">
+				<ul>
+					<li><a id="dashboardLink">Dashboard</a></li>
+					<li><a class="returnFalse" href=""><?= lang('ionize_menu_content') ?></a>	
+						<ul>
+							<?php if($this->connect->is('super-admins')) :?>
+								<li><a id="menuLink" href=""><?=lang('ionize_menu_menu')?></a></li>
+							<?php endif ;?>
+							<li><a id="newPageLink" href="<?= admin_url() . 'page/create/0' ?>"><?= lang('ionize_menu_page') ?></a></li>
+							<li><a id="articlesLink" href="<?= admin_url() . 'article/list_articles' ?>"><?= lang('ionize_menu_articles') ?></a></li>
+							<li><a id="translationLink" href=""><?= lang('ionize_menu_translation') ?></a></li>
+							<li class="divider"><a id="mediaManagerLink" href=""><?= lang('ionize_menu_media_manager') ?></a></li>
+							<?php if ($this->connect->is('super-admins')) :?>
+								<li class="divider"><a id="elementsLink" href=""><?= lang('ionize_menu_content_elements') ?></a></li>
+							<?php endif ;?>
+							<?php if ($this->connect->is('super-admins') ) :?>
+								<li><a id="extendfieldsLink" href=""><?= lang('ionize_menu_extend_fields') ?></a></li>
+							<?php endif ;?>
+						</ul>
+					</li>
+					<?php if($this->connect->is('editors')) :?>
+					<li><a class="returnFalse" href=""><?= lang('ionize_menu_modules') ?></a>
+						<ul>
+							<!-- Module Admin controllers links -->
+							<?php foreach($modules as $uri => $module) :?>
+								<?php if($this->connect->is($module['access_group'])) :?>
+									<li><a class="modules" id="<?= $uri ?>ModuleLink" href="<?= admin_url() ?>module/<?= $uri ?>/<?= $uri ?>/index"><?= $module['name'] ?></a></li>
+								<?php endif ;?>								
 							<?php endforeach ;?>
-						</li>
-					</ul>
+							<?php if($this->connect->is('admins')) :?>
+								<li class="divider"><a id="modulesLink" href=""><?=lang('ionize_menu_modules_admin')?></a></li>
+							<?php endif ;?>
+						</ul>
+					</li>
+					<?php endif ;?>
+					<li><a class="returnFalse" href=""><?= lang('ionize_menu_tools') ?></a>
+						<ul>
+							<li><a id="googleAnalyticsLink" href="https://www.google.com/analytics/reporting/login" target="_blank">Google Analytics</a></li>
+						</ul>
+					</li>
+
+					<li><a class="returnFalse" href=""><?=lang('ionize_menu_settings')?></a>
+						<ul>
+							<li><a id="ionizeSettingLink" href=""><?=lang('ionize_menu_ionize_settings')?></a></li>
+							<li><a id="languagesLink" href=""><?=lang('ionize_menu_languages')?></a></li>
+							<?php if($this->connect->is('admins')) :?>
+								<li><a id="usersLink" href=""><?=lang('ionize_menu_users')?></a></li>
+							<?php endif ;?>
+							<?php if($this->connect->is('super-admins')) :?>
+								<li><a id="themesLink"><?=lang('ionize_menu_theme')?></a></li>
+							<?php endif ;?>
+							<li class="divider"><a id="settingLink" href=""><?=lang('ionize_menu_site_settings')?></a></li>
+							<?php if($this->connect->is('super-admins')) :?>
+								<li><a id="technicalSettingLink" href=""><?=lang('ionize_menu_technical_settings')?></a></li>
+							<?php endif ;?>
+						</ul>
+					</li>
+					<li><a class="returnFalse" href=""><?= lang('ionize_menu_help') ?></a>
+						<ul>
+							<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?>
+								<li><a id="docLink" href="../user-guide/index.html" target="_blank"><?= lang('ionize_menu_documentation') ?></a></li>								
+							<?php endif; ?>
+							<li<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?> class="divider"<?php endif; ?>><a id="aboutLink" href="<?= theme_url() ?>views/about.html"><?= lang('ionize_menu_about') ?></a></li>
+						</ul>
+					</li>
+				</ul>	
+				<div class="toolbox">
+					<div id="spinnerWrapper"><div id="spinner"></div></div>		
 				</div>
 
-				<div id="desktopNavbar">
-					<ul>
-						<li><a id="dashboardLink">Dashboard</a></li>
-						<li><a class="returnFalse" href=""><?= lang('ionize_menu_content') ?></a>	
-							<ul>
-								<?php if($this->connect->is('super-admins')) :?>
-									<li><a id="menuLink" href=""><?=lang('ionize_menu_menu')?></a></li>
-								<?php endif ;?>
-								<li><a id="newPageLink" href="<?= admin_url() . 'page/create/0' ?>"><?= lang('ionize_menu_page') ?></a></li>
-								<li><a id="articlesLink" href="<?= admin_url() . 'article/list_articles' ?>"><?= lang('ionize_menu_articles') ?></a></li>
-								<li><a id="translationLink" href=""><?= lang('ionize_menu_translation') ?></a></li>
-								<li class="divider"><a id="mediaManagerLink" href=""><?= lang('ionize_menu_media_manager') ?></a></li>
-								<?php if ($this->connect->is('admins') && Settings::get('use_extend_fields') == '1') :?>
-									<li class="divider"><a id="extendfieldsLink" href=""><?= lang('ionize_menu_extend_fields') ?></a></li>
-								<?php endif ;?>
-							</ul>
-						</li>
-						<?php if($this->connect->is('editors')) :?>
-						<li><a class="returnFalse" href=""><?= lang('ionize_menu_modules') ?></a>
-							<ul>
-								<!-- Module Admin controllers links -->
-								<?php foreach($modules as $uri => $module) :?>
-									<?php if($this->connect->is($module['access_group'])) :?>
-										<li><a class="modules" id="<?= $uri ?>ModuleLink" href="<?= admin_url() ?>module/<?= $uri ?>/<?= $uri ?>/index"><?= $module['name'] ?></a></li>
-									<?php endif ;?>								
-								<?php endforeach ;?>
-								<?php if($this->connect->is('admins')) :?>
-									<li class="divider"><a id="modulesLink" href=""><?=lang('ionize_menu_modules_admin')?></a></li>
-								<?php endif ;?>
-							</ul>
-						</li>
-						<?php endif ;?>
-						<li><a class="returnFalse" href=""><?= lang('ionize_menu_tools') ?></a>
-							<ul>
-								<li><a id="googleAnalyticsLink" href="https://www.google.com/analytics/reporting/login" target="_blank">Google Analytics</a></li>
-							</ul>
-						</li>
+				
+			</div><!-- /desktopNavbar -->
 
-						<li><a class="returnFalse" href=""><?=lang('ionize_menu_settings')?></a>
-							<ul>
-								<li><a id="ionizeSettingLink" href=""><?=lang('ionize_menu_ionize_settings')?></a></li>
-								<li><a id="languagesLink" href=""><?=lang('ionize_menu_languages')?></a></li>
-								<?php if($this->connect->is('admins')) :?>
-									<li><a id="usersLink" href=""><?=lang('ionize_menu_users')?></a></li>
-								<?php endif ;?>
-								<?php if($this->connect->is('super-admins')) :?>
-									<li><a id="themesLink"><?=lang('ionize_menu_theme')?></a></li>
-								<?php endif ;?>
-								<li class="divider"><a id="settingLink" href=""><?=lang('ionize_menu_site_settings')?></a></li>
-								<?php if($this->connect->is('super-admins')) :?>
-									<li><a id="technicalSettingLink" href=""><?=lang('ionize_menu_technical_settings')?></a></li>
-								<?php endif ;?>
-							</ul>
-						</li>
-						<li><a class="returnFalse" href=""><?= lang('ionize_menu_help') ?></a>
-							<ul>
-								<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?>
-									<li><a id="docLink" href="../user-guide/index.html" target="_blank"><?= lang('ionize_menu_documentation') ?></a></li>								
-								<?php endif; ?>
-								<li<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?> class="divider"<?php endif; ?>><a id="aboutLink" href="<?= theme_url() ?>views/about.html"><?= lang('ionize_menu_about') ?></a></li>
-							</ul>
-						</li>
-					</ul>	
-					<div class="toolbox">
-						<div id="spinnerWrapper"><div id="spinner"></div></div>		
-					</div>
-
-					
-				</div><!-- /desktopNavbar -->
-			</div><!-- /desktopTitlebar -->
 		</div>
+
+
+
 	</div><!-- /desktopHeader -->
 
 	<div id="dockWrapper">

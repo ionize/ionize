@@ -19,6 +19,83 @@ var ION = new Hash({
 	// Rewritten functions
 	// ------------------------------------------------------------------------
 
+	tinyMceSettings: function(id, mode, options)
+	{
+		var options = ($type(options) != false) ? options : {};
+
+		var width = ($type(options.width) != false) ? options.width : '100%';
+		var height = ($type(options.height) != false) ? options.height : 180;
+	
+		switch (mode)
+		{
+			case 'small':
+
+				var settings =  
+				{
+					mode : 'exact',
+					elements : id,
+					theme : 'advanced',
+					skin: 'ionizeMce',
+					language : Lang.get('current'),
+					entity_encoding : 'raw',
+					height: height,
+					width: width,
+					dialog_type : 'modal',
+					inlinepopups_skin: 'ionizeMce',
+					extended_valid_elements  : "ion:*, a[href</<ion:*]",
+					verify_html : false,
+					relative_urls : false,
+					auto_cleanup_word : false,
+					theme_advanced_toolbar_location : 'top',
+					theme_advanced_toolbar_align : 'left',
+					theme_advanced_buttons1 : 'bold,italic,|,bullist,numlist',
+					theme_advanced_buttons2 : '',
+					theme_advanced_buttons3 : ''
+				};
+				return settings;
+				break;
+			
+			default:
+				// Removed plugin preelementfix
+				var settings = {
+					mode : 'exact',
+					elements : id,
+					theme : 'advanced',
+					skin: 'ionizeMce',
+					language : Lang.get('current'),
+					entity_encoding : 'raw',
+					height:'450',
+					width:'100%',
+					dialog_type : 'modal',
+					inlinepopups_skin: 'ionizeMce',
+					extended_valid_elements  : "ion:*, a[href</<ion:*]",
+					verify_html : false,
+					relative_urls : false,
+					auto_cleanup_word : false,
+					plugins : 'pdw, inlinepopups,codemirror,safari,nonbreaking,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
+					flash_menu : 'false',
+					theme_advanced_toolbar_location : 'top',
+					theme_advanced_toolbar_align : 'left',
+					theme_advanced_resizing : true,
+					theme_advanced_resizing_use_cookie : false,
+					theme_advanced_path_location : 'bottom',
+					theme_advanced_blockformats : 'p,h2,h3,h4,h5,pre,div',
+					theme_advanced_disable : 'help',
+					theme_advanced_buttons1 : tinyButtons1,
+					theme_advanced_buttons2 : tinyButtons2,
+					theme_advanced_buttons3 : tinyButtons3,
+					content_css : tinyCSS,
+		            // PDW Toggle Toolbars settings
+		            pdw_toggle_on : 1,
+		            pdw_toggle_toolbars : '2,3',
+					file_browser_callback: 'openFilemanager'
+				};
+				return settings;
+				break;
+		}
+
+	},
+
 
 	/**
 	 * GLOBAL REQUEST FUNCTIONS
@@ -97,6 +174,12 @@ var ION = new Hash({
 			
 			onSnap: function(el) { el.addClass('move'); },
 			
+			onDrag: function(element, event)
+			{
+				if (event.shift) { element.addClass('plus'); }
+				else { element.removeClass('plus'); }
+			},
+			
 			onDrop: function(element, droppable, event)
 			{
 				if (droppable)
@@ -126,7 +209,32 @@ var ION = new Hash({
 					// ION.execCallbacks({'fn':onDrop, 'args':[element, droppable, event] });
 					
 					// If onDrop is a string, it can only be a func name : execute it and sent him the standard args
-					if ($type(onDrop) == 'string')
+					
+					/* For each droppable class, a function need to be executed
+					 * ION.addDragDrop(
+					 *		el, 
+					 *		'.drop-class-1, .drop-class-2',		// this.options.droppables, array
+					 *		'drop-func-1, drop-func-2'			// onDrop, string of functions names
+					 * );
+					 *
+					 */
+					if (onDrop.contains(",") && this.options.droppables.length > 1)
+					{
+						var onDrops = (onDrop).replace(' ','').split(",");
+						var index = false;
+						
+						$each(this.options.droppables, function(cl, idx)
+						{
+							cl = cl.replace('.', '');
+							if (droppable.hasClass(cl)) { index = idx;}
+						});
+						
+						if ($type(onDrops[index]) != false)
+						{
+							ION.execCallbacks({'fn':onDrops[index], 'args':[element, droppable, event] });
+						}
+					}
+					else if ($type(onDrop) == 'string')
 					{
 						ION.execCallbacks({'fn':onDrop, 'args':[element, droppable, event] });
 					}
@@ -134,17 +242,19 @@ var ION = new Hash({
 					{
 						ION.execCallbacks(onDrop);
 					}
-					
-					droppable.removeClass('focus');
+
+					droppable.removeClass('onenter');
 				}
 			},
 			onEnter: function(el, droppable)
-			{ 
-				droppable.addClass('focus');
+			{
+				el.addClass('enter');
+				droppable.addClass('onenter');
 			},
 			onLeave: function(el, droppable) 
 			{
-				droppable.removeClass('focus');
+				el.removeClass('enter');
+				droppable.removeClass('onenter');
 			}
 		});
 	},
@@ -159,84 +269,408 @@ var ION = new Hash({
 		    opacity:0.8,
 		    preventDefault:true
 		});
-	
 	},
 
-
-	initMove: function(el, droppables, onDrop)
-	{
-		el.makeDraggable(
-		{
-	    	droppables: droppables,
-			snap: 10,
-			opacity: 0.8,
-			revert: true,
-			classe: 'ondrag',
-			
-			onSnap: function(el) { el.addClass('move'); },
-			
-			onDrop: function(element, droppable, event)
-			{
-				if (droppable)
-				{
-					// If onDrop is a string, it can only be a func name : execute it and sent him the standard args
-					if ($type(onDrop) == 'string')
-					{
-						ION.execCallbacks({'fn':onDrop, 'args':[element, droppable, event] });
-					}
-					else
-					{
-						ION.execCallbacks(onDrop);
-					}
-					
-					droppable.removeClass('focus');
-				}
-			},
-			onEnter: function(el, droppable)
-			{ 
-				droppable.addClass('focus');
-			},
-			onLeave: function(el, droppable) 
-			{
-				droppable.removeClass('focus');
-			}
-		});
-	},
-
-	
 	highlight: function(element, droppable, event)
 	{
 		droppable.highlight(ION.hbg);
 	},
 
-
-/*	
-	highlight: function(element, droppable, event)
-	{
-		droppable.highlight();
-	},
-*/	
-	
 	
 	deleteDomElements: function(selector)
 	{
 		$$(selector).each(function(item, idx) { item.dispose(); });
 	},
 
+	setHTML: function(selector, html)
+	{
+		$$(selector).each(function(item, idx) { item.set('html', html); });
+	},
 
+	initHelp: function(selector, table, title)
+	{
+		$$(selector).each(function(item, idx)
+		{
+//			item.removeEvents();
+			item.addEvent('click', function(e)
+			{
+				e.stop();
+				MUI.dataWindow(table + 'Help', 'Help', 'desktop/help/' + table + '/' + title, {resize:true});
+				return false;
+			});
+		});
+	},
 	
-//	linkElement
+	/**
+	 * Init TinyMCE on tabbed selectors
+	 * @param	string	CSS tabs selectors
+	 *					Each tab much have the "rel" attribute set.
+	 *					Example : rel="fr"
+	 * @param	string	textareas selector. Must have the same "rel" attr. as the atb
+	 *					Example : #categoryTabContent .tinyCategory
+	 * @param	string	Editor mode. Can be 'small' or empty (normal editor)
+	 *
+	 *
+	 */
+	initTinyEditors: function(tab_selector, container_selector, mode, options)
+	{
+		var textareas = $$(container_selector);
+		var mode = mode;
+		
+		$$(tab_selector).each(function(tab)
+		{
+			// Current tab language or identifier
+			var tab_rel = tab.getProperty('rel');
+		
+			textareas.each(function(target)
+			{
+				// Current area language or identifier (related to tab)
+				var target_rel = target.getProperty('rel');
+				
+				if (tab_rel == target_rel)
+				{
+					// Tab click : Init TinyMCE
+					tab.addEvent('click', function(e)
+					{
+						var ed = tinyMCE.editors[target.id];
+		
+						if ($type(ed) != 'object')
+						{
+							tinyMCE.init(ION.tinyMceSettings(target.id, mode, options));
+						}
+					});
+					// Remove tiny editor of object with this ID.
+					(tinyMCE.editors).each(function(tiny)
+					{
+						if ($type(tiny) != false)
+						{
+							if (tiny.id == target.id)
+							{
+								tinyMCE.remove(tiny);
+							}
+						}
+					});
+					
+					// Init Tiny on the visible tab
+					if (tab.hasClass('selected'))
+					{
+						var ed = tinyMCE.editors[target.id];
+
+						if ($type(ed) == false)
+						{
+							setTimeout(function() {
+								tinyMCE.init(ION.tinyMceSettings(target.id, mode, options));
+							}, 50);
+						}
+					}
+				}
+			});
+
+
+// Debug : List of active tiny object in memory
+/*
+(tinyMCE.editors).each(function(tiny)
+{
+	if ($type(tiny) == 'object')
+	{
+		console.log(tiny.id + ' in memory.');
+	}
+});
+*/
+		});
+	},
 	
+	
+	/*
+	 * Not working yet
+	 */
+	addClearField:function(input)
+	{
+		if ($type($(input)) != false)
+		{
+			var clear = new Element('a', {'class':'icon clearfield left'}).addEvent('click', function(e){ION.clearField(input);}).inject($(input), 'after');
+			$(input).addClass('left');
+		}
+	},
+	
+
+
+	/*
+	 * Splitted Article panel init
+	 *
+	 */
+	editArticle: function(id, title) 
+	{
+		if ($('mainPanel')) {			
+			
+			MUI.updateContent({
+				'element': $('mainPanel'),
+				'url': admin_url + 'desktop/get/empty',
+				loadMethod: 'xhr',
+				'title': title,
+				onContentLoaded: function(c)
+				{
+					new MUI.Column({
+						container: 'mainPanel',
+						id: 'mainColumn2',
+						placement: 'main',
+						width: null,
+						resizeLimit: [100, 300]
+					});
+		
+					new MUI.Column({
+						container: 'mainPanel',
+						id: 'sideColumn2',
+						placement: 'right',
+						width: 290,
+						resizeLimit: [290, 400]
+					});
+					
+					// mainPanel
+					new MUI.Panel({
+						id: 'splitPanel_mainPanel',
+						title: title,
+						loadMethod: 'xhr',
+						contentURL: admin_url + 'article/edit/' + id,
+						padding: { top: 15, right: 15, bottom: 8, left: 15 },
+						addClass: 'maincolumn',
+						column: 'mainColumn2',
+						collapsible: false,
+						header: false
+					});
+					
+					new MUI.Panel({
+						id: 'articlePanel',
+						title: Lang.get('ionize_title_article_settings'),
+						contentURL: admin_url + 'article/options/' + id,
+						column: 'sideColumn2'
+					//	addClass: 'maincolumn'
+				//,tabsURL: admin_url + 'desktop/get/tabs/article_tabs'
+					});
+				}
+			});
+		}
+	},
+
 	
 	// ------------------------------------------------------------------------
 	// / Rewritten functions
 	// ------------------------------------------------------------------------
 
+	/**
+	 * Test function to get all the elements
+	 *
+	 
+	getContentElements: function(parent, id_parent)
+	{
+		// ION.JSON(admin_url + 'element/get_elements', {'parent': parent, 'id_parent': id_parent});
+		var r = new Request.JSON(
+		{
+			url: admin_url + 'element/get_elements', 
+			method: 'post',
+			loadMethod: 'xhr',
+			data:
+			{
+				'parent': parent,
+				'id_parent': id_parent
+			},
+			onSuccess: function(responseJSON, responseText)
+			{
+				$each(responseJSON, function(item, idx)
+				{
+					console.log(item.name);
+					
+					$each(item.elements, function(element, idx)
+					{
+						console.log('-' + element.id_element);
+		
+						$each(element.fields, function(field, idx)
+						{
+							console.log('--' + field.label);
+						});
+					});
+				});
+			}
+		}).send();
+	},	
+	*/
 
+	/**
+	 * Insert Content Elements Definition tabs
+	 *
+	 */
+	getContentElements: function(parent, id_parent)
+	{
+		// tabSwapper elements
+		var tabSwapper = $('desktop').retrieve('tabSwapper');
+		var tabs = 		tabSwapper.tabs;
+		
+		// DOM elements
+		var tabsContainer = $(tabSwapper.options.tabsContainer);
+		var sectionsContainer = $(tabSwapper.options.sectionsContainer);
+		var ul = tabsContainer.getElement('ul');
 
+		var r = new Request.JSON(
+		{
+			url: admin_url + 'element_definition/get_definitions_from_parent', 
+			method: 'post',
+			loadMethod: 'xhr',
+			data:
+			{
+				'parent': parent,
+				'id_parent': id_parent
+			},
+			onSuccess: function(responseJSON, responseText)
+			{
+				var index = 0;
+				
+				$each(responseJSON, function(item, idx)
+				{
+					var id = item.id_element_definition;
+					var found = false;
+					index = tabs.length;
+					
+					tabs.each(function(tab) { if (tab.hasClass('tab' + id)) { found = tab; } });
 
+					// Not found ? Build it !
+					if (found == false)
+					{
+						// Tab
+						var title = (item.title != '') ? item.title : item.name;
+						var a = new Element('a').set('html', title);
+						var li = new Element('li', {'id':'tab' + id, 'class': 'tab' + id}).adopt(a);
+						li.inject(ul, 'bottom');
+						
+						// Section
+						var div = new Element('div', {'id':'tabcontent' + id, 'class': 'tabcontent tabcontent' + id}).inject(sectionsContainer, 'bottom');
+						tabSwapper.addTab(li, div, a, index);
+						
+						// Get the content
+						ION.HTML('element/get_elements_from_definition', {'parent':parent, 'id_parent':id_parent, 'id_element_definition': id}, {'update': div, 'onSuccess': function(){ION.updateTabNumber('tab' + id, 'tabcontent' +id )} });
+					}
+					// Found : Update
+					else
+					{
+						//	tabSwapper.addTab(found, found.retrieve('section'), found.retrieve('clicker'), idx);
+						ION.HTML('element/get_elements_from_definition', {'parent':parent, 'id_parent':id_parent, 'id_element_definition': id}, {'update': 'tabcontent' + id, 'onSuccess': function(){ION.updateTabNumber('tab' + id, 'tabcontent' + id)}});
+					}
+				});
+				
+				if (index > 0)
+				{
+	//				tabSwapper.show(0);
+				}
+			}
+		}).send();
+	},
 	
 
+	updateTabNumber: function(id_tab, id_container)
+	{
+	// Add the media number to the tab
+		var tab = $(id_tab);
+		
+		if ($type(tab) != false)
+		{
+			var nb = 0;
+			
+			if (tab.getElement('span')) tab.getElement('span').dispose();
+			
+			var ul = $(id_container).getElement('ul');
+			
+			if ($type(ul) != false)
+			{
+				nb = (ul.getChildren('li')).length;		
+			}
+			else
+			{
+				nb = ($(id_container).getChildren()).length;
+			}
+			
+			if (nb > 0)
+			{
+				tab.adopt(new Element('span', {'class':'tab-detail'}).set('html',nb));
+			}
+		}
+	},
+
+	
+	/**
+	 * Deletes one tab and its section based on its ID.
+	 * Called after a dleete by the controller if the element definition
+	 * has no more element for this parent.
+	 *
+	 * TODO : Implement
+	 *
+	 */
+	deleteTab: function(id)
+	{
+			var tabSwapper = $('desktop').retrieve('tabSwapper');
+			var tabs = tabSwapper.tabs;
+/*
+			tabs.each(function(tab, idx)
+			{
+				if (tab.hasClass('tab' + id))
+				{
+				//	tabSwapper.removeTab(idx);
+
+					tab.retrieve('section').destroy();
+					tab.destroy();
+				//	arrayName.splice(i,1);
+					
+					tabSwapper.tabs.splice(idx, 1);
+					if (tab.hasClass(tabSwapper.options.selectedClass) && tabs.length > 1)	{ tabSwapper.show(0); }
+					
+				//	$('memory').store('tabSwapper', tabSwapper);
+ 
+				//	return;
+				}
+			});
+
+		console.log(tabs.length);
+*/
+		
+	},
+	
+	
+	updateTabs: function()
+	{
+		var tabSwapper = $('desktop').retrieve('tabSwapper');
+			
+		if (tabSwapper)
+		{
+			var tabs = tabSwapper.tabs;
+			
+			tabs.each(function(tab, idx)
+			{
+				var section = tab.retrieve('section');
+				
+				console.log(idx);
+				console.log(section.getChildren());
+				
+			});
+		}
+	},
+	
+	
+	/**
+	 * Updates all the content elements from a given parent
+	 *
+	 *
+	 */
+	updateContentTabs: function(parent, id_parent)
+	{
+		// Retrieve the tabSwapper
+		var tabSwapper = $('desktop').retrieve('tabSwapper');
+
+		if(tabSwapper)
+		{
+			ION.getContentElements(parent, id_parent, tabSwapper);
+		}
+	},
+	
+	
+	
 	
 	/**
 	 * Updates the info about the link
@@ -256,12 +690,8 @@ var ION = new Hash({
 		if (type != '')
 		{
 			var url = admin_url + type + '/edit/' + id;
-			if (type == 'article')
-			{
-				url = admin_url + type + '/edit/0.' + id;
-			}
 			
-			var a = new Element('a').set('text', text);
+			var a = new Element('a').set('html', text);
 		
 			// Title
 			var dt = new Element('dt', {'class': 'small'});
@@ -305,6 +735,7 @@ var ION = new Hash({
 	 */
 	removeLink: function()
 	{
+		
 		// remove form data
 		$('link').set('text', '').setProperty('value','').fireEvent('change');
 		$('link_type').value='';
@@ -312,6 +743,37 @@ var ION = new Hash({
 		
 		// Empty the link_info DL
 		$('link_info').empty();
+	},
+	
+	
+	/**
+	 * Update the context of each article passed as args.
+	 * Updates the tree names, flags, etc.
+	 *
+	 * Replaces ION.updateTreeArticles()
+	 *
+	 */
+	updateArticleContext: function(articles)
+	{
+		articles.each(function(art)
+		{
+			var title = (art.title != '') ? art.title : art.url;
+			var id = art.id_article;
+			
+			var rel = art.id_page + '.' + art.id_article;
+			
+			// Update the title
+			$$('.file .title[rel=' + rel + ']').each(function(el)
+			{
+				el.empty();
+				el.set('html', title).setProperty('title', title);
+				
+				var flag = art.flag;
+				if (flag == '0' && art.type_flag != '') { flag = art.type_flag; }
+			
+				new Element('span', {'class':'flag flag' + flag}).inject(el, 'top');
+			});
+		});
 	},
 	
 	
@@ -356,26 +818,31 @@ var ION = new Hash({
 	 * Updates all the tree articles
 	 * Used after saving an article, in case of main data update (title or url, sticky, etc.)
 	 *
-	 */
 	updateTreeArticles: function(args)
 	{
 		var title = (args.title != '') ? args.title : args.url;
-
 		var id = args.id_article;
-
+		
 		// file or sticky
 		var icon = (args.indexed && args.indexed == '1') ? 'file' : 'sticky';
 		var old_icon = (args.indexed && args.indexed == '1') ? 'sticky' : 'file';
 		
-		// Flag span
-		var span = new Element('span', {'class':'flag flag' + args.flag});
-
 		// Update the title
 		$$('.tree .article' + id + '.title').each(function(el)
 		{
+			var rel = (el.getProperty('rel')).split('.');
+			var id_page = rel[0];
+			
+			// Flag span : If the article is flagged, display the article flag, else display the article's type flag.
+			var flag = args.flag;
+//console.log(id_page + ' :: '+ flag + ' :: ' + args.type_flag);
+			if (id_page == args.id_page && flag == '0' && args.type_flag != '') {
+				flag = args.type_flag;
+			}
+			
 			el.empty();
 			el.set('html', args.title).setProperty('title', title);
-			span.clone().inject(el, 'top');
+			new Element('span', {'class':'flag flag' + flag}).inject(el, 'top');
 		});
 		
 		// Update the article icon (file or sticky)
@@ -384,7 +851,7 @@ var ION = new Hash({
 		// Update the main Panel title
 		$('mainPanel_title').set('text', Lang.get('ionize_title_edit_article') + ' : ' + title);
 	},
-	
+	*/
 	
 	/**
 	 * Updates the folder or file icon when editing an article or a page
@@ -510,41 +977,24 @@ var ION = new Hash({
 	 * @param	int		ID of the article
 	 * @param	int		ID of the page to add as parent
 	 * @param	int		ID of the original page. 0 if no one.
+	 * @param	Event	Event object.
 	 *
 	 */
-	linkArticleToPage: function(id_article, id_page, id_page_origin)
+	linkArticleToPage: function(id_article, id_page, id_page_origin, event)
 	{
-		new Request.JSON({
-			url: admin_url + 'article/link_to_page',
-			method: 'post',
-			loadMethod: 'xhr',
-			data: {
-				'id_article': id_article,
-				'id_page': id_page,
-				'id_page_origin': id_page_origin
-			},
-			onRequest: function()
-			{
-				MUI.showSpinner();
-			},
-			onFailure: function(xhr) 
-			{
-				MUI.hideSpinner();
-				
-				// Error notification
-				MUI.notification('error', xhr.responseJSON);
-			},
-			onSuccess: function(responseJSON, responseText)
-			{
-				MUI.hideSpinner();
-				
-				// Execute the callbacks
-				ION.execCallbacks(responseJSON.callback);
-				
-				MUI.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
-			}
-		}).send();
+		var data = {
+			'id_article': id_article,
+			'id_page': id_page,
+			'id_page_origin': id_page_origin
+		};
 		
+		// Copy if SHIFT
+		if (event.shift)
+		{
+			data['copy'] = true;
+		}
+		
+		ION.JSON('article/link_to_page', data);
 	},
 	
 	
@@ -586,94 +1036,18 @@ var ION = new Hash({
 	
 	
 	/**
-	 * Adds the DOM article element to the page article list
+	 * Reloads the page's articles list
 	 * called by ION.linkArticleToPage()
 	 *
-	 * <li rel="id_page.id_article" class="parent_page"><span class="link-img page"></span><a class="icon right unlink"></a><a class="page">Page Title in Default Language</a></li>
-	 *
 	 */
-	addArticleToPageArticleListDOM: function(args)
+	reloadPageArticleList: function(id_page)
 	{
-		if ($('articleList' + args.id_page) )
+		if ($type($('id_page')) != false && $('id_page').value == id_page)
 		{
-			var status = (options.online == '1') ? ' online ' : ' offline '; 
-
-			var rel = args.id_page + '.' + args.id_article;				// rel : REL of article
-			var flat_rel = args.id_page + 'x' + args.id_article;		// flat rel : Used to build unique class selectors
-			
-			var title = (args.title != '') ? args.title : args.url;
-		
-			var li = new Element('li', {'rel':rel, 'class':'sortme article' + args.id_article + ' article'+flat_rel + ' ' + status});
-
-			// Unlink icon
-			var aUnlink = new Element('a', {'rel':rel, 'class':'icon right unlink', 'title':Lang.get('ionize_label_unlink')});
-			ION.initArticleUnlinkEvent(aUnlink);
-			li.adopt(aUnlink);
-
-			// Online / Offline icon
-			var aStatus = new Element('a', {'rel':rel, 'class':'icon right pr5 status article'+args.id_article + ' article'+flat_rel + ' ' + status, 'alt':Lang.get('ionize_label_unlink')});
-			ION.initArticleStatusEvent(aStatus);
-			li.adopt(aStatus);
-			
-			// Lang flags
-			// <span style="width:<?=$flag_width?>px;" class="right mr20 ml20">
-			var spanFlag = new Element('span',{'class':'right mr20 ml20'});
-			var nbLang = 0;
-			$each(args.langs, function(value, key)
-			{
-				nbLang++;
-				
-				if (value.content != '')
-				{
-					spanFlag.adopt(new Element('img', {'class':'left pl5 pt3', src:theme_url + 'images/world_flags/flag_'+ value['lang'] +'.gif'}));
-				}
-			});
-			spanFlag.setStyles({
-				'width': 25 * nbLang + 'px',
-				'height': '16px'
-			});
-			
-			li.adopt(spanFlag);
-
-			// Type select
-			var spanType = new Element('span', {'class':'right ml20'}).set('html', args.types);
-			ION.initArticleTypeEvent(spanType.getFirst('select'));
-			li.adopt(spanType);
-			
-			// View select
-			var spanView = new Element('span', {'class':'right'}).set('html', args.views);
-			ION.initArticleViewEvent(spanView.getFirst('select'));
-			li.adopt(spanView);
-
-			
-			// Article drag icon
-			li.adopt(new Element('a', {'class':'icon left drag pr5'}));
-			
-			// Left article's title
-			var a = new Element('a', {'class':'left pl5 article'+flat_rel + ' ' + status, 'rel':rel}).set('text', title);
-			var span = new Element('span', {'class':'flag flag' + args.flag});
-			span.inject(a, 'top');
-			
-			// Make the article's title draggable
-			ION.makeLinkDraggable(a, 'article');
-			
-			li.adopt(a);
-			
-			li.getElements('.title').addEvent('click', function(e) {
-				e.stop();
-				MUI.updateContent({'element': $('mainPanel'),'loadMethod': 'xhr','url': admin_url + 'article/edit/' + args.id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
-			});
-			
-			$('articleList' + args.id_page).adopt(li);
-			
-			// Add element to sortables
-			var sortables = $('articleList' + args.id_page).retrieve('sortables');
-			
-			sortables.addItems(li);
+			ION.HTML(admin_url + 'article/get_list', {'id_page':id_page}, {'update': 'articleListContainer'});
 		}
 	},
-
-
+	
 	updateSimpleItem: function(args)
 	{
 		// Items list exists ?
@@ -727,7 +1101,7 @@ var ION = new Hash({
 			// ... and one function : admin/<args.type>/edit/ must also exists
 			a.addEvent('click', function()
 			{
-				MUI.formWindow(args.type + args.rel, args.type + 'Form' + args.rel, Lang.get('ionize_title_' + args.type + '_edit'), args.type + '/edit/' + this.getProperty('rel'));
+				MUI.formWindow(args.type + args.rel, args.type + 'Form' + args.rel, Lang.get('ionize_title_' + args.type + '_edit'), args.type + '/edit/' + this.getProperty('rel'), {});
 			});
 			li.adopt(a);
 
@@ -783,6 +1157,43 @@ var ION = new Hash({
 		});
 	},
 	
+	initCopyLang: function(selector, elements)
+	{
+		$$(selector).each(function(item, idx)
+		{
+			item.addEvent('click', function()
+			{
+				var lang = item.getProperty('rel');
+				var langs = Lang.get('languages');
+				
+				tinyMCE.triggerSave();
+				
+				elements.each(function(item, idx)
+				{
+					langs.each(function(l)
+					{
+						if (l != lang)
+						{
+							var tiny = tinymce.EditorManager.get(item + '_' + l);
+							if (tiny)
+							{
+								tiny.setContent($(item + '_' + lang).value);
+							}
+							else
+							{
+								$(item + '_' + l).value = $(item + '_' + lang).value;
+							}
+						}
+					});
+				});
+				
+				MUI.notification('success', Lang.get('ionize_message_article_lang_copied'));
+				
+				item.getParent().highlight();
+				
+			});
+		})
+	},
 	
 	/**
 	 * Adds unlink event to one icon
@@ -930,6 +1341,8 @@ var ION = new Hash({
 			// Callback definition
 			var callback = ION.itemDeleteConfirm.pass([type, id]);
 			
+			item.removeEvents();
+			
 			// Confirmation modal window
 			item.addEvent('click', function(e)
 			{
@@ -990,6 +1403,13 @@ var ION = new Hash({
 					}
 				}
 				
+				// JS Callback
+				if (responseJSON && responseJSON.callback)
+				{
+					MUI.execCallbacks(responseJSON.callback);
+				}
+
+				
 				// If Error, display a modal instead a notification
 				if(responseJSON.message_type == 'error')
 				{
@@ -1007,149 +1427,221 @@ var ION = new Hash({
 			}
 		}).send();
 	},
-
 	
 	/**
-	 * Makes the page / article element draggable and droppable
-	 * 
-	 * @param	HtmlDOMElement		The DOM element to put the drag on
-	 * @param	String				Type of element : 'page' or 'article'
+	 * Link an Element to a parent
+	 * Called by ION.dropContentElementInPage(), ION.dropContentElementInArticle()
+	 *
+	 * @param	String			Parent type. Can be 'article', 'page', etc.
+	 * @param	DOM Element		The copied / moved element
+	 * @param	DOM Element		DOM target
+	 * @param	Event			Event
 	 *
 	 */
-	makeLinkDraggable: function(el, type)
+	dropContentElement: function(parent, element, droppable, event)
 	{
-		// Make the link draggable. See drag.clone.js
-		el.makeCloneDraggable(
+		// Element
+		var rel = (element.getProperty('rel')).split(".");
+		var id_element = (rel.length > 1) ? rel[1] : rel[0];
+		
+		// Target
+		rel = (droppable.getProperty('rel')).split(".");
+		var id_parent = (rel.length > 1) ? rel[1] : rel[0];
+		
+		// Old Parent
+		rel = ($('rel').value).split(".");
+		var old_id_parent = (rel.length > 1) ? rel[1] : rel[0];
+		
+		
+		var data = {
+			'id_element': id_element,
+			'parent': parent,
+			'id_parent': id_parent,
+			'old_parent': $('element').value,
+			'old_id_parent': old_id_parent
+		};
+
+		// Copy if SHIFT
+		if (event.shift)
 		{
-			// The "link" field of each page / article has the .droppable class
-			droppables: ['.droppable','.folder'],
-			snap: 10,
-			opacity: 0.8,
-			classe: 'ondrag',
-			
-			onSnap: function(el) { el.addClass('move'); },
-			
-			onDrop: function(element, droppable, event)
-			{
-				if (!droppable) {}
-				else
-				{
-					// Drop the element as link for another page or article
-					if (droppable.id == 'link')
-					{
-						// Element ID
-						var rel = (element.getProperty('rel')).split(".");
-						var id = rel[0];
-						if (rel.length > 1) { id = rel[1]; }
-						
-						// Check if link is invalid : No circular link
-						if ($('element').value == type && $('id_' + type).value == id )
-						{
-							MUI.notification('error', Lang.get('ionize_message_no_circular_link'));
-						}
-						else
-						{
-							// Check if article has more than one parent : Basic JS check in the tree
-							// Means if the article is linked to another page after the link is set, the link will point to 2 parents...
-							var check = (type == 'article') ? 'file' : 'folder';
+			data['copy'] = true;
+		}
 
-							var nbOccurences = ($$('.tree .' + check + '[class*=' + type + id + ']' )).length;
-
-							if (nbOccurences > 1)
-							{
-
-//							MUI.notification('error', check + '[class*=' + type + id + '] :: ' + id);
-// CHECK
-								MUI.notification('error', Lang.get('ionize_message_target_link_not_unique'));
-							}
-							else
-							{
-								// Link form data
-								$('link_type').value = type;
-								$('link_id').value = id;
-								$('link').set('text', element.get('text')).setProperty('value', element.get('text'));
-								
-								
-								// Save the cheerleader, save the link !
-								
-								
-	// HERE
-	// HERE
-								
-								
-								
-
-								ION.updateLinkInfo({'type':type, 'id':id, 'text':element.get('text')});
-								
-								droppable.fireEvent('change');
-							}
-						}
-					}
-					
-					// Drop the page as parent of an article
-					if (droppable.id == 'new_parent')
-					{
-						if (type == 'page')
-						{
-							ION.linkArticleToPage($('id_article').value, element.getProperty('rel'),'0');
-						}
-						else
-						{
-							MUI.notification('error', Lang.get('ionize_message_drop_only_page'));
-						}
-					}
-					
-					// Drop an article in a page
-					if (droppable.id == 'new_article')
-					{
-						var rel = (element.getProperty('rel')).split(".");
-						var id_page_origin = rel[0];
-						var id_article = rel[1];
-
-						if (type == 'article')
-						{
-							ION.linkArticleToPage(id_article, $('id_page').value, id_page_origin);
-						}
-						else
-						{
-							MUI.notification('error', Lang.get('ionize_message_drop_only_article'));
-						}
-					}
-					
-					// Drop an article in a page on the tree
-					if (droppable.hasClass('folder'))
-					{
-						droppable.removeProperty('style'); 
-						
-						if (type == 'article')
-						{
-							var rel = (element.getProperty('rel')).split(".");
-							var id_page_origin = rel[0];
-							var id_article = rel[1];
-							var id_page = droppable.getProperty('rel');
-
-							ION.linkArticleToPage(id_article, id_page, id_page_origin);
-						}
-						else
-						{
-							MUI.notification('error', Lang.get('ionize_message_drop_only_article'));
-						}
-					}
-					
-					droppable.removeClass('focus');
-				}
-			},
-			onEnter: function(el, droppable)
-			{ 
-				droppable.addClass('focus');
-			},
-			onLeave: function(el, droppable) 
-			{
-				droppable.removeClass('focus');
-			}
-		});
+		ION.JSON('element/link_element', data);
 	},
 	
+	/**
+	 * Drop one Content Element in a page (in the tree)
+	 * Copy / Move depending on the SHIFT key
+	 *
+	 */
+	dropContentElementInPage: function(element, droppable, event)
+	{
+		event.stop();
+		ION.dropContentElement('page', element, droppable, event);
+	},
+	
+	/**
+	 * Drop one Content Element in an article (in the tree)
+	 * Copy / Move depending on the SHIFT key
+	 *
+	 */
+	dropContentElementInArticle: function(element, droppable, event)
+	{
+		event.stop();
+		ION.dropContentElement('article', element, droppable, event);
+	},
+	
+	
+	/**
+	 * Drops an article into a page (from tree to page)
+	 *
+	 */
+	dropArticleInPage: function(element, droppable, event)
+	{
+		var rel = (element.getProperty('rel')).split(".");
+		var id_page_origin = rel[0];
+		var id_article = rel[1];
+		var id_page = droppable.getProperty('rel');
+
+		ION.linkArticleToPage(id_article, id_page, id_page_origin, event);
+	},
+
+	/**
+	 * Drops a page into an article (from tree to article's parents)
+	 *
+	 */
+	dropPageInArticle: function(element, droppable, event)
+	{
+		var id_article = $('id_article').value;
+		var id_page = droppable.getProperty('rel');
+
+		ION.linkArticleToPage(id_article, id_page, '0', event);
+	},
+
+	
+	addExternalLink: function(receiver_type, url, textarea)
+	{
+		new Request.JSON({
+			url: admin_url + receiver_type + '/add_link',
+			method: 'post',
+			loadMethod: 'xhr',
+			data: {
+				'receiver_rel': $('rel').value,
+				'link_type': 'external',
+				'url': url
+			},
+			onSuccess: function(responseJSON, responseText)
+			{
+				// Set the link title to the textarea
+				$(textarea).set('html', url);
+
+				MUI.notification('success', Lang.get('ionize_message_operation_ok'));
+
+				// JS Callback
+				if (responseJSON && responseJSON.callback)
+				{
+					MUI.execCallbacks(responseJSON.callback);
+				}
+			}
+		}).send();
+	},
+
+	removeElementLink: function()
+	{
+		// Receiver's element type
+		var receiver_type = $('element').value;
+		var rel = $('rel').value;
+		
+		new Request.JSON({
+			url: admin_url + receiver_type + '/remove_link',
+			method: 'post',
+			loadMethod: 'xhr',
+			data: {
+				'receiver_rel': rel
+			},
+			onSuccess: function(responseJSON, responseText)
+			{
+				// empty the textarea
+				$('link').set('text', '').setProperty('value','').fireEvent('change');
+
+				MUI.notification('success', Lang.get('ionize_message_operation_ok'));
+
+				// JS Callback
+				if (responseJSON && responseJSON.callback)
+				{
+					MUI.execCallbacks(responseJSON.callback);
+				}
+			}
+		}).send();
+	},
+
+
+	dropElementAsLink: function(link_type, element, droppable)
+	{
+		// Target link rel
+		var link_rel = element.getProperty('rel');
+		
+		// Receiver's element type
+		var receiver_type = $('element').value;
+
+		// No circular link !
+		if (receiver_type == link_type && $('rel').value == link_rel )
+		{
+			MUI.notification('error', Lang.get('ionize_message_no_circular_link'));
+		}
+		else
+		{
+			new Request.JSON({
+				url: admin_url + receiver_type + '/add_link',
+				method: 'post',
+				loadMethod: 'xhr',
+				data: {
+					'link_rel': link_rel,
+					'receiver_rel': $('rel').value,
+					'link_type': link_type
+				},
+				onSuccess: function(responseJSON, responseText)
+				{
+					// Set the link title to the textarea
+					droppable.getElement('textarea').set('html', element.getProperty('title'));
+
+					MUI.notification('success', Lang.get('ionize_message_operation_ok'));
+
+					// JS Callback
+					if (responseJSON && responseJSON.callback)
+					{
+						MUI.execCallbacks(responseJSON.callback);
+					}
+				}
+			}).send();
+		}
+	},
+
+
+
+
+	/**
+	 * Drops one article as link for another article / page
+	 *
+	 *
+	 */
+	dropArticleAsLink: function(element, droppable, event)
+	{
+		ION.dropElementAsLink('article', element, droppable);
+	},
+
+
+	/**
+	 * Drops one page as link for another article / page
+	 *
+	 *
+	 */
+	dropPageAsLink: function(element, droppable, event)
+	{
+		ION.dropElementAsLink('page', element, droppable);
+	},
+
 	
 	switchArticleStatus: function(id_page, id_article)
 	{
@@ -1355,10 +1847,23 @@ var ION = new Hash({
 		{
 			this.fx.toggle();
 			this.toggleClass('expand');
-			this.getParent('ul').toggleClass('highlight');
+			this.getParent('li').toggleClass('highlight');
+//			this.getParent('ul').toggleClass('highlight');
 		});
 	},
 	
+	insertDomElement: function(container, where, html)
+	{
+		var div = new Element('div');
+		div.set('html', html);
+
+		var el = div.getFirst();
+		
+		el.inject(container, where);
+	},
+	
+
+
 		
 	/**
 	 * URL correction init
@@ -1575,15 +2080,7 @@ ION.Tree = new Class({
 			var folderImage = new Element('div', {'class': 'tree-img drag folder' + homeClass}).inject(folder, 'top');
 	
 			// Define which open and close graphic ( + - ) each folder gets
-			var addclass = '';
-			if (idx == 0) {	addclass = 'first';	}
-			else {
-				if ( !folder.getNext()) { 
-					addclass = 'last';
-				}
-			}
-
-			var image = new Element('div', {'class': 'tree-img plus ' + addclass});
+			var image = new Element('div', {'class': 'tree-img plus'});
 			
 			image.addEvent('click', this.openclose).inject(folder, 'top');
 
@@ -1600,11 +2097,9 @@ ION.Tree = new Class({
 			// Add connecting branches to each file node
 			folderContents.each(function(element){
 				var docs = element.getChildren('li.doc').extend(element.getChildren('li.sticky'));
-				docs.each(function(el) {
-					// Last branche
-					if (el == docs.getLast() && !el.getNext()) { new Element('div', {'class': 'tree-img line last'}).inject(el.getElement('span'), 'before');}
-					// Tree branche
-					else { new Element('div', {'class': 'tree-img line node'}).inject(el.getElement('span'), 'before');}
+				docs.each(function(el)
+				{
+					new Element('div', {'class': 'tree-img line node'}).inject(el.getElement('span'), 'before');
 				});
 			});
 			
@@ -1612,7 +2107,7 @@ ION.Tree = new Class({
 			this.addPageActionLinks(folder);
 			
 			// Make the folder name draggable
-			ION.makeLinkDraggable(folder.getLast('span').getElement('a'), 'page');
+			ION.addDragDrop(folder.getElement('a.title'), '.dropPageAsLink,.dropPageInArticle', 'ION.dropPageAsLink,ION.dropPageInArticle');
 			
 
 		}.bind(this));
@@ -1622,8 +2117,7 @@ ION.Tree = new Class({
 		{
 			// Add connecting branches to each node
 			node.getParents('li').each(function(parent){
-				if (parent.getNext() || !parent.hasClass('last')) {	new Element('div', {'class': 'tree-img line'}).inject(node, 'top');}
-				else { new Element('div', {'class': 'tree-img line empty'}).inject(node, 'top');}
+				new Element('div', {'class': 'tree-img line'}).inject(node, 'top');
 			});
 			
 			var typeClass = (node.hasClass('doc')) ? 'file' : 'sticky' ;
@@ -1640,14 +2134,10 @@ ION.Tree = new Class({
 				this.addEditLink(node, 'article');
 				
 				// Actions
-//				this.addArticleActionLinks(node);
+				// this.addArticleActionLinks(node);
 				
 				// Make the article name draggable
-				ION.makeLinkDraggable(node.getLast('span').getElement('a'), 'article');
-				
-//				ION.addDragDrop(title, '.dropNote', 'NOSE.dropNote');
-
-				
+				ION.addDragDrop(title, '.dropArticleInPage,.dropArticleAsLink,.folder', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
 			}
 			
 			// Mouse over effect
@@ -1669,8 +2159,6 @@ ION.Tree = new Class({
 		$$('#' + element + ' .articleContainer').each(function(item, idx) { 
 			item.store('articleManager', new ION.ArticleManager({ container: item.id , id_parent: item.getProperty('rel')}));
 		}.bind(this));
-		
-		
 	},
 
 
@@ -1708,7 +2196,8 @@ ION.Tree = new Class({
 	 */
 	addEditLink: function(el, type)
 	{
-		var a = el.getLast('span').getElement('a');
+//		var a = el.getLast('span').getElement('a');
+		var a = el.getElement('a.title');
 		var rel = (a.getProperty('rel')).split(".");
 		var id = rel[0];
 		
@@ -1720,7 +2209,9 @@ ION.Tree = new Class({
 		a.addEvent('click', function(e)
 		{
 			e.stop();
-
+			
+//			ION.editArticle(this.getProperty('rel'), Lang.get('ionize_title_edit_' + type));
+			
 			MUI.updateContent({
 				'element': p,
 				'loadMethod': 'xhr',
@@ -1830,7 +2321,6 @@ ION.Tree = new Class({
 		
 		// Action elements
 		var iconOnline = icon.clone().adopt(new Element('a', {'class': 'status ' + status + ' article' + flat_rel, 'rel': rel}));
-//		var iconDelete = icon.clone().adopt(new Element('a', {'class': 'delete', 'rel': id}));
 		var iconUnlink = icon.clone().adopt(new Element('a', {'class': 'unlink', 'rel': rel}));
 		action.adopt(iconOnline, iconUnlink);
 		
@@ -1838,7 +2328,7 @@ ION.Tree = new Class({
 		this.addArticleActionLinks(action);
 		
 		// Add drag to article link
-		ION.makeLinkDraggable(a,'article');
+		ION.addDragDrop(a, '.dropArticleInPage,.dropArticleAsLink,.folder', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
 		
 		// Flag span
 		var span = new Element('span', {'class':'flag flag' + options.flag});
@@ -1865,7 +2355,6 @@ ION.Tree = new Class({
 			var lis = container.getChildren('li');
 			
 			// Node lines
-			if (options.ordering > lis.length) nodeLine.removeClass('node').addClass('last');
 			nodeLine.inject(li, 'top');
 			for (var i=0; i < treeLines.length -1; i++)	{ 
 				treeline.clone().inject(li, 'top'); 
@@ -1874,19 +2363,11 @@ ION.Tree = new Class({
 			// Inject LI at the correct pos
 			if (options.ordering == '1') li.inject(container, 'top');
 			else li.inject(lis[options.ordering -2], 'after');
-			
-			// Correct the upper article nodeline
-			if (nodeBefore = li.getPrevious())
-			{
-				nodeTree = nodeBefore.getChildren('.tree-img');
-				nodeTree[nodeTree.length-2].removeClass('last').addClass('node');
-			}
 		}
 		// if no article container, we will create one.
 		else
 		{
 			// Node lines
-			nodeLine.addClass('last');
 			nodeLine.inject(li, 'top');
 			for (var i=0; i < treeLines.length -1; i++)	{ treeline.clone().inject(li, 'top'); }
 
@@ -1963,7 +2444,7 @@ ION.Tree = new Class({
 		var treeLines = $$('#page_' + id_parent + ' > .tree-img');
 		
 		/* Make the li draggable */
-		ION.makeLinkDraggable(a, 'page');
+		ION.addDragDrop(a, '.dropPageAsLink,.dropPageInArticle', 'ION.dropPageAsLink,ION.dropPageInArticle');
 
 	
 		// Try to get the parent UL container
@@ -2013,7 +2494,10 @@ ION.Tree = new Class({
 });
 
 
-
+/**
+ * Gives ability to an input to have the "droppable" class and to chnage class on focus / blur
+ *
+ */
 ION.Droppable = new Class({
 
 	Implements: [Events, Options],
@@ -2323,33 +2807,37 @@ ION.PageManager = new Class({
 			'container': options.container
 		});
 		
-		
 		// Makes items sortable
 		this.makeSortable();
-	},
-	
-
-
-// HERE	
-// HERE	
-// HERE	
-// HERE	
-// A voir si pertinent
-	/**
-	 * Init potential status buttons (switch online / offline)
-	 *
-	 */
-	initStatusEvents: function()
-	{
-		$$('#' + this.options.container + ' .status').each(function(item,idx)
-		{
-			ION.initPageStatusEvent(item);
-		});
 	}
-	
 });
 
 
+/**
+ 
+Class: Notify
+	Creates a windows notification box.
+
+Syntax:
+	(start code)
+	new ION.Notify(target, options);
+	(end)
+
+Arguments:
+	target - (string) ID of the window
+	options
+
+Options:
+	className - (string) Optional box class name
+	type - (string) Box type. Can be 'error', 'information', 'alert'
+
+Returns:
+	Notify box object.
+	
+Example :
+
+
+*/
 ION.Notify = new Class({
 
 	Implements: [Events, Options],
@@ -2361,7 +2849,7 @@ ION.Notify = new Class({
 		this.displayed = false;
 		
 		// new Element('p').set('text', options.message)
-		this.box = new Element('div', {'class':options.class + ' ' + options.type});
+		this.box = new Element('div', {'class':options.className + ' ' + options.type});
 		
 		this.box.set('slide', 
 		{
@@ -2525,6 +3013,12 @@ var IonizeMediaManager = new Class(
 		}
 	},
 	
+	initParent: function(parent, id_parent)
+	{
+		this.parent = parent;
+		this.idParent = id_parent;
+	},
+	
 	/**
 	 * Adds one medium to the current parent
 	 * Called by callback by the file / image manager
@@ -2624,6 +3118,7 @@ var IonizeMediaManager = new Class(
 		// Receiver container
 		var container = $(this.containers.get(responseJSON.type));
 	
+
 		if (responseJSON && responseJSON.content)
 		{
 			// Feed the container with responseJSON content		
@@ -2664,6 +3159,9 @@ var IonizeMediaManager = new Class(
 		{
 			container.set('html', responseJSON.message);
 		}
+
+		// Add the media number to the tab
+		ION.updateTabNumber(responseJSON.type + 'Tab', container.getProperty('id'));
 	},
 
 
@@ -2733,7 +3231,11 @@ var IonizeMediaManager = new Class(
 		{
 			url: this.adminUrl + 'media/detach_media/' + type + '/' + this.parent + '/' + this.idParent + '/' + id,
 			method: 'post',
-			onSuccess: this.disposeMedia.bind(this),
+//			onSuccess: this.disposeMedia.bind(this),
+			onSuccess: function()
+			{
+				this.loadMediaList(type);
+			}.bind(this),
 			onFailure: this.failure.bind(this)
 		}).send();
 	},
@@ -2974,6 +3476,8 @@ var IonizeMediaManager = new Class(
 
 
 
+
+
 /**
  * ION object extensions
  */
@@ -3061,87 +3565,6 @@ ION.extend({
 
 
 	/**
-	 * SAves the current open lang tab (page / article) to cookie
-	 *
-	 */
-	setOpenTabToCookie: function(group, id, prefix)
-	{
-		if (prefix == null) { prefix = ''; }
-		
-		Cookie.write('tab', group + ',' + id + ',' + prefix);
-	},
-	
-	
-	diplayCookieTab: function()
-	{
-		if (Cookie.read('tab'))
-		{
-			tab = (Cookie.read('tab')).split(',');
-			
-			if (tab[0] && tab[1])
-			{
-				$('tab-' + tab[1]).fireEvent('click', this);
-			}
-		}	
-	},
-	
-	displayBlock: function(group, id, prefix)
-	{
-		if (prefix == null)
-		{
-			prefix = '';
-		}
-	
-		if ($('block' + prefix + '-' + id))
-		{
-			$$(group).setStyle('display', 'none');
-		
-			$('block' + prefix + '-' + id).setStyle('display', 'block');
-		
-			element = $('tab' + prefix + '-' + id);
-		
-			// update the menu item
-			element.getParent('ul').getChildren('li').each(function(el){
-				el.removeClass('active');
-			});
-		
-			element.addClass('active');
-		}
-	},	
-
-
-	/**
-	 * Displays one language block and set the current displayed title
-	 *
-	 */
-	displayLangBlock: function(group, lang, prefix)
-	{
-		if (prefix == null)
-		{
-			prefix = '';
-		}
-
-		if ($('block' + prefix + '-' + lang))
-		{
-			$$(group).setStyle('display', 'none');
-		
-			$('block' + prefix + '-' + lang).setStyle('display', 'block');
-		
-			element = $('tab' + prefix + '-' + lang);
-		
-			// Update the current displayed tab style
-			element.getParent('ul').getChildren('li').each(function(el){
-				el.removeClass('active');
-			});
-		
-			element.addClass('active');
-			
-			// Update the displayed lang title
-//			$('main-title').set('text', $('title_' + lang).value);
-		}
-	},
-	
-	/**
 	 * Updates the given HTML DOM object ID with the source text on source value change
 	 * 
 	 * @param	String		HTML DOM object ID
@@ -3195,7 +3618,6 @@ ION.extend({
 	/**
 	 * Save one view
 	 *
-	 */
 	editAreaSave: function(id, content)
 	{
 		MUI.showSpinner();
@@ -3225,6 +3647,7 @@ ION.extend({
 			}
 		}).send();
 	},
+	 */
 	
 	
 	/**
@@ -3238,7 +3661,7 @@ ION.extend({
 		var consonants = 'bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ1234567890@#$!()';
 	 
 		var key = '';
-		
+
 		var alt = Date.time() % 2;
 		for (var i = 0; i < size; i++) {
 			if (alt == 1) {
@@ -3259,13 +3682,19 @@ ION.extend({
 	 */
 	clearField: function(field) 
 	{
-		if ($(field))
+		if ($type($(field)) != false )
 		{
-			$(field).value='';
+			$(field).value = '';
 			$(field).focus();
 		}
+	},
+
+	checkUrl: function(url)
+	{
+		var RegexUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+		return RegexUrl.test(url);
 	}
-	
+
 });
 
 
@@ -3304,4 +3733,5 @@ Date.extend({
 	}
 
 });
+
 

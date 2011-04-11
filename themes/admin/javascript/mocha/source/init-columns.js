@@ -125,5 +125,6 @@ initializeColumns = function() {
 		headerToolboxURL: admin_url + 'desktop/get/toolboxes/empty_toolbox'
 	});
 
+
 	MUI.myChain.callChain();
 }

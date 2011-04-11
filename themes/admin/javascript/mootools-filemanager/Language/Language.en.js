@@ -17,6 +17,8 @@ FileManager.Language.en = {
 	create: 'Create folder',
 	createdir: 'Please specify a folder name:',
 	cancel: 'Cancel',
+	uploadUrl: 'Upload from URL',
+	addUrl: 'Add URL',
 	
 	information: 'Information',
 	type: 'Type:',

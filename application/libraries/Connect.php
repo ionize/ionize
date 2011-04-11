@@ -822,11 +822,13 @@ class Connect {
 			// Set the user's group
 			if($this->verify_user)
 			{
-			    $user_data['id_group'] = $this->model->set_group($this->pending_user_group);
+				$group = $this->get_group($this->pending_user_group);
+			    $user_data['id_group'] = $group['id_group'];
 			}
 			else
 			{
-			    $user_data['id_group'] = $this->model->set_group($this->default_user_group);
+				$group = $this->get_group($this->default_user_group);
+			    $user_data['id_group'] = $group['id_group'];
 			}
 			
 			// Encrypt the password and prepare data for inserting
@@ -870,12 +872,11 @@ class Connect {
 		if($user && $code == $this->calc_activation_key($user))
 		{
 			$g = $this->model->find_group(array('slug' => $this->default_user_group));
-
-			if($user['group']['level'] < $g['level'])
+			
+			// Activate the user only if he is not banned (Security against using the activation link to unban)
+			if($user['group']['level'] < $g['level'] && $user['group']['level'] > 0)
 			{
-				$user->set_group($g[$this->access->groups_pk]);
-
-				return $user->save();
+				return $this->model->set_group($user, $g[$this->model->groups_pk]);
 			}
 		}
 
@@ -894,7 +895,7 @@ class Connect {
 	 */
 	public function calc_activation_key($user)
 	{
-		return sha1(sha1($user['username'] . $user['email']).sha1($user['salt']));
+		return sha1(sha1($user['username'] . $user['email'] . $user['password']).sha1($user['salt']));
 	}
 
 
@@ -1062,7 +1063,35 @@ class Connect {
 		return substr(md5(uniqid(rand(), true)), 0, $this->salt_length);
 	}
 
-	
+
+	/**
+	 * Generates a random password.
+	 *
+	 * @param	int		Password length
+	 * @return	String	Password value
+	 *
+	 **/	
+	public function get_random_password($size = 8)
+	{
+		$vowels = 'aeiouyAEIOUY';
+		$consonants = 'bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ1234567890@#$';
+	 
+		$key = '';
+
+		$alt = time() % 2;
+		
+		for ($i = 0; $i < $size; $i++) {
+			if ($alt == 1) {
+				$key .= $consonants[rand() % strlen($consonants)];
+				$alt = 0;
+			} else {
+				$key .= $vowels[rand() % strlen($vowels)];
+				$alt = 1;
+			}
+		}
+		return $key;
+	}
+
 	// --------------------------------------------------------------------
 
 

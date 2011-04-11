@@ -52,5 +52,5 @@ class Article_type_model extends Base_model
 
 }
 
-/* End of file category_model.php */
-/* Location: ./application/models/category.php */
+/* End of file article_type_model.php */
+/* Location: ./application/models/article_type_model.php */

@@ -8,7 +8,7 @@
 |
 | This lang file can be replaced by a theme one.
 | Simply copy this file in the folder /themes/your_theme/language/xx/
-| and modify the tranlations elements.
+| and modify the translations elements.
 |
 |--------------------------------------------------------------------------
 */

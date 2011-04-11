@@ -10,13 +10,15 @@
 <div id="maincolumn">
 
 	<!-- Page extend fields -->
-	<?php if ($this->connect->is('admins') && Settings::get('use_extend_fields') == '1') :?>
+	<?php if ($this->connect->is('admins') ) :?>
 
 		
 
 		<!-- Tables of existing extended fields.
 			 Must be named like this : extend_fields_<table_type>
 		-->
+		<div id="extend_fields"></div>
+
 		<div id="extend_fields_page"></div>
 		
 		<div id="extend_fields_article"></div>
@@ -32,11 +34,13 @@
 			 * Get Extends fields table
 			 *
 			 */
-			MUI.updateElement({element:'extend_fields_page', url:'extend_field/get_element_extend_fields_table/page'});
+			MUI.updateElement({element:'extend_fields', url:'extend_field/get_extend_fields'});
 			
-			MUI.updateElement({element:'extend_fields_article', url:'extend_field/get_element_extend_fields_table/article'});
+			MUI.updateElement({element:'extend_fields_page', url:'extend_field/get_extend_fields/page'});
 			
-			MUI.updateElement({element:'extend_fields_media', url:'extend_field/get_element_extend_fields_table/media'});
+			MUI.updateElement({element:'extend_fields_article', url:'extend_field/get_extend_fields/article'});
+			
+			MUI.updateElement({element:'extend_fields_media', url:'extend_field/get_extend_fields/media'});
 
 //			MUI.updateElement({element:'extend_fields_users', url:'extend_field/get_element_extend_fields_table/users'});
 			

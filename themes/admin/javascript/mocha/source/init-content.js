@@ -40,7 +40,6 @@ var initializeContent = function()
 		{
 			$('mainPanel_headerToolbox').empty();
 		}
-	
 	};
 	
 	
@@ -84,10 +83,18 @@ var initializeContent = function()
 	 * @param	string 	HTMLElement ID
 	 *	
 	 */
-	MUI.initAccordion = function(togglers, elements) 
-	{	
+	MUI.initAccordion = function(togglers, elements, openAtStart) 
+	{
+		// Hack IE 7 : No Accordion
+		if (Browser.Engine.trident == true && Browser.Engine.version < 6)
+		{
+			return;
+		}
+		
+		var disp = ($type(openAtStart) != false) ? 0 : -1;
+	
 		var acc = new Fx.Accordion(togglers, elements, {
-			display: 0,
+			display: disp,
 			opacity: false,
 			alwaysHide: true,
 			initialDisplayFx: false,
@@ -98,6 +105,8 @@ var initializeContent = function()
 				toggler.removeClass('expand');
 			}
 		});
+		
+		return acc;
 	};
 
 	
@@ -112,7 +121,7 @@ var initializeContent = function()
 		var element = $('sidecolumn');		
 		var button = $('sidecolumnSwitcher');
 		
-		if (button)
+		if (button && element)
 		{
 			// button event
 			button.addEvent('click', function(e)
@@ -122,7 +131,7 @@ var initializeContent = function()
 				if (this.retrieve('status') == 'close')
 				{
 					element.removeClass('close');
-					maincolumn.addClass('with-side');
+					maincolumn.addClass('sidecolumn');
 	
 					this.set('value', Lang.get('ionize_label_hide_options'));
 					this.store('status', 'open');
@@ -133,7 +142,7 @@ var initializeContent = function()
 				else
 				{
 					element.addClass('close');
-					maincolumn.removeClass('with-side');
+					maincolumn.removeClass('sidecolumn');
 					
 					this.set('value', Lang.get('ionize_label_show_options'));
 					this.store('status', 'close');
@@ -147,11 +156,11 @@ var initializeContent = function()
 			 */
 			var pos = Cookie.read('sidecolumn');
 	
-			if (pos != null && pos == 'close')
+			if ($type(pos) != false && pos == 'close')
 			{
 				// element.hide();
 				element.addClass('close');
-				maincolumn.removeClass('with-side');
+				maincolumn.removeClass('sidecolumn');
 				
 				button.set('value', Lang.get('ionize_label_show_options'));
 				button.store('status', 'close');
@@ -159,7 +168,7 @@ var initializeContent = function()
 			else
 			{
 				element.removeClass('close');
-				maincolumn.addClass('with-side');
+				maincolumn.addClass('sidecolumn');
 	
 				button.store('status', 'open');
 				button.set('value', Lang.get('ionize_label_hide_options'));
@@ -234,6 +243,7 @@ var initializeContent = function()
 	
 	/**
 	 * Displays one CSS "help link" on each label which have a title
+	 * For other elements than labels, adding the .help class and one title will be enough to display the tip
 	 *
 	 */
 	MUI.initLabelHelpLinks = function(element)

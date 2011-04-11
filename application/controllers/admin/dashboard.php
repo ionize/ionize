@@ -36,7 +36,7 @@ class Dashboard extends MY_Admin {
 	function index()
 	{
 		// Articles
-		$articles = $this->article_model->get_list(false, 'updated DESC');
+		$articles = $this->article_model->get_list(array('order_by'=>'updated DESC'));
 
 		// Last 5 articles
 		$last_articles = array();
@@ -80,7 +80,7 @@ class Dashboard extends MY_Admin {
 		}
 
 		// Orphan pages
-		$orphan_pages = $this->page_model->get_lang_list(array('id_menu' => '0'), Settings::get_lang('default'), false, false, 'name ASC');
+		$orphan_pages = $this->page_model->get_lang_list(array('id_menu' => '0', 'order_by'=>'name ASC'), Settings::get_lang('default'));
 		
 		// Last connected users
 //		$users = array_filter($this->connect->model->get_users(array('limit'=>'10', 'level > ' => '999'), array($this, '_filter_users'));

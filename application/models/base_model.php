@@ -94,6 +94,7 @@ class Base_model extends Model
 	 *
 	 */
 	protected static $publish_filter = true;
+
 	
 	/*
 	 * Array of table names on which media can be linked
@@ -101,7 +102,41 @@ class Base_model extends Model
 	 */
 	protected $with_media_table = array('page', 'article');
 
+
+	/*
+	 * Array of table names on which content elements can be linked
+	 *
+	 */
+	protected $with_elements = array('page', 'article');
+
 	
+	/*
+	 * Elements definition table
+	 * This table contains definition of each element
+	 *
+	 */ 
+	public $element_definition_table = 		'element_definition';
+	public $element_definition_lang_table = 	'element_definition_lang';
+
+	/*
+	 * Elements intances table.
+	 * This table contains all the elements instances
+	 *
+	 */
+	public $element_table = 		'element';
+
+	/*
+	 * Stores if we already got or not the elements definition
+	 * If we already got them, they don't need to be loaded once more...
+	 *
+	 */
+	protected $got_elements_def = false;
+	
+	/*
+	 * Array of elements definition
+	 * Contains all the elements definition.
+	 */
+	protected $elements_def = array();
 	
 	// ------------------------------------------------------------------------
 
@@ -284,28 +319,34 @@ class Base_model extends Model
 	 *
 	 * @access	public
 	 * @param 	array		An associative array
-	 * @param 	string		order_by field name
-	 * @param 	boolean		Limit value
+	 * @param 	string		table name. Optional.
 	 * @return	array		Array of records
 	 *
 	 */
-	function get_list($where = false, $orderby = null, $limit=false)
+	function get_list($where = FALSE, $table = NULL)
 	{
 		$data = array();
+
+		$table = (!is_null($table)) ? $table : $this->table;
 		
-		if ( is_array($where) )
+		// Perform conditions from the $where array
+		foreach(array('limit', 'offset', 'order_by', 'like') as $key)
+		{
+			if(isset($where[$key]))
+			{
+				call_user_func(array($this->db, $key), $where[$key]);
+				unset($where[$key]);
+			}
+		}
+
+		if ( !empty ($where) )
 			$this->db->where($where);
 
-		if ( ! is_null($orderby) )
-			$this->db->order_by($orderby);
 
-		if ($limit !== false)
-			(is_array($limit)) ? $this->db->limit($limit[1], $limit[0]) : $this->db->limit($limit);
-
-		$this->db->select($this->table.'.*');
+		$this->db->select($table.'.*');
 		
-		$query = $this->db->get($this->table);
-		
+		$query = $this->db->get($table);
+				
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();
 
@@ -375,24 +416,7 @@ class Base_model extends Model
 
 		// Make sure we have only one time each element
 		$this->db->distinct();
-/*
-		if ( $order_by !== FALSE )
-		{
-			if ( ! is_array($order_by))
-			{
-				$order_by = array($order_by);
-			}
-			
-			foreach($order_by as $ob)
-			{
-				$order_settings = explode(' ', $ob);
-				$order_direction = (isset($order_settings[1]) && $order_settings[1] == 'DESC') ? 'DESC' : 'ASC';
-				$order_field = $order_settings[0];
-				
-				$this->db->orderby($order_field, $order_direction);
-			}
-		}
-*/
+
 		// Lang data
 		if ( ! is_null($lang))
 		{
@@ -404,39 +428,12 @@ class Base_model extends Model
 		// Main data select			
 		$this->db->select($this->table.'.*', false);
 
-
 		// Where ?
-
-// TODO : Test with where_in
-
 		if (is_array($where) )
 		{
 			$this->db->where($where);
-			/*
-			foreach ($where as $key => $value)
-			{
-				$protect = true;
-
-				if (substr($key, -2) == 'in')
-				{
-					$protect = false;
-				}
-				if (strpos($key, '.') > 0)
-				{
-					$this->db->where($key, $value, $protect);			
-				}
-				else
-				{
-					$this->db->where($this->table.'.'.$key, $value, $protect);
-				}
-			}
-			*/
 		}
 	
-		// Like ?
-//		if ($like)
-//			$this->db->like($like);
-		
 		$query = $this->db->get($this->table);
 
 // trace($this->db->last_query());
@@ -580,6 +577,9 @@ class Base_model extends Model
 		
 		// N to N table
 		$link_table = $prefix.$parent_table.'_'.$child_table;
+
+		// Correct ambiguous columns
+		$cond = $this->correct_ambiguous_conditions($cond, $link_table);
 
 		$this->db->from($link_table);
 		$this->db->where($cond);
@@ -785,6 +785,34 @@ class Base_model extends Model
 		$this->lang_table = $table;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get the elements definition and store them in the private property "elements_def"
+	 *
+	 * @param	String	Parent type
+	 * @return	Array	Extend fields definition array
+	 */
+	protected function set_elements_definition($lang)
+	{
+		$CI =& get_instance();
+
+		// Loads the model if it isn't loaded
+		if (!isset($CI->element_definition_model))
+			$CI->load->model('element_definition_model');
+			
+		// Get the extend fields definition if not already got
+		if ($this->got_elements_def == false)
+		{
+			// Store the extend fields definition
+			$this->elements_def = $CI->element_definition_model->get_lang_list(FALSE, $lang);
+			
+			// Set this to true so we don't get the extend field def a second time for an object of same kind
+			$this->got_elements_def = true;
+		}
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -1121,10 +1149,10 @@ class Base_model extends Model
 				// Add extended fields values for each media
 				// Needs to be improved as the extend fieldsdefinition loaded in $this->extend_fields_def are these from the table and not from the medias...
 				// But this has no importance, it's just not clean.
-				if (Settings::get('use_extend_fields') == '1' && !empty($data[$k]['medias']))
-				{
+//				if (Settings::get('use_extend_fields') == '1' && !empty($data[$k]['medias']))
+//				{
 					$this->add_extend_fields($data[$k]['medias'], 'media', $lang);
-				}
+//				}
 				
 				// Add file extension to each media
 				foreach($data[$k]['medias'] as &$media)
@@ -1139,10 +1167,10 @@ class Base_model extends Model
 		{
 			$data['medias'] = array_values(array_filter($result, create_function('$row','return $row["'.$this->pk_name.'"] == "'. $data[$this->pk_name] .'";')));
 
-			if (Settings::get('use_extend_fields') == '1' && !empty($data['medias']))
-			{
+//			if (Settings::get('use_extend_fields') == '1' && !empty($data['medias']))
+//			{
 				$this->add_extend_fields($data['medias'], 'media', $lang);
-			}
+//			}
 			
 			// Add file extension to each media
 			foreach($data['medias'] as &$media)
@@ -1211,11 +1239,64 @@ class Base_model extends Model
 	 * @param	String	Lang code
 	 *
 	 */
+	protected function add_elements(&$data, $parent, $lang)
+	{	
+		$CI =& get_instance();
+
+		// Loads the model if it isn't loaded
+		if (!isset($CI->element_definition_model))
+			$CI->load->model('element_definition_model');
+
+
+		// get the elements definition array
+		$this->set_elements_definition($lang);
+
+		// Get the elements ID to filter the SQL on...
+		$ids = array();
+		
+		foreach ($data as $d)
+		{
+			$ids[] = $d['id_'.$parent];
+		}
+/*		
+		// Get all definitions
+		$definitions = $this->get_lang_list(array('order_by' => 'ordering ASC'), Settings::get_lang('default'));
+
+		if ( ! is_null($lang))
+		{
+			$this->db->select($this->element_definition_lang_table.'.*');
+			$this->db->join($this->element_definition_table, $this->element_definition_lang_table.'.id_'.$this->element_definition_table.' = ' .$this->element_definition_table.'.id_'.$this->element_definition_table, 'inner');			
+			$this->db->order_by($this->element_definition_table.'ordering', 'ASC');
+			$this->db->where($this->element_definition_lang_table.'.lang', $lang);
+
+			$query = $this->db->get($this->element_definition_lang_table);
+
+		}
+*/
+		$elements = $CI->element_definition_model->get_definitions_from_parent($parent);
+
+
+		// trace($elements);
+
+
+	}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Add extended fields and their values if website settings allow it.
+	 * 
+	 * @param	Array	Data array. By ref.
+	 * @param	String	Parent type. can be "page", "article", etc.
+	 * @param	String	Lang code
+	 *
+	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{	
 		// Check the website settings regarding the extend fields
-		if (Settings::get('use_extend_fields') == '1')
-		{
+//		if (Settings::get('use_extend_fields') == '1')
+//		{
 			// get the extend fields definition array
 			$this->set_extend_fields_definition($this->table);
 			
@@ -1238,7 +1319,7 @@ class Base_model extends Model
 			if ( $query->num_rows() > 0)
 				$result = $query->result_array();
 			
-			// Filter the result by lang : Only returns the not translated data and the given language tranlated data
+			// Filter the result by lang : Only returns the not translated data and the given language translated data
 			$result = array_filter($result,  create_function('$row','return ($row["lang"] == "'. $lang .'" || $row["lang"] == "" );'));
 
 			// Attach each extra field to the corresponding data array
@@ -1268,7 +1349,7 @@ class Base_model extends Model
 					}
 				}
 			}			
-		}
+//		}
 	}
 
 
@@ -1477,8 +1558,10 @@ class Base_model extends Model
 	 * @param	array	By ref, the template array
 	 *
 	 */
-	function feed_blank_template(&$template)
+	function feed_blank_template(&$template = FALSE)
 	{
+		if ($template == FALSE) $template = array();
+
 		$fields = $this->db->list_fields($this->table);
 
 		$fields_data = $this->field_data($this->table);
@@ -1490,7 +1573,7 @@ class Base_model extends Model
 
 			$template[$field] = (isset($field_data['Default'])) ? $field_data['Default'] : '';
 		}
-
+		return $template;
 	}
 
 
@@ -1503,8 +1586,10 @@ class Base_model extends Model
 	 * @param	array	By ref, the template array
 	 *
 	 */
-	function feed_blank_lang_template(&$template)
+	function feed_blank_lang_template(&$template = FALSE)
 	{
+		if ($template == FALSE) $template = array();
+	
 		$fields = $this->db->list_fields($this->lang_table);
 
 		$fields_data = $this->field_data($this->lang_table);
@@ -1521,6 +1606,7 @@ class Base_model extends Model
 				$template[$lang][$field] = (isset($field_data['Default'])) ? $field_data['Default'] : '';
 			}
 		}
+		return $template;
 	}
 
 
@@ -1622,7 +1708,7 @@ class Base_model extends Model
 		}
 	
 		$this->db->delete($table);
-		
+				
 		return (int) $this->db->affected_rows();
 	}
 
@@ -1754,12 +1840,24 @@ class Base_model extends Model
 	{
 		if (is_array($array))
 		{
+		/*
+			foreach ($array as $key => $val)
+			{
+				if ($key == $this->pk_name)
+				{
+					unset($array[$key]);
+					$key = $this->table.'.'.$key;
+					$array[$key] = $val;
+				}
+			}
+		*/
 			foreach ($array as $key => $val)
 			{
 				unset($array[$key]);
 				$key = $table.'.'.$key;
 				$array[$key] = $val;
 			}
+
 			return $array;
 		}
 	}

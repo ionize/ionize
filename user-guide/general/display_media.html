@@ -28,7 +28,7 @@
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td><h1>Ionize User Guide Version 0.9.7</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -66,11 +66,7 @@ Display Media
 <p>4 kind of media are available : picture, music, video and file.</p>
 
 
-<h3>Code example</h3>
-
 <pre>
-&lt;html>
-
 <dfn>&lt;!-- Displays the page title --></dfn>
 &lt;ion:title />
 
@@ -97,8 +93,29 @@ Display Media
 
 &lt;/ion:article>
 
-&lt;/html>
 </pre>
+
+
+<h2>Display only one media</h2>
+
+<p>Displaying the first linked media of an article or a page will be done like this :</p>
+
+<pre>
+<dfn>&lt;!-- Displays the first picture from thumb folder called "thumb_230" --></dfn>
+&lt;img src="&lt;ion:media type="picture" folder="230" attr="src" />" alt="&lt;ion:media type="picture" attr="alt" />" />
+</pre>
+
+<p>If you want to display a enclosing media tag only if a picture is linked to a parent, you will need to use a little block of PHP :</p>
+
+<pre>
+<dfn>&lt;!-- Conditional display of the first picture --></dfn>
+<kbd>&lt;php</kbd> if('&lt;ion:media type="picture" attr="src" />' != '') <kbd>:?></kbd>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="my_class">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;img src="&lt;ion:media type="picture" folder="230" attr="src" />" alt="&lt;ion:media type="picture" attr="alt" />" />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div>
+<kbd>&lt;php</kbd> endif <kbd>;?></kbd>
+</pre>
+
 
 
 
@@ -112,7 +129,7 @@ Previous Topic:&nbsp;&nbsp;<a href="./articles_from_another_page.html.html">Disp
 &nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 <a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
 <a href="../index.html">User Guide Home</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
-Next Topic:&nbsp;&nbsp;<a href="extended_fields.html">Extend the data model</a>
+Next Topic:&nbsp;&nbsp;<a href="extend_the_data_model.html">Extend the data model</a>
 </p>
 <p><a href="http://www.ionizecms.com/">Ionize website</a></p>
 </div>

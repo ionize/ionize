@@ -48,7 +48,7 @@
 	<!-- Parent page -->
 	<dl class="small">
 		<dt>
-			<label for="dup_id_page"><?= lang('ionize_label_parent') ?></label>
+			<label for="dup_id_page"><?= lang('ionize_label_page') ?></label>
 		</dt>
 		<dd>
 			<?= $parent_select ?>

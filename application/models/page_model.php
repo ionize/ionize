@@ -47,7 +47,7 @@ class Page_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	function get_lang_list($where=false, $lang=NULL, $limit=false, $like=false)
+	function get_lang_list($where=false, $lang=NULL)
 	{
 		// Order by ordering field
 		$this->db->orderby($this->table.'.level', 'ASC');
@@ -56,7 +56,7 @@ class Page_model extends Base_model
 		// Filter on published
 		$this->filter_on_published(self::$publish_filter, $lang);
 
-		return parent::get_lang_list($where, $lang, $limit, $like);
+		return parent::get_lang_list($where, $lang);
 	}
 
 
@@ -77,6 +77,7 @@ class Page_model extends Base_model
 		// Dates
 		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on']) : '0000-00-00';
 		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off']) : '0000-00-00';
+		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date']) : '0000-00-00';
 
 		// Creation date
 		if( ! ($data['id_page']) )
@@ -181,7 +182,7 @@ class Page_model extends Base_model
 		$this->db->query($sql);
 	
 		// Update of articles which link to this page
-		$sql = "update article as a
+		$sql = "update page_article as a
 				set a.link = '".$link_name."'
 				where a.link_type = 'page'
 				and a.link_id = " . $id_page;
@@ -190,6 +191,7 @@ class Page_model extends Base_model
 
 
 		// Update of articles (lang table) which link to this page
+		/*
 		$sql = "update article_lang as al
 					inner join article as a on a.id_article = al.id_article
 					inner join page_lang as p on p.id_page = a.link_id
@@ -199,6 +201,7 @@ class Page_model extends Base_model
 				and a.link_id = " . $id_page;
 		
 		$this->db->query($sql);
+		*/
 	}
 
 
@@ -316,21 +319,24 @@ class Page_model extends Base_model
 	 *
 	 * @return	array	Parent array
 	 */
-	function get_parent_array($id_page, $data=array())
+	function get_parent_array($id_page, $data=array(), $lang = FALSE)
 	{
-		$result = $this->get($id_page);
+		$result = $this->get($id_page, $lang);
 
 		if (isset($result['id_parent']) && $result['id_parent'] != 0 )
 		{
-			$data = $this->get_parent_array($result['id_parent'], $data);
+			$data = $this->get_parent_array($result['id_parent'], $data, $lang);
 		}
 		
 		if (!empty($result))
 		{
+			/*
 			$data[] = array(
-							'id_page'	=> $result['id_page'],
-							'name' => $result['name'],
-						);
+				'id_page'	=> $result['id_page'],
+				'name' => $result['name']
+			);
+			*/
+			$data[] = $result;
 		}					
 		
 		return $data;

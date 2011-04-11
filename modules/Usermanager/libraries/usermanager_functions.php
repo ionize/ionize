@@ -1,30 +1,30 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Usermanager_Functions {
-
+class Usermanager_Functions
+{
 	// Additional errors, that are added to the error-string besides form_validation-errors
 	public $additional_err = array();
 	public $additional_notices = array();
 	public $additional_success = array();
+	
 
 	function __construct()
     {
 		$this->_set_error_messages();
 	}
 
+
 	/*
 	 * Main functions
 	 * For input processing and output creation
+	 *
 	 */
-
 	public function check_login_input()
 	{
 		include APPPATH . '../modules/Usermanager/config/config.php';
 		$ci =  &get_instance();
 
 		$err = false;
-
-		//$ci->form_validation->set_error_delimiters('<div class="error">', '</div>');
 
 		foreach ($config['usermanager_login_model'] as $key => $val)
 		{
@@ -57,17 +57,6 @@ class Usermanager_Functions {
 		}
 	}
 
-	/*public function prepare_login_output()
-	{
-		include APPPATH . '../modules/Usermanager/config/config.php';
-		$ci =  &get_instance();
-		$ret = $this->_prep_ret();
-		foreach ($config['usermanager_login_model'] as $key => $val)
-		{
-			$ret['fields'][$key] = $ci->input->post($key);
-		}
-		return $ret;
-	}*/
 
 	public function check_register_input()
 	{
@@ -81,8 +70,10 @@ class Usermanager_Functions {
 			if ($config['usermanager_email_as_username'] == false || ($config['usermanager_email_as_username'] == true && $key != "username"))
 			{
 				$ci->form_validation->set_rules($key, "lang:module_usermanager_field_".$key, $val['rules']);
+
 				if ($val['special_field'] === "restricted")
 					$this->_restricted($key);
+
 				if ($val['special_field'] === "id_user")
 					$this->_id_user($key);
 
@@ -90,8 +81,13 @@ class Usermanager_Functions {
 					if ($ci->input->post($key) === false)
 						if (!$val['special_field'] === "checkbox") // Because of Checkboxes
 							$_POST[$key] = $val['default_value'];
+
 				if ($ci->input->post($key) === "on" && $val['special_field'] === "checkbox")
 					$_POST[$key] = "1";
+
+				// AntiSpam
+				if ($val['rules'] === 'antispam')
+					$this->_antispam($key);
 			}
 		}
 
@@ -110,19 +106,6 @@ class Usermanager_Functions {
 		}
 	}
 
-	/*public function prepare_register_output()
-	{
-		include APPPATH . '../modules/Usermanager/config/config.php';
-		$ci =  &get_instance();
-		$ret = $this->_prep_ret();
-		foreach ($config['usermanager_user_model'] as $key => $val)
-		{
-			$ret['fields'][$key] = $val['default_value'] === false ? "" : $val['default_value'];
-			$ret['fields'][$key] = !($ci->input->post("$key") === false) ? $ci->input->post($key) : $ret['fields'][$key];
-			$ret['fields'][$key] = $ci->input->post("$key") === false && ($val['default_value'] === "1" || $val['default_value'] === 1) && !($ci->input->post("register") === "1") ? "1" : $ci->input->post("$key"); // Checkboxes
-		}
-		return $ret;
-	}*/
 
 	public function check_profile_input()
 	{
@@ -138,8 +121,10 @@ class Usermanager_Functions {
 				if ($key != "password" && $key != "password2" || ($key == "password" && $ci->input->post('password')) || ($key == "password2" && $ci->input->post('password2')))
 				{
 					$ci->form_validation->set_rules($key, "lang:module_usermanager_field_".$key, $val['rules']);
+					
 					if ($val['special_field'] === "restricted")
 						$this->_restricted($key);
+					
 					if ($val['special_field'] === "id_user")
 						$this->_id_user($key);
 
@@ -147,10 +132,13 @@ class Usermanager_Functions {
 						if ($ci->input->post($key) === false)
 							if (!$val['special_field'] === "checkbox") // Because of Checkboxes
 								$_POST[$key] = $val['default_value'];
+					
 					if ($ci->input->post($key) === false)
 						$_POST[$key] = "";
+					
 					if ($ci->input->post($key) === "on" && $val['special_field'] === "checkbox")
 						$_POST[$key] = "1";
+					
 				}
 			}
 		}
@@ -170,27 +158,6 @@ class Usermanager_Functions {
 		}
 	}
 
-	/*public function prepare_profile_output()
-	{
-		$ret = $this->_prep_ret();
-		return $ret;
-	}*/
-
-	/*public function prepare_profile_edit_output()
-	{
-		include APPPATH . '../modules/Usermanager/config/config.php';
-		$ci =  &get_instance();
-		$ret = $this->_prep_ret();
-		foreach ($config['usermanager_user_model'] as $key => $val)
-		{
-			$ret['fields'][$key] = "";
-			$ret['fields'][$key] = isset($ret['user'][$key]) && $ret['user'][$key] && ($ci->input->post('edit') === "1" || strstr($val['rules'], 'max_length[1]') === false) ? $ret['user'][$key] : $ret['fields'][$key];
-			if ($key === "password" || $key == "password2")
-				$ret['fields'][$key] = "";
-			$ret['fields'][$key] = !($ci->input->post("$key") === false) ? $ci->input->post($key) : $ret['fields'][$key];
-		}
-		return $ret;
-	}*/
 
 	// Everything, that is present, will be set. Regardless of which fields are required. Restricted fields will still be left out.
 	public function check_random_fields_input()
@@ -235,8 +202,10 @@ class Usermanager_Functions {
 	public function check_additional_errors()
 	{
 		$ci =  &get_instance();
+		
 		foreach ($this->additional_err as $key => $val)
 			$ci->form_validation->_error_array[$key] = $val;
+		
 		if (sizeof($ci->form_validation->_error_array) > 0)
 		{
 			unset($this->additional_err);
@@ -245,6 +214,20 @@ class Usermanager_Functions {
 		}
 		return false;
 	}
+
+	/**
+	 * Called by check_...() 
+	 * 
+	 */
+	private function _antispam($val)
+	{
+		$ci =  &get_instance();
+
+		if ($ci->input->post($val) != config_item('form_antispam_key'))
+			$this->additional_err['spam'] = lang('module_usermanager_error_spam');
+	}	
+
+
 
 	private function _set_error_messages()
 	{
@@ -269,23 +252,6 @@ class Usermanager_Functions {
 		$ci->form_validation->set_message('is_natural_no_zero', lang('module_usermanager_error_is_natural_no_zero'));
 	}
 
-	/*private function _prep_ret()
-	{
-		include APPPATH . '../modules/Usermanager/config/config.php';
-		$ci =  &get_instance();
-		$this->check_additional_errors();
-		return array( "admin_url" => base_url()."admin",
-					  "profile_url" => base_url().$ci->settings->get_lang()."/".$config['usermanager_profile_url'],
-					  "register_url" => base_url().$ci->settings->get_lang()."/".$config['usermanager_register_url'],
-					  "login_url" => base_url().$ci->settings->get_lang()."/".$config['usermanager_login_url'],
-					  "url" => (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
-					  "user" => $ci->usermanager_user->get_current_user(),
-					  "fields" => array(),
-					  "login_field_name" => $config['usermanager_email_as_username'] ? "email" : "username",
-					  "login_field_label" => $config['usermanager_email_as_username'] ? lang("module_usermanager_field_email") : lang("module_usermanager_field_username"),
-					  "connect" => &$ci->connect,
-				  	  "error" => (isset($ci->form_validation) && $ci->form_validation->error_string() ? $ci->form_validation->error_string() : ""));
-	}*/
 
 	/*
 	 * Custom form_validation rules

@@ -22,7 +22,6 @@ table { border-collapse: collapse; border-spacing: 0; }
 :focus { outline: none; }
 
 /* Structure */
-
 body {
 	text-align: left;
 	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
@@ -69,7 +68,7 @@ a:hover {}
 
 p {
 	margin: 0;
-	padding: 0 0 9px 0;
+	padding: 0 0 5px 0;
 }
 
 .lite {

@@ -31,6 +31,11 @@ Options:
 
 require_once(FileManagerUtility::getPath() . '/Filemanager/Upload.php');
 require_once(FileManagerUtility::getPath() . '/Filemanager/Image.php');
+require_once(FileManagerUtility::getPath() . '/Filemanager/GetImage.php');
+
+// Debug only
+require_once(FileManagerUtility::getPath() . '/../helpers/trace_helper.php');
+
 
 class Filemanager {
 	
@@ -41,15 +46,17 @@ class Filemanager {
 	protected $options;
 	protected $post;
 	protected $get;
+	protected $allowed_extensions = array();
 	
-	public function __construct($options){
+	public function __construct($options)
+	{
 		$path = FileManagerUtility::getPath();
 		
 		$this->options = array_merge(array(
 			'directory' => '../Demos/Files',
 			'baseURL' => '',
 			'assetBasePath' => '../Assets',
-			'id3Path' => $path . '/Filemanager/Assets/getid3/getid3.php',
+			'id3Path' => $path . '/getid3/getid3.php',
 			'mimeTypesPath' => $path . '/Filemanager/MimeTypes.ini',
 			'dateFormat' => 'j M Y - H:i',
 			'maxUploadSize' => 1024 * 1024 * 3,
@@ -67,6 +74,8 @@ class Filemanager {
 		$this->basename = pathinfo($this->basedir, PATHINFO_BASENAME) . '/';
 		$this->path = realpath($this->options['directory'] . '/../');
 		$this->length = strlen($this->path);
+
+		$this->allowed_extensions = array_merge(explode(",", Settings::get('media_type_picture')), explode(",", Settings::get('media_type_music')), explode(",", Settings::get('media_type_video')), explode(",", Settings::get('media_type_file')));
 
 		
 //		header('Expires: Fri, 01 Jan 1990 00:00:00 GMT');
@@ -106,14 +115,17 @@ class Filemanager {
 	{
 		$dir = $this->getDir(!empty($this->post['directory']) ? $this->post['directory'] : null);
 		$files = ($files = glob($dir . '/*')) ? $files : array();
-
+		
 		if ($dir != $this->basedir) array_unshift($files, $dir . '/..');
 		natcasesort($files);
-
+		
 		foreach ($files as $file)
 		{
 			$mime = $this->getMimeType($file);
 
+			if ( is_file($file) && ( ! in_array(pathinfo($file, PATHINFO_EXTENSION), $this->allowed_extensions)) )
+				continue;
+			
 			if ($this->options['filter'] && $mime != 'text/directory' && !FileManagerUtility::startsWith($mime, $this->options['filter']))
 				continue;
 			
@@ -123,7 +135,7 @@ class Filemanager {
 				'mime' => $this->getMimeType($file),
 				'icon' => $this->getIcon($this->normalize($file)),
 				'size' => filesize($file),
-		'path' => $file
+				'path' => $file
 			);
 		}
 		
@@ -205,9 +217,9 @@ class Filemanager {
 					</object>
 				</div>
 				<dl>
-					<dt>${title}</dt><dd>' . @$getid3->info['comments']['title'][0] . '</dd>
-					<dt>${artist}</dt><dd>' . @$getid3->info['comments']['artist'][0] . '</dd>
-					<dt>${album}</dt><dd>' . @$getid3->info['comments']['album'][0] . '</dd>
+					<dt>${title}</dt><dd>' . @$getid3->info['tags_html']['id3v2']['title'][0] . '</dd>
+					<dt>${artist}</dt><dd>' . @$getid3->info['tags_html']['id3v2']['artist'][0] . '</dd>
+					<dt>${album}</dt><dd>' . @$getid3->info['tags_html']['id3v2']['album'][0] . '</dd>
 					<dt>${length}</dt><dd>' . @$getid3->info['playtime_string'] . '</dd>
 					<dt>${bitrate}</dt><dd>' . @round($getid3->info['bitrate']/1000) . ' kbps</dd>
 				</dl>';
@@ -294,15 +306,28 @@ class Filemanager {
 				'mimes' => $this->getAllowedMimeTypes()
 			));
 
-// Must see how we manage the auto-genrrated thumbnails
-/*			
-			if (FileManagerUtility::startsWith(Upload::mime($file), 'image/') && !empty($this->post['resize'])){
-				$img = new Image($file);
-				$size = $img->getSize();
-				if ($size['width'] > 800) $img->resize(800)->save();
-				elseif ($size['height'] > 600) $img->resize(null, 600)->save();
+			// Resize the picture if needed
+			if (FileManagerUtility::startsWith(Upload::mime($file), 'image/') && !empty($this->post['resizeImages']))
+			{
+				$mh = $this->options['pictureMaxHeight'];
+				$mw = $this->options['pictureMaxWidth'];
+				
+				if ($mw != FALSE OR $mh != FALSE)
+				{
+					$img = new Image($file);
+					
+					// Check the width
+					$size = $img->getSize();
+					if ($mw != FALSE && $size['width'] > $mw)
+						$img->resize($mw)->save();
+					
+					// Check again, but the height
+					$size = $img->getSize();
+					if ($mh != FALSE && $size['height'] > $mh)
+						$img->resize(null, $mh)->save();
+				}
 			}
-*/			
+
 			echo json_encode(array(
 				'status' => 1,
 				'name' => pathinfo($file, PATHINFO_BASENAME)
@@ -331,7 +356,8 @@ class Filemanager {
 	}
 	
 	/* This method is used by both move and rename */
-	protected function onMove(){
+	protected function onMove()
+	{
 		if (empty($this->post['directory']) || empty($this->post['file'])) return;
 		
 		$rename = empty($this->post['newDirectory']) && !empty($this->post['name']);
@@ -437,6 +463,32 @@ class Filemanager {
 		}
 	}
 	
+	protected function onUploadUrl()
+	{
+	
+		$image = new GetImage();
+	
+		foreach($_POST as $key => $url)
+		{
+			$options = array(
+				'source' => $url,
+				'save_to' => $this->basedir
+			);
+			$image->init($options);
+			
+			$get = $image->download('curl');
+			
+			trace($get);
+		}
+		
+
+
+
+	
+	}
+	
+	
+	
 	
 	protected function unlink($file){
 		$file = realpath($file);
@@ -526,8 +578,8 @@ class Filemanager {
 
 		if ( ! is_dir($thumbpath)) mkdir($thumbpath, $this->options['dirPerms'], true);
 
-//		if ( ! file_exists($thumbfile))
-//		{
+		if ( ! file_exists($thumbfile))
+		{
 			$img = new Image($file);
 			
 			$size = $img->getSize();
@@ -536,7 +588,7 @@ class Filemanager {
 				$resize = ($size['width'] > $size['height']) ? $img->resize($this->options['thumbSize'], null) : $img->resize(null, $this->options['thumbSize']);
 			
 			$img->save($thumbfile);
-//		}
+		}
 		
 		return($thumbfile);
 	}
@@ -616,3 +668,32 @@ class FileManagerUtility {
 		return true;
 	}
 }
+
+class FileManagerUrl
+{
+
+	public static function check_url($url)
+	{
+		$c = curl_init();
+		curl_setopt($c, CURLOPT_URL, $url);
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($c, CURLOPT_NOBODY, true);
+		$output = @curl_exec($c);
+		
+		if($output !== FALSE)
+		{
+			$httpCode = curl_getinfo($c, CURLINFO_HTTP_CODE);
+			
+			trace($c);
+			
+			
+			curl_close($c);		
+			return $httpCode;
+		}
+		return FALSE;
+	}
+
+
+}
+

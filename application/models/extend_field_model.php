@@ -42,9 +42,10 @@ class Extend_field_model extends Base_model
 	}
 
 
-	function get_list($where, $order_by=false)
+	function get_list($where = array())
 	{
-		return parent::get_list($where, 'ordering ASC');
+		$where['order_by'] = 'ordering ASC';
+		return parent::get_list($where);
 	}
 
 
@@ -80,7 +81,7 @@ class Extend_field_model extends Base_model
 
 		$langs = Settings::get_languages();
 		$element_fields = $this->db->list_fields($this->elements_table);
-		
+
 		foreach($extend_fields as $k => &$extend_field)
 		{
 			// A not tranlated extend field...
@@ -119,6 +120,7 @@ class Extend_field_model extends Base_model
 				}
 			}
 		}
+
 		return $extend_fields;
 	}
 
@@ -135,8 +137,8 @@ class Extend_field_model extends Base_model
 	 */
 	function save_data($parent, $id, $data)
 	{
-		// Get all extends fields with this kind of parent
-		$extend_fields = $this->get_list(array('parent' => $parent));
+		// Get all extends fields with this element OR kind of parent
+		$extend_fields = (!empty($data['id_element_definition'])) ? $this->get_list(array('id_element_definition' => $data['id_element_definition'])) : $this->get_list(array('parent' => $parent));
 		
 		foreach ($extend_fields as $extend_field)
 		{
@@ -146,7 +148,7 @@ class Extend_field_model extends Base_model
 				'id_parent' => $id
 			);
 			
-			// For checkboxes : first clear values from DB as the var isn't in $_POST if no value is checked
+			// Checkboxes : first clear values from DB as the var isn't in $_POST if no value is checked
 			if ($extend_field['type'] == '4')
 			{
 				$this->db->where($where);
@@ -163,6 +165,7 @@ class Extend_field_model extends Base_model
 					$data['content'] = '';
 					$data['lang'] = '';
 					$data['id_parent'] = $id;
+//					$data['parent'] = $parent;
 
 					// id of the extend field
 					$key = explode('_', $k);
@@ -193,20 +196,14 @@ class Extend_field_model extends Base_model
 						// Insert
 						else
 						{
-							// Set lang to '' if not defined by key
-						//	$data['lang'] = isset($key[2]) ? $key[2] : '';
-							
 							// Set the extend field element field ID
 							$data[$this->pk_name] = $key[1];
 							
 							$this->db->insert($this->elements_table, $data);
 						}
-
-
 					}
 				}
 			}
-
 		}
 	}
 

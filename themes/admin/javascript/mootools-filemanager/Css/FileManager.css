@@ -479,6 +479,12 @@ div.filemanager-filelist .file .thumb.rar,
 div.filemanager-filelist .file .thumb.tar,
 div.filemanager-filelist .file .thumb.zip { background-image: url(../Assets/Icons/thumb_archive.png); }
 
+/* OTHER CONTENT */
+div.filemanager-body {
+	overflow: auto;
+	height:100%;
+	padding:40px 16px 10px 16px;
+}
 
 
 

@@ -63,7 +63,7 @@ class Media_model extends Base_model
 		{
 			// Select from media table
 			$this->db->order_by('ordering', 'ASC');
-			$this->db->select($this->table.'.*', false);
+			$this->db->select($this->table.'.*', FALSE);
 			
 			// Limit to current parent ID
 			$this->db->where($media_table.'.'.$parent_pk, $id_parent);
@@ -94,7 +94,7 @@ class Media_model extends Base_model
 	 * 
 	 * @param	string	Medium type. Can be 'picture', 'music', 'video', 'file'
 	 * @param	string	Complete path to the medium, including file name.
-	 * @return	boolean	true if succeed, false if errors
+	 * @return	boolean	TRUE if succeed, FALSE if errors
 	 *
 	 */
 	function insert_media($type, $path)
@@ -102,7 +102,7 @@ class Media_model extends Base_model
 		if ($path) {
 
 			// If no '/' in the path...
-			if(strpos($path, '/') === false) 
+			if(strpos($path, '/') === FALSE) 
 			{
 				$file_name =  $path;
 				$base_path = '';
@@ -135,7 +135,7 @@ class Media_model extends Base_model
 			}
 			return $id;
 		}
-		return false;
+		return FALSE;
 	}
 
 
@@ -149,7 +149,7 @@ class Media_model extends Base_model
 	 * @param	string	parent. Example : 'article', 'page'
 	 * @param	string	Parent ID
 	 * @param	string	Medium ID
-	 * @return	boolean	true if success, false if error
+	 * @return	boolean	TRUE if success, FALSE if error
 	 *
 	 */
 	public function attach_media($type, $parent, $id_parent, $id_media)
@@ -192,9 +192,9 @@ class Media_model extends Base_model
 
 			$this->db->insert($media_table);
 
-			return true;
+			return TRUE;
 		}
-		return false;
+		return FALSE;
 	}
 
 	
@@ -210,7 +210,7 @@ class Media_model extends Base_model
 	 * @param	string	media type. Optional.
 	 *
 	 */
-	function detach_media_by_type($parent, $id_parent, $type = false)
+	function detach_media_by_type($parent, $id_parent, $type = FALSE)
 	{
 		// Parent PK , Media table
 		$parent_pk = $this->get_pk_name($parent);

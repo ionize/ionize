@@ -47,7 +47,7 @@ class Menu extends MY_admin
 	function index()
 	{
 
-		$menus = $this->base_model->get_list($where = false, $orderby = 'ordering ASC');
+		$menus = $this->base_model->get_list(array('order_by' => 'ordering ASC'));
 
 		$this->template['menus'] = $menus;
 
@@ -112,7 +112,7 @@ class Menu extends MY_admin
 	 */
 	function update()
 	{
-		$menus = $this->base_model->get_list($where = false, $orderby = 'ordering ASC');
+		$menus = $this->base_model->get_list(array('order_by' => 'ordering ASC'));
 
 		foreach($menus as $menu)
 		{

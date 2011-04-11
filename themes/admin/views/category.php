@@ -23,47 +23,59 @@
 	<fieldset id="blocks">
 
 		<!-- Tabs -->
-		<div class="tab">
-			<ul class="tab-content">
-	
+		<div id="categoryTab<?= $id_category ?>" class="mainTabs">
+			<ul class="tab-menu">
 				<?php foreach(Settings::get_languages() as $l) :?>
-					<li id="tabwindowCategory<?= $id_category ?>-<?= $l['lang'] ?>"><a><span><?= ucfirst($l['name']) ?></span></a></li>
+					<li class="tab_edit_category<?= $id_category ?>" rel="<?= $l['lang'] ?>"><a><?= ucfirst($l['name']) ?></a></li>
 				<?php endforeach ;?>
-
 			</ul>
+			<div class="clear"></div>
 		</div>
 
-		<!-- Text block -->
-		<?php foreach(Settings::get_languages() as $l) :?>
+		<div id="categoryTabContent<?= $id_category ?>">
+
+			<!-- Text block -->
+			<?php foreach(Settings::get_languages() as $l) :?>
+				
+				<?php $lang = $l['lang']; ?>
+	
+				<div class="tabcontent<?= $id_category ?>">
+	
+					<!-- title -->
+					<dl class="small">
+						<dt>
+							<label for="title"><?= lang('ionize_label_title') ?></label>
+						</dt>
+						<dd>
+							<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext w180" type="text" value="<?= ${$lang}['title'] ?>"/>
+						</dd>
+					</dl>
+	
+					<!-- subtitle -->
+					<dl class="small">
+						<dt>
+							<label for="subtitle<?= $lang ?><?= $id_category ?>"><?= lang('ionize_label_subtitle') ?></label>
+						</dt>
+						<dd>
+							<input id="subtitle_<?= $lang ?><?= $id_category ?>" name="subtitle_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['subtitle'] ?>"/>
+						</dd>
+					</dl>
+						
+					<!-- description -->
+					<dl class="small">
+						<dt>
+							<label title="<?= lang('ionize_label_help_description') ?>" for="description_<?= $lang ?><?= $id_category ?>"><?= lang('ionize_label_description') ?></label>
+						</dt>
+						<dd>
+							<textarea id="description_<?= $lang ?><?= $id_category ?>" name="description_<?= $lang ?>" class="tinyCategory w220 h120" rel="<?= $lang ?>"><?= ${$lang}['description'] ?></textarea>
+						</dd>
+					</dl>
+				
+				</div>
 			
-			<?php $lang = $l['lang']; ?>
+			<?php endforeach ;?>
 
-			<div id="blockwindowCategory<?= $id_category ?>-<?= $lang ?>" class="block windowCategory<?= $id_category ?>">
-
-				<!-- title -->
-				<dl class="small">
-					<dt>
-						<label for="title"><?= lang('ionize_label_title') ?></label>
-					</dt>
-					<dd>
-						<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext w180" type="text" value="<?= ${$lang}['title'] ?>"/>
-					</dd>
-				</dl>
-
-				<!-- description -->
-				<dl class="small">
-					<dt>
-						<label for="description"><?= lang('ionize_label_description') ?></label>
-					</dt>
-					<dd>
-						<input id="description_<?= $lang ?>" name="description_<?= $lang ?>" class="inputtext w180" type="text" value="<?= ${$lang}['description'] ?>"/>
-					</dd>
-				</dl>
-			
-			</div>
-		
-		<?php endforeach ;?>
-		
+		</div>
 	</fieldset>
 
 </form>
@@ -74,31 +86,31 @@
 --> 
 <div class="buttons">
 	<button id="bSavecategory<?= $id_category ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
-	<button id="bCancelcategory<?= $id_category ?>"  type="button" class="button no "><?= lang('ionize_button_cancel') ?></button>
+	<button id="bCancelcategory<?= $id_category ?>"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
 </div>
 
 <script type="text/javascript">
 
 	/** 
-	 * Show current tabs
+	 * Tabs init
+	 *
 	 */
-	ION.displayBlock('.windowCategory<?= $id_category ?>', '<?= Settings::get_lang('first') ?>', 'windowCategory<?= $id_category ?>');
-	
-	
-	/** 
-	 * Add events to tabs
-	 * - Lang Tab Events 
-	 * - Options Tab Events
-	 * - Wysiwyg buttons
+	new TabSwapper({tabsContainer: 'categoryTab<?= $id_category ?>', sectionsContainer: 'categoryTabContent<?= $id_category ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?= $id_category ?>' });
+
+	MUI.initLabelHelpLinks('#categoryForm<?= $id_category ?>');
+
+	/**
+	 * TinyEditors
+	 * Must be called after tabs init.
+	 *
 	 */
-	<?php foreach(Settings::get_languages() as $l) :?>
+	ION.initTinyEditors('.tab_edit_category<?= $id_category ?>', '#categoryTabContent<?= $id_category ?> .tinyCategory', 'small', {'height':120});
 
-		$('tabwindowCategory<?= $id_category ?>-<?= $l["lang"] ?>').addEvent('click', function()
-		{ 
-			ION.displayBlock('.windowCategory<?= $id_category ?>', '<?= $l["lang"] ?>', 'windowCategory<?= $id_category ?>'); 
-		});
-
-	<?php endforeach ;?>
+	/**
+	 * Window resize
+	 *
+	 */
+	MUI.windowResize('category<?= $id_category ?>', {width:420});
+	
 
 </script>
-

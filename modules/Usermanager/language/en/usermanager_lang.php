@@ -1,7 +1,7 @@
 <?php
 
 $lang['module_usermanager_field_email'] = 			"Email";
-$lang['module_usermanager_field_username'] = 		"Username";
+$lang['module_usermanager_field_username'] = 		"Username (login)";
 $lang['module_usermanager_field_password'] = 		"Password";
 $lang['module_usermanager_field_password2'] = 		"Password rpt.";
 $lang['module_usermanager_field_title'] = 			"Title";
@@ -11,7 +11,7 @@ $lang['module_usermanager_field_infomails_desc'] = 	"I want to receive informati
 $lang['module_usermanager_field_newsletter_desc'] = "I want to receive the newsletter via email.";
 $lang['module_usermanager_field_terms_desc'] = 		"I have read and accepted the terms of usage.";
 $lang['module_usermanager_field_firstname'] = 		"Name";
-$lang['module_usermanager_field_screen_name'] = 	"Surname";
+$lang['module_usermanager_field_screen_name'] = 	"Complete Name";
 $lang['module_usermanager_field_terms'] = 			"Terms";
 $lang['module_usermanager_field_company'] = 		"Company";
 $lang['module_usermanager_field_street'] = 			"Street";
@@ -31,6 +31,11 @@ $lang['module_usermanager_link_login'] = 			"Login";
 $lang['module_usermanager_link_admin_interface'] = 	"Administration";
 $lang['module_usermanager_link_logout'] = 			"Logout";
 
+$lang['module_usermanager_title_user_activated'] = 		"Account activated !";
+$lang['module_usermanager_title_important'] = 			"Important";
+$lang['module_usermanager_title_welcome'] = 			"Welcome";
+$lang['module_usermanager_title_new_password'] = 	"New password created !";
+
 $lang['module_usermanager_text_logged_in_as'] = 		"Logged in as";
 $lang['module_usermanager_text_ask_registered'] = 		"You do not have an account yet? Register";
 $lang['module_usermanager_text_ask_registered_here'] = 	"here";
@@ -38,14 +43,14 @@ $lang['module_usermanager_text_logged_in'] = 			"You have been successfully logg
 $lang['module_usermanager_text_mandatory_fields'] = 	"Main info";
 $lang['module_usermanager_text_optional_fields'] = 		"Optional info";
 $lang['module_usermanager_text_final_fields'] = 		"Finish";
-$lang['module_usermanager_text_registered'] = 			"You have been successfully registered. You can log in";
-$lang['module_usermanager_text_registered_here'] = 		"here";
+$lang['module_usermanager_text_registered'] = 			"You have been successfully registered.<br/>You will receive an email with your Account Activation link.";
+$lang['module_usermanager_text_activated'] = 			"Your account is successfully activated.<br/>You can log in with the header login panel.";
 $lang['module_usermanager_text_user_deleted'] = 		"Your account has been successfully deleted.";
 $lang['module_usermanager_text_not_logged_in'] = 		"You have to log in in order to view this page.";
 $lang['module_usermanager_text_error'] = 				"Oops, something went wrong";
 $lang['module_usermanager_text_register'] = 			"Register";
 $lang['module_usermanager_text_login'] = 				"Login";
-$lang['module_usermanager_text_profile'] = 				"Profil";
+$lang['module_usermanager_text_profile'] = 				"Profile";
 $lang['module_usermanager_text_notice'] = 				"Notice";
 $lang['module_usermanager_text_profile_saved'] = 		"The changes have been saved.";
 $lang['module_usermanager_text_action'] = 				"Profile handling";
@@ -54,8 +59,15 @@ $lang['module_usermanager_text_about_me'] = 			"About me";
 $lang['module_usermanager_text_references'] = 			"References";
 $lang['module_usermanager_text_options'] = 				"Options";
 $lang['module_usermanager_text_data_saved'] = 			"The data has been saved.";
-$lang['module_usermanager_text_success'] = 				"Success";
+$lang['module_usermanager_text_user_activated'] = 		"Your user account has been activated.";
+$lang['module_usermanager_text_success1'] = 			"We just sent you an <strong>activation link</strong> by mail.<br/>Until your account isn't activated, you will not be able to connect to the website.";
+$lang['module_usermanager_text_success2'] = 			"We thank you for your registration,";
+$lang['module_usermanager_text_success3'] = 			"Signature";
+$lang['module_usermanager_text_restore_password'] = 	"Just enter your email address.<br/>You will receive a new password.";
+$lang['module_usermanager_text_restore_password_ok'] = 	"A new password was created.<br/>Please check your mail to get you new login information !";
+$lang['module_usermanager_label_back_to_home'] = 	"back to homepage";
 
+$lang['module_usermanager_error_spam'] = 				"Javascript must be activated to send this form !";
 $lang['module_usermanager_error_required'] 				= "The <strong>%s</strong> field is required.";
 $lang['module_usermanager_error_isset']					= "The <strong>%s</strong> field must have a value.";
 $lang['module_usermanager_error_valid_email']			= "The <strong>%s</strong> field must contain a valid email address.";
@@ -83,6 +95,7 @@ $lang['module_usermanager_error_terms']					= "You have to accept the terms of u
 $lang['module_usermanager_error_upload_something']		= "Something went wrong while uploading the files.";
 $lang['module_usermanager_error_upload_file_size']		= "The uploaded file needn't be larger than 1 MB.";
 $lang['module_usermanager_error_upload_file_type']		= "Only JPEGs, PNGs and GIFs are allowed.";
+$lang['module_usermanager_error_activation']		= "This account can't be activated or is already activated.";
 
 $lang['module_usermanager_button_login'] = 				"Login";
 $lang['module_usermanager_button_register'] = 			"Register";
@@ -91,6 +104,7 @@ $lang['module_usermanager_button_save'] = 				"Save";
 $lang['module_usermanager_button_delete'] = 			"Delete account";
 $lang['module_usermanager_button_company_profile'] = 	"Change into company profile";
 $lang['module_usermanager_button_nocompany_profile'] = 	"Change into user profile";
+$lang['module_usermanager_button_get_new_password'] = 	"Send me a new password !";
 
 $lang['module_usermanager_email_registration_title'] = 		"Registration";
 $lang['module_usermanager_email_registration_user_data'] = 	"Login information";

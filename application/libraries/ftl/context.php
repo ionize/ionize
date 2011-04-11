@@ -41,6 +41,13 @@ class FTL_Context
 	 */
 	protected $tag_binding_stack = array();
 	
+	/**
+	 * A stack of tag names.
+	 * 
+	 * @var array(string)
+	 */
+	protected $tag_name_stack = array();
+	
 	// --------------------------------------------------------------------
 		
 	/**
@@ -127,7 +134,7 @@ class FTL_Context
 		else
 		{
 			$qname = $this->qualified_tag_name($name);
-			
+
 			if(is_string($qname) && array_key_exists($qname, $this->definitions))
 			{
 				// render
@@ -161,7 +168,8 @@ class FTL_Context
 		$locals = new FTL_VarStack($previous_locals);
 		$binding = new FTL_Binding($this, $locals, $name, $args, $block);
 		
-		$this->tag_binding_stack[$name] = $binding;
+		$this->tag_binding_stack[] = $binding;
+		$this->tag_name_stack[]    = $name;
 		
 		// Check if we have a function or a method
 		if(is_callable($call))
@@ -175,6 +183,7 @@ class FTL_Context
 		
 		// jump out
 		array_pop($this->tag_binding_stack);
+		array_pop($this->tag_name_stack);
 		
 		return $result;
 	}
@@ -190,7 +199,7 @@ class FTL_Context
 	function qualified_tag_name($name)
 	{
 		// Get the path array
-		$path_chunks = array_merge(array_keys($this->tag_binding_stack), array($name));
+		$path_chunks = array_merge($this->tag_name_stack, array($name));
 		// For literal matches
 		$path = implode(':', $path_chunks);
 		
@@ -212,6 +221,9 @@ class FTL_Context
 			
 			// Start
 			$c =& $this->tree;
+//echo('<pre>');
+//var_dump($this->tree);
+//echo('</pre>');
 			
 			// Go through the whole name
 			while( ! empty($path_chunks))
@@ -256,7 +268,7 @@ class FTL_Context
 	 */
 	public function tag_missing($name, $args = array(), $block = null)
 	{
-		show_error('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
+		throw new Exception('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
 	}
 	
 	// --------------------------------------------------------------------
@@ -270,7 +282,7 @@ class FTL_Context
 	 */
 	function current_nesting()
 	{
-		return implode(':', array_keys($this->tag_binding_stack));
+		return implode(':', $this->tag_name_stack);
 	}
 }
 

@@ -28,7 +28,7 @@
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td><h1>Ionize User Guide Version 0.9.7</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -81,10 +81,10 @@ Article Tags
 	</td>
 </tr>
 <tr>
-	<td class="td">num</td>
+	<td class="td">limit</td>
 	<td class="td">yes</td>
 	<td class="td">
-		Number of article to return.<br/>
+		Number of article to return. Replaces previous "num" attribute.<br/>
 		Not compatible with use of pagination.
 	</td>
 </tr>
@@ -184,13 +184,15 @@ Article Tags
 
 
 <h2>date</h2>
-<p>Element date, based on defined Ionize date.</p>
+<p>Article's date, based on defined Ionize date.</p>
 <p>If no publication date is defined in Ionize, this tag will return the creation date of the element.</p>
-<p>If the format attribute is not set, returns the date with the format :  Y-m-d H:i:s .</p>
+<p>If the format attribute is not set, returns the date with the format :  <var>Y-m-d H:i:s</var> .</p>
 
-<p>Example of standard return : 2010-03-29 20:14:55</p>
+<p>Example of standard return : <strong>2010-03-29 20:14:55</strong></p>
 
-<p>If one of the following format is used, the corresponding translation will be searched in the <var>/themes/your_theme/language/xxx/date_lang.php</var> file :</p>
+<p>See the <a href="http://www.php.net/manual/en/function.date.php" target="_blank">PHP date documentation</a> for accepted date format.</p>
+
+<p>If one of the following format is used, the corresponding translation will be searched in the <var>/themes/your_theme/language/xxx/</var><kbd>date_lang.php</kbd> file :</p>
 <ul>
 	<li><strong>D</strong> : Name of the day, on 3 chars.</li>
 	<li><strong>l</strong> : Name of the day, long.</li>
@@ -205,6 +207,50 @@ Article Tags
 &lt;ion:date format="D" />
 </pre>
 
+<h3>Advanced date format</h3>
+
+<p>On a multilingual website, translated dates should have different output formatting depending on the language.</p>
+<p>Example with the 15. of January:</p>
+<ul>
+	<li>English date : <strong>01/15/2011</strong></li>
+	<li>French date : <strong>15/01/2011</strong></li>
+</ul>
+
+<p>To do this, the date tag can use an advanced date format description, stored in <var>/application/language/xxx/</var><kbd>date_lang.php</kbd> :</p>
+<pre>
+$lang['dateformat_<strong>short</strong>'] = 'd m Y';
+$lang['dateformat_<strong>medium</strong>'] = 'd M Y';
+$lang['dateformat_<strong>long</strong>'] = 'd F Y';
+</pre>
+
+<p>Example with french and english : </p>
+<p><var>/application/language/<strong>fr/</strong></var><kbd>date_lang.php</kbd> contains :</p>
+<pre>
+$lang['dateformat_<strong>long</strong>'] = 'd F Y';
+</pre>
+<p><var>/application/language/<strong>en/</strong></var><kbd>date_lang.php</kbd> contains :</p>
+<pre>
+$lang['dateformat_<strong>long</strong>'] = 'F d Y';
+</pre>
+
+<pre>
+<dfn>&lt;!-- Will display : "15 janvier 2011" in french and "january 15 2011" in english --></dfn>
+&lt;ion:date format="long" />
+</pre>
+
+<p>You can create your own format definitions, they must simply be prefixed by '<strong>dateformat_</strong>' : </p>
+
+<p><var>/application/language/<strong>xxx/</strong></var><kbd>date_lang.php</kbd> :</p>
+<pre>
+$lang['dateformat_<strong>crazy</strong>'] = 'W d F Y \a\t H:i:s';
+</pre>
+<p>To call it in a view :</p>
+<pre>
+&lt;ion:date format="crazy" />
+</pre>
+
+
+
 <table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
 <tr>
 	<th>Attribute</th>
@@ -215,7 +261,7 @@ Article Tags
 	<td class="td">format</td>
 	<td class="td">yes</td>
 	<td class="td">
-		PHP output format<br/>
+		PHP output format or index of the advanced date format.<br/>
 		If set, returns the date using this format string.
 	</td>
 </tr>

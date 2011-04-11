@@ -31,8 +31,6 @@ class Article_type extends MY_admin
 	{
 		parent::__construct();
 
-//		$this->connect->restrict('editors');
-
 		$this->load->model('article_type_model', '', TRUE);
 	}
 
@@ -88,7 +86,6 @@ class Article_type extends MY_admin
 	 *
 	 * @return string	HTML categories select box
 	 *
-	 */
 	function get_types($parent = FALSE, $id_parent = FALSE)
 	{
 		// Feed new type form with blank data.
@@ -100,11 +97,22 @@ class Article_type extends MY_admin
 	
 
 		// Types list
-		$this->template['types'] = $this->article_type_model->get_list($where = FALSE, $orderby='ordering ASC');
+		$this->template['types'] = $this->article_type_model->get_list(array('order_by'=>'ordering ASC'));
 
 		$this->output('article_types');
 	}
+	 */
 
+	function get_list()
+	{
+		// Feed new type form with blank data.
+		$this->article_type_model->feed_blank_template($this->template);
+
+		// Types list
+		$this->template['types'] = $this->article_type_model->get_list(array('order_by' => 'ordering ASC'));
+
+		$this->output('article_type_list');
+	}
 
 	// ------------------------------------------------------------------------	
 
@@ -191,7 +199,7 @@ class Article_type extends MY_admin
 				$this->id = $this->article_type_model->save($this->data);
 
 				// Get data for answer
-				$data = $this->article_type_model->get($this->id);
+//				$data = $this->article_type_model->get($this->id);
 	
 				/*
 				 * JSON Update array
@@ -207,22 +215,20 @@ class Article_type extends MY_admin
 				}
 				
 				// Finally, update the categories list (categories item manager)
-				$data['rel'] = $this->id;
-				$data['name'] = $data['type'];
-				$data['type'] = 'article_type';
-				
+//				$data['rel'] = $this->id;
+//				$data['name'] = $data['type'];
+//				$data['type'] = 'article_type';
+
 				$this->callback = array(
 					array(
-						'fn' => 'ION.updateSimpleItem',
-						'args' => $data
+						'fn' => 'ION.HTML',
+						'args' => array('article_type/get_list', '', array('update' => 'articleTypesContainer'))
 					),
 					array(
 						'fn' => 'ION.clearFormInput',
 						'args' => array('form' => 'newTypeForm')
 					)
 				);
-
-	
 	
 				$this->success(lang('ionize_message_article_type_saved'));
 			}

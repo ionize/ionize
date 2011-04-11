@@ -28,7 +28,7 @@
 <div id="masthead">
 <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
 <tr>
-<td><h1>Ionize User Guide Version 0.9.6</h1></td>
+<td><h1>Ionize User Guide Version 0.9.7</h1></td>
 <td id="breadcrumb_right"><a href="../toc.html">Table of Contents Page</a></td>
 </tr>
 </table>
@@ -99,8 +99,19 @@ Medias : Files, pictures, videos
 <img src="../images/ionize_thumb_creation.jpg" />
 
 <p>In the above example, we define a 500px width thumb wich will be located in the folder <var>thumb_medium</var>.<br/>
-When a thumb will be created, it will use the sharp filter, which will be reulting of more sharpen images than the standard resize.
+In this example, when a thumb is created, it will use the sharp filter, which will give a more sharpen thumbnail and avoid the common blur problem on little thumbs.
 </p>
+
+<h3>Automatic picture resize on upload</h3>
+<p>When set, uploaded pictures are checked and if their size is bigger than the defined one, they will be resized during the upload process.</p>
+<p>To activate automatic upload : </p>
+<ol>
+	<li><var>Settings > Advanced settings</var></li>
+	<li>In <var>Media Management</var></li>
+	<li>Set <strong>Picture max. Width</strong> and <strong>Picture max. Height</strong> values, in pixels.</li>
+</ol>
+
+
 
 <table cellpadding="0" cellspacing="1" border="0" style="width:100%" class="tableborder">
 <tr>

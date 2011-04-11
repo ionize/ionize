@@ -24,9 +24,9 @@ class Page extends Base_Controller
 	);
 
 //	protected $default_page_view = 			'default/page';
-	protected $default_navigation_view = 	'default/navigation';
-	protected $default_categories_view = 	'default/categories';
-	protected $default_archives_view = 		'default/archives';
+//	protected $default_navigation_view = 	'default/navigation';
+//	protected $default_categories_view = 	'default/categories';
+//	protected $default_archives_view = 		'default/archives';
 
 	public $uri_segment;
 	
@@ -48,6 +48,7 @@ class Page extends Base_Controller
 		require_once APPPATH.'libraries/Tagmanager.php';
 
 		require_once APPPATH.'libraries/Tagmanager/Page.php';
+		require_once APPPATH.'libraries/Tagmanager/Element.php';
 		require_once APPPATH.'libraries/Tagmanager/Form.php';
 		require_once APPPATH.'libraries/Tagmanager/Login.php';
 		
@@ -99,6 +100,11 @@ class Page extends Base_Controller
 			$m->add_globals($c);
 			$m->add_tags($c);
 
+			// Element tag manager
+			$f = new TagManager_Element($this);
+			$f->add_globals($c);
+			$f->add_tags($c);
+			
 			// Form tag manager
 			$f = new TagManager_Form($this);
 			$f->add_globals($c);
@@ -108,15 +114,6 @@ class Page extends Base_Controller
 			$l = new TagManager_Login($this);
 			$l->add_globals($c);
 			$l->add_tags($c);
-
-			/*
-			 * Can only be used if Tagmanager::init()->spl_autoload_register('TagManager::autoload') is uncommented
-			 * Automate that to load all the active modules
-			 * TagManager::autoload('Fancyupload_Tags');
-			 */
-			// new Fancyupload_Tags();
-			// new PhotoGallery_Tags();
-			// TagManager::autoload('Fancyupload_Tags');
 		}
 		
 		// Add tags from modules
@@ -134,7 +131,9 @@ class Page extends Base_Controller
 			// Online languages are defined by MY_Controller
 			$lang = (count(Settings::get_online_languages()) > 1 ) ? Settings::get_lang('current').'/' : '';
 
-			redirect(base_url().$lang.$c->globals->page['link']);
+			$domain = (!empty($c->globals->page['link_type'])  && $c->globals->page['link_type'] == 'external') ? '' : base_url();
+
+			redirect($domain.$lang.$c->globals->page['link']);
 		}
 
 		// Get the page view

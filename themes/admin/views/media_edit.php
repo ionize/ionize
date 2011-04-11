@@ -115,13 +115,23 @@
 	<input type="hidden" name="id_media" value="<?= $id_media ?>" />
 	<input type="hidden" name="type" value="<?= $type ?>" />
 	
+	<!-- Container -->
+	<dl class="small">
+		<dt>
+			<label for="container_<?= $type.$id_media ?>"><?=lang('ionize_label_media_container')?></label>
+		</dt>
+		<dd>
+			<input id="container_<?= $type.$id_media ?>" name="container" class="inputtext w200" type="text" value="<?= $container ?>" />
+		</dd>
+	</dl>
+
 	<!-- Copyright -->
 	<dl class="small">
 		<dt>
 			<label for="copyright"><?=lang('ionize_label_copyright')?></label>
 		</dt>
 		<dd>
-			<input id="copyright_<?= $type.$id_media ?>" name="copyright" class="inputtext" type="text" value="<?= $copyright ?>" />
+			<input id="copyright_<?= $type.$id_media ?>" name="copyright" class="inputtext w200" type="text" value="<?= $copyright ?>" />
 		</dd>
 	</dl>
 
@@ -147,7 +157,6 @@
 	</dl>
 
 	<!-- extend fields goes here... -->
-	<?php if (Settings::get('use_extend_fields') == '1') :?>
 		<?php foreach($extend_fields as $extend_field) :?>
 		
 			<?php if ($extend_field['translated'] != '1') :?>
@@ -251,7 +260,6 @@
 					
 			<?php endif ;?>
 		<?php endforeach ;?>
-	<?php endif ;?>
 
 
 
@@ -259,21 +267,23 @@
 	<fieldset id="picture-lang">
 		
 		<!-- Tabs -->
-		<div class="tab">
-			<ul class="tab-content">
-				
-				<?php foreach(Settings::get_languages() as $language) :?>
-					<li id="tab-media<?= $id_media ?><?= $language['lang'] ?>"<?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($language['name']) ?></span></a></li>
+		<div id="mediaTab<?= $UNIQ ?>" class="mainTabs">
+			<ul class="tab-menu">
+				<?php foreach(Settings::get_languages() as $l) :?>
+					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
 				<?php endforeach ;?>
 			</ul>
+			<div class="clear"></div>
 		</div>
-		
+
+
+		<div id="mediaTabContent<?= $UNIQ ?>">	
 		<!-- Text block -->
 		<?php foreach(Settings::get_languages() as $language) :?>
 
 			<?php $lang = $language['lang']; ?>
 			
-			<div id="block-media<?= $id_media ?><?= $lang ?>" class="block media<?= $id_media ?>lang">
+			<div class="tabcontent<?= $UNIQ ?>">
 
 				<!-- title -->
 				<dl class="small">
@@ -285,6 +295,16 @@
 						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('title_<?= $lang ?><?= $type.$id_media ?>');"/>
 					</dd>
 				</dl>
+		
+				<?php if(pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == 'mp3') :?>
+				
+				<dl class="small mt10">
+					<dt>
+						<label</label>
+					</dt>
+					<dd class="lite"><?= lang('ionize_message_alt_desc_for_mp3') ?></dd>
+				</dl>
+				<?php endif ;?>
 		
 				<!-- alternative text -->
 				<dl class="small">
@@ -310,7 +330,6 @@
 			</div>
 
 			<!-- extend fields goes here... -->
-			<?php if (Settings::get('use_extend_fields') == '1') :?>
 				<?php foreach($extend_fields as $extend_field) :?>
 					<?php if ($extend_field['translated'] == '1') :?>
 					
@@ -330,10 +349,9 @@
 							
 					<?php endif ;?>
 				<?php endforeach ;?>
-			<?php endif ;?>
 			
 		<?php endforeach ;?>
-		
+		</div>	
 	</fieldset>
 
 
@@ -354,16 +372,9 @@
 	datePicker.attach();
 
 	/** 
-	 * Show current tabs
+	 * Tabs init
+	 *
 	 */
- 	ION.displayBlock('.media<?= $id_media ?>lang', 'media<?= $id_media.Settings::get_lang('first') ?>');
-
-	/** 
-	 * Add events to tabs
-	 * - Lang Tab Events 
-	 */
-	<?php foreach(Settings::get_languages() as $lang) :?>
-		$('tab-media<?= $id_media ?><?= $lang["lang"] ?>').addEvent('click', function(){ ION.displayBlock('.media<?= $id_media ?>lang', 'media<?= $id_media ?><?= $lang["lang"] ?>'); });
-	<?php endforeach ;?>
+	new TabSwapper({tabsContainer: 'mediaTab<?= $UNIQ ?>', sectionsContainer: 'mediaTabContent<?= $UNIQ ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?= $UNIQ ?>' });
 
 </script>

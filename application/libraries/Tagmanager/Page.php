@@ -24,7 +24,12 @@ class TagManager_Page extends TagManager
 	 *
 	 */
 	protected $uri_config = array();
+	
+	
+//	private static $plural_to_singular = array ('articles','pages');
 
+	
+	
 	// ------------------------------------------------------------------------
 
 	/**
@@ -63,7 +68,6 @@ class TagManager_Page extends TagManager
 			// Page
 //			'link' => 				'tag_page_link',					// Deprecated since 0.9.5
 			'count' => 				'tag_count',
-			'counter' => 			'tag_counter',
 			'period' => 			'tag_period',
 			'pagination' =>			'tag_pagination',
 			'absolute_url' =>		'tag_absolute_url',
@@ -120,16 +124,19 @@ class TagManager_Page extends TagManager
 			'articles:date' => 			'tag_article_date',
 			'articles:content' => 		'tag_article_content',
 			'articles:url' => 			'tag_article_url',
-//			'articles:link' => 			'tag_article_link',				// Deprecated since 0.9.5
+			'articles:link' => 			'tag_article_link',
 			'articles:categories' => 	'tag_article_categories',
 			'articles:readmore' => 		'tag_article_readmore',
 			'articles:index' => 		'tag_article_index',
+			'articles:count' => 		'tag_article_count',
 						
-			// Articles by Categories
+			// Categories
 			'categories' => 				'tag_categories',
-			'categories:url' => 			'tag_categories_url',
-			'categories:active_class' => 	'tag_categories_active_class',
-			'categories:lang_url' => 		'tag_categories_lang_url',
+			'categories:url' => 			'tag_category_url',
+			'categories:active_class' => 	'tag_category_active_class',
+//			'categories:lang_url' => 		'tag_categories_lang_url',
+			'categories:title' => 			'tag_category_title',
+			'categories:subtitle' => 		'tag_category_subtitle',
 			
 			// Archives
 			'archives' =>				'tag_archives',
@@ -160,6 +167,7 @@ class TagManager_Page extends TagManager
 
 			// One media
 			'media' =>				'tag_media'
+			
 		));
 	}
 
@@ -232,80 +240,79 @@ class TagManager_Page extends TagManager
 	{
 		foreach ($con->globals->pages as &$page)
 		{
+
 			// Set the page complete URL
 			$page['absolute_url'] = '';
 
 			// If link, returns the link
-			if ($page['link'] != '' )
+			if ($page['link_type'] != '' )
 			{
 				// External link
 				if ($page['link_type'] == 'external')
 				{
 					$page['absolute_url'] = $page['link'];
 				}
-				
-				// For article link, retrieve the page to build the link
-				if($page['link_type'] == 'article')
-				{
-					// Get the article (we need to know its parent page ID)
-					$target_article = $this->ci->article_model->get(array('id_article'=>$page['link_id']), Settings::get_lang('current'));
-					$target_article['context'] = $this->ci->article_model->get_all_context($target_article['id_article']);
-					
-					// Of course, only if not empty...
-					if ( ! empty($target_article))
-					{
-						// Get the article's parent page
-						$parent_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['context'][0]['id_page'] .'";')));
-				
-						$page['absolute_url'] = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
-					}
-				}
-				// This link to a page
 				else
 				{
-					// Get the page to which the page links
-					$target_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $page['link_id'] .'";')));
-					
-					if ( ! empty($target_page))
+					// For article link, retrieve the page to build the link
+					if($page['link_type'] == 'article')
 					{
-						$page['absolute_url'] = $target_page[0]['url'];
+						// Get the article to which this page links
+						$rel = explode('.', $page['link_id']);
+						$target_article = $this->ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
+	
+						// Of course, only if not empty...
+						if ( ! empty($target_article))
+						{
+							// Get the article's parent page
+							$parent_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
+					
+							$page['absolute_url'] = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
+						}
 					}
+					// Link to a page
+					else
+					{
+						// Get the page to which the page links
+						$target_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $page['link_id'] .'";')));
+	
+						if ( ! empty($target_page))
+						{
+							$page['absolute_url'] = $target_page[0]['url'];
+						}
+					}
+					$page['absolute_url'] = base_url() . $page['absolute_url'];
+
 				}
 			}
-
-			
-			// Standard link 
 			else
 			{
-				// Only returns the URL containing the lang code when languages > 1
-				if (count(Settings::get_online_languages()) > 1)
+				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 				{
 					// Home page : doesn't contains the page URL
 					if ($page['home'] == 1 )
 					{
 						// Default language : No language code in the URL for the home page
-						if (Settings::get_lang('default') == Settings::get_lang())
-						{
-							$page['absolute_url'] = base_url();
-						}
 						// Other language : The home page has the lang code in URL
-						else
+						if (Settings::get_lang('default') != Settings::get_lang())
 						{
-							$page['absolute_url'] = base_url() . Settings::get_lang();
+							$page['absolute_url'] = Settings::get_lang();
 						}
 					}
 					// Other pages : lang code in URL
 					else
 					{
-						$page['absolute_url'] = base_url() . Settings::get_lang() . '/' . $page['url'];
+						// If page URL if already set because of a link, don't replace it.
+						$page['absolute_url'] = ($page['absolute_url'] != '') ? Settings::get_lang() . '/' . $page['absolute_url'] : Settings::get_lang() . '/' . $page['url'];
 					}
+	
+					$page['absolute_url'] = base_url() . $page['absolute_url'];
 					
 					// Set the lang code depending URL (used by language subtag)
 					$page['absolute_urls'] = array();
-					
+	
 					foreach (Settings::get_online_languages() as $lang)
 					{
-					
 						if ($page['home'] == 1 )
 						{
 							// Default language : No language code in the URL for the home page
@@ -326,9 +333,9 @@ class TagManager_Page extends TagManager
 						}
 					}
 				}
-				// 1 language : The lang code is not in the URL
 				else
 				{
+
 					if ($page['home'] == 1)
 					{
 						$page['absolute_url'] = base_url();
@@ -337,18 +344,11 @@ class TagManager_Page extends TagManager
 					{
 						$page['absolute_url'] = base_url() . $page['url'];
 					}
-					
 					// Set the lang code depending URL (used by language subtag)
 					$page['absolute_urls'][Settings::get_lang()] = $page['absolute_url'];
-					
 				}
-				
-				// Adds the suffix if defined
-				if ( config_item('url_suffix') != '' ) $page['absolute_url'] .= config_item('url_suffix');
-			}
-			
-			
-			// trace($page['name'].' :: '.$page['url'].' :: '.$page['absolute_url']);
+//			trace($page['name'].' :: '.$page['url'].' :: '.$page['absolute_url']);
+			}				
 		}
 	}
 	
@@ -424,7 +424,9 @@ class TagManager_Page extends TagManager
 
 
 		// Number of article limiter
-		$num = (isset($tag->attr['num'])) ? $this->get_attribute($tag, 'num') : 0 ;
+		$num = (isset($tag->attr['limit'])) ? $this->get_attribute($tag, 'limit') : 0 ;
+		if ($num == 0)
+			$num = (isset($tag->attr['num'])) ? $this->get_attribute($tag, 'num') : 0 ;
 
 		// Get the special URI config array (see /config/ionize.php)
 		$uri_config = $this->ci->config->item('special_uri');
@@ -807,12 +809,12 @@ class TagManager_Page extends TagManager
 		(
 			$where, 
 			Settings::get_lang(),
-			$limit = FALSE,
+			$limit = '1',
 			$like = FALSE,
 			$order_by,
 			$filter
 		);
-		
+				
 		return $articles;
 	}
 
@@ -917,29 +919,6 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 	
 
-	/**
-	 * In dev : Should return the current index of an item in a collection
-	 *
-	 */
-	public static function tag_counter($tag)
-	{
-	
-		// Get the tag nesting path
-		$tag_path = explode(':', $tag->nesting());
-		array_pop($tag_path);
-
-		$obj_tag = (count($tag_path) > 0) ? array_pop($tag_path) : 'page';
-		
-		
-		
-		trace($obj_tag);
-	
-	}
-
-
-	// ------------------------------------------------------------------------
-	
-
 	public static function tag_last_item($tag)
 	{
 		$value = (isset($tag->attr['value']) ) ? $tag->attr['value'] : TRUE;
@@ -1003,7 +982,10 @@ class TagManager_Page extends TagManager
 
 		// Get the obj
 		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-
+		
+		// things to count
+		$items = array();
+		
 		// Get the tag nesting path
 		$tag_path = explode(':', $tag->nesting());
 		array_pop($tag_path);
@@ -1011,45 +993,46 @@ class TagManager_Page extends TagManager
 		// Try to get the current obj from the tag path
 		if (is_null($obj))
 		{
-			$obj_tag = (count($tag_path) > 0) ? array_pop($tag_path) : 'page';
-			$obj = isset($tag->locals->{$obj_tag}) ? $tag->locals->{$obj_tag} : NULL;
+			$from = (count($tag_path) > 0) ? array_pop($tag_path) : 'page';
+			$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
 		}
-		
-//trace($tag->locals);
-		if ( ! is_null($obj) && $items != FALSE)
-		{
 
-			if(isset( $obj[$items]) )
+		if ( ! is_null($obj) )
+		{
+			if($items != FALSE && isset( $obj[$items]) )
 			{
 				if ( ! empty($obj[$items]))
 				{
-					if ($filter !== FALSE)
-					{
-						// Normalize egality
-						$filter = preg_replace("#[=*]{1,12}#", '==', $filter);
-				
-						// Test condition
-						$condition = preg_replace("#([\w]*)(\s*==\s*|\s*!==\s*)([a-zA-Z0-9'])#", '$row[\'\1\']\2\3', $filter);
-						$filtered_items = @array_filter($obj[$items], create_function('$row','return ('.$condition.');'));
-
-						if ($filtered_items == FALSE && ! is_array($filtered_items))
-						{
-							return self::show_tag_error($tag->name, '<b>Your filter contains an error : </b><br/>'.$filter);
-						}
-						
-						return count($filtered_items);
-					}
-					return count($obj[$items]);
+					$items = $obj[$items];
 				}
-				else
-				{
-					return 0;
-				}
+//				else
+//				{
+//					return self::show_tag_error($tag->name, 'The items <b>"'.$items.'"</b> you try to count doesn\'t exist in the element <b>"'. $from.'"</b>');		
+//				}
 			}
 			else
 			{
-				return self::show_tag_error($tag->name, 'The items <b>"'.$items.'"</b> you try to count don\'t exist in the element <b>"'. $from.'"</b>');		
+				$items = $obj;
 			}
+
+			if ($filter !== FALSE)
+			{
+				// Normalize egality
+				$filter = preg_replace("#[=*]{1,12}#", '==', $filter);
+		
+				// Test condition
+				$condition = preg_replace("#([\w]*)(\s*==\s*|\s*!==\s*)([a-zA-Z0-9'])#", '$row[\'\1\']\2\3', $filter);
+				$items = @array_filter($items, create_function('$row','return ('.$condition.');'));
+
+				if ($items == FALSE && ! is_array($items))
+				{
+					return self::show_tag_error($tag->name, '<b>Your filter contains an error : </b><br/>'.$filter);
+				}
+				
+				return count($items);
+			}
+			return count($items);
+			
 		}
 
 		return 0;
@@ -1393,7 +1376,7 @@ class TagManager_Page extends TagManager
 				{
 					foreach($filtered_medias as $index => $media)
 					{
-						if ($index >= $from && $i < $num)
+						if ($index >= $from && ($i < $limit OR $limit === FALSE))
 						{
 							if ($index <= $to OR $to === FALSE)
 							{
@@ -1492,11 +1475,11 @@ class TagManager_Page extends TagManager
 		{
 			$nav = call_user_func($helper_function, $languages);
 			
-			return self::enclose($tag, $nav);
+			return self::wrap($tag, $nav);
 		}
 		else
 		{
-			return self::enclose($tag, $str);
+			return self::wrap($tag, $str);
 		}
 	}
 
@@ -1685,9 +1668,9 @@ class TagManager_Page extends TagManager
 	 * 
 	 * 
 	 */	
-	public static function tag_page_id($tag) { return self::enclose($tag, $tag->locals->page['id_page']); }
+	public static function tag_page_id($tag) { return self::wrap($tag, $tag->locals->page['id_page']); }
 	
-	public static function tag_page_name($tag) { return self::enclose($tag, $tag->locals->page['name']); }
+	public static function tag_page_name($tag) { return self::wrap($tag, $tag->locals->page['name']); }
 
 	/**
      * Return the page title
@@ -1697,7 +1680,7 @@ class TagManager_Page extends TagManager
      *            The "from" attribute works with th "up" attribute. up="2" means the parent from the parent, etc.
      *            If the "up" attribute isn't set when using "parent", it will be set to 1.Means the returned title will be the one of the parent page of th current page.
      *            
-     * @returns     String        The page title, enclosed or not by the optional defined tags.
+     * @returns     String        The page title, wrapped or not by the optional defined tags.
      *
      */
     public function tag_page_title($tag)    
@@ -1720,16 +1703,16 @@ class TagManager_Page extends TagManager
             
             if ( ! empty($breacrumbs[$up]))
             {
-                return self::enclose($tag, $breacrumbs[$up]['title']);
+                return self::wrap($tag, $breacrumbs[$up]['title']);
             }
         }
         
-        return self::enclose($tag, $tag->locals->page['title']);
+        return self::wrap($tag, $tag->locals->page['title']);
     }
     
-    public static function tag_page_url($tag)	{ return self::enclose($tag, $tag->locals->page['url']); }
+    public static function tag_page_url($tag)	{ return self::wrap($tag, $tag->locals->page['url']); }
 	
-	public static function tag_page_subtitle($tag) { return self::enclose($tag, $tag->locals->page['subtitle']); }
+	public static function tag_page_subtitle($tag) { return self::wrap($tag, $tag->locals->page['subtitle']); }
 
 	public function tag_page_meta_title($tag)
 	{
@@ -1750,14 +1733,14 @@ class TagManager_Page extends TagManager
 		}		
 
 		if ( ! empty ($article['meta_title']))
-			return self::enclose($tag, $article['meta_title']);
+			return self::wrap($tag, $article['meta_title']);
 		else if ( ! empty ($tag->locals->page['meta_title']) )
-			return self::enclose($tag, $tag->locals->page['meta_title']);
+			return self::wrap($tag, $tag->locals->page['meta_title']);
 		else
 		{
 			if ( ! empty($tag->locals->page['title']))
 			{
-				return self::enclose($tag, $tag->locals->page['title']);		
+				return self::wrap($tag, $tag->locals->page['title']);		
 			}
 			return '';
 		}
@@ -1793,7 +1776,7 @@ class TagManager_Page extends TagManager
 		
 		if ( $medias !== FALSE)
 		{
-			return self::get_medias($tag, $medias);	
+			return wrap($tag, self::get_medias($tag, $medias));
 		}
 		return ;
 	}
@@ -1844,10 +1827,6 @@ class TagManager_Page extends TagManager
 
 		// Page from locals
 		$pages =&  $tag->locals->pages;
-
-		// Number of wished last article
-		$num = (isset($tag->attr['num'])) ? $this->get_attribute($tag, 'num') : 0 ;
-		if ($num == 0) $num = 0;
 
 		// paragraph limit ?
 		$paragraph = (isset($tag->attr['paragraph'] )) ? $this->get_attribute($tag, 'paragraph') : FALSE ;
@@ -1905,7 +1884,7 @@ class TagManager_Page extends TagManager
 					$articles[$key]['content'] = tag_limiter($article['content'], 'p', $paragraph);
 
 				// Autolink the content
-				$articles[$key]['content'] = 	auto_link($articles[$key]['content'], 'both', TRUE);
+				$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
 				
 				// Article's index
 				$articles[$key]['index'] = $index++;
@@ -1933,7 +1912,7 @@ class TagManager_Page extends TagManager
 // Needs to be improved 		
 //		$str = $tag->parse_as_nested($str);
 		
-		return self::enclose($tag, $str);		
+		return self::wrap($tag, $str);		
 	}
 
 	
@@ -2018,15 +1997,36 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	public static function tag_article_id($tag) { return self::enclose($tag, $tag->locals->article['id_article']); }
-	public static function tag_article_name($tag) { return self::enclose($tag, $tag->locals->article['name']); }
-	public static function tag_article_title($tag) { return self::enclose($tag, $tag->locals->article['title']); }
-	public static function tag_article_subtitle($tag) { return self::enclose($tag, $tag->locals->article['subtitle']); }
-	public static function tag_article_date($tag) { return self::enclose($tag, self::format_date($tag, $tag->locals->article['date'])); }
-	public static function tag_article_meta_title($tag) { return self::enclose($tag, $tag->locals->article['meta_title']); }
-	public static function tag_article_active_class($tag) { return self::enclose($tag, $tag->locals->article['active_class']); }
-
+	public static function tag_article_id($tag) { return self::wrap($tag, $tag->locals->article['id_article']); }
+	public static function tag_article_name($tag) { return self::wrap($tag, $tag->locals->article['name']); }
+	public static function tag_article_title($tag) { return self::wrap($tag, $tag->locals->article['title']); }
+	public static function tag_article_subtitle($tag) { return self::wrap($tag, $tag->locals->article['subtitle']); }
+	public static function tag_article_date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->article['date'])); }
+	public static function tag_article_meta_title($tag) { return self::wrap($tag, $tag->locals->article['meta_title']); }
+	public static function tag_article_active_class($tag) { return self::wrap($tag, $tag->locals->article['active_class']); }
 	
+	/**
+	 * Returns informations about the link
+	 *
+	 */
+	public static function tag_article_link($tag)
+	{
+		// paragraph limit ?
+		$attr = (isset($tag->attr['attr'] )) ? $tag->attr['attr'] : FALSE ;
+		
+		if ($attr == FALSE)
+		{
+			return $tag->locals->article['link'];
+		}
+		else
+		{
+		
+		}
+		
+		
+		// return self::wrap($tag, $tag->locals->article['link']);
+	}
+
 	// ------------------------------------------------------------------------
 
 
@@ -2045,7 +2045,7 @@ class TagManager_Page extends TagManager
 		if ($paragraph !== FALSE)
 			$content = tag_limiter($content, 'p', $paragraph);
 
-		return self::enclose($tag, $content);
+		return self::wrap($tag, $content);
 	}
 
 
@@ -2065,7 +2065,7 @@ class TagManager_Page extends TagManager
 		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
 
 		// If link, return the link
-		if ($tag->locals->article['link'] != '' )
+		if ($tag->locals->article['link_type'] != '' )
 		{
 			// External link
 			if ($tag->locals->article['link_type'] == 'external')
@@ -2077,16 +2077,21 @@ class TagManager_Page extends TagManager
 			if($tag->locals->article['link_type'] == 'article')
 			{
 				// Get the article to which this article links
-				$target_article = $this->ci->article_model->get(array('id_article'=>$tag->locals->article['link_id']), Settings::get_lang('current'));
-				$target_article['context'] = $this->ci->article_model->get_all_context($target_article['id_article']);
+				$rel = explode('.', $tag->locals->article['link_id']);
+				$target_article = $this->ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
 				
 				// If more than one parent, links to to first found
 				// Normally, target link articles should not be duplicated in the tree
-				$parent_page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['context'][0]['id_page'] .'";')));
+				$parent_page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
 
 				$url = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
-
-				return $url;
+				
+				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+				{
+					$url = Settings::get_lang('current').'/'.$url;
+				}
+				
+				return base_url().$url;
 			}
 			// This is a link to a page
 			else
@@ -2137,7 +2142,7 @@ class TagManager_Page extends TagManager
 	public static function tag_article_medias($tag)
 	{
 		$medias = $tag->locals->article['medias'];
-		return self::get_medias($tag, $medias);
+		return self::wrap($tag, self::get_medias($tag, $medias));
 	}
 
 
@@ -2153,7 +2158,7 @@ class TagManager_Page extends TagManager
 		foreach($tag->globals->users as $user)
 		{
 			if ($user['username'] == $tag->locals->article['author'])
-				return self::enclose($tag, $user['screen_name']);
+				return self::wrap($tag, $user['screen_name']);
 		}
 
 		return '';
@@ -2172,7 +2177,7 @@ class TagManager_Page extends TagManager
 		foreach($tag->globals->users as $user)
 		{
 			if ($user['username'] == $tag->locals->article['author'])
-				return self::enclose($tag, $user['email']);
+				return self::wrap($tag, $user['email']);
 		}
 
 		return '';
@@ -2181,7 +2186,7 @@ class TagManager_Page extends TagManager
 
 
 	/**
-	 * Returns HTML categories links enclosed by the given tag
+	 * Returns HTML categories links wrapped by the given tag
 	 *
 	 * @TODO : 	Add the open and closing tag for each anchor.
 	 *			Example : <li><a>... here is the anchor ... </a></li>
@@ -2197,11 +2202,20 @@ class TagManager_Page extends TagManager
 		// Make a link from each category or not. Default : TRUE
 		$link = ( ! empty($tag->attr['link']) && $tag->attr['link'] == 'false') ? FALSE : TRUE;	
 
-		// Field to return for each category. "title" by default, but can be "name"
+		// Field to return for each category. "title" by default, but can be "name", "subtitle'
 		$field =  ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : 'title';
 
 		// don't display the lang URL (by default)
 		$lang_url = '';
+
+		// Global tag and class, for memory
+		$html_tag =  ( ! empty($tag->attr['tag'])) ? $tag->attr['tag'] : FALSE;
+		$class =  ( ! empty($tag->attr['class'])) ? $tag->attr['class'] : FALSE;
+		
+		// Tag and class for each category, if set.
+		$subtag =  ( ! empty($tag->attr['subtag'])) ? $tag->attr['subtag'] : FALSE;
+		$subclass =  ( ! empty($tag->attr['subclass'])) ? ' class="'.$tag->attr['subclass'].'"' : FALSE;
+
 
 		// If lang attribute is set to TRUE, force the lang code to be in the URL
 		// Usefull only if the website has only one language
@@ -2228,27 +2242,46 @@ class TagManager_Page extends TagManager
 
 		$category_uri = $uri_config['category'];
 
-		
 		// Get the categories from current article
 		$categories = $tag->locals->article['categories'];	
 
 		// Build the anchor array
-		if ($link == TRUE)
+		foreach($categories as $category)
 		{
-			foreach($categories as $category)
+			$category_string = '';
+			
+			if ($subtag !== FALSE)
 			{
-				$data[] = anchor(base_url().$lang_url.$page['name'].'/'.$category_uri.'/'.$category['name'], $category[$field]);
+				// Set the local category, to get the class from current category
+				$tag->locals->category = $category;
+				$subclass = self::get_attribute($tag, 'subclass');
+				$subtag = self::get_attribute($tag, 'subtag');
+				
+				// Replace the class and tag by the subclass and subtag
+				$tag->attr['class'] = $subclass;
+				$tag->attr['tag'] = $subtag;
+	
+				$category_string = self::wrap($tag, $category[$field]);
 			}
+			else
+			{
+				$category_string = $category[$field];
+			}
+			
+			if ($link == TRUE)
+			{
+				$category_string = anchor(base_url().$lang_url.$page['name'].'/'.$category_uri.'/'.$category['name'], $category_string);
+			}
+			
+			$data[] = $category_string;
+			
+			
 		}
-		else
-		{
-			foreach($categories as $category)
-			{
-				$data[] = $category[$field];
-			}
-		}		
+
+		$tag->attr['tag'] = $html_tag;
+		$tag->attr['class'] = $class;
 		
-		return self::enclose($tag, implode($separator, $data));
+		return self::wrap($tag, implode($separator, $data));
 	}
 
 
@@ -2267,7 +2300,7 @@ class TagManager_Page extends TagManager
 			
 //			if (strlen($content) < strlen($article['content']))
 //			{
-				return self::enclose($tag, '<a href="'.self::tag_article_url($tag).'">'.lang($term).'</a>'); 
+				return self::wrap($tag, '<a href="'.self::tag_article_url($tag).'">'.lang($term).'</a>'); 
 //			}
 //			else
 //			{
@@ -2287,6 +2320,11 @@ class TagManager_Page extends TagManager
 		return $tag->locals->article['index'];
 	}
 	
+	public static function tag_article_count($tag)
+	{
+		return $tag->locals->article['count'];
+	}
+	
 	
 	// ------------------------------------------------------------------------
 	
@@ -2302,14 +2340,14 @@ class TagManager_Page extends TagManager
 	
 		return count($medias);
 	}
-	
-	
-	
-	
+
 	
 	// ------------------------------------------------------------------------
 
-	
+	/**
+	 * Returns one media
+	 *
+	 */
 	public static function tag_media($tag)
 	{
 		// thumb folder name (without the 'thumb_' prefix)
@@ -2317,36 +2355,20 @@ class TagManager_Page extends TagManager
 		$attr = (isset($tag->attr['attr']) ) ? $tag->attr['attr'] : FALSE;
 		$index = (isset($tag->attr['index']) && intval($tag->attr['index']) > 0 ) ? $tag->attr['index'] : '1';
 		$random = (isset($tag->attr['random']) && $tag->attr['random'] == 'TRUE' ) ? TRUE : FALSE;
+		$extension = (isset($tag->attr['extension']) ) ? $tag->attr['extension'] : FALSE;
 		
+		$medias = array();
 		
 		if ($type !== FALSE && $attr != FALSE)
 		{
-			$medias = $tag->locals->page['medias'];	
-	
-			self::get_medias($tag, $medias);
-
-//			return $tag->locals->media[$attr];
-
-			// Media extension
-			$extension = (isset($tag->attr['extension']) ) ? $tag->attr['extension'] : FALSE;
+			$parent = self::get_parent_tag($tag);
 			
-			// Number of wished displayed medias
-			$num = (isset($tag->attr['num'] )) ? $tag->attr['num'] : 9999 ;
-	
-			// Range : Start and stop index, coma separated
-			$range = (isset($tag->attr['range'] )) ? explode(',',$tag->attr['range']) : FALSE ;
-			$from = $to = FALSE;
-			
-			if ($range !== FALSE)
+			if (isset($tag->locals->{$parent}))
 			{
-				$from = $range[0];
-				$to = (isset($range[1]) && $range[1] >= $range[0]) ? $range[1] : FALSE;
+				$medias = $tag->locals->{$parent}['medias'];
 			}
-		
-		
+			
 			$filtered_medias = array();
-
-			$i = 0;
 
 			if ( ! empty($medias))
 			{
@@ -2354,7 +2376,7 @@ class TagManager_Page extends TagManager
 				// filter by type
 				foreach($medias as $media)
 				{
-					if ($media['type'] == $type && $i < $num)
+					if ($media['type'] == $type)
 					{
 						$filtered_medias[] = $media;
 					}
@@ -2407,9 +2429,7 @@ class TagManager_Page extends TagManager
 					}
 				}
 			}
-
 		}
-	
 	}
 	
 	
@@ -2420,15 +2440,15 @@ class TagManager_Page extends TagManager
 	 * Medias tags callback functions
 	 *
 	 */
-	public static function tag_media_title($tag) {	return self::enclose($tag, $tag->locals->media['title']); }
-	public static function tag_media_link($tag) { return self::enclose($tag, $tag->locals->media['link']); }
-	public static function tag_media_alt($tag) {	return self::enclose($tag, $tag->locals->media['alt']); }
-	public static function tag_media_file_name($tag) { return self::enclose($tag, $tag->locals->media['file_name']); }
+	public static function tag_media_title($tag) {	return self::wrap($tag, $tag->locals->media['title']); }
+	public static function tag_media_link($tag) { return self::wrap($tag, $tag->locals->media['link']); }
+	public static function tag_media_alt($tag) {	return self::wrap($tag, $tag->locals->media['alt']); }
+	public static function tag_media_file_name($tag) { return self::wrap($tag, $tag->locals->media['file_name']); }
 	public static function tag_media_base_path($tag) { return $tag->locals->media['base_path']; }
 	public static function tag_media_id($tag) { return $tag->locals->media['id_media']; }
 	public static function tag_media_path($tag) { return $tag->locals->media['path']; }
-	public static function tag_media_description($tag) { return self::enclose($tag, $tag->locals->media['description']); }
-	public static function tag_media_copyright($tag) { return self::enclose($tag, $tag->locals->media['copyright']); }
+	public static function tag_media_description($tag) { return self::wrap($tag, $tag->locals->media['description']); }
+	public static function tag_media_copyright($tag) { return self::wrap($tag, $tag->locals->media['copyright']); }
 
 	
 	// ------------------------------------------------------------------------
@@ -2520,10 +2540,8 @@ class TagManager_Page extends TagManager
 		// Final string to print out.
 		$str = '';
 
-		/*
-		 * Infos from tags
-		 *
-		 */
+		// No helper ?
+		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
 		
 		// Menu : Main menu by default
 		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
@@ -2538,6 +2556,9 @@ class TagManager_Page extends TagManager
 		
 		// Navigation level. 0 if not defined
 		$asked_level = isset($tag->attr['level']) ? $tag->attr['level'] : 0;
+
+		// Display hidden navigation elements ?
+		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
 
 		// Current page
 		$current_page =& $tag->locals->page;
@@ -2569,9 +2590,8 @@ class TagManager_Page extends TagManager
 		$pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $asked_level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
 	
 		// Filter on 'appears'=>'1'
-		$pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
-
-
+		if ($display_hidden == FALSE)
+			$pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
 		
 		// Get the parent page from one level upper
 		$parent_page = array();
@@ -2592,7 +2612,7 @@ class TagManager_Page extends TagManager
 			if ($asked_level > 0)
 				$pages = array();
 		}
-		
+
 		// Get helper method
 		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';
 		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
@@ -2601,11 +2621,22 @@ class TagManager_Page extends TagManager
 		$this->ci->load->helper($helper);
 		
 		// Return the helper function result
-		if (function_exists($helper_function))
+		if (function_exists($helper_function) && $no_helper === FALSE)
 		{
 			$nav = call_user_func($helper_function, $pages);
 			
-			return self::enclose($tag, $nav);
+			return self::wrap($tag, $nav);
+		}
+		else
+		{
+			foreach($pages as $index => $p)
+			{
+				$tag->locals->page = $p;
+				$tag->locals->index = $index;
+				$str .= $tag->expand();
+			}
+
+			return self::wrap($tag, $str);
 		}
 		
 		return self::show_tag_error($tag->name, 'Error message');
@@ -2654,6 +2685,9 @@ class TagManager_Page extends TagManager
 		
 		// Attribute : active class
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
+
+		// Display hidden navigation elements ?
+		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
 
 		// Attribute : HTML Tree container ID & class attribute
 		$id = (isset($tag->attr['id']) ) ? $tag->attr['id'] : NULL ;
@@ -2732,9 +2766,10 @@ class TagManager_Page extends TagManager
 			$pages[$key]['active_class'] = in_array($p['id_page'], $active_pages) ? $active_class : '';
 		}
 
-		
 		// Filter on 'appears'=>'1'
-		$nav_pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
+		if ($display_hidden == FALSE)
+			$nav_pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
+	
 		$nav_pages = array_filter($nav_pages, create_function('$row','return ($row["id_menu"] == "'. $id_menu .'") ;'));
 
 		// Get the tree navigation array
@@ -2810,7 +2845,7 @@ class TagManager_Page extends TagManager
 		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
 
 		// month
-		$with_month = (isset($tag->attr['with_month']) && $tag->attr['with_month'] == 'TRUE' ) ? TRUE : FALSE;
+		$with_month = (isset($tag->attr['with_month']) ) ? TRUE : FALSE;
 
 		// Current archive
 		$current_archive = isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : '' ;
@@ -3061,7 +3096,7 @@ class TagManager_Page extends TagManager
 		}
 		if ( ! is_null($category_value))
 		{
-			return self::enclose($tag, $category_value);
+			return self::wrap($tag, $category_value);
 		}
 		
 		return '';
@@ -3092,12 +3127,13 @@ class TagManager_Page extends TagManager
 		$str = '';
 		foreach($tag->globals->categories as $category)
 		{
-			$tag->locals->page = $category;
+			$tag->locals->category = $category;
+//			$tag->locals->page = $category;
 			$str .= $tag->expand();
 		}
 
 		// View rendering
-		return self::enclose($tag, $str);
+		return self::wrap($tag, $str);
 	}
 
 	
@@ -3108,7 +3144,7 @@ class TagManager_Page extends TagManager
 	 * Categories tags callback functions
 	 *
 	 */
-	public static function tag_categories_url($tag) 
+	public static function tag_category_url($tag) 
 	{ 
 		// don't display the lang URL (by default)
 		$lang_url = FALSE;
@@ -3124,10 +3160,10 @@ class TagManager_Page extends TagManager
 		// or atribute lang set to TRUE
 		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
 		{
-			return $tag->locals->page['lang_url'];
+			return $tag->locals->category['lang_url'];
 		}
 		
-		return $tag->locals->page['url'];
+		return $tag->locals->category['url'];
 	}
 
 
@@ -3138,10 +3174,13 @@ class TagManager_Page extends TagManager
 	 * Use tag_categories_url()
 	 * @deprecated
 	 */
-	public static function tag_categories_lang_url($tag) { return ($tag->locals->page['lang_url'] != '' ) ? $tag->locals->page['lang_url'] : '' ; }
+//	public static function tag_categories_lang_url($tag) { return ($tag->locals->category['lang_url'] != '' ) ? $tag->locals->category['lang_url'] : '' ; }
 
-	public static function tag_categories_active_class($tag) { return ($tag->locals->page['active_class'] != '' ) ? $tag->locals->page['active_class'] : '' ; }
+	public static function tag_category_active_class($tag) { return ($tag->locals->category['active_class'] != '' ) ? $tag->locals->category['active_class'] : '' ; }
 
+    public static function tag_category_title($tag) { return self::wrap($tag, $tag->locals->category['title']); }
+
+	public static function tag_category_subtitle($tag) { return self::wrap($tag, $tag->locals->category['subtitle']); }
 
 
 	// ------------------------------------------------------------------------

@@ -33,6 +33,7 @@ class Lang extends MY_admin
 		parent::__construct();
 
 		$this->load->model('lang_model', '', true);
+		$this->load->model('settings_model', '', true);
 	}
 
 
@@ -46,7 +47,7 @@ class Lang extends MY_admin
 	function index()
 	{
 
-		$languages = $this->lang_model->get_list($where = false, $orderby = 'ordering ASC');
+		$languages = $this->lang_model->get_list(array('order_by' => 'ordering ASC'));
 
 		$this->template['languages'] = $languages;
 
@@ -305,6 +306,11 @@ class Lang extends MY_admin
 		{
 			$this->error(lang('ionize_message_lang_file_not_saved'));
 		}
+
+		// Force lang URLs ?
+		$data = array('name' => 'force_lang_urls', 'content' => $this->input->post('force_lang_urls'));
+		$this->settings_model->save_setting($data);
+		
 		
 		// UI update panels
 		$this->update[] = array(
@@ -385,7 +391,7 @@ class Lang extends MY_admin
 	 */
 	function _update_config_file()
 	{
-		$languages = $this->lang_model->get_list($where = false, $orderby = 'ordering ASC');
+		$languages = $this->lang_model->get_list(array('order_by' => 'ordering ASC'));
 
 		// Default language
 		$def_lang = '';

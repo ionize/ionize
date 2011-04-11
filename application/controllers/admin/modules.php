@@ -142,7 +142,7 @@ class Modules extends MY_admin
 		include APPPATH . 'config/modules.php';
 
 		// Load the module XML config file
-		if ( ! $xml = simplexml_load_file(MODPATH . '/' . $module_folder . '/config.xml') )
+		if ( ! $xml = simplexml_load_file(MODPATH . $module_folder . '/config.xml') )
 		{
 			$this->error(lang('ionize_message_module_install_error_no_config'));
 		}

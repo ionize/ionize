@@ -83,8 +83,8 @@ fieldset {
 .mocha dl.small {
 	min-width: inherit;
 }
-.panle dl.small dt,
-.mocha dl dt {
+.panel dl.small dt,
+.mocha dl.small dt {
 	min-width:inherit;
 	width:115px;
 }
@@ -136,6 +136,15 @@ dt.small {
 ---------------------------------------------------------------- */
 
 /* Standard label */
+div.label {
+	background-color: #f2f2f2;
+	padding:2px 0 2px 5px;
+	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
+}
+div.label:hover {
+	background-color: #cef;
+}
+
 label {
 	font-size: 11px;
 	margin: 0 10px;
@@ -163,6 +172,7 @@ input.required, textarea.required, select.required{
 textarea{
 	border:1px solid #bbb;
 	padding:3px;
+	margin:0;
 }
 .select {
 	border:1px solid #bbb;
@@ -174,6 +184,7 @@ textarea{
 .inputtext {
 	border:1px solid #bbb;
 	padding:4px;
+	width:82%;
 }
 .inputtext:focus,
 textarea:focus {
@@ -185,7 +196,7 @@ input.italic {
 input.droppable,
 textarea.droppable {
 	font-style: italic;
-	padding:5px;
+	padding:4px;
 }
 input.droppable.empty,
 textarea.droppable.empty {
@@ -212,7 +223,7 @@ textarea.droppable.focus {
 
 input.date {
 	float:left;
-	margin-right:5px;
+/*	margin-right:5px;*/
 }
 .inputcheckbox {}
 .inputradio {}
@@ -236,7 +247,8 @@ input.date {
 }
 
 /* Special form elements */
-#maincolumn .inputtext {
+#maincolumn .inputtext,
+#maincolumn .textarea {
 	width: 82%;
 }
 
@@ -264,7 +276,8 @@ input.date {
 
 
 /* Toolbar button */
-.toolbar-button {
+.toolbar-button,
+.light-button {
 	-moz-border-radius:4px;
 	font-family:Arial,Helvetica,sans-serif;
 	border: 1px solid transparent;
@@ -277,16 +290,21 @@ input.date {
 	height: 24px;
 	vertical-align: middle;
 }
-.toolbar-button.plus {
-	background:url(../images/icon_16_plus.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-.toolbar-button.minus {
-	background:url(../images/icon_16_minus.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-.toolbar-button:hover {
+.toolbar-button.plus, .light-button.plus { background:url(../images/icon_16_plus.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.minus, .light-button.minus { background:url(../images/icon_16_minus.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.files, .light-button.files { background:url(../images/icon_16_files.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.music, .light-button.music { background:url(../images/icon_16_music.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.delete, .light-button.delete { background:url(../images/icon_16_delete.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.video, .light-button.video { background:url(../images/icon_16_video.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.refresh, .light-button.refresh { background:url(../images/icon_16_refresh.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.pictures, .light-button.pictures { background:url(../images/icon_16_pictures.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.back, .light-button.back { background:url(../images/icon_16_left.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.helpme, .light-button.helpme { background:url(../images/icon_16_helpme.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.element, .light-button.element { background:url(../images/icon_16_element.png) no-repeat 4px 50%; padding-left: 24px; }
+
+.toolbar-button:hover, .light-button:hover {
 	border:1px solid #bbb;
+	background-color: #fff;
 }
 
 /* Toolbox inputs */

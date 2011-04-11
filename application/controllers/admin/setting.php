@@ -416,7 +416,7 @@ class Setting extends MY_admin
 		$settings = array(	'texteditor', 'filemanager', 'files_path', 'cache', 'cache_time', 
 							'ftp_dir', 'ftp_host', 'ftp_user', 'ftp_password', 
 							'tinybuttons1','tinybuttons2','tinybuttons3',
-							'google_analytics', 'system_thumb_list', 'system_thumb_edition','media_thumb_size', 
+							'google_analytics', 'system_thumb_list', 'system_thumb_edition','media_thumb_size', 'picture_max_width', 'picture_max_height',
 							'use_extend_fields');
 							
 		// Medias extensions to save			
@@ -492,23 +492,25 @@ class Setting extends MY_admin
 				}
 			}
 		}		
-
+		
 		// Antispam key
-		if (config_item('form_antispam_key') != $this->input->post('form_antispam_key') )
+		$config_items = array('form_antispam_key');
+		
+		foreach($config_items as $config_item)
 		{
-			if ($this->config_model->change('ionize.php', 'form_antispam_key', $this->input->post('form_antispam_key')) == FALSE)
+			if (config_item($config_item) != $this->input->post($config_item) )
 			{
-				$this->error(lang('ionize_message_error_writing_ionize_file'));				
+				if ($this->config_model->change('ionize.php', $config_item, $this->input->post($config_item)) == FALSE)
+					$this->error(lang('ionize_message_error_writing_ionize_file'));				
 			}
+		
 		}
 		
-		// Update the main panel
-		$this->update[] = array(
-			'element' => 'mainPanel', 
-			'url' => admin_url() . 'setting/technical'
+		$this->callback = array(
+			'fn' => 'ION.reload',
+			'args' => array('url' => config_item('admin_url'))
 		);
 
-		// Answer
 		$this->success(lang('ionize_message_settings_saved'));
 	}
 

@@ -100,6 +100,22 @@ class Desktop extends MY_Admin
 
 		$this->output($args);
 	}
+	
+	/**
+	 * Opens a help window
+	 *
+	 */
+	function help($table, $title='')
+	{
+		$this->load->model($table.'_model', '', TRUE);
+		
+		$this->template['data'] = $this->{$table.'_model'}->get_list();
+		$this->template['table'] = $table;
+
+		$this->template['title'] = $title;
+		
+		$this->output('help');
+	}
 }
 
 /* End of file desktop.php */

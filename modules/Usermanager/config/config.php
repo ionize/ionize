@@ -15,6 +15,12 @@ $config['usermanager_register_url'] = "register";
 // In this case, it's "profile"
 $config['usermanager_profile_url'] = "profile";
 
+// The controller / view to the activation
+// e.g. www.domain.com/activate
+// In this case, it's "activate"
+$config['usermanager_activation_url'] = "activation";
+
+
 // Use e-mail for login
 // If true, it'll overwrite the usermanager_user_midel->username value (see below)
 $config['usermanager_email_as_username'] = false;
@@ -23,6 +29,8 @@ $config['usermanager_email_as_username'] = false;
 // If true, it'll write exact error messages for a login attempt (min_length, xss_clean, etc.)
 // Otherwise it'll only return bad_login_information
 $config['usermanager_display_login_errors'] = false;
+
+
 
 // Some configuration regarding pictures, the user can upload
 // "sizes" will be contrainted. If a picture is 500x1000, "xl" will be 250x500, "s" will be 25x50
@@ -87,7 +95,8 @@ $config['usermanager_picture'] = array(
 //  - save : String which represents the table, where the data is stored. 'users' is ionize's default user table.
 //           Don't alter the 'users' table, but create a new one in /modules/Usermanager/config.xml.
 //           False means it won't be stored (e.g. for fields, which are used for matches).
-$config['usermanager_user_model'] = array(
+$config['usermanager_user_model'] = array
+(
 	/* Default fields */
 	'username' => array(
 		'rules' => 'trim|required|min_length[4]|xss_clean',
@@ -119,6 +128,13 @@ $config['usermanager_user_model'] = array(
 		'default_value' => '4',
 		'save' => 'users'
 	),
+	// Antispam field
+	'ck' => array(
+		'rules' => 'antispam',
+		'special_field' => false,
+		'default_value' => false,
+		'save' => false
+	),
 	/* /Default fields */
 
 	/* Match fields */
@@ -142,12 +158,6 @@ $config['usermanager_user_model'] = array(
 		'rules' => 'trim|min_length[1]|xss_clean',
 		'special_field' => false,
 		'default_value' => '0',
-		'save' => 'users_info'
-	),
-	'firstname' => array(
-		'rules' => 'trim|required|min_length[2]|xss_clean',
-		'special_field' => false,
-		'default_value' => false,
 		'save' => 'users_info'
 	),
 	'company' => array(
@@ -201,13 +211,13 @@ $config['usermanager_user_model'] = array(
 	'terms' => array(
 		'rules' => 'trim|required|xss_clean|max_length[1]',
 		'special_field' => 'checkbox',
-		'default_value' => false,
+		'default_value' => '1',
 		'save' => 'users_info'
 	),
 	'position' => array(
 		'rules' => 'trim|xss_clean',
 		'special_field' => false,
-		'default_value' => false,
+		'default_value' => '1',
 		'save' => 'users_info'
 	),
 	'picture' => array(
@@ -283,6 +293,6 @@ $config['usermanager_user_model'] = array(
 $config['usermanager_login_model'] = array(
 	// Email or username depends on usermanager_email_as_username
 	'email' => 'trim|required|min_length[5]|valid_email|xss_clean',
-	'username' => 'trim|required|min_length[5]|xss_clean',
+	'username' => 'trim|required|min_length[4]|xss_clean',
 	'password' => 'trim|required|min_length[4]|xss_clean',
 );
