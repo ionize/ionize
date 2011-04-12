@@ -47,11 +47,8 @@ ul {
 	margin-bottom:-2px;
 }
 .tree li a.title {
-/*	background-color: #fd2;*/
-	height:18px;
 	position: absolute;
 	top:0;
-	
 }
 
 .tree li .action{

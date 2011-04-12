@@ -913,6 +913,7 @@ div.mochaToolbarWrapper.bottom {
 }
 .tree li a.title {
 	display:block;
+	height: 18px;
 }
 
 .tree li img {
