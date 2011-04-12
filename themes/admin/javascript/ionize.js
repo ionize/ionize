@@ -1837,19 +1837,22 @@ var ION = new Hash({
 	 */	
 	initListToggler: function(toggler, child)
 	{
-		toggler.fx = new Fx.Slide(child, {
-		    mode: 'vertical',
-		    duration: 200
-		});
-		toggler.fx.hide();
-
-		toggler.addEvent('click', function()
+		if ($type(child) != false)
 		{
-			this.fx.toggle();
-			this.toggleClass('expand');
-			this.getParent('li').toggleClass('highlight');
-//			this.getParent('ul').toggleClass('highlight');
-		});
+			toggler.fx = new Fx.Slide(child, {
+			    mode: 'vertical',
+			    duration: 200
+			});
+			toggler.fx.hide();
+	
+			toggler.addEvent('click', function()
+			{
+				this.fx.toggle();
+				this.toggleClass('expand');
+				this.getParent('li').toggleClass('highlight');
+	//			this.getParent('ul').toggleClass('highlight');
+			});
+		}
 	},
 	
 	insertDomElement: function(container, where, html)

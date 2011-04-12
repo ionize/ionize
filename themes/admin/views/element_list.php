@@ -27,7 +27,7 @@
 	
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">
 			
-			<div class="pt5" id="def_<?= $id ?>">
+			<div class="pt5" id="add_def_<?= $id ?>">
 				
 				<ul class="fields" id="fields<?= $id ?>" rel="<?= $id ?>">
 
@@ -54,13 +54,13 @@
 <script type="text/javascript">
 
 // Add toggler to each definition
-$$('.element_definition .toggler').each(function(el)
+$$('#element_definition_<?= $id ?> .toggler').each(function(el)
 {
-	ION.initListToggler(el, $('def_' + el.getProperty('rel')));
+	ION.initListToggler(el, $('add_def_' + el.getProperty('rel')));
 });
 
 // Plus icon Event
-$$('.element_definition .plus').each(function(item)
+$$('#element_definition_<?= $id ?> .plus').each(function(item)
 {
 	item.addEvent('click', function(e)
 	{

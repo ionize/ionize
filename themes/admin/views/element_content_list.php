@@ -18,9 +18,6 @@ $width = (100 / $nbLang);
 
 ?>
 
-
-<!--<form method="post" name="elements<?= $id_def ?>">-->
-
 <ul id="elements<?= $id_def ?>">
 
 <?php foreach($elements as $element) :?>
@@ -47,9 +44,11 @@ $width = (100 / $nbLang);
 
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">
 
+			<?php if(count($element['fields']) > 1) :?>
 			<span class="toggler right mr10" style="display:block;height:16px;" rel="<?= $id_element ?>">
 				<a class="left" rel="<?= $id_element ?>"><?= lang('ionize_label_see_element_detail') ?></a>
 			</span>
+			<?php endif ;?>
 
 			<?php foreach($element['fields'] as $field) :?>
 
@@ -363,35 +362,36 @@ $width = (100 / $nbLang);
 
 </ul>
 
-<!-- </form>-->
 
 <script type="text/javascript">
+
 
 	/**
 	 * itemManager
 	 *
 	 */
-	elementsManager<?= $id_def ?> = new ION.ItemManager({container: 'elements<?= $id_def ?>', 'element':'element', 'parent_element': '<?= $parent ?>', 'id_parent':'<?= $id_parent ?>'});
+	var elementsManager<?= $id_def ?> = new ION.ItemManager({container: 'elements<?= $id_def ?>', 'element':'element', 'parent_element': '<?= $parent ?>', 'id_parent':'<?= $id_parent ?>'});
 	elementsManager<?= $id_def ?>.makeSortable();
 
+
 	// Add toggler to each definition
-	$$('.element .toggler').each(function(el)
+	<?php if(count($element['fields']) > 1) :?>
+	$$('#elements<?= $id_def ?> li.element .toggler').each(function(el)
 	{
 		ION.initListToggler(el, $('def_' + el.getProperty('rel')));
 	});
+	<?php endif ;?>
 
 	// Edit on each element
-	$$('#elements<?= $id_def ?> .element .title').each(function(item)
+	$$('#elements<?= $id_def ?> li.element a.title').each(function(item)
 	{
 		item.addEvent('click', function(e)
 		{
-			var rel = item.getProperty('rel');
+			var rel = this.getProperty('rel');
 			MUI.dataWindow('contentElement' + rel, 'ionize_title_edit_content_element', 'element/edit', {width:500, height:300}, {'id_element': rel});
 		});
 		
 		ION.addDragDrop(item, '.folder,.file', 'ION.dropContentElementInPage,ION.dropContentElementInArticle');
-		
-		
 	});
 	
 

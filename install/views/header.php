@@ -5,7 +5,6 @@
 <title><?php echo lang('title_ionize_installation')?></title>
 
 <link rel="stylesheet" href="../themes/admin/css/installer.css" type="text/css" />
-<link rel="stylesheet" href="../themes/admin/css/form.css" type="text/css" />
 
 <script type="text/javascript" src="../themes/admin/javascript/mootools-1.2.4-core-nc.js"></script>
 
