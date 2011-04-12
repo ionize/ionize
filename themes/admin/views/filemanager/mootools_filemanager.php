@@ -1,19 +1,5 @@
 
-<div id="mootools-filemanager" style="width: 100%; height: 100%; position: absolute; overflow: hidden;"></div>
-
-<style>
-
-div.filemanager div.filemanager-menu {
-	background-color: #f2f2f2;
-	bottom:0;
-	top:0;
-	right:12px;
-}
-div.filemanager-menu label  {
-	padding-top:4px;
-}
-</style>
-
+<div id="mootools-filemanager"></div>
 
 <script type="text/javascript">	
 

@@ -30,7 +30,7 @@
 	<script type="text/javascript" src="<?= theme_url() ?>javascript/excanvas_r43_compressed.js"></script>		
 <![endif]-->
 
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-1.2.4-core-nc.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-1.2.5-core.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-1.2.4.4-more-yc.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/drag.clone.js"></script>
 
@@ -121,6 +121,7 @@
 	<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Css/FileManager.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Css/Additions.css" />
 
+	<!--[if IE 7]><link rel="stylesheet" href="<?= theme_url() ?>javascript/mootools-filemanager/Css/FileManager_ie7.css" /><![endif]-->
 
 
 
