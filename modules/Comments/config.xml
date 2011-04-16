@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>#module_name Module</name>
+	<description>#module_description</description>
+	<uri_segment>comments</uri_segment>
+	
+	<!-- Has this module an admin panel ? -->
+	<has_admin>true</has_admin>
+	
+	<!-- Group who can access to the admin panel of the module -->
+	<access_group>editors</access_group>
+	
+	<!-- Module's DB tables. These tables will be installed at module installation -->
+	<!--
+	<database>
+		<table name="demo_module" if_not_exists="true" engine="InnoDB" default_charset="utf8" collate="utf8_unicode_ci" auto_increment="1">
+			<primary_key>id</primary_key>
+			<column name="id" type="int" length="11" attributes="UNSIGNED" zerofill="NOT NULL" auto_increment="true" ></column>
+			<column name="id_user" type="int" length="11" attributes="UNSIGNED" zerofill="NOT NULL"></column>
+			<column name="firstname" type="varchar" length="255" zerofill="NOT NULL"></column>
+			<column name="company" type="varchar" length="255"></column>
+		</table>
+	</database>
+	-->
+</module>
