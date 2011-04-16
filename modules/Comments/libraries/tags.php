@@ -29,7 +29,6 @@ class Comments_Tags
 	 
 	public static $tag_extension_map = array(												
 	
-		"comments_admin"	=>	"articles:comments_admin", 						// Display admin options & save changes
 		"comments"			=>	"articles:comments", 							// Comments loop
 		"comment_form"		=>	"articles:comment_form", 						// Display "comment" form
 		"comment_save"		=>	"articles:comment_save", 						// Save new comment
@@ -40,7 +39,8 @@ class Comments_Tags
 		"date"				=>	"articles:comments:date",						// Display comment date
 		"gravatar"			=>	"articles:comments:gravatar",					// Display avatar, using gravatar site
 		"comments_allowed"	=>  "articles:comments_allowed",					// Display nested content if comments allowed
-		"message"			=> 	"articles:comments_admin", 						// Display admin flash message 
+		"comments_admin"	=>	"articles:comments_admin", 						// Display admin options & save changes				
+		"message"			=> 	"articles:comments_admin:message",				// Display admin flash message 
 		"success_message"	=> 	"articles:comments_allowed:success_message",	// Display success flash message
 		"error_message"		=> 	"articles:comments_allowed:error_message"		// Display error flash message  								
 	);
@@ -227,7 +227,6 @@ class Comments_Tags
 	public static function comments_admin(FTL_Binding $tag)
 	{
 		$CI =& get_instance();
-				
 		$allowed = $CI->connect->restrict( array('group' => 'admins'), true );
 		
 		//return $tag->locals->article['comment_allow'];
@@ -248,6 +247,8 @@ class Comments_Tags
 		}
 		
 	}
+	
+	
 	
 	/***************************************************************************
 	 * Display a flash message to inform admin that action was completed
@@ -308,16 +309,19 @@ class Comments_Tags
 		} 	
 	}
 	
+	
+	
 	/***************************************************************************
-	 * Return "checked" if comments are allowed
+	 * Expands the tag (display tag content) if comments are allowed
 	 *
 	 */
 	public static function comments_allowed(FTL_Binding $tag)
 	{
-		
 		$result = $tag->locals->article['comment_allow']=="1" ? $result = $tag->expand() : $result ="";
 		return $result;	
 	}
+	
+	
 
 
 }
