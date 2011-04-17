@@ -1,0 +1,6 @@
+/* theme screen stylesheets */
+
+/* import stylesheets and hide from ie/mac \*/
+@import url("reset.css");
+@import url("FreshPick.css");
+/* end import/hide */
