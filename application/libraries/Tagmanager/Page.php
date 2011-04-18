@@ -1776,7 +1776,7 @@ class TagManager_Page extends TagManager
 		
 		if ( $medias !== FALSE)
 		{
-			return wrap($tag, self::get_medias($tag, $medias));
+			return self::wrap($tag, self::get_medias($tag, $medias));
 		}
 		return ;
 	}
