@@ -37,6 +37,7 @@ class Comments_Tags
 		"author"			=>	"articles:comments:author", 					// Return comment author
 		"email"				=>	"articles:comments:email", 						// Return comment email
 		"date"				=>	"articles:comments:date",						// Display comment date
+		"id"				=>	"articles:comments:id",							// Display comment id
 		"gravatar"			=>	"articles:comments:gravatar",					// Display avatar, using gravatar site
 		"comments_allowed"	=>  "articles:comments_allowed",					// Display nested content if comments allowed
 		"comments_admin"	=>	"articles:comments_admin", 						// Display admin options & save changes				
@@ -75,7 +76,7 @@ class Comments_Tags
 	public static function comment_form(FTL_Binding $tag)
 	{
 		
-		// the tag returns the content of this view :
+		// the tag returns the content of this view :   
 		return $tag->parse_as_nested(file_get_contents(MODPATH.'Comments/views/comment_form'.EXT));
 	}
 	
@@ -87,7 +88,7 @@ class Comments_Tags
 	{
 		// get CodeIgniter instance
 		$CI =& get_instance();
-	
+		
 		// Comment was posted, saving it
 		if ($content = $CI->input->post('content'))
 		{
@@ -124,7 +125,10 @@ class Comments_Tags
 		
 		
 		// Make comment count available to child tags
-		$tag->locals->comment_count = sizeof( $comment );
+		if (isset($comments)) 
+			$tag->locals->comment_count = sizeof( $comments );
+		else
+			$tag->locals->comment_count = 0;
 		
 		$output = ""; // Var used to store the built display
 		
@@ -199,6 +203,17 @@ class Comments_Tags
 		return $tag->locals->comment["created"];
 		
 	}
+	
+	/***********************************************************************
+	 * Display comment's id
+	 *
+	 */
+	public static function id(FTL_Binding $tag)
+	{
+		return $tag->locals->comment["id_article_comment"];
+		
+	}
+	
 
 	/************************************************************************
 	 * Display comment's author's gravatar
@@ -229,18 +244,23 @@ class Comments_Tags
 		$CI =& get_instance();
 		$allowed = $CI->connect->restrict( array('group' => 'admins'), true );
 		
-		//return $tag->locals->article['comment_allow'];
-		$result = "nothing";
-		
+		// Display tag content & apply modifications if needed (only if the user is member of "admins+" group)
 		if ($allowed) 
 		{
 			
+			// Loading comments model if needed
 			if (!isset($CI->comments_model)) $CI->load->model('comments_model', '', true);
 			
-			// Checking if a modification (POST) should be done
+			// Checking if comments should be enabled/disabled (POST) should be done
 			if ($CI->input->post( "comments_article_update" )=="1" )
 			{
 				$tag->locals->article['comment_allow'] = $CI->comments_model->update_article( $tag->locals->article['id_article'] );				$tag->locals->showFlashMessage=true;	
+			}
+			
+			if ($CI->input->post( "comment_delete" )=="1" )
+			{				
+				$CI->comments_model->delete_article( $CI->input->post( "id_article_comment" ) );				
+				$tag->locals->showFlashMessage=true;	
 			}
 			
 			return $tag->expand();
@@ -278,7 +298,7 @@ class Comments_Tags
 		$CI =& get_instance();	
 		
 		// Build flash message "success"
-		if ($CI->locals->showSuccessFlashMessage==true)
+		if (isset($CI->locals->showSuccessFlashMessage) && $CI->locals->showSuccessFlashMessage==true)
 		{
 			$class = isset($tag->attr['class']) ? ' class="'.$tag->attr['class'].'"' : '';
 			$id = isset($tag->attr['id']) ? ' id="'.$tag->attr['id'].'"' : '';
@@ -298,7 +318,7 @@ class Comments_Tags
 		$CI =& get_instance();	
 		
 		// Build flash message "success"
-		if ($CI->locals->showErrorFlashMessage==true)
+		if (isset( $CI->locals->showErrorFlashMessage) && $CI->locals->showErrorFlashMessage==true)
 		{
 			$class = isset($tag->attr['class']) ? ' class="'.$tag->attr['class'].'"' : '';
 			$id = isset($tag->attr['id']) ? ' id="'.$tag->attr['id'].'"' : '';
