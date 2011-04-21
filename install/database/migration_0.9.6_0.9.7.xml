@@ -63,15 +63,15 @@
 	</query>
 
 	<query>
-		UPDATE page_article, article SET page_article.link=article.link WHERE page_article.id_article = article.id_article;
+		UPDATE page_article, article SET page_article.link = article.link WHERE page_article.id_article = article.id_article AND link !='';
 	</query>
 
 	<query>
-		UPDATE page_article, article SET page_article.link_id=article.link_id WHERE page_article.id_article = article.id_article;
+		UPDATE page_article, article SET page_article.link_id = article.link_id WHERE page_article.id_article = article.id_article AND link !='';
 	</query>
 
 	<query>
-		UPDATE page_article, article SET page_article.link_type=article.link_type WHERE page_article.id_article = article.id_article;
+		UPDATE page_article, article SET page_article.link_type = article.link_type WHERE page_article.id_article = article.id_article AND link !='';
 	</query>
 
 	<query>
