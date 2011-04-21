@@ -1,0 +1,110 @@
+/* upload */
+
+.filemanager-uploader ul.filemanager-uploader-list {
+  padding: 2px 5px;
+}
+
+.filemanager-uploader li.file img.icon, .filemanager-uploader li.file img.file-cancel {
+  position:relative;
+  top: 3px;
+}
+.filemanager-uploader li.file img.icon {
+  padding-right: 4px;
+}
+
+/* Overlay */
+div.overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  
+  z-index: 999;
+  background: #aaa;
+}
+
+/* Dialog */
+div.overlay-dialog {
+  z-index: 1999;
+  background: #fff;
+}
+
+div.dialog {
+  position: absolute;
+  display: none;
+  z-index: 2000;
+
+  width: 229px;
+  padding-bottom: 40px;
+
+  color: #bebebe;
+  font-family: Tahoma, sans-serif;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+}
+
+div.dialog-engine-trident {
+  background: #000;
+}
+
+div.dialog-engine-trident4 { width: 249px; }
+
+div.dialog a { color: #aaa; }
+div.dialog a:hover { text-decoration: none; }
+div.dialog div { margin: 10px; }
+
+div.dialog input, div.dialog select {
+  width: 94%;
+  margin: 20px 2%;
+  padding: 2px 1%;
+  border: 1px solid #bebebe;
+  background: #fff;
+  
+  color: #333;
+  font-family: Tahoma, sans-serif;
+  font-size: 12px;
+}
+
+div.dialog-engine-trident4 input, div.dialog-engine-trident5 input {
+  width: 80%;
+}
+
+div.dialog button {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  
+  width: auto;
+  height: 22px;
+  padding: 2px;
+  border: 1px solid #bebebe;
+  
+  cursor: pointer;
+  color: #333;
+  text-shadow: #eee 1px 1px 1px;
+  
+  font-family: Tahoma, sans-serif;
+  letter-spacing: 0;
+  font-size: 12px;
+  font-weight: normal;
+  margin: 0;
+  background: url("../Images/button.png") repeat-x;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+div.dialog-engine-trident4 button, div.dialog-engine-trident5 button {
+  padding: 0 .25em;
+  overflow: visible;
+}
+
+div.dialog button.dialog-decline {
+  right: auto;
+  left: 15px;
+}

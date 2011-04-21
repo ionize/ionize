@@ -17,6 +17,7 @@ FileManager.Language.it = {
 	create: 'Crea cartella',
 	createdir: 'Specifica il nome della cartella:',
 	cancel: 'Annulla',
+	error: 'Errore',
 	
 	information: 'Informazioni',
 	type: 'Tipo:',
@@ -40,24 +41,49 @@ FileManager.Language.it = {
 	length: 'Lunghezza:',
 	bitrate: 'Bitrate:',
 	
-	video_codec: 'Codec:',
-	
 	deselect: 'Deseleziona',
 	
 	nodestroy: 'La cancellazioni dei file è disabilitata.',
 	
-	notwritable: 'La dir base media non è scrivibile. Controllare i permessi.',
+	'backend.disabled': 'L Upload dei file è disabilitato.',
+	'backend.authorized': 'Non sei autorizzato a fare l upload dei file.',
+	'backend.path': 'La cartella degli upload non esiste. Contattare il webmaster.',
+	'backend.exists': 'La cartella specificata per gli upload esiste già. Contattare il webmaster.',
+	'backend.mime': 'Il tipo del file specificato non è consentito.',
+	'backend.extension': 'Il tipo di file che si vuole caricare non è consentito o è sconosciuto.',
+	'backend.size': 'La dimensione del file è troppo grande per essere processato. Ricarica un file con dimensioni ridotte.',
+	'backend.partial': 'Il file è stato parzialmente caricato. Per favore, prova a ricaricarlo.',
+	'backend.nofile': 'Non è stato specificato alcun file da caricare.',
+	'backend.default': 'Mi spiace, l operazione non è andata a buon fine.',
 	
-	'upload.disabled': 'L Upload dei file è disabilitato.',
-	'upload.authenticated': 'Non sei autorizzato a fare l upload dei file.',
-	'upload.path': 'La cartella degli upload non esiste. Contattare il webmaster.',
-	'upload.exists': 'La cartella specificata per gli upload esiste già. Contattare il webmaster.',
-	'upload.mime': 'Il tipo del file specificato non è consentito.',
-	'upload.extension': 'Il tipo di file che si vuole caricare non è consentito o è sconosciuto.',
-	'upload.size': 'La dimensione del file è troppo grande per essere processato. Ricarica un file con dimensioni ridotte.',
-	'upload.partial': 'Il file è stato parzialmente caricato. Per favore, prova a ricaricarlo.',
-	'upload.nofile': 'Non è stato specificato alcun file da caricare.',
-	'upload.default': 'Mi spiace, l operazione non è andata a buon fine.',
+	'backend.nonewfile': 'A new name for the file to be moved / copied is missing.',
+	'backend.corrupt_img': 'This file is a not a image or a corrupt file: ', // path
+	'backend.copy_failed': 'An error occurred while copying the file / directory: ', // oldlocalpath : newlocalpath
+	'backend.delete_thumbnail_failed': 'An error occurred when attempting to delete the image thumbnail',
+	'backend.mkdir_failed': 'An error occurred when attempting to create the directory: ', // path
+	'backend.move_failed': 'An error occurred while moving / renaming the file / directory: ', // oldlocalpath : newlocalpath
+	'backend.path_tampering': 'Path tampering detected.',
+	'backend.realpath_failed': 'Cannot translate the given file specification to a valid storage location: ', // $path
+	'backend.unlink_failed': 'An error occurred when attempting to delete the file / directory: ',  // path
+
+	// Image.class.php:
+	'backend.process_nofile': 'The image processing unit did not receive a valid file location to work on.',
+	'backend.imagecreatetruecolor_failed': 'The image processing unit failed: GD imagecreatetruecolor() failed.',
+	'backend.imagealphablending_failed': 'The image processing unit failed: cannot perform the required image alpha blending.',
+	'backend.imageallocalpha50pctgrey_failed': 'The image processing unit failed: cannot allocate space for the alpha channel and the 50% background.',
+	'backend.imagecolorallocatealpha_failed': 'The image processing unit failed: cannot allocate space for the alpha channel for this color image.',
+	'backend.imagerotate_failed': 'The image processing unit failed: GD imagerotate() failed.',
+	'backend.imagecopyresampled_failed': 'The image processing unit failed: GD imagecopyresampled() failed.',
+	'backend.imagecopy_failed': 'The image processing unit failed: GD imagecopy() failed.',
+	'backend.imageflip_failed': 'The image processing unit failed: cannot flip the image.',
+	'backend.imagejpeg_failed': 'The image processing unit failed: GD imagejpeg() failed.',
+	'backend.imagepng_failed': 'The image processing unit failed: GD imagepng() failed.',
+	'backend.imagegif_failed': 'The image processing unit failed: GD imagegif() failed.',
+	'backend.imagecreate_failed': 'The image processing unit failed: GD imagecreate() failed.',
+	'backend.cvt2truecolor_failed': 'conversion to True Color failed. Image resolution: ', /* x * y */
+	'backend.no_imageinfo': 'Corrupt image or not an image file at all.',
+	'backend.img_will_not_fit': 'image does not fit in available RAM; minimum required (estimate): ', /* XXX MBytes */
+	'backend.unsupported_imgfmt': 'unsupported image format: ',    /* jpeg/png/gif/... */
 	
 	/* FU */
 	uploader: {

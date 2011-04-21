@@ -10,14 +10,15 @@ FileManager.Language.de = {
 	more: 'Details',
 	width: 'Breite:',
 	height: 'Höhe:',
-	
+
 	ok: 'Ok',
 	open: 'Datei wählen',
 	upload: 'Datei hochladen',
 	create: 'Ordner erstellen',
 	createdir: 'Bitte gib einen Ordnernamen ein:',
 	cancel: 'Abbrechen',
-	
+	error: 'Fehler',
+
 	information: 'Information',
 	type: 'Typ:',
 	size: 'Größe:',
@@ -27,51 +28,76 @@ FileManager.Language.de = {
 	close: 'Schließen',
 	destroy: 'Löschen',
 	destroyfile: 'Bist du sicher, dass du diese Datei löschen möchtest?',
-	
+
 	rename: 'Umbenennen',
 	renamefile: 'Gib einen neuen Dateinamen ein:',
-	
+
 	download: 'Download',
 	nopreview: '<i>Keine Vorschau verfügbar</i>',
-	
+
 	title: 'Titel:',
 	artist: 'Artist:',
 	album: 'Album:',
 	length: 'Länge:',
 	bitrate: 'Bitrate:',
-	
-	video_codec: 'Codec:',
-	
+
 	deselect: 'Entfernen',
-	
+
 	nodestroy: 'Dateien löschen wurde auf diesem Server deaktiviert.',
-	
-	notwritable: 'Die Basis Medien dir ist nicht beschreibbar. Überprüfen Sie die Berechtigungen.',
-	
-	'upload.disabled': 'Der Datei-Upload wurde auf diesem Server deaktiviert.',
-	'upload.authenticated': 'Upload fehlgeschlagen: Du bist nicht authentifiziert.',
-	'upload.path': 'Der angegebene Upload-Ordner existiert nicht. Bitte kontaktiere den Administrator dieser Website.',
-	'upload.exists': 'Der angegebene Upload-Speicherort existiert bereits. Bitte kontaktiere den Administrator dieser Website.',
-	'upload.mime': 'Der angegebene Dateityp ist nicht erlaubt.',
-	'upload.extension': 'Die Datei hat eine unbekannte oder unerlaubte Datei-Erweiterung.',
-	'upload.size': 'Die Datei, die du hochgeladen hast, ist zu groß um sie auf diesem Server zu verarbeiten. Bitte lade eine kleinere Datei hoch.',
-	'upload.partial': 'Die Datei wurde nur teilweise hochgeladen. Bitte lade sie erneut hoch.',
-	'upload.nofile': 'Es wurde keine Datei hochgeladen.',
-	'upload.default': 'Der Datei-Upload ist fehlgeschlagen.',
-	
+
+	'backend.disabled': 'Dieser Funktion wurde auf diesem Server deaktiviert.',
+	'backend.authorized': 'Akt fehlgeschlagen: Du hast keine Genehmigung.',
+	'backend.path': 'Der angegebene Ordner oder Datei existiert nicht. Bitte kontaktiere den Administrator dieser Website.',
+	'backend.exists': 'Der angegebene Speicherort existiert bereits. Bitte kontaktiere den Administrator dieser Website.',
+	'backend.mime': 'Der angegebene Dateityp ist nicht erlaubt.',
+	'backend.extension': 'Die Datei hat eine unbekannte oder unerlaubte Datei-Erweiterung.',
+	'backend.size': 'Die Datei, die du hochgeladen hast, ist zu groß um sie auf diesem Server zu verarbeiten. Bitte lade eine kleinere Datei hoch.',
+	'backend.partial': 'Die Datei wurde nur teilweise hochgeladen. Bitte lade sie erneut hoch.',
+	'backend.nofile': 'Es wurde keine Datei angezeigt/hochgeladen oder der Datei konnte nicht gefunden werden.',
+	'backend.default': 'Der Datei-Upload ist fehlgeschlagen.',
+
+	'backend.nonewfile': 'A new name for the file to be moved / copied is missing.',
+	'backend.corrupt_img': 'This file is a not a image or a corrupt file: ', // path
+	'backend.copy_failed': 'An error occurred while copying the file / directory: ', // oldlocalpath : newlocalpath
+	'backend.delete_thumbnail_failed': 'An error occurred when attempting to delete the image thumbnail',
+	'backend.mkdir_failed': 'An error occurred when attempting to create the directory: ', // path
+	'backend.move_failed': 'An error occurred while moving / renaming the file / directory: ', // oldlocalpath : newlocalpath
+	'backend.path_tampering': 'Path tampering detected.',
+	'backend.realpath_failed': 'Cannot translate the given file specification to a valid storage location: ', // $path
+	'backend.unlink_failed': 'An error occurred when attempting to delete the file / directory: ',  // path
+
+	// Image.class.php:
+	'backend.process_nofile': 'The image processing unit did not receive a valid file location to work on.',
+	'backend.imagecreatetruecolor_failed': 'The image processing unit failed: GD imagecreatetruecolor() failed.',
+	'backend.imagealphablending_failed': 'The image processing unit failed: cannot perform the required image alpha blending.',
+	'backend.imageallocalpha50pctgrey_failed': 'The image processing unit failed: cannot allocate space for the alpha channel and the 50% background.',
+	'backend.imagecolorallocatealpha_failed': 'The image processing unit failed: cannot allocate space for the alpha channel for this color image.',
+	'backend.imagerotate_failed': 'The image processing unit failed: GD imagerotate() failed.',
+	'backend.imagecopyresampled_failed': 'The image processing unit failed: GD imagecopyresampled() failed.',
+	'backend.imagecopy_failed': 'The image processing unit failed: GD imagecopy() failed.',
+	'backend.imageflip_failed': 'The image processing unit failed: cannot flip the image.',
+	'backend.imagejpeg_failed': 'The image processing unit failed: GD imagejpeg() failed.',
+	'backend.imagepng_failed': 'The image processing unit failed: GD imagepng() failed.',
+	'backend.imagegif_failed': 'The image processing unit failed: GD imagegif() failed.',
+	'backend.imagecreate_failed': 'The image processing unit failed: GD imagecreate() failed.',
+	'backend.cvt2truecolor_failed': 'conversion to True Color failed. Image resolution: ', /* x * y */
+	'backend.no_imageinfo': 'Corrupt image or not an image file at all.',
+	'backend.img_will_not_fit': 'image does not fit in available RAM; minimum required (estimate): ', /* XXX MBytes */
+	'backend.unsupported_imgfmt': 'unsupported image format: ',    /* jpeg/png/gif/... */
+
 	/* FU */
 	uploader: {
 		unknown: 'Unbekannter Fehler',
 		sizeLimitMin: 'Die Datei "<em>${name}</em>" (${size}), ist zu klein. Minimaldateigröße: <strong>${size_min}</strong>!',
 		sizeLimitMax: 'Die Datei "<em>${name}</em>" (${size}), ist zu groß. Dateigrößen-Limit: <strong>${size_max}</strong>!'
 	},
-	
+
 	flash: {
 		hidden: 'Um den Uploader benutzen zu können, muss er im Browser freigegeben werden und die Seite muss neu geladen werden (Adblock).',
 		disabled: 'Um den Uploader benutzen zu können, muss die geblockte Flash Datei freigegeben werden und die Seite muss neu geladen werden (Flashblock).',
 		flash: 'Um Dateien hochzuladen muss <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash">Adobe Flash</a> installiert werden.'
 	},
-	
+
 	resizeImages: 'Große Bilder bei Upload verkleinern',
 
 	serialize: 'Galerie speichern',
