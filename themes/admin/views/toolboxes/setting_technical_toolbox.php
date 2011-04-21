@@ -12,20 +12,20 @@
 	 * Views form
 	 * see mocha/init-forms.js for more information about this method
 	 */
-	MochaUI.setFormSubmit('settingsForm', 'settingsFormSubmit', 'setting/save_technical');
+	ION.setFormSubmit('settingsForm', 'settingsFormSubmit', 'setting/save_technical');
 
 
 	/**
 	 * Options show / hide button
 	 *
 	 */
-	MUI.initSideColumn();
+	ION.initSideColumn();
 
 
 	/**
 	 * Save with CTRL+s
 	 *
 	 */
-	MUI.addFormSaveEvent('settingsFormSubmit');
+	ION.addFormSaveEvent('settingsFormSubmit');
 
 </script>

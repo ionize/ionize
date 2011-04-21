@@ -1,6 +1,6 @@
 
 
-<ul id="articleList<?= $id_page ?>">
+<ul id="articleList<?= $id_page ?>" class="sortable-container">
 
 <?php
 	$nbLang = count(Settings::get_languages());
@@ -111,7 +111,7 @@
 		// Edit link
 		item.addEvent('click', function(e) {
 			e.stop();
-			MUI.updateContent({'element': $('mainPanel'),'loadMethod': 'xhr','url': admin_url + 'article/edit/' + id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
+			MUI.Content.update({'element': $('mainPanel'),'loadMethod': 'xhr','url': admin_url + 'article/edit/' + id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
 		});
 	});
 

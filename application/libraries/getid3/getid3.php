@@ -487,7 +487,7 @@ class getID3
 
 			// get the MD5 sum of the audio/video portion of the file - without ID3/APE/Lyrics3/etc header/footer tags
 			if ($this->option_md5_data) {
-				// do not cald md5_data if md5_data_source is present - set by flac only - future MPC/SV8 too
+				// do not calc md5_data if md5_data_source is present - set by flac only - future MPC/SV8 too
 				if (!$this->option_md5_data_source || empty($this->info['md5_data_source'])) {
 					$this->getHashdata('md5');
 				}
@@ -1187,7 +1187,7 @@ class getID3
 
 				foreach ($this->info[$comment_name]['comments'] as $tag_key => $valuearray) {
 					foreach ($valuearray as $key => $value) {
-						$value = (is_string($value) ? trim($value) : $value);
+						// $value = (is_string($value) ? trim($value) : $value);     // [i_a] http://www.getid3.org/phpBB3/viewtopic.php?f=4&t=1136
 						if (!empty($value) > 0) {
 							$this->info['tags'][trim($tag_name)][trim($tag_key)][] = $value; // do not trim!! Unicode characters will get mangled if trailing nulls are removed!
 						}

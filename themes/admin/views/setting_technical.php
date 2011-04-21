@@ -317,7 +317,7 @@
 
 
 		<!-- Google Analytics -->
-		<h3 class="toggler1"><?=lang('ionize_title_google_analytics')?></h3>
+		<h3 class="toggler1 mt20"><?=lang('ionize_title_google_analytics')?></h3>
 
 		<div class="element1">
 
@@ -623,51 +623,51 @@
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox('setting_technical_toolbox');
+	ION.initToolbox('setting_technical_toolbox');
 
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element');
-	MUI.initAccordion('.toggler1', 'div.element1');
+	ION.initAccordion('.toggler', 'div.element');
+	ION.initAccordion('.toggler1', 'div.element1');
 
 	/**
 	 * Init help tips on label
 	 *
 	 */
-	MUI.initLabelHelpLinks('#settingsForm');
+	ION.initLabelHelpLinks('#settingsForm');
 
 
 	/**
 	 * Database form action
 	 * see mocha/init-forms.js for more information about this method
 	 */
-	MUI.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true', 'mainPanel', 'setting/technical');
 
 	/**
 	 * New Thumb form action
 	 * see mocha/init-forms.js for more information about this method
 	 */
-	MUI.setFormSubmit('thumbForm', 'submit_thumb', 'setting/save_thumb/true', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('thumbForm', 'submit_thumb', 'setting/save_thumb/true', 'mainPanel', 'setting/technical');
 
 	/**
 	 * SMTP form action
 	 * see mocha/init-forms.js for more information about this method
 	 */
-	MUI.setFormSubmit('smtpForm', 'submit_smtp', 'setting/save_smtp/true', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('smtpForm', 'submit_smtp', 'setting/save_smtp/true', 'mainPanel', 'setting/technical');
 
 	/**
 	 * Admin URL form action
 	 * see mocha/init-forms.js for more information about this method
 	 */
-	MUI.addConfirmation(
+	ION.addConfirmation(
 		'changeAdminUrl', 
 		'submit_admin_url',
 		function()
 		{
-			MUI.sendData('setting/save_admin_url', $('adminUrlForm'))
+			ION.sendData('setting/save_admin_url', $('adminUrlForm'))
 		},
 		Lang.get('ionize_confirm_change_admin_url')
 	);
@@ -692,7 +692,7 @@
 	{
 		var id = item.id;
 		
-		MUI.addConfirmation('confirm' + id, 
+		ION.addConfirmation('confirm' + id, 
 							'delThumb_' + id, 
 							'setting/delete_thumb/' + id, 
 							'ionize_confirm_element_delete'
@@ -736,12 +736,12 @@
 	 */
 	$('filemanager').addEvent('change', function()
 	{
-		MUI.information('<?php echo lang('ionize_onchange_filemanager') ;?>');
+		ION.information('<?php echo lang('ionize_onchange_filemanager') ;?>');
 	});
 
 	$('texteditor').addEvent('change', function()
 	{
-		MUI.information('<?php echo lang('ionize_onchange_texteditor') ;?>');
+		ION.information('<?php echo lang('ionize_onchange_texteditor') ;?>');
 	});
 
 </script>

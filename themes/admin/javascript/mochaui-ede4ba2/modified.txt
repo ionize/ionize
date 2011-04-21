@@ -1,0 +1,12 @@
+
+Modified elements to fit to Ionize
+----------------------------------------
+
+
+Controls/desktop/desktop.js
+
+
+Themes/default/css/core.css
+Themes/default/css/desktop.css
+Themes/default/css/menu.css
+

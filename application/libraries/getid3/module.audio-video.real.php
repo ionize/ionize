@@ -207,6 +207,9 @@ class getid3_real
 								$ThisFileInfo['video']['frame_rate']      = (float) $thisfile_real_chunks_currentchunk_videoinfo['frames_per_second'];
 								$ThisFileInfo['video']['codec']           =         $thisfile_real_chunks_currentchunk_videoinfo['codec'];
 								$ThisFileInfo['video']['bits_per_sample'] =         $thisfile_real_chunks_currentchunk_videoinfo['bits_per_sample'];
+								
+								// [i_a] correct file mimetype too:
+								if ($ThisFileInfo['mime_type'] == 'audio/x-realaudio') $ThisFileInfo['mime_type'] = 'video/x-realvideo';
 								break;
 
 							case 'audio/x-pn-realaudio':

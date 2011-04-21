@@ -365,11 +365,11 @@
 
 <script type="text/javascript">
 
-	/** 
-	 * Calendars
+	/**
+	 * Calendars init
 	 *
 	 */
-	datePicker.attach();
+	ION.initDatepicker();
 
 	/** 
 	 * Tabs init

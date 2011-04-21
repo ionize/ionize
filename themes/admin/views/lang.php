@@ -7,7 +7,7 @@
 	<div id="options">
 
 		<!-- New language -->
-		<h3 class="toggler"><?=lang('ionize_title_add_language')?></h3>
+		<h3 class="toggler mt20"><?=lang('ionize_title_add_language')?></h3>
 
 		<div class="element">
 
@@ -140,7 +140,7 @@
 		<input name="current_default_lang" id="current_default_lang" type="hidden" value="<?= Settings::get_lang('default'); ?>"/>
 
 
-		<h3 class="toggler1"><?=lang('ionize_title_existing_languages')?></h3>
+		<h3 class="toggler1 mt20"><?=lang('ionize_title_existing_languages')?></h3>
 		
 		<div class="element1">
 
@@ -244,25 +244,25 @@
 	 * see init-form.js for more information about this method
 	 *
 	 */
-	MUI.setFormSubmit('newLangForm', 'submit_new', 'lang/save');
+	ION.setFormSubmit('newLangForm', 'submit_new', 'lang/save');
 
 
 	/**
 	 * Clean Lang tables form action
 	 *
 	 */
-	MUI.setFormSubmit('cleanLangForm', 'submit_clean', 'lang/clean_tables', {message:Lang.get('ionize_confirmation_clean_lang')});
+	ION.setFormSubmit('cleanLangForm', 'submit_clean', 'lang/clean_tables', {message:Lang.get('ionize_confirmation_clean_lang')});
 
 	 
 	/**
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox('lang_toolbox');
+	ION.initToolbox('lang_toolbox');
 
 				
-	MUI.initAccordion('.toggler', 'div.element', true);
-	MUI.initAccordion('.toggler1', 'div.element1', true);
+	ION.initAccordion('.toggler', 'div.element', true);
+	ION.initAccordion('.toggler1', 'div.element1', true);
 	
 
 	/**
@@ -270,7 +270,7 @@
 	 * see init-content.js
 	 *
 	 */
-	MUI.initLabelHelpLinks('#options');
+	ION.initLabelHelpLinks('#options');
 
 
 	// Content copy confirmation callback
@@ -283,7 +283,7 @@
 			'from' : $('lang_copy_from').value,
 			'to' : $('lang_copy_to').value
 		};
-		MUI.sendData(url, data);
+		ION.sendData(url, data);
 	
 	};
 
@@ -292,7 +292,7 @@
 	{
 		e.stop();
 
-		MUI.confirmation(
+		ION.confirmation(
 			'copyLangConfWindow', 
 			copyLang,
 			Lang.get('ionize_message_confirm_copy_whole_content')

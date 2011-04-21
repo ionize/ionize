@@ -8,7 +8,7 @@
 
 ?>
 
-<ul id="categoryList" class="mb20">
+<ul id="categoryList" class="mb20 sortable-container">
 
 <?php foreach($categories as $category) :?>
 
@@ -36,8 +36,9 @@
 	{
 		var rel = item.getProperty('rel');
 		
-		item.addEvent('click', function(e){
-			MUI.formWindow('category' + rel, 'categoryForm' + rel, Lang.get('ionize_title_category_edit'), 'category/edit/' + rel);	
+		item.addEvent('click', function(e)
+		{
+			ION.formWindow('category' + rel, 'categoryForm' + rel, Lang.get('ionize_title_category_edit'), 'category/edit/' + rel);	
 		});
 	});
 

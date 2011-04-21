@@ -90,23 +90,6 @@ class Core extends MY_Admin {
 	}
 
 
-	/** 
-	 * Gets a simple view
-	 * @param	string		the view name, without extension
-	 *
-	 */
-	function get($view = false)
-	{
-		// Adds optional args to template
-		//$this->template['args'] = $args;
-		
-		$this->template['view'] = $view;
-		
-		$args = func_get_args();
-		$args = implode('/', $args);
-
-		$this->output($args);
-	}
 	
 }
 

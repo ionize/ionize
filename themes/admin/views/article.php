@@ -162,11 +162,11 @@
 						</div>
 						
 						<!-- Categories list 
-						<a onclick="javascript:MUI.dataWindow('Categories', '<?= lang('ionize_title_categories') ?>', '<?= admin_url() ?>category/get_categories/article/<?= $id_article ?>', {width:450, height:300});"><?= lang('ionize_label_edit_categories') ?></a><br/>
+						<a onclick="javascript:ION.dataWindow('Categories', '<?= lang('ionize_title_categories') ?>', '<?= admin_url() ?>category/get_categories/article/<?= $id_article ?>', {width:450, height:300});"><?= lang('ionize_label_edit_categories') ?></a><br/>
 						-->
 						
 						<!-- Category create button -->
-						<a onclick="javascript:MUI.formWindow('Category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
+						<a onclick="javascript:ION.formWindow('Category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
 						
 						
 					</dd>
@@ -782,7 +782,7 @@
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('file');return false;"><?= lang('ionize_label_detach_all_files') ?></button>
 					</p>
 					
-					<ul id="fileContainer">
+					<ul id="fileContainer" class="sortable-container">
 						<span><?= lang('ionize_message_no_file') ?></span>
 					</ul>
 	
@@ -797,7 +797,7 @@
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('music');return false;"><?= lang('ionize_label_detach_all_musics') ?></button>
 					</p>
 					
-					<ul id="musicContainer">
+					<ul id="musicContainer" class="sortable-container">
 						<span><?= lang('ionize_message_no_music') ?></span>
 					</ul>
 	
@@ -812,7 +812,7 @@
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('video');return false;"><?= lang('ionize_label_detach_all_videos') ?></button>
 					</p>
 	
-					<ul id="videoContainer">
+					<ul id="videoContainer" class="sortable-container">
 						<span><?= lang('ionize_message_no_video') ?></span>
 					</ul>
 	
@@ -829,7 +829,7 @@
 	
 					</p>
 				
-					<div id="pictureContainer">
+					<div id="pictureContainer" class="sortable-container">
 						<span><?= lang('ionize_message_no_picture') ?></span>
 					</div>
 	
@@ -855,44 +855,10 @@
 <script type="text/javascript">
 
 	/**
- 	 * Text editor
-	 */
-	<?php if(Settings::get('texteditor') == 'ckeditor' ) :?>
-		// CKEditor
-		// Language fields
-		<?php foreach(Settings::get_languages() as $l) :?>
-			if ($('content_<?= $l["lang"] ?>'))
-			{
-				if(CKEDITOR.instances['content_<?= $l["lang"] ?>'])
-				{
-					CKEDITOR.remove(CKEDITOR.instances['content_<?= $l["lang"] ?>']);
-				}
-				CKEDITOR.replace( 'content_<?= $l["lang"] ?>');
-			}
-		<?php endforeach ;?>
-		// Extend filds
-		<?php foreach($extend_fields as $extend_field) :?>
-			<?php if ($extend_field['translated'] != '1') :?>
-				<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
-					if ($('cf_<?= $extend_field['id_extend_field'] ?>'))
-					{
-						if(CKEDITOR.instances['cf_<?= $extend_field['id_extend_field'] ?>'])
-						{
-							CKEDITOR.remove(CKEDITOR.instances['cf_<?= $extend_field['id_extend_field'] ?>']);
-						}
-						CKEDITOR.replace( 'cf_<?= $extend_field['id_extend_field'] ?>');
-					}
-				<?php endif ;?>
-			<?php endif ;?>
-		<?php endforeach ;?>
-	<?php endif ;?>
-
-
-	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element', true);
+	ION.initAccordion('.toggler', 'div.element', true);
 		
 
 	/**
@@ -900,7 +866,7 @@
 	 * see init-content.js
 	 *
 	 */
-	MUI.initLabelHelpLinks('#articleForm');
+	ION.initLabelHelpLinks('#articleForm');
 
 
 	/**
@@ -908,7 +874,7 @@
 	 * Init the panel toolbox is mandatory !!! 
 	 *
 	 */
-	MUI.initToolbox('article_toolbox');
+	ION.initToolbox('article_toolbox');
 
 
 	/**
@@ -918,6 +884,13 @@
 	ION.initDroppable();
 	 
 	 
+	/**
+	 * Calendars init
+	 *
+	 */
+	ION.initDatepicker();
+
+
 	/**
 	 * Add links on each parent page
 	 *
@@ -965,7 +938,7 @@
 				'to' : $('lang_copy_to').value
 			};
 		 	
-	 		MUI.sendData(url, data);
+	 		ION.sendData(url, data);
 		});
 	}
 
@@ -992,11 +965,6 @@
 	 */
 	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content', 'meta_title'));
 	
-	/** 
-	 * Calendars
-	 *
-	 */
-	datePicker.attach();
 
 	/** 
 	 * Show current tabs
@@ -1061,11 +1029,7 @@
 		/** 
 		 * Media Manager & tabs events
 		 *
-		$('fileTab').addEvent('click', function(){ if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('file'); this.store('loaded', true);} });
-		$('musicTab').addEvent('click', function(){ if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('music'); this.store('loaded', true);} });
-		$('videoTab').addEvent('click', function(){ if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('video'); this.store('loaded', true);} });
-		$('pictureTab').addEvent('click', function() { if ( ! this.retrieve('loaded')) { mediaManager.loadMediaList('picture'); this.store('loaded', true);} });
-		*/
+		 */
 		mediaManager.initParent('article', '<?= $id_article ?>');
 		
 		mediaManager.loadMediaList('file');

@@ -76,7 +76,7 @@
 	<h2 class="main themes" id="main-title"><?= lang('ionize_title_themes') ?></h2>
 
 	<!-- Views list -->
-	<h3 ><?=lang('ionize_title_views_list')?> : <?= Settings::get('theme') ?></h3>
+	<h3 class="mt20"><?=lang('ionize_title_views_list')?> : <?= Settings::get('theme') ?></h3>
 
 	<!--<div class="element">-->
 
@@ -146,14 +146,14 @@
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox('setting_theme_toolbox');
+	ION.initToolbox('setting_theme_toolbox');
 
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element');
+	ION.initAccordion('.toggler', 'div.element');
 
 
 	/**
@@ -245,7 +245,7 @@
 							$('contentview_' + id).value = mirrorFrame.mirror.getCode();
 							
 							// Get the form
-							var options = MUI.getFormObject(formUrl, $(form));
+							var options = ION.getFormObject(formUrl, $(form));
 							
 							var r = new Request.JSON(options);
 							
@@ -268,6 +268,6 @@
 	 * Database form action
 	 * see mocha/init-forms.js for more information about this method
 	 */
-	MochaUI.setFormSubmit('themesForm', 'themesFormSubmit', 'setting/save_themes');
+	ION.setFormSubmit('themesForm', 'themesFormSubmit', 'setting/save_themes');
 
 </script>

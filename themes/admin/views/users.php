@@ -12,7 +12,7 @@
 	<h2 class="main groups" id="main-title"><?= lang('ionize_title_users') ?></h2>
 
 	<!-- Tabs -->
-	<div id="usersTab" class="mainTabs">
+	<div id="usersTab" class="mainTabs mt20">
 		<ul class="tab-menu">
 			<li id="usersListTab"><a><?= lang('ionize_title_existing_users') ?></a></li>
 			<li><a><?= lang('ionize_title_existing_groups') ?></a></li>
@@ -354,14 +354,14 @@
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox('empty_toolbox');
+	ION.initToolbox('empty_toolbox');
 
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler1', 'div.element1');
+	ION.initAccordion('.toggler1', 'div.element1');
 
 
 	/** 
@@ -375,7 +375,7 @@
 	{
 		if ( ! this.retrieve('loaded'))
 		{ 
-			MUI.updateElement({
+			ION.updateElement({
 				'url': 'users/users_list',
 				'element': 'usersList'
 			});
@@ -388,17 +388,17 @@
 	 * Init help tips on label
 	 *
 	 */
-	MUI.initLabelHelpLinks('#newUserForm');
-	MUI.initLabelHelpLinks('#newGroupForm');
-	MUI.initLabelHelpLinks('#userExportForm');
+	ION.initLabelHelpLinks('#newUserForm');
+	ION.initLabelHelpLinks('#newGroupForm');
+	ION.initLabelHelpLinks('#userExportForm');
 
 	/**
 	 * New user form action
 	 * see init.js for more information about this method
 	 */
-	MUI.setFormSubmit('newUserForm', 'submit_new_user', 'users/save');
-	MUI.setFormSubmit('newGroupForm', 'submit_new_group', 'groups/save');
-//	MUI.setFormSubmit('userExportForm', 'submit_user_export', $('userExportForm').action);
+	ION.setFormSubmit('newUserForm', 'submit_new_user', 'users/save');
+	ION.setFormSubmit('newGroupForm', 'submit_new_group', 'groups/save');
+//	ION.setFormSubmit('userExportForm', 'submit_user_export', $('userExportForm').action);
 
 	/**
 	 * Filter users list
@@ -431,7 +431,7 @@
 		{
 			var e = new Event(e).stop();
 			var id = item.getProperty('rel');
-			MUI.formWindow(	
+			ION.formWindow(	
 				id, 							// object ID
 				'groupForm',					// Form ID
 				'ionize_title_group_edit', 		// Window title

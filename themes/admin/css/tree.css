@@ -1,0 +1,148 @@
+/*
+
+Ionize Tree CSS
+
+Copyright:
+	Copyright (c) 2009/2011 Ionize Dev Team.
+	
+License:
+	MIT-style license.
+
+*/
+
+
+.treetitle {
+	margin-right:15px;
+	position: relative;
+}
+.treetitle .action {
+	display:none;
+	position: absolute;
+	right:0;
+	top:0;
+}
+.treetitle:hover .action {
+	display:block;
+}
+
+.treetitle:hover {
+	background-color: #e1e3e4;
+}
+.tree {
+	font-size: 11px;
+	line-height: 16px;
+	margin: 10px 12px 20px 0px;
+	overflow: hidden;
+}
+.tree ul {
+	margin: 0;
+	display:block;
+}
+.tree li {
+	width:100%;
+	min-height:18px;
+	min-width:200px;
+	clear:both;
+	list-style-type: none;
+	white-space: nowrap;
+	position: relative;
+	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
+}
+.tree li.highlight {
+	background-color: #e1e3e4;
+}
+.tree li a {
+	text-decoration: none;
+}
+.tree li a.title {
+	display:block;
+	height: 18px;
+}
+
+.tree li img {
+	vertical-align: middle;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	border:none;
+}
+.tree li .action{
+	position: absolute;
+	right: 0;
+	top:0;
+	height:18px;
+	background-color: #e1e3e4;
+	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
+}
+.tree li .icon{
+	float:right;
+	width:16px;
+	height:16px;
+	padding-right: 0px;
+	padding-left: 5px;
+}
+.tree li .icon a{
+	width:16px;
+	height:16px;
+	display:block;
+}
+
+/* Tree nodes */
+.tree-img {
+	float:left;
+	height:18px;
+	width:18px;
+	background:transparent url(../images/mootree.gif) repeat scroll;
+}
+.tree-img.line { background-position: 0px 50%; } 				/* Standard tree line */
+.tree-img.line.node { background-position: -108px 50%; } 		/* Line with one node after */
+.tree-img.line.last { background-position: -18px 50%; } 		/* Last element line */
+.tree-img.line.empty { background-position: -306px 50%; } 		/* Empty line (spacer) */
+.tree-img.plus { background-position: -144px 50%; } 			/* Plus icon */
+.tree-img.plus.first { background-position: -234px 50%; }
+.tree-img.plus.last { background-position: -54px 50%; }
+.tree-img.minus { background-position: -126px 50%; } 			/* Minus icon */
+.tree-img.minus.first { background-position: -216px 50%; }
+.tree-img.minus.last { background-position: -36px 50%; }
+.tree-img.folder { background-position: -162px 50%; margin-right:5px;} 			/* Closed folder */
+.tree-img.folder.open { background-position: -198px 50%; } 		/* Opened folder */
+.tree-img.folder.home { background-position: -324px 50%; } 		/* Closed home folder */
+.tree-img.folder.home.open { background-position: -342px 50%; } 		/* Closed home folder */
+.tree-img.file { background-position: -180px 50%;  margin-right:5px;} 			/* File */
+.tree-img.sticky { background-position: -252px 50%;  margin-right:5px;} 			/* File */
+.tree-img.filelink { background-position: -360px 50%;  margin-right:5px;} 			/* Link to File */
+.tree-img.folderlink { background-position: -378px 50%;  margin-right:5px;} 			/* Link to Folder */
+
+.tree li.offline{
+	background-image: url(../images/icon_16_offline.png);
+	background-position: right 1px;
+	background-repeat: no-repeat;
+}
+
+/* Last file child node line  */
+.tree li.file:last-child div.node { background-position: -18px 50%; }
+
+/* First root folder plus / minus icons */
+.tree > li.folder:first-child > div.plus:first-child{ background-position: -234px 50%;}
+.tree > li.folder:first-child > div.minus:first-child{ background-position: -216px 50%;}
+.tree > li.folder:last-child > div.plus:first-child{ background-position: -54px 50%;}
+.tree > li.folder:last-child > div.minus:first-child{ background-position: -36px 50%;}
+
+/* last root folder first line empty */
+.tree > li.folder:last-child li div:first-child{ background-position: -306px 50%;}
+
+/* Files line nodes 
+
+All of these are not working.
+
+.tree li.file div.line:nth-last-of-type(1){ background-position: -108px 50%; };
+.tree li.file div.line:nth-of-type(1){ background-position: -108px 50%; };
+.tree li.file div[class~=line]:last-child{ background-position: -108px 50%; };
+.tree li.file div.line:last-child { background-position: -108px 50%; };
+
+*/
+
+.dragtreeli .action {
+	display:none;
+}
+

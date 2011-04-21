@@ -14,20 +14,20 @@
 	 * See mocha-init.js for more information about this method
 	 *
 	 */
-	MochaUI.setFormSubmit('existingLangForm', 'existingLangFormSubmit', 'lang/update');
+	ION.setFormSubmit('existingLangForm', 'existingLangFormSubmit', 'lang/update');
 
 
 	/**
 	 * Options show / hide button
 	 *
 	 */
-	MUI.initSideColumn();
+	ION.initSideColumn();
 
 
 	/**
 	 * Save with CTRL+s
 	 *
 	 */
-	MUI.addFormSaveEvent('existingLangFormSubmit');
+	ION.addFormSaveEvent('existingLangFormSubmit');
 
 </script>

@@ -1,0 +1,93 @@
+/*
+ ---
+
+ file: desktop.css
+
+ description: MUI - Desktop css.
+
+ copyright: (c) 2011 Contributors in (/AUTHORS.txt).
+
+ license: MIT-style license in (/MIT-LICENSE.txt).
+
+ provides: css for default theme
+
+ ...
+ */
+
+.desktop { background-color: #f2f2f2; position: relative; min-width: 400px; /* Helps keep header content from wrapping */ height: 100%; min-height: 100%; overflow: hidden; cursor: default; /* Fix for issue in IE7. IE7 wants to use the I-bar text cursor */ }
+
+/* header */
+.desktopHeader { background: #f2f2f2;}
+.desktopNav { clear:both; height:30px; overflow: hidden; background: transparent;}
+
+
+/* Ionize specific */
+#desktopHeader { background: url(../images/application_header_bg.gif) repeat-x;}
+#desktopBar {
+	background: url(../images/application_header_logo.jpg) no-repeat;
+	background-position: left 0;
+}
+#structurePanel_pad {
+	padding: 15px 0 8px 15px !important;
+}
+#about_contentWrapper {
+	background: #e5e5e5 url(../images/application_about_window_bg.jpg) top left no-repeat;
+}
+#about_contentWrapper p.version{
+	font-size:0.9em;
+	margin-bottom:5px;
+	color:#777;
+}
+#about_contentWrapper p{
+	font-size:0.9em;
+	padding-bottom: 6px;
+	line-height: 15px;
+}
+
+
+.desktopTitlebarWrapper { position: relative; height: 32px; overflow: hidden; }
+.desktopTitlebar { padding: 6px 8px 0 0; height: 32px; }
+.desktopTitlebar h1.applicationTitle { display: none; margin: 0; padding: 0 5px 0 0; font-size: 20px; line-height: 25px; font-weight: bold; color: #fff; }
+.desktopTitlebar h2.tagline { padding: 7px 0 0 0; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; color: #d4dce4; font-weight: bold; text-align: center; text-transform: uppercase; }
+.desktopTitlebar h2.tagline .taglineEm { color: #fff; font-weight: bold; }
+.desktopTitlebar div.topNav { font-family: "lucida grande",tahoma,verdana,arial,sans-serif; font-size: 11px; position: absolute; right: 0; top: 0; color: #d4dce4; text-align: right; padding: 8px 10px 0 0; }
+.desktopTitlebar div.topNav a { color: #fff; font-weight: normal; }
+.desktopTitlebar div.topNav a:hover { text-decoration: underline; }
+
+/* content*/
+li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
+.desktopContent { position: relative;  overflow: hidden; /* This can be set to hidden or auto */ border-bottom: 1px solid #909090; }
+
+/* Footer */
+.desktopFooter { position: absolute; left: 0; bottom: 0; width: 100%; height: 30px; overflow: hidden; }
+.desktopFooter .copyright { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; height: 24px; padding: 6px 8px 0 8px; background: #f2f2f2; }
+
+/* Panel Layout */
+/* Columns */
+.column { position: relative; overflow: hidden; /* Required by IE6 */ }
+
+/* Panels */
+.panel { position: relative; overflow: auto; background: #f8f8f8; border-bottom: 1px solid #b9b9b9; clear:both; }
+.panelWrapper.collapsed .panel-header { border-bottom: 0; }
+.panelAlt { background: #f2f2f2; }
+.bottomPanel .panel { border-bottom: 0; }
+.pad { padding: 8px; }
+#mainPanel2 { background: #fff; }
+.panel-header { position: relative; background: #f1f1f1 url(../images/bg-panel-header.gif) repeat-x; height: 30px; border-bottom: 1px solid #d3d3d3; overflow:hidden; overflow-x: hidden; overflow-y: hidden; }
+.panel-headerContent { padding-top: 2px; display: table-cell }
+.panel-header h2 { display: inline-block; font-size: 12px; margin: 0; padding: 3px 8px 0 8px; height: 22px; overflow: hidden; color: #333; }
+.panel-collapse { background: url(../images/collapse-expand.gif) left top no-repeat; padding-right:5px }
+.panel-expand { background: url(../images/collapse-expand.gif) left -16px no-repeat; }
+.icon16 { margin: 4px 0 0 2px; cursor: pointer; }
+
+.panel-footer { position: relative; width: 100%; background: #f9f9f9; height: 30px; overflow: hidden; border-bottom: 1px solid #b9b9b9; padding: 0 0 0 8px; }
+.bottomPanel .panel-footer { border-top: 1px solid #b9b9b9; border-bottom: 0; }
+.collapsed .panel-footer { display: none; }
+.panel-footerContent { margin-top: 6px; }
+
+/* Column and Panel Handles */
+.horizontalHandle { height: 4px; line-height: 1px; font-size: 1px; overflow: hidden; background: #eee url(../images/bg-handle-horizontal.gif) repeat-x; }
+.horizontalHandle.detached .handleIcon { background: transparent; }
+.horizontalHandle .handleIcon { margin: 0 auto; height: 4px; line-height: 1px; font-size: 1px; overflow: hidden; background: url(../images/handle-icon-horizontal.gif) center center no-repeat; }
+.columnHandle { min-height: 10px; float: left; width: 6px; overflow: hidden; background: #D5D9DC url(../images/handle-icon.gif) center center no-repeat; border: 1px solid #C5C7C9; border-top: 0; border-bottom: 0; }
+

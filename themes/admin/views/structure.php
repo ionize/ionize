@@ -117,8 +117,6 @@ function getTree($items, $first = false, $id_item=false, $root_id = '')
 
 ?>
 
-<div id="debug"></div>
-
 <!-- Menus -->
 <?php foreach($menus as $menu) :?>
 

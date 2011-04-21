@@ -119,18 +119,24 @@ class Media extends MY_admin
 		// FileManager constructor options
 		$params = array (
 			'directory' => FCPATH.Settings::get('files_path'),
+//			'directory' => Settings::get('files_path'),
+			'thumbnailPath' => FCPATH.Settings::get('files_path') . '/.thumbs',
 			'baseURL' => base_url(),
 			'assetBasePath' => FCPATH.Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
-			'assetBaseUrl' => theme_url().'javascript/mootools-filemanager/Assets',
+//			'assetBasePath' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
+////			'assetBaseUrl' => theme_url().'javascript/mootools-filemanager/Assets',
 			'upload' => TRUE,
 			'destroy' => TRUE,
-			'thumbSize' => (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120,
+			'download' => FALSE,
+			'thumbnailSize' => (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120,
 			'pictureMaxWidth' => (Settings::get('picture_max_width') !='') ? Settings::get('picture_max_width') : FALSE,
 			'pictureMaxHeight' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : FALSE,
-			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024
+			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
+			'filter' => 'image/,audio/,video/'
 		);
 
 		$this->load->library('filemanager', $params);
+//		$this->load->library('FileManagerWithAliasSupport', $params);
 
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object
@@ -759,17 +765,17 @@ class Media extends MY_admin
 		$thumbs = $this->base_model->get_list(array('name like' => 'thumb_%'));
 
 		// System thumbnail full path
-		$thumb_path = FCPATH . str_replace(Settings::get('files_path'), Settings::get('files_path').'/.thumbs', $picture['base_path'] );
+//		$thumb_path = FCPATH . str_replace(Settings::get('files_path'), Settings::get('files_path').'/.thumbs', $picture['base_path'] );
 
 		// Source picture size
-		$dim = $this->get_image_dimensions(FCPATH.$picture['path']);
+//		$dim = $this->get_image_dimensions(FCPATH.$picture['path']);
 
-		$setting = array(
-			'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ,
-			'sizeref' => ($dim['width'] > $dim['height']) ? 'width' : 'height',
-			'unsharp' => '0'
-		);
-		$this->_create_thumbnail(FCPATH.$picture['path'], $thumb_path. $picture['file_name'], $setting);		
+//		$setting = array(
+//			'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ,
+//			'sizeref' => ($dim['width'] > $dim['height']) ? 'width' : 'height',
+//			'unsharp' => '0'
+//		);
+//		$this->_create_thumbnail(FCPATH.$picture['path'], $thumb_path. $picture['file_name'], $setting);		
 
 
 

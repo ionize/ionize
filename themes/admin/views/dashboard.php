@@ -260,18 +260,18 @@
 	 * Init the panel toolbox is mandatory !!! 
 	 *
 	 */
-	MUI.initToolbox('dashboard_toolbox');
+	ION.initToolbox('dashboard_toolbox');
 
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element');
+	ION.initAccordion('.toggler', 'div.element');
 
 
 	// Articles edit
-	var articles = ($$('#articleList .article')).extend($$('#orphanArticlesList .article'));
+	var articles = ($$('#articleList .article')).append($$('#orphanArticlesList .article'));
 	
 	
 	articles.each(function(item, idx)
@@ -284,21 +284,20 @@
 		
 		item.addEvent('click', function(e){
 			e.stop();
-			MUI.updateContent({
+			MUI.Content.update({
 				'element': $('mainPanel'),
 				'loadMethod': 'xhr',
 				'url': admin_url + 'article/edit/'+id_page+'.'+id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
 		});
 		
 		// Make draggable to tree
-//		ION.makeLinkDraggable(item, 'article');
 		ION.addDragDrop(item, '.dropArticleInPage,.dropArticleAsLink,.folder', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
 	});
 
 
 
 	// Pages edit
-	var pages = ($$('#articleList a.page')).extend($$('#orphanPagesList a.page'));
+	var pages = ($$('#articleList a.page')).append($$('#orphanPagesList a.page'));
 
 	pages.each(function(item, idx)
 	{
@@ -307,7 +306,7 @@
 		
 		item.addEvent('click', function(e){
 			e.stop();
-			MUI.updateContent({
+			MUI.Content.update({
 				'element': $('mainPanel'),
 				'loadMethod': 'xhr',
 				'url': admin_url + 'page/edit/'+id,'title': Lang.get('ionize_title_edit_page') + ' : ' + title});
@@ -320,7 +319,7 @@
 	// Main Icons actions
 	$('iconAddPage').addEvent('click', function(e){
 		e.stop();
-		MUI.updateContent({
+		MUI.Content.update({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_title_new_page'),
 			url : admin_url + 'page/create/0'
@@ -329,7 +328,7 @@
 	
 	$('iconArticles').addEvent('click', function(e){
 		e.stop();
-		MUI.updateContent({
+		MUI.Content.update({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_title_articles'),
 			url : admin_url + 'article/list_articles'		
@@ -338,7 +337,7 @@
 	
 	$('iconMediaManager').addEvent('click', function(e){
 		e.stop();
-		MUI.updateContent({
+		MUI.Content.update({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_menu_media_manager'),
 			url : admin_url + 'media/get_media_manager',
@@ -348,7 +347,7 @@
 
 	$('iconTranslation').addEvent('click', function(e){
 		e.stop();
-		MUI.updateContent({
+		MUI.Content.update({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_title_translation'),
 			url : admin_url + 'translation/'
@@ -360,16 +359,6 @@
 		window.location.href = 'http://www.google.com/analytics/'
 	});
 
-
-	// Flags edit event
-	if ($('edit_flags'))
-	{
-		$('edit_flags').addEvent('click', function(e)
-		{
-			e.stop();
-			MUI.updateContent({'element': $('mainPanel'),'loadMethod': 'xhr','url': admin_url + 'setting','title': Lang.get('ionize_menu_site_settings_global') });
-		});
-	}
 
 
 

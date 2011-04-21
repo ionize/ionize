@@ -201,7 +201,8 @@ var SortableTable = new Class({
 		}
 		//
 		this.elements.sort(el.compare);
-		this.elements.injectInside(this.tBody);
+//		this.elements.injectInside(this.tBody);
+		this.elements.inject(this.tBody, 'inside');
 		//
 		if(this.filtered){
 			this.filteredAltRow();

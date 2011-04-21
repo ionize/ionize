@@ -143,7 +143,6 @@ class TagManager
 		}
 		
 		
-		
 		/* If modules are installed : Get the modules tags definition
 		 * Modules tags definition must be stored in : /modules/your_module/libraires/tags.php
 		 * 
@@ -158,34 +157,16 @@ class TagManager
 				// Get tag definition class name
 				$methods = get_class_methods($class);
 				
-				// Get public vars
-				$vars = get_class_vars( $class );
-				
 				// Store tags definitions into self::$tags
 				// add module enclosing tag
 				self::$tags[$plugin] = $class.'::index';
 
-				
 				// Use of module name as namespace for the module to avoid modules tags collision
 				foreach ($methods as $method)
-				{																
-					// Allow to extend core tags using "tag_extension_map" static array
-					
-					if (isset($vars["tag_extension_map"])&&isset($vars["tag_extension_map"][$method]))
-					{
-						self::$tags[$vars["tag_extension_map"][$method]] = $class.'::'.$method;
-					}
-					
-					
-					// Regular tag declaration					
-					else
-					{
-						self::$tags[$plugin.':'.$method] = $class.'::'.$method;
-					}
-
+				{
+					self::$tags[$plugin.':'.$method] = $class.'::'.$method;
 				}
 				
-								
 				return true;
 			}
 			else

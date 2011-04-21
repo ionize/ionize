@@ -11,7 +11,7 @@
 	
 
 	<!-- Visual help : help tips and "Connected" label -->
-	<h3 class="toggler1"><?=lang('ionize_title_visual_help')?></h3>
+	<h3 class="toggler1 mt20"><?=lang('ionize_title_visual_help')?></h3>
 	
 	<div class="element1">
 
@@ -91,21 +91,21 @@
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox('setting_ionize_toolbox');
+	ION.initToolbox('setting_ionize_toolbox');
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element');
-	MUI.initAccordion('.toggler1', 'div.element1');
+	ION.initAccordion('.toggler', 'div.element');
+	ION.initAccordion('.toggler1', 'div.element1');
 
 	/**
 	 * Init help tips on label
 	 * see init-content.js
 	 *
 	 */
-	MUI.initLabelHelpLinks('#ionizeSettingsForm');
+	ION.initLabelHelpLinks('#ionizeSettingsForm');
 
 
 

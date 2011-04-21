@@ -8,7 +8,7 @@
 
 ?>
 
-<ul id="article_typeList">
+<ul id="article_typeList" class="sortable-container">
 
 <?php foreach($types as $type) :?>
 
@@ -42,7 +42,7 @@
 		var rel = item.getProperty('rel');
 		
 		item.addEvent('click', function(e){
-			MUI.formWindow('article_type' + rel, 'article_typeForm' + rel, Lang.get('ionize_title_type_edit'), 'article_type/edit/' + rel);	
+			ION.formWindow('article_type' + rel, 'article_typeForm' + rel, Lang.get('ionize_title_type_edit'), 'article_type/edit/' + rel);	
 		});
 	});
 

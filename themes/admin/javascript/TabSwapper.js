@@ -64,7 +64,7 @@ var TabSwapper = new Class({
 			return this;
 		}
 		//if the index isn't specified, put the tab at the end
-		if (!$defined(index)) index = this.tabs.length;
+		if (index == null) index = this.tabs.length;
 		//if this isn't the first item, and there's a tab
 		//already in the interface at the index 1 less than this
 		//insert this after that one
@@ -121,7 +121,7 @@ var TabSwapper = new Class({
 		return this;
 	},
 	show: function(i){
-		if (!$chk(this.now)) {
+		if (this.now == null) {
 			this.tabs.each(function(tab, idx){
 				if (i != idx) 
 					this.hideSection(idx);
@@ -136,7 +136,7 @@ var TabSwapper = new Class({
 		return this;
 	},
 	recall: function(){
-		return (this.options.cookieName)?$pick(Cookie.read(this.options.cookieName), false): false;
+		return (this.options.cookieName) ? [Cookie.read(this.options.cookieName), false].pick() : false;
 	},
 	hideSection: function(idx) {
 		var tab = this.tabs[idx];
@@ -201,7 +201,7 @@ var TabSwapper = new Class({
 				if (!effect) effect = {};
 				effect.height = size;
 			}
-			if ($chk(this.now)) this.hideSection(this.now);
+			if (this.now != null) this.hideSection(this.now);
 			if (this.options.smoothSize && this.lastHeight) start.height = this.lastHeight;
 			sect.setStyles(start);
 			if (effect) {

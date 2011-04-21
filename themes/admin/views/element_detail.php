@@ -364,7 +364,7 @@ $('saveElementFormSubmit<?= $id_element ?>').addEvent('click', function(e)
 		}
 		
 		// Get the form
-		var options = MUI.getJSONRequestOptions('element/save', $('elementForm<?= $id_element ?>'), {'onSuccess': function(){MUI.closeWindow($('wcontentElement<?= $id_element ?>'))}});
+		var options = ION.getJSONRequestOptions('element/save', $('elementForm<?= $id_element ?>'), {'onSuccess': function(){MUI.closeWindow($('wcontentElement<?= $id_element ?>'))}});
 		
 		var r = new Request.JSON(options);
 		
@@ -372,7 +372,7 @@ $('saveElementFormSubmit<?= $id_element ?>').addEvent('click', function(e)
 	}
 	else
 	{
-		MUI.notification('error', Lang.get('ionize_message_element_cannot_be_added_to_parent'));
+		ION.notification('error', Lang.get('ionize_message_element_cannot_be_added_to_parent'));
 	}
 });
 
@@ -403,56 +403,21 @@ ION.initCopyLang('.copyLang', elements);
  * Text editor
  *
  */
-<?php if( Settings::get('texteditor') == '' || Settings::get('texteditor') == 'tinymce' ) :?>
-
-	ION.initTinyEditors('.tab-element<?= $UNIQ ?>', '#elementTabContent<?= $UNIQ ?> .tinyTextarea', 'small', {height:120});
-
-<?php elseif( Settings::get('texteditor') == 'ckeditor' ) :?>
-
-	// CKEditor
-	<?php foreach($fields as $field) :?>
-		<?php if ($field['type'] == '2' OR $field['type'] == '3') :?>
-			if ($('cf_<?= $field['id_extend_field'] ?>'))
-			{
-				if(CKEDITOR.instances['cf_<?= $field['id_extend_field'] ?>'])
-				{
-					CKEDITOR.remove(CKEDITOR.instances['cf_<?= $field['id_extend_field'] ?>']);
-				}
-				CKEDITOR.replace('cf_<?= $field['id_extend_field'] ?>');
-			}
-		<?php endif ;?>
-	<?php endforeach ;?>
-	
-	<?php foreach($lang_fields as $field) :?>
-		<?php if ($field['type'] == '2' OR $field['type'] == '3') :?>
-			<?php foreach(Settings::get_languages() as $l) :?>
-				if ($('cf_<?= $field['id_extend_field'] ?>_<?=$l['lang']?>'))
-				{
-					if(CKEDITOR.instances['cf_<?= $field['id_extend_field'] ?>_<?=$l['lang']?>'])
-					{
-						CKEDITOR.remove(CKEDITOR.instances['cf_<?= $field['id_extend_field'] ?>_<?=$l['lang']?>']);
-					}
-					CKEDITOR.replace('cf_<?= $field['id_extend_field'] ?>_<?=$l['lang']?>');
-				}
-			<?php endforeach ;?>
-		<?php endif ;?>
-	<?php endforeach ;?>
-<?php endif ;?>
+ION.initTinyEditors('.tab-element<?= $UNIQ ?>', '#elementTabContent<?= $UNIQ ?> .tinyTextarea', 'small', {height:120});
 
 
-
-/** 
- * Calendars
+/**
+ * Calendars init
  *
  */
-datePicker.attach();
+ION.initDatepicker();
 
 
 /** 
  * Resize
  *
  */
-MUI.windowResize('contentElement<?= $id_element ?>', {'width':500});
+ION.windowResize('contentElement<?= $id_element ?>', {'width':500});
 
 
 

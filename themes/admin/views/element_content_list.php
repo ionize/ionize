@@ -18,7 +18,7 @@ $width = (100 / $nbLang);
 
 ?>
 
-<ul id="elements<?= $id_def ?>">
+<ul id="elements<?= $id_def ?>" class="sortable-container">
 
 <?php foreach($elements as $element) :?>
 
@@ -388,7 +388,7 @@ $width = (100 / $nbLang);
 		item.addEvent('click', function(e)
 		{
 			var rel = this.getProperty('rel');
-			MUI.dataWindow('contentElement' + rel, 'ionize_title_edit_content_element', 'element/edit', {width:500, height:300}, {'id_element': rel});
+			ION.dataWindow('contentElement' + rel, 'ionize_title_edit_content_element', 'element/edit', {width:500, height:300}, {'id_element': rel});
 		});
 		
 		ION.addDragDrop(item, '.folder,.file', 'ION.dropContentElementInPage,ION.dropContentElementInArticle');

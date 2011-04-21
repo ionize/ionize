@@ -14,19 +14,19 @@
 	 * See mocha-init.js for more information about this method
 	 *
 	 */
-	MochaUI.setFormSubmit('existingMenuForm', 'existingMenuFormSubmit', 'menu/update');
+	ION.setFormSubmit('existingMenuForm', 'existingMenuFormSubmit', 'menu/update');
 
 
 	/**
 	 * Options show / hide button
 	 *
 	 */
-	MUI.initSideColumn();
+	ION.initSideColumn();
 
 	/**
 	 * Save with CTRL+s
 	 *
 	 */
-	MUI.addFormSaveEvent('existingMenuFormSubmit');
+	ION.addFormSaveEvent('existingMenuFormSubmit');
 
 </script>

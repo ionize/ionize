@@ -822,7 +822,7 @@
 					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('file');return false;"><?= lang('ionize_label_detach_all_files') ?></button>
 				</p>
 				
-				<ul id="fileContainer">
+				<ul id="fileContainer" class="sortable-container">
 					<span><?= lang('ionize_message_no_file') ?></span>
 				</ul>
 
@@ -837,7 +837,7 @@
 					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('music');return false;"><?= lang('ionize_label_detach_all_musics') ?></button>
 				</p>
 				
-				<ul id="musicContainer">
+				<ul id="musicContainer" class="sortable-container">
 					<span><?= lang('ionize_message_no_music') ?></span>
 				</ul>
 
@@ -852,7 +852,7 @@
 					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('video');return false;"><?= lang('ionize_label_detach_all_videos') ?></button>
 				</p>
 
-				<ul id="videoContainer">
+				<ul id="videoContainer" class="sortable-container">
 					<span><?= lang('ionize_message_no_video') ?></span>
 				</ul>
 
@@ -869,9 +869,9 @@
 
 				</p>
 			
-				<ul id="pictureContainer">
+				<div id="pictureContainer" class="sortable-container">
 					<span><?= lang('ionize_message_no_picture') ?></span>
-				</ul>
+				</div>
 
 			</div>
 			
@@ -948,7 +948,7 @@
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element', true);
+	ION.initAccordion('.toggler', 'div.element', true);
 
 
 	ION.initHelp('#articles .type.helpme', 'article_type', Lang.get('ionize_title_help_articles_types'));
@@ -957,20 +957,29 @@
 	 * Init help tips on label
 	 *
 	 */
-	MUI.initLabelHelpLinks('#pageForm');
+	ION.initLabelHelpLinks('#pageForm');
 
 
 	/**
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox('page_toolbox');
+	ION.initToolbox('page_toolbox');
 
 
 	/**
 	 * Droppables init
+	 *
 	 */
 	ION.initDroppable();
+
+
+	/**
+	 * Calendars init
+	 *
+	 */
+	ION.initDatepicker();
+
 
 
 	/**
@@ -1073,18 +1082,10 @@
 			'to' : $('lang_copy_to').value
 		};
 	 	
- 		MUI.sendData(url, data);
+ 		ION.sendData(url, data);
 	});
 
 
-	
-	/** 
-	 * Calendars
-	 *
-	 */
-	datePicker.attach();
-	
-//	ION.addClearField('logical_date');
 
 	<?php if (!empty($id_page)) :?>
 

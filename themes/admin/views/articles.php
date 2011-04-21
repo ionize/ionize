@@ -368,8 +368,8 @@
 	 */
 	new SortableTable('articlesTable',{sortOn: 0, sortBy: 'ASC'});
 
-	MUI.initLabelHelpLinks('#articlesTable');
-	MUI.initLabelHelpLinks('#filterArticles');
+	ION.initLabelHelpLinks('#articlesTable');
+	ION.initLabelHelpLinks('#filterArticles');
 
 
 	// Categories list
@@ -379,7 +379,7 @@
 	// New category Form submit
 	$('bSaveNewCategory').addEvent('click', function(e) {
 		e.stop();
-		MUI.sendData(admin_url + 'category/save', $('newCategoryForm'));
+		ION.sendData(admin_url + 'category/save', $('newCategoryForm'));
 	});
 	
 	
@@ -403,7 +403,7 @@
 	// New Type Form submit
 	$('bSaveNewType').addEvent('click', function(e) {
 		e.stop();
-		MUI.sendData(admin_url + 'article_type/save', $('newTypeForm'));
+		ION.sendData(admin_url + 'article_type/save', $('newTypeForm'));
 	});
 
 
@@ -413,7 +413,7 @@
 	 */
 	$('bSaveFlags').addEvent('click', function(e) {
 		e.stop();
-		MUI.sendData(admin_url + 'setting/save_flags', $('flagsForm'));
+		ION.sendData(admin_url + 'setting/save_flags', $('flagsForm'));
 	});
 	
 
@@ -442,7 +442,7 @@
 		item.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.formWindow('DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:520, height:280});
+			ION.formWindow('DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:520, height:280});
 		});
 	});
 
@@ -454,7 +454,7 @@
 		item.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.updateContent({'element': $('mainPanel'),'loadMethod': 'xhr','url':	admin_url + 'article/edit/0.' + id_article, 'title': Lang.get('ionize_title_edit_article') + ' : ' + title	});
+			MUI.Content.update({'element': $('mainPanel'),'loadMethod': 'xhr','url':	admin_url + 'article/edit/0.' + id_article, 'title': Lang.get('ionize_title_edit_article') + ' : ' + title	});
 		});
 	});
 
@@ -620,7 +620,7 @@
 	 *
 	 */
 	
-	MUI.initToolbox('articles_toolbox');
+	ION.initToolbox('articles_toolbox');
 	
 
 </script>

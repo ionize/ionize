@@ -156,11 +156,11 @@
 				</div>
 				
 				<!-- Categories list 
-				<a onclick="javascript:MUI.dataWindow('Categories', '<?= lang('ionize_title_categories') ?>', '<?= admin_url() ?>category/get_categories/article/<?= $id_article ?>', {width:450, height:300});"><?= lang('ionize_label_edit_categories') ?></a><br/>
+				<a onclick="javascript:ION.dataWindow('Categories', '<?= lang('ionize_title_categories') ?>', '<?= admin_url() ?>category/get_categories/article/<?= $id_article ?>', {width:450, height:300});"><?= lang('ionize_label_edit_categories') ?></a><br/>
 				-->
 				
 				<!-- Category create button -->
-				<a onclick="javascript:MUI.formWindow('Category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
+				<a onclick="javascript:ION.formWindow('Category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
 				
 				
 			</dd>
@@ -351,7 +351,7 @@
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element', true);
+	ION.initAccordion('.toggler', 'div.element', true);
 		
 
 	/**
@@ -359,7 +359,7 @@
 	 * see init-content.js
 	 *
 	 */
-	MUI.initLabelHelpLinks('#articleForm');
+	ION.initLabelHelpLinks('#articleForm');
 
 	/**
 	 * Add links on each parent page
@@ -387,16 +387,17 @@
 				'to' : $('lang_copy_to').value
 			};
 		 	
-	 		MUI.sendData(url, data);
+	 		ION.sendData(url, data);
 		});
 	}
 	
 	
-	/** 
-	 * Calendars
+	/**
+	 * Calendars init
 	 *
 	 */
-	datePicker.attach();
+	ION.initDatepicker();
+
 
 	new TabSwapper({tabsContainer: 'permanentUrlTab', sectionsContainer: 'permanentUrlTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'permanentUrlTab' });
 

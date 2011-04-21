@@ -72,13 +72,25 @@ Drag.Clone = new Class({
 		this.setOptions(options);
 		this.idle = true;
 		
-		if (this.options.revert) this.effect = new Fx.Morph(null, $merge({duration: 250, link: 'cancel'}, this.options.revert));
+		if (this.options.revert) this.effect = new Fx.Morph(null, Object.merge({},{duration: 250, link: 'cancel'}, this.options.revert));
 		
-		(this.options.handle ? element.getElement(this.options.handle) || element : element).addEvent('mousedown', this.start.bindWithEvent(this, element));
+		(this.options.handle ? element.getElement(this.options.handle) || element : element).addEvent('mousedown', function(event) {
+			this.start(event, element);
+		}.bind(this));
 		
-		if ($type(this.options.droppables) == 'string')
+		this.dropClasses = this.options.droppables;
+		this.droppables = $$(this.options.droppables);
+		
+		if (typeOf(this.dropClasses) == 'string')
 		{
-			this.options.droppables = (this.options.droppables).replace(' ', '').split(",");
+			this.dropClasses = (this.dropClasses).replace(' ', '').split(",");
+/*
+			droppables.each(function(d)
+			{
+			console.log($$(d));
+				this.options.droppables = (this.options.droppables).append($$(d));
+			}.bind(this));
+*/
 		}
 	},
 
@@ -87,17 +99,16 @@ Drag.Clone = new Class({
 		if (!this.idle) return;
 		this.idle = false;
 		this.element = element;
-		this.opacity = element.get('opacity');
+		this.opacity = element.getStyle('opacity');
 		this.clone = this.getClone(event, element);
-
+		
 		this.drag = new Drag.Move(this.clone, {
 			snap: this.options.snap,
-			droppables: this.options.droppables,
+			droppables: this.droppables,
 			onSnap: function(){
 				event.stop();
-				this.element.set('opacity', this.options.opacity || 0);
+				this.element.setStyle('opacity', this.options.opacity || 0);
 				this.clone.setStyle('visibility', 'visible');
-//				this.clone.set('opacity', this.options.opacity || 0);
 				this.snapped(this.clone);
 			}.bind(this),
 			onDrag: this.dragged.bind(this),
@@ -111,30 +122,11 @@ Drag.Clone = new Class({
 		this.drag.start(event);
 	},
 
-
 	end: function()
 	{
 		this.drag.detach();
-		this.element.set('opacity', this.opacity);
+		this.element.setStyle('opacity', this.opacity);
 		this.reset();
-/*
-		if (this.effect){
-			var dim = this.element.getStyles('width', 'height');
-			var pos = this.clone.computePosition(this.element.getPosition(this.clone.offsetParent));
-			this.effect.element = this.clone;
-			this.effect.start({
-				top: pos.top,
-				left: pos.left,
-				width: dim.width,
-				height: dim.height,
-				opacity: 0.25
-			}).chain(this.reset.bind(this));
-		}
-		else
-		{
-			this.reset();
-		}
-*/
 	},
 
 	reset: function()
@@ -152,9 +144,8 @@ Drag.Clone = new Class({
 
 	getClone: function(event, element)
 	{
-		if ($type(this.options.clone) == 'function') return this.options.clone.call(this, event, element);
+		if (typeOf(this.options.clone) == 'function') return this.options.clone.call(this, event, element);
 
-//		var dim = element.getSize();
 		var dim = element.getDimensions();
 		var dim = element.getComputedSize();
 
@@ -163,9 +154,7 @@ Drag.Clone = new Class({
 			'top': element.getCoordinates()['top'],
 			'left': element.getCoordinates()['left'],
 			'visibility': 'hidden',
-/*			'width': dim.width + 5 + 'px', */
 			'width': dim.totalWidth + 10 + 'px',
-//			'height': dim.totalHeight + 3 + 'px',
 			'display': 'block',
 			'z-index': 10000
 		});

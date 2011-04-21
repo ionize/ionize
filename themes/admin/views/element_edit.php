@@ -11,7 +11,7 @@
 <script type="text/javascript">
 
 
-	ION.HTML('element_definition/get_element_list', {'parent':'<?= $parent ?>', 'id_parent': <?= $id_parent ?>}, {'update': 'elementEditContainer' });
+	ION.HTML('element_definition/get_element_list', {'parent':'<?= $parent ?>', 'id_parent': '<?= $id_parent ?>'}, {'update': 'elementEditContainer' });
 	
 	
 </script>

@@ -72,7 +72,7 @@
 	 * Init the panel toolbox is mandatory !!! 
 	 *
 	 */
-	MUI.initToolbox();
+	ION.initToolbox();
 
 
 	/**
@@ -80,7 +80,7 @@
 	 * see init-ionize.js
 	 *
 	 */
-	MUI.initLabelHelpLinks('#maincolumn');
+	ION.initLabelHelpLinks('#maincolumn');
 
 
 	/**
@@ -96,7 +96,7 @@
 
 			var module_uri = $('segment' + item.getProperty('rel')).value;
 			
-			MUI.sendData(url + '/' + module_uri,'');
+			ION.sendData(url + '/' + module_uri,'');
 		});
 	});
 
@@ -112,7 +112,7 @@
 		{
 			var e = new Event(e).stop();
 			
-			MUI.sendData(url,'');
+			ION.sendData(url,'');
 		});
 	});
 
@@ -126,7 +126,7 @@
 		{
 			var e = new Event(e).stop();
 			
-			MUI.updateContent({
+			MUI.Content.update({
 				element: $('mainPanel'),
 				title: item.get('rel'),
 				url : item.getProperty('href')

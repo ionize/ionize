@@ -70,10 +70,8 @@ $$('#element_definition_<?= $id ?> .plus').each(function(item)
 	});
 });
 
-var windowEl = $('waddContentElement');
-var contentEl = $('waddContentElement_content');
-windowEl.retrieve('instance').resize({height: 300, width: 400});
 
+ION.windowResize('contentElement', {height: 300, width: 400});
 
 
 </script>
