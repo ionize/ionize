@@ -21,7 +21,7 @@
 	{
 		e.stop();
 		
-		MUI.updateContent({
+		ION.updateContent({
 			element: $('mainPanel'),
 			title: this.getProperty('rel'),
 			url : this.getProperty('href')

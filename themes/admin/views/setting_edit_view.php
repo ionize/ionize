@@ -20,7 +20,7 @@
 
 <script type="text/javascript">
 
-	MUI.addFormSaveEvent('bSave<?= $id ?>');
+	ION.addFormSaveEvent('bSave<?= $id ?>');
 
 </script>
 

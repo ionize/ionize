@@ -87,7 +87,7 @@
 	 * Init the panel toolbox is mandatory !!! 
 	 *
 	 */
-	MUI.initToolbox('translation_toolbox');
+	ION.initToolbox('translation_toolbox');
 
 	$$('#block .toggler').each(function(el)
 	{
@@ -105,12 +105,12 @@
 		
 		item.addEvent('click', function(e)
 		{
-			MUI.confirmation(
+			ION.confirmation(
 				'deleteTranslationTerm' + rel,
 				function()
 				{
 					$('key_' + rel).value = '';
-					MUI.sendData(base_url + 'translation/save', $('translationForm'))
+					ION.sendData(base_url + 'translation/save', $('translationForm'))
 				},
 				Lang.get('ionize_message_delete_translation')
 			);

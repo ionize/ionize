@@ -319,12 +319,15 @@ class Base_Controller extends MY_Controller
 		$lang_folder = Theme::get_theme_path().'language/'.Settings::get_lang().'/';
 
 		// Core languages files : Including except "admin_lang.php"
-		$lang_files = glob(APPPATH.'language/'.Settings::get_lang().'/*_lang.php', GLOB_BRACE);
-		foreach($lang_files as $key => $lang_file)
+		if (is_dir(APPPATH.'language/'.Settings::get_lang()))
 		{
-			if ($lang_file == APPPATH.'language/'.Settings::get_lang().'/admin_lang.php')
+			$lang_files = glob(APPPATH.'language/'.Settings::get_lang().'/*_lang.php', GLOB_BRACE);
+			foreach($lang_files as $key => $lang_file)
 			{
-				unset($lang_files[$key]);
+				if ($lang_file == APPPATH.'language/'.Settings::get_lang().'/admin_lang.php')
+				{
+					unset($lang_files[$key]);
+				}
 			}
 		}
 

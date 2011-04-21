@@ -25,7 +25,7 @@ $id = $id_element_definition;
 			
 				$('elementDefinitionSave<?= $id ?>').addEvent('click', function()
 				{
-					MUI.sendData('element_definition/save_field', {'id':'<?= $id ?>', 'field': 'name', 'value': $('elementName<?= $id ?>').value, selector:'.element_definition a.name[rel=<?= $id ?>]'});
+					ION.sendData('element_definition/save_field', {'id':'<?= $id ?>', 'field': 'name', 'value': $('elementName<?= $id ?>').value, selector:'.element_definition a.name[rel=<?= $id ?>]'});
 				});
 				
 				$('elementName<?= $id ?>').focus();

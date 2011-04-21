@@ -134,7 +134,7 @@
 
 
 <!-- Save / Cancel buttons
-	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through MUI.formWindow()
+	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
 	<button id="bSaveextendfield<?= $id_extend_field ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
@@ -147,7 +147,7 @@
 	 * Init help tips on label
 	 *
 	 */
-	MUI.initLabelHelpLinks('#extendfieldForm<?= $id_extend_field ?>');
+	ION.initLabelHelpLinks('#extendfieldForm<?= $id_extend_field ?>');
 
 	function display_value_block()
 	{
@@ -180,7 +180,7 @@
 		}
 		
 		// Window Resize
-		MUI.windowResize('extendfield' + id, {'width':410});
+		ION.windowResize('extendfield' + id, {'width':410});
 	}
 	
 	$('type<?= $id_extend_field ?>').addEvent('change', function()

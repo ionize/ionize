@@ -261,7 +261,7 @@ class Element_definition extends MY_Admin {
 					$this->callback = array
 					(
 						array(
-							'fn' => 'MUI.notification',
+							'fn' => 'ION.notification',
 							'args' => array (
 								'error',
 								lang('ionize_message_element_definition_name_already_exists')
@@ -280,7 +280,7 @@ class Element_definition extends MY_Admin {
 				$this->callback = array
 				(
 					array(
-						'fn' => 'MUI.notification',
+						'fn' => 'ION.notification',
 						'args' => array (
 							'success',
 							lang('ionize_message_content_element_saved')
@@ -315,7 +315,7 @@ class Element_definition extends MY_Admin {
 				$this->callback = array
 				(
 					array(
-						'fn' => 'MUI.notification',
+						'fn' => 'ION.notification',
 						'args' => array (
 							'error',
 							lang('ionize_message_content_element_not_saved')
@@ -358,7 +358,7 @@ class Element_definition extends MY_Admin {
 				$this->callback = array
 				(
 					array(
-						'fn' => 'MUI.notification',
+						'fn' => 'ION.notification',
 						'args' => array (
 							'success',
 							lang('ionize_message_content_element_saved')
@@ -391,7 +391,7 @@ class Element_definition extends MY_Admin {
 				$this->callback = array
 				(
 					array(
-						'fn' => 'MUI.notification',
+						'fn' => 'ION.notification',
 						'args' => array (
 							'error',
 							lang('ionize_message_content_element_not_saved')

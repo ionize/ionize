@@ -17,7 +17,7 @@
 	 * see init.js for more information about this method
 	 *
 	 */
-	MUI.setFormSubmit('translationForm', 'translationFormSubmit', 'translation/save');
+	ION.setFormSubmit('translationForm', 'translationFormSubmit', 'translation/save');
 
 	/**
 	 * Expand / Collapse button
@@ -66,6 +66,6 @@
 	 * Save with CTRL+s
 	 *
 	 */
-	MUI.addFormSaveEvent('translationFormSubmit');
+	ION.addFormSaveEvent('translationFormSubmit');
 
 </script>

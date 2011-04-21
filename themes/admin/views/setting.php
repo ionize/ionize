@@ -75,20 +75,20 @@
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox('setting_toolbox');
+	ION.initToolbox('setting_toolbox');
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	MUI.initAccordion('.toggler', 'div.element');
+	ION.initAccordion('.toggler', 'div.element');
 
 	/**
 	 * Init help tips on label
 	 * see init-content.js
 	 *
 	 */
-	MUI.initLabelHelpLinks('#settingsForm');
+	ION.initLabelHelpLinks('#settingsForm');
 
 	/** 
 	 * Tabs init

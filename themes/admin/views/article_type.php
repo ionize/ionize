@@ -55,7 +55,7 @@
 
 
 <!-- Save / Cancel buttons
-	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through MUI.formWindow()
+	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
 	<button id="bSavearticle_type<?= $id_type ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
@@ -64,7 +64,7 @@
 
 <script type="text/javascript">
 
-	MUI.windowResize('article_type<?= $id_type ?>', {width:400, height:200});
+	ION.windowResize('article_type<?= $id_type ?>', {width:400, height:200});
 
 	tinyMCE.init(ION.tinyMceSettings('tinyType<?= $UNIQ ?>', 240, 120, 'small'));
 

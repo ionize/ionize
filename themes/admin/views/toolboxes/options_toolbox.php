@@ -8,6 +8,6 @@
 	 * Options show / hide button
 	 *
 	 */
-	MUI.initSideColumn();
+	ION.initSideColumn();
 
 </script>

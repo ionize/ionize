@@ -107,7 +107,7 @@
 			e.stop();
 			var id = item.getProperty('rel');
 			var wid = 'user' + id;			// Window ID. Ex: wuser120
-			MUI.formWindow(
+			ION.formWindow(
 				wid, 						// object ID
 				'userForm',					// Form ID
 				'ionize_title_user_edit', 	// Window title

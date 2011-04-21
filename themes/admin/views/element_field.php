@@ -118,7 +118,7 @@ $id = $id_extend_field;
 
 
 <!-- Save / Cancel buttons
-	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through MUI.formWindow()
+	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
 	<button id="bSaveelementfield<?= $id ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
@@ -131,7 +131,7 @@ $id = $id_extend_field;
 	 * Init help tips on label
 	 *
 	 */
-	MUI.initLabelHelpLinks('#elementfieldForm<?= $id ?>');
+	ION.initLabelHelpLinks('#elementfieldForm<?= $id ?>');
 
 	var windowEl = $('welementfield<?= $id ?>');
 	var contentEl = $('welementfield<?= $id ?>_content');

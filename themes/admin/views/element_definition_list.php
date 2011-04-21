@@ -52,7 +52,7 @@ $$('#elementContainer .edit.name').each(function(item, idx)
 	{
 		if (input.value != '')
 		{
-			MUI.sendData('element_definition/save_field', {'id':id, 'field': 'name', 'value':input.value, selector:'.element_definition a.name[rel='+id+']' });
+			ION.sendData('element_definition/save_field', {'id':id, 'field': 'name', 'value':input.value, selector:'.element_definition a.name[rel='+id+']' });
 		}
 		input.hide();
 		item.show();
@@ -87,7 +87,7 @@ $$('#elementContainer .edit.title').each(function(item, idx)
 		
 		if (input.value != '' && input.value != title)
 		{
-			MUI.sendData('element_definition/save_lang_field', {'id':id, 'field': 'title', 'lang':lang, 'value': value, selector:'a.title[rel='+item.getProperty('rel')+']' });
+			ION.sendData('element_definition/save_lang_field', {'id':id, 'field': 'title', 'lang':lang, 'value': value, selector:'a.title[rel='+item.getProperty('rel')+']' });
 			item.removeClass('lite').removeClass('italic');
 		}
 
@@ -114,7 +114,7 @@ $$('#elementContainer .edit_field').each(function(item, idx)
 	{
 		e.stop();
 		var id = item.getProperty('rel');
-		MUI.formWindow('elementfield'+id, 'elementfieldForm'+id, 'ionize_title_element_field_edit', 'element_field/edit', {width:400, height:330}, {'id_extend_field': id});
+		ION.formWindow('elementfield'+id, 'elementfieldForm'+id, 'ionize_title_element_field_edit', 'element_field/edit', {width:400, height:330}, {'id_extend_field': id});
 	});		
 });
 
@@ -130,7 +130,7 @@ $$('#elementContainer li .add_field').each(function(item)
 	{
 		e.stop();
 		var id = this.getProperty('rel');
-		MUI.formWindow('elementfield', 'elementfieldForm', 'ionize_title_element_field_new', 'element_field/create', {width:400, height:330}, {'id_element_definition': id});
+		ION.formWindow('elementfield', 'elementfieldForm', 'ionize_title_element_field_new', 'element_field/create', {width:400, height:330}, {'id_element_definition': id});
 	});		
 });
 

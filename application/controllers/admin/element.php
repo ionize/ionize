@@ -200,7 +200,7 @@ class Element extends MY_Admin {
 			$this->callback = array
 			(
 				array(
-					'fn' => 'MUI.notification',
+					'fn' => 'ION.notification',
 					'args' => array
 					(
 						'error',
@@ -313,7 +313,7 @@ class Element extends MY_Admin {
 					)
 				),
 				array(
-					'fn' => 'MUI.notification',
+					'fn' => 'ION.notification',
 					'args' => array
 					(
 						'success',

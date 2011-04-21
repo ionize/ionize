@@ -103,7 +103,7 @@
 
 
 <!-- Save / Cancel buttons
-	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through MUI.formWindow()
+	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
 	<button id="bSaveDuplicateArticle" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>

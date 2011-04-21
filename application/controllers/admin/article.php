@@ -378,7 +378,7 @@ class Article extends MY_admin
 				
 				// Success Message
 				$this->callback[] = array(
-					'fn' => 'MUI.notification',
+					'fn' => 'ION.notification',
 					'args' => array('success', lang('ionize_message_article_saved'))
 				);
 				
@@ -632,7 +632,7 @@ class Article extends MY_admin
 		{
 			$this->callback[] = array
 			(
-				'fn' => 'MUI.notification',
+				'fn' => 'ION.notification',
 				'args' => array('success', lang('ionize_message_article_context_saved'))
 			);
 			$this->update_contexts($data['id_article']);
@@ -745,7 +745,7 @@ class Article extends MY_admin
 						'args' => $article
 					),
 					array(
-						'fn' => 'MUI.notification',
+						'fn' => 'ION.notification',
 						'args' => array('success', lang('ionize_message_article_linked_to_page'))
 					)
 				);
@@ -878,7 +878,7 @@ class Article extends MY_admin
 				{
 					$this->callback[] = array
 					(
-						'fn' => 'MUI.notification',
+						'fn' => 'ION.notification',
 						'args' => array	(
 							'error',
 							lang('ionize_message_url_not_found')
@@ -889,7 +889,7 @@ class Article extends MY_admin
 				{
 					$this->callback[] = array
 					(
-						'fn' => 'MUI.notification',
+						'fn' => 'ION.notification',
 						'args' => array	(
 							'error',
 							lang('ionize_message_url_got_404')

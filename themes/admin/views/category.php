@@ -82,7 +82,7 @@
 
 
 <!-- Save / Cancel buttons
-	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through MUI.formWindow()
+	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
 	<button id="bSavecategory<?= $id_category ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
@@ -97,7 +97,7 @@
 	 */
 	new TabSwapper({tabsContainer: 'categoryTab<?= $id_category ?>', sectionsContainer: 'categoryTabContent<?= $id_category ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?= $id_category ?>' });
 
-	MUI.initLabelHelpLinks('#categoryForm<?= $id_category ?>');
+	ION.initLabelHelpLinks('#categoryForm<?= $id_category ?>');
 
 	/**
 	 * TinyEditors
@@ -110,7 +110,7 @@
 	 * Window resize
 	 *
 	 */
-	MUI.windowResize('category<?= $id_category ?>', {width:420});
+	ION.windowResize('category<?= $id_category ?>', {width:420});
 	
 
 </script>

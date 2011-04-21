@@ -116,7 +116,7 @@
 
 
 <!-- Save / Cancel buttons
-	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through MUI.formWindow()
+	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
 	<button id="bSaveextendtable" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
@@ -129,7 +129,7 @@
 	 * Init help tips on label
 	 *
 	 */
-	MUI.initLabelHelpLinks('#extendtableForm');
+	ION.initLabelHelpLinks('#extendtableForm');
 
 	function display_value_block()
 	{

@@ -17,7 +17,7 @@
 	 * Panel toolbox
 	 *
 	 */
-	MUI.initToolbox();
+	ION.initToolbox();
 
 
 	mcFileManager.openInIframe('filemanager_iframe', 'fileManagerForm', 'hiddenFile');

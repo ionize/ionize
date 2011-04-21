@@ -10,9 +10,9 @@
 <script type="text/javascript">
 
 	
-//	MUI.initializeTabs('perfumePanelTabs', 'perfumePanel');
+//	ION.initializeTabs('perfumePanelTabs', 'perfumePanel');
 	
-	MUI.initToolbox('article_toolbox');
+	ION.initToolbox('article_toolbox');
 
 
 </script>

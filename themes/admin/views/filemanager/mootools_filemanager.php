@@ -3,7 +3,7 @@
 
 <script type="text/javascript">	
 
-MUI.initToolbox();
+ION.initToolbox();
 
 // Get the tokken, get the options...
 var xhr = new Request.JSON(

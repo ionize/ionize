@@ -474,7 +474,7 @@ class Page extends MY_admin
 			{
 				$this->callback[] = array
 				(
-					'fn' => 'MUI.notification',
+					'fn' => 'ION.notification',
 					'args' => array	(
 						'error',
 						lang('ionize_message_url_not_found')
@@ -485,7 +485,7 @@ class Page extends MY_admin
 			{
 				$this->callback[] = array
 				(
-					'fn' => 'MUI.notification',
+					'fn' => 'ION.notification',
 					'args' => array	(
 						'error',
 						lang('ionize_message_url_got_404')

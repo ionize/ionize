@@ -45,7 +45,7 @@ $title = ($parent !== FALSE) ? lang('ionize_label_'.$parent) : lang('ionize_labe
 			
 			item.addEvent('click', function()
 			{
-				MUI.formWindow('extendfield' + id, 'extendfieldForm'+id, '<?= lang('ionize_title_extend_field') ?>', 'extend_field/edit/' + id, {width: 400, height: 400});
+				ION.formWindow('extendfield' + id, 'extendfieldForm'+id, '<?= lang('ionize_title_extend_field') ?>', 'extend_field/edit/' + id, {width: 400, height: 400});
 			});
 		});
 	
