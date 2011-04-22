@@ -127,7 +127,7 @@ class FileManagerWithAliasSupport extends FileManager
 
 		// collect the real items first:
 		$coll = parent::scandir($dir, $filemask, $see_thumbnail_dir, $glob_flags_or, $glob_flags_and);
-		FM_vardumper($this, 'scandir4Alias', $coll);
+//		FM_vardumper($this, 'scandir4Alias', $coll);
 		if ($coll === false)
 			return $coll;
 
