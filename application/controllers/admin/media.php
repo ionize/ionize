@@ -118,12 +118,12 @@ class Media extends MY_admin
 	{
 		// FileManager constructor options
 		$params = array (
-			'directory' => FCPATH.Settings::get('files_path'),
-//			'directory' => Settings::get('files_path'),
+//			'directory' => FCPATH.Settings::get('files_path'),
+			'directory' => Settings::get('files_path'),
 			'thumbnailPath' => FCPATH.Settings::get('files_path') . '/.thumbs',
 			'baseURL' => base_url(),
-			'assetBasePath' => FCPATH.Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
-//			'assetBasePath' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
+//			'assetBasePath' => FCPATH.Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
+			'assetBasePath' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
 ////			'assetBaseUrl' => theme_url().'javascript/mootools-filemanager/Assets',
 			'upload' => TRUE,
 			'destroy' => TRUE,
@@ -135,8 +135,8 @@ class Media extends MY_admin
 			'filter' => 'image/,audio/,video/'
 		);
 
-		$this->load->library('filemanager', $params);
-//		$this->load->library('FileManagerWithAliasSupport', $params);
+//		$this->load->library('filemanager', $params);
+		$this->load->library('FileManagerWithAliasSupport', $params);
 
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object
@@ -144,7 +144,7 @@ class Media extends MY_admin
 		
 		if ($event != 'upload')
 		{
-			$this->filemanager->fireEvent(!is_null($event) ? $event : null);
+			$this->FileManagerWithAliasSupport->fireEvent(!is_null($event) ? $event : null);
 		}
 		else
 		{
@@ -174,7 +174,7 @@ class Media extends MY_admin
 					// Fires the Filemanager event if the user is connected
 					if ($connected === TRUE)
 					{
-						$this->filemanager->fireEvent($event);
+						$this->FileManagerWithAliasSupport->fireEvent($event);
 					}
 					// The user isn't connected
 					else
