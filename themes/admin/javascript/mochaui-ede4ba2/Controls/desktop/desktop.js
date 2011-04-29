@@ -258,6 +258,7 @@ MUI.Window.implement({
 		// temporarily move the window to the desktop while it is minimized.
 		if (options.container != MUI.desktop.el.content){
 			MUI.desktop.grab(windowEl);
+//			$(options.container).grab(windowEl);
 			if (options.restrict) windowDrag.container = this.el.desktop;
 		}
 

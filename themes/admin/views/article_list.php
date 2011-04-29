@@ -37,6 +37,9 @@
 
 	<li class="sortme article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>">
 		
+		<!-- Drag icon -->
+		<a class="icon left pr5 drag"></a>
+
 		<!-- Unlink icon -->
 		<a class="icon right unlink" rel="<?= $rel ?>" title="<?= lang('ionize_label_unlink') ?>"></a>
 		
@@ -69,8 +72,6 @@
 		
 		</span>
 		
-		<!-- Drag icon -->
-		<a class="icon left pr5 drag" />
 		
 		<!-- Title (draggable) -->
 		<a style="overflow:hidden;height:16px;display:block;" class=" pl5 pr10 article article<?= $flat_rel ?> <?= $status ;?>" title="<?= lang('ionize_label_edit') ?> / <?= lang('ionize_label_drag_to_page') ?>" rel="<?= $rel ?>"><span class="flag flag<?= $article['flag'] ?>"></span><?= $title ?></a>

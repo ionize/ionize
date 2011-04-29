@@ -161,18 +161,13 @@
 							<?= $categories ?>
 						</div>
 						
-						<!-- Categories list 
-						<a onclick="javascript:ION.dataWindow('Categories', '<?= lang('ionize_title_categories') ?>', '<?= admin_url() ?>category/get_categories/article/<?= $id_article ?>', {width:450, height:300});"><?= lang('ionize_label_edit_categories') ?></a><br/>
-						-->
-						
 						<!-- Category create button -->
-						<a onclick="javascript:ION.formWindow('Category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
-						
-						
+						<a onclick="javascript:ION.formWindow('category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
+
 					</dd>
 				</dl>
 
-				<!-- Tags -->
+				<!-- Tags 
 				<dl class="small">
 					<dt>
 						<label for="template"><?= lang('ionize_label_tags') ?></label>
@@ -181,7 +176,7 @@
 						<textarea id="tags" name="tags" class="inputtext w140 h40" type="text" onkeyup="formManager.toLowerCase(this, 'tags');"><?= $tags ?></textarea>
 					</dd>
 				</dl>
-
+				-->
 				<!-- Existing Tags 
 				<dl class="small last">
 					<dt>

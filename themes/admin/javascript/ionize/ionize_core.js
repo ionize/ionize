@@ -12,13 +12,14 @@ ION.append = function(hash){
 
 ION.append({
 	
+	/**
+	 * URLs used by depending classes
+	 *
+	 */
 	baseUrl: base_url,
-	
 	adminUrl: admin_url,
 	
 	mainpanel: 'mainPanel',
-	
-//	hbg: '#df8',
 	
 	/**
 	 * Reloads Ionize's interface
@@ -113,3 +114,4 @@ Date.extend({
 		return Math.floor(new Date().getTime()/1000);
 	}
 });
+

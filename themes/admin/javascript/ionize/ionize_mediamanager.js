@@ -199,20 +199,17 @@ var IonizeMediaManager = new Class(
 				clone: true,
 				container: container,
 				opacity: 0.5,
-				onStart: function(element, clone)
-				{
-					console.log(clone.getOffsetParent());
-				},
 				onComplete: function()
 				{
 					var serialized = this.serialize(0, function(element, index) 
 					{
 						// Get the ID list by replacing 'type_' by '' for each item
 						// Example : Each picture item is named 'picture_ID' where 'ID' is the media ID
-						if (element.getProperty('id') != null)
-							return element.getProperty('id').replace(responseJSON.type + '_','');
+						if (element.id != '')
+						{
+							return (element.id).replace(responseJSON.type + '_','');
+						}
 					});
-					
 					// Items sorting
 					self.sortItemList(responseJSON.type, serialized);
 				}
@@ -252,18 +249,26 @@ var IonizeMediaManager = new Class(
 		var container = $(this.containers.get(type))
 		var sortableOrder = container.retrieve('sortableOrder');
 
+		// Remove "undefined" from serialized. Undefined comes from the clone, which isn't removed before serialize.
+		var serie = new Array();
+		serialized.each(function(item)
+		{
+			if (typeOf(item) != 'null')
+				serie.push(item);
+		});
+
 		// If current <> new ordering : Save it ! 
-		if (sortableOrder.toString() != serialized.toString() ) 
+		if (sortableOrder.toString() != serie.toString() ) 
 		{
 			// Store the new ordering
-			container.store('sortableOrder', serialized);
+			container.store('sortableOrder', serie);
 
 			// Save the new ordering
 			var myAjax = new Request.JSON(
 			{
 				url: this.adminUrl + 'media/save_ordering/' + this.parent + '/' + this.idParent,
 				method: 'post',
-				data: 'order=' + serialized,
+				data: 'order=' + serie,
 				onSuccess: function(responseJSON, responseText)
 				{
 					MUI.hideSpinner();
@@ -498,10 +503,6 @@ var IonizeMediaManager = new Class(
 
 					// Referer to ionizeMediaManager
 					var self = this;
-//					var baseUrl = this.baseUrl;
-//					var adminUrl = this.adminUrl;
-//					var themeUrl = this.themeUrl;
-					
 					
 					// First try to get a tokken : The tokken is only returned if the user is connected.
 					var xhr = new Request.JSON(
@@ -525,7 +526,6 @@ var IonizeMediaManager = new Class(
 								// fileManager init
 								filemanager = new FileManager({
 									baseURL: base_url,
-									directory:'files',
 									url: admin_url + 'media/filemanager',
 									assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
 									language: Lang.get('current'),
@@ -537,8 +537,8 @@ var IonizeMediaManager = new Class(
 									parentContainer: 'filemanagerWindow_contentWrapper'
 								});
 
-								// Window creation
-								var options = self.getFilemanagerWindowOptions();
+								// MUI Window creation
+								var options = ION.getFilemanagerWindowOptions();
 								
 								options.content = filemanager.show();
 								
@@ -548,9 +548,6 @@ var IonizeMediaManager = new Class(
 								}
 								
 								self.window = new MUI.Window(options);
-								
-
-
 							}
 							else
 							{
@@ -565,9 +562,14 @@ var IonizeMediaManager = new Class(
 					ION.notification('error', 'No mode set for mediaManager');
 			}
 		}
-	},
+	}
 	
 	
+	
+});
+
+ION.append({
+
 	/**
 	 * Returns the Filemanager Mocha Window options
 	 *
@@ -600,9 +602,6 @@ var IonizeMediaManager = new Class(
 			id: 'filemanagerWindow',
 			title: 'Filemanager',
 			container: document.body,
-//			loadMethod: 'html',
-//			content: this.container,
-//			evalResponse: true,
 			width: wSize.width,
 			height: wSize.height,
 			y: 35,
@@ -626,11 +625,8 @@ var IonizeMediaManager = new Class(
 		
 		return options;
 	}
-	
-});
+/*
 
-
-ION.append({
 
 	openFilemanager: function(callback)
 	{
@@ -667,4 +663,5 @@ ION.append({
 			}
 		}, self).send();
 	}
+*/
 });

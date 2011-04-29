@@ -364,7 +364,7 @@ $('saveElementFormSubmit<?= $id_element ?>').addEvent('click', function(e)
 		}
 		
 		// Get the form
-		var options = ION.getJSONRequestOptions('element/save', $('elementForm<?= $id_element ?>'), {'onSuccess': function(){MUI.closeWindow($('wcontentElement<?= $id_element ?>'))}});
+		var options = ION.getJSONRequestOptions('element/save', $('elementForm<?= $id_element ?>'), {'onSuccess': function(){ION.closeWindow($('wcontentElement<?= $id_element ?>'))}});
 		
 		var r = new Request.JSON(options);
 		

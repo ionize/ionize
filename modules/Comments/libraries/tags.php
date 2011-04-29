@@ -254,7 +254,8 @@ class Comments_Tags
 			// Checking if comments should be enabled/disabled (POST) should be done
 			if ($CI->input->post( "comments_article_update" )=="1" )
 			{
-				$tag->locals->article['comment_allow'] = $CI->comments_model->update_article( $tag->locals->article['id_article'] );				$tag->locals->showFlashMessage=true;	
+				$tag->locals->article['comment_allow'] = $CI->comments_model->update_article( $tag->locals->article['id_article'] );
+				$tag->locals->showFlashMessage=true;	
 			}
 			
 			if ($CI->input->post( "comment_delete" )=="1" )

@@ -1,6 +1,11 @@
 
 <div id="desktopBar">
 
+<?php
+
+	$lang_url = base_url().Settings::get_lang('current').'/'.Settings::get('admin_url');
+?>
+
 <div class="desktopTitlebarWrapper">
 	<div class="desktopTitlebar">
 		<h1 class="applicationTitle">ionize <?php echo($this->config->item('version')) ;?></h1>
@@ -36,7 +41,7 @@
 					<li><a class="navlink" href="page/create/0" title="<?= lang('ionize_title_new_page') ?>"><?= lang('ionize_menu_page') ?></a></li>
 					<li><a class="navlink" href="article/list_articles" title="<?= lang('ionize_title_articles') ?>"><?= lang('ionize_menu_articles') ?></a></li>
 					<li><a class="navlink" href="translation" title="<?= lang('ionize_title_translation') ?>"><?= lang('ionize_menu_translation') ?></a></li>
-					<li class="divider"><a class="navlink" href="media/get_media_manager" title="<?= lang('ionize_menu_media_manager') ?>"><?= lang('ionize_menu_media_manager') ?></a></li>
+					<li class="divider"><a id="mediamanagerlink" href="media/get_media_manager" title="<?= lang('ionize_menu_media_manager') ?>"><?= lang('ionize_menu_media_manager') ?></a></li>
 					<?php if ($this->connect->is('super-admins')) :?>
 						<li class="divider"><a class="navlink" href="element_definition/index" title="<?= lang('ionize_menu_content_elements') ?>"><?= lang('ionize_menu_content_elements') ?></a></li>
 					<?php endif ;?>
@@ -51,7 +56,7 @@
 					<!-- Module Admin controllers links -->
 					<?php foreach($modules as $uri => $module) :?>
 						<?php if($this->connect->is($module['access_group'])) :?>
-							<li><a class="modules" id="<?= $uri ?>ModuleLink" href="module/<?= $uri ?>/<?= $uri ?>/index" title="<?= $module['name'] ?>"><?= $module['name'] ?></a></li>
+							<li><a class="navlink" id="<?= $uri ?>ModuleLink" href="module/<?= $uri ?>/<?= $uri ?>/index" title="<?= $module['name'] ?>"><?= $module['name'] ?></a></li>
 						<?php endif ;?>								
 					<?php endforeach ;?>
 					<?php if($this->connect->is('admins')) :?>
@@ -113,10 +118,22 @@
 			event.preventDefault();
 			
 			MUI.Content.update({
-				url: admin_url + this.getProperty('href'),
+				url: admin_url + ION.cleanUrl(this.getProperty('href')),
 				element: 'mainPanel',
 				title: this.getProperty('title')
 			});
+		});
+	});
+	
+	$('mediamanagerlink').addEvent('click', function(event)
+	{
+		event.preventDefault();
+		
+		MUI.Content.update({
+			url: admin_url + ION.cleanUrl(this.getProperty('href')),
+			element: 'mainPanel',
+			title: this.getProperty('title'),
+			padding: {top: 0, right: 0, bottom: 0, left: 0}
 		});
 	});
 
@@ -136,6 +153,6 @@
 			scrollbars: false
 		});
 	});
-
+	
 </script>
 

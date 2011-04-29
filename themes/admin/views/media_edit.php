@@ -4,6 +4,14 @@
  * Modal window for Media metadata edition
  *
  */
+
+$pictureSize = NULL;
+
+if($type == 'picture')
+{
+	$pictureSize = @getimagesize(base_url().$path);
+}
+
 ?>
 
 <!-- Media summary -->
@@ -19,7 +27,7 @@
 			$thumb_url =	$thumb_base_url.$thumb_path;
 		 ?>
 		<div class="picture" style="float:right;margin:0;">
-		<div class="thumb" style="width:<?= $thumb_size ?>px;height:<?= $thumb_size ?>px;background-image:url(<?= $thumb_url ?>?t=<?= time() ?>);"></div>
+		<div class="thumb" style="width:<?= $thumb_size ?>px;height:<?= $thumb_size ?>px;background-image:url(<?= $thumb_url ?>?t=<?= $UNIQ ?>);"></div>
 		</div>
 	<?php endif ;?>
 
@@ -98,9 +106,10 @@
 		
 			<?php if($type == 'picture') :?>
 				 - 
-				<?php if ($d = @getimagesize($path)) :?>
-					<?php echo($d['0']) ?>x<?php echo($d['1']) ?>
-				<?php endif ;?>
+				<?php if ( ! is_null($pictureSize)) :?>
+					<?php echo($pictureSize['0']) ?> x <?php echo($pictureSize['1']) ?> px
+					<br /><a id="imageCropLink<?= $id_media ?>">crop image</a>
+				<?php endif ;?> 
 			<?php endif ;?>
 		</dd>		
 	
@@ -376,5 +385,22 @@
 	 *
 	 */
 	new TabSwapper({tabsContainer: 'mediaTab<?= $UNIQ ?>', sectionsContainer: 'mediaTabContent<?= $UNIQ ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?= $UNIQ ?>' });
+
+	
+	/**
+	 * Opens the crop window if picture
+	 *
+	 */
+	
+	<?php if ( ! is_null($pictureSize)) :?>
+	if (typeOf($('imageCropLink<?= $id_media ?>')) != 'null')
+	{
+		$('imageCropLink<?= $id_media ?>').addEvent('click', function()
+		{
+			// Should be : 'maximizable': true, 
+			ION.dataWindow('ImageCrop<?= $id_media ?>', 'Crop', 'media/get_crop/<?= $id_media ?>', {width:640, height:480});
+		});
+	}
+	<?php endif ;?>
 
 </script>

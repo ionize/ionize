@@ -221,7 +221,7 @@ class Extend_field extends MY_admin
 				$this->callback = array
 				(
 					array(
-						'fn' => 'MUI.updateElement',
+						'fn' => 'ION.updateElement',
 						'args' => array(
 							'element' => $dom_element,
 							'url' => $url

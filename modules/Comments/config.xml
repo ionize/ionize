@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-	<name>#module_name Module</name>
-	<description>#module_description</description>
+	<name>Comments</name>
+	<description>Blog like comments capabilities to articles</description>
 	<uri_segment>comments</uri_segment>
 	
 	<!-- Has this module an admin panel ? -->
-	<has_admin>true</has_admin>
+	<has_admin>false</has_admin>
 	
 	<!-- Group who can access to the admin panel of the module -->
 	<access_group>editors</access_group>

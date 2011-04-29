@@ -10,29 +10,10 @@ ION.append({
 	 */
 	initToolbox: function(toolbox_url, onContentLoaded)
 	{
-/*
-		new MUI.Window({
-			id: 'ajaxpage',
-			content: 'hop',
-			width: 340,
-			height: 150
-		});
-
-ION.notification('loaded');	
-	
-/*
-console.log(typeOf(MUI.Windows._getWithHighestZIndex));
-
-console.log(typeOf(MUI.Windows.blurAll));
-console.log(typeOf(MUI.Windows));
-console.log(typeOf(MUI))
-*/
-
 		// Creates the header toolbox if it doesn't exists
 		if ( ! $('mainPanel_headerToolbox')) {
 			this.panelHeaderToolboxEl = new Element('div', {
 				'id': 'mainPanel_headerToolbox',
-//				'class': 'panel-header-toolbox'
 				'class': 'toolbar'
 			}).inject($('mainPanel_header'));
 		}
@@ -425,7 +406,7 @@ console.log(typeOf(MUI))
 	 * @param	String				Callback function object.
 	 *
 	 * @usage
-	 * 			ION. (item, '.dropcreators', 
+	 * 			ION.addDragDrop (item, '.dropcreators', 
 	 *			{
 	 *				fn:'ION.JSON',
 	 *				args: ['perfume/link_creator', {'creator_id' : rel, 'perfume_id': $('perfume_id').value} ]
@@ -441,6 +422,7 @@ console.log(typeOf(MUI))
 			opacity: 0.5,
 			revert: true,
 			classe: 'ondrag',
+			container: $('desktop'),
 			
 			onSnap: function(el) { el.addClass('move'); },
 			
@@ -706,7 +688,7 @@ console.log(typeOf(MUI))
 			onSuccess: function(responseJSON, responseText)
 			{
 				var index = 0;
-				
+
 				responseJSON.each(function(item, idx)
 				{
 					var id = item.id_element_definition;
@@ -1408,7 +1390,7 @@ console.log(typeOf(MUI))
 		item.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.confirmation('confDelete' + flat_rel, url, Lang.get('ionize_confirm_article_page_unlink'));
+			ION.confirmation('confDelete' + flat_rel, url, Lang.get('ionize_confirm_article_page_unlink'));
 		});
 	},
 	
@@ -1572,7 +1554,7 @@ console.log(typeOf(MUI))
 					$$('.' + type + responseJSON.id).each(function(item, idx) { item.dispose(); });
 					
 					// Get the update array and do the jobs
-					if (responseJSON.update != null && responseJSON.update != '') {	MUI.updateElements(responseJSON.update); }
+					if (responseJSON.update != null && responseJSON.update != '') {	ION.updateElements(responseJSON.update); }
 					
 					// As we delete the current edited item, let's return to the home page
 					if($('id_' + type) && $('id_' + type).value == id)
@@ -1590,14 +1572,14 @@ console.log(typeOf(MUI))
 				// JS Callback
 				if (responseJSON && responseJSON.callback)
 				{
-					MUI.execCallbacks(responseJSON.callback);
+					ION.execCallbacks(responseJSON.callback);
 				}
 
 				
 				// If Error, display a modal instead a notification
 				if(responseJSON.message_type == 'error')
 				{
-					MUI.error(responseJSON.message);
+					ION.error(responseJSON.message);
 				}
 				else
 				{
@@ -1687,8 +1669,9 @@ console.log(typeOf(MUI))
 		var id_page_origin = rel[0];
 		var id_article = rel[1];
 		var id_page = droppable.getProperty('rel');
-
-		ION.linkArticleToPage(id_article, id_page, id_page_origin, event);
+		
+		if (id_page_origin != id_page)
+			ION.linkArticleToPage(id_article, id_page, id_page_origin, event);
 	},
 
 	/**
@@ -1725,7 +1708,7 @@ console.log(typeOf(MUI))
 				// JS Callback
 				if (responseJSON && responseJSON.callback)
 				{
-					MUI.execCallbacks(responseJSON.callback);
+					ION.execCallbacks(responseJSON.callback);
 				}
 			}
 		}).send();
@@ -1754,7 +1737,7 @@ console.log(typeOf(MUI))
 				// JS Callback
 				if (responseJSON && responseJSON.callback)
 				{
-					MUI.execCallbacks(responseJSON.callback);
+					ION.execCallbacks(responseJSON.callback);
 				}
 			}
 		}).send();
@@ -1795,7 +1778,7 @@ console.log(typeOf(MUI))
 					// JS Callback
 					if (responseJSON && responseJSON.callback)
 					{
-						MUI.execCallbacks(responseJSON.callback);
+						ION.execCallbacks(responseJSON.callback);
 					}
 				}
 			}).send();
@@ -1853,7 +1836,7 @@ console.log(typeOf(MUI))
 					// Get the update table and do the jobs
 					if (responseJSON.update != null && responseJSON.update != '')
 					{
-						MUI.updateElements(responseJSON.update);
+						ION.updateElements(responseJSON.update);
 					}
 					
 				}
@@ -2000,14 +1983,9 @@ console.log(typeOf(MUI))
 		input.focus();
 		
 		ION.initListToggler(toggler, translation);
-		
 	},
 
 	
-	
-
-
-
 	
 	/**
 	 * Cleans the base URL
@@ -2019,9 +1997,12 @@ console.log(typeOf(MUI))
 	{
 		// Cleans URLs
 		url = url.replace(admin_url, '');
-		
+
 		// Base URL contains the lang code. Try to clean without the lang code
 		url = url.replace(admin_url.replace(Lang.get('current') + '/', ''), '');
+
+		url = url.replace(base_url + Lang.get('current') + '/', '');
+		url = url.replace(base_url, '');
 		
 		return url;
 	},
@@ -2134,7 +2115,4 @@ console.log(typeOf(MUI))
 		return str;
 	}
 
-
-	
-	
 });

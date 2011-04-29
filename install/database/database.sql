@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS article (
   id_article int(11) UNSIGNED NOT NULL auto_increment,
   name varchar(55) default NULL,
@@ -7,24 +8,22 @@ CREATE TABLE IF NOT EXISTS article (
   publish_on datetime NOT NULL default '0000-00-00 00:00:00',
   publish_off datetime NOT NULL default '0000-00-00 00:00:00',
   updated datetime NOT NULL,
+  logical_date datetime NOT NULL default '0000-00-00 00:00:00',
   indexed tinyint(1) UNSIGNED NOT NULL default 1,
   id_category int(11) UNSIGNED default NULL,
   comment_allow char(1) default '0',
   comment_autovalid char(1) default '0',
   comment_expire datetime,
-  link varchar(255) default NULL,
-  link_type varchar(25) collate utf8_unicode_ci default NULL COMMENT '''page'', ''article'' or NULL',
-  link_id bigint(20) default NULL,
   flag smallint(1) default 0,
   PRIMARY KEY  (id_article)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
 CREATE TABLE IF NOT EXISTS article_category (
 	id_article INT(11) UNSIGNED NOT NULL ,
 	id_category INT(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -32,7 +31,6 @@ CREATE TABLE IF NOT EXISTS article_lang (
   id_article int(11) UNSIGNED NOT NULL default 0,
   lang varchar(3) NOT NULL default '',
   url VARCHAR( 100 ) NOT NULL default '',
-  link VARCHAR( 255 ) NOT NULL default '',
   title varchar(255) default NULL,
   subtitle varchar(255) default NULL,
   meta_title varchar(255) default NULL,
@@ -42,7 +40,7 @@ CREATE TABLE IF NOT EXISTS article_lang (
   meta_description varchar(255) default NULL,
   online tinyint(1) UNSIGNED NOT NULL default 1,
   PRIMARY KEY  (id_article,lang)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -52,7 +50,7 @@ CREATE TABLE IF NOT EXISTS article_media (
   ordering int(11) UNSIGNED default 9999,
   url varchar(255) default NULL,
   PRIMARY KEY  (id_article,id_media)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -69,7 +67,7 @@ CREATE TABLE IF NOT EXISTS article_comment (
 	updated datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 	admin tinyint UNSIGNED NOT NULL	default 0										COMMENT 'If comment comes from admin, set to 1',
 	PRIMARY KEY (id_article_comment)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -77,16 +75,18 @@ CREATE TABLE IF NOT EXISTS article_tag (
 	id_article int(11) UNSIGNED NOT NULL,
 	id_tag int(11) UNSIGNED NOT NULL,
 	PRIMARY KEY  (id_article, id_tag)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
 CREATE TABLE IF NOT EXISTS article_type (
   id_type int(11) unsigned NOT NULL auto_increment,
   type varchar(50) collate utf8_unicode_ci NOT NULL,
-  ordering int(11) default NULL,
+  ordering int(11) default 0,
+  description text NOT NULL default '',
+  type_flag TINYINT( 1 ) NOT NULL default 0,
   PRIMARY KEY  (id_type)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS captcha (
   lang varchar(3) NOT NULL default '',
   hash varchar(32) NOT NULL default '',
   PRIMARY KEY  (id_captcha)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -106,16 +106,51 @@ CREATE TABLE IF NOT EXISTS category (
   name varchar(50) NOT NULL,
   ordering int(11) default 0,
   PRIMARY KEY  (id_category)
-)  ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+)  ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
 CREATE TABLE IF NOT EXISTS category_lang (
   id_category int(11) UNSIGNED NOT NULL default '0',
-  lang char(3) NOT NULL default '',
-  title varchar(255) default NULL,
-  description text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  lang char(3) NOT NULL,
+  title varchar(255) NOT NULL default '',
+  subtitle VARCHAR( 255 ) NOT NULL default '',
+  description text NOT NULL,
+	  PRIMARY KEY  (id_category, lang)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
+
+
+
+CREATE TABLE IF NOT EXISTS element (
+  id_element int(11) unsigned NOT NULL auto_increment,
+  id_element_definition int(11) unsigned NOT NULL,
+  parent varchar(50) NOT NULL,
+  id_parent int(11) NOT NULL,
+  ordering int(11) NOT NULL default '0',
+  PRIMARY KEY  (id_element),
+  KEY idx_element_id_element_definition (id_element_definition),
+  KEY idx_element_id_parent (id_parent),
+  KEY idx_element_parent (parent)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
+
+
+
+CREATE TABLE IF NOT EXISTS element_definition (
+  id_element_definition int(11) unsigned NOT NULL auto_increment,
+  name varchar(50) NOT NULL,
+  description text,
+  ordering int(11) not null default 0,
+  PRIMARY KEY  (id_element_definition)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
+
+
+
+CREATE TABLE IF NOT EXISTS element_definition_lang (
+  id_element_definition int(11) unsigned NOT NULL,
+  lang varchar(3) NOT NULL,
+  title varchar(255) NOT NULL default '',
+  PRIMARY KEY  (id_element_definition, lang)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -132,9 +167,12 @@ CREATE TABLE IF NOT EXISTS extend_field (
 	default_value varchar(255) NULL,
 	global tinyint(1) UNSIGNED NOT NULL default '0',
 	parents varchar(300) NOT NULL default '',
+	id_element_definition INT( 11 ) UNSIGNED NOT NULL DEFAULT '0',
+	block VARCHAR( 50 ) NOT NULL DEFAULT '',
 	PRIMARY KEY  (id_extend_field),
-	KEY i_extend_field_parent (parent)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1;
+	KEY idx_extend_field_parent (parent),
+    KEY idx_extend_field_id_element_definition (id_element_definition) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -145,9 +183,13 @@ CREATE TABLE IF NOT EXISTS extend_fields (
 	id_parent int(11) UNSIGNED NOT NULL,
 	lang char(3) NOT NULL default '',
 	content text,
+	ordering INT( 11 ) UNSIGNED NOT NULL DEFAULT '0',
+	id_element INT( 11 ) UNSIGNED NOT NULL,
 	PRIMARY KEY  (id_extend_fields),
-	KEY i_extend_fields_lang (lang)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1;
+	KEY idx_extend_fields_id_parent (id_parent),
+	KEY idx_extend_fields_lang (lang),
+    KEY idx_extend_fields_id_extend_field (id_extend_field) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -158,7 +200,7 @@ CREATE TABLE IF NOT EXISTS ion_sessions (
   last_activity int(10) unsigned NOT NULL default '0',
   user_data text collate utf8_unicode_ci NULL,
   PRIMARY KEY  (session_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -169,7 +211,7 @@ CREATE TABLE IF NOT EXISTS lang (
   def char(1) default '0',
   ordering int(11),
   PRIMARY KEY  (lang)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -178,21 +220,22 @@ CREATE TABLE IF NOT EXISTS login_tracker (
   first_time int(11) unsigned NOT NULL,
   failures tinyint(2) unsigned default NULL,
   PRIMARY KEY  (`ip_address`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
 CREATE TABLE IF NOT EXISTS media (
 	id_media int(11) UNSIGNED NOT NULL auto_increment,
 	type varchar(10) NOT NULL DEFAULT '',
-	file_name varchar(255) NOT NULL default ''	COMMENT 'file_name',
-	path varchar(500) NOT NULL					COMMENT 'Complete path to the medium, including media file name, excluding host name',
-	base_path varchar(500) NOT NULL				COMMENT 'medium folder base path, excluding host name',
+	file_name varchar(255) NOT NULL default ''		COMMENT 'file_name',
+	path varchar(500) NOT NULL						COMMENT 'Complete path to the medium, including media file name, excluding host name',
+	base_path varchar(500) NOT NULL					COMMENT 'medium folder base path, excluding host name',
 	copyright varchar(128) default NULL,
-	date datetime NOT NULL						COMMENT 'Medium date',
-	link varchar(255) default NULL				COMMENT 'Link to a resource, attached to this medium',
+	container VARCHAR( 255 ) NOT NULL DEFAULT '',
+	date datetime NOT NULL							COMMENT 'Medium date',
+	link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
 	PRIMARY KEY  (id_media)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -203,7 +246,7 @@ CREATE TABLE IF NOT EXISTS media_lang (
   alt varchar(500) default NULL,
   description longtext,
   PRIMARY KEY  (id_media, lang)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -214,7 +257,7 @@ CREATE TABLE IF NOT EXISTS menu (
   ordering int(11),
   PRIMARY KEY  (id_menu),
   UNIQUE KEY name (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -229,7 +272,7 @@ CREATE TABLE IF NOT EXISTS module (
 	description text NOT NULL,
 	PRIMARY KEY  (id_module),
 	KEY i_module_name (name)
-)  ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+)  ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -240,7 +283,7 @@ CREATE TABLE IF NOT EXISTS module_setting (
   content varchar(255) NOT NULL				COMMENT 'Setting content',	
   lang varchar(2) default NULL,
   PRIMARY KEY  (id_module_setting) 
-)   ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+)   ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -251,7 +294,7 @@ CREATE TABLE IF NOT EXISTS note (
   type VARCHAR( 10 ) NOT NULL,
   content TEXT NOT NULL ,
   PRIMARY KEY  (id_note)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -270,35 +313,40 @@ CREATE TABLE IF NOT EXISTS page (
   publish_on datetime NOT NULL,
   publish_off datetime NOT NULL,
   updated datetime NOT NULL,
+  logical_date datetime NOT NULL default '0000-00-00 00:00:00',
   appears tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
   view varchar(50) default NULL										COMMENT 'Page view',
   article_list_view VARCHAR(50) default NULL						COMMENT 'Article list view for each article linked to this page',
-  article_view varchar(50) default NULL								COMMENT 'Article detail view for each article linked to this page',
+	  article_view varchar(50) default NULL								COMMENT 'Article detail view for each article linked to this page',
   article_order VARCHAR(50) NOT NULL DEFAULT 'ordering'				COMMENT 'Article order in this page. Can be "ordering", "date"',
   article_order_direction VARCHAR(50) NOT NULL DEFAULT 'ASC',	
   link varchar(255) default ''										COMMENT 'Link to internal / external resource',
   link_type varchar(25) collate utf8_unicode_ci default NULL COMMENT '''page'', ''article'' or NULL',
-  link_id bigint(20) default NULL,
+  link_id varchar(20) NOT NULL default '',
   pagination tinyint(1) UNSIGNED NOT NULL DEFAULT 0						COMMENT 'Pagination use ?',
   pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
   id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   PRIMARY KEY  (`id_page`),
-  KEY i_page_id_parent (id_parent),
-  KEY i_page_level (level),
-  KEY i_page_menu (id_menu) 
-)   ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+  KEY idx_page_id_parent (id_parent),
+  KEY idx_page_level (level),
+  KEY idx_page_menu (id_menu) 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
 CREATE TABLE IF NOT EXISTS page_article (
-  id_page INT(11) UNSIGNED NOT NULL,
-  id_article INT(11) UNSIGNED NOT NULL,
-  online tinyint(1) UNSIGNED NOT NULL default 0,
-  view varchar(50) default NULL,
-  ordering int(11) default 0,
-  id_type int(11) UNSIGNED NULL,
-  PRIMARY KEY  (id_page, id_article)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+	id_page INT(11) UNSIGNED NOT NULL,
+	id_article INT(11) UNSIGNED NOT NULL,
+	online tinyint(1) UNSIGNED NOT NULL default 0,
+	view varchar(50) default NULL,
+  	ordering int(11) default 0,
+	id_type int(11) UNSIGNED NULL,
+	link_type VARCHAR( 25 ) NOT NULL DEFAULT '',
+	link_id varchar(20) NOT NULL DEFAULT '',
+	link VARCHAR( 255 ) NOT NULL DEFAULT '',
+	PRIMARY KEY  (id_page, id_article),
+    KEY idx_page_article_id_type (id_type) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -306,7 +354,7 @@ CREATE TABLE IF NOT EXISTS page_user_groups (
   id_page int(11) UNSIGNED NOT NULL default 0,
   ig_group smallint(4) UNSIGNED NOT NULL default 0,
   PRIMARY KEY  (id_page,ig_group)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -321,8 +369,8 @@ CREATE TABLE IF NOT EXISTS page_lang (
   meta_description varchar(255) default NULL,
   meta_keywords varchar(255) default NULL,
   online tinyint(1) UNSIGNED NOT NULL default 1,
-  PRIMARY KEY  (id_page, lang)
-)  ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY  (id_page,lang)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -331,7 +379,7 @@ CREATE TABLE IF NOT EXISTS page_media (
   id_media int(11) UNSIGNED NOT NULL default 0,
   ordering int(11) UNSIGNED default 9999,
   PRIMARY KEY  (id_page,id_media)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
 
@@ -341,7 +389,7 @@ CREATE TABLE IF NOT EXISTS setting (
   content text not null,
   lang varchar(3),
   PRIMARY KEY (id_setting)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -349,7 +397,7 @@ CREATE TABLE IF NOT EXISTS tag (
 	id_tag int(11) UNSIGNED NOT NULL auto_increment,
 	tag varchar(50) default NULL,
 	PRIMARY KEY  (id_tag)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
 
@@ -367,7 +415,7 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY  (id_user),
   UNIQUE KEY username (username),
   KEY id_group (id_group)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Users table' AUTO_INCREMENT=1; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7'; 
 
 
 
@@ -376,7 +424,7 @@ CREATE TABLE IF NOT EXISTS users_meta (
   newsletter tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
   phone varchar(20) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (id_user)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Users meta table'; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7'; 
 
 
 
@@ -388,11 +436,12 @@ CREATE TABLE IF NOT EXISTS user_groups (
   description tinytext collate utf8_unicode_ci,
   PRIMARY KEY (id_group),
   UNIQUE KEY slug (slug)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Users Groups table' AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7' AUTO_INCREMENT=1;
+
+
 
 
 TRUNCATE TABLE login_tracker;
-
 
 INSERT INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
 INSERT INTO user_groups VALUES (2, 5000, 'admins', 'Admins', NULL);
@@ -415,29 +464,29 @@ INSERT INTO setting VALUES (10, 'ftp_user', '', NULL);
 INSERT INTO setting VALUES (11, 'ftp_password', '', NULL);
 INSERT INTO setting VALUES (12, 'picture_copyright', '', NULL);
 INSERT INTO setting VALUES (14, 'google_analytics', '', NULL);
-INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemamager', NULL);
+INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemanager', NULL);
 INSERT INTO setting VALUES (16, 'thumb_small', 'width,120,true,true', NULL);
-INSERT INTO setting VALUES (17, 'use_extend_fields', '', NULL);
 INSERT INTO setting VALUES (18, 'media_type_picture', 'jpg,jpeg,gif,png', NULL);
 INSERT INTO setting VALUES (19, 'media_type_music', 'mp3', NULL);
-INSERT INTO setting VALUES (20, 'media_type_video', 'flv,fv4', NULL);
+INSERT INTO setting VALUES (20, 'media_type_video', 'flv,f4v', NULL);
 INSERT INTO setting VALUES (21, 'media_type_file', 'txt,doc,pdf', NULL);
-INSERT INTO setting VALUES(22, 'ionize_version', '0.9.7', NULL);
-INSERT INTO setting VALUES(23, 'show_help_tips', '1', NULL);
+INSERT INTO setting VALUES (22, 'ionize_version', '0.9.7', NULL);
+INSERT INTO setting VALUES (23, 'show_help_tips', '1', NULL);
 
-INSERT INTO setting VALUES(24, 'display_connected_label', '1', NULL);
-INSERT INTO setting VALUES(25, 'texteditor', 'tinymce', NULL);
-INSERT INTO setting VALUES(26, 'media_thumb_size', '120', NULL);
+INSERT INTO setting VALUES (24, 'display_connected_label', '1', NULL);
+INSERT INTO setting VALUES (25, 'texteditor', 'tinymce', NULL);
+INSERT INTO setting VALUES (26, 'media_thumb_size', '120', NULL);
 
-INSERT INTO setting VALUES(27, 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image', NULL);
-INSERT INTO setting VALUES(28, 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);
-INSERT INTO setting VALUES(29, 'tinybuttons3', 'tablecontrols', NULL);
-INSERT INTO setting VALUES(30, 'displayed_admin_languages', 'en,fr', NULL);
-INSERT INTO setting VALUES(31, 'date_format', '%Y.%m.%d', NULL);
+INSERT INTO setting VALUES (27, 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', NULL);
+INSERT INTO setting VALUES (28, 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);
+INSERT INTO setting VALUES (29, 'tinybuttons3', 'tablecontrols', NULL);
+INSERT INTO setting VALUES (30, 'displayed_admin_languages', 'en', NULL);
+INSERT INTO setting VALUES (31, 'date_format', '%Y.%m.%d', NULL);
+INSERT INTO setting VALUES (32, 'force_lang_urls', '0', NULL);
+INSERT INTO setting VALUES (29, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
+
+
 
 INSERT INTO menu (id_menu, name, title) VALUES 
-(1 , 'main', 'Main menu'),
-(2 , 'system', 'System menu');
-
-
-
+	(1 , 'main', 'Main menu'),
+	(2 , 'system', 'System menu');

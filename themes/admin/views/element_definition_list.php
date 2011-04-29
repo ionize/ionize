@@ -14,13 +14,6 @@
 
 <script type="text/javascript">
 
-// Add toggler to each definition
-//	$$('#elementContainer .toggler').each(function(el)
-//	{
-//		ION.initListToggler(el, $('def_' + el.getProperty('rel')));
-//	});
-
-
 /**
  * Content Element itemManager
  *

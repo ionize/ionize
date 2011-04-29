@@ -62,7 +62,7 @@ ION.append({
 					theme_advanced_resizing : true,
 					theme_advanced_resizing_use_cookie : false,
 					theme_advanced_path_location : 'bottom',
-					theme_advanced_blockformats : 'p,h2,h3,h4,h5,pre,div',
+					theme_advanced_blockformats : tinyBlockFormats,
 					theme_advanced_disable : 'help',
 					theme_advanced_buttons1 : tinyButtons1,
 					theme_advanced_buttons2 : tinyButtons2,
@@ -71,7 +71,7 @@ ION.append({
 		            // PDW Toggle Toolbars settings
 		            pdw_toggle_on : 1,
 		            pdw_toggle_toolbars : '2,3',
-					file_browser_callback: 'openFilemanager'
+					file_browser_callback: 'ION.openTinyFilemanager'
 				};
 				return settings;
 				break;
@@ -157,10 +157,74 @@ ION.append({
 });
 */
 		});
+	},
+
+
+
+	openTinyFilemanager:function(field, url, type, win)
+	{
+		// Get the tokken, get the options...
+		var xhr = new Request.JSON(
+		{
+			url: admin_url + 'media/get_tokken',
+			method: 'post',
+			onSuccess: function(responseJSON, responseText)
+			{
+				// Opens the filemanager if the tokken can be retrieved (auth checked by get_tokken() )
+				if (responseJSON && responseJSON.tokken != '')
+				{
+					var fmOptions = {
+						baseURL: base_url,
+						url: admin_url + 'media/filemanager',
+						assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
+						language: Lang.get('current'),
+						selectable: true,
+						hideOnClick: true,
+//									thumbSize: self.options.thumbSize,
+						'uploadAuthData': responseJSON.tokken,
+						parentContainer: 'filemanagerWindow_contentWrapper',
+						onComplete: function(path)
+						{
+							if (!win.document) return;
+							win.document.getElementById(field).value = path;
+							if (win.ImageDialog) win.ImageDialog.showPreviewImage(path, 1);
+							
+							// CLose filemanager after insert
+//							filemanager.close();
+							MUI.get('filemanagerWindow').close();
+						}
+					};
+
+					// Close existing instance of fileManager
+					var instance = MUI.get('filemanagerWindow');
+					if (instance)
+					{
+						instance.close();
+					}
+					
+					// Init FM
+					var filemanager = new FileManager(fmOptions);
+					
+					// MUI Window creation
+					var options = ION.getFilemanagerWindowOptions();
+								
+					options.content = filemanager.show();
+								
+					options.onResize = function() {	filemanager.fitSizes(); }
+					
+					// Set the MUI Window on the top of Tiny's modals
+					// tinyMCE modals are stored at 300000, Dialogs at 400000
+					MUI.Windows.indexLevel = 350000;
+					
+					new MUI.Window(options);
+				}
+				else
+				{
+					ION.notification('error', Lang.get('ionize_session_expired'));
+					return false;
+				}
+			}
+		}).send();
 	}
-
-
-
-
 });
 

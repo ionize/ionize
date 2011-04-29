@@ -1,61 +1,10 @@
 /* 
 
- In this file we setup our Windows, Columns and Panels,
- and then initialize MochaUI.
+ Ionize main menu intialization
 
- At the bottom of Core.js you can see how to setup lazy loading for your
- own plugins.
-
- */
-
-/*
-
- INITIALIZE COLUMNS AND PANELS
-
- Creating a Column and Panel Layout:
-
- - If you are not using panels then these columns are not required.
- - If you do use panels, the main column is required. The side columns are optional.
-
- Columns
- - Create your columns from left to right.
- - One column should not have it's width set. This column will have a fluid width.
-
- Panels
- - After creating Columns, create your panels from top to bottom, left to right.
- - One panel in each column should not have it's height set. This panel will have a fluid height.
- - New Panels are inserted at the bottom of their column.
-
- -------------------------------------------------------------------- */
-var Ionize = (Ionize || {});
-
-/*
-Ionize.updateMainPanel = function(event, item)
-{
-	MUI.Content.update({
-		url: item.url,
-		element: 'mainPanel',
-		title: item.title
-	});
-}
-
-
-Ionize.aboutWindow = function()
-{
-	new MUI.Modal({
-		id: 'about',
-		title: 'MUI',
-		content: {url: admin_url + 'desktop/get/about'},
-		type: 'modal2',
-		width: 360,
-		height: 210,
-		padding: {top: 70, right: 12, bottom: 10, left: 22},
-		scrollbars: false
-	});
-}
 */
 
-
+var Ionize = (Ionize || {});
 
 Ionize.initializeDesktop = function(){
 
@@ -110,8 +59,7 @@ Ionize.initializeDesktop = function(){
 window.addEvent('load', function()
 {
 	MUI.initialize({path:{root:theme_url + 'javascript/mochaui-ede4ba2/'}});
-//	MUI.register('Ionize', Ionize);
-//	MUI.register('MUI.Windows', MUI.Windows);
 	Ionize.initializeDesktop();
+	MUI.register('MUI.Windows', MUI.Windows);
 });
 

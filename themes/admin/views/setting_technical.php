@@ -335,7 +335,8 @@
 		<h3 class="toggler1"><?=lang('ionize_title_article_management')?></h3>
 
 		<div class="element1">
-			<dl class="last">
+			
+			<dl>
 				<dt>
 					<label for="texteditor"><?=lang('ionize_label_texteditor')?></label>
 				</dt>
@@ -346,7 +347,8 @@
 						<?php endforeach ;?>
 					</select>
 				</dd>
-
+			</dl>
+			<dl>
 				<!-- TinyMCE toolbar buttons -->
 				<dt>
 					<label for="texteditor" title="<?=lang('ionize_help_tinybuttons')?>"><?=lang('ionize_label_tinybuttons')?></label>
@@ -356,6 +358,17 @@
 					2 <input class="inputtext w360 mb5" id="tinybuttons2" name="tinybuttons2" type="text" value="<?= Settings::get('tinybuttons2') ?>"/><br />
 					3 <input class="inputtext w360" id="tinybuttons3" name="tinybuttons3" type="text" value="<?= Settings::get('tinybuttons3') ?>"/><br />
 					<a id="texteditor_default"><?=lang('ionize_label_restore_tinybuttons')?></a>
+				</dd>
+				
+			</dl>
+			<dl class="last">
+				<!-- TinyMCE Block Format (Select) -->
+				<dt>
+					<label for="texteditor" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
+				</dt>
+				<dd>
+					<input class="inputtext w360 mb5" id="tinyblockformats" name="tinyblockformats" type="text" value="<?= Settings::get('tinyblockformats') ?>"/><br />
+					<a id="texteditor_default_tinyblockformats"><?=lang('ionize_label_restore_tinyblockformats')?></a>
 				</dd>
 			</dl>
 		</div>
@@ -591,8 +604,8 @@
 				</dd>
 			</dl>
 		
-		
 		</div>
+		
 	</form>
 	
 	<!-- Admin URL -->
@@ -610,6 +623,22 @@
 	
 	</div>
 	
+	<!-- Encryption key -->
+	<h3 class="toggler1"><?=lang('encryption_key')?></h3>
+
+	<div class="element1">
+	
+		<!-- Current key -->
+		<dl class="last">
+			<dt>
+				<label for="form_antispam_key"></label>
+			</dt>
+			<dd>
+				<span><?= config_item('encryption_key') ?></span>
+			</dd>
+		</dl>
+	
+	</div>
 	
 
 	
@@ -642,25 +671,25 @@
 
 	/**
 	 * Database form action
-	 * see mocha/init-forms.js for more information about this method
+	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true', 'mainPanel', 'setting/technical');
 
 	/**
 	 * New Thumb form action
-	 * see mocha/init-forms.js for more information about this method
+	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('thumbForm', 'submit_thumb', 'setting/save_thumb/true', 'mainPanel', 'setting/technical');
 
 	/**
 	 * SMTP form action
-	 * see mocha/init-forms.js for more information about this method
+	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('smtpForm', 'submit_smtp', 'setting/save_smtp/true', 'mainPanel', 'setting/technical');
 
 	/**
 	 * Admin URL form action
-	 * see mocha/init-forms.js for more information about this method
+	 * see ionize-form.js for more information about this method
 	 */
 	ION.addConfirmation(
 		'changeAdminUrl', 
@@ -685,7 +714,7 @@
 
 	/** 
 	 * Add Confirmation window on thumb delete icons
-	 * See mocha/init-windows.js for more information about this method
+	 * See ionize_window.js for more information about this method
 	 *
 	 */
 	$('thumbs').getElements('div').each(function(item)
@@ -710,6 +739,13 @@
 		$('tinybuttons3').value = 'tablecontrols';
 	
 	});
+
+	$('texteditor_default_tinyblockformats').addEvent('click', function()
+	{
+		$('tinyblockformats').value = 'p,h2,h3,h4,h5,pre';
+	});
+
+
 
 	
 	/**

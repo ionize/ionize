@@ -10,7 +10,7 @@
 
 	/**
 	 * Views form
-	 * see mocha/init-forms.js for more information about this method
+	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('viewsForm', 'viewsFormSubmit', 'setting/save_views');
 

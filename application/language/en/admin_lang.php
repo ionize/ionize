@@ -513,6 +513,9 @@ $lang['ionize_label_db_pass'] = 'Password';
 $lang['ionize_label_google_analytics'] = 'Google Analytics';
 $lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';
 $lang['ionize_label_restore_tinybuttons'] = 'Restore TinyMCE default toolbar';
+$lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';
+$lang['ionize_label_tinyblockformats'] = 'TinyMCE Format Select';
+$lang['ionize_label_restore_tinyblockformats'] = 'Restore TinyMCE default Format Select';
 
 $lang['ionize_label_smtp_protocol'] = 'Protocol';
 $lang['ionize_label_smtp_host'] = 'Host';
@@ -582,6 +585,7 @@ $lang['ionize_help_media_thumb_size'] = 'Size of system thumbnail, in pixels';
 $lang['ionize_help_tinybuttons'] = 'See TinyMCE documentation';
 $lang['ionize_help_setting_picture_max_height'] = 'Picture which exceed these size will be resized during the Upload process.';
 $lang['ionize_help_setting_picture_max_width'] = 'Picture which exceed these size will be resized during the Upload process.';
+$lang['ionize_help_tinyblockformats'] = 'Default TinyMCE Blocks Format (Select)';
 
 /*
 |--------------------------------------------------------------------------

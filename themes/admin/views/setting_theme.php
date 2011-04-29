@@ -230,7 +230,7 @@
 						bCancel.addEvent('click', function(e)
 						{
 							var e = new Event(e).stop();
-							MUI.closeWindow($('w' + id));
+							ION.closeWindow($('w' + id));
 						});
 					}
 					
@@ -266,7 +266,7 @@
 
 	/**
 	 * Database form action
-	 * see mocha/init-forms.js for more information about this method
+	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('themesForm', 'themesFormSubmit', 'setting/save_themes');
 

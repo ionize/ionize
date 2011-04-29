@@ -90,8 +90,7 @@
 			<label class="highlight"><?php echo lang('encryption_key')?></label>
 		</dt>
 		<dd class="highlight2">
-			<input name="encryption_key" type="hidden" class="inputtext" value="<?php echo $encryption_key ?>"></input>
-			<?php echo $encryption_key ?>
+			<input name="encryption_key" type="text" class="inputtext w300" value="<?php echo $encryption_key ?>"></input>
 		</dd>
 	</dl>
 	<br/>

@@ -614,7 +614,7 @@ class TagManager
 
 		if ( ! is_null($var))
 		{
-			$tag->globals->{$var} = $value;
+			$tag->locals->{$var} = $value;
 		}
 		
 		return $value;

@@ -28,7 +28,6 @@
 			el.hide();
 		}
 		MUI.get('desktop').setDesktopSize();
-//		window.fireEvent('resize');
 	});
 	
 	// Init desktopHeader status from cookie
@@ -36,7 +35,6 @@
 	var opened = (Cookie.read('desktopHeader'));
 	if (opened == 'false') {dh.hide();}
 	else {dh.show();} 
-//	window.fireEvent('resize');
 	MUI.get('desktop').setDesktopSize();
 
 

@@ -33,7 +33,7 @@
 	// Event on btn No : Simply close the window
 	$('bClose<?= $UNIQ ?>').addEvent('click', function() 
 	{
-		MUI.closeWindow($('w<?= $table ?>Help'));
+		ION.closeWindow($('w<?= $table ?>Help'));
 	}.bind(this));
 
 </script>

@@ -54,7 +54,7 @@ ION.append({
 				{
 					if (responseJSON.message_type == 'error')
 					{
-						MUI.error(responseJSON.message);
+						ION.error(responseJSON.message);
 					}
 					else
 					{

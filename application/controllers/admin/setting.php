@@ -415,7 +415,7 @@ class Setting extends MY_admin
 		// Settings to save
 		$settings = array(	'texteditor', 'filemanager', 'files_path', 'cache', 'cache_time', 
 							'ftp_dir', 'ftp_host', 'ftp_user', 'ftp_password', 
-							'tinybuttons1','tinybuttons2','tinybuttons3',
+							'tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats',
 							'google_analytics', 'system_thumb_list', 'system_thumb_edition','media_thumb_size', 'picture_max_width', 'picture_max_height',
 							'use_extend_fields');
 							

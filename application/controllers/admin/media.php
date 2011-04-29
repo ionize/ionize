@@ -289,6 +289,84 @@ class Media extends MY_admin
 	}
 
 
+	function get_crop($id_media)
+	{
+		$picture = $this->media_model->get($id_media);
+		
+		$path = $picture['path'];
+
+		$size = @getimagesize(FCPATH.$path);
+		$size = array
+		(
+			'width' => $size[0],
+			'height' => $size[1]
+		);
+			
+		$this->template['id_media'] = $id_media;
+		$this->template['path'] = $path;
+		$this->template['size'] = $size;
+		
+		$this->output('media_picture_crop');	
+	}
+
+	
+	function crop()
+	{
+		$path = $this->input->post('path');
+		$coords = $this->input->post('coords');
+		$id_media = $this->input->post('id_media');
+		
+		$path = FCPATH.$path;
+		
+		// Get image dimension before crop
+		$dim = $this->get_image_dimensions($path);
+			
+		// CI Image_lib config array
+		$config = array
+		(
+			'source_image' => $path,
+			'new_image' => '',
+			'x_axis' => $coords['x'],
+			'y_axis' => $coords['y'],
+			'unsharpmask' => FALSE,
+			'maintain_ratio' => FALSE,
+			'width' => $coords['w'],
+			'height' => $coords['h']
+		);
+		
+		$this->image_lib->clear();
+		$this->image_lib->initialize($config);
+				
+		if ( TRUE !== $this->image_lib->crop() )
+		{
+			// Error Message
+			$this->callback[] = array(
+				'fn' => 'ION.notification',
+				'args' => array('error', lang('ionize_exception_image_crop'))
+			);
+		}
+		else
+		{
+			// Success Message
+			$this->callback[] = array(
+				'fn' => 'ION.notification',
+				'args' => array('success', lang('ionize_message_operation_ok'))
+			);
+
+			$this->callback[] = array(
+				'fn' => 'ION.updateElement',
+				'args' => array(
+					'element'=> 'wImageCrop'.$id_media.'_content',
+					'url' => 'media/get_crop/' . $id_media
+				)
+			);
+
+		}
+		
+		$this->response();
+		
+	}
+
 	// ------------------------------------------------------------------------
 
 

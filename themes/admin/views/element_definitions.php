@@ -4,7 +4,7 @@
 	<!-- Existing elements -->
 	<h2 class="main elements"><?= lang('ionize_title_content_element_list') ?></h2>
 	
-	<ul id="elementContainer" class="sortable-container"></ul>
+	<ul id="elementContainer" class="sortable-container mt20"></ul>
 	
 
 </div>

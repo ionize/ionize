@@ -54,13 +54,13 @@
 <script type="text/javascript">
 
 // Add toggler to each definition
-$$('#element_definition_<?= $id ?> .toggler').each(function(el)
+$$('li.element_definition span.toggler').each(function(el)
 {
 	ION.initListToggler(el, $('add_def_' + el.getProperty('rel')));
 });
 
 // Plus icon Event
-$$('#element_definition_<?= $id ?> .plus').each(function(item)
+$$('li.element_definition .plus').each(function(item)
 {
 	item.addEvent('click', function(e)
 	{

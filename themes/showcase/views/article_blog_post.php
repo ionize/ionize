@@ -16,10 +16,8 @@
 
 
 	<?
-	/**********
-	 * Displaying article admin options for comments, only displayed when the user is logged in and belongs to admin group
-	 **********/
-	 ?>
+	// Displaying article admin options for comments, only displayed when the user is logged in and belongs to admin group
+	?>
 	<ion:comments_admin>
 		<a name="admin"></a>
 		<h4>Admin</h4>
@@ -46,8 +44,8 @@
 	</ion:comments_admin>
 	
 	
-	<!------------------------------------------------ 
-	Displaying comments, when the articles allows them 
+	<!-- 
+		Displaying comments, when the articles allows them 
 	-->
 	<ion:comments_allowed>
 		<a name="comments"></a>

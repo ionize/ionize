@@ -1577,7 +1577,7 @@ MUI.Window.implement({
 			if (!instance.isTypeOf('MUI.Window')) return;
 
 			// helps release memory in chrome
-			if (instance.el.canvas){
+			if (Browser.chrome == true && instance.el.canvas){
 				instance.el.canvas.height = 0;
 				instance.el.canvas.width = 0;
 			}

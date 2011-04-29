@@ -79,7 +79,7 @@
 	 * Initialize the toolbar buttons and remove the "save" button if no parameters is given
 	 *
 	 */
-	MUI.initModuleToolbox('demo','demo_toolbox');
+	ION.initModuleToolbox('demo','demo_toolbox');
 	// If no toolbox, remove the MUI.initModuleToolbox and uncomment this line
 	// MUI.initModuleToolbox('demo','');
 	
@@ -88,10 +88,10 @@
 	 * Settings form send
 	 * Sends the form data through XHR (Ajax) and reload (optional) the panel
 	 *
-	 * see mocha/init-ionize.js for JS method detail
+	 * see ionize_form.js for JS method detail
 	 *
 	 */
-	MUI.setFormSubmit(
+	ION.setFormSubmit(
 		'configForm',					// ID of the form to send
 		'submit_config',				// ID of the submit button to put the send action on
 		'module/demo/demo/save_config' 	// URL of the controller which process data
@@ -101,7 +101,7 @@
 	 * Get table existing extends fields list
 	 *
 	 */
-	MUI.updateElement({element:'extend_table', url:'extend_table/get_extend_fields_list/demo_module'});
+	ION.updateElement({element:'extend_table', url:'extend_table/get_extend_fields_list/demo_module'});
 	
 	
 	/**
@@ -110,7 +110,7 @@
 	 */
 	$('addExtend').addEvent('click', function(e)
 	{
-		MUI.formWindow('extendtable', 'extendtableForm', 'ionize_title_extend_table_field', 'extend_table/add/' + this.getProperty('rel'), {width:400, height:330});
+		ION.formWindow('extendtable', 'extendtableForm', 'ionize_title_extend_table_field', 'extend_table/add/' + this.getProperty('rel'), {width:400, height:330});
 	});
 		
 

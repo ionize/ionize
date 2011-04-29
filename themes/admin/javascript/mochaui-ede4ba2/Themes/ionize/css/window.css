@@ -17,7 +17,7 @@
 /* Windows
 ---------------------------------------------------------------- */
 
-.mocha { display: none; overflow: hidden; background-color: #e5e5e5;  font-family: Arial,Helvetica,sans-serif; }
+.mocha { display: none; overflow: hidden; background-color: #e5e5e5; }
 .mocha.css3 { overflow: visible; }
 .mocha.isFocused { }
 .mochaOverlay { position: absolute; /* This is also set in theme.js in order to make theme transitions smoother */ top: 0; left: 0; }
@@ -50,7 +50,7 @@
 div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .mochaToolbar { width: 100%; /* For IE */ border-top: 1px solid #fff; }
 .mochaContentBorder { border-top: 1px solid #dadada; border-bottom: 1px solid #dadada; }
-.mochaContentWrapper { /* Has a fixed height and scrollbars if required. */ font-size: 12px; overflow: auto; background: #fff; }
+.mochaContentWrapper { /* Has a fixed height and scrollbars if required. */ font-size: 11px; overflow: auto; background: #fff; }
 .mochaContent { padding: 10px 12px; }
 .mochaWindowFooter { height: 26px; padding-left: 20px; padding-top:1px; }
 .mochaWindowFooter .toolbar { vertical-align:middle; height:20px; line-height:20px; margin:0; padding-top:2px; float:left; padding-left:20px; }
@@ -133,11 +133,37 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 #clock { background: #fff; }
 
 
-/* Ionize specific */
+/* Ionize addon 
+---------------------------------------*/
 .mocha .buttons {
 	width: 100%;
 	position:absolute;
 	bottom:10px;
 }
 
+/* Ionize Modal Window Themes */
+.mocha.confirmation .mochaContentWrapper {
+	overflow:auto;
+}
+.mocha.confirmation .mochaContent,
+.mocha.information .mochaContent,
+.mocha.alert .mochaContent,
+.mocha.error .mochaContent {
+	background-repeat: no-repeat;
+	background-position: 20px 28px;
+	min-height: 60px;
+}
+.mocha.confirmation .mochaContent {background-image:url(../../../../../images/icon_48_confirm.png);}
+.mocha.information .mochaContent {background-image:url(../../../../../images/icon_48_information.png);}
+.mocha.alert .mochaContent {background-image:url(../../../../../images/icon_48_alert.png);}
+.mocha.error .mochaContent {background-image:url(../../../../../images/icon_48_error.png);}
+
+.mocha.confirmation .message,
+.mocha.information .message,
+.mocha.alert .message,
+.mocha.error .message {
+	padding:20px 10px 0 70px;
+	font-size: 12px;
+	color:#000;
+}
 

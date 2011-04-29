@@ -24,22 +24,6 @@ ION.append({
 			shadowBlur: 5,
 			bodyBgColor: [250, 250, 250]
 		});
-/*
-		MUI.create({
-			control: 'MUI.Window',
-			loadMethod: 'html',
-			closeAfter: 2500,
-			type: 'notification',
-			cssClass: 'notification',
-			content: '<div class="'+ type +'">' + message + '</div>',
-			width: 350,
-			height: 50,
-			y: 1,
-			padding: {top: 15, right: 12, bottom: 10, left: 12},
-			shadowBlur: 5,
-			bodyBgColor: [250, 250, 250]
-		});
-*/
 	},
 
 
@@ -90,7 +74,6 @@ ION.append({
 			content: wContent,
 			title: Lang.get('ionize_modal_confirmation_title'),
 			cssClass:'confirmation',
-//			addClass:'confirmation',
 			draggable: true,
 			y: 150,
 			padding: { top: 15, right: 15, bottom: 8, left: 15 }			
@@ -156,16 +139,14 @@ ION.append({
 			id: 'w' + id,
 			title: (typeOf(Lang.get(title)) == 'null') ? title : Lang.get(title),
 			container: document.body,
-//			loadMethod: 'xhr',
-//			method:'post',
-			data: data,
 			content: {
 				url: admin_url + wUrl,
+				method:'post',
+				data: data,
 				onLoaded: function(element, content)
 				{
 					// Get the form action URL and adds 'true' so the transport is set to XHR
 					var formUrl = $(form).getProperty('action');
-	
 					// Set the form submit button action and send the DOM Element to update with the according URL
 					ION.setFormSubmit(form, ('bSave' + id), formUrl);
 	
@@ -230,10 +211,11 @@ ION.append({
 			id: 'w' + id,
 			title: (typeOf(Lang.get(title)) == 'null') ? title : Lang.get(title),
 			container: document.body,
-			data: data,
 //			evalResponse: true,
 			content: {
 				url: admin_url + wUrl,
+				data: data,
+				method: 'post',
 				onLoaded: function(element, content)
 				{
 					// Window resize
@@ -391,7 +373,6 @@ ION.append({
 		// windows content size
 		var cs = false;
 		var gotSize = $('w' + id + '_content').getSize();
-
 		if (typeOf(size) == 'object')
 		{
 			cs = {};
@@ -415,5 +396,13 @@ ION.append({
 			$('w' + id).retrieve('instance').resize({height: mps.y - 30, width: cs.x, centered:true, top:70 });						
 		}
 	
+	},
+	
+	closeWindow: function(id)
+	{
+		if (typeOf(id) == 'element')
+		{
+			MUI.get(id).close();
+		}
 	}
 });

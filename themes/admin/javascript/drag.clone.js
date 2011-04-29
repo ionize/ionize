@@ -59,12 +59,12 @@ Drag.Clone = new Class({
 		opacity: 1,
 		revert: false,
 		handle: false,
-		precalculate: true,
+		precalculate: false,
 		style: false,
 		classe: false,			// 'class' hangs on Webkit
 		'width': false,			//
-		'height': false		//
-
+		'height': false,		//
+		container: ''
 	},
 	
 	initialize: function(element, options)
@@ -79,18 +79,10 @@ Drag.Clone = new Class({
 		}.bind(this));
 		
 		this.dropClasses = this.options.droppables;
-		this.droppables = $$(this.options.droppables);
 		
 		if (typeOf(this.dropClasses) == 'string')
 		{
-			this.dropClasses = (this.dropClasses).replace(' ', '').split(",");
-/*
-			droppables.each(function(d)
-			{
-			console.log($$(d));
-				this.options.droppables = (this.options.droppables).append($$(d));
-			}.bind(this));
-*/
+			this.dropClasses = (this.dropClasses).split(',');
 		}
 	},
 
@@ -101,10 +93,13 @@ Drag.Clone = new Class({
 		this.element = element;
 		this.opacity = element.getStyle('opacity');
 		this.clone = this.getClone(event, element);
-		
+
+		this.droppables = $$(this.options.droppables);
+
 		this.drag = new Drag.Move(this.clone, {
 			snap: this.options.snap,
 			droppables: this.droppables,
+			container: this.options.container,
 			onSnap: function(){
 				event.stop();
 				this.element.setStyle('opacity', this.options.opacity || 0);

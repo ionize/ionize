@@ -1,0 +1,70 @@
+/*
+	cwcrop - css file . modify as needed
+	
+	More information here: http://www.chipwreck.de/blog/software/cwcrop/
+	@author Mario Fischer <http://www.chipwreck.de/blog/>
+*/
+ 
+.imgouter {
+	position: relative; border: none;
+	z-index: 200;
+}
+
+.imglayer {
+	background-color: transparent; background-repeat: no-repeat; opacity: 0.5; cursor: default;
+	filter:alpha(opacity=50); /* IE 6-7 Trash */
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; /* IE8 Trash */
+	z-index: 300;	
+}	
+
+.cropframe {
+	position: absolute; width: 40px; height: 40px; left: 0px; top: 0px; padding: 0px; border: 1px dashed #333; background-repeat: no-repeat;
+	-border-image: url('ants.gif') 1 repeat repeat;
+	-webkit-border-image: url('ants.gif') 1 repeat repeat;
+	-moz-border-image: url('ants.gif') 1 repeat repeat;
+	z-index: 999;		
+}
+
+.cropframe.active {
+	border: 1px dashed #fff;
+}
+
+.cropinfo {
+	background-color: #ccc;	opacity: 0.5; top: 0px; left: 0px; height: 32px; position: absolute;
+	filter:alpha(opacity=50); /* IE 6-7 Trash */
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; /* IE8 Trash */	
+	z-index: 600;
+}
+
+.cropdims {
+	color: #000; padding: 6px 5px; margin-left: 32px; font-size: 12px;
+	z-index: 500; font-family: sans-serif;
+}
+
+.cropbtn {
+	background-image:url('crop.gif'); background-repeat: no-repeat;
+	position: absolute; left: 0px; height: 32px; width: 32px; cursor: pointer !important;
+	z-index: 800;
+}
+
+.cropbtn:hover {
+	background-color: black;
+}
+
+.draghandle {
+	background-color: transparent; top: 0; left: 0; width: 100%; height: 100%; margin: 0px; position: absolute; cursor: move;
+	z-index: 90;
+}
+
+.resizeHandle {
+	z-index: 40; opacity: 0.9;
+	filter:alpha(opacity=90); /* IE 6-7 Trash */
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)"; /* IE8 Trash */
+	background-color: #666;
+	position: absolute;	margin: 0px; border: 1px solid #fff; height: 8px; width: 8px;		
+}
+
+.resizeHandleXY {
+	left: 100%;	top: 100%;		
+	cursor: se-resize;
+}

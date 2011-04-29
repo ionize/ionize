@@ -39,7 +39,7 @@ MUI.append({
 		standardEffects: true,  // Basic effects that tend to run smoothly.
 
 		path: {
-			root:		'../',						// Path to root of other source folders
+			root:		'../',				// Path to root of other source folders
 			source:		'{root}',			// Path to MochaUI source JavaScript
 			themes:		'{root}Themes/'		// Path to MochaUI Themes
 		},
@@ -49,7 +49,7 @@ MUI.append({
 			'plugins':{path:'{root}Plugins/',singularName:'plugin'}
 		},
 
-		themes: ['Default','Charcoal'],
+		themes: ['Ionize'],
 
 		css:	 ['{theme}css/core.css'],				// default list of css files to load, added to requirements of every control and plugin loaded
 
@@ -77,6 +77,12 @@ MUI.append({
 		}
 		Object.each(MUI.options.pluginGroups, MUI.addPluginGroup);
 		MUI.initialized = true;
+// Partikule		
+		if(Browser.ie9)
+		{
+			this.ieSupport = '';
+		}
+// / Partikule
 	},
 
 	replaceFields: function(str, values){
@@ -340,7 +346,7 @@ function fixPNG(myImage){
 }
 
 Element.implement({
-
+/*
 	shake: function(radius, duration){
 		radius = radius || 3;
 		duration = duration || 500;
@@ -392,6 +398,52 @@ Element.implement({
 
 		return this;
 	},
+*/
+
+	shake: function(radius,duration){
+		radius = radius || 8;
+		duration = duration || 500;
+		duration = (duration/50).toInt() - 1;
+		var parent = this.getParent();
+		if(parent != $(document.body) && parent.getStyle('position') == 'static'){
+			parent.setStyle('position','relative');
+		}
+		var position = this.getStyle('position');
+		if(position == 'static'){
+			this.setStyle('position','relative');
+			position = 'relative';
+		}
+		if(Browser.ie){
+			parent.setStyle('height',parent.getStyle('height'));
+		}
+		var coords = this.getPosition(parent);
+		if(position == 'relative' && !Browser.opera){
+			coords.x -= parent.getStyle('paddingLeft').toInt();
+		}
+		var morph = this.retrieve('morph');
+		if (morph){
+			morph.cancel();
+			var oldOptions = morph.options;
+		}
+		var morph = this.get('morph',{
+			duration:40,
+			link:'chain'
+		});
+		for(var i=0 ; i < duration ; i++){
+			morph.start({
+				left:coords.x+radius*(i%2 * -1)
+			});
+		}
+		morph.start({
+			left:coords.x
+		}).chain(function(){
+			if(oldOptions){
+				this.set('morph',oldOptions);
+			}
+		}.bind(this));
+		return this;
+	},
+
 
 	hide: function(){
 		var instance = MUI.get(this.id);

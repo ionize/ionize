@@ -44,7 +44,7 @@
 			ADD `id_element` INT( 11 ) UNSIGNED NOT NULL;
 	</query>
 	<query>
-		ALTER TABLE `article_type` ADD `description` TEXT NOT NULL;
+		ALTER TABLE `article_type` ADD `description` TEXT NOT NULL, ADD `type_flag` TINYINT(1) NOT NULL DEFAULT 0;
 	</query>
 
 	<query>
@@ -63,15 +63,31 @@
 	</query>
 
 	<query>
-		UPDATE page_article, article SET page_article.link = article.link WHERE page_article.id_article = article.id_article AND link !='';
+		UPDATE page_article, article SET page_article.link = article.link WHERE page_article.id_article = article.id_article AND article.link_type != 'external';
 	</query>
 
 	<query>
-		UPDATE page_article, article SET page_article.link_id = article.link_id WHERE page_article.id_article = article.id_article AND link !='';
+		UPDATE page_article, article SET page_article.link_id = article.link_id WHERE page_article.id_article = article.id_article AND article.link_type != 'external';
 	</query>
 
 	<query>
-		UPDATE page_article, article SET page_article.link_type = article.link_type WHERE page_article.id_article = article.id_article AND link !='';
+		UPDATE page_article, article SET page_article.link_type = article.link_type WHERE page_article.id_article = article.id_article AND article.link_type != 'external';
+	</query>
+
+	<query>
+		update page_article, page_lang, lang set page_article.link = page_lang.title
+			where page_lang.id_page = page_article.link_id
+			and page_lang.lang = lang.lang
+			and lang.def='1'
+			and page_article.`link_type` = 'page';
+	</query>
+
+	<query>
+		update page_article, article_lang, lang set page_article.link = article_lang.title
+			where article_lang.id_article = page_article.link_id
+			and article_lang.lang = lang.lang
+			and lang.def='1'
+			and page_article.`link_type` = 'article';
 	</query>
 
 	<query>
@@ -95,6 +111,52 @@
 	</query>
 
 	<query>
-		ALTER TABLE `category_lang` ADD `subtitle` VARCHAR( 255 ) NOT NULL 
+		ALTER TABLE `category_lang` ADD `subtitle` VARCHAR( 255 ) NOT NULL ;
 	</query>
+	
+	<query>
+		DELETE FROM setting WHERE name='tinyblockformats';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre', '');
+	</query>
+
+
+	<query>ALTER TABLE `article` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `article_category` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `article_comment` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `article_langv COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `article_media` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `article_tag` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `article_type` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `captcha` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `category` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `category_lang` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `element` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `element_definition` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `element_definition_lang` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `extend_field` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `extend_fields` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `ion_sessions` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `lang` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `login_tracker` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `media` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `media_lang` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `menu` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `module` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `module_setting` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `note` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `page` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `page_article` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `page_lang` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `page_media` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `page_user_groups` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `setting` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `tag` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `user_groups` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `users` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `users_meta COMMENT = '0.9.7';</query>
+
+
+
 </sql>

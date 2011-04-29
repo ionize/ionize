@@ -1034,8 +1034,13 @@
 		{
 			url: admin_url + 'page/get_parents_select/' + $('id_menu').value + '/' + id_current + '/' + id_parent,
 			method: 'post',
-			update: 'id_parent'
+			onSuccess: function(responseTree)
+			{
+				$('id_parent').empty();
+				$('id_parent').adopt(responseTree);
+			}
 		}).send();
+
 	});
 	$('id_menu').fireEvent('change');
 	

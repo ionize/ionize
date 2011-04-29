@@ -12,7 +12,7 @@ ION.ItemManager = new Class({
 
 		this.baseUrl = this.options.baseUrl;
 		
-		this.adminUrl = this.options.adminUrl;
+		this.adminUrl = ION.adminUrl;
 
 		this.element = this.options.element;
 
@@ -56,32 +56,42 @@ ION.ItemManager = new Class({
 		{
 			var list = this.options.list;
 			if (!list) list = this.options.container;
-		
+			
+			var self = this;
+
 			// Init the sortable 
 			this.sortables = new Sortables(list, {
-				constrain: true,
 				revert: true,
 				handle: '.drag',
-				referer: this,
 				clone: true,
+				constrain: true,
+//				container: this.options.container,
 				opacity: 0.5,
-				onComplete: function(item)
+				onStart: function(element, clone)
+				{
+//					console.log(clone.getOffsetParent());
+				},
+				onComplete: function(item, clone)
 				{
 					// Hides the current sorted element (correct a Mocha bug on hidding modal window)
 					item.removeProperty('style');
-					
+
 					// Get the new order					
 					var serialized = this.serialize(0, function (element, index) 
 					{
-						var rel = (element.getProperty('rel')).split(".");
-						var id = rel[0];
-						if (rel.length > 1) { id = rel[1]; }
-
-						return id;
+						// Check for the not removed clone
+						if (element.id != '')
+						{
+							var rel = (element.getProperty('rel')).split(".");
+							var id = rel[0];
+							if (rel.length > 1) { id = rel[1]; }
+							return id;
+						}
+						return;
 					});
-					
+
 					// Items sorting
-					this.options.referer.sortItemList(serialized);
+					self.sortItemList(serialized);
 				}			
 			});
 		
@@ -113,11 +123,19 @@ ION.ItemManager = new Class({
 	{
 		var sortableOrder = this.container.retrieve('sortableOrder');
 
+		// Remove "undefined" from serialized. Undefined comes from the clone, which isn't removed before serialize.
+		var serie = new Array();
+		serialized.each(function(item)
+		{
+			if (typeOf(item) != 'null')
+				serie.push(item);
+		});
+
 		// If current <> new ordering : Save it ! 
-		if (sortableOrder.toString() != serialized.toString() ) 
+		if (sortableOrder.toString() != serie.toString() ) 
 		{
 			// Store the new ordering
-			this.container.store('sortableOrder', serialized);
+			this.container.store('sortableOrder', serie);
 
 			// Set the request URL
 			var url = this.adminUrl + this.element + '/save_ordering';
@@ -133,7 +151,7 @@ ION.ItemManager = new Class({
 			{
 				url: url,
 				method: 'post',
-				data: 'order=' + serialized,
+				data: 'order=' + serie,
 				onSuccess: function(responseJSON, responseText)
 				{
 					MUI.hideSpinner();
@@ -141,11 +159,12 @@ ION.ItemManager = new Class({
 					// Get the update table and do the jobs
 					if (responseJSON.update != null && responseJSON.update != '')
 					{
-						MUI.updateElements(responseJSON.update);
+						ION.updateElements(responseJSON.update);
 					}
 					
 					// Callbacks
-					ION.execCallbacks(responseJSON.callback);
+					if (typeOf(responseJSON.callback) != 'null')
+						ION.execCallbacks(responseJSON.callback);
 
 					// Success notification
 					if (responseJSON && responseJSON.message_type)

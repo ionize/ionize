@@ -204,7 +204,7 @@ window.addEvent('load', function()
 	MUI.register('Ionize', Ionize);
 	MUI.register('MUI.Windows', MUI.Windows);
 	Ionize.initializeDesktop();
-	initializeContent();
+//	initializeContent();
 /*
 	MUI.myChain = new Chain();
 	MUI.myChain.chain(

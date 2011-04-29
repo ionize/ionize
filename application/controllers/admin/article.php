@@ -369,7 +369,7 @@ class Article extends MY_admin
 				
 				// Reloads the article
 				$this->callback[] = array(
-					'fn' => 'MUI.updateElement',
+					'fn' => 'ION.updateElement',
 					'args' => array(
 						'element'=> 'mainPanel',
 						'url' => 'article/edit/' .$this->data['id_page'].'.'.$this->id

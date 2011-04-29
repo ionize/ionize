@@ -15,18 +15,19 @@ var xhr = new Request.JSON(
 		// Opens the filemanager if the tokken can be retrieved (auth checked by get_tokken() )
 		if (responseJSON && responseJSON.tokken != '')
 		{
-	        var options = {
-				baseURL: '<?= base_url() ;?>',
-				url: '<?= admin_url() ?>media/filemanager',
-				assetBasePath: '<?= theme_url() ?>javascript/mootools-filemanager/Assets',
-				language: '<?php echo Settings::get_lang() ;?>',
+			var filemanager = new FileManager({
+				baseURL: base_url,
+				url: admin_url + 'media/filemanager',
+				assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
+				language: Lang.get('current'),
 				selectable: false,
-				'uploadAuthData': responseJSON.tokken
-			};
-
-			filemanager = new FileManager(options);
-
-			filemanager.showIn('mootools-filemanager');
+				hideOnClick: false,
+				'uploadAuthData': responseJSON.tokken,
+				parentContainer: 'mainPanel'
+			});
+			
+			var content = filemanager.show();
+			content.inject($('mootools-filemanager'));
 		}
 	}
 }).send();

@@ -8,16 +8,21 @@
 
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/core.css" />
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/menu.css" />
-
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/desktop.css" />
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/window.css" />
+
+<!-- To be loaded if controls aren't defined through the pluginGroups 
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/taskbar.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/toolbar.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/accordion.css" />
+-->
 
 <link rel="stylesheet" href="<?= theme_url() ?>css/form.css" type="text/css" />
 <link rel="stylesheet" href="<?= theme_url() ?>css/content.css" type="text/css" />
 <link rel="stylesheet" href="<?= theme_url() ?>css/tree.css" type="text/css" />
 
 <!--[if IE 7]><link rel="stylesheet" href="<?= theme_url() ?>css/ie7.css" /><![endif]-->
-<!--[if IE]><script type="text/javascript" src="<?= theme_url() ?>javascript/excanvas_r43_compressed.js"></script><![endif]-->
+<!--[if lt IE 9]><script type="text/javascript" src="<?= theme_url() ?>javascript/excanvas_r43_compressed.js"></script><![endif]-->
 
 <!-- Mootools 1.3.1 -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.1-full-nocompat.js"></script>
@@ -36,6 +41,10 @@
 <!-- Sortable Table -->
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/SortableTable/SortableTable.css" />
 <script type="text/javascript" src="<?= theme_url() ?>javascript/SortableTable/SortableTable.js"></script>
+
+<!-- CwCrop -->
+<script type="text/javascript" src="<?= theme_url() ?>javascript/cwcrop/ysr-crop.js"></script>
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/cwcrop/ysr-crop.css" />
 
 
 <!-- Base URL & languages translations available for javascript -->
@@ -70,6 +79,18 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/canvas.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/content.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/persist.js"></script>
+
+<!-- To be loaded if controls aren't defined through the pluginGroups 
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/accordion/accordion.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/desktop/desktop.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/column/column.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/panel/panel.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/dock/dock.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/dockhtml/dockhtml.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/menu/menu.js"></script>
+-->
+
+<!-- Normal load -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/taskbar/taskbar.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/toolbar/toolbar.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/window/window.js"></script>
@@ -101,9 +122,14 @@
 <?php else :?>
 	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Language/Language.en.js"></script>
 <?php endif ;?>	
+
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader/Fx.ProgressBar.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader/Swiff.Uploader.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader.js"></script>
+
+
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js"></script>
+
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager.css" />
 <link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/Additions.css" />
@@ -112,7 +138,6 @@
 
 <!-- TinyMCE -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce_src.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/FileManager.TinyMCE.js"></script>
 
 
 <!-- If users templates, add them to the init object -->
@@ -171,12 +196,10 @@
 	var tinyButtons1 = '<?= Settings::get('tinybuttons1'); ?>';
 	var tinyButtons2 = '<?= Settings::get('tinybuttons2'); ?>';
 	var tinyButtons3 = '<?= Settings::get('tinybuttons3'); ?>';
+	var tinyBlockFormats = '<?= Settings::get('tinyblockformats'); ?>';
 
 
 </script>
-
-
-
 
 
 </head>
@@ -184,32 +207,6 @@
 
 <div id="desktop" class="desktop"></div>
 
-
-<script type="text/javascript">
-
-	/*
-	 * Add modules links events
-	 */
-	$$('.modules').each(function(item, idx) 
-	{
-		item.addEvent('click', function(e)
-		{
-			var e = new Event(e).stop();
-			
-			MUI.Content.update({
-				element: $('mainPanel'),
-				title: item.get('text'),
-				url : item.getProperty('href')
-			});
-		});
-	});
-
-
-</script>
-
-
 </body>
-
-
 </html>
 
