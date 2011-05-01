@@ -108,7 +108,15 @@ class getid3_vqf
 					break;
 
 				default:
-					$ThisFileInfo['warning'][] = 'Unhandled chunk type "'.$ChunkName.'" at offset '.$ChunkBaseOffset;
+					// [i_a] hexdump chunk because it may be ANYTHING and we don't want illegal characters to end up inside the warning text!
+					$temp = strtr($ChunkName, "\x00", ' ');
+					if (preg_match('/[^ -~]/', $temp))
+					{
+						$temp = unpack('H*', $temp);
+						//$temp = implode(' ', str_split($temp[1], 8));
+						$temp = '0x' . $temp[1];
+					}
+					$ThisFileInfo['warning'][] = 'Unhandled chunk type "'.$temp.'" at offset '.$ChunkBaseOffset;
 					break;
 			}
 		}

@@ -46,6 +46,9 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/cwcrop/ysr-crop.js"></script>
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/cwcrop/ysr-crop.css" />
 
+<!-- swfObject -->
+<script type="text/javascript" src="<?= theme_url() ?>javascript/swfobject.js"></script>
+
 
 <!-- Base URL & languages translations available for javascript -->
 <script type="text/javascript">
@@ -127,12 +130,21 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader/Swiff.Uploader.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader.js"></script>
 
+<!-- Flash test. No Flash means the NoFlash MTFM Uploader needs to be loaded -->
+<!-- If the player < 9, no Flash upload -->
+<script type="text/javascript">
 
+if(swfobject.ua.pv[0] < 15)
+{
+	Asset.javascript('<?= theme_url() ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js');
+}
+
+</script>
+<!--
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js"></script>
-
+-->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
-<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager.css" />
-<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/Additions.css" />
+<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager_ionize.css" />
 <!--[if IE 7]><link rel="stylesheet" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager_ie7.css" /><![endif]-->
 
 

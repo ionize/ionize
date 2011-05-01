@@ -1,4 +1,6 @@
-
+div.filemanager div.filemanager-browserscroll {
+	position:relative;
+}
 div.filemanager-infos {
 	width:auto;
 }
@@ -25,3 +27,7 @@ div.filemanager-details {
 #mootools-filemanager div.filemanager-menu label  {
 }
 
+div.filemanager button {
+	display:inline;
+	overflow: visible;
+}

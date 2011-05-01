@@ -895,7 +895,7 @@ class getid3_lib
 			return $string;
 		}
 
-		// iconv() availble
+		// iconv() available
 		if (function_exists('iconv')) {
 
 			ob_start();

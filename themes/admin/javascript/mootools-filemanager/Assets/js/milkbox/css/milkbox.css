@@ -98,6 +98,7 @@
 	padding:0px 10px 0 0;
 	font-weight: normal;
 	text-align:justify;
+	overflow-x: hidden;  /* make sure the controls at the right remain accessible, even for small images with very large filenames: those would otherwise overlap those controls at right */
 }
 
 .mbox-loading{ background:url(loading.gif) no-repeat center; }/* IMAGE: loading gif */

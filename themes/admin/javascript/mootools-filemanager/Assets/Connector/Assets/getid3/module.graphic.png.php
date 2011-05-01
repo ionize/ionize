@@ -429,7 +429,15 @@ class getid3_png
 				default:
 					//unset($chunk['data']);
 					$thisfile_png_chunk_type_text['header'] = $chunk;
-					$ThisFileInfo['warning'][] = 'Unhandled chunk type: '.$chunk['type_text'];
+					// [i_a] hexdump chunk because it may be ANYTHING and we don't want illegal characters to end up inside the warning text!
+					$temp = strtr($chunk['type_text'], "\x00", ' ');
+					if (preg_match('/[^ -~]/', $temp))
+					{
+						$temp = unpack('H*', $temp);
+						//$temp = implode(' ', str_split($temp[1], 8));
+						$temp = '0x' . $temp[1];
+					}
+					$ThisFileInfo['warning'][] = 'Unhandled chunk type: '.$temp;
 					break;
 			}
 		}

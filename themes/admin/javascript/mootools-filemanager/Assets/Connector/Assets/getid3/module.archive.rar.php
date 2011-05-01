@@ -17,7 +17,7 @@
 class getid3_rar
 {
 
-	var $option_use_rar_extension = false;
+	var $option_use_rar_extension = true;
 
 	function getid3_rar(&$fd, &$ThisFileInfo) {
 

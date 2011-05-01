@@ -1,14 +1,18 @@
 /*
 ---
-description: Fx.Progressbar
+name: Fx.ProgressBar
 
-authors: Harald Kirschner
+description: Fx.ProgressBar
 
-requires: [Core/*]
+requires: [Core/Fx.Transitions, Core/Fx, Core/Class]
 
-provides: FileManager.Swiff.Progressbar
+provides: [Fx.ProgressBar]
 
-license: MIT-style license
+version: 1.1
+
+license: MIT License
+
+author: Harald Kirschner <http://digitarald.de>
 ...
 */
 
@@ -27,7 +31,7 @@ Fx.ProgressBar = new Class({
   initialize: function(element, options) {
     this.element = $(element);
     this.parent(options);
-        
+
     var url = this.options.url;
     if (url) {
       this.element.setStyles({
@@ -35,7 +39,7 @@ Fx.ProgressBar = new Class({
         'background-repeat': 'no-repeat'
       });
     }
-    
+
     if (this.options.fit) {
       url = url || this.element.getStyle('background-image').replace(/^url\(["']?|["']?\)$/g, '');
       if (url) {
@@ -54,7 +58,7 @@ Fx.ProgressBar = new Class({
   },
 
   start: function(to, total) {
-    return this.parent(this.now, (arguments.length == 1) ? to.limit(0, 100) : to / total * 100);
+    return this.parent(this.now, (arguments.length == 1 || !total) ? to.limit(0, 100) : to / total * 100);
   },
 
   set: function(to) {
@@ -62,12 +66,12 @@ Fx.ProgressBar = new Class({
     var css = (this.fill)
       ? (((this.fill / -2) + (to / 100) * (this.element.width || 1) || 0).round() + 'px')
       : ((100 - to) + '%');
-    
+
     this.element.setStyle('backgroundPosition', css + ' 0px').title = Math.round(to) + '%';
-    
+
     var text = $(this.options.text);
     if (text) text.set('text', Math.round(to) + '%');
-    
+
     return this;
   }
 

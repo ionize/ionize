@@ -177,6 +177,7 @@ ION.append({
 						baseURL: base_url,
 						url: admin_url + 'media/filemanager',
 						assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
+						standalone: false,
 						language: Lang.get('current'),
 						selectable: true,
 						hideOnClick: true,

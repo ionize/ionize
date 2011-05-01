@@ -151,7 +151,14 @@ class Image_XMP
 				$segdatastart = ftell($filehnd);
 
 				// Read the segment data with length indicated by the previously read size
-				$segdata = fread($filehnd, $decodedsize['size'] - 2);
+				if ($decodedsize['size'] - 2 > 0)	// [i_a] bugfix
+				{
+					$segdata = fread($filehnd, $decodedsize['size'] - 2);
+				}
+				else
+				{
+					$segdata = null;
+				}
 
 				// Store the segment information in the output array
 				$headerdata[] = array(
@@ -333,12 +340,12 @@ class Image_XMP
 						if (array_key_exists('attributes', $xml_elem))
 						{
 							// If Lang Alt (language alternatives) then ensure we take the default language
-							if ($xml_elem['attributes']['xml:lang'] != 'x-default')
+							if (empty($xml_elem['attributes']['xml:lang']) || $xml_elem['attributes']['xml:lang'] != 'x-default')  // [i_a] crash fix
 							{
 								break;
 							}
 						}
-						if ($current_property != '')
+						if ($current_property != '' && isset($xml_elem['value']))  // [i_a]
 						{
 							$xmp_array[$current_property][$container_index] = $xml_elem['value'];
 							$container_index += 1;

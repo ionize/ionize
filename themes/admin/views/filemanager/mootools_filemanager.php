@@ -20,10 +20,24 @@ var xhr = new Request.JSON(
 				url: admin_url + 'media/filemanager',
 				assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
 				language: Lang.get('current'),
+				standalone: false,
 				selectable: false,
+				standalone: false,
+				thumbSmallSize: 120,
+				createFolders: true,
+				destroy: true,
+				rename: true,
+				move_or_copy: true,
 				hideOnClick: false,
 				'uploadAuthData': responseJSON.tokken,
-				parentContainer: 'mainPanel'
+				parentContainer: 'mainPanel',
+				mkServerRequestURL: function(fm_obj, request_code, post_data)
+				{
+					return {
+						url: fm_obj.options.url + '/' + request_code,
+						data: post_data
+					};
+				}
 			});
 			
 			var content = filemanager.show();

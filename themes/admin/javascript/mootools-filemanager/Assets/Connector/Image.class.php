@@ -6,17 +6,20 @@
  * @license MIT-style License
  * @author Christoph Pojer <christoph.pojer@gmail.com>
  * @author Additions: Fabian Vogelsteller <fabian.vogelsteller@gmail.com>
+ * @author Additions: Ger Hobbelt <ger@hobbelt.com>
  *
  * @link http://www.bin-co.com/php/scripts/classes/gd_image/ Based on work by "Binny V A"
  *
- * @version 1.11
- * Changlog<br>
+ * @version 1.12
+ * Changelog
+ *    - 1.12 added memory usage guestimator to warn you when attempting to process overlarge images which will silently but fataly crash PHP
  *    - 1.11 fixed $ratio in resize when both values are given
  *    - 1.1 add real resizing, with comparison of ratio
  *    - 1.01 small fixes in process method and add set memory limit to a higher value
  */
 
 
+define('IMAGE_PROCESSING_MEMORY_MAX_USAGE', 64); // memory_limit setting, in Megabytes; increase when Image class reports too often the images don't fit in memory.
 
 class Image {
 	/**
@@ -37,66 +40,86 @@ class Image {
 	 * @var array
 	 */
 	private $meta;
+	/**
+	 * Flags whether the image has been manipulated by this instance in any way and has not yet been saved to disk.
+	 */
+	private $dirty;
 
 	/**
 	 * @param string $file The path to the image file
 	 */
-	public function __construct($file){
+	public function __construct($file)
+	{
+		$this->dirty = false;
 
-		$finfo = self::guestimateRequiredMemorySpace($file);
-		$file = $finfo['path'];
+		$this->meta = self::checkFileForProcessing($file);
 
-		// is it a valid file existing on disk?
-		if (!isset($finfo['imageinfo']))
-			throw new Exception('no_imageinfo');
-
-		// only set the new memory limit of 64MB when the configured one is smaller:
-		if ($finfo['memory_limit'] < 64 * 1024 * 1024)
+		// only set the new memory limit of IMAGE_PROCESSING_MEMORY_MAX_USAGE MB when the configured one is smaller:
+		if ($this->meta['fileinfo']['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
 		{
-			ini_set('memory_limit', '64M'); //  handle large images
+			ini_set('memory_limit', IMAGE_PROCESSING_MEMORY_MAX_USAGE . 'M'); //  handle large images
 		}
 
 		$this->file = $file;
-		$img = $finfo['imageinfo'];
 
-		// and will it fit in available memory if we go and load the bugger?
-		if (!$finfo['will_fit'])
-			throw new Exception('img_will_not_fit:' . round(($finfo['usage_min_advised'] + 9.9E5) / 1E6) . ' MByte');
-
-		$explarr = explode('/', $img['mime']); // make sure the end() call doesn't throw an error next in E_STRICT mode:
-		$ext_from_mime = end($explarr);
-		$this->meta = array(
-			'width' => $img[0],
-			'height' => $img[1],
-			'mime' => $img['mime'],
-			'ext' => $ext_from_mime,
-		);
-
-		if($this->meta['ext']=='jpg')
-			$this->meta['ext'] = 'jpeg';
-		if(!in_array($this->meta['ext'], array('gif', 'png', 'jpeg')))
-			throw new Exception('unsupported_imgfmt:' . $this->meta['ext']);
-
-		if(in_array($this->meta['ext'], array('gif', 'png'))){
+		if($this->meta['ext'] != 'jpeg')
+		{
 			$this->image = $this->create();
 
 			$fn = 'imagecreatefrom'.$this->meta['ext'];
-			$original = @$fn($file);
-			if (!$original) throw new Exception('imagecreate_failed');
+			$original = false;
+			if (function_exists($fn))
+			{
+				$original = @$fn($file);
+			}
+			if (!$original) throw new Exception('imagecreate_failed:' . $fn);
 
 			if (!@imagecopyresampled($this->image, $original, 0, 0, 0, 0, $this->meta['width'], $this->meta['height'], $this->meta['width'], $this->meta['height']))
 				throw new Exception('cvt2truecolor_failed:' . $this->meta['width'] . ' x ' . $this->meta['height']);
 			imagedestroy($original);
 			unset($original);
-		} else {
+		}
+		else
+		{
 			$this->image = @imagecreatefromjpeg($file);
-			if (!$this->image) throw new Exception('imagecreate_failed');
+			if (!$this->image) throw new Exception('imagecreate_failed:imagecreatefromjpeg');
 		}
 	}
 
 	public function __destruct(){
 		if(!empty($this->image)) imagedestroy($this->image);
 		unset($this->image);
+	}
+
+	/**
+	 * Return an array of supported extensions (rather: the second parts of the mime types!)
+	 *
+	 * A type is listed as 'supported' when it can be READ.
+	 */
+	public static function getSupportedTypes()
+	{
+		static $supported_types;
+
+		if (empty($supported_types))
+		{
+			$gdi = gd_info();
+
+			$supported_types = array();
+			if (!empty($gdi['GIF Read Support']))
+				$supported_types[] = 'gif';
+			if (!empty($gdi['PNG Support']))
+				$supported_types[] = 'png';
+			if (!empty($gdi['JPEG Support']) || !empty($gdi['JPG Support']) /* pre 5.3.0 */ )
+				$supported_types[] = 'jpeg';
+			if (!empty($gdi['WBMP Support']))
+				$supported_types[] = 'wbmp';
+			if (!empty($gdi['XPM Support']))
+				$supported_types[] = 'xpm';
+			if (!empty($gdi['XBM Support']))
+				$supported_types[] = 'xbm';
+			$supported_types[] = 'bmp';
+		}
+		return $supported_types;
 	}
 
 	/**
@@ -131,16 +154,6 @@ class Image {
 		$limit = $val;
 
 		$in_use = (function_exists('memory_get_usage') ? memory_get_usage() : 1000000 /* take a wild guess, er, excuse me, 'apply a heuristic' */ );
-
-
-		$file = str_replace('\\','/',$file);
-		$file = preg_replace('#/+#','/',$file);
-		$file = str_replace($_SERVER['DOCUMENT_ROOT'],'',$file);
-		$file = $_SERVER['DOCUMENT_ROOT'].$file;
-		$file = str_replace('\\','/',$file);
-		$file = preg_replace('#/+#','/',$file);
-		$file = realpath($file);
-		$file = str_replace('\\','/',$file);
 
 		$rv = array(
 			'memory_limit' => $limit,
@@ -181,6 +194,13 @@ class Image {
 				// and 'worst case' (ahem) we've got the file itself loaded in memory as well (on initial load and later save):
 				// ... but this is more than covered by the 'triple charge' already, so we ditch this one from the heuristics.
 				if (0) $will_eat += $raw_size;
+
+				// interestingly, JPEG files only appear to require about half that space required by PNG resize processes...
+				if (!empty($img['mime']) && $img['mime'] == 'image/jpeg')
+				{
+					$will_eat /= 2.0;
+				}
+
 				$rv['usage_guestimate'] = $will_eat;
 
 				// now we know what we about need for this bugger, see if we got enough:
@@ -193,6 +213,132 @@ class Image {
 				// else: this is not a valid image file!
 				$rv['not_an_image_file'] = true;
 			}
+		}
+		else
+		{
+			// else: this file does not exist!
+			$rv['not_an_image_file'] = true;
+		}
+		return $rv;
+	}
+
+	/**
+	 * Check whether the given file is really an image file and whether it can be processed by our Image class, given the PHP
+	 * memory restrictions.
+	 *
+	 * Return the meta data array when the expectation is that the given file can be processed; throw an exception otherwise.
+	 */
+	public static function checkFileForProcessing($file)
+	{
+		$finfo = self::guestimateRequiredMemorySpace($file);
+		if (!empty($finfo['not_an_image_file']))
+			throw new Exception('no_imageinfo');
+
+		// is it a valid file existing on disk?
+		if (!isset($finfo['imageinfo']))
+			throw new Exception('no_imageinfo');
+
+		$file = $finfo['path'];
+
+		// only set the new memory limit of IMAGE_PROCESSING_MEMORY_MAX_USAGE MB when the configured one is smaller:
+		if ($finfo['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
+		{
+			// recalc the 'will_fit' indicator now:
+			$finfo['will_fit'] = ($finfo['usage_min_advised'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024);
+		}
+
+		$img = $finfo['imageinfo'];
+
+		// and will it fit in available memory if we go and load the bugger?
+		if (!$finfo['will_fit'])
+			throw new Exception('img_will_not_fit:' . ceil($finfo['usage_min_advised'] / 1E6) . ' MByte');
+
+		$explarr = explode('/', $img['mime']); // make sure the end() call doesn't throw an error next in E_STRICT mode:
+		$ext_from_mime = end($explarr);
+		$meta = array(
+			'width' => $img[0],
+			'height' => $img[1],
+			'mime' => $img['mime'],
+			'ext' => $ext_from_mime,
+			'fileinfo' => $finfo
+		);
+
+		if($meta['ext'] == 'jpg')
+			$meta['ext'] = 'jpeg';
+		else if($meta['ext'] == 'bmp')
+			$meta['ext'] = 'bmp';
+		else if($meta['ext'] == 'x-ms-bmp')
+			$meta['ext'] = 'bmp';
+		if(!in_array($meta['ext'], self::getSupportedTypes()))
+			throw new Exception('unsupported_imgfmt:' . $meta['ext']);
+
+		return $meta;
+	}
+
+	/**
+	 * Calculate the resize dimensions of an image, given the original dimensions and size limits
+	 *
+	 * @param int $orig_x the original's width
+	 * @param int $orig_y the original's height
+	 * @param int $x the maximum width after resizing has been done
+	 * @param int $y the maximum height after resizing has been done
+	 * @param bool $ratio set to FALSE if the image ratio is solely to be determined
+	 *                    by the $x and $y parameter values; when TRUE (the default)
+	 *                    the resize operation will keep the image aspect ratio intact
+	 * @param bool $resizeWhenSmaller if FALSE the images will not be resized when
+	 *                    already smaller, if TRUE the images will always be resized
+	 * @return array with 'width', 'height' and 'must_resize' component values on success; FALSE on error
+	 */
+	public static function calculate_resize_dimensions($orig_x, $orig_y, $x = null, $y = null, $ratio = true, $resizeWhenSmaller = false)
+	{
+		if(empty($orig_x) || empty($orig_y) || (empty($x) && empty($y))) return false;
+
+		$xStart = $x;
+		$yStart = $y;
+		$ratioX = $orig_x / $orig_y;
+		$ratioY = $orig_y / $orig_x;
+		$ratio |= (empty($y) || empty($x)); // keep ratio when only width OR height is set
+		//echo 'ALLOWED: <br>'.$xStart.'x'."<br>".$yStart.'y'."<br>---------------<br>";
+		// ->> keep the RATIO
+		if($ratio) {
+			//echo 'BEGINN: <br>'.$orig_x.'x'."<br>".$orig_y.'y'."<br><br>";
+			// -> align to WIDTH
+			if(!empty($x) && ($x < $orig_x || $resizeWhenSmaller))
+				$y = $x / $ratioX;
+			// -> align to HEIGHT
+			elseif(!empty($y) && ($y < $orig_y || $resizeWhenSmaller))
+				$x = $y / $ratioY;
+			else {
+				$y = $orig_y;
+				$x = $orig_x;
+			}
+			//echo 'BET: <br>'.$x.'x'."<br>".$y.'y'."<br><br>";
+			// ->> align to WIDTH AND HEIGHT
+			if((!empty($yStart) && $y > $yStart) || (!empty($xStart) && $x > $xStart)) {
+				if($y > $yStart) {
+					$y = $yStart;
+					$x = $y / $ratioY;
+				} elseif($x > $xStart) {
+					$x = $xStart;
+					$y = $x / $ratioX;
+				}
+			}
+		}
+		// else: ->> DONT keep the RATIO
+
+		$x = round($x);
+		$y = round($y);
+
+		//echo 'END: <br>'.$x.'x'."<br>".$y.'y'."<br><br>";
+		$rv = array(
+			'width' => $x,
+			'height' => $y,
+			'must_resize' => false
+		);
+		// speedup? only do the resize operation when it must happen:
+		if ($x != $orig_x || $y != $orig_y)
+		{
+			$rv['must_resize'] = true;
 		}
 		return $rv;
 	}
@@ -209,13 +355,34 @@ class Image {
 		);
 	}
 
+
+	/**
+	 * Returns a copy of the meta information of the image
+	 *
+	 * @return array
+	 */
+	public function getMetaInfo(){
+		return array_merge(array(), (is_array($this->meta) ? $this->meta : array()));
+	}
+
+
+	/**
+	 * Returns TRUE when the image data have been altered by this instance's operations, FALSE when the content has not (yet) been touched.
+	 *
+	 * @return boolean
+	 */
+	public function isDirty(){
+		return $this->dirty;
+	}
+
+
 	/**
 	 * Creates a new, empty image with the desired size
 	 *
 	 * @param int $x
 	 * @param int $y
 	 * @param string $ext
-	 * @return resource
+	 * @return resource GD image handle on success; throws an exception on failure
 	 */
 	private function create($x = null, $y = null, $ext = null){
 		if(!$x) $x = $this->meta['width'];
@@ -224,7 +391,7 @@ class Image {
 		$image = @imagecreatetruecolor($x, $y);
 		if (!$image) throw new Exception('imagecreatetruecolor_failed');
 		if(!$ext) $ext = $this->meta['ext'];
-		if($ext=='png'){
+		if($ext == 'png'){
 			if (!@imagealphablending($image, false))
 				throw new Exception('imagealphablending_failed');
 			$alpha = @imagecolorallocatealpha($image, 0, 0, 0, 127);
@@ -241,11 +408,12 @@ class Image {
 	 * @param resource $new
 	 */
 	private function set($new){
-	  if(!empty($this->image)) imagedestroy($this->image);
-		$this->image = $new;
+		if(!empty($this->image)) imagedestroy($this->image);
+			$this->dirty = true;
+			$this->image = $new;
 
-		$this->meta['width'] = imagesx($this->image);
-		$this->meta['height'] = imagesy($this->image);
+			$this->meta['width'] = imagesx($this->image);
+			$this->meta['height'] = imagesy($this->image);
 	}
 
 	/**
@@ -271,7 +439,7 @@ class Image {
 	 *
 	 * @param int $angle
 	 * @param array $bgcolor An indexed array with red/green/blue/alpha values
-	 * @return Image
+	 * @return resource Image resource on success; throws an exception on failure
 	 */
 	public function rotate($angle, $bgcolor = null){
 		if(empty($this->image) || !$angle || $angle>=360) return $this;
@@ -299,65 +467,34 @@ class Image {
 	 *                    already smaller, if TRUE the images will always be resized
 	 * @return resource Image resource on success; throws an exception on failure
 	 */
-	public function resize($x = null, $y = null, $ratio = true, $resizeWhenSmaller = true){
-		if(empty($this->image) || (empty($x) && empty($y))) return false;
-
-		$xStart = $x;
-	$yStart = $y;
-	$ratioX = $this->meta['width'] / $this->meta['height'];
-	$ratioY = $this->meta['height'] / $this->meta['width'];
-	//echo 'ALLOWED: <br>'.$xStart.'x'."<br>".$yStart.'y'."<br>---------------<br>";
-	// ->> keep the RATIO
-	if($ratio) {
-	  //echo 'BEGINN: <br>'.$this->meta['width'].'x'."<br>".$this->meta['height'].'y'."<br><br>";
-		// -> align to WIDTH
-		if(!empty($x) && ($x < $this->meta['width'] || $resizeWhenSmaller))
-		  $y = $x / $ratioX;
-		// -> align to HEIGHT
-		elseif(!empty($y) && ($y < $this->meta['height'] || $resizeWhenSmaller))
-		  $x = $y / $ratioY;
-		else {
-		  $y = $this->meta['height'];
-		  $x = $this->meta['width'];
+	public function resize($x = null, $y = null, $ratio = true, $resizeWhenSmaller = false)
+	{
+		if(empty($this->image) || (empty($x) && empty($y)))
+		{
+			throw new Exception('resize_inerr');
 		}
-	  //echo 'BET: <br>'.$x.'x'."<br>".$y.'y'."<br><br>";
-	  // ->> align to WIDTH AND HEIGHT
-	  if((!empty($yStart) && $y > $yStart) || (!empty($xStart) && $x > $xStart)) {
-		if($y > $yStart) {
-		  $y = $yStart;
-		  $x = $y / $ratioY;
-		} elseif($x > $xStart) {
-		  $x = $xStart;
-		  $y = $x / $ratioX;
-		}
-	  }
-	// ->> DONT keep the RATIO (but keep ration when only width OR height is set)
-	} else {
-	  // RATIO X
-	  if(!empty($y) && empty($x) && ($y < $this->meta['height'] || $resizeWhenSmaller))
-		$x = $y / $ratioX;
-	  // RATIO Y
-	  elseif(empty($y) && !empty($x) && ($x < $this->meta['width'] || $resizeWhenSmaller))
-		$y = $x / $ratioY;
-	}
-	$x = round($x);
-	$y = round($y);
 
-		//echo 'END: <br>'.$x.'x'."<br>".$y.'y'."<br><br>";
+		$dims = Image::calculate_resize_dimensions($this->meta['width'], $this->meta['height'], $x, $y, $ratio, $resizeWhenSmaller);
+		if ($dims === false)
+		{
+			throw new Exception('resize_inerr:' . $this->meta['width'] . ' x ' . $this->meta['height']);
+		}
 
 		// speedup? only do the resize operation when it must happen:
-		if ($x != $this->meta['width'] || $y != $this->meta['height'])
+		if ($dims['must_resize'])
 		{
-			$new = $this->create($x, $y);
-			if(@imagecopyresampled($new, $this->image, 0, 0, 0, 0, $x, $y, $this->meta['width'], $this->meta['height'])) {
+			$new = $this->create($dims['width'], $dims['height']);
+			if(@imagecopyresampled($new, $this->image, 0, 0, 0, 0, $dims['width'], $dims['height'], $this->meta['width'], $this->meta['height'])) {
 				$this->set($new);
 				unset($new);
+				return $this;
 			}
-			return $this;
+			unset($new);
+			throw new Exception('imagecopyresampled_failed:' . $this->meta['width'] . ' x ' . $this->meta['height']);
 		}
 		else
 		{
-			throw new Exception('imagecopyresampled_failed');
+			return $this;
 		}
 	}
 
@@ -449,28 +586,52 @@ class Image {
 	 * @param string $ext
 	 * @param string $file
 	 * @param int $quality the amount of lossy compression to apply to the saved file
+	 * @param boolean $store_original_if_unaltered (default: FALSE) set to TRUE if you want to copy the
+	 *                                             original instead of saving the loaded copy when no
+	 *                                             edits to the image have occurred. (set to TRUE when
+	 *                                             you like to keep animated GIFs intact when they have
+	 *                                             not been cropped, rescaled, etc., for instance)
+	 *
 	 * @return Image object
 	 */
-	public function process($ext = null, $file = null, $quality = 100){
+	public function process($ext = null, $file = null, $quality = 100, $store_original_if_unaltered = false){
 		if(empty($this->image)) return $this;
 
 		if(!$ext) $ext = $this->meta['ext'];
+		$ext = strtolower($ext);
+
 		if($ext=='jpg') $ext = 'jpeg';
-		if($ext=='png') imagesavealpha($this->image, true);
+		else if($ext=='png') imagesavealpha($this->image, true);
 
 		if($file == null)
-		  $file = $this->file;
+			$file = $this->file;
 		if(!$file) throw new Exception('process_nofile');
-
-		$fn = 'image'.$ext;
-		if($ext == 'jpeg')
-		  $rv = @$fn($this->image, $file, $quality);
-		elseif($ext == 'png')
-		  $rv = @$fn($this->image, $file, 9); // PNG is lossless: always maximum compression!
+		if(!is_dir(dirname($file))) throw new Exception('process_nodir');
+		if ($store_original_if_unaltered && !$this->isDirty() && $ext == $this->meta['ext'])
+		{
+			// copy original instead of saving the internal representation:
+			$rv = true;
+			if ($file != $this->file)
+			{
+				$rv = @copy($this->file, $file);
+			}
+		}
 		else
-		  $rv = @$fn($this->image, $file);
+		{
+			$rv = false;
+			$fn = 'image'.$ext;
+			if (function_exists($fn))
+			{
+				if($ext == 'jpeg')
+					$rv = @$fn($this->image, $file, $quality);
+				elseif($ext == 'png')
+					$rv = @$fn($this->image, $file, 9); // PNG is lossless: always maximum compression!
+				else
+					$rv = @$fn($this->image, $file);
+			}
+		}
 		if (!$rv)
-		  throw new Exception($fn . '_failed');
+			throw new Exception($fn . '_failed');
 
 		// If there is a new filename change the internal name too
 		$this->file = $file;
@@ -482,9 +643,16 @@ class Image {
 	 * Saves the image to the given path
 	 *
 	 * @param string $file Leave empty to replace the original file
+	 * @param int $quality the amount of lossy compression to apply to the saved file
+	 * @param boolean $store_original_if_unaltered (default: FALSE) set to TRUE if you want to copy the
+	 *                                             original instead of saving the loaded copy when no
+	 *                                             edits to the image have occurred. (set to TRUE when
+	 *                                             you like to keep animated GIFs intact when they have
+	 *                                             not been cropped, rescaled, etc., for instance)
+	 *
 	 * @return Image
 	 */
-	public function save($file = null){
+	public function save($file = null, $quality = 100, $store_original_if_unaltered = false){
 		if(empty($this->image)) return $this;
 
 		if(!$file) $file = $this->file;
@@ -497,10 +665,7 @@ class Image {
 
 		if($ext=='jpg') $ext = 'jpeg';
 
-		if(!in_array($ext, array('png', 'jpeg', 'gif')))
-			return $this;
-
-		return $this->process($ext, $file);
+		return $this->process($ext, $file, $quality, $store_original_if_unaltered);
 	}
 
 	/**
@@ -513,5 +678,122 @@ class Image {
 
 		header('Content-type: '.$this->meta['mime']);
 		return $this->process();
+	}
+}
+
+
+
+
+
+
+if (!function_exists('imagecreatefrombmp'))
+{
+	/**
+	 * http://nl3.php.net/manual/en/function.imagecreatefromwbmp.php#86214
+	 */
+	function imagecreatefrombmp($filepath)
+	{
+		// Load the image into a string
+		$filesize = @filesize($filepath);
+		if ($filesize < 108 + 4)
+			return false;
+
+		$read = file_get_contents($filepath);
+		if ($file === false)
+			return false;
+
+		$temp = unpack("H*",$read);
+		unset($read);               // reduce memory consumption
+		$hex = $temp[1];
+		unset($temp);
+		$header = substr($hex, 0, 108);
+
+		// Process the header
+		// Structure: http://www.fastgraph.com/help/bmp_header_format.html
+		if (substr($header, 0, 4) == '424d')
+		{
+			// Cut it in parts of 2 bytes
+			$header_parts = str_split($header, 2);
+
+			// Get the width        4 bytes
+			$width = hexdec($header_parts[19] . $header_parts[18]);
+
+			// Get the height        4 bytes
+			$height = hexdec($header_parts[23] . $header_parts[22]);
+
+			// Unset the header params
+			unset($header_parts);
+		}
+
+		// Define starting X and Y
+		$x = 0;
+		$y = 1;
+
+		// Create newimage
+		$image = imagecreatetruecolor($width, $height);
+		if ($image === false)
+			return $image;
+
+		// Grab the body from the image
+		$body = substr($hex, 108);
+		unset($hex);
+
+		// Calculate if padding at the end-line is needed
+		// Divided by two to keep overview.
+		// 1 byte = 2 HEX-chars
+		$body_size = strlen($body) / 2;
+		$header_size = $width * $height;
+
+		// Use end-line padding? Only when needed
+		$usePadding = ($body_size > $header_size * 3 + 4);
+
+		// Using a for-loop with index-calculation instaid of str_split to avoid large memory consumption
+		// Calculate the next DWORD-position in the body
+		for ($i = 0; $i < $body_size; $i += 3)
+		{
+			// Calculate line-ending and padding
+			if ($x >= $width)
+			{
+				// If padding needed, ignore image-padding
+				// Shift i to the ending of the current 32-bit-block
+				if ($usePadding)
+					$i += $width % 4;
+
+				// Reset horizontal position
+				$x = 0;
+
+				// Raise the height-position (bottom-up)
+				$y++;
+
+				// Reached the image-height? Break the for-loop
+				if ($y > $height)
+					break;
+			}
+
+			// Calculation of the RGB-pixel (defined as BGR in image-data)
+			// Define $i_pos as absolute position in the body
+			$i_pos = $i * 2;
+			$r = hexdec($body[$i_pos+4] . $body[$i_pos+5]);
+			$g = hexdec($body[$i_pos+2] . $body[$i_pos+3]);
+			$b = hexdec($body[$i_pos] . $body[$i_pos+1]);
+
+			// Calculate and draw the pixel
+			$color = imagecolorallocate($image, $r, $g, $b);
+			if ($color === false)
+			{
+				imagedestroy($image);
+				return false;
+			}
+			imagesetpixel($image, $x, $height - $y, $color);
+
+			// Raise the horizontal position
+			$x++;
+		}
+
+		// Unset the body / free the memory
+		unset($body);
+
+		// Return image-object
+		return $image;
 	}
 }

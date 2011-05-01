@@ -527,14 +527,32 @@ var IonizeMediaManager = new Class(
 								filemanager = new FileManager({
 									baseURL: base_url,
 									url: admin_url + 'media/filemanager',
+									directory:'files',
 									assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
+									standalone: false,
+									thumbSmallSize: 120,
+									createFolders: true,
+									destroy: true,
+									rename: true,
+									move_or_copy: true,
 									language: Lang.get('current'),
 									selectable: true,
-									hideOnClick: true,
+									hideOnSelect: false,
 									thumbSize: self.options.thumbSize,
 									'onComplete': self.addMedia.bind(self),
 									'uploadAuthData': responseJSON.tokken,
-									parentContainer: 'filemanagerWindow_contentWrapper'
+									propagateData: {'uploadAuthData': responseJSON.tokken},
+									parentContainer: 'filemanagerWindow_contentWrapper',
+									mkServerRequestURL: function(fm_obj, request_code, post_data)
+									{
+//		console.log('B: mkServerRequestURL');
+//		console.log(post_data);
+//		console.log('E: mkServerRequestURL');
+										return {
+											url: fm_obj.options.url + '/' + request_code,
+											data: post_data
+										};
+									}
 								});
 
 								// MUI Window creation

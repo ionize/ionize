@@ -219,6 +219,10 @@ class Installer
 			{
 				$this->template['encryption_key'] = $this->generateEncryptKey();
 			}
+			else
+			{
+//				$this->template['encryption_key'] =$config['encryption_key'];
+			}
 			
 			$this->output('user');
 		}
@@ -373,6 +377,7 @@ class Installer
 		
 			if ( ! empty($migration_files))
 			{
+				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';			
 				if (in_array('migration_0.9.5_0.9.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.5</b>';			
 				if (in_array('migration_0.9.4_0.9.5.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.4</b>';			
 				if (in_array('migration_0.93_0.9.4.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.3</b>';			
@@ -1206,6 +1211,8 @@ class Installer
 				$migration_xml[] = 'migration_0.92_0.93.xml';
 				$migration_xml[] = 'migration_0.93_0.9.4.xml';
 				$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
+				$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+				$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 			}
 	
 			
@@ -1235,6 +1242,8 @@ class Installer
 					$migration_xml[] = 'migration_0.92_0.93.xml';
 					$migration_xml[] = 'migration_0.93_0.9.4.xml';
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
+					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 				}
 			}
 	
@@ -1261,6 +1270,8 @@ class Installer
 				{
 					$migration_xml[] = 'migration_0.93_0.9.4.xml';
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
+					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 				}
 			}
 
@@ -1284,6 +1295,8 @@ class Installer
 				if ($migrate_from == true)
 				{
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
+					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 				}
 			}
 
@@ -1306,6 +1319,29 @@ class Installer
 				if ($migrate_from == true)
 				{
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+				}
+			}
+			
+			/*
+			 * From Ionize 0.9.6 : the table extend_field does not contains the field id_element_definition
+			 *
+			 */
+			if (empty($migration_xml))
+			{
+				$migrate_from = true;
+				
+				$fields = $this->db->field_data('extend_field');
+	
+				foreach ($fields as $field)
+				{
+					if ($field->name == 'id_element_definition')
+						$migrate_from = false;
+				}
+				
+				if ($migrate_from == true)
+				{
+					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 				}
 			}
 		}

@@ -1,685 +1,1085 @@
-div.filemanager-container { display: none }
-div.filemanager * { outline: 0 }
-div.filemanager a img { border: 0 }
+div.filemanager-container {
+	display: none;
+}
+div.filemanager * {
+	outline: 0;
+}
+div.filemanager a img {
+	border: 0;
+}
+
 div.filemanager-container,
 div.filemanager,
 div.filemanager button,
 div.filemanager label,
 div.filemanager h1 {
-    width: auto;
-    margin: 0;
-    font: normal 11px verdana, arial, Tahoma, sans-serif;
-    text-transform: none;
-    letter-spacing: 0;
+	width: auto;
+	margin: 0;
+
+	font: normal 11px verdana, arial, Tahoma, sans-serif;
+	text-transform: none;
+	letter-spacing: 0;
 }
 
 /* filemanager */
+
 div.filemanager {
-    background: #fff;
-    position: absolute;
-    z-index: 1001;
-    width: 75%;
-    height: 75%;
-    /*: ;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
-    -o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
-    border-radius: 0 0 8px 8px;
-    -moz-border-radius: 0 0 8px 8px;
-    -webkit-border-radius: 0 0 8px 8px;
-    -o-border-radius: 0 0 8px 8px;*/
+	background: #F5F5F5;
+
+	position: absolute;
+	/* z-index: 1001; */
+	width: 75%;
+	height: 75%;
+
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+	-o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+
+	border-radius: 0 0 8px 8px;
+	-moz-border-radius: 0 0 8px 8px;
+	-webkit-border-radius: 0 0 8px 8px;
+	-o-border-radius: 0 0 8px 8px;
 }
 
 /* filemanager-header */
 div.filemanager-header {
-    z-index: 3;
-    position: absolute;
-    top: -30px;
-    left: 0px;
-    width: 100%;
-    height: 14px;
-    padding: 8px 0px;
-    background: url("../Images/menu.png") repeat-x;
-    /* : ;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    -o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    border-radius: 8px 8px 0 0;
-    -moz-border-radius: 8px 8px 0 0;
-    -webkit-border-radius: 8px 8px 0 0;
-    -o-border-radius: 8px 8px 0 0;*/
-    overflow: hidden;
+	/* z-index: 3; */
+	position: absolute;
+	top: -30px;
+	left: 0px;
+	width: 100%;
+	height: 14px;
+	padding: 8px 0px;
+	background: url("../Images/menu.png") repeat-x;
+
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+	-o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+
+	border-radius: 8px 8px 0 0;
+	-moz-border-radius: 8px 8px 0 0;
+	-webkit-border-radius: 8px 8px 0 0;
+	-o-border-radius: 8px 8px 0 0;
+
+	overflow: hidden;
 }
 
 /* filemanager-menu */
+
 div.filemanager div.filemanager-menu {
-    z-index: 2;
-    position: absolute;
-    height: 30px;
-    left: 35%;
-    width: 65%;
-    bottom: 0;
-    line-height: 30px;
-    border-top: 1px solid #bebebe;
-    background: url("../Images/menu.png") repeat-x;
-    /*  : ;
-    box-shadow: rgba(0, 0, 0, 0.3) 2px 0 5px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.3) 1px -2px 5px -2px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    -o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    border-radius: 0 0 8px 0;
-    -moz-border-radius: 0 0 8px 0;
-    -webkit-border-radius: 0 0 8px 0;
-    -o-border-radius: 0 0 8px 0;*/
+	/* z-index: 2; */
+	position: absolute;
+	height: 30px;
+	left: 35%;
+	width: 65%;
+	bottom: 0;
+	line-height: 30px;
+
+	border-top: 1px solid #bebebe;
+	background: url("../Images/menu.png") repeat-x;
+
+	box-shadow: rgba(0, 0, 0, 0.3) 2px 0 5px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 1px -2px 5px -2px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+	-o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+
+	border-radius: 0 0 8px 0;
+	-moz-border-radius: 0 0 8px 0;
+	-webkit-border-radius: 0 0 8px 0;
+	-o-border-radius: 0 0 8px 0;
 }
 
-/*
 div.filemanager button {
-  cursor: pointer;
-  height: 22px;
-  line-height: 22px;
-  margin: 4px 5px;
-  padding: 0 2px;
-  
-  color: #333;
-  text-shadow: #eee 1px 1px 1px;
-  
-  clear: none;
-  background: url("../Images/button.png") repeat-x;
-  border: 1px solid #a1aeb9;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-}
-*/
+	cursor: pointer;
+	height: 22px;
+	line-height: 20px;        /* lift the text in the button by 1 px: line-height: 20px vs height: 22px */
+	margin: 4px 5px;
+	padding: 0 2px;
 
-div.filemanager button {
-    background: url("../../../../images/button-bg.jpg") no-repeat scroll 0 50% transparent;
-    border: 1px solid #FFFFFF;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 11px;
-    height: 24px;
-    line-height: normal;
-    margin: 4px 5px;
-    padding: 2px 6px;
-    vertical-align: middle;
+	color: #333;
+	text-shadow: #eee 1px 1px 1px;
+
+	clear: none;
+	background: url("../Images/button.png") repeat-x;
+	border: 1px solid #a1aeb9;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-o-border-radius: 4px;
+	border-radius: 4px;
 }
 div.filemanager-engine-trident4 button,
 div.filemanager-engine-trident5 button {
-    padding: 0 .25em;
-    overflow: visible;
+	padding: 0 .25em;
+	overflow: visible;
 }
-div.filemanager-menu button { float: right }
+
+div.filemanager-menu button {
+	float: right;
+}
+
 div.filemanager button:hover,
 div.filemanager button.hover,
-div.filemanager button:focus { background: url(../../../../images/button-bg.jpg) no-repeat -200px 50% }
-
-/*
-div.filemanager button:hover, div.filemanager button.hover, div.filemanager button:focus {
-  border: 1px solid #5f676e;
+div.filemanager button:focus {
+	border: 1px solid #5f676e;
 }
-*/
-
-/*
-div.filemanager button.disabled, div.filemanager button.disabled:hover, div.filemanager button.disabled:focus {
-  cursor: default;
-  color: #666;
-  text-shadow: none;
-  background: url("../Images/button_disabled.png") repeat-x;
-  border-color: #bababa;
-}
-*/
 
 div.filemanager button.disabled,
 div.filemanager button.disabled:hover,
-div.filemanager button.disabled:focus,
-div.filemanager button.filemanager-open.disabled,
-div.filemanager button.filemanager-open.disabled:hover,
-div.filemanager button.filemanager-open.disabled:focus {
-    background: none repeat scroll 0 0 #DDDDDD;
-    color: #666666;
-    cursor: default;
-    text-shadow: none;
+div.filemanager button.disabled:focus {
+	cursor: default;
+	color: #666;
+	text-shadow: none;
+	background: url("../Images/button_disabled.png") repeat-x;
+	border-color: #bababa;
 }
 
-/*
 div.filemanager button.filemanager-open {
-  font-weight: bold;
+	font-weight: bold;
 }
-*/
 
-div.filemanager button.filemanager-open {
-    background: url("../../../../images/submit-bg.jpg") no-repeat scroll 0 50% transparent;
-    margin-right: 10px;
-}
 div.filemanager-menu label {
-    cursor: pointer;
-    float: right;
-    width: auto;
-    height: auto;
-    line-height: 30px;
-    font-size: 11px;
+	cursor: pointer;
+	float: right;
+	width: auto;
+	height: auto;
+	line-height: 30px;
+
+	font-size: 11px;
 }
+
 div.loader {
-    width: 16px;
-    height: 16px;
-    background: url("../Images/loader.gif") no-repeat;
+	width: 16px;
+	height: 16px;
+	background: url("../Images/loader.gif") no-repeat;
 }
 div.filemanager-header div.loader {
-    position: absolute;
-    top: 7px;
-    right: 30px;
+	position: absolute;
+	top: 7px;
+	right: 30px;
 }
 div.filemanager-browserheader div.loader {
-    position: absolute;
-    top: 4px;
-    left: 5px;
+	position: absolute;
+	top: 4px;
+	left: 5px;
 }
 div.filemanager-preview div.loader {
-    position: relative;
-    left: 50%;
-    right: auto;
-    margin-left: -8px;
+	position: relative;
+	left: 50%;
+	right: auto;
+	margin-left: -8px;
 }
 
 /* filemanager-browserscroll */
+
 div.filemanager div.filemanager-browserscroll {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: auto;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden; /* don't show the hor. scrollbar just because a few filenames are very long: just clip them! */
 }
-div.filemanager div.filemanager-browserscroll li.list { height: 21px }
-div.filemanager div.filemanager-browserscroll li.thumb { height: 54px }
+
+
+div.filemanager div.filemanager-browserscroll li.list {
+	height: 21px;
+}
+div.filemanager div.filemanager-browserscroll li.thumb {
+	height: 54px;
+}
+
 div.filemanager ul {
-    margin: 0;
-    padding: 0;
-    position: relative;
-    line-height: 1.8em;
-    zoom: 1;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	line-height: 1.8em;
+	zoom: 1;                  /*:: < IE 9.0    :: Microsoft Internet Explorer hack */
 }
+
 div.filemanager ul li {
-    background: none;
-    list-style-image: none;
-    list-style-type: none;
-    list-style: none;
-    line-height: 1.8em;
-    margin: 0;
-    padding: 0;
-    white-space: nowrap;
+	background: none;
+	list-style-image: none;
+	list-style-type: none;
+	list-style: none;
+	line-height: 1.8em;
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
 }
+
 div.filemanager div.filemanager-browsercontainer {
-    height: 100%;
-    width: 35%;
-    border: 0;
-    border-right: 1px solid #bebebe;
-    background: #dee6f0 url("../Images/filelist.png") repeat-x bottom left;
-    overflow: hidden;
-    /*  : ;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    -o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-    border-radius: 0 0 0 8px;
-    -moz-border-radius: 0 0 0 8px;
-    -webkit-border-radius: 0 0 0 8px;
-    -o-border-radius: 0 0 0 8px;*/
+	height: 100%;
+	width: 35%;
+	min-width: 189px;
+	border: 0;
+	border-right: 1px solid #bebebe;
+	background: #D7DEE8 url("../Images/filelist.png") repeat-x bottom left;
+	overflow: hidden;
+
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+	-o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
+
+	border-radius: 0 0 0 8px;
+	-moz-border-radius: 0 0 0 8px;
+	-webkit-border-radius: 0 0 0 8px;
+	-o-border-radius: 0 0 0 8px;
 }
+
 div.filemanager-browsercontainer div.filemanager-browserheader {
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 25px;
-    background: #C3CDD9;
-    border-bottom: 1px solid #bebebe;
-    text-align: right;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 25px;
+	background: #C3CDD9;
+	border-bottom: 1px solid #bebebe;
+	text-align: center;
 }
-div.filemanager-browsercontainer div.filemanager-browserheader a.listType,
-div.filemanager-browsercontainer div.filemanager-browserheader a#togggle_side_thumbs {
-    display: inline-block;
-    float: right;
-    width: 16px;
-    height: 16px;
-    margin: 5px;
-    cursor: pointer;
+
+div.filemanager-browsercontainer div.filemanager-browserheader a.listType {
+	display: inline-block;
+	float: right;
+	width: 16px;
+	height: 16px;
+	margin: 5px;
+	cursor: pointer;
 }
-div.filemanager-browsercontainer div.filemanager-browserheader a.listType#togggle_side_list { background: url("../Images/application_side_list.png") no-repeat }
-div.filemanager-browsercontainer div.filemanager-browserheader a.listType#togggle_side_boxes { background: url("../Images/application_side_boxes.png") no-repeat }
-div.filemanager-browsercontainer div.filemanager-browserheader a#togggle_side_thumbs { 
-	background: url("../Images/application_side_thumbs.png") no-repeat;
-	margin-right: 10px;
-	margin-left: 10px;
+div.filemanager-browsercontainer div.filemanager-browserheader a.listType#toggle_side_list {
+	background: url("../Images/application_side_list.png") no-repeat;
 }
+div.filemanager-browsercontainer div.filemanager-browserheader a.listType#toggle_side_boxes {
+	background: url("../Images/application_side_boxes.png") no-repeat;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader a#show_dir_thumb_gallery {
+	background: url("../Images/application_side_thumbs.png") no-repeat top left;
+	height: 16px;
+	width: 16px;
+	display: inline-block;
+	float: right;
+	margin: 5px;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader a#drag_n_drop {
+	display: inline-block;
+	float: right;
+	margin: 5px 3% 0 0;        /* 3%: keep distance variable with the total width of the FM window: looks better for tight and wide viewports */
+	cursor: help;
+
+	background-image: url("../Images/drag_n_drop.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 16px;
+	overflow: hidden;
+	background-position: 0px -16px;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging {
+	display: inline-block;
+	float: right;
+	margin: 1px 3% 0 0;
+	height: 19px;
+	padding: 4px 5px 0 5px;
+	/* add subtle lines to increase visual separation with the other icons up top */
+	border-left: 1px solid #BEBEBE;
+	border-right: 1px solid #BEBEBE;
+
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a {
+	display: inline-block;
+	margin: 0 2px;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_first {
+	background-image: url("../Images/go_first.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 10px;
+	overflow: hidden;
+	background-position: 50% 50%;
+
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_previous {
+	background-image: url("../Images/go_previous.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 7px;
+	overflow: hidden;
+	background-position: 50% 50%;
+
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_next {
+	background-image: url("../Images/go_next.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 7px;
+	overflow: hidden;
+	background-position: 50% 50%;
+
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_last {
+	background-image: url("../Images/go_last.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 10px;
+	overflow: hidden;
+	background-position: 50% 50%;
+
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging #paging_info {
+	margin: 0 10px;
+	/*
+	 * to help the page number center vertically, we have to tweak the settings a bit oddly:
+	 * without the position:relative and the top:-4px, it wouldn't work. vertical-align is no use at all:
+	 * 'middle' does not do anything while 'top' does, but is exactly what we do not want.
+	 * Anyway, relative -4px it is.
+	 */
+	height: 16px;
+	position: relative;
+	top: -4px;
+	overflow: hidden;
+}
+
+
 div.filemanager-container span.fi {
-    height: 21px;
-    line-height: 1.8em;
-    padding-left: 5px;
-    color: #000;
-    text-decoration: none;
-    display: block;
-    white-space: nowrap;
-    cursor: pointer;
+	height: 21px;
+	line-height: 1.8em;
+	padding-left: 5px;
+	color: #000;
+	text-decoration: none;
+	display: block;
+	white-space: nowrap;
+	cursor: pointer;
 }
+
 div.filemanager-container span.thumb {
-    height: 48px;
-    padding: 3px 0 3px 3px;
-    margin: 0;
-    overflow: hidden;
+	height: 48px;
+	padding: 3px 0 3px 3px;
+	margin: 0;
+	overflow: hidden;
 }
-div.filemanager-container span.fi:hover,
-div.filemanager-container span.fi.hover { background: #E2EBF6 }
+
+div.filemanager-container span.fi.hover {
+	background: #E2EBF6;
+}
+
 div.filemanager-container span.fi span,
 div.filemanager-container span.thumb {
-    white-space: nowrap;
-    display: block;
-    overflow: hidden;
+	white-space: nowrap;
+	display: block;
+	overflow: hidden;
+	vertical-align: middle;   /* pretty useless, but keep it in? */
+	overflow: visible;
+	/* ^^^ since the floats are all images, this does a nice graphic effect for very long filenames:
+	 *     the maximum width of the row is used to display the name and when hovering over it, the
+	 *     icons appear on top.
+	 */
 }
-div.filemanager-container span.thumb span { margin-top: 14px }
-div.filemanager-container span.thumb img.thumb {
-    width: 48px;
-    height: auto;
+
+/* forcing the text to center: see comment below where we v-center the image */
+div.filemanager-container span.thumb span {
+	/* margin-top: 14px; */
+	margin-top: 12px;  /* instead, we 'vertical center' (ahem!) the thing by pushing it down. */
+	/* display: table-cell; */
 }
+
+/*
+ * Have the image (thumbnail) centered as well:
+ *
+ * After several failed attempts this was done with 90% success:
+ *    http://www.brunildo.org/test/img_center.html
+ *
+ * Note that you cannot mix 'float:left' and 'display-table-cell'
+ * in the same element. That is why the text following the image
+ * MUST be 'display: table-cell' as well, for otherwise it would
+ * not display on the same line.
+ * And because the text is now it's own 'table-cell' it also needs
+ * its own 'vertical-align:middle' replacing the brute-force
+ * margin-top downshift.
+ *
+ * HOWEVER we note that last 10%: very long filenames, i.e. spans
+ * with text that would wrap, will NOT center correctly, but instead
+ * nuke the complete layout of that particular row. No matter what you do.
+ *
+ * We can't have that so finally we go back to our old-time all-time favorite:
+ * a <span> (which is already here now that we did the previous) filled
+ * with a _background_ image: since CSS can center those very well, we're
+ * good to go. Finally.
+ */
+div.filemanager-container span.thumb span.thumb {
+	float: left;   /* 'left' for the span with background image way; 'none' for the previous method */
+	width: 48px;
+	height: 48px;
+	vertical-align: middle;   /* pretty useless, but keep it in? */
+	text-align: center;
+	/* display: table-cell; */
+	margin: 0 5px 0 0;    /* previous method only: superfluous as it's a 'table-cell' display now: the margin is neglected, so we move the right-side gap to the padding. */
+	/* padding: 0 5px 0 0; */
+	padding: 0;
+
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+/*
+div.filemanager-container span.thumb span.thumb img,
+div.filemanager-container span.list span.list img {
+	float: none;
+	vertical-align: middle;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+*/
+div.filemanager-container span.list span.list {
+	float: left;   /* 'left' for the span with background image way; 'none' for the previous method */
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;   /* pretty useless, but keep it in? */
+	text-align: center;
+	/* display: table-cell; */
+	margin: 0 5px 0 0;    /* previous method only: superfluous as it's a 'table-cell' display now: the margin is neglected, so we move the right-side gap to the padding. */
+	/* padding: 0 5px 0 0; */
+	padding: 0;
+
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+
+
 div.filemanager-container span.drag span,
 div.filemanager-engine-trident4 ul li span.fi span,
 div.filemanager-engine-trident5 ul li span.fi span,
-div.filemanager-engine-presto ul li span.fi span,
-div.filemanager ul li:hover span.fi span { overflow: hidden }
-div.filemanager ul li span.dir { background-color: transparent }
+div.filemanager-engine-presto   ul li span.fi span,
+div.filemanager                 ul li:hover span.fi span {
+	overflow: hidden;
+}
+
+div.filemanager ul li span.dir {
+	background-color: transparent;
+}
+
 div.filemanager ul li span.droppable,
-div.filemanager-gallery ul.droppable { background-color: #99b7e7 }
+div.filemanager-gallery ul.droppable {
+	background-color: #99b7e7;
+}
+
 ul.filemanager-browser a,
-ul.filemanager-browser span { position: relative }
+ul.filemanager-browser span {
+	position: relative;
+}
 
 /*
-div.filemanager ul li a.selected, div.filemanager ul li span.selected {
-  background: url("../Images/filelist_selected.png") repeat-x;
-  color: #eee;
-  outline: none;
+div.filemanager ul li a.selected,
+div.filemanager ul li span.selected {
+	background: url("../Images/filelist_selected.png") repeat-x;
+	color: #eee;
+	outline: none;
 }
 */
 
 div.filemanager ul li span.thumb.selected,
 div.filemanager ul li span.fi.selected {
-    background: #8EAAD6;
-    color: #eee;
-    outline: none;
-}
-div.filemanager-container span.fi img {
-    float: left;
-    margin: 3px 3px 0 0;
-}
-div.filemanager-container span.thumb img {
-    float: left;
-    margin: 0 5px 0 0;
-}
-div.filemanager-container span.file img {
-    border: none;
-    margin-top: 5px;
-}
-div.filemanager-container span.fi img.browser-icon {
-    float: right;
-    border: none;
-}
-div.filemanager-container span.move img.browser-icon { display: none }
-div.filemanager span.notice {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-}
-div.filemanager a.filemanager-close {
-    z-index: 4;
-    display: block;
-    position: absolute;
-    right: 6px;
-    top: -23px;
-    height: 16px;
-    width: 16px;
-    background: url("../Images/close.png") no-repeat;
-    cursor: pointer;
-}
-div.filemanager a.filemanager-close:hover { background-position: 0px -16px }
-div.filemanager div.filemanager-close img { padding: 2px }
-div.filemanager-infos {
-    z-index: 0;
-    position: absolute;
-    left: 35%;
-    top: 0;
-    width: 63%;
-    height: 92%;
-    padding: 0px 1%;
-    line-height: 1.6em;
-    overflow: auto;
-}
-div.filemanager-head {
-    height: 32px;
-    overflow: hidden;
-}
-img.filemanager-icon {
-    float: left;
-    margin: 10px 12px;
-}
-div.filemanager h1 {
-    margin: 0;
-    padding: 0;
-    height: 32px;
-    line-height: 32px;
-    color: #333;
-    font-size: 20px;
-    letter-spacing: 1px;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: transparent;
-}
-div.filemanager h2 {
-    margin: 0;
-    border-top: 1px solid #bebebe;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 2px 0 0 5px;
-    clear: both;
-}
-div.filemanager dl {
-    margin: 5px 0;
-    width: 100%;
-    clear: both;
-    overflow: auto;
-}
-div.filemanager dt,
-div.filemanager dd {
-    float: left;
-    line-height: 20px;
-    font-size: 11px;
-    margin-left: 3%;
-}
-div.filemanager dt {
-    clear: both;
-    width: 22%;
-    font-weight: bold;
-}
-div.filemanager dd {
-    width: 60%;
-    white-space: nowrap;
-    overflow: auto;
-}
-div.filemanager div.margin { margin-left: 15px }
-div.filemanager a.filemanager-dir-title {
-    padding-left: 10px;
-    padding-right: 10px;
-    font-weight: bold;
-    text-decoration: none;
-    color: #666;
-}
-div.filemanager a.filemanager-dir-title:hover { color: #999 }
-div.filemanager input.filemanager-dir {
-    margin-top: -4px;
-    background-color: #fbfbfb;
-    background-image: none !important;
-    border: 1px solid #ccc;
-    width: 70%;
-    padding: 1px 5px;
-    font-size: 14px;
-}
-div.filemanager span.filemanager-dir a.icon {
-    border: 1px solid #bebebe;
-    padding: 2px 5px 2px 20px;
-    text-decoration: none;
-    background: #eee url("../Images/Icons/dir.png") 2px 0 no-repeat;
-    color: #000;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -o-border-radius: 3px;
-    border-radius: 3px;
+	background: #8EAAD6;
+	color: #eee;
+	outline: none;
 }
 
+div.filemanager-container span.fi img {
+	float: left;
+	margin: 3px 3px 0 0;
+}
+
+/*
+obsoleted by the new centering code. At least that one works by centering the image instead of clipping them while forcing width=48px.
+
+div.filemanager-container span.thumb img {
+	float: left;
+	margin: 0 5px 0 0;
+}
+*/
+
+div.filemanager-container span.file img {
+	border: none;
+	margin-top: 5px;
+}
+
+div.filemanager-container span.fi img.browser-icon {
+	float: right;
+	border: none;
+	margin-top: 3px; /* vertically center the little buggers */
+}
+
+/* & and correct for thumb view: */
+div.filemanager-container span.thumb img.browser-icon {
+	margin-top: 16px; /* vertically center the little buggers */
+}
+
+
+div.filemanager-container span.move img.browser-icon {
+	display: none;
+}
+
+div.filemanager span.notice {
+	position: absolute;
+	bottom: 16px;
+	left: 16px;
+}
+
+div.filemanager a.filemanager-close {
+	/* z-index: 4; */
+	display: block;
+	position: absolute;
+	right: 6px;
+	top: -23px;
+	height: 16px;
+	width: 16px;
+	background: url("../Images/close.png") no-repeat;
+	cursor: pointer;
+}
+div.filemanager a.filemanager-close:hover {
+	background-position: 0px -16px;
+}
+div.filemanager div.filemanager-close img {
+	padding: 2px;
+}
+
+div.filemanager-infos {
+	/* z-index: 0; */
+	position: absolute;
+	left: 35%;
+	top: 0;
+	width: 63%;
+	min-width: 250px;
+	height: 92%;
+	padding: 0px 1%;
+	line-height: 1.6em;
+	overflow: auto;
+}
+
+div.filemanager-head {
+	height: 32px;
+	overflow: hidden;
+}
+
+img.filemanager-icon {
+	float: left;
+	margin: 10px 12px;
+}
+
+div.filemanager h1 {
+	margin: 0;
+	padding: 0;
+	height: 32px;
+	line-height: 32px;
+
+	color: #333;
+	font-size: 20px;
+	letter-spacing: 1px;
+	overflow: hidden;
+	white-space: nowrap;
+	background-color: transparent;
+}
+
+div.filemanager h2,
+div.filemanager h3 {
+	margin: 0;
+	border-top: 1px solid #bebebe;
+	font-weight: bold;
+	padding: 2px 0 0 5px;
+	clear: both;
+}
+
+div.filemanager div.filemanager-info-area {
+	border-top: 1px solid #bebebe;
+	padding: 2px 0 0 0;
+	clear: both;
+}
+div.filemanager div.filemanager-preview-content {
+	border-top: 1px solid #bebebe;
+	padding: 2px 0 0 0;
+	clear: both;
+}
+div.filemanager div.filemanager-errors {
+	border-top: 1px solid #bebebe;
+	padding: 2px 0 0 0;
+	clear: both;
+}
+div.filemanager div.filemanager-diag-dump {
+	border-top: 1px solid #bebebe;
+	padding: 2px 0 0 0;
+	clear: both;
+}
+
+div.filemanager h2 {
+	font-size: 14px;
+}
+
+div.filemanager h3 {
+	font-size: 12px;
+}
+
+div.filemanager dl {
+	margin: 5px 0;
+	width: 100%;
+	clear: both;
+	overflow: auto;
+}
+
+div.filemanager dt,
+div.filemanager dd {
+	float: left;
+	line-height: 20px;
+	font-size: 11px;
+}
+
+div.filemanager dt {
+	clear: both;
+	width: 22%;
+	margin-left: 5%;
+	font-weight: bold;
+}
+
+div.filemanager dd {
+	/* width: 60%;    -- Safari4 renders H scrollbar for items which are a little too wide for this, yet still fit on the line :-( */
+	white-space: nowrap;
+	overflow: auto;
+}
+
+div.filemanager div.margin {
+	margin-left: 15px;
+}
+
+div.filemanager a.filemanager-dir-title {
+	padding-left: 10px;
+	padding-right: 10px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #666;
+}
+div.filemanager a.filemanager-dir-title:hover {
+	color: #999;
+}
+
+div.filemanager input.filemanager-dir {
+	margin-top: -4px;
+	background-color: #fbfbfb;
+	background-image: none !important;
+	border: 1px solid #ccc;
+	width: 70%;
+	padding: 1px 5px;
+	font-size: 14px;
+}
+
+div.filemanager span.filemanager-dir a.icon {
+	border: 1px solid #bebebe;
+	padding: 2px 5px 2px 20px;
+	text-decoration: none;
+	background: #eee url("../Images/Icons/directory.png") 2px 0 no-repeat;
+	color: #000;
+
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+}
 /* not selectable path */
 div.filemanager span.filemanager-dir span.icon {
-    border: none;
-    padding: 2px 5px 2px 20px;
-    background: url("../Images/Icons/dir.png") 2px 0 no-repeat;
-    color: #999;
+	border: none;
+	padding: 2px 5px 2px 20px;
+	background: url("../Images/Icons/directory.png") 2px 0 no-repeat;
+	color: #999;
 }
+
 div.filemanager span.filemanager-dir a.icon:hover {
-    text-decoration: none;
-    background-color: #fff;
+	text-decoration: none;
+	background-color: #fff;
 }
+
 div.filemanager span.filemanager-dir a.selected,
 div.filemanager span.filemanager-dir a.selected:hover {
-    margin: 0 1px;
-    background-color: transparent;
-    border: none;
-    cursor: auto;
+	margin: 0 1px;
+	background-color: transparent;
+	border: none;
+	cursor: auto;
 }
+
 div.filemanager-preview {
-    border-top: 1px solid #D5D9DC;
-    margin-top: 5px;
-    padding: 5px 12px 0;
+	margin-top: 5px;
 }
+
 div.filemanager-preview img.preview {
-    margin: 0 auto 1em;
-    display: block;
-    background: transparent;
-    border: 1px solid #fff;
-    max-width: 100%;
+	margin: 0 auto 1em;
+	display: block;
+	/* background: transparent; */
+	background: url("../Images/loader.gif") center center no-repeat;
+	border: 1px solid #fff;
 }
-div.filemanager-preview img.preview:hover { border: 1px solid #666 }
+
+div.filemanager-preview img.preview:hover {
+	border: 1px solid #666;
+}
+
 div.filemanager-preview ul li img,
 div.filemanager-uploader ul li img {
-    margin-top: 2px;
-    margin-right: 4px;
-    float: left;
+	margin-top: 2px;
+	margin-right: 4px;
+	float: left;
 }
-div.filemanager-engine-trident4 div.filemanager-preview img.preview { height: 100px }
+
+div.filemanager-preview p.tech_info {
+	font-size: 9px;
+	line-height: 1.2em;
+}
+
+div.filemanager-preview p.err_info {
+	color: red;
+	font-weight: bold;
+}
+
+div.filemanager-preview div.preview_err_report {
+	background-color: #fcc;
+}
+
+/*
+div.filemanager-engine-trident4 div.filemanager-preview img.preview {
+	height: 100px;
+}
+*/
+
 div.filemanager-preview ul,
+div.filemanager-uploader ul,
 div.filemanager-preview div.textpreview {
-    border: 1px solid #bebebe;
-    background: #fff;
-    padding: 2px;
-    margin: 1em auto;
-    width: 490px;
-    height: 280px;
-    overflow: auto;
+	border: 1px solid #bebebe;
+	background: #fff;
+
+	padding: 2px;
+	margin: 1em auto;
+
+	width: 490px;
+	height: 280px;
+	overflow: auto;
 }
-div.filemanager-preview div.textpreview pre { font: 10px Verdana, Arial, Helvetica, sans-serif }
+
+div.filemanager-preview div.textpreview pre {
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+}
+
 div.filemanager-preview div.object {
-    width: 100%;
-    text-align: center;
-    overflow: hidden;
+	width: 100%;
+	text-align: center;
+	overflow: hidden;
 }
+
 div.filemanager-container img.browser-add {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    z-index: 2000;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	/* z-index: 2000; */
 }
 
 /* UPLOAD */
-div.filemanager-container .file span { padding: 0 5px 0 0 }
-div.filemanager-container .file .file-size { color: #666 }
+div.filemanager-container .file span {
+	padding: 0 5px 0 0;
+}
+
+div.filemanager-container .file .file-size {
+	color: #666;
+}
+
 div.filemanager-container .file .file-cancel {
-    cursor: pointer;
-    padding-left: 5px;
-    float: right;
+	cursor: pointer;
+	padding-left: 5px;
+	float: right;
 }
 div.filemanager-container .file .file-progress {
-    margin-top: 5px;
-    float: right;
-    width: 125px;
-    height: 12px;
-    background-image: url("../Images/progress.gif");
+	margin-top: 5px;
+	float: right;
+	width: 125px;
+	height: 12px;
+	background-image: url("../Images/progress.gif");
 }
+
 div.filemanager div.checkbox {
-    float: left;
-    height: 12px;
-    width: 16px;
-    margin: 10px 3px 0;
-    background: url("../Images/checkbox.png") no-repeat;
+	float: left;
+	height: 12px;
+	width: 16px;
+	margin: 10px 3px 0;
+	background: url("../Images/checkbox.png") no-repeat;
 }
-div.filemanager div.checkboxChecked { background-position: 0 -12px }
+
+div.filemanager div.checkboxChecked {
+	background-position: 0 -12px;
+}
 
 /* SELECTED FILE */
 div.selected-file img {
-    vertical-align: bottom;
-    padding: 0 3px 0 0;
+	vertical-align: bottom;
+	padding: 0 3px 0 0;
 }
-div.selected-file span { line-height: 16px }
+div.selected-file span {
+	line-height: 16px;
+}
 div.selected-file .file-cancel {
-    cursor: pointer;
-    padding: 0 0 0 5px;
+	cursor: pointer;
+	padding: 0 0 0 5px;
 }
+
 
 /* GALLERY */
-div.filemanager button.filemanager-serialize { font-weight: bold }
+div.filemanager button.filemanager-serialize {
+	font-weight: bold;
+}
+
 div.filemanager-gallery {
-    position: absolute;
-    z-index: 1000;
-    width: 750px;
-    height: 144px;
-    display: none;
-    font-family: Tahoma, sans-serif;
-    font-size: 12px;
-    border: 1px solid #bebebe;
-    border-top: 0;
-    background: #eee;
-    border-radius-bottomleft: 5px;
-    -moz-border-radius-bottomleft: 5px;
-    -webkit-border-radius-bottomleft: 5px;
-    -o-border-radius-bottomleft: 5px;
-    border-radius-bottomright: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -webkit-border-radius-bottomright: 5px;
-    -webkit-o-radius-bottomright: 5px;
-    box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
-    -o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+	position: absolute;
+	/* z-index: 1000; */
+	width: 778px;        /* 9 images wide; old 750px value was ~ 8.5 so pretty useless */
+	height: 144px;
+	display: none;
+
+	font-family: Tahoma, sans-serif;
+	font-size: 12px;
+
+	border: 1px solid #bebebe;
+	border-top: 0;
+	background: #eee;
+
+	border-radius: 0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-radius: 0 0 5px 5px;
+	-o-border-radius: 0 0 5px 5px;
+
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
+	-o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 40px;
 }
+
 div.filemanager-gallery div.howto {
-    position: absolute;
-    z-index: 1002;
-    left: 50px;
-    top: 60px;
-    color: #666;
-    font-size: 18px;
-    font-style: italic;
+	position: absolute;
+	/* z-index: 1002; */
+	left: 50px;
+	top: 60px;
+
+	color: #666;
+	font-size: 18px;
+	font-style: italic;
 }
+
 div.filemanager-gallery ul {
-    height: 121px;
-    margin: 7px 6px;
-    padding: 4px;
-    overflow: auto;
-    overflow-x: hidden;
-    border: 1px solid #bebebe;
-    background: #f2f2f2;
+	height: 122px;     /* 2 rows @ 60px + ul padding */
+
+	margin: 7px 6px;
+	padding: 4px;
+
+	overflow: auto;
+	overflow-x: hidden;
+	border: 1px solid #bebebe;
+	background: #f2f2f2;
 }
+
 div.filemanager-gallery ul li {
-    position: relative;
-    float: left;
-    margin: 0;
-    width: 79px;
-    height: 60px;
-    list-style: none;
-    background: url("../Images/loader.gif") center center no-repeat;
+	position: relative;
+	display: inline-block;
+	float: left;
+	margin: 0 2px;
+	width: 80px;
+	height: 60px;
+	list-style: none;
+	background: url("../Images/loader.gif") center center no-repeat;
 }
-div.filemanager-gallery ul li img {
-    padding: 2px;
-    width: 75px;
-    height: 56px;
-    cursor: pointer;
+
+div.filemanager-gallery ul li div.gallery-image {
+	padding: 2px;
+	/*
+	width: 75px;
+	height: 56px;
+
+	-- see comment in Gallery.js; these are set up there as getSize() won't deliver these (it delivers actual size, and that's different for this one)
+	*/
+	cursor: pointer;
 }
+
+div.filemanager-gallery ul li div.gallery-image img {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
 div.filemanager-gallery ul li img.filemanager-remove {
-    position: absolute;
-    right: -5px;
-    top: -5px;
-    width: 16px;
-    height: 16px;
+	position: absolute;
+	right: -2px; /* place the red X inside the li entirely; otherwise the adjacent image may partly obscure it */
+	top: -1px;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
 }
+
 div.filemanager-wrapper {
-    position: absolute;
-    z-index: 1020;
-    width: 222px;
-    height: 250px;
-    font-family: Tahoma, sans-serif;
-    font-size: 12px;
-    border: 1px solid #bebebe;
-    background: #eee;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -o-border-radius: 5px;
+	position: absolute;
+	/* z-index: 1020; */
+	width: 272px;
+	height: 410px;
+
+	font-family: Tahoma, sans-serif;
+	font-size: 12px;
+
+	border: 1px solid #bebebe;
+	background: #eee;
+
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-o-border-radius: 5px;
 }
+
 div.filemanager-wrapper div.img {
-    width: 210px;
-    height: 160px;
-    margin: 5px;
-    border: 1px solid #bebebe;
-    background: #fff;
+	width: 260px;
+	height: 260px;
+	margin: 5px;
+
+	border: 1px solid #bebebe;
+	background: #fff;
 }
+
 div.filemanager-wrapper span {
-    display: block;
-    margin: 3px 8px 1px;
-    font-weight: bold;
+	display: block;
+	margin: 3px 8px 1px;
+	font-weight: bold;
 }
-div.filemanager-wrapper input {
-    width: 210px;
-    margin: 3px 5px 0;
-    border: 1px solid #bebebe;
-    background: #fff;
+
+div.filemanager-wrapper textarea {
+	padding: 2px;             /* at least Safari had this by default; looks better than 0px, but width must be corrected for this */
+	width: 256px;             /* 260px - 2 * 2 px */
+	height: 80px;
+	margin: 3px 5px 0;
+
+	border: 1px solid #bebebe;
+	background: #fff;
 }
-div.filemanager-wrapper button { margin: 3px 7px }
-img.filemanager-clone { cursor: pointer }
+
+div.filemanager-wrapper button {
+	margin: 3px 7px;
+}
+
+img.filemanager-clone {
+	cursor: pointer;
+}
 
 /* TIPS */
-.tip-filebrowser { z-index: 1201 }
+.tip-filebrowser {
+	/* z-index: 1201; */
+}
 .tip-filebrowser .tip {
-    background: #000;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -o-border-radius: 5px;
-    border-radius: 5px;
-    border: none;
+	background: #000;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	border: none;
 }
+
 .tip-filebrowser .tip-title {
-    color: #fff;
-    font: normal 9px verdana, arial, Tahoma, sans-serif;
-    padding: 1px 4px;
-    line-height: 21px;
-    text-align: center;
-    font-weight: bold;
+	color: #fff;
+	font: normal 9px verdana, arial, Tahoma, sans-serif;
+	padding: 1px 4px;
+	line-height: 21px;
+	text-align: center;
+	font-weight: bold;
 }
-.tip-filebrowser .tip-text { display: none }
+
+.tip-filebrowser .tip-text {
+	display: none;
+}
 
 /* THUMBNAILS IN PREVIEW LIST */
 div.filemanager-details {
-    overflow: auto;
-    height: 100%;
+	overflow: auto;
+	height: 100%;
 }
-div.filemanager-filelist { padding: 5px }
-div.filemanager-filelist .file {
-    position: relative;
-    float: left;
-    margin: 3px;
-    padding: 4px;
-    background-color: #f2f2f2;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    text-align: center;
-    white-space: nowrap;
-    cursor: pointer;
+div.filemanager-filelist {
+	padding: 5px;
+	border-top: 1px solid #bebebe;
 }
-div.filemanager-filelist .file:hover { background-color: #dee6f0 }
-div.filemanager-filelist .file:hover .name { color: #098ED1 }
-div.filemanager-filelist .file .thumb {
-    background-repeat: no-repeat;
-    background-position: center center;
+div.filemanager-filelist .fi, div.gallery-image {
+	position: relative;
+	display: inline-block;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-o-border-radius: 4px;
+
+	text-align: center;
+	white-space: nowrap;
+	cursor: pointer;
 }
-div.filemanager-filelist .file .name {
-    overflow: hidden;
-    margin-top: 5px;
-    font-weight: bold;
+div.gallery-image {
+	float: none;
 }
+div.filemanager-filelist .fi:hover, div.gallery-image:hover {
+	background-color: #dee6f0;
+}
+div.filemanager-filelist .fi:hover .name {
+	color: #098ED1;
+}
+div.filemanager-filelist .fi .dir-gal-thumb-bg {
+	background-repeat: no-repeat;
+	background-position: center center;
+/* Size depends on the user's choice for gallery thumbs sizes
+	width: 100%;
+	height: 120px;
+*/
+}
+div.filemanager-filelist .fi .name {
+	overflow: hidden;
+	margin-top: 5px;
+	font-weight: normal;
+}
+
+
+/* Extra (Tech.) Info / Diagnostics in preview pane */
+
+div.filemanager div.filemanager-diag-dump ul {
+	width: auto;
+	height: auto;
+	background: inherit;
+	border-top: 1px solid #BEBEBE;
+	border-bottom: 1px solid #E7E7E7;
+	border-left: 0;
+	border-right: 0;
+	margin: 5px 0 5px 10px;
+}
+
+div.filemanager div.filemanager-diag-dump ul.dump_level_00 {
+	border: 0;
+}
+
+div.filemanager div.filemanager-diag-dump li span.key {
+	margin-right: 2em;
+	display: inline-block;
+	width: 150px;
+	font-weight: bold;
+}
+
+div.filemanager div.filemanager-diag-dump li span.key.overlarge {
+	width: auto;    /* prevent key text from overlapping the data; that looks really ugly. */
+}
+
+div.filemanager div.filemanager-diag-dump li {
+	white-space: normal;
+}
+
+div.filemanager div.filemanager-diag-dump li img {
+	/* embedded images should not float in here */
+	float: none;
+}
+

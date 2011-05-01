@@ -24,7 +24,7 @@ this.Milkbox = new Class({
 		fileboxBorderWidth:'0px',
 		fileboxBorderColor:'#000000',
 		fileboxPadding:'0px',
-		resizeDuration:.5,
+		resizeDuration:0.5,
 		resizeTransition:'sine:in:out',/*function (ex. Transitions.Sine.easeIn) or string (ex. 'bounce:out')*/
 		autoPlay:false,
 		autoPlayDelay:7,
@@ -39,37 +39,46 @@ this.Milkbox = new Class({
 	},
 
 	initialize: function(options){
-		if (milkbox_singleton) return milkbox_singleton;
+		if (milkbox_singleton) {
+			return milkbox_singleton;
+		}
 		milkbox_singleton = this;
 
 		this.setOptions(options);
-		this.autoPlayBkup = { autoPlayDelay:this.options.autoPlayDelay, autoPlay:this.options.autoPlay };
+		this.autoPlayBkup = {
+			autoPlayDelay: this.options.autoPlayDelay,
+			autoPlay: this.options.autoPlay
+		};
 		this.fullOptionsBkup = {};
 		this.galleries = [];
 		this.formElements = [];
-		this.activated;
+		this.activated = false;
 		this.busy = false;
 		this.paused = false;
 		this.closed = true;
-		this.intId;
-		this.loadCheckerId;
+		this.intId = null;
+		this.loadCheckerId = null;
 		this.externalGalleries = [];
 		this.singlePageLinkId = 0;
 
-		this.currentIndex;
-		this.currentGallery;
-		this.fileReady;
+		this.currentIndex = 0;
+		this.currentGallery = null;
+		this.fileReady = false;
 		this.loadedImages = [];
-		this.currentFile;
+		this.currentFile = null;
 
-		this.display;
+		this.display = null;
 
 		this.getPageGalleries();
-		if(this.galleries.length != 0){ this.prepare(true); }
+		if(this.galleries.length !== 0){
+			this.prepare(true);
+		}
 	},
 
 	prepare:function(checkForm){
-		if(checkForm){ this.checkFormElements(); }
+		if(checkForm){
+			this.checkFormElements();
+		}
 		this.prepareHTML();
 		this.prepareEventListeners();
 		this.activated = true;
@@ -77,18 +86,38 @@ this.Milkbox = new Class({
 
 	//utility
 	open:function(gallery,index){
-		if(!this.activated){ this.prepare(true); }
+		var i;
 
-		var i = (index != undefined) ? index : 0;
-		var g = (instanceOf(gallery,MilkboxGallery)) ? gallery : this.getGallery(gallery);
-		if(!g) return;
+		if(!this.activated){
+			this.prepare(true);
+		}
+
+		var g = (instanceOf(gallery,MilkboxGallery) ? gallery : this.getGallery(gallery));
+		if(!g) {
+			return false;
+		}
+
+		// [i_a] when 'index' is not an number, it may be a element reference or string: resolve such indexes too
+		if (typeOf(index) !== 'number') {
+			i = g.get_index_of(index);
+			if (i !== -1) {
+				index = i;
+			}
+			// on failure, try to parse index as an integer value. (e.g. when index is a string representing a index number)
+		}
+		i = parseInt(index, 10);
+		if (isNaN(i)) {
+			i = 0;
+		}
 
 		this.closed = false;
-		var item = g.get_item(index);
-		if(!item) return;
+		var item = g.get_item(i);   // [i_a] index is undefined
+		if(!item) {
+			return false;
+		}
 
 		this.currentGallery = g;
-		this.currentIndex = index;
+		this.currentIndex = i;      // [i_a]
 
 		this.hideFormElements();
 
@@ -96,20 +125,25 @@ this.Milkbox = new Class({
 		this.display.appear();
 
 
-		if(this.options.autoPlay || g.options.autoplay){ this.startAutoPlay(true); }
+		if(this.options.autoPlay || g.options.autoplay){
+			this.startAutoPlay(true);
+		}
 
 		this.loadFile(item,this.getPreloads());
+		return true;
 	},
 
 
 	//utility
 	close:function(hideDisplay){
-		if(hideDisplay){ this.display.disappear(); }
+		if(hideDisplay){
+			this.display.disappear();
+		}
 		this.showFormElements();
 		this.pauseAutoPlay();
 		this.stopLoadingCheck();
 		this.currentGallery = null;
-		this.currentIndex = null;
+		this.currentIndex = 0;
 		this.currentFile = null;
 		this.busy = false;
 		this.paused = false;
@@ -119,13 +153,16 @@ this.Milkbox = new Class({
 	},
 
 	startAutoPlay:function(opening){
-		var d = this.currentGallery.options.autoplay_delay || this.options.autoPlayDelay;
-		if(d < this.options.resizeDuration*2){ d = this.options.resizeDuration*2 };
+		var d = (this.currentGallery.options.autoplay_delay || this.options.autoPlayDelay);
+		if(d < this.options.resizeDuration*2) {
+			d = this.options.resizeDuration*2;
+		}
 
-		var f = function(){
+		var f;   // [i_a] split decl and assignment in two statements as jsLint said: Problem at line 148 character 42: 'f' has not been fully defined yet.
+		f = function(){
 			this.removeEvent('fileReady',f);
 			this.intId = this.navAux.periodical(d*1000,this,[null,'next']);
-		}
+		};
 
 		if(opening){
 			this.addEvent('fileReady',f);
@@ -149,13 +186,18 @@ this.Milkbox = new Class({
 	//list:Array of objects or an object > [ { gallery:'gall1', autoplay:true, delay:6 } ]
 	//to permanently define autoplay options for any gallery
 	setAutoPlay:function(list){
-		var l = (typeOf(list) == 'object') ? [list] : list;
+		var l = (typeOf(list) !== 'array' ? [list] : list);
 		l.each(function(item){
 			var g = this.getGallery(item.gallery);
-			if(!g){ return; }
-			var a = (item.autoplay == true) ? item.autoplay : false;
-			var d = (item.delay && a) ? item.delay : this.options.autoPlayDelay;
-			g.setOptions({ autoplay:a, autoplay_delay:d }).refresh();
+			if(!g){
+				return;
+			}
+			var a = (item.autoplay == true ? item.autoplay : false);
+			var d = ((item.delay && a) ? item.delay : this.options.autoPlayDelay);
+			g.setOptions({
+				autoplay:a,
+				autoplay_delay:d
+			}).refresh();
 		},this);
 	},
 
@@ -165,17 +207,22 @@ this.Milkbox = new Class({
 	//show a file on the fly without gallery functionalities
 	openWithFile:function(file){
 		var g = new MilkboxGallery([file]);
-		this.open(g,0);
+		// [i_a] make sure this gallery is only created when there's actually something to show (supported formats and all that)
+		if (g.items && g.items.length > 0) {
+			this.open(g,0);
+		}
 	},
 
 	getPreloads:function(){
 		var items = this.currentGallery.items;
 		var index = this.currentIndex;
-		if(items.length == 1) return null;
+		if(items.length === 1) {
+			return null;
+		}
 
-		var next = (index != items.length-1) ? items[index+1] : items[0];
-		var prev = (index != 0) ? items[index-1] : items[items.length-1];
-		var preloads = (prev == next) ? [prev] : [prev,next]; //if gallery.length == 2, then prev == next
+		var next = (index != items.length-1 ? items[index+1] : items[0]);
+		var prev = (index != 0 ? items[index-1] : items[items.length-1]);
+		var preloads = (prev == next ? [prev] : [prev,next]); //if gallery.length == 2, then prev == next
 		return preloads;
 	},
 
@@ -194,8 +241,12 @@ this.Milkbox = new Class({
 			this.loadImage(fileObj);
 		}
 
-		if(!this.checkFileType(fileObj,'swf')) this.startLoadingCheck();
-		if(preloads){ this.preloadFiles(preloads); }
+		if(!this.checkFileType(fileObj,'swf')) {
+			this.startLoadingCheck();
+		}
+		if(preloads){
+			this.preloadFiles(preloads);
+		}
 	},
 
 	//to prevent the loader to show if the file is cached
@@ -236,7 +287,10 @@ this.Milkbox = new Class({
 		var file = fileObj.href;
 		var imageAsset = new Asset.image(file, {
 			onLoad:function(img){
-				if(!this.loadedImages.contains(file)){ this.loadedImages.push(file); };//see next/prev events
+				if(!this.loadedImages.contains(file)){
+					//see next/prev events
+					this.loadedImages.push(file);
+				}
 				this.loadComplete(img,fileObj.caption);
 			}.bind(this)
 		});
@@ -247,7 +301,10 @@ this.Milkbox = new Class({
 			width:fileObj.size.width,
 			height:fileObj.size.height,
 			vars:fileObj.vars,
-			params:{ wMode:'opaque', swLiveConnect:'false' }
+			params:{
+				wMode:'opaque',
+				swLiveConnect:'false'
+			}
 		});
 
 		this.loadComplete($(swfObj),fileObj.caption);
@@ -255,10 +312,10 @@ this.Milkbox = new Class({
 
 	loadHtml:function(fileObj){
 
-		var query = (fileObj.vars) ? Object.toQueryString(fileObj.vars) : '';
+		var query = (fileObj.vars ? '?' + Object.toQueryString(fileObj.vars) : '');
 
 		var iFrame = new Element('iframe',{
-			src:fileObj.href+'?'+query,
+			src:fileObj.href+query,
 			styles:{
 				'border-style':'solid',
 				'border-width':'0px'
@@ -279,15 +336,20 @@ this.Milkbox = new Class({
 	//LOAD COMPLETE ********//
 	loadComplete:function(file,caption){
 
-		if(this.closed) return;//if an onload event were still running
+		if(this.closed) {
+			return;//if an onload event were still running
+		}
 
 		this.fileReady = true;//the file is loaded and ready to be showed (see next_prev_aux())
 		this.stopLoadingCheck();
 		this.currentFile = file;
 
-		var timer = (function(){
+		var timer; // split due to jsLint: Problem at line 338 character 31: 'timer' has not been fully defined yet.
+		timer = (function(){
 			if(this.display.ready){
-				this.display.show_file(file,caption,this.currentIndex+1,this.currentGallery.items.length);
+				if (this.currentGallery.items != null) {
+					this.display.show_file(file,caption,this.currentIndex+1,this.currentGallery.items.length);
+				}
 				clearInterval(timer);
 			}
 		}).periodical(100,this);
@@ -296,8 +358,8 @@ this.Milkbox = new Class({
 	},//end loadComplete
 
 	checkFileType:function(file,type){
-		var href = (typeOf(file) != 'string') ? file.href : file;
-		var regexp = new RegExp("\.("+type+")$","i");
+		var href = (typeOf(file) !== 'string' ? file.href : file);
+		var regexp = new RegExp('\\.('+type+')$','i');
 		return href.split('?')[0].test(regexp);
 	},
 
@@ -309,20 +371,37 @@ this.Milkbox = new Class({
 		//check names
 		links.each(function(link){
 			var name = link.get('data-milkbox');
-			if(name == 'single'){
-				this.galleries.push(new MilkboxGallery(link,{name:'single'+this.singlePageLinkId++}));
+			if(name === 'single'){
+				var gallery = new MilkboxGallery(link,{
+					name:'single'+this.singlePageLinkId++
+				});
+				// [i_a] make sure this gallery is only created when there's actually something to show (supported formats and all that)
+				if (gallery.items && gallery.items.length > 0) {
+					this.galleries.push(gallery);
+				}
 			} else if(!names.contains(name)){
 				names.push(name);
 			}
 		},this);
 
 		names.each(function(name){
-			this.galleries.push(new MilkboxGallery($$('a[data-milkbox='+name+']'),{ name:name }));
+			var gallery = new MilkboxGallery($$('a[data-milkbox='+name+']'),{
+				name:name
+			});
+			// [i_a] make sure this gallery is only created when there's actually something to show (supported formats and all that)
+			if (gallery.items && gallery.items.length > 0) {
+				this.galleries.push(gallery);
+			}
 		},this);
 
 		//set default autoplay // override with setAutoPlay
 		if(this.options.autoPlay){
-			this.galleries.each(function(g){ g.setOptions({autoplay:this.options.autoPlay,autoplay_delay:this.options.autoPlayDelay}); });
+			this.galleries.each(function(g){
+				g.setOptions({
+					autoplay:this.options.autoPlay,
+					autoplay_delay:this.options.autoPlayDelay
+				});
+			});
 		}
 
 		//console.log(this.galleries);
@@ -333,37 +412,51 @@ this.Milkbox = new Class({
 		this.removePageGalleryEvents();
 
 		this.galleries = this.galleries.filter(function(gallery){
-			if(!gallery.external) gallery.clear();
+			if(!gallery.external) {
+				gallery.clear();
+			}
 			return gallery.external;
 		});
 
 		this.getPageGalleries();
 		this.addPageGalleriesEvents();
 
-		if(!this.activated){ this.prepare(true); }
+		if(!this.activated){
+			this.prepare(true);
+		}
 	},//end reloadPageGalleries
 
 	//list: optional. Can be a single string/object or an array of strings/objects
 	resetExternalGalleries:function(list){
 		this.galleries = this.galleries.filter(function(gallery){
-			if(gallery.external) gallery.clear();
+			if(gallery.external) {
+				gallery.clear();
+			}
 			return !gallery.external;
 		});
 
-		if(!list) return;
-		var array = (typeOf(list) == 'array') ? list : [list];
-		array.each(function(data){ this.addGalleries(data); }, this);
+		if(!list) {
+			return;
+		}
+		var array = (typeOf(list) === 'array' ? list : [list]);
+		array.each(function(data){
+			this.addGalleries(data);
+		}, this);
 	},
 
 	//utility
 	addGalleries:function(data){
-		if(!this.activated){ this.prepare(true); }
-		if (typeOf(data) == 'string' && data.split('?')[0].test(/\.(xml)$/i)) {
+		if(!this.activated){
+			this.prepare(true);
+		}
+		if (typeOf(data) === 'string' && data.split('?')[0].test(/\.(xml)$/i)) {
 			this.loadXml(data);
 		} else {//array or object
 			this.setObjectGalleries(data);
 		}
-		if(!this.activated){ this.prepare(true); }
+		if(!this.activated){
+			this.prepare(true);
+		}
 	},
 
 	loadXml:function(xmlfile){
@@ -378,28 +471,36 @@ this.Milkbox = new Class({
 				var t = text.replace(/(<a.+)\/>/gi,"$1></a>");
 				this.setXmlGalleries(new Element('div',{ html:t }));
 			}.bind(this),
-			onFailure:function(transport){ alert('Milkbox :: loadXml: XML file path error or local Ajax test: please test xml galleries on-line'); }
+			onFailure:function(transport){
+				alert('Milkbox :: loadXml: XML file path error or local Ajax test: please test xml galleries on-line');
+			}
 		}).send();
 	},
 
 	setXmlGalleries:function(container){
 		var c = container;
 		var xml_galleries = c.getElements('.gallery');
-		var links;
-		var aplist = [];
 		xml_galleries.each(function(xml_gallery,i){
 
 			var options = {
 				name:xml_gallery.getProperty('name'),
 				autoplay:Boolean(xml_gallery.getProperty('autoplay')),
 				autoplay_delay:Number(xml_gallery.getProperty('autoplay_delay'))
-			}
+			};
 
 			var links = xml_gallery.getChildren('a').map(function(tag){
-				return { href:tag.href, size:tag.get('data-milkbox-size'), title:tag.get('title') }
+				return {
+					href:tag.href,
+					size:tag.get('data-milkbox-size'),
+					title:tag.get('title')
+				};
 			},this);
 
-			this.galleries.push(new MilkboxGallery(links,options));
+			var gallery = new MilkboxGallery(links,options);
+			// [i_a] make sure this gallery is only created when there's actually something to show (supported formats and all that)
+			if (gallery.items && gallery.items.length > 0) {
+				this.galleries.push(gallery);
+			}
 		},this);
 
 		this.fireEvent('xmlGalleries');
@@ -407,21 +508,27 @@ this.Milkbox = new Class({
 
 	//[{ name:'gall1', autoplay:true, autoplay_delay:7, files:[{href:'file1.jpg',size:'width:900,height:100', title:'text'},{href:'file2.html',size:'w:800,h:200', title:'text'}] },{...},{...}]
 	setObjectGalleries:function(data){
-		var array = (typeOf(data) == 'array') ? data : [data];
+		var array = (typeOf(data) === 'array' ? data : [data]);
 		array.each(function(newobj){
 			var options = {
 				name:newobj.name,
 				autoplay:newobj.autoplay,
 				autoplay_delay:newobj.autoplay_delay
+			};
+			var gallery = new MilkboxGallery(newobj.files,options);
+			// [i_a] make sure this gallery is only created when there's actually something to show (supported formats and all that)
+			if (gallery.items && gallery.items.length > 0) {
+				this.galleries.push(gallery);
 			}
-			this.galleries.push(new MilkboxGallery(newobj.files,options));
 		},this);
 	},
 
 	//utility
 	getGallery:function(name){
-		var g = this.galleries.filter(function(gallery){ return gallery.name == name; },this);
-		return g[0] || null;
+		var g = this.galleries.filter(function(gallery){
+			return gallery.name == name;
+		},this);
+		return (g[0] || null);
 	},
 
 	//HTML
@@ -444,7 +551,9 @@ this.Milkbox = new Class({
 
 	checkFormElements:function(){
 		this.formElements = $$('select, textarea');
-		if(this.formElements.length == 0) return;
+		if(this.formElements.length === 0) {
+			return;
+		}
 
 		this.formElements = this.formElements.map(function(elem){
 			elem.store('visibility',elem.getStyle('visibility'));
@@ -454,21 +563,29 @@ this.Milkbox = new Class({
 	},
 
 	hideFormElements:function(){
-		if(this.formElements.length == 0) return;
-		this.formElements.each(function(elem){ elem.setStyle('display','none'); });
+		if(this.formElements.length === 0) {
+			return;
+		}
+		this.formElements.each(function(elem){
+			elem.setStyle('display','none');
+		});
 	},
 
 	showFormElements:function(){
-		if(this.formElements.length == 0) return;
+		if(this.formElements.length === 0) {
+			return;
+		}
 		this.formElements.each(function(elem){
 			elem.setStyle('visibility',elem.retrieve('visibility'));
 			elem.setStyle('display',elem.retrieve('display'));
-		})
+		});
 	},
 
 	//EVENTS
 	addPageGalleriesEvents:function(){
-		var pageGalleries = this.galleries.filter(function(gallery){ return !gallery.external });
+		var pageGalleries = this.galleries.filter(function(gallery){
+			return !gallery.external;
+		});
 		pageGalleries.each(function(gallery){
 			gallery.items.each(function(item){
 				item.element.addEvent('click',function(e){
@@ -480,7 +597,9 @@ this.Milkbox = new Class({
 	},
 
 	removePageGalleryEvents:function(){
-		var pageGalleries = this.galleries.filter(function(gallery){ return !gallery.external });
+		var pageGalleries = this.galleries.filter(function(gallery){
+			return !gallery.external;
+		});
 		pageGalleries.each(function(gallery){
 			gallery.items.each(function(item){
 				item.element.removeEvents('click');
@@ -519,16 +638,34 @@ this.Milkbox = new Class({
 
 		//reset overlay height and position onResize
 		window.addEvent('resize',function(){
-			if(this.display.ready){ this.display.resetOverlaySize(); }
+			if(this.display.ready){
+				this.display.resetOverlaySize();
+			}
 		}.bind(this));
 
 		//keyboard next/prev/close
 		window.document.addEvent('keydown',function(e){
-			if(this.busy == true || this.closed){ return; }
-			if(e.key == 'right' || e.key == 'left' || e.key == 'space'){ e.preventDefault(); }
-			if(e.key == 'right' || e.key == 'space'){ this.navAux(e,'next'); }
-			else if(e.key == 'left'){ this.navAux(e,'prev'); }
-			else if(e.key == 'esc'){ e.stop(); this.close(true); }
+			if(this.busy == true || this.closed){
+				return;
+			}
+			switch (e.key)
+			{
+			case 'right':
+			case 'space':
+				e.preventDefault();
+				this.navAux(e,'next');
+				break;
+
+			case 'left':
+				e.preventDefault();
+				this.navAux(e,'prev');
+				break;
+
+			case 'esc':
+				e.stop();
+				this.close(true);
+				break;
+			}
 		}.bind(this));
 	},
 
@@ -537,22 +674,27 @@ this.Milkbox = new Class({
 		if(e){//called from a button/key event
 			this.pauseAutoPlay();
 		} else {//called from autoplay
-			if(this.busy || !this.fileReady){ return; }//prevent autoplay()
+			if(this.busy || !this.fileReady){
+				//prevent autoplay()
+				return;
+			}
 		}
 
 		this.busy = true; //for keyboard and autoplay
 
-		var i, _i;
+		var i1, i2;
 
-		if(direction == "next"){
-			i= (this.currentIndex != this.currentGallery.items.length-1) ? this.currentIndex += 1 : this.currentIndex = 0;
-			_i= (this.currentIndex != this.currentGallery.items.length-1) ? this.currentIndex + 1 : 0;
+		if(direction === 'next'){
+			i1 = (this.currentIndex != this.currentGallery.items.length-1 ? this.currentIndex + 1 : 0);
+			this.currentIndex = i1;
+			i2 = (this.currentIndex != this.currentGallery.items.length-1 ? this.currentIndex + 1 : 0);
 		} else {
-			i= (this.currentIndex != 0) ? this.currentIndex -= 1 : this.currentIndex = this.currentGallery.items.length-1;
-			_i= (this.currentIndex != 0) ? this.currentIndex - 1 : this.currentGallery.items.length-1;
-		};
+			i1 = (this.currentIndex != 0 ? this.currentIndex - 1 : this.currentGallery.items.length-1);
+			this.currentIndex = i1;
+			i2 = (this.currentIndex != 0 ? this.currentIndex - 1 : this.currentGallery.items.length-1);
+		}
 
-		this.loadFile(this.currentGallery.get_item(i),[this.currentGallery.get_item(_i)]);
+		this.loadFile(this.currentGallery.get_item(i1),[this.currentGallery.get_item(i2)]);
 	}
 
 
@@ -576,12 +718,14 @@ var MilkboxDisplay= new Class({
 		margin_top:0,
 		filebox_border_color:'#000000',
 		filebox_padding:'0px',
-		resize_duration:.5,
+		resize_duration:0.5,
 		resize_transition:'sine:in:out',
 		centered:false,
 		auto_size:false,
 		autosize_max_height:0,
+		fixup_dimension:true,
 		image_of_text:'of',
+		zIndex: 410000,  // required to be a high number > 400000 as the 'filemanager as tinyMCE plugin' sits at z-index 400K+
 		onNextClick:function(){},
 		onPrevClick:function(){},
 		onPlayPause:function(){},
@@ -592,28 +736,28 @@ var MilkboxDisplay= new Class({
 	initialize: function(options){
 		this.setOptions(options);
 
-		this.overlay;
-		this.mainbox;
-		this.filebox;
-		this.bottom;
-		this.controls;
-		this.caption;
-		this.close;
-		this.next;
-		this.prev;
-		this.playpause;
+		this.overlay = null;
+		this.mainbox = null;
+		this.filebox = null;
+		this.bottom = null;
+		this.controls = null;
+		this.caption = null;
+		this.close = null;
+		this.next = null;
+		this.prev = null;
+		this.playpause = null;
 		this.paused = false;
-		this.count;
+		this.count = null;
 
 		this.mode = 'standard';
 		this.ready = false;//after overlay and mainbox become visible == true
 
-		this.overlay_show_fx;
-		this.overlay_hide_fx;
+		this.overlay_show_fx = null;
+		this.overlay_hide_fx = null;
 
-		this.mainbox_show_fx;
-		this.mainbox_hide_fx;
-		this.mainbox_resize_fx;
+		this.mainbox_show_fx = null;
+		this.mainbox_hide_fx = null;
+		this.mainbox_resize_fx = null;
 
 		this.current_file = null;
 
@@ -630,7 +774,7 @@ var MilkboxDisplay= new Class({
 				'visibility':'visible',
 				'position':'fixed',
 				'display':'none',
-				'z-index':410000,  // required to be a high number > 400000 as the 'filemanager as tinyMCE plugin' sits at z-index 400K+
+				'z-index': this.options.zIndex,
 				'left':0,
 				'width':'100%',
 				'opacity':0,
@@ -644,25 +788,25 @@ var MilkboxDisplay= new Class({
 		this.mainbox = new Element('div', {
 			'id':'mbox-mainbox',
 			'styles': {
-				'position':(this.options.centered) ? 'fixed' : 'absolute',
+				'position':(this.options.centered ? 'fixed' : 'absolute'),
 				'overflow':'hidden',
 				'display':'none',
-				'z-index':410001,   // required to be > overlay.z-index
+				'z-index': this.options.zIndex + 1,   // required to be > overlay.z-index
 				'width':this.options.init_width,
 				'height':this.options.init_height,
 				'opacity':0,
 				'margin':0,
 				'left':'50%',
 				'marginLeft':-(this.options.init_width/2),
-				'marginTop':(this.options.centered) ? -(this.options.init_height/2) : '',
-				'top':(this.options.centered) ? '50%' : ''
+				'marginTop':(this.options.centered ? -(this.options.init_height/2) : ''),
+				'top':(this.options.centered ? '50%' : '')
 			}
 		}).inject($(document.body));
 
 		this.filebox = new Element('div#mbox-filebox').inject(this.mainbox);
 
-		this.bottom = new Element('div#mbox-bottom').setStyle('visibility','hidden').inject(this.mainbox);//;
-		this.controls = new Element('div#mbox-controls')//.setStyle('visibility','hidden');
+		this.bottom = new Element('div#mbox-bottom').setStyle('visibility','hidden').inject(this.mainbox);
+		this.controls = new Element('div#mbox-controls'); //.setStyle('visibility','hidden');
 		this.caption = new Element('div#mbox-caption',{'html':'test'}).setStyle('display','none');
 
 		this.bottom.adopt(new Element('div.mbox-reset'),this.controls, this.caption, new Element('div.mbox-reset'));
@@ -757,10 +901,18 @@ var MilkboxDisplay= new Class({
 	},//end prepare_effects
 
 	prepare_events:function(){
-		$$(this.overlay,this.close).addEvent('click', function(){ this.disappear(); }.bind(this));
-		this.prev.addEvent('click',function(){ this.fireEvent('prevClick') }.bind(this));
-		this.next.addEvent('click',function(){ this.fireEvent('nextClick') }.bind(this));
-		this.playpause.addEvent('click',function(){ this.fireEvent('playPauseClick') }.bind(this) );
+		$$(this.overlay,this.close).addEvent('click', function(){
+			this.disappear();
+		}.bind(this));
+		this.prev.addEvent('click',function(){
+			this.fireEvent('prevClick');
+		}.bind(this));
+		this.next.addEvent('click',function(){
+			this.fireEvent('nextClick');
+		}.bind(this));
+		this.playpause.addEvent('click',function(){
+			this.fireEvent('playPauseClick');
+		}.bind(this) );
 	},
 
 	show_file:function(file,caption,index,length){
@@ -769,14 +921,34 @@ var MilkboxDisplay= new Class({
 		this.hide_loader();
 
 		if(file.match && file.match('img') && (this.options.auto_size || this.options.centered)){
-			var file = this.get_resized_image(file);
+			file = this.get_resized_image(file);
+		}
+
+		var file_size = {
+			w:file.width.toInt(),
+			h:file.height.toInt()
 		};
+		if(!file_size.w || !file_size.h){
+			//data-milkbox-size not passed
+			if (!this.options.fixup_dimension) {
+				alert('Milkbox error: you must pass size values if the file is swf or html or a free file (openWithFile)');
+				return;
+			}
+			// assume some sensible defaults:
+			var dims = Window.getSize();
+			file.width = dims.x;
+			file.height = dims.y;
+			file_size = {
+				w: dims.x * 0.85,
+				h: dims.y * 0.85
+			};
+			file.set({ 'width':file_size.w.toInt(), 'height':file_size.h.toInt() });
+		}
+		file_size = Object.map(file_size,function(value){
+			return value.toInt();
+		});
 
-		var file_size = { w:file.width.toInt(), h:file.height.toInt() };
-		if(!file_size.w || !file_size.h){ alert('Milkbox error: you must pass size values if the file is swf or html or a free file (openWithFile)'); return; }//data-milkbox-size not passed
-		file_size = Object.map(file_size,function(value){ return value.toInt(); });
-
-		this.caption.innerHTML = (caption) ? caption : '';
+		this.caption.innerHTML = (caption ? caption : '');
 		this.update_count(index,length);
 
 		var filebox_addsize = this.filebox.getStyle('border-width').toInt()*2+this.filebox.getStyle('padding').toInt()*2;
@@ -795,7 +967,7 @@ var MilkboxDisplay= new Class({
 			h:final_h,
 			total_w:final_w+mainbox_size.totalWidth-mainbox_size.width,
 			total_h:final_h+mainbox_size.totalHeight-mainbox_size.height
-		}
+		};
 
 		this.current_file = file;
 		this.resize_to(target_size);
@@ -808,11 +980,14 @@ var MilkboxDisplay= new Class({
 		var ratio;
 		var check;
 
-		var i_size = { w:image.get('width').toInt(), h:image.get('height').toInt() };
+		var i_size = {
+			w:image.get('width').toInt(),
+			h:image.get('height').toInt()
+		};
 
 		//cut out some pixels to make it better
 		var w_size = window.getSize();
-		var max_size = {
+		max_size = {
 			w:w_size.x-60,
 			h:w_size.y-68-this.options.margin_top*2
 		};
@@ -827,16 +1002,22 @@ var MilkboxDisplay= new Class({
 			check = 'w';
 		}
 
-		ratio = (ratio <= 1) ? ratio : 1;
+		ratio = (ratio <= 1 ? ratio : 1);
 
-		i_size = Object.map(i_size,function(value){ return Math.floor(value*ratio); });
+		i_size = Object.map(i_size,function(value){
+			return Math.floor(value*ratio);
+		});
 
-		ratio = (max_size[check]/i_size[check] <= 1) ? max_size[check]/i_size[check] : 1;
-		i_size = Object.map(i_size,function(value){ return Math.floor(value*ratio); });
+		ratio = (max_size[check]/i_size[check] <= 1 ? max_size[check]/i_size[check] : 1);
+		i_size = Object.map(i_size,function(value){
+			return Math.floor(value*ratio);
+		});
 
 		if(this.options.autosize_max_height > 0){
-			ratio = (this.options.autosize_max_height/i_size.height < 1) ? this.options.autosize_max_height/i_size.height : 1;
-			i_size = Object.map(i_size,function(value){ return Math.floor(value*ratio); });
+			ratio = (this.options.autosize_max_height/i_size.height < 1 ? this.options.autosize_max_height/i_size.height : 1);
+			i_size = Object.map(i_size,function(value){
+				return Math.floor(value*ratio);
+			});
 		}
 
 		image.set({ 'width':i_size.w, 'height':i_size.h });
@@ -849,7 +1030,7 @@ var MilkboxDisplay= new Class({
 			'width':target_size.w,
 			'height':target_size.h,
 			'marginLeft':-(target_size.total_w/2).round(),
-			'marginTop':(this.options.centered) ? -(target_size.total_h/2).round() : ''
+			'marginTop':(this.options.centered ? -(target_size.total_h/2).round() : '')
 		});
 	},
 
@@ -879,7 +1060,9 @@ var MilkboxDisplay= new Class({
 	},
 
 	appear:function(){
-		if(!this.options.centered){ this.mainbox.setStyle('top',window.getScroll().y+this.options.margin_top); }
+		if(!this.options.centered){
+			this.mainbox.setStyle('top',window.getScroll().y+this.options.margin_top);
+		}
 		this.overlay_show_fx.start(this.options.overlay_opacity);
 	},
 
@@ -906,8 +1089,8 @@ var MilkboxDisplay= new Class({
 			'width':this.options.init_width,
 			'height':this.options.init_height,
 			'marginLeft':-(this.options.init_width/2),
-			'marginTop':(this.options.centered) ? -(this.options.init_height/2) : '',
-			'top':(this.options.centered) ? '50%' : ''
+			'marginTop':(this.options.centered ? -(this.options.init_height/2) : ''),
+			'top':(this.options.centered ? '50%' : '')
 		});
 
 		this.overlay_hide_fx.start(0);
@@ -921,7 +1104,9 @@ var MilkboxDisplay= new Class({
 		this.mainbox_show_fx,
 		this.overlay_hide_fx,
 		this.overlay_show_fx
-		].each(function(fx){ fx.cancel(); });
+		].each(function(fx){
+			fx.cancel();
+		});
 	},
 
 	set_mode:function(gallery_type){
@@ -956,7 +1141,7 @@ var MilkboxDisplay= new Class({
 
 	set_paused:function(paused){
 		this.paused = paused;
-		var pos = (this.paused) ? '0 -66px' : '';
+		var pos = (this.paused ? '0 -66px' : '');
 		this.playpause.setStyle('background-position',pos);
 	},
 
@@ -965,7 +1150,10 @@ var MilkboxDisplay= new Class({
 	},
 
 	resetOverlaySize:function(){
-		if(this.overlay.getStyle('opacity') == 0){ return; };//resize only if visible
+		if(this.overlay.getStyle('opacity') == 0){
+			//resize only if visible
+			return;
+		}
 		var h = window.getSize().y;
 		this.overlay.setStyles({ 'height':h });
 	}
@@ -1005,50 +1193,69 @@ var MilkboxGallery = new Class({
 	},
 
 	prepare_gallery:function(){
-		switch(typeOf(this.source)){
-			case 'element'://single
-				if(this.check_extension(this.source.href)){ this.items = [this.source]; }
-				break;
-			case 'elements'://html
-				this.items = this.source.filter(function(link){ return this.check_extension(link.href); },this);
-				break;
-			case 'array'://xml, array
-				this.items = this.source.filter(function(link){ return this.check_extension(link.href); },this);
-				this.external = true;
-				break;
-			default:
-				return;
+		switch(typeOf(this.source))
+		{
+		case 'element'://single
+			if(this.check_extension(this.source.href)){
+				this.items = [this.source];
+			}
+			break;
+		case 'elements'://html
+			this.items = this.source.filter(function(link){
+				return this.check_extension(link.href);
+			},this);
+			break;
+		case 'array'://xml, array
+			this.items = this.source.filter(function(link){
+				return this.check_extension(link.href);
+			},this);
+			this.external = true;
+			break;
+		default:
+			return;
 		}
 	},
 
 	//turns everything into an object
 	prepare_elements:function(){
 		//console.log('items gallery', this.items);
+		if(!this.items || this.items.length === 0) {
+			return;   // [i_a] prevent crash when none have been set up
+		}
+
 		this.items = this.items.map(function(item){
 			var splitted_url = item.href.split('?');
 			var output = {};
-			output.element = (typeOf(item) == 'element') ? item : null;
+			output.element = (typeOf(item) === 'element' ? item : null);
 			output.href = splitted_url[0];
-			output.vars = (splitted_url[1]) ? splitted_url[1].parseQueryString() : null;
+			output.vars = (splitted_url[1] ? splitted_url[1].parseQueryString() : null);
 			output.size = null;
-			output.caption = (output.element) ? output.element.get('title') : item.title;
-			var size_string = (output.element) ? output.element.get('data-milkbox-size') : item.size;
-			if(size_string){ output.size = Object.map(this.get_item_props(size_string),function(value,key){ return value.toInt(); }); }
+			output.caption = (output.element ? output.element.get('title') : item.title);
+			var size_string = (output.element ? output.element.get('data-milkbox-size') : item.size);
+			if(size_string){
+				output.size = Object.map(this.get_item_props(size_string),function(value,key){
+					return value.toInt();
+				});
+			}
 			return output;
 		},this);
 
-		if(this.items.length == 0) return;
+		if(this.items.length === 0) {
+			return;
+		}
 
-		this.type = (this.items.length == 1) ? 'single' : (this.options.autoplay) ? 'autoplay' : 'standard';
+		this.type = (this.items.length === 1 ? 'single' : (this.options.autoplay ? 'autoplay' : 'standard'));
 	},
 
 	check_extension:function(string){
-		return string.split('?')[0].test(/\.(gif|jpg|jpeg|png|swf|html)$/i);
+		return string.split('?')[0].test(/\.(gif|jpg|jpeg|png|bmp|tif|tiff|swf|html)$/i);
 	},
 
 	get_index_of:function(item){
-		var index = (typeOf(item) == 'string') ? this.items.indexOf(this.items.filter(function(i){ i.href == item })[0]) : this.items.indexOf(item);
-		return this.items.indexOf(item);
+		var index = (typeOf(item) === 'string' ? this.items.indexOf(this.items.filter(function(i){
+				return i.href === item;
+			})[0]) : this.items.indexOf(item));
+		return index;
 	},
 
 	get_item:function(index){
@@ -1057,7 +1264,7 @@ var MilkboxGallery = new Class({
 
 	get_item_props:function(prop_string){
 		var props = {};
-		var s = prop_string.split(',').each(function(p,i){
+		prop_string.split(',').each(function(p,i){
 			var clean = p.trim().split(':');
 			props[clean[0].trim()] = clean[1].trim();
 		},this);
@@ -1065,7 +1272,7 @@ var MilkboxGallery = new Class({
 	},
 
 	refresh:function(){
-		this.type = (this.items.length == 1) ? 'single' : (this.options.autoplay) ? 'autoplay' : 'standard';
+		this.type = (this.items.length === 1 ? 'single' : (this.options.autoplay ? 'autoplay' : 'standard'));
 	},
 
 	clear:function(){
@@ -1077,7 +1284,18 @@ var MilkboxGallery = new Class({
 
 
 
-//Creating Milkbox instance: you can comment this code and instantiate Milkbox somewhere else instead.
+//Creating Milkbox instance: you can comment this code out and instantiate Milkbox somewhere else instead.
 window.addEvent('domready', function(){
-	milkbox = new Milkbox({ centered:false });
+	this.milkbox = new Milkbox({
+		centered:false
+	});
 });
+
+
+/*
+jsLint settings:
+disallow undefined variables, assume browser
+predefined variables: alert, Class, Options, Events, instanceOf, typeOf, Request, Fx, Asset, Swiff, $, $$, Element
+                      include these to shut up jsLint about further undefined/too early errors:     Milkbox, MilkboxGallery, MilkboxDisplay
+expect ~ 15 errors reported
+*/

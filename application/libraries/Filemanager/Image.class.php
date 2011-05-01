@@ -278,7 +278,7 @@ class Image {
 	/**
 	 * Calculate the resize dimensions of an image, given the original dimensions and size limits
 	 *
-	 * @param int $orig_x the original's width 
+	 * @param int $orig_x the original's width
 	 * @param int $orig_y the original's height
 	 * @param int $x the maximum width after resizing has been done
 	 * @param int $y the maximum height after resizing has been done
@@ -469,7 +469,7 @@ class Image {
 	 */
 	public function resize($x = null, $y = null, $ratio = true, $resizeWhenSmaller = false)
 	{
-		if(empty($this->image) || (empty($x) && empty($y))) 
+		if(empty($this->image) || (empty($x) && empty($y)))
 		{
 			throw new Exception('resize_inerr');
 		}
@@ -479,7 +479,7 @@ class Image {
 		{
 			throw new Exception('resize_inerr:' . $this->meta['width'] . ' x ' . $this->meta['height']);
 		}
-	
+
 		// speedup? only do the resize operation when it must happen:
 		if ($dims['must_resize'])
 		{

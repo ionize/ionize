@@ -158,8 +158,8 @@ Object.append(Asset, {
 				}).inject(document.head);
 // Partikule
 				if (typeOf(properties.onload) == 'function')
-// /Partikule
 					properties.onload();
+// /Partikule
 			}.bind(this),
 			onFailure: function(){
 			},

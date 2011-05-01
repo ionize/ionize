@@ -1,7 +1,7 @@
 /*
 ---
 
-description: FileManager, Ionize version.
+description: FileManager
 
 authors: Christoph Pojer (@cpojer), Fabian Vogelsteller (@frozeman)
 
@@ -9,1571 +9,3579 @@ license: MIT-style license
 
 requires:
   core/1.3.1: '*'
-  more/1.3.1.1: [Array.Extras, String.QueryString, Hash, Element.Delegation, Element.Measure, Fx.Scroll, Fx.SmoothScroll, Drag, Drag.Move, Assets, Tips ]
+  more/1.3.1.1: [Request.Queue, Array.Extras, String.QueryString, Hash, Element.Delegation, Element.Measure, Fx.Scroll, Fx.SmoothScroll, Drag, Drag.Move, Assets, Tips ]
 
 provides: Filemanager
 
 ...
 */
 
-var MooFileManagerUniqueID = 1;
-
-/**
-
-Class: FileManager
-	Creates a Filemanager.
-	
-Syntax:
-	(start code)
-	new Filemanager(options);
-	(end)	
-
-Arguments:
-	options
-
-Options:
-	directory - (string)
-    url - (string). Default to null,
-    assetBasePath - (string). Default to null,
-    language - (String). Default to 'en',
-    selectable - (boolean). Default to false,
-    destroy - (boolean). Default to true,
-    rename - (boolean). Default to true,
-    download - (boolean). Default to false,
-    createFolders - (boolean). Default to false,
-    filter - (string). Default to '',
-    hideOnClick - (boolean). Default to false,
-    hideClose - (boolean). Default to false. If the 'standalone' option is set to true, this option will automatically set to true.
-    hideOverlay - (boolean). Default to false. If the 'standalone' option is set to true, this option will automatically set to true.
-	hideQonDelete - (boolean). Default to false,
-	standalone - (boolean). Default to true. If set to false, returns the Filemanager without enclosing window / overlay.
-	parentContainer - (string). ID of the parent container. If not set, FM will consider its first container parent for fitSizes();
-	advancedEffects - (boolean). Default to true. If set to false, it disables the fading effects.
-	hideOnSelect - (boolean). Default to true. If set to false, it leavers the FM open after a picture select.
-
-*/
 var FileManager = new Class({
 
-  Implements: [Options, Events],
+	Implements: [Options, Events],
 
-  Request: null,
-  Directory: null,
-  Current: null,
-  ID: null,
+	Request: null,
+	RequestQueue: null,
+	Directory: null,
+	Current: null,
+	ID: null,
 
-  options: {
-    /*onComplete: function(){},
-    onModify: function(){},
-    onShow: function(){},
-    onHide: function(){},
-    onPreview: function(){}*/
-    directory: '',
-    url: null,
-    assetBasePath: null,
-    language: 'en',
-    selectable: false,
-    destroy: true,
-    rename: true,
-    download: false,
-    createFolders: true,
-    filter: '',
-    hideOnClick: false,
-    hideClose: false,
-    hideOverlay: false,
-	hideQonDelete: false,
-	hideonSelect: false,
-	standalone: false,
-	parentContainer: null,
-	advancedEffects: false,
-	thumbSize: 120
-  },
+	options: {
+		/*
+		 * onComplete: function(           // Fired when the 'Select' button is clicked
+		 *                      path,      // URLencoded absolute URL path to selected file
+		 *                      file,      // the file specs object: .name, .path, .size, .date, .mime, .icon, .icon48, .thumb48, .thumb250
+		 *                      fmobj      // reference to the FileManager instance which fired the event
+		 *                     )
+		 *
+		 * onModify: function(             // Fired when either the 'Rename' or 'Delete' icons are clicked or when a file is drag&dropped.
+		 *                                 // Fired AFTER the action is executed.
+		 *                    file,        // a CLONE of the file specs object: .name, .path, .size, .date, .mime, .icon, .icon48, .thumb48, .thumb250
+		 *                    json,        // The JSON data as sent by the server for this 'destroy/rename/move/copy' request
+		 *                    mode,        // string specifying the action: 'destroy', 'rename', 'move', 'copy'
+		 *                    fmobj        // reference to the FileManager instance which fired the event
+		 *                   )
+		 *
+		 * onShow: function(               // Fired AFTER the file manager is rendered
+		 *                  fmobj          // reference to the FileManager instance which fired the event
+		 *                 )
+		 *
+		 * onHide: function(               // Fired AFTER the file manager is removed from the DOM
+		 *                  fmobj          // reference to the FileManager instance which fired the event
+		 *                 )
+		 *
+		 * onScroll: function(             // Cascade of the window scroll event
+		 *                    e,           // reference to the event object (argument passed from the window.scroll event)
+		 *                    fmobj        // reference to the FileManager instance which fired the event
+		 *                   )
+		 *
+		 * onPreview: function(            // Fired when the preview thumbnail image is clicked
+		 *                     src,        // this.get('src') ???
+		 *                     fmobj,      // reference to the FileManager instance which fired the event
+		 *                     el          // reference to the 'this' ~ the element which was clicked
+		 *                    )
+		 *
+		 * onDetails: function(            // Fired when an item is picked from the files list to be previewed
+		 *                                 // Fired AFTER the server request is completed and BEFORE the preview is rendered.
+		 *                     json,       // The JSON data as sent by the server for this 'detail' request
+		 *                     fmobj       // reference to the FileManager instance which fired the event
+		 *                    )
+		 *
+		 * onHidePreview: function(        // Fired when the preview is hidden (e.g. when uploading)
+		 *                                 // Fired BEFORE the preview is removed from the DOM.
+		 *                         fmobj   // reference to the FileManager instance which fired the event
+		 *                        )
+		 */
+		directory: '',
+		url: null,
+		assetBasePath: null,
+		language: 'en',
+		selectable: false,
+		destroy: false,
+		rename: false,
+		move_or_copy: false,
+		download: false,
+		createFolders: false,
+		filter: '',
+		hideOnClick: false,
+		hideClose: false,
+		hideOverlay: false,
+		hideQonDelete: false,
+		verbose: false,
+		zIndex: 1000,
+		styles: {},
+		listPaginationSize: 100,          // add pagination per N items for huge directories (speed up interaction)
+		listPaginationAvgWaitTime: 2000,  // adaptive pagination: strive to, on average, not spend more than this on rendering a directory chunk
+		propagateData: {},                // extra query parameters sent with every request to the backend
 
-  hooks: {
-    show: {},
-    cleanup: {}
-  },
+		standalone: true,                 // (boolean). Default to true. If set to false, returns the Filemanager without enclosing window / overlay.
+		parentContainer: null,            // (string). ID of the parent container. If not set, FM will consider its first container parent for fitSizes();
+		hideOnSelect: true,               // (boolean). Default to true. If set to false, it leavers the FM open after a picture select.
+// Partikule
+// To set the thumb gallery container size for each thumb (dir-gal-thumb-bg)
+// Could also be returned by the backend lib, but makes alot of data for nothing on big galleries.		
+		thumbSmallSize: 48,
+// /Partikule
+		mkServerRequestURL: null          // (function) specify your own alternative URL/POST data constructor when you use a framework/system which requires such.   function([object] fm_obj, [string] request_code, [assoc.array] post_data)
+	},
 
-  initialize: function(options)
-  {
-    this.setOptions(options);
-    this.ID = MooFileManagerUniqueID++;
-    this.dragZIndex = 1300;
-    this.droppables = [];
-    this.assetBasePath = this.options.assetBasePath.replace(/(\/|\\)*$/, '/');
-    this.Directory = this.options.directory;
-    this.listType = 'list';
-    this.dialogOpen = false;
-    this.usingHistory = false;
-    this.fmShown = false;
+	/*
+	 * hook items are objects (kinda associative arrays, as they are used here), where each
+	 * key item is called when the hook is invoked.
+	 */
+	hooks: {
+		show: {},                         // invoked after the 'show' event
+		cleanup: {},                      // invoked before the 'hide' event
+		cleanupPreview: {},               // invoked before the 'hidePreview' event
+		fill: {}                          // invoked after the fill operation has completed
+	},
 
-    this.language = Object.clone(FileManager.Language.en);
-    if(this.options.language != 'en') this.language = Object.merge(this.language, FileManager.Language[this.options.language]);
+	initialize: function(options) {
+		this.options.mkServerRequestURL = this.mkServerRequestURL;
 
-// Added by Partikule
-	if (this.options.standalone == false)
-	{
-		this.options.hideOverlay = true;
-		this.options.hideClose = true;
-	}
+		this.setOptions(options);
+		this.diag.verbose = this.options.verbose;
+		this.ID = String.uniqueID();
+		this.droppables = [];
+		this.assetBasePath = this.options.assetBasePath.replace(/(\/|\\)*$/, '/');
+		this.root = null;
+// Problem here
+		this.CurrentDir = null;
+//		this.CurrentDir = {path:'/files', name:'files'};
+		this.listType = 'list';
+		this.dialogOpen = false;
+		this.storeHistory = false;
+		this.fmShown = false;
+		this.drop_pending = 0;           // state: 0: no drop pending, 1: copy pending, 2: move pending
+		this.view_fill_timer = null;     // timer reference when fill() is working chunk-by-chunk.
+		this.view_fill_startindex = 0;   // offset into the view JSON array: which part of the entire view are we currently watching?
+		this.view_fill_json = null;      // the latest JSON array describing the entire list; used with pagination to hop through huge dirs without repeatedly consulting the server.
+		this.listPaginationLastSize = this.options.listPaginationSize;
+		this.Request = null;
+		this.downloadIframe = null;
+		this.downloadForm = null;
+		this.drag_is_active = false;
+		this.ctrl_key_pressed = false;
+		this.pending_error_dialog = null;
+		// timer for dir-gallery click / dblclick events:
+		this.dir_gallery_click_timer = null;
 
-    this.container = new Element('div', {'class': 'filemanager-container' + (Browser.opera ? ' filemanager-engine-presto' : '') + (Browser.ie ? ' filemanager-engine-trident' : '') + (Browser.ie8 ? '4' : '') + (Browser.ie9 ? '5' : '')});
-    this.filemanager = new Element('div', {'class': 'filemanager'}).inject(this.container);
-	this.header = new Element('div', {'class': 'filemanager-header'}).inject(this.filemanager);
-	this.menu = new Element('div', {'class': 'filemanager-menu'}).inject(this.filemanager);
-    this.loader = new Element('div', {'class': 'loader', opacity: 0, tween: {duration: 300}}).inject(this.header);
-    this.previewLoader = new Element('div', {'class': 'loader', opacity: 0, tween: {duration: 300}});
-    this.browserLoader = new Element('div', {'class': 'loader', opacity: 0, tween: {duration: 300}});
-    
-    // switch the path, from clickable to input text
-    this.clickablePath = new Element('span', {'class': 'filemanager-dir'});
-    this.selectablePath = new Element('input',{'type':'text','class': 'filemanager-dir','readonly':'readonly'});
-    this.pathTitle = new Element('a', {href:'#','class': 'filemanager-dir-title',text: this.language.dir}).addEvent('click',(function(e){
-      e.stop();
-      if(this.header.getElement('span.filemanager-dir')!= null) {
-        this.selectablePath.setStyle('width',(this.header.getSize().x - this.pathTitle.getSize().x - 55));
-        this.selectablePath.replaces(this.clickablePath);
-      } else
-        this.clickablePath.replaces(this.selectablePath);
-    }).bind(this));
-    this.header.adopt(this.pathTitle,this.clickablePath);
+		var dbg_cnt = 0;
 
-// Altered by Partikule
-// Because the header is positionned -30px before the container, we hide it for the moment if th FM isn't standalone.
+		this.RequestQueue = new Request.Queue({
+			concurrent: 3,              // 3 --> 75% max load on a quad core server
+			autoAdvance: true,
+			stopOnFailure: false,
+
+			onRequest: (function(){
+				//this.diag.log('request queue: onRequest: ', arguments);
+			}).bind(this),
+
+			onComplete: (function(name){
+				//this.diag.log('request queue: onComplete: ', arguments);
+
+				// clean out the item from the queue; doesn't seem to happen automatically :-(
+				var cnt = 0;
+				Object.each(this.RequestQueue.requests, function() {
+					cnt++;
+				});
+				// cut down on the number of reports:
+				if (Math.abs(cnt - dbg_cnt) >= 25)
+				{
+					this.diag.log('request queue: name counts: ', cnt, ', queue length: ', this.RequestQueue.queue.length);
+					dbg_cnt = cnt;
+				}
+
+			}).bind(this),
+
+			onCancel: (function(){
+				this.diag.log('request queue: onCancel: ', arguments);
+			}).bind(this),
+
+			onSuccess: (function(){
+				//this.diag.log('request queue: onSuccess: ', arguments);
+			}).bind(this),
+
+			onFailure: (function(name){
+				this.diag.log('request queue: onFailure: ', arguments);
+			}).bind(this),
+
+			onException: (function(name){
+				this.diag.log('request queue: onException: ', arguments);
+			}).bind(this)
+
+		});
+
+		// add a special custom routine to the queue object: we want to be able to clear PART OF the queue!
+		this.RequestQueue.cancel_bulk = (function(marker)
+		{
+			Object.each(this.requests, function(q, name)
+			{
+				var n = name.split(':');
+				if (n[0] === marker)
+				{
+					// match! revert by removing the request (and cancelling it!)
+					this.cancel(name);
+					this.removeRequest(name);
+
+					this.clear(name);           // eek, a full table scan! yech.
+					delete this.requests[name];
+					delete this.reqBinders[name];
+				}
+			}, this);
+
+			// now that we have cleared out all those requests, some of which may have been running at the time, we need to resume the loading:
+			this.resume();
+
+		}).bind(this.RequestQueue);
+
+		this.language = Object.clone(FileManager.Language.en);
+		if (this.options.language !== 'en') {
+			this.language = Object.merge(this.language, FileManager.Language[this.options.language]);
+		}
+
+// Partikule
+		if (!this.options.standalone)
+		{
+			this.options.hideOverlay = true;
+			this.options.hideClose = true;
+		}
+// /Partikule
+
+		this.container = new Element('div', {
+			'class': 'filemanager-container' + (Browser.opera ? ' filemanager-engine-presto' : '') + (Browser.ie ? ' filemanager-engine-trident' : '') + (Browser.ie8 ? '4' : '') + (Browser.ie9 ? '5' : ''),
+			styles:
+			{
+				'z-index': this.options.zIndex
+			}
+		});
+		this.filemanager = new Element('div', {
+			'class': 'filemanager',
+			styles: Object.append({},
+			this.options.styles,
+			{
+				'z-index': this.options.zIndex + 1
+			})
+		}).inject(this.container);
+		this.header = new Element('div', {
+			'class': 'filemanager-header' /* ,
+			styles:
+			{
+				'z-index': this.options.zIndex + 3
+			} */
+		}).inject(this.filemanager);
+		this.menu = new Element('div', {
+			'class': 'filemanager-menu' /* ,
+			styles:
+			{
+				'z-index': this.options.zIndex + 2
+			} */
+		}).inject(this.filemanager);
+		this.loader = new Element('div', {'class': 'loader', opacity: 0, tween: {duration: 'short'}}).inject(this.header);
+		this.previewLoader = new Element('div', {'class': 'loader', opacity: 0, tween: {duration: 'short'}});
+		this.browserLoader = new Element('div', {'class': 'loader', opacity: 0, tween: {duration: 'short'}});
+		// switch the path, from clickable to input text
+		this.clickablePath = new Element('span', {'class': 'filemanager-dir'});
+		this.selectablePath = new Element('input',{'type': 'text', 'class': 'filemanager-dir', 'readonly': 'readonly'});
+		this.pathTitle = new Element('a', {href:'#','class': 'filemanager-dir-title',text: this.language.dir}).addEvent('click',(function(e) {
+			this.diag.log('pathTitle-click event: ', e, ' @ ', e.target.outerHTML);
+			e.stop();
+			if (this.header.getElement('span.filemanager-dir') != null) {
+				this.selectablePath.setStyle('width',(this.header.getSize().x - this.pathTitle.getSize().x - 55));
+				this.selectablePath.replaces(this.clickablePath);
+			}
+			else {
+				this.clickablePath.replaces(this.selectablePath);
+			}
+		}).bind(this));
+		this.header.adopt(this.pathTitle,this.clickablePath);
+
+// Partikule
+// Because the header is positioned -30px before the container, we hide it for the moment if the FM isn't standalone.
 // Need to think about a better integration
-	if (this.options.standalone == false)
-	{
-		this.header.hide();
-		this.filemanager.setStyle('width','100%');
-	}
-
-    var self = this;
-
-    // -> catch a click on an element in the file/folder browser
-    this.relayClick = function(e)
-    {
-      if(e) e.stop();
-      self.storeHistory = true;
-
-      var file = this.retrieve('file');
-      if (this.retrieve('edit')) {
-        this.eliminate('edit');
-        return;
-      }
-      if (file.mime == 'text/directory'){
-        this.addClass('selected');
-        self.load(self.Directory + file.name);
-        return;
-      }
-
-      self.fillInfo(file);
-      if (self.Current) self.Current.removeClass('selected');
-      self.Current = this.addClass('selected');
-
-      self.switchButton();
-    };
-
-// Partikule
-	// Cacth a double click click on thumb list in the preview thumb list
-	this.relayDblClick = function(e)
-	{
-		if(e) e.stop();
-		
-		var file = this.retrieve('file');
-
-		if (self.Current) self.Current.removeClass('selected');
-		self.Current = this.addClass('selected');
-
-		self.CurrentFile = file;
-
-		self.open();
-	};
+		if (!this.options.standalone)
+		{
+			this.header.hide();
+			this.filemanager.setStyle('width', '100%');
+		}
 // /Partikule
 
-    this.toggleList = function(e) {
-      if(e) e.stop();
-      $$('.filemanager-browserheader a').set('opacity',0.5);
-      if(!this.browserMenu_thumb.retrieve('set',false)) {
-        this.browserMenu_list.store('set',false);
-        this.browserMenu_thumb.store('set',true).set('opacity',1);
-        this.listType = 'thumb';
-        if(typeof jsGET != 'undefined') jsGET.set('fmListType=thumb');
-      } else {
-        this.browserMenu_thumb.store('set',false);
-        this.browserMenu_list.store('set',true).set('opacity',1);
-        this.listType = 'list';
-        if(typeof jsGET != 'undefined') jsGET.set('fmListType=list');
-      }
-      this.load(this.Directory);
-    };
+		var self = this;
 
-    this.browsercontainer = new Element('div',{'class': 'filemanager-browsercontainer'}).inject(this.filemanager);
-    this.browserheader = new Element('div',{'class': 'filemanager-browserheader'}).inject(this.browsercontainer);
-    this.browserheader.adopt(this.browserLoader);
-    this.browserScroll = new Element('div', {'class': 'filemanager-browserscroll'}).inject(this.browsercontainer).addEvent('mouseover',(function(){
-      this.browser.getElements('span.fi.hover').each(function(span){ span.removeClass('hover'); });
-    }).bind(this));
-    
-// Partikule : Add a scroller to scroll the browser list when moving a file
-	this.scroller = new Scroller(this.browserScroll);
+		this.browsercontainer = new Element('div',{'class': 'filemanager-browsercontainer'}).inject(this.filemanager);
+		this.browserheader = new Element('div',{'class': 'filemanager-browserheader'}).inject(this.browsercontainer);
+		this.browserheader.adopt(this.browserLoader);
+		this.browserScroll = new Element('div', {'class': 'filemanager-browserscroll'}).inject(this.browsercontainer).addEvents({
+			'mouseover': (function(e) {
+					//this.diag.log('mouseover: ', e);
+
+					// sync mouse and keyboard-driven browsing: the keyboard requires that we keep track of the hovered item,
+					// so we cannot simply leave it to a :hover CSS style. Instead, we find out which element is currently
+					// hovered:
+					var row = null;
+					if (e.target)
+					{
+						row = (e.target.hasClass('fi') ? e.target : e.target.getParent('span.fi'));
+						if (row)
+						{
+							row.addClass('hover');
+						}
+					}
+					this.browser.getElements('span.fi.hover').each(function(span) {
+						// prevent screen flicker: only remove the class for /other/ nodes:
+						if (span != row) {
+							span.removeClass('hover');
+							var rowicons = span.getElements('img.browser-icon');
+							if (rowicons)
+							{
+								rowicons.each(function(icon) {
+									icon.set('tween', {duration: 'short'}).fade(0);
+								});
+							}
+						}
+					});
+
+					if  (row)
+					{
+						var icons = row.getElements('img.browser-icon');
+						if (icons)
+						{
+							icons.each(function(icon) {
+								if (e.target == icon)
+								{
+									icon.set('tween', {duration: 'short'}).fade(1);
+								}
+								else
+								{
+									icon.set('tween', {duration: 'short'}).fade(0.5);
+								}
+							});
+						}
+					}
+				}).bind(this),
+
+			/* 'mouseout' */
+			'mouseleave': (function(e) {
+					//this.diag.log('mouseout: ', e);
+
+					// only bother us when the mouse cursor has just left the browser area; anything inside there is handled
+					// by the recurring 'mouseover' event above...
+					//
+					// - do NOT remove the 'hover' marker from the row; it will be used by the keyboard!
+					// - DO fade out the action icons, though!
+					this.browser.getElements('span.fi.hover').each(function(span) {
+						var rowicons = span.getElements('img.browser-icon');
+						if (rowicons)
+						{
+							rowicons.each(function(icon) {
+								icon.set('tween', {duration: 'short'}).fade(0);
+							});
+						}
+					});
+
+				}).bind(this)
+			});
+		this.browserMenu_thumb = new Element('a',{
+				'id':'toggle_side_boxes',
+				'class':'listType',
+				'style' : 'margin-right: 10px;',
+				'title': this.language.toggle_side_boxes
+			}).set('opacity',0.5).addEvents({
+				click: this.toggleList.bind(this)
+			});
+		this.browserMenu_list = new Element('a',{
+				'id':'toggle_side_list',
+				'class':'listType',
+				'title': this.language.toggle_side_list
+			}).set('opacity',1).addEvents({
+				click: this.toggleList.bind(this)
+			});
+
+// Partikule : Thumbs list in preview panel
+		this.browserMenu_thumbList = new Element('a',{
+				'id': 'show_dir_thumb_gallery',
+				'title': this.language.show_dir_thumb_gallery
+			}).addEvent('click', function()
+			{
+				// do NOT change the jsGET history carrying our browsing so far; the fact we want to view the dirtree should
+				// *NOT* blow away the recall in which directory we are (and what item is currently selected):
+
+				//if (typeof jsGET !== 'undefined')
+				//  jsGET.clear();
+
+				// no need to request the dirscan again: after all, we only wish to render another view of the same directory.
+				// (This means, however, that we MAY requesting any deferred thumbnails)
+
+				//self.load(self.options.directory, true);
+				//return self.deselect();   // nothing to return on a click event, anyway. And do NOT loose the selection!
+
+				// the code you need here is identical to clicking on the current directory in the top path bar:
+				// show the 'directory' info in the detail pane again (this is a way to get back from previewing single files to previewing the directory as a gallery)
+				this.diag.log('show_dir_Thumb_gallery button click: current directory!', this.CurrentDir, ', startdir: ', this.options.directory);
+				this.fillInfo();
+			}.bind(this));
 // /Partikule
 
 
-    this.browserMenu_thumb = new Element('a',{
-        'id':'togggle_side_boxes',
-        'class':'listType'
-      }).set('opacity',0.5).addEvents({
-        click: this.toggleList.bind(this)
-      });
-    this.browserMenu_list = new Element('a',{
-        'id':'togggle_side_list',
-        'class':'listType'
-      }).set('opacity',1).addEvents({
-        click: this.toggleList.bind(this)
-      });
-// Partikule : Thumb list in preview panel
-    this.browserMenu_thumbList = new Element('a',{
-        'id':'togggle_side_thumbs'
-      }).set('opacity',1).addEvent('click', function(){
-		if (typeof jsGET !== 'undefined')
-			jsGET.clear();
-        self.load(self.Directory, true);
-   		return self.deselect();
-      });
+		this.browser_dragndrop_info = new Element('a',{
+				'id':'drag_n_drop',
+				'title': this.language.drag_n_drop_disabled
+			}); // .setStyle('visibility', 'hidden');
+		this.browser_paging = new Element('div',{
+				'id':'fm_view_paging'
+			}).set('opacity', 0); // .setStyle('visibility', 'hidden');
+		this.browser_paging_first = new Element('a',{
+				'id':'paging_goto_first'
+			}).set('opacity', 1).addEvents({
+				click: this.paging_goto_first.bind(this)
+			});
+		this.browser_paging_prev = new Element('a',{
+				'id':'paging_goto_previous'
+			}).set('opacity', 1).addEvents({
+				click: this.paging_goto_prev.bind(this)
+			});
+		this.browser_paging_next = new Element('a',{
+				'id':'paging_goto_next'
+			}).set('opacity', 1).addEvents({
+				click: this.paging_goto_next.bind(this)
+			});
+		this.browser_paging_last = new Element('a',{
+				'id':'paging_goto_last'
+			}).set('opacity', 1).addEvents({
+				click: this.paging_goto_last.bind(this)
+			});
+		this.browser_paging_info = new Element('span',{
+				'id':'paging_info',
+				'text': ''
+			});
+		this.browser_paging.adopt([this.browser_paging_first, this.browser_paging_prev, this.browser_paging_info, this.browser_paging_next, this.browser_paging_last]);
+
+// Partikule : Added the browserMenu_thumbList to the browserheader
+		this.browserheader.adopt([this.browserMenu_thumbList, this.browserMenu_thumb, this.browserMenu_list, this.browser_dragndrop_info, this.browser_paging]);
 // /Partikule
-    this.browserheader.adopt([this.browserMenu_thumbList, this.browserMenu_thumb,this.browserMenu_list]);
 
-    this.browser = new Element('ul', {'class': 'filemanager-browser'}).inject(this.browserScroll);
+		this.browser = new Element('ul', {'class': 'filemanager-browser'}).inject(this.browserScroll);
 
-    if(this.options.createFolders) this.addMenuButton('create');
-    if(this.options.download) this.addMenuButton('download');
-    if(this.options.selectable) this.addMenuButton('open');
+		if (this.options.createFolders) this.addMenuButton('create');
+		if (this.options.download) this.addMenuButton('download');
+		if (this.options.selectable) this.addMenuButton('open');
 
-    this.info = new Element('div', {'class': 'filemanager-infos', opacity: 0}).inject(this.filemanager);
+		this.info = new Element('div', {'class': 'filemanager-infos'});
 
-    var head = new Element('div', {'class': 'filemanager-head'}).adopt([
-      new Element('img', {'class': 'filemanager-icon'}),
-      new Element('h1')
-    ]);
-	this.info.adopt(head);
+		this.info_head = new Element('div', {
+			'class': 'filemanager-head',
+			styles:
+			{
+				opacity: 0
+			}
+		}).adopt([
+			new Element('img', {'class': 'filemanager-icon'}),
+			new Element('h1')
+		]);
 
-// Partikule. Removed :
+		this.preview = new Element('div', {'class': 'filemanager-preview'}).addEvent('click:relay(img.preview)', function() {
+			self.fireEvent('preview', [this.get('src'), self, this]);
+		});
+
+		// We need to group the headers and lists together because we may
+		// use some CSS to reorganise it a bit in the custom event handler.  So we create "filemanager-preview-area" which
+		// will contain the h2 for the preview and also the preview content returned from
+		// Backend/FileManager.php
+		this.preview_area = new Element('div', {'class': 'filemanager-preview-area',
+			styles:
+			{
+				opacity: 0
+			}
+		});
+
+// Partikule. Removed new Element('h2', {'class': 'filemanager-headline' :
 // 1. To gain more vertical space for preview
-// 2. Because the user now this is info about the file
+// 2. Because the user knows this is info about the file
+		this.preview_area.adopt([
+			//new Element('h2', {'class': 'filemanager-headline', text: this.language.more}),
+			this.preview
+		]);
+
+// Partikule.
+// 1. To gain more vertical space for preview
+// 2. Because the user knows this is info about the file
 // 3. Less is more :-)
-//    this.info.adopt([head, new Element('h2', {text: this.language.information})]);
+		this.info.adopt([this.info_head, this.preview_area]).inject(this.filemanager);
+// /Partikule
 
-    new Element('dl').adopt([
-      new Element('dt', {text: this.language.modified}),
-      new Element('dd', {'class': 'filemanager-modified'}),
-      new Element('dt', {text: this.language.type}),
-      new Element('dd', {'class': 'filemanager-type'}),
-      new Element('dt', {text: this.language.size}),
-      new Element('dd', {'class': 'filemanager-size'})
-    ]).inject(this.info);
-
-    this.preview = new Element('div', {'class': 'filemanager-preview'}).addEvent('click:relay(img.preview)', function(){
-      self.fireEvent('preview', [this.get('src')]);
-    });
-
-// Partikule. Removed :
-// 1. To gain more vertical space for preview
-// 2. Because the user now this is info about the file
-/*
-    this.info.adopt([
-      new Element('h2', {'class': 'filemanager-headline', text: this.language.more}),
-      this.preview
-    ]);
-*/
-	this.info.adopt(this.preview);
-
-
-    if(!this.options.hideClose) {
-      this.closeIcon = new Element('a', {
-        'class': 'filemanager-close',
-        opacity: 0.5,
-        title: this.language.close,
-        events: {click: this.hide.bind(this)}
-      }).inject(this.filemanager).addEvent('mouseover',function(){this.fade(1);}).addEvent('mouseout',function(){this.fade(0.5);});
-    }
-
-    this.tips = new Tips({
-      className: 'tip-filebrowser',
-      offsets: {x: 15, y: 0},
-      text: null,
-      showDelay: 50,
-      hideDelay: 50,
-      onShow: function()
-      {
 // Partikule
-// Certainly a better way to optimize this....
-        if (self.advancedEffects == true)
-        	this.tip.set('tween', {duration: 250}).setStyle('display', 'block').fade(1);
-        else
-         	this.tip.setStyle('display', 'block');
-      },
-      onHide: function()
-      {
-        if (self.advancedEffects == true)
-        {
-        	this.tip.fade(0).get('tween').chain(function()
-        	{
-				this.element.setStyle('display', 'none');
-		    });
+// Add of the thumbnail list in the preview panel
+
+// We fill this one while we render the directory tree view to ensure that the deferred thumbnail loading system
+// (using 'detail / mode=direct' requests to obtain the actual thumbnail paths) doesn't become a seriously complex
+// mess.
+// This way, any updates coming from the server are automatically edited into this list; whether it is shown or
+// not depends on the decisions in fillInfo()
+//
+// Usage:
+// - One doubleclick on one thumb in this list will select the file : quicker select
+// - One click displays the preview, but with the file in bigger format : less clicks to see the picture wider.
+
+		// Thumbs list container (in preview panel)
+		this.dir_filelist = new Element('div', {'class': 'filemanager-filelist'});
+
+// /Partikule
+
+		if (!this.options.hideClose) {
+			this.closeIcon = new Element('a', {
+				'class': 'filemanager-close',
+				opacity: 0.5,
+				title: this.language.close,
+				events: {click: this.hide.bind(this)}
+			}).inject(this.filemanager).addEvent('mouseover',function() {
+					this.fade(1);
+				}).addEvent('mouseout',function() {
+					this.fade(0.5);
+				});
+		}
+
+		this.tips = new Tips({
+			className: 'tip-filebrowser',
+			offsets: {x: 15, y: 0},
+			text: null,
+			showDelay: 50,
+			hideDelay: 50,
+			onShow: function() {
+				this.tip.setStyle('z-index', self.options.zIndex + 501).set('tween', {duration: 'short'}).setStyle('display', 'block').fade(1);
+			},
+			onHide: function() {
+				this.tip.fade(0).get('tween').chain(function() {
+					this.element.setStyle('display', 'none');
+				});
+			}
+		});
+		if (!this.options.hideClose) {
+			this.tips.attach(this.closeIcon);
+		}
+
+		this.imageadd = new Asset.image(this.assetBasePath + 'Images/add.png', {
+			'class': 'browser-add',
+			styles:
+			{
+				'z-index': this.options.zIndex + 1600
+			}
+		}).set('opacity', 0).set('tween', {duration: 'short'}).inject(this.container);
+
+		if (!this.options.hideOverlay) {
+			this.overlay = new Overlay(Object.append((this.options.hideOnClick ? {
+				events: {
+					click: this.hide.bind(this)
+				}
+			} : {}),
+			{
+				styles:
+				{
+					'z-index': this.options.zIndex - 1
+				}
+			}));
+		}
+
+		this.bound = {
+			keydown: (function(e)
+			{
+				// at least FF on Win will trigger this function multiple times when keys are depressed for a long time. Hence time consuming actions are don in 'keyup' whenever possible.
+
+				this.diag.log('keydown: key press: ', e);
+				if (e.control || e.meta)
+				{
+					if (this.drag_is_active && !this.ctrl_key_pressed)
+					{
+						// only init the fade when actually switching CONTROL key states!
+						this.imageadd.fade(1);
+					}
+					this.ctrl_key_pressed = true;
+				}
+			}).bind(this),
+			keyup: (function(e)
+			{
+				this.diag.log('keyup: key press: ', e);
+				if (!e.control && !e.meta)
+				{
+					if (/* this.drag_is_active && */ this.ctrl_key_pressed)
+					{
+						// only init the fade when actually switching CONTROL key states!
+						this.imageadd.fade(0);
+					}
+					this.ctrl_key_pressed = false;
+				}
+
+				if (!this.dialogOpen)
+				{
+					switch (e.key)
+					{
+					case 'tab':
+						e.stop();
+						this.toggleList();
+						break;
+
+					case 'esc':
+						e.stop();
+						this.hide();
+						break;
+					}
+				}
+			}).bind(this),
+			keyboardInput: (function(e)
+			{
+				this.diag.log('keyboardInput key press: ', e);
+				if (this.dialogOpen) return;
+				switch (e.key)
+				{
+				case 'up':
+				case 'down':
+				case 'pageup':
+				case 'pagedown':
+				case 'home':
+				case 'end':
+				case 'enter':
+				case 'delete':
+					e.preventDefault();
+					this.browserSelection(e.key);
+					break;
+				}
+			}).bind(this),
+			scroll: (function(e)
+			{
+				this.fireEvent('scroll', [e, this]);
+				this.fitSizes();
+			}).bind(this)
+		};
+
+		if (this.options.standalone)
+		{
+			this.container.inject(document.body);
+
+			// ->> autostart filemanager when set
+			this.initialShow();
 		}
 		else
 		{
-			this.tip.setStyle('display', 'none');		
+			this.options.hideOverlay = true;
 		}
-      }
-    });
-    if(!this.options.hideClose)
-      this.tips.attach(this.closeIcon);
+		return this;
+	},
 
-    this.imageadd = new Asset.image(this.assetBasePath + 'Images/add.png', {
-      'class': 'browser-add'
-    }).set('opacity', 0).set('tween',{duration:300}).inject(this.container);
+	initialShowBase: function() {
+		if (typeof jsGET !== 'undefined' && jsGET.get('fmID') == this.ID) {
+			this.show();
+		}
+		else {
+			window.addEvent('jsGETloaded',(function() {
+				if (typeof jsGET !== 'undefined' && jsGET.get('fmID') == this.ID)
+					this.show();
+			}).bind(this));
+		}
+	},
 
-// Move to bottom by Partikule
-//    this.container.inject(document.body);
+	// overridable method:
+	initialShow: function() {
+		this.initialShowBase();
+	},
 
-    if(!this.options.hideOverlay) {
-      this.overlay = new Overlay(this.options.hideOnClick ? {
-        events: {click: this.hide.bind(this)}
-      } : null);
-    }
+	allow_DnD: function(j, pagesize)
+	{
+		if (!this.options.move_or_copy)
+			return false;
 
-    this.bound = {
-      keydown: (function(e){
-        if (e.control || e.meta) this.imageadd.fade(1);
-      }).bind(this),
-      keyup: (function(){
-        this.imageadd.fade(0);
-      }).bind(this),
-      toggleList: (function(e){
-        if(this.dialogOpen) return;
-        if(e.key=='tab') {
-          e.preventDefault();
-          this.toggleList();
-        }
-      }).bind(this),
-      keyesc:( function(e) {
-        if(this.dialogOpen) return;
+		if (!j || !j.dirs || !j.files || !pagesize)
+			return true;
 
-        if (e.key=='esc') this.hide();
-      }).bind(this),
-      keyboardInput: (function(e) {
-        if(this.dialogOpen) return;
-        if (e.key=='up') {
-          e.preventDefault();
-          this.browserSelection('up');
-        }
-        if (e.key=='down') {
-          e.preventDefault();
-          this.browserSelection('down');
-        }
-        if (e.key=='enter') {
-          e.preventDefault();
-          this.browserSelection('enter');
-        }
-      }).bind(this),
-      scroll: (function(){
-        this.fireEvent('scroll');
-        this.fitSizes();
-      }).bind(this)
-    };
+		return (j.dirs.length + j.files.length <= pagesize * 4);
+	},
 
-    this.fitSizes = function()
-    {
-// Partikule : Add the standalone check
-		if (this.standalone == true)
+	/*
+	 * default method to produce a suitable request URL/POST; as several frameworks out there employ url rewriting, one way or another,
+	 * we now allow users to provide their own construction method to replace this one: simply provide your own method in
+	 *   options.mkServerRequestURL
+	 * Like this one, it MUST return an object, containing two properties:
+	 *
+	 *   url:  (string) contains the URL sent to the server for the given event/request (which is always transmitted as a POST request)
+	 *   data: (assoc. array): extra parameters added to this POST. (Mainly there in case a framework wants to have the 'event' parameter
+	 *         transmitted as a POST data element, rather than having it included in the request URL itself in some form.
+	 */
+	mkServerRequestURL: function(fm_obj, request_code, post_data)
+	{
+		// WARNING: 'this' in here is actually **NOT** pointing at the FM instance; use 'fm_obj' for that!  (In fact, 'this' points at the 'options' object, but consider that an 'undocumented feature' as it may change in the future without notice!)
+
+		return {
+			url: fm_obj.options.url + (fm_obj.options.url.indexOf('?') == -1 ? '?' : '&') + Object.toQueryString({
+					event: request_code
+				}),
+			data: post_data
+		};
+	},
+
+	fitSizes: function()
+	{
+		if (this.options.standalone)
 		{
 			this.filemanager.center(this.offsets);
 		}
 		else
 		{
-			parent = (this.options.parentContainer != null) ? $(this.options.parentContainer) : this.container.getParent();
+			var parent = (this.options.parentContainer != null ? $(this.options.parentContainer) : this.container.getParent());
 			if (parent)
 			{
 				parentSize = parent.getSize();
-				this.filemanager.setStyle('height',parentSize.y);
+				this.filemanager.setStyle('height', parentSize.y);
 			}
 		}
-		
-		containerSize = this.filemanager.getSize();
-		headerSize = this.browserheader.getSize();
-		menuSize = this.menu.getSize();
+
+		var containerSize = this.filemanager.getSize();
+		var headerSize = this.browserheader.getSize();
+		var menuSize = this.menu.getSize();
 		this.browserScroll.setStyle('height',containerSize.y - headerSize.y);
 		this.info.setStyle('height',containerSize.y - menuSize.y);
-    };
+	},
 
-    // ->> autostart filemanager when set
-    if(!this.galleryPlugin) {
-      if(typeof jsGET != 'undefined' && jsGET.get('fmID') == this.ID)
-          this.show();
-      else {
-        window.addEvent('jsGETloaded',(function(){
-          if(typeof jsGET != 'undefined' && jsGET.get('fmID') == this.ID)
-            this.show();
-        }).bind(this));
-      }
-    }
-    
-// Added by Partikule
-	if (this.options.standalone == true)
-	{
-    	this.container.inject(document.body);
-    }
-    else
-    {
-    	this.options.hideOverlay = true;
-    	return this;
-    }
-  },
+	// see also: http://cass-hacks.com/articles/discussion/js_url_encode_decode/
+	// and: http://xkr.us/articles/javascript/encode-compare/
+	// This is a much simplified version as we do not need exact PHP rawurlencode equivalence.
+	//
+	// We have one mistake to fix: + instead of %2B. We don't mind
+	// that * and / remain unencoded. Not exactly RFC3986, but there you have it...
+	//
+	// WARNING: given the above, we ASSUME this function will ONLY be used to encode the
+	//          a single URI 'path', 'query' or 'fragment' component at a time!
+	escapeRFC3986: function(s) {
+		return encodeURI(s.toString()).replace(/\+/g, '%2B').replace(/#/g, '%23');
+	},
+	unescapeRFC3986: function(s) {
+		return decodeURI(s.toString());
+	},
 
-  hashHistory: function(vars) { // get called from the jsGET listener
-    this.storeHistory = false;
-    //console.log(vars);
-    if(vars.changed['fmPath'] == '')
-      vars.changed['fmPath'] = '/';
+	// -> catch a click on an element in the file/folder browser
+	relayClick: function(e, el) {
+		if (e) e.stop();
 
-    Object.each(vars.changed,function(value,key) {
-        if(key == 'fmPath') {
-          this.load(value);
-        }
+		// ignore mouse clicks while drag&drop + resulting copy/move is pending.
+		//
+		// Theoretically only the first click originates from the same mouse event as the 'drop' event, so we
+		// COULD reset 'drop_pending' after processing that one.
+		if (this.drop_pending != 0)
+		{
+			this.drop_pending = 0;
+		}
+		else
+		{
+			this.storeHistory = true;
 
-        if(key == 'fmFile') {
-          this.browser.getElements('span.fi span').each((function(current) {
-            current.getParent('span.fi').removeClass('hover');
-            if(current.get('title') == value) {
-              this.deselect();
-              this.Current = current.getParent('span.fi');
-              new Fx.Scroll(this.browserScroll,{duration: 250,offset:{x:0,y:-(this.browserScroll.getSize().y/4)}}).toElement(current.getParent('span.fi'));
-              current.getParent('span.fi').addClass('selected');
-              this.fillInfo(current.getParent('span.fi').retrieve('file'));
-            }
-          }).bind(this));
-        }
-    },this);
-  },
+			var file = el.retrieve('file');
+			this.diag.log('on relayClick file = ', file, ', current directory: ', this.CurrentDir, '@ el = ', el);
+			if (el.retrieve('edit')) {
+				el.eliminate('edit');
+				return;
+			}
+			if (file.mime === 'text/directory')
+			{
+				el.addClass('selected');
+				// reset the paging to page #0 as we clicked to change directory
+				this.store_view_fill_startindex(0);
+				this.load(file.path);
+				return;
+			}
 
-  show: function(e)
-  {
-    if(e) e.stop();
-    if(this.fmShown) return;
-    this.fmShown = true;
-    this.onShow = false;
-    
-    // get and set history
-    if(typeof jsGET != 'undefined')
-    {
-      if(jsGET.get('fmFile') != null) this.onShow = true;
-      
-      if(jsGET.get('fmListType') != null) {
-        $$('.filemanager-browserheader a').set('opacity',0.5);
-        this.listType = jsGET.get('fmListType');
-        if(this.listType == 'thumb')
-          this.browserMenu_thumb.store('set',true).set('opacity',1);
-        else
-          this.browserMenu_list.store('set',true).set('opacity',1);
-      }
-      if(jsGET.get('fmPath') != null) this.Directory = jsGET.get('fmPath');
-      jsGET.set({'fmID':this.ID,'fmPath':this.Directory});
-      this.hashListenerId = jsGET.addListener(this.hashHistory,false,this);
-    }
+			// when we're right smack in the middle of a drag&drop, which may end up as a MOVE, do NOT send a 'detail' request
+			// alongside (through fillInfo) as that may lock the file being moved, server-side.
+			// It's good enough to disable the detail view, if we want/need to.
+			//
+			// Note that this.drop_pending tracks the state of the drag&drop state machine -- more functions may check this one!
+			if (this.Current) {
+				this.Current.removeClass('selected');
+			}
+			// ONLY do this when we're doing a COPY or on a failed attempt...
+			// CORRECTION: as even a failed 'drop' action will have moved the cursor, we can't keep this one selected right now:
+			this.Current = el.addClass('selected');
+			// We need to have Current assigned before fillInfo because fillInfo adds to it
+			this.fillInfo(file);
 
-    this.load(this.Directory);
-    
-    if( ! this.options.hideOverlay)
-      this.overlay.show();
-
-    this.info.set('opacity', 0);
-    this.container.set('opacity', 0);
-
-    this.container.setStyles({
-        opacity: 0,
-        display: 'block'
-      });
-
-    window.addEvents({
-      'scroll': this.bound.scroll,
-      'resize': this.bound.scroll
-    });
-    
-    
-    // add keyboard navigation
-    document.addEvent('keydown', this.bound.toggleList);
-    window.addEvent('keydown', this.bound.keyesc);
-    if((Browser.Engine && (Browser.Engine.trident || Browser.Engine.webkit)) || (Browser.ie || Browser.chrome || Browser.safari))
-		document.addEvent('keydown', this.bound.keyboardInput);
-    else
-		document.addEvent('keypress', this.bound.keyboardInput);
-
-// Partikule : Advanced effect ?   
-    if (this.options.advancedEffects)
-	    this.container.tween('opacity',1);
-	else
-	    this.container.set('opacity',1);
-
-    this.fitSizes();
-    this.fireEvent('show');
-    this.fireHooks('show');
-    
-// Added by Partikule
-   	if (this.options.standalone == false)
-	{
-    	return this.container;
-    }
-
-    
-  },
-
-  hide: function(e){
-    if (e) e.stop();
-    if(!this.fmShown) return;
-    this.fmShown = false;
-
-    // stop hashListener
-    if(typeof jsGET != 'undefined') {
-      jsGET.removeListener(this.hashListenerId);
-      jsGET.remove(['fmID','fmPath','fmFile','fmListType']);
-    }
-
-    if(!this.options.hideOverlay)
-      this.overlay.hide();
-    this.tips.hide();
-    this.browser.empty();
-    this.container.setStyle('display', 'none');
-
-    // add keyboard navigation
-    window.removeEvent('scroll', this.bound.scroll).removeEvent('resize', this.bound.scroll);
-    document.removeEvent('keydown', this.bound.toggleList);
-    window.removeEvent('keydown', this.bound.keyesc);
-    if((Browser.Engine && (Browser.Engine.trident || Browser.Engine.webkit)) || (Browser.ie || Browser.chrome || Browser.safari))
-     document.removeEvent('keydown', this.bound.keyboardInput);
-    else
-     document.removeEvent('keypress', this.bound.keyboardInput);
-
-    this.fireHooks('cleanup');
-    this.fireEvent('hide');
-  },
-
-  open: function(e)
-  {
-    if (e) e.stop();
-    
-    if (!this.Current) return;
-    
-    this.fireEvent('complete', 
-    [
-      this.normalize(this.Current.retrieve('file').path),
-      this.Current.retrieve('file')
-    ]);
+			this.switchButton4Current();
+		}
+	},
 
 // Partikule
-// Why Hide ? For some usage, it can be useful to keep it open (more than 3 files select and it will be really annoying to re-open the FM for each file select)
-	if (this.options.hideOnSelect == true)
-		this.hide();
-  },
 
-  download: function(e) {
-    e.stop();
-    if (!this.Current) return;
-    window.open(this.options.url + '?event=download&file='+this.normalize(this.Current.retrieve('file').path));
-  },
+	/**
+	 * Catches both single and double click on thumb list icon in the directory preview thumb/gallery list
+	 */
+	relayDblClick: function(e, self, dg_el, file, clicks)
+	{
+		if (e) e.stop();
 
-  create: function(e) {
-    e.stop();
-    var input = new Element('input', {'class': 'createDirectory','autofocus':'autofocus'});
+		this.diag.log('on relayDblClick file = ', file, ', current dir: ', this.CurrentDir, ', # clicks: ', clicks);
 
-    var self = this;
-    new Dialog(this.language.createdir, {
-      language: {
-        confirm: this.language.create,
-        decline: this.language.cancel
-      },
-      content: [
-        input
-      ],
-      onOpen: this.onDialogOpen.bind(this),
-      onClose: this.onDialogClose.bind(this),
-      onShow: function(){
-        input.addEvent('keyup', function(e){
-          if (e.key == 'enter') e.target.getParent('div.dialog').getElement('button.dialog-confirm').fireEvent('click');
-        }).focus();
-      },
-      onConfirm: function() {
-        new FileManager.Request({
-          url: self.options.url + '?event=create',
-          onRequest: self.browserLoader.set('opacity', 1),
-          onSuccess: self.fill.bind(self),
-          onComplete: self.browserLoader.fade(0),
-          onError: (function(xmlHttpRequest) {
-            this.showError(xmlHttpRequest);
-            this.browserLoader.fade(0);
-          }).bind(self),
-          data: {
-            file: input.get('value'),
-            directory: self.Directory,
-            type: self.listType
-          }
-        }).send();
-      }
-    });
-  },
+		this.tips.hide();
 
-  deselect: function(el) {
-    if (el && this.Current != el) return;
-    if (el) this.fillInfo();
-    if (this.Current) this.Current.removeClass('selected');
-    this.Current = null;
-    this.switchButton();
-  },
+		var el_ref = dg_el.retrieve('el_ref');
 
-  load: function(dir, nofade) {
-
-    this.deselect();
-// Partikule : Effects
-    if (!nofade && this.options.advancedEffects == true) this.info.fade(0);
-    else if (!nofade) this.info.set('opacity', 0);
-// /Partikule
-
-    if (this.Request) this.Request.cancel();
-
-    this.Request = new FileManager.Request({
-      url: this.options.url,
-      onRequest: (function(){
-        this.browserLoader.set('opacity', 1);
-      }).bind(this),
-      onSuccess: (function(j) {
-        this.fill(j, nofade);
-      }).bind(this),
-      onComplete: (function() {
-        this.fitSizes();
-        this.browserLoader.fade(0);
-      }).bind(this),
-      onError: (function(xmlHttpRequest) {
-        this.showError(xmlHttpRequest);
-        this.browserLoader.fade(0);
-      }).bind(this),
-      data: {
-        directory: dir,
-        type: this.listType,
-        filter: this.options.filter
-      }
-    }, this).send();
-  },
-
-  destroy_noQasked: function(file) {
-    var self = this;
-	new FileManager.Request({
-	  url: self.options.url + '?event=destroy',
-	  data: {
-		file: file.name,
-		directory: self.Directory,
-		filter: self.options.filter
-	  },
-	  onRequest: self.browserLoader.set('opacity', 1),
-	  onSuccess: function(j){
-		if (!j || j.content!='destroyed'){
-		  new Dialog(self.language.nodestroy, {language: {confirm: self.language.ok}, buttons: ['confirm']});
-		  return;
+		if (this.Current)
+		{
+			this.Current.removeClass('selected');
 		}
 
-		self.fireEvent('modify', [Object.clone(file)]);
-		file.element.getParent().fade(0).get('tween').chain(function(){
-		  self.deselect(file.element);
-		  this.element.destroy();
-		});
-	  },
-	  onComplete: self.browserLoader.fade(0),
-	  onError: (function(xmlHttpRequest) {
-		this.showError(xmlHttpRequest);
-		this.browserLoader.fade(0);
-	  }).bind(self)
-	}).send();
-  },
+		this.Current = el_ref.addClass('selected');
+		file = el_ref.retrieve('file');
 
-  destroy: function(file){
-    var self = this;
-	if (self.options.hideQonDelete) {
-	  self.destroy_noQasked(file);
-	}
-	else {
-		new Dialog(this.language.destroyfile, {
-		  language: {
-			confirm: this.language.destroy,
-			decline: this.language.cancel
-		  },
-		  onOpen: this.onDialogOpen.bind(this),
-		  onClose: this.onDialogClose.bind(this),
-		  onConfirm: function() {
-			self.destroy_noQasked(file);
-		  }
-		});
-	}
-  },
+		this.CurrentFile = file;
 
-  rename: function(file) {
-    var self = this;
-    var name = file.name;
-    var input = new Element('input', {'class': 'rename', value: name,'autofocus':'autofocus'});
+		// now make sure we can see the selected item in the left pane: scroll there:
+		this.browserSelection('none');
 
-    if (file.mime != 'text/directory') name = name.replace(/\..*$/, '');
+		// only simulate the 'select' button click by doubleclick on thumbnail in directory preview, when 'select' is actually allowed.
+		if (clicks === 2 && this.options.selectable)
+		{
+			this.open_on_click(null);
+		}
+		else
+		{
+			// the single-click action is to simulate a click on the corresponding line in the directory view (left pane)
+			this.relayClick(e, el_ref);
+		}
+	},
 
-    new Dialog(this.language.renamefile, {
-      language: {
-        confirm: this.language.rename,
-        decline: this.language.cancel
-      },
-      content: [
-        input
-      ],
-      onOpen: this.onDialogOpen.bind(this),
-      onClose: this.onDialogClose.bind(this),
-      onShow: function(){
-        input.addEvent('keyup', function(e){
-          if (e.key=='enter') e.target.getParent('div.dialog').getElement('button.dialog-confirm').fireEvent('click');
-        }).focus();
-      },
-      onConfirm: (function(){
-        new FileManager.Request({
-          url: self.options.url + '?event=move',
-          onRequest: self.browserLoader.set('opacity', 1),
-          onSuccess: (function(j){
-            if (!j || !j.name) return;
-            self.fireEvent('modify', [Object.clone(file)]);
-            file.element.getElement('span').set('text', j.name);
-            file.element.addClass('selected');
-            file.name = j.name;
-            self.fillInfo(file);
-          }).bind(this),
-          onComplete: self.browserLoader.fade(0),
-          onError: (function(xmlHttpRequest) {
-            this.showError(xmlHttpRequest);
-            this.browserLoader.fade(0);
-          }).bind(self),
-          data: {
-            file: file.name,
-            name: input.get('value'),
-            directory: self.Directory,
-            filter: this.options.filter
-          }
-        }, self).send();
-      }).bind(this)
-    });
-  },
+// /Partikule
 
-  browserSelection: function(direction) {
-    if(this.browser.getElement('li') == null) return;
+	toggleList: function(e) {
+		if (e) e.stop();
 
-    // none is selected
-    if(this.browser.getElement('span.fi.hover') == null && this.browser.getElement('span.fi.selected') == null) {
-      // select first folder
-      this.browser.getFirst('li').getElement('span.fi').addClass('hover');
-      new Fx.Scroll(this.browserScroll,{duration: 250}).toElement(this.browser.getFirst('li').getElement('span.fi'));
-    } else {
-      // select the current file/folder or the one with hover
-      var current = null;
-      if(this.browser.getElement('span.fi.hover') == null && this.browser.getElement('span.fi.selected') != null)
-        current = this.browser.getElement('span.fi.selected');
-      else if(this.browser.getElement('span.fi.hover') != null)
-        current = this.browser.getElement('span.fi.hover');
-      var browserScrollFx = new Fx.Scroll(this.browserScroll,{duration: 150}); //offset: {x:0,y:-(this.browserScroll.getSize().y / 4)},
+		$$('.filemanager-browserheader a.listType').set('opacity',0.5);
+		if (!this.browserMenu_thumb.retrieve('set',false)) {
+			this.browserMenu_list.store('set',false);
+			this.browserMenu_thumb.store('set',true).set('opacity',1);
+			this.listType = 'thumb';
+			if (typeof jsGET !== 'undefined') jsGET.set('fmListType=thumb');
+		} else {
+			this.browserMenu_thumb.store('set',false);
+			this.browserMenu_list.store('set',true).set('opacity',1);
+			this.listType = 'list';
+			if (typeof jsGET !== 'undefined') jsGET.set('fmListType=list');
+		}
+		this.diag.log('on toggleList dir = ', this.CurrentDir, e);
 
-      // go down
-      if(direction == 'down') {
-        if(current.getParent('li').getNext('li') != null) {
-          current.removeClass('hover');
-          var next = current.getParent('li').getNext('li').getElement('span.fi');
-          next.addClass('hover');
-          if((current.getPosition(this.browserScroll).y + (current.getSize().y*2)) >= this.browserScroll.getSize().y)
-            browserScrollFx.toElement(current);
-        }
-      // go up
-      } else if(direction == 'up') {
-        if(current.getParent('li').getPrevious('li') != null) {
-          current.removeClass('hover');
-          var previous = current.getParent('li').getPrevious('li').getElement('span.fi');
-          previous.addClass('hover');
-          if((current.getPosition(this.browserScroll).y) <= current.getSize().y) {
-            browserScrollFx.start(current.getPosition(this.browserScroll).x,(this.browserScroll.getScroll().y - this.browserScroll.getSize().y + (current.getSize().y*2)));
-          }
-        }
+		// abort any still running ('antiquated') fill chunks and reset the store before we set up a new one:
+		this.RequestQueue.cancel_bulk('fill');
+		clearTimeout(this.view_fill_timer);
+		this.view_fill_timer = null;
 
-      // select
-      } else if(direction == 'enter') {
-        this.storeHistory = true;
-        this.Current = current;
-        if(this.browser.getElement('span.fi.selected') != null) // remove old selected one
-          this.browser.getElement('span.fi.selected').removeClass('selected');
-        current.addClass('selected');
-        var currentFile = current.retrieve('file');
-        if(currentFile.mime == 'text/directory')
-          this.load(currentFile.path.replace(this.root,''));
-        else {
-          this.fillInfo(currentFile);
-        }
-      }
-    }
-  },
+		this.fill(null, this.get_view_fill_startindex(), this.listPaginationLastSize);
+	},
 
-
-// Partikule : Start making the code more readable
-//
-	
-	fill: function(j, nofade)
+	/*
+	 * Gets called from the jsGET listener.
+	 *
+	 * Is fired for two reasons:
+	 *
+	 * 1) the user clicked on a file or directory to view and that change was also pushed to the history through one or more jsGET.set() calls.
+	 *    (In this case, we've already done what needed doing, so we should not redo that effort in here!)
+	 *
+	 * 2) the user went back in browser history or manually edited the URI hash section.
+	 *    (This is an 'change from the outside' and exactly what this listener is for. This time around, we should follow up on those changes!)
+	 */
+	hashHistory: function(vars)
 	{
-		this.Directory = j.path;
-		this.CurrentDir = j.dir;
-		
-		// Fills the folder info
-//		if (!nofade && !this.onShow) this.fillInfo(j.dir);
-		this.fillInfo(j.dir)
+		this.storeHistory = false;
+		this.diag.log('hasHistory:', vars);
+		if (vars.changed['fmPath'] === '')
+			vars.changed['fmPath'] = '/';
 
-		// Empty the browser's files list
+		Object.each(vars.changed, function(value, key) {
+			this.diag.log('on hashHistory key = ', key, 'value = ', value);
+			switch (key)
+			{
+			case 'fmPath':
+				if (this.CurrentDir && this.CurrentDir.path !== value)
+				{
+					this.load(value);
+				}
+				break;
+
+			case 'fmFile':
+				var hot_item = (this.Current && this.Current.retrieve('file'));
+				if (hot_item == null || value !== hot_item.name)
+				{
+					this.browser.getElements('span.fi span').each((function(current)
+					{
+						current.getParent('span.fi').removeClass('hover');
+						if (current.get('title') == value)
+						{
+							this.deselect(null);
+							this.Current = current.getParent('span.fi');
+							new Fx.Scroll(this.browserScroll,{duration: 'short', offset: {x: 0, y: -(this.browserScroll.getSize().y/4)}}).toElement(this.Current);
+							this.Current.addClass('selected');
+							this.diag.log('on hashHistory @ fillInfo key = ', key, 'value = ', value, 'source = ', current, 'file = ', current.getParent('span.fi').retrieve('file'));
+							this.fillInfo(this.Current.retrieve('file'));
+						}
+					}).bind(this));
+				}
+				break;
+			}
+		},this);
+	},
+
+	// Add the ability to specify a path (relative to the base directory) and a file to preselect
+	show: function(e, loaddir, preselect) {
+		if (e) e.stop();
+
+		this.diag.log('on show: ', e, ', loaddir:', loaddir, ', preselect: ', preselect);
+		if (this.fmShown) {
+			return;
+		}
+		this.fmShown = true;
+		this.onShow = false;
+
+		if (typeof preselect === 'undefined') preselect = null;
+		if (typeof loaddir === 'undefined') loaddir = null;
+
+		if (loaddir == null && typeof jsGET !== 'undefined')
+		{
+			if (jsGET.get('fmPath') != null)
+			{
+				loaddir = jsGET.get('fmPath');
+			}
+		}
+		if (loaddir == null)
+		{
+			if (this.CurrentDir)
+			{
+				loaddir = this.CurrentDir.path;
+			}
+			else
+			{
+				loaddir = this.options.directory;
+			}
+		}
+		if (preselect)
+		{
+			this.diag.log('on show: set onShow on PRESELECT: ', preselect);
+			this.onShow = true;
+		}
+
+		// get and set history
+		if (typeof jsGET !== 'undefined') {
+			if (jsGET.get('fmFile')) {
+				this.diag.log('on show: set onShow on fmFile: ', jsGET.get('fmFile'));
+				this.onShow = true;
+			}
+			if (jsGET.get('fmListType') != null) {
+				$$('.filemanager-browserheader a.listType').set('opacity',0.5);
+				this.listType = jsGET.get('fmListType');
+				if (this.listType === 'thumb')
+					this.browserMenu_thumb.store('set',true).set('opacity',1);
+				else
+					this.browserMenu_list.store('set',true).set('opacity',1);
+			}
+			jsGET.set({
+				'fmID': this.ID,
+				'fmPath': loaddir
+			});
+			this.hashListenerId = jsGET.addListener(this.hashHistory, false, this);
+		}
+
+		this.load(loaddir, preselect);
+		if (!this.options.hideOverlay) {
+			this.overlay.show();
+		}
+
+		this.show_our_info_sections(false);
+		this.container.fade(0).setStyles({
+				display: 'block'
+			});
+
+		window.addEvents({
+			'scroll': this.bound.scroll,
+			'resize': this.bound.scroll
+		});
+		// add keyboard navigation
+		this.diag.log('add keyboard nav on show file = ', loaddir);
+		document.addEvent('keydown', this.bound.keydown);
+		document.addEvent('keyup', this.bound.keyup);
+		if ((Browser.Engine && (Browser.Engine.trident || Browser.Engine.webkit)) || (Browser.ie || Browser.chrome || Browser.safari))
+			document.addEvent('keydown', this.bound.keyboardInput);
+		else
+			document.addEvent('keypress', this.bound.keyboardInput);
+		this.container.fade(1);
+
+		this.fitSizes();
+		this.fireEvent('show', [this]);
+		this.fireHooks('show');
+
+// Partikule : If not standalone, returns the HTML content
+		if (!this.options.standalone)
+		{
+			return this.container;
+		}
+// /Partikule
+	},
+
+	hide: function(e) {
+		if (e) e.stop();
+		this.diag.log('on hide', e, this);
+		if (!this.fmShown) {
+			return;
+		}
+		this.fmShown = false;
+
+		// stop hashListener
+		if (typeof jsGET !== 'undefined') {
+			jsGET.removeListener(this.hashListenerId);
+			jsGET.remove(['fmID','fmPath','fmFile','fmListType','fmPageIdx']);
+		}
+
+		if (!this.options.hideOverlay) {
+			this.overlay.hide();
+		}
+		this.tips.hide();
 		this.browser.empty();
-		
+		this.container.setStyle('display', 'none');
+
+		// remove keyboard navigation
+		this.diag.log('REMOVE keyboard nav on hide');
+		window.removeEvent('scroll', this.bound.scroll).removeEvent('resize', this.bound.scroll);
+		document.removeEvent('keydown', this.bound.keydown);
+		document.removeEvent('keyup', this.bound.keyup);
+		if ((Browser.Engine && (Browser.Engine.trident || Browser.Engine.webkit)) || (Browser.ie || Browser.chrome || Browser.safari))
+			document.removeEvent('keydown', this.bound.keyboardInput);
+		else
+			document.removeEvent('keypress', this.bound.keyboardInput);
+
+		this.fireHooks('cleanup');
+		this.fireEvent('hide', [this]);
+	},
+
+	// hide the FM info <div>s. do NOT hide the outer info <div> itself, as the Uploader (and possibly other derivatives) may choose to show their own content there!
+	show_our_info_sections: function(state) {
+		if (!state)
+		{
+			this.info_head.fade(0).get('tween').chain(function() {
+				this.element.setStyle('display', 'none');
+			});
+			this.preview_area.fade(0).get('tween').chain(function() {
+				this.element.setStyle('display', 'none');
+			});
+		}
+		else
+		{
+			this.info_head.setStyle('display', 'block').fade(1);
+			this.preview_area.setStyle('display', 'block').fade(1);
+		}
+	},
+
+	open_on_click: function(e) {
+		if (e) e.stop();
+
+		if (!this.Current)
+			return;
+
+		var file = this.Current.retrieve('file');
+		this.fireEvent('complete', [
+			this.escapeRFC3986(this.normalize('/' + this.root + file.path)), // the absolute URL for the selected file, rawURLencoded
+			file,                 // the file specs: .name, .path, .size, .date, .mime, .icon, .icon48, .thumb48, .thumb250
+			this
+		]);
+
+		// Only hide if hideOnSelect is true
+		if (this.options.hideOnSelect)
+		{
+			this.hide();
+		}
+	},
+
+	download_on_click: function(e) {
+		e.stop();
+		if (!this.Current) {
+			return;
+		}
+		this.diag.log('download: ', this.Current.retrieve('file'));
+		var file = this.Current.retrieve('file');
+		this.download(file);
+	},
+
+	download: function(file) {
+		// the chained display:none code inside the Tips class doesn't fire when the 'Save As' dialog box appears right away (happens in FF3.6.15 at least):
+		if (this.tips.tip) {
+			this.tips.tip.setStyle('display', 'none');
+		}
+
+		// discard old iframe, if it exists:
+		if (this.downloadIframe)
+		{
+			// remove from the menu (dispose) and trash it (destroy)
+			this.downloadIframe.dispose().destroy();
+			this.downloadIframe = null;
+		}
+		if (this.downloadForm)
+		{
+			// remove from the menu (dispose) and trash it (destroy)
+			this.downloadForm.dispose().destroy();
+			this.downloadForm = null;
+		}
+
+		this.downloadIframe = (new IFrame()).set({src: 'about:blank', name: '_downloadIframe'}).setStyles({display:'none'});
+		this.menu.adopt(this.downloadIframe);
+
+		this.downloadForm = new Element('form', {target: '_downloadIframe', method: 'post', enctype: 'multipart/form-data'});
+		this.menu.adopt(this.downloadForm);
+
+		var tx_cfg = this.options.mkServerRequestURL(this, 'download', Object.merge({},
+						this.options.propagateData,
+						{
+							file: file.path,
+							filter: this.options.filter
+						}));
+
+		this.downloadForm.action = tx_cfg.url;
+
+		Object.each(tx_cfg.data,
+					function(v, k)
+					{
+						this.downloadForm.adopt((new Element('input')).set({type: 'hidden', name: k, value: v}));
+					}.bind(this));
+
+		return this.downloadForm.submit();
+	},
+
+	create_on_click: function(e) {
+		e.stop();
+		var input = new Element('input', {'class': 'createDirectory'});
+		var click_ok_f = (function(e) {
+			this.diag.log('create on click: KEYBOARD handler: key press: ', e);
+
+			if (e.key === 'enter') {
+				e.stopPropagation();
+				e.target.getParent('div.filemanager-dialog').getElement('button.filemanager-dialog-confirm').fireEvent('click');
+			}
+		}).bind(this);
+
+		new FileManager.Dialog(this.language.createdir, {
+			language: {
+				confirm: this.language.create,
+				decline: this.language.cancel
+			},
+			content: [
+				input
+			],
+			autofocus_on: 'input.createDirectory',
+			zIndex: this.options.zIndex + 900,
+			onOpen: this.onDialogOpen.bind(this),
+			onClose: (function() {
+				input.removeEvent('keyup', click_ok_f);
+				this.onDialogClose();
+			}).bind(this),
+			onShow: (function() {
+				this.diag.log('add key up on create dialog:onShow');
+				input.addEvent('keyup', click_ok_f);
+			}).bind(this),
+			onConfirm: (function() {
+				if (this.Request) this.Request.cancel();
+
+				// abort any still running ('antiquated') fill chunks and reset the store before we set up a new one:
+				this.reset_view_fill_store();
+
+				var tx_cfg = this.options.mkServerRequestURL(this, 'create', {
+								file: input.get('value'),
+								directory: this.CurrentDir.path,
+								filter: this.options.filter
+							});
+
+				this.Request = new FileManager.Request({
+					url: tx_cfg.url,
+					data: tx_cfg.data,
+					onRequest: function() {},
+					onSuccess: (function(j) {
+						if (!j || !j.status) {
+							this.browserLoader.fade(0);
+							return;
+						}
+
+						this.deselect(null);
+						this.show_our_info_sections(false);
+
+						// make sure we store the JSON list!
+						this.reset_view_fill_store(j);
+
+						// the 'view' request may be an initial reload: keep the startindex (= page shown) intact then:
+						this.fill(j, this.get_view_fill_startindex());
+					}).bind(this),
+					onComplete: function() {},
+					onError: (function(text, error) {
+						this.browserLoader.fade(0);
+					}).bind(this),
+					onFailure: (function(xmlHttpRequest) {
+						this.browserLoader.fade(0);
+					}).bind(this)
+				}, this).send();
+			}).bind(this)
+		});
+	},
+
+	deselect: function(el) {
+		if (el && this.Current != el) {
+			return;
+		}
+		this.diag.log('deselect:Current', el);
+		if (el) {
+			this.fillInfo();
+		}
+		if (this.Current) {
+			this.Current.removeClass('selected');
+		}
+		this.Current = null;
+		this.switchButton4Current();
+	},
+
+	// add the ability to preselect a file in the dir
+	load: function(dir, preselect) {
+
+		if (typeof preselect === 'undefined') preselect = null;
+
+		this.deselect(null);
+		this.show_our_info_sections(false);
+
+		if (this.Request) this.Request.cancel();
+
+		this.diag.log("### 'view' request: onRequest invoked @ load(): ", dir, ', preselect: ', preselect);
+
+		// abort any still running ('antiquated') fill chunks and reset the store before we set up a new one:
+		this.reset_view_fill_store();
+
+		var tx_cfg = this.options.mkServerRequestURL(this, 'view', {
+						directory: dir,
+						filter: this.options.filter,
+						file_preselect: (preselect || '')
+					});
+
+		this.diag.log('load(): view URI: ', dir, this.listType, tx_cfg);
+
+		this.Request = new FileManager.Request({
+			url: tx_cfg.url,
+			data: tx_cfg.data,
+			onRequest: function() {},
+			onSuccess: (function(j) {
+				this.diag.log("### 'view' request: onSuccess invoked", j);
+				if (!j || !j.status) {
+					this.browserLoader.fade(0);
+					return;
+				}
+
+				// make sure we store the JSON list!
+				this.reset_view_fill_store(j);
+
+				// the 'view' request may be an initial reload: keep the startindex (= page shown) intact then:
+				// Xinha: add the ability to preselect a file in the dir
+				var start_idx = this.get_view_fill_startindex();
+				preselect = null;
+				if (j.preselect_index > 0)
+				{
+					start_idx = j.preselect_index - 1;
+					preselect = j.preselect_name;
+				}
+				this.fill(j, start_idx, null, null, preselect);
+			}).bind(this),
+			onComplete: (function() {
+				this.diag.log("### 'view' request: onComplete invoked");
+				this.fitSizes();
+			}).bind(this),
+			onError: (function(text, error) {
+				// a JSON error
+				this.diag.log("### 'view' request: onError invoked", text, error);
+				this.browserLoader.fade(0);
+			}).bind(this),
+			onFailure: (function(xmlHttpRequest) {
+				// a generic (non-JSON) communication failure
+				this.diag.log("### 'view' request: onFailure invoked", xmlHttpRequest);
+				this.browserLoader.fade(0);
+			}).bind(this)
+		}, this).send();
+	},
+
+	delete_from_dircache: function(file)
+	{
+		var items;
+		var i;
+
+		if (this.view_fill_json)
+		{
+			if (file.mime === 'text/directory')
+			{
+				items = this.view_fill_json.dirs;
+			}
+			else
+			{
+				items = this.view_fill_json.files;
+			}
+
+			for (i = items.length - 1; i >= 0; i--)
+			{
+				var item = items[i];
+				if (item.name === file.name)
+				{
+					items.splice(i, 1);
+					break;
+				}
+			}
+		}
+	},
+
+	destroy_noQasked: function(file) {
+
+		if (this.Request) this.Request.cancel();
+
+		this.browserLoader.fade(1);
+
+		var tx_cfg = this.options.mkServerRequestURL(this, 'destroy', {
+						file: file.name,
+						directory: this.CurrentDir.path,
+						filter: this.options.filter
+					});
+
+		this.Request = new FileManager.Request({
+			url: tx_cfg.url,
+			data: tx_cfg.data,
+			onRequest: function() {},
+			onSuccess: (function(j) {
+				if (!j || !j.status) {
+					this.browserLoader.fade(0);
+					return;
+				}
+
+				this.fireEvent('modify', [Object.clone(file), j, 'destroy', this]);
+
+				// remove entry from cached JSON directory list and remove the item from the view.
+				// This is particularly important when working on a paginated directory and afterwards the pages are jumped back & forth:
+				// the next time around, this item should NOT appear in the list anymore!
+				this.deselect(file.element);
+
+				var rerendering_list = false;
+				if (this.view_fill_json)
+				{
+					this.delete_from_dircache(file);  /* do NOT use j.name, as that one can be 'cleaned up' as part of the 'move' operation! */
+
+					// minor caveat: when we paginate the directory list, then browsing to the next page will skip one item (which would
+					// have been the first on the next page). The brute-force fix for this is to force a re-render of the page when in
+					// pagination view mode:
+					if (this.view_fill_json.dirs.length + this.view_fill_json.files.length > this.listPaginationLastSize)
+					{
+						// similar activity as load(), but without the server communication...
+
+						// abort any still running ('antiquated') fill chunks and reset the store before we set up a new one:
+						this.RequestQueue.cancel_bulk('fill');
+						clearTimeout(this.view_fill_timer);
+						this.view_fill_timer = null;
+
+						rerendering_list = true;
+						this.fill(null, this.get_view_fill_startindex(), this.listPaginationLastSize);
+					}
+				}
+				// make sure fade does not clash with parallel directory (re)load:
+				if (!rerendering_list)
+				{
+					var p = file.element.getParent();
+					if (p) {
+						p.fade(0).get('tween').chain(function() {
+							this.element.destroy();
+						});
+					}
+				}
+				this.browserLoader.fade(0);
+			}).bind(this),
+			onComplete: function() {},
+			onError: (function(text, error) {
+				this.browserLoader.fade(0);
+			}).bind(this),
+			onFailure: (function(xmlHttpRequest) {
+				this.browserLoader.fade(0);
+			}).bind(this)
+		}, this).send();
+	},
+
+	destroy: function(file) {
+		if (this.options.hideQonDelete) {
+			this.destroy_noQasked(file);
+		}
+		else {
+			new FileManager.Dialog(this.language.destroyfile, {
+				language: {
+					confirm: this.language.destroy,
+					decline: this.language.cancel
+				},
+				zIndex: this.options.zIndex + 900,
+				onOpen: this.onDialogOpen.bind(this),
+				onClose: this.onDialogClose.bind(this),
+				onConfirm: (function() {
+					this.destroy_noQasked(file);
+				}).bind(this)
+			});
+		}
+	},
+
+	rename: function(file) {
+		var name = file.name;
+		var input = new Element('input', {'class': 'rename', value: name});
+
+		this.diag.log('### rename: ', Object.clone(file));
+
+		new FileManager.Dialog(this.language.renamefile, {
+			language: {
+				confirm: this.language.rename,
+				decline: this.language.cancel
+			},
+			content: [
+				input
+			],
+			autofocus_on: 'input.rename',
+			zIndex: this.options.zIndex + 900,
+			onOpen: this.onDialogOpen.bind(this),
+			onClose: this.onDialogClose.bind(this),
+			onShow: (function() {
+				this.diag.log('add key up on rename dialog:onShow');
+				input.addEvent('keyup', (function(e) {
+					this.diag.log('rename: KEYBOARD handler: key press: ', e);
+
+					if (e.key === 'enter') {
+						e.stopPropagation();
+						e.target.getParent('div.filemanager-dialog').getElement('button.filemanager-dialog-confirm').fireEvent('click');
+					}
+				}).bind(this));
+			}).bind(this),
+			onConfirm: (function() {
+				if (this.Request) this.Request.cancel();
+
+				this.browserLoader.fade(1);
+
+				this.diag.log('### rename: going to rename: ', Object.clone(file), ' to ', input.get('value'));
+
+				var tx_cfg = this.options.mkServerRequestURL(this, 'move', {
+								file: file.name,
+								name: input.get('value'),
+								directory: this.CurrentDir.path,
+								filter: this.options.filter
+							});
+
+				this.Request = new FileManager.Request({
+					url: tx_cfg.url,
+					data: tx_cfg.data,
+					onRequest: function() {},
+					onSuccess: (function(j) {
+						if (!j || !j.status) {
+							this.browserLoader.fade(0);
+							return;
+						}
+						this.diag.log('move : onSuccess: file = ', Object.clone(file), ', json: ', j);
+						this.fireEvent('modify', [Object.clone(file), j, 'rename', this]);
+						file.element.getElement('span.filemanager-filename').set('text', j.name).set('title', j.name);
+						file.element.addClass('selected');
+						file.name = j.name;
+						this.diag.log('move : onSuccess going to fillInfo: file = ', Object.clone(file), ', json: ', j);
+						this.fillInfo(file);
+						this.browserLoader.fade(0);
+					}).bind(this),
+					onComplete: function() {},
+					onError: (function(text, error) {
+						this.browserLoader.fade(0);
+					}).bind(this),
+					onFailure: (function(xmlHttpRequest) {
+						this.browserLoader.fade(0);
+					}).bind(this)
+				}, this).send();
+			}).bind(this)
+		});
+	},
+
+	browserSelection: function(direction) {
+		var csel;
+
+		this.diag.log('browserSelection : direction = ', direction);
+		if (this.browser.getElement('li') == null) return;
+
+		if (direction === 'go-bottom')
+		{
+			// select first item of next page
+			current = this.browser.getFirst('li').getElement('span.fi');
+
+			// blow away any lingering 'selected' after a page switch like that
+			csel = this.browser.getElement('span.fi.selected');
+			if (csel != null)
+				csel.removeClass('selected');
+		}
+		else if (direction === 'go-top')
+		{
+			// select last item of previous page
+			current = this.browser.getLast('li').getElement('span.fi');
+
+			// blow away any lingering 'selected' after a page switch like that
+			csel = this.browser.getElement('span.fi.selected');
+			if (csel != null)
+				csel.removeClass('selected');
+		}
+		else if (this.browser.getElement('span.fi.hover') == null && this.browser.getElement('span.fi.selected') == null)
+		{
+			// none is selected: select first item (folder/file)
+			current = this.browser.getFirst('li').getElement('span.fi');
+		}
+		else
+		{
+			// select the current file/folder or the one with hover
+			var current = null;
+			if (this.browser.getElement('span.fi.hover') == null && this.browser.getElement('span.fi.selected') != null) {
+				current = this.browser.getElement('span.fi.selected');
+			}
+			else if (this.browser.getElement('span.fi.hover') != null) {
+				current = this.browser.getElement('span.fi.hover');
+			}
+		}
+
+		this.browser.getElements('span.fi.hover').each(function(span) {
+			span.removeClass('hover');
+		});
+
+		var stepsize = 1, next, currentFile;
+
+		switch (direction) {
+		// go down
+		case 'end':
+			stepsize = 1E5;
+			/* fallthrough */
+		case 'pagedown':
+			if (stepsize == 1) {
+				if (current.getPosition(this.browserScroll).y + current.getSize().y * 2 < this.browserScroll.getSize().y) {
+					stepsize = Math.floor((this.browserScroll.getSize().y - current.getPosition(this.browserScroll).y) / current.getSize().y) - 1;
+					if (stepsize < 1)
+						stepsize = 1;
+				}
+				else {
+					stepsize = Math.floor(this.browserScroll.getSize().y / current.getSize().y);
+				}
+			}
+			/* fallthrough */
+		case 'down':
+			current = current.getParent('li');
+			this.diag.log('key DOWN: stepsize = ', stepsize);
+
+			// when we're at the bottom of the view and there are more pages, go to the next page:
+			next = current.getNext('li');
+			if (next == null)
+			{
+				if (this.paging_goto_next(null, 'go-bottom'))
+					break;
+			}
+			else
+			{
+				for ( ; stepsize > 0; stepsize--) {
+					next = current.getNext('li');
+					if (next == null)
+						break;
+					current = next;
+				}
+			}
+			current = current.getElement('span.fi');
+			/* fallthrough */
+		case 'go-bottom':        // 'faked' key sent when done shifting one pagination page down
+			current.addClass('hover');
+			this.Current = current;
+			direction = 'down';
+			break;
+
+		// go up
+		case 'home':
+			stepsize = 1E5;
+			/* fallthrough */
+		case 'pageup':
+			if (stepsize == 1) {
+				// when at the top of the viewport, a full page scroll already happens /visually/ when you go up 1: that one will end up at the /bottom/, after all.
+				stepsize = Math.floor(current.getPosition(this.browserScroll).y / current.getSize().y);
+				if (stepsize < 1)
+					stepsize = 1;
+			}
+			/* fallthrough */
+		case 'up':
+			current = current.getParent('li');
+			this.diag.log('key UP: stepsize = ', stepsize);
+
+			// when we're at the top of the view and there are pages before us, go to the previous page:
+			var previous = current.getPrevious('li');
+			if (previous == null)
+			{
+				if (this.paging_goto_prev(null, 'go-top'))
+					break;
+			}
+			else
+			{
+				for ( ; stepsize > 0; stepsize--) {
+					previous = current.getPrevious('li');
+					if (previous == null)
+						break;
+					current = previous;
+				}
+			}
+			current = current.getElement('span.fi');
+			/* fallthrough */
+		case 'go-top':        // 'faked' key sent when done shifting one pagination page up
+			current.addClass('hover');
+			this.Current = current;
+			direction = 'up';
+			break;
+
+		case 'none':        // 'faked' key sent when picking a row 'remotely', i.e. when we don't know where we are currently, but when we want to scroll to 'current' anyhow
+			current.addClass('hover');
+			this.Current = current;
+			break;
+
+		// select
+		case 'enter':
+			this.storeHistory = true;
+			this.Current = current;
+			csel = this.browser.getElement('span.fi.selected');
+			if (csel != null) // remove old selected one
+				csel.removeClass('selected');
+
+			current.addClass('selected');
+			currentFile = current.retrieve('file');
+			this.diag.log('on key ENTER file = ', currentFile);
+			if (currentFile.mime === 'text/directory') {
+				this.load(currentFile.dir + currentFile.name /*.replace(this.root,'')*/);
+			}
+			else {
+				this.fillInfo(currentFile);
+			}
+			break;
+
+		// delete file/directory:
+		case 'delete':
+			this.storeHistory = true;
+			this.Current = current;
+			this.browser.getElements('span.fi.selected').each(function(span) {
+				span.removeClass('selected');
+			});
+
+			// and before we go and delete the entry, see if we pick the next one down or up as our next cursor position:
+			var parent = current.getParent('li');
+			next = parent.getNext('li');
+			if (next == null) {
+				next = parent.getPrevious('li');
+			}
+			if (next != null) {
+				next = next.getElement('span.fi');
+				next.addClass('hover');
+			}
+
+			currentFile = current.retrieve('file');
+			this.diag.log('on key DELETE file = ', currentFile);
+			this.destroy(currentFile);
+
+			current = next;
+			this.Current = current;
+			break;
+		}
+
+		// make sure to scroll the view so the selected/'hovered' item is within visible range:
+
+		this.diag.log('key handler: current X/Y = ', current.getPosition(this.browserScroll), ', H/W/SCROLL = ', this.browserScroll.getSize(), ', 1U/SIZE = ', current.getSize());
+		var dy, browserScrollFx;
+		if (direction !== 'up' && current.getPosition(this.browserScroll).y + current.getSize().y * 2 >= this.browserScroll.getSize().y)
+		{
+			// make scroll duration slightly dependent on the distance to travel:
+			dy = (current.getPosition(this.browserScroll).y + current.getSize().y * 2 - this.browserScroll.getSize().y);
+			dy = 50 * dy / this.browserScroll.getSize().y;
+			this.diag.log('key @ direction = UP: DUR: ', dy);
+			browserScrollFx = new Fx.Scroll(this.browserScroll, { duration: (dy < 150 ? 150 : dy > 1000 ? 1000 : dy.toInt()) });
+			browserScrollFx.toElement(current);
+		}
+		else if (direction !== 'down' && current.getPosition(this.browserScroll).y <= current.getSize().y)
+		{
+			var sy = this.browserScroll.getScroll().y + current.getPosition(this.browserScroll).y - this.browserScroll.getSize().y + current.getSize().y * 2;
+
+			// make scroll duration slightly dependent on the distance to travel:
+			dy = this.browserScroll.getScroll().y - sy;
+			dy = 50 * dy / this.browserScroll.getSize().y;
+			this.diag.log('key @ direction = DOWN: SY = ', sy, ', DUR: ', dy);
+			browserScrollFx = new Fx.Scroll(this.browserScroll, { duration: (dy < 150 ? 150 : dy > 1000 ? 1000 : dy.toInt()) });
+			browserScrollFx.start(current.getPosition(this.browserScroll).x, (sy >= 0 ? sy : 0));
+		}
+	},
+
+	// -> cancel dragging
+	revert_drag_n_drop: function(el) {
+		el.fade(1).removeClass('drag').removeClass('move').setStyles({
+			'z-index': 'auto',
+			position: 'relative',
+			width: 'auto',
+			left: 0,
+			top: 0
+		}).inject(el.retrieve('parent'));
+		// also dial down the opacity of the icons within this row (download, rename, delete):
+		var icons = el.getElements('img.browser-icon');
+		if (icons) {
+			icons.each(function(icon) {
+				icon.fade(0);
+			});
+		}
+
+		this.diag.log('DISABLE keyboard up/down on revert');
+		this.drag_is_active = false;
+		this.imageadd.fade(0);
+	},
+
+	// clicked 'first' button in the paged list/thumb view:
+	paging_goto_prev: function(e, kbd_dir)
+	{
+		if (e) e.stop();
+		var startindex = this.get_view_fill_startindex();
+		if (!startindex)
+			return false;
+
+		return this.paging_goto_helper(startindex - this.listPaginationLastSize, this.listPaginationLastSize, kbd_dir);
+	},
+	paging_goto_next: function(e, kbd_dir)
+	{
+		if (e) e.stop();
+		var startindex = this.get_view_fill_startindex();
+		if (this.view_fill_json && startindex > this.view_fill_json.dirs.length + this.view_fill_json.files.length - this.listPaginationLastSize)
+			return false;
+
+		return this.paging_goto_helper(startindex + this.listPaginationLastSize, this.listPaginationLastSize, kbd_dir);
+	},
+	paging_goto_first: function(e, kbd_dir)
+	{
+		if (e) e.stop();
+		var startindex = this.get_view_fill_startindex();
+		if (!startindex)
+			return false;
+
+		return this.paging_goto_helper(0, null, kbd_dir);
+	},
+	paging_goto_last: function(e, kbd_dir)
+	{
+		if (e) e.stop();
+		var startindex = this.get_view_fill_startindex();
+		if (this.view_fill_json && startindex > this.view_fill_json.dirs.length + this.view_fill_json.files.length - this.options.listPaginationSize)
+			return false;
+
+		return this.paging_goto_helper(2E9 /* ~ maxint */, null, kbd_dir);
+	},
+	paging_goto_helper: function(startindex, pagesize, kbd_dir)
+	{
+		// similar activity as load(), but without the server communication...
+		this.deselect(null);
+		this.show_our_info_sections(false);
+
+		// abort any still running ('antiquated') fill chunks and reset the store before we set up a new one:
+		this.RequestQueue.cancel_bulk('fill');
+		clearTimeout(this.view_fill_timer);
+		this.view_fill_timer = null;
+
+		return this.fill(null, startindex, pagesize, kbd_dir);
+	},
+
+	fill: function(j, startindex, pagesize, kbd_dir, preselect)
+	{
+		var j_item_count;
+
+		if (typeof preselect === 'undefined') preselect = null;
+
+		if (!pagesize)
+		{
+			pagesize = this.options.listPaginationSize;
+			this.listPaginationLastSize = pagesize;
+		}
+		// else: pagesize specified means stick with that one. (useful to keep pagesize intact when going prev/next)
+
+		if (!j)
+		{
+			j = this.view_fill_json;
+		}
+
+		j_item_count = j.dirs.length + j.files.length;
+
+		startindex = parseInt(startindex, 10);     // make sure it's an int number
+		if (isNaN(startindex))
+		{
+			startindex = 0;
+		}
+
+		if (!pagesize)
+		{
+			// no paging: always go to position 0 then!
+			startindex = 0;
+		}
+		else if (startindex > j_item_count)
+		{
+			startindex = j_item_count;
+		}
+		else if (startindex < 0)
+		{
+			startindex = 0;
+		}
+		// always make sure startindex is exactly on a page edge: this is important to keep the page numbers
+		// in the tooltips correct!
+		startindex = Math.floor(startindex / pagesize);
+		startindex *= pagesize;
+
+		// keyboard navigation sets the 'hover' class on the 'current' item: remove any of those:
+		this.browser.getElements('span.fi.hover').each(function(span) {
+			span.removeClass('hover');
+		});
+
+		this.diag.log('# fill: file = ', j, ', onShow: ', this.onShow, ', mgr: ', this);
 		this.root = j.root;
-		var self = this;
+
+		this.CurrentDir = j.this_dir;
+		if (!this.onShow) {
+			this.diag.log('fill internal: fillInfo: file = ', j, j.this_dir);
+			this.fillInfo(j.this_dir); // XXXX
+		}
+		this.browser.empty();
+
 // Partikule
-// define timer, for dblclick event.
-		var timer;
-		
+// Add of the thumbnail list in the preview panel: blow away any pre-existing list now, as we'll generate a new one now:
+
+		this.dir_filelist.empty();
+
+// /Partikule
+
 		// set history
-		if(typeof jsGET != 'undefined' && this.storeHistory && j.dir.mime == 'text/directory')
-			jsGET.set({'fmPath':j.path});
-		
-		// Path to the files
-		this.CurrentPath = this.root + this.Directory;
+		if (typeof jsGET !== 'undefined' && this.storeHistory && j.this_dir.mime === 'text/directory')
+		{
+			jsGET.set({'fmPath': j.path});
+		}
+
+		var current_path = this.normalize(this.root + this.CurrentDir.path);
 		var text = [], pre = [];
-		
-		// On error reported by backend, there WON'T be a JSON 'root' element at all times:
+		// on error reported by backend, there WON'T be a JSON 'root' element at all times:
+		//
 		// TODO: how to handle that error condition correctly?
 		if (!j.root)
 		{
-			new Dialog(('${error}: ' + j.error).substitute(this.language, /\\?\$\{([^{}]+)\}/g) , {language: {confirm: this.language.ok}, buttons: ['confirm']});
-			return;
+			this.showError('' + j.error);
+			return false;
 		}
-		
-		// Website's rootpath
 		var rootPath = j.root.slice(0,-1).split('/');
 		rootPath.pop();
-
-		this.CurrentPath.split('/').each(function(folderName)
-		{
+		current_path.split('/').each((function(folderName) {
 			if (!folderName) return;
-			
+
 			pre.push(folderName);
 			var path = ('/'+pre.join('/')+'/').replace(j.root,'');
-			
-			// add non-clickable path
-			if(rootPath.contains(folderName))
-			{
-				text.push(new Element('span', {'class': 'icon',text: folderName}));
+			this.diag.log('on fill: display directory path chuncks: root = ', j.root, ', path: ' , path, ', folder: ', folderName);
+			if (rootPath.contains(folderName)) {
+				// add non-clickable path
+				text.push(new Element('span', {'class': 'icon', text: folderName}));
+			} else {
 				// add clickable path
-			} 
-			else
-			{
-				text.push(new Element('a',
-				{
-					'class': 'icon',
-					href: '#',
-					text: folderName
-				}).addEvent('click', function(e)
-				{
-					e.stop();
-					self.load(path);
-				}));
+				text.push(new Element('a', {
+						'class': 'icon',
+						href: '#',
+						text: folderName
+					}).addEvent('click', (function(e) {
+						this.diag.log('path section - click event: ', e, path);
+						e.stop();
+						this.load(path);
+					}).bind(this))
+				);
 			}
 			text.push(new Element('span', {text: ' / '}));
-		});
-		
+		}).bind(this));
+
 		text.pop();
-		text[text.length-1].addClass('selected').removeEvents('click').addEvent('click', function(e){e.stop();});
-		this.selectablePath.set('value','/'+this.CurrentPath);
+		text[text.length-1].addClass('selected').removeEvents('click').addEvent('click', (function(e) {
+			e.stop();
+			// show the 'directory' info in the detail pane again (this is a way to get back from previewing single files to previewing the directory as a gallery)
+			this.diag.log('click: fillInfo: current directory!');
+			this.fillInfo();
+		}).bind(this));
+		this.selectablePath.set('value', '/' + current_path);
 		this.clickablePath.empty().adopt(new Element('span', {text: '/ '}), text);
-		
-		if (!j.files) return;
 
-// Partikule
-// Add of the thumbnail list in the preview panel
-// Reasons : 
-// - One doubleclick on one thumb in this list will select the file : quicker select
-// - One click displays the preview, but with the file in bigger format : less clicks to see the picture wider.
+		if (!j.dirs || !j.files) {
+			return false;
+		}
 
-		// Thumbs list container (in preview panel)
-		var filelist = new Element('div', {'class': 'filemanager-filelist'});
-		this.preview.adopt(filelist);
-
-		
-		// Generate browser list
+		// ->> generate browser list
 		var els = [[], []];
 
-	    Array.each(j.files, function(file)
-	    {
-			file.dir = j.path;
-			var largeDir = '';
-			
-			// generate unique id
-			var newDate = new Date;
-			uniqueId = newDate.getTime();
+		/*
+		 * For very large directories, where the number of directories in there and/or the number of files is HUGE (> 200),
+		 * we DISABLE drag&drop functionality.
+		 *
+		 * Yes, we could have opted for the alternative, which is splitting up the .makeDraggable() activity in multiple
+		 * setTimeout(callback, 0) initiated chunks in order to spare the user the hassle of a 'slow script' dialog,
+		 * but in reality drag&drop is ludicrous in such an environment; currently we do not (yet) support autoscrolling
+		 * the list to enable drag&dropping it to elements further away that the current viewport can hold at the same time,
+		 * but drag&drop in a 500+ image carrying directory is resulting in a significant load of the browser anyway;
+		 * alternative means to move/copy files should be provided in such cases instead.
+		 *
+		 * Hence we run through the list here and abort / limit the drag&drop assignment process when the hardcoded number of
+		 * directories or files have been reached (support_DnD_for_this_dir).
+		 *
+		 * TODO: make these numbers 'auto adaptive' based on timing measurements: how long does it take to initialize
+		 *       a view on YOUR machine? --> adjust limits accordingly.
+		 */
+		var support_DnD_for_this_dir = this.allow_DnD(j, pagesize);
+		var starttime = new Date().getTime();
+		this.diag.log('fill list size = ', j_item_count);
 
-			var icon = (this.listType == 'thumb') ? new Asset.image(file.thumbnail+'?'+uniqueId,{'class':this.listType}) : new Asset.image(file.icon);
-			
-			var el = file.element = new Element('span', {'class': 'fi ' + this.listType, href: '#'}).adopt(
-				icon,
-				new Element('span', {text: file.name, title:file.name})
-			).store('file', file);
-			
-			// add click event, only to directories, files use the revert function (to enable drag n drop)
-			if(file.mime == 'text/directory')
-				el.addEvent('click',this.relayClick);
-			
-			// -> add icons
-			var icons = [];
-			
-			// download icon
-			if(file.mime != 'text/directory' && this.options.download)
-			{
-				icons.push(new Asset.image(this.assetBasePath + 'Images/disk.png', {title: this.language.download}).addClass('browser-icon').addEvent('mouseup', (function(e)
-				{
-					e.preventDefault();
-					el.store('edit',true);
-					window.open(this.options.url + '?event=download&file=' + this.normalize(file.path));
-				}).bind(this)).inject(el, 'top'));
-			}
-			
-			// rename, delete icon
-			if(file.name != '..')
-			{
-				var editButtons = new Array();
-				if(this.options.rename) editButtons.push('rename');
-				if(this.options.destroy) editButtons.push('destroy');
-				
-				editButtons.each(function(v)
-				{
-					icons.push(new Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').addEvent('mouseup', (function(e)
-					{
-						e.preventDefault();
-						el.store('edit',true);
-						this.tips.hide();
-						this[v](file);
-					}).bind(this)).inject(el,'top'));
-				}, this);				
-			}
-
-// Partikule : Thumbs list
-			
-			// Add the file in the preview thumbs list if not directory
-			if (file.mime != 'text/directory')
-			{
-				// Thumb container
-				var thumb = new Element('div', {'class': 'thumb ' + file.icon}).setStyles({
-					'width': self.options.thumbSize + 'px',
-					'height': self.options.thumbSize + 'px'
-				});
-
-				// Thumb background : Picture thumb or large icon of the file type
-				thumb.setStyle('background-image', 'url(' + file.thumbnail + '?'+ uniqueId +')');
-
-				var domfile = new Element('div', {'class': 'file'}).adopt([
-					thumb,
-					new Element('div', {'class': 'name'}).setStyle('width', self.options.thumbSize).set('text', file.name)
-				]).store('file', file).addEvents(
-				{
-					'click': function(){
-						clearTimeout(timer);
-				        timer = self.relayClick.delay(500, domfile); 
-					},
-					'dblclick': function(){
-						clearTimeout(timer);
-						timer = self.relayDblClick.delay(0, domfile);
-					}
-				});
-				
-				domfile.inject(filelist);
-			}
-// / Partikule
-			
-			els[file.mime == 'text/directory' ? 1 : 0].push(el);
-			
-			//if (file.name == '..') el.set('opacity', 0.7);
-			
-			// Browser's file list
-			el.inject(new Element('li',{'class':this.listType}).inject(this.browser)).store('parent', el.getParent());
-			
-			icons = $$(icons.map((function(icon)
-			{
-				this.showFunctions(icon,icon,0.5,1);
-				this.showFunctions(icon,el.getParent('li'),1);
-			}).bind(this)));
-			
-			// ->> LOAD the FILE/IMAGE from history when PAGE gets REFRESHED (only directly after refresh)
-			if(this.onShow && typeof jsGET != 'undefined' && jsGET.get('fmFile') != null && file.name == jsGET.get('fmFile'))
-			{
-				this.deselect();
-				this.Current = file.element;
-				new Fx.Scroll(this.browserScroll,{duration: 250,offset:{x:0,y:-(this.browserScroll.getSize().y/4)}}).toElement(file.element);
-				file.element.addClass('selected');
-				this.fillInfo(file);
-			}
-			else if(this.onShow && jsGET.get('fmFile') == null)
-				this.onShow = false;
-			
-		}, this);
-
-		// -> cancel dragging
-		var revert = function(el)
+		var endindex = j_item_count;
+		var paging_now = 0;
+		if (pagesize)
 		{
-			el.set('opacity', 1).removeClass('drag').removeClass('move').setStyles({
-				opacity: 1,
-				'z-index': 'auto',
-				position: 'relative',
-				width: 'auto',
-				left: 0,
-				top: 0
-			}).inject(el.retrieve('parent'));
-		
-			document.removeEvent('keydown', self.bound.keydown).removeEvent('keyup', self.bound.keyup);
-			self.imageadd.fade(0);
+			// endindex MAY point beyond j_item_count; that's okay; we check the boundary every time in the other fill chunks.
+			endindex = startindex + pagesize;
+			// however for reasons of statistics gathering, we keep it bound to j_item_count at the moment:
+			if (endindex > j_item_count) endindex = j_item_count;
+
+			if (pagesize < j_item_count)
+			{
+				var pagecnt = Math.ceil(j_item_count / pagesize);
+				var curpagno = Math.floor(startindex / pagesize) + 1;
+
+				this.browser_paging_info.set('text', '' + curpagno + '/' + pagecnt);
+
+				if (curpagno > 1)
+				{
+					this.browser_paging_first.set('title', this.language.goto_page + ' 1');
+					this.browser_paging_first.fade(1);
+					this.browser_paging_prev.set('title', this.language.goto_page + ' ' + (curpagno - 1));
+					this.browser_paging_prev.fade(1);
+				}
+				else
+				{
+					this.browser_paging_first.set('title', '---');
+					this.browser_paging_first.fade(0.25);
+					this.browser_paging_prev.set('title', '---');
+					this.browser_paging_prev.fade(0.25);
+				}
+				if (curpagno < pagecnt)
+				{
+					this.browser_paging_last.set('title', this.language.goto_page + ' ' + pagecnt);
+					this.browser_paging_last.fade(1);
+					this.browser_paging_next.set('title', this.language.goto_page + ' ' + (curpagno + 1));
+					this.browser_paging_next.fade(1);
+				}
+				else
+				{
+					this.browser_paging_last.set('title', '---');
+					this.browser_paging_last.fade(0.25);
+					this.browser_paging_next.set('title', '---');
+					this.browser_paging_next.fade(0.25);
+				}
+
+				paging_now = 1;
+			}
+		}
+		this.browser_paging.fade(paging_now);
+		// fix for MSIE8: also fade out the pagination icons themselves
+		if (!paging_now)
+		{
+			this.browser_paging_first.fade(0);
+			this.browser_paging_prev.fade(0);
+			this.browser_paging_last.fade(0);
+			this.browser_paging_next.fade(0);
+		}
+
+		// remember pagination position history
+		this.store_view_fill_startindex(startindex);
+
+		this.view_fill_timer = this.fill_chunkwise_1.delay(1, this, [startindex, endindex, endindex - startindex, pagesize, support_DnD_for_this_dir, starttime, els, kbd_dir, preselect]);
+
+		return true;
+	},
+
+	list_row_maker: function(thumbnail_url, file)
+	{
+		return file.element = new Element('span', {'class': 'fi ' + this.listType, href: '#'}).adopt(
+			new Element('span', {
+				'class': this.listType,
+				'styles': {
+					'background-image': 'url(' + (thumbnail_url ? thumbnail_url : this.assetBasePath + 'Images/loader.gif') + ')'
+				}
+			}).addClass('fm-thumb-bg'),
+			new Element('span', {'class': 'filemanager-filename', text: file.name, title: file.name})
+		).store('file', file);
+	},
+
+	dir_gallery_item_maker: function(thumbnail_url, file)
+	{
+		// as we want the thumbnails line up reasonably well in a grid and have no huge white areas thanks to long filenames,
+		// we strip the filename on display. When the user wishes to know the full filename, he can hover over the image, anyway.
+		var fname = file.name;
+		if (fname.length > 6)
+		{
+//			fname = fname.substr(0, 10) + '...';
+		}
+
+		var el = new Element('div', {
+			'class': 'fi',
+			'title': file.name
+		}).adopt(
+			new Element('div', {
+				'class': 'dir-gal-thumb-bg',
+				'styles': {
+					'width': this.options.thumbSmallSize + 'px',
+					'height': this.options.thumbSmallSize + 'px',
+					'background-image': 'url(' + (thumbnail_url ? thumbnail_url : this.assetBasePath + 'Images/loader.gif') + ')'
+				}
+			}),
+			new Element('div', {
+				'class': 'name',
+				'styles': {
+					'width': this.options.thumbSmallSize + 'px'
+				},
+				'text': fname
+			})
+		);
+		this.tips.attach(el);
+		return el;
+	},
+
+	/*
+	 * The old one-function-does-all fill() would take an awful long time when processing large directories. This function
+	 * contains the most costly code chunk of the old fill() and has adjusted the looping through the j.dirs[] and j.files[] lists
+	 * in such a way that we can 'chunk it up': we can measure the time consumed so far and when we have spent more than
+	 * X milliseconds in the loop, we stop and allow the loop to commence after a minimal delay.
+	 *
+	 * The delay is the way to relinquish control to the browser and as a thank-you NOT get the dreaded
+	 * 'slow script, continue or abort?' dialog in your face. Ahh, the joy of cooperative multitasking is back again! :-)
+	 */
+	fill_chunkwise_1: function(startindex, endindex, render_count, pagesize, support_DnD_for_this_dir, starttime, els, kbd_dir, preselect) {
+
+		var idx, file, loop_duration;
+		var self = this;
+		var j = this.view_fill_json;
+		var loop_starttime = new Date().getTime();
+		var fmFile = (typeof jsGET !== 'undefined' ? jsGET.get('fmFile') : null);
+
+		var duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time duration @ fill_chunkwise_1(', startindex, '): ', duration);
+
+		/*
+		 * Note that the '< j.dirs.length' / '< j.files.length' checks MUST be kept around: one of the fastest ways to abort/cancel
+		 * the render is emptying the dirs[] + files[] array, as that would abort the loop on the '< j.dirs.length' / '< j.files.length'
+		 * condition.
+		 *
+		 * This, together with killing our delay-timer, is done when anyone calls reset_view_fill_store() to
+		 * abort this render pronto.
+		 */
+
+		// first loop: only render directories, when the indexes fit the range: 0 .. j.dirs.length-1
+		// Assume several directory aspects, such as no thumbnail hassle (it's one of two icons anyway, really!)
+		var el, editButtons;
+
+		for (idx = startindex; idx < endindex && idx < j.dirs.length; idx++)
+		{
+			file = j.dirs[idx];
+
+			if (idx % 10 == 0) {
+				// try not to spend more than 100 msecs per (UI blocking!) loop run!
+				loop_duration = new Date().getTime() - loop_starttime;
+				duration = new Date().getTime() - starttime;
+				//this.diag.log(' + time taken so far = ', duration, ' / ', loop_duration, ' @ elcnt = ', idx);
+
+				/*
+				 * Are we running in adaptive pagination mode? yes: calculate estimated new pagesize and adjust average (EMA) when needed.
+				 *
+				 * Do this here instead of at the very end so that pagesize will adapt, particularly when user does not want to wait for
+				 * this render to finish.
+				 */
+				this.adaptive_update_pagination_size(idx, endindex, render_count, pagesize, duration, 1.0 / 7.0, 1.1, 0.1 / 1000);
+
+				if (loop_duration >= 100)
+				{
+					this.view_fill_timer = this.fill_chunkwise_1.delay(1, this, [idx, endindex, render_count, pagesize, support_DnD_for_this_dir, starttime, els, kbd_dir, preselect]);
+					return; // end call == break out of loop
+				}
+			}
+
+			file.dir = j.path;
+
+			//this.diag.log('fill_chunkwise_1: dir = file: ', file, ' at index: ', idx);
+
+			// This is just a raw image
+			el = this.list_row_maker((this.listType === 'thumb' ? file.icon48 : file.icon), file);
+
+			//this.diag.log('add DIRECTORY click event to ', file);
+			el.addEvent('click', (function(e) {
+				self.diag.log('is_dir:CLICK: ', e);
+				var node = this;
+				self.relayClick.apply(self, [e, node]);
+			}).bind(el));
+
+			editButtons = [];
+
+			// rename, delete icon
+			if (file.name !== '..')
+			{
+				if (this.options.rename) editButtons.push('rename');
+				if (this.options.destroy) editButtons.push('destroy');
+			}
+
+			editButtons.each(function(v) {
+				//icons.push(
+				new Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+					// this = el, self = FM instance
+					e.preventDefault();
+					this.store('edit', true);
+					// can't use 'file' in here directly anymore either:
+					var file = this.retrieve('file');
+					self.tips.hide();
+					self[v](file);
+				}).bind(el)).inject(el,'top');
+				//);
+			}, this);
+
+			els[1].push(el);
+			//if (file.name === '..') el.fade(0.7);
+			el.inject(new Element('li',{'class':this.listType}).inject(this.browser)).store('parent', el.getParent());
+			//icons = $$(icons.map((function(icon) {
+			//  this.showFunctions(icon,icon,0.5,1);
+			//  this.showFunctions(icon,el.getParent('li'),1);
+			//}).bind(this)));
+
+			// you CANNOT 'preselect' a directory as if it were a file, so we don't need to check against the 'preselect' or 'fmFile' values here!
+		}
+
+		// and another, ALMOST identical, loop to render the files. Note that these buggers have their own peculiarities... and make sure the index is adjusted to point into files[]
+		var dir_count = j.dirs.length;
+
+		// skip files[] rendering, when the startindex still points inside dirs[]  ~  too many directories to fit any files on this page!
+		if (idx >= dir_count)
+		{
+			var dg_el;
+
+			for ( ; idx < endindex && idx - dir_count < j.files.length; idx++)
+			{
+				file = j.files[idx - dir_count];
+
+				if (idx % 10 == 0) {
+					// try not to spend more than 100 msecs per (UI blocking!) loop run!
+					loop_duration = new Date().getTime() - loop_starttime;
+					duration = new Date().getTime() - starttime;
+					//this.diag.log('time taken so far = ', duration, ' / ', loop_duration, ' @ elcnt = ', idx);
+
+					/*
+					 * Are we running in adaptive pagination mode? yes: calculate estimated new pagesize and adjust average (EMA) when needed.
+					 *
+					 * Do this here instead of at the very end so that pagesize will adapt, particularly when user does not want to wait for
+					 * this render to finish.
+					 */
+					this.adaptive_update_pagination_size(idx, endindex, render_count, pagesize, duration, 1.0 / 7.0, 1.1, 0.1 / 1000);
+
+					if (loop_duration >= 100)
+					{
+						this.view_fill_timer = this.fill_chunkwise_1.delay(1, this, [idx, endindex, render_count, pagesize, support_DnD_for_this_dir, starttime, els, kbd_dir, preselect]);
+						return; // end call == break out of loop
+					}
+				}
+
+				file.dir = j.path;
+
+				//this.diag.log('fill_chunkwise_1: files: file: ', file, ' at index: ', idx - dir_count);
+
+				// As we now have two views into the directory, we have to fetch the thumbnails, even when we're in 'list' view: the direcory gallery will need them!
+				// Besides, fetching the thumbs and all right after we render the directory also makes these thumbs + metadata available for drag&drop gallery and
+				// 'select mode', so they don't always have to ask for the meta data when it is required there and then.
+				if (file.thumb48 || /* this.listType !== 'thumb' || */ !file.thumbs_deferred)
+				{
+					// This is just a raw image
+					el = this.list_row_maker((this.listType === 'thumb' ? (file.thumb48 ? file.thumb48 : file.icon48) : file.icon), file);
+
+					dg_el = this.dir_gallery_item_maker((file.thumb48 ? file.thumb48 : file.icon48), file);
+				}
+				else    // thumbs_deferred...
+				{
+					// We must AJAX POST our propagateData, so we need to do the post and take the url to the
+					// thumbnail from the post results.
+					//
+					// The alternative here, taking only 1 round trip instead of 2, would have been to FORM POST
+					// to a tiny iframe, which is suitably sized to contain the generated thumbnail and the POST
+					// actually returning the binary image data, thus the iframe contents becoming the thumbnail image.
+
+					// update this one alongside the 'el':
+					dg_el = this.dir_gallery_item_maker(file.icon48, file);
+
+					el = (function(file, dg_el) {           // Closure
+						var iconpath = this.assetBasePath + 'Images/Icons/' + (this.listType === 'thumb' ? 'Large/' : '') + 'default-error.png';
+						var list_row = this.list_row_maker((this.listType === 'thumb' ? file.icon48 : file.icon), file);
+
+						var tx_cfg = this.options.mkServerRequestURL(this, 'detail', {
+										directory: this.dirname(file.path),
+										file: file.name,
+										filter: this.options.filter,
+										mode: 'direct'
+									});
+
+						var req = new FileManager.Request({
+							url: tx_cfg.url,
+							data: tx_cfg.data,
+							fmDisplayErrors: false,   // Should we display the error here? No, we just display the general error icon instead
+							onRequest: function() {},
+							onSuccess: (function(j) {
+								if (!j || !j.status || !j.thumb48)
+								{
+									list_row.getElement('span.fm-thumb-bg').setStyle('background-image', 'url(' + (this.listType === 'thumb' ? (j.icon48 ? j.icon48 : iconpath) : (j.icon ? j.icon : iconpath)) + ')');
+									dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + (j.icon48 ? j.icon48 : iconpath) + ')');
+								}
+								else
+								{
+									list_row.getElement('span.fm-thumb-bg').setStyle('background-image', 'url(' + (this.listType === 'thumb' ? j.thumb48 : j.icon) + ')');
+									dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + j.thumb48 + ')');
+								}
+
+								// update the stored json for this file as well:
+								file = Object.merge(file, j);
+
+								delete file.error;
+								delete file.status;
+								delete file.content;
+
+								if (file.element)
+								{
+									file.element.store('file', file);
+								}
+							}).bind(this),
+							onError: (function(text, error) {
+								list_row.getElement('span.fm-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+								dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+							}).bind(this),
+							onFailure: (function(xmlHttpRequest) {
+								list_row.getElement('span.fm-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+								dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+							}).bind(this)
+						}, this);
+
+						this.RequestQueue.addRequest('fill:' + String.uniqueID(), req);
+						req.send();
+
+						return list_row;
+					}).bind(this)(file, dg_el);
+				}
+
+				/*
+				 * WARNING: for some (to me) incomprehensible reason the old code which bound the event handlers to 'this==self' and which used the 'el' variable
+				 *          available here, does NOT WORK ANY MORE - tested in FF3.6. Turns out 'el' is pointing anywhere but where you want it by the time
+				 *          the event handler is executed.
+				 *
+				 *          The 'solution' which I found was to rely on the 'self' reference instead and bind to 'el'. If the one wouldn't work, the other shouldn't,
+				 *          but there you have it: this way around it works. FF3.6.14 :-(
+				 *
+				 * EDIT 2011/03/16: the problem started as soon as the old Array.each(function(...) {...}) by the chunked code which uses a for loop:
+				 *
+				 *              http://jibbering.com/faq/notes/closures/
+				 *
+				 *          as it says there:
+				 *
+				 *              A closure is formed when one of those inner functions is made accessible outside of the function in which it was
+				 *              contained, so that it may be executed after the outer function has returned. At which point it still has access to
+				 *              the local variables, parameters and inner function declarations of its outer function. Those local variables,
+				 *              parameter and function declarations (initially) >>>> have the values that they had when the outer function returned <<<<
+				 *              and may be interacted with by the inner function.
+				 *
+				 *          The >>>> <<<< emphasis is mine: in the .each() code, each el was a separate individual, while due to the for loop,
+				 *          the last 'el' to exist at all is the one created during the last round of the loop in that chunk. Which explains the
+				 *          observed behaviour before the fix: the file names associated with the 'el' element object were always pointing
+				 *          at some item further down the list, not necessarily the very last one, but always these references were 'grouped':
+				 *          multiple rows would produce the same filename.
+				 *
+				 * EXTRA: 2011/04/09: why you don't want to add this event for any draggable item!
+				 *
+				 *          It turns out that IE9 (IE6-8 untested as I write this) and Opera do NOT fire the 'click' event after the drag operation is
+				 *          'cancel'led, while other browsers fire both (Chrome/Safari/FF3).
+				 *          For the latter ones, the event handler sequence after a simple click on a draggable item is:
+				 *            - Drag::onBeforeStart
+				 *            - Drag::onCancel
+				 *            - 'click'
+				 *          while a tiny amount of dragging produces this sequence instead:
+				 *            - Drag::onBeforeStart
+				 *            - Drag::onStart
+				 *            - Drag::onDrop
+				 *            - 'click'
+				 *
+				 *          Meanwhile, Opera and IE9 do this:
+				 *            - Drag::onBeforeStart
+				 *            - Drag::onCancel
+				 *            - **NO** click event!
+				 *          while a tiny amount of dragging produces this sequence instead:
+				 *            - Drag::onBeforeStart
+				 *            - Drag::onStart
+				 *            - Drag::onDrop
+				 *            - **NO** click event!
+				 *
+				 *          which explains why the old implementation did not simply register this 'click' event handler and had 'revert' fake the 'click'
+				 *          event instead.
+				 *          HOWEVER, the old way, using revert() (now called revert_drag_n_drop()) was WAY too happy to hit the 'click' event handler. In
+				 *          fact, the only spot where such 'manually firing' was desirable is when the drag operation is CANCELLED. And only there!
+				 */
+
+				// 2011/04/09: only register the 'click' event when the element is NOT a draggable:
+				if (!support_DnD_for_this_dir)
+				{
+					self.diag.log('add FILE click event to ', file);
+					el.addEvent('click', (function(e) {
+						self.diag.log('is_file:CLICK: ', e);
+						var node = this;
+						self.relayClick.apply(self, [e, node]);
+					}).bind(el));
+				}
+
+				editButtons = [];
+				// download icon
+				if (this.options.download) {
+					if (this.options.download) editButtons.push('download');
+				}
+
+				// rename, delete icon
+				if (this.options.rename) editButtons.push('rename');
+				if (this.options.destroy) editButtons.push('destroy');
+
+				editButtons.each(function(v) {
+					new Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+						// this = el, self = FM instance
+						e.preventDefault();
+						this.store('edit', true);
+						// can't use 'file' in here directly anymore either:
+						var file = this.retrieve('file');
+						self.tips.hide();
+						self[v](file);
+					}).bind(el)).inject(el,'top');
+				}, this);
+
+				els[0].push(el);
+				el.inject(new Element('li',{'class':this.listType}).inject(this.browser)).store('parent', el.getParent());
+
+				// ->> LOAD the FILE/IMAGE from history when PAGE gets REFRESHED (only directly after refresh)
+				//this.diag.log('fill on PRESELECT (test): onShow = ', this.onShow, ', file = ', file, ', fmFile = ', fmFile, ', preselect = ', preselect);
+				if (this.onShow)
+				{
+					if (preselect)
+					{
+						if (preselect === file.name)
+						{
+							this.deselect(null);
+							this.Current = file.element;
+							new Fx.Scroll(this.browserScroll,{duration: 'short', offset: {x: 0, y: -(this.browserScroll.getSize().y/4)}}).toElement(file.element);
+							file.element.addClass('selected');
+							this.diag.log('fill on PRESELECT: fillInfo: file = ', file);
+							this.fillInfo(file);
+						}
+					}
+					else if (fmFile)
+					{
+						if (fmFile === file.name)
+						{
+							this.deselect(null);
+							this.Current = file.element;
+							new Fx.Scroll(this.browserScroll,{duration: 'short', offset: {x: 0, y: -(this.browserScroll.getSize().y/4)}}).toElement(file.element);
+							file.element.addClass('selected');
+							this.diag.log('fill: fillInfo: file = ', file);
+							this.fillInfo(file);
+						}
+					}
+					else
+					{
+						this.diag.log('fill: RESET onShow: file = ', file);
+						this.onShow = false;
+					}
+				}
+
 
 // Partikule
-			// Stop the scroller
-			self.scroller.stop();
-// Partikule
-	
-			self.relayClick.apply(el);
-		};
+// Thumbs list
 
-// Partikule : Stop making the code readable
+				// use a closure to keep a reference to the current dg_el, otherwise dg_el, file, etc. will carry the values they got at the end of the loop!
+				(function(dg_el, el, file)
+				{
+					dg_el.store('el_ref', el).addEvents({
+						'click': function(e)
+						{
+							clearTimeout(self.dir_gallery_click_timer);
+							self.dir_gallery_click_timer = self.relayDblClick.delay(700, self, [e, this, dg_el, file, 1]);
+						},
+						'dblclick': function(e)
+						{
+							clearTimeout(this.dir_gallery_click_timer);
+							this.dir_gallery_click_timer = self.relayDblClick.delay(0, self, [e, this, dg_el, file, 2]);
+						}
+					});
 
+					dg_el.inject(this.dir_filelist);
+				}).bind(this)(dg_el, el, file);
 
-    // -> make dragable
-    $$(els[0]).makeDraggable(
-    {
-      droppables: $$(this.droppables.combine(els[1])),
-      //stopPropagation: true,
+// / Partikule
+			}
+		}
 
-      onDrag: function(el, e){
+		// check how much we've consumed so far:
+		duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time taken in array traversal = ', duration);
 
-// Partikule
-// Change the drag because of container : The container can be moved, the pos needs to be relative to the container.
-// Not perfect...
-// 
-		var cpos = el.retrieve('cpos');
-		el.setStyles({
-			display: 'block',
-			left: e.page.x - cpos.x + 12,
-			top: e.page.y - cpos.y + 10
+		// go to the next stage, right after these messages... ;-)
+		this.view_fill_timer = this.fill_chunkwise_2.delay(1, this, [render_count, pagesize, support_DnD_for_this_dir, starttime, els, kbd_dir]);
+	},
+
+	/*
+	 * See comment for fill_chunkwise_1(): the makeDraggable() is a loop in itself and taking some considerable time
+	 * as well, so make it happen in a 'fresh' run here...
+	 */
+	fill_chunkwise_2: function(render_count, pagesize, support_DnD_for_this_dir, starttime, els, kbd_dir) {
+
+		var duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time duration @ fill_chunkwise_2() begin: ', duration);
+
+		// check how much we've consumed so far:
+		duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time taken in array traversal + revert = ', duration);
+
+		if (support_DnD_for_this_dir) {
+			// -> make draggable
+			$$(els[0]).makeDraggable({
+				droppables: $$(this.droppables.combine(els[1])),
+				//stopPropagation: true,
+
+				onDrag: (function(el, e) {
+					this.imageadd.setStyles({
+						'left': e.page.x + 25,
+						'top': e.page.y + 25
+					});
+				}).bind(this),
+
+				onBeforeStart: (function(el) {
+					this.diag.log('draggable:onBeforeStart', el);
+					var position = el.getPosition();
+					el.addClass('drag').setStyles({
+						'z-index': this.options.zIndex + 1500,
+						'position': 'absolute',
+						'width': el.getWidth() - el.getStyle('paddingLeft').toInt() - el.getStyle('paddingRight').toInt(),
+						'left': position.x,
+						'top': position.y
+					}).inject(this.container);
+				}).bind(this),
+
+				// FIX: do not deselect item when aborting dragging _another_ item!
+				onCancel: (function(el) {
+					this.diag.log('draggable:onCancel', el);
+					this.revert_drag_n_drop(el);
+					/*
+					 * Fixing the 'click' on FF+Opera (other browsers do get that event for any item which is made draggable):
+					 * a basic mouse'click' appears as the event sequence onBeforeStart + onCancel.
+					 *
+					 * NOTE that onStart is NOT invoked! When it is, it's a drag operation, no matter if it's successful as a drag&drop or not.
+					 *
+					 * So we then manually fire the 'click' event. See also the comment near the 'click' event handler registration in fill_chunkwise_1()
+					 * about the different behaviour in different browsers.
+					 */
+					this.relayClick(null, el);
+				}).bind(this),
+
+				onStart: (function(el) {
+					this.diag.log('draggable:onStart', el);
+					this.tips.hide();
+
+					el.fade(0.7).addClass('move');
+
+					this.diag.log('ENABLE keyboard up/down on drag start');
+
+					// FIX wrong visual when CONTROL key is kept depressed between drag&drops: the old code discarded the relevant keyboard handler; we simply switch visuals but keep the keyboard handler active.
+					// This state change will be reverted in revert_drag_n_drop().
+					this.drag_is_active = true;
+					this.imageadd.fade(0 + this.ctrl_key_pressed);
+				}).bind(this),
+
+				onEnter: function(el, droppable) {
+					droppable.addClass('droppable');
+				},
+
+				onLeave: function(el, droppable) {
+					droppable.removeClass('droppable');
+				},
+
+				onDrop: (function(el, droppable, e) {
+					this.diag.log('draggable:onDrop', el, droppable, e);
+
+					var is_a_move = !(e.control || e.meta);
+					this.drop_pending = 1 + is_a_move;
+
+					if (!is_a_move || !droppable) {
+						el.setStyles({left: 0, top: 0});
+					}
+
+					var dir = null;
+					if (droppable) {
+						droppable.addClass('selected').removeClass('droppable');
+						(function() {
+							droppable.removeClass('selected');
+						}).delay(300);
+						if (this.onDragComplete(el, droppable)) {
+							this.drop_pending = 0;
+
+							this.revert_drag_n_drop(el);   // go and request the details anew, then refresh them in the view
+							return;
+						}
+
+						dir = droppable.retrieve('file');
+						this.diag.log('on drop dir = ', dir);
+					}
+
+					if ((!this.options.move_or_copy) || (is_a_move && !droppable)) {
+						this.drop_pending = 0;
+
+						this.revert_drag_n_drop(el);   // go and request the details anew, then refresh them in the view
+						return;
+					}
+
+					this.revert_drag_n_drop(el);       // do not send the 'detail' request in here: this.drop_pending takes care of that!
+
+					var file = el.retrieve('file');
+					this.diag.log('on drop file = ', file, ', current dir:', this.CurrentDir, ', droppable: ', droppable);
+
+					if (this.Request) this.Request.cancel();
+
+					var tx_cfg = this.options.mkServerRequestURL(this, 'move', {
+									file: file.name,
+									filter: this.options.filter,
+									directory: this.CurrentDir.path,
+									newDirectory: (dir ? dir.path : this.CurrentDir.path),
+									copy: is_a_move ? 0 : 1
+								});
+
+					this.Request = new FileManager.Request({
+						url: tx_cfg.url,
+						data: tx_cfg.data,
+						onSuccess: (function(j) {
+							if (!j || !j.status) {
+								this.drop_pending = 0;
+								this.browserLoader.fade(0);
+								return;
+							}
+
+							this.fireEvent('modify', [Object.clone(file), j, (is_a_move ? 'move' : 'copy'), this]);
+
+							var rerendering_list = false;
+
+							// remove entry from cached JSON directory list and remove the item from the view when this was a move!
+							// This is particularly important when working on a paginated directory and afterwards the pages are jumped back & forth:
+							// the next time around, this item should NOT appear in the list anymore!
+							if (is_a_move)
+							{
+								this.deselect(file.element);
+
+								if (this.view_fill_json)
+								{
+									this.delete_from_dircache(file);  /* do NOT use j.name, as that one can be 'cleaned up' as part of the 'move' operation! */
+
+									// minor caveat: when we paginate the directory list, then browsing to the next page will skip one item (which would
+									// have been the first on the next page). The brute-force fix for this is to force a re-render of the page when in
+									// pagination view mode:
+									if (this.view_fill_json.dirs.length + this.view_fill_json.files.length > this.listPaginationLastSize)
+									{
+										// similar activity as load(), but without the server communication...
+
+										// abort any still running ('antiquated') fill chunks and reset the store before we set up a new one:
+										this.RequestQueue.cancel_bulk('fill');
+										clearTimeout(this.view_fill_timer);
+										this.view_fill_timer = null;
+
+										rerendering_list = true;
+										this.fill(null, this.get_view_fill_startindex(), this.listPaginationLastSize);
+									}
+								}
+
+								// make sure fade does not clash with parallel directory (re)load:
+								if (!rerendering_list)
+								{
+									var p = file.element.getParent();
+									if (p) {
+										p.fade(0).get('tween').chain(function() {
+											this.element.destroy();
+										});
+									}
+								}
+							}
+							else
+							{
+								if (!dir)
+								{
+									// copied to the very same directory:
+									rerendering_list = true;
+									this.load(this.CurrentDir.path);
+								}
+							}
+
+							this.drop_pending = 0;
+							this.browserLoader.fade(0);
+						}).bind(this),
+						onError: (function(text, error) {
+							this.drop_pending = 0;
+							this.browserLoader.fade(0);
+						}).bind(this),
+						onFailure: (function(xmlHttpRequest) {
+							this.drop_pending = 0;
+							this.browserLoader.fade(0);
+						}).bind(this)
+					}, this).send();
+				}).bind(this)
+			});
+
+			this.browser_dragndrop_info.setStyle('background-position', '0px 0px');
+			this.browser_dragndrop_info.set('title', this.language.drag_n_drop);
+		}
+
+		// check how much we've consumed so far:
+		duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time taken in make draggable = ', duration);
+
+		$$(els[0].combine(els[1])).setStyles({'left': 0, 'top': 0});
+
+		// check how much we've consumed so far:
+		duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time taken in setStyles = ', duration);
+
+		this.adaptive_update_pagination_size(render_count, render_count, render_count, pagesize, duration, 1.0 / 7.0, 1.02, 0.1 / 1000);
+
+		// go to the next stage, right after these messages... ;-)
+		this.view_fill_timer = this.fill_chunkwise_3.delay(1, this, [render_count, pagesize, support_DnD_for_this_dir, starttime, kbd_dir]);
+	},
+
+	/*
+	 * See comment for fill_chunkwise_1(): the tooltips need to be assigned with each icon (2..3 per list item)
+	 * and apparently that takes some considerable time as well for large directories and slightly slower machines.
+	 */
+	fill_chunkwise_3: function(render_count, pagesize, support_DnD_for_this_dir, starttime, kbd_dir) {
+
+		var duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time duration @ fill_chunkwise_3() begin:', duration);
+
+		this.tips.attach(this.browser.getElements('img.browser-icon'));
+		this.browser_dragndrop_info.fade(1);
+
+		// check how much we've consumed so far:
+		duration = new Date().getTime() - starttime;
+		//this.diag.log(' + time taken in tips.attach = ', duration);
+
+		// when a render is completed, we have maximum knowledge, i.e. maximum prognosis power: shorter tail on the EMA is our translation of that.
+		this.adaptive_update_pagination_size(render_count, render_count, render_count, pagesize, duration, 1.0 / 5.0, 1.0, 0);
+
+		// we're done: erase the timer so it can be garbage collected
+		//this.RequestQueue.cancel_bulk('fill');    -- do NOT do this!
+		clearTimeout(this.view_fill_timer);
+		this.view_fill_timer = null;
+
+		// make sure the selection, when keyboard driven, is marked correctly
+		if (kbd_dir)
+		{
+			this.browserSelection(kbd_dir);
+		}
+
+		this.browserLoader.fade(0);
+
+		this.fireHooks('fill');
+	},
+
+	adaptive_update_pagination_size: function(currentindex, endindex, render_count, pagesize, duration, EMA_factor, future_fudge_factor, compensation)
+	{
+		var avgwait = this.options.listPaginationAvgWaitTime;
+		if (avgwait)
+		{
+			// we can now estimate how much time we'll need to process the entire list:
+			var orig_startindex = endindex - render_count;
+			var done_so_far = currentindex - orig_startindex;
+			// the 1.3 is a heuristic covering for chunk_2+3 activity
+			done_so_far /= parseFloat(render_count);
+			// at least 5% of the job should be done before we start using our info for estimation/extrapolation
+			if (done_so_far > 0.05)
+			{
+				/*
+				 * and it turns out our fudge factors are not telling the whole story: the total number of elements
+				 * to render are still a factor then.
+				 */
+				future_fudge_factor *= (1 + compensation * render_count);
+
+				var t_est = duration * future_fudge_factor / done_so_far;
+
+				// now take the configured _desired_ maximum average wait time and see how we should fare:
+				var p_est = render_count * avgwait / t_est;
+
+				// EMA + sensitivity: the closer to our current target, the better our info:
+				var tail = EMA_factor * (0.9 + 0.1 * done_so_far);
+				var newpsize = tail * p_est + (1 - tail) * pagesize;
+
+				// apply limitations: never reduce more than 50%, never increase more than 20%:
+				var delta = newpsize / pagesize;
+				if (delta < 0.5)
+					newpsize = 0.5 * pagesize;
+				else if (delta > 1.2)
+					newpsize = 1.2 * pagesize;
+				newpsize = newpsize.toInt();
+
+				// and never let it drop below rediculous values:
+				if (newpsize < 20)
+					newpsize = 20;
+
+				//this.diag.log('::auto-tune pagination: new page = ', newpsize, ' @ tail:', tail, ', p_est: ', p_est, ', psize:', pagesize, ', render:', render_count, ', done%:', done_so_far, ', delta index:', currentindex - orig_startindex, ', t_est:', t_est, ', dur:', duration, ', pdelta: ', delta);
+				this.options.listPaginationSize = newpsize;
+			}
+		}
+	},
+
+	fillInfo: function(file) {
+
+		if (!file) file = this.CurrentDir;
+		if (!file) return;
+
+		// set file history
+		this.diag.log('fillInfo: ', this.storeHistory, ', file: ', Object.clone(file));
+		if (typeof jsGET !== 'undefined' && this.storeHistory) {
+			if (file.mime !== 'text/directory')
+				jsGET.set({'fmFile': file.name});
+			else
+				jsGET.set({'fmFile': ''});
+		}
+
+		var icon = file.icon;
+
+		this.switchButton4Current();
+
+		this.fireHooks('cleanupPreview');
+		// We need to remove our custom attributes form when the preview is hidden
+		this.fireEvent('hidePreview', [this]);
+
+		this.preview.empty();
+
+		//if (file.mime === 'text/directory') return;
+
+		if (this.drop_pending == 0)
+		{
+			if (this.Request) this.Request.cancel();
+
+			var dir = this.CurrentDir.path;
+
+			this.diag.log('fillInfo: request detail for file: ', Object.clone(file), ', dir: ', dir);
+
+			var tx_cfg = this.options.mkServerRequestURL(this, 'detail', {
+							directory: this.dirname(file.path),
+							// fixup for *directory* detail requests:    (file.mime === 'text/directory'
+							file: (file.mime === 'text/directory' && file.name === '') ? '/' : file.name,
+							filter: this.options.filter,
+							mode: 'auto'                    // provide either direct links to the thumbnails (when available in cache) or PHP event trigger URLs for delayed thumbnail image creation (performance optimization: faster page render)
+						});
+
+			this.Request = new FileManager.Request({
+				url: tx_cfg.url,
+				data: tx_cfg.data,
+				onRequest: (function() {
+					this.previewLoader.inject(this.preview);
+					this.previewLoader.fade(1);
+					this.show_our_info_sections(false);
+				}).bind(this),
+				onSuccess: (function(j) {
+
+					if (!j || !j.status) {
+						this.previewLoader.dispose();
+						return;
+					}
+
+					// speed up DOM tree manipulation: detach .info from document temporarily:
+					this.info.dispose();
+
+					this.info_head.getElement('img').set({
+							src: icon,
+							alt: file.mime
+						});
+
+					this.info_head.getElement('h1').set('text', file.name);
+					this.info_head.getElement('h1').set('title', file.name);
+
+					// don't wait for the fade to finish to set up the new content
+					var prev = this.preview.removeClass('filemanager-loading').set('html', (j.content ? j.content.substitute(this.language, /\\?\$\{([^{}]+)\}/g) : '')).getElement('img.preview');
+
+					if (file.mime === 'text/directory')
+					{
+						// only show the image set when this directory is also the current one (other directory detail views can result from a directory rename operation!
+						this.diag.log('? fillInfo for DIR: ', file, ', currentDir: ', this.CurrentDir);
+						if (file.path === this.CurrentDir.path)
+						{
+							this.preview.adopt(this.dir_filelist);
+						}
+					}
+
+					// and plug in the manipulated DOM subtree again:
+					this.info.inject(this.filemanager);
+					this.show_our_info_sections(true);
+
+					this.previewLoader.fade(0).get('tween').chain((function() {
+						this.previewLoader.dispose();
+					}).bind(this));
+
+					var els = this.preview.getElements('button');
+					if (els) {
+						els.addEvent('click', function(e) {
+							e.stop();
+							window.open(this.get('value'));
+						});
+					}
+
+					if (prev && !j.thumb250 && j.thumbs_deferred)
+					{
+						var iconpath = this.assetBasePath + 'Images/Icons/Large/default-error.png';
+
+						if (0)
+						{
+							prev.set('src', iconpath);
+							prev.setStyles({
+								'width': '',
+								'height': '',
+								'background': 'none'
+							});
+						}
+
+						var tx_cfg = this.options.mkServerRequestURL(this, 'detail', {
+										directory: this.dirname(file.path),
+										file: file.name,
+										filter: this.options.filter,
+										mode: 'direct'
+									});
+
+						var req = new FileManager.Request({
+							url: tx_cfg.url,
+							data: tx_cfg.data,
+							fmDisplayErrors: false,   // Should we display the error here? No, we just display the general error icon instead
+							onRequest: function() {},
+							onSuccess: (function(j) {
+								var img_url = (j.icon48 ? j.icon48 : iconpath);
+								if (j && j.status && j.thumb250)
+								{
+									img_url = j.thumb250;
+								}
+
+								prev.set('src', img_url);
+								prev.addEvent('load', function() {
+									// when the thumb250 image has loaded, remove the loader animation in the background ...
+									//this.setStyle('background', 'none');
+									// ... AND blow away the encoded 'width' and 'height' styles: after all, the thumb250 generation MAY have failed.
+									// In that case, an icon is produced by the backend, but it will have different dimensions, and we don't want to
+									// distort THAT one, either.
+									this.setStyles({
+										'width': '',
+										'height': '',
+										'background': 'none'
+									});
+								});
+
+								// Xinha: We need to add in a form for setting the attributes of images etc,
+								// so we add this event and pass it the information we have about the item
+								// as returned by Backend/FileManager.php
+								this.fireEvent('details', [j, this]);
+
+								// update the stored json for this file as well:
+
+								// now mix with the previously existing 'file' info (as produced by a 'view' run):
+								file = Object.merge(file, j);
+
+								// remove unwanted JSON elements:
+								delete file.status;
+								delete file.error;
+								delete file.content;
+
+								if (file.element)
+								{
+									file.element.store('file', file);
+								}
+
+								if (typeof milkbox !== 'undefined')
+								{
+									milkbox.reloadPageGalleries();
+								}
+							}).bind(this),
+							onError: (function(text, error) {
+								prev.set('src', iconpath);
+								prev.setStyles({
+									'width': '',
+									'height': '',
+									'background': 'none'
+								});
+							}).bind(this),
+							onFailure: (function(xmlHttpRequest) {
+								prev.set('src', iconpath);
+								prev.setStyles({
+									'width': '',
+									'height': '',
+									'background': 'none'
+								});
+							}).bind(this)
+						}, this);
+
+						this.RequestQueue.addRequest('info:' + String.uniqueID(), req);
+						req.send();
+					}
+					else
+					{
+						// Xinha: We need to add in a form for setting the attributes of images etc,
+						// so we add this event and pass it the information we have about the item
+						// as returned by Backend/FileManager.php
+						this.fireEvent('details', [j, this]);
+
+						// We also want to hold onto the data so we can access it later on,
+						// e.g. when selecting the image.
+
+						// now mix with the previously existing 'file' info (as produced by a 'view' run):
+						file = Object.merge(file, j);
+
+						// remove unwanted JSON elements:
+						delete file.status;
+						delete file.error;
+						delete file.content;
+
+						if (file.element)
+						{
+							file.element.store('file', file);
+						}
+
+						if (typeof milkbox !== 'undefined')
+						{
+							milkbox.reloadPageGalleries();
+						}
+					}
+				}).bind(this),
+				onError: (function(text, error) {
+					this.previewLoader.dispose();
+				}).bind(this),
+				onFailure: (function(xmlHttpRequest) {
+					this.previewLoader.dispose();
+				}).bind(this)
+			}, this).send();
+		}
+	},
+
+	showFunctions: function(icon,appearOn,opacityBefore,opacityAfter) {
+		var opacity = [opacityBefore || 1, opacityAfter || 0];
+		icon.set({
+			opacity: opacity[1]
 		});
-	
-		self.imageadd.setStyles({
-			'left': e.page.x - cpos.x,
-			'top': e.page.y - cpos.y + 12
+
+		$(appearOn).addEvents({
+			mouseenter: (function() {
+							this.set('opacity', opacity[0]);
+						}).bind(icon),
+			mouseleave: (function() {
+							this.set('opacity', opacity[1]);
+						}).bind(icon)
 		});
-// / Partikule
-/*
-        self.imageadd.setStyles({
-          'left': e.page.x + 25,
-          'top': e.page.y + 25
-        });
-        self.imageadd.fade('in');
-*/
-      },
+		return icon;
+	},
 
-      onBeforeStart: function(el){
-        self.deselect();
-        self.tips.hide();
-        var position = el.getPosition();
-		
-// Partikule : Store the container position and start the scroller
+	normalize: function(str) {
+		return str.replace(/\/+/g, '/');
+	},
 
-		// start the scroller				
-		self.scroller.start();
+	dirname: function(path) {
+		var sects = path.split('/');
+		var topdir = sects.pop();
+		if (topdir === '')
+		{
+			// path has trailing '/'; keep it that way!
+			sects.pop();
+			sects.push('');
+		}
+		return sects.join('/');
+	},
 
-		el.store('cpos', self.container.getPosition());
+	switchButton4Current: function() {
+		var chk = !!this.Current;
+		var els = [];
+		els.push(this.menu.getElement('button.filemanager-open'));
+		els.push(this.menu.getElement('button.filemanager-download'));
+		els.each(function(el) {
+			if (el)
+			{
+				el.set('disabled', !chk)[(chk ? 'remove' : 'add') + 'Class']('disabled');
+			}
+		});
+	},
 
-// / Partikule
-/*
-        el.addClass('drag').setStyles({
-          'z-index': self.dragZIndex,
-          'position': 'absolute',
-          'width': el.getWidth() - el.getStyle('paddingLeft').toInt() - el.getStyle('paddingRight').toInt(),
-          'left': position.x,
-          'top': position.y
-        }).inject(self.container);
-*/
-      },
+	// adds buttons to the file main menu, which onClick start a method with the same name
+	addMenuButton: function(name) {
+		var el = new Element('button', {
+			'class': 'filemanager-' + name,
+			text: this.language[name]
+		}).inject(this.menu, 'top');
 
-      onCancel: revert,
+		if (this[name+'_on_click'])
+		{
+			el.addEvent('click', this[name+'_on_click'].bind(this));
+		}
+		return el;
+	},
 
-      onStart: function(el, e)
-      {
-// Partikule : Add
-		var position = el.getPosition();
+	// clear the view chunk timer, erase the JSON store but do NOT reset the pagination to page 0:
+	// we may be reloading and we don't want to destroy the page indicator then!
+	reset_view_fill_store: function(j)
+	{
+		this.view_fill_startindex = 0;   // offset into the view JSON array: which part of the entire view are we currently watching?
+		if (this.view_fill_json)
+		{
+			// make sure the old 'fill' run is aborted ASAP: clear the old files[] array to break
+			// the heaviest loop in fill:
+			this.view_fill_json.files = [];
+			this.view_fill_json.dirs = [];
+		}
 
-		var cpos = el.retrieve('cpos');
+		this.reset_fill();
 
-		el.addClass('drag').setStyles({
-			'z-index': self.dragZIndex,
-			'position': 'absolute',
-			'width': el.getWidth() - el.getStyle('paddingLeft').toInt(),
-			'display': 'none',
-			'left': e.page.x - cpos.x + 10,
-			'top': e.page.y - cpos.y + 10
+		this.view_fill_json = ((j && j.status) ? j : null);      // clear out the old JSON data and set up possibly new data.
+		// ^^^ the latest JSON array describing the entire list; used with pagination to hop through huge dirs without repeatedly
+		//     consulting the server. The server doesn't need to know we're so slow we need pagination now! ;-)
+	},
 
-		}).inject(self.container);
-// / Partikule
 
-        el.set('opacity', 0.7).addClass('move');
-        document.addEvents({
-          keydown: self.bound.keydown,
-          keyup: self.bound.keyup
-        });
-      },
+	// clear the view chunk timer only. We are probably redrawing the list view!
+	reset_fill: function()
+	{
+		this.browser_dragndrop_info.fade(0.5);
+		this.browser_dragndrop_info.setStyle('background-position', '0px -16px');
+		this.browser_dragndrop_info.set('title', this.language.drag_n_drop_disabled);
 
-      onEnter: function(el, droppable){
-        droppable.addClass('droppable');
-      },
+		// as this is a long-running process, make sure the hourglass-equivalent is visible for the duration:
+		this.browserLoader.fade(1);
 
-      onLeave: function(el, droppable){
-        droppable.removeClass('droppable');
-      },
+		this.browser_paging.fade(0);
 
-      onDrop: function(el, droppable, e){
-        revert(el);
+		// abort any still running ('antiquated') fill chunks:
+		this.RequestQueue.cancel_bulk('fill');
+		clearTimeout(this.view_fill_timer);
+		this.view_fill_timer = null;     // timer reference when fill() is working chunk-by-chunk.
+	},
 
-        if (e.control || e.meta || !droppable) el.setStyles({left: 0, top: 0});
-        if (!droppable && !e.control && !e.meta) return;
+	store_view_fill_startindex: function(idx)
+	{
+		this.view_fill_startindex = idx;
+		if (typeof jsGET !== 'undefined' /* && this.storeHistory */) {
+			jsGET.set({'fmPageIdx': idx});
+		}
+	},
 
-        var dir;
-        if (droppable){
-          droppable.addClass('selected').removeClass('droppable');
-          (function(){droppable.removeClass('selected');}).delay(300);
-          if (self.onDragComplete(el, droppable)) return;
+	get_view_fill_startindex: function(idx)
+	{
+		// we don't care about null, undefined or 0 here: as we keep close track of the startindex, any nonzero valued setting wins out.
+		if (!idx)
+		{
+			idx = this.view_fill_startindex;
+		}
+		if (typeof jsGET !== 'undefined' && !idx)
+		{
+			idx = jsGET.get('fmPageIdx');
+		}
+		return parseInt(idx ? idx : 0, 10);
+	},
 
-          dir = droppable.retrieve('file');
-        }
-        var file = el.retrieve('file');
+	fireHooks: function(hook) {
+		var args = Array.slice(arguments, 1);
+		for(var key in this.hooks[hook]) {
+			this.hooks[hook][key].apply(this, args);
+		}
+		return this;
+	},
 
-        new FileManager.Request({
-//          url: self.options.url + '?event=move',
-          url: self.options.url + '/move',
-          data: {
-            file: file.name,
-            filter: self.options.filter,
-            directory: self.Directory,
-            newDirectory: dir ? (dir.dir ? dir.dir + '/' : '') + dir.name : self.Directory,
-            copy: e.control || e.meta ? 1 : 0
-          },
-          onSuccess: function(){
-            if (!dir) self.load(self.Directory);
-          },
-          onError: (function(xmlHttpRequest) {
-            this.showError(xmlHttpRequest);
-            this.browserLoader.fade(0);
-          }).bind(self)
-        }, self).send();
+	cvtXHRerror2msg: function(xmlHttpRequest) {
+		var status = xmlHttpRequest.status;
+		var orsc = xmlHttpRequest.onreadystatechange;
+		var response = (xmlHttpRequest.responseText || this.language['backend.unidentified_error']);
 
-        self.fireEvent('modify', [Object.clone(file)]);
+		var text = response.substitute(this.language, /\\?\$\{([^{}]+)\}/g);
+		return text;
+	},
 
-        if (!e.control && !e.meta)
-          el.fade(0).get('tween').chain(function(){
-            self.deselect(el);
-            el.getParent().destroy();
-          });
-      }
-    });
+	showError: function(text) {
+		var errorText = '' + text;
 
-    $$(els[0].combine(els[1])).setStyles({'left': 0, 'top': 0});
+		if (!errorText) {
+			errorText = this.language['backend.unidentified_error'];
+		}
+		errorText = errorText.substitute(this.language, /\\?\$\{([^{}]+)\}/g);
 
-    this.tips.attach(this.browser.getElements('img.browser-icon'));
-  },
+		if (this.pending_error_dialog)
+		{
+			this.pending_error_dialog.appendMessage(errorText);
+		}
+		else
+		{
+			this.pending_error_dialog = new FileManager.Dialog(this.language.error, {
+				buttons: ['confirm'],
+				language: {
+					confirm: this.language.ok
+				},
+				content: [
+					errorText
+				],
+				zIndex: this.options.zIndex + 1000,
+				onOpen: this.onDialogOpen.bind(this),
+				onClose: function()
+				{
+					this.pending_error_dialog = null;
+					this.onDialogClose();
+				}.bind(this)
+			});
+		}
+	},
 
-  fillInfo: function(file) {
-    if (!file) file = this.CurrentDir;
-    if (!file) return;
+	showMessage: function(textOrElement, title) {
+		if (!title) title = '';
+		new FileManager.Dialog(title, {
+			buttons: ['confirm'],
+			language: {
+				confirm: this.language.ok
+			},
+			content: [
+				textOrElement
+			],
+			zIndex: this.options.zIndex + 950,
+			onOpen: this.onDialogOpen.bind(this),
+			onClose: this.onDialogClose.bind(this)
+		});
+	},
 
-    // set file history
-    //console.log(this.storeHistory);
-    if(typeof jsGET != 'undefined' && this.storeHistory) {
-      if(file.mime != 'text/directory')
-        jsGET.set({'fmFile':file.name});
-      else
-        jsGET.set({'fmFile':''});
-    }
+	onRequest: function() {
+		this.loader.fade(1);
+	},
+	onComplete: function() {
+		//this.loader.fade(0);
+	},
+	onSuccess: function() {
+		this.loader.fade(0);
+	},
+	onError: function() {
+		this.loader.fade(0);
+	},
+	onFailure: function() {
+		this.loader.fade(0);
+	},
+	onDialogOpen: function() {
+		this.dialogOpen = true;
+		this.onDialogOpenWhenUpload.apply(this);
+	},
+	onDialogClose: function() {
+		this.dialogOpen = false;
+		this.onDialogCloseWhenUpload.apply(this);
+	},
+	onDialogOpenWhenUpload: function() {},
+	onDialogCloseWhenUpload: function() {},
+	onDragComplete: function() {
+		return false;   // return TRUE when the drop action is unwanted
+	},
 
-    var size = this.size(file.size);
-    var icon = file.icon;
+	// dev/diag shortcuts:
 
-    this.switchButton();
+	// always return a string; dump object/array/... in 'arr' to human readable string:
+	diag:
+	{
+		verbose: false,
+		dump: function(arr, level, max_depth, max_lines, no_show)
+		{
+			return '';
+		},
+		log: function(/* ... */)
+		{
+			if (!this.verbose) return;
 
-			
-    this.info.getElement('img').set({
-      src: icon,
-      alt: file.mime
-    });
-
-// Partikule
-// Again with effects... could be better.....
-	if(this.options.advancedEffects == true )
-		this.info.fade(1);
-	else
-	    this.info.set('opacity', 1).setStyle('display', 'block');
-
-// / Partikule
-
-    this.fireHooks('cleanup');
-    this.preview.empty();
-
-    this.info.getElement('h1').set('text', file.name);
-    this.info.getElement('h1').set('title', file.name);
-    this.info.getElement('dd.filemanager-modified').set('text', file.date);
-    this.info.getElement('dd.filemanager-type').set('text', file.mime);
-    this.info.getElement('dd.filemanager-size').set('text', !size[0] && size[1] == 'Bytes' ? '-' : (size.join(' ') + (size[1] != 'Bytes' ? ' (' + file.size + ' Bytes)' : '')));
-//    this.info.getElement('h2.filemanager-headline').setStyle('display', file.mime == 'text/directory' ? 'none' : 'block');
-
-    if (file.mime=='text/directory') return;
-
-    if (this.Request) this.Request.cancel();
-
-    this.Request = new FileManager.Request({
-//      url: this.options.url + '?event=detail',
-	  url: this.options.url + '/detail',
-      onRequest: (function() {
-        this.previewLoader.inject(this.preview);
-        this.previewLoader.set('opacity', 1);
-      }).bind(this),
-      onSuccess: (function(j) {
-
-        this.previewLoader.fade(0).get('tween').chain((function() {
-          this.previewLoader.dispose();
-
-		  if (0)   // debugging only:
-		    if (j && !j.status)
-		    {
-		      new Dialog(('' + j.error).substitute(this.language, /\\?\$\{([^{}]+)\}/g) , {language: {confirm: this.language.ok}, buttons: ['confirm']});
-		    }
-
-          var prev = this.preview.removeClass('filemanager-loading').set('html', j && j.content ? j.content.substitute(this.language, /\\?\$\{([^{}]+)\}/g) : '').getElement('img.preview');
-          if (prev) prev.addEvent('load', function(){
-            this.setStyle('background', 'none');
-          });
-
-          var els = this.preview.getElements('button');
-          if (els) els.addEvent('click', function(e){
-            e.stop();
-            window.open(this.get('value'));
-          });
-
-          if(typeof milkbox != 'undefined')
-            milkbox.reloadPageGalleries();
-
-        }).bind(this));
-      }).bind(this),
-      onError: (function(xmlHttpRequest) {
-        this.previewLoader.dispose();
-        this.showError(xmlHttpRequest);
-      }).bind(this),
-      data: {
-        directory: this.Directory,
-        file: file.name,
-        filter: this.options.filter
-      }
-    }, this).send();
-
-  },
-
-  showFunctions: function(icon,appearOn,opacityBefore,opacityAfter) {
-    var opacity = [opacityBefore || 1, opacityAfter || 0];
-    icon.set({
-      opacity: opacity[1]
-    });
-
-    $(appearOn).addEvents({
-      mouseenter: (function(){this.setStyle('opacity',opacity[0]);}).bind(icon),
-      mouseleave: (function(){this.setStyle('opacity',opacity[1]);}).bind(icon)
-    });
-    return icon;
-  },
-
-  size: function(size){
-    var tab = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    for(var i = 0; size > 1024; i++)
-      size = size/1024;
-
-    return [Math.round(size), tab[i]];
-  },
-
-  normalize: function(str){
-    return str.replace(/\/+/g, '/');
-  },
-
-  switchButton: function() {
-    var chk = !!this.Current;
-    var els = new Array();
-    els.push(this.menu.getElement('button.filemanager-open'));
-    els.push(this.menu.getElement('button.filemanager-download'));
-    els.each(function(el){
-      if (el) el.set('disabled', !chk)[(chk ? 'remove' : 'add') + 'Class']('disabled');
-    });
-  },
-
-  // adds buttons to the file main menu, which onClick start a method with the same name
-  addMenuButton: function(name) {
-    var el = new Element('button', {
-      'class': 'filemanager-' + name,
-      text: this.language[name]
-    }).inject(this.menu, 'top');
-    if (this[name]) el.addEvent('click', this[name].bind(this));
-    return el;
-  },
-
-  fireHooks: function(hook){
-    var args = Array.slice(arguments, 1);
-    for(var key in this.hooks[hook]) this.hooks[hook][key].apply(this, args);
-    return this;
-  },
-
-  showError: function(text) {
-    var errorText = text;
-    var self = this;
-
-    if(errorText.indexOf('{') != -1)
-      errorText = errorText.substring(0,errorText.indexOf('{'));
-
-    new Dialog(this.language.error, {
-      buttons: ['confirm'],
-      language: {
-        confirm: this.language.ok
-      },
-      content: [
-        errorText
-      ],
-      onOpen: this.onDialogOpen.bind(this),
-      onClose: this.onDialogClose.bind(this)
-    });
-  },
-
-  onRequest: function(){this.loader.set('opacity', 1);},
-  onComplete: function(){this.loader.fade(0);},
-  onError: function(){this.loader.fade(0);},
-  onDialogOpen: function(){this.dialogOpen = true; this.onDialogOpenWhenUpload.apply(this);},
-  onDialogClose: function(){this.dialogOpen = false; this.onDialogCloseWhenUpload.apply(this);},
-  onDialogOpenWhenUpload: function(){},
-  onDialogCloseWhenUpload: function(){},
-  onDragComplete: Function.from(false)
+			if (typeof console !== 'undefined')
+			{
+				if (console.info)
+				{
+					console.info.apply(console, arguments);
+				}
+				else if (console.log)
+				{
+					console.log.apply(console, arguments);
+				}
+			}
+		}
+	}
 });
 
 FileManager.Request = new Class({
-  Extends: Request.JSON,
-  secure: true,
+	Extends: Request.JSON,
 
-  initialize: function(options, filebrowser){
-    this.parent(options);
+	options:
+	{
+		secure:          true, // Isn't this true by default anyway in REQUEST.JSON?
+		fmDisplayErrors: true  // Automatically display errors - ** your onSuccess still gets called, just ignore if it's an error **
+	},
 
-    if (filebrowser) this.addEvents({
-      request: filebrowser.onRequest.bind(filebrowser),
-      complete: filebrowser.onComplete.bind(filebrowser),
-      error: filebrowser.onError.bind(filebrowser)
-    });
-  }
+	initialize: function(options, filebrowser) {
+		this.parent(options);
+
+		this.options.data = Object.merge({}, filebrowser.options.propagateData, this.options.data);
+
+		if (this.options.fmDisplayErrors)
+		{
+			this.addEvents({
+				success: function(j)
+				{
+					if (!j)
+					{
+						filebrowser.showError();
+					}
+					else if (!j.status)
+					{
+						filebrowser.showError(('' + j.error).substitute(filebrowser.language, /\\?\$\{([^{}]+)\}/g));
+					}
+				}.bind(this),
+
+				error: function(text, error)
+				{
+					filebrowser.showError(text);
+				},
+
+				failure: function(xmlHttpRequest)
+				{
+					var text = filebrowser.cvtXHRerror2msg(xmlHttpRequest);
+					filebrowser.showError(text);
+				}
+			});
+		}
+
+		this.addEvents({
+			request: filebrowser.onRequest.bind(filebrowser),
+			complete: filebrowser.onComplete.bind(filebrowser),
+			success: filebrowser.onSuccess.bind(filebrowser),
+			error: filebrowser.onError.bind(filebrowser),
+			failure: filebrowser.onFailure.bind(filebrowser)
+		});
+	}
 });
 
 FileManager.Language = {};
 
-(function(){
+(function() {
 
-// ->> load DEPENCIES
-var __DIR__ = (function() {
-    var scripts = document.getElementsByTagName('script');
-    var script = scripts[scripts.length - 1].src;
-    var host = window.location.href.replace(window.location.pathname+window.location.hash,'');
-    return script.substring(0, script.lastIndexOf('/')).replace(host,'') + '/';
-})();
-Asset.javascript(__DIR__+'../Assets/js/milkbox/milkbox.js');
-Asset.css(__DIR__+'../Assets/js/milkbox/css/milkbox.css');
-Asset.css(__DIR__+'../Assets/Css/FileManager.css');
-Asset.css(__DIR__+'../Assets/Css/Additions.css');
-Asset.javascript(__DIR__+'../Assets/js/jsGET.js', { events: {load: (function(){ window.fireEvent('jsGETloaded'); }).bind(this)}});
+// ->> load DEPENDENCIES
+if (typeof __MFM_ASSETS_DIR__ === 'undefined')
+{
+	var __DIR__ = (function() {
+			var scripts = document.getElementsByTagName('script');
+			var script = scripts[scripts.length - 1].src;
+			var host = window.location.href.replace(window.location.pathname+window.location.hash,'');
+			return script.substring(0, script.lastIndexOf('/')).replace(host,'') + '/';
+	})();
+	__MFM_ASSETS_DIR__ = __DIR__ + "../Assets";
+}
+Asset.javascript(__MFM_ASSETS_DIR__+'/js/milkbox/milkbox.js');
+Asset.css(__MFM_ASSETS_DIR__+'/js/milkbox/css/milkbox.css');
+Asset.css(__MFM_ASSETS_DIR__+'/Css/FileManager.css');
+Asset.css(__MFM_ASSETS_DIR__+'/Css/Additions.css');
+Asset.javascript(__MFM_ASSETS_DIR__+'/js/jsGET.js', {
+	events: {
+		load: (function() {
+			window.fireEvent('jsGETloaded');
+		}).bind(this)
+	}
+});
 
 Element.implement({
 
-  center: function(offsets) {
-    var scroll = document.getScroll(),
-      offset = document.getSize(),
-      size = this.getSize(),
-      values = {x: 'left', y: 'top'};
+	center: function(offsets) {
+		var scroll = document.getScroll();
+		var offset = document.getSize();
+		var size = this.getSize();
+		var values = {x: 'left', y: 'top'};
 
-    if(!offsets) offsets = {};
+		if (!offsets) {
+			offsets = {};
+		}
 
-    for (var z in values){
-      var style = scroll[z] + (offset[z] - size[z]) / 2 + (offsets[z] || 0);
-      this.setStyle(values[z], (z == 'y' && style < 30) ? 30 : style);
-    }
-    return this;
-  }
+		for (var z in values) {
+			var style = scroll[z] + (offset[z] - size[z]) / 2 + (offsets[z] || 0);
+			this.setStyle(values[z], (z === 'y' && style < 30) ? 30 : style);
+		}
+		return this;
+	}
 
 });
 
-this.Dialog = new Class({
+FileManager.Dialog = new Class({
 
-  Implements: [Options, Events],
+	Implements: [Options, Events],
 
-  options: {
-    /*onShow: function(){},
-    onOpen: function(){},
-    onConfirm: function(){},
-    onDecline: function(){},
-    onClose: function(){},*/
-    request: null,
-    buttons: ['confirm', 'decline'],
-    language: {}
-  },
+	options: {
+		/*
+		 * onShow: function() {},
+		 * onOpen: function() {},
+		 * onConfirm: function() {},
+		 * onDecline: function() {},
+		 * onClose: function() {},
+		 */
+		request: null,
+		buttons: ['confirm', 'decline'],
+		language: {},
+		zIndex: 2000,
+		autofocus_on: null // (string) suitable as a .getElement() argument or NULL for default. Example: 'button.filemanager-dialog-confirm'
+	},
 
-  initialize: function(text, options){
-    this.setOptions(options);
-    this.dialogOpen = false;
+	initialize: function(text, options) {
+		this.setOptions(options);
+		this.dialogOpen = false;
 
-    this.el = new Element('div', {
-      'class': 'dialog' + (Browser.ie ? ' dialog-engine-trident' : '') + (Browser.ie ? ' dialog-engine-trident' : '') + (Browser.ie8 ? '4' : '') + (Browser.ie9 ? '5' : ''),
-      opacity: 0,
-      tween: {duration: 250}
-    }).adopt([
-      typeOf(text) == 'string' ? new Element('div', {text: text}) : text
-    ]);
+		this.content_el = new Element('div', {
+			'class': 'filemanager-dialog-content'
+		}).adopt([
+			typeOf(text) === 'string' ? this.str2el(text) : text
+		]);
 
-    if(typeof this.options.content != 'undefined') {
-      this.options.content.each((function(content){
-        if(content && typeOf(content) == 'element') this.el.getElement('div').adopt(content);
-        else if(content) this.el.getElement('div').set('html',this.el.getElement('div').get('html')+'<br>'+content);
-      }).bind(this));
-    }
+		this.el = new Element('div', {
+			'class': 'filemanager-dialog' + (Browser.ie ? ' filemanager-dialog-engine-trident' : '') + (Browser.ie ? ' filemanager-dialog-engine-trident' : '') + (Browser.ie8 ? '4' : '') + (Browser.ie9 ? '5' : ''),
+			opacity: 0,
+			tween: {duration: 'short'},
+			styles:
+			{
+				'z-index': this.options.zIndex
+			}
+		}).adopt(this.content_el);
 
-    Array.each(this.options.buttons, function(v){
-      new Element('button', {'class': 'dialog-' + v, text: this.options.language[v]}).addEvent('click', (function(e){
-        if (e) e.stop();
-        this.fireEvent(v).fireEvent('close');
-        //if(!this.options.hideOverlay)
-        this.overlay.hide();
-        this.destroy();
-      }).bind(this)).inject(this.el);
-    }, this);
+		if (typeof this.options.content !== 'undefined') {
+			this.options.content.each((function(content) {
+				if (content)
+				{
+					if (typeOf(content) !== 'string')
+					{
+						this.content_el.adopt(content);
+					}
+					else
+					{
+						this.content_el.adopt(this.str2el(content));
+					}
+				}
+			}).bind(this));
+		}
 
-    this.overlay = new Overlay({
-      'class': 'overlay overlay-dialog',
-      events: {click: this.fireEvent.pass('close',this)},
-      tween: {duration: 250}
-    });
+		Array.each(this.options.buttons, function(v) {
+			new Element('button', {'class': 'filemanager-dialog-' + v, text: this.options.language[v]}).addEvent('click', (function(e) {
+				if (e) e.stop();
+				this.fireEvent(v).fireEvent('close');
+				//if (!this.options.hideOverlay)
+				this.overlay.hide();
+				this.destroy();
+			}).bind(this)).inject(this.el);
+		}, this);
 
-    this.bound = {
-      scroll: (function(){
-        if (!this.el) this.destroy();
-        else this.el.center();
-      }).bind(this),
-      keyesc: (function(e){
-        if (e.key == 'esc') {
-          e.stopPropagation();
-          this.fireEvent('close').destroy();
-        };
-      }).bind(this)
-    };
+		this.overlay = new Overlay({
+			'class': 'filemanager-overlay filemanager-overlay-dialog',
+			events: {
+				click: this.fireEvent.pass('close', this)
+			},
+			//tween: {duration: 'short'},
+			styles:
+			{
+				'z-index': this.options.zIndex - 1
+			}
+		});
 
-    this.show();
-  },
+		this.bound = {
+			scroll: (function() {
+				if (!this.el)
+					this.destroy();
+				else
+					this.el.center();
+			}).bind(this),
 
-  show: function(){
-    if(!this.options.hideOverlay)
-      this.overlay.show();
-    var self = this.fireEvent('open');
-    this.el.setStyle('display', 'block').inject(document.body).center().fade(1).get('tween').chain(function(){
-      var button = this.element.getElement('button.dialog-confirm') || this.element.getElement('button');
-      if (button) button.focus();
-      self.fireEvent('show');
-    });
+			keyesc: (function(e) {
+				window.FileManager.prototype.diag.log('keyEsc: key press: ', e);
+				if (e.key === 'esc') {
+					e.stopPropagation();
+					this.destroy();
+				}
+			}).bind(this)
+		};
 
-    document.addEvents({
-      'scroll': this.bound.scroll,
-      'resize': this.bound.scroll,
-      'keyup': this.bound.keyesc
-    });
-  },
+		this.show();
+	},
 
-  destroy: function() {
-    if (this.el)
-      this.el.fade(0).get('tween').chain((function(){
-        if(!this.options.hideOverlay)
-          this.overlay.destroy();
-        this.el.destroy();
-      }).bind(this));
+	show: function() {
+		this.overlay.show();
 
-      document.removeEvent('scroll', this.bound.scroll).removeEvent('resize', this.bound.scroll).removeEvent('keyup', this.bound.keyesc);
-  }
+		var self = this;
+		this.fireEvent('open');
+		this.el.setStyle('display', 'block').inject(document.body);
+		this.restrictSize();
+		var autofocus_el = (this.options.autofocus_on ? this.el.getElement(this.options.autofocus_on) : (this.el.getElement('button.filemanager-dialog-confirm') || this.el.getElement('button')));
+		if (autofocus_el)
+		{
+			if (('autofocus' in autofocus_el) && !(Browser.Engine && Browser.Engine.webkit))
+			{
+				// HTML5 support: see    http://diveintohtml5.org/detect.html
+				//
+				// Unfortunately, it's not really working for me in webkit browsers (Chrome, Safari)  :-((
+				autofocus_el.set('autofocus', 'autofocus');
+				autofocus_el = null;
+			}
+			else
+			{
+				// Safari / Chrome have trouble focussing on things not yet fully rendered!
+			}
+		}
+		this.el.center().fade(1).get('tween').chain((function() {
+				// Safari / Chrome have trouble focussing on things not yet fully rendered!
+				// see   http://stackoverflow.com/questions/2074347/focus-not-working-in-safari-or-chrome
+				// and   http://www.mkyong.com/javascript/focus-is-not-working-in-ie-solution/
+				if (autofocus_el)
+				{
+					if (0)                  // the delay suggested as a fix there is part of the fade()...
+					{
+						(function(el) {
+							el.focus();
+						}).delay(1, this, [autofocus_el]);
+					}
+					else
+					{
+						//autofocus_el.set('tabIndex', 0);   // http://code.google.com/p/chromium/issues/detail?id=27868#c15
+						// ^-- not needed.  When you debug JS in a Webkit browser, you're toast when it comes to getting input field focus, period.   :-(
+						autofocus_el.focus();
+					}
+				}
+			}).bind(this));
 
+		self.fireEvent('show');
+
+		window.FileManager.prototype.diag.log('add key up(ESC)/resize/scroll on show 1500');
+		document.addEvents({
+			'scroll': this.bound.scroll,
+			'resize': this.bound.scroll,
+			'keyup': this.bound.keyesc
+		});
+	},
+
+	appendMessage: function(text) {
+		this.content_el.adopt([
+			typeOf(text) === 'string' ? this.str2el(text) : text
+		]);
+		this.restrictSize();
+		this.el.center();
+	},
+
+	restrictSize: function()
+	{
+		// make sure the dialog never is larger than the viewport!
+		var ddim = this.el.getSize();
+		var vdim = window.getSize();
+		var maxx = (vdim.x - 20) * 0.85; // heuristic: make dialog a little smaller than the screen itself and keep a place for possible outer scrollbars
+		if (ddim.x >= maxx)
+		{
+			this.el.setStyle('width', maxx.toInt());
+		}
+		ddim = this.el.getSize();
+		var cdim = this.content_el.getSize();
+		var maxy = (vdim.y - 20) * 0.85; // heuristic: make dialog a little less high than the screen itself and keep a place for possible outer scrollbars
+		if (ddim.y >= maxy)
+		{
+			// first attempt to correct this by making the dialog wider:
+			var x = ddim.x * 2.0;
+			while (x < maxx && ddim.y >= maxy)
+			{
+				this.el.setStyle('width', x.toInt());
+				ddim = this.el.getSize();
+				x = ddim.x * 1.3;
+			}
+
+			cdim = this.content_el.getSize();
+			if (ddim.y >= maxy)
+			{
+				var y = maxy - ddim.y + cdim.y;
+				this.content_el.setStyles({
+					height: y.toInt(),
+					overflow: 'auto'
+				});
+			}
+		}
+	},
+
+	str2el: function(text)
+	{
+		var el = new Element('div');
+		if (text.indexOf('<') != -1 && text.indexOf('>') != -1)
+		{
+			try
+			{
+				el.set('html', text);
+			}
+			catch(e)
+			{
+				el.set('text', text);
+			}
+		}
+		else
+		{
+			el.set('text', text);
+		}
+		return el;
+	},
+
+	destroy: function() {
+		if (this.el) {
+			this.el.fade(0).get('tween').chain((function() {
+				if (!this.options.hideOverlay) {
+					this.overlay.destroy();
+				}
+				this.el.destroy();
+			}).bind(this));
+		}
+		window.FileManager.prototype.diag.log('remove key up(ESC) on destroy');
+		document.removeEvent('scroll', this.bound.scroll).removeEvent('resize', this.bound.scroll).removeEvent('keyup', this.bound.keyesc);
+		this.fireEvent('close');
+	}
 });
 
 this.Overlay = new Class({
 
-  initialize: function(options){
-    this.el = new Element('div', Object.append({
-      'class': 'overlay'
-    }, options)).inject(document.body);
-  },
+	initialize: function(options) {
+		this.el = new Element('div', Object.append({
+			'class': 'filemanager-overlay'
+		}, options)).inject(document.body);
+	},
 
-  show: function(){
-    this.objects = $$('object, select, embed').filter(function(el){
-      return el.id == 'SwiffFileManagerUpload' || el.style.visibility == 'hidden' ? false : !!(el.style.visibility = 'hidden');
-    });
+	show: function() {
+		this.objects = $$('object, select, embed').filter(function(el) {
+			if (el.id === 'SwiffFileManagerUpload' || el.style.visibility === 'hidden') {
+				return false;
+			}
+			else {
+				el.style.visibility = 'hidden';
+				return true;
+			}
+		});
 
-    this.resize = (function(){
-      if (!this.el) this.destroy();
-      else this.el.setStyles({
-        width: document.getScrollWidth(),
-        height: document.getScrollHeight()
-      });
-    }).bind(this);
+		this.resize();
 
-    this.resize();
+		this.el.setStyles({
+			opacity: 0,
+			display: 'block'
+		}).get('tween'). /* pause(). */ start('opacity', 0.5);
 
-    this.el.setStyles({
-      opacity: 0,
-      display: 'block'
-    }).get('tween').pause().start('opacity', 0.5);
+		window.addEvent('resize', this.resize.bind(this));
 
-    window.addEvent('resize', this.resize);
+		return this;
+	},
 
-    return this;
-  },
+	hide: function() {
+		if (!Browser.ie) {
+			this.el.fade(0).get('tween').chain((function() {
+				this.revertObjects();
+				this.el.setStyle('display', 'none');
+			}).bind(this));
+		} else {
+			this.revertObjects();
+			this.el.setStyle('display', 'none');
+		}
 
-  hide: function(){
-    if(!Browser.ie) {
-      this.el.fade(0).get('tween').chain((function(){
-        this.revertObjects();
-        this.el.setStyle('display', 'none');
-      }).bind(this));
-    } else {
-      this.revertObjects();
-      this.el.setStyle('display', 'none');
-    }
+		window.removeEvent('resize', this.resize);
 
-    window.removeEvent('resize', this.resize);
+		return this;
+	},
 
-    return this;
-  },
+	resize: function() {
+		if (!this.el) {
+			this.destroy();
+		}
+		else {
+			this.el.setStyles({
+				width: document.getScrollWidth(),
+				height: document.getScrollHeight()
+			});
+		}
+	},
 
-  destroy: function(){
-    this.revertObjects().el.destroy();
-  },
+	destroy: function() {
+		this.revertObjects().el.destroy();
+	},
 
-  revertObjects: function(){
-    if (this.objects && this.objects.length)
-      this.objects.each(function(el){
-        el.style.visibility = 'visible';
-      });
+	revertObjects: function() {
+		if (this.objects && this.objects.length) {
+			this.objects.each(function(el) {
+				el.style.visibility = 'visible';
+			});
+		}
 
-    return this;
-  }
-
+		return this;
+	}
 });
 
 })();

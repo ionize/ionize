@@ -63,7 +63,7 @@ class getid3_jpg
 					if (function_exists('exif_read_data')) {
 						if (substr($imageinfo['APP1'], 0, 4) == 'Exif') {
 							ob_start();
-							$ThisFileInfo['jpg']['exif'] = exif_read_data($ThisFileInfo['filenamepath'], '', true, false);
+							$ThisFileInfo['jpg']['exif'] = @exif_read_data($ThisFileInfo['filenamepath'], '', true, false);
 							$errors = ob_get_contents();
 							if ($errors) {
 								$ThisFileInfo['warning'][] = strip_tags($errors);
