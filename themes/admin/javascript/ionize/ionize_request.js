@@ -189,15 +189,16 @@ ION.append({
 	execCallbacks: function(args)
 	{
 		var callbacks = new Array();
-		
+
 		// More than one callback
 		if (typeOf(args) == 'array') {
 			callbacks = args;
 		}
 		else {
-			callbacks.push(args)	
+//			callbacks.include(args);
+			callbacks.push(args);
 		}
-	
+		
 		callbacks.each(function(item, idx)
 		{
 			var cb = (item.fn).split(".");
@@ -211,6 +212,7 @@ ION.append({
 			else {
 				func = window[cb];
 			}
+			
 			func.delay(100, obj, item.args);
 		});
 	}

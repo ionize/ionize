@@ -7,18 +7,20 @@
 $minSize = (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120;
 ?>
 
-<div id="imgouter" class="imgouter">
+<div id="imgCropContainer<?= $id_media ?>">
+	<div id="imgouter" class="imgouter">
 
-	<div id="cropframe<?= $id_media ?>" class="cropframe" style="background-image: url('<?= base_url().$path ?>?t=<?= $UNIQ ?>')">
-		<div id="draghandle<?= $id_media ?>" class="draghandle"></div>
-		<div id="resizeHandleXY<?= $id_media ?>" class="resizeHandle resizeHandleXY"></div>
-		<div id="cropinfo<?= $id_media ?>" class="cropinfo" rel="Click to crop">
-			<div title="Click to crop" id="cropbtn<?= $id_media ?>" class="cropbtn"></div>
-			<div id="cropdims<?= $id_media ?>" class="cropdims"></div>
+		<div id="cropframe<?= $id_media ?>" class="cropframe" style="background-image: url('<?= base_url().$path ?>?t=<?= $UNIQ ?>')">
+			<div id="draghandle<?= $id_media ?>" class="draghandle"></div>
+			<div id="resizeHandleXY<?= $id_media ?>" class="resizeHandle resizeHandleXY"></div>
+			<div id="cropinfo<?= $id_media ?>" class="cropinfo" rel="Click to crop">
+				<div title="Click to crop" id="cropbtn<?= $id_media ?>" class="cropbtn"></div>
+				<div id="cropdims<?= $id_media ?>" class="cropdims"></div>
+			</div>
 		</div>
-	</div>
 	
-	<div id="imglayer<?= $id_media ?>" class="imglayer" style="width: <?= $size['width'] ?>px; height: <?= $size['height'] ?>px; padding: 1px; background-position: center center; background-image: url('<?= base_url().$path ?>?t=<?= $UNIQ ?>')"></div>
+		<div id="imglayer<?= $id_media ?>" class="imglayer" style="width: <?= $size['width'] ?>px; height: <?= $size['height'] ?>px; padding: 1px; background-position: center center; background-image: url('<?= base_url().$path ?>?t=<?= $UNIQ ?>')"></div>
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -44,6 +46,13 @@ window.addEvent("domready", function()
 			ION.JSON('media/crop', {'path':'<?= $path ?>', 'coords': values, 'id_media': '<?= $id_media ?>'});
 		}
 	});
+	var size = $('imgCropContainer<?= $id_media ?>').getParent('div.mochaContentWrapper').getSize();
+	if (Browser.ie7)
+	{
+		$('imgCropContainer<?= $id_media ?>').getParent('div.mochaContentWrapper').setStyles({
+			'position': 'relative'
+		});
+	}
 });
 
 

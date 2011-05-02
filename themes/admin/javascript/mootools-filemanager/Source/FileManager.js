@@ -2381,8 +2381,8 @@ var FileManager = new Class({
 						},
 						'dblclick': function(e)
 						{
-							clearTimeout(this.dir_gallery_click_timer);
-							this.dir_gallery_click_timer = self.relayDblClick.delay(0, self, [e, this, dg_el, file, 2]);
+							clearTimeout(self.dir_gallery_click_timer);
+							self.dir_gallery_click_timer = self.relayDblClick.delay(0, self, [e, this, dg_el, file, 2]);
 						}
 					});
 
@@ -3562,10 +3562,13 @@ this.Overlay = new Class({
 			this.destroy();
 		}
 		else {
-			this.el.setStyles({
-				width: document.getScrollWidth(),
-				height: document.getScrollHeight()
-			});
+			if (typeOf(this.el) == 'element')
+			{
+				this.el.setStyles({
+					width: document.getScrollWidth(),
+					height: document.getScrollHeight()
+				});
+			}
 		}
 	},
 

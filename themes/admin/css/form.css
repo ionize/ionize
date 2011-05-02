@@ -254,7 +254,14 @@ input.date {
 
 
 
-/* Yes button, No button */
+/* Yes button, No button, Submit */
+.button {
+	margin: 0 2px;
+	height: 24px;
+	background:url(../images/button-bg.jpg) no-repeat 0 50%;
+}
+.button:hover {	background:url(../images/button-bg.jpg) no-repeat -200px 50%; }
+
 .button.yes { background:url(../images/button-yes-bg.jpg) no-repeat 0 50%; }
 .button.yes:hover { background:url(../images/button-yes-bg.jpg) no-repeat -200px 50%; }
 
@@ -263,13 +270,6 @@ input.date {
 
 .button.left {float:left;}
 .button.right {float:right;}
-/*.button {float:right;margin:0 2px;}*/
-.button {margin:0 2px;}
-
-
-/* Standard button and submit button */
-.button { background:url(../images/button-bg.jpg) no-repeat 0 50%; }
-.button:hover {	background:url(../images/button-bg.jpg) no-repeat -200px 50%; }
 
 .submit { background:url(../images/submit-bg.jpg) no-repeat 0 50%; }
 .submit:hover {	background:url(../images/submit-bg.jpg) no-repeat -200px 50%; }

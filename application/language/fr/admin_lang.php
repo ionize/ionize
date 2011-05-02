@@ -686,6 +686,7 @@ $lang['ionize_label_link'] = 'Lien';
 $lang['ionize_label_description'] = 'Description';
 $lang['ionize_label_reload_media_list'] = 'Recharger liste';
 $lang['ionize_label_media_container'] = 'Album / Série';
+$lang['ionize_label_media_crop_picture'] = 'Retailler Image';
 
 $lang['ionize_message_please_save_first'] = 'Veuillez enregistrer avant d\'ajouter un media !';
 $lang['ionize_message_media_not_authorized'] = 'Type de média non autorisé !';

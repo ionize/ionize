@@ -108,6 +108,7 @@ Drag.Clone = new Class({
 			}.bind(this),
 			onDrag: this.dragged.bind(this),
 			onDrop: this.dropped.bind(this),
+
 			onEnter: this.entered.bind(this),
 			onLeave: this.leaved.bind(this),
 			onCancel: this.reset.bind(this),
@@ -127,8 +128,12 @@ Drag.Clone = new Class({
 	reset: function()
 	{
 		this.idle = true;
-		this.clone.destroy();
-		this.fireEvent('complete', this.element);
+		
+		// IE : Delays the clone destroy. 150ms doesn't affect the visual rendering on other browsers.
+		(function(){
+			this.clone.destroy();
+			this.fireEvent('complete', this.element);
+		}).delay(150, this);	
 	},
 	
 	dragged: function(element, event) { this.fireEvent('drag', [element, event]); },
@@ -164,7 +169,8 @@ Drag.Clone = new Class({
 				input.set('name', 'clone_' + i);
 			});
 		}
-		return clone.inject(document.body);
+		clone.inject(document.body);
+		return clone;
 	}
 
 });

@@ -22,11 +22,12 @@
 <link rel="stylesheet" href="<?= theme_url() ?>css/tree.css" type="text/css" />
 
 <!--[if IE 7]><link rel="stylesheet" href="<?= theme_url() ?>css/ie7.css" /><![endif]-->
+<!--[if IE 8]><link rel="stylesheet" href="<?= theme_url() ?>css/ie8.css" /><![endif]-->
 <!--[if lt IE 9]><script type="text/javascript" src="<?= theme_url() ?>javascript/excanvas_r43_compressed.js"></script><![endif]-->
 
 <!-- Mootools 1.3.1 -->
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.1-full-nocompat.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.1.1-yc.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.2-full-nocompat.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.2.1-yc.js"></script>
 
 <!-- Drag Clone -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/drag.clone.js"></script>

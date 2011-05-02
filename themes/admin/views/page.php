@@ -49,7 +49,7 @@
 				<?php endif ;?>
 
 				<!-- Internal / External link Info -->
-				<dl class="compact" id="link_info"></dl>
+				<dl class="small compact" id="link_info"></dl>
 
 			</div>
 			
@@ -1029,15 +1029,18 @@
 		
 		// Parent page ID
 		var id_parent = ($('origin_id_parent').value) ? $('origin_id_parent').value : '0';
-		
+
 		var xhr = new Request.HTML(
 		{
 			url: admin_url + 'page/get_parents_select/' + $('id_menu').value + '/' + id_current + '/' + id_parent,
 			method: 'post',
-			onSuccess: function(responseTree)
+			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
 			{
 				$('id_parent').empty();
-				$('id_parent').adopt(responseTree);
+				if (Browser.ie)
+					$('id_parent').set('html', responseHTML);
+				else
+					$('id_parent').adopt(responseTree);
 			}
 		}).send();
 

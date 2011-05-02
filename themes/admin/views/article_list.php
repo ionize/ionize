@@ -38,13 +38,14 @@
 	<li class="sortme article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>">
 		
 		<!-- Drag icon -->
-		<a class="icon left pr5 drag"></a>
+		<img class="icon left drag pr5" src="<?= theme_url() ?>images/icon_16_ordering.png" />
 
-		<!-- Unlink icon -->
-		<a class="icon right unlink" rel="<?= $rel ?>" title="<?= lang('ionize_label_unlink') ?>"></a>
-		
 		<!-- Status icon -->
 		<a class="icon right pr5 status article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>"></a>
+
+		<!-- Unlink icon -->
+		<a class="icon right pr5 unlink" rel="<?= $rel ?>" title="<?= lang('ionize_label_unlink') ?>"></a>
+		
 		
 		<!-- Flags : Available content for language -->
 		<span style="width:<?=$flag_width?>px;display:block;height:16px;" class="right mr20 ml20"><?= $content_html ?></span>

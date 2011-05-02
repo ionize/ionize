@@ -1,9 +1,9 @@
 <div class="toolbox divider nobr">
-	<input id="pageFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save_page') ?>" />
+	<input type="button" id="pageFormSubmit" class="button yes" value="<?= lang('ionize_button_save_page') ?>" />
 </div>
 
 <div class="toolbox divider nobr" id="tPageDeleteButton">
-	<input id="pageDeleteButton" type="button" class="button no" value="<?= lang('ionize_button_delete') ?>" />
+	<input type="button" id="pageDeleteButton" class="button no" value="<?= lang('ionize_button_delete') ?>" />
 </div>
 
 <div class="toolbox divider">
@@ -11,15 +11,15 @@
 </div>
 
 <div class="toolbox divider" id="tPageAddContentElement">
-	<input id="addContentElement" type="button" class="toolbar-button element" value="<?= lang('ionize_label_add_content_element') ?>" />
+	<input type="button" id="addContentElement" class="toolbar-button element" value="<?= lang('ionize_label_add_content_element') ?>" />
 </div>
 
 <div class="toolbox divider" id="tPageMediaButton">
-	<input id="addMedia" type="button" class="fmButton toolbar-button pictures" value="<?= lang('ionize_label_attach_media') ?>"/>
+	<input type="button" id="addMedia" class="fmButton toolbar-button pictures" value="<?= lang('ionize_label_attach_media') ?>"/>
 </div>
 
 <div class="toolbox" id="tPageAddArticle">
-	<input id="addArticle" type="button" class="toolbar-button plus" value="<?= lang('ionize_label_add_article') ?>" />
+	<input type="button" id="addArticle" class="toolbar-button plus" value="<?= lang('ionize_label_add_article') ?>" />
 </div>
 
 

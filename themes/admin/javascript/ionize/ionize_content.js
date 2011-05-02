@@ -470,9 +470,9 @@ ION.append({
 					 * );
 					 *
 					 */
-					if (onDrop.contains(",") && this.dropClasses.length > 1)
+					if (onDrop.contains(',') && this.dropClasses.length > 1)
 					{
-						var onDrops = (onDrop).replace(' ','').split(",");
+						var onDrops = (onDrop).replace(' ','').split(',');
 						var index = false;
 						
 						// Search the method to execute.
@@ -481,9 +481,9 @@ ION.append({
 							cl = cl.replace('.', '');
 							if (droppable.hasClass(cl)) { index = idx;}
 						});
-						
 						if (typeOf(onDrops[index]) != 'null')
 						{
+//	alert(typeOf(element));
 							ION.execCallbacks({'fn':onDrops[index], 'args':[element, droppable, event] });
 						}
 					}
@@ -535,11 +535,10 @@ ION.append({
 	{
 		$$(selector).each(function(item, idx)
 		{
-//			item.removeEvents();
 			item.addEvent('click', function(e)
 			{
 				e.stop();
-				MUI.dataWindow(table + 'Help', 'Help', 'desktop/help/' + table + '/' + title, {resize:true});
+				ION.dataWindow(table + 'Help', 'Help', 'desktop/help/' + table + '/' + title, {resize:true});
 				return false;
 			});
 		});
@@ -862,15 +861,15 @@ ION.append({
 			
 			var a = new Element('a').set('html', text);
 		
-			// Title
-			var dt = new Element('dt', {'class': 'small'});
+			// Title (DT)
+			var dt = new Element('dt');
 			var label = new Element('label').set('text', Lang.get('ionize_label_linkto')); 
 			dt.adopt(label);
 			dt.inject(dl, 'top');
 	
 			// Icon & link
 			var dd = new Element('dd').inject(dl, 'bottom');
-			var span = new Element('span', {'class': 'link-img ' + type}).inject(label, 'bottom');
+			var span = new Element('span', {'class': 'link-img left ' + type}).inject(a, 'top');
 		
 			if (type == 'external')
 			{
@@ -1441,7 +1440,7 @@ ION.append({
 					'view' : this.value
 				};
 
- 				MUI.sendData(url, data);
+ 				ION.sendData(url, data);
 			}
 		});
 	},
@@ -1474,7 +1473,7 @@ ION.append({
 					'id_type': this.value
 				};
 
- 				MUI.sendData(url, data);
+ 				ION.sendData(url, data);
 			}
 		});
 	},
@@ -1665,7 +1664,7 @@ ION.append({
 	 */
 	dropArticleInPage: function(element, droppable, event)
 	{
-		var rel = (element.getProperty('rel')).split(".");
+		var rel = (element.rel).split('.');
 		var id_page_origin = rel[0];
 		var id_article = rel[1];
 		var id_page = droppable.getProperty('rel');
@@ -1771,7 +1770,8 @@ ION.append({
 				onSuccess: function(responseJSON, responseText)
 				{
 					// Set the link title to the textarea
-					droppable.getElement('textarea').set('html', element.getProperty('title'));
+					var textarea = droppable.getElement('textarea');
+					textarea.set('html', element.getProperty('title'));
 
 					ION.notification('success', Lang.get('ionize_message_operation_ok'));
 

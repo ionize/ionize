@@ -205,7 +205,6 @@ ION.ArticleManager = new Class({
 			'id_parent': options.id_parent
 		});
 		
-		
 		// Init event on switch online / offline buttons
 		this.initStatusEvents();
 		

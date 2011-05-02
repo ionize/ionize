@@ -1,3 +1,7 @@
+/*
+ * Ionize IE7 CSS corrections
+ *
+ */
 
 ul {
 	list-style: none;
@@ -85,7 +89,7 @@ div.toolbox.divider { /* Have to specify div here for IE6's sake */
 	width:80%;
 }
 
-/* Form Correction */
+/* Form & Buttons */
 .panel dt, .mocha dt {
   width: 150px;
 }
@@ -93,9 +97,15 @@ div.toolbox.divider { /* Have to specify div here for IE6's sake */
   width: auto;
   margin-left: 200px;
 }
-input.submit {
+.mocha .buttons {
+	bottom:20px;
+}
+
+.submit,
+.button {
 	overflow: visible;
 	display:inline;
+	border: 1px transparent solid !important;
 }
 
 

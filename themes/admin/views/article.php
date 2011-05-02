@@ -47,7 +47,7 @@
 			<?php endif ;?>
 				
 			<!-- Internal / External link Info -->
-			<dl class="compact" id="link_info"></dl>
+			<dl class="small compact" id="link_info"></dl>
 
 		</div>
 			

@@ -398,7 +398,7 @@ if($type == 'picture')
 		$('imageCropLink<?= $id_media ?>').addEvent('click', function()
 		{
 			// Should be : 'maximizable': true, 
-			ION.dataWindow('ImageCrop<?= $id_media ?>', 'Crop', 'media/get_crop/<?= $id_media ?>', {width:640, height:480});
+			ION.dataWindow('ImageCrop<?= $id_media ?>', Lang.get('ionize_label_media_crop_picture'), 'media/get_crop/<?= $id_media ?>', {width:660, height:480, padding:0});
 		});
 	}
 	<?php endif ;?>

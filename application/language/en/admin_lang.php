@@ -690,6 +690,7 @@ $lang['ionize_label_link'] = 'Link';
 $lang['ionize_label_description'] = 'Description';
 $lang['ionize_label_reload_media_list'] = 'Reload media list';
 $lang['ionize_label_media_container'] = 'Album / Serie';
+$lang['ionize_label_media_crop_picture'] = 'Crop Picture';
 
 $lang['ionize_message_please_save_first'] = 'Please save before adding media';
 $lang['ionize_message_media_not_authorized'] = 'Media type not authorized !';

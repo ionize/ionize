@@ -51,7 +51,7 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .mochaToolbar { width: 100%; /* For IE */ border-top: 1px solid #fff; }
 .mochaContentBorder { border-top: 1px solid #dadada; border-bottom: 1px solid #dadada; }
 .mochaContentWrapper { /* Has a fixed height and scrollbars if required. */ font-size: 11px; overflow: auto; background: #fff; }
-.mochaContent { padding: 10px 12px; }
+.mochaContent { padding: 10px 12px;}
 .mochaWindowFooter { height: 26px; padding-left: 20px; padding-top:1px; }
 .mochaWindowFooter .toolbar { vertical-align:middle; height:20px; line-height:20px; margin:0; padding-top:2px; float:left; padding-left:20px; }
 .IE .mochaWindowFooter .toolbar { padding-top:4px }
