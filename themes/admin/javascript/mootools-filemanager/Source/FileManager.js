@@ -377,6 +377,11 @@ var FileManager = new Class({
 				click: this.toggleList.bind(this)
 			});
 
+// Partikule : Add a scroller to scroll the browser list when moving a file
+		this.scroller = new Scroller(this.browserScroll);
+// /Partikule
+
+
 // Partikule : Thumbs list in preview panel
 		this.browserMenu_thumbList = new Element('a',{
 				'id': 'show_dir_thumb_gallery',
@@ -2420,14 +2425,38 @@ var FileManager = new Class({
 				droppables: $$(this.droppables.combine(els[1])),
 				//stopPropagation: true,
 
+// Partikule
+// Changed the drag because of container : The container of the FM can be moved, the pos needs to be relative to the container, not to the page
+// Not perfect...
 				onDrag: (function(el, e) {
+/*
 					this.imageadd.setStyles({
 						'left': e.page.x + 25,
 						'top': e.page.y + 25
 					});
+*/
+					var cpos = el.retrieve('cpos');
+					el.setStyles({
+						display: 'block',
+						left: e.page.x - cpos.x + 12,
+						top: e.page.y - cpos.y + 10
+					});
+
+					this.imageadd.setStyles({
+						'left': e.page.x - cpos.x,
+						'top': e.page.y - cpos.y + 12
+					});
+
 				}).bind(this),
 
 				onBeforeStart: (function(el) {
+					var position = el.getPosition();
+					el.store('cpos', this.container.getPosition());
+					
+					// start the scroller				
+					this.scroller.start();
+					
+/*	Partikule				
 					this.diag.log('draggable:onBeforeStart', el);
 					var position = el.getPosition();
 					el.addClass('drag').setStyles({
@@ -2437,6 +2466,7 @@ var FileManager = new Class({
 						'left': position.x,
 						'top': position.y
 					}).inject(this.container);
+*/
 				}).bind(this),
 
 				// FIX: do not deselect item when aborting dragging _another_ item!
@@ -2455,10 +2485,23 @@ var FileManager = new Class({
 					this.relayClick(null, el);
 				}).bind(this),
 
-				onStart: (function(el) {
+				onStart: (function(el, e) {
 					this.diag.log('draggable:onStart', el);
 					this.tips.hide();
+// Partikule add
+					var position = el.getPosition();
+					var cpos = el.retrieve('cpos');
 
+					el.addClass('drag').setStyles({
+						'z-index': this.options.zIndex + 1500,
+						'position': 'absolute',
+						'width': el.getWidth() - el.getStyle('paddingLeft').toInt(),
+						'display': 'none',
+						'left': e.page.x - cpos.x + 10,
+						'top': e.page.y - cpos.y + 10
+
+					}).inject(this.container);
+// /Partikule
 					el.fade(0.7).addClass('move');
 
 					this.diag.log('ENABLE keyboard up/down on drag start');
