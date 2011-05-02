@@ -257,8 +257,10 @@ FileManager.Gallery = new Class({
 		// determine how many images we can show next to one another:
 		var galWidthComp = 2;    // 2px not accounted for in the Width calculation; without these the width slowly grows instead of 'jump' to fit one more/less image horizontally
 		var imgMarginWidth = 4;  // 4px unaccounted for in the element width
-		var radiiCorr = 20;      // correction for the radii in the FileManager container: looks better that way
+		var radiiCorr = 40;      // correction for the radii in the FileManager container: looks better that way; must at least be 20
 		var imgWidth = 84;       // derived from current CSS; bad form to do it this way, but this is a good guess when there's no image in there yet.
+		var scrollbarCorr = 20;  // correction for optional Y scrollbar when the number of images doesn't fit in two rows anymore.
+
 		var imgs = this.galleryContainer.getElements('li');
 		if (imgs && imgs[0])
 		{
@@ -266,10 +268,10 @@ FileManager.Gallery = new Class({
 			imgWidth = imgs[0].getWidth() + imgMarginWidth;
 		}
 		var galWidth = this.galleryContainer.getWidth();
-		var g_rem = galWidth % imgWidth;
-		var img_cnt = Math.floor((size.x - g_rem - radiiCorr) / imgWidth);
+		var g_rem = (galWidth - scrollbarCorr) % imgWidth;
+		var img_cnt = Math.floor((size.x - g_rem - scrollbarCorr - radiiCorr) / imgWidth);
 		if (img_cnt < 3) img_cnt = 3;
-		var gw = img_cnt * imgWidth + g_rem;
+		var gw = img_cnt * imgWidth + g_rem + scrollbarCorr;
 
 		this.galleryContainer.setStyles({
 			top: pos.y + size.y - 1,
@@ -441,7 +443,7 @@ FileManager.Gallery = new Class({
 		mb = ch - mt - h;
 
 		var self = this;
-		var img = new Asset.image(pic, {
+		var img = Asset.image(pic, {
 			styles: {
 				width: w,
 				height: h,
@@ -516,7 +518,7 @@ FileManager.Gallery = new Class({
 
 		// store & display item in gallery:
 		var self = this;
-		var destroyIcon = new Asset.image(this.assetBasePath + 'Images/destroy.png').set({
+		var destroyIcon = Asset.image(this.assetBasePath + 'Images/destroy.png').set({
 			'class': 'filemanager-remove',
 			title: this.language.gallery.remove,
 			events: {

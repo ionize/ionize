@@ -33,9 +33,7 @@ session_write_close();
 
 	<script type="text/javascript" src="../Source/FileManager.js"></script>
 	<script type="text/javascript" src="../Source/Gallery.js"></script>
-	<script type="text/javascript" src="../Source/Uploader/Fx.ProgressBar.js"></script>
-	<script type="text/javascript" src="../Source/Uploader/Swiff.Uploader.js"></script>
-	<script type="text/javascript" src="../Source/Uploader.js"></script>
+	<script type="text/javascript" src="../Source/NoFlash.Uploader.js"></script>
 	<script type="text/javascript" src="../Language/Language.en.js"></script>
 	<script type="text/javascript" src="dev_support.js"></script>
 
@@ -99,33 +97,14 @@ session_write_close();
 </head>
 <body>
 <div id="content" class="content">
-	<h1><img src="home_16x16.png"> Basic FileManager Demo</h1>
+	<div class="go_home">
+		<a href="index.php" title="Go to the Demo index page"><img src="home_16x16.png"> </a>
+	</div>
+
+	<h1>FileManager Demo using No Flash</h1>
+
 	<div class="example">
 		<button id="example1" class="BrowseExample">Open File-Manager</button>
-	</div>
-
-	<div class="example">
-		<a href="NoFlashUpload-demo.php">Try the File Manager with NoFlash upload support (default FM upload assumes you have Flash)</a>
-	</div>
-
-	<div class="example">
-		<a href="gallery-demo.php">Try the gallery mode demo</a>
-	</div>
-
-	<div class="example">
-		<a href="multiple-demos.php">Try more demos: selecting an image, creating a gallery, translated interface (i18n support)</a>
-	</div>
-
-	<div class="example">
-		<a href="test-backend.php">Run tests on the backend of the File-Manager</a>
-	</div>
-
-	<div class="example">
-		<a href="../Assets/js/demo.html">Run jsGET demo</a>
-	</div>
-
-	<div class="example">
-		<a href="video-embedding.html">Test video and audio embedding</a>
 	</div>
 
 	<div style="clear: both;"></div>

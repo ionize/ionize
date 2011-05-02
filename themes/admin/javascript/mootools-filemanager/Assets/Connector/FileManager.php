@@ -26,6 +26,8 @@
  *   - directory: (string) The URI base directory to be used for the FileManager ('URI path' i.e. an absolute path here would be rooted at DocumentRoot: '/' == DocumentRoot)
  *   - assetBasePath: (string, optional) The URI path to all images and swf files used by the filemanager
  *   - thumbnailPath: (string) The URI path where the thumbnails of the pictures will be saved
+ *   - thumbSmallSize: (integer) The (maximum) width / height in pixels of the thumb48 'small' thumbnails produced by this backend
+ *   - thumbBigSize: (integer) The (maximum) width / height in pixels of the thumb250 'big' thumbnails produced by this backend
  *   - mimeTypesPath: (string, optional) The filesystem path to the MimeTypes.ini file. May exist in a place outside the DocumentRoot tree.
  *   - dateFormat: (string, defaults to *j M Y - H:i*) The format in which dates should be displayed
  *   - maxUploadSize: (integer, defaults to *20280000* bytes) The maximum file size for upload in bytes
@@ -552,13 +554,6 @@ define('MTFM_USE_FINFO_OPEN', false);
 // flags for clean_ID3info_results()
 define('MTFM_CLEAN_ID3_STRIP_EMBEDDED_IMAGES',      0x0001);
 
-// 'UsageMode' bits; these work as bit flags:
-define('MTFM_USAGE_ASYNC_THUMB250_PRODUCTION',      0x0001);
-define('MTFM_USAGE_ASYNC_THUMB48_PRODUCTION',       0x0002);
-define('MTFM_USAGE_AGGRESSIVE_META_INFO_CACHING',   0x0004);
-// and some aggregates for ease of use:
-define('MTFM_USAGE_BASIC', 0);
-define('MTFM_USAGE_SPEED_FREAK', MTFM_USAGE_ASYNC_THUMB250_PRODUCTION | MTFM_USAGE_ASYNC_THUMB48_PRODUCTION | MTFM_USAGE_AGGRESSIVE_META_INFO_CACHING);
 
 
 
@@ -1005,19 +1000,8 @@ class FileManager
 			'directory' => null,                                                        // the root of the 'legal URI' directory tree, to be managed by MTFM. MUST be in the DocumentRoot tree.
 			'assetBasePath' => null,                                                    // may sit outside options['directory'] but MUST be in the DocumentRoot tree
 			'thumbnailPath' => null,                                                    // may sit outside options['directory'] but MUST be in the DocumentRoot tree
-/* Partikule
- * 48px is really too small for the thumb gallery.
- * The purpose of using the thumb gallery to display thumbs was to have more space, and to make the preview more suitable for the user
- * 120px (or another size, why not ?) is more userfriendly.
- * More of that, on big photographer repo, 120px gives ability to better distinguish pictures, wich couldn't be done at 48px...
- * For the same reason, the current "250" size should be a setting, not forced.
- * Ideally, we should have 2 thumbs size : small & big.
- *
- */
-			'thumbSmallSize' => 120,		// Used for thumb48 creation
-			'thumbBigSize' => 250,			// Used for thumb250 creation
-// /Partikule
-
+			'thumbSmallSize' => 48,                                                     // Used for thumb48 creation
+			'thumbBigSize' => 250,                                                      // Used for thumb250 creation
 			'mimeTypesPath' => strtr(dirname(__FILE__), '\\', '/') . '/MimeTypes.ini',  // an absolute filesystem path anywhere; when relative, it will be assumed to be against SERVER['SCRIPT_NAME']
 			'documentRootPath' => null,                                                 // an absolute filesystem path pointing at URI path '/'. Default: SERVER['DOCUMENT_ROOT']
 			'dateFormat' => 'j M Y - H:i',
@@ -1046,8 +1030,7 @@ class FileManager
 			'CreateIsAuthorized_cb' => null,
 			'DestroyIsAuthorized_cb' => null,
 			'MoveIsAuthorized_cb' => null,
-			'showHiddenFoldersAndFiles' => false,      // Hide dot dirs/files ?
-			'UsageMode' => MTFM_USAGE_BASIC
+			'showHiddenFoldersAndFiles' => false      // Hide dot dirs/files ?
 		), (is_array($options) ? $options : array()));
 
 		// transform the obsoleted/deprecated options:
@@ -2207,7 +2190,8 @@ class FileManager
 	{
 		$emsg = null;
 		$file_arg = null;
-		$legal_url = null;
+		$file = null;
+		$legal_dir_url = null;
 		$jserr = array(
 				'status' => 1
 			);
@@ -5075,8 +5059,20 @@ class FileManagerUtility
 			$returnstring .= '<ul class="dump_array dump_level_' . sprintf('%02u', $level) . '">';
 			foreach ($variable as $key => &$value)
 			{
-				$overlarge_key_class = (strlen($key) >= 20 ? 'overlarge' : ''); // this is a heuristic based on the current frontend CSS; this spares me a long walk over all the <span> nodes using JS to measure and adjust those nodes which truly need it.
-				$returnstring .= '<li><span class="key ' . $overlarge_key_class . '">' . $key . '</span>';
+				// Assign an extra class representing the (rounded) width in number of characters 'or more':
+				// You can use this as a width approximation in pixels to style (very) wide items. It saves
+				// a long run through all the nodes in JS, just to measure the actual width and correct any
+				// overlap occurring in there.
+				$keylen = strlen($key);
+				$threshold = 10;
+				$overlarge_key_class = '';
+				while ($keylen >= $threshold)
+				{
+					$overlarge_key_class .= ' overlarger' . sprintf('%04d', $threshold);
+					$threshold *= 1.6;
+				}
+
+				$returnstring .= '<li><span class="key' . $overlarge_key_class . '">' . $key . '</span>';
 				$tstring = '';
 				if ($show_types)
 				{

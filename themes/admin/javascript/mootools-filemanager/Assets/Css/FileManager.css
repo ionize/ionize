@@ -838,7 +838,7 @@ div.filemanager button.filemanager-serialize {
 div.filemanager-gallery {
 	position: absolute;
 	/* z-index: 1000; */
-	width: 778px;        /* 9 images wide; old 750px value was ~ 8.5 so pretty useless */
+	width: 798px;        /* 9 images wide + optional scrollbar; old 750px value was ~ 8.5 so pretty useless */
 	height: 144px;
 	display: none;
 
@@ -1034,10 +1034,11 @@ div.filemanager-filelist .fi:hover .name {
 div.filemanager-filelist .fi .dir-gal-thumb-bg {
 	background-repeat: no-repeat;
 	background-position: center center;
-/* Size depends on the user's choice for gallery thumbs sizes
+	/*
+	-- Size depends on the user's choice for gallery thumbs sizes
 	width: 100%;
-	height: 120px;
-*/
+	height: 48px;
+	*/
 }
 div.filemanager-filelist .fi .name {
 	overflow: hidden;
@@ -1070,7 +1071,12 @@ div.filemanager div.filemanager-diag-dump li span.key {
 	font-weight: bold;
 }
 
-div.filemanager div.filemanager-diag-dump li span.key.overlarge {
+/*
+ * overlarger series ~ golden ratio: 0010, 0016, 0025, 0040, ...
+ *
+ * Use these classes to tweak the look of the detail info dump.
+ */
+div.filemanager div.filemanager-diag-dump li span.key.overlarger0016 {
 	width: auto;    /* prevent key text from overlapping the data; that looks really ugly. */
 }
 
@@ -1082,4 +1088,71 @@ div.filemanager div.filemanager-diag-dump li img {
 	/* embedded images should not float in here */
 	float: none;
 }
+
+
+
+
+
+/*  the thumbnails gallery displayed in the preview/detail pane */
+
+#gallery-tn-container
+{
+	margin: 15px;
+	padding: 5px;
+	border: 1px solid #b2a0a0;
+	background: #fffafa;
+	box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
+	-moz-box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
+	-webkit-box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
+}
+
+#gallery-tn-container div
+{
+	float: left;
+
+	/* border: green solid 1px; */
+	margin: 5px;
+
+}
+
+#gallery-tn-container div a
+{
+	display: block;
+	/*
+	width: 250px;
+	height: 250px;
+
+	-- The <a> (and the <img> within!) are 'sized' in the JS code
+	*/
+	border: 1px solid #b2a0a0;
+	background: #eee2e2;
+	padding: 0;
+	margin: 0;
+
+	/* horizontal centering of the contained image */
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#gallery-tn-container div a img
+{
+	padding: 0;
+	margin: 0;
+	border: 0 none;
+}
+
+/*
+ *  http://www.smashingmagazine.com/2007/05/01/css-float-theory-things-you-should-know/
+ * -->
+ *  http://www.positioniseverything.net/easyclearing.html
+ * -->
+ *  http://blogs.sitepoint.com/simple-clearing-of-floats/
+ */
+#gallery-tn-container
+{
+	overflow: auto;
+}
+
+
 

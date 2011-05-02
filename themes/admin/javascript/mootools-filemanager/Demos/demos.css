@@ -5,6 +5,11 @@ body
 	font-family: Tahoma, sans-serif;
 }
 
+a img
+{
+	border: 0 none;
+}
+
 h1, h2
 {
 	margin: 0 0 10px 0;
@@ -89,63 +94,6 @@ div.go_home
 {
 	float: right;
 }
-
-
-#gallery-tn-container
-{
-	margin: 15px;
-	padding: 5px;
-	border: 1px solid #b2a0a0;
-	background: #fffafa;
-	box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
-	-moz-box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
-	-webkit-box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
-}
-
-#gallery-tn-container div
-{
-	float: left;
-
-	/* border: green solid 1px; */
-	margin: 5px;
-
-}
-
-#gallery-tn-container div a
-{
-	display: block;
-	/*
-	width: 250px;
-	height: 250px;
-	*/
-	border: 1px solid #b2a0a0;
-	background: #eee2e2;
-	padding: 0;
-	margin: 0;
-
-	text-align: center;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-#gallery-tn-container div a img
-{
-	padding: 0;
-	margin: 0;
-}
-
-/*
- *  http://www.smashingmagazine.com/2007/05/01/css-float-theory-things-you-should-know/
- * -->
- *  http://www.positioniseverything.net/easyclearing.html
- * -->
- *  http://blogs.sitepoint.com/simple-clearing-of-floats/
- */
-#gallery-tn-container
-{
-	overflow: auto;
-}
-
 
 
 /*

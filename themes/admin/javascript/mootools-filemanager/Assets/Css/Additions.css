@@ -120,3 +120,21 @@ div.filemanager-dialog button.filemanager-dialog-decline {
 	right: auto;
 	left: 15px;
 }
+
+/* NoFlash.upload */
+div.filemanager #filemanager_upload_Filedata
+{
+	width: auto;
+	font-size: 11px;
+}
+
+div.filemanager label.filemanager-resize
+{
+	width: auto;
+}
+
+div.filemanager label.filemanager-resize span
+{
+	width: 20%;
+	overflow: hidden;
+}

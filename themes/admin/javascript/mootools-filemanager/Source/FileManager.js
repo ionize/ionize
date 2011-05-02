@@ -97,11 +97,7 @@ var FileManager = new Class({
 		standalone: true,                 // (boolean). Default to true. If set to false, returns the Filemanager without enclosing window / overlay.
 		parentContainer: null,            // (string). ID of the parent container. If not set, FM will consider its first container parent for fitSizes();
 		hideOnSelect: true,               // (boolean). Default to true. If set to false, it leavers the FM open after a picture select.
-// Partikule
-// To set the thumb gallery container size for each thumb (dir-gal-thumb-bg)
-// Could also be returned by the backend lib, but makes alot of data for nothing on big galleries.		
-		thumbSmallSize: 48,
-// /Partikule
+		thumbSize4DirGallery: 120,        // To set the thumb gallery container size for each thumb (dir-gal-thumb-bg); depending on size, it will pick either the small or large thumbnail provided by the backend and scale that one
 		mkServerRequestURL: null          // (function) specify your own alternative URL/POST data constructor when you use a framework/system which requires such.   function([object] fm_obj, [string] request_code, [assoc.array] post_data)
 	},
 
@@ -125,9 +121,7 @@ var FileManager = new Class({
 		this.droppables = [];
 		this.assetBasePath = this.options.assetBasePath.replace(/(\/|\\)*$/, '/');
 		this.root = null;
-// Problem here
 		this.CurrentDir = null;
-//		this.CurrentDir = {path:'/files', name:'files'};
 		this.listType = 'list';
 		this.dialogOpen = false;
 		this.storeHistory = false;
@@ -544,7 +538,7 @@ var FileManager = new Class({
 			this.tips.attach(this.closeIcon);
 		}
 
-		this.imageadd = new Asset.image(this.assetBasePath + 'Images/add.png', {
+		this.imageadd = Asset.image(this.assetBasePath + 'Images/add.png', {
 			'class': 'browser-add',
 			styles:
 			{
@@ -582,6 +576,7 @@ var FileManager = new Class({
 					this.ctrl_key_pressed = true;
 				}
 			}).bind(this),
+
 			keyup: (function(e)
 			{
 				this.diag.log('keyup: key press: ', e);
@@ -630,6 +625,7 @@ var FileManager = new Class({
 					break;
 				}
 			}).bind(this),
+
 			scroll: (function(e)
 			{
 				this.fireEvent('scroll', [e, this]);
@@ -917,7 +913,6 @@ var FileManager = new Class({
 			return;
 		}
 		this.fmShown = true;
-		this.onShow = false;
 
 		if (typeof preselect === 'undefined') preselect = null;
 		if (typeof loaddir === 'undefined') loaddir = null;
@@ -940,17 +935,11 @@ var FileManager = new Class({
 				loaddir = this.options.directory;
 			}
 		}
-		if (preselect)
-		{
-			this.diag.log('on show: set onShow on PRESELECT: ', preselect);
-			this.onShow = true;
-		}
 
 		// get and set history
 		if (typeof jsGET !== 'undefined') {
 			if (jsGET.get('fmFile')) {
 				this.diag.log('on show: set onShow on fmFile: ', jsGET.get('fmFile'));
-				this.onShow = true;
 			}
 			if (jsGET.get('fmListType') != null) {
 				$$('.filemanager-browserheader a.listType').set('opacity',0.5);
@@ -1811,27 +1800,18 @@ var FileManager = new Class({
 			span.removeClass('hover');
 		});
 
-		this.diag.log('# fill: file = ', j, ', onShow: ', this.onShow, ', mgr: ', this);
+		this.diag.log('# fill: JSON = ', j, ', mgr: ', this);
 		this.root = j.root;
-
 		this.CurrentDir = j.this_dir;
-		if (!this.onShow) {
-			this.diag.log('fill internal: fillInfo: file = ', j, j.this_dir);
-			this.fillInfo(j.this_dir); // XXXX
-		}
 		this.browser.empty();
 
-// Partikule
-// Add of the thumbnail list in the preview panel: blow away any pre-existing list now, as we'll generate a new one now:
-
+		// Adding the thumbnail list in the preview panel: blow away any pre-existing list now, as we'll generate a new one now:
 		this.dir_filelist.empty();
 
-// /Partikule
-
 		// set history
-		if (typeof jsGET !== 'undefined' && this.storeHistory && j.this_dir.mime === 'text/directory')
+		if (typeof jsGET !== 'undefined' && this.storeHistory)
 		{
-			jsGET.set({'fmPath': j.path});
+			jsGET.set({'fmPath': this.CurrentDir.path});
 		}
 
 		var current_path = this.normalize(this.root + this.CurrentDir.path);
@@ -1844,15 +1824,16 @@ var FileManager = new Class({
 			this.showError('' + j.error);
 			return false;
 		}
-		var rootPath = j.root.slice(0,-1).split('/');
-		rootPath.pop();
+		var rootPath = '/' + j.root;
+		var rootParent = this.dirname(rootPath);
+		var rplen = rootParent.length;
 		current_path.split('/').each((function(folderName) {
 			if (!folderName) return;
 
 			pre.push(folderName);
-			var path = ('/'+pre.join('/')+'/').replace(j.root,'');
-			this.diag.log('on fill: display directory path chuncks: root = ', j.root, ', path: ' , path, ', folder: ', folderName);
-			if (rootPath.contains(folderName)) {
+			var path = ('/'+pre.join('/')+'/');
+			this.diag.log('on fill: display directory path chunks: JSON root = ', j.root, ', path: ' , path, ', folder: ', folderName, ', root: ', rootPath, ', parent: ', rootParent);
+			if (path.length <= rplen) {
 				// add non-clickable path
 				text.push(new Element('span', {'class': 'icon', text: folderName}));
 			} else {
@@ -1862,8 +1843,9 @@ var FileManager = new Class({
 						href: '#',
 						text: folderName
 					}).addEvent('click', (function(e) {
-						this.diag.log('path section - click event: ', e, path);
 						e.stop();
+						path = path.replace(j.root,'');
+						this.diag.log('## path section - click event: ', e, ', path: ', path);
 						this.load(path);
 					}).bind(this))
 				);
@@ -1970,6 +1952,9 @@ var FileManager = new Class({
 		// remember pagination position history
 		this.store_view_fill_startindex(startindex);
 
+		// reset the fillInfo fire marker:
+		this.fillInfoOnFillFired = false;
+
 		this.view_fill_timer = this.fill_chunkwise_1.delay(1, this, [startindex, endindex, endindex - startindex, pagesize, support_DnD_for_this_dir, starttime, els, kbd_dir, preselect]);
 
 		return true;
@@ -1990,14 +1975,6 @@ var FileManager = new Class({
 
 	dir_gallery_item_maker: function(thumbnail_url, file)
 	{
-		// as we want the thumbnails line up reasonably well in a grid and have no huge white areas thanks to long filenames,
-		// we strip the filename on display. When the user wishes to know the full filename, he can hover over the image, anyway.
-		var fname = file.name;
-		if (fname.length > 6)
-		{
-//			fname = fname.substr(0, 10) + '...';
-		}
-
 		var el = new Element('div', {
 			'class': 'fi',
 			'title': file.name
@@ -2005,21 +1982,87 @@ var FileManager = new Class({
 			new Element('div', {
 				'class': 'dir-gal-thumb-bg',
 				'styles': {
-					'width': this.options.thumbSmallSize + 'px',
-					'height': this.options.thumbSmallSize + 'px',
+					'width': this.options.thumbSize4DirGallery + 'px',
+					'height': this.options.thumbSize4DirGallery + 'px',
 					'background-image': 'url(' + (thumbnail_url ? thumbnail_url : this.assetBasePath + 'Images/loader.gif') + ')'
 				}
 			}),
 			new Element('div', {
 				'class': 'name',
 				'styles': {
-					'width': this.options.thumbSmallSize + 'px'
+					'width': this.options.thumbSize4DirGallery + 'px'
 				},
-				'text': fname
+				'text': file.name
 			})
 		);
 		this.tips.attach(el);
 		return el;
+	},
+
+	dir_gallery_set_actual_img: function(file, dg_el)
+	{
+		// calculate which thumb to use and how to center it:
+		var img_url, iw, ih, ds, mt, mb, ml, mr, ratio;
+
+		ds = this.options.thumbSize4DirGallery;
+		if (ds > 48)
+		{
+			img_url = file.thumb250;
+			iw = file.thumb250_width;
+			ih = file.thumb250_height;
+		}
+		else
+		{
+			img_url = file.thumb48;
+			iw = file.thumb48_width;
+			ih = file.thumb48_height;
+		}
+
+		// 'zoom' image to fit area:
+		if (iw > ds)
+		{
+			var redux = ds / iw;
+			iw *= redux;
+			ih *= redux;
+		}
+		if (ih > ds)
+		{
+			var redux = ds / ih;
+			iw *= redux;
+			ih *= redux;
+		}
+		iw = Math.round(iw);
+		ih = Math.round(ih);
+		ml = Math.round((ds - iw) / 2);
+		mr = ds - ml - iw;
+		mt = Math.round((ds - ih) / 2);
+		mb = ds - mt - ih;
+
+		Asset.image(img_url, {
+			styles: {
+				width: iw,
+				height: ih,
+				'margin-left': ml,
+				'margin-top': mt,
+				'margin-right': mr,
+				'margin-bottom': mb
+			},
+			onLoad: function() {
+				var img_el = this;
+				var img_div = dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', '');
+				img_div.adopt(img_el);
+			},
+			onError: function() {
+				self.diag.log('dirgallery image asset: error!');
+				var iconpath = self.assetBasePath + 'Images/Icons/Large/default-error.png';
+				dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+			},
+			onAbort: function() {
+				self.diag.log('dirgallery image asset: ABORT!');
+				var iconpath = self.assetBasePath + 'Images/Icons/Large/default-error.png';
+				dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+			}
+		});
 	},
 
 	/*
@@ -2105,7 +2148,7 @@ var FileManager = new Class({
 
 			editButtons.each(function(v) {
 				//icons.push(
-				new Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+				Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
 					// this = el, self = FM instance
 					e.preventDefault();
 					this.store('edit', true);
@@ -2173,7 +2216,11 @@ var FileManager = new Class({
 					// This is just a raw image
 					el = this.list_row_maker((this.listType === 'thumb' ? (file.thumb48 ? file.thumb48 : file.icon48) : file.icon), file);
 
-					dg_el = this.dir_gallery_item_maker((file.thumb48 ? file.thumb48 : file.icon48), file);
+					dg_el = this.dir_gallery_item_maker(file.icon48, file);
+					if (file.thumb48)
+					{
+						this.dir_gallery_set_actual_img(file, dg_el);
+					}
 				}
 				else    // thumbs_deferred...
 				{
@@ -2212,7 +2259,10 @@ var FileManager = new Class({
 								else
 								{
 									list_row.getElement('span.fm-thumb-bg').setStyle('background-image', 'url(' + (this.listType === 'thumb' ? j.thumb48 : j.icon) + ')');
-									dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + j.thumb48 + ')');
+									if (j.thumb48)
+									{
+										this.dir_gallery_set_actual_img(j, dg_el);
+									}
 								}
 
 								// update the stored json for this file as well:
@@ -2322,7 +2372,7 @@ var FileManager = new Class({
 				if (this.options.destroy) editButtons.push('destroy');
 
 				editButtons.each(function(v) {
-					new Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+					Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
 						// this = el, self = FM instance
 						e.preventDefault();
 						this.store('edit', true);
@@ -2337,8 +2387,8 @@ var FileManager = new Class({
 				el.inject(new Element('li',{'class':this.listType}).inject(this.browser)).store('parent', el.getParent());
 
 				// ->> LOAD the FILE/IMAGE from history when PAGE gets REFRESHED (only directly after refresh)
-				//this.diag.log('fill on PRESELECT (test): onShow = ', this.onShow, ', file = ', file, ', fmFile = ', fmFile, ', preselect = ', preselect);
-				if (this.onShow)
+				//this.diag.log('fill on PRESELECT (test): onShow = ', this.fillInfoOnFillFired, ', file = ', file, ', fmFile = ', fmFile, ', preselect = ', preselect);
+				if (!this.fillInfoOnFillFired)
 				{
 					if (preselect)
 					{
@@ -2350,6 +2400,7 @@ var FileManager = new Class({
 							file.element.addClass('selected');
 							this.diag.log('fill on PRESELECT: fillInfo: file = ', file);
 							this.fillInfo(file);
+							this.fillInfoOnFillFired = true;
 						}
 					}
 					else if (fmFile)
@@ -2362,12 +2413,8 @@ var FileManager = new Class({
 							file.element.addClass('selected');
 							this.diag.log('fill: fillInfo: file = ', file);
 							this.fillInfo(file);
+							this.fillInfoOnFillFired = true;
 						}
-					}
-					else
-					{
-						this.diag.log('fill: RESET onShow: file = ', file);
-						this.onShow = false;
 					}
 				}
 
@@ -2386,8 +2433,8 @@ var FileManager = new Class({
 						},
 						'dblclick': function(e)
 						{
-							clearTimeout(self.dir_gallery_click_timer);
-							self.dir_gallery_click_timer = self.relayDblClick.delay(0, self, [e, this, dg_el, file, 2]);
+							clearTimeout(this.dir_gallery_click_timer);
+							this.dir_gallery_click_timer = self.relayDblClick.delay(0, self, [e, this, dg_el, file, 2]);
 						}
 					});
 
@@ -2396,6 +2443,14 @@ var FileManager = new Class({
 
 // / Partikule
 			}
+		}
+
+		// when we get here, we have rendered all files in the current page and we know whether we have fired off a fillInfo on a preselect/history-recalled file now, or not:
+		if (!this.fillInfoOnFillFired)
+		{
+			this.diag.log('fill internal: fillInfo: file = ', j, j.this_dir);
+			this.fillInfo(j.this_dir);
+			this.fillInfoOnFillFired = true;
 		}
 
 		// check how much we've consumed so far:
@@ -2784,8 +2839,8 @@ var FileManager = new Class({
 
 			var tx_cfg = this.options.mkServerRequestURL(this, 'detail', {
 							directory: this.dirname(file.path),
-							// fixup for *directory* detail requests:    (file.mime === 'text/directory'
-							file: (file.mime === 'text/directory' && file.name === '') ? '/' : file.name,
+							// fixup for root directory detail requests:
+							file: (file.mime === 'text/directory' && file.path === '/') ? '/' : file.name,
 							filter: this.options.filter,
 							mode: 'auto'                    // provide either direct links to the thumbnails (when available in cache) or PHP event trigger URLs for delayed thumbnail image creation (performance optimization: faster page render)
 						});
@@ -3209,13 +3264,110 @@ var FileManager = new Class({
 
 			if (typeof console !== 'undefined')
 			{
-				if (console.info)
+				// WARNING: MS IE9 (+ v8?) says: this object doesn't support the 'apply' method. :-(((
+				// Also, MSIE 8/9 doesn't show object dumps like you'd expect; Firebug Lite allegedly fixes that,
+				// but this is code which intends to 'hide' all that shite, so we can simply write diag.log() and
+				// not bother where it will end up.
+				if (console.info && console.info.apply)
 				{
 					console.info.apply(console, arguments);
 				}
-				else if (console.log)
+				else if (console.log && console.log.apply)
 				{
 					console.log.apply(console, arguments);
+				}
+				else if (console.info || console.log)
+				{
+					// the MSIE downgrade
+					var l = (console.info || console.log);
+					var a;
+					var lt = '';
+					var m, e, v;
+					var multiobj = 0;   // count items dumped without inter-WS
+					for (a in arguments)
+					{
+						multiobj++;
+						a = arguments[a];
+						switch (typeof a)
+						{
+						case 'undefined':
+							lt += '(undefined)';
+							break;
+
+						case 'null':
+							lt += '(null)';
+							break;
+
+						case 'object':
+							lt += '{';
+							m = '';
+							for (e in a)
+							{
+								lt += m;
+
+								v = a[e];
+								//if (typeof e !== 'string') continue;
+								switch (typeof v)
+								{
+								case 'function':
+									continue;               // skip these
+
+								case 'undefined':
+									lt += e + ': (undefined)';
+									break;
+
+								case 'null':
+									lt += e + ': (null)';
+									break;
+
+								case 'object':
+									// nuts of course: IE9 has objects which turn out as === null and clunk on .toString() as a consequence   >:-S
+									if (v === null)
+									{
+										lt += e + ': (null)';
+									}
+									else
+									{
+										lt += e + ': ' + v.toString();
+									}
+									break;
+
+								case 'string':
+									lt += e + ': "' + v + '"';
+									break;
+
+								default:
+									lt += e + ': ' + v.toString();
+									break;
+								}
+								m = ', ';
+							}
+							lt += '}';
+							break;
+
+						case 'string':
+							// reset inter-WS formatting assist:
+							multiobj = 0;
+							lt += a;
+							break;
+
+						default:
+							try
+							{
+								m = a.toString();
+							}
+							catch (e)
+							{
+								m = '(*clunk*)';
+							}
+							lt += v;
+							break;
+						}
+						if (multiobj >= 1)
+						{
+							lt += ' ';
+						}
+					}
 				}
 			}
 		}
@@ -3605,13 +3757,10 @@ this.Overlay = new Class({
 			this.destroy();
 		}
 		else {
-			if (typeOf(this.el) == 'element')
-			{
-				this.el.setStyles({
-					width: document.getScrollWidth(),
-					height: document.getScrollHeight()
-				});
-			}
+			this.el.setStyles({
+				width: document.getScrollWidth(),
+				height: document.getScrollHeight()
+			});
 		}
 	},
 
