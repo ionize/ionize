@@ -176,86 +176,88 @@
 			
 			this.resizeCodeMirror = function(w)
 			{
-				var mfw = w.getElement('.CodeMirror-wrapping');
-				mfw.setStyle('height', w.getSize().y - 130);
+				var contentEl = w.el.contentWrapper;
+				var mfw = contentEl.getElement('.CodeMirror-wrapping');
+				mfw.setStyle('height', contentEl.getSize().y - 70);
 			}
 			
 			var wOptions = 
 			{
 				id: 'w' + id,
 				title: Lang.get('ionize_title_view_edit') + ' : ' + rel,
-				loadMethod: 'xhr',
-				contentURL: admin_url + 'setting/edit_view/' + rel,
+				content: {
+					url: admin_url + 'setting/edit_view/' + rel,
+					method:'post',
+					onLoaded: function(element, content)
+					{
+						// CodeMirror settings
+						var c = $('editview_' + id).value;
+
+						var mirrorFrame = new ViewCodeMirror(CodeMirror.replace($('editview_' + id)), 
+						{
+							height: "360px",
+							width: "95%",
+							content: c,
+							tabMode: 'shift',
+							parserfile: ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js', 'tokenizephp.js', 'parsephp.js', 'parsephphtmlmixed.js'],
+							stylesheet: [
+								'<?= theme_url() ?>javascript/codemirror/css/basic.css',
+								'<?= theme_url() ?>javascript/codemirror/css/xmlcolors.css',
+								'<?= theme_url() ?>javascript/codemirror/css/jscolors.css',
+								'<?= theme_url() ?>javascript/codemirror/css/csscolors.css',
+								'<?= theme_url() ?>javascript/codemirror/css/phpcolors.css'
+							],
+							path: '<?= theme_url() ?>javascript/codemirror/js/',
+							lineNumbers: true
+						});
+
+						// Set height of CodeMirror
+						self.resizeCodeMirror(this);
+
+						var form = 'formView' + id;
+
+						// Get the form action URL and adds 'true' so the transport is set to XHR
+						var formUrl = $(form).getProperty('action');
+
+						// Add the cancel event if cancel button exists
+						if (bCancel = $('bCancel' + id))
+						{
+							bCancel.addEvent('click', function(e)
+							{
+								e.stop();
+								ION.closeWindow($('w' + id));
+							});
+						}
+
+						// Event on save button
+						if (bSave = $('bSave' + id))
+						{
+							bSave.addEvent('click', function(e)
+							{
+								e.stop();
+
+								// Get the CodeMirror Code
+								$('contentview_' + id).value = mirrorFrame.mirror.getCode();
+
+								// Get the form
+								var options = ION.getFormObject(formUrl, $(form));
+
+								var r = new Request.JSON(options);
+
+								r.send();
+							});
+						}
+					}
+				},
 				y: 80,
 				width:800, 
 				height:450,
 				padding: { top: 12, right: 12, bottom: 10, left: 12 },
 				maximizable: true,
 				contentBgColor: '#fff',		
-				
-				onContentLoaded: function(w)
-				{
-					// CodeMirror settings
-					var c = $('editview_' + id).value;
-
-					var mirrorFrame = new ViewCodeMirror(CodeMirror.replace($('editview_' + id)), 
-					{
-						height: "360px",
-						width: "95%",
-						content: c,
-						tabMode: 'shift',
-						parserfile: ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js', 'tokenizephp.js', 'parsephp.js', 'parsephphtmlmixed.js'],
-						stylesheet: [
-							'<?= theme_url() ?>javascript/codemirror/css/basic.css',
-							'<?= theme_url() ?>javascript/codemirror/css/xmlcolors.css',
-							'<?= theme_url() ?>javascript/codemirror/css/jscolors.css',
-							'<?= theme_url() ?>javascript/codemirror/css/csscolors.css',
-							'<?= theme_url() ?>javascript/codemirror/css/phpcolors.css'
-						],
-						path: '<?= theme_url() ?>javascript/codemirror/js/',
-						lineNumbers: true
-					});
-					
-					// Set height of CodeMirror
-					self.resizeCodeMirror(w);
-
-					var form = 'formView' + id;
-
-					// Get the form action URL and adds 'true' so the transport is set to XHR
-					var formUrl = $(form).getProperty('action');
-	
-					// Add the cancel event if cancel button exists
-					if (bCancel = $('bCancel' + id))
-					{
-						bCancel.addEvent('click', function(e)
-						{
-							var e = new Event(e).stop();
-							ION.closeWindow($('w' + id));
-						});
-					}
-					
-					// Event on save button
-					if (bSave = $('bSave' + id))
-					{
-						bSave.addEvent('click', function(e)
-						{
-							e.stop();
-							
-							// Get the CodeMirror Code
-							$('contentview_' + id).value = mirrorFrame.mirror.getCode();
-							
-							// Get the form
-							var options = ION.getFormObject(formUrl, $(form));
-							
-							var r = new Request.JSON(options);
-							
-							r.send();
-						});
-					}
-				},
 				onResize: function(w) { self.resizeCodeMirror(w); },
 				onMaximize: function(w) { self.resizeCodeMirror(w);	},
-				onRestore: function(w) { self.resizeCodeMirror(w);	}
+				onRestore: function(w) { self.resizeCodeMirror(w); }
 			};
 			
 			// Window creation

@@ -50,6 +50,10 @@
 <!-- swfObject -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/swfobject.js"></script>
 
+<!-- CodeMirror -->
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/codemirror/css/codemirror.css" />
+<script type="text/javascript" src="<?= theme_url() ?>javascript/codemirror/js/codemirror.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/codemirror/codemirror.views.js"></script>
 
 <!-- Base URL & languages translations available for javascript -->
 <script type="text/javascript">
