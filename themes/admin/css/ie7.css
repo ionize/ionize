@@ -23,10 +23,9 @@ ul {
 	height:auto;
 	overflow: auto;
 	width:295px;
-	float:right;
 	margin-left:20px;
 	padding:0 0 0 15px;
-	position:static;
+/*	position:static;*/
 }
 #sidecolumn #options{
 	width:auto;
@@ -37,6 +36,10 @@ ul {
 #sidecolumn .tabcontent textarea{
 	position:relative;
 	display: block;
+}
+#sidecolumn.close {
+	display:none;
+	z-index: -1;
 }
 
 /* Tree Correction */

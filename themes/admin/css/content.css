@@ -33,7 +33,7 @@ License:
 	position:absolute;
 	right:0px;
 	top: 0px;
-/*	z-index: 2;*/
+	z-index: 2;
 }
 #sidecolumn #options{
 	width:270px;
@@ -853,7 +853,7 @@ span.flag, .tree li span.flag {
 .tree li span.flag {
 	margin-right: 4px;
 }
-span.flag1, span.flag2, span.flag3, span.flag4, span.flag5 { width:4px; margin-right: 4px;}
+span.flag1, span.flag2, span.flag3, span.flag4, span.flag5, span.flag6  { width:4px; margin-right: 4px;}
 .flag.flag1 {background-color: #de9a8f;}
 .flag.flag2 {background-color: #eec37f;}
 .flag.flag3 {background-color: #efe67f;}

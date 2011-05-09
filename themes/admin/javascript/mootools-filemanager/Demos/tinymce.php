@@ -39,6 +39,11 @@ session_write_close();
 	<script type="text/javascript" src="mootools-core.js"></script>
 	<script type="text/javascript" src="mootools-more.js"></script>
 
+	<script type="text/javascript">
+		// disable the autoinit of the milkbox (must be set before the FileManager.js loads the milkbox.js!)
+		__MILKBOX_NO_AUTOINIT__ = true;
+	</script>
+
 	<script type="text/javascript" src="../Source/FileManager.js"></script>
 	<script type="text/javascript" src="../Source/Uploader/Fx.ProgressBar.js"></script>
 	<script type="text/javascript" src="../Source/Uploader/Swiff.Uploader.js"></script>
@@ -64,10 +69,25 @@ session_write_close();
 			width: '100%',
 			height: '300px',
 
-			document_base_url: '',  // not /c/ !
+			document_base_url: '',
 
 			/* Here goes the Magic */
-			file_browser_callback: FileManager.TinyMCE(function(type){
+			file_browser_callback: FileManager.TinyMCE(function(type)
+			{
+				if (typeof this.milkbox == 'undefined')
+				{
+					// init the milkbox: we cannot use the zIndex base set by the FileManager as the FM isn't initialized yet!
+					this.milkbox = new Milkbox({
+						centered: true,
+						zIndex: 400000 + 4000,
+						//autoSizeMaxHeight: 0,
+						//autoSizeMaxWidth: 0,
+						autoSizeMinHeight: 60,
+						autoSizeMinWidth: 100,      // compensate for very small images: always show the controls, at least
+						marginTop: 10
+					});
+				}
+
 				return {
 					url: 'manager.php?exhibit=A', // 'manager.php', but with a bogus query parameter included: latest FM can cope with such an URI
 					assetBasePath: '../Assets', // '/c/lib/includes/js/mootools-filemanager/Assets',

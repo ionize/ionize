@@ -432,8 +432,8 @@
 			<?php
 				
 				$title = ${Settings::get_lang('default')}['title'];
-				
-				if ($title == '') $title = ${Settings::get_lang('default')}['name'];
+
+				if ($title == '') $title = ${Settings::get_lang('default')}['url'];
 			
 			?>
 

@@ -35,7 +35,7 @@
 	
 	?>
 
-	<li class="sortme article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>">
+	<li id="articleinpage<?= $article['id_article'] ?>" class="sortme article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>">
 		
 		<!-- Drag icon -->
 		<img class="icon left drag pr5" src="<?= theme_url() ?>images/icon_16_ordering.png" />
@@ -113,7 +113,7 @@
 		// Edit link
 		item.addEvent('click', function(e) {
 			e.stop();
-			MUI.Content.update({'element': $('mainPanel'),'loadMethod': 'xhr','url': admin_url + 'article/edit/' + id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
+			MUI.Content.update({'element': $('mainPanel'),'url': admin_url + 'article/edit/' + id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
 		});
 	});
 

@@ -14,7 +14,7 @@ ION.append({
 		if ( ! $('mainPanel_headerToolbox')) {
 			this.panelHeaderToolboxEl = new Element('div', {
 				'id': 'mainPanel_headerToolbox',
-				'class': 'toolbar'
+				'class': 'buttonbar'
 			}).inject($('mainPanel_header'));
 		}
 	
@@ -22,9 +22,7 @@ ION.append({
 		{
 			cb = '';
 			if (onContentLoaded)
-			{
 				cb = onContentLoaded;
-			}
 		
 			MUI.Content.update({
 				element: 'mainPanel_headerToolbox',
@@ -924,7 +922,7 @@ ION.append({
 	{
 		articles.each(function(art)
 		{
-			var title = (art.title != '') ? art.title : art.url;
+			var title = (art.title != '') ? art.title : art.name;
 			var id = art.id_article;
 			
 			var rel = art.id_page + '.' + art.id_article;
@@ -1758,6 +1756,8 @@ ION.append({
 		}
 		else
 		{
+			var title = element.getProperty('title');
+		
 			new Request.JSON({
 				url: admin_url + receiver_type + '/add_link',
 				method: 'post',
@@ -1770,9 +1770,13 @@ ION.append({
 				onSuccess: function(responseJSON, responseText)
 				{
 					// Set the link title to the textarea
-					var textarea = droppable.getElement('textarea');
-					textarea.set('html', element.getProperty('title'));
+					var linkTextarea = droppable.getElement('textarea');
 
+					if (Browser.ie7)
+						linkTextarea.set('text', title);
+					else
+						linkTextarea.set('html', title);
+					
 					ION.notification('success', Lang.get('ionize_message_operation_ok'));
 
 					// JS Callback

@@ -156,7 +156,6 @@ var jsGET = {
 
 		if (typeof remove !== 'object') {
 			removes = [remove];
-			//removes[0] = remove;
 		} else {
 			removes = remove;
 		}

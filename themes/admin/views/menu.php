@@ -1,7 +1,7 @@
 
 <div id="sidecolumn" class="close">
 
-	<div id="options">
+	<div id="options" class="mt20">
 
 		<!-- New Menu -->
 		<h3 class="toggler"><?=lang('ionize_title_add_menu')?></h3>

@@ -45,57 +45,57 @@ FileManager.Language.fr = {
 
 	nodestroy: 'La suppression de fichier a été désactivée sur ce serveur.',
 
-	toggle_side_boxes: 'Thumbnail view',
-	toggle_side_list: 'List view',
-	show_dir_thumb_gallery: 'Show thumbnails of the files in the preview pane',
-	drag_n_drop: 'Drag & drop has been enabled for this directory',
-	drag_n_drop_disabled: 'Drag & drop has been temporarily disabled for this directory',
-	goto_page: 'Go to page',
+	toggle_side_boxes: 'Vue miniatures',
+	toggle_side_list: 'Vue liste',
+	show_dir_thumb_gallery: 'Voir les miniatures dans le panneau de prévisualisation',
+	drag_n_drop: 'Le glisser / déposé est actif pour ce dossier',
+	drag_n_drop_disabled: 'Le glisser / déposé est temporairement inactif pour ce dossier',
+	goto_page: 'Aller à la page',
 
-	'backend.disabled': 'Le téléversement de fichier a été désactivé sur ce serveur.',
+	'backend.disabled': 'L\'upload de fichier a été désactivé sur ce serveur.',
 	'backend.authorized': 'Vous n\'êtes pas authentifié et ne pouvez pas téléverser de fichier.',
-	'backend.path': 'Le répertoire de téléversement spécifié n\'existe pas. Merci de contacter l\'administrateur de ce site Internet.',
-	'backend.exists': 'Le chemin de téléversement spécifié existe déjà. Merci de contacter l\'administrateur de ce site Internet.',
+	'backend.path': 'Le répertoire d\'upload spécifié n\'existe pas. Merci de contacter l\'administrateur de ce site Internet.',
+	'backend.exists': 'Le chemin de d\'upload spécifié existe déjà. Merci de contacter l\'administrateur de ce site Internet.',
 	'backend.mime': 'Le type de fichier spécifié n\'est pas autorisé.',
-	'backend.extension': 'Le fichier téléversé a une extension inconnue ou interdite.',
-	'backend.size': 'La taille de votre fichier est trop grande pour être téléversée sur ce serveur. Merci de sélectionner un fichier moins lourd.',
-	'backend.partial': 'Le fichier a été partiellement téléversé, merci de recommencer l\'opération.',
+	'backend.extension': 'Le fichier uploadé a une extension inconnue ou interdite.',
+	'backend.size': 'La taille de votre fichier est trop grande pour être uploadée sur ce serveur. Merci de sélectionner un fichier moins lourd.',
+	'backend.partial': 'Le fichier a été partiellement uploadé, merci de recommencer l\'opération.',
 	'backend.nofile': 'Aucun fichier n\'a été spécifié.',
 	'backend.default': 'Une erreur s\'est produite.',
-	'backend.path_not_writable': 'You do not have write/upload permissions for this directory.',
-	'backend.filename_maybe_too_large': 'The filename/path is probably too long for the server filesystem. Please retry with a shorter file name.',
-	'backend.fmt_not_allowed': 'You are not allowed to upload this file format/name.',
-	'backend.unidentified_error': 'An unindentified error occurred while communicating with the backend (web server).',
+	'backend.path_not_writable': 'Problème de droit d\'écriture sur le dossier.',
+	'backend.filename_maybe_too_large': 'Le chemin ou nom de fichier est probablement trop long. Réessayez avec un nom plus court.',
+	'backend.fmt_not_allowed': 'Le format ou nom de fichier que vous souhaitez uploader n\'est pas autorisé.',
+	'backend.unidentified_error': 'Une erreur inconnue est survenue lors de la communication avec le serveur.',
 
-	'backend.nonewfile': 'A new name for the file to be moved / copied is missing.',
-	'backend.corrupt_img': 'This file is a not a image or a corrupt file: ', // path
-	'backend.resize_inerr': 'This file could not be resized due to an internal error.',
-	'backend.copy_failed': 'An error occurred while copying the file / directory: ', // oldlocalpath : newlocalpath
-	'backend.delete_cache_entries_failed': 'An error occurred when attempting to delete the item cache (thumbnails, metadata)',
-	'backend.mkdir_failed': 'An error occurred when attempting to create the directory: ', // path
-	'backend.move_failed': 'An error occurred while moving / renaming the file / directory: ', // oldlocalpath : newlocalpath
-	'backend.path_tampering': 'Path tampering detected.',
-	'backend.realpath_failed': 'Cannot translate the given file specification to a valid storage location: ', // $path
-	'backend.unlink_failed': 'An error occurred when attempting to delete the file / directory: ',  // path
+	'backend.nonewfile': 'Le nouveau nom de fichier est manquant.',
+	'backend.corrupt_img': 'Ce fichier est corrompu ou n\'est pas une image : ', // path
+	'backend.resize_inerr': 'Ce fichier ne peut être redimensionné (erreur interne).',
+	'backend.copy_failed': 'Une erreur est survenue lors de la copie de ce fichier / dossier : ', // oldlocalpath : newlocalpath
+	'backend.delete_cache_entries_failed': 'Une erreur est survenue lors de la suppression du cache (thumbnails, metadata)',
+	'backend.mkdir_failed': 'Une erreur est survenue lors de la création du dossier : ', // path
+	'backend.move_failed': 'Une erreur est survenue lors du déplacement / renommage du fichier / dossier : ', // oldlocalpath : newlocalpath
+	'backend.path_tampering': 'Altération de chemin détectée.',
+	'backend.realpath_failed': 'Impossible de traduire le chemin de ce fichier en emplacement valide : ', // $path
+	'backend.unlink_failed': 'Une erreur est survenue lors de la suppression du fichier / dossier : ',  // path
 
 	// Image.class.php:
-	'backend.process_nofile': 'The image processing unit did not receive a valid file location to work on.',
-	'backend.imagecreatetruecolor_failed': 'The image processing unit failed: GD imagecreatetruecolor() failed.',
-	'backend.imagealphablending_failed': 'The image processing unit failed: cannot perform the required image alpha blending.',
-	'backend.imageallocalpha50pctgrey_failed': 'The image processing unit failed: cannot allocate space for the alpha channel and the 50% background.',
-	'backend.imagecolorallocatealpha_failed': 'The image processing unit failed: cannot allocate space for the alpha channel for this color image.',
-	'backend.imagerotate_failed': 'The image processing unit failed: GD imagerotate() failed.',
-	'backend.imagecopyresampled_failed': 'The image processing unit failed: GD imagecopyresampled() failed. Image resolution: ', /* x * y */
-	'backend.imagecopy_failed': 'The image processing unit failed: GD imagecopy() failed.',
-	'backend.imageflip_failed': 'The image processing unit failed: cannot flip the image.',
-	'backend.imagejpeg_failed': 'The image processing unit failed: GD imagejpeg() failed.',
-	'backend.imagepng_failed': 'The image processing unit failed: GD imagepng() failed.',
-	'backend.imagegif_failed': 'The image processing unit failed: GD imagegif() failed.',
-	'backend.imagecreate_failed': 'The image processing unit failed: GD imagecreate() failed.',
-	'backend.cvt2truecolor_failed': 'conversion to True Color failed. Image resolution: ', /* x * y */
-	'backend.no_imageinfo': 'Corrupt image or not an image file at all.',
-	'backend.img_will_not_fit': 'Server error: image does not fit in available RAM; minimum required (estimate): ', /* XXX MBytes */
-	'backend.unsupported_imgfmt': 'unsupported image format: ',    /* jpeg/png/gif/... */
+	'backend.process_nofile': 'Le chemin du fichier à traiter n\'est pas valide.',
+	'backend.imagecreatetruecolor_failed': 'Le traitement de l\'image a échoué : GD imagecreatetruecolor().',
+	'backend.imagealphablending_failed': 'Le traitement de l\'image a échoué : Blending alpha impossible.',
+	'backend.imageallocalpha50pctgrey_failed': 'Le traitement de l\'image a échoué : Mémoire insuffisante pour alpha channel et fond 50%.',
+	'backend.imagecolorallocatealpha_failed': 'Le traitement de l\'image a échoué : Mémoire insuffisante pour alpha channel.',
+	'backend.imagerotate_failed': 'Le traitement de l\'image a échoué : GD imagerotate().',
+	'backend.imagecopyresampled_failed': 'Le traitement de l\'image a échoué : GD imagecopyresampled(). Résolution image : ', /* x * y */
+	'backend.imagecopy_failed': 'Le traitement de l\'image a échoué : GD imagecopy().',
+	'backend.imageflip_failed': 'Le traitement de l\'image a échoué : Flip impossible.',
+	'backend.imagejpeg_failed': 'Le traitement de l\'image a échoué : GD imagejpeg().',
+	'backend.imagepng_failed': 'Le traitement de l\'image a échoué : GD imagepng().',
+	'backend.imagegif_failed': 'Le traitement de l\'image a échoué : GD imagegif().',
+	'backend.imagecreate_failed': 'Le traitement de l\'image a échoué : GD imagecreate().',
+	'backend.cvt2truecolor_failed': 'conversion to True Color failed. Résolution image : ', /* x * y */
+	'backend.no_imageinfo': 'Image corrompu ou fichier non image.',
+	'backend.img_will_not_fit': 'Erreur serveur: Mémoire insuffisante; Minimum requis : ', /* XXX MBytes */
+	'backend.unsupported_imgfmt': 'Format non supporté : ',    /* jpeg/png/gif/... */
 
 	/* FU */
 	uploader: {
@@ -103,22 +103,22 @@ FileManager.Language.fr = {
 		duplicate: 'Vous ne pouvez pas ajouter "<em>${name}</em>" (${size}), car l\'élément est déjà ajoutée !',
 		sizeLimitMin: 'Vous ne pouvez pas ajouter "<em>${name}</em>" (${size}), la taille minimale des fichiers est de <strong>${size_min}</strong>!',
 		sizeLimitMax: 'Vous ne pouvez pas ajouter "<em>${name}</em>" (${size}), la taille maximale des fichiers est de <strong>${size_max}</strong>!',
-		mod_security: 'No response was given from the uploader, this may mean that "mod_security" is active on the server and one of the rules in mod_security has cancelled this request.  If you can not disable mod_security, you may need to use the NoFlash Uploader.'
+		mod_security: 'Aucune réponse de l\'uploadeur. "mod_security" est peut-être actif sur le serveur et un des rôles a annulé cette requête.  Si vous ne pouvez désactiver mod_security, il vous faut utiliser NoFlash Uploader.'
 	},
 
 	flash: {
 		hidden: null,
 		disabled: null,
-		flash: 'Dans le but de téléverser des fichiers, vous devez installer <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash">Adobe Flash</a>.'
+		flash: 'Dans le but d\'uploader des fichiers, vous devez installer <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash">Adobe Flash</a>.'
 	},
 
-	resizeImages: 'Redimensionner les images pendant le téléversement',
+	resizeImages: 'Redimensionner pendant l\'upload',
 
-	serialize: 'Save gallery',
+	serialize: 'Sauver la galerie',
 	gallery: {
-		text: 'Image caption',
-		save: 'Save',
-		remove: 'Remove from gallery',
-		drag: 'Drag items here to create a gallery...'
+		text: 'Texte de l\'image',
+		save: 'Sauver',
+		remove: 'Retirer de la galerie',
+		drag: 'Glissez des images ici pour créer une galerie...'
 	}
 };

@@ -31,6 +31,11 @@ session_write_close();
 	<script type="text/javascript" src="mootools-core.js"></script>
 	<script type="text/javascript" src="mootools-more.js"></script>
 
+	<script type="text/javascript">
+		// disable the autoinit of the milkbox (must be set before the FileManager.js loads the milkbox.js!)
+		__MILKBOX_NO_AUTOINIT__ = true;
+	</script>
+
 	<script type="text/javascript" src="../Source/FileManager.js"></script>
 	<script type="text/javascript" src="../Source/Gallery.js"></script>
 	<script type="text/javascript" src="../Source/Uploader/Fx.ProgressBar.js"></script>
@@ -234,6 +239,17 @@ session_write_close();
 			});
 			$('example4').addEvent('click', manager4.show.bind(manager4));
 
+
+			// init the milkbox: use the zIndex base set by the FileManager:
+			this.milkbox = new Milkbox({
+				centered: true,
+				zIndex: manager4.options.zIndex + 4000,
+				//autoSizeMaxHeight: 0,
+				//autoSizeMaxWidth: 0,
+				autoSizeMinHeight: 60,
+				autoSizeMinWidth: 100,      // compensate for very small images: always show the controls, at least
+				marginTop:10
+			});
 
 
 			var slider = $('slider');

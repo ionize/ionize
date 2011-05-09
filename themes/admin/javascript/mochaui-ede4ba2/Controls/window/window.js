@@ -1474,6 +1474,7 @@ MUI.Window.implement({
 				panel.setStyle('overflow', panel.retrieve('oldOverflow')); // Fix for a rendering bug in FF
 			});
 		}
+		this.fireEvent('resizeOnDrag', [this]);
 	},
 
 	_resizeOnComplete: function(){

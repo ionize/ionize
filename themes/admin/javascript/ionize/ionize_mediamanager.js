@@ -527,7 +527,7 @@ var IonizeMediaManager = new Class(
 								filemanager = new FileManager({
 									baseURL: base_url,
 									url: admin_url + 'media/filemanager',
-									directory:'files',
+//									directory:'files',
 									assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
 									standalone: false,
 									thumbSmallSize: 120,
@@ -540,14 +540,10 @@ var IonizeMediaManager = new Class(
 									hideOnSelect: false,
 									thumbSize: self.options.thumbSize,
 									'onComplete': self.addMedia.bind(self),
-									'uploadAuthData': responseJSON.tokken,
 									propagateData: {'uploadAuthData': responseJSON.tokken},
 									parentContainer: 'filemanagerWindow_contentWrapper',
 									mkServerRequestURL: function(fm_obj, request_code, post_data)
 									{
-//		console.log('B: mkServerRequestURL');
-//		console.log(post_data);
-//		console.log('E: mkServerRequestURL');
 										return {
 											url: fm_obj.options.url + '/' + request_code,
 											data: post_data
@@ -560,7 +556,7 @@ var IonizeMediaManager = new Class(
 								
 								options.content = filemanager.show();
 								
-								options.onResize = function()
+								options.onResizeOnDrag = function()
 								{
 									filemanager.fitSizes();
 								}
@@ -596,9 +592,9 @@ ION.append({
 	{
 		// Window size
 		var wSize = {
-			'width': 810,
-			'height': 420,
-			'x': 80,
+			'width': 890,
+			'height': 500,
+			'x': 70,
 			'y': null
 		}
 		

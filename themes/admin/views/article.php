@@ -960,6 +960,13 @@
 	 */
 	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content', 'meta_title'));
 	
+	var nbCategories = ($('categories').getElements('option')).length;
+	if (nbCategories > 5)
+	{
+		$$('#categories select').setStyles({
+			'height': (nbCategories * 15) + 'px'
+		});
+	}
 
 	/** 
 	 * Show current tabs

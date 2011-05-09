@@ -170,7 +170,7 @@ ION.Tree = new Class({
 			MUI.Content.update({
 				'element': p,
 				'url': admin_url + type + '/edit/' + a.getProperty('rel'),
-				'title': Lang.get('ionize_title_edit_' + type)	
+				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + a.get('text')	
 			});
 		});
 	},

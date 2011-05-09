@@ -48,11 +48,11 @@ ALTER TABLE `page_article` ADD `link_id` varchar(20) NOT NULL DEFAULT '';
 
 ALTER TABLE `page_article` ADD `link` VARCHAR( 255 ) NOT NULL DEFAULT '';	
 
-UPDATE page_article, article SET page_article.link=article.link WHERE page_article.id_article = article.id_article AND link !='';
+UPDATE page_article, article SET page_article.link=article.link WHERE page_article.id_article = article.id_article AND article.link !='';
 
-UPDATE page_article, article SET page_article.link_id=article.link_id WHERE page_article.id_article = article.id_article AND link !='';
+UPDATE page_article, article SET page_article.link_id=article.link_id WHERE page_article.id_article = article.id_article AND article.link !='';
 
-UPDATE page_article, article SET page_article.link_type=article.link_type WHERE page_article.id_article = article.id_article AND link !='';
+UPDATE page_article, article SET page_article.link_type=article.link_type WHERE page_article.id_article = article.id_article AND article.link !='';
 
 ALTER TABLE `article` 
 	DROP `link`, 

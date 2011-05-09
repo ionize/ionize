@@ -46,7 +46,8 @@ Ionize.initializeDesktop = function(){
 								position: 'header',
 								url: admin_url + 'desktop/get/toolboxes/empty_toolbox'
 							}
-						]
+						],
+						collapsible: false
 	//					,onResize: Ionize.updateResizeElements
 					}]
 				}

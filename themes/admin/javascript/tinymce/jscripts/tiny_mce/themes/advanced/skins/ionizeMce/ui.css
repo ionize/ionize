@@ -7,6 +7,10 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 	
 */
 
+#mce_fullscreen_container {
+	background: #202d3e;
+}
+
 /* Reset */
 .ionizeMceSkin table, .ionizeMceSkin tbody, .ionizeMceSkin a, .ionizeMceSkin img, .ionizeMceSkin tr, .ionizeMceSkin div, .ionizeMceSkin td, .ionizeMceSkin iframe, .ionizeMceSkin span, .ionizeMceSkin *, .ionizeMceSkin .mceText {
 	border: 0;
