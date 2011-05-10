@@ -245,6 +245,7 @@ h2.main.settings { background: url(../images/icon_48_settings.png) no-repeat 0 0
 h2.main.website { background: url(../images/icon_48_www.png) no-repeat 0 0; } 
 h2.main.elements { background: url(../images/icon_48_elements.png) no-repeat 0 0; } 
 h2.main.help { background: url(../images/icon_48_helpme.png) no-repeat 0 0; } 
+h2.main.system-check { background: url(../images/icon_48_system_check.png) no-repeat 0 0; } 
 
 
 #maincolumn h2, 
@@ -262,11 +263,10 @@ h2.main.help { background: url(../images/icon_48_helpme.png) no-repeat 0 0; }
 	height:48px;
 	overflow: hidden;
 }
+
 #maincolumn h2.main {
 	font-size:35px;
-/*	margin-bottom: 20px;*/
 }
-
 /* Windows content titles */
 .mochaContent h2.main {
 	font-size:30px;
@@ -274,6 +274,9 @@ h2.main.help { background: url(../images/icon_48_helpme.png) no-repeat 0 0; }
 }
 .mochaContent h3 {
 	border-bottom: 1px solid #D5D9DC;
+}
+#maincolumn .subtitle {
+	margin-left:68px;
 }
 
 
@@ -1051,6 +1054,12 @@ dl#link_info dd {
 .ml40 { margin-left: 40px; }
 .mb40 { margin-bottom: 40px; }
 .mr40 { margin-right: 40px; }
+
+.m50 { margin: 50px; }
+.mt50 { margin-top: 50px; }
+.ml50 { margin-left: 50px; }
+.mb50 { margin-bottom: 50px; }
+.mr50 { margin-right: 50px; }
 
 .mr-auto {margin-right:auto;}
 .ml-auto {margin-left:auto;}

@@ -150,6 +150,34 @@ class Page_model extends Base_model
 	}
 
 	
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Correct the whole website pages levels regarding the parent of each page
+	 * 
+	 *
+	 */
+	function correct_levels(&$pages, $id_parent=0, $level=0)
+	{
+		if (is_array($pages))
+		{
+			$children = array_values(array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $id_parent .'";')));
+			$sub_level = $level + 1;
+			
+			foreach ($children as $child)
+			{
+				$this->db->where('id_parent', $id_parent);
+				$this->db->update('page', array('level' => $level));
+
+				Page_model::correct_levels($pages, $child['id_page'], $sub_level);
+			}
+		}
+	} 
+
+
+	
 	/**
 	 * Updates all other articles / pages links when saving one page
 	 *

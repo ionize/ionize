@@ -43,7 +43,10 @@
 	padding-bottom: 6px;
 	line-height: 15px;
 }
-
+#desktopNavToolbar_spinner {
+	position:absolute;
+	right:10px;
+}
 
 .desktopTitlebarWrapper { position: relative; height: 32px; overflow: hidden; }
 .desktopTitlebar { padding: 6px 8px 0 0; height: 32px; }

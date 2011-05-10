@@ -5,9 +5,9 @@ ION.append({
 	 * Not to be used directly. Use initRequestEvent() instead to add one event to an element.
 	 *
 	 */
-	JSON: function(url, data)
+	JSON: function(url, data, options)
 	{
-		new Request.JSON(ION.getJSONRequestOptions(url, data)).send();
+		new Request.JSON(ION.getJSONRequestOptions(url, data, options)).send();
 	},
 
 	HTML: function(url, data, options)
@@ -20,9 +20,9 @@ ION.append({
 	 * Create one Request event
 	 *
 	 */
-	initRequestEvent: function(item, url, data, message)
+	initRequestEvent: function(item, url, data, options)
 	{
-		var rel = item.getProperty('rel') || '';
+		var data = (typeOf(data) == 'null') ? {} : data;
 
 		// Some safety before adding the event.
 		item.removeEvents('click');
@@ -32,7 +32,7 @@ ION.append({
 			e.stop();
 			
 			// Confirmation screen
-			if (options.message)
+			if (typeOf(options) != 'null' && typeOf(options.message) != 'null')
 			{
 				var message = (Lang.get(options.message)) ? Lang.get(options.message) : Lang.get('app_message_confirm'); 
 				
@@ -65,7 +65,7 @@ ION.append({
 		if (!data) {
 			data = '';
 		}
-
+console.log(url);
 		// Cleans URLs
 		url = ION.cleanUrl(url);
 

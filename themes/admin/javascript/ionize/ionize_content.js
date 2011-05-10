@@ -295,10 +295,12 @@ ION.append({
 		}
 		else
 		{
+			var display_format = (date_format).replace(/%/g, '');
+			
 			ION.datePicker = new DatePicker('.date', {
 				pickerClass: 'datepicker_dashboard', 
 				timePicker:true, 
-				format: 'd.m.Y H:i:s', 
+				format: display_format + ' H:i:s', 
 				inputOutputFormat:'d.m.Y H:i:s', 
 				allowEmpty:true, 
 				useFadeInOut:false, 

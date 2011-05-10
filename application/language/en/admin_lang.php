@@ -87,6 +87,7 @@ $lang['ionize_button_toggle_header'] = 'Toggle header';
 | Admin navigation menu
 |--------------------------------------------------------------------------
 */
+$lang['ionize_menu_dashboard'] = 'Dashboard';
 $lang['ionize_menu_content'] = 'Content';
 $lang['ionize_menu_articles'] = 'Articles';
 $lang['ionize_menu_translation'] = 'Translations';
@@ -494,6 +495,7 @@ $lang['ionize_title_thumbs_system'] = 'Ionize system thumbnail';
 $lang['ionize_title_form_antispam_key'] = 'Antispam JS key';
 $lang['ionize_title_article_management'] = 'Article management';
 $lang['ionize_title_admin_url'] = 'Admin panel URL';
+$lang['ionize_title_encryption_key'] = 'Encryption key';
 
 $lang['ionize_label_thumb_automatic'] = 'Automatic';
 $lang['ionize_label_files_path'] = 'Media base folder';
@@ -932,5 +934,20 @@ $lang['ionize_message_module_install_database_error'] = 'Error when installing t
 $lang['ionize_message_module_saved'] = 'Module installed';
 $lang['ionize_message_module_uninstalled'] = 'Module uninstalled';
 $lang['ionize_message_module_not_installed'] = 'Module not installed !';
+
+
+/*
+|--------------------------------------------------------------------------
+| Admin : System Check
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_title_system_check'] = 'System Check Tool';
+$lang['ionize_menu_system_check'] = 'System Check';
+$lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and repair what should be. You cannot break anything by using these fetaures.';
+
+$lang['ionize_label_start_system_check'] = 'Start Check';
+$lang['ionize_button_start_system_check'] = 'Start Check';
+
+
 
 

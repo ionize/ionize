@@ -7,8 +7,10 @@
 
 	<h2 class="main ionize" id="main-title"><?= lang('ionize_title_ionize_settings') ?></h2>
 
+	<!-- Subtitle -->
+	<div class="subtitle">
 		<p><?= lang('ionize_onchange_ionize_settings')?></p>
-	
+	</div>
 
 	<!-- Visual help : help tips and "Connected" label -->
 	<h3 class="toggler1 mt20"><?=lang('ionize_title_visual_help')?></h3>
@@ -91,7 +93,7 @@
 	 * Panel toolbox
 	 *
 	 */
-	ION.initToolbox('empty_toolbox');
+	ION.initToolbox('setting_ionize_toolbox');
 
 	/**
 	 * Options Accordion

@@ -624,7 +624,7 @@
 	</div>
 	
 	<!-- Encryption key -->
-	<h3 class="toggler1"><?=lang('encryption_key')?></h3>
+	<h3 class="toggler1"><?=lang('ionize_title_encryption_key')?></h3>
 
 	<div class="element1">
 	
