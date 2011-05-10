@@ -853,7 +853,7 @@
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler', 'div.element', true);
+	ION.initAccordion('.toggler', 'div.element', true, 'articleAccordion');
 		
 
 	/**

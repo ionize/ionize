@@ -267,7 +267,7 @@
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler', 'div.element');
+	ION.initAccordion('.toggler', 'div.element', false, 'dashboardAccordion');
 
 
 	// Articles edit

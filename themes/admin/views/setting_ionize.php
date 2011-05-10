@@ -91,14 +91,13 @@
 	 * Panel toolbox
 	 *
 	 */
-	ION.initToolbox('setting_ionize_toolbox');
+	ION.initToolbox('empty_toolbox');
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler', 'div.element');
-	ION.initAccordion('.toggler1', 'div.element1');
+	ION.initAccordion('.toggler1', 'div.element1', false, 'ionizeSettingsAccordion');
 
 	/**
 	 * Init help tips on label

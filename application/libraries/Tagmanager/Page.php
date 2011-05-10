@@ -161,10 +161,10 @@ class TagManager_Page extends TagManager
 			'medias:file_name' => 	'tag_media_file_name',
 			'medias:description' => 'tag_media_description',
 			'medias:copyright' => 	'tag_media_copyright',
+			'medias:index' => 		'tag_media_index',
+			'medias:count' => 		'tag_media_count',
 			
 			
-//			'articles:medias:count' => 		'tag_article_media_count',
-
 			// One media
 			'media' =>				'tag_media'
 			
@@ -251,6 +251,10 @@ class TagManager_Page extends TagManager
 				if ($page['link_type'] == 'external')
 				{
 					$page['absolute_url'] = $page['link'];
+				}
+				else if ($page['link_type'] == 'email')
+				{
+					$page['absolute_url'] = auto_link($page['link'], 'both', TRUE);
 				}
 				else
 				{
@@ -352,6 +356,34 @@ class TagManager_Page extends TagManager
 		}
 	}
 	
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Orders the pages array regarding the editors logical order.
+	 * This function do not nest the pages.
+	 * Internal use only.
+	 *
+	 * @param	Array	Array of pages to order
+	 * @param	Array	Array to feed. Will contain the ordered pages.
+	 * @param	int		ID page from which to start
+	 *
+	 */
+	private static function order_pages(&$data, &$arr, $parent=0)
+	{
+		if (is_array($data))
+		{
+			$children = array_values(array_filter($data, create_function('$row','return $row["id_parent"] == "'. $parent .'";')));
+			
+			foreach ($children as $child)
+			{
+				$arr[] = $child;
+				self::order_pages($data, $arr, $child['id_page']);
+			}
+		}
+	} 
+
 
 	// ------------------------------------------------------------------------
 
@@ -972,7 +1004,7 @@ class TagManager_Page extends TagManager
 	public static function tag_count($tag)
 	{
 		// Object type : page, article, media
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
+		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : self::get_parent_tag($tag);;
 
 		// Item to count
 		$items = (isset($tag->attr['items']) ) ? $tag->attr['items'] : FALSE;
@@ -982,39 +1014,17 @@ class TagManager_Page extends TagManager
 
 		// Get the obj
 		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-		
-		// things to count
-		$items = array();
-		
-		// Get the tag nesting path
-		$tag_path = explode(':', $tag->nesting());
-		array_pop($tag_path);
-
-		// Try to get the current obj from the tag path
-		if (is_null($obj))
-		{
-			$from = (count($tag_path) > 0) ? array_pop($tag_path) : 'page';
-			$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-		}
 
 		if ( ! is_null($obj) )
 		{
 			if($items != FALSE && isset( $obj[$items]) )
 			{
-				if ( ! empty($obj[$items]))
-				{
-					$items = $obj[$items];
-				}
-//				else
-//				{
-//					return self::show_tag_error($tag->name, 'The items <b>"'.$items.'"</b> you try to count doesn\'t exist in the element <b>"'. $from.'"</b>');		
-//				}
+				$items = $obj[$items];
 			}
 			else
 			{
 				$items = $obj;
 			}
-
 			if ($filter !== FALSE)
 			{
 				// Normalize egality
@@ -1022,6 +1032,7 @@ class TagManager_Page extends TagManager
 		
 				// Test condition
 				$condition = preg_replace("#([\w]*)(\s*==\s*|\s*!==\s*)([a-zA-Z0-9'])#", '$row[\'\1\']\2\3', $filter);
+
 				$items = @array_filter($items, create_function('$row','return ('.$condition.');'));
 
 				if ($items == FALSE && ! is_array($items))
@@ -1032,66 +1043,12 @@ class TagManager_Page extends TagManager
 				return count($items);
 			}
 			return count($items);
-			
 		}
-
 		return 0;
 	}
-/*
-	public static function tag_count($tag)
-	{
-		// Object type : page, article, media
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
 
-		// Item to count
-		$item = (isset($tag->attr['item']) ) ? $tag->attr['item'] : FALSE;
-
-		// Filter on one field
-		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
-
-		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-
-		if ( ! is_null($obj) && $item != FALSE)
-		{
-			if(isset( $obj[$item]) )
-			{
-				if ( ! empty($obj[$item]))
-				{
-					if ($filter !== FALSE)
-					{
-						// Normalize egality
-						$filter = preg_replace("#[=*]{1,12}#", '==', $filter);
-				
-						// Test condition
-						$condition = preg_replace("#([\w]*)(\s*==\s*|\s*!==\s*)([a-zA-Z0-9'])#", '$row[\'\1\']\2\3', $filter);
-						$filtered_items = @array_filter($obj[$item], create_function('$row','return ('.$condition.');'));
-	
-						if ($filtered_items == FALSE && ! is_array($filtered_items))
-						{
-							return self::show_tag_error($tag->name, '<b>Your filter contains an error : </b><br/>'.$filter);
-						}
-						
-						return count($filtered_items);
-					}
-					return count($obj[$item]);
-				}
-				else
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				return self::show_tag_error($tag->name, 'The items <b>"'.$item.'"</b> you try to count don\'t exist in the element <b>"'. $from.'"</b>');		
-			}
-		}
-
-		return 0;
-	}
-*/
 
 	// ------------------------------------------------------------------------
-
 
 
 	/**
@@ -1380,10 +1337,10 @@ class TagManager_Page extends TagManager
 						{
 							if ($index <= $to OR $to === FALSE)
 							{
-								$tag->locals->media = $media;
-								$tag->locals->index = $index;
-								$str .= $tag->expand();
 								$i++;
+								$tag->locals->media = $media;
+								$tag->locals->index = $i;
+								$str .= $tag->expand();
 							}
 						}
 					}
@@ -1395,10 +1352,10 @@ class TagManager_Page extends TagManager
 					{
 						if ($i < $limit OR $limit === FALSE)
 						{
-							$tag->locals->media = $media;
-							$tag->locals->index = $index;
-							$str .= $tag->expand();
 							$i++;
+							$tag->locals->media = $media;
+							$tag->locals->index = $i;
+							$str .= $tag->expand();
 						}
 					}
 				}
@@ -1799,11 +1756,11 @@ class TagManager_Page extends TagManager
 	/**
 	 * Returns the number of articles
 	 *
-	 */
 	public function tag_page_media_count($tag)
 	{
 		return count($tag->locals->page['medias']);
 	}
+	 */
 	
 	
 	
@@ -1897,7 +1854,7 @@ class TagManager_Page extends TagManager
 			$tag->locals->page['articles'] = $articles;
 	
 			$count = count($tag->locals->page['articles']);
-	
+			
 			foreach($tag->locals->page['articles'] as $key=>$article)
 			{
 				// Render the article
@@ -2072,6 +2029,13 @@ class TagManager_Page extends TagManager
 			{
 				return $tag->locals->article['link'];
 			}
+			
+			// Mail link
+			if ($tag->locals->article['link_type'] == 'email')
+			{
+				return auto_link($tag->locals->article['link'], 'both', TRUE);
+			}
+			
 			
 			// If link to one article, get the page to build the complete link
 			if($tag->locals->article['link_type'] == 'article')
@@ -2322,6 +2286,12 @@ class TagManager_Page extends TagManager
 	
 	public static function tag_article_count($tag)
 	{
+		// Redirect to the global count tag if items is set as attribute. Means we want to count something else.
+		if (isset($tag->attr['items']))
+		{
+			return self::tag_count($tag);
+		}
+
 		return $tag->locals->article['count'];
 	}
 	
@@ -2332,14 +2302,20 @@ class TagManager_Page extends TagManager
 	/**
 	 * Returns the number of articles
 	 *
-	 */
 	public function tag_article_medias_count($tag)
 	{
+		// Redirect to the global count tag if items is set as attribute. Means we want to count something else.
+		if (isset($tag->attr['items']))
+		{
+			return self::tag_count($tag);
+		}
+	
 		$medias = $tag->locals->article['medias'];	
 		$medias = self::get_medias($tag, $medias);
 	
 		return count($medias);
 	}
+	*/
 
 	
 	// ------------------------------------------------------------------------
@@ -2449,6 +2425,11 @@ class TagManager_Page extends TagManager
 	public static function tag_media_path($tag) { return $tag->locals->media['path']; }
 	public static function tag_media_description($tag) { return self::wrap($tag, $tag->locals->media['description']); }
 	public static function tag_media_copyright($tag) { return self::wrap($tag, $tag->locals->media['copyright']); }
+	public static function tag_media_index($tag) { return $tag->locals->index; }
+	public static function tag_media_count($tag)
+	{
+		return $tag->locals->count;
+	}
 
 	
 	// ------------------------------------------------------------------------
@@ -2523,11 +2504,151 @@ class TagManager_Page extends TagManager
 
 	// ------------------------------------------------------------------------
 
-
+	
 	/**
-	 * Navigation tags
+	 * Return an adjacent page
+	 * Internal use
+	 *
+	 * @param	FTL_Binding object 
+	 * @param	String				Mode. 'prev' or 'next'
+	 *
+	 * @return	Mixed				Page array or FALSE if no page was found.
 	 *
 	 */
+	private static function get_adjacent_page($tag, $mode='prev')
+	{
+		$mode = ($mode=='prev') ? -1 : 1;
+		
+		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
+		$id_menu = 1;
+		foreach($tag->globals->menus as $menu)
+		{
+			if ($menu_name == $menu['name'])
+			{
+				$id_menu = $menu['id_menu'];
+			}	
+		}
+
+		$level = isset($tag->attr['level']) ? $tag->attr['level'] : 0;
+		
+		$current_page =& $tag->locals->page;
+		
+		// Order the pages.		
+		$ordered_pages = array();
+		if ( empty($tag->globals->pages_ordered))
+		{
+			self::order_pages($tag->globals->pages, $ordered_pages);
+			$tag->globals->pages = $ordered_pages;
+			$tag->globals->pages_ordered = TRUE;
+		}
+		
+		$global_pages = $tag->globals->pages;
+		
+		// Filter by menu and asked level : We only need the asked level pages !
+		$pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
+		
+		// Filter on 'appears'=>'1'
+		$pages = array_values(array_filter($pages, array('self', '_filter_appearing_pages')));
+		
+		foreach($pages as $idx => $page)
+		{
+			if ($page['id_page'] == $current_page['id_page'])
+			{
+				if (!empty($pages[$idx + $mode]))
+				{
+					return $pages[$idx + $mode];
+				}
+			}
+		}
+		
+		return FALSE;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Next page tag
+	 * @usage		<ion:next_page [ prefix="Next page : " menu="main|system|..." level="0|1|..." helper="helper_name:function_name" ] />
+	 *				Attributes : 
+	 *				prefix :	Prefix to add before the next page anchor. Can be free text or a static translation item index.
+	 *				menu :		By default will be "main"
+	 *				level :		The wished pages level to consider
+	 *				helper :	Will be "navigation_helper:get_next_prev_page" by default.
+	 *							This calls the function "get_next_prev_page" in the helper /application/helpers/navigation_helper.php"
+	 *
+	 */
+	public function tag_next_page($tag)
+	{
+		$page = self::get_adjacent_page($tag, 'next');
+	
+		return self::process_next_prev_page($tag, $page);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Previous page tag
+	 * @usage		<ion:next_page [ prefix="Previous page : " menu="main|system|..." level="0|1|..." helper="helper_name:function_name"] />
+	 *				Attributes : 
+	 *				prefix :	Prefix to add before the previous page anchor. Can be free text or a static translation item index.
+	 *				menu :		By default will be "main"
+	 *				level :		The wished pages level to consider
+	 *				helper :	Will be "navigation_helper:get_next_prev_page" by default.
+	 *							This calls the function "get_next_prev_page" in the helper /application/helpers/navigation_helper.php"
+	 *
+	 */
+	public function tag_prev_page($tag)
+	{
+		$page = self::get_adjacent_page($tag, 'prev');
+	
+		return self::process_next_prev_page($tag, $page);
+	}
+	
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Processes the next / previous page tags result
+	 * Internal use only.
+	 *	 
+	 */
+	private function process_next_prev_page($tag, $page)
+	{
+		if ($page != FALSE)
+		{
+			// helper
+			$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
+
+			// Get helper method
+			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_next_prev_page';
+			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
+	
+			// Prefix ?
+			$prefix = (!empty($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
+	
+			// load the helper
+			$this->ci->load->helper($helper);
+			
+			// Return the helper function result
+			if (function_exists($helper_function))
+			{
+				$return = call_user_func($helper_function, $page, $prefix);
+				
+				return self::wrap($tag, $return);
+			}
+		}
+		
+		return '';
+	
+	}	
+
+
+	// ------------------------------------------------------------------------
 
 	
 	/**
@@ -2967,49 +3088,45 @@ class TagManager_Page extends TagManager
 	 */
 	public function tag_breadcrumb($tag)
 	{
-		/* Attributes : Tag open, ID and class of the tag
-		 *
-		 */
-		$class = (isset($tag->attr['class'])) ? ' class="' . $tag->attr['class'] .'" ' : '';
-		$id = (isset($tag->attr['id'])) ? ' id="' . $tag->attr['id'] .'" ' : '';
-
-		$full_tag_open = (isset($tag->attr['full_tag'])) ? '<' . $tag->attr['full_tag'] . $id . $class . '>' : '';
-		$full_tag_close = (isset($tag->attr['full_tag'])) ? '</' . $tag->attr['full_tag'] . '>' : '';
-		
-		$lang_url = (isset($tag->attr['lang_url']) && $tag->attr['lang_url'] == 'TRUE') ? TRUE : FALSE;
+		// Anchor enclosing tag 
+		$subtag_open = (isset($tag->attr['subtag'])) ? '<' . $tag->attr['subtag'] . '>' : '';
+		$subtag_close = (isset($tag->attr['subtag'])) ? '</' . $tag->attr['subtag'] . '>' : '';
 		
 		$separator = (isset($tag->attr['separator']) ) ? htmlentities($tag->attr['separator']) : ' &raquo; ';
-								
-		// Current lang
-		$lang = Settings::get_lang();
-		
+
+		$starting_level = (isset($tag->attr['starting_level']) ) ? $tag->attr['starting_level'] : FALSE;
+
 		// Current page ID
 		$current_page_id = $tag->globals->page['id_page'];
 		
 		// Get the Breadcrumbs array
+		$lang = Settings::get_lang();
 		$breacrumbs = $this->get_breadcrumb_array($tag->locals->page, $tag->locals->pages, $lang );
 		
 		// Filter appearing pages
 		$breacrumbs = array_values(array_filter($breacrumbs, array($this, '_filter_appearing_pages')));
 		
+		if ($starting_level != FALSE)
+		{
+			$breacrumbs =  array_values(array_filter($breacrumbs, create_function('$row','return $row["level"] >= '. $starting_level .';')));
+		}
+
 		// Build the links
 		$return = '';
+
 		for($i=0; $i<count($breacrumbs); $i++)
 		{
-			$url = ($lang_url == TRUE) ? base_url().Settings::get_lang().'/'.$breacrumbs[$i]['name'] : base_url().$breacrumbs[$i]['name'] ;
+			$url = $breacrumbs[$i]['absolute_url'];
 			
 			// Adds the suffix if defined
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
-			
-			$a = $full_tag_open . '<a href="'.$url.'">'.$breacrumbs[$i]['title'].'</a>';
-			
 			$return .= ($return != '') ? $separator : '';
 
-			$return .= $a;
+			$return .= $subtag_open . '<a href="'.$url.'">'.$breacrumbs[$i]['title'].'</a>' . $subtag_close;
 		}
 		
-		return $return;				
+		return self::wrap($tag, $return);
 	}
 	
 	

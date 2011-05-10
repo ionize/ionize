@@ -431,7 +431,7 @@ class Article extends MY_admin
 				// Categories
 				$categories = $this->category_model->get_categories_select();
 				$current_categories = $this->category_model->get_current_categories('article', $id_article);
-				$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select" multiple="multiple"');
+				$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w140" multiple="multiple"');
 	
 				// Tags
 				$this->template['tags'] =	$this->tag_model->get_tags_from_parent('article', $id_article, 'string');
@@ -1079,7 +1079,7 @@ class Article extends MY_admin
 					'title' => lang('ionize_title_edit_article')
 				);
 				
-				$this->callback = array(
+				$this->callback[] = array(
 					'fn' => $menu['name'].'Tree.insertTreeArticle',
 					'args' => $this->data
 				);

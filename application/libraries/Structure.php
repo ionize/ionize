@@ -78,7 +78,7 @@ class Structure{
 	 * @param	array	Optional. Articles array
 	 *
 	 */
-	function get_nested_structure(&$data, &$arr, $parent, $startDepth, $maxDepth, $articles=false)
+	function get_nested_structure(&$data, &$arr, $parent, $startDepth, $maxDepth, $articles=FALSE)
 	{
 		if ($maxDepth-- == 0) return;
 		$index = 0;
@@ -169,7 +169,7 @@ class Structure{
 	// ------------------------------------------------------------------------
 
 	
-	function get_tree_navigation($data, $id_parent, $startDepth=0, $maxDepth=-1)
+	function get_tree_navigation($data, $id_parent, $startDepth=0, $maxDepth=-1, $articles=FALSE)
 	{
 		// Pages array
 		$arr = array();
@@ -177,7 +177,7 @@ class Structure{
 		// Return array
 		$select_data = array();
 		
-		Structure::get_nested_structure($data, $arr, $id_parent, $startDepth, $maxDepth);
+		Structure::get_nested_structure($data, $arr, $id_parent, $startDepth, $maxDepth, $articles);
 		
 		return $arr;
 	

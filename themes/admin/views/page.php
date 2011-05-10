@@ -948,7 +948,7 @@
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler', 'div.element', true);
+	ION.initAccordion('.toggler', 'div.element', true, 'pageAccordion');
 
 
 	ION.initHelp('#articles .type.helpme', 'article_type', Lang.get('ionize_title_help_articles_types'));

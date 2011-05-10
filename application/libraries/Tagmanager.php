@@ -1269,11 +1269,11 @@ class TagManager
 
 		// Remove the current tag from the path
 		array_pop($tag_path);
-		
+
 		// If no parent, the default parent is 'page'
 		$obj_tag = (count($tag_path) > 0) ? array_pop($tag_path) : $tag_name;
 		
-		if ($obj_tag == 'partial') $obj_tag = $tag_name;
+		if ($obj_tag == 'partial') $obj_tag = array_pop($tag_path);
 		
 		// Parent name. Removes plural from parent tag name if any.
 		if (substr($obj_tag, -1) == 's')

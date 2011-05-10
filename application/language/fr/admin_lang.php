@@ -597,7 +597,7 @@ $lang['ionize_label_view_name'] = 'Nom logique';
 $lang['ionize_label_view_type'] = 'Type';
 $lang['ionize_label_current_theme'] = 'Thème en cours';
 
-$lang['ionize_select_no_type'] = '-- Aucun --';
+$lang['ionize_select_no_type'] = '-- Aucun Type --';
 $lang['ionize_message_views_saved'] = 'Définition des vues enregistrée';
 
 $lang['ionize_message_view_saved'] = 'Vue enregistrée';
@@ -628,7 +628,7 @@ $lang['ionize_label_page_delete_date'] = 'Date suppression page';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Page d\'accueil';
 
-$lang['ionize_select_default_view'] = '-- Non défini --';
+$lang['ionize_select_default_view'] = '-- Vue par défaut --';
 $lang['ionize_select_everyone'] = '-- Tous --';
 
 $lang['ionize_message_page_name_exists'] = 'Cette page existe déjà !';

@@ -141,7 +141,7 @@
 	ION.initToolbox('menu_toolbox');
 
 				
-	ION.initAccordion('.toggler', 'div.element');
+	ION.initAccordion('.toggler', 'div.element', true, 'menuAccordion1');
 	
 
 

@@ -74,17 +74,19 @@ ION.append({
 	 * @param	string 	HTMLElement ID
 	 *	
 	 */
-	initAccordion: function(togglers, elements, openAtStart) 
+	initAccordion: function(togglers, elements, openAtStart, cookieName) 
 	{
 		// Hack IE 7 : No Accordion
 		if (Browser.ie == true && Browser.version < 8)
 		{
 			return;
 		}
-		
-		
+		var cookieDays = 999;
 		var disp = (typeOf(openAtStart) != 'null') ? 0 : -1;
-	
+
+		if (cookieName)
+			disp = [Cookie.read(cookieName), disp].pick();
+			
 		var acc = new Fx.Accordion(togglers, elements, {
 			display: disp,
 			opacity: false,
@@ -92,6 +94,7 @@ ION.append({
 			initialDisplayFx: false,
 			onActive: function(toggler, element){
 				toggler.addClass('expand');
+				Cookie.write(cookieName, this.togglers.indexOf(toggler), {duration:this.options.cookieDays});
 			},
 			onBackground: function(toggler, element){
 				toggler.removeClass('expand');
@@ -811,8 +814,8 @@ ION.append({
 			{
 				var section = tab.retrieve('section');
 				
-				console.log(idx);
-				console.log(section.getChildren());
+//				console.log(idx);
+//				console.log(section.getChildren());
 				
 			});
 		}

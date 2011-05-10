@@ -151,6 +151,7 @@ class Translation extends MY_admin
 					if ($term != '')
 					{
 						$value = str_replace("\'", "'", $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)]);
+						$value = str_replace('"', '\"', $value);
 						
 						$data .= "\$lang['".$term."'] = \"".$value."\";\n"; 
 					}

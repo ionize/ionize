@@ -361,7 +361,7 @@
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler1', 'div.element1');
+	ION.initAccordion('.toggler1', 'div.element1', false, 'usersAccordion');
 
 
 	/** 

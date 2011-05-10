@@ -103,7 +103,7 @@ if ( ! function_exists('getMysqlDatetime'))
 
 if ( ! function_exists('humanize_mdate'))
 {
-	function humanize_mdate($mdate, $datestr = '%d.%m.%Y at %H:%m:%s') 
+	function humanize_mdate($mdate, $datestr = '%d.%m.%Y at %H:%i:%s') 
 	{
 		if ($mdate != '' && $mdate != "0000-00-00 00:00:00")
 		{

@@ -40,10 +40,7 @@ class Media extends MY_admin
 
 		// Models
 		$this->load->model('media_model');
-//		if (Settings::get('use_extend_fields') == '1')
-//		{
-			$this->load->model('extend_field_model', '', true);
-//		}
+		$this->load->model('extend_field_model', '', true);
 
 		// Librairies
 		$this->load->library('image_lib');

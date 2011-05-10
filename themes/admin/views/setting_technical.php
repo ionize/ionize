@@ -659,8 +659,8 @@
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler', 'div.element');
-	ION.initAccordion('.toggler1', 'div.element1');
+	ION.initAccordion('.toggler', 'div.element', true, 'settingsAccordion1');
+	ION.initAccordion('.toggler1', 'div.element1', false, 'settingsAccordion2');
 
 	/**
 	 * Init help tips on label

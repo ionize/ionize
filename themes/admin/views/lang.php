@@ -261,8 +261,8 @@
 	ION.initToolbox('lang_toolbox');
 
 				
-	ION.initAccordion('.toggler', 'div.element', true);
-	ION.initAccordion('.toggler1', 'div.element1', true);
+	ION.initAccordion('.toggler', 'div.element', true, 'langAccordion1');
+	ION.initAccordion('.toggler1', 'div.element1', false, 'langAccordion2');
 	
 
 	/**
