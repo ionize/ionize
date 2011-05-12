@@ -781,6 +781,7 @@ $lang['ionize_message_article_already_linked_to_page'] = 'Article already linked
 $lang['ionize_message_article_linked_to_page'] = 'Article linked to page';
 $lang['ionize_message_article_context_saved'] = 'Données article enregistrées';
 $lang['ionize_message_article_lang_copied'] = 'Contenu copié. Veuillez sauvegarder !';
+$lang['ionize_message_article_main_parent_saved'] = 'Parent Principal sauvegardé !';
 
 // Inline help
 $lang['ionize_help_article_online'] = 'Cet article est-il en ligne ?';

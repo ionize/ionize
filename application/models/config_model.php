@@ -36,6 +36,7 @@ class Config_model extends Base_model
 		// Ionize Core config file
 		if (is_dir(realpath(APPPATH.'config')))
 		{
+			trace(realpath(APPPATH.'config').'/');
 			self::$path = realpath(APPPATH.'config').'/';
 		}
 		parent::__construct();

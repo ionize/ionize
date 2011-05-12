@@ -29,7 +29,7 @@ class TagManager
 	protected static $folders = array();
 	
 	protected $trigger_else = 0;
-
+	
 	public $ci;
 
 	/*
@@ -309,23 +309,35 @@ class TagManager
 	 */
 	protected function get_home_page(FTL_Context $con)
 	{
-		$return = array();
-	
 		if( ! empty($con->globals->pages))
 		{
-			$pages = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_menu"] == 1;')));
-			
-			foreach($pages as $page)
+			// $pages = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_menu"] == 1;')));
+/*			$pages = array();
+			foreach($con->globals->pages as $p)
+			{
+				if ($p['id_menu'] == 1)
+					$pages[] = $p;
+			}
+*/			
+			foreach($con->globals->pages as $page)
 			{
 				if ($page['home'] == 1)
 				{
 					return $page;
 				}
 			}
-			if(isset($pages[0])) return $pages[0];
+			
+			// No Home page found : Return the first page of the menu 1
+			foreach($con->globals->pages as $p)
+			{
+				if ($p['id_menu'] == 1)
+					return $p;
+			}
+			
+//			if(isset($pages[0])) return $pages[0];
 		}
 
-		return $return;
+		return array();
 	}
 
 
@@ -340,12 +352,21 @@ class TagManager
 	 */
 	protected function get_page(FTL_Context $con, $page_name)
 	{
-		$pages = array_values(array_filter($con->globals->pages, create_function('$row','return $row["url"] == "'. $page_name .'";')));
+		// $pages = array_values(array_filter($con->globals->pages, create_function('$row','return $row["url"] == "'. $page_name .'";')));
+
+		foreach($con->globals->pages as $p)
+		{
+			if ($p['url'] == $page_name)
+				return $p;
+		}
 	
-		if ( !empty($pages))
+		return array();
+	
+/*		if ( !empty($pages))
 			return $pages[0];
 		else
 			return array();
+*/
 	}
 
 
@@ -745,7 +766,14 @@ class TagManager
 					$fields = array();
 					foreach($filters as $filter)
 					{
-						$fields += array_filter($obj[$objects], create_function('$row', 'return $row["'.$filter[0].'"]'.$filter[1].'="'.$filter[2].'";'));
+						// $fields += array_filter($obj[$objects], create_function('$row', 'return $row["'.$filter[0].'"]'.$filter[1].'="'.$filter[2].'";'));
+						foreach($obj[$objects] as $obj)
+						{
+							if ($obj[$filter[0]].$filter[1] = $filter[2])
+							{
+								$fields[] = $obj;
+							}
+						}
 					}
 
 					$return = array();
@@ -1373,6 +1401,8 @@ class TagManager
 		ob_end_clean();
 		return $buffer;
 	}
+
+	
 
 
 }

@@ -102,8 +102,17 @@ class Article extends MY_admin
 		// Add page data to each context
 		foreach($page_article as &$pa)
 		{
-			 $page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $pa['id_page'] .'";')));
-			 $pa['page'] = (!empty($page) ? $page[0] : array() );
+			$pa['page'] = array();
+			foreach($pages as $page)
+			{
+				if($page['id_page'] == $pa['id_page'])
+				{
+					$pa['page'] = $page;
+				}
+			
+			}
+			// $page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $pa['id_page'] .'";')));
+			// $pa['page'] = (!empty($page) ? $page[0] : array() );
 		}
 		
 		// Link articles to pages
@@ -152,7 +161,21 @@ class Article extends MY_admin
 			$datas = $this->article_type_model->get_types_select();
 			$datas = array('' => lang('ionize_select_no_type')) + $datas; 
 			$this->template['all_article_types'] = $datas;
-
+			
+			
+			// Article's all pages contexts
+			$articles_id = array();
+			foreach($articles as $article)
+			{
+				$articles_id[] = $article['id_article'];
+			}
+			$pages_context = $this->page_model->get_lang_contexts($articles_id, Settings::get_lang('default'));
+	
+			// Add pages contexts data to articles
+			foreach($articles as &$article)
+			{
+				$article['pages'] = array_values(array_filter($pages_context, create_function('$row', 'return $row["id_article"] == '. $article['id_article'] .';')));
+			}
 	
 			$this->template['articles'] = $articles;
 			$this->template['id_page'] = $id_page;
@@ -256,14 +279,11 @@ class Article extends MY_admin
 		$this->template['article_types'] =	form_dropdown('id_type', $types, false, 'class="select"');
 		
 		// Extends fields
-		$this->template['extend_fields'] = array();
-//		if (Settings::get('use_extend_fields') == '1')
-//		{
-			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('article');
-//		}
+		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('article');
 		
 		// Context data initialized when article creation
 		$this->template['online'] = '0';
+		$this->template['main_parent'] = '1';
 
 		$this->output('article');
 	}	
@@ -320,7 +340,11 @@ class Article extends MY_admin
 				if ( ! empty($this->data['id_page']))
 				{
 					$this->data['online'] = $this->input->post('online');
+					$this->data['main_parent'] = $this->input->post('main_parent');
 					$this->article_model->link_to_page($this->data['id_page'], $this->id, $this->data);
+					
+//					$this->article_model->save_context($this->data);
+					
 				}
 				else
 					$this->data['id_page'] = '0';				
@@ -441,10 +465,7 @@ class Article extends MY_admin
 				
 				// Extends fields
 				$this->template['extend_fields'] = array();
-//				if (Settings::get('use_extend_fields') == '1')
-//				{
-					$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('article', $id_article);
-//				}
+				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('article', $id_article);
 				
 				// Link : Depending on the context
 				$context = $this->article_model->get_context($id_article, $id_page);
@@ -454,8 +475,8 @@ class Article extends MY_admin
 					$this->template['link'] = $context['link'];
 					$this->template['link_id'] = $context['link_id'];
 					$this->template['link_type'] = $context['link_type'];
+					$this->template['main_parent'] = $context['main_parent'];
 					
-//					$this->template['page'] = $this->page_model->get(array('id_page' => $id_page), Settings::get_lang('default'));
 					$pages = $this->page_model->get_parent_array(array('id_page' => $id_page), array(), Settings::get_lang('default'));
 					$breadcrump = array();
 					foreach($pages as $page)
@@ -644,6 +665,28 @@ class Article extends MY_admin
 	}
 	
 	
+	function save_main_parent()
+	{
+		$id_article = $this->input->post('id_article');
+		$id_page = $this->input->post('id_page');
+		
+		$return = $this->article_model->save_main_parent($id_article, $id_page);
+		
+		if ($return)
+		{
+			$this->callback[] = array
+			(
+				'fn' => 'ION.notification',
+				'args' => array('success', lang('ionize_message_article_main_parent_saved'))
+			);
+			$this->response();
+//			$this->update_contexts($data['id_article']);
+		}
+		else
+		{
+			$this->error(lang('ionize_message_operation_nok'));
+		}
+	}
 	
 	// ------------------------------------------------------------------------
 
@@ -669,9 +712,12 @@ class Article extends MY_admin
 			// Get the original context
 			$original_context = $this->article_model->get_context($id_article, $id_page_origin);
 			
-			// Clean of online value : Only when copiing
-			if ($copy)
+			// Clean of context : On copy
+			if ($copy) {
 				$original_context['online'] = '0';
+				$original_context['main_parent'] = '0';
+			}
+				
 			
 			// Ordering : last position
 			$original_context['ordering'] = $this->_get_ordering('last', $id_page);
@@ -767,9 +813,6 @@ class Article extends MY_admin
 				
 				// Context update
 				$this->update_contexts($id_article);
-				
-				
-//				$this->success(lang('ionize_message_article_linked_to_page'));
 			}
 			else
 			{

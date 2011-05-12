@@ -146,27 +146,29 @@ li.offline { opacity:0.7; }
 	right:0px;
 }
 
-.icon a.online, a.icon.online {	background: url(../images/icon_16_online.png) no-repeat 0 0; }
-.icon a.offline, a.icon.offline {background: url(../images/icon_16_offline.png) no-repeat 0 0;}
-.icon a.unlink, a.icon.unlink {background: url(../images/icon_16_unlink.png) no-repeat 0 0;}
-.icon a.delete, a.icon.delete {background: url(../images/icon_16_delete.png) no-repeat 0 0;}
-.icon a.article, a.icon.article {background: url(../images/icon_16_add_article.png) no-repeat 0 0;}
-.icon a.unlink, a.icon.unlink {background: url(../images/icon_16_unlink.png) no-repeat 0 0;}
-.icon a.drag, a.icon.drag {background: url(../images/icon_16_ordering.png) no-repeat 0 0;}
-.icon a.duplicate, a.icon.duplicate {background: url(../images/icon_16_duplicate.gif) no-repeat 0 0;}
-.icon a.clearfield, a.icon.clearfield {background: url(../images/icon_16_clear_field.png) no-repeat 0 2px;width: 18px;height: 18px;}
-.icon a.edit, a.icon.edit {background: url(../images/icon_16_edit.png) no-repeat 0 0;}
-.icon a.edit_article, a.icon.edit_article {background: url(../images/icon_16_edit_article.png) no-repeat 0 0;}
-.icon a.refresh, a.icon.refresh {background: url(../images/icon_16_refresh.png) no-repeat 0 0;}
-.icon a.plus, a.icon.plus {background: url(../images/icon_16_plus.png) no-repeat 0 0;}
-.icon a.add_page, a.icon.add_page {background: url(../images/icon_16_add_page.png) no-repeat 0 0;}
-.icon a.type_edit, a.icon.type_edit {background: url(../images/icon_16_type_edit.png) no-repeat 0 0;}
-.icon a.info, a.icon.info {background: url(../images/icon_16_info.png) no-repeat 0 0;}
-.icon a.database, a.icon.database {background: url(../images/icon_16_database.png) no-repeat 0 0;}
-.icon a.drag, a.icon.drag {background: url(../images/icon_16_drag.png) no-repeat 0 0;}
-.icon a.up, a.icon.up {background: url(../images/icon_16_up.png) no-repeat 0 0;}
-.icon a.helpme, a.icon.helpme {background: url(../images/icon_16_helpme.png) no-repeat 0 0;}
-.icon a.copy, a.icon.copy {background: url(../images/icon_16_copy.png) no-repeat 0 0;}
+.icon a.online, a.icon.online 				{background: url(../images/icon_16_online.png) no-repeat 0 0; }
+.icon a.offline, a.icon.offline 			{background: url(../images/icon_16_offline.png) no-repeat 0 0;}
+.icon a.unlink, a.icon.unlink 				{background: url(../images/icon_16_unlink.png) no-repeat 0 0;}
+.icon a.delete, a.icon.delete 				{background: url(../images/icon_16_delete.png) no-repeat 0 0;}
+.icon a.article, a.icon.article 			{background: url(../images/icon_16_add_article.png) no-repeat 0 0;}
+.icon a.unlink, a.icon.unlink 				{background: url(../images/icon_16_unlink.png) no-repeat 0 0;}
+.icon a.drag, a.icon.drag 					{background: url(../images/icon_16_ordering.png) no-repeat 0 0;}
+.icon a.duplicate, a.icon.duplicate 		{background: url(../images/icon_16_duplicate.gif) no-repeat 0 0;}
+.icon a.clearfield, a.icon.clearfield 		{background: url(../images/icon_16_clear_field.png) no-repeat 0 2px;width: 18px;height: 18px;}
+.icon a.edit, a.icon.edit 					{background: url(../images/icon_16_edit.png) no-repeat 0 0;}
+.icon a.edit_article, a.icon.edit_article 	{background: url(../images/icon_16_edit_article.png) no-repeat 0 0;}
+.icon a.refresh, a.icon.refresh 			{background: url(../images/icon_16_refresh.png) no-repeat 0 0;}
+.icon a.plus, a.icon.plus 					{background: url(../images/icon_16_plus.png) no-repeat 0 0;}
+.icon a.add_page, a.icon.add_page 			{background: url(../images/icon_16_add_page.png) no-repeat 0 0;}
+.icon a.type_edit, a.icon.type_edit 		{background: url(../images/icon_16_type_edit.png) no-repeat 0 0;}
+.icon a.info, a.icon.info 					{background: url(../images/icon_16_info.png) no-repeat 0 0;}
+.icon a.database, a.icon.database 			{background: url(../images/icon_16_database.png) no-repeat 0 0;}
+.icon a.drag, a.icon.drag 					{background: url(../images/icon_16_drag.png) no-repeat 0 0;}
+.icon a.up, a.icon.up 						{background: url(../images/icon_16_up.png) no-repeat 0 0;}
+.icon a.helpme, a.icon.helpme 				{background: url(../images/icon_16_helpme.png) no-repeat 0 0;}
+.icon a.copy, a.icon.copy 					{background: url(../images/icon_16_copy.png) no-repeat 0 0;}
+.icon a.ok, a.icon.ok 						{background: url(../images/icon_16_ok.png) no-repeat 0 0;}
+
 
 /*.icon a.link, a.icon.link {background: url(../images/toggler-collapse-expand.png) no-repeat 0 0;}*/
 

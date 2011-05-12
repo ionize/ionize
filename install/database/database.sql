@@ -344,6 +344,7 @@ CREATE TABLE IF NOT EXISTS page_article (
 	link_type VARCHAR( 25 ) NOT NULL DEFAULT '',
 	link_id varchar(20) NOT NULL DEFAULT '',
 	link VARCHAR( 255 ) NOT NULL DEFAULT '',
+	main_parent TINYINT(1) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (id_page, id_article),
     KEY idx_page_article_id_type (id_type) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';

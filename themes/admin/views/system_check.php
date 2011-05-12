@@ -9,17 +9,17 @@
 	<div class="subtitle">
 		<p><?= lang('ionize_text_system_check')?></p>
 		<p><input id="startCheckButton" type="button" class="button yes ml0" value="<?= lang('ionize_button_start_system_check') ?>" /></p>
+	
+	
+		<!-- Check report -->
+		<div id="system_check_report" class="mt20"></div>
+	
 	</div>
 	
-	
-	<!-- Check report -->
-	<div id="system_check_report"></div>
-
-
-
 </div> <!-- /maincolumn -->
 
-</form>
+
+
 
 <script type="text/javascript">
 	

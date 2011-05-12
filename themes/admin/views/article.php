@@ -7,6 +7,7 @@
 	<input type="hidden" name="created" value="<?= $created ?>" />
 	<input type="hidden" name="author" value="<?= $author ?>" />
 	<input type="hidden" name="name" id="name" value="<?= $name ?>" />
+	<input type="hidden" name="main_parent" id="main_parent" value="<?= $main_parent ?>" />
 	
 	<!-- JS storing element -->
 	<input type="hidden" id="memory" />
@@ -17,6 +18,14 @@
 		<div class="info">
 
 			<?php if ($id_article != '') :?>
+
+				<?php if ($this->connect->is('super-admins') ) :?>
+					<dl class="small compact">
+						<dt><label>ID</label></dt>
+						<dd><span class="lite"><?= $id_article ?></span></dd>
+					</dl>
+				<?php endif ;?>
+				
 
 				<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
 					<dl class="small compact">

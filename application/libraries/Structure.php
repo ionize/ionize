@@ -86,14 +86,27 @@ class Structure{
 		
 		if (is_array($data))
 		{
-			$children = array_values(array_filter($data, create_function('$row','return $row["id_parent"] == "'. $parent .'";')));
+			// $children = array_values(array_filter($data, create_function('$row','return $row["id_parent"] == "'. $parent .'";')));
+			$children = array();
+			foreach($data as $d)
+			{
+				if ($d['id_parent'] == $parent)
+					$children[] = $d;
+			}
 			
 			foreach ($children as $child)
 			{
 				$arr[$index] = $child;
 
 				if ($articles)
-					$arr[$index]['articles'] = array_values(array_filter($articles, create_function('$row','return $row["id_page"] == "'. $child['id_page'] .'";')));
+				{
+					// $arr[$index]['articles'] = array_values(array_filter($articles, create_function('$row','return $row["id_page"] == "'. $child['id_page'] .'";')));
+					foreach($articles as $article)
+					{
+						if ($article['id_page'] == $child['id_page'])
+							$arr[$index]['articles'][] = $article;
+					}
+				}
 				
 				Structure::get_nested_structure($data, $arr[$index]['children'], $child['id_page'], $startDepth, $maxDepth, $articles);
 				$index++;
@@ -198,11 +211,17 @@ class Structure{
 		$active_pages = array();
 		
 		// Page data
-		$page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $id_page .'";') ));
-
-		if (! empty($page))
+		// $page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $id_page .'";') ));
+		$page = array();
+		foreach($pages as $p)
 		{
-			$page = $page[0];
+			if ($p['id_page'] == $id_page)
+				$page = $p;
+		}
+
+		if ( ! empty($page))
+		{
+//			$page = $page[0];
 
 			if ($page['id_parent'] != '0')
 			{

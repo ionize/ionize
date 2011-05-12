@@ -400,8 +400,11 @@ class Base_model extends Model
 	 *	@return	array	The complete arrayList of element, including medias
 	 *
 	 */
-	function get_lang_list($where=false, $lang=NULL, $limit=false, $like=false)
+	function get_lang_list($where = FALSE, $lang = NULL) // , $limit=false, $like=false)
 	{
+//trace('Base_Model->get_lang_list() : '. $this->table);
+
+
 		$data = array();
 
 		// Perform conditions from the $where array
@@ -435,8 +438,6 @@ class Base_model extends Model
 		}
 	
 		$query = $this->db->get($this->table);
-
-// trace($this->db->last_query());
 
 		if($query->num_rows() > 0)
 		{
@@ -1117,6 +1118,8 @@ class Base_model extends Model
 	 */
 	protected function add_linked_media(&$data, $parent, $lang = NULL)
 	{
+// trace('Base_Model->add_linked_media() : '. $parent);
+
 		// Select medias
 		$this->db->select('*, media.id_media');
 		$this->db->from('media,'. $parent .'_media');
@@ -1144,15 +1147,20 @@ class Base_model extends Model
 		{
 			foreach($data as $k=>$el)
 			{
-				$data[$k]['medias'] = array_values(array_filter($result, create_function('$row','return $row["'.$this->pk_name.'"] == "'. $el[$this->pk_name] .'";')));
+//				$data[$k]['medias'] = array_values(array_filter($result, create_function('$row','return $row["'.$this->pk_name.'"] == "'. $el[$this->pk_name] .'";')));
+				$data[$k]['medias'] = array();
+				foreach($result as $row)
+				{
+					if ($row[$this->pk_name] == $el[$this->pk_name])
+						$data[$k]['medias'][] = $row;
+				}
+				
 				
 				// Add extended fields values for each media
 				// Needs to be improved as the extend fieldsdefinition loaded in $this->extend_fields_def are these from the table and not from the medias...
 				// But this has no importance, it's just not clean.
-//				if (Settings::get('use_extend_fields') == '1' && !empty($data[$k]['medias']))
-//				{
+				if ( ! empty($data[$k]['medias']))
 					$this->add_extend_fields($data[$k]['medias'], 'media', $lang);
-//				}
 				
 				// Add file extension to each media
 				foreach($data[$k]['medias'] as &$media)
@@ -1165,12 +1173,16 @@ class Base_model extends Model
 		// The data array is a hashtable
 		else
 		{
-			$data['medias'] = array_values(array_filter($result, create_function('$row','return $row["'.$this->pk_name.'"] == "'. $data[$this->pk_name] .'";')));
-
-//			if (Settings::get('use_extend_fields') == '1' && !empty($data['medias']))
-//			{
+			// $data['medias'] = array_values(array_filter($result, create_function('$row','return $row["'.$this->pk_name.'"] == "'. $data[$this->pk_name] .'";')));
+			$data['medias'] = array();
+			foreach($result as $row)
+			{
+				if ($row[$this->pk_name] == $data[$this->pk_name])
+					$data['medias'][] = $row;
+			}
+			
+			if ( ! empty($data['medias']))
 				$this->add_extend_fields($data['medias'], 'media', $lang);
-//			}
 			
 			// Add file extension to each media
 			foreach($data['medias'] as &$media)
@@ -1195,9 +1207,21 @@ class Base_model extends Model
 	 */
 	protected function add_lang_urls(&$data, $parent)
 	{
-		// Select medias
-		$this->db->select('id_'.$this->table.','.$this->table.'_lang.lang'.','.$this->table.'_lang.url');
-		$this->db->from($this->table .'_lang');
+//trace('Base_Model->add_lang_urls() : '.$parent);
+
+		// Element ID
+		$id = 'id_'.$parent;
+		
+		// Array of IDs to get.
+		$ids = array();
+		foreach($data as $element)
+		{
+			$ids[] = $element[$id];
+		}
+
+		$this->db->select($id .',' .$parent . '_lang.lang,' . $parent . '_lang.url');
+		$this->db->where($id . ' in (' . implode(',' , $ids ) . ')' );
+		$this->db->from($parent . '_lang');
 	
 		$query = $this->db->get();
 
@@ -1205,22 +1229,27 @@ class Base_model extends Model
 
 		// Feed each media array
 		if($query->num_rows() > 0)
-		{
 			$result = $query->result_array();
-		}			
-		
-		// If the data array is a list of arrays
+
 		$languages = Settings::get_languages();
 		
+		// data must be a list of arrays
 		if (isset($data[0]) && is_array($data[0]))
 		{
-			foreach($data as $k=>$el)
+			foreach($data as $k => $el)
 			{
 				foreach($languages as $language)
 				{
-					$url = array_values(array_filter($result, create_function('$row','return ($row["id_'.$this->table.'"] == "'. $el['id_'.$this->table] .'" && $row["lang"] == "'.$language['lang'].'");')));
-					$url = (!empty($url[0])) ? $url[0]['url'] : '';
-					$data[$k]['urls'][$language['lang']] = $url;
+					foreach($result as $row)
+					{
+						if ($row[$id] == $el[$id] && $row['lang'] == $language['lang'])
+						{
+							$data[$k]['urls'][$row['lang']] = $row['url'];
+						}
+					}
+					// $url = array_values(array_filter($result, create_function('$row','return ($row["id_'.$this->table.'"] == "'. $el['id_'.$this->table] .'" && $row["lang"] == "'.$language['lang'].'");')));
+					// $url = (!empty($url[0])) ? $url[0]['url'] : '';
+					// $data[$k]['urls'][$language['lang']] = $url;
 				}
 			}
 		}
@@ -1320,7 +1349,13 @@ class Base_model extends Model
 				$result = $query->result_array();
 			
 			// Filter the result by lang : Only returns the not translated data and the given language translated data
-			$result = array_filter($result,  create_function('$row','return ($row["lang"] == "'. $lang .'" || $row["lang"] == "" );'));
+			// $result = array_filter($result,  create_function('$row','return ($row["lang"] == "'. $lang .'" || $row["lang"] == "" );'));
+			$filtered_result = array();
+			foreach($result as $res)
+			{
+				if ($res['lang'] == $lang || $res['lang'] == '' )
+					$filtered_result[] = $res;
+			}
 
 			// Attach each extra field to the corresponding data array
 			foreach ($data as &$d)

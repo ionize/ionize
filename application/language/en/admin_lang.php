@@ -787,6 +787,8 @@ $lang['ionize_message_article_already_linked_to_page'] = 'Article already linked
 $lang['ionize_message_article_linked_to_page'] = 'Article linked to page';
 $lang['ionize_message_article_context_saved'] = 'Article settings saved';
 $lang['ionize_message_article_lang_copied'] = 'Lang data copied. Save please !';
+$lang['ionize_message_article_main_parent_saved'] = 'Main Parent Page saved !';
+
 
 // Inline help
 $lang['ionize_help_article_online'] = 'Is this article online?';
@@ -941,12 +943,20 @@ $lang['ionize_message_module_not_installed'] = 'Module not installed !';
 | Admin : System Check
 |--------------------------------------------------------------------------
 */
-$lang['ionize_title_system_check'] = 'System Check Tool';
-$lang['ionize_menu_system_check'] = 'System Check';
-$lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and repair what should be. You cannot break anything by using these fetaures.';
+$lang['ionize_title_system_check'] = 'System Diagnotic Tool';
+$lang['ionize_menu_system_check'] = 'System Diagnotic';
+$lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and repair what should be. You cannot break anything by using this.';
 
 $lang['ionize_label_start_system_check'] = 'Start Check';
 $lang['ionize_button_start_system_check'] = 'Start Check';
+
+$lang['ionize_title_check_page_level'] = 'Check Pages Levels';
+$lang['ionize_title_check_article_context'] = 'Check Articles Contexts';
+
+$lang['ionize_message_check_corrected'] = ' corrected.';
+$lang['ionize_message_check_ok'] = 'Everything\'s fine.';
+
+
 
 
 

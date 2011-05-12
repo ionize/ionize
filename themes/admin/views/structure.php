@@ -47,8 +47,6 @@ function getTree($items, $first = false, $id_item=false, $root_id = '')
 		 *
 		 */
 		.'<span><a class="title page'.$item['id_page'].' '.$status.'" rel="'.$item['id_page'].'" title="'.$title.'">'.$title.'</a></span>'
-
-
 		.'<span class="action">'
 			// Online / Offline
 			.'<span class="icon"><a title="'.lang('ionize_button_switch_online').'" class="status '.$status.' page'.$item['id_page'].'" rel="'.$item['id_page'].'"></a></span>'
@@ -56,7 +54,7 @@ function getTree($items, $first = false, $id_item=false, $root_id = '')
 			// Add article 
 			.'<span class="icon"><a class="addArticle article" title="'.lang('ionize_title_create_article').'" rel="'.$item['id_page'].'"></a></span>'
 		.'</span>';
-		
+
 		
 		// Get folders
 		if (!empty($item['children']))
@@ -90,19 +88,13 @@ function getTree($items, $first = false, $id_item=false, $root_id = '')
 					// Edit link. 
 					// rel : needed for drag / drop functionnality. ID article in this case
 					.'<span class="title_item"><a class="title article'.$article['id_article'].' article'.$flat_rel.' '.$status.'"  title="'.$title.'" rel="'.$rel.'"><span class="flag flag'. $flag .'"></span>'. $title .'</a></span>'
-				
-
 					.'<span class="action">'
 						// Online / Offline
 						// rel : needed for swith online/offline in the page context
 						.'<span class="icon"><a class="status '.$status.' article'.$article['id_article'].' article'.$flat_rel.'" rel="'. $rel .'"></a></span>'
-
 						// Unlink icon
 						.'<span class="icon"><a class="unlink" rel="' . $rel . '"></a></span>'
-					
 					.'</span>'
-					
-					
 				.'</li>';
 			}
 			$tree.= '</ul>';

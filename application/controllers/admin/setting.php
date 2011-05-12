@@ -495,7 +495,7 @@ class Setting extends MY_admin
 		
 		// Antispam key
 		$config_items = array('form_antispam_key');
-		
+
 		foreach($config_items as $config_item)
 		{
 			if (config_item($config_item) != $this->input->post($config_item) )

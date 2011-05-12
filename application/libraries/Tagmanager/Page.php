@@ -25,11 +25,12 @@ class TagManager_Page extends TagManager
 	 */
 	protected $uri_config = array();
 	
+	protected static $_cache = array();
+
 	
 //	private static $plural_to_singular = array ('articles','pages');
 
-	
-	
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -192,6 +193,20 @@ class TagManager_Page extends TagManager
 		}
 	}
 
+	protected static function get_cache($tag)
+	{
+		$key = md5(__CLASS__.$tag->name.serialize($tag->attr));
+	
+		if ( ! empty(self::$_cache[$key])) 
+			return self::$_cache[$key];
+		
+		return FALSE;
+	}
+
+	protected static function set_cache($tag, $value)
+	{
+		self::$_cache[md5(__CLASS__.$tag->name.serialize($tag->attr))] = $value;
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -240,7 +255,6 @@ class TagManager_Page extends TagManager
 	{
 		foreach ($con->globals->pages as &$page)
 		{
-
 			// Set the page complete URL
 			$page['absolute_url'] = '';
 
@@ -269,20 +283,30 @@ class TagManager_Page extends TagManager
 						if ( ! empty($target_article))
 						{
 							// Get the article's parent page
-							$parent_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
-					
-							$page['absolute_url'] = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
+							$page['absolute_url'] = '';
+							
+							foreach($con->globals->pages as $p)
+							{
+								if ($p['id_page'] == $target_article['id_page'])
+									$page['absolute_url'] = $p['url'] . '/' . $target_article['url'];
+							}
 						}
 					}
 					// Link to a page
 					else
 					{
 						// Get the page to which the page links
-						$target_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $page['link_id'] .'";')));
-	
-						if ( ! empty($target_page))
+						// $target_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $page['link_id'] .'";')));
+						// if ( ! empty($target_page))
+						// {
+						//	$page['absolute_url'] = $target_page[0]['url'];
+						// }
+						$page['absolute_url'] = '';
+						
+						foreach($con->globals->pages as $p)
 						{
-							$page['absolute_url'] = $target_page[0]['url'];
+							if ($p['id_page'] == $page['link_id'])
+								$page['absolute_url'] = $p['url'];
 						}
 					}
 					$page['absolute_url'] = base_url() . $page['absolute_url'];
@@ -351,12 +375,58 @@ class TagManager_Page extends TagManager
 					// Set the lang code depending URL (used by language subtag)
 					$page['absolute_urls'][Settings::get_lang()] = $page['absolute_url'];
 				}
-//			trace($page['name'].' :: '.$page['url'].' :: '.$page['absolute_url']);
 			}				
 		}
 	}
 	
+	
+	
+	// ------------------------------------------------------------------------
+	
+	
+	/**
+	 * Inits articles URLs
+	 * Get the contexts of all given articles and deifne each article correct URL
+	 *
+	 */
+	private function init_articles_urls(&$articles)
+	{
+		$articles_id = array();
+		foreach($articles as $article)
+		{
+			$articles_id[] = $article['id_article'];
+		}
+		$pages_context = $this->ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
+		
+		// Add pages contexts data to articles
+		foreach($articles as &$article)
+		{
+			$contexts = array();
+			foreach($pages_context as $context)
+			{
+				if ($context['id_article'] == $article['id_article'])
+					$contexts[] = $context;
+			}
+			
+			$page = array_shift($contexts);
 
+			// Find the Main Parent
+			if ( ! empty($contexts))
+			{
+				foreach($contexts as $context)
+				{
+					if ($context['main_parent'] == '1')
+						$page = $context;
+				}
+			}
+			$url = $article['url'];
+			
+			$article['url'] = 		base_url() . $page['url'] . '/' . $url;			
+			$article['lang_url'] = 	base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $url;
+		}
+	}
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -374,7 +444,13 @@ class TagManager_Page extends TagManager
 	{
 		if (is_array($data))
 		{
-			$children = array_values(array_filter($data, create_function('$row','return $row["id_parent"] == "'. $parent .'";')));
+//			$children = array_values(array_filter($data, create_function('$row','return $row["id_parent"] == "'. $parent .'";')));
+			$children = array();
+			foreach($data as $k=>$v)
+			{
+				if ($v['id_parent'] == $parent)
+					$children[] = $v;
+			}
 			
 			foreach ($children as $child)
 			{
@@ -409,13 +485,17 @@ class TagManager_Page extends TagManager
 		if ($from_page !== FALSE)
 		{
 			// Get the asked page details
-			$page = array_values(array_filter($pages, create_function('$row','return $row["name"] == "'. $from_page .'";')));
-			
-			// If not empty, filter articles on id_page
-			if ( ! empty($page))
+//			$page = array_values(array_filter($pages, create_function('$row','return $row["name"] == "'. $from_page .'";')));
+			foreach($pages as $p)
 			{
-				$page = $page[0];
+				if ($p['name'] == $from_page)
+					return $p;
 			}
+			// If not empty, filter articles on id_page
+//			if ( ! empty($page))
+//			{
+//				$page = $page[0];
+//			}
 		}
 		return $page;
 	}
@@ -433,8 +513,9 @@ class TagManager_Page extends TagManager
 	 * 3. Filter on the article name if the article name is in URI segment 1
 	 *
 	 */
-	function get_articles($tag, $filter=FALSE, $order_by=FALSE, $like=FALSE)
+	function get_articles($tag)
 	{
+
 		$articles = array();
 
 		// Page from locals
@@ -493,7 +574,9 @@ class TagManager_Page extends TagManager
 		 * From where do we get the article : from a page, from the parent page or from the all website ?
 		 *
 		 */
-		$where = array();
+		$where = array(
+			'order_by' => $order_by
+		);
 
 		// Add type to the where array
 		if ( isset ($tag->attr['type']) )
@@ -520,13 +603,16 @@ class TagManager_Page extends TagManager
 			// Check if one lang URL of each page can be used for filter
 			foreach($pages as $page)
 			{
-				$add_ref = FALSE;
-				$urls = array_values($page['urls']);
-				foreach($urls as $url)
-				{
-					if (in_array($url, $asked_pages))
-						$in_pages[] = $page['id_page'];
-				}
+				if (in_array($page['name'], $asked_pages))
+					$in_pages[] = $page['id_page'];
+				
+//				$urls = array_values($page['urls']);
+				
+//				foreach($urls as $url)
+//				{
+//					if (in_array($url, $asked_pages))
+//						$in_pages[] = $page['id_page'];
+//				}
 			}
 
 			// If not empty, filter articles on id_page
@@ -562,20 +648,23 @@ class TagManager_Page extends TagManager
 		if ($special_uri !== FALSE && array_key_exists($special_uri, $uri_config) && $from_page === FALSE)
 		{
 			if (method_exists($this, 'get_articles_from_'.$uri_config[$special_uri]))
-				$articles = call_user_func(array($this, 'get_articles_from_'.$uri_config[$special_uri]), $tag, $where, $order_by, $filter);
+				$articles = call_user_func(array($this, 'get_articles_from_'.$uri_config[$special_uri]), $tag, $where, $filter);
 		}
 		// This case is very special : getting one article through his name in the URL
 		else if ($special_uri !== FALSE && !array_key_exists($special_uri, $uri_config) && $from_page == FALSE && $scope == FALSE)
 		{
-			$articles = $this->get_articles_from_one_article($tag, $where, $order_by, $filter);
+			$articles = $this->get_articles_from_one_article($tag, $where, $filter);
 		}
 		// Get all the page articles
 		// If Pagination is active, set the limit. This articles result is the first page of pagination
 		else 
 		{
+			// Set Limit
 			$limit = ( ! empty($tag->locals->page['pagination']) && ($tag->locals->page['pagination'] > 0) ) ? $tag->locals->page['pagination'] : FALSE;
-
+			
 			if ($limit == FALSE && $num > 0) $limit = $num;
+			
+			$where['limit'] = $limit;
 			
 			if ($from_categories !== FALSE)
 			{
@@ -584,9 +673,6 @@ class TagManager_Page extends TagManager
 					explode(',', $from_categories),
 					$from_categories_condition,
 					$lang = Settings::get_lang(),
-					$limit,
-					$like = FALSE,
-					$order_by,
 					$filter
 				);
 			}
@@ -595,14 +681,18 @@ class TagManager_Page extends TagManager
 				$articles = $this->ci->article_model->get_lang_list(
 					$where,
 					$lang = Settings::get_lang(),
-					$limit,
-					$like = FALSE,
-					$order_by,
 					$filter
 				);
 			}
 		}
-
+		
+		// Correct the articles URLs
+		if (count($articles) > 0)
+		{
+			$this->init_articles_urls($articles);
+		}
+		
+		
 		// Here, we are in an article list configuration : More than one article, page display
 		// If the article-list view exists, we will force the article to adopt this view.
 		// Not so much clean to do that in the get_article funtion but for the moment just helpfull...
@@ -642,8 +732,11 @@ class TagManager_Page extends TagManager
 	 * @return	Array	Array of articles
 	 *
 	 */
-	function get_articles_from_pagination($tag, $where, $order_by, $filter)
+	function get_articles_from_pagination($tag, $where, $filter)
 	{
+
+// trace('  get_articles_from_pagination()');
+
 		$page = & $tag->locals->page;
 
 		$start_index = array_pop(array_slice($this->ci->uri_segment, -1));
@@ -658,7 +751,10 @@ class TagManager_Page extends TagManager
 		// from categories ? 
 		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? $this->get_attribute($tag, 'from_categories') : FALSE;
 		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
-
+		
+		$where['offset'] = (int)$start_index;
+		$where['limit'] =  (int)$per_page;
+		
 		if ($from_categories !== FALSE)
 		{
 			$articles = $this->ci->article_model->get_from_categories(
@@ -666,9 +762,6 @@ class TagManager_Page extends TagManager
 				explode(',', $from_categories),
 				$from_categories_condition,
 				$lang = Settings::get_lang(),
-				array( (int) $start_index, (int) $per_page),
-				$like = FALSE,
-				$order_by,
 				$filter
 			);
 		}
@@ -677,9 +770,6 @@ class TagManager_Page extends TagManager
 			$articles = $this->ci->article_model->get_lang_list(
 				$where,
 				$lang = Settings::get_lang(),
-				array( (int) $start_index, (int) $per_page),
-				$like = FALSE,
-				$order_by,
 				$filter
 			);
 		}
@@ -714,8 +804,10 @@ class TagManager_Page extends TagManager
 	 * @return	Array	Array of articles
 	 *
 	 */
-	function get_articles_from_category($tag, $where, $order_by, $filter)
+	function get_articles_from_category($tag, $where, $filter)
 	{
+// trace('  get_articles_from_category()');
+
 		$page = & $tag->locals->page;
 
 		// Get the start index for the SQL limit query param : last part of the URL
@@ -724,7 +816,12 @@ class TagManager_Page extends TagManager
 		// If category name exists
 		if (isset($this->ci->uri_segment[2]))
 		{
-			// Set the query limit
+			// Limit
+//			$where['offset'] = ($start_index > 0 && $page['pagination'] > 0) ? (int)$start_index : 0;
+			$where['offset'] = $start_index;
+			$where['limit'] =  (int)$page['pagination'];
+
+/*
 			$limit = FALSE;
 
 			if ($start_index > 0 && $page['pagination'] > 0)
@@ -733,16 +830,18 @@ class TagManager_Page extends TagManager
 			{
 				$limit = $page['pagination'];
 			}
-							
+			
+			$where['limit'] = $limit;
+*/							
 			// Get the articles
 			$articles = $this->ci->article_model->get_from_category
 			(
 				$where, 
 				$this->ci->uri_segment[2], 
 				Settings::get_lang(),
-				$limit,
-				$like = FALSE,
-				$order_by, 
+//				$limit,
+//				$like = FALSE,
+//				$order_by, 
 				$filter
 			);
 
@@ -767,8 +866,9 @@ class TagManager_Page extends TagManager
 	 * @return	Array	Array of articles
 	 *
 	 */
-	function get_articles_from_archives($tag, $where, $order_by, $filter)
+	function get_articles_from_archives($tag, $where, $filter)
 	{
+// trace('  get_articles_from_archives()');
 		$page = & $tag->locals->page;
 
 		$start_index = 0;
@@ -785,7 +885,8 @@ class TagManager_Page extends TagManager
 		
 			$month = isset($this->ci->uri_segment[3]) ? $this->ci->uri_segment[3] : NULL;
 			
-			// Set the query limit
+			// Limit
+			/*
 			$limit = FALSE;
 
 			if ($start_index > 0 && $page['pagination'] > 0)
@@ -794,6 +895,11 @@ class TagManager_Page extends TagManager
 			{
 				$limit = $page['pagination'];
 			}
+			$where['limit'] = $limit;
+			*/
+			
+			$where['offset'] = $start_index;
+			$where['limit'] =  (int)$page['pagination'];
 
 			$articles =  $this->ci->article_model->get_from_archives
 			(
@@ -801,9 +907,6 @@ class TagManager_Page extends TagManager
 				$year, 
 				$month, 
 				Settings::get_lang(),
-				$limit,
-				$like = FALSE,
-				$order_by, 
 				$filter
 			);
 
@@ -827,7 +930,7 @@ class TagManager_Page extends TagManager
 	 *
 	 * @return	Array	Array of articles
 	 */
-	function get_articles_from_one_article($tag, $where, $order_by, $filter)
+	function get_articles_from_one_article($tag, $where, $filter)
 	{
 		$page = & $tag->locals->page;
 	
@@ -835,15 +938,15 @@ class TagManager_Page extends TagManager
 		
 		$name = array_pop(array_slice($this->ci->uri_segment, -1));
 
-		$where = array('article_lang.url' => $name);
+		$where = array(
+			'article_lang.url' => $name,
+			'limit' => 1
+		);
 
 		$articles =  $this->ci->article_model->get_lang_list
 		(
 			$where, 
 			Settings::get_lang(),
-			$limit = '1',
-			$like = FALSE,
-			$order_by,
 			$filter
 		);
 				
@@ -1060,6 +1163,8 @@ class TagManager_Page extends TagManager
 	 */
 	function count_articles($tag, $filter)
 	{
+// trace('  count_articles()');
+
 		if ( ! isset($tag->locals->page['nb_articles']))
 		{
 			$nb = 0;
@@ -1151,6 +1256,7 @@ class TagManager_Page extends TagManager
 	 */
 	function count_articles_from_category($tag, $filter)
 	{
+// trace('  count_articles_from_category()');
 		$nb = 0;
 		
 		$category = isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : NULL;
@@ -1181,6 +1287,8 @@ class TagManager_Page extends TagManager
 	 */
 	function count_articles_from_archives($tag, $filter)
 	{
+// trace('  count_articles_from_archives()');
+
 		$nb = 0;
 		
 		$year = 	isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : NULL;
@@ -1467,6 +1575,7 @@ class TagManager_Page extends TagManager
 	 */
 	public function tag_pagination($tag)
 	{
+// trace('-- TAG PAGINATION');
 		/* 
 		 * Tag attributes
 		 */
@@ -1673,6 +1782,11 @@ class TagManager_Page extends TagManager
 
 	public function tag_page_meta_title($tag)
 	{
+		if ($return = self::get_cache($tag))
+			return $return;
+
+		$meta_title = '';
+
 		// Try to find an article with the name of the last part of the URL.
 		$name = array_pop(array_slice($this->ci->uri_segment, -1));
 
@@ -1690,17 +1804,24 @@ class TagManager_Page extends TagManager
 		}		
 
 		if ( ! empty ($article['meta_title']))
-			return self::wrap($tag, $article['meta_title']);
+		{
+			$meta_title = self::wrap($tag, $article['meta_title']);
+		}
 		else if ( ! empty ($tag->locals->page['meta_title']) )
-			return self::wrap($tag, $tag->locals->page['meta_title']);
+		{
+			$meta_title = self::wrap($tag, $tag->locals->page['meta_title']);
+		}
 		else
 		{
 			if ( ! empty($tag->locals->page['title']))
 			{
-				return self::wrap($tag, $tag->locals->page['title']);		
+				$meta_title = self::wrap($tag, $tag->locals->page['title']);		
 			}
-			return '';
 		}
+		
+		self::set_cache($tag, $meta_title);
+		
+		return $meta_title;
 	}		
 
 
@@ -1753,16 +1874,6 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 	
 	
-	/**
-	 * Returns the number of articles
-	 *
-	public function tag_page_media_count($tag)
-	{
-		return count($tag->locals->page['medias']);
-	}
-	 */
-	
-	
 	
 	/*
 	 * Articles / Article tags
@@ -1779,6 +1890,8 @@ class TagManager_Page extends TagManager
 	 */
 	public function tag_articles($tag)
 	{
+// trace('-- TAG ARTICLES ');
+
 		// Returned string
 		$str = '';
 
@@ -1813,8 +1926,8 @@ class TagManager_Page extends TagManager
 			foreach($articles as $key => $article)
 			{
 				// parent page : one must exists !
-				$page = array_values(array_filter($tag->locals->pages, create_function('$row','return $row["id_page"] == "'. $article['id_page'] .'";')));
-				$page = $page[0];
+//				$page = array_values(array_filter($tag->locals->pages, create_function('$row','return $row["id_page"] == "'. $article['id_page'] .'";')));
+//				$page = $page[0];
 				
 				// Force the view if the "view" attribute is defined
 				if ($view !== FALSE)
@@ -1823,6 +1936,7 @@ class TagManager_Page extends TagManager
 				}
 	
 				$articles[$key]['active_class'] = '';
+// Correct this				
 				if (!empty($tag->attr['active_class']))
 				{
 					if ($uri_last_part == $article['url'])
@@ -1831,11 +1945,6 @@ class TagManager_Page extends TagManager
 					}
 				}
 
-
-				// Set the correct URL to the article
-				$articles[$key]['url'] = 		base_url() . $page['url'] . '/' . $article['url'];			
-				$articles[$key]['lang_url'] = 	base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $article['url'];
-	
 				// Limit to x paragraph if the attribute is set
 				if ($paragraph !== FALSE)
 					$articles[$key]['content'] = tag_limiter($article['content'], 'p', $paragraph);
@@ -2030,7 +2139,7 @@ class TagManager_Page extends TagManager
 				return $tag->locals->article['link'];
 			}
 			
-			// Mail link
+			// Mail link : TODO
 			if ($tag->locals->article['link_type'] == 'email')
 			{
 				return auto_link($tag->locals->article['link'], 'both', TRUE);
@@ -2046,14 +2155,19 @@ class TagManager_Page extends TagManager
 				
 				// If more than one parent, links to to first found
 				// Normally, target link articles should not be duplicated in the tree
-				$parent_page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
-
-				$url = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
+				// $parent_page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
+				// $url = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
+				$url = '';
+				foreach($tag->globals->pages as $p)
+				{
+					if ($p['id_page'] == $target_article['id_page'])
+					{
+						$url = $p['url']. '/' . $target_article['url'];
+					}
+				}
 				
 				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
-				{
 					$url = Settings::get_lang('current').'/'.$url;
-				}
 				
 				return base_url().$url;
 			}
@@ -2061,12 +2175,16 @@ class TagManager_Page extends TagManager
 			else
 			{
 				// Get the page to which the article links
-				$page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $tag->locals->article['link_id'] .'";')));
-
-				if ( ! empty($page[0]))
+				// $page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $tag->locals->article['link_id'] .'";')));
+				// if ( ! empty($page[0]))
+				// {
+				// 	$page = $page[0];
+				// 	return $page['absolute_url'];
+				// }
+				foreach($tag->globals->pages as $p)
 				{
-					$page = $page[0];
-					return $page['absolute_url'];
+					if ($p['id_page'] == $tag->locals->article['link_id'])
+						return $p['absolute_url'];
 				}
 			}
 		}
@@ -2080,7 +2198,7 @@ class TagManager_Page extends TagManager
 		{
 			$url = $tag->locals->article['url'];
 		}
-		
+
 		// Adds the suffix if defined in /application/config.php
 		if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 		
@@ -2088,12 +2206,6 @@ class TagManager_Page extends TagManager
 	}
 
 
-	/**
-	 * @deprecated
-	 * Only exists for compatibility mode.
-	 * Use <ion:url lang="TRUE" instead.
-	 */
-	public static function tag_article_lang_url($tag) { return $tag->locals->article['lang_url']; }
 	
 	public static function tag_article_view($tag) { return $tag->locals->article['view']; }
 
@@ -2545,7 +2657,13 @@ class TagManager_Page extends TagManager
 		$global_pages = $tag->globals->pages;
 		
 		// Filter by menu and asked level : We only need the asked level pages !
-		$pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
+		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
+		$pages = array();
+		foreach($global_pages as $p)
+		{
+			if ($p['level'] == $level && $p['id_menu'] == $id_menu)
+				$pages[] = $p;
+		}
 		
 		// Filter on 'appears'=>'1'
 		$pages = array_values(array_filter($pages, array('self', '_filter_appearing_pages')));
@@ -2670,9 +2788,7 @@ class TagManager_Page extends TagManager
 		foreach($tag->globals->menus as $menu)
 		{
 			if ($menu_name == $menu['name'])
-			{
 				$id_menu = $menu['id_menu'];
-			}	
 		}
 		
 		// Navigation level. 0 if not defined
@@ -2700,7 +2816,9 @@ class TagManager_Page extends TagManager
 
 		// Add the active class key
 		$id_current_page = ( ! empty($current_page['id_page'])) ? $current_page['id_page'] : FALSE;
+		
 		$active_pages = Structure::get_active_pages($global_pages, $id_current_page);
+
 		foreach($global_pages as &$page)
 		{
 			// Add the active_class key
@@ -2708,8 +2826,14 @@ class TagManager_Page extends TagManager
 		}
 
 		// Filter by menu and asked level : We only need the asked level pages !
-		$pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $asked_level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
-	
+		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $asked_level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
+		$pages = array();
+		foreach($global_pages as $p)
+		{
+			if ($p['level'] == $asked_level && $p['id_menu'] == $id_menu)
+				$pages[] = $p;
+		}
+		
 		// Filter on 'appears'=>'1'
 		if ($display_hidden == FALSE)
 			$pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
@@ -2718,15 +2842,34 @@ class TagManager_Page extends TagManager
 		$parent_page = array();
 		if ($asked_level > 0)
 		{
-			$parent_pages = array_filter($global_pages, create_function('$row','return $row["level"] == "'. ($asked_level-1) .'";'));
-			$parent_page = array_values(array_filter($parent_pages, create_function('$row','return $row["active_class"] != "";')));
-			$parent_page = ( ! empty($parent_page)) ? $parent_page[0] : FALSE;
+			// $parent_pages = array_filter($global_pages, create_function('$row','return $row["level"] == "'. ($asked_level-1) .'";'));
+			$parent_pages = array();
+			foreach($global_pages as $p)
+			{
+				if ($p['level'] == ($asked_level-1))
+					$parent_pages[] = $p;
+			}
+			
+			// $parent_page = array_values(array_filter($parent_pages, create_function('$row','return $row["active_class"] != "";')));
+			// $parent_page = ( ! empty($parent_page)) ? $parent_page[0] : FALSE;
+			foreach($parent_pages as $p)
+			{
+				if ($p['active_class'] != '')
+					$parent_page = $p;
+			}
 		}
 		
 		// Filter the current level pages on the link with parent page
 		if ( ! empty($parent_page ))
 		{
-			$pages = array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $parent_page['id_page'] .'";'));
+			// $pages = array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $parent_page['id_page'] .'";'));
+			$o_pages = $pages;
+			$pages = array();
+			foreach($o_pages as $p)
+			{
+				if ($p['id_parent'] == $parent_page['id_page'])
+					$pages[] = $p;
+			}
 		}
 		else
 		{
@@ -2867,11 +3010,20 @@ class TagManager_Page extends TagManager
 		// Find out the wished parent page 
 		while ($page_level >= $from_level && $from_level > 0)
 		{
-			$potential_parent_page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $parent_page['id_parent'] .'";')));
-			
-			if (isset($potential_parent_page[0]))
+			// $potential_parent_page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $parent_page['id_parent'] .'";')));
+			$potential_parent_page = array();
+			foreach($pages as $p)
 			{
-				$parent_page = $potential_parent_page[0];
+				if($p['id_page'] == $parent_page['id_parent'])
+				{
+					$potential_parent_page = $p;
+					break;
+				}
+			}
+			// if (isset($potential_parent_page[0]))
+			if ( ! empty($potential_parent_page))
+			{
+				$parent_page = $potential_parent_page;
 				$page_level = $parent_page['level'];
 			}
 			else
@@ -2888,13 +3040,20 @@ class TagManager_Page extends TagManager
 		}
 
 		// Filter on 'appears'=>'1'
+		$nav_pages = array();
 		if ($display_hidden == FALSE)
 			$nav_pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
-	
-		$nav_pages = array_filter($nav_pages, create_function('$row','return ($row["id_menu"] == "'. $id_menu .'") ;'));
-
+		
+		// $nav_pages = array_filter($nav_pages, create_function('$row','return ($row["id_menu"] == "'. $id_menu .'") ;'));
+		$final_nav_pages = array();
+		foreach($nav_pages as $k => $np)
+		{
+			if ($np['id_menu'] == $id_menu )
+				$final_nav_pages[] = $np;
+		}
+		
 		// Get the tree navigation array
-		$tree = Structure::get_tree_navigation($nav_pages, $parent_page['id_page'], $from_level, $depth);
+		$tree = Structure::get_tree_navigation($final_nav_pages, $parent_page['id_page'], $from_level, $depth);
 
 		// Return the helper function
 		if (function_exists($helper_function))
@@ -3108,7 +3267,14 @@ class TagManager_Page extends TagManager
 		
 		if ($starting_level != FALSE)
 		{
-			$breacrumbs =  array_values(array_filter($breacrumbs, create_function('$row','return $row["level"] >= '. $starting_level .';')));
+			// $breacrumbs =  array_values(array_filter($breacrumbs, create_function('$row','return $row["level"] >= '. $starting_level .';')));
+			$new_breadcrumbs = array();
+			foreach($breacrumbs as $b)
+			{
+				if ($b['level'] >= $starting_level)
+					$new_breadcrumbs[] = $b;
+			}
+			$breacrumbs = $new_breadcrumbs;
 		}
 
 		// Build the links
@@ -3245,7 +3411,6 @@ class TagManager_Page extends TagManager
 		foreach($tag->globals->categories as $category)
 		{
 			$tag->locals->category = $category;
-//			$tag->locals->page = $category;
 			$str .= $tag->expand();
 		}
 

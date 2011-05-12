@@ -22,6 +22,13 @@
 			
 			<div class="info">
 			
+				<?php if ($this->connect->is('super-admins') ) :?>
+					<dl class="small compact">
+						<dt><label>ID</label></dt>
+						<dd><span class="lite"><?= $id_page ?></span></dd>
+					</dl>
+				<?php endif ;?>
+
 				<dl class="compact small">
 					<dt><label><?= lang('ionize_label_status') ?></label></dt>
 					<dd class="icon">

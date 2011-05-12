@@ -76,14 +76,6 @@ class Page extends MY_admin
 		$datas = $this->menu_model->get_select();
 		$this->template['menus'] =	form_dropdown('id_menu', $datas, $id_menu, 'id="id_menu" class="select"');
 
-		
-		// Dropdown parents
-//		$datas = $this->page_model->get_lang_list(array('id_menu' => '1'), Settings::get_lang('default'));
-//		$parents = array('0' => '/');
-//		($parents_array = $this->structure->get_parent_select($datas) ) ? $parents += $parents_array : '';
-//		$this->template['parents'] =	form_dropdown('id_parent', $parents, false, 'class="select" id="id_parent"');
-
-		
 		// Dropdowns Views : Get $view var from my_theme/config/views.php
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
@@ -114,11 +106,7 @@ class Page extends MY_admin
 		 * Extend fields
 		 *
 		 */
-		$this->template['extend_fields'] = array();
-//		if (Settings::get('use_extend_fields') == '1')
-//		{
-			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page');
-//		}
+		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page');
 
 		$this->output('page');
 	}
@@ -183,15 +171,6 @@ class Page extends MY_admin
 				$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select w160"');
 			}
 			
-			// All articles views to template
-//			$this->template['all_article_views'] = $datas;
-			
-			// All articles type to template
-//			$datas = $this->article_type_model->get_types_select();
-//			$datas = array('' => lang('ionize_select_no_type')) + $datas; 
-//			$this->template['all_article_types'] = $datas;
-
-			
 			/*
 			 * Groups access
 			 *
@@ -214,26 +193,13 @@ class Page extends MY_admin
 			 * Extend fields
 			 *
 			 */
-			$this->template['extend_fields'] = array();
-//			if (Settings::get('use_extend_fields') == '1')
-//			{
-				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
-//			}
+			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
 			
 			/*
 			 * Lang data
 			 */
 			$this->page_model->feed_lang_template($id, $this->template);
 			
-			/*
-			 * Linked articles
-			 */
-//			$articles = $this->article_model->get_lang_list(array('id_page'=>$id), Settings::get_lang('default'));
-			
-			// Add lang content to each article
-//			$this->article_model->add_lang_data($articles);
-			
-//			$this->template['articles'] = $articles;
 			
 			/*
 			 * Output the view
@@ -288,8 +254,7 @@ class Page extends MY_admin
 					$this->page_model->correct_integrity($this->data, $this->lang_data);
 
 				// Save extends fields data
-//				if (Settings::get('use_extend_fields') == '1')
-					$this->extend_field_model->save_data('page', $this->id, $_POST);
+				$this->extend_field_model->save_data('page', $this->id, $_POST);
 						
 				// Save linked access groups authorizations
 				// $this->base_model->join_items_keys_to('user_groups', $this->input->post('groups'), 'page', $this->id);
@@ -674,52 +639,6 @@ class Page extends MY_admin
 		unset($this->data['link']);
 		unset($this->data['link_type']);
 		unset($this->data['link_id']);
-					
-
-
-		/*
-		 * Links
-		 *
-		if ($this->data['link'] != lang('ionize_label_drop_link_here'))
-		{
-			// External Link cleaning : We assume an external link has a "." in its URL
-			if (strpos($this->data['link'], '.') !== FALSE OR $this->data['link_type'] == '')
-			{
-				$this->data['link_id'] = '';
-				$this->data['link_type'] = 'external';
-				
-				if ( ! empty($this->data['link']))
-					$this->data['link'] = prep_url($this->data['link']);
-				
-				// This link is unique : All languages data need to have the same
-				foreach(Settings::get_languages() as $language)
-				{
-					$this->lang_data[$language['lang']]['link'] = $this->data['link'];
-				}
-				
-			}
-			// Internal link : Get link urls for each language
-			else if ($this->data['link_type'] != '' && $this->data['link_type'] != '0')
-			{
-				$elements = $this->{$this->data['link_type'].'_model'}->get_lang($this->data['link_id']);
-				
-				foreach ($elements as $element)
-				{
-					$this->lang_data[$element['lang']]['link'] = $element['url'];
-				}
-			}
-		}
-		// Clean languages link
-		else
-		{
-			$this->data['link'] = '';
-			
-			foreach(Settings::get_languages() as $language)
-			{
-				$this->lang_data[$language['lang']]['link'] = '';
-			}
-		}
-		 */
 	}
 
 	

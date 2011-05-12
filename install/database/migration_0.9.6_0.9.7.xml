@@ -61,7 +61,9 @@
 	<query>
 		ALTER TABLE `page_article` ADD `link` VARCHAR( 255 ) NOT NULL DEFAULT '';	
 	</query>
-
+	<query>
+		ALTER TABLE  `page_article` ADD  `main_parent` TINYINT( 1 ) NOT NULL DEFAULT 0;
+	</query>
 	<query>
 		UPDATE page_article, article SET page_article.link = article.link WHERE page_article.id_article = article.id_article AND article.link_type != 'external';
 	</query>

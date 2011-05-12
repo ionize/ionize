@@ -49,21 +49,19 @@ class Search_Tags
 	 * Returns the search form view
 	 *
 	 * @usage	<ion:searchform />
-	 *		<ion:searchform show="true"/>
 	 *
 	 */
 	public static function searchform(FTL_Binding $tag)
 	{
 		$CI =& get_instance();
 	
+		$searchForm_action = (isset($tag->attr['result_page']) ) ? $tag->attr['result_page'] : '';
+		$tag->locals->result_page = $searchForm_action;
+		
+		
 		// If the realm data was posted, the form will not be displayed
 		// Useful when results should be displayed on the same page as the search form
-		/**
-		 * This was my problem, actually, I wanted control on when the form is
-		 * displayed. This version works as intended.
-		 */
-		$show = (isset($tag->attr['show']) ) ? $tag->attr['show'] : false;
-		if ($show === false)
+		if ($realm = $CI->input->post('realm'))
 		{
 			return '';
 		}
@@ -98,6 +96,25 @@ class Search_Tags
 			return lang('module_search_fill_the_field');
 		}
 	}
+	
+	/**
+	 * Form action tag
+	 * Used to display the results on a new page
+	 *
+	 */
+	public static function result_page(FTL_Binding $tag)
+	{
+		// Local results are set : Means the search process was done
+		if ( isset($tag->locals->result_page))
+		{
+			return $tag->locals->result_page;
+		}
+		else
+		{
+			return "";
+		}
+	}
+	
 	
 
 	// ------------------------------------------------------------------------
@@ -196,8 +213,22 @@ class Search_Tags
 		
 		return $str;
 	}
-
-
+	
+	public static function highlight(FTL_Binding $tag)
+	{
+		$search = '';
+		
+		
+		if( ! empty($tag->locals->realm))
+		{
+			$search = $tag->locals->realm;
+		}
+		
+		$str = '<script type="text/javascript"> highlightSearchTerms(\''.$search.'\');</script>'; 		
+		
+		return $str;
+	}
+	
 	/**
 	 * Returns one asked field of the current result.
 	 * If you query result contains the field 'title', you can retrieve it with this tag.

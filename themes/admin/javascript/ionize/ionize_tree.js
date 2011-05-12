@@ -14,6 +14,10 @@ ION.Tree = new Class({
 	
 	initialize: function(element, options)
 	{
+
+// var start = new Date().getTime();
+		
+		
 		this.setOptions(options);
 		this.element = element;
 		
@@ -25,54 +29,61 @@ ION.Tree = new Class({
 		var opened = new Array();
 		if (Cookie.read('tree')) opened = (Cookie.read('tree')).split(',');
 		
-		var folders = $$('#' + element + ' li.folder');
+//		var folderIconModel = new Element('div', {'class': 'tree-img drag folder'});
+//		var plusMinusModel = new Element('div', {'class': 'tree-img plus'});
+//		var lineNodeModel = new Element('div', {'class': 'tree-img line node'});
+//		var fileIconModel =	new Element('div', {'class': 'tree-img drag'});
 		
-		// Pages
-		folders.each(function(folder, idx)
-		{
-			var folderContents = folder.getChildren('ul');
-			
-			var homeClass = (folder.hasClass('home')) ? ' home' : '' ;
-			
-			var folderImage = new Element('div', {'class': 'tree-img drag folder' + homeClass}).inject(folder, 'top');
-	
-			// Define which open and close graphic ( + - ) each folder gets
-			var image = new Element('div', {'class': 'tree-img plus'});
-			
-			image.addEvent('click', this.openclose).inject(folder, 'top');
-
-			if (opened.contains(folder.id))
-			{
-				folder.addClass('f-open');
-				image.removeClass('plus').addClass('minus');
-			}
-			else
-			{
-				folderContents.each(function(el){ el.setStyle('display', 'none'); });
-			}
-
-			// Add connecting branches to each file node
-			folderContents.each(function(element)
-			{
-				var docs = element.getChildren('li.doc').append(element.getChildren('li.sticky'));
-				docs.each(function(el)
-				{
-					new Element('div', {'class': 'tree-img line node'}).inject(el.getElement('span'), 'before');
-				});
-			});
-			
-			this.addEditLink(folder, 'page');
-			this.addPageActionLinks(folder);
-			
-			// Make the folder name draggable
-			ION.addDragDrop(folder.getElement('a.title'), '.dropPageAsLink,.dropPageInArticle', 'ION.dropPageAsLink,ION.dropPageInArticle');
-			
-
-		}.bind(this));
-
 		// All nodes (Page & Articles)
-		$$('#'+element+' li').each(function(node, idx)
+		var nodes = $$('#'+element+' li');
+		nodes.each(function(node, idx)
 		{
+			if (node.hasClass('folder'))
+			{
+				var folderChildren = node.getChildren('ul');
+				var homeClass = (node.hasClass('home')) ? ' home' : '' ;
+				
+				var folderIcon = new Element('div', {'class': 'tree-img drag folder' + homeClass}).inject(node, 'top');
+	//			var folderIcon = folderIconModel.clone(false).inject(node, 'top');
+				if (homeClass !='') folderIcon.addClass(homeClass);
+				
+		
+				// Define which open and close graphic ( + - ) each folder gets
+				var pm = new Element('div', {'class': 'tree-img plus'});
+	//			var pm = plusMinusModel.clone(false);
+				
+				pm.addEvent('click', this.openclose).inject(node, 'top');
+	
+				if (opened.contains(node.id))
+				{
+					node.addClass('f-open');
+					pm.removeClass('plus').addClass('minus');
+				}
+				else
+				{
+					folderChildren.each(function(el){ el.setStyle('display', 'none'); });
+				}
+	
+				// Add connecting branches to each child node
+				folderChildren.each(function(element)
+				{
+					var docs = element.getChildren('li.doc').append(element.getChildren('li.sticky'));
+					docs.each(function(el)
+					{
+						new Element('div', {'class': 'tree-img line node'}).inject(el.getElement('span'), 'before');
+	//					lineNodeModel.clone(false).inject(el.getElement('span'), 'before');
+					});
+				});
+				
+				this.addEditLink(node, 'page');
+				this.addPageActionLinks(node);
+				
+				// Make the folder name draggable
+				ION.addDragDrop(node.getElement('a.title'), '.dropPageAsLink,.dropPageInArticle', 'ION.dropPageAsLink,ION.dropPageInArticle');
+			
+			}
+
+
 			// Add connecting branches to each node
 			node.getParents('li').each(function(parent){
 				new Element('div', {'class': 'tree-img line'}).inject(node, 'top');
@@ -86,7 +97,9 @@ ION.Tree = new Class({
 				var title = node.getElement('a.title');
 				
 				var link = node.getElement('span');
+				
 				new Element('div', {'class': 'tree-img drag ' + typeClass}).inject(link, 'before');
+	//			fileIconModel.clone(false).addClass(typeClass).inject(link, 'before')
 				
 				// Edit Link
 				this.addEditLink(node, 'article');
@@ -102,6 +115,9 @@ ION.Tree = new Class({
 			this.addMouseOver(node);
 			
 		}.bind(this));
+
+// var ms = (new Date().getTime()-start)+'ms';
+// alert(ms);
 	
 		$$('#' + element + ' li span.action').setStyle('display','none');
 		
@@ -162,7 +178,7 @@ ION.Tree = new Class({
 		if (rel.length > 1) { id = rel[1]; }
 
 		var p = $(this.mainpanel);
-//console.log(p);
+
 		a.addEvent('click', function(e)
 		{
 			e.stop();

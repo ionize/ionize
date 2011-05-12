@@ -32,6 +32,7 @@ class System_check extends MY_admin
 		parent::__construct();
 
 		// Models
+		$this->load->model('system_check_model', '', true);
 		$this->load->model('menu_model', '', true);
 		$this->load->model('page_model', '', true);
 		
@@ -61,37 +62,145 @@ class System_check extends MY_admin
 	 */
 	function start_check()
 	{
+		// Start the first check : pages levels
 		$this->callback = array(
 			array (
-				'fn' => 'MUI.showSpinner'
+				'fn' => 'ION.emptyDomElement',
+				'args' => array	('system_check_report')
 			),
 			array (
 				'fn' => 'ION.JSON',
 				'args' => array	(
-					'system_check/check_pages_levels'
+					'system_check/check_page_level'
 				)
 			)
 		);
 
-		
 		$this->response();
-		
-		
 	}
 	
-	function check_pages_levels()
+	
+	/**
+	 * Check page level integrity
+	 *
+	 */
+	function check_page_level()
 	{
+		$result = array(
+			'title' => lang('ionize_title_check_page_level'),
+			'result_status' => 'ok'
+		);
+
+		$nb_wrong_levels = $this->system_check_model->check_page_level();
+		
+		// Correct
+		if ($nb_wrong_levels > 0)
+		{
+			$corrected = $this->system_check_model->check_page_level($correct = TRUE);
+		
+			$result['result_text'] = $nb_wrong_levels .'/'. $corrected . lang('ionize_message_check_corrected');
+		}
+		else
+		{
+			$result['result_text'] = lang('ionize_message_check_ok');
+		}
+		
+		// Result view
+		$view = $this->load->view('system_check_result', $result, TRUE);
+
 		$this->callback = array(
 			array (
-					'fn' => 'ION.notification',
-					'args' => array	(
-						'success',
-						'Check complete !'
-					)
-			)
+				'fn' => 'ION.appendDomElement',
+				'args' => array	(
+					'system_check_report',
+					$view
+				)
+			),
+			array (
+				'fn' => 'ION.JSON',
+				'args' => array	(
+					'system_check/check_article_context'
+				)
+			)			
 		);
 		
 		$this->response();
+
+	}
+	
+	
+	/**
+	 * Checks if all articles which have one cpage context have the page as "Main Parent"
+	 *
+	 */
+	function check_article_context()
+	{
+		$result = array(
+			'title' => lang('ionize_title_check_article_context'),
+			'result_status' => 'ok'
+		);
+
+		$nb_orphan_articles = $this->system_check_model->check_article_context();
+
+		// Correct
+		if ($nb_orphan_articles > 0)
+			$result['result_text'] = lang('ionize_message_check_corrected');
+		else
+			$result['result_text'] = lang('ionize_message_check_ok');
+
+
+		// Result view
+		$view = $this->load->view('system_check_result', $result, TRUE);
+
+
+		$this->callback = array(
+			array (
+				'fn' => 'ION.appendDomElement',
+				'args' => array	(
+					'system_check_report',
+					$view
+				)
+			),
+			array (
+				'fn' => 'ION.notification',
+				'args' => array	(
+					'success',
+					'Check complete !'
+				)
+			)			
+		);
+		
+		$this->response();
+	}
+	
+	
+	/**
+	 * Check if all langs defined in DB are set in the config file
+	 *
+	 */
+	function check_lang()
+	{
+	
+	}
+	
+	
+	/**
+	 * Checks write rights on Ionize's used folders
+	 *
+	 */
+	function check_folder_right()
+	{
+	
+	}
+	
+	
+	/**
+	 * Check, for each database registered picture, if all the defined thumbs exist
+	 *
+	 */
+	function check_thumbs()
+	{
+	
 	}
 	
 }

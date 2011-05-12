@@ -24,6 +24,8 @@
 class Page_model extends Base_model 
 {
 
+	public $context_table =	'page_article';
+
 
 	/**
 	 * Model Constructor
@@ -150,34 +152,9 @@ class Page_model extends Base_model
 	}
 
 	
-
 	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Correct the whole website pages levels regarding the parent of each page
-	 * 
-	 *
-	 */
-	function correct_levels(&$pages, $id_parent=0, $level=0)
-	{
-		if (is_array($pages))
-		{
-			$children = array_values(array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $id_parent .'";')));
-			$sub_level = $level + 1;
-			
-			foreach ($children as $child)
-			{
-				$this->db->where('id_parent', $id_parent);
-				$this->db->update('page', array('level' => $level));
-
-				Page_model::correct_levels($pages, $child['id_page'], $sub_level);
-			}
-		}
-	} 
-
-
-	
 	/**
 	 * Updates all other articles / pages links when saving one page
 	 *
@@ -366,6 +343,44 @@ class Page_model extends Base_model
 			*/
 			$data[] = $result;
 		}					
+		
+		return $data;
+	}
+
+
+	/**
+	 * Returns all contexts page's lang data as an array of pages.
+	 *
+	 * @param	Mixed		ID of one article / Array of articles IDs
+	 * @param	string		Lang code
+	 *
+	 * @return	array		Array of articles
+	 *
+	 */
+	function get_lang_contexts($id_article, $lang)
+	{
+		$data = array();
+
+		$this->db->select($this->table.'.*');
+		$this->db->select($this->lang_table.'.*');
+		$this->db->select($this->context_table.'.*');
+
+		$this->db->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
+		$this->db->join($this->context_table, $this->table.'.'.$this->pk_name.' = ' .$this->context_table.'.'.$this->pk_name);			
+
+		$this->db->where(array($this->lang_table.'.lang' => $lang));
+		
+		if ( ! is_array($id_article) )
+			$this->db->where(array($this->context_table.'.id_article' => $id_article));
+		else
+			$this->db->where($this->context_table.'.id_article in (' . implode(',', $id_article) . ')');
+
+		$query = $this->db->get($this->table);
+
+		if($query->num_rows() > 0)
+		{
+			$data = $query->result_array();
+		}
 		
 		return $data;
 	}

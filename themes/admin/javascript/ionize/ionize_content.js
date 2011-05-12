@@ -200,13 +200,6 @@ ION.append({
 		options.url = admin_url + ION.cleanUrl(options.url);
 			
 		// If the panel doesn't exists, try to update directly one DomHTMLElement
-//		if ( ! MUI.Windows.instances.get(options.element) && ! MUI.Panels.instances.get(options.element))
-/*
-(MUI.instances).each(function(inst)
-{
-	console.log(inst.id);
-});
-*/
 		if ( ! MUI.get(options.element) )
 		{
 			new Request.HTML({
@@ -221,7 +214,6 @@ ION.append({
 			
 			// Update the Mocha UI panel with Core.updateContent() method
 			MUI.Content.update(options);
-//			updateContent(options);
 		}
 	},
 
@@ -332,6 +324,29 @@ ION.append({
 			new Tips(element + ' .help', {'className' : 'tooltip'});
 		}
 	},
+	
+	emptyDomElement: function(element)
+	{
+		if (typeOf(element) == 'string')
+			element = $(element);
+			
+		element.empty();
+	},
+	
+	appendDomElement: function(container, html)
+	{
+		var div = new Element('div');
+		div.set('html', html);
+
+		if (typeOf(container) == 'string')
+			container = $(container);
+
+		if (typeOf(html) == 'element')
+			container.adopt(html);
+		else
+			container.set('html', container.get('html') + html);
+	},
+
 
 	insertDomElement: function(container, where, html)
 	{
@@ -1480,6 +1495,40 @@ ION.append({
 			}
 		});
 	},
+	
+	initArticleMainParentEvent: function(item)
+	{
+		var rel = item.getAttribute('rel').split(".");
+
+		if (item.value != '0' && item.value != '') { item.addClass('a'); }
+
+		// Some safety before adding the event.
+		item.removeEvents('change');
+
+		item.addEvents({
+		
+			'change': function(e)
+			{
+				e.stop();
+			 	
+				var url = admin_url + 'article/save_main_parent';
+				
+				this.removeClass('a');
+				
+				if (this.value != '0' && this.value != '') { this.addClass('a'); }
+				
+				var data = {
+					'id_page': this.value,
+					'id_article': rel[1]
+				};
+
+ 				ION.sendData(url, data);
+			}
+		});
+	},
+	
+	
+	
 	
 	
 	initPageStatusEvent: function(item)

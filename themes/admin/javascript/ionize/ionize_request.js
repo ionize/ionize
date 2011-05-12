@@ -65,7 +65,7 @@ ION.append({
 		if (!data) {
 			data = '';
 		}
-console.log(url);
+
 		// Cleans URLs
 		url = ION.cleanUrl(url);
 
