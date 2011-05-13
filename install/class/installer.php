@@ -461,9 +461,14 @@ class Installer
 			{
 				// Get the encryption key and move it to config/config.php
 				$enc = false;
+				$config = array();
 				
-				include(ROOTPATH . 'application/config/access.php');
-				if ($config['encrypt_key'] != '')
+				if (is_file(ROOTPATH . 'application/config/access.php'))
+				{
+					include(ROOTPATH . 'application/config/access.php');
+				}
+				
+				if ( ! empty($config['encrypt_key']) &&  $config['encrypt_key'] != '')
 				{
 					$enc =  $config['encrypt_key'];
 				}

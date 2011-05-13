@@ -31,6 +31,7 @@ else
 define('EXT', '.'.pathinfo(__FILE__, PATHINFO_EXTENSION));
 define('BASEPATH', $system_folder.'/');
 define('ROOTPATH', str_replace("\\", "/", realpath(dirname($system_folder))) . '/');
+define('FCPATH', '');
 define('BASEURL', $base_url);
 
 if (is_dir($application_folder))
