@@ -420,13 +420,12 @@ class Base_Controller extends MY_Controller
 		{
 			$parsed = $this->parse($parsed, $context);
 
-			if (Connect()->is('editors') && Settings::get('display_connected_label') == '1')
+			if (Connect()->is('editors') && Settings::get('display_connected_label') == '1' )
 			{
 				$injected_html = $this->load->view('core/logged_as_editor', array(), true);	
 				
 				$parsed = str_replace('</body>', $injected_html, $parsed);
 			}
-
 		}
 		
 		// Returns the result or output it directly

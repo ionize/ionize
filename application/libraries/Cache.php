@@ -83,8 +83,12 @@ class Cache
 		$CFG =& load_class('Config');
 		$URI =& load_class('URI');
 		$OUT =& load_class('Output');
-		
-		if( ! empty($_POST) OR $URI->segments[1] == config_item('admin_url') )
+
+		// No cache if : 
+		// - If some POST data are sent
+		// - Admin URL
+		// - User logged in
+		if( ! empty($_POST) OR Connect()->logged_in() != FALSE OR $URI->segments[1] == config_item('admin_url'))
 		{
 			// Regenerate the page
 			return FALSE;
