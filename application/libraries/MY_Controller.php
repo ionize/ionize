@@ -210,7 +210,9 @@ class Base_Controller extends MY_Controller
         parent::__construct();
 
 // $this->output->enable_profiler(true);
-//		$this->output->cache(100);
+		
+		if (config_item('cache_enabled') && config_item('cache_time') > 0)
+			$this->output->cache(config_item('cache_time'));
 		
 		// Unlock filtering if admin or editor users is logged in
 //		$this->load->library('connect');
@@ -317,6 +319,7 @@ class Base_Controller extends MY_Controller
 		 *
 		 */
 		$lang_folder = Theme::get_theme_path().'language/'.Settings::get_lang().'/';
+		$lang_files = array();
 
 		// Core languages files : Including except "admin_lang.php"
 		if (is_dir(APPPATH.'language/'.Settings::get_lang()))

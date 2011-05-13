@@ -113,18 +113,25 @@ class Media extends MY_admin
 	 */
 	function filemanager($event = NULL, $resize = FALSE, $uploadAuthData = FALSE)
 	{
+
+
+// str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']); 		
+
 		// FileManager constructor options
 		$params = array (
-//			'directory' => FCPATH.Settings::get('files_path'),
-			'directory' => Settings::get('files_path'),
-//			'thumbnailPath' => FCPATH.Settings::get('files_path') . '/.thumbs',
-			'thumbnailPath' => Settings::get('files_path').'/.thumbs',
+			'directory' => Settings::get('files_path') . '/', // files
+			
+//			'documentRootPath' => FCPATH,
+			'documentRootPath' => $_SERVER['DOCUMENT_ROOT'], // Asolute base path of the website folder
+//			'RequestScriptURI' => '/ionize-with_last_mtfm',
+			
+			'thumbnailPath' => '/ionize-with_last_mtfm/' .Settings::get('files_path').'/.thumbs',
 			'thumbSmallSize' => 120,
 			'thumbBigSize' => 500,
 			'mimeTypesPath' => APPPATH.'libraries/Filemanager/MimeTypes.ini',
-			'baseURL' => base_url(),
+			'baseURL' => base_url(), // http://fca.partikule.net - http://localhost/ionize-with-what.../
 //			'assetBasePath' => FCPATH.Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
-			'assetBasePath' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
+			'assetBasePath' => '/ionize-with_last_mtfm/' . Theme::get_theme_path().'javascript/mootools-filemanager/Assets', // themes/admin/
 ////			'assetBaseUrl' => theme_url().'javascript/mootools-filemanager/Assets',
 			'upload' => TRUE,
 			'destroy' => TRUE,
@@ -132,14 +139,16 @@ class Media extends MY_admin
 			'move' => TRUE,
 			'download' => FALSE,
 			'thumbnailSize' => (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120,
-			'pictureMaxWidth' => (Settings::get('picture_max_width') !='') ? Settings::get('picture_max_width') : FALSE,
-			'pictureMaxHeight' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : FALSE,
+			'maxImageDimension' => array(
+				'width' => (Settings::get('picture_max_width') !='') ? Settings::get('picture_max_width') : 2000,
+				'height' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : 2000
+			),
 			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
 			'filter' => 'image/,audio/,video/'
 		);
 
-//		$this->load->library('filemanager', $params);
-		$this->load->library('FileManagerWithAliasSupport', $params);
+//		$this->load->library('Filemanager', $params);
+		$this->load->library('Filemanagerwithaliassupport', $params);
 
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object
@@ -147,7 +156,7 @@ class Media extends MY_admin
 		
 		if ($event != 'upload')
 		{
-			$this->FileManagerWithAliasSupport->fireEvent(!is_null($event) ? $event : null);
+			$this->Filemanagerwithaliassupport->fireEvent(!is_null($event) ? $event : null);
 		}
 		else
 		{
@@ -177,7 +186,7 @@ class Media extends MY_admin
 					// Fires the Filemanager event if the user is connected
 					if ($connected === TRUE)
 					{
-						$this->FileManagerWithAliasSupport->fireEvent($event);
+						$this->Filemanagerwithaliassupport->fireEvent($event);
 					}
 					// The user isn't connected
 					else
@@ -387,6 +396,9 @@ class Media extends MY_admin
 	 */
 	function add_media($type, $parent, $id_parent, $path=null) 
 	{
+		// Clear the cache
+		Cache()->clear_cache();
+
 		/*
 		 * Some path cleaning
 		 * The media path should start at the root media dir.
@@ -543,6 +555,9 @@ class Media extends MY_admin
 	{
 		if ($parent !== false && $id_parent !== false && $id_media !== false)
 		{			
+			// Clear the cache
+			Cache()->clear_cache();
+
 			// Delete succeed : Message to user
 			if ($this->media_model->delete_joined_key('media', $id_media, $parent, $id_parent) > 0)
 			{
@@ -579,6 +594,9 @@ class Media extends MY_admin
 	{
 		if ($parent !== false && $id_parent !== false && $type !== false)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			// Delete succeed : Message to user
 			if ($this->media_model->detach_media_by_type($parent, $id_parent, $type) > 0)
 			{
@@ -607,7 +625,9 @@ class Media extends MY_admin
 
 		if( $order = $this->input->post('order') )
 		{
-			// Saves the new ordering
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$this->media_model->save_ordering($order, $parent, $id_parent);
 			
 			// Answer
@@ -668,6 +688,9 @@ class Media extends MY_admin
 	 */
 	function save()
 	{
+		// Clear the cache
+		Cache()->clear_cache();
+
 		// Standard data;
 		$data = array();
 		
@@ -700,10 +723,8 @@ class Media extends MY_admin
 		$this->id = $this->media_model->save($data, $lang_data);
 
 		// Save extend fields data
-//		if (Settings::get('use_extend_fields') == '1')
-			$this->extend_field_model->save_data('media', $this->id, $_POST);
+		$this->extend_field_model->save_data('media', $this->id, $_POST);
 
-		
 		$media = $this->media_model->get($this->id, Settings::get_lang('default'));
 
 		// Save ID3 to file if MP3
@@ -722,10 +743,7 @@ class Media extends MY_admin
 			}
 
 			$this->write_ID3($media['path'], $tags);
-			
 		}	
-
-
 		
 		if ( $this->id !== false )
 		{

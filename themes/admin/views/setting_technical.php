@@ -106,6 +106,45 @@
 		</div> <!-- /element -->
 			
 
+		<!-- Cache -->
+		<h3 class="toggler"><?=lang('ionize_title_cache')?></h3>
+		
+		<div class="element">
+		
+			<form name="cacheForm" id="cacheForm" method="post" action="<?= admin_url() ?>setting/save_cache">
+			
+				<!-- Enabled / Disabled -->
+				<dl class="small">
+					<dt>
+						<label for="cache_enabled" title="<?=lang('ionize_help_cache_enabled')?>"><?=lang('ionize_label_cache_enabled')?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="cache_enabled" id="cache_enabled" value="1" <?php if (config_item('cache_enabled') == TRUE ):?>checked="checked"<?php endif;?>/>
+					</dd>
+				</dl>
+				
+				<!-- Cache Time -->
+				<dl class="small">
+					<dt>
+						<label for="cache_time"  title="<?=lang('ionize_help_cache_time')?>"><?=lang('ionize_label_cache_time')?></label>
+					</dt>
+					<dd>
+						<input id="cache_time" name="cache_time" class="inputtext w60" type="text" value="<?= config_item('cache_time') ?>" />
+					</dd>
+				</dl>
+				
+				<!-- Submit button  -->
+				<dl class="small last">
+					<dt>&#160;</dt>
+					<dd>
+						<input id="submit_cache" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+					</dd>
+				</dl>
+
+			</form>
+		</div>
+
+
 		<!-- SMTP -->
 		<h3 class="toggler"><?=lang('ionize_title_mail_send')?></h3>
 		
@@ -313,6 +352,11 @@
 
 	<h2 class="main settings" id="main-title"><?= lang('ionize_title_technical_settings') ?></h2>
 	
+	<!-- Subtitle -->
+	<div class="subtitle">
+		<p><?= lang('ionize_onchange_ionize_settings')?></p>
+	</div>
+
 	<form name="settingsForm" id="settingsForm" method="post" action="<?= admin_url() ?>setting/save_technical">
 
 
@@ -667,6 +711,7 @@
 	 *
 	 */
 	ION.initLabelHelpLinks('#settingsForm');
+	ION.initLabelHelpLinks('#cacheForm');
 
 
 	/**
@@ -686,6 +731,12 @@
 	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('smtpForm', 'submit_smtp', 'setting/save_smtp/true', 'mainPanel', 'setting/technical');
+	
+	/**
+	 * Cache form action
+	 */
+	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache', 'mainPanel', 'setting/technical');
+
 
 	/**
 	 * Admin URL form action
@@ -769,7 +820,6 @@
 
 	/**
 	 * Notification to reload admin panel after changing filemanager/texteditor
-	 */
 	$('filemanager').addEvent('change', function()
 	{
 		ION.information('<?php echo lang('ionize_onchange_filemanager') ;?>');
@@ -779,5 +829,6 @@
 	{
 		ION.information('<?php echo lang('ionize_onchange_texteditor') ;?>');
 	});
+	 */
 
 </script>

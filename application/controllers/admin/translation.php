@@ -120,6 +120,9 @@ class Translation extends MY_admin
 	 */
 	function save()
 	{
+		// Clear the cache
+		Cache()->clear_cache();
+
 		foreach(Settings::get_languages() as $language)
 		{
 			$lang = $language['lang'];

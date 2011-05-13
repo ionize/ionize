@@ -36,7 +36,6 @@ class Config_model extends Base_model
 		// Ionize Core config file
 		if (is_dir(realpath(APPPATH.'config')))
 		{
-			trace(realpath(APPPATH.'config').'/');
 			self::$path = realpath(APPPATH.'config').'/';
 		}
 		parent::__construct();
@@ -76,15 +75,22 @@ class Config_model extends Base_model
 		{
 //			$pattern = '%(config\[\''.$key.'\'\] = \')(.*)(\';)%';
 			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.*\'?)(;)%';
-
 			$type = gettype($val);
 			
 			if ($type == 'string')
 			{
-				$val = "'".$val."'";
-			}
-			if ($type == 'boolean') $val = ($val ? TRUE : (int) FALSE);
+				if ($val == '1' OR strtolower($val) == 'true')
+					$val = var_export(TRUE, TRUE);
 
+				else if ($val == '0' OR strtolower($val) == 'false')
+					$val = var_export(FALSE, TRUE);
+				
+				else if (strval(intval($val)) == $val)
+					$val = intval($val);
+				
+				else $val = "'".$val."'";
+			}
+			if ($type == 'boolean') $val = ($val ? var_export(TRUE, TRUE) : var_export(FALSE, TRUE) );
 
 			self::$content = preg_replace($pattern, '${1}'.$val. '${3}', self::$content );
 

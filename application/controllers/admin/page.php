@@ -243,6 +243,9 @@ class Page extends MY_admin
 			}
 			else
 			{
+				// Clear the cache
+				Cache()->clear_cache();
+			
 				// Prepare data before save
 				$this->_prepare_data();
 	
@@ -345,6 +348,9 @@ class Page extends MY_admin
 	 */
 	function switch_online($id)
 	{
+		// Clear the cache
+		Cache()->clear_cache();
+
 		$status = $this->page_model->switch_online($id);
 
 		$this->id = $id;
@@ -368,6 +374,9 @@ class Page extends MY_admin
 	{
 		if( $order = $this->input->post('order') )
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			// Saves the new ordering
 			$this->page_model->save_ordering($order);
 
@@ -396,6 +405,9 @@ class Page extends MY_admin
 	 */
 	function add_link()
 	{
+		// Clear the cache
+		Cache()->clear_cache();
+
 		// Page which received the link
 		$id_page = $this->input->post('receiver_rel');
 		$link_type = $this->input->post('link_type');
@@ -483,6 +495,9 @@ class Page extends MY_admin
 		
 		if ($id_page)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$context = array(
 				'link_type' => '',
 				'link_id' => '',
@@ -525,6 +540,9 @@ class Page extends MY_admin
 		// Delete was successfull
 		if ($affected_rows > 0)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			// Remember the deleted page ID
 			$this->id = $id;
 			

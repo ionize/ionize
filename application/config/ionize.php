@@ -6,7 +6,7 @@
 |--------------------------------------------------------------------------
 |
 */
-$config['version'] = '0.9.7 beta';
+$config['version'] = '0.9.7 beta 13.05.2011';
 
 
 /*
@@ -126,6 +126,29 @@ $config['form_antispam_key'] = "yourAntiSpamKey_ShouldContainsNumbersAndChars";
 |
 */
 $config['files_path'] = 'files/';
+
+
+/*
+|--------------------------------------------------------------------------
+| Cache Enabled
+|--------------------------------------------------------------------------
+|
+| Enable or disable the cache system
+| The cache folder set in config.php in the setting "cache_path" must exists
+| and be writable.
+|
+*/
+$config['cache_enabled'] = true;
+
+/*
+|--------------------------------------------------------------------------
+| Cache Time
+|--------------------------------------------------------------------------
+|
+| Number of minutes you wish the page to remain cached between refreshes
+|
+*/
+$config['cache_time'] = 120;
 
 
 /* End of file ionize.php */

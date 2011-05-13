@@ -305,6 +305,9 @@ class Article extends MY_admin
 		 */
 		if ($this->_check_before_save() == TRUE)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$rel = $this->input->post('rel');
 			
 			// IDs
@@ -330,6 +333,9 @@ class Article extends MY_admin
 			// else, save...
 			else
 			{
+				// Clear the cache
+//				Cache()->clear_cache();
+
 				// Prepare data before saving
 				$this->_prepare_data();
 
@@ -651,6 +657,9 @@ class Article extends MY_admin
 		
 		if ($return)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$this->callback[] = array
 			(
 				'fn' => 'ION.notification',
@@ -674,6 +683,9 @@ class Article extends MY_admin
 		
 		if ($return)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$this->callback[] = array
 			(
 				'fn' => 'ION.notification',
@@ -724,6 +736,10 @@ class Article extends MY_admin
 
 			if ($this->article_model->link_to_page($id_page, $id_article, $original_context) === TRUE)
 			{
+				// Clear the cache
+				Cache()->clear_cache();
+
+
 				// Get the page, menu and articles details for the JSON answer
 				$page = $this->page_model->get($id_page, Settings::get_lang('default'));
 				$page['id_article'] = $id_article;
@@ -963,6 +979,9 @@ class Article extends MY_admin
 		
 		if (count($receiver_rel > 1))
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$context = array(
 				'link_type' => '',
 				'link_id' => '',
@@ -1099,6 +1118,9 @@ class Article extends MY_admin
 		
 			if ($id_new_article !== FALSE)
 			{
+				// Clear the cache
+				Cache()->clear_cache();
+
 				/* Update the content structure tree
 				 * The data var is merged to the default lang data_lang var,
 				 * in order to send the lang values to the browser without making another SQL request
@@ -1154,6 +1176,9 @@ class Article extends MY_admin
 	 */
 	function switch_online($id_page, $id_article)
 	{
+		// Clear the cache
+		Cache()->clear_cache();
+
 		$status = $this->article_model->switch_online($id_page, $id_article);
 
 		// Additional JSON data
@@ -1178,6 +1203,9 @@ class Article extends MY_admin
 	{
 		if( $order = $this->input->post('order') )
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			// Saves the new ordering
 			$this->article_model->save_ordering($order, $parent, $id_parent);
 			
@@ -1265,6 +1293,9 @@ class Article extends MY_admin
 		// Delete was successfull
 		if ($affected_rows > 0)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$this->id = $id;
 			$addon_data = array('element' => 'article');
 		

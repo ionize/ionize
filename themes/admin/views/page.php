@@ -446,8 +446,6 @@
 
 			<h2 class="main page" id="main-title"><?= $title ?></h2>
 
-			
-
 		<?php else :?>
 			
 			<h2 class="main page" id="main-title"><?= lang('ionize_title_new_page') ?></h2>

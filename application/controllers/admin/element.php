@@ -144,6 +144,9 @@ class Element extends MY_Admin {
 	{
 		if( $order = $this->input->post('order') )
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			// Saves the new ordering
 			$this->element_model->save_ordering($order);
 			
@@ -173,6 +176,9 @@ class Element extends MY_Admin {
 		
 		if (!empty($parent) && !empty($id_parent))
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$id_element_definition = $this->input->post('id_element_definition');
 			
 			$element_definition = $this->element_definition_model->get(array('id_element_definition' => $id_element_definition) );

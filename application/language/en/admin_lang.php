@@ -496,6 +496,7 @@ $lang['ionize_title_form_antispam_key'] = 'Antispam JS key';
 $lang['ionize_title_article_management'] = 'Article management';
 $lang['ionize_title_admin_url'] = 'Admin panel URL';
 $lang['ionize_title_encryption_key'] = 'Encryption key';
+$lang['ionize_title_cache'] = 'Cache System';
 
 $lang['ionize_label_thumb_automatic'] = 'Automatic';
 $lang['ionize_label_files_path'] = 'Media base folder';
@@ -527,6 +528,9 @@ $lang['ionize_label_smtp_port'] = 'Port';
 $lang['ionize_label_email_charset'] = 'Charset';
 $lang['ionize_label_email_mailtype'] = 'Format';
 $lang['ionize_label_mailpath'] = 'Mail path';
+
+$lang['ionize_label_cache_enabled'] = 'Enabled';
+$lang['ionize_label_cache_time'] = 'Time (mins.)';
 
 $lang['ionize_label_thumb_dir'] = 'Folder';
 $lang['ionize_label_thumb_size'] = 'Size';
@@ -576,6 +580,8 @@ $lang['ionize_message_error_writing_database_file'] = 'application/config/databa
 $lang['ionize_message_error_writing_email_file'] = 'application/config/email.php could not be written !';
 $lang['ionize_message_error_writing_ionize_file'] = 'application/config/ionize.php could not be written !';
 
+$lang['ionize_message_cache_saved'] = 'Cache Settings saved.';
+
 $lang['ionize_help_setting_google_analytics'] = 'The complete Google script, as copied from the Google Analytics website';
 $lang['ionize_help_setting_files_path'] = 'Indicates the base media folder. Doesn\'t change the physical folder name';
 $lang['ionize_help_setting_system_thumb_list'] = 'Thumbnails displayed by ionize in image list and picture edit window';
@@ -588,6 +594,9 @@ $lang['ionize_help_tinybuttons'] = 'See TinyMCE documentation';
 $lang['ionize_help_setting_picture_max_height'] = 'Picture which exceed these size will be resized during the Upload process.';
 $lang['ionize_help_setting_picture_max_width'] = 'Picture which exceed these size will be resized during the Upload process.';
 $lang['ionize_help_tinyblockformats'] = 'Default TinyMCE Blocks Format (Select)';
+
+$lang['ionize_help_cache_enabled'] = 'Enable / Disable the cache. Disabling it will clear the existing cache.';
+$lang['ionize_help_cache_time'] = 'Number of minutes the pages will remain cached between refreshes';
 
 /*
 |--------------------------------------------------------------------------

@@ -143,6 +143,10 @@ class Setting extends MY_admin
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
 		
 		
+		// Cache
+		$this->template['cache_enabled'] = config_item('cache_enabled');
+		$this->template['cache_time'] = config_item('cache_time');
+		
 		// Antispam key
 		$this->template['form_antispam_key'] = config_item('form_antispam_key');
 
@@ -649,6 +653,43 @@ class Setting extends MY_admin
 		$this->error(lang('ionize_message_thumb_not_saved'));				
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves the Cache settings
+	 *
+	 */
+	function save_cache()
+	{
+		$this->load->model('config_model', '', true);
+
+		$config_items = array('cache_enabled', 'cache_time');
+
+		foreach($config_items as $config_item)
+		{
+			if (config_item($config_item) !== $this->input->post($config_item) )
+			{
+				if ($this->config_model->change('ionize.php', $config_item, $this->input->post($config_item)) == FALSE)
+					$this->error(lang('ionize_message_error_writing_ionize_file'));				
+			}
+		}
+		
+		if ( ! $this->input->post('cache_enabled'))
+		{
+			Cache()->clear_cache();
+		}
+
+		// UI panel to update after saving
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'setting/technical'
+		);
+
+		// Answer
+		$this->success(lang('ionize_message_cache_saved'));				
+	}
 
 	// ------------------------------------------------------------------------
 
