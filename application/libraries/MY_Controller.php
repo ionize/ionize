@@ -211,14 +211,14 @@ class Base_Controller extends MY_Controller
 
 // $this->output->enable_profiler(true);
 		
-		if (config_item('cache_enabled') && config_item('cache_time') > 0)
-			$this->output->cache(config_item('cache_time'));
+//		if (config_item('cache_enabled') && config_item('cache_time') > 0)
+//			$this->output->cache(config_item('cache_time'));
 		
 		// Unlock filtering if admin or editor users is logged in
 //		$this->load->library('connect');
 
 		$this->connect = Connect::get_instance();
-
+//		$this->cache = Cache::get_instance();
 
 		// Libraries
 		$this->load->library('structure');	

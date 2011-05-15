@@ -126,9 +126,6 @@ class Article_model extends Base_model
 	 */
 	function get_lang_list($where=FALSE, $lang=NULL, $filter=FALSE)
 	{
-
-// trace('Article_Model->get_lang_list() ');
-
 		$data = array();
 	
 		if ( empty($where['order_by']))
@@ -146,27 +143,6 @@ class Article_model extends Base_model
 			}
 		}
 
-/*		// Article ordering
-		if ( $order_by === FALSE )
-		{
-			$this->db->orderby($this->parent_table.'.ordering', 'ASC');
-		}
-		else
-		{
-			$order_settings = explode(' ', $order_by);
-			$order_direction = (isset($order_settings[1]) && $order_settings[1] == 'DESC') ? 'DESC' : 'ASC';
-			$order_field = $order_settings[0];
-			
-			if ($order_field == 'ordering')
-			{
-				$this->db->orderby($this->parent_table.'.'.$order_field, $order_direction);
-			}
-			else
-			{
-				$this->db->orderby($order_field, $order_direction);
-			}
-		}
-*/		
 		// Add the SQL publish filter if mandatory
 		$this->filter_on_published(self::$publish_filter, $lang);
 
@@ -199,9 +175,6 @@ class Article_model extends Base_model
 		$this->db->select($this->type_table.'.type');
 		$this->db->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
 
-		// Limit ?
-//		if ($limit !== FALSE)
-//			(is_array($limit)) ? $this->db->limit($limit[1], $limit[0]) : $this->db->limit($limit);
 
 		// Where ?
 		if (is_array($where) )
@@ -240,8 +213,6 @@ class Article_model extends Base_model
 		
 		// DB Query
 		$query = $this->db->get($this->table);
-
-// trace($this->db->last_query());
 
 		if($query->num_rows() > 0)
 		{
@@ -1056,7 +1027,6 @@ class Article_model extends Base_model
 	 * return	array	Articles array
 	 *
 	 */	
-//	function get_from_category($where=FALSE, $category, $lang, $limit=FALSE, $like=FALSE, $order_by=FALSE, $filter=FALSE)
 	function get_from_category($where=FALSE, $category, $lang, $filter=FALSE)
 	{
 		$this->db->join('article_category t5', $this->table.'.id_article = t5.id_article', 'inner');
@@ -1066,7 +1036,6 @@ class Article_model extends Base_model
 		$this->db->where('t6.name', $category);
 		$this->db->where('t7.lang', $lang);
 		
-//		return $this->get_lang_list($where, $lang, $limit, $like, $order_by, $filter);
 		return $this->get_lang_list($where, $lang, $filter);
 	}
 
@@ -1088,7 +1057,6 @@ class Article_model extends Base_model
 	 * return	array	Articles array
 	 *
 	 */	
-//	function get_from_categories($where=FALSE, $categories, $categories_condition, $lang, $limit=FALSE, $like=FALSE, $order_by=FALSE, $filter=FALSE)
 	function get_from_categories($where=FALSE, $categories, $categories_condition, $lang, $filter=FALSE)
 	{
 
@@ -1102,7 +1070,6 @@ class Article_model extends Base_model
 		$this->db->where('tcl.lang', $lang);
 		
 		// Unactivate $limit to preserve articles for categories filtering (3rd attribute)
-//		$articles = $this->get_lang_list($where, $lang, FALSE, $like, $order_by, $filter);
 		$articles = $this->get_lang_list($where, $lang, $filter);
 
 		
@@ -1113,13 +1080,9 @@ class Article_model extends Base_model
 		if ($limit !== FALSE)
 		{
 			if (is_array($limit))
-			{
 				$articles = array_slice($articles, $limit[0], $limit[1]);
-			}
 			else
-			{
 				$articles = array_slice($articles, 0, $limit);
-			}
 		}
 
 		return $articles;
@@ -1143,13 +1106,8 @@ class Article_model extends Base_model
 	 * @return	Array		Array of articles
 	 *
 	 */
-//	function get_from_archives($where=FALSE, $year, $month, $lang, $limit=FALSE, $like=FALSE, $order_by=FALSE, $filter=FALSE)
 	function get_from_archives($where=FALSE, $year, $month, $lang, $filter=FALSE)
 	{
-
-trace('Article_Model->get_from_archives() ');
-
-trace('    $year : ' . $year . ' $month : ' . $month );
 		$period = $year;
 		
 		// If month is not null
@@ -1223,7 +1181,6 @@ trace('    $year : ' . $year . ' $month : ' . $month );
 		$this->filter_on_published(self::$publish_filter);
 
 		$query = $this->db->get($this->table);
-// trace($this->db->last_query());
 
 		if($query->num_rows() > 0)
 		{

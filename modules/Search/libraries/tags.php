@@ -18,7 +18,7 @@
  * Search TagManager 
  *
  */
-class Search_Tags
+class Search_Tags extends TagManager
 {
 	
 	/**
@@ -144,25 +144,48 @@ class Search_Tags
 			// Get the results
 			$articles = $CI->search_model->get_articles($realm);
 			
-			// Put the results to the local results var
-			$tag->locals->results = $articles;
-			
+	
+
 			// If result, expand the tag
 			if ( ! empty($articles))
 			{
+				// arrays of keys, for multisorting
+				$knum = $kdate = array();
+				
+				foreach($articles as $key => &$article)
+				{
+					// set number of found words
+					preg_match_all('#'.$tag->locals->realm.'#i', $article['title'].' '.$article['content'], $match);
+					$num = count($match[0]);
+
+					$article['nb_found'] = $knum[$key] = $num;
+					$kdate[$key] = strtotime($article['date']);
+				}
+				
+				array_multisort($knum, SORT_DESC, SORT_NUMERIC, $kdate, SORT_DESC, SORT_NUMERIC, $articles);
+				
+				
+				// Put the results to the local results var
+				$tag->locals->results = $articles;
+				$tag->locals->nb_results = count($articles);
+
+				
 				// $tag->locals->results = $articles;
 				$str .= $tag->expand();
 			}
 			// If no results, display a message or returns another view, the form view, whatever you want in fact...
 			else
 			{
+				$tag->locals->results = array();
 				// Example of message return. This message is stored in /modules/Search/language/xx/search_lang.php
-				// $str .= lang('module_search_message_no_results');
+//				$str .= lang('module_search_message_no_results');
 			
 				// Example with returning the form view
-				return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search_form'.EXT));
+				// return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search_form'.EXT));
 
 			}
+			$str .= $tag->expand();
+
 		}
 		return $str;
 	}
@@ -199,7 +222,14 @@ class Search_Tags
 		return $str;
 	}
 
-
+	public static function no_results(FTL_Binding $tag)
+	{
+		if( empty($tag->locals->results))
+		{
+			return $tag->expand();
+		}
+	
+	}
 	// ------------------------------------------------------------------------
 
 	public static function realm(FTL_Binding $tag)
@@ -243,7 +273,7 @@ class Search_Tags
 		
 		if ($field && ( ! empty($tag->locals->result[$field])))
 		{
-			return $tag->locals->result[$field];
+			return self::wrap($tag, $tag->locals->result[$field]);
 		}
 		return '';
 	}
@@ -274,11 +304,30 @@ class Search_Tags
 	 */
 	public static function url(FTL_Binding $tag)
 	{
-		return $tag->locals->result['url'];
+		return $tag->locals->result['page_url'].'/'.$tag->locals->result['url'];
 	}
 
+	public static function content(FTL_Binding $tag)
+	{
+		// paragraph limit ?
+		$paragraph = (isset($tag->attr['paragraph'] )) ? (int)self::get_attribute($tag, 'paragraph') : FALSE ;
+
+		$content = $tag->locals->result['content'];
+
+		// Limit to x paragraph if the attribute is set
+		if ($paragraph !== FALSE)
+			$content = tag_limiter($content, 'p', $paragraph);
+
+		return self::wrap($tag, $content);
+	}
 
 	// ------------------------------------------------------------------------
+
+	public static function date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->result['date'])); }
+	
+	public static function nb_results($tag) { return self::wrap($tag, $tag->locals->nb_results); }
+
+	public static function nb_found($tag) { return self::wrap($tag, $tag->locals->result['nb_found']); }
 
 
 }

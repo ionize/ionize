@@ -130,25 +130,16 @@ $config['files_path'] = 'files/';
 
 /*
 |--------------------------------------------------------------------------
-| Cache Enabled
+| Cache Time
 |--------------------------------------------------------------------------
 |
-| Enable or disable the cache system
+| Number of minutes you wish the page to remain cached between refreshes.
+| 0 / false : disables the cache system.
 | The cache folder set in config.php in the setting "cache_path" must exists
 | and be writable.
 |
 */
-$config['cache_enabled'] = true;
-
-/*
-|--------------------------------------------------------------------------
-| Cache Time
-|--------------------------------------------------------------------------
-|
-| Number of minutes you wish the page to remain cached between refreshes
-|
-*/
-$config['cache_time'] = 120;
+$config['cache_time'] = 1;
 
 
 /* End of file ionize.php */

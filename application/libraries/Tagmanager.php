@@ -185,7 +185,6 @@ class TagManager
 
 				}
 				
-								
 				return true;
 			}
 			else
@@ -194,6 +193,110 @@ class TagManager
 			}
 		}
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function has_cache($tag)
+	{
+	} 		
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Cache or returns one tag cache
+	 *
+	 *
+	 */
+	public static function get_cache($tag)
+	{
+		$id = self::get_tag_cache_id($tag);
+
+		return Cache()->get($id);
+	} 		
+
+
+	// ------------------------------------------------------------------------
+
+		
+	/**
+	 * Cache or returns one tag cache
+	 *
+	 *
+	 */
+	public static function set_cache($tag, $output)
+	{
+		if (isset($tag->attr['nocache'])) return FALSE;
+		
+		$id = self::get_tag_cache_id($tag);
+		
+		Cache()->store($id, $output);
+	} 		
+
+
+	// ------------------------------------------------------------------------
+
+	
+	/**
+	 * Memory request micro cache
+	 * Stores one tag result in the local $_cache var
+	 * Avoid calling 2 times one same process.
+	 * 
+	 */
+	public static function set_micro_cache($tag)
+	{
+		$key = self::get_tag_cache_id($tag);
+		
+		self::$_cache[$key] = $value;
+	}
+	
+
+	// ------------------------------------------------------------------------
+
+	
+	/**
+	 * Returns one tag's micro cache
+	 *
+	 */
+	public static function get_micro_cache($tag)
+	{
+		$key = self::get_tag_cache_id($tag);
+	
+		if ( ! empty(self::$_cache[$key]))
+			return self::$_cache[$key];
+		
+		return FALSE;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	
+	/**
+	 * Returns one tag unique ID, regarding the tag attributes
+	 *
+	 *
+	 */
+	public static function get_tag_cache_id($tag)
+	{
+		if (isset($tag->attr['nocache'])) return FALSE;		
+	
+		$CI =& get_instance();
+		
+		$uri =	$CI->config->item('base_url').
+				$CI->config->item('index_page').
+				$CI->uri->uri_string();
+		
+		asort($tag->attr);
+		
+		$uri .= serialize($tag->attr);
+
+		return $tag->name . $uri;
+	}
+	
 
 	// ------------------------------------------------------------------------
 
@@ -311,14 +414,6 @@ class TagManager
 	{
 		if( ! empty($con->globals->pages))
 		{
-			// $pages = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_menu"] == 1;')));
-/*			$pages = array();
-			foreach($con->globals->pages as $p)
-			{
-				if ($p['id_menu'] == 1)
-					$pages[] = $p;
-			}
-*/			
 			foreach($con->globals->pages as $page)
 			{
 				if ($page['home'] == 1)
@@ -333,8 +428,6 @@ class TagManager
 				if ($p['id_menu'] == 1)
 					return $p;
 			}
-			
-//			if(isset($pages[0])) return $pages[0];
 		}
 
 		return array();
@@ -352,21 +445,13 @@ class TagManager
 	 */
 	protected function get_page(FTL_Context $con, $page_name)
 	{
-		// $pages = array_values(array_filter($con->globals->pages, create_function('$row','return $row["url"] == "'. $page_name .'";')));
-
 		foreach($con->globals->pages as $p)
 		{
 			if ($p['url'] == $page_name)
 				return $p;
 		}
 	
-		return array();
-	
-/*		if ( !empty($pages))
-			return $pages[0];
-		else
-			return array();
-*/
+		return array();	
 	}
 
 
@@ -445,13 +530,6 @@ class TagManager
 		// For safety, return false
 		return false;
 	}
-
-/*
-	public function tag_global_get($tag)
-	{
-		$get = (isset($tag->attr['get']) ) ? $tag->attr['get'] : false;
-	}
-*/
 
 
 	// ------------------------------------------------------------------------
@@ -625,17 +703,18 @@ class TagManager
 
 
 	/**
-	 * Sets a global var
+	 * Stores a var
 	 *
 	 */
 	public function tag_set($tag)
 	{
 		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : null;
+		$scope = ( !empty ($tag->attr['scope'])) ? $tag->attr['scope'] : 'locals';
 		$value = ( !empty ($tag->attr['value'])) ? $tag->attr['value'] : null;
 
 		if ( ! is_null($var))
 		{
-			$tag->locals->{$var} = $value;
+			$tag->{$scope}->{$var} = $value;
 		}
 		
 		return $value;
@@ -646,7 +725,7 @@ class TagManager
 	
 	
 	/**
-	 * Gets a global var
+	 * Gets a stored var
 	 *
 	 */
 	public function tag_get($tag)
@@ -656,7 +735,6 @@ class TagManager
 
 		if ( ! is_null($var) && !empty($tag->{$scope}->vars[$var]))
 		{
-//			return $tag->globals->{$var};
 			return $tag->{$scope}->vars[$var];
 		}
 		
@@ -795,6 +873,7 @@ class TagManager
 
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * Get one field from a data array
 	 * Used to get extended fields values
@@ -859,7 +938,7 @@ class TagManager
 		
 		// Error
 		return '';
-		return self::show_tag_error($tag->name, '<b>The "from" attribute is mandatory</b>');
+		// return self::show_tag_error($tag->name, '<b>The "from" attribute is mandatory</b>');
 	}
 	
 	
@@ -954,6 +1033,10 @@ class TagManager
 		return;
 	}
 	
+	
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 *
 	 *
@@ -1243,19 +1326,11 @@ class TagManager
 
 				foreach($segments as $key => $segment)
 				{
-				//	if (substr($segment, 0, 1) != '#')
-				//	{
-						$tmp = (String) date($segment, $date);
+					$tmp = (String) date($segment, $date);
 
-						if (preg_match('/D|l|F|M/', $segment))
-						{
-							$tmp = lang(strtolower($tmp));
-						}
-				//	}
-				//	else
-				//	{
-				//		$tmp = substr($segment, 1);
-				//	}
+					if (preg_match('/D|l|F|M/', $segment))
+						$tmp = lang(strtolower($tmp));
+
 					$segments[$key] = $tmp;
 				}
 				$str = implode(' ', $segments);
@@ -1327,16 +1402,12 @@ class TagManager
 	protected static function php_process($value, $functions)
 	{
 		if ( ! is_array($functions))
-		{
 			$functions = explode(',', $functions);
-		}
 		
 		foreach($functions as $func)
 		{
 			if (function_exists($func))
-			{
 				$value = $func($value);
-			}
 		}
 		
 		return $value;
@@ -1393,7 +1464,6 @@ class TagManager
 		
 		$message = '<p>'.implode('</p><p>', ( ! is_array($message)) ? array($message) : $message).'</p>';
 
-
 		ob_start();
 		include(APPPATH.'errors/'.$template.EXT);
 		$buffer = ob_get_contents();
@@ -1401,10 +1471,6 @@ class TagManager
 		ob_end_clean();
 		return $buffer;
 	}
-
-	
-
-
 }
 
 

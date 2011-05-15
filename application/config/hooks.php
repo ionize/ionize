@@ -13,13 +13,15 @@
 // load the file here, to allow use of connect() in constructor
 require_once APPPATH.'libraries/Connect.php';
 
+require_once APPPATH.'libraries/Cache.php';
+
 
 $hook['post_controller_constructor'][] = array (
 	'function'	=> 'init_connect',
 	'filename'	=> 'Connect.php',
 	'filepath'	=> 'libraries'
 );
-
+/*
 $hook['post_controller_constructor'][] = array(
 	'class'    => 'Cache',
 	'function' => 'post_controller_constructor_cache',
@@ -27,7 +29,6 @@ $hook['post_controller_constructor'][] = array(
 	'filepath' => 'libraries',
 	'params'   => array()
 );
-
 $hook['cache_override'] = array(
 	'class' => 'Cache',
 	'function' => 'display_cache_override',
@@ -35,6 +36,7 @@ $hook['cache_override'] = array(
 	'filepath' => 'libraries',
 	'params' => array()
 );
+*/
 
 
 /* End of file hooks.php */

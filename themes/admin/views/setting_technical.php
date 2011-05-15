@@ -112,17 +112,7 @@
 		<div class="element">
 		
 			<form name="cacheForm" id="cacheForm" method="post" action="<?= admin_url() ?>setting/save_cache">
-			
-				<!-- Enabled / Disabled -->
-				<dl class="small">
-					<dt>
-						<label for="cache_enabled" title="<?=lang('ionize_help_cache_enabled')?>"><?=lang('ionize_label_cache_enabled')?></label>
-					</dt>
-					<dd>
-						<input class="inputcheckbox" type="checkbox" name="cache_enabled" id="cache_enabled" value="1" <?php if (config_item('cache_enabled') == TRUE ):?>checked="checked"<?php endif;?>/>
-					</dd>
-				</dl>
-				
+							
 				<!-- Cache Time -->
 				<dl class="small">
 					<dt>

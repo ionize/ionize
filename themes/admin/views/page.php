@@ -169,10 +169,7 @@
 							<label for="id_parent"><?= lang('ionize_label_parent') ?></label>
 						</dt>
 						<dd>
-							<select name="id_parent" id="id_parent" class="select w150">
-							
-							
-							</select>
+							<select name="id_parent" id="id_parent" class="select w150"></select>
 						</dd>
 					</dl>
 					
@@ -1026,7 +1023,7 @@
 	<?php endif ;?>
 
 	
-	// Update parent select list when menu change
+	// Parent select list
 	$('id_menu').addEvent('change', function()
 	{
 		// Current page ID
@@ -1045,7 +1042,10 @@
 				if (Browser.ie)
 					$('id_parent').set('html', responseHTML);
 				else
-					$('id_parent').adopt(responseTree);
+					$('id_parent').set('html', responseHTML);
+// TODO : 
+// Check the difference with FF4 & IE9
+//					$('id_parent').adopt(responseTree);
 			}
 		}).send();
 

@@ -31,7 +31,8 @@ class Search_model extends Base_model
 	{
 		$realm = '%'.$realm.'%';
 	
-		$sql = "	SELECT 	article_lang.* , 
+		$sql = "	SELECT 	article_lang.title, article_lang.content, article_lang.url,
+							IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date,
 							page_lang.url as page_url, 
 							page_lang.title as page_title 
 					FROM (article)

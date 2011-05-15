@@ -79,10 +79,12 @@ class Config_model extends Base_model
 			
 			if ($type == 'string')
 			{
-				if ($val == '1' OR strtolower($val) == 'true')
+//				if ($val == '1' OR strtolower($val) == 'true')
+				if (strtolower($val) == 'true')
 					$val = var_export(TRUE, TRUE);
 
-				else if ($val == '0' OR strtolower($val) == 'false')
+//				else if ($val == '0' OR strtolower($val) == 'false')
+				else if (strtolower($val) == 'false')
 					$val = var_export(FALSE, TRUE);
 				
 				else if (strval(intval($val)) == $val)

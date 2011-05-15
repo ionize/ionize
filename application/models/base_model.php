@@ -402,9 +402,6 @@ class Base_model extends Model
 	 */
 	function get_lang_list($where = FALSE, $lang = NULL) // , $limit=false, $like=false)
 	{
-//trace('Base_Model->get_lang_list() : '. $this->table);
-
-
 		$data = array();
 
 		// Perform conditions from the $where array
@@ -1118,8 +1115,6 @@ class Base_model extends Model
 	 */
 	protected function add_linked_media(&$data, $parent, $lang = NULL)
 	{
-// trace('Base_Model->add_linked_media() : '. $parent);
-
 		// Select medias
 		$this->db->select('*, media.id_media');
 		$this->db->from('media,'. $parent .'_media');
@@ -1207,8 +1202,6 @@ class Base_model extends Model
 	 */
 	protected function add_lang_urls(&$data, $parent)
 	{
-//trace('Base_Model->add_lang_urls() : '.$parent);
-
 		// Element ID
 		$id = 'id_'.$parent;
 		

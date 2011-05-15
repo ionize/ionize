@@ -417,7 +417,7 @@ class Setting extends MY_admin
 		$this->load->model('config_model', '', true);
 
 		// Settings to save
-		$settings = array(	'texteditor', 'filemanager', 'files_path', 'cache', 'cache_time', 
+		$settings = array(	'texteditor', 'filemanager', 'files_path', 
 							'ftp_dir', 'ftp_host', 'ftp_user', 'ftp_password', 
 							'tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats',
 							'google_analytics', 'system_thumb_list', 'system_thumb_edition','media_thumb_size', 'picture_max_width', 'picture_max_height',
@@ -665,18 +665,14 @@ class Setting extends MY_admin
 	{
 		$this->load->model('config_model', '', true);
 
-		$config_items = array('cache_enabled', 'cache_time');
-
-		foreach($config_items as $config_item)
+		if (config_item('cache_time') !== $this->input->post('cache_time') )
 		{
-			if (config_item($config_item) !== $this->input->post($config_item) )
-			{
-				if ($this->config_model->change('ionize.php', $config_item, $this->input->post($config_item)) == FALSE)
-					$this->error(lang('ionize_message_error_writing_ionize_file'));				
-			}
+			if ($this->config_model->change('ionize.php', 'cache_time', $this->input->post('cache_time')) == FALSE)
+				$this->error(lang('ionize_message_error_writing_ionize_file'));				
 		}
+
 		
-		if ( ! $this->input->post('cache_enabled'))
+		if ( ! $this->input->post('cache_time'))
 		{
 			Cache()->clear_cache();
 		}
