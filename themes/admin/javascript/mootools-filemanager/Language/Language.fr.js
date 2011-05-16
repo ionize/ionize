@@ -31,7 +31,7 @@ FileManager.Language.fr = {
 
 	rename: 'Renommer',
 	renamefile: 'Merci de spécifier un nouveau nom de fichier :',
-	rn_mv_cp: 'Rename/Move/Copy',
+	rn_mv_cp: 'Renommer/Déplacer/Copier',
 
 	download: 'Télécharger',
 	nopreview: '<i>Aucun aperçu disponible</i>',
@@ -114,7 +114,7 @@ FileManager.Language.fr = {
 		flash: 'Dans le but d\'uploader des fichiers, vous devez installer <a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash">Adobe Flash</a>.'
 	},
 
-	resizeImages: 'Redimensionner pendant l\'upload',
+	resizeImages: 'Redimen. après upload',
 
 	serialize: 'Sauver la galerie',
 	gallery: {

@@ -30,6 +30,27 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.2-full-nocompat.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.2.1-yc.js"></script>
 
+
+<script type="text/javascript">
+
+	if (Browser.ie)
+	{
+		// override mootools global default setting for fade effects:
+		Fx.prototype.options.fps = 10;				// 50
+		//Fx.prototype.options.unit = false;
+		Fx.prototype.options.duration = 5;			// 500
+		//Fx.prototype.options.frames = 1000;
+		//Fx.prototype.options.frameSkip = true;
+		//Fx.prototype.options.link = 'ignore';
+		//Fx.prototype.frameInterval;
+		Fx.Durations['short'] = 5;					// 250
+		Fx.Durations['normal'] = 5;					// 500
+		Fx.Durations['long'] = 5;					// 750
+	}
+
+</script>
+
+
 <!-- Drag Clone -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/drag.clone.js"></script>
 
@@ -141,7 +162,7 @@
 <!-- If the player < 9, no Flash upload -->
 <script type="text/javascript">
 
-if(swfobject.ua.pv[0] < 15)
+if(swfobject.ua.pv[0] < 9)
 {
 	Asset.javascript('<?= theme_url() ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js');
 }

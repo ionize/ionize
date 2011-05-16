@@ -34,3 +34,6 @@ div.filemanager-dialog button{
 	overflow: visible;
 }
 
+div.filemanager-container span.fi span {
+	overflow:hidden;
+}

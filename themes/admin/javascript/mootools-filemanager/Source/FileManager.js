@@ -142,7 +142,7 @@ var FileManager = new Class({
 		this.pending_error_dialog = null;
 		// timer for dir-gallery click / dblclick events:
 		this.dir_gallery_click_timer = null;
-
+		
 		var dbg_cnt = 0;
 
 		this.RequestQueue = new Request.Queue({
@@ -247,6 +247,7 @@ var FileManager = new Class({
 				'z-index': this.options.zIndex + 3
 			} */
 		}).inject(this.filemanager);
+		
 		this.menu = new Element('div', {
 			'class': 'filemanager-menu' /* ,
 			styles:
