@@ -118,6 +118,7 @@ class Media extends MY_admin
 // str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']); 		
 
 		// FileManager constructor options
+/*
 		$params = array (
 			'directory' => Settings::get('files_path') . '/', // files
 			
@@ -149,6 +150,33 @@ class Media extends MY_admin
 
 //		$this->load->library('Filemanager', $params);
 		$this->load->library('Filemanagerwithaliassupport', $params);
+*/
+
+
+		$params = array (
+			'URLpath4FileManagedDirTree' => Settings::get('files_path') . '/',                   // relative paths: are relative to the URI request script path, i.e. dirname(__FILE__) or rather: $_SERVER['SCRIPT_NAME']
+			'URLpath4assets' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
+			'URLpath4thumbnails' => Settings::get('files_path') . '/.thumbs',
+			'upload' => TRUE,
+			'destroy' => TRUE,
+			'create' => TRUE,
+			'move' => TRUE,
+			'download' => FALSE,
+			'thumbSmallSize' => (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120,
+			'thumbBigSize' => 500,
+			'maxImageDimension' => array(
+				'width' => (Settings::get('picture_max_width') !='') ? Settings::get('picture_max_width') : 2000,
+				'height' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : 2000
+			),
+			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
+			'filter' => 'image/,audio/,video/'
+		);
+
+//		$this->load->library('Filemanager', $params);
+		$this->load->library('Filemanagerwithaliassupport', $params);
+
+
+
 
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object

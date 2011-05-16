@@ -174,24 +174,27 @@ ION.append({
 				if (responseJSON && responseJSON.tokken != '')
 				{
 					var fmOptions = {
-						baseURL: base_url,
 						url: admin_url + 'media/filemanager',
-						assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
+						URLpath4assets: theme_url + 'javascript/mootools-filemanager/Assets',
+//						assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
 						standalone: false,
 						language: Lang.get('current'),
 						selectable: true,
 						hideOnClick: true,
-//									thumbSize: self.options.thumbSize,
 						'uploadAuthData': responseJSON.tokken,
 						parentContainer: 'filemanagerWindow_contentWrapper',
+						mkServerRequestURL: function(fm_obj, request_code, post_data)
+						{
+							return {
+								url: fm_obj.options.url + '/' + request_code,
+								data: post_data
+							};
+						},
 						onComplete: function(path)
 						{
 							if (!win.document) return;
 							win.document.getElementById(field).value = path;
 							if (win.ImageDialog) win.ImageDialog.showPreviewImage(path, 1);
-							
-							// CLose filemanager after insert
-//							filemanager.close();
 							MUI.get('filemanagerWindow').close();
 						}
 					};

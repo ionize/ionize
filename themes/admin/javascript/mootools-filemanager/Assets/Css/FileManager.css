@@ -1049,6 +1049,12 @@ div.filemanager-filelist .fi .name {
 
 /* Extra (Tech.) Info / Diagnostics in preview pane */
 
+/*
+div.filemanager div.filemanager-diag-dump {
+	display: none;
+}
+*/
+
 div.filemanager div.filemanager-diag-dump ul {
 	width: auto;
 	height: auto;

@@ -31,6 +31,7 @@ FileManager.Language.br = {
 
 	rename: 'Renomear',
 	renamefile: 'Por favor especifique o novo nome do arquivo:',
+	rn_mv_cp: 'Rename/Move/Copy',
 
 	download: 'Download',
 	nopreview: '<i>Pré-visualização indisponível</i>',
@@ -65,6 +66,7 @@ FileManager.Language.br = {
 	'backend.path_not_writable': 'You do not have write/upload permissions for this directory.',
 	'backend.filename_maybe_too_large': 'The filename/path is probably too long for the server filesystem. Please retry with a shorter file name.',
 	'backend.fmt_not_allowed': 'You are not allowed to upload this file format/name.',
+	'backend.read_error': 'Cannot read / download the specified file.',
 	'backend.unidentified_error': 'An unindentified error occurred while communicating with the backend (web server).',
 
 	'backend.nonewfile': 'A new name for the file to be moved / copied is missing.',

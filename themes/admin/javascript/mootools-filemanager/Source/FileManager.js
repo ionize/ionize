@@ -8,8 +8,8 @@ authors: Christoph Pojer (@cpojer), Fabian Vogelsteller (@frozeman)
 license: MIT-style license
 
 requires:
-  core/1.3.1: '*'
-  more/1.3.1.1: [Request.Queue, Array.Extras, String.QueryString, Hash, Element.Delegation, Element.Measure, Fx.Scroll, Fx.SmoothScroll, Drag, Drag.Move, Assets, Tips ]
+  core/1.3.2: '*'
+  more/1.3.2.1: [Request.Queue, Array.Extras, String.QueryString, Hash, Element.Delegation, Element.Measure, Fx.Scroll, Fx.SmoothScroll, Drag, Drag.Move, Assets, Tips, Scroller ]
 
 provides: Filemanager
 
@@ -72,9 +72,9 @@ var FileManager = new Class({
 		 *                         fmobj   // reference to the FileManager instance which fired the event
 		 *                        )
 		 */
-		directory: '',
+		directory: '',                    // (string) the directory (relative path) which should be loaded on startup (show).
 		url: null,
-		assetBasePath: null,
+		URLpath4assets: null,
 		language: 'en',
 		selectable: false,
 		destroy: false,
@@ -83,21 +83,24 @@ var FileManager = new Class({
 		download: false,
 		createFolders: false,
 		filter: '',
+		detailInfoMode: '',               // (string) whether you want to receive extra metadata on select/etc. and/or view this metadata in the preview pane (modes: '', '+metaHTML', '+metaJSON'. Modes may be combined)
+		deliverPathAsLegalURL: false,     // (boolean) TRUE: deliver 'legal URL' paths, i.e. PHP::options['URLpath4FileManagedDirTree']-rooted (~ this.root), FALSE: deliver absolute URI paths.
 		hideOnClick: false,
 		hideClose: false,
 		hideOverlay: false,
 		hideQonDelete: false,
-		verbose: false,
+		hideOnSelect: true,               // (boolean). Default to true. If set to false, it leavers the FM open after a picture select.
+		thumbSize4DirGallery: 120,        // To set the thumb gallery container size for each thumb (dir-gal-thumb-bg); depending on size, it will pick either the small or large thumbnail provided by the backend and scale that one
 		zIndex: 1000,
 		styles: {},
 		listPaginationSize: 100,          // add pagination per N items for huge directories (speed up interaction)
 		listPaginationAvgWaitTime: 2000,  // adaptive pagination: strive to, on average, not spend more than this on rendering a directory chunk
-		propagateData: {},                // extra query parameters sent with every request to the backend
 
 		standalone: true,                 // (boolean). Default to true. If set to false, returns the Filemanager without enclosing window / overlay.
+		advancedEffects: true,			  // (boolean). Default to true. Fading effect on panels. Slow when large thumbs dir.
 		parentContainer: null,            // (string). ID of the parent container. If not set, FM will consider its first container parent for fitSizes();
-		hideOnSelect: true,               // (boolean). Default to true. If set to false, it leavers the FM open after a picture select.
-		thumbSize4DirGallery: 120,        // To set the thumb gallery container size for each thumb (dir-gal-thumb-bg); depending on size, it will pick either the small or large thumbnail provided by the backend and scale that one
+		propagateData: {},                // extra query parameters sent with every request to the backend
+		verbose: false,
 		mkServerRequestURL: null          // (function) specify your own alternative URL/POST data constructor when you use a framework/system which requires such.   function([object] fm_obj, [string] request_code, [assoc.array] post_data)
 	},
 
@@ -119,7 +122,7 @@ var FileManager = new Class({
 		this.diag.verbose = this.options.verbose;
 		this.ID = String.uniqueID();
 		this.droppables = [];
-		this.assetBasePath = this.options.assetBasePath.replace(/(\/|\\)*$/, '/');
+		this.URLpath4assets = this.options.URLpath4assets.replace(/(\/|\\)*$/, '/');
 		this.root = null;
 		this.CurrentDir = null;
 		this.listType = 'list';
@@ -257,6 +260,7 @@ var FileManager = new Class({
 		// switch the path, from clickable to input text
 		this.clickablePath = new Element('span', {'class': 'filemanager-dir'});
 		this.selectablePath = new Element('input',{'type': 'text', 'class': 'filemanager-dir', 'readonly': 'readonly'});
+		
 		this.pathTitle = new Element('a', {href:'#','class': 'filemanager-dir-title',text: this.language.dir}).addEvent('click',(function(e) {
 			this.diag.log('pathTitle-click event: ', e, ' @ ', e.target.outerHTML);
 			e.stop();
@@ -371,10 +375,16 @@ var FileManager = new Class({
 				click: this.toggleList.bind(this)
 			});
 
-// Partikule : Add a scroller to scroll the browser list when moving a file
-		this.scroller = new Scroller(this.browserScroll);
-// /Partikule
-
+		// Add a scroller to scroll the browser list when dragging a file
+		this.scroller = new Scroller(this.browserScroll, {
+			onChange: function(x, y)
+			{
+				// restrict scrolling to Y direction only!
+				//this.element.scrollTo(x, y);
+				var scroll = this.element.getScroll();
+				this.element.scrollTo(scroll.x, y);
+			}
+		});
 
 // Partikule : Thumbs list in preview panel
 		this.browserMenu_thumbList = new Element('a',{
@@ -538,7 +548,7 @@ var FileManager = new Class({
 			this.tips.attach(this.closeIcon);
 		}
 
-		this.imageadd = Asset.image(this.assetBasePath + 'Images/add.png', {
+		this.imageadd = Asset.image(this.URLpath4assets + 'Images/add.png', {
 			'class': 'browser-add',
 			styles:
 			{
@@ -684,11 +694,14 @@ var FileManager = new Class({
 	 *   url:  (string) contains the URL sent to the server for the given event/request (which is always transmitted as a POST request)
 	 *   data: (assoc. array): extra parameters added to this POST. (Mainly there in case a framework wants to have the 'event' parameter
 	 *         transmitted as a POST data element, rather than having it included in the request URL itself in some form.
+	 *
+	 * WARNING: 'this' in here is actually **NOT** pointing at the FM instance; use 'fm_obj' for that!
+	 *
+	 *          In fact, 'this' points at the 'fm_obj.options' object, but consider that an 'undocumented feature'
+	 *          as it may change in the future without notice!
 	 */
 	mkServerRequestURL: function(fm_obj, request_code, post_data)
 	{
-		// WARNING: 'this' in here is actually **NOT** pointing at the FM instance; use 'fm_obj' for that!  (In fact, 'this' points at the 'options' object, but consider that an 'undocumented feature' as it may change in the future without notice!)
-
 		return {
 			url: fm_obj.options.url + (fm_obj.options.url.indexOf('?') == -1 ? '?' : '&') + Object.toQueryString({
 					event: request_code
@@ -733,7 +746,7 @@ var FileManager = new Class({
 		return encodeURI(s.toString()).replace(/\+/g, '%2B').replace(/#/g, '%23');
 	},
 	unescapeRFC3986: function(s) {
-		return decodeURI(s.toString());
+		return decodeURI(s.toString().replace(/%23/g, '#').replace(/%2B/g, '+'));
 	},
 
 	// -> catch a click on an element in the file/folder browser
@@ -1053,7 +1066,7 @@ var FileManager = new Class({
 
 		var file = this.Current.retrieve('file');
 		this.fireEvent('complete', [
-			this.escapeRFC3986(this.normalize('/' + this.root + file.path)), // the absolute URL for the selected file, rawURLencoded
+			(this.options.deliverPathAsLegalURL ? file.path : this.escapeRFC3986(this.normalize('/' + this.root + file.path))), // the absolute URL for the selected file, rawURLencoded
 			file,                 // the file specs: .name, .path, .size, .date, .mime, .icon, .icon48, .thumb48, .thumb250
 			this
 		]);
@@ -1076,6 +1089,9 @@ var FileManager = new Class({
 	},
 
 	download: function(file) {
+		var self = this;
+		var dummyframe_active = false;
+
 		// the chained display:none code inside the Tips class doesn't fire when the 'Save As' dialog box appears right away (happens in FF3.6.15 at least):
 		if (this.tips.tip) {
 			this.tips.tip.setStyle('display', 'none');
@@ -1095,7 +1111,50 @@ var FileManager = new Class({
 			this.downloadForm = null;
 		}
 
-		this.downloadIframe = (new IFrame()).set({src: 'about:blank', name: '_downloadIframe'}).setStyles({display:'none'});
+		this.downloadIframe = new IFrame({
+				src: 'about:blank',
+				name: '_downloadIframe',
+				styles: {
+					display: 'none'
+				},
+			    events: {
+					load: function()
+					{
+						var iframe = this;
+						self.diag.log('download response: ', this, ', iframe: ', self.downloadIframe, ', ready: ', (1 * dummyframe_active));
+
+						// make sure we don't act on premature firing of the event in MSIE / Safari browsers:
+						if (!dummyframe_active)
+							return;
+
+						var response = null;
+						Function.attempt(function() {
+								response = iframe.contentDocument.documentElement.textContent;
+							},
+							function() {
+								response = iframe.contentWindow.document.innerText;
+							},
+							function() {
+								response = iframe.contentDocument.innerText;
+							},
+							function() {
+								response = "{status: 0, error: \"Download: download assumed okay: can't find response.\"}";
+							}
+						);
+
+						var j = JSON.decode(response);
+
+						if (j && !j.status)
+						{
+							self.showError('' + j.error);
+						}
+						else if (!j)
+						{
+							self.showError('bugger! No or faulty JSON response! ' + response);
+						}
+					}
+				}
+			});
 		this.menu.adopt(this.downloadIframe);
 
 		this.downloadForm = new Element('form', {target: '_downloadIframe', method: 'post', enctype: 'multipart/form-data'});
@@ -1115,6 +1174,8 @@ var FileManager = new Class({
 					{
 						this.downloadForm.adopt((new Element('input')).set({type: 'hidden', name: k, value: v}));
 					}.bind(this));
+
+		dummyframe_active = true;
 
 		return this.downloadForm.submit();
 	},
@@ -1306,6 +1367,19 @@ var FileManager = new Class({
 		if (this.Request) this.Request.cancel();
 
 		this.browserLoader.fade(1);
+
+		if ((typeof jsGET !== 'undefined') && this.storeHistory)
+		{
+			if (file.mime !== 'text/directory')
+			{
+				// TODO: really, a full check should also check whether the fmPath equals the this.CurrentDir.path
+				if (file.name === jsGET.get('fmFile'))
+				{
+					// this will ensure the subsequent fill() action will revert the detail view to the directory details.
+					jsGET.remove(['fmFile']);
+				}
+			}
+		}
 
 		var tx_cfg = this.options.mkServerRequestURL(this, 'destroy', {
 						file: file.name,
@@ -1966,7 +2040,7 @@ var FileManager = new Class({
 			new Element('span', {
 				'class': this.listType,
 				'styles': {
-					'background-image': 'url(' + (thumbnail_url ? thumbnail_url : this.assetBasePath + 'Images/loader.gif') + ')'
+					'background-image': 'url(' + (thumbnail_url ? thumbnail_url : this.URLpath4assets + 'Images/loader.gif') + ')'
 				}
 			}).addClass('fm-thumb-bg'),
 			new Element('span', {'class': 'filemanager-filename', text: file.name, title: file.name})
@@ -1984,7 +2058,7 @@ var FileManager = new Class({
 				'styles': {
 					'width': this.options.thumbSize4DirGallery + 'px',
 					'height': this.options.thumbSize4DirGallery + 'px',
-					'background-image': 'url(' + (thumbnail_url ? thumbnail_url : this.assetBasePath + 'Images/loader.gif') + ')'
+					'background-image': 'url(' + (thumbnail_url ? thumbnail_url : this.URLpath4assets + 'Images/loader.gif') + ')'
 				}
 			}),
 			new Element('div', {
@@ -2038,6 +2112,8 @@ var FileManager = new Class({
 		mt = Math.round((ds - ih) / 2);
 		mb = ds - mt - ih;
 
+		var self = this;
+
 		Asset.image(img_url, {
 			styles: {
 				width: iw,
@@ -2054,12 +2130,12 @@ var FileManager = new Class({
 			},
 			onError: function() {
 				self.diag.log('dirgallery image asset: error!');
-				var iconpath = self.assetBasePath + 'Images/Icons/Large/default-error.png';
+				var iconpath = self.URLpath4assets + 'Images/Icons/Large/default-error.png';
 				dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
 			},
 			onAbort: function() {
 				self.diag.log('dirgallery image asset: ABORT!');
-				var iconpath = self.assetBasePath + 'Images/Icons/Large/default-error.png';
+				var iconpath = self.URLpath4assets + 'Images/Icons/Large/default-error.png';
 				dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
 			}
 		});
@@ -2148,7 +2224,7 @@ var FileManager = new Class({
 
 			editButtons.each(function(v) {
 				//icons.push(
-				Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+				Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
 					// this = el, self = FM instance
 					e.preventDefault();
 					this.store('edit', true);
@@ -2235,14 +2311,14 @@ var FileManager = new Class({
 					dg_el = this.dir_gallery_item_maker(file.icon48, file);
 
 					el = (function(file, dg_el) {           // Closure
-						var iconpath = this.assetBasePath + 'Images/Icons/' + (this.listType === 'thumb' ? 'Large/' : '') + 'default-error.png';
+						var iconpath = this.URLpath4assets + 'Images/Icons/' + (this.listType === 'thumb' ? 'Large/' : '') + 'default-error.png';
 						var list_row = this.list_row_maker((this.listType === 'thumb' ? file.icon48 : file.icon), file);
 
 						var tx_cfg = this.options.mkServerRequestURL(this, 'detail', {
 										directory: this.dirname(file.path),
 										file: file.name,
 										filter: this.options.filter,
-										mode: 'direct'
+										mode: 'direct' + this.options.detailInfoMode
 									});
 
 						var req = new FileManager.Request({
@@ -2362,17 +2438,14 @@ var FileManager = new Class({
 				}
 
 				editButtons = [];
-				// download icon
-				if (this.options.download) {
-					if (this.options.download) editButtons.push('download');
-				}
 
-				// rename, delete icon
+				// download, rename, delete icon
+				if (this.options.download) editButtons.push('download');
 				if (this.options.rename) editButtons.push('rename');
 				if (this.options.destroy) editButtons.push('destroy');
 
 				editButtons.each(function(v) {
-					Asset.image(this.assetBasePath + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+					Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
 						// this = el, self = FM instance
 						e.preventDefault();
 						this.store('edit', true);
@@ -2433,8 +2506,8 @@ var FileManager = new Class({
 						},
 						'dblclick': function(e)
 						{
-							clearTimeout(this.dir_gallery_click_timer);
-							this.dir_gallery_click_timer = self.relayDblClick.delay(0, self, [e, this, dg_el, file, 2]);
+							clearTimeout(self.dir_gallery_click_timer);
+							self.dir_gallery_click_timer = self.relayDblClick.delay(0, self, [e, this, dg_el, file, 2]);
 						}
 					});
 
@@ -2474,59 +2547,44 @@ var FileManager = new Class({
 		duration = new Date().getTime() - starttime;
 		//this.diag.log(' + time taken in array traversal + revert = ', duration);
 
-		if (support_DnD_for_this_dir) {
+		if (support_DnD_for_this_dir)
+		{
+			var self = this;
+			
 			// -> make draggable
 			$$(els[0]).makeDraggable({
 				droppables: $$(this.droppables.combine(els[1])),
 				//stopPropagation: true,
 
-// Partikule
-// Changed the drag because of container : The container of the FM can be moved, the pos needs to be relative to the container, not to the page
-// Not perfect...
-				onDrag: (function(el, e) {
-/*
-					this.imageadd.setStyles({
-						'left': e.page.x + 25,
-						'top': e.page.y + 25
-					});
-*/
-					var cpos = el.retrieve('cpos');
+				// We position the element relative to its original position; this ensures the drag always works with arbitrary container.
+				onDrag: (function(el, e)
+				{
+					var dpos = el.retrieve('delta_pos');
+
 					el.setStyles({
 						display: 'block',
-						left: e.page.x - cpos.x + 12,
-						top: e.page.y - cpos.y + 10
+						left: e.page.x - dpos.x + 12,
+						top: e.page.y - dpos.y + 10
 					});
 
 					this.imageadd.setStyles({
-						'left': e.page.x - cpos.x,
-						'top': e.page.y - cpos.y + 12
+						'left': e.page.x - dpos.x,
+						'top': e.page.y - dpos.y + 12
 					});
-
 				}).bind(this),
 
 				onBeforeStart: (function(el) {
-					var position = el.getPosition();
-					el.store('cpos', this.container.getPosition());
+					// you CANNOT use .container to get good x/y coords as in standalone mode, this <div> has a bogus position;
+					el.store('delta_pos', self.container.getPosition());
 					
-					// start the scroller				
+					// start the scroller
 					this.scroller.start();
-					
-/*	Partikule				
-					this.diag.log('draggable:onBeforeStart', el);
-					var position = el.getPosition();
-					el.addClass('drag').setStyles({
-						'z-index': this.options.zIndex + 1500,
-						'position': 'absolute',
-						'width': el.getWidth() - el.getStyle('paddingLeft').toInt() - el.getStyle('paddingRight').toInt(),
-						'left': position.x,
-						'top': position.y
-					}).inject(this.container);
-*/
 				}).bind(this),
 
 				// FIX: do not deselect item when aborting dragging _another_ item!
 				onCancel: (function(el) {
 					this.diag.log('draggable:onCancel', el);
+					this.scroller.stop();
 					this.revert_drag_n_drop(el);
 					/*
 					 * Fixing the 'click' on FF+Opera (other browsers do get that event for any item which is made draggable):
@@ -2543,20 +2601,41 @@ var FileManager = new Class({
 				onStart: (function(el, e) {
 					this.diag.log('draggable:onStart', el);
 					this.tips.hide();
-// Partikule add
+
 					var position = el.getPosition();
-					var cpos = el.retrieve('cpos');
+					var dpos = el.retrieve('delta_pos');
+					/*
+					var dpos = {
+						x: position.x - e.page.x,
+						y: position.y - e.page.y
+					};
+					*/
+					/*
+					 * Use the element size (Y) for IE-fixing heuristics:
+					 * in IE the mouse is already quite some distance away before the onStart fires,
+					 * we need to restrict the vertical position of the dragged element in such a way
+					 * that it will reside 'under the mouse cursor'.
+					 */
+					var elsize = el.getSize();
+/*
+					if (dpos.y > 0)
+						dpos.y = -Math.round(elsize.y / 2);
+					else if (dpos.y < -elsize.y)
+						dpos.y = -Math.round(elsize.y / 2);
+*/
+					this.diag.log('~~~ positions at start: ', position, dpos, e);
+
+//					el.store('delta_pos', dpos);
 
 					el.addClass('drag').setStyles({
 						'z-index': this.options.zIndex + 1500,
 						'position': 'absolute',
-						'width': el.getWidth() - el.getStyle('paddingLeft').toInt(),
+						'width': el.getWidth() - el.getStyle('paddingLeft').toInt() - el.getStyle('paddingRight').toInt(),
 						'display': 'none',
-						'left': e.page.x - cpos.x + 10,
-						'top': e.page.y - cpos.y + 10
-
+						'left': e.page.x - dpos.x,
+						'top': e.page.y - dpos.y
 					}).inject(this.container);
-// /Partikule
+
 					el.fade(0.7).addClass('move');
 
 					this.diag.log('ENABLE keyboard up/down on drag start');
@@ -2577,6 +2656,7 @@ var FileManager = new Class({
 
 				onDrop: (function(el, droppable, e) {
 					this.diag.log('draggable:onDrop', el, droppable, e);
+					this.scroller.stop();
 
 					var is_a_move = !(e.control || e.meta);
 					this.drop_pending = 1 + is_a_move;
@@ -2814,7 +2894,7 @@ var FileManager = new Class({
 			if (file.mime !== 'text/directory')
 				jsGET.set({'fmFile': file.name});
 			else
-				jsGET.set({'fmFile': ''});
+				jsGET.remove(['fmFile']);
 		}
 
 		var icon = file.icon;
@@ -2842,7 +2922,8 @@ var FileManager = new Class({
 							// fixup for root directory detail requests:
 							file: (file.mime === 'text/directory' && file.path === '/') ? '/' : file.name,
 							filter: this.options.filter,
-							mode: 'auto'                    // provide either direct links to the thumbnails (when available in cache) or PHP event trigger URLs for delayed thumbnail image creation (performance optimization: faster page render)
+							// provide either direct links to the thumbnails (when available in cache) or PHP event trigger URLs for delayed thumbnail image creation (performance optimization: faster page render):
+							mode: 'auto' + this.options.detailInfoMode
 						});
 
 			this.Request = new FileManager.Request({
@@ -2902,7 +2983,7 @@ var FileManager = new Class({
 
 					if (prev && !j.thumb250 && j.thumbs_deferred)
 					{
-						var iconpath = this.assetBasePath + 'Images/Icons/Large/default-error.png';
+						var iconpath = this.URLpath4assets + 'Images/Icons/Large/default-error.png';
 
 						if (0)
 						{
@@ -2918,7 +2999,7 @@ var FileManager = new Class({
 										directory: this.dirname(file.path),
 										file: file.name,
 										filter: this.options.filter,
-										mode: 'direct'
+										mode: 'direct' + this.options.detailInfoMode
 									});
 
 						var req = new FileManager.Request({

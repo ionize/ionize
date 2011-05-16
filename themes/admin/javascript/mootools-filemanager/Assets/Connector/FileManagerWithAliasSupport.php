@@ -1,6 +1,6 @@
 <?php
 /*
- * Script: FMgr4Alias.php
+ * Script: FileManagerWithAliasSupport.php
  *   MooTools FileManager - Backend for the FileManager Script (with Alias path mapping support)
  *
  * Authors:
@@ -14,7 +14,7 @@
  *
  * Copyright:
  *   FileManager Copyright (c) 2009-2011 [Christoph Pojer](http://cpojer.net)
- *   Backend: FileManager & FMgr4Alias Copyright (c) 2011 [Ger Hobbelt](http://hobbelt.com)
+ *   Backend: FileManager & FileManagerWithAliasSupport Copyright (c) 2011 [Ger Hobbelt](http://hobbelt.com)
  *
  * Dependencies:
  *   - Tooling.php
@@ -46,17 +46,10 @@ class FileManagerWithAliasSupport extends FileManager
 		$this->scandir_alias_lu_arr = null;
 
 		$options = array_merge(array(
-			'Aliases' => null,             // default is an empty Alias list.
-			'RequestScriptURI' => null     // default is $_SERVER['SCRIPT_NAME']
+			'Aliases' => null             // default is an empty Alias list.
 		), (is_array($options) ? $options : array()));
 
 		parent::__construct($options);
-
-		// apply default to RequestScriptURI:
-		if (empty($this->options['RequestScriptURI']))
-		{
-			$this->options['RequestScriptURI'] = parent::getRequestScriptURI();
-		}
 
 		/*
 		 * Now process the Aliases array:
@@ -70,7 +63,7 @@ class FileManagerWithAliasSupport extends FileManager
 		{
 			$alias_arr = $this->options['Aliases'];
 
-			// collect the set of aliases per parent directory: we need a fully set up options['directory'] for this now
+			// collect the set of aliases per parent directory: we need a fully set up options['URLpath4FileManagedDirTree'] for this now
 			$scandir_lookup_arr = array();
 
 			// NOTE: we can use any of the url2file_path methods here as those only use the raw [Aliases] array
@@ -107,16 +100,6 @@ class FileManagerWithAliasSupport extends FileManager
 		), parent::getSettings());
 	}
 
-	public /* static */ function getRequestScriptURI()
-	{
-		if (!empty($this->options['RequestScriptURI']))
-		{
-			return $this->options['RequestScriptURI'];
-		}
-		return parent::getRequestScriptURI();
-	}
-
-
 	/**
 	 * An augmented scandir() which will ensure any Aliases are included in the relevant
 	 * directory scans; this makes the Aliases behave very similarly to actual directories.
@@ -127,7 +110,6 @@ class FileManagerWithAliasSupport extends FileManager
 
 		// collect the real items first:
 		$coll = parent::scandir($dir, $filemask, $see_thumbnail_dir, $glob_flags_or, $glob_flags_and);
-		FM_vardumper($this, 'scandir4Alias', $coll);
 		if ($coll === false)
 			return $coll;
 
@@ -148,7 +130,7 @@ class FileManagerWithAliasSupport extends FileManager
 		$tndir = null;
 		if (!$see_thumbnail_dir)
 		{
-			$tn_uri = $this->options['thumbnailPath'];
+			$tn_uri = $this->options['URLpath4thumbnails'];
 			$tnpath = $this->url_path2file_path($tn_uri);
 			//if (FileManagerUtility::startswith($dir, $tnpath))
 			//  return false;
@@ -250,7 +232,7 @@ class FileManagerWithAliasSupport extends FileManager
 	{
 		$url_path = $this->rel2abs_legal_url_path($url_path);
 
-		$url_path = substr($this->options['directory'], 0, -1) . $url_path;
+		$url_path = substr($this->options['URLpath4FileManagedDirTree'], 0, -1) . $url_path;
 
 		$path = $this->url_path2file_path($url_path);
 

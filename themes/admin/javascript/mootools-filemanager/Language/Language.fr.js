@@ -31,6 +31,7 @@ FileManager.Language.fr = {
 
 	rename: 'Renommer',
 	renamefile: 'Merci de spécifier un nouveau nom de fichier :',
+	rn_mv_cp: 'Rename/Move/Copy',
 
 	download: 'Télécharger',
 	nopreview: '<i>Aucun aperçu disponible</i>',
@@ -65,6 +66,7 @@ FileManager.Language.fr = {
 	'backend.path_not_writable': 'Problème de droit d\'écriture sur le dossier.',
 	'backend.filename_maybe_too_large': 'Le chemin ou nom de fichier est probablement trop long. Réessayez avec un nom plus court.',
 	'backend.fmt_not_allowed': 'Le format ou nom de fichier que vous souhaitez uploader n\'est pas autorisé.',
+	'backend.read_error': 'Cannot read / download the specified file.',
 	'backend.unidentified_error': 'Une erreur inconnue est survenue lors de la communication avec le serveur.',
 
 	'backend.nonewfile': 'Le nouveau nom de fichier est manquant.',

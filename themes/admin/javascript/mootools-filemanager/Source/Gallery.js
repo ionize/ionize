@@ -56,6 +56,9 @@ FileManager.Gallery = new Class({
 			},
 
 			show: function(self) {
+				self.gallery.empty();
+				self.files = {};
+
 				self.show_gallery();
 				self.populate();
 			},
@@ -464,12 +467,12 @@ FileManager.Gallery = new Class({
 			},
 			onError: function() {
 				self.diag.log('image asset: error!');
-				var iconpath = self.assetBasePath + 'Images/Icons/Large/default-error.png';
+				var iconpath = self.URLpath4assets + 'Images/Icons/Large/default-error.png';
 				this.src = iconpath;
 			},
 			onAbort: function() {
 				self.diag.log('image asset: ABORT!');
-				var iconpath = self.assetBasePath + 'Images/Icons/Large/default-error.png';
+				var iconpath = self.URLpath4assets + 'Images/Icons/Large/default-error.png';
 				this.src = iconpath;
 			}
 		});
@@ -518,7 +521,7 @@ FileManager.Gallery = new Class({
 
 		// store & display item in gallery:
 		var self = this;
-		var destroyIcon = Asset.image(this.assetBasePath + 'Images/destroy.png').set({
+		var destroyIcon = Asset.image(this.URLpath4assets + 'Images/destroy.png').set({
 			'class': 'filemanager-remove',
 			title: this.language.gallery.remove,
 			events: {
@@ -573,7 +576,7 @@ FileManager.Gallery = new Class({
 							directory: this.dirname(file.path),
 							file: file.name,
 							filter: this.options.filter,
-							mode: 'direct'                          // provide direct links to the thumbnail files
+							mode: 'direct' + this.options.detailInfoMode           // provide direct links to the thumbnail files
 						});
 
 			var req = new FileManager.Request({
@@ -757,6 +760,8 @@ FileManager.Gallery = new Class({
 		{
 			// we've got work to do, folks!
 			var i;
+			var abs_root = this.normalize('/' + this.root);
+
 			for (i = 0; i < count; ++i)
 			{
 				// LIFO queue:
@@ -765,7 +770,7 @@ FileManager.Gallery = new Class({
 
 				// coded so that we support 'legal URL space' items and 'absolute URL path' items at the same time:
 				// when paths start with the root directory, we'll strip that off to make them 'legal URL space' compliant filespecs.
-				if (path.indexOf(this.root) === 0)
+				if (path.indexOf(abs_root) === 0)
 				{
 					path = path.substr(this.root.length);
 				}
@@ -787,11 +792,16 @@ FileManager.Gallery = new Class({
 		var serialized = {};
 		var metas = {};
 		var index = 0;
-		Object.each(this.files,function(file) {
-			serialized[file.legal_path] = (file.caption || '');
+		Object.each(this.files,function(file)
+		{
+			var path = (this.options.deliverPathAsLegalURL ? file.file.path : this.escapeRFC3986(this.normalize('/' + this.root + file.file.path)));  // the absolute URL for the given file, rawURLencoded
+			var caption = (file.caption || '');
+			serialized[path] = caption;
 			var m = Object.clone(file.file);
 			m['order_no'] = index++;
-			metas[file.legal_path] = m;
+			m['caption'] = caption;
+			m['pathRFC3986'] = path;
+			metas[path] = m;
 		}, this);
 		this.keepGalleryData = true;
 		this.hide(e);

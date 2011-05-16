@@ -230,40 +230,43 @@ class Cache
 	 */
 	function store($id, $output)
 	{
-		$CI =& get_instance();	
-		$path = $CI->config->item('cache_path');
+		if ($this->cache_expiration > 0)
+		{
+			$CI =& get_instance();	
+			$path = $CI->config->item('cache_path');
+		
+			$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
+			
+			if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
+			{
+				return;
+			}
+			
+			$cache_path .= md5($id);
+			
+			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+			{
+				log_message('error', "Unable to write cache file: ".$cache_path);
+				return;
+			}
+			
+			$expire = time() + ($this->cache_expiration * 60);
 	
-		$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
-		
-		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
-		{
-			return;
+			if (flock($fp, LOCK_EX))
+			{
+				fwrite($fp, $expire.'TS--->'.$output);
+				flock($fp, LOCK_UN);
+			}
+			else
+			{
+				log_message('error', "Unable to secure a file lock for file at: ".$cache_path);
+				return;
+			}
+			fclose($fp);
+			@chmod($cache_path, DIR_WRITE_MODE);
+	
+			log_message('debug', "Cache file written: ".$cache_path);
 		}
-		
-		$cache_path .= md5($id);
-		
-		if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
-		{
-			log_message('error', "Unable to write cache file: ".$cache_path);
-			return;
-		}
-		
-		$expire = time() + ($this->cache_expiration * 60);
-
-		if (flock($fp, LOCK_EX))
-		{
-			fwrite($fp, $expire.'TS--->'.$output);
-			flock($fp, LOCK_UN);
-		}
-		else
-		{
-			log_message('error', "Unable to secure a file lock for file at: ".$cache_path);
-			return;
-		}
-		fclose($fp);
-		@chmod($cache_path, DIR_WRITE_MODE);
-
-		log_message('debug', "Cache file written: ".$cache_path);	
 	}
 	
 	
@@ -281,7 +284,7 @@ class Cache
 			// put it in the loader
 			$CI =& get_instance();
 
-			$dummy = new Cache(config_item('cache_time'));
+			$dummy = new Cache(config_item('cache_expiration'));
 
 			$CI->load->_ci_loaded_files[] = APPPATH.'libraries/Cache.php';
 		}

@@ -28,7 +28,8 @@ div.filemanager-details {
 #mootools-filemanager div.filemanager-menu label  {
 }
 
-div.filemanager button {
+div.filemanager button,
+div.filemanager-dialog button{
 	display: inline;
 	overflow: visible;
 }

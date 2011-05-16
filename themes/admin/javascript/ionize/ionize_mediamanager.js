@@ -525,10 +525,9 @@ var IonizeMediaManager = new Class(
 								
 								// fileManager init
 								filemanager = new FileManager({
-									baseURL: base_url,
 									url: admin_url + 'media/filemanager',
-//									directory:'files',
-									assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
+									URLpath4assets: theme_url + 'javascript/mootools-filemanager/Assets',
+//									assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
 									standalone: false,
 									thumbSmallSize: 120,
 									createFolders: true,
@@ -577,9 +576,6 @@ var IonizeMediaManager = new Class(
 			}
 		}
 	}
-	
-	
-	
 });
 
 ION.append({
