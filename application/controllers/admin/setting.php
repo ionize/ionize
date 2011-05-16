@@ -665,14 +665,13 @@ class Setting extends MY_admin
 	{
 		$this->load->model('config_model', '', true);
 
-		if (config_item('cache_time') !== $this->input->post('cache_time') )
+		if (config_item('cache_expiration') !== $this->input->post('cache_expiration') )
 		{
-			if ($this->config_model->change('ionize.php', 'cache_time', $this->input->post('cache_time')) == FALSE)
+			if ($this->config_model->change('ionize.php', 'cache_expiration', $this->input->post('cache_expiration')) == FALSE)
 				$this->error(lang('ionize_message_error_writing_ionize_file'));				
 		}
 
-		
-		if ( ! $this->input->post('cache_time'))
+		if ( ! $this->input->post('cache_expiration'))
 		{
 			Cache()->clear_cache();
 		}
@@ -685,6 +684,15 @@ class Setting extends MY_admin
 
 		// Answer
 		$this->success(lang('ionize_message_cache_saved'));				
+	}
+
+	function clear_cache()
+	{
+		Cache()->clear_cache();
+
+		// Answer
+		$this->success(lang('ionize_message_cache_cleared'));				
+		
 	}
 
 	// ------------------------------------------------------------------------

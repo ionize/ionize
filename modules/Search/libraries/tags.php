@@ -97,6 +97,10 @@ class Search_Tags extends TagManager
 		}
 	}
 	
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Form action tag
 	 * Used to display the results on a new page
@@ -136,7 +140,11 @@ class Search_Tags extends TagManager
 		$tag->locals->realm = $CI->input->post('realm');
 		
 		// Did we got the POST realm ?
-		if ($realm = $CI->input->post('realm'))
+		$realm = $CI->input->post('realm');
+	
+		$tag->locals->results = array();
+		
+		if ($realm !== FALSE && $realm != '')
 		{
 			// Loads the serach module model
 			$CI->load->model('search_model', '', true);
@@ -144,8 +152,6 @@ class Search_Tags extends TagManager
 			// Get the results
 			$articles = $CI->search_model->get_articles($realm);
 			
-	
-
 			// If result, expand the tag
 			if ( ! empty($articles))
 			{
@@ -162,31 +168,22 @@ class Search_Tags extends TagManager
 					$kdate[$key] = strtotime($article['date']);
 				}
 				
+				// Sort the results by realm occurences DESC first, by date DESC second.			
 				array_multisort($knum, SORT_DESC, SORT_NUMERIC, $kdate, SORT_DESC, SORT_NUMERIC, $articles);
-				
 				
 				// Put the results to the local results var
 				$tag->locals->results = $articles;
 				$tag->locals->nb_results = count($articles);
-
-				
-				// $tag->locals->results = $articles;
-				$str .= $tag->expand();
 			}
 			// If no results, display a message or returns another view, the form view, whatever you want in fact...
 			else
 			{
-				$tag->locals->results = array();
-				// Example of message return. This message is stored in /modules/Search/language/xx/search_lang.php
-//				$str .= lang('module_search_message_no_results');
-			
-				// Example with returning the form view
-				// return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search_form'.EXT));
-
+				// Do nothing, the tag "no_result" will display the message or the form again.
 			}
-			$str .= $tag->expand();
-
 		}
+		
+		$str .= $tag->expand();
+		
 		return $str;
 	}
 
@@ -221,7 +218,15 @@ class Search_Tags extends TagManager
 	
 		return $str;
 	}
+	
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Displays the content of the tag if no results
+	 *
+	 */
 	public static function no_results(FTL_Binding $tag)
 	{
 		if( empty($tag->locals->results))
@@ -230,8 +235,15 @@ class Search_Tags extends TagManager
 		}
 	
 	}
+	
+	
 	// ------------------------------------------------------------------------
-
+	
+	
+	/**
+	 * Returns the searched term
+	 *
+	 */
 	public static function realm(FTL_Binding $tag)
 	{
 		$str = '';
@@ -244,21 +256,10 @@ class Search_Tags extends TagManager
 		return $str;
 	}
 	
-	public static function highlight(FTL_Binding $tag)
-	{
-		$search = '';
-		
-		
-		if( ! empty($tag->locals->realm))
-		{
-			$search = $tag->locals->realm;
-		}
-		
-		$str = '<script type="text/javascript"> highlightSearchTerms(\''.$search.'\');</script>'; 		
-		
-		return $str;
-	}
 	
+	// ------------------------------------------------------------------------
+	
+
 	/**
 	 * Returns one asked field of the current result.
 	 * If you query result contains the field 'title', you can retrieve it with this tag.
@@ -278,6 +279,9 @@ class Search_Tags extends TagManager
 		return '';
 	}
 
+	
+	// ------------------------------------------------------------------------
+	
 
 	/**
 	 * Return one result title
@@ -307,6 +311,14 @@ class Search_Tags extends TagManager
 		return $tag->locals->result['page_url'].'/'.$tag->locals->result['url'];
 	}
 
+	
+	// ------------------------------------------------------------------------
+	
+	
+	/**
+	 * Returns each result article's content
+	 *
+	 */
 	public static function content(FTL_Binding $tag)
 	{
 		// paragraph limit ?
@@ -321,12 +333,34 @@ class Search_Tags extends TagManager
 		return self::wrap($tag, $content);
 	}
 
+
 	// ------------------------------------------------------------------------
 
+
+	/**
+	 * Returns each result article's date
+	 *
+	 */
 	public static function date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->result['date'])); }
 	
+
+	// ------------------------------------------------------------------------
+
+	
+	/**
+	 * Returns number of articles found
+	 *
+	 */
 	public static function nb_results($tag) { return self::wrap($tag, $tag->locals->nb_results); }
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns number of term occurences for each article found
+	 *
+	 */
 	public static function nb_found($tag) { return self::wrap($tag, $tag->locals->result['nb_found']); }
 
 

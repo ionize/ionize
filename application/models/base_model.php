@@ -1211,42 +1211,44 @@ class Base_model extends Model
 		{
 			$ids[] = $element[$id];
 		}
-
-		$this->db->select($id .',' .$parent . '_lang.lang,' . $parent . '_lang.url');
-		$this->db->where($id . ' in (' . implode(',' , $ids ) . ')' );
-		$this->db->from($parent . '_lang');
-	
-		$query = $this->db->get();
-
-		$result = array();
-
-		// Feed each media array
-		if($query->num_rows() > 0)
-			$result = $query->result_array();
-
-		$languages = Settings::get_languages();
 		
-		// data must be a list of arrays
-		if (isset($data[0]) && is_array($data[0]))
+		if ( ! empty($ids))
 		{
-			foreach($data as $k => $el)
+			$this->db->select($id .',' .$parent . '_lang.lang,' . $parent . '_lang.url');
+			$this->db->where($id . ' in (' . implode(',' , $ids ) . ')' );
+			$this->db->from($parent . '_lang');
+		
+			$query = $this->db->get();
+	
+			$result = array();
+	
+			// Feed each media array
+			if($query->num_rows() > 0)
+				$result = $query->result_array();
+	
+			$languages = Settings::get_languages();
+			
+			// data must be a list of arrays
+			if (isset($data[0]) && is_array($data[0]))
 			{
-				foreach($languages as $language)
+				foreach($data as $k => $el)
 				{
-					foreach($result as $row)
+					foreach($languages as $language)
 					{
-						if ($row[$id] == $el[$id] && $row['lang'] == $language['lang'])
+						foreach($result as $row)
 						{
-							$data[$k]['urls'][$row['lang']] = $row['url'];
+							if ($row[$id] == $el[$id] && $row['lang'] == $language['lang'])
+							{
+								$data[$k]['urls'][$row['lang']] = $row['url'];
+							}
 						}
+						// $url = array_values(array_filter($result, create_function('$row','return ($row["id_'.$this->table.'"] == "'. $el['id_'.$this->table] .'" && $row["lang"] == "'.$language['lang'].'");')));
+						// $url = (!empty($url[0])) ? $url[0]['url'] : '';
+						// $data[$k]['urls'][$language['lang']] = $url;
 					}
-					// $url = array_values(array_filter($result, create_function('$row','return ($row["id_'.$this->table.'"] == "'. $el['id_'.$this->table] .'" && $row["lang"] == "'.$language['lang'].'");')));
-					// $url = (!empty($url[0])) ? $url[0]['url'] : '';
-					// $data[$k]['urls'][$language['lang']] = $url;
 				}
 			}
-		}
-	
+		}	
 	}
 
 
@@ -1316,20 +1318,18 @@ class Base_model extends Model
 	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{	
-		// Check the website settings regarding the extend fields
-//		if (Settings::get('use_extend_fields') == '1')
-//		{
-			// get the extend fields definition array
-			$this->set_extend_fields_definition($this->table);
-			
-			// Get the elements ID to filter the SQL on...
-			$ids = array();
-			
-			foreach ($data as $d)
-			{
-				$ids[] = $d['id_'.$parent];
-			}
-			
+		// get the extend fields definition array
+		$this->set_extend_fields_definition($this->table);
+		
+		// Get the elements ID to filter the SQL on...
+		$ids = array();
+		foreach ($data as $d)
+		{
+			$ids[] = $d['id_'.$parent];
+		}
+		
+		if ( ! empty($ids))
+		{
 			// Get the extend fields details, filtered on parents ID
 			$this->db->where(array('extend_field.parent'=>$parent));
 			$this->db->where_in($ids);
@@ -1377,7 +1377,7 @@ class Base_model extends Model
 					}
 				}
 			}			
-//		}
+		}
 	}
 
 

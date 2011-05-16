@@ -360,28 +360,30 @@ class Page_model extends Base_model
 	function get_lang_contexts($id_article, $lang)
 	{
 		$data = array();
-
-		$this->db->select($this->table.'.*');
-		$this->db->select($this->lang_table.'.*');
-		$this->db->select($this->context_table.'.*');
-
-		$this->db->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
-		$this->db->join($this->context_table, $this->table.'.'.$this->pk_name.' = ' .$this->context_table.'.'.$this->pk_name);			
-
-		$this->db->where(array($this->lang_table.'.lang' => $lang));
 		
-		if ( ! is_array($id_article) )
-			$this->db->where(array($this->context_table.'.id_article' => $id_article));
-		else
-			$this->db->where($this->context_table.'.id_article in (' . implode(',', $id_article) . ')');
-
-		$query = $this->db->get($this->table);
-
-		if($query->num_rows() > 0)
+		if ( ! empty($id_article))
 		{
-			$data = $query->result_array();
+			$this->db->select($this->table.'.*');
+			$this->db->select($this->lang_table.'.*');
+			$this->db->select($this->context_table.'.*');
+	
+			$this->db->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
+			$this->db->join($this->context_table, $this->table.'.'.$this->pk_name.' = ' .$this->context_table.'.'.$this->pk_name);			
+	
+			$this->db->where(array($this->lang_table.'.lang' => $lang));
+			
+			if ( ! is_array($id_article) )
+				$this->db->where(array($this->context_table.'.id_article' => $id_article));
+			else
+				$this->db->where($this->context_table.'.id_article in (' . implode(',', $id_article) . ')');
+	
+			$query = $this->db->get($this->table);
+	
+			if($query->num_rows() > 0)
+			{
+				$data = $query->result_array();
+			}
 		}
-		
 		return $data;
 	}
 

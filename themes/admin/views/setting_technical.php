@@ -116,18 +116,21 @@
 				<!-- Cache Time -->
 				<dl class="small">
 					<dt>
-						<label for="cache_time"  title="<?=lang('ionize_help_cache_time')?>"><?=lang('ionize_label_cache_time')?></label>
+						<label for="cache_expiration"  title="<?=lang('ionize_help_cache_expiration')?>"><?=lang('ionize_label_cache_expiration')?></label>
 					</dt>
 					<dd>
-						<input id="cache_time" name="cache_time" class="inputtext w60" type="text" value="<?= config_item('cache_time') ?>" />
+						<input id="cache_expiration" name="cache_expiration" class="inputtext w60" type="text" value="<?= config_item('cache_expiration') ?>" />
+						<input id="submit_cache" type="submit" class="submit m0" value="<?= lang('ionize_button_save') ?>" />
 					</dd>
 				</dl>
 				
-				<!-- Submit button  -->
+				<!-- Empty cache  -->
 				<dl class="small last">
-					<dt>&#160;</dt>
+					<dt>
+						<label for="clear_cache"  title="<?=lang('ionize_help_clear_cache')?>"><?=lang('ionize_label_clear_cache')?></label>
+					</dt>
 					<dd>
-						<input id="submit_cache" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+						<input id="clear_cache" type="button" class="button m0" value="<?= lang('ionize_button_clear_cache') ?>" />
 					</dd>
 				</dl>
 
@@ -728,6 +731,9 @@
 	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache', 'mainPanel', 'setting/technical');
 
 
+	ION.initRequestEvent($('clear_cache'), 'setting/clear_cache');
+
+
 	/**
 	 * Admin URL form action
 	 * see ionize-form.js for more information about this method
@@ -751,6 +757,7 @@
 		$('form_antispam_key').value = key;
 		$('form_antispam_key').highlight();
 	});
+
 
 
 	/** 

@@ -530,7 +530,9 @@ $lang['ionize_label_email_mailtype'] = 'Format';
 $lang['ionize_label_mailpath'] = 'Mail path';
 
 $lang['ionize_label_cache_enabled'] = 'Enabled';
-$lang['ionize_label_cache_time'] = 'Time (mins.)';
+$lang['ionize_label_cache_expiration'] = 'Time (mins.)';
+$lang['ionize_label_clear_cache'] = 'Clear Cache';
+$lang['ionize_button_clear_cache'] = 'Clear';
 
 $lang['ionize_label_thumb_dir'] = 'Folder';
 $lang['ionize_label_thumb_size'] = 'Size';
@@ -581,6 +583,7 @@ $lang['ionize_message_error_writing_email_file'] = 'application/config/email.php
 $lang['ionize_message_error_writing_ionize_file'] = 'application/config/ionize.php could not be written !';
 
 $lang['ionize_message_cache_saved'] = 'Cache Settings saved.';
+$lang['ionize_message_cache_cleared'] = 'Cache cleared.';
 
 $lang['ionize_help_setting_google_analytics'] = 'The complete Google script, as copied from the Google Analytics website';
 $lang['ionize_help_setting_files_path'] = 'Indicates the base media folder. Doesn\'t change the physical folder name';
@@ -596,7 +599,8 @@ $lang['ionize_help_setting_picture_max_width'] = 'Picture which exceed these siz
 $lang['ionize_help_tinyblockformats'] = 'Default TinyMCE Blocks Format (Select)';
 
 $lang['ionize_help_cache_enabled'] = 'Enable / Disable the cache. Disabling it will clear the existing cache.';
-$lang['ionize_help_cache_time'] = 'Number of minutes the pages will remain cached between refreshes';
+$lang['ionize_help_cache_expiration'] = 'Number of minutes elements will remain cached between refreshes';
+$lang['ionize_help_clear_cache'] = 'Deletes all the cache files.';
 
 /*
 |--------------------------------------------------------------------------

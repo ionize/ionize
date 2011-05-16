@@ -130,7 +130,7 @@ $config['files_path'] = 'files/';
 
 /*
 |--------------------------------------------------------------------------
-| Cache Time
+| Cache Expiration
 |--------------------------------------------------------------------------
 |
 | Number of minutes you wish the page to remain cached between refreshes.
@@ -139,7 +139,7 @@ $config['files_path'] = 'files/';
 | and be writable.
 |
 */
-$config['cache_time'] = 1;
+$config['cache_expiration'] = 2;
 
 
 /* End of file ionize.php */

@@ -437,30 +437,33 @@ class Article_model extends Base_model
 	 */
 	function add_lang_data(&$articles = array())
 	{
-		// Add lang content to each article
-		$articles_lang = $this->get_lang();
-		
-		foreach($articles as &$article)
+		if ( ! empty($articles))
 		{
-			$article['langs'] = array();
+			// Add lang content to each article
+			$articles_lang = $this->get_lang();
 			
-			// $langs = array_values(array_filter($articles_lang, create_function('$row','return $row["id_article"] == "'. $article['id_article'] .'";')));
-			$langs = array();
-			foreach($articles_lang as $al)
+			foreach($articles as &$article)
 			{
-				if ($al['id_article'] == $article['id_article'])
+				$article['langs'] = array();
+				
+				// $langs = array_values(array_filter($articles_lang, create_function('$row','return $row["id_article"] == "'. $article['id_article'] .'";')));
+				$langs = array();
+				foreach($articles_lang as $al)
 				{
-					$langs[] = $al;
+					if ($al['id_article'] == $article['id_article'])
+					{
+						$langs[] = $al;
+					}
 				}
-			}
-		
-			foreach(Settings::get_languages() as $lang)
-			{
-//				$article['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
-				foreach($langs as $l)
+			
+				foreach(Settings::get_languages() as $lang)
 				{
-					if ($l['lang'] == $lang['lang'])
-						$article['langs'][$lang['lang']] = $l;
+	//				$article['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
+					foreach($langs as $l)
+					{
+						if ($l['lang'] == $lang['lang'])
+							$article['langs'][$lang['lang']] = $l;
+					}
 				}
 			}
 		}
