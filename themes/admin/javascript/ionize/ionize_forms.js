@@ -110,8 +110,6 @@ ION.append({
 		{
 			var func = function()
 			{
-				MUI.showSpinner();
-
 				var options = ION.getFormObject(url, $(form));
 				
 				var r = new Request.JSON(options);
@@ -134,9 +132,6 @@ ION.append({
 			$(button).addEvent('click', function(e)
 			{
 				new Event(e).stop();
-				
-				// Show spinner
-				MUI.showSpinner();
 				
 				// tinyMCE and CKEditor trigerSave
 				ION.updateRichTextEditors();
