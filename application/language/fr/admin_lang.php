@@ -87,6 +87,7 @@ $lang['ionize_button_toggle_header'] = 'Afficher / Masquer barre principale';
 | Admin navigation menu
 |--------------------------------------------------------------------------
 */
+$lang['ionize_menu_dashboard'] = 'Bureau';
 $lang['ionize_menu_content'] = 'Contenu';
 $lang['ionize_menu_articles'] = 'Articles';
 $lang['ionize_menu_translation'] = 'Traductions statiques';
@@ -494,6 +495,8 @@ $lang['ionize_title_thumbs_system'] = 'Miniatures Ionize';
 $lang['ionize_title_form_antispam_key'] = 'Clé JS Antispam';
 $lang['ionize_title_article_management'] = 'Gestion des articles';
 $lang['ionize_title_admin_url'] = 'URL de l\'Administration du site';
+$lang['ionize_title_encryption_key'] = 'Clé d\'encryption';
+$lang['ionize_title_cache'] = 'Cache';
 
 $lang['ionize_label_thumb_automatic'] = 'Automatique';
 $lang['ionize_label_files_path'] = 'Dossier des médias';
@@ -513,6 +516,8 @@ $lang['ionize_label_db_pass'] = 'Mot de passe';
 $lang['ionize_label_google_analytics'] = 'Google Analytics';
 $lang['ionize_label_tinybuttons'] = 'Barre TinyMCE';
 $lang['ionize_label_restore_tinybuttons'] = 'Restorer les commandes TinyMCE par défaut';
+$lang['ionize_label_tinyblockformats'] = 'Select Formats TinyMCE';
+$lang['ionize_label_restore_tinyblockformats'] = 'Restorer les formats par défaut';
 
 $lang['ionize_label_smtp_protocol'] = 'Protocole';
 $lang['ionize_label_smtp_host'] = 'Host';
@@ -522,6 +527,10 @@ $lang['ionize_label_smtp_port'] = 'Port';
 $lang['ionize_label_email_charset'] = 'Charset';
 $lang['ionize_label_email_mailtype'] = 'Format';
 $lang['ionize_label_mailpath'] = 'Chemin Mail';
+
+$lang['ionize_label_cache_expiration'] = 'Expiration (mins.)';
+$lang['ionize_label_clear_cache'] = 'Vider Cache';
+$lang['ionize_button_clear_cache'] = 'Vider';
 
 $lang['ionize_label_thumb_dir'] = 'Dossier';
 $lang['ionize_label_thumb_size'] = 'Taille';
@@ -582,6 +591,9 @@ $lang['ionize_help_media_thumb_size'] = 'Taille des thubnails système, en pixel
 $lang['ionize_help_tinybuttons'] = 'Voir la documentation TinyMCE';
 $lang['ionize_help_setting_picture_max_height'] = 'Les images dont la taille excède cette taille vont être retaillées durant l\'upload';
 $lang['ionize_help_setting_picture_max_width'] = 'Les images dont la taille excède cette taille vont être retaillées durant l\'upload';
+
+$lang['ionize_help_cache_expiration'] = 'Durée en minutes de validité du cache avant régénération';
+$lang['ionize_help_clear_cache'] = 'Supprime touts les fichiers du cache.';
 
 /*
 |--------------------------------------------------------------------------
@@ -931,3 +943,20 @@ $lang['ionize_message_module_uninstalled'] = 'Module désinstallé';
 $lang['ionize_message_module_not_installed'] = 'Module non installé !';
 
 
+/*
+|--------------------------------------------------------------------------
+| Admin : System Check
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_title_system_check'] = 'Diagnostic Système';
+$lang['ionize_menu_system_check'] = 'Diagnostic Système';
+$lang['ionize_text_system_check'] = 'Cet outil contrôle l\'intégrité des données Ionize et corrige les éventuelles incohérences.';
+
+$lang['ionize_label_start_system_check'] = 'Commencer le test';
+$lang['ionize_button_start_system_check'] = 'Aller hop !';
+
+$lang['ionize_title_check_page_level'] = 'Levels des Pages';
+$lang['ionize_title_check_article_context'] = 'Contexte des articles';
+
+$lang['ionize_message_check_corrected'] = ' corrigé(s).';
+$lang['ionize_message_check_ok'] = 'Tout va bien.';
