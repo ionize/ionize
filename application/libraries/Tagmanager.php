@@ -287,6 +287,7 @@ class TagManager
 		$CI =& get_instance();
 		
 		$uri =	$CI->config->item('base_url').
+				Settings::get_lang('current').
 				$CI->config->item('index_page').
 				$CI->uri->uri_string();
 		

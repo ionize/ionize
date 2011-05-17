@@ -170,6 +170,9 @@ class Cache
 	 */
 	function get($id)
 	{
+		// Do not cache for editors.
+		if (Connect()->is('editors')) return FALSE;
+	
 		$cache_path = (config_item('cache_path') == '') ? BASEPATH.'cache/' : config_item('cache_path');
 			
 		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
@@ -230,7 +233,7 @@ class Cache
 	 */
 	function store($id, $output)
 	{
-		if ($this->cache_expiration > 0)
+		if ($this->cache_expiration > 0 && Connect()->is_not('editors'))
 		{
 			$CI =& get_instance();	
 			$path = $CI->config->item('cache_path');

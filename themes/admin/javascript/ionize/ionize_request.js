@@ -90,9 +90,9 @@ ION.append({
 			},
 			onSuccess: function(responseJSON, responseText)
 			{
-				onSuccess(responseJSON, responseText);
-				
 				MUI.hideSpinner();
+
+				onSuccess(responseJSON, responseText);
 				
 				// Update the elements transmitted through JSON
 				if (responseJSON && responseJSON.update)
@@ -172,9 +172,9 @@ ION.append({
 			},
 			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
 			{
-				onSuccess(responseTree, responseElements, responseHTML, responseJavaScript);
-	
 				MUI.hideSpinner();			
+
+				onSuccess(responseTree, responseElements, responseHTML, responseJavaScript);
 			}
 		};
 	},

@@ -124,5 +124,22 @@ if( ! function_exists('get_language_navigation'))
 }
 
 
+/**
+ * Returns the previous / next page enclosed in the given tag
+ *
+ */
+if( ! function_exists('get_next_prev_page'))
+{
+	function get_next_prev_page($page, $prefix)
+	{
+		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
+		
+		$link = $prefix. '<a href="' . $page['absolute_url'] . '">' . $page['title']. '</a>';
+		
+		return $link;
+	}
+}
+
+
 /* End of file navigation_helper.php */
 /* Location: .application/helpers/navigation_helper.php */
