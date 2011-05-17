@@ -15,7 +15,7 @@
 			<ul class="menu-right">
 				<li><?= lang('ionize_logged_as') ?> : <?= $current_user['screen_name'] ?></li>
 				<li><a href="<?= base_url() ?>" target="_blank"><?= lang('ionize_website') ?></a></li>
-				<li><a href="<?= admin_url() ?>user/logout"><?= lang('ionize_logout') ?></a></li>
+				<li><a href="<?= base_url().Settings::get_lang('current').'/'.config_item('admin_url') ?>/user/logout"><?= lang('ionize_logout') ?></a></li>
 				<li>
 					<?php foreach(Settings::get('displayed_admin_languages') as $lang) :?>
 						<a href="<?= base_url().$lang ?>/<?= config_item('admin_url')?>"><img src="<?= theme_url() ?>images/world_flags/flag_<?= $lang ?>.gif" alt="<?= $lang ?>" /></a>

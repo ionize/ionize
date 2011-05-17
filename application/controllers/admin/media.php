@@ -113,48 +113,8 @@ class Media extends MY_admin
 	 */
 	function filemanager($event = NULL, $resize = FALSE, $uploadAuthData = FALSE)
 	{
-
-
-// str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']); 		
-
-		// FileManager constructor options
-/*
 		$params = array (
-			'directory' => Settings::get('files_path') . '/', // files
-			
-//			'documentRootPath' => FCPATH,
-			'documentRootPath' => $_SERVER['DOCUMENT_ROOT'], // Asolute base path of the website folder
-//			'RequestScriptURI' => '/ionize-with_last_mtfm',
-			
-			'thumbnailPath' => '/ionize-with_last_mtfm/' .Settings::get('files_path').'/.thumbs',
-			'thumbSmallSize' => 120,
-			'thumbBigSize' => 500,
-			'mimeTypesPath' => APPPATH.'libraries/Filemanager/MimeTypes.ini',
-			'baseURL' => base_url(), // http://fca.partikule.net - http://localhost/ionize-with-what.../
-//			'assetBasePath' => FCPATH.Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
-			'assetBasePath' => '/ionize-with_last_mtfm/' . Theme::get_theme_path().'javascript/mootools-filemanager/Assets', // themes/admin/
-////			'assetBaseUrl' => theme_url().'javascript/mootools-filemanager/Assets',
-			'upload' => TRUE,
-			'destroy' => TRUE,
-			'create' => TRUE,
-			'move' => TRUE,
-			'download' => FALSE,
-			'thumbnailSize' => (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120,
-			'maxImageDimension' => array(
-				'width' => (Settings::get('picture_max_width') !='') ? Settings::get('picture_max_width') : 2000,
-				'height' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : 2000
-			),
-			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
-			'filter' => 'image/,audio/,video/'
-		);
-
-//		$this->load->library('Filemanager', $params);
-		$this->load->library('Filemanagerwithaliassupport', $params);
-*/
-
-
-		$params = array (
-			'URLpath4FileManagedDirTree' => Settings::get('files_path') . '/',                   // relative paths: are relative to the URI request script path, i.e. dirname(__FILE__) or rather: $_SERVER['SCRIPT_NAME']
+			'URLpath4FileManagedDirTree' => Settings::get('files_path') . '/',
 			'URLpath4assets' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
 			'URLpath4thumbnails' => Settings::get('files_path') . '/.thumbs',
 			'upload' => TRUE,
@@ -422,7 +382,7 @@ class Media extends MY_admin
 	 *					Complete path, including media file name, to the medium
 	 *
 	 */
-	function add_media($type, $parent, $id_parent, $path=null) 
+	function add_media($type, $parent, $id_parent) 
 	{
 		// Clear the cache
 		Cache()->clear_cache();
@@ -483,12 +443,13 @@ class Media extends MY_admin
 			$this->media_model->feed_lang_template($id, $data);
 
 			$this->set_ID3($data, $this->get_ID3($path));
-// trace($data);			
+
 			$this->media_model->save($data, $data);
 		}
 		
 		// Parent linking
 		$data = '';		
+
 		if (!$this->media_model->attach_media($type, $parent, $id_parent, $id)) 
 		{
 			$this->error(lang('ionize_message_media_already_attached'));

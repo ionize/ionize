@@ -206,6 +206,30 @@ class Settings
 		}
 	}
 
+
+	public static function get_default_admin_lang()
+	{
+		$default_admin_lang = self::get('default_admin_lang');
+		$displayed_admin_lang = self::get('displayed_admin_languages');
+		
+		// Correct the default Admin panel language
+		if ( ! in_array($default_admin_lang, $displayed_admin_lang))
+			$default_admin_lang = config_item('default_language');
+		
+		return $default_admin_lang;
+	}
+	
+	
+	public static function get_uri_lang()
+	{
+		$str = preg_replace("|/*(.+?)/*$|", "\\1", str_replace(base_url(), '', current_url()));
+		$uri_segments = explode('/', $str);
+		$uri_lang = current($uri_segments);
+		
+		return $uri_lang;	
+	}
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -228,7 +252,7 @@ class Settings
 
 
 	/**
-	 * Returns the language code regarding to the type
+	 * Returns the website (visitor side) language code regarding to the type
 	 *
 	 * @param	string	Wished lang code. Optional.
 	 *					'first' :	returns the first language code (depending on the language ordering in DB) 

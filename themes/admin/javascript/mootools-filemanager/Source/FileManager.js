@@ -1062,10 +1062,12 @@ var FileManager = new Class({
 	open_on_click: function(e) {
 		if (e) e.stop();
 
-		if (!this.Current)
+		if (!this.CurrentFile)
 			return;
 
-		var file = this.Current.retrieve('file');
+//		var file = this.Current.retrieve('file');
+		var file = this.CurrentFile;
+
 		this.fireEvent('complete', [
 			(this.options.deliverPathAsLegalURL ? file.path : this.escapeRFC3986(this.normalize('/' + this.root + file.path))), // the absolute URL for the selected file, rawURLencoded
 			file,                 // the file specs: .name, .path, .size, .date, .mime, .icon, .icon48, .thumb48, .thumb250

@@ -370,7 +370,7 @@ class Setting extends MY_admin
 
 
 		// Other Settings to save
-		$settings = array('show_help_tips', 'display_connected_label', 'date_format');
+		$settings = array('show_help_tips', 'display_connected_label', 'date_format', 'default_admin_lang');
 
 		// Save settings to DB
 		$this->_save_settings($settings);

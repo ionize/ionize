@@ -122,6 +122,12 @@
 	<query>
 		INSERT INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre', '');
 	</query>
+	<query>
+		DELETE FROM setting WHERE name='default_admin_lang';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', '');
+	</query>
 
 
 	<query>ALTER TABLE `article` COMMENT = '0.9.7';</query>

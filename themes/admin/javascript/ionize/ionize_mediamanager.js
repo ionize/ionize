@@ -91,7 +91,7 @@ var IonizeMediaManager = new Class(
 	 * @param	string	Complete URL to the media. Slashes ('/') were replaced by ~ to permit CI management
 	 *
 	 */
-	addMedia:function(url) 
+	addMedia:function(url, file) 
 	{
 		// File extension
 		var extension = (url.substr(url.lastIndexOf('.') + 1 )).toLowerCase();
@@ -106,7 +106,7 @@ var IonizeMediaManager = new Class(
 		// Media type not authorized : error message
 		if (type == false)
 		{
-			ION.notification('error', Lang.get('ionize_message_media_not_authorized'));
+			ION.notification('error', Lang.get('ionize_message_media_not_authorized') + ' : ' + extension);
 		}
 		else
 		{

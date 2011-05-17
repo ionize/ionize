@@ -447,7 +447,7 @@ ul.left-arrow li {
 /* Table list
 ---------------------------------------------------------------- */
 table.list {
-	border-collapse:collapse;
+		border-collapse:collapse;
 	margin:10px 0;
 	width:100%;
 }
@@ -471,6 +471,11 @@ table.list tbody td {
 	text-align:left;
 	vertical-align:top;
 }
+table.list tbody td.center,
+table.list th.center {
+	text-align: center;
+}
+
 table.list tbody tr.odd {background-color:#fcfbf5; }
 table.list tbody tr.even {background-color:#fff; }
 table.list .highlight { background-color: #f3f3f3; }
