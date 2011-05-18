@@ -855,6 +855,13 @@ class Media extends MY_admin
 		// System thumbnail full path
 		$thumb_path = FCPATH . str_replace(Settings::get('files_path'), Settings::get('files_path').'/.thumbs', $picture['base_path'] );
 
+		// Create directory is not exists
+		if( ! is_dir($thumb_path) )
+		{
+			if ( ! @mkdir($thumb_path, 0777) )
+				throw new Exception(lang('ionize_exception_folder_creation').' : '.$thumb_path);
+		}
+
 		// Source picture size
 		$dim = $this->get_image_dimensions(FCPATH.$picture['path']);
 

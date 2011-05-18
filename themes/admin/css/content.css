@@ -194,7 +194,7 @@ a.ondrag.plus {
 	color:#fff;
 }
 a.ondrag.enter {
-	background: url(../images/icon_16_drag_enter.png) no-repeat right 4px;
+/*	background: url(../images/icon_16_drag_enter.png) no-repeat right 4px;*/
 	background-color: #948d8a;
 	color:#fff;
 }
