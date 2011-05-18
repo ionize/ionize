@@ -153,8 +153,13 @@ class Translation extends MY_admin
 					
 					if ($term != '')
 					{
-						$value = str_replace("\'", "'", $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)]);
-						$value = str_replace('"', '\"', $value);
+						$value = $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)];
+						
+						if (!get_magic_quotes_gpc())
+						{
+							$value = addslashes($value);
+						}
+						$value = str_replace("\'", "'", $value);
 						
 						$data .= "\$lang['".$term."'] = \"".$value."\";\n"; 
 					}

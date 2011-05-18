@@ -37,7 +37,7 @@ require(strtr(dirname(__FILE__), '\\', '/') . '/FileManager.php');
  *
  * See Demos/FM-common.php::mkNewFileManager() for an example of an 'Aliases' path mapping set.
  */
-class FileManagerWithAliasSupport extends FileManager
+class Filemanagerwithaliassupport extends FileManager
 {
 	protected $scandir_alias_lu_arr;
 

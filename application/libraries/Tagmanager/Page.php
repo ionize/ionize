@@ -796,7 +796,7 @@ class TagManager_Page extends TagManager
 		{
 			// Limit
 			$where['offset'] = $start_index;
-			$where['limit'] =  (int)$page['pagination'];
+			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
 
 			// Get the articles
 			$articles = $this->ci->article_model->get_from_category
@@ -832,7 +832,7 @@ class TagManager_Page extends TagManager
 		$page = & $tag->locals->page;
 
 		$start_index = 0;
-	
+
 		// Get the start index for the SQL limit query param : last part of the URL only if the 4th URI segmenet (pagination) is set
 		if (isset($this->ci->uri_segment[4]))
 			$start_index = array_pop(array_slice($this->ci->uri_segment, -1));
@@ -845,7 +845,7 @@ class TagManager_Page extends TagManager
 			$month = isset($this->ci->uri_segment[3]) ? $this->ci->uri_segment[3] : NULL;
 			
 			$where['offset'] = $start_index;
-			$where['limit'] =  (int)$page['pagination'];
+			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
 
 			$articles =  $this->ci->article_model->get_from_archives
 			(

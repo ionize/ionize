@@ -1125,7 +1125,7 @@ class Article_model extends Base_model
 		{
 			$this->db->having('YEAR(date) = \'' . $period .'\'' );
 		}
-		
+
 		return $this->get_lang_list($where, $lang, $filter);
 	}
 
