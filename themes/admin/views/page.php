@@ -1039,13 +1039,15 @@
 			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
 			{
 				$('id_parent').empty();
-				if (Browser.ie)
+				if (Browser.ie || (Browser.firefox && Browser.version < 4))
+				{
 					$('id_parent').set('html', responseHTML);
+					$('id_parent').getFirst('option').setProperty('selected', 'selected');
+				}
 				else
-					$('id_parent').set('html', responseHTML);
-// TODO : 
-// Check the difference with FF4 & IE9
-//					$('id_parent').adopt(responseTree);
+				{
+					$('id_parent').adopt(responseTree);
+				}
 			}
 		}).send();
 

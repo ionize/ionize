@@ -48,14 +48,14 @@
 		
 		
 		<!-- Flags : Available content for language -->
-		<span style="width:<?=$flag_width?>px;display:block;height:16px;" class="right mr20 ml20"><?= $content_html ?></span>
+		<span style="width:<?=$flag_width?>px;display:block;height:16px;" class="right mr10 ml10"><?= $content_html ?></span>
 
 	
 
 		<!-- Type -->
-		<span class="right ml20 type-block" rel="<?= $rel ?>">
+		<span class="right ml10 type-block" rel="<?= $rel ?>">
 			
-			<select id="type<?= $flat_rel ?>" class="select w120 type left" style="padding:0;" rel="<?= $rel ?>">
+			<select id="type<?= $flat_rel ?>" class="select w80 type left" style="padding:0;" rel="<?= $rel ?>">
 				<?php foreach($all_article_types as $idx => $type) :?>
 					<option <?php if ($article['id_type'] == $idx) :?>selected="selected"<?php endif; ?>  value="<?= $idx ?>"><?= $type ?></option>
 				<?php endforeach ;?>
@@ -64,9 +64,9 @@
 		</span>
 
 		<!-- Used view -->
-		<span class="right ml20">
+		<span class="right ml10">
 		
-			<select id="view<?= $flat_rel ?>" class="select w120 view" style="padding:0;" rel="<?= $rel ?>">
+			<select id="view<?= $flat_rel ?>" class="select w110 view" style="padding:0;" rel="<?= $rel ?>">
 				<?php foreach($all_article_views as $idx => $view) :?>
 					<option <?php if ($article['view'] == $idx) :?>selected="selected"<?php endif; ?> value="<?= $idx ?>"><?= $view ?></option>
 				<?php endforeach ;?>
@@ -78,7 +78,7 @@
 		<?php if (count($article['pages']) > 1) :?>
 			<span class="right type-block" rel="<?= $rel ?>">
 				
-				<select id="amp<?= $flat_rel ?>" class="select w120 parent left" style="padding:0;" rel="<?= $rel ?>">
+				<select id="amp<?= $flat_rel ?>" class="select w100 parent left" style="padding:0;" rel="<?= $rel ?>">
 					<?php foreach($article['pages'] as $page) :?>
 						<option <?php if ($page['main_parent'] == '1') :?>selected="selected"<?php endif; ?> value="<?= $page['id_page'] ?>"><?= $page['title'] ?></option>
 					<?php endforeach ;?>
