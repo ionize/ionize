@@ -7,7 +7,8 @@
 	<meta http-equiv="imagetoolbar" content="no" />
 	<link rel="shortcut icon" href="<?= theme_url() ?>images/favicon.ico" type="image/x-icon" />
 
-	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.1-full-nocompat-yc.js"></script>
+	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.2-full-nocompat.js"></script>
+	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.2.1.js"></script>
 
 	<link rel="stylesheet" href="<?= theme_url() ?>css/login.css" type="text/css" />
 	<link rel="stylesheet" href="<?= theme_url() ?>css/form.css" type="text/css" />
