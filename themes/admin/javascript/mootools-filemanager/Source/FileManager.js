@@ -802,7 +802,12 @@ var FileManager = new Class({
 	 */
 	relaySingleOrDoubleClick: function(e, self, dg_el, file, clicks)
 	{
-		if (e) e.stop();
+// Partikule : IE7 / IE8 event problem
+//		if (e) e.stop();
+//		if(typeOf(e.event.type) != 'undefined')
+		if( ! Browser.ie)
+			e.stop();
+//
 
 		this.diag.log('on relaySingleOrDoubleClick file = ', file, ', current dir: ', this.CurrentDir, ', # clicks: ', clicks);
 

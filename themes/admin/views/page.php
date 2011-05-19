@@ -1042,7 +1042,9 @@
 				if (Browser.ie || (Browser.firefox && Browser.version < 4))
 				{
 					$('id_parent').set('html', responseHTML);
-					$('id_parent').getFirst('option').setProperty('selected', 'selected');
+	
+					if ($('origin_id_parent').value == '0')
+						$('id_parent').getFirst('option').setProperty('selected', 'selected');
 				}
 				else
 				{

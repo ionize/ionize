@@ -43,14 +43,6 @@ p {
 	font-stretch: normal;
 }
 
-em {
-	display:block;
-	color:#8c8a88;
-	font-size:11px;
-	margin:0;
-	padding:0;
-}
-
 img {
 	border:1px solid #000;
 	margin:5px;

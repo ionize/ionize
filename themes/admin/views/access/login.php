@@ -1,14 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title><?= Settings::get('site_title') ?></title>
-
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title><?= Settings::get('site_title') ?></title>
 	<meta http-equiv="imagetoolbar" content="no" />
 	<link rel="shortcut icon" href="<?= theme_url() ?>images/favicon.ico" type="image/x-icon" />
 
 	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.2-full-nocompat.js"></script>
-	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.2.1.js"></script>
+	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.2.1-yc.js"></script>
 
 	<link rel="stylesheet" href="<?= theme_url() ?>css/login.css" type="text/css" />
 	<link rel="stylesheet" href="<?= theme_url() ?>css/form.css" type="text/css" />
@@ -57,7 +56,7 @@
 
 <body>
 
-	<!--Content -->
+	<!-- Content -->
 	<div id="content" class="content" onKeyPress="javascript:doSubmit(event);">
 	
 		<div id="loginWindow" class=" clearfix">
@@ -94,7 +93,6 @@
 				<div class="action">
 					<!-- <?=form_checkbox('remember_me', 1)?> <?=lang('ionize_login_remember')?> -->
 					<button type="submit" name="send" class="submit"><?=lang('ionize_login')?></button>
-					<!-- <p class="fake_label"><small><?=anchor('user/forgot', lang('ionize_forgot_password'))?></small></p> -->
 				</div>
 		
 			<?=form_close()?>
