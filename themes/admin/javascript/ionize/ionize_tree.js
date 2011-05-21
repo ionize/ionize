@@ -138,7 +138,8 @@ ION.Tree = new Class({
 
 	openclose:function(evt)
 	{
-		evt.stop();
+		if (typeOf(evt.stop) == 'function') evt.stop();
+		
 		el = evt.target;
 		var folder = el.getParent();
 		var folderContents = folder.getChildren('ul');
@@ -157,6 +158,9 @@ ION.Tree = new Class({
 			folderContents.each(function(ul){ ul.setStyle('display', 'block'); });
 			folder.addClass('f-open');
 			ION.treeAddToCookie(folder.getProperty('id'));
+			
+			$('btnStructureExpand').store('status', 'expand');
+			$('btnStructureExpand').value = Lang.get('ionize_label_collapse_all');
 		}
 	},
 
@@ -298,8 +302,10 @@ ION.Tree = new Class({
 		li.adopt(action, link);
 		
 		this.addEditLink(li, 'article');
-		
-		var icon = treeline.clone().addClass('file drag');
+
+		// File or sticky icon
+		var typeClass = (options.indexed == '1') ? 'file' : 'sticky' ;
+		var icon = treeline.clone().addClass(typeClass + ' drag');
 		icon.inject(li, 'top');
 		
 		// Get the parent and the tree lines (nodes)

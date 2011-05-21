@@ -211,14 +211,10 @@ class Base_Controller extends MY_Controller
 
 // $this->output->enable_profiler(true);
 		
-//		if (config_item('cache_enabled') && config_item('cache_time') > 0)
-//			$this->output->cache(config_item('cache_time'));
-		
 		// Unlock filtering if admin or editor users is logged in
 //		$this->load->library('connect');
 
 		$this->connect = Connect::get_instance();
-//		$this->cache = Cache::get_instance();
 
 		// Libraries
 		$this->load->library('structure');	
@@ -540,8 +536,20 @@ class MY_Admin extends MY_Controller
 		$this->get_modules_config();
 
 		// Including all modules languages files
-		// $lang_files = glob(config_item('module_path').'*/language/'.Settings::get_lang().'/*');
-		
+		require(APPPATH.'config/modules.php');
+		$installed_modules = $modules;
+
+		foreach($installed_modules as $module)
+		{
+			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
+			
+			if (is_file($lang_file))
+			{
+				include $lang_file;
+				$this->lang->language = array_merge($this->lang->language, $lang);
+				unset($lang);
+			}
+		}
 		
 		
 		
@@ -576,8 +584,6 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 		 * Settings
 		 *
 		 */
-		
-
 
 		// @TODO : Remove this thing from the global CMS. Not more mandatory, but necessary for compatibility with historical version
 		// Available menus

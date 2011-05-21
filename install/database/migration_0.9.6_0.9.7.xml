@@ -93,6 +93,19 @@
 	</query>
 
 	<query>
+		ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL
+	</query>
+
+	<query>
+		update page set id_subnav = id_page;
+	</query>
+
+
+	<query>
+		ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
+	</query>
+
+	<query>
 		ALTER TABLE `article` DROP `link`, DROP `link_type`, DROP `link_id`, ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
 	</query>
 

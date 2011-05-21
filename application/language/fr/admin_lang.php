@@ -625,6 +625,7 @@ $lang['ionize_title_create_page'] = 'Création d\'une page';
 $lang['ionize_title_new_page'] = 'Nouvelle page';
 $lang['ionize_title_edit_page'] = 'Edition d\'une page';
 $lang['ionize_title_page_parent'] = 'Parent';
+$lang['ionize_title_sub_navigation'] = 'Navigation';
 
 $lang['ionize_title_help_articles_types'] = 'A propos des types d\'article';
 
@@ -639,6 +640,11 @@ $lang['ionize_label_article_list_template'] = 'Vue liste';
 $lang['ionize_label_page_delete_date'] = 'Date suppression page';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Page d\'accueil';
+$lang['ionize_label_article_reorder'] = 'Réordonner';
+$lang['ionize_label_date_asc'] = 'Date Ascendante';
+$lang['ionize_label_date_desc'] = 'Date Descendante';
+
+$lang['ionize_button_reorder'] = 'Réordonner';
 
 $lang['ionize_select_default_view'] = '-- Vue par défaut --';
 $lang['ionize_select_everyone'] = '-- Tous --';
@@ -651,6 +657,7 @@ $lang['ionize_message_page_not_exist'] = 'Page inexistante';
 $lang['ionize_message_page_ordered'] = 'Page réordonnées';
 $lang['ionize_message_page_needs_url_or_title'] = 'Saisissez le titre ou l\'URL de la langue par défaut !';
 $lang['ionize_message_drop_only_article'] = 'Seul un article peut être glissé ici';
+$lang['ionize_message_articles_ordered'] = 'Articles réordonnés !';
 
 $lang['ionize_help_page_online'] = 'Cette page est-elle en ligne ?';
 $lang['ionize_help_page_content_online'] = 'Cette page est-elle en ligne pour cette langue ?';
@@ -666,6 +673,7 @@ $lang['ionize_help_add_page_to_menu'] = 'Ajouter une page à ce menu';
 $lang['ionize_help_page_drop_article_here'] = 'Glissez un article depuis l\'arborescence en sélectionnant son nom.';
 $lang['ionize_label_help_articles_types_and_views'] = 'A propos des types et des vues';
 $lang['ionize_label_help_articles_types'] = 'A propos des types';
+$lang['ionize_label_help_articles_reorder'] = 'Réordonne les articles par date. Détermination de la date : Logique ou Publication ou Création.';
 
 /*
 |--------------------------------------------------------------------------

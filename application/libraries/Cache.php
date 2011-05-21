@@ -43,6 +43,13 @@ class Cache
 	private static $instance;
 
 
+	/**
+	 * Cache path
+	 *
+	 */
+	private static $cache_path;
+
+
 	// --------------------------------------------------------------------
 	
 	
@@ -55,6 +62,8 @@ class Cache
 	{
 		$this->cache_expiration = $cache_time;
 		
+		$this->cache_path = (config_item('cache_path') == '') ? FCPATH.'cache/' : config_item('cache_path');
+
 		self::$instance =& $this;
 	}
 
@@ -116,17 +125,15 @@ class Cache
 	 */
 	function clear_cache()
 	{
-		$cache_path = (config_item('cache_path') == '') ? BASEPATH.'cache/' : config_item('cache_path');
-		
-		if (is_dir($cache_path))
+		if (is_dir($this->cache_path))
 		{
-			if ($dh = opendir($cache_path))
+			if ($dh = opendir($this->cache_path))
 			{
 				while (($file = readdir($dh)) !== false)
 				{
 					if($file!='..' && $file!='.' && $file!='index.html')
 					{
-						unlink($cache_path.$file);
+						unlink($this->cache_path.$file);
 					}
 				}
 			}
@@ -173,24 +180,18 @@ class Cache
 		// Do not cache for editors.
 		if (Connect()->is('editors')) return FALSE;
 	
-		$cache_path = (config_item('cache_path') == '') ? BASEPATH.'cache/' : config_item('cache_path');
-			
-		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
+		if ( ! is_dir($this->cache_path) OR ! is_really_writable($this->cache_path))
 		{
 			return FALSE;
 		}
 
-		$filepath = $cache_path.md5($id);
+		$filepath = $this->cache_path.md5($id);
 
 		if ( ! @file_exists($filepath))
-		{
 			return FALSE;
-		}
 	
 		if ( ! $fp = @fopen($filepath, FOPEN_READ))
-		{
 			return FALSE;
-		}
 			
 		flock($fp, LOCK_SH);
 		
@@ -216,7 +217,7 @@ class Cache
 			log_message('debug', "Cache file has expired. File deleted");
 			return FALSE;
 		}
-		
+
 		// Display the cache
 		return str_replace($match['0'], '', $cache);
 	}
@@ -236,20 +237,15 @@ class Cache
 		if ($this->cache_expiration > 0 && Connect()->is_not('editors'))
 		{
 			$CI =& get_instance();	
-			$path = $CI->config->item('cache_path');
-		
-			$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
 			
-			if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
-			{
+			if ( ! is_dir($this->cache_path) OR ! is_really_writable($this->cache_path))
 				return;
-			}
 			
-			$cache_path .= md5($id);
+			$filepath = $this->cache_path . md5($id);
 			
-			if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+			if ( ! $fp = @fopen($this->cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
 			{
-				log_message('error', "Unable to write cache file: ".$cache_path);
+				log_message('error', "Unable to write cache file: ".$filepath);
 				return;
 			}
 			
@@ -262,13 +258,13 @@ class Cache
 			}
 			else
 			{
-				log_message('error', "Unable to secure a file lock for file at: ".$cache_path);
+				log_message('error', "Unable to secure a file lock for file at: ".$filepath);
 				return;
 			}
 			fclose($fp);
 			@chmod($cache_path, DIR_WRITE_MODE);
 	
-			log_message('debug', "Cache file written: ".$cache_path);
+			log_message('debug', "Cache file written: ".$filepath);
 		}
 	}
 	

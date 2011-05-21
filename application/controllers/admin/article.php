@@ -491,6 +491,10 @@ class Article extends MY_admin
 					}
 					$this->template['breadcrump'] = implode(' &raquo; ', $breadcrump);
 				}
+				else
+				{
+					$this->template['main_parent'] = '0';
+				}
 				
 				// Lang data
 				$this->article_model->feed_lang_template($id_article, $this->template);
@@ -565,6 +569,81 @@ class Article extends MY_admin
 		}
 	
 	}
+
+
+	function update_field()
+	{
+		$field = $this->input->post('field');
+		$id_article = $this->input->post('id_article');
+		$type = $this->input->post('type');
+		
+		if ($id_article && $field)
+		{
+			$value = $this->input->post('value');
+			
+			// Check the type of data, for special process
+			if ($type == 'date')
+			{
+				$value = ($value) ? getMysqlDatetime($value) : '0000-00-00 00:00:00';
+			}
+
+			// Update
+			$result = $this->article_model->update(array('id_article' => $id_article), array($field => $value));
+
+			if ($result)
+			{
+				$this->callback[] = array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_article_saved'))
+				);
+
+				$this->update_contexts($id_article);
+			}
+		}
+	}
+	
+	
+	function update_indexed()
+	{
+		$id_article = $this->input->post('id_article');
+		$indexed = $this->input->post('indexed');
+		
+		if ($id_article)
+		{
+			$result = $this->article_model->update(array('id_article'=>$id_article), array('indexed'=>$indexed));
+			
+			if ($result)
+			{
+				$this->callback[] = array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_article_saved'))
+				);
+
+				$this->update_contexts($id_article);
+			}
+		}
+	}
+	
+	function update_categories()
+	{
+		$id_article = $this->input->post('id_article');
+
+		if ($id_article)
+		{
+			$result = $this->article_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $id_article);
+
+			if ($result)
+			{
+				$this->callback[] = array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_article_saved'))
+				);
+
+				$this->response();
+			}
+		}
+	}
+	
 	
 	/**
 	 * Updates the articles contexts (in tree for example)

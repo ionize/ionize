@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS article (
   publish_off datetime NOT NULL default '0000-00-00 00:00:00',
   updated datetime NOT NULL,
   logical_date datetime NOT NULL default '0000-00-00 00:00:00',
-  indexed tinyint(1) UNSIGNED NOT NULL default 1,
+  indexed tinyint(1) UNSIGNED NOT NULL default 0,
   id_category int(11) UNSIGNED default NULL,
   comment_allow char(1) default '0',
   comment_autovalid char(1) default '0',

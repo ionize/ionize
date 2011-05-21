@@ -48,6 +48,7 @@ class Page extends MY_admin
 		$this->load->model('article_model', '', true);
 		$this->load->model('structure_model', '', true);
 		$this->load->model('extend_field_model', '', true);
+		$this->load->model('system_check_model', '', true);
 		
 		// Libraries
 		$this->load->library('structure');
@@ -75,6 +76,7 @@ class Page extends MY_admin
 		// Dropdown menus
 		$datas = $this->menu_model->get_select();
 		$this->template['menus'] =	form_dropdown('id_menu', $datas, $id_menu, 'id="id_menu" class="select"');
+		
 
 		// Dropdowns Views : Get $view var from my_theme/config/views.php
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
@@ -141,8 +143,15 @@ class Page extends MY_admin
 			
 			// Dropdown menus
 			$datas = $this->menu_model->get_select();
-			$this->template['menus'] =	form_dropdown('id_menu', $datas, $this->template['id_menu'], 'id="id_menu" class="select"');
+			$this->template['menus'] = form_dropdown('id_menu', $datas, $this->template['id_menu'], 'id="id_menu" class="select"');
 			
+			// Subnav menu
+			$subnav_page = $this->page_model->get($page['id_subnav']);
+			$selected_subnav = ( ! empty($subnav_page['id_menu'])) ? $subnav_page['id_menu'] : '-1';
+			$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $datas, $selected_subnav, 'id="id_subnav_menu" class="select"');
+
+
+
 			// Dropdowns Views
 			if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 				require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
@@ -254,7 +263,12 @@ class Page extends MY_admin
 
 				// Correct DB integrity : links URL and names, childrens pages menus
 				if ( ! empty($id) )
+				{
 					$this->page_model->correct_integrity($this->data, $this->lang_data);
+					
+					// Correct pages levels regarding parents.
+					$this->system_check_model->check_page_level(TRUE);
+				}
 
 				// Save extends fields data
 				$this->extend_field_model->save_data('page', $this->id, $_POST);
@@ -386,6 +400,95 @@ class Page extends MY_admin
 		else 
 		{
 			$this->error(lang('ionize_message_operation_nok'));
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	function reorder_articles()
+	{
+		$id_page = $this->input->post('id_page');
+		$direction = $this->input->post('direction');
+		
+		if ($direction && $id_page)
+		{
+			$articles = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
+			
+			$kdate = array();
+			foreach($articles as $key => $article)
+			{
+				$kdate[$key] = strtotime($article['date']);
+			}
+
+			$sort_direction = 'SORT_'.$direction;
+			
+			// Sort the results by realm occurences DESC first, by date DESC second.			
+			array_multisort($kdate, constant($sort_direction), $articles);
+
+			foreach($articles as $idx => $article)
+			{
+				$this->page_model->update(array('id_page'=>$id_page, 'id_article' => $article['id_article']), array('ordering' => $idx + 1), 'page_article');
+			}
+
+			$this->callback = array(
+				array(
+					'fn' => 'ION.HTML',
+					'args' => array('article/get_list', array('id_page' => $id_page), array('update' => 'articleListContainer'))
+				),
+				array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_articles_ordered'))
+				)
+			);
+
+			$this->response();
+		}
+	}
+
+
+	function update_field()
+	{
+		$field = $this->input->post('field');
+		$id_page = $this->input->post('id_page');
+		$type = $this->input->post('type');
+		
+		if ($id_page && $field)
+		{
+			$value = $this->input->post('value');
+			
+			// Check the type of data, for special process
+			if ($type == 'date')
+			{
+				$value = ($value) ? getMysqlDatetime($value) : '0000-00-00 00:00:00';
+			}
+
+			// Update
+			$result = $this->page_model->update(array('id_page' => $id_page), array($field => $value));
+
+			if ($result)
+			{
+				// Datas
+				$page = $this->page_model->get($id_page, Settings::get_lang('default'));
+				$menu = $this->menu_model->get($page['id_menu']);
+				
+//				$page = array_merge($this->page_model->get_lang(Settings::get_lang('default')), $page);
+				$page['title'] = htmlspecialchars_decode($page['title'], ENT_QUOTES);
+				$page['element'] = 'page';
+				$page['menu'] = $menu;
+
+				$this->callback[] = array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_page_saved'))
+				);
+
+				$this->callback[] = array(
+					'fn' => 'ION.updateTreePage',
+					'args' => $page
+				);
+
+				$this->response();
+			}
 		}
 	}
 

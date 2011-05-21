@@ -82,7 +82,9 @@ class Category_model extends Base_model
 
 		$sql .= 		' 
 					)
-				)';
+				)
+				order by category.ordering
+				';
 
 		$data = array();
 

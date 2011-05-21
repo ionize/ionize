@@ -78,6 +78,7 @@
 							<label for="template" title="<?= lang('ionize_help_article_context') ?>"><?= lang('ionize_label_parents') ?></label>
 						</dt>
 						<dd>
+						
 							<div id="parents">
 								<ul class="parent_list" id="parent_list">
 								
@@ -91,10 +92,10 @@
 									//		$rel = $page['id_page']. '.' .$id_article;
 										?>
 								
-										<li rel="<?= $page['id_page'] ?>.<?= $id_article ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left"></span><?= $title ?></a></li>
+										<li rel="<?= $page['id_page'] ?>.<?= $id_article ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?= $title ?></a></li>
 								
 									<?php endforeach ;?>
-								
+									
 								</ul>
 								<!--
 								<input type="text" id="new_parent" class="inputtext w140 italic empty nofocus droppable" alt="<?= lang('ionize_label_drop_page_here') ?>"></input>
@@ -879,8 +880,8 @@
 	 *
 	 */
 	ION.initToolbox('article_toolbox');
-
-
+	
+	
 	/**
 	 * Article element in each of its parent context
 	 * 
@@ -894,7 +895,6 @@
 	 */
 	ION.initDatepicker();
 
-
 	/**
 	 * Add links on each parent page
 	 *
@@ -904,7 +904,6 @@
 		ION.addParentPageEvents(item);
 	});
 	 
-	
 	// Auto-generate Main title
 	$$('.tabcontent .title').each(function(input, idx)
 	{
@@ -923,7 +922,7 @@
 
 		<?php endforeach ;?>
 	<?php endif; ?>
-	 
+
 
 	// Copy content
 	if ($('copy_lang'))
@@ -945,7 +944,7 @@
 	 		ION.sendData(url, data);
 		});
 	}
-
+	
 	
 	// Article ordering : 
 	// - Show / hide article list depending on Ordering select
@@ -962,7 +961,6 @@
 		});
 	}
 
-	
 	/**
 	 * Copy Lang data to other languages dynamically
 	 *
@@ -976,13 +974,14 @@
 			'height': (nbCategories * 15) + 'px'
 		});
 	}
-
+	
 	/** 
 	 * Show current tabs
 	 */
 	var articleTab = new TabSwapper({tabsContainer: 'articleTab', sectionsContainer: 'articleTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleTab' });
 	new TabSwapper({tabsContainer: 'permanentUrlTab', sectionsContainer: 'permanentUrlTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'permanentUrlTab' });
-	
+
+
 	/**
 	 * TinyEditors
 	 * Must be called after tabs init.
@@ -990,9 +989,38 @@
 	 */
 	ION.initTinyEditors('.tab_article', '#articleTabContent .tinyTextarea');
 	
-
 	<?php if (!empty($id_article)) :?>
 	
+		/**
+		 * Indexed XHR update
+		 * Categories XHR update
+		 *
+		 */
+		// Indexed
+		$('indexed').addEvent('click', function(e)
+		{
+			var value = (this.checked) ? '1' : '0';
+			ION.JSON('article/update_field', {'field': 'indexed', 'value': value, 'id_article': $('id_article').value});
+		});
+
+		// Dates
+		ION.datePicker.options['onClose'] = function()	
+		{
+			ION.JSON('article/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_article': $('id_article').value});
+		}
+
+		// Categories
+		var categoriesSelect = $('categories').getFirst('select');
+		categoriesSelect.addEvent('change', function(e)
+		{
+			var ids = new Array();
+			var sel = this;
+			for (var i = 0; i < sel.options.length; i++) {
+				if (sel.options[i].selected) ids.push(sel.options[i].value);
+			}		
+			ION.JSON('article/update_categories', {'categories': ids, 'id_article': $('id_article').value});
+		});
+
 		/**
 		 * Links interaction
 		 *
@@ -1017,9 +1045,9 @@
 				}
 			});
 		}
-
+		
 		// Add edit link to the link (if internal)
-		<?php if ($link != '') :?>
+		<?php if (isset($link) && $link != '') :?>
 
 			ION.updateLinkInfo({
 				'type': '<?php echo($link_type); ?>',
@@ -1048,8 +1076,8 @@
 		mediaManager.loadMediaList('picture');
 		mediaManager.loadMediaList('video');
 		
-		
-	<?php endif ;?>
 
+
+	<?php endif ;?>
 
 </script>

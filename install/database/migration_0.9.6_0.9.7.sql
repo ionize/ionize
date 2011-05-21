@@ -95,42 +95,32 @@
 			and page_article.`link_type` = 'article';
 	
 
+		ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL DEFAULT 0;
+
+		ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
+
+		update page set id_subnav = id_page;
 	
 		ALTER TABLE `article` DROP `link`, DROP `link_type`, DROP `link_id`, ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
 	
-
-	
 		ALTER TABLE `article_lang` DROP `link`;
-	
-
 	
 		ALTER TABLE `page` CHANGE `link_id` `link_id` VARCHAR( 20 ) NOT NULL  DEFAULT '', ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
 	
-
-	
 		UPDATE page SET link_id='' WHERE link_id = '0';
-	
-	
 	
 		ALTER TABLE `article_type` ADD `type_flag` TINYINT( 1 ) NOT NULL DEFAULT 0;
 	
-
-	
 		ALTER TABLE `category_lang` ADD `subtitle` VARCHAR( 255 ) NOT NULL ;
-	
-	
 	
 		DELETE FROM setting WHERE name='tinyblockformats';
 	
-	
 		INSERT INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre', '');
-	
 	
 		DELETE FROM setting WHERE name='default_admin_lang';
 	
-	
 		INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', '');
-	
+
 
 
 	ALTER TABLE `article` COMMENT = '0.9.7';

@@ -896,6 +896,10 @@ dl#link_info dd {
 	background-position: -162px 50%; 
 	cursor: pointer;
 }
+.link-img.page.main-parent { 
+	background-position: -378px 50%; 
+	cursor: pointer;
+}
 .link-img.article {	
 	background-position: -180px 50%; 
 	cursor: pointer;

@@ -632,6 +632,7 @@ $lang['ionize_title_create_page'] = 'Create page';
 $lang['ionize_title_new_page'] = 'New page';
 $lang['ionize_title_edit_page'] = 'Page edit';
 $lang['ionize_title_page_parent'] = 'Parent';
+$lang['ionize_title_sub_navigation'] = 'Navigation';
 
 $lang['ionize_title_help_articles_types'] = 'About Types';
 
@@ -646,6 +647,12 @@ $lang['ionize_label_article_list_template'] = 'List view';
 $lang['ionize_label_page_delete_date'] = 'Page delete date';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Home page';
+$lang['ionize_label_article_reorder'] = 'Reorder Articles';
+$lang['ionize_label_date_asc'] = 'Date Ascendant';
+$lang['ionize_label_date_desc'] = 'Date Descendant';
+$lang['ionize_label_no_sub_navigation'] = '-- No one --';
+
+$lang['ionize_button_reorder'] = 'Reorder';
 
 $lang['ionize_select_default_view'] = '-- Default view --';
 $lang['ionize_select_everyone'] = '-- Everyone --';
@@ -658,6 +665,7 @@ $lang['ionize_message_page_not_exist'] = 'Page don\'t exist';
 $lang['ionize_message_page_ordered'] = 'Page ordered';
 $lang['ionize_message_page_needs_url_or_title'] = 'Please fill title or URL for the default language !';
 $lang['ionize_message_drop_only_article'] = 'Please drop only an article!';
+$lang['ionize_message_articles_ordered'] = 'Articles ordered !';
 
 $lang['ionize_help_page_online'] = 'Is this page online?';
 $lang['ionize_help_page_content_online'] = 'Is this page online for this language?';
@@ -673,6 +681,7 @@ $lang['ionize_help_add_page_to_menu'] = 'Add a page to this menu';
 $lang['ionize_help_page_drop_article_here'] = 'Drag an article from the left tree by selecting its name.';
 $lang['ionize_label_help_articles_types_and_views'] = 'About Types & Views';
 $lang['ionize_label_help_articles_types'] = 'About Types';
+$lang['ionize_label_help_articles_reorder'] = 'Reorder articles by date. Date calculation : Logical or Publish On or Creation.';
 
 /*
 |--------------------------------------------------------------------------

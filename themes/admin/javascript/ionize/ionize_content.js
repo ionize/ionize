@@ -957,6 +957,17 @@ ION.append({
 				if (flag == '0' && art.type_flag != '') { flag = art.type_flag; }
 			
 				new Element('span', {'class':'flag flag' + flag}).inject(el, 'top');
+				
+				
+			});
+			
+			// Update doc / sticky icon
+			$$('li.file[rel=' + rel + '] div.tree-img.drag').each(function(el)
+			{
+				if (art.indexed == '1')
+					el.removeClass('sticky').addClass('file');
+				else
+					el.removeClass('file').addClass('sticky');
 			});
 		});
 	},

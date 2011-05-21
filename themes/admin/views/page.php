@@ -9,6 +9,7 @@
 	<input type="hidden" name="rel" id="rel" value="<?= $id_page ?>" />
 	<input type="hidden" name="name" id="name" value="<?= $name ?>" />
 	<input type="hidden" id="origin_id_parent" value="<?= $id_parent ?>" />
+	<input type="hidden" id="origin_id_subnav" value="<?= $id_subnav ?>" />
 
 	
 	<?php if ($id_page != '') :?>
@@ -176,6 +177,67 @@
 				</div>
 			
 			<?php endif ;?>
+			
+			
+			<!-- Subnavigation -->
+			<?php if ($id_page != '') :?>
+
+				<h3 class="toggler"><?= lang('ionize_title_sub_navigation') ?></h3>
+				
+				<div class="element">
+			
+					<!-- Subnav Menu -->
+					<dl class="small">
+						<dt>
+							<label for="id_subnav_menu"><?= lang('ionize_label_menu') ?></label>
+						</dt>
+						<dd>
+							<?= $subnav_menu ?>
+						</dd>
+					</dl>	
+
+					<!-- ID sub navigation Page -->
+					<dl class="small last">
+						<dt>
+							<label for="id_subnav"><?= lang('ionize_label_page') ?></label>
+						</dt>
+						<dd>
+							<select name="id_subnav" id="id_subnav" class="select w150"></select>
+						</dd>
+					</dl>
+
+					<!-- Title -->
+					<dl class="small">
+						<dt>
+							<label title=""><?= lang('ionize_label_title') ?></label>
+						</dt>
+						<dd>
+							<!-- Tabs -->
+							<div id="subnavTitleTab" class="mainTabs small gray">
+								<ul class="tab-menu">
+									<?php foreach(Settings::get_languages() as $language) :?>
+										<li><a><?= ucfirst($language['lang']) ?></a></li>
+									<?php endforeach ;?>
+								</ul>
+								<div class="clear"></div>
+							</div>
+							<div id="subnavTitleTabContent" class="w160">
+							
+								<?php foreach(Settings::get_languages() as $language) :?>
+									<div class="tabcontent">
+										<textarea id="subnav_title_<?= $language['lang'] ?>" name="subnav_title_<?= $language['lang'] ?>" class="h80" style="border-top:none;width:142px;"><?= ${$language['lang']}['subnav_title'] ?></textarea>
+									</div>
+								<?php endforeach ;?>
+							
+							</div>
+	
+						</dd>
+					</dl>
+
+					
+				</div>
+			
+			<?php endif ;?>
 
 
 			<!-- Advanced Options -->
@@ -203,8 +265,9 @@
 					</dd>
 				</dl>
 
-
 			</div>
+
+
 
 			<!-- Dates -->
 			<h3 class="toggler"><?= lang('ionize_title_dates') ?></h3>
@@ -374,50 +437,79 @@
 			</div>
 
 
-			<!-- Other info : Permanent URL, etc. -->
-			<h3 class="toggler"><?= lang('ionize_title_informations') ?></h3>
+			<?php if ($id_page != '') :?>
 			
-			<div class="element">
-
-				<?php if ($id_page != '') :?>
-				<dl class="small compact">
-					<dt><label for="permanent_url"><?= lang('ionize_label_permanent_url') ?></label></dt>
-					<dd>
-						<!-- Tabs -->
-						<div id="permanentUrlTab" class="mainTabs small gray">
-							<ul class="tab-menu">
-								<?php foreach(Settings::get_languages() as $language) :?>
-									<li><a><?= ucfirst($language['lang']) ?></a></li>
-								<?php endforeach ;?>
-							</ul>
-							<div class="clear"></div>
-						</div>
-						<div id="permanentUrlTabContent" class="w160">
-						
-							<?php foreach(Settings::get_languages() as $language) :?>
-								<?php
-									$lang = (count(Settings::get_online_languages()) > 1) ? $language['lang'].'/' : '';
-								?>
-								<div class="tabcontent">
-									<textarea id="permanent_url_<?= $language['lang'] ?>" name="permanent_url_<?= $language['lang'] ?>" class="h40" style="border-top:none;width:142px;" onclick="javascript:this.select();" readonly="readonly"><?= base_url().$lang ?><?= ${$language['lang']}['url'] ?></textarea>
-								</div>
-							<?php endforeach ;?>
-						
-						</div>
-
-					</dd>
-				</dl>
+				<!-- Articles ordering -->
+				<h3 class="toggler"><?= lang('ionize_title_articles') ?></h3>
+			
+				<div class="element">
+					
+					<dl class="small compact">
+						<dt><label for="reorder_direction" title="<?=lang('ionize_label_help_articles_reorder')?>"><?= lang('ionize_label_article_reorder') ?></label></dt>
+						<dd>
+							<select name="reorder_direction" id="reorder_direction" class="w140 select">
+								
+								<option value="DESC"><?= lang('ionize_label_date_desc') ?></option>
+								<option value="ASC"><?= lang('ionize_label_date_asc') ?></option>
+								
+							</select>
+						</dd>
+					</dl>
+					<!-- Submit button  -->
+					<dl class="small last">
+						<dt>&#160;</dt>
+						<dd>
+							<input type="submit" value="<?= lang('ionize_button_reorder') ?>" class="submit" id="button_reorder_articles">
+						</dd>
+					</dl>
 				
-				<!-- Technical info 
-				<dl class="small compact">
-					<dt><label for="">Ordering</label></dt>
-					<dd><?= $ordering ?></dd>
-				</dl>
-				-->
+				</div>
 
-				<?php endif ;?>
-			
-			</div>
+
+				<!-- Other info : Permanent URL, etc. -->
+				<h3 class="toggler"><?= lang('ionize_title_informations') ?></h3>
+				
+				<div class="element">
+	
+					<dl class="small compact">
+						<dt><label for="permanent_url"><?= lang('ionize_label_permanent_url') ?></label></dt>
+						<dd>
+							<!-- Tabs -->
+							<div id="permanentUrlTab" class="mainTabs small gray">
+								<ul class="tab-menu">
+									<?php foreach(Settings::get_languages() as $language) :?>
+										<li><a><?= ucfirst($language['lang']) ?></a></li>
+									<?php endforeach ;?>
+								</ul>
+								<div class="clear"></div>
+							</div>
+							<div id="permanentUrlTabContent" class="w160">
+							
+								<?php foreach(Settings::get_languages() as $language) :?>
+									<?php
+										$lang = (count(Settings::get_online_languages()) > 1) ? $language['lang'].'/' : '';
+									?>
+									<div class="tabcontent">
+										<textarea id="permanent_url_<?= $language['lang'] ?>" name="permanent_url_<?= $language['lang'] ?>" class="h40" style="border-top:none;width:142px;" onclick="javascript:this.select();" readonly="readonly"><?= base_url().$lang ?><?= ${$language['lang']}['url'] ?></textarea>
+									</div>
+								<?php endforeach ;?>
+							
+							</div>
+	
+						</dd>
+					</dl>
+					
+					<!-- Technical info 
+					<dl class="small compact">
+						<dt><label for="">Ordering</label></dt>
+						<dd><?= $ordering ?></dd>
+					</dl>
+					-->
+	
+				</div>
+
+			<?php endif ;?>
+
 			
 			
 		</div>	<!-- /options -->
@@ -911,7 +1003,7 @@
 <!--						<input id="articleCreate" type="button" class="light-button plus right" value="<?= lang('ionize_label_add_article') ?>" rel="<?= $id_page ?>" />-->
 
 							<button class="right light-button helpme type"><?= lang('ionize_label_help_articles_types') ?></button>
-
+							
 							<!-- Droppable to link one article to this page -->
 							<input type="text" id="new_article" class="inputtext w120 italic droppable empty nofocus" alt="<?= lang('ionize_label_drop_article_here') ?>"></input>
 							<label title="<?= lang('ionize_help_page_drop_article_here') ?>"></label>
@@ -1056,6 +1148,35 @@
 	});
 	$('id_menu').fireEvent('change');
 	
+
+	
+	$('id_subnav_menu').addEvent('change', function()
+	{
+		// Sub nav
+		var xhr = new Request.HTML(
+		{
+			url: admin_url + 'page/get_parents_select/' + $('id_subnav_menu').value +'/0/<?= $id_subnav ?>',
+			method: 'post',
+			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
+			{
+				$('id_subnav').empty();
+				if (Browser.ie || (Browser.firefox && Browser.version < 4))
+				{
+					$('id_subnav').set('html', responseHTML);
+				}
+				else
+				{
+					$('id_subnav').adopt(responseTree);
+				}
+				// $('id_subnav').getFirst('option').set('text', Lang.get('ionize_label_no_sub_navigation'))
+				(new Element('option', {'value': '-1'})).set('text', Lang.get('ionize_label_no_sub_navigation')).inject($('id_subnav'), 'top');
+			}
+		}).send();
+	});
+	$('id_subnav_menu').fireEvent('change');
+	
+	
+	
 	
 	// Auto-generate Main title
 	$$('.tabcontent .title').each(function(input, idx)
@@ -1079,6 +1200,7 @@
 
 	// Tabs
 	var pageTab = new TabSwapper({tabsContainer: 'pageTab', sectionsContainer: 'pageTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'mainTab' });
+	new TabSwapper({tabsContainer: 'subnavTitleTab', sectionsContainer: 'subnavTitleTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'subnavTitleTab'	});
 	new TabSwapper({tabsContainer: 'metaDescriptionTab', sectionsContainer: 'metaDescriptionTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaDescriptionTab'	});
 	new TabSwapper({tabsContainer: 'metaKeywordsTab', sectionsContainer: 'metaKeywordsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaKeywordsTab' });
 	new TabSwapper({tabsContainer: 'permanentUrlTab', sectionsContainer: 'permanentUrlTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'permanentUrlTab' });
@@ -1105,6 +1227,39 @@
 
 
 	<?php if (!empty($id_page)) :?>
+
+		/**
+		 * XHR updtes
+		 *
+		 */
+		// Dates
+		ION.datePicker.options['onClose'] = function()	
+		{
+			ION.JSON('page/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_page': $('id_page').value});
+		}
+		
+		// Parent
+//		$('id_parent').addEvent('change', function(e)
+//		{
+//			ION.JSON('page/update_field', {'field': 'id_parent', 'value': this.value, 'id_page': $('id_page').value});
+//		});
+		
+		
+		// Reorder articles
+		$('button_reorder_articles').addEvent('click', function(e)
+		{
+			e.stop();
+		 	
+			var url = admin_url + 'page/reorder_articles';
+	
+			var data = {
+				'id_page': $('id_page').value,
+				'direction': $('reorder_direction').value
+			};
+		 	
+	 		ION.sendData(url, data);
+		});
+
 
 		/*
 		 * Articles List

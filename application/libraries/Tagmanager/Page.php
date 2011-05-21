@@ -109,6 +109,8 @@ class TagManager_Page extends TagManager
 			'tree_navigation:active_class' =>	'tag_navigation_active_class',			
 			'tree_navigation:base_link' =>		'tag_navigation_base_link',			
 			'tree_navigation:lang_link' =>		'tag_navigation_lang_link',			
+			'sub_navigation' => 				'tag_sub_navigation',
+			'sub_navigation_title' => 			'tag_sub_navigation_title',
 				
 			// Articles
 			'articles' => 				'tag_articles',
@@ -2712,8 +2714,9 @@ class TagManager_Page extends TagManager
 		// Final string to print out.
 		$str = '';
 
-		// No helper ?
+		// Helper / No helper ?
 		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
+		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
 		
 		// Menu : Main menu by default
 		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
@@ -2724,8 +2727,8 @@ class TagManager_Page extends TagManager
 				$id_menu = $menu['id_menu'];
 		}
 		
-		// Navigation level. 0 if not defined
-		$asked_level = isset($tag->attr['level']) ? $tag->attr['level'] : 0;
+		// Navigation level. FALSE if not defined
+		$asked_level = isset($tag->attr['level']) ? $tag->attr['level'] : FALSE;
 
 		// Display hidden navigation elements ?
 		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
@@ -2737,8 +2740,6 @@ class TagManager_Page extends TagManager
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
 		if (strpos($active_class, 'class') !== FALSE) $active_class= str_replace('\'', '"', $active_class);
 		
-		// helper
-		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
 
 		/*
 		 * Getting menu data
@@ -2761,10 +2762,30 @@ class TagManager_Page extends TagManager
 		// Filter by menu and asked level : We only need the asked level pages !
 		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $asked_level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
 		$pages = array();
-		foreach($global_pages as $p)
+		$parent_page = array();
+		
+		// Asked Level exists
+		if ($asked_level !== FALSE)
 		{
-			if ($p['level'] == $asked_level && $p['id_menu'] == $id_menu)
-				$pages[] = $p;
+			foreach($global_pages as $p)
+			{
+				if ($p['level'] == $asked_level && $p['id_menu'] == $id_menu)
+					$pages[] = $p;
+			}
+		}
+		// Get navigation from current page
+		else
+		{
+			foreach($global_pages as $p)
+			{
+				// Child pages of id_subnav
+				if ($p['id_parent'] == $tag->locals->page['id_subnav'])
+					$pages[] = $p;
+
+				// Parent page is the id_subnav page
+				if ($p['id_page'] == $tag->locals->page['id_subnav'])
+					$parent_page = $p;
+			}
 		}
 		
 		// Filter on 'appears'=>'1'
@@ -2772,7 +2793,6 @@ class TagManager_Page extends TagManager
 			$pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
 		
 		// Get the parent page from one level upper
-		$parent_page = array();
 		if ($asked_level > 0)
 		{
 			// $parent_pages = array_filter($global_pages, create_function('$row','return $row["level"] == "'. ($asked_level-1) .'";'));
@@ -2850,6 +2870,26 @@ class TagManager_Page extends TagManager
 	}
 
 
+	public function tag_sub_navigation_title($tag)
+	{
+		if ($tag->locals->page['subnav_title']  != '')
+		{
+			return self::wrap($tag, $tag->locals->page['subnav_title']);
+		}
+		else
+		{
+			foreach($tag->globals->pages as $page)
+			{
+				if ($page['id_page'] == $tag->locals->page['id_subnav'])
+				{
+					return self::wrap($tag, $page['subnav_title']);
+				}
+			}
+		}		
+		return '';		
+	}
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -3074,6 +3114,9 @@ class TagManager_Page extends TagManager
 		// month
 		$with_month = (isset($tag->attr['with_month']) ) ? TRUE : FALSE;
 
+		// order
+		$order = (isset($tag->attr['order']) && $tag->attr['order'] == 'ASC' ) ? 'period ASC' : 'period DESC';
+
 		// Current archive
 		$current_archive = isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : '' ;
 		$current_archive .= isset($this->ci->uri_segment[3]) ? $this->ci->uri_segment[3] : '' ;
@@ -3084,7 +3127,8 @@ class TagManager_Page extends TagManager
 			array('id_page' => $tag->locals->page['id_page']), 
 			Settings::get_lang(),
 			$filter,
-			$with_month
+			$with_month,
+			$order
 		);
 
 

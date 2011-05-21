@@ -214,6 +214,8 @@ class Article_model extends Base_model
 		// DB Query
 		$query = $this->db->get($this->table);
 
+// trace($this->db->last_query());
+
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();
@@ -1136,13 +1138,13 @@ class Article_model extends Base_model
 	/**
 	 * 
 	 */
-	function get_archives_list($where=FALSE, $lang=NULL, $filter=FALSE, $month=FALSE)
+	function get_archives_list($where=FALSE, $lang=NULL, $filter=FALSE, $month=FALSE, $order_by='period DESC')
 	{
 		$data = array();
 	
 		if ($month === true)
 		{
-			$this->db->select('if (logical_date !=0, CONCAT(YEAR(logical_date), MONTH(logical_date)), if(publish_on != 0, CONCAT(YEAR(publish_on), MONTH(publish_on)), CONCAT(YEAR(created), MONTH(created)))) AS period, count(1) as nb', FALSE);
+			$this->db->select('if (logical_date !=0, CONCAT(YEAR(logical_date), DATE_FORMAT(logical_date, "%m")), if(publish_on != 0, CONCAT(YEAR(publish_on), DATE_FORMAT(publish_on, "%m")), CONCAT(YEAR(created), DATE_FORMAT(created, "%m")))) AS period, count(1) as nb', FALSE);
 		}
 		else
 		{
@@ -1150,6 +1152,7 @@ class Article_model extends Base_model
 		}
 		
 		$this->db->group_by('period');
+		$this->db->order_by($order_by);
 
 		$this->db->select($this->parent_table.'.*', FALSE);
 		$this->db->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
@@ -1404,17 +1407,24 @@ class Article_model extends Base_model
 	 */
 	private function _set_filter($filter)
 	{
+		$this->db->where('('.$filter.')');
+	}
+
+	/**
+	 * Adds all SQL conditions requested by the filter to the current request
+	 *
+	 * @param	String		Filter
+	 * @return 	void
+	 *
+	private function _set_filter($filter)
+	{
+
+
 		$filter = explode('|', $filter);
 		
 		foreach($filter as $condition)
 		{
-			/* Explode the condition string
-			 * Condition string could look like :
-			 * title :				means with 'title' not empty
-			 * author != 'foo'		means with author != 'toto'
-			 */ 
 			$c = explode(':', $condition);
-
 			$value = isset($c[1]) ? $c[1] : " !='' ";
 
 			// If filter field name in $filter_field_ref, use the given table as field to avoid ambiguous SQL
@@ -1426,6 +1436,7 @@ class Article_model extends Base_model
 			$this->db->where('('.$c[0]. ' '. $value.')');
 		}	
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
