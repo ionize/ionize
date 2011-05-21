@@ -1150,30 +1150,6 @@
 	
 
 	
-	$('id_subnav_menu').addEvent('change', function()
-	{
-		// Sub nav
-		var xhr = new Request.HTML(
-		{
-			url: admin_url + 'page/get_parents_select/' + $('id_subnav_menu').value +'/0/<?= $id_subnav ?>',
-			method: 'post',
-			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
-			{
-				$('id_subnav').empty();
-				if (Browser.ie || (Browser.firefox && Browser.version < 4))
-				{
-					$('id_subnav').set('html', responseHTML);
-				}
-				else
-				{
-					$('id_subnav').adopt(responseTree);
-				}
-				// $('id_subnav').getFirst('option').set('text', Lang.get('ionize_label_no_sub_navigation'))
-				(new Element('option', {'value': '-1'})).set('text', Lang.get('ionize_label_no_sub_navigation')).inject($('id_subnav'), 'top');
-			}
-		}).send();
-	});
-	$('id_subnav_menu').fireEvent('change');
 	
 	
 	
@@ -1238,13 +1214,34 @@
 			ION.JSON('page/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_page': $('id_page').value});
 		}
 		
-		// Parent
-//		$('id_parent').addEvent('change', function(e)
-//		{
-//			ION.JSON('page/update_field', {'field': 'id_parent', 'value': this.value, 'id_page': $('id_page').value});
-//		});
-		
-		
+		$('id_subnav_menu').addEvent('change', function()
+		{
+			// Sub nav
+			var xhr = new Request.HTML(
+			{
+				url: admin_url + 'page/get_parents_select/' + $('id_subnav_menu').value +'/0/<?= $id_subnav ?>',
+				method: 'post',
+				onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
+				{
+	
+	
+					$('id_subnav').empty();
+					if (Browser.ie || (Browser.firefox && Browser.version < 4))
+					{
+						$('id_subnav').set('html', responseHTML);
+					}
+					else
+					{
+						$('id_subnav').adopt(responseTree);
+					}
+					// $('id_subnav').getFirst('option').set('text', Lang.get('ionize_label_no_sub_navigation'))
+					(new Element('option', {'value': '-1'})).set('text', Lang.get('ionize_label_no_sub_navigation')).inject($('id_subnav'), 'top');
+				}
+			}).send();
+		});
+		$('id_subnav_menu').fireEvent('change');
+
+
 		// Reorder articles
 		$('button_reorder_articles').addEvent('click', function(e)
 		{
