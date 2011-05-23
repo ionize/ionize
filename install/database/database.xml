@@ -378,6 +378,7 @@
 			  link VARCHAR( 255 ) NOT NULL default '',
 			  title varchar(255) default NULL,
 			  subtitle varchar(255) default NULL,
+	  		  subnav_title VARCHAR( 255 ) NOT NULL DEFAULT '',
 			  meta_title varchar(255) default NULL,
 			  meta_description varchar(255) default NULL,
 			  meta_keywords varchar(255) default NULL,

@@ -77,7 +77,7 @@
 	</query>
 
 	<query>
-		update page_article, page_lang, lang set page_article.link = page_lang.title
+		UPDATE page_article, page_lang, lang SET page_article.link = page_lang.title
 			where page_lang.id_page = page_article.link_id
 			and page_lang.lang = lang.lang
 			and lang.def='1'
@@ -85,7 +85,7 @@
 	</query>
 
 	<query>
-		update page_article, article_lang, lang set page_article.link = article_lang.title
+		UPDATE page_article, article_lang, lang SET page_article.link = article_lang.title
 			where article_lang.id_article = page_article.link_id
 			and article_lang.lang = lang.lang
 			and lang.def='1'
@@ -93,11 +93,11 @@
 	</query>
 
 	<query>
-		ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL
+		ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL;
 	</query>
 
 	<query>
-		update page set id_subnav = id_page;
+		UPDATE page SET id_subnav = id_page;
 	</query>
 
 

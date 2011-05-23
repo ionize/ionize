@@ -1,4 +1,10 @@
+--
+-- Ionize 0.9.7 SQL creation tables
+--
 
+
+
+		
 CREATE TABLE IF NOT EXISTS article (
   id_article int(11) UNSIGNED NOT NULL auto_increment,
   name varchar(55) default NULL,
@@ -302,6 +308,7 @@ CREATE TABLE IF NOT EXISTS page (
   id_page int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   id_parent int(11) UNSIGNED NOT NULL default 0,
   id_menu int(11) UNSIGNED NOT NULL default 0,
+  id_subnav int(11) UNSIGNED NOT NULL default 0, 
   name varchar(55) default NULL,
   ordering int(11) UNSIGNED default 0,
   level int(11) UNSIGNED NOT NULL default 0,
@@ -366,6 +373,7 @@ CREATE TABLE IF NOT EXISTS page_lang (
   link VARCHAR( 255 ) NOT NULL default '',
   title varchar(255) default NULL,
   subtitle varchar(255) default NULL,
+	  subnav_title VARCHAR( 255 ) NOT NULL DEFAULT '',
   meta_title varchar(255) default NULL,
   meta_description varchar(255) default NULL,
   meta_keywords varchar(255) default NULL,
@@ -440,8 +448,6 @@ CREATE TABLE IF NOT EXISTS user_groups (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7' AUTO_INCREMENT=1;
 
 
-
-
 TRUNCATE TABLE login_tracker;
 
 INSERT INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
@@ -488,6 +494,9 @@ INSERT INTO setting VALUES (29, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NUL
 
 
 
-INSERT INTO menu (id_menu, name, title) VALUES 
-	(1 , 'main', 'Main menu'),
-	(2 , 'system', 'System menu');
+
+	INSERT INTO menu (id_menu, name, title) VALUES 
+		(1 , 'main', 'Main menu'),
+		(2 , 'system', 'System menu');
+		
+
