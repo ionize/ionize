@@ -490,7 +490,7 @@ INSERT INTO setting VALUES (29, 'tinybuttons3', 'tablecontrols', NULL);
 INSERT INTO setting VALUES (30, 'displayed_admin_languages', 'en', NULL);
 INSERT INTO setting VALUES (31, 'date_format', '%Y.%m.%d', NULL);
 INSERT INTO setting VALUES (32, 'force_lang_urls', '0', NULL);
-INSERT INTO setting VALUES (29, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
+INSERT INTO setting VALUES (33, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
 
 
 
