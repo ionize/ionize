@@ -1149,11 +1149,6 @@
 	$('id_menu').fireEvent('change');
 	
 
-	
-	
-	
-	
-	
 	// Auto-generate Main title
 	$$('.tabcontent .title').each(function(input, idx)
 	{
@@ -1223,8 +1218,6 @@
 				method: 'post',
 				onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
 				{
-	
-	
 					$('id_subnav').empty();
 					if (Browser.ie || (Browser.firefox && Browser.version < 4))
 					{
@@ -1234,7 +1227,6 @@
 					{
 						$('id_subnav').adopt(responseTree);
 					}
-					// $('id_subnav').getFirst('option').set('text', Lang.get('ionize_label_no_sub_navigation'))
 					(new Element('option', {'value': '-1'})).set('text', Lang.get('ionize_label_no_sub_navigation')).inject($('id_subnav'), 'top');
 				}
 			}).send();

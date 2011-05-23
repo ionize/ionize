@@ -44,26 +44,28 @@ ul {
 
 /* Tree Correction */
 .tree li {
+	overflow: visible;
+}
+
+.tree li span.title {
 	overflow: hidden;
 	position: relative;
 }
-.tree ul {
-	margin-bottom:-2px;
-}
-.tree li.file {
-	margin-bottom:-2px;
-}
 .tree li a.title {
+	overflow: hidden;
+	position:relative;
+}
+.tree li a.title span{
 	position: absolute;
 	top:0;
+	left:0;
 }
-
 .tree li .action{
 	width:46px;
 	z-index:10;
 }
 
-/* Pictuer List */
+/* Picture List */
 .picture {
 	width: 120px;
 	height: 140px;

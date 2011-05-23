@@ -65,12 +65,7 @@ ION.ItemManager = new Class({
 				handle: '.drag',
 				clone: true,
 				constrain: true,
-//				container: this.options.container,
 				opacity: 0.5,
-				onStart: function(element, clone)
-				{
-//					console.log(clone.getOffsetParent());
-				},
 				onComplete: function(item, clone)
 				{
 					// Hides the current sorted element (correct a Mocha bug on hidding modal window)

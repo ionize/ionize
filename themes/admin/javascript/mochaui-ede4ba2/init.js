@@ -22,7 +22,12 @@ Ionize.initializeDesktop = function(){
 							id: 'structurePanel',
 							title: '',
 							content: [
-								{url: admin_url + 'core/get_structure'},
+//								{url: admin_url + 'core/get_structure'},
+								{
+									url: admin_url + 'tree'
+//									method:'post',
+//									data: {'id_parent':'0'}
+								},
 								{
 									name: 'toolbox',
 									position: 'header',

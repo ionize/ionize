@@ -391,8 +391,8 @@ class Article extends MY_admin
 					if (!empty($menu))
 					{
 						$this->callback[] = array(
-							'fn' => $menu['name'].'Tree.insertTreeArticle',
-							'args' => $this->data
+							'fn' => $menu['name'].'Tree.insertElement',
+							'args' => array($this->data, 'article')
 						);
 					}
 				}
@@ -872,8 +872,8 @@ class Article extends MY_admin
 					),
 					// Insert the article to the parent in the structure tree
 					array(
-						'fn' => $menu['name'].'Tree.insertTreeArticle',
-						'args' => $article
+						'fn' => $menu['name'].'Tree.insertElement',
+						'args' => array($article, 'article')
 					),
 					// Reload the Page articles list
 					array(
@@ -1224,8 +1224,8 @@ class Article extends MY_admin
 				);
 				
 				$this->callback[] = array(
-					'fn' => $menu['name'].'Tree.insertTreeArticle',
-					'args' => $this->data
+					'fn' => $menu['name'].'Tree.insertElement',
+					'args' => array($this->data, 'article')
 				);
 
 				// Answer send

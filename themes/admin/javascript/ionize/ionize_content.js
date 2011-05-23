@@ -1071,12 +1071,16 @@ ION.append({
 		var order = (args.order).split(',');
 		order = order.reverse();
 		
+		
 		for (var i=0; i< order.length; i++)
 		{
-			var el = articleContainer.getElement('#article_' + args.id_page + 'x' + order[i]);
-			el.inject(articleContainer, 'top');
+			if (typeOf(articleContainer) != 'null')
+			{
+				var el = articleContainer.getElement('#article_' + args.id_page + 'x' + order[i]);
+				el.inject(articleContainer, 'top');
+			}
 			
-			if (articleList)
+			if (typeOf(articleList) != 'null')
 			{
 				var el = articleList.getElement('li.article' + args.id_page + 'x' + order[i]);
 				el.inject(articleList, 'top');

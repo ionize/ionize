@@ -296,8 +296,8 @@ class Page extends MY_admin
 				if ( empty($id))
 				{
 					$this->callback = array(
-						'fn' => $menu['name'].'Tree.insertTreePage',
-						'args' => $this->data
+						'fn' => $menu['name'].'Tree.insertElement',
+						'args' => array($this->data, 'page')
 					);
 				}
 				else
@@ -413,6 +413,9 @@ class Page extends MY_admin
 		
 		if ($direction && $id_page)
 		{
+			// Clear the cache
+			Cache()->clear_cache();
+
 			$articles = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
 			
 			$kdate = array();
@@ -425,10 +428,12 @@ class Page extends MY_admin
 			
 			// Sort the results by realm occurences DESC first, by date DESC second.			
 			array_multisort($kdate, constant($sort_direction), $articles);
-
+			
+			$ids = array();
 			foreach($articles as $idx => $article)
 			{
 				$this->page_model->update(array('id_page'=>$id_page, 'id_article' => $article['id_article']), array('ordering' => $idx + 1), 'page_article');
+				$ids[] = $article['id_article'];
 			}
 
 			$this->callback = array(
@@ -439,7 +444,14 @@ class Page extends MY_admin
 				array(
 					'fn' => 'ION.notification',
 					'args' => array('success', lang('ionize_message_articles_ordered'))
-				)
+				),
+				array(
+					'fn' => 'ION.updateArticleOrder',
+					'args' => array(
+						'id_page' => $id_page,
+						'order' => implode(',', $ids)
+					)
+				)				
 			);
 
 			$this->response();

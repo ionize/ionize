@@ -115,3 +115,13 @@ Date.extend({
 	}
 });
 
+String.extend({
+	
+	htmlspecialchars_decode:function(text)
+	{
+		var tmp = new Element('span',{ 'html':text });
+		var ret_val = tmp.get('text');
+		delete tmp;
+		return ret_val;
+	}
+});

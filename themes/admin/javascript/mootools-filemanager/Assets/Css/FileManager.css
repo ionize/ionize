@@ -372,7 +372,6 @@ div.filemanager-container span.fi span,
 div.filemanager-container span.thumb {
 	white-space: nowrap;
 	display: block;
-	overflow: hidden;
 	vertical-align: middle;   /* pretty useless, but keep it in? */
 	overflow: visible;
 	/* ^^^ since the floats are all images, this does a nice graphic effect for very long filenames:
