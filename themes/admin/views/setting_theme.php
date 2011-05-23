@@ -92,8 +92,8 @@
 						<th axis="string" style="width:20px;"></th>
 						<th axis="string"><?= lang('ionize_label_view_filename') ?></th>
 						<th axis="string"><?= lang('ionize_label_view_folder') ?></th>
-						<th axis="string"><?= lang('ionize_label_view_name') ?></th>
-						<th axis="string"><?= lang('ionize_label_view_type') ?></th>				
+						<th><?= lang('ionize_label_view_name') ?></th>
+						<th><?= lang('ionize_label_view_type') ?></th>				
 					</tr>
 				</thead>
 
@@ -155,6 +155,13 @@
 	 */
 	ION.initAccordion('.toggler', 'div.element');
 
+
+
+	/**
+	 * Adds Sortable function to the user list table
+	 *
+	 */
+	new SortableTable('viewsTable',{sortOn: 1, sortBy: 'ASC'});
 
 	/**
 	 * Views Edit links

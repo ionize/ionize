@@ -1759,7 +1759,7 @@ class TagManager_Page extends TagManager
 		}
 		
 
-		if ( $meta_title != '' && ! empty ($tag->locals->page['meta_title']) )
+		if ( $meta_title == '' && ! empty($tag->locals->page['meta_title']) )
 		{
 			$meta_title = self::wrap($tag, $tag->locals->page['meta_title']);
 		}

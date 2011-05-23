@@ -225,10 +225,11 @@ ION.TreeXhr = new Class({
 			if (element.indexed == '0') icon.addClass('sticky');
 			else icon.addClass('file');
 
-			// Flag span
-			var span = new Element('span', {'class':'flag flag' + element.flag});
+			// Flag span : Type first, then user's flag
+			var flag = (element.type_flag != '') ? element.type_flag : element.flag;
+			var span = new Element('span', {'class':'flag flag' + flag});
 			span.inject(a, 'top');
-			if (element.flag != '0' && Browser.ie7) a.setStyle('padding-left','6px');
+			if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
 			
 			// Item node line
 			this.treeLine_Model.clone().inject(li, 'top').addClass('line').addClass('node');
