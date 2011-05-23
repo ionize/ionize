@@ -7,7 +7,7 @@
 
 <link rel="stylesheet" href="../themes/admin/css/installer.css" type="text/css" />
 
-<script type="text/javascript" src="../themes/admin/javascript/mootools-core-1.3.1-full-nocompat-yc.js"></script>
+<script type="text/javascript" src="../themes/admin/javascript/mootools-core-1.3.2-full-nocompat-yc.js"></script>
 
 <script type="text/javascript">
 
