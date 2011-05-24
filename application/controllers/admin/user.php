@@ -95,7 +95,7 @@ class User extends My_Admin
 			}
 			else
 			{
-				$this->login_errors = "Something's wrong appears....";
+				$this->login_errors = lang('ionize_login_error');
 			}
 		}
 		else

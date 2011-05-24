@@ -401,7 +401,7 @@ class Base_Controller extends MY_Controller
 		return $p->parse($string);
 	}
 
-
+	
 	protected function render($view, &$context = null, $return = false)
 	{
 		// Loads the view to parse
@@ -423,6 +423,16 @@ class Base_Controller extends MY_Controller
 				$parsed = str_replace('</body>', $injected_html, $parsed);
 			}
 		}
+		
+		// Full page cache ?
+		if (isset($context->globals->page['_cached']))
+		{
+			/*
+			 * Write the full page cache file
+			 *
+			 */
+		}
+		
 		
 		// Returns the result or output it directly
 		if ($return)

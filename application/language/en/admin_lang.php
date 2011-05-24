@@ -48,6 +48,7 @@ $lang['ionize_login_remember'] = 'Remember me';
 $lang['ionize_login'] = 'Login';
 $lang['ionize_forgot_password'] = 'Forgotten password ?';
 $lang['ionize_session_expired'] = 'Your session has expired. Please log in again.';
+$lang['ionize_login_error'] = 'Something wrong appears...';
 
 
 /*

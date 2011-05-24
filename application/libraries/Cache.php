@@ -87,7 +87,7 @@ class Cache
 
 	/**
 	 * Called just after each controller instanciation
-	 * Displays or not the cache
+	 * Displays or not the full page cache
 	 *
 	 */
 	function post_controller_constructor_cache()
@@ -111,8 +111,17 @@ class Cache
 		// Retrieve the complete URI with language code
 		$URI->_fetch_uri_string();
 
+		/*
+		 * HERE : 	Outputs the Cache()->get_page_cache()
+		 * 			If cache file not found returns false, but do not write the cache file
+		 *			Writin gof the cache file is done by Base_Controller()->render() depending on the page settings.
+		 *
+		 */
+
+/*
 		if ($OUT->_display_cache($CFG, $URI) == TRUE)
 			exit;
+*/
 	}
 	
 
@@ -266,6 +275,26 @@ class Cache
 	
 			log_message('debug', "Cache file written: ".$filepath);
 		}
+	}
+	
+	
+	/**
+	 * Writes a full page cache file
+	 *
+	 */
+	function write_page_cache()
+	{
+	
+	}
+	
+	
+	/**
+	 * Returns the cached page file content
+	 *
+	 */
+	function get_page_cache()
+	{
+	
 	}
 	
 	
