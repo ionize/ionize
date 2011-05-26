@@ -29,6 +29,8 @@ class Settings_Model extends Base_model
 
 		$this->set_table('setting');
 		$this->set_pk_name('id_setting');
+		
+		$this->load->helper('path_helper');
 	}
 
 
@@ -96,15 +98,24 @@ class Settings_Model extends Base_model
 	 */
 	function get_admin_langs()
 	{
-		$path = APPPATH.'/language/';
+		$path = set_realpath(APPPATH.'language/');
+		$lang_dirs = array();
 		
 		if ($dirs = scandir($path))
 		{
-			$callback = create_function('$el', 'return is_file("'.$path.'$el'.'/admin_lang'.EXT.'");');
+			foreach ($dirs as $dir)
+			{
+				$file_path = set_realpath($path.$dir).'admin_lang'.EXT;
+
+				if (is_file($file_path))
+					$lang_dirs[] = $dir;
+			}
 		
-			return $lang_dirs = array_values(array_filter($dirs, $callback));
+//			$callback = create_function('$el', 'return is_file(realpath("'.$path.'$el'.'/admin_lang'.EXT.'"));');
+//			return $lang_dirs = array_values(array_filter($dirs, $callback));
 		}
-		return array();
+
+		return $lang_dirs;
 	}
 
 
