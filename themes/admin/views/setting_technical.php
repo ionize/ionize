@@ -499,6 +499,51 @@
 
 		</div>
 
+		<!-- Allowed types -->
+		<h3 class="toggler1"><?=lang('ionize_title_allowed types')?></h3>
+
+		<div class="element1">
+		
+		
+			<?php foreach($mimes as $type => $mime_list) :?>
+			
+				<h4><?= $type ?></h4>
+
+				<?php
+					$type_allowed = explode(',',Settings::get('media_type_' . $type));
+				?>
+		
+				<table class="list w280">
+					<thead>
+						<tr>
+							<th class="right">Ext</th>
+							<th>Mime</th>
+							<th class="center">Allowed ?</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<?php foreach($mime_list as $ext => $mime) :?>
+						
+								<tr>
+									<td class="right"><?= $ext ?> </td>
+									<td>
+										<label for="allowed_type_<?= $ext ?>"><?= $mime ?></label>
+									</td>
+									<td class="center">
+										<input <?php if(in_array($ext, $type_allowed)) :?>checked="checked" <?php endif ;?>id="<?= $ext ?>" class="inputcheckbox" name="" type="checkbox" value="<?= $ext ?>" />
+									</td>
+								</tr>
+						<?php endforeach ;?>
+
+					</tbody>
+				</table>
+			
+			<?php endforeach ;?>
+		
+		</div>
+
+
 		<!-- Thumbnails -->
 		<?php if ( ! empty($thumbs)) :?>
 			<h3 class="toggler1"><?=lang('ionize_title_thumbs')?></h3>

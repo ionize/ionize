@@ -102,6 +102,11 @@ class Setting extends MY_admin
 				$this->template['filemanagers'][] = $f;
 //			}
 		}
+		
+		// Mimes types
+		$mimes = Settings::get_mimes_types();
+		
+		$this->template['mimes'] = $mimes;
 
 		/* 
 		 * Database settings

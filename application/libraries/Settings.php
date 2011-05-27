@@ -31,6 +31,8 @@ class Settings
 	
 	public static $online_languages = array();
 
+	public static $mimes = array();
+
 
 	/**
 	 * Sets one setting
@@ -300,6 +302,24 @@ class Settings
 
 		return $lang;
 	}
+	
+	
+	public static function get_mimes_types()
+	{
+		global $mimes;
+	
+		if (count(self::$mimes) == 0)
+		{
+			if (@require_once(APPPATH.'config/mimes_ionize'.EXT))
+			{
+				self::$mimes = $mimes_ionize;
+				unset($mimes_ionize);
+			}
+		}
+
+		return self::$mimes;
+	}
+
 }
 
 
