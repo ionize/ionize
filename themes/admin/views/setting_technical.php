@@ -513,10 +513,10 @@
 					$type_allowed = explode(',',Settings::get('media_type_' . $type));
 				?>
 		
-				<table class="list w280">
+				<table class="list w340">
 					<thead>
 						<tr>
-							<th class="right">Ext</th>
+							<th class="right"></th>
 							<th>Mime</th>
 							<th class="center">Allowed ?</th>
 						</tr>
@@ -526,12 +526,12 @@
 						<?php foreach($mime_list as $ext => $mime) :?>
 						
 								<tr>
-									<td class="right"><?= $ext ?> </td>
+									<td class="right pr10"><?= $ext ?> </td>
 									<td>
-										<label for="allowed_type_<?= $ext ?>"><?= $mime ?></label>
+										<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
 									</td>
 									<td class="center">
-										<input <?php if(in_array($ext, $type_allowed)) :?>checked="checked" <?php endif ;?>id="<?= $ext ?>" class="inputcheckbox" name="" type="checkbox" value="<?= $ext ?>" />
+										<input <?php if(in_array($ext, $type_allowed)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="" type="checkbox" value="<?= $ext ?>" />
 									</td>
 								</tr>
 						<?php endforeach ;?>
