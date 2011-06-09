@@ -24,7 +24,7 @@ class ION_Encrypt {
 	 * Simply determines whether the mcrypt library exists.
 	 *
 	 */
-	function ION_Encrypt($config)
+	function __construct($config)
 	{
 		$this->_mcrypt_exists = ( ! function_exists('mcrypt_encrypt')) ? FALSE : TRUE;
 
@@ -83,7 +83,6 @@ class ION_Encrypt {
 	 * @param	string	the string to encode
 	 * @param	string	the key
 	 * @return	string
-	 */
 	function encode($string, $key = '')
 	{
 		$key = $this->get_key($key);
@@ -95,6 +94,24 @@ class ION_Encrypt {
 		}
 		return base64_encode($enc);
 	}
+	 */
+
+	function encode($string, $key = '')
+	{
+		$key = $this->get_key($key);
+
+		if ($this->_mcrypt_exists === TRUE)
+		{
+			$enc = $this->mcrypt_encode($string, $key);
+		}
+		else
+		{
+			$enc = $this->_xor_encode($string, $key);
+		}
+
+		return base64_encode($enc);
+	}
+
 
 	// --------------------------------------------------------------------
 
@@ -108,7 +125,7 @@ class ION_Encrypt {
 	 * @param	string
 	 * @return	string
 	 */
-	function decode($string, $key = '')
+	function old_decode($string, $key = '')
 	{
 		$key = $this->get_key($key);
 		
@@ -128,6 +145,32 @@ class ION_Encrypt {
 		}
 
 		return $this->_xor_decode($dec, $key);
+	}
+	
+	function decode($string, $key = '')
+	{
+		$key = $this->get_key($key);
+
+		if (preg_match('/[^a-zA-Z0-9\/\+=]/', $string))
+		{
+			return FALSE;
+		}
+
+		$dec = base64_decode($string);
+
+		if ($this->_mcrypt_exists === TRUE)
+		{
+			if (($dec = $this->mcrypt_decode($dec, $key)) === FALSE)
+			{
+				return FALSE;
+			}
+		}
+		else
+		{
+			$dec = $this->_xor_decode($dec, $key);
+		}
+
+		return $dec;
 	}
 
 	// --------------------------------------------------------------------
@@ -224,7 +267,8 @@ class ION_Encrypt {
 	 */
 	function mcrypt_encode($data, $key)
 	{
-		$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
+//		$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
+		$init_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB);
 		$init_vect = mcrypt_create_iv($init_size, MCRYPT_RAND);
 		return $this->_add_cipher_noise($init_vect.mcrypt_encrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), $key);
 	}
@@ -242,7 +286,9 @@ class ION_Encrypt {
 	function mcrypt_decode($data, $key)
 	{
 		$data = $this->_remove_cipher_noise($data, $key);
-		$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
+
+//		$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
+		$init_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CFB);
 
 		if ($init_size > strlen($data))
 		{
@@ -251,7 +297,7 @@ class ION_Encrypt {
 
 		$init_vect = substr($data, 0, $init_size);
 		$data = substr($data, $init_size);
-		return rtrim(mcrypt_decrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), "\0");
+		return rtrim(mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $data, MCRYPT_MODE_CFB, $init_vect), "\0");
 	}
 
 	// --------------------------------------------------------------------
@@ -383,7 +429,7 @@ class ION_Encrypt {
 	{
 		if ($this->_mcrypt_mode == '')
 		{
-			$this->_mcrypt_mode = MCRYPT_MODE_ECB;
+			$this->_mcrypt_mode = MCRYPT_MODE_CFB;
 		}
 		
 		return $this->_mcrypt_mode;
@@ -446,6 +492,45 @@ class ION_Encrypt {
 			return sha1($str);
 		}
 	}
+
+
+	function encode_from_legacy($string, $legacy_mode = MCRYPT_MODE_CFB, $key = '')
+	{
+		if ($this->_mcrypt_exists === FALSE)
+		{
+			log_message('error', 'Encoding from legacy is available only when Mcrypt is in use.');
+			return FALSE;
+		}
+
+		// decode it first
+		// set mode temporarily to what it was when string was encoded with the legacy
+		// algorithm - typically MCRYPT_MODE_ECB
+		$current_mode = $this->_get_mode();
+		$this->set_mode($legacy_mode);
+
+		$key = $this->get_key($key);
+
+		if (preg_match('/[^a-zA-Z0-9\/\+=]/', $string))
+		{
+			return FALSE;
+		}
+
+		$dec = base64_decode($string);
+
+		if (($dec = $this->mcrypt_decode($dec, $key)) === FALSE)
+		{
+			return FALSE;
+		}
+
+		$dec = $this->_xor_decode($dec, $key);
+
+		// set the mcrypt mode back to what it should be, typically MCRYPT_MODE_CBC
+		$this->set_mode($current_mode);
+
+		// and re-encode
+		return base64_encode($this->mcrypt_encode($dec, $key));
+	}
+
 
 }
 

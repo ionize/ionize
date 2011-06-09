@@ -396,7 +396,6 @@ class Installer
 		}
 		else
 		{
-	
 			$this->db_connect();
 	
 			/*
@@ -505,7 +504,7 @@ class Installer
 						foreach ($query->result_array() as $user)
 						{
 							$pass = $this->_decrypt094($user['password'], $user);
-							$enc = $this->_encrypt095($pass, $user);
+							$enc = $this->_encrypt($pass, $user);
 											
 							$user['password'] = $enc;
 						
@@ -519,12 +518,78 @@ class Installer
 					$this->_send_error('user', lang('no_encryption_key_found'), $_POST);
 				}
 			}
+
+			/*
+			 * Migration to 0.9.7
+			 * Migration to CI2
+			 *
+			 */
+			if (in_array('migration_0.9.6_0.9.7.xml', $migration_files))
+			{
+				// Updates the users account
+				$query = $this->db->get('users');
+				
+				if ($query->num_rows() > 0)
+				{
+					foreach ($query->result_array() as $user)
+					{
+						$old_decoded_pass = $this->_decrypt096($user['password'], $user);
+						$encoded_pass = $this->_encrypt($old_decoded_pass, $user);
+						
+						$user['password'] = $encoded_pass;
+						$this->db->where('username', $user['username']);
+						$this->db->update('users', $user);
+					}						
+				}
+			}
+
 	
 			GLOBAL $base_url;
 			header("Location: ".$base_url.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 		}
 	}
 
+	function migrate_users_to_ci2()
+	{
+		$this->db_connect();
+		
+		// Updates the users account
+		$query = $this->db->get('users');
+		
+		if ($query->num_rows() > 0)
+		{
+			foreach ($query->result_array() as $user)
+			{
+				$old_decoded_pass = $this->_decrypt096($user['password'], $user);
+				$encoded_pass = $this->_encrypt($old_decoded_pass, $user);
+				
+				$user['password'] = $encoded_pass;
+				$this->db->where('username', $user['username']);
+				$this->db->update('users', $user);
+				
+				echo($user['username'] . ' : ' . 'done<br/>');
+			}						
+		}
+	}
+
+	function show_password()
+	{
+		$this->db_connect();
+		
+		// Updates the users account
+		$query = $this->db->get('users');
+		
+		if ($query->num_rows() > 0)
+		{
+			foreach ($query->result_array() as $user)
+			{
+				$decoded_pass = $this->_decrypt($user['password'], $user);
+
+				var_dump($decoded_pass);
+			}						
+		}
+	
+	}
 
 	// --------------------------------------------------------------------
 
@@ -1010,7 +1075,7 @@ class Installer
 		// Here is everything OK, we can create the user
 		$data['join_date'] = date('Y-m-d H:i:s');
 		$data['salt'] = $this->get_salt();
-		$data['password'] = $this->_encrypt095($data['password'], $data);
+		$data['password'] = $this->_encrypt($data['password'], $data);
 		$data['id_group'] = '1';
 		
 		// Clean data array
@@ -1600,6 +1665,35 @@ class Installer
 	// --------------------------------------------------------------------
 
 
+	function _decrypt($str, $data)
+	{
+		require_once('./class/Encrypt.php');
+		
+		include(APPPATH.'config/config.php');
+		
+		$encrypt = new ION_Encrypt($config);
+
+		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
+		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
+		
+		return $encrypt->decode($str, substr($key, 0, 56));
+	}
+
+	function _decrypt096($str, $data)
+	{
+		require_once('./class/Encrypt.php');
+		
+		include(APPPATH.'config/config.php');
+		
+		$encrypt = new ION_Encrypt($config);
+
+		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
+		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
+		
+		return $encrypt->old_decode($str, substr($key, 0, 56));
+	}
+
+
 	/**
 	 * Encrypts one password, based on the encrypt key set in config/connect.php
 	 *
@@ -1608,7 +1702,7 @@ class Installer
 	 * @return	string		Encrypted password
 	 *
 	 */
-	function _encrypt095($str, $data)
+	function _encrypt($str, $data)
 	{
 		require_once('./class/Encrypt.php');
 		
@@ -1622,21 +1716,6 @@ class Installer
 		return $encrypt->encode($str, substr($key, 0, 56));
 	}
 
-/* Just for debug
-	function _decrypt095($str, $data)
-	{
-		require_once('./class/Encrypt.php');
-		
-		include(APPPATH.'config/connect.php');
-		
-		$encrypt = new ION_Encrypt($config);
-
-		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
-		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
-		
-		return $encrypt->decode($str, substr($key, 0, 56));
-	}
-*/
 
 	// --------------------------------------------------------------------
 
