@@ -106,16 +106,29 @@
 	</query>
 
 	<query>
-		ALTER TABLE `article` DROP `link`, DROP `link_type`, DROP `link_id`, ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
-	</query>
-
-	<query>
 		ALTER TABLE `article_lang` DROP `link`;
 	</query>
 
 	<query>
-		ALTER TABLE `page` CHANGE `link_id` `link_id` VARCHAR( 20 ) NOT NULL  DEFAULT '', ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
+		ALTER TABLE `article_lang` DROP `link_type`;
 	</query>
+	<query>
+		ALTER TABLE `article_lang` DROP `link_id`;
+	</query>
+
+	<query>
+		ALTER TABLE `article` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
+	</query>
+
+
+	<query>
+		ALTER TABLE `page` CHANGE `link_id` `link_id` VARCHAR( 20 ) NOT NULL  DEFAULT '';
+	</query>
+
+	<query>
+		ALTER TABLE `page` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
+	</query>
+
 
 	<query>
 		UPDATE page SET link_id='' WHERE link_id = '0';
@@ -146,7 +159,7 @@
 	<query>ALTER TABLE `article` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_category` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_comment` COMMENT = '0.9.7';</query>
-	<query>ALTER TABLE `article_langv COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `article_lang` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_media` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_tag` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_type` COMMENT = '0.9.7';</query>
@@ -174,9 +187,9 @@
 	<query>ALTER TABLE `page_user_groups` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `setting` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `tag` COMMENT = '0.9.7';</query>
-	<query>ALTER TABLE `user_groups` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `users` COMMENT = '0.9.7';</query>
-	<query>ALTER TABLE `users_meta COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `users_meta` COMMENT = '0.9.7';</query>
+	<query>ALTER TABLE `user_groups` COMMENT = '0.9.7';</query>
 
 
 

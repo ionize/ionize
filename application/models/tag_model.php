@@ -238,7 +238,7 @@ class Tag_model extends Base_model
 		$this->db->select('tag');
 		$this->db->where('id_'.$parent, $id_parent);
 		$this->db->join($this->table, $this->table.'.'.$this->pk_name.' = '. $join_table.'.'.$this->pk_name, 'inner');
-		$this->db->orderby($join_table.'.id_tag');
+		$this->db->order_by($join_table.'.id_tag');
 		
 		$query = $this->db->get($join_table);
 		

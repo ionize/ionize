@@ -32,14 +32,9 @@ class Page extends Base_Controller
 	
 	function index()
 	{
-		// Real URI segments : See URI problem below
+		// Get the page / article array
 		$this->uri_segment = func_get_args();
-		
-	// URI SEGMENT PROBLEM 
-	// trace($this->uri_segment[1]);
-	// trace($this->uri->segment(4));	
-	// END URI SEG PROB
-		
+
 		$this->load->model('page_model');
 
 		require_once APPPATH.'libraries/ftl/parser.php';

@@ -246,14 +246,15 @@ class Cache
 		if ($this->cache_expiration > 0 && Connect()->is_not('editors'))
 		{
 			$CI =& get_instance();	
-			
+
 			if ( ! is_dir($this->cache_path) OR ! is_really_writable($this->cache_path))
 				return;
-			
+
 			$filepath = $this->cache_path . md5($id);
 			
-			if ( ! $fp = @fopen($this->cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+			if ( ! $fp = @fopen($filepath, FOPEN_WRITE_CREATE_DESTRUCTIVE))
 			{
+				
 				log_message('error', "Unable to write cache file: ".$filepath);
 				return;
 			}
@@ -271,7 +272,7 @@ class Cache
 				return;
 			}
 			fclose($fp);
-			@chmod($cache_path, DIR_WRITE_MODE);
+			@chmod($this->cache_path, DIR_WRITE_MODE);
 	
 			log_message('debug', "Cache file written: ".$filepath);
 		}

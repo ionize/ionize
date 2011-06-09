@@ -4,7 +4,7 @@
  * Model handling database interacions for the Connect library.
  */
 //  CI 2.0 Compatibility
-if(!class_exists('CI_Model')) { class CI_Model extends Model {} }
+//if(!class_exists('CI_Model')) { class CI_Model extends Model {} }
 
 class Connect_model extends CI_Model 
 {

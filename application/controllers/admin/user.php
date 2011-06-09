@@ -85,7 +85,6 @@ class User extends My_Admin
 				try
 				{
 					$this->connect->login($_POST);
-
 					redirect(base_url().$uri_lang.'/'.config_item('admin_url'));
 				}
 				catch(Exception $e)

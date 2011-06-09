@@ -10,7 +10,10 @@
 <script type"text/javascript">
 
 
-	// ToggleHeader Button
+	/**
+	 * ToggleHeader Button
+	 *
+	 */
 	$('toggleHeaderButton').addEvent('click', function(e)
 	{
 		e.stop();
@@ -35,7 +38,10 @@
 		MUI.get('desktop').setDesktopSize();
 	});
 	
-	// Init desktopHeader status from cookie
+	/**
+	 * Init desktopHeader status from cookie
+	 *
+	 */
 	var dh = $('desktopHeader');
 	var opened = (Cookie.read('desktopHeader'));
 	if (opened == 'false') {dh.hide();}
@@ -53,6 +59,10 @@
 	{
 		e.stop();
 		
+		$$('#structurePanel div.minus').each(function(el){
+			el.fireEvent('click', {'target': el});
+		});
+/*
 		if (this.retrieve('status') == 'collapse')
 		{
 			$$('#structurePanel div.plus').each(function(el){
@@ -69,6 +79,7 @@
 			this.value = Lang.get('ionize_label_expand_all');
 			this.store('status', 'collapse');
 		}
+*/
 	});
 
 

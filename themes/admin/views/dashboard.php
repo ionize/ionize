@@ -33,7 +33,6 @@
 	
 	</div>
 
-	
 	<div id="infos" class="mt20">	
 
 		<!-- Last connected users -->

@@ -35,6 +35,7 @@ class System_check extends MY_admin
 		$this->load->model('system_check_model', '', true);
 		$this->load->model('menu_model', '', true);
 		$this->load->model('page_model', '', true);
+		$this->load->model('config_model', '', true);
 		
 		// Libraries
 		$this->load->library('structure');
@@ -71,7 +72,7 @@ class System_check extends MY_admin
 			array (
 				'fn' => 'ION.JSON',
 				'args' => array	(
-					'system_check/check_page_level'
+					'system_check/check_lang'
 				)
 			)
 		);
@@ -79,9 +80,88 @@ class System_check extends MY_admin
 		$this->response();
 	}
 	
+
+	/**
+	 * Check if all langs defined in DB are set in the config file
+	 *
+	 */
+	function check_lang()
+	{
+		$result = array(
+			'title' => lang('ionize_title_check_lang'),
+			'result_status' => 'ok',
+			'result_text' => lang('ionize_message_check_ok')
+		);
+		
+		// Get the languages : DB + config/language.php
+		$db_languages = Settings::get_languages();
+		$config_languages = config_item('lang_uri_abbr');
+		
+		// Check differences between DB and config/language.php file
+		$result_status = TRUE;
+		
+		foreach($db_languages as $lang)
+		{
+			if ( ! array_key_exists($lang['lang'], $config_languages))
+			{
+				$result_status = FALSE;
+			}
+		}
+		
+		// Correct if needed
+		if ($result_status == FALSE)
+		{
+			// Default language
+			$def_lang = '';
+			
+			// Available languages array
+			$lang_uri_abbr = array();
+			
+			foreach($db_languages as $l)
+			{
+				// Set default lang code
+				if ($l['def'] == '1')
+					$def_lang = $l['lang'];
+				
+				$lang_uri_abbr[$l['lang']] = $l['name'];
+			}
+
+			$this->config_model->change('language.php', 'language_abbr', $def_lang);
+
+			if ( ! empty($lang_uri_abbr))
+				$this->config_model->change('language.php', 'lang_uri_abbr', $lang_uri_abbr);
+
+			$result['result_text'] = lang('ionize_message_check_corrected');
+			
+		}
+		
+		// Result view
+		$view = $this->load->view('system_check_result', $result, TRUE);
+		
+		$this->callback = array(
+			array (
+				'fn' => 'ION.appendDomElement',
+				'args' => array	(
+					'system_check_report',
+					$view
+				)
+			)
+			,
+			array (
+				'fn' => 'ION.JSON',
+				'args' => array	(
+					'system_check/check_page_level'
+				)
+			)
+		);
+
+		$this->response();
+	}
+
 	
 	/**
 	 * Check page level integrity
+	 * Checks the page level inegrity, correct and chains the next check : article's contexts
 	 *
 	 */
 	function check_page_level()
@@ -130,7 +210,8 @@ class System_check extends MY_admin
 	
 	
 	/**
-	 * Checks if all articles which have one cpage context have the page as "Main Parent"
+	 * Checks if all articles which have one page context have the page as "Main Parent"
+	 * End of check. 
 	 *
 	 */
 	function check_article_context()
@@ -174,14 +255,6 @@ class System_check extends MY_admin
 	}
 	
 	
-	/**
-	 * Check if all langs defined in DB are set in the config file
-	 *
-	 */
-	function check_lang()
-	{
-	
-	}
 	
 	
 	/**

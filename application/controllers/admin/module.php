@@ -72,12 +72,14 @@ class Module extends MY_admin
 		$obj = new $module_controller($this);
 		
 		// Loads module language file, if exists
-		if (is_file($module_path.'language/'.$this->config->item('language_abbr').'/'.$module_name.'_lang.php'))
+//		if (is_file($module_path.'language/'.$this->config->item('language_abbr').'/'.$module_name.'_lang.php'))
+//		{
 			$this->lang->load($module_name, $this->config->item('language_abbr'));
-		else
-		{
-			trace('warning: no language file for this module in : '. $module_path.'language/'.$this->config->item('language_abbr').'/');
-		}
+//		}
+//		else
+//		{
+//			trace('warning: no language file for this module in : '. $module_path.'language/'.$this->config->item('language_abbr').'/');
+//		}
 
 		call_user_func_array(array($obj, $module_func), $module_args);
 

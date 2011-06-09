@@ -401,7 +401,7 @@ class Lang extends MY_admin
 		
 		foreach($languages as $l)
 		{
-			// Set defualt lang code
+			// Set default lang code
 			if ($l['def'] == '1')
 				$def_lang = $l['lang'];
 			

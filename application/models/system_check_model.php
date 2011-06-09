@@ -32,7 +32,7 @@ class System_check_model extends Base_model
 	public function __construct()
 	{
 		// Call the Model constructor
-		parent::Model();
+		parent::__construct();
 	}
 	
 	

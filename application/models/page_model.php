@@ -52,8 +52,8 @@ class Page_model extends Base_model
 	function get_lang_list($where=false, $lang=NULL)
 	{
 		// Order by ordering field
-		$this->db->orderby($this->table.'.level', 'ASC');
-		$this->db->orderby($this->table.'.ordering', 'ASC');
+		$this->db->order_by($this->table.'.level', 'ASC');
+		$this->db->order_by($this->table.'.ordering', 'ASC');
 
 		// Filter on published
 		$this->filter_on_published(self::$publish_filter, $lang);

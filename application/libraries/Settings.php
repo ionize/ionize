@@ -216,7 +216,7 @@ class Settings
 		
 		// Correct the default Admin panel language
 		if ( ! in_array($default_admin_lang, $displayed_admin_lang))
-			$default_admin_lang = config_item('default_language');
+			$default_admin_lang = config_item('language');
 		
 		return $default_admin_lang;
 	}

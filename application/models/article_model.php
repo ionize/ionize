@@ -130,7 +130,7 @@ class Article_model extends Base_model
 	
 		if ( empty($where['order_by']))
 		{
-			$this->db->orderby($this->parent_table.'.ordering', 'ASC');
+			$this->db->order_by($this->parent_table.'.ordering', 'ASC');
 		}
 
 		// Perform conditions from the $where array

@@ -207,7 +207,7 @@ class Element_definition extends MY_Admin {
 		// Delete
 		else
 		{
-			$this->element_definition_model->delete($cond);
+			$this->element_definition_model->delete($id);
 			
 			// Reload Elements definitions list
 			$this->callback = array

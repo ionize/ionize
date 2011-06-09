@@ -22,7 +22,7 @@
  *
  */
 
-class Tree_model extends Model 
+class Tree_model extends CI_Model 
 {
 
 	/**
@@ -33,7 +33,7 @@ class Tree_model extends Model
 	public function __construct()
 	{
 		// Call the Model constructor
-		parent::Model();
+		parent::__construct();
 	}
 
 

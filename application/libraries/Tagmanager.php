@@ -142,8 +142,6 @@ class TagManager
 			return false;
 		}
 		
-		
-		
 		/* If modules are installed : Get the modules tags definition
 		 * Modules tags definition must be stored in : /modules/your_module/libraires/tags.php
 		 * 
@@ -171,18 +169,16 @@ class TagManager
 				{																
 					// Allow to extend core tags using "tag_extension_map" static array
 					
-					if (isset($vars["tag_extension_map"])&&isset($vars["tag_extension_map"][$method]))
+					if (isset($vars["tag_extension_map"]) && isset($vars["tag_extension_map"][$method]))
 					{
 						self::$tags[$vars["tag_extension_map"][$method]] = $class.'::'.$method;
 					}
-					
 					
 					// Regular tag declaration					
 					else
 					{
 						self::$tags[$plugin.':'.$method] = $class.'::'.$method;
 					}
-
 				}
 				
 				return true;

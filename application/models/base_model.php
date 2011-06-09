@@ -22,7 +22,7 @@
  *
  */
 
-class Base_model extends Model 
+class Base_model extends CI_Model 
 {
 	/*
 	 * Stores if this model is already loaded or not.
@@ -148,7 +148,7 @@ class Base_model extends Model
 	 */
 	public function __construct()
 	{
-		parent::Model();
+		parent::__construct();
 
 		if(self::$_inited)
 		{
@@ -1119,7 +1119,7 @@ class Base_model extends Model
 		$this->db->select('*, media.id_media');
 		$this->db->from('media,'. $parent .'_media');
 		$this->db->where('media.id_media', $parent.'_media.id_media', false);
-		$this->db->orderby($parent.'_media.ordering');
+		$this->db->order_by($parent.'_media.ordering');
 
 		if ( ! is_null($lang))
 		{

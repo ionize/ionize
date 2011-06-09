@@ -389,7 +389,7 @@ class Connect {
 		}
 		
 		$user = $this->model->find_user($identification);
-		
+
 		// did we get a user, and does the passwords match?
 		if($user != FALSE && $password == $this->decrypt($user['password'], $user))
 		{
@@ -965,13 +965,15 @@ class Connect {
 				{
 					$this->session->set_userdata('connect_blocked_url', current_url());
 				}
-
+				
 				redirect($this->restrict_type_redirect['uri']);
-			break;
+				
+				break;
 
 			case '404':
 				show_404();
-			break;
+				
+				break;
 
 			default:
 				
@@ -1240,10 +1242,6 @@ class Connect {
 			$CI =& get_instance();
 			
 			$CI->load->_ci_loaded_files[] = APPPATH.'libraries/Connect.php';
-			
-//			$CI->connect =& $CONNECT;
-
-//			$CI->connect =& self::$instance;
 		}
 		
 		return self::$instance;

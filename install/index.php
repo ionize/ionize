@@ -56,13 +56,11 @@ else
  */
 
 require('../system/database/DB.php');
-require('../system/codeigniter/Common.php');
+require('../system/core/Common.php');
 require('../application/config/constants.php');
 require('../application/config/ionize.php');
-require_once('../application/libraries/finder/finder.php');		// So My_Language can output CI errors.
+require_once('../application/core/finder/finder.php');		// So My_Language can output CI errors.
 
-// Access class
-// require(APPPATH.'libraries/access/Access.php');
 
 // Installer class
 if (file_exists('./class/installer.php'))
@@ -79,6 +77,7 @@ if (file_exists('./class/installer.php'))
 	 */
 	require('./helpers/language_helper.php');
 	require(BASEPATH.'helpers/email_helper.php');
+	require(APPPATH.'helpers/trace_helper.php');
 	
 	
 	/*
@@ -119,11 +118,18 @@ if (file_exists('./class/installer.php'))
 		case 'migrate' :
 			$installer->migrate();
 			break;
+		
+		case 'migrate_users_to_ci2' :
+			$installer->migrate_users_to_ci2();
+			break;
 			 
 		case 'settings' :
 			$installer->settings();
 			break;
-			 
+		
+		case 'show_password' : 
+			$installer->show_password();
+			break;
 	}
 }
 ?>

@@ -964,6 +964,7 @@ $lang['ionize_text_system_check'] = 'Cet outil contrôle l\'intégrité des donn
 $lang['ionize_label_start_system_check'] = 'Commencer le test';
 $lang['ionize_button_start_system_check'] = 'Aller hop !';
 
+$lang['ionize_title_check_lang'] = 'Langues';
 $lang['ionize_title_check_page_level'] = 'Levels des Pages';
 $lang['ionize_title_check_article_context'] = 'Contexte des articles';
 

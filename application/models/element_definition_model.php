@@ -64,8 +64,28 @@ class Element_definition_model extends Base_model
 		
 		return $definitions;
 	}
+	
+	
+	// ------------------------------------------------------------------------
 
-
+	/**
+	 * Deletes one Element Definition
+	 * 
+	 *
+	 */
+	
+	function delete($id)
+	{
+		$affected_rows = 0;
+		
+		// Article delete
+		$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table);
+			
+		// Lang
+		$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->lang_table);
+		
+		return $affected_rows;
+	}
 
 
 }

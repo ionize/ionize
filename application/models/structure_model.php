@@ -21,7 +21,7 @@
  *
  */
 
-class Structure_model extends Model 
+class Structure_model extends CI_Model 
 {
 
 	/**
@@ -32,7 +32,7 @@ class Structure_model extends Model
 	public function __construct()
 	{
 		// Call the Model constructor
-		parent::Model();
+		parent::__construct();
 	}
 
 

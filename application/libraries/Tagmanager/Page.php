@@ -182,6 +182,8 @@ class TagManager_Page extends TagManager
 	{
 		parent::add_globals($con);
 
+// trace($this->ci->uri->segment_array());
+
 		// Get current asked page
 		$con->globals->page = $this->get_current_page($con, $this->ci->uri->segment(3));
 
@@ -505,7 +507,7 @@ class TagManager_Page extends TagManager
 
 		// Page from locals
 		$pages =& $tag->locals->pages;
-
+		
 		// Get the potential special URI
 		$special_uri = (isset($this->ci->uri_segment[1])) ? $this->ci->uri_segment[1] : FALSE;
 

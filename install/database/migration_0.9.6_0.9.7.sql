@@ -95,7 +95,8 @@ ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  ''
 
 
 
-ALTER TABLE `article` DROP `link`, DROP `link_type`, DROP `link_id`, ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
+ALTER TABLE `article` DROP `link`, DROP `link_type`, DROP `link_id`;
+ALTER TABLE `article` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
 
 
 
@@ -135,7 +136,7 @@ INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', '');
 ALTER TABLE `article` COMMENT = '0.9.7';
 ALTER TABLE `article_category` COMMENT = '0.9.7';
 ALTER TABLE `article_comment` COMMENT = '0.9.7';
-ALTER TABLE `article_langv COMMENT = '0.9.7';
+ALTER TABLE `article_lang` COMMENT = '0.9.7';
 ALTER TABLE `article_media` COMMENT = '0.9.7';
 ALTER TABLE `article_tag` COMMENT = '0.9.7';
 ALTER TABLE `article_type` COMMENT = '0.9.7';
@@ -165,8 +166,5 @@ ALTER TABLE `setting` COMMENT = '0.9.7';
 ALTER TABLE `tag` COMMENT = '0.9.7';
 ALTER TABLE `user_groups` COMMENT = '0.9.7';
 ALTER TABLE `users` COMMENT = '0.9.7';
-ALTER TABLE `users_meta COMMENT = '0.9.7';
+ALTER TABLE `users_meta` COMMENT = '0.9.7';
 
-
-
-</sql>

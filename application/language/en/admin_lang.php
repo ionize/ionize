@@ -973,6 +973,7 @@ $lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and 
 $lang['ionize_label_start_system_check'] = 'Start Check';
 $lang['ionize_button_start_system_check'] = 'Start Check';
 
+$lang['ionize_title_check_lang'] = 'Check Languages';
 $lang['ionize_title_check_page_level'] = 'Check Pages Levels';
 $lang['ionize_title_check_article_context'] = 'Check Articles Contexts';
 
