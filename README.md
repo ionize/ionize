@@ -18,7 +18,16 @@ About this branche (with_ci2)
 ----------
 
 This branche is experimental, it may not work.
+
 We provide no support on this branche, but every issue report is welcome.
+
+### Development status
+
+* Mootools 1.3.3 : OK
+* Mootools FileManager : 80% integrated
+* CodeIgniter 2 : 90% integrated
+* Tags Cache system : OK
+* Full Page Cache : In dev
 
 
 ### Installation
