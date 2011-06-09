@@ -843,7 +843,7 @@ class Setting extends MY_admin
 				// UI panel to update after saving : Structure panel
 				$this->update[] = array(
 					'element' => 'structurePanel',
-					'url' => admin_url() . 'core/get_structure'
+					'url' => admin_url() . 'tree'
 				);
 
 				$this->success(lang('ionize_message_database_saved'));				

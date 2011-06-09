@@ -167,7 +167,19 @@ class Modules extends MY_admin
 				// Install module database tables
 				if ($database = $xml->database)
 				{
-					$errors = $this->install_database($database);
+					$errors = array();
+					
+					$database_attr = $database->attributes();
+					
+					// Install through a dedicated XML script
+					if ( ! empty($database_attr['script']))
+					{
+						$errors = $this->install_database_script($database_attr['script'], $module_folder);
+					}
+					else
+					{
+						$errors = $this->install_database($database);				
+					}
 
 					if ( !empty($errors))
 					{
@@ -296,7 +308,6 @@ class Modules extends MY_admin
 				 * Columns script
 				 *
 				 */
-				
 				// Number of column items
 				$columns_cnt = count($table->column);
 
@@ -356,9 +367,88 @@ class Modules extends MY_admin
 	}
 
 
+	// ------------------------------------------------------------------------
+	
+
+	/**
+	 * Installs the module database based on a separated simple XML script
+	 * 
+	 * @param	String	File name
+	 *
+	 * The database.xml script must look like the database.xml install file :
+	 *
+	 * 	<?xml version="1.0" ?>
+	 *	<sql>
+	 *		<name>Ionize Shop Module Database Creation script</name>
+	 *		<version>0.9.7</version>
+	 *		<license>Open Source MIT license</license>
+	 *		
+	 *		<!-- Tables definition -->
+	 *		<tables>
+	 *			<query>
+	 *				CREATE  TABLE IF NOT EXISTS `my_table` (
+	 *				  `id_my_table` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+	 *				  `field1` VARCHAR(30) ,
+	 *				  `default_value` DECIMAL(12,3) NULL ,
+	 *				  PRIMARY KEY (`id_my_table`)
+	 *				)
+	 *				ENGINE = InnoDB
+	 *				AUTO_INCREMENT = 1
+	 *				DEFAULT CHARACTER SET = utf8
+	 *				COLLATE = utf8_unicode_ci;
+	 *			</query>
+	 *			<query>
+	 *				...
+	 *			</query>
+	 *		</tables>
+	 *			
+	 *		<!-- Basic Content -->
+	 *		<content>
+	 *			<query>INSERT INTO my_table VALUES (1, 'EU', 10.2);</query>
+	 *			<query>INSERT INTO my_table VALUES (2, 'AR', 5);</query>
+	 *		</content>				
+	 *			
+	 *	</sql>		
+	 *
+	 *
+	 */
+	function install_database_script($script, $module_folder)
+	{
+		$errors = array();
+		
+		if ( ! $xml = simplexml_load_file(MODPATH . $module_folder . '/' . $script) )
+		{
+			$errors[] = 'SQL File ' . $script . ' cannot be found.';
+		}
+		else
+		{
+			// Get tables & content
+			$tables = $xml->xpath('/sql/tables/query');
+			$content = $xml->xpath('/sql/content/query');
+			
+			// Create tables
+			foreach ($tables as $sql)
+			{
+				if ( ! $this->db->simple_query($sql))
+				{
+					$errors[] = $sql;
+				}
+			}
+			
+			// Add content
+			foreach ($content as $sql)
+			{
+				$this->db->simple_query($sql);
+			}
+		}
+
+		return $errors;
+	}
+
 
 	// ------------------------------------------------------------------------
 	
+
 	/**
 	 * @deprecated
 	 *

@@ -10,9 +10,10 @@
 |
 */
 
-// load the file here, to allow use of connect() in constructor
+// Connect Library : To use in constructors
 require_once APPPATH.'libraries/Connect.php';
 
+// Cache Library : Available everywhere
 require_once APPPATH.'libraries/Cache.php';
 
 

@@ -67,7 +67,7 @@ class Menu extends MY_admin
 		if( $this->input->post('name_new') != "" && $this->input->post('title_new') != "" )
 		{
 			$data = array(
-						'name' => $this->input->post('name_new'),
+						'name' => url_title($this->input->post('name_new'), 'underscore'),
 						'title' => $this->input->post('title_new')
 					);
 
@@ -89,7 +89,7 @@ class Menu extends MY_admin
 				),
 				array(
 					'element' => 'structurePanel',
-					'url' => admin_url() . 'core/get_structure'
+					'url' => admin_url() . 'tree'
 				)	
 			);
 			
@@ -118,7 +118,7 @@ class Menu extends MY_admin
 		{
 			// Update existing menus
 			$data = array(
-				'name' =>		$this->input->post('name_'.$menu['id_menu']),
+				'name' =>		url_title($this->input->post('name_'.$menu['id_menu']), 'underscore'),
 				'title' =>		$this->input->post('title_'.$menu['id_menu'])
 			);
 
@@ -141,7 +141,7 @@ class Menu extends MY_admin
 			),
 			array(
 				'element' => 'structurePanel',
-				'url' => admin_url() . 'core/get_structure'
+				'url' => admin_url() . 'tree'
 			)	
 		);
 
@@ -167,7 +167,7 @@ class Menu extends MY_admin
 			$this->update = array(
 				array(
 					'element' => 'structurePanel',
-					'url' => admin_url() . 'core/get_structure'
+					'url' => admin_url() . 'tree'
 				)	
 			);
 
@@ -207,7 +207,7 @@ class Menu extends MY_admin
 				),
 				array(
 					'element' => 'structurePanel',
-					'url' => admin_url() . 'core/get_structure'
+					'url' => admin_url() . 'tree'
 				)	
 			);
 			
