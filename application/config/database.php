@@ -3,10 +3,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'dev';
+$db['default']['hostname'] = '';
+$db['default']['username'] = '';
 $db['default']['password'] = '';
-$db['default']['database'] = 'fca_work';
+$db['default']['database'] = '';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['swap_pre'] = '';
