@@ -23,16 +23,11 @@ ION.TreeXhr = new Class({
 		// Array of itemManagers
 		this.itemManagers = {'page': new Array(), 'article': new Array()};
 		
-		var opened = new Array();
-		if (Cookie.read('tree')) opened = (Cookie.read('tree')).split(',');
-		
 		this.elementIcon_Model = new Element('div', {'class': 'tree-img drag'});
 		this.plusMinus_Model = new Element('div', {'class': 'tree-img plus'});
 		this.lineNode_Model = new Element('div', {'class': 'tree-img line node'});
 		this.treeLine_Model = new Element('div', {'class': 'tree-img'});
 		
-		this.folderLi_Model = new Element('li', {'class': 'folder page'});
-		this.fileLi_Model = new Element('li', {'class': 'file doc'});
 		this.action_Model = new Element('span', {'class': 'action', 'styles': { 'display':'none' }});
 		this.icon_Model = new Element('span', {'class': 'icon'});
 		this.span_Model = new Element('span');
@@ -306,7 +301,7 @@ ION.TreeXhr = new Class({
 			folderContents.each(function(ul){ ul.setStyle('display', 'none');});
 			folder.removeClass('f-open');
 			
-			ION.treeDelFromCookie(folder.retrieve('id_page'));
+			ION.listDelFromCookie('tree', folder.retrieve('id_page'));
 		}
 		else
 		{
@@ -317,7 +312,7 @@ ION.TreeXhr = new Class({
 			folderContents.each(function(ul){ ul.setStyle('display', 'block'); });
 			folder.addClass('f-open');
 			
-			ION.treeAddToCookie(folder.retrieve('id_page'));
+			ION.listAddToCookie('tree', folder.retrieve('id_page'));
 			
 			$('btnStructureExpand').store('status', 'expand');
 			$('btnStructureExpand').value = Lang.get('ionize_label_collapse_all');
@@ -396,6 +391,13 @@ ION.TreeXhr = new Class({
 			});
 		});
 		
+/**
+ * HERE : 	To be replaced by :
+ *			ION.initRequestEvent(a, adminUrl + 'switch_online/...' + a.getProperty('rel'));
+			and
+			Callback of : 
+			updateElementStatus()
+ */
 		// Online / Offline icon
 		a = el.getElement('a.status');
 		ION.initPageStatusEvent(el.getElement('a.status'));
@@ -404,6 +406,13 @@ ION.TreeXhr = new Class({
 	
 	addArticleActionLinks: function(el)
 	{
+/**
+ * HERE : 	To be replaced by :
+ *			ION.initRequestEvent(a, adminUrl + 'switch_online/...' + a.getProperty('rel'));
+			and
+			Callback of : 
+			updateElementStatus()
+ */
 		// Add the Status Event
 		ION.initArticleStatusEvent(el.getElement('a.status'));
 
@@ -431,14 +440,13 @@ ION.TreeXhr = new Class({
 	}
 });
 
-
+/*
 ION.append({
 
 
 	/**
 	 * Add tree element to cookie
 	 *
-	 */
 	treeAddToCookie: function(value)
 	{
 		var opened = Array();
@@ -455,7 +463,6 @@ ION.append({
 	/**
 	 * Remove tree elements from cookie
 	 *
-	 */
 	treeDelFromCookie: function(value)
 	{
 		var opened = Array();
@@ -469,3 +476,4 @@ ION.append({
 	}
 	
 });
+*/

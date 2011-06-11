@@ -52,10 +52,13 @@ class Module extends MY_admin
 	{
 		// Delete the segments before the module name
 		$mod_uri = array_slice($this->uri->segments, 3);
-		
+
 		// Get the controller, the called func name and the args
 		$module_controller = $mod_uri[0];
-		$module_func = $mod_uri[1];
+		
+		$module_func = 'index';
+		if (isset($mod_uri[1]))
+			$module_func = $mod_uri[1];
 		
 		$module_args = array_slice($mod_uri, 2);
 

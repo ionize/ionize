@@ -73,9 +73,44 @@ ION.append({
 	{
 		var RegexUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 		return RegexUrl.test(url);
-	}
+	},
+
+
+// HERE 
+// HERE
+	
+	/**
+	 * Add tree element to cookie
+	 *
+	 */
+	listAddToCookie: function(name, value)
+	{
+		var list = Array();
+		if (Cookie.read(name))
+			list = (Cookie.read(name)).split(',');
+		if (!list.contains(value))
+		{
+			list.push(value);
+			Cookie.write(name, list.join(','));
+		}
+	},
 
 	
+	/**
+	 * Remove tree elements from cookie
+	 *
+	 */
+	listDelFromCookie: function(name, value)
+	{
+		var list = Array();
+		if (Cookie.read(name))
+			list = (Cookie.read(name)).split(',');
+		if (list.contains(value))
+		{
+			list.erase(value);
+			Cookie.write(name, list.join(','));
+		}
+	}
 	
 
 });

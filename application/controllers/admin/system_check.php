@@ -72,7 +72,7 @@ class System_check extends MY_admin
 			array (
 				'fn' => 'ION.JSON',
 				'args' => array	(
-					'system_check/check_lang'
+					'system_check/check_page_level'
 				)
 			)
 		);
@@ -129,7 +129,10 @@ class System_check extends MY_admin
 			$this->config_model->change('language.php', 'language_abbr', $def_lang);
 
 			if ( ! empty($lang_uri_abbr))
+			{
+// trace($lang_uri_abbr);
 				$this->config_model->change('language.php', 'lang_uri_abbr', $lang_uri_abbr);
+			}
 
 			$result['result_text'] = lang('ionize_message_check_corrected');
 			

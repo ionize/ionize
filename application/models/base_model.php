@@ -400,7 +400,7 @@ class Base_model extends CI_Model
 	 *	@return	array	The complete arrayList of element, including medias
 	 *
 	 */
-	function get_lang_list($where = FALSE, $lang = NULL) // , $limit=false, $like=false)
+	function get_lang_list($where = FALSE, $lang = NULL)
 	{
 		$data = array();
 
@@ -1325,7 +1325,8 @@ class Base_model extends CI_Model
 		$ids = array();
 		foreach ($data as $d)
 		{
-			$ids[] = $d['id_'.$parent];
+			if ( ! empty($d['id_'.$parent]))
+				$ids[] = $d['id_'.$parent];
 		}
 		
 		if ( ! empty($ids))

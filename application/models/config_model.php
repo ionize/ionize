@@ -74,8 +74,12 @@ class Config_model extends Base_model
 		if ( ! is_null(self::$content))
 		{
 //			$pattern = '%(config\[\''.$key.'\'\] = \')(.*)(\';)%';
-//			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.*\'?)(;)%';
-			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.[\S|\s]*\'?)(;)%';
+			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.*\'?)(;)%';
+
+//			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.[\S|\s]*\'?)(;)%'; // Does not work
+
+//			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.[\s]*\'?;)%';
+			
 			$type = gettype($val);
 			
 			if ($type == 'string')
@@ -98,6 +102,7 @@ class Config_model extends Base_model
 			if ($type == 'array') $val = var_export($val, TRUE);
 
 			self::$content = preg_replace($pattern, '${1}'.$val. '${3}', self::$content );
+//			self::$content = preg_replace($pattern, '${1}'.$val . ';', self::$content );
 
 			return TRUE;
 		}
