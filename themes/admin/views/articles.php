@@ -428,11 +428,21 @@
 	/**
 	 * Table action icons
 	 *
-	 */
 	$$('#articlesTable .delete').each(function(item)
 	{
+	
 		ION.initItemDeleteEvent(item, 'article');
 	});
+	 */
+	var confirmDeleteMessage = Lang.get('ionize_confirm_element_delete');
+ 	var url = admin_url + 'article/delete/';
+
+	$$('#articlesTable .delete').each(function(item)
+	{
+		ION.initRequestEvent(item, url + item.getProperty('rel'), {}, {'message': confirmDeleteMessage})
+	});
+
+
 
 	$$('#articlesTable .duplicate').each(function(item)
 	{

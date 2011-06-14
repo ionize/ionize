@@ -214,11 +214,6 @@ class Article_type extends MY_admin
 					);
 				}
 				
-				// Finally, update the categories list (categories item manager)
-//				$data['rel'] = $this->id;
-//				$data['name'] = $data['type'];
-//				$data['type'] = 'article_type';
-
 				$this->callback = array(
 					array(
 						'fn' => 'ION.HTML',
@@ -263,6 +258,12 @@ class Article_type extends MY_admin
 				$this->update[] = array(
 					'element' => 'article_types',
 					'url' => admin_url() . 'article_type/get_select/' . $parent . '/' . $id_parent
+				);
+				
+				// Remove deleted items from DOM
+				$this->callback[] = array(
+					'fn' => 'ION.deleteDomElements',
+					'args' => array('.article_type' . $id)
 				);
 				
 				// Answer prepare

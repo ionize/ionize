@@ -51,8 +51,13 @@
 	else
 	{
 		// Delete button
-		$('pageDeleteButton').setProperty('rel', id);
-		ION.initItemDeleteEvent($('pageDeleteButton'), 'page');
+//		$('pageDeleteButton').setProperty('rel', id);
+//		ION.initItemDeleteEvent($('pageDeleteButton'), 'page');
+
+	 	var url = admin_url + 'page/delete/';
+		ION.initRequestEvent($('pageDeleteButton'), url + id, {'redirect':true}, {'message': Lang.get('ionize_confirm_element_delete')})
+
+
 
 		// Add Content Element button
 		$('addContentElement').addEvent('click', function(e)

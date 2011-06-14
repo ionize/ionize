@@ -19,6 +19,13 @@ ION.append({
 	/**
 	 * Create one Request event
 	 *
+	 * @param	HTMLDomElement		Dom Element on which add the 'click' event
+	 * @param	String				URL of the request. Relative to http://domain.tld/admin/
+	 * @param	Object				Data to send as POST
+	 * @param	Object				Options object.
+	 *								'confirm' : Boolean. true to open a confirmation window
+	 *								'message' : String. The confirmation message
+	 *
 	 */
 	initRequestEvent: function(item, url, data, options)
 	{
@@ -32,14 +39,14 @@ ION.append({
 			e.stop();
 			
 			// Confirmation screen
-			if (typeOf(options) != 'null' && typeOf(options.message) != 'null')
+			if (typeOf(options) != 'null' && options.confirm == true)
 			{
-				var message = (Lang.get(options.message)) ? Lang.get(options.message) : Lang.get('app_message_confirm'); 
+				var message = (typeOf(options.message) != 'null') ? options.message : Lang.get('ionize_confirm_element_delete'); 
 				
 				// Callback request
 				var callback = ION.JSON.pass([url,data]);
 
-				ION.confirmation('requestConfirm' + rel, callback, message);
+				ION.confirmation('requestConfirm' + item.getProperty('rel'), callback, message);
 			}
 			else
 			{
@@ -56,8 +63,10 @@ ION.append({
 	 * 
 	 * NOTE : SHOULD REPLACE THE MUI.getFormObject() FUNCTION !!!
 	 *
-	 * @param	string		URL to send the form data. With or without the base URL prefix. Will be cleaned.
-	 * @param	mixed		Form data
+	 * @param	String		URL to send the form data. With or without the base URL prefix. Will be cleaned.
+	 * @param	Object		Form data to send as POST
+	 * @param	Object		Options
+	 *						'onSuccess' : Function to use as callback on success
 	 *
 	 */
 	getJSONRequestOptions: function(url, data, options)
@@ -134,7 +143,10 @@ ION.append({
 	 *
 	 * @param	string		URL to send the form data. With or without the base URL prefix. Will be cleaned.
 	 * @param	mixed		Form data
-	 * @param	object		Request options
+	 * @param	object		Options
+	 *						'update' : DOM Element ID to update with the result
+	 *						'append' : DOM Element ID to append the result to.
+	 *						'onSuccess' : Function to use as callback after success
 	 *
 	 */
 	getHTMLRequestOptions: function(url, data, options)

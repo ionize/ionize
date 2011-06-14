@@ -2113,18 +2113,22 @@ class TagManager_Page extends TagManager
 				// $parent_page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
 				// $url = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
 				$url = '';
-				foreach($tag->globals->pages as $p)
+				
+				if ( ! empty($target_article))
 				{
-					if ($p['id_page'] == $target_article['id_page'])
+					foreach($tag->globals->pages as $p)
 					{
-						$url = $p['url']. '/' . $target_article['url'];
+						if ($p['id_page'] == $target_article['id_page'])
+						{
+							$url = $p['url']. '/' . $target_article['url'];
+						}
 					}
+					
+					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+						$url = Settings::get_lang('current').'/'.$url;
+					
+					return base_url().$url;
 				}
-				
-				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
-					$url = Settings::get_lang('current').'/'.$url;
-				
-				return base_url().$url;
 			}
 			// This is a link to a page
 			else

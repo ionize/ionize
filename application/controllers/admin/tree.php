@@ -12,7 +12,7 @@
 // ------------------------------------------------------------------------
 
 /**
- * Ionize Structure Controller
+ * Ionize Tree Controller
  * Provides Ionizes Structure Tree
  *
  * @package		Ionize
@@ -40,7 +40,7 @@ class Tree extends MY_Admin {
 		$this->load->model('article_model', '', true);
 		
 		// Librairies
-		$this->load->library('structure');
+//		$this->load->library('structure');
 	}
 
 	
@@ -89,15 +89,9 @@ class Tree extends MY_Admin {
 			,'page.id_menu' => $id_menu
 		));
 		
-		$tree = array();
-//		$this->structure->get_nested_structure($pages, $tree, $id_parent, 0, -1, $articles);
-		
 		$this->response(array('pages' => $pages, 'articles' => $articles));
 	}
-	
-
-	
 }
 
-/* End of file structure.php */
-/* Location: ./application/admin/controllers/structure.php */
+/* End of file tree.php */
+/* Location: ./application/admin/controllers/tree.php */

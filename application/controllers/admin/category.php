@@ -276,7 +276,13 @@ class Category extends MY_admin
 					'element' => 'categories',
 					'url' =>  admin_url() . 'category/get_select' . $parent_url
 				);
-				
+
+				// Remove deleted items from DOM
+				$this->callback[] = array(
+					'fn' => 'ION.deleteDomElements',
+					'args' => array('.category' . $id)
+				);
+
 				// Answer prepare
 				$this->id = $id;
 				
@@ -310,12 +316,6 @@ class Category extends MY_admin
 				'element' => 'categories',
 				'url' =>  admin_url() . 'category/get_select/' . $parent . '/' . $id_parent
 			);
-
-			// Also update categories in categories window (if window is open)
-//			$this->update[] = array(
-//				'element' => 'wCategories_content',
-//				'url' => 'admin/category/get_categories'
-//			);
 
 			// Answer
 			$this->success(lang('ionize_message_operation_ok'));

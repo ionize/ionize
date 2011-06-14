@@ -33,7 +33,7 @@
 				<dl class="compact small">
 					<dt><label><?= lang('ionize_label_status') ?></label></dt>
 					<dd class="icon">
-						<a class="page<?= $id_page ?> <?=($online == '1') ? 'online' : 'offline' ;?>" onclick="javascript:ION.switchPageStatus('<?= $id_page ?>')"></a>
+						<a id="iconPageStatus" class="page<?= $id_page ?> <?=($online == '1') ? 'online' : 'offline' ;?>"></a>
 					</dd>
 				</dl>
 		
@@ -1209,6 +1209,10 @@
 			ION.JSON('page/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_page': $('id_page').value});
 		}
 		
+		// Page status
+		ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?= $id_page ?>');
+		
+
 		$('id_subnav_menu').addEvent('change', function()
 		{
 			// Sub nav

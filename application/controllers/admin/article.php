@@ -138,6 +138,9 @@ class Article extends MY_admin
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	function get_list()
 	{
 		$id_page = $this->input->post('id_page');
@@ -182,7 +185,8 @@ class Article extends MY_admin
 			$this->output('article_list');
 		}
 	}	
-
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -386,7 +390,10 @@ class Article extends MY_admin
 				{
 					$menu = $this->menu_model->get_from_page($this->data['id_page']);
 					$this->data['menu'] = $menu;
-									
+					
+					// Used by JS Tree to detect if article in inserted in tree or not
+					$this->data['inserted'] = TRUE;
+					
 					// Insert article to tree if menu is found (for id_page = 0, no one is found)
 					if (!empty($menu))
 					{
@@ -828,40 +835,18 @@ class Article extends MY_admin
 				// Articles
 				$articles = $this->article_model->get_lang_list(array('id_article'=>$id_article, 'id_page'=>$id_page), Settings::get_lang('default'));
 
-				// Lang data
-//				$this->article_model->add_lang_data($articles);
-
 				// Set the article
 				$article = array();
 				if ( ! empty($articles))
 				{
 					$article = $articles[0];
 					$article['title'] = htmlspecialchars_decode($article['title'], ENT_QUOTES);
+					
+					// Used by JS Tree to detect if article is inserted in tree or not
+					$article['inserted'] = TRUE;
 				}
 
 
-				// Add view logical name to article list (from theme/config/views.php file)
-//				if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
-//					require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
-//				else
-//					$views = false;
-				
-// Needed for Articles list in case of page editing.
-// Stupid : Better to reload the page article's list
-/*
-				// Views dropdown
-				$datas = isset($views['article']) ? $views['article'] : array() ;
-				$datas = array('' => lang('ionize_select_default_view')) + $datas; 
-				$article['views'] = form_dropdown('view', $datas, $article['view'], 'id="view'.$flat_rel.'" class="select w120" style="padding:0;" rel="'.$rel.'"');
-
-				// Types dropdown
-				$datas = $this->article_type_model->get_types_select();
-				$datas = array('' => lang('ionize_select_no_type')) + $datas; 
-				$article['types'] = form_dropdown('type', $datas, $article['id_type'], 'id="type'.$flat_rel.'" class="select w120" style="padding:0;" rel="'.$rel.'"');
-*/
-//
-
-//
 
 				$this->callback = array
 				(
@@ -1260,14 +1245,18 @@ class Article extends MY_admin
 
 		$status = $this->article_model->switch_online($id_page, $id_article);
 
-		// Additional JSON data
-		$data = array(
-			'status' => $status,
-			'id_article' => $id_article,
-			'rel' => $id_page . '.' . $id_article
+		$this->callback = array(
+			array(
+				'fn' => 'ION.switchOnlineStatus',
+				'args' => array(
+					'status' => $status,
+					'selector' => '.article'.$id_page.'x'.$id_article
+				)
+			)
 		);
+
 		
-		$this->success(lang('ionize_message_operation_ok'), $data);
+		$this->success(lang('ionize_message_operation_ok'));
 	}
 
 
@@ -1375,10 +1364,25 @@ class Article extends MY_admin
 			// Clear the cache
 			Cache()->clear_cache();
 
-			$this->id = $id;
-			$addon_data = array('element' => 'article');
-		
-			$this->success(lang('ionize_message_operation_ok'), $addon_data);
+			// Remove deleted article from DOM
+			$this->callback[] = array(
+				'fn' => 'ION.deleteDomElements',
+				'args' => array('.article' . $id)
+			);
+			
+			// If the current edited article is deleted
+			if ($this->input->post('redirect'))
+			{
+				$this->callback[] = array(
+					'fn' => 'ION.updateElement',
+					'args' => array(
+						'element' => 'mainPanel',
+						'url' => 'dashboard'
+					)
+				);
+			}
+			
+			$this->success(lang('ionize_message_operation_ok'));
 		}
 		else
 		{

@@ -1,29 +1,67 @@
+/**
+	Ionize Item Manager
+	
+	Manage a list of elements : 
+	- Make them sortable
+	- Init the delete icon event
+	- Init the status (online / offline) icon event
+
+	@example
+ 	var myItemsManager = new ION.ItemManager(
+	{
+		container: 'myUL',
+		'controller':'module/my_module/controller_name',
+		'sortable': true,
+		'confirmDeleteMessage': Lang.get('my_module_confirm_element_delete')
+	});
+
+ 
+ */
 ION.ItemManager = new Class({
 
 	Implements: [Events, Options],
 	
-	options: ION.options,
+	options: 
+	{
+		'controller': false,
+		'confirmDelete': true,
+		'confirmDeleteMessage': Lang.get('ionize_confirm_element_delete'),
+		'sortable': false
+	},
 	
+	/**
+	 * @constructor
+	 * @param	Object	Options object
+	 *
+	 */
 	initialize: function(options)
 	{
-		this.setOptions(options);
-		
-		this.container = $(this.options.container);
-
-		this.baseUrl = this.options.baseUrl;
-		
 		this.adminUrl = ION.adminUrl;
 
-		this.element = this.options.element;
-
+		// Options
+		this.setOptions(options);
+		this.container = $(this.options.container);
+		if (this.options.controller == false) this.options.controller = this.options.element;
+		
 		// Set parent and id_parent (for ordering)
 		if (options.parent_element && options.id_parent && options.parent_element !='')
 		{
 			this.parent_element = options.parent_element;
 			this.id_parent = options.id_parent;
 		}
-		
+
+		this.init();
+	},
+
+	init: function()
+	{
 		this.initDeleteEvent();
+		this.initStatusEvents();
+
+		if (this.options.sortable == true)
+		{
+			this.makeSortable();
+		}
 	},
 
 	/**
@@ -32,11 +70,27 @@ ION.ItemManager = new Class({
 	 */
 	initDeleteEvent: function()
 	{
-		var type = this.element;
-
+		var self = this;
+ 		var url = this.adminUrl + this.options.controller + '/delete/';
+		
 		$$('#' + this.options.container + ' .delete').each(function(item)
 		{
-			ION.initItemDeleteEvent(item, type);
+			ION.initRequestEvent(item, url + item.getProperty('rel'), {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
+		});
+	},
+
+	/**
+	 * Adds the status Event on each .status anchor in the list
+	 *
+	 */
+	initStatusEvents: function()
+	{
+
+		var url = this.adminUrl + this.options.controller;
+		
+		$$('#' + this.options.container + ' .status').each(function(item, idx)
+		{
+			ION.initRequestEvent(item, url + '/switch_online/' + item.getProperty('rel'));
 		});
 	},
 
@@ -133,7 +187,7 @@ ION.ItemManager = new Class({
 			this.container.store('sortableOrder', serie);
 
 			// Set the request URL
-			var url = this.adminUrl + this.element + '/save_ordering';
+			var url = this.adminUrl + this.options.controller + '/save_ordering';
 
 			// If parent and parent ID are defined, send them to the controller through the URL
 			if (this.parent_element && this.id_parent)
@@ -197,18 +251,24 @@ ION.ArticleManager = new Class({
 			'element': 'article',
 			'container': options.container,
 			'parent_element':'page',
-			'id_parent': options.id_parent
+			'id_parent': options.id_parent,
+			'sortable': true
 		});
-		
-		// Init event on switch online / offline buttons
-		this.initStatusEvents();
-		
-		// Init Article Unlink event
-		this.initUnlinkEvents();
-		
-		// Makes items sortable
-		this.makeSortable();
 	},
+
+	init: function()
+	{
+		this.initDeleteEvent();
+		this.initStatusEvents();
+
+		if (this.options.sortable == true)
+		{
+			this.makeSortable();
+		}
+		
+		this.initUnlinkEvents();
+	},
+
 	
 	/**
 	 * Init potential status buttons (switch online / offline)
@@ -216,34 +276,25 @@ ION.ArticleManager = new Class({
 	 */
 	initStatusEvents: function()
 	{
-		$$('#' + this.options.container + ' .status').each(function(item,idx)
+		var url = this.adminUrl + 'article/switch_online/';
+		
+		$$('#' + this.options.container + ' .status').each(function(item, idx)
 		{
-			ION.initArticleStatusEvent(item);
+			var rel = (item.getProperty('rel')).split(".");
+			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1]);
 		});
 	},
 
 	initUnlinkEvents: function()
 	{
+		var url = this.adminUrl + 'article/unlink/';
+
 		$$('#' + this.options.container + ' .unlink').each(function(item,idx)
 		{
-			ION.initArticleUnlinkEvent(item);
+			var rel = (item.getProperty('rel')).split(".");
+			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1], {}, {message: Lang.get('ionize_confirm_article_page_unlink')});
 		});
 	}
 });
 
-ION.PageManager = new Class({
-
-	Extends: ION.ItemManager,
-
-	initialize: function(options)
-	{
-		this.parent({
-			'element': 'page',
-			'container': options.container
-		});
-		
-		// Makes items sortable
-		this.makeSortable();
-	}
-});
 

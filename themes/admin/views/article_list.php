@@ -103,17 +103,78 @@
 	 */
 	$$('#articleList<?= $id_page ?> .type').each(function(item, idx)
 	{
-		ION.initArticleTypeEvent(item);
+		var rel = item.getAttribute('rel').split(".");
+
+		item.addEvents({
+		
+			'change': function(e)
+			{
+				this.removeClass('a');
+				
+				if (this.value != '0' && this.value != '') { this.addClass('a'); }
+
+				ION.JSON(
+					admin_url + 'article/save_context', 
+					{
+						'id_page': rel[0],
+						'id_article': rel[1],
+						'id_type' : this.value
+					}
+				);
+			}
+		});
+
+//		ION.initArticleTypeEvent(item);
 	});
 
 	$$('#articleList<?= $id_page ?> .view').each(function(item, idx)
 	{
-		ION.initArticleViewEvent(item);
+		var rel = item.getAttribute('rel').split(".");
+
+		item.addEvents({
+		
+			'change': function(e)
+			{
+				this.removeClass('a');
+				
+				if (this.value != '0' && this.value != '') { this.addClass('a'); }
+
+				ION.JSON(
+					admin_url + 'article/save_context', 
+					{
+						'id_page': rel[0],
+						'id_article': rel[1],
+						'view' : this.value
+					}
+				);
+			}
+		});
+	
+//		ION.initArticleViewEvent(item);
 	});
 	
 	$$('#articleList<?= $id_page ?> .parent').each(function(item, idx)
 	{
-		ION.initArticleMainParentEvent(item);
+		var rel = item.getAttribute('rel').split(".");
+
+		item.addEvents({
+		
+			'change': function(e)
+			{
+				this.removeClass('a');
+				
+				if (this.value != '0' && this.value != '') { this.addClass('a'); }
+
+				ION.JSON(
+					admin_url + 'article/save_main_parent', 
+					{
+						'id_page': this.value,
+						'id_article': rel[1]
+					}
+				);
+			}
+		});
+//		ION.initArticleMainParentEvent(item);
 	});
 	
 	/**

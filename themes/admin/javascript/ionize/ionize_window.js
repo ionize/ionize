@@ -122,7 +122,7 @@ ION.append({
 	 * Ionize generic form window
 	 * Use to load a window which contains a form 
 	 *
-	 * @param	string		Window ID
+	 * @param	string		Window ID.
 	 * @param	string		Window Form ID
 	 * @param	string		Lang translation key or string as title of the window
 	 * @param	string		URL called in case of form validation

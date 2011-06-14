@@ -190,8 +190,9 @@ ION.append({
 	/**
 	 * Updates one element
 	 *
-	 * @param	string Element ID
-	 * @param	Object Core.updateContent options object
+	 * @param	Object	Options
+	 *					'url' : URL of the controller to call
+	 *					'element' : ID of the DOM element to update
 	 *
 	 */
 	updateElement: function (options)
@@ -367,6 +368,12 @@ ION.append({
 	{
 		$$(selector).each(function(item, idx) { item.set('html', html); });
 	},
+	
+	addClass: function(selector, className)
+	{
+		$$(selector).addClass(className);
+	},
+	
 	
 	/**
 	 * Init the dynamic title update
@@ -957,8 +964,6 @@ ION.append({
 				if (flag == '0' && art.type_flag != '') { flag = art.type_flag; }
 			
 				new Element('span', {'class':'flag flag' + flag}).inject(el, 'top');
-				
-				
 			});
 			
 			// Update doc / sticky icon
@@ -1009,45 +1014,6 @@ ION.append({
 		});
 	},
 	
-	
-	/**
-	 * Updates all the tree articles
-	 * Used after saving an article, in case of main data update (title or url, sticky, etc.)
-	 *
-	updateTreeArticles: function(args)
-	{
-		var title = (args.title != '') ? args.title : args.url;
-		var id = args.id_article;
-		
-		// file or sticky
-		var icon = (args.indexed && args.indexed == '1') ? 'file' : 'sticky';
-		var old_icon = (args.indexed && args.indexed == '1') ? 'sticky' : 'file';
-		
-		// Update the title
-		$$('.tree .article' + id + '.title').each(function(el)
-		{
-			var rel = (el.getProperty('rel')).split('.');
-			var id_page = rel[0];
-			
-			// Flag span : If the article is flagged, display the article flag, else display the article's type flag.
-			var flag = args.flag;
-//console.log(id_page + ' :: '+ flag + ' :: ' + args.type_flag);
-			if (id_page == args.id_page && flag == '0' && args.type_flag != '') {
-				flag = args.type_flag;
-			}
-			
-			el.empty();
-			el.set('html', args.title).setProperty('title', title);
-			new Element('span', {'class':'flag flag' + flag}).inject(el, 'top');
-		});
-		
-		// Update the article icon (file or sticky)
-		$$('.tree .article' + id + ' ' + '.' + old_icon).removeClass(old_icon).addClass(icon);
-		
-		// Update the main Panel title
-		$('mainPanel_title').set('text', Lang.get('ionize_title_edit_article') + ' : ' + title);
-	},
-	*/
 	
 	/**
 	 * Updates the folder or file icon when editing an article or a page
@@ -1247,80 +1213,15 @@ ION.append({
 			ION.HTML(admin_url + 'article/get_list', {'id_page':id_page}, {'update': 'articleListContainer'});
 		}
 	},
-	
-	updateSimpleItem: function(args)
-	{
-		// Items list exists ?
-		if ($(args.type + 'List'))
-		{
-			// Item already exists ?
-			var item = $(args.type + 'List').getFirst('[rel='+ args.rel +']');
-			
-			// Update
-			if (item)
-			{
-				// Update the name
-				item.getFirst('.title').set('text', args.name);
-			}
-			// Create
-			else
-			{
-				ION.addSimpleItemToList(args);
-			}
-		}
-	},
-	
-	
-	/**
-	 * Adds a simple LI item to a container (ION.ItemManager)
-	 *
-	 * @param	JSON object		Item to add
-	 *
-	 */
-	addSimpleItemToList: function(args)
-	{
-		if ($(args.type + 'List'))
-		{
-			var title = args.name;
-	
-			var li = new Element('li', {'rel':args.rel, 'class':'sortme ' + args.type + args.rel });
-	
-			// Delete button
-			var aDelete = new Element('a', {'class':'icon delete right', 'rel':args.rel});
-			ION.initItemDeleteEvent(aDelete, args.type);
-			li.adopt(aDelete);
 
-			// Item's drag icon
-			li.adopt(new Element('a', {'class':'icon left drag pr5'}));
-			
-			// Item's title
-			var a = new Element('a', {'class':'title left pl5 ' + args.type + args.rel, 'rel':args.rel}).set('text', title);
-			
-			// Global edit link
-			// One controller : admin/<args.type>/edit/ must exists
-			// ... and one function : admin/<args.type>/edit/ must also exists
-			a.addEvent('click', function()
-			{
-				MUI.formWindow(args.type + args.rel, args.type + 'Form' + args.rel, Lang.get('ionize_title_' + args.type + '_edit'), args.type + '/edit/' + this.getProperty('rel'), {});
-			});
-			li.adopt(a);
-
-
-			// Add item to list DOM object
-			$(args.type + 'List').adopt(li);
-	
-			// Add element to sortables
-			var sortables = $(args.type + 'List').retrieve('sortables');
-	
-			sortables.addItems(li);
-		}	
-	},
-	
 	
 	/**
 	 * Add events (edit context, unlink) on given parent page element
 	 *
 	 */
+
+// TODO : Replace by ION.initRequestEvent...
+
 	addParentPageEvents: function(item)
 	{
 		var rel = (item.getProperty('rel')).split(".");
@@ -1399,267 +1300,7 @@ ION.append({
 		})
 	},
 	
-	/**
-	 * Adds unlink event to one icon
-	 * Used by ION.ArticleManager:initUnlinkEvents()
-	 *
-	 * The item must have the REL property set to "id_page.id_article".. ex : ... rel="1.5"
-	 *
-	 *
-	 */
-	initArticleUnlinkEvent: function(item)
-	{
-		var rel = (item.getProperty('rel')).split(".");
-		var id_page = rel[0];
-		var id_article = rel[1];
-		var flat_rel = id_page + 'x' + id_article;
-		
-		var url = admin_url + 'article/unlink/' + id_page + '/' + id_article;
-		
-		// Some safety before adding the event.
-		item.removeEvents('click');
 
-		item.addEvent('click', function(e)
-		{
-			e.stop();
-			ION.confirmation('confDelete' + flat_rel, url, Lang.get('ionize_confirm_article_page_unlink'));
-		});
-	},
-	
-	
-	initArticleStatusEvent: function(item)
-	{
-		var rel = (item.getProperty('rel')).split(".");
-		var id_page = rel[0];
-		var id_article = rel[1];
-		
-		var url = admin_url + 'article/switch_online/' + id_page + '/' + id_article;
-
-		// Some safety before adding the event.
-		item.removeEvents('click');
-
-		item.addEvent('click', function(e)
-		{
-			e.stop();
-			ION.switchArticleStatus(id_page, id_article);
-		});
-	},
-	
-	
-	initArticleViewEvent: function(item)
-	{
-		var rel = item.getAttribute('rel').split(".");
-		
-		if (item.value != '0' && item.value != '') { item.addClass('a'); }
-
-		// Some safe before adding the event.
-		item.removeEvents('change');
-
-		item.addEvents({
-		
-			'change': function(e)
-			{
-				e.stop();
-			 	
-				var url = admin_url + 'article/save_context';
-				
-				this.removeClass('a');
-				
-				if (this.value != '0' && this.value != '') { this.addClass('a'); }
-				
-				var data = {
-					'id_page': rel[0],
-					'id_article': rel[1],
-					'view' : this.value
-				};
-
- 				ION.sendData(url, data);
-			}
-		});
-	},
-	
-	
-	initArticleTypeEvent: function(item)
-	{
-		var rel = item.getAttribute('rel').split(".");
-
-		if (item.value != '0' && item.value != '') { item.addClass('a'); }
-
-		// Some safety before adding the event.
-		item.removeEvents('change');
-
-		item.addEvents({
-		
-			'change': function(e)
-			{
-				e.stop();
-			 	
-				var url = admin_url + 'article/save_context';
-				
-				this.removeClass('a');
-				
-				if (this.value != '0' && this.value != '') { this.addClass('a'); }
-				
-				var data = {
-					'id_page': rel[0],
-					'id_article': rel[1],
-					'id_type': this.value
-				};
-
- 				ION.sendData(url, data);
-			}
-		});
-	},
-	
-	initArticleMainParentEvent: function(item)
-	{
-		var rel = item.getAttribute('rel').split(".");
-
-		if (item.value != '0' && item.value != '') { item.addClass('a'); }
-
-		// Some safety before adding the event.
-		item.removeEvents('change');
-
-		item.addEvents({
-		
-			'change': function(e)
-			{
-				e.stop();
-			 	
-				var url = admin_url + 'article/save_main_parent';
-				
-				this.removeClass('a');
-				
-				if (this.value != '0' && this.value != '') { this.addClass('a'); }
-				
-				var data = {
-					'id_page': this.value,
-					'id_article': rel[1]
-				};
-
- 				ION.sendData(url, data);
-			}
-		});
-	},
-	
-	
-	
-	
-	
-	initPageStatusEvent: function(item)
-	{
-		var rel = (item.getProperty('rel')).split(".");
-		var id_page = rel[0];
-		
-		var url = admin_url + 'page/switch_online/' + id_page;
-
-		// Some safety before adding the event.
-		item.removeEvents('click');
-
-		item.addEvent('click', function(e)
-		{
-			e.stop();
-			ION.switchPageStatus(id_page);
-		});
-	},
-	
-	
-	initItemDeleteEvent: function(item, type)
-	{
-		var id = item.getProperty('rel');
-		
-		if (id)
-		{
-			// Callback definition
-			var callback = ION.itemDeleteConfirm.pass([type, id]);
-			
-			item.removeEvents();
-			
-			// Confirmation modal window
-			item.addEvent('click', function(e)
-			{
-				e.stop();
-				ION.confirmation('del' + type + id, callback, Lang.get('ionize_confirm_element_delete'));
-			});
-		}
-	},
-
-	
-	/**
-	 * Effective item delete
-	 * callback function
-	 *
-	 * @param	String		Type. Can be 'page' or 'article' or anything else.
-	 * @param	int			item ID
-	 *
-	 */
-	itemDeleteConfirm: function(type, id, parent, id_parent)
-	{
-		// Shows the spinner
-		MUI.showSpinner();
-
-		// Delete URL
-		var url = admin_url + type + '/delete/' + id;
-		
-		// If parent, include it to URL
-		if (parent && id_parent)
-		{
-			url += '/' + parent + '/' + id_parent
-		}
-		
-		// JSON Request
-		var xhr = new Request.JSON(
-		{
-			url: url,
-			method: 'post',
-			onSuccess: function(responseJSON, responseText)
-			{
-				if (responseJSON.id)
-				{
-					// Remove all HTML elements with the CSS class corresponding to the element type and ID
-					$$('.' + type + responseJSON.id).each(function(item, idx) { item.dispose(); });
-					
-					// Get the update array and do the jobs
-					if (responseJSON.update != null && responseJSON.update != '') {	ION.updateElements(responseJSON.update); }
-					
-					// As we delete the current edited item, let's return to the home page
-					if($('id_' + type) && $('id_' + type).value == id)
-					{
-						MUI.Content.update({
-							'element': $('mainPanel'),
-							'loadMethod': 'xhr',
-							'url': admin_url + 'dashboard',
-							'title': Lang.get('ionize_title_welcome')
-						});
-						ION.initToolbox();
-					}
-				}
-				
-				// JS Callback
-				if (responseJSON && responseJSON.callback)
-				{
-					ION.execCallbacks(responseJSON.callback);
-				}
-
-				
-				// If Error, display a modal instead a notification
-				if(responseJSON.message_type == 'error')
-				{
-					ION.error(responseJSON.message);
-				}
-				else
-				{
-					// User message
-					ION.notification(responseJSON.message_type, responseJSON.message);		
-				}
-				
-				
-				// Hides the spinner
-				MUI.hideSpinner();
-			}
-		}).send();
-	},
-	
 	/**
 	 * Link an Element to a parent
 	 * Called by ION.dropContentElementInPage(), ION.dropContentElementInArticle()
@@ -1859,8 +1500,6 @@ ION.append({
 	},
 
 
-
-
 	/**
 	 * Drops one article as link for another article / page
 	 *
@@ -1883,128 +1522,17 @@ ION.append({
 	},
 
 	
-	switchArticleStatus: function(id_page, id_article)
+	switchOnlineStatus: function(args)
 	{
-		// Show the spinner
-		MUI.showSpinner();
-		
-		var xhr = new Request.JSON(
-		{
-			url: this.adminUrl + 'article/switch_online/' + id_page + '/' + id_article,
-			method: 'post',
-			onSuccess: function(responseJSON, responseText)
-			{
-				// Change the item status icon
-				if ( responseJSON.message_type == 'success' )
-				{
-					// Set online / offline class to all elements with this selector
-					var args = {
-						'id_page': id_page,
-						'id_article': id_article,
-						'status': responseJSON.status
-					}
-					
-					ION.updateArticleStatus(args);
-					
-					// Get the update table and do the jobs
-					if (responseJSON.update != null && responseJSON.update != '')
-					{
-						ION.updateElements(responseJSON.update);
-					}
-					
-				}
-				// User message
-				ION.notification.delay(50, this, new Array(responseJSON.message_type, responseJSON.message));
-				
-				// Hides the spinner
-				MUI.hideSpinner();
-				
-			}.bind(this)
-
-		}).send();
-	},
-	
-	
-	switchPageStatus: function(id_page)
-	{
-		// Show the spinner
-		MUI.showSpinner();
-		
-		var xhr = new Request.JSON(
-		{
-			url: this.adminUrl + 'page/switch_online/' + id_page,
-			method: 'post',
-			onSuccess: function(responseJSON, responseText)
-			{
-				// Change the item status icon
-				if ( responseJSON.message_type == 'success' )
-				{
-					// Set online / offline class to all elements with this selector
-					var args = {
-						'id_page': id_page,
-						'status': responseJSON.status
-					}
-					
-					ION.updatePageStatus(args);
-					
-				}
-				// User message
-				ION.notification.delay(50, this, new Array(responseJSON.message_type, responseJSON.message));
-				
-				// Hides the spinner
-				MUI.hideSpinner();
-				
-			}.bind(this)
-
-		}).send();
-	},
-	
-	
-	/**
-	 * Updates all the screen visible articles regarding the passed args
-	 * Called after context data saving : See Article->save_context()
-	 *
-	 * @param	Object	Status arguments
-	 *					args = {id_page:<int>,id_article:<int>,status:<0.1>}
-	 *
-	 */
-	updateArticleStatus: function(args)
-	{
-		// Set online / offline class to all elements with this selector
-		var elements = $$('.article' + args.id_page + 'x' + args.id_article);
-		
 		if (args.status == 1) {
-			elements.removeClass('offline').addClass('online');
+			$$(args.selector).removeClass('offline').addClass('online');
 		}
 		else
 		{
-			elements.removeClass('online').addClass('offline');
+			$$(args.selector).removeClass('online').addClass('offline');
 		}
 	},
 	
-	
-	updatePageStatus: function(args)
-	{
-		// Set online / offline class to all elements with this selector
-		var elements = $$('.page' + args.id_page);
-		var inputs = $$('.online' + args.id_page);
-		
-		inputs.each(function(item, idx)
-		{
-			item.setProperty('value', args.status);
-		});
-
-
-		if (args.status == 1) {
-			elements.removeClass('offline').addClass('online');
-		}
-		else
-		{
-			elements.removeClass('online').addClass('offline');
-		}
-	},
-	
-
 	
 	/**
 	 * Removes all DOM elements which display the link between a page and an article
@@ -2015,8 +1543,6 @@ ION.append({
 	{
 		$$('li[rel=' + args.id_page + '.' + args.id_article + ']').each(function(item, idx) { item.dispose(); });
 	},
-	
-	
 	
 	
 	/**

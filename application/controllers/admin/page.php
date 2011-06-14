@@ -295,6 +295,9 @@ class Page extends MY_admin
 				
 				if ( empty($id))
 				{
+					// Used by JS Tree to detect if page in inserted in tree or not
+					$this->data['inserted'] = TRUE;
+					
 					$this->callback = array(
 						'fn' => $menu['name'].'Tree.insertElement',
 						'args' => array($this->data, 'page')
@@ -367,13 +370,18 @@ class Page extends MY_admin
 
 		$status = $this->page_model->switch_online($id);
 
-		$this->id = $id;
-
-		// Output array
-		$output_data = array('status' => $status);
+		$this->callback = array(
+			array(
+				'fn' => 'ION.switchOnlineStatus',
+				'args' => array(
+					'status' => $status,
+					'selector' => '.page'.$id
+				)
+			)
+		);
 		
 		// Answer send
-		$this->success(lang('ionize_message_operation_ok'), $output_data);
+		$this->success(lang('ionize_message_operation_ok'));
 	}
 
 
@@ -658,9 +666,24 @@ class Page extends MY_admin
 			// Clear the cache
 			Cache()->clear_cache();
 
-			// Remember the deleted page ID
-			$this->id = $id;
+			// Remove deleted article from DOM
+			$this->callback[] = array(
+				'fn' => 'ION.deleteDomElements',
+				'args' => array('.page' . $id)
+			);
 			
+			// If the current edited article is deleted
+			if ($this->input->post('redirect'))
+			{
+				$this->callback[] = array(
+					'fn' => 'ION.updateElement',
+					'args' => array(
+						'element' => 'mainPanel',
+						'url' => 'dashboard'
+					)
+				);
+			}
+
 			$this->success(lang('ionize_message_operation_ok'));
 		}
 		else

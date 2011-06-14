@@ -780,7 +780,8 @@ abstract class Module_Admin extends MY_Admin
 		}
 		else
 		{
-			throw new Exception('Missing property');
+	 		show_error(get_class($this).'->'.$prop.'() doesn\'t exist.', 206, 'Missing property');
+//			throw new Exception('Missing property');
 		}
 	}
 	
@@ -796,7 +797,8 @@ abstract class Module_Admin extends MY_Admin
 	 	}
 	 	else
 	 	{
-	 		throw new BadMethodCallException(get_class($this).'::'.$method);
+	 		show_error(get_class($this).'->'.$method.'() doesn\'t exist.', 206, get_class($this). ' controller Error');
+//	 		throw new BadMethodCallException(get_class($this).'::'.$method);
 	 	}
 	}
 

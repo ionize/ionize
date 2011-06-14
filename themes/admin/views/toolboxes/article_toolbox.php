@@ -49,8 +49,13 @@
 	else
 	{
 		// Delete button
+/*		
 		$('articleDeleteButton').setProperty('rel', id);
 		ION.initItemDeleteEvent($('articleDeleteButton'), 'article');
+*/
+	 	var url = admin_url + 'article/delete/';
+		ION.initRequestEvent($('articleDeleteButton'), url + id, {'redirect':true}, {'message': Lang.get('ionize_confirm_element_delete')})
+
 		
 		// Duplicate button
 		$('articleDuplicateButton').addEvent('click', function(e)
