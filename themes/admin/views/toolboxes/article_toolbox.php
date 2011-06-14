@@ -54,7 +54,7 @@
 		ION.initItemDeleteEvent($('articleDeleteButton'), 'article');
 */
 	 	var url = admin_url + 'article/delete/';
-		ION.initRequestEvent($('articleDeleteButton'), url + id, {'redirect':true}, {'message': Lang.get('ionize_confirm_element_delete')})
+		ION.initRequestEvent($('articleDeleteButton'), url + id, {'redirect':true}, {'confirm':true,'message': Lang.get('ionize_confirm_element_delete')})
 
 		
 		// Duplicate button

@@ -1069,11 +1069,12 @@ ION.append({
 		var element = $('page_' + id);
 		
 		// Parent ID from the page in the tree, before update
-		var id_tree_parent = element.getParent('ul').getProperty('rel');
+		var id_tree_parent = element.getParent('ul').id;
 		
 		var id_tree = args.menu.name + 'Tree';
 		var parent = (id_parent != '0') ? $('page_' + id_parent) : $(id_tree);
-		var id_container = (id_parent != '0') ? 'pageContainer' + id_parent : id_tree ;
+		var id_container = (id_parent != '0') ? 'pageContainer' + id_parent : 'pageContainerTree' + args.menu.id_menu ;
+
 		
 		// link Title in tree (A tag)
 		var el_link = '.title.page' + id;
@@ -1085,7 +1086,7 @@ ION.append({
 		element.removeClass('offline').removeClass('online').addClass(status);
 
 		// if the container doesn't exists, create it
-		if ( ! (container = $(id_container)))
+		if ( ! (container = $(id_container)) && typeOf($(parent)) != 'null')
 		{
 			container = new Element('ul', {'id': 'pageContainer' + id_parent, 'class':'pageContainer', 'rel':id_parent });
 			
@@ -1104,29 +1105,36 @@ ION.append({
 		}
 		
 		// Moves the element in the tree
-		if ( id_tree_parent != id_parent )
+		if ( id_tree_parent != id_container )
 		{
-			var childs = container.getChildren();
-			
-			// Put the page in the last position in the container
-			container.adopt(element);
-
-			// Update tree lines
-			var pNbLines = parent.getChildren('.tree-img').length;
-			var eNbLines = element.getChildren('.tree-img').length;
-			
-			var treeline = 	new Element('div', {'class': 'tree-img line'});
-			var lis = element.getElements('li');
-			lis.push(element);
-			
-			lis.each(function(li)
+			if (typeOf(container) != 'null')
 			{
-				for (var i=0; i < eNbLines -2; i++) { (li.getFirst()).dispose();}
-				for (var i=0; i < pNbLines -1; i++) { treeline.clone().inject(li, 'top'); }
-			});
-			
-			// Update the relevant ID
-			element.setProperty('rel', id);
+				var childs = container.getChildren();
+				
+				// Put the page in the last position in the container
+				container.adopt(element);
+	
+				// Update tree lines
+				var pNbLines = parent.getChildren('.tree-img').length;
+				var eNbLines = element.getChildren('.tree-img').length;
+				
+				var treeline = 	new Element('div', {'class': 'tree-img line'});
+				var lis = element.getElements('li');
+				lis.push(element);
+				
+				lis.each(function(li)
+				{
+					for (var i=0; i < eNbLines -2; i++) { (li.getFirst()).dispose();}
+					for (var i=0; i < pNbLines -1; i++) { treeline.clone().inject(li, 'top'); }
+				});
+				
+				// Update the relevant ID
+				element.setProperty('rel', id);
+			}
+			else
+			{
+				element.dispose();
+			}
 		}
 		
 		// Update Home page icon, if mandatory

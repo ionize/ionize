@@ -258,8 +258,8 @@ class Page extends MY_admin
 				// Prepare data before save
 				$this->_prepare_data();
 	
-				// Save base datas
-				$this->id = $this->page_model->save($this->data, $this->lang_data);
+				// Save Page
+				$saved_id = $this->page_model->save($this->data, $this->lang_data);
 
 				// Correct DB integrity : links URL and names, childrens pages menus
 				if ( ! empty($id) )
@@ -271,7 +271,7 @@ class Page extends MY_admin
 				}
 
 				// Save extends fields data
-				$this->extend_field_model->save_data('page', $this->id, $_POST);
+				$this->extend_field_model->save_data('page', $saved_id, $_POST);
 						
 				// Save linked access groups authorizations
 				// $this->base_model->join_items_keys_to('user_groups', $this->input->post('groups'), 'page', $this->id);
@@ -279,41 +279,44 @@ class Page extends MY_admin
 				// Save Home page
 				if ($this->data['home'] == '1')
 				{
-					$this->page_model->update_home_page($this->id);
+					$this->page_model->update_home_page($saved_id);
 				}
 
 
 				// Prepare the Json answer
-				$menu = $this->menu_model->get($this->data['id_menu']);
-				
+				$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get($saved_id));
+
+				$page['menu'] = $this->menu_model->get($page['id_menu']);
+/*				
 				$this->data = array_merge($this->lang_data[Settings::get_lang('default')], $this->data);
 				$this->data['title'] = htmlspecialchars_decode($this->data['title'], ENT_QUOTES);
 				$this->data['id_page'] = $this->id;
 				$this->data['element'] = 'page';
 				$this->data['menu'] = $menu;
 				$this->data['ordering'] = $this->input->post('ordering');
-				
+*/				
 				if ( empty($id))
 				{
 					// Used by JS Tree to detect if page in inserted in tree or not
-					$this->data['inserted'] = TRUE;
+					$page['inserted'] = TRUE;
+					$page['online'] = 0;
 					
 					$this->callback = array(
-						'fn' => $menu['name'].'Tree.insertElement',
-						'args' => array($this->data, 'page')
+						'fn' => $page['menu']['name'].'Tree.insertElement',
+						'args' => array($page, 'page')
 					);
 				}
 				else
 				{
 					$this->callback = array(
 						'fn' => 'ION.updateTreePage',
-						'args' => $this->data
+						'args' => $page
 					);
 				}				
 
 				$this->update[] = array(
 					'element' => 'mainPanel',
-					'url' => admin_url() . 'page/edit/'.$this->id,
+					'url' => admin_url() . 'page/edit/'.$saved_id,
 					'title' => lang('ionize_title_edit_page')
 				);
 
