@@ -402,7 +402,7 @@ Element.implement({
 
 	shake: function(radius,duration){
 		radius = radius || 8;
-		duration = duration || 500;
+		duration = duration || 300;
 		duration = (duration/50).toInt() - 1;
 		var parent = this.getParent();
 		if(parent != $(document.body) && parent.getStyle('position') == 'static'){
@@ -421,14 +421,17 @@ Element.implement({
 			coords.x -= parent.getStyle('paddingLeft').toInt();
 		}
 		var morph = this.retrieve('morph');
+		var oldOptions;
 		if (morph){
 			morph.cancel();
 			var oldOptions = morph.options;
 		}
-		var morph = this.get('morph',{
+
+		this.set('morph', {
 			duration:40,
 			link:'chain'
 		});
+
 		for(var i=0 ; i < duration ; i++){
 			morph.start({
 				left:coords.x+radius*(i%2 * -1)

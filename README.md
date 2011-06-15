@@ -51,3 +51,8 @@ These instruction takes in account that this version is in developement.
   * Launch ONE TIME ONLY : http://your_domain/install/?step=migrate_users_to_ci2
   
 
+### Code Migration
+
+* From Ionize 0.9.6
+  * Articles Tag : Change your <ion:article filter="" > attributes from "title:!=''" to "title !=''" (remove ":")
+  * Navigation Tag : Add the "level" attribute : <ion:navigation level="0" />

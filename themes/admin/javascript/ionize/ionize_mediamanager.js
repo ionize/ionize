@@ -561,6 +561,7 @@ var IonizeMediaManager = new Class(
 								}
 								
 								self.window = new MUI.Window(options);
+								self.window.filemanager = filemanager;
 							}
 							else
 							{
@@ -620,8 +621,8 @@ ION.append({
 			contentBgColor: '#fff',
 			onClose: function()
 			{
-// Should hide the filemanager
-//				self.hide();
+				// Hides the filemanager
+				this.filemanager.hide();
 			}
 /*			,
 			onResize: function()
