@@ -33,6 +33,30 @@
 	
 	</div>
 
+	<?php if ( ! empty($modules)) :?>
+
+		<h3 class="mt20"><?= lang('ionize_menu_modules') ?></h3>
+
+		<div style="overflow:hidden;">
+
+			<?php foreach($modules as $uri => $module) :?>
+	
+				<?php if($this->connect->is($module['access_group'])) :?>
+				
+					<div class="desktopIcon desktopModuleIcon">
+						<img src="<?= base_url() ?>modules/<?= $module['folder'] ?>/assets/images/icon_48_module.png" />
+						<p><a title="<?= $module['name'] ?>" href="admin/module/<?= $uri ?>/<?= $uri ?>/index"><?= $module['name'] ?></a></p>
+					</div>
+				
+				<?php endif ;?>								
+	
+			<?php endforeach ;?>
+
+		</div>
+
+	<?php endif ;?>
+
+
 	<div id="infos" class="mt20">	
 
 		<!-- Last connected users -->
@@ -313,8 +337,6 @@
 	});
 
 
-
-
 	// Main Icons actions
 	$('iconAddPage').addEvent('click', function(e){
 		e.stop();
@@ -357,8 +379,24 @@
 		e.stop();
 		window.location.href = 'http://www.google.com/analytics/'
 	});
-
-
+	
+	
+	// Modules Icons actions
+	$$('.desktopModuleIcon').each(function(item)
+	{
+		var a = item.getElement('a');
+		var href = a.getProperty('href');
+		var title = a.getProperty('title');
+		
+		item.addEvent('click', function(e){
+			MUI.Content.update({
+				element: $('mainPanel'),
+				title: title,
+				url : href
+			});
+		});
+	});
+	
 
 
 </script>

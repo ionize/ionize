@@ -137,6 +137,58 @@ class Dashboard extends MY_Admin {
 				$flags[substr($key, -1)] = $setting;
 			}
 		}
+
+		// Modules
+		include APPPATH . 'config/modules.php';
+		$config_files = glob(MODPATH . '*/config.xml');
+
+		// Module data to put to template
+		$moddata = array();
+		
+		// Get all modules from folders
+		if (!empty($config_files))
+		{
+			foreach($config_files as $file)
+			{
+				$xml = simplexml_load_file($file);
+				
+				// Module folder
+				preg_match('/\/([^\/]*)\/config.xml$/i', $file, $matches);
+				$folder = $matches[1];
+	
+				$uri = (String) $xml->uri_segment;
+	
+				// Only add 
+				// - installed modules (in $module var of config/modules.php)
+				// - module with admin part
+				if (in_array($folder, $modules) && $xml->has_admin == 'true')
+				{
+					// Store data
+					$moddata[$uri] = array(
+							'name'			=> (String) $xml->name,
+							'uri_segment'	=> (String) $xml->uri_segment,
+							'description'	=> (String) $xml->description,
+							'folder'		=> $folder,
+							'file'			=> $file,
+							'access_group'	=> (String) $xml->access_group
+					);
+	
+					// Get the user segment
+					foreach($modules as $segment => $f)
+					{
+						if ($f == $folder)
+							$moddata[$uri]['uri_segment'] = $segment; 
+					}
+				}
+			}
+		}
+				
+		// Put installed module list to template
+		$this->template['modules'] = $moddata;
+		
+
+
+
 		$this->template['flags'] = $flags;
 		
 		

@@ -398,8 +398,18 @@ ION.append({
 	
 	},
 	
+	
+	/**
+	 * Closes one window
+	 *
+	 * @param	Mixed	Window DOM Element or String of Complete window ID
+	 *
+	 */
 	closeWindow: function(id)
 	{
+		if (typeOf(id) == 'string')
+			id = $(id);
+	
 		if (typeOf(id) == 'element')
 		{
 			MUI.get(id).close();

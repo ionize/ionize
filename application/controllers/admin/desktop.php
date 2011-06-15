@@ -43,7 +43,7 @@ class Desktop extends MY_Admin
 		include APPPATH . 'config/modules.php';
 
 		// Get all modules config files in modules folder
-		$config_files = glob(MODPATH . '/*/config.xml');
+		$config_files = glob(MODPATH . '*/config.xml');
 
 		// Module data to put to template
 		$moddata = array();
