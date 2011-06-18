@@ -82,6 +82,14 @@ class Demo extends Module_Admin
 	{
 	}
 
+
+	function _addons()
+	{
+		$CI =& get_instance();
+		
+	}	
+
+
 }
 /* End of file usermanager.php */
 /* Location: ./modules/Usermanager/controllers/admin/usermanager.php */

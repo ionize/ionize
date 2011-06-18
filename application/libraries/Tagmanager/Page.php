@@ -19,9 +19,6 @@
 
 class TagManager_Page extends TagManager
 {	
-	
-	protected static $_cache = array();
-
 	protected static $_inited = false;
 
 	public static $tag_definitions = array
@@ -1412,10 +1409,12 @@ class TagManager_Page extends TagManager
 
 		// Get the special URI config array (see /config/ionize.php)
 		$uri_config = self::$ci->config->item('special_uri');
+		$uri_config2 = array_flip(self::$ci->config->item('special_uri'));
+		$pagination_uri = $uri_config2['pagination'];
 
 		// If a special URI exists and is different from pagination URI, get the special URI to the pagination URL
 		// Calling a special function for that is mandatory as each special URI can have different numbers of parameters
-		if ($special_uri !== FALSE && $special_uri != self::$pagination_uri && array_key_exists($special_uri, $uri_config))
+		if ($special_uri !== FALSE && $special_uri != $pagination_uri && array_key_exists($special_uri, $uri_config))
 		{
 			if (method_exists(__CLASS__, 'get_pagination_uri_addon_from_'.$uri_config[$special_uri]))
 			{
@@ -1434,11 +1433,11 @@ class TagManager_Page extends TagManager
 		
 		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
 		{
-			$base_url = base_url() . Settings::get_lang('current') . '/'. $tag->locals->page['url'] . '/' . $uri_addon . self::$pagination_uri;
+			$base_url = base_url() . Settings::get_lang('current') . '/'. $tag->locals->page['url'] . '/' . $uri_addon . $pagination_uri;
 		}
 		else
 		{
-			$base_url = base_url() . $tag->locals->page['url'] . '/' . $uri_addon . self::$pagination_uri;		
+			$base_url = base_url() . $tag->locals->page['url'] . '/' . $uri_addon . $pagination_uri;		
 		}
 		
 		/*
@@ -1496,7 +1495,7 @@ class TagManager_Page extends TagManager
 			}
 
 			// Current page
-			$cur_page = (in_array(self::$pagination_uri, self::$ci->uri_segment)) ? array_pop(array_slice(self::$ci->uri_segment, -1)) : 1;
+			$cur_page = (in_array($pagination_uri, self::$ci->uri_segment)) ? array_pop(array_slice(self::$ci->uri_segment, -1)) : 1;
 
 			// Pagination tag config init
 			$pagination_config = array_merge($pagination_config,

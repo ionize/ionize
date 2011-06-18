@@ -33,11 +33,13 @@ class TagManager
 	
 	static $ci;
 
+//	protected static $_cache = array();
+
 	/*
 	 * Extended fields prefix. Needs to be the same as the one defined in /models/base_model
 	 *
 	 */
-	protected $extend_field_prefix = 	'ion_';
+	protected static $extend_field_prefix = 'ion_';
 	
 
 	/**
@@ -142,7 +144,7 @@ class TagManager
 	{
 		$class = 'tagmanager_' . strtolower(str_replace(EXT, '', $file_name));
 
-		require_once APPPATH.'libraries/TagManager/'.$file_name;
+		require_once APPPATH.'libraries/Tagmanager/'.$file_name;
 
 		// Get public vars
 		$vars = get_class_vars($class);
@@ -364,7 +366,6 @@ class TagManager
 	 * Stores one tag result in the local $_cache var
 	 * Avoid calling 2 times one same process.
 	 * 
-	 */
 	public static function set_micro_cache($tag)
 	{
 		$key = self::get_tag_cache_id($tag);
@@ -372,6 +373,7 @@ class TagManager
 		self::$_cache[$key] = $value;
 	}
 	
+	 */
 
 	// ------------------------------------------------------------------------
 
@@ -379,7 +381,6 @@ class TagManager
 	/**
 	 * Returns one tag's micro cache
 	 *
-	 */
 	public static function get_micro_cache($tag)
 	{
 		$key = self::get_tag_cache_id($tag);
@@ -389,6 +390,7 @@ class TagManager
 		
 		return FALSE;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -541,16 +543,16 @@ class TagManager
 				{
 					// Second : Try to get the field in the extend fields
 					// exemple : $tag->locals->page[ion_field]
-					if ( ! isset($element[$this->extend_field_prefix.$ar[1]]))
+					if ( ! isset($element[self::$extend_field_prefix.$ar[1]]))
 					{
 						return false;
 					}
 					else
 					{
 						// Try to get the value
-						if ( ! empty($element[$this->extend_field_prefix.$ar[1]]))
+						if ( ! empty($element[self::$extend_field_prefix.$ar[1]]))
 						{
-							return $element[$this->extend_field_prefix.$ar[1]];
+							return $element[self::$extend_field_prefix.$ar[1]];
 						}
 						return false;
 					}
@@ -601,147 +603,6 @@ class TagManager
 	}
 
 
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * NOT AN OFFICIAL TAG
-	 * Needs to be improved
-	 *
-	 */
-	public function tag_if($tag)
-	{
-		$condition = $tag->attr['condition'];
-		
-		// The object from which get the data to check
-		$condition = explode(" ", $condition);
-		
-		@list($variable, $operator, $value) = $condition;
-		
-		if (isset($variable) && isset($operator) && isset($value))
-		{
-			$catched_variable = NULL;
-			$catched_value = $value;
-			
-			// Var from an object ? Ex : article:index
-			if(($pos = strpos($variable, ':')) != 0)
-			{
-				$item = NULL;
-				$array = substr($variable, 0, $pos);
-				$variable = substr($variable, $pos + 1);
-				
-				// Try to get the element to test from locals
-				if ( ! empty($tag->locals->{$array}))
-				{
-					$item = $tag->locals->{$array};
-				}
-				// Try to get the item from the globals
-				else if ( ! empty($tag->globals->{$array}))
-				{
-					$item = $tag->locals->{$array};
-				}
-				
-				if ( ! is_null($item))
-					$catched_variable = $item[$variable];
-			}
-			// Global var		
-			else
-			{
-				if ( ! empty($tag->globals->{$variable}))
-				{
-					$catched_variable = $tag->globals->{$variable};
-				}				
-			}
-			
-			// Value from an object ?
-			if(($pos = strpos($value, ':')) != 0)
-			{
-				$item = NULL;
-				$array = substr($value, 0, $pos);
-				$value = substr($value, $pos + 1);
-				
-				// Try to get the element to test from locals
-				if ( ! empty($tag->locals->{$array}))
-				{
-					$item = $tag->locals->{$array};
-				}
-				// Try to get the item from the globals
-				else if ( ! empty($tag->globals->{$array}))
-				{
-					$item = $tag->locals->{$array};
-				}
-				
-				if ( ! is_null($item))
-					$catched_value = $item[$value];
-			}
-			// Global var		
-			else
-			{
-				if ( ! empty($tag->globals->{$value}))
-				{
-					$catched_value = $tag->globals->{$value};
-				}				
-			}
-			
-			// We have the internal value, comparison with asked one.
-			if ( ! is_null($catched_variable) && ! is_null($catched_value))
-			{
-				$test = ( "return ($catched_variable $operator $catched_value);" );
-
-				if (eval($test) == TRUE)
-				{
-					return $tag->expand();
-				}
-				else
-				{
-					$this->trigger_else++;
-				}
-			}
-		}
-		else
-		{
-			return 'Error in your conditional expression : ' . $tag->name . ':' .$tag->attr['condition'];
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * NOT OFFICIAL TAG
-	 * Needs to be improved
-	 *
-	 */
-	public function tag_else($tag)
-	{
-		if($this->trigger_else > 0)
-		{
-			$this->trigger_else--;
-	
-			return $tag->expand();
-		}
-	} 
-
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * NOT OFFICIAL TAG
-	 * @deprecated
-	 *
-	public function tag_php($tag)
-	{
-		ob_start();
-		eval($tag->expand());
-		$c = ob_get_contents();
-		ob_end_clean();
-		return $c;	
-	}
-	 */
-
-	
 	// ------------------------------------------------------------------------
 
 
@@ -850,7 +711,7 @@ class TagManager
 		{
 			if ($from == FALSE)
 			{
-				$from = $this->get_parent_tag($tag);
+				$from = self::get_parent_tag($tag);
 			}
 
 			$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
@@ -948,7 +809,7 @@ class TagManager
 		// Current tag parent tag
 		if ($from == FALSE && $force_core == FALSE )
 		{
-			$from = $this->get_parent_tag($tag);
+			$from = self::get_parent_tag($tag);
 		}
 
 		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
@@ -964,15 +825,15 @@ class TagManager
 			}
 			
 			// Try to get the extend field value			
-			if ( ! empty($obj[$this->extend_field_prefix.$name]))
+			if ( ! empty($obj[self::$extend_field_prefix.$name]))
 			{
 				// If "format" attribute is defined, suppose the field is a date ...
-				if ($format && $obj[$this->extend_field_prefix.$name] != '')
+				if ($format && $obj[self::$extend_field_prefix.$name] != '')
 				{
-					return self::wrap($tag, (self::format_date($tag, $obj[$this->extend_field_prefix.$name])));
+					return self::wrap($tag, (self::format_date($tag, $obj[self::$extend_field_prefix.$name])));
 				}
 
-				return self::wrap($tag, $obj[$this->extend_field_prefix.$name]);
+				return self::wrap($tag, $obj[self::$extend_field_prefix.$name]);
 			}
 			// Else, get the core field value
 			else if (!empty($obj[$name]))
@@ -1011,7 +872,7 @@ class TagManager
 		{
 			if(isset($tag->attr['php']) && $tag->attr['php'] == 'true')
 			{
-				return $this->ci->load->view($view, array(), true);
+				return self::$ci->load->view($view, array(), true);
 			}
 			else
 			{
