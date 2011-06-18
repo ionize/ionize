@@ -135,6 +135,15 @@ Number.extend({
 	}
 });
 
+Number.extend({
+
+
+	round: function(num, dec) {
+		var result = Math.round( Math.round( num * Math.pow( 10, dec + 1 ) ) / Math.pow( 10, 1 ) ) / Math.pow(10,dec);
+		return result;
+	}
+
+});
 
 Date.extend({
 	
@@ -160,3 +169,19 @@ String.extend({
 		return ret_val;
 	}
 });
+
+
+FocusTracker = {
+    startFocusTracking: function() {
+       this.store('hasFocus', false);
+       this.addEvent('focus', function() { this.store('hasFocus', true); });
+       this.addEvent('blur', function() { this.store('hasFocus', false); });
+    },
+	
+    hasFocus: function() {
+       return this.retrieve('hasFocus');
+    }
+};
+
+Element.implement(FocusTracker);
+

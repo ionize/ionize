@@ -73,6 +73,7 @@ div.panel-header div.tabs ul { height:28px; overflow:hidden }
 }
 div.toolbox.divider { /* Have to specify div here for IE6's sake */
 	padding-left: 8px;
+	background: url(../images/toolbar-divider.gif) repeat-y;
 }
 
 .toolbox img {

@@ -232,6 +232,20 @@ class Base_Controller extends MY_Controller
 
 
 		/*
+		 * Installed modules
+		 *
+		 */
+		require(APPPATH.'config/modules.php');
+		$installed_modules = $modules;
+		
+		foreach($installed_modules as $module)
+		{
+			// Path to Module
+			Finder::add_path(MODPATH.$module.'/');
+		}
+
+
+		/*
 		 * Theme
 		 *
 		 */
@@ -259,12 +273,6 @@ class Base_Controller extends MY_Controller
 		Settings::set('menus', $this->menu_model->get_list());
 		
 		  
-		/*
-		 * Installed modules
-		 *
-		 */
-		require(APPPATH.'config/modules.php');
-		$installed_modules = $modules;
 		
 		
 		/*
@@ -337,23 +345,12 @@ class Base_Controller extends MY_Controller
 			$lang_files = array_merge($lf, (Array)$lang_files);
 
 
-		// Modules languages files : Including. Can be empty
+		// Modules
 		foreach($installed_modules as $module)
 		{
+			// Languages files : Including. Can be empty
 			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
 			array_push($lang_files, $lang_file);
-		}
-
-		// Add the module path to the Finder
-		$modules = glob(MODPATH.'*');
-
-		if (!empty($modules))
-		{
-			foreach ($modules as $module)
-			{
-				if (is_dir($module))
-					Finder::add_path($module.'/');
-			}
 		}
 
 
@@ -385,7 +382,6 @@ class Base_Controller extends MY_Controller
 									$this->lang->language[$key] = $translation;
 							}
 						}
-//						$this->lang->language = array_merge($this->lang->language, $lang);
 						unset($lang);
 					}
 				}
@@ -488,7 +484,14 @@ class MY_Admin extends MY_Controller
 	 */
 	public $callback;
 
-
+	/*
+	 * Modules Addons
+	 *
+	 */
+	public $modules_addons = array();
+	
+	
+	
 	/**
 	 * Constructor
 	 *
@@ -496,6 +499,9 @@ class MY_Admin extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+
+		$this->load->helper('module_helper');	
+
 
 		// Redirect the not authorized user to the login panel. See /application/config/connect.php
 		Connect()->restrict_type_redirect = array(
@@ -547,9 +553,9 @@ class MY_Admin extends MY_Controller
 
 		// Including all modules languages files
 		require(APPPATH.'config/modules.php');
-		$installed_modules = $modules;
+		$this->modules = $modules;
 
-		foreach($installed_modules as $module)
+		foreach($this->modules as $module)
 		{
 			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
 			
@@ -561,7 +567,11 @@ class MY_Admin extends MY_Controller
 			}
 		}
 		
-		
+		/*
+		 * Loads all Module's addons
+		 *
+		 */
+		$this->_get_modules_addons();
 		
 		
 		
@@ -714,26 +724,70 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 			exit();
     	}
     }
-}
+    
 
-/*
-class MY_Module extends Base_Controller
-{
+	function _get_modules_addons()
+	{
+		if (get_class($this) != 'Module')
+		{
+			$addons = array();
+		
+			foreach($this->modules as $uri => $folder)
+			{
+				if ( ! class_exists($folder) && file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) )
+					require_once(MODPATH.$folder.'/controllers/admin/'.$uri.EXT);
+	
+				if (method_exists($folder, '_addons'))
+				{
+					// Module path
+					$module_path = MODPATH.ucfirst($folder).'/';
+		
+					// Add the module path to the finder
+					array_push(Finder::$paths, $module_path);
+
+					$addons[$uri] = call_user_func(array($folder, '_addons'));
+				}
+			}
+
+			return $addons;
+		}	
+	}
+	
+	function get_modules_addons($type, $placeholder)
+	{
+		$return = '';
+
+		foreach($this->modules_addons as $key => $addon)
+		{
+			if ( $key == $type  &&  !empty($addon[$placeholder]))
+			{
+				foreach($addon[$placeholder] as $content)
+					$return .= $content;
+			}
+		}
+		
+		return $return;
+	}
+	
 	/**
-	 * Constructor
+	 * Adds on addon to a core element
+	 * This function must be called from _addons() module's function.
 	 *
-	 *		
-    public function __construct()
-    {
-        parent::__construct();
-
-		// Modules static languages files : Including. Can be empty
-	//	$module_langs = glob(config_item('module_path').'*language/'.Settings::get_lang().'/*_lang.php');
-		
-		
+	 * @param	String		Core Element to add the addon to. Can be 'page', 'article', 'media'
+	 * @param	String		Placeholder which will display the addon
+	 *  - 'side_top' : Side Column, Top
+	 *  - 'side_bottom' : Side Column, Bottom
+	 *  - 'main_top' : Main Column, Top
+	 *  - 'main_bottom' : Main Column, Top
+	 *  - 'toolbar' : Top toolbar
+	 *
+	 */
+	public function add_addon($type, $placeholder, $view, $data = array())
+	{
+		$this->modules_addons[$type][$placeholder][] = $this->load->view($view, $data, true);
 	}
 }
-*/
+
 
 
 /**

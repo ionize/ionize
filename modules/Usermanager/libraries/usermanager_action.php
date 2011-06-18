@@ -385,6 +385,9 @@ class Usermanager_Action
 			case "is_editor":
 				return $ci->usermanager_user->is_editor($tag);
 				break;
+			case "is":
+				return $ci->usermanager_user->is($tag);
+				break;
 			case "is_logged_in":
 				return $ci->usermanager_user->is_logged_in($tag);
 				break;

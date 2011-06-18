@@ -69,7 +69,8 @@ class Module extends MY_admin
 		array_unshift(Finder::$paths, $module_path);
 
 		// Includes the module Class file
-		include($module_path.'controllers/admin/'.$module_controller.EXT);
+		if ( ! class_exists($module_controller) )
+			include($module_path.'controllers/admin/'.$module_controller.EXT);
 
 		// Create an instance of the module controller
 		$obj = new $module_controller($this);
@@ -85,9 +86,7 @@ class Module extends MY_admin
 //		}
 
 		call_user_func_array(array($obj, $module_func), $module_args);
-
 	}
-
 }
 
 

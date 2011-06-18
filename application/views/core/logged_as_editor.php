@@ -15,5 +15,5 @@
 
 ?>
 <link rel="stylesheet" href="<?= base_url() ?>themes/admin/css/logged-as-editor.css" />
-<div id="ionizeLoggedAsEditorFlag"><a href="<?= base_url() ?>admin/" /></div>
+<div id="ionizeLoggedAsEditorFlag"><a href="<?= base_url() ?><?= config_item('admin_url') ?>/" /></div>
 </body>

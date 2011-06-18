@@ -55,8 +55,7 @@ class Theme {
 		self::$theme = $t;
 		
 		// Add current theme path to Finder searching path
-//		Finder::add_path(self::get_theme_path());
-		array_unshift(Finder::$paths, self::get_theme_path());
+		Finder::add_path(self::get_theme_path());
 	}
 	
 	
@@ -102,7 +101,7 @@ class Theme {
 	public static function load($name, $directory = 'views')
 	{
 		$file = Finder::find_file($name, $directory, true);
-		
+
 		if(empty($file))
 		{
 			show_error('Theme error : <b>The file "'.$directory.'/'.$name.'" cannot be found.</b>');

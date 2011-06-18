@@ -58,7 +58,8 @@ License:
 
 .tabsidecolumn{
 	width: 35%;
-	float:right;	
+	float:right;
+	position: relative;
 	min-height:300px;
 	padding:5px 10px 5px 15px;
 	background-color: #f3f3f3;
@@ -447,7 +448,7 @@ ul.left-arrow li {
 /* Table list
 ---------------------------------------------------------------- */
 table.list {
-		border-collapse:collapse;
+	border-collapse:collapse;
 	margin:10px 0;
 	width:100%;
 }
@@ -461,6 +462,10 @@ table.list th {
 table.list th.right {
 	float:none;
 	text-align: right;
+}
+table.list tbody tr.noborder,
+table.list tbody td.noborder {
+	border:none;
 }
 table.list tbody tr {
 	border-bottom:1px solid #eee;

@@ -562,26 +562,36 @@ class Base_model extends CI_Model
 	 * @param	String		Parent table name
 	 * @param	String		Child table name
 	 * @param	Array		Array of conditions
+	 * @param	int			Data from first or second table. Default 1
 	 * @param	String		Link table prefix. Default to ''
 	 *
 	 * @return	array		Array of Hashtable
 	 *
 	 */
-	function get_linked_items($parent_table, $child_table, $cond, $prefix = '')
+	function get_linked_items($first_table, $second_table, $cond, $join=1, $prefix = '')
 	{
 		$data = array();
 		
-		$child_pk_name = $this->get_pk_name($child_table);
+		$second_pk_name = $this->get_pk_name($second_table);
+		$first_pk_name = $this->get_pk_name($first_table);
 		
 		// N to N table
-		$link_table = $prefix.$parent_table.'_'.$child_table;
+		$link_table = $prefix.$first_table.'_'.$second_table;
 
 		// Correct ambiguous columns
 		$cond = $this->correct_ambiguous_conditions($cond, $link_table);
 
 		$this->db->from($link_table);
 		$this->db->where($cond);
-		$this->db->join($child_table, $child_table.'.'.$child_pk_name.' = '.$link_table.'.'.$child_pk_name);
+
+		if ($join == 2)
+		{
+			$this->db->join($second_table, $second_table.'.'.$second_pk_name.' = '.$link_table.'.'.$second_pk_name);
+		}
+		else
+		{
+			$this->db->join($first_table, $first_table.'.'.$first_pk_name.' = '.$link_table.'.'.$first_pk_name);
+		}
 		
 		$query = $this->db->get();
 
@@ -1001,7 +1011,7 @@ class Base_model extends CI_Model
 			}
 			
 			$this->db->insert($link_table, $data);
-			
+
 			return TRUE;
 		}
 		
@@ -1398,7 +1408,7 @@ class Base_model extends CI_Model
 	 *			In that case, the tables ARTICLE and the table CATEGORY MUST exist
 	 *
 	 * @param	string		items table name
-	 * @param	array		items to save. Simple array of keys.
+	 * @param	string/array		items to save. Simple array of keys.
 	 * @param	string		parent table name.
 	 * @param	int			parent ID
 	 *
@@ -1474,8 +1484,10 @@ class Base_model extends CI_Model
 		$fields = $this->db->list_fields($parent_table);
 		$parent_table_pk = $fields[0];
 
-		$this->db->where($parent_table_pk, $parent_id);
-		$this->db->where($items_table_pk, $item_key);
+		$this->db->where(array(
+			$parent_table_pk => $parent_id,
+			$items_table_pk => $item_key
+		));
 
 		return (int) $this->db->delete($link_table);
 	}

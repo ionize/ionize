@@ -45,7 +45,7 @@
 				
 					<div class="desktopIcon desktopModuleIcon">
 						<img src="<?= base_url() ?>modules/<?= $module['folder'] ?>/assets/images/icon_48_module.png" />
-						<p><a title="<?= $module['name'] ?>" href="admin/module/<?= $uri ?>/<?= $uri ?>/index"><?= $module['name'] ?></a></p>
+						<p><a title="<?= $module['name'] ?>" href="module/<?= $uri ?>/<?= $uri ?>/index"><?= $module['name'] ?></a></p>
 					</div>
 				
 				<?php endif ;?>								
@@ -392,11 +392,10 @@
 			MUI.Content.update({
 				element: $('mainPanel'),
 				title: title,
-				url : href
+				url : admin_url + ION.cleanUrl(href)
 			});
 		});
 	});
 	
-
 
 </script>

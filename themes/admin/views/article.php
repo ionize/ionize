@@ -58,6 +58,15 @@
 			<!-- Internal / External link Info -->
 			<dl class="small compact" id="link_info"></dl>
 
+			<!-- Modules PlaceHolder -->
+			<?php if ( ! empty($id_article)) :?>
+			
+				<?= get_modules_addons('article', 'side_top'); ?>
+			
+			
+			<?php endif ;?>
+
+
 		</div>
 			
 
@@ -351,8 +360,18 @@
 			</div>
 
 			<?php endif ;?>
+			-->
 			
--->
+			
+			<!-- Modules PlaceHolder -->
+			<?php if ( ! empty($id_article)) :?>
+			
+				<?= get_modules_addons('article', 'side_bottom'); ?>
+			
+			
+			<?php endif ;?>
+			
+			
 		</div>	<!-- /options -->
 	
 	</div> <!-- /sidecolumn -->

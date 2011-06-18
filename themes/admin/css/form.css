@@ -304,7 +304,7 @@ input.date {
 
 .toolbar-button:hover, .light-button:hover {
 	border:1px solid #bbb;
-	background-color: #fff;
+	background-color: #fff !important;
 }
 
 /* Toolbox inputs */

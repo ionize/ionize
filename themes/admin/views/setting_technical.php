@@ -500,7 +500,7 @@
 		</div>
 
 		<!-- Allowed types -->
-		<h3 class="toggler1"><?=lang('ionize_title_allowed types')?></h3>
+		<h3 class="toggler1"><?=lang('ionize_title_allowed_types')?></h3>
 
 		<div class="element1">
 		

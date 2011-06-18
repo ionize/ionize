@@ -178,7 +178,7 @@ class FTL_Context
 		}
 		else
 		{
-			show_error('Error in definition of tag "'.$name.'", the associated callable cannot be called.');
+			show_error('Error in definition of tag "'.$name.'", the associated <b>static function</b> "'.$call.'" cannot be called.');
 		}
 		
 		// jump out

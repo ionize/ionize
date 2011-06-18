@@ -15,38 +15,117 @@
  * Page TagManager 
  *
  */
+// require_once APPPATH.'libraries/Tagmanager/Media.php';
+
 class TagManager_Page extends TagManager
 {	
-	/* Special URI array
-	 * Feeded with values from $this->ci->config->item('special_uri');
-	 * Used to define which URI are "special one"
-	 * Special URI permit to get articles with special condition like "by archive" or "by categories"
-	 *
-	 */
-	protected $uri_config = array();
 	
 	protected static $_cache = array();
 
-	
-//	private static $plural_to_singular = array ('articles','pages');
+	protected static $_inited = false;
+
+	public static $tag_definitions = array
+	(
+		// Page
+		'count' => 				'tag_count',
+		'period' => 			'tag_period',
+		'pagination' =>			'tag_pagination',
+		'absolute_url' =>		'tag_absolute_url',
+		'first_item' => 		'tag_first_item',
+		'last_item' => 			'tag_last_item',
+		
+		// Languages
+		'languages' =>					'tag_languages',
+		'languages:language' =>			'tag_languages_language',
+		'languages:name' =>				'tag_languages_name',
+		'languages:code' =>				'tag_languages_code',
+		'languages:active_class' =>		'tag_languages_active_class',
+		'languages:url' =>			'tag_languages_url',
+		
+		// Page
+		'id_page' => 			'tag_page_id',
+		'page:name' => 			'tag_page_name',
+		'page:url' => 			'tag_page_url',
+		'title' => 				'tag_page_title',
+		'subtitle' => 			'tag_page_subtitle',
+		'meta_title' => 		'tag_page_meta_title',
+		'content' =>			'tag_page_content',
+		'category' =>			'tag_category',
+		
+		// Breadrumb
+		'breadcrumb' =>			'tag_breadcrumb',
+		
+			
+		// Articles
+		'articles' => 				'tag_articles',
+		'articles:article' => 		'tag_articles_article',
+		'articles:id_article' => 	'tag_article_id',
+		'articles:active_class' => 	'tag_article_active_class',
+		'articles:view' => 			'tag_article_view',
+		'articles:author' => 		'tag_article_author_name',
+		'articles:author_email' => 	'tag_article_author_email',
+		'articles:name' => 			'tag_article_name',
+		'articles:title' => 		'tag_article_title',
+		'articles:subtitle' => 		'tag_article_subtitle',
+		'articles:meta_title' =>    'tag_article_meta_title',
+		'articles:date' => 			'tag_article_date',
+		'articles:content' => 		'tag_article_content',
+		'articles:url' => 			'tag_article_url',
+		'articles:link' => 			'tag_article_link',
+		'articles:categories' => 	'tag_article_categories',
+		'articles:readmore' => 		'tag_article_readmore',
+		'articles:index' => 		'tag_article_index',
+		'articles:count' => 		'tag_article_count',
+					
+		// Categories
+		'categories' => 				'tag_categories',
+		'categories:url' => 			'tag_category_url',
+		'categories:active_class' => 	'tag_category_active_class',
+		'categories:title' => 			'tag_category_title',
+		'categories:subtitle' => 		'tag_category_subtitle',
+		
+		// Archives
+		'archives' =>				'tag_archives',
+		'archives:url' => 			'tag_archives_url',
+		'archives:lang_url' => 		'tag_archives_lang_url',
+		'archives:period' => 		'tag_archives_period',
+		'archives:nb' => 			'tag_archives_nb',
+		'archives:active_class' => 	'tag_archives_active_class'
+	);
 
 
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * 
 	 * 
-	 * @return 
 	 */
-	public function __construct($controller, $con, $pages)
+	public function __construct($con)
 	{
-		$this->ci = $controller;
+		self::$ci =& get_instance(); 
 
 		// Article model
-		$this->ci->load->model('article_model');
+		self::$ci->load->model('article_model');
+		self::$ci->load->model('page_model');
 
 		// Helpers
-		$this->ci->load->helper('text');
+		self::$ci->load->helper('text');
+
+		/* Add all pages to the context
+		 *
+		 */
+		$pages = self::$ci->page_model->get_lang_list(false, Settings::get_lang());
+
+		/* Spread authorizations from parents pages to chidrens.
+		 * This adds the group ID to the childrens pages of a protected page
+		 * If you don't want this, just uncomment this line.
+		 */
+		self::$ci->page_model->spread_authorizations($pages);
+
+		// Filter pages regarding the authorizations
+		$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_pages_authorization')));
+
 
 		// Add pages to the context
 		if ( empty($con->globals->pages))
@@ -58,123 +137,20 @@ class TagManager_Page extends TagManager
 		}
 		
 		// Pagination URI
-		$this->uri_config = $this->ci->config->item('special_uri');
+		
+		$uri_config = self::$ci->config->item('special_uri');
 		
 		// Get the pagination URI
-		$uri_config = array_flip($this->uri_config);
+		$uri_config = array_flip($uri_config);
 		$this->pagination_uri = $uri_config['pagination'];
-		
-		$this->tag_definitions = array_merge($this->tag_definitions, array(
-			
-			// Page
-//			'link' => 				'tag_page_link',					// Deprecated since 0.9.5
-			'count' => 				'tag_count',
-			'period' => 			'tag_period',
-			'pagination' =>			'tag_pagination',
-			'absolute_url' =>		'tag_absolute_url',
-			'first_item' => 		'tag_first_item',
-			'last_item' => 			'tag_last_item',
-			
-			// Languages
-			'languages' =>					'tag_languages',
-			'languages:language' =>			'tag_languages_language',
-			'languages:name' =>				'tag_languages_name',
-			'languages:code' =>				'tag_languages_code',
-			'languages:active_class' =>		'tag_languages_active_class',
-//			'languages:page_url' =>			'tag_languages_page_url',		// Deprecated in 0.9.5. Replaced by <ion:url />
-			'languages:url' =>			'tag_languages_url',
-			
-			// Page
-			'id_page' => 			'tag_page_id',
-			'page:name' => 			'tag_page_name',
-			'page:url' => 			'tag_page_url',
-			'title' => 				'tag_page_title',
-			'subtitle' => 			'tag_page_subtitle',
-			'meta_title' => 		'tag_page_meta_title',
-			'content' =>			'tag_page_content',
-			'category' =>			'tag_category',
-			
-			// Breadrumb
-			'breadcrumb' =>			'tag_breadcrumb',
-			
-			// Navigation
-			'navigation' => 					'tag_navigation',
-			'navigation:title' =>				'tag_page_title',			
-			'navigation:subtitle' =>			'tag_page_subtitle',
-			'navigation:active_class' =>		'tag_navigation_active_class',			
-			'navigation:base_link' =>			'tag_navigation_base_link',			
-			'navigation:lang_link' =>			'tag_navigation_lang_link',			
-			'navigation:url' =>					'tag_navigation_url',			
-			'tree_navigation' => 				'tag_tree_navigation',
-			'tree_navigation:active_class' =>	'tag_navigation_active_class',			
-			'tree_navigation:base_link' =>		'tag_navigation_base_link',			
-			'tree_navigation:lang_link' =>		'tag_navigation_lang_link',			
-			'sub_navigation' => 				'tag_sub_navigation',
-			'sub_navigation_title' => 			'tag_sub_navigation_title',
-				
-			// Articles
-			'articles' => 				'tag_articles',
-			'articles:article' => 		'tag_articles_article',
-			'articles:id_article' => 	'tag_article_id',
-			'articles:active_class' => 	'tag_article_active_class',
-			'articles:view' => 			'tag_article_view',
-			'articles:author' => 		'tag_article_author_name',
-			'articles:author_email' => 	'tag_article_author_email',
-			'articles:name' => 			'tag_article_name',
-			'articles:title' => 		'tag_article_title',
-			'articles:subtitle' => 		'tag_article_subtitle',
-			'articles:meta_title' =>    'tag_article_meta_title',
-			'articles:date' => 			'tag_article_date',
-			'articles:content' => 		'tag_article_content',
-			'articles:url' => 			'tag_article_url',
-			'articles:link' => 			'tag_article_link',
-			'articles:categories' => 	'tag_article_categories',
-			'articles:readmore' => 		'tag_article_readmore',
-			'articles:index' => 		'tag_article_index',
-			'articles:count' => 		'tag_article_count',
-						
-			// Categories
-			'categories' => 				'tag_categories',
-			'categories:url' => 			'tag_category_url',
-			'categories:active_class' => 	'tag_category_active_class',
-//			'categories:lang_url' => 		'tag_categories_lang_url',
-			'categories:title' => 			'tag_category_title',
-			'categories:subtitle' => 		'tag_category_subtitle',
-			
-			// Archives
-			'archives' =>				'tag_archives',
-			'archives:url' => 			'tag_archives_url',
-			'archives:lang_url' => 		'tag_archives_lang_url',
-			'archives:period' => 		'tag_archives_period',
-			'archives:nb' => 			'tag_archives_nb',
-			'archives:active_class' => 	'tag_archives_active_class',
-			
-			// Medias tags
-			// Missing tag : date !!!!
-			'medias' => 			'tag_page_medias',
-			'articles:medias' => 	'tag_article_medias',
-			'medias:id_media' => 	'tag_media_id',
-			'medias:alt' => 		'tag_media_alt',
-			'medias:base_path' => 	'tag_media_base_path',
-			'medias:path' => 		'tag_media_path',				// Can do nesting, no change if not nested ('path' => 'tag_src')
-			'medias:src' => 		'tag_media_src',
-			'medias:size' => 		'tag_media_size',
-			'medias:title' => 		'tag_media_title',
-			'medias:link' => 		'tag_media_link',
-			'medias:file_name' => 	'tag_media_file_name',
-			'medias:description' => 'tag_media_description',
-			'medias:copyright' => 	'tag_media_copyright',
-			'medias:index' => 		'tag_media_index',
-			'medias:count' => 		'tag_media_count',
-			
-			
-			// One media
-			'media' =>				'tag_media'
-			
-		));
-	}
-
 	
+
+		$this->add_globals($con);
+		$this->add_tags($con);
+		$this->add_module_tags($con);
+	}
+	
+
 	// ------------------------------------------------------------------------
 
 	
@@ -182,16 +158,13 @@ class TagManager_Page extends TagManager
 	{
 		parent::add_globals($con);
 
-// trace($this->ci->uri->segment_array());
-
 		// Get current asked page
-		$con->globals->page = $this->get_current_page($con, $this->ci->uri->segment(3));
+		$con->globals->page = self::get_current_page($con, self::$ci->uri->segment(3));
 
 		// Show 404 if no page
 		if(empty($con->globals->page))
 		{
-			$this->set_404($con);
-			// show_error("TagManager_Page Error :<br/><ul><li>No existing page or</li><li>Unable to determine wich page should be displayed or </li><li>Page translation not done in the default language : <b>".Settings::get_lang().'</b></li></ul>');
+			self::set_404($con);
 		}
 	}
 
@@ -204,10 +177,19 @@ class TagManager_Page extends TagManager
 	 *
 	 */
 	public function set_404(&$con)
-	{
-		$con->globals->page = array(
-			'link' => '404'
-		);
+	{	
+		self::$ci->output->set_header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+
+		$ext = array_pop(explode('.', array_pop(self::$ci->uri->segment_array())));
+
+		if ( ! empty($ext) && in_array($ext, array('css','js','jpg')))
+		{
+			self::$ci->output->set_output('');
+			self::$ci->output->_display();
+			die();
+		}
+
+		$con->globals->page = self::get_current_page($con, '404');
 	}	
 
 
@@ -265,7 +247,7 @@ class TagManager_Page extends TagManager
 					{
 						// Get the article to which this page links
 						$rel = explode('.', $page['link_id']);
-						$target_article = $this->ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
+						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
 
 						// Of course, only if not empty...
 						if ( ! empty($target_article))
@@ -384,7 +366,7 @@ class TagManager_Page extends TagManager
 		{
 			$articles_id[] = $article['id_article'];
 		}
-		$pages_context = $this->ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
+		$pages_context = self::$ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
 		
 		// Add pages contexts data to articles
 		foreach($articles as &$article)
@@ -432,7 +414,6 @@ class TagManager_Page extends TagManager
 	{
 		if (is_array($data))
 		{
-//			$children = array_values(array_filter($data, create_function('$row','return $row["id_parent"] == "'. $parent .'";')));
 			$children = array();
 			foreach($data as $k=>$v)
 			{
@@ -479,11 +460,6 @@ class TagManager_Page extends TagManager
 				if ($p['name'] == $from_page)
 					return $p;
 			}
-			// If not empty, filter articles on id_page
-//			if ( ! empty($page))
-//			{
-//				$page = $page[0];
-//			}
 		}
 		return $page;
 	}
@@ -509,7 +485,7 @@ class TagManager_Page extends TagManager
 		$pages =& $tag->locals->pages;
 		
 		// Get the potential special URI
-		$special_uri = (isset($this->ci->uri_segment[1])) ? $this->ci->uri_segment[1] : FALSE;
+		$special_uri = (isset(self::$ci->uri_segment[1])) ? self::$ci->uri_segment[1] : FALSE;
 
 		// Use Pagination
 		// The "articles" tag must explicitely indicates it want to use pagination. 
@@ -524,12 +500,12 @@ class TagManager_Page extends TagManager
 
 
 		// Number of article limiter
-		$num = (isset($tag->attr['limit'])) ? $this->get_attribute($tag, 'limit') : 0 ;
+		$num = (isset($tag->attr['limit'])) ? self::get_attribute($tag, 'limit') : 0 ;
 		if ($num == 0)
-			$num = (isset($tag->attr['num'])) ? $this->get_attribute($tag, 'num') : 0 ;
+			$num = (isset($tag->attr['num'])) ? self::get_attribute($tag, 'num') : 0 ;
 
 		// Get the special URI config array (see /config/ionize.php)
-		$uri_config = $this->ci->config->item('special_uri');
+		$uri_config = self::$ci->config->item('special_uri');
 
 		// filter & "with" tag compatibility
 		// create a SQL filter
@@ -547,10 +523,10 @@ class TagManager_Page extends TagManager
 
 		// from page name ?
 		// $from_page = (isset($tag->attr['from']) && $tag->attr['from'] !='' ) ? $tag->attr['from'] : FALSE;
-		$from_page = (isset($tag->attr['from']) && $tag->attr['from'] !='' ) ? $this->get_attribute($tag, 'from') : FALSE;
+		$from_page = (isset($tag->attr['from']) && $tag->attr['from'] !='' ) ? self::get_attribute($tag, 'from') : FALSE;
 
 		// from categories ? 
-		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? $this->get_attribute($tag, 'from_categories') : FALSE;
+		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
 		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 
 		// Order. Default order : ordering ASC
@@ -592,14 +568,6 @@ class TagManager_Page extends TagManager
 			{
 				if (in_array($page['name'], $asked_pages))
 					$in_pages[] = $page['id_page'];
-				
-//				$urls = array_values($page['urls']);
-				
-//				foreach($urls as $url)
-//				{
-//					if (in_array($url, $asked_pages))
-//						$in_pages[] = $page['id_page'];
-//				}
 			}
 
 			// If not empty, filter articles on id_page
@@ -615,11 +583,11 @@ class TagManager_Page extends TagManager
 		}
 		else if ($scope == 'parent')
 		{
-			$where += $this->set_parent_scope($tag);
+			$where += self::set_parent_scope($tag);
 		}
 		else if ($scope == 'global')
 		{
-			$where += $this->set_global_scope($tag);
+			$where += self::set_global_scope($tag);
 		}
 		// Get only articles from current page
 		else
@@ -627,20 +595,21 @@ class TagManager_Page extends TagManager
 			$where['id_page'] = $tag->locals->page['id_page'];
 		}
 
-
 		/* Get the articles
 		 *
 		 */
 		// If a special URI exists, get the articles from it.
 		if ($special_uri !== FALSE && array_key_exists($special_uri, $uri_config) && $from_page === FALSE)
 		{
-			if (method_exists($this, 'get_articles_from_'.$uri_config[$special_uri]))
-				$articles = call_user_func(array($this, 'get_articles_from_'.$uri_config[$special_uri]), $tag, $where, $filter);
+			if (method_exists(__CLASS__, 'get_articles_from_'.$uri_config[$special_uri]))
+			{
+				$articles = call_user_func(array(__CLASS__, 'get_articles_from_'.$uri_config[$special_uri]), $tag, $where, $filter);
+			}
 		}
 		// This case is very special : getting one article through his name in the URL
 		else if ($special_uri !== FALSE && !array_key_exists($special_uri, $uri_config) && $from_page == FALSE && $scope == FALSE)
 		{
-			$articles = $this->get_articles_from_one_article($tag, $where, $filter);
+			$articles = self::get_articles_from_one_article($tag, $where, $filter);
 		}
 		// Get all the page articles
 		// If Pagination is active, set the limit. This articles result is the first page of pagination
@@ -655,7 +624,7 @@ class TagManager_Page extends TagManager
 			
 			if ($from_categories !== FALSE)
 			{
-				$articles = $this->ci->article_model->get_from_categories(
+				$articles = self::$ci->article_model->get_from_categories(
 					$where,
 					explode(',', $from_categories),
 					$from_categories_condition,
@@ -665,7 +634,7 @@ class TagManager_Page extends TagManager
 			}
 			else
 			{
-				$articles = $this->ci->article_model->get_lang_list(
+				$articles = self::$ci->article_model->get_lang_list(
 					$where,
 					$lang = Settings::get_lang(),
 					$filter
@@ -676,7 +645,7 @@ class TagManager_Page extends TagManager
 		// Correct the articles URLs
 		if (count($articles) > 0)
 		{
-			$this->init_articles_urls($articles);
+			self::init_articles_urls($articles);
 		}
 		
 		
@@ -723,17 +692,17 @@ class TagManager_Page extends TagManager
 	{
 		$page = & $tag->locals->page;
 
-		$start_index = array_pop(array_slice($this->ci->uri_segment, -1));
+		$start_index = array_pop(array_slice(self::$ci->uri_segment, -1));
 
 		// Load CI Pagination Lib
-		isset($this->ci->pagination) OR $this->ci->load->library('pagination');
+		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
 	
 		// Number of displayed articles / page
 		// If no pagination : redirect to the current page
-		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect($this->ci->uri_segment[0]);
+		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect(self::$ci->uri_segment[0]);
 
 		// from categories ? 
-		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? $this->get_attribute($tag, 'from_categories') : FALSE;
+		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
 		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 		
 		$where['offset'] = (int)$start_index;
@@ -741,7 +710,7 @@ class TagManager_Page extends TagManager
 		
 		if ($from_categories !== FALSE)
 		{
-			$articles = $this->ci->article_model->get_from_categories(
+			$articles = self::$ci->article_model->get_from_categories(
 				$where,
 				explode(',', $from_categories),
 				$from_categories_condition,
@@ -751,7 +720,7 @@ class TagManager_Page extends TagManager
 		}
 		else
 		{
-			$articles = $this->ci->article_model->get_lang_list(
+			$articles = self::$ci->article_model->get_lang_list(
 				$where,
 				$lang = Settings::get_lang(),
 				$filter
@@ -778,7 +747,7 @@ class TagManager_Page extends TagManager
 	/**
 	 * Get articles linked to a category
 	 * Called if special URI "category" is found. See tag_articles()
-	 * Uses the $this->ci->uri_segment var to determine the category name
+	 * Uses the self::$ci->uri_segment var to determine the category name
 	 *
 	 * @param	array	Current page array
 	 * @param	Array	SQL Condition array
@@ -793,20 +762,21 @@ class TagManager_Page extends TagManager
 		$page = & $tag->locals->page;
 
 		// Get the start index for the SQL limit query param : last part of the URL
-		$start_index = array_pop(array_slice($this->ci->uri_segment, -1));
+		$start_index = array_pop(array_slice(self::$ci->uri_segment, -1));
+
 
 		// If category name exists
-		if (isset($this->ci->uri_segment[2]))
+		if (isset(self::$ci->uri_segment[2]))
 		{
 			// Limit
 			$where['offset'] = $start_index;
 			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
 
 			// Get the articles
-			$articles = $this->ci->article_model->get_from_category
+			$articles = self::$ci->article_model->get_from_category
 			(
 				$where, 
-				$this->ci->uri_segment[2], 
+				self::$ci->uri_segment[2], 
 				Settings::get_lang(),
 				$filter
 			);
@@ -822,7 +792,7 @@ class TagManager_Page extends TagManager
 	/**
 	 * Get articles linked from a period
 	 * Called if special URI "archives" is found. See tag_articles()
-	 * Uses the $this->ci->uri_segment var to determine the category name
+	 * Uses the self::$ci->uri_segment var to determine the category name
 	 *
 	 * @param	Array	Current page array
 	 * @param	Array	SQL Condition array
@@ -838,20 +808,20 @@ class TagManager_Page extends TagManager
 		$start_index = 0;
 
 		// Get the start index for the SQL limit query param : last part of the URL only if the 4th URI segmenet (pagination) is set
-		if (isset($this->ci->uri_segment[4]))
-			$start_index = array_pop(array_slice($this->ci->uri_segment, -1));
+		if (isset(self::$ci->uri_segment[4]))
+			$start_index = array_pop(array_slice(self::$ci->uri_segment, -1));
 
 		// If year is set
-		if (isset($this->ci->uri_segment[2]))
+		if (isset(self::$ci->uri_segment[2]))
 		{
-			$year = $this->ci->uri_segment[2];
+			$year = self::$ci->uri_segment[2];
 		
-			$month = isset($this->ci->uri_segment[3]) ? $this->ci->uri_segment[3] : NULL;
+			$month = isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : NULL;
 			
 			$where['offset'] = $start_index;
 			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
 
-			$articles =  $this->ci->article_model->get_from_archives
+			$articles =  self::$ci->article_model->get_from_archives
 			(
 				$where, 
 				$year, 
@@ -885,14 +855,14 @@ class TagManager_Page extends TagManager
 	
 		$articles = array();
 		
-		$name = array_pop(array_slice($this->ci->uri_segment, -1));
+		$name = array_pop(array_slice(self::$ci->uri_segment, -1));
 
 		$where = array(
 			'article_lang.url' => $name,
 			'limit' => 1
 		);
 
-		$articles =  $this->ci->article_model->get_lang_list
+		$articles =  self::$ci->article_model->get_lang_list
 		(
 			$where, 
 			Settings::get_lang(),
@@ -913,18 +883,19 @@ class TagManager_Page extends TagManager
 	function get_categories($tag, $page)
 	{
 		// Categories model
-		isset($this->ci->category_model) OR $this->ci->load->model('category_model', '', TRUE);
+		isset(self::$ci->category_model) OR self::$ci->load->model('category_model');
 	
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
 		
 		// Asked category
-		$category_uri = array_pop(array_slice($this->ci->uri_segment, -1));
+		$category_uri = array_pop(array_slice(self::$ci->uri_segment, -1));
 	
 		// Get categories from this page articles
-		$categories = $this->ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
-	
+		$categories = self::$ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
+		
 		// Flip the URI config array to have the category index first
-		$uri_config = array_flip($this->uri_config);
+		$uri_config = self::$ci->config->item('special_uri');
+		$uri_config = array_flip($uri_config);
 		
 		// Add the URL to the category to each category row
 		// Also add the active class		
@@ -967,7 +938,7 @@ class TagManager_Page extends TagManager
 		
 		// Get all pages ID where the parent is the current parent ID
 		// Sister pages from current parent page
-		$parents = $this->ci->page_model->get_list(array('id_parent' => $id_parent));
+		$parents = self::$ci->page_model->get_list(array('id_parent' => $id_parent));
 
 		// Page from locals
 		$pages =&  $tag->locals->pages;
@@ -1040,10 +1011,6 @@ class TagManager_Page extends TagManager
 
 	// ------------------------------------------------------------------------
 	
-
-
-
-//	public static function tag_period($tag) { return $tag->locals->page['period']; }
 
 	/**
 	 * Returns the count of an item collection
@@ -1121,21 +1088,22 @@ class TagManager_Page extends TagManager
 			$nb = 0;
 		
 			// Check if articles comes from a special URI result
-			$special_uri = isset($this->ci->uri_segment[1]) ? $this->ci->uri_segment[1] : FALSE;
+			$special_uri = isset(self::$ci->uri_segment[1]) ? self::$ci->uri_segment[1] : FALSE;
+			$uri_config = self::$ci->config->item('special_uri');
 	
 			// Special URI
 			// For example, to count articles from one archive
-			if ($special_uri !== FALSE && array_key_exists($special_uri, $this->uri_config) && $this->uri_config[$special_uri] != 'pagination' )
+			if ($special_uri !== FALSE && array_key_exists($special_uri, $uri_config) && $uri_config[$special_uri] != 'pagination' )
 			{
 				// If special URI count method exists, use it !
 				// That mean that foreach special URI, you need to define a method to count the articles
 				// depending of this special URI.
-				if (method_exists($this, 'count_articles_from_'.$this->uri_config[$special_uri]))
-					$nb = call_user_func(array($this, 'count_articles_from_'.$this->uri_config[$special_uri]), $tag, $filter);
+				if (method_exists(__CLASS__, 'count_articles_from_'.$uri_config[$special_uri]))
+					$nb = call_user_func(array(__CLASS__, 'count_articles_from_'.$uri_config[$special_uri]), $tag, $filter);
 			}
 			// Only one article is displayed
 			// The special URI is the article name
-			else if ($special_uri !== FALSE && ( ! array_key_exists($special_uri, $this->uri_config) ))
+			else if ($special_uri !== FALSE && ( ! array_key_exists($special_uri, $uri_config) ))
 			{
 				return 1;
 			}
@@ -1145,7 +1113,7 @@ class TagManager_Page extends TagManager
 				$where = array();
 
 				// from categories ? 
-				$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? $this->get_attribute($tag, 'from_categories') : FALSE;
+				$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
 				$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 			
 				// Get the scope set to the pagination tag
@@ -1154,10 +1122,10 @@ class TagManager_Page extends TagManager
 				if ($scope !== FALSE)
 				{
 					if ($scope == 'parent')
-						$where = $this->set_parent_scope($tag);
+						$where = self::set_parent_scope($tag);
 			
 					if ($scope == 'global')
-						$where = $this->set_global_scope($tag);
+						$where = self::set_global_scope($tag);
 				}
 				else
 				{
@@ -1168,7 +1136,7 @@ class TagManager_Page extends TagManager
 				// Reduce to the categories
 				if ($from_categories !== FALSE)
 				{
-					$nb = $this->ci->article_model->count_articles_from_categories(
+					$nb = self::$ci->article_model->count_articles_from_categories(
 						$where, 
 						explode(',', $from_categories), 
 						$from_categories_condition, 
@@ -1179,7 +1147,7 @@ class TagManager_Page extends TagManager
 				else
 				{
 					// Count all articles in the current page : SQL
-					$nb = $this->ci->article_model->count_articles(
+					$nb = self::$ci->article_model->count_articles(
 						$where,
 						Settings::get_lang('current'),
 						$filter
@@ -1209,11 +1177,11 @@ class TagManager_Page extends TagManager
 	{
 		$nb = 0;
 		
-		$category = isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : NULL;
+		$category = isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : NULL;
 		
 		if ( ! is_null($category))
 		{
-			$nb = $this->ci->article_model->count_articles_from_category
+			$nb = self::$ci->article_model->count_articles_from_category
 			(
 				array('id_page'=>$tag->locals->page['id_page']),
 				$category,
@@ -1239,12 +1207,12 @@ class TagManager_Page extends TagManager
 	{
 		$nb = 0;
 		
-		$year = 	isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : NULL;
-		$month = 	isset($this->ci->uri_segment[3]) ? $this->ci->uri_segment[3] : NULL;
+		$year = 	isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : NULL;
+		$month = 	isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : NULL;
 		
 		if ( ! is_null($year))
 		{
-			$nb = $this->ci->article_model->count_articles_from_archives(
+			$nb = self::$ci->article_model->count_articles_from_archives(
 				array('id_page'=>$tag->locals->page['id_page']),
 				$year,
 				$month,
@@ -1268,8 +1236,8 @@ class TagManager_Page extends TagManager
 	 */
 	function get_pagination_uri_addon_from_category()
 	{
-		$category_uri = 	$this->ci->uri_segment[1];
-		$category_name = 	$this->ci->uri_segment[2];
+		$category_uri = 	self::$ci->uri_segment[1];
+		$category_name = 	self::$ci->uri_segment[2];
 
 		return $category_uri . '/' . $category_name .'/';
 	}
@@ -1286,10 +1254,10 @@ class TagManager_Page extends TagManager
 	 */
 	function get_pagination_uri_addon_from_archives()
 	{
-		$archive_uri = $this->ci->uri_segment[1];
+		$archive_uri = self::$ci->uri_segment[1];
 	
-		$year = isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : NULL;
-		$month = isset($this->ci->uri_segment[3]) ? $this->ci->uri_segment[3] : NULL;
+		$year = isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : NULL;
+		$month = isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : NULL;
 		
 		if ( ! is_null($year))
 		{
@@ -1307,127 +1275,6 @@ class TagManager_Page extends TagManager
 
 	// ------------------------------------------------------------------------
 
-
-	/**
-	 * Get the medias regarding the type
-	 *
-	 */
-	public static function get_medias($tag, $medias)
-	{
-		// Media type
-		$type = (isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
-
-		// Attribute. Used by tag_media
-//		$attr = (isset($tag->attr['attr']) ) ? $tag->attr['attr'] : FALSE;
-
-		// Media extension
-		$extension = (isset($tag->attr['extension']) ) ? $tag->attr['extension'] : FALSE;
-		
-		// Number of wished displayed medias
-		$limit = (isset($tag->attr['limit'] )) ? $tag->attr['limit'] : FALSE ;
-		
-		// DEPRECATED : Use limit instead
-		if ($limit === FALSE)
-		{
-			$limit = (isset($tag->attr['num'])) ? $tag->attr['num'] : FALSE ;
-		}
-
-		// Range : Start and stop index, coma separated
-		$range = (isset($tag->attr['range'] )) ? explode(',',$tag->attr['range']) : FALSE ;
-		$from = $to = FALSE;
-		
-		if ($range !== FALSE)
-		{
-			$from = $range[0];
-			$to = (isset($range[1]) && $range[1] >= $range[0]) ? $range[1] : FALSE;
-		}
-		
-		// Return list ?
-		// If set to "list", will return the media list, coma separated.
-		// Usefull for javascript
-		// Not yet implemented
-		$return = ( ! empty($tag->attr['return'])) ? $tag->attr['return'] : FALSE;
-
-		$i = 0;
-		
-		if ($type !== FALSE)
-		{
-			$str = '';
-			$filtered_medias = array();
-
-			if ( ! empty($medias))
-			{
-				// First get the correct media type
-				// filter by type
-				foreach($medias as $media)
-				{
-					if ($media['type'] == $type && ($i < $limit OR $limit === FALSE) )
-					{
-						$filtered_medias[] = $media;
-					}
-				}
-				
-				// Filter by extension if needed
-				if ($extension !== FALSE)
-				{
-					$extension = explode(',', $extension);
-					
-					$tmp_medias = $filtered_medias;
-					$filtered_medias = array();
-					
-					foreach($tmp_medias as $media)
-					{
-						if (in_array($media['extension'], $extension))
-						{
-							$filtered_medias[] = $media;
-						}
-					}
-				}
-				
-				// Second, if there is a range, get the medias from this range
-				if ($range !== FALSE)
-				{
-					foreach($filtered_medias as $index => $media)
-					{
-						if ($index >= $from && ($i < $limit OR $limit === FALSE))
-						{
-							if ($index <= $to OR $to === FALSE)
-							{
-								$i++;
-								$tag->locals->media = $media;
-								$tag->locals->index = $i;
-								$str .= $tag->expand();
-							}
-						}
-					}
-				}
-				// Else, get all medias, just $num limited
-				else
-				{
-					foreach($filtered_medias as $index => $media)
-					{
-						if ($i < $limit OR $limit === FALSE)
-						{
-							$i++;
-							$tag->locals->media = $media;
-							$tag->locals->index = $i;
-							$str .= $tag->expand();
-						}
-					}
-				}
-				$tag->locals->count = $i;
-
-			}
-			return $str;
-		}
-		else
-		{
-			return;
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
 
 	/**
 	 * Returns the page absolute URL
@@ -1448,7 +1295,7 @@ class TagManager_Page extends TagManager
 	 * @param	FTL_Binding		The binded tag to parse
 	 *
 	 */
-	public function tag_languages($tag)
+	public static function tag_languages($tag)
 	{
 		$languages = Settings::get_online_languages();
 		
@@ -1481,7 +1328,7 @@ class TagManager_Page extends TagManager
 		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
 
 		// load the helper
-		$this->ci->load->helper($helper);
+		self::$ci->load->helper($helper);
 
 		// Return the helper function result
 		if (function_exists($helper_function) && $no_helper === FALSE)
@@ -1497,17 +1344,20 @@ class TagManager_Page extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+	
+
 	/**
 	 * Languages nested tags
 	 * 
 	 * @param	FTL_Binding		The binded tag to parse
 	 *
 	 */
-	public function tag_languages_language($tag) { return $tag->locals->lang['name']; }
-	public function tag_languages_name($tag) { return $tag->locals->lang['name']; }
-	public function tag_languages_code($tag) { return $tag->locals->lang['lang']; }
-	public function tag_languages_url($tag) { return $tag->locals->url; }
-	public function tag_languages_active_class($tag) { return $tag->locals->active; }
+	public static function tag_languages_language($tag) { return $tag->locals->lang['name']; }
+	public static function tag_languages_name($tag) { return $tag->locals->lang['name']; }
+	public static function tag_languages_code($tag) { return $tag->locals->lang['lang']; }
+	public static function tag_languages_url($tag) { return $tag->locals->url; }
+	public static function tag_languages_active_class($tag) { return $tag->locals->active; }
 
 
 	// ------------------------------------------------------------------------
@@ -1521,7 +1371,7 @@ class TagManager_Page extends TagManager
 	 * Main class name, id, open tag, close tag, every options from cI in fact ! 
 	 *
 	 */
-	public function tag_pagination($tag)
+	public static function tag_pagination($tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -1558,20 +1408,18 @@ class TagManager_Page extends TagManager
 		$uri_addon = '';
 		
 		// Get the potential special URI
-		$special_uri = (isset($this->ci->uri_segment[1])) ? $this->ci->uri_segment[1] : FALSE;
-
+		$special_uri = (isset(self::$ci->uri_segment[1])) ? self::$ci->uri_segment[1] : FALSE;
 
 		// Get the special URI config array (see /config/ionize.php)
-		$uri_config = $this->ci->config->item('special_uri');
-
+		$uri_config = self::$ci->config->item('special_uri');
 
 		// If a special URI exists and is different from pagination URI, get the special URI to the pagination URL
 		// Calling a special function for that is mandatory as each special URI can have different numbers of parameters
-		if ($special_uri !== FALSE && $special_uri != $this->pagination_uri && array_key_exists($special_uri, $uri_config))
+		if ($special_uri !== FALSE && $special_uri != self::$pagination_uri && array_key_exists($special_uri, $uri_config))
 		{
-			if (method_exists($this, 'get_pagination_uri_addon_from_'.$uri_config[$special_uri]))
+			if (method_exists(__CLASS__, 'get_pagination_uri_addon_from_'.$uri_config[$special_uri]))
 			{
-				$uri_addon = call_user_func(array($this, 'get_pagination_uri_addon_from_'.$uri_config[$special_uri]));
+				$uri_addon = call_user_func(array(__CLASS__, 'get_pagination_uri_addon_from_'.$uri_config[$special_uri]));
 			}
 		}
 
@@ -1586,11 +1434,11 @@ class TagManager_Page extends TagManager
 		
 		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
 		{
-			$base_url = base_url() . Settings::get_lang('current') . '/'. $tag->locals->page['url'] . '/' . $uri_addon . $this->pagination_uri;
+			$base_url = base_url() . Settings::get_lang('current') . '/'. $tag->locals->page['url'] . '/' . $uri_addon . self::$pagination_uri;
 		}
 		else
 		{
-			$base_url = base_url() . $tag->locals->page['url'] . '/' . $uri_addon . $this->pagination_uri;		
+			$base_url = base_url() . $tag->locals->page['url'] . '/' . $uri_addon . self::$pagination_uri;		
 		}
 		
 		/*
@@ -1600,13 +1448,13 @@ class TagManager_Page extends TagManager
 		$id = (isset($tag->attr['id'])) ? ' id="' . $tag->attr['id'] .'" ' : '';
 
 		// Article count :
-		$tag->locals->page['nb_articles'] = $this->count_articles($tag, $filter);
+		$tag->locals->page['nb_articles'] = self::count_articles($tag, $filter);
 
 		// Pagination setup
 		if ($per_page > 0 && $tag->locals->page['nb_articles'] > $per_page)
 		{
 			// Load CI Pagination Lib
-			isset($this->ci->pagination) OR $this->ci->load->library('pagination');
+			isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
 			
 			// Pagination theme config
 			$cf = Theme::get_theme_path().'config/pagination.php';
@@ -1648,7 +1496,7 @@ class TagManager_Page extends TagManager
 			}
 
 			// Current page
-			$cur_page = (in_array($this->pagination_uri, $this->ci->uri_segment)) ? array_pop(array_slice($this->ci->uri_segment, -1)) : 1;
+			$cur_page = (in_array(self::$pagination_uri, self::$ci->uri_segment)) ? array_pop(array_slice(self::$ci->uri_segment, -1)) : 1;
 
 			// Pagination tag config init
 			$pagination_config = array_merge($pagination_config,
@@ -1667,10 +1515,10 @@ class TagManager_Page extends TagManager
 			);
 
 			// Pagination initialization
-			$this->ci->pagination->initialize($pagination_config); 
+			self::$ci->pagination->initialize($pagination_config); 
 
 			// Create the links
-			$tag->locals->page['pagination_links'] = $this->ci->pagination->create_links();
+			$tag->locals->page['pagination_links'] = self::$ci->pagination->create_links();
 
 			// Tag cache
 			self::set_cache($tag, $tag->locals->page['pagination_links']);
@@ -1689,8 +1537,14 @@ class TagManager_Page extends TagManager
 	 * 
 	 */	
 	public static function tag_page_id($tag) { return self::wrap($tag, $tag->locals->page['id_page']); }
-	
 	public static function tag_page_name($tag) { return self::wrap($tag, $tag->locals->page['name']); }
+    public static function tag_page_url($tag)	{ return self::wrap($tag, $tag->locals->page['url']); }
+	public static function tag_page_subtitle($tag) { return self::wrap($tag, $tag->locals->page['subtitle']); }
+	public static function tag_page_date($tag) { return self::format_date($tag, $tag->locals->page['date']); }
+
+
+	// ------------------------------------------------------------------------
+	
 
 	/**
      * Return the page title
@@ -1703,7 +1557,7 @@ class TagManager_Page extends TagManager
      * @returns     String        The page title, wrapped or not by the optional defined tags.
      *
      */
-    public function tag_page_title($tag)    
+    public static function tag_page_title($tag)    
     {
         // Is the asked title from another page ?
         $from = (isset($tag->attr['from'])) ? $tag->attr['from'] : FALSE ;
@@ -1713,10 +1567,10 @@ class TagManager_Page extends TagManager
             $up = (isset($tag->attr['up'])) ? $tag->attr['up'] : 1 ;
             
             // Get the Breadcrumbs array
-            $breacrumbs = $this->get_breadcrumb_array($tag->locals->page, $tag->locals->pages, Settings::get_lang() );
+            $breacrumbs = self::get_breadcrumb_array($tag->locals->page, $tag->locals->pages, Settings::get_lang() );
             
             // Filter appearing pages
-            $breacrumbs = array_values(array_filter($breacrumbs, array($this, '_filter_appearing_pages')));
+            $breacrumbs = array_values(array_filter($breacrumbs, array(__CLASS__, '_filter_appearing_pages')));
             
             // Reverse the breadcrumbs array
             $breacrumbs = array_reverse($breacrumbs);
@@ -1730,11 +1584,11 @@ class TagManager_Page extends TagManager
         return self::wrap($tag, $tag->locals->page['title']);
     }
     
-    public static function tag_page_url($tag)	{ return self::wrap($tag, $tag->locals->page['url']); }
-	
-	public static function tag_page_subtitle($tag) { return self::wrap($tag, $tag->locals->page['subtitle']); }
 
-	public function tag_page_meta_title($tag)
+	// ------------------------------------------------------------------------
+	
+
+	public static function tag_page_meta_title($tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -1743,15 +1597,15 @@ class TagManager_Page extends TagManager
 		$meta_title = '';
 
 		// Get the potential special URI
-		$uri_config = $this->ci->config->item('special_uri');
-		$special_uri = (isset($this->ci->uri_segment[1])) ? $this->ci->uri_segment[1] : FALSE;
+		$uri_config = self::$ci->config->item('special_uri');
+		$special_uri = (isset(self::$ci->uri_segment[1])) ? self::$ci->uri_segment[1] : FALSE;
 		
 		if ($special_uri !== FALSE && ! array_key_exists($special_uri, $uri_config) )
 		{
 			// Try to find an article with the name of the last part of the URL.
-			$name = array_pop(array_slice($this->ci->uri_segment, -1));
+			$name = array_pop(array_slice(self::$ci->uri_segment, -1));
 
-			$article =  $this->ci->article_model->get(
+			$article =  self::$ci->article_model->get(
 				array('name' => $name), 
 				Settings::get_lang()
 			);
@@ -1760,7 +1614,6 @@ class TagManager_Page extends TagManager
 				$meta_title = self::wrap($tag, $article['meta_title']);
 		}
 		
-
 		if ( $meta_title == '' && ! empty($tag->locals->page['meta_title']) )
 		{
 			$meta_title = self::wrap($tag, $tag->locals->page['meta_title']);
@@ -1778,9 +1631,8 @@ class TagManager_Page extends TagManager
 	}		
 
 
-
-
-	public static function tag_page_date($tag) { return self::format_date($tag, $tag->locals->page['date']); }
+	// ------------------------------------------------------------------------
+	
 
 	/**
 	 * Returns the medias tag content
@@ -1807,7 +1659,8 @@ class TagManager_Page extends TagManager
 		
 		if ( $medias !== FALSE)
 		{
-			return self::wrap($tag, self::get_medias($tag, $medias));
+//			return self::wrap($tag, self::get_medias($tag, $medias));
+			return self::wrap($tag, TagManager_Media::get_medias($tag, $medias));
 		}
 		return ;
 	}
@@ -1841,7 +1694,7 @@ class TagManager_Page extends TagManager
 	 * @param	FTL_Binding object 
 	 * @return 
 	 */
-	public function tag_articles($tag)
+	public static function tag_articles($tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -1854,7 +1707,7 @@ class TagManager_Page extends TagManager
 		$pages =&  $tag->locals->pages;
 
 		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? $this->get_attribute($tag, 'paragraph') : FALSE ;
+		$paragraph = (isset($tag->attr['paragraph'] )) ? self::get_attribute($tag, 'paragraph') : FALSE ;
 
 		// view
 		$view = (isset($tag->attr['view']) ) ? $tag->attr['view'] : FALSE;
@@ -1865,7 +1718,7 @@ class TagManager_Page extends TagManager
 		/* Get the articles
 		 *
 		 */
-		$articles = $this->get_articles($tag);
+		$articles = self::get_articles($tag);
 		
 		// Number of articles
 		$count = count($articles);
@@ -2026,6 +1879,10 @@ class TagManager_Page extends TagManager
 	public static function tag_article_meta_title($tag) { return self::wrap($tag, $tag->locals->article['meta_title']); }
 	public static function tag_article_active_class($tag) { return self::wrap($tag, $tag->locals->article['active_class']); }
 	
+
+	// ------------------------------------------------------------------------
+	
+
 	/**
 	 * Returns informations about the link
 	 *
@@ -2055,10 +1912,10 @@ class TagManager_Page extends TagManager
 	 * Returns the article content
 	 *
 	 */
-	public function tag_article_content($tag)
+	public static function tag_article_content($tag)
 	{
 		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? (Int)$this->get_attribute($tag, 'paragraph') : FALSE ;
+		$paragraph = (isset($tag->attr['paragraph'] )) ? (Int)self::get_attribute($tag, 'paragraph') : FALSE ;
 
 		$content = $tag->locals->article['content'];
 
@@ -2070,6 +1927,9 @@ class TagManager_Page extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns the URL of the article, based or not on the lang
 	 * If only one language is online, this tag will return the URL without the lang code
@@ -2077,7 +1937,7 @@ class TagManager_Page extends TagManager
 	 * If the link or the article is set, this tag will return the link instead of the URL to the article.
 	 *
 	 */
-	public function tag_article_url($tag) 
+	public static function tag_article_url($tag) 
 	{
 		$url = '';
 		
@@ -2106,7 +1966,7 @@ class TagManager_Page extends TagManager
 			{
 				// Get the article to which this article links
 				$rel = explode('.', $tag->locals->article['link_id']);
-				$target_article = $this->ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
+				$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
 				
 				// If more than one parent, links to to first found
 				// Normally, target link articles should not be duplicated in the tree
@@ -2165,6 +2025,8 @@ class TagManager_Page extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
 	
 	public static function tag_article_view($tag) { return $tag->locals->article['view']; }
 
@@ -2173,21 +2035,22 @@ class TagManager_Page extends TagManager
 	 * Article medias tag definition
 	 * Medias in one article context
 	 *
-	 */
 	public static function tag_article_medias($tag)
 	{
 		$medias = $tag->locals->article['medias'];
-		return self::wrap($tag, self::get_medias($tag, $medias));
+//		return self::wrap($tag, self::get_medias($tag, $medias));
+		return self::wrap($tag, TagManager_Media::get_medias($tag, $medias));
 	}
+	 */
 
 
-	public function tag_article_author_name($tag)
+	public static function tag_article_author_name($tag)
 	{
 		// Get the users if they're not defined
 		if (!isset($tag->globals->users))
 		{
-			$this->ci->base_model->set_table('users');
-			$tag->globals->users = $this->ci->base_model->get_list();
+			self::$ci->base_model->set_table('users');
+			$tag->globals->users = self::$ci->base_model->get_list();
 		}
 		
 		foreach($tag->globals->users as $user)
@@ -2200,13 +2063,13 @@ class TagManager_Page extends TagManager
 	}
 
 
-	public function tag_article_author_email($tag)
+	public static function tag_article_author_email($tag)
 	{
 		// Get the users if they're not defined
 		if (!isset($tag->globals->users))
 		{
-			$this->ci->base_model->set_table('users');
-			$tag->globals->users = $this->ci->base_model->get_list();
+			self::$ci->base_model->set_table('users');
+			$tag->globals->users = self::$ci->base_model->get_list();
 		}
 		
 		foreach($tag->globals->users as $user)
@@ -2227,7 +2090,7 @@ class TagManager_Page extends TagManager
 	 *			Example : <li><a>... here is the anchor ... </a></li>
 	 *
 	 */
-	public function tag_article_categories($tag)
+	public static function tag_article_categories($tag)
 	{
 		$data = array();
 		
@@ -2271,9 +2134,8 @@ class TagManager_Page extends TagManager
 	
 			
 		// Get the category URI segment from /config/ionize.php config file
-		$this->uri_config = $this->ci->config->item('special_uri');
-
-		$uri_config = array_flip($this->uri_config);
+		$uri_config = self::$ci->config->item('special_uri');
+		$uri_config = array_flip($uri_config);
 
 		$category_uri = $uri_config['category'];
 
@@ -2370,187 +2232,6 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 	
 	
-	/**
-	 * Returns one media
-	 *
-	 */
-	public static function tag_media($tag)
-	{
-		// thumb folder name (without the 'thumb_' prefix)
-		$type = (isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
-		$attr = (isset($tag->attr['attr']) ) ? $tag->attr['attr'] : FALSE;
-		$index = (isset($tag->attr['index']) && intval($tag->attr['index']) > 0 ) ? $tag->attr['index'] : '1';
-		$random = (isset($tag->attr['random']) && $tag->attr['random'] == 'TRUE' ) ? TRUE : FALSE;
-		$extension = (isset($tag->attr['extension']) ) ? $tag->attr['extension'] : FALSE;
-		
-		$medias = array();
-		
-		if ($type !== FALSE && $attr != FALSE)
-		{
-			$parent = self::get_parent_tag($tag);
-			
-			if (isset($tag->locals->{$parent}))
-			{
-				$medias = $tag->locals->{$parent}['medias'];
-			}
-			
-			$filtered_medias = array();
-
-			if ( ! empty($medias))
-			{
-				// First get the correct media type
-				// filter by type
-				foreach($medias as $media)
-				{
-					if ($media['type'] == $type)
-					{
-						$filtered_medias[] = $media;
-					}
-				}
-				
-				// Filter by extension if needed
-				if ($extension !== FALSE)
-				{
-					$extension = explode(',', $extension);
-					
-					$tmp_medias = $filtered_medias;
-					$filtered_medias = array();
-					
-					foreach($tmp_medias as $media)
-					{
-						$ext = substr($media['file_name'], strrpos($media['file_name'], '.') +1 );
-						
-						if (in_array($ext, $extension))
-						{
-							$filtered_medias[] = $media;
-						}
-					}
-				}
-				
-				// Now, return the asked field
-				if ( ! empty($filtered_medias))
-				{
-//					if ($random == TRUE)
-//					{
-//						$index = rand(0, count($filtered_medias - 1));
-//					}
-					
-					if ( ! empty($filtered_medias[$index - 1 ]))
-					{
-						$media = $filtered_medias[$index - 1 ];
-
-						// SRC attribute
-						if ($attr == 'src')
-						{
-							$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
-							
-							// Media source complete URL
-							if ($folder !== FALSE) 
-								return base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
-							else
-								return base_url() . $media['path'];
-						}
-
-						return $media[$attr];
-					}
-				}
-			}
-		}
-	}
-	
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Medias tags callback functions
-	 *
-	 */
-	public static function tag_media_title($tag) {	return self::wrap($tag, $tag->locals->media['title']); }
-	public static function tag_media_link($tag) { return self::wrap($tag, $tag->locals->media['link']); }
-	public static function tag_media_alt($tag) {	return self::wrap($tag, $tag->locals->media['alt']); }
-	public static function tag_media_file_name($tag) { return self::wrap($tag, $tag->locals->media['file_name']); }
-	public static function tag_media_base_path($tag) { return $tag->locals->media['base_path']; }
-	public static function tag_media_id($tag) { return $tag->locals->media['id_media']; }
-	public static function tag_media_path($tag) { return $tag->locals->media['path']; }
-	public static function tag_media_description($tag) { return self::wrap($tag, $tag->locals->media['description']); }
-	public static function tag_media_copyright($tag) { return self::wrap($tag, $tag->locals->media['copyright']); }
-	public static function tag_media_index($tag) { return $tag->locals->index; }
-	public static function tag_media_count($tag)
-	{
-		return $tag->locals->count;
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the media complete URL
-	 * 
-	 * @usage : <ion:src folder="<folder_name>" />
-	 *			Physically, the folder is prefixed by "thumb_" if the folder is containing thumbs
-	 *			The tag automatiquely adds the "thumb_" prefix to the folder name
-	 *
-	 */
-	public static function tag_media_src($tag)
-	{
-		// thumb folder name (without the 'thumb_' prefix)
-		$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
-
-		$media = $tag->locals->media;
-
-		if ( ! empty($media))
-		{
-			// Media source complete URL
-			if ($folder !== FALSE) 
-				return base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
-			else
-				return base_url() . $media['path'];
-		}
-		return '';
-	}
-
-
-	/**
-	 * Returns the media size
-	 *
-	 * @usage : <ion:size folder="medium" dim="width|height" />
-	 *
-	 */
-	public static function tag_media_size($tag)
-	{
-		// thumb folder name (without the 'thumb_' prefix)
-		$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
-
-		$dim = (isset($tag->attr['dim']) ) ? $tag->attr['dim'] : FALSE;
-
-		$media = $tag->locals->media;
-
-		if (isset($media['size']))
-		{
-			return $media['size'][$dim];
-		}
-		else
-		{
-			if ( ! empty($media))
-			{
-				// Media source complete URL
-				if ($folder !== FALSE) 
-					$folder = base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
-				else
-					$folder = base_url() . $media['path'];
-	
-				// Get media size
-				if ($d = @getimagesize($folder))
-				{
-					return ($dim == 'width') ? $d['0'] : $d['1'];
-				}
-			}
-		}
-		return '';
-	}
-
 
 	// ------------------------------------------------------------------------
 
@@ -2604,7 +2285,7 @@ class TagManager_Page extends TagManager
 		}
 		
 		// Filter on 'appears'=>'1'
-		$pages = array_values(array_filter($pages, array('self', '_filter_appearing_pages')));
+		$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_appearing_pages')));
 		
 		foreach($pages as $idx => $page)
 		{
@@ -2657,7 +2338,7 @@ class TagManager_Page extends TagManager
 	 *							This calls the function "get_next_prev_page" in the helper /application/helpers/navigation_helper.php"
 	 *
 	 */
-	public function tag_prev_page($tag)
+	public static function tag_prev_page($tag)
 	{
 		$page = self::get_adjacent_page($tag, 'prev');
 	
@@ -2673,7 +2354,7 @@ class TagManager_Page extends TagManager
 	 * Internal use only.
 	 *	 
 	 */
-	private function process_next_prev_page($tag, $page)
+	private static function process_next_prev_page($tag, $page)
 	{
 		if ($page != FALSE)
 		{
@@ -2688,7 +2369,7 @@ class TagManager_Page extends TagManager
 			$prefix = (!empty($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
 	
 			// load the helper
-			$this->ci->load->helper($helper);
+			self::$ci->load->helper($helper);
 			
 			// Return the helper function result
 			if (function_exists($helper_function))
@@ -2705,404 +2386,13 @@ class TagManager_Page extends TagManager
 
 	// ------------------------------------------------------------------------
 
-	
-	/**
-	 * Navigation tag definition
-	 * @usage	
-	 *
-	 */
-	public function tag_navigation($tag)
-	{
-		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
-			return $str;
-
-		// Final string to print out.
-		$str = '';
-
-		// Helper / No helper ?
-		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
-		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
-		
-		// Menu : Main menu by default
-		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
-		$id_menu = 1;
-		foreach($tag->globals->menus as $menu)
-		{
-			if ($menu_name == $menu['name'])
-				$id_menu = $menu['id_menu'];
-		}
-		
-		// Navigation level. FALSE if not defined
-		$asked_level = isset($tag->attr['level']) ? $tag->attr['level'] : FALSE;
-
-		// Display hidden navigation elements ?
-		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
-
-		// Current page
-		$current_page =& $tag->locals->page;
-
-		// Attribute : active CSS class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
-		if (strpos($active_class, 'class') !== FALSE) $active_class= str_replace('\'', '"', $active_class);
-		
-
-		/*
-		 * Getting menu data
-		 *
-		 */
-		// Page from locals
-		$global_pages = $tag->globals->pages;
-
-		// Add the active class key
-		$id_current_page = ( ! empty($current_page['id_page'])) ? $current_page['id_page'] : FALSE;
-		
-		$active_pages = Structure::get_active_pages($global_pages, $id_current_page);
-
-		foreach($global_pages as &$page)
-		{
-			// Add the active_class key
-			$page['active_class'] = in_array($page['id_page'], $active_pages) ? $active_class : '';
-		}
-
-		// Filter by menu and asked level : We only need the asked level pages !
-		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $asked_level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
-		$pages = array();
-		$parent_page = array();
-		
-		// Asked Level exists
-		if ($asked_level !== FALSE)
-		{
-			foreach($global_pages as $p)
-			{
-				if ($p['level'] == $asked_level && $p['id_menu'] == $id_menu)
-					$pages[] = $p;
-			}
-		}
-		// Get navigation from current page
-		else
-		{
-			foreach($global_pages as $p)
-			{
-				// Child pages of id_subnav
-				if ($p['id_parent'] == $tag->locals->page['id_subnav'])
-					$pages[] = $p;
-
-				// Parent page is the id_subnav page
-				if ($p['id_page'] == $tag->locals->page['id_subnav'])
-					$parent_page = $p;
-			}
-		}
-		
-		// Filter on 'appears'=>'1'
-		if ($display_hidden == FALSE)
-			$pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
-		
-		// Get the parent page from one level upper
-		if ($asked_level > 0)
-		{
-			// $parent_pages = array_filter($global_pages, create_function('$row','return $row["level"] == "'. ($asked_level-1) .'";'));
-			$parent_pages = array();
-			foreach($global_pages as $p)
-			{
-				if ($p['level'] == ($asked_level-1))
-					$parent_pages[] = $p;
-			}
-			
-			// $parent_page = array_values(array_filter($parent_pages, create_function('$row','return $row["active_class"] != "";')));
-			// $parent_page = ( ! empty($parent_page)) ? $parent_page[0] : FALSE;
-			foreach($parent_pages as $p)
-			{
-				if ($p['active_class'] != '')
-					$parent_page = $p;
-			}
-		}
-		
-		// Filter the current level pages on the link with parent page
-		if ( ! empty($parent_page ))
-		{
-			// $pages = array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $parent_page['id_page'] .'";'));
-			$o_pages = $pages;
-			$pages = array();
-			foreach($o_pages as $p)
-			{
-				if ($p['id_parent'] == $parent_page['id_page'])
-					$pages[] = $p;
-			}
-		}
-		else
-		{
-			if ($asked_level > 0)
-				$pages = array();
-		}
-
-		// Get helper method
-		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';
-		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-
-		// load the helper
-		$this->ci->load->helper($helper);
-		
-		// Return the helper function result
-		if (function_exists($helper_function) && $no_helper === FALSE)
-		{
-			$nav = call_user_func($helper_function, $pages);
-			
-			$output = self::wrap($tag, $nav);
-			
-			// Tag cache
-			self::set_cache($tag, $output);
-
-			return $output;
-		}
-		else
-		{
-			foreach($pages as $index => $p)
-			{
-				$tag->locals->page = $p;
-				$tag->locals->index = $index;
-				$str .= $tag->expand();
-			}
-
-			$output = self::wrap($tag, $str);
-			
-			// Tag cache
-			self::set_cache($tag, $output);
-
-			return $output;
-		}
-		
-		return self::show_tag_error($tag->name, 'Error message');
-	}
-
-
-	public function tag_sub_navigation_title($tag)
-	{
-		if ($tag->locals->page['subnav_title']  != '')
-		{
-			return self::wrap($tag, $tag->locals->page['subnav_title']);
-		}
-		else
-		{
-			foreach($tag->globals->pages as $page)
-			{
-				if ($page['id_page'] == $tag->locals->page['id_subnav'])
-				{
-					return self::wrap($tag, $page['subnav_title']);
-				}
-			}
-		}		
-		return '';		
-	}
-	
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Return a tree navigation based on the given helper.
-	 *
-	 * @param	FTL_Binding object
-	 *
-	 */
-	public function tag_tree_navigation($tag)
-	{
-		// Current page
-		$page = $tag->locals->page;
-	
-		// If 404 : Put empty vars, so the menu will prints out without errors
-		if ( !isset($page['id_page']))
-		{
-			$page = array(
-				'id_page' => '',
-				'id_parent' => ''
-			);
-		}
-
-		// Menu : Main menu by default
-		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
-		$id_menu = 1;
-		foreach($tag->globals->menus as $menu)
-		{
-			if ($menu_name == $menu['name'])
-			{
-				$id_menu = $menu['id_menu'];
-			}	
-		}
-		
-		// If set, attribute level, else parent page level + 1
-		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] :0 ;
-
-		// If set, depth
-		$depth = (isset($tag->attr['depth']) ) ? $tag->attr['depth'] : -1;
-		
-		// Attribute : active class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
-
-		// Display hidden navigation elements ?
-		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
-
-		// Attribute : HTML Tree container ID & class attribute
-		$id = (isset($tag->attr['id']) ) ? $tag->attr['id'] : NULL ;
-		if (strpos($id, 'id') !== FALSE) $id= str_replace('\'', '"', $id);
-
-		$class = (isset($tag->attr['class']) ) ? $tag->attr['class'] : NULL ;
-		if (strpos($active_class, 'class') !== FALSE) $active_class= str_replace('\'', '"', $active_class);
-		
-		// Attribute : Use lang_url or url ?
-		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] === 'TRUE') ? TRUE : FALSE ;
-		if ($lang_url == FALSE)
-			$lang_url = (isset($tag->attr['lang_url']) && $tag->attr['lang_url'] === 'TRUE') ? TRUE : FALSE ;
-		
-		// Attribute : Helper to use to print out the tree navigation
-		$helper = (isset($tag->attr['helper']) && $tag->attr['helper'] != '' ) ? $tag->attr['helper'] : 'navigation';
-
-		// Get helper method
-		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_tree_navigation';
-		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-
-		// load the helper
-		$this->ci->load->helper($helper);
-
-		// Page from locals : By ref because of active_class definition
-		$pages =&  $tag->locals->pages;
-
-		/* Get the reference parent page ID
-		 * Note : this is depending on the whished level.
-		 * If the curent page level > asked level, we need to find recursively the parent page which has the good level.
-		 * This is done to avoid tree cut when navigation to a child page
-		 *
-		 * e.g :
-		 *
-		 * On the "services" page and each subpage, we want the tree navigation composed by the sub-pages of "services"
-		 * We are in the page "offer"
-		 * We have to find out that the level 1 parent is "services"
-		 *
-		 *	Page structure				Level
-		 *
-		 *	home						0
-		 *	 |_ about					1		
-		 *	 |_ services				1		<- We want all the nested nav starting at level 1 from this parent page
-		 *	 	   |_ development		2
-		 *		   |_ design			2
-		 *				|_ offer		3		<- We are here.
-		 *				|_ portfolio	3	
-		 *
-		 */
-		$page_level = (isset($page['level'])) ? $page['level'] : 0;
-	 
-		$parent_page = array(
-			'id_page' => ($from_level > 0) ? $page['id_page'] : 0,
-			'id_parent' => isset($page['id_parent']) ? $page['id_parent'] : 0
-		);
-
-		// Find out the wished parent page 
-		while ($page_level >= $from_level && $from_level > 0)
-		{
-			// $potential_parent_page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $parent_page['id_parent'] .'";')));
-			$potential_parent_page = array();
-			foreach($pages as $p)
-			{
-				if($p['id_page'] == $parent_page['id_parent'])
-				{
-					$potential_parent_page = $p;
-					break;
-				}
-			}
-			// if (isset($potential_parent_page[0]))
-			if ( ! empty($potential_parent_page))
-			{
-				$parent_page = $potential_parent_page;
-				$page_level = $parent_page['level'];
-			}
-			else
-			{
-				$page_level--;
-			}
-		}
-		// Active pages array. Array of ID
-		$active_pages = Structure::get_active_pages($pages, $page['id_page']);
-		
-		foreach($pages as $key => $p)
-		{
-			$pages[$key]['active_class'] = in_array($p['id_page'], $active_pages) ? $active_class : '';
-		}
-
-		// Filter on 'appears'=>'1'
-		$nav_pages = array();
-		if ($display_hidden == FALSE)
-			$nav_pages = array_values(array_filter($pages, array($this, '_filter_appearing_pages')));
-		
-		// $nav_pages = array_filter($nav_pages, create_function('$row','return ($row["id_menu"] == "'. $id_menu .'") ;'));
-		$final_nav_pages = array();
-		foreach($nav_pages as $k => $np)
-		{
-			if ($np['id_menu'] == $id_menu )
-				$final_nav_pages[] = $np;
-		}
-		
-		// Get the tree navigation array
-		$tree = Structure::get_tree_navigation($final_nav_pages, $parent_page['id_page'], $from_level, $depth);
-
-		// Return the helper function
-		if (function_exists($helper_function))
-			return call_user_func($helper_function, $tree, $lang_url, $id, $class);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_navigation_active_class($tag) { return isset($tag->locals->page['active_class']) ? $tag->locals->page['active_class'] : ''; }
-	
-
-	// ------------------------------------------------------------------------
-
-
-	/** 
-	 * Return the URL of a navigation menu item.
-	 *
-	 */
-	public function tag_navigation_url($tag) 
-	{
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
-		
-		if ($tag->locals->page['link'] != '' && $tag->locals->page['link_type'] == '')
-		{
-			return $tag->locals->page['absolute_url'];
-		}
-		
-		/*
-		 * In this case, the <ion:url /> tag of the <ion:navigation /> tag forces the lang code to be in the URL
-		 * Because the function init_pages_urls() has already put the lang code, this check is only useful
-		 * for internal link if the lang code isn't set by init_pages_urls()
-		 *
-		 */
-		if ($lang_url === TRUE)
-		{
-			if (strpos($tag->locals->page['absolute_url'], base_url().Settings::get_lang()) === FALSE)
-			{
-				$tag->locals->page['absolute_url'] = str_replace(base_url(), base_url().Settings::get_lang() . '/', $tag->locals->page['absolute_url']);
-			}
-			
-			return $tag->locals->page['absolute_url'];
-		}
-		
-		return $tag->locals->page['absolute_url'];
-	}
-	
-	
-	// ------------------------------------------------------------------------
-
 
 	/**
 	 * Get the archives tag
 	 *
 	 *
 	 */
-	function tag_archives($tag)
+	public static function tag_archives($tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -3124,11 +2414,11 @@ class TagManager_Page extends TagManager
 		$order = (isset($tag->attr['order']) && $tag->attr['order'] == 'ASC' ) ? 'period ASC' : 'period DESC';
 
 		// Current archive
-		$current_archive = isset($this->ci->uri_segment[2]) ? $this->ci->uri_segment[2] : '' ;
-		$current_archive .= isset($this->ci->uri_segment[3]) ? $this->ci->uri_segment[3] : '' ;
+		$current_archive = isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : '' ;
+		$current_archive .= isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : '' ;
 
 		// Get the archives infos		
-		$archives = $this->ci->article_model->get_archives_list
+		$archives = self::$ci->article_model->get_archives_list
 		(
 			array('id_page' => $tag->locals->page['id_page']), 
 			Settings::get_lang(),
@@ -3142,7 +2432,8 @@ class TagManager_Page extends TagManager
 		$month_formats = array('D', 'l', 'F', 'M');
 
 		// Flip the URI config array to have the category index first
-		$uri_config = array_flip($this->uri_config);
+		$uri_config = self::$ci->config->item('special_uri');
+		$uri_config = array_flip($uri_config);
 
 		foreach ($archives as &$row)
 		{
@@ -3240,7 +2531,7 @@ class TagManager_Page extends TagManager
 	 * @return	String	The parsed view
 	 * 
 	 */
-	public function tag_breadcrumb($tag)
+	public static function tag_breadcrumb($tag)
 	{
 		// Anchor enclosing tag 
 		$subtag_open = (isset($tag->attr['subtag'])) ? '<' . $tag->attr['subtag'] . '>' : '';
@@ -3255,10 +2546,10 @@ class TagManager_Page extends TagManager
 		
 		// Get the Breadcrumbs array
 		$lang = Settings::get_lang();
-		$breacrumbs = $this->get_breadcrumb_array($tag->locals->page, $tag->locals->pages, $lang );
+		$breacrumbs = self::get_breadcrumb_array($tag->locals->page, $tag->locals->pages, $lang );
 		
 		// Filter appearing pages
-		$breacrumbs = array_values(array_filter($breacrumbs, array($this, '_filter_appearing_pages')));
+		$breacrumbs = array_values(array_filter($breacrumbs, array(__CLASS__, '_filter_appearing_pages')));
 		
 		if ($starting_level != FALSE)
 		{
@@ -3303,7 +2594,7 @@ class TagManager_Page extends TagManager
 	 * @return	Array	Array of pages name (in the current language)
 	 *
 	 */
-	private function get_breadcrumb_array($page, $pages, $lang, $data = array())
+	private static function get_breadcrumb_array($page, $pages, $lang, $data = array())
 	{
 		$parent = NULL;
 		
@@ -3315,7 +2606,7 @@ class TagManager_Page extends TagManager
 				if ($pages[$i]['id_page'] == $page['id_parent'])
 				{
 					$parent = $pages[$i];
-					$data = $this->get_breadcrumb_array($parent, $pages, $lang, $data);
+					$data = self::get_breadcrumb_array($parent, $pages, $lang, $data);
 					break;
 				}
 			}
@@ -3333,9 +2624,9 @@ class TagManager_Page extends TagManager
 	 * Renders the <ion:articles /> last_article sub tag
 	 *
 	 */
-	function tag_last_articles_article($tag)
+	public static function tag_last_articles_article($tag)
 	{
-		return $this->tag_articles_article($tag);
+		return self::tag_articles_article($tag);
 	}
 	
 	
@@ -3349,11 +2640,11 @@ class TagManager_Page extends TagManager
 	 * @param	String			Wished returned value ('name', 'title', etc.)
 	 *
 	 */
-	function tag_category($tag)
+	public static function tag_category($tag)
 	{
 		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
 
-		$category_uri = array_pop(array_slice($this->ci->uri_segment, -1));
+		$category_uri = array_pop(array_slice(self::$ci->uri_segment, -1));
 
 		// Categorie prefix in the returned string. Exemple "Category "
 		$category_value = NULL;
@@ -3361,7 +2652,7 @@ class TagManager_Page extends TagManager
 		// Store categories in Globals, so no multiple time retrieve
 		if (empty($tag->globals->categories))
 		{
-			$tag->globals->categories = $this->get_categories($tag, $this->get_asked_page($tag));
+			$tag->globals->categories = self::get_categories($tag, self::get_asked_page($tag));
 		}
 
 		foreach($tag->globals->categories as $category)
@@ -3393,7 +2684,7 @@ class TagManager_Page extends TagManager
 	 *
 	 *
 	 */
-	function tag_categories($tag)
+	public static function tag_categories($tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -3401,7 +2692,7 @@ class TagManager_Page extends TagManager
 
 		if (empty($tag->globals->categories))
 		{
-			$tag->globals->categories = $this->get_categories($tag, $this->get_asked_page($tag));
+			$tag->globals->categories = self::get_categories($tag, self::get_asked_page($tag));
 		}
 
 		// Tag expand
@@ -3472,10 +2763,10 @@ class TagManager_Page extends TagManager
 
 	/**
 	 * Filters page which should appear
-	 * used by $this->tag_navigation()
+	 * used by self::tag_navigation()
 	 *
 	 */
-	private static function _filter_appearing_pages($row)
+	public static function _filter_appearing_pages($row)
 	{
 		return ($row['appears'] == 1);
 	}
@@ -3492,13 +2783,13 @@ class TagManager_Page extends TagManager
 			$page_group = FALSE;
 			
 			// Get the page group
-			foreach($this->ci->connect->groups as $group)
+			foreach(self::$ci->connect->groups as $group)
 			{
 				if ($group['id_group'] == $row['id_group']) $page_group = $group;
 			} 
 
 			// If the current connected user has access to the page return TRUE
-			if ($this->ci->user !== FALSE && $page_group != FALSE && $this->ci->user['group']['level'] >= $page_group->level)
+			if (self::$ci->user !== FALSE && $page_group != FALSE && self::$ci->user['group']['level'] >= $page_group->level)
 				return TRUE;
 			
 			// If nothing found, return FALSE
@@ -3506,6 +2797,9 @@ class TagManager_Page extends TagManager
 		}
 		return TRUE;
 	}
+	
+	
+	
 
 }
 

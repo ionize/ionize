@@ -27,39 +27,14 @@ class TagManager_Element extends TagManager
 	
 	private static $elements_def = array();
 
-	public function __construct($controller)
-	{
-		$this->ci = $controller;
-		
-		// Element model
-		$this->ci->load->model('element_model', '', true);
-		$this->ci->load->model('element_definition_model', '', true);
-		$this->ci->load->model('article_model', '', true);
-
-		$this->tag_definitions = array_merge($this->tag_definitions, array
-		(
-			'elements' => 'tag_elements',
-			'elements:field' => 'tag_element_field',
-			'elements:fields' => 'tag_element_fields',
-			'elements:fields:attribute' => 'tag_element_fields_attribute'
-		));
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Adds global values to the context.
-	 * 
-	 * @param  FTL_Context
-	 * @return void
-	 */
-	public function add_globals(FTL_Context $con)
-	{
-		parent::add_globals($con);
-	}
-
+	public static $tag_definitions = array
+	(
+		'elements' => 'tag_elements',
+		'elements:field' => 'tag_element_field',
+		'elements:fields' => 'tag_element_fields',
+		'elements:fields:attribute' => 'tag_element_fields_attribute'	
+	);
+	
 
 	// ------------------------------------------------------------------------
 	
@@ -72,11 +47,13 @@ class TagManager_Element extends TagManager
 	 */
 	private function set_elements_definition($lang)
 	{
+		self::$ci->load->model('element_definition_model', '', true);
+		
 		// Get the extend fields definition if not already got
 		if (self::$got_elements_def == false)
 		{
 			// Store the extend fields definition
-			self::$elements_def = $this->ci->element_definition_model->get_lang_list(FALSE, $lang);
+			self::$elements_def = self::$ci->element_definition_model->get_lang_list(FALSE, $lang);
 			
 			// Set this to true so we don't get the extend field def a second time for an object of same kind
 			self::$got_elements_def = true;
@@ -103,7 +80,7 @@ class TagManager_Element extends TagManager
 	 * Returns 
 	 *
 	 */
-	public function tag_elements($tag)
+	public static function tag_elements($tag)
 	{
 		// Returned string
 		$str = '';
@@ -192,13 +169,16 @@ class TagManager_Element extends TagManager
 			// Allowed parent ? Great, let's get the definition
 			if ( ! is_null($id_parent) && in_array($parent, self::$allowed_parents) )
 			{
+				// CI Model
+				self::$ci->load->model('element_model', '', true);
+			
 				// Get only one time the definition
-				$this->set_elements_definition(Settings::get_lang('current'));
+				self::set_elements_definition(Settings::get_lang('current'));
 				
 				// Get the corresponding element definition ID
 				$id_element_definition = self::get_definition_id_from_name($element_definition_name);
 
-				$elements = $this->ci->element_model->get_fields_from_parent($parent, $id_parent, $id_element_definition);
+				$elements = self::$ci->element_model->get_fields_from_parent($parent, $id_parent, $id_element_definition);
 				
 				// Process the elements
 				if (!empty($elements['elements']))
@@ -232,7 +212,7 @@ class TagManager_Element extends TagManager
 	 * Returns 
 	 *
 	 */
-	public function tag_element_field($tag)
+	public static function tag_element_field($tag)
 	{
 		// Wished element definition name
 		$field_name = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
@@ -279,7 +259,7 @@ class TagManager_Element extends TagManager
 	// ------------------------------------------------------------------------
 	
 	
-	public function tag_element_fields($tag)
+	public static function tag_element_fields($tag)
 	{
 		$element = $tag->locals->element;
 		$str = '';
@@ -294,8 +274,11 @@ class TagManager_Element extends TagManager
 		return $str;
 	}
 	
+
+	// ------------------------------------------------------------------------
 	
-	function tag_element_fields_attribute($tag)
+	
+	public static function tag_element_fields_attribute($tag)
 	{
 		// Wished field attribute
 		$attr = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;

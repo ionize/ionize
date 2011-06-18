@@ -189,6 +189,23 @@ class Usermanager_User {
 	 * Functions, that are used by tags
 	 */
 
+	public function is($tag)
+	{
+		$ci = &get_instance();
+		$user = $this->get_current_user(isset($tag->attr['id_user']) ? $tag->attr['id_user'] : false);
+		if (!$user)
+			return "";
+
+		if (isset($tag->attr['is']))
+		{
+			if ($ci->connect->is($tag->attr['is']))
+			{
+				return $tag->expand();
+			}
+		}
+		return "";
+	}
+
 	public function is_editor($tag)
 	{
 		$ci = &get_instance();

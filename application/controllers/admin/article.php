@@ -816,7 +816,6 @@ class Article extends MY_admin
 				$original_context['main_parent'] = '0';
 			}
 				
-			
 			// Ordering : last position
 			$original_context['ordering'] = $this->_get_ordering('last', $id_page);
 
@@ -824,7 +823,6 @@ class Article extends MY_admin
 			{
 				// Clear the cache
 				Cache()->clear_cache();
-
 
 				// Get the page, menu and articles details for the JSON answer
 				$page = $this->page_model->get($id_page, Settings::get_lang('default'));
@@ -845,8 +843,6 @@ class Article extends MY_admin
 					// Used by JS Tree to detect if article is inserted in tree or not
 					$article['inserted'] = TRUE;
 				}
-
-
 
 				$this->callback = array
 				(

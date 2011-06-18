@@ -176,20 +176,16 @@ class CI_Router
 		{
 			// Fetch the complete URI string
 			$this->uri->_fetch_uri_string();
-
+			
 			// use the default controller
 			if(empty($this->uri->uri_string))
 			{
 				$this->load_default_uri();
 			}
 			$this->uri->_remove_url_suffix();
-
+			
 			// clean the uri and explode it
 			$this->explode_segments($this->uri->uri_string);
-			
-//			log_message('debug', 'Router: _set_routing() :: URI->segments : '.$this->uri->segments);
-
-
 			
 			// LANGUAGE:
 			// check if we have a valid language key there
@@ -261,11 +257,8 @@ class CI_Router
 			}
 			$this->uri->segments = $this->match_to_routes($this->uri->segments);
 
-// trace($this->uri->segments);			
-
-
 			$this->find_controller($this->uri->segments);
-
+				
 			// add the module first so it is correct
 			if($this->module_path)
 			{
