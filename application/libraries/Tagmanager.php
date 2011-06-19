@@ -99,7 +99,8 @@ class TagManager
 		include APPPATH.'config/modules.php';
 
 		// Put modules arrays keys to lowercase
-		self::$module_folders = array_combine(array_map('strtolower', array_values($modules)), array_values($modules));
+		if (!empty($modules))
+			self::$module_folders = array_combine(array_map('strtolower', array_values($modules)), array_values($modules));
 
 		// Tags from /config/modules.php
 		// Commented, because we try to get the tag names dynamilly from tag definition class
