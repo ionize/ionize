@@ -882,7 +882,7 @@ class TagManager
 		}
 		else
 		{
-			show_error('TagManager : Please use the attribute <b>"path"</b> when using the tag <b>partial</b>');
+			show_error('TagManager : Please use the attribute <b>"view"</b> when using the tag <b>partial</b>');
 		}
 	}
 

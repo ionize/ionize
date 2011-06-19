@@ -42,7 +42,7 @@ class Simpleform_Validation {
 			{
 				if ((isset($ci->form_validation) && $ci->form_validation->error_string()))
 					return $tag->expand();
-					
+				
 				return '';
 			}
 
