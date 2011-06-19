@@ -498,6 +498,9 @@ $lang['ionize_title_article_management'] = 'Article management';
 $lang['ionize_title_admin_url'] = 'Admin panel URL';
 $lang['ionize_title_encryption_key'] = 'Encryption key';
 $lang['ionize_title_cache'] = 'Cache System';
+$lang['ionize_title_allowed_mimes'] = 'Allowed Mimes';
+
+
 
 $lang['ionize_label_thumb_automatic'] = 'Automatic';
 $lang['ionize_label_files_path'] = 'Media base folder';

@@ -499,8 +499,8 @@
 
 		</div>
 
-		<!-- Allowed types -->
-		<h3 class="toggler1"><?=lang('ionize_title_allowed_types')?></h3>
+		<!-- Allowed Mimes -->
+		<h3 class="toggler1"><?=lang('ionize_title_allowed_mimes')?></h3>
 
 		<div class="element1">
 		
