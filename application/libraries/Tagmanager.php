@@ -120,7 +120,7 @@ class TagManager
 		{
 			self::autoload_module_tags($module.'_Tags');
 		}
-		
+
 		/*
 		 * Load automatically all TagManagers defined in /libraries/Tagmanager
 		 */
@@ -873,7 +873,8 @@ class TagManager
 		{
 			if(isset($tag->attr['php']) && $tag->attr['php'] == 'true')
 			{
-				return self::$ci->load->view($view, array(), true);
+				$data = ( ! empty($tag->attr['data'])) ? $tag->attr['data'] : array();
+				return self::$ci->load->view($view, $data, true);
 			}
 			else
 			{

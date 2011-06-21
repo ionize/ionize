@@ -346,7 +346,7 @@ class Base_model extends CI_Model
 		$this->db->select($table.'.*');
 		
 		$query = $this->db->get($table);
-				
+
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();
 
@@ -414,6 +414,15 @@ class Base_model extends CI_Model
 			}
 		}
 
+		if (isset($where['where_in']))
+		{
+			foreach($where['where_in'] as $key => $value)
+			{
+				$this->db->where_in($key, $value);
+			}
+			unset($where['where_in']);
+		}
+		
 		// Make sure we have only one time each element
 		$this->db->distinct();
 

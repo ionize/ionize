@@ -606,6 +606,9 @@
 
 						<p class="clear h15">
 							<a class="right icon copy copyLang" rel="<?= $lang ?>" title="<?= lang('ionize_label_copy_to_other_languages') ?>"></a>
+
+								<button id="wysiwyg_<?= $lang ?>" type="button" class="light-button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
+
 						</p>
 			
 						<!-- title -->
@@ -781,17 +784,9 @@
 								<textarea id="content_<?= $lang ?>" name="content_<?= $lang ?>" class="tinyTextarea w600 h260" rel="<?= $lang ?>"><?= htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8') ?></textarea>
 							</dd>
 						</dl>
-	<!--
-	Needs to be corrected.
-						<dl>
-							<dt>
-								<label for="wysiwyg_<?= $lang ?>">&#160;</label>
-							</dt>
-							<dd>
-								<button id="wysiwyg_<?= $lang ?>" type="button" class="light-button" onclick="tinyMCE.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
-							</dd>
-						</dl>
-		-->		
+
+
+
 
 				</div>
 				<?php endforeach ;?>

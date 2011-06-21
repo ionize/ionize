@@ -447,6 +447,9 @@ ul.left-arrow li {
 
 /* Table list
 ---------------------------------------------------------------- */
+table tr td {
+	vertical-align: top;
+}
 table.list {
 	border-collapse:collapse;
 	margin:10px 0;

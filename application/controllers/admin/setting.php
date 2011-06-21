@@ -155,6 +155,8 @@ class Setting extends MY_admin
 		// Antispam key
 		$this->template['form_antispam_key'] = config_item('form_antispam_key');
 
+		$this->template['article_allowed_tags'] = explode(',', Settings::get('article_allowed_tags') );
+
 		$this->output('setting_technical');
 	}
 
@@ -467,8 +469,11 @@ class Setting extends MY_admin
 			$this->input->set_post('files_path', $old_files_path);
 		}
 
+
 		// Save settings to DB
 		$this->_save_settings($settings);
+
+
 
 		// Thumbs update
 		$thumbs  = $this->settings_model->get_list(array('name like' => 'thumb_%'));
@@ -514,6 +519,23 @@ class Setting extends MY_admin
 			}
 		
 		}
+		
+		// Tags allowed in articles
+		$tags = $this->input->post('article_allowed_tags');
+		if (in_array('table', $tags)) $tags = array_merge($tags, array('thead','tbody','tfoot','tr','th','td'));
+		if (in_array('object', $tags)) $tags = array_merge($tags, array('param', 'embed'));
+		if (in_array('dl', $tags)) $tags = array_merge($tags, array('dt','dd'));
+		if (in_array('img', $tags)) $tags = array_merge($tags, array('map'));
+		
+		// Standard allowed tags
+		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong'));
+		
+		$article_allowed_tags = array(
+					'name' => 'article_allowed_tags',
+					'content' => implode(',', $tags)
+				);
+		$this->settings_model->save_setting($article_allowed_tags);
+
 		
 		$this->callback = array(
 			'fn' => 'ION.reload',

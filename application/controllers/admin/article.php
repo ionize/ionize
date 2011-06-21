@@ -1464,6 +1464,13 @@ class Article extends MY_admin
 					// Convert HTML special char only on other fields than these defined in $no_htmlspecialchars
 					if ( ! in_array($field, $this->no_htmlspecialchars))
 						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
+					
+					// Allowed tags filter
+					$allowed_tags = explode(',', Settings::get('article_allowed_tags'));
+					$allowed_tags = '<' . implode('>,<', $allowed_tags ) . '>';
+//					trace($allowed_tags);
+					$content = strip_tags($content, $allowed_tags);
+
 						
 					$this->lang_data[$language['lang']][$field] = $content;
 				}

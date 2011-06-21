@@ -499,6 +499,7 @@ $lang['ionize_title_admin_url'] = 'Admin panel URL';
 $lang['ionize_title_encryption_key'] = 'Encryption key';
 $lang['ionize_title_cache'] = 'Cache System';
 $lang['ionize_title_allowed_mimes'] = 'Allowed Mimes';
+$lang['ionize_label_article_allowed_tags'] = 'Allowed Tags';
 
 
 
@@ -605,6 +606,7 @@ $lang['ionize_help_tinyblockformats'] = 'Default TinyMCE Blocks Format (Select)'
 $lang['ionize_help_cache_enabled'] = 'Enable / Disable the cache. Disabling it will clear the existing cache.';
 $lang['ionize_help_cache_expiration'] = 'Number of minutes elements will remain cached between refreshes';
 $lang['ionize_help_clear_cache'] = 'Deletes all the cache files.';
+$lang['ionize_help_article_allowed_tags'] = 'Allowed HTML tags in Articles content';
 
 /*
 |--------------------------------------------------------------------------

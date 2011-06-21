@@ -1617,10 +1617,9 @@ class TagManager_Page extends TagManager
 		{
 			$meta_title = self::wrap($tag, $tag->locals->page['meta_title']);
 		}
-		else
+		if ( $meta_title == '' && ! empty($tag->locals->page['title']) )
 		{
-			if ( ! empty($tag->locals->page['title']))
-				$meta_title = self::wrap($tag, $tag->locals->page['title']);		
+			$meta_title = self::wrap($tag, $tag->locals->page['title']);		
 		}
 
 		// Tag cache

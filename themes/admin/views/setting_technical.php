@@ -398,7 +398,8 @@
 				</dd>
 				
 			</dl>
-			<dl class="last">
+			
+			<dl class="mt10">
 				<!-- TinyMCE Block Format (Select) -->
 				<dt>
 					<label for="texteditor" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
@@ -408,6 +409,56 @@
 					<a id="texteditor_default_tinyblockformats"><?=lang('ionize_label_restore_tinyblockformats')?></a>
 				</dd>
 			</dl>
+
+			<dl class="last mt10">
+				<!-- TinyMCE Block Format (Select) -->
+				<dt>
+					<label for="article_allowed_tags" title="<?=lang('ionize_help_article_allowed_tags')?>"><?=lang('ionize_label_article_allowed_tags')?></label>
+				</dt>
+				<dd>
+					<?php
+						$tags1 = array('h2','h3','h4','h5','h6','em','img');
+						$tags2 = array('iframe','table','object','span','dl','pre','code');
+						$tags3 = array('dfn','samp','kbd','legend','q','small');
+					?>
+				
+					<table class="w220 mt0">
+						<tbody>
+							<tr>
+								<td>
+									<table class="list w60 mt0">
+										<tbody>
+											<?php foreach($tags1 as $tag) :?>
+												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
+											<?php endforeach ?>
+										</tbody>
+									</table>
+								</td>
+								<td>
+									<table class="list w60 mt0">
+										<tbody>
+											<?php foreach($tags2 as $tag) :?>
+												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
+											<?php endforeach ?>
+										</tbody>
+									</table>
+								</td>
+								<td>
+									<table class="list w60 mt0">
+										<tbody>
+											<?php foreach($tags3 as $tag) :?>
+												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
+											<?php endforeach ?>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				
+				</dd>
+			</dl>
+
 		</div>
 
 		<!-- Media management -->

@@ -285,7 +285,7 @@ ION.append({
 			id: 'w' + id,
 			content: wContent,
 			title: Lang.get('ionize_modal_' + type + '_title'),
-			addClass: type,
+			cssClass: type,
 			draggable: true,
 			y: 150,
 			padding: { top: 15, right: 15, bottom: 8, left: 15 }			

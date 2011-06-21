@@ -500,8 +500,7 @@
 		<query>INSERT INTO setting VALUES (31, 'date_format', '%Y.%m.%d', NULL);</query>
 		<query>INSERT INTO setting VALUES (32, 'force_lang_urls', '0', NULL);</query>
 		<query>INSERT INTO setting VALUES (33, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);</query>
-		
-
+		<query>INSERT INTO setting VALUES ('', 'article_allowed_tags', 'h2,h3,h4,h5,h6,em,img,iframe,table,object,thead,tbody,tfoot,tr,th,td,param,embed,map,p,a,ul,ol,li,br,b,strong', NULL);</query>
 	
 		<query>
 			INSERT INTO menu (id_menu, name, title) VALUES 

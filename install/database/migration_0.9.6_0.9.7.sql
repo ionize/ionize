@@ -132,6 +132,11 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', '');
 
 
+DELETE FROM setting WHERE name='article_allowed_tags';
+
+
+INSERT INTO setting VALUES ('', 'article_allowed_tags', 'h2,h3,h4,h5,h6,em,img,iframe,table,object,thead,tbody,tfoot,tr,th,td,param,embed,map,p,a,ul,ol,li,br,b,strong', NULL);
+
 
 ALTER TABLE `article` COMMENT = '0.9.7';
 ALTER TABLE `article_category` COMMENT = '0.9.7';

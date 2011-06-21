@@ -211,16 +211,19 @@ ION.append({
 					
 					// MUI Window creation
 					var options = ION.getFilemanagerWindowOptions();
-								
+					
 					options.content = filemanager.show();
 								
-					options.onResize = function() {	filemanager.fitSizes(); }
+					options.onResizeOnDrag = function() {	filemanager.fitSizes(); }
 					
 					// Set the MUI Window on the top of Tiny's modals
 					// tinyMCE modals are stored at 300000, Dialogs at 400000
 					MUI.Windows.indexLevel = 350000;
 					
-					new MUI.Window(options);
+					var w = new MUI.Window(options);
+					w.filemanager = filemanager;
+					
+					// new MUI.Window(options);
 				}
 				else
 				{
