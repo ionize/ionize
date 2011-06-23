@@ -138,7 +138,7 @@ class TagManager_Media extends TagManager
 						}
 					}
 				}
-				// Else, get all medias, just $num limited
+				// Else, get all medias, just $limit limited
 				else
 				{
 					foreach($filtered_medias as $index => $media)

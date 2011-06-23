@@ -32,11 +32,11 @@ class TagManager_Page extends TagManager
 		'last_item' => 			'tag_last_item',
 		
 		// Languages
-		'languages' =>					'tag_languages',
-		'languages:language' =>			'tag_languages_language',
-		'languages:name' =>				'tag_languages_name',
-		'languages:code' =>				'tag_languages_code',
-		'languages:active_class' =>		'tag_languages_active_class',
+		'languages' =>				'tag_languages',
+		'languages:language' =>		'tag_languages_language',
+		'languages:name' =>			'tag_languages_name',
+		'languages:code' =>			'tag_languages_code',
+		'languages:active_class' =>	'tag_languages_active_class',
 		'languages:url' =>			'tag_languages_url',
 		
 		// Page
@@ -1710,6 +1710,9 @@ class TagManager_Page extends TagManager
 		// paragraph limit ?
 		$paragraph = (isset($tag->attr['paragraph'] )) ? self::get_attribute($tag, 'paragraph') : FALSE ;
 
+		// auto_link
+		$auto_link = (isset($tag->attr['auto_link']) && strtolower($tag->attr['auto_link'] == 'false') ) ? FALSE : TRUE ;
+
 		// view
 		$view = (isset($tag->attr['view']) ) ? $tag->attr['view'] : FALSE;
 
@@ -1754,7 +1757,9 @@ class TagManager_Page extends TagManager
 					$articles[$key]['content'] = tag_limiter($article['content'], 'p', $paragraph);
 
 				// Autolink the content
-				$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
+				if ($auto_link)
+					$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
+				
 				
 				// Article's index
 				$articles[$key]['index'] = $index++;
