@@ -161,14 +161,44 @@ Date.extend({
 
 String.extend({
 	
-	htmlspecialchars_decode:function(text)
+	htmlspecialchars_decode: function(text)
 	{
 		var tmp = new Element('span',{ 'html':text });
 		var ret_val = tmp.get('text');
 		delete tmp;
 		return ret_val;
+	},
+
+	strip_tags: function(html)
+	{
+		if(arguments.length < 3)
+		{
+			html = html.replace(/<\/?(?!\!)[^>]*>/gi, '');
+		} 
+		else
+		{
+			var allowed = arguments[1];
+			var specified = eval("["+arguments[2]+"]");
+			if(allowed)
+			{
+				var regex='</?(?!(' + specified.join('|') + '))\b[^>]*>';
+				html = html.replace(new RegExp(regex, 'gi'), '');
+			}
+			else
+			{
+				var regex='</?(' + specified.join('|') + ')\b[^>]*>';
+				html = html.replace(new RegExp(regex, 'gi'), '');
+			}
+		}
+
+		var clean_string = html;
+		return clean_string;
 	}
+
 });
+
+
+
 
 
 FocusTracker = {

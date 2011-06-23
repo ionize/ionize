@@ -41,7 +41,7 @@ class Page extends MY_admin
 	public function __construct()
 	{
 		parent::__construct();
-
+		
 		// Models
 		$this->load->model('menu_model', '', true);
 		$this->load->model('page_model', '', true);
@@ -254,7 +254,7 @@ class Page extends MY_admin
 			{
 				// Clear the cache
 				Cache()->clear_cache();
-			
+				
 				// Prepare data before save
 				$this->_prepare_data();
 	
@@ -287,14 +287,10 @@ class Page extends MY_admin
 				$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get($saved_id));
 
 				$page['menu'] = $this->menu_model->get($page['id_menu']);
-/*				
-				$this->data = array_merge($this->lang_data[Settings::get_lang('default')], $this->data);
-				$this->data['title'] = htmlspecialchars_decode($this->data['title'], ENT_QUOTES);
-				$this->data['id_page'] = $this->id;
-				$this->data['element'] = 'page';
-				$this->data['menu'] = $menu;
-				$this->data['ordering'] = $this->input->post('ordering');
-*/				
+
+				// Remove HTML tags from returned array
+				strip_html($page);
+
 				if ( empty($id))
 				{
 					// Used by JS Tree to detect if page in inserted in tree or not
@@ -712,9 +708,9 @@ class Page extends MY_admin
 		// Set the data to the posted value.
 		foreach ($fields as $field)
 		{
-			if ( ! in_array($field, $this->no_htmlspecialchars))
-				$this->data[$field] = htmlspecialchars($this->input->post($field), ENT_QUOTES, 'utf-8');
-			else
+//			if ( ! in_array($field, $this->no_htmlspecialchars))
+//				$this->data[$field] = htmlspecialchars($this->input->post($field), ENT_QUOTES, 'utf-8');
+//			else
 				$this->data[$field] = $this->input->post($field);
 		}
 
@@ -779,8 +775,8 @@ class Page extends MY_admin
 					$content = $this->input->post($field.'_'.$language['lang']);
 					
 					// Convert HTML special char only on other fields than these defined in $no_htmlspecialchars
-					if ( ! in_array($field, $this->no_htmlspecialchars))
-						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
+//					if ( ! in_array($field, $this->no_htmlspecialchars))
+//						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
 						
 					$this->lang_data[$language['lang']][$field] = $content;
 				}

@@ -1586,7 +1586,7 @@ class TagManager_Page extends TagManager
 
 	// ------------------------------------------------------------------------
 	
-
+	
 	public static function tag_page_meta_title($tag)
 	{
 		// Tag cache
@@ -1610,23 +1610,26 @@ class TagManager_Page extends TagManager
 			);
 
 			if ( ! empty ($article['meta_title']))
-				$meta_title = self::wrap($tag, $article['meta_title']);
+				$meta_title = $article['meta_title'];
 		}
 		
 		if ( $meta_title == '' && ! empty($tag->locals->page['meta_title']) )
 		{
-			$meta_title = self::wrap($tag, $tag->locals->page['meta_title']);
+			$meta_title = $tag->locals->page['meta_title'];
 		}
 		if ( $meta_title == '' && ! empty($tag->locals->page['title']) )
 		{
-			$meta_title = self::wrap($tag, $tag->locals->page['title']);		
+			$meta_title = $tag->locals->page['title'];		
 		}
-
+		
+		// Remove HTML tags from meta title
+		$meta_title = strip_tags($meta_title);
+		
 		// Tag cache
-		self::set_cache($tag, $meta_title);
+		self::set_cache($tag, self::wrap($tag, $meta_title));
 		
 		return $meta_title;
-	}		
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -1874,7 +1877,7 @@ class TagManager_Page extends TagManager
 	public static function tag_article_title($tag) { return self::wrap($tag, $tag->locals->article['title']); }
 	public static function tag_article_subtitle($tag) { return self::wrap($tag, $tag->locals->article['subtitle']); }
 	public static function tag_article_date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->article['date'])); }
-	public static function tag_article_meta_title($tag) { return self::wrap($tag, $tag->locals->article['meta_title']); }
+	public static function tag_article_meta_title($tag) { return self::wrap($tag, strip_tags($tag->locals->article['meta_title'])); }
 	public static function tag_article_active_class($tag) { return self::wrap($tag, $tag->locals->article['active_class']); }
 	
 

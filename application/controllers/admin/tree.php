@@ -53,17 +53,12 @@ class Tree extends MY_Admin {
 	{
 		$nb_elements = $this->page_model->count_all() + $this->article_model->count_all();
 		
-		// Activate only if nb_elements > x
-//		if ($nb_elements > config_item(''))
-		
-		
 		// Menus : All menus
 		$menus = $this->menu_model->get_list(array('order_by'=>'ordering ASC'));
 
 		$this->template['menus'] = $menus;
 		
 		$this->output('tree');
-
 	}
 	
 	

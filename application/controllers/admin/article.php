@@ -337,9 +337,6 @@ class Article extends MY_admin
 			// else, save...
 			else
 			{
-				// Clear the cache
-//				Cache()->clear_cache();
-
 				// Prepare data before saving
 				$this->_prepare_data();
 
@@ -384,6 +381,11 @@ class Article extends MY_admin
 				// Get the context info
 				$context = $this->article_model->get_context($this->id, $this->data['id_page'], Settings::get_lang('default'));
 				$this->data = array_merge($this->data, $context);
+				
+				
+				// Remove HTML tags from returned array
+				strip_html($this->data);
+				
 				
 				// Insert Case
 				if ( empty($id_article) )
@@ -606,6 +608,10 @@ class Article extends MY_admin
 
 				$this->update_contexts($id_article);
 			}
+			else
+			{
+				$this->response();
+			}
 		}
 	}
 	
@@ -660,7 +666,9 @@ class Article extends MY_admin
 	function update_contexts($id_article)
 	{
 		$contexts = $this->article_model->get_lang_contexts($id_article, Settings::get_lang('default'));
-
+		
+		strip_html($contexts);
+		
 		$this->callback[] = array (
 			'fn' => 'ION.updateArticleContext',
 			'args' => array($contexts)
@@ -1454,21 +1462,18 @@ class Article extends MY_admin
 				if ( $field != 'url' && $this->input->post($field.'_'.$language['lang']) !== false)
 				{
 					// Avoid or not security XSS filter
-					if ( ! in_array($field, $this->no_xss_filter))
+//					if ( ! in_array($field, $this->no_xss_filter))
 						$content = $this->input->post($field.'_'.$language['lang']);
-					else
-					{
-						$content = stripslashes($_REQUEST[$field.'_'.$language['lang']]);
-					}
+//					else
+//						$content = stripslashes($_REQUEST[$field.'_'.$language['lang']]);
 
 					// Convert HTML special char only on other fields than these defined in $no_htmlspecialchars
-					if ( ! in_array($field, $this->no_htmlspecialchars))
-						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
+//					if ( ! in_array($field, $this->no_htmlspecialchars))
+//						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
 					
 					// Allowed tags filter
 					$allowed_tags = explode(',', Settings::get('article_allowed_tags'));
 					$allowed_tags = '<' . implode('>,<', $allowed_tags ) . '>';
-//					trace($allowed_tags);
 					$content = strip_tags($content, $allowed_tags);
 
 						

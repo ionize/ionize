@@ -230,7 +230,7 @@ class TagManager
 			}
 			else
 			{
-				log_message('warning', 'Cannot find tag definitions for module "'.self::$folders[$module].'".');
+				log_message('warning', 'Cannot find tag definitions for module "'.self::$module_folders[$module].'".');
 			}
 		}
 	}

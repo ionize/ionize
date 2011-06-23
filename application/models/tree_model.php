@@ -63,7 +63,15 @@ class Tree_model extends CI_Model
 		$query = $this->db->get('page');
 
 		if($query->num_rows() > 0)
+		{
 			$data = $query->result_array();
+			
+			// Some cleaning for tree
+			foreach($data as &$p)
+			{
+				$p['title'] = strip_tags(html_entity_decode($p['title']));
+			}			
+		}
 
 		return $data;
 	}
@@ -102,7 +110,15 @@ class Tree_model extends CI_Model
 			$query = $this->db->get('article');
 
 			if($query->num_rows() > 0)
+			{
 				$data = $query->result_array();
+
+				// Some cleaning for tree
+				foreach($data as &$a)
+				{
+					$a['title'] = strip_tags(html_entity_decode($a['title']));
+				}
+			}
 		}
 		return $data;
 	}

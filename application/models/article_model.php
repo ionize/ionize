@@ -646,12 +646,15 @@ class Article_model extends Base_model
 		$link_name = 	($article_lang['title'] != '') ? $article_lang['title'] : $article['name'];
 		
 		// Update of pages which link to this article
-		$sql = "update page as p
-				set p.link = '".$link_name."'
-				where p.link_type = 'article'
-				and p.link_id = " . $rel ;
-		$this->db->query($sql);
-	
+		$this->db->set('link', $link_name);
+		$this->db->where(
+			array(
+				'link_type' => 'article',
+				'link_id' => $rel
+			)
+		);
+		$this->db->update('page');
+
 		// Update of pages (lang table) wich links to this article
 		$sql = "update page_lang as pl
 					inner join page as p on p.id_page = pl.id_page
@@ -664,12 +667,15 @@ class Article_model extends Base_model
 		$this->db->query($sql);
 		
 		// Update of articles which link to this article
-		$sql = "update page_article as a1
-				set a1.link = '".$link_name."'
-				where a1.link_type = 'article'
-				and a1.link_id = " . $rel ;		
-		$this->db->query($sql);
-		
+		$this->db->set('link', $link_name);
+		$this->db->where(
+			array(
+				'link_type' => 'article',
+				'link_id' => $rel
+			)
+		);
+		$this->db->update('page_article');
+
 		// Update of articles (lang table) which link to this article
 		/*
 		$sql = "update article_lang as al

@@ -62,7 +62,7 @@ class Simpleform_Action
 		 * Here, it sends a mail with the form data.
 		 *
 		 */
-		if ($ci->input->post('form_name') !== FALSE)
+		if ($ci->input->post('form_name') !== FALSE && config_item('simpleform_' . $ci->input->post('form_name')))
 		{
 			$form_name = $ci->input->post('form_name');
 		

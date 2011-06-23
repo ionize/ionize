@@ -501,8 +501,7 @@ class MY_Admin extends MY_Controller
         parent::__construct();
 
 		$this->load->helper('module_helper');	
-
-
+		
 		// Redirect the not authorized user to the login panel. See /application/config/connect.php
 		Connect()->restrict_type_redirect = array(
 					'uri' => config_item('admin_url').'/user/login',
@@ -512,10 +511,9 @@ class MY_Admin extends MY_Controller
 
 //	$this->output->enable_profiler(true);
 
-		// PHP standard session is mandatory for MCE FileManager authentication
+		// PHP standard session is mandatory for FileManager authentication
 		// and other external lib
 		session_start();
-//		$_SESSION['isLoggedIn'] = true;
 
 		
 		// Librairies

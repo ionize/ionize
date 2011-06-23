@@ -169,11 +169,14 @@ class Page_model extends Base_model
 		$link_name = 	($page_lang['title'] != '') ? $page_lang['title'] : $page['name'];
 
 		// Update of pages wich links to this page
-		$sql = "update page as p1
-				set p1.link = '".$link_name."'
-				where p1.link_type = 'page'
-				and p1.link_id = " . $id_page;
-		$this->db->query($sql);
+		$this->db->set('link', $link_name);
+		$this->db->where(
+			array(
+				'link_type' => 'page',
+				'link_id' => $id_page
+			)
+		);
+		$this->db->update('page');
 	
 		// Update of pages (lang table) wich links to this page
 		$sql = "update page_lang as pl
@@ -187,13 +190,15 @@ class Page_model extends Base_model
 		$this->db->query($sql);
 	
 		// Update of articles which link to this page
-		$sql = "update page_article as a
-				set a.link = '".$link_name."'
-				where a.link_type = 'page'
-				and a.link_id = " . $id_page;
+		$this->db->set('link', $link_name);
+		$this->db->where(
+			array(
+				'link_type' => 'page',
+				'link_id' => $id_page
+			)
+		);
+		$this->db->update('page_article');
 		
-		$this->db->query($sql);
-
 
 		// Update of articles (lang table) which link to this page
 		/*
