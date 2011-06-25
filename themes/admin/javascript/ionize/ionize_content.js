@@ -427,8 +427,8 @@ ION.append({
 	 * Adds drag'n'drop functionnality to one element
 	 *
 	 * @param	HTML Dom Element	Element to add the drag on.
-	 * @param	String				Class, Array of classes which can drop the element.
-	 * @param	String				Callback function object.
+	 * @param	String				CSS classes which can drop the element, comma separated names.
+	 * @param	String				Callback function(s), comma separated names.
 	 *
 	 * @usage
 	 * 			ION.addDragDrop (item, '.dropcreators', 
@@ -438,7 +438,7 @@ ION.append({
 	 *			});
 	 *
 	 */
-	addDragDrop: function(el, droppables, onDrop)
+	addDragDrop: function(el, droppables, dropCallbacks)
 	{
 		el.makeCloneDraggable(
 		{
@@ -448,6 +448,7 @@ ION.append({
 			revert: true,
 			classe: 'ondrag',
 			container: $('desktop'),
+			dropCallbacks: dropCallbacks,
 			
 			onSnap: function(el) { el.addClass('move'); },
 			
@@ -459,45 +460,22 @@ ION.append({
 			
 			onDrop: function(element, droppable, event)
 			{
+console.log(this.options.dropCallbacks);
 				if (droppable)
 				{
-					/*
-					 * TODO : Allow multiple callbacks on drop
-					 *
-					 *
-					onDrops = new Array();
-					callbacks =  new Array();
-					
-					// Be sure onDrops will be an array
-					if (typeOf(onDrop) == 'array') {
-						onDrops = onDrop;
-					}
-					else {
-						onDrops.push(onDrop)	
-					}
-					
-					onDrops.each(function(item, idx)
-					{
-						callbacks.push({'fn':item, 'args':[element, droppable, event] });
-					}
-					*/
-					
-					// One callback : works great.
-					// ION.execCallbacks({'fn':onDrop, 'args':[element, droppable, event] });
-					
-					// If onDrop is a string, it can only be a func name : execute it and sent him the standard args
-					
 					/* For each droppable class, a function need to be executed
 					 * ION.addDragDrop(
 					 *		el, 
-					 *		'.drop-class-1, .drop-class-2',		// this.options.droppables, array
-					 *		'drop-func-1, drop-func-2'			// onDrop, string of functions names
+					 *		'.drop-class-1, .drop-class-2',		// this.options.droppables, string of comma separated classes names
+					 *		'drop-func-1, drop-func-2'			// this.options.dropCallbacks, string of functions names
 					 * );
 					 *
 					 */
-					if (onDrop.contains(',') && this.dropClasses.length > 1)
+					var dropCB = this.options.dropCallbacks;
+					
+					if (dropCB.contains(',') && this.dropClasses.length > 1)
 					{
-						var onDrops = (onDrop).replace(' ','').split(',');
+						var onDrops = (dropCB).replace(' ','').split(',');
 						var index = false;
 						
 						// Search the method to execute.
@@ -508,17 +486,16 @@ ION.append({
 						});
 						if (typeOf(onDrops[index]) != 'null')
 						{
-//	alert(typeOf(element));
 							ION.execCallbacks({'fn':onDrops[index], 'args':[element, droppable, event] });
 						}
 					}
-					else if (typeOf(onDrop) == 'string')
+					else if (typeOf(dropCB) == 'string')
 					{
-						ION.execCallbacks({'fn':onDrop, 'args':[element, droppable, event] });
+						ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
 					}
 					else
 					{
-						ION.execCallbacks(onDrop);
+						ION.execCallbacks(dropCB);
 					}
 
 					droppable.removeClass('onenter');

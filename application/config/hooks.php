@@ -22,6 +22,25 @@ $hook['post_controller_constructor'][] = array (
 	'filename'	=> 'Connect.php',
 	'filepath'	=> 'libraries'
 );
+
+/*
+$hook['display_override'][] = array(
+	'class' => '',
+	'function' => 'remove_comments',
+	'filename' => 'remove_comments.php',
+	'filepath' => 'hooks'
+	);
+*/
+
+
+
+/*
+$hook['display_override'][] = array(
+	'class' => '',
+	'function' => 'compress',
+	'filename' => 'compress.php',
+	'filepath' => 'hooks'
+	);
 /*
 $hook['post_controller_constructor'][] = array(
 	'class'    => 'Cache',

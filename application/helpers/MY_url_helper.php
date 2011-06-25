@@ -27,6 +27,27 @@
 
 // ------------------------------------------------------------------------
 
+
+/*
+ * This function checks if SSL is on for the current request,
+ * and if it is, it makes a secure URL. This can be used to 
+ * load resources like stylesheets, images, or javascript
+ * in a way that won't cause a partially secure warning in the browser.
+ *
+ */
+function if_secure_base_url()
+{
+	$CI = get_instance();
+	$url = $CI->config->slash_item('base_url');
+	if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+	{
+		$url = substr($url, 0, 4).'s'.substr($url, 4);
+	}
+	return $url;
+}
+
+// ------------------------------------------------------------------------
+
 /**
  * Admin URL
  *

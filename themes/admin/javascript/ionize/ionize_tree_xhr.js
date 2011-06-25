@@ -23,6 +23,8 @@ ION.TreeXhr = new Class({
 	{
 //		this.setOptions(options);
 		this.container = $(container);
+		this.container.store('tree', this);
+		
 		this.id_menu = id_menu;
 		
 		this.mainpanel = ION.mainpanel;
@@ -88,9 +90,8 @@ ION.TreeXhr = new Class({
 				
 				var parentContainer = self.getParentContainer(id_parent);
 
-			self.itemManagers['page'][pageContainer.id] = new ION.ItemManager({'container': pageContainer.id, 'element':'page', 'sortable':true });
-			self.itemManagers['article'][articleContainer.id] = new ION.ArticleManager({ 'container': articleContainer.id, 'id_parent': id_parent});
-
+				self.itemManagers['page'][pageContainer.id] = new ION.ItemManager({'container': pageContainer.id, 'element':'page', 'sortable':true });
+				self.itemManagers['article'][articleContainer.id] = new ION.ArticleManager({ 'container': articleContainer.id, 'id_parent': id_parent});
 
 				// Stores that the content is loaded
 				parentContainer.store('loaded', true);
@@ -98,10 +99,13 @@ ION.TreeXhr = new Class({
 				// Opens the folder
 				if (id_parent != 0)
 					self.updateOpenClose(parentContainer);
+				
+				// Fires the event
+				self.fireEvent('get', self);
 			}
 		}).send();
 	},
-
+	
 
 	/**
 	 * Inject or return an existing container for elements (page or articles)

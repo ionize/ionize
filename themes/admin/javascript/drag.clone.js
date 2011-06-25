@@ -70,19 +70,54 @@ Drag.Clone = new Class({
 	initialize: function(element, options)
 	{
 		this.setOptions(options);
-		this.idle = true;
-		
-		if (this.options.revert) this.effect = new Fx.Morph(null, Object.merge({},{duration: 250, link: 'cancel'}, this.options.revert));
-		
-		(this.options.handle ? element.getElement(this.options.handle) || element : element).addEvent('mousedown', function(event) {
-			this.start(event, element);
-		}.bind(this));
-		
-		this.dropClasses = this.options.droppables;
-		
-		if (typeOf(this.dropClasses) == 'string')
+
+		if ( ! element.retrieve('DragClone'))
 		{
-			this.dropClasses = (this.dropClasses).split(',');
+			this.idle = true;
+			
+			if (this.options.revert) this.effect = new Fx.Morph(null, Object.merge({},{duration: 250, link: 'cancel'}, this.options.revert));
+		
+			(this.options.handle ? element.getElement(this.options.handle) || element : element).addEvent('mousedown', function(event)
+			{
+				this.start(event, element);
+			}.bind(this));
+		
+			this.dropClasses = this.options.droppables;
+			if (typeOf(this.dropClasses) == 'string')
+			{
+				this.dropClasses = (this.dropClasses).split(',');
+			}
+			
+			element.store('DragClone', this);
+		}
+		else
+		{
+			var dc = element.retrieve('DragClone');
+			
+			var dropClasses = this.options.droppables;
+			if (typeOf(dropClasses) == 'string')
+			{
+				dropClasses = (dropClasses).split(',');
+			}
+			
+			dropClasses.each(function(item)
+			{
+				if ((dc.dropClasses).contains(item) == false)
+				{
+					dc.options.droppables = dc.options.droppables + ',' + item;
+					(dc.dropClasses).push(item);
+				}
+			});
+			
+			var dropCallbacks = (this.options.dropCallbacks).split(',');
+			var dcDropCallbacks = (dc.options.dropCallbacks).split(',');
+			dropCallbacks.each(function(item)
+			{
+				if (dcDropCallbacks.contains(item) == false)
+				{
+					dc.options.dropCallbacks = dc.options.dropCallbacks + ',' + item
+				}
+			});
 		}
 	},
 
