@@ -204,7 +204,7 @@
 	{
 		static $_config;
 
-		if (isset($_config))
+		if (isset($_config) )
 		{
 			return $_config[0];
 		}
@@ -256,8 +256,8 @@
 	{
 		static $_config_item = array();
 
-		if ( ! isset($_config_item[$item]))
-		{
+//		if ( ! isset($_config_item[$item]))
+//		{
 			$config =& get_config();
 
 			if ( ! isset($config[$item]))
@@ -265,7 +265,7 @@
 				return FALSE;
 			}
 			$_config_item[$item] = $config[$item];
-		}
+//		}
 
 		return $_config_item[$item];
 	}

@@ -671,16 +671,17 @@ class TagManager
 			Settings::set_all_languages_online();
 		}
 
-		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'true' OR $force_lang === true)
+		if (isset($tag->attr['lang']) && strtolower($tag->attr['lang']) == 'true' OR $force_lang === true)
 		{
 			if (count(Settings::get_online_languages()) > 1 )
 			{
 				// forces the lang code to be in the URL, for each language
-				if ($force_lang === true)
-				{
-					return base_url() . Settings::get_lang() .'/';
-				}
+//				if ($force_lang === true)
+//				{
+				return base_url() . Settings::get_lang() .'/';
+//				}
 				// More intelligent : Detects if the current lang is the default one and don't return the lang code this lang code
+/*
 				else
 				{
 					if (Settings::get_lang() != Settings::get_lang('default'))
@@ -688,6 +689,7 @@ class TagManager
 						return base_url() . Settings::get_lang() .'/';
 					}
 				}
+*/
 			}
 		}
 
@@ -1054,10 +1056,14 @@ class TagManager
 	public function tag_config($tag)
 	{
 		// Config item asked
-		$item = (isset($tag->attr['item'] )) ? $tag->attr['item'] : false ;
+		$item = (isset($tag->attr['item'] )) ? $tag->attr['item'] : FALSE ;
+		$is_like = (isset($tag->attr['is_like'] )) ? $tag->attr['is_like'] : FALSE ;
 	
 		if ($item !== false)
 		{
+			if ($is_like !== FALSE && config_item($item) == $is_like)
+				return $tag->expand();
+			
 			return config_item($item);
 		}
 		return;

@@ -201,7 +201,7 @@ a.ondrag.enter {
 }
 .onenter {
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
-	background-color: #df8;
+	background-color: #df8 !important;
 }
 /* Cursors */
 .pointer { cursor: pointer;}
@@ -454,6 +454,16 @@ table.list {
 	border-collapse:collapse;
 	margin:10px 0;
 	width:100%;
+}
+table.list.noborder tbody tr,
+table.list.noborder tbody td{
+	border:none;
+}
+table.list tbody tr.border.top{
+	border-top:1px solid #eee;
+}
+table.list tbody tr.border.bottom{
+	border-bottom:1px solid #eee;
 }
 table.list th {
 	color:#36607D;
