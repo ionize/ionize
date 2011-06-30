@@ -385,7 +385,15 @@ class TagManager
 	}
 
 
-
+	/**
+	 * Adds a var to the global vars array
+	 * Useful to send a variable to a tag.
+	 * 
+	 */
+	public static function set_global($name, $value)
+	{
+		self::$context->globals->vars[$name] = $value;
+	}
 
 	// ------------------------------------------------------------------------
 
