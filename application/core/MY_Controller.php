@@ -214,6 +214,7 @@ class Base_Controller extends MY_Controller
 		// Unlock filtering if admin or editor users is logged in
 //		$this->load->library('connect');
 
+
 		$this->connect = Connect::get_instance();
 
 		// Libraries
@@ -221,7 +222,7 @@ class Base_Controller extends MY_Controller
 		$this->load->library('widget');
 
 		// FTL parser
-		require_once APPPATH.'libraries/ftl/parser.php';
+//		require_once APPPATH.'libraries/ftl/parser.php';
 
 		// Models
 		$this->load->model('structure_model', '', true);
@@ -387,9 +388,14 @@ class Base_Controller extends MY_Controller
 				}
 			}
 		}
+		
+		
+		require_once APPPATH.'libraries/Tagmanager.php';
+
+		
 	}
 
-
+/*
 	protected function parse($string, $context, $tag_prefix = 'ion')
 	{
 		$p = new FTL_Parser($context, array('tag_prefix' => $tag_prefix));
@@ -426,7 +432,7 @@ class Base_Controller extends MY_Controller
 			/*
 			 * Write the full page cache file
 			 *
-			 */
+			 *
 		}
 		
 		
@@ -436,6 +442,7 @@ class Base_Controller extends MY_Controller
 		else
 			$this->output->set_output($parsed);
 	}
+*/
 }
 
 

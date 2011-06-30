@@ -6,6 +6,10 @@ $modules = array(
 $aliases = array(
 	);
 
+$disable_controller = array(
+
+	);
+
 
 
 /* End of file modules.php */

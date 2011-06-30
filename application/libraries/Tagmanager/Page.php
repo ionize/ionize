@@ -16,11 +16,18 @@
  *
  */
 // require_once APPPATH.'libraries/Tagmanager/Media.php';
+// require_once APPPATH.'libraries/Tagmanager.php';
 
 class TagManager_Page extends TagManager
 {	
 	protected static $_inited = false;
-
+	
+	protected static $pagination_uri = '';
+	
+	protected static $user = FALSE;
+	
+	protected static $uri_segments = array();
+	
 	public static $tag_definitions = array
 	(
 		// Page
@@ -98,8 +105,11 @@ class TagManager_Page extends TagManager
 	 * 
 	 * 
 	 */
-	public function __construct($con)
+//	public function __construct($con)
+	public static function init()
 	{
+ 		//parent::init('Page');
+		
 		self::$ci =& get_instance(); 
 
 		// Article model
@@ -108,6 +118,10 @@ class TagManager_Page extends TagManager
 
 		// Helpers
 		self::$ci->load->helper('text');
+
+		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
+		self::$uri_segments = explode('/', $uri);
+
 
 		/* Add all pages to the context
 		 *
@@ -118,6 +132,9 @@ class TagManager_Page extends TagManager
 		 * This adds the group ID to the childrens pages of a protected page
 		 * If you don't want this, just uncomment this line.
 		 */
+		if (Connect()->logged_in())
+			self::$user = Connect()->get_current_user();
+		 
 		self::$ci->page_model->spread_authorizations($pages);
 
 		// Filter pages regarding the authorizations
@@ -125,43 +142,55 @@ class TagManager_Page extends TagManager
 
 
 		// Add pages to the context
-		if ( empty($con->globals->pages))
+		if ( empty(self::$context->globals->pages))
 		{
-			$con->globals->pages = $pages;
+			self::$context->globals->pages = $pages;
 			
 			// Set all abolute URLs one time, for perf.
-			$this->init_absolute_urls($con);
+			self::init_absolute_urls();
 		}
 		
-		// Pagination URI
-		
-		$uri_config = self::$ci->config->item('special_uri');
-		
-		// Get the pagination URI
-		$uri_config = array_flip($uri_config);
-		$this->pagination_uri = $uri_config['pagination'];
+// Pagination URI
+//		$uri_config = self::$ci->config->item('special_uri');
+//		$uri_config = array_flip($uri_config);
+//		self::pagination_uri = $uri_config['pagination'];
 	
 
-		$this->add_globals($con);
-		$this->add_tags($con);
-		$this->add_module_tags($con);
+		self::add_globals();
+
+		// Current page
+		$page = self::$context->globals->page;
+		if ( ! empty($page['link']))
+		{
+			// Online languages are defined by MY_Controller
+			$lang = (count(Settings::get_online_languages()) > 1 ) ? Settings::get_lang('current').'/' : '';
+
+			$domain = (!empty($page['link_type'])  && $page['link_type'] == 'external') ? '' : base_url();
+
+			redirect($domain.$lang.$page['link']);
+		}
+		
+		self::$view = ($page['view'] != false) ? $page['view'] : Theme::get_default_view('page');
+		
+
+		self::render();
 	}
 	
 
 	// ------------------------------------------------------------------------
 
 	
-	public function add_globals(FTL_Context $con)
+	public function add_globals()
 	{
-		parent::add_globals($con);
+		parent::add_globals();
 
 		// Get current asked page
-		$con->globals->page = self::get_current_page($con, self::$ci->uri->segment(3));
+		self::$context->globals->page = self::get_current_page(self::$ci->uri->segment(3));
 
 		// Show 404 if no page
-		if(empty($con->globals->page))
+		if(empty(self::$context->globals->page))
 		{
-			self::set_404($con);
+			self::set_404();
 		}
 	}
 
@@ -173,7 +202,7 @@ class TagManager_Page extends TagManager
 	 * Set base data for a 404 page
 	 *
 	 */
-	public function set_404(&$con)
+	public function set_404()
 	{	
 		self::$ci->output->set_header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 
@@ -186,7 +215,7 @@ class TagManager_Page extends TagManager
 			die();
 		}
 
-		$con->globals->page = self::get_current_page($con, '404');
+		self::$context->globals->page = self::get_current_page('404');
 	}	
 
 
@@ -199,7 +228,7 @@ class TagManager_Page extends TagManager
 	 */
 	public function set_page_data($data)
 	{
-		$con->globals->page = array(
+		self::$context->globals->page = array(
 			'id_page' => ( ! empty($data['id_page'])) ? $data['id_page'] : 0,
 			'view' => ( ! empty($data['view'])) ? $data['view'] : '',
 			'title' => ( ! empty($data['title'])) ? $data['title'] : '',
@@ -218,9 +247,9 @@ class TagManager_Page extends TagManager
 	 *
 	 *
 	 */
-	public function init_absolute_urls(&$con)
+	public function init_absolute_urls()
 	{
-		foreach ($con->globals->pages as &$page)
+		foreach (self::$context->globals->pages as &$page)
 		{
 			// Set the page complete URL
 			$page['absolute_url'] = '';
@@ -252,7 +281,7 @@ class TagManager_Page extends TagManager
 							// Get the article's parent page
 							$page['absolute_url'] = '';
 							
-							foreach($con->globals->pages as $p)
+							foreach(self::$context->globals->pages as $p)
 							{
 								if ($p['id_page'] == $target_article['id_page'])
 									$page['absolute_url'] = $p['url'] . '/' . $target_article['url'];
@@ -270,7 +299,7 @@ class TagManager_Page extends TagManager
 						// }
 						$page['absolute_url'] = '';
 						
-						foreach($con->globals->pages as $p)
+						foreach(self::$context->globals->pages as $p)
 						{
 							if ($p['id_page'] == $page['link_id'])
 								$page['absolute_url'] = $p['url'];
@@ -480,9 +509,10 @@ class TagManager_Page extends TagManager
 
 		// Page from locals
 		$pages =& $tag->locals->pages;
-		
+
+
 		// Get the potential special URI
-		$special_uri = (isset(self::$ci->uri_segment[1])) ? self::$ci->uri_segment[1] : FALSE;
+		$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
 
 		// Use Pagination
 		// The "articles" tag must explicitely indicates it want to use pagination. 
@@ -689,14 +719,14 @@ class TagManager_Page extends TagManager
 	{
 		$page = & $tag->locals->page;
 
-		$start_index = array_pop(array_slice(self::$ci->uri_segment, -1));
+		$start_index = array_pop(array_slice(self::$uri_segmentss, -1));
 
 		// Load CI Pagination Lib
 		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
 	
 		// Number of displayed articles / page
 		// If no pagination : redirect to the current page
-		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect(self::$ci->uri_segment[0]);
+		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect(self::$uri_segmentss[0]);
 
 		// from categories ? 
 		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
@@ -744,7 +774,7 @@ class TagManager_Page extends TagManager
 	/**
 	 * Get articles linked to a category
 	 * Called if special URI "category" is found. See tag_articles()
-	 * Uses the self::$ci->uri_segment var to determine the category name
+	 * Uses the self::$uri_segments var to determine the category name
 	 *
 	 * @param	array	Current page array
 	 * @param	Array	SQL Condition array
@@ -759,11 +789,11 @@ class TagManager_Page extends TagManager
 		$page = & $tag->locals->page;
 
 		// Get the start index for the SQL limit query param : last part of the URL
-		$start_index = array_pop(array_slice(self::$ci->uri_segment, -1));
+		$start_index = array_pop(array_slice(self::$uri_segments, -1));
 
 
 		// If category name exists
-		if (isset(self::$ci->uri_segment[2]))
+		if (isset(self::$uri_segments[2]))
 		{
 			// Limit
 			$where['offset'] = $start_index;
@@ -773,7 +803,7 @@ class TagManager_Page extends TagManager
 			$articles = self::$ci->article_model->get_from_category
 			(
 				$where, 
-				self::$ci->uri_segment[2], 
+				self::$uri_segments[2], 
 				Settings::get_lang(),
 				$filter
 			);
@@ -789,7 +819,7 @@ class TagManager_Page extends TagManager
 	/**
 	 * Get articles linked from a period
 	 * Called if special URI "archives" is found. See tag_articles()
-	 * Uses the self::$ci->uri_segment var to determine the category name
+	 * Uses the self::$uri_segments var to determine the category name
 	 *
 	 * @param	Array	Current page array
 	 * @param	Array	SQL Condition array
@@ -805,15 +835,15 @@ class TagManager_Page extends TagManager
 		$start_index = 0;
 
 		// Get the start index for the SQL limit query param : last part of the URL only if the 4th URI segmenet (pagination) is set
-		if (isset(self::$ci->uri_segment[4]))
-			$start_index = array_pop(array_slice(self::$ci->uri_segment, -1));
+		if (isset(self::$uri_segments[4]))
+			$start_index = array_pop(array_slice(self::$uri_segments, -1));
 
 		// If year is set
-		if (isset(self::$ci->uri_segment[2]))
+		if (isset(self::$uri_segments[2]))
 		{
-			$year = self::$ci->uri_segment[2];
+			$year = self::$uri_segments[2];
 		
-			$month = isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : NULL;
+			$month = isset(self::$uri_segments[3]) ? self::$uri_segments[3] : NULL;
 			
 			$where['offset'] = $start_index;
 			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
@@ -852,7 +882,7 @@ class TagManager_Page extends TagManager
 	
 		$articles = array();
 		
-		$name = array_pop(array_slice(self::$ci->uri_segment, -1));
+		$name = array_pop(array_slice(self::$uri_segments, -1));
 
 		$where = array(
 			'article_lang.url' => $name,
@@ -885,7 +915,7 @@ class TagManager_Page extends TagManager
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
 		
 		// Asked category
-		$category_uri = array_pop(array_slice(self::$ci->uri_segment, -1));
+		$category_uri = array_pop(array_slice(self::$uri_segments, -1));
 	
 		// Get categories from this page articles
 		$categories = self::$ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
@@ -1085,7 +1115,7 @@ class TagManager_Page extends TagManager
 			$nb = 0;
 		
 			// Check if articles comes from a special URI result
-			$special_uri = isset(self::$ci->uri_segment[1]) ? self::$ci->uri_segment[1] : FALSE;
+			$special_uri = isset(self::$uri_segments[1]) ? self::$uri_segments[1] : FALSE;
 			$uri_config = self::$ci->config->item('special_uri');
 	
 			// Special URI
@@ -1174,7 +1204,7 @@ class TagManager_Page extends TagManager
 	{
 		$nb = 0;
 		
-		$category = isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : NULL;
+		$category = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : NULL;
 		
 		if ( ! is_null($category))
 		{
@@ -1204,8 +1234,8 @@ class TagManager_Page extends TagManager
 	{
 		$nb = 0;
 		
-		$year = 	isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : NULL;
-		$month = 	isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : NULL;
+		$year = 	isset(self::$uri_segments[2]) ? self::$uri_segments[2] : NULL;
+		$month = 	isset(self::$uri_segments[3]) ? self::$uri_segments[3] : NULL;
 		
 		if ( ! is_null($year))
 		{
@@ -1233,8 +1263,8 @@ class TagManager_Page extends TagManager
 	 */
 	function get_pagination_uri_addon_from_category()
 	{
-		$category_uri = 	self::$ci->uri_segment[1];
-		$category_name = 	self::$ci->uri_segment[2];
+		$category_uri = 	self::$uri_segments[1];
+		$category_name = 	self::$uri_segments[2];
 
 		return $category_uri . '/' . $category_name .'/';
 	}
@@ -1251,10 +1281,10 @@ class TagManager_Page extends TagManager
 	 */
 	function get_pagination_uri_addon_from_archives()
 	{
-		$archive_uri = self::$ci->uri_segment[1];
+		$archive_uri = self::$uri_segments[1];
 	
-		$year = isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : NULL;
-		$month = isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : NULL;
+		$year = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : NULL;
+		$month = isset(self::$uri_segments[3]) ? self::$uri_segments[3] : NULL;
 		
 		if ( ! is_null($year))
 		{
@@ -1405,7 +1435,7 @@ class TagManager_Page extends TagManager
 		$uri_addon = '';
 		
 		// Get the potential special URI
-		$special_uri = (isset(self::$ci->uri_segment[1])) ? self::$ci->uri_segment[1] : FALSE;
+		$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
 
 		// Get the special URI config array (see /config/ionize.php)
 		$uri_config = self::$ci->config->item('special_uri');
@@ -1495,7 +1525,7 @@ class TagManager_Page extends TagManager
 			}
 
 			// Current page
-			$cur_page = (in_array($pagination_uri, self::$ci->uri_segment)) ? array_pop(array_slice(self::$ci->uri_segment, -1)) : 1;
+			$cur_page = (in_array($pagination_uri, self::$uri_segments)) ? array_pop(array_slice(self::$uri_segments, -1)) : 1;
 
 			// Pagination tag config init
 			$pagination_config = array_merge($pagination_config,
@@ -1597,12 +1627,12 @@ class TagManager_Page extends TagManager
 
 		// Get the potential special URI
 		$uri_config = self::$ci->config->item('special_uri');
-		$special_uri = (isset(self::$ci->uri_segment[1])) ? self::$ci->uri_segment[1] : FALSE;
+		$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
 		
 		if ($special_uri !== FALSE && ! array_key_exists($special_uri, $uri_config) )
 		{
 			// Try to find an article with the name of the last part of the URL.
-			$name = array_pop(array_slice(self::$ci->uri_segment, -1));
+			$name = array_pop(array_slice(self::$uri_segments, -1));
 
 			$article =  self::$ci->article_model->get(
 				array('name' => $name), 
@@ -2420,8 +2450,8 @@ class TagManager_Page extends TagManager
 		$order = (isset($tag->attr['order']) && $tag->attr['order'] == 'ASC' ) ? 'period ASC' : 'period DESC';
 
 		// Current archive
-		$current_archive = isset(self::$ci->uri_segment[2]) ? self::$ci->uri_segment[2] : '' ;
-		$current_archive .= isset(self::$ci->uri_segment[3]) ? self::$ci->uri_segment[3] : '' ;
+		$current_archive = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : '' ;
+		$current_archive .= isset(self::$uri_segments[3]) ? self::$uri_segments[3] : '' ;
 
 		// Get the archives infos		
 		$archives = self::$ci->article_model->get_archives_list
@@ -2650,7 +2680,7 @@ class TagManager_Page extends TagManager
 	{
 		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
 
-		$category_uri = array_pop(array_slice(self::$ci->uri_segment, -1));
+		$category_uri = array_pop(array_slice(self::$uri_segments, -1));
 
 		// Categorie prefix in the returned string. Exemple "Category "
 		$category_value = NULL;
@@ -2789,13 +2819,14 @@ class TagManager_Page extends TagManager
 			$page_group = FALSE;
 			
 			// Get the page group
-			foreach(self::$ci->connect->groups as $group)
+//			foreach(self::$ci->connect->groups as $group)
+			foreach(Connect()->groups as $group)
 			{
 				if ($group['id_group'] == $row['id_group']) $page_group = $group;
 			} 
 
 			// If the current connected user has access to the page return TRUE
-			if (self::$ci->user !== FALSE && $page_group != FALSE && self::$ci->user['group']['level'] >= $page_group->level)
+			if (self::$user !== FALSE && $page_group != FALSE && self::$user['group']['level'] >= $page_group->level)
 				return TRUE;
 			
 			// If nothing found, return FALSE

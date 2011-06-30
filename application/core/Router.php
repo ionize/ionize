@@ -136,7 +136,7 @@ class CI_Router
 				// check if it is installed
 				include APPPATH . 'config/modules.php';
 				
-				if(in_array($this->module, array_keys($modules)))
+				if(in_array($this->module, array_keys($modules)) && ( ! in_array($this->module, $disable_controller)))
 				{
 					// get path
 					$this->module_path = $modules[$this->module];
@@ -222,7 +222,7 @@ class CI_Router
 				// Browser detection : need to be rewritten
 				// This function does not return the good language in case of root ("/") URL
 				// It just returns the first found browser lang code, which can be incorrect.
-				// $this->detect_language();
+//				$this->detect_language();
 			}
 			// END LANGUAGE
 			
@@ -234,7 +234,7 @@ class CI_Router
 			$rmodule = current($this->uri->segments);
 			
 			// do we have a module with that name?
-			if(in_array($rmodule, array_keys($modules)))
+			if(in_array($rmodule, array_keys($modules)) && ( ! in_array($rmodule, $disable_controller)))
 			{
 				// yes, remove it and store it as a module, also remove the module name from the uri
 				$this->module_path = $modules[array_shift($this->uri->segments)];
@@ -458,7 +458,13 @@ class CI_Router
 	 */
 	public function detect_language()
 	{
-		$input = load_class('Input');
+		// Because CI 2.0 Reactor loads the Security Class after the Router in CodeIgniter.
+		// And because Input depends on Security
+		$this->config->set_item('global_xss_filtering', FALSE);
+		
+		$input = load_class('Input', 'core');
+		
+		$this->config->set_item('global_xss_filtering', TRUE);
 		
 		// If this script doesn't find a valid language, the really default one will be set
 		$valid_language_found = false;
@@ -490,7 +496,8 @@ class CI_Router
 		
 		if ($valid_language_found === false)
 		{
-			$this->lang_key = $this->config->item('default_lang');
+			$this->lang_key = $this->config->item('language_abbr');
+//			$this->lang_key = $this->config->item('default_lang');
 			$this->apply_language();
 		}
 	}
@@ -574,7 +581,15 @@ class CI_Router
 	{
 		log_message('debug', 'Router: Applying the language key "'.$this->lang_key.'".');
 		
+		if ($this->lang_key != config_item('language_abbr'))
+		{
+//			trace($this->lang_key);
+//			trace(config_item('language_abbr'));
+		}
+//			header("Location: ".config_item('base_url').$this->lang_key, TRUE, 302);
+	
 		$this->config->set_item('language_abbr', $this->lang_key);
+	
 	//	$this->config->set_item('language', $this->lang_dict[$this->lang_key]);
 	}
 

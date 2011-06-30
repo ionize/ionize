@@ -151,9 +151,13 @@ class Modules extends MY_admin
 			// Get the pages
 			$this->load->model('page_model', '', TRUE);
 			$pages = $this->page_model->get_list();
+
+			$disable_module_controller =  ( strtolower((String)$xml->disable_controller) == 'true') ? TRUE : FALSE;
 			
 			// Check if conflict with existing pages
-			$conflict = array_filter($pages, create_function('$page','return $page[\'name\'] == "'. $module_uri .'";') );
+			$conflict = array();
+			if ($disable_module_controller == FALSE)
+				$conflict = array_filter($pages, create_function('$page','return $page[\'name\'] == "'. $module_uri .'";') );
 
 			if ( ! empty($conflict))
 			{
@@ -163,6 +167,11 @@ class Modules extends MY_admin
 			{
 				// uri => Module Folder 
 				$modules[$module_uri] = $module_folder;
+				
+				// The module controller is disabled : Not possible to call this module from controller.
+				if ( ! isset($disable_controller)) $disable_controller = array();
+				if ($disable_module_controller == TRUE)
+					if ( ! in_array($module_uri, $disable_controller)) $disable_controller[] = $module_uri;
 
 				// Install module database tables
 				if ($database = $xml->database)
@@ -188,7 +197,7 @@ class Modules extends MY_admin
 				}
 				
 				// Write config file : /application/config/modules.php
-				if ( ! $this->save_config($modules, $aliases))
+				if ( ! $this->save_config($modules, $aliases, $disable_controller))
 				{
 					$this->error(lang('ionize_message_module_install_error_config_write'). ' : ' .APPPATH.'/config/modules.php');
 				}
@@ -223,10 +232,14 @@ class Modules extends MY_admin
 		include APPPATH . 'config/modules.php';
 
 		// Filter the module array
-		$modules = array_filter($modules, create_function('$folder','return $folder != "'. $module_folder .'";') );
+		unset($modules[array_search($module_folder, $modules)]);
+
+		// Find the module's uri and unset it
+		$key = ((array_search($module_folder, $modules)));
+		unset($disable_controller[array_search($key, $disable_controller)]);
 
 		// Write config file
-		if ($this->save_config($modules, $aliases))
+		if ($this->save_config($modules, $aliases, $disable_controller))
 		{
 			// Reload the panel
 			$this->update[] = array(
@@ -247,13 +260,15 @@ class Modules extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	function save_config($modules, $aliases, $moddata = NULL)
+	function save_config($modules, $aliases, $disable_controller, $moddata = NULL)
 	{
 		$str = "<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); \n\n";
 
 		$str .= '$modules = '.dump_variable($modules)."\n\n";
 
 		$str .= '$aliases = '.dump_variable($aliases)."\n\n";
+		
+		$str .= '$disable_controller = '.dump_variable($disable_controller)."\n\n";
 
 //		$str .= '$moddata = '.dump_variable($moddata)."\n\n";
 
