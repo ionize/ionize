@@ -520,7 +520,7 @@ class MY_Admin extends MY_Controller
 
 		// PHP standard session is mandatory for FileManager authentication
 		// and other external lib
-		session_start();
+//		session_start();
 
 		
 		// Librairies
