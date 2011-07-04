@@ -189,10 +189,6 @@ if(swfobject.ua.pv[0] < 9)
 	</script>
 <?php endif ;?>
 
-
-
-
-
 <script type="text/javascript">
 	/**
 	 * Global filemanager
@@ -216,10 +212,10 @@ if(swfobject.ua.pv[0] < 9)
 		wait:'waitPicture',
 		mode:'<?= Settings::get('filemanager') ?>',
 		thumbSize: <?= (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,		
-		pictureArray:Array('<?= str_replace(',', "','", Settings::get('media_type_picture')) ?>'),
-		musicArray:Array('<?= str_replace(',', "','", Settings::get('media_type_music')) ?>'),
-		videoArray:Array('<?= str_replace(',', "','", Settings::get('media_type_video')) ?>'),
-		fileArray:Array('<?= str_replace(',', "','", Settings::get('media_type_file')) ?>')
+		pictureArray:Array('<?= implode("','", Settings::get_allowed_extensions('picture')) ?>'),
+		musicArray:Array('<?= implode("','", Settings::get_allowed_extensions('music')) ?>'),
+		videoArray:Array('<?= implode("','", Settings::get_allowed_extensions('video')) ?>'),
+		fileArray:Array('<?= implode("','", Settings::get_allowed_extensions('file')) ?>')
 	});
 
 	/* If user's theme has a tinyMCE.css content CSS file, load it.

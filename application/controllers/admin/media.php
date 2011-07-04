@@ -113,6 +113,9 @@ class Media extends MY_admin
 	 */
 	function filemanager($event = NULL, $resize = FALSE, $uploadAuthData = FALSE)
 	{
+		// Get allowed mimes
+		$allowed_mimes = implode(',', Settings::get_allowed_mimes());
+
 		$params = array (
 			'URLpath4FileManagedDirTree' => Settings::get('files_path') . '/',
 			'URLpath4assets' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
@@ -129,12 +132,11 @@ class Media extends MY_admin
 				'height' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : 2000
 			),
 			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
-			'filter' => 'image/,audio/,video/'
+			'filter' => $allowed_mimes
 		);
 
 //		$this->load->library('Filemanager', $params);
 		$this->load->library('Filemanagerwithaliassupport', $params);
-
 
 
 

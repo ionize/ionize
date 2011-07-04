@@ -319,6 +319,62 @@ class Settings
 
 		return self::$mimes;
 	}
+	
+
+	public static function get_allowed_extensions($type = FALSE)
+	{
+		$allowed_extensions = array();
+		
+		require_once(APPPATH.'config/mimes_ionize'.EXT);
+
+		$filemanager_file_types = explode(',', self::$settings['filemanager_file_types']);
+
+		if ($type == FALSE)
+		{
+			foreach($mimes_ionize as $type)
+			{
+				foreach($type as $ext => $mime)
+				{
+					if (in_array($ext, $filemanager_file_types))
+						$allowed_extensions[] = $ext;
+				}
+			}
+		}
+		else
+		{
+			if ( ! empty($mimes_ionize[$type]))
+			{
+				foreach($mimes_ionize[$type] as $ext => $mime)
+				{
+					if (in_array($ext, $filemanager_file_types))
+						$allowed_extensions[] = $ext;
+				}
+			}
+		}
+		
+		return $allowed_extensions;
+	}
+
+	public static function get_allowed_mimes()
+	{
+		$allowed_mimes = array();
+		
+		require_once(APPPATH.'config/mimes_ionize'.EXT);
+
+		$filemanager_file_types = explode(',', self::get('filemanager_file_types'));
+		
+		foreach($mimes_ionize as $type)
+		{
+			foreach($type as $ext => $mime)
+			{
+				if ( ! in_array($mime, $allowed_mimes) && in_array($ext, $filemanager_file_types))
+					$allowed_mimes[] = $mime;
+			}
+		}
+		return $allowed_mimes;
+	}
+
+
 
 }
 

@@ -2603,13 +2603,25 @@ var FileManager = new Class({
 
 					el.setStyles({
 						display: 'block',
+						left: e.page.x - dpos.x + 12,
+						top: e.page.y - dpos.y + 10
+						/*
+						 * This is definitely not working in not standalone mode.
+						 * To fix it : Define a clean parent dic through CSS ? (relative pos ?)
+						 *
 						left: dpos.x + e.page.x - dpos.mouse_start.x,
 						top: dpos.y + e.page.y - dpos.mouse_start.y
+						*/
 					});
 
 					this.imagedragstate.setStyles({
+						'left': e.page.x - dpos.x - 12,
+						'top': e.page.y - dpos.y + 2
+						/*
+						 * Same here...
 						'left': dpos.x + e.page.x - dpos.mouse_start.x - 12,
 						'top': dpos.y + e.page.y - dpos.mouse_start.y + 2
+						*/
 					});
 
 					// see comment below about the 'mouseleave' / 'mouseover' trouble due to the dragged element:
@@ -2624,7 +2636,8 @@ var FileManager = new Class({
 					 * Instead, we simply monitor the mouse coordinates from the very beginning and adjust the element positioning
 					 * based on the change of those.
 					 */
-					var dpos = el.getPosition();
+//					var dpos = el.getPosition();
+					var dpos = self.container.getPosition();
 
 					/*
 					 * Because the (abs.pos.) dragged item is located under the mouse, dragging behaviour may be fine, but the 'mouseleave'
@@ -2717,8 +2730,13 @@ var FileManager = new Class({
 						'position': 'absolute',
 						'width': el.getWidth() - el.getStyle('paddingLeft').toInt() - el.getStyle('paddingRight').toInt(),
 						'display': 'none',
+						'left': e.page.x - dpos.x,
+						'top': e.page.y - dpos.y						
+						/*
+						 * Bogus in non standalone mode
 						'left': dpos.x + e.page.x - dpos.mouse_start.x,
 						'top': dpos.y + e.page.y - dpos.mouse_start.y
+						*/
 					}).inject(this.container);
 
 					el.fade(0.7).addClass('move');
@@ -2730,8 +2748,13 @@ var FileManager = new Class({
 					this.drag_is_active = true;
 
 					this.imagedragstate.setStyles({
+						'left': dpos.x - dpos.x - 12,
+						'top': dpos.y - dpos.y + 2
+						
+						/*
 						'left': dpos.x + e.page.x - dpos.mouse_start.x - 12,
 						'top': dpos.y + e.page.y - dpos.mouse_start.y + 2
+						*/
 					}).changeState(1 + this.ctrl_key_pressed);
 				}).bind(this),
 

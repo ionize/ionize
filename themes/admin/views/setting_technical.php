@@ -556,13 +556,14 @@
 		<div class="element1">
 		
 		
+			<?php
+				$filemanager_file_types = explode(',',Settings::get('filemanager_file_types'));
+			?>
+
 			<?php foreach($mimes as $type => $mime_list) :?>
 			
 				<h4><?= $type ?></h4>
 
-				<?php
-					$type_allowed = explode(',',Settings::get('media_type_' . $type));
-				?>
 		
 				<table class="list w340">
 					<thead>
@@ -582,7 +583,7 @@
 										<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
 									</td>
 									<td class="center">
-										<input <?php if(in_array($ext, $type_allowed)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="" type="checkbox" value="<?= $ext ?>" />
+										<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?= $ext ?>" />
 									</td>
 								</tr>
 						<?php endforeach ;?>

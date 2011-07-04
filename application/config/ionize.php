@@ -6,27 +6,7 @@
 |--------------------------------------------------------------------------
 |
 */
-$config['version'] = '0.9.7 beta 13.05.2011';
-
-
-/*
-|--------------------------------------------------------------------------
-| Ionize Installer protection
-|--------------------------------------------------------------------------
-|
-| NOTICE : Possible security hole, so deactivated.
-|
-| Protects the website from beeing view until the /intall folder is deleted.
-| Default to true.
-|
-| You can change this value once the install folder is deleted.
-|
-| Be careful : With this value to FALSE, the installer AND the website can be reachable
-| at the same time !
-|
-|
-*/
-// $config['protect_installer'] = FALSE;
+$config['version'] = '0.9.7';
 
 
 /* 

@@ -161,6 +161,13 @@
 		INSERT INTO setting VALUES ('', 'article_allowed_tags', 'h2,h3,h4,h5,h6,em,img,iframe,table,object,thead,tbody,tfoot,tr,th,td,param,embed,map,p,a,ul,ol,li,br,b,strong', NULL);
 	</query>
 
+	<query>
+		DELETE FROM setting WHERE name='filemanager_file_types';
+	</query>
+	<query>
+		INSERT INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', NULL);
+	</query>
+
 
 
 	<query>ALTER TABLE `article` COMMENT = '0.9.7';</query>

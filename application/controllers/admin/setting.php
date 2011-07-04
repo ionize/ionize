@@ -422,25 +422,20 @@ class Setting extends MY_admin
 	function save_technical()
 	{
 		$this->load->model('config_model', '', true);
+		$this->load->helper('string_helper');
 
 		// Settings to save
 		$settings = array(	'texteditor', 'filemanager', 'files_path', 
 							'ftp_dir', 'ftp_host', 'ftp_user', 'ftp_password', 
 							'tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats',
 							'google_analytics', 'system_thumb_list', 'system_thumb_edition','media_thumb_size', 'picture_max_width', 'picture_max_height',
-							'use_extend_fields');
+							'use_extend_fields', 'filemanager_file_types');
 							
-		// Medias extensions to save			
-		$settings_extension = array('media_type_picture', 'media_type_video', 'media_type_music', 'media_type_file');
+		
+		// Allowed filemanager file extensions
+		$filemanager_file_types = $this->input->post('allowed_type');
+		$this->input->set_post('filemanager_file_types', implode(',', $filemanager_file_types));
 
-		foreach ($settings_extension as $setting)
-		{	
-			if ($this->input->post($setting))
-			{
-				$this->input->set_post($setting, str_replace(' ', '', strtr(trim($this->input->post($setting), ",/\-_"), '/\-_', '')));
-				$settings[] = $setting;
-			}
-		}
 
 		// Get the old media path before saving
 		$old_files_path = Settings::get('files_path');
