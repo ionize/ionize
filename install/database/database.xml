@@ -12,7 +12,7 @@
 		<query>
 			CREATE TABLE IF NOT EXISTS article (
 			  id_article int(11) UNSIGNED NOT NULL auto_increment,
-			  name varchar(55) default NULL,
+			  name varchar(255) default NULL,
 			  author varchar(55) default NULL,
 			  updater varchar(55) default NULL,
 			  created datetime NOT NULL,
@@ -314,7 +314,7 @@
 			  id_parent int(11) UNSIGNED NOT NULL default 0,
 			  id_menu int(11) UNSIGNED NOT NULL default 0,
 			  id_subnav int(11) UNSIGNED NOT NULL default 0, 
-			  name varchar(55) default NULL,
+			  name varchar(255) default NULL,
 			  ordering int(11) UNSIGNED default 0,
 			  level int(11) UNSIGNED NOT NULL default 0,
 			  online tinyint(1) UNSIGNED NOT NULL default 0,
