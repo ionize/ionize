@@ -52,6 +52,8 @@ class Page extends MY_admin
 		
 		// Libraries
 		$this->load->library('structure');
+
+		$this->load->helper('string_helper');
 	}
 
 

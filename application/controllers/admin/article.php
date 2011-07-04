@@ -58,6 +58,8 @@ class Article extends MY_admin
 		$this->load->model('extend_field_model', '', true);
 		
 		$this->load->library('structure');
+		
+		$this->load->helper('string_helper');
 	}
 
 
