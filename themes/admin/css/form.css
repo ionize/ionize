@@ -301,6 +301,7 @@ input.date {
 .toolbar-button.back, .light-button.back { background:url(../images/icon_16_left.png) no-repeat 4px 50%; padding-left: 24px; }
 .toolbar-button.helpme, .light-button.helpme { background:url(../images/icon_16_helpme.png) no-repeat 4px 50%; padding-left: 24px; }
 .toolbar-button.element, .light-button.element { background:url(../images/icon_16_element.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.print, .light-button.print { background:url(../images/icon_16_print.png) no-repeat 4px 50%; padding-left: 24px; }
 
 .toolbar-button:hover, .light-button:hover {
 	border:1px solid #bbb;

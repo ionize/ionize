@@ -76,6 +76,7 @@ class CI_Session  {
 	function destroy()
 	{
 		unset($_SESSION);
+		
 		if ( isset( $_COOKIE[session_name()] ) )
 		{
 			setcookie(session_name(), '', time()-42000, '/');
@@ -83,6 +84,9 @@ class CI_Session  {
 		session_destroy();
 	}
 
+	/**
+    * CI Compatibility
+    */
 	function sess_destroy()
 	{
 		$this->destroy();
@@ -93,9 +97,12 @@ class CI_Session  {
     */    
 	function userdata($item)
 	{
-		if($item == 'session_id'){ //added for backward-compatibility
+		if($item == 'session_id') //added for backward-compatibility
+		{
 			return session_id();
-		}else{
+		}
+		else
+		{
 			return ( ! isset($_SESSION[$item])) ? false : $_SESSION[$item];
 		}
 	}
@@ -133,7 +140,8 @@ class CI_Session  {
 		{
 			foreach ($newdata as $key => $val)
 			{
-				unset($_SESSION[$key]);
+				if ( ! empty($_SESSION[$key]))
+					unset($_SESSION[$key]);
 			}
 		}
 	}
@@ -179,7 +187,7 @@ class CI_Session  {
     */
 	function _session_id_expired()
 	{
-		if ( !isset( $_SESSION['regenerated'] ) )
+		if ( ! isset( $_SESSION['regenerated'] ) )
 		{
 			$_SESSION['regenerated'] = time();
 			return false;
@@ -215,8 +223,6 @@ class CI_Session  {
 				$this->set_userdata($flash_key, $val);
 			}
 		}
-//		$flash_key = $this->flash_key.':new:'.$key;
-//		$this->set_userdata($flash_key, $value);
 	}
 
 	/**

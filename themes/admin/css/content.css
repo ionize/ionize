@@ -170,6 +170,10 @@ li.offline { opacity:0.7; }
 .icon a.copy, a.icon.copy 					{background: url(../images/icon_16_copy.png) no-repeat 0 0;}
 .icon a.ok, a.icon.ok 						{background: url(../images/icon_16_ok.png) no-repeat 0 0;}
 
+.icon a.flag.green, a.flag.green 			{background: url(../images/icon_16_flag_green.png) no-repeat 0 0;}
+.icon a.flag.yellow, a.flag.yellow 			{background: url(../images/icon_16_flag_yellow.png) no-repeat 0 0;}
+.icon a.flag.red, a.flag.red 				{background: url(../images/icon_16_flag_red.png) no-repeat 0 0;}
+
 
 /*.icon a.link, a.icon.link {background: url(../images/toggler-collapse-expand.png) no-repeat 0 0;}*/
 
@@ -455,9 +459,16 @@ table.list {
 	margin:10px 0;
 	width:100%;
 }
+
+table.noborder tbody tr,
+table.noborder tbody td,
 table.list.noborder tbody tr,
 table.list.noborder tbody td{
-	border:none;
+	border:none !important;
+}
+table.nopadding tbody td,
+table.list.nopadding tbody td{
+	padding:0 !important;
 }
 table.list tbody tr.border.top{
 	border-top:1px solid #eee;
