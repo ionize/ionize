@@ -6,15 +6,15 @@
 <meta http-equiv="imagetoolbar" content="no" />
 <link rel="shortcut icon" href="<?= theme_url() ?>images/favicon.ico" type="image/x-icon" />
 
-<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/core.css" />
-<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/menu.css" />
-<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/desktop.css" />
-<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/window.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui/Themes/ionize/css/core.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui/Themes/ionize/css/menu.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui/Themes/ionize/css/desktop.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui/Themes/ionize/css/window.css" />
 
 <!-- To be loaded if controls aren't defined through the pluginGroups 
-<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/taskbar.css" />
-<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/toolbar.css" />
-<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui-ede4ba2/Themes/ionize/css/accordion.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui/Themes/ionize/css/taskbar.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui/Themes/ionize/css/toolbar.css" />
+<link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/mochaui/Themes/ionize/css/accordion.css" />
 -->
 
 <link rel="stylesheet" href="<?= theme_url() ?>css/form.css" type="text/css" />
@@ -104,32 +104,32 @@
 </script>
 
 <!-- Mocha UI-->
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/core.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/create.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/require.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/canvas.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/content.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Core/persist.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Core/core.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Core/create.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Core/require.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Core/canvas.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Core/content.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Core/persist.js"></script>
 
 <!-- To be loaded if controls aren't defined through the pluginGroups 
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/accordion/accordion.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/desktop/desktop.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/column/column.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/panel/panel.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/dock/dock.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/dockhtml/dockhtml.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/menu/menu.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/accordion/accordion.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/desktop/desktop.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/column/column.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/panel/panel.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/dock/dock.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/dockhtml/dockhtml.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/menu/menu.js"></script>
 -->
 
 <!-- Normal load -->
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/taskbar/taskbar.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/toolbar/toolbar.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/window/window.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/window/modal.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/Controls/spinner/spinner.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/taskbar/taskbar.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/toolbar/toolbar.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/window/window.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/window/modal.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/Controls/spinner/spinner.js"></script>
 
 <!-- UI initialization -->
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui-ede4ba2/init.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/init.js"></script>
 
 
 <!-- Ionize -->

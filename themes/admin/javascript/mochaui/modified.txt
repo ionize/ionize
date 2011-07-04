@@ -1,0 +1,10 @@
+Modified elements to fit to Ionize
+----------------------------------------
+version : ede4ba2
+
+Controls/desktop/desktop.js
+
+Themes/default/css/core.css
+Themes/default/css/desktop.css
+Themes/default/css/menu.css
+
