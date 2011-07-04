@@ -488,40 +488,6 @@
 			</dl>
 	
 			<!-- Supported media extensions, by media type -->
-			<dl>
-				<dt>
-					<label for="media_type_picture" title="<?=lang('ionize_help_setting_media_type_picture')?>"><?=lang('ionize_label_media_type_picture')?></label>
-				</dt>
-				<dd>
-					<input name="media_type_picture" id="media_type_picture" class="inputtext w240" type="text" value="<?= Settings::get('media_type_picture') ?>"/>
-				</dd>
-			</dl>
-			<dl>
-				<dt>
-					<label for="media_type_music" title="<?=lang('ionize_help_setting_media_type_music')?>"><?=lang('ionize_label_media_type_music')?></label>
-				</dt>
-				<dd>
-					<input name="media_type_music" id="media_type_music" class="inputtext w240" type="text" value="<?= Settings::get('media_type_music') ?>"/>
-				</dd>
-			</dl>
-			<dl>
-				<dt>
-					<label for="media_type_video" title="<?=lang('ionize_help_setting_media_type_video')?>"><?=lang('ionize_label_media_type_video')?></label>
-				</dt>
-				<dd>
-					<input name="media_type_video" id="media_type_video" class="inputtext w240" type="text" value="<?= Settings::get('media_type_video') ?>"/>
-				</dd>
-			</dl>
-	
-			<dl class="mb10">
-				<dt>
-					<label for="media_type_file" title="<?=lang('ionize_help_setting_media_type_file')?>"><?=lang('ionize_label_media_type_file')?></label>
-				</dt>
-				<dd>
-					<input name="media_type_file" id="media_type_file" class="inputtext w240" type="text" value="<?= Settings::get('media_type_file') ?>"/>
-				</dd>
-			</dl>
-
 			<dl class="last">
 				<dt>
 					<label for="picture_max_width" title="<?=lang('ionize_help_setting_picture_max_width')?>"><?=lang('ionize_label_setting_picture_max_width')?></label>
