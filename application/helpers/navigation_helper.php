@@ -141,5 +141,22 @@ if( ! function_exists('get_next_prev_page'))
 }
 
 
+/**
+ * Returns the previous / next article enclosed in the given tag
+ * 
+ */
+if( ! function_exists('get_next_prev_article'))
+{
+	function get_next_prev_article($article, $prefix)
+	{
+		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
+		
+		$link = $prefix. '<a href="' . $article['absolute_url'] . '">' . $article['title']. '</a>';
+		
+		return $link;
+	}
+}
+
+
 /* End of file navigation_helper.php */
 /* Location: .application/helpers/navigation_helper.php */

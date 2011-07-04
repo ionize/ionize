@@ -37,6 +37,10 @@ class TagManager_Page extends TagManager
 		'absolute_url' =>		'tag_absolute_url',
 		'first_item' => 		'tag_first_item',
 		'last_item' => 			'tag_last_item',
+		'next_page' =>			'tag_next_page',
+		'prev_page' =>			'tag_prev_page',
+		'next_article' =>		'tag_next_article',
+		'prev_article' =>		'tag_prev_article',
 		
 		// Languages
 		'languages' =>				'tag_languages',
@@ -80,7 +84,7 @@ class TagManager_Page extends TagManager
 		'articles:readmore' => 		'tag_article_readmore',
 		'articles:index' => 		'tag_article_index',
 		'articles:count' => 		'tag_article_count',
-					
+		
 		// Categories
 		'categories' => 				'tag_categories',
 		'categories:url' => 			'tag_category_url',
@@ -1035,10 +1039,10 @@ class TagManager_Page extends TagManager
 		}
 	}
 	
-
+	
 	// ------------------------------------------------------------------------
 	
-
+	
 	/**
 	 * Returns the count of an item collection
 	 *
@@ -2267,7 +2271,88 @@ class TagManager_Page extends TagManager
 	
 	// ------------------------------------------------------------------------
 	
+	public static function tag_prev_article($tag)
+	{
+		$article = self::get_adjacent_article($tag, 'prev');
 	
+		return self::process_next_prev_article($tag, $article);
+	}
+
+
+	public static function tag_next_article($tag)
+	{
+		$article = self::get_adjacent_article($tag, 'next');
+	
+		return self::process_next_prev_article($tag, $article);
+	}
+
+	
+	private static function get_adjacent_article($tag, $mode='prev')
+	{
+		$page = $tag->locals->page;
+		
+		$tag->attr['from'] = $page['name'];
+		
+		$articles = self::get_articles($tag);
+		
+		$uri = self::$uri_segments;
+		$uri = array_pop($uri);
+		
+		$wished_article = array();
+		
+		$enum = ($mode=='prev') ? -1 : 1;
+		
+		foreach($articles as $key => $article)
+		{
+			if ($article['name'] == $uri)
+			{
+				if ( ! empty($articles[$key + $enum]))
+				{
+					$wished_article = $articles[$key + $enum];
+					break;
+				}
+			}
+		}
+		
+		return $wished_article;
+	}
+	
+
+	/**
+	 * Processes the next / previous article tags result
+	 * Internal use only.
+	 *	 
+	 */
+	private static function process_next_prev_article($tag, $article)
+	{
+		if ($article != FALSE)
+		{
+			// helper
+			$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
+
+			// Get helper method
+			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_next_prev_article';
+			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
+	
+			// Prefix ?
+			$prefix = (!empty($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
+	
+			// load the helper
+			self::$ci->load->helper($helper);
+			
+			// Return the helper function result
+			if (function_exists($helper_function))
+			{
+				$return = call_user_func($helper_function, $article, $prefix);
+				
+				return self::wrap($tag, $return);
+			}
+		}
+		
+		return '';
+	}	
+
+
 
 	// ------------------------------------------------------------------------
 
@@ -2352,7 +2437,7 @@ class TagManager_Page extends TagManager
 	 *							This calls the function "get_next_prev_page" in the helper /application/helpers/navigation_helper.php"
 	 *
 	 */
-	public function tag_next_page($tag)
+	public static function tag_next_page($tag)
 	{
 		$page = self::get_adjacent_page($tag, 'next');
 	
