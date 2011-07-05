@@ -152,8 +152,15 @@ class Media extends MY_admin
 		{
 			if ($event == 'upload')
 			{
-				$uploadAuthData = ( !empty($_POST['uploadAuthData'])) ? $_POST['uploadAuthData'] : FALSE;
-			
+				// $user = Connect()->get_current_user();
+				
+				if (Connect()->is('Editors') && Connect()->logged_in())
+				{
+					$uploadAuthData = ( !empty($_POST['uploadAuthData'])) ? $_POST['uploadAuthData'] : FALSE;
+					
+					$this->Filemanagerwithaliassupport->fireEvent($event);
+				}
+/*			
 				// Get all DB saved CI sessions in order to check the tokken
 				$query = $this->db->get(config_item('sess_table_name'));
 				
@@ -187,6 +194,7 @@ class Media extends MY_admin
 						));
 					}
 				}
+*/
 				// No session saved in DB
 				else
 				{
