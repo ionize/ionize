@@ -164,6 +164,7 @@ class TagManager_Page extends TagManager
 
 		// Current page
 		$page = self::$context->globals->page;
+
 		if ( ! empty($page['link']))
 		{
 			// Online languages are defined by MY_Controller
@@ -641,6 +642,16 @@ class TagManager_Page extends TagManager
 		else if ($special_uri !== FALSE && !array_key_exists($special_uri, $uri_config) && $from_page == FALSE && $scope == FALSE)
 		{
 			$articles = self::get_articles_from_one_article($tag, $where, $filter);
+			
+			// Get articles from 404
+			if ( empty($articles))
+			{
+				self::set_404();
+				$articles = self::$ci->article_model->get_lang_list(
+					array('id_page' => $tag->locals->page['id_page']),
+					$lang = Settings::get_lang()
+				);
+			}
 		}
 		// Get all the page articles
 		// If Pagination is active, set the limit. This articles result is the first page of pagination
