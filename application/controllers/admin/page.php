@@ -297,7 +297,6 @@ class Page extends MY_admin
 				{
 					// Used by JS Tree to detect if page in inserted in tree or not
 					$page['inserted'] = TRUE;
-					$page['online'] = 0;
 					
 					$this->callback = array(
 						'fn' => $page['menu']['name'].'Tree.insertElement',

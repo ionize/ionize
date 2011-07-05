@@ -1273,11 +1273,12 @@ class TagManager
 	 */
 	protected static function wrap($tag, $value)
 	{
-		$prefix = $suffix = '';
+		$open_tag = $close_tag = '';
 		
 		$html_tag = self::get_attribute($tag, 'tag');
 		$class = self::get_attribute($tag, 'class');
 		$id = self::get_attribute($tag, 'id');
+		$prefix = self::get_attribute($tag, 'prefix');
 		
 		if ( ! empty($class)) $class = ' class="'.$class.'"';
 		if ( ! empty($id)) $id = ' id="'.$id.'"';
@@ -1299,12 +1300,12 @@ class TagManager
 
 		if ($html_tag !== false)
 		{
-			$prefix = '<' . $html_tag . $id . $class . '>';
-			$suffix = '</' . $html_tag .'>';
+			$open_tag = '<' . $html_tag . $id . $class . '>';
+			$close_tag = '</' . $html_tag .'>';
 		}
 		
 		if ( ! empty ($value) )
-			return $prefix . $value . $suffix;
+			return $open_tag . $prefix . $value . $close_tag;
 		else
 			return '';
 	}

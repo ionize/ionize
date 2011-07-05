@@ -39,6 +39,7 @@ class TagManager_Media extends TagManager
 		'medias:copyright' => 	'tag_media_copyright',
 		'medias:index' => 		'tag_media_index',
 		'medias:count' => 		'tag_media_count',
+		'medias:date' => 		'tag_media_date',
 		
 		// One media
 		'media' =>				'tag_media'
@@ -292,6 +293,7 @@ class TagManager_Media extends TagManager
 	public static function tag_media_description($tag) { return self::wrap($tag, $tag->locals->media['description']); }
 	public static function tag_media_copyright($tag) { return self::wrap($tag, $tag->locals->media['copyright']); }
 	public static function tag_media_index($tag) { return $tag->locals->index; }
+	public static function tag_media_date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->media['date'])); }
 	public static function tag_media_count($tag)
 	{
 		return $tag->locals->count;

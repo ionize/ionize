@@ -45,7 +45,7 @@ if( ! function_exists('get_navigation'))
 		
 		foreach($items as $key => $page)
 		{
-			$active = ( ! empty($page['active_class'])) ? ' class="'.$page['active_class'].'"' : '';
+			$active = ( ! empty($page['active_class'])) ? ' class="'.$page['active_class'].'" ' : '';
 			
 			// Adds the suffix if defined in /application/config.php
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
@@ -79,7 +79,7 @@ if( ! function_exists('get_tree_navigation'))
 		
 		foreach($items as $key => $page)
 		{
-			$active = ( ! empty($page['active_class'])) ? ' class="'.$page['active_class'].'"' : '';
+			$active = ( ! empty($page['active_class'])) ? ' class="'.$page['active_class'].'" ' : '';
 
 			$tree .= '<li><a'.$active.' href="' . $page['absolute_url'] . '">'.$page['title']. '</a>';
 	
@@ -114,7 +114,7 @@ if( ! function_exists('get_language_navigation'))
 		
 		foreach($items as $key => $lang)
 		{
-			$active = ( ! empty($lang['active_class'])) ? ' class="'.$lang['active_class'].'"' : '';
+			$active = ( ! empty($lang['active_class'])) ? ' class="'.$lang['active_class'].'" ' : '';
 			
 			$nav .= '<li' . $active . '><a ' . $active . 'href="' . $lang['url'] . '">' . $lang['name']. '</a></li>';
 		}
