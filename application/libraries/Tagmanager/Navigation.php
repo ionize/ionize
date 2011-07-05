@@ -273,8 +273,10 @@ class TagManager_Navigation extends TagManager
 		// If set, depth
 		$depth = (isset($tag->attr['depth']) ) ? $tag->attr['depth'] : -1;
 		
-		// Attribute : active class
+		// Attribute : active class, first_class, last_class
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
+		$first_class = (isset($tag->attr['first_class']) ) ? $tag->attr['first_class'] : '';
+		$last_class = (isset($tag->attr['last_class']) ) ? $tag->attr['last_class'] : '';
 
 		// Display hidden navigation elements ?
 		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
@@ -383,7 +385,7 @@ class TagManager_Navigation extends TagManager
 
 		// Return the helper function
 		if (function_exists($helper_function))
-			return call_user_func($helper_function, $tree, $lang_url, $id, $class);
+			return call_user_func($helper_function, $tree, $lang_url, $id, $class, $first_class, $last_class);
 	}
 
 

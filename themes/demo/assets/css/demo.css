@@ -1,0 +1,289 @@
+/*
+
+Ionize Demo website CSS
+
+This style shouln't be used for a productive website
+
+Copyright:
+	Copyright (c) 2009/2011 Ionize Dev Team.
+	
+License:
+	MIT-style license.
+
+*/
+
+
+div.img {
+	overflow: hidden;
+}
+.imgborder {
+	background-color: #F6F6F6;
+	border: 1px solid #EAEAEA;
+	padding: 4px;
+}
+
+body {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	background:url(../images/body_bg_pattern0.png);
+	background-repeat:repeat;
+	background-position:top;
+	background-attachment:fixed;
+	background-color:#f5f5f5;
+	color:#5f5f5f;
+}
+
+/* Blueprint addons */
+.colborder {border-right:0;}
+.span-33 {
+	width:270px;
+	float:left;
+	margin-right:30px
+}
+.span-33.last {
+	margin-right:0
+}
+hr {
+	background-image: url("../images/hr.png");
+	background-repeat: repeat-x;
+	background-color: transparent;
+	border-width: 0;
+	clear: both;
+	height: 1px;
+	line-height: 0;
+	margin: 30px 0;
+	page-break-after: always;
+	text-align: center;
+	width: 100%;
+}
+h4 { font-size: 18px;}
+h5 { font-size: 16px;}
+/*
+#wrap {
+	width:990px;
+	margin:30px auto;
+}
+*/
+#container {
+	margin-top:30px;
+	background-color:#fff;
+}
+
+#page-container {
+	width:950px;
+	margin:0 30px;
+	background-color:#fff
+}
+
+#header {
+	padding-top:50px;
+	padding-bottom:30px;
+	height: 70px;
+}
+#header-left{width:640px; float:left;}
+#header-right{width:300px; float:left;}
+
+#header ul.icons{margin:0px 0 0 0 ; padding:0; list-style-type:none; float:right; }
+#header ul.icons li{padding:0 2px !important; border:0 !important; display:inline}
+
+
+#logo {
+	width:300px;
+	height:40px;
+	float:left;
+	position:relative
+}
+
+#logo h1 {
+	text-indent:-9999em;
+	height:40px
+}
+
+#logo a {
+	background:url(../images/logo.png) no-repeat 0 0;
+	text-indent:-9999em;
+	width:350px;
+	height:40px;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:2
+}
+
+#logo a:hover {
+	background:url(../images/logo.png) no-repeat 0 -40px
+}
+
+/* */
+#navigation {
+	position:relative;
+	z-index:200;
+	padding-bottom: 70px;
+	font-family:"Century Gothic", Arial, Verdana;
+	margin:0;
+	clear:both;
+	float:none;
+}
+#nav {
+	overflow: visible;
+}
+#navigation ul {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+#navigation li {
+	margin-right:30px;
+	padding:0;
+	float:left;
+	border-top:1px solid #dadada;
+	width:120px;
+	text-transform:uppercase;
+	font-size:11px;
+	z-index:0
+}
+
+#nav a {
+	display:block;
+	padding:3px 0 8px;
+	text-decoration:none;
+	color:#5f5f5f;
+}
+
+#navigation li a:hover {
+	text-decoration:none;
+	display:block
+}
+
+#navigation li ul {
+	list-style:none;
+	position:absolute;
+	width:130px;
+	top:35px;
+	left:-999em;
+	padding:10px;
+	margin-left:-10px;
+	z-index:10;
+	filter:alpha(opacity=90);
+/* here you can set the opacity of box with text */
+	opacity:.9
+/* here you can set the opacity of box with text */
+/*background: url(../images/bg-menu.png) repeat;*/
+}
+
+#navigation li:hover ul,#navigation li.sfhover ul {
+	left:auto
+}
+
+#navigation li ul li:hover ul {
+	left:100%;
+	top:-10px;
+	margin-left:9px
+}
+
+#navigation li li {
+	margin:0;
+	padding:0;
+	width:120px;
+	left:auto;
+	height:auto!important;
+	position:relative!important
+}
+
+#navigation li li a {
+	width:140px;
+	line-height:18px;
+	margin:0;
+	padding:8px 0!important
+}
+
+#navigation li li a:hover {
+	padding:8px 0
+}
+
+#navigation li:hover,#navigation li.sfhover {
+/* prevents IE7 drop-down navigation bug (focus on a page element prevents nested navigations from disappearing) */
+	position:static
+}
+
+#home-slider{
+	width:870px;
+	overflow: hidden;
+	position:relative;
+	margin-bottom:50px;
+}
+
+#content h1, 
+#content h2, 
+#content h3, 
+#content h4, 
+#content h5, 
+#content h6{
+	color:#303030;
+}
+.span-33.home h2 {
+	font-size: 18px;
+}
+
+/* Footer
+ -------------------------------- */
+.footer {
+	margin-bottom:30px;
+	background-color: #fff;
+}
+#footer {
+	background-color: #f8f8f8;
+	padding-top:30px;
+	padding-bottom:30px;
+}
+
+#footer-copyright {
+	padding-top:10px;
+	padding-left:10px;
+	height:34px;
+}
+#footer-copyright #copyright{
+	float:left;
+	width: 50%;
+}
+#footer-copyright #footermenu{
+	float:left;
+	width: 50%;
+}
+#footer-copyright ul{
+	list-style: none;
+	float:right;
+	margin:0 10px 0 0;
+}
+#footer-copyright ul li{
+	float: left;
+	padding: 0 2px 0 6px;
+}
+
+
+.lavaLamp {
+	position:relative;
+	height:32px;
+	padding:0;
+	overflow:hidden
+}
+
+.lavaLamp li {
+	list-style:none;
+	float:left
+}
+
+#nav li.back {
+	z-index:8;
+	position:absolute;
+	border-top: solid 2px #ddd;
+}
+
+.lavaLamp li a {
+	z-index:10
+}
+
+.nomargin {
+	margin:0!important
+}

@@ -69,7 +69,7 @@ if( ! function_exists('get_navigation'))
  */
 if( ! function_exists('get_tree_navigation'))
 {
-	function get_tree_navigation($items, $lang_url=false, $id = NULL, $class = NULL)
+	function get_tree_navigation($items, $lang_url=false, $id = NULL, $class = NULL, $first_class = NULL, $last_class = NULL)
 	{
 		// HTML Attributes
 		$id = ( ! is_null($id) ) ? ' id="' . $id . '" ' : '';
@@ -77,11 +77,24 @@ if( ! function_exists('get_tree_navigation'))
 
 		$tree = '<ul' . $id . $class . '>';
 		
+		
 		foreach($items as $key => $page)
 		{
-			$active = ( ! empty($page['active_class'])) ? ' class="'.$page['active_class'].'" ' : '';
-
-			$tree .= '<li><a'.$active.' href="' . $page['absolute_url'] . '">'.$page['title']. '</a>';
+			$class = array();
+			if (( ! empty($page['active_class']))) $class[] = $page['active_class'];
+			if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
+			if ($key == (count($items) - 1) && ! is_null($last_class)) $class[] = $last_class;
+			
+			if ( ! empty($class))
+			{
+				$class = ' class="'.implode(' ', $class).'"';
+			}
+			else
+			{
+				$class = '';
+			}
+			
+			$tree .= '<li'.$class.'><a'.$class.' href="' . $page['absolute_url'] . '">'.$page['title']. '</a>';
 	
 			if (!empty($page['children']))
 				 $tree .= get_tree_navigation($page['children'], $lang_url);
