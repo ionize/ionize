@@ -361,7 +361,10 @@ ION.append({
 
 	deleteDomElements: function(selector)
 	{
-		$$(selector).each(function(item, idx) { item.dispose(); });
+		$$(selector).each(function(item, idx)
+		{
+			item.dispose();
+		});
 	},
 
 	setHTML: function(selector, html)
@@ -460,7 +463,6 @@ ION.append({
 			
 			onDrop: function(element, droppable, event)
 			{
-console.log(this.options.dropCallbacks);
 				if (droppable)
 				{
 					/* For each droppable class, a function need to be executed
@@ -564,6 +566,7 @@ console.log(this.options.dropCallbacks);
 
 	/*
 	 * Splitted Article panel init
+	 * Test
 	 *
 	 */
 	editArticle: function(id, title) 
@@ -618,6 +621,56 @@ console.log(this.options.dropCallbacks);
 		}
 	},
 
+	
+	initAutocompleter: function(input, options)
+	{
+		var searchUrl = ION.cleanUrl(options.searchUrl);
+		var detailUrl = ION.cleanUrl(options.detailUrl);
+		var item_id = options.item_id;
+		
+		var update = options.update;
+		var zIndex = (typeOf(options.zIndex != 'null')) ? options.zIndex : 100;
+		
+		new Autocompleter.Request.HTML($(input), admin_url + searchUrl, 
+		{
+			'postVar': 'search',
+			'indicatorClass': 'autocompleter-loading',
+			minLength: 2,
+		    maxChoices: 20,
+		    zIndex: zIndex,
+		    relative: true,
+//			'selectMode': 'type-ahead',
+		    'injectChoice': function(choice)
+		    {
+				// choice is one <li> element
+				var text = choice.getFirst();
+				
+				// the first element in this <li> is the <span> with the text
+				var value = text.innerHTML;
+				
+				// inputValue saves value of the element for later selection
+				choice.inputValue = value;
+				
+				// overrides the html with the marked query value (wrapped in a <span>)
+				text.set('html', this.markQueryValue(value));
+				
+				// add the mouse events to the <li> element
+				this.addChoiceEvents(choice);
+			},
+			onSelection: function(selection, item, value, input)
+			{
+				var id = item.getProperty('rel');
+				
+				if ($(update))
+				{
+					ION.HTML(admin_url + detailUrl, {item_id:id}, {'update':$(update)});
+				}
+			}
+		});
+	},
+	
+	
+	
 	
 	// ------------------------------------------------------------------------
 	// / Rewritten functions

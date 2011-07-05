@@ -302,6 +302,9 @@ input.date {
 .toolbar-button.helpme, .light-button.helpme { background:url(../images/icon_16_helpme.png) no-repeat 4px 50%; padding-left: 24px; }
 .toolbar-button.element, .light-button.element { background:url(../images/icon_16_element.png) no-repeat 4px 50%; padding-left: 24px; }
 .toolbar-button.print, .light-button.print { background:url(../images/icon_16_print.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.search, .light-button.search { background:url(../images/icon_16_search.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.calendar, .light-button.calendar { background:url(../images/icon_16_calendar.png) no-repeat 4px 50%; padding-left: 24px; }
+.toolbar-button.alert, .light-button.alert { background:url(../images/icon_16_alert.png) no-repeat 4px 50%; padding-left: 24px; }
 
 .toolbar-button:hover, .light-button:hover {
 	border:1px solid #bbb;

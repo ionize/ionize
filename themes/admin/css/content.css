@@ -169,6 +169,8 @@ li.offline { opacity:0.7; }
 .icon a.helpme, a.icon.helpme 				{background: url(../images/icon_16_helpme.png) no-repeat 0 0;}
 .icon a.copy, a.icon.copy 					{background: url(../images/icon_16_copy.png) no-repeat 0 0;}
 .icon a.ok, a.icon.ok 						{background: url(../images/icon_16_ok.png) no-repeat 0 0;}
+.icon a.search, a.icon.search 				{background: url(../images/icon_16_search.png) no-repeat 0 0;}
+.icon a.calendar, a.icon.calendar 				{background: url(../images/icon_16_calendar.png) no-repeat 0 0;}
 
 .icon a.flag.green, a.flag.green 			{background: url(../images/icon_16_flag_green.png) no-repeat 0 0;}
 .icon a.flag.yellow, a.flag.yellow 			{background: url(../images/icon_16_flag_yellow.png) no-repeat 0 0;}
@@ -505,7 +507,7 @@ table.list th.center {
 	text-align: center;
 }
 
-table.list tbody tr.odd {background-color:#fcfbf5; }
+table.list tbody tr.odd {background-color:#f5f5f5; }
 table.list tbody tr.even {background-color:#fff; }
 table.list .highlight { background-color: #f3f3f3; }
 

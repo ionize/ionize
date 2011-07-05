@@ -320,7 +320,7 @@ class Settings
 		return self::$mimes;
 	}
 	
-
+	
 	public static function get_allowed_extensions($type = FALSE)
 	{
 		$allowed_extensions = array();
@@ -354,7 +354,8 @@ class Settings
 		
 		return $allowed_extensions;
 	}
-
+	
+	
 	public static function get_allowed_mimes()
 	{
 		$allowed_mimes = array();
@@ -373,9 +374,6 @@ class Settings
 		}
 		return $allowed_mimes;
 	}
-
-
-
 }
 
 

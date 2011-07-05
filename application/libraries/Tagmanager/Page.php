@@ -2901,17 +2901,19 @@ class TagManager_Page extends TagManager
 		// If the page group != 0, then get the page group and check the restriction
 		if($row['id_group'] != 0)
 		{
+			self::$ci->load->model('connect_model');
 			$page_group = FALSE;
 			
+			$groups = self::$ci->connect_model->get_groups();
+			
 			// Get the page group
-//			foreach(self::$ci->connect->groups as $group)
-			foreach(Connect()->groups as $group)
+			foreach($groups as $group)
 			{
 				if ($group['id_group'] == $row['id_group']) $page_group = $group;
 			} 
 
 			// If the current connected user has access to the page return TRUE
-			if (self::$user !== FALSE && $page_group != FALSE && self::$user['group']['level'] >= $page_group->level)
+			if (self::$user !== FALSE && $page_group != FALSE && self::$user['group']['level'] >= $page_group['level'])
 				return TRUE;
 			
 			// If nothing found, return FALSE

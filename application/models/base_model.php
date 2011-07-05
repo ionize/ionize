@@ -340,7 +340,20 @@ class Base_model extends CI_Model
 		}
 
 		if ( !empty ($where) )
-			$this->db->where($where);
+		{
+			foreach($where as $cond => $value)
+			{
+				if (is_string($cond))
+				{
+					$this->db->where($cond, $value);
+				}
+				else
+				{
+					$this->db->where($value);
+				}
+			}
+		}
+//			$this->db->where($where, FALSE);
 
 
 		$this->db->select($table.'.*');
