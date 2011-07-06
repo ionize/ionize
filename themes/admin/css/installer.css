@@ -123,9 +123,12 @@ h1 {
 h2 {
 	color:#1E85B8;
 	padding:0 0 3px 0;
-	margin: 10px 8px 20px 8px;
+	margin: 20px 8px 10px 8px;
 	border-bottom: solid 1px #ddd;
 	font-size: 14px;
+}
+h2.first {
+	margin-top:10px;
 }
 h3, h4 {
 	margin: 0 0 10px 0;
@@ -228,6 +231,10 @@ dl dt {
 }
 dl dt.large {
 	width:230px;
+	padding-right:5px;
+}
+dl dt.xlarge {
+	width:400px;
 	padding-right:5px;
 }
 dl dt.left {

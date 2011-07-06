@@ -37,8 +37,11 @@ $lang['write_themes'] = 		'<b>/themes/*</b>';
 $lang['config_check_errors'] = 	"Certains prérequis ne sont pas remplis.<br/> Veuillez corriger avant de poursuivre l'installation.";
 $lang['welcome_text'] = 		"<p>Bienvenue sur Ionize !<br/>Ces quelques étapes vont vous permettre d'installer Ionize.</p>";
 $lang['write_check_text'] = 	"<p>Ionize doit pouvoir écrire les dossiers et fichiers suivants...</p>";
-$lang['system_check_text'] = 	"<p>Tous ces indicateurs doivent être au vert pour continuer.</p>";
+// $lang['system_check_text'] = 	"<p>Tous ces indicateurs doivent être au vert pour continuer.</p>";
  
+$lang['title_folder_check'] = 	"Ionize doit posséder les droits d'écriture sur ces dossiers";
+$lang['title_files_check'] = 	"Ionize doit posséder les droits d'écriture sur ces fichiers";
+
 
 /* Database */
 $lang['database_driver'] = 			'Pilote';

@@ -8,6 +8,7 @@ $lang['title_ionize_installation'] = 		'Installation';
 $lang['title_system_check'] = 		'System check result';
 $lang['title_database_settings'] = 	'Database settings';
 $lang['title_user_account'] = 	'Admin user account';
+$lang['title_default_language'] = 	'Default language';
 $lang['title_sample_data'] = 	'Install the sample website?';
 
 $lang['button_next_step'] = 		'Next step';
@@ -34,9 +35,12 @@ $lang['write_config_dir'] = 	'<b>/application/config/</b>';
 $lang['write_files'] = 			'<b>/files/*</b>';
 $lang['write_themes'] = 		'<b>/themes/*</b>';
 $lang['config_check_errors'] = 	'Some base requirement are not OK.<br/>Please correct them to continue the installation.';
-$lang['welcome_text'] = 		"<p>Welcome on Ionize!<br/>These steps will help you install Ionize.</p>";
+$lang['welcome_text'] = 		"<p>Welcome ! These steps will help you install Ionize.</p>";
 $lang['write_check_text'] = 	"<p>The following folders and files need to be writable...</p>";
-$lang['system_check_text'] = 	"<p>Ionize needs all of these settings to be OK.</p>";
+// $lang['system_check_text'] = 	"<p>Ionize needs all of these settings to be OK.</p>";
+
+$lang['title_folder_check'] = 	"These folders needs to be writable";
+$lang['title_files_check'] = 	"These files needs to be writable";
  
 
 /* Database */

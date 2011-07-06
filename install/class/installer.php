@@ -122,20 +122,35 @@ class Installer
 		 * Folder access rights checks
 		 *
 		 */
-		// Config folder
-		$this->template['write_config_dir'] = $this->_test_dir(ROOTPATH . 'application/config');
 
-		// Config folder files
-		$this->template['write_config_config'] = is_really_writable(ROOTPATH . 'application/config/config.php');
-		$this->template['write_config_database'] = is_really_writable(ROOTPATH . 'application/config/database.php');
-		$this->template['write_config_email'] = is_really_writable(ROOTPATH . 'application/config/email.php');
-		$this->template['write_config_language'] = is_really_writable(ROOTPATH . 'application/config/language.php');
+		// Check files rights
+		$files = array(
+			'application/config/config.php',
+			'application/config/database.php',
+			'application/config/email.php',
+			'application/config/language.php',
+			'application/config/modules.php'
+		);
 
-		// Users files path
-		$this->template['write_files'] = $this->_test_dir(ROOTPATH . 'files', true);
+		$check_files = array();
+		foreach($files as $file)
+			$check_files[$file] = is_really_writable(ROOTPATH . $file);
 
-		// Theme path
-		$this->template['write_themes'] = $this->_test_dir(ROOTPATH . 'themes', true);
+		// Check folders rights
+		$folders = array(
+			'application/config',
+			'files',
+			'themes'
+		);
+		
+		$check_folders = array();
+		foreach($folders as $folder)
+			$check_folders[$folder] = $this->_test_dir(ROOTPATH . $folder, true);
+		
+		
+		$this->template['check_files'] = $check_files;
+		$this->template['check_folders'] = $check_folders;
+
 		
 		/*
 		 * Message to user if one setting is false
