@@ -294,7 +294,7 @@ class Base_Controller extends MY_Controller
 
 		
 		// Simple languages code array, used to detect if Routers found language is in DB languages
-		$lang_codes = array();
+		$online_lang_codes = array();
 		foreach(Settings::get_online_languages() as $language)
 		{
 			$online_lang_codes[] = $language['lang'];
