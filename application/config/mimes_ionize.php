@@ -68,24 +68,15 @@ $mimes_ionize = array(
 		'ppz'		=>	'application/mspowerpoint',
 		'ps'		=>	'application/postscript, *',
 		'rar'		=>	'application/x-rar',
+		'rtf'		=>	'text/rtf',
 		'tar'		=>	'application/x-tar',
+		'txt'		=>	'text/plain,*',
 		'xlc'		=>	'application/vnd.ms-excel',
 		'xll'		=>	'application/vnd.ms-excel',
 		'xlm'		=>	'application/vnd.ms-excel',
 		'xls'		=>	'application/vnd.ms-excel, *',
 		'xlw'		=>	'application/vnd.ms-excel',
 		'zip'		=>	'application/zip'
-	),
-	'text' => array(
-		'htm'=>'text/html',
-		'html'=>'text/html,*',
-		'rtf'=>'text/rtf',
-		'rtx'=>'text/richtext',
-		'sgm'=>'text/sgml',
-		'sgml'=>'text/sgml,*',
-		'tsv'=>'text/tab-separated-values',
-		'txt'=>'text/plain,*',
-		'xml'=>'text/xml'
 	)
 );
 	

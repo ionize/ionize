@@ -134,6 +134,7 @@ class TagManager_Media extends TagManager
 								$i++;
 								$tag->locals->media = $media;
 								$tag->locals->index = $i;
+								$tag->locals->media['index'] = $i;
 								$str .= $tag->expand();
 							}
 						}
@@ -149,6 +150,7 @@ class TagManager_Media extends TagManager
 							$i++;
 							$tag->locals->media = $media;
 							$tag->locals->index = $i;
+							$tag->locals->media['index'] = $i;
 							$str .= $tag->expand();
 						}
 					}

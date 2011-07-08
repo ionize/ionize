@@ -118,6 +118,7 @@ ION.append({
 			};
 		
 			// Form submit or button event
+			$(button).removeEvents('click');
 			$(button).addEvent('click', function(e)
 			{
 				new Event(e).stop();
@@ -129,6 +130,7 @@ ION.append({
 		else if ($(button))
 		{
 			// Form submit or button event
+			$(button).removeEvents('click');
 			$(button).addEvent('click', function(e)
 			{
 				new Event(e).stop();

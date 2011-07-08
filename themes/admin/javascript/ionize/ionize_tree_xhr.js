@@ -280,7 +280,8 @@ ION.TreeXhr = new Class({
 		// The element was dynamically inserted through XHR
 		if (typeOf(element.inserted) != 'null')
 		{
-			(this.itemManagers[type][container.id]).init();
+			if (typeOf(this.itemManagers[type][container.id]) != 'null')
+				(this.itemManagers[type][container.id]).init();
 		}
 
 		

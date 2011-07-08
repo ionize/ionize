@@ -39,6 +39,7 @@ class Widget
 	 */
 	function run($name) 
 	{
+		$ci =& get_instance(); 
 		// Get widget args
 		$args = func_get_args();
 		
@@ -72,7 +73,7 @@ class Widget
 					include $lang_file;
 					
 					// Merge to the Lang array
-					$this->ci->lang->language = array_merge($this->ci->lang->language, $lang);
+					$ci->lang->language = array_merge($ci->lang->language, $lang);
 					unset($lang);
 				}
 			}
