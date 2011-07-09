@@ -90,7 +90,6 @@ ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL;
 UPDATE page SET id_subnav = id_page;
 
 
-
 ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
 
 

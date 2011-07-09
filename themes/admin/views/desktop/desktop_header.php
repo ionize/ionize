@@ -33,7 +33,7 @@
 
 		<ul>
 			<li><a class="navlink" href="dashboard" title="<?= lang('ionize_title_welcome')?>"><?= lang('ionize_menu_dashboard')?></a></li>
-			<li><a class="returnFalse" href=""><?= lang('ionize_menu_content') ?></a>	
+			<li><a class="returnFalse"><?= lang('ionize_menu_content') ?></a>	
 				<ul>
 					<?php if($this->connect->is('super-admins')) :?>
 						<li><a class="navlink" href="menu" title="<?= lang('ionize_title_menu') ?>"><?=lang('ionize_menu_menu')?></a></li>
@@ -51,7 +51,7 @@
 				</ul>
 			</li>
 			<?php if($this->connect->is('editors')) :?>
-			<li><a class="returnFalse" href=""><?= lang('ionize_menu_modules') ?></a>
+			<li><a class="returnFalse"><?= lang('ionize_menu_modules') ?></a>
 				<ul>
 					<!-- Module Admin controllers links -->
 					<?php foreach($modules as $uri => $module) :?>
@@ -65,14 +65,14 @@
 				</ul>
 			</li>
 			<?php endif ;?>
-			<li><a class="returnFalse" href=""><?= lang('ionize_menu_tools') ?></a>
+			<li><a class="returnFalse"><?= lang('ionize_menu_tools') ?></a>
 				<ul>
 					<li><a href="https://www.google.com/analytics/reporting/login" target="_blank">Google Analytics</a></li>
 					<li><a class="navlink" href="system_check"><?=lang('ionize_menu_system_check')?></a></li>
 				</ul>
 			</li>
 		
-			<li><a class="returnFalse" href=""><?=lang('ionize_menu_settings')?></a>
+			<li><a class="returnFalse"><?=lang('ionize_menu_settings')?></a>
 				<ul>
 					<li><a class="navlink" href="setting/ionize" title="<?= lang('ionize_menu_ionize_settings') ?>"><?=lang('ionize_menu_ionize_settings')?></a></li>
 					<li><a class="navlink" href="lang" title="<?= lang('ionize_menu_languages') ?>"><?=lang('ionize_menu_languages')?></a></li>
@@ -88,7 +88,7 @@
 					<?php endif ;?>
 				</ul>
 			</li>
-			<li><a class="returnFalse" href=""><?= lang('ionize_menu_help') ?></a>
+			<li><a class="returnFalse"><?= lang('ionize_menu_help') ?></a>
 				<ul>
 					<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?>
 						<li><a id="docLink" href="../user-guide/index.html" target="_blank"><?= lang('ionize_menu_documentation') ?></a></li>								
@@ -130,6 +130,7 @@
 		});
 	});
 	
+
 	$('mediamanagerlink').addEvent('click', function(event)
 	{
 		event.preventDefault();

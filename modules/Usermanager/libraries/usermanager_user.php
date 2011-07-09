@@ -178,7 +178,8 @@ class Usermanager_User {
 
 		// If only the post data is requested
 		if (!isset($tag->attr['is_like']))
-			return (!isset($tag->attr['html_encode']) || $tag->attr['html_encode'] == "1") ? htmlentities(utf8_decode($ret)) : $ret;
+			return $ret;
+//			return (!isset($tag->attr['html_encode']) || $tag->attr['html_encode'] == "1") ? htmlentities(utf8_decode($ret)) : $ret;
 		
 		// If the post data is compared to is_like
 		else

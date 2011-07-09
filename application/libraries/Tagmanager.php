@@ -828,11 +828,12 @@ class TagManager
 			{
 				if ( ! empty($obj[$objects]))
 				{
+
+// trace($obj[$objects]);
+
 					// Set the prefix
-					if ($prefix == 'base_url')
-					{
-						$prefix = base_url();
-					}
+					$prefix = (function_exists($prefix)) ? call_user_func($prefix) : $prefix;
+
 					// Prepare filtering
 					if ($filter)
 					{
@@ -864,15 +865,16 @@ class TagManager
 							// TODO : Rewrite
 							// Because the operator isn't takken in account
 							//
-//							if ($ob[$filter[0]].$filter[1] = $filter[2])
-//							{
-							if ($ob[$filter[0]] = $filter[2])
-							{
+							// trace($ob[$filter[0]].$filter[1].'='.$filter[2]);
+							eval("\$result = '" . $ob[$filter[0]]."'".$filter[1]."='".$filter[2]."';");
 
+							if ($result)
+							{
 								$fields[] = $ob;
 							}
 						}
 					}
+						
 
 					$return = array();
 					foreach($fields as $key => $row)
@@ -882,6 +884,8 @@ class TagManager
 							$return[] = $prefix.$row[$field];
 						}
 					}
+					// Safe about prefix
+					unset($tag->attr['prefix']);
 					return self::wrap($tag, implode($separator, $return));
 				}
 			}

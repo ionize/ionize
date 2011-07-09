@@ -17,14 +17,14 @@ class Usermanager_Tags
 	 * 									  "user" 	[id_user="<int>"] [attr="is_editor"] 		[is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown
 	 * 									   			[id_user="<int>"] [attr="is_logged_in"] 	[is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown
 	 * 									  		 	[id_user="<int>"] [attr="get_picture"] 		[field="<string>"] 	[dimensions="<s/m/l/xl/../original>"] // Returns an URL to the picture of the field "field" with the specified dimension
-	 * 									  			[id_user="<int>"] [attr="id_user"] 			[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
-	 * 									  			[id_user="<int>"] [attr="join_date"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
-	 * 									  			[id_user="<int>"] [attr="last_visit"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
-	 * 									  			[id_user="<int>"] [attr="username"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
-	 * 									  			[id_user="<int>"] [attr="screen_name"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
-	 * 									  			[id_user="<int>"] [attr="email"] 			[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
-	 * 									  			[id_user="<int>"] [attr="id_group"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
-	 * 									  			[id_user="<int>"] [attr="<custom field>"] 	[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] [html_encode="<1/0>"]
+	 * 									  			[id_user="<int>"] [attr="id_user"] 			[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
+	 * 									  			[id_user="<int>"] [attr="join_date"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
+	 * 									  			[id_user="<int>"] [attr="last_visit"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
+	 * 									  			[id_user="<int>"] [attr="username"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
+	 * 									  			[id_user="<int>"] [attr="screen_name"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
+	 * 									  			[id_user="<int>"] [attr="email"] 			[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
+	 * 									  			[id_user="<int>"] [attr="id_group"] 		[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
+	 * 									  			[id_user="<int>"] [attr="<custom field>"] 	[from_default_value="<1/0>"] [from_user_field="<1/0>"] [from_post_data="<form-name>"] [is_like="<string>"] 
 	 * 												// The user-request gives you lots of opportunities to retrieve user and form information
 	 * 												// id_user is the id of the user, you want to retreive information of. If it's not set, the current user is used.
 	 * 												// Besides attr="is_editor" (which is a container-tag only), every attr="" is a user-field, which are defined under $config['usermanager_user_model'].

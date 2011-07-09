@@ -31,7 +31,7 @@ class Settings
 	
 	public static $online_languages = array();
 
-	public static $mimes = array();
+	public static $mimes = FALSE;
 
 
 	/**
@@ -306,9 +306,9 @@ class Settings
 	
 	public static function get_mimes_types()
 	{
-		global $mimes;
+//		global $mimes;
 	
-		if (count(self::$mimes) == 0)
+		if (self::$mimes == FALSE)
 		{
 			if (@require_once(APPPATH.'config/mimes_ionize'.EXT))
 			{
@@ -325,13 +325,18 @@ class Settings
 	{
 		$allowed_extensions = array();
 		
-		require_once(APPPATH.'config/mimes_ionize'.EXT);
+		if (self::$mimes == FALSE)
+		{
+			require_once(APPPATH.'config/mimes_ionize'.EXT);	
+			self::$mimes = $mimes_ionize;
+		}
+		
 
-		$filemanager_file_types = explode(',', self::$settings['filemanager_file_types']);
+		$filemanager_file_types = explode(',', self::get('filemanager_file_types'));
 
 		if ($type == FALSE)
 		{
-			foreach($mimes_ionize as $type)
+			foreach(self::$mimes as $type)
 			{
 				foreach($type as $ext => $mime)
 				{
@@ -342,9 +347,9 @@ class Settings
 		}
 		else
 		{
-			if ( ! empty($mimes_ionize[$type]))
+			if ( ! empty(self::$mimes[$type]))
 			{
-				foreach($mimes_ionize[$type] as $ext => $mime)
+				foreach(self::$mimes[$type] as $ext => $mime)
 				{
 					if (in_array($ext, $filemanager_file_types))
 						$allowed_extensions[] = $ext;
