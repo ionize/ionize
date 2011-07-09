@@ -6,7 +6,7 @@
  * @package 	Ionize CMS
  * @subpackage 	IonConnect
  * @author 		Ionize Dev Team
- *				based on Martin Wernstahl <m4rw3r@gmail.com> and Christophe Prudent <info@toopixel.ch> Access lib
+ *				based on Martin Wernstahl <m4rw3r@gmail.com> and Christophe Prudent <info@toopixel.ch> Connect lib
  */
 class Connect {
 
@@ -213,9 +213,9 @@ class Connect {
 		$CI->lang->load('connect');
 		$this->lang =& $CI->lang;
 		
-		$CI->load->model('connect_model', 'access');
-		$this->model =& $CI->access;
-		
+		$CI->load->model('connect_model', 'model', TRUE);
+		$this->model =& $CI->model;
+
 		// load settings
 		foreach($config as $key => $val)
 		{
@@ -282,7 +282,7 @@ class Connect {
 			else
 			{
 				// alert the server admin that we've received a tampered cookie
-				log_message('error', "Access Class: Tampered remember me cookie received from ip ".$CI->input->ip_address());
+				log_message('error', "Connect Class: Tampered remember me cookie received from ip ".$CI->input->ip_address());
 				
 				// just delete his cookie, we're evil to all the hackers ;)
 				delete_cookie($this->remember_me['cookie_name']);
@@ -812,7 +812,7 @@ class Connect {
 		}
 
 		// @TODO: Make also that depending on the config file, if the login is done by the email, then it must check for duplicate too, 
-		// anyway the form validation will also take care of that problem before the access lib is called.
+		// anyway the form validation will also take care of that problem before the connect lib is called.
 		if ( ! $this->model->find_user($user_data['username']))
 		{									
 			// Set the salt
@@ -1171,7 +1171,7 @@ class Connect {
 		
 		if($val > 0 && $val % 1 == 0)
 		{
-			log_message('error', 'Access: Many tries to login with the identification '.$key.':"'.$id.'" from ip "'.$CI->input->ip_address().'", try no '.$this->tracker['failures']);
+			log_message('error', 'Connect: Many tries to login with the identification '.$key.':"'.$id.'" from ip "'.$CI->input->ip_address().'", try no '.$this->tracker['failures']);
 		}
 	}
 	
@@ -1274,7 +1274,7 @@ function Connect()
  */
 function init_connect()
 {
-	// get the access object and the router object
+	// get the connect object and the router object
 	$connect = Connect::get_instance();
 	$router =& load_class('Router');
 

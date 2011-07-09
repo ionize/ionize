@@ -181,57 +181,62 @@ var IonizeMediaManager = new Class(
 		MUI.hideSpinner();
 
 		// Receiver container
-		var container = $(this.containers.get(responseJSON.type));
-	
-		if (responseJSON && responseJSON.content)
+		var cname = this.containers.get(responseJSON.type);
+		if (cname)
+			var container = $(cname);
+		
+		if (typeOf(container) != 'null')
 		{
-			container.empty();
-			
-			// Feed the container with responseJSON content		
-			container.set('html', responseJSON.content);
-
-			var self = this;
-
-			// Init the sortable 
-			sortableMedia = new Sortables(container, {
-				revert: true,
-				handle: '.drag',
-				clone: true,
-				container: container,
-				opacity: 0.5,
-				onComplete: function()
-				{
-					var serialized = this.serialize(0, function(element, index) 
-					{
-						// Get the ID list by replacing 'type_' by '' for each item
-						// Example : Each picture item is named 'picture_ID' where 'ID' is the media ID
-						if (element.id != '')
-						{
-							return (element.id).replace(responseJSON.type + '_','');
-						}
-					});
-					// Items sorting
-					self.sortItemList(responseJSON.type, serialized);
-				}
-			});
-
-			// Store the first ordering after picture list load
-			container.store('sortableOrder', sortableMedia.serialize(0, function (element, index) 
+			if (responseJSON && responseJSON.content)
 			{
-				return element.getProperty('id').replace(responseJSON.type + '_','');
-			}));
-
-			// Set tips
-			new Tips('#' + this.containers.get(responseJSON.type) + ' .help', {'className' : 'tooltip'});
+				container.empty();
+				
+				// Feed the container with responseJSON content		
+				container.set('html', responseJSON.content);
+	
+				var self = this;
+	
+				// Init the sortable 
+				sortableMedia = new Sortables(container, {
+					revert: true,
+					handle: '.drag',
+					clone: true,
+					container: container,
+					opacity: 0.5,
+					onComplete: function()
+					{
+						var serialized = this.serialize(0, function(element, index) 
+						{
+							// Get the ID list by replacing 'type_' by '' for each item
+							// Example : Each picture item is named 'picture_ID' where 'ID' is the media ID
+							if (element.id != '')
+							{
+								return (element.id).replace(responseJSON.type + '_','');
+							}
+						});
+						// Items sorting
+						self.sortItemList(responseJSON.type, serialized);
+					}
+				});
+	
+				// Store the first ordering after picture list load
+				container.store('sortableOrder', sortableMedia.serialize(0, function (element, index) 
+				{
+					return element.getProperty('id').replace(responseJSON.type + '_','');
+				}));
+	
+				// Set tips
+				new Tips('#' + this.containers.get(responseJSON.type) + ' .help', {'className' : 'tooltip'});
+			}
+			// If no media, feed the content HMTLDomElement with transmitted message
+			else
+			{
+				container.set('html', responseJSON.message);
+			}
+	
+			// Add the media number to the tab
+			ION.updateTabNumber(responseJSON.type + 'Tab', container.getProperty('id'));
 		}
-		// If no media, feed the content HMTLDomElement with transmitted message
-		else
-		{
-			container.set('html', responseJSON.message);
-		}
-
-		// Add the media number to the tab
-		ION.updateTabNumber(responseJSON.type + 'Tab', container.getProperty('id'));
 	},
 
 

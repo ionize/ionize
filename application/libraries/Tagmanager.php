@@ -204,7 +204,7 @@ class TagManager
 		{
 			return FALSE;
 		}
-		
+
 		/* If modules are installed : Get the modules tags definition
 		 * Modules tags definition must be stored in : /modules/your_module/libraires/tags.php
 		 * 
@@ -243,7 +243,7 @@ class TagManager
 						self::$tags[$module.':'.$method] = $class.'::'.$method;
 					}
 				}
-
+//trace(self::$tags);
 				return TRUE;
 			}
 			else
@@ -682,6 +682,29 @@ class TagManager
 	}
 
 
+
+	public static function tag_if($tag)
+	{
+		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : FALSE;
+		$condition = ( ! empty($tag->attr['condition'])) ? $tag->attr['condition'] : FALSE;
+		$result = FALSE;
+
+		if ($field && $condition)
+		{
+			$obj_name = self::get_parent_tag($tag);
+
+			if ( ! empty($tag->locals->{$obj_name}[$field] ))
+			{
+				$value = $tag->locals->{$obj_name}[$field];
+				eval("\$result = ('".$value."'".$condition.") ? TRUE : FALSE;");
+				
+				if ($result)
+					return $tag->expand();
+			}
+		}
+	}
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -794,9 +817,13 @@ class TagManager
 			{
 				$from = self::get_parent_tag($tag);
 			}
-
+			if ($from == FALSE)
+			{
+				$from = 'page';
+			}
+			
 			$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-	
+
 			if ( ! is_null($obj) && $field != FALSE)
 			{
 				if ( ! empty($obj[$objects]))
@@ -832,11 +859,17 @@ class TagManager
 					foreach($filters as $filter)
 					{
 						// $fields += array_filter($obj[$objects], create_function('$row', 'return $row["'.$filter[0].'"]'.$filter[1].'="'.$filter[2].'";'));
-						foreach($obj[$objects] as $obj)
+						foreach($obj[$objects] as $ob)
 						{
-							if ($obj[$filter[0]].$filter[1] = $filter[2])
+							// TODO : Rewrite
+							// Because the operator isn't takken in account
+							//
+//							if ($ob[$filter[0]].$filter[1] = $filter[2])
+//							{
+							if ($ob[$filter[0]] = $filter[2])
 							{
-								$fields[] = $obj;
+
+								$fields[] = $ob;
 							}
 						}
 					}

@@ -44,7 +44,7 @@ ION.TreeXhr = new Class({
 		
 		this.opened = new Array();
 		if (Cookie.read('tree')) this.opened = (Cookie.read('tree')).split(',');
-
+		
 		this.get(0);
 	},
 
@@ -65,10 +65,6 @@ ION.TreeXhr = new Class({
 			data: {
 				'id_menu': this.id_menu,
 				'id_parent': id_parent
-			},
-			onFailure: function(xhr) 
-			{
-				ION.notification('error', xhr.responseJSON);
 			},
 			onSuccess: function(responseJSON, responseText)
 			{
@@ -377,6 +373,8 @@ ION.TreeXhr = new Class({
 		{
 			e.stop();
 			
+//			ION.HTML(admin_url + type + '/edit/' + a.getProperty('rel'), {}, {'update':p});
+
 			MUI.Content.update({
 				'element': p,
 				'url': admin_url + type + '/edit/' + a.getProperty('rel'),
@@ -401,15 +399,12 @@ ION.TreeXhr = new Class({
 
 
 
-/**
- * 
- *
- * HERE : Replace switchOnline() and deleteItem() by the ION one
- *
- *
- *
- *
- */	
+	/**
+	 * Adds Actions Buttons Events on one page Element
+	 *
+	 * @param	DOMElement		tree LI
+	 *
+	 */
 	addPageActionLinks: function(el)
 	{
 		var a = el.getElement('a.addArticle');

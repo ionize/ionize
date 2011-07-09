@@ -104,7 +104,10 @@ ALTER TABLE `article_lang` DROP `link`;
 
 
 
-ALTER TABLE `page` CHANGE `link_id` `link_id` VARCHAR( 20 ) NOT NULL  DEFAULT '', ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
+ALTER TABLE `page` CHANGE `link_id` `link_id` VARCHAR( 20 ) NOT NULL  DEFAULT '';
+
+
+ALTER TABLE `page` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
 
 
 
