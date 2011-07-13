@@ -1134,7 +1134,10 @@
 				if (Browser.ie || (Browser.firefox && Browser.version < 4))
 				{
 					$('id_parent').set('html', responseHTML);
-	
+					
+					var selected = $('id_parent').getElement('option[selected=selected]');
+					selected.setProperty('selected', 'selected');
+					
 					if ($('origin_id_parent').value == '0')
 						$('id_parent').getFirst('option').setProperty('selected', 'selected');
 				}
@@ -1226,6 +1229,9 @@
 					if (Browser.ie || (Browser.firefox && Browser.version < 4))
 					{
 						$('id_subnav').set('html', responseHTML);
+		
+						var selected = $('id_subnav').getElement('option[selected=selected]');
+						selected.setProperty('selected', 'selected');
 					}
 					else
 					{

@@ -544,7 +544,7 @@ var IonizeMediaManager = new Class(
 									hideOnSelect: false,
 									thumbSize: self.options.thumbSize,
 									'onComplete': self.addMedia.bind(self),
-									propagateData: {'uploadAuthData': responseJSON.tokken},
+									propagateData: {'uploadTokken': responseJSON.tokken},
 									parentContainer: 'filemanagerWindow_contentWrapper',
 									mkServerRequestURL: function(fm_obj, request_code, post_data)
 									{

@@ -434,7 +434,11 @@ class Setting extends MY_admin
 		
 		// Allowed filemanager file extensions
 		$filemanager_file_types = $this->input->post('allowed_type');
-		$this->input->set_post('filemanager_file_types', implode(',', $filemanager_file_types));
+		if (is_array($filemanager_file_types))
+			$this->input->set_post('filemanager_file_types', implode(',', $filemanager_file_types));
+		else
+			$this->input->set_post('filemanager_file_types', '');
+		
 
 
 		// Get the old media path before saving

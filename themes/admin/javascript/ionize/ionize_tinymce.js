@@ -181,7 +181,8 @@ ION.append({
 						language: Lang.get('current'),
 						selectable: true,
 						hideOnClick: true,
-						'uploadAuthData': responseJSON.tokken,
+						propagateData: {'uploadTokken': responseJSON.tokken},
+//						'uploadAuthData': responseJSON.tokken,
 						parentContainer: 'filemanagerWindow_contentWrapper',
 						mkServerRequestURL: function(fm_obj, request_code, post_data)
 						{

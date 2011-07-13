@@ -139,7 +139,6 @@ class Media extends MY_admin
 		$this->load->library('Filemanagerwithaliassupport', $params);
 
 
-
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object
 		// If no event is givven, it will call the "display" event
@@ -152,50 +151,22 @@ class Media extends MY_admin
 		{
 			if ($event == 'upload')
 			{
-				// $user = Connect()->get_current_user();
-				
-				if (Connect()->is('Editors') && Connect()->logged_in())
+				if ( ! empty($_POST['PHPSESSID']))
 				{
-					$uploadAuthData = ( !empty($_POST['uploadAuthData'])) ? $_POST['uploadAuthData'] : FALSE;
+					session_destroy();
+					session_id($_POST['PHPSESSID']);
+					session_start();
 					
-					$this->Filemanagerwithaliassupport->fireEvent($event);
-				}
-/*			
-				// Get all DB saved CI sessions in order to check the tokken
-				$query = $this->db->get(config_item('sess_table_name'));
-				
-				if ($query->num_rows() > 0 && $uploadAuthData !== FALSE)
-				{
-					$connected = FALSE;
-				
-					$sessions = $query->result();
+					$okken = $this->session->userdata('uploadTokken');
+					$sent_tokken = $_POST['uploadTokken'];
 					
-					// Session & tokken comparison
-					foreach ($query->result() as $sess)
-					{
-						// Rebuild the tokken
-						$tokken = md5($sess->session_id . config_item('encryption_key'));
-						
-						// The calculated tokken is OK.
-						if ($tokken == $uploadAuthData) $connected = TRUE;
-					}
-					
-					// Fires the Filemanager event if the user is connected
-					if ($connected === TRUE)
+					if ($okken == $sent_tokken)
 					{
 						$this->Filemanagerwithaliassupport->fireEvent($event);
 					}
-					// The user isn't connected
-					else
-					{
-						echo json_encode(array(
-							'status' => 0,
-							'error' => lang('ionize_session_expired')
-						));
-					}
 				}
-*/
-				// No session saved in DB
+				
+				// No session
 				else
 				{
 					echo json_encode(array(
@@ -240,8 +211,12 @@ class Media extends MY_admin
 	{
 		if (Connect()->is('editors'))
 		{
+			$tokken = md5(session_id() . config_item('encryption_key'));
+			
+			$this->session->set_userdata('uploadTokken', $tokken);
+
 			echo json_encode(array(
-				'tokken' => md5($this->session->userdata('session_id') . config_item('encryption_key')) 
+				'tokken' => $tokken 
 			));
 		}
 		else
