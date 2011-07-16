@@ -501,7 +501,16 @@ $lang['ionize_title_cache'] = 'Cache System';
 $lang['ionize_title_allowed_mimes'] = 'Allowed Mimes';
 $lang['ionize_label_article_allowed_tags'] = 'Allowed Tags';
 
-
+$lang['ionize_title_maintenance'] = 'Maintenance Mode';
+$lang['ionize_title_maintenance_page'] = 'Maintenance Page';
+$lang['ionize_label_maintenance'] = 'In maintenance';
+$lang['ionize_label_maintenance_ips'] = 'Restrict to IPs';
+$lang['ionize_drop_maintenance_page_here'] = 'Drop the wished maintenance page here...';
+$lang['ionize_label_maintenance_help'] = 'When checked, the website will display a maintenance message. Ionize stays available during maintenance.';
+$lang['ionize_label_maintenance_ips_help'] = 'The font-end website will be visible for these IPs';
+$lang['ionize_label_your_ip'] = 'your IP';
+$lang['ionize_label_maintenance_page_help'] = 'This page must be set before activating the maintenance mode in order to let Ionize build correctly the plain HTML page.';
+$lang['ionize_message_maintenance_page_curl_error'] = 'The cURL PHP extension needs to be installed';
 
 $lang['ionize_label_thumb_automatic'] = 'Automatic';
 $lang['ionize_label_files_path'] = 'Media base folder';

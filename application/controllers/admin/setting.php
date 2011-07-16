@@ -84,33 +84,27 @@ class Setting extends MY_admin
 		// (Settings are displayed in view from this library)
 		$this->_get_settings();
 
-		/* 
-		 * Text editor list
-		 */
+
+		// Text editor list
 		foreach(config_item('texteditors') as $t)
 		{
 			$this->template['texteditors'][] = $t;
 		}
 
-		/* 
-		 * Filemanager list
-		 */
+
+		// Filemanager list
 		foreach($this->config->item('filemanagers') as $f)
 		{
-//			if (file_exists(APPPATH.'../themes/admin/javascript/tinymce/jscripts/tiny_mce/plugins/'.strtolower($f)))
-//			{
-				$this->template['filemanagers'][] = $f;
-//			}
+			$this->template['filemanagers'][] = $f;
 		}
 		
+
 		// Mimes types
 		$mimes = Settings::get_mimes_types();
-		
 		$this->template['mimes'] = $mimes;
 
-		/* 
-		 * Database settings
-		 */
+
+		// Database settings
 		$this->load->dbutil();
 
 		// If the user is here, a valid database.php config file exists !
@@ -124,9 +118,7 @@ class Setting extends MY_admin
 		$this->template['databases'] =		$this->dbutil->list_databases();
 
 
-		/* 
-		 * Website Email settings
-		 */
+		// Website Email settings
 		if (file_exists(APPPATH.'config/email'.EXT))
 		{
 			include(APPPATH.'config/email'.EXT);
@@ -142,9 +134,7 @@ class Setting extends MY_admin
 		$this->template['mailtype'] = 		isset($config['mailtype']) ? $config['mailtype'] : 'text';
 
 
-		/*
-		 * Thumbs settings
-		 */
+		// Thumbs settings
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
 		
 		
@@ -152,10 +142,17 @@ class Setting extends MY_admin
 		$this->template['cache_enabled'] = config_item('cache_enabled');
 		$this->template['cache_time'] = config_item('cache_time');
 		
+		
 		// Antispam key
 		$this->template['form_antispam_key'] = config_item('form_antispam_key');
-
+		
+		
+		// Allowed HTML tags in content
 		$this->template['article_allowed_tags'] = explode(',', Settings::get('article_allowed_tags') );
+
+		// Antispam key
+		$this->template['maintenance_ips'] = implode("\n", config_item('maintenance_ips'));
+
 
 		$this->output('setting_technical');
 	}
@@ -170,10 +167,7 @@ class Setting extends MY_admin
 	 */
 	function themes()
 	{
-		/* 
-		 * Get Themes list
-		 *
-		 */
+		// Themes list
 		$themes = $themes_admin = array();
 		$handle = opendir(APPPATH.'../themes');
 		if ($handle)
@@ -191,10 +185,8 @@ class Setting extends MY_admin
 		$this->template['themes_admin'] = $themes_admin;
 
 
-		/* 
-		 * Get Current theme views list
-		 *
-		 */
+		// Get Current theme views list
+
 		// Filesystem files list
 		$files = $this->_get_view_files();
 
@@ -229,16 +221,89 @@ class Setting extends MY_admin
 		$this->template['files'] = $files;
 
 		
-		/* 
-		 * Get Special URI definition
-		 *
-		 */
-		
-
 		$this->output('setting_theme');
 	}
 
 
+	// ------------------------------------------------------------------------
+	
+	
+	/**
+	 * Gets the maintenance page
+	 *
+	 */
+	function get_maintenance_page()
+	{
+		if (Settings::get('maintenance_page') != '')
+		{
+			$this->load->model('page_model', '', true);
+			$this->template['page'] = $this->page_model->get(Settings::get('maintenance_page'), Settings::get_lang('default'));
+		}
+
+		$this->output('setting_maintenance_page');
+	}
+	
+	
+	// ------------------------------------------------------------------------
+	
+	
+	/**
+	 * Sets the maintenance page
+	 *
+	 */
+	function set_maintenance_page()
+	{
+		$id_page = $this->input->post('id_page');
+
+		$data = array(
+			'name' => 'maintenance_page',
+			'content' => $id_page
+		);
+		
+		$this->settings_model->save_setting($data);
+
+		if ($id_page)
+		{
+			$this->load->model('page_model', '', true);
+
+			$page = $this->page_model->get($id_page, Settings::get_lang('default'));
+		
+			$options = array(
+				CURLOPT_RETURNTRANSFER => true, // return web page
+				CURLOPT_HEADER => false, // don't return headers
+				CURLOPT_FOLLOWLOCATION => true, // follow redirects
+				CURLOPT_ENCODING => "", // handle all encodings
+				CURLOPT_USERAGENT => "ionize", // who am i
+				CURLOPT_AUTOREFERER => true, // set referer on redirect
+				CURLOPT_CONNECTTIMEOUT => 120, // timeout on connect
+				CURLOPT_TIMEOUT => 120, // timeout on response
+				CURLOPT_MAXREDIRS => 10, // stop after 10 redirects
+				CURLOPT_SSL_VERIFYHOST => 0, // don't verify ssl
+				CURLOPT_SSL_VERIFYPEER => false, //
+				CURLOPT_VERBOSE => 1 //
+			);
+ 
+			$ch = curl_init(base_url().$page['name']);
+			curl_setopt_array($ch,$options);
+			$content = curl_exec($ch);
+			$err = curl_errno($ch);
+			$errmsg = curl_error($ch) ;
+			$header = curl_getinfo($ch);
+			curl_close($ch);
+
+			write_file(FCPATH.'maintenance.html', $content);
+		}
+		else
+		{
+			@unlink(FCPATH.'maintenance.html');
+		}
+		
+		Settings::set('maintenance_page', $id_page);
+		
+		$this->get_maintenance_page();
+	}
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -536,6 +601,7 @@ class Setting extends MY_admin
 				);
 		$this->settings_model->save_setting($article_allowed_tags);
 
+
 		
 		$this->callback = array(
 			'fn' => 'ION.reload',
@@ -680,7 +746,47 @@ class Setting extends MY_admin
 		$this->error(lang('ionize_message_thumb_not_saved'));				
 	}
 
+	
+	
+	/**
+	 * Saves Maintenance Mode
+	 *
+	 */
+	function save_maintenance()
+	{
+		$this->load->model('config_model', '', true);
 
+		// Maintenance Mode
+/*		$data = array(
+					'name' => 'maintenance',
+					'content' => $this->input->post('maintenance')
+				);
+		
+		$this->settings_model->save_setting($data);
+*/
+//		$maintenance = 
+		if ($this->config_model->change('ionize.php', 'maintenance', $this->input->post('maintenance')) == FALSE)
+			$this->error(lang('ionize_message_error_writing_ionize_file'));				
+
+
+		// Allowed IPs
+		$ips = explode("\n", $this->input->post('maintenance_ips'));
+		
+		if ($this->config_model->change('ionize.php', 'maintenance_ips', $ips) == FALSE)
+			$this->error(lang('ionize_message_error_writing_ionize_file'));				
+		
+		
+		// UI panel to update after saving
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'setting/technical'
+		);
+
+		// Answer
+		$this->success(lang('ionize_message_operation_ok'));				
+
+	
+	}
 	// ------------------------------------------------------------------------
 
 

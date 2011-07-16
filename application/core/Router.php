@@ -80,6 +80,41 @@ class CI_Router
 
 		$this->_set_routing();
 
+
+		// If maintenance mode, don't go further
+		if (config_item('maintenance') == 1 && $this->uri->segment(1) != config_item('admin_url'))
+		{
+			if ( ! in_array($_SERVER['REMOTE_ADDR'], config_item('maintenance_ips')))
+			{
+				$content = "Website in maintenance";
+				
+				if (file_exists(FCPATH.'maintenance.html'))
+				{
+					$content = file_get_contents(FCPATH.'maintenance.html');
+				}
+				elseif (file_exists(APPPATH.'views/core/maintenance.php')) 
+				{
+					$path = APPPATH.'views/core/maintenance.php';
+					
+					ob_start();
+					if ((bool) @ini_get('short_open_tag') === FALSE AND config_item('rewrite_short_tags') == TRUE)
+					{
+						echo eval('?>'.preg_replace("/;*\s*\?>/", "; ?>", str_replace('<?=', '<?php echo ', file_get_contents($path))));
+					}
+					else
+					{
+						include($path); 
+					}
+					ob_end_flush();
+					die();
+				}					
+				
+				echo $content;
+				die();
+			}
+		}
+		
+
 		log_message('debug', "Router Class Initialized");
 	}
 

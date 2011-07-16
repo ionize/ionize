@@ -25,7 +25,7 @@
 </ion:languages>
 
 <!-- Website title -->
-<ion:site_title tag="h1" class="toto" />
+<ion:site_title tag="h1" />
 
 <!-- Navigation -->
 <ion:navigation level="0" tag="ul" class="navigation" active_class="active" />

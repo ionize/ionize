@@ -122,5 +122,21 @@ $config['files_path'] = 'files/';
 $config['cache_expiration'] = 2;
 
 
+/*
+|--------------------------------------------------------------------------
+| Maintenance allowed IPs
+|--------------------------------------------------------------------------
+|
+| These IPs are allowed to see the front-end website when the website
+| is in maintenance mode.
+| Values here are automatically set by the Settings Advanced panel
+|
+*/
+$config['maintenance'] = false;
+
+$config['maintenance_ips'] = array (
+);
+
+
 /* End of file ionize.php */
 /* Location: ./application/config/ionize.php */

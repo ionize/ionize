@@ -97,8 +97,13 @@ License:
 }
 
 #options h4 {
-	margin: 10px 0 10px 0;
+	margin: 10px 0 5px 15px;
 }
+
+#options .element p {
+	margin-left:15px;
+}
+ 
 
 /* Accordion togglers
 ---------------------------------------------------------------- */

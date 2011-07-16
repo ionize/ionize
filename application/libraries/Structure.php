@@ -187,13 +187,19 @@ class Structure{
 		// Pages array
 		$arr = array();
 		
-		// Return array
-		$select_data = array();
-		
 		Structure::get_nested_structure($data, $arr, $id_parent, $startDepth, $maxDepth, $articles);
 		
+		if ($articles)
+		{
+			foreach($articles as $article)
+			{
+				if ($article['id_page'] == $id_parent)
+					$arr['articles'][] = $article;
+			}
+			
+		}
+		
 		return $arr;
-	
 	}
 
 
@@ -221,8 +227,6 @@ class Structure{
 
 		if ( ! empty($page))
 		{
-//			$page = $page[0];
-
 			if ($page['id_parent'] != '0')
 			{
 				$active_pages += self::get_active_pages($pages, $page['id_parent']);

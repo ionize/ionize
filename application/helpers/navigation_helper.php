@@ -76,35 +76,64 @@ if( ! function_exists('get_tree_navigation'))
 		$class = ( ! is_null($class) ) ? ' class="' . $class . '" ' : '';
 
 		$tree = '<ul' . $id . $class . '>';
-		
-		
+
 		foreach($items as $key => $page)
 		{
-			$class = array();
-			if (( ! empty($page['active_class']))) $class[] = $page['active_class'];
-			if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
-			if ($key == (count($items) - 1) && ! is_null($last_class)) $class[] = $last_class;
-			
-			if ( ! empty($class))
+			if ($key !== 'articles')
 			{
-				$class = ' class="'.implode(' ', $class).'"';
-			}
-			else
-			{
-				$class = '';
-			}
-			
-			$tree .= '<li'.$class.'><a'.$class.' href="' . $page['absolute_url'] . '">'.$page['title']. '</a>';
+				$class = array();
+				if (( ! empty($page['active_class']))) $class[] = $page['active_class'];
+				if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
+				if ($key == (count($items) - 1) && ! is_null($last_class)) $class[] = $last_class;
+				
+				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
+				
+				$tree .= '<li'.$class.'><a'.$class.' href="' . $page['absolute_url'] . '">'.$page['title']. '</a>';
+		
+				if (!empty($page['children']))
+					 $tree .= get_tree_navigation($page['children'], $lang_url);
+				
 	
-			if (!empty($page['children']))
-				 $tree .= get_tree_navigation($page['children'], $lang_url);
-			
-			$tree .= '</li>';
-			
+				if (!empty($page['articles']))
+				{
+					$tree .= '<ul' . $id . $class . '>';
+					
+					foreach($page['articles'] as $article)
+					{
+						$class = array();
+						if (( ! empty($article['active_class']))) $class[] = $article['active_class'];
+						if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
+						if ($key == (count($page['articles']) - 1) && ! is_null($last_class)) $class[] = $last_class;
+						
+						$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
+
+						$tree .= '<li'.$class.'><a'.$class.' href="' . $article['url'] . '">'.$article['title']. '</a></li>';
+					}
+					$tree .= '</ul>';
+				}
+				
+				
+				$tree .= '</li>';
+			}
+		}
+
+		if ( ! empty($items['articles']))
+		{
+			foreach($items['articles'] as $article)
+			{
+				$class = array();
+				if (( ! empty($article['active_class']))) $class[] = $article['active_class'];
+				if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
+				if ($key == (count($items['articles']) - 1) && ! is_null($last_class)) $class[] = $last_class;
+						
+				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
+
+				$tree .= '<li'.$class.'><a'.$class.' href="' . $article['url'] . '">'.$article['title']. '</a></li>';
+			}
 		}
 		
 		$tree .= '</ul>';
-		
+
 		return $tree;
 	}
 }

@@ -193,11 +193,13 @@ textarea:focus {
 input.italic {
 	font-style: italic;
 }
+div.droppable,
 input.droppable,
 textarea.droppable {
 	font-style: italic;
 	padding:4px;
 }
+div.droppable,
 input.droppable.empty,
 textarea.droppable.empty {
 	background-color:#fff;
@@ -206,6 +208,7 @@ textarea.droppable.empty {
 	border: dashed 1px #ccc;
 	-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;
 }
+div.droppable.nofocus,
 input.nofocus,
 input.droppable.nofocus,
 textarea.nofocus,

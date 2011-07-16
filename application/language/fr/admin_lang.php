@@ -3,8 +3,8 @@
 /*
 |--------------------------------------------------------------------------
 | Ionize Language file
-| Language : Français
-|
+| Language : English
+| Translater : Guardian, 13th Sept 2010
 |
 | Usage :
 | Form labels :				ionize_label_*
@@ -17,15 +17,15 @@
 |							ionize_*_notify_*
 | Help (inline) :			ionize_help_*
 |
-| Notes :	Les éléments de traduction des modules doivent être prefixé du nom du module.
-|			Exemple :
-|			$lang['module_fancyupload_label_folder'] = 'Dossier de destination';
+| Notes : 	Modules translation items should begin with the prefix 'module_name'
+|			Example :
+|			$lang['module_fancyupload_label_folder'] = 		'Dossier de destination';
 |
-| Label documentation : Chaque label devrait posséder un attribut "title" renseigné
-|						L'attribut title aide l\'utilisteur à comprendre le fonctionnement d\'un champ
+| Label documentation :	Each label should have a "title" attribute set
+| 						The title attribute value helps the user to understand what use he can made from a field
 |						Example : 
-|						Label :			$lang['ionize_label_appears'] = 'Visible';
-|						Label title :	$lang['ionize_help_appears'] = 'L'élément apparait dans le menu du site';
+|						Label : $lang['ionize_label_appears'] = 'Visible menu';
+|						Label title : $lang['ionize_help_appears'] = 'La page apparaît-elle dans le menu de navigation ?';
 |
 |--------------------------------------------------------------------------
 */
@@ -37,7 +37,7 @@
 |--------------------------------------------------------------------------
 */
 $lang['ionize_home'] = 'Accueil';
-$lang['ionize_login'] = 'Connexion';
+$lang['ionize_login'] = 'Se connecter';
 $lang['ionize_logout'] = 'Déconnexion';
 $lang['ionize_goback'] = 'Retour au site';
 $lang['ionize_website'] = 'Voir le site';
@@ -271,7 +271,7 @@ $lang['ionize_label_article_template'] = 'Vue articles';
 
 $lang['ionize_label_title'] = 'Titre';
 $lang['ionize_label_subtitle'] = 'Sous Titre';
-$lang['ionize_label_meta_title'] = 'Titre fenêtre'; 
+$lang['ionize_label_meta_title'] = 'Titre fenêtre';
 $lang['ionize_label_text'] = 'Texte';
 $lang['ionize_label_content'] = 'Contenu';
 $lang['ionize_label_category'] = 'Catégorie';
@@ -360,8 +360,8 @@ $lang['ionize_message_operation_ok'] = 'Opération effectuée';
 $lang['ionize_message_operation_nok'] = 'Opération non effectuée';
 $lang['ionize_message_delete_installer'] = 'IMPORTANT : <br/>Pour des raison de sécurité, veuillez supprimer le dossier <b>"/install"</b> pour pouvoir accéder au site';
 $lang['ionize_message_no_circular_link'] = 'Liens circulaires non autorisés';
-$lang['button_delete_installer_done_admin'] = 'C\'est fait ! Aller à l\'Admin';
 $lang['ionize_message_target_link_not_unique'] = 'Le lien pointé doit être unique dans l\'arborescence !';
+$lang['button_delete_installer_done_admin'] = 'C\'est fait ! Aller à l\'Admin';
 $lang['button_delete_installer_done_site'] = 'C\'est fait ! Aller au site';
 $lang['ionize_message_item_used_by_data_no_delete'] = 'Cet élément est utilisé et ne peut être supprimé';
 $lang['ionize_message_url_not_found'] = 'URL non supprimé';
@@ -380,8 +380,8 @@ $lang['ionize_title_language'] = 'Gestion des langues';
 $lang['ionize_title_existing_languages'] = 'Langues existantes';
 $lang['ionize_title_add_language'] = 'Ajout d\'une langue';
 $lang['ionize_title_advanced_language'] = 'Fonctions avancées';
-$lang['ionize_message_no_languages'] = '<b>Aucune langue n\'est définie</b>. <br/> Veuillez créer une langue au minimum.';
 $lang['ionize_title_lang_urls'] = 'Langues et URLs';
+$lang['ionize_message_no_languages'] = '<b>Aucune langue n\'est définie</b>. <br/> Veuillez créer une langue au minimum.';
 $lang['ionize_message_lang_saved'] = 'Langue enregistrée';
 $lang['ionize_message_lang_not_saved'] = 'Langue non enregistrée';
 $lang['ionize_message_lang_file_not_saved'] = 'Erreur d\'écriture : config/language.php';
@@ -447,8 +447,8 @@ $lang['ionize_label_filter_result'] = 'Filter result';
 
 $lang['ionize_message_user_updated'] = 'Utilisateur mis à jour';
 $lang['ionize_message_user_not_saved'] = 'Utilisateur non enregistré';
-$lang['ionize_message_user_exists'] = 'Utilisateur déjà existant !';
 $lang['ionize_message_user_saved'] = 'Utilisateur enregistré';
+$lang['ionize_message_user_exists'] = 'Utilisateur déjà existant !';
 $lang['ionize_message_user_deleted'] = 'Utilisateur supprimé';
 $lang['ionize_message_user_cannot_delete_yourself'] = 'Vous ne pouvez vous supprimer vous-même !';
 $lang['ionize_message_group_updated'] = 'Groupe mis à jour';
@@ -469,10 +469,10 @@ $lang['ionize_button_export'] = 'Exporter';
 
 $lang['ionize_label_site_title'] = 'Titre du site';
 $lang['ionize_message_settings_saved'] = 'Paramètres enregistrés';
-$lang['ionize_title_visual_help'] =  'Eléments visuels';
+$lang['ionize_title_visual_help'] = 'Eléments visuels';
+$lang['ionize_label_show_help_tips'] = 'Afficher l\'aide';
 $lang['ionize_title_admin_panel_languages'] =  'Langues de l\'interface d\'administration';
 $lang['ionize_title_admin_panel_datetime'] =  'Date et heure';
-$lang['ionize_label_show_help_tips'] = 'Afficher l\'aide';
 $lang['ionize_label_display_connected_label'] = 'Label Connecté';
 $lang['ionize_help_display_connected_label'] = 'Affiche un label sur le site lorsque vous êtes connecté à l\'Administration du site.';
 $lang['ionize_onchange_ionize_settings'] = 'L\'interface se rafraîchira après sauvegarde de ces paramètres.';
@@ -500,6 +500,17 @@ $lang['ionize_title_encryption_key'] = 'Clé d\'encryption';
 $lang['ionize_title_cache'] = 'Cache';
 $lang['ionize_title_allowed_mimes'] = 'Mimes autorisés';
 $lang['ionize_label_article_allowed_tags'] = 'Tags autorisés';
+
+$lang['ionize_title_maintenance'] = 'Maintenance';
+$lang['ionize_title_maintenance_page'] = 'Page de Maintenance';
+$lang['ionize_label_maintenance'] = 'En maintenance';
+$lang['ionize_label_maintenance_ips'] = 'Restreindre aux IPs';
+$lang['ionize_drop_maintenance_page_here'] = 'Glissez la page souhaitée ici...';
+$lang['ionize_label_maintenance_help'] = 'Si coché, le site affichera un message de maintenance. Ionize reste accessible durant la maintenance.';
+$lang['ionize_label_maintenance_ips_help'] = 'Le site sera visible pour les IPs listées ci-dessous';
+$lang['ionize_label_your_ip'] = 'Votre IP';
+$lang['ionize_label_maintenance_page_help'] = 'Pour que Ionize puisse générer correctemnt la page de maintenance statique, celle-ci doit être glissée ici avant d\'activer le mode maintenance.';
+$lang['ionize_message_maintenance_page_curl_error'] = 'L\'extension cURL est nécessaire';
 
 $lang['ionize_label_thumb_automatic'] = 'Automatique';
 $lang['ionize_label_files_path'] = 'Dossier des médias';
@@ -759,16 +770,16 @@ $lang['ionize_exception_image_lib'] = 'Erreur Image Lib';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_title_articles'] = 'Articles';
-$lang['ionize_select_no_category'] = '-- Aucune --';
 $lang['ionize_select_no_parent'] = '-- Aucun --';
+$lang['ionize_select_no_category'] = '-- Aucune --';
 
 $lang['ionize_title_create_article'] = 'Création d\'un article';
 $lang['ionize_title_new_article'] = 'Nouvel article';
 $lang['ionize_title_edit_article'] = 'Edition d\'un article';
 $lang['ionize_title_comments'] = 'Commentaires';
 $lang['ionize_title_duplicate_article'] = 'Dupliquer l\'article';
-$lang['ionize_title_article_context'] = 'Contexte de l\'article';
-$lang['ionize_title_content'] = 'Contenu';
+$lang['ionize_title_duplicate_source_context'] = 'Article source';
+$lang['ionize_title_duplicate_destination'] = 'Destination';
 
 $lang['ionize_title_article_context'] = 'Context de l\'article';
 $lang['ionize_title_content'] = 'Contenu';
@@ -777,8 +788,8 @@ $lang['ionize_label_article_online'] = 'Article Online';
 $lang['ionize_label_article_content_online'] = 'Contenu Online';
 $lang['ionize_label_parents'] = 'Parents';
 $lang['ionize_label_indexed'] = 'Indexé';
-$lang['ionize_label_categories'] = 'Categories';
-$lang['ionize_label_edit_categories'] = 'Editer categories';
+$lang['ionize_label_categories'] = 'Catégories';
+$lang['ionize_label_edit_categories'] = 'Editer les catégories';
 $lang['ionize_label_new_category'] = 'Créer catégorie';
 $lang['ionize_label_comment_allow'] = 'Autoriser';
 $lang['ionize_label_comment_autovalid'] = 'Auto validation';
@@ -815,6 +826,7 @@ $lang['ionize_message_article_context_saved'] = 'Données article enregistrées'
 $lang['ionize_message_article_lang_copied'] = 'Contenu copié. Veuillez sauvegarder !';
 $lang['ionize_message_article_main_parent_saved'] = 'Parent Principal sauvegardé !';
 
+
 // Inline help
 $lang['ionize_help_article_online'] = 'Cet article est-il en ligne ?';
 $lang['ionize_help_article_content_online'] = 'Ce contenu est-il en ligne ?';
@@ -822,9 +834,9 @@ $lang['ionize_help_indexed'] = 'Le contenu de l\'article est indexé et prêt po
 $lang['ionize_help_article_link'] = 'Lien HTTP interne ou externe. Can be used with the link tag';
 $lang['ionize_help_articles_types'] = 'Type d\'article. Permet de filtrer les articles dans une vue';
 $lang['ionize_help_article_window_title'] = 'Titre de la fenêtre du navigateur';
-$lang['ionize_help_article_context'] =	'Edition des données de l\'article dans le contexte de la page';
-$lang['ionize_help_missing_translated_content'] =	'Les contenus ne sont traduits pour toutes les langues';
-$lang['ionize_help_orphan_article'] =	'Article orphelin. Non lié à ucune page.';
+$lang['ionize_help_article_context'] = 'Edition des données de l\'article dans le contexte de la page';
+$lang['ionize_help_missing_translated_content'] = 'Les contenus ne sont traduits pour toutes les langues';
+$lang['ionize_help_orphan_article'] = 'Article orphelin. Non lié à ucune page.';
 $lang['ionize_help_article_filter'] = 'Filtre les articles (pas opérationnel)';
 
 $lang['ionize_button_duplicate_article'] = 'Dupliquer l\'article';
@@ -856,7 +868,7 @@ $lang['ionize_label_type'] = 'Type';
 $lang['ionize_label_label'] = 'Label';
 $lang['ionize_label_edit_types'] = 'Editer types';
 $lang['ionize_label_new_type'] = 'Nouveau type';
-$lang['ionize_label_values'] = 'Valeurs';	
+$lang['ionize_label_values'] = 'Valeurs';
 $lang['ionize_label_default_value'] = 'Valeur par défaut';
 $lang['ionize_label_field_length'] = 'Longueur';
 $lang['ionize_label_field_auto_increment'] = 'Auto increment';
@@ -909,7 +921,7 @@ $lang['ionize_message_field_must_have_a_name'] = 'Le champ doit posséder un nom
 $lang['ionize_message_varchar_int_must_have_length'] = 'Un doit VARCHAR ou INT doit posséder une longueur';
 $lang['ionize_message_field_name_sql_reserved'] = 'Le nom de champ est un mot réservé SQL. Veuillez changer.';
 
-$lang['ionize_help_ef_name'] = 'Clé à utiliser avec le tag : field. Exemple : &#8249;ion:field name=&#34;field-name&#34; /&#8250;';
+$lang['ionize_help_ef_parent'] = 'Limiter cet Extend à un type de parent';
 $lang['ionize_help_ef_global'] = 'Ce champ est-il disponible pour tout type de parent ?';
 $lang['ionize_help_ef_name'] = 'Clé du champ personnalisé. Exemple : &#8249;ion:field name=&#34;field-name&#34; /&#8250;';
 $lang['ionize_help_ef_values'] = 'clé:valeur, séparé par un retour à la ligne ';
@@ -981,3 +993,12 @@ $lang['ionize_title_check_article_context'] = 'Contexte des articles';
 
 $lang['ionize_message_check_corrected'] = ' corrigé(s).';
 $lang['ionize_message_check_ok'] = 'Tout va bien.';
+
+
+
+
+
+
+
+
+?>

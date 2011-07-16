@@ -330,6 +330,54 @@
 		</div> <!-- /element -->
 
 
+		<!-- Maintenance mode -->
+		<h3 class="toggler"><?=lang('ionize_title_maintenance')?></h3>
+
+		<div class="element">
+			
+			<form name="maintenanceForm" id="maintenanceForm" method="post" action="<?= admin_url() ?>setting/save_maintenance">
+
+				<!-- Maintenance ? -->
+				<dl class="small">
+					<dt>
+						<label for="maintenance" title="<?=lang('ionize_label_maintenance_help')?>"><?=lang('ionize_label_maintenance')?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" <?php if (config_item('maintenance') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="maintenance" id="maintenance" value="1" />
+					</dd>
+				</dl>
+				
+				<!-- Maintenance IP restrict -->
+				<dl class="small">
+					<dt>
+						<label for="maintenance_ips" title="<?=lang('ionize_label_maintenance_ips_help')?>"><?=lang('ionize_label_maintenance_ips')?></label>
+					</dt>
+					<dd>
+						<span><?= lang('ionize_label_your_ip') ?> : <?= $_SERVER['REMOTE_ADDR'] ?></span>
+						<textarea name="maintenance_ips" class="h50 w140"><?= $maintenance_ips ?></textarea>
+					</dd>
+				</dl>
+
+				<!-- Submit button  -->
+				<dl class="small last">
+					<dt>&#160;</dt>
+					<dd>
+						<input id="submit_maintenance" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+					</dd>
+				</dl>
+
+				<!-- Maintenance page -->
+				<?php if (function_exists('curl_init')) : ?>
+	
+					<h4><?=lang('ionize_title_maintenance_page')?></h4>
+					<p class="lite"><?=lang('ionize_label_maintenance_page_help')?></p>
+					<div id="maintenancePageContainer"></div>
+					
+				<?php endif ;?>
+				
+			</form>
+
+		</div> <!-- /element -->
 
 
 
@@ -768,6 +816,7 @@
 	 */
 	ION.initLabelHelpLinks('#settingsForm');
 	ION.initLabelHelpLinks('#cacheForm');
+	ION.initLabelHelpLinks('#maintenanceForm');
 
 
 	/**
@@ -795,6 +844,14 @@
 
 
 	ION.initRequestEvent($('clear_cache'), 'setting/clear_cache');
+
+
+	/**
+	 * Maintenance form action
+	 */
+	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance', 'mainPanel', 'setting/technical');
+
+
 
 
 	/**
@@ -877,6 +934,43 @@
 		}
 	}
 	changeEmailDetails();
+
+	
+	
+	
+	/**
+	 * Make each tree page draggable to the maintenance page container
+	 *
+	 */
+	if ($('maintenancePageContainer'))
+	{
+		// Get set maintenace page
+		ION.HTML(admin_url + 'setting/get_maintenance_page', {}, {'update': 'maintenancePageContainer'});
+		
+		
+		setMaintenancePage = function(element, droppable, event)
+		{
+			ION.HTML(admin_url + 'setting/set_maintenance_page', {'id_page': element.getProperty('rel')}, {'update': 'maintenancePageContainer'});
+		}
+		
+		$$('.treeContainer .page a.title').each(function(item, idx)
+		{
+			ION.addDragDrop(item, '.dropPageAsMaintenancePage', 'setMaintenancePage');
+		});	
+	
+		$$('.treeContainer').each(function(tree, idx)
+		{
+			tree.retrieve('tree').addEvent('get', function()
+			{
+				$$('.treeContainer .page a.title').each(function(item, idx)
+				{
+					ION.addDragDrop(item, '.dropPageAsMaintenancePage', 'setMaintenancePage');
+				});	
+			});
+		});	
+	}	
+
+
 
 	/**
 	 * Notification to reload admin panel after changing filemanager/texteditor

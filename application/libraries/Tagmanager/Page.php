@@ -109,7 +109,6 @@ class TagManager_Page extends TagManager
 	 * 
 	 * 
 	 */
-//	public function __construct($con)
 	public static function init()
 	{
  		//parent::init('Page');
@@ -188,10 +187,10 @@ class TagManager_Page extends TagManager
 	public function add_globals()
 	{
 		parent::add_globals();
-
+		
 		// Get current asked page
 		self::$context->globals->page = self::get_current_page(self::$ci->uri->segment(3));
-
+		
 		// Show 404 if no page
 		if(empty(self::$context->globals->page))
 		{

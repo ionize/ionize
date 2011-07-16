@@ -27,9 +27,11 @@ ION.append({
 	 *								'message' : String. The confirmation message
 	 *
 	 */
-	initRequestEvent: function(item, url, data, options)
+	initRequestEvent: function(item, url, data, options, mode)
 	{
 		var data = (typeOf(data) == 'null') ? {} : data;
+		
+		var mode = (typeOf(mode) == 'null') ? 'JSON' : mode;
 
 		// Some safety before adding the event.
 		item.removeEvents('click');
@@ -46,11 +48,17 @@ ION.append({
 				// Callback request
 				var callback = ION.JSON.pass([url,data]);
 
+				if (mode == 'HTML')
+					callback = ION.HTML.pass([url,data,options]);
+
 				ION.confirmation('requestConfirm' + item.getProperty('rel'), callback, message);
 			}
 			else
 			{
-				ION.JSON(url, data);
+				if (mode == 'HTML')
+					ION.HTML(url, data, options);
+				else
+					ION.JSON(url, data);
 			}
 		});
 	},
