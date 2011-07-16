@@ -112,8 +112,11 @@ class Installer
 		// MySQL support
 		$this->template['mysql_support']  = function_exists('mysql_connect');
 		
+		// Safe Mode
+		$this->template['safe_mode']  = (ini_get('safe_mode')) ? FALSE : TRUE;
+		
 		// Files upload
-		$this->template['file_uploads'] = ini_get('file_uploads');
+		$this->template['file_uploads'] = (ini_get('file_uploads')) ? TRUE : FALSE;
 		
 		// GD lib
 		$this->template['gd_lib'] = function_exists('imagecreatetruecolor');

@@ -44,6 +44,15 @@
 
 <dl class="list">
 	<dt class="xlarge left">
+		<label for="title">Safe Mode Off</label>
+	</dt>
+	<dd>
+		<img src="../themes/admin/images/icon_16_<?php if($safe_mode) :?>ok<?php else :?>delete<?php endif ;?>.png" />
+	</dd>
+</dl>
+
+<dl class="list">
+	<dt class="xlarge left">
 		<label for="title"><?php echo lang('file_uploads')?></label>
 	</dt>
 	<dd>

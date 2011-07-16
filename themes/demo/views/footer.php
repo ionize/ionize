@@ -5,42 +5,20 @@
 <!-- Footer -->
 <div id="footer" class="container">
 
-	<div class="span-33 prepend-1">
-
-				<h4>Keep Update With Us!</h4>
-				<div class="text-widget"><p>Our newsletter delivers to your inbox. Free receive updates, tips, support and inspiration once a month.</p>
-				<form method="get" action="" id="newsletter">
-					<div><input class="inputbox" value="Enter your email address" onblur="if (this.value == ''){this.value = 'Enter your email address'; }" onfocus="if (this.value == 'Enter your email address') {this.value = ''; }" type="text"/><input type="submit" name="submit" class="button_src" value=""/></div>
-				</form>
-				</div>
-
-	</div>
-
-	<div class="span-33">
-
-				<h4>Latest Post</h4>
-				<div class="text-widget">
-					<p><a href="#">Sample Title Post One</a><br />
-						Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-					<p><a href="#">Sample Title Post Two</a><br />
-						Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-				</div>
-
-	</div>
+	<!-- Articles from one defined page
+		 Take care : This page must not change its URL !
+	-->
+	<ion:articles from="footer" limit="3">
 	
-	<div class="span-33">
+		<div class="span-33<?php if('<ion:index />' == '1') :?> prepend-1<?php endif ;?>">
 
-				<h4>Street Address</h4>
-				<div class="text-widget">
-					<p>BringArm Road, 1234 CityVille<br />
-                        Farmvilee, Country 3456<br />
-                        Phone: +62 1234 5678<br />
-                        Fax: +62 1234 4567<br />
-                        Email: <a href="mailto:testmail@templatesquare.com">testmail@templatesquare.com</a>
-					</p>
-				</div>
+			<!-- Each article uses its own view, as set in Ionize -->
+			<ion:article />
+			
+		</div>
+		
+	</ion:articles>
 
-	</div>
 </div>
 
 

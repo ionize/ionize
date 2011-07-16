@@ -43,7 +43,7 @@ body {
 
 #content {
 	padding:0px 40px 20px 40px;
-	background: url('../images/installer_content_bg.jpg') repeat-y bottom left;
+	background: url('../images/installer_content_bg.gif') repeat-y bottom left;
 	overflow: hidden;
 }
 #content-top, #content-bottom {	height:17px;}

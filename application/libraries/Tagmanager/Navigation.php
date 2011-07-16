@@ -55,8 +55,12 @@ class TagManager_Navigation extends TagManager
 		$str = '';
 
 		// Helper / No helper ?
+		// $tag->attr['no_helper'] : Will disapear in next versions... replaced by $tag->attr['helper']
 		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
-		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
+		$helper = (isset($tag->attr['helper'])) ? $tag->attr['helper'] : 'navigation';
+		
+		if ($helper == 'false' OR $no_helper == TRUE)
+			$helper = FALSE;
 		
 		// Menu : Main menu by default
 		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
@@ -72,6 +76,7 @@ class TagManager_Navigation extends TagManager
 
 		// Display hidden navigation elements ?
 		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
+
 
 		// Current page
 		$current_page =& $tag->locals->page;
@@ -170,24 +175,27 @@ class TagManager_Navigation extends TagManager
 				$pages = array();
 		}
 
-		// Get helper method
-		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';
-		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-
-		// load the helper
-		self::$ci->load->helper($helper);
-		
-		// Return the helper function result
-		if (function_exists($helper_function) && $no_helper === FALSE)
+		if ($helper !== FALSE)
 		{
-			$nav = call_user_func($helper_function, $pages);
+			// Get helper method
+			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';
+			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
+	
+			// load the helper
+			self::$ci->load->helper($helper);
 			
-			$output = self::wrap($tag, $nav);
-			
-			// Tag cache
-			self::set_cache($tag, $output);
-
-			return $output;
+			// Return the helper function result
+			if (function_exists($helper_function))
+			{
+				$nav = call_user_func($helper_function, $pages);
+				
+				$output = self::wrap($tag, $nav);
+				
+				// Tag cache
+				self::set_cache($tag, $output);
+	
+				return $output;
+			}
 		}
 		else
 		{
@@ -268,7 +276,8 @@ class TagManager_Navigation extends TagManager
 		}
 		
 		// If set, attribute level, else parent page level + 1
-		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] :0 ;
+//		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : 0 ;
+		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : FALSE ;
 
 		// If set, depth
 		$depth = (isset($tag->attr['depth']) ) ? $tag->attr['depth'] : -1;
@@ -280,6 +289,9 @@ class TagManager_Navigation extends TagManager
 
 		// Display hidden navigation elements ?
 		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
+
+		// Includes articles as menu elements
+		$with_articles = isset($tag->attr['articles']) ? TRUE : FALSE;
 
 		// Attribute : HTML Tree container ID & class attribute
 		$id = (isset($tag->attr['id']) ) ? $tag->attr['id'] : NULL ;
@@ -329,11 +341,32 @@ class TagManager_Navigation extends TagManager
 		 *
 		 */
 		$page_level = (isset($page['level'])) ? $page['level'] : 0;
+		$parent_page = array();
+
+		// Asked Level exists
 	 
 		$parent_page = array(
 			'id_page' => ($from_level > 0) ? $page['id_page'] : 0,
 			'id_parent' => isset($page['id_parent']) ? $page['id_parent'] : 0
 		);
+
+		if ($from_level !== FALSE)
+		{
+			$parent_page = array(
+				'id_page' => ($from_level > 0) ? $page['id_page'] : 0,
+				'id_parent' => isset($page['id_parent']) ? $page['id_parent'] : 0
+			);
+		}
+		// Get navigation from current page
+		else
+		{
+			foreach($pages as $p)
+			{
+				// Parent page is the id_subnav page
+				if ($p['id_page'] == $page['id_subnav'])
+					$parent_page = $p;
+			}
+		}
 
 		// Find out the wished parent page 
 		while ($page_level >= $from_level && $from_level > 0)
@@ -373,15 +406,36 @@ class TagManager_Navigation extends TagManager
 			$nav_pages = array_values(array_filter($pages, array('TagManager_Page', '_filter_appearing_pages')));
 		
 		// $nav_pages = array_filter($nav_pages, create_function('$row','return ($row["id_menu"] == "'. $id_menu .'") ;'));
-		$final_nav_pages = array();
+		$final_nav_pages = $nav_pages_list = array();
 		foreach($nav_pages as $k => $np)
 		{
 			if ($np['id_menu'] == $id_menu )
+			{
 				$final_nav_pages[] = $np;
+				$nav_pages_list[] = $np['id_page'];
+			}
 		}
 		
+		// Should we include articles ?
+		$articles = FALSE;
+		if ($with_articles == TRUE)
+		{
+			$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
+			$uri_segments = explode('/', $uri);
+			$current_article_uri = array_pop($uri_segments);
+
+			$tag->attr['scope'] = 'global';
+			$articles = TagManager_Page::get_articles($tag);
+			
+			foreach($articles as &$article)
+			{
+				if (array_pop(explode('/', $article['url'])) == $current_article_uri)
+					$article['active_class'] = $active_class;
+			}
+		}
+
 		// Get the tree navigation array
-		$tree = Structure::get_tree_navigation($final_nav_pages, $parent_page['id_page'], $from_level, $depth);
+		$tree = Structure::get_tree_navigation($final_nav_pages, $parent_page['id_page'], $from_level, $depth, $articles);
 
 		// Return the helper function
 		if (function_exists($helper_function))

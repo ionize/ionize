@@ -265,7 +265,7 @@ $lang['ionize_label_table'] = 'Table';
 $lang['ionize_label_name'] = 'Nom';
 $lang['ionize_label_id'] = 'Identifiant';
 $lang['ionize_label_parent'] = 'Parent';
-$lang['ionize_label_permanent_url'] = 'Permanent URL';
+$lang['ionize_label_permanent_url'] = 'URL permanente';
 $lang['ionize_label_view'] = 'Vue';
 $lang['ionize_label_article_template'] = 'Vue articles';
 
@@ -498,6 +498,8 @@ $lang['ionize_title_article_management'] = 'Gestion des articles';
 $lang['ionize_title_admin_url'] = 'URL de l\'Administration du site';
 $lang['ionize_title_encryption_key'] = 'Clé d\'encryption';
 $lang['ionize_title_cache'] = 'Cache';
+$lang['ionize_title_allowed_mimes'] = 'Mimes autorisés';
+$lang['ionize_label_article_allowed_tags'] = 'Tags autorisés';
 
 $lang['ionize_label_thumb_automatic'] = 'Automatique';
 $lang['ionize_label_files_path'] = 'Dossier des médias';
@@ -517,6 +519,7 @@ $lang['ionize_label_db_pass'] = 'Mot de passe';
 $lang['ionize_label_google_analytics'] = 'Google Analytics';
 $lang['ionize_label_tinybuttons'] = 'Barre TinyMCE';
 $lang['ionize_label_restore_tinybuttons'] = 'Restorer les commandes TinyMCE par défaut';
+$lang['ionize_label_tinybuttons'] = 'Barre TinyMCE';
 $lang['ionize_label_tinyblockformats'] = 'Select Formats TinyMCE';
 $lang['ionize_label_restore_tinyblockformats'] = 'Restorer les formats par défaut';
 
@@ -529,6 +532,7 @@ $lang['ionize_label_email_charset'] = 'Charset';
 $lang['ionize_label_email_mailtype'] = 'Format';
 $lang['ionize_label_mailpath'] = 'Chemin Mail';
 
+$lang['ionize_label_cache_enabled'] = 'Activé';
 $lang['ionize_label_cache_expiration'] = 'Expiration (mins.)';
 $lang['ionize_label_clear_cache'] = 'Vider Cache';
 $lang['ionize_button_clear_cache'] = 'Vider';
@@ -581,6 +585,9 @@ $lang['ionize_message_error_writing_database_file'] = 'Erreur d\'écriture : app
 $lang['ionize_message_error_writing_email_file'] = 'Erreur d\'écriture : application/config/email.php';
 $lang['ionize_message_error_writing_ionize_file'] = 'Erreur d\'écriture : application/config/ionize.php';
 
+$lang['ionize_message_cache_saved'] = 'Parmètre du Cache sauveagrdés.';
+$lang['ionize_message_cache_cleared'] = 'Cache vidé.';
+
 $lang['ionize_help_setting_google_analytics'] = 'Le script Google complet, comme copié depuis le site Analytics';
 $lang['ionize_help_setting_files_path'] = 'Indique le dossier de base des médias. Ne modifie pas le nom du dossier physique';
 $lang['ionize_help_setting_system_thumb_list'] = 'Miniature utilisée par Ionize pour les listes d\'images et l\'édition d\'une image';
@@ -592,9 +599,12 @@ $lang['ionize_help_media_thumb_size'] = 'Taille des thubnails système, en pixel
 $lang['ionize_help_tinybuttons'] = 'Voir la documentation TinyMCE';
 $lang['ionize_help_setting_picture_max_height'] = 'Les images dont la taille excède cette taille vont être retaillées durant l\'upload';
 $lang['ionize_help_setting_picture_max_width'] = 'Les images dont la taille excède cette taille vont être retaillées durant l\'upload';
+$lang['ionize_help_tinyblockformats'] = 'Liste de Formats TinyMCE par défaut (Select)';
 
+$lang['ionize_help_cache_enabled'] = 'Activer / Désactiver le cache. Le désactiver va vider le cache existant.';
 $lang['ionize_help_cache_expiration'] = 'Durée en minutes de validité du cache avant régénération';
 $lang['ionize_help_clear_cache'] = 'Supprime touts les fichiers du cache.';
+$lang['ionize_help_article_allowed_tags'] = 'Tags HTML autorisés dans le contenu des articles';
 
 /*
 |--------------------------------------------------------------------------
@@ -644,6 +654,7 @@ $lang['ionize_label_home_page'] = 'Page d\'accueil';
 $lang['ionize_label_article_reorder'] = 'Réordonner';
 $lang['ionize_label_date_asc'] = 'Date Ascendante';
 $lang['ionize_label_date_desc'] = 'Date Descendante';
+$lang['ionize_label_no_sub_navigation'] = '-- Aucun --';
 
 $lang['ionize_button_reorder'] = 'Réordonner';
 
@@ -852,7 +863,7 @@ $lang['ionize_label_field_auto_increment'] = 'Auto increment';
 $lang['ionize_label_field_null'] = 'NULL ?';
 $lang['ionize_label_field_unsigned'] = 'Unsigned';
 
-$lang['ionize_message_category_name_exists'] = 'Une catégorie portant ce nom existe déjà !';
+$lang['ionize_message_category_name_exists'] = 'Cette catégorie existe déjà !';
 $lang['ionize_message_category_saved'] = 'Catégorie enregistrée';
 $lang['ionize_message_category_not_saved'] = 'Erreur : Veuillez saisir un nom de catégorie';
 $lang['ionize_message_category_deleted'] = 'Catégorie supprimée';

@@ -9,6 +9,6 @@
 
 
 <?php foreach($pages as $id => $title) :?>
-	<option value="<?= $id ?>"<?php if ($id_selected==$id) :?> selected="selected"<?php endif; ?>><?= $title ?></option>
+	<option value="<?= $id ?>"<?php if ($id_selected==$id) :?> selected="selected"<?php endif; ?>><?= strip_tags($title) ?></option>
 <?php endforeach ;?>
 

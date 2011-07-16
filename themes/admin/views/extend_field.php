@@ -23,7 +23,7 @@
 			</dt>
 			<dd>
 				<select id="parent<?= $id_extend_field ?>" name="parent" class="select">
-					<option value="" <?php if ($parent=='') :?> selected="selected" <?php endif ;?>><?= lang('ionize_label_extend_field_for_all')?></option>
+<!--				<option value="" <?php if ($parent=='') :?> selected="selected" <?php endif ;?>><?= lang('ionize_label_extend_field_for_all')?></option> -->
 					<option value="page" <?php if ($parent=='page') :?> selected="selected" <?php endif ;?>><?= lang('ionize_label_extend_field_for_pages')?></option>
 					<option value="article" <?php if ($parent=='article') :?> selected="selected" <?php endif ;?>><?= lang('ionize_label_extend_field_for_articles')?></option>
 					<option value="media" <?php if ($parent=='media') :?> selected="selected" <?php endif ;?>><?= lang('ionize_label_extend_field_for_medias')?></option>
@@ -32,7 +32,7 @@
 			
 		</dl>
 
-		<!-- Global -->
+		<!-- Global 
 		<dl class="small">
 			<dt>
 				<label for="global<?= $id_extend_field ?>" title="<?=lang('ionize_help_ef_global')?>"><?=lang('ionize_label_extend_field_global')?></label>
@@ -41,7 +41,7 @@
 				<input id="global<?= $id_extend_field ?>" name="global" class="inputcheckbox" type="checkbox" value="1" <?php if ($global=='1') :?> checked="checked" <?php endif ;?> />
 			</dd>
 		</dl>
-
+		-->
 
 	</div>
 

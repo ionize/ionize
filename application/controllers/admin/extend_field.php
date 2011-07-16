@@ -111,10 +111,6 @@ class Extend_field extends MY_admin
 	{
 		$this->extend_field_model->feed_template($id, $this->template);
 
-		// Pass the parent informations to the template
-//		$this->template['parent'] = $parent;
-//		$this->template['id_parent'] = $id_parent;
-		
 		$this->output('extend_field');
 	}
 
@@ -143,42 +139,25 @@ class Extend_field extends MY_admin
 		{
 			$where['parent'] = $parent;
 		}
-		else
-		{
-			$where['parent'] = '';		
-		}
-		
+
 		// Returns the extends list ordered by 'ordering' 
 		$extend_fields = $this->extend_field_model->get_list($where);
 
+		// Get the parents
+		$parents = array();
+		foreach($extend_fields as $extend)
+		{
+			if ( ! in_array($extend['parent'], $parents))
+				$parents[] = $extend['parent'];
+		}
+
 		$this->template['parent'] = ( ! is_null($parent)) ? $parent : FALSE;
+		$this->template['parents'] = $parents;
 		$this->template['extend_fields'] = $extend_fields;
 		
     	$this->output('extend_fields_table');
 	}
 
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Outputs the extend fields table
-	 *
-	 * @param 		String		Page type. Can be 'page, 'article', etc...
-	 * @returns		String		HTML table of extended fields
-	 *							See /themes/admin/extend_fields_table.php for output view
-	function get_element_extend_fields_table($parent = FALSE)
-	{
-		if ($parent !== FALSE)
-		{
-			$this->template['extend_fields'] = $this->get_extend_fields($parent);
-			$this->template['parent'] = $parent;
-			
-	    	$this->output('extend_fields_table');
-	    }
-	}
-	 */
-	
 	
 	// ------------------------------------------------------------------------
 
@@ -203,32 +182,11 @@ class Extend_field extends MY_admin
 				// Save data
 				$this->id = $this->extend_field_model->save($this->data);
 	
-				/*
-				 * JSON Update array
-				 *
-				 */
-// trace($_POST);
-
-				$dom_element = 'extend_fields';
-				$url = 'extend_field/get_extend_fields';
-				
-				if ($this->input->post('parent') !='')
-				{
-					$dom_element .= '_' . $this->input->post('parent');
-					$url .= '/' . $this->input->post('parent');
-				}
-
-				$this->callback = array
-				(
-					array(
-						'fn' => 'ION.updateElement',
-						'args' => array(
-							'element' => $dom_element,
-							'url' => $url
-						)
-					)
+				$this->update[] = array(
+					'element' => 'extend_fields',
+					'url' =>  'extend_field/get_extend_fields'
 				);
-					
+
 				$this->success(lang('ionize_message_extend_field_saved'));
 			}
 		}
@@ -249,7 +207,7 @@ class Extend_field extends MY_admin
 	 * @param	string 	Parent table name. optional
 	 * @param	int 	Parent ID. Optional
 	 */
-	function delete($id, $parent=false)
+	function delete($id)
 	{
 		if ($id && $id != '')
 		{
@@ -259,20 +217,13 @@ class Extend_field extends MY_admin
 				$this->extend_field_model->delete_extend_fields($id);
 				
 				// Update array
-				if ( $parent !== false)
-				{
-					$this->update[] = array(
-						'element' => 'extend_fields_table',
-						'url' =>  'extend_field/get_element_extend_fields_table/'.$parent
-					);
-				}
+				$this->update[] = array(
+					'element' => 'extend_fields',
+					'url' =>  'extend_field/get_extend_fields'
+				);
 			
-				// Answer prepare
-				$this->id = $id;
-
 				// Send answer				
 				$this->success(lang('ionize_message_extend_field_deleted'));
-
 			}
 			else
 			{
@@ -280,7 +231,8 @@ class Extend_field extends MY_admin
 			}
 		}
 	}
-
+	
+	
 	// ------------------------------------------------------------------------
 
 

@@ -6,16 +6,17 @@ Cufon.replace('h1') ('h2') ('h3') ('h4') ('h5') ('h6') ('.pagenavi a', {hover:tr
 //Cufon.replace('#topnav li', { hover:true, fontFamily: 'Khmer UI' });
 
 
+
+
 /*
  * s3slider
  *
- */
 jQuery(document).ready(function()
 {
-	// If javascript disabled */
+	// If javascript disabled 
 	jQuery("body").removeClass("nojs").addClass("js");
 	
-	// Homepage slider */
+	// Homepage slider
 	if ((jQuery('#s3slider')).length > 0)
 	{
 		jQuery('#s3slider').s3Slider({
@@ -23,12 +24,12 @@ jQuery(document).ready(function()
 		});
 	}
 });
+ */
 
 
 /*
  * s3slider
  *
- */
 jQuery(function() {
 	$("#nav").lavaLamp({
 		fx: "backout",
@@ -50,3 +51,4 @@ jQuery(function() {
 		});
 	});
 });
+ */

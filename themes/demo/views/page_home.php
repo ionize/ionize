@@ -1,6 +1,6 @@
 <ion:partial view="header" />
 
-<!-- Home Picture Slider -->
+<!-- Home Picture Slider
 <div class="span-22 prepend-1 append-1">
 	<div id="home-slider" >
 		<div id="slideshow">
@@ -15,7 +15,7 @@
 								<p><ion:description /></p>
 								
 								<!-- The copyright will be displayed inside a "p" tag with class"copyright"
-									 Nothing will be displayed if no copyright is filled on the picture infos -->
+									 Nothing will be displayed if no copyright is filled on the picture infos
 								<ion:copyright tag="p" class="copyright" prefix="© " /><ion:date format="Y" tag="p" class="date" />
 							</div>
 						</li>
@@ -25,12 +25,77 @@
 				</ul>
 			</div>
 		</div>
-	</div><!-- /home-bloc -->
+	</div>
 </div>
+-->
+
+<div class="span-22 prepend-1 append-1">
+	<div id="home-slider" >
+	
+		<div id="wall" ></div>
+		
+	</div>
+</div>
+
+<script type="text/javascript">
+
+	var images = new Array();
+	var descriptions = new Array();
+	var titles = new Array();
+	
+	<ion:medias type="picture">
+		images.push('<ion:src folder="940" />');
+		titles.push('<ion:title />');
+		descriptions.push('<ion:description />');
+	</ion:medias>
+	
+   	
+   	var wall = new Wall("wall", {
+		"slideshow":true,
+		"showDuration":3000,
+		"speed":1000,
+		"preload":true,
+		"autoposition":true,
+		"inertia":true,
+		"transition":Fx.Transitions.Expo.easeInOut,
+		"width":870,
+		"height":400,
+		"rangex":[0,4],
+		"rangey":[0,1]
+    });
+
+     callBack = function(items)
+     {
+		items.each(function(e, i){
+			e.node.setStyle("background", "url("+images[e.y]+") no-repeat center center");
+			
+			if (titles[e.y] != '')
+			{
+				var layer = new Element('div', {'class':'layer'});
+				var h2 = new Element('h2').set('text', titles[e.y]);
+				
+				layer.set('html', descriptions[e.y]);
+				/*.setStyles({
+					'bottom': ((Math.random()*200) + 10) + 'px',
+					'left': ((Math.random()*200) + 10) + 'px',
+				});
+				*/
+				
+				h2.inject(layer, 'top');
+				e.node.adopt(layer);
+			}
+		});
+	}
+ 
+     // Define CallBack
+     wall.setCallOnUpdate(callBack)	
+	 wall.initWall();
+
+</script>
 
 
 <!-- Home Content -->
-<div id="content" class="span-22 prepend-1 append-1">
+<div class="span-22 prepend-1 append-1">
 
 	<!-- Page's subtitle -->
 	<h2 class="title"><ion:subtitle /></h2>
@@ -38,7 +103,7 @@
 	<!-- Home page articles
 		 Loop into articles without linked view : Article's fields are directly displayed
 	-->
-	<ion:articles limit="3">
+	<ion:articles limit="3" type="">
 
 		<div class="span-33 home <?php if('<ion:index />' == 3) :?> last<?php endif;?>">
 	
@@ -69,33 +134,53 @@
 	<hr />
 		
     <div class="span-6 colborder">
-    	<h2 class="title">Service News</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae risus dolor. Duis vehicula fermentum eros ut tempor.</p>
-        <ul>
-            <li>Website &amp; Development System</li>
-            <li>Animation Photoshop</li>
-            <li>Network &amp; Web 2.1 Company</li>
-            <li>eCommerce &amp; Portfolio</li>
-            <li>Landingpage &amp; Branding</li>
-            <li>More...</li>
-        </ul>
+    
+    	<!-- Article in the one-fourth column of the home page.
+    		 We limit the displayed article to this type
+    	-->
+    	<ion:articles type="one-fourth">
+    	
+    		<!-- Article's title
+    			 In this case, the H2 tag is only displayed if one title is set for the article
+    		-->
+    		<ion:title tag="h2" />
+    		
+    		<ion:content />
+    	
+    	</ion:articles>
+    
     </div>
     
     
     <div class="span-15 last">
     	
-		<h2 class="title">Recent Activity</h2>
-		<div>
-			<img src="images/content/rp1.jpg" alt="" class="alignleft imgborder"/>
-        	<h5>Curabitur quis felis at lacus ultricies rhoncus.</h5>
-            <p>Sed imperdiet tellus id risus rutrum nec feugiat ante pretium. Etiam massa arcu, molestie ac dapibus nec, posuere sit amet arcu. Phasellus cursus, dolor ac venenatis fermentum, metus sem pellentesque eros. <a href="#">Read more...</a></p>					
-		</div>
-		<div>
-			<img src="images/content/rp1.jpg" alt="" class="alignleft imgborder"/>
-        	<h5>Curabitur quis felis at lacus ultricies rhoncus.</h5>
-            <p>Sed imperdiet tellus id risus rutrum nec feugiat ante pretium. Etiam massa arcu, molestie ac dapibus nec, posuere sit amet arcu. Phasellus cursus, dolor ac venenatis fermentum, metus sem pellentesque eros. <a href="#">Read more...</a></p>					
-		</div>
+
+    	<!-- Static translated title
+    		 This title is static in this view : It has nothing to do with articles.
+    		 We call a translated "static term".
+    		 Calling a term through a tag makes this term available in the "Static translations" panel of Ionize
+    	-->
+ 		<h2 class="title"><ion:translation term="home_last_post" /></h2>
+   	
+    	<!-- Article of type "three-fourth" -->
+    	<ion:articles type="three-fourth">
+    	
+			<!-- In this pecial case, we don't care about article's title -->
+			<div>
+				<ion:medias type="picture" limit="1">
+					<img src="<ion:src folder="145" />" alt="" class="alignleft imgborder"/>				
+				</ion:medias>
+				
+				<ion:title tag="h5" />
+				
+				<ion:content />
+
+			</div>
+
+    	</ion:articles>
+
     </div>
+
 </div>
 
 
