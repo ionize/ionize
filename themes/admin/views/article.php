@@ -55,8 +55,15 @@
 			
 			<?php endif ;?>
 				
-			<!-- Internal / External link Info -->
-			<dl class="small compact" id="link_info"></dl>
+
+			<!-- Link ? -->
+			<?php if ($id_article != '') :?>
+			
+				<div id="linkContainer"></div>
+				
+			<?php endif ;?>
+
+
 
 			<!-- Modules PlaceHolder -->
 			<?php if ( ! empty($id_article)) :?>
@@ -128,22 +135,6 @@
 					</dd>
 				</dl>
 
-				<!-- Internal / External link -->
-				<?php if ($id_article != '' && $id_page != '0') :?>
-				<dl class="small dropArticleAsLink dropPageAsLink">
-					<dt>
-						<label for="link" title="<?= lang('ionize_help_article_link') ?>"><?= lang('ionize_label_link') ?></label>
-						<br/>
-						
-					</dt>
-					<dd>
-						<textarea id="link" name="link" class="inputtext w140 h40 droppable" alt="<?= lang('ionize_label_drop_link_here') ?>"><?= $link ?></textarea>
-						<br />
-						
-						<a id="link_remove"><?= lang('ionize_label_remove_link') ?></a><br/>
-					</dd>
-				</dl>
-				<?php endif ;?>
 
 				<!-- Flag -->
 				<dl class="small">
@@ -621,16 +612,6 @@
 							</dd>
 						</dl>
 	
-						<!-- URL -->
-						<dl>
-							<dt>
-								<label for="url_<?= $lang ?>"><?= lang('ionize_label_url') ?></label>
-							</dt>
-							<dd>
-								<input id="url_<?= $lang ?>" name="url_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['url'] ?>"/>
-							</dd>
-						</dl>
-				
 						<!-- sub title -->
 						<dl>
 							<dt>
@@ -641,9 +622,20 @@
 <!--								<a class="icon edit subtitle"></a> -->
 							</dd>
 						</dl>
+
+						<!-- URL -->
+						<dl class="mt15">
+							<dt>
+								<label for="url_<?= $lang ?>"><?= lang('ionize_label_url') ?></label>
+							</dt>
+							<dd>
+								<input id="url_<?= $lang ?>" name="url_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['url'] ?>"/>
+							</dd>
+						</dl>
+				
 				
 						<!-- Meta Title : Browser window title -->
-						<dl>
+						<dl class="mb20">
 							<dt>
 								<label for="meta_title_<?= $lang ?>" title="<?= lang('ionize_help_article_window_title') ?>"><?= lang('ionize_label_meta_title') ?></label>
 							</dt>
@@ -1032,41 +1024,13 @@
 			ION.JSON('article/update_categories', {'categories': ids, 'id_article': $('id_article').value});
 		});
 
-		/**
-		 * Links interaction
-		 *
-		 */
-	
-		// Remove link event
-		if ($('link_remove'))
-		{
-			$('link_remove').addEvent('click', function(e)
-			{
-				e.stop();
-				ION.removeElementLink();
-			});
-	
-			// External link Add
-			$('link').addEvent('blur', function(e)
-			{
-				if (ION.checkUrl(this.value))
-				{
-					// type of receiver, url, ID of textarea which receive the link after save.
-					ION.addExternalLink('article', this.value, 'link');
-				}
-			});
-		}
 		
-		// Add edit link to the link (if internal)
-		<?php if (isset($link) && $link != '') :?>
+		// Link to page or article or what else...
+		if ($('linkContainer'))
+		{
+			ION.HTML(admin_url + 'article/get_link', {'id_page': '<?= $id_page ?>', 'id_article': '<?= $id_article ?>'}, {'update': 'linkContainer'});
+		}
 
-			ION.updateLinkInfo({
-				'type': '<?php echo($link_type); ?>',
-				'id': '<?php echo($link_id); ?>', 
-				'text': '<?php echo($link); ?>'
-			});
-
-		<?php endif ;?>
 
 		/**
 		 * Get Content Elements Tabs & Elements

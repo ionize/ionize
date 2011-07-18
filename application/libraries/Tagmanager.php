@@ -1349,6 +1349,7 @@ class TagManager
 			if ($format != 'Y-m-d H:i:s' && lang('dateformat_'.$format) != '#dateformat_'.$format )
 			{
 				$format = lang('dateformat_'.$format);
+				/*
 				$segments = explode(' ', $format);
 
 				foreach($segments as $key => $segment)
@@ -1361,7 +1362,9 @@ class TagManager
 					$segments[$key] = $tmp;
 				}
 				$str = implode(' ', $segments);
+			*/
 			}
+			/*
 			else
 			{
 				// Get date in the wished format
@@ -1371,10 +1374,24 @@ class TagManager
 				 * Get translation, if mandatory
 				 * Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
 				 *
-				 */
+				 *
 				if (preg_match('/D|l|F|M/', $format) && strlen($format) == 1)
 					$str = lang(strtolower($str));		
 			}
+			*/
+				$segments = explode(' ', $format);
+
+				foreach($segments as $key => $segment)
+				{
+					$tmp = (String) date($segment, $date);
+
+					if (preg_match('/D|l|F|M/', $segment))
+						$tmp = lang(strtolower($tmp));
+
+					$segments[$key] = $tmp;
+				}
+				$str = implode(' ', $segments);
+			
 
 			return $str;
 		}

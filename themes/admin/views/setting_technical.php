@@ -465,8 +465,8 @@
 				</dt>
 				<dd>
 					<?php
-						$tags1 = array('h2','h3','h4','h5','h6','em','img');
-						$tags2 = array('iframe','table','object','span','dl','pre','code');
+						$tags1 = array('h1','h2','h3','h4','h5','h6','em','img');
+						$tags2 = array('iframe','table','object','div','span','dl','pre','code');
 						$tags3 = array('dfn','samp','kbd','legend','q','small');
 					?>
 				
@@ -944,20 +944,23 @@
 	 */
 	if ($('maintenancePageContainer'))
 	{
-		// Get set maintenace page
+		// Get the maintenance page
 		ION.HTML(admin_url + 'setting/get_maintenance_page', {}, {'update': 'maintenancePageContainer'});
 		
 		
+		// Callbak when page is dropped
 		setMaintenancePage = function(element, droppable, event)
 		{
 			ION.HTML(admin_url + 'setting/set_maintenance_page', {'id_page': element.getProperty('rel')}, {'update': 'maintenancePageContainer'});
 		}
 		
+		// Make tree pages draggable
 		$$('.treeContainer .page a.title').each(function(item, idx)
 		{
 			ION.addDragDrop(item, '.dropPageAsMaintenancePage', 'setMaintenancePage');
 		});	
-	
+		
+		// Add the get event, so events are added when pages are retrieved (click on plus)
 		$$('.treeContainer').each(function(tree, idx)
 		{
 			tree.retrieve('tree').addEvent('get', function()

@@ -47,10 +47,12 @@ if( ! function_exists('get_navigation'))
 		{
 			$active = ( ! empty($page['active_class'])) ? ' class="'.$page['active_class'].'" ' : '';
 			
+			$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
+			
 			// Adds the suffix if defined in /application/config.php
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
-			$nav .= '<li' . $active . '><a ' . $active . 'href="' . $page['absolute_url'] . '">'.$page['title']. '</a></li>';
+			$nav .= '<li' . $active . '><a ' . $active . 'href="' . $page['absolute_url'] . '">'.$title. '</a></li>';
 		}
 		
 		return $nav;
@@ -69,7 +71,7 @@ if( ! function_exists('get_navigation'))
  */
 if( ! function_exists('get_tree_navigation'))
 {
-	function get_tree_navigation($items, $lang_url=false, $id = NULL, $class = NULL, $first_class = NULL, $last_class = NULL)
+	function get_tree_navigation($items, $id = NULL, $class = NULL, $first_class = NULL, $last_class = NULL)
 	{
 		// HTML Attributes
 		$id = ( ! is_null($id) ) ? ' id="' . $id . '" ' : '';
@@ -87,11 +89,13 @@ if( ! function_exists('get_tree_navigation'))
 				if ($key == (count($items) - 1) && ! is_null($last_class)) $class[] = $last_class;
 				
 				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
+
+				$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
 				
 				$tree .= '<li'.$class.'><a'.$class.' href="' . $page['absolute_url'] . '">'.$page['title']. '</a>';
 		
 				if (!empty($page['children']))
-					 $tree .= get_tree_navigation($page['children'], $lang_url);
+					 $tree .= get_tree_navigation($page['children']);
 				
 	
 				if (!empty($page['articles']))

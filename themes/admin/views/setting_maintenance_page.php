@@ -26,7 +26,7 @@
 
 	<div class="droppable h40 ml15 dropPageAsMaintenancePage">
 
-		<sapn class="lite"><?= lang('ionize_drop_maintenance_page_here') ?></span>
+		<span class="lite"><?= lang('ionize_drop_maintenance_page_here') ?></span>
 	
 	</div>
 

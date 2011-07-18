@@ -160,7 +160,10 @@ class Structure{
 		
 		foreach($items as $key => $page)
 		{
-			$title = ($page['title'] != '') ? $page['title'] : $page['name'];
+			$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
+			
+			if ($title == '')
+				$title = $page['name'];
 			
 			if ($page['id_page'] != $id_page)
 			{

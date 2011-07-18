@@ -1432,33 +1432,7 @@ ION.append({
 	},
 
 	
-	addExternalLink: function(receiver_type, url, textarea)
-	{
-		new Request.JSON({
-			url: admin_url + receiver_type + '/add_link',
-			method: 'post',
-			loadMethod: 'xhr',
-			data: {
-				'receiver_rel': $('rel').value,
-				'link_type': 'external',
-				'url': url
-			},
-			onSuccess: function(responseJSON, responseText)
-			{
-				// Set the link title to the textarea
-				$(textarea).set('html', url);
-
-				ION.notification('success', Lang.get('ionize_message_operation_ok'));
-
-				// JS Callback
-				if (responseJSON && responseJSON.callback)
-				{
-					ION.execCallbacks(responseJSON.callback);
-				}
-			}
-		}).send();
-	},
-
+/*
 	removeElementLink: function()
 	{
 		// Receiver's element type
@@ -1487,7 +1461,7 @@ ION.append({
 			}
 		}).send();
 	},
-
+*/
 
 	dropElementAsLink: function(link_type, element, droppable)
 	{
@@ -1504,36 +1478,14 @@ ION.append({
 		}
 		else
 		{
-			var title = element.getProperty('title');
-		
-			new Request.JSON({
-				url: admin_url + receiver_type + '/add_link',
-				method: 'post',
-				loadMethod: 'xhr',
-				data: {
+			ION.JSON(
+				admin_url + receiver_type + '/add_link',
+				{
 					'link_rel': link_rel,
 					'receiver_rel': $('rel').value,
 					'link_type': link_type
-				},
-				onSuccess: function(responseJSON, responseText)
-				{
-					// Set the link title to the textarea
-					var linkTextarea = droppable.getElement('textarea');
-
-					if (Browser.ie7)
-						linkTextarea.set('text', title);
-					else
-						linkTextarea.set('html', title);
-					
-					ION.notification('success', Lang.get('ionize_message_operation_ok'));
-
-					// JS Callback
-					if (responseJSON && responseJSON.callback)
-					{
-						ION.execCallbacks(responseJSON.callback);
-					}
 				}
-			}).send();
+			);
 		}
 	},
 

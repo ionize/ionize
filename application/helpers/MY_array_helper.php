@@ -107,9 +107,12 @@ if ( ! function_exists('array_recursive_search'))
 	}
 }
 
+//function array_recursive_get
+
+
 if ( ! function_exists('array_get'))
 {
-	function array_get($wished, $array, $searched, $index)
+	function array_get($array, $searched, $index)
 	{
 		$aIt = new RecursiveArrayIterator($array);
 		$it = new RecursiveIteratorIterator($aIt);
@@ -119,7 +122,8 @@ if ( ! function_exists('array_get'))
 			if (((isset($index) AND ($it->key() == $index)) OR (!isset($index))) AND ($it->current() == $searched))
 			{
 				$c = $aIt->current();
-				return $c[$wished];
+				return $c;
+//				return $c[$key];
 			}
 		
 			$it->next();

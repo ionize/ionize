@@ -27,6 +27,9 @@ class TagManager_Page extends TagManager
 	protected static $user = FALSE;
 	
 	protected static $uri_segments = array();
+
+	protected static $categories = FALSE;
+
 	
 	public static $tag_definitions = array
 	(
@@ -58,7 +61,6 @@ class TagManager_Page extends TagManager
 		'subtitle' => 			'tag_page_subtitle',
 		'meta_title' => 		'tag_page_meta_title',
 		'content' =>			'tag_page_content',
-		'category' =>			'tag_category',
 		
 		// Breadrumb
 		'breadcrumb' =>			'tag_breadcrumb',
@@ -86,6 +88,7 @@ class TagManager_Page extends TagManager
 		'articles:count' => 		'tag_article_count',
 		
 		// Categories
+		'category' =>					'tag_category',
 		'categories' => 				'tag_categories',
 		'categories:url' => 			'tag_category_url',
 		'categories:active_class' => 	'tag_category_active_class',
@@ -93,6 +96,7 @@ class TagManager_Page extends TagManager
 		'categories:subtitle' => 		'tag_category_subtitle',
 		
 		// Archives
+		'archive' =>				'tag_archive',
 		'archives' =>				'tag_archives',
 		'archives:url' => 			'tag_archives_url',
 		'archives:lang_url' => 		'tag_archives_lang_url',
@@ -166,17 +170,49 @@ class TagManager_Page extends TagManager
 
 		if ( ! empty($page['link']))
 		{
-			// Online languages are defined by MY_Controller
-			$lang = (count(Settings::get_online_languages()) > 1 ) ? Settings::get_lang('current').'/' : '';
+			// External redirect
+			if ($page['link_type'] == 'external')
+			{
+				redirect($page['link']);
+				die();
+			}
+			// Internal redirect
+			else
+			{
+				self::$ci->load->helper('array_helper');
 
-			$domain = (!empty($page['link_type'])  && $page['link_type'] == 'external') ? '' : base_url();
+				// Page
+				if ($page['link_type'] == 'page')
+				{
 
-			redirect($domain.$lang.$page['link']);
+					if ($page = array_get(self::$context->globals->pages, $page['link_id'], 'id_page'))
+					{
+						redirect($page['absolute_url']);
+					}
+				}
+				// Article
+				if ($page['link_type'] == 'article')
+				{
+					$rel = explode('.', $page['link_id']);
+					
+					if ($page = array_get(self::$context->globals->pages, $rel[0], 'id_page'))
+					{
+						$articles =  self::$ci->article_model->get_lang_list
+						(
+							array('id_article' => $rel[1]), 
+							Settings::get_lang()
+						);
+						self::init_articles_urls($articles);
+						$article = array_shift($articles);
+						
+						redirect($article['url']);
+					}
+				}	
+			}
 		}
 		
 		self::$view = ($page['view'] != false) ? $page['view'] : Theme::get_default_view('page');
 		
-
 		self::render();
 	}
 	
@@ -258,10 +294,10 @@ class TagManager_Page extends TagManager
 			// Set the page complete URL
 			$page['absolute_url'] = '';
 
-			// If link, returns the link
+			// Link
 			if ($page['link_type'] != '' )
 			{
-				// External link
+				// External
 				if ($page['link_type'] == 'external')
 				{
 					$page['absolute_url'] = $page['link'];
@@ -270,9 +306,10 @@ class TagManager_Page extends TagManager
 				{
 					$page['absolute_url'] = auto_link($page['link'], 'both', TRUE);
 				}
+				// Internal
 				else
 				{
-					// For article link, retrieve the page to build the link
+					// Article
 					if($page['link_type'] == 'article')
 					{
 						// Get the article to which this page links
@@ -292,7 +329,7 @@ class TagManager_Page extends TagManager
 							}
 						}
 					}
-					// Link to a page
+					// Page
 					else
 					{
 						// Get the page to which the page links
@@ -308,6 +345,10 @@ class TagManager_Page extends TagManager
 							if ($p['id_page'] == $page['link_id'])
 								$page['absolute_url'] = $p['url'];
 						}
+					}
+					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+					{
+						$page['absolute_url'] =  Settings::get_lang(). '/' . $page['absolute_url'];
 					}
 					$page['absolute_url'] = base_url() . $page['absolute_url'];
 
@@ -420,9 +461,17 @@ class TagManager_Page extends TagManager
 				}
 			}
 			$url = $article['url'];
-			
-			$article['url'] = 		base_url() . $page['url'] . '/' . $url;			
-			$article['lang_url'] = 	base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $url;
+
+//			$article['lang_url'] = 	base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $url;
+
+			if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+			{
+				$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $url;
+			}
+			else
+			{
+				$article['url'] = base_url() . $page['url'] . '/' . $url;			
+			}
 		}
 	}
 	
@@ -732,15 +781,16 @@ class TagManager_Page extends TagManager
 	function get_articles_from_pagination($tag, $where, $filter)
 	{
 		$page = & $tag->locals->page;
-
-		$start_index = array_pop(array_slice(self::$uri_segmentss, -1));
+		
+		$uri_segments = self::$uri_segments;
+		$start_index = array_pop(array_slice($uri_segments, -1));
 
 		// Load CI Pagination Lib
 		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
 	
 		// Number of displayed articles / page
 		// If no pagination : redirect to the current page
-		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect(self::$uri_segmentss[0]);
+		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect(self::$uri_segments[0]);
 
 		// from categories ? 
 		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
@@ -803,7 +853,8 @@ class TagManager_Page extends TagManager
 		$page = & $tag->locals->page;
 
 		// Get the start index for the SQL limit query param : last part of the URL
-		$start_index = array_pop(array_slice(self::$uri_segments, -1));
+		$uri_segments = self::$uri_segments;
+		$start_index = array_pop(array_slice($uri_segments, -1));
 
 
 		// If category name exists
@@ -850,7 +901,10 @@ class TagManager_Page extends TagManager
 
 		// Get the start index for the SQL limit query param : last part of the URL only if the 4th URI segmenet (pagination) is set
 		if (isset(self::$uri_segments[4]))
-			$start_index = array_pop(array_slice(self::$uri_segments, -1));
+		{
+			$uri_segments = self::$uri_segments;
+			$start_index = array_pop(array_slice($uri_segments, -1));
+		}
 
 		// If year is set
 		if (isset(self::$uri_segments[2]))
@@ -896,7 +950,8 @@ class TagManager_Page extends TagManager
 	
 		$articles = array();
 		
-		$name = array_pop(array_slice(self::$uri_segments, -1));
+		$uri_segments = self::$uri_segments;
+		$name = array_pop(array_slice($uri_segments, -1));
 
 		$where = array(
 			'article_lang.url' => $name,
@@ -929,8 +984,9 @@ class TagManager_Page extends TagManager
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
 		
 		// Asked category
-		$category_uri = array_pop(array_slice(self::$uri_segments, -1));
-	
+		$uri_segments = self::$uri_segments;
+		$category_uri = array_pop(array_slice($uri_segments, -1));
+
 		// Get categories from this page articles
 		$categories = self::$ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
 		
@@ -1539,7 +1595,8 @@ class TagManager_Page extends TagManager
 			}
 
 			// Current page
-			$cur_page = (in_array($pagination_uri, self::$uri_segments)) ? array_pop(array_slice(self::$uri_segments, -1)) : 1;
+			$uri_segments = self::$uri_segments;
+			$cur_page = (in_array($pagination_uri, self::$uri_segments)) ? array_pop(array_slice($uri_segments, -1)) : 1;
 
 			// Pagination tag config init
 			$pagination_config = array_merge($pagination_config,
@@ -1604,7 +1661,7 @@ class TagManager_Page extends TagManager
     {
         // Is the asked title from another page ?
         $from = (isset($tag->attr['from'])) ? $tag->attr['from'] : FALSE ;
-        
+
         if ($from == 'parent')
         {
             $up = (isset($tag->attr['up'])) ? $tag->attr['up'] : 1 ;
@@ -1646,7 +1703,8 @@ class TagManager_Page extends TagManager
 		if ($special_uri !== FALSE && ! array_key_exists($special_uri, $uri_config) )
 		{
 			// Try to find an article with the name of the last part of the URL.
-			$name = array_pop(array_slice(self::$uri_segments, -1));
+			$uri_segments = self::$uri_segments;
+			$name = array_pop(array_slice($uri_segments, -1));
 
 			$article =  self::$ci->article_model->get(
 				array('name' => $name), 
@@ -2132,106 +2190,6 @@ class TagManager_Page extends TagManager
 	}
 
 
-
-	/**
-	 * Returns HTML categories links wrapped by the given tag
-	 *
-	 * @TODO : 	Add the open and closing tag for each anchor.
-	 *			Example : <li><a>... here is the anchor ... </a></li>
-	 *
-	 */
-	public static function tag_article_categories($tag)
-	{
-		$data = array();
-		
-		// HTML Separatorof each category
-		$separator = ( ! empty($tag->attr['separator'])) ? $tag->attr['separator'] : ' | ';	
-		
-		// Make a link from each category or not. Default : TRUE
-		$link = ( ! empty($tag->attr['link']) && $tag->attr['link'] == 'false') ? FALSE : TRUE;	
-
-		// Field to return for each category. "title" by default, but can be "name", "subtitle'
-		$field =  ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : 'title';
-
-		// don't display the lang URL (by default)
-		$lang_url = '';
-
-		// Global tag and class, for memory
-		$html_tag =  ( ! empty($tag->attr['tag'])) ? $tag->attr['tag'] : FALSE;
-		$class =  ( ! empty($tag->attr['class'])) ? $tag->attr['class'] : FALSE;
-		
-		// Tag and class for each category, if set.
-		$subtag =  ( ! empty($tag->attr['subtag'])) ? $tag->attr['subtag'] : FALSE;
-		$subclass =  ( ! empty($tag->attr['subclass'])) ? ' class="'.$tag->attr['subclass'].'"' : FALSE;
-
-
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' )
-		{
-			$lang_url = TRUE;
-		}
-
-		// Only returns the URL containing the lang code when languages > 1
-		// or atribute lang set to TRUE
-		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
-		{
-			$lang_url = Settings::get_lang().'/';
-		}
-		
-		// Current page
-		$page = $tag->locals->page;
-	
-			
-		// Get the category URI segment from /config/ionize.php config file
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-
-		$category_uri = $uri_config['category'];
-
-		// Get the categories from current article
-		$categories = $tag->locals->article['categories'];	
-
-		// Build the anchor array
-		foreach($categories as $category)
-		{
-			$category_string = '';
-			
-			if ($subtag !== FALSE)
-			{
-				// Set the local category, to get the class from current category
-				$tag->locals->category = $category;
-				$subclass = self::get_attribute($tag, 'subclass');
-				$subtag = self::get_attribute($tag, 'subtag');
-				
-				// Replace the class and tag by the subclass and subtag
-				$tag->attr['class'] = $subclass;
-				$tag->attr['tag'] = $subtag;
-	
-				$category_string = self::wrap($tag, $category[$field]);
-			}
-			else
-			{
-				$category_string = $category[$field];
-			}
-			
-			if ($link == TRUE)
-			{
-				$category_string = anchor(base_url().$lang_url.$page['name'].'/'.$category_uri.'/'.$category['name'], $category_string);
-			}
-			
-			$data[] = $category_string;
-			
-			
-		}
-
-		$tag->attr['tag'] = $html_tag;
-		$tag->attr['class'] = $class;
-		
-		return self::wrap($tag, implode($separator, $data));
-	}
-
-
 	public function tag_article_readmore($tag)
 	{
 		$term = (isset($tag->attr['term']) ) ? $tag->attr['term'] : '';
@@ -2516,6 +2474,27 @@ class TagManager_Page extends TagManager
 
 
 	// ------------------------------------------------------------------------
+	public static function tag_archive($tag)
+	{
+		// Current archive
+		$year = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : '' ;
+		$month = isset(self::$uri_segments[3]) ? self::$uri_segments[3] : '' ;
+		
+		$timestamp = '';
+		if ($year != '' && $month !='')
+			$timestamp = mktime(0, 0, 0, $month, 1, $year);
+		else if ($year != '')
+			$timestamp = mktime(0, 0, 0, 0, 1, $year);
+		
+		if ($timestamp != '')
+		{
+			$date = (string) date('Y-m-d H:i:s', $timestamp);
+
+			return self::format_date($tag, $date);
+		}
+		
+		return '';
+	}
 
 
 	/**
@@ -2775,18 +2754,19 @@ class TagManager_Page extends TagManager
 	{
 		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
 
-		$category_uri = array_pop(array_slice(self::$uri_segments, -1));
+		$uri_segments = self::$uri_segments;
+		$category_uri = array_pop(array_slice($uri_segments, -1));
 
 		// Categorie prefix in the returned string. Exemple "Category "
 		$category_value = NULL;
 
 		// Store categories in Globals, so no multiple time retrieve
-		if (empty($tag->globals->categories))
+		if (self::$categories === FALSE)
 		{
-			$tag->globals->categories = self::get_categories($tag, self::get_asked_page($tag));
+			self::$categories = self::get_categories($tag, self::get_asked_page($tag));
 		}
 
-		foreach($tag->globals->categories as $category)
+		foreach(self::$categories as $category)
 		{
 			if ($category['name'] == $category_uri)
 			{
@@ -2797,8 +2777,6 @@ class TagManager_Page extends TagManager
 		{
 			return self::wrap($tag, $category_value);
 		}
-		
-		return '';
 	}
 	
 	
@@ -2817,18 +2795,20 @@ class TagManager_Page extends TagManager
 	 */
 	public static function tag_categories($tag)
 	{
+
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
 			return $str;
-
-		if (empty($tag->globals->categories))
+		
+		// Store of all categories
+		if (self::$categories === FALSE)
 		{
-			$tag->globals->categories = self::get_categories($tag, self::get_asked_page($tag));
+			self::$categories = self::get_categories($tag, self::get_asked_page($tag));
 		}
 
 		// Tag expand
 		$str = '';
-		foreach($tag->globals->categories as $category)
+		foreach(self::$categories as $category)
 		{
 			$tag->locals->category = $category;
 			$str .= $tag->expand();
@@ -2874,19 +2854,116 @@ class TagManager_Page extends TagManager
 
 
 
-
-	/** 
-	 * Deprecated, will be deleted in the next version 
-	 * Use tag_categories_url()
-	 * @deprecated
-	 */
-//	public static function tag_categories_lang_url($tag) { return ($tag->locals->category['lang_url'] != '' ) ? $tag->locals->category['lang_url'] : '' ; }
-
 	public static function tag_category_active_class($tag) { return ($tag->locals->category['active_class'] != '' ) ? $tag->locals->category['active_class'] : '' ; }
 
     public static function tag_category_title($tag) { return self::wrap($tag, $tag->locals->category['title']); }
 
 	public static function tag_category_subtitle($tag) { return self::wrap($tag, $tag->locals->category['subtitle']); }
+
+
+
+	/**
+	 * Returns HTML categories links wrapped by the given tag
+	 *
+	 * @TODO : 	Add the open and closing tag for each anchor.
+	 *			Example : <li><a>... here is the anchor ... </a></li>
+	 *
+	 */
+	public static function tag_article_categories($tag)
+	{
+		$data = array();
+		
+		// HTML Separatorof each category
+		$separator = ( ! empty($tag->attr['separator'])) ? $tag->attr['separator'] : ' | ';	
+		
+		// Make a link from each category or not. Default : TRUE
+		$link = ( ! empty($tag->attr['link']) && $tag->attr['link'] == 'false') ? FALSE : TRUE;	
+
+		// Field to return for each category. "title" by default, but can be "name", "subtitle'
+		$field =  ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : 'title';
+
+		// don't display the lang URL (by default)
+		$lang_url = '';
+
+		// Global tag and class, for memory
+		$html_tag =  ( ! empty($tag->attr['tag'])) ? $tag->attr['tag'] : FALSE;
+		$class =  ( ! empty($tag->attr['class'])) ? $tag->attr['class'] : FALSE;
+		
+		// Tag and class for each category, if set.
+		$subtag =  ( ! empty($tag->attr['subtag'])) ? $tag->attr['subtag'] : FALSE;
+		$subclass =  ( ! empty($tag->attr['subclass'])) ? ' class="'.$tag->attr['subclass'].'"' : FALSE;
+
+
+		// If lang attribute is set to TRUE, force the lang code to be in the URL
+		// Usefull only if the website has only one language
+		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' )
+		{
+			$lang_url = TRUE;
+		}
+
+		// Only returns the URL containing the lang code when languages > 1
+		// or atribute lang set to TRUE
+		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
+		{
+			$lang_url = Settings::get_lang().'/';
+		}
+		
+		// Current page
+		$page = $tag->locals->page;
+	
+			
+		// Get the category URI segment from /config/ionize.php config file
+		$uri_config = self::$ci->config->item('special_uri');
+		$uri_config = array_flip($uri_config);
+
+		$category_uri = $uri_config['category'];
+
+		// Get the categories from current article
+		$categories = $tag->locals->article['categories'];	
+
+		// Build the anchor array
+		foreach($categories as $category)
+		{
+			$category_string = '';
+			
+			
+			if ($subtag !== FALSE)
+			{
+				// Set the local category, to get the class from current category
+				$tag->locals->category = $category;
+				$subclass = self::get_attribute($tag, 'subclass');
+				$subtag = self::get_attribute($tag, 'subtag');
+				
+				// Replace the class and tag by the subclass and subtag
+				$tag->attr['class'] = $subclass;
+				$tag->attr['tag'] = $subtag;
+	
+				$category_string = self::wrap($tag, $category[$field]);
+			}
+			else
+			{
+				$category_string = $category[$field];
+			}
+			
+			$url = anchor(base_url().$lang_url.$page['name'].'/'.$category_uri.'/'.$category['name'], $category_string);
+
+			if ($link == TRUE)
+				$category_string = $url;
+			
+			$data[] = $category_string;
+			
+// To make nested tags working...
+//			$category['url'] = $url;
+//			$tag->locals->category = $category;
+//			$tag->expand();
+			
+		}
+
+		$tag->attr['tag'] = $html_tag;
+		$tag->attr['class'] = $class;
+		
+		return self::wrap($tag, implode($separator, $data));
+	}
 
 
 	// ------------------------------------------------------------------------

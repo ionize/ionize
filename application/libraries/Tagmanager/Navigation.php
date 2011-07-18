@@ -276,8 +276,8 @@ class TagManager_Navigation extends TagManager
 		}
 		
 		// If set, attribute level, else parent page level + 1
-//		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : 0 ;
-		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : FALSE ;
+		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : 0 ;
+//		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : FALSE ;
 
 		// If set, depth
 		$depth = (isset($tag->attr['depth']) ) ? $tag->attr['depth'] : -1;
@@ -301,9 +301,9 @@ class TagManager_Navigation extends TagManager
 		if (strpos($active_class, 'class') !== FALSE) $active_class= str_replace('\'', '"', $active_class);
 		
 		// Attribute : Use lang_url or url ?
-		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] === 'TRUE') ? TRUE : FALSE ;
-		if ($lang_url == FALSE)
-			$lang_url = (isset($tag->attr['lang_url']) && $tag->attr['lang_url'] === 'TRUE') ? TRUE : FALSE ;
+//		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] === 'TRUE') ? TRUE : FALSE ;
+//		if ($lang_url == FALSE)
+//			$lang_url = (isset($tag->attr['lang_url']) && $tag->attr['lang_url'] === 'TRUE') ? TRUE : FALSE ;
 		
 		// Attribute : Helper to use to print out the tree navigation
 		$helper = (isset($tag->attr['helper']) && $tag->attr['helper'] != '' ) ? $tag->attr['helper'] : 'navigation';
@@ -439,7 +439,7 @@ class TagManager_Navigation extends TagManager
 
 		// Return the helper function
 		if (function_exists($helper_function))
-			return call_user_func($helper_function, $tree, $lang_url, $id, $class, $first_class, $last_class);
+			return call_user_func($helper_function, $tree, $id, $class, $first_class, $last_class);
 	}
 
 
@@ -462,7 +462,7 @@ class TagManager_Navigation extends TagManager
 		// Usefull only if the website has only one language
 		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
 		
-		if ($tag->locals->page['link'] != '' && $tag->locals->page['link_type'] == '')
+		if ($tag->locals->page['link'] != '' && $tag->locals->page['link_type'] == 'external')
 		{
 			return $tag->locals->page['absolute_url'];
 		}
@@ -479,8 +479,6 @@ class TagManager_Navigation extends TagManager
 			{
 				$tag->locals->page['absolute_url'] = str_replace(base_url(), base_url().Settings::get_lang() . '/', $tag->locals->page['absolute_url']);
 			}
-			
-			return $tag->locals->page['absolute_url'];
 		}
 		
 		return $tag->locals->page['absolute_url'];

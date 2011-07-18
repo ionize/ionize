@@ -56,8 +56,16 @@
 					</dl>
 				<?php endif ;?>
 
-				<!-- Internal / External link Info -->
-				<dl class="small compact" id="link_info"></dl>
+
+			
+				<!-- Link ? -->
+				<?php if ($id_page != '') :?>
+				
+					<div id="linkContainer"></div>
+					
+				<?php endif ;?>
+				
+				
 
 			</div>
 			
@@ -124,25 +132,6 @@
 				<?php endif ;?>
 				
 
-				<?php if ($id_page != '') :?>
-				<!-- Internal / External link -->
-				<dl class="small last dropArticleAsLink dropPageAsLink">
-					<dt>
-						<label for="link" title="<?= lang('ionize_help_page_link') ?>"><?= lang('ionize_label_link') ?></label>
-						<br/>
-						
-					</dt>
-					<dd>
-						<input type="hidden" id="link_type" name="link_type" value="<?= $link_type ?>" />
-						<input type="hidden" id="link_id" name="link_id" value="<?= $link_id ?>" />
-						
-						<textarea id="link" name="link" class="inputtext w140 h40 droppable" alt="<?= lang('ionize_label_drop_link_here') ?>"><?= $link ?></textarea>
-						<br />
-						
-						<a id="link_remove"><?= lang('ionize_label_remove_link') ?></a><br/>
-					</dd>
-				</dl>
-				<?php endif ;?>
 
 			</div>
 			
@@ -750,8 +739,19 @@
 						</dd>
 					</dl>
 
-					<!-- URL -->
+					<!-- Sub title -->
 					<dl>
+						<dt>
+							<label for="subtitle_<?= $lang ?>"><?= lang('ionize_label_subtitle') ?></label>
+						</dt>
+						<dd>
+							<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="inputtext h30" type="text"><?= ${$lang}['subtitle'] ?></textarea>
+						</dd>
+					</dl>
+
+
+					<!-- URL -->
+					<dl class="mt15">
 						<dt>
 							<label for="url_<?= $lang ?>" title="<?= lang('ionize_help_page_url') ?>"><?= lang('ionize_label_url') ?></label>
 						</dt>
@@ -763,8 +763,18 @@
 						</dd>
 					</dl>
 
-					<!-- Meta title : used for browser window title -->
+					<!-- Nav title -->
 					<dl>
+						<dt>
+							<label for="nav_title_<?= $lang ?>" title="<?= lang('ionize_help_page_nav_title') ?>"><?= lang('ionize_label_nav_title') ?></label>
+						</dt>
+						<dd>
+							<input id="nav_title_<?= $lang ?>" name="nav_title_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['nav_title'] ?>"/>
+						</dd>
+					</dl>
+
+					<!-- Meta title : used for browser window title -->
+					<dl class="mb20">
 						<dt>
 							<label for="meta_title_<?= $lang ?>" title="<?= lang('ionize_help_page_window_title') ?>"><?= lang('ionize_label_meta_title') ?></label>
 						</dt>
@@ -774,15 +784,6 @@
 					</dl>
 
 			
-					<!-- sub title -->
-					<dl>
-						<dt>
-							<label for="subtitle_<?= $lang ?>"><?= lang('ionize_label_subtitle') ?></label>
-						</dt>
-						<dd>
-							<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="inputtext h30" type="text"><?= ${$lang}['subtitle'] ?></textarea>
-						</dd>
-					</dl>
 			
 
 					<!-- Online -->
@@ -1075,46 +1076,14 @@
 	ION.initDatepicker();
 
 
-
 	/**
 	 * Copy Lang data to other languages dynamically
 	 *
 	 */
 	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'meta_title'));
 
-	// Remove link event
-	if ($('link_remove'))
-	{
-		$('link_remove').addEvent('click', function(e)
-		{
-			e.stop();
-			ION.removeElementLink();
-		});
 
-		// External link Add
-		$('link').addEvent('blur', function(e)
-		{
-			if (ION.checkUrl(this.value))
-			{
-				// type of receiver, url, ID of textarea which receive the link after save.
-				ION.addExternalLink('page', this.value, 'link');
-			}
-		});
-	}
-	
 
-	// Add edit link to the link (if internal)
-	<?php if ($link != '') :?>
-	
-		ION.updateLinkInfo({
-			'type': '<?php echo($link_type); ?>',
-			'id': '<?php echo($link_id); ?>', 
-			'text': '<?php echo($link); ?>'
-		});
-	
-	<?php endif ;?>
-
-	
 	// Parent select list
 	$('id_menu').addEvent('change', function()
 	{
@@ -1203,7 +1172,7 @@
 	<?php if (!empty($id_page)) :?>
 
 		/**
-		 * XHR updtes
+		 * XHR updates
 		 *
 		 */
 		// Dates
@@ -1258,6 +1227,14 @@
 		 	
 	 		ION.sendData(url, data);
 		});
+
+
+		// Link to page or article or what else...
+		if ($('linkContainer'))
+		{
+			ION.HTML(admin_url + 'page/get_link', {'id_page': '<?= $id_page ?>'}, {'update': 'linkContainer'});
+		}
+
 
 
 		/*

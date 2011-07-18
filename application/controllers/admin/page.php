@@ -354,6 +354,7 @@ class Page extends MY_admin
 	}
 
 
+
 	// ------------------------------------------------------------------------
 
 
@@ -516,6 +517,56 @@ class Page extends MY_admin
 	// ------------------------------------------------------------------------
 
 
+	function get_link()
+	{
+		// Get the link
+		$id_page = $this->input->post('id_page');
+		
+		$page = $this->page_model->get(array('id_page' => $id_page));
+		$link_type = $page['link_type'];
+
+		$this->template = array('parent' => 'page');
+
+		if ($page['link'] !='' )		
+		{
+			$title = NULL;
+			
+			// Prep the Link
+			switch($page['link_type'])
+			{
+				case 'page' :
+					$link = $this->page_model->get(array('id_page' => $page['link_id']), Settings::get_lang('default'));
+					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+					break;
+					
+				case 'article' :
+					$link_rel = explode('.', $page['link_id']);
+					$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+					break;
+				
+				case 'external' :
+					$link_rel = '';
+					$title = $page['link'];
+					break;
+			}
+
+			$this->template = array(
+				'parent' => 'page',
+				'rel' => $id_page,
+				'link_id' => $page['link_id'],
+				'link_type' => $page['link_type'],
+				'link' => $title
+			);
+		}
+
+		$this->output('link');
+	}
+	
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Adds a link to a page
 	 *
@@ -531,7 +582,7 @@ class Page extends MY_admin
 		// Clear the cache
 		Cache()->clear_cache();
 
-		// Page which received the link
+		// Sent by ION.dropElementAsLink() or ION.addExternalLink()
 		$id_page = $this->input->post('receiver_rel');
 		$link_type = $this->input->post('link_type');
 		$link_id = $this->input->post('link_rel');
@@ -539,29 +590,32 @@ class Page extends MY_admin
 		// Link name (default lang title, for display)
 		$title = NULL;
 		
-		if ($link_type == 'page')
+		switch($link_type)
 		{
-			$link = $this->page_model->get(array('id_page' => $link_id), Settings::get_lang('default'));
-			$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+			case 'page' :
+				$link = $this->page_model->get(array('id_page' => $link_id), Settings::get_lang('default'));
+				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+				break;
+			
+			case 'article' :
+				$link_rel = explode('.', $link_id);
+				$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+				break;
+
+			case 'external' :
+				$link_rel = '';
+				$title = prep_url($this->input->post('url'));
+				break;
 		}
-		if ($link_type == 'article')
-		{
-			$link_rel = explode('.', $link_id);
-			$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
-			$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
-		}
-		if ($link_type == 'external')
-		{
-			$link_rel = '';
-			$title = prep_url($this->input->post('url'));
-		}
-		
+
 		$data = array(
 			'link_id' => $link_id,
 			'link_type' => $link_type,
 			'link' => $title
 		);
-		
+
+
 		// Save the link
 		$this->page_model->update(array('id_page' => $id_page), $data);
 
@@ -570,7 +624,7 @@ class Page extends MY_admin
 		{
 			$check = check_url($title);
 			
-			if($check === false)
+			if($check === FALSE)
 			{
 				$this->callback[] = array
 				(
@@ -580,6 +634,8 @@ class Page extends MY_admin
 						lang('ionize_message_url_not_found')
 					)
 				);
+				$this->response();
+
 			}
 			elseif($check == 404)
 			{
@@ -591,17 +647,18 @@ class Page extends MY_admin
 						lang('ionize_message_url_got_404')
 					)
 				);
+				$this->response();
 			}
 		}
 
-		$this->callback[] = array
-		(
-			'fn' => 'ION.updateLinkInfo',
-			'args' => array
-			(
-				'type'=> $link_type,
-				'id'=> $link_id,
-				'text'=> $title
+		$this->callback = array(
+			array(
+				'fn' => 'ION.HTML',
+				'args' => array('page/get_link', array('id_page' => $id_page), array('update' => 'linkContainer'))
+			),
+			array(
+				'fn' => 'ION.notification',
+				'args' => array('success', lang('ionize_message_link_added'))
 			)
 		);
 
@@ -614,7 +671,7 @@ class Page extends MY_admin
 
 	function remove_link()
 	{
-		$id_page = $this->input->post('receiver_rel');
+		$id_page = $this->input->post('rel');
 		
 		if ($id_page)
 		{
@@ -630,14 +687,10 @@ class Page extends MY_admin
 			// Save the context		
 			$this->page_model->update(array('id_page' => $id_page), $context);
 
-			$this->callback[] = array
-			(
-				'fn' => 'ION.updateLinkInfo',
-				'args' => array
-				(
-					'type'=> '',
-					'id'=> '',
-					'text'=> ''
+			$this->callback = array(
+				array(
+					'fn' => 'ION.HTML',
+					'args' => array('page/get_link', array('id_page' => $id_page), array('update' => 'linkContainer'))
 				)
 			);
 

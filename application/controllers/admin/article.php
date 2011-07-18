@@ -947,6 +947,54 @@ class Article extends MY_admin
 	}
 
 
+	function get_link()
+	{
+		// Get the articel in the context of the page
+		$id_page = $this->input->post('id_page');
+		$id_article = $this->input->post('id_article');
+
+		// Get the receiver's context
+		$context = $this->article_model->get_context($id_article, $id_page);
+
+		$this->template = array('parent' => 'article');
+
+		if ($context['link'] !='')		
+		{
+			$title = NULL;
+			
+			// Prep the Link
+			switch($context['link_type'])
+			{
+				case 'page' :
+					$link = $this->page_model->get(array('id_page' => $context['link_id']), Settings::get_lang('default'));
+					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+					break;
+					
+				case 'article' :
+					$link_rel = explode('.', $context['link_id']);
+					$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+					break;
+				
+				case 'external' :
+					$link_rel = '';
+					$title = $page['link'];
+					break;
+			}
+
+			$this->template = array(
+				'parent' => 'article',
+				'rel' => $id_page.'.'.$id_article,
+				'link_id' => $context['link_id'],
+				'link_type' => $context['link_type'],
+				'link' => $title
+			);
+		}
+
+		$this->output('link');
+	}
+	
+
 	/**
 	 * Adds a link to an article
 	 *
@@ -959,6 +1007,7 @@ class Article extends MY_admin
 	 */
 	function add_link()
 	{
+		// Sent by ION.dropElementAsLink() or ION.addExternalLink()
 		$receiver_rel = explode('.', $this->input->post('receiver_rel'));
 		$link_type = $this->input->post('link_type');
 		$link_rel = $this->input->post('link_rel');
@@ -972,24 +1021,26 @@ class Article extends MY_admin
 			// Link name (default lang title, for display)
 			$title = NULL;
 			
-			// Get the link object
-			if ($link_type == 'page')
+			// Prep the Link
+			switch($link_type)
 			{
-				$link = $this->page_model->get(array('id_page' => $link_rel), Settings::get_lang('default'));
-				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+				case 'page' :
+					$link = $this->page_model->get(array('id_page' => $link_rel), Settings::get_lang('default'));
+					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+					break;
+					
+				case 'article' :
+					$rel = explode('.', $link_rel);
+					$link = $this->article_model->get(array('id_article' => $rel[1]), Settings::get_lang('default'));
+					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+					break;
+				
+				case 'external' :
+					$link_rel = '';
+					$title = prep_url($this->input->post('url'));
+					break;
 			}
-			if ($link_type == 'article')
-			{
-				$rel = explode('.', $link_rel);
-				$link = $this->article_model->get(array('id_article' => $rel[1]), Settings::get_lang('default'));
-				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
-			}
-			if ($link_type == 'external')
-			{
-				$link_rel = '';
-				$title = prep_url($this->input->post('url'));
-			}
-	
+
 			$context['link_type'] = $link_type;
 			$context['link_id'] = $link_rel;
 			$context['id_page'] = $receiver_rel[0];
@@ -1013,6 +1064,7 @@ class Article extends MY_admin
 							lang('ionize_message_url_not_found')
 						)
 					);
+					$this->response();
 				}
 				elseif($check == 404)
 				{
@@ -1024,17 +1076,18 @@ class Article extends MY_admin
 							lang('ionize_message_url_got_404')
 						)
 					);
+					$this->response();
 				}
 			}
 
-			$this->callback[] = array
-			(
-				'fn' => 'ION.updateLinkInfo',
-				'args' => array
-				(
-					'type'=> $link_type,
-					'id'=> $link_rel,
-					'text'=> $title
+			$this->callback = array(
+				array(
+					'fn' => 'ION.HTML',
+					'args' => array('article/get_link', array('id_page' => $receiver_rel[0], 'id_article'=> $receiver_rel[1]), array('update' => 'linkContainer'))
+				),
+				array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_link_added'))
 				)
 			);
 
@@ -1045,7 +1098,7 @@ class Article extends MY_admin
 
 	function remove_link()
 	{
-		$receiver_rel = explode('.', $this->input->post('receiver_rel'));
+		$receiver_rel = explode('.', $this->input->post('rel'));
 		
 		if (count($receiver_rel > 1))
 		{
@@ -1063,14 +1116,10 @@ class Article extends MY_admin
 			// Save the context		
 			$this->article_model->save_context($context);
 
-			$this->callback[] = array
-			(
-				'fn' => 'ION.updateLinkInfo',
-				'args' => array
-				(
-					'type'=> '',
-					'id'=> '',
-					'text'=> ''
+			$this->callback = array(
+				array(
+					'fn' => 'ION.HTML',
+					'args' => array('article/get_link', array('id_page' => $receiver_rel[0],'id_article' => $receiver_rel[1]), array('update' => 'linkContainer'))
 				)
 			);
 

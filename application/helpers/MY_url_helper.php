@@ -445,6 +445,41 @@ if( ! function_exists('check_url'))
 }
 
 
+// ------------------------------------------------------------------------
+
+/**
+ * Header Redirect
+ * Modified to redirect 303 by default.
+ *
+ * Header redirect in two flavors
+ * For very fine grained control over headers, you could use the Output
+ * Library's set_header() function.
+ *
+ * @access	public
+ * @param	string	the URL
+ * @param	string	the method: location or redirect
+ * @return	string
+ */
+if ( ! function_exists('redirect'))
+{
+	function redirect($uri = '', $method = 'location', $http_response_code = 303)
+	{
+		if ( ! preg_match('#^https?://#i', $uri))
+		{
+			$uri = site_url($uri);
+		}
+
+		switch($method)
+		{
+			case 'refresh'	: header("Refresh:0;url=".$uri);
+				break;
+			default			: header("Location: ".$uri, TRUE, $http_response_code);
+				break;
+		}
+		exit;
+	}
+}
+
 
 /* End of file MY_url_helper.php */
 /* Location: ./application/helpers/MY_url_helper.php */

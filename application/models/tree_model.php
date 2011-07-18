@@ -56,7 +56,7 @@ class Tree_model extends CI_Model
 		$this->db->order_by('page.ordering', 'ASC');
 		
 		$this->db->select('page.*', false);
-		$this->db->select('page_lang.title','page_lang.url');
+		$this->db->select('page_lang.title,page_lang.nav_title,page_lang.url');
 		$this->db->join('page_lang', 'page_lang.id_page = page.id_page', 'inner');			
 		$this->db->where('page_lang.lang', Settings::get_lang('default'));
 		
@@ -70,6 +70,7 @@ class Tree_model extends CI_Model
 			foreach($data as &$p)
 			{
 				$p['title'] = strip_tags(html_entity_decode($p['title']));
+				$p['nav_title'] = strip_tags(html_entity_decode($p['nav_title']));
 			}			
 		}
 
