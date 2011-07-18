@@ -98,7 +98,8 @@ ION.append({
 			},
 			onBackground: function(toggler, element){
 				toggler.removeClass('expand');
-			}
+			},
+			duration:'short'
 		});
 		
 		return acc;
@@ -1091,7 +1092,8 @@ ION.append({
 	 */	
 	updateTreePage: function(args)
 	{
-		var title = (args.title !='') ? args.title : args.url;
+		var title = (args.nav_title !='') ? args.nav_title : args.title;
+		if (title == '') title = args.url;
 		var id = args.id_page;
 		var id_parent = args.id_parent;
 		var status = (args.online == '1') ? 'online' : 'offline';

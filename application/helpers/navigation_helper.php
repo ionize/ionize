@@ -92,7 +92,7 @@ if( ! function_exists('get_tree_navigation'))
 
 				$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
 				
-				$tree .= '<li'.$class.'><a'.$class.' href="' . $page['absolute_url'] . '">'.$page['title']. '</a>';
+				$tree .= '<li'.$class.'><a'.$class.' href="' . $page['absolute_url'] . '">'.$title. '</a>';
 		
 				if (!empty($page['children']))
 					 $tree .= get_tree_navigation($page['children']);
@@ -180,7 +180,9 @@ if( ! function_exists('get_next_prev_page'))
 	{
 		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
 		
-		$link = $prefix. '<a href="' . $page['absolute_url'] . '">' . $page['title']. '</a>';
+		$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
+
+		$link = $prefix. '<a href="' . $page['absolute_url'] . '">' . $title . '</a>';
 		
 		return $link;
 	}

@@ -426,21 +426,25 @@ if( ! function_exists('check_url'))
 {
 	function check_url($url)
 	{
-		$url = prep_url($url);
-		$c = curl_init();
-		curl_setopt($c, CURLOPT_URL, $url);
-		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($c, CURLOPT_NOBODY, true);
-		$output = @curl_exec($c);
-		
-		if($output !== FALSE)
+		if (function_exists('curl_init'))
 		{
-			$httpCode = curl_getinfo($c, CURLINFO_HTTP_CODE);
-			curl_close($c);				
-			return $httpCode;
+			$url = prep_url($url);
+			$c = curl_init();
+			curl_setopt($c, CURLOPT_URL, $url);
+			curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($c, CURLOPT_NOBODY, true);
+			$output = @curl_exec($c);
+			
+			if($output !== FALSE)
+			{
+				$httpCode = curl_getinfo($c, CURLINFO_HTTP_CODE);
+				curl_close($c);				
+				return $httpCode;
+			}
+			return FALSE;
 		}
-		return FALSE;
+		return '200';
 	}
 }
 

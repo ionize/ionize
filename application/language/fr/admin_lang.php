@@ -693,6 +693,7 @@ $lang['ionize_help_article_list_template'] = 'Si plus d\'un article / page, util
 $lang['ionize_help_appears'] = 'La page apparaît-elle dans le menu de navigation ?';
 $lang['ionize_help_page_meta'] = 'Remplace les META par défaut du site si non vide';
 $lang['ionize_help_page_window_title'] = 'Titre de la fenêtre du navigateur';
+$lang['ionize_help_page_nav_title'] = 'Titre de l\'élément de menu';
 $lang['ionize_help_home_page'] = 'Définir cette page comme page d\'accueil du site ?';
 $lang['ionize_help_add_page_to_menu'] = 'Ajouter une page à ce menu';
 $lang['ionize_help_page_drop_article_here'] = 'Glissez un article depuis l\'arborescence en sélectionnant son nom.';

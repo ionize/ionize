@@ -18,10 +18,11 @@
 	
 	<div id="sidecolumn" class="close">
 
-		<!-- Main informations -->
-		<?php if ($id_page != '') :?>
+		<div class="info">
+
+			<!-- Main informations -->
+			<?php if ($id_page != '') :?>
 			
-			<div class="info">
 			
 				<?php if ($this->connect->is('super-admins') ) :?>
 					<dl class="small compact">
@@ -65,14 +66,12 @@
 					
 				<?php endif ;?>
 				
-				
-
-			</div>
 			
-		<?php endif ;?>
+			<?php endif ;?>
+		</div>
 
 
-		<div id="options" class="mt20">
+		<div id="options">
 
 			<!-- Options -->
 			<h3 class="toggler"><?= lang('ionize_title_options') ?></h3>

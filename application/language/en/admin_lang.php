@@ -693,6 +693,7 @@ $lang['ionize_help_article_list_template'] = 'If more than 1 article on the page
 $lang['ionize_help_appears'] = 'Does the page appears in the navigation menu ?';
 $lang['ionize_help_page_meta'] = 'Replace the global website META when not empty';
 $lang['ionize_help_page_window_title'] = 'Browser window title';
+$lang['ionize_help_page_nav_title'] = 'Navigation item (menu) title';
 $lang['ionize_help_home_page'] = 'Is this page the home page of the website ?';
 $lang['ionize_help_add_page_to_menu'] = 'Add a page to this menu';
 $lang['ionize_help_page_drop_article_here'] = 'Drag an article from the left tree by selecting its name.';

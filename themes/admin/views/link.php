@@ -51,7 +51,7 @@
 	
 <?php else :?>
 
-	<dl class="small last dropArticleAsLink dropPageAsLink">
+	<dl class="small dropArticleAsLink dropPageAsLink">
 		<dt>
 			<label for="link" title="<?= lang('ionize_help_page_link') ?>"><?= lang('ionize_label_link') ?></label>
 			<br/>

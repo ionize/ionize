@@ -104,6 +104,10 @@
 	<query>
 		ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
 	</query>
+	
+	<query>
+		ALTER TABLE  `page_lang` ADD  `nav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
+	</query>
 
 	<query>
 		ALTER TABLE `article_lang` DROP `link`;

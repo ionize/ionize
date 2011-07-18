@@ -91,6 +91,7 @@ UPDATE page SET id_subnav = id_page;
 
 
 ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
+ALTER TABLE  `page_lang` ADD  `nav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
 
 
 

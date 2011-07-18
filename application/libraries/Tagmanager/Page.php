@@ -2474,25 +2474,34 @@ class TagManager_Page extends TagManager
 
 
 	// ------------------------------------------------------------------------
+	
+	
 	public static function tag_archive($tag)
 	{
 		// Current archive
 		$year = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : '' ;
 		$month = isset(self::$uri_segments[3]) ? self::$uri_segments[3] : '' ;
 		
-		$timestamp = '';
-		if ($year != '' && $month !='')
-			$timestamp = mktime(0, 0, 0, $month, 1, $year);
-		else if ($year != '')
-			$timestamp = mktime(0, 0, 0, 0, 1, $year);
+		$uri_config = self::$ci->config->item('special_uri');
+		$uri_config = array_flip($uri_config);
+		$archive_uri = $uri_config['archives'];
 		
-		if ($timestamp != '')
+		if (self::$uri_segments[1] == $archive_uri)
 		{
-			$date = (string) date('Y-m-d H:i:s', $timestamp);
-
-			return self::format_date($tag, $date);
+			$timestamp = '';
+			if ($year != '' && $month !='')
+				$timestamp = mktime(0, 0, 0, $month, 1, $year);
+			else if ($year != '')
+				$timestamp = mktime(0, 0, 0, 0, 1, $year);
+			
+			if ($timestamp != '')
+			{
+				$date = (string) date('Y-m-d H:i:s', $timestamp);
+	
+				return self::format_date($tag, $date);
+			}
 		}
-		
+				
 		return '';
 	}
 
