@@ -1966,7 +1966,8 @@ class FileManager
 			{
 				throw new FileManagerException('mkdir_failed:' . $this->legal2abs_url_path($legal_url) . $file);
 			}
-
+			@chmod($newdir, $fileinfo['chmod']);
+			
 			$this->sendHttpHeaders('Content-Type: application/json');
 
 			// success, now show the new directory as a list view:

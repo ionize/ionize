@@ -153,16 +153,36 @@ class Media extends MY_admin
 			{
 				if ( ! empty($_POST['PHPSESSID']))
 				{
-					session_destroy();
-					session_id($_POST['PHPSESSID']);
-					session_start();
+//					session_destroy();
+//					session_id($_POST['PHPSESSID']);
+//					session_start();
 					
-					$okken = $this->session->userdata('uploadTokken');
-					$sent_tokken = $_POST['uploadTokken'];
+/*					
+					echo json_encode(array(
+						'status' => 0,
+						'error' => 	
+							trace($this->session->userdata('uploadTokken')).
+							trace($_POST)
+					));
+*/
+
 					
-					if ($okken == $sent_tokken)
+					// Get the original session tokken
+					$tokken = $this->session->userdata('uploadTokken');
+					
+					// Get the sent tokken & compare
+					$sent_tokken = ( ! empty($_POST['uploadTokken'])) ? $_POST['uploadTokken'] : '';
+					
+					if ($tokken == $sent_tokken)
 					{
 						$this->Filemanagerwithaliassupport->fireEvent($event);
+					}
+					else
+					{
+						echo json_encode(array(
+							'status' => 0,
+							'error' => lang('ionize_session_expired')
+						));
 					}
 				}
 				

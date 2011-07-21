@@ -187,9 +187,10 @@ class TagManager_Navigation extends TagManager
 			// Return the helper function result
 			if (function_exists($helper_function))
 			{
-				$nav = call_user_func($helper_function, $pages);
+				//$nav = call_user_func($helper_function, $pages);
+				$tag->attr['helper'] = $helper.':'.$helper_function;
 				
-				$output = self::wrap($tag, $nav);
+				$output = self::wrap($tag, $pages);
 				
 				// Tag cache
 				self::set_cache($tag, $output);

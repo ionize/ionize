@@ -127,7 +127,24 @@ ION.TreeXhr = new Class({
 			{
 				container.id = type + 'Container' + id_parent;
 			}
-			container.addClass(type + 'Container').inject(parentContainer, 'bottom');
+			
+			container.addClass(type + 'Container');
+			
+			// Try to inject page container before the article container, else at the bottom
+			var injected = false;
+			if (type == 'page')
+			{
+				if (typeOf($('articleContainer' + id_parent)) != 'null')
+				{
+					container.inject($('articleContainer' + id_parent), 'before');
+					injected = true;
+				}
+			}
+			
+			if (injected == false)
+			{
+				container.inject(parentContainer, 'bottom');
+			}
 			
 			// Hide the parentContainer if it should be, but not for the root.
 			if (id_parent != 0)

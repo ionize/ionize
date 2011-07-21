@@ -1088,6 +1088,7 @@ class Article_model extends Base_model
 		$articles = $this->filter_on_categories($articles, $categories, $categories_condition);
 
 		// limit now
+		/*
 		if ($limit !== FALSE)
 		{
 			if (is_array($limit))
@@ -1095,6 +1096,7 @@ class Article_model extends Base_model
 			else
 				$articles = array_slice($articles, 0, $limit);
 		}
+		*/
 
 		return $articles;
 	}
@@ -1300,7 +1302,7 @@ class Article_model extends Base_model
 
 	function count_articles_from_categories($where=FALSE, $categories, $categories_condition, $lang, $filter=FALSE)
 	{
-		$articles = $this->get_from_categories($where, $categories, $categories_condition, $lang, FALSE, FALSE, FALSE, $filter);
+		$articles = $this->get_from_categories($where, $categories, $categories_condition, $lang, $filter);
 	
 		return count($articles);
 	}

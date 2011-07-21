@@ -32,7 +32,7 @@ var xhr = new Request.JSON(
 				hideOnClick: false,
 				hideOnSelect: false,
 				parentContainer: 'mainPanel',
-				propagateData: {'uploadAuthData': responseJSON.tokken},
+				propagateData: {'uploadTokken': responseJSON.tokken},
 				mkServerRequestURL: function(fm_obj, request_code, post_data)
 				{
 					return {
