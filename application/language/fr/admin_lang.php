@@ -984,6 +984,7 @@ $lang['ionize_message_module_not_installed'] = 'Module non installé !';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_title_system_check'] = 'Diagnostic Système';
+$lang['ionize_menu_sitemap'] = 'Site Map';
 $lang['ionize_menu_system_check'] = 'Diagnostic Système';
 $lang['ionize_text_system_check'] = 'Cet outil contrôle l\'intégrité des données Ionize et corrige les éventuelles incohérences.';
 
