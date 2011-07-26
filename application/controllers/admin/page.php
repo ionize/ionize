@@ -105,7 +105,9 @@ class Page extends MY_admin
 		$groups = $this->page_model->get_groups_select();
 //		$this->template['groups'] =	form_dropdown('groups[]', $groups, false, 'class="select" multiple="multiple"');
 		$this->template['groups'] =	form_dropdown('id_group', $groups, false, 'class="select"');
-
+		
+		$this->template['priority'] = '5';
+		
 		/*
 		 * Extend fields
 		 *
@@ -283,7 +285,9 @@ class Page extends MY_admin
 				{
 					$this->page_model->update_home_page($saved_id);
 				}
-
+				
+				// Save the Sitemap
+				$this->structure->build_sitemap();
 
 				// Prepare the Json answer
 				$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get($saved_id));
@@ -605,7 +609,14 @@ class Page extends MY_admin
 
 			case 'external' :
 				$link_rel = '';
-				$title = prep_url($this->input->post('url'));
+				if ($this->input->post('url') != lang('ionize_label_drop_link_here')) 
+				{
+					$title = prep_url($this->input->post('url'));
+				}
+				else
+				{
+					$title = $link_type = '';
+				}
 				break;
 		}
 
@@ -620,6 +631,7 @@ class Page extends MY_admin
 		$this->page_model->update(array('id_page' => $id_page), $data);
 
 		// Test the external link
+		/*
 		if ($link_type == 'external')
 		{
 			$check = check_url($title);
@@ -650,17 +662,21 @@ class Page extends MY_admin
 				$this->response();
 			}
 		}
-
-		$this->callback = array(
-			array(
-				'fn' => 'ION.HTML',
-				'args' => array('page/get_link', array('id_page' => $id_page), array('update' => 'linkContainer'))
-			),
-			array(
-				'fn' => 'ION.notification',
-				'args' => array('success', lang('ionize_message_link_added'))
-			)
-		);
+		*/
+		
+		if ($title != '')
+		{
+			$this->callback = array(
+				array(
+					'fn' => 'ION.HTML',
+					'args' => array('page/get_link', array('id_page' => $id_page), array('update' => 'linkContainer'))
+				),
+				array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_link_added'))
+				)
+			);
+		}
 
 		$this->response();
 	}

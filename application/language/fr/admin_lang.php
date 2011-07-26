@@ -326,6 +326,7 @@ $lang['ionize_help_copy_to_other_languages'] = 'Copier le contenu de cette langu
 $lang['ionize_button_save'] = 'Enregistrer';
 $lang['ionize_button_save_close'] = 'Enregistrer et fermer';
 $lang['ionize_button_send'] = 'Envoyer';
+$lang['ionize_button_add'] = 'Ajouter';
 $lang['ionize_button_next'] = 'Suite';
 $lang['ionize_button_delete'] = 'Supprimer';
 $lang['ionize_button_new'] = 'Nouveau';
@@ -479,6 +480,8 @@ $lang['ionize_label_display_connected_label'] = 'Label Connecté';
 $lang['ionize_help_display_connected_label'] = 'Affiche un label sur le site lorsque vous êtes connecté à l\'Administration du site.';
 $lang['ionize_onchange_ionize_settings'] = 'L\'interface se rafraîchira après sauvegarde de ces paramètres.';
 
+$lang['ionize_label_sitemaps_gzip'] = 'Compresser Sitemap';
+$lang['ionize_help_setting_sitemaps_gzip'] = 'Compresse le fichier Sitemap avec gzip.';
 
 /*
 |--------------------------------------------------------------------------
@@ -490,18 +493,21 @@ $lang['ionize_title_theme'] = 'Thème';
 $lang['ionize_title_translation'] = 'Traductions statiques';
 $lang['ionize_title_database'] = 'Base de données';
 $lang['ionize_title_mail_send'] = 'Envoi d\'emails';
-$lang['ionize_title_media_management'] = 'Gestion des médias';
+$lang['ionize_title_media_management'] = 'Médias';
 $lang['ionize_title_google_analytics'] = 'Statistiques';
 $lang['ionize_title_thumb_new'] = 'Nouvelle miniature d\'image';
 $lang['ionize_title_thumbs'] = 'Miniatures d\'images';
 $lang['ionize_title_thumbs_system'] = 'Miniatures Ionize';
 $lang['ionize_title_form_antispam_key'] = 'Clé JS Antispam';
-$lang['ionize_title_article_management'] = 'Gestion des articles';
+$lang['ionize_title_article_management'] = 'Articles';
 $lang['ionize_title_admin_url'] = 'URL de l\'Administration du site';
 $lang['ionize_title_encryption_key'] = 'Clé d\'encryption';
 $lang['ionize_title_cache'] = 'Cache';
-$lang['ionize_title_allowed_mimes'] = 'Mimes autorisés';
-$lang['ionize_label_article_allowed_tags'] = 'Tags autorisés';
+$lang['ionize_title_allowed_mimes'] = 'Mimes';
+$lang['ionize_label_article_allowed_tags'] = 'Tags HTML';
+$lang['ionize_title_seo'] = 'SEO';
+$lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
+$lang['ionize_title_sitemap_search_engine'] = 'Serveurs de Ping Sitemap';
 
 $lang['ionize_title_maintenance'] = 'Maintenance';
 $lang['ionize_title_maintenance_page'] = 'Page de Maintenance';
@@ -535,6 +541,11 @@ $lang['ionize_label_restore_tinybuttons'] = 'Restorer les commandes TinyMCE par 
 $lang['ionize_label_tinybuttons'] = 'Barre TinyMCE';
 $lang['ionize_label_tinyblockformats'] = 'Select Formats TinyMCE';
 $lang['ionize_label_restore_tinyblockformats'] = 'Restorer les formats par défaut';
+$lang['ionize_label_ping_url'] = 'URL';
+$lang['ionize_label_sitemap_url'] = 'URL';
+
+$lang['ionize_text_sitemaps_url_list'] = 'Liste d\'URLs, séparés par un retour à la ligne';
+$lang['ionize_text_ping_url_list'] = 'Liste d\'URLs, séparés par un retour à la ligne';
 
 $lang['ionize_label_smtp_protocol'] = 'Protocole';
 $lang['ionize_label_smtp_host'] = 'Host';
@@ -600,6 +611,10 @@ $lang['ionize_message_error_writing_ionize_file'] = 'Erreur d\'écriture : appli
 
 $lang['ionize_message_cache_saved'] = 'Parmètre du Cache sauveagrdés.';
 $lang['ionize_message_cache_cleared'] = 'Cache vidé.';
+$lang['ionize_message_urls_saved'] = 'URLs enregistrées';
+$lang['ionize_message_setting_saved'] = 'Paramètre enregistré';
+
+
 
 $lang['ionize_help_setting_google_analytics'] = 'Le script Google complet, comme copié depuis le site Analytics';
 $lang['ionize_help_setting_files_path'] = 'Indique le dossier de base des médias. Ne modifie pas le nom du dossier physique';
@@ -664,6 +679,7 @@ $lang['ionize_label_article_list_template'] = 'Vue liste';
 $lang['ionize_label_page_delete_date'] = 'Date suppression page';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Page d\'accueil';
+$lang['ionize_label_sitemap_priority'] = 'Priorité Sitemap';
 $lang['ionize_label_article_reorder'] = 'Réordonner';
 $lang['ionize_label_date_asc'] = 'Date Ascendante';
 $lang['ionize_label_date_desc'] = 'Date Descendante';
@@ -700,6 +716,7 @@ $lang['ionize_help_page_drop_article_here'] = 'Glissez un article depuis l\'arbo
 $lang['ionize_label_help_articles_types_and_views'] = 'A propos des types et des vues';
 $lang['ionize_label_help_articles_types'] = 'A propos des types';
 $lang['ionize_label_help_articles_reorder'] = 'Réordonne les articles par date. Détermination de la date : Logique ou Publication ou Création.';
+$lang['ionize_help_sitemap_priority'] = 'Priorité de page, entre 0 et 10';
 
 /*
 |--------------------------------------------------------------------------
@@ -997,12 +1014,6 @@ $lang['ionize_title_check_article_context'] = 'Contexte des articles';
 
 $lang['ionize_message_check_corrected'] = ' corrigé(s).';
 $lang['ionize_message_check_ok'] = 'Tout va bien.';
-
-
-
-
-
-
 
 
 ?>

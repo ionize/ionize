@@ -225,7 +225,7 @@ class Base_Controller extends MY_Controller
 //		require_once APPPATH.'libraries/ftl/parser.php';
 
 		// Models
-		$this->load->model('structure_model', '', true);
+//		$this->load->model('structure_model', '', true);
 		$this->load->model('menu_model', '', true);
 
 		// Modules config

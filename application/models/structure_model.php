@@ -12,7 +12,7 @@
 // ------------------------------------------------------------------------
 
 /**
- * Ionize Page Model
+ * Ionize Structure Model
  *
  * @package		Ionize
  * @subpackage	Models
@@ -91,7 +91,8 @@ class Structure_model extends CI_Model
 
 		return $data;
 	}
-
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -111,7 +112,8 @@ class Structure_model extends CI_Model
 			$data = $query->result_array();
 			
 		return $data;
-	}	
+	}
+	
 	
 }
 /* End of file structure_model.php */

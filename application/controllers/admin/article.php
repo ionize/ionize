@@ -51,7 +51,6 @@ class Article extends MY_admin
 		$this->load->model('menu_model', '', true);
 		$this->load->model('page_model', '', true);
 		$this->load->model('article_model', '', true);
-		$this->load->model('structure_model', '', true);
 		$this->load->model('category_model', '', true);
 		$this->load->model('article_type_model', '', true);
 		$this->load->model('tag_model', '', true);
@@ -333,7 +332,6 @@ class Article extends MY_admin
 			if ( !empty($articles) )
 			{
 				$message = lang('ionize_message_article_url_exists');
-		//		$message .= anchor('admin/article/edit/'.$articles[0]['id_article'], $articles[0]['name']);
 				$this->error($message);
 			}
 			// else, save...
@@ -351,9 +349,6 @@ class Article extends MY_admin
 					$this->data['online'] = $this->input->post('online');
 					$this->data['main_parent'] = $this->input->post('main_parent');
 					$this->article_model->link_to_page($this->data['id_page'], $this->id, $this->data);
-					
-//					$this->article_model->save_context($this->data);
-					
 				}
 				else
 					$this->data['id_page'] = '0';				
@@ -1037,7 +1032,14 @@ class Article extends MY_admin
 				
 				case 'external' :
 					$link_rel = '';
-					$title = prep_url($this->input->post('url'));
+					if ($this->input->post('url') != lang('ionize_label_drop_link_here')) 
+					{
+						$title = prep_url($this->input->post('url'));
+					}
+					else
+					{
+						$title = $link_type = '';
+					}
 					break;
 			}
 
@@ -1050,6 +1052,7 @@ class Article extends MY_admin
 			$this->article_model->save_context($context);
 			
 			// Test the external link
+			/*
 			if ($link_type == 'external')
 			{
 				$check = check_url($title);
@@ -1079,17 +1082,21 @@ class Article extends MY_admin
 					$this->response();
 				}
 			}
+			*/
 
-			$this->callback = array(
-				array(
-					'fn' => 'ION.HTML',
-					'args' => array('article/get_link', array('id_page' => $receiver_rel[0], 'id_article'=> $receiver_rel[1]), array('update' => 'linkContainer'))
-				),
-				array(
-					'fn' => 'ION.notification',
-					'args' => array('success', lang('ionize_message_link_added'))
-				)
-			);
+			if ($title != '')
+			{
+				$this->callback = array(
+					array(
+						'fn' => 'ION.HTML',
+						'args' => array('article/get_link', array('id_page' => $receiver_rel[0], 'id_article'=> $receiver_rel[1]), array('update' => 'linkContainer'))
+					),
+					array(
+						'fn' => 'ION.notification',
+						'args' => array('success', lang('ionize_message_link_added'))
+					)
+				);
+			}
 
 			$this->response();
 		}

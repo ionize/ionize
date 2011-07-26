@@ -39,6 +39,9 @@ class Setting extends MY_admin
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->load->config('sitemaps');
+		
 	}
 
 
@@ -52,7 +55,7 @@ class Setting extends MY_admin
 	function index()
 	{
 		$this->_get_settings();
-
+		
 		$this->output('setting');
 	}
 
@@ -398,16 +401,18 @@ class Setting extends MY_admin
 
 
 	/**
-	 * Saves settings
+	 * Saves Website basics settings
 	 *
 	 */
 	function save()
 	{
 		// Settings to save
+		// Settings to save
+		$settings = array('google_analytics');
 		$lang_settings = array('meta_keywords', 'meta_description', 'site_title');
 
 		// Save settings to DB
-		$this->_save_settings(array(), $lang_settings);
+		$this->_save_settings($settings, $lang_settings);
 
 		// Answer
 		$this->success(lang('ionize_message_settings_saved'));
@@ -490,10 +495,10 @@ class Setting extends MY_admin
 		$this->load->helper('string_helper');
 
 		// Settings to save
-		$settings = array(	'texteditor', 'filemanager', 'files_path', 
+		$settings = array(	'files_path', 
 							'ftp_dir', 'ftp_host', 'ftp_user', 'ftp_password', 
 							'tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats',
-							'google_analytics', 'system_thumb_list', 'system_thumb_edition','media_thumb_size', 'picture_max_width', 'picture_max_height',
+							'system_thumb_list', 'system_thumb_edition','media_thumb_size', 'picture_max_width', 'picture_max_height',
 							'use_extend_fields', 'filemanager_file_types');
 							
 		
@@ -587,10 +592,10 @@ class Setting extends MY_admin
 		// Tags allowed in articles
 		$tags = $this->input->post('article_allowed_tags');
 		if ( ! $tags) $tags = array();
-		if (in_array('table', $tags)) $tags = array_merge($tags, array('thead','tbody','tfoot','tr','th','td'));
+		if (in_array('table', $tags)) $tags = array_merge($tags, array('thead','tbody','tfoot','tr','th','td','caption'));
 		if (in_array('object', $tags)) $tags = array_merge($tags, array('param', 'embed'));
 		if (in_array('dl', $tags)) $tags = array_merge($tags, array('dt','dd'));
-		if (in_array('img', $tags)) $tags = array_merge($tags, array('map'));
+		if (in_array('img', $tags)) $tags = array_merge($tags, array('map','area'));
 		
 		// Standard allowed tags
 		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong'));
@@ -787,8 +792,119 @@ class Setting extends MY_admin
 
 	
 	}
-	// ------------------------------------------------------------------------
+	
+	
+	
+	function save_seo_urls()
+	{
+		$type = $this->input->post('type');
+		
+		$urls = explode("\n", str_replace("\r\n", "\n", $_REQUEST['urls']));
 
+		foreach($urls as &$url)
+		{
+			$url = prep_url($url);
+		}
+		
+		$urls = implode("|", $urls);
+		
+		$data = array(
+			'name' => $type.'_urls',
+			'content' => $urls
+		);
+		
+		$this->settings_model->save_setting($data);
+		
+
+		// UI panel to update after saving
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'setting'
+		);
+
+		// Answer
+		$this->success(lang('ionize_message_urls_saved'));				
+	}
+	
+	
+	// ------------------------------------------------------------------------
+	
+	
+	/**
+	 * Saves one setting to DB or in a config file
+	 *
+	 * @usage	In the setting view, the form must have 1 hidden field called "setting" :
+	 *
+	 *			<input type="hidden" name="setting" value="sitemaps_gzip" />
+	 *
+	 *			The hidden field "config_file" is optional.
+	 *			If set, it define the config file to use to store the setting.
+	 *			If not set, the setting will be saved in DB
+	 *
+	 *			<input type="hidden" name="config_file" value="sitemaps" />
+	 *
+	 *			If "type" is set, the function try to convert the value to the givven type
+	 *			<input type="hidden" name="type" value="<array>" />
+	 *
+	 */
+	function save_setting()
+	{
+		$this->load->model('config_model', '', true);
+
+		$setting = $this->input->post('setting');
+		$type = $this->input->post('type');
+		$value = (isset($_REQUEST['setting_value'])) ? $_REQUEST['setting_value'] : FALSE;
+
+		// Where to save ?
+		$where = ($this->input->post('config_file') != FALSE) ? $this->input->post('config_file') .EXT : 'database';
+		
+		if ($value != FALSE)
+		{
+			if ($type == 'array' && ! is_array($value))
+			{
+				$value = str_replace("\r\n", "\n", $value);
+				$value = explode("\n", $value);
+				foreach ($value as $key=>$val)
+				{
+					if ($val == '')
+					{
+						unset($value[$key]);
+					}
+				}
+			}
+		}
+		
+		// Save in config file
+		if ($where != 'database')
+		{
+			if ($this->config_model->change($where, $setting, $value) == FALSE)
+				$this->error(lang('ionize_message_error_writing_ionize_file'));				
+		}
+		// Save in DB
+		else
+		{
+			if (is_array($value))
+			{
+				// Arrays are stored in DB as strings separated by "|"
+				$value = implode("|", $value);
+			}
+
+			$data = array(
+				'name' => $setting,
+				'content' => $value
+			);
+			
+			$this->settings_model->save_setting($data);
+		}
+		
+		// Answer
+		$this->success(lang('ionize_message_setting_saved'));				
+	}
+	
+	
+	
+	// ------------------------------------------------------------------------
+	
 
 	/**
 	 * Saves the Cache settings

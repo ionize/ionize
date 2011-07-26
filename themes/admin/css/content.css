@@ -49,7 +49,7 @@ License:
 }
 
 #maincolumn a:hover {
-	text-decoration:underline;
+/*	text-decoration:underline;*/
 }
 
 .maincolumn{
@@ -611,6 +611,10 @@ table.list div.content ul{
 	background: url(../images/tabs_content.gif) repeat-x;
 	background-position: right -35px;	
 }
+.mainTabs .tab-menu li a:hover {
+	text-decoration: none;
+	color: #098ED1;
+}
 .mainTabs .tab-menu li span.tab-detail{
 	font-size: 9px;
 	position: absolute;
@@ -945,10 +949,10 @@ dl#link_info dd {
 ---------------------------------------------------------------- */
 
 /* Standard border radius */
-.r5 {-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
-.r10 {-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;}
-.r15 {-webkit-border-radius: 15px; -moz-border-radius: 15px; border-radius: 15px;}
-.r20 {-webkit-border-radius: 20px; -moz-border-radius: 20px; border-radius: 20px;}
+.r5 {-webkit-border-radius: 5px !important; -moz-border-radius: 5px !important; border-radius: 5px !important;}
+.r10 {-webkit-border-radius: 10px !important; -moz-border-radius: 10px !important; border-radius: 10px !important;}
+.r15 {-webkit-border-radius: 15px !important; -moz-border-radius: 15px !important; border-radius: 15px !important;}
+.r20 {-webkit-border-radius: 20px !important; -moz-border-radius: 20px !important; border-radius: 20px !important;}
 
 
 /* Standard Padding and Margin classes */

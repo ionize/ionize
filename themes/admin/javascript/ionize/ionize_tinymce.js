@@ -25,7 +25,7 @@ ION.append({
 					width: width,
 					dialog_type : 'modal',
 					inlinepopups_skin: 'ionizeMce',
-					extended_valid_elements  : "ion:*, a[href</<ion:*]",
+//					extended_valid_elements  : "ion:*, a[href</<ion:*]",
 					verify_html : false,
 					relative_urls : false,
 					auto_cleanup_word : false,
@@ -51,7 +51,7 @@ ION.append({
 					width:'100%',
 					dialog_type : 'modal',
 					inlinepopups_skin: 'ionizeMce',
-					extended_valid_elements  : "ion:*, a[href</<ion:*]",
+//					extended_valid_elements  : "ion:*, a[href</<ion:*]",
 					verify_html : false,
 					relative_urls : false,
 					auto_cleanup_word : false,
@@ -71,7 +71,14 @@ ION.append({
 		            // PDW Toggle Toolbars settings
 		            pdw_toggle_on : 1,
 		            pdw_toggle_toolbars : '2,3',
-					file_browser_callback: 'ION.openTinyFilemanager'
+					file_browser_callback: 'ION.openTinyFilemanager',
+	
+					formats : {
+						alignleft : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'left'},
+						aligncenter : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'center'},
+						alignright : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'right'},
+						alignfull : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'justify'}
+					}				
 				};
 				return settings;
 				break;
@@ -145,17 +152,17 @@ ION.append({
 				}
 			});
 
-
-// Debug : List of active tiny object in memory
-/*
-(tinyMCE.editors).each(function(tiny)
-{
-	if (typeOf(tiny) == 'object')
-	{
-		console.log(tiny.id + ' in memory.');
-	}
-});
-*/
+			// Debug : List of active tiny object in memory
+			
+			(tinyMCE.editors).each(function(tiny)
+			{
+				if (typeOf(tiny) == 'object')
+				{
+//					console.log(tiny.id + ' in memory.');
+					console.log();
+				}
+			});
+			
 		});
 	},
 
@@ -182,7 +189,6 @@ ION.append({
 						selectable: true,
 						hideOnClick: true,
 						propagateData: {'uploadTokken': responseJSON.tokken},
-//						'uploadAuthData': responseJSON.tokken,
 						parentContainer: 'filemanagerWindow_contentWrapper',
 						mkServerRequestURL: function(fm_obj, request_code, post_data)
 						{
@@ -223,8 +229,6 @@ ION.append({
 					
 					var w = new MUI.Window(options);
 					w.filemanager = filemanager;
-					
-					// new MUI.Window(options);
 				}
 				else
 				{

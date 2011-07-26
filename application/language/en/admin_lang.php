@@ -243,7 +243,7 @@ $lang['ionize_label_unlink'] = 'Unlink';
 $lang['ionize_label_status'] = 'Status';
 $lang['ionize_label_max_upload_size'] = 'Max Upload';
 $lang['ionize_label_file_uploads'] = 'Upload ?';
-$lang['ionize_label_site_email'] = 'Email site';
+$lang['ionize_label_site_email'] = 'Website Email';
 $lang['ionize_label_linkto'] = 'Link to...';
 $lang['ionize_label_drop_link_here'] = 'drop a link here...';
 $lang['ionize_label_drop_page_here'] = 'drop a page here...';
@@ -326,6 +326,7 @@ $lang['ionize_help_copy_to_other_languages'] = 'Copy to other languages';
 $lang['ionize_button_save'] = 'Save';
 $lang['ionize_button_save_close'] = 'Save & close';
 $lang['ionize_button_send'] = 'Send';
+$lang['ionize_button_add'] = 'Add';
 $lang['ionize_button_next'] = 'Next';
 $lang['ionize_button_delete'] = 'Delete';
 $lang['ionize_button_new'] = 'New';
@@ -470,14 +471,19 @@ $lang['ionize_button_export'] = 'Export';
 */
 
 $lang['ionize_label_site_title'] = 'Website title';
+
 $lang['ionize_message_settings_saved'] = 'Settings saved';
 $lang['ionize_title_visual_help'] = 'Visual help';
+
 $lang['ionize_label_show_help_tips'] = 'Display help on fields';
 $lang['ionize_title_admin_panel_languages'] =  'Administration interface languages';
 $lang['ionize_title_admin_panel_datetime'] =  'Date and Time';
 $lang['ionize_label_display_connected_label'] = 'Connected label';
 $lang['ionize_help_display_connected_label'] = 'Displays a label on the top left of the website when you\'re connected to the Admin panel';
 $lang['ionize_onchange_ionize_settings'] = 'The Administration panel will reload after saving these settings.';
+
+$lang['ionize_label_sitemaps_gzip'] = 'Compress Sitemap';
+$lang['ionize_help_setting_sitemaps_gzip'] = 'Compress the Sitemap file with gzip.';
 
 
 /*
@@ -490,18 +496,21 @@ $lang['ionize_title_theme'] = 'Theme';
 $lang['ionize_title_translation'] = 'Static translations';
 $lang['ionize_title_database'] = 'Database';
 $lang['ionize_title_mail_send'] = 'Email sending';
-$lang['ionize_title_media_management'] = 'Media management';
+$lang['ionize_title_media_management'] = 'Medias';
 $lang['ionize_title_google_analytics'] = 'Statistics';
 $lang['ionize_title_thumb_new'] = 'New picture thumbnail';
 $lang['ionize_title_thumbs'] = 'Thumbnails';
 $lang['ionize_title_thumbs_system'] = 'Ionize system thumbnail';
 $lang['ionize_title_form_antispam_key'] = 'Antispam JS key';
-$lang['ionize_title_article_management'] = 'Article management';
+$lang['ionize_title_article_management'] = 'Articles';
 $lang['ionize_title_admin_url'] = 'Admin panel URL';
 $lang['ionize_title_encryption_key'] = 'Encryption key';
 $lang['ionize_title_cache'] = 'Cache System';
-$lang['ionize_title_allowed_mimes'] = 'Allowed Mimes';
-$lang['ionize_label_article_allowed_tags'] = 'Allowed Tags';
+$lang['ionize_title_allowed_mimes'] = 'Mimes';
+$lang['ionize_label_article_allowed_tags'] = 'HTML Tags';
+$lang['ionize_title_seo'] = 'SEO';
+$lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
+$lang['ionize_title_sitemap_search_engine'] = 'Sitemap Ping Search Engines';
 
 $lang['ionize_title_maintenance'] = 'Maintenance Mode';
 $lang['ionize_title_maintenance_page'] = 'Maintenance Page';
@@ -509,7 +518,7 @@ $lang['ionize_label_maintenance'] = 'In maintenance';
 $lang['ionize_label_maintenance_ips'] = 'Restrict to IPs';
 $lang['ionize_drop_maintenance_page_here'] = 'Drop the wished maintenance page here...';
 $lang['ionize_label_maintenance_help'] = 'When checked, the website will display a maintenance message. Ionize stays available during maintenance.';
-$lang['ionize_label_maintenance_ips_help'] = 'The font-end website will be visible for these IPs';
+$lang['ionize_label_maintenance_ips_help'] = 'The front-end website will be visible for these IPs only';
 $lang['ionize_label_your_ip'] = 'your IP';
 $lang['ionize_label_maintenance_page_help'] = 'This page must be set before activating the maintenance mode in order to let Ionize build correctly the plain HTML page.';
 $lang['ionize_message_maintenance_page_curl_error'] = 'The cURL PHP extension needs to be installed';
@@ -535,6 +544,11 @@ $lang['ionize_label_restore_tinybuttons'] = 'Restore TinyMCE default toolbar';
 $lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';
 $lang['ionize_label_tinyblockformats'] = 'TinyMCE Format Select';
 $lang['ionize_label_restore_tinyblockformats'] = 'Restore TinyMCE default Format Select';
+$lang['ionize_label_ping_url'] = 'URL';
+$lang['ionize_label_sitemap_url'] = 'URL';
+
+$lang['ionize_text_sitemaps_url_list'] = 'List of URLs to add (separated by a carriage return)';
+$lang['ionize_text_ping_url_list'] = 'List of URLs to add (separated by a carriage return)';
 
 $lang['ionize_label_smtp_protocol'] = 'Protocol';
 $lang['ionize_label_smtp_host'] = 'Host';
@@ -600,6 +614,8 @@ $lang['ionize_message_error_writing_ionize_file'] = 'application/config/ionize.p
 
 $lang['ionize_message_cache_saved'] = 'Cache Settings saved.';
 $lang['ionize_message_cache_cleared'] = 'Cache cleared.';
+$lang['ionize_message_urls_saved'] = 'URLs saved';
+$lang['ionize_message_setting_saved'] = 'Setting saved';
 
 $lang['ionize_help_setting_google_analytics'] = 'The complete Google script, as copied from the Google Analytics website';
 $lang['ionize_help_setting_files_path'] = 'Indicates the base media folder. Doesn\'t change the physical folder name';
@@ -664,6 +680,7 @@ $lang['ionize_label_article_list_template'] = 'List view';
 $lang['ionize_label_page_delete_date'] = 'Page delete date';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Home page';
+$lang['ionize_label_sitemap_priority'] = 'Sitemap priority';
 $lang['ionize_label_article_reorder'] = 'Reorder Articles';
 $lang['ionize_label_date_asc'] = 'Date Ascendant';
 $lang['ionize_label_date_desc'] = 'Date Descendant';
@@ -700,6 +717,7 @@ $lang['ionize_help_page_drop_article_here'] = 'Drag an article from the left tre
 $lang['ionize_label_help_articles_types_and_views'] = 'About Types & Views';
 $lang['ionize_label_help_articles_types'] = 'About Types';
 $lang['ionize_label_help_articles_reorder'] = 'Reorder articles by date. Date calculation : Logical or Publish On or Creation.';
+$lang['ionize_help_sitemap_priority'] = 'Page priority, between 0 and 10';
 
 /*
 |--------------------------------------------------------------------------

@@ -290,8 +290,8 @@
 			</div>
 
 
-			<!-- Metas -->
-			<h3 class="toggler"><?= lang('ionize_title_metas') ?></h3>
+			<!-- SEO -->
+			<h3 class="toggler"><?= lang('ionize_title_seo') ?></h3>
 			
 			<div class="element">
 				
@@ -351,6 +351,23 @@
 
 					</dd>
 				</dl>
+
+				<!-- Priority -->
+				<dl class="small">
+					<dt>
+						<label for="priority" title="<?= lang('ionize_help_sitemap_priority') ?>"><?= lang('ionize_label_sitemap_priority') ?></label>
+					</dt>
+					<dd>
+						<select name="priority" id="priority" class="inputtext w40">
+							<?php for($i=0; $i<=10; $i++) :?>
+							
+								<option value="<?= $i ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?= $i ?></option>
+							
+							<?php endfor; ?>
+						</select>
+					</dd>
+				</dl>
+
 			
 			</div>
 

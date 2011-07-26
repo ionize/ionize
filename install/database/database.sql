@@ -333,6 +333,7 @@ CREATE TABLE IF NOT EXISTS page (
   pagination tinyint(1) UNSIGNED NOT NULL DEFAULT 0						COMMENT 'Pagination use ?',
   pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
   id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
+  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
   PRIMARY KEY  (`id_page`),
   KEY idx_page_id_parent (id_parent),
   KEY idx_page_level (level),

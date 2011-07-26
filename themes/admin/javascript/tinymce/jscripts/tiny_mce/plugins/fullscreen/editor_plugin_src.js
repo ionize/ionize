@@ -86,7 +86,7 @@
 
 					n = DOM.add(DOM.doc.body, 'div', {
 						id : 'mce_fullscreen_container', 
-						style : 'position:' + posCss + ';left:0;width:' + vp.w + 'px;height:' + vp.h + 'px;z-index:200000;'});
+						style : 'position:' + posCss + ';left:0;width:100%;height:100%;z-index:200000;'});
 					DOM.add(n, 'div', {id : 'mce_fullscreen'});
 
 					tinymce.each(ed.settings, function(v, n) {
@@ -123,15 +123,14 @@
 					t.fullscreenElement.update();
 					//document.body.overflow = 'hidden';
 
-					t.resizeFunc = tinymce.dom.Event.add(DOM.win, 'resize', function() {
-						var vp = tinymce.DOM.getViewPort(), fed = t.fullscreenEditor, outerSize, innerSize;
-
-						// Get outer/inner size to get a delta size that can be used to calc the new iframe size
-						outerSize = fed.dom.getSize(fed.getContainer().firstChild);
-						innerSize = fed.dom.getSize(fed.getContainer().getElementsByTagName('iframe')[0]);
-
-						fed.theme.resizeTo(vp.w - outerSize.w + innerSize.w, vp.h - outerSize.h + innerSize.h);
+					t.resizeFunc = tinymce.dom.Event.add(DOM.win, 'resize', function()
+					{
+						var ed = t.fullscreenEditor;
+						var toolbarSize = ed.dom.getSize(tinymce.DOM.get('mce_fullscreen_toolbargroup'));
+						var containerSize = ed.dom.getSize(ed.getContainer());
+						ed.theme.resizeTo(containerSize.w-30, containerSize.h - toolbarSize.h -50);
 					});
+					t.resizeFunc();
 				}
 			});
 

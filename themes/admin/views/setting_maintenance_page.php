@@ -8,7 +8,7 @@
 		$status = (!$page['online']) ? 'offline' : 'online' ;
 	?>
 	
-	<ul class="sortable-container ml15" id="maintenancePageList">
+	<ul class="sortable-container" id="maintenancePageList">
 	
 		<li class="sortme" rel="<?= $id ?>">
 	
@@ -24,7 +24,7 @@
 
 <?php else :?>
 
-	<div class="droppable h40 ml15 dropPageAsMaintenancePage">
+	<div class="droppable h40 dropPageAsMaintenancePage">
 
 		<span class="lite"><?= lang('ionize_drop_maintenance_page_here') ?></span>
 	

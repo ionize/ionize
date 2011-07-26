@@ -73,22 +73,24 @@ class Config_model extends Base_model
 	{
 		if ( ! is_null(self::$content))
 		{
-//			$pattern = '%(config\[\''.$key.'\'\] = \')(.*)(\';)%';
-			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.*\'?)(;)%';
-
-//			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.[\S|\s]*\'?)(;)%'; // Does not work
-
-//			$pattern = '%(config\[\''.$key.'\'\] = )(\'?.[\s]*\'?;)%';
+			$pattern = '%(?sx)
+				(
+					\$'."config
+					\[(['\"])
+					(".$key.")
+					\\2\]
+					\s*=\s*
+				)
+				(.+?);
+			%";
 			
 			$type = gettype($val);
 			
 			if ($type == 'string')
 			{
-//				if ($val == '1' OR strtolower($val) == 'true')
 				if (strtolower($val) == 'true')
 					$val = var_export(TRUE, TRUE);
 
-//				else if ($val == '0' OR strtolower($val) == 'false')
 				else if (strtolower($val) == 'false')
 					$val = var_export(FALSE, TRUE);
 				
@@ -98,11 +100,14 @@ class Config_model extends Base_model
 				else $val = "'".$val."'";
 			}
 			if ($type == 'boolean') $val = ($val ? var_export(TRUE, TRUE) : var_export(FALSE, TRUE) );
-			
-			if ($type == 'array') $val = var_export($val, TRUE);
+//trace($type);		
+			if ($type == 'array')
+			{
+				$val = preg_replace("/[0-9]+ \=\>/i", '', var_export($val, TRUE));
+				$val = str_replace("\n", "\r\n", $val);
+			}
 
-			self::$content = preg_replace($pattern, '${1}'.$val. '${3}', self::$content );
-//			self::$content = preg_replace($pattern, '${1}'.$val . ';', self::$content );
+			self::$content = preg_replace($pattern, "\\1$val;", self::$content);
 
 			return TRUE;
 		}

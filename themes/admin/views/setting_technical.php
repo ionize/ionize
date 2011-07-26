@@ -335,7 +335,7 @@
 
 		<div class="element">
 			
-			<form name="maintenanceForm" id="maintenanceForm" method="post" action="<?= admin_url() ?>setting/save_maintenance">
+			<form name="maintenanceForm" id="maintenanceForm" method="post" action="<?= admin_url() ?>setting/save_maintenance" class="mb20">
 
 				<!-- Maintenance ? -->
 				<dl class="small">
@@ -358,25 +358,64 @@
 					</dd>
 				</dl>
 
+				<!-- Maintenance page -->
+				<?php if (function_exists('curl_init')) : ?>
+					<dl class="small">
+						<dt>
+							<label title="<?=lang('ionize_label_maintenance_page_help')?>"><?=lang('ionize_title_maintenance_page')?></label>
+						</dt>
+						<dd>
+							<div id="maintenancePageContainer"></div>				
+						</dd>
+					</dl>
+					
+					
+					<!--
+					<h4><?=lang('ionize_title_maintenance_page')?></h4>
+					<p class="lite"><?=lang('ionize_label_maintenance_page_help')?></p>
+					<div id="maintenancePageContainer"></div>
+					-->
+					
+				<?php endif ;?>
+				
 				<!-- Submit button  -->
-				<dl class="small last">
+				<dl class="small mt10">
 					<dt>&#160;</dt>
 					<dd>
 						<input id="submit_maintenance" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
 					</dd>
 				</dl>
 
-				<!-- Maintenance page -->
-				<?php if (function_exists('curl_init')) : ?>
-	
-					<h4><?=lang('ionize_title_maintenance_page')?></h4>
-					<p class="lite"><?=lang('ionize_label_maintenance_page_help')?></p>
-					<div id="maintenancePageContainer"></div>
-					
-				<?php endif ;?>
 				
 			</form>
 
+		</div> <!-- /element -->
+		
+		
+		<!-- Admin URL -->
+		<h3 class="toggler"><?=lang('ionize_title_admin_url')?></h3>
+		
+		<div class="element">
+
+			<form name="adminUrlForm" id="adminUrlForm" method="post" action="<?= admin_url() ?>setting/save_admin_url">
+
+			<dl>
+				<dt>
+					<label for="admin_url" title="<?=lang('ionize_help_setting_admin_url')?>"><?= lang('ionize_title_admin_url') ?></label>
+				</dt>
+				<dd>
+					<input id="admin_url" name="admin_url" class="inputtext w120" value="<?=config_item('admin_url')?>" /><br/>
+				</dd>
+			</dl>
+
+			<dl>
+				<dt>&nbsp;</dt>
+				<dd>
+					<input id="submit_admin_url" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+				</dd>
+			</dl>
+
+			</form>
 		</div> <!-- /element -->
 
 
@@ -391,6 +430,9 @@
 <div id="maincolumn">
 
 
+	<input id="settingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_save_settings') ?>" />
+
+
 	<h2 class="main settings" id="main-title"><?= lang('ionize_title_technical_settings') ?></h2>
 	
 	<!-- Subtitle -->
@@ -398,133 +440,33 @@
 		<p><?= lang('ionize_onchange_ionize_settings')?></p>
 	</div>
 
+
+
+
 	<form name="settingsForm" id="settingsForm" method="post" action="<?= admin_url() ?>setting/save_technical">
 
 
-		<!-- Google Analytics -->
-		<h3 class="toggler1 mt20"><?=lang('ionize_title_google_analytics')?></h3>
-
-		<div class="element1">
-
-			<dl class="last">
-				<dt>
-					<label for="google_analytics" title="<?=lang('ionize_help_setting_google_analytics')?>"><?=lang('ionize_label_google_analytics')?></label>
-				</dt>
-				<dd>
-					<textarea name="google_analytics" id="google_analytics" class="w360 h160"><?= htmlentities(stripslashes(Settings::get('google_analytics')), ENT_QUOTES, 'utf-8') ?></textarea>
-				</dd>
-			</dl>
-		</div>
-
-		<!-- Article management -->
-		<h3 class="toggler1"><?=lang('ionize_title_article_management')?></h3>
-
-		<div class="element1">
+	<!-- Tabs -->
+	<div id="settingsTab" class="mainTabs">
+		
+		<ul class="tab-menu">
 			
-			<dl>
-				<dt>
-					<label for="texteditor"><?=lang('ionize_label_texteditor')?></label>
-				</dt>
-				<dd>
-					<select class="select mb5" name="texteditor" id="texteditor">
-						<?php foreach($texteditors as $key=>$t) :?>
-							<option value="<?= $t ?>" <?php if(Settings::get('texteditor') == $t) :?> selected="selected" <?php endif ;?>><?= $t ?></option>
-						<?php endforeach ;?>
-					</select>
-				</dd>
-			</dl>
-			<dl>
-				<!-- TinyMCE toolbar buttons -->
-				<dt>
-					<label for="texteditor" title="<?=lang('ionize_help_tinybuttons')?>"><?=lang('ionize_label_tinybuttons')?></label>
-				</dt>
-				<dd>
-					1 <input class="inputtext w360 mb5" id="tinybuttons1" name="tinybuttons1" type="text" value="<?= Settings::get('tinybuttons1') ?>"/><br />
-					2 <input class="inputtext w360 mb5" id="tinybuttons2" name="tinybuttons2" type="text" value="<?= Settings::get('tinybuttons2') ?>"/><br />
-					3 <input class="inputtext w360" id="tinybuttons3" name="tinybuttons3" type="text" value="<?= Settings::get('tinybuttons3') ?>"/><br />
-					<a id="texteditor_default"><?=lang('ionize_label_restore_tinybuttons')?></a>
-				</dd>
-				
-			</dl>
-			
-			<dl class="mt10">
-				<!-- TinyMCE Block Format (Select) -->
-				<dt>
-					<label for="texteditor" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
-				</dt>
-				<dd>
-					<input class="inputtext w360 mb5" id="tinyblockformats" name="tinyblockformats" type="text" value="<?= Settings::get('tinyblockformats') ?>"/><br />
-					<a id="texteditor_default_tinyblockformats"><?=lang('ionize_label_restore_tinyblockformats')?></a>
-				</dd>
-			</dl>
+			<li id="media_settings"><a><?= lang('ionize_title_media_management') ?></a></li>
+			<li id="mimes_settings"><a><?= lang('ionize_title_allowed_mimes') ?></a></li>
+			<li id="thumbs_settings"><a><?= lang('ionize_title_thumbs') ?></a></li>
+			<li id="article_settings"><a><?= lang('ionize_title_article_management') ?></a></li>
+			<li id="thumbs_advanced"><a><?= lang('ionize_title_advanced') ?></a></li>
 
-			<dl class="last mt10">
-				<!-- TinyMCE Block Format (Select) -->
-				<dt>
-					<label for="article_allowed_tags" title="<?=lang('ionize_help_article_allowed_tags')?>"><?=lang('ionize_label_article_allowed_tags')?></label>
-				</dt>
-				<dd>
-					<?php
-						$tags1 = array('h1','h2','h3','h4','h5','h6','em','img');
-						$tags2 = array('iframe','table','object','div','span','dl','pre','code');
-						$tags3 = array('dfn','samp','kbd','legend','q','small');
-					?>
-				
-					<table class="w220 mt0">
-						<tbody>
-							<tr>
-								<td>
-									<table class="list w60 mt0">
-										<tbody>
-											<?php foreach($tags1 as $tag) :?>
-												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
-											<?php endforeach ?>
-										</tbody>
-									</table>
-								</td>
-								<td>
-									<table class="list w60 mt0">
-										<tbody>
-											<?php foreach($tags2 as $tag) :?>
-												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
-											<?php endforeach ?>
-										</tbody>
-									</table>
-								</td>
-								<td>
-									<table class="list w60 mt0">
-										<tbody>
-											<?php foreach($tags3 as $tag) :?>
-												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
-											<?php endforeach ?>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				
-				</dd>
-			</dl>
+		</ul>
+		<div class="clear"></div>
+	
+	</div>
 
-		</div>
 
+	<div id="settingsTabContent">
+	
 		<!-- Media management -->
-		<h3 class="toggler1"><?=lang('ionize_title_media_management')?></h3>
-
-		<div class="element1">
-			<dl>
-				<dt>
-					<label for="filemanager"><?=lang('ionize_label_filemanager')?></label>
-				</dt>
-				<dd>
-					<select class="select" name="filemanager" id="filemanager">
-						<?php foreach($filemanagers as $key=>$f) :?>
-							<option value="<?= $f ?>" <?php if(Settings::get('filemanager') == $f) :?> selected="selected" <?php endif ;?>><?= $f ?></option>
-						<?php endforeach ;?>
-					</select>
-				</dd>
-			</dl>
+		<div class="tabcontent pt20">
 	
 			<dl class="mb10">
 				<dt>
@@ -536,7 +478,7 @@
 			</dl>
 	
 			<!-- Supported media extensions, by media type -->
-			<dl class="last">
+			<dl>
 				<dt>
 					<label for="picture_max_width" title="<?=lang('ionize_help_setting_picture_max_width')?>"><?=lang('ionize_label_setting_picture_max_width')?></label>
 				</dt>
@@ -544,7 +486,7 @@
 					<input name="picture_max_width" id="picture_max_width" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_width') ?>"/>
 				</dd>
 			</dl>
-			<dl class="last">
+			<dl class="mb10">
 				<dt>
 					<label for="picture_max_height" title="<?=lang('ionize_help_setting_picture_max_height')?>"><?=lang('ionize_label_setting_picture_max_height')?></label>
 				</dt>
@@ -553,7 +495,7 @@
 				</dd>
 			</dl>
 
-			<dl class="last">
+			<dl>
 				<dt>
 					<label for="media_thumb_size" title="<?=lang('ionize_help_media_thumb_size')?>"><?=lang('ionize_label_media_thumb_size')?></label>
 				</dt>
@@ -561,22 +503,17 @@
 					<input name="media_thumb_size" id="media_thumb_size" class="inputtext w40" type="text" value="<?= Settings::get('media_thumb_size') ?>"/>
 				</dd>
 			</dl>
-
-		</div>
-
+		</div>		
+		
 		<!-- Allowed Mimes -->
-		<h3 class="toggler1"><?=lang('ionize_title_allowed_mimes')?></h3>
-
-		<div class="element1">
-		
-		
+		<div class="tabcontent p10">
 			<?php
 				$filemanager_file_types = explode(',',Settings::get('filemanager_file_types'));
 			?>
 
 			<?php foreach($mimes as $type => $mime_list) :?>
 			
-				<h4><?= $type ?></h4>
+				<h3><?= $type ?></h3>
 
 		
 				<table class="list w340">
@@ -590,31 +527,26 @@
 					<tbody>
 
 						<?php foreach($mime_list as $ext => $mime) :?>
-						
-								<tr>
-									<td class="right pr10"><?= $ext ?> </td>
-									<td>
-										<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
-									</td>
-									<td class="center">
-										<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?= $ext ?>" />
-									</td>
-								</tr>
+							<tr>
+								<td class="right pr10"><?= $ext ?> </td>
+								<td>
+									<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
+								</td>
+								<td class="center">
+									<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?= $ext ?>" />
+								</td>
+							</tr>
 						<?php endforeach ;?>
 
 					</tbody>
 				</table>
 			
 			<?php endforeach ;?>
+		</div>		
 		
-		</div>
-
-
 		<!-- Thumbnails -->
 		<?php if ( ! empty($thumbs)) :?>
-			<h3 class="toggler1"><?=lang('ionize_title_thumbs')?></h3>
-			
-			<div class="element1">
+		<div class="tabcontent pt20">
 				<div id="thumbs">
 				
 				<?php 
@@ -694,55 +626,87 @@
 					?>
 		
 				</div>
-			</div>	
-
-			<!-- Thumbs used by ionize 
-			<h3 class="toggler1"><?=lang('ionize_title_thumbs_system')?></h3>
-			
-			<div class="element1">
-			
-				<dl class="last">
-					<dt>
-						<label  title="<?=lang('ionize_help_setting_system_thumb_list')?>"><?=lang('ionize_label_thumbs_system')?></label>
-					</dt>
-					<dd>
-						<?php
-						
-						$system_thumb_list = Settings::get('system_thumb_list');
-						
-						?>
-						<input <?php if (empty($system_thumb_list)) :?>checked="checked"<?php endif;?> class="inputradio" type="radio" name="system_thumb_list" id="system_thumb_list" value="" />
-						<label for="system_thumb_list"><?= lang('ionize_label_thumb_automatic') ?></label>
-						<br/>
-					
-					<?php 
-						foreach($thumbs as $thumb)
-						{
-							$dir = substr($thumb['name'], strrpos($thumb['name'], '_') + 1 );
-							?>
-			
-							<input <?php if (Settings::get('system_thumb_list') && Settings::get('system_thumb_list') == $thumb['name']):?>checked="checked"<?php endif;?> class="inputradio" type="radio" name="system_thumb_list" id="system_thumb_list_<?=$dir?>" value="<?=$thumb['name']?>" />
-							<label for="system_thumb_list_<?=$dir?>"><?=$dir?></label>
-							<br/>
-							<?php
-						}
-					?>
-					</dd>
-				</dl>
-			</div>
-			
-			-->
-				
+		</div>		
 		<?php endif ;?>	
-
 		
-		<!-- Form antispam key -->
-		<h3 class="toggler1"><?=lang('ionize_title_form_antispam_key')?></h3>
 
-		<div class="element1">
+		<!-- Article management -->
+		<div class="tabcontent pt20">
+			
+			<dl class="mb20">
+				<!-- TinyMCE Block Format (Select) -->
+				<dt>
+					<label for="texteditor" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
+				</dt>
+				<dd>
+					<input class="inputtext w360 mb5" id="tinyblockformats" name="tinyblockformats" type="text" value="<?= Settings::get('tinyblockformats') ?>"/><br />
+					<a id="texteditor_default_tinyblockformats"><?=lang('ionize_label_restore_tinyblockformats')?></a>
+				</dd>
+			</dl>
+
+			<dl class="mb20">
+				<!-- TinyMCE toolbar buttons -->
+				<dt>
+					<label for="texteditor" title="<?=lang('ionize_help_tinybuttons')?>"><?=lang('ionize_label_tinybuttons')?></label>
+				</dt>
+				<dd>
+					1 <input class="inputtext w360 mb5" id="tinybuttons1" name="tinybuttons1" type="text" value="<?= Settings::get('tinybuttons1') ?>"/><br />
+					2 <input class="inputtext w360 mb5" id="tinybuttons2" name="tinybuttons2" type="text" value="<?= Settings::get('tinybuttons2') ?>"/><br />
+					3 <input class="inputtext w360" id="tinybuttons3" name="tinybuttons3" type="text" value="<?= Settings::get('tinybuttons3') ?>"/><br />
+					<a id="texteditor_default"><?=lang('ionize_label_restore_tinybuttons')?></a>
+				</dd>
+				
+			</dl>
+			
+
+			<dl class="last mb20">
+				<!-- TinyMCE Block Format (Select) -->
+				<dt>
+					<label for="article_allowed_tags" title="<?=lang('ionize_help_article_allowed_tags')?>"><?=lang('ionize_label_article_allowed_tags')?></label>
+				</dt>
+				<dd>
+
+					<?php
+						$tags = array(
+							'tag1' => array('h1','h2','h3','h4','h5','h6','em','img'),
+							'tag2' => array('iframe','table','object','div','span','dl','pre','code'),
+							'tag3' => array('dfn','samp','kbd','var','cite','q','big','small'),
+							'tag4' => array('link','adress','legend','abbr','sub','sup','ins')
+						);
+					?>
+
+					<table class="w240 mt0">
+						<tbody>
+							<tr>
+								
+								<?php foreach($tags as $key => $tag_array) :?>
+							
+								<td>
+									<table class="list w80 mt0 mr20">
+										<tbody>
+											<?php foreach($tag_array as $tag) :?>
+												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
+											<?php endforeach ?>
+										</tbody>
+									</table>
+								</td>
+								
+								<?php endforeach; ?>
+								
+							</tr>
+						</tbody>
+					</table>
+				
+				</dd>
+			</dl>
+		</div>		
+
+
+		<!-- Advanced -->
+		<div class="tabcontent pt20">
 		
-			<!-- Current key -->
-			<dl class="last">
+			<!-- Form antispam key -->
+			<dl class="mb10">
 				<dt>
 					<label for="form_antispam_key"><?=lang('ionize_label_current_antispam_key')?></label>
 				</dt>
@@ -751,45 +715,21 @@
 					<a class="icon left refresh ml5" id="antispamRefresh" title="<?= lang('ionize_label_refresh_antispam_key')?>"></a>
 				</dd>
 			</dl>
-		
-		</div>
-		
-	</form>
-	
-	<!-- Admin URL -->
-	<h3 class="toggler1"><?=lang('ionize_title_admin_url')?></h3>
+			
+			
+			<!-- Encryption key -->
+			<dl class="mb10">
+				<dt>
+					<label for="form_antispam_key"><?=lang('ionize_title_encryption_key')?></label>
+				</dt>
+				<dd>
+					<span><?= config_item('encryption_key') ?></span>
+				</dd>
+			</dl>
 
-	<div class="element1">
+		</div>		
 		
-		<form name="adminUrlForm" id="adminUrlForm" method="post" action="<?= admin_url() ?>setting/save_admin_url">
-
-			<p>
-				<label for="admin_url" title="<?=lang('ionize_help_setting_admin_url')?>"><?= base_url() ?>&nbsp;&nbsp;<input id="admin_url" name="admin_url" class="inputtext w120" value="<?=config_item('admin_url')?>" /></label>
-				<input id="submit_admin_url" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
-			</p>
-		</form>
-	
 	</div>
-	
-	<!-- Encryption key -->
-	<h3 class="toggler1"><?=lang('ionize_title_encryption_key')?></h3>
-
-	<div class="element1">
-	
-		<!-- Current key -->
-		<dl class="last">
-			<dt>
-				<label for="form_antispam_key"></label>
-			</dt>
-			<dd>
-				<span><?= config_item('encryption_key') ?></span>
-			</dd>
-		</dl>
-	
-	</div>
-	
-
-	
 
 </div> <!-- /maincolumn -->
 
@@ -808,7 +748,7 @@
 	 *
 	 */
 	ION.initAccordion('.toggler', 'div.element', true, 'settingsAccordion1');
-	ION.initAccordion('.toggler1', 'div.element1', false, 'settingsAccordion2');
+//	ION.initAccordion('.toggler1', 'div.element1', false, 'settingsAccordion2');
 
 	/**
 	 * Init help tips on label
@@ -817,6 +757,9 @@
 	ION.initLabelHelpLinks('#settingsForm');
 	ION.initLabelHelpLinks('#cacheForm');
 	ION.initLabelHelpLinks('#maintenanceForm');
+
+
+	var settingsTab = new TabSwapper({tabsContainer: 'settingsTab', sectionsContainer: 'settingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'settingsTab' });
 
 
 	/**
@@ -974,18 +917,18 @@
 	}	
 
 
+	/**
+	 * Views form
+	 * see ionize-form.js for more information about this method
+	 */
+	ION.setFormSubmit('settingsForm', 'settingsFormSubmit', 'setting/save_technical');
 
 	/**
-	 * Notification to reload admin panel after changing filemanager/texteditor
-	$('filemanager').addEvent('change', function()
-	{
-		ION.information('<?php echo lang('ionize_onchange_filemanager') ;?>');
-	});
-
-	$('texteditor').addEvent('change', function()
-	{
-		ION.information('<?php echo lang('ionize_onchange_texteditor') ;?>');
-	});
+	 * Save with CTRL+s
+	 *
 	 */
+	ION.addFormSaveEvent('settingsFormSubmit');
+
+
 
 </script>

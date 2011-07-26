@@ -85,7 +85,9 @@ UPDATE page_article, article_lang, lang SET page_article.link = article_lang.tit
 
 
 ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL;
+ALTER TABLE  `page` ADD  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority';
 
+  
 
 UPDATE page SET id_subnav = id_page;
 

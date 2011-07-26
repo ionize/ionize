@@ -1,5 +1,6 @@
 <?php
 
+
 $lang['module_simpleform_field_email'] = "Email";
 $lang['module_simpleform_field_name'] = "Name";
 $lang['module_simpleform_field_firstname'] = "Surname";
@@ -21,7 +22,9 @@ $lang['module_simpleform_field_country'] = "Country";
 $lang['module_simpleform_field_housenumber'] = "Housenumber";
 $lang['module_simpleform_field_zip'] = "ZIP";
 $lang['module_simpleform_field_website'] = "Website URL";
+$lang['module_simpleform_field_subject'] = "Subject";
 $lang['module_simpleform_field_message'] = "Message";
+$lang['module_simpleform_all_fields_required'] = "All fields are required";
 
 $lang['module_simpleform_button_send'] = "Send";
 $lang['module_simpleform_button_save'] = "Save";

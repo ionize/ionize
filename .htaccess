@@ -3,7 +3,6 @@ RewriteEngine On
 # The RewriteBase / instruction is commented. Remove the "#" to uncomment
 # RewriteBase /
 
-# Maintenance
 # Uncomment these lines to display the off.html page to other IP than the one bellow
 #RewriteCond %{REMOTE_ADDR} !^127.0.0.1$
 #RewriteCond %{REQUEST_FILENAME} !-f

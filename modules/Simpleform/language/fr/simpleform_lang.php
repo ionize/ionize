@@ -21,7 +21,9 @@ $lang['module_simpleform_field_country'] = "Pays";
 $lang['module_simpleform_field_housenumber'] = "N°";
 $lang['module_simpleform_field_zip'] = "CP";
 $lang['module_simpleform_field_website'] = "URL Site Internet";
+$lang['module_simpleform_field_subject'] = "Sujet";
 $lang['module_simpleform_field_message'] = "Message";
+$lang['module_simpleform_all_fields_required'] = "Tous les champs sont obigatoires";
 
 $lang['module_simpleform_button_send'] = "Envoyer";
 $lang['module_simpleform_button_save'] = "Sauvegarder";

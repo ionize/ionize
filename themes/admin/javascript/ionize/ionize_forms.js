@@ -149,6 +149,52 @@ ION.append({
 	},
 
 
+	setChangeSubmit: function(form, button, url, confirm)
+	{
+		// Add the form submit event with a confirmation window
+		if ($(button) && (typeOf(confirm) == 'object'))
+		{
+			var func = function()
+			{
+				var options = ION.getFormObject(url, $(form));
+				
+				var r = new Request.JSON(options);
+				
+				r.send();
+			};
+		
+			// Form submit or button event
+			$(button).removeEvents('change');
+			$(button).addEvent('change', function(e)
+			{
+				new Event(e).stop();
+				
+				ION.confirmation('conf' + button.id, func, confirm.message);
+			});
+		}
+		// Add the form submit button event without confirmation
+		else if ($(button))
+		{
+			// Form submit or button event
+			$(button).removeEvents('change');
+			$(button).addEvent('change', function(e)
+			{
+				new Event(e).stop();
+				
+				// tinyMCE and CKEditor trigerSave
+				ION.updateRichTextEditors();
+				
+				// Get the form
+				var options = ION.getFormObject(url, $(form));
+				
+				var r = new Request.JSON(options);
+				
+				r.send();
+			});
+		}
+	},
+
+
 	/**
 	 * CTRL+s or Meta+s save event
 	 *

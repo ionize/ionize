@@ -2,23 +2,28 @@
 
 
 body, td, pre, p, ul, ol {
-	font-size:11px;
+	font-size:13px;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 body {
 	background-color:#fff;
-	margin:0;
+	margin:1em;
 }
 
 h2,h3,h4,h5,h6 {
 	margin:0;
 	background-color:#f3f3f3;
 }
-h2 {padding:5px 10px 5px 10px;font-size:1.3em;}
-h3 {padding:5px 10px 5px 10px;font-size:1.2em;}
-h4 {padding:5px 10px 5px 10px;font-size:1.1em;}
-h5 {padding:5px 10px 5px 10px;font-size:1.0em}
-h6 {padding:3px 10px 3px 10px;font-size:0.9em}
+
+
+/*
+h2 {font-size:1.3em;}
+h3 {font-size:1.2em;}
+h4 {font-size:1.1em;}
+h5 {font-size:1.0em}
+h6 {font-size:0.9em}
+*/
 
 
 ul, ol {
@@ -28,17 +33,16 @@ ul, ol {
 }
 ul li, ol li {
 	margin: 0 15px 0 10px !important;
-	line-height: 1.2;
+	line-height: 1.5em;
 }
 p {
-	background-color:#f3f3f3;
 	margin:0;
-	padding:10px 15px 10px 10px !important;
+/*	padding:10px 15px 10px 10px !important;*/
 	text-align:justify;
 	color:#000;
 	font-weight: normal;
 	font-size: 1em;
-	line-height: 1.2;
+	line-height: 1.5em;
 	font-size-adjust: none;
 	font-stretch: normal;
 }
@@ -62,3 +66,15 @@ script {
 	border:solid dashed #000;
 }
 
+.left{
+	float:left;
+}
+.right{
+	float:right;
+}
+.center{
+	text-align: center;
+}
+.justify {
+	text-align: justify;
+}
