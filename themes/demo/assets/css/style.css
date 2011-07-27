@@ -13,18 +13,11 @@ License:
 */
 
 
-div.img {
-	overflow: hidden;
-}
-.imgborder {
-	background-color: #F6F6F6;
-	border: 1px solid #EAEAEA;
-	padding: 4px;
-}
 
 body {
 	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size:11px;
+	line-height: 1.8em;
 	background:url(../images/body_pattern_tree2.png);
 	background-repeat:repeat;
 	background-position:top;
@@ -33,16 +26,6 @@ body {
 	color:#5f5f5f;
 }
 
-/* Blueprint addons */
-.colborder {border-right:0;}
-.span-33 {
-	width:270px;
-	float:left;
-	margin-right:30px
-}
-.span-33.last {
-	margin-right:0
-}
 hr {
 	background-image: url("../images/hr.png");
 	background-repeat: repeat-x;
@@ -56,14 +39,16 @@ hr {
 	text-align: center;
 	width: 100%;
 }
+h1, h2 {
+	font-family: "Century Gothic",Arial,Verdana;
+	color:#555;
+}
 h4 { font-size: 18px;}
 h5 { font-size: 16px;}
-/*
-#wrap {
-	width:990px;
-	margin:30px auto;
-}
-*/
+
+
+/* Containers
+ -------------------------------- */
 #container {
 	margin-top:30px;
 	background-color:#fff;
@@ -75,6 +60,20 @@ h5 { font-size: 16px;}
 	background-color:#fff
 }
 
+/* Blueprint addons */
+.colborder {border-right:0;}
+.span-33 {
+	width:270px;
+	float:left;
+	margin-right:30px
+}
+.span-33.last {
+	margin-right:0
+}
+
+
+/* Header + Logo 
+ -------------------------------- */
 #header {
 	padding-top:50px;
 	padding-bottom:30px;
@@ -114,7 +113,9 @@ h5 { font-size: 16px;}
 	background:url(../images/logo.png) no-repeat 0 -40px
 }
 
-/* */
+
+/* Navigation 
+ -------------------------------- */
 #navigation {
 	position:relative;
 	z-index:200;
@@ -205,6 +206,9 @@ h5 { font-size: 16px;}
 	position:static
 }
 
+
+/* Home content
+ -------------------------------- */
 #home-slider{
 	width:870px;
 	height:400px;
@@ -235,25 +239,64 @@ h5 { font-size: 16px;}
 #home-slider .tile .layer h2{
 	color:#fff;
 	margin-bottom:10px;
-	font-size: 36px;
+	font-size: 22px;
+	font-weight: normal;
 }
 
-#content h1, 
-#content h2, 
-#content h3, 
-#content h4, 
-#content h5, 
-#content h6{
-	color:#303030;
+
+/* Content
+ -------------------------------- */
+div.img {
+	overflow: hidden;
 }
+.imgborder {
+	background-color: #F6F6F6;
+	border: 1px solid #EAEAEA;
+	padding: 4px;
+}
+img.left {
+	margin-bottom: 12px;
+	margin-right: 15px;
+	margin-top: 3px;
+}
+.contact-article ul{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.contact-article ul li {
+	margin-bottom: 25px;
+}
+.contact-form {
+	border-right: dashed 1px #ddd;
+}
+
 .span-33.home h2 {
 	font-size: 18px;
+	margin-top: 10px;
 }
-
-
+.span-24, .span-22 {
+	padding-bottom: 30px;
+}
+div.error {
+	border: solid 2px #900;
+	padding:15px;
+	background: #b00;
+	color:#fff;
+	margin-bottom: 20px;
+}
+div.error h3{
+	color: #fff;
+}
+div.error p{
+	margin: 0;
+}
+div.notice{
+	margin-bottom: 15px;
+}
 /* Forms
  -------------------------------- */
-
+/*
 input[type=text], textarea{
 	border:solid 1px #dadada;
 	margin:4px 4px 8px 0px; 
@@ -261,8 +304,48 @@ input[type=text], textarea{
 	vertical-align:middle; 
 	font-size:11px;
 }
+*/
+input[type="text"], .inputtext, textarea {
+    background: none repeat scroll 0 0 #F7F7F7;
+    border: 1px solid #DADADA;
+    color: #666666;
+    padding: 5px;
+    width: 40%;
+}
+input[type="text"]:focus, .inputtext:focus {
+    background: none repeat scroll 0 0 #fff;
+	
+}
+#contactform label{
+    display: block;
+    float: left;
+    width: 80px;
+}
+#contactform input{
+	display: block;
+	margin-bottom: 8px;
+	padding: 8px 5px;
+	vertical-align: middle;
+	width: 55%;
+}
+#contactform textarea {
+    margin-bottom: 10px;
+    padding: 8px 5px;
+    vertical-align: top;
+    width: 80%;
+}
 
-
+#contactform .button {
+    background-image: url("../images/bg-button.gif");
+    background-repeat: repeat-x;
+    border: 1px solid #DADADA;
+    border-radius: 5px 5px 5px 5px;
+    width:130px;
+    cursor: pointer;
+}
+#contactform .button:hover {
+    background-image: url("../images/bg-button.gif");
+}
 /* Single input form (Newsletter / Search form )
  -------------------------------- */
 

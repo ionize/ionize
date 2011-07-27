@@ -153,7 +153,7 @@ class Setting extends MY_admin
 		// Allowed HTML tags in content
 		$this->template['article_allowed_tags'] = explode(',', Settings::get('article_allowed_tags') );
 
-		// Antispam key
+		// Maintenance IPs
 		$this->template['maintenance_ips'] = implode("\n", config_item('maintenance_ips'));
 
 

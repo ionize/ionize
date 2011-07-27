@@ -311,7 +311,7 @@ class Structure{
 			}
 		}
 		
-		$file_name = $ci->sitemaps->build('sitemap_pages.xml');
+		$file_name = $ci->sitemaps->build('sitemap.xml');
 	}
 	
 }
