@@ -7,4 +7,4 @@
  */
 
 ?>
-<p class="w300"><b><?= $title ?></b> : <span class="<?= $result_status ?>"><?= $result_text ?></span><a class="icon right ok ml10"></a></p>
+<p style="width:80%;"><b><?= $title ?></b> : <span class="<?= $result_status ?>"><?= $result_text ?></span><a class="icon right ok ml10"></a></p>

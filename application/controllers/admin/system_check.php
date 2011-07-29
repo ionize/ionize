@@ -64,15 +64,18 @@ class System_check extends MY_admin
 	function start_check()
 	{
 		// Start the first check : pages levels
-		$this->callback = array(
+		$this->callback = array
+		(
+			// Clear the report ODM container
 			array (
 				'fn' => 'ION.emptyDomElement',
 				'args' => array	('system_check_report')
 			),
+			// Call the first check
 			array (
 				'fn' => 'ION.JSON',
 				'args' => array	(
-					'system_check/check_page_level'
+					'system_check/check_folder_right'
 				)
 			)
 		);
@@ -82,6 +85,65 @@ class System_check extends MY_admin
 	
 
 	/**
+	 * Checks write rights on Ionize's used folders
+	 *
+	 */
+	function check_folder_right()
+	{
+		$results = array();
+		
+		$folders = array(
+			'cache_path' => (config_item('cache_path') == '') ? FCPATH.'cache/' : config_item('cache_path'),
+			'files_path' => (config_item('files_path') == '') ? FCPATH.'files/' : config_item('files_path'),
+			'theme_path' => FCPATH.'themes/'.Settings::get('theme')
+		);
+
+		foreach($folders as $folder)
+		{
+			$result = array(
+				'title' => lang('ionize_title_check_folder').' : '.$folder,
+				'result_status' => 'success',
+				'result_text' => lang('ionize_message_check_ok')
+			);
+			
+			if ( ! is_dir($folder) OR ! is_really_writable($folder))
+			{
+				$result['result_status'] = 'error';
+				$result['result_text'] = lang('ionize_message_check_folder_nok');
+			}
+			
+			$results[] = $result;
+		}
+		
+		// Result view
+		$view = '';
+		foreach($results as $result)
+		{
+			$view .= $this->load->view('system_check_result', $result, TRUE);
+		}
+
+
+		$this->callback = array(
+			array (
+				'fn' => 'ION.appendDomElement',
+				'args' => array	(
+					'system_check_report',
+					$view
+				)
+			),
+			array (
+				'fn' => 'ION.JSON',
+				'args' => array	(
+					'system_check/check_page_level'
+				)
+			)
+		);
+		
+		$this->response();
+	}
+
+
+	/**
 	 * Check if all langs defined in DB are set in the config file
 	 *
 	 */
@@ -89,7 +151,7 @@ class System_check extends MY_admin
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_lang'),
-			'result_status' => 'ok',
+			'result_status' => 'success',
 			'result_text' => lang('ionize_message_check_ok')
 		);
 		
@@ -130,7 +192,6 @@ class System_check extends MY_admin
 
 			if ( ! empty($lang_uri_abbr))
 			{
-// trace($lang_uri_abbr);
 				$this->config_model->change('language.php', 'lang_uri_abbr', $lang_uri_abbr);
 			}
 
@@ -171,7 +232,7 @@ class System_check extends MY_admin
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_page_level'),
-			'result_status' => 'ok'
+			'result_status' => 'success'
 		);
 
 		$nb_wrong_levels = $this->system_check_model->check_page_level();
@@ -221,7 +282,7 @@ class System_check extends MY_admin
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_article_context'),
-			'result_status' => 'ok'
+			'result_status' => 'success'
 		);
 
 		$nb_orphan_articles = $this->system_check_model->check_article_context();
@@ -260,14 +321,6 @@ class System_check extends MY_admin
 	
 	
 	
-	/**
-	 * Checks write rights on Ionize's used folders
-	 *
-	 */
-	function check_folder_right()
-	{
-	
-	}
 	
 	
 	/**

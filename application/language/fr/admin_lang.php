@@ -1009,11 +1009,13 @@ $lang['ionize_label_start_system_check'] = 'Commencer le test';
 $lang['ionize_button_start_system_check'] = 'Aller hop !';
 
 $lang['ionize_title_check_lang'] = 'Langues';
+$lang['ionize_title_check_folder'] = 'Dossier';
 $lang['ionize_title_check_page_level'] = 'Levels des Pages';
 $lang['ionize_title_check_article_context'] = 'Contexte des articles';
 
 $lang['ionize_message_check_corrected'] = ' corrigé(s).';
-$lang['ionize_message_check_ok'] = 'Tout va bien.';
+$lang['ionize_message_check_ok'] = 'OK';
+$lang['ionize_message_check_folder_nok'] = 'Ecriture impossible';
 
 
 ?>

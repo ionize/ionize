@@ -398,7 +398,7 @@ class TagManager
 		$id = self::get_tag_cache_id($tag);
 
 		return Cache()->get($id);
-	} 		
+	}
 
 
 	// ------------------------------------------------------------------------

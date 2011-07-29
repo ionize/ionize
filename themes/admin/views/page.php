@@ -708,7 +708,7 @@
 		</fieldset>
 
 
-		<fieldset class="mt10 clear">
+		<fieldset class="mt10">
 	
 
 			<!-- Tabs -->

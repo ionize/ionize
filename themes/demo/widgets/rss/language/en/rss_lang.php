@@ -1,5 +1,5 @@
 <?php
 
-$lang['widget_rss_title'] = 	"See on... ";
+$lang['widget_rss_title'] = 	"Seen on... ";
 
 ?>

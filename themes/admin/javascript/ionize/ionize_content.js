@@ -152,22 +152,25 @@ ION.append({
 			 */
 			var pos = Cookie.read('sidecolumn');
 	
-			if (typeOf(pos) != 'null' && pos == 'close')
-			{
-				// element.hide();
-				element.addClass('close');
-				maincolumn.removeClass('sidecolumn');
-				
-				button.set('value', Lang.get('ionize_label_show_options'));
-				button.store('status', 'close');
-			}
-			else
+			if (typeOf(pos) != 'null' && pos == 'open')
 			{
 				element.removeClass('close');
 				maincolumn.addClass('sidecolumn');
 	
 				button.store('status', 'open');
 				button.set('value', Lang.get('ionize_label_hide_options'));
+
+			}
+			else
+			{
+				element.addClass('close');
+				maincolumn.removeClass('sidecolumn');
+				
+				button.set('value', Lang.get('ionize_label_show_options'));
+				button.store('status', 'close');
+				
+				/*
+				*/
 			}
 		}
 	},

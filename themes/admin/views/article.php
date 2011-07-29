@@ -563,7 +563,7 @@
 
 		</fieldset>
 
-		<fieldset id="blocks" class="mt20 clear">
+		<fieldset id="blocks" class="mt20">
 	
 			<!-- Tabs -->
 			<div id="articleTab" class="mainTabs">

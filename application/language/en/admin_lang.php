@@ -1010,11 +1010,13 @@ $lang['ionize_label_start_system_check'] = 'Start Check';
 $lang['ionize_button_start_system_check'] = 'Start Check';
 
 $lang['ionize_title_check_lang'] = 'Check Languages';
+$lang['ionize_title_check_folder'] = 'Folder';
 $lang['ionize_title_check_page_level'] = 'Check Pages Levels';
 $lang['ionize_title_check_article_context'] = 'Check Articles Contexts';
 
 $lang['ionize_message_check_corrected'] = ' corrected.';
-$lang['ionize_message_check_ok'] = 'Everything\'s fine.';
+$lang['ionize_message_check_ok'] = 'OK';
+$lang['ionize_message_check_folder_nok'] = 'No Write rights';
 
 
 

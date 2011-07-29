@@ -17,25 +17,39 @@ class System_check
 	 */
 	function check_config()
 	{
+		error_reporting(1);
+		
 		$check = array
 		(
 			// PHP version >= 5
-			'php version' => version_compare(substr(phpversion(), 0, 3), '5.2', '>='),
+			'php version' => (version_compare(substr(phpversion(), 0, 3), '5.2', '>=')) ? 'OK' : 'Error',
 	
 			// MySQL support
-			'mysql support'  => function_exists('mysql_connect'),
+			'mysql support'  => (function_exists('mysql_connect')) ? 'OK' : 'Error',
 			
 			// Files upload
-			'file upload' => ini_get('file_uploads'),
+			'file upload' => (ini_get('file_uploads')) ? 'OK' : 'Error',
 			
 			// GD lib
-			'GD lib' => function_exists('imagecreatetruecolor'),
-			
-			// Mod_rewrite
-			'mod_rewrite' => in_array('mod_rewrite', @apache_get_modules())
+			'GD lib' => (function_exists('imagecreatetruecolor')) ? 'OK' : 'Error'		
 		);
+		
+		if (function_exists('apache_get_modules'))
+		{
+			$check['mod_rewrite'] = (in_array('mod_rewrite', @apache_get_modules())) ? 'OK' : 'Error';
+		}
+		else
+		{
+			$check['mod_rewrite'] = "Can't be tested";
+		}
+		
+		if ($check['file upload'] == 'OK')
+		{
+			$check['file Max Size'] = ini_get('upload_max_filesize');
+		}
+		
 
-		self::output($check);
+		self::out($check);
 	}
 
 
@@ -43,12 +57,12 @@ class System_check
 	// --------------------------------------------------------------------
 
 
-	function output($arr)
+	static function out($arr)
 	{
 		$str = '';		
 		foreach($arr as $key => $value)
 		{
-			$result = ($value) ? '<strong style="color:#0a0;">OK</strong>' : '<strong style="color:#b00;">Error</strong>';
+			$result = ($value == 'OK') ? '<strong style="color:#0a0;">'.$value.'</strong>' : '<strong style="color:#b00;">'.$value.'</strong>';
 			$str .= '<li>' . $key . ' : ' . $result . '</li>';
 		}
 		
@@ -76,6 +90,6 @@ class System_check
 	
 }
 
-
 System_check::check_config();
 
+?>

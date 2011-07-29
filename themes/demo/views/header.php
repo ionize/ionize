@@ -107,7 +107,7 @@
 				 			in the config.xml file of the module and to reinstall it through Ionize.
 			-->
 			<form method="post" action="<ion:base_url />search-result" class="singleinput right">
-				<div><input name="realm" class="inputbox" value="<ion:translation term="form_search" />" onblur="if (this.value == ''){this.value = '<ion:translation term="form_search" />'; }" onfocus="if (this.value == '<ion:translation term="form_search" />') {this.value = ''; }" type="text"/><input type="submit" name="submit" class="button_src" value=""/></div>
+				<div><input name="realm" value="<ion:translation term="form_search" />" onblur="if (this.value == ''){this.value = '<ion:translation term="form_search" />'; }" onfocus="if (this.value == '<ion:translation term="form_search" />') {this.value = ''; }" type="text"/><input type="submit" name="submit" class="button_src" value=""/></div>
 			</form>
 
 		</div>

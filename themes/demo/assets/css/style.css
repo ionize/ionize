@@ -294,6 +294,41 @@ div.error p{
 div.notice{
 	margin-bottom: 15px;
 }
+
+/* side-blocks */
+.side-block {
+	margin-bottom:30px;
+}
+.side-block h3{
+	font-size: 1em;
+	margin-bottom:0;
+}
+.side-block h3 a {
+	text-decoration: none;
+}
+
+/* Links list */
+ul.links {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+ul.links li {
+	background: url("../images/arrow.png") no-repeat scroll 0 13px transparent;
+	border-bottom: 1px solid #F3F3F3;
+	list-style-type: none;
+	margin: 0;
+	padding:0;
+}
+ul.links li a{
+	display: block;
+	padding: 6px 0 6px 15px;
+	text-decoration: none;
+}
+ul.links li a:hover{
+	background-color: #fcfcfc;
+}
+
 /* Forms
  -------------------------------- */
 /*
@@ -329,7 +364,7 @@ input[type="text"]:focus, .inputtext:focus {
 	width: 55%;
 }
 #contactform textarea {
-    margin-bottom: 10px;
+    margin: 0 0 10px 0;
     padding: 8px 5px;
     vertical-align: top;
     width: 80%;
@@ -350,8 +385,21 @@ input[type="text"]:focus, .inputtext:focus {
  -------------------------------- */
 
 .singleinput div{ border:1px solid #eaeaea; width:249px; padding:5px 0px 0px 0px; background-color:#fff;}
-.singleinput input{ background-color:transparent; border:0px solid #fff; width:205px; color:#b4b4b4; background-image:none; border:0px; padding:0px 10px; font-size:11px;}
-.singleinput .button_src{background:url(../images/but_submit.gif) no-repeat 0px 3px; width:7px; border:0px; cursor:pointer;}
+.singleinput input{ 
+	background-color:transparent; 
+	border:0px solid #fff; 
+	width:209px; color:#b4b4b4; 
+	background-image:none; 
+	padding:0px 10px;
+	margin-bottom: 6px;
+	font-size:11px;
+}
+.singleinput .button_src{
+	background:url(../images/but_submit.gif) no-repeat 0px 3px; 
+	width:7px; 
+	border:0px;
+	cursor:pointer;
+}
 
 
 
