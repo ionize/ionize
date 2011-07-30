@@ -1799,8 +1799,10 @@ class TagManager_Page extends TagManager
 	 */
 	public static function tag_articles($tag)
 	{
+		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+
 		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
+		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
 			return $str;
 
 		// Returned string

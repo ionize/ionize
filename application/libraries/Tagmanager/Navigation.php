@@ -47,8 +47,10 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_navigation($tag)
 	{
+		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+
 		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
+		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
 			return $str;
 
 		// Final string to print out.
