@@ -112,7 +112,7 @@
 				<?php if (isset($article_views)) :?>
 					<dl class="small">
 						<dt>
-							<label for="article_view"><?= lang('ionize_label_article_template') ?></label>
+							<label for="article_view" title="<?= lang('ionize_help_article_template') ?>"><?= lang('ionize_label_article_template') ?></label>
 						</dt>
 						<dd>
 							<?= $article_views ?>

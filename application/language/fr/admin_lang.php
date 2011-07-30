@@ -269,7 +269,7 @@ $lang['ionize_label_id'] = 'Identifiant';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_permanent_url'] = 'URL permanente';
 $lang['ionize_label_view'] = 'Vue';
-$lang['ionize_label_article_template'] = 'Vue articles';
+$lang['ionize_label_article_template'] = 'Vue article';
 
 $lang['ionize_label_title'] = 'Titre';
 $lang['ionize_label_subtitle'] = 'Sous Titre';
@@ -708,6 +708,7 @@ $lang['ionize_help_page_url'] = 'URL de cette page. Doit être unique';
 $lang['ionize_help_page_link'] = 'Lien HTTP interne ou externe. Remplace le lien par défaut vers la page';
 $lang['ionize_help_pagination'] = 'Si > 0, active la pagination des articles';
 $lang['ionize_help_article_list_template'] = 'Si plus d\'un article / page, utilisation de cette vue pour afficher chaque article';
+$lang['ionize_help_article_template'] = 'Vue utilisée pour l\'affichage individuel d\'un article OU si une seul article dans cette page';
 $lang['ionize_help_appears'] = 'La page apparaît-elle dans le menu de navigation ?';
 $lang['ionize_help_page_meta'] = 'Remplace les META par défaut du site si non vide';
 $lang['ionize_help_page_window_title'] = 'Titre de la fenêtre du navigateur';

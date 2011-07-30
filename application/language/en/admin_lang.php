@@ -269,7 +269,7 @@ $lang['ionize_label_id'] = 'ID';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_permanent_url'] = 'Permanent URL';
 $lang['ionize_label_view'] = 'View';
-$lang['ionize_label_article_template'] = 'Articles view';
+$lang['ionize_label_article_template'] = 'Article view';
 
 $lang['ionize_label_title'] = 'Title';
 $lang['ionize_label_subtitle'] = 'Subtitle';
@@ -709,6 +709,7 @@ $lang['ionize_help_page_url'] = 'Page\'s URL. Must be unique';
 $lang['ionize_help_page_link'] = 'Internal or External HTTP link. Replace the default page link';
 $lang['ionize_help_pagination'] = 'If > 0, activate the pagination of article.';
 $lang['ionize_help_article_list_template'] = 'If more than 1 article on the page, use of this view to display each article';
+$lang['ionize_help_article_template'] = 'View used to display the articles in standalone mode OR if just one article in this page';
 $lang['ionize_help_appears'] = 'Does the page appears in the navigation menu ?';
 $lang['ionize_help_page_meta'] = 'Replace the global website META when not empty';
 $lang['ionize_help_page_window_title'] = 'Browser window title';
