@@ -171,7 +171,7 @@ input.required, textarea.required, select.required{
 }
 textarea{
 	border:1px solid #bbb;
-	padding:3px;
+	padding:4px;
 	margin:0;
 }
 .select {
@@ -189,6 +189,8 @@ textarea{
 .inputtext:focus,
 textarea:focus {
 	background-color: #fdfced;
+	border:2px solid #bbb;
+	padding:3px;
 }
 input.italic {
 	font-style: italic;

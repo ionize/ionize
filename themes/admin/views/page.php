@@ -23,14 +23,6 @@
 			<!-- Main informations -->
 			<?php if ($id_page != '') :?>
 			
-			
-				<?php if ($this->connect->is('super-admins') ) :?>
-					<dl class="small compact">
-						<dt><label>ID</label></dt>
-						<dd><span class="lite"><?= $id_page ?></span></dd>
-					</dl>
-				<?php endif ;?>
-
 				<dl class="compact small">
 					<dt><label><?= lang('ionize_label_status') ?></label></dt>
 					<dd class="icon">
@@ -57,8 +49,6 @@
 					</dl>
 				<?php endif ;?>
 
-
-			
 				<!-- Link ? -->
 				<?php if ($id_page != '') :?>
 				
@@ -74,7 +64,7 @@
 		<div id="options">
 
 			<!-- Options -->
-			<h3 class="toggler"><?= lang('ionize_title_options') ?></h3>
+			<h3 class="toggler"><?= lang('ionize_title_attributes') ?></h3>
 		
 			<div class="element">
 
@@ -166,6 +156,38 @@
 			
 			<?php endif ;?>
 			
+			<!-- Dates -->
+			<h3 class="toggler"><?= lang('ionize_title_dates') ?></h3>
+			
+			<div class="element">
+				<dl class="small">
+					<dt>
+						<label for="logical_date"><?= lang('ionize_label_date') ?></label>
+					</dt>
+					<dd>
+						<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+					</dd>
+				</dl>
+				<dl class="small">
+					<dt>
+						<label for="publish_on" title="<?= lang('ionize_help_publish_on') ?>"><?= lang('ionize_label_publish_on') ?></label>
+					</dt>
+					<dd>
+						<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?= humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+					</dd>
+				</dl>
+			
+				<dl class="small last">
+					<dt>
+						<label for="publish_off" title="<?= lang('ionize_help_publish_off') ?>"><?= lang('ionize_label_publish_off') ?></label>
+					</dt>
+					<dd>
+						<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+					</dd>
+				</dl>
+			
+			</div>
+
 			
 			<!-- Subnavigation -->
 			<?php if ($id_page != '') :?>
@@ -256,38 +278,6 @@
 			</div>
 
 
-
-			<!-- Dates -->
-			<h3 class="toggler"><?= lang('ionize_title_dates') ?></h3>
-			
-			<div class="element">
-				<dl class="small">
-					<dt>
-						<label for="logical_date"><?= lang('ionize_label_date') ?></label>
-					</dt>
-					<dd>
-						<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%m:%s') ?>" />
-					</dd>
-				</dl>
-				<dl class="small">
-					<dt>
-						<label for="publish_on" title="<?= lang('ionize_help_publish_on') ?>"><?= lang('ionize_label_publish_on') ?></label>
-					</dt>
-					<dd>
-						<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?= humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%m:%s') ?>" />
-					</dd>
-				</dl>
-			
-				<dl class="small last">
-					<dt>
-						<label for="publish_off" title="<?= lang('ionize_help_publish_off') ?>"><?= lang('ionize_label_publish_off') ?></label>
-					</dt>
-					<dd>
-						<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%m:%s') ?>" />
-					</dd>
-				</dl>
-			
-			</div>
 
 
 			<!-- SEO -->
@@ -392,11 +382,12 @@
 			</div>
 
 
-			<!-- Copy Content -->
-			<h3 class="toggler"><?= lang('ionize_title_content') ?></h3>
+			<!-- Operations on Page -->
+			<h3 class="toggler"><?= lang('ionize_title_operation') ?></h3>
 			
 			<div class="element">
 			
+				<!-- Copy Content -->
 				<dl class="small">
 					<dt>
 						<label for="lang_copy_from" title="<?= lang('ionize_help_copy_content') ?>"><?= lang('ionize_label_copy_content') ?></label>
@@ -438,18 +429,12 @@
 						<input type="submit" value="<?= lang('ionize_button_copy_content') ?>" class="submit" id="copy_lang">
 					</dd>
 				</dl>
-			
-			</div>
-
-
-			<?php if ($id_page != '') :?>
-			
-				<!-- Articles ordering -->
-				<h3 class="toggler"><?= lang('ionize_title_articles') ?></h3>
-			
-				<div class="element">
+				
+				<?php if ($id_page != '') :?>
 					
-					<dl class="small compact">
+					<hr class="ml10" />
+					
+					<dl class="small compact mt10">
 						<dt><label for="reorder_direction" title="<?=lang('ionize_label_help_articles_reorder')?>"><?= lang('ionize_label_article_reorder') ?></label></dt>
 						<dd>
 							<select name="reorder_direction" id="reorder_direction" class="w140 select">
@@ -460,16 +445,29 @@
 							</select>
 						</dd>
 					</dl>
+					
 					<!-- Submit button  -->
 					<dl class="small last">
 						<dt>&#160;</dt>
 						<dd>
-							<input type="submit" value="<?= lang('ionize_button_reorder') ?>" class="submit" id="button_reorder_articles">
+							<input type="submit" value="<?= lang('ionize_button_reorder') ?>" class="submit mt10" id="button_reorder_articles">
 						</dd>
 					</dl>
+				<?php endif ;?>
+			
+			</div>
+
+
+			<?php if ($id_page != '') :?>
+			
+				<!-- Articles ordering 
+				<h3 class="toggler"><?= lang('ionize_title_articles') ?></h3>
+			
+				<div class="element">
+					
 				
 				</div>
-
+-->
 
 				<!-- Other info : Permanent URL, etc. -->
 				<h3 class="toggler"><?= lang('ionize_title_informations') ?></h3>
@@ -539,6 +537,17 @@
 			?>
 
 			<h2 class="main page" id="main-title"><?= $title ?></h2>
+			
+			<div style="margin: -15px 0pt 20px 72px;">
+				<p>
+					<?php if ($this->connect->is('super-admins') ) :?>
+						<span class="lite">ID : </span>
+						<?= $id_page ?>
+					<?php endif ;?>
+				</p>
+			</div>
+			
+			
 
 		<?php else :?>
 			

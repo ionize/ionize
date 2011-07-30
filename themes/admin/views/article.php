@@ -19,13 +19,6 @@
 
 			<?php if ($id_article != '') :?>
 
-				<?php if ($this->connect->is('super-admins') ) :?>
-					<dl class="small compact">
-						<dt><label>ID</label></dt>
-						<dd><span class="lite"><?= $id_article ?></span></dd>
-					</dl>
-				<?php endif ;?>
-				
 
 				<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
 					<dl class="small compact">
@@ -81,9 +74,35 @@
 		<div id="options">
 
 			<!-- Options -->
-			<h3 class="toggler"><?= lang('ionize_title_options') ?></h3>
+			<h3 class="toggler"><?= lang('ionize_title_attributes') ?></h3>
 		
 			<div class="element">
+
+				<!-- Indexed content -->
+				<dl class="small">
+					<dt>
+						<label for="indexed" title="<?= lang('ionize_help_indexed') ?>"><?= lang('ionize_label_indexed') ?></label>
+					</dt>
+					<dd>
+						<input id="indexed" name="indexed" type="checkbox" class="inputcheckbox" <?php if ($indexed == 1):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
+				<!-- Categories -->
+				<dl class="small">
+					<dt>
+						<label for="template"><?= lang('ionize_label_categories') ?></label>
+					</dt>
+					<dd>
+						<div id="categories">
+							<?= $categories ?>
+						</div>
+						
+						<!-- Category create button -->
+						<a onclick="javascript:ION.formWindow('category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
+
+					</dd>
+				</dl>
 
 				<!-- Existing Article -->
 				<?php if( ! empty($id_article)) :?>
@@ -105,7 +124,7 @@
 											$title = ($page['title'] != '') ? $page['title'] : $page['name'];
 											
 											// All REL or ID which permit the DOM identification of one article MUST be written like this.
-									//		$rel = $page['id_page']. '.' .$id_article;
+											// $rel = $page['id_page']. '.' .$id_article;
 										?>
 								
 										<li rel="<?= $page['id_page'] ?>.<?= $id_article ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?= $title ?></a></li>
@@ -120,23 +139,12 @@
 						</dd>
 					</dl>
 				
-				<!-- New Article -->
 				<?php endif ;?>
 					
 
 			
-				<!-- Indexed content -->
-				<dl class="small">
-					<dt>
-						<label for="indexed" title="<?= lang('ionize_help_indexed') ?>"><?= lang('ionize_label_indexed') ?></label>
-					</dt>
-					<dd>
-						<input id="indexed" name="indexed" type="checkbox" class="inputcheckbox" <?php if ($indexed == 1):?> checked="checked" <?php endif;?> value="1" />
-					</dd>
-				</dl>
 
-
-				<!-- Flag -->
+				<!-- Flag 
 				<dl class="small">
 					<dt>
 						<label for="flag0" title="<?= lang('ionize_help_flag') ?>"><?= lang('ionize_label_flag') ?></label>
@@ -151,31 +159,18 @@
 						</dd>
 					</dt>
 				</dl>
+				
+				-->
 
 			</div>
 			
 			
 			
-			<!-- Advanced options -->
+			<!-- Advanced options 
 			<h3 class="toggler"><?= lang('ionize_title_advanced') ?></h3>
 			
 			<div class="element">
 
-				<!-- Categories -->
-				<dl class="small">
-					<dt>
-						<label for="template"><?= lang('ionize_label_categories') ?></label>
-					</dt>
-					<dd>
-						<div id="categories">
-							<?= $categories ?>
-						</div>
-						
-						<!-- Category create button -->
-						<a onclick="javascript:ION.formWindow('category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
-
-					</dd>
-				</dl>
 
 				<!-- Tags 
 				<dl class="small">
@@ -186,7 +181,7 @@
 						<textarea id="tags" name="tags" class="inputtext w140 h40" type="text" onkeyup="formManager.toLowerCase(this, 'tags');"><?= $tags ?></textarea>
 					</dd>
 				</dl>
-				-->
+				
 				<!-- Existing Tags 
 				<dl class="small last">
 					<dt>
@@ -194,10 +189,12 @@
 					</dt>
 					<dd><?= $existing_tags ?></dd>
 				</dl>
-				-->
+				
 
 			</div>
 
+			-->
+			
 			
 			<!-- Dates -->
 			<h3 class="toggler"><?= lang('ionize_title_dates') ?></h3>
@@ -389,7 +386,15 @@
 
 				<div style="margin: -15px 0pt 20px 72px;">
 							
-					<p><span class="lite"><?= lang('ionize_label_article_context_edition') ?> : </span><?=$breadcrump?></p>
+					<p>
+						<?php if ($this->connect->is('super-admins') ) :?>
+							<span class="lite">ID : </span>
+							<?= $id_article ?> | 
+						<?php endif ;?>
+				
+						<span class="lite"><?= lang('ionize_label_article_context_edition') ?> : </span><?=$breadcrump?>
+						
+					</p>
 					
 				</div>
 			

@@ -132,6 +132,8 @@ $lang['ionize_menu_content_elements'] = 'Content Elements';
 $lang['ionize_title_welcome'] = 'Welcome to Ionize';
 $lang['ionize_title_structure'] = 'Structure';
 $lang['ionize_title_options'] = 'Options';
+$lang['ionize_title_attributes'] = 'Attributes';
+$lang['ionize_title_operation'] = 'Operations';
 $lang['ionize_title_advanced'] = 'Advanced options';
 $lang['ionize_title_dates'] = 'Dates';
 $lang['ionize_title_informations'] = 'Information';
@@ -665,7 +667,7 @@ $lang['ionize_title_create_page'] = 'Create page';
 $lang['ionize_title_new_page'] = 'New page';
 $lang['ionize_title_edit_page'] = 'Page edit';
 $lang['ionize_title_page_parent'] = 'Parent';
-$lang['ionize_title_sub_navigation'] = 'Navigation';
+$lang['ionize_title_sub_navigation'] = 'Sub Navigation';
 
 $lang['ionize_title_help_articles_types'] = 'About Types';
 
@@ -851,7 +853,7 @@ $lang['ionize_message_article_main_parent_saved'] = 'Main Parent Page saved !';
 // Inline help
 $lang['ionize_help_article_online'] = 'Is this article online?';
 $lang['ionize_help_article_content_online'] = 'Is this content online?';
-$lang['ionize_help_indexed'] = 'If checked, the article content will be fulltext indexed (ready for search engine)';
+$lang['ionize_help_indexed'] = 'If checked, the article content will be fulltext indexed (ready for internal search)';
 $lang['ionize_help_article_link'] = 'HTTP link. Can be used with the link tag';
 $lang['ionize_help_articles_types'] = 'Type of article. Useful for distinguish articles in a page view';
 $lang['ionize_help_article_window_title'] = 'Title of the browser window';
