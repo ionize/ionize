@@ -2,9 +2,9 @@
 
 /*
 |--------------------------------------------------------------------------
-| Ionize Language file
-| Language : Turkish
-| Translater : Ukyo, 13 - 04 - 2011
+| Ionize Dil Dosyası
+| Language : Türkçe
+| Translater : Ukyo, 27 07 2011
 |
 | Kullanımı :
 | Form Etiketleri :					ionize_label_*
@@ -43,12 +43,13 @@ $lang['ionize_logout'] =			'Çıkış Yap';
 $lang['ionize_goback'] =			'Yönetim Paneline Git';
 $lang['ionize_website'] =			'Ön Sayfaya Gözat';
 $lang['ionize_logged_as'] =			'Giriş yapıldı';
-$lang['ionize_login_name'] =		"Kullanıcı Adı";
+$lang['ionize_login_name'] =		'Kullanıcı Adı';
 $lang['ionize_login_password'] =	'Şifre';
 $lang['ionize_login_remember'] =	'Beni Hatırla';
 $lang['ionize_login'] =				'Giriş';
 $lang['ionize_forgot_password'] =	'Şifremi Unuttum ?';
 $lang['ionize_session_expired'] = 'Oturumunuz zaman aşımına uğradı. Lütfen tekrar giriş yapın.';
+$lang['ionize_login_error'] = 'Yolunda gitmeyen bişey var...';
 
 
 /*
@@ -131,18 +132,20 @@ $lang['ionize_menu_content_elements'] = 'İçerik Öğeleri';
 */
 $lang['ionize_title_welcome'] =				'Ionize\'ye Hoş Geldiniz';
 $lang['ionize_title_structure'] =			'Yapı';
+$lang['ionize_title_options'] = 'Ayarlar';
+$lang['ionize_title_attributes'] = 'Öznitelikler';
 $lang['ionize_title_options'] =				'Ayarlar';
 $lang['ionize_title_advanced'] =			'Gelişmiş Ayarlar';
 $lang['ionize_title_dates'] =				'Tarihler';
 $lang['ionize_title_informations'] =		'Bilgi';
-$lang['ionize_title_authorization'] =		"Erişim Yetkileri";
-$lang['ionize_title_metas'] =				"Anahtar Kelimeler";
-$lang['ionize_title_modules'] =				"Modül Yönetimi";
+$lang['ionize_title_authorization'] =		'Erişim Yetkileri';
+$lang['ionize_title_metas'] =				'Anahtar Kelimeler';
+$lang['ionize_title_modules'] =				'Modül Yönetimi';
 $lang['ionize_title_menu'] = 'Menü yönetimi';
 $lang['ionize_title_documentation'] = 'Dökümantasyon';
 $lang['ionize_title_ionize_settings'] = 'Ionize Arayüzü';
 $lang['ionize_title_help'] = 'Yardım';
-$lang['title_delete_installer'] =			"INSTALL Klasörünü silin";
+$lang['title_delete_installer'] =			'INSTALL Klasörünü silin';
 $lang['title_ionize_installation'] = 		'Ionize Yükleyici';
 
 $lang['ionize_title_site_settings'] = 'Site Ayarları';
@@ -245,7 +248,7 @@ $lang['ionize_label_linkto'] = 'Bağla...';
 $lang['ionize_label_drop_link_here'] = 'bağlantıyı buraya bırak...';
 $lang['ionize_label_drop_page_here'] = 'sayfayı buraya bırak...';
 $lang['ionize_label_drop_article_here'] = 'makaleyi buraya bırak...';
-$lang['ionize_label_remove_link'] = 'Bağlantıyı sil';
+$lang['ionize_label_add_link'] = 'Bağlantıyı Ekle';
 $lang['ionize_label_url'] = 'URL';
 $lang['ionize_label_see_online'] = 'Yayında Gör';
 $lang['ionize_label_flag'] = 'İşaretleyici';
@@ -269,6 +272,7 @@ $lang['ionize_label_article_template'] =		'Makale Görünümü';
 $lang['ionize_label_title'] =		'Başlık';
 $lang['ionize_label_subtitle'] =	'Alt Başlık';
 $lang['ionize_label_meta_title'] =	'Pencere Başlığı'; 
+$lang['ionize_label_nav_title'] = 'Navigasyon başlığı';
 $lang['ionize_label_text'] =		'Metin';
 $lang['ionize_label_content'] =		'İçerik';
 $lang['ionize_label_category'] =	'Kategori';
@@ -303,7 +307,7 @@ $lang['ionize_label_show_options'] = 'Ayarları Göster';
 $lang['ionize_label_copy_to_other_languages'] = 'Diğer dillere kopyala';
 $lang['ionize_help_status'] =			'Yönetici olarak bağlı iseniz, Bağlantıyı sonlandırana kadar bu elementi göreceksiniz';
 $lang['ionize_help_online'] = 'Bu element genel olarak online mı?';
-$lang['ionize_help_online_lang'] =		"Bu dil için bu öğe yayınlansın mı ?";
+$lang['ionize_help_online_lang'] =		'Bu dil için bu öğe yayınlansın mı ?';
 $lang['ionize_help_publish_on'] = 		'Öğeyi belirtilen tarihte yayınla ve görüntülenen öğe tarihiyle değiştir';
 $lang['ionize_help_publish_off'] = 		'Belirtilen tarihte öğeyi yayından kaldır';
 $lang['ionize_help_url'] = 'Element URL\'si';
@@ -320,6 +324,7 @@ $lang['ionize_help_copy_to_other_languages'] = 'Diğer dillere kopyala';
 $lang['ionize_button_save'] =		'Kaydet';
 $lang['ionize_button_save_close'] =	'Kaydet & Kapat';
 $lang['ionize_button_send'] =		'Gönder';
+$lang['ionize_button_add'] = 'Ekle';
 $lang['ionize_button_next'] =		'İleri';
 $lang['ionize_button_delete'] =		'Sil';
 $lang['ionize_button_new'] =		'Yeni';
@@ -351,11 +356,12 @@ $lang['ionize_confirm_element_delete'] =	'Bu elementi kesinlikle silmek istediğ
 $lang['ionize_message_missing_params'] =	'Eksik Ayarlar';
 $lang['ionize_message_operation_ok'] =		'Operasyon Başarılı';
 $lang['ionize_message_operation_nok'] =		'Operasyon Başarısız';
-$lang['ionize_message_delete_installer'] =  'ÖNEMLİ : <br/>Güvenlik nedeniyle, lütfen <b>"/install"</b> klasörünü silin. Ionize bu dosya silinene kadar kullanılabilir olmayacak.';
+$lang['ionize_message_delete_installer'] =  'ÖNEMLİ : <br/>Güvenlik nedeniyle, lütfen <b>\'/install\'</b> klasörünü silin. Ionize bu dosya silinene kadar kullanılabilir olmayacak.';
 $lang['ionize_message_no_circular_link'] = 'Dairesel bağlantıya izin verilmez';
+$lang['ionize_message_link_added'] = 'Bağlantı Eklendi';
 $lang['ionize_message_target_link_not_unique'] = 'Hedef elementin ağaç menüde eşi olmamalıdır!';
-$lang['button_delete_installer_done_admin'] =  	"Tamam! Yönetim Paneline Git";
-$lang['button_delete_installer_done_site'] =  	"Tamam! Ön Sayfaya Git";
+$lang['button_delete_installer_done_admin'] =  	'Tamam! Yönetim Paneline Git';
+$lang['button_delete_installer_done_site'] =  	'Tamam! Ön Sayfaya Git';
 $lang['ionize_message_item_used_by_data_no_delete'] = 'Bu öğe kullanımda ve silinemez';
 $lang['ionize_message_url_not_found'] = 'URL bulunamadı';
 $lang['ionize_message_url_got_404'] = 'Bu URL 404 sayfasına gidiyor';
@@ -370,20 +376,20 @@ $lang['ionize_label_copy_all_content'] = 'Tüm içeriği kopyala';
 $lang['ionize_label_copy_article_content'] = 'İçerdiği makaleler';
 $lang['ionize_label_force_lang_urls'] = 'Force lang in URLs'; //Çevrilecek
 $lang['ionize_title_language'] =			'Dil Yönetimi';
-$lang['ionize_title_existing_languages'] =	"Var Olan Diller";
-$lang['ionize_title_add_language'] =		"Dil Ekle";
+$lang['ionize_title_existing_languages'] =	'Var Olan Diller';
+$lang['ionize_title_add_language'] =		'Dil Ekle';
 $lang['ionize_title_advanced_language'] = 'Gelişmiş fonksiyonlar';
 $lang['ionize_title_lang_urls'] = 'URL ler ve Diller';
-$lang['ionize_message_no_languages'] = 		"<b>Var Olan Dil Yok</b>. <br/> Lütfen Bir Dil Oluşturun.";
-$lang['ionize_message_lang_saved'] = 		"Dil Kaydedildi";
-$lang['ionize_message_lang_not_saved'] = 	"Dil Kaydedilemedi";
-$lang['ionize_message_lang_file_not_saved'] = 	"Hata : config/language.php yazılamıyor";
-$lang['ionize_message_lang_code_already_exists'] = 	"Bu dil kodu zaten kullanılıyor.";
-$lang['ionize_message_lang_not_deleted'] = 	"Dil Silinemedi";
-$lang['ionize_message_lang_deleted'] = 		"Dil Silindi";
-$lang['ionize_message_lang_ordered'] = 		"Diller Sıralandı";
-$lang['ionize_message_lang_not_ordered'] = 	"Diller Sıralanamadı";
-$lang['ionize_message_lang_updated'] = 		"Dil Güncellendi";
+$lang['ionize_message_no_languages'] = 		'<b>Var Olan Dil Yok</b>. <br/> Lütfen Bir Dil Oluşturun.';
+$lang['ionize_message_lang_saved'] = 		'Dil Kaydedildi';
+$lang['ionize_message_lang_not_saved'] = 	'Dil Kaydedilemedi';
+$lang['ionize_message_lang_file_not_saved'] = 	'Hata : config/language.php yazılamıyor';
+$lang['ionize_message_lang_code_already_exists'] = 	'Bu dil kodu zaten kullanılıyor.';
+$lang['ionize_message_lang_not_deleted'] = 	'Dil Silinemedi';
+$lang['ionize_message_lang_deleted'] = 		'Dil Silindi';
+$lang['ionize_message_lang_ordered'] = 		'Diller Sıralandı';
+$lang['ionize_message_lang_not_ordered'] = 	'Diller Sıralanamadı';
+$lang['ionize_message_lang_updated'] = 		'Dil Güncellendi';
 $lang['ionize_notify_advanced_language'] = 'Ne yaptığınızdan eminseniz bu fonksiyonu kullanın.';
 $lang['ionize_button_clean_lang_tables'] = 'Dil tablolarını temizle';
 $lang['ionize_button_copy_content'] = 'İçeriği kopyala';
@@ -407,7 +413,7 @@ $lang['ionize_message_lang_content_copied'] = 'Dil içeriği kopyalama başarıl
 |--------------------------------------------------------------------------
 */
 $lang['ionize_title_users'] =				'Kullanıcı Yönetimi';
-$lang['ionize_title_user_edit'] =			"Kullanıcı Düzenle";
+$lang['ionize_title_user_edit'] =			'Kullanıcı Düzenle';
 $lang['ionize_title_existing_users'] =		'Var Olan Kullanıcı';
 $lang['ionize_title_existing_groups'] = 'Varolan Gruplar';
 $lang['ionize_title_group_edit'] = 'Grup Düzenle';
@@ -441,7 +447,7 @@ $lang['ionize_message_user_not_saved'] = 	'Kullanıcı Güncellenemedi';
 $lang['ionize_message_user_saved'] = 		'Kullanıcı Kaydedildi';
 $lang['ionize_message_user_exists'] = 'Kullanıcı Zaten Veritabanında Mevcut!';
 $lang['ionize_message_user_deleted'] = 		'Kullanıcı Silindi';
-$lang['ionize_message_user_cannot_delete_yourself'] = 	"Kendinizi Silemezsiniz!";
+$lang['ionize_message_user_cannot_delete_yourself'] = 	'Kendinizi Silemezsiniz!';
 $lang['ionize_message_group_updated'] = 'Grup Güncellendi';
 $lang['ionize_message_group_not_saved'] = 'Grup Güncellenemedi';
 $lang['ionize_message_group_saved'] = 'Grup Kaydedildi';
@@ -459,14 +465,17 @@ $lang['ionize_button_export'] =	'Dışarı Aktar';
 
 $lang['ionize_label_site_title'] =			'Site Başlığı';
 $lang['ionize_message_settings_saved'] = 	'Ayarlar Kaydedildi';
-$lang['ionize_title_visual_help'] =	"Görsel Yardım";
-$lang['ionize_label_show_help_tips'] =		"Alanlarda Yardım Görüntüle";
+$lang['ionize_title_visual_help'] =	'Görsel Yardım';
+$lang['ionize_label_show_help_tips'] =		'Alanlarda Yardım Görüntüle';
 $lang['ionize_title_admin_panel_languages'] = 'Yönetim paneli arayüz dili';
 $lang['ionize_title_admin_panel_datetime'] =  'Tarih ve Zaman';
 $lang['ionize_label_display_connected_label'] = 'Bağlı etiket';
 $lang['ionize_help_display_connected_label'] = 'Yönetim paneline giriş yapıldığında internet sitesinin sol üst köşesinde etiket gösterilecek';
+$lang['ionize_onchange_ionize_settings'] = 'Yönetim panelini ayarları kaydettikten sonra sayfa otomatik olarak yenilenecektir.';
 
-$lang['ionize_onchange_ionize_settings'] = 'Yönetim panelini ayarları kaydettikten sonra yenilemeniz gerekiyor (CTRL + R).';
+$lang['ionize_label_sitemaps_gzip'] = 'Site haritasını sıkıştır';
+$lang['ionize_help_setting_sitemaps_gzip'] = 'Site haritası dosyasını gzip ile sıkıştır.';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -481,12 +490,30 @@ $lang['ionize_title_mail_send'] =			'E-posta gönderiliyor';
 $lang['ionize_title_media_management'] =	'Medya Yönetimi';
 $lang['ionize_title_google_analytics'] =	'İstatistikler';
 $lang['ionize_title_thumb_new'] =			'Yeni Küçük Resim';
-$lang['ionize_title_thumbs'] =				"Küçük Resimler";
+
+$lang['ionize_title_thumbs'] =				'Küçük Resimler';
 $lang['ionize_title_thumbs_system'] =		'Ionize sistem küçük resmi';
 $lang['ionize_title_form_antispam_key'] = 'Antispam JS anahtarı';
 $lang['ionize_title_article_management'] = 'Makale Yönetimi';
 $lang['ionize_title_admin_url'] = 'Yönetim Paneli Yolu';
+$lang['ionize_title_encryption_key'] = 'Şifreleme Anahtarı';
+$lang['ionize_title_cache'] = 'Ön Bellek Sistemi';
+$lang['ionize_title_allowed_mimes'] = 'İzin Verilen Dosya Uzantıları';
+$lang['ionize_label_article_allowed_tags'] = 'İzin Verilen Taglar';
+$lang['ionize_title_seo'] = 'SEO';
+$lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
+$lang['ionize_title_sitemap_search_engine'] = 'Sitemap Ping Search Engines';
 
+$lang['ionize_title_maintenance'] = 'Bakım Modu';
+$lang['ionize_title_maintenance_page'] = 'Bakım Sayfası';
+$lang['ionize_label_maintenance'] = 'Bakımda';
+$lang['ionize_label_maintenance_ips'] = 'IPleri kısıtla';
+$lang['ionize_drop_maintenance_page_here'] = 'İstediğiniz bakım sayfasını bırakın...';
+$lang['ionize_label_maintenance_help'] = 'İşaretlendiğinde, internet siteniz bakım mesajını görüntüleyecek. Bakım sırasında Ionize yi kullanabilirsiniz.';
+$lang['ionize_label_maintenance_ips_help'] = 'İnternet sitenizin ön sayfası sadece belirlediğiniz IP ler tarafından görünebilir olacak';
+$lang['ionize_label_your_ip'] = 'IP adresin';
+$lang['ionize_label_maintenance_page_help'] = 'Ionize nin HTML sayfasını düzgün ve doğru oluşturabilmesi için bu sayfanın bakım modunu aktiv etmeden ayarlanması gerekiyor.';
+$lang['ionize_message_maintenance_page_curl_error'] = 'PHP eklentisi "cURL" nin yüklü olması gerekiyor';
 $lang['ionize_label_thumb_automatic'] = 'Otomatik';
 $lang['ionize_label_files_path'] =			'Medya ana dizini';
 $lang['ionize_label_media_type_picture'] =	'Resim Uzantıları';
@@ -506,7 +533,14 @@ $lang['ionize_label_db_pass'] = 			'Şifre';
 $lang['ionize_label_google_analytics'] = 	'Google Analytics';
 $lang['ionize_label_tinybuttons'] = 'TinyMCE Araç Çubuğu';
 $lang['ionize_label_restore_tinybuttons'] = 'TinyMCE varsayılan araç çubuğu';
+$lang['ionize_label_tinybuttons'] = 'TinyMCE Araç Çubuğu';
+$lang['ionize_label_tinyblockformats'] = 'TinyMCE Biçim Seçimi';
+$lang['ionize_label_restore_tinyblockformats'] = 'TinyMCE Varsayılan Biçimi Geri Yükle';
+$lang['ionize_label_ping_url'] = 'URL';
+$lang['ionize_label_sitemap_url'] = 'URL';
 
+$lang['ionize_text_sitemaps_url_list'] = 'Eklenecek URL listesi (satırlarla ayrılması gerekiyor)';
+$lang['ionize_text_ping_url_list'] = 'Eklenecek URL listesi (satırlarla ayrılması gerekiyor)';
 $lang['ionize_label_smtp_protocol'] =		'Protokol';
 $lang['ionize_label_smtp_host'] =			'Host';
 $lang['ionize_label_smtp_user'] =			'Kullcanıcı Adı';
@@ -516,6 +550,10 @@ $lang['ionize_label_email_charset'] =		'Karakter Kodlaması';
 $lang['ionize_label_email_mailtype'] =		'Format';
 $lang['ionize_label_mailpath'] =			'Posta Yolu';
 
+$lang['ionize_label_cache_enabled'] = 'Aktif';
+$lang['ionize_label_cache_expiration'] = 'Süre (dk.)';
+$lang['ionize_label_clear_cache'] = 'Önbelleği Temizle';
+$lang['ionize_button_clear_cache'] = 'Temizle';
 $lang['ionize_label_thumb_dir'] = 			'Dosya';
 $lang['ionize_label_thumb_size'] = 			'Boyut';
 $lang['ionize_label_thumb_sizeref'] = 		'Referans';
@@ -538,7 +576,7 @@ $lang['ionize_title_db_version'] = 			'Veritabanı';
 $lang['ionize_title_php_version'] = 		'PHP';
 
 $lang['ionize_message_database_not_saved'] = 		'Yanlış veritabanı ayarları';
-$lang['ionize_message_database_not_exist'] = 		"Seçili veritabanı mevcut değil";
+$lang['ionize_message_database_not_exist'] = 		'Seçili veritabanı mevcut değil';
 $lang['ionize_message_database_connection_error'] = 'Veritabanı bağlantısı şuanda mümkün değil';
 $lang['ionize_message_database_saved'] = 				'Veritabanı ayarları başarıyla kaydedildi';
 
@@ -560,10 +598,14 @@ $lang['ionize_message_error_writing_database_file'] = 	'/config/database.php yaz
 $lang['ionize_message_error_writing_email_file'] = 		'/config/email.php yazılamıyor !';
 $lang['ionize_message_error_writing_ionize_file'] = 'application/config/ionize.php yazılamıyor !';
 
+$lang['ionize_message_cache_saved'] = 'Önbellek Ayarları Kaydedildi.';
+$lang['ionize_message_cache_cleared'] = 'Önbellek Temizlendi.';
+$lang['ionize_message_urls_saved'] = 'URL ler Kaydedildi';
+$lang['ionize_message_setting_saved'] = 'Ayarlar Kaydedildi';
 
 $lang['ionize_help_setting_google_analytics'] = 'Google Analytics web sitesinden kopyaladığınız script ile analytics işlemini tamamlayın';
-$lang['ionize_help_setting_files_path'] =			"Medya Dosya Yolu Belirtin. Fiziksel dosya adını değiştirmeyin";
-$lang['ionize_help_setting_system_thumb_list'] =	"Küçük resimler ionize resim listesi ve resim düzenleme penceresinde gösterildi";
+$lang['ionize_help_setting_files_path'] =			'Medya Dosya Yolu Belirtin. Fiziksel dosya adını değiştirmeyin';
+$lang['ionize_help_setting_system_thumb_list'] =	'Küçük resimler ionize resim listesi ve resim düzenleme penceresinde gösterildi';
 $lang['ionize_help_setting_media_type_picture'] =	'Uzantılar, noktasız, virgülle ayrılmış';
 $lang['ionize_help_setting_media_type_music'] =		'Uzantılar, noktasız, virgülle ayrılmış';
 $lang['ionize_help_setting_media_type_video'] =		'Uzantılar, noktasız, virgülle ayrılmış';
@@ -572,7 +614,12 @@ $lang['ionize_help_media_thumb_size'] = 'Sistem küçük resim boyutu, pixel ola
 $lang['ionize_help_tinybuttons'] = 'TinyMCE dökümantasyonuna gözat';
 $lang['ionize_help_setting_picture_max_height'] = 'Yükeleme esnasında resim boyutları belirtilen boyutları aşarsa yeniden boyutlandırılır.';
 $lang['ionize_help_setting_picture_max_width'] = 'Yükeleme esnasında resim boyutları belirtilen boyutları aşarsa yeniden boyutlandırılır.';
+$lang['ionize_help_tinyblockformats'] = 'Varsayılan TinyMCE Blok Biçimi (Seç)';
 
+$lang['ionize_help_cache_enabled'] = 'Ön Belleği Aç / Kapat. Ön belleği kapatmak varolan önbeller verilerini temizleyecek.';
+$lang['ionize_help_cache_expiration'] = 'Belirtiğiniz dakika içerisinde sayfalar yeniden önbelleğe alınacak.';
+$lang['ionize_help_clear_cache'] = 'Tüm önbellek dosyalarını sil.';
+$lang['ionize_help_article_allowed_tags'] = 'Makale içeriğinde izin verilen HTML tagları';
 /*
 |--------------------------------------------------------------------------
 | Admin : Temalar
@@ -601,8 +648,9 @@ $lang['ionize_message_view_saved'] =	'Görünüm Kaydedildi';
 $lang['ionize_title_pages'] =					'Sayfalar';
 $lang['ionize_title_create_page'] = 'Sayfa oluştur';
 $lang['ionize_title_new_page'] =				'Sayfa Oluştur';
-$lang['ionize_title_edit_page'] =				"Sayfa Düzenle";
+$lang['ionize_title_edit_page'] =				'Sayfa Düzenle';
 $lang['ionize_title_page_parent'] = 'Ana / Kaynak';
+$lang['ionize_title_sub_navigation'] = 'Alt Navigasyon';
 
 $lang['ionize_title_help_articles_types'] = 'Tipler Hakkında';
 $lang['ionize_label_page_online'] = 'Sayfa yayında';
@@ -616,18 +664,27 @@ $lang['ionize_label_article_list_template'] =	'Görüntü Listesi';
 $lang['ionize_label_page_delete_date'] = 'Sayfa tarih silme';
 $lang['ionize_label_menu'] = 'Menü';
 $lang['ionize_label_home_page'] = 'Ana sayfa';
+$lang['ionize_label_sitemap_priority'] = 'Site Haritasında Öncelik';
+$lang['ionize_label_article_reorder'] = 'Kayıtlı Makaleler';
+$lang['ionize_label_date_asc'] = 'Tarih Artan';
+$lang['ionize_label_date_desc'] = 'Tarih Azalan';
+$lang['ionize_label_no_sub_navigation'] = '-- Hiçbiri --';
 
+
+
+$lang['ionize_button_reorder'] = 'Tekrar Sırala';
 $lang['ionize_select_default_view'] =			'-- Varsayılan Görüntü --';
-$lang['ionize_select_everyone'] =				'-- Herkez --';
+$lang['ionize_select_everyone'] =				'-- Herkes --';
 
 $lang['ionize_message_page_name_exists'] =		'Bu sayfa zaten var!';
 $lang['ionize_message_page_url_exists'] = 'Aynı URL\'ye sahip bir sayfa zaten var !';
 $lang['ionize_message_page_saved'] =			'Sayfa kaydedildi';
 $lang['ionize_message_page_not_saved'] =		'Sayfa kaydedilemedi';
-$lang['ionize_message_page_not_exist'] =		"Sayfa yok";
+$lang['ionize_message_page_not_exist'] =		'Sayfa yok';
 $lang['ionize_message_page_ordered'] =			'Sayfa Sıralandı';
 $lang['ionize_message_page_needs_url_or_title'] = 'Lütfen varsayılan dil için URL yada Başlık giriniz !';
 $lang['ionize_message_drop_only_article'] = 'Lütfen sadece bir makale bırakın!';
+$lang['ionize_message_articles_ordered'] = 'Makaleler Sıralandı !';
 
 $lang['ionize_help_page_online'] =				'Bu sayfa yayındamı?';
 $lang['ionize_help_page_content_online'] = 'Bu sayfa bu dil için yayındamı?';
@@ -636,13 +693,16 @@ $lang['ionize_help_page_link'] = 'İç yada Dış HTTP bağlantısı. Yerine var
 $lang['ionize_help_pagination'] =				'Eğer (if > 0), Sayfalamayı aktive et.';
 $lang['ionize_help_article_list_template'] =	'Eğer sayfada 1 den fala makale varsa, her makale için ayrı görüntüleme kullan';
 $lang['ionize_help_appears'] =					'Sayfa navigasyon menüsünde görünsünmü ?';
-$lang['ionize_help_page_meta'] =				"Boş olmadığında genel site META larını kullan";
+$lang['ionize_help_page_meta'] =				'Boş olmadığında genel site META larını kullan';
 $lang['ionize_help_page_window_title'] =		'Browser pencere başlığı';
+$lang['ionize_help_page_nav_title'] = 'Navigasyon Öğesi (Memü) başlığı';
 $lang['ionize_help_home_page'] = 'Bu sayfa web sitenizin ana sayfasımı ?';
 $lang['ionize_help_add_page_to_menu'] = 'Bu menüye sayfa ekle';
 $lang['ionize_help_page_drop_article_here'] = 'Soldaki ağaç menüden makalenin ismini seçerek taşıyın.';
 $lang['ionize_label_help_articles_types_and_views'] = 'Tipler & Görünümler Hakkında';
 $lang['ionize_label_help_articles_types'] = 'Tipler Hakkında';
+$lang['ionize_label_help_articles_reorder'] = 'Makaleleri tarihe göre sırala. Tarih hesaplaması : Makul yada Yayınlanma veya Oluşturulma.';
+$lang['ionize_help_sitemap_priority'] = 'Sayfa Önceliği, 0 ile 10 arasında olmalıdır';
 
 /*
 |--------------------------------------------------------------------------
@@ -673,10 +733,11 @@ $lang['ionize_label_date'] =				'Tarih';
 $lang['ionize_label_alt'] =					'Alternatif Metin';
 $lang['ionize_label_link'] =				'Bağlantı';
 $lang['ionize_label_description'] =			'Açıklama';
-$lang['ionize_label_reload_media_list'] =	"Medya Listesini Tekrar Yükle";
+$lang['ionize_label_reload_media_list'] =	'Medya Listesini Tekrar Yükle';
 $lang['ionize_label_media_container'] = 'Albüm / Serisi';
+$lang['ionize_label_media_crop_picture'] = 'Resmi Kes';
 
-$lang['ionize_message_please_save_first'] =		"Lütfen medya eklemeden önce kaydedin";
+$lang['ionize_message_please_save_first'] =		'Lütfen medya eklemeden önce kaydedin';
 $lang['ionize_message_media_not_authorized'] =	'Medya türü desteklenmiyor !';
 $lang['ionize_message_media_attached'] =		'Medya Bağlantısı Oluşturuldu';
 $lang['ionize_message_media_detached'] =		'Medya Bağlantısı Kaldırıldı';
@@ -698,15 +759,15 @@ $lang['ionize_message_alt_desc_for_mp3'] = 'Bu medya bir MP3 olduğundan, aşağ
 $lang['ionize_exception_folder_creation'] =		'Klasör oluşturma sırasında hata oluştu';
 $lang['ionize_exception_no_thumbs_settings'] =	'Ayarlar : Küçük resim bulunamadı!';
 $lang['ionize_exception_getimagesize'] =		'PHP : getimagesize fonksiyonu mevcut değil!';
-$lang['ionize_exception_getimagesize_get'] =	"Görüntü boyutunu elde etmek mümkün değil";
+$lang['ionize_exception_getimagesize_get'] =	'Görüntü boyutunu elde etmek mümkün değil';
 $lang['ionize_exception_chmod'] =				'PHP : CHMOD imkansız';
 $lang['ionize_exception_unlink'] =				'PHP : dosya silmek inkansız';
-$lang['ionize_exception_image_resize'] =		"Resim Küt. : Resim boyutlandırma imkansız";
-$lang['ionize_exception_image_crop'] =			"Resim Küt. : Resim kırpma imkansız";
-$lang['ionize_exception_copy'] =				"PHP : Resmi kopyalamak mümkün değil";
-$lang['ionize_exception_no_source_file'] =		"Kaynak dosya bulunamadıs";
-$lang['ionize_exception_memory_limit'] =		"PHP Hafıza limiti aşıldı";
-$lang['ionize_exception_image_lib'] =			"Resim Kütüphanesi Hatası";
+$lang['ionize_exception_image_resize'] =		'Resim Küt. : Resim boyutlandırma imkansız';
+$lang['ionize_exception_image_crop'] =			'Resim Küt. : Resim kırpma imkansız';
+$lang['ionize_exception_copy'] =				'PHP : Resmi kopyalamak mümkün değil';
+$lang['ionize_exception_no_source_file'] =		'Kaynak dosya bulunamadıs';
+$lang['ionize_exception_memory_limit'] =		'PHP Hafıza limiti aşıldı';
+$lang['ionize_exception_image_lib'] =			'Resim Kütüphanesi Hatası';
 
 
 
@@ -720,7 +781,7 @@ $lang['ionize_select_no_parent'] = '-- Yok --';
 $lang['ionize_select_no_category'] =		'-- Yok --';
 
 $lang['ionize_title_create_article'] =		'Yeni Makale';
-$lang['ionize_title_new_article'] =		"Yeni Makale";
+$lang['ionize_title_new_article'] =		'Yeni Makale';
 $lang['ionize_title_edit_article'] = 'Makale Düzenle';
 $lang['ionize_title_comments'] =			'Yorumlar';
 $lang['ionize_title_duplicate_article'] = 'Makaleyi kopyala';
@@ -769,13 +830,15 @@ $lang['ionize_confirm_article_page_unlink'] = 'Makaleden sayfa bağlantısını 
 $lang['ionize_message_article_already_linked_to_page'] = 'Sayfaya makale bağlantısı zaten oluşturulmuş';
 $lang['ionize_message_article_linked_to_page'] = 'Sayfaya makale bağlantısı yapıldı';
 $lang['ionize_message_article_context_saved'] = 'Makale ayarları kaydedildi';
+$lang['ionize_message_article_lang_copied'] = 'Dil verileri kopyalandı. Lütfen Kaydedin !';
+$lang['ionize_message_article_main_parent_saved'] = 'Ana Alt Sayfa kaydedildi !';
 
 // Inline help
 $lang['ionize_help_article_online'] = 'Bu makale yayındamı?';
 $lang['ionize_help_article_content_online'] = 'Bu içerik yayındamı?';
-$lang['ionize_help_indexed'] =				'Eğer İşaretliyse, makale içerisindeki yazı "FULLTEXT" olarak indexlenecek (Arama Motorları için Hazır)';
-$lang['ionize_help_article_link'] =			"HTTP bağlantısı. Bağlantı tagı ile kullanılabilir";
-$lang['ionize_help_articles_types'] =			"Makale Tipi. Makaleleri ayırmak için faydalı bir sayfa görünümü";
+$lang['ionize_help_indexed'] =				'Eğer İşaretliyse, makale içerisindeki yazı FULLTEXT olarak indexlenecek (İç Aramalar İçin Hazır)';
+$lang['ionize_help_article_link'] =			'HTTP bağlantısı. Bağlantı tagı ile kullanılabilir';
+$lang['ionize_help_articles_types'] =			'Makale Tipi. Makaleleri ayırmak için faydalı bir sayfa görünümü';
 $lang['ionize_help_article_window_title'] =		'Tarayıcı Penceresi Başlığı';
 $lang['ionize_help_article_context'] = 'Makele sayfasının kaynak verisini düzenle';
 $lang['ionize_help_missing_translated_content'] = 'Bazı içerik dil çevirileri eksik';
@@ -911,10 +974,29 @@ $lang['ionize_label_module_uninstall'] =	'Kaldır';
 $lang['ionize_label_database_tables'] = 'Tablolar';
 
 $lang['ionize_message_module_install_error_no_config'] =		'Hata : Module without config.xml';
-$lang['ionize_message_module_install_error_config_write'] =		"Yazma Hatası : config/modules.php";
-$lang['ionize_message_module_page_conflict'] =					"Hata : Var Olan Bir URI";
-$lang['ionize_message_module_install_database_error'] =			"Hata : Mödül Tablolarını Yüklemek İmkansız";
+$lang['ionize_message_module_install_error_config_write'] =		'Yazma Hatası : config/modules.php';
+$lang['ionize_message_module_page_conflict'] =					'Hata : Var Olan Bir URI';
+$lang['ionize_message_module_install_database_error'] =			'Hata : Mödül Tablolarını Yüklemek İmkansız';
 $lang['ionize_message_module_saved'] =							'Modül Yüklendi';
 $lang['ionize_message_module_uninstalled'] =					'Modül Kaldırıldı';
 $lang['ionize_message_module_not_installed'] =					'Modül Yüklenemedi !';
 
+
+/*
+|--------------------------------------------------------------------------
+| Admin : System Check
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_title_system_check'] = 'Sistem Denetim Aracı';
+$lang['ionize_menu_sitemap'] = 'Site Haritası';
+$lang['ionize_menu_system_check'] = 'Sistemi Kontrol Et';
+$lang['ionize_text_system_check'] = 'Bu araç Ionize bütünlüğünü ve onarımını kontrol etmek için kullanılır. Bu özelliği kullanarak hiçbirşeyi bozamazsınız.';
+
+$lang['ionize_label_start_system_check'] = 'Kontrolü Başlat';
+$lang['ionize_button_start_system_check'] = 'Kontrolü Başlat';
+$lang['ionize_title_check_lang'] = 'Dilleri Kontrol Et';
+$lang['ionize_title_check_page_level'] = 'Sayfa düzeylerini kontrol et';
+$lang['ionize_title_check_article_context'] = 'Makale bağlamlarını kontrol et';
+
+$lang['ionize_message_check_corrected'] = ' düzeltildi.';
+$lang['ionize_message_check_ok'] = 'Herşey normal.';

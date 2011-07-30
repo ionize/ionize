@@ -1651,6 +1651,9 @@ ION.append({
 		text = text.replace(/ù/g, 'u');
 		text = text.replace(/µ/g, 'u');
 		text = text.replace(/ç/g, 'c');
+		text = text.replace(/ş/g, 's');
+		text = text.replace(/ı/g, 'i');
+		text = text.replace(/ğ/g, 'g');
 
 		var str = '';
 		

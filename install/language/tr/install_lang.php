@@ -4,19 +4,21 @@ $lang = array();
 
 /* General */
 $lang['title_ionize_installation'] = 		'Yükleme';
-$lang['title_step_1'] = 			'Adım 1/5 : Sistem Ayarları Denetimi';
-$lang['title_step_2'] = 			'Adım 2/5 : Veritabanı';
-$lang['title_step_3.1'] = 			'Adım 3/5 : Veritabanı Aktarımı';
-$lang['title_step_3.2'] = 			'Adım 3/5 : Site Ayarları';
-$lang['title_step_4'] = 			'Adım 4/5 : Kullanıcı Ayarları';
-$lang['title_step_5'] = 			'Adım 5/5 : Örnek Verilerin Yüklenmesi';
+$lang['title_system_check'] = 			'Sistem kontrolü sonucu';
+$lang['title_database_settings'] = 			'Veritabanı Ayarları';
+$lang['title_user_account'] = 	'Yönetici hesabı';
+$lang['title_default_language'] = 	'Varsayılan dil';
+$lang['title_sample_data'] = 	'Örnek siteyi yükle?';
 $lang['button_next_step'] = 		'Sonraki Adım';
 $lang['button_skip_next_step'] = 	'Atla & Sonraki Adım';
 $lang['button_save_next_step'] = 	'Kaydet & Sonraki Adıma Git';
 $lang['button_install_test_data'] = 	"Örnek Verileri Yükle";
 $lang['button_start_migrate'] = 		'Veri Tabanı Aktarımını Başlat';
 
-
+$lang['nav_check'] = 'Sistem kontrolü';
+$lang['nav_db'] = 'Veritabanı';
+$lang['nav_settings'] = 'Ayarlar';
+$lang['nav_end'] = 'Son';
 /* System check */
 $lang['php_version'] = 			'PHP >= 5';
 $lang['php_version_found'] = 	'PHP Versiyonu';
@@ -27,7 +29,13 @@ $lang['mcrypt'] = 				'PHP Mcrypt Lib';
 $lang['gd_lib'] = 				'PHP GD Lib';
 $lang['write_config_dir'] = 	'Yazma İzni <b>/config/</b>';
 $lang['write_files'] = 			'Yazma İzni <b>/files/</b>';
+$lang['write_themes'] = 		'<b>/themes/*</b>';
 $lang['config_check_errors'] = 	'Bazı gereksinimler tamam değil.<br/>Lütfen gereksinimleri tamamlayıp tekrar deneyin.';
+$lang['welcome_text'] = 		"<p>Ionize'ye Hoş Geldiniz !<br/>Adımlar Ionize'yi yüklemenize yardımcı olacak.</p>";
+$lang['write_check_text'] = 	"<p>Aşağıdaki dosya ve klasörlerin yazılabilir olması gerekiyor...</p>";
+// $lang['system_check_text'] = 	"<p>Ionize kurulumu için aşağıdaki ayarların yapılmış olması gerekiyor.</p>";
+$lang['title_folder_check'] = 	"Klasörlerin yazılabilir olması gerekiyor";
+$lang['title_files_check'] = 	"Dosyaların yazılabilir olması gerekiyor";
  
 
 /* Database */
@@ -52,8 +60,8 @@ $lang['database_error_coud_not_create_database'] = "Yükleyici Veritabanını Ol
 $lang['database_error_no_ionize_tables'] = 			"Seçtiğiniz Veritabanı Ionize Veritabanı Gibi Görünmemektedir. Lütfen Tekrar Kontrol Ediniz.";
 $lang['database_error_no_users_to_migrate'] = 		"Güncellenecek Kullanıcı Hesabı";
 
+
 $lang['database_migration_from'] = 			'Versiyonundan Güncelle : ';
-$lang['database_no_migration_needed'] = 		'Aktarım gerekmiyor.';
 
 $lang['database_migration_text'] = 		"<p class=\"error\"><b>ÖNEMLİ :</b><br/> Veritabanı güncellenecek.<b><br/>Lütfen Güncellemeden Önce Veritabanınızın Yedeğini Alın.</p>";
 
@@ -68,6 +76,10 @@ $lang['settings_error_missing_lang_name'] = "Dil Adı Zorunludur";
 $lang['settings_error_lang_code_2_chars'] = "Dil Kodu 2 Karakterden Oluşmak Zorundadır. Örnek : \"tr\"";
 $lang['settings_error_write_rights'] = "Yazma İzni <b>/application/config/laguage.php</b> klasörü için yok. Lütfen Bu Dosyanın Yazma Haklarını Kontrol Edin.";
 $lang['settings_error_write_rights_config'] = "Yazma İzni <b>/application/config/config.php</b> klasörü için yok. Lütfen Bu Dosyanın Yazma Haklarını Kontrol Edin.";
+$lang['settings_error_admin_url'] = "Site Yönetim paneli girişi boşluk veya özel karakter olmadan, bir alfanümerik dize Olmalıdır";
+$lang['settings_admin_url_title'] = 		'Yönetim Paneli Yolu';
+$lang['settings_admin_url_text'] = 		'Kesinlikle varsayılanı değiştirmeniz tavsiye edilir.';
+$lang['admin_url'] = 'Yönetim Paneli Yolu';
 
 
 /* User */
