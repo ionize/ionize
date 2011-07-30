@@ -748,14 +748,18 @@ class TagManager_Page extends TagManager
 			{
 				foreach ($articles as $k=>$article)
 				{
-					// Set the article view to the page "article-list" value view.
-					if ($list_view !== FALSE)
+					// Only do this for articles from current page
+					if ($tag->locals->page['id_page'] == $article['id_page'])
 					{
-						$articles[$k]['view'] = $list_view;
-					}
-					else
-					{
-						$articles[$k]['view'] = $tag->locals->page['article_list_view'];
+						// Set the article view to the page "article-list" value view.
+						if ($list_view !== FALSE)
+						{
+							$articles[$k]['view'] = $list_view;
+						}
+						else
+						{
+							$articles[$k]['view'] = $tag->locals->page['article_list_view'];
+						}
 					}
 				}
 			}
