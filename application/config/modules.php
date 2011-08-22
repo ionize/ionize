@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
 $modules = array(
+	'rss' => 'Rss'
 	);
 
 $aliases = array(

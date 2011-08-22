@@ -4,7 +4,7 @@
 
 <div class="span-24">
 
-	<div class="span-14 prepend-1 colborder">
+	<div class="span-14 prepend-1 colborder blog">
 	
 
 		<?php if ('<ion:category field="title" />' != '') :?>
@@ -14,22 +14,23 @@
 		<?php endif; ?>
 
 
-
+		<!-- 
+			We explicitely get the articles which don't have any type set.
+		-->
 		<ion:articles type="">
-
-			<ion:medias type="picture">
 			
-				<img src="<ion:src folder="430" />" />
-			
-			</ion:medias>
-	
-			<ion:title tag="h2" class="pagetitle" />
-
-			<ion:categories separator=", " />
-
-			
-			<ion:content />
-
+			<!-- 
+				In the "Blog" page edition panel of Ionize, we set the views of articles for this page :
+				
+				List view : 	"Blog Post List"
+								This view will be used for the post list or if just aticle is posted
+								
+				Article View : 	"Blog Post"
+								This view will be used for one post single view
+				
+			-->
+			<ion:article />
+		
 		</ion:articles>
 	
 	</div>

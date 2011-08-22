@@ -20,7 +20,7 @@
 
 var Lang = new Hash({
 	
-	<?php foreach($this->lang->language as $key=>$text) :?>'<?= $key ?>': '<?= addslashes($text) ?>',<?php endforeach ;?>
+	<?php foreach($this->lang->language as $key=>$text) :?>'<?= $key ?>': '<?= addslashes(str_replace(array("\r\n", "\r", "\n", "\t"), ' ', $text)) ?>',<?php endforeach ;?>
 
 	'current': '<?= $this->config->item('language_abbr'); ?>',
 	'first': '<?= Settings::get_lang('first') ?>',

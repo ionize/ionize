@@ -41,7 +41,7 @@
 
 			<?php foreach($modules as $uri => $module) :?>
 	
-				<?php if($this->connect->is($module['access_group'])) :?>
+				<?php if(Connect()->is($module['access_group'])) :?>
 				
 					<div class="desktopIcon desktopModuleIcon">
 						<img src="<?= base_url() ?>modules/<?= $module['folder'] ?>/assets/images/icon_48_module.png" />

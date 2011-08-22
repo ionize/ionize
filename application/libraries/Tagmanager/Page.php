@@ -2122,15 +2122,18 @@ class TagManager_Page extends TagManager
 			}
 		}
 
+		
 		// Only returns the URL containing the lang code when languages > 1 or atribute lang set to TRUE
+/*
 		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
 		{
 			$url = $tag->locals->article['lang_url'];
 		}
 		else
 		{
+*/
 			$url = $tag->locals->article['url'];
-		}
+//		}
 
 		// Adds the suffix if defined in /application/config.php
 		if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');

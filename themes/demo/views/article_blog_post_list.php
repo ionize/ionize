@@ -1,11 +1,19 @@
 
 <!-- View used for articles in blog's article list -->
 
-<h4><ion:title /></h4>
+<h2><a href="<ion:url />"><ion:title class="pagetitle" /></a></h2>
 
-<div>
+<ion:medias type="picture">
 
-	<ion:content />
+	<img src="<ion:src folder="540" />" />
 
-</div>
+</ion:medias>
+
+<!-- This article categories -->
+<p class="categories">
+	<ion:translation term="categories" /> : <ion:categories separator=", " />
+</p>
+
+<!-- We limit the display to to first paragraph (first <p></p>) -->
+<ion:content paragraph="1" />
 

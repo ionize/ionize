@@ -295,6 +295,12 @@ div.notice{
 	margin-bottom: 15px;
 }
 
+/* Blog Content */
+.blog h2 {}
+.blog h2 a{
+	text-decoration: none;
+}
+
 /* side-blocks */
 .side-block {
 	margin-bottom:30px;
@@ -347,8 +353,10 @@ input[type="text"], .inputtext, textarea {
     padding: 5px;
     width: 40%;
 }
-input[type="text"]:focus, .inputtext:focus {
+input[type="text"]:focus, .inputtext:focus, textarea:focus {
     background: none repeat scroll 0 0 #fff;
+    padding: 4px;
+    border: 2px solid #DADADA;
 	
 }
 #contactform label{

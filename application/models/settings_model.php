@@ -100,15 +100,18 @@ class Settings_Model extends Base_model
 	{
 		$path = set_realpath(APPPATH.'language/');
 		$lang_dirs = array();
-		
+
 		if ($dirs = scandir($path))
 		{
 			foreach ($dirs as $dir)
 			{
-				$file_path = set_realpath($path.$dir).'admin_lang'.EXT;
+				if (is_dir($path.$dir))
+				{
+					$file_path = set_realpath($path.$dir).'admin_lang'.EXT;
 
-				if (is_file($file_path))
-					$lang_dirs[] = $dir;
+					if (is_file($file_path))
+						$lang_dirs[] = $dir;
+				}
 			}
 		
 //			$callback = create_function('$el', 'return is_file(realpath("'.$path.'$el'.'/admin_lang'.EXT.'"));');

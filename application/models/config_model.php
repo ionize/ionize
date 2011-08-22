@@ -93,14 +93,15 @@ class Config_model extends Base_model
 
 				else if (strtolower($val) == 'false')
 					$val = var_export(FALSE, TRUE);
-				
-				else if (strval(intval($val)) == $val)
-					$val = intval($val);
+
+// Hangs with preg_replace			
+//				else if (strval(intval($val)) == $val)
+//					$val = intval($val);
 				
 				else $val = "'".$val."'";
 			}
 			if ($type == 'boolean') $val = ($val ? var_export(TRUE, TRUE) : var_export(FALSE, TRUE) );
-//trace($type);		
+
 			if ($type == 'array')
 			{
 				$val = preg_replace("/[0-9]+ \=\>/i", '', var_export($val, TRUE));
