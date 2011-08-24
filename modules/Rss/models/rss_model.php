@@ -35,6 +35,9 @@ class Rss_model extends Article_model
 
 		// Add the ID pages filter to the query
 		$this->db->where_in('page_article.id_page', $id_pages);
+		
+		// Check for not empty content
+		$this->db->where($this->lang_table.'.content <>', '');
 
 		$data = parent::get_lang_list(FALSE, $lang);
 		

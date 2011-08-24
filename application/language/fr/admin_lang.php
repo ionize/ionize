@@ -959,6 +959,9 @@ $lang['ionize_help_field_length'] = 'Longueur du champ';
 | Admin : Translations
 |--------------------------------------------------------------------------
 */
+$lang['ionize_tab_current_theme'] = 'Thème utilisé';
+$lang['ionize_tab_modules'] = 'Modules';
+$lang['ionize_text_module_translation_file_exist_for'] = 'Ce module est par défaut traduit pour les langues';
 $lang['ionize_message_language_files_saved'] = 'Traductions enregistrées';
 $lang['ionize_message_language_dir_creation_fail'] = 'Impossible de créer le dossier';
 $lang['ionize_message_language_file_creation_fail'] = 'Impossible de créer le fichier';
@@ -966,6 +969,7 @@ $lang['ionize_label_expand_all'] = 'Développer';
 $lang['ionize_label_collapse_all'] = 'Réduire';
 $lang['ionize_label_add_translation'] = 'Ajouter un terme';
 $lang['ionize_message_delete_translation'] = 'Supprimer cette traduction statique ?';
+$lang['ionize_help_modules_translation'] = 'Traductions statiques des modules.<br/>Ces termes peuvent être utilisés dans vos vues via le tag : <dfn><\ion:translation term="term" /></dfn>.<br/>Si vous voulez remplacer certaines traductions, utilisez les champs de chaque terme.';
 
 
 /*

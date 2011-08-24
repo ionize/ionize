@@ -247,83 +247,73 @@ class Page extends MY_admin
 			// try to get the page with one of the form provided URL
 			$urls = array_values($this->_get_urls());
 			
-			$pages = $this->page_model->get_from_urls($urls, $exclude = $id);
+			// Clear the cache
+			Cache()->clear_cache();
+			
+			// Prepare data before save
+			$this->_prepare_data();
 
-			// If no article ID (means new one) and this article URL already exists in DB : No save 
-			if ( !empty($pages) )
+			// Save Page
+			$saved_id = $this->page_model->save($this->data, $this->lang_data);
+
+			// Correct DB integrity : links URL and names, childrens pages menus
+			if ( ! empty($id) )
 			{
-				$this->error(lang('ionize_message_page_url_exists'));
+				$this->page_model->correct_integrity($this->data, $this->lang_data);
+				
+				// Correct pages levels regarding parents.
+				$this->system_check_model->check_page_level(TRUE);
+			}
+
+			// Save extends fields data
+			$this->extend_field_model->save_data('page', $saved_id, $_POST);
+					
+			// Save linked access groups authorizations
+			// $this->base_model->join_items_keys_to('user_groups', $this->input->post('groups'), 'page', $this->id);
+
+			// Save Home page
+			if ($this->data['home'] == '1')
+			{
+				$this->page_model->update_home_page($saved_id);
+			}
+			
+			// Save the Sitemap
+			$this->structure->build_sitemap();
+
+			// Prepare the Json answer
+			$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get($saved_id));
+
+			$page['menu'] = $this->menu_model->get($page['id_menu']);
+
+			// Remove HTML tags from returned array
+			strip_html($page);
+
+			if ( empty($id))
+			{
+				// Used by JS Tree to detect if page in inserted in tree or not
+				$page['inserted'] = TRUE;
+				
+				$this->callback = array(
+					'fn' => $page['menu']['name'].'Tree.insertElement',
+					'args' => array($page, 'page')
+				);
 			}
 			else
 			{
-				// Clear the cache
-				Cache()->clear_cache();
-				
-				// Prepare data before save
-				$this->_prepare_data();
-	
-				// Save Page
-				$saved_id = $this->page_model->save($this->data, $this->lang_data);
-
-				// Correct DB integrity : links URL and names, childrens pages menus
-				if ( ! empty($id) )
-				{
-					$this->page_model->correct_integrity($this->data, $this->lang_data);
-					
-					// Correct pages levels regarding parents.
-					$this->system_check_model->check_page_level(TRUE);
-				}
-
-				// Save extends fields data
-				$this->extend_field_model->save_data('page', $saved_id, $_POST);
-						
-				// Save linked access groups authorizations
-				// $this->base_model->join_items_keys_to('user_groups', $this->input->post('groups'), 'page', $this->id);
-
-				// Save Home page
-				if ($this->data['home'] == '1')
-				{
-					$this->page_model->update_home_page($saved_id);
-				}
-				
-				// Save the Sitemap
-				$this->structure->build_sitemap();
-
-				// Prepare the Json answer
-				$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get($saved_id));
-
-				$page['menu'] = $this->menu_model->get($page['id_menu']);
-
-				// Remove HTML tags from returned array
-				strip_html($page);
-
-				if ( empty($id))
-				{
-					// Used by JS Tree to detect if page in inserted in tree or not
-					$page['inserted'] = TRUE;
-					
-					$this->callback = array(
-						'fn' => $page['menu']['name'].'Tree.insertElement',
-						'args' => array($page, 'page')
-					);
-				}
-				else
-				{
-					$this->callback = array(
-						'fn' => 'ION.updateTreePage',
-						'args' => $page
-					);
-				}				
-
-				$this->update[] = array(
-					'element' => 'mainPanel',
-					'url' => admin_url() . 'page/edit/'.$saved_id,
-					'title' => lang('ionize_title_edit_page')
+				$this->callback = array(
+					'fn' => 'ION.updateTreePage',
+					'args' => $page
 				);
+			}				
 
-				// Answer
-				$this->success(lang('ionize_message_page_saved'));
-			}
+			$this->update[] = array(
+				'element' => 'mainPanel',
+				'url' => admin_url() . 'page/edit/'.$saved_id,
+				'title' => lang('ionize_title_edit_page')
+			);
+
+			// Answer
+			$this->success(lang('ionize_message_page_saved'));
 		}
 		else
 		{
@@ -819,16 +809,9 @@ class Page extends MY_admin
 		// URLs : Feed the other languages URL with the default one if the URL is missing
 		$urls = $this->_get_urls(TRUE);
 
-		$default_lang_url = $urls[Settings::get_lang('default')];
-		
-		foreach($urls as $lang => $url)
-		{
-			if ($url == '')
-				$urls[$lang] = $default_lang_url;
-		}
 		
 		// Update the page name (not used anymore in the frontend)
-		$this->data['name'] = $default_lang_url;
+		$this->data['name'] = $urls[Settings::get_lang('default')];
 
 
 		// Lang data
@@ -928,6 +911,15 @@ class Page extends MY_admin
 				}
 			}
 		}
+
+		$default_lang_url = $urls[Settings::get_lang('default')];
+		
+		foreach($urls as $lang => $url)
+		{
+			if ($url == '')
+				$urls[$lang] = $default_lang_url;
+		}
+
 		
 		return $urls;
 	}

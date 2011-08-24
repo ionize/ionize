@@ -49,7 +49,7 @@
 						<div class="text_content">
 							
 							<!-- This translation term is a static one the user can easily change in Ionize -->
-							<p><ion:translation term="search_no_results_found" /></p>
+							<p><ion:translation term="module_search_message_no_results" /></p>
 							
 						</div>
 						

@@ -494,6 +494,9 @@ class Base_model extends CI_Model
 	{
 		$data = array();
 		
+		if ( ! is_array($urls))
+			$urls = array_values(array($urls));
+		
 		// Main data select						
 		$this->db->select($this->table.'.*', false);
 		$this->db->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
@@ -519,6 +522,7 @@ class Base_model extends CI_Model
 		
 		return $data;
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -813,6 +817,51 @@ class Base_model extends CI_Model
 	public function set_lang_table($table)
 	{
 		$this->lang_table = $table;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Check all URLs against the articles URLs in DB and correct them if needed
+	 *
+	 */ 
+	function set_unique_urls(&$lang_data, $exclude_id = FALSE)
+	{
+		
+		foreach(Settings::get_languages() as $l)
+		{
+			$lang_data[$l['lang']]['url'] = $this->_set_unique_url($lang_data[$l['lang']]['url'], $exclude_id);
+		}
+
+	}
+	
+
+	// ------------------------------------------------------------------------
+
+
+	function _set_unique_url($url, $exclude_id, $id=1)
+	{
+
+		$articles = $this->get_from_urls($url, $exclude_id);
+		
+		if ( ! empty($articles))
+		{
+			// Remove the existing last number
+			if ($id > 1)
+				$url = substr($url,0,-2);
+			
+			// Add the last ID
+			$url = $url . '-' . $id;
+			
+			// Check the new URL
+			return $this->_set_unique_url($url, $exclude_id, $id+1);
+		}
+		else
+		{
+			return $url;
+		}
 	}
 
 

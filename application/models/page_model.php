@@ -92,6 +92,10 @@ class Page_model extends Base_model
 			$data['updated'] = date('Y-m-d H:i:s');			
 		}
 
+		// Be sure URLs are unique
+		$this->set_unique_urls($lang_data, $data['id_page']);
+
+
 		// Clean metas data
 		foreach($lang_data as $lang => $row)
 		{

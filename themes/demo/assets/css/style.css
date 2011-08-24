@@ -75,7 +75,7 @@ h5 { font-size: 16px;}
 /* Header + Logo 
  -------------------------------- */
 #header {
-	padding-top:50px;
+	padding-top:20px;
 	padding-bottom:30px;
 	height: 70px;
 }
@@ -85,10 +85,13 @@ h5 { font-size: 16px;}
 #header ul.icons{margin:0px 0 0 0 ; padding:0; list-style-type:none; float:right; }
 #header ul.icons li{padding:0 2px !important; border:0 !important; display:inline}
 
+#header .searchform{
+	padding-top:30px;
+}
 
 #logo {
 	width:300px;
-	height:40px;
+	height:80px;
 	float:left;
 	position:relative
 }
@@ -102,16 +105,14 @@ h5 { font-size: 16px;}
 	background:url(../images/logo.png) no-repeat 0 0;
 	text-indent:-9999em;
 	width:350px;
-	height:40px;
+	height:80px;
 	position:absolute;
 	top:0;
 	left:0;
 	z-index:2
 }
 
-#logo a:hover {
-	background:url(../images/logo.png) no-repeat 0 -40px
-}
+
 
 
 /* Navigation 
@@ -353,12 +354,14 @@ input[type="text"], .inputtext, textarea {
     padding: 5px;
     width: 40%;
 }
+/*
 input[type="text"]:focus, .inputtext:focus, textarea:focus {
     background: none repeat scroll 0 0 #fff;
     padding: 4px;
     border: 2px solid #DADADA;
 	
 }
+*/
 #contactform label{
     display: block;
     float: left;
@@ -377,7 +380,12 @@ input[type="text"]:focus, .inputtext:focus, textarea:focus {
     vertical-align: top;
     width: 80%;
 }
-
+#contactform input:focus,
+#contactform textarea:focus {
+    padding: 7px 4px;
+    border: 2px solid #DADADA;
+    background: none repeat scroll 0 0 #fff;
+}
 #contactform .button {
     background-image: url("../images/bg-button.gif");
     background-repeat: repeat-x;
@@ -401,6 +409,8 @@ input[type="text"]:focus, .inputtext:focus, textarea:focus {
 	padding:0px 10px;
 	margin-bottom: 6px;
 	font-size:11px;
+}
+.singleinput input:focus{ 
 }
 .singleinput .button_src{
 	background:url(../images/but_submit.gif) no-repeat 0px 3px; 

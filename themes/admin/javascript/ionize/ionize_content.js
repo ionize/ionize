@@ -242,7 +242,7 @@ ION.append({
 			{
 				this.fx.toggle();
 				this.toggleClass('expand');
-				this.getParent('li').toggleClass('highlight');				// Not tip top
+				this.getParent().toggleClass('highlight');				// Not tip top
 			});
 		}
 	},

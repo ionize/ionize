@@ -321,106 +321,89 @@ class Article extends MY_admin
 
 			$id_article = $this->input->post('id_article');
 			
-			// Check the articles URL (all Urls)
-			// 1. Try to get the page with one of the form provided URL
-			$urls = array_values($this->_get_urls());
+			// Prepare data before saving
+			$this->_prepare_data();
 
-			// 2. Get the list of all articles having the same URLs
-			$articles = $this->article_model->get_from_urls($urls, $exclude = $id_article);
+			// Saves article to DB and get the saved ID
+			$this->id = $this->article_model->save($this->data, $this->lang_data);
 
-			// If no article ID (means new one) and this article URL already exists in DB : No save 
-			if ( !empty($articles) )
+			// Link to page
+			if ( ! empty($this->data['id_page']))
 			{
-				$message = lang('ionize_message_article_url_exists');
-				$this->error($message);
+				$this->data['online'] = $this->input->post('online');
+				$this->data['main_parent'] = $this->input->post('main_parent');
+				$this->article_model->link_to_page($this->data['id_page'], $this->id, $this->data);
 			}
-			// else, save...
 			else
+				$this->data['id_page'] = '0';				
+
+			// Correct DB integrity : Links IDs
+			if ( ! empty($id_article) )
+				$this->article_model->correct_integrity($this->data, $this->lang_data);
+				
+			// Saves linked categories
+			$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $this->id);
+
+			// Saves tags
+			$this->tag_model->save_tags($this->input->post('tags'), 'article', $this->id);
+
+			// Save extend fields data
+			$this->extend_field_model->save_data('article', $this->id, $_POST);
+
+			
+			/* 
+			 * JSON Answer
+			 *
+			 * Updates the structure tree
+			 * The data var is merged to the default lang data_lang var,
+			 * in order to send the lang values to the browser without making another SQL request
+			 */
+			
+			// Get the context info
+			$context = $this->article_model->get_context($this->id, $this->data['id_page'], Settings::get_lang('default'));
+			$this->data = array_merge($this->data, $context);
+			
+			
+			// Remove HTML tags from returned array
+			strip_html($this->data);
+			
+			
+			// Insert Case
+			if ( empty($id_article) )
 			{
-				// Prepare data before saving
-				$this->_prepare_data();
-
-				// Saves article to DB and get the saved ID
-				$this->id = $this->article_model->save($this->data, $this->lang_data);
-
-				// Link to page
-				if ( ! empty($this->data['id_page']))
+				$menu = $this->menu_model->get_from_page($this->data['id_page']);
+				$this->data['menu'] = $menu;
+				
+				// Used by JS Tree to detect if article in inserted in tree or not
+				$this->data['inserted'] = TRUE;
+				
+				// Insert article to tree if menu is found (for id_page = 0, no one is found)
+				if (!empty($menu))
 				{
-					$this->data['online'] = $this->input->post('online');
-					$this->data['main_parent'] = $this->input->post('main_parent');
-					$this->article_model->link_to_page($this->data['id_page'], $this->id, $this->data);
+					$this->callback[] = array(
+						'fn' => $menu['name'].'Tree.insertElement',
+						'args' => array($this->data, 'article')
+					);
 				}
-				else
-					$this->data['id_page'] = '0';				
-
-				// Correct DB integrity : Links IDs
-				if ( ! empty($id_article) )
-					$this->article_model->correct_integrity($this->data, $this->lang_data);
-
-				// Saves linked categories
-				$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $this->id);
-
-				// Saves tags
-				$this->tag_model->save_tags($this->input->post('tags'), 'article', $this->id);
-
-				// Save extend fields data
-				$this->extend_field_model->save_data('article', $this->id, $_POST);
-
-				
-				/* 
-				 * JSON Answer
-				 *
-				 * Updates the structure tree
-				 * The data var is merged to the default lang data_lang var,
-				 * in order to send the lang values to the browser without making another SQL request
-				 */
-				
-				// Get the context info
-				$context = $this->article_model->get_context($this->id, $this->data['id_page'], Settings::get_lang('default'));
-				$this->data = array_merge($this->data, $context);
-				
-				
-				// Remove HTML tags from returned array
-				strip_html($this->data);
-				
-				
-				// Insert Case
-				if ( empty($id_article) )
-				{
-					$menu = $this->menu_model->get_from_page($this->data['id_page']);
-					$this->data['menu'] = $menu;
-					
-					// Used by JS Tree to detect if article in inserted in tree or not
-					$this->data['inserted'] = TRUE;
-					
-					// Insert article to tree if menu is found (for id_page = 0, no one is found)
-					if (!empty($menu))
-					{
-						$this->callback[] = array(
-							'fn' => $menu['name'].'Tree.insertElement',
-							'args' => array($this->data, 'article')
-						);
-					}
-				}
-				
-				// Reloads the article
-				$this->callback[] = array(
-					'fn' => 'ION.updateElement',
-					'args' => array(
-						'element'=> 'mainPanel',
-						'url' => 'article/edit/' .$this->data['id_page'].'.'.$this->id
-					)
-				);
-				
-				// Success Message
-				$this->callback[] = array(
-					'fn' => 'ION.notification',
-					'args' => array('success', lang('ionize_message_article_saved'))
-				);
-				
-				// Context update
-				$this->update_contexts($this->data['id_article']);
 			}
+			
+			// Reloads the article
+			$this->callback[] = array(
+				'fn' => 'ION.updateElement',
+				'args' => array(
+					'element'=> 'mainPanel',
+					'url' => 'article/edit/' .$this->data['id_page'].'.'.$this->id
+				)
+			);
+			
+			// Success Message
+			$this->callback[] = array(
+				'fn' => 'ION.notification',
+				'args' => array('success', lang('ionize_message_article_saved'))
+			);
+			
+			// Context update
+			$this->update_contexts($this->data['id_article']);
 		}
 		else
 		{
@@ -783,7 +766,6 @@ class Article extends MY_admin
 				'args' => array('success', lang('ionize_message_article_main_parent_saved'))
 			);
 			$this->response();
-//			$this->update_contexts($data['id_article']);
 		}
 		else
 		{
@@ -894,10 +876,6 @@ class Article extends MY_admin
 				
 				// Context update
 				$this->update_contexts($id_article);
-			}
-			else
-			{
-//				$this->error(lang('ionize_message_article_already_linked_to_page'));
 			}
 		}
 	}
@@ -1496,13 +1474,15 @@ class Article extends MY_admin
 		// URLs : Feed the other languages URL with the default one if the URL is missing
 		$urls = $this->_get_urls(TRUE);
 
+/*
 		$default_lang_url = $urls[Settings::get_lang('default')];
 		
 		foreach($urls as $lang => $url)
 			if ($url == '')	$urls[$lang] = $default_lang_url;
-		
+*/		
+
 		// Update the page name (not used anymore in the frontend, but used in the backend)
-		$this->data['name'] = $default_lang_url;
+		$this->data['name'] = $urls[Settings::get_lang('default')];
 
 
 		/*
@@ -1519,22 +1499,13 @@ class Article extends MY_admin
 			{
 				if ( $field != 'url' && $this->input->post($field.'_'.$language['lang']) !== false)
 				{
-					// Avoid or not security XSS filter
-//					if ( ! in_array($field, $this->no_xss_filter))
-						$content = $this->input->post($field.'_'.$language['lang']);
-//					else
-//						$content = stripslashes($_REQUEST[$field.'_'.$language['lang']]);
-
-					// Convert HTML special char only on other fields than these defined in $no_htmlspecialchars
-//					if ( ! in_array($field, $this->no_htmlspecialchars))
-//						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
+					$content = $this->input->post($field.'_'.$language['lang']);
 					
 					// Allowed tags filter
 					$allowed_tags = explode(',', Settings::get('article_allowed_tags'));
 					$allowed_tags = '<' . implode('>,<', $allowed_tags ) . '>';
 					$content = strip_tags($content, $allowed_tags);
 
-						
 					$this->lang_data[$language['lang']][$field] = $content;
 				}
 				// URL : Fill with the correct URLs array data
@@ -1547,6 +1518,7 @@ class Article extends MY_admin
 			// Online value
 			$this->lang_data[$language['lang']]['online'] = $this->input->post('online_'.$language['lang']);
 		}
+
 	}
 
 
@@ -1661,8 +1633,14 @@ class Article extends MY_admin
 			}
 		}
 		
+		// Fill in potential empty URLs		
+		foreach($urls as $lang => $url)
+			if ($url == '')	$urls[$lang] = $urls[Settings::get_lang('default')];
+		
 		return $urls;
 	}
+	
+	
 }
 
 

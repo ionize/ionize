@@ -960,13 +960,19 @@ $lang['ionize_help_field_length'] = 'Field length';
 | Admin : Translations
 |--------------------------------------------------------------------------
 */
+$lang['ionize_tab_current_theme'] = 'Current theme';
+$lang['ionize_tab_modules'] = 'Modules';
+$lang['ionize_text_module_translation_file_exist_for'] = 'This module has default languages files for';
 $lang['ionize_message_language_files_saved'] = 'Translations saved';
 $lang['ionize_message_language_dir_creation_fail'] = 'Folder creation impossible';
 $lang['ionize_message_language_file_creation_fail'] = 'File writing impossible';
+
 $lang['ionize_label_expand_all'] = 'Expand all';
 $lang['ionize_label_collapse_all'] = 'Collapse all';
 $lang['ionize_label_add_translation'] = 'Add a translated item';
 $lang['ionize_message_delete_translation'] = 'Delete this translation item?';
+$lang['ionize_help_modules_translation'] = 'Available static translations for modules.<br/>These terms can be used in your theme views through <dfn><\ion:translation term="term" /></dfn>.<br/>If you want to overwrite some of them, add your translation in each term textarea.';
+				
 
 
 /*

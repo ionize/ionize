@@ -32,7 +32,8 @@ class Translation extends MY_admin
 		'% Lang.get\(([- \w:\']+?)\)%'
 	);
 
-
+	private $modules_terms = NULL;
+	
 
 	/**
 	 * Constructor
@@ -56,22 +57,32 @@ class Translation extends MY_admin
 		// All terms
 		$this->template['terms'] = $terms = array();
 
-		// Get the already translated items from languages files
-		$translated_items = $this->_get_translated_items();
-
 		// Get terms from views files
-		$views_terms = $this->_get_terms_from_views();
+		$theme_terms = $this->_get_terms_from_theme();
 
-		if ( ! empty($views_terms['term']))
+		// Get translated items from theme languages files
+		$theme_translations = $this->_get_theme_translations();
+		
+		// Get terms form installed modules
+		$modules_terms = $this->_get_terms_from_modules();
+		
+		// Get translations for installed languages
+		$module_translations = $this->_get_modules_translations();
+		
+		// Get, for each module, the lang codes for which a default translation file exists
+		$module_translation_files = $this->_get_modules_translation_files();
+		
+
+		if ( ! empty($theme_terms['term']))
 		{
-			$terms = array_fill_keys($views_terms['term'],'');
+			$terms = array_fill_keys($theme_terms['term'],'');
 		}
 
 		// Add terms from lang file to the terms in views
-		if ( ! empty($translated_items[Settings::get_lang('default')]))
+		if ( ! empty($theme_translations[Settings::get_lang('default')]))
 		{
 			// Simple array of all terms
-			$terms = array_keys(array_merge($terms, $translated_items[Settings::get_lang('default')]));
+			$terms = array_keys(array_merge($terms, $theme_translations[Settings::get_lang('default')]));
 		}
 		else
 		{
@@ -83,30 +94,34 @@ class Translation extends MY_admin
 
 		if ( ! empty($terms))
 		{
-	
 			foreach(Settings::get_languages() as $language)
 			{
 				$lang = $language['lang'];
 				
 				// Merge
-				if ( ! empty($translated_items[$lang]))
-					$translated_items[$lang] = array_merge($terms, $translated_items[$lang]);
+				if ( ! empty($theme_translations[$lang]))
+					$theme_translations[$lang] = array_merge($terms, $theme_translations[$lang]);
 				
 				foreach($terms as $term)
 				{
-					if ( ! empty($translated_items[$lang][$term]))
-						$translated_items[$lang][$term] = stripslashes($translated_items[$lang][$term]);
+					if ( ! empty($theme_translations[$lang][$term]))
+						$theme_translations[$lang][$term] = stripslashes($theme_translations[$lang][$term]);
 					else
-						$translated_items[$lang][$term] = '';						
+						$theme_translations[$lang][$term] = '';						
 				}
 			}
 		}
 
+
 		$this->template['terms'] = $terms;
 		
-		$this->template['views_terms'] = $views_terms;
-				
-		$this->template['translated_items'] = $translated_items;
+		$this->template['theme_terms'] = $theme_terms;
+		$this->template['theme_translations'] = $theme_translations;
+
+		$this->template['modules_terms'] = $modules_terms;
+		$this->template['module_translations'] = $module_translations;
+		$this->template['module_translation_files'] = $module_translation_files;
+
 		
 		$this->output('translation');
 	}
@@ -122,6 +137,8 @@ class Translation extends MY_admin
 	{
 		// Clear the cache
 		Cache()->clear_cache();
+
+		$file_name = strtolower($this->input->post('file_name'));
 
 		foreach(Settings::get_languages() as $language)
 		{
@@ -155,7 +172,85 @@ class Translation extends MY_admin
 					{
 						$value = $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)];
 						
-						if (!get_magic_quotes_gpc())
+						if ( ! get_magic_quotes_gpc())
+						{
+							$value = addslashes($value);
+						}
+						$value = str_replace("\'", "'", $value);
+						
+						$data .= "\$lang['".$term."'] = \"".$value."\";\n"; 
+					}
+				}
+			}
+			
+			// Finish the file data
+			$data .= "\n".'?'.'>';
+
+			// Try writing the language file
+			try
+			{
+				write_file($path.'/'.$file_name.'_lang.php', $data);
+			}
+			catch (Exception $e) {
+				$this->error(lang('ionize_message_language_file_creation_fail'));
+			}			
+		}
+
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'translation',
+			'title' => lang('ionize_title_translation')
+		);
+
+		
+		// If method arrives here, everything was OK
+		$this->success(lang('ionize_message_language_files_saved'));
+	}
+	
+	
+	// ------------------------------------------------------------------------
+
+	
+	function save_module_translations()
+	{
+		// Clear the cache
+		Cache()->clear_cache();
+
+		$module = $this->input->post('module');
+		
+		foreach(Settings::get_languages() as $language)
+		{
+			$lang = $language['lang'];
+
+			// Creates the lang folder if it doesn't exists
+			$path = FCPATH.'themes/'.Settings::get('theme').'/language/'.$lang;
+
+			if ( ! is_dir($path) )
+			{
+				try {	
+					@mkdir($path, 0777, TRUE);
+				}
+				catch (Exception $e) {
+					$this->error(lang('ionize_message_language_dir_creation_fail'));
+				}
+			}
+
+			// Build the file data
+			$data  = "<?php\n\n";
+
+			foreach($_REQUEST as $key => $value)
+			{
+				if (substr($key, 0, 3) == 'key')
+				{
+					$idx = substr($key,4);
+					
+					$term = $_REQUEST[$key];
+					
+					if ($term != '')
+					{
+						$value = $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)];
+						
+						if ( ! get_magic_quotes_gpc())
 						{
 							$value = addslashes($value);
 						}
@@ -183,13 +278,13 @@ class Translation extends MY_admin
 			'url' => admin_url() . 'translation',
 			'title' => lang('ionize_title_translation')
 		);
-
 		
 		// If method arrives here, everything was OK
 		$this->success(lang('ionize_message_language_files_saved'));
+	
 	}
-
-
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -198,8 +293,7 @@ class Translation extends MY_admin
 	 * 
 	 * @return array	A simple array of unique items to translate, used for saving
 	 *
-	 */
-	function _get_items()
+	function _get_terms()
 	{
 		// File helper
 		$this->load->helper('file');
@@ -237,6 +331,7 @@ class Translation extends MY_admin
 		
 		return $items;
 	}
+	 */
 	
 	
 	// ------------------------------------------------------------------------
@@ -248,14 +343,14 @@ class Translation extends MY_admin
 	 *
 	 * @return	array	Items to translate, by view
 	 * 					Array(
-	 *						'terms' => terms to translate,
+	 *						'term' => terms to translate,
 	 *						'views' => array(
 	 *									term => views list
 	 *						)
 	 *					)
 	 *
 	 */
-	function _get_terms_from_views()
+	function _get_terms_from_theme()
 	{
 		// File helper
 		$this->load->helper('file');
@@ -268,7 +363,16 @@ class Translation extends MY_admin
 			'term' => array(),		// array of terms and their translations
 			'views' => array()		// array of view in which each term appears, key : term
 		);
-
+		
+		// Get the modules term as a flat array of terms
+		$modules_data = $this->_get_terms_from_modules();
+		$modules_terms = array();
+		foreach($modules_data as $module => $terms)
+		{
+			$modules_terms = array_merge($modules_terms, array_values($terms));
+		}
+		
+		
 		// Only do something if dir exists !
 		if (is_dir($path))
 		{
@@ -289,13 +393,17 @@ class Translation extends MY_admin
 						{
 							foreach($matches[1] as $term)
 							{
-								// Add the view to the term view list
-								if ( ! isset($items['views'][$term]) || ! in_array($file->getFilename(), $items['views'][$term]))
-									$items['views'][$term][] = $file->getFilename();
-	
-								// Add the term to the term array
-								if (!in_array($term, $items['term']))
-									$items['term'][] = $term;
+								// Only add the term if it is not a module one
+								if ( ! in_array($term, $modules_terms))
+								{
+									// Add the view to the term view list
+									if ( ! isset($items['views'][$term]) || ! in_array($file->getFilename(), $items['views'][$term]))
+										$items['views'][$term][] = $file->getFilename();
+		
+									// Add the term to the term array
+									if ( ! in_array($term, $items['term']))
+										$items['term'][] = $term;
+								}
 							}
 						}
 					}
@@ -307,12 +415,138 @@ class Translation extends MY_admin
 			{
 				$items['views'][$term] = implode(', ', $views);
 			}
+			
 		}
 		
 		return $items;
 	}
+	
+	
+	/**
+	 * Get the array of items to translate, per module
+	 *
+	 * @notice	The english translation file is the reference 
+	 *			and MUST exist for each module
+	 *
+	 * @return	array	Items to translate, by view
+	 * 					Array(
+	 *						<module_name> => Array (<terms to translate>)
+	 *					)
+	 *
+	 */
+	function _get_terms_from_modules()
+	{
+		if ( ! is_null($this->modules_terms))
+		{
+			return $this->modules_terms;
+		}
+		
+		$items = array();
+		
+		// Installed Modules : includes the $modules var
+		require(APPPATH.'config/modules.php');
+		
+		// Sort modules by name
+		natcasesort($modules);
 
+		// Modules languages files : Including. Can be empty
+		foreach($modules as $module)
+		{
+			$file = MODPATH.$module.'/language/en/'.strtolower($module).'_lang.php';
+			
+			// Include the $lang var of the translation file
+			if (is_file($file))
+			{
+				include($file);
+	
+				if (isset($lang))
+				{
+					$items[$module] = array_keys($lang);
+					
+					unset($lang);
+				}
+			}
+		}
 
+		return $items;
+
+	}
+	
+		
+	/**
+	 * Returns Modules translations
+	 *
+	 * @return	array	Modules translation, by module
+	 * 					Array(
+	 *						<module_name> => Array (
+	 *							<term> => Array (
+	 *								<lang_code> => Array (
+	 *									'default' => <translation>
+	 *									'theme' => <translation>
+	 *								)
+	 *							)
+	 *						)
+	 *					)
+	 */
+	function _get_modules_translations()
+	{
+		// Theme views folder
+		$theme_path = FCPATH.'themes/'.Settings::get('theme').'/language/';
+
+		$modules_data = $this->_get_terms_from_modules();
+
+		$items = array();
+
+		foreach($modules_data as $module => $terms)
+		{
+			$items[$module] = array();
+			
+			// Try to get the module translation file
+			foreach(Settings::get_languages() as $language)
+			{
+				// Init the translations arrays for this lang
+				$theme_lang = $module_lang = array();
+
+				// Default translation file for this language (if exists)
+				$module_file = MODPATH.$module.'/language/'.$language['lang'].'/'.strtolower($module).'_lang.php';
+				
+				// Theme translation file for this module
+				$theme_file = $theme_path.$language['lang'].'/module_'.strtolower($module).'_lang.php';
+				
+				// Feed $module_lang and theme_lang
+				if (is_file($module_file))
+				{
+					// Get the module $lang var
+					include($module_file);
+					$module_lang = $lang;
+					unset($lang);
+				}
+				if (is_file($theme_file))
+				{
+					// Get the theme $lang var
+					include($theme_file);
+					$theme_lang = $lang;
+					unset($lang);
+				}
+			
+				
+				// Build the $items array
+				foreach($terms as $term)
+				{
+					$items[$module][$term][$language['lang']] = array
+					(
+						'default' => (!empty($module_lang[$term])) ? $module_lang[$term] : '',
+						'theme' => (!empty($theme_lang[$term])) ? $theme_lang[$term] : ''
+					);
+				}
+			}
+		}
+		
+		return $items;
+	}
+	
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -320,8 +554,9 @@ class Translation extends MY_admin
 	 * Gets already translated items from language files
 	 *
 	 * @return	array	Array of already translated terms
+	 *
 	 */
-	function _get_translated_items()
+	function _get_theme_translations()
 	{
 		$items = array();
 	
@@ -329,11 +564,6 @@ class Translation extends MY_admin
 
 		// Theme folder
 		$path = FCPATH.'themes/'.Settings::get('theme');
-
-		// Modules
-//		require(APPPATH.'config/modules.php');
-//		$installed_modules = $modules;
-
 
 
 		// Read the template language directory
@@ -343,14 +573,12 @@ class Translation extends MY_admin
 			$lang_code = $language['lang'];
 			$items[$lang_code] = array();
 			
-			// Translation file name. look like [theme_name]_lang.php
+			// Translation file name. Named [theme_name]_lang.php
 			$file = $path.'/language/'.$lang_code.'/'.Settings::get('theme').'_lang.php';
 
 			// Include the file if it exists
 			if (file_exists($file))
 			{
-//				array_push($lang_files, $file);
-						
 				include($file);
 
 				if (isset($lang))
@@ -359,33 +587,41 @@ class Translation extends MY_admin
 					
 					unset($lang);
 				}
-
 			}
-			// Modules languages files : Including. Can be empty
-/*			foreach($installed_modules as $module)
-			{
-				$lang_file = MODPATH.$module.'/language/'.$lang_code.'/'.strtolower($module).'_lang.php';
-				array_push($lang_files, $lang_file);
-			}
-trace($lang_files);		
-			foreach($lang_files as $l)
-			{
-				if (is_file($l) && '.'.end(explode('.', $l)) == EXT )
-				{
-					include $l;
-					if ( ! empty($lang))
-					{
-						$items[$lang_code] = array_merge($items[$lang_code], $lang);
-						unset($lang);
-					}
-				}
-			}
-*/			
-						
 		}
 		return $items;
 	}	
+	
+	
+	function _get_modules_translation_files()
+	{
+		$data = array();
+		
+		// Installed Modules : includes the $modules var
+		require(APPPATH.'config/modules.php');
+		
+		// Sort modules by name
+		natcasesort($modules);
 
+		// Modules languages files : Including. Can be empty
+		foreach($modules as $module)
+		{
+			$paths = glob(MODPATH.$module.'/language/*/');
+			
+			foreach($paths as $path)
+			{
+				if (is_file($path.strtolower($module).'_lang'.EXT))
+				{
+					$path = substr($path, 0, -1);
+					$data[$module][] = array_pop(explode('/', $path));
+				}
+				
+			}
+		}
+
+		return $data;
+	}
+	
 }
 
 /* End of file translation.php */

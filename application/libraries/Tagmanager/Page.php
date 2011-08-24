@@ -2495,7 +2495,7 @@ class TagManager_Page extends TagManager
 		$uri_config = array_flip($uri_config);
 		$archive_uri = $uri_config['archives'];
 		
-		if (self::$uri_segments[1] == $archive_uri)
+		if (isset(self::$uri_segments[1]) && self::$uri_segments[1] == $archive_uri)
 		{
 			$timestamp = '';
 			if ($year != '' && $month !='')

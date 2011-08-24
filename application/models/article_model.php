@@ -102,7 +102,6 @@ class Article_model extends Base_model
 	 * @param	string	Lang code. Optional
 	 * @return	array	Data array
 	 *
-	 */
 	function get($where, $lang = NULL) 
 	{
 		$data = parent::get($where, $lang);
@@ -114,6 +113,7 @@ class Article_model extends Base_model
 		}
 		return $data;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -425,7 +425,48 @@ class Article_model extends Base_model
 		
 		return $data;
 	}
+	
 
+	// ------------------------------------------------------------------------
+
+	
+	/**
+	 * Check all URLs against the articles URLs in DB and correct them if needed
+	 *
+	function set_unique_urls(&$data_lang, $exclude_id = FALSE)
+	{
+		
+		foreach(Settings::get_languages() as $l)
+		{
+			$data_lang[$l['lang']]['url'] = $this->_set_unique_url($data_lang[$l['lang']]['url'], $exclude_id);
+		}
+
+	}
+	
+	function _set_unique_url($url, $exclude_id, $id=1)
+	{
+
+		$articles = $this->article_model->get_from_urls($url, $exclude_id);
+		
+		if ( ! empty($articles))
+		{
+			// Remove the existing last number
+			if ($id > 1)
+				$url = substr($url,0,-2);
+			
+			// Add the last ID
+			$url = $url . '-' . $id;
+			
+			// Check the new URL
+			return $this->_set_unique_url($url, $exclude_id, $id+1);
+		}
+		else
+		{
+			return $url;
+		}
+	}
+	
+	 */ 
 
 	// ------------------------------------------------------------------------
 
@@ -572,7 +613,7 @@ class Article_model extends Base_model
 	 * @return	int		Articles saved ID
 	 *
 	 */
-	function save($data, $dataLang) 
+	function save($data, $lang_data) 
 	{
 		// New article : Created field
 		if( ! $data['id_article'] )
@@ -581,6 +622,10 @@ class Article_model extends Base_model
 		else
 			$data['updated'] = date('Y-m-d H:i:s');
 
+		// Be sure URLs are unique
+		$this->set_unique_urls($lang_data, $data['id_article']);
+		
+	
 		// Dates
 		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on']) : '0000-00-00';
 		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off']) : '0000-00-00';
@@ -589,7 +634,7 @@ class Article_model extends Base_model
 			
 
 		// Article saving
-		return parent::save($data, $dataLang);
+		return parent::save($data, $lang_data);
 	}
 
 
@@ -778,7 +823,8 @@ class Article_model extends Base_model
 	 
 
 	// ------------------------------------------------------------------------
-
+	
+	
 	/**
 	 * Duplicates one article
 	 *
