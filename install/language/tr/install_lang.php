@@ -19,6 +19,8 @@ $lang['nav_check'] = 'Sistem kontrolü';
 $lang['nav_db'] = 'Veritabanı';
 $lang['nav_settings'] = 'Ayarlar';
 $lang['nav_end'] = 'Son';
+$lang['nav_data'] = 'Demo data';
+
 /* System check */
 $lang['php_version'] = 			'PHP >= 5';
 $lang['php_version_found'] = 	'PHP Versiyonu';

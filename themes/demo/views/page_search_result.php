@@ -24,34 +24,27 @@
 					<!-- Loop through results -->
 					<ion:results>
 		
-						<div class="event">
+						<div class="post">
 							
-							<div class="datetag"><span class="day"><ion:date format="d" /></span><span><ion:date format="month_year" /></span></div>
-			
-							<div class="event_content nopic">
-								
-								<span class="event_category"><ion:translation term="result_in" /> <ion:result field="page_title" /></span>
-								
-								<h3><a href="<ion:url />"><ion:title /></a></h3>
-								
-								<span class="event_date"><ion:field name="date-event" /></span>
-								
-								<ion:content paragraph="1" />
-						
-								<a href="<ion:url />" class="readmore"><ion:translation term="read_complete_article" /></a>
-							</div>
+							
+							<h2><a href="<ion:url />"><ion:title /></a></h2>
+							<p class="date"><ion:date format="complete" /></p>
+							<p class="date"><ion:translation term="result_in" /> <strong><ion:result field="page_title" /></strong></p>
+							
+							<ion:content paragraph="1" />
+					
+							<a href="<ion:url />" class="readmore"><ion:translation term="read_complete_article" /></a>
 						</div>
+							
 					</ion:results>
 					
 					<!-- If no result, display what is between these tags -->
 					<ion:no_results>
 					
-						<div class="text_content">
+						
+						<!-- This translation term is a static one the user can easily change in Ionize -->
+						<p><ion:translation term="module_search_message_no_results" /></p>
 							
-							<!-- This translation term is a static one the user can easily change in Ionize -->
-							<p><ion:translation term="module_search_message_no_results" /></p>
-							
-						</div>
 						
 						<!-- Here we also display the page articles if no results are found.
 							 It is a nice way to give control on the content to editor.

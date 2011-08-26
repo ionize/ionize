@@ -1,5 +1,53 @@
 <?php
 
+$lang['module_simpleform_about'] = "Ce module permet l'ajout de formulaires simples à votre site.";
+$lang['module_simpleform_doc_title'] = "Comment configurer ce module";
+$lang['module_simpleform_doc_content'] = "
+	<h4>1. Paramétrer le fichier config.php :</h4>
+	<p>Chaque formulaire est déclaré dans le fichier <b>/modules/Simpleform/config/config.php</b><p>
+	<pre>
+// XXXXX représente le nom de votre formulaire.
+// Example pour un formulaire nommé 'contact': \$config['simpleform_contact_email'] = 'yourname@yourdomain.tld';
+
+\$config['simpleform_XXXXX_email'] = 'yourname@yourdomain.tld';
+
+// Titre de l'email : Index de la traduction du fichier de langue : Simpleform/language/xxx/simpleform_lang.php
+// Dans le cas ci-dessous,  \$lang['module_simpleform_email_title'] sera utilisé comme titrre de mail pour ce formulaire
+
+\$config['simpleform_XXXXX_email_title'] = 'module_simpleform_email_title';
+
+// Vue d'email à utiliser pour l'envoi des données (sans l'extension .php)
+// Cette vue doit être placée dans /modules/Simpleform/views
+
+\$config['simpleform_XXXXX_email_view'] = 'mail';
+
+// Champs et règles du formulaire
+
+\$config['simpleform_XXXXX'] = array(
+	'name' => 'trim|required|min_length[4]|xss_clean',
+	'email' => 'trim|required|min_length[5]|valid_email|xss_clean',
+	'message' => 'required|xss_clean',
+	'city' => 'antispam'
+);
+	</pre>
+
+	<h4>2. Créer la page ou l'article contenant le formulaire</h4>
+	<p>
+		Pour créer un formulaire, crééz simplement une vue, déclarez-la et liez-la à une page ou un article
+	</p>
+	<p>
+		Cette vue contiendra les tags du module Simpleforms. <br/>
+		La vue <b>views/form_view.php</b> est un bon exemple.
+	</p>
+	
+	<h4>3. Modifiez la librairie : libraries/simpleform_action.php file</h4>
+	<p>
+		La méthode nommée <b>process_data()</b> se charge de traiter le formulaire si besoin.<br/>
+		Modifiez cette méthode pour qu'elle corresponde à vos besoins.
+	</p>
+	
+";
+
 $lang['module_simpleform_field_email'] = "Email";
 $lang['module_simpleform_field_name'] = "Nom";
 $lang['module_simpleform_field_firstname'] = "Prénom";

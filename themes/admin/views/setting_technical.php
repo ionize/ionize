@@ -1,37 +1,353 @@
 
-<div id="sidecolumn" class="close">
-	
-	<div class="info">
+<!-- Main Column -->
+<div id="maincolumn">
 
-		<dl class="small compact">
-			<dt><label><?=lang('ionize_title_php_version')?></label></dt>
-			<dd><?= phpversion() ?></dd>
-		</dl>
-		<dl class="small compact">
-			<dt><label><?=lang('ionize_title_db_version')?></label></dt>
-			<dd><?=$this->db->platform().' '.$this->db->version();?></dd>
-		</dl>
-		<dl class="small compact">
-			<dt><label><?=lang('ionize_label_file_uploads')?></label></dt>
-			<dd><img src="<?= theme_url() ?>images/icon_16_<?php if(ini_get('file_uploads') == true) :?>ok<?php else :?>nok<?php endif ;?>.png" /></dd>
-		</dl>
-		<dl class="small compact">
-			<dt><label><?=lang('ionize_label_max_upload_size')?></label></dt>
-			<dd><?= ini_get('upload_max_filesize') ?></dd>
-		</dl>
-		<dl class="small compact">
-			<dt>&nbsp;</dt>
-			<dd><a href="<?=base_url() . config_item('admin_url')?>/desktop/get/phpinfo" target="_blank">Complete PHP Info</a></dd>
-		</dl>
-		
+
+	<input id="settingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_save_settings') ?>" />
+
+
+	<h2 class="main settings" id="main-title"><?= lang('ionize_title_technical_settings') ?></h2>
+	
+	<!-- Subtitle -->
+	<div class="subtitle">
+		<p><?= lang('ionize_onchange_ionize_settings')?></p>
 	</div>
 
-	<div id="options">
-		
-		<!-- Database -->
-		<h3 class="toggler"><?=lang('ionize_title_database')?></h3>
 
-		<div class="element">
+	<form name="settingsForm" id="settingsForm" method="post" action="<?= admin_url() ?>setting/save_technical">
+
+
+	<!-- Tabs -->
+	<div id="settingsTab" class="mainTabs">
+		
+		<ul class="tab-menu">
+			
+			<li id="media_settings"><a><?= lang('ionize_title_media_management') ?></a></li>
+			<li id="mimes_settings"><a><?= lang('ionize_title_allowed_mimes') ?></a></li>
+			<li id="thumbs_settings"><a><?= lang('ionize_title_thumbs') ?></a></li>
+			<li id="article_settings"><a><?= lang('ionize_title_article_management') ?></a></li>
+			<li id="database_settings"><a><?= lang('ionize_title_database') ?></a></li>
+			<li id="email_settings"><a><?= lang('ionize_title_mail_send') ?></a></li>
+			<li id="system_settings"><a><?= lang('ionize_title_system') ?></a></li>
+
+		</ul>
+
+		<div class="clear"></div>
+	
+	</div>
+
+
+	<div id="settingsTabContent">
+	
+		<!-- Media management -->
+		<div class="tabcontent pt20">
+	
+			<dl class="mb10">
+				<dt>
+					<label for="files_path" title="<?=lang('ionize_help_setting_files_path')?>"><?=lang('ionize_label_files_path')?></label>
+				</dt>
+				<dd>
+					<input name="files_path" id="files_path" class="inputtext w240" type="text" value="<?= Settings::get('files_path') ?>"/>
+				</dd>
+			</dl>
+	
+			<!-- Supported media extensions, by media type -->
+			<dl>
+				<dt>
+					<label for="picture_max_width" title="<?=lang('ionize_help_setting_picture_max_width')?>"><?=lang('ionize_label_setting_picture_max_width')?></label>
+				</dt>
+				<dd>
+					<input name="picture_max_width" id="picture_max_width" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_width') ?>"/>
+				</dd>
+			</dl>
+			<dl class="mb10">
+				<dt>
+					<label for="picture_max_height" title="<?=lang('ionize_help_setting_picture_max_height')?>"><?=lang('ionize_label_setting_picture_max_height')?></label>
+				</dt>
+				<dd>
+					<input name="picture_max_height" id="picture_max_height" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_height') ?>"/>
+				</dd>
+			</dl>
+
+			<dl>
+				<dt>
+					<label for="media_thumb_size" title="<?=lang('ionize_help_media_thumb_size')?>"><?=lang('ionize_label_media_thumb_size')?></label>
+				</dt>
+				<dd>
+					<input name="media_thumb_size" id="media_thumb_size" class="inputtext w40" type="text" value="<?= Settings::get('media_thumb_size') ?>"/>
+				</dd>
+			</dl>
+		</div>		
+		
+		<!-- Allowed Mimes -->
+		<div class="tabcontent p10">
+			<?php
+				$filemanager_file_types = explode(',',Settings::get('filemanager_file_types'));
+			?>
+
+			<?php foreach($mimes as $type => $mime_list) :?>
+			
+				<h3><?= $type ?></h3>
+
+		
+				<table class="list w340">
+					<thead>
+						<tr>
+							<th class="right"></th>
+							<th>Mime</th>
+							<th class="center">Allowed ?</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<?php foreach($mime_list as $ext => $mime) :?>
+							<tr>
+								<td class="right pr10"><?= $ext ?> </td>
+								<td>
+									<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
+								</td>
+								<td class="center">
+									<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?= $ext ?>" />
+								</td>
+							</tr>
+						<?php endforeach ;?>
+
+					</tbody>
+				</table>
+			
+			<?php endforeach ;?>
+		</div>		
+		
+		<!-- Thumbnails -->
+		<?php if ( ! empty($thumbs)) :?>
+		<div class="tabcontent pt20">
+
+
+			<div class="tabsidecolumn">
+				
+				<h3><?=lang('ionize_title_thumb_new')?></h3>
+				
+				<form name="thumbForm" id="thumbForm" method="post" action="<?= admin_url() ?>setting/save_thumb">
+	
+					<!-- Thumb name -->
+					<dl class="small">
+						<dt>
+							<label for="thumb_name_new"><?=lang('ionize_label_thumb_dir')?></label>
+						</dt>
+						<dd>
+							<input id="thumb_name_new" name="thumb_name_new" type="text" class="inputtext" value="" />
+						</dd>
+					</dl>
+	
+					<!-- Thumb size ? -->
+					<dl class="small">
+						<dt>
+							<label for="thumb_size_new"><?=lang('ionize_label_thumb_size')?></label>
+						</dt>
+						<dd>
+							<input id="thumb_size_new" name="thumb_size_new" type="text" class="inputtext" value="" />
+						</dd>
+					</dl>
+	
+					<!-- Thumb ref size (width or height) ? -->
+					<dl class="small">
+						<dt>
+							<label><?=lang('ionize_label_thumb_sizeref')?></label>
+						</dt>
+						<dd>
+							<input class="inputradiobox" type="radio" name="thumb_sizeref_new" id="thumb_sizeref_new1" value="width" checked="checked" /><label for="thumb_sizeref_new1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
+							<input class="inputradiobox" type="radio" name="thumb_sizeref_new" id="thumb_sizeref_new2" value="height" /><label for="thumb_sizeref_new2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
+						</dd>
+					</dl>
+	
+					<!-- Thumb square resize ? -->
+					<dl class="small">
+						<dt>
+							<label for="thumb_square_new"><?=lang('ionize_label_thumb_square')?></label>
+						</dt>
+						<dd>
+							<input class="inputcheckbox" type="checkbox" name="thumb_square_new" id="thumb_square_new" value="true" />
+						</dd>
+					</dl>
+	
+					<!-- Thumb unsharp mask ? -->
+					<dl class="small">
+						<dt>
+							<label for="thumb_unsharp_new"><?=lang('ionize_label_thumb_unsharp')?></label>
+						</dt>
+						<dd>
+							<input class="inputcheckbox" type="checkbox" name="thumb_unsharp_new" id="thumb_unsharp_new" value="true" />
+						</dd>
+					</dl>
+	
+					<!-- Submit button  -->
+					<dl class="small last">
+						<dt>&#160;</dt>
+						<dd>
+							<input id="submit_thumb" type="submit" class="submit" value="<?= lang('ionize_button_add') ?>" />
+						</dd>
+					</dl>
+	
+				</form>
+			</div>
+
+
+			<ul class="tabcolumn list" id="thumbs">
+				
+				<?php 
+					foreach($thumbs as $thumb)
+					{
+						$settings = explode(",", $thumb['content']);
+						$setting = array(
+							'dir' =>	substr($thumb['name'], strpos($thumb['name'], '_') + 1 ),
+							'sizeref' => 	$settings[0],
+							'size' => 	$settings[1],
+							'square' => isset($settings[2]) ? $settings[2] : '0',
+							'unsharp' => isset($settings[3]) ? $settings[3] : '0'
+						);
+						
+					?>
+					
+					<li id="<?=$thumb['id_setting']?>" class="">	
+						
+						<!-- Dir -->
+						<dl>
+							<dt>
+								<label for="thumb_name_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_dir')?></label>
+							</dt>
+							<dd>
+								<input name="thumb_name_<?=$thumb['id_setting']?>" id="thumb_name_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['dir'] ?>"/>
+								<img title="<?=lang('ionize_label_delete')?>" id="delThumb_<?=$thumb['id_setting']?>" class="inputicon pointer right" src="<?= theme_url() ?>images/icon_16_delete.png" />
+							</dd>
+						</dl>
+		
+						<!-- Size -->
+						<dl>
+							<dt>
+								<label for="thumb_size_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_size')?></label>
+							</dt>
+							<dd>
+								<input name="thumb_size_<?=$thumb['id_setting']?>" id="thumb_size_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['size'] ?>"/>
+							</dd>
+						</dl>
+		
+						<!-- Size Reference -->
+						<dl>
+							<dt>
+								<label><?=lang('ionize_label_thumb_sizeref')?></label>
+							</dt>
+							<dd>
+								<input <?php if ($setting['sizeref'] == 'width'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>1" value="width" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
+								<input <?php if ($setting['sizeref'] == 'height'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>2" value="height" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
+							</dd>
+						</dl>
+	
+						<!-- Square ? -->
+						<dl>
+							<dt>
+								<label for="thumb_square_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_square')?></label>
+							</dt>
+							<dd>
+								<input <?php if ($setting['square'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_square_<?=$thumb['id_setting']?>" value="true" />
+							</dd>
+						</dl>
+		
+						<!-- Unsharp ? -->
+						<dl>
+							<dt>
+								<label for="thumb_unsharp_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_unsharp')?></label>
+							</dt>
+							<dd>
+								<input <?php if ($setting['unsharp'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_unsharp_<?=$thumb['id_setting']?>" value="true" />
+							</dd>
+						</dl>
+						
+					</li>
+				
+					
+					<?php
+					}
+					?>
+		
+			</ul>
+		</div>		
+		<?php endif ;?>	
+		
+
+		<!-- Article management -->
+		<div class="tabcontent pt20">
+			
+			<dl class="mb20">
+				<!-- TinyMCE Block Format (Select) -->
+				<dt>
+					<label for="texteditor" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
+				</dt>
+				<dd>
+					<input class="inputtext w360 mb5" id="tinyblockformats" name="tinyblockformats" type="text" value="<?= Settings::get('tinyblockformats') ?>"/><br />
+					<a id="texteditor_default_tinyblockformats"><?=lang('ionize_label_restore_tinyblockformats')?></a>
+				</dd>
+			</dl>
+
+			<dl class="mb20">
+				<!-- TinyMCE toolbar buttons -->
+				<dt>
+					<label for="texteditor" title="<?=lang('ionize_help_tinybuttons')?>"><?=lang('ionize_label_tinybuttons')?></label>
+				</dt>
+				<dd>
+					1 <input class="inputtext w360 mb5" id="tinybuttons1" name="tinybuttons1" type="text" value="<?= Settings::get('tinybuttons1') ?>"/><br />
+					2 <input class="inputtext w360 mb5" id="tinybuttons2" name="tinybuttons2" type="text" value="<?= Settings::get('tinybuttons2') ?>"/><br />
+					3 <input class="inputtext w360" id="tinybuttons3" name="tinybuttons3" type="text" value="<?= Settings::get('tinybuttons3') ?>"/><br />
+					<a id="texteditor_default"><?=lang('ionize_label_restore_tinybuttons')?></a>
+				</dd>
+				
+			</dl>
+			
+
+			<dl class="last mb20">
+				<!-- TinyMCE Block Format (Select) -->
+				<dt>
+					<label for="article_allowed_tags" title="<?=lang('ionize_help_article_allowed_tags')?>"><?=lang('ionize_label_article_allowed_tags')?></label>
+				</dt>
+				<dd>
+
+					<?php
+						$tags = array(
+							'tag1' => array('h1','h2','h3','h4','h5','h6','em','img'),
+							'tag2' => array('iframe','table','object','div','span','dl','pre','code'),
+							'tag3' => array('dfn','samp','kbd','var','cite','q','big','small'),
+							'tag4' => array('link','adress','legend','abbr','sub','sup','ins')
+						);
+					?>
+
+					<table class="w240 mt0">
+						<tbody>
+							<tr>
+								
+								<?php foreach($tags as $key => $tag_array) :?>
+							
+								<td>
+									<table class="list w80 mt0 mr20">
+										<tbody>
+											<?php foreach($tag_array as $tag) :?>
+												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
+											<?php endforeach ?>
+										</tbody>
+									</table>
+								</td>
+								
+								<?php endforeach; ?>
+								
+							</tr>
+						</tbody>
+					</table>
+				
+				</dd>
+			</dl>
+		</div>		
+
+
+		<!-- Database -->
+		<div class="tabcontent pt20">
 
 			<form name="databaseForm" id="databaseForm" method="post" action="<?= admin_url() ?>setting/save_database">
 
@@ -103,46 +419,12 @@
 
 			</form>
 
-		</div> <!-- /element -->
-			
-
-		<!-- Cache -->
-		<h3 class="toggler"><?=lang('ionize_title_cache')?></h3>
-		
-		<div class="element">
-		
-			<form name="cacheForm" id="cacheForm" method="post" action="<?= admin_url() ?>setting/save_cache">
-							
-				<!-- Cache Time -->
-				<dl class="small">
-					<dt>
-						<label for="cache_expiration"  title="<?=lang('ionize_help_cache_expiration')?>"><?=lang('ionize_label_cache_expiration')?></label>
-					</dt>
-					<dd>
-						<input id="cache_expiration" name="cache_expiration" class="inputtext w60" type="text" value="<?= config_item('cache_expiration') ?>" />
-						<input id="submit_cache" type="submit" class="submit m0" value="<?= lang('ionize_button_save') ?>" />
-					</dd>
-				</dl>
-				
-				<!-- Empty cache  -->
-				<dl class="small last">
-					<dt>
-						<label for="clear_cache"  title="<?=lang('ionize_help_clear_cache')?>"><?=lang('ionize_label_clear_cache')?></label>
-					</dt>
-					<dd>
-						<input id="clear_cache" type="button" class="button m0" value="<?= lang('ionize_button_clear_cache') ?>" />
-					</dd>
-				</dl>
-
-			</form>
 		</div>
-
-
-		<!-- SMTP -->
-		<h3 class="toggler"><?=lang('ionize_title_mail_send')?></h3>
 		
-		<div class="element">
-
+		
+		<!-- Email -->
+		<div class="tabcontent pt20">
+		
 			<form name="smtpForm" id="smtpForm" method="post" action="<?= admin_url() ?>setting/save_smtp">
 			
 				<!-- Website email -->
@@ -258,475 +540,181 @@
 			</form>
 		</div>
 		
-			
-		<!-- New thumbnail -->
-		<h3 class="toggler"><?=lang('ionize_title_thumb_new')?></h3>
-
-		<div class="element">
-			
-			<form name="thumbForm" id="thumbForm" method="post" action="<?= admin_url() ?>setting/save_thumb">
-
-				<!-- Thumb name -->
-				<dl class="small">
-					<dt>
-						<label for="thumb_name_new"><?=lang('ionize_label_thumb_dir')?></label>
-					</dt>
-					<dd>
-						<input id="thumb_name_new" name="thumb_name_new" type="text" class="inputtext w140" value="" />
-					</dd>
-				</dl>
-
-				<!-- Thumb size ? -->
-				<dl class="small">
-					<dt>
-						<label for="thumb_size_new"><?=lang('ionize_label_thumb_size')?></label>
-					</dt>
-					<dd>
-						<input id="thumb_size_new" name="thumb_size_new" type="text" class="inputtext w140" value="" />
-					</dd>
-				</dl>
-
-				<!-- Thumb ref size (width or height) ? -->
-				<dl class="small">
-					<dt>
-						<label><?=lang('ionize_label_thumb_sizeref')?></label>
-					</dt>
-					<dd>
-						<input class="inputradiobox" type="radio" name="thumb_sizeref_new" id="thumb_sizeref_new1" value="width" checked="checked" /><label for="thumb_sizeref_new1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
-						<input class="inputradiobox" type="radio" name="thumb_sizeref_new" id="thumb_sizeref_new2" value="height" /><label for="thumb_sizeref_new2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
-					</dd>
-				</dl>
-
-				<!-- Thumb square resize ? -->
-				<dl class="small">
-					<dt>
-						<label for="thumb_square_new"><?=lang('ionize_label_thumb_square')?></label>
-					</dt>
-					<dd>
-						<input class="inputcheckbox" type="checkbox" name="thumb_square_new" id="thumb_square_new" value="true" />
-					</dd>
-				</dl>
-
-				<!-- Thumb unsharp mask ? -->
-				<dl class="small">
-					<dt>
-						<label for="thumb_unsharp_new"><?=lang('ionize_label_thumb_unsharp')?></label>
-					</dt>
-					<dd>
-						<input class="inputcheckbox" type="checkbox" name="thumb_unsharp_new" id="thumb_unsharp_new" value="true" />
-					</dd>
-				</dl>
-
-				<!-- Submit button  -->
-				<dl class="small last">
-					<dt>&#160;</dt>
-					<dd>
-						<input id="submit_thumb" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
-					</dd>
-				</dl>
-
-			</form>
-
-		</div> <!-- /element -->
-
-
-		<!-- Maintenance mode -->
-		<h3 class="toggler"><?=lang('ionize_title_maintenance')?></h3>
-
-		<div class="element">
-			
-			<form name="maintenanceForm" id="maintenanceForm" method="post" action="<?= admin_url() ?>setting/save_maintenance" class="mb20">
-
-				<!-- Maintenance ? -->
-				<dl class="small">
-					<dt>
-						<label for="maintenance" title="<?=lang('ionize_label_maintenance_help')?>"><?=lang('ionize_label_maintenance')?></label>
-					</dt>
-					<dd>
-						<input class="inputcheckbox" <?php if (config_item('maintenance') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="maintenance" id="maintenance" value="1" />
-					</dd>
-				</dl>
+		
+		<!-- System -->
+		<div class="tabcontent pt20">
+		
+		
+			<div class="tabsidecolumn">
 				
-				<!-- Maintenance IP restrict -->
-				<dl class="small">
-					<dt>
-						<label for="maintenance_ips" title="<?=lang('ionize_label_maintenance_ips_help')?>"><?=lang('ionize_label_maintenance_ips')?></label>
-					</dt>
-					<dd>
-						<span><?= lang('ionize_label_your_ip') ?> : <?= $_SERVER['REMOTE_ADDR'] ?></span>
-						<textarea name="maintenance_ips" class="h50 w140"><?= $maintenance_ips ?></textarea>
-					</dd>
-				</dl>
+				<h3><?=lang('ionize_title_informations')?></h3>
 
-				<!-- Maintenance page -->
-				<?php if (function_exists('curl_init')) : ?>
-					<dl class="small">
+				<dl class="small compact">
+					<dt><label><?=lang('ionize_title_php_version')?></label></dt>
+					<dd><?= phpversion() ?></dd>
+				</dl>
+				<dl class="small compact">
+					<dt><label><?=lang('ionize_title_db_version')?></label></dt>
+					<dd><?=$this->db->platform().' '.$this->db->version();?></dd>
+				</dl>
+				<dl class="small compact">
+					<dt><label><?=lang('ionize_label_file_uploads')?></label></dt>
+					<dd><img src="<?= theme_url() ?>images/icon_16_<?php if(ini_get('file_uploads') == true) :?>ok<?php else :?>nok<?php endif ;?>.png" /></dd>
+				</dl>
+				<dl class="small compact">
+					<dt><label><?=lang('ionize_label_max_upload_size')?></label></dt>
+					<dd><?= ini_get('upload_max_filesize') ?></dd>
+				</dl>
+				<dl class="small compact">
+					<dt>&nbsp;</dt>
+					<dd><a href="<?=base_url() . config_item('admin_url')?>/desktop/get/phpinfo" target="_blank">Complete PHP Info</a></dd>
+				</dl>
+			</div>
+			
+			<div class="tabcolumn">
+		
+		
+				<h3 class="toggler"><?= lang('ionize_title_encryption_key') ?></h3>
+		
+				<div class="element">
+
+					<!-- Form antispam key -->
+					<dl class="mb10">
 						<dt>
-							<label title="<?=lang('ionize_label_maintenance_page_help')?>"><?=lang('ionize_title_maintenance_page')?></label>
+							<label for="form_antispam_key"><?=lang('ionize_label_antispam_key')?></label>
 						</dt>
 						<dd>
-							<div id="maintenancePageContainer"></div>				
+							<input id="form_antispam_key" name="form_antispam_key" type="text" class="inputtext w300 left" value="<?= $form_antispam_key ?>" />
+							<a class="icon left refresh ml5" id="antispamRefresh" title="<?= lang('ionize_label_refresh_antispam_key')?>"></a>
 						</dd>
 					</dl>
 					
+					<!-- Encryption key -->
+					<dl class="mb10">
+						<dt>
+							<label for="form_antispam_key"><?=lang('ionize_title_encryption_key')?></label>
+						</dt>
+						<dd>
+							<textarea class="w300"><?= config_item('encryption_key') ?></textarea>
+						</dd>
+					</dl>
 					
-					<!--
-					<h4><?=lang('ionize_title_maintenance_page')?></h4>
-					<p class="lite"><?=lang('ionize_label_maintenance_page_help')?></p>
-					<div id="maintenancePageContainer"></div>
-					-->
-					
-				<?php endif ;?>
-				
-				<!-- Submit button  -->
-				<dl class="small mt10">
-					<dt>&#160;</dt>
-					<dd>
-						<input id="submit_maintenance" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
-					</dd>
-				</dl>
-
-				
-			</form>
-
-		</div> <!-- /element -->
-		
-		
-		<!-- Admin URL -->
-		<h3 class="toggler"><?=lang('ionize_title_admin_url')?></h3>
-		
-		<div class="element">
-
-			<form name="adminUrlForm" id="adminUrlForm" method="post" action="<?= admin_url() ?>setting/save_admin_url">
-
-			<dl>
-				<dt>
-					<label for="admin_url" title="<?=lang('ionize_help_setting_admin_url')?>"><?= lang('ionize_title_admin_url') ?></label>
-				</dt>
-				<dd>
-					<input id="admin_url" name="admin_url" class="inputtext w120" value="<?=config_item('admin_url')?>" /><br/>
-				</dd>
-			</dl>
-
-			<dl>
-				<dt>&nbsp;</dt>
-				<dd>
-					<input id="submit_admin_url" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
-				</dd>
-			</dl>
-
-			</form>
-		</div> <!-- /element -->
-
-
-
-
-	</div> <!-- /togglers -->
-
-</div> <!-- /sidecolumn -->
-
-
-<!-- Main Column -->
-<div id="maincolumn">
-
-
-	<input id="settingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_save_settings') ?>" />
-
-
-	<h2 class="main settings" id="main-title"><?= lang('ionize_title_technical_settings') ?></h2>
-	
-	<!-- Subtitle -->
-	<div class="subtitle">
-		<p><?= lang('ionize_onchange_ionize_settings')?></p>
-	</div>
-
-
-
-
-	<form name="settingsForm" id="settingsForm" method="post" action="<?= admin_url() ?>setting/save_technical">
-
-
-	<!-- Tabs -->
-	<div id="settingsTab" class="mainTabs">
-		
-		<ul class="tab-menu">
-			
-			<li id="media_settings"><a><?= lang('ionize_title_media_management') ?></a></li>
-			<li id="mimes_settings"><a><?= lang('ionize_title_allowed_mimes') ?></a></li>
-			<li id="thumbs_settings"><a><?= lang('ionize_title_thumbs') ?></a></li>
-			<li id="article_settings"><a><?= lang('ionize_title_article_management') ?></a></li>
-			<li id="thumbs_advanced"><a><?= lang('ionize_title_advanced') ?></a></li>
-
-		</ul>
-		<div class="clear"></div>
-	
-	</div>
-
-
-	<div id="settingsTabContent">
-	
-		<!-- Media management -->
-		<div class="tabcontent pt20">
-	
-			<dl class="mb10">
-				<dt>
-					<label for="files_path" title="<?=lang('ionize_help_setting_files_path')?>"><?=lang('ionize_label_files_path')?></label>
-				</dt>
-				<dd>
-					<input name="files_path" id="files_path" class="inputtext w240" type="text" value="<?= Settings::get('files_path') ?>"/>
-				</dd>
-			</dl>
-	
-			<!-- Supported media extensions, by media type -->
-			<dl>
-				<dt>
-					<label for="picture_max_width" title="<?=lang('ionize_help_setting_picture_max_width')?>"><?=lang('ionize_label_setting_picture_max_width')?></label>
-				</dt>
-				<dd>
-					<input name="picture_max_width" id="picture_max_width" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_width') ?>"/>
-				</dd>
-			</dl>
-			<dl class="mb10">
-				<dt>
-					<label for="picture_max_height" title="<?=lang('ionize_help_setting_picture_max_height')?>"><?=lang('ionize_label_setting_picture_max_height')?></label>
-				</dt>
-				<dd>
-					<input name="picture_max_height" id="picture_max_height" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_height') ?>"/>
-				</dd>
-			</dl>
-
-			<dl>
-				<dt>
-					<label for="media_thumb_size" title="<?=lang('ionize_help_media_thumb_size')?>"><?=lang('ionize_label_media_thumb_size')?></label>
-				</dt>
-				<dd>
-					<input name="media_thumb_size" id="media_thumb_size" class="inputtext w40" type="text" value="<?= Settings::get('media_thumb_size') ?>"/>
-				</dd>
-			</dl>
-		</div>		
-		
-		<!-- Allowed Mimes -->
-		<div class="tabcontent p10">
-			<?php
-				$filemanager_file_types = explode(',',Settings::get('filemanager_file_types'));
-			?>
-
-			<?php foreach($mimes as $type => $mime_list) :?>
-			
-				<h3><?= $type ?></h3>
-
-		
-				<table class="list w340">
-					<thead>
-						<tr>
-							<th class="right"></th>
-							<th>Mime</th>
-							<th class="center">Allowed ?</th>
-						</tr>
-					</thead>
-					<tbody>
-
-						<?php foreach($mime_list as $ext => $mime) :?>
-							<tr>
-								<td class="right pr10"><?= $ext ?> </td>
-								<td>
-									<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
-								</td>
-								<td class="center">
-									<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?= $ext ?>" />
-								</td>
-							</tr>
-						<?php endforeach ;?>
-
-					</tbody>
-				</table>
-			
-			<?php endforeach ;?>
-		</div>		
-		
-		<!-- Thumbnails -->
-		<?php if ( ! empty($thumbs)) :?>
-		<div class="tabcontent pt20">
-				<div id="thumbs">
-				
-				<?php 
-					foreach($thumbs as $thumb)
-					{
-						$settings = explode(",", $thumb['content']);
-						$setting = array(
-							'dir' =>	substr($thumb['name'], strpos($thumb['name'], '_') + 1 ),
-							'sizeref' => 	$settings[0],
-							'size' => 	$settings[1],
-							'square' => isset($settings[2]) ? $settings[2] : '0',
-							'unsharp' => isset($settings[3]) ? $settings[3] : '0'
-						);
-						
-					?>
-					
-					<div id="<?=$thumb['id_setting']?>">	
-						
-						<!-- Dir -->
-						<dl>
-							<dt>
-								<label for="thumb_name_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_dir')?></label>
-							</dt>
-							<dd>
-								<input name="thumb_name_<?=$thumb['id_setting']?>" id="thumb_name_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['dir'] ?>"/>
-								<img  title="<?=lang('ionize_label_delete')?>" id="delThumb_<?=$thumb['id_setting']?>" class="inputicon pointer" src="<?= theme_url() ?>images/icon_16_delete.png" />
-							</dd>
-						</dl>
-		
-						<!-- Size -->
-						<dl>
-							<dt>
-								<label for="thumb_size_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_size')?></label>
-							</dt>
-							<dd>
-								<input name="thumb_size_<?=$thumb['id_setting']?>" id="thumb_size_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['size'] ?>"/>
-							</dd>
-						</dl>
-		
-						<!-- Size Reference -->
-						<dl>
-							<dt>
-								<label><?=lang('ionize_label_thumb_sizeref')?></label>
-							</dt>
-							<dd>
-								<input <?php if ($setting['sizeref'] == 'width'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>1" value="width" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
-								<input <?php if ($setting['sizeref'] == 'height'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>2" value="height" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
-							</dd>
-						</dl>
-	
-						<!-- Square ? -->
-						<dl>
-							<dt>
-								<label for="thumb_square_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_square')?></label>
-							</dt>
-							<dd>
-								<input <?php if ($setting['square'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_square_<?=$thumb['id_setting']?>" value="true" />
-							</dd>
-						</dl>
-		
-						<!-- Unsharp ? -->
-						<dl>
-							<dt>
-								<label for="thumb_unsharp_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_unsharp')?></label>
-							</dt>
-							<dd>
-								<input <?php if ($setting['unsharp'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_unsharp_<?=$thumb['id_setting']?>" value="true" />
-								<hr/>
-							</dd>
-						</dl>
-						
-					</div>
-				
-					
-					<?php
-					}
-					?>
-		
 				</div>
-		</div>		
-		<?php endif ;?>	
-		
-
-		<!-- Article management -->
-		<div class="tabcontent pt20">
-			
-			<dl class="mb20">
-				<!-- TinyMCE Block Format (Select) -->
-				<dt>
-					<label for="texteditor" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
-				</dt>
-				<dd>
-					<input class="inputtext w360 mb5" id="tinyblockformats" name="tinyblockformats" type="text" value="<?= Settings::get('tinyblockformats') ?>"/><br />
-					<a id="texteditor_default_tinyblockformats"><?=lang('ionize_label_restore_tinyblockformats')?></a>
-				</dd>
-			</dl>
-
-			<dl class="mb20">
-				<!-- TinyMCE toolbar buttons -->
-				<dt>
-					<label for="texteditor" title="<?=lang('ionize_help_tinybuttons')?>"><?=lang('ionize_label_tinybuttons')?></label>
-				</dt>
-				<dd>
-					1 <input class="inputtext w360 mb5" id="tinybuttons1" name="tinybuttons1" type="text" value="<?= Settings::get('tinybuttons1') ?>"/><br />
-					2 <input class="inputtext w360 mb5" id="tinybuttons2" name="tinybuttons2" type="text" value="<?= Settings::get('tinybuttons2') ?>"/><br />
-					3 <input class="inputtext w360" id="tinybuttons3" name="tinybuttons3" type="text" value="<?= Settings::get('tinybuttons3') ?>"/><br />
-					<a id="texteditor_default"><?=lang('ionize_label_restore_tinybuttons')?></a>
-				</dd>
 				
-			</dl>
+				
+				<!-- Cache -->
+				<h3 class="toggler"><?= lang('ionize_title_cache') ?></h3>
+	
+				<div class="element">
+					<form name="cacheForm" id="cacheForm" method="post" action="<?= admin_url() ?>setting/save_cache">
+									
+						<!-- Cache Time -->
+						<dl>
+							<dt>
+								<label for="cache_expiration"  title="<?=lang('ionize_help_cache_expiration')?>"><?=lang('ionize_label_cache_expiration')?></label>
+							</dt>
+							<dd>
+								<input id="cache_expiration" name="cache_expiration" class="inputtext w60" type="text" value="<?= config_item('cache_expiration') ?>" />
+								<input id="submit_cache" type="submit" class="submit m0" value="<?= lang('ionize_button_save') ?>" />
+							</dd>
+						</dl>
+						
+						<!-- Empty cache  -->
+						<dl class="mb10">
+							<dt>
+								<label for="clear_cache"  title="<?=lang('ionize_help_clear_cache')?>"><?=lang('ionize_label_clear_cache')?></label>
+							</dt>
+							<dd>
+								<input id="clear_cache" type="button" class="button m0" value="<?= lang('ionize_button_clear_cache') ?>" />
+							</dd>
+						</dl>
+		
+					</form>
+				</div>
+				
+				
+				<!-- Admin URL -->
+				<h3 class="toggler"><?= lang('ionize_title_admin_url') ?></h3>
+				
+				<div class="element">
+					<form name="adminUrlForm" id="adminUrlForm" method="post" action="<?= admin_url() ?>setting/save_admin_url">
+		
+						<dl>
+							<dt>
+								<label for="admin_url" title="<?=lang('ionize_help_setting_admin_url')?>"><?= lang('ionize_title_admin_url') ?></label>
+							</dt>
+							<dd>
+								<input id="admin_url" name="admin_url" class="inputtext w120" value="<?=config_item('admin_url')?>" /><br/>
+							</dd>
+						</dl>
 			
-
-			<dl class="last mb20">
-				<!-- TinyMCE Block Format (Select) -->
-				<dt>
-					<label for="article_allowed_tags" title="<?=lang('ionize_help_article_allowed_tags')?>"><?=lang('ionize_label_article_allowed_tags')?></label>
-				</dt>
-				<dd>
-
-					<?php
-						$tags = array(
-							'tag1' => array('h1','h2','h3','h4','h5','h6','em','img'),
-							'tag2' => array('iframe','table','object','div','span','dl','pre','code'),
-							'tag3' => array('dfn','samp','kbd','var','cite','q','big','small'),
-							'tag4' => array('link','adress','legend','abbr','sub','sup','ins')
-						);
-					?>
-
-					<table class="w240 mt0">
-						<tbody>
-							<tr>
-								
-								<?php foreach($tags as $key => $tag_array) :?>
+						<dl class="mb10">
+							<dt>&nbsp;</dt>
+							<dd>
+								<input id="submit_admin_url" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+							</dd>
+						</dl>
+		
+					</form>
+				</div>
+				
+				
+				<!-- Maintenance Mode -->
+				<h3 class="toggler"><?= lang('ionize_title_maintenance') ?></h3>
+				
+				<div class="element">
+					
+					<form name="maintenanceForm" id="maintenanceForm" method="post" action="<?= admin_url() ?>setting/save_maintenance" class="mb20">
+		
+						<!-- Maintenance ? -->
+						<dl>
+							<dt>
+								<label for="maintenance" title="<?=lang('ionize_label_maintenance_help')?>"><?=lang('ionize_label_maintenance')?></label>
+							</dt>
+							<dd>
+								<input class="inputcheckbox" <?php if (config_item('maintenance') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="maintenance" id="maintenance" value="1" />
+							</dd>
+						</dl>
+						
+						<!-- Maintenance IP restrict -->
+						<dl>
+							<dt>
+								<label for="maintenance_ips" title="<?=lang('ionize_label_maintenance_ips_help')?>"><?=lang('ionize_label_maintenance_ips')?></label>
+							</dt>
+							<dd>
+								<span><?= lang('ionize_label_your_ip') ?> : <?= $_SERVER['REMOTE_ADDR'] ?></span><br/>
+								<textarea name="maintenance_ips" class="h50 w140"><?= $maintenance_ips ?></textarea>
+							</dd>
+						</dl>
+		
+						<!-- Maintenance page -->
+						<?php if (function_exists('curl_init')) : ?>
 							
-								<td>
-									<table class="list w80 mt0 mr20">
-										<tbody>
-											<?php foreach($tag_array as $tag) :?>
-												<tr><td class="pr10"><label for="tag_<?=$tag?>"><?=$tag?></label></td><td class="center"><input id="tag_<?=$tag?>" name="article_allowed_tags[]" <?php if(in_array($tag, $article_allowed_tags)) :?>checked="checked" <?php endif;?>type="checkbox" value="<?=$tag?>"/></td></tr>
-											<?php endforeach ?>
-										</tbody>
-									</table>
-								</td>
-								
-								<?php endforeach; ?>
-								
-							</tr>
-						</tbody>
-					</table>
-				
-				</dd>
-			</dl>
-		</div>		
-
-
-		<!-- Advanced -->
-		<div class="tabcontent pt20">
+							<dl>
+								<dt>
+									<label title="<?=lang('ionize_label_maintenance_page_help')?>"><?=lang('ionize_title_maintenance_page')?></label>
+								</dt>
+								<dd>
+									<div id="maintenancePageContainer"></div>				
+								</dd>
+							</dl>
+							
+						<?php endif ;?>
+						
+						<!-- Submit button  -->
+						<dl class="mt10">
+							<dt>&#160;</dt>
+							<dd>
+								<input id="submit_maintenance" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+							</dd>
+						</dl>
 		
-			<!-- Form antispam key -->
-			<dl class="mb10">
-				<dt>
-					<label for="form_antispam_key"><?=lang('ionize_label_current_antispam_key')?></label>
-				</dt>
-				<dd>
-					<input id="form_antispam_key" name="form_antispam_key" type="text" class="inputtext w300 left" value="<?= $form_antispam_key ?>" />
-					<a class="icon left refresh ml5" id="antispamRefresh" title="<?= lang('ionize_label_refresh_antispam_key')?>"></a>
-				</dd>
-			</dl>
-			
-			
-			<!-- Encryption key -->
-			<dl class="mb10">
-				<dt>
-					<label for="form_antispam_key"><?=lang('ionize_title_encryption_key')?></label>
-				</dt>
-				<dd>
-					<span><?= config_item('encryption_key') ?></span>
-				</dd>
-			</dl>
+						
+					</form>
 
+				</div>
+				
+			</div>		
 		</div>		
 		
 	</div>
@@ -740,7 +728,7 @@
 	 * Panel toolbox
 	 *
 	 */
-	ION.initToolbox('setting_technical_toolbox');
+	ION.initToolbox('empty_toolbox');
 
 
 	/**
@@ -828,7 +816,7 @@
 	 * See ionize_window.js for more information about this method
 	 *
 	 */
-	$('thumbs').getElements('div').each(function(item)
+	$('thumbs').getElements('li').each(function(item)
 	{
 		var id = item.id;
 		

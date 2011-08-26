@@ -21,6 +21,7 @@ $lang['nav_check'] = 'システムチェック';
 $lang['nav_db'] = 'データベース';
 $lang['nav_settings'] = '設定';
 $lang['nav_end'] = '終了';
+$lang['nav_data'] = 'Demo data';
 
 
 /* System check */

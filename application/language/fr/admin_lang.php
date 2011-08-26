@@ -510,6 +510,7 @@ $lang['ionize_label_article_allowed_tags'] = 'Tags HTML';
 $lang['ionize_title_seo'] = 'SEO';
 $lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
 $lang['ionize_title_sitemap_search_engine'] = 'Serveurs de Ping Sitemap';
+$lang['ionize_title_system'] = 'Système';
 
 $lang['ionize_title_maintenance'] = 'Maintenance';
 $lang['ionize_title_maintenance_page'] = 'Page de Maintenance';
@@ -579,7 +580,7 @@ $lang['ionize_label_setting_picture_max_height'] = 'Images : Hauteur max.';
 $lang['ionize_onchange_filemanager'] = 'Vous devrez rafraîchir l\'interface (CTRL + R) pour prendre en compte vos modifications.';
 $lang['ionize_onchange_texteditor'] = 'Vous devrez rafraîchir l\'interface (CTRL + R) pour prendre en compte vos modifications';
 
-$lang['ionize_label_current_antispam_key'] = 'Clé actuelle';
+$lang['ionize_label_antispam_key'] = 'Clé AntiSpam';
 $lang['ionize_label_refresh_antispam_key'] = 'Raffraîchir la clé';
 
 $lang['ionize_label_texteditor'] = 'Editeur de texte';

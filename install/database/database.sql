@@ -474,11 +474,10 @@ INSERT INTO setting VALUES (11, 'ftp_password', '', NULL);
 INSERT INTO setting VALUES (12, 'picture_copyright', '', NULL);
 INSERT INTO setting VALUES (14, 'google_analytics', '', NULL);
 INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemanager', NULL);
-INSERT INTO setting VALUES (16, 'thumb_small', 'width,120,true,true', NULL);
-INSERT INTO setting VALUES (18, 'media_type_picture', 'jpg,jpeg,gif,png', NULL);
-INSERT INTO setting VALUES (19, 'media_type_music', 'mp3', NULL);
-INSERT INTO setting VALUES (20, 'media_type_video', 'flv,f4v', NULL);
-INSERT INTO setting VALUES (21, 'media_type_file', 'txt,doc,pdf', NULL);
+--INSERT INTO setting VALUES (18, 'media_type_picture', 'jpg,jpeg,gif,png', NULL);
+--INSERT INTO setting VALUES (19, 'media_type_music', 'mp3', NULL);
+--INSERT INTO setting VALUES (20, 'media_type_video', 'flv,f4v', NULL);
+--INSERT INTO setting VALUES (21, 'media_type_file', 'txt,doc,pdf', NULL);
 INSERT INTO setting VALUES (22, 'ionize_version', '0.9.7', NULL);
 INSERT INTO setting VALUES (23, 'show_help_tips', '1', NULL);
 
@@ -493,8 +492,12 @@ INSERT INTO setting VALUES (30, 'displayed_admin_languages', 'en', NULL);
 INSERT INTO setting VALUES (31, 'date_format', '%Y.%m.%d', NULL);
 INSERT INTO setting VALUES (32, 'force_lang_urls', '0', NULL);
 INSERT INTO setting VALUES (33, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
-
-
+INSERT INTO setting VALUES (35, 'system_thumb_list','',NULL),
+INSERT INTO setting VALUES (36, 'system_thumb_edition','',NULL),
+INSERT INTO setting VALUES (37, 'picture_max_width','',NULL),
+INSERT INTO setting VALUES (38, 'picture_max_height','',NULL),
+INSERT INTO setting VALUES (40, 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf',NULL),
+INSERT INTO setting VALUES (41, 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong',NULL),
 
 
 	INSERT INTO menu (id_menu, name, title) VALUES 

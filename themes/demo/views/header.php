@@ -9,58 +9,28 @@
 	<meta name="language" content="<ion:current_lang />" />
 	<meta http-equiv="imagetoolbar" content="no" />
 	
-	<!-- Blueprint framework
-	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/screen.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/ie.css" />
-	<link rel="stylesheet" type="text/css" media="print" href="<ion:theme_url />assets/css/print.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/demo.css" />
-	-->
-
 	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/src/reset.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/src/ie.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/src/grid.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/src/typography.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/style.css" />
 
-	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/s3slider.css" />
-	
+	<!-- Milbox CSS -->
+	<link rel="stylesheet" href="<ion:theme_url />assets/css/milkbox/milkbox.css" />
 
 	<!-- favicon -->
 	<link rel="shortcut icon" href="<ion:theme_url />assets/images/favicon.ico" type="image/x-icon" />
-	
-	<!-- jQuery 
-	<script type="text/javascript" src="<ion:theme_url />javascript/jquery-1.5.1.min.js"></script>
-	-->
 	
 	<!-- Mootools -->
 	<script type="text/javascript" src="<ion:theme_url />javascript/mootools-core-1.3.2-full-nocompat-yc.js"></script>
 	<script type="text/javascript" src="<ion:theme_url />javascript/mootools-more-1.3.2.1-yc.js"></script>
 	<script type="text/javascript" src="<ion:theme_url />javascript/wall.js"></script>
+	<script type="text/javascript" src="<ion:theme_url />javascript/milkbox-yc.js"></script>
 
-	<!-- Cufon -->
-	<script type="text/javascript" src="<ion:theme_url />javascript/cufon-yui.js"></script>
-	<script type="text/javascript" src="<ion:theme_url />javascript/Quicksand_Book_400.font.js"></script>
-	<script type="text/javascript" src="<ion:theme_url />javascript/Quicksand_Light_300.font.js"></script>
-
-	<!--
-	<script type="text/javascript" src="<ion:theme_url />javascript/Khmer_UI_400-Khmer_UI_700.font.js"></script>
-	<script type="text/javascript" src="<ion:theme_url />javascript/Century_Gothic_400-Century_Gothic_700-Century_Gothic_italic_400-Century_Gothic_italic_700.font.js"></script>
-	-->
 
 	<!-- swfObject -->
 	<script type="text/javascript" src="<ion:theme_url />flash/player/swfobject.js"></script>
 		
-	<!-- jQuery plugins 
-	<script type="text/javascript" src="<ion:theme_url />javascript/jquery.easing.1.1.js"></script>
-	<script type="text/javascript" src="<ion:theme_url />javascript/s3Slider.js"></script>
-	-->
-	
-	<!--
-	<script type="text/javascript" src="<ion:theme_url />javascript/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-	<script type="text/javascript" src="<ion:theme_url />javascript/jquery.highlight-1.1.js"></script>
-	<link rel="stylesheet" type="text/css" href="<ion:theme_url />javascript/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
-	-->
-
 	<!-- This Demo Theme JS -->
 	<script type="text/javascript" src="<ion:theme_url />javascript/demo.js"></script>
 	
@@ -91,14 +61,7 @@
 		</div>
 		
 		<div class="span-10 last searchform">
-<!--
-            <ul class="icons">
-                <li><a href="#"><img src="<ion:theme_url />assets/images/i-email.png" alt=""  /></a></li>
-                <li><a href="#"><img src="<ion:theme_url />assets/images/i-fb.png" alt=""  /></a></li>
-                <li><a href="#"><img src="<ion:theme_url />assets/images/i-rss.png" alt=""  /></a></li>
-                <li><a href="#"><img src="<ion:theme_url />assets/images/i-twitter.png" alt=""  /></a></li>
-            </ul>
--->
+
 			<!-- Form using the "Search" module
 				 Action : 	URL of the page containing the module's search result tags
 				 Notes : 	The actionpage must not be called "search", because this is the module's default URI

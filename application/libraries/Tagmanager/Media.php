@@ -88,6 +88,8 @@ class TagManager_Media extends TagManager
 
 		$i = 0;
 		
+		$tag->locals->count = 0;
+		
 		if ($type !== FALSE)
 		{
 			$str = '';
@@ -121,42 +123,33 @@ class TagManager_Media extends TagManager
 						}
 					}
 				}
-				
-				// Second, if there is a range, get the medias from this range
+
+				// Range / Limit ?
 				if ($range !== FALSE)
 				{
-					foreach($filtered_medias as $index => $media)
-					{
-						if ($index >= $from && ($i < $limit OR $limit === FALSE))
-						{
-							if ($index <= $to OR $to === FALSE)
-							{
-								$i++;
-								$tag->locals->media = $media;
-								$tag->locals->index = $i;
-								$tag->locals->media['index'] = $i;
-								$str .= $tag->expand();
-							}
-						}
-					}
+					$length = ($to !== FALSE) ? $to - $from + 1 : count($filtered_medias) - $from;
+					
+					if ($limit > 0 && $limit < $length) $length = $limit;
+					
+					$filtered_medias = array_slice($filtered_medias, $from, $length);
 				}
-				// Else, get all medias, just $limit limited
-				else
+				else if ($limit > 0)
 				{
-					foreach($filtered_medias as $index => $media)
-					{
-						if ($i < $limit OR $limit === FALSE)
-						{
-							$i++;
-							$tag->locals->media = $media;
-							$tag->locals->index = $i;
-							$tag->locals->media['index'] = $i;
-							$str .= $tag->expand();
-						}
-					}
+					$filtered_medias = array_slice($filtered_medias, 0, $limit);
 				}
-				$tag->locals->count = $i;
-
+				
+				// Stores the final number of medias
+				$count = count($filtered_medias);
+				 
+				foreach($filtered_medias as $index => $media)
+				{
+					$i++;
+					$tag->locals->media = $media;
+					$tag->locals->index = $i;
+					$tag->locals->count = $count;
+					$tag->locals->media['index'] = $i;
+					$str .= $tag->expand();
+				}
 			}
 			return $str;
 		}
@@ -181,9 +174,12 @@ class TagManager_Media extends TagManager
 			$obj = $tag->locals->page;
 		}
 		
-		$medias = $obj['medias'];
+		if ( isset($obj['medias']))
+		{
+			$medias = $obj['medias'];
 
-		return self::wrap($tag, self::get_medias($tag, $medias));
+			return self::wrap($tag, self::get_medias($tag, $medias));
+		}
 	}
 
 	// ------------------------------------------------------------------------

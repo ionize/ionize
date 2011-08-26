@@ -816,6 +816,9 @@ class Article_model extends Base_model
 					
 			// Categories
 			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table.'_'.$this->category_table);
+			
+			// Contexts
+			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->parent_table);
 		}
 		
 		return $affected_rows;

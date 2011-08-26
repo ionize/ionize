@@ -21,6 +21,7 @@ $lang['nav_check'] = 'System check';
 $lang['nav_db'] = 'Database';
 $lang['nav_settings'] = 'Settings';
 $lang['nav_end'] = 'End';
+$lang['nav_data'] = 'Demo data';
 
 
 /* System check */
@@ -106,10 +107,13 @@ $lang['no_encryption_key_found'] = 	"The encryption key was not found. the user 
 
 
 /* Example data */
-$lang['data_install_intro'] = 	"If this is the first time you use Ionize, it's strongly recommended you install the example data.<br/>
-								These data include : ";
-$lang['data_install_list'] = 	"<li>A complete set of database data, usefull to test Ionize,</li>
-								<li>1 working example theme</li>";
+$lang['data_install_intro'] = 	"<p>If this is the first time you use Ionize, it's strongly recommended you install the sample website.<br/>
+								This website includes : </p>
+								<ul>
+									<li>A complete set of data, useful to test Ionize,</li>
+									<li>1 working example theme</li>
+								</ul>
+								";
 $lang['title_skip_this_step'] = 	"Skip this step";
 
 

@@ -483,11 +483,6 @@
 		<query>INSERT INTO setting VALUES (12, 'picture_copyright', '', NULL);</query>
 		<query>INSERT INTO setting VALUES (14, 'google_analytics', '', NULL);</query>
 		<query>INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemanager', NULL);</query>
-		<query>INSERT INTO setting VALUES (16, 'thumb_small', 'width,120,true,true', NULL);</query>
-		<query>INSERT INTO setting VALUES (18, 'media_type_picture', 'jpg,jpeg,gif,png', NULL);</query>
-		<query>INSERT INTO setting VALUES (19, 'media_type_music', 'mp3', NULL);</query>
-		<query>INSERT INTO setting VALUES (20, 'media_type_video', 'flv,f4v', NULL);</query>
-		<query>INSERT INTO setting VALUES (21, 'media_type_file', 'txt,doc,pdf', NULL);</query>
 		<query>INSERT INTO setting VALUES (22, 'ionize_version', '0.9.7', NULL);</query>
 		<query>INSERT INTO setting VALUES (23, 'show_help_tips', '1', NULL);</query>
 

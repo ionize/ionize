@@ -91,6 +91,8 @@ class System_check_model extends Base_model
 	
 	public function check_article_context()
 	{
+		$nb = 0;
+		
 		$sql = '
 			select id_article 
 			from page_article
@@ -115,10 +117,51 @@ class System_check_model extends Base_model
 			{
 				$this->db->set('main_parent', '1');
 				$this->db->where('id_article in (' . implode(',', $articles_id) . ')');
-				return $this->db->update('page_article');
+				$nb = $this->db->update('page_article');
 			}
 		} 
-		return 0;
+		
+		// Removes non existing articles from context
+		$sql = '
+			select distinct id_article 
+			from page_article
+		';
+		
+		$query = $this->db->query($sql);
+		
+		if ($query->num_rows() > 0)
+		{
+			$context_articles = $query->result_array();
+
+			// Get all articles ID
+			$sql = '
+				select distinct id_article 
+				from article
+			';
+
+			$query = $this->db->query($sql);
+
+			if ($query->num_rows() > 0)
+			{
+				$id_articles = array();
+				$articles = $query->result_array();
+				foreach($articles as $article)
+					$id_articles[] = $article['id_article'];
+					
+				foreach($context_articles as $article)
+				{
+					if ( ! in_array($article['id_article'], $id_articles))
+					{
+						$this->db->where('id_article', $article['id_article'] );
+						$this->db->delete('page_article');
+						$nb++; 
+					
+					}
+				}
+			}				
+		}
+		
+		return $nb;
 	}
 	
 	

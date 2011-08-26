@@ -12,8 +12,7 @@ body {
 }
 
 h2,h3,h4,h5,h6 {
-	margin:0;
-	background-color:#f3f3f3;
+	margin:1.5em 0 1em;
 }
 
 
@@ -27,18 +26,15 @@ h6 {font-size:0.9em}
 
 
 ul, ol {
-	background-color:#f3f3f3;
-	margin:0;
-	padding:0 0 10px 20px;
+	margin:0 0 1em;
+	padding-left: 1em;
 }
 ul li, ol li {
-	margin: 0 15px 0 10px !important;
 	line-height: 1.5em;
+	margin-left: 1em;
 }
 p {
-	margin:0;
-/*	padding:10px 15px 10px 10px !important;*/
-	text-align:justify;
+	margin:0 0 1em;
 	color:#000;
 	font-weight: normal;
 	font-size: 1em;

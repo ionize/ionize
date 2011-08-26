@@ -75,8 +75,12 @@ class Simpleform_Action
 
 					// Email Lib
 					if (!isset($ci->email))	$ci->load->library('email');
-
-					$ci->email->subject(Settings::get("site_title")." - ".lang($config['simpleform_' . $form_name . '_email_title']));
+					
+					// Email Title
+					$title = isset($config['simpleform_' . $form_name . '_email_title']) ? lang($config['simpleform_' . $form_name . '_email_title']) : Settings::get("site_title");
+					$ci->email->subject($title);
+					
+					// From : Standard website's email
 					$ci->email->from(Settings::get("site_email"), Settings::get("site_title"));
 					
 					// To : As defined in config.php
@@ -97,7 +101,11 @@ class Simpleform_Action
 					if (file_exists(MODPATH.'Simpleform/views/'.$config['simpleform_' . $form_name . '_email_view'].EXT))
 					{
 						$ci->email->message($tag->parse_as_nested(file_get_contents(MODPATH.'Simpleform/views/'.$config['simpleform_' . $form_name . '_email_view'].EXT)));
-						$ci->email->send();
+// Email send is desactivated
+// Uncomment these lines
+// after config.php setup
+//						$ci->email->send();
+
 						$ci->simpleform_validation->additional_success['profile'] = lang("module_usermanager_text_registered") . " <a href=''>".lang("module_usermanager_text_registered_here")."</a>.";
 					}
 					else

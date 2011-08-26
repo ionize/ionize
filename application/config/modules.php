@@ -1,6 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
 $modules = array(
+	'search' => 'Search',
+	'simpleform' => 'Simpleform',
 	'rss' => 'Rss'
 	);
 

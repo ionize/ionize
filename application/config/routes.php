@@ -46,9 +46,6 @@ $route['404_override'] = 'page';
 $route[config_item('admin_url')] = 'admin/desktop';
 $route[config_item('admin_url').'(/.*)?'] = 'admin$1';
 
-$route['correctdb'] = 'correctdb/index/$1'; 
-$route['translator'.'(/.*)?'] = 'translator$1';
-
 
 /* Route to default controller
  */

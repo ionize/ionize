@@ -1,9 +1,10 @@
 
 <ul id="nav">
 
-	<li><a href="" class="active"><?php echo lang('nav_check') ?></a></li>
-	<li><a class="inactive"><?php echo lang('nav_db') ?></a></li>
-	<li><a class="inactive"><?php echo lang('nav_settings') ?></a></a></li>
+	<li><a class="active" 	href="?step=checkconfig&lang=<?php echo $lang ?>"><?php echo lang('nav_check') ?></a></li>
+	<li><a class="inactive" href="?step=database&lang=<?php echo $lang ?>"><?php echo lang('nav_db') ?></a></li>
+	<li><a class="inactive" href="?step=settings&lang=<?php echo $lang ?>"><?php echo lang('nav_settings') ?></a></a></li>
+	<li><a class="inactive" href="?step=data&lang=<?php echo $lang ?>"><?php echo lang('nav_data') ?></a></a></li>
 	<li><a class="inactive"><?php echo lang('nav_end') ?></a></a></li>
 	
 </ul>

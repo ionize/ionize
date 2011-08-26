@@ -6,9 +6,6 @@
 	
 	 -->
 
-
-	
-
 	<div id="maincolumn">
 		
 

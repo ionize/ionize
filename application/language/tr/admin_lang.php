@@ -569,7 +569,7 @@ $lang['ionize_label_setting_picture_max_height'] = 'Resim Yüksekliği maks.';
 
 $lang['ionize_onchange_filemanager'] = 'Değişiklikleri kaydettikten sonra yönetici panelini yeniden yükleyin.';
 $lang['ionize_onchange_texteditor'] = 'Değişiklikleri kaydettikten sonra yönetici panelini yeniden yükleyin.';
-$lang['ionize_label_current_antispam_key'] = 'Varolan anahtar';
+$lang['ionize_label_antispam_key'] = 'Varolan anahtar';
 $lang['ionize_label_refresh_antispam_key'] = 'Anahtarı yenile';
 $lang['ionize_label_texteditor'] = 'Yazı Editörü';
 $lang['ionize_title_db_version'] = 			'Veritabanı';

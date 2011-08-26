@@ -129,7 +129,8 @@ License:
 .toggler, .toggler1, .toggler2, .toggler3 {
 	color:#528CE0;
 	cursor: pointer;
-	padding: 0 0 2px 18px;
+	padding: 0 0 2px 18px !important;
+	margin-top: 0 !important;
 	background: url(../images/toggler-collapse-expand.png) no-repeat 0 0;
 }
 .toggler.expand,
@@ -305,6 +306,10 @@ h2.main.system-check { background: url(../images/icon_48_system_check.png) no-re
 	font-size:30px;
 	margin-bottom: 10px;
 }
+#maincolumn h3,
+#maincolumn h4 {
+	margin: 10px 0 10px 0; padding: 0 0 3px 0; font-weight: bold; }
+}
 .mochaContent h3 {
 	border-bottom: 1px solid #D5D9DC;
 }
@@ -383,14 +388,11 @@ ul.sortable {
 	padding:0;
 	overflow: hidden;
 }
-li.sortme {
+li.sortme,
+ul.list li {
 	padding: 4px 8px;
 	list-style:none;
 	background-color:#fff;
-/*
-	border-top: solid 1px #eee;	border-left: solid 1px #eee;
-	border-right:solid 1px #ccc; border-bottom:solid 1px #ccc;
-*/
 	border: solid 1px #ddd;
 	margin-bottom:1px;
 	color:#333;
@@ -399,7 +401,8 @@ li.sortme {
 	border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;
 	min-height: 16px;
 }
-li.sortme:hover {
+li.sortme:hover,
+ul.list li:hover {
 	background-color: #f2f2f2;
 }
 /* Parent list */
@@ -591,10 +594,14 @@ table.list div.content ul{
 .mainTabs {	
 	padding: 0 5px 2px 2px;
 	margin: 10px 0 10px 0;
+	background: url(../images/tabs_bg.gif) 0 0;
+/*	background-position: left -70px;*/
+/*
 	background: url(../images/tabs_content.gif) repeat-x;
 	background-position: left -70px;
+*/
 	overflow: hidden;
-	height: 32px;
+/*	height: 32px;*/
 }
 .mainTabs .tab-menu {	
 	padding-top: 1px;
@@ -674,7 +681,9 @@ table.list div.content ul{
 }
 
 /* Gray version */
-.mainTabs.gray,
+.mainTabs.gray{
+	background: url(../images/tabs_bg.gif) 0 0;
+}
 .mainTabs.gray .tab-menu li,
 .mainTabs.gray .tab-menu li.selected,
 .mainTabs.gray .tab-menu li a,

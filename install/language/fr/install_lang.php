@@ -21,6 +21,7 @@ $lang['nav_check'] = 'Système';
 $lang['nav_db'] = 'Base de données';
 $lang['nav_settings'] = 'Paramètres';
 $lang['nav_end'] = 'Fin';
+$lang['nav_data'] = 'Données Démo';
 
 
 /* System check */

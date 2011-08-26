@@ -119,7 +119,7 @@ $config['files_path'] = 'files/';
 | and be writable.
 |
 */
-$config['cache_expiration'] = 2;
+$config['cache_expiration'] = 0;
 
 
 /*

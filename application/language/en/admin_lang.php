@@ -497,7 +497,7 @@ $lang['ionize_title_themes'] = 'Themes';
 $lang['ionize_title_theme'] = 'Theme';
 $lang['ionize_title_translation'] = 'Static translations';
 $lang['ionize_title_database'] = 'Database';
-$lang['ionize_title_mail_send'] = 'Email sending';
+$lang['ionize_title_mail_send'] = 'Email';
 $lang['ionize_title_media_management'] = 'Medias';
 $lang['ionize_title_google_analytics'] = 'Statistics';
 $lang['ionize_title_thumb_new'] = 'New picture thumbnail';
@@ -507,14 +507,15 @@ $lang['ionize_title_form_antispam_key'] = 'Antispam JS key';
 $lang['ionize_title_article_management'] = 'Articles';
 $lang['ionize_title_admin_url'] = 'Admin panel URL';
 $lang['ionize_title_encryption_key'] = 'Encryption key';
-$lang['ionize_title_cache'] = 'Cache System';
+$lang['ionize_title_cache'] = 'Cache';
 $lang['ionize_title_allowed_mimes'] = 'Mimes';
 $lang['ionize_label_article_allowed_tags'] = 'HTML Tags';
 $lang['ionize_title_seo'] = 'SEO';
 $lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
 $lang['ionize_title_sitemap_search_engine'] = 'Sitemap Ping Search Engines';
+$lang['ionize_title_system'] = 'System';
 
-$lang['ionize_title_maintenance'] = 'Maintenance Mode';
+$lang['ionize_title_maintenance'] = 'Maintenance';
 $lang['ionize_title_maintenance_page'] = 'Maintenance Page';
 $lang['ionize_label_maintenance'] = 'In maintenance';
 $lang['ionize_label_maintenance_ips'] = 'Restrict to IPs';
@@ -582,7 +583,8 @@ $lang['ionize_label_setting_picture_max_height'] = 'Pictures max. Height';
 $lang['ionize_onchange_filemanager'] = 'You have to reload the admin panel (CTRL + R) after saving changes.';
 $lang['ionize_onchange_texteditor'] = 'You have to reload the admin panel (CTRL + R) after saving changes.';
 
-$lang['ionize_label_current_antispam_key'] = 'Current key';
+$lang['ionize_title_keys'] = 'Keys';
+$lang['ionize_label_antispam_key'] = 'Antispam key';
 $lang['ionize_label_refresh_antispam_key'] = 'Refresh the key';
 
 $lang['ionize_label_texteditor'] = 'Text editor';

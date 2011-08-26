@@ -66,7 +66,7 @@
 							<ul class="term">
 							
 								<li>
-									<span class="toggler left" style="display:block;height:16px;" rel="<?= $el_id ?>"></span><input type="text" class="left inputtext w300" id="key_<?= $el_id ?>" name="key_<?= $el_id ?>" value="<?= $term ?>"></input>
+									<span class="toggler left" style="display:block;height:16px;" rel="<?= $el_id ?>"></span><input type="text" class="left inputtext w300 transinput" id="key_<?= $el_id ?>" name="key_<?= $el_id ?>" value="<?= $term ?>"></input>
 									<a class="left icon delete ml5" rel="<?= $el_id ?>"></a>
 								</li>
 								
@@ -374,7 +374,14 @@
 			{
 				c = c + el.get('text');
 			});
-
+			
+			els = el.getElements('.transinput');
+			els.each(function(el)
+			{
+				c = c + el.value;
+			});
+			
+			
 			var m = c.match(search);
 			
 			if ( (m))

@@ -6,7 +6,7 @@
 <div id="footer" class="container">
 
 	<!-- Articles from one defined page
-		 Take care : This page must not change its URL !
+		 Take care : The page "footer" must not change its URL !
 	-->
 	<ion:articles from="footer" limit="3">
 	
@@ -27,7 +27,7 @@
 	
 	<div id="footer-copyright">
 		
-		<div id="copyright">Copyright &copy;2011 Ionize Dev Team.- More info on <a href="http://ionizecms.com.com" onclick="window.open(this.href,'_blank');return false;">Ionize CMS website</a>.</div>
+		<div id="copyright">More info on <a href="http://ionizecms.com" onclick="window.open(this.href,'_blank');return false;">Ionize CMS website</a>.</div>
 		
 		<div id="footermenu">
 			<ul>
@@ -41,9 +41,6 @@
 </div>
 
 
- 
-<script type="text/javascript"> Cufon.now(); </script>		
-   
 <!-- Google Analytics code -->
 
 </body>

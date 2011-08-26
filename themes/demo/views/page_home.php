@@ -1,34 +1,5 @@
 <ion:partial view="header" />
 
-<!-- Home Picture Slider
-<div class="span-22 prepend-1 append-1">
-	<div id="home-slider" >
-		<div id="slideshow">
-			<div id="s3slider">
-				<ul id="s3sliderContent">
-				
-					<ion:medias type="picture">
-						<li class="s3sliderImage">
-							<img src="<ion:src folder="940" />" alt="" />
-							<div>
-								<h1><ion:title /></h1>
-								<p><ion:description /></p>
-								
-								<!-- The copyright will be displayed inside a "p" tag with class"copyright"
-									 Nothing will be displayed if no copyright is filled on the picture infos
-								<ion:copyright tag="p" class="copyright" prefix="© " /><ion:date format="Y" tag="p" class="date" />
-							</div>
-						</li>
-					</ion:medias>
-	
-					<li class="clear s3sliderImage"></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-</div>
--->
-
 <div class="span-22 prepend-1 append-1">
 	<div id="home-slider" >
 	
@@ -161,19 +132,27 @@
     		 Calling a term through a tag makes this term available in the "Static translations" panel of Ionize
     	-->
  		<h2 class="title"><ion:translation term="home_last_post" /></h2>
-   	
-    	<!-- Article of type "three-fourth" -->
-    	<ion:articles type="three-fourth">
+   		
+   		
+    	<!-- Articles from another page : Blog
+    		 We display only 2 articles : limit attrbiute of the articles tag
+    		 For each article, we only display the first paragrph of the content.
+    		 We also limit the picture display to the first one.
+    	-->
+    	<ion:articles from="blog" limit="2">
     	
 			<!-- In this pecial case, we don't care about article's title -->
-			<div>
+			<div class="home-last-post">
+				
 				<ion:medias type="picture" limit="1">
-					<img src="<ion:src folder="145" />" alt="" class="alignleft imgborder"/>				
+					<img src="<ion:src folder="150" />" alt="" class="left imgborder"/>				
 				</ion:medias>
 				
-				<ion:title tag="h5" />
+				<!-- The title is a link to the post -->
+				<h3><a href="<ion:url />"><ion:title /></a></h3>
 				
-				<ion:content />
+				<!-- Content limited to the first paragraph -->
+				<ion:content paragraph="1" />
 
 			</div>
 
