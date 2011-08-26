@@ -1,7 +1,7 @@
 Ionize CMS
 ====================
 
-Ionize is a free professional and multilingual PHP CMS, developped with user experience in mind.
+Ionize is a free professional and natively multilingual PHP CMS, developped with user experience in mind.
 Ionize is dedicated to webdesigners and web agencies to simply make their clients happy.
 Official website : http://www.ionizecms.com
 
@@ -12,23 +12,6 @@ Official website : http://www.ionizecms.com
 * [Michel-Ange Kuntz](http://www.partikule.net.net)
 * [Martin Wernstahl]
 * [Christophe Prudent](http://www.toopixel.ch)
-
-
-About this branche (with_ci2)
-----------
-
-This branche is experimental, it may not work.
-
-We provide no support on this branche, but every issue report is welcome.
-
-### Development status
-
-* Mootools 1.3.3 : OK
-* Mootools FileManager : 80% integrated
-* CodeIgniter 2 : 90% integrated
-* Tags Cache system : OK
-* Full Page Cache : In dev
-
 
 ### Installation
 
@@ -43,7 +26,7 @@ These instruction takes in account that this version is in developement.
   * Launch the installer : http://your_domain/install
   * The installer will migrate the database and the user accounts
   
-* From Ionize 0.9.7 (other branche than with_ci2)
+* From Ionize 0.9.7 (dev version)
   * Copy your database, you will start working with this copy,
   * Go in your 0.9.6 config/config.php file and copy your encryption key in the new config/config.php file,
   * Launch the installer : http://your_domain/install

@@ -228,7 +228,6 @@ p {
 }
 
 #nav li:hover,#nav li.sfhover {
-/* prevents IE7 drop-down navigation bug (focus on a page element prevents nested navigations from disappearing) */
 	position:static
 }
 
@@ -336,7 +335,7 @@ div.notice{
 	margin-bottom:30px;
 }
 .side-block h3{
-	font-size: 1em;
+	font-size: 1.2em;
 	margin-bottom:0;
 }
 .side-block h3 a {
@@ -369,6 +368,12 @@ ul.links li a:hover{
  -------------------------------- */
 .post {
 	margin-bottom:30px;
+}
+.post h2 a{
+	color:#1b69a6;
+}
+.post h2 a:hover{
+	color:#09f;
 }
 .post p.date {
 	margin-top: -15px;

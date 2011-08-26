@@ -10,17 +10,52 @@
 
 <script type="text/javascript">
 
+	/**
+	 * The Wall is a Mootools class created by Plasm : http://wall.plasm.it/
+	 * This plugin is used as example and the purpose of the Demo theme isn't to document it.
+	 *
+	 * This script is Mootools based, but you can use any client side JS framework with Ionize.
+	 *
+	 */
 	var images = new Array();
 	var descriptions = new Array();
 	var titles = new Array();
+	var range_x = 0;
 	
+	/**
+	 * Loop into Pictures linked to the page
+	 * Purpose : Feed the javascript plugin images array.
+	 *
+	 * We use the "940" pixels width thumb declaration
+	 * Physically, the thumb folder is named : "thumb_940"
+	 * Logically, its name is "940"
+	 *
+	 * See the produced source in your browser
+	 *
+	 */
 	<ion:medias type="picture">
+	
 		images.push('<ion:src folder="940" />');
-		titles.push('<ion:title />');
-		descriptions.push('<ion:description />');
+		
+		/**
+		 * Title and description of each picture is processed by the PHP function "addslashes"
+		 * to prevent hangs if the string contains quotes.
+		 *
+		 */
+		titles.push('<ion:title function="addslashes" />');
+		descriptions.push('<ion:description function="addslashes" />');
+		
+		/**
+		 * range_x stores the total number of pictures linked to the page
+		 *
+		 */
+		range_x = <ion:count />;
+	
 	</ion:medias>
 	
-   	
+   	/**
+   	 * The Wall init
+   	 */
    	var wall = new Wall("wall", {
 		"slideshow":true,
 		"showDuration":3000,
@@ -31,13 +66,14 @@
 		"transition":Fx.Transitions.Expo.easeInOut,
 		"width":870,
 		"height":400,
-		"rangex":[0,4],
+		"rangex":[0,range_x],
 		"rangey":[0,1]
     });
 
      callBack = function(items)
      {
-		items.each(function(e, i){
+		items.each(function(e, i)
+		{
 			e.node.setStyle("background", "url("+images[e.y]+") no-repeat center center");
 			
 			if (titles[e.y] != '')

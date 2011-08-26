@@ -252,7 +252,7 @@ class Installer
 			
 			$this->db_connect();
 
-			header("Location: ".$base_url.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
+			header("Location: ".$base_url.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
 
 /*
 			// Check if the DB was migrated : If yes, no sample data install
@@ -288,7 +288,7 @@ class Installer
 
 			// Check if the DB was migrated : If yes, no sample data install
 			$query = $this->db->get('page');
-			if ($query->num_rows() > 1)
+			if ($query->num_rows() > 2)
 			{
 				header("Location: ".$base_url.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
 			}
@@ -325,7 +325,7 @@ class Installer
 			}
 			else
 			{
-				$file = fopen('./example_data/example.sql', 'r');
+				$file = fopen('./database/demo_data.sql', 'r');
 				
 				if (is_resource($file))
 				{

@@ -24,6 +24,10 @@
 
 <script type="text/javascript">
 	
+	/**
+	 * The Wall is a Mootools class created by Plasm : http://wall.plasm.it/
+	 *
+	 */
 	var images = new Array();
 	var nb_medias = 0;
 	
@@ -37,10 +41,6 @@
 		nb_medias = <ion:count />;
 	</ion:medias>
 
-	/**
-	 * Wall is a Mootools class created by Plasm : http://wall.plasm.it/
-	 *
-	 */
 	var wall = new Wall("wall", {
 		"draggable":true,
 		"preload":true,
