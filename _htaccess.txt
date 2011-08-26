@@ -17,6 +17,10 @@ RewriteEngine On
 # Solution 2 : Displays a 403 forbidden
 # RewriteRule .*\.(jpe?g|gif|bmp|png)$ - [F]
 
+# Forces the "www"
+# RewriteCond %{HTTP_HOST} !^www\.yourdomain\.tld$ [NC]
+# RewriteRule ^(.*)$ http://www.yourdomain.tld/$1 [QSA,L,R=301]
+
 # Uncomment these lines to display the off.html page to other IP than the one bellow
 # RewriteCond %{REMOTE_ADDR} !^127.0.0.1$
 # RewriteCond %{REQUEST_FILENAME} !-f
