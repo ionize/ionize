@@ -1,9 +1,15 @@
 Ionize CMS
 ====================
 
+Current version : 0.9.7
+
 Ionize is a free professional and natively multilingual PHP CMS, developped with user experience in mind.
+
 Ionize is dedicated to webdesigners and web agencies to simply make their clients happy.
+
 Official website : http://www.ionizecms.com
+
+Translations : http://mygengo.com/string/p/ionize-language-packs-1
 
 ![Screenshot](https://github.com/ionize/ionize/raw/master/files/screenshot_ionize_dashboard.jpg)
 

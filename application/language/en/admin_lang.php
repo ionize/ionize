@@ -508,7 +508,7 @@ $lang['ionize_title_article_management'] = 'Articles';
 $lang['ionize_title_admin_url'] = 'Admin panel URL';
 $lang['ionize_title_encryption_key'] = 'Encryption key';
 $lang['ionize_title_cache'] = 'Cache';
-$lang['ionize_title_allowed_mimes'] = 'Mimes';
+$lang['ionize_title_allowed_mimes'] = 'Allowed Mimes';
 $lang['ionize_label_article_allowed_tags'] = 'HTML Tags';
 $lang['ionize_title_seo'] = 'SEO';
 $lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
@@ -623,7 +623,6 @@ $lang['ionize_message_setting_saved'] = 'Setting saved';
 
 $lang['ionize_help_setting_google_analytics'] = 'The complete Google script, as copied from the Google Analytics website';
 $lang['ionize_help_setting_files_path'] = 'Indicates the base media folder. Doesn\'t change the physical folder name';
-$lang['ionize_help_setting_system_thumb_list'] = 'Thumbnails displayed by ionize in image list and picture edit window';
 $lang['ionize_help_setting_media_type_picture'] = 'File Extensions, comma seperated';
 $lang['ionize_help_setting_media_type_music'] = 'File Extensions, comma seperated';
 $lang['ionize_help_setting_media_type_video'] = 'File Extensions, comma seperated';
@@ -638,6 +637,10 @@ $lang['ionize_help_cache_enabled'] = 'Enable / Disable the cache. Disabling it w
 $lang['ionize_help_cache_expiration'] = 'Number of minutes elements will remain cached between refreshes';
 $lang['ionize_help_clear_cache'] = 'Deletes all the cache files.';
 $lang['ionize_help_article_allowed_tags'] = 'Allowed HTML tags in Articles content';
+
+$lang['ionize_text_allowed_mimes'] = 'The following files types will be available for upload if checked.';
+
+
 
 /*
 |--------------------------------------------------------------------------
