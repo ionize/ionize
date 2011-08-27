@@ -74,8 +74,8 @@ class Page_model extends Base_model
 	 * @return	string		The inserted / updated page ID
 	 *
 	 */
-	function save($data, $lang_data) {
-		
+	function save($data, $lang_data)
+	{	
 		// Dates
 		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on']) : '0000-00-00';
 		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off']) : '0000-00-00';
@@ -444,7 +444,7 @@ class Page_model extends Base_model
 		{
 			$this->db->where($this->table.'.online', '1');		
 	
-			if ($lang !== NULL)
+			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
 				$this->db->where($this->lang_table.'.online', '1');		
 	
 			$this->db->where('((publish_off > ', 'now()', false);

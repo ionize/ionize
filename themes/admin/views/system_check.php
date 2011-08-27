@@ -12,12 +12,22 @@
 	
 	
 		<!-- Check report -->
-		<div id="system_check_report" class="mt20"></div>
+		<table class="list">
+			<thead>
+				<tr>
+					<th><?= lang('ionize_title_check_element')?></th>
+					<th class="center"><?= lang('ionize_title_check_result')?></th>
+					<th class="center"><?= lang('ionize_title_check_status')?></th>
+				</tr>
+			</thead>
+			<tbody id="system_check_report">
+				
+			</tbody>
+		</table>
 	
 	</div>
 	
 </div> <!-- /maincolumn -->
-
 
 
 
@@ -31,15 +41,6 @@
 
 	
 	ION.initRequestEvent($('startCheckButton'), 'system_check/start_check');
-
-
-	/**
-	 * Init help tips on label
-	 * see init-content.js
-	 *
-	 */
-//	ION.initLabelHelpLinks('#ionizeSettingsForm');
-
 
 
 </script>

@@ -1390,7 +1390,7 @@ class Article_model extends Base_model
 		{
 			$this->db->where($this->parent_table.'.online', '1');		
 	
-			if ($lang !== NULL)
+			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
 				$this->db->where($this->lang_table.'.online', '1');		
 	
 			$this->db->where('((publish_off > ', 'now()', FALSE);

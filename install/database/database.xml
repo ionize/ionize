@@ -470,20 +470,20 @@
 		<query>INSERT INTO user_groups VALUES (7, -10, 'banned', 'Banned', NULL);</query>
 		<query>INSERT INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', NULL);</query>
 
+		<query>DELETE FROM setting WHERE name='cache';</query>
+		<query>DELETE FROM setting WHERE name='cache_time';</query>
+		<query>DELETE FROM setting WHERE name='create_dir_use_ftp';</query>
+		<query>DELETE FROM setting WHERE name='ftp_host';</query>
+		<query>DELETE FROM setting WHERE name='ftp_user';</query>
+		<query>DELETE FROM setting WHERE name='ftp_password';</query>
+		<query>DELETE FROM setting WHERE name='picture_copyright';</query>
+
 		<query>INSERT INTO setting VALUES (2, 'website_email', '', NULL);</query>
 		<query>INSERT INTO setting VALUES (3, 'files_path', 'files', NULL);</query>
-		<query>INSERT INTO setting VALUES (4, 'cache', '0', NULL);</query>
-		<query>INSERT INTO setting VALUES (5, 'cache_time', '150', NULL);</query>
 		<query>INSERT INTO setting VALUES (6, 'theme', 'default', NULL);</query>
 		<query>INSERT INTO setting VALUES (7, 'theme_admin', 'admin', NULL);</query>
-		<query>INSERT INTO setting VALUES (8, 'create_dir_use_ftp', '', NULL);</query>
-		<query>INSERT INTO setting VALUES (9, 'ftp_host', '', NULL);</query>
-		<query>INSERT INTO setting VALUES (10, 'ftp_user', '', NULL);</query>
-		<query>INSERT INTO setting VALUES (11, 'ftp_password', '', NULL);</query>
-		<query>INSERT INTO setting VALUES (12, 'picture_copyright', '', NULL);</query>
 		<query>INSERT INTO setting VALUES (14, 'google_analytics', '', NULL);</query>
 		<query>INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemanager', NULL);</query>
-		<query>INSERT INTO setting VALUES (22, 'ionize_version', '0.9.7', NULL);</query>
 		<query>INSERT INTO setting VALUES (23, 'show_help_tips', '1', NULL);</query>
 
 		<query>INSERT INTO setting VALUES (24, 'display_connected_label', '1', NULL);</query>
@@ -499,6 +499,13 @@
 		<query>INSERT INTO setting VALUES (33, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);</query>
 		<query>INSERT INTO setting VALUES ('', 'article_allowed_tags', 'h2,h3,h4,h5,h6,em,img,iframe,table,object,thead,tbody,tfoot,tr,th,td,param,embed,map,p,a,ul,ol,li,br,b,strong', NULL);</query>
 		<query>INSERT INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', NULL);</query>
+
+		<query>DELETE FROM setting WHERE name='default_admin_lang';</query>
+		<query>INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);</query>
+
+		<query>DELETE FROM setting WHERE name='ionize_version';</query>
+		<query>INSERT INTO setting VALUES ('', 'ionize_version', '0.9.7', NULL);</query>
+
 	
 		<query>
 			INSERT INTO menu (id_menu, name, title) VALUES 

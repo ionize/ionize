@@ -763,7 +763,7 @@ class TagManager
 //				{
 				return base_url() . Settings::get_lang() .'/';
 //				}
-				// More intelligent : Detects if the current lang is the default one and don't return the lang code this lang code
+				// More intelligent : Detects if the current lang is the default one and don't return the lang code
 /*
 				else
 				{
@@ -810,9 +810,6 @@ class TagManager
 			{
 				if ( ! empty($obj[$objects]))
 				{
-
-// trace($obj[$objects]);
-
 					// Set the prefix
 					$prefix = (function_exists($prefix)) ? call_user_func($prefix) : $prefix;
 
@@ -942,9 +939,9 @@ class TagManager
 			}
 		}
 		
-		// Error
-		return '';
+		// Returns nothing : better than an error ?
 		// return self::show_tag_error($tag->name, '<b>The "from" attribute is mandatory</b>');
+		return '';
 	}
 	
 	
@@ -1305,11 +1302,7 @@ class TagManager
 		// helper
 		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : FALSE;
 		
-		// php func ?
-		// $php_func = ( ! empty($tag->attr['function'])) ? $tag->attr['function'] : FALSE;
-		
-
-		// Process the value through the passed in function name.
+		// PHP : Process the value through the passed in function name.
 		if ( ! empty($tag->attr['function'])) $value = self::php_process($value, $tag->attr['function'] );
 
 		if ($helper !== FALSE)
@@ -1343,58 +1336,36 @@ class TagManager
 		
 		if ($date)
 		{
-			$format = ( !empty($tag->attr['format'])) ? $tag->attr['format'] : 'Y-m-d H:i:s';		
-			$str = '';
+			$format = ( ! empty($tag->attr['format'])) ? $tag->attr['format'] : 'Y-m-d H:i:s';		
 
-			if ($format != 'Y-m-d H:i:s' && lang('dateformat_'.$format) != '#dateformat_'.$format )
+			if ($format != 'Y-m-d H:i:s')
 			{
-				$format = lang('dateformat_'.$format);
-				/*
-				$segments = explode(' ', $format);
-
-				foreach($segments as $key => $segment)
+				if (lang('dateformat_'.$format) != '#dateformat_'.$format)
 				{
-					$tmp = (String) date($segment, $date);
-
-					if (preg_match('/D|l|F|M/', $segment))
-						$tmp = lang(strtolower($tmp));
-
-					$segments[$key] = $tmp;
+				 	// Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
+					$format = lang('dateformat_'.$format);
 				}
-				$str = implode(' ', $segments);
-			*/
+				else
+				{
+					$format = 'Y-m-d H:i:s';
+				}
 			}
-			/*
-			else
+
+			$segments = explode(' ', $format);
+
+			foreach($segments as $key => $segment)
 			{
-				// Get date in the wished format
-				$str = (String) date($format, $date);
-	
-				/*
-				 * Get translation, if mandatory
-				 * Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
-				 *
-				 *
-				if (preg_match('/D|l|F|M/', $format) && strlen($format) == 1)
-					$str = lang(strtolower($str));		
+				$tmp = (String) date($segment, $date);
+
+				if (preg_match('/D|l|F|M/', $segment))
+					$tmp = lang(strtolower($tmp));
+
+				$segments[$key] = $tmp;
 			}
-			*/
-				$segments = explode(' ', $format);
-
-				foreach($segments as $key => $segment)
-				{
-					$tmp = (String) date($segment, $date);
-
-					if (preg_match('/D|l|F|M/', $segment))
-						$tmp = lang(strtolower($tmp));
-
-					$segments[$key] = $tmp;
-				}
-				$str = implode(' ', $segments);
 			
-
-			return $str;
+			return implode(' ', $segments);
 		}
+
 		return $tag->expand();
 	}
 

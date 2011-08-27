@@ -177,20 +177,20 @@ INSERT INTO `page` VALUES(14, 4, 1, 0, 'modules', 1, 1, 1, 0, '0', '', '2011-08-
 --
 
 TRUNCATE `page_article`;
-INSERT INTO `page_article` VALUES 	(1,1,1,'404',0,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(2,2,1,NULL,2,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(2,4,1,NULL,3,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(2,5,1,NULL,5,2,'','','',1);
-INSERT INTO `page_article` VALUES 	(2,32,1,NULL,4,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(3,13,1,NULL,1,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(4,9,1,NULL,1,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(6,10,1,NULL,3,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(6,11,1,NULL,4,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(9,6,1,'article_footer',1,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(9,7,1,'article_footer',2,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(9,8,1,'article_footer',3,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(10,31,1,'article_picture_gallery',1,NULL,'','','',1);
-INSERT INTO `page_article` VALUES 	(14,34,1,NULL,1,NULL,'','','',1);
+INSERT INTO `page_article` VALUES(1, 1, 1, '404', 0, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(2, 2, 1, NULL, 2, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(2, 4, 1, NULL, 3, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(2, 5, 1, NULL, 5, 2, '', '', '', 1);
+INSERT INTO `page_article` VALUES(2, 32, 1, NULL, 4, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(3, 13, 1, NULL, 1, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(4, 9, 1, NULL, 1, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(6, 10, 1, NULL, 3, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(6, 11, 1, NULL, 4, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(9, 6, 1, 'article_footer', 1, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(9, 7, 1, 'article_footer', 2, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(9, 8, 1, 'article_footer', 3, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(10, 31, 1, 'article_picture_gallery', 1, NULL, '', '', '', 1);
+INSERT INTO `page_article` VALUES(14, 34, 1, NULL, 1, NULL, '', '', '', 1);
 
 
 -- 
@@ -198,15 +198,15 @@ INSERT INTO `page_article` VALUES 	(14,34,1,NULL,1,NULL,'','','',1);
 -- 
 		
 TRUNCATE `page_lang`;
-INSERT INTO `page_lang` VALUES ('en',1,'404','','404','','','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',2,'welcome-url','','Welcome','More about Ionize ?','','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',3,'contact','','Contact','','','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',4,'examples','','Examples','','Some examples','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',6,'blog','','Blog','','','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',8,'search-result','','Search Results','','','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',9,'footer','','Footer','','','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',10,'picture-gallery','','Picture Gallery','','','','','',1,'');
-INSERT INTO `page_lang` VALUES ('en',14,'modules','','Modules','','','','','',1,'');
+INSERT INTO `page_lang` VALUES('en', 1, '404', '', '404', '', '', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 2, 'welcome-url', '', 'Welcome', 'More about Ionize ?', '', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 3, 'contact', '', 'Contact', '', '', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 4, 'examples', '', 'Examples', '', 'Some examples', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 6, 'blog', '', 'Blog', '', '', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 8, 'search-result', '', 'Search Results', '', '', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 9, 'footer', '', 'Footer', '', '', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 10, 'picture-gallery', '', 'Picture Gallery', '', '', '', '', '', '', 1);
+INSERT INTO `page_lang` VALUES('en', 14, 'modules', '', 'Modules', '', '', '', '', '', '', 1);
 
 
 -- 

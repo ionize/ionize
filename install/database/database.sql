@@ -461,24 +461,23 @@ INSERT INTO user_groups VALUES (6, 10, 'guests', 'Guests', NULL);
 INSERT INTO user_groups VALUES (7, -10, 'banned', 'Banned', NULL);
 INSERT INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
 
+DELETE FROM setting WHERE name='cache';
+DELETE FROM setting WHERE name='cache_time';
+DELETE FROM setting WHERE name='create_dir_use_ftp';
+DELETE FROM setting WHERE name='ftp_host';
+DELETE FROM setting WHERE name='ftp_user';
+DELETE FROM setting WHERE name='ftp_password';
+DELETE FROM setting WHERE name='picture_copyright';
+
+
 INSERT INTO setting VALUES (2, 'website_email', '', NULL);
 INSERT INTO setting VALUES (3, 'files_path', 'files', NULL);
 INSERT INTO setting VALUES (4, 'cache', '0', NULL);
 INSERT INTO setting VALUES (5, 'cache_time', '150', NULL);
 INSERT INTO setting VALUES (6, 'theme', 'default', NULL);
 INSERT INTO setting VALUES (7, 'theme_admin', 'admin', NULL);
-INSERT INTO setting VALUES (8, 'create_dir_use_ftp', '', NULL);
-INSERT INTO setting VALUES (9, 'ftp_host', '', NULL);
-INSERT INTO setting VALUES (10, 'ftp_user', '', NULL);
-INSERT INTO setting VALUES (11, 'ftp_password', '', NULL);
-INSERT INTO setting VALUES (12, 'picture_copyright', '', NULL);
 INSERT INTO setting VALUES (14, 'google_analytics', '', NULL);
 INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemanager', NULL);
---INSERT INTO setting VALUES (18, 'media_type_picture', 'jpg,jpeg,gif,png', NULL);
---INSERT INTO setting VALUES (19, 'media_type_music', 'mp3', NULL);
---INSERT INTO setting VALUES (20, 'media_type_video', 'flv,f4v', NULL);
---INSERT INTO setting VALUES (21, 'media_type_file', 'txt,doc,pdf', NULL);
-INSERT INTO setting VALUES (22, 'ionize_version', '0.9.7', NULL);
 INSERT INTO setting VALUES (23, 'show_help_tips', '1', NULL);
 
 INSERT INTO setting VALUES (24, 'display_connected_label', '1', NULL);
@@ -492,16 +491,22 @@ INSERT INTO setting VALUES (30, 'displayed_admin_languages', 'en', NULL);
 INSERT INTO setting VALUES (31, 'date_format', '%Y.%m.%d', NULL);
 INSERT INTO setting VALUES (32, 'force_lang_urls', '0', NULL);
 INSERT INTO setting VALUES (33, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
-INSERT INTO setting VALUES (35, 'system_thumb_list','',NULL),
-INSERT INTO setting VALUES (36, 'system_thumb_edition','',NULL),
 INSERT INTO setting VALUES (37, 'picture_max_width','',NULL),
 INSERT INTO setting VALUES (38, 'picture_max_height','',NULL),
 INSERT INTO setting VALUES (40, 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf',NULL),
 INSERT INTO setting VALUES (41, 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong',NULL),
 
 
-	INSERT INTO menu (id_menu, name, title) VALUES 
-		(1 , 'main', 'Main menu'),
-		(2 , 'system', 'System menu');
+DELETE FROM setting WHERE name='default_admin_lang';
+INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
+
+DELETE FROM setting WHERE name='ionize_version';
+INSERT INTO setting VALUES ('', 'ionize_version', '0.9.7', NULL);
+
+
+
+INSERT INTO menu (id_menu, name, title) VALUES 
+	(1 , 'main', 'Main menu'),
+	(2 , 'system', 'System menu');
 		
 

@@ -1017,8 +1017,11 @@ $lang['ionize_menu_sitemap'] = 'Site Map';
 $lang['ionize_menu_system_check'] = 'System Diagnotic';
 $lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and repair what should be. You cannot break anything by using this.';
 
-$lang['ionize_label_start_system_check'] = 'Start Check';
 $lang['ionize_button_start_system_check'] = 'Start Check';
+
+$lang['ionize_title_check_element'] = 'Checked Element';
+$lang['ionize_title_check_result'] = 'Result';
+$lang['ionize_title_check_status'] = 'Status';
 
 $lang['ionize_title_check_lang'] = 'Check Languages';
 $lang['ionize_title_check_folder'] = 'Folder';

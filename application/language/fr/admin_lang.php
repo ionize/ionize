@@ -1013,8 +1013,11 @@ $lang['ionize_menu_sitemap'] = 'Site Map';
 $lang['ionize_menu_system_check'] = 'Diagnostic Système';
 $lang['ionize_text_system_check'] = 'Cet outil contrôle l\'intégrité des données Ionize et corrige les éventuelles incohérences.';
 
-$lang['ionize_label_start_system_check'] = 'Commencer le test';
-$lang['ionize_button_start_system_check'] = 'Aller hop !';
+$lang['ionize_button_start_system_check'] = 'Lancer le test';
+
+$lang['ionize_title_check_element'] = 'Element';
+$lang['ionize_title_check_result'] = 'Résultat';
+$lang['ionize_title_check_status'] = 'Statut';
 
 $lang['ionize_title_check_lang'] = 'Langues';
 $lang['ionize_title_check_folder'] = 'Dossier';

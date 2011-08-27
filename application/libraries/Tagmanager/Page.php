@@ -115,7 +115,7 @@ class TagManager_Page extends TagManager
 	 */
 	public static function init()
 	{
- 		//parent::init('Page');
+ 		// parent::init('Page');
 		
 		self::$ci =& get_instance(); 
 
@@ -134,6 +134,12 @@ class TagManager_Page extends TagManager
 		 *
 		 */
 		$pages = self::$ci->page_model->get_lang_list(false, Settings::get_lang());
+		
+		// Should never be displayed : no pages are set.
+		if (empty($pages))
+		{
+			show_error('Internal error : <b>No pages found.</b><br/>Solution: <b>Create at least one online page.</b>', 500 );
+		}
 
 		/* Spread authorizations from parents pages to chidrens.
 		 * This adds the group ID to the childrens pages of a protected page
@@ -162,7 +168,7 @@ class TagManager_Page extends TagManager
 //		$uri_config = array_flip($uri_config);
 //		self::pagination_uri = $uri_config['pagination'];
 	
-
+		// Set self::$context->globals->page
 		self::add_globals();
 
 		// Current page
@@ -226,7 +232,7 @@ class TagManager_Page extends TagManager
 		
 		// Get current asked page
 		self::$context->globals->page = self::get_current_page(self::$ci->uri->segment(3));
-		
+
 		// Show 404 if no page
 		if(empty(self::$context->globals->page))
 		{
