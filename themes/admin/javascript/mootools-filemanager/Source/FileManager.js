@@ -1184,7 +1184,7 @@ var FileManager = new Class({
 						}
 						else if (!j)
 						{
-							self.showError('bugger! No or faulty JSON response! ' + response);
+//							self.showError('bugger! No or faulty JSON response! ' + response);
 						}
 					}
 				}
@@ -3962,10 +3962,12 @@ this.Overlay = new Class({
 			this.destroy();
 		}
 		else {
-			this.el.setStyles({
-				width: document.getScrollWidth(),
-				height: document.getScrollHeight()
-			});
+			if (!Browser.ie) {
+				this.el.setStyles({
+					width: document.getScrollWidth(),
+					height: document.getScrollHeight()
+				});
+			}
 		}
 	},
 

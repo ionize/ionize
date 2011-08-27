@@ -259,7 +259,7 @@ FileManager.implement({
 				// IE9 fires the load event on init! :-(
 				if (self.CurrentDir)
 				{
-					self.showError('bugger! No or faulty JSON response! ' + response);
+//					self.showError('bugger! No or faulty JSON response! ' + response);
 					self.load(self.CurrentDir.path);
 				}
 			}
