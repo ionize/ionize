@@ -27,13 +27,9 @@
 	<script type="text/javascript" src="<ion:theme_url />javascript/wall.js"></script>
 	<script type="text/javascript" src="<ion:theme_url />javascript/milkbox-yc.js"></script>
 
-
 	<!-- swfObject -->
 	<script type="text/javascript" src="<ion:theme_url />flash/player/swfobject.js"></script>
 		
-	<!-- This Demo Theme JS -->
-	<script type="text/javascript" src="<ion:theme_url />javascript/demo.js"></script>
-	
 	<!-- if JS needs to get the theme URL, we give it to him -->
 	<script type="text/javascript">
 		var theme_url = '<ion:theme_url />';
@@ -42,12 +38,9 @@
 	<!-- Translations availables for javascript (have a look at the produced code in firebug) -->
 	<ion:jslang />
 
-
 </head>
 
 <body>
-
-
 
 <div id="container" class="container">
 
