@@ -503,6 +503,8 @@ INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 DELETE FROM setting WHERE name='ionize_version';
 INSERT INTO setting VALUES ('', 'ionize_version', '0.9.7', NULL);
 
+DELETE FROM setting WHERE name='media_upload_mode';
+INSERT INTO setting VALUES ('', 'media_upload_mode', 'multiple', NULL);
 
 
 INSERT INTO menu (id_menu, name, title) VALUES 

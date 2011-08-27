@@ -162,10 +162,12 @@
 <!-- If the player < 9, no Flash upload -->
 <script type="text/javascript">
 
-if(swfobject.ua.pv[0] < 9)
-{
-	Asset.javascript('<?= theme_url() ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js');
-}
+	var upload_mode = '<?= Settings::get('media_upload_mode'); ?>';
+	
+	if(swfobject.ua.pv[0] < 9 || upload_mode=='single')
+	{
+		Asset.javascript('<?= theme_url() ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js');
+	}
 
 </script>
 <!--

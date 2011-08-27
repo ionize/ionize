@@ -497,7 +497,7 @@ class Setting extends MY_admin
 		// Settings to save
 		$settings = array(	'files_path', 
 							'tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats',
-							'media_thumb_size', 'picture_max_width', 'picture_max_height',
+							'media_thumb_size', 'picture_max_width', 'picture_max_height', 'media_upload_mode',
 							'filemanager_file_types');
 							
 		

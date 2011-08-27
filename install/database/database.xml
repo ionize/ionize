@@ -506,6 +506,8 @@
 		<query>DELETE FROM setting WHERE name='ionize_version';</query>
 		<query>INSERT INTO setting VALUES ('', 'ionize_version', '0.9.7', NULL);</query>
 
+		<query>DELETE FROM setting WHERE name='media_upload_mode';</query>
+		<query>INSERT INTO setting VALUES ('', 'media_upload_mode', 'multiple', NULL);</query>
 	
 		<query>
 			INSERT INTO menu (id_menu, name, title) VALUES 

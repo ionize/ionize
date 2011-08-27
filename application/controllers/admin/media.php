@@ -151,42 +151,22 @@ class Media extends MY_admin
 		{
 			if ($event == 'upload')
 			{
+				// Flash mode (Multiple files) : PHPSESSID is send
 				if ( ! empty($_POST['PHPSESSID']))
 				{
-//					session_destroy();
-//					session_id($_POST['PHPSESSID']);
-//					session_start();
-					
-/*					
-					echo json_encode(array(
-						'status' => 0,
-						'error' => 	
-							trace($this->session->userdata('uploadTokken')).
-							trace($_POST)
-					));
-*/
-
-					
-					// Get the original session tokken
-					$tokken = $this->session->userdata('uploadTokken');
-					
-					// Get the sent tokken & compare
-					$sent_tokken = ( ! empty($_POST['uploadTokken'])) ? $_POST['uploadTokken'] : '';
-					
-					if ($tokken == $sent_tokken)
-					{
-						$this->Filemanagerwithaliassupport->fireEvent($event);
-					}
-					else
-					{
-						echo json_encode(array(
-							'status' => 0,
-							'error' => lang('ionize_session_expired')
-						));
-					}
+					session_id($_POST['PHPSESSID']);
 				}
 				
-				// No session
+				// Get the original session tokken
+				$tokken = $this->session->userdata('uploadTokken');
+				
+				// Get the sent tokken & compare
+				$sent_tokken = ( ! empty($_POST['uploadTokken'])) ? $_POST['uploadTokken'] : '';
+				
+				if ($tokken == $sent_tokken)
+				{
+					$this->Filemanagerwithaliassupport->fireEvent($event);
+				}
 				else
 				{
 					echo json_encode(array(

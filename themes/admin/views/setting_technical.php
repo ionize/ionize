@@ -80,6 +80,16 @@
 						<input name="media_thumb_size" id="media_thumb_size" class="inputtext w40" type="text" value="<?= Settings::get('media_thumb_size') ?>"/>
 					</dd>
 				</dl>
+				
+				<dl class="small mt20">
+					<dt>
+						<label title="<?=lang('ionize_help_media_upload_mode')?>"><?=lang('ionize_label_media_upload_mode')?></label>
+					</dt>
+					<dd>
+						<input type="radio" name="media_upload_mode" id="media_upload_mode1" value="single" <?php if(Settings::get('media_upload_mode') == 'single'):?>checked="checked"<?php endif;?> /><label for="media_upload_mode1"><?=lang('ionize_label_media_upload_mode_single')?></label><br/>
+						<input type="radio" name="media_upload_mode" id="media_upload_mode2" value="multiple" <?php if(Settings::get('media_upload_mode') == 'multiple'):?>checked="checked"<?php endif;?>/><label for="media_upload_mode2"><?=lang('ionize_label_media_upload_mode_multiple')?></label>
+					</dd>
+				</dl>
 			</div>
 			
 			<!-- Allowed Mimes -->

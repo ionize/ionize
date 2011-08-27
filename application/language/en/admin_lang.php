@@ -534,6 +534,7 @@ $lang['ionize_label_media_type_music'] = 'Music extensions';
 $lang['ionize_label_media_type_file'] = 'File extensions';
 $lang['ionize_label_filemanager'] = 'File manager';
 $lang['ionize_label_media_thumb_size'] = 'Thumbnails size';
+$lang['ionize_label_upload_mode'] = 'Upload Mode';
 $lang['ionize_label_theme'] = 'Theme';
 $lang['ionize_label_theme_admin'] = 'Admin theme';
 $lang['ionize_label_db_driver'] = 'Driver';
@@ -579,6 +580,9 @@ $lang['ionize_label_thumb_edition'] = 'Picture edition';
 $lang['ionize_label_thumbs_system'] = 'Picture list / edit';
 $lang['ionize_label_setting_picture_max_width'] = 'Pictures max. Width';
 $lang['ionize_label_setting_picture_max_height'] = 'Pictures max. Height';
+$lang['ionize_label_media_upload_mode'] = 'Upload Mode';
+$lang['ionize_label_media_upload_mode_single'] = 'Single File';
+$lang['ionize_label_media_upload_mode_multiple'] = 'Multiple Files';
 
 $lang['ionize_onchange_filemanager'] = 'You have to reload the admin panel (CTRL + R) after saving changes.';
 $lang['ionize_onchange_texteditor'] = 'You have to reload the admin panel (CTRL + R) after saving changes.';
@@ -637,6 +641,7 @@ $lang['ionize_help_cache_enabled'] = 'Enable / Disable the cache. Disabling it w
 $lang['ionize_help_cache_expiration'] = 'Number of minutes elements will remain cached between refreshes';
 $lang['ionize_help_clear_cache'] = 'Deletes all the cache files.';
 $lang['ionize_help_article_allowed_tags'] = 'Allowed HTML tags in Articles content';
+$lang['ionize_help_media_upload_mode'] = 'If Multiple File hangs, try Single File (no Flash)';
 
 $lang['ionize_text_allowed_mimes'] = 'The following files types will be available for upload if checked.';
 
