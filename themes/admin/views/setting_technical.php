@@ -23,7 +23,6 @@
 		<ul class="tab-menu">
 			
 			<li id="media_settings"><a><?= lang('ionize_title_media_management') ?></a></li>
-			<li id="mimes_settings"><a><?= lang('ionize_title_allowed_mimes') ?></a></li>
 			<li id="thumbs_settings"><a><?= lang('ionize_title_thumbs') ?></a></li>
 			<li id="article_settings"><a><?= lang('ionize_title_article_management') ?></a></li>
 			<li id="database_settings"><a><?= lang('ionize_title_database') ?></a></li>
@@ -40,87 +39,101 @@
 	<div id="settingsTabContent">
 	
 		<!-- Media management -->
-		<div class="tabcontent pt20">
+		<div class="tabcontent pt10">
 	
-			<dl class="mb10">
-				<dt>
-					<label for="files_path" title="<?=lang('ionize_help_setting_files_path')?>"><?=lang('ionize_label_files_path')?></label>
-				</dt>
-				<dd>
-					<input name="files_path" id="files_path" class="inputtext w240" type="text" value="<?= Settings::get('files_path') ?>"/>
-				</dd>
-			</dl>
+			<div class="tabsidecolumn">
+				
+				<h3><?=lang('ionize_title_media_management')?></h3>
+			
+				<dl class="small">
+					<dt>
+						<label for="files_path" title="<?=lang('ionize_help_setting_files_path')?>"><?=lang('ionize_label_files_path')?></label>
+					</dt>
+					<dd>
+						<input name="files_path" id="files_path" class="inputtext" type="text" value="<?= Settings::get('files_path') ?>"/>
+					</dd>
+				</dl>
+		
+				<dl class="small">
+					<dt>
+						<label for="picture_max_width" title="<?=lang('ionize_help_setting_picture_max_width')?>"><?=lang('ionize_label_setting_picture_max_width')?></label>
+					</dt>
+					<dd>
+						<input name="picture_max_width" id="picture_max_width" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_width') ?>"/>
+					</dd>
+				</dl>
+				
+				<dl class="small">
+					<dt>
+						<label for="picture_max_height" title="<?=lang('ionize_help_setting_picture_max_height')?>"><?=lang('ionize_label_setting_picture_max_height')?></label>
+					</dt>
+					<dd>
+						<input name="picture_max_height" id="picture_max_height" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_height') ?>"/>
+					</dd>
+				</dl>
 	
-			<!-- Supported media extensions, by media type -->
-			<dl>
-				<dt>
-					<label for="picture_max_width" title="<?=lang('ionize_help_setting_picture_max_width')?>"><?=lang('ionize_label_setting_picture_max_width')?></label>
-				</dt>
-				<dd>
-					<input name="picture_max_width" id="picture_max_width" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_width') ?>"/>
-				</dd>
-			</dl>
-			<dl class="mb10">
-				<dt>
-					<label for="picture_max_height" title="<?=lang('ionize_help_setting_picture_max_height')?>"><?=lang('ionize_label_setting_picture_max_height')?></label>
-				</dt>
-				<dd>
-					<input name="picture_max_height" id="picture_max_height" class="inputtext w40" type="text" value="<?= Settings::get('picture_max_height') ?>"/>
-				</dd>
-			</dl>
+				<dl class="small">
+					<dt>
+						<label for="media_thumb_size" title="<?=lang('ionize_help_media_thumb_size')?>"><?=lang('ionize_label_media_thumb_size')?></label>
+					</dt>
+					<dd>
+						<input name="media_thumb_size" id="media_thumb_size" class="inputtext w40" type="text" value="<?= Settings::get('media_thumb_size') ?>"/>
+					</dd>
+				</dl>
+			</div>
+			
+			<!-- Allowed Mimes -->
+			<div class="tabcolumn">
+				
+				<h3><?=lang('ionize_title_allowed_mimes')?></h3>
+				<p class="mb15"><?= lang('ionize_text_allowed_mimes') ?></p>
 
-			<dl>
-				<dt>
-					<label for="media_thumb_size" title="<?=lang('ionize_help_media_thumb_size')?>"><?=lang('ionize_label_media_thumb_size')?></label>
-				</dt>
-				<dd>
-					<input name="media_thumb_size" id="media_thumb_size" class="inputtext w40" type="text" value="<?= Settings::get('media_thumb_size') ?>"/>
-				</dd>
-			</dl>
+				<?php
+					$filemanager_file_types = explode(',',Settings::get('filemanager_file_types'));
+				?>
+	
+				<?php foreach($mimes as $type => $mime_list) :?>
+				
+					<h3 class="toggler1"><?= $type ?></h3>
+				
+					<div class="element1">
+	
+						<table class="list w340">
+							<thead>
+								<tr>
+									<th class="right"></th>
+									<th>Mime</th>
+									<th class="center">Allowed ?</th>
+								</tr>
+							</thead>
+							<tbody>
+		
+								<?php foreach($mime_list as $ext => $mime) :?>
+									<tr>
+										<td class="right pr10"><?= $ext ?> </td>
+										<td>
+											<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
+										</td>
+										<td class="center">
+											<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?= $ext ?>" />
+										</td>
+									</tr>
+								<?php endforeach ;?>
+		
+							</tbody>
+						</table>
+					
+					</div>
+				
+				<?php endforeach ;?>
+			</div>				
+
 		</div>		
 		
-		<!-- Allowed Mimes -->
-		<div class="tabcontent p10">
-			<?php
-				$filemanager_file_types = explode(',',Settings::get('filemanager_file_types'));
-			?>
-
-			<?php foreach($mimes as $type => $mime_list) :?>
-			
-				<h3><?= $type ?></h3>
-
-		
-				<table class="list w340">
-					<thead>
-						<tr>
-							<th class="right"></th>
-							<th>Mime</th>
-							<th class="center">Allowed ?</th>
-						</tr>
-					</thead>
-					<tbody>
-
-						<?php foreach($mime_list as $ext => $mime) :?>
-							<tr>
-								<td class="right pr10"><?= $ext ?> </td>
-								<td>
-									<label for="allowed_type_<?= $ext ?>" class="m0"><?= $mime ?></label>
-								</td>
-								<td class="center">
-									<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?= $ext ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?= $ext ?>" />
-								</td>
-							</tr>
-						<?php endforeach ;?>
-
-					</tbody>
-				</table>
-			
-			<?php endforeach ;?>
-		</div>		
 		
 		<!-- Thumbnails -->
 		<?php if ( ! empty($thumbs)) :?>
-		<div class="tabcontent pt20">
+		<div class="tabcontent pt10">
 
 
 			<div class="tabsidecolumn">
@@ -736,7 +749,7 @@
 	 *
 	 */
 	ION.initAccordion('.toggler', 'div.element', true, 'settingsAccordion1');
-//	ION.initAccordion('.toggler1', 'div.element1', false, 'settingsAccordion2');
+	ION.initAccordion('.toggler1', 'div.element1', false, 'settingsAccordion2');
 
 	/**
 	 * Init help tips on label
