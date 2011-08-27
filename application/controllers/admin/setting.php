@@ -41,7 +41,7 @@ class Setting extends MY_admin
 		parent::__construct();
 		
 		$this->load->config('sitemaps');
-		
+		$this->load->model('config_model', '', true);
 	}
 
 
@@ -462,9 +462,10 @@ class Setting extends MY_admin
 		$this->success(lang('ionize_message_settings_saved'));
 	}
 	
+	
 	// ------------------------------------------------------------------------
-
-
+	
+	
 	/**
 	 * Saves markers (flags)
 	 *
@@ -480,36 +481,123 @@ class Setting extends MY_admin
 		// Answer
 		$this->success(lang('ionize_message_operation_ok'));
 	}
+	
+	
+	// ------------------------------------------------------------------------
+	
+	
+	function save_keys()
+	{
+		// Antispam key
+		$config_items = array('form_antispam_key');
+
+		foreach($config_items as $config_item)
+		{
+			if (config_item($config_item) != $this->input->post($config_item) )
+			{
+				if ($this->config_model->change('ionize.php', $config_item, $this->input->post($config_item)) == FALSE)
+					$this->error(lang('ionize_message_error_writing_ionize_file'));				
+			}
+		
+		}
+
+		// UI panel to update after saving
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'setting/technical'
+		);
+
+		$this->success(lang('ionize_message_settings_saved'));
+	}
 
 
 	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Saves technical settings
-	 *
-	 */
-	function save_technical()
+	function save_article()
 	{
-		$this->load->model('config_model', '', true);
-		$this->load->helper('string_helper');
+		// Settings to save
+		$settings = array('tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats');
 
+		// Save settings to DB
+		$this->_save_settings($settings);
+
+		// Tags allowed in articles
+		$tags = $this->input->post('article_allowed_tags');
+		if ( ! $tags) $tags = array();
+		if (in_array('table', $tags)) $tags = array_merge($tags, array('thead','tbody','tfoot','tr','th','td','caption'));
+		if (in_array('object', $tags)) $tags = array_merge($tags, array('param', 'embed'));
+		if (in_array('dl', $tags)) $tags = array_merge($tags, array('dt','dd'));
+		if (in_array('img', $tags)) $tags = array_merge($tags, array('map','area'));
+		
+		// Standard allowed tags
+		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong'));
+		
+		$article_allowed_tags = array(
+					'name' => 'article_allowed_tags',
+					'content' => implode(',', $tags)
+				);
+		$this->settings_model->save_setting($article_allowed_tags);
+
+		$this->callback = array(
+			'fn' => 'ION.reload',
+			'args' => array('url' => config_item('admin_url'))
+		);
+
+		$this->success(lang('ionize_message_settings_saved'));
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	function save_thumbs()
+	{
+		// Thumbs update
+		$thumbs  = $this->settings_model->get_list(array('name like' => 'thumb_%'));
+		foreach($thumbs as $thumb)
+		{
+			$sizeref = 	$this->input->post('thumb_sizeref_'.$thumb['id_setting']);
+			$size = 	$this->input->post('thumb_size_'.$thumb['id_setting']);
+			$square = 	$this->input->post('thumb_square_'.$thumb['id_setting']);
+			$unsharp = 	$this->input->post('thumb_unsharp_'.$thumb['id_setting']);
+
+			$data = array(
+						'name'	=> 'thumb_'.$this->input->post('thumb_name_'.$thumb['id_setting']),
+						'content' => $sizeref.','.$size.','.$square.','.$unsharp
+					);
+			$this->settings_model->update($thumb['id_setting'], $data);
+		}
+
+		// UI panel to update after saving
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'setting/technical'
+		);
+
+		$this->success(lang('ionize_message_settings_saved'));
+		
+	}
+	
+
+	// ------------------------------------------------------------------------
+
+
+	function save_medias()
+	{
 		// Settings to save
 		$settings = array(	'files_path', 
-							'tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats',
 							'media_thumb_size', 'picture_max_width', 'picture_max_height', 'media_upload_mode',
 							'filemanager_file_types');
-							
 		
 		// Allowed filemanager file extensions
 		$filemanager_file_types = $this->input->post('allowed_type');
+		
 		if (is_array($filemanager_file_types))
 			$this->input->set_post('filemanager_file_types', implode(',', $filemanager_file_types));
 		else
 			$this->input->set_post('filemanager_file_types', '');
-		
-
-
+	
 		// Get the old media path before saving
 		$old_files_path = Settings::get('files_path');
 
@@ -537,82 +625,17 @@ class Setting extends MY_admin
 			$this->input->set_post('files_path', $old_files_path);
 		}
 
-
 		// Save settings to DB
 		$this->_save_settings($settings);
 
-
-
-		// Thumbs update
-		$thumbs  = $this->settings_model->get_list(array('name like' => 'thumb_%'));
-		foreach($thumbs as $thumb)
-		{
-			$sizeref = 	$this->input->post('thumb_sizeref_'.$thumb['id_setting']);
-			$size = 	$this->input->post('thumb_size_'.$thumb['id_setting']);
-			$square = 	$this->input->post('thumb_square_'.$thumb['id_setting']);
-			$unsharp = 	$this->input->post('thumb_unsharp_'.$thumb['id_setting']);
-
-			$data = array(
-						'name'	=> 'thumb_'.$this->input->post('thumb_name_'.$thumb['id_setting']),
-						'content' => $sizeref.','.$size.','.$square.','.$unsharp
-					);
-			$this->settings_model->update($thumb['id_setting'], $data);
-		}
-
-		// Files path
-		if ( $this->input->post('files_path') == FALSE)
-		{
-			$this->error(lang('ionize_message_error_no_files_path'));				
-		}
-		else
-		{
-			if (config_item('files_path') != $this->input->post('files_path') )
-			{
-				if ($this->config_model->change('ionize.php', 'files_path', trim_slashes($this->input->post('files_path')).'/') == FALSE)
-				{
-					$this->error(lang('ionize_message_error_writing_ionize_file'));				
-				}
-			}
-		}		
-		
-		// Antispam key
-		$config_items = array('form_antispam_key');
-
-		foreach($config_items as $config_item)
-		{
-			if (config_item($config_item) != $this->input->post($config_item) )
-			{
-				if ($this->config_model->change('ionize.php', $config_item, $this->input->post($config_item)) == FALSE)
-					$this->error(lang('ionize_message_error_writing_ionize_file'));				
-			}
-		
-		}
-		
-		// Tags allowed in articles
-		$tags = $this->input->post('article_allowed_tags');
-		if ( ! $tags) $tags = array();
-		if (in_array('table', $tags)) $tags = array_merge($tags, array('thead','tbody','tfoot','tr','th','td','caption'));
-		if (in_array('object', $tags)) $tags = array_merge($tags, array('param', 'embed'));
-		if (in_array('dl', $tags)) $tags = array_merge($tags, array('dt','dd'));
-		if (in_array('img', $tags)) $tags = array_merge($tags, array('map','area'));
-		
-		// Standard allowed tags
-		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong'));
-		
-		$article_allowed_tags = array(
-					'name' => 'article_allowed_tags',
-					'content' => implode(',', $tags)
-				);
-		$this->settings_model->save_setting($article_allowed_tags);
-
-
-		
-		$this->callback = array(
-			'fn' => 'ION.reload',
-			'args' => array('url' => config_item('admin_url'))
+		// UI panel to update after saving
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'setting/technical'
 		);
 
 		$this->success(lang('ionize_message_settings_saved'));
+
 	}
 
 
@@ -758,7 +781,6 @@ class Setting extends MY_admin
 	 */
 	function save_maintenance()
 	{
-		$this->load->model('config_model', '', true);
 
 		// Maintenance Mode
 /*		$data = array(
@@ -792,6 +814,8 @@ class Setting extends MY_admin
 	
 	}
 	
+	
+	// ------------------------------------------------------------------------
 	
 	
 	function save_seo_urls()
@@ -848,8 +872,6 @@ class Setting extends MY_admin
 	 */
 	function save_setting()
 	{
-		$this->load->model('config_model', '', true);
-
 		$setting = $this->input->post('setting');
 		$type = $this->input->post('type');
 		$value = (isset($_REQUEST['setting_value'])) ? $_REQUEST['setting_value'] : FALSE;
@@ -901,18 +923,15 @@ class Setting extends MY_admin
 	}
 	
 	
-	
 	// ------------------------------------------------------------------------
 	
-
+	
 	/**
 	 * Saves the Cache settings
 	 *
 	 */
 	function save_cache()
 	{
-		$this->load->model('config_model', '', true);
-
 		if (config_item('cache_expiration') !== $this->input->post('cache_expiration') )
 		{
 			if ($this->config_model->change('ionize.php', 'cache_expiration', $this->input->post('cache_expiration')) == FALSE)
@@ -948,8 +967,6 @@ class Setting extends MY_admin
 
 	function save_admin_url()
 	{
-		$this->load->model('config_model', '', true);
-		
 		$admin_url = $this->input->post('admin_url');
 		
 		if(	$admin_url != "" && preg_match("/^([a-z0-9])+$/i", $admin_url))

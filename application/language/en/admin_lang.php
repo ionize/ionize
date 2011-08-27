@@ -583,6 +583,7 @@ $lang['ionize_label_setting_picture_max_height'] = 'Pictures max. Height';
 $lang['ionize_label_media_upload_mode'] = 'Upload Mode';
 $lang['ionize_label_media_upload_mode_single'] = 'Single File';
 $lang['ionize_label_media_upload_mode_multiple'] = 'Multiple Files';
+$lang['ionize_button_update_thumbs'] = 'Update existing thumbs';
 
 $lang['ionize_onchange_filemanager'] = 'You have to reload the admin panel (CTRL + R) after saving changes.';
 $lang['ionize_onchange_texteditor'] = 'You have to reload the admin panel (CTRL + R) after saving changes.';
