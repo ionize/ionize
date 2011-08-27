@@ -49,25 +49,25 @@ class Installer
 		// Check GET language
 		if (is_array($_GET) && isset($_GET['lang']) )
 		{
-			if (is_file(ROOTPATH.'install/language/'.$_GET['lang'].'/install_lang.php'))
+			if (is_file(ROOTPATH.'application/language/'.$_GET['lang'].'/install_lang.php'))
 				$lang = $_GET['lang'];
 		}
 		
 		$this->template['lang'] = $lang;
 		
 		// Include language file and merge it to language var
-		include('language/'. $lang .'/install_lang.php');
+		include(ROOTPATH.'application/language/'. $lang .'/install_lang.php');
 		
 		$this->lang = array_merge($this->lang, $lang);
 
 
 		// Get all available translations
-		$dirs = scandir('./language');
+		$dirs = scandir(ROOTPATH.'application/language');
 		
 		$languages = array();
 		foreach($dirs as $dir)
 		{
-			if (is_dir('./language/'.$dir) and strpos($dir, '.') === false)
+			if (is_file(ROOTPATH.'application/language/'.$dir.'/install_lang.php') and strpos($dir, '.') === false)
 			{
 				$languages[] = $dir;
 			}
