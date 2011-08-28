@@ -19,6 +19,7 @@ body {
 	font-size: 62.5%;
 	line-height: 18px;
 	color: #000;
+	background: url(../images/installer_bg.jpg);
 	background-color: #d9d9d9;
 }
 
@@ -43,16 +44,16 @@ body {
 
 #content {
 	padding:0px 40px 20px 40px;
-	background: url('../images/installer_content_bg.gif') repeat-y bottom left;
+	background: url('../images/installer_content_bg.png') repeat-y bottom left;
 	overflow: hidden;
 }
 #content-top, #content-bottom {	height:17px;}
 
 #content-top {
-	background: url('../images/installer_content_top.gif') no-repeat top left;
+	background: url('../images/installer_content_top.png') no-repeat top left;
 }
 #content-bottom {
-	background: url('../images/installer_content_bottom.gif') no-repeat top left;
+	background: url('../images/installer_content_bottom.png') no-repeat top left;
 }
 
 #lang {

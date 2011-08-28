@@ -48,6 +48,13 @@ class MY_Controller extends CI_Controller
 
 		$this->load->database();
 
+		if ( ! $this->db->db_select())
+		{
+			$error =& load_class('Exceptions', 'core');
+			echo $error->show_error('Database Error', 'Unable to connect to the specified database : '. $this->db->database, 'error_db');
+			exit;
+		}
+
 		// Models
 		$this->load->model('base_model', '', true);
 		$this->load->model('settings_model', '', true);
@@ -156,7 +163,7 @@ class MY_Controller extends CI_Controller
 
 
 	/**
-	 * Returns true if database settings are correct
+	 * Returns true if database settings seems to be correct
 	 *
 	 */
 	public function test_database_config()
