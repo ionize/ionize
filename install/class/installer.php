@@ -805,8 +805,6 @@ class Installer
 		{
 			$this->db->where(array('lang' => $lang, 'name' => 'site_title'));
 			$query = $this->db->get('setting');
-
-			$query = $this->db->get('page');
 		
 			if ($query->num_rows() == 0)
 			{
