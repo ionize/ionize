@@ -139,6 +139,7 @@ class TagManager_Page extends TagManager
 		if (empty($pages))
 		{
 			show_error('Internal error : <b>No pages found.</b><br/>Solution: <b>Create at least one online page.</b>', 500 );
+			exit;
 		}
 
 		/* Spread authorizations from parents pages to chidrens.

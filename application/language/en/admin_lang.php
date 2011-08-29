@@ -644,6 +644,7 @@ $lang['ionize_help_clear_cache'] = 'Deletes all the cache files.';
 $lang['ionize_help_article_allowed_tags'] = 'Allowed HTML tags in Articles content';
 $lang['ionize_help_media_upload_mode'] = 'If Multiple File hangs, try Single File (no Flash)';
 
+$lang['ionize_text_no_thumbnails'] = 'No thumbnails are currently defined.';
 $lang['ionize_text_allowed_mimes'] = 'The following files types will be available for upload if checked.';
 
 

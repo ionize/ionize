@@ -6,8 +6,18 @@
  *
  */
 
+/* Demo Theme extension
+ *
+ */
+p:after {
+	content:" ¶";
+	color:#ccc;
+}
+  
+
 
 /* Standard Elements 
+ * THESE styles MUST be included in the theme extension
  *
  */
 body, td, pre, p, ul, ol {

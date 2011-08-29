@@ -15,8 +15,8 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/src/typography.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<ion:theme_url />assets/css/style.css" />
 
-	<!-- Milbox CSS -->
-	<link rel="stylesheet" href="<ion:theme_url />assets/css/milkbox/milkbox.css" />
+	<!-- Slimbox CSS -->
+	<link rel="stylesheet" href="<ion:theme_url />javascript/slimbox/css/slimbox.css" />
 
 	<!-- favicon -->
 	<link rel="shortcut icon" href="<ion:theme_url />assets/images/favicon.ico" type="image/x-icon" />
@@ -25,7 +25,8 @@
 	<script type="text/javascript" src="<ion:theme_url />javascript/mootools-core-1.3.2-full-nocompat-yc.js"></script>
 	<script type="text/javascript" src="<ion:theme_url />javascript/mootools-more-1.3.2.1-yc.js"></script>
 	<script type="text/javascript" src="<ion:theme_url />javascript/wall.js"></script>
-	<script type="text/javascript" src="<ion:theme_url />javascript/milkbox-yc.js"></script>
+
+	<script type="text/javascript" src="<ion:theme_url />javascript/slimbox/js/slimbox.js"></script>
 
 	<!-- swfObject -->
 	<script type="text/javascript" src="<ion:theme_url />flash/player/swfobject.js"></script>

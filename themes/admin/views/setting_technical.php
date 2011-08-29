@@ -143,7 +143,6 @@
 		
 		
 		<!-- Thumbnails -->
-		<?php if ( ! empty($thumbs)) :?>
 		<div class="tabcontent pt10">
 
 
@@ -219,90 +218,97 @@
 			
 				<form name="thumbsSettingsForm" id="thumbsSettingsForm" method="post">
 
-					<p class="h30"><input id="thumbsSettingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_update_thumbs') ?>" /></p>
+					<?php if ( ! empty($thumbs)) :?>
 					
-					<ul class="list" id="thumbs">
+						<p class="h30"><input id="thumbsSettingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_update_thumbs') ?>" /></p>
 						
-						<?php 
-							foreach($thumbs as $thumb)
-							{
-								$settings = explode(",", $thumb['content']);
-								$setting = array(
-									'dir' =>	substr($thumb['name'], strpos($thumb['name'], '_') + 1 ),
-									'sizeref' => 	$settings[0],
-									'size' => 	$settings[1],
-									'square' => isset($settings[2]) ? $settings[2] : '0',
-									'unsharp' => isset($settings[3]) ? $settings[3] : '0'
-								);
-								
-							?>
+						<ul class="list" id="thumbs">
 							
-							<li id="<?=$thumb['id_setting']?>" class="">	
+							<?php 
+								foreach($thumbs as $thumb)
+								{
+									$settings = explode(",", $thumb['content']);
+									$setting = array(
+										'dir' =>	substr($thumb['name'], strpos($thumb['name'], '_') + 1 ),
+										'sizeref' => 	$settings[0],
+										'size' => 	$settings[1],
+										'square' => isset($settings[2]) ? $settings[2] : '0',
+										'unsharp' => isset($settings[3]) ? $settings[3] : '0'
+									);
+									
+								?>
 								
-								<!-- Dir -->
-								<dl>
-									<dt>
-										<label for="thumb_name_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_dir')?></label>
-									</dt>
-									<dd>
-										<input name="thumb_name_<?=$thumb['id_setting']?>" id="thumb_name_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['dir'] ?>"/>
-										<img title="<?=lang('ionize_label_delete')?>" id="delThumb_<?=$thumb['id_setting']?>" class="inputicon pointer right" src="<?= theme_url() ?>images/icon_16_delete.png" />
-									</dd>
-								</dl>
+								<li id="<?=$thumb['id_setting']?>" class="">	
+									
+									<!-- Dir -->
+									<dl>
+										<dt>
+											<label for="thumb_name_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_dir')?></label>
+										</dt>
+										<dd>
+											<input name="thumb_name_<?=$thumb['id_setting']?>" id="thumb_name_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['dir'] ?>"/>
+											<img title="<?=lang('ionize_label_delete')?>" id="delThumb_<?=$thumb['id_setting']?>" class="inputicon pointer right" src="<?= theme_url() ?>images/icon_16_delete.png" />
+										</dd>
+									</dl>
+					
+									<!-- Size -->
+									<dl>
+										<dt>
+											<label for="thumb_size_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_size')?></label>
+										</dt>
+										<dd>
+											<input name="thumb_size_<?=$thumb['id_setting']?>" id="thumb_size_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['size'] ?>"/>
+										</dd>
+									</dl>
+					
+									<!-- Size Reference -->
+									<dl>
+										<dt>
+											<label><?=lang('ionize_label_thumb_sizeref')?></label>
+										</dt>
+										<dd>
+											<input <?php if ($setting['sizeref'] == 'width'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>1" value="width" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
+											<input <?php if ($setting['sizeref'] == 'height'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>2" value="height" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
+										</dd>
+									</dl>
 				
-								<!-- Size -->
-								<dl>
-									<dt>
-										<label for="thumb_size_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_size')?></label>
-									</dt>
-									<dd>
-										<input name="thumb_size_<?=$thumb['id_setting']?>" id="thumb_size_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['size'] ?>"/>
-									</dd>
-								</dl>
-				
-								<!-- Size Reference -->
-								<dl>
-									<dt>
-										<label><?=lang('ionize_label_thumb_sizeref')?></label>
-									</dt>
-									<dd>
-										<input <?php if ($setting['sizeref'] == 'width'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>1" value="width" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
-										<input <?php if ($setting['sizeref'] == 'height'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>2" value="height" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
-									</dd>
-								</dl>
-			
-								<!-- Square ? -->
-								<dl>
-									<dt>
-										<label for="thumb_square_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_square')?></label>
-									</dt>
-									<dd>
-										<input <?php if ($setting['square'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_square_<?=$thumb['id_setting']?>" value="true" />
-									</dd>
-								</dl>
-				
-								<!-- Unsharp ? -->
-								<dl>
-									<dt>
-										<label for="thumb_unsharp_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_unsharp')?></label>
-									</dt>
-									<dd>
-										<input <?php if ($setting['unsharp'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_unsharp_<?=$thumb['id_setting']?>" value="true" />
-									</dd>
-								</dl>
-								
-							</li>
-						
+									<!-- Square ? -->
+									<dl>
+										<dt>
+											<label for="thumb_square_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_square')?></label>
+										</dt>
+										<dd>
+											<input <?php if ($setting['square'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_square_<?=$thumb['id_setting']?>" value="true" />
+										</dd>
+									</dl>
+					
+									<!-- Unsharp ? -->
+									<dl>
+										<dt>
+											<label for="thumb_unsharp_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_unsharp')?></label>
+										</dt>
+										<dd>
+											<input <?php if ($setting['unsharp'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_unsharp_<?=$thumb['id_setting']?>" value="true" />
+										</dd>
+									</dl>
+									
+								</li>
 							
-							<?php
-							}
-							?>
-				
-					</ul>
+								
+								<?php
+								}
+								?>
+					
+						</ul>
+					
+					<?php else :?>
+					
+						<p class="lite"><?= lang('ionize_text_no_thumbnails') ?></p>
+					
+					<?php endif ;?>	
 				</form>
 			</div>
 		</div>		
-		<?php endif ;?>	
 		
 
 		<!-- Article management -->

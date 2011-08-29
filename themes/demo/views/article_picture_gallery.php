@@ -16,7 +16,7 @@
 	<ion:medias type="picture">
 		
 		<!-- Link to the full sized picture -->
-		<a href="<ion:src />" data-milkbox="milkbox:g1" title="<ion:title function="addslashes" /> : <ion:description function="addslashes" />" class="imgborder gallery-thumb<?php if (<ion:index/>%5 == 0) :?> last<?php endif ;?>">
+		<a href="<ion:src />" rel="lightbox" data-milkbox="milkbox:g1" title="<ion:title function="addslashes" /> : <ion:description function="addslashes" />" class="imgborder gallery-thumb<?php if (<ion:index/>%5 == 0) :?> last<?php endif ;?>">
 
 			<!-- 
 				The displayed thumb comes from the folder 145
