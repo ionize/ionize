@@ -430,6 +430,21 @@ ION.append({
 		}
 	},
 	
+/**
+ * Todo : Write this method.
+ * Attach function on droppable
+ * 
+ * Todo 2 : Rewrite addDragnDrop()
+ * in tree structure first check if droppable has this function end execute it
+ * if droppable doesn't have function then execute draggable function
+ * if droppable have function than don't execute draggable functions
+ *
+ */
+	linkDropMethod: function(droppable, functions)
+	{
+	
+	},
+	
 	/**
 	 * Adds drag'n'drop functionnality to one element
 	 *

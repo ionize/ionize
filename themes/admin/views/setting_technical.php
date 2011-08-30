@@ -874,16 +874,20 @@
 	 * See ionize_window.js for more information about this method
 	 *
 	 */
-	$('thumbs').getElements('li').each(function(item)
+	if ($('thumbs'))
 	{
-		var id = item.id;
-		
-		ION.addConfirmation('confirm' + id, 
-							'delThumb_' + id, 
-							'setting/delete_thumb/' + id, 
-							'ionize_confirm_element_delete'
-							);
-	});
+		$('thumbs').getElements('li').each(function(item)
+		{
+			var id = item.id;
+			
+			ION.addConfirmation('confirm' + id, 
+								'delThumb_' + id, 
+								'setting/delete_thumb/' + id, 
+								'ionize_confirm_element_delete'
+								);
+		});
+	}
+
 
 	/**
 	 * Restore tinyButtons toolbar to default config
