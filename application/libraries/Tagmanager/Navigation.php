@@ -18,6 +18,10 @@
  * @category	TagManager Libraries
  *
  */
+
+require_once APPPATH.'libraries/Pages.php';
+
+
 class TagManager_Navigation extends TagManager
 {
 
@@ -61,6 +65,9 @@ class TagManager_Navigation extends TagManager
 		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
 		$helper = (isset($tag->attr['helper'])) ? $tag->attr['helper'] : 'navigation';
 		
+		// Get the asked lang if any
+		$lang = (isset($tag->attr['lang'])) ? $tag->attr['lang'] : FALSE;
+		
 		if ($helper == 'false' OR $no_helper == TRUE)
 			$helper = FALSE;
 		
@@ -92,8 +99,8 @@ class TagManager_Navigation extends TagManager
 		 * Getting menu data
 		 *
 		 */
-		// Page from locals
-		$global_pages = $tag->globals->pages;
+		// Pages : Current lang OR asked lang code pages.
+		$global_pages = ($lang !== FALSE && Settings::get_lang() != $lang) ? Pages::get_pages($lang) : $tag->globals->pages;
 
 		// Add the active class key
 		$id_current_page = ( ! empty($current_page['id_page'])) ? $current_page['id_page'] : FALSE;
@@ -487,7 +494,8 @@ class TagManager_Navigation extends TagManager
 		return $tag->locals->page['absolute_url'];
 	}
 	
-	
+
+	// ------------------------------------------------------------------------
 
 }
 

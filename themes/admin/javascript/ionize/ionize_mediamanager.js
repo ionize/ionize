@@ -50,7 +50,8 @@ var IonizeMediaManager = new Class(
 							 'file': options.fileContainer
 							});
 		// Filemanager mode
-		this.mode =			options.mode;
+//		this.mode =			options.mode;
+		this.mode = 'mootools-filemanager';
 
 		// Filemanager opening buttons
 		var self = this;
