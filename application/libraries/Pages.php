@@ -109,7 +109,7 @@ class Pages
 					{
 						// Get the article to which this page links
 						$rel = explode('.', $page['link_id']);
-						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
+						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], $lang);
 
 						// Of course, only if not empty...
 						if ( ! empty($target_article))
@@ -117,10 +117,12 @@ class Pages
 							// Get the article's parent page
 							$page['absolute_url'] = '';
 							
-							foreach(self::$context->globals->pages as $p)
+							foreach($pages as $p)
 							{
 								if ($p['id_page'] == $target_article['id_page'])
+								{
 									$page['absolute_url'] = $p['url'] . '/' . $target_article['url'];
+								}
 							}
 						}
 					}
@@ -143,7 +145,7 @@ class Pages
 					}
 					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 					{
-						$page['absolute_url'] =  Settings::get_lang(). '/' . $page['absolute_url'];
+						$page['absolute_url'] =  $lang. '/' . $page['absolute_url'];
 					}
 					$page['absolute_url'] = base_url() . $page['absolute_url'];
 
