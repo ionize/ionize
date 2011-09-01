@@ -130,6 +130,7 @@ FileManager.implement({
 				//.set('action', tx_cfg.url)
 				.set('method', 'post')
 				.set('enctype', 'multipart/form-data')
+				.set('encoding', 'multipart/form-data')		// IE7
 				.set('target', 'dummyframe')
 				.setStyles({
 					'float': 'left',

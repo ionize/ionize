@@ -844,7 +844,9 @@ var FileManager = new Class({
 	 */
 	relaySingleOrDoubleClick: function(e, self, dg_el, file, clicks)
 	{
-		if (e) e.stop();
+		// IE7 / IE8 event problem
+		if( ! Browser.ie)
+			if (e) e.stop();
 
 		this.diag.log('on relaySingleOrDoubleClick file = ', file, ', current dir: ', this.CurrentDir, ', # clicks: ', clicks);
 
@@ -2723,7 +2725,7 @@ var FileManager = new Class({
 
 					var position = el.getPosition();
 					var dpos = el.retrieve('delta_pos');
-					this.diag.log('~~~ positions at start: ', position, dpos, e, 1 * this.browserScroll.contains(el));
+					// this.diag.log('~~~ positions at start: ', position, dpos, e, 1 * this.browserScroll.contains(el));
 
 					el.addClass('drag').setStyles({
 						'z-index': this.options.zIndex + 1500,
@@ -2741,7 +2743,7 @@ var FileManager = new Class({
 
 					el.fade(0.7).addClass('move');
 
-					this.diag.log('ENABLE keyboard up/down on drag start');
+					// this.diag.log('ENABLE keyboard up/down on drag start');
 
 					// FIX wrong visual when CONTROL key is kept depressed between drag&drops: the old code discarded the relevant keyboard handler; we simply switch visuals but keep the keyboard handler active.
 					// This state change will be reverted in revert_drag_n_drop().

@@ -86,7 +86,6 @@ class Element_definition extends MY_Admin {
 
 		$this->callback = array
 		(
-/*
 					array(
 						'fn' => 'ION.HTML',
 						'args' => array (
@@ -98,8 +97,7 @@ class Element_definition extends MY_Admin {
 							)
 						)	
 					)
-*/
-
+/*
 			array(
 				'fn' => 'ION.insertDomElement',
 				'args' => array (
@@ -108,6 +106,7 @@ class Element_definition extends MY_Admin {
 					$html
 				)	
 			)
+*/
 		);
 		
 		$this->response();

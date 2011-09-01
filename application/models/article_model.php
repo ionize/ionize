@@ -151,7 +151,7 @@ class Article_model extends Base_model
 			$this->_set_filter($filter);
 
 		// Add the 'date' field to the query
-		$this->db->select('IF(logical_date !=0, logical_date, IF(publish_on !=0, publish_on, created )) AS date');
+		$this->db->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
 
 		// Make sure we have only one time each element
 		$this->db->distinct();
@@ -175,15 +175,20 @@ class Article_model extends Base_model
 		$this->db->select($this->type_table.'.type');
 		$this->db->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
 
-
 		// Where ?
 		if (is_array($where) )
 		{
 			foreach ($where as $key => $value)
 			{
-				// id_page must be searched in page_article table
 				if (strpos($key, 'id_page') !== FALSE)
+				{
+					// id_page must be searched in page_article table
 					$key = str_replace('id_page', $this->parent_table.'.id_page', $key);
+					
+					// Add article's context page views
+					$this->db->select('article_list_view, article_view');
+					$this->db->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
+				}
 				
 				$protect = true;
 				$null = FALSE;
@@ -1393,11 +1398,11 @@ class Article_model extends Base_model
 			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
 				$this->db->where($this->lang_table.'.online', '1');		
 	
-			$this->db->where('((publish_off > ', 'now()', FALSE);
-			$this->db->or_where('publish_off = ', '0)' , FALSE);
+			$this->db->where('((article.publish_off > ', 'now()', FALSE);
+			$this->db->or_where('article.publish_off = ', '0)' , FALSE);
 		
-			$this->db->where('(publish_on < ', 'now()', FALSE);
-			$this->db->or_where('publish_on = ', '0))' , FALSE);
+			$this->db->where('(article.publish_on < ', 'now()', FALSE);
+			$this->db->or_where('article.publish_on = ', '0))' , FALSE);
 		}	
 	}
 

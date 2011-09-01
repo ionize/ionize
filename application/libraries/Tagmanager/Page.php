@@ -161,7 +161,6 @@ class TagManager_Page extends TagManager
 				// Page
 				if ($page['link_type'] == 'page')
 				{
-
 					if ($page = array_get(self::$context->globals->pages, $page['link_id'], 'id_page'))
 					{
 						redirect($page['absolute_url']);
@@ -170,20 +169,30 @@ class TagManager_Page extends TagManager
 				// Article
 				if ($page['link_type'] == 'article')
 				{
+					if (count(self::$uri_segments) == 1)
+					{
+						redirect($page['absolute_url']);
+					}
+/*				
 					$rel = explode('.', $page['link_id']);
-					
-					if ($page = array_get(self::$context->globals->pages, $rel[0], 'id_page'))
+
+					if ($article_page = array_get(self::$context->globals->pages, $rel[0], 'id_page'))
 					{
 						$articles =  self::$ci->article_model->get_lang_list
 						(
 							array('id_article' => $rel[1]), 
 							Settings::get_lang()
 						);
+						
 						self::init_articles_urls($articles);
 						$article = array_shift($articles);
-						
-						redirect($article['url']);
+
+						if ($article['url'] != current_url())
+						{
+							redirect($article['url']);
+						}
 					}
+*/
 				}	
 			}
 		}
@@ -564,22 +573,36 @@ class TagManager_Page extends TagManager
 			}
 		}
 		
+		$nb_articles = count($articles);
 		// Correct the articles URLs
-		if (count($articles) > 0)
+		if ($nb_articles > 0)
 		{
 			self::init_articles_urls($articles);
 		}
 		
+//trace($articles);
 		
 		// Here, we are in an article list configuration : More than one article, page display
 		// If the article-list view exists, we will force the article to adopt this view.
 		// Not so much clean to do that in the get_article funtion but for the moment just helpfull...
-		if (count($articles) > 1 && $keep_view == FALSE)
-		{
-			if ( ! empty($tag->locals->page['article_list_view']) OR $list_view !== FALSE )
-			{
+//		if (count($articles) > 1 && $keep_view == FALSE)
+//		{
+//			if ( ! empty($tag->locals->page['article_list_view']) OR $list_view !== FALSE )
+//			{
 				foreach ($articles as $k=>$article)
 				{
+					if (empty($article['view']))
+					{
+						if ($nb_articles > 1 && ! empty($article['article_list_view']))
+						{
+							$articles[$k]['view'] = $article['article_list_view'];
+						}
+						else if (! empty($article['article_view']))
+						{
+							$articles[$k]['view'] = $article['article_view'];
+						}
+					}
+					/*
 					// Only do this for articles from current page
 					if ($tag->locals->page['id_page'] == $article['id_page'])
 					{
@@ -593,9 +616,10 @@ class TagManager_Page extends TagManager
 							$articles[$k]['view'] = $tag->locals->page['article_list_view'];
 						}
 					}
+					*/
 				}
-			}
-		}
+//			}
+//		}
 
 		return $articles;
 	}
@@ -804,6 +828,19 @@ class TagManager_Page extends TagManager
 		return $articles;
 	}
 
+	/**
+	 * Get one article from the URL
+	 *
+	 */
+	function get_article_from_url()
+	{
+		$uri_segments = self::$uri_segments;
+		
+		trace(count($uri_segments));
+		
+		$name = array_pop(array_slice($uri_segments, -1));
+	
+	}
 
 	// ------------------------------------------------------------------------
 

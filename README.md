@@ -43,5 +43,6 @@ These instruction takes in account that this version is in developement.
 ### Code Migration
 
 * From Ionize 0.9.6
-  * Articles Tag : Change your <ion:article filter="" > attributes from "title:!=''" to "title !=''" (remove ":")
+  * Articles Tag : Change your <ion:article filter="title:!=''" > attributes from "title:!=''" to "title !=''" (remove ":")
+  * Articles Tag : Change <ion:article filter="type:='your_type'"> to  <ion:article type="your_type" >
   * Navigation Tag : Add the "level" attribute : <ion:navigation level="0" />

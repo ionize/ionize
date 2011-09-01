@@ -39,7 +39,7 @@ $width = (100 / $nbLang);
 	<li class="sortme element element<?= $id_element ?>" id="element<?= $id_element ?>" rel="<?= $id_element ?>">
 
 		<a class="icon delete right absolute mr10" rel="<?= $id_element ?>"></a>
-		<a class="icon drag left absolute"></a>
+		<img class="icon drag left absolute" src="<?= theme_url() ?>images/icon_16_ordering.png" />
 		<div style="position:absolute;top:3px;left:40px;font-size:20px;color:#ddd;"><?= $element['ordering'] ?></div>
 
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">
@@ -370,8 +370,13 @@ $width = (100 / $nbLang);
 	 * itemManager
 	 *
 	 */
-	var elementsManager<?= $id_def ?> = new ION.ItemManager({container: 'elements<?= $id_def ?>', 'element':'element', 'parent_element': '<?= $parent ?>', 'id_parent':'<?= $id_parent ?>'});
-	elementsManager<?= $id_def ?>.makeSortable();
+	var elementsManager<?= $id_def ?> = new ION.ItemManager({
+		'container': 'elements<?= $id_def ?>', 
+		'element':'element', 
+		'parent_element': '<?= $parent ?>', 
+		'id_parent':'<?= $id_parent ?>',
+		'sortable': true
+	});
 
 
 	// Add toggler to each definition

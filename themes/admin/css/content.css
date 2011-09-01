@@ -691,7 +691,9 @@ table.list div.content ul{
 	background-image: url(../images/tabs_content_gray.gif)	;
 }
 /* Gray version */
-.mainTabs.transparent,
+.mainTabs.transparent {
+	background: url(../images/tabs_bg.gif) 0 0;
+}
 .mainTabs.transparent .tab-menu li,
 .mainTabs.transparent .tab-menu li.selected,
 .mainTabs.transparent .tab-menu li a,

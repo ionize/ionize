@@ -35,6 +35,7 @@ class System_check extends MY_admin
 		$this->load->model('system_check_model', '', true);
 		$this->load->model('menu_model', '', true);
 		$this->load->model('page_model', '', true);
+		$this->load->model('article_model', '', true);
 		$this->load->model('config_model', '', true);
 		
 		// Libraries
@@ -313,13 +314,94 @@ class System_check extends MY_admin
 					'Check complete !'
 				)
 			)			
+
+			/* TODO : Add this correction in another "system tools block"
+			array (
+				'fn' => 'ION.JSON',
+				'args' => array	(
+					'system_check/check_views'
+				)
+			)
+			*/			
 		);
 		
 		$this->response();
 	}
 	
 	
-	
+	/**
+	 * Checks views of both pages and articles
+	 *
+	 */
+	function check_views()
+	{
+		$nb = 0;
+		
+		$result = array(
+			'title' => lang('ionize_title_check_views'),
+			'result_status' => 'success'
+		);
+		
+		$views_folder = (FCPATH.'themes/'.Settings::get('theme').'/views/');
+		
+		// Check and correct page's views
+		$pages = $this->page_model->get_list();
+		
+		foreach($pages as $page)
+		{
+			if ( ! empty($page['view']) &&  ! is_file($views_folder.$page['view'].EXT))
+			{
+				$this->db->set('view', '');
+				$this->db->where('id_page', $page['id_page']);
+				$nb += $this->db->update('page');
+			}
+		}
+		
+		// Check and correct article's views
+		$article_contexts = $this->article_model->get_all_context();
+		
+		foreach($article_contexts as $context)
+		{
+			if ( ! empty($context['view']) && ! is_file($views_folder.$page['view'].EXT))
+			{
+				$this->db->set('view', '');
+				$this->db->where(array(
+					'id_page' => $context['id_page'],
+					'id_article' => $context['id_article']
+				));
+				$nb += $this->db->update('page_article');
+			}
+		}
+		
+		// Correct
+		if ($nb > 0)
+			$result['result_text'] = lang('ionize_message_check_corrected');
+		else
+			$result['result_text'] = lang('ionize_message_check_ok');
+		
+		// Result view
+		$view = $this->load->view('system_check_result', $result, TRUE);
+
+
+		$this->callback = array(
+			array (
+				'fn' => 'ION.appendDomElement',
+				'args' => array	(
+					'system_check_report',
+					$view
+				)
+			),
+			array (
+				'fn' => 'ION.notification',
+				'args' => array	(
+					'success',
+					'Check complete !'
+				)
+			)			
+		);
+		
+		$this->response();
+	}
 	
 	
 	

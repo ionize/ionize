@@ -30,6 +30,8 @@ class TagManager_Element extends TagManager
 	public static $tag_definitions = array
 	(
 		'elements' => 'tag_elements',
+		'elements:index' => 'tag_element_index',
+		'elements:count' => 'tag_element_count',
 		'elements:field' => 'tag_element_field',
 		'elements:fields' => 'tag_element_fields',
 		'elements:fields:attribute' => 'tag_element_fields_attribute'	
@@ -191,7 +193,7 @@ class TagManager_Element extends TagManager
 						$element = $elements['elements'][$i];
 
 						$tag->locals->element = $elements['elements'][$i];
-						$tag->locals->index = $i;
+						$tag->locals->index = $i +1;
 						$tag->locals->count = $limit;
 						$str .= $tag->expand();
 					}
@@ -293,7 +295,19 @@ class TagManager_Element extends TagManager
 
 		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
 	}
+	
+	
+	public static function tag_element_index($tag)
+	{
+		return $tag->locals->index;
+	}
 
+	public static function tag_element_count($tag)
+	{
+		return $tag->locals->count;
+	}
+
+	
 }
 
 /* End of file Element.php */
