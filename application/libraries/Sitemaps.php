@@ -79,30 +79,35 @@ class Sitemaps
 
         if( ! is_null($file_name))
         {
-            $fh = fopen($file_name, 'w');
-            fwrite($fh, $map);
-            fclose($fh);
-
-            if($CI->config->item('sitemaps_filesize_error') && filesize($file_name) > 1024 * 1024 * 10)
+            $fh = @fopen($file_name, 'w');
+            
+            if ($fh !== FALSE )
             {
-                show_error('Your sitemap is bigger than 10MB, most search engines will not accept it.');
-            }
-
-            if($gzip OR (is_null($gzip) && $CI->config->item('sitemaps_gzip')))
-            {
-                $gzdata = gzencode($map, 9);
-                $file_gzip = str_replace("{file_name}", $file_name, $CI->config->item('sitemaps_gzip_path'));
-                $fp = fopen($file_gzip, "w");
-                fwrite($fp, $gzdata);
-                fclose($fp);
-
-                // Delete the uncompressed sitemap
-                unlink($file_name);
-
-                return $file_gzip;
-            }
-
-            return $file_name;
+	            fwrite($fh, $map);
+	            fclose($fh);
+	
+	            if($CI->config->item('sitemaps_filesize_error') && filesize($file_name) > 1024 * 1024 * 10)
+	            {
+	                show_error('Your sitemap is bigger than 10MB, most search engines will not accept it.');
+	            }
+	
+	            if($gzip OR (is_null($gzip) && $CI->config->item('sitemaps_gzip')))
+	            {
+	                $gzdata = gzencode($map, 9);
+	                $file_gzip = str_replace("{file_name}", $file_name, $CI->config->item('sitemaps_gzip_path'));
+	                $fp = fopen($file_gzip, "w");
+	                fwrite($fp, $gzdata);
+	                fclose($fp);
+	
+	                // Delete the uncompressed sitemap
+	                unlink($file_name);
+	
+	                return $file_gzip;
+	            }
+	
+	            return $file_name;
+			}
+			return FALSE;
         }
         else
         {

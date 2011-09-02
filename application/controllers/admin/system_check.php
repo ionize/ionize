@@ -414,6 +414,14 @@ class System_check extends MY_admin
 	
 	}
 	
+	/**
+	 * Check write rights on Sitemap files
+	 *
+	 */
+	function check_sitemap_file()
+	{
+	}
+	
 }
 
 
