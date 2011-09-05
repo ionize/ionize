@@ -178,7 +178,7 @@ class Setting extends MY_admin
 			while ( false !== ($theme = readdir($handle)) )
 			{
 				// make sure we don't map silly dirs like .svn, or . or ..
-				if (substr($theme, 0, 1) != "." && $theme != 'index.html' && substr($theme,0,5) != 'admin')
+				if (substr($theme, 0, 1) != "." && $theme != 'index.html' && $theme != '@eaDir' && substr($theme,0,5) != 'admin')
 					$themes[] = $theme;
 				else if(substr($theme,0,5) == 'admin')
 					$themes_admin[] = $theme;
@@ -1243,7 +1243,7 @@ class Setting extends MY_admin
 			
 			foreach ($iterator as $file)
 			{
-				if ($file->isFile() && (substr($file->getFilename(), 0, 1) != ".") )
+				if ($file->isFile() && (substr($file->getFilename(), 0, 1) != "." && strpos($file->getFilename(), '@') === FALSE) )
 				{
 					// Set a human readable path
 					$path = str_replace($theme_path, '', $file->getPath());

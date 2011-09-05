@@ -1037,6 +1037,7 @@ $lang['ionize_title_check_lang'] = 'Check Languages';
 $lang['ionize_title_check_folder'] = 'Folder';
 $lang['ionize_title_check_page_level'] = 'Check Pages Levels';
 $lang['ionize_title_check_article_context'] = 'Check Articles Contexts';
+$lang['ionize_title_check_views'] = 'Check Views';
 
 $lang['ionize_message_check_corrected'] = ' corrected.';
 $lang['ionize_message_check_ok'] = 'OK';

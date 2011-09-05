@@ -45,13 +45,6 @@ class TagManager_Page extends TagManager
 		'next_article' =>		'tag_next_article',
 		'prev_article' =>		'tag_prev_article',
 		
-		// Languages
-		'languages' =>				'tag_languages',
-		'languages:language' =>		'tag_languages_language',
-		'languages:name' =>			'tag_languages_name',
-		'languages:code' =>			'tag_languages_code',
-		'languages:active_class' =>	'tag_languages_active_class',
-		'languages:url' =>			'tag_languages_url',
 		
 		// Page
 		'id_page' => 			'tag_page_id',
@@ -116,7 +109,6 @@ class TagManager_Page extends TagManager
 	public static function init()
 	{
  		// parent::init('Page');
-		
 		self::$ci =& get_instance(); 
 
 		// Article model
@@ -132,8 +124,6 @@ class TagManager_Page extends TagManager
 		// Get pages and add them to the context
 		self::$context->globals->pages = Pages::get_pages();
 
-// trace(self::$context->globals->pages);		
-		
 // Pagination URI
 //		$uri_config = self::$ci->config->item('special_uri');
 //		$uri_config = array_flip($uri_config);
@@ -270,7 +260,7 @@ class TagManager_Page extends TagManager
 	
 	/**
 	 * Inits articles URLs
-	 * Get the contexts of all given articles and deifne each article correct URL
+	 * Get the contexts of all given articles and define each article correct URL
 	 *
 	 */
 	private function init_articles_urls(&$articles)
@@ -313,6 +303,14 @@ class TagManager_Page extends TagManager
 			{
 				$article['url'] = base_url() . $page['url'] . '/' . $url;			
 			}
+			
+			// All possible article's URLs
+//			$article['absolute_urls'] = array();
+
+//			foreach (Settings::get_online_languages() as $language)
+//			{
+//				$article['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $page['urls'][$language['lang']] . '/' . $article['urls'][$language['lang']];
+//			}
 		}
 	}
 	
@@ -589,6 +587,7 @@ class TagManager_Page extends TagManager
 //		{
 //			if ( ! empty($tag->locals->page['article_list_view']) OR $list_view !== FALSE )
 //			{
+
 				foreach ($articles as $k=>$article)
 				{
 					if (empty($article['view']))
@@ -1258,76 +1257,6 @@ class TagManager_Page extends TagManager
 
 	// ------------------------------------------------------------------------
 
-
-	/**
-	 * Languages tag
-	 * 
-	 * @param	FTL_Binding		The binded tag to parse
-	 *
-	 */
-	public static function tag_languages($tag)
-	{
-		$languages = Settings::get_online_languages();
-		
-		// Current active language class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
-
-		// helper
-		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
-
-		// No helper ?
-		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
-
-		$str = '';
-
-		foreach($languages as &$lang)
-		{
-			$tag->locals->lang = $lang;
-			$tag->locals->url = $lang['url'] = $tag->locals->page['absolute_urls'][$lang['lang']];
-			
-			$tag->locals->active = $lang['active_class'] = ($lang['lang'] == Settings::get_lang('current') ) ? $active_class : '';
-
-			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
-			{
-				$str .= $tag->expand();
-			}
-		}
-
-		// Get helper method
-		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_language_navigation';
-		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-
-		// load the helper
-		self::$ci->load->helper($helper);
-
-		// Return the helper function result
-		if (function_exists($helper_function) && $no_helper === FALSE)
-		{
-			$nav = call_user_func($helper_function, $languages);
-			
-			return self::wrap($tag, $nav);
-		}
-		else
-		{
-			return self::wrap($tag, $str);
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
-	
-
-	/**
-	 * Languages nested tags
-	 * 
-	 * @param	FTL_Binding		The binded tag to parse
-	 *
-	 */
-	public static function tag_languages_language($tag) { return $tag->locals->lang['name']; }
-	public static function tag_languages_name($tag) { return $tag->locals->lang['name']; }
-	public static function tag_languages_code($tag) { return $tag->locals->lang['lang']; }
-	public static function tag_languages_url($tag) { return $tag->locals->url; }
-	public static function tag_languages_active_class($tag) { return $tag->locals->active; }
 
 
 	// ------------------------------------------------------------------------

@@ -485,6 +485,8 @@ class TagManager
 	// ------------------------------------------------------------------------
 
 
+
+
 	/** 
 	 * Get the current page data.
 	 * 
@@ -744,35 +746,21 @@ class TagManager
 		// don't display the lang URL (by default)
 		$lang_url = false;
 
-		// The lang code in the URL is forced by the tag
-		$force_lang = (isset($tag->attr['force_lang'])) ? true : false;
-
-
 		// Set all languages online if connected as editor or more
 		if( Connect()->is('editors', true))
 		{
 			Settings::set_all_languages_online();
 		}
 
-		if (isset($tag->attr['lang']) && strtolower($tag->attr['lang']) == 'true' OR $force_lang === true)
+		if (isset($tag->attr['lang']) && strtolower($tag->attr['lang']) == 'true')
 		{
 			if (count(Settings::get_online_languages()) > 1 )
 			{
-				// forces the lang code to be in the URL, for each language
-//				if ($force_lang === true)
-//				{
-				return base_url() . Settings::get_lang() .'/';
-//				}
-				// More intelligent : Detects if the current lang is the default one and don't return the lang code
-/*
-				else
+				// if the current lang is the default one : don't return the lang code
+				if (Settings::get_lang() != Settings::get_lang('default'))
 				{
-					if (Settings::get_lang() != Settings::get_lang('default'))
-					{
-						return base_url() . Settings::get_lang() .'/';
-					}
+					return base_url() . Settings::get_lang() .'/';
 				}
-*/
 			}
 		}
 
@@ -1279,8 +1267,8 @@ class TagManager
 
 
 	// ------------------------------------------------------------------------
-
-
+	
+	
 	/**
 	 * Wraps a tag value depending on the given HTML tag
 	 *

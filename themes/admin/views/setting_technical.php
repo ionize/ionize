@@ -510,7 +510,7 @@
 
 				<!-- Mail Path -->
 				<div id="emailMailDetails" style="display:none;">
-					<dl class="small">
+					<dl>
 						<dt>
 							<label for="mailpath"><?=lang('ionize_label_mailpath')?></label>
 						</dt>

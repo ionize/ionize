@@ -81,7 +81,14 @@ class Pages
 	
 	// ------------------------------------------------------------------------
 	
-
+	
+	/**
+	 * Inits the Absolutes URLs of each page
+	 *
+	 * @TODO : Rewrite the "absolute_urls" definition so that it takes the internal links in account.
+	 *
+	 *
+	 */
 	public static function init_absolute_urls(&$pages, $lang)
 	{
 		foreach ($pages as &$page)
@@ -176,7 +183,8 @@ class Pages
 					
 					// Set the lang code depending URL (used by language subtag)
 					$page['absolute_urls'] = array();
-	
+					
+					/*
 					foreach (Settings::get_online_languages() as $language)
 					{
 						if ($page['home'] == 1 )
@@ -198,6 +206,7 @@ class Pages
 							$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $page['urls'][$language['lang']];
 						}
 					}
+					*/
 				}
 				else
 				{
@@ -213,7 +222,31 @@ class Pages
 					// Set the lang code depending URL (used by language subtag)
 					$page['absolute_urls'][$lang] = $page['absolute_url'];
 				}
-			}				
+			}
+
+
+			foreach (Settings::get_online_languages() as $language)
+			{
+				if ($page['home'] == 1 )
+				{
+					// Default language : No language code in the URL for the home page
+					if (Settings::get_lang('default') == $language['lang'])
+					{
+						$page['absolute_urls'][$language['lang']] = base_url();
+					}
+					// Other language : The home page has the lang code in URL
+					else
+					{
+						$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'];
+					}
+				}
+				// Other pages : lang code in URL
+				else
+				{
+					$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $page['urls'][$language['lang']];
+				}
+			}
+			
 		}
 	}
 	

@@ -607,15 +607,18 @@ class Translation extends MY_admin
 		foreach($modules as $module)
 		{
 			$paths = glob(MODPATH.$module.'/language/*/');
-			
-			foreach($paths as $path)
+
+			if (is_array($paths))
 			{
-				if (is_file($path.strtolower($module).'_lang'.EXT))
+				foreach($paths as $path)
 				{
-					$path = substr($path, 0, -1);
-					$data[$module][] = array_pop(explode('/', $path));
+					if (is_file($path.strtolower($module).'_lang'.EXT))
+					{
+						$path = substr($path, 0, -1);
+						$data[$module][] = array_pop(explode('/', $path));
+					}
+					
 				}
-				
 			}
 		}
 

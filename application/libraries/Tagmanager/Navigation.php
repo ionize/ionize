@@ -24,20 +24,25 @@ require_once APPPATH.'libraries/Pages.php';
 
 class TagManager_Navigation extends TagManager
 {
+	protected static $uri_segments = array();
 
 	public static $tag_definitions = array
 	(
 		'navigation' => 					'tag_navigation',
-//		'navigation:title' =>				'tag_page_title',			
-//		'navigation:subtitle' =>			'tag_page_subtitle',
 		'navigation:active_class' =>		'tag_navigation_active_class',			
 		'navigation:url' =>					'tag_navigation_url',			
 		'tree_navigation' => 				'tag_tree_navigation',
 		'tree_navigation:active_class' =>	'tag_navigation_active_class',			
-//		'tree_navigation:base_link' =>		'tag_navigation_base_link',			
-//		'tree_navigation:lang_link' =>		'tag_navigation_lang_link',			
 		'sub_navigation' => 				'tag_sub_navigation',
 		'sub_navigation_title' => 			'tag_sub_navigation_title',
+
+		// Languages
+		'languages' =>				'tag_languages',
+		'languages:language' =>		'tag_languages_language',
+		'languages:name' =>			'tag_languages_name',
+		'languages:code' =>			'tag_languages_code',
+		'languages:active_class' =>	'tag_languages_active_class',
+		'languages:url' =>			'tag_languages_url'
 	);
 	
 	
@@ -317,11 +322,10 @@ class TagManager_Navigation extends TagManager
 		
 		// Attribute : Helper to use to print out the tree navigation
 		$helper = (isset($tag->attr['helper']) && $tag->attr['helper'] != '' ) ? $tag->attr['helper'] : 'navigation';
-
+		
 		// Get helper method
 		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_tree_navigation';
 		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-
 		// load the helper
 		self::$ci->load->helper($helper);
 
@@ -496,6 +500,121 @@ class TagManager_Navigation extends TagManager
 	
 
 	// ------------------------------------------------------------------------
+
+	/**
+	 * Languages tag
+	 * 
+	 * @param	FTL_Binding		The binded tag to parse
+	 *
+	 */
+	public static function tag_languages($tag)
+	{
+		$languages = Settings::get_online_languages();
+
+//		$infos = self::get_url_infos();
+		
+		// Current active language class
+		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
+
+		// helper
+		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
+
+		// No helper ?
+		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
+
+		$str = '';
+
+		foreach($languages as &$lang)
+		{
+			$tag->locals->lang = $lang;
+			$tag->locals->url = $tag->locals->page['absolute_urls'][$lang['lang']];
+
+			$tag->locals->active = $lang['active_class'] = ($lang['lang'] == Settings::get_lang('current') ) ? $active_class : '';
+
+			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
+			{
+				$str .= $tag->expand();
+			}
+		}
+
+		// Get helper method
+		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_language_navigation';
+		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
+
+		// load the helper
+		self::$ci->load->helper($helper);
+
+		// Return the helper function result
+		if (function_exists($helper_function) && $no_helper === FALSE)
+		{
+			$nav = call_user_func($helper_function, $languages);
+			
+			return self::wrap($tag, $nav);
+		}
+		else
+		{
+			return self::wrap($tag, $str);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+	
+
+	/**
+	 * Languages nested tags
+	 * 
+	 * @param	FTL_Binding		The binded tag to parse
+	 *
+	 */
+	public static function tag_languages_language($tag) { return $tag->locals->lang['name']; }
+	public static function tag_languages_name($tag) { return $tag->locals->lang['name']; }
+	public static function tag_languages_code($tag) { return $tag->locals->lang['lang']; }
+	public static function tag_languages_url($tag) { return $tag->locals->url; }
+	public static function tag_languages_active_class($tag) { return $tag->locals->active; }
+	
+	
+	/**
+	 * Get the current URL and feed the URL infos
+	 * 
+	 */
+	public static function get_url_infos()
+	{
+		self::$ci =& get_instance(); 
+		
+		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
+		self::$uri_segments = explode('/', $uri);
+
+		// Returned data
+		$infos = array(
+			'type' => 'page',
+			'page' => self::$uri_segments[0],
+			'article' => ''
+		);
+		
+		
+		// Get the special URI config array (see /config/ionize.php)
+		$uri_config = self::$ci->config->item('special_uri');
+
+		// Get the potential special URI
+		$special_uri = (isset(self::$uri_segments[1]) && array_key_exists(self::$uri_segments[1], $uri_config)) ? self::$uri_segments[1] : FALSE;
+		
+		// If a special URI exists, get the articles from it.
+		if ($special_uri !== FALSE)
+		{
+			$infos['type'] = 'special';
+			$infos['page'] = self::$uri_segments[0];
+		}
+		// Get one article through his name in the URL
+		else if (isset(self::$uri_segments[1]))
+		{
+			$infos['type'] = 'article';
+			$infos['page'] = $uri_segments[0];
+			$infos['article'] = self::$uri_segments[1];
+		}
+
+		return $infos;		
+	}
 
 }
 
