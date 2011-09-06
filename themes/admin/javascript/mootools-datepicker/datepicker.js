@@ -627,7 +627,7 @@ var DatePicker = new Class({
 		var d = this.dateFromObject(this.choice);
 		this.input.set('value', this.format(d, this.options.inputOutputFormat));
 		this.visual.set('value', this.format(d, this.options.format));
-		this.options.onSelect(d);
+		this.options.onSelect(d, this.input);
 		this.close(null, true);
 	},
 	

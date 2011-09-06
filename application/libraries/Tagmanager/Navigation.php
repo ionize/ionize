@@ -415,10 +415,10 @@ class TagManager_Navigation extends TagManager
 		}
 
 		// Filter on 'appears'=>'1'
-		$nav_pages = array();
-		if ($display_hidden == FALSE)
+		$nav_pages = $pages;
+		if ($display_hidden === FALSE)
 			$nav_pages = array_values(array_filter($pages, array('TagManager_Page', '_filter_appearing_pages')));
-		
+
 		// $nav_pages = array_filter($nav_pages, create_function('$row','return ($row["id_menu"] == "'. $id_menu .'") ;'));
 		$final_nav_pages = $nav_pages_list = array();
 		foreach($nav_pages as $k => $np)

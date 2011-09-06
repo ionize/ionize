@@ -92,6 +92,15 @@
 </div>
 
 <script type="text/javascript">
+
+/**
+ * Panel toolbox
+ * Init the panel toolbox is mandatory !!! 
+ *
+ */
+ION.initToolbox('empty_toolbox');
+
+
 /**
 * Tabs init
 *

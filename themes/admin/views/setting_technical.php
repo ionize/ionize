@@ -364,7 +364,7 @@
 								'tag1' => array('h1','h2','h3','h4','h5','h6','em','img'),
 								'tag2' => array('iframe','table','object','div','span','dl','pre','code'),
 								'tag3' => array('dfn','samp','kbd','var','cite','q','big','small'),
-								'tag4' => array('link','adress','legend','abbr','sub','sup','ins')
+								'tag4' => array('hr', 'link','adress','legend','abbr','sub','sup','ins')
 							);
 						?>
 	

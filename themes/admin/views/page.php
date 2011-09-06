@@ -1201,10 +1201,12 @@
 		 *
 		 */
 		// Dates
+		/*
 		ION.datePicker.options['onClose'] = function()	
 		{
 			ION.JSON('page/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_page': $('id_page').value});
 		}
+		*/
 		
 		// Page status
 		ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?= $id_page ?>');

@@ -89,3 +89,13 @@ script {
 .justify {
 	text-align: justify;
 }
+
+/* Templates CSS
+ * TinyMCE HTML templates must be in the folder : /themes/your_theme/assets/templates/
+ */
+div.half{
+	width:45%;
+	float:left;
+	margin-right:5%;
+	background-color: #e6eff8;
+}

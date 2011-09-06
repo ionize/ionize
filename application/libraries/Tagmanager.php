@@ -1333,10 +1333,12 @@ class TagManager
 				 	// Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
 					$format = lang('dateformat_'.$format);
 				}
+				/*
 				else
 				{
 					$format = 'Y-m-d H:i:s';
 				}
+				*/
 			}
 
 			$segments = explode(' ', $format);

@@ -80,6 +80,13 @@ ION.append({
 						alignfull : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'justify'}
 					}				
 				};
+				
+				// If users templates, add them to the init object
+				if (getTinyTemplates != false)
+				{
+					settings.template_templates = getTinyTemplates(site_theme_url + 'assets/templates/');
+				}
+
 				return settings;
 				break;
 		}
@@ -159,7 +166,7 @@ ION.append({
 				if (typeOf(tiny) == 'object')
 				{
 //					console.log(tiny.id + ' in memory.');
-					console.log();
+//					console.log();
 				}
 			});
 			

@@ -154,7 +154,7 @@
 				<!-- Date & Time -->
 				<?php if ($field['type'] == '7') :?>
 				
-					<input id="cf_<?= $id ?>" class="inputtext w120 date" type="text" name="cf_<?= $id ?>" value="<?= $field['content']  ?>" />
+					<input id="cf_<?= $id ?>" class="inputtext w120 date" type="text" name="cf_<?= $id ?>" value="<?= $field['content']  ?>" data-item="element" data-id="<?= $id ?>" />
 					
 				<?php endif ;?>
 				

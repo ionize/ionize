@@ -1005,10 +1005,12 @@
 		});
 
 		// Dates
+		/*
 		ION.datePicker.options['onClose'] = function()	
 		{
 			ION.JSON('article/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_article': $('id_article').value});
 		}
+		*/
 
 		// Categories
 		var categoriesSelect = $('categories').getFirst('select');

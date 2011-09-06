@@ -86,6 +86,7 @@
 	 */
 	var base_url = '<?= base_url() ?>';
 	var theme_url = '<?= theme_url() ?>';
+	var site_theme_url = '<?= base_url() . 'themes/' . Settings::get('theme') .'/' ?>';
 	var admin_url = '<?= base_url().Settings::get_lang('current') ?>/<?=config_item('admin_url')?>/';
 	var date_format = '<?= Settings::get('date_format'); ?>';
 

@@ -50,7 +50,9 @@ class Pages
 	public static function get_pages($lang = FALSE)
 	{
 		if ($lang == FALSE) $lang = Settings::get_lang();
-	
+
+		self::$ci->load->model('page_model');
+
 		$pages = self::$ci->page_model->get_lang_list(false, $lang);
 		
 		// Should never be displayed : no pages are set.
