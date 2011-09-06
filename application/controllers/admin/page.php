@@ -129,9 +129,6 @@ class Page extends MY_admin
 	 */
 	function edit($id)
 	{
-		$this->load->model('article_type_model', '', true);
-		
-	
 		// Datas
 		$page = $this->page_model->get($id);
 

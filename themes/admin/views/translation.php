@@ -83,7 +83,7 @@
 										
 									<?php endforeach ;?>
 		
-									<p class="pl5 lite small">
+									<p class="pl5 lite small clear">
 										<?php if( ! empty($theme_terms['views'][$term]) ) :?>
 										
 											<?= $theme_terms['views'][$term] ?>
@@ -93,6 +93,7 @@
 									</p>
 														
 								</div>
+								
 							</ul>
 		
 						<?php endforeach ;?>

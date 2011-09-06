@@ -301,7 +301,11 @@ ION.append({
 				inputOutputFormat:'d.m.Y H:i:s', 
 				allowEmpty:true, 
 				useFadeInOut:false, 
-				positionOffset: {x:-30,y:0}
+				positionOffset: {x:-30,y:0},
+				onSelect: function(d, input)
+				{
+					// console.log(input.getProperty('data-item'));
+				}
 			});
 		}
 

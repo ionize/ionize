@@ -830,7 +830,8 @@ ul.pagination li a.current {
 /* Term UL
 ---------------------------------------------------------------- */
 ul.term {
-	padding-top:4px;margin-bottom:1px;
+	padding-top:4px;
+	margin-bottom:1px;
 	list-style: none;
 }
 ul.term li{
