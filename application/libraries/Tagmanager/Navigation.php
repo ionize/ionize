@@ -527,8 +527,8 @@ class TagManager_Navigation extends TagManager
 		foreach($languages as &$lang)
 		{
 			$tag->locals->lang = $lang;
-			$tag->locals->url = $tag->locals->page['absolute_urls'][$lang['lang']];
 
+			$tag->locals->url = $lang['url'] = $tag->locals->page['absolute_urls'][$lang['lang']];
 			$tag->locals->active = $lang['active_class'] = ($lang['lang'] == Settings::get_lang('current') ) ? $active_class : '';
 
 			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
