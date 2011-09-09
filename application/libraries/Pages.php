@@ -139,11 +139,6 @@ class Pages
 					else
 					{
 						// Get the page to which the page links
-						// $target_page = array_values(array_filter($con->globals->pages, create_function('$row','return $row["id_page"] == "'. $page['link_id'] .'";')));
-						// if ( ! empty($target_page))
-						// {
-						//	$page['absolute_url'] = $target_page[0]['url'];
-						// }
 						$page['absolute_url'] = '';
 						
 						foreach($pages as $p)

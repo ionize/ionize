@@ -265,11 +265,14 @@ class TagManager_Page extends TagManager
 	 */
 	private function init_articles_urls(&$articles)
 	{
+		// Array of all articles IDs
 		$articles_id = array();
 		foreach($articles as $article)
 		{
 			$articles_id[] = $article['id_article'];
 		}
+		
+		// Articles contexts of all articles
 		$pages_context = self::$ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
 		
 		// Add pages contexts data to articles
@@ -284,7 +287,7 @@ class TagManager_Page extends TagManager
 			
 			$page = array_shift($contexts);
 
-			// Find the Main Parent
+			// Get the context of the Main Parent
 			if ( ! empty($contexts))
 			{
 				foreach($contexts as $context)
@@ -293,24 +296,73 @@ class TagManager_Page extends TagManager
 						$page = $context;
 				}
 			}
+			
+			// Basic article URL : its name in fact
 			$url = $article['url'];
-
-			if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+			
+			// Link ?
+			if ($page['link_type'] != '' )
 			{
-				$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $url;
+				// External
+				if ($page['link_type'] == 'external')
+				{
+					$article['url'] = $page['link'];
+				}
+				
+				// Email
+				else if ($page['link_type'] == 'email')
+				{
+					$article['url'] = auto_link($page['link'], 'both', TRUE);
+				}
+				
+				// Internal
+				else
+				{
+					// Article
+					if($page['link_type'] == 'article')
+					{
+						// Get the article to which this page links
+						$rel = explode('.', $page['link_id']);
+						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
+						
+						// Of course, only if not empty...
+						if ( ! empty($target_article))
+						{
+							// Get the article's parent page
+							$parent_page = self::$ci->page_model->get($rel[0], Settings::get_lang('current'));
+							
+							if ( ! empty($parent_page))
+								$article['url'] = $parent_page['url'] . '/' . $target_article['url'];
+						}
+					}
+					// Page
+					else
+					{
+						$target_page = self::$ci->page_model->get($page['link_id'], Settings::get_lang('current'));
+						$article['url'] = $target_page['url'];
+					}
+					
+					// Correct the URL : Lang + Base URL
+					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+					{
+						$article['url'] =  Settings::get_lang('current'). '/' . $article['url'];
+					}
+					$article['url'] = base_url() . $article['url'];
+					
+				}	
 			}
+			// Standard URL
 			else
 			{
-				$article['url'] = base_url() . $page['url'] . '/' . $url;			
-			}
-			
-			// All possible article's URLs
-//			$article['absolute_urls'] = array();
-
-//			foreach (Settings::get_online_languages() as $language)
-//			{
-//				$article['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $page['urls'][$language['lang']] . '/' . $article['urls'][$language['lang']];
-//			}
+				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+				{
+					$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $url;
+				}
+				else
+				{
+					$article['url'] = base_url() . $page['url'] . '/' . $url;			
+				}
+			}			
 		}
 	}
 	

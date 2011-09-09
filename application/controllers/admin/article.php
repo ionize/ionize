@@ -951,7 +951,7 @@ class Article extends MY_admin
 				
 				case 'external' :
 					$link_rel = '';
-					$title = $page['link'];
+					$title = $context['link'];
 					break;
 			}
 
