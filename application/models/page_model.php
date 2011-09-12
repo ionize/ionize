@@ -82,7 +82,7 @@ class Page_model extends Base_model
 		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date']) : '0000-00-00';
 
 		// Creation date
-		if( ! ($data['id_page']) )
+		if( ! $data['id_page'] OR $data['id_page'] == '' )
 		{
 			$data['created'] = date('Y-m-d H:i:s');
 		}

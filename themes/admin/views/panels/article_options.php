@@ -15,26 +15,26 @@
 		<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
 			<dl class="small compact">
 				<dt><label><?= lang('ionize_label_date') ?></label></dt>
-				<dd><?= humanize_mdate($logical_date, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($logical_date, '%H:%m:%s') ?></span></dd>
+				<dd><?= humanize_mdate($logical_date, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($logical_date, '%H:%i:%s') ?></span></dd>
 			</dl>
 		<?php endif ;?>
 
 		<dl class="small compact">
 			<dt><label><?= lang('ionize_label_created') ?></label></dt>
-			<dd><?= humanize_mdate($created, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($created, '%H:%m:%s') ?></span></dd>
+			<dd><?= humanize_mdate($created, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($created, '%H:%i:%s') ?></span></dd>
 		</dl>
 
 		<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
 			<dl class="small compact">
 				<dt><label><?= lang('ionize_label_updated') ?></label></dt>
-				<dd><?= humanize_mdate($updated, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($updated, '%H:%m:%s') ?></span></dd>
+				<dd><?= humanize_mdate($updated, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($updated, '%H:%i:%s') ?></span></dd>
 			</dl>
 		<?php endif ;?>
 		
 		<?php if (humanize_mdate($publish_on, Settings::get('date_format')) != '') :?>
 			<dl class="small compact">
 				<dt><label><?= lang('ionize_label_publish_on') ?></label></dt>
-				<dd><?= humanize_mdate($publish_on, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($publish_on, '%H:%m:%s') ?></span></dd>
+				<dd><?= humanize_mdate($publish_on, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($publish_on, '%H:%i:%s') ?></span></dd>
 			</dl>
 		<?php endif ;?>
 	
@@ -197,7 +197,7 @@
 				<label for="logical_date"><?= lang('ionize_label_date') ?></label>
 			</dt>
 			<dd>
-				<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+				<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
 			</dd>
 		</dl>
 		<dl class="small">
@@ -205,7 +205,7 @@
 				<label for="publish_on"><?= lang('ionize_label_publish_on') ?></label>
 			</dt>
 			<dd>
-				<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?= humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+				<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?= humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s') ?>" />
 			</dd>
 		</dl>
 	
@@ -214,7 +214,7 @@
 				<label for="publish_off"><?= lang('ionize_label_publish_off') ?></label>
 			</dt>
 			<dd>
-				<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+				<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s') ?>" />
 			</dd>
 		</dl>
 	
@@ -249,7 +249,7 @@
 				<label for="comment_expire"><?= lang('ionize_label_comment_expire') ?></label>
 			</dt>
 			<dd>
-				<input id="comment_expire" name="comment_expire" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($comment_expire, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+				<input id="comment_expire" name="comment_expire" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($comment_expire, Settings::get('date_format'). ' %H:%i:%s') ?>" />
 			</dd>
 		</dl>
 

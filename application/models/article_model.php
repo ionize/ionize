@@ -621,7 +621,7 @@ class Article_model extends Base_model
 	function save($data, $lang_data) 
 	{
 		// New article : Created field
-		if( ! $data['id_article'] )
+		if( ! $data['id_article'] OR $data['id_article'] == '')
 			$data['created'] = $data['updated'] = date('Y-m-d H:i:s');
 		// Existing article : Update date
 		else

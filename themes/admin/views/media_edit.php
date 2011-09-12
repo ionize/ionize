@@ -161,7 +161,7 @@ if($type == 'picture')
 			<label for="date_<?= $type.$id_media ?>"><?=lang('ionize_label_date')?></label>
 		</dt>
 		<dd>
-			<input id="date_<?= $type.$id_media ?>" name="date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($date, Settings::get('date_format'). ' %H:%m:%s') ?>" />
+			<input id="date_<?= $type.$id_media ?>" name="date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
 		</dd>
 	</dl>
 
