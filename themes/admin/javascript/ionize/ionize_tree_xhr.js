@@ -10,8 +10,6 @@ ION.TreeXhr = new Class({
 
 	Implements: [Events, Options],
 	
-//	options: ION.options,
-	
 	/**
 	 * @constructor
 	 *
@@ -21,7 +19,6 @@ ION.TreeXhr = new Class({
 	 */
 	initialize: function(container, id_menu)
 	{
-//		this.setOptions(options);
 		this.container = $(container);
 		this.container.store('tree', this);
 		
@@ -85,7 +82,8 @@ ION.TreeXhr = new Class({
 				});
 				
 				var parentContainer = self.getParentContainer(id_parent);
-
+				
+				// Set the item managers (see ION.ItemManager)
 				self.itemManagers['page'][pageContainer.id] = new ION.ItemManager({'container': pageContainer.id, 'element':'page', 'sortable':true });
 				self.itemManagers['article'][articleContainer.id] = new ION.ArticleManager({ 'container': articleContainer.id, 'id_parent': id_parent});
 
@@ -244,9 +242,6 @@ ION.TreeXhr = new Class({
 			var iconUnlink = this.icon_Model.clone().adopt(new Element('a', {'class': 'unlink', 'rel': rel}));
 			action.adopt(iconUnlink);
 
-			// Actions
-//			this.addArticleActionLinks(action);
-			
 			// File icon
 			if (element.indexed == '0') icon.addClass('sticky');
 			else icon.addClass('file');
@@ -287,11 +282,6 @@ ION.TreeXhr = new Class({
 		{
 			(container.retrieve('sortables')).addItems(li);
 		}
-//		else
-//		{
-//			if (type == 'page')	this.itemManagers[type][container.id] = new ION.ItemManager({'container': container.id, 'element':'page', 'sortable':true });
-//			else if (type == 'article') this.itemManagers[type][container.id] = new ION.ArticleManager({ 'container': container.id , 'id_parent': id_parent});
-//		}
 
 		// The element was dynamically inserted through XHR
 		if (typeOf(element.inserted) != 'null')
@@ -299,7 +289,6 @@ ION.TreeXhr = new Class({
 			if (typeOf(this.itemManagers[type][container.id]) != 'null')
 				(this.itemManagers[type][container.id]).init();
 		}
-
 		
 		// Mouse over effect : Show / Hide actions
 		this.addMouseOver(li);
@@ -393,8 +382,6 @@ ION.TreeXhr = new Class({
 		{
 			e.stop();
 			
-//			ION.HTML(admin_url + type + '/edit/' + a.getProperty('rel'), {}, {'update':p});
-
 			MUI.Content.update({
 				'element': p,
 				'url': admin_url + type + '/edit/' + a.getProperty('rel'),
@@ -442,24 +429,8 @@ ION.TreeXhr = new Class({
 			});
 		});
 		
-		// Online / Offline
-//		a = el.getElement('a.status');
-//		ION.initRequestEvent(a, admin_url + 'page/switch_online/' + a.getProperty('rel'));
 	},
 
-/*	
-	addArticleActionLinks: function(el)
-	{
-		// Status
-		var a = el.getElement('a.status');
-		var rel = (a.getProperty('rel')).split(".");
-		ION.initRequestEvent(a, admin_url + 'article/switch_online/' + rel[0] + '/' + rel[1]);
-
-		// Unlink
-		a = el.getElement('a.unlink');
-		ION.initRequestEvent(a, admin_url + 'article/unlink/' + rel[0] + '/' + rel[1], {}, {message:Lang.get('ionize_confirm_article_page_unlink')});
-	},
-*/
 	
 	addMouseOver: function(node)
 	{

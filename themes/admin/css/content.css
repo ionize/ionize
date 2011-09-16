@@ -533,6 +533,17 @@ table.list tbody td.center,
 table.list th.center {
 	text-align: center;
 }
+table.list tbody td.right {
+	float: none;
+	text-align:right;
+}
+table.list tbody td.left {
+	float: none;
+	text-align:left;
+}
+table.list tbody td.middle {
+	vertical-align: middle;
+}
 
 table.list tbody tr.odd {background-color:#f5f5f5; }
 table.list tbody tr.even {background-color:#fff; }

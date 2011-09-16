@@ -87,7 +87,7 @@ ION.ItemManager = new Class({
 	{
 
 		var url = this.adminUrl + this.options.controller;
-		
+
 		$$('#' + this.options.container + ' .status').each(function(item, idx)
 		{
 			ION.initRequestEvent(item, url + '/switch_online/' + item.getProperty('rel'));
