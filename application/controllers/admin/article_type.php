@@ -287,9 +287,11 @@ class Article_type extends MY_admin
 	 * Saves article types ordering
 	 * 
 	 */
-	function save_ordering($parent = FALSE, $id_parent = FALSE) {
-
-		if( $order = $this->input->post('order') )
+	function save_ordering($parent = FALSE, $id_parent = FALSE)
+	{
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Saves the new ordering
 			$this->article_type_model->save_ordering($order);

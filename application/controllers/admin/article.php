@@ -153,6 +153,7 @@ class Article extends MY_admin
 			$this->article_model->add_lang_data($articles);
 
 			// Dropdowns Views
+			$views = array();
 			if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 				require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 
@@ -263,6 +264,7 @@ class Article extends MY_admin
 	
 	
 		// Dropdown articles views
+		$views = array();
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 
@@ -673,8 +675,8 @@ class Article extends MY_admin
 		// Page datas
 		$page = $this->page_model->get($id_page, Settings::get_lang('default'));
 		
-
 		// Dropdown article views (templates)
+		$views = array();
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 		
@@ -1309,7 +1311,9 @@ class Article extends MY_admin
 	 */
 	function save_ordering($parent, $id_parent)
 	{
-		if( $order = $this->input->post('order') )
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Clear the cache
 			Cache()->clear_cache();
@@ -1366,7 +1370,6 @@ class Article extends MY_admin
 	 *
 	 * @returns	string	HTML string of options items
 	 *
-	 */
 	function get_parents_select($id_menu, $id_parent=0)
 	{
 		$datas = $this->page_model->get_lang_list(array('id_menu' => $id_menu), Settings::get_lang('default'));
@@ -1381,6 +1384,7 @@ class Article extends MY_admin
 		
 		$this->output('page_parent_select');
 	}
+	*/
 
 
 	// ------------------------------------------------------------------------

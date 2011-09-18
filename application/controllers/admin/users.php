@@ -175,9 +175,10 @@ class Users extends MY_admin
 	 */
 	function update()
 	{
-		if ($id_user = $this->input->post('user_PK'))
+		$id_user = $this->input->post('user_PK');
+		
+		if ($id_user !== FALSE)
 		{
-			
 			// Update array
 			$data = array(
 						'id_group' =>	$this->input->post('id_group'),

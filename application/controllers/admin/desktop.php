@@ -40,6 +40,7 @@ class Desktop extends MY_Admin
 	function get_header()
 	{
 		// Get the modules config file
+		$modules = array();
 		include APPPATH . 'config/modules.php';
 
 		// Get all modules config files in modules folder

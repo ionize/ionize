@@ -176,8 +176,7 @@ class Translation extends MY_admin
 						{
 							$value = addslashes($value);
 						}
-						$value = str_replace("\'", "'", $value);
-						
+						$value = str_replace("\\'", "'", $value);
 						$data .= "\$lang['".$term."'] = \"".$value."\";\n"; 
 					}
 				}
@@ -254,7 +253,7 @@ class Translation extends MY_admin
 						{
 							$value = addslashes($value);
 						}
-						$value = str_replace("\'", "'", $value);
+						$value = str_replace("\\'", "'", $value);
 						
 						$data .= "\$lang['".$term."'] = \"".$value."\";\n"; 
 					}
@@ -457,13 +456,12 @@ class Translation extends MY_admin
 			// Include the $lang var of the translation file
 			if (is_file($file))
 			{
+				$lang = array();
 				include($file);
 	
-				if (isset($lang))
+				if ( ! empty($lang))
 				{
 					$items[$module] = array_keys($lang);
-					
-					unset($lang);
 				}
 			}
 		}
@@ -517,19 +515,19 @@ class Translation extends MY_admin
 				if (is_file($module_file))
 				{
 					// Get the module $lang var
+					$lang = array();
 					include($module_file);
 					$module_lang = $lang;
-					unset($lang);
 				}
+				
 				if (is_file($theme_file))
 				{
 					// Get the theme $lang var
+					$lang = array();
 					include($theme_file);
 					$theme_lang = $lang;
-					unset($lang);
 				}
 			
-				
 				// Build the $items array
 				foreach($terms as $term)
 				{
@@ -579,13 +577,12 @@ class Translation extends MY_admin
 			// Include the file if it exists
 			if (file_exists($file))
 			{
+				$lang = array();
 				include($file);
 
-				if (isset($lang))
+				if ( ! empty($lang))
 				{
 					$items[$lang_code] = $lang;
-					
-					unset($lang);
 				}
 			}
 		}

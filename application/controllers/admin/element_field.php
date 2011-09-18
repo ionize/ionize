@@ -179,9 +179,11 @@ class Element_field extends MY_Admin
 	 * @return	String		Success or error message
 	 * 
 	 */
-	function save_ordering() {
-
-		if( $order = $this->input->post('order') )
+	function save_ordering()
+	{
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Saves the new ordering
 			$this->extend_field_model->save_ordering($order);

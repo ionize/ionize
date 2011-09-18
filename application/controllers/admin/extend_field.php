@@ -74,28 +74,6 @@ class Extend_field extends MY_admin
 		$this->output('extend_field');
 	}
 
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Prints out the empty extend field form
-	 * called by edition form window
-	 *
-	 * @param	string	parent. Element from which we edit the categories list
-	 * @param	string	parent ID
-	 *
-	 */
-	function create()
-	{
-		$this->extend_field_model->feed_blank_template($this->template);
-		
-		// Pass the parent informations to the template
-		$this->template['parent'] = $parent;
-		$this->template['id_parent'] = $id_parent;
-		
-		$this->output('extend_field');
-	}
-
 	
 	// ------------------------------------------------------------------------
 
@@ -244,9 +222,11 @@ class Extend_field extends MY_admin
 	 * @return	String		Success or error message
 	 * 
 	 */
-	function save_ordering() {
-
-		if( $order = $this->input->post('order') )
+	function save_ordering()
+	{
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Saves the new ordering
 			$this->extend_field_model->save_ordering($order);

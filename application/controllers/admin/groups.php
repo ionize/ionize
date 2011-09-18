@@ -85,7 +85,9 @@ class Groups extends MY_admin
 	 */
 	function update()
 	{
-		if ($id_group = $this->input->post('group_PK'))
+		$id_group = $this->input->post('group_PK');
+		
+		if ($id_group !== FALSE)
 		{
 			
 			// Update array

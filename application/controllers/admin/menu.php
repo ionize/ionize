@@ -156,9 +156,11 @@ class Menu extends MY_admin
 	 * Saves ordering
 	 * 
 	 */
-	function save_ordering() {
-
-		if( $order = $this->input->post('order') )
+	function save_ordering()
+	{
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Saves the new ordering
 			$this->base_model->save_ordering($order);

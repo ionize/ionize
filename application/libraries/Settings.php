@@ -241,9 +241,9 @@ class Settings
 		
 		foreach(self::$settings as $key => $setting)
 		{
-			if(substring($key, 0, 5) == 'thumb')
+			if(substr($key, 0, 5) == 'thumb')
 			{
-				$thumbs[] = $settings;
+				$thumbs[] = $setting;
 			}
 		}
 		return $thumbs;

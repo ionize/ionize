@@ -306,7 +306,9 @@ class Category extends MY_admin
 	 */
 	function save_ordering($parent = FALSE, $id_parent = FALSE)
 	{
-		if( $order = $this->input->post('order') )
+		$order = $this->input->post('order');
+		
+		if( $order != FALSE )
 		{
 			// Saves the new ordering
 			$this->category_model->save_ordering($order);

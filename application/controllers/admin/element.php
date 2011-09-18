@@ -142,7 +142,9 @@ class Element extends MY_Admin {
 	
 	function save_ordering()
 	{
-		if( $order = $this->input->post('order') )
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Clear the cache
 			Cache()->clear_cache();

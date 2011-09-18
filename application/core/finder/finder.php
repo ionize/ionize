@@ -59,9 +59,9 @@ class Finder{
 		// is it already loaded?
 		if(isset(self::$loaded_files[$temp_type.$path.EXT]))
 		{
-			log_message('debug', $class." class already loaded. Second attempt ignored.");
+			log_message('debug', $path." class already loaded. Second attempt ignored.");
 
-			return self::$loaded_files[$temp_type.$file.EXT];
+			return self::$loaded_files[$temp_type.$path.EXT];
 		}
 
 		$files = array_reverse(self::find_file($path, $type, $allow_subclass == true ? 1 : 0));

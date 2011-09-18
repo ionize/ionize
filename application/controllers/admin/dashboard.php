@@ -139,6 +139,7 @@ class Dashboard extends MY_Admin {
 		}
 
 		// Modules
+		$modules = array();
 		include APPPATH . 'config/modules.php';
 		$config_files = glob(MODPATH . '*/config.xml');
 
@@ -186,20 +187,66 @@ class Dashboard extends MY_Admin {
 		// Put installed module list to template
 		$this->template['modules'] = $moddata;
 		
-
-
-
 		$this->template['flags'] = $flags;
-		
 		
 		$this->template['last_articles'] = $last_articles;
 		$this->template['orphan_pages'] = $orphan_pages;
 		$this->template['orphan_articles'] = $orphan_articles;
 		$this->template['users'] = $users;	
 		$this->template['last_registered_users'] = $last_registered_users;	
+
+
+$this->load->library('structure');
+$pages = $this->page_model->get_lang_list(false, Settings::get_lang('default'));
+
+/*
+$tree = array();
+$this->structure->get_nested_structure($pages, $tree, 0, 0);
+trace($tree);
+*/
+foreach($pages as $page)
+{
+	foreach(Settings::get_languages() as $language)
+	{
+		$breacrumbs = $this->get_breadcrumb_array($page, $pages, $language['lang']);
+		$url = '';
+		for($i=0; $i<count($breacrumbs); $i++)
+		{
+			$url .= '/' . $breacrumbs[$i]['url'];
+		}
+		trace($url);
+	}
+}		
+
 		
 		$this->output('dashboard');		
 	}
+
+/* TEST
+
+ */
+	function get_breadcrumb_array($page, $pages, $lang, $data = array())
+	{
+		$parent = NULL;
+		
+		if (isset($page['id_parent']) ) // && $page['id_parent'] != '0')
+		{
+			// Find the parent
+			for($i=0; $i<count($pages) ; $i++)
+			{
+				if ($pages[$i]['id_page'] == $page['id_parent'])
+				{
+					$parent = $pages[$i];
+					$data = self::get_breadcrumb_array($parent, $pages, $lang, $data);
+					break;
+				}
+			}
+			
+			$data[] = $page;
+		}
+		return $data;
+	}
+
 
 }
 /* End of file dashboard.php */

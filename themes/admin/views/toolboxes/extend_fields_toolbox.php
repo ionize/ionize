@@ -8,7 +8,7 @@
 
 	$('addextendfield').addEvent('click', function(e)
 	{
-		ION.formWindow('extendfield', 'extendfieldForm', 'ionize_title_extend_fields', 'extend_field/get_form/' + this.getProperty('rel'), {width:400, height:330});
+		ION.formWindow('extendfield', 'extendfieldForm', 'ionize_title_extend_fields', 'extend_field/get_form/', {width:400, height:330});
 	});
 		
 </script>

@@ -595,9 +595,11 @@ class Media extends MY_admin
 	 * @param	string	parent ID
 	 *
 	 */
-	function save_ordering($parent, $id_parent) {
-
-		if( $order = $this->input->post('order') )
+	function save_ordering($parent, $id_parent)
+	{
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Clear the cache
 			Cache()->clear_cache();
@@ -711,7 +713,9 @@ class Media extends MY_admin
 				'album' => array($media['container'])
 			);
 			
-			if ($date = strtotime($media['date']) )
+			$date = strtotime($media['date']);
+			
+			if ($date !== FALSE)
 			{
 				$tags['year'][] = (String) date('Y', $date);
 			}
@@ -1057,7 +1061,9 @@ class Media extends MY_admin
 		
 		if (function_exists('getimagesize'))
 		{
-			if ($d = @getimagesize($path))
+			$d = @getimagesize($path);
+			
+			if ($d !== FALSE)
 			{
 				$dim['width']	= $d['0'];
 				$dim['height']	= $d['1'];

@@ -48,6 +48,7 @@ class Modules extends MY_admin
 		$config_files = glob(MODPATH . '/*/config.xml');
 
 		// Get the modules config file
+		$modules = array();
 		include APPPATH . 'config/modules.php';
 		
 		// Module data to put to template
@@ -139,6 +140,9 @@ class Modules extends MY_admin
 		 */
 		
 		// Get the modules config file : $modules, $aliases
+		$modules = array();
+		$disable_controller = array();				// Array of disabled modules controllers. Got from config/modules
+		$aliases = array();
 		include APPPATH . 'config/modules.php';
 
 		// Load the module XML config file
@@ -174,7 +178,9 @@ class Modules extends MY_admin
 					if ( ! in_array($module_uri, $disable_controller)) $disable_controller[] = $module_uri;
 
 				// Install module database tables
-				if ($database = $xml->database)
+				$database = $xml->database;
+				
+				if ($database !== FALSE)
 				{
 					$errors = array();
 					
@@ -229,6 +235,9 @@ class Modules extends MY_admin
 	function uninstall($module_folder)
 	{
 		// Get the modules config file
+		$modules = array();
+		$disable_controller = array();
+		$aliases = array();
 		include APPPATH . 'config/modules.php';
 
 		// Filter the module array

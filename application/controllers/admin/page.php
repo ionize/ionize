@@ -81,6 +81,7 @@ class Page extends MY_admin
 		
 
 		// Dropdowns Views : Get $view var from my_theme/config/views.php
+		$views = array();
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 		
@@ -154,6 +155,7 @@ class Page extends MY_admin
 
 
 			// Dropdowns Views
+			$views = array();
 			if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 				require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 			
@@ -386,7 +388,9 @@ class Page extends MY_admin
 	 */
 	function save_ordering()
 	{
-		if( $order = $this->input->post('order') )
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Clear the cache
 			Cache()->clear_cache();
@@ -772,7 +776,8 @@ class Page extends MY_admin
 		}
 
 		// level ?
-		if ($parent = $this->page_model->get($this->input->post('id_parent')) )
+		$parent = $this->page_model->get($this->input->post('id_parent'));
+		if ($parent !== FALSE )
 			$this->data['level'] = $parent['level'] + 1;	
 		else 
 			$this->data['level'] = 0;

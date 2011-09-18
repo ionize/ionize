@@ -111,6 +111,8 @@ class Setting extends MY_admin
 		$this->load->dbutil();
 
 		// If the user is here, a valid database.php config file exists !
+		$db = array();
+		$active_group = '';
 		include(APPPATH.'config/database'.EXT);
 
 		$this->template['db_host'] = 	$db[$active_group]['hostname'];
@@ -122,10 +124,9 @@ class Setting extends MY_admin
 
 
 		// Website Email settings
+		$config = array();
 		if (file_exists(APPPATH.'config/email'.EXT))
-		{
 			include(APPPATH.'config/email'.EXT);
-		}
 
 		$this->template['protocol'] = 		isset($config['protocol']) ? $config['protocol'] : 'mail';
 		$this->template['mailpath'] = 		isset($config['mailpath']) ? $config['mailpath'] : '/usr/sbin/sendmail';
@@ -194,6 +195,7 @@ class Setting extends MY_admin
 		$files = $this->_get_view_files();
 
 		// Recorded views definitions 
+		$views = array();
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 
@@ -451,12 +453,18 @@ class Setting extends MY_admin
 
 		// Save settings to DB
 		$this->_save_settings($settings);
-
+		
+		// Admin lang for backend reload URL
+		$default_admin_lang = $this->input->post('default_admin_lang');
+		
+		// Correct the default Admin panel language
+		if ( ! in_array($default_admin_lang, explode(',',$displayed_admin_languages)))
+			$default_admin_lang = config_item('language');
 
 		// Answer
 		$this->callback = array(
 			'fn' => 'ION.reload',
-			'args' => array('url' => config_item('admin_url'))
+			'args' => array('url' => $default_admin_lang.'/'.config_item('admin_url'))
 		);
 
 		$this->success(lang('ionize_message_settings_saved'));

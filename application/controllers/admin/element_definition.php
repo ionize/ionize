@@ -413,7 +413,9 @@ class Element_definition extends MY_Admin {
 	 */
 	function save_ordering()
 	{
-		if( $order = $this->input->post('order') )
+		$order = $this->input->post('order');
+		
+		if( $order !== FALSE )
 		{
 			// Saves the new ordering
 			$this->element_definition_model->save_ordering($order);

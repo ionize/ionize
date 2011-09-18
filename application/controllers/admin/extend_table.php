@@ -86,6 +86,7 @@ class Extend_table extends MY_admin
 			$this->error(lang('ionize_message_varchar_int_must_have_length'));
 		
 		// Check the name regarding the reserved words
+		$_sql_reserved = array();
 		require_once(APPPATH.'config/sql_reserved.php');
 		if (in_array(strtoupper($this->input->post('name')), $_sql_reserved))
 			$this->error(lang('ionize_message_field_name_sql_reserved'));

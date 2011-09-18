@@ -140,7 +140,7 @@ class Cache
 			{
 				while (($file = readdir($dh)) !== false)
 				{
-					if(is_file($file) && $file!='..' && $file!='.' && $file!='index.html' && $file!='.htaccess')
+					if(is_file($this->cache_path.$file) && $file!='..' && $file!='.' && $file!='index.html' && $file!='.htaccess')
 					{
 						unlink($this->cache_path.$file);
 					}

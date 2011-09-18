@@ -40,6 +40,7 @@ class TagManager_Media extends TagManager
 		'medias:index' => 		'tag_media_index',
 		'medias:count' => 		'tag_media_count',
 		'medias:date' => 		'tag_media_date',
+		'medias:extension' =>	'tag_media_extension',
 		
 		// One media
 		'media' =>				'tag_media'
@@ -366,6 +367,21 @@ class TagManager_Media extends TagManager
 		}
 		return '';
 	}
+	
+	
+	/**
+	 * Returns the media extension
+	 *
+	 * @usage : <ion:extension />
+	 *
+	 */
+	public static function tag_media_extension($tag)
+	{
+		$extension = substr(strrchr($tag->locals->media['file_name'], '.'), 1);
+		return self::wrap($tag, $extension);
+	}
+	
+	
 }
 
 

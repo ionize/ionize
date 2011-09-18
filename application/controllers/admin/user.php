@@ -78,10 +78,6 @@ class User extends My_Admin
 
 			if($this->_try_validate_login())
 			{
-                // Syntax talks from itself, isn't it? :)
-                // The login method will check for a 'remember_me' value
-                // If found it will remember the user until he log out.
-                // Remember time is specified time in the access config file (default is 7 days)
 				try
 				{
 					$this->connect->login($_POST);
@@ -99,7 +95,7 @@ class User extends My_Admin
 		}
 		else
 		{
-			if (! in_array($uri_lang, Settings::get('displayed_admin_languages')) OR $uri_lang == config_item('admin_uri')) // && 
+			if ( ! in_array($uri_lang, Settings::get('displayed_admin_languages')) OR $uri_lang != $default_admin_lang)
 			{
 				redirect(base_url().$default_admin_lang.'/'.config_item('admin_url').'/user/login');
 			}
@@ -129,9 +125,9 @@ class User extends My_Admin
 
 		$default_admin_lang = Settings::get_default_admin_lang();
 		
-		$uri_lang = Settings::get_uri_lang();
+//		$uri_lang = Settings::get_uri_lang();
 
-    	$this->connect->logout(base_url().$uri_lang.'/'.config_item('admin_url'));
+    	$this->connect->logout(base_url().$default_admin_lang.'/'.config_item('admin_url'));
 	}
 
 

@@ -14,6 +14,7 @@
  */
 class MY_Config extends CI_Config
 {
+	static $router = FALSE;
 	
 	// ------------------------------------------------------------------------
 
@@ -25,11 +26,12 @@ class MY_Config extends CI_Config
 	 */
 	public function site_url($uri = '')
 	{
-		static $router;
+//		static $router;
 		
-		if( ! $router)
+//		if( ! $router)
+		if( ! self::$router)
 		{
-			$router = load_class('Router');
+			self::$router = load_class('Router');
 		}
 		
 		if(is_array($uri))
@@ -43,7 +45,7 @@ class MY_Config extends CI_Config
 		{
 			return $this->slash_item('base_url') .
 				   $index .
-				   '/' . $router->fetch_lang_key();
+				   '/' . self::$router->fetch_lang_key();
 		}
 		else
 		{
@@ -51,7 +53,7 @@ class MY_Config extends CI_Config
 
 			return $this->slash_item('base_url') .
 				   $index .
-				   $router->fetch_lang_key() . '/' .
+				   self::$router->fetch_lang_key() . '/' .
 				   preg_replace("|^/*(.+?)/*$|", "\\1", $uri) .
 				   $suffix;
 		}
@@ -68,14 +70,15 @@ class MY_Config extends CI_Config
 	 */
 	public function lang_url($lang_key, $uri = '')
 	{
-		static $router;
+//		static $router;
 		
-		if( ! $router)
+//		if( ! $router)
+		if( ! self::$router)
 		{
-			$router = load_class('Router');
+			self::$router = load_class('Router');
 		}
 		
-		$lkey = $router->validate_lang_key($lang_key);
+		$lkey = self::$router->validate_lang_key($lang_key);
 		
 		if( ! $lkey)
 		{
