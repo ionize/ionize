@@ -842,13 +842,29 @@ class Media extends MY_admin
 		$thumbs = $this->base_model->get_list(array('name like' => 'thumb_%'));
 
 		// System thumbnail full path
-		$thumb_path = FCPATH . str_replace(Settings::get('files_path'), Settings::get('files_path').'/.thumbs', $picture['base_path'] );
+		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $picture['base_path'] );
+		$thumb_base_path = FCPATH . Settings::get('files_path') . '/.thumbs';
+		$thumb_path = $thumb_base_path . '/' .$thumb_path_segment;
 
 		// Create directory is not exists
 		if( ! is_dir($thumb_path) )
 		{
-			if ( ! @mkdir($thumb_path, 0777) )
-				throw new Exception(lang('ionize_exception_folder_creation').' : '.$thumb_path);
+			$path_segments = explode('/', $thumb_path_segment);
+			array_pop($path_segments);
+			
+			$next_folder = '';
+			
+			foreach($path_segments as $folder)
+			{
+				$next_folder .= '/' . $folder;
+				
+				if ( ! is_dir($thumb_base_path . $next_folder))
+				{
+					if ( ! @mkdir($thumb_base_path . $next_folder, 0777) )
+						throw new Exception(lang('ionize_exception_folder_creation').' : '.$thumb_path);
+				}
+			}
+		
 		}
 
 		// Source picture size
@@ -860,7 +876,6 @@ class Media extends MY_admin
 			'unsharp' => '0'
 		);
 		$this->_create_thumbnail(FCPATH.$picture['path'], $thumb_path. $picture['file_name'], $setting);		
-
 
 
 		// Create other thumbs
