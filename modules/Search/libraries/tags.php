@@ -61,17 +61,17 @@ class Search_Tags extends TagManager
 		
 		// If the realm data was posted, the form will not be displayed
 		// Useful when results should be displayed on the same page as the search form
-		if ($realm = $CI->input->post('realm'))
-		{
-			return '';
-		}
-		else
-		{
+//		if ($realm = $CI->input->post('realm'))
+//		{
+//			return '';
+//		}
+//		else
+//		{
 			$tag->expand();
 			
 			// the tag returns the content of this view :
 			return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search_form'.EXT));
-		}
+//		}
 	}
 	
 
@@ -206,10 +206,13 @@ class Search_Tags extends TagManager
 	public static function results(FTL_Binding $tag)
 	{
 		$str = '';
+		$index = 0;
 		
 		foreach($tag->locals->results as $article)
 		{
 			// Add each article as the current local result
+			$index += 1;
+			$article['index'] = $index;
 			$tag->locals->result = $article;
 			
 			// Expand the tag : Means the children tags of this tag will get the above defined "result" 
@@ -355,12 +358,13 @@ class Search_Tags extends TagManager
 
 
 	// ------------------------------------------------------------------------
-
-
+	
+	
 	/**
 	 * Returns number of term occurences for each article found
 	 *
 	 */
+
 	public static function nb_found($tag) { return self::wrap($tag, $tag->locals->result['nb_found']); }
 
 

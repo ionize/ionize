@@ -19,6 +19,8 @@ ION.TreeXhr = new Class({
 	 */
 	initialize: function(container, id_menu)
 	{
+		this.click_timer = null;
+		
 		this.container = $(container);
 		this.container.store('tree', this);
 		
@@ -311,8 +313,8 @@ ION.TreeXhr = new Class({
 		el = e.target;
 		
 		// Folder (LI)
-		var folder = el.getParent();
-		
+		var folder = el.getParent('li');
+
 		// Update content : XHR
 		if (folder.retrieve('loaded') == false)
 			this.get(folder.retrieve('id_page'));
@@ -370,26 +372,47 @@ ION.TreeXhr = new Class({
 	addEditLink: function(el, type)
 	{
 		var a = el.getElement('a.title');
-		var rel = (a.getProperty('rel')).split(".");
-		var id = rel[0];
+		var self = this;
 		
-		// id is the last rel
-		if (rel.length > 1) { id = rel[1]; }
-
-		var p = $(this.mainpanel);
-
-		a.addEvent('click', function(e)
+		a.addEvents(
 		{
-			e.stop();
-			
-			MUI.Content.update({
-				'element': p,
-				'url': admin_url + type + '/edit/' + a.getProperty('rel'),
-				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + a.get('text')	
-			});
-		});
+			'click': function(e)
+			{
+				clearTimeout(self.click_timer);
+				self.click_timer = self.relaySingleOrDoubleClick.delay(700, self, [e, self, a, type, 1]);		
+			},
+			'dblclick': function(e)
+			{
+				clearTimeout(self.click_timer);
+				self.click_timer = self.relaySingleOrDoubleClick.delay(0, self, [e, self, a, type, 2]);		
+			}
+		});		
 	},
-
+	
+	
+	relaySingleOrDoubleClick: function(e, self, el, type, clicks)
+	{
+		// IE7 / IE8 event problem
+		if( ! Browser.ie)
+			if (e) e.stop();
+		
+		// Open page
+		if (clicks === 2 && type == 'page')
+		{
+			self.openclose(e);
+		}
+		// Edit Element
+		else
+		{
+			MUI.Content.update({
+				'element': $(self.mainpanel),
+				'url': admin_url + type + '/edit/' + el.getProperty('rel'),
+				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')	
+			});
+		}		
+	},
+	
+	
 
 	getParentContainer: function(id_parent)
 	{

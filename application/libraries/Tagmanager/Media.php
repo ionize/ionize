@@ -282,14 +282,24 @@ class TagManager_Media extends TagManager
 	 * Medias tags callback functions
 	 *
 	 */
-	public static function tag_media_title($tag) {	return self::wrap($tag, $tag->locals->media['title']); }
+	public static function tag_media_title($tag)
+	{
+		return self::wrap($tag, self::get_value('media', 'title', $tag));
+	}
+	
+	public static function tag_media_alt($tag)
+	{
+		return self::wrap($tag, self::get_value('media', 'alt', $tag));
+	}	
+	
+	public static function tag_media_description($tag) { return self::wrap($tag, $tag->locals->media['description']); }
+
+	
 	public static function tag_media_link($tag) { return self::wrap($tag, $tag->locals->media['link']); }
-	public static function tag_media_alt($tag) {	return self::wrap($tag, $tag->locals->media['alt']); }
 	public static function tag_media_file_name($tag) { return self::wrap($tag, $tag->locals->media['file_name']); }
 	public static function tag_media_base_path($tag) { return $tag->locals->media['base_path']; }
 	public static function tag_media_id($tag) { return $tag->locals->media['id_media']; }
 	public static function tag_media_path($tag) { return $tag->locals->media['path']; }
-	public static function tag_media_description($tag) { return self::wrap($tag, $tag->locals->media['description']); }
 	public static function tag_media_copyright($tag) { return self::wrap($tag, $tag->locals->media['copyright']); }
 	public static function tag_media_index($tag) { return $tag->locals->index; }
 	public static function tag_media_date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->media['date'])); }

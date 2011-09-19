@@ -891,7 +891,7 @@ class TagManager
 		// Force to get the field name from core. To be used when the field has the same name as one core field
 		$force_core = (isset($tag->attr['core']) && $tag->attr['core'] == TRUE ) ? TRUE : FALSE;
 
-		// Current tag parent tag
+		// Current tag : parent tag
 		if ($from == FALSE && $force_core == FALSE )
 		{
 			$from = self::get_parent_tag($tag);
@@ -930,6 +930,40 @@ class TagManager
 		// Returns nothing : better than an error ?
 		// return self::show_tag_error($tag->name, '<b>The "from" attribute is mandatory</b>');
 		return '';
+	}
+	
+	
+	// ------------------------------------------------------------------------
+
+	
+	/**
+	 * Get the value of one tag key
+	 * Takes care about alternatives (attribute "or")
+	 *
+	 * @usage : To be used in tag function. No direct usage.
+	 * @TODO : Globalize this method and mix it with tag_field()
+	 *
+	 */
+	public static function get_value($obj, $key, $tag)
+	{
+		// thumb folder name (without the 'thumb_' prefix)
+		$or = (isset($tag->attr['or']) ) ? explode(',', $tag->attr['or']) : FALSE;
+		
+		$value = $tag->locals->media['title'];
+		
+		if ($tag->locals->{$obj}[$key] == '' && $or !== FALSE)
+		{
+			foreach ($or as $alternative)
+			{
+				if ( ! empty($tag->locals->{$obj}[$alternative]))
+				{
+					$value = $tag->locals->{$obj}[$alternative];
+					break;
+				}
+			}
+		}
+		
+		return $value;
 	}
 	
 	
@@ -1306,6 +1340,7 @@ class TagManager
 		
 		if ( ! empty ($value) )
 			return $open_tag . $prefix . $value . $close_tag;
+//			return $open_tag . $prefix . htmlentities($value, ENT_QUOTES, "UTF-8") . $close_tag;
 		else
 			return '';
 	}
