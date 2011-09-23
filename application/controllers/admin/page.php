@@ -777,7 +777,8 @@ class Page extends MY_admin
 
 		// level ?
 		$parent = $this->page_model->get($this->input->post('id_parent'));
-		if ($parent !== FALSE )
+
+		if ( ! empty($parent) )
 			$this->data['level'] = $parent['level'] + 1;	
 		else 
 			$this->data['level'] = 0;

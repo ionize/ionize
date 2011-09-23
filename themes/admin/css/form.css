@@ -65,6 +65,10 @@ fieldset {
 	min-width:130px;
 	width:18%;
 }
+.panel dt.left,
+.mocha dt.left {
+	text-align: left;
+}
 .panel dd,
 .mocha dd {
 	margin:0;

@@ -542,9 +542,9 @@ class Setting extends MY_admin
 		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong'));
 		
 		$article_allowed_tags = array(
-					'name' => 'article_allowed_tags',
-					'content' => implode(',', $tags)
-				);
+			'name' => 'article_allowed_tags',
+			'content' => implode(',', $tags)
+		);
 		$this->settings_model->save_setting($article_allowed_tags);
 
 		$this->callback = array(

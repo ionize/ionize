@@ -75,7 +75,8 @@ class Element_model extends Base_model
 	{
 		// Loads the element model if it isn't loaded
 		$CI =& get_instance();
-		if (!isset($CI->element_definition_model)) $CI->load->model('element_definition_model');
+//		if (!isset($CI->element_definition_model)) $CI->load->model('element_definition_model');
+		if (!isset($CI->extend_field_model)) $CI->load->model('extend_field_model');
 		
 		// Get the element
 		$element = $this->get(array('id_element' => $id_element) );
@@ -86,7 +87,19 @@ class Element_model extends Base_model
 			'id_element_definition' => $element['id_element_definition'],
 			'order_by' => 'ordering ASC'
 		);
-		$definitions_fields = $CI->element_definition_model->get_list($cond, 'extend_field');
+		$definitions_fields = $CI->extend_field_model->get_list($cond, 'extend_field');
+
+		$definitions_fields_lang = $CI->extend_field_model->get_lang();
+
+		foreach($definitions_fields as &$field)
+		{
+			foreach(Settings::get_languages() as $lang)
+			{
+				$langs = array_values(array_filter($definitions_fields_lang, create_function('$row','return $row["id_extend_field"] == "'. $field['id_extend_field'] .'";')));
+				$field['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
+			}
+
+		}
 
 
 		// Get fields instances
@@ -148,19 +161,20 @@ class Element_model extends Base_model
 	// ------------------------------------------------------------------------
 	
 
-	function get_fields_from_parent($parent, $id_parent, $id_definition = FALSE, $id_element = FALSE)
+	function get_fields_from_parent($parent, $id_parent, $lang, $id_definition = FALSE, $id_element = FALSE)
 	{
 		// Loads the element model if it isn't loaded
 		$CI =& get_instance();
 		if (!isset($CI->element_definition_model)) $CI->load->model('element_definition_model');
+		if (!isset($CI->extend_field_model)) $CI->load->model('extend_field_model');
 
 		// Get definitions
 		$cond = array();
 
 		if ($id_definition != FALSE)
-			$cond['id_element_definition'] = $id_definition;
+			$cond['element_definition.id_element_definition'] = $id_definition;
 		
-		$definitions = $CI->element_definition_model->get_list($cond);
+		$definitions = $CI->element_definition_model->get_lang_list($cond, $lang);
 		
 
 		// Get definitions fields
@@ -168,7 +182,7 @@ class Element_model extends Base_model
 			'id_element_definition <>' => '0',
 			'order_by' => 'ordering ASC'
 		);
-		$definitions_fields = $CI->element_definition_model->get_list($cond, 'extend_field');
+		$definitions_fields = $CI->extend_field_model->get_lang_list($cond, $lang);
 
 
 		// Get Elements

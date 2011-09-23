@@ -102,7 +102,7 @@ $id = $id_element_definition;
 							</span>
 							
 							<a class="icon drag left"></a>
-							<a class="left ml10 edit_field" rel="<?= $field['id_extend_field'] ?>"><?= $field['label'] ?></a>
+							<a class="left ml10 edit_field" rel="<?= $field['id_extend_field'] ?>"><?= $field['name'] ?></a>
 						</li>
 					<?php endforeach ;?>
 				</ul>

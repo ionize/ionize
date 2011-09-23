@@ -488,7 +488,11 @@ table.list {
 	margin:10px 0;
 	width:100%;
 }
-
+table.list.border tbody td,
+table.list.border td{
+	border-left:1px solid #eee;
+	border-right:1px solid #eee;
+}
 table.noborder tbody tr,
 table.noborder tbody td,
 table.list.noborder tbody tr,

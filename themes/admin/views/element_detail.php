@@ -67,7 +67,10 @@
 	
 		<dl class="small">
 			<dt>
-				<label for="cf_<?= $id ?>" title="<?= $field['description'] ?>"><?= $field['label'] ?></label>
+				<?php
+					$label = ( ! empty($field['langs'][Settings::get_lang('default')]['label'])) ? $field['langs'][Settings::get_lang('default')]['label'] : $field['name'];
+				?>
+				<label for="cf_<?= $id ?>" title="<?= $field['description'] ?>"><?= $label ?></label>
 			</dt>
 			<dd>
 				<?php
@@ -205,7 +208,10 @@
 	
 				<dl class="small">
 					<dt>
-						<label for="cf_<?= $id ?>_<?= $lang ?>" title="<?= $field['description'] ?>"><?= $field['label'] ?></label>
+						<?php
+							$label = ( ! empty($field['langs'][$lang]['label'])) ? $field['langs'][$lang]['label'] : $field['name'];
+						?>
+						<label for="cf_<?= $id ?>_<?= $lang ?>" title="<?= $field['description'] ?>"><?= $label ?></label>
 					</dt>
 					<dd>
 						<?php

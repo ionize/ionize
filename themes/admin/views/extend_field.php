@@ -31,7 +31,42 @@
 			</dd>
 			
 		</dl>
+		<dl class="small">
+			<dt class="lite"><label><?=lang('ionize_label_label')?></label></dt>
+			<dd>
 
+				<!-- Tabs -->
+				<div id="extendFieldTab<?= $id_extend_field ?>" class="mainTabs gray mb5 mt0 ">
+					
+					<ul class="tab-menu">
+						
+						<?php foreach(Settings::get_languages() as $language) :?>
+						
+							<li class="tab_extend<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?= $language['lang'] ?>"><a><?= ucfirst($language['name']) ?></a></li>
+						
+						<?php endforeach ;?>
+			
+					</ul>
+					<div class="clear"></div>
+				
+				</div>
+				
+				<div id="extendFieldTabContent<?= $id_extend_field ?>">
+					
+					<?php foreach(Settings::get_languages() as $language) :?>
+						
+						<?php $lang = $language['lang']; ?>
+			
+						<div class="tabcontent <?= $lang ?>">
+					
+							<!-- Label -->
+							<input id="label_<?= $lang ?><?= $id_extend_field ?>" name="label_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['label'] ?>"/>
+			
+						</div>
+					<?php endforeach ;?>
+				</div>
+			</dd>
+		</dl>
 		<!-- Global 
 		<dl class="small">
 			<dt>
@@ -45,18 +80,6 @@
 
 	</div>
 
-
-	<!-- Label -->
-	<dl class="small">
-		<dt>
-			<label for="label<?= $id_extend_field ?>" title="<?=lang('ionize_help_label_label')?>"><?=lang('ionize_label_label')?></label>
-		</dt>
-		<dd>
-			<input id="label<?= $id_extend_field ?>" name="label" class="inputtext required" type="text" value="<?= $label ?>" />
-		</dd>
-		
-	</dl>
-
 	<!-- Name -->
 	<dl class="small">
 		<dt>
@@ -67,6 +90,21 @@
 		</dd>
 		
 	</dl>
+
+
+
+	<!-- Label 
+	<dl class="small">
+		<dt>
+			<label for="label<?= $id_extend_field ?>" title="<?=lang('ionize_help_label_label')?>"><?=lang('ionize_label_label')?></label>
+		</dt>
+		<dd>
+			<input id="label<?= $id_extend_field ?>" name="label" class="inputtext required" type="text" value="<?= $label ?>" />
+		</dd>
+		
+	</dl>
+	-->
+	
 	
 
 	<!-- Type -->
@@ -193,6 +231,10 @@
 	// Auto generates the name of the field
 	ION.initCorrectUrl('label', 'name');
 
+	/** 
+	 * Lang tabs
+	 */
+	var extendFieldTab<?= $id_extend_field ?> = new TabSwapper({tabsContainer: 'extendFieldTab<?= $id_extend_field ?>', sectionsContainer: 'extendFieldTabContent<?= $id_extend_field ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent'});
 
 </script>
 

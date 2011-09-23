@@ -192,7 +192,7 @@ $lang['ionize_title_add_content_element'] = 'Add Element';
 $lang['ionize_title_edit_content_element'] = 'Edit Element';
 $lang['ionize_title_element_edit'] = 'Edit Element';
 $lang['ionize_title_element_new'] = 'New Content Element';
-$lang['ionize_title_element_field_edit'] = 'Edit Content Element';
+$lang['ionize_title_element_field_edit'] = 'Edit Field';
 
 $lang['ionize_title_element_fields'] = 'Fields';
 

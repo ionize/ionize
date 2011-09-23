@@ -125,7 +125,7 @@ class Element_definition extends MY_Admin {
 	 */
 	function get_element_definition_list()
 	{
-		$elements = $this->element_definition_model->get_list(array('order_by'=>'ordering ASC'));
+		$elements = $this->element_definition_model->get_lang_list(array('order_by'=>'ordering ASC'), Settings::get_lang('default'));
 		$elements_lang = $this->element_definition_model->get_lang();
 
 		// Elements
@@ -140,14 +140,13 @@ class Element_definition extends MY_Admin {
 			}
 
 			// Element's fields
-			$element['fields'] = $this->extend_field_model->get_list(array('id_element_definition' => $element['id_element_definition']));
+			$element['fields'] = $this->extend_field_model->get_lang_list(array('id_element_definition' => $element['id_element_definition']), Settings::get_lang('default'));
 			
 			// Name of the field type ("checkbox", "input", ...)
 			foreach($element['fields'] as &$field)
 			{
 				$field['type_name'] = self::$type_names[$field['type']];
 			}
-
 		}
 
 		$this->template['elements'] = $elements;
@@ -484,12 +483,22 @@ class Element_definition extends MY_Admin {
 		$element_definition = $this->element_definition_model->get(array('id_element_definition' => $id_element), Settings::get_lang('default') );
 		
 		// Element's fields
-		$fields = $this->extend_field_model->get_list(array('id_element_definition' => $id_element, 'order_by' =>'ordering ASC'));
+		$fields = $this->extend_field_model->get_lang_list(array('id_element_definition' => $id_element, 'order_by' =>'ordering ASC'), Settings::get_lang('default'));
+
+		$fields_lang = $this->extend_field_model->get_lang();
+
 			
 		foreach($fields as &$field)
 		{
 			// Add the type name ("checkbox", etc.)
 			$field['type_name'] = self::$type_names[$field['type']];
+
+			foreach(Settings::get_languages() as $lang)
+			{
+				$langs = array_values(array_filter($fields_lang, create_function('$row','return $row["id_extend_field"] == "'. $field['id_extend_field'] .'";')));
+				$field['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
+			}
+
 		}
 
 		$this->template['element_definition'] = $element_definition;

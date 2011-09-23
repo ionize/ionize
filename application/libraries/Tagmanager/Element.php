@@ -34,6 +34,7 @@ class TagManager_Element extends TagManager
 		'elements:count' => 'tag_element_count',
 		'elements:field' => 'tag_element_field',
 		'elements:fields' => 'tag_element_fields',
+		'elements:attribute' => 'tag_element_attribute',
 		'elements:fields:attribute' => 'tag_element_fields_attribute'	
 	);
 	
@@ -180,8 +181,8 @@ class TagManager_Element extends TagManager
 				// Get the corresponding element definition ID
 				$id_element_definition = self::get_definition_id_from_name($element_definition_name);
 
-				$elements = self::$ci->element_model->get_fields_from_parent($parent, $id_parent, $id_element_definition);
-				
+				$elements = self::$ci->element_model->get_fields_from_parent($parent, $id_parent, Settings::get_lang(), $id_element_definition);
+
 				// Process the elements
 				if (!empty($elements['elements']))
 				{
@@ -191,8 +192,10 @@ class TagManager_Element extends TagManager
 					for($i = 0; $i < $limit; $i++)
 					{
 						$element = $elements['elements'][$i];
-
-						$tag->locals->element = $elements['elements'][$i];
+						$element['title'] =  $elements['title'];
+						$element['name'] =  $elements['name'];
+						
+						$tag->locals->element = $element;
 						$tag->locals->index = $i +1;
 						$tag->locals->count = $limit;
 						$str .= $tag->expand();
@@ -279,6 +282,23 @@ class TagManager_Element extends TagManager
 
 	// ------------------------------------------------------------------------
 	
+	
+	public static function tag_element_attribute($tag)
+	{
+		// Wished field attribute
+		$attr = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
+
+		if ($attr !== FALSE)
+		{
+			if (isset($tag->locals->element[$attr]))
+			{
+				return $tag->locals->element[$attr];
+			}
+			return self::show_tag_error($tag->name, '<b>The attribute "'.$attr.'" doesn\'t exists.</b>');
+		}
+
+		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
+	}
 	
 	public static function tag_element_fields_attribute($tag)
 	{

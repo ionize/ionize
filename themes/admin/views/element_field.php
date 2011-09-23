@@ -21,16 +21,54 @@ $id = $id_extend_field;
 
 	<!-- Contexte -->
 	<div class="summary">
-	<dl class="small">
-		<dt class="lite">
-			<label for="name"><?=lang('ionize_label_content_element')?></label>
-		</dt>
-		<dd><?= $element['name'] ?></dd>
-		
-	</dl>
+		<dl class="small">
+			<dt class="lite">
+				<label for="name"><?=lang('ionize_label_content_element')?></label>
+			</dt>
+			<dd><?= $element['name'] ?></dd>
+			
+		</dl>
+		<dl class="small">
+			<dt class="lite"><label><?=lang('ionize_label_label')?></label></dt>
+			<dd>
+	
+				<!-- Tabs -->
+				<div id="elementFieldTab<?= $id ?>" class="mainTabs gray mt0 mb5">
+					
+					<ul class="tab-menu">
+						
+						<?php foreach(Settings::get_languages() as $language) :?>
+						
+							<li class="tab_element<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?= $language['lang'] ?>"><a><?= ucfirst($language['name']) ?></a></li>
+						
+						<?php endforeach ;?>
+			
+					</ul>
+					<div class="clear"></div>
+				
+				</div>
+				
+				<div id="elementFieldTabContent<?= $id ?>">
+					
+					<?php foreach(Settings::get_languages() as $language) :?>
+						
+						<?php $lang = $language['lang']; ?>
+			
+						<div class="tabcontent <?= $lang ?>">
+					
+							<!-- Label -->
+							<input id="label_<?= $lang ?><?= $id ?>" name="label_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['label'] ?>"/>
+			
+						</div>
+					<?php endforeach ;?>
+				</div>
+			
+			</dd>
+		</dl>
+	
 	</div>
 
-	<!-- Label -->
+	<!-- Label
 	<dl class="small">
 		<dt>
 			<label for="label<?= $id ?>" title="<?=lang('ionize_help_label_label')?>"><?=lang('ionize_label_label')?></label>
@@ -40,7 +78,8 @@ $id = $id_extend_field;
 		</dd>
 		
 	</dl>
-
+	 -->
+	 
 	<!-- Name -->
 	<dl class="small">
 		<dt>
@@ -176,6 +215,10 @@ $id = $id_extend_field;
 	// Auto generates the name of the field
 	ION.initCorrectUrl('label<?= $id ?>', 'name<?= $id ?>');
 
+	/** 
+	 * Lang tabs
+	 */
+	var elementFieldTab<?= $id ?> = new TabSwapper({tabsContainer: 'elementFieldTab<?= $id ?>', sectionsContainer: 'elementFieldTabContent<?= $id ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent'});
 
 </script>
 

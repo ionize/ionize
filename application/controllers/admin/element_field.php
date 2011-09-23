@@ -49,6 +49,7 @@ class Element_field extends MY_Admin
 		$id_element_definition = $this->input->post('id_element_definition');
 		
 		$this->extend_field_model->feed_blank_template($this->template);
+		$this->extend_field_model->feed_blank_lang_template($this->template, Settings::get_lang('default'));
 		
 		// Get the parent element
 		$element = $this->element_definition_model->get( array('id_element_definition' => $id_element_definition) );
@@ -72,6 +73,7 @@ class Element_field extends MY_Admin
 		$id_extend_field = $this->input->post('id_extend_field');
 
 		$this->extend_field_model->feed_template($id_extend_field, $this->template);
+		$this->extend_field_model->feed_lang_template($id_extend_field, $this->template);
 
 		// Get the parent element
 		$element = $this->element_definition_model->get( array('id_element_definition' => $this->template['id_element_definition']) );
@@ -104,7 +106,7 @@ class Element_field extends MY_Admin
 				$this->_prepare_data();
 	
 				// Save data
-				$this->id = $this->extend_field_model->save($this->data);
+				$this->id = $this->extend_field_model->save($this->data, $this->lang_data);
 	
 				$this->callback = array
 				(
@@ -138,14 +140,19 @@ class Element_field extends MY_Admin
 	 */
 	function delete($id)
 	{
-	/*
+		/*
+		 * Check of data use should be implemented
+		 *
+		 * Minimum : Ask for delete confirmation
+		 *
+		 *
 		if ($this->extend_field_model->exists(array('id_extend_field'=>$id), 'extend_fields'))
 		{
 			$this->error(lang('ionize_message_item_used_by_data_no_delete'));
 		}
-	*/
+		*/
 		$this->extend_field_model->delete(array('id_extend_field'=>$id));
-		
+		$this->extend_field_model->delete(array('id_extend_field'=>$id), 'extend_field_lang');
 		$this->extend_field_model->delete(array('id_extend_field'=>$id), 'extend_fields');
 		
 		$this->callback = array
@@ -216,6 +223,25 @@ class Element_field extends MY_Admin
 
 		// Some safe !
 		$this->data['name'] = url_title($this->data['name']);
+
+		// Lang data
+		$this->lang_data = array();
+
+		$fields = $this->db->list_fields('extend_field_lang');
+
+		foreach(Settings::get_languages() as $language)
+		{
+			foreach ($fields as $field)
+			{
+				if ($this->input->post($field.'_'.$language['lang']) !== false)
+				{
+					$content = $this->input->post($field.'_'.$language['lang']);
+					
+					$this->lang_data[$language['lang']][$field] = $content;
+				}
+			}
+		}
+
 	}
 
 }

@@ -34,8 +34,9 @@ class Extend_field_model extends Base_model
 		parent::__construct();
 
 		// Stores the extend fields definition
-		$this->table =		'extend_field';
-		$this->pk_name 	=	'id_extend_field';
+		$this->set_table('extend_field');
+		$this->set_pk_name('id_extend_field');
+		$this->set_lang_table('extend_field_lang');
 		
 		// Stores the extends fields instances
 		$this->elements_table =		'extend_fields';
@@ -46,6 +47,13 @@ class Extend_field_model extends Base_model
 	{
 		$where['order_by'] = 'ordering ASC';
 		return parent::get_list($where);
+	}
+	
+	
+	function get_lang_list($where = array(), $lang)
+	{
+		$where['order_by'] = 'ordering ASC';
+		return parent::get_lang_list($where, $lang);
 	}
 
 
@@ -84,7 +92,7 @@ class Extend_field_model extends Base_model
 
 		foreach($extend_fields as $k => &$extend_field)
 		{
-			// A not tranlated extend field...
+			// One not tranlated extend field...
 			if ($extend_field['translated'] != '1')
 			{
 				// fill the base data with empty values

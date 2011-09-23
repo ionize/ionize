@@ -75,7 +75,7 @@ class Element extends MY_Admin {
 		$id_parent = $this->input->post('id_parent');
 		$id_element_definition = $this->input->post('id_element_definition');
 		
-		$this->template['definition'] = $this->element_model->get_fields_from_parent($parent, $id_parent, $id_element_definition);
+		$this->template['definition'] = $this->element_model->get_fields_from_parent($parent, $id_parent, Settings::get_lang('default'), $id_element_definition);
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
 		
@@ -240,7 +240,6 @@ class Element extends MY_Admin {
 
 		// Element's fields
 		$element_fields = $this->element_model->get_element_fields($id_element);
-
 
 		$this->template['element'] = $element;
 		$this->template['element_definition'] = $element_definition;

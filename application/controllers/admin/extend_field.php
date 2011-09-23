@@ -66,6 +66,7 @@ class Extend_field extends MY_admin
 	function get_form($parent = FALSE, $id_parent = FALSE)
 	{
 		$this->extend_field_model->feed_blank_template($this->template);
+		$this->extend_field_model->feed_blank_lang_template($this->template);
 		
 		// Pass the parent informations to the template
 		$this->template['parent'] = $parent;
@@ -88,6 +89,7 @@ class Extend_field extends MY_admin
 	function edit($id, $parent = FALSE, $id_parent = FALSE)
 	{
 		$this->extend_field_model->feed_template($id, $this->template);
+		$this->extend_field_model->feed_lang_template($id, $this->template);
 
 		$this->output('extend_field');
 	}
@@ -119,7 +121,7 @@ class Extend_field extends MY_admin
 		}
 
 		// Returns the extends list ordered by 'ordering' 
-		$extend_fields = $this->extend_field_model->get_list($where);
+		$extend_fields = $this->extend_field_model->get_lang_list($where, Settings::get_lang('default'));
 
 		// Get the parents
 		$parents = array();
@@ -158,7 +160,7 @@ class Extend_field extends MY_admin
 				$this->_prepare_data();
 	
 				// Save data
-				$this->id = $this->extend_field_model->save($this->data);
+				$this->id = $this->extend_field_model->save($this->data, $this->lang_data);
 	
 				$this->update[] = array(
 					'element' => 'extend_fields',
@@ -259,6 +261,24 @@ class Extend_field extends MY_admin
 
 		// Some safe !
 		$this->data['name'] = url_title($this->data['name']);
+		
+		// Lang data
+		$this->lang_data = array();
+
+		$fields = $this->db->list_fields('extend_field_lang');
+
+		foreach(Settings::get_languages() as $language)
+		{
+			foreach ($fields as $field)
+			{
+				if ($this->input->post($field.'_'.$language['lang']) !== false)
+				{
+					$content = $this->input->post($field.'_'.$language['lang']);
+					
+					$this->lang_data[$language['lang']][$field] = $content;
+				}
+			}
+		}
 	}
 }
 

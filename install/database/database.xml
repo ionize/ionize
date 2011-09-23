@@ -168,7 +168,6 @@
 			CREATE TABLE IF NOT EXISTS extend_field (
 				id_extend_field INT(11) UNSIGNED NOT NULL auto_increment,
 				name varchar(255) NOT NULL,
-				label varchar(255) NOT NULL,
 				type varchar(1) NOT NULL,
 				description varchar(255) DEFAULT '',
 				parent varchar(50) NOT NULL,
@@ -185,7 +184,14 @@
 			    KEY idx_extend_field_id_element_definition (id_element_definition) 
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1 COMMENT='0.9.7';
 		</query>
-		
+		<query>
+			CREATE TABLE IF NOT EXISTS extend_field_lang (
+			  id_extend_field int(11) unsigned NOT NULL,
+			  lang char(3) NOT NULL,
+			  label varchar(255),
+			  PRIMARY KEY  (id_extend_field, lang)
+			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+		</query>
 		<query>
 			CREATE TABLE IF NOT EXISTS extend_fields (
 				id_extend_fields INT(11) UNSIGNED NOT NULL auto_increment,
