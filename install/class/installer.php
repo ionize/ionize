@@ -67,9 +67,12 @@ class Installer
 		$languages = array();
 		foreach($dirs as $dir)
 		{
-			if (is_file(ROOTPATH.'application/language/'.$dir.'/install_lang.php') and strpos($dir, '.') === false)
+			if (is_dir(ROOTPATH.'application/language/'.$dir))
 			{
-				$languages[] = $dir;
+				if (is_file(ROOTPATH.'application/language/'.$dir.'/install_lang.php') and strpos($dir, '.') === false)
+				{
+					$languages[] = $dir;
+				}
 			}
 		}
 		$this->template['languages'] = $languages;
@@ -395,6 +398,7 @@ class Installer
 		
 			if ( ! empty($migration_files))
 			{
+				if (in_array('migration_0.9.7_0.9.8.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';			
 				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';			
 				if (in_array('migration_0.9.5_0.9.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.5</b>';			
 				if (in_array('migration_0.9.4_0.9.5.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.4</b>';			
@@ -561,6 +565,13 @@ class Installer
 				}
 			}
 
+			/*
+			 * Migration to 0.9.8
+			 *
+			 */
+			if (in_array('migration_0.9.7_0.9.8.xml', $migration_files))
+			{
+			}
 	
 			GLOBAL $base_url;
 			header("Location: ".$base_url.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
@@ -819,6 +830,16 @@ class Installer
 			}
 		}
 
+		// VERSION
+		require_once('./class/Config.php');
+
+		// Save version
+		$conf = new ION_Config(APPPATH.'config/', 'ionize.php');
+		$conf->set_config('version', VERSION);
+		if ($conf->save() == FALSE)
+		{
+			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
+		}
 
 		$this->template['base_url'] = $base_url;
 		$this->output('finish');
@@ -1150,6 +1171,8 @@ class Installer
 		{
 			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
 		}
+
+		
 		
 		
 		// DB save
@@ -1299,6 +1322,7 @@ class Installer
 				$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 				$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 				$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+				$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
 			}
 	
 			
@@ -1330,6 +1354,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
 				}
 			}
 	
@@ -1358,6 +1383,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
 				}
 			}
 
@@ -1383,6 +1409,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
 				}
 			}
 
@@ -1406,6 +1433,7 @@ class Installer
 				{
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
 				}
 			}
 			
@@ -1428,8 +1456,28 @@ class Installer
 				if ($migrate_from == true)
 				{
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
 				}
 			}
+			
+			/*
+			 * From 0.9.7
+			 *
+			 *
+			 */
+			if (empty($migration_xml))
+			{
+				$migrate_from = false;
+				
+				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
+				$version = isset($version['content']) ? $version['content'] : '';
+				
+				if ($version == '0.9.7')
+				{
+					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+				}
+			}
+
 		}
 
 		

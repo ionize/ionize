@@ -14,40 +14,46 @@
 		insert into extend_field_lang select id_extend_field, lang, label from extend_field, lang;
 	</query>
 
-	<query>ALTER TABLE `article` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `article_category` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `article_comment` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `article_lang` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `article_media` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `article_tag` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `article_type` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `captcha` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `category` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `category_lang` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `element` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `element_definition` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `element_definition_lang` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `extend_field` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `extend_fields` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `ion_sessions` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `lang` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `login_tracker` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `media` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `media_lang` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `menu` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `module` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `module_setting` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `note` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `page` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `page_article` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `page_lang` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `page_media` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `page_user_groups` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `setting` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `tag` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `users` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `users_meta` COMMENT = '0.9.8';</query>
-	<query>ALTER TABLE `user_groups` COMMENT = '0.9.8';</query>
+	<query>
+		update setting set content='0.9.7.5' where name = 'ionize_version';
+	</query>
+
+	
+
+	<query>ALTER TABLE `article` COMMENT = '';</query>
+	<query>ALTER TABLE `article_category` COMMENT = '';</query>
+	<query>ALTER TABLE `article_comment` COMMENT = '';</query>
+	<query>ALTER TABLE `article_lang` COMMENT = '';</query>
+	<query>ALTER TABLE `article_media` COMMENT = '';</query>
+	<query>ALTER TABLE `article_tag` COMMENT = '';</query>
+	<query>ALTER TABLE `article_type` COMMENT = '';</query>
+	<query>ALTER TABLE `captcha` COMMENT = '';</query>
+	<query>ALTER TABLE `category` COMMENT = '';</query>
+	<query>ALTER TABLE `category_lang` COMMENT = '';</query>
+	<query>ALTER TABLE `element` COMMENT = '';</query>
+	<query>ALTER TABLE `element_definition` COMMENT = '';</query>
+	<query>ALTER TABLE `element_definition_lang` COMMENT = '';</query>
+	<query>ALTER TABLE `extend_field` COMMENT = '';</query>
+	<query>ALTER TABLE `extend_fields` COMMENT = '';</query>
+	<query>ALTER TABLE `ion_sessions` COMMENT = '';</query>
+	<query>ALTER TABLE `lang` COMMENT = '';</query>
+	<query>ALTER TABLE `login_tracker` COMMENT = '';</query>
+	<query>ALTER TABLE `media` COMMENT = '';</query>
+	<query>ALTER TABLE `media_lang` COMMENT = '';</query>
+	<query>ALTER TABLE `menu` COMMENT = '';</query>
+	<query>ALTER TABLE `module` COMMENT = '';</query>
+	<query>ALTER TABLE `module_setting` COMMENT = '';</query>
+	<query>ALTER TABLE `note` COMMENT = '';</query>
+	<query>ALTER TABLE `page` COMMENT = '';</query>
+	<query>ALTER TABLE `page_article` COMMENT = '';</query>
+	<query>ALTER TABLE `page_lang` COMMENT = '';</query>
+	<query>ALTER TABLE `page_media` COMMENT = '';</query>
+	<query>ALTER TABLE `page_user_groups` COMMENT = '';</query>
+	<query>ALTER TABLE `setting` COMMENT = '';</query>
+	<query>ALTER TABLE `tag` COMMENT = '';</query>
+	<query>ALTER TABLE `users` COMMENT = '';</query>
+	<query>ALTER TABLE `users_meta` COMMENT = '';</query>
+	<query>ALTER TABLE `user_groups` COMMENT = '';</query>
 
 
 
