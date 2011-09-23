@@ -92,21 +92,6 @@
 	</dl>
 
 
-
-	<!-- Label 
-	<dl class="small">
-		<dt>
-			<label for="label<?= $id_extend_field ?>" title="<?=lang('ionize_help_label_label')?>"><?=lang('ionize_label_label')?></label>
-		</dt>
-		<dd>
-			<input id="label<?= $id_extend_field ?>" name="label" class="inputtext required" type="text" value="<?= $label ?>" />
-		</dd>
-		
-	</dl>
-	-->
-	
-	
-
 	<!-- Type -->
 	<dl class="small">
 		<dt>

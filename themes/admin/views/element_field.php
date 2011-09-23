@@ -68,18 +68,7 @@ $id = $id_extend_field;
 	
 	</div>
 
-	<!-- Label
-	<dl class="small">
-		<dt>
-			<label for="label<?= $id ?>" title="<?=lang('ionize_help_label_label')?>"><?=lang('ionize_label_label')?></label>
-		</dt>
-		<dd>
-			<input id="label<?= $id ?>" name="label" class="inputtext required" type="text" value="<?= $label ?>" />
-		</dd>
-		
-	</dl>
-	 -->
-	 
+
 	<!-- Name -->
 	<dl class="small">
 		<dt>
@@ -202,7 +191,7 @@ $id = $id_extend_field;
 				$('translate_block<?= $id ?>').setStyle('display', 'block').highlight();
 			}
 		}
-		windowEl.retrieve('instance').resize({height: (contentEl.getSize()).y + 10});
+		ION.windowResize('elementfield<?= $id ?>', {'width':410});
 	}
 	
 	$('type<?= $id ?>').addEvent('change', function()

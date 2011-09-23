@@ -32,7 +32,7 @@ class TagManager_Element extends TagManager
 		'elements' => 'tag_elements',
 		'elements:index' => 'tag_element_index',
 		'elements:count' => 'tag_element_count',
-		'elements:field' => 'tag_element_field',
+		'elements:field' => 'tag_element_field',					// deprecated
 		'elements:fields' => 'tag_element_fields',
 		'elements:attribute' => 'tag_element_attribute',
 		'elements:fields:attribute' => 'tag_element_fields_attribute'	
@@ -192,6 +192,7 @@ class TagManager_Element extends TagManager
 					for($i = 0; $i < $limit; $i++)
 					{
 						$element = $elements['elements'][$i];
+						
 						$element['title'] =  $elements['title'];
 						$element['name'] =  $elements['name'];
 						
@@ -214,11 +215,54 @@ class TagManager_Element extends TagManager
 
 
 	/**
-	 * Returns 
+	 * Returns ione field value
 	 *
 	 */
+	public static function tag_element_fields_attribute($tag)
+	{
+		// Wished field attribute
+		$attr = ( ! empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
+		$autolink = ( ! empty($tag->attr['autolink'])) ? TRUE : FALSE ;
+		
+		if ($attr !== FALSE)
+		{
+			if (isset($tag->locals->field[$attr]))
+			{
+				$field = $tag->locals->field;
+				$value = $field[$attr];
+
+				// Date
+				if ($field['type'] == '7')
+				{
+					$value = self::format_date($tag, $value);
+				}
+				
+				// Translated Element
+				if ($field['translated'] == '1')
+				{
+					if (isset($field[Settings::get_lang('current')]['content']))
+					{
+						$value = $field[Settings::get_lang('current')][$attr];
+					}
+				}
+				
+				// Autolink				
+				if ($autolink == TRUE)
+					$value = auto_link($value, 'both', TRUE);
+
+				return self::wrap($tag, $value );
+			}
+			return '';
+		}
+
+		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
+	}
+	
 	public static function tag_element_field($tag)
 	{
+		return self::tag_element_fields_attribute($tag);
+
+	/*
 		// Wished element definition name
 		$field_name = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
 
@@ -246,18 +290,17 @@ class TagManager_Element extends TagManager
 				}
 				
 				// Textarea or Rich Text content
-				/*
 				if ($field['type'] == '2' OR $field['type'] == '3')
 				{
 					$field['content'] = auto_link($field['content'], 'both', TRUE);
 				}
-				*/
 				
 				return self::wrap($tag, $field['content'] );
 			}
 			return '';
 		}
 		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
+	*/
 	}
 
 
@@ -300,21 +343,6 @@ class TagManager_Element extends TagManager
 		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
 	}
 	
-	public static function tag_element_fields_attribute($tag)
-	{
-		// Wished field attribute
-		$attr = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
-
-		if ($attr !== FALSE)
-		{
-			if (isset($tag->locals->field[$attr]))
-			{
-				return $tag->locals->field[$attr];
-			}
-		}
-
-		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
-	}
 	
 	
 	public static function tag_element_index($tag)

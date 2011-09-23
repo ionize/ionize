@@ -115,7 +115,7 @@ class Element extends MY_Admin {
 					)
 				);
 				// Deletes the tab if the element defintion has no elements
-				// Not implemented...
+				// Not implemented yet...
 				/*
 				if ( empty($elements))
 				{

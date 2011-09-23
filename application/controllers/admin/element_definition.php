@@ -86,27 +86,17 @@ class Element_definition extends MY_Admin {
 
 		$this->callback = array
 		(
-					array(
-						'fn' => 'ION.HTML',
-						'args' => array (
-							'element_definition/get_element_definition_list',
-							'',
-							array
-							(
-								'update'=> 'elementContainer'
-							)
-						)	
-					)
-/*
 			array(
-				'fn' => 'ION.insertDomElement',
+				'fn' => 'ION.HTML',
 				'args' => array (
-					'elementContainer',
-					'top',
-					$html
+					'element_definition/get_element_definition_list',
+					'',
+					array
+					(
+						'update'=> 'elementContainer'
+					)
 				)	
 			)
-*/
 		);
 		
 		$this->response();
@@ -194,11 +184,7 @@ class Element_definition extends MY_Admin {
 		$elements = $this->element_model->get_elements($cond);
 
 		// No delete if used
-		//
-		// TODO :
-		// Confirmation and cascade delete of all instances of element.
-		//
-		if (!empty($fields) OR !empty($elements))
+		if ( ! empty($fields) OR  !empty($elements))
 		{
 			$this->error(lang('ionize_message_element_in_use'));			
 		}
@@ -284,16 +270,6 @@ class Element_definition extends MY_Admin {
 							lang('ionize_message_content_element_saved')
 						)	
 					),
-					/*
-					array(
-						'fn' => 'ION.setHTML',
-						'args' => array (
-							$selector,
-							$value
-						)	
-					)
-					*/
-					
 					array(
 						'fn' => 'ION.HTML',
 						'args' => array (
@@ -305,7 +281,6 @@ class Element_definition extends MY_Admin {
 							)
 						)	
 					)
-					
 				);
 			}
 			else
