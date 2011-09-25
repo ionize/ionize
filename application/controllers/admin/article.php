@@ -195,7 +195,7 @@ class Article extends MY_admin
 	/** 
 	 * Create one article
 	 * @TODO	Developp the "existing tags" functionality
-	 
+	 *
 	 * @param	string 	page ID. Article parent.
 	 *
 	 */

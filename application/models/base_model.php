@@ -1424,20 +1424,20 @@ class Base_model extends CI_Model
 	
 				$query = $this->db->get($this->extend_field_table);
 	
-				$result = array();
+				$extend_fields = array();
 				if ( $query->num_rows() > 0)
-					$result = $query->result_array();
+					$extend_fields = $query->result_array();
 				
 				// Filter the result by lang : Only returns the not translated data and the given language translated data
 				// $result = array_filter($result,  create_function('$row','return ($row["lang"] == "'. $lang .'" || $row["lang"] == "" );'));
 				$filtered_result = array();
-				foreach($result as $res)
+				foreach($extend_fields as $res)
 				{
 					if ($res['lang'] == $lang || $res['lang'] == '' )
 						$filtered_result[] = $res;
 				}
 	
-				// Attach each extra field to the corresponding data array
+				// Attach each extend field to the corresponding data array
 				foreach ($data as &$d)
 				{
 					// Store the extend definition array
@@ -1445,15 +1445,15 @@ class Base_model extends CI_Model
 					// Can be used for debugging
 					// $d['_extend_fields_definition'] = $this->get_extend_fields_definition();
 					
-					// First set the extended fields of the data row to an empty value. So it exists...
+					// First set the extend fields of the data row to the default value. So it exists...
 					foreach ($this->extend_fields_def as $e)
 					{
-						$d[$this->extend_field_prefix.$e['name']] = '';
+						$d[$this->extend_field_prefix.$e['name']] = $e['default_value'];
 					}
 					
-					// Feeds the extended fields
-					// Each extended field will be prefixed to avoid collision with standard fields names
-					foreach ($result as $e)
+					// Feeds the extend fields
+					// Each extend field will be prefixed to avoid collision with standard fields names
+					foreach ($extend_fields as $e)
 					{
 						if (empty($e['content']) && !empty($e['default_value']))
 							$e['content'] = $e['default_value'];

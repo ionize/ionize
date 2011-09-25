@@ -904,29 +904,50 @@ class TagManager
 			$value = '';
 
 			// If force core field value, return it.
-			if ($force_core === TRUE && !empty($obj[$name]))
+			// Must be used in case one extend field has the same name than one core field.
+			// @TODO : Think about one more clean solution.
+			if ($force_core === TRUE && ! empty($obj[$name]))
 			{
-				return self::wrap($tag, $obj[$name]);
+				// return self::wrap($tag, $obj[$name]);
+				$value = self::get_value($from, $name, $tag);
+				
+				if ($value != '')
+				{
+					if ($format !== FALSE)
+						return self::wrap($tag, self::format_date($tag, $value));
+				
+					return self::wrap($tag, $value);
+				}
+
+				// return self::wrap($tag, self::get_value($from, $name, $tag));
 			}
-			
+
 			// Try to get the extend field value			
-			if ( ! empty($obj[self::$extend_field_prefix.$name]))
+			if ( isset($obj[self::$extend_field_prefix.$name]))
 			{
 				// If "format" attribute is defined, suppose the field is a date ...
-				if ($format && $obj[self::$extend_field_prefix.$name] != '')
-				{
+				if ($format !== FALSE && $obj[self::$extend_field_prefix.$name] != '')
 					return self::wrap($tag, (self::format_date($tag, $obj[self::$extend_field_prefix.$name])));
-				}
 
 				return self::wrap($tag, $obj[self::$extend_field_prefix.$name]);
 			}
 			// Else, get the core field value
-			else if (!empty($obj[$name]))
+//			else if ( ! empty($obj[$name]))
+			else
 			{
-				return self::wrap($tag, $obj[$name]);
+				// return self::wrap($tag, $obj[$name]);
+				$value = self::get_value($from, $name, $tag);
+				
+				if ($value != '')
+				{
+					if ($format !== FALSE)
+						return self::wrap($tag, self::format_date($tag, $value));
+				
+					return self::wrap($tag, $value);
+				}
 			}
 		}
-		
+
 		// Returns nothing : better than an error ?
 		// return self::show_tag_error($tag->name, '<b>The "from" attribute is mandatory</b>');
 		return '';
@@ -938,20 +959,26 @@ class TagManager
 	
 	/**
 	 * Get the value of one tag key
+	 * To be used in tag function. No direct use.
 	 * Takes care about alternatives (attribute "or")
 	 *
-	 * @usage : To be used in tag function. No direct usage.
-	 * @TODO : Globalize this method and mix it with tag_field()
+	 * @param 	String 			Local object to get the value from
+	 * @param 	String 			Default asked key. If the tag if <ion:title />, this value must be 'title'
+	 * @param 	FTL_Binding		The binded tag to parse
+	 *
+	 * @usage : $value = get_value('media', 'title', $tag)
+	 *
+	 * @TODO : Globalize this method ( done : used by tag_field())
 	 *
 	 */
 	public static function get_value($obj, $key, $tag)
 	{
 		// thumb folder name (without the 'thumb_' prefix)
 		$or = (isset($tag->attr['or']) ) ? explode(',', $tag->attr['or']) : FALSE;
-		
-		$value = $tag->locals->media['title'];
-		
-		if ($tag->locals->{$obj}[$key] == '' && $or !== FALSE)
+
+		$value = ( ! empty($tag->locals->{$obj}[$key])) ? $tag->locals->{$obj}[$key] : '';
+
+		if ($value == '' && $or !== FALSE)
 		{
 			foreach ($or as $alternative)
 			{

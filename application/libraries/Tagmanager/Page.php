@@ -1506,7 +1506,7 @@ class TagManager_Page extends TagManager
      * @usage : <ion:title [tag="h2" from="parent" up="2" ] />
      *
      *            The "from" attribute works with th "up" attribute. up="2" means the parent from the parent, etc.
-     *            If the "up" attribute isn't set when using "parent", it will be set to 1.Means the returned title will be the one of the parent page of th current page.
+     *            If the "up" attribute isn't set when using "parent", it will be set to 1.Means the returned title will be the one of the parent page of the current page.
      *            
      * @returns     String        The page title, wrapped or not by the optional defined tags.
      *
@@ -1569,10 +1569,13 @@ class TagManager_Page extends TagManager
 				$meta_title = $article['meta_title'];
 		}
 		
+		// First, try to get the meta title
 		if ( $meta_title == '' && ! empty($tag->locals->page['meta_title']) )
 		{
 			$meta_title = $tag->locals->page['meta_title'];
 		}
+
+		// If no meta title, get the title as alternative
 		if ( $meta_title == '' && ! empty($tag->locals->page['title']) )
 		{
 			$meta_title = $tag->locals->page['title'];		
@@ -1584,7 +1587,7 @@ class TagManager_Page extends TagManager
 		// Tag cache
 		self::set_cache($tag, self::wrap($tag, $meta_title));
 		
-		return $meta_title;
+		return self::wrap($tag, $meta_title);
 	}
 
 
@@ -1616,7 +1619,6 @@ class TagManager_Page extends TagManager
 		
 		if ( $medias !== FALSE)
 		{
-//			return self::wrap($tag, self::get_medias($tag, $medias));
 			return self::wrap($tag, TagManager_Media::get_medias($tag, $medias));
 		}
 		return ;
@@ -1836,11 +1838,58 @@ class TagManager_Page extends TagManager
 
 
 	public static function tag_article_id($tag) { return self::wrap($tag, $tag->locals->article['id_article']); }
-	public static function tag_article_name($tag) { return self::wrap($tag, $tag->locals->article['name']); }
-	public static function tag_article_title($tag) { return self::wrap($tag, $tag->locals->article['title']); }
-	public static function tag_article_subtitle($tag) { return self::wrap($tag, $tag->locals->article['subtitle']); }
-	public static function tag_article_date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->article['date'])); }
-	public static function tag_article_meta_title($tag) { return self::wrap($tag, strip_tags($tag->locals->article['meta_title'])); }
+
+	public static function tag_article_name($tag)
+	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'name';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('article', 'name', $tag));
+	}
+	
+	public static function tag_article_title($tag)
+	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'title';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('article', 'title', $tag));
+	}
+	
+	public static function tag_article_subtitle($tag)
+	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'subtitle';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('article', 'subtitle', $tag));
+	}
+	
+	public static function tag_article_date($tag)
+	{ 
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'date';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('article', 'date', $tag));
+	}
+	
+	public static function tag_article_meta_title($tag)
+	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'meta_title';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('article', 'meta_title', $tag));
+//		return self::wrap($tag, strip_tags($tag->locals->article['meta_title']));
+	}
+
 	public static function tag_article_active_class($tag) { return self::wrap($tag, $tag->locals->article['active_class']); }
 	
 
@@ -1972,18 +2021,7 @@ class TagManager_Page extends TagManager
 			}
 		}
 
-		
-		// Only returns the URL containing the lang code when languages > 1 or atribute lang set to TRUE
-/*
-		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
-		{
-			$url = $tag->locals->article['lang_url'];
-		}
-		else
-		{
-*/
-			$url = $tag->locals->article['url'];
-//		}
+		$url = $tag->locals->article['url'];
 
 		// Adds the suffix if defined in /application/config.php
 		if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
@@ -1997,18 +2035,6 @@ class TagManager_Page extends TagManager
 	
 	public static function tag_article_view($tag) { return $tag->locals->article['view']; }
 
-
-	/**
-	 * Article medias tag definition
-	 * Medias in one article context
-	 *
-	public static function tag_article_medias($tag)
-	{
-		$medias = $tag->locals->article['medias'];
-//		return self::wrap($tag, self::get_medias($tag, $medias));
-		return self::wrap($tag, TagManager_Media::get_medias($tag, $medias));
-	}
-	 */
 
 
 	public static function tag_article_author_name($tag)

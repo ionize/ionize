@@ -172,7 +172,10 @@ if($type == 'picture')
 			
 				<dl class="small">
 					<dt>
-						<label for="cf_<?= $extend_field['id_extend_field'] ?>" title="<?= $extend_field['description'] ?>"><?= $extend_field['label'] ?></label>
+						<?php
+							$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
+						?>
+						<label for="cf_<?= $extend_field['id_extend_field'] ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
 					</dt>
 					<dd>
 						<?php
@@ -344,7 +347,10 @@ if($type == 'picture')
 					
 						<dl class="small">
 							<dt>
-								<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" title="<?= $extend_field['description'] ?>"><?= $extend_field['label'] ?></label>
+								<?php
+									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
+								?>
+								<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
 							</dt>
 							<dd>
 								<?php if ($extend_field['type'] == '1') :?>

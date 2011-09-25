@@ -65,7 +65,7 @@ class TagManager_Media extends TagManager
 		// Number of wished displayed medias
 		$limit = (isset($tag->attr['limit'] )) ? $tag->attr['limit'] : FALSE ;
 		
-		// DEPRECATED : Use limit instead
+		// num. DEPRECATED : Use limit instead
 		if ($limit === FALSE)
 		{
 			$limit = (isset($tag->attr['num'])) ? $tag->attr['num'] : FALSE ;
@@ -279,22 +279,71 @@ class TagManager_Media extends TagManager
 
 
 	/**
-	 * Medias tags callback functions
+	 * Media Title
+	 * @return 		Media Title or title of the asked parent tag.
+	 * @usage 		<ion:title [or="<subtitle|alt|description|...>" from="<article|page>"] />
 	 *
 	 */
 	public static function tag_media_title($tag)
 	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'title';
+			return self::tag_field($tag);
+		}
 		return self::wrap($tag, self::get_value('media', 'title', $tag));
 	}
 	
+	
+	// ------------------------------------------------------------------------
+
+
 	public static function tag_media_alt($tag)
 	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'alt';
+			return self::tag_field($tag);
+		}
 		return self::wrap($tag, self::get_value('media', 'alt', $tag));
 	}	
 	
-	public static function tag_media_description($tag) { return self::wrap($tag, $tag->locals->media['description']); }
+	
+	// ------------------------------------------------------------------------
+
+
+	public static function tag_media_description($tag)
+	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'description';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('media', 'description', $tag));
+	}
 
 	
+	// ------------------------------------------------------------------------
+
+
+	public static function tag_media_date($tag)
+	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'date';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('media', 'date', $tag));
+	}
+
+	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Simple Media tags
+	 *
+	 */
 	public static function tag_media_link($tag) { return self::wrap($tag, $tag->locals->media['link']); }
 	public static function tag_media_file_name($tag) { return self::wrap($tag, $tag->locals->media['file_name']); }
 	public static function tag_media_base_path($tag) { return $tag->locals->media['base_path']; }
@@ -302,11 +351,7 @@ class TagManager_Media extends TagManager
 	public static function tag_media_path($tag) { return $tag->locals->media['path']; }
 	public static function tag_media_copyright($tag) { return self::wrap($tag, $tag->locals->media['copyright']); }
 	public static function tag_media_index($tag) { return $tag->locals->index; }
-	public static function tag_media_date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->media['date'])); }
-	public static function tag_media_count($tag)
-	{
-		return $tag->locals->count;
-	}
+	public static function tag_media_count($tag) { return $tag->locals->count; }
 
 	
 	// ------------------------------------------------------------------------
@@ -337,6 +382,9 @@ class TagManager_Media extends TagManager
 		}
 		return '';
 	}
+
+	
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -379,6 +427,47 @@ class TagManager_Media extends TagManager
 	}
 	
 	
+	// ------------------------------------------------------------------------
+
+	
+	/**
+	 * Returns the media info
+	 *
+	 * @note 	Not yet written.
+	 *
+	 * @todo 	To write.
+	 *			Use of Filemanager->getFileInfo()
+	 *			Pro : 	Easy to implement
+	 *			Cons : 	Strong dependency on the .thimbs folder and the .nfo file created by FileManager.
+	 *			
+	 * @usage : <ion:info folder="medium" attribute="width|height" />
+	 *
+	 */
+	public static function tag_media_info($tag)
+	{
+		// thumb folder name (without the 'thumb_' prefix)
+		$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
+
+		$attribute = (isset($tag->attr['attribute']) ) ? $tag->attr['attribute'] : FALSE;
+
+		$media = $tag->locals->media;
+
+		if (isset($media['info']))
+		{
+			return $media['info'][$attribute];
+		}
+		else
+		{
+			/* TODO */
+
+		}
+		return '';
+	}
+	
+	
+	// ------------------------------------------------------------------------
+
+	
 	/**
 	 * Returns the media extension
 	 *
@@ -390,8 +479,7 @@ class TagManager_Media extends TagManager
 		$extension = substr(strrchr($tag->locals->media['file_name'], '.'), 1);
 		return self::wrap($tag, $extension);
 	}
-	
-	
+
 }
 
 
