@@ -219,8 +219,6 @@ class Article_model extends Base_model
 		// DB Query
 		$query = $this->db->get($this->table);
 
-// trace($this->db->last_query());
-
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();

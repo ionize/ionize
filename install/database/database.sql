@@ -163,7 +163,6 @@ CREATE TABLE IF NOT EXISTS element_definition_lang (
 CREATE TABLE IF NOT EXISTS extend_field (
 	id_extend_field INT(11) UNSIGNED NOT NULL auto_increment,
 	name varchar(255) NOT NULL,
-	label varchar(255) NOT NULL,
 	type varchar(1) NOT NULL,
 	description varchar(255) DEFAULT '',
 	parent varchar(50) NOT NULL,
@@ -180,6 +179,12 @@ CREATE TABLE IF NOT EXISTS extend_field (
     KEY idx_extend_field_id_element_definition (id_element_definition) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1 COMMENT='0.9.7';
 
+CREATE TABLE IF NOT EXISTS extend_field_lang (
+  id_extend_field int(11) unsigned NOT NULL,
+  lang char(3) NOT NULL,
+  label varchar(255),
+  PRIMARY KEY  (id_extend_field, lang)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS extend_fields (
@@ -501,7 +506,7 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 
 DELETE FROM setting WHERE name='ionize_version';
-INSERT INTO setting VALUES ('', 'ionize_version', '0.9.7', NULL);
+INSERT INTO setting VALUES ('', 'ionize_version', '0.9.8', NULL);
 
 DELETE FROM setting WHERE name='media_upload_mode';
 INSERT INTO setting VALUES ('', 'media_upload_mode', 'multiple', NULL);
