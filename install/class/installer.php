@@ -1471,8 +1471,9 @@ class Installer
 				
 				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
 				$version = isset($version['content']) ? $version['content'] : '';
+				$version = str_replace('.', '', $version);
 				
-				if ($version == '0.9.7')
+				if (intval($version) <= 97)
 				{
 					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
 				}
