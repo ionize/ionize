@@ -86,14 +86,14 @@ class Tag_model extends Base_model
 		}
 				
 		// Delete the already saved tags from parent join table
-		$this->db->where('id_'.$parent, $id_parent);
-		$query = $this->db->delete($join_table);
+		$this->{$this->db_group}->where('id_'.$parent, $id_parent);
+		$query = $this->{$this->db_group}->delete($join_table);
 		
 		// Update tag table
 		foreach	($tag_array as $tag)
 		{
-			$this->db->where('tag', $tag);
-			$query = $this->db->get($this->table, 1);
+			$this->{$this->db_group}->where('tag', $tag);
+			$query = $this->{$this->db_group}->get($this->table, 1);
 			
 			if ($query->num_rows == 1)
 			{
@@ -102,8 +102,8 @@ class Tag_model extends Base_model
 			}
 			else
 			{
-				$query = $this->db->insert($this->table, array('tag'=>$tag) );
-				$id_tag = $this->db->insert_id();
+				$query = $this->{$this->db_group}->insert($this->table, array('tag'=>$tag) );
+				$id_tag = $this->{$this->db_group}->insert_id();
 			}
 			
 			// Update the parent join table
@@ -112,7 +112,7 @@ class Tag_model extends Base_model
 							'id_tag'	=> $id_tag
 						);
 		
-			$query = $this->db->insert($join_table, $tag_data);
+			$query = $this->{$this->db_group}->insert($join_table, $tag_data);
 		}
 		
 		// Clean up the tag table : Remove unused tags
@@ -147,9 +147,9 @@ class Tag_model extends Base_model
 		
 		$sql .=' GROUP BY t.id_tag';
 
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 		
-//		echo($this->db->last_query());
+//		echo($this->{$this->db_group}->last_query());
 		
 		$built = array();
 		
@@ -184,8 +184,8 @@ class Tag_model extends Base_model
 		$string = '';
 
 		// DB query
-		$this->db->select('tag');
-		$query = $this->db->get($this->table);
+		$this->{$this->db_group}->select('tag');
+		$query = $this->{$this->db_group}->get($this->table);
 		
 		if ($query->num_rows() > 0)
 		{
@@ -235,12 +235,12 @@ class Tag_model extends Base_model
 		// Join table
 		$join_table = $parent.'_'.$this->table;
 		
-		$this->db->select('tag');
-		$this->db->where('id_'.$parent, $id_parent);
-		$this->db->join($this->table, $this->table.'.'.$this->pk_name.' = '. $join_table.'.'.$this->pk_name, 'inner');
-		$this->db->order_by($join_table.'.id_tag');
+		$this->{$this->db_group}->select('tag');
+		$this->{$this->db_group}->where('id_'.$parent, $id_parent);
+		$this->{$this->db_group}->join($this->table, $this->table.'.'.$this->pk_name.' = '. $join_table.'.'.$this->pk_name, 'inner');
+		$this->{$this->db_group}->order_by($join_table.'.id_tag');
 		
-		$query = $this->db->get($join_table);
+		$query = $this->{$this->db_group}->get($join_table);
 		
 		if ($query->num_rows() > 0)
 		{

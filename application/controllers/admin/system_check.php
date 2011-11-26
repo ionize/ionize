@@ -37,6 +37,7 @@ class System_check extends MY_admin
 		$this->load->model('page_model', '', true);
 		$this->load->model('article_model', '', true);
 		$this->load->model('config_model', '', true);
+		$this->load->model('url_model', '', true);
 		
 		// Libraries
 		$this->load->library('structure');
@@ -308,10 +309,9 @@ class System_check extends MY_admin
 				)
 			),
 			array (
-				'fn' => 'ION.notification',
+				'fn' => 'ION.JSON',
 				'args' => array	(
-					'success',
-					'Check complete !'
+					'system_check/rebuild_pages_urls'
 				)
 			)			
 
@@ -403,6 +403,95 @@ class System_check extends MY_admin
 		$this->response();
 	}
 	
+	
+	/**
+	 * Rebuilds the pages URLs
+	 *
+	 */
+	function rebuild_pages_urls()
+	{
+		$nb = $this->page_model->rebuild_urls();
+		$this->url_model->delete_empty_urls();
+		
+		$result = array(
+			'title' => lang('ionize_title_rebuild_pages_urls'),
+			'result_status' => 'success'
+		);
+		
+		// Correct
+		if ($nb > 0)
+			$result['result_text'] = lang('ionize_message_check_corrected');
+		else
+			$result['result_text'] = lang('ionize_message_check_ok');
+		
+		// Result view
+		$view = $this->load->view('system_check_result', $result, TRUE);
+
+		$this->callback = array(
+			array (
+				'fn' => 'ION.appendDomElement',
+				'args' => array	(
+					'system_check_report',
+					$view
+				)
+			),
+			array (
+				'fn' => 'ION.notification',
+				'args' => array	(
+					'success',
+					'Check complete !'
+				)
+			)			
+		);
+
+		$this->response();
+		
+	}
+	
+	
+	/**
+	 * Rebuilds the articles URLs
+	 *
+	function rebuild_articles_urls()
+	{
+		$nb = $this->article_model->rebuild_urls();
+		$this->url_model->delete_empty_urls();
+
+		$result = array(
+			'title' => lang('ionize_title_rebuild_articles_urls'),
+			'result_status' => 'success'
+		);
+		
+		// Correct
+		if ($nb > 0)
+			$result['result_text'] = lang('ionize_message_check_corrected');
+		else
+			$result['result_text'] = lang('ionize_message_check_ok');
+		
+		// Result view
+		$view = $this->load->view('system_check_result', $result, TRUE);
+
+		$this->callback = array(
+			array (
+				'fn' => 'ION.appendDomElement',
+				'args' => array	(
+					'system_check_report',
+					$view
+				)
+			),
+			array (
+				'fn' => 'ION.notification',
+				'args' => array	(
+					'success',
+					'Check complete !'
+				)
+			)			
+		);
+
+		$this->response();
+		
+	}
+	 */
 	
 	
 	/**

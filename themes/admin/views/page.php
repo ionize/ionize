@@ -63,6 +63,14 @@
 
 		<div id="options">
 
+			<?php if ($id_page != '') :?>
+	
+				<!-- Modules PlaceHolder -->
+				<?= get_modules_addons('page', 'side_top'); ?>
+	
+			<?php endif ;?>
+
+
 			<!-- Options -->
 			<h3 class="toggler"><?= lang('ionize_title_attributes') ?></h3>
 		
@@ -88,10 +96,22 @@
 				<?php if ($id_page !='' && isset($views)) :?>
 					<dl class="small">
 						<dt>
-							<label for="view"><?= lang('ionize_label_view') ?></label>
+							<label for="view" title="<?= lang('ionize_help_page_view') ?>"><?= lang('ionize_label_view') ?></label>
 						</dt>
 						<dd>
 							<?= $views ?>
+						</dd>
+					</dl>
+				<?php endif ;?>
+				
+				<!-- Single Article Page view -->
+				<?php if ($id_page !='' && isset($single_views)) :?>
+					<dl class="small">
+						<dt>
+							<label for="view" title="<?= lang('ionize_help_page_single_view') ?>"><?= lang('ionize_label_page_single_view') ?></label>
+						</dt>
+						<dd>
+							<?= $single_views ?>
 						</dd>
 					</dl>
 				<?php endif ;?>
@@ -511,6 +531,10 @@
 	
 				</div>
 
+				<!-- Modules PlaceHolder -->
+				<?= get_modules_addons('page', 'side_bottom'); ?>
+
+
 			<?php endif ;?>
 
 			
@@ -538,12 +562,14 @@
 
 			<h2 class="main page" id="main-title"><?= $title ?></h2>
 			
+			<!-- Breadcrumb -->
 			<div style="margin: -15px 0pt 20px 72px;">
 				<p>
 					<?php if ($this->connect->is('super-admins') ) :?>
 						<span class="lite">ID : </span>
-						<?= $id_page ?>
+						<?= $id_page ?> |
 					<?php endif ;?>
+					<span class="lite"></span><?=$breadcrump?>
 				</p>
 			</div>
 			

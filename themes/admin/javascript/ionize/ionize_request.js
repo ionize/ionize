@@ -12,7 +12,16 @@ ION.append({
 
 	HTML: function(url, data, options)
 	{
-		new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
+		if ( ! options.update)
+			new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
+		else
+		{
+			if (options.update)
+			{
+				if ($(options.update))
+					new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
+			}
+		}
 	},
 
 
@@ -128,14 +137,15 @@ ION.append({
 				// User notification
 				if (responseJSON && responseJSON.message_type)
 				{
-					if (responseJSON.message_type == 'error')
+/*					if (responseJSON.message_type == 'error')
 					{
 						ION.error(responseJSON.message);
 					}
 					else
 					{
+*/
 						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
-					}
+//					}
 				}
 			}
 		};

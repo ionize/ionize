@@ -78,8 +78,8 @@ class System_check_model extends Base_model
 				$nb_wrong++;
 				if ($correct == TRUE)
 				{
-					$this->db->where('id_page', $child['id_page']);
-					$this->db->update('page', array('level' => $level));
+					$this->{$this->db_group}->where('id_page', $child['id_page']);
+					$this->{$this->db_group}->update('page', array('level' => $level));
 				}
 			}
 
@@ -101,7 +101,7 @@ class System_check_model extends Base_model
 			having COUNT(id_page) = 1
 		';
 		
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 		
 		if ($query->num_rows() > 0)
 		{
@@ -115,9 +115,9 @@ class System_check_model extends Base_model
 			
 			if ( ! empty($articles_id))
 			{
-				$this->db->set('main_parent', '1');
-				$this->db->where('id_article in (' . implode(',', $articles_id) . ')');
-				$nb = $this->db->update('page_article');
+				$this->{$this->db_group}->set('main_parent', '1');
+				$this->{$this->db_group}->where('id_article in (' . implode(',', $articles_id) . ')');
+				$nb = $this->{$this->db_group}->update('page_article');
 			}
 		} 
 		
@@ -127,7 +127,7 @@ class System_check_model extends Base_model
 			from page_article
 		';
 		
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 		
 		if ($query->num_rows() > 0)
 		{
@@ -139,7 +139,7 @@ class System_check_model extends Base_model
 				from article
 			';
 
-			$query = $this->db->query($sql);
+			$query = $this->{$this->db_group}->query($sql);
 
 			if ($query->num_rows() > 0)
 			{
@@ -152,8 +152,8 @@ class System_check_model extends Base_model
 				{
 					if ( ! in_array($article['id_article'], $id_articles))
 					{
-						$this->db->where('id_article', $article['id_article'] );
-						$this->db->delete('page_article');
+						$this->{$this->db_group}->where('id_article', $article['id_article'] );
+						$this->{$this->db_group}->delete('page_article');
 						$nb++; 
 					
 					}

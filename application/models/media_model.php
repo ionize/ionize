@@ -62,21 +62,21 @@ class Media_model extends Base_model
 		if ($parent_pk !== FALSE)
 		{
 			// Select from media table
-			$this->db->order_by('ordering', 'ASC');
-			$this->db->select($this->table.'.*', FALSE);
+			$this->{$this->db_group}->order_by('ordering', 'ASC');
+			$this->{$this->db_group}->select($this->table.'.*', FALSE);
 			
 			// Limit to current parent ID
-			$this->db->where($media_table.'.'.$parent_pk, $id_parent);
+			$this->{$this->db_group}->where($media_table.'.'.$parent_pk, $id_parent);
 			
 			if ( ! is_null($type))
-				$this->db->where($this->table.'.type', $type);
+				$this->{$this->db_group}->where($this->table.'.type', $type);
 			
 			// Join to link table
-			$this->db->join($media_table, $this->table.'.'.$this->pk_name.'='.$media_table.'.'.$this->pk_name);
+			$this->{$this->db_group}->join($media_table, $this->table.'.'.$this->pk_name.'='.$media_table.'.'.$this->pk_name);
 
-			$this->db->select($media_table.'.ordering');
+			$this->{$this->db_group}->select($media_table.'.ordering');
 
-			$query = $this->db->get($this->table);
+			$query = $this->{$this->db_group}->get($this->table);
 
 			if($query->num_rows() > 0)
 				$data = $query->result_array();
@@ -123,15 +123,15 @@ class Media_model extends Base_model
 			if( $query->num_rows() > 0)
 			{
 				$medium = $query->row_array();
-				$this->db->where('path', $path);
-				$this->db->update($this->table, $data);
+				$this->{$this->db_group}->where('path', $path);
+				$this->{$this->db_group}->update($this->table, $data);
 				$id = $medium['id_media'];
 			}
 			// Insert
 			else
 			{
-				$this->db->insert($this->table, $data);
-				$id = $this->db->insert_id();
+				$this->{$this->db_group}->insert($this->table, $data);
+				$id = $this->{$this->db_group}->insert_id();
 			}
 			return $id;
 		}
@@ -159,14 +159,14 @@ class Media_model extends Base_model
 		$media_table = $parent.'_'.$this->table;
 	
 		// Get the media ordering value, regarding to the type
-		if ($this->db->field_exists('ordering', $media_table))
+		if ($this->{$this->db_group}->field_exists('ordering', $media_table))
 		{
-			$this->db->select_max('ordering');
-			$this->db->join('media', 'media.id_media = '.$media_table.'.id_media');
-			$this->db->where($parent_pk, $id_parent);
-			$this->db->where('media.type', $type);
+			$this->{$this->db_group}->select_max('ordering');
+			$this->{$this->db_group}->join('media', 'media.id_media = '.$media_table.'.id_media');
+			$this->{$this->db_group}->where($parent_pk, $id_parent);
+			$this->{$this->db_group}->where('media.type', $type);
 
-			$query = $this->db->get($media_table);
+			$query = $this->{$this->db_group}->get($media_table);
 
 			if ($query->num_rows() > 0)
 			{	
@@ -177,20 +177,20 @@ class Media_model extends Base_model
 			{
 				$ordering = 0;
 			}
-			$this->db->set('ordering', $ordering += 1);
+			$this->{$this->db_group}->set('ordering', $ordering += 1);
 		}
 		
-		$this->db->where('id_media', $id_media);
-		$this->db->where($parent_pk, $id_parent);
+		$this->{$this->db_group}->where('id_media', $id_media);
+		$this->{$this->db_group}->where($parent_pk, $id_parent);
 
-		$query = $this->db->get($media_table);
+		$query = $this->{$this->db_group}->get($media_table);
 
 		if ($query->num_rows() == 0) {
 
-			$this->db->set('id_media', $id_media);
-			$this->db->set($parent_pk, $id_parent);
+			$this->{$this->db_group}->set('id_media', $id_media);
+			$this->{$this->db_group}->set($parent_pk, $id_parent);
 
-			$this->db->insert($media_table);
+			$this->{$this->db_group}->insert($media_table);
 
 			return TRUE;
 		}
@@ -232,9 +232,9 @@ class Media_model extends Base_model
 			$sql .= ' WHERE first.' . $parent_pk . ' = ' . $id_parent;
 		}
 		
-		$this->db->query($sql);
+		$this->{$this->db_group}->query($sql);
 		
-		return (int) $this->db->affected_rows();		
+		return (int) $this->{$this->db_group}->affected_rows();		
 	}
 
 

@@ -52,8 +52,8 @@ class Page_model extends Base_model
 	function get_lang_list($where=false, $lang=NULL)
 	{
 		// Order by ordering field
-		$this->db->order_by($this->table.'.level', 'ASC');
-		$this->db->order_by($this->table.'.ordering', 'ASC');
+		$this->{$this->db_group}->order_by($this->table.'.level', 'ASC');
+		$this->{$this->db_group}->order_by($this->table.'.ordering', 'ASC');
 
 		// Filter on published
 		$this->filter_on_published(self::$publish_filter, $lang);
@@ -141,7 +141,7 @@ class Page_model extends Base_model
 				set id_menu='".$id_menu."'
 				where id_parent = '".$id_page."'
 				";
-		$this->db->query($sql);
+		$this->{$this->db_group}->query($sql);
 
 		// Get childs and start again
 		$childs = $this->get_list(array('id_parent' => $id_page));
@@ -173,14 +173,14 @@ class Page_model extends Base_model
 		$link_name = 	($page_lang['title'] != '') ? $page_lang['title'] : $page['name'];
 
 		// Update of pages wich links to this page
-		$this->db->set('link', $link_name);
-		$this->db->where(
+		$this->{$this->db_group}->set('link', $link_name);
+		$this->{$this->db_group}->where(
 			array(
 				'link_type' => 'page',
 				'link_id' => $id_page
 			)
 		);
-		$this->db->update('page');
+		$this->{$this->db_group}->update('page');
 	
 		// Update of pages (lang table) wich links to this page
 		$sql = "update page_lang as pl
@@ -191,17 +191,17 @@ class Page_model extends Base_model
 				and pl.lang = p2.lang
 				and p.link_id = " . $id_page;
 
-		$this->db->query($sql);
+		$this->{$this->db_group}->query($sql);
 	
 		// Update of articles which link to this page
-		$this->db->set('link', $link_name);
-		$this->db->where(
+		$this->{$this->db_group}->set('link', $link_name);
+		$this->{$this->db_group}->where(
 			array(
 				'link_type' => 'page',
 				'link_id' => $id_page
 			)
 		);
-		$this->db->update('page_article');
+		$this->{$this->db_group}->update('page_article');
 		
 
 		// Update of articles (lang table) which link to this page
@@ -214,7 +214,7 @@ class Page_model extends Base_model
 				and al.lang = p.lang
 				and a.link_id = " . $id_page;
 		
-		$this->db->query($sql);
+		$this->{$this->db_group}->query($sql);
 		*/
 	}
 
@@ -237,9 +237,9 @@ class Page_model extends Base_model
 			$data = array(
 				'home' => 0
 			);
-			$this->db->where($this->pk_name.' !=', $id_page);
+			$this->{$this->db_group}->where($this->pk_name.' !=', $id_page);
 			
-			$num_rows = $this->db->update($this->table, $data);
+			$num_rows = $this->{$this->db_group}->update($this->table, $data);
 			
 			return $num_rows;
 		}
@@ -268,23 +268,23 @@ class Page_model extends Base_model
 		if( $this->exists(array($this->pk_name => $id)) )
 		{
 			// Page delete
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
 			
 			// Lang
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->lang_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->lang_table);
 	
 			// Articles : Delete link between page and articles
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete('page_article');
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete('page_article');
 
 			// Linked medias
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table.'_media');
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table.'_media');
 			
 			// Sub-pages to parent 0 (root) and menu 0 (orphan)
 			$data = array(
 				'id_parent' => 0,
 				'id_menu' => 0
 			);
-			$affected_rows += $this->db->where('id_parent', $id)->update($this->table, $data);
+			$affected_rows += $this->{$this->db_group}->where('id_parent', $id)->update($this->table, $data);
 			
 		}
 		
@@ -344,18 +344,129 @@ class Page_model extends Base_model
 		
 		if (!empty($result))
 		{
-			/*
-			$data[] = array(
-				'id_page'	=> $result['id_page'],
-				'name' => $result['name']
-			);
-			*/
 			$data[] = $result;
 		}					
 		
 		return $data;
 	}
+	
+	// ------------------------------------------------------------------------
 
+
+	/** 
+	 * Returns one page childs array
+	 *
+	 * @param	string	Page ID
+	 * @param	array	Empty data array.
+	 *
+	 * @return	array	Childs array
+	 */
+	function get_child_array($id_page, $data=array(), $lang = FALSE)
+	{
+		$result = $this->get_list(array('id_parent'=> $id_page), $lang);
+
+		if (isset($result['id_parent']) && $result['id_parent'] != 0 )
+		{
+			$data = $this->get_parent_array($result['id_parent'], $data, $lang);
+		}
+		
+		if (!empty($result))
+		{
+			$data[] = $result;
+		}					
+		
+		return $data;
+	}
+	
+	
+	/**
+	 * Saves one page URLs paths
+	 *
+	 * @param	int		Page id
+	 * @return	int		Number of inserted / updated Urls
+	 *
+	 */
+	function save_urls($id_page)
+	{
+		$CI =& get_instance();
+		$CI->load->model('url_model', '', true);
+		
+		$nb = 0;
+		
+		// Asked page process
+		foreach($this->get_languages() as $l)
+		{
+			$parents_array = $this->get_parent_array($id_page, array(), $l['lang']);
+			$url = array();
+			
+			foreach($parents_array as $page)
+			{
+				if ($page['appears'] == '1')
+					$url[] = $page['url'];
+			}
+			
+			if ( ! empty($url))
+			{
+				$url = implode('/', $url);
+				$nb = $CI->url_model->save_url('page', $l['lang'], $id_page, $url);
+			}
+		}
+		
+		// Articles linked to this page process
+		$this->save_linked_articles_urls($id_page);
+		
+		// Process childs
+		$childs = $this->get_list(array('id_parent'=> $id_page));
+		foreach($childs as $page)
+		{
+			$nb += $this->save_urls($page['id_page']);
+		}
+
+		return $nb;
+	}
+	
+	function save_linked_articles_urls($id_page)
+	{
+		$CI =& get_instance();
+		$CI->load->model('article_model', '', true);
+		
+		$articles = $this->get_list(array('id_page' => $id_page, 'main_parent' => '1'), 'page_article');
+		
+		foreach($articles as $article)
+		{
+			$CI->article_model->save_urls($article['id_article']);
+		}
+	}
+	
+	/**
+	 * Rebuild all the Url of all / one page
+	 * If no page id is given, rebuilds all the URLs
+	 *
+	 * @param	int		Optional. Page id
+	 * @return	int		Number of inserted / updated Urls
+	 *
+	 */
+	function rebuild_urls($id_page = NULL)
+	{
+		$nb = 0;
+
+		if ( ! is_null($id_page))
+		{
+			$nb = $this->save_urls($id_page);
+		}
+		else
+		{
+			$pages = $this->get_list();
+			
+			foreach($pages as $page)
+			{
+				$nb += $this->save_urls($page['id_page']);
+			}
+		}
+		
+		return $nb;
+	}
+	
 
 	/**
 	 * Returns all contexts page's lang data as an array of pages.
@@ -372,21 +483,21 @@ class Page_model extends Base_model
 		
 		if ( ! empty($id_article))
 		{
-			$this->db->select($this->table.'.*');
-			$this->db->select($this->lang_table.'.*');
-			$this->db->select($this->context_table.'.*');
+			$this->{$this->db_group}->select($this->table.'.*');
+			$this->{$this->db_group}->select($this->lang_table.'.*');
+			$this->{$this->db_group}->select($this->context_table.'.*');
 	
-			$this->db->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
-			$this->db->join($this->context_table, $this->table.'.'.$this->pk_name.' = ' .$this->context_table.'.'.$this->pk_name);			
+			$this->{$this->db_group}->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
+			$this->{$this->db_group}->join($this->context_table, $this->table.'.'.$this->pk_name.' = ' .$this->context_table.'.'.$this->pk_name);			
 	
-			$this->db->where(array($this->lang_table.'.lang' => $lang));
+			$this->{$this->db_group}->where(array($this->lang_table.'.lang' => $lang));
 			
 			if ( ! is_array($id_article) )
-				$this->db->where(array($this->context_table.'.id_article' => $id_article));
+				$this->{$this->db_group}->where(array($this->context_table.'.id_article' => $id_article));
 			else
-				$this->db->where($this->context_table.'.id_article in (' . implode(',', $id_article) . ')');
+				$this->{$this->db_group}->where($this->context_table.'.id_article in (' . implode(',', $id_article) . ')');
 	
-			$query = $this->db->get($this->table);
+			$query = $this->{$this->db_group}->get($this->table);
 	
 			if($query->num_rows() > 0)
 			{
@@ -442,16 +553,16 @@ class Page_model extends Base_model
 	{
 		if ($on === true)
 		{
-			$this->db->where($this->table.'.online', '1');		
+			$this->{$this->db_group}->where($this->table.'.online', '1');		
 	
 			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
-				$this->db->where($this->lang_table.'.online', '1');		
+				$this->{$this->db_group}->where($this->lang_table.'.online', '1');		
 	
-			$this->db->where('((publish_off > ', 'now()', false);
-			$this->db->or_where('publish_off = ', '0)' , false);
+			$this->{$this->db_group}->where('((publish_off > ', 'now()', false);
+			$this->{$this->db_group}->or_where('publish_off = ', '0)' , false);
 		
-			$this->db->where('(publish_on < ', 'now()', false);
-			$this->db->or_where('publish_on = ', '0))' , false);
+			$this->{$this->db_group}->where('(publish_on < ', 'now()', false);
+			$this->{$this->db_group}->or_where('publish_on = ', '0))' , false);
 		}	
 	}
 

@@ -55,6 +55,7 @@ class Article extends MY_admin
 		$this->load->model('article_type_model', '', true);
 		$this->load->model('tag_model', '', true);
 		$this->load->model('extend_field_model', '', true);
+		$this->load->model('url_model', '', true);
 		
 		$this->load->library('structure');
 		
@@ -212,7 +213,6 @@ class Article extends MY_admin
 			$page = array(
 				'id_menu' => '1'
 			);
-
 		}
 
 		// Create blank data for this article
@@ -254,13 +254,26 @@ class Article extends MY_admin
 		$this->template['parent_select'] = form_dropdown('id_page', $parents, $id_page, 'id="id_page" class="select"');
 	
 		// Parent info
-		$parent = '';
+		$breadcrumbs = array();
+		$b_id_page = $id_page;
+		$level = 1;
 
-		foreach($datas as $page)
+		while ($level > -1)
 		{
-			if ($id_page == $page['id_page']) $parent = $page['title'];
+			foreach($datas as $page)
+			{
+				if ($b_id_page == $page['id_page'])
+				{
+					$level = $page['level'];
+					$breadcrumbs[] = $page;
+					$b_id_page = $page['id_parent'];
+					break;
+				}
+			}
+			$level--;
 		}
-		$this->template['parent'] = $parent;
+		$breadcrumbs = array_reverse($breadcrumbs);
+		$this->template['breadcrumbs'] = $breadcrumbs;
 	
 	
 		// Dropdown articles views
@@ -352,6 +365,9 @@ class Article extends MY_admin
 			// Save extend fields data
 			$this->extend_field_model->save_data('article', $this->id, $_POST);
 
+			// Save URLs
+			$this->article_model->save_urls($this->id);
+			
 			
 			/* 
 			 * JSON Answer
@@ -440,6 +456,8 @@ class Article extends MY_admin
 
 			if( ! empty($article) )
 			{
+				$this->load_modules_addons($article);
+
 				// Page context of the current edited article
 				$article['id_page'] = $id_page;
 				
@@ -475,12 +493,13 @@ class Article extends MY_admin
 					$this->template['main_parent'] = $context['main_parent'];
 					
 					$pages = $this->page_model->get_parent_array(array('id_page' => $id_page), array(), Settings::get_lang('default'));
+					
 					$breadcrump = array();
 					foreach($pages as $page)
 					{
 						$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
 					}
-					$this->template['breadcrump'] = implode(' &raquo; ', $breadcrump);
+					$this->template['breadcrump'] = implode(' > ', $breadcrump);
 				}
 				else
 				{
@@ -941,29 +960,51 @@ class Article extends MY_admin
 			switch($context['link_type'])
 			{
 				case 'page' :
+					
 					$link = $this->page_model->get(array('id_page' => $context['link_id']), Settings::get_lang('default'));
+					
+					// Correct missing link
+					if ( empty($link) )
+					{
+						$this->_remove_link($id_page, $id_article);
+						break;
+					}
+					
 					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 					break;
 					
 				case 'article' :
+					
 					$link_rel = explode('.', $context['link_id']);
 					$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+					
+					// Correct missing link
+					if ( empty($link) )
+					{
+						$this->_remove_link($id_page, $id_article);
+						break;
+					}
+					
 					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 					break;
 				
 				case 'external' :
+					
 					$link_rel = '';
 					$title = $context['link'];
 					break;
 			}
-
-			$this->template = array(
-				'parent' => 'article',
-				'rel' => $id_page.'.'.$id_article,
-				'link_id' => $context['link_id'],
-				'link_type' => $context['link_type'],
-				'link' => $title
-			);
+			
+			if ( ! is_null($title))
+			{
+				$this->template = array(
+					'parent' => 'article',
+					'rel' => $id_page.'.'.$id_article,
+					'link_id' => $context['link_id'],
+					'link_type' => $context['link_type'],
+					'link' => $title
+				);
+			}
 		}
 
 		$this->output('link');
@@ -1072,6 +1113,10 @@ class Article extends MY_admin
 						'args' => array('article/get_link', array('id_page' => $receiver_rel[0], 'id_article'=> $receiver_rel[1]), array('update' => 'linkContainer'))
 					),
 					array(
+						'fn' => 'ION.updateArticleContext',
+						'args' => array(array($context))
+					),
+					array(
 						'fn' => 'ION.notification',
 						'args' => array('success', lang('ionize_message_link_added'))
 					)
@@ -1091,17 +1136,8 @@ class Article extends MY_admin
 		{
 			// Clear the cache
 			Cache()->clear_cache();
-
-			$context = array(
-				'link_type' => '',
-				'link_id' => '',
-				'link' => '',
-				'id_page' => $receiver_rel[0],
-				'id_article' => $receiver_rel[1]
-			);
-
-			// Save the context		
-			$this->article_model->save_context($context);
+			
+			$this->_remove_link($receiver_rel[0], $receiver_rel[1]);
 
 			$this->callback = array(
 				array(
@@ -1112,6 +1148,25 @@ class Article extends MY_admin
 
 			$this->response();
 		}		
+	}
+	
+	
+	// ------------------------------------------------------------------------
+
+	
+	private function _remove_link($id_page, $id_article)
+	{
+		$context = array(
+			'link_type' => '',
+			'link_id' => '',
+			'link' => '',
+			'id_page' => $id_page,
+			'id_article' => $id_article
+		);
+
+		// Save the context		
+		return $this->article_model->save_context($context);
+	
 	}
 
 	
@@ -1242,6 +1297,9 @@ class Article extends MY_admin
 				$this->data['element'] = 'article';
 				$this->data['menu'] = $menu;
 				$this->data['online'] = 0;
+				
+				// Used by JS Tree to detect if article in inserted in tree or not
+				$this->data['inserted'] = TRUE;
 
 				// Panels Update array
 				$this->update[] = array(

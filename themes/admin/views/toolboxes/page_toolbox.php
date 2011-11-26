@@ -62,13 +62,14 @@
 		// Add Content Element button
 		$('addContentElement').addEvent('click', function(e)
 		{
-			ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:300}, {'parent':'page', 'id_parent': id});
+			ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'page', 'id_parent': id});
 		});
 
 
 		$('addMedia').addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
 			mediaManager.initParent('page', $('id_page').value);
 			mediaManager.toggleFileManager();
 		});
@@ -79,7 +80,8 @@
 		 */
 		$('addArticle').addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
 			
 			MUI.Content.update({
 				'element': $('mainPanel'),

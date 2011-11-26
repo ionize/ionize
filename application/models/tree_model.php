@@ -22,7 +22,7 @@
  *
  */
 
-class Tree_model extends CI_Model 
+class Tree_model extends Base_Model 
 {
 
 	/**
@@ -51,16 +51,16 @@ class Tree_model extends CI_Model
 		$data = array();
 
 		if (is_array($where) )
-			$this->db->where($where);
+			$this->{$this->db_group}->where($where);
 		
-		$this->db->order_by('page.ordering', 'ASC');
+		$this->{$this->db_group}->order_by('page.ordering', 'ASC');
 		
-		$this->db->select('page.*', false);
-		$this->db->select('page_lang.title,page_lang.nav_title,page_lang.url');
-		$this->db->join('page_lang', 'page_lang.id_page = page.id_page', 'inner');			
-		$this->db->where('page_lang.lang', Settings::get_lang('default'));
+		$this->{$this->db_group}->select('page.*', false);
+		$this->{$this->db_group}->select('page_lang.title,page_lang.nav_title,page_lang.url');
+		$this->{$this->db_group}->join('page_lang', 'page_lang.id_page = page.id_page', 'inner');			
+		$this->{$this->db_group}->where('page_lang.lang', Settings::get_lang('default'));
 		
-		$query = $this->db->get('page');
+		$query = $this->{$this->db_group}->get('page');
 
 		if($query->num_rows() > 0)
 		{
@@ -92,23 +92,23 @@ class Tree_model extends CI_Model
 		// Do not return the articles linked to no page.
 		if ($where['page_article.id_page'] != '0')
 		{
-			$this->db->where($where);
+			$this->{$this->db_group}->where($where);
 		
-			$this->db->order_by('page_article.ordering', 'ASC');
+			$this->{$this->db_group}->order_by('page_article.ordering', 'ASC');
 		
-			$this->db->select('article.*', false);
-			$this->db->select('article_lang.title');
-			$this->db->select('page_article.*');
-			$this->db->select('article_type.id_type, article_type.type_flag');
-			$this->db->join('page_article', 'page_article.id_article = article.id_article', 'inner');			
-			$this->db->join('article_lang', 'article_lang.id_article = article.id_article', 'inner');			
+			$this->{$this->db_group}->select('article.*', false);
+			$this->{$this->db_group}->select('article_lang.title');
+			$this->{$this->db_group}->select('page_article.*');
+			$this->{$this->db_group}->select('article_type.id_type, article_type.type_flag');
+			$this->{$this->db_group}->join('page_article', 'page_article.id_article = article.id_article', 'inner');			
+			$this->{$this->db_group}->join('article_lang', 'article_lang.id_article = article.id_article', 'inner');			
 
-			$this->db->join('page', 'page_article.id_page = page.id_page', 'inner');			
+			$this->{$this->db_group}->join('page', 'page_article.id_page = page.id_page', 'inner');			
 
-			$this->db->join('article_type', 'article_type.id_type = page_article.id_type', 'left outer');			
-			$this->db->where('article_lang.lang', Settings::get_lang('default'));
+			$this->{$this->db_group}->join('article_type', 'article_type.id_type = page_article.id_type', 'left outer');			
+			$this->{$this->db_group}->where('article_lang.lang', Settings::get_lang('default'));
 
-			$query = $this->db->get('article');
+			$query = $this->{$this->db_group}->get('article');
 
 			if($query->num_rows() > 0)
 			{
@@ -136,8 +136,8 @@ class Tree_model extends CI_Model
 	{
 		$data = array();
 		
-		$this->db->where_not_in('id_menu', array('1', '2'));
-		$query = $this->db->get('menu');
+		$this->{$this->db_group}->where_not_in('id_menu', array('1', '2'));
+		$query = $this->{$this->db_group}->get('menu');
 		
 		if($query->num_rows() > 0)
 			$data = $query->result_array();

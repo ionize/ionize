@@ -97,7 +97,8 @@ ION.append({
 				Cookie.write(cookieName, this.togglers.indexOf(toggler), {duration:this.options.cookieDays});
 			},
 			onBackground: function(toggler, element){
-				toggler.removeClass('expand');
+				if (typeOf(toggler) != 'null')
+					toggler.removeClass('expand');
 			},
 			duration:'short'
 		});
@@ -122,7 +123,7 @@ ION.append({
 			// button event
 			button.addEvent('click', function(e)
 			{
-				var e = new Event(e).stop();
+				e.stop();
 				
 				if (this.retrieve('status') == 'close')
 				{
@@ -190,6 +191,10 @@ ION.append({
 		});
 	},
 
+	emptyElement: function (element)
+	{
+		$(element).empty();
+	},
 
 	/**
 	 * Updates one element
@@ -496,33 +501,53 @@ ION.append({
 					 * );
 					 *
 					 */
+					// Maintain compatibility of ION.addDragDrop()
 					var dropCB = this.options.dropCallbacks;
 					
-					if (dropCB.contains(',') && this.dropClasses.length > 1)
+					// New method : attch the callback to the element
+					var callbacks = element.retrieve('dropCallbacks');
+					if (typeOf(callbacks) != 'null')
 					{
-						var onDrops = (dropCB).replace(' ','').split(',');
-						var index = false;
-						
-						// Search the method to execute.
-						(this.dropClasses).each(function(cl, idx)
+						funcNames = Object.keys(callbacks);
+						Array.each(funcNames, function(funcName, idx)
 						{
-							cl = cl.replace('.', '');
-							if (droppable.hasClass(cl)) { index = idx;}
+							if (droppable.hasClass(funcName))
+							{
+								dropCB = callbacks[funcName];
+								console.log('found...' + dropCB);
+								dropCB.delay(100, null, [element, droppable, event]);
+						//		ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
+							}
 						});
-						if (typeOf(onDrops[index]) != 'null')
-						{
-							ION.execCallbacks({'fn':onDrops[index], 'args':[element, droppable, event] });
-						}
-					}
-					else if (typeOf(dropCB) == 'string')
-					{
-						ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
 					}
 					else
-					{
-						ION.execCallbacks(dropCB);
+					{					
+						if (dropCB.contains(',') && this.dropClasses.length > 1)
+						{
+							var onDrops = (dropCB).replace(' ','').split(',');
+							var index = false;
+							
+							// Search the method to execute.
+							(this.dropClasses).each(function(cl, idx)
+							{
+								cl = cl.replace('.', '');
+								if (droppable.hasClass(cl)) { index = idx;}
+							});
+							if (typeOf(onDrops[index]) != 'null')
+							{
+								ION.execCallbacks({'fn':onDrops[index], 'args':[element, droppable, event] });
+							}
+						}
+						else if (typeOf(dropCB) == 'string')
+						{
+							ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
+						}
+						else
+						{
+							ION.execCallbacks(dropCB);
+						}
 					}
-
+					
 					droppable.removeClass('onenter');
 				}
 			},
@@ -1019,13 +1044,21 @@ ION.append({
 				new Element('span', {'class':'flag flag' + flag}).inject(el, 'top');
 			});
 			
-			// Update doc / sticky icon
+			// Article icons
 			$$('li.file[rel=' + rel + '] div.tree-img.drag').each(function(el)
 			{
+				// Indexed icon
 				if (art.indexed == '1')
 					el.removeClass('sticky').addClass('file');
 				else
 					el.removeClass('file').addClass('sticky');
+				
+				// Link icon
+				if (art.link !='')
+					el.addClass('link');
+				else
+					el.removeClass('link');
+				
 			});
 		});
 	},
@@ -1197,6 +1230,14 @@ ION.append({
 			$$('.folder').removeClass('home');
 			element.getFirst('.folder').addClass('home');
 		}
+		
+		element.getFirst('.folder').removeClass('hidden');
+		if (args.appears == '0')
+		{
+			element.getFirst('.folder').addClass('hidden');
+		}
+		
+		
 	},
 	
 	
@@ -1338,13 +1379,11 @@ ION.append({
 					{
 						if (l != lang)
 						{
-							if (tinymce != undefined)
+							if ($(item + '_' + l).hasClass('tinyTextarea') && tinymce != undefined)
 							{
 								var tiny = tinymce.EditorManager.get(item + '_' + l);
 								if (tiny)
-								{
 									tiny.setContent($(item + '_' + lang).value);
-								}
 							}
 							else
 							{
@@ -1356,7 +1395,7 @@ ION.append({
 				
 				ION.notification('success', Lang.get('ionize_message_article_lang_copied'));
 				
-				item.getParent().highlight();
+//				item.getParent().highlight();
 				
 			});
 		})

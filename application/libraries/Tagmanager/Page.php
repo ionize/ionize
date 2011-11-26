@@ -29,7 +29,8 @@ class TagManager_Page extends TagManager
 	protected static $uri_segments = array();
 
 	protected static $categories = FALSE;
-
+	
+	protected static $_article = array();
 	
 	public static $tag_definitions = array
 	(
@@ -186,7 +187,16 @@ class TagManager_Page extends TagManager
 				}	
 			}
 		}
-
+		
+		// Can we get one article from the URL ?
+		$article = self::get_article_from_url();
+		if (! empty($article))
+		{
+			self::$_article = $article;
+			
+			$page['view'] = ($page['view_single'] != false) ? $page['view_single'] : $page['view'];
+		}
+		
 		self::$view = ($page['view'] != false) ? $page['view'] : Theme::get_default_view('page');
 		
 		self::render();
@@ -879,6 +889,10 @@ class TagManager_Page extends TagManager
 		return $articles;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Get one article from the URL
 	 *
@@ -886,11 +900,30 @@ class TagManager_Page extends TagManager
 	function get_article_from_url()
 	{
 		$uri_segments = self::$uri_segments;
+		$uri_config = self::$ci->config->item('special_uri');
 		
-		trace(count($uri_segments));
-		
-		$name = array_pop(array_slice($uri_segments, -1));
+		// $uri_segments[1] : Special URI segement, like "category"
+		if (count($uri_segments) > 1 && ! array_key_exists($uri_segments[1], $uri_config))
+		{
+			$name = array_pop(array_slice($uri_segments, -1));
 	
+			$where = array(
+				'article_lang.url' => $name,
+				'limit' => 1
+			);
+	
+			$articles =  self::$ci->article_model->get_lang_list
+			(
+				$where, 
+				Settings::get_lang()
+			);
+			
+			if ( ! empty($articles))
+			{
+				return array_shift($articles);
+			}
+		}	
+		return array();
 	}
 
 	// ------------------------------------------------------------------------

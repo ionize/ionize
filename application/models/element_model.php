@@ -40,7 +40,7 @@ class Element_model extends Base_model
 		{
 			if(isset($where[$key]))
 			{
-				call_user_func(array($this->db, $key), $where[$key]);
+				call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
 				unset($where[$key]);
 			}
 		}
@@ -48,12 +48,12 @@ class Element_model extends Base_model
 		$where = $this->correct_ambiguous_conditions($where, $this->table);
 
 		if ( !empty ($where) )
-			$this->db->where($where);
+			$this->{$this->db_group}->where($where);
 
 		
-		$this->db->join($this->table, $this->table.'.'.$this->definition_pk_name.'='.$this->definition_table.'.'.$this->definition_pk_name );
+		$this->{$this->db_group}->join($this->table, $this->table.'.'.$this->definition_pk_name.'='.$this->definition_table.'.'.$this->definition_pk_name );
 		
-		$query = $this->db->get($this->definition_table);
+		$query = $this->{$this->db_group}->get($this->definition_table);
 		
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();
@@ -109,7 +109,7 @@ class Element_model extends Base_model
 				where extend_fields.id_element = \''.$id_element.'\'
 				order by extend_field.ordering ASC';
 
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 
 		$result = array();
 		if ( $query->num_rows() > 0)
@@ -118,7 +118,7 @@ class Element_model extends Base_model
 
 		// Feed each field with content for the element fields
 		$langs = Settings::get_languages();
-		$extend_fields_fields = $this->db->list_fields('extend_fields');
+		$extend_fields_fields = $this->{$this->db_group}->list_fields('extend_fields');
 		
 		foreach($definitions_fields as $key => &$df)
 		{
@@ -215,7 +215,7 @@ class Element_model extends Base_model
 				join extend_field on extend_field.id_extend_field = extend_fields.id_extend_field'
 				.$where;
 		
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 
 		$result = array();
 		if ( $query->num_rows() > 0)
@@ -224,8 +224,8 @@ class Element_model extends Base_model
 
 
 		$langs = Settings::get_languages();
-		$extend_field_fields = $this->db->list_fields('extend_field');
-		$extend_fields_fields = $this->db->list_fields('extend_fields');
+		$extend_field_fields = $this->{$this->db_group}->list_fields('extend_field');
+		$extend_fields_fields = $this->{$this->db_group}->list_fields('extend_fields');
 		
 		foreach($definitions as $key => &$definition)
 		{
@@ -310,7 +310,7 @@ class Element_model extends Base_model
 					and id_parent= \''.$id_parent.'\'
 				)';
 		
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 
 		$result = array();
 		if ( $query->num_rows() > 0)
@@ -320,7 +320,7 @@ class Element_model extends Base_model
 
 		$langs = Settings::get_languages();
 
-		$element_fields = $this->db->list_fields('extend_fields');
+		$element_fields = $this->{$this->db_group}->list_fields('extend_fields');
 		
 		foreach($definitions as $key => &$definition)
 		{
@@ -395,8 +395,8 @@ class Element_model extends Base_model
 				'id_parent' => $id_parent,
 				'ordering' => $ordering
 			);
-			$this->db->insert('element', $element);
-			$id_element = $this->db->insert_id();
+			$this->{$this->db_group}->insert('element', $element);
+			$id_element = $this->{$this->db_group}->insert_id();
 		}
 		
 		// Save fields
@@ -414,8 +414,8 @@ class Element_model extends Base_model
 			// Checkboxes : first clear values from DB as the var isn't in $_POST if no value is checked
 			if ($extend_field['type'] == '4')
 			{
-				$this->db->where($where);
-				$this->db->delete('extend_fields');			
+				$this->{$this->db_group}->where($where);
+				$this->{$this->db_group}->delete('extend_fields');			
 			}
 			
 			// Get the value from _POST values ($data) and feed the data array
@@ -450,8 +450,8 @@ class Element_model extends Base_model
 						// Update
 						if( $this->exists($where, 'extend_fields'))
 						{
-							$this->db->where($where);
-							$this->db->update('extend_fields', $data);
+							$this->{$this->db_group}->where($where);
+							$this->{$this->db_group}->update('extend_fields', $data);
 						}
 						// Insert
 						else
@@ -459,7 +459,7 @@ class Element_model extends Base_model
 							// Set the extend field element field ID
 							$data['id_extend_field'] = $key[1];
 							
-							$this->db->insert('extend_fields', $data);
+							$this->{$this->db_group}->insert('extend_fields', $data);
 						}
 					}
 				}
@@ -481,10 +481,10 @@ class Element_model extends Base_model
 		if( $this->exists(array($this->pk_name => $id)) )
 		{
 			// Element delete
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
 			
 			// Extend fields content delete
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->fields_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->fields_table);
 		}
 		
 		return $affected_rows;
@@ -511,8 +511,8 @@ class Element_model extends Base_model
 		
 		unset($element['id_element']);
 
-		$this->db->insert('element', $element);
-		$return = $id_element = $this->db->insert_id();
+		$this->{$this->db_group}->insert('element', $element);
+		$return = $id_element = $this->{$this->db_group}->insert_id();
 		
 		if ($id_element)
 		{
@@ -536,7 +536,7 @@ class Element_model extends Base_model
 					from extend_fields 
 					where id_element = '.$data['id_element'];
 
-			$return = $this->db->query($sql);
+			$return = $this->{$this->db_group}->query($sql);
 		}
 		return $return;
 	}

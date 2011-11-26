@@ -365,7 +365,7 @@
 								'tag2' => array('iframe','table','object','div','span','dl','pre','code'),
 								'tag3' => array('dfn','samp','kbd','var','cite','q','big','small'),
 								'tag4' => array('hr', 'link','adress','legend','abbr','sub','sup','ins'),
-								'tag5' => array('blockquote')
+								'tag5' => array('blockquote', 'form')
 							);
 						?>
 	
@@ -897,7 +897,7 @@
 	$('texteditor_default').addEvent('click', function()
 	{
 		$('tinybuttons1').value = 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image';
-		$('tinybuttons2').value = 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror';
+		$('tinybuttons2').value = 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,nonbreaking,|,template,|,codemirror';
 		$('tinybuttons3').value = 'tablecontrols';
 	
 	});

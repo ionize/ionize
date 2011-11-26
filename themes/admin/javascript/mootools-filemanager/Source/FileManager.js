@@ -676,7 +676,8 @@ var FileManager = new Class({
 				if (rowicons)
 				{
 					rowicons.each(function(icon) {
-						icon.set('tween', {duration: 'short'}).fade(0);
+//						icon.set('tween', {duration: 'short'}).fade(0);
+						icon.hide();
 					});
 				}
 			}
@@ -690,11 +691,13 @@ var FileManager = new Class({
 				icons.each(function(icon) {
 					if (e.target == icon)
 					{
-						icon.set('tween', {duration: 'short'}).fade(1);
+						icon.show();
+//						icon.set('tween', {duration: 'short'}).fade(1);
 					}
 					else
 					{
-						icon.set('tween', {duration: 'short'}).fade(0.5);
+						icon.show();
+//						icon.set('tween', {duration: 'short'}).fade(0.5);
 					}
 				});
 			}
@@ -720,7 +723,8 @@ var FileManager = new Class({
 			if (rowicons)
 			{
 				rowicons.each(function(icon) {
-					icon.set('tween', {duration: 'short'}).fade(0);
+//					icon.set('tween', {duration: 'short'}).fade(0);
+					icon.hide();
 				});
 			}
 		});
@@ -1809,7 +1813,8 @@ var FileManager = new Class({
 		var icons = el.getElements('img.browser-icon');
 		if (icons) {
 			icons.each(function(icon) {
-				icon.fade(0);
+				icon.hide();
+				//icon.fade(0);
 			});
 		}
 
@@ -2268,7 +2273,8 @@ var FileManager = new Class({
 
 			editButtons.each(function(v) {
 				//icons.push(
-				Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+//				Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+				Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').hide().addEvent('mouseup', (function(e, target) {
 					// this = el, self = FM instance
 					e.preventDefault();
 					this.store('edit', true);
@@ -2489,7 +2495,8 @@ var FileManager = new Class({
 				if (this.options.destroy) editButtons.push('destroy');
 
 				editButtons.each(function(v) {
-					Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+//					Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
+					Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').hide().addEvent('mouseup', (function(e, target) {
 						// this = el, self = FM instance
 						e.preventDefault();
 						this.store('edit', true);

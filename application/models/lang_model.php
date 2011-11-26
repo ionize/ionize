@@ -86,8 +86,8 @@ class Lang_model extends Base_model
 			// Force copy from $from lang
 			if ($erase == TRUE)
 			{
-				$this->db->where('lang', $to);
-				$this->db->delete($table . '_lang');
+				$this->{$this->db_group}->where('lang', $to);
+				$this->{$this->db_group}->delete($table . '_lang');
 			}
 
 			// Copy...
@@ -103,7 +103,7 @@ class Lang_model extends Base_model
 							WHERE lang = '". $to ."'
 						)
 					)";
-			$this->db->query($sql);
+			$this->{$this->db_group}->query($sql);
 		}
 	}
 
@@ -146,8 +146,8 @@ class Lang_model extends Base_model
 		{
 			foreach ($tables as $table)
 			{
-				$this->db->where_not_in('lang', $lang_codes);
-				$nb_affected_rows += $this->db->delete($table . '_lang');
+				$this->{$this->db_group}->where_not_in('lang', $lang_codes);
+				$nb_affected_rows += $this->{$this->db_group}->delete($table . '_lang');
 			}
 		}
 		
@@ -175,8 +175,8 @@ class Lang_model extends Base_model
 
 		foreach ($tables as $table)
 		{
-			$this->db->where('lang', $from);
-			$this->db->update($table . '_lang', array('lang' => $to));
+			$this->{$this->db_group}->where('lang', $from);
+			$this->{$this->db_group}->update($table . '_lang', array('lang' => $to));
 		}
 	}
 
@@ -191,9 +191,9 @@ class Lang_model extends Base_model
 	function copy_lang_content($from, $to, $table, $id)
 	{
 		// Data (all languages)
-		$this->db->where('id_'.$table, $id);
+		$this->{$this->db_group}->where('id_'.$table, $id);
 		
-		$query = $this->db->get($table.'_lang');
+		$query = $this->{$this->db_group}->get($table.'_lang');
 		
 		$data = array();
 		if ( $query->num_rows() > 0 )
@@ -226,9 +226,9 @@ class Lang_model extends Base_model
 			// Update
 			if ( ! empty($dest))
 			{
-				$this->db->where(array('id_'.$table => $id, 'lang' => $to));
+				$this->{$this->db_group}->where(array('id_'.$table => $id, 'lang' => $to));
 			
-				return $this->db->update($table.'_lang', $dest);
+				return $this->{$this->db_group}->update($table.'_lang', $dest);
 			}
 			return 0;
 		}

@@ -448,6 +448,67 @@ class Media extends MY_admin
 		}
 	}
 
+	
+	
+	function add_external_media()
+	{
+		// Clear the cache
+		Cache()->clear_cache();
+
+		$path = $this->input->post('path');
+		$type = $this->input->post('type');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+
+		if ($path != '')
+		{
+			// DB Insert
+			$id = $this->media_model->insert_media($type, $path);
+		
+			// Parent linking
+			if (!$this->media_model->attach_media($type, $parent, $id_parent, $id)) 
+			{
+				$this->error(lang('ionize_message_media_already_attached'));
+			}
+			else 
+			{
+				// Addon answer data
+				$output_data = array('type' => $type);
+			
+				// Error Message
+				$this->callback = array(
+					array(
+						'fn' => 'mediaManager.loadMediaList',
+						'args' => 'video'
+					),
+					array(
+						'fn' => 'ION.emptyElement',
+						'args' => 'addVideo'
+					)					
+					
+				/*
+					array(
+						'fn' => 'ION.notification',
+						'args' => array('success', lang('ionize_message_media_attached'), $output_data)
+					),
+					array(
+						'fn' => 'ION.JSON',
+						'args' => array	(
+							'media/get_media_list/' . $type . '/' .  $parent . '/' . $id_parent
+						)
+					)
+				*/
+				);
+	
+				$this->response();
+			}
+		}
+		else
+		{
+			$this->error(lang('ionize_message_operation_nok'));
+		}
+	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -645,11 +706,19 @@ class Media extends MY_admin
 		 * extend fields
 		 *
 		 */
-		$this->template['extend_fields'] = array();
-//		if (Settings::get('use_extend_fields') == '1')
-//		{
-			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('media', $id);
-//		}
+		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('media', $id);
+		
+		// Location : 'http:' / 'files'
+		$location = array_shift(explode('/', $this->template['path']));
+		if ($location == 'http:')
+			$this->template['is_external'] = TRUE;
+		else
+			$this->template['is_external'] = FALSE;
+		
+		$this->template['location'] = $location;
+		
+		// Modules addons
+		$this->load_modules_addons($this->template);
 
 		$this->output('media_edit');	
 	}

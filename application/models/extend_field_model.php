@@ -78,17 +78,17 @@ class Extend_field_model extends Base_model
 		$extend_fields = $this->get_list($where);
 		
 		// Current element extend field
-		$this->db->where(array('extend_field.parent'=>$parent, $this->elements_table.'.id_parent' => $id_parent));
-		$this->db->join($this->elements_table, $this->elements_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
+		$this->{$this->db_group}->where(array('extend_field.parent'=>$parent, $this->elements_table.'.id_parent' => $id_parent));
+		$this->{$this->db_group}->join($this->elements_table, $this->elements_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
 
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 
 		$result = array();
 		if ( $query->num_rows() > 0)
 			$result = $query->result_array();
 
 		$langs = Settings::get_languages();
-		$element_fields = $this->db->list_fields($this->elements_table);
+		$element_fields = $this->{$this->db_group}->list_fields($this->elements_table);
 
 		foreach($extend_fields as $k => &$extend_field)
 		{
@@ -159,8 +159,8 @@ class Extend_field_model extends Base_model
 			// Checkboxes : first clear values from DB as the var isn't in $_POST if no value is checked
 			if ($extend_field['type'] == '4')
 			{
-				$this->db->where($where);
-				$this->db->delete($this->elements_table);			
+				$this->{$this->db_group}->where($where);
+				$this->{$this->db_group}->delete($this->elements_table);			
 			}
 			
 			// Get the value from _POST values and feed the data array
@@ -198,8 +198,8 @@ class Extend_field_model extends Base_model
 						// Update
 						if( $this->exists($where, $this->elements_table))
 						{
-							$this->db->where($where);
-							$this->db->update($this->elements_table, $data);
+							$this->{$this->db_group}->where($where);
+							$this->{$this->db_group}->update($this->elements_table, $data);
 						}
 						// Insert
 						else
@@ -207,7 +207,7 @@ class Extend_field_model extends Base_model
 							// Set the extend field element field ID
 							$data[$this->pk_name] = $key[1];
 							
-							$this->db->insert($this->elements_table, $data);
+							$this->{$this->db_group}->insert($this->elements_table, $data);
 						}
 					}
 				}
@@ -226,9 +226,9 @@ class Extend_field_model extends Base_model
 	 */
 	function delete_extend_fields($id)
 	{
-		$this->db->where('id_'.$this->table, $id);
+		$this->{$this->db_group}->where('id_'.$this->table, $id);
 		
-		return $this->db->delete($this->elements_table);
+		return $this->{$this->db_group}->delete($this->elements_table);
 	}
 	
 	

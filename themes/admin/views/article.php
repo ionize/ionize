@@ -74,9 +74,9 @@
 		<div id="options">
 
 			<!-- Options -->
-			<h3 class="toggler"><?= lang('ionize_title_attributes') ?></h3>
+			<h3 class="toggler toggler-options"><?= lang('ionize_title_attributes') ?></h3>
 		
-			<div class="element">
+			<div class="element element-options">
 
 				<!-- Indexed content -->
 				<dl class="small">
@@ -197,9 +197,9 @@
 			
 			
 			<!-- Dates -->
-			<h3 class="toggler"><?= lang('ionize_title_dates') ?></h3>
+			<h3 class="toggler toggler-options"><?= lang('ionize_title_dates') ?></h3>
 			
-			<div class="element">
+			<div class="element element-options">
 				<dl class="small">
 					<dt>
 						<label for="logical_date"><?= lang('ionize_label_date') ?></label>
@@ -269,9 +269,9 @@
 			<!-- Copy Content -->
 			<?php if( ! empty($id_article)) :?>
 
-				<h3 class="toggler"><?= lang('ionize_title_content') ?></h3>
+				<h3 class="toggler toggler-options"><?= lang('ionize_title_content') ?></h3>
 				
-				<div class="element">
+				<div class="element element-options">
 				
 					<dl class="small">
 						<dt>
@@ -412,7 +412,11 @@
 			<!-- Where is the article ? -->
 			<dl>
 				<dt><label><?= lang('ionize_label_article_in') ?></label></dt>
-				<dd class="lite"><?= $menu ?> > <?= $parent ?></dd>
+				<dd class="lite"><?= $menu ?> 
+					<?php foreach ($breadcrumbs as $breadcrumb) :?>
+						> <?= $breadcrumb['title'] ?>
+					<?php endforeach ;?>
+				</dd>
 			</dl>	
 
 
@@ -603,20 +607,44 @@
 
 				<div class="tabcontent <?= $lang ?>">
 
-						<p class="clear h15">
-							<a class="right icon copy copyLang" rel="<?= $lang ?>" title="<?= lang('ionize_label_copy_to_other_languages') ?>"></a>
-						</p>
-			
-						<!-- title -->
-						<dl class="first">
-							<dt>
-								<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
-							</dt>
-							<dd>
-								<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['title'] ?>"/>
-							</dd>
-						</dl>
-	
+					<!-- Copy data -->
+					<p class="clear h15">
+						<a class="right icon copy copyLang" rel="<?= $lang ?>" title="<?= lang('ionize_label_copy_to_other_languages') ?>"></a>
+					</p>
+
+					<!-- title -->
+					<dl class="first">
+						<dt>
+							<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
+						</dt>
+						<dd>
+							<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['title'] ?>"/>
+						</dd>
+					</dl>
+						<!-- Online -->
+						<?php if(count(Settings::get_languages()) > 1) :?>
+						
+							<dl>
+								<dt>
+									<label for="online_<?= $lang ?>" title="<?= lang('ionize_help_article_content_online') ?>"><?= lang('ionize_label_article_content_online') ?></label>
+								</dt>
+								<dd>
+									<input id="online_<?= $lang ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?= $lang ?>" class="inputcheckbox" type="checkbox" value="1"/>
+								</dd>
+							</dl>
+						
+						<?php else :?>
+						
+							<input id="online_<?= $lang ?>" name="online_<?= $lang ?>" type="hidden" value="1"/>
+						
+						<?php endif ;?>
+
+					<!-- Toggler : More : SEO, Online.. -->
+					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_title_seo') ?></h3>
+				
+					<div class="element element-<?= $lang ?>">
+
+
 						<!-- sub title -->
 						<dl>
 							<dt>
@@ -624,7 +652,7 @@
 							</dt>
 							<dd>
 								<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="textarea subtitleTiny h30" type="text"><?= ${$lang}['subtitle'] ?></textarea>
-<!--								<a class="icon edit subtitle"></a> -->
+								<!-- <a class="icon edit subtitle"></a> -->
 							</dd>
 						</dl>
 
@@ -648,134 +676,149 @@
 								<input id="meta_title_<?= $lang ?>" name="meta_title_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['meta_title'] ?>"/>
 							</dd>
 						</dl>
-				
-						<!-- Online -->
-						<?php if(count(Settings::get_languages()) > 1) :?>
 						
-							<dl>
-								<dt>
-									<label for="online_<?= $lang ?>" title="<?= lang('ionize_help_article_content_online') ?>"><?= lang('ionize_label_article_content_online') ?></label>
-								</dt>
-								<dd>
-									<input id="online_<?= $lang ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?= $lang ?>" class="inputcheckbox" type="checkbox" value="1"/>
-								</dd>
-							</dl>
-						
-						<?php else :?>
-						
-							<input id="online_<?= $lang ?>" name="online_<?= $lang ?>" type="hidden" value="1"/>
-						
-						<?php endif ;?>
-				
-						<!-- extend fields goes here... -->
-							<?php foreach($extend_fields as $extend_field) :?>
-								<?php if ($extend_field['translated'] == '1') :?>
-								
-									<dl>
-										<dt>
-											<?php
-												$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-											?>
-											<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
-										</dt>
-										<dd>
-											<?php
-												$extend_field[$lang]['content'] = (!empty($extend_field[$lang]['content'])) ? $extend_field[$lang]['content'] : $extend_field['default_value'];
-											?>
-						
-											<?php if ($extend_field['type'] == '1') :?>
-												<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $extend_field[$lang]['content'] ?>" />
-											<?php endif ;?>
-											
-											<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
-												<textarea id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext h80" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>"><?= $extend_field[$lang]['content'] ?></textarea>
-											<?php endif ;?>
-											
-											<!-- Checkbox -->
-											<?php if ($extend_field['type'] == '4') :?>
-												
-												<?php
-													$pos = 		explode("\n", $extend_field['value']);
-													$saved = 	explode(',', $extend_field[$lang]['content']);
-												?>
+					</div> <!-- /element -->				
+
 	
-												<?php
-													$i = 0; 
-													foreach($pos as $values)
-													{
-														$vl = explode(':', $values);
-														$key = $vl[0];
-														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
+					<!-- extend fields goes here... -->
+					<?php if ( ! empty($extend_fields)) :?>
+						
+						<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_title_extend_fields') ?></h3>
 			
-														?>
-														<input type="checkbox" id= "cf_<?= $extend_field['id_extend_field'].$i ?>_<?= $lang ?>" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>[]" value="<?= $key ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>_<?= $lang ?>"><?= $value ?></label></input><br/>
-														<?php
-														$i++;
-													}
-												?>
-											<?php endif ;?>
-											
-											<!-- Radio -->
-											<?php if ($extend_field['type'] == '5') :?>
-												
-												<?php
-													$pos = explode("\n", $extend_field['value']);
-												?>
-												<?php
-													$i = 0; 
-													foreach($pos as $values)
-													{
-														$vl = explode(':', $values);
-														$key = $vl[0];
-														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-			
-														?>
-														<input type="radio" id= "cf_<?= $extend_field['id_extend_field'].$i ?>_<?= $lang ?>" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $key ?>" <?php if ($extend_field[$lang]['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>_<?= $lang ?>"><?= $value ?></label></input><br/>
-														<?php
-														$i++;
-													}
-												?>
-											<?php endif ;?>
-											
-											<!-- Selectbox -->
-											<?php if ($extend_field['type'] == '6' && !empty($extend_field['value'])) :?>
-												
-												<?php									
-													$pos = explode("\n", $extend_field['value']);
-													$saved = 	explode(',', $extend_field[$lang]['content']);
-												?>
-												<select name="cf_<?= $extend_field['id_extend_field']?>_<?= $lang ?>">
-												<?php
-													$i = 0; 
-													foreach($pos as $values)
-													{
-														$vl = explode(':', $values);
-														$key = $vl[0];
-														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-														?>
-														<option value="<?= $key ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?= $value ?></option>
-														<?php
-														$i++;
-													}
-												?>
-												</select>
-											<?php endif ;?>
-	
-											<!-- Date & Time -->
-											<?php if ($extend_field['type'] == '7') :?>
-											
-												<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext w120 date" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $extend_field['content']  ?>" />
-												
-											<?php endif ;?>
-	
-											
-										</dd>
-									</dl>	
+						<div class="element element-<?= $lang ?>">
+
+						<?php foreach($extend_fields as $extend_field) :?>
+							<?php if ($extend_field['translated'] == '1') :?>
+							
+								<dl>
+									<dt>
+										<?php
+											$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
+										?>
+										<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
+									</dt>
+									<dd>
+										<?php
+											$extend_field[$lang]['content'] = (!empty($extend_field[$lang]['content'])) ? $extend_field[$lang]['content'] : $extend_field['default_value'];
+										?>
+					
+										<?php if ($extend_field['type'] == '1') :?>
+											<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $extend_field[$lang]['content'] ?>" />
+										<?php endif ;?>
 										
-								<?php endif ;?>
-							<?php endforeach ;?>
-	
-						<!-- Text -->
+										<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
+											<textarea id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext h80" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>"><?= $extend_field[$lang]['content'] ?></textarea>
+										<?php endif ;?>
+										
+										<!-- Checkbox -->
+										<?php if ($extend_field['type'] == '4') :?>
+											
+											<?php
+												$pos = 		explode("\n", $extend_field['value']);
+												$saved = 	explode(',', $extend_field[$lang]['content']);
+											?>
+
+											<?php
+												$i = 0; 
+												foreach($pos as $values)
+												{
+													$vl = explode(':', $values);
+													$key = $vl[0];
+													$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
+		
+													?>
+													<input type="checkbox" id= "cf_<?= $extend_field['id_extend_field'].$i ?>_<?= $lang ?>" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>[]" value="<?= $key ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>_<?= $lang ?>"><?= $value ?></label></input><br/>
+													<?php
+													$i++;
+												}
+											?>
+										<?php endif ;?>
+										
+										<!-- Radio -->
+										<?php if ($extend_field['type'] == '5') :?>
+											
+											<?php
+												$pos = explode("\n", $extend_field['value']);
+											?>
+											<?php
+												$i = 0; 
+												foreach($pos as $values)
+												{
+													$vl = explode(':', $values);
+													$key = $vl[0];
+													$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
+		
+													?>
+													<input type="radio" id= "cf_<?= $extend_field['id_extend_field'].$i ?>_<?= $lang ?>" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $key ?>" <?php if ($extend_field[$lang]['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>_<?= $lang ?>"><?= $value ?></label></input><br/>
+													<?php
+													$i++;
+												}
+											?>
+										<?php endif ;?>
+										
+										<!-- Selectbox -->
+										<?php if ($extend_field['type'] == '6' && !empty($extend_field['value'])) :?>
+											
+											<?php									
+												$pos = explode("\n", $extend_field['value']);
+												$saved = 	explode(',', $extend_field[$lang]['content']);
+											?>
+											<select name="cf_<?= $extend_field['id_extend_field']?>_<?= $lang ?>">
+											<?php
+												$i = 0; 
+												foreach($pos as $values)
+												{
+													$vl = explode(':', $values);
+													$key = $vl[0];
+													$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
+													?>
+													<option value="<?= $key ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?= $value ?></option>
+													<?php
+													$i++;
+												}
+											?>
+											</select>
+										<?php endif ;?>
+
+										<!-- Date & Time -->
+										<?php if ($extend_field['type'] == '7') :?>
+										
+											<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext w120 date" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $extend_field['content']  ?>" />
+											
+										<?php endif ;?>
+
+										
+									</dd>
+								</dl>	
+									
+							<?php endif ;?>
+						<?php endforeach ;?>
+			
+						</div>		<!-- / element1 -->
+
+					<!-- End if extend_fields -->
+					<?php endif ;?>
+
+					<!-- Summary -->
+					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_label_summary') ?></h3>
+					
+					<div class="element element-<?= $lang ?>">
+
+						<div>
+							<textarea id="summary_<?= $lang ?>" name="summary_<?= $lang ?>" class="smallTinyTextarea w600 h100" rel="<?= $lang ?>"><?= htmlentities(${$lang}['summary'], ENT_QUOTES, 'utf-8') ?></textarea>
+							
+							<p class="clear h15 mb15">
+								<button id="wysiwyg_summary_<?= $lang ?>" type="button" class="light-button left" onclick="tinymce.execCommand('mceToggleEditor',false,'summary_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
+							</p>
+						</div>
+
+					</div>
+
+					<!-- Text -->
+					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_label_text') ?></h3>
+		
+					<div class="element element-<?= $lang ?>">
+
 						<div>
 							<textarea id="content_<?= $lang ?>" name="content_<?= $lang ?>" class="tinyTextarea w600 h260" rel="<?= $lang ?>"><?= htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8') ?></textarea>
 							
@@ -783,6 +826,8 @@
 								<button id="wysiwyg_<?= $lang ?>" type="button" class="light-button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
 							</p>
 						</div>
+					
+					</div>
 
 				</div>
 				<?php endforeach ;?>
@@ -797,7 +842,6 @@
 					</p>
 					
 					<ul id="fileContainer" class="sortable-container">
-						<span><?= lang('ionize_message_no_file') ?></span>
 					</ul>
 	
 				</div>
@@ -811,7 +855,6 @@
 					</p>
 					
 					<ul id="musicContainer" class="sortable-container">
-						<span><?= lang('ionize_message_no_music') ?></span>
 					</ul>
 	
 				</div>
@@ -823,9 +866,18 @@
 						<button class="right light-button video" onclick="javascript:mediaManager.loadMediaList('video');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('video');return false;"><?= lang('ionize_label_detach_all_videos') ?></button>
 					</p>
-	
+					
+					<dl class="first">
+						<dt>
+							<label for="add_video"><?= lang('ionize_label_add_video') ?></label>
+						</dt>
+						<dd>
+							<input id="addVideo" name="addVideo" class="inputtext w300 left mr5" type="text" value=""/>
+							<button id="btnAddVideo" class="left light-button plus"><?= lang('ionize_button_add_video') ?></button>
+						</dd>
+					</dl>
+					
 					<ul id="videoContainer" class="sortable-container">
-						<span><?= lang('ionize_message_no_video') ?></span>
 					</ul>
 	
 				</div>
@@ -842,7 +894,6 @@
 					</p>
 				
 					<div id="pictureContainer" class="sortable-container">
-						<span><?= lang('ionize_message_no_picture') ?></span>
 					</div>
 	
 				</div>
@@ -870,7 +921,13 @@
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler', 'div.element', true, 'articleAccordion');
+	ION.initAccordion('.toggler-options', 'div.element-options', true, 'articleAccordion');
+
+	<?php foreach (Settings::get_languages() as $lang) :?>
+
+		ION.initAccordion('.toggler-<?= $lang['lang']?>', 'div.element-<?= $lang['lang']?>', true, 'articleAccordion-<?= $lang['lang']?>');
+
+	<?php endforeach ;?>
 		
 
 	/**
@@ -960,7 +1017,9 @@
 	{
 		$('ordering_select').addEvent('change', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
+
 			var el = e.target;
 			
 			if (el.value == 'after'){ $('ordering_after').setStyle('display', 'block');}
@@ -995,6 +1054,7 @@
 	 *
 	 */
 	ION.initTinyEditors('.tab_article', '#articleTabContent .tinyTextarea');
+	ION.initTinyEditors('.tab_article', '#articleTabContent .smallTinyTextarea', 'small', {'height':80});
 	
 	<?php if (!empty($id_article)) :?>
 	
@@ -1044,7 +1104,27 @@
 		 */
 		$('desktop').store('tabSwapper', articleTab);
 		ION.getContentElements('article', '<?= $id_article ?>');
-
+		
+		
+		/**
+		 * Add Video button
+		 *
+		 */
+		$('btnAddVideo').addEvent('click', function()
+		{
+			if ($('addVideo').value !='')
+			{
+				ION.JSON('media/add_external_media', {
+					'type': 'video', 
+					'parent': 'article', 
+					'id_parent': '<?= $id_article ?>',
+					'path': $('addVideo').value
+				});
+			}
+			return false;
+		});
+		
+		
 
 		/** 
 		 * Media Manager & tabs events

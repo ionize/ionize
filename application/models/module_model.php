@@ -45,7 +45,7 @@ class Module_Model extends Base_model
 	 */
 	function get_languages()
 	{
-		return $this->db->from('lang')->order_by('ordering', 'ASC')->get()->result_array();
+		return $this->{$this->db_group}->from('lang')->order_by('ordering', 'ASC')->get()->result_array();
 	}
 }
 /* End of file module_model.php */

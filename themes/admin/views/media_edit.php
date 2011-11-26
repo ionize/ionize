@@ -40,23 +40,33 @@ if($type == 'picture')
 	
 	<!-- Video file -->
 	<?php if($type == 'video') :?>
-	
-		<div style="float:right;"  id="video<?= $id_media ?>"></div>
-	
-		<script type="text/javascript">
-			
-			var s1 = new SWFObject('<?= theme_url() ?>flash/mediaplayer/player.swf','player','170','145','9');
-			s1.addParam('allowfullscreen','true');
-			s1.addParam('allowscriptaccess','always');
-			
-			s1.addParam('flashvars','file=<?=base_url().$path?>');
-			
-			s1.write('video<?= $id_media ?>');
-			
-		</script>
-
-		<h3><?= lang('ionize_title_informations') ?></h3>
 		
+		<?php if($is_external == TRUE) :?>
+
+			<iframe  style="float:right;" width="170" height="145" src="<?= $path?>" frameborder="0" allowfullscreen></iframe>
+		
+			<h3><?= lang('ionize_title_informations') ?></h3>
+
+		
+		<?php else :?>
+
+			<div style="float:right;"  id="video<?= $id_media ?>"></div>
+		
+			<script type="text/javascript">
+				
+				var s1 = new SWFObject('<?= theme_url() ?>flash/mediaplayer/player.swf','player','170','145','9');
+				s1.addParam('allowfullscreen','true');
+				s1.addParam('allowscriptaccess','always');
+				
+				s1.addParam('flashvars','file=<?=base_url().$path?>');
+				
+				s1.write('video<?= $id_media ?>');
+				
+			</script>
+	
+			<h3><?= lang('ionize_title_informations') ?></h3>
+		
+		<?php endif ;?>
 	<?php endif ;?>
 	
 
@@ -94,24 +104,29 @@ if($type == 'picture')
 
 	<!-- File size in ko -->
 	<dl class="small">
-		<dt>
-			<label><?= lang('ionize_label_file_size') ?></label>
-		</dt>
-		<dd>
-			<?php if (file_exists($path)) :?>
-				<?php echo sprintf('%01.2f', filesize($path) / (1024 )) ?> ko
-			<?php else :?>
-				<?php echo(lang('ionize_exception_no_source_file')) ;?>
-			<?php endif ;?>
+
+		<?php if($is_external == FALSE) :?>
+
+			<dt>
+				<label><?= lang('ionize_label_file_size') ?></label>
+			</dt>
+			<dd>
+				<?php if (file_exists($path)) :?>
+					<?php echo sprintf('%01.2f', filesize($path) / (1024 )) ?> ko
+				<?php else :?>
+					<?php echo(lang('ionize_exception_no_source_file')) ;?>
+				<?php endif ;?>
+			
+				<?php if($type == 'picture') :?>
+					 - 
+					<?php if ( ! is_null($pictureSize)) :?>
+						<?php echo($pictureSize['0']) ?> x <?php echo($pictureSize['1']) ?> px
+						<br /><a id="imageCropLink<?= $id_media ?>">crop image</a>
+					<?php endif ;?> 
+				<?php endif ;?>
+			</dd>		
 		
-			<?php if($type == 'picture') :?>
-				 - 
-				<?php if ( ! is_null($pictureSize)) :?>
-					<?php echo($pictureSize['0']) ?> x <?php echo($pictureSize['1']) ?> px
-					<br /><a id="imageCropLink<?= $id_media ?>">crop image</a>
-				<?php endif ;?> 
-			<?php endif ;?>
-		</dd>		
+		<?php endif ;?>
 	
 	</dl>
 	

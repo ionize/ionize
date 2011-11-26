@@ -33,12 +33,16 @@ FileManager.implement({
 
 		cleanup: {
 			upload: function() {
+
 				if (!this.options.upload || !this.upload) return;
 
 				if (this.upload.uploader) {
 					this.upload.uploader.fade(0).get('tween').chain(function() {
 						this.element.dispose();
 					});
+				}
+				if (this.swf) {
+					this.swf.box.dispose();
 				}
 			}
 		}
@@ -317,7 +321,7 @@ FileManager.implement({
 			timeLimit: self.options.uploadTimeLimit,
 			fileSizeMax: self.options.uploadFileSizeMax,
 			typeFilter: this.getFileTypes(),
-			zIndex: this.options.zIndex + 3000,
+			zIndex: this.options.zIndex + 400000,
 			onSelectSuccess: function() {
 				self.diag.log('FlashUploader: onSelectSuccess', arguments, ', fileList: ', self.swf.fileList);
 				//self.fillInfo();

@@ -49,6 +49,7 @@ class Page extends MY_admin
 		$this->load->model('structure_model', '', true);
 		$this->load->model('extend_field_model', '', true);
 		$this->load->model('system_check_model', '', true);
+		$this->load->model('url_model', '', true);
 		
 		// Libraries
 		$this->load->library('structure');
@@ -67,6 +68,8 @@ class Page extends MY_admin
 	 */
 	function create($id_menu) 
 	{	
+		$this->load_modules_addons();
+	
 		// Current menu : Needs to be improved.
 		// TODO : Create a menu table or see how to manage menus.
 		$this->template['id_menu'] = $id_menu;
@@ -90,7 +93,7 @@ class Page extends MY_admin
 		if(count($datas) > 0)
 		{
 			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
-			$this->template['views'] = form_dropdown('view', $datas, false, 'class="select w160"');
+			$this->template['views'] = $this->template['single_views'] = form_dropdown('view', $datas, false, 'class="select w160"');
 		}
 
 		// Dropdown Article views
@@ -135,6 +138,8 @@ class Page extends MY_admin
 
 		if( !empty($page) )
 		{
+			$this->load_modules_addons($page);
+
 			// Correct the menu ID (for phantom pages)
 			if ($page['id_menu'] == '0') $page['id_menu'] = '1'; 
 			
@@ -153,7 +158,6 @@ class Page extends MY_admin
 			$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $datas, $selected_subnav, 'id="id_subnav_menu" class="select"');
 
 
-
 			// Dropdowns Views
 			$views = array();
 			if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
@@ -165,6 +169,7 @@ class Page extends MY_admin
 			{
 				$datas = array('' => lang('ionize_select_default_view')) + $datas; 
 				$this->template['views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select w160"');
+				$this->template['single_views'] = form_dropdown('view_single', $datas, $this->template['view_single'], 'class="select w160"');
 			}
 			
 			// Dropdown article list views (templates)
@@ -182,6 +187,17 @@ class Page extends MY_admin
 			{
 				$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select w160"');
 			}
+			
+			// Breadcrumbs
+			$pages = $this->page_model->get_parent_array(array('id_page' => $id), array(), Settings::get_lang('default'));
+			
+			$breadcrump = array();
+			foreach($pages as $page)
+			{
+				$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+			}
+			$this->template['breadcrump'] = implode(' > ', $breadcrump);
+
 			
 			/*
 			 * Groups access
@@ -240,7 +256,6 @@ class Page extends MY_admin
 		 */
 		if ($this->_check_before_save() == TRUE)
 		{
-
 			$id = $this->input->post('id_page');
 			
 			// try to get the page with one of the form provided URL
@@ -275,6 +290,28 @@ class Page extends MY_admin
 			{
 				$this->page_model->update_home_page($saved_id);
 			}
+			
+			// Save the Urls
+//			$this->url_model->save_page_urls($saved_id);
+			
+			$this->page_model->save_urls($saved_id);
+			
+			
+			// Set the Path (breadcrumb)
+			// Breadcrumbs
+/*
+// One breadcrumb / lang
+// Take care to the path !!!
+
+			$pages = $this->page_model->get_parent_array(array('id_page' => $saved_id), array(), Settings::get_lang('default'));
+			
+			$breadcrump = array();
+			foreach($pages as $page)
+			{
+				$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+			}
+			$this->template['breadcrump'] = implode(' > ', $breadcrump);
+*/			
 			
 			// Save the Sitemap
 			$this->structure->build_sitemap();

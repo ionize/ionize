@@ -533,10 +533,11 @@ class Setting extends MY_admin
 		// Tags allowed in articles
 		$tags = $this->input->post('article_allowed_tags');
 		if ( ! $tags) $tags = array();
-		if (in_array('table', $tags)) $tags = array_merge($tags, array('thead','tbody','tfoot','tr','th','td','caption'));
+		if (in_array('table', $tags)) $tags = array_merge($tags, array('thead','tbody','tfoot','tr','th','td','caption','colgroup','col'));
 		if (in_array('object', $tags)) $tags = array_merge($tags, array('param', 'embed'));
 		if (in_array('dl', $tags)) $tags = array_merge($tags, array('dt','dd'));
 		if (in_array('img', $tags)) $tags = array_merge($tags, array('map','area'));
+		if (in_array('form', $tags)) $tags = array_merge($tags, array('input','button','fieldset','label','textarea','legend','optgroup','option','select'));
 		
 		// Standard allowed tags
 		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong'));

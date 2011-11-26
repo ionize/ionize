@@ -31,25 +31,10 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.2.1-yc.js"></script>
 
 
-<script type="text/javascript">
-
-	if (Browser.ie)
-	{
-		// override mootools global default setting for fade effects:
-		Fx.prototype.options.fps = 10;				// 50
-		//Fx.prototype.options.unit = false;
-		Fx.prototype.options.duration = 5;			// 500
-		//Fx.prototype.options.frames = 1000;
-		//Fx.prototype.options.frameSkip = true;
-		//Fx.prototype.options.link = 'ignore';
-		//Fx.prototype.frameInterval;
-		Fx.Durations['short'] = 5;					// 250
-		Fx.Durations['normal'] = 5;					// 500
-		Fx.Durations['long'] = 5;					// 750
-	}
-
-</script>
-
+<!-- Mootools 1.4.1
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.4.1-full-nocompat-yc.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.4.0.1-yc.js"></script>
+ -->
 
 <!-- Drag Clone -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/drag.clone.js"></script>
@@ -145,6 +130,7 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_itemsmanager.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_tinymce.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_tree_xhr.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_list_filter.js"></script>
 
 
 <!-- Mootools Filemanager -->

@@ -429,7 +429,8 @@
 	{
 		item.addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
 			var id = item.getProperty('rel');
 			ION.formWindow(	
 				id, 							// object ID

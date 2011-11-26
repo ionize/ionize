@@ -830,7 +830,7 @@ MUI.Form = new Class({
 
 				var panelClick = function(id){
 					return function(e){
-						new Event(e).stop();
+						e.stop();
 						$(id + '_formpanel').getParent().getElements('.formPanel').setStyle('display', 'none');
 						$(id + '_formpanel').setStyle('display', '');
 						$(id + '_tab').getParent().getElements('.C').removeClass('C');

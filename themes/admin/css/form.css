@@ -183,7 +183,7 @@ textarea{
 	padding:3px;
 }
 #options select {
-	max-width: 150px;
+/*	max-width: 150px;*/
 }
 .inputtext {
 	border:1px solid #bbb;

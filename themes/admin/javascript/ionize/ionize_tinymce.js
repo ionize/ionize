@@ -29,11 +29,17 @@ ION.append({
 					verify_html : false,
 					relative_urls : false,
 					auto_cleanup_word : false,
+					plugins : 'inlinepopups,advimage,advlink,spellchecker,nonbreaking',
 					theme_advanced_toolbar_location : 'top',
 					theme_advanced_toolbar_align : 'left',
-					theme_advanced_buttons1 : 'bold,italic,|,bullist,numlist',
+					theme_advanced_resizing : true,
+					theme_advanced_resizing_use_cookie : false,
+					theme_advanced_path_location : 'bottom',
+					theme_advanced_buttons1 : 'bold,italic,|,bullist,numlist,|,link,unlink,image,|,nonbreaking',
 					theme_advanced_buttons2 : '',
-					theme_advanced_buttons3 : ''
+					theme_advanced_buttons3 : '',
+					content_css : tinyCSS,
+					file_browser_callback: 'ION.openTinyFilemanager'
 				};
 				return settings;
 				break;

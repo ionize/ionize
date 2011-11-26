@@ -41,11 +41,11 @@ class Article_type_model extends Base_model
 	 */
 	function update_article_after_delete($id_type)
 	{
-		$this->db->where($this->pk_name, $id_type);
+		$this->{$this->db_group}->where($this->pk_name, $id_type);
 		
-		$this->db->set($this->pk_name, 'NULL');
+		$this->{$this->db_group}->set($this->pk_name, 'NULL');
 		
-		return $this->db->update('page_article');
+		return $this->{$this->db_group}->update('page_article');
 	}
 
 

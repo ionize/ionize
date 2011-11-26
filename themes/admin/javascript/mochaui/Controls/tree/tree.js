@@ -349,7 +349,7 @@ MUI.Tree = new NamedClass('MUI.Tree', {
 		var mY = 0;
 		var mX = 0;
 		if (e){
-			e = new Event(e).stop();
+			e.stop();
 			var c = itm.getCoordinates();
 			mY = e.client.y - c.top;
 			mX = e.client.x - c.left;
@@ -376,13 +376,13 @@ MUI.Tree = new NamedClass('MUI.Tree', {
 
 	onNodeClick: function(e, node){
 		var o = this.options;
-		e = new Event(e).stop();
+		e.stop();
 		this.selectValue(MUI.getData(node, o.valueField), e);
 		this.fireEvent('nodeClicked', [e, node, this]);
 	},
 
 	onNodeCheck: function(e, node){
-		e = new Event(e).stopPropagation();
+		e.stopPropagation();
 		this.fireEvent('nodeChecked', [e, node, this]);
 	}
 

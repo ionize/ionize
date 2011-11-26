@@ -72,7 +72,8 @@
 		
 		$('addMedia').addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
 			mediaManager.initParent('article', $('id_article').value);
 			mediaManager.toggleFileManager();
 		});
@@ -80,7 +81,7 @@
 		// Add Content Element button
 		$('addContentElement').addEvent('click', function(e)
 		{
-			ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:300}, {'parent':'article', 'id_parent': id});
+			ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'article', 'id_parent': id});
 		});
 		
 		

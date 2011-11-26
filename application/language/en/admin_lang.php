@@ -269,12 +269,14 @@ $lang['ionize_label_id'] = 'ID';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_permanent_url'] = 'Permanent URL';
 $lang['ionize_label_view'] = 'View';
+$lang['ionize_label_page_single_view'] = 'Single View';
 $lang['ionize_label_article_template'] = 'Article view';
 
 $lang['ionize_label_title'] = 'Title';
 $lang['ionize_label_subtitle'] = 'Subtitle';
 $lang['ionize_label_meta_title'] = 'Window title';
 $lang['ionize_label_nav_title'] = 'Navigation title';
+$lang['ionize_label_summary'] = 'Summary';
 $lang['ionize_label_text'] = 'Text';
 $lang['ionize_label_content'] = 'Content';
 $lang['ionize_label_category'] = 'Category';
@@ -327,6 +329,7 @@ $lang['ionize_help_copy_to_other_languages'] = 'Copy to other languages';
 */
 $lang['ionize_button_save'] = 'Save';
 $lang['ionize_button_save_close'] = 'Save & close';
+$lang['ionize_button_update'] = 'Update';
 $lang['ionize_button_send'] = 'Send';
 $lang['ionize_button_add'] = 'Add';
 $lang['ionize_button_next'] = 'Next';
@@ -341,6 +344,7 @@ $lang['ionize_button_cancel'] = 'Cancel';
 $lang['ionize_button_add_page'] = 'Add page';
 $lang['ionize_button_switch_online'] = 'Online / Offline';
 $lang['ionize_button_filter'] = 'Filter';
+$lang['ionize_button_reset_filter'] = 'Reset';
 
 $lang['ionize_button_save_new_lang'] = 'Add this language';
 $lang['ionize_button_save_page'] = 'Save page';
@@ -719,9 +723,11 @@ $lang['ionize_help_page_online'] = 'Is this page online?';
 $lang['ionize_help_page_content_online'] = 'Is this page online for this language?';
 $lang['ionize_help_page_url'] = 'Page\'s URL. Must be unique';
 $lang['ionize_help_page_link'] = 'Internal or External HTTP link. Replace the default page link';
+$lang['ionize_help_page_view'] = 'Common page view';
+$lang['ionize_help_page_single_view'] = 'Page view used to display one Article';
 $lang['ionize_help_pagination'] = 'If > 0, activate the pagination of article.';
-$lang['ionize_help_article_list_template'] = 'If more than 1 article on the page, use of this view to display each article';
-$lang['ionize_help_article_template'] = 'View used to display the articles in standalone mode OR if just one article in this page';
+$lang['ionize_help_article_list_template'] = 'Article view : If more than 1 article on the page, use this view by default for each article';
+$lang['ionize_help_article_template'] = 'Article view : Use this view for each article displayed in standalone mode OR if just one article in this page';
 $lang['ionize_help_appears'] = 'Does the page appears in the navigation menu ?';
 $lang['ionize_help_page_meta'] = 'Replace the global website META when not empty';
 $lang['ionize_help_page_window_title'] = 'Browser window title';
@@ -766,6 +772,10 @@ $lang['ionize_label_description'] = 'Description';
 $lang['ionize_label_reload_media_list'] = 'Reload media list';
 $lang['ionize_label_media_container'] = 'Album / Serie';
 $lang['ionize_label_media_crop_picture'] = 'Crop Picture';
+$lang['ionize_label_add_video'] = 'Add Video URL';
+
+$lang['ionize_button_add_video'] = 'Add';
+ 
 
 $lang['ionize_message_please_save_first'] = 'Please save before adding media';
 $lang['ionize_message_media_not_authorized'] = 'Media type not authorized !';
@@ -1038,6 +1048,9 @@ $lang['ionize_title_check_folder'] = 'Folder';
 $lang['ionize_title_check_page_level'] = 'Check Pages Levels';
 $lang['ionize_title_check_article_context'] = 'Check Articles Contexts';
 $lang['ionize_title_check_views'] = 'Check Views';
+$lang['ionize_title_rebuild_pages_urls'] = 'Rebuild of Pages URLs';
+$lang['ionize_title_rebuild_articles_urls'] = 'Rebuild of Articles URLs';
+
 
 $lang['ionize_message_check_corrected'] = ' corrected.';
 $lang['ionize_message_check_ok'] = 'OK';

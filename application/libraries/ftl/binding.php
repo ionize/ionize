@@ -124,6 +124,39 @@ class FTL_Binding
 		return $this->context->tag_missing($this->name, $this->attr, $this->block);
 	}
 	
+	
+	/**
+	 * Returns one attribute or FALSE if not found
+	 *
+	 */
+	public function getAttribute($attr)
+	{
+		return (isset($this->attr[$attr])) ? $this->attr[$attr] : FALSE;
+	}
+	
+	
+	/**
+	 * Returns one local var
+	 *
+	 */
+	public function get($local)
+	{
+		return $this->locals->{$local};
+	}
+	
+	
+	/**
+	 * Set one local var
+	 *
+	 */
+	public function set($key, $value)
+	{
+		$this->locals->{$key} = $value;
+	}
+	
+	
+	
+	
 	/**
 	 * Renders another tag.
 	 * 

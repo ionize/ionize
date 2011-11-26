@@ -24,6 +24,7 @@ ION.ItemManager = new Class({
 	options: 
 	{
 		'controller': false,
+		'method': 'save_ordering',
 		'confirmDelete': true,
 		'confirmDeleteMessage': Lang.get('ionize_confirm_element_delete'),
 		'sortable': false
@@ -187,7 +188,7 @@ ION.ItemManager = new Class({
 			this.container.store('sortableOrder', serie);
 
 			// Set the request URL
-			var url = this.adminUrl + this.options.controller + '/save_ordering';
+			var url = this.adminUrl + this.options.controller + '/' + this.options.method;
 
 			// If parent and parent ID are defined, send them to the controller through the URL
 			if (this.parent_element && this.id_parent)

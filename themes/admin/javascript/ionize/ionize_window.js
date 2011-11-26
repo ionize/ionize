@@ -40,7 +40,7 @@ ION.append({
 	{
 		$(button).addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+			e.stop();
 			ION.confirmation(id, callback, msg, options);
 		});	
 	},
@@ -156,7 +156,7 @@ ION.append({
 					{
 						bCancel.addEvent('click', function(e)
 						{
-							var e = new Event(e).stop();
+							e.stop();
 							MUI.get('w' + id).close();
 						});
 					}
@@ -166,7 +166,7 @@ ION.append({
 					{
 						bSave.addEvent('click', function(e)
 						{
-							var e = new Event(e).stop();
+							e.stop();
 							
 							// closeFunc is needed for IE8
 							var closeFunc = function()

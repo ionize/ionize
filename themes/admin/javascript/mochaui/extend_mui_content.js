@@ -130,7 +130,7 @@ var initializeContent = function()
 			// button event
 			button.addEvent('click', function(e)
 			{
-				var e = new Event(e).stop();
+				e.stop();
 				
 				if (this.retrieve('status') == 'close')
 				{

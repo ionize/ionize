@@ -197,7 +197,10 @@ ION.TreeXhr = new Class({
 		
 		// Title element 
 		var link = this.span_Model.clone().addClass('title');
-		var a = this.title_Model.clone().addClass(online).addClass(type + flat_id).addClass('title').setProperty('rel', rel).setProperty('title', title).set('text', String.htmlspecialchars_decode(title));
+		var a = this.title_Model.clone()
+					.addClass(online).addClass(type + flat_id).addClass('title')
+					.setProperty('rel', rel).setProperty('title', title).setProperty('data-type', type).setProperty('data-id', id)
+					.set('text', String.htmlspecialchars_decode(title));
 		link.adopt(a);
 		li.adopt(action, link);
 		this.addEditLink(li, type);
@@ -219,6 +222,7 @@ ION.TreeXhr = new Class({
 
 			// Folder icon
 			icon.addClass('folder');
+			if (element.appears == '0') icon.addClass('hidden');
 
 			// if home page, remove home from the old home page
 			if (element.home == '1')
@@ -247,7 +251,10 @@ ION.TreeXhr = new Class({
 			// File icon
 			if (element.indexed == '0') icon.addClass('sticky');
 			else icon.addClass('file');
-
+			
+			// Link icon
+			if (element.link != '') icon.addClass('link');
+			
 			// Flag span : User's flag first, then Type flag
 			var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
 			var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');

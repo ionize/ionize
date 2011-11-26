@@ -178,27 +178,31 @@ class Modules extends MY_admin
 					if ( ! in_array($module_uri, $disable_controller)) $disable_controller[] = $module_uri;
 
 				// Install module database tables
-				$database = $xml->database;
+				$db = $xml->database;
 				
-				if ($database !== FALSE)
+				if ($db !== FALSE)
 				{
 					$errors = array();
 					
-					$database_attr = $database->attributes();
-					
-					// Install through a dedicated XML script
-					if ( ! empty($database_attr['script']))
-					{
-						$errors = $this->install_database_script($database_attr['script'], $module_folder);
-					}
-					else
-					{
-						$errors = $this->install_database($database);				
-					}
+					$database_attr = $db->attributes();
 
-					if ( !empty($errors))
+					// Install through a dedicated XML script
+					try {
+						if ( ! empty($database_attr['script']))
+						{
+							$errors = $this->install_database_script(strval($database_attr['script']), $module_folder);
+						}
+						else
+						{
+							$errors = $this->install_database($db);				
+						}
+					}
+					catch(Exception $e)
 					{
-						$this->error(lang('ionize_message_module_install_database_error') . ' : ' . implode(', ', $errors));
+						if ( !empty($errors))
+						{
+							$this->error(lang('ionize_message_module_install_database_error') . ' : ' . implode(', ', $errors));
+						}
 					}
 				}
 				

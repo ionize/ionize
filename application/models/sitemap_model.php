@@ -46,19 +46,19 @@ class Sitemap_model extends Base_model
 	{
 		$data = array();
 		
-		$this->db->select('IF(url !=\'\', url, name ) AS url');
-		$this->db->select('created, updated, publish_on, logical_date');
-		$this->db->select('lang, priority');
+		$this->{$this->db_group}->select('IF(url !=\'\', url, name ) AS url');
+		$this->{$this->db_group}->select('created, updated, publish_on, logical_date');
+		$this->{$this->db_group}->select('lang, priority');
 
-		$this->db->where(array(
+		$this->{$this->db_group}->where(array(
 			'appears' => '1',
 			'page.online' =>'1',
 			'page_lang.online' =>'1'
 		));
 		
-		$this->db->join('page_lang', 'page.id_page = page_lang.id_page');
+		$this->{$this->db_group}->join('page_lang', 'page.id_page = page_lang.id_page');
 		
-		$query = $this->db->get('page');
+		$query = $this->{$this->db_group}->get('page');
 
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();

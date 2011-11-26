@@ -47,22 +47,22 @@ class Users_model extends Base_model
 		$data = array(); 
 	
 		// Standard users data
-		$this->db->select('username, screen_name, email, join_date, last_visit');
+		$this->{$this->db_group}->select('username, screen_name, email, join_date, last_visit');
 
 		// Meta data
 		if( ! empty($fields))
 		{
 			foreach($fields as $field)
 			{
-				$this->db->select($this->meta_table.'.'.$field);
+				$this->{$this->db_group}->select($this->meta_table.'.'.$field);
 			}
 			
-			$this->db->join($this->meta_table, $this->table.'.'.$this->pk_name.' = ' .$this->table.'.'.$this->pk_name, 'left');
+			$this->{$this->db_group}->join($this->meta_table, $this->table.'.'.$this->pk_name.' = ' .$this->table.'.'.$this->pk_name, 'left');
 		}
 
-		$this->db->order_by('screen_name', 'ASC');
+		$this->{$this->db_group}->order_by('screen_name', 'ASC');
 
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 		
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();
@@ -87,9 +87,9 @@ class Users_model extends Base_model
 		// The returned array will contains the correct keys
 		$data = array_fill_keys($fields, '');
 		
-		$this->db->where($this->pk_name, $id);
+		$this->{$this->db_group}->where($this->pk_name, $id);
 		
-		$query = $this->db->get($this->meta_table);
+		$query = $this->{$this->db_group}->get($this->meta_table);
 		
 		if ( $query->num_rows() > 0 )
 		{
@@ -119,7 +119,7 @@ class Users_model extends Base_model
 	{
 		$data = array();
 		
-		$query = $this->db->query("SHOW COLUMNS FROM " . $this->meta_table);
+		$query = $this->{$this->db_group}->query("SHOW COLUMNS FROM " . $this->meta_table);
 	
 		$fields = $query->result_array();
 		
@@ -164,12 +164,12 @@ class Users_model extends Base_model
 		if ($this->exists(array($this->pk_name => $id_user),$this->meta_table ) == false)
 		{
 			$metas[$this->pk_name] = $id_user;
-			$this->db->insert($this->meta_table, $metas);
+			$this->{$this->db_group}->insert($this->meta_table, $metas);
 		}
 		else
 		{
-			$this->db->where($this->pk_name, $id_user);
-			$this->db->update($this->meta_table, $metas);
+			$this->{$this->db_group}->where($this->pk_name, $id_user);
+			$this->{$this->db_group}->update($this->meta_table, $metas);
 		}
 	}
 	
@@ -190,10 +190,10 @@ class Users_model extends Base_model
 		if( $this->exists(array($this->pk_name => $id)) )
 		{
 			// User delete
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
 			
 			// User's meta delete
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->meta_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->meta_table);
 		}
 		return $affected_rows;	
 	}

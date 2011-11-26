@@ -334,6 +334,7 @@
 			  logical_date datetime NOT NULL default '0000-00-00 00:00:00',
 			  appears tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 			  view varchar(50) default NULL										COMMENT 'Page view',
+			  view_single varchar(50) default NULL								COMMENT 'Single Article Page view',
 			  article_list_view VARCHAR(50) default NULL						COMMENT 'Article list view for each article linked to this page',
  			  article_view varchar(50) default NULL								COMMENT 'Article detail view for each article linked to this page',
 			  article_order VARCHAR(50) NOT NULL DEFAULT 'ordering'				COMMENT 'Article order in this page. Can be "ordering", "date"',

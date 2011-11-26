@@ -108,10 +108,16 @@ License:
 .tree-img.folder.open { background-position: -198px 50%; } 		/* Opened folder */
 .tree-img.folder.home { background-position: -324px 50%; } 		/* Closed home folder */
 .tree-img.folder.home.open { background-position: -342px 50%; } 		/* Closed home folder */
+.tree-img.folder.hidden { background-position: -396px 50%; margin-right:5px;} 			/* Closed folder hidden in nav */
+.tree-img.folder.open.hidden { background-position: -414px 50%; margin-right:5px;} 			/* Closed folder hidden in nav */
+.tree-img.folder.home.hidden { background-position: -432px 50%; margin-right:5px;}
+.tree-img.folder.home.open.hidden { background-position: -450px 50%; margin-right:5px;}
 .tree-img.file { background-position: -180px 50%;  margin-right:5px;} 			/* File */
 .tree-img.sticky { background-position: -252px 50%;  margin-right:5px;} 			/* File */
 .tree-img.filelink { background-position: -360px 50%;  margin-right:5px;} 			/* Link to File */
 .tree-img.folderlink { background-position: -378px 50%;  margin-right:5px;} 			/* Link to Folder */
+.tree-img.file.link { background-position: -486px 50%;  margin-right:5px;} 			/* Link to ... */
+.tree-img.sticky.link { background-position: -468px 50%;  margin-right:5px;} 			/* Link to ... */
 
 .tree li.offline{
 	background-image: url(../images/icon_16_offline.png);

@@ -44,7 +44,7 @@ class Settings_Model extends Base_model
 	 */
 	function get_languages()
 	{
-		return $this->db->from('lang')->order_by('ordering', 'ASC')->get()->result_array();
+		return $this->{$this->db_group}->from('lang')->order_by('ordering', 'ASC')->get()->result_array();
 	}
 
 
@@ -59,8 +59,8 @@ class Settings_Model extends Base_model
 	 */
 	function get_settings()
 	{
-		$this->db->where("(lang is null or lang='')");
-		$query = $this->db->get($this->table);
+		$this->{$this->db_group}->where("(lang is null or lang='')");
+		$query = $this->{$this->db_group}->get($this->table);
 		
 		return $query->result_array();
 	}
@@ -80,8 +80,8 @@ class Settings_Model extends Base_model
 	 */
 	function get_lang_settings($lang)
 	{
-		$this->db->where('lang', $lang);
-		$query = $this->db->get($this->table);
+		$this->{$this->db_group}->where('lang', $lang);
+		$query = $this->{$this->db_group}->get($this->table);
 
 		return $query->result_array();
 	}
@@ -128,24 +128,24 @@ class Settings_Model extends Base_model
 	function save_setting($data)
 	{
 		// Check the setting
-		$this->db->from($this->table);
-		$this->db->where('name', $data['name']);
+		$this->{$this->db_group}->from($this->table);
+		$this->{$this->db_group}->where('name', $data['name']);
 		
 		// Check if the setting depends on lang code
 		$where = '';
 		if ( isset($data['lang']) )
 		{
-			$this->db->where('lang', $data['lang']);
+			$this->{$this->db_group}->where('lang', $data['lang']);
 			$where =" and lang='".$data['lang']."'";
 		}	
 		
-		if ($this->db->count_all_results() > 0)
+		if ($this->{$this->db_group}->count_all_results() > 0)
 		{
-			$this->db->update($this->table, $data, "name = '".$data['name']."' ".$where);
+			$this->{$this->db_group}->update($this->table, $data, "name = '".$data['name']."' ".$where);
 		}
 		else
 		{
-			$this->db->insert($this->table, $data);
+			$this->{$this->db_group}->insert($this->table, $data);
 		}
 	}
 
@@ -170,11 +170,11 @@ class Settings_Model extends Base_model
 			
 			// Update media table
 			$sql = 	"UPDATE media set path = REPLACE(path, '" . $old_path . "/', '" . $new_path . "/'), base_path = REPLACE(base_path, '" . $old_path . "/', '" . $new_path . "/') ";
-			$this->db->query($sql);
+			$this->{$this->db_group}->query($sql);
 			
 			// Update articles table
 			$sql = "UPDATE article_lang set content = REPLACE(content, '/".$old_path."/', '/" . $new_path . "/')";
-			$this->db->query($sql);
+			$this->{$this->db_group}->query($sql);
 		}
 	}
 	

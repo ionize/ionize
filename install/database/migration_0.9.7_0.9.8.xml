@@ -15,8 +15,57 @@
 	</query>
 
 	<query>
+		alter table extend_field drop label;
+	</query>
+
+	<query>
 		update setting set content='0.9.7.6' where name = 'ionize_version';
 	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `birth_date` DATETIME NOT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `gender` smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female';
+	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `firstname` varchar(100) NOT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `lastname` varchar(100) DEFAULT NULL;
+	</query>
+
+
+
+	<!-- Old 0.9.7 alpha version safe update -->
+	<query>
+		ALTER TABLE `page` ADD `view_single` VARCHAR( 50 ) DEFAULT NULL; 
+	</query>
+
+	<query>
+		ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE  `page` ADD  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority';
+	</query>
+
+	<query>
+		UPDATE page SET id_subnav = id_page;
+	</query>
+
+	<query>
+		ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
+	</query>
+
+ 	<query>
+		ALTER TABLE `article` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
+	</query>
+
+
 
 	
 

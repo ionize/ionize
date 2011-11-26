@@ -78,6 +78,14 @@ class User extends My_Admin
 
 			if($this->_try_validate_login())
 			{
+				// User can log with email OR username
+				if (strpos($_POST['username'], '@') !== FALSE)
+				{
+					$email = $_POST['username'];
+					unset($_POST['username']);
+					$_POST['email'] = $email;
+				}
+
 				try
 				{
 					$this->connect->login($_POST);

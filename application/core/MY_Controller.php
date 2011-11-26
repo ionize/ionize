@@ -583,7 +583,7 @@ class MY_Admin extends MY_Controller
 		 * Loads all Module's addons
 		 *
 		 */
-		$this->_get_modules_addons();
+//		$this->_load_modules_addons();
 		
 		
 		
@@ -737,8 +737,21 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
     	}
     }
     
+    /**
+     * Load the modules addons
+     * Called by each Core controller method (Page, Article) which displays modules addon views
+     *
+     * @param	Array	Optional data array to pass to the module's _addons() method
+     *					for example the page data array, so the module addon can retrieve the current edited page
+     *
+     */
+    protected function load_modules_addons($data = array())
+    {
+    	return $this->_load_modules_addons($data);
+    }
+    
 
-	function _get_modules_addons()
+	private function _load_modules_addons($data)
 	{
 		if (get_class($this) != 'Module')
 		{
@@ -746,9 +759,10 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 		
 			foreach($this->modules as $uri => $folder)
 			{
+				// Get the module Class modules/Module_Name/controllers/admin/module_name.php
 				if ( ! class_exists($folder) && file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) )
 					require_once(MODPATH.$folder.'/controllers/admin/'.$uri.EXT);
-	
+
 				if (method_exists($folder, '_addons'))
 				{
 					// Module path
@@ -757,14 +771,20 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 					// Add the module path to the finder
 					array_push(Finder::$paths, $module_path);
 
-					$addons[$uri] = call_user_func(array($folder, '_addons'));
+					$addons[$uri] = call_user_func(array($folder, '_addons'), $data);
 				}
 			}
-
+			
 			return $addons;
 		}	
 	}
 	
+	/**
+	 * Retrieves all the modules addons views
+	 *
+	 * @param	String	Parent type. 'page', 'article', etc.
+	 * @param	String	Name of the placehoder	 
+	 *
 	function get_modules_addons($type, $placeholder)
 	{
 		$return = '';
@@ -777,7 +797,27 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 					$return .= $content;
 			}
 		}
-		
+
+		return $return;
+	}
+	 */
+
+	function get_modules_addons($type, $placeholder)
+	{
+		$return = '';
+
+		foreach($this->modules_addons as $module => $type_array)
+		{
+			foreach($type_array as $type_key => $addon)
+			{
+				if ( $type_key == $type  &&  !empty($addon[$placeholder]))
+				{
+					foreach($addon[$placeholder] as $content)
+						$return .= $content;
+				}
+			}
+		}
+
 		return $return;
 	}
 	
@@ -787,16 +827,32 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 	 *
 	 * @param	String		Core Element to add the addon to. Can be 'page', 'article', 'media'
 	 * @param	String		Placeholder which will display the addon
-	 *  - 'side_top' : Side Column, Top
-	 *  - 'side_bottom' : Side Column, Bottom
-	 *  - 'main_top' : Main Column, Top
-	 *  - 'main_bottom' : Main Column, Top
-	 *  - 'toolbar' : Top toolbar
+	 *  					- 'side_top' : Side Column, Top
+	 *  					- 'side_bottom' : Side Column, Bottom
+	 *  					- 'main_top' : Main Column, Top
+	 *  					- 'main_bottom' : Main Column, Top
+	 *  					- 'toolbar' : Top toolbar
 	 *
 	 */
-	public function add_addon($type, $placeholder, $view, $data = array())
+/*
+	public function load_addon_view($type, $placeholder, $view, $data = array())
 	{
 		$this->modules_addons[$type][$placeholder][] = $this->load->view($view, $data, true);
+	}
+*/
+	public function load_addon_view($module_name, $type, $placeholder, $view, $data = array())
+	{
+		// trace(Finder::$paths);
+
+//		$this->modules_addons[$module_name][$type][$placeholder][] = $this->load->view($view, $data, true);
+
+		$this->modules_addons[$module_name][$type][$placeholder][] = $this->load->_ci_load(array(
+			'_ci_path' => MODPATH.ucfirst($module_name).'/views/'.$view.EXT, 
+			'_ci_vars' => $this->load->_ci_object_to_array($data), 
+			'_ci_return' => true
+		));
+
+
 	}
 }
 

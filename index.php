@@ -85,7 +85,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$modules_folder = "modules";
+	$modules_folder = 'modules';
 
 
 /*

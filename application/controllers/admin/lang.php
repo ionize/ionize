@@ -101,6 +101,12 @@ class Lang extends MY_admin
 				 * see lang_model->insert_lang_data() for more info.
 				 */
 				$this->lang_model->insert_lang_data(array('page', 'article'), $fields = array('url'), $from = Settings::get_lang('default'), $to = $this->input->post('lang_new'));
+				
+				/*
+				 * Rebuild the pages URLs
+				 */
+				$this->load->model('page_model', '', true);
+				$this->page_model->rebuild_urls();
 			}
 			
 			// Update the language config file

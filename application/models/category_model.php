@@ -88,7 +88,7 @@ class Category_model extends Base_model
 
 		$data = array();
 
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 		
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();

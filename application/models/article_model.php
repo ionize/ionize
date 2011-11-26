@@ -75,9 +75,9 @@ class Article_model extends Base_model
 	{
 		$data = array();
 
-		$this->db->select($this->lang_table.'.*');
-		$this->db->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
-		$this->db->where($this->lang_table.'.lang', Settings::get_lang('default'));
+		$this->{$this->db_group}->select($this->lang_table.'.*');
+		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
+		$this->{$this->db_group}->where($this->lang_table.'.lang', Settings::get_lang('default'));
 		
 		$data = parent::get_list($where);
 		
@@ -130,7 +130,7 @@ class Article_model extends Base_model
 	
 		if ( empty($where['order_by']))
 		{
-			$this->db->order_by($this->parent_table.'.ordering', 'ASC');
+			$this->{$this->db_group}->order_by($this->parent_table.'.ordering', 'ASC');
 		}
 
 		// Perform conditions from the $where array
@@ -138,7 +138,7 @@ class Article_model extends Base_model
 		{
 			if(isset($where[$key]))
 			{
-				call_user_func(array($this->db, $key), $where[$key]);
+				call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
 				unset($where[$key]);
 			}
 		}
@@ -151,29 +151,29 @@ class Article_model extends Base_model
 			$this->_set_filter($filter);
 
 		// Add the 'date' field to the query
-		$this->db->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
+		$this->{$this->db_group}->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
 
 		// Make sure we have only one time each element
-		$this->db->distinct();
+		$this->{$this->db_group}->distinct();
 
 		// Main data select						
-		$this->db->select($this->table.'.*', FALSE);
+		$this->{$this->db_group}->select($this->table.'.*', FALSE);
 
 		// Lang data
 		if ( ! is_null($lang) || ! $lang == FALSE)
 		{
-			$this->db->select($this->lang_table.'.*');
-			$this->db->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
-			$this->db->where($this->lang_table.'.lang', $lang);
+			$this->{$this->db_group}->select($this->lang_table.'.*');
+			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
+			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 
 		// Join table select
-		$this->db->select($this->parent_table.'.*', FALSE);
-		$this->db->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
+		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
+		$this->{$this->db_group}->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
 		
 		// Add Type to query
-		$this->db->select($this->type_table.'.type');
-		$this->db->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
+		$this->{$this->db_group}->select($this->type_table.'.type');
+		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
 
 		// Where ?
 		if (is_array($where) )
@@ -186,8 +186,8 @@ class Article_model extends Base_model
 					$key = str_replace('id_page', $this->parent_table.'.id_page', $key);
 					
 					// Add article's context page views
-					$this->db->select('article_list_view, article_view');
-					$this->db->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
+					$this->{$this->db_group}->select('article_list_view, article_view');
+					$this->{$this->db_group}->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
 				}
 				
 				$protect = true;
@@ -200,24 +200,24 @@ class Article_model extends Base_model
 				// NULL value : Create an "where value is NULL" constraint
 				if ($value == 'NULL')
 				{
-					$this->db->where($key. ' IS NULL', NULL, FALSE);
+					$this->{$this->db_group}->where($key. ' IS NULL', NULL, FALSE);
 				}
 				else
 				{
 					if (strpos($key, '.') > 0)
 					{
-						$this->db->where($key, $value, $protect);			
+						$this->{$this->db_group}->where($key, $value, $protect);			
 					}
 					else
 					{
-						$this->db->where($this->table.'.'.$key, $value, $protect);
+						$this->{$this->db_group}->where($this->table.'.'.$key, $value, $protect);
 					}
 				}
 			}
 		}
 		
 		// DB Query
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
 		{
@@ -238,20 +238,20 @@ class Article_model extends Base_model
 		// Add Categories to each article
 		$categories = $art_cat = array();
 		
-		$this->db->join($this->category_lang_table, $this->category_table.'.id_category = ' .$this->category_lang_table.'.id_category', 'left');
+		$this->{$this->db_group}->join($this->category_lang_table, $this->category_table.'.id_category = ' .$this->category_lang_table.'.id_category', 'left');
 		
 		if ( ! is_null($lang))
 		{
-			$this->db->where($this->category_lang_table.'.lang', $lang);
+			$this->{$this->db_group}->where($this->category_lang_table.'.lang', $lang);
 		}
-		$query = $this->db->get($this->category_table);
+		$query = $this->{$this->db_group}->get($this->category_table);
 		
 		if($query->num_rows() > 0)
 		{
 			$categories = $query->result_array();
 
 			// Get categories articles table content
-			$query = $this->db->get($this->article_category_table);
+			$query = $this->{$this->db_group}->get($this->article_category_table);
 			
 			// table of links between articles and categories
 			if($query->num_rows() > 0) $art_cat = $query->result_array();			
@@ -294,21 +294,21 @@ class Article_model extends Base_model
 	{
 		$data = array();
 	
-		$this->db->where($this->pk_name, $id_article);
+		$this->{$this->db_group}->where($this->pk_name, $id_article);
 		
 		// Page table data
-		$this->db->join($this->page_table, $this->parent_table.'.id_'.$this->page_table.' = ' .$this->page_table.'.id_'.$this->page_table, 'left');
+		$this->{$this->db_group}->join($this->page_table, $this->parent_table.'.id_'.$this->page_table.' = ' .$this->page_table.'.id_'.$this->page_table, 'left');
 		
 		// Lang data
-		$this->db->select($this->page_lang_table.'.*');
-		$this->db->join($this->page_lang_table, $this->page_lang_table.'.id_'.$this->page_table.' = ' .$this->page_table.'.id_'.$this->page_table, 'inner');			
-		$this->db->where($this->page_lang_table.'.lang', Settings::get_lang('default'));
+		$this->{$this->db_group}->select($this->page_lang_table.'.*');
+		$this->{$this->db_group}->join($this->page_lang_table, $this->page_lang_table.'.id_'.$this->page_table.' = ' .$this->page_table.'.id_'.$this->page_table, 'inner');			
+		$this->{$this->db_group}->where($this->page_lang_table.'.lang', Settings::get_lang('default'));
 		
 		// Join table data
-		$this->db->select($this->page_table.'.*');
-		$this->db->select($this->parent_table.'.*');
+		$this->{$this->db_group}->select($this->page_table.'.*');
+		$this->{$this->db_group}->select($this->parent_table.'.*');
 
-		$query = $this->db->get($this->parent_table);
+		$query = $this->{$this->db_group}->get($this->parent_table);
 		
 		if($query->num_rows() > 0)
 		{
@@ -333,19 +333,19 @@ class Article_model extends Base_model
 		
 		$lang = (is_null($lang)) ? Settings::get_lang('default') : $lang;
 		
-		$this->db->select($this->table.'.*');
-		$this->db->select($this->lang_table.'.*');
-		$this->db->select($this->parent_table.'.*');
-		$this->db->select('article_type.type_flag');
+		$this->{$this->db_group}->select($this->table.'.*');
+		$this->{$this->db_group}->select($this->lang_table.'.*');
+		$this->{$this->db_group}->select($this->parent_table.'.*');
+		$this->{$this->db_group}->select('article_type.type_flag');
 
-		$this->db->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name, 'inner');			
-		$this->db->join($this->parent_table, $this->table.'.'.$this->pk_name.' = ' .$this->parent_table.'.'.$this->pk_name, 'inner');			
-		$this->db->join('article_type', 'article_type.id_type = page_article.id_type', 'left outer');			
+		$this->{$this->db_group}->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name, 'inner');			
+		$this->{$this->db_group}->join($this->parent_table, $this->table.'.'.$this->pk_name.' = ' .$this->parent_table.'.'.$this->pk_name, 'inner');			
+		$this->{$this->db_group}->join('article_type', 'article_type.id_type = page_article.id_type', 'left outer');			
 
-		$this->db->where(array($this->lang_table.'.lang' => $lang));
-		$this->db->where(array($this->table.'.'.$this->pk_name => $id_article, $this->parent_table.'.id_page' => $id_page));
+		$this->{$this->db_group}->where(array($this->lang_table.'.lang' => $lang));
+		$this->{$this->db_group}->where(array($this->table.'.'.$this->pk_name => $id_article, $this->parent_table.'.id_page' => $id_page));
 
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
 		{
@@ -375,10 +375,10 @@ class Article_model extends Base_model
 
 		if ( ! is_null($id_article))
 		{
-			$this->db->where('id_article', $id_article);
+			$this->{$this->db_group}->where('id_article', $id_article);
 		}
 
-		$query = $this->db->get($this->parent_table);
+		$query = $this->{$this->db_group}->get($this->parent_table);
 
 		if($query->num_rows() > 0)
 		{
@@ -389,6 +389,41 @@ class Article_model extends Base_model
 	}
 	
 	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the main context for one article
+	 *
+	 * @param	int			Article ID
+	 *
+	 * @return	array		Article array, or one empty array if no article is found
+	 *
+	 */
+	function get_main_context($id_article)
+	{
+		$data = array();
+
+		$where = array(
+			'id_article' => $id_article,
+			'main_parent' => '1'
+		);
+		
+		$this->{$this->db_group}->where($where);
+
+		$query = $this->{$this->db_group}->get($this->parent_table);
+
+		if($query->num_rows() > 0)
+		{
+			$data = $query->row_array();
+		}
+
+		return $data;
+	}
+	
+	
+	// ------------------------------------------------------------------------
+
 	
 	/**
 	 * Returns all contexts article's lang data as an array of articles.
@@ -403,23 +438,23 @@ class Article_model extends Base_model
 	{
 		$data = array();
 
-		$this->db->select($this->table.'.*');
-		$this->db->select($this->lang_table.'.*');
-		$this->db->select($this->parent_table.'.*');
-		$this->db->select('article_type.type_flag');
+		$this->{$this->db_group}->select($this->table.'.*');
+		$this->{$this->db_group}->select($this->lang_table.'.*');
+		$this->{$this->db_group}->select($this->parent_table.'.*');
+		$this->{$this->db_group}->select('article_type.type_flag');
 
-		$this->db->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
-		$this->db->join($this->parent_table, $this->table.'.'.$this->pk_name.' = ' .$this->parent_table.'.'.$this->pk_name);			
-		$this->db->join('article_type', 'article_type.id_type = page_article.id_type', 'left outer');			
+		$this->{$this->db_group}->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
+		$this->{$this->db_group}->join($this->parent_table, $this->table.'.'.$this->pk_name.' = ' .$this->parent_table.'.'.$this->pk_name);			
+		$this->{$this->db_group}->join('article_type', 'article_type.id_type = page_article.id_type', 'left outer');			
 
-		$this->db->where(array($this->lang_table.'.lang' => $lang));
+		$this->{$this->db_group}->where(array($this->lang_table.'.lang' => $lang));
 		
 		if ( ! is_array($id_article) )
-			$this->db->where(array($this->table.'.'.$this->pk_name => $id_article));
+			$this->{$this->db_group}->where(array($this->table.'.'.$this->pk_name => $id_article));
 		else
-			$this->db->where($this->table.'.'.$this->pk_name . ' in (' . implode(',', $id_article) . ')');
+			$this->{$this->db_group}->where($this->table.'.'.$this->pk_name . ' in (' . implode(',', $id_article) . ')');
 
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
 		{
@@ -554,10 +589,10 @@ class Article_model extends Base_model
 		{
 			$context_data = $this->clean_data($context_data, $this->parent_table);
 		
-			$this->db->where('id_page', $context_data['id_page']);
-			$this->db->where('id_article', $context_data['id_article']);
+			$this->{$this->db_group}->where('id_page', $context_data['id_page']);
+			$this->{$this->db_group}->where('id_article', $context_data['id_article']);
 			
-			return $this->db->update($this->parent_table, $context_data);
+			return $this->{$this->db_group}->update($this->parent_table, $context_data);
 		}
 		
 		return 0;
@@ -573,17 +608,93 @@ class Article_model extends Base_model
 	 */
 	function save_main_parent($id_article, $id_page)
 	{
-		$this->db->where('id_article', $id_article);
-		$this->db->set('main_parent', '0');
-		$this->db->update($this->parent_table);
+		$this->{$this->db_group}->where('id_article', $id_article);
+		$this->{$this->db_group}->set('main_parent', '0');
+		$this->{$this->db_group}->update($this->parent_table);
 		
-		$this->db->where( array('id_article' => $id_article, 'id_page' => $id_page));
-		$this->db->set('main_parent', '1');
+		$this->{$this->db_group}->where( array('id_article' => $id_article, 'id_page' => $id_page));
+		$this->{$this->db_group}->set('main_parent', '1');
 		
-		return $this->db->update($this->parent_table);
+		return $this->{$this->db_group}->update($this->parent_table);
+	}
+	
+
+	/**
+	 * Saves one article URLs paths
+	 *
+	 * @param	int		Article id
+	 * @return	int		Number of inserted / updated Urls
+	 *
+	 */
+	function save_urls($id_article)
+	{
+		$CI =& get_instance();
+		$CI->load->model('url_model', '', true);
+		$CI->load->model('page_model', '', true);
+		
+		$nb = 0;
+		
+		// Article main context 
+		$context = $this->get_main_context($id_article);
+		
+		if ( ! empty($context))
+		{
+			foreach($this->get_languages() as $l)
+			{
+				$parents_array = $CI->page_model->get_parent_array($context['id_page'], array(), $l['lang']);
+				
+				$article = $this->get(array('id_article'=>$id_article), $l['lang']);
+				
+				$url = array();
+				
+				foreach($parents_array as $page)
+				{
+					if ($page['appears'] == '1')
+						$url[] = $page['url'];
+				}
+
+				if ( ! empty($url))
+				{
+					$url = implode('/', $url) . '/' . $article['url'];
+		
+					$nb = $CI->url_model->save_url('article', $l['lang'], $id_article, $url);
+				}
+			}
+		}		
+		return $nb;
 	}
 	
 	
+	/**
+	 * Rebuild all the Url of all / one article
+	 * If no article id is given, rebuilds all the URLs
+	 *
+	 * @param	int		Optional. Article id
+	 * @return	int		Number of inserted / updated Urls
+	 *
+	 */
+	function rebuild_urls($id_article = NULL)
+	{
+		$nb = 0;
+
+		if ( ! is_null($id_article))
+		{
+			$nb = $this->save_urls($id_article);
+		}
+		else
+		{
+			$articles = $this->get_list();
+			
+			foreach($articles as $article)
+			{
+				$nb += $this->save_urls($article['id_article']);
+			}
+		}
+		
+		return $nb;
+	}
+
+
 	// ------------------------------------------------------------------------
 
 	
@@ -593,8 +704,8 @@ class Article_model extends Base_model
 	 */
 	function unlink($id_article, $id_page)
 	{
-		$this->db->where(array($this->parent_table.'.id_page'=>$id_page, $this->parent_table.'.id_article'=>$id_article));
-		$nb =  $this->db->delete($this->parent_table);
+		$this->{$this->db_group}->where(array($this->parent_table.'.id_page'=>$id_page, $this->parent_table.'.id_article'=>$id_article));
+		$nb =  $this->{$this->db_group}->delete($this->parent_table);
 		
 		// Correct "Main Parent"
 		$this->correct_main_parent($id_article);
@@ -667,9 +778,9 @@ class Article_model extends Base_model
 		
 		if (count($contexts) == 1)
 		{
-			$this->db->set('main_parent', '1');
-			$this->db->where('id_article', $id_article );
-			return $this->db->update('page_article');
+			$this->{$this->db_group}->set('main_parent', '1');
+			$this->{$this->db_group}->where('id_article', $id_article );
+			return $this->{$this->db_group}->update('page_article');
 		}
 		return 0;
 	}
@@ -694,14 +805,14 @@ class Article_model extends Base_model
 		$link_name = 	($article_lang['title'] != '') ? $article_lang['title'] : $article['name'];
 		
 		// Update of pages which link to this article
-		$this->db->set('link', $link_name);
-		$this->db->where(
+		$this->{$this->db_group}->set('link', $link_name);
+		$this->{$this->db_group}->where(
 			array(
 				'link_type' => 'article',
 				'link_id' => $rel
 			)
 		);
-		$this->db->update('page');
+		$this->{$this->db_group}->update('page');
 
 		// Update of pages (lang table) wich links to this article
 		$sql = "update page_lang as pl
@@ -712,17 +823,17 @@ class Article_model extends Base_model
 				and pl.lang = al.lang
 				and p.link_id = " . $rel;
 
-		$this->db->query($sql);
+		$this->{$this->db_group}->query($sql);
 		
 		// Update of articles which link to this article
-		$this->db->set('link', $link_name);
-		$this->db->where(
+		$this->{$this->db_group}->set('link', $link_name);
+		$this->{$this->db_group}->where(
 			array(
 				'link_type' => 'article',
 				'link_id' => $rel
 			)
 		);
-		$this->db->update('page_article');
+		$this->{$this->db_group}->update('page_article');
 
 		// Update of articles (lang table) which link to this article
 		/*
@@ -734,7 +845,7 @@ class Article_model extends Base_model
 				and al.lang = a2.lang
 				and a.link_id = " . $id_article;
 		
-		$this->db->query($sql);
+		$this->{$this->db_group}->query($sql);
 		*/
 
 	}
@@ -779,7 +890,7 @@ class Article_model extends Base_model
 				$data['ordering'] = count($order_list) + 1;
 			}
 
-			$this->db->insert($this->parent_table, $data);
+			$this->{$this->db_group}->insert($this->parent_table, $data);
 			
 			// correct the Main Parent context data
 			$this->correct_main_parent($id_article);
@@ -809,19 +920,19 @@ class Article_model extends Base_model
 		if( $this->exists(array($this->pk_name => $id)) )
 		{
 			// Article delete
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
 			
 			// Lang
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->lang_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->lang_table);
 	
 			// Linked medias
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table.'_media');
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table.'_media');
 					
 			// Categories
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->table.'_'.$this->category_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table.'_'.$this->category_table);
 			
 			// Contexts
-			$affected_rows += $this->db->where($this->pk_name, $id)->delete($this->parent_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->parent_table);
 		}
 		
 		return $affected_rows;
@@ -901,11 +1012,11 @@ class Article_model extends Base_model
 				$article_context['id_article'] = $id_copy;
 				
 				// Join table with page
-				$this->db->insert($this->parent_table, $article_context);
+				$this->{$this->db_group}->insert($this->parent_table, $article_context);
 
 				// Medias
-				$this->db->where('id_article', $id_source);
-				$query = $this->db->get('article_media');
+				$this->{$this->db_group}->where('id_article', $id_source);
+				$query = $this->{$this->db_group}->get('article_media');
 				
 				if ( $query->num_rows() > 0)
 				{
@@ -914,13 +1025,13 @@ class Article_model extends Base_model
 					foreach($result as & $arr)
 					{
 						$arr['id_article'] = $id_copy;
-						$this->db->insert('article_media', $arr);	
+						$this->{$this->db_group}->insert('article_media', $arr);	
 					}
 				}				
 				
 				// Lang
-				$this->db->where('id_article', $id_source);
-				$query = $this->db->get('article_lang');
+				$this->{$this->db_group}->where('id_article', $id_source);
+				$query = $this->{$this->db_group}->get('article_lang');
 
 				if ( $query->num_rows() > 0)
 				{
@@ -933,13 +1044,13 @@ class Article_model extends Base_model
 						// The URL for all languages is the new URL 
 						$arr['url'] = $data['name'];
 						
-						$this->db->insert('article_lang', $arr);
+						$this->{$this->db_group}->insert('article_lang', $arr);
 					}
 				}
 				
 				// Categories
-				$this->db->where('id_article', $id_source);
-				$query = $this->db->get('article_category');
+				$this->{$this->db_group}->where('id_article', $id_source);
+				$query = $this->{$this->db_group}->get('article_category');
 
 				if ( $query->num_rows() > 0)
 				{
@@ -948,7 +1059,7 @@ class Article_model extends Base_model
 					foreach($result as & $arr)
 					{
 						$arr['id_article'] = $id_copy;
-						$this->db->insert('article_category', $arr);
+						$this->{$this->db_group}->insert('article_category', $arr);
 					}
 				}
 				
@@ -964,9 +1075,9 @@ class Article_model extends Base_model
 
 					if ( !empty($efids))
 					{
-						$this->db->where(array('id_parent'=>$id_source));
-						$this->db->where_in('id_extend_field', $efids);
-						$query = $this->db->get('extend_fields');
+						$this->{$this->db_group}->where(array('id_parent'=>$id_source));
+						$this->{$this->db_group}->where_in('id_extend_field', $efids);
+						$query = $this->{$this->db_group}->get('extend_fields');
 	
 	
 						if ( $query->num_rows() > 0)
@@ -976,7 +1087,7 @@ class Article_model extends Base_model
 							{
 								$arr['id_extend_fields'] = '';
 								$arr['id_parent'] = $id_copy;
-								$this->db->insert('extend_fields', $arr);
+								$this->{$this->db_group}->insert('extend_fields', $arr);
 							}
 						}
 					}
@@ -1010,7 +1121,7 @@ class Article_model extends Base_model
 			$sql .= ' AND ordering >= ' . $from;
 		}
 		
-		$this->db->query($sql);
+		$this->{$this->db_group}->query($sql);
 	}
 
 
@@ -1065,10 +1176,10 @@ class Article_model extends Base_model
 		($status == 1) ? $status = 0 : $status = 1;
 
 		// Save		
-		$this->db->where($this->pk_name, $id_article);
-		$this->db->where('id_page', $id_page);
-		$this->db->set('online', $status);
-		$this->db->update($this->parent_table);
+		$this->{$this->db_group}->where($this->pk_name, $id_article);
+		$this->{$this->db_group}->where('id_page', $id_page);
+		$this->{$this->db_group}->set('online', $status);
+		$this->{$this->db_group}->update($this->parent_table);
 		
 		return $status;
 	}
@@ -1092,12 +1203,12 @@ class Article_model extends Base_model
 	 */	
 	function get_from_category($where=FALSE, $category, $lang, $filter=FALSE)
 	{
-		$this->db->join('article_category t5', $this->table.'.id_article = t5.id_article', 'inner');
-		$this->db->join('category t6', 't6.id_category = t5.id_category', 'inner');
-		$this->db->join('category_lang t7', 't7.id_category = t6.id_category', 'inner');
+		$this->{$this->db_group}->join('article_category t5', $this->table.'.id_article = t5.id_article', 'inner');
+		$this->{$this->db_group}->join('category t6', 't6.id_category = t5.id_category', 'inner');
+		$this->{$this->db_group}->join('category_lang t7', 't7.id_category = t6.id_category', 'inner');
 
-		$this->db->where('t6.name', $category);
-		$this->db->where('t7.lang', $lang);
+		$this->{$this->db_group}->where('t6.name', $category);
+		$this->{$this->db_group}->where('t7.lang', $lang);
 		
 		return $this->get_lang_list($where, $lang, $filter);
 	}
@@ -1123,14 +1234,14 @@ class Article_model extends Base_model
 	function get_from_categories($where=FALSE, $categories, $categories_condition, $lang, $filter=FALSE)
 	{
 
-		$this->db->join('article_category tac', $this->table.'.id_article = tac.id_article', 'inner');
-		$this->db->join('category tcat', 'tcat.id_category = tac.id_category', 'inner');
-		$this->db->join('category_lang tcl', 'tcl.id_category = tcat.id_category', 'inner');
+		$this->{$this->db_group}->join('article_category tac', $this->table.'.id_article = tac.id_article', 'inner');
+		$this->{$this->db_group}->join('category tcat', 'tcat.id_category = tac.id_category', 'inner');
+		$this->{$this->db_group}->join('category_lang tcl', 'tcl.id_category = tcat.id_category', 'inner');
 
 		$in_categories = "('".implode("','", $categories)."')";
 
-		$this->db->where('tcat.name in ', $in_categories, FALSE);
-		$this->db->where('tcl.lang', $lang);
+		$this->{$this->db_group}->where('tcat.name in ', $in_categories, FALSE);
+		$this->{$this->db_group}->where('tcl.lang', $lang);
 		
 		// Unactivate $limit to preserve articles for categories filtering (3rd attribute)
 		$articles = $this->get_lang_list($where, $lang, $filter);
@@ -1181,11 +1292,11 @@ class Article_model extends Base_model
 			// Compatibility with 'MONTH' SQL function : month < 10 without firts '0'
 			$period = $year.intval($month);
 			
-			$this->db->having('CONCAT(YEAR(date), MONTH(date)) = \'' . $period .'\'' );
+			$this->{$this->db_group}->having('CONCAT(YEAR(date), MONTH(date)) = \'' . $period .'\'' );
 		}
 		else
 		{
-			$this->db->having('YEAR(date) = \'' . $period .'\'' );
+			$this->{$this->db_group}->having('YEAR(date) = \'' . $period .'\'' );
 		}
 
 		return $this->get_lang_list($where, $lang, $filter);
@@ -1204,24 +1315,24 @@ class Article_model extends Base_model
 	
 		if ($month === true)
 		{
-			$this->db->select('if (logical_date !=0, CONCAT(YEAR(logical_date), DATE_FORMAT(logical_date, "%m")), if(publish_on != 0, CONCAT(YEAR(publish_on), DATE_FORMAT(publish_on, "%m")), CONCAT(YEAR(created), DATE_FORMAT(created, "%m")))) AS period, count(1) as nb', FALSE);
+			$this->{$this->db_group}->select('if (logical_date !=0, CONCAT(YEAR(logical_date), DATE_FORMAT(logical_date, "%m")), if(publish_on != 0, CONCAT(YEAR(publish_on), DATE_FORMAT(publish_on, "%m")), CONCAT(YEAR(created), DATE_FORMAT(created, "%m")))) AS period, count(1) as nb', FALSE);
 		}
 		else
 		{
-			$this->db->select('if (logical_date !=0, YEAR(logical_date), if(publish_on != 0, YEAR(publish_on), YEAR(created))) AS period, count(1) as nb', FALSE);
+			$this->{$this->db_group}->select('if (logical_date !=0, YEAR(logical_date), if(publish_on != 0, YEAR(publish_on), YEAR(created))) AS period, count(1) as nb', FALSE);
 		}
 		
-		$this->db->group_by('period');
-		$this->db->order_by($order_by);
+		$this->{$this->db_group}->group_by('period');
+		$this->{$this->db_group}->order_by($order_by);
 
-		$this->db->select($this->parent_table.'.*', FALSE);
-		$this->db->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
+		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
+		$this->{$this->db_group}->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
 
 		// Lang data
 		if ( ! is_null($lang))
 		{
-			$this->db->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
-			$this->db->where($this->lang_table.'.lang', $lang);
+			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
+			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 
 		// Where ?
@@ -1235,7 +1346,7 @@ class Article_model extends Base_model
 				else
 					$key = $this->table.'.'.$key;
 				
-				$this->db->where($key, $value);
+				$this->{$this->db_group}->where($key, $value);
 			}
 		}
 
@@ -1246,7 +1357,7 @@ class Article_model extends Base_model
 		// The publish filter
 		$this->filter_on_published(self::$publish_filter);
 
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
 		{
@@ -1265,23 +1376,23 @@ class Article_model extends Base_model
 	{
 		if ($adjacent == 'previous')
 		{
-			$this->db->select_max('ordering');
-			$this->db->where('ordering <', $current['ordering']);
+			$this->{$this->db_group}->select_max('ordering');
+			$this->{$this->db_group}->where('ordering <', $current['ordering']);
 		}
 		else
 		{
-			$this->db->select_min('ordering');
-			$this->db->where('ordering >', $current['ordering']);
+			$this->{$this->db_group}->select_min('ordering');
+			$this->{$this->db_group}->where('ordering >', $current['ordering']);
 		}
 		
-		$this->db->select('name');
+		$this->{$this->db_group}->select('name');
 		
-		$this->db->where('id_page', $current['id_page']);
+		$this->{$this->db_group}->where('id_page', $current['id_page']);
 		
 		// The publish filter
 		$this->filter_on_published(self::$publish_filter);
 		
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 		
 		if ($query->num_rows() > 0)
 			return $query->row_array();
@@ -1299,17 +1410,17 @@ class Article_model extends Base_model
 		$this->filter_on_published(self::$publish_filter, $lang);
 
 		// Main join						
-		$this->db->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
+		$this->{$this->db_group}->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
 
 		// Lang data
 		if ( ! is_null($lang))
 		{
-			$this->db->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
-			$this->db->where($this->lang_table.'.lang', $lang);
+			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
+			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 
 		// Add Type to query
-		$this->db->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
+		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
 
 		// Where ?
 		if (is_array($where) )
@@ -1322,7 +1433,7 @@ class Article_model extends Base_model
 				else
 					$key = $this->table.'.'.$key;
 				
-				$this->db->where($key, $value, FALSE);
+				$this->{$this->db_group}->where($key, $value, FALSE);
 			}
 		}
 
@@ -1333,7 +1444,7 @@ class Article_model extends Base_model
 		// The publish filter
 		$this->filter_on_published(self::$publish_filter);
 
-		$nb = $this->db->count_all_results($this->table);
+		$nb = $this->{$this->db_group}->count_all_results($this->table);
 		
 		return $nb;
 	}
@@ -1341,12 +1452,12 @@ class Article_model extends Base_model
 
 	function count_articles_from_category($where=FALSE, $category, $lang, $filter=FALSE)
 	{
-		$this->db->join('article_category t5', $this->table.'.id_article = t5.id_article', 'inner');
-		$this->db->join('category t6', 't6.id_category = t5.id_category', 'inner');
-		$this->db->join('category_lang t7', 't7.id_category = t6.id_category', 'inner');
+		$this->{$this->db_group}->join('article_category t5', $this->table.'.id_article = t5.id_article', 'inner');
+		$this->{$this->db_group}->join('category t6', 't6.id_category = t5.id_category', 'inner');
+		$this->{$this->db_group}->join('category_lang t7', 't7.id_category = t6.id_category', 'inner');
 
-		$this->db->where('t6.name', $category);
-		$this->db->where('t7.lang', $lang);
+		$this->{$this->db_group}->where('t6.name', $category);
+		$this->{$this->db_group}->where('t7.lang', $lang);
 		
 		return $this->count_articles($where, $lang, $filter);
 	}
@@ -1369,13 +1480,13 @@ class Article_model extends Base_model
 			$period = intval($year).intval($month);
 
 			// Add the 'date' field to the query 
-			$this->db->where('(
+			$this->{$this->db_group}->where('(
 				if (logical_date !=0, CONCAT(YEAR(logical_date), MONTH(logical_date)), if(publish_on != 0, CONCAT(YEAR(publish_on), MONTH(publish_on)), CONCAT(YEAR(created), MONTH(created)))) = \''.$period.'\'
 			)');
 		}
 		else
 		{
-			$this->db->where('( 
+			$this->{$this->db_group}->where('( 
 				if (logical_date !=0, YEAR(logical_date), if(publish_on != 0, YEAR(publish_on), YEAR(created))) = \''.$period.'\'
 			)');
 		}
@@ -1391,16 +1502,16 @@ class Article_model extends Base_model
 	{
 		if ($on === true)
 		{
-			$this->db->where($this->parent_table.'.online', '1');		
+			$this->{$this->db_group}->where($this->parent_table.'.online', '1');		
 	
 			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
-				$this->db->where($this->lang_table.'.online', '1');		
+				$this->{$this->db_group}->where($this->lang_table.'.online', '1');		
 	
-			$this->db->where('((article.publish_off > ', 'now()', FALSE);
-			$this->db->or_where('article.publish_off = ', '0)' , FALSE);
+			$this->{$this->db_group}->where('((article.publish_off > ', 'now()', FALSE);
+			$this->{$this->db_group}->or_where('article.publish_off = ', '0)' , FALSE);
 		
-			$this->db->where('(article.publish_on < ', 'now()', FALSE);
-			$this->db->or_where('article.publish_on = ', '0))' , FALSE);
+			$this->{$this->db_group}->where('(article.publish_on < ', 'now()', FALSE);
+			$this->{$this->db_group}->or_where('article.publish_on = ', '0))' , FALSE);
 		}	
 	}
 
@@ -1467,7 +1578,7 @@ class Article_model extends Base_model
 	 */
 	private function _set_filter($filter)
 	{
-		$this->db->where('('.$filter.')');
+		$this->{$this->db_group}->where('('.$filter.')');
 	}
 
 	/**
@@ -1493,7 +1604,7 @@ class Article_model extends Base_model
 				$c[0] = $this->filter_field_ref[$c[0]].'.'.$c[0];
 			}
 			
-			$this->db->where('('.$c[0]. ' '. $value.')');
+			$this->{$this->db_group}->where('('.$c[0]. ' '. $value.')');
 		}	
 	}
 	 */
@@ -1511,11 +1622,11 @@ class Article_model extends Base_model
 	
 	function get_from_tag($where=FALSE, $tag, $lang, $limit=FALSE)
 	{
-		$this->db->select('t4.id_tag, t4.tag');	
-		$this->db->from('article_tags t4');
-		$this->db->join('article_entry_tags t3', 't4.id_tag = t3.id_tag', 'inner');
-		$this->db->where('t1.id_article = t3.id_article');
-		$this->db->where('t4.tag', $tag);
+		$this->{$this->db_group}->select('t4.id_tag, t4.tag');	
+		$this->{$this->db_group}->from('article_tags t4');
+		$this->{$this->db_group}->join('article_entry_tags t3', 't4.id_tag = t3.id_tag', 'inner');
+		$this->{$this->db_group}->where('t1.id_article = t3.id_article');
+		$this->{$this->db_group}->where('t4.tag', $tag);
 		
 		return $this->get_lang_list($where, $lang, $limit);
 	}
@@ -1532,18 +1643,18 @@ class Article_model extends Base_model
 	
 		if($id_entry)
 		{
-			$this->db->where('t1.id_'.$this->table, $id_entry);
+			$this->{$this->db_group}->where('t1.id_'.$this->table, $id_entry);
 		}
 		
 		if ($where)
 		{
-			$this->db->where($where);
+			$this->{$this->db_group}->where($where);
 		}
 		
-		$this->db->select('t1.*, t2.name', FALSE);
-		$this->db->join($this->table.' t2', 't1.id_'.$this->table.' = t2.id_'.$this->table);
+		$this->{$this->db_group}->select('t1.*, t2.name', FALSE);
+		$this->{$this->db_group}->join($this->table.' t2', 't1.id_'.$this->table.' = t2.id_'.$this->table);
 		
-		$query = $this->db->get($this->comment_table.' t1');
+		$query = $this->{$this->db_group}->get($this->comment_table.' t1');
 		
 		if ($query->num_rows > 0)
 		{
@@ -1560,9 +1671,9 @@ class Article_model extends Base_model
 	{
 		$result = array();
 		
-		$this->db->where('id_article_comment', $id_comment);
+		$this->{$this->db_group}->where('id_article_comment', $id_comment);
 		
-		$query = $this->db->get($this->comment_table);
+		$query = $this->{$this->db_group}->get($this->comment_table);
 		
 		if ($query->num_rows == 1)
 		{
@@ -1581,15 +1692,15 @@ class Article_model extends Base_model
 		if(!$id)
 		{
 			$data['created'] = getMysqlDatetime();
-			$this->db->insert($this->comment_table, $data);
-			$id = $this->db->insert_id();
+			$this->{$this->db_group}->insert($this->comment_table, $data);
+			$id = $this->{$this->db_group}->insert_id();
 		}
 		// Update
 		else
 		{
 			$data['updated'] = getMysqlDatetime();			
-			$this->db->where('id_'.$this->comment_table, $id);
-			$this->db->update($this->comment_table, $data);
+			$this->{$this->db_group}->where('id_'.$this->comment_table, $id);
+			$this->{$this->db_group}->update($this->comment_table, $data);
 		}
 		
 		return $id;

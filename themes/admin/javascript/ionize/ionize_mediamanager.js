@@ -59,7 +59,7 @@ var IonizeMediaManager = new Class(
 		{
 			item.addEvent('click', function(e)
 			{
-				var e = new Event(e).stop();
+				e.stop();
 				self.toggleFileManager();
 			});
 		});
@@ -188,10 +188,10 @@ var IonizeMediaManager = new Class(
 		
 		if (typeOf(container) != 'null')
 		{
+			container.empty();
+
 			if (responseJSON && responseJSON.content)
 			{
-				container.empty();
-				
 				// Feed the container with responseJSON content		
 				container.set('html', responseJSON.content);
 	
@@ -232,7 +232,7 @@ var IonizeMediaManager = new Class(
 			// If no media, feed the content HMTLDomElement with transmitted message
 			else
 			{
-				container.set('html', responseJSON.message);
+			//	container.set('html', responseJSON.message);
 			}
 	
 			// Add the media number to the tab

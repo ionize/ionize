@@ -1448,7 +1448,7 @@ class TagManager
 		// Parent name. Removes plural from parent tag name if any.
 		if (substr($obj_tag, -1) == 's')
 			$tag_name = substr($obj_tag, 0, -1);
-		else
+		else if($obj_tag != '')
 			$tag_name = $obj_tag;
 		
 		return $tag_name;

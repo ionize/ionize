@@ -354,7 +354,6 @@ MUI.List = new NamedClass('MUI.List', {
 
 	_itemCommand: function(e, item, parent, cmd){
 		var self = this;
-		e = new Event(e);
 		e.stop();
 		var t = $(e.target);
 		if (t.nodeName != 'A') t = t.getParent('a');

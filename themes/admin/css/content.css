@@ -201,6 +201,9 @@ li.offline { opacity:0.7; }
 .icon a.flag.yellow, a.flag.yellow 			{background: url(../images/icon_16_flag_yellow.png) no-repeat 0 0;}
 .icon a.flag.red, a.flag.red 				{background: url(../images/icon_16_flag_red.png) no-repeat 0 0;}
 
+.icon a.arrow-right, a.arrow-right 			{background: url(../images/icon_16_right.png) no-repeat 0 0;}
+.icon a.arrow-left, a.arrow-left 			{background: url(../images/icon_16_left.png) no-repeat 0 0;}
+
 
 /*.icon a.link, a.icon.link {background: url(../images/toggler-collapse-expand.png) no-repeat 0 0;}*/
 
@@ -281,6 +284,22 @@ h2.main.elements { background: url(../images/icon_48_elements.png) no-repeat 0 0
 h2.main.help { background: url(../images/icon_48_helpme.png) no-repeat 0 0; } 
 h2.main.system-check { background: url(../images/icon_48_system_check.png) no-repeat 0 0; } 
 
+h2.main.pictured {
+	color:#ccc;
+	line-height: 120px !important;
+	padding-left:130px !important;
+	height: 130px !important;
+	max-height:130px !important;
+	margin-bottom:0;
+}
+
+.main.subtitle {
+	margin: -15px 0 20px 72px;
+	display:block;
+}
+.main.subtitle.pictured {
+	margin: -50px 0 20px 130px;
+}
 
 #maincolumn h2, 
 #maincolumn h3 {
@@ -300,6 +319,7 @@ h2.main.system-check { background: url(../images/icon_48_system_check.png) no-re
 
 #maincolumn h2.main {
 	font-size:35px;
+	border-bottom: none;
 }
 /* Windows content titles */
 .mochaContent h2.main {
@@ -313,9 +333,11 @@ h2.main.system-check { background: url(../images/icon_48_system_check.png) no-re
 .mochaContent h3 {
 	border-bottom: 1px solid #D5D9DC;
 }
+/*
 #maincolumn .subtitle {
 	margin-left:68px;
 }
+*/
 
 
 
@@ -1079,6 +1101,24 @@ dl#link_info dd {
 .pl30 { padding-left: 30px !important; }
 .pb30 { padding-bottom: 30px !important; }
 .pr30 { padding-right: 30px !important; }
+
+.p35 { padding: 35px !important; }
+.pt35 { padding-top: 35px !important; }
+.pl35 { padding-left: 35px !important; }
+.pb35 { padding-bottom: 35px !important; }
+.pr35 { padding-right: 35px !important; }
+
+.p40 { padding: 40px !important; }
+.pt40 { padding-top: 40px !important; }
+.pl40 { padding-left: 40px !important; }
+.pb40 { padding-bottom: 40px !important; }
+.pr40 { padding-right: 40px !important; }
+
+.p50 { padding: 50px !important; }
+.pt50 { padding-top: 50px !important; }
+.pl50 { padding-left: 50px !important; }
+.pb50 { padding-bottom: 50px !important; }
+.pr50 { padding-right: 50px !important; }
 
 .m0  {margin: 0 !important; }
 .mt0 { margin-top: 0 !important; }

@@ -171,7 +171,7 @@ MUI.Taskbar.implement({
 
 		instance._taskBar = this; 
 		taskbarTab.addEvent('mousedown', function(e){
-			new Event(e).stop();
+			e.stop();
 			this.timeDown = Date.now();
 		}.bind(instance));
 

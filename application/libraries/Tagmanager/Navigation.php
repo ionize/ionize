@@ -57,7 +57,9 @@ class TagManager_Navigation extends TagManager
 	public static function tag_navigation($tag)
 	{
 		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
-
+		
+		$error_message = '';
+		
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
 			return $str;
@@ -211,6 +213,7 @@ class TagManager_Navigation extends TagManager
 	
 				return $output;
 			}
+			$error_message = 'Helper ' . $helper.':'.$helper_function.'() not found';
 		}
 		else
 		{
@@ -229,7 +232,7 @@ class TagManager_Navigation extends TagManager
 			return $output;
 		}
 		
-		return self::show_tag_error($tag->name, 'Error message');
+		return self::show_tag_error($tag->name, $error_message);
 	}
 
 	

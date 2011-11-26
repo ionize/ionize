@@ -121,7 +121,7 @@ ION.append({
 			$(button).removeEvents('click');
 			$(button).addEvent('click', function(e)
 			{
-				new Event(e).stop();
+				e.stop();
 				
 				ION.confirmation('conf' + button.id, func, confirm.message);
 			});
@@ -133,7 +133,7 @@ ION.append({
 			$(button).removeEvents('click');
 			$(button).addEvent('click', function(e)
 			{
-				new Event(e).stop();
+				e.stop();
 				
 				// tinyMCE and CKEditor trigerSave
 				ION.updateRichTextEditors();
@@ -167,7 +167,7 @@ ION.append({
 			$(button).removeEvents('change');
 			$(button).addEvent('change', function(e)
 			{
-				new Event(e).stop();
+				e.stop();
 				
 				ION.confirmation('conf' + button.id, func, confirm.message);
 			});
@@ -179,7 +179,7 @@ ION.append({
 			$(button).removeEvents('change');
 			$(button).addEvent('change', function(e)
 			{
-				new Event(e).stop();
+				e.stop();
 				
 				// tinyMCE and CKEditor trigerSave
 				ION.updateRichTextEditors();

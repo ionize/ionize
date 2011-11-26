@@ -194,6 +194,12 @@ Drag.Clone = new Class({
 			'z-index': 10000
 		});
 		
+		var cb = element.retrieve('dropCallbacks');
+		if (cb != '')
+		{
+			clone.store('dropCallbacks', cb);
+		}
+		
 		if (this.options.style) { clone.setStyles(this.options.style);}
 		
 		if (this.options.classe){ clone.addClass(this.options.classe);}

@@ -46,9 +46,9 @@ class Menu_model extends Base_model
 	{
  		$data = array();
  		
- 		$this->db->order_by('ordering', 'ASC');
+ 		$this->{$this->db_group}->order_by('ordering', 'ASC');
 			
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
 		{
@@ -77,11 +77,11 @@ class Menu_model extends Base_model
 	{
 		$data = array();
 		
-		$this->db->join('page', $this->table.'.id_menu = page.id_menu', 'left');
-		$this->db->select('menu.*');
-		$this->db->where('page.id_page', $id_page);
+		$this->{$this->db_group}->join('page', $this->table.'.id_menu = page.id_menu', 'left');
+		$this->{$this->db_group}->select('menu.*');
+		$this->{$this->db_group}->where('page.id_page', $id_page);
 		
-		$query = $this->db->get($this->table);
+		$query = $this->{$this->db_group}->get($this->table);
 		
 		if($query->num_rows() > 0)
 		{

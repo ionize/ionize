@@ -360,25 +360,43 @@ class TagManager_Media extends TagManager
 	/**
 	 * Returns the media complete URL
 	 * 
-	 * @usage : <ion:src folder="<folder_name>" />
-	 *			Physically, the folder is prefixed by "thumb_" if the folder is containing thumbs
-	 *			The tag automatiquely adds the "thumb_" prefix to the folder name
+	 * @usage : <ion:src [size="200" square="<true|false>" unsharp="true|false"]  />
+	 *			For pictures, if size is set, returns the path to one thumb with this size
 	 *
 	 */
 	public static function tag_media_src($tag)
 	{
-		// thumb folder name (without the 'thumb_' prefix)
-		$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
-
-		$media = $tag->locals->media;
+		$media = $tag->get('media');
 
 		if ( ! empty($media))
 		{
-			// Media source complete URL
-			if ($folder !== FALSE) 
+			// Compatibility with older version of Ionize
+			if ($tag->getAttribute('folder'))
+			{
+				$folder = 'thumb_' . $tag->getAttribute('folder');
+				
 				return base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
-			else
-				return base_url() . $media['path'];
+			}
+			else if ($tag->getAttribute('size') !== FALSE && $media['type'] == 'picture')
+			{
+				$thumb_file_path = self::_get_thumb_file_path($tag, $media);
+
+				if ( ! file_exists($thumb_file_path))
+				{
+					$settings = array(
+						'unsharpmask' => $tag->getAttribute('unsharp') ? '1' : '0',
+						'square' => $tag->getAttribute('square'),
+						'size' => $tag->getAttribute('size')
+					);
+					self::_create_thumb($media['path'], $thumb_file_path, $settings);
+				}
+
+				return self::_get_thumb_url($tag, $media);
+			 
+			}
+			
+			return base_url() . $media['path'];
+
 		}
 		return '';
 	}
@@ -480,6 +498,167 @@ class TagManager_Media extends TagManager
 		return self::wrap($tag, $extension);
 	}
 
+
+
+	private function _create_thumb($source_path, $dest_path, $settings = array())
+	{
+		$CI =& get_instance();
+		$CI->load->library('image_lib');
+
+		self::_create_thumb_folder($dest_path);
+		
+		// Settings for square array
+		$settings_square = array();
+		
+		// Source picture size
+		if ( $dim = self::get_image_dimensions($source_path) )
+		{
+			$settings['master_dim'] = ($dim['width'] > $dim['height']) ? 'width' : 'height';
+			$settings['source_image'] =	$source_path;
+			$settings['new_image'] =	$dest_path;
+			$settings['quality'] =		'90';
+	
+			if ($settings['square'])
+			{
+				if ($dim['width'] >= $dim['height']) 
+					$settings['master_dim'] =	$settings_square['master_dim'] = 'height';
+				else 
+					$settings['master_dim'] =	$settings_square['master_dim'] = 'width';
+			}
+			else
+			{
+				$settings['maintain_ratio'] = true;	
+			}
+	
+			if ($dim[$settings['master_dim']] >= $settings['size'])
+			{
+				$settings['width'] = $settings['height'] = $settings['size']; 		// Resize on master_dim. Used to keep ratio.
+	
+				$CI->image_lib->clear();
+				$CI->image_lib->initialize($settings);
+	
+				// Thumbnail creation
+				if ( $CI->image_lib->resize() )
+				{
+					if($settings['square']) 
+					{
+						$settings_square['source_image'] =	$CI->image_lib->full_dst_path;
+						
+						// Calculate x and y axis
+						$settings_square['x_axis'] = $config2['y_axis'] = '0';
+						
+						// Get image dimension before crop
+						$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
+		
+						// Center the scare
+						if ($dim['width'] > $dim['height'])
+						{
+							$settings_square['x_axis'] = ($dim['width'] - $settings['width']) / 2;
+						}
+						else
+						{
+							$settings_square['y_axis'] = ($dim['height'] - $settings['height']) / 2;
+						}
+		
+						$settings_square['new_image'] =		'';
+						$settings_square['unsharpmask'] =	false;
+						$settings_square['maintain_ratio'] = false;
+						$settings_square['height'] =		$settings['size'];
+						$settings_square['width'] =			$settings['size'];
+						$CI->image_lib->clear();
+						$CI->image_lib->initialize($settings_square);
+						
+						$CI->image_lib->crop();
+					}
+				}
+			}
+		}	
+	}
+	
+	
+	private static function _create_thumb_folder($thumb_path)
+	{
+		// Create directory is not exists
+		if( ! is_dir($thumb_path) )
+		{
+			$path_segments = explode('/', ltrim($thumb_path, '/'));
+			array_pop($path_segments);
+			
+			$next_folder = '';
+
+			foreach($path_segments as $folder)
+			{
+				$next_folder .= '/' . $folder;
+
+				if ( ! is_dir($next_folder))
+				{
+					if ( ! @mkdir($next_folder, 0777) )
+						throw new Exception(lang('ionize_exception_folder_creation').' : '.$next_folder);
+				}
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get the dimensions of a picture
+	 *
+	 * @param	string	Complete path to the image file
+	 * @return	array	Array of dimension.
+	 *					'width' : contains the width
+	 *					'height' : contains the height
+	 *
+	 */
+	private static function get_image_dimensions($path)
+	{
+		$dim = array();
+		
+		if (function_exists('getimagesize'))
+		{
+			$d = @getimagesize($path);
+			
+			if ($d !== FALSE)
+			{
+				$dim['width']	= $d['0'];
+				$dim['height']	= $d['1'];
+				return $dim;
+			}
+		}
+		return FALSE;
+	}
+	
+	
+	private static function _get_thumb_file_path($tag, $media)
+	{
+		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
+
+		$size = $tag->getAttribute('size');
+		$file_prefix = $tag->getAttribute('square') ? 'square_' : '';
+
+		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
+		$thumb_base_path = FCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
+		$thumb_path = $thumb_base_path . $thumb_path_segment;
+		$thumb_file_path = $thumb_path.$file_prefix.$size.'/'.$media['file_name'];
+		
+		return $thumb_file_path;
+	}
+	
+	
+	private static function _get_thumb_url($tag, $media)
+	{
+		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
+		
+		$size = $tag->getAttribute('size');
+		$file_prefix = $tag->getAttribute('square') ? 'square_' : '';
+
+		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
+		
+		return base_url() . Settings::get('files_path') . '/' . $thumb_folder . '/' . $thumb_path_segment . $file_prefix.$size . '/' . $media['file_name'];
+	}
+	
 }
 
 

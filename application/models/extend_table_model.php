@@ -58,9 +58,9 @@ class Extend_table_model extends Base_model
 	{
 		$extend_table = $table . '_extend';
 	
-		if ($this->db->table_exists($extend_table))
+		if ($this->{$this->db_group}->table_exists($extend_table))
 		{
-			$fields = $this->db->field_data($extend_table);
+			$fields = $this->{$this->db_group}->field_data($extend_table);
 			
 			// Filter the fields : Removes the primaries and foreign keys
 			$fields = array_filter($fields, create_function('$row', 'return $row->primary_key != "1";'));
@@ -89,7 +89,7 @@ class Extend_table_model extends Base_model
 	{
 		$extend_table =  $table . '_extend';
 		
-		$fields = $this->db->field_data($extend_table);
+		$fields = $this->{$this->db_group}->field_data($extend_table);
 		
 		foreach ($fields as $field)
 		{
@@ -117,15 +117,15 @@ class Extend_table_model extends Base_model
 		$extend_table = $parent_table . '_extend';
 		
 		// Only add one field if the parent table exists
-		if ($this->db->table_exists($parent_table))
+		if ($this->{$this->db_group}->table_exists($parent_table))
 		{
 			// Creates the extend table is it doesn't exists
-			if ( ! $this->db->table_exists($extend_table))
+			if ( ! $this->{$this->db_group}->table_exists($extend_table))
 			{
 				$this->create_extend_table($parent_table);
 			}
 			
-			return $this->dbforge->add_column($extend_table, $field);
+			return $this->{$this->db_group}forge->add_column($extend_table, $field);
 		}
 	}
 	
@@ -155,7 +155,7 @@ class Extend_table_model extends Base_model
 	private function create_extend_table($parent_table)
 	{
 		// Get the parent table fields infos
-		$fields = $this->db->field_data($parent_table);
+		$fields = $this->{$this->db_group}->field_data($parent_table);
 		
 		// Only get primary keys fileds info
 		$fields = array_filter($fields, create_function('$row', 'return $row->primary_key == "1";'));
@@ -172,14 +172,14 @@ class Extend_table_model extends Base_model
 				);
 				
 				// Add PRIMARY KEY of the parent table as KEY of the extend table
-				$this->dbforge->add_key($field->name);
+				$this->{$this->db_group}forge->add_key($field->name);
 			}
 			
 			// Add all keys to the table
-			$this->dbforge->add_field($keys);
+			$this->{$this->db_group}forge->add_field($keys);
 			
 			// Creates table IF NOT EXISTS
-			return $this->dbforge->create_table($parent_table.'_extend', TRUE);
+			return $this->{$this->db_group}forge->create_table($parent_table.'_extend', TRUE);
 		}
 		
 		return FALSE;

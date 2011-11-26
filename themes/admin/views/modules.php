@@ -92,7 +92,8 @@
 
 		item.addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
 
 			var module_uri = $('segment' + item.getProperty('rel')).value;
 			
@@ -110,7 +111,8 @@
 		
 		item.addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
 			
 			ION.sendData(url,'');
 		});
@@ -124,7 +126,8 @@
 	{
 		item.addEvent('click', function(e)
 		{
-			var e = new Event(e).stop();
+//			var e = new Event(e).stop();
+			e.stop();
 			
 			MUI.Content.update({
 				element: $('mainPanel'),
