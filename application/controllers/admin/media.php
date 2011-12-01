@@ -814,7 +814,7 @@ class Media extends MY_admin
 		// Path to the picture
 		if ($picture && file_exists($picture_path = FCPATH.$picture['path']))
 		{
-			$thumb_path = FCPATH.Settings::get('files_path'). str_replace(Settings::get('files_path'), '/.thumbs', $picture['base_path']);
+			$thumb_path = FCPATH.Settings::get('files_path'). str_replace(Settings::get('files_path').'/', '/.thumbs/', $picture['base_path']);
 
 			// If no thumb, try to create it
 			if ( ! file_exists($thumb_path.$picture['file_name']))
