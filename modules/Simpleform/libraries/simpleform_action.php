@@ -104,7 +104,7 @@ class Simpleform_Action
 // Email send is desactivated
 // Uncomment these lines
 // after config.php setup
-//						$ci->email->send();
+						$ci->email->send();
 
 						$ci->simpleform_validation->additional_success['profile'] = lang("module_usermanager_text_registered") . " <a href=''>".lang("module_usermanager_text_registered_here")."</a>.";
 					}

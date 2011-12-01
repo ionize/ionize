@@ -39,6 +39,24 @@
 	</query>
 
 
+	<query>
+			CREATE TABLE url (
+			  id_url int(11) unsigned NOT NULL AUTO_INCREMENT,
+			  id_entity int(11) unsigned NOT NULL,
+			  type varchar(10) NOT NULL,
+			  canonical smallint(1) NOT NULL DEFAULT '0',
+			  active smallint(1) NOT NULL DEFAULT '0',
+			  lang varchar(3) NOT NULL,
+			  path varchar(255) NOT NULL DEFAULT '',
+			  creation_date datetime NOT NULL,
+			  PRIMARY KEY (id_url),
+			  KEY idx_url_type (type),
+			  KEY idx_url_active (active),
+			  KEY idx_url_lang (lang)
+			) ENGINE=InnoDB AUTO_INCREMENT=808 DEFAULT CHARSET=utf8;
+	</query>	
+	
+
 
 	<!-- Old 0.9.7 alpha version safe update -->
 	<query>

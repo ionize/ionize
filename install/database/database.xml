@@ -236,7 +236,7 @@
 			  ip_address varchar(32) collate utf8_unicode_ci NOT NULL,
 			  first_time int(11) unsigned NOT NULL,
 			  failures tinyint(2) unsigned default NULL,
-			  PRIMARY KEY  (`ip_address`)
+			  PRIMARY KEY  (ip_address)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 		</query>
 
@@ -346,7 +346,7 @@
 			  pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
 			  id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   			  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
-			  PRIMARY KEY  (`id_page`),
+			  PRIMARY KEY  (id_page),
 			  KEY idx_page_id_parent (id_parent),
 			  KEY idx_page_level (level),
 			  KEY idx_page_menu (id_menu) 
@@ -423,6 +423,22 @@
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 		</query>
 
+		<query>
+			CREATE TABLE url (
+			  id_url int(11) unsigned NOT NULL AUTO_INCREMENT,
+			  id_entity int(11) unsigned NOT NULL,
+			  type varchar(10) NOT NULL,
+			  canonical smallint(1) NOT NULL DEFAULT '0',
+			  active smallint(1) NOT NULL DEFAULT '0',
+			  lang varchar(3) NOT NULL,
+			  path varchar(255) NOT NULL DEFAULT '',
+			  creation_date datetime NOT NULL,
+			  PRIMARY KEY (id_url),
+			  KEY idx_url_type (type),
+			  KEY idx_url_active (active),
+			  KEY idx_url_lang (lang)
+			) ENGINE=InnoDB AUTO_INCREMENT=808 DEFAULT CHARSET=utf8;
+		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS users (
