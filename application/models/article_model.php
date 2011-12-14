@@ -636,7 +636,7 @@ class Article_model extends Base_model
 		
 		// Article main context 
 		$context = $this->get_main_context($id_article);
-		
+
 		if ( ! empty($context))
 		{
 			foreach($this->get_languages() as $l)
@@ -647,17 +647,34 @@ class Article_model extends Base_model
 				
 				$url = array();
 				
+				// Full path IDs to the article
+				$full_path_ids = array();
+				
+				// Path IDs to the article (does not include page which hasn't one URL)
+				$path_ids = array();
+				
 				foreach($parents_array as $page)
 				{
-					if ($page['appears'] == '1')
+					$full_path_ids[] = $page['id_page'];
+					
+					if ($page['has_url'] == '1')
+					{
 						$url[] = $page['url'];
+						$path_ids[] = $page['id_page'];
+					}
 				}
 
 				if ( ! empty($url))
 				{
-					$url = implode('/', $url) . '/' . $article['url'];
-		
-					$nb = $CI->url_model->save_url('article', $l['lang'], $id_article, $url);
+					$data = array(
+						'url' => implode('/', $url) . '/' . $article['url'],
+						'path_ids' => implode('/', $path_ids),
+						'full_path_ids' => implode('/', $full_path_ids)
+					);
+					
+					// $url = implode('/', $url) . '/' . $article['url'];
+					
+					$nb = $CI->url_model->save_url('article', $l['lang'], $id_article, $data);
 				}
 			}
 		}		
@@ -709,6 +726,9 @@ class Article_model extends Base_model
 		
 		// Correct "Main Parent"
 		$this->correct_main_parent($id_article);
+		
+		// Updates URLs
+		$this->rebuild_urls($id_article);
 		
 		return $nb;
 		
@@ -780,7 +800,12 @@ class Article_model extends Base_model
 		{
 			$this->{$this->db_group}->set('main_parent', '1');
 			$this->{$this->db_group}->where('id_article', $id_article );
-			return $this->{$this->db_group}->update('page_article');
+			$nb = $this->{$this->db_group}->update('page_article');
+			
+			// Updates URLs
+			$this->rebuild_urls($id_article);
+			
+			return $nb;
 		}
 		return 0;
 	}
@@ -990,7 +1015,8 @@ class Article_model extends Base_model
 				'id_page' => $data['id_page'],
 				'view' => $data['view'],
 				'id_type' => $data['id_type'],
-				'ordering' => $order
+				'ordering' => $order,
+				'main_parent' => '1'
 			);
 			
 			// Merge the data to the article array			

@@ -1379,15 +1379,18 @@ ION.append({
 					{
 						if (l != lang)
 						{
-							if ($(item + '_' + l).hasClass('tinyTextarea') && tinymce != undefined)
+							if ($(item + '_' + l))
 							{
-								var tiny = tinymce.EditorManager.get(item + '_' + l);
-								if (tiny)
-									tiny.setContent($(item + '_' + lang).value);
-							}
-							else
-							{
-								$(item + '_' + l).value = $(item + '_' + lang).value;
+								if ($(item + '_' + l).hasClass('tinyTextarea') && tinymce != undefined)
+								{
+									var tiny = tinymce.EditorManager.get(item + '_' + l);
+									if (tiny)
+										tiny.setContent($(item + '_' + lang).value);
+								}
+								else
+								{
+									$(item + '_' + l).value = $(item + '_' + lang).value;
+								}
 							}
 						}
 					});

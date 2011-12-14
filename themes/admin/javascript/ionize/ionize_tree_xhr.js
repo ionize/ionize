@@ -182,7 +182,7 @@ ION.TreeXhr = new Class({
 		
 		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
 
-		if (title == '') title == element.name;
+		if (title == '') title = element.name;
 
 		var container = this.injectContainer(type, id_parent)
 

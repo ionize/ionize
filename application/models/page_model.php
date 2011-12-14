@@ -397,18 +397,35 @@ class Page_model extends Base_model
 		foreach($this->get_languages() as $l)
 		{
 			$parents_array = $this->get_parent_array($id_page, array(), $l['lang']);
+
 			$url = array();
+
+			// Full path IDs to the article
+			$full_path_ids = array();
+				
+			// Path IDs to the article (does not include page which hasn't one URL)
+			$path_ids = array();
 			
 			foreach($parents_array as $page)
 			{
-				if ($page['appears'] == '1')
+				$full_path_ids[] = $page['id_page'];
+
+				if ($page['has_url'] == '1')
+				{
 					$url[] = $page['url'];
+					$path_ids[] = $page['id_page'];
+				}
 			}
 			
 			if ( ! empty($url))
 			{
-				$url = implode('/', $url);
-				$nb = $CI->url_model->save_url('page', $l['lang'], $id_page, $url);
+				$data = array(
+					'url' => implode('/', $url),
+					'path_ids' => implode('/', $path_ids),
+					'full_path_ids' => implode('/', $full_path_ids)
+				);
+//				$url = implode('/', $url);
+				$nb = $CI->url_model->save_url('page', $l['lang'], $id_page, $data);
 			}
 		}
 		

@@ -304,6 +304,7 @@ class Article extends MY_admin
 		// Context data initialized when article creation
 		$this->template['online'] = '0';
 		$this->template['main_parent'] = '1';
+		$this->template['has_url'] = '1';
 
 		$this->output('article');
 	}	
@@ -883,8 +884,9 @@ class Article extends MY_admin
 				// Article moved ?
 				if ($copy == FALSE && $id_page_origin != FALSE)
 				{
+					// Unlink from first parent : Corrects also the main parent
 					$affected_rows = $this->article_model->unlink($id_article, $id_page_origin);
-
+					
 					$ordering = $this->article_model->get_articles_ordering($id_page_origin);
 					
 					$this->article_model->save_ordering($ordering, 'page', $id_page_origin);
@@ -1229,6 +1231,7 @@ class Article extends MY_admin
 		$this->template = array_merge($this->template, $source_article);
 
 		$this->template['name'] = $source_article['name'];
+//		$this->template['has_url'] = $source_article['has_url'];
 		$this->template['title'] = ($source_article['title'] != '') ? $source_article['title'] : $source_article['name'];
 
 		// Dropdown menus
@@ -1281,6 +1284,9 @@ class Article extends MY_admin
 			{
 				// Clear the cache
 				Cache()->clear_cache();
+
+				// Update URLs
+				$this->article_model->save_urls($id_new_article);
 
 				/* Update the content structure tree
 				 * The data var is merged to the default lang data_lang var,

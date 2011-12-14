@@ -20,14 +20,14 @@ if($type == 'picture')
 	<!-- Picture file -->
 	<?php if($type == 'picture') :?>
 		<?php
-			$file_path = Settings::get('files_path').'/';
-			$thumb_base_url = base_url().$file_path.'.thumbs/';
+//			$file_path = Settings::get('files_path').'/';
+//			$thumb_base_url = base_url().$file_path.'.thumbs/';
 			$thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
-			$thumb_path = str_replace($file_path, '', $path);
-			$thumb_url =	$thumb_base_url.$thumb_path;
+//			$thumb_path = str_replace($file_path, '', $path);
+//			$thumb_url =	$thumb_base_url.$thumb_path;
 		 ?>
 		<div class="picture" style="float:right;margin:0;">
-		<div class="thumb" style="width:<?= $thumb_size ?>px;height:<?= $thumb_size ?>px;background-image:url(<?= $thumb_url ?>?t=<?= $UNIQ ?>);"></div>
+		<div class="thumb" style="width:<?= $thumb_size ?>px;height:<?= $thumb_size ?>px;background-image:url(<?= admin_url(TRUE) . 'media/get_thumb/'.$id_media.'/'.time()  ?>);"></div>
 		</div>
 	<?php endif ;?>
 
@@ -139,154 +139,6 @@ if($type == 'picture')
 	<input type="hidden" name="id_media" value="<?= $id_media ?>" />
 	<input type="hidden" name="type" value="<?= $type ?>" />
 	
-	<!-- Container -->
-	<dl class="small">
-		<dt>
-			<label for="container_<?= $type.$id_media ?>"><?=lang('ionize_label_media_container')?></label>
-		</dt>
-		<dd>
-			<input id="container_<?= $type.$id_media ?>" name="container" class="inputtext w200" type="text" value="<?= $container ?>" />
-		</dd>
-	</dl>
-
-	<!-- Copyright -->
-	<dl class="small">
-		<dt>
-			<label for="copyright"><?=lang('ionize_label_copyright')?></label>
-		</dt>
-		<dd>
-			<input id="copyright_<?= $type.$id_media ?>" name="copyright" class="inputtext w200" type="text" value="<?= $copyright ?>" />
-		</dd>
-	</dl>
-
-	<!-- Link (URL) -->
-	<dl class="small">
-		<dt>
-			<label for="link"><?=lang('ionize_label_link')?></label>
-		</dt>
-		<dd>
-			<input id="link_<?= $type.$id_media ?>" name="link" type="text" class="inputtext w200" value="<?= $link ?>" />
-			<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png" onclick="javascript:ION.clearField('link_<?= $type.$id_media ?>');"/>
-		</dd>
-	</dl>
-
-	<!-- Date -->
-	<dl class="small">
-		<dt>
-			<label for="date_<?= $type.$id_media ?>"><?=lang('ionize_label_date')?></label>
-		</dt>
-		<dd>
-			<input id="date_<?= $type.$id_media ?>" name="date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
-		</dd>
-	</dl>
-
-	<!-- extend fields goes here... -->
-		<?php foreach($extend_fields as $extend_field) :?>
-		
-			<?php if ($extend_field['translated'] != '1') :?>
-			
-				<dl class="small">
-					<dt>
-						<?php
-							$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-						?>
-						<label for="cf_<?= $extend_field['id_extend_field'] ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
-					</dt>
-					<dd>
-						<?php
-							$extend_field['content'] = ($extend_field['content'] != '') ? $extend_field['content'] : $extend_field['default_value'];
-						?>
-					
-						<?php if ($extend_field['type'] == '1') :?>
-							<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext w200" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
-						<?php endif ;?>
-						
-						<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
-							<textarea id="cf_<?= $extend_field['id_extend_field'] ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext w340 h80" name="cf_<?= $extend_field['id_extend_field'] ?>"><?= $extend_field['content'] ?></textarea>
-						<?php endif ;?>
-						
-						<!-- Checkbox -->
-						<?php if ($extend_field['type'] == '4') :?>
-							
-							<?php
-								$pos = 		explode("\n", $extend_field['value']);
-								$saved = 	explode(',', $extend_field['content']);
-							?>
-							<?php
-								$i = 0; 
-								foreach($pos as $values)
-								{
-									$vl = explode(':', $values);
-									$key = $vl[0];
-									$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-
-									?>
-									<input type="checkbox" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>[]" value="<?= $key ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
-									<?php
-									$i++;
-								}
-							?>
-						<?php endif ;?>
-						
-						<!-- Radio -->
-						<?php if ($extend_field['type'] == '5') :?>
-							
-							<?php
-								$pos = explode("\n", $extend_field['value']);
-							?>
-							<?php
-								$i = 0; 
-								foreach($pos as $values)
-								{
-									$vl = explode(':', $values);
-									$key = $vl[0];
-									$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-
-									?>
-									<input type="radio" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $key ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
-									<?php
-									$i++;
-								}
-							?>
-						<?php endif ;?>
-						
-						<!-- Selectbox -->
-						<?php if ($extend_field['type'] == '6' && !empty($extend_field['value'])) :?>
-							
-							<?php									
-								$pos = explode("\n", $extend_field['value']);
-								$saved = 	explode(',', $extend_field['content']);
-							?>
-							<select name="cf_<?= $extend_field['id_extend_field']?>">
-							<?php
-								$i = 0; 
-								foreach($pos as $values)
-								{
-									$vl = explode(':', $values);
-									$key = $vl[0];
-									$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-									?>
-									<option value="<?= $key ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?= $value ?></option>
-									<?php
-									$i++;
-								}
-							?>
-							</select>
-						<?php endif ;?>
-						
-						
-						<!-- Date & Time -->
-						<?php if ($extend_field['type'] == '7') :?>
-						
-							<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext w120 date" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
-							
-						<?php endif ;?>
-						
-					</dd>
-				</dl>	
-					
-			<?php endif ;?>
-		<?php endforeach ;?>
 
 
 
@@ -296,17 +148,157 @@ if($type == 'picture')
 		<!-- Tabs -->
 		<div id="mediaTab<?= $UNIQ ?>" class="mainTabs">
 			<ul class="tab-menu">
+				<li class="left"><a><span><?= lang('ionize_title_details'); ?></span></a></li>
 				<?php foreach(Settings::get_languages() as $l) :?>
 					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
 				<?php endforeach ;?>
+				<li class="right"><a><span><?= lang('ionize_title_thumbnail'); ?></span></a></li>
 			</ul>
 			<div class="clear"></div>
 		</div>
 
 
 		<div id="mediaTabContent<?= $UNIQ ?>">	
-		<!-- Text block -->
-		<?php foreach(Settings::get_languages() as $language) :?>
+
+			<div class="tabcontent<?= $UNIQ ?>">
+
+				<!-- Container -->
+				<dl class="small">
+					<dt><label for="container_<?= $type.$id_media ?>"><?=lang('ionize_label_media_container')?></label></dt>
+					<dd><input id="container_<?= $type.$id_media ?>" name="container" class="inputtext w200" type="text" value="<?= $container ?>" /></dd>
+				</dl>
+			
+				<!-- Copyright -->
+				<dl class="small">
+					<dt><label for="copyright"><?=lang('ionize_label_copyright')?></label></dt>
+					<dd><input id="copyright_<?= $type.$id_media ?>" name="copyright" class="inputtext w200" type="text" value="<?= $copyright ?>" /></dd>
+				</dl>
+			
+				<!-- Link (URL) -->
+				<dl class="small">
+					<dt><label for="link"><?=lang('ionize_label_link')?></label></dt>
+					<dd><input id="link_<?= $type.$id_media ?>" name="link" type="text" class="inputtext w200" value="<?= $link ?>" /><img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png" onclick="javascript:ION.clearField('link_<?= $type.$id_media ?>');"/></dd>
+				</dl>
+			
+				<!-- Date -->
+				<dl class="small">
+					<dt><label for="date_<?= $type.$id_media ?>"><?=lang('ionize_label_date')?></label></dt>
+					<dd><input id="date_<?= $type.$id_media ?>" name="date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($date, Settings::get('date_format'). ' %H:%i:%s') ?>" /></dd>
+				</dl>
+
+				<!-- extend fields goes here... -->
+				<?php foreach($extend_fields as $extend_field) :?>
+				
+					<?php if ($extend_field['translated'] != '1') :?>
+					
+						<dl class="small">
+							<dt>
+								<?php
+									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
+								?>
+								<label for="cf_<?= $extend_field['id_extend_field'] ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
+							</dt>
+							<dd>
+								<?php
+									$extend_field['content'] = ($extend_field['content'] != '') ? $extend_field['content'] : $extend_field['default_value'];
+								?>
+							
+								<?php if ($extend_field['type'] == '1') :?>
+									<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext w200" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
+								<?php endif ;?>
+								
+								<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
+									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext w340 h80" name="cf_<?= $extend_field['id_extend_field'] ?>"><?= $extend_field['content'] ?></textarea>
+								<?php endif ;?>
+								
+								<!-- Checkbox -->
+								<?php if ($extend_field['type'] == '4') :?>
+									
+									<?php
+										$pos = 		explode("\n", $extend_field['value']);
+										$saved = 	explode(',', $extend_field['content']);
+									?>
+									<?php
+										$i = 0; 
+										foreach($pos as $values)
+										{
+											$vl = explode(':', $values);
+											$key = $vl[0];
+											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
+			
+											?>
+											<input type="checkbox" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>[]" value="<?= $key ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
+											<?php
+											$i++;
+										}
+									?>
+								<?php endif ;?>
+								
+								<!-- Radio -->
+								<?php if ($extend_field['type'] == '5') :?>
+									
+									<?php
+										$pos = explode("\n", $extend_field['value']);
+									?>
+									<?php
+										$i = 0; 
+										foreach($pos as $values)
+										{
+											$vl = explode(':', $values);
+											$key = $vl[0];
+											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
+			
+											?>
+											<input type="radio" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $key ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
+											<?php
+											$i++;
+										}
+									?>
+								<?php endif ;?>
+								
+								<!-- Selectbox -->
+								<?php if ($extend_field['type'] == '6' && !empty($extend_field['value'])) :?>
+									
+									<?php									
+										$pos = explode("\n", $extend_field['value']);
+										$saved = 	explode(',', $extend_field['content']);
+									?>
+									<select name="cf_<?= $extend_field['id_extend_field']?>">
+									<?php
+										$i = 0; 
+										foreach($pos as $values)
+										{
+											$vl = explode(':', $values);
+											$key = $vl[0];
+											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
+											?>
+											<option value="<?= $key ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?= $value ?></option>
+											<?php
+											$i++;
+										}
+									?>
+									</select>
+								<?php endif ;?>
+								
+								
+								<!-- Date & Time -->
+								<?php if ($extend_field['type'] == '7') :?>
+								
+									<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext w120 date" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
+									
+								<?php endif ;?>
+								
+							</dd>
+						</dl>	
+							
+					<?php endif ;?>
+				<?php endforeach ;?>
+		
+			</div>
+
+
+			<!-- Translated Meta data -->
+			<?php foreach(Settings::get_languages() as $language) :?>
 
 			<?php $lang = $language['lang']; ?>
 			
@@ -354,9 +346,8 @@ if($type == 'picture')
 						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('description_<?= $lang ?><?= $type.$id_media ?>');"/>
 					</dd>
 				</dl>
-			</div>
 
-			<!-- extend fields goes here... -->
+				<!-- extend fields goes here... -->
 				<?php foreach($extend_fields as $extend_field) :?>
 					<?php if ($extend_field['translated'] == '1') :?>
 					
@@ -379,9 +370,19 @@ if($type == 'picture')
 							
 					<?php endif ;?>
 				<?php endforeach ;?>
+
+			</div>
+			<?php endforeach ;?>
+
+			<!-- Thumbnails preferences -->
+			<div class="tabcontent<?= $UNIQ ?>">
 			
-		<?php endforeach ;?>
-		</div>	
+			
+			</div>
+
+		
+		</div>
+		
 	</fieldset>
 
 

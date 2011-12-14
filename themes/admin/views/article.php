@@ -8,6 +8,7 @@
 	<input type="hidden" name="author" value="<?= $author ?>" />
 	<input type="hidden" name="name" id="name" value="<?= $name ?>" />
 	<input type="hidden" name="main_parent" id="main_parent" value="<?= $main_parent ?>" />
+	<input type="hidden" name="has_url" id="has_url" value="<?= $has_url ?>" />
 	
 	<!-- JS storing element -->
 	<input type="hidden" id="memory" />

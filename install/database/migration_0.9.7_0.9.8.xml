@@ -56,6 +56,13 @@
 			) ENGINE=InnoDB AUTO_INCREMENT=808 DEFAULT CHARSET=utf8;
 	</query>	
 	
+	<query>
+		ALTER TABLE `page` ADD has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1;
+	</query>
+
+	<query>
+		ALTER TABLE `article` ADD has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1;
+	</query>
 
 
 	<!-- Old 0.9.7 alpha version safe update -->
@@ -85,6 +92,42 @@
 
 
 
+
+	<query>ALTER TABLE article ENGINE = InnoDB;</query>
+	<query>ALTER TABLE article_category ENGINE = InnoDB;</query>
+	<query>ALTER TABLE article_comment ENGINE = InnoDB;</query>
+	<query>ALTER TABLE article_lang ENGINE = InnoDB;</query>
+	<query>ALTER TABLE article_media ENGINE = InnoDB;</query>
+	<query>ALTER TABLE article_tag ENGINE = InnoDB;</query>
+	<query>ALTER TABLE article_type ENGINE = InnoDB;</query>
+	<query>ALTER TABLE captcha ENGINE = InnoDB;</query>
+	<query>ALTER TABLE category ENGINE = InnoDB;</query>
+	<query>ALTER TABLE category_lang ENGINE = InnoDB;</query>
+	<query>ALTER TABLE element ENGINE = InnoDB;</query>
+	<query>ALTER TABLE element_definition ENGINE = InnoDB;</query>
+	<query>ALTER TABLE element_definition_lang ENGINE = InnoDB;</query>
+	<query>ALTER TABLE extend_field ENGINE = InnoDB;</query>
+	<query>ALTER TABLE extend_field_lang ENGINE = InnoDB;</query>
+	<query>ALTER TABLE extend_fields ENGINE = InnoDB;</query>
+	<query>ALTER TABLE ion_sessions ENGINE = InnoDB;</query>
+	<query>ALTER TABLE lang ENGINE = InnoDB;</query>
+	<query>ALTER TABLE login_tracker ENGINE = InnoDB;</query>
+	<query>ALTER TABLE media ENGINE = InnoDB;</query>
+	<query>ALTER TABLE media_lang ENGINE = InnoDB;</query>
+	<query>ALTER TABLE menu ENGINE = InnoDB;</query>
+	<query>ALTER TABLE module ENGINE = InnoDB;</query>
+	<query>ALTER TABLE module_setting ENGINE = InnoDB;</query>
+	<query>ALTER TABLE note ENGINE = InnoDB;</query>
+	<query>ALTER TABLE page ENGINE = InnoDB;</query>
+	<query>ALTER TABLE page_article ENGINE = InnoDB;</query>
+	<query>ALTER TABLE page_lang ENGINE = InnoDB;</query>
+	<query>ALTER TABLE page_media ENGINE = InnoDB;</query>
+	<query>ALTER TABLE page_user_groups ENGINE = InnoDB;</query>
+	<query>ALTER TABLE setting ENGINE = InnoDB;</query>
+	<query>ALTER TABLE tag ENGINE = InnoDB;</query>
+	<query>ALTER TABLE users ENGINE = InnoDB;</query>
+	<query>ALTER TABLE users_meta ENGINE = InnoDB;</query>
+	<query>ALTER TABLE user_groups ENGINE = InnoDB;</query>
 	
 
 	<query>ALTER TABLE `article` COMMENT = '';</query>
@@ -101,6 +144,7 @@
 	<query>ALTER TABLE `element_definition` COMMENT = '';</query>
 	<query>ALTER TABLE `element_definition_lang` COMMENT = '';</query>
 	<query>ALTER TABLE `extend_field` COMMENT = '';</query>
+	<query>ALTER TABLE `extend_field_lang` COMMENT = '';</query>
 	<query>ALTER TABLE `extend_fields` COMMENT = '';</query>
 	<query>ALTER TABLE `ion_sessions` COMMENT = '';</query>
 	<query>ALTER TABLE `lang` COMMENT = '';</query>

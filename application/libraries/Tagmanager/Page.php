@@ -570,6 +570,10 @@ class TagManager_Page extends TagManager
 		{
 			$where += self::set_global_scope($tag);
 		}
+		else if ($scope == 'this')
+		{
+			$where += array('id_page' => $tag->locals->page['id_page']);
+		}
 		// Get only articles from current page
 		else
 		{
@@ -1716,6 +1720,10 @@ class TagManager_Page extends TagManager
 		 *
 		 */
 		$articles = self::get_articles($tag);
+
+		// Make articles in random order
+		$random = (isset($tag->attr['random'])) ? (bool) $tag->attr['random'] : FALSE;
+		if($random) shuffle ($articles);
 		
 		// Number of articles
 		$count = count($articles);

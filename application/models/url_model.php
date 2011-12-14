@@ -44,12 +44,17 @@ class Url_model extends Base_model
 	 * @param	String		'page', 'article', etc.
 	 * @param	String		lang code
 	 * @param	int			ID of the entity.
-	 * @param	String		Complete URL path
+	 * @param	Array		Array of URL paths
+	 *							array(
+	 *								'url' => 			'/path/to/the/element',
+	 *								'path_ids' =>		'/1/8/12',
+	 *								'full_path_ids' =>	'/1/8/3/12'
+	 *							)
 	 *
 	 * @return	int			Number of inserted / updated URL;
 	 *
 	 */
-	public function save_url($type, $lang, $id_entity, $url)
+	public function save_url($type, $lang, $id_entity, $data)
 	{
 		$return = 0;
 		
@@ -60,7 +65,7 @@ class Url_model extends Base_model
 			'active' => '1'
 		);
 		
-		$data = array(
+		$element = array(
 			'id_entity' => $id_entity,
 			'type' => $type,
 			'lang' => $lang,
@@ -74,33 +79,39 @@ class Url_model extends Base_model
 		// The URL already exists
 		if ( ! empty($db_url) && 
 			 ( time() - strtotime($db_url['creation_date'])) > 3600 &&
-			 $url != $db_url['path'] )
+			 $data['url'] != $db_url['path'] )
 		{
 			// Set the old link as inactive
-			$data['active'] = '0';
-			$this->update($where, $data);
+			$element['active'] = '0';
+			$this->update($where, $element);
 			$nb = $this->db->affected_rows();
 			
 			// Insert the new link
-			$data['active'] = '1';
-			$data['path'] = $url;
-			$data['creation_date'] = date('Y-m-d H:i:s');
-			$this->insert($data);
+			$element['active'] = '1';
+			$element['path'] = $data['url'];
+			$element['path_ids'] = $data['path_ids'];
+			$element['full_path_ids'] = $data['full_path_ids'];
+			$element['creation_date'] = date('Y-m-d H:i:s');
+			$this->insert($element);
 		}
-		else if ( ! empty($db_url) && $url != $db_url['path'] )
+		else if ( ! empty($db_url) && $data['url'] != $db_url['path'] )
 		{
-			$data['path'] = $url;
-			$this->update($where, $data);
+			$element['path'] = $data['url'];
+			$element['path_ids'] = $data['path_ids'];
+			$element['full_path_ids'] = $data['full_path_ids'];
+			$this->update($where, $element);
 		}
 		else if (empty($db_url))
 		{
-			$data['path'] = $url;
-			$data['creation_date'] = date('Y-m-d H:i:s');
+			$element['path'] = $data['url'];
+			$element['path_ids'] = $data['path_ids'];
+			$element['full_path_ids'] = $data['full_path_ids'];
+			$element['creation_date'] = date('Y-m-d H:i:s');
 			
-			$this->insert($data);
+			$this->insert($element);
 			$return = 1;
 		}
-		
+
 		return $return;
 	}
 	

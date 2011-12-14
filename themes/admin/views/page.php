@@ -91,6 +91,15 @@
 				
 				<?php endif ;?>
 
+				<!-- Has one URL ? Means is reachable through its URL -->
+				<dl class="small">
+					<dt>
+						<label for="has_url" title="<?= lang('ionize_help_has_url') ?>"><?= lang('ionize_label_has_url') ?></label>
+					</dt>
+					<dd>
+						<input id="has_url" name="has_url" type="checkbox" class="inputcheckbox" <?php if ($has_url == 1):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
 
 				<!-- Page view -->
 				<?php if ($id_page !='' && isset($views)) :?>

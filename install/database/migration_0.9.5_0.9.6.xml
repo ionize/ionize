@@ -14,7 +14,7 @@
 	</query>
 
 	<query>
-		INSERT INTO page_article (
+		INSERT INTO page_article (id_page, id_article, online, view, ordering, id_type)
 			SELECT 
 				id_page, 
 				id_article,

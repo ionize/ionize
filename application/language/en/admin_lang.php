@@ -290,6 +290,7 @@ $lang['ionize_label_code'] = 'Code';
 $lang['ionize_label_toggle_editor'] = 'toggle editor';
 
 $lang['ionize_label_in_menu'] = 'Appears in menu';
+$lang['ionize_label_has_url'] = 'Has URL';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_meta_keywords'] = 'Keywords';
 $lang['ionize_label_meta_description']= 'Description';
@@ -310,6 +311,7 @@ $lang['ionize_label_show_options'] = 'Show Options';
 
 $lang['ionize_label_copy_to_other_languages'] = 'Copy to other languages';
 
+$lang['ionize_help_has_url'] = 'If checked, the element has one URL and is reachable through its URL.';
 $lang['ionize_help_status'] = 'If connected as admin, you will see this element on the website even it is not online';
 $lang['ionize_help_online'] = 'Is this element globally online?';
 $lang['ionize_help_online_lang'] = 'Is this translation online for this language?';
@@ -748,6 +750,8 @@ $lang['ionize_help_sitemap_priority'] = 'Page priority, between 0 and 10';
 $lang['ionize_title_medias'] = 'Medias';
 $lang['ionize_title_thumbs_status'] = 'Thumbnails status';
 $lang['ionize_title_informations'] = 'Information';
+$lang['ionize_title_details'] = 'Details';
+$lang['ionize_title_thumbnail'] = 'Thumbnail';
 
 $lang['ionize_label_file_size'] = 'File size';
 $lang['ionize_label_reload_picture_list'] = 'Reload list';

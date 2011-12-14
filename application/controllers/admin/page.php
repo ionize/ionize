@@ -111,6 +111,7 @@ class Page extends MY_admin
 		$this->template['groups'] =	form_dropdown('id_group', $groups, false, 'class="select"');
 		
 		$this->template['priority'] = '5';
+		$this->template['has_url'] = '1';
 		
 		/*
 		 * Extend fields

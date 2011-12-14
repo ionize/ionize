@@ -26,6 +26,7 @@
 			  comment_autovalid char(1) default '0',
 			  comment_expire datetime,
 			  flag smallint(1) default 0,
+			  has_url tinyint(1) UNSIGNED NOT NULL default 1,
 			  PRIMARY KEY  (id_article)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 		</query>
@@ -333,6 +334,7 @@
 			  updated datetime NOT NULL,
 			  logical_date datetime NOT NULL default '0000-00-00 00:00:00',
 			  appears tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+			  has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 			  view varchar(50) default NULL										COMMENT 'Page view',
 			  view_single varchar(50) default NULL								COMMENT 'Single Article Page view',
 			  article_list_view VARCHAR(50) default NULL						COMMENT 'Article list view for each article linked to this page',
@@ -529,7 +531,7 @@
 
 		<query>INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', '');</query>
 		<query>INSERT INTO setting VALUES ('', 'ionize_version', '0.9.8', '');</query>
-		<query>INSERT INTO setting VALUES ('', 'media_upload_mode', 'multiple', '');</query>
+		<query>INSERT INTO setting VALUES ('', 'media_upload_mode', 'single', '');</query>
 	
 		<query>
 			INSERT INTO menu (id_menu, name, title) VALUES 

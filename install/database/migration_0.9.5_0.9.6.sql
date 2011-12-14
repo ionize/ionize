@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS page_article (
 	PRIMARY KEY  (id_page, id_article)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO page_article (
+INSERT INTO page_article (id_page, id_article, online, view, ordering, id_type)
 	SELECT 
 		id_page, 
 		id_article,

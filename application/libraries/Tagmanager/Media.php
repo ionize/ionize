@@ -383,6 +383,14 @@ class TagManager_Media extends TagManager
 
 				if ( ! file_exists($thumb_file_path))
 				{
+					/*
+					 * Here : 
+					 * - Add support for thumb settings (store in DB) about :
+					 *   - square crop position (in case of square crop)
+					 *
+					 */
+				
+				
 					$settings = array(
 						'unsharpmask' => $tag->getAttribute('unsharp') ? '1' : '0',
 						'square' => $tag->getAttribute('square'),
@@ -392,11 +400,9 @@ class TagManager_Media extends TagManager
 				}
 
 				return self::_get_thumb_url($tag, $media);
-			 
 			}
 			
 			return base_url() . $media['path'];
-
 		}
 		return '';
 	}
@@ -517,6 +523,7 @@ class TagManager_Media extends TagManager
 			$settings['source_image'] =	$source_path;
 			$settings['new_image'] =	$dest_path;
 			$settings['quality'] =		'90';
+			$settings['maintain_ratio'] = true;	
 	
 			if ($settings['square'])
 			{
@@ -524,10 +531,6 @@ class TagManager_Media extends TagManager
 					$settings['master_dim'] =	$settings_square['master_dim'] = 'height';
 				else 
 					$settings['master_dim'] =	$settings_square['master_dim'] = 'width';
-			}
-			else
-			{
-				$settings['maintain_ratio'] = true;	
 			}
 	
 			if ($dim[$settings['master_dim']] >= $settings['size'])
@@ -540,12 +543,12 @@ class TagManager_Media extends TagManager
 				// Thumbnail creation
 				if ( $CI->image_lib->resize() )
 				{
-					if($settings['square']) 
+					if( $settings['square'] ) 
 					{
 						$settings_square['source_image'] =	$CI->image_lib->full_dst_path;
 						
 						// Calculate x and y axis
-						$settings_square['x_axis'] = $config2['y_axis'] = '0';
+						$settings_square['x_axis'] = $settings_square['y_axis'] = '0';
 						
 						// Get image dimension before crop
 						$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
@@ -585,15 +588,23 @@ class TagManager_Media extends TagManager
 			array_pop($path_segments);
 			
 			$next_folder = '';
+			
+			// Check if server os is windows,
+			// If server os is windows, first separator has to be empty string
+			$separator = (strpos(strtolower(php_uname('s')), 'win') !== false) ? '' : '/';
 
 			foreach($path_segments as $folder)
 			{
-				$next_folder .= '/' . $folder;
-
-				if ( ! is_dir($next_folder))
+				$next_folder .= $separator . $folder;
+				$separator = '/';
+				
+				if ( ! @is_dir($next_folder))
 				{
+					@mkdir($next_folder, 0777);
+/*
 					if ( ! @mkdir($next_folder, 0777) )
 						throw new Exception(lang('ionize_exception_folder_creation').' : '.$next_folder);
+*/
 				}
 			}
 		}

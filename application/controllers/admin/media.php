@@ -862,9 +862,7 @@ class Media extends MY_admin
 			$content = read_file(FCPATH.'themes/'.Settings::get('theme_admin').'/images/icon_48_no_source_picture.png');
 
 			self::push_thumb($content, $mime, 0);
-			
 		}
-		
 	}
 
 
