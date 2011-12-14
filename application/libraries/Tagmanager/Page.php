@@ -1917,7 +1917,7 @@ class TagManager_Page extends TagManager
 			$tag->attr['name'] = 'date';
 			return self::tag_field($tag);
 		}
-		return self::wrap($tag, self::get_value('article', 'date', $tag));
+		return self::wrap($tag, self::format_date($tag, $tag->locals->article['date']));
 	}
 	
 	public static function tag_article_meta_title($tag)
