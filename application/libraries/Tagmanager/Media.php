@@ -389,8 +389,6 @@ class TagManager_Media extends TagManager
 					 *   - square crop position (in case of square crop)
 					 *
 					 */
-				
-				
 					$settings = array(
 						'unsharpmask' => $tag->getAttribute('unsharp') ? '1' : '0',
 						'square' => $tag->getAttribute('square'),
@@ -591,13 +589,13 @@ class TagManager_Media extends TagManager
 			
 			// Check if server os is windows,
 			// If server os is windows, first separator has to be empty string
-			$separator = (strpos(strtolower(php_uname('s')), 'win') !== false) ? '' : '/';
+			$separator = ((strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') !== false) ? '' : '/';
 
 			foreach($path_segments as $folder)
 			{
 				$next_folder .= $separator . $folder;
 				$separator = '/';
-				
+
 				if ( ! @is_dir($next_folder))
 				{
 					@mkdir($next_folder, 0777);
@@ -652,7 +650,7 @@ class TagManager_Media extends TagManager
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = FCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
 		$thumb_path = $thumb_base_path . $thumb_path_segment;
-		$thumb_file_path = $thumb_path.$file_prefix.$size.'/'.$media['file_name'];
+		$thumb_file_path = $thumb_path . $file_prefix . $size . '/' . $media['file_name'];
 		
 		return $thumb_file_path;
 	}
