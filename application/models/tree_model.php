@@ -99,7 +99,7 @@ class Tree_model extends Base_Model
 			$this->{$this->db_group}->select('article.*', false);
 			$this->{$this->db_group}->select('article_lang.title');
 			$this->{$this->db_group}->select('page_article.*');
-			$this->{$this->db_group}->select('article_type.id_type, article_type.type_flag');
+			$this->{$this->db_group}->select('article_type.id_type, article_type.type_flag, article_type.description as type_description');
 			$this->{$this->db_group}->join('page_article', 'page_article.id_article = article.id_article', 'inner');			
 			$this->{$this->db_group}->join('article_lang', 'article_lang.id_article = article.id_article', 'inner');			
 

@@ -43,7 +43,7 @@ ION.ItemManager = new Class({
 		this.setOptions(options);
 		this.container = $(this.options.container);
 		if (this.options.controller == false) this.options.controller = this.options.element;
-		
+
 		// Set parent and id_parent (for ordering)
 		if (options.parent_element && options.id_parent && options.parent_element !='')
 		{
@@ -111,7 +111,7 @@ ION.ItemManager = new Class({
 		{
 			var list = this.options.list;
 			if (!list) list = this.options.container;
-			
+
 			var self = this;
 
 			// Init the sortable 
@@ -144,17 +144,20 @@ ION.ItemManager = new Class({
 					self.sortItemList(serialized);
 				}			
 			});
-		
+
 			// Store the sortables in the container, for further access
 			this.container.store('sortables', this.sortables);
 		
 			// Store the first ordering after picture list load
 			this.container.store('sortableOrder', this.sortables.serialize(0,function (element, index) 
 			{
-				var rel = (element.getProperty('rel')).split(".");
-				var id = rel[0];
-				if (rel.length > 1) { id = rel[1]; }
-				return id;
+				if (element.id != '')
+				{
+					var rel = (element.getProperty('rel')).split(".");
+					var id = rel[0];
+					if (rel.length > 1) { id = rel[1]; }
+					return id;
+				}
 			}.bind(this)));
 		}
 	},

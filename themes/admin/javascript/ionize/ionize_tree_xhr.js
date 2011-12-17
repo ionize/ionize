@@ -27,7 +27,7 @@ ION.TreeXhr = new Class({
 		this.id_menu = id_menu;
 		
 		this.mainpanel = ION.mainpanel;
-
+		
 		// Array of itemManagers
 		this.itemManagers = {'page': new Array(), 'article': new Array()};
 		
@@ -181,11 +181,12 @@ ION.TreeXhr = new Class({
 		var online = (element.online == '1') ? 'online' : 'offline'; 
 		
 		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
+		var type_description = (typeOf(element.type_description) != 'null' && element.type_description != '') ? ' : ' + element.type_description : '';
 
 		if (title == '') title = element.name;
-
+		
 		var container = this.injectContainer(type, id_parent)
-
+		
 		var li = new Element('li').setProperty('id', type + '_' + flat_id).addClass(online).addClass(type + flat_id).setProperty('rel', rel);
 		li.store('loaded', false);
 		li.store('id_' + type, id);
@@ -199,7 +200,7 @@ ION.TreeXhr = new Class({
 		var link = this.span_Model.clone().addClass('title');
 		var a = this.title_Model.clone()
 					.addClass(online).addClass(type + flat_id).addClass('title')
-					.setProperty('rel', rel).setProperty('title', title).setProperty('data-type', type).setProperty('data-id', id)
+					.setProperty('rel', rel).setProperty('title', title + type_description).setProperty('data-type', type).setProperty('data-id', id)
 					.set('text', String.htmlspecialchars_decode(title));
 		link.adopt(a);
 		li.adopt(action, link);

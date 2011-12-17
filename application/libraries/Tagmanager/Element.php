@@ -32,7 +32,7 @@ class TagManager_Element extends TagManager
 		'elements' => 'tag_elements',
 		'elements:index' => 'tag_element_index',
 		'elements:count' => 'tag_element_count',
-		'elements:field' => 'tag_element_field',					// deprecated
+		'elements:field' => 'tag_element_field',
 		'elements:fields' => 'tag_element_fields',
 		'elements:attribute' => 'tag_element_attribute',
 		'elements:fields:attribute' => 'tag_element_fields_attribute'	
@@ -215,7 +215,20 @@ class TagManager_Element extends TagManager
 
 
 	/**
-	 * Returns ione field value
+	 * Returns one field value
+	 * 
+	 * @usage : 
+	 *
+	 *			<ion:elements type="my_element_name" [from="page:my_page" limit="5"]>
+	 *			    
+	 *			    <select>
+	 *			    	<!-- Loop through all the element's fields -->
+	 *			    	<ion:fields>
+	 *			    		<!-- Display the value of the field
+	 *			    		<option value="<ion:attribute name="content" />"><ion:attribute name="label" /></option>
+	 *			    	</ion:fields>
+	 *			    </select>
+	 *			</ion:elements>
 	 *
 	 */
 	public static function tag_element_fields_attribute($tag)
@@ -258,11 +271,29 @@ class TagManager_Element extends TagManager
 		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
 	}
 	
+	
+	/**
+	 * Returns the value of one element field
+	 *
+	 * @usage : 
+	 *
+	 *			<ion:elements type="my_element_name" [from="page:my_page" limit="5"]>
+	 *		
+	 *				<span class="date"><ion:field name="date" format="d" /></span> 
+	 *				<span class="month"><ion:field name="date" format="M" /></span>
+	 *
+	 *				<span class="location">
+	 *					<ion:field name="city"/>
+	 *					<small><ion:field name="location" /> | <ion:field name="country" /></small>
+	 *				</span>
+	 *
+	 *			</ion:elements>
+	 *
+	 *
+	 *
+	 */
 	public static function tag_element_field($tag)
 	{
-		return self::tag_element_fields_attribute($tag);
-
-	/*
 		// Wished element definition name
 		$field_name = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
 
@@ -300,7 +331,7 @@ class TagManager_Element extends TagManager
 			return '';
 		}
 		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
-	*/
+
 	}
 
 

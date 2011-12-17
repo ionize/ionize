@@ -2582,7 +2582,7 @@ class TagManager_Page extends TagManager
 		$subtag_open = (isset($tag->attr['subtag'])) ? '<' . $tag->attr['subtag'] . '>' : '';
 		$subtag_close = (isset($tag->attr['subtag'])) ? '</' . $tag->attr['subtag'] . '>' : '';
 		
-		$separator = (isset($tag->attr['separator']) ) ? htmlentities($tag->attr['separator']) : ' &raquo; ';
+		$separator = (isset($tag->attr['separator']) ) ? htmlentities(html_entity_decode($tag->attr['separator'])) : ' &raquo; ';
 
 		$starting_level = (isset($tag->attr['starting_level']) ) ? $tag->attr['starting_level'] : FALSE;
 

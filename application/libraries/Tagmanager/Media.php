@@ -380,7 +380,8 @@ class TagManager_Media extends TagManager
 			else if ($tag->getAttribute('size') !== FALSE && $media['type'] == 'picture')
 			{
 				$thumb_file_path = self::_get_thumb_file_path($tag, $media);
-
+				
+				// Create the thumb if it doesn't exists
 				if ( ! file_exists($thumb_file_path))
 				{
 					/*
@@ -396,6 +397,12 @@ class TagManager_Media extends TagManager
 					);
 					self::_create_thumb($media['path'], $thumb_file_path, $settings);
 				}
+				
+				// If no thumbs exists here, that means 
+				// 1. the original file is smaller than the asked thumb
+				// 2. There was a problem when creating the folder / thumb
+				if ( ! file_exists($thumb_file_path))
+					return self::_get_picture_url($tag, $media);
 
 				return self::_get_thumb_url($tag, $media);
 			}
@@ -666,6 +673,12 @@ class TagManager_Media extends TagManager
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		
 		return base_url() . Settings::get('files_path') . '/' . $thumb_folder . '/' . $thumb_path_segment . $file_prefix.$size . '/' . $media['file_name'];
+	}
+	
+	
+	private static function _get_picture_url($tag, $media)
+	{
+		return base_url() . $media['path'];
 	}
 	
 }
