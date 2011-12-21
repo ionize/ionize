@@ -954,62 +954,67 @@ class Article extends MY_admin
 
 		$this->template = array('parent' => 'article');
 
-		if ($context['link'] !='')		
-		{
-			$title = NULL;
-			
-			// Prep the Link
-			switch($context['link_type'])
+		// Check if index:link is set
+		if( isset($context['link']) ) {
+		
+			if ($context['link'] !='')		
 			{
-				case 'page' :
-					
-					$link = $this->page_model->get(array('id_page' => $context['link_id']), Settings::get_lang('default'));
-					
-					// Correct missing link
-					if ( empty($link) )
-					{
-						$this->_remove_link($id_page, $id_article);
-						break;
-					}
-					
-					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
-					break;
-					
-				case 'article' :
-					
-					$link_rel = explode('.', $context['link_id']);
-					$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
-					
-					// Correct missing link
-					if ( empty($link) )
-					{
-						$this->_remove_link($id_page, $id_article);
-						break;
-					}
-					
-					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
-					break;
+				$title = NULL;
 				
-				case 'external' :
+				// Prep the Link
+				switch($context['link_type'])
+				{
+					case 'page' :
+						
+						$link = $this->page_model->get(array('id_page' => $context['link_id']), Settings::get_lang('default'));
+						
+						// Correct missing link
+						if ( empty($link) )
+						{
+							$this->_remove_link($id_page, $id_article);
+							break;
+						}
+						
+						$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+						break;
+						
+					case 'article' :
+						
+						$link_rel = explode('.', $context['link_id']);
+						$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+						
+						// Correct missing link
+						if ( empty($link) )
+						{
+							$this->_remove_link($id_page, $id_article);
+							break;
+						}
+						
+						$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+						break;
 					
-					$link_rel = '';
-					$title = $context['link'];
-					break;
+					case 'external' :
+						
+						$link_rel = '';
+						$title = $context['link'];
+						break;
+				}
+				
+				if ( ! is_null($title))
+				{
+					$this->template = array(
+						'parent' => 'article',
+						'rel' => $id_page.'.'.$id_article,
+						'link_id' => $context['link_id'],
+						'link_type' => $context['link_type'],
+						'link' => $title
+					);
+				}
 			}
-			
-			if ( ! is_null($title))
-			{
-				$this->template = array(
-					'parent' => 'article',
-					'rel' => $id_page.'.'.$id_article,
-					'link_id' => $context['link_id'],
-					'link_type' => $context['link_type'],
-					'link' => $title
-				);
-			}
+	
+			$this->output('link');
 		}
-
-		$this->output('link');
+	// Check if index:link is set closing
 	}
 	
 
