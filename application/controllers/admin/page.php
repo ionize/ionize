@@ -561,7 +561,7 @@ class Page extends MY_admin
 
 		$this->template = array('parent' => 'page');
 
-		if ($page['link'] !='' )		
+		if ( ! empty($page['link']) )		
 		{
 			$title = NULL;
 			
