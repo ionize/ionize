@@ -273,30 +273,39 @@ class Setting extends MY_admin
 
 			$page = $this->page_model->get($id_page, Settings::get_lang('default'));
 		
-			$options = array(
-				CURLOPT_RETURNTRANSFER => true, // return web page
-				CURLOPT_HEADER => false, // don't return headers
-				CURLOPT_FOLLOWLOCATION => true, // follow redirects
-				CURLOPT_ENCODING => "", // handle all encodings
-				CURLOPT_USERAGENT => "ionize", // who am i
-				CURLOPT_AUTOREFERER => true, // set referer on redirect
-				CURLOPT_CONNECTTIMEOUT => 120, // timeout on connect
-				CURLOPT_TIMEOUT => 120, // timeout on response
-				CURLOPT_MAXREDIRS => 10, // stop after 10 redirects
-				CURLOPT_SSL_VERIFYHOST => 0, // don't verify ssl
-				CURLOPT_SSL_VERIFYPEER => false, //
-				CURLOPT_VERBOSE => 1 //
-			);
- 
-			$ch = curl_init(base_url().$page['name']);
-			curl_setopt_array($ch,$options);
-			$content = curl_exec($ch);
-			$err = curl_errno($ch);
-			$errmsg = curl_error($ch) ;
-			$header = curl_getinfo($ch);
-			curl_close($ch);
+			if (isset($page['name']))
+			{
+				// page details were returned
+				$options = array(
+					CURLOPT_RETURNTRANSFER => true, // return web page
+					CURLOPT_HEADER => false, // don't return headers
+					CURLOPT_FOLLOWLOCATION => true, // follow redirects
+					CURLOPT_ENCODING => "", // handle all encodings
+					CURLOPT_USERAGENT => "ionize", // who am i
+					CURLOPT_AUTOREFERER => true, // set referer on redirect
+					CURLOPT_CONNECTTIMEOUT => 120, // timeout on connect
+					CURLOPT_TIMEOUT => 120, // timeout on response
+					CURLOPT_MAXREDIRS => 10, // stop after 10 redirects
+					CURLOPT_SSL_VERIFYHOST => 0, // don't verify ssl
+					CURLOPT_SSL_VERIFYPEER => false, //
+					CURLOPT_VERBOSE => 1 //
+				);
 
-			write_file(FCPATH.'maintenance.html', $content);
+				$ch = curl_init(base_url().$page['name']);
+				curl_setopt_array($ch,$options);
+				$content = curl_exec($ch);
+				$err = curl_errno($ch);
+				$errmsg = curl_error($ch) ;
+				$header = curl_getinfo($ch);
+				curl_close($ch);
+
+				write_file(FCPATH.'maintenance.html', $content);
+			}
+			else
+			{
+				// no page details were returned
+				echo "ERROR MESSAGE - NOT SURE HOW IT SHOULD BE FORMATED AND TRANSLATED";
+			}
 		}
 		else
 		{
