@@ -48,6 +48,8 @@
 			  active smallint(1) NOT NULL DEFAULT '0',
 			  lang varchar(3) NOT NULL,
 			  path varchar(255) NOT NULL DEFAULT '',
+			  path_ids varchar(50),
+			  full_path_ids varchar(50),
 			  creation_date datetime NOT NULL,
 			  PRIMARY KEY (id_url),
 			  KEY idx_url_type (type),

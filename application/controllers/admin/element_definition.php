@@ -162,7 +162,8 @@ class Element_definition extends MY_Admin {
 
 		$definitions = $this->element_definition_model->get_definitions_from_parent($parent, $id_parent);
 
-		echo(json_encode(array_values($definitions)));
+		$this->xhr_output(array_values($definitions));
+		
 	}
 
 

@@ -199,6 +199,26 @@ class MY_Controller extends CI_Controller
 			}
 		}
 	}
+	
+	
+	/**
+	 * Outputs XHR data
+	 * If the passed data is an array or an object, it will converted to json.
+	 * else, the strig will be send.
+	 *
+	 * @param	Array	Optional. Array of data. will be converted into a JSON String
+	 *
+	 */
+	protected function xhr_output($data)
+	{
+		if (is_array($data) OR is_object($data))
+			$data = json_encode($data);
+		
+		echo($data);
+		
+		die();
+	}
+	
 } 
 // End MY_Controller
 

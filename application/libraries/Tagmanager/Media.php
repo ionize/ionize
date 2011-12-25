@@ -384,6 +384,9 @@ class TagManager_Media extends TagManager
 				// Create the thumb if it doesn't exists
 				if ( ! file_exists($thumb_file_path))
 				{
+					$ci =& get_instance();
+					$ci->load->library('medias');
+					
 					/*
 					 * Here : 
 					 * - Add support for thumb settings (store in DB) about :
@@ -395,7 +398,8 @@ class TagManager_Media extends TagManager
 						'square' => $tag->getAttribute('square'),
 						'size' => $tag->getAttribute('size')
 					);
-					self::_create_thumb($media['path'], $thumb_file_path, $settings);
+					$ci->medias->create_thumb($media['path'], $thumb_file_path, $settings);
+/* 					self::_create_thumb($media['path'], $thumb_file_path, $settings); */
 				}
 				
 				// If no thumbs exists here, that means 
@@ -511,6 +515,7 @@ class TagManager_Media extends TagManager
 
 
 
+/*
 	private function _create_thumb($source_path, $dest_path, $settings = array())
 	{
 		$CI =& get_instance();
@@ -606,15 +611,16 @@ class TagManager_Media extends TagManager
 				if ( ! @is_dir($next_folder))
 				{
 					@mkdir($next_folder, 0777);
-/*
-					if ( ! @mkdir($next_folder, 0777) )
-						throw new Exception(lang('ionize_exception_folder_creation').' : '.$next_folder);
-*/
+
+//					if ( ! @mkdir($next_folder, 0777) )
+//						throw new Exception(lang('ionize_exception_folder_creation').' : '.$next_folder);
+
 				}
 			}
 		}
 	}
 
+*/
 
 	// ------------------------------------------------------------------------
 

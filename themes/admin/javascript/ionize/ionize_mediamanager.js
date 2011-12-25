@@ -112,14 +112,14 @@ var IonizeMediaManager = new Class(
 		else
 		{
 			// Complete relative path to the media
-			var path =	url.replace(/\//g, "~");
+//			var path =	url.replace(/\//g, "~");
 
 			// Send the media to link
 			var xhr = new Request.JSON(
 			{
 				'url': this.adminUrl + 'media/add_media/' + type + '/' + this.parent + '/' + this.idParent, 
 				'method': 'post',
-				'data': 'path=' + path,
+				'data': 'path=' + url,
 				'onSuccess': this.successAddMedia.bind(this), 
 				'onFailure': this.failure.bind(this)
 			}).send();

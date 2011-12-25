@@ -310,46 +310,6 @@
 				</div>
 
 			<?php endif ;?>
-
-			<!-- Other info : Permanenet URL, etc. 
-			<?php if (!empty($id_article) && !empty($page['name'])) :?>
-
-			<h3 class="toggler"><?= lang('ionize_title_informations') ?></h3>
-			
-			<div class="element">
-
-				<dl class="small compact">
-					<dt><label for="permanent_url"><?= lang('ionize_label_permanent_url') ?></label></dt>
-					<dd>
-						
-						<div id="permanentUrlTab" class="mainTabs small gray">
-							<ul class="tab-menu">
-								<?php foreach(Settings::get_languages() as $language) :?>
-									<li><a><?= ucfirst($language['lang']) ?></a></li>
-								<?php endforeach ;?>
-							</ul>
-							<div class="clear"></div>
-						</div>
-						<div id="permanentUrlTabContent">
-						
-							<?php foreach(Settings::get_languages() as $language) :?>
-								<?php
-									$lang = (count(Settings::get_online_languages()) > 1) ? $language['lang'].'/' : '';
-								?>
-								<div class="tabcontent">
-									<textarea id="permanent_url_<?= $language['lang'] ?>" name="permanent_url_<?= $language['lang'] ?>" class="h40" style="border-top:none;width:142px;" onclick="javascript:this.select();" readonly="readonly"><?= base_url().$lang ?><?= $page['urls'][$language['lang']] ?>/<?= ${$language['lang']}['url'] ?></textarea>
-								</div>
-							<?php endforeach ;?>
-						
-						</div>
-						
-					</dd>
-				</dl>
-
-			</div>
-
-			<?php endif ;?>
-			-->
 			
 			
 			<!-- Modules PlaceHolder -->

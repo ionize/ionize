@@ -55,6 +55,7 @@ class Page extends MY_admin
 		$this->load->library('structure');
 
 		$this->load->helper('string_helper');
+		$this->load->helper('text_helper');
 	}
 
 
@@ -936,14 +937,14 @@ class Page extends MY_admin
 			// If lang URL exists, use it
 			if ( $this->input->post('url_'.$l['lang']) !== '' )
 			{
-				$urls[$l['lang']] = url_title($this->input->post('url_'.$l['lang']));
+				$urls[$l['lang']] = url_title(convert_accented_characters($this->input->post('url_'.$l['lang'])));
 			}
 			else
 			{
 				// Try to use the lang title
 				if ( $this->input->post('title_'.$l['lang']) !== '' )
 				{
-					$urls[$l['lang']] = url_title($this->input->post('title_'.$l['lang']));
+					$urls[$l['lang']] = url_title(convert_accented_characters($this->input->post('title_'.$l['lang'])));
 				}
 				// Fill with empty value if needed 
 				else if ($fill_empty_lang == TRUE)

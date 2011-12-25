@@ -62,7 +62,8 @@ class Cache
 	{
 		$this->cache_expiration = $cache_time;
 		
-		$this->cache_path = (config_item('cache_path') == '') ? FCPATH.'cache/' : config_item('cache_path');
+		// If the cache folder isn't set in config.php, let's use the default CI one
+		$this->cache_path = (config_item('cache_path') == '') ? APPPATH.'cache/' : config_item('cache_path');
 
 		self::$instance =& $this;
 	}

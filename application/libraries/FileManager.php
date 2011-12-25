@@ -1028,6 +1028,7 @@ class FileManager
 			'safe' => true,
 			'filter' => null,
 			'chmod' => 0777,
+			'cleanFileName' => TRUE,
 			'ViewIsAuthorized_cb' => null,
 			'DetailIsAuthorized_cb' => null,
 			'UploadIsAuthorized_cb' => null,
@@ -1918,6 +1919,7 @@ class FileManager
 			if (!empty($file_arg))
 			{
 				$filename = basename($file_arg);
+				$filename = FileManagerUtility::cleanUrl($filename, array(), '_');
 
 				if (!$this->IsHiddenNameAllowed($file_arg))
 				{
@@ -2354,7 +2356,13 @@ class FileManager
 
 			//if (!isset($fileinfo['extension']))
 			//  throw new FileManagerException('extension');
-
+			
+			// Creates safe file names
+			if ($this->options['cleanFileName'])
+			{
+				$filename = FileManagerUtility::cleanUrl($filename, array(), '.');
+			}
+			
 			// must transform here so alias/etc. expansions inside legal_url_path2file_path() get a chance:
 			$legal_url = $legal_dir_url . $filename;
 			$file = $this->legal_url_path2file_path($legal_url);
@@ -5049,6 +5057,25 @@ class FileManagerUtility
 
 		return false;
 	}
+
+
+	public static function cleanUrl($str, $replace=array(), $delimiter='-')
+	{
+		setlocale(LC_ALL, 'en_US.UTF8');
+
+		if( !empty($replace) ) {
+			$str = str_replace((array)$replace, ' ', $str);
+		}
+	
+		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+		$clean = preg_replace("/[^a-zA-Z0-9\/_.|+ -]/", '', $clean);
+		$clean = strtolower(trim($clean, '-. '));
+		$clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+		return $clean;
+	}
+
+
+
 
 	/**
 	 * Apply rawurlencode() to each of the elements of the given path

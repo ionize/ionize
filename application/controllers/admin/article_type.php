@@ -145,7 +145,7 @@ class Article_type extends MY_admin
 		}
 		
 		// Outputs the categories form dropdown
-		echo (form_dropdown('id_type', $types, $current_type, 'class="select"'));
+		$this->xhr_output(form_dropdown('id_type', $types, $current_type, 'class="select"'));
 	}
 
 	

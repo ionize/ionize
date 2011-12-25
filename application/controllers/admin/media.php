@@ -43,6 +43,7 @@ class Media extends MY_admin
 		$this->load->model('extend_field_model', '', true);
 
 		// Librairies
+		$this->load->library('medias');
 		$this->load->library('image_lib');
 
 		
@@ -169,7 +170,7 @@ class Media extends MY_admin
 				}
 				else
 				{
-					echo json_encode(array(
+					$this->xhr_output(array(
 						'status' => 0,
 						'error' => lang('ionize_session_expired')
 					));
@@ -280,7 +281,7 @@ class Media extends MY_admin
 		
 		$path = $picture['path'];
 
-		$size = @getimagesize(FCPATH.$path);
+		$size = @getimagesize(DOCPATH.$path);
 		$size = array
 		(
 			'width' => $size[0],
@@ -297,11 +298,9 @@ class Media extends MY_admin
 	
 	function crop()
 	{
-		$path = $this->input->post('path');
 		$coords = $this->input->post('coords');
 		$id_media = $this->input->post('id_media');
-		
-		$path = FCPATH.$path;
+		$path = DOCPATH.$this->input->post('path');
 		
 		// Get image dimension before crop
 		$dim = $this->get_image_dimensions($path);
@@ -378,11 +377,12 @@ class Media extends MY_admin
 		 * Adding base_url() to the media path gives the complete media path
 		 * Example : files/pictures/my_picture.jpg
 		 */
-		$path = $this->input->post('path');
+		$path = ltrim($this->input->post('path'), '/');
 		 
+/*
 		// Replace the path separators with '/'
 		$path = str_replace("~", "/", $path);
-		
+
 		// First, try to cut the complete base_url() path in the picture path
 		// ex : http://my_domain/ionize_install_path/ => ''
 		$path = str_replace(base_url(), '', $path);
@@ -401,6 +401,7 @@ class Media extends MY_admin
 		
 		// Clean the first '/'
 		$path = preg_replace('/^[\/]/', '', $path);
+*/
 
 		// DB Insert
 		$id = $this->media_model->insert_media($type, $path);
@@ -812,71 +813,57 @@ class Media extends MY_admin
 		$picture = $this->media_model->get($id);
 
 		// Path to the picture
-		if ($picture && file_exists($picture_path = FCPATH.$picture['path']))
+		if ($picture && file_exists($picture_path = DOCPATH.$picture['path']))
 		{
-			$thumb_path = FCPATH.Settings::get('files_path'). str_replace(Settings::get('files_path').'/', '/.thumbs/', $picture['base_path']);
+			$thumb_path = DOCPATH . Settings::get('files_path'). str_replace(Settings::get('files_path').'/', '/.thumbs/', $picture['base_path']);
+			
+			$return_thumb_path = $thumb_path.$picture['file_name'];
 
 			// If no thumb, try to create it
 			if ( ! file_exists($thumb_path.$picture['file_name']))
 			{
-				// Source picture size
-				$dim = $this->get_image_dimensions($picture_path);
-		
-				$setting = array(
-					'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ,
-					'sizeref' => ($dim['width'] > $dim['height']) ? 'width' : 'height',
+				$settings = array(
+					'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120,
 					'unsharp' => '0'
 				);
 				
 				try
 				{
-					// Create .thumbs directory is not exists
-					if( ! is_dir($thumb_path) )
-					{
-						if ( ! @mkdir($thumb_path, 0777, true) )
-						{
-							$mime = 'image/png';
-							$content = read_file(FCPATH.'themes/'.Settings::get('theme_admin').'/images/icon_48_no_folder_rights.png');
-			        		self::push_thumb($content, $mime);
-						}
-					}
-					
-					$this->_create_thumbnail($picture_path, $thumb_path.$picture['file_name'], $setting);
+					$return_thumb_path = $this->medias->create_thumb(DOCPATH . $picture['path'], $thumb_path.$picture['file_name'], $settings);
 				}
 				catch(Exception $e)
 				{
-					$mime = 'image/png';
-					$content = read_file(FCPATH.'themes/'.Settings::get('theme_admin').'/images/icon_48_no_writing_rights.png');
-			        self::push_thumb($content, $mime);
+					$return_thumb_path = FCPATH.'themes/'.Settings::get('theme_admin').'/images/icon_48_no_folder_rights.png';
 				}
 			}
 			
-			$mime = get_mime_by_extension($thumb_path.$picture['file_name']);
-			$content = read_file($thumb_path.$picture['file_name']);
-			self::push_thumb($content, $mime);
+			$mime = get_mime_by_extension($return_thumb_path);
+			$content = read_file($return_thumb_path);
+			
+			self::push_thumb($content, $mime, 0);
 		}
 		// No source file
 		else
 		{
 			$mime = 'image/png';
 			$content = read_file(FCPATH.'themes/'.Settings::get('theme_admin').'/images/icon_48_no_source_picture.png');
-
 			self::push_thumb($content, $mime, 0);
 		}
 	}
 
 
-	function push_thumb($content, $mime=null, $expire=null)
+	function push_thumb($content, $mime = NULL, $expire = NULL)
 	{
-        if ($expire === null) $expire = self::$DEFAULT_EXPIRE;
+        if ($expire === NULL) $expire = self::$DEFAULT_EXPIRE;
         $expires = gmdate("D, d M Y H:i:s", time() + $expire) . " GMT";
-
         $size = strlen($content);
 
         header("Content-Type: $mime");
         header("Expires: $expires");
         header("Cache-Control: max-age=$expire");
+/*
         header("Pragma: !invalid");
+*/
         header("Content-Length: $size");
 
         echo $content;
@@ -908,48 +895,12 @@ class Media extends MY_admin
 		$this->base_model->set_table('setting');
 		$thumbs = $this->base_model->get_list(array('name like' => 'thumb_%'));
 
-		// System thumbnail full path
-		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $picture['base_path'] );
-		$thumb_base_path = FCPATH . Settings::get('files_path') . '/.thumbs';
-		$thumb_path = $thumb_base_path . '/' .$thumb_path_segment;
-
-		// Create directory is not exists
-		if( ! is_dir($thumb_path) )
-		{
-			$path_segments = explode('/', $thumb_path_segment);
-			array_pop($path_segments);
-			
-			$next_folder = '';
-			
-			foreach($path_segments as $folder)
-			{
-				$next_folder .= '/' . $folder;
-				
-				if ( ! is_dir($thumb_base_path . $next_folder))
-				{
-					if ( ! @mkdir($thumb_base_path . $next_folder, 0777) )
-						throw new Exception(lang('ionize_exception_folder_creation').' : '.$thumb_path);
-				}
-			}
-		
-		}
-
-		// Source picture size
-		$dim = $this->get_image_dimensions(FCPATH.$picture['path']);
-
-		$setting = array(
-			'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ,
-			'sizeref' => ($dim['width'] > $dim['height']) ? 'width' : 'height',
-			'unsharp' => '0'
-		);
-		$this->_create_thumbnail(FCPATH.$picture['path'], $thumb_path. $picture['file_name'], $setting);		
-
-
 		// Create other thumbs
 		if ( ! empty($thumbs))
 		{
+			$picture_path = DOCPATH . $picture['path'];
 			// Check if source file exists
-			if ( ! is_file(FCPATH.$picture['path']) )
+			if ( ! is_file($picture_path) )
 			{
 				throw new Exception( lang('ionize_exception_no_source_file').' : '. $picture['file_name'] );						
 			}
@@ -961,28 +912,18 @@ class Media extends MY_admin
 				$settings = explode(",", $thumb['content']);
 				$setting = array(
 								'dir' =>		$thumb['name'],
-								'sizeref' => 	$settings[0],
+//								'sizeref' => 	$settings[0],
 								'size' => 		$settings[1],
 								'square' => 	$settings[2],
 								'unsharp' => 	$settings[3]
 							);
 				
-				// Create directory is not exists
-				if( ! is_dir(FCPATH.$picture['base_path'].$setting['dir']) )
-				{
-					// If MKDIR impossible : exception
-					if ( ! @mkdir(FCPATH.$picture['base_path'].$setting['dir'], 0777) )
-					{
-						throw new Exception(lang('ionize_exception_folder_creation').' : '.$setting['dir']);
-					}
-				}
-	
 				// Thumbnail creation
-				$thumb_path = FCPATH.$picture['base_path'].$setting['dir']."/".$picture['file_name'];
+				$thumb_path = DOCPATH . $picture['base_path'].$setting['dir']."/".$picture['file_name'];
 	
 				try
 				{
-					$this->_create_thumbnail(FCPATH.$picture['path'], $thumb_path, $setting);
+					$this->medias->create_thumb($picture_path, $thumb_path, $setting);
 				}
 				catch(Exception $e)
 				{
@@ -1004,6 +945,7 @@ class Media extends MY_admin
 	 * @param	array	Thumb settings array
 	 *
 	 */
+/*
 	function _create_thumbnail($source_image, $new_image, $settings)
 	{
 		// Get images data : sizes
@@ -1123,6 +1065,7 @@ class Media extends MY_admin
 			}
 		}
 	}
+*/
 
 
 	// ------------------------------------------------------------------------
@@ -1169,7 +1112,7 @@ class Media extends MY_admin
 	{
 		$tags = array_fill_keys(self::$MP3_ID3, '');
 	
-		if ( is_file(FCPATH.$path) )
+		if ( is_file(DOCPATH.$path) )
 		{
 			require_once(APPPATH.'libraries/getid3/getid3.php');
 
@@ -1177,7 +1120,7 @@ class Media extends MY_admin
 			$getID3 = new getID3;
 
 			// Analyze file and store returned data in $ThisFileInfo
-			$id3 = $getID3->analyze(FCPATH.$path);
+			$id3 = $getID3->analyze(DOCPATH.$path);
 
 			foreach(self::$MP3_ID3 as $index)
 			{
@@ -1206,7 +1149,7 @@ class Media extends MY_admin
 	
 	private function write_ID3($path, $tags)
 	{
-		if ( is_file(FCPATH.$path) )
+		if ( is_file(DOCPATH.$path) )
 		{
 			require_once(APPPATH.'libraries/getid3/getid3.php');
 
@@ -1236,7 +1179,7 @@ class Media extends MY_admin
 	
 	private function is($path, $ext)
 	{
-		if (pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == $ext)
+		if (pathinfo(DOCPATH.$path, PATHINFO_EXTENSION) == $ext)
 			return TRUE;
 			
 		return FALSE;

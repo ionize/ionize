@@ -150,7 +150,7 @@ class Category extends MY_admin
 			$current_categories = $this->category_model->get_joined_items_keys('category', $parent, $id_parent);
 		
 		// Outputs the categories form dropdown
-		echo (form_dropdown('categories[]', $categories, $current_categories, 'class="select" multiple="multiple"'));
+		$this->xhr_output(form_dropdown('categories[]', $categories, $current_categories, 'class="select" multiple="multiple"'));
 	}
 
 	
