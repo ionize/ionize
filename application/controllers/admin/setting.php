@@ -173,7 +173,7 @@ class Setting extends MY_admin
 	{
 		// Themes list
 		$themes = $themes_admin = array();
-		$handle = opendir(APPPATH.'../themes');
+		$handle = opendir(FCPATH.'themes');
 		if ($handle)
 		{
 			while ( false !== ($theme = readdir($handle)) )
@@ -185,6 +185,7 @@ class Setting extends MY_admin
 					$themes_admin[] = $theme;
 			}
 		}
+		
 		$this->template['themes'] = $themes;
 		$this->template['themes_admin'] = $themes_admin;
 
@@ -196,8 +197,10 @@ class Setting extends MY_admin
 
 		// Recorded views definitions 
 		$views = array();
-		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
-			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
+		$theme_path = FCPATH.'themes/'.Settings::get('theme');
+
+		if (is_file($theme_path.'/config/views.php'))
+			require_once($theme_path.'/config/views.php');
 
 		// Try to match each file with found config file
 		foreach($files as $file)
@@ -1243,7 +1246,7 @@ class Setting extends MY_admin
 	{
 		$views = array();
 		
-		$theme_path = APPPATH.'../themes/'.Settings::get('theme').'/views';
+		$theme_path = FCPATH.'themes/'.Settings::get('theme').'/views';
 
 		if (is_dir($theme_path))
 		{

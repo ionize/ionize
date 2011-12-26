@@ -86,8 +86,8 @@ class Page extends MY_admin
 
 		// Dropdowns Views : Get $view var from my_theme/config/views.php
 		$views = array();
-		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
-			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
+		if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
+			require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
 		
 		// Dropdown Page views
 		$datas = isset($views['page']) ? $views['page'] : array() ;
@@ -162,8 +162,8 @@ class Page extends MY_admin
 
 			// Dropdowns Views
 			$views = array();
-			if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
-				require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
+			if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
+				require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
 			
 			// Dropdown Page views
 			$datas = isset($views['page']) ? $views['page'] : array() ;
