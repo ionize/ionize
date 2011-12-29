@@ -283,5 +283,36 @@ class CI_Session  {
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 	}
 	
+	
+	/**
+	 * Switch to the session which has the given ID
+	 *
+	 * @param	string		Session ID to switch to
+	 * @param	string		Session name
+	 * @param	string		Session save handler
+	 *
+	 * @return	Array		The retrieved session data
+	 *
+	 */
+	function switchSession($session_id, $session_name = 'PHPSESSID', $session_save_handler = 'files')
+	{
+		# write and close current session
+		session_write_close();
+			
+		# grab old save handler, and switch to files
+		$old_session_save_handler = ini_get('session.save_handler');
+		ini_set('session.save_handler', $session_save_handler);
+			
+		# now we can switch the session over, capturing the old session name
+		$old_session_name = session_name($session_name);
+		session_id($session_id);
+		session_start();
+			
+		# get the desired session data
+		$session_data = $_SESSION;
+			
+		# now return the data we just retrieved
+		return $session_data;
+	}	
 }
 ?>

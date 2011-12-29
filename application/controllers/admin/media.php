@@ -143,7 +143,6 @@ class Media extends MY_admin
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object
 		// If no event is givven, it will call the "display" event
-		
 		if ($event != 'upload')
 		{
 			$this->Filemanagerwithaliassupport->fireEvent(!is_null($event) ? $event : null);
@@ -155,7 +154,7 @@ class Media extends MY_admin
 				// Flash mode (Multiple files) : PHPSESSID is send
 				if ( ! empty($_POST['PHPSESSID']))
 				{
-					session_id($_POST['PHPSESSID']);
+					$session_data = $this->session->switchSession($_POST['PHPSESSID']);
 				}
 				
 				// Get the original session tokken
@@ -163,7 +162,8 @@ class Media extends MY_admin
 				
 				// Get the sent tokken & compare
 				$sent_tokken = ( ! empty($_POST['uploadTokken'])) ? $_POST['uploadTokken'] : '';
-				
+
+				// Only upload if tokkens match
 				if ($tokken == $sent_tokken)
 				{
 					$this->Filemanagerwithaliassupport->fireEvent($event);
