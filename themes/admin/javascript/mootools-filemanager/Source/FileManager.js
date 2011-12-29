@@ -571,10 +571,10 @@ var FileManager = new Class({
 						this.toggleList();
 						break;
 
-					case 'esc':
-						e.stop();
-						this.hide();
-						break;
+					// case 'esc':
+					// 	e.stop();
+					// 	this.hide();
+					// 	break;
 					}
 				}
 			}).bind(this),
@@ -591,7 +591,7 @@ var FileManager = new Class({
 				case 'home':
 				case 'end':
 				case 'enter':
-				case 'delete':
+//				case 'delete':
 					e.preventDefault();
 					this.browserSelection(e.key);
 					break;
@@ -2600,7 +2600,9 @@ var FileManager = new Class({
 			// -> make draggable
 			$$(els[0]).makeDraggable({
 				// .droppables: the outer UL should be the first droppable as it should be considered as being 'below' the other droppables:
-				droppables: $$(this.droppables.include(this.browserScroll).combine(els[1])),
+				// droppables: $$(this.droppables.include(this.browserScroll).combine(els[1])),
+				// Corrected by Partikule : Ah ?
+				droppables: $$(els[1]),
 				//stopPropagation: true,
 				//preventDefault: true,
 
