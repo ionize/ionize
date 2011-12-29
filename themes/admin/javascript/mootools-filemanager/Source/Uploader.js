@@ -20,7 +20,7 @@ FileManager.implement({
 		resizeImages: true,
 		upload: true,
 		uploadAuthData: {},            // deprecated; use FileManager.propagateData instead!
-		uploadTimeLimit: 260,
+		uploadTimeLimit: 300,
 		uploadFileSizeMax: 2600 * 2600 * 25
 	},
 
@@ -36,14 +36,10 @@ FileManager.implement({
 
 				if (!this.options.upload || !this.upload) return;
 
-				if (this.upload.uploader) {
-					this.upload.uploader.fade(0).get('tween').chain(function() {
-						this.element.dispose();
-					});
-				}
-				if (this.swf) {
-					this.swf.box.dispose();
-				}
+				if (this.upload.uploader) this.upload.uploader.dispose();
+				if (this.upload.button)	this.upload.button.dispose();
+				if (this.upload.list)	this.upload.list.dispose();
+				if (this.swf.box) this.swf.box.dispose();
 			}
 		}
 	},
@@ -199,11 +195,11 @@ FileManager.implement({
 
 				// when all items in the list have been cancelled/removed, and the transmission of the files is done, i.e. after the onComplete has fired, destroy the list!
 				var cnt = self.upload.list.getElements('li').length;
-				if (cnt == 0 && this.has_completed)
+
+//				if (cnt == 0 && this.has_completed)
+				if (cnt == 0 )
 				{
-					self.upload.uploader.fade(0).get('tween').chain(function() {
-						self.upload.uploader.setStyle('display', 'none');
-					});
+					self.upload.uploader.setStyle('display', 'none');
 				}
 			},
 

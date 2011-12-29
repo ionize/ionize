@@ -137,8 +137,8 @@ class Media extends MY_admin
 			'filter' => $allowed_mimes
 		);
 
-		$this->load->library('Filemanager', $params);
-//		$this->load->library('Filemanagerwithaliassupport', $params);
+//		$this->load->library('Filemanager', $params);
+		$this->load->library('Filemanagerwithaliassupport', $params);
 
 
 		// Fires the Event called by FileManager.js
@@ -146,8 +146,8 @@ class Media extends MY_admin
 		// If no event is givven, it will call the "display" event
 		if ($event != 'upload')
 		{
-			$this->Filemanager->fireEvent(!is_null($event) ? $event : null);
-//			$this->Filemanagerwithaliassupport->fireEvent(!is_null($event) ? $event : null);
+//			$this->Filemanager->fireEvent(!is_null($event) ? $event : null);
+			$this->Filemanagerwithaliassupport->fireEvent(!is_null($event) ? $event : null);
 		}
 		else
 		{
@@ -166,8 +166,8 @@ class Media extends MY_admin
 				// Only upload if tokkens match
 				if ($tokken == $sent_tokken)
 				{
-					$this->Filemanager->fireEvent($event);
-//					$this->Filemanagerwithaliassupport->fireEvent($event);
+//					$this->Filemanager->fireEvent($event);
+					$this->Filemanagerwithaliassupport->fireEvent($event);
 				}
 				else
 				{

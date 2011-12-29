@@ -9,7 +9,7 @@ $pictureSize = NULL;
 
 if($type == 'picture')
 {
-	$pictureSize = @getimagesize(base_url().$path);
+	$pictureSize = @getimagesize(DOCPATH.$path);
 }
 
 ?>
@@ -90,7 +90,7 @@ if($type == 'picture')
 					<label><?=substr($thumb['name'], strpos($thumb['name'], '_') + 1) ?> : <?= $size ?></label>
 				</dt>
 				<dd>
-					<?php if (file_exists(FCPATH.$base_path.$thumb['name'].'/'.$file_name)) :?>
+					<?php if (file_exists(DOCPATH.$base_path.$thumb['name'].'/'.$file_name)) :?>
 						<img src="<?= theme_url() ?>images/icon_16_ok.png" />
 					<?php else: ?>
 						<img src="<?= theme_url() ?>images/icon_16_delete.png" />
@@ -111,8 +111,8 @@ if($type == 'picture')
 				<label><?= lang('ionize_label_file_size') ?></label>
 			</dt>
 			<dd>
-				<?php if (file_exists($path)) :?>
-					<?php echo sprintf('%01.2f', filesize($path) / (1024 )) ?> ko
+				<?php if (file_exists(DOCPATH . $path)) :?>
+					<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )) ?> ko
 				<?php else :?>
 					<?php echo(lang('ionize_exception_no_source_file')) ;?>
 				<?php endif ;?>
@@ -152,7 +152,9 @@ if($type == 'picture')
 				<?php foreach(Settings::get_languages() as $l) :?>
 					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
 				<?php endforeach ;?>
-				<li class="right"><a><span><?= lang('ionize_title_thumbnail'); ?></span></a></li>
+				<?php if($type == 'picture') :?>
+					<li class="right"><a><span><?= lang('ionize_title_thumbnail'); ?></span></a></li>
+				<?php endif ;?>
 			</ul>
 			<div class="clear"></div>
 		</div>
@@ -375,11 +377,10 @@ if($type == 'picture')
 			<?php endforeach ;?>
 
 			<!-- Thumbnails preferences -->
-			<div class="tabcontent<?= $UNIQ ?>">
+			<?php if($type == 'picture') :?>
+				<div class="tabcontent<?= $UNIQ ?>"></div>
+			<?php endif ;?>
 			
-			
-			</div>
-
 		
 		</div>
 		

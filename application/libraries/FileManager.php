@@ -2249,7 +2249,6 @@ class FileManager
 			$v_ex_code = 'nofile';
 
 			$file_size = (empty($_FILES['Filedata']['size']) ? 0 : $_FILES['Filedata']['size']);
-
 			$file_arg = $_FILES['Filedata']['name'];
 
 			$dir_arg = $this->getPOSTparam('directory');
