@@ -218,8 +218,9 @@ class Article_model extends Base_model
 		
 		// DB Query
 		$query = $this->{$this->db_group}->get($this->table);
+		// trace($this->{$this->db_group}->last_query());
 
-		if($query->num_rows() > 0)
+		if($query && $query->num_rows() > 0)
 		{
 			$data = $query->result_array();
 			$query->free_result();
@@ -761,10 +762,10 @@ class Article_model extends Base_model
 		
 	
 		// Dates
-		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on']) : '0000-00-00';
-		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off']) : '0000-00-00';
-		$data['comment_expire'] = ($data['comment_expire']) ? getMysqlDatetime($data['comment_expire']) : '0000-00-00';
-		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date']) : '0000-00-00';
+		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
+		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
+		$data['comment_expire'] = ($data['comment_expire']) ? getMysqlDatetime($data['comment_expire'], Settings::get('date_format')) : '0000-00-00';
+		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
 			
 
 		// Article saving
@@ -1604,6 +1605,12 @@ class Article_model extends Base_model
 	 */
 	private function _set_filter($filter)
 	{
+/*
+		if (preg_match_all("#(^([a-z0-9\s]+)(!=|=)([a-z0-9\/'\s!=]+))#i", $filter, $matches))
+		{
+			trace($matches);
+		}
+*/
 		$this->{$this->db_group}->where('('.$filter.')');
 	}
 

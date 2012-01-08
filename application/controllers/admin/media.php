@@ -118,10 +118,14 @@ class Media extends MY_admin
 		$allowed_mimes = implode(',', Settings::get_allowed_mimes());
 
 		$params = array (
-			'URLpath4FileManagedDirTree' => '/' . trim(Settings::get('files_path'), '/') . '/',
-			'FileSystemPath4SiteDocumentRoot' => DOCPATH,
+			'URLpath4FileManagedDirTree' => Settings::get('files_path') . '/',
+//			'URLpath4FileManagedDirTree' => '/' . trim(Settings::get('files_path'), '/') . '/',
+//			'FileSystemPath4SiteDocumentRoot' => DOCPATH,
 			'URLpath4assets' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
-			'URLpath4thumbnails' => '/' . trim(Settings::get('files_path'), '/') . '/.thumbs',
+//			'URLpath4thumbnails' => '/' . trim(Settings::get('files_path'), '/') . '/.thumbs',
+			'URLpath4thumbnails' => Settings::get('files_path') . '/.thumbs',
+			
+			
 			'upload' => TRUE,
 			'destroy' => TRUE,
 			'create' => TRUE,
@@ -139,7 +143,6 @@ class Media extends MY_admin
 
 //		$this->load->library('Filemanager', $params);
 		$this->load->library('Filemanagerwithaliassupport', $params);
-
 
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object

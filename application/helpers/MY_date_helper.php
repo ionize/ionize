@@ -78,7 +78,7 @@ if ( ! function_exists('getFrenchDatetime'))
  */
 if ( ! function_exists('getMysqlDatetime'))
 {
-	function getMysqlDatetime($inputDate) 
+	function getMysqlDatetime($inputDate, $inputFormat='dd.mm.yyyy') 
 	{
 		if ($inputDate !='')
 		{
@@ -92,8 +92,15 @@ if ( ! function_exists('getMysqlDatetime'))
 				$date = $inputDate;
 				$time = '00:00:00';
 			}
-
-			list($day, $month, $year) = preg_split("/[\/.-]/", $date);
+			
+			if ($inputFormat == '%d.%m.%Y')
+			{
+				list($day, $month, $year) = preg_split("/[\/.-]/", $date);
+			}
+			else if ($inputFormat == '%Y.%m.%d')
+			{
+				list($year, $month, $day) = preg_split("/[\/.-]/", $date);
+			}
 	
 			return "$year-$month-$day $time";
 		}

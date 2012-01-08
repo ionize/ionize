@@ -252,7 +252,7 @@ class Media_model extends Base_model
 	function save($data, $lang_data)
 	{
 		// Dates
-		$data['date'] = ($data['date']) ? getMysqlDatetime($data['date']) : '0000-00-00';
+		$data['date'] = ($data['date']) ? getMysqlDatetime($data['date'], Settings::get('date_format')) : '0000-00-00';
 		
 		// Media saving
 		return parent::save($data, $lang_data);

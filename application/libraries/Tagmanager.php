@@ -1065,17 +1065,21 @@ class TagManager
 	public static function tag_translation($tag)
 	{
 		// Kind of article : Get only the article linked to the given view
-		$term = (isset($tag->attr['item'] )) ? $tag->attr['item'] : FALSE ;
+		$term = $tag->getAttribute('item');
 		
 		if ($term === FALSE)
-			$term = (isset($tag->attr['term'] )) ? $tag->attr['term'] : FALSE ;
+			$term = $tag->getAttribute('term');
 		
 		if ($term !== FALSE)
 		{
-			// Return the auto-linked translation value
+			$autolink = ( ! isset($tag->attr['autolink'])) ? TRUE :  $tag->getAttribute('autolink');
+		
 			if (array_key_exists($term, self::$ci->lang->language) && self::$ci->lang->language[$term] != '') 
 			{
-				return auto_link(self::$ci->lang->language[$term], 'both', true);
+				if ( ! $autolink)
+					return self::wrap($tag, self::$ci->lang->language[$term]);
+
+				return self::wrap($tag, auto_link(self::$ci->lang->language[$term], 'both', true));
 			}
 			// Return the term index prefixed by "#" if no translation is found
 			else

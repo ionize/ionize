@@ -257,8 +257,10 @@ ION.append({
 	 * Originally using the Monkey Physics Datepicker.
 	 * Currently using this one : abidibo / mootools-datepicker
 	 *
+	 * @param	String		PHP Date format
+	 *
 	 */
-	initDatepicker: function()
+	initDatepicker: function(dateFormat)
 	{
 		/**
 		 * Implementation of https://github.com/arian/mootools-datepicker
@@ -291,19 +293,22 @@ ION.append({
 		}
 		ION.datePicker.attach($$('input.date'));
 		*/
+		
+		if (typeOf(dateFormat) == 'null') dateFormat = '%d.%m.%Y';
+		
 		if (ION.datePicker)
 		{
 			ION.datePicker.close();
 		}
 		else
 		{
-			var display_format = (date_format).replace(/%/g, '');
-			
+			var date_format = (dateFormat).replace(/%/g, '');
+
 			ION.datePicker = new DatePicker('.date', {
 				pickerClass: 'datepicker_dashboard', 
 				timePicker:true, 
-				format: display_format + ' H:i:s', 
-				inputOutputFormat:'d.m.Y H:i:s', 
+				format: date_format + ' H:i:s', 
+				inputOutputFormat: date_format + ' H:i:s', 
 				allowEmpty:true, 
 				useFadeInOut:false, 
 				positionOffset: {x:-30,y:0},

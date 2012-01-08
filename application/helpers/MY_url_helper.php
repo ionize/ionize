@@ -366,7 +366,9 @@ function auto_link($str, $type = 'both', $popup = FALSE)
 {
 	if ($type != 'email')
 	{
-		if (preg_match_all("#(^|\s|\(|>)((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches))
+		// (|\b) : Includes href="..." in auto_link, which isn't good
+		// if (preg_match_all("#(^|\s|\(|\b)((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches))
+		if (preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches))
 		{
 			$pop = ($popup == TRUE) ? " target=\"_blank\" " : "";
 

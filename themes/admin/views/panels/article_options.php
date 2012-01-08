@@ -396,7 +396,7 @@
 	 * Calendars init
 	 *
 	 */
-	ION.initDatepicker();
+	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
 
 
 	new TabSwapper({tabsContainer: 'permanentUrlTab', sectionsContainer: 'permanentUrlTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'permanentUrlTab' });

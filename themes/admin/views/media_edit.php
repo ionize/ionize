@@ -401,7 +401,7 @@ if($type == 'picture')
 	 * Calendars init
 	 *
 	 */
-	ION.initDatepicker();
+	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
 
 	/** 
 	 * Tabs init

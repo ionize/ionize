@@ -918,7 +918,7 @@
 	 * Calendars init
 	 *
 	 */
-	ION.initDatepicker();
+	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
 
 	/**
 	 * Add links on each parent page

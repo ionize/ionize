@@ -676,7 +676,6 @@ var FileManager = new Class({
 				if (rowicons)
 				{
 					rowicons.each(function(icon) {
-//						icon.set('tween', {duration: 'short'}).fade(0);
 						icon.hide();
 					});
 				}
@@ -692,12 +691,10 @@ var FileManager = new Class({
 					if (e.target == icon)
 					{
 						icon.show();
-//						icon.set('tween', {duration: 'short'}).fade(1);
 					}
 					else
 					{
 						icon.show();
-//						icon.set('tween', {duration: 'short'}).fade(0.5);
 					}
 				});
 			}
@@ -723,7 +720,6 @@ var FileManager = new Class({
 			if (rowicons)
 			{
 				rowicons.each(function(icon) {
-//					icon.set('tween', {duration: 'short'}).fade(0);
 					icon.hide();
 				});
 			}
@@ -1015,9 +1011,11 @@ var FileManager = new Class({
 		}
 
 		this.show_our_info_sections(false);
-		this.container.fade(0).setStyles({
-				display: 'block'
-			});
+		this.container.hide();
+
+		// this.container.fade(0).setStyles({
+		// 		display: 'block'
+		// 	});
 
 		window.addEvents({
 			'scroll': this.bound.scroll,
@@ -1031,7 +1029,7 @@ var FileManager = new Class({
 			document.addEvent('keydown', this.bound.keyboardInput);
 		else
 			document.addEvent('keypress', this.bound.keyboardInput);
-		this.container.fade(1);
+		this.container.show();
 
 		this.fitSizes();
 		this.fireEvent('show', [this]);
@@ -1084,6 +1082,8 @@ var FileManager = new Class({
 	show_our_info_sections: function(state) {
 		if (!state)
 		{
+			// this.info_head.hide();
+			// this.preview_area.hide();
 			this.info_head.fade(0).get('tween').chain(function() {
 				this.element.setStyle('display', 'none');
 			});
@@ -1093,6 +1093,8 @@ var FileManager = new Class({
 		}
 		else
 		{
+			// this.info_head.show()
+			// this.preview_area.show();
 			this.info_head.setStyle('display', 'block').fade(1);
 			this.preview_area.setStyle('display', 'block').fade(1);
 		}
@@ -1997,16 +1999,6 @@ var FileManager = new Class({
 		 * For very large directories, where the number of directories in there and/or the number of files is HUGE (> 200),
 		 * we DISABLE drag&drop functionality.
 		 *
-		 * Yes, we could have opted for the alternative, which is splitting up the .makeDraggable() activity in multiple
-		 * setTimeout(callback, 0) initiated chunks in order to spare the user the hassle of a 'slow script' dialog,
-		 * but in reality drag&drop is ludicrous in such an environment; currently we do not (yet) support autoscrolling
-		 * the list to enable drag&dropping it to elements further away that the current viewport can hold at the same time,
-		 * but drag&drop in a 500+ image carrying directory is resulting in a significant load of the browser anyway;
-		 * alternative means to move/copy files should be provided in such cases instead.
-		 *
-		 * Hence we run through the list here and abort / limit the drag&drop assignment process when the hardcoded number of
-		 * directories or files have been reached (support_DnD_for_this_dir).
-		 *
 		 * TODO: make these numbers 'auto adaptive' based on timing measurements: how long does it take to initialize
 		 *       a view on YOUR machine? --> adjust limits accordingly.
 		 */
@@ -2210,15 +2202,6 @@ var FileManager = new Class({
 		var duration = new Date().getTime() - starttime;
 		//this.diag.log(' + time duration @ fill_chunkwise_1(', startindex, '): ', duration);
 
-		/*
-		 * Note that the '< j.dirs.length' / '< j.files.length' checks MUST be kept around: one of the fastest ways to abort/cancel
-		 * the render is emptying the dirs[] + files[] array, as that would abort the loop on the '< j.dirs.length' / '< j.files.length'
-		 * condition.
-		 *
-		 * This, together with killing our delay-timer, is done when anyone calls reset_view_fill_store() to
-		 * abort this render pronto.
-		 */
-
 		// first loop: only render directories, when the indexes fit the range: 0 .. j.dirs.length-1
 		// Assume several directory aspects, such as no thumbnail hassle (it's one of two icons anyway, really!)
 		var el, editButtons;
@@ -2272,8 +2255,6 @@ var FileManager = new Class({
 			}
 
 			editButtons.each(function(v) {
-				//icons.push(
-//				Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
 				Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').hide().addEvent('mouseup', (function(e, target) {
 					// this = el, self = FM instance
 					e.preventDefault();
@@ -2283,11 +2264,10 @@ var FileManager = new Class({
 					self.tips.hide();
 					self[v](file);
 				}).bind(el)).inject(el,'top');
-				//);
 			}, this);
 
 			els[1].push(el);
-			//if (file.name === '..') el.fade(0.7);
+
 			el.inject(new Element('li',{'class':this.listType}).inject(this.browser)).store('parent', el.getParent());
 			//icons = $$(icons.map((function(icon) {
 			//  this.showFunctions(icon,icon,0.5,1);
@@ -2337,7 +2317,7 @@ var FileManager = new Class({
 				// As we now have two views into the directory, we have to fetch the thumbnails, even when we're in 'list' view: the direcory gallery will need them!
 				// Besides, fetching the thumbs and all right after we render the directory also makes these thumbs + metadata available for drag&drop gallery and
 				// 'select mode', so they don't always have to ask for the meta data when it is required there and then.
-				if (file.thumb48 || /* this.listType !== 'thumb' || */ !file.thumbs_deferred)
+				if (file.thumb48 || !file.thumbs_deferred)
 				{
 					// This is just a raw image
 					el = this.list_row_maker((this.listType === 'thumb' ? (file.thumb48 ? file.thumb48 : file.icon48) : file.icon), file);
@@ -2350,13 +2330,6 @@ var FileManager = new Class({
 				}
 				else    // thumbs_deferred...
 				{
-					// We must AJAX POST our propagateData, so we need to do the post and take the url to the
-					// thumbnail from the post results.
-					//
-					// The alternative here, taking only 1 round trip instead of 2, would have been to FORM POST
-					// to a tiny iframe, which is suitably sized to contain the generated thumbnail and the POST
-					// actually returning the binary image data, thus the iframe contents becoming the thumbnail image.
-
 					// update this one alongside the 'el':
 					dg_el = this.dir_gallery_item_maker(file.icon48, file);
 
@@ -2420,62 +2393,6 @@ var FileManager = new Class({
 					}).bind(this)(file, dg_el);
 				}
 
-				/*
-				 * WARNING: for some (to me) incomprehensible reason the old code which bound the event handlers to 'this==self' and which used the 'el' variable
-				 *          available here, does NOT WORK ANY MORE - tested in FF3.6. Turns out 'el' is pointing anywhere but where you want it by the time
-				 *          the event handler is executed.
-				 *
-				 *          The 'solution' which I found was to rely on the 'self' reference instead and bind to 'el'. If the one wouldn't work, the other shouldn't,
-				 *          but there you have it: this way around it works. FF3.6.14 :-(
-				 *
-				 * EDIT 2011/03/16: the problem started as soon as the old Array.each(function(...) {...}) by the chunked code which uses a for loop:
-				 *
-				 *              http://jibbering.com/faq/notes/closures/
-				 *
-				 *          as it says there:
-				 *
-				 *              A closure is formed when one of those inner functions is made accessible outside of the function in which it was
-				 *              contained, so that it may be executed after the outer function has returned. At which point it still has access to
-				 *              the local variables, parameters and inner function declarations of its outer function. Those local variables,
-				 *              parameter and function declarations (initially) >>>> have the values that they had when the outer function returned <<<<
-				 *              and may be interacted with by the inner function.
-				 *
-				 *          The >>>> <<<< emphasis is mine: in the .each() code, each el was a separate individual, while due to the for loop,
-				 *          the last 'el' to exist at all is the one created during the last round of the loop in that chunk. Which explains the
-				 *          observed behaviour before the fix: the file names associated with the 'el' element object were always pointing
-				 *          at some item further down the list, not necessarily the very last one, but always these references were 'grouped':
-				 *          multiple rows would produce the same filename.
-				 *
-				 * EXTRA: 2011/04/09: why you don't want to add this event for any draggable item!
-				 *
-				 *          It turns out that IE9 (IE6-8 untested as I write this) and Opera do NOT fire the 'click' event after the drag operation is
-				 *          'cancel'led, while other browsers fire both (Chrome/Safari/FF3).
-				 *          For the latter ones, the event handler sequence after a simple click on a draggable item is:
-				 *            - Drag::onBeforeStart
-				 *            - Drag::onCancel
-				 *            - 'click'
-				 *          while a tiny amount of dragging produces this sequence instead:
-				 *            - Drag::onBeforeStart
-				 *            - Drag::onStart
-				 *            - Drag::onDrop
-				 *            - 'click'
-				 *
-				 *          Meanwhile, Opera and IE9 do this:
-				 *            - Drag::onBeforeStart
-				 *            - Drag::onCancel
-				 *            - **NO** click event!
-				 *          while a tiny amount of dragging produces this sequence instead:
-				 *            - Drag::onBeforeStart
-				 *            - Drag::onStart
-				 *            - Drag::onDrop
-				 *            - **NO** click event!
-				 *
-				 *          which explains why the old implementation did not simply register this 'click' event handler and had 'revert' fake the 'click'
-				 *          event instead.
-				 *          HOWEVER, the old way, using revert() (now called revert_drag_n_drop()) was WAY too happy to hit the 'click' event handler. In
-				 *          fact, the only spot where such 'manually firing' was desirable is when the drag operation is CANCELLED. And only there!
-				 */
-
 				// 2011/04/09: only register the 'click' event when the element is NOT a draggable:
 				if (!support_DnD_for_this_dir)
 				{
@@ -2495,7 +2412,6 @@ var FileManager = new Class({
 				if (this.options.destroy) editButtons.push('destroy');
 
 				editButtons.each(function(v) {
-//					Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').set('opacity', 0).addEvent('mouseup', (function(e, target) {
 					Asset.image(this.URLpath4assets + 'Images/' + v + '.png', {title: this.language[v]}).addClass('browser-icon').hide().addEvent('mouseup', (function(e, target) {
 						// this = el, self = FM instance
 						e.preventDefault();
@@ -2603,8 +2519,6 @@ var FileManager = new Class({
 				// droppables: $$(this.droppables.include(this.browserScroll).combine(els[1])),
 				// Corrected by Partikule : Ah ?
 				droppables: $$(els[1]),
-				//stopPropagation: true,
-				//preventDefault: true,
 
 				// We position the element relative to its original position; this ensures the drag always works with arbitrary container.
 				onDrag: (function(el, e)
@@ -2642,66 +2556,15 @@ var FileManager = new Class({
 				}).bind(this),
 
 				onBeforeStart: (function(el) {
-					/*
-					 * you CANNOT use .container to get good x/y coords as in standalone mode that <div> has a bogus position.
-					 * Instead, we simply monitor the mouse coordinates from the very beginning and adjust the element positioning
-					 * based on the change of those.
-					 */
 //					var dpos = el.getPosition();
 					var dpos = self.container.getPosition();
 
-					/*
-					 * Because the (abs.pos.) dragged item is located under the mouse, dragging behaviour may be fine, but the 'mouseleave'
-					 * event for the this.browserScroll element AND the this.scroller behaviour are erratic.
-					 *
-					 * The reason is that when you move the mouse sufficiently, the mouse will temporarily move 'out' of the
-					 * area occupied by the high z-index-ed dragged element, then the dragged element is repositioned in onDrag
-					 * and consequently the browser will see a 'mouseleave' as the mouse now 'moves' from inside to outside the
-					 * surface occupied by the this.browserScroll OR ITS CHILDREN: the dragged element is not considered to be
-					 * 'inside' the this.browserScroll DOM tree:
-					 *    this.browserScroll.contains(el) == false
-					 * Hence we'll need to add an extra check in the 'mouseleave' handler above.
-					 *
-					 * If you do NOT move the mouse 'sufficiently', then the mouse will be considered to float over the absolute
-					 * positioned element which is being dragged and no 'mouseover' / 'mouseleave' will fire for this.browserScroll
-					 * as the dragged element is not considered to be contained by it.
-					 *
-					 * Furthermore, due to this apparent 'mouse moving out/into area over the dragged element', the 'mouseleave'
-					 * event for the this.scroller will fire quite quickly while you drag the mouse, causing the this.scroller
-					 * effect to STOP WORKING within the second you started it by starting to drag.
-					 * The only way out of THIS conundrum is to invoke the mouse movement checking code of the this.scroller
-					 * MANUALLY from our onDrag to ensure that the Scroller performs smoothly.
-					 *
-					 * So you want proof?
-					 * Remove the line in onDrag which says:
-					 *     	this.scroller.getCoords(e);
-					 * and disable the two mouseover/mouseleave handler code sections in the initializer where this.browserScroll is
-					 * set up:
-					 *		if (this.drag_is_active) {
-					 *			return;
-					 *		}
-					 * e.g. by commenting out the 'return' statement in there.
-					 *
-					 * Next, go drag&drop on a few machines and see some 'jumpy' and inconsistent behaviour.
-					 *
-					 * Next, add this line here to shift the dragged element down by 50 pixels so it's out of the way and NOT under
-					 * the mouse, then run the test again: see a smooth behaviour for the scroller and everything else:
-					 *		dpos.y += 50;
-					 *
-					 * Since we want that smooth behaviour while the dragged element remains under the mouse, we had to make the
-					 * changes listed above.
-					 */
 					//dpos.y += 50;
 
 					// fetch this Drag.Move instance:
 					var dragger = el.retrieve('dragger');
 					var mouse_start = dragger.mouse.start;	// contains the event.page.x/y values
-					/*
-					 * Right now, we can be sure the mouse is positioned over the element that MAY be dragged;
-					 * by the time we get the START event we can be sure it's already away and dragging, hence
-					 * any positioning done by then will be off by an arbitrary amount (depending on the dragging
-					 * speed of the user)
-					 */
+
 					dpos.mouse_start = mouse_start;
 					el.store('delta_pos', dpos);
 					this.diag.log('~~~ positions before start: ', dpos, this.container.getPosition(), el.getPosition(), this.browsercontainer.getPosition(), 1 * this.browserScroll.contains(el));

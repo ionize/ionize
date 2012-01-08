@@ -416,7 +416,7 @@ ION.initTinyEditors('.tab-element<?= $UNIQ ?>', '#elementTabContent<?= $UNIQ ?> 
  * Calendars init
  *
  */
-ION.initDatepicker();
+ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
 
 
 /** 

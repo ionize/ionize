@@ -77,9 +77,9 @@ class Page_model extends Base_model
 	function save($data, $lang_data)
 	{	
 		// Dates
-		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on']) : '0000-00-00';
-		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off']) : '0000-00-00';
-		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date']) : '0000-00-00';
+		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
+		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
+		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
 
 		// Creation date
 		if( ! $data['id_page'] OR $data['id_page'] == '' )

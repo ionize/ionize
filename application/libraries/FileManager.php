@@ -997,6 +997,8 @@ class FileManager
 	public function __construct($options)
 	{
 		$this->options = array_merge(array(
+			
+
 			/*
 			 * Note that all default paths as listed below are transformed to DocumentRoot-based paths
 			 * through the getRealPath() invocations further below:
@@ -1004,6 +1006,7 @@ class FileManager
 			'URLpath4FileManagedDirTree' => null,                                       // the root of the 'legal URI' directory tree, to be managed by MTFM. MUST be in the DocumentRoot tree.
 			'URLpath4assets' => null,                                                   // may sit outside options['URLpath4FileManagedDirTree'] but MUST be in the DocumentRoot tree
 			'URLpath4thumbnails' => null,                                               // may sit outside options['URLpath4FileManagedDirTree'] but MUST be in the DocumentRoot tree
+			
 			'thumbSmallSize' => 48,                                                     // Used for thumb48 creation
 			'thumbBigSize' => 250,                                                      // Used for thumb250 creation
 			'FileSystemPath4mimeTypesMapFile' => strtr(dirname(__FILE__), '\\', '/') . '/Filemanager/MimeTypes.ini',  // an absolute filesystem path anywhere; when relative, it will be assumed to be against options['URIpath4RequestScript']
@@ -1039,12 +1042,6 @@ class FileManager
 			'showHiddenFoldersAndFiles' => false      // Hide dot dirs/files ?
 		), (is_array($options) ? $options : array()));
 
-		// transform the obsoleted/deprecated options:
-		if (!empty($this->options['maxImageSize']) && $this->options['maxImageSize'] != 1024 && $this->options['maxImageDimension']['width'] == 1024 && $this->options['maxImageDimension']['height'] == 768)
-		{
-			$this->options['maxImageDimension'] = array('width' => $this->options['maxImageSize'], 'height' => $this->options['maxImageSize']);
-		}
-
 		$document_root_fspath = null;
 		if (!empty($this->options['FileSystemPath4SiteDocumentRoot']))
 		{
@@ -1063,7 +1060,6 @@ class FileManager
 		{
 			$this->options['URIpath4RequestScript'] = $this->getURIpath4RequestScript();
 		}
-
 		// only calculate the guestimated defaults when they are indeed required:
 		if ($this->options['URLpath4FileManagedDirTree'] == null || $this->options['URLpath4assets'] == null || $this->options['URLpath4thumbnails'] == null)
 		{
@@ -1105,6 +1101,7 @@ class FileManager
 		// now that the correct options['URLpath4FileManagedDirTree'] has been set up, go and check/clean the other paths in the options[]:
 
 		$this->options['URLpath4thumbnails'] = $this->rel2abs_url_path($this->options['URLpath4thumbnails'] . '/');
+		
 		$this->thumbnailCacheDir = $this->url_path2file_path($this->options['URLpath4thumbnails']);  // precalculate this value; safe as we can assume the entire cache dirtree maps 1:1 to filesystem.
 		$this->thumbnailCacheParentDir = $this->url_path2file_path(self::getParentDir($this->options['URLpath4thumbnails']));    // precalculate this value as well; used by scandir/view
 
@@ -1171,6 +1168,9 @@ class FileManager
 		$dir = $this->legal_url_path2file_path($legal_url);
 		$doubledot = null;
 		$coll = null;
+
+// log_message('error', '_onView : ' .  $dir);
+
 		if (is_dir($dir))
 		{
 			/*
@@ -1495,7 +1495,6 @@ class FileManager
 				$rv = $this->_onView($legal_url, $jserr, $mime_filter, $file_preselect_arg);
 
 				$this->sendHttpHeaders('Content-Type: application/json');
-
 				echo json_encode($rv);
 				return;
 			}
@@ -1526,6 +1525,7 @@ class FileManager
 		// when we fail here, it's pretty darn bad and nothing to it.
 		// just push the error JSON and go.
 		echo json_encode($jserr);
+		die();
 	}
 
 	/**
@@ -2359,7 +2359,7 @@ class FileManager
 			// Creates safe file names
 			if ($this->options['cleanFileName'])
 			{
-				$filename = FileManagerUtility::cleanUrl($filename, array(), '.');
+				$filename = FileManagerUtility::cleanUrl($filename, array(), '_');
 			}
 			
 			// must transform here so alias/etc. expansions inside legal_url_path2file_path() get a chance:
@@ -2761,7 +2761,7 @@ class FileManager
 
 		$url = $this->legal2abs_url_path($legal_url);
 		$filename = basename($url);
-
+log_message('error', '$url : ' . $url);
 		// must transform here so alias/etc. expansions inside url_path2file_path() get a chance:
 		$file = $this->url_path2file_path($url);
 
@@ -4189,6 +4189,7 @@ class FileManager
 
 		$largeDir = (!$smallIcon ? 'Large/' : '');
 		$url_path = $this->options['URLpath4assets'] . 'Images/Icons/' . $largeDir . $ext . '.png';
+//log_message('error', 'getIcon : ' . ($url_path));
 		$path = (is_file($this->url_path2file_path($url_path)))
 			? $url_path
 			: $this->options['URLpath4assets'] . 'Images/Icons/' . $largeDir . 'default.png';
@@ -4418,7 +4419,7 @@ class FileManager
 	 *
 	 * This default can be overridden by specifying the options['URIpath4RequestScript'] when invoking the constructor.
 	 */
-	public /* static */ function getURIpath4RequestScript()
+	public function getURIpath4RequestScript()
 	{
 		if (!empty($this->options['URIpath4RequestScript']))
 		{
@@ -4438,7 +4439,7 @@ class FileManager
 	 *
 	 * Note that the path is returned WITH a trailing slash '/'.
 	 */
-	public /* static */ function getRequestPath()
+	public function getRequestPath()
 	{
 		$path = self::getParentDir($this->getURIpath4RequestScript());
 		$path = self::enforceTrailingSlash($path);
@@ -4454,7 +4455,7 @@ class FileManager
 	 *
 	 * Throw an exception when the operation failed to produce a legal path.
 	 */
-	public /* static */ function normalize($path)
+	public function normalize($path)
 	{
 		$path = preg_replace('/(\\\|\/)+/', '/', $path);
 
@@ -4625,7 +4626,8 @@ class FileManager
 	public function url_path2file_path($url_path)
 	{
 		$url_path = $this->rel2abs_url_path($url_path);
-
+//log_message('error', 'url_path2file_path :' . $url_path);
+//log_message('error', 'FileSystemPath4SiteDocumentRoot :' . $this->options['FileSystemPath4SiteDocumentRoot']);
 		$path = $this->options['FileSystemPath4SiteDocumentRoot'] . $url_path;
 
 		return $path;
