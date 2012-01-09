@@ -78,6 +78,7 @@ class TagManager
 		'get' =>				'tag_get',
 		'php' =>				'tag_php',
 		'jslang' =>				'tag_jslang',
+		'browser' =>			'tag_browser',
 		
 		'global:get' =>			'tag_global_get'
 	);
@@ -1328,6 +1329,46 @@ class TagManager
 	public static function tag_time($tag)
 	{
 		return md5(time());
+	}	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Browser check
+	 * Checks the browser and display or not the tag content reagarding the result.
+	 * 
+	 * @param  	FTL_Binding		Tag
+	 *
+	 * @usage	<ion:browser method="is_browser|is_mobile|is_robot|..." value="Safari|Firefox..." is="true|false">
+	 *				...
+	 *			</ion:browser>
+	 *
+	 * @see		http://codeigniter.com/user_guide/libraries/user_agent.html
+	 *			for the method list
+	 *
+	 */
+	public static function tag_browser(FTL_Binding $tag)
+	{
+		self::$ci->load->library('user_agent');
+		
+		$method = $tag->getAttribute('method');
+		$value = $tag->getAttribute('value');
+		$is = $tag->getAttribute('is');
+
+		$result = NULL;
+		
+		if ( ! is_null($method))
+		{
+			if ( ! is_null($value))
+				$result = self::$ci->agent->{$method}($value);
+			else
+				$result = self::$ci->agent->{$method}();
+		}
+
+		if (is_bool($is) && $result == $is)
+			return $tag->expand();
 	}	
 
 
