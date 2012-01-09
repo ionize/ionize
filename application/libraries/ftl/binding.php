@@ -126,11 +126,15 @@ class FTL_Binding
 	
 	
 	/**
-	 * Returns one attribute or FALSE if not found
+	 * Returns one attribute value
+	 * returns NULL if the attribute isn't set.
 	 *
 	 */
 	public function getAttribute($attr)
 	{
+		if ( ! isset($this->attr[$attr]))
+			return NULL;
+		
 		if (isset($this->attr[$attr]) && strtolower($this->attr[$attr]) == 'true')
 			return TRUE;
 		

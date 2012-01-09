@@ -34,7 +34,7 @@ class Simpleform_Tags
 	*/
 	public static function simple_form(FTL_Binding $tag)
 	{   
-		return $tag->parse_as_nested(file_get_contents(MODPATH . 'Simpleform/views/form' . EXT));
+		return $tag->parse_as_nested(file_get_contents(MODPATH . 'Simpleform/views/form_view' . EXT));
 	}
 	
 	/**

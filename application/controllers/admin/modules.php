@@ -180,17 +180,25 @@ class Modules extends MY_admin
 				// Install module database tables
 				$db = $xml->database;
 				
-				if ($db !== FALSE)
+				if ( (bool)$xml->database == 1)
 				{
 					$errors = array();
+					
+					$db = $xml->database;
 					
 					$database_attr = $db->attributes();
 
 					// Install through a dedicated XML script
 					try {
+
 						if ( ! empty($database_attr['script']))
 						{
-							$errors = $this->install_database_script(strval($database_attr['script']), $module_folder);
+							$script = $database_attr['script'];
+						
+//							if (is_string($script))
+//								$errors = $this->install_database_script(strval($script), $module_folder);
+//							else
+								$errors = $this->install_database($db);				
 						}
 						else
 						{
@@ -476,7 +484,19 @@ class Modules extends MY_admin
 
 	// ------------------------------------------------------------------------
 	
-
+	
+	function xml_attribute($object, $attribute)
+	{
+		if(isset($object[$attribute]))
+			return (string) $object[$attribute];
+		
+		return NULL;
+	}
+	
+	
+	// ------------------------------------------------------------------------
+	
+	
 	/**
 	 * @deprecated
 	 *

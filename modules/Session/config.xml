@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<name>Session</name>
+	<description>Allows change on the fly / check of session vars</description>
+	<uri_segment>session</uri_segment>
+	<has_admin>false</has_admin>
+	<access_group>super-admins</access_group>
+</module>
