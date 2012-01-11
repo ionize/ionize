@@ -132,8 +132,10 @@ class FTL_Binding
 	 */
 	public function getAttribute($attr)
 	{
+/*
 		if ( ! isset($this->attr[$attr]))
 			return NULL;
+*/
 		
 		if (isset($this->attr[$attr]) && strtolower($this->attr[$attr]) == 'true')
 			return TRUE;

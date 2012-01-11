@@ -72,6 +72,7 @@ class TagManager
 		'meta_description' => 	'tag_meta_description',
 		'setting' => 			'tag_setting',
 		'time' =>				'tag_time',
+		'uniq' =>				'tag_uniq',
 		'if' =>					'tag_if',
 		'else' =>				'tag_else',
 		'set' =>				'tag_set',
@@ -1322,13 +1323,36 @@ class TagManager
 
 	/**
 	 * Returns the local meta keywords if found, otherwise the global ones.
+	 *
+	 * @DEPRECATED	Use "uniq" instead
 	 * 
+	 *
 	 * @param  FTL_Binding
 	 * @return string
 	 */
 	public static function tag_time($tag)
 	{
-		return md5(time());
+		return self::tag_uniq($tag);
+	}	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the local meta keywords if found, otherwise the global ones.
+	 * 
+	 * @param  FTL_Binding
+	 * @return string
+	 */
+	public static function tag_uniq($tag)
+	{
+		$type = $tag->getAttribute('type');
+		
+		if ( ! is_null($type) && $type == 'number')
+			return time();
+		else
+			return md5(time());
 	}	
 
 
@@ -1359,9 +1383,9 @@ class TagManager
 
 		$result = NULL;
 		
-		if ( ! is_null($method))
+		if ( $method)
 		{
-			if ( ! is_null($value))
+			if ( $value)
 				$result = self::$ci->agent->{$method}($value);
 			else
 				$result = self::$ci->agent->{$method}();

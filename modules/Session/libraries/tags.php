@@ -90,11 +90,11 @@ class Session_Tags extends TagManager
 
 		if ( self::is_allowed($var) == TRUE)
 		{
-			if ( ! is_null($is))
+			if ( $is !== FALSE)
 			{
 				if (self::$ci->session->userdata($var) == $is)
 				{
-					if ( ! is_null($set))
+					if ( $set != FALSE)
 						self::$ci->session->set_userdata($var, $set);
 					
 					return $tag->expand();

@@ -1480,15 +1480,15 @@ class Base_model extends CI_Model
 			{
 				// Get the extend fields details, filtered on parents ID
 				$this->{$this->db_group}->where(array('extend_field.parent'=>$parent));
-				$this->{$this->db_group}->where_in($ids);
+				$this->{$this->db_group}->where_in('id_parent', $ids);
 				$this->{$this->db_group}->join($this->extend_fields_table, $this->extend_field_table.'.id_'.$this->extend_field_table.' = ' .$this->extend_fields_table.'.id_'.$this->extend_field_table, 'inner');			
 	
 				$query = $this->{$this->db_group}->get($this->extend_field_table);
-	
+
 				$extend_fields = array();
 				if ( $query->num_rows() > 0)
 					$extend_fields = $query->result_array();
-				
+
 				// Filter the result by lang : Only returns the not translated data and the given language translated data
 				// $result = array_filter($result,  create_function('$row','return ($row["lang"] == "'. $lang .'" || $row["lang"] == "" );'));
 				$filtered_result = array();
