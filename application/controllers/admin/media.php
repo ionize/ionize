@@ -383,13 +383,6 @@ class Media extends MY_admin
 		 */
 		$path = ltrim($this->input->post('path'), '/');
 		 
-/*
-		// Replace the path separators with '/'
-		$path = str_replace("~", "/", $path);
-
-		// First, try to cut the complete base_url() path in the picture path
-		// ex : http://my_domain/ionize_install_path/ => ''
-		$path = str_replace(base_url(), '', $path);
 		
 		// If not protocol prefix, the base URL has to be cut
 		$host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
@@ -405,7 +398,6 @@ class Media extends MY_admin
 		
 		// Clean the first '/'
 		$path = preg_replace('/^[\/]/', '', $path);
-*/
 
 		// DB Insert
 		$id = $this->media_model->insert_media($type, $path);
@@ -420,7 +412,6 @@ class Media extends MY_admin
 			catch (Exception $e)
 			{
 				$this->error($e->getMessage());
-
 				return;
 			}
 		}
