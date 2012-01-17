@@ -719,17 +719,17 @@ table.list div.content ul{
 
 /* Gray version */
 .mainTabs.gray{
-	background: url(../images/tabs_bg.gif) 0 0;
+	background: url(../images/tabs_bg.gif) repeat-x 0 0;
 }
 .mainTabs.gray .tab-menu li,
 .mainTabs.gray .tab-menu li.selected,
 .mainTabs.gray .tab-menu li a,
 .mainTabs.gray .tab-menu li.selected a {
-	background-image: url(../images/tabs_content_gray.gif)	;
+	background: url(../images/tabs_content_gray.gif) repeat-x;
 }
 /* Gray version */
 .mainTabs.transparent {
-	background: url(../images/tabs_bg.gif) 0 0;
+	background: url(../images/tabs_bg.gif) repeat-x 0 0;
 }
 .mainTabs.transparent .tab-menu li,
 .mainTabs.transparent .tab-menu li.selected,
