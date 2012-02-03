@@ -48,6 +48,9 @@ class TagManager_Page extends TagManager
 		
 		
 		// Page
+/*
+		'page' => 				'tag_page',
+*/
 		'id_page' => 			'tag_page_id',
 		'page:name' => 			'tag_page_name',
 		'page:url' => 			'tag_page_url',
@@ -479,6 +482,7 @@ class TagManager_Page extends TagManager
 		// Use this view for each article if more than one article
 		$list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
 
+		$type = ( isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
 
 		// Number of article limiter
 		$num = (isset($tag->attr['limit'])) ? self::get_attribute($tag, 'limit') : 0 ;
@@ -510,30 +514,22 @@ class TagManager_Page extends TagManager
 		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
 		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 
-		// Order. Default order : ordering ASC
-		$order_by = (isset($tag->attr['order_by']) && $tag->attr['order_by'] != '') ? $tag->attr['order_by'] : 'ordering ASC';
-
 		/*
 		 * Preparing WHERE on articles
 		 * From where do we get the article : from a page, from the parent page or from the all website ?
 		 *
 		 */
-		$where = array(
-			'order_by' => $order_by
-		);
+		// Order. Default order : ordering ASC
+		$order_by = (isset($tag->attr['order_by']) && $tag->attr['order_by'] != '') ? $tag->attr['order_by'] : 'ordering ASC';
+		$where = array('order_by' => $order_by);
 
 		// Add type to the where array
-		if ( isset ($tag->attr['type']) )
+		if ($type !== FALSE)
 		{
-			// Case of empty type declared
-			if ($tag->attr['type'] == '')
-			{
+			if ($type == '')
 				$where['article_type.type'] = 'NULL';
-			}
 			else
-			{
-				$where['article_type.type'] = $tag->attr['type'];
-			}
+				$where['article_type.type'] = $type;
 		}
 
 		// If a page name is set, returns only articles from this page
@@ -584,7 +580,7 @@ class TagManager_Page extends TagManager
 		 *
 		 */
 		// If a special URI exists, get the articles from it.
-		if ($special_uri !== FALSE && array_key_exists($special_uri, $uri_config) && $from_page === FALSE)
+		if ($special_uri !== FALSE && array_key_exists($special_uri, $uri_config) && $from_page === FALSE && $type === FALSE)
 		{
 			if (method_exists(__CLASS__, 'get_articles_from_'.$uri_config[$special_uri]))
 			{
@@ -592,7 +588,7 @@ class TagManager_Page extends TagManager
 			}
 		}
 		// This case is very special : getting one article through his name in the URL
-		else if ($special_uri !== FALSE && !array_key_exists($special_uri, $uri_config) && $from_page == FALSE && $scope == FALSE)
+		else if ($special_uri !== FALSE && !array_key_exists($special_uri, $uri_config) && $from_page == FALSE && $scope == FALSE && $type === FALSE)
 		{
 			$articles = self::get_articles_from_one_article($tag, $where, $filter);
 			
@@ -1338,7 +1334,7 @@ class TagManager_Page extends TagManager
 	 * Returns the page absolute URL
 	 *
 	 */
-	public function tag_absolute_url($tag)
+	public static function tag_absolute_url($tag)
 	{
 		return $tag->locals->page['absolute_url'];
 	}
@@ -1526,7 +1522,44 @@ class TagManager_Page extends TagManager
 	 * Page tags
 	 * 
 	 * 
-	 */	
+	 */
+/*
+    public static function tag_page($tag)    
+    {
+		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
+		
+		$page = $tag->locals->page;
+		
+        // Is the asked title from another page ?
+        $from = (isset($tag->attr['from'])) ? $tag->attr['from'] : FALSE ;
+
+        if ($from == 'parent')
+        {
+            $up = (isset($tag->attr['up'])) ? $tag->attr['up'] : 1 ;
+            
+            // Get the Breadcrumbs array
+            $breacrumbs = self::get_breadcrumb_array($tag->locals->page, $tag->locals->pages, Settings::get_lang() );
+            
+            // Filter appearing pages
+            $breacrumbs = array_values(array_filter($breacrumbs, array(__CLASS__, '_filter_appearing_pages')));
+            
+            // Reverse the breadcrumbs array
+            $breacrumbs = array_reverse($breacrumbs);
+            
+            if ( ! empty($breacrumbs[$up]))
+            {
+ 				$page = $breacrumbs[$up];
+            }
+        }
+
+        if ( ! is_null($field))
+        	return self::wrap($tag, $page[$field]);
+        
+        return '';
+
+	}
+*/
+	
 	public static function tag_page_id($tag) { return self::wrap($tag, $tag->locals->page['id_page']); }
 	public static function tag_page_name($tag) { return self::wrap($tag, $tag->locals->page['name']); }
     public static function tag_page_url($tag)	{ return self::wrap($tag, $tag->locals->page['url']); }
@@ -1747,7 +1780,8 @@ class TagManager_Page extends TagManager
 // Correct this				
 				if (!empty($tag->attr['active_class']))
 				{
-					if ($uri_last_part == $article['url'])
+					$article_url = array_pop(explode('/', $article['url']));
+					if ($uri_last_part == $article_url)
 					{
 						$articles[$key]['active_class'] = $tag->attr['active_class'];
 					}

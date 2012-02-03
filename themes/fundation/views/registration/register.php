@@ -1,0 +1,2 @@
+
+<ion:usermanager request="register" />

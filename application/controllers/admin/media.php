@@ -456,7 +456,12 @@ class Media extends MY_admin
 		$parent = $this->input->post('parent');
 		$id_parent = $this->input->post('id_parent');
 
-		if ($path != '')
+		$pattern = "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i";
+		preg_match($pattern, $path, $link);
+		if (empty($link[0])) $path = FALSE;
+		else $path = $link[0];			
+
+		if ($path != FALSE)
 		{
 			// DB Insert
 			$id = $this->media_model->insert_media($type, $path);

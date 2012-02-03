@@ -582,30 +582,28 @@
 							<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['title'] ?>"/>
 						</dd>
 					</dl>
-						<!-- Online -->
-						<?php if(count(Settings::get_languages()) > 1) :?>
-						
-							<dl>
-								<dt>
-									<label for="online_<?= $lang ?>" title="<?= lang('ionize_help_article_content_online') ?>"><?= lang('ionize_label_article_content_online') ?></label>
-								</dt>
-								<dd>
-									<input id="online_<?= $lang ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?= $lang ?>" class="inputcheckbox" type="checkbox" value="1"/>
-								</dd>
-							</dl>
-						
-						<?php else :?>
-						
-							<input id="online_<?= $lang ?>" name="online_<?= $lang ?>" type="hidden" value="1"/>
-						
-						<?php endif ;?>
+					<!-- Online -->
+					<?php if(count(Settings::get_languages()) > 1) :?>
+					
+						<dl>
+							<dt>
+								<label for="online_<?= $lang ?>" title="<?= lang('ionize_help_article_content_online') ?>"><?= lang('ionize_label_article_content_online') ?></label>
+							</dt>
+							<dd>
+								<input id="online_<?= $lang ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?= $lang ?>" class="inputcheckbox" type="checkbox" value="1"/>
+							</dd>
+						</dl>
+					
+					<?php else :?>
+					
+						<input id="online_<?= $lang ?>" name="online_<?= $lang ?>" type="hidden" value="1"/>
+					
+					<?php endif ;?>
 
 					<!-- Toggler : More : SEO, Online.. -->
+<!--
 					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_title_seo') ?></h3>
-				
-					<div class="element element-<?= $lang ?>">
-
-
+-->
 						<!-- sub title -->
 						<dl>
 							<dt>
@@ -637,8 +635,7 @@
 								<input id="meta_title_<?= $lang ?>" name="meta_title_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['meta_title'] ?>"/>
 							</dd>
 						</dl>
-						
-					</div> <!-- /element -->				
+				
 
 	
 					<!-- extend fields goes here... -->
@@ -833,7 +830,7 @@
 							<label for="add_video"><?= lang('ionize_label_add_video') ?></label>
 						</dt>
 						<dd>
-							<input id="addVideo" name="addVideo" class="inputtext w300 left mr5" type="text" value=""/>
+							<textarea id="addVideo" name="addVideo" class="inputtext w300 left mr5" type="text"></textarea>
 							<button id="btnAddVideo" class="left light-button plus"><?= lang('ionize_button_add_video') ?></button>
 						</dd>
 					</dl>

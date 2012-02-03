@@ -73,7 +73,7 @@ if($type == 'picture')
 	<!-- Picture file -->
 	<?php if($type == 'picture') :?>
 
-		<h3><?= lang('ionize_title_thumbs_status') ?></h3>
+		<h3><?= lang('ionize_title_informations') ?></h3>
 		
 		<!-- Thumbs status -->
 		<dl class="small">
@@ -127,8 +127,18 @@ if($type == 'picture')
 			</dd>		
 		
 		<?php endif ;?>
+	</dl>
+	<dl class="small">
+		<dt>
+			<label><?= lang('ionize_label_file_path') ?></label>
+		</dt>
+		<dd>
+			<?php echo auto_link($path, 'both', true) ;?>
+
+		</dd>
 	
 	</dl>
+
 	
 </div>
 
@@ -401,7 +411,7 @@ if($type == 'picture')
 	 * Calendars init
 	 *
 	 */
-	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
+	ION.initDatepicker();
 
 	/** 
 	 * Tabs init

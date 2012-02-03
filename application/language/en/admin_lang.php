@@ -754,6 +754,7 @@ $lang['ionize_title_details'] = 'Details';
 $lang['ionize_title_thumbnail'] = 'Thumbnail';
 
 $lang['ionize_label_file_size'] = 'File size';
+$lang['ionize_label_file_path'] = 'Path';
 $lang['ionize_label_reload_picture_list'] = 'Reload list';
 $lang['ionize_message_no_picture'] = 'No image';
 $lang['ionize_message_no_music'] = 'No audio file';

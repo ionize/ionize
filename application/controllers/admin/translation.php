@@ -29,6 +29,7 @@ class Translation extends MY_admin
 
 	private $reg_keys = array(
 		'% term=\"([- \w:]+?)\" *\/>%',
+		'% item=\"([- \w:]+?)\" *\/>%',
 		'% Lang.get\(([- \w:\']+?)\)%'
 	);
 

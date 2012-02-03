@@ -371,13 +371,13 @@ class TagManager_Media extends TagManager
 		if ( ! empty($media))
 		{
 			// Compatibility with older version of Ionize
-			if ($tag->getAttribute('folder'))
+			if ( ! is_null($tag->getAttribute('folder')))
 			{
 				$folder = 'thumb_' . $tag->getAttribute('folder');
 				
 				return base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
 			}
-			else if ($tag->getAttribute('size') !== FALSE && $media['type'] == 'picture')
+			else if ($tag->getAttribute('size') !== NULL && $media['type'] == 'picture')
 			{
 				$thumb_file_path = self::_get_thumb_file_path($tag, $media);
 
@@ -394,12 +394,11 @@ class TagManager_Media extends TagManager
 					 *
 					 */
 					$settings = array(
-						'unsharpmask' => $tag->getAttribute('unsharp') ? '1' : '0',
+						'unsharpmask' => ( ! is_null($tag->getAttribute('unsharp'))) ? '1' : '0',
 						'square' => $tag->getAttribute('square'),
 						'size' => $tag->getAttribute('size')
 					);
 					$ci->medias->create_thumb($media['path'], $thumb_file_path, $settings);
-/* 					self::_create_thumb($media['path'], $thumb_file_path, $settings); */
 				}
 				
 				// If no thumbs exists here, that means 

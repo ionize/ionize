@@ -1,0 +1,49 @@
+/* Yahoo widget CSS
+ * Copyright Yahoo! Inc.
+ * http://weather.yahoo.com/forecast/
+ *
+ */
+
+#yw-forecast {
+	height:130px;
+	position:relative;
+	width:250px;
+	overflow: auto;
+}
+
+#yw-forecast .forecast-temp {
+	min-width:200px;
+	position:absolute;
+	top:45px;
+	left:40px;
+	width:200px;
+	height:80px;
+}
+
+#yw-forecast .forecast-temp h3 {
+	color:#FFFFFF;
+	float:right;
+	font-size:200%;
+	font-weight:bold;
+	border: none;
+	padding:5px 20px 2px 0;
+	margin:0;
+	text-shadow:0 -1px 1px #315895;
+}
+
+#yw-forecast .forecast-temp p {
+	clear:right;
+	color:#FFFFFF;
+	font-size:10px;
+	padding-right:17px;
+	text-align:right;
+	text-shadow:0 -1px 1px #315895;
+}
+#yw-forecast .forecast-icon {
+	background-repeat:no-repeat;
+	height:130px;
+	left:0px;
+	position:absolute;
+	top:0;
+	width:250px;
+}

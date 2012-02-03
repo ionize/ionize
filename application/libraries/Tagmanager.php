@@ -1069,10 +1069,10 @@ class TagManager
 		// Kind of article : Get only the article linked to the given view
 		$term = $tag->getAttribute('item');
 		
-		if ($term === FALSE)
+		if ($term === NULL)
 			$term = $tag->getAttribute('term');
 		
-		if ($term !== FALSE)
+		if ($term !== NULL)
 		{
 			$autolink = ( ! isset($tag->attr['autolink'])) ? TRUE :  $tag->getAttribute('autolink');
 		
@@ -1383,9 +1383,9 @@ class TagManager
 
 		$result = NULL;
 		
-		if ( $method)
+		if ( ! is_null($method))
 		{
-			if ( $value)
+			if ( ! is_null($value))
 				$result = self::$ci->agent->{$method}($value);
 			else
 				$result = self::$ci->agent->{$method}();

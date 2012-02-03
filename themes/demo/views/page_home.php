@@ -108,7 +108,7 @@
 	<h2 class="title"><ion:subtitle /></h2>
 	
 	<!-- Home page articles
-		 Loop into articles without linked view : Article's fields are directly displayed
+		 Loop into articles without "type"
 	-->
 	<ion:articles limit="3" type="">
 
