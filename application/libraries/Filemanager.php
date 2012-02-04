@@ -1,6 +1,6 @@
 <?php
 /*
- * Script: FileManager.php
+ * Script: Filemanager.php
  *   MooTools FileManager - Backend for the FileManager Script
  *
  * Authors:
