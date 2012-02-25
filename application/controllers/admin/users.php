@@ -188,7 +188,12 @@ class Users extends MY_admin
 						'join_date' =>			$this->input->post('join_date'),
 						'salt' =>			$this->input->post('salt')
 					);
-
+			
+			if ($this->_user_with_same_email_exists($this->input->post('email'), $id_user))
+			{
+				$this->error(lang('ionize_message_user_exists'));
+			}
+			
 			if (($this->input->post('password') != '' && $this->input->post('password2') != '') &&
 				($this->input->post('password') == $this->input->post('password2'))	)
 			{
@@ -226,6 +231,11 @@ class Users extends MY_admin
 			($this->input->post('password') == $this->input->post('password2'))	
 		)
 		{
+			if ($this->_user_with_same_email_exists($this->input->post('email')))
+			{
+				$this->error(lang('ionize_message_user_exists'));
+			}
+			
 			// Insert array
 			$data = array(
 						'id_group' =>		$this->input->post('id_group'),
@@ -238,6 +248,7 @@ class Users extends MY_admin
 					);
 			
 			$data['password'] = $this->connect->encrypt($data['password'], $data);
+			
 			
 			// Save new user only if it not exists
 			if ( ! $this->base_model->exists(array('username' => $data['username'])))
@@ -340,6 +351,34 @@ class Users extends MY_admin
 
 	}
 
+
+	// ------------------------------------------------------------------------
+	
+	/**
+	 * Checks if another user has the same email
+	 *
+	 * @param	Current user ID
+	 * @param	Email to find
+	 *
+	 * @return	TRUE if another user is found, FALSE if not
+	 */
+	private function _user_with_same_email_exists($email, $id_user = NULL)
+	{
+		$user = $this->connect->model->find_user(array('email' => $email));
+		
+		if ( ! is_null($id_user))
+		{
+			if ( ! empty($user) && $user['id_user'] != $id_user)
+				return TRUE;
+		}
+		else
+		{
+			if ( ! empty($user))
+				return TRUE;
+		}
+		return FALSE;
+	}
+	
 
 	// ------------------------------------------------------------------------
 

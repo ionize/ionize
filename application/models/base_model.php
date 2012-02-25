@@ -367,6 +367,16 @@ class Base_model extends CI_Model
 			}
 		}
 
+		if (isset($where['where_in']))
+		{
+			foreach($where['where_in'] as $key => $value)
+			{
+				$this->{$this->db_group}->where_in($key, $value);
+			}
+			unset($where['where_in']);
+		}
+
+
 		if ( !empty ($where) )
 		{
 			foreach($where as $cond => $value)

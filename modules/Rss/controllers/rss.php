@@ -53,7 +53,7 @@ class Rss extends Base_Controller
 	*/
 	function feed($lang = FALSE)
 	{
-		$id_pages = config_item('module_rss_pages');
+		$id_pages = explode(',', config_item('module_rss_pages'));
 		
 		$articles = $this->rss_model->get_articles($id_pages, $lang);
 
