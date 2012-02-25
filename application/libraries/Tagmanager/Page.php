@@ -74,6 +74,7 @@ class TagManager_Page extends TagManager
 		'articles:name' => 			'tag_article_name',
 		'articles:title' => 		'tag_article_title',
 		'articles:subtitle' => 		'tag_article_subtitle',
+		'articles:summary' => 		'tag_article_summary',
 		'articles:meta_title' =>    'tag_article_meta_title',
 		'articles:date' => 			'tag_article_date',
 		'articles:content' => 		'tag_article_content',
@@ -1943,6 +1944,17 @@ class TagManager_Page extends TagManager
 		}
 		return self::wrap($tag, self::get_value('article', 'subtitle', $tag));
 	}
+
+	public static function tag_article_summary($tag)
+	{
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->attr['name'] = 'summary';
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::get_value('article', 'summary', $tag));
+	}
+
 	
 	public static function tag_article_date($tag)
 	{ 
