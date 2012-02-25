@@ -245,6 +245,7 @@ CREATE TABLE IF NOT EXISTS media (
 	container VARCHAR( 255 ) NOT NULL DEFAULT '',
 	date datetime NOT NULL							COMMENT 'Medium date',
 	link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
+	square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',
 	PRIMARY KEY  (id_media)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
