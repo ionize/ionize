@@ -115,7 +115,11 @@
 </div>
 
 <script type="text/javascript">
-
+	
+	/**
+	 * Init of all main menu links
+	 *
+	 */
 	$$('.navlink').each(function(item)
 	{
 		item.addEvent('click', function(event)

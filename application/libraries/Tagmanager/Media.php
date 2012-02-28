@@ -379,6 +379,7 @@ class TagManager_Media extends TagManager
 			}
 			else if ($tag->getAttribute('size') !== NULL && $media['type'] == 'picture')
 			{
+	
 				$thumb_file_path = self::_get_thumb_file_path($tag, $media);
 
 				// Create the thumb if it doesn't exists
@@ -387,22 +388,129 @@ class TagManager_Media extends TagManager
 					$ci =& get_instance();
 					$ci->load->library('medias');
 					
-					/*
-					 * Here : 
-					 * - Add support for thumb settings (store in DB) about :
-					 *   - square crop position (in case of square crop)
-					 *
-					 */
-					$settings = array(
-						'unsharpmask' => ( ! is_null($tag->getAttribute('unsharp'))) ? '1' : '0',
-						'square' => $tag->getAttribute('square'),
-						'size' => $tag->getAttribute('size')
-					);
-					$ci->medias->create_thumb($media['path'], $thumb_file_path, $settings);
+					$settings = array();
+					
+					$settings['method'] = 'wider_side';
+					
+					if($tag->getAttribute('square'))
+						$settings['method'] = 'square';
+
+					// width is fixed
+					if($tag->getAttribute('master') == 'width')
+						$settings['method'] = 'fixed_width';
+
+					// height is fixed
+					if($tag->getAttribute('master') == 'height')
+						$settings['method'] = 'fixed_height';
+
+					if($tag->getAttribute('adaptive'))
+						$settings['method'] = 'adaptive_resize';
+
+					if( ! is_null($tag->getAttribute('background')))
+						$settings['method'] = 'border_add';
+
+					$settings['watermark'] = ( ! is_null($tag->getAttribute('watermark'))) ? $tag->getAttribute('watermark') : ''; 
+					$settings['unsharp'] = ( ! is_null($tag->getAttribute('unsharp'))) ? $tag->getAttribute('unsharp') : false; 
+					
+					$size_error = false;
+					$background_error = false;
+					$thumb_folder = self::_get_thumb_folder($tag);
+					
+					switch($settings['method'])
+					{
+						case 'square':
+							
+							$settings['width'] = $tag->getAttribute('size');
+							$settings['height'] = $tag->getAttribute('size');
+							
+							$settings['square_crop'] = (is_null($tag->getAttribute('start'))) ? $media['square_crop'] : $tag->getAttribute('start');
+							
+							// check size attribut
+							if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}$/', $thumb_folder))
+								$size_error = true;
+							
+							break;
+						
+						case 'fixed_width':
+							
+							$settings['width'] = $tag->getAttribute('size');
+							
+							// check size attribut
+							if(!preg_match('/^([0-9]){1,4}x$/', $thumb_folder))
+								$size_error = true;
+							
+							break;
+						
+						case 'fixed_height':
+							
+							$settings['height'] = $tag->getAttribute('size');
+							
+							// check size attribut
+							if(!preg_match('/^x([0-9]){1,4}$/', $thumb_folder))
+								$size_error = true;
+							
+							break;
+						
+						case 'wider_side';
+							
+							$settings['size'] = $tag->getAttribute('size');
+							
+							// check size attribut
+							if(!preg_match('/^([0-9]){1,4}$/', $thumb_folder))
+								$size_error = true;
+							
+							break;
+						
+						case 'adaptive_resize':
+							
+							$size = $tag->getAttribute('size');
+							$dim = explode(',', $size);
+							
+							$settings['width'] = $dim[0];
+							$settings['height'] = $dim[1];
+							
+							// check size attribut
+							if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}a$/', $thumb_folder))
+								$size_error = true;
+							
+							break;
+						
+						case 'border_add':
+							
+							$size = $tag->getAttribute('size');
+							$dim = explode(',', $size);
+							
+							$settings['width'] = $dim[0];
+							$settings['height'] = $dim[1];
+							
+							$settings['background'] = $tag->getAttribute('background');
+							
+							// check background color
+							if(
+								!preg_match('/^([A-Fa-f0-9]){6}$/', $settings['background']) 
+								&& !preg_match('/^([A-Fa-f0-9]){3}$/', $settings['background'])
+								&& !preg_match('/^#([A-Fa-f0-9]){6}$/', $settings['background'])
+								&& !preg_match('/^#([A-Fa-f0-9]){3}$/', $settings['background'])
+							)
+								$background_error = true;
+							
+							// check size attribut
+							if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}e$/', $thumb_folder))
+								$size_error = true;
+							
+							break;
+						
+					}
+
+					// On invalid size attribut or invalid background attribut
+					// don't create thumb
+					if( ! $size_error && ! $background_error)
+						$ci->medias->create_thumb_onthefly($media['path'], $thumb_file_path, $settings);
+
 				}
 				
 				// If no thumbs exists here, that means 
-				// 1. the original file is smaller than the asked thumb
+				// 1. There is size or background error
 				// 2. There was a problem when creating the folder / thumb
 				if ( ! file_exists($thumb_file_path))
 					return self::_get_picture_url($tag, $media);
@@ -414,7 +522,7 @@ class TagManager_Media extends TagManager
 		}
 		return '';
 	}
-
+	
 	
 	// ------------------------------------------------------------------------
 
@@ -550,12 +658,14 @@ class TagManager_Media extends TagManager
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 
 		$size = $tag->getAttribute('size');
-		$file_prefix = $tag->getAttribute('square') ? 'square_' : '';
+		//$file_prefix = $tag->getAttribute('square') ? 'square_' : '';
+		
+		$size_folder = self::_get_thumb_folder($tag);
 
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
 		$thumb_path = $thumb_base_path . $thumb_path_segment;
-		$thumb_file_path = $thumb_path . $file_prefix . $size . '/' . $media['file_name'];
+		$thumb_file_path = $thumb_path . $size_folder . '/' . $media['file_name'];
 		
 		return $thumb_file_path;
 	}
@@ -566,17 +676,63 @@ class TagManager_Media extends TagManager
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 		
 		$size = $tag->getAttribute('size');
-		$file_prefix = $tag->getAttribute('square') ? 'square_' : '';
+		$size_folder = self::_get_thumb_folder($tag);
 
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		
-		return base_url() . Settings::get('files_path') . '/' . $thumb_folder . '/' . $thumb_path_segment . $file_prefix.$size . '/' . $media['file_name'];
+		return base_url() . Settings::get('files_path') . '/' . $thumb_folder . '/' . $thumb_path_segment . $size_folder . '/' . $media['file_name'];
 	}
 	
 	
 	private static function _get_picture_url($tag, $media)
 	{
 		return base_url() . $media['path'];
+	}
+	
+	private static function _get_thumb_folder($tag)
+	{
+		if($tag->getAttribute('square'))
+		{
+			return $tag->getAttribute('size') . 'x' . $tag->getAttribute('size');
+		}
+		
+		// width is fixed
+		if($tag->getAttribute('master') == 'width')
+		{
+			return $tag->getAttribute('size') . 'x';
+		}
+		
+		// height is fixed
+		if($tag->getAttribute('master') == 'height')
+		{
+			return 'x' . $tag->getAttribute('size');
+		}
+		
+		if($tag->getAttribute('adaptive'))
+		{
+			$size = $tag->getAttribute('size');
+			$folder_parts = explode(',', $size);
+			
+			if(isset($folder_parts[1]))
+				return trim($folder_parts[0]) . 'x' . trim($folder_parts[1]) . 'a';
+			
+			return '';
+		}
+		
+		if( ! is_null($tag->getAttribute('background')))
+		{
+			$size = $tag->getAttribute('size');
+			$folder_parts = explode(',', $size);
+			
+			if(isset($folder_parts[1]))
+				return trim($folder_parts[0]) . 'x' . trim($folder_parts[1]) . 'e';
+			
+			return '';
+
+		}
+		
+		// The wider side of image
+		return $tag->getAttribute('size');
 	}
 	
 }

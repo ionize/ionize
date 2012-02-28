@@ -48,7 +48,7 @@ $lang['ionize_login_remember'] = 'Remember me';
 $lang['ionize_login'] = 'Login';
 $lang['ionize_forgot_password'] = 'Forgotten password ?';
 $lang['ionize_session_expired'] = 'Your session has expired. Please log in again.';
-$lang['ionize_login_error'] = 'Something wrong appears...';
+$lang['ionize_login_error'] = 'Something wrong happens...';
 
 
 /*
@@ -459,7 +459,7 @@ $lang['ionize_label_filter_result'] = 'Résultat du filtre';
 $lang['ionize_message_user_updated'] = 'User updated';
 $lang['ionize_message_user_not_saved'] = 'User not updated';
 $lang['ionize_message_user_saved'] = 'User saved';
-$lang['ionize_message_user_exists'] = 'User already in database!';
+$lang['ionize_message_user_exists'] = 'User already exists in database.<br/> Change Login or Email.';
 $lang['ionize_message_user_deleted'] = 'User deleted';
 $lang['ionize_message_user_cannot_delete_yourself'] = 'You can\'t delete yourself!';
 $lang['ionize_message_group_updated'] = 'Group updated';
@@ -1061,7 +1061,10 @@ $lang['ionize_message_check_corrected'] = ' corrected.';
 $lang['ionize_message_check_ok'] = 'OK';
 $lang['ionize_message_check_folder_nok'] = 'No Write rights';
 
-
+$lang['ionize_label_square_crop_area'] = 'Square crop area';
+$lang['ionize_label_top_left'] = 'top-left';
+$lang['ionize_label_middle'] = 'middle';
+$lang['ionize_label_bottom_right'] = 'bottom-right';
 
 
 

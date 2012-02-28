@@ -736,6 +736,10 @@ class Media extends MY_admin
 	{
 		// Clear the cache
 		Cache()->clear_cache();
+		
+		// Get old values
+		$id_media = $this->input->post('id_media'); 
+		$old_media_data = $this->media_model->get($id_media);
 
 		// Standard data;
 		$data = array();
@@ -792,6 +796,13 @@ class Media extends MY_admin
 
 			$this->write_ID3($media['path'], $tags);
 		}	
+		
+		// delete picture squares if square_crop is changed
+		if($media['type'] == 'picture' && $media['square_crop'] != $old_media_data['square_crop'])
+		{
+			$this->load->library('medias');
+			$this->medias->delete_squares($media);
+		}
 		
 		if ( $this->id !== false )
 		{

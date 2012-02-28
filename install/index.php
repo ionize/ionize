@@ -58,11 +58,11 @@ else
  *
  */
 
-require('../system/database/DB.php');
-require('../system/core/Common.php');
-require('../application/config/constants.php');
-require('../application/config/ionize.php');
-require_once('../application/core/finder/finder.php');		// So My_Language can output CI errors.
+require($system_folder . '/database/DB.php');
+require($system_folder . '/core/Common.php');
+require($application_folder . '/config/constants.php');
+require($application_folde . '/config/ionize.php');
+require_once($application_folder. '/core/finder/finder.php');		// So My_Language can output CI errors.
 
 
 // Installer class

@@ -388,7 +388,19 @@ if($type == 'picture')
 
 			<!-- Thumbnails preferences -->
 			<?php if($type == 'picture') :?>
-				<div class="tabcontent<?= $UNIQ ?>"></div>
+				<div class="tabcontent<?= $UNIQ ?>">
+					
+					<!-- Thumbnail square crop area -->
+					<dl class="small">
+						<dt><?= lang('ionize_label_square_crop_area') ?>&nbsp;&nbsp;</dt>
+						<dd>
+							<input id="square_crop_<?= $id_media ?>_1" name="square_crop" type="radio" value="tl"<?php if ($square_crop == 'tl'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_1"><?= lang('ionize_label_top_left') ?></label></input><br />
+							<input id="square_crop_<?= $id_media ?>_2" name="square_crop" type="radio" value="m"<?php if ($square_crop == 'm'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_2"><?= lang('ionize_label_middle') ?></label></input><br />
+							<input id="square_crop_<?= $id_media ?>_3" name="square_crop" type="radio" value="br"<?php if ($square_crop == 'br'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_3"><?= lang('ionize_label_bottom_right') ?></label></input>
+						</dd>
+					</dl>
+
+				</div>
 			<?php endif ;?>
 			
 		

@@ -92,7 +92,9 @@
 		ALTER TABLE `article` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
 	</query>
 
-
+ 	<query>
+		ALTER TABLE `media` ADD square_crop enum('tl','m','br') NOT NULL DEFAULT 'm';
+	</query>
 
 
 	<query>ALTER TABLE article ENGINE = InnoDB;</query>

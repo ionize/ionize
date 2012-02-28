@@ -245,13 +245,17 @@
 							<label for="level"><?=lang('ionize_label_group_level')?></label>
 						</dt>
 						<dd>
-							<select name="level" class="select">
-								<?php foreach($groups as $group) :?>
-								
-									<option value="<?= $group['level'] ?>"><?= $group['group_name'] ?></option>
-								
-								<?php endforeach ;?>
-							</select>
+							<?php if($this->connect->is('super-admins')) :?>
+								<input name="level" class="inputtext w100" value=""/>
+							<?php else: ?>
+								<select name="level" class="select">
+									<?php foreach($groups as $group) :?>
+									
+										<option value="<?= $group['level'] ?>"><?= $group['group_name'] ?></option>
+									
+									<?php endforeach ;?>
+								</select>
+							<?php endif; ?>
 						</dd>
 					</dl>
 					
@@ -275,7 +279,7 @@
 							<th axis="string"><?= lang('ionize_label_id') ?></th>
 							<th axis="string"><?= lang('ionize_label_group_name') ?></th>
 							<th axis="string"><?= lang('ionize_label_group_title') ?></th>
-							<th axis="string"><?= lang('ionize_label_group_level') ?></th>
+							<th axis="number"><?= lang('ionize_label_group_level') ?></th>
 							<th axis="string"><?= lang('ionize_label_group_description') ?></th>				
 							<th></th>
 						</tr>

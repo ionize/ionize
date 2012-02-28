@@ -103,6 +103,260 @@ class Medias
 	}
 	
 	
+	public function create_thumb_onthefly($source_path, $dest_path, $settings = array())
+	{
+		$CI =& get_instance();
+		$CI->load->library('image_lib');
+		
+		$dim = self::get_image_dimensions($source_path);
+		
+		$create_func = '';
+		$save_func = '';
+		$quality = 0;
+		$type = '';
+		
+		switch($dim['type'])
+		{
+			case 1:
+				
+				$create_func = 'imagecreatefromgif';
+				$save_func = 'imagegif';
+				$type = 'gif';
+				
+				break;
+			
+			case 2:
+				
+				$create_func = 'imagecreatefromjpeg';
+				$save_func = 'imagejpeg';
+				$quality = 90;
+				$type = 'jpeg';
+				
+				break;
+			
+			case 3:
+			
+				$create_func = 'imagecreatefrompng';
+				$save_func = 'imagepng';
+				$quality = 9;
+				$type = 'png';
+				
+				break;
+		}
+		
+		// if image is not jpg, png or gif don't create thumb
+		//if(empty ($type)) return;
+		
+		self::create_thumb_folder($dest_path);
+		
+		$ci_settings = array();
+		$ci_settings['source_image'] = $source_path;
+		$ci_settings['new_image'] = $dest_path;
+		$ci_settings['maintain_ratio'] = true;	
+		$ci_settings['quality'] = $quality;	
+		$ci_settings['unsharpmask'] = false;	
+		
+		switch($settings['method'])
+		{
+			case 'square':
+				
+				$ci_settings['width'] = $settings['width'];
+				$ci_settings['height'] = $settings['height'];
+				
+				$ci_settings['master_dim'] = ($dim['width'] < $dim['height']) ? 'width' : 'height';
+				
+				$CI->image_lib->clear();
+				$CI->image_lib->initialize($ci_settings);
+				
+				if ( $CI->image_lib->resize() )
+				{
+					$ci_settings['source_image'] =	$CI->image_lib->full_dst_path;
+					
+					$ci_settings['x_axis'] = $ci_settings['y_axis'] = '0';
+					
+					// Get image dimension before crop
+					$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
+					
+					// Center the square
+					if ($dim['width'] > $dim['height'])
+					{
+						$ci_settings['x_axis'] = ($dim['width'] - $settings['width']) / 2;
+					}
+					else
+					{
+						$ci_settings['y_axis'] = ($dim['height'] - $settings['height']) / 2;
+					}
+					
+					switch ($settings['square_crop'])
+					{
+						// crop top-left area
+						case 'tl':
+							
+							$ci_settings['x_axis'] = '0';
+							$ci_settings['y_axis'] = '0';
+							break;
+						
+						// crop bottom-right area
+						case 'br':
+							
+							$ci_settings['x_axis'] = $dim['width'] - $settings['width'];
+							$ci_settings['y_axis'] = $dim['height'] - $settings['height'];
+							
+							break;
+					}
+					
+					$ci_settings['master_dim'] = 'auto';
+					
+					$ci_settings['maintain_ratio'] = false;
+					
+					$CI->image_lib->clear();
+					$CI->image_lib->initialize($ci_settings);
+
+					$CI->image_lib->crop();
+				}
+				
+				break;
+			
+			case 'fixed_width':
+				
+				
+				$ci_settings['width'] = $settings['width'];
+				$ci_settings['height'] = intval($settings['width']  * $dim['height'] / $dim['width']);
+				
+				$ci_settings['maintain_ratio'] = false;
+				
+				$CI->image_lib->clear();
+				$CI->image_lib->initialize($ci_settings);
+				
+				$CI->image_lib->resize();
+				
+				break;
+			
+			case 'fixed_height':
+				
+				$ci_settings['height'] = $settings['height'];
+				$ci_settings['width'] = intval($settings['height']  * $dim['width'] / $dim['height']);
+				
+				$ci_settings['maintain_ratio'] = false;
+				
+				$CI->image_lib->clear();
+				$CI->image_lib->initialize($ci_settings);
+				
+				$CI->image_lib->resize();
+				
+				break;
+			
+			case 'wider_side':
+				
+				if ($dim['width'] < $dim['height']) 
+					$ci_settings['master_dim'] = 'height';
+				else 
+					$ci_settings['master_dim'] = 'width';
+				
+				$ci_settings['width'] = $settings['size'];
+				$ci_settings['height'] = $settings['size'];
+				
+				$CI->image_lib->clear();
+				$CI->image_lib->initialize($ci_settings);
+				
+				$CI->image_lib->resize();
+				
+				break;
+				
+			case 'adaptive_resize':
+								
+				$params = self::calculate_crop_params($dim['width'], $dim['height'], $settings['width'], $settings['height'], 'crop');
+				
+				$ci_settings['width'] = $params['resize_width'];
+				$ci_settings['height'] = $params['resize_height'];
+				
+				$ci_settings['maintain_ratio'] = false;
+				
+				$CI->image_lib->clear();
+				$CI->image_lib->initialize($ci_settings);
+				
+				if ( $CI->image_lib->resize() )
+				{
+					$ci_settings['source_image'] =	$CI->image_lib->full_dst_path;
+					
+					$ci_settings['width'] = $settings['width'];
+					$ci_settings['height'] = $settings['height'];
+					
+					$ci_settings['x_axis'] = $params['x_axis'];
+					$ci_settings['y_axis'] = $params['y_axis'];
+					
+					$CI->image_lib->clear();
+					$CI->image_lib->initialize($ci_settings);
+					
+					$CI->image_lib->crop();
+
+				}
+				
+				break;
+				
+				case 'border_add':
+					
+					if(!empty($create_func))
+					{
+					
+						$params = self::calculate_crop_params($dim['width'], $dim['height'], $settings['width'], $settings['height'], 'expand');
+
+						$ci_settings['width'] = $params['resize_width'];
+						$ci_settings['height'] = $params['resize_height'];
+
+						$ci_settings['maintain_ratio'] = false;
+
+						$CI->image_lib->clear();
+						$CI->image_lib->initialize($ci_settings);
+
+						if ( $CI->image_lib->resize() )
+						{
+							$imagefile = $CI->image_lib->full_dst_path;
+
+							$color = self::get_color_from_html_color($settings['background']);
+							
+							$imcanvas = imagecreatetruecolor($settings['width'], $settings['height']);
+							imagefill($imcanvas, 0, 0, $color);
+
+							$image = $create_func($imagefile);
+
+							$src_w = imagesx($image);
+							$src_h = imagesy($image);
+
+							imagecopyresampled(
+								$imcanvas, 
+								$image, 
+								$params['x_axis'],
+								$params['y_axis'],	
+								0,
+								0,					
+								$src_w,
+								$src_h,
+								$src_w,
+								$src_h
+							);
+
+							if($save_func == 'imagegif')
+								$save_func($imcanvas, $imagefile);
+							else
+								$save_func($imcanvas, $imagefile, $quality);
+							
+							imagedestroy($imcanvas);
+							imagedestroy($image);
+						}
+					
+					}
+
+				break;
+				
+		}
+		
+		if($type == 'jpeg' && ! empty ($settings['watermark']) && file_exists($dest_path))
+			$this->embed_watermark($dest_path, $settings['watermark']);
+
+	}
+	
+	
 	public function create_thumb_folder($thumb_path)
 	{
 		// Create directory is not exists
@@ -155,10 +409,191 @@ class Medias
 			{
 				$dim['width']	= $d['0'];
 				$dim['height']	= $d['1'];
+				$dim['type']	= $d['2'];
 				return $dim;
 			}
 		}
 		return FALSE;
+	}
+	
+	//-------------------------------------------------------------------------
+
+	/**
+	 * 
+	 * Calculate crop area
+	 * 
+	 *	Usage of $data :
+	 *	1. Resize picture to $data['resize_width'], $data['resize_height'] 
+	 *	2. If crop picture: copy area ($dest_width, $dest_height) with offset $data['x_axis'], $data['y_axis']
+	 *	3. If add borders: create empty image ($dest_width, $dest_height), 
+	 *		Copy resized image to position (offset)  $data['x_axis'], $data['y_axis']
+	 */
+	
+	public static function calculate_crop_params($src_width, $src_height, $dest_width, $dest_height, $type = 'crop')
+	{
+		$data = array();
+		
+		$k1 = $dest_width / $src_width;
+		$k = $dest_height / $src_height;
+		
+		$w1 = round ( $k1 * $src_width );
+		$h1 = round ( $k1 * $src_height );
+
+		if($w1 >= $dest_width && $h1 >= $dest_height && $type == 'crop')
+			$k = $k1;
+		
+		if($w1 <= $dest_width && $h1 <= $dest_height && $type == 'expand')
+			$k = $k1;
+		
+		// data for picture resizing
+		$data['resize_width'] = round($src_width * $k);
+		$data['resize_height'] = round($src_height * $k);
+		
+		// crop start position
+		$data['x_axis'] = round(($data['resize_width'] - $dest_width) / 2);
+		$data['y_axis'] = round(($data['resize_height'] - $dest_height) / 2);
+		
+		if($type == 'expand')
+		{
+			$data['x_axis'] = - $data['x_axis'] ;
+			$data['y_axis'] = - $data['y_axis'];
+		}
+		
+		return $data;
+	}
+	
+	//-------------------------------------------------------------------------
+	
+	/**
+	 * 
+	 * Calculate int color value from html hex color code (rgb) (3 or 6 digits)
+	 *
+	 * @param string $html_color
+	 * @return type int
+	 * 
+	 */
+	
+	public static function get_color_from_html_color($html_color)
+	{
+		$color = $html_color;
+		
+		if ($color[0] == '#')
+			$color = substr($color, 1);
+		
+		if (strlen($color) == 6)
+			list($r, $g, $b) = array($color[0].$color[1], $color[2].$color[3], $color[4].$color[5]);
+		
+		elseif (strlen($color) == 3)
+			list($r, $g, $b) = array($color[0].$color[0], $color[1].$color[1], $color[2].$color[2]);
+		
+		else
+			return false;
+		
+		$r = hexdec($r);
+		$g = hexdec($g);
+		$b = hexdec($b);
+		
+		$color = $r * 65536 + $g * 256 + $b;
+		
+		return $color;
+	}
+	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Embed watermark
+	 *
+	 * watermark is file inside 'files' folder, filename: 'watermark.png'
+	 *
+	 */
+	
+	public function embed_watermark($filepath, $watermark_positions)
+	{
+		$CI =& get_instance();
+		$CI->load->library('image_lib');
+		
+		$watermark_path = DOCPATH . Settings::get('files_path') . '/watermark.png';
+		
+		if( !file_exists($watermark_path))
+			return;
+		
+		$w = explode(',', $watermark_positions);
+		
+		foreach($w as $p)
+		{
+			$p = trim($p);
+			if(strlen($p) == 2)
+			{
+				// vertical position
+				$v = substr($p, 0, 1);
+				
+				// horizontal position
+				$h = substr($p, 1, 1);
+				
+				$vert = 'middle';
+				$hor = 'center';
+				
+				switch($v)
+				{
+					case 't': $vert = 'top'; break;
+					case 'b': $vert = 'bottom'; break;	
+				}
+				
+				switch($h)
+				{
+					case 'l': $hor = 'left'; break;
+					case 'r': $hor = 'right'; break;	
+				}
+				
+				$wconf = array(
+					'wm_type' => 'overlay',
+					'source_image' => $filepath,
+					'quality' => 90,
+					'wm_vrt_alignment' => $vert,
+					'wm_hor_alignment' => $hor,
+					'wm_overlay_path' => $watermark_path
+				);
+				
+				$CI->image_lib->clear();
+				$CI->image_lib->initialize($wconf);
+				
+				$CI->image_lib->watermark();
+				
+			}
+		}	
+	}
+	
+	public function delete_squares($media)
+	{
+		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
+
+		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
+		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
+		$thumb_path = $thumb_base_path . $thumb_path_segment;
+		
+		$thumb_name = $media['file_name'];
+		
+		if($handle = opendir($thumb_path))
+		{
+			while(false !== ($size_folder = readdir($handle)))
+			{
+				if(preg_match('/^([0-9]){1,4}x([0-9]){1,4}$/', $size_folder))
+				{
+					$dim = explode('x', $size_folder);
+					
+					if($dim[0] == $dim[1])
+					{
+						$thumb_file_path = $thumb_path . $size_folder . '/' . $thumb_name;
+						if(file_exists($thumb_file_path))
+						{
+							unlink($thumb_file_path);
+						}
+					}
+				}
+			}
+		}
+
 	}
 }
 

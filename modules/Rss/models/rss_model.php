@@ -31,16 +31,16 @@ class Rss_model extends Article_model
 	function get_articles($id_pages, $lang)
 	{
 		// Only include "indexed" articles. Means real "content" article.
-		$this->db->where($this->table.'.indexed', '1');
+		$this->{$this->db_group}->where($this->table.'.indexed', '1');
 
 		// Add the ID pages filter to the query
-		$this->db->where_in('page_article.id_page', $id_pages);
+		$this->{$this->db_group}->where_in('page_article.id_page', $id_pages);
 		
 		// Check for not empty content
-		$this->db->where($this->lang_table.'.content <>', '');
+		$this->{$this->db_group}->where($this->lang_table.'.content <>', '');
 
-		$data = parent::get_lang_list(FALSE, $lang);
-		
+		$data = $this->get_lang_list(FALSE, $lang);
+
 		return $data;
 	}
 	
