@@ -2162,7 +2162,7 @@ class TagManager_Page extends TagManager
 	}
 
 
-	public function tag_article_readmore($tag)
+	public static function tag_article_readmore($tag)
 	{
 		$term = (isset($tag->attr['term']) ) ? $tag->attr['term'] : '';
 		$class = (isset($tag->attr['class']) ) ? ' class="' . $tag->attr['class'] . '"' : '';
@@ -2245,7 +2245,8 @@ class TagManager_Page extends TagManager
 		
 		foreach($articles as $key => $article)
 		{
-			if ($article['name'] == $uri)
+			// if ($article['name'] == $uri)
+			if ($article['urls'][Settings::get_lang()] == $uri)
 			{
 				if ( ! empty($articles[$key + $enum]))
 				{
