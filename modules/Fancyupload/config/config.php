@@ -3,7 +3,7 @@
 $config['fancyupload_active'] = '';
 $config['fancyupload_max_upload'] = '0';
 $config['fancyupload_type'] = 'photoqueue';
-$config['fancyupload_folder'] = '/Volumes/Data/Sites/ionize-connect/files/pictures/';
+$config['fancyupload_folder'] = dirname(BASEPATH).'/files/';
 $config['fancyupload_file_prefix'] = '';
 $config['fancyupload_send_alert'] = '';
 $config['fancyupload_send_confirmation'] = '';
