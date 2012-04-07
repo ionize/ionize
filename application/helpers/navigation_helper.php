@@ -176,13 +176,14 @@ if( ! function_exists('get_language_navigation'))
  */
 if( ! function_exists('get_next_prev_page'))
 {
-	function get_next_prev_page($page, $prefix)
+	function get_next_prev_page($page, $prefix, $term, $class)
 	{
 		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
 		
 		$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
+		$term = ($term != '' ) ? lang($term) : $title;
 
-		$link = $prefix. '<a href="' . $page['absolute_url'] . '">' . $title . '</a>';
+		$link = $prefix. '<a ' . $class . ' href="' . $page['absolute_url'] . '" title="' . $title .'">' . $term . '</a>';
 		
 		return $link;
 	}
@@ -195,11 +196,12 @@ if( ! function_exists('get_next_prev_page'))
  */
 if( ! function_exists('get_next_prev_article'))
 {
-	function get_next_prev_article($article, $prefix)
+	function get_next_prev_article($article, $prefix, $term, $class)
 	{
+		$term = ($term != '' ) ? lang($term) : $article['title'];
 		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
 		
-		$link = $prefix. '<a href="' . $article['absolute_url'] . '">' . $article['title']. '</a>';
+		$link = $prefix. '<a ' . $class . ' href="' . $article['url'] . '" title="' . $article['title'] . '">' . $term. '</a>';
 		
 		return $link;
 	}

@@ -251,7 +251,7 @@ class TagManager_Element extends TagManager
 				}
 				
 				// Translated Element
-				if ($field['translated'] == '1')
+				if ($field['translated'] == '1' && $attr != 'label')
 				{
 					if (isset($field[Settings::get_lang('current')]['content']))
 					{

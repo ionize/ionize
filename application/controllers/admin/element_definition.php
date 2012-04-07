@@ -418,23 +418,26 @@ class Element_definition extends MY_Admin {
 	function get_element_list()
 	{
 		// Elements
-		$elements = $this->element_definition_model->get_lang_list(array('name <>' => '', 'order_by' => 'ordering ASC'), Settings::get_lang('default') );
+		$elements = $this->element_definition_model->get_lang_list(array('name <>' => '', 'order_by' => 'ordering ASC'), Settings::get_lang() );
 		
 		$this->template['elements'] = '';
 		foreach($elements as $key => &$element)
 		{
 			// Element's fields
+			// $element['fields'] = $this->element_model->get_fields_from_parent($parent, $id_parent, Settings::get_lang(), $element['id_element_definition'])
 			$element['fields'] = $this->extend_field_model->get_list(array('id_element_definition' => $element['id_element_definition']));
-			
+			// trace($element['fields']);
 			foreach($element['fields'] as &$field)
 			{
+				// trace($field);
 				$field['type_name'] = self::$type_names[$field['type']];
+				$field['label'] = $this->extend_field_model->get_label($field['id_extend_field']);
 			}
 
 			if (count($element['fields']) == 0)
 				unset($elements[$key]);
 		}
-		
+		// trace($elements);
 		$data['elements'] = $elements;
 		$data['parent'] = $this->input->post('parent');
 		$data['id_parent'] = $this->input->post('id_parent');
