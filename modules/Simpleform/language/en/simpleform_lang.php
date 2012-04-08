@@ -50,7 +50,7 @@ $lang['module_simpleform_doc_content'] = "
 
 $lang['module_simpleform_field_email'] = "Email";
 $lang['module_simpleform_field_name'] = "Name";
-$lang['module_simpleform_field_firstname'] = "Surname";
+$lang['module_simpleform_field_firstname'] = "First name";
 $lang['module_simpleform_field_lastname'] = "Last name";
 $lang['module_simpleform_field_username'] = "Username";
 $lang['module_simpleform_field_password'] = "Password";

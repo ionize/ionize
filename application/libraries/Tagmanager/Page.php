@@ -2162,9 +2162,10 @@ class TagManager_Page extends TagManager
 	}
 
 
-	public function tag_article_readmore($tag)
+	public static function tag_article_readmore($tag)
 	{
 		$term = (isset($tag->attr['term']) ) ? $tag->attr['term'] : '';
+		$class = (isset($tag->attr['class']) ) ? ' class="' . $tag->attr['class'] . '"' : '';
 		$paragraph = (isset($tag->attr['paragraph'] )) ? $tag->attr['paragraph'] : FALSE ;
 
 
@@ -2177,7 +2178,7 @@ class TagManager_Page extends TagManager
 			
 //			if (strlen($content) < strlen($article['content']))
 //			{
-				return self::wrap($tag, '<a href="'.self::tag_article_url($tag).'">'.lang($term).'</a>'); 
+				return self::wrap($tag, '<a' . $class . ' href="' . self::tag_article_url($tag) . '" title="' . self::tag_article_title($tag) . '"">'.lang($term).'</a>'); 
 //			}
 //			else
 //			{
@@ -2244,7 +2245,8 @@ class TagManager_Page extends TagManager
 		
 		foreach($articles as $key => $article)
 		{
-			if ($article['name'] == $uri)
+			// if ($article['name'] == $uri)
+			if ($article['urls'][Settings::get_lang()] == $uri)
 			{
 				if ( ! empty($articles[$key + $enum]))
 				{
@@ -2263,6 +2265,7 @@ class TagManager_Page extends TagManager
 	 * Internal use only.
 	 *	 
 	 */
+	// private static function process_next_prev_article($tag, $article)
 	private static function process_next_prev_article($tag, $article)
 	{
 		if ($article != FALSE)
@@ -2276,14 +2279,20 @@ class TagManager_Page extends TagManager
 	
 			// Prefix ?
 			$prefix = (!empty($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
-	
+			
+			// Added by ukyo -/start
+				$term = (!empty($tag->attr['term']) ) ? $tag->attr['term'] : '';
+				$class = (!empty($tag->attr['class']) ) ? 'class="' . $tag->attr['class'] . '"' : '';
+			//-/end
+		
 			// load the helper
 			self::$ci->load->helper($helper);
 			
 			// Return the helper function result
 			if (function_exists($helper_function))
 			{
-				$return = call_user_func($helper_function, $article, $prefix);
+				$return = call_user_func($helper_function, $article, $prefix, $term, $class);
+				// $return = call_user_func($helper_function, $article, $prefix);
 				
 				return self::wrap($tag, $return);
 			}
@@ -2428,6 +2437,11 @@ class TagManager_Page extends TagManager
 	
 			// Prefix ?
 			$prefix = (!empty($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
+			
+			// Added by ukyo -/start
+				$term = (!empty($tag->attr['term']) ) ? $tag->attr['term'] : '';
+				$class = (!empty($tag->attr['class']) ) ? 'class="' . $tag->attr['class'] . '"' : '';
+			//-/end
 	
 			// load the helper
 			self::$ci->load->helper($helper);
@@ -2435,7 +2449,7 @@ class TagManager_Page extends TagManager
 			// Return the helper function result
 			if (function_exists($helper_function))
 			{
-				$return = call_user_func($helper_function, $page, $prefix);
+				$return = call_user_func($helper_function, $page, $prefix, $term, $class);
 				
 				return self::wrap($tag, $return);
 			}

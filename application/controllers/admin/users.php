@@ -299,7 +299,15 @@ class Users extends MY_admin
 			{
 				$this->id = $id;
 				
+				/** Remove deleted items from DOM **/
+				$this->callback[] = array(
+					'fn' => 'ION.deleteDomElements',
+					'args' => array('.users' . $id)
+				);
+				
+				/** Send answer **/
 				$this->success(lang('ionize_message_user_deleted'));
+				$this->response();
 			}
 			else
 			{
