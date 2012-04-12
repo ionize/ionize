@@ -792,13 +792,32 @@
 						<a class="right icon copy copyLang" rel="<?= $lang ?>" title="<?= lang('ionize_label_copy_to_other_languages') ?>"></a>
 					</p>
 
+
+					<!-- Online -->
+					<?php if(count(Settings::get_languages()) > 1) :?>
+
+						<dl>
+							<dt>
+								<label for="online_<?= $lang ?>" title="<?= lang('ionize_help_page_content_online') ?>"><?= lang('ionize_label_page_content_online') ?></label>
+							</dt>
+							<dd>
+								<input id="online_<?= $lang ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?= $lang ?>" class="inputcheckbox" type="checkbox" value="1"/>
+							</dd>
+						</dl>
+					
+					<?php else :?>
+					
+						<input id="online_<?= $lang ?>" name="online_<?= $lang ?>" type="hidden" value="1"/>
+					
+					<?php endif ;?>
+
 					<!-- title -->
 					<dl class="first">
 						<dt>
 							<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
 						</dt>
 						<dd>
-							<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['title'] ?>" title="<?= lang('ionize_label_title') ?>"/>
+							<textarea id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="textarea title" type="text" title="<?= lang('ionize_label_title') ?>"><?= ${$lang}['title'] ?></textarea>
 						</dd>
 					</dl>
 
@@ -808,7 +827,7 @@
 							<label for="subtitle_<?= $lang ?>"><?= lang('ionize_label_subtitle') ?></label>
 						</dt>
 						<dd>
-							<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="inputtext h30" type="text"><?= ${$lang}['subtitle'] ?></textarea>
+							<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="textarea" type="text"><?= ${$lang}['subtitle'] ?></textarea>
 						</dd>
 					</dl>
 
@@ -845,27 +864,6 @@
 							<input id="meta_title_<?= $lang ?>" name="meta_title_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['meta_title'] ?>"/>
 						</dd>
 					</dl>
-
-			
-			
-
-					<!-- Online -->
-					<?php if(count(Settings::get_languages()) > 1) :?>
-
-						<dl>
-							<dt>
-								<label for="online_<?= $lang ?>" title="<?= lang('ionize_help_page_content_online') ?>"><?= lang('ionize_label_page_content_online') ?></label>
-							</dt>
-							<dd>
-								<input id="online_<?= $lang ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?= $lang ?>" class="inputcheckbox" type="checkbox" value="1"/>
-							</dd>
-						</dl>
-					
-					<?php else :?>
-					
-						<input id="online_<?= $lang ?>" name="online_<?= $lang ?>" type="hidden" value="1"/>
-					
-					<?php endif ;?>
 
 
 

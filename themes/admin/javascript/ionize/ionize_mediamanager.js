@@ -194,15 +194,16 @@ var IonizeMediaManager = new Class(
 			{
 				// Feed the container with responseJSON content		
 				container.set('html', responseJSON.content);
+
 	
 				var self = this;
-	
 				// Init the sortable 
 				sortableMedia = new Sortables(container, {
 					revert: true,
 					handle: '.drag',
 					clone: true,
-					container: container,
+					// constrain: true,
+					// container: container,
 					opacity: 0.5,
 					onComplete: function()
 					{
@@ -219,7 +220,7 @@ var IonizeMediaManager = new Class(
 						self.sortItemList(responseJSON.type, serialized);
 					}
 				});
-	
+
 				// Store the first ordering after picture list load
 				container.store('sortableOrder', sortableMedia.serialize(0, function (element, index) 
 				{

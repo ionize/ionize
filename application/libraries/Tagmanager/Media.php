@@ -63,16 +63,16 @@ class TagManager_Media extends TagManager
 		$extension = (isset($tag->attr['extension']) ) ? $tag->attr['extension'] : FALSE;
 		
 		// Number of wished displayed medias
-		$limit = (isset($tag->attr['limit'] )) ? $tag->attr['limit'] : FALSE ;
+		$limit = (isset($tag->attr['limit'] )) ? $tag->attr['limit'] : FALSE;
 		
 		// num. DEPRECATED : Use limit instead
 		if ($limit === FALSE)
 		{
-			$limit = (isset($tag->attr['num'])) ? $tag->attr['num'] : FALSE ;
+			$limit = (isset($tag->attr['num'])) ? $tag->attr['num'] : FALSE;
 		}
 
 		// Range : Start and stop index, coma separated
-		$range = (isset($tag->attr['range'] )) ? explode(',',$tag->attr['range']) : FALSE ;
+		$range = (isset($tag->attr['range'] )) ? explode(',', $tag->attr['range']) : FALSE;
 		$from = $to = FALSE;
 		
 		if ($range !== FALSE)
@@ -104,7 +104,14 @@ class TagManager_Media extends TagManager
 				{
 					if ($media['type'] == $type && ($i < $limit OR $limit === FALSE) )
 					{
-						$filtered_medias[] = $media;
+						// Only filter on lang if lang_display is set for the media
+						if ( ! empty($media['lang_display']))
+						{
+							if ($media['lang_display'] == Settings::get_lang('current'))
+								$filtered_medias[] = $media;						
+						}
+						else
+							$filtered_medias[] = $media;
 					}
 				}
 				
@@ -124,6 +131,8 @@ class TagManager_Media extends TagManager
 						}
 					}
 				}
+
+				// 
 
 				// Range / Limit ?
 				if ($range !== FALSE)
@@ -291,7 +300,14 @@ class TagManager_Media extends TagManager
 			$tag->attr['name'] = 'title';
 			return self::tag_field($tag);
 		}
-		return self::wrap($tag, self::get_value('media', 'title', $tag));
+		$title = self::get_value('media', 'title', $tag);
+
+		if ( is_null($title) || $title == '')
+		{
+			$title = self::get_value('media', 'file_name', $tag);
+		}
+		
+		return self::wrap($tag, $title);
 	}
 	
 	

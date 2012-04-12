@@ -6,7 +6,7 @@
 |--------------------------------------------------------------------------
 |
 */
-$config['version'] = '0.9.7.7';
+$config['version'] = '0.9.8';
 
 
 /* 
@@ -119,7 +119,7 @@ $config['files_path'] = 'files/';
 | and be writable.
 |
 */
-$config['cache_expiration'] = 0;
+$config['cache_expiration'] = '0';
 
 
 /*

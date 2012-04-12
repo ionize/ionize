@@ -573,15 +573,6 @@
 						<a class="right icon copy copyLang" rel="<?= $lang ?>" title="<?= lang('ionize_label_copy_to_other_languages') ?>"></a>
 					</p>
 
-					<!-- title -->
-					<dl class="first">
-						<dt>
-							<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
-						</dt>
-						<dd>
-							<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext title" type="text" value="<?= ${$lang}['title'] ?>"/>
-						</dd>
-					</dl>
 					<!-- Online -->
 					<?php if(count(Settings::get_languages()) > 1) :?>
 					
@@ -600,6 +591,16 @@
 					
 					<?php endif ;?>
 
+					<!-- title -->
+					<dl class="first">
+						<dt>
+							<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
+						</dt>
+						<dd>
+							<textarea id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="textarea title" type="text"><?= ${$lang}['title'] ?></textarea>
+						</dd>
+					</dl>
+
 					<!-- Toggler : More : SEO, Online.. -->
 <!--
 					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_title_seo') ?></h3>
@@ -610,7 +611,7 @@
 								<label for="subtitle_<?= $lang ?>"><?= lang('ionize_label_subtitle') ?></label>
 							</dt>
 							<dd>
-								<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="textarea subtitleTiny h30" type="text"><?= ${$lang}['subtitle'] ?></textarea>
+								<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="textarea subtitleTiny" type="text"><?= ${$lang}['subtitle'] ?></textarea>
 								<!-- <a class="icon edit subtitle"></a> -->
 							</dd>
 						</dl>
@@ -756,6 +757,8 @@
 
 					<!-- End if extend_fields -->
 					<?php endif ;?>
+
+
 
 					<!-- Summary -->
 					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_label_summary') ?></h3>

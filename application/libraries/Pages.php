@@ -227,7 +227,8 @@ class Pages
 				if ($page['home'] == 1 )
 				{
 					// Default language : No language code in the URL for the home page
-					if (Settings::get_lang('default') == $language['lang'])
+					// default : if (Settings::get_lang('default') == $language['lang'])
+					if (Settings::get_lang('current') == $language['lang'])
 					{
 						$page['absolute_urls'][$language['lang']] = base_url();
 					}

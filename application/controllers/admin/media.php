@@ -251,7 +251,6 @@ class Media extends MY_admin
 		// To set data relative to the parent
 		$data['parent'] = $parent;
 		$data['id_parent'] = $id_parent;
-
 		$data['type'] = $type;
 		
 		if (empty($data['items']))
@@ -685,14 +684,18 @@ class Media extends MY_admin
 	 * Shows one media meta data
 	 *
 	 * @param string	Media type
-	 * @param string	Media ID
+	 * @param int		Media ID
+	 * @param string	parent type ('page', 'article')
+	 * @param int		Parent ID (context in which the media is linked)
 	 *
 	 */
-	function edit($type, $id)
+	function edit($type, $id, $parent, $id_parent)
 	{
 		$this->media_model->feed_template($id, $this->template);
-
 		$this->media_model->feed_lang_template($id, $this->template);
+
+		$this->template['parent'] = $parent;
+		$this->template['id_parent'] = $id_parent;
 		
 		// Get the mp3 tags
 		if ( $this->is($this->template['path'], 'mp3') )
@@ -718,6 +721,9 @@ class Media extends MY_admin
 		
 		$this->template['location'] = $location;
 		
+		// context data
+		$this->template['context_data'] = $this->media_model->get_context_data($id, $parent, $id_parent);
+
 		// Modules addons
 		$this->load_modules_addons($this->template);
 
@@ -775,6 +781,9 @@ class Media extends MY_admin
 		// Save extend fields data
 		$this->extend_field_model->save_data('media', $this->id, $_POST);
 
+		// Save parent context data
+		$this->media_model->save_context_data($_POST);
+
 		$media = $this->media_model->get($this->id, Settings::get_lang('default'));
 
 		// Save ID3 to file if MP3
@@ -806,7 +815,18 @@ class Media extends MY_admin
 		
 		if ( $this->id !== false )
 		{
-			$this->success(lang('ionize_message_media_data_saved'));
+			// Error Message
+			$this->callback = array(
+				array(
+					'fn' => 'mediaManager.loadMediaList',
+					'args' => $media['type']
+				)
+			);
+
+			$this->response();
+
+
+//			$this->success(lang('ionize_message_media_data_saved'));
 		}
 		else
 		{

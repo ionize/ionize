@@ -61,6 +61,7 @@
 			  id_media int(11) UNSIGNED NOT NULL default 0,
 			  ordering int(11) UNSIGNED default 9999,
 			  url varchar(255) default NULL,
+			  lang_display varchar(3) DEFAULT NULL,
 			  PRIMARY KEY  (id_article,id_media)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 		</query>
@@ -404,6 +405,7 @@
 			  id_page int(11) UNSIGNED NOT NULL default 0,
 			  id_media int(11) UNSIGNED NOT NULL default 0,
 			  ordering int(11) UNSIGNED default 9999,
+  			  lang_display varchar(3) DEFAULT NULL,
 			  PRIMARY KEY  (id_page,id_media)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 		</query>
@@ -424,6 +426,21 @@
 				tag varchar(50) default NULL,
 				PRIMARY KEY  (id_tag)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+		</query>
+
+
+		<query>
+			CREATE TABLE IF NOT EXISTS `type` (
+			  `id_type` int(11) unsigned NOT NULL AUTO_INCREMENT,
+			  `code` varchar(50) NOT NULL,
+			  `parent` char(20) NOT NULL,
+			  `title` varchar(255) NOT NULL,
+			  `description` varchar(3000) DEFAULT NULL,
+			  `ordering` smallint(6) NOT NULL,
+			  `view` varchar(50) DEFAULT NULL COMMENT 'view',
+			  `flag` tinyint(1) NOT NULL,
+			  PRIMARY KEY (`id_type`)
+			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 		</query>
 
 		<query>

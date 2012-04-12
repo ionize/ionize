@@ -259,6 +259,88 @@ class Structure{
 		
 		$langs = Settings::get_online_languages();
 		
+		if (count($langs) > 1 OR Settings::get('force_lang_urls') == '1') {
+			
+			// Get pages
+			$pages = array();
+			
+			foreach($langs as $lang)
+			{
+				$pages[$lang['lang']] = $ci->sitemap_model->get_pages($lang['lang']);
+			}
+			
+			foreach($langs as $lang)
+			{
+				// Prepare pages :
+				foreach($pages[$lang['lang']] as &$p)
+				{
+					$p['date'] = $p['created'];
+					if (strtotime($p['updated']) > strtotime($p['date'])) $p['date'] = $p['updated'];
+					if (strtotime($p['publish_on']) > strtotime($p['date'])) $p['date'] = $p['publish_on'];
+					if (strtotime($p['logical_date']) > strtotime($p['date'])) $p['date'] = $p['logical_date'];
+				}
+			}
+			
+			foreach($langs as $lang)
+			{
+				$code = $lang['lang'];
+				
+				foreach($pages[$code] as $page)
+				{
+					$item = array(
+						'loc' => base_url().$code.'/' . $page['url'],
+						// ISO 8601 format - date("c") requires PHP5
+						'lastmod' => date("c", strtotime($page['date'])),
+						'changefreq' => 'weekly',
+						'priority' => ($page['priority'] / 10)
+					);
+						
+					$ci->sitemaps->add_item($item);
+				}
+			}
+		}
+		// No lang in URLs
+		else
+		{
+			// Get pages
+			$pages = $ci->sitemap_model->get_pages();
+	
+			// Prepare pages :
+			// 
+			foreach($pages as &$p)
+			{
+				$p['date'] = $p['created'];
+				if (strtotime($p['updated']) > strtotime($p['date'])) $p['date'] = $p['updated'];
+				if (strtotime($p['publish_on']) > strtotime($p['date'])) $p['date'] = $p['publish_on'];
+				if (strtotime($p['logical_date']) > strtotime($p['date'])) $p['date'] = $p['logical_date'];
+			}
+
+			foreach($pages as $page)
+			{
+				$item = array(
+					'loc' => base_url().$page['url'],
+					// ISO 8601 format - date("c") requires PHP5
+					'lastmod' => date("c", strtotime($page['date'])),
+					'changefreq' => 'weekly',
+					'priority' => ($page['priority'] / 10)
+				);
+					
+				$ci->sitemaps->add_item($item);
+			}
+		}
+		
+		$file_name = $ci->sitemaps->build('sitemap.xml');
+	}
+	/**
+	function build_sitemap()
+	{
+		$ci =& get_instance();
+		
+		$ci->load->library('sitemaps');
+		$ci->load->model('sitemap_model', '', TRUE);
+		
+		$langs = Settings::get_online_languages();
+		
 		// Get pages
 		$pages = $ci->sitemap_model->get_pages();
 
@@ -313,7 +395,7 @@ class Structure{
 		
 		$file_name = $ci->sitemaps->build('sitemap.xml');
 	}
-	
+	**/
 }
 
 

@@ -148,9 +148,10 @@ if($type == 'picture')
 
 	<input type="hidden" name="id_media" value="<?= $id_media ?>" />
 	<input type="hidden" name="type" value="<?= $type ?>" />
-	
 
-
+	<!-- Context data -->
+	<input type="hidden" name="parent" value="<?= $parent ?>" />
+	<input type="hidden" name="id_parent" value="<?= $id_parent ?>" />
 
 	<!-- Lang data -->
 	<fieldset id="picture-lang">
@@ -158,13 +159,13 @@ if($type == 'picture')
 		<!-- Tabs -->
 		<div id="mediaTab<?= $UNIQ ?>" class="mainTabs">
 			<ul class="tab-menu">
-				<li class="left"><a><span><?= lang('ionize_title_details'); ?></span></a></li>
 				<?php foreach(Settings::get_languages() as $l) :?>
 					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
 				<?php endforeach ;?>
 				<?php if($type == 'picture') :?>
 					<li class="right"><a><span><?= lang('ionize_title_thumbnail'); ?></span></a></li>
 				<?php endif ;?>
+				<li class="right"><a><span><?= lang('ionize_title_details'); ?></span></a></li>
 			</ul>
 			<div class="clear"></div>
 		</div>
@@ -172,8 +173,114 @@ if($type == 'picture')
 
 		<div id="mediaTabContent<?= $UNIQ ?>">	
 
+
+			<!-- Translated Meta data -->
+			<?php foreach(Settings::get_languages() as $language) :?>
+
+			<?php $lang_code = $language['lang']; ?>
+			
 			<div class="tabcontent<?= $UNIQ ?>">
 
+				<!-- title -->
+				<dl class="small">
+					<dt>
+						<label for="title_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_title') ?></label>
+					</dt>
+					<dd>
+						<input id="title_<?= $lang_code ?><?= $type.$id_media ?>" name="title_<?= $lang_code ?>" class="inputtext w200" type="text" value="<?= ${$lang_code}['title'] ?>"/>
+						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('title_<?= $lang_code ?><?= $type.$id_media ?>');"/>
+					</dd>
+				</dl>
+		
+				<?php if(pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == 'mp3') :?>
+				
+				<dl class="small mt10">
+					<dt>
+						<label</label>
+					</dt>
+					<dd class="lite"><?= lang('ionize_message_alt_desc_for_mp3') ?></dd>
+				</dl>
+				<?php endif ;?>
+		
+				<!-- alternative text -->
+				<dl class="small">
+					<dt>
+						<label for="alt_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_alt') ?></label>
+					</dt>
+					<dd>
+						<input id="alt_<?= $lang_code ?><?= $type.$id_media ?>" name="alt_<?= $lang_code ?>" class="inputtext w200" type="text" value="<?= ${$lang_code}['alt'] ?>"/>
+						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('alt_<?= $lang_code ?><?= $type.$id_media ?>');"/>
+					</dd>
+				</dl>
+		
+				<!-- description -->
+				<dl class="small">
+					<dt>
+						<label for="description_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_description') ?></label>
+					</dt>
+					<dd>
+						<input id="description_<?= $lang_code ?><?= $type.$id_media ?>" name="description_<?= $lang_code ?>" class="inputtext w200" type="text" value="<?= ${$lang_code}['description'] ?>"/>
+						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('description_<?= $lang_code ?><?= $type.$id_media ?>');"/>
+					</dd>
+				</dl>
+
+				<!-- extend fields goes here... -->
+				<?php foreach($extend_fields as $extend_field) :?>
+					<?php if ($extend_field['translated'] == '1') :?>
+					
+						<dl class="small">
+							<dt>
+								<?php
+									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
+								?>
+								<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
+							</dt>
+							<dd>
+								<?php if ($extend_field['type'] == '1') :?>
+									<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" class="inputtext w340" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" value="<?= $extend_field[$lang_code]['content'] ?>" />
+								<?php endif ;?>
+								<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
+									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" class="inputtext w340 h80" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>"><?= $extend_field[$lang_code]['content'] ?></textarea>
+								<?php endif ;?>
+							</dd>
+						</dl>	
+							
+					<?php endif ;?>
+				<?php endforeach ;?>
+
+			</div>
+			<?php endforeach ;?>
+
+			<!-- Thumbnails preferences -->
+			<?php if($type == 'picture') :?>
+				<div class="tabcontent<?= $UNIQ ?>">
+					
+					<!-- Thumbnail square crop area -->
+					<dl class="small">
+						<dt><?= lang('ionize_label_square_crop_area') ?>&nbsp;&nbsp;</dt>
+						<dd>
+							<input id="square_crop_<?= $id_media ?>_1" name="square_crop" type="radio" value="tl"<?php if ($square_crop == 'tl'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_1"><?= lang('ionize_label_top_left') ?></label></input><br />
+							<input id="square_crop_<?= $id_media ?>_2" name="square_crop" type="radio" value="m"<?php if ($square_crop == 'm'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_2"><?= lang('ionize_label_middle') ?></label></input><br />
+							<input id="square_crop_<?= $id_media ?>_3" name="square_crop" type="radio" value="br"<?php if ($square_crop == 'br'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_3"><?= lang('ionize_label_bottom_right') ?></label></input>
+						</dd>
+					</dl>
+
+				</div>
+			<?php endif ;?>
+			
+			<div class="tabcontent<?= $UNIQ ?>">
+
+				<!-- Lang display -->
+				<dl class="small">
+					<dt><label for="lang_<?= $type.$id_media ?>"><?=lang('ionize_label_media_limit_display_to_lang')?></label></dt>
+					<dd>
+						<input type="radio" name="lang_display" id="display_all" value="" <?php if($context_data['lang_display'] == ''):?>checked="checked"<?php endif ;?>/><label for="display_all"><?=lang('ionize_label_media_no_limit_display')?></label>
+						<?php foreach(Settings::get_languages() as $language) :?>
+						<input id="display_<?= $language['lang']; ?>" type="radio" name="lang_display" value="<?= $language['lang']; ?>"  <?php if($context_data['lang_display'] == $language['lang']):?>checked="checked"<?php endif ;?>/><label for="display_<?= $language['lang']; ?>"><img alt="<?= $language['lang']; ?>" src="<?= theme_url() ?>/images/world_flags/flag_<?= $language['lang']; ?>.gif" /></label>
+						<?php endforeach; ?>
+					</dd>
+				</dl>
+			
 				<!-- Container -->
 				<dl class="small">
 					<dt><label for="container_<?= $type.$id_media ?>"><?=lang('ionize_label_media_container')?></label></dt>
@@ -307,102 +414,6 @@ if($type == 'picture')
 				<?php endforeach ;?>
 		
 			</div>
-
-
-			<!-- Translated Meta data -->
-			<?php foreach(Settings::get_languages() as $language) :?>
-
-			<?php $lang = $language['lang']; ?>
-			
-			<div class="tabcontent<?= $UNIQ ?>">
-
-				<!-- title -->
-				<dl class="small">
-					<dt>
-						<label for="title_<?= $lang ?><?= $type.$id_media ?>"><?= lang('ionize_label_title') ?></label>
-					</dt>
-					<dd>
-						<input id="title_<?= $lang ?><?= $type.$id_media ?>" name="title_<?= $lang ?>" class="inputtext w200" type="text" value="<?= ${$lang}['title'] ?>"/>
-						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('title_<?= $lang ?><?= $type.$id_media ?>');"/>
-					</dd>
-				</dl>
-		
-				<?php if(pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == 'mp3') :?>
-				
-				<dl class="small mt10">
-					<dt>
-						<label</label>
-					</dt>
-					<dd class="lite"><?= lang('ionize_message_alt_desc_for_mp3') ?></dd>
-				</dl>
-				<?php endif ;?>
-		
-				<!-- alternative text -->
-				<dl class="small">
-					<dt>
-						<label for="alt_<?= $lang ?><?= $type.$id_media ?>"><?= lang('ionize_label_alt') ?></label>
-					</dt>
-					<dd>
-						<input id="alt_<?= $lang ?><?= $type.$id_media ?>" name="alt_<?= $lang ?>" class="inputtext w200" type="text" value="<?= ${$lang}['alt'] ?>"/>
-						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('alt_<?= $lang ?><?= $type.$id_media ?>');"/>
-					</dd>
-				</dl>
-		
-				<!-- description -->
-				<dl class="small">
-					<dt>
-						<label for="description_<?= $lang ?><?= $type.$id_media ?>"><?= lang('ionize_label_description') ?></label>
-					</dt>
-					<dd>
-						<input id="description_<?= $lang ?><?= $type.$id_media ?>" name="description_<?= $lang ?>" class="inputtext w200" type="text" value="<?= ${$lang}['description'] ?>"/>
-						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('description_<?= $lang ?><?= $type.$id_media ?>');"/>
-					</dd>
-				</dl>
-
-				<!-- extend fields goes here... -->
-				<?php foreach($extend_fields as $extend_field) :?>
-					<?php if ($extend_field['translated'] == '1') :?>
-					
-						<dl class="small">
-							<dt>
-								<?php
-									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-								?>
-								<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
-							</dt>
-							<dd>
-								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext w340" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $extend_field[$lang]['content'] ?>" />
-								<?php endif ;?>
-								<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext w340 h80" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>"><?= $extend_field[$lang]['content'] ?></textarea>
-								<?php endif ;?>
-							</dd>
-						</dl>	
-							
-					<?php endif ;?>
-				<?php endforeach ;?>
-
-			</div>
-			<?php endforeach ;?>
-
-			<!-- Thumbnails preferences -->
-			<?php if($type == 'picture') :?>
-				<div class="tabcontent<?= $UNIQ ?>">
-					
-					<!-- Thumbnail square crop area -->
-					<dl class="small">
-						<dt><?= lang('ionize_label_square_crop_area') ?>&nbsp;&nbsp;</dt>
-						<dd>
-							<input id="square_crop_<?= $id_media ?>_1" name="square_crop" type="radio" value="tl"<?php if ($square_crop == 'tl'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_1"><?= lang('ionize_label_top_left') ?></label></input><br />
-							<input id="square_crop_<?= $id_media ?>_2" name="square_crop" type="radio" value="m"<?php if ($square_crop == 'm'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_2"><?= lang('ionize_label_middle') ?></label></input><br />
-							<input id="square_crop_<?= $id_media ?>_3" name="square_crop" type="radio" value="br"<?php if ($square_crop == 'br'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_3"><?= lang('ionize_label_bottom_right') ?></label></input>
-						</dd>
-					</dl>
-
-				</div>
-			<?php endif ;?>
-			
 		
 		</div>
 		

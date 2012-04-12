@@ -36,7 +36,7 @@
 			<dd>
 
 				<!-- Tabs -->
-				<div id="extendFieldTab<?= $id_extend_field ?>" class="mainTabs gray mb5 mt0 ">
+				<div id="extendFieldTab<?= $id_extend_field ?>" class="mainTabs transparent mb5 mt0 ">
 					
 					<ul class="tab-menu">
 						

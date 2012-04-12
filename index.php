@@ -104,7 +104,7 @@ if (defined('ENVIRONMENT'))
  * Main app folder : 	/public_html/
  * Ionize folder : 		/public_html/ionize/
  * 
- * If you want to store files (madias) outside from the ionize folder
+ * If you want to store files (medias) outside from the ionize folder
  * the public doc folder needs to be set and will be different from the
  * FCPATH 
  *
@@ -231,10 +231,16 @@ if (defined('ENVIRONMENT'))
 	}
 
 	// Path to the public web folder
-	if (realpath($doc_folder) !== FALSE)
-		$doc_path = realpath($doc_folder);
+	if (realpath(FCPATH.$doc_folder) !== FALSE)
+	{
+//		$doc_path = realpath($doc_folder);
+		$doc_path = realpath(FCPATH.$doc_folder);
+	}
 	else
-		$doc_path = realpath($_SERVER['DOCUMENT_ROOT']);
+	{
+//		$doc_path = realpath($_SERVER['DOCUMENT_ROOT']);
+		$doc_path = FCPATH;
+	}
 
 	$doc_path = rtrim($doc_path, '/').'/';
 

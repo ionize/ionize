@@ -406,6 +406,8 @@ class Lang extends MY_admin
 		
 		// Available languages array
 		$lang_uri_abbr = array();
+                
+		$lang_online_abbr = array();
 		
 		foreach($languages as $l)
 		{
@@ -414,6 +416,9 @@ class Lang extends MY_admin
 				$def_lang = $l['lang'];
 			
 			$lang_uri_abbr[$l['lang']] = $l['name'];
+ 
+			if($l['online'] == '1')
+				$lang_online_abbr[$l['lang']] = $l['name'];
 		}
 
 		// Files begin
@@ -437,6 +442,9 @@ class Lang extends MY_admin
 		
 		$conf .= "// available languages\n";
 		$conf .= "\$config['lang_uri_abbr'] = ".dump_variable($lang_uri_abbr)."\n\n";
+                
+		$conf .= "// online languages\n";
+		$conf .= "\$config['lang_online_abbr'] = ".dump_variable($lang_online_abbr)."\n\n";
 		
 		$conf .= "// ignore these language abbreviation : not used for the moment \n";
 		$conf .= "\$config['lang_ignore'] = array();\n";

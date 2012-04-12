@@ -179,7 +179,7 @@ class Modules extends MY_admin
 
 				// Install module database tables
 				$db = $xml->database;
-				
+
 				if ( (bool)$xml->database == 1)
 				{
 					$errors = array();
@@ -194,10 +194,10 @@ class Modules extends MY_admin
 						if ( ! empty($database_attr['script']))
 						{
 							$script = $database_attr['script'];
-						
-//							if (is_string($script))
-//								$errors = $this->install_database_script(strval($script), $module_folder);
-//							else
+
+							if ( ! empty($script))
+								$errors = $this->install_database_script(strval($script), $module_folder);
+							else
 								$errors = $this->install_database($db);				
 						}
 						else
@@ -391,7 +391,7 @@ class Modules extends MY_admin
 				$script .= (isset($table_attr['auto_increment'])) ?		' AUTO_INCREMENT=' . $table_attr['auto_increment'] . ' ' : '';
 
 				$script .= ';';
-				
+
 				if ( ! $this->db->simple_query($script))
 				{
 					$errors[] = $table_attr['name'];
@@ -461,7 +461,7 @@ class Modules extends MY_admin
 			// Get tables & content
 			$tables = $xml->xpath('/sql/tables/query');
 			$content = $xml->xpath('/sql/content/query');
-			
+
 			// Create tables
 			foreach ($tables as $sql)
 			{

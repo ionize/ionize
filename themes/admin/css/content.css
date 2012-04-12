@@ -645,7 +645,7 @@ table.list div.content ul{
 	list-style:	none;
 	margin: 0;
 	padding: 0;
-	line-height: 16px;
+	line-height: 14px;
 	font-size: 11px;
 }
 .mainTabs .tab-menu li {
@@ -721,20 +721,24 @@ table.list div.content ul{
 .mainTabs.gray{
 	background: url(../images/tabs_bg.gif) repeat-x 0 0;
 }
-.mainTabs.gray .tab-menu li,
-.mainTabs.gray .tab-menu li.selected,
+/*
 .mainTabs.gray .tab-menu li a,
 .mainTabs.gray .tab-menu li.selected a {
+*/.mainTabs.gray .tab-menu li,
+.mainTabs.gray .tab-menu li.selected{
 	background: url(../images/tabs_content_gray.gif) repeat-x;
 }
+
+
+
 /* Gray version */
 .mainTabs.transparent {
 	background: url(../images/tabs_bg.gif) repeat-x 0 0;
 }
-.mainTabs.transparent .tab-menu li,
-.mainTabs.transparent .tab-menu li.selected,
 .mainTabs.transparent .tab-menu li a,
-.mainTabs.transparent .tab-menu li.selected a {
+.mainTabs.transparent .tab-menu li.selected a,
+.mainTabs.transparent .tab-menu li,
+.mainTabs.transparent .tab-menu li.selected{
 	background-image: url(../images/tabs_content_transparent.gif)	;
 }
 

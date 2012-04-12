@@ -94,7 +94,10 @@ class Url_model extends Base_model
 			$element['creation_date'] = date('Y-m-d H:i:s');
 			$this->insert($element);
 		}
-		else if ( ! empty($db_url) && $data['url'] != $db_url['path'] )
+		else if ( 
+			(! empty($db_url) && $data['url'] != $db_url['path'] )
+			OR (! empty($db_url) && ($data['path_ids'] != $db_url['path_ids'] OR $data['full_path_ids'] != $db_url['full_path_ids']))
+		)
 		{
 			$element['path'] = $data['url'];
 			$element['path_ids'] = $data['path_ids'];

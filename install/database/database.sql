@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS extend_field (
 	parent varchar(50) NOT NULL,
   	ordering int(11) default 0,
 	translated char(1) default '0',
-	`value` text NULL,
+	value text NULL,
 	default_value varchar(255) NULL,
 	global tinyint(1) UNSIGNED NOT NULL default '0',
 	parents varchar(300) NOT NULL default '',
@@ -230,7 +230,7 @@ CREATE TABLE IF NOT EXISTS login_tracker (
   ip_address varchar(32) collate utf8_unicode_ci NOT NULL,
   first_time int(11) unsigned NOT NULL,
   failures tinyint(2) unsigned default NULL,
-  PRIMARY KEY  (`ip_address`)
+  PRIMARY KEY  (ip_address)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
 
@@ -341,7 +341,7 @@ CREATE TABLE IF NOT EXISTS page (
   pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
   id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
-  PRIMARY KEY  (`id_page`),
+  PRIMARY KEY  (id_page),
   KEY idx_page_id_parent (id_parent),
   KEY idx_page_level (level),
   KEY idx_page_menu (id_menu) 
@@ -418,6 +418,17 @@ CREATE TABLE IF NOT EXISTS tag (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 
+CREATE TABLE IF NOT EXISTS type (
+  id_type int(11) unsigned NOT NULL AUTO_INCREMENT,
+  code varchar(50) NOT NULL,
+  parent char(20) NOT NULL,
+  title varchar(255) NOT NULL,
+  description varchar(3000) DEFAULT NULL,
+  ordering smallint(6) NOT NULL,
+  view varchar(50) DEFAULT NULL,
+  flag tinyint(1) NOT NULL,
+  PRIMARY KEY (id_type)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS users (

@@ -342,6 +342,16 @@ class Base_Controller extends MY_Controller
 			Settings::set('current_lang', config_item('language_abbr'));		
 		}
 
+		// Set lang preferrence cookie
+		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
+		
+		if( ! empty($_COOKIE['ion_selected_language']))
+		{
+			setcookie('ion_selected_language', '', time() - 3600, '/', $host);
+		}
+		
+		setcookie('ion_selected_language', Settings::get_lang(), time() + 3600, '/', $host);
+
 		// Lang dependant settings for the current language : Meta, etc.
 		Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('language_abbr')), 'name','content');
 

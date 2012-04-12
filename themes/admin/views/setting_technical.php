@@ -346,7 +346,7 @@
 						1 <input class="inputtext w360 mb5" id="tinybuttons1" name="tinybuttons1" type="text" value="<?= Settings::get('tinybuttons1') ?>"/><br />
 						2 <input class="inputtext w360 mb5" id="tinybuttons2" name="tinybuttons2" type="text" value="<?= Settings::get('tinybuttons2') ?>"/><br />
 						3 <input class="inputtext w360" id="tinybuttons3" name="tinybuttons3" type="text" value="<?= Settings::get('tinybuttons3') ?>"/><br />
-						<a id="texteditor_default"><?=lang('ionize_label_restore_tinybuttons')?></a>
+						<a id="texteditor_default"><?=lang('ionize_label_restore_tinybuttons')?></a> | <a target="_blank" href="http://www.tinymce.com/wiki.php/Buttons/controls"><?=lang('ionize_label_help_tinybuttons')?></a>
 					</dd>
 					
 				</dl>

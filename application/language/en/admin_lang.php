@@ -551,6 +551,7 @@ $lang['ionize_label_db_pass'] = 'Password';
 $lang['ionize_label_google_analytics'] = 'Google Analytics';
 $lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';
 $lang['ionize_label_restore_tinybuttons'] = 'Restore TinyMCE default toolbar';
+$lang['ionize_label_help_tinybuttons'] = 'TinyMCE toolbar buttons help';
 $lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';
 $lang['ionize_label_tinyblockformats'] = 'TinyMCE Format Select';
 $lang['ionize_label_restore_tinyblockformats'] = 'Restore TinyMCE default Format Select';
@@ -778,6 +779,12 @@ $lang['ionize_label_reload_media_list'] = 'Reload media list';
 $lang['ionize_label_media_container'] = 'Album / Serie';
 $lang['ionize_label_media_crop_picture'] = 'Crop Picture';
 $lang['ionize_label_add_video'] = 'Add Video URL';
+$lang['ionize_label_media_limit_display_to_lang'] = 'Limit display to';
+$lang['ionize_label_media_display_limited_to_lang'] = 'Display limited to';
+$lang['ionize_label_media_no_limit_display'] = 'No limit';
+
+
+
 
 $lang['ionize_button_add_video'] = 'Add';
  

@@ -38,6 +38,18 @@
 		ALTER TABLE `users` ADD `lastname` varchar(100) DEFAULT NULL;
 	</query>
 
+	<query>
+		ALTER TABLE `article_media` ADD `lang_display` varchar(3) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `page_media` ADD `lang_display` varchar(3) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `media` ADD `square_crop` enum('tl','m','br') NOT NULL DEFAULT 'm';
+	</query>
+
 
 	<query>
 			CREATE TABLE url (
@@ -96,6 +108,19 @@
 		ALTER TABLE `media` ADD square_crop enum('tl','m','br') NOT NULL DEFAULT 'm';
 	</query>
 
+ 	<query>
+		CREATE TABLE IF NOT EXISTS `type` (
+		  `id_type` int(11) unsigned NOT NULL AUTO_INCREMENT,
+		  `code` varchar(50) NOT NULL,
+		  `parent` char(20) NOT NULL,
+		  `title` varchar(255) NOT NULL,
+		  `description` varchar(3000) DEFAULT NULL,
+		  `ordering` smallint(6) NOT NULL,
+		  `view` varchar(50) DEFAULT NULL COMMENT 'view',
+		  `flag` tinyint(1) NOT NULL,
+		  PRIMARY KEY (`id_type`)
+		) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+ 	</query>
 
 	<query>ALTER TABLE article ENGINE = InnoDB;</query>
 	<query>ALTER TABLE article_category ENGINE = InnoDB;</query>

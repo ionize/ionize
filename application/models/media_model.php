@@ -23,7 +23,11 @@
 
 class Media_model extends Base_model 
 {
-
+	// Fields of the context table which can be NULL
+	private $_context_null_allowed = array(
+		'lang_display'
+	);
+	
 
 	/**
 	 * Constructor
@@ -64,6 +68,7 @@ class Media_model extends Base_model
 			// Select from media table
 			$this->{$this->db_group}->order_by('ordering', 'ASC');
 			$this->{$this->db_group}->select($this->table.'.*', FALSE);
+			$this->{$this->db_group}->select($media_table.'.ordering, '.$media_table.'.lang_display', FALSE);
 			
 			// Limit to current parent ID
 			$this->{$this->db_group}->where($media_table.'.'.$parent_pk, $id_parent);
@@ -256,7 +261,59 @@ class Media_model extends Base_model
 		
 		// Media saving
 		return parent::save($data, $lang_data);
-	}	
+	}
+	
+	/**
+	 * Saves the media context data
+	 * depending on the link between one parent and the media
+	 * Exemple : table article_media
+	 *
+	 */
+	function save_context_data($post)
+	{
+		if ( ! empty($post['parent']))
+		{
+			$data = array();
+			$link_table = $post['parent'].'_media';
+			$fields = $this->{$this->db_group}->list_fields($link_table);
+			
+			foreach ($fields as $field)
+			{
+				if ( ! empty($post[$field]) )
+					$data[$field] = $post[$field];
+				else
+				{
+					if (in_array($field, $this->_context_null_allowed))
+					$data[$field] = NULL;
+				}
+			}
+			if ( ! empty($data) )
+			{
+				$this->{$this->db_group}->where('id_'.$post['parent'], $post['id_parent']);
+				$this->{$this->db_group}->where('id_media', $post['id_media']);
+				$this->{$this->db_group}->update($link_table, $data);
+			}
+		}
+	}
+	
+	
+	function get_context_data($id, $parent, $id_parent)
+	{
+		$data = array();
+		
+		$link_table = $parent.'_media';
+		$parent_pk = 'id_'.$parent;
+		
+		$this->{$this->db_group}->where($link_table.'.'.$parent_pk, $id_parent);
+		$this->{$this->db_group}->where('id_media', $id);
+
+		$query = $this->{$this->db_group}->get($link_table);
+	
+		if($query->num_rows() > 0)
+			$data = $query->row_array();
+
+		return $data;
+	}
 }
 
 

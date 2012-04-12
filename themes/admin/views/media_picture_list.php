@@ -16,15 +16,12 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 ?>
 
 <?php foreach ($items as $media) :?>
-
 	<?php
 	
 //	$path = str_replace($file_path, '', $media['path']);
 	
 	$path = substr($media['path'], strpos($media['path'], '/') + 1);
-	
 	$thumbUrl =	$thumb_base_url.$path;
-
 	// Get picture thumb size	
 	$details = '';
 
@@ -40,18 +37,18 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 	{
 		$details = lang('ionize_exception_no_source_file');
 	}
-	
 	?>
-	
 	<div class="picture drag" id="picture_<?= $media['id_media'] ?>">
 		<div class="thumb" style="width:<?= $thumb_size ?>px;height:<?= $thumb_size ?>px; background-image:url(<?= admin_url(TRUE) . 'media/get_thumb/'.$media['id_media'].'/'.time()  ?>);"></div>
 		<p class="icons">
 			<a class="icon delete right" href="javascript:mediaManager.detachMedia('<?= $media['type'] ?>', '<?= $media['id_media'] ?>');" title="<?= lang('ionize_label_detach_media') ?>"></a>
-			<a class="icon edit left mr5 " href="javascript:ION.formWindow('<?= $media['type'].$media['id_media'] ?>', 'mediaForm<?= $media['id_media'] ?>', '<?= $media['file_name'] ?>', '<?= admin_url(TRUE) ?>media/edit/picture/<?= $media['id_media'] ?>', {width:520,height:430,resize:true});" title="<?= lang('ionize_label_edit') ?>"></a>
+			<a class="icon edit left mr5 " href="javascript:ION.formWindow('<?= $media['type'].$media['id_media'] ?>', 'mediaForm<?= $media['id_media'] ?>', '<?= $media['file_name'] ?>', '<?= admin_url(TRUE) ?>media/edit/picture/<?= $media['id_media'] ?>/<?= $parent ?>/<?= $id_parent ?>', {width:520,height:430,resize:false});" title="<?= lang('ionize_label_edit') ?>"></a>
 			<a class="icon refresh left mr5 " href="javascript:mediaManager.initThumbs('<?= $media['id_media'] ?>');" title="<?= lang('ionize_label_init_thumb') ?>"></a>
 			<a class="icon info left help" title="<?php if ($this->connect->is('super-admins') ) :?><?= $media['id_media'] ?> : <?php endif ;?><?= $path ?>" rel="<?= $details ?>"></a>
+			<?php if( ! empty($media['lang_display'])) :?>
+				<a class="icon left ml5 help" title="<?=lang('ionize_label_media_display_limited_to_lang')?> : <?= $media['lang_display']; ?>"><img alt="<?=lang('ionize_label_media_display_limited_to_lang')?> : <?= $media['lang_display']; ?>" src="<?= theme_url() ?>/images/world_flags/flag_<?= $media['lang_display']; ?>.gif" /></a>
+			<?php endif ;?>
 		</p>
 	</div>
-	
 <?php endforeach ;?>
 

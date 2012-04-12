@@ -42,7 +42,7 @@ class Sitemap_model extends Base_model
 		
 	}
 	
-	public function get_pages()
+	public function get_pages($lang = FALSE)
 	{
 		$data = array();
 		
@@ -55,6 +55,8 @@ class Sitemap_model extends Base_model
 			'page.online' =>'1',
 			'page_lang.online' =>'1'
 		));
+		
+		(!empty($lang)) ? $this->{$this->db_group}->where(array('page_lang.lang' => $lang)) : '';
 		
 		$this->{$this->db_group}->join('page_lang', 'page.id_page = page_lang.id_page');
 		

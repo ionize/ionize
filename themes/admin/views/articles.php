@@ -185,7 +185,7 @@
 						<fieldset id="blocks">
 							
 							<!-- Category Lang Tabs -->
-							<div id="categoryTab" class="mainTabs gray">
+							<div id="categoryTab" class="mainTabs transparent">
 								
 								<ul class="tab-menu">
 									<?php foreach(Settings::get_languages() as $l) :?>

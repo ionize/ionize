@@ -1365,7 +1365,7 @@ class TagManager
 	 * 
 	 * @param  	FTL_Binding		Tag
 	 *
-	 * @usage	<ion:browser method="is_browser|is_mobile|is_robot|..." value="Safari|Firefox..." is="true|false">
+	 * @usage	<ion:browser method="is_browser|is_mobile|is_robot|..." value="Safari|Firefox..." is="true|false" return="true">
 	 *				...
 	 *			</ion:browser>
 	 *
@@ -1380,7 +1380,10 @@ class TagManager
 		$method = $tag->getAttribute('method');
 		$value = $tag->getAttribute('value');
 		$is = $tag->getAttribute('is');
-
+		
+		$return = $tag->getAttribute('return');
+		$return = ( ! empty($return)) ? TRUE : FALSE ;
+	
 		$result = NULL;
 		
 		if ( ! is_null($method))
@@ -1390,9 +1393,13 @@ class TagManager
 			else
 				$result = self::$ci->agent->{$method}();
 		}
-
-		if (is_bool($is) && $result == $is)
-			return $tag->expand();
+		if ($result == $is)
+		{
+			if ( ! $return)
+				return $tag->expand();
+			else
+				return $result;
+		}
 	}	
 
 

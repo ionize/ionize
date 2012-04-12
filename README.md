@@ -15,7 +15,7 @@ Translations : http://mygengo.com/string/p/ionize-language-packs-1
 
 ### Authors
 
-* [Michel-Ange Kuntz](http://www.partikule.net.net)
+* [Michel-Ange Kuntz](http://www.partikule.net)
 * [Martin Wernstahl]
 * [Christophe Prudent](http://www.toopixel.ch)
 

@@ -84,10 +84,13 @@ var TabSwapper = new Class({
 			}.bind(this)
 		});
 
-		clicker.addEvent('click', function(e){
-			e.preventDefault();
-			this.show(index);
-		}.bind(this));
+		if ( ! tab.hasAttribute('disabled'))
+		{
+			clicker.addEvent('click', function(e){
+				e.preventDefault();
+				this.show(index);
+			}.bind(this));
+		}
 
 		tab.store('tabbered', true);
 		tab.store('section', section);
@@ -136,7 +139,16 @@ var TabSwapper = new Class({
 		return this;
 	},
 	recall: function(){
-		return (this.options.cookieName) ? [Cookie.read(this.options.cookieName), false].pick() : false;
+
+		if (this.options.cookieName)
+		{
+			var idx = ([Cookie.read(this.options.cookieName), false].pick());
+
+			if (typeOf(idx) != 'null' && this.tabs[idx])
+				if( (this.tabs[idx]).hasAttribute('disabled') == false)
+					return idx;
+		}
+		return false;
 	},
 	hideSection: function(idx) {
 		var tab = this.tabs[idx];

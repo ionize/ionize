@@ -1,7 +1,7 @@
 RewriteEngine On
 
 # The RewriteBase / instruction is commented. Remove the "#" to uncomment
-# RewriteBase /
+RewriteBase /
 
 # Memory Limit
 # php_value memory_limit 256M
@@ -17,9 +17,13 @@ RewriteEngine On
 # Solution 2 : Displays a 403 forbidden
 # RewriteRule .*\.(jpe?g|gif|bmp|png)$ - [F]
 
-# Forces the "www"
-# RewriteCond %{HTTP_HOST} !^www\.yourdomain\.tld$ [NC]
-# RewriteRule ^(.*)$ http://www.yourdomain.tld/$1 [QSA,L,R=301]
+# Redirect domain.com to www.domain.com
+# RewriteCond %{HTTP_HOST} !^www\.domain\.tld$ [NC]
+# RewriteRule ^(.*)$ http://www.domain.tld/$1 [QSA,L,R=301]
+
+# Redirect www.domain.com to domain.com
+# RewriteCond %{HTTP_HOST} !^domain.com$ [NC]
+# RewriteRule ^(.*)$ http://domain.com/$1 [L,R=301]
 
 # Uncomment these lines to display the off.html page to other IP than the one bellow
 # RewriteCond %{REMOTE_ADDR} !^127.0.0.1$
@@ -28,12 +32,20 @@ RewriteEngine On
 
 # DO NOT MODIFY ANY FOLLOWING LINE
 
+# 
 # Ionize Rules
+#
+# If Ionize resized outside the public folder, keep modules asset availability
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteRule ^(modules)/([a-zA-Z0-9-]+)/(assets)/(.*)$ ../$1/$2/$3/$4
+
+
 # Keep these lines even in maintenance mode, to have an access to the website
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond $1 !^(index\.php|robots\.txt)
 RewriteRule ^(.*)$ index.php/$1
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(application|modules|plugins|system|themes) index.php/$1 [L]
+
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteRule ^(application|plugins|system|themes) index.php/$1 [L]

@@ -73,6 +73,8 @@ class CI_Router
 		// all available website languages
 		$this->lang_dict = $this->config->item('lang_uri_abbr');
 		
+ 		$this->lang_online = $this->config->item('lang_online_abbr');
+                
 		// ignore lang array
 		$this->lang_ignore = (Array) $this->config->item('lang_ignore');
 
@@ -556,7 +558,28 @@ class CI_Router
 		}
 		else
 		{
-			$this->lang_key = $this->config->item('language_abbr');
+			$selected_language = ( ! empty($_COOKIE['ion_selected_language'])) ? $_COOKIE['ion_selected_language'] : FALSE ;
+			
+			if($selected_language)
+			{
+				// Use lang preferrence from cookie
+				$this->lang_key = $selected_language;
+			}
+			else
+			{
+				// Define user lang by browser preferrence
+				$user_lang = (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : '';
+
+				if($user_lang != '' && $user_lang != $this->config->item('language_abbr') && !empty($this->lang_dict[$user_lang]) && !empty($this->lang_online[$user_lang]))
+					$this->lang_key = $user_lang;
+				else
+					$this->lang_key = $this->config->item('language_abbr');
+			}
+
+			/**
+			 * Default
+			 */
+			//$this->lang_key = $this->config->item('language_abbr');
 		}
 		
 		$this->apply_language();
