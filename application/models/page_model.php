@@ -479,7 +479,7 @@ class Page_model extends Base_model
 		}
 		else
 		{
-			$pages = $this->get_list();
+			$pages = $this->get_list(array('id_parent' => '0'));
 			
 			foreach($pages as $page)
 			{

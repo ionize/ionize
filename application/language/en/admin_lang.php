@@ -728,6 +728,7 @@ $lang['ionize_help_page_content_online'] = 'Is this page online for this languag
 $lang['ionize_help_page_url'] = 'Page\'s URL. Must be unique';
 $lang['ionize_help_page_link'] = 'Internal or External HTTP link. Replace the default page link';
 $lang['ionize_help_page_view'] = 'Common page view';
+$lang['ionize_help_page_type'] = 'Page type (model)';
 $lang['ionize_help_page_single_view'] = 'Page view used to display one Article';
 $lang['ionize_help_pagination'] = 'If > 0, activate the pagination of article.';
 $lang['ionize_help_article_list_template'] = 'Article view : If more than 1 article on the page, use this view by default for each article';
@@ -783,9 +784,6 @@ $lang['ionize_label_add_video'] = 'Add Video URL';
 $lang['ionize_label_media_limit_display_to_lang'] = 'Limit display to';
 $lang['ionize_label_media_display_limited_to_lang'] = 'Display limited to';
 $lang['ionize_label_media_no_limit_display'] = 'No limit';
-
-
-
 
 $lang['ionize_button_add_video'] = 'Add';
  

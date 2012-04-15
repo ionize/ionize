@@ -57,6 +57,11 @@ class Url_model extends Base_model
 	public function save_url($type, $lang, $id_entity, $data)
 	{
 		$return = 0;
+
+
+log_message('error', $id_entity . ' :: ' . $data['url']);
+
+
 		
 		// Check / correct the URL
 		$data['url'] = $this->check_unique_url($type, $id_entity, $lang, $data['url']);
@@ -190,7 +195,8 @@ class Url_model extends Base_model
 	
 	function delete_empty_urls()
 	{
-		$this->delete(array('path' => ''));
+		$this->{$this->db_group}->where(array('path' => ''));
+		return $this->{$this->db_group}->delete('url');
 	}
 	
 	
@@ -200,7 +206,10 @@ class Url_model extends Base_model
 			'type' => $type,
 			'id_entity' => $id_entity
 		);
-		return $this->delete($where);
+
+		$this->{$this->db_group}->where($where);
+		return $this->{$this->db_group}->delete('url');
+
 	}
 	
 	/**

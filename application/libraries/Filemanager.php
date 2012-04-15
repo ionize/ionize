@@ -2761,7 +2761,7 @@ class FileManager
 
 		$url = $this->legal2abs_url_path($legal_url);
 		$filename = basename($url);
-log_message('error', '$url : ' . $url);
+// log_message('error', '$url : ' . $url);
 		// must transform here so alias/etc. expansions inside url_path2file_path() get a chance:
 		$file = $this->url_path2file_path($url);
 
