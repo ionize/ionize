@@ -58,6 +58,12 @@ class Url_model extends Base_model
 	{
 		$return = 0;
 		
+		// Check / correct the URL
+		$data['url'] = $this->check_unique_url($type, $id_entity, $lang, $data['url']);
+		
+		// Update the entity URL (page, article)
+		$this->update_entity_url($type, $id_entity, $lang, $data['url']);
+		
 		$where = array(
 			'type' => $type,
 			'lang' => $lang,
@@ -119,9 +125,145 @@ class Url_model extends Base_model
 	}
 	
 	
+	/**
+	 * Returns list of URLs
+	 *
+	 * @param	String		Entity type. 'article, 'page'
+	 * @param	Int			Entity ID
+	 * @param	String		Lang code. 'all' for all languages
+	 * @param	Boolean		Only active URLs. 1 default
+	 *
+	 */
+	function get_collection($type, $id_entity, $lang = 'all', $active = TRUE)
+	{
+		$where = array(
+			'type' => $type,
+			'id_entity' => $id_entity,
+			'active' => ($active) ? 1 : 0
+		);
+		
+		if ($lang != 'all')
+			$where['lang'] = $lang;
+		
+		$this->{$this->db_group}->where($where);
+		$query = $this->{$this->db_group}->get($this->table);
+		
+		if ($query->num_rows() > 0)
+			return $query->result_array();
+		
+		return array();
+	}
+		
+	
+	/**
+	 * Update the entity lang table with one new URL
+	 *
+	 * @param	String		Entity type. 'article, 'page'
+	 * @param	Int			Entity ID
+	 * @param	String		Lang code
+	 * @param	String		URL
+	 * 
+	 */
+	function update_entity_url($type, $id_entity, $lang, $url)
+	{
+		$table = $type . '_lang';
+
+		// If the table exists and has the URL field
+		if (
+			$this->{$this->db_group}->table_exists($table)
+			&& $this->has_field('url', $table)
+		)
+		{
+			// Get only the last URL part
+			$url = array_pop(explode('/', $url));
+			
+			$this->{$this->db_group}->where(
+				array(
+					'id_'.$type => $id_entity,
+					'lang' => $lang
+				)
+			);
+			$this->{$this->db_group}->update($table, array('url' => $url));
+		}
+	}
+	
+	
 	function delete_empty_urls()
 	{
 		$this->delete(array('path' => ''));
 	}
+	
+	
+	function delete($type, $id_entity)
+	{
+		$where = array(
+			'type' => $type,
+			'id_entity' => $id_entity
+		);
+		return $this->delete($where);
+	}
+	
+	/**
+	 * Return TRUE if one URL already exists (for another entity_id with the same type
+	 *
+	 * @param	String		Entity type. 'article, 'page'
+	 * @param	Int			Entity ID to exclude
+	 * @param	String		URL
+	 * @param	String		Lang code. 'all' for all languages (default)
+	 *
+	 */
+	function is_existing_url($type, $id_entity, $url, $lang='all')
+	{
+		// Try to get one URL different from entity one
+		$where = array(
+			'type' => $type,
+			'id_entity <>' => $id_entity,
+			'active' => 1,
+			'path' => $url
+		);
+		
+		if ($lang != 'all')
+			$where['lang'] = $lang;
+		
+		$this->{$this->db_group}->where($where);
+		$query = $this->{$this->db_group}->get($this->table);
+
+		if ($query->num_rows() > 0)
+			return TRUE;
+		
+		return FALSE;			
+	}
+	
+	
+	
+	/**
+	 * Return one unique URL
+	 *
+	 * @param	String		Entity type. 'article, 'page'
+	 * @param	Int			Entity ID
+	 * @param	String		Lang code. 'all' for all languages
+	 * @param	String		URL
+	 *
+	 */
+	function check_unique_url($type, $id_entity, $lang, $url, $id = 1)
+	{
+		if ($this->is_existing_url($type, $id_entity, $url, $lang))
+		{
+			// 1. If we already try with $id to 1 OR
+			// 2. If the URI already contains a last number
+			// -> Remove the last number before increment
+			if ($id > 1 OR (substr($url, -2, count($url) -2) && intval(substr($url, -1)) != 0 ))
+				$url = substr($url, 0, -2);
+			
+			// Add the last ID
+			$url = $url . '-' . $id;
+			
+			// Check the new URL
+			return $this->check_unique_url($type, $id_entity, $lang, $url, $id + 1);
+		}
+		
+		return $url;
+	}
+	
 }
 

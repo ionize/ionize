@@ -899,7 +899,6 @@ class Base_model extends CI_Model
 	/**
 	 * Check all URLs against the articles URLs in DB and correct them if needed
 	 *
-	 */ 
 	function set_unique_urls(&$lang_data, $exclude_id = FALSE)
 	{
 		foreach($this->get_languages() as $l)
@@ -907,11 +906,12 @@ class Base_model extends CI_Model
 			$lang_data[$l['lang']]['url'] = $this->_set_unique_url($lang_data[$l['lang']]['url'], $exclude_id);
 		}
 	}
+	 */ 
 	
 
 	// ------------------------------------------------------------------------
 
-
+	/*
 	function _set_unique_url($url, $exclude_id, $id=1)
 	{
 
@@ -934,7 +934,7 @@ class Base_model extends CI_Model
 			return $url;
 		}
 	}
-
+	*/
 
 	// ------------------------------------------------------------------------
 

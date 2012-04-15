@@ -170,8 +170,8 @@ class Page extends MY_admin
 			if(count($datas) > 0)
 			{
 				$datas = array('' => lang('ionize_select_default_view')) + $datas; 
-				$this->template['views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select w160"');
-				$this->template['single_views'] = form_dropdown('view_single', $datas, $this->template['view_single'], 'class="select w160"');
+				$this->template['views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select w140"');
+				$this->template['single_views'] = form_dropdown('view_single', $datas, $this->template['view_single'], 'class="select"');
 			}
 			
 			// Dropdown article list views (templates)
@@ -179,7 +179,7 @@ class Page extends MY_admin
 			if(count($datas) > 0)
 			{
 				$datas = array('' => lang('ionize_select_default_view')) + $datas; 
-				$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, $this->template['article_list_view'], 'class="select w160"');
+				$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, $this->template['article_list_view'], 'class="select"');
 			}
 			
 			// Dropdown article views (templates)
@@ -187,7 +187,7 @@ class Page extends MY_admin
 			$datas = array('' => lang('ionize_select_default_view')) + $datas; 
 			if(count($datas) > 0)
 			{
-				$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select w160"');
+				$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select"');
 			}
 			
 			// Breadcrumbs
@@ -764,7 +764,7 @@ class Page extends MY_admin
 		{
 			// Clear the cache
 			Cache()->clear_cache();
-
+			
 			// Remove deleted article from DOM
 			$this->callback[] = array(
 				'fn' => 'ION.deleteDomElements',

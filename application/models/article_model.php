@@ -468,47 +468,6 @@ class Article_model extends Base_model
 
 	// ------------------------------------------------------------------------
 
-	
-	/**
-	 * Check all URLs against the articles URLs in DB and correct them if needed
-	 *
-	function set_unique_urls(&$data_lang, $exclude_id = FALSE)
-	{
-		
-		foreach(Settings::get_languages() as $l)
-		{
-			$data_lang[$l['lang']]['url'] = $this->_set_unique_url($data_lang[$l['lang']]['url'], $exclude_id);
-		}
-
-	}
-	
-	function _set_unique_url($url, $exclude_id, $id=1)
-	{
-
-		$articles = $this->article_model->get_from_urls($url, $exclude_id);
-		
-		if ( ! empty($articles))
-		{
-			// Remove the existing last number
-			if ($id > 1)
-				$url = substr($url,0,-2);
-			
-			// Add the last ID
-			$url = $url . '-' . $id;
-			
-			// Check the new URL
-			return $this->_set_unique_url($url, $exclude_id, $id+1);
-		}
-		else
-		{
-			return $url;
-		}
-	}
-	
-	 */ 
-
-	// ------------------------------------------------------------------------
-
 
 	/**
 	 * Add lang content to each article in the article list.
@@ -667,8 +626,11 @@ class Article_model extends Base_model
 
 				if ( ! empty($url))
 				{
+					// Check if URL exists and correct it if necessary
+					$url = implode('/', $url) . '/' . $article['url'];
+					
 					$data = array(
-						'url' => implode('/', $url) . '/' . $article['url'],
+						'url' => $url,
 						'path_ids' => implode('/', $path_ids),
 						'full_path_ids' => implode('/', $full_path_ids)
 					);
@@ -758,7 +720,7 @@ class Article_model extends Base_model
 			$data['updated'] = date('Y-m-d H:i:s');
 
 		// Be sure URLs are unique
-		$this->set_unique_urls($lang_data, $data['id_article']);
+//		$this->set_unique_urls($lang_data, $data['id_article']);
 		
 	
 		// Dates
@@ -894,6 +856,7 @@ class Article_model extends Base_model
 	 */
 	function link_to_page($id_page, $id_article, $context_data = array())
 	{
+		// If the article doesn't exists in the context of the page
 		if ($this->exists(array('id_article' => $id_article, 'id_page' => $id_page), $this->parent_table) == FALSE)
 		{
 			$data = array(
@@ -903,7 +866,7 @@ class Article_model extends Base_model
 						
 			if ( ! empty($context_data) )
 			{
-				// Cleans the context data array by removing data not in context table
+				// Cleans the context data array by removing keys not corresponding to fields in context table
 				$context_data = $this->clean_data($context_data, $this->parent_table);
 				
 				$data = array_merge($context_data, $data);				
@@ -959,6 +922,13 @@ class Article_model extends Base_model
 			
 			// Contexts
 			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->parent_table);
+			
+			// URLs
+			$where = array(
+				'type' => 'article',
+				'id_entity' => $id
+			);
+			$affected_rows += $this->{$this->db_group}->where($where)->delete('url');
 		}
 		
 		return $affected_rows;

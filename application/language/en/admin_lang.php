@@ -668,6 +668,7 @@ $lang['ionize_label_view_filename'] = 'File';
 $lang['ionize_label_view_folder'] = 'Folder';
 $lang['ionize_label_view_name'] = 'Logical name';
 $lang['ionize_label_view_type'] = 'Type';
+$lang['ionize_label_type'] = 'Type';
 $lang['ionize_label_current_theme'] = 'Current theme';
 
 $lang['ionize_select_no_type'] = '-- No type --';
@@ -868,8 +869,9 @@ $lang['ionize_label_article_context_edition'] = 'Editing context';
 
 $lang['ionize_message_article_not_saved'] = 'Article not saved : Missing data';
 $lang['ionize_message_article_saved'] = 'Article saved';
-$lang['ionize_message_article_name_exists'] = 'One article with the same name exists already!';
-$lang['ionize_message_article_url_exists'] = 'One article with the same URL exists already!';
+$lang['ionize_message_article_name_exists'] = 'One article with the same name already exists!';
+$lang['ionize_message_article_url_exists'] = 'One article with the same URL already exists!';
+$lang['ionize_message_article_url_exists_in_page'] = 'One article with the same URL exists in this page';
 $lang['ionize_message_article_ordered'] = 'Article ordored';
 $lang['ionize_message_article_duplicate_no_name_change'] = 'The duplicated article must have another name!';
 $lang['ionize_message_article_duplicated'] = 'Article duplicated';
@@ -880,6 +882,7 @@ $lang['ionize_message_parent_page_unlinked'] = 'Page and Article successfuly unl
 $lang['ionize_confirm_article_page_unlink'] = 'Unlink this page from this article?';
 $lang['ionize_message_article_already_linked_to_page'] = 'Article already linked to page';
 $lang['ionize_message_article_linked_to_page'] = 'Article linked to page';
+$lang['ionize_message_article_moved'] = 'Article moved';
 $lang['ionize_message_article_context_saved'] = 'Article settings saved';
 $lang['ionize_message_article_lang_copied'] = 'Lang data copied. Save please !';
 $lang['ionize_message_article_main_parent_saved'] = 'Main Parent Page saved !';

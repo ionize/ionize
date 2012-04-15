@@ -93,7 +93,7 @@ class Page_model extends Base_model
 		}
 
 		// Be sure URLs are unique
-		$this->set_unique_urls($lang_data, $data['id_page']);
+		// $this->set_unique_urls($lang_data, $data['id_page']);
 
 
 		// Clean metas data
@@ -286,6 +286,12 @@ class Page_model extends Base_model
 			);
 			$affected_rows += $this->{$this->db_group}->where('id_parent', $id)->update($this->table, $data);
 			
+			// URLs
+			$where = array(
+				'type' => 'page',
+				'id_entity' => $id
+			);
+			$affected_rows += $this->{$this->db_group}->where($where)->delete('url');
 		}
 		
 		return $affected_rows;
@@ -424,7 +430,7 @@ class Page_model extends Base_model
 					'path_ids' => implode('/', $path_ids),
 					'full_path_ids' => implode('/', $full_path_ids)
 				);
-//				$url = implode('/', $url);
+				
 				$nb = $CI->url_model->save_url('page', $l['lang'], $id_page, $data);
 			}
 		}

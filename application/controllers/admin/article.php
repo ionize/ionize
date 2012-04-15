@@ -510,7 +510,10 @@ class Article extends MY_admin
 				
 				// Lang data
 				$this->article_model->feed_lang_template($id_article, $this->template);
-
+				
+				// URLs
+				// $this->template['urls'] = $this->url_model->get_collection('article', $id_article);
+								
 				$this->output('article');
 			}		
 		}
@@ -813,6 +816,7 @@ class Article extends MY_admin
 		$id_page_origin = $this->input->post('id_page_origin');
 		$rel = $id_page.'.'.$id_article;
 		$flat_rel = $id_page.'x'.$id_article;
+		
 		$copy = $this->input->post('copy');
 
 		if ((!empty($id_page)) && (!empty($id_article)))
@@ -828,78 +832,123 @@ class Article extends MY_admin
 				
 			// Ordering : last position
 			$original_context['ordering'] = $this->_get_ordering('last', $id_page);
-
-			if ($this->article_model->link_to_page($id_page, $id_article, $original_context) === TRUE)
+			
+			// Check if no article has the same URL in case of copy
+			$copy_allowed = TRUE;
+			if ($copy)
 			{
-				// Clear the cache
-				Cache()->clear_cache();
-
-				// Get the page, menu and articles details for the JSON answer
-				$page = $this->page_model->get($id_page, Settings::get_lang('default'));
-				$page['id_article'] = $id_article;
-
-				$menu = $this->menu_model->get_from_page($id_page);
+				// Get all page URLs
+				$page_urls = $this->url_model->get_collection('page', $id_page);
 				
-				// Articles
-				$articles = $this->article_model->get_lang_list(array('id_article'=>$id_article, 'id_page'=>$id_page), Settings::get_lang('default'));
+				// Article lang data
+				$articles = $this->article_model->get_lang(array('id_article' => $id_article));
 
-				// Set the article
-				$article = array();
-				if ( ! empty($articles))
+				foreach($page_urls as $page_url)
 				{
-					$article = $articles[0];
-					$article['title'] = htmlspecialchars_decode($article['title'], ENT_QUOTES);
-					
-					// Used by JS Tree to detect if article is inserted in tree or not
-					$article['inserted'] = TRUE;
+					foreach($articles as $article)
+					{
+						if ($article['lang'] == $page_url['lang'])
+						{
+							$new_url = $page_url['path'].'/'.$article['url'];
+							
+							if ($this->url_model->is_existing_url('article', $id_article, $new_url, $article['lang']))
+								$copy_allowed = FALSE;
+						}
+					}
 				}
-
+			}
+			
+			if ($copy_allowed == FALSE)
+			{
 				$this->callback = array
 				(
-					// Add the page to the Article parents list
-					array(
-						'fn' => 'ION.addPageToArticleParentListDOM',
-						'args' => $page
-					),
-					// Insert the article to the parent in the structure tree
-					array(
-						'fn' => $menu['name'].'Tree.insertElement',
-						'args' => array($article, 'article')
-					),
-					// Reload the Page articles list
-					array(
-						'fn' => 'ION.reloadPageArticleList',
-						'args' => $id_page
-					),
-					// Clean the orphan article list (Dashboard) : TODO
-					array(
-						'fn' => 'ION.removeArticleFromOrphan',
-						'args' => $article
-					),
-					array(
-						'fn' => 'ION.notification',
-						'args' => array('success', lang('ionize_message_article_linked_to_page'))
-					)
+					'fn' => 'ION.notification',
+					'args' => array('error', lang('ionize_message_article_url_exists_in_page'))
 				);
-				
-				// Article moved ?
-				if ($copy == FALSE && $id_page_origin != FALSE)
+				$this->response();
+			}
+			else
+			{		
+				if ($this->article_model->link_to_page($id_page, $id_article, $original_context) === TRUE)
 				{
-					// Unlink from first parent : Corrects also the main parent
-					$affected_rows = $this->article_model->unlink($id_article, $id_page_origin);
+					// Clear the cache
+					Cache()->clear_cache();
+	
+					// Get the page, menu and articles details for the JSON answer
+					$page = $this->page_model->get($id_page, Settings::get_lang('default'));
+					$page['id_article'] = $id_article;
+	
+					$menu = $this->menu_model->get_from_page($id_page);
 					
-					$ordering = $this->article_model->get_articles_ordering($id_page_origin);
-					
-					$this->article_model->save_ordering($ordering, 'page', $id_page_origin);
-					
-					$this->callback[] = array(
-						'fn' => 'ION.unlinkArticleFromPageDOM',
-						'args' => array('id_page' => $id_page_origin, 'id_article' => $id_article)
+					// Articles
+					$articles = $this->article_model->get_lang_list(array('id_article'=>$id_article, 'id_page'=>$id_page), Settings::get_lang('default'));
+	
+					// Set the article
+					$article = array();
+					if ( ! empty($articles))
+					{
+						$article = $articles[0];
+						$article['title'] = htmlspecialchars_decode($article['title'], ENT_QUOTES);
+						
+						// Used by JS Tree to detect if article is inserted in tree or not
+						$article['inserted'] = TRUE;
+					}
+	
+					$this->callback = array
+					(
+						// Add the page to the Article parents list
+						array(
+							'fn' => 'ION.addPageToArticleParentListDOM',
+							'args' => $page
+						),
+						// Insert the article to the parent in the structure tree
+						array(
+							'fn' => $menu['name'].'Tree.insertElement',
+							'args' => array($article, 'article')
+						),
+						// Reload the Page articles list
+						array(
+							'fn' => 'ION.reloadPageArticleList',
+							'args' => $id_page
+						),
+						// Clean the orphan article list (Dashboard) : TODO
+						array(
+							'fn' => 'ION.removeArticleFromOrphan',
+							'args' => $article
+						)
 					);
+					
+					// Article moved ?
+					if ($copy == FALSE && $id_page_origin != FALSE)
+					{
+						// Unlink from first parent : Corrects also the main parent
+						$affected_rows = $this->article_model->unlink($id_article, $id_page_origin);
+						
+						$ordering = $this->article_model->get_articles_ordering($id_page_origin);
+						
+						$this->article_model->save_ordering($ordering, 'page', $id_page_origin);
+						
+						$this->callback[] = array(
+							'fn' => 'ION.unlinkArticleFromPageDOM',
+							'args' => array('id_page' => $id_page_origin, 'id_article' => $id_article)
+						);
+						
+						$this->callback[] = array(
+							'fn' => 'ION.notification',
+							'args' => array('success', lang('ionize_message_article_moved'))
+						);
+					}
+					else
+					{
+						$this->callback[] = array(
+							'fn' => 'ION.notification',
+							'args' => array('success', lang('ionize_message_article_linked_to_page'))
+						);
+					}
+					
+					// Context update
+					$this->update_contexts($id_article);
 				}
-				
-				// Context update
-				$this->update_contexts($id_article);
 			}
 		}
 	}

@@ -233,6 +233,45 @@ class Lang_model extends Base_model
 			return 0;
 		}
 	}
+
+
+	/**
+	 * Copy URLs from one lang to another
+	 * Used when one new lang is created
+	 *
+	 * @param	String				Lang code from which copy the data
+	 * @param	String				Lang code to copy to.
+	 *
+	 */
+	function copy_lang_urls($from, $to, $erase=FALSE)
+	{
+		if ($erase == TRUE)
+		{
+			$this->{$this->db_group}->where('lang', $to);
+			$this->{$this->db_group}->delete('url');
+		}
+
+		$now = date('Y-m-d H:i:s');
+
+		// Copy...
+		$sql = "insert into url (id_entity, type, canonical, active, lang, path, creation_date, path_ids, full_path_ids )
+				(
+					select id_entity, type, canonical, 1, '".$to."',path,'".$now."',path_ids, full_path_ids from url 
+					where lang = '". $from ."'
+					and active = 1
+					and id_entity not in
+					(
+						SELECT DISTINCT id_entity
+						FROM url
+						WHERE lang = '". $to ."'
+						and active = 1
+					)
+				)";
+		
+		$this->{$this->db_group}->query($sql);
+	}
+	
+	
 }
 /* End of file lang_model.php */
 /* Location: ./application/models/lang_model.php */

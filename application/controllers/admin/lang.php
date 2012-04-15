@@ -100,13 +100,22 @@ class Lang extends MY_admin
 				/* Insert in lang tables (page_lang, article_lang) the basic lang data for this new created lang
 				 * see lang_model->insert_lang_data() for more info.
 				 */
-				$this->lang_model->insert_lang_data(array('page', 'article'), $fields = array('url'), $from = Settings::get_lang('default'), $to = $this->input->post('lang_new'));
+				$this->lang_model->insert_lang_data(
+					array('page', 'article'), 
+					$fields = array('url'), 
+					$from = Settings::get_lang('default'), 
+					$to = $this->input->post('lang_new')
+				);
 				
-				/*
-				 * Rebuild the pages URLs
+				/* Insert lang URL in URL table
+				 * Does not erase existing URL, to prevent URL change in case of lang re-creation after 
+				 * user error.
+				 *
 				 */
-				$this->load->model('page_model', '', true);
-				$this->page_model->rebuild_urls();
+				$this->lang_model->copy_lang_urls(
+					$from = Settings::get_lang('default'), 
+					$to = $this->input->post('lang_new')
+				);
 			}
 			
 			// Update the language config file
@@ -406,8 +415,6 @@ class Lang extends MY_admin
 		
 		// Available languages array
 		$lang_uri_abbr = array();
-                
-		$lang_online_abbr = array();
 		
 		foreach($languages as $l)
 		{
@@ -416,9 +423,6 @@ class Lang extends MY_admin
 				$def_lang = $l['lang'];
 			
 			$lang_uri_abbr[$l['lang']] = $l['name'];
- 
-			if($l['online'] == '1')
-				$lang_online_abbr[$l['lang']] = $l['name'];
 		}
 
 		// Files begin
@@ -442,9 +446,6 @@ class Lang extends MY_admin
 		
 		$conf .= "// available languages\n";
 		$conf .= "\$config['lang_uri_abbr'] = ".dump_variable($lang_uri_abbr)."\n\n";
-                
-		$conf .= "// online languages\n";
-		$conf .= "\$config['lang_online_abbr'] = ".dump_variable($lang_online_abbr)."\n\n";
 		
 		$conf .= "// ignore these language abbreviation : not used for the moment \n";
 		$conf .= "\$config['lang_ignore'] = array();\n";
