@@ -49,6 +49,9 @@ class TagManager
 
 	public static $view = '';
 
+	protected static $uri_segments = array();
+
+
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
 	 * 
@@ -77,6 +80,7 @@ class TagManager
 		'else' =>				'tag_else',
 		'set' =>				'tag_set',
 		'get' =>				'tag_get',
+		'count' => 				'tag_count',
 		'php' =>				'tag_php',
 		'jslang' =>				'tag_jslang',
 		'browser' =>			'tag_browser',
@@ -109,11 +113,11 @@ class TagManager
 		// This file contains definition for installed modules only.
 		include APPPATH.'config/modules.php';
 		
-		
+		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
+
 		// Put modules arrays keys to lowercase
 		if (!empty($modules))
 			self::$module_folders = array_combine(array_map('strtolower', array_values($modules)), array_values($modules));
-		
 		
 		// Loads automatically all installed modules tags
 		foreach (self::$module_folders as $module)
@@ -483,6 +487,7 @@ class TagManager
 	}
 	
 
+
 	// ------------------------------------------------------------------------
 
 
@@ -779,6 +784,67 @@ class TagManager
 		}
 		
 		return '';
+	}
+
+	// ------------------------------------------------------------------------
+	
+	
+	/**
+	 * Returns the count of an item collection
+	 *
+	 * @tag_attributes		'from' : 	collection name
+	 *						'item' : 	items to count inside the collection
+	 *						'filter' : 	Filter the items
+	 * 
+	 * @param				FTL_Binding Object		Tag
+	 *
+	 * @returns 			Int	Number of items
+	 *
+	 */
+	public static function tag_count($tag)
+	{
+		// Object type : page, article, media
+		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : self::get_parent_tag($tag);;
+
+		// Item to count
+		$items = (isset($tag->attr['items']) ) ? $tag->attr['items'] : FALSE;
+
+		// Filter on one field
+		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
+
+		// Get the obj
+		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
+
+		if ( ! is_null($obj) )
+		{
+			if($items != FALSE && isset( $obj[$items]) )
+			{
+				$items = $obj[$items];
+			}
+			else
+			{
+				$items = $obj;
+			}
+			if ($filter !== FALSE)
+			{
+				// Normalize egality
+				$filter = preg_replace("#[=*]{1,12}#", '==', $filter);
+		
+				// Test condition
+				$condition = preg_replace("#([\w]*)(\s*==\s*|\s*!==\s*)([a-zA-Z0-9'])#", '$row[\'\1\']\2\3', $filter);
+
+				$items = @array_filter($items, create_function('$row','return ('.$condition.');'));
+
+				if ($items == FALSE && ! is_array($items))
+				{
+					return self::show_tag_error($tag->name, '<b>Your filter contains an error : </b><br/>'.$filter);
+				}
+				
+				return count($items);
+			}
+			return count($items);
+		}
+		return 0;
 	}
 
 

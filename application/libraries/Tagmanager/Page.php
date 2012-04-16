@@ -26,7 +26,6 @@ class TagManager_Page extends TagManager
 	
 	protected static $user = FALSE;
 	
-	protected static $uri_segments = array();
 
 	protected static $categories = FALSE;
 	
@@ -35,10 +34,15 @@ class TagManager_Page extends TagManager
 	// Entity asked by the URL (usually 'page' or 'article')
 	protected static $_entity = NULL;
 	
+	protected static $_special_uri = NULL;
+	
+	// Int. Segment index of $ci->uri->uri_string() of the special URI
+	protected static $_special_uri_segment = NULL;
+	
+	
 	public static $tag_definitions = array
 	(
 		// Page
-		'count' => 				'tag_count',
 		'period' => 			'tag_period',
 		'pagination' =>			'tag_pagination',
 		'absolute_url' =>		'tag_absolute_url',
@@ -67,43 +71,10 @@ class TagManager_Page extends TagManager
 		
 			
 		// Articles
-		'articles' => 				'tag_articles',
-		'articles:article' => 		'tag_articles_article',
-		'articles:id_article' => 	'tag_article_id',
-		'articles:active_class' => 	'tag_article_active_class',
-		'articles:view' => 			'tag_article_view',
-		'articles:author' => 		'tag_article_author_name',
-		'articles:author_email' => 	'tag_article_author_email',
-		'articles:name' => 			'tag_article_name',
-		'articles:title' => 		'tag_article_title',
-		'articles:subtitle' => 		'tag_article_subtitle',
-		'articles:summary' => 		'tag_article_summary',
-		'articles:meta_title' =>    'tag_article_meta_title',
-		'articles:date' => 			'tag_article_date',
-		'articles:content' => 		'tag_article_content',
-		'articles:url' => 			'tag_article_url',
-		'articles:link' => 			'tag_article_link',
-		'articles:categories' => 	'tag_article_categories',
-		'articles:readmore' => 		'tag_article_readmore',
-		'articles:index' => 		'tag_article_index',
-		'articles:count' => 		'tag_article_count',
 		
 		// Categories
-		'category' =>					'tag_category',
-		'categories' => 				'tag_categories',
-		'categories:url' => 			'tag_category_url',
-		'categories:active_class' => 	'tag_category_active_class',
-		'categories:title' => 			'tag_category_title',
-		'categories:subtitle' => 		'tag_category_subtitle',
 		
 		// Archives
-		'archive' =>				'tag_archive',
-		'archives' =>				'tag_archives',
-		'archives:url' => 			'tag_archives_url',
-		'archives:lang_url' => 		'tag_archives_lang_url',
-		'archives:period' => 		'tag_archives_period',
-		'archives:nb' => 			'tag_archives_nb',
-		'archives:active_class' => 	'tag_archives_active_class'
 	);
 
 
@@ -127,8 +98,8 @@ class TagManager_Page extends TagManager
 		// Helpers
 		self::$ci->load->helper('text');
 
-		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
-		self::$uri_segments = explode('/', $uri);
+		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
+
 
 		// Get pages and add them to the context
 		self::$context->globals->pages = Pages::get_pages();
@@ -144,7 +115,6 @@ class TagManager_Page extends TagManager
 		// Current page
 		$page = self::$context->globals->page;
 
-trace($page['url']);
 
 		if ( ! empty($page['link']))
 		{
@@ -179,16 +149,16 @@ trace($page['url']);
 		}
 		
 		// Can we get one article from the URL ?
-		$article = self::get_article_from_url();
-		if (! empty($article))
+		$article = TagManager_Article::get_article_from_url();
+
+		if ( ! empty($article))
 		{
 			self::$_article = $article;
-			
 			$page['view'] = ($page['view_single'] != false) ? $page['view_single'] : $page['view'];
 		}
 		
 		self::$view = ($page['view'] != false) ? $page['view'] : Theme::get_default_view('page');
-		
+
 		self::render();
 	}
 	
@@ -200,8 +170,6 @@ trace($page['url']);
 	{
 		parent::add_globals();
 
-trace('try to get : ' . self::$ci->uri->uri_string());
-		
 		// Get current asked page
 		self::$context->globals->page = self::get_current_page();
 
@@ -218,7 +186,7 @@ trace('try to get : ' . self::$ci->uri->uri_string());
 	 *
 	 *
 	 */
-	protected function get_entity()
+	public function get_entity()
 	{
 		if ( is_null(self::$_entity))
 			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
@@ -252,7 +220,7 @@ trace('try to get : ' . self::$ci->uri->uri_string());
 	protected static function get_current_page()
 	{
 		$uri = self::$ci->uri->uri_string();
-	
+
 		// Ignore the page named 'page' and get the home page
 		if ($uri == 'page')
 		{
@@ -268,30 +236,94 @@ trace('try to get : ' . self::$ci->uri->uri_string());
 			{
 				// Asked entity : Page or article
 				$entity = self::get_entity();
-				
+
 				// One Article
 				if ( ! empty($entity['type']) && $entity['type'] == 'article')
 				{
 					$paths = explode('/', $entity['path_ids']);
 					$id_page = $paths[count($paths)-2];
+					
 					return self::get_page_by_id($id_page);
 				}
 				
-				// Special URI : category,
-				$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
-				$uri_config = self::$ci->config->item('special_uri');
-trace(self::$uri_segments);				
- 				if ($special_uri && array_key_exists($special_uri, $uri_config))
+				// Special URI : category, archive, pagination
+ 				if ( self::get_special_uri())
  				{
- 				// 	self::get_page($special_uri)
+	 				trace('special URI : ' . self::$_special_uri);
+ 					$uri = self::get_page_path_from_special_uri();
+ 					
  				}
-
-
+ 				
 				return self::get_page_by_url($uri);
 			}
 		}
 	}
+	
+	
+	/**
+	 * Return the internal special URI code
+	 * See config/ionize.php -> $config['special_uri']
+	 *		
+	 * Archives : 	page/subpage/archive/2012/07 : segments -2 
+	 * Category : 	page/subpage/category/webdesign : segments -1
+	 * Pagination : page/subpage/page/5 : segments -1
+	 *
+	 */
+	function get_special_uri()
+	{
+		if ( is_null(self::$_special_uri))
+		{
+			$uri_config = self::$ci->config->item('special_uri');
+			$segments = self::$ci->uri->segment_array();
+			
+			// Limit the array to the potential special URI, and avoid taking the first "page" segment.
+			$segment_index = count($segments) - 3;
+			$segments = array_slice($segments, 2);
 
+			while( ! empty($segments))
+			{
+				$segment = array_pop($segments);
+				if ($segment_index !=0 && array_key_exists($segment, $uri_config))
+				{
+					self::$_special_uri_segment = $segment_index;
+					self::$_special_uri = $uri_config[$segment];
+					break;
+				}
+				$segment_index--;
+			}
+		}
+		return self::$_special_uri;
+	}
+	
+	/**
+	 * Return the special URI segment index regarding to self::$ci->uri->segment_array()
+	 *
+	 * @return 		int		Segment index
+	 *
+	 *
+	 */
+	function get_special_uri_segment()
+	{
+		if ( is_null(self::$_special_uri))
+		{
+			self::get_special_uri();
+		}
+		return self::$_special_uri_segment;
+	}
+	
+	
+	/**
+	 * Returns the page path without the special URI path
+	 *
+	 *
+	 */
+	function get_page_path_from_special_uri()
+	{
+		$special_uri = self::get_special_uri();
+
+		return implode('/', array_slice(self::$ci->uri->segment_array(), 2, self::$_special_uri_segment  ));
+	}
+	
 
 	// ------------------------------------------------------------------------
 
@@ -391,8 +423,15 @@ trace(self::$uri_segments);
 	}
 
 
+	// ------------------------------------------------------------------------
 
-
+	
+	function get_article()
+	{
+		return self::$_article;
+	}
+	
+	
 	// ------------------------------------------------------------------------
 
 
@@ -436,118 +475,6 @@ trace(self::$uri_segments);
 		);
 	}	
 
-
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Inits articles URLs
-	 * Get the contexts of all given articles and define each article correct URL
-	 *
-	 */
-	private function init_articles_urls(&$articles)
-	{
-		// Array of all articles IDs
-		$articles_id = array();
-		foreach($articles as $article)
-		{
-			$articles_id[] = $article['id_article'];
-		}
-		
-		// Articles contexts of all articles
-		$pages_context = self::$ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
-		
-		// Add pages contexts data to articles
-		foreach($articles as &$article)
-		{
-			$contexts = array();
-			foreach($pages_context as $context)
-			{
-				if ($context['id_article'] == $article['id_article'])
-					$contexts[] = $context;
-			}
-			
-			$page = array_shift($contexts);
-
-			// Get the context of the Main Parent
-			if ( ! empty($contexts))
-			{
-				foreach($contexts as $context)
-				{
-					if ($context['main_parent'] == '1')
-						$page = $context;
-				}
-			}
-			
-			// Basic article URL : its name in fact
-			$url = $article['url'];
-			
-			// Link ?
-			if ($page['link_type'] != '' )
-			{
-				// External
-				if ($page['link_type'] == 'external')
-				{
-					$article['url'] = $page['link'];
-				}
-				
-				// Email
-				else if ($page['link_type'] == 'email')
-				{
-					$article['url'] = auto_link($page['link'], 'both', TRUE);
-				}
-				
-				// Internal
-				else
-				{
-					// Article
-					if($page['link_type'] == 'article')
-					{
-						// Get the article to which this page links
-						$rel = explode('.', $page['link_id']);
-						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
-						
-						// Of course, only if not empty...
-						if ( ! empty($target_article))
-						{
-							// Get the article's parent page
-							$parent_page = self::$ci->page_model->get($rel[0], Settings::get_lang('current'));
-							
-							if ( ! empty($parent_page))
-								$article['url'] = $parent_page['url'] . '/' . $target_article['url'];
-						}
-					}
-					// Page
-					else
-					{
-						$target_page = self::$ci->page_model->get($page['link_id'], Settings::get_lang('current'));
-						$article['url'] = $target_page['url'];
-					}
-					
-					// Correct the URL : Lang + Base URL
-					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
-					{
-						$article['url'] =  Settings::get_lang('current'). '/' . $article['url'];
-					}
-					$article['url'] = base_url() . $article['url'];
-					
-				}	
-			}
-			// Standard URL
-			else
-			{
-				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
-				{
-					$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page['url'] . '/' . $url;
-				}
-				else
-				{
-					$article['url'] = base_url() . $page['url'] . '/' . $url;			
-				}
-			}			
-		}
-	}
-	
 	
 	// ------------------------------------------------------------------------
 
@@ -582,571 +509,6 @@ trace(self::$uri_segments);
 	} 
 
 
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Returns asked page
-	 *
-	 * @param		FTLBinding		Tag
-	 * @return		array			Asked page
-	 *
-	 */
-	function get_asked_page($tag)
-	{
-		$from_page = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
-	
-		// All pages
-		$pages =&  $tag->locals->pages;
-	
-		// Current page
-		$page = $tag->locals->page;
-	
-		// If a page name is set, try to get it
-		if ($from_page !== FALSE)
-		{
-			// Get the asked page details
-//			$page = array_values(array_filter($pages, create_function('$row','return $row["name"] == "'. $from_page .'";')));
-			foreach($pages as $p)
-			{
-				if ($p['name'] == $from_page)
-					return $p;
-			}
-		}
-		return $page;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Get Articles
-	 * @param	
-	 *
-	 * 1. Try to get the articles from a special URI
-	 * 2. Get the articles from the current page
-	 * 3. Filter on the article name if the article name is in URI segment 1
-	 *
-	 */
-	function get_articles($tag)
-	{
-		$articles = array();
-
-		// Page from locals
-		$pages =& $tag->locals->pages;
-
-		// Get the potential special URI
-		$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
-
-		// Use Pagination
-		// The "articles" tag must explicitely indicates it want to use pagination. 
-		// This explicit declaration is done to avoid all articles tags on one page using the same pagination value.
-		$use_pagination = (isset($tag->attr['pagination']) && $tag->attr['pagination'] == 'TRUE') ? TRUE : FALSE;
-
-		// Don't use the "article_list_view" setting set through Ionize
-		$keep_view = (isset($tag->attr['keep_view'])) ? TRUE : FALSE;
-
-		// Use this view for each article if more than one article
-		$list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
-
-		$type = ( ! empty($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
-
-		// Number of article limiter
-		$num = (isset($tag->attr['limit'])) ? self::get_attribute($tag, 'limit') : 0 ;
-		if ($num == 0)
-			$num = (isset($tag->attr['num'])) ? self::get_attribute($tag, 'num') : 0 ;
-
-		// Get the special URI config array (see /config/ionize.php)
-		$uri_config = self::$ci->config->item('special_uri');
-
-		// filter & "with" tag compatibility
-		// create a SQL filter
-		$filter = (isset($tag->attr['filter']) && $tag->attr['filter'] != '') ? $tag->attr['filter'] : FALSE;
-
-		/* Scope can be : 
-		 * not defined : 	means current page
-		 * "page" :			current page
-		 * "parent" :		parent page
-		 * "global" :		all pages from the website
-		 * "pages" : 		one or more page names. Not done for the moment
-		 *
-		 */
-		$scope = (isset($tag->attr['scope']) && $tag->attr['scope'] != '' ) ? $tag->attr['scope'] : FALSE;
-
-		// from page name ?
-		// $from_page = (isset($tag->attr['from']) && $tag->attr['from'] !='' ) ? $tag->attr['from'] : FALSE;
-		$from_page = (isset($tag->attr['from']) && $tag->attr['from'] !='' ) ? self::get_attribute($tag, 'from') : FALSE;
-
-		// from categories ? 
-		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
-		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
-
-		/*
-		 * Preparing WHERE on articles
-		 * From where do we get the article : from a page, from the parent page or from the all website ?
-		 *
-		 */
-		// Order. Default order : ordering ASC
-		$order_by = (isset($tag->attr['order_by']) && $tag->attr['order_by'] != '') ? $tag->attr['order_by'] : 'ordering ASC';
-		$where = array('order_by' => $order_by);
-
-		// Add type to the where array
-		if ($type !== FALSE)
-		{
-			if ($type == '')
-				$where['article_type.type'] = 'NULL';
-			else
-				$where['article_type.type'] = $type;
-		}
-
-		// If a page name is set, returns only articles from this page
-		if ($from_page !== FALSE)
-		{
-			// Get the asked page details
-			$asked_pages = explode(',', $from_page);
-
-			$in_pages = array();
-			
-			// Check if one lang URL of each page can be used for filter
-			foreach($pages as $page)
-			{
-				if (in_array($page['name'], $asked_pages))
-					$in_pages[] = $page['id_page'];
-			}
-
-			// If not empty, filter articles on id_page
-			if ( ! empty($in_pages))
-			{
-				$where['id_page in'] = '('.implode(',', $in_pages).')';
-			}
-			// else return nothing. Seems the asked page doesn't exists...
-			else
-			{
-				return;
-			}
-		}
-		else if ($scope == 'parent')
-		{
-			$where += self::set_parent_scope($tag);
-		}
-		else if ($scope == 'global')
-		{
-			$where += self::set_global_scope($tag);
-		}
-		else if ($scope == 'this')
-		{
-			$where += array('id_page' => $tag->locals->page['id_page']);
-		}
-		// Get only articles from current page
-		else
-		{
-			// Return the asked article and that's it...
-			if ( ! is_null(self::get_entity()) && self::$_entity['type'] == 'article')
-			{
-				$articles =  self::$ci->article_model->get_lang_list
-				(
-					array('id_article' => self::$_entity['id_entity']), 
-					Settings::get_lang(),
-					$filter
-				);
-			}
-			else
-			{	
-				$where['id_page'] = $tag->locals->page['id_page'];
-			}
-		}
-
-		/* Get the articles
-		 *
-		 */
-		// If a special URI exists, get the articles from it.
-		if ($special_uri !== FALSE && array_key_exists($special_uri, $uri_config) && $from_page === FALSE && $type === FALSE)
-		{
-			if (method_exists(__CLASS__, 'get_articles_from_'.$uri_config[$special_uri]))
-			{
-				$articles = call_user_func(array(__CLASS__, 'get_articles_from_'.$uri_config[$special_uri]), $tag, $where, $filter);
-			}
-		}
-		// This case is very special : getting one article through his name in the URL
-/*
-		else if ($special_uri !== FALSE && !array_key_exists($special_uri, $uri_config) && $from_page == FALSE && $scope == FALSE && $type === FALSE)
-		{
-			$articles = self::get_articles_from_one_article($tag, $where, $filter);
-
-			// Get articles from 404
-			if ( empty($articles))
-			{
-				self::set_404();
-				$articles = self::$ci->article_model->get_lang_list(
-					array('id_page' => $tag->locals->page['id_page']),
-					$lang = Settings::get_lang()
-				);
-			}
-		}
-*/
-		// Get all the page articles
-		// If Pagination is active, set the limit. This articles result is the first page of pagination
-		else 
-		{
-			// Set Limit
-			$limit = ( ! empty($tag->locals->page['pagination']) && ($tag->locals->page['pagination'] > 0) ) ? $tag->locals->page['pagination'] : FALSE;
-			
-			if ($limit == FALSE && $num > 0) $limit = $num;
-			
-			$where['limit'] = $limit;
-			
-			if ($from_categories !== FALSE)
-			{
-				$articles = self::$ci->article_model->get_from_categories(
-					$where,
-					explode(',', $from_categories),
-					$from_categories_condition,
-					$lang = Settings::get_lang(),
-					$filter
-				);
-			}
-			else
-			{
-				$articles = self::$ci->article_model->get_lang_list(
-					$where,
-					$lang = Settings::get_lang(),
-					$filter
-				);
-			}
-		}
-		
-		$nb_articles = count($articles);
-		// Correct the articles URLs
-		if ($nb_articles > 0)
-		{
-			self::init_articles_urls($articles);
-		}
-		
-//trace($articles);
-		
-		// Here, we are in an article list configuration : More than one article, page display
-		// If the article-list view exists, we will force the article to adopt this view.
-		// Not so much clean to do that in the get_article funtion but for the moment just helpfull...
-//		if (count($articles) > 1 && $keep_view == FALSE)
-//		{
-//			if ( ! empty($tag->locals->page['article_list_view']) OR $list_view !== FALSE )
-//			{
-
-				foreach ($articles as $k=>$article)
-				{
-					if (empty($article['view']))
-					{
-						if ($nb_articles > 1 && ! empty($article['article_list_view']))
-						{
-							$articles[$k]['view'] = $article['article_list_view'];
-						}
-						else if (! empty($article['article_view']))
-						{
-							$articles[$k]['view'] = $article['article_view'];
-						}
-					}
-					/*
-					// Only do this for articles from current page
-					if ($tag->locals->page['id_page'] == $article['id_page'])
-					{
-						// Set the article view to the page "article-list" value view.
-						if ($list_view !== FALSE)
-						{
-							$articles[$k]['view'] = $list_view;
-						}
-						else
-						{
-							$articles[$k]['view'] = $tag->locals->page['article_list_view'];
-						}
-					}
-					*/
-				}
-//			}
-//		}
-
-		return $articles;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Pagination articles
-	 *
-	 * @param	Array	Current page array
-	 * @param	Array	SQL Condition array
-	 * @param	String	order by condition
-	 * @param	String	Filter string
-	 *
-	 * @return	Array	Array of articles
-	 *
-	 */
-	function get_articles_from_pagination($tag, $where, $filter)
-	{
-		$page = & $tag->locals->page;
-		
-		$uri_segments = self::$uri_segments;
-		$start_index = array_pop(array_slice($uri_segments, -1));
-
-		// Load CI Pagination Lib
-		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
-	
-		// Number of displayed articles / page
-		// If no pagination : redirect to the current page
-		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect(self::$uri_segments[0]);
-
-		// from categories ? 
-		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
-		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
-		
-		$where['offset'] = (int)$start_index;
-		$where['limit'] =  (int)$per_page;
-		
-		if ($from_categories !== FALSE)
-		{
-			$articles = self::$ci->article_model->get_from_categories(
-				$where,
-				explode(',', $from_categories),
-				$from_categories_condition,
-				$lang = Settings::get_lang(),
-				$filter
-			);
-		}
-		else
-		{
-			$articles = self::$ci->article_model->get_lang_list(
-				$where,
-				$lang = Settings::get_lang(),
-				$filter
-			);
-		}
-
-		// Set the view
-		// Rule : If page has article_list_view defined, used this one.
-		if($page['article_list_view'] != FALSE)
-		{
-			foreach ($articles as $k=>$article)
-			{
-				$articles[$k]['view'] = $page['article_list_view'];
-			}
-		}
-
-		return $articles;
-	}
-	
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Get articles linked to a category
-	 * Called if special URI "category" is found. See tag_articles()
-	 * Uses the self::$uri_segments var to determine the category name
-	 *
-	 * @param	array	Current page array
-	 * @param	Array	SQL Condition array
-	 * @param	String	order by condition
-	 * @param	String	Filter string
-	 *
-	 * @return	Array	Array of articles
-	 *
-	 */
-	function get_articles_from_category($tag, $where, $filter)
-	{
-		$page = & $tag->locals->page;
-
-		// Get the start index for the SQL limit query param : last part of the URL
-		$uri_segments = self::$uri_segments;
-		$start_index = array_pop(array_slice($uri_segments, -1));
-
-
-		// If category name exists
-		if (isset(self::$uri_segments[2]))
-		{
-			// Limit
-			$where['offset'] = $start_index;
-			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
-
-			// Get the articles
-			$articles = self::$ci->article_model->get_from_category
-			(
-				$where, 
-				self::$uri_segments[2], 
-				Settings::get_lang(),
-				$filter
-			);
-
-			return $articles;
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Get articles linked from a period
-	 * Called if special URI "archives" is found. See tag_articles()
-	 * Uses the self::$uri_segments var to determine the category name
-	 *
-	 * @param	Array	Current page array
-	 * @param	Array	SQL Condition array
-	 * @param	String	Filter string
-	 *
-	 * @return	Array	Array of articles
-	 *
-	 */
-	function get_articles_from_archives($tag, $where, $filter)
-	{
-		$page = & $tag->locals->page;
-
-		$start_index = 0;
-
-		// Get the start index for the SQL limit query param : last part of the URL only if the 4th URI segmenet (pagination) is set
-		if (isset(self::$uri_segments[4]))
-		{
-			$uri_segments = self::$uri_segments;
-			$start_index = array_pop(array_slice($uri_segments, -1));
-		}
-
-		// If year is set
-		if (isset(self::$uri_segments[2]))
-		{
-			$year = self::$uri_segments[2];
-		
-			$month = isset(self::$uri_segments[3]) ? self::$uri_segments[3] : NULL;
-			
-			$where['offset'] = $start_index;
-			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
-
-			$articles =  self::$ci->article_model->get_from_archives
-			(
-				$where, 
-				$year, 
-				$month, 
-				Settings::get_lang(),
-				$filter
-			);
-
-			return $articles;
-		}
-	}
-	
-
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Returns one named article from website
-	 * In this case, the current pag s not important, the URL asked article will be displayed.
-	 * Gives the ability to display a given article at any place of the website.
-	 *
-	 * @param	array	Current page array
-	 * @param	Array	SQL Condition array
-	 * @param	String	Filter string
-	 *
-	 * @return	Array	Array of articles
-	 */
-	function get_articles_from_one_article($tag, $where, $filter)
-	{
-		$page = & $tag->locals->page;
-	
-		$articles = array();
-		
-		$uri_segments = self::$uri_segments;
-		$name = array_pop(array_slice($uri_segments, -1));
-
-		$where = array(
-			'article_lang.url' => $name,
-			'limit' => 1
-		);
-
-		$articles =  self::$ci->article_model->get_lang_list
-		(
-			$where, 
-			Settings::get_lang(),
-			$filter
-		);
-				
-		return $articles;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Get one article from the URL
-	 *
-	 */
-	function get_article_from_url()
-	{
-		$uri_segments = self::$uri_segments;
-		$uri_config = self::$ci->config->item('special_uri');
-		
-		// $uri_segments[1] : Special URI segement, like "category"
-		if (count($uri_segments) > 1 && ! array_key_exists($uri_segments[1], $uri_config))
-		{
-			$name = array_pop(array_slice($uri_segments, -1));
-	
-			$where = array(
-				'article_lang.url' => $name,
-				'limit' => 1
-			);
-	
-			$articles =  self::$ci->article_model->get_lang_list
-			(
-				$where, 
-				Settings::get_lang()
-			);
-			
-			if ( ! empty($articles))
-			{
-				return array_shift($articles);
-			}
-		}	
-		return array();
-	}
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the categories regarding the given page
-	 *
-	 */
-	function get_categories($tag, $page)
-	{
-		// Categories model
-		isset(self::$ci->category_model) OR self::$ci->load->model('category_model');
-	
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
-		
-		// Asked category
-		$uri_segments = self::$uri_segments;
-		$category_uri = array_pop(array_slice($uri_segments, -1));
-
-		// Get categories from this page articles
-		$categories = self::$ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
-		
-		// Flip the URI config array to have the category index first
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-		
-		// Add the URL to the category to each category row
-		// Also add the active class		
-		foreach($categories as $key => $category)
-		{
-			$categories[$key]['url'] = 			base_url() . $page['url'] . '/' . $uri_config['category'] . '/' . $category['name'];
-			$categories[$key]['lang_url'] = 	base_url() . Settings::get_lang() . '/' . $page['url'] . '/' . $uri_config['category'] . '/' . $category['name'];
-			$categories[$key]['active_class'] = ($category['name'] == $category_uri) ? $active_class : '';
-		}
-	
-		// Reorder array keys
-		return array_values($categories);
-	}
-	
 
 	// ------------------------------------------------------------------------
 
@@ -1246,67 +608,6 @@ trace(self::$uri_segments);
 	}
 	
 	
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Returns the count of an item collection
-	 *
-	 * @tag_attributes		'from' : 	collection name
-	 *						'item' : 	items to count inside the collection
-	 *						'filter' : 	Filter the items
-	 * 
-	 * @param				FTL_Binding Object		Tag
-	 *
-	 * @returns 			Int	Number of items
-	 *
-	 */
-	public static function tag_count($tag)
-	{
-		// Object type : page, article, media
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : self::get_parent_tag($tag);;
-
-		// Item to count
-		$items = (isset($tag->attr['items']) ) ? $tag->attr['items'] : FALSE;
-
-		// Filter on one field
-		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
-
-		// Get the obj
-		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-
-		if ( ! is_null($obj) )
-		{
-			if($items != FALSE && isset( $obj[$items]) )
-			{
-				$items = $obj[$items];
-			}
-			else
-			{
-				$items = $obj;
-			}
-			if ($filter !== FALSE)
-			{
-				// Normalize egality
-				$filter = preg_replace("#[=*]{1,12}#", '==', $filter);
-		
-				// Test condition
-				$condition = preg_replace("#([\w]*)(\s*==\s*|\s*!==\s*)([a-zA-Z0-9'])#", '$row[\'\1\']\2\3', $filter);
-
-				$items = @array_filter($items, create_function('$row','return ('.$condition.');'));
-
-				if ($items == FALSE && ! is_array($items))
-				{
-					return self::show_tag_error($tag->name, '<b>Your filter contains an error : </b><br/>'.$filter);
-				}
-				
-				return count($items);
-			}
-			return count($items);
-		}
-		return 0;
-	}
-
 
 	// ------------------------------------------------------------------------
 
@@ -1317,7 +618,6 @@ trace(self::$uri_segments);
 	 *
 	 * @return	int		The number of count articles
 	 *
-	 */
 	function count_articles($tag, $filter)
 	{
 		if ( ! isset($tag->locals->page['nb_articles']))
@@ -1325,18 +625,18 @@ trace(self::$uri_segments);
 			$nb = 0;
 		
 			// Check if articles comes from a special URI result
-			$special_uri = isset(self::$uri_segments[1]) ? self::$uri_segments[1] : FALSE;
+			$special_uri = self::get_special_uri();
 			$uri_config = self::$ci->config->item('special_uri');
 	
 			// Special URI
 			// For example, to count articles from one archive
-			if ($special_uri !== FALSE && array_key_exists($special_uri, $uri_config) && $uri_config[$special_uri] != 'pagination' )
+			if ($special_uri && $special_uri != 'pagination' )
 			{
 				// If special URI count method exists, use it !
 				// That mean that foreach special URI, you need to define a method to count the articles
 				// depending of this special URI.
-				if (method_exists(__CLASS__, 'count_articles_from_'.$uri_config[$special_uri]))
-					$nb = call_user_func(array(__CLASS__, 'count_articles_from_'.$uri_config[$special_uri]), $tag, $filter);
+				if (method_exists(__CLASS__, 'count_articles_from_'.$special_uri))
+					$nb = call_user_func(array(__CLASS__, 'count_articles_from_'.$special_uri), $tag, $filter);
 			}
 			// Only one article is displayed
 			// The special URI is the article name
@@ -1398,6 +698,7 @@ trace(self::$uri_segments);
 			return $tag->locals->page['nb_articles'];
 		}
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -1409,25 +710,28 @@ trace(self::$uri_segments);
 	 *
 	 * @return	int		The number of count articles
 	 *
-	 */
 	function count_articles_from_category($tag, $filter)
 	{
 		$nb = 0;
+
+		$category_uri = self::get_special_uri();
+		$cat_segment_pos = TagManager_Page::get_special_uri_segment();
+		$category_name = 	self::$uri_segments[$cat_segment_pos + 1];
 		
-		$category = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : NULL;
 		
-		if ( ! is_null($category))
+		if ( $category_name)
 		{
 			$nb = self::$ci->article_model->count_articles_from_category
 			(
 				array('id_page'=>$tag->locals->page['id_page']),
-				$category,
+				$category_name,
 				Settings::get_lang('current'),
 				$filter
 			);
 		}
 		return $nb;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -1439,13 +743,13 @@ trace(self::$uri_segments);
 	 *
 	 * @return	int		The number of count articles
 	 *
-	 */
 	function count_articles_from_archives($tag, $filter)
 	{
 		$nb = 0;
-		
-		$year = 	isset(self::$uri_segments[2]) ? self::$uri_segments[2] : NULL;
-		$month = 	isset(self::$uri_segments[3]) ? self::$uri_segments[3] : NULL;
+
+		$arc_segment_pos = TagManager_Page::get_special_uri_segment();
+		$year = isset(self::$uri_segments[$arc_segment_pos + 1]) ? self::$uri_segments[$arc_segment_pos + 1] : NULL ;
+		$month = isset(self::$uri_segments[$arc_segment_pos + 2]) ? self::$uri_segments[$arc_segment_pos + 2] : NULL ;
 		
 		if ( ! is_null($year))
 		{
@@ -1460,6 +764,7 @@ trace(self::$uri_segments);
 
 		return $nb;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -1473,8 +778,9 @@ trace(self::$uri_segments);
 	 */
 	function get_pagination_uri_addon_from_category()
 	{
-		$category_uri = 	self::$uri_segments[1];
-		$category_name = 	self::$uri_segments[2];
+		$category_uri = self::get_special_uri();
+		$cat_segment_pos = TagManager_Page::get_special_uri_segment();
+		$category_name = 	self::$uri_segments[$cat_segment_pos + 1];
 
 		return $category_uri . '/' . $category_name .'/';
 	}
@@ -1491,11 +797,13 @@ trace(self::$uri_segments);
 	 */
 	function get_pagination_uri_addon_from_archives()
 	{
-		$archive_uri = self::$uri_segments[1];
-	
-		$year = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : NULL;
-		$month = isset(self::$uri_segments[3]) ? self::$uri_segments[3] : NULL;
+		$archive_uri = self::get_special_uri();
 		
+		$arc_segment_pos = TagManager_Page::get_special_uri_segment();
+
+		$year = isset(self::$uri_segments[$arc_segment_pos + 1]) ? self::$uri_segments[$arc_segment_pos + 1] : NULL ;
+		$month = isset(self::$uri_segments[$arc_segment_pos + 2]) ? self::$uri_segments[$arc_segment_pos + 2] : NULL ;
+	
 		if ( ! is_null($year))
 		{
 			$archive_uri .= '/' .  $year;
@@ -1889,592 +1197,6 @@ trace(self::$uri_segments);
 	}
 	
 	
-	// ------------------------------------------------------------------------
-	
-	
-	
-	/*
-	 * Articles / Article tags
-	 * 
-	 * 
-	 */
-
-
-	/**
-	 * Returns the articles tag content
-	 * 
-	 * @param	FTL_Binding object 
-	 * @return 
-	 */
-	public static function tag_articles($tag)
-	{
-		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
-
-		// Tag cache
-		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
-			return $str;
-
-		// Returned string
-		$str = '';
-
-		// Page from locals
-		$pages =&  $tag->locals->pages;
-
-		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? self::get_attribute($tag, 'paragraph') : FALSE ;
-
-		// auto_link
-		$auto_link = (isset($tag->attr['auto_link']) && strtolower($tag->attr['auto_link'] == 'false') ) ? FALSE : TRUE ;
-
-		// view
-		$view = (isset($tag->attr['view']) ) ? $tag->attr['view'] : FALSE;
-
-		// Last part of the URI
-		$uri_last_part = array_pop(explode('/', uri_string()));
-		
-		/* Get the articles
-		 *
-		 */
-		$articles = self::get_articles($tag);
-
-		// Make articles in random order
-		$random = (isset($tag->attr['random'])) ? (bool) $tag->attr['random'] : FALSE;
-		if($random) shuffle ($articles);
-		
-		// Number of articles
-		$count = count($articles);
-		
-		// Add data like URL to each article
-		// and finally render each article
-		if ( ! empty($articles))
-		{
-			// Articles index starts at 1.
-			$index = 1;
-		
-			foreach($articles as $key => $article)
-			{
-				// Force the view if the "view" attribute is defined
-				if ($view !== FALSE)
-				{	
-					$articles[$key]['view'] = $view;
-				}
-	
-				$articles[$key]['active_class'] = '';
-// Correct this				
-				if (!empty($tag->attr['active_class']))
-				{
-					$article_url = array_pop(explode('/', $article['url']));
-					if ($uri_last_part == $article_url)
-					{
-						$articles[$key]['active_class'] = $tag->attr['active_class'];
-					}
-				}
-
-				// Limit to x paragraph if the attribute is set
-				if ($paragraph !== FALSE)
-					$articles[$key]['content'] = tag_limiter($article['content'], 'p', $paragraph);
-
-				// Autolink the content
-				if ($auto_link)
-					$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
-				
-				
-				// Article's index
-				$articles[$key]['index'] = $index++;
-				
-				// Article's count
-				$articles[$key]['count'] = $count;
-			}
-
-			// Set the articles
-			$tag->locals->page['articles'] = $articles;
-	
-			$count = count($tag->locals->page['articles']);
-			
-			foreach($tag->locals->page['articles'] as $key=>$article)
-			{
-				// Render the article
-				$tag->locals->article = $article;
-				$tag->locals->index = $key;
-				$tag->locals->count = $count;
-				$str .= $tag->expand();
-			}
-		}
-
-// Experimental : To allow tags in articles
-// Needs to be improved 		
-//		$str = $tag->parse_as_nested($str);
-		
-		$output = self::wrap($tag, $str);
-		
-		// Tag cache
-		self::set_cache($tag, $output);
-		
-		return $output;
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the article tag content
-	 * To be used inside an "articles" tag
-	 * 
-	 * @param	FTL_Binding object
-	 * @return 
-	 */
-	public static function tag_articles_article($tag)
-	{
-		// View : Overwrite each defined article view by the passed one
-		// It is possible to bypass the Article view by set it to ''
-		$view = (isset($tag->attr['view'] )) ? $tag->attr['view'] : FALSE ;
-		
-		// Kind of article : Get only the article linked to the given view
-		$type = (isset($tag->attr['type'] )) ? $tag->attr['type'] : FALSE ;
-		
-		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? $tag->attr['paragraph'] : FALSE ;
-
-		if ( ! empty($tag->locals->article))
-		{
-			// Current article (set by tag_articles() )
-			$article = &$tag->locals->article;
-
-			/*
-			 * Article View
-			 * If no view : First, try to get the pages defined article_list view
-			 *				Second, get the pages defined article view
-			 *				Else, get the default view
-			 */
-			if ($view === FALSE)
-			{
-				// The article defined view
-				$view = $article['view'];
-
-				// If article has no defined view : view to 0, nothing or FALSE
-				if ( $view == FALSE OR $view == '')
-				{				
-					// First and second step : The page defined views for articles
-					// Need to be discussed...
-					$view = $tag->globals->page['article_view'] ? $tag->globals->page['article_view'] : $tag->globals->page['article_list_view'];
-				}
-			}
-			
-			// Paragraph limiter
-			if ($paragraph !== FALSE)
-			{
-				$article['content'] = tag_limiter($article['content'], 'p', $paragraph);
-			}
-
-			// View rendering
-			if (empty($view))
-			{
-				$view = Theme::get_default_view('article');
-				
-				// Returns the default view ('article') if found in the theme folder
-				if (file_exists(Theme::get_theme_path().'views/'.$view.EXT))
-				{
-					return $tag->parse_as_nested(file_get_contents(Theme::get_theme_path().'views/'.$view.EXT));
-				}
-				return $tag->parse_as_nested(file_get_contents(APPPATH.'views/'.$view.EXT));
-			}
-			else
-			{
-				if ( ! file_exists(Theme::get_theme_path().'views/'.$view.EXT))
-				{
-					return self::show_tag_error($tag->name, '<b>Cannot find view file "'.Theme::get_theme_path().'views/'.$view.EXT.'".');
-				}
-				return $tag->parse_as_nested(file_get_contents(Theme::get_theme_path().'views/'.$view.EXT));
-			}
-		}
-		return self::show_tag_error($tag->name, '<b>This article doesn\'t exists</b>');
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_article_id($tag) { return self::wrap($tag, $tag->locals->article['id_article']); }
-
-	public static function tag_article_name($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'name';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('article', 'name', $tag));
-	}
-	
-	public static function tag_article_title($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'title';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('article', 'title', $tag));
-	}
-	
-	public static function tag_article_subtitle($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'subtitle';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('article', 'subtitle', $tag));
-	}
-
-	public static function tag_article_summary($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'summary';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('article', 'summary', $tag));
-	}
-
-	
-	public static function tag_article_date($tag)
-	{ 
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'date';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::format_date($tag, $tag->locals->article['date']));
-	}
-	
-	public static function tag_article_meta_title($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'meta_title';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('article', 'meta_title', $tag));
-//		return self::wrap($tag, strip_tags($tag->locals->article['meta_title']));
-	}
-
-	public static function tag_article_active_class($tag) { return self::wrap($tag, $tag->locals->article['active_class']); }
-	
-
-	// ------------------------------------------------------------------------
-	
-
-	/**
-	 * Returns informations about the link
-	 *
-	 */
-	public static function tag_article_link($tag)
-	{
-		// paragraph limit ?
-		$attr = (isset($tag->attr['attr'] )) ? $tag->attr['attr'] : FALSE ;
-		
-		if ($attr == FALSE)
-		{
-			return $tag->locals->article['link'];
-		}
-		else
-		{
-		
-		}
-		
-		
-		// return self::wrap($tag, $tag->locals->article['link']);
-	}
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the article content
-	 *
-	 */
-	public static function tag_article_content($tag)
-	{
-		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? (Int)self::get_attribute($tag, 'paragraph') : FALSE ;
-
-		$content = $tag->locals->article['content'];
-
-		// Limit to x paragraph if the attribute is set
-		if ($paragraph !== FALSE)
-			$content = tag_limiter($content, 'p', $paragraph);
-
-		return self::wrap($tag, $content);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the URL of the article, based or not on the lang
-	 * If only one language is online, this tag will return the URL without the lang code
-	 * To returns the lag code if you have only one language, set the "lang" attribute to TRUE
-	 * If the link or the article is set, this tag will return the link instead of the URL to the article.
-	 *
-	 */
-	public static function tag_article_url($tag) 
-	{
-		$url = '';
-		
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
-
-		// If link, return the link
-		if ($tag->locals->article['link_type'] != '' )
-		{
-			// External link
-			if ($tag->locals->article['link_type'] == 'external')
-			{
-				return $tag->locals->article['link'];
-			}
-			
-			// Mail link : TODO
-			if ($tag->locals->article['link_type'] == 'email')
-			{
-				return auto_link($tag->locals->article['link'], 'both', TRUE);
-			}
-			
-			
-			// If link to one article, get the page to build the complete link
-			if($tag->locals->article['link_type'] == 'article')
-			{
-				// Get the article to which this article links
-				$rel = explode('.', $tag->locals->article['link_id']);
-				$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
-				
-				// If more than one parent, links to to first found
-				// Normally, target link articles should not be duplicated in the tree
-				// $parent_page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
-				// $url = ( ! empty($parent_page[0])) ? $parent_page[0]['url'] . '/' . $target_article['url'] : '';
-				$url = '';
-				
-				if ( ! empty($target_article))
-				{
-					foreach($tag->globals->pages as $p)
-					{
-						if ($p['id_page'] == $target_article['id_page'])
-						{
-							$url = $p['url']. '/' . $target_article['url'];
-						}
-					}
-					
-					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
-						$url = Settings::get_lang('current').'/'.$url;
-					
-					return base_url().$url;
-				}
-			}
-			// This is a link to a page
-			else
-			{
-				// Get the page to which the article links
-				// $page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $tag->locals->article['link_id'] .'";')));
-				// if ( ! empty($page[0]))
-				// {
-				// 	$page = $page[0];
-				// 	return $page['absolute_url'];
-				// }
-				foreach($tag->globals->pages as $p)
-				{
-					if ($p['id_page'] == $tag->locals->article['link_id'])
-						return $p['absolute_url'];
-				}
-			}
-		}
-
-		$url = $tag->locals->article['url'];
-
-		// Adds the suffix if defined in /application/config.php
-		if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
-		
-		return $url;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-	
-	public static function tag_article_view($tag) { return $tag->locals->article['view']; }
-
-
-
-	public static function tag_article_author_name($tag)
-	{
-		// Get the users if they're not defined
-		if (!isset($tag->globals->users))
-		{
-			self::$ci->base_model->set_table('users');
-			$tag->globals->users = self::$ci->base_model->get_list();
-		}
-		
-		foreach($tag->globals->users as $user)
-		{
-			if ($user['username'] == $tag->locals->article['author'])
-				return self::wrap($tag, $user['screen_name']);
-		}
-
-		return '';
-	}
-
-
-	public static function tag_article_author_email($tag)
-	{
-		// Get the users if they're not defined
-		if (!isset($tag->globals->users))
-		{
-			self::$ci->base_model->set_table('users');
-			$tag->globals->users = self::$ci->base_model->get_list();
-		}
-		
-		foreach($tag->globals->users as $user)
-		{
-			if ($user['username'] == $tag->locals->article['author'])
-				return self::wrap($tag, $user['email']);
-		}
-
-		return '';
-	}
-
-
-	public function tag_article_readmore($tag)
-	{
-		$term = (isset($tag->attr['term']) ) ? $tag->attr['term'] : '';
-		$paragraph = (isset($tag->attr['paragraph'] )) ? $tag->attr['paragraph'] : FALSE ;
-
-
-		if ( ! empty($tag->locals->article))
-		{
-			// Current article (set by tag_articles() )
-//			$article = &$tag->locals->article;
-		
-//			$content = 	tag_limiter($article['content'], 'p', $paragraph);
-			
-//			if (strlen($content) < strlen($article['content']))
-//			{
-				return self::wrap($tag, '<a href="'.self::tag_article_url($tag).'">'.lang($term).'</a>'); 
-//			}
-//			else
-//			{
-//				return '';
-//			}
-		}
-		else
-		{
-			return '';
-		}
-	}
-	
-	
-
-	public static function tag_article_index($tag)
-	{
-		return $tag->locals->article['index'];
-	}
-	
-	public static function tag_article_count($tag)
-	{
-		// Redirect to the global count tag if items is set as attribute. Means we want to count something else.
-		if (isset($tag->attr['items']))
-		{
-			return self::tag_count($tag);
-		}
-
-		return $tag->locals->article['count'];
-	}
-	
-	
-	// ------------------------------------------------------------------------
-	
-	public static function tag_prev_article($tag)
-	{
-		$article = self::get_adjacent_article($tag, 'prev');
-	
-		return self::process_next_prev_article($tag, $article);
-	}
-
-
-	public static function tag_next_article($tag)
-	{
-		$article = self::get_adjacent_article($tag, 'next');
-	
-		return self::process_next_prev_article($tag, $article);
-	}
-
-	
-	private static function get_adjacent_article($tag, $mode='prev')
-	{
-		$page = $tag->locals->page;
-		
-		$tag->attr['from'] = $page['name'];
-		
-		$articles = self::get_articles($tag);
-		
-		$uri = self::$uri_segments;
-		$uri = array_pop($uri);
-		
-		$wished_article = array();
-		
-		$enum = ($mode=='prev') ? -1 : 1;
-		
-		foreach($articles as $key => $article)
-		{
-			if ($article['name'] == $uri)
-			{
-				if ( ! empty($articles[$key + $enum]))
-				{
-					$wished_article = $articles[$key + $enum];
-					break;
-				}
-			}
-		}
-		
-		return $wished_article;
-	}
-	
-
-	/**
-	 * Processes the next / previous article tags result
-	 * Internal use only.
-	 *	 
-	 */
-	private static function process_next_prev_article($tag, $article)
-	{
-		if ($article != FALSE)
-		{
-			// helper
-			$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
-
-			// Get helper method
-			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_next_prev_article';
-			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-	
-			// Prefix ?
-			$prefix = (!empty($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
-	
-			// load the helper
-			self::$ci->load->helper($helper);
-			
-			// Return the helper function result
-			if (function_exists($helper_function))
-			{
-				$return = call_user_func($helper_function, $article, $prefix);
-				
-				return self::wrap($tag, $return);
-			}
-		}
-		
-		return '';
-	}	
-
-
 
 	// ------------------------------------------------------------------------
 
@@ -2630,169 +1352,6 @@ trace(self::$uri_segments);
 	// ------------------------------------------------------------------------
 	
 	
-	public static function tag_archive($tag)
-	{
-		// Current archive
-		$year = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : '' ;
-		$month = isset(self::$uri_segments[3]) ? self::$uri_segments[3] : '' ;
-		
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-		$archive_uri = $uri_config['archives'];
-		
-		if (isset(self::$uri_segments[1]) && self::$uri_segments[1] == $archive_uri)
-		{
-			$timestamp = '';
-			if ($year != '' && $month !='')
-				$timestamp = mktime(0, 0, 0, $month, 1, $year);
-			else if ($year != '')
-				$timestamp = mktime(0, 0, 0, 0, 1, $year);
-			
-			if ($timestamp != '')
-			{
-				$date = (string) date('Y-m-d H:i:s', $timestamp);
-	
-				return self::format_date($tag, $date);
-			}
-		}
-				
-		return '';
-	}
-
-
-	/**
-	 * Get the archives tag
-	 *
-	 *
-	 */
-	public static function tag_archives($tag)
-	{
-		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
-			return $str;
-
-		// Period format
-		$format = (isset($tag->attr['format']) ) ? $tag->attr['format'] : 'F';
-
-		// Attribute : active class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
-
-		// filter
-		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
-
-		// month
-		$with_month = (isset($tag->attr['with_month']) ) ? TRUE : FALSE;
-
-		// order
-		$order = (isset($tag->attr['order']) && $tag->attr['order'] == 'ASC' ) ? 'period ASC' : 'period DESC';
-
-		// Current archive
-		$current_archive = isset(self::$uri_segments[2]) ? self::$uri_segments[2] : '' ;
-		$current_archive .= isset(self::$uri_segments[3]) ? self::$uri_segments[3] : '' ;
-
-		// Get the archives infos		
-		$archives = self::$ci->article_model->get_archives_list
-		(
-			array('id_page' => $tag->locals->page['id_page']), 
-			Settings::get_lang(),
-			$filter,
-			$with_month,
-			$order
-		);
-
-
-		// Translated period array
-		$month_formats = array('D', 'l', 'F', 'M');
-
-		// Flip the URI config array to have the category index first
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-
-		foreach ($archives as &$row)
-		{
-			$year = 	substr($row['period'],0,4);
-			$month = 	substr($row['period'],4);
-			
-			if ($month != '')
-			{
-				$month = (strlen($month) == 1) ? '0'.$month : $month;
-
-				$timestamp = mktime(0, 0, 0, $month, 1, $year);
-    
-				// Get date in the wished format
-				$period = (String) date($format, $timestamp);
-
-				if (in_array($format, $month_formats))
-					$period = lang(strtolower($period));
-
-				$row['period'] = $period . ' ' . $year;
-				$row['url'] = base_url() . $tag->locals->page['name'] . '/' . $uri_config['archives'] . '/' . $year . '/' . $month ;
-				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->page['name'] . '/' .  $uri_config['archives'] . '/' . $year . '/' . $month ;
-				$row['active_class'] = ($year.$month == $current_archive) ? $active_class : '';
-			}
-			else
-			{
-				$row['period'] = $year;
-				$row['url'] = base_url() . $tag->locals->page['name'] . '/' . $uri_config['archives'] . '/' . $year;
-				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->page['name'] . '/' .  $uri_config['archives'] . '/' . $year;
-				$row['active_class'] = ($year == $current_archive) ? $active_class : '';
-			}
-		}
-
-
-		// Tag expand
-		$str = '';
-
-		foreach($archives as $archive)
-		{
-			$tag->locals->archive = $archive;
-			$str .= $tag->expand();
-			
-		}
-
-		// Tag cache
-		self::set_cache($tag, $str);
-		
-		return $str;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Archives tags callback functions
-	 *
-	 */
-	public static function tag_archives_url($tag) 
-	{ 
-		// with lang code in the URL ?
-		$lang = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE') ? TRUE : FALSE ;
-
-		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE')
-		{
-			// Only returns the URL containing the lang code when languages > 1
-			if (count(Settings::get_online_languages()) > 1)
-			{
-				return $tag->locals->archive['lang_url'];
-			}
-		}
-		return $tag->locals->archive['url']; 
-	}
-
-
-	/** 
-	 * Deprecated, will be deleted in the next version 
-	 * Use tag_archives_url
-	 * @deprecated
-	 */
-	public static function tag_archives_lang_url($tag) { return ($tag->locals->archive['lang_url'] != '' ) ? $tag->locals->archive['lang_url'] : '' ; }
-	
-	
-	public static function tag_archives_period($tag) { return ($tag->locals->archive['period'] != '' ) ? $tag->locals->archive['period'] : '' ; }
-	public static function tag_archives_nb($tag) { return ($tag->locals->archive['nb'] != '' ) ? $tag->locals->archive['nb'] : '' ; }
-	public static function tag_archives_active_class($tag) { return ($tag->locals->archive['active_class'] != '' ) ? $tag->locals->archive['active_class'] : '' ; }
-	
 
 	// ------------------------------------------------------------------------
 
@@ -2903,232 +1462,6 @@ trace(self::$uri_segments);
 	}
 	
 	
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Return the current category
-	 * 
-	 * @param	FTLBinding		Current tag
-	 * @param	String			Wished returned value ('name', 'title', etc.)
-	 *
-	 */
-	public static function tag_category($tag)
-	{
-		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
-
-		$uri_segments = self::$uri_segments;
-		$category_uri = array_pop(array_slice($uri_segments, -1));
-
-		// Categorie prefix in the returned string. Exemple "Category "
-		$category_value = NULL;
-
-		// Store categories in Globals, so no multiple time retrieve
-		if (self::$categories === FALSE)
-		{
-			self::$categories = self::get_categories($tag, self::get_asked_page($tag));
-		}
-
-		foreach(self::$categories as $category)
-		{
-			if ($category['name'] == $category_uri)
-			{
-				$category_value = ( ! empty($category[$field])) ? $category[$field] : $category_uri;
-			}
-		}
-		if ( ! is_null($category_value))
-		{
-			return self::wrap($tag, $category_value);
-		}
-	}
-	
-	
-	// ------------------------------------------------------------------------
-	
-	
-// HERE : Add pagination : Number of page displayed on category view !!!!
-// Could not be possible as the pagination tag don't know this Category tag attribute value (per_page)
-
-
-	/**
-	 * Categories tag
-	 * Get the categories list from within the current page or globally
-	 *
-	 *
-	 */
-	public static function tag_categories($tag)
-	{
-
-		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
-			return $str;
-		
-		// Store of all categories
-		if (self::$categories === FALSE)
-		{
-			self::$categories = self::get_categories($tag, self::get_asked_page($tag));
-		}
-
-		// Tag expand
-		$str = '';
-		foreach(self::$categories as $category)
-		{
-			$tag->locals->category = $category;
-			$str .= $tag->expand();
-		}
-
-		$output = self::wrap($tag, $str);
-		
-		// Tag cache
-		self::set_cache($tag, $output);
-		
-		return $output;
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Categories tags callback functions
-	 *
-	 */
-	public static function tag_category_url($tag) 
-	{ 
-		// don't display the lang URL (by default)
-		$lang_url = FALSE;
-
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' )
-		{
-			$lang_url = TRUE;
-		}
-
-		// Only returns the URL containing the lang code when languages > 1
-		// or atribute lang set to TRUE
-		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
-		{
-			return $tag->locals->category['lang_url'];
-		}
-		
-		return $tag->locals->category['url'];
-	}
-
-
-
-	public static function tag_category_active_class($tag) { return ($tag->locals->category['active_class'] != '' ) ? $tag->locals->category['active_class'] : '' ; }
-
-    public static function tag_category_title($tag) { return self::wrap($tag, $tag->locals->category['title']); }
-
-	public static function tag_category_subtitle($tag) { return self::wrap($tag, $tag->locals->category['subtitle']); }
-
-
-
-	/**
-	 * Returns HTML categories links wrapped by the given tag
-	 *
-	 * @TODO : 	Add the open and closing tag for each anchor.
-	 *			Example : <li><a>... here is the anchor ... </a></li>
-	 *
-	 */
-	public static function tag_article_categories($tag)
-	{
-		$data = array();
-		
-		// HTML Separatorof each category
-		$separator = ( ! empty($tag->attr['separator'])) ? $tag->attr['separator'] : ' | ';	
-		
-		// Make a link from each category or not. Default : TRUE
-		$link = ( ! empty($tag->attr['link']) && $tag->attr['link'] == 'false') ? FALSE : TRUE;	
-
-		// Field to return for each category. "title" by default, but can be "name", "subtitle'
-		$field =  ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : 'title';
-
-		// don't display the lang URL (by default)
-		$lang_url = '';
-
-		// Global tag and class, for memory
-		$html_tag =  ( ! empty($tag->attr['tag'])) ? $tag->attr['tag'] : FALSE;
-		$class =  ( ! empty($tag->attr['class'])) ? $tag->attr['class'] : FALSE;
-		
-		// Tag and class for each category, if set.
-		$subtag =  ( ! empty($tag->attr['subtag'])) ? $tag->attr['subtag'] : FALSE;
-		$subclass =  ( ! empty($tag->attr['subclass'])) ? ' class="'.$tag->attr['subclass'].'"' : FALSE;
-
-
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' )
-		{
-			$lang_url = TRUE;
-		}
-
-		// Only returns the URL containing the lang code when languages > 1
-		// or atribute lang set to TRUE
-		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
-		{
-			$lang_url = Settings::get_lang().'/';
-		}
-		
-		// Current page
-		$page = $tag->locals->page;
-	
-			
-		// Get the category URI segment from /config/ionize.php config file
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-
-		$category_uri = $uri_config['category'];
-
-		// Get the categories from current article
-		$categories = $tag->locals->article['categories'];	
-
-		// Build the anchor array
-		foreach($categories as $category)
-		{
-			$category_string = '';
-			
-			
-			if ($subtag !== FALSE)
-			{
-				// Set the local category, to get the class from current category
-				$tag->locals->category = $category;
-				$subclass = self::get_attribute($tag, 'subclass');
-				$subtag = self::get_attribute($tag, 'subtag');
-				
-				// Replace the class and tag by the subclass and subtag
-				$tag->attr['class'] = $subclass;
-				$tag->attr['tag'] = $subtag;
-	
-				$category_string = self::wrap($tag, $category[$field]);
-			}
-			else
-			{
-				$category_string = $category[$field];
-			}
-			
-			$url = anchor(base_url().$lang_url.$page['name'].'/'.$category_uri.'/'.$category['name'], $category_string);
-
-			if ($link == TRUE)
-				$category_string = $url;
-			
-			$data[] = $category_string;
-			
-// To make nested tags working...
-//			$category['url'] = $url;
-//			$tag->locals->category = $category;
-//			$tag->expand();
-			
-		}
-
-		$tag->attr['tag'] = $html_tag;
-		$tag->attr['class'] = $class;
-		
-		return self::wrap($tag, implode($separator, $data));
-	}
-
-
 	// ------------------------------------------------------------------------
 
 

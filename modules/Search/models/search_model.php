@@ -34,12 +34,14 @@ class Search_model extends Base_model
 		$sql = "	SELECT 	article_lang.title, article_lang.content, article_lang.url,
 							IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date,
 							page_lang.url as page_url, 
-							page_lang.title as page_title 
+							page_lang.title as page_title,
+							url.path
 					FROM (article)
 						JOIN article_lang ON article.id_article = article_lang.id_article
 						JOIN page_article ON article.id_article = page_article.id_article
 						JOIN page ON page.id_page = page_article.id_page
 						JOIN page_lang ON page_lang.id_page = page.id_page
+						LEFT JOIN url ON (url.id_entity = page.id_page AND url.active = 1 AND url.lang= ?)
 					WHERE 
 						page.online = 1
 						AND article.indexed = 1
@@ -58,7 +60,7 @@ class Search_model extends Base_model
 		// Current language
 		$lang = Settings::get_lang();
 		
-		$query = $this->db->query($sql, array($lang, $lang, $realm, $realm, $realm, $realm));
+		$query = $this->db->query($sql, array($lang, $lang, $lang, $realm, $realm, $realm, $realm));
 		
 		return $query->result_array();
 	}

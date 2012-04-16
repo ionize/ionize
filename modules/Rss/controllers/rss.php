@@ -53,6 +53,10 @@ class Rss extends Base_Controller
 	*/
 	function feed($lang = FALSE)
 	{
+		// Page URL index to use. For compat.
+		$page_url = (config_item('url_mode') == 'short') ? 'url' : 'path';
+		
+	
 		$id_pages = explode(',', config_item('module_rss_pages'));
 		
 		$articles = $this->rss_model->get_articles($id_pages, $lang);
@@ -94,11 +98,11 @@ class Rss extends Base_Controller
 
 			if ( count(Settings::get_online_languages()) > 1 )
 			{
-				$article['url'] = base_url() . $lang . '/' . $page['url'] . '/' . $url;
+				$article['url'] = base_url() . $lang . '/' . $page[$page_url] . '/' . $url;
 			}
 			else
 			{
-				$article['url'] = base_url() . $page['url'] . '/' . $url;			
+				$article['url'] = base_url() . $page[$page_url] . '/' . $url;			
 			}
 		}
 		
@@ -119,9 +123,9 @@ class Rss extends Base_Controller
 		$this->output->set_header("Content-Type: application/rss+xml; charset=UTF-8");		
 		$this->load->view('rss', array
 		(
-			'charset'			=> 'utf-8',
-			'language'		=> $lang,
-			'articles'			=> $articles
+			'charset'	=> 'utf-8',
+			'language'	=> $lang,
+			'articles'	=> $articles
 		));
 	}
 }

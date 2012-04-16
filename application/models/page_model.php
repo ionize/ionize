@@ -520,6 +520,14 @@ class Page_model extends Base_model
 	
 			$this->{$this->db_group}->join($this->lang_table, $this->table.'.'.$this->pk_name.' = ' .$this->lang_table.'.'.$this->pk_name);			
 			$this->{$this->db_group}->join($this->context_table, $this->table.'.'.$this->pk_name.' = ' .$this->context_table.'.'.$this->pk_name);			
+
+			// Join to URL
+			$this->{$this->db_group}->select('url.path');
+			$this->{$this->db_group}->join('url', $this->table.'.'.$this->pk_name.' = url.id_entity', 'inner');			
+			$this->{$this->db_group}->where(array('url.type' => 'page', 'active' => 1));
+			if ( ! is_null($lang))		
+				$this->{$this->db_group}->where(array('url.lang' => $lang));			
+
 	
 			$this->{$this->db_group}->where(array($this->lang_table.'.lang' => $lang));
 			

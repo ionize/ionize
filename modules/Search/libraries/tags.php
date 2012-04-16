@@ -311,7 +311,11 @@ class Search_Tags extends TagManager
 	 */
 	public static function url(FTL_Binding $tag)
 	{
-		return $tag->locals->result['page_url'].'/'.$tag->locals->result['url'];
+		// Page URL index to use
+		$page_url = (config_item('url_mode') == 'short') ? 'page_url' : 'path';
+	
+	
+		return $tag->locals->result[$page_url].'/'.$tag->locals->result['url'];
 	}
 
 	
