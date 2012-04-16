@@ -54,7 +54,7 @@ class Pages
 		self::$ci->load->model('page_model');
 
 		$pages = self::$ci->page_model->get_lang_list(false, $lang);
-		
+				
 		// Should never be displayed : no pages are set.
 		if (empty($pages))
 		{
@@ -93,11 +93,13 @@ class Pages
 	 */
 	public static function init_absolute_urls(&$pages, $lang)
 	{
+		$short_mode = (config_item('url_mode') == 'short') ? TRUE : FALSE;
+	
 		foreach ($pages as &$page)
 		{
 			// Set the page complete URL
 			$page['absolute_url'] = '';
-
+			
 			// Link
 			if ($page['link_type'] != '' )
 			{
@@ -130,7 +132,8 @@ class Pages
 							{
 								if ($p['id_page'] == $target_article['id_page'])
 								{
-									$page['absolute_url'] = $p['url'] . '/' . $target_article['url'];
+									$url = ($short_mode) ? $page['url'] : $page['path'];
+									$page['absolute_url'] = $url . '/' . $target_article['url'];
 								}
 							}
 						}
@@ -144,7 +147,7 @@ class Pages
 						foreach($pages as $p)
 						{
 							if ($p['id_page'] == $page['link_id'])
-								$page['absolute_url'] = $p['url'];
+								$page['absolute_url'] = ($short_mode) ? $p['url'] : $p['path'];
 						}
 					}
 					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
@@ -173,37 +176,14 @@ class Pages
 					else
 					{
 						// If page URL if already set because of a link, don't replace it.
-						$page['absolute_url'] = ($page['absolute_url'] != '') ? $lang . '/' . $page['absolute_url'] : $lang . '/' . $page['url'];
+						$url = ($short_mode) ? $page['url'] : $page['path'];
+						$page['absolute_url'] = ($page['absolute_url'] != '') ? $lang . '/' . $page['absolute_url'] : $lang . '/' . $url;
 					}
 	
 					$page['absolute_url'] = base_url() . $page['absolute_url'];
 					
 					// Set the lang code depending URL (used by language subtag)
-					$page['absolute_urls'] = array();
-					
-					/*
-					foreach (Settings::get_online_languages() as $language)
-					{
-						if ($page['home'] == 1 )
-						{
-							// Default language : No language code in the URL for the home page
-							if (Settings::get_lang('default') == $language['lang'])
-							{
-								$page['absolute_urls'][$language['lang']] = base_url();
-							}
-							// Other language : The home page has the lang code in URL
-							else
-							{
-								$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'];
-							}
-						}
-						// Other pages : lang code in URL
-						else
-						{
-							$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $page['urls'][$language['lang']];
-						}
-					}
-					*/
+					$page['absolute_urls'] = array();					
 				}
 				else
 				{
@@ -214,7 +194,8 @@ class Pages
 					}
 					else
 					{
-						$page['absolute_url'] = base_url() . $page['url'];
+						$url = ($short_mode) ? $page['url'] : $page['path'];
+						$page['absolute_url'] = base_url() . $url;
 					}
 					// Set the lang code depending URL (used by language subtag)
 					$page['absolute_urls'][$lang] = $page['absolute_url'];

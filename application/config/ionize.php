@@ -9,6 +9,22 @@
 $config['version'] = '0.9.8';
 
 
+/*
+|--------------------------------------------------------------------------
+| Ionize URLs
+|--------------------------------------------------------------------------
+| For compatibility reason.
+| If your website uses Ionize < 0.9.8 and your pages are well referenced
+| keep 'short' URLs
+| Else, put 'long' URLs, which will be the future default way of URLs display
+|
+| 'full' : 	Full URL. Example : http://yourdomain/page/subpage
+| 'short' : Small URL. Example : http://yourdomain/subpage
+|
+*/
+$config['url_mode'] = 'full';
+
+
 /* 
 |--------------------------------------------------------------------------
 | Available filemanagers

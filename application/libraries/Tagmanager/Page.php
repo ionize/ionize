@@ -32,6 +32,9 @@ class TagManager_Page extends TagManager
 	
 	protected static $_article = array();
 	
+	// Entity asked by the URL (usually 'page' or 'article')
+	protected static $_entity = NULL;
+	
 	public static $tag_definitions = array
 	(
 		// Page
@@ -119,6 +122,7 @@ class TagManager_Page extends TagManager
 		// Article model
 		self::$ci->load->model('article_model');
 		self::$ci->load->model('page_model');
+		self::$ci->load->model('url_model');
 
 		// Helpers
 		self::$ci->load->helper('text');
@@ -139,6 +143,8 @@ class TagManager_Page extends TagManager
 
 		// Current page
 		$page = self::$context->globals->page;
+
+trace($page['url']);
 
 		if ( ! empty($page['link']))
 		{
@@ -168,26 +174,6 @@ class TagManager_Page extends TagManager
 					{
 						redirect($page['absolute_url']);
 					}
-/*				
-					$rel = explode('.', $page['link_id']);
-
-					if ($article_page = array_get(self::$context->globals->pages, $rel[0], 'id_page'))
-					{
-						$articles =  self::$ci->article_model->get_lang_list
-						(
-							array('id_article' => $rel[1]), 
-							Settings::get_lang()
-						);
-						
-						self::init_articles_urls($articles);
-						$article = array_shift($articles);
-
-						if ($article['url'] != current_url())
-						{
-							redirect($article['url']);
-						}
-					}
-*/
 				}	
 			}
 		}
@@ -213,9 +199,11 @@ class TagManager_Page extends TagManager
 	public function add_globals()
 	{
 		parent::add_globals();
+
+trace('try to get : ' . self::$ci->uri->uri_string());
 		
 		// Get current asked page
-		self::$context->globals->page = self::get_current_page(self::$ci->uri->segment(3));
+		self::$context->globals->page = self::get_current_page();
 
 		// Show 404 if no page
 		if(empty(self::$context->globals->page))
@@ -223,6 +211,186 @@ class TagManager_Page extends TagManager
 			self::set_404();
 		}
 	}
+
+
+	/**
+	 * Returns the current entity asked by the URL ('page' or 'article')
+	 *
+	 *
+	 */
+	protected function get_entity()
+	{
+		if ( is_null(self::$_entity))
+			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
+	
+		return self::$_entity;
+	}
+
+	// ------------------------------------------------------------------------
+
+
+
+	/** 
+	 * Get the current page data.
+	 * 
+	 * @param	FTL_Context		FTL_ArrayContext array object
+	 * @param	string			Page name
+	 * @return	array			Array of the page data. Can be empty.
+	protected static function get_current_page($page_name)
+	{
+		// Ignore the page named 'page' and get the home page
+		if ($page_name == 'page')
+		{
+			return self::get_home_page();
+		}
+		else
+		{
+			return self::get_page($page_name);
+		}
+	}
+	 */
+	protected static function get_current_page()
+	{
+		$uri = self::$ci->uri->uri_string();
+	
+		// Ignore the page named 'page' and get the home page
+		if ($uri == 'page')
+		{
+			return self::get_home_page();
+		}
+		else
+		{
+			if (config_item('url_mode') == 'short')
+			{
+				return self::get_page(self::$ci->uri->segment(3));
+			}
+			else
+			{
+				// Asked entity : Page or article
+				$entity = self::get_entity();
+				
+				// One Article
+				if ( ! empty($entity['type']) && $entity['type'] == 'article')
+				{
+					$paths = explode('/', $entity['path_ids']);
+					$id_page = $paths[count($paths)-2];
+					return self::get_page_by_id($id_page);
+				}
+				
+				// Special URI : category,
+				$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
+				$uri_config = self::$ci->config->item('special_uri');
+trace(self::$uri_segments);				
+ 				if ($special_uri && array_key_exists($special_uri, $uri_config))
+ 				{
+ 				// 	self::get_page($special_uri)
+ 				}
+
+
+				return self::get_page_by_url($uri);
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get the website Home page
+	 * The Home page is the first page from the main menu (ID : 1)
+	 * 
+	 * @param	FTL_Context		FTL_ArrayContext array object
+	 * @return	Array			Home page data array or an empty array if no home page is found
+	 */
+	protected static function get_home_page()
+	{
+		if( ! empty(self::$context->globals->pages))
+		{
+			foreach(self::$context->globals->pages as $page)
+			{
+				if ($page['home'] == 1)
+				{
+					return $page;
+				}
+			}
+			
+			// No Home page found : Return the first page of the menu 1
+			foreach(self::$context->globals->pages as $p)
+			{
+				if ($p['id_menu'] == 1)
+					return $p;
+			}
+		}
+
+		return array();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get one page regarding to its name
+	 * 
+	 * @param	string	Page name
+	 * @return	array	Page data array
+	 */
+	protected static function get_page($page_name)
+	{
+		foreach(self::$context->globals->pages as $p)
+		{
+			if ($p['url'] == $page_name)
+				return $p;
+		}
+	
+		return array();	
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get one page from its URL
+	 * 
+	 * @param	string	Page name
+	 * @return	array	Page data array
+	 *
+	 */
+	protected static function get_page_by_url($url)
+	{
+		foreach(self::$context->globals->pages as $p)
+		{
+			if ($p['path'] == $url)
+				return $p;
+		}
+	
+		return array();	
+	}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get one page from its ID
+	 * 
+	 * @param	string	Page ID
+	 * @return	array	Page data array
+	 *
+	 */
+	protected static function get_page_by_id($id_page)
+	{
+		foreach(self::$context->globals->pages as $p)
+		{
+			if ($p['id_page'] == $id_page)
+				return $p;
+		}
+	
+		return array();	
+	}
+
+
 
 
 	// ------------------------------------------------------------------------
@@ -245,7 +413,7 @@ class TagManager_Page extends TagManager
 			die();
 		}
 
-		self::$context->globals->page = self::get_current_page('404');
+		self::$context->globals->page = self::get_page('404');
 	}	
 
 
@@ -468,7 +636,6 @@ class TagManager_Page extends TagManager
 		// Page from locals
 		$pages =& $tag->locals->pages;
 
-
 		// Get the potential special URI
 		$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
 
@@ -483,7 +650,7 @@ class TagManager_Page extends TagManager
 		// Use this view for each article if more than one article
 		$list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
 
-		$type = ( isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
+		$type = ( ! empty($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
 
 		// Number of article limiter
 		$num = (isset($tag->attr['limit'])) ? self::get_attribute($tag, 'limit') : 0 ;
@@ -574,7 +741,20 @@ class TagManager_Page extends TagManager
 		// Get only articles from current page
 		else
 		{
-			$where['id_page'] = $tag->locals->page['id_page'];
+			// Return the asked article and that's it...
+			if ( ! is_null(self::get_entity()) && self::$_entity['type'] == 'article')
+			{
+				$articles =  self::$ci->article_model->get_lang_list
+				(
+					array('id_article' => self::$_entity['id_entity']), 
+					Settings::get_lang(),
+					$filter
+				);
+			}
+			else
+			{	
+				$where['id_page'] = $tag->locals->page['id_page'];
+			}
 		}
 
 		/* Get the articles
@@ -589,10 +769,11 @@ class TagManager_Page extends TagManager
 			}
 		}
 		// This case is very special : getting one article through his name in the URL
+/*
 		else if ($special_uri !== FALSE && !array_key_exists($special_uri, $uri_config) && $from_page == FALSE && $scope == FALSE && $type === FALSE)
 		{
 			$articles = self::get_articles_from_one_article($tag, $where, $filter);
-			
+
 			// Get articles from 404
 			if ( empty($articles))
 			{
@@ -603,6 +784,7 @@ class TagManager_Page extends TagManager
 				);
 			}
 		}
+*/
 		// Get all the page articles
 		// If Pagination is active, set the limit. This articles result is the first page of pagination
 		else 

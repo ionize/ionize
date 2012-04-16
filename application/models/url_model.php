@@ -58,11 +58,6 @@ class Url_model extends Base_model
 	{
 		$return = 0;
 
-
-log_message('error', $id_entity . ' :: ' . $data['url']);
-
-
-		
 		// Check / correct the URL
 		$data['url'] = $this->check_unique_url($type, $id_entity, $lang, $data['url']);
 		
@@ -104,6 +99,7 @@ log_message('error', $id_entity . ' :: ' . $data['url']);
 			$element['full_path_ids'] = $data['full_path_ids'];
 			$element['creation_date'] = date('Y-m-d H:i:s');
 			$this->insert($element);
+			$return = 1;
 		}
 		else if ( 
 			(! empty($db_url) && $data['url'] != $db_url['path'] )
@@ -113,7 +109,7 @@ log_message('error', $id_entity . ' :: ' . $data['url']);
 			$element['path'] = $data['url'];
 			$element['path_ids'] = $data['path_ids'];
 			$element['full_path_ids'] = $data['full_path_ids'];
-			$this->update($where, $element);
+			$return = $this->update($where, $element);
 		}
 		else if (empty($db_url))
 		{
@@ -127,6 +123,52 @@ log_message('error', $id_entity . ' :: ' . $data['url']);
 		}
 
 		return $return;
+	}
+	
+	
+	/**
+	 * Return one entity based of its URL
+	 * 
+	 * Important : If one page and one article have the same URL, the page is returned 
+	 *
+	 * @return	Mixed	Array of the entity or NULL if no entity found
+	 *
+	 * @TODO : 	Check what happens when one article has the same URL
+	 *			than one page !
+	 *
+	 */
+	function get_by_url($url, $lang = NULL)
+	{
+		$where = array(
+			'path' => $url,
+			'active' => 1
+		);
+
+		if ( is_null($lang))
+			$lang = Settings::get_lang('current');
+
+		$where['lang'] = $lang;
+		
+		$this->{$this->db_group}->where($where);
+		$query = $this->{$this->db_group}->get($this->table);
+		
+		if ($query->num_rows() > 0)
+		{
+			$result = $query->result_array();
+			
+			if (count($result >1))
+			{
+				foreach($result as $row)
+				{
+					if ($row['type'] == 'page')
+						return $row;
+				}
+			}
+			
+			return array_pop($result);
+		}
+		
+		return NULL;
 	}
 	
 	

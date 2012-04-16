@@ -31,6 +31,7 @@ class Article_model extends Base_model
 	public $page_table =				'page';
 	public $page_lang_table =			'page_lang';
 	public $parent_table =				'page_article';
+	public $url_table =					'url';
 
 	/* Contains table name wich should be used for each filter get.
 	 * Purpose : Avoid Ambiguous SQL quey when 2 fields have the same name.
@@ -165,6 +166,20 @@ class Article_model extends Base_model
 			$this->{$this->db_group}->select($this->lang_table.'.*');
 			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
 			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
+
+			// Add URL path to query
+			// URL depends on  lang, it is not possible to get it outside one lang query
+			$this->{$this->db_group}->select('path, path_ids, full_path_ids');
+			$this->{$this->db_group}->join(
+				$this->url_table,
+				$this->table.".id_article = " .$this->url_table.".id_entity AND ".
+					"(". 
+						$this->url_table.".type = 'article' AND " .
+						$this->url_table.".active = 1 ".
+					")",
+				'left'
+			);
+
 		}
 
 		// Join table select
@@ -174,12 +189,15 @@ class Article_model extends Base_model
 		// Add Type to query
 		$this->{$this->db_group}->select($this->type_table.'.type');
 		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
+		
+		
 
 		// Where ?
 		if (is_array($where) )
 		{
 			foreach ($where as $key => $value)
 			{
+				// Join to context table (page_article) if needed
 				if (strpos($key, 'id_page') !== FALSE)
 				{
 					// id_page must be searched in page_article table
@@ -189,6 +207,12 @@ class Article_model extends Base_model
 					$this->{$this->db_group}->select('article_list_view, article_view');
 					$this->{$this->db_group}->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
 				}
+				
+				// Join to URL table if needed
+				if (strpos($key, 'path') !== FALSE)
+				{
+				}
+				
 				
 				$protect = true;
 				$null = FALSE;
@@ -218,7 +242,7 @@ class Article_model extends Base_model
 		
 		// DB Query
 		$query = $this->{$this->db_group}->get($this->table);
-		// trace($this->{$this->db_group}->last_query());
+// trace($this->{$this->db_group}->last_query());
 
 		if($query && $query->num_rows() > 0)
 		{
@@ -575,7 +599,9 @@ class Article_model extends Base_model
 		$this->{$this->db_group}->where( array('id_article' => $id_article, 'id_page' => $id_page));
 		$this->{$this->db_group}->set('main_parent', '1');
 		
-		return $this->{$this->db_group}->update($this->parent_table);
+		$this->{$this->db_group}->update($this->parent_table);
+
+		return $this->save_urls($id_article);
 	}
 	
 
@@ -629,13 +655,14 @@ class Article_model extends Base_model
 					// Check if URL exists and correct it if necessary
 					$url = implode('/', $url) . '/' . $article['url'];
 					
+					$path_ids[] = $id_article;
+					$full_path_ids[] = $id_article;
+					
 					$data = array(
 						'url' => $url,
 						'path_ids' => implode('/', $path_ids),
 						'full_path_ids' => implode('/', $full_path_ids)
 					);
-					
-					// $url = implode('/', $url) . '/' . $article['url'];
 					
 					$nb = $CI->url_model->save_url('article', $l['lang'], $id_article, $data);
 				}

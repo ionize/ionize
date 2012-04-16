@@ -57,10 +57,18 @@ class Page_model extends Base_model
 
 		// Filter on published
 		$this->filter_on_published(self::$publish_filter, $lang);
-
+		
+		// Add Url to the request
+		$this->{$this->db_group}->select('url.path');
+		$this->{$this->db_group}->join('url', $this->table.'.'.$this->pk_name.' = url.id_entity', 'inner');			
+		$this->{$this->db_group}->where(array('url.type' => 'page', 'active' => 1));
+		if ( ! is_null($lang))		
+			$this->{$this->db_group}->where(array('url.lang' => $lang));			
+		
 		return parent::get_lang_list($where, $lang);
 	}
-
+	
+	
 
 	// ------------------------------------------------------------------------
 
