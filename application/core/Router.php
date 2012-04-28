@@ -394,6 +394,14 @@ class CI_Router
 			return explode('/', $this->routes[$uri]);
 		}
 
+		// Move catch-all route to the end of the array so modules' routes
+		// can actually catch something
+		if(isset($this->routes['(.*)'])) {
+			$catchall = $this->routes['(.*)'];
+			unset($this->routes['(.*)']);
+			$this->routes['(.*)'] = $catchall;
+		}
+
 		// Loop through the route array looking for wild-cards
 		foreach($this->routes as $key => $val)
 		{
