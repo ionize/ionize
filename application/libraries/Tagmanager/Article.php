@@ -88,7 +88,7 @@ class TagManager_Article extends TagManager
 		// Use this view for each article if more than one article
 		$list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
 
-		$type = ( ! empty($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
+		$type = ( isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
 
 		// Number of article limiter
 		$num = (isset($tag->attr['limit'])) ? self::get_attribute($tag, 'limit') : 0 ;
