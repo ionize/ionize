@@ -85,10 +85,20 @@ class MY_Image_lib extends CI_Image_lib {
 			$this->x_axis = 0;
 			$this->y_axis = 0;
 		}
-		
+
+		// Check available memory
+		if (false === $this->_checkMemoryBeforeImageCreate($this->full_src_path, $this->width, $this->height) )
+		{
+			$this->set_error('Not enough memory to handle this picture');
+
+			return false;
+		}
+
 		//  Create the image handle
 		if ( ! ($src_img = $this->image_create_gd()))
-		{		
+		{
+			$this->set_error('imglib_image_process_failed');
+
 			return FALSE;
 		}
 
@@ -104,45 +114,37 @@ class MY_Image_lib extends CI_Image_lib {
 			$copy	= 'imagecopyresized';
 		}
 		
-		// Check available memory
-		if (false === $this->_checkMemoryBeforeImageCreate($this->width, $this->height) )
-		{
-			return false;
-		}
-
-
 		if ($dst_img = @$create($this->width, $this->height))
 		{
-		
-		$copy($dst_img, $src_img, 0, 0, $this->x_axis, $this->y_axis, $this->width, $this->height, $this->orig_width, $this->orig_height);
+			$copy($dst_img, $src_img, 0, 0, $this->x_axis, $this->y_axis, $this->width, $this->height, $this->orig_width, $this->orig_height);
 
-		// Hack : Ajout de  unsharpMask
-		if ($this->unsharpmask !== '' && $this->unsharpmask !== false)
-		{
-			$dst_img = $this->unsharpMask($dst_img, 50, 0.5, 3);
-		}
-		//  Show the image	
-		if ($this->dynamic_output == TRUE)
-		{
-			$this->image_display_gd($dst_img);
-		}
-		else
-		{
-			// Or save it
-			if ( ! $this->image_save_gd($dst_img))
+			// Hack : Ajout de  unsharpMask
+			if ($this->unsharpmask !== '' && $this->unsharpmask !== false)
 			{
-				return FALSE;
+				$dst_img = $this->unsharpMask($dst_img, 50, 0.5, 3);
 			}
-		}
+			//  Show the image
+			if ($this->dynamic_output == TRUE)
+			{
+				$this->image_display_gd($dst_img);
+			}
+			else
+			{
+				// Or save it
+				if ( ! $this->image_save_gd($dst_img))
+				{
+					return FALSE;
+				}
+			}
 
-		//  Kill the file handles
-		imagedestroy($dst_img);
-		imagedestroy($src_img);
-		
-		// Set the file to 777
-		@chmod($this->full_dst_path, 0777);
-		
-		return TRUE;
+			//  Kill the file handles
+			imagedestroy($dst_img);
+			imagedestroy($src_img);
+
+			// Set the file to 777
+			@chmod($this->full_dst_path, 0777);
+
+			return TRUE;
 		}
 		return false;
 	}
@@ -199,8 +201,11 @@ class MY_Image_lib extends CI_Image_lib {
 	    if ($threshold > 255)    $threshold = 255; 
 	     
 	    $radius = abs(round($radius));     // Only integers make sense. 
-	    if ($radius == 0) { 
-	        return $img; imagedestroy($img); break;        } 
+	    if ($radius == 0) {
+	        return $img;
+			// imagedestroy($img);
+			// break;
+		}
 	    $w = imagesx($img); $h = imagesy($img); 
 	    $imgCanvas = imagecreatetruecolor($w, $h); 
 	    $imgBlur = imagecreatetruecolor($w, $h); 
@@ -316,24 +321,38 @@ class MY_Image_lib extends CI_Image_lib {
 	 * @param	boolean	true if enough memory is available, false if not.
 	 *
 	 */
-	function _checkMemoryBeforeImageCreate($width, $height)
+	function _checkMemoryBeforeImageCreate($source_path, $dest_width, $dest_height)
 	{
+		if (empty($this->full_src_path))
+			return FALSE;
+
 		// check if imagecreatetruecolor available
 		$truecolor = 0;
 		if (function_exists('imagecreatetruecolor'))
 			$truecolor = 1;
-		
-		// Picture memory need, including the current used memory, in bytes
-		$picture_need = $width*$height*(2.2+($truecolor*3)) + memory_get_usage();
 
 		// Memory limit from php.ini config file in bytes
 		$ini_memory_limit = intval(substr(ini_get('memory_limit'), 0, -1)) * 1024 * 1024;
 
+		// First, check the source
+		$size = getimagesize($this->full_src_path);
+		$picture_need = $size[0]*$size[1]*(2.2+($truecolor*3)) + memory_get_usage();
+
 		if ($picture_need > $ini_memory_limit)
 		{
+			log_message('error', 'Memory need : ' . $picture_need . '. Src : ' . $source_path);
 			return false;
 		}
-		
+
+		// Then, check the destination memory need, including the current used memory, in bytes
+		$picture_need = $dest_width*$dest_height*(2.2+($truecolor*3)) + memory_get_usage();
+
+		if ($picture_need > $ini_memory_limit)
+		{
+			log_message('error', 'Memory need : ' . $picture_need . '. Src : ' . $source_path);
+			return false;
+		}
+
 		return true;
 	}
 

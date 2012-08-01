@@ -330,12 +330,12 @@ class TagManager
 
 
 
-	public static function render($view = FALSE, $return = false)
+	public static function render($view = NULL, $return = false)
 	{
 		$ci =& get_instance();
 
 		// Loads the view to parse
-		$view = ($view != FALSE) ? $view : self::$view;
+		$view = ($view != NULL) ? $view : self::$view;
 		$parsed = Theme::load($view);
 
 		// We can now check if the file is a PHP one or a FTL one
@@ -769,7 +769,7 @@ class TagManager
 						
 
 					$return = array();
-					foreach($fields as $key => $row)
+					foreach($fields as $row)
 					{
 						if ( ! empty($row[$field]))
 						{
@@ -1570,7 +1570,7 @@ class TagManager
 			if (function_exists($helper_func))
 				$value = call_user_func_array($helper_func, $helper_args);
 			else
-				return self::show_tag_error($tag->name, 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
+				return self::show_tag_error('Tagmanager', 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
 		}
 		
 		return $value;	

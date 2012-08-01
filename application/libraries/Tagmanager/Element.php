@@ -56,7 +56,7 @@ class TagManager_Element extends TagManager
 		if (self::$got_elements_def == false)
 		{
 			// Store the extend fields definition
-			self::$elements_def = self::$ci->element_definition_model->get_lang_list(FALSE, $lang);
+			self::$elements_def = self::$ci->element_definition_model->get_lang_list(NULL, $lang);
 			
 			// Set this to true so we don't get the extend field def a second time for an object of same kind
 			self::$got_elements_def = true;
@@ -158,7 +158,7 @@ class TagManager_Element extends TagManager
 					// Get the article
 					case 'article' :
 						
-						$article = 	$this->ci->article_model->get(array('name' => $parent_name));
+						$article = 	self::$ci->article_model->get(array('name' => $parent_name));
 						
 						if ( ! empty($article))
 						{

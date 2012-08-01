@@ -107,7 +107,7 @@ class Media_model extends Base_model
 		if ($path) {
 
 			// If no '/' in the path...
-			if(strpos($path, '/') === FALSE) 
+			if(strpos($path, '/') === FALSE)
 			{
 				$file_name =  $path;
 				$base_path = '';
@@ -313,6 +313,93 @@ class Media_model extends Base_model
 			$data = $query->row_array();
 
 		return $data;
+	}
+
+
+	/**
+	 * Cleans the media and the media lang table from unused medias
+	 * Used by System tool
+	 *
+	 * @return int	Number of affected medias
+	 *
+	 */
+	function clean_table()
+	{
+		$tables = $this->db->list_tables();
+		$process_tables = array();
+
+		$left_joins = $wheres = '';
+
+		foreach ($tables as $table)
+		{
+			if (substr($table, -6) == '_media')
+			{
+				// $fields = $this->db->list_fields($table);
+				$fields = $this->db->field_data($table);
+
+				// First pass
+				foreach ($fields as $field)
+				{
+					if ($field->name == 'id_media')
+					{
+						$process_tables[$table] = array('name' => $table, 'pk'=> NULL);
+						break;
+					}
+				}
+				// Second pass
+				foreach ($fields as $field)
+				{
+					if ($field->name != 'id_media' && $field->primary_key == 1)
+					{
+						if (isset($process_tables[$table]))
+						{
+							$process_tables[$table]['pk'] = $field->name;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		$i = 0;
+		foreach($process_tables as $key => $table)
+		{
+			$left_joins .= ' left join ' . $table['name'] . ' on ' . $table['name'] . '.id_media = m.id_media';
+			if ($i > 0)	$wheres .= ' and ';
+			$wheres .= ' ' . $table['name'] . '.' . $table['pk'] . ' is NULL ';
+			$i++;
+		}
+
+		// Media
+		$sql = ' delete m from media m ' . $left_joins . ' where ' . $wheres;
+		$this->{$this->db_group}->query($sql);
+
+		// Returned : Number of deleted media rows
+		$nb_affected_rows = (int) $this->{$this->db_group}->affected_rows();
+
+		// Media_Lang
+		$sql = ' delete m from media_lang m ' . $left_joins . ' where ' . $wheres;
+		$this->{$this->db_group}->query($sql);
+
+		return $nb_affected_rows;
+	}
+
+
+	function get_brokens()
+	{
+		$brokens = array();
+
+		$medias = $this->get_all();
+
+		foreach($medias as $media)
+		{
+			if ( ! file_exists(DOCPATH . $media->path))
+			{
+				$brokens[] = $media;
+			}
+		}
+
+		return $brokens;
 	}
 }
 

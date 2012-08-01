@@ -266,12 +266,10 @@ class Settings
 	 * @return string	The lang code
 	 *
 	 */
-	public static function get_lang($type = false)
+	public static function get_lang($type = 'current')
 	{
 		$lang = '';
 	
-		($type === false) ? $type = 'current' : '';
-
 		$languages = self::$settings['languages'];
 
 		switch ($type)

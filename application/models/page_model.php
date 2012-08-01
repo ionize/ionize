@@ -24,7 +24,8 @@
 class Page_model extends Base_model 
 {
 
-	public $context_table =	'page_article';
+	public $context_table =		'page_article';
+	public $url_table =			'url';
 
 
 	/**
@@ -40,16 +41,103 @@ class Page_model extends Base_model
 		$this->set_pk_name('id_page');
 		$this->set_lang_table('page_lang');
 		
+		$this->type_table = 'type';
 		$this->extend_field_table = 'extend_field';
 		$this->extend_fields_table = 'extend_fields';
 		
 	}
 
+	// ------------------------------------------------------------------------
+
+	
+	/** 
+	 * Get one page
+	 *
+	 * @param	string		where array
+	 * @param	string		Optional. Lang code
+	 * @return	array		array of media
+	 *
+	 */
+	function get($where, $lang = NULL) 
+	{
+		$data = $this->get_lang_list($where, $lang);
+
+		if ( ! empty($data))
+			return $data[0];
+
+		return array();
+/*
+		$data = array();
+
+		if ( ! is_null($lang))
+		{
+			$this->{$this->db_group}->select('t1.*, t2.*, type.id_type', false);
+			$this->{$this->db_group}->join($this->lang_table.' t2', 't2.'.$this->pk_name.' = t1.'.$this->pk_name, 'inner');
+			$this->{$this->db_group}->where('t2.lang', $lang);
+
+			// URL depends on  lang, it is not possible to get it outside one lang query
+			$this->{$this->db_group}->select('path, path_ids, full_path_ids');
+			$this->{$this->db_group}->join(
+				$this->url_table,
+				"t1.id_page = " .$this->url_table.".id_entity AND ".
+					"(".
+					$this->url_table.".type = 'page' AND " .
+					$this->url_table.".active = 1 AND ".
+					$this->url_table.".lang = '". $lang ."'" .
+					")",
+				'left'
+			);
+		}
+		else
+		{
+			$this->{$this->db_group}->select('t1.*, type.id_type', false);	
+		}
+		
+		// Link to type
+		$this->{$this->db_group}->join($this->type_table.' type', 'type.id_type = t1.id_type', 'left');
+
+		// Add Url to the request
+		// Left join, because the page must be get, even the URL wasn't built.
+		//$this->{$this->db_group}->select('url.path');
+		//$this->{$this->db_group}->join('url', 't1.'.$this->pk_name.' = url.id_entity', 'left');
+
+		if ( is_array($where) )
+		{
+			foreach ($where as $key => $value)
+			{
+				$this->{$this->db_group}->where('t1.'.$key, $value);
+			}
+		}
+		else
+		{
+			$this->{$this->db_group}->where('t1.'.$this->pk_name, $where);
+		}
+		
+		$query = $this->{$this->db_group}->get($this->table.' t1');
+
+		if ( $query->num_rows() > 0)
+		{
+			$data = $query->row_array();
+			$query->free_result();
+				
+			// Add medias to data array
+			if (in_array($this->table, $this->with_media_table))
+				$this->add_linked_media($data, $this->table, $lang);
+			
+		}
+	*/
+//		return $data;
+	}
+
+	public function get_by_id($id, $lang = NULL)
+	{
+		return $this->get(array('page.id_page' => $id), $lang);
+	}
 
 	// ------------------------------------------------------------------------
 
 
-	function get_lang_list($where=false, $lang=NULL)
+	function get_lang_list($where = NULL, $lang = NULL)
 	{
 		// Order by ordering field
 		$this->{$this->db_group}->order_by($this->table.'.level', 'ASC');
@@ -59,12 +147,22 @@ class Page_model extends Base_model
 		$this->filter_on_published(self::$publish_filter, $lang);
 		
 		// Add Url to the request
-		$this->{$this->db_group}->select('url.path');
-		$this->{$this->db_group}->join('url', $this->table.'.'.$this->pk_name.' = url.id_entity', 'inner');			
-		$this->{$this->db_group}->where(array('url.type' => 'page', 'active' => 1));
-		if ( ! is_null($lang))		
-			$this->{$this->db_group}->where(array('url.lang' => $lang));			
-		
+		if ($lang == NULL)
+			$lang = Settings::get_lang('default');
+
+		// URL paths
+		$this->{$this->db_group}->select('path, path_ids, full_path_ids');
+		$this->{$this->db_group}->join(
+		   $this->url_table,
+			$this->table.".id_page = " .$this->url_table.".id_entity AND ".
+			   "(".
+			   $this->url_table.".type = 'page' AND " .
+			   $this->url_table.".active = 1 AND ".
+			   $this->url_table.".lang = '". $lang ."'" .
+			   ")",
+		   'left'
+		);
+
 		return parent::get_lang_list($where, $lang);
 	}
 	
@@ -342,57 +440,30 @@ class Page_model extends Base_model
 	/** 
 	 * Returns one page parents array
 	 *
-	 * @param	string	Page ID
+	 * @param	int	P	age ID
 	 * @param	array	Empty data array.
 	 *
 	 * @return	array	Parent array
 	 */
-	function get_parent_array($id_page, $data=array(), $lang = FALSE)
+	function get_parent_array($id_page, $data = array(), $lang = NULL)
 	{
-		$result = $this->get($id_page, $lang);
+		$result = $this->get_by_id($id_page, $lang);
 
 		if (isset($result['id_parent']) && $result['id_parent'] != 0 )
 		{
 			$data = $this->get_parent_array($result['id_parent'], $data, $lang);
 		}
 		
-		if (!empty($result))
-		{
+		if ( ! empty($result))
 			$data[] = $result;
-		}					
-		
+
 		return $data;
 	}
-	
+
+
 	// ------------------------------------------------------------------------
 
 
-	/** 
-	 * Returns one page childs array
-	 *
-	 * @param	string	Page ID
-	 * @param	array	Empty data array.
-	 *
-	 * @return	array	Childs array
-	 */
-	function get_child_array($id_page, $data=array(), $lang = FALSE)
-	{
-		$result = $this->get_list(array('id_parent'=> $id_page), $lang);
-
-		if (isset($result['id_parent']) && $result['id_parent'] != 0 )
-		{
-			$data = $this->get_parent_array($result['id_parent'], $data, $lang);
-		}
-		
-		if (!empty($result))
-		{
-			$data[] = $result;
-		}					
-		
-		return $data;
-	}
-	
-	
 	/**
 	 * Saves one page URLs paths
 	 *
@@ -406,7 +477,10 @@ class Page_model extends Base_model
 		$CI->load->model('url_model', '', true);
 		
 		$nb = 0;
-		
+
+		// Clean old URL
+		$this->url_model->delete('page', $id_page);
+
 		// Asked page process
 		foreach($this->get_languages() as $l)
 		{
@@ -460,11 +534,15 @@ class Page_model extends Base_model
 	{
 		$CI =& get_instance();
 		$CI->load->model('article_model', '', true);
-		
+		$CI->load->model('url_model', '', true);
+
 		$articles = $this->get_list(array('id_page' => $id_page, 'main_parent' => '1'), 'page_article');
 		
 		foreach($articles as $article)
 		{
+			// Clean old URL
+			$CI->url_model->delete('article', $article['id_article']);
+
 			$CI->article_model->save_urls($article['id_article']);
 		}
 	}
@@ -488,7 +566,7 @@ class Page_model extends Base_model
 		else
 		{
 			$pages = $this->get_list(array('id_parent' => '0'));
-			
+
 			foreach($pages as $page)
 			{
 				$nb += $this->save_urls($page['id_page']);

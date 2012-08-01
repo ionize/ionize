@@ -33,6 +33,13 @@ class Page extends MY_admin
 	 */
 	protected $no_htmlspecialchars = array('subtitle');
 
+	/**
+	 * Data array representing one article
+	 *
+	 * @var array
+	 */
+	protected $data = array();
+
 
 	/**
 	 * Constructor
@@ -50,6 +57,7 @@ class Page extends MY_admin
 		$this->load->model('extend_field_model', '', true);
 		$this->load->model('system_check_model', '', true);
 		$this->load->model('url_model', '', true);
+		$this->load->model('type_model', '', true);
 		
 		// Libraries
 		$this->load->library('structure');
@@ -136,9 +144,9 @@ class Page extends MY_admin
 	function edit($id)
 	{
 		// Datas
-		$page = $this->page_model->get($id);
+		$page = $this->page_model->get_by_id($id);
 
-		if( !empty($page) )
+		if( ! empty($page) )
 		{
 			$this->load_modules_addons($page);
 
@@ -146,16 +154,19 @@ class Page extends MY_admin
 			if ($page['id_menu'] == '0') $page['id_menu'] = '1'; 
 			
 			$this->template = array_merge($this->template, $page);
-			
+
+			// Lang data
+			$this->page_model->feed_lang_template($id, $this->template);
+
 			// Array of path to the element. Gives the complete URL to the element.
-//			$this->template['parent_array'] = $this->page_model->get_parent_array($id);
+			$this->template['parent_array'] = $this->page_model->get_parent_array($id);
 			
 			// Dropdown menus
 			$datas = $this->menu_model->get_select();
 			$this->template['menus'] = form_dropdown('id_menu', $datas, $this->template['id_menu'], 'id="id_menu" class="select"');
 			
 			// Subnav menu
-			$subnav_page = $this->page_model->get($page['id_subnav']);
+			$subnav_page = $this->page_model->get_by_id($page['id_subnav']);
 			$selected_subnav = ( ! empty($subnav_page['id_menu'])) ? $subnav_page['id_menu'] : '-1';
 			$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $datas, $selected_subnav, 'id="id_subnav_menu" class="select"');
 
@@ -191,7 +202,7 @@ class Page extends MY_admin
 			}
 			
 			// Breadcrumbs
-			$pages = $this->page_model->get_parent_array(array('id_page' => $id), array(), Settings::get_lang('default'));
+			$pages = $this->page_model->get_parent_array($id, array(), Settings::get_lang('default'));
 			
 			$breadcrump = array();
 			foreach($pages as $page)
@@ -200,40 +211,31 @@ class Page extends MY_admin
 			}
 			$this->template['breadcrump'] = implode(' > ', $breadcrump);
 
-			
-			/*
-			 * Groups access
-			 *
-			 * Formely multiple groups for one page. Not used anymore
-			
-			$groups = $this->page_model->get_groups_select();
-			
-			// Current groups
-			$current_groups = $this->page_model->get_current_groups($id);
-			*/
-			
-			// All groups
+			// Group access
 			$groups = $this->page_model->get_groups_select();
 			
 			// Form dropdown to template
 			$this->template['groups'] =	form_dropdown('id_group', $groups, $page['id_group'], 'class="select"');
 			
-			
-			/*
-			 * Extend fields
-			 *
-			 */
+			// Extend fields
 			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
 			
-			/*
-			 * Lang data
-			 */
-			$this->page_model->feed_lang_template($id, $this->template);
-			
-			
-			/*
-			 * Output the view
-			 */
+			// Types
+			$types = $this->type_model->get_select('page', lang('ionize_select_no_type'));
+			if (count($types) > 1)
+			{
+				$this->template['types'] = form_dropdown(
+					'id_type', 
+					$types,
+					$this->template['id_type'],
+					'class="select"'
+				);
+			}
+
+			// URLs
+			$this->template['urls'] = $this->url_model->get_entity_urls('page', $id);
+
+			// Output
 			$this->output('page');
 		}
 		else
@@ -319,7 +321,7 @@ class Page extends MY_admin
 			$this->structure->build_sitemap();
 
 			// Prepare the Json answer
-			$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get($saved_id));
+			$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get_by_id($saved_id));
 
 			$page['menu'] = $this->menu_model->get($page['id_menu']);
 
@@ -524,7 +526,7 @@ class Page extends MY_admin
 			if ($result)
 			{
 				// Datas
-				$page = $this->page_model->get($id_page, Settings::get_lang('default'));
+				$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 				$menu = $this->menu_model->get($page['id_menu']);
 				
 //				$page = array_merge($this->page_model->get_lang(Settings::get_lang('default')), $page);
@@ -556,7 +558,7 @@ class Page extends MY_admin
 		// Get the link
 		$id_page = $this->input->post('id_page');
 		
-		$page = $this->page_model->get(array('id_page' => $id_page));
+		$page = $this->page_model->get_by_id($id_page);
 		$link_type = $page['link_type'];
 
 		$this->template = array('parent' => 'page');
@@ -569,13 +571,13 @@ class Page extends MY_admin
 			switch($page['link_type'])
 			{
 				case 'page' :
-					$link = $this->page_model->get(array('id_page' => $page['link_id']), Settings::get_lang('default'));
+					$link = $this->page_model->get_by_id($page['link_id'], Settings::get_lang('default'));
 					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 					break;
 					
 				case 'article' :
 					$link_rel = explode('.', $page['link_id']);
-					$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+					$link = $this->article_model->get_by_id($link_rel[1], Settings::get_lang('default'));
 					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 					break;
 				
@@ -627,13 +629,13 @@ class Page extends MY_admin
 		switch($link_type)
 		{
 			case 'page' :
-				$link = $this->page_model->get(array('id_page' => $link_id), Settings::get_lang('default'));
+				$link = $this->page_model->get_by_id($link_id, Settings::get_lang('default'));
 				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 				break;
 			
 			case 'article' :
 				$link_rel = explode('.', $link_id);
-				$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+				$link = $this->article_model->get_by_id($link_rel[1], Settings::get_lang('default'));
 				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 				break;
 
@@ -762,6 +764,9 @@ class Page extends MY_admin
 		// Delete was successfull
 		if ($affected_rows > 0)
 		{
+			// Clean URL table
+			$this->url_model->clean_table();
+
 			// Clear the cache
 			Cache()->clear_cache();
 			
@@ -815,7 +820,7 @@ class Page extends MY_admin
 		}
 
 		// level ?
-		$parent = $this->page_model->get($this->input->post('id_parent'));
+		$parent = $this->page_model->get_by_id($this->input->post('id_parent'));
 
 		if ( ! empty($parent) )
 			$this->data['level'] = $parent['level'] + 1;	
@@ -847,14 +852,11 @@ class Page extends MY_admin
 			unset($this->data['ordering']);
 		}
 
-
 		// URLs : Feed the other languages URL with the default one if the URL is missing
 		$urls = $this->_get_urls(TRUE);
 
-		
 		// Update the page name (not used anymore in the frontend)
 		$this->data['name'] = $urls[Settings::get_lang('default')];
-
 
 		// Lang data
 		$this->lang_data = array();

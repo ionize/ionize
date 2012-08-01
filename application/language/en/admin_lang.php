@@ -252,6 +252,7 @@ $lang['ionize_label_drop_page_here'] = 'drop a page here...';
 $lang['ionize_label_drop_article_here'] = 'drop an article here...';
 $lang['ionize_label_add_link'] = 'Add link';
 $lang['ionize_label_url'] = 'URL';
+$lang['ionize_label_full_url'] = 'Full URL';
 $lang['ionize_label_see_online'] = 'See online';
 $lang['ionize_label_flag'] = 'Flag';
 $lang['ionize_label_flags'] = 'Flags';
@@ -515,6 +516,7 @@ $lang['ionize_title_admin_url'] = 'Admin panel URL';
 $lang['ionize_title_encryption_key'] = 'Encryption key';
 $lang['ionize_title_cache'] = 'Cache';
 $lang['ionize_title_allowed_mimes'] = 'Allowed Mimes';
+$lang['ionize_title_no_source_picture'] = 'No source picture';
 $lang['ionize_label_article_allowed_tags'] = 'HTML Tags';
 $lang['ionize_title_seo'] = 'SEO';
 $lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
@@ -590,6 +592,8 @@ $lang['ionize_label_setting_picture_max_height'] = 'Pictures max. Height';
 $lang['ionize_label_media_upload_mode'] = 'Upload Mode';
 $lang['ionize_label_media_upload_mode_single'] = 'Single File';
 $lang['ionize_label_media_upload_mode_multiple'] = 'Multiple Files';
+$lang['ionize_label_no_source_picture'] = 'File name';
+
 $lang['ionize_button_update_thumbs'] = 'Update existing thumbs';
 
 $lang['ionize_onchange_filemanager'] = 'You have to reload the admin panel (CTRL + R) after saving changes.';
@@ -653,6 +657,7 @@ $lang['ionize_help_media_upload_mode'] = 'If Multiple File hangs, try Single Fil
 
 $lang['ionize_text_no_thumbnails'] = 'No thumbnails are currently defined.';
 $lang['ionize_text_allowed_mimes'] = 'The following files types will be available for upload if checked.';
+$lang['ionize_text_no_source_picture'] = 'The following picture will be used if one picture source file isn\'t found.<br/>Complete file name and extension.';
 
 
 
@@ -702,6 +707,10 @@ $lang['ionize_label_article_list_template'] = 'List view';
 $lang['ionize_label_page_delete_date'] = 'Page delete date';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Home page';
+$lang['ionize_help_home_page'] = 'Home page';
+$lang['ionize_label_page_used_by_module'] = 'Used by module';
+$lang['ionize_help_page_used_by_module'] = 'If checked, all sub URLs will refer to this page, and will not return one 404.';
+
 $lang['ionize_label_sitemap_priority'] = 'Sitemap priority';
 $lang['ionize_label_article_reorder'] = 'Reorder Articles';
 $lang['ionize_label_date_asc'] = 'Date Ascendant';
@@ -1048,7 +1057,7 @@ $lang['ionize_message_module_not_installed'] = 'Module not installed !';
 $lang['ionize_title_system_check'] = 'System Diagnotic Tool';
 $lang['ionize_menu_sitemap'] = 'Site Map';
 $lang['ionize_menu_system_check'] = 'System Diagnotic';
-$lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and repair what should be. You cannot break anything by using this.';
+$lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and repair what should be. You cannot break anything by using them.';
 
 $lang['ionize_button_start_system_check'] = 'Start Check';
 
@@ -1058,16 +1067,33 @@ $lang['ionize_title_check_status'] = 'Status';
 
 $lang['ionize_title_check_lang'] = 'Check Languages';
 $lang['ionize_title_check_folder'] = 'Folder';
-$lang['ionize_title_check_page_level'] = 'Check Pages Levels';
-$lang['ionize_title_check_article_context'] = 'Check Articles Contexts';
+$lang['ionize_title_check_page_level'] = 'Pages Levels';
+$lang['ionize_title_check_article_context'] = 'Articles Contexts';
 $lang['ionize_title_check_views'] = 'Check Views';
+$lang['ionize_title_rebuild_urls'] = 'Rebuild URLs';
 $lang['ionize_title_rebuild_pages_urls'] = 'Rebuild of Pages URLs';
 $lang['ionize_title_rebuild_articles_urls'] = 'Rebuild of Articles URLs';
+$lang['ionize_title_clean_media'] = 'Clean Media';
+$lang['ionize_title_check_reports'] = 'Reports';
+$lang['ionize_title_broken_media_links'] = 'Media broken links';
+
+
+
+$lang['ionize_text_rebuild_urls'] = 'Rebuilds the whole pages and articles URLs.<br/> Removes the old URLs in the URL table.';
+$lang['ionize_text_check_lang'] = 'Check if all languages defined in DB are set in the config file.<br/> Corrects the config file if needed.';
+$lang['ionize_text_check_page_level'] = 'Checks the page level integrity and correct if needed.';
+$lang['ionize_text_check_article_context'] = 'Checks if all articles which have only one page context have the page as "Main Parent".<br/>Corrects if needed.';
+$lang['ionize_text_clean_media'] = 'Removes the non used medias from media tables. Do not removes any media file.';
+$lang['ionize_text_broken_media_links'] = 'Lists the media files which are in media table (means used) but not found on the server (file missing).';
+
+$lang['ionize_title_label_write_rights'] = 'Write rights';
 
 
 $lang['ionize_message_check_corrected'] = ' corrected.';
 $lang['ionize_message_check_ok'] = 'OK';
 $lang['ionize_message_check_folder_nok'] = 'No Write rights';
+$lang['ionize_message_nb_media_cleaned'] = ' media cleaned';
+$lang['ionize_message_no_broken_media_links'] = 'No broken media found';
 
 $lang['ionize_label_square_crop_area'] = 'Square crop area';
 $lang['ionize_label_top_left'] = 'top-left';

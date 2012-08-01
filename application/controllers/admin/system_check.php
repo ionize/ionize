@@ -32,12 +32,13 @@ class System_check extends MY_admin
 		parent::__construct();
 
 		// Models
-		$this->load->model('system_check_model', '', true);
-		$this->load->model('menu_model', '', true);
-		$this->load->model('page_model', '', true);
-		$this->load->model('article_model', '', true);
-		$this->load->model('config_model', '', true);
-		$this->load->model('url_model', '', true);
+		$this->load->model('system_check_model', '', TRUE);
+		$this->load->model('menu_model', '', TRUE);
+		$this->load->model('page_model', '', TRUE);
+		$this->load->model('article_model', '', TRUE);
+		$this->load->model('media_model', '', TRUE);
+		$this->load->model('config_model', '', TRUE);
+		$this->load->model('url_model', '', TRUE);
 		
 		// Libraries
 		$this->load->library('structure');
@@ -54,6 +55,30 @@ class System_check extends MY_admin
 	 */
 	function index() 
 	{
+		// Write rights
+		$folders = array(
+			array(
+				'path' => (config_item('cache_path') == '') ? FCPATH.'cache/' : config_item('cache_path'),
+				'write' => FALSE
+			),
+			array(
+				'path' => (config_item('files_path') == '') ? FCPATH.'files/' : FCPATH.config_item('files_path'),
+				'write' => FALSE
+			),
+			array(
+				'path' => FCPATH.'themes/'.Settings::get('theme'),
+				'write' => FALSE
+			),
+		);
+
+		foreach($folders as $key => $folder)
+		{
+			if ( is_dir($folder['path']) AND is_really_writable($folder['path']))
+				$folders[$key]['write'] = TRUE;
+		}
+
+		$this->template['folders'] = $folders;
+
 		$this->output('system_check');
 	}
 	
@@ -77,7 +102,7 @@ class System_check extends MY_admin
 			array (
 				'fn' => 'ION.JSON',
 				'args' => array	(
-					'system_check/check_folder_right'
+					'system_check/check_lang'
 				)
 			)
 		);
@@ -85,70 +110,9 @@ class System_check extends MY_admin
 		$this->response();
 	}
 	
-
-	/**
-	 * Checks write rights on Ionize's used folders
-	 *
-	 */
-	function check_folder_right()
-	{
-		$results = array();
-		
-		$folders = array(
-			'cache_path' => (config_item('cache_path') == '') ? FCPATH.'cache/' : config_item('cache_path'),
-			'files_path' => (config_item('files_path') == '') ? FCPATH.'files/' : config_item('files_path'),
-			'theme_path' => FCPATH.'themes/'.Settings::get('theme')
-		);
-
-		foreach($folders as $folder)
-		{
-			$result = array(
-				'title' => lang('ionize_title_check_folder').' : '.$folder,
-				'result_status' => 'success',
-				'result_text' => lang('ionize_message_check_ok')
-			);
-			
-			if ( ! is_dir($folder) OR ! is_really_writable($folder))
-			{
-				$result['result_status'] = 'error';
-				$result['result_text'] = lang('ionize_message_check_folder_nok');
-			}
-			
-			$results[] = $result;
-		}
-		
-		// Result view
-		$view = '';
-		foreach($results as $result)
-		{
-			$view .= $this->load->view('system_check_result', $result, TRUE);
-		}
-
-
-		$this->callback = array(
-			array (
-				'fn' => 'ION.appendDomElement',
-				'args' => array	(
-					'system_check_report',
-					$view
-				)
-			),
-			array (
-				'fn' => 'ION.JSON',
-				'args' => array	(
-					'system_check/check_page_level'
-				)
-			)
-		);
-		
-		$this->response();
-	}
-
-
 	/**
 	 * Check if all langs defined in DB are set in the config file
 	 *
-	 */
 	function check_lang()
 	{
 		$result = array(
@@ -223,8 +187,62 @@ class System_check extends MY_admin
 
 		$this->response();
 	}
+	*/
+	function check_lang()
+	{
+		$result = array(
+			'title' => lang('ionize_title_check_lang'),
+			'status' => 'success',
+			'message' => lang('ionize_message_check_ok')
+		);
 
-	
+		// Get the languages : DB + config/language.php
+		$db_languages = Settings::get_languages();
+		$config_languages = config_item('lang_uri_abbr');
+
+		// Check differences between DB and config/language.php file
+		$result_status = TRUE;
+
+		foreach($db_languages as $lang)
+		{
+			if ( ! array_key_exists($lang['lang'], $config_languages))
+			{
+				$result_status = FALSE;
+			}
+		}
+
+		// Correct if needed
+		if ($result_status == FALSE)
+		{
+			// Default language
+			$def_lang = '';
+
+			// Available languages array
+			$lang_uri_abbr = array();
+
+			foreach($db_languages as $l)
+			{
+				// Set default lang code
+				if ($l['def'] == '1')
+					$def_lang = $l['lang'];
+
+				$lang_uri_abbr[$l['lang']] = $l['name'];
+			}
+
+			$this->config_model->change('language.php', 'language_abbr', $def_lang);
+
+			if ( ! empty($lang_uri_abbr))
+			{
+				$this->config_model->change('language.php', 'lang_uri_abbr', $lang_uri_abbr);
+			}
+
+			$result['message'] = lang('ionize_message_check_corrected');
+
+		}
+
+		$this->xhr_output($result);
+	}
+
 	/**
 	 * Check page level integrity
 	 * Checks the page level inegrity, correct and chains the next check : article's contexts
@@ -234,7 +252,7 @@ class System_check extends MY_admin
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_page_level'),
-			'result_status' => 'success'
+			'status' => 'success'
 		);
 
 		$nb_wrong_levels = $this->system_check_model->check_page_level();
@@ -244,34 +262,14 @@ class System_check extends MY_admin
 		{
 			$corrected = $this->system_check_model->check_page_level($correct = TRUE);
 		
-			$result['result_text'] = $nb_wrong_levels .'/'. $corrected . lang('ionize_message_check_corrected');
+			$result['message'] = $nb_wrong_levels .'/'. $corrected . lang('ionize_message_check_corrected');
 		}
 		else
 		{
-			$result['result_text'] = lang('ionize_message_check_ok');
+			$result['message'] = lang('ionize_message_check_ok');
 		}
-		
-		// Result view
-		$view = $this->load->view('system_check_result', $result, TRUE);
 
-		$this->callback = array(
-			array (
-				'fn' => 'ION.appendDomElement',
-				'args' => array	(
-					'system_check_report',
-					$view
-				)
-			),
-			array (
-				'fn' => 'ION.JSON',
-				'args' => array	(
-					'system_check/check_article_context'
-				)
-			)			
-		);
-		
-		$this->response();
-
+		$this->xhr_output($result);
 	}
 	
 	
@@ -284,50 +282,62 @@ class System_check extends MY_admin
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_article_context'),
-			'result_status' => 'success'
+			'status' => 'success'
 		);
 
 		$nb_orphan_articles = $this->system_check_model->check_article_context();
 
 		// Correct
 		if ($nb_orphan_articles > 0)
-			$result['result_text'] = lang('ionize_message_check_corrected');
+			$result['message'] = lang('ionize_message_check_corrected');
 		else
-			$result['result_text'] = lang('ionize_message_check_ok');
+			$result['message'] = lang('ionize_message_check_ok');
 
-
-		// Result view
-		$view = $this->load->view('system_check_result', $result, TRUE);
-
-
-		$this->callback = array(
-			array (
-				'fn' => 'ION.appendDomElement',
-				'args' => array	(
-					'system_check_report',
-					$view
-				)
-			),
-			array (
-				'fn' => 'ION.JSON',
-				'args' => array	(
-					'system_check/rebuild_pages_urls'
-				)
-			)			
-
-			/* TODO : Add this correction in another "system tools block"
-			array (
-				'fn' => 'ION.JSON',
-				'args' => array	(
-					'system_check/check_views'
-				)
-			)
-			*/			
-		);
-		
-		$this->response();
+		$this->xhr_output($result);
 	}
-	
+
+	/**
+	 * Removes not used media from the media tables.
+	 *
+	 */
+	function clean_media()
+	{
+		$result = array(
+			'title' => lang('ionize_title_clean_media'),
+			'status' => 'success'
+		);
+
+		// Check and correct page's views
+		$nb_cleaned = $this->media_model->clean_table();
+
+		$result['message'] = $nb_cleaned . lang('ionize_message_nb_media_cleaned');
+
+		$this->xhr_output($result);
+	}
+
+
+	function broken_media_report()
+	{
+		$report_message = lang('ionize_message_no_broken_media_links');
+
+		$brokens = $this->media_model->get_brokens();
+		if (!empty($brokens))
+		{
+			$report_message = '';
+			foreach($brokens as $media)
+			{
+				$report_message .= $media->path . '<br/>';
+			}
+		}
+
+		$result = array(
+			'title' => lang('ionize_title_clean_media'),
+			'status' => 'success',
+			'message' => $report_message,
+		);
+
+		$this->xhr_output($result);
+	}
 	
 	/**
 	 * Checks views of both pages and articles
@@ -408,92 +418,22 @@ class System_check extends MY_admin
 	 * Rebuilds the pages URLs
 	 *
 	 */
-	function rebuild_pages_urls()
+	function rebuild_urls()
 	{
+		$this->url_model->clean_table();
+
 		$nb = $this->page_model->rebuild_urls();
 		$this->url_model->delete_empty_urls();
 		
 		$result = array(
 			'title' => lang('ionize_title_rebuild_pages_urls'),
-			'result_status' => 'success'
+			'status' => 'success',
+			'message' => lang('ionize_message_check_ok'),
 		);
 		
-		// Correct
-		if ($nb > 0)
-			$result['result_text'] = lang('ionize_message_check_corrected');
-		else
-			$result['result_text'] = lang('ionize_message_check_ok');
-		
-		// Result view
-		$view = $this->load->view('system_check_result', $result, TRUE);
-
-		$this->callback = array(
-			array (
-				'fn' => 'ION.appendDomElement',
-				'args' => array	(
-					'system_check_report',
-					$view
-				)
-			),
-			array (
-				'fn' => 'ION.notification',
-				'args' => array	(
-					'success',
-					'Check complete !'
-				)
-			)			
-		);
-
-		$this->response();
-		
+		$this->xhr_output($result);
 	}
-	
-	
-	/**
-	 * Rebuilds the articles URLs
-	 *
-	function rebuild_articles_urls()
-	{
-		$nb = $this->article_model->rebuild_urls();
-		$this->url_model->delete_empty_urls();
 
-		$result = array(
-			'title' => lang('ionize_title_rebuild_articles_urls'),
-			'result_status' => 'success'
-		);
-		
-		// Correct
-		if ($nb > 0)
-			$result['result_text'] = lang('ionize_message_check_corrected');
-		else
-			$result['result_text'] = lang('ionize_message_check_ok');
-		
-		// Result view
-		$view = $this->load->view('system_check_result', $result, TRUE);
-
-		$this->callback = array(
-			array (
-				'fn' => 'ION.appendDomElement',
-				'args' => array	(
-					'system_check_report',
-					$view
-				)
-			),
-			array (
-				'fn' => 'ION.notification',
-				'args' => array	(
-					'success',
-					'Check complete !'
-				)
-			)			
-		);
-
-		$this->response();
-		
-	}
-	 */
-	
-	
 	/**
 	 * Check, for each database registered picture, if all the defined thumbs exist
 	 *

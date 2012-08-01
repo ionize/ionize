@@ -53,7 +53,7 @@ class Dashboard extends MY_Admin {
 		$page_article = $this->article_model->get_all_context();
 
 		// Get pages
-		$pages = $this->page_model->get_lang_list(false, Settings::get_lang('default'));
+		$pages = $this->page_model->get_lang_list(NULL, Settings::get_lang('default'));
 
 		// Add page name to each context & feed the linked articles array
 		$linked_articles = array();

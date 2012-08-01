@@ -228,7 +228,7 @@ var IonizeMediaManager = new Class(
 				}));
 	
 				// Set tips
-				new Tips('#' + this.containers.get(responseJSON.type) + ' .help', {'className' : 'tooltip'});
+				new Tips('#' + this.containers.get(responseJSON.type) + ' .help', {'className' : 'tooltip', 'text': 'rel', 'title' : 'title'});
 			}
 			// If no media, feed the content HMTLDomElement with transmitted message
 			else

@@ -975,7 +975,7 @@
 			<!-- Files -->
 			<div class="tabcontent">
 			
-				<p class="h20">
+				<p class="h30">
 <!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button> -->
 					<button class="right light-button files" onclick="javascript:mediaManager.loadMediaList('file');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('file');return false;"><?= lang('ionize_label_detach_all_files') ?></button>
@@ -990,7 +990,7 @@
 			<!-- Music -->
 			<div class="tabcontent">
 				
-				<p class="h20"> 
+				<p class="h30"> 
 <!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button> -->
 					<button class="right light-button music" onclick="javascript:mediaManager.loadMediaList('music');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('music');return false;"><?= lang('ionize_label_detach_all_musics') ?></button>
@@ -1005,7 +1005,7 @@
 			<!-- Videos -->
 			<div class="tabcontent">
 			
-				<p class="h20">
+				<p class="h30">
 <!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button>-->
 					<button class="right light-button video" onclick="javascript:mediaManager.loadMediaList('video');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('video');return false;"><?= lang('ionize_label_detach_all_videos') ?></button>
@@ -1020,7 +1020,7 @@
 			<!-- Pictures -->
 			<div class="tabcontent">
 			
-				<p class="h20">
+				<p class="h30">
 <!--					<button class="fmButton right light-button plus"><?= lang('ionize_label_attach_media') ?></button>-->
 					<button class="right light-button pictures" onclick="javascript:mediaManager.loadMediaList('picture');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 					<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('picture');return false;"><?= lang('ionize_label_detach_all_pictures') ?></button>

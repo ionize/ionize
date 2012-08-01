@@ -60,6 +60,32 @@ class Article_model extends Base_model
 
 	// ------------------------------------------------------------------------
 
+	/**
+	 * Get one article
+	 *
+	 * @param	string		where array
+	 * @param	string		Optional. Lang code
+	 * @return	array		array of media
+	 *
+	 */
+	function get($where, $lang = NULL)
+	{
+		$data = $this->get_lang_list($where, $lang);
+
+		if ( ! empty($data))
+			return $data[0];
+
+		return array();
+	}
+
+
+	public function get_by_id($id, $lang = NULL)
+	{
+		return $this->get(array('article.id_article' => $id), $lang);
+	}
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Get array of articles
@@ -74,8 +100,6 @@ class Article_model extends Base_model
 	 */
 	function get_list($where = FALSE)
 	{
-		$data = array();
-
 		$this->{$this->db_group}->select($this->lang_table.'.*');
 		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
 		$this->{$this->db_group}->where($this->lang_table.'.lang', Settings::get_lang('default'));
@@ -91,32 +115,6 @@ class Article_model extends Base_model
 		return $data;
 	}
 
-
-	// ------------------------------------------------------------------------
-
-
-	/** 
-	 * Get one element
-	 * @updated		04,09,2009
-	 *
-	 * @param	array	Where array
-	 * @param	string	Lang code. Optional
-	 * @return	array	Data array
-	 *
-	function get($where, $lang = NULL) 
-	{
-		$data = parent::get($where, $lang);
-
-		// Set the correct publish date
-		if ( !empty($data))
-		{
-//			$data['date']	= (isDate($data['publish_on'])) ? $data['publish_on'] : $data['created'];
-		}
-		return $data;
-	}
-	 */
-
-
 	// ------------------------------------------------------------------------
 
 
@@ -125,76 +123,61 @@ class Article_model extends Base_model
 	 * Used by front-end to get the posts with lang data
 	 *
 	 */
-	function get_lang_list($where=FALSE, $lang=NULL, $filter=FALSE)
+	function get_lang_list($where = array(), $lang = NULL, $filter = FALSE)
 	{
-		$data = array();
-	
+		// Context table
+		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
+		$this->{$this->db_group}->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'left');
+
+		// Page table
+		$this->{$this->db_group}->select('article_list_view, article_view');
+		$this->{$this->db_group}->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
+
+		// Default ordering
 		if ( empty($where['order_by']))
+			$where['order_by'] = $this->parent_table.'.ordering ASC';
+			// $this->{$this->db_group}->order_by($this->parent_table.'.ordering', 'ASC');
+
+		// Correction on $where['id_page']
+		if (is_array($where) && isset($where['id_page']) )
 		{
-			$this->{$this->db_group}->order_by($this->parent_table.'.ordering', 'ASC');
+			$where[$this->parent_table.'.id_page'] = $where['id_page'];
+			unset($where['id_page']);
 		}
 
-		// Perform conditions from the $where array
-		foreach(array('limit', 'offset', 'order_by', 'like') as $key)
-		{
-			if(isset($where[$key]))
-			{
-				call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
-				unset($where[$key]);
-			}
-		}
-
-		// Add the SQL publish filter if mandatory
+		// Published filter
 		$this->filter_on_published(self::$publish_filter, $lang);
 
-		// Filter on users filter
-		if ( $filter !== FALSE)
-			$this->_set_filter($filter);
+		// User's filter (tags)
+		if ( $filter !== FALSE)	$this->_set_filter($filter);
 
 		// Add the 'date' field to the query
 		$this->{$this->db_group}->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
 
-		// Make sure we have only one time each element
-		$this->{$this->db_group}->distinct();
-
-		// Main data select						
-		$this->{$this->db_group}->select($this->table.'.*', FALSE);
-
-		// Lang data
-		if ( ! is_null($lang) || ! $lang == FALSE)
-		{
-			$this->{$this->db_group}->select($this->lang_table.'.*');
-			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
-			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
-
-			// Add URL path to query
-			// URL depends on  lang, it is not possible to get it outside one lang query
-			$this->{$this->db_group}->select('path, path_ids, full_path_ids');
-			$this->{$this->db_group}->join(
-				$this->url_table,
-				$this->table.".id_article = " .$this->url_table.".id_entity AND ".
-					"(". 
-						$this->url_table.".type = 'article' AND " .
-						$this->url_table.".active = 1 ".
-					")",
-				'left'
-			);
-
-		}
-
-		// Join table select
-		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
-		$this->{$this->db_group}->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
-		
 		// Add Type to query
 		$this->{$this->db_group}->select($this->type_table.'.type');
 		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
-		
-		
 
-		// Where ?
+		// Base_model->get_lang_list()
+		$articles =  parent::get_lang_list($where, $lang);
+
+		$this->add_categories($articles, $lang);
+
+		return $articles;
+		/*
 		if (is_array($where) )
 		{
+
+				// Perform conditions from the $where array
+			foreach(array('limit', 'offset', 'order_by', 'like') as $key)
+			{
+				if(isset($where[$key]))
+				{
+					call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
+					unset($where[$key]);
+				}
+			}
+
 			foreach ($where as $key => $value)
 			{
 				// Join to context table (page_article) if needed
@@ -202,20 +185,13 @@ class Article_model extends Base_model
 				{
 					// id_page must be searched in page_article table
 					$key = str_replace('id_page', $this->parent_table.'.id_page', $key);
-					
+
 					// Add article's context page views
-					$this->{$this->db_group}->select('article_list_view, article_view');
-					$this->{$this->db_group}->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
+					// $this->{$this->db_group}->select('article_list_view, article_view');
+					// $this->{$this->db_group}->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
 				}
-				
-				// Join to URL table if needed
-				if (strpos($key, 'path') !== FALSE)
-				{
-				}
-				
-				
+
 				$protect = true;
-				$null = FALSE;
 
 				if (in_array(substr($key, -2), array('in', 'is')) )
 				{
@@ -230,7 +206,7 @@ class Article_model extends Base_model
 				{
 					if (strpos($key, '.') > 0)
 					{
-						$this->{$this->db_group}->where($key, $value, $protect);			
+						$this->{$this->db_group}->where($key, $value, $protect);
 					}
 					else
 					{
@@ -239,10 +215,52 @@ class Article_model extends Base_model
 				}
 			}
 		}
+
+		// Add the SQL publish filter if mandatory
+		$this->filter_on_published(self::$publish_filter, $lang);
+
+		// Filter on users filter
+		if ( $filter !== FALSE)	$this->_set_filter($filter);
+
+		// Add the 'date' field to the query
+		$this->{$this->db_group}->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
+
+		// Make sure we have only one time each element
+		$this->{$this->db_group}->distinct();
+
+		// Main data select						
+		$this->{$this->db_group}->select($this->table.'.*', FALSE);
+
+		// Lang data
+		if ( ! is_null($lang) || ! $lang == FALSE)
+		{
+			$this->{$this->db_group}->select($this->lang_table.'.*');
+			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'left');
+			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
+
+			// Add URL path to query
+			// URL depends on  lang, it is not possible to get it outside one lang query
+			$this->{$this->db_group}->select('path, path_ids, full_path_ids');
+			$this->{$this->db_group}->join(
+				$this->url_table,
+				$this->table.".id_article = " .$this->url_table.".id_entity AND ".
+					"(". 
+						$this->url_table.".type = 'article' AND " .
+						$this->url_table.".active = 1 AND ".
+						$this->url_table.".lang = '". $lang ."'" .
+					")",
+				'left'
+			);
+		}
+
+		// Add Type to query
+		$this->{$this->db_group}->select($this->type_table.'.type');
+		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
 		
+
 		// DB Query
 		$query = $this->{$this->db_group}->get($this->table);
-// trace($this->{$this->db_group}->last_query());
+log_message('error', $this->{$this->db_group}->last_query());
 
 		if($query && $query->num_rows() > 0)
 		{
@@ -304,6 +322,8 @@ class Article_model extends Base_model
 		}
 		
 		return $data;
+		*/
+
 	}
 
 	// ------------------------------------------------------------------------
@@ -511,19 +531,15 @@ class Article_model extends Base_model
 			{
 				$article['langs'] = array();
 				
-				// $langs = array_values(array_filter($articles_lang, create_function('$row','return $row["id_article"] == "'. $article['id_article'] .'";')));
 				$langs = array();
 				foreach($articles_lang as $al)
 				{
 					if ($al['id_article'] == $article['id_article'])
-					{
 						$langs[] = $al;
-					}
 				}
 			
 				foreach(Settings::get_languages() as $lang)
 				{
-	//				$article['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
 					foreach($langs as $l)
 					{
 						if ($l['lang'] == $lang['lang'])
@@ -560,6 +576,51 @@ class Article_model extends Base_model
 	}
 
 
+	function add_categories(&$articles = array(), $lang = NULL)
+	{
+		// Add Categories to each article
+		$categories = $art_cat = array();
+
+		$this->{$this->db_group}->join($this->category_lang_table, $this->category_table.'.id_category = ' .$this->category_lang_table.'.id_category', 'left');
+
+		if ( ! is_null($lang))
+			$this->{$this->db_group}->where($this->category_lang_table.'.lang', $lang);
+
+		$query = $this->{$this->db_group}->get($this->category_table);
+
+		if($query->num_rows() > 0)
+		{
+			$categories = $query->result_array();
+
+			// Get categories articles table content
+			$query = $this->{$this->db_group}->get($this->article_category_table);
+
+			// table of links between articles and categories
+			if($query->num_rows() > 0) $art_cat = $query->result_array();
+		}
+
+		// Add entry to each data array element
+		foreach ($articles as $key => $article)
+		{
+			$article['categories'] = array();
+			if ( ! empty($categories))
+			{
+				foreach($art_cat as $cat)
+				{
+					if($articles[$key]['id_article'] == $cat['id_article'])
+					{
+						foreach($categories as $c)
+						{
+							if ($c['id_category'] == $cat['id_category'])
+								$articles[$key]['categories'][] = $c;
+						}
+					}
+				}
+			}
+		}
+	}
+
+
 	// ------------------------------------------------------------------------
 
 	
@@ -578,7 +639,7 @@ class Article_model extends Base_model
 			
 			return $this->{$this->db_group}->update($this->parent_table, $context_data);
 		}
-		
+
 		return 0;
 	}
 	
@@ -721,7 +782,6 @@ class Article_model extends Base_model
 		$this->rebuild_urls($id_article);
 		
 		return $nb;
-		
 	}
 
 
@@ -746,17 +806,12 @@ class Article_model extends Base_model
 		else
 			$data['updated'] = date('Y-m-d H:i:s');
 
-		// Be sure URLs are unique
-//		$this->set_unique_urls($lang_data, $data['id_article']);
-		
-	
 		// Dates
 		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
 		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
 		$data['comment_expire'] = ($data['comment_expire']) ? getMysqlDatetime($data['comment_expire'], Settings::get('date_format')) : '0000-00-00';
 		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
 			
-
 		// Article saving
 		return parent::save($data, $lang_data);
 	}
@@ -776,7 +831,6 @@ class Article_model extends Base_model
 	{
 		$this->update_links($article, $article_lang);
 	}
-
 
 
 	// ------------------------------------------------------------------------
@@ -880,6 +934,8 @@ class Article_model extends Base_model
 	 * @param	int		ID of the article
 	 * @param	Array	Optional. Array of context data to insert to the join table.
 	 *
+	 * @return	boolean	TRUE is the link was set.
+	 *
 	 */
 	function link_to_page($id_page, $id_article, $context_data = array())
 	{
@@ -976,7 +1032,8 @@ class Article_model extends Base_model
 	 * @param		Integer		ID of the article to duplicate
 	 * @param		Array		Array of new fields (id_page, name, order, etc...)
 	 * @param		String		Article Order in the defined page. Can be "first" or "last"
-	 * @returns		Integer		ID of the new article
+	 *
+	 * @return		Integer		ID of the new article
 	 *
 	 */
 	function duplicate($id_source, $data, $order)
@@ -1088,35 +1145,32 @@ class Article_model extends Base_model
 				}
 				
 				// Extended fields
-//				if (Settings::get('use_extend_fields') == '1')
-//				{
-					$extend_fields = $this->get_extend_fields_definition();
-	
-					// Extend fields IDs
-					$efids = array();
-					foreach($extend_fields as $ef)
-						$efids[] = $ef['id_extend_field'];
+				$extend_fields = $this->get_extend_fields_definition();
 
-					if ( !empty($efids))
+				// Extend fields IDs
+				$efids = array();
+				foreach($extend_fields as $ef)
+					$efids[] = $ef['id_extend_field'];
+
+				if ( !empty($efids))
+				{
+					$this->{$this->db_group}->where(array('id_parent'=>$id_source));
+					$this->{$this->db_group}->where_in('id_extend_field', $efids);
+					$query = $this->{$this->db_group}->get('extend_fields');
+
+
+					if ( $query->num_rows() > 0)
 					{
-						$this->{$this->db_group}->where(array('id_parent'=>$id_source));
-						$this->{$this->db_group}->where_in('id_extend_field', $efids);
-						$query = $this->{$this->db_group}->get('extend_fields');
-	
-	
-						if ( $query->num_rows() > 0)
+						$result = $query->result_array();
+						foreach($result as & $arr)
 						{
-							$result = $query->result_array();
-							foreach($result as & $arr)
-							{
-								$arr['id_extend_fields'] = '';
-								$arr['id_parent'] = $id_copy;
-								$this->{$this->db_group}->insert('extend_fields', $arr);
-							}
+							$arr['id_extend_fields'] = '';
+							$arr['id_parent'] = $id_copy;
+							$this->{$this->db_group}->insert('extend_fields', $arr);
 						}
 					}
-//				}
-				
+				}
+
 				return $id_copy;
 			}
 		}
@@ -1216,13 +1270,12 @@ class Article_model extends Base_model
 	 * Gets articles from one category
 	 * Adds a SQL filter on the categories and calls Article_model->get_lang_list()
 	 *
-	 * @param	array	Array of condition to transmit to get_lang_list()
-	 * @param	string	Category name
-	 * @param	string	Lang code
-	 * @param	int		Limit value, will be passed to get_lang_list()
-	 * @param	string	Like string, will be passed to get_lang_list()
+	 * @param	array		Array of condition to transmit to get_lang_list()
+	 * @param	string		Category name
+	 * @param	string		Lang code
+	 * @param	mixed		Filter
 	 *
-	 * return	array	Articles array
+	 * @return	array	Articles array
 	 *
 	 */	
 	function get_from_category($where=FALSE, $category, $lang, $filter=FALSE)
@@ -1245,14 +1298,13 @@ class Article_model extends Base_model
 	 * Gets articles from categories
 	 * Adds a SQL filter on the categories and calls Article_model->get_lang_list()
 	 *
-	 * @param	array	Array of condition to transmit to get_lang_list()
-	 * @param	array	Categories name array
-	 * @param	string	Categories condition : 'or', 'and' 
-	 * @param	string	Lang code
-	 * @param	int		Limit value, will be passed to get_lang_list()
-	 * @param	string	Like string, will be passed to get_lang_list()
+	 * @param	array		Array of condition to transmit to get_lang_list()
+	 * @param	array		Categories name array
+	 * @param	string		Categories condition : 'or', 'and'
+	 * @param	string		Lang code
+	 * @param	boolean		Filter
 	 *
-	 * return	array	Articles array
+	 * @return	array	Articles array
 	 *
 	 */	
 	function get_from_categories($where=FALSE, $categories, $categories_condition, $lang, $filter=FALSE)
@@ -1299,12 +1351,9 @@ class Article_model extends Base_model
 	 * @param	String		Year, YYYY
 	 * @param	String		Month, MM
 	 * @param	String		Lang code
-	 * @param	Integer		Limit the query to X articles
-	 * @param	String		SQL Like
-	 * @param	String		SQL Order by
 	 * @param	String		Filter conditions
-	 * @return	Array		Array of articles
 	 *
+	 * @return	array
 	 */
 	function get_from_archives($where=FALSE, $year, $month, $lang, $filter=FALSE)
 	{
@@ -1421,7 +1470,7 @@ class Article_model extends Base_model
 		if ($query->num_rows() > 0)
 			return $query->row_array();
 
-		return $FALSE;              
+		return FALSE;
 	} 
 	
 
@@ -1610,34 +1659,6 @@ class Article_model extends Base_model
 */
 		$this->{$this->db_group}->where('('.$filter.')');
 	}
-
-	/**
-	 * Adds all SQL conditions requested by the filter to the current request
-	 *
-	 * @param	String		Filter
-	 * @return 	void
-	 *
-	private function _set_filter($filter)
-	{
-
-
-		$filter = explode('|', $filter);
-		
-		foreach($filter as $condition)
-		{
-			$c = explode(':', $condition);
-			$value = isset($c[1]) ? $c[1] : " !='' ";
-
-			// If filter field name in $filter_field_ref, use the given table as field to avoid ambiguous SQL
-			if (array_key_exists($c[0], $this->filter_field_ref))
-			{
-				$c[0] = $this->filter_field_ref[$c[0]].'.'.$c[0];
-			}
-			
-			$this->{$this->db_group}->where('('.$c[0]. ' '. $value.')');
-		}	
-	}
-	 */
 
 
 	// ------------------------------------------------------------------------

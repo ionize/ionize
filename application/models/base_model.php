@@ -464,29 +464,57 @@ class Base_model extends CI_Model
 	 *	@return	array	The complete arrayList of element, including medias
 	 *
 	 */
-	function get_lang_list($where = FALSE, $lang = NULL)
+	function get_lang_list($where = array(), $lang = NULL)
 	{
 		$data = array();
 
 		// Perform conditions from the $where array
-		foreach(array('limit', 'offset', 'order_by', 'like') as $key)
+		if ( ! empty($where) && is_array($where) )
 		{
-			if(isset($where[$key]))
+			foreach(array('limit', 'offset', 'order_by', 'like') as $key)
 			{
-				call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
-				unset($where[$key]);
+				if(isset($where[$key]))
+				{
+					call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
+					unset($where[$key]);
+				}
+			}
+
+			if (isset($where['where_in']))
+			{
+				foreach($where['where_in'] as $key => $value)
+				{
+					$this->{$this->db_group}->where_in($key, $value);
+				}
+				unset($where['where_in']);
+			}
+
+			$protect = TRUE;
+
+			foreach ($where as $key => $value)
+			{
+				if (in_array(substr($key, -2), array('in', 'is')) )
+					$protect = FALSE;
+
+				// NULL value : Create an "where value is NULL" constraint
+				if ($value == 'NULL')
+				{
+					$this->{$this->db_group}->where($key. ' IS NULL', NULL, FALSE);
+				}
+				else
+				{
+					if (strpos($key, '.') > 0)
+					{
+						$this->{$this->db_group}->where($key, $value, $protect);
+					}
+					else
+					{
+						$this->{$this->db_group}->where($this->table.'.'.$key, $value, $protect);
+					}
+				}
 			}
 		}
 
-		if (isset($where['where_in']))
-		{
-			foreach($where['where_in'] as $key => $value)
-			{
-				$this->{$this->db_group}->where_in($key, $value);
-			}
-			unset($where['where_in']);
-		}
-		
 		// Make sure we have only one time each element
 		$this->{$this->db_group}->distinct();
 
@@ -494,20 +522,16 @@ class Base_model extends CI_Model
 		if ( ! is_null($lang))
 		{
 			$this->{$this->db_group}->select($this->lang_table.'.*');
-			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.'.$this->pk_name.' = ' .$this->table.'.'.$this->pk_name, 'inner');			
+			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.'.$this->pk_name.' = ' .$this->table.'.'.$this->pk_name, 'left');
 			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 
 		// Main data select			
 		$this->{$this->db_group}->select($this->table.'.*', false);
+		log_message('error', 'table : '. $this->table);
 
-		// Where ?
-		if (is_array($where) )
-		{
-			$this->{$this->db_group}->where($where);
-		}
-	
 		$query = $this->{$this->db_group}->get($this->table);
+		log_message('error', $this->{$this->db_group}->last_query());
 
 		if($query->num_rows() > 0)
 		{
@@ -520,7 +544,8 @@ class Base_model extends CI_Model
 					
 			// Add extended fields if necessary
 			$this->add_extend_fields($data, $this->table, $lang);
-			
+
+
 			// Add URLs for each language
 			if ($this->table == 'page' OR $this->table == 'article')
 				$this->add_lang_urls($data, $this->table, $lang);
@@ -1290,58 +1315,42 @@ class Base_model extends CI_Model
 		if($query->num_rows() > 0)
 		{
 			$result = $query->result_array();
-		}			
-
-		// If the data array is a list of arrays
-		if (isset($data[0]) && is_array($data[0]))
-		{
-			foreach($data as $k=>$el)
-			{
-//				$data[$k]['medias'] = array_values(array_filter($result, create_function('$row','return $row["'.$this->pk_name.'"] == "'. $el[$this->pk_name] .'";')));
-				$data[$k]['medias'] = array();
-				foreach($result as $row)
-				{
-					if ($row[$this->pk_name] == $el[$this->pk_name])
-						$data[$k]['medias'][] = $row;
-				}
-				
-				
-				// Add extended fields values for each media
-				// Needs to be improved as the extend fieldsdefinition loaded in $this->extend_fields_def are these from the table and not from the medias...
-				// But this has no importance, it's just not clean.
-				if ( ! empty($data[$k]['medias']))
-					$this->add_extend_fields($data[$k]['medias'], 'media', $lang);
-				
-				// Add file extension to each media
-				foreach($data[$k]['medias'] as &$media)
-				{
-					$media['extension'] = pathinfo($media['file_name'], PATHINFO_EXTENSION);
-					$media['mime'] = get_mime_by_extension($media['file_name']);
-				}
-			}
 		}
-		// The data array is a hashtable
-		else
+
+		// If the data array is one simple array
+		$data_is_simple_array = FALSE;
+		if (! isset($data[0]) OR ! is_array($data[0]))
 		{
-			// $data['medias'] = array_values(array_filter($result, create_function('$row','return $row["'.$this->pk_name.'"] == "'. $data[$this->pk_name] .'";')));
-			$data['medias'] = array();
+			$data_is_simple_array = TRUE;
+			$data = array(0 => $data);
+		}
+
+		foreach($data as $k=>$el)
+		{
+			$data[$k]['medias'] = array();
 			foreach($result as $row)
 			{
-				if ($row[$this->pk_name] == $data[$this->pk_name])
-					$data['medias'][] = $row;
+				if ($row[$this->pk_name] == $el[$this->pk_name])
+					$data[$k]['medias'][] = $row;
 			}
-			
-			if ( ! empty($data['medias']))
-				$this->add_extend_fields($data['medias'], 'media', $lang);
-			
+
+			// Add extended fields values for each media
+			// Needs to be improved as the extend fieldsdefinition loaded in $this->extend_fields_def are these from the table and not from the medias...
+			// But this has no importance, it's just not clean.
+			if ( ! empty($data[$k]['medias']))
+				$this->add_extend_fields($data[$k]['medias'], 'media', $lang);
+
 			// Add file extension to each media
-			foreach($data['medias'] as &$media)
+			foreach($data[$k]['medias'] as &$media)
 			{
 				$media['extension'] = pathinfo($media['file_name'], PATHINFO_EXTENSION);
 				$media['mime'] = get_mime_by_extension($media['file_name']);
 			}
 		}
-		
+
+		if ($data_is_simple_array)
+			$data = $data[0];
+
 		$query->free_result();
 	}
 
@@ -1359,7 +1368,15 @@ class Base_model extends CI_Model
 	{
 		// Element ID
 		$id = 'id_'.$parent;
-		
+
+		// If the data array is one simple array
+		$data_is_simple_array = FALSE;
+		if (! isset($data[0]) OR ! is_array($data[0]))
+		{
+			$data_is_simple_array = TRUE;
+			$data = array(0 => $data);
+		}
+
 		// Array of IDs to get.
 		$ids = array();
 		foreach($data as $element)
@@ -1403,7 +1420,10 @@ class Base_model extends CI_Model
 					}
 				}
 			}
-		}	
+		}
+
+		if ($data_is_simple_array)
+			$data = $data[0];
 	}
 
 
@@ -1478,6 +1498,14 @@ class Base_model extends CI_Model
 
 		if ($this->{$this->db_group}->table_exists('extend_field'))
 		{
+			// If the data array is one simple array
+			$data_is_simple_array = FALSE;
+			if (! isset($data[0]) OR ! is_array($data[0]))
+			{
+				$data_is_simple_array = TRUE;
+				$data = array(0 => $data);
+			}
+
 			// Get the elements ID to filter the SQL on...
 			$ids = array();
 			foreach ($data as $d)
@@ -1485,14 +1513,14 @@ class Base_model extends CI_Model
 				if ( ! empty($d['id_'.$parent]))
 					$ids[] = $d['id_'.$parent];
 			}
-			
+
 			if ( ! empty($ids))
 			{
 				// Get the extend fields details, filtered on parents ID
 				$this->{$this->db_group}->where(array('extend_field.parent'=>$parent));
 				$this->{$this->db_group}->where_in('id_parent', $ids);
-				$this->{$this->db_group}->join($this->extend_fields_table, $this->extend_field_table.'.id_'.$this->extend_field_table.' = ' .$this->extend_fields_table.'.id_'.$this->extend_field_table, 'inner');			
-	
+				$this->{$this->db_group}->join($this->extend_fields_table, $this->extend_field_table.'.id_'.$this->extend_field_table.' = ' .$this->extend_fields_table.'.id_'.$this->extend_field_table, 'inner');
+
 				$query = $this->{$this->db_group}->get($this->extend_field_table);
 
 				$extend_fields = array();
@@ -1507,7 +1535,7 @@ class Base_model extends CI_Model
 					if ($res['lang'] == $lang || $res['lang'] == '' )
 						$filtered_result[] = $res;
 				}
-	
+
 				// Attach each extend field to the corresponding data array
 				foreach ($data as &$d)
 				{
@@ -1515,27 +1543,30 @@ class Base_model extends CI_Model
 					// Not usefull for the moment.
 					// Can be used for debugging
 					// $d['_extend_fields_definition'] = $this->get_extend_fields_definition();
-					
+
 					// First set the extend fields of the data row to the default value. So it exists...
 					foreach ($this->extend_fields_def as $e)
 					{
 						$d[$this->extend_field_prefix.$e['name']] = $e['default_value'];
 					}
-					
+
 					// Feeds the extend fields
 					// Each extend field will be prefixed to avoid collision with standard fields names
 					foreach ($extend_fields as $e)
 					{
 						if (empty($e['content']) && !empty($e['default_value']))
 							$e['content'] = $e['default_value'];
-					
+
 						if ($d['id_'.$parent] == $e['id_parent'])
 						{
 							$d[$this->extend_field_prefix.$e['name']] = $e['content'];
 						}
 					}
-				}			
+				}
 			}
+
+			if ($data_is_simple_array)
+				$data = $data[0];
 		}
 	}
 
@@ -2098,17 +2129,6 @@ class Base_model extends CI_Model
 	{
 		if (is_array($array))
 		{
-		/*
-			foreach ($array as $key => $val)
-			{
-				if ($key == $this->pk_name)
-				{
-					unset($array[$key]);
-					$key = $this->table.'.'.$key;
-					$array[$key] = $val;
-				}
-			}
-		*/
 			foreach ($array as $key => $val)
 			{
 				unset($array[$key]);

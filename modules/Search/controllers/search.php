@@ -55,7 +55,7 @@ class Search extends Base_Controller
 
 	/**
 	 * Example of pure PHP result
-	 * Usefull when calling the function through XHR
+	 * Useful when calling the function through XHR
 	 *
 	 * @notice : 	The "result_pure_php" view has in this case no access to the Ionize tags,
 	 *				because the Ionize Tags library is not loaded, so the tags will not be parsed.

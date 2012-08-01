@@ -92,7 +92,7 @@
 				<!-- Categories -->
 				<dl class="small">
 					<dt>
-						<label for="template"><?= lang('ionize_label_categories') ?></label>
+						<label for="categories"><?= lang('ionize_label_categories') ?></label>
 					</dt>
 					<dd>
 						<div id="categories">
@@ -111,7 +111,7 @@
 					<!-- Parent pages list -->
 					<dl class="small dropPageInArticle">
 						<dt>
-							<label for="template" title="<?= lang('ionize_help_article_context') ?>"><?= lang('ionize_label_parents') ?></label>
+							<label for="parents" title="<?= lang('ionize_help_article_context') ?>"><?= lang('ionize_label_parents') ?></label>
 						</dt>
 						<dd>
 						
@@ -384,7 +384,7 @@
 			<!-- Ordering -->
 			<dl>
 				<dt >
-					<label for="ordering"><?= lang('ionize_label_ordering') ?></label>
+					<label for="ordering_select"><?= lang('ionize_label_ordering') ?></label>
 				</dt>
 				<dd>
 					<select name="ordering_select" id="ordering_select" class="select">
@@ -766,8 +766,7 @@
 					<div class="element element-<?= $lang ?>">
 
 						<div>
-							<textarea id="summary_<?= $lang ?>" name="summary_<?= $lang ?>" class="smallTinyTextarea w600 h100" rel="<?= $lang ?>"><?= htmlentities(${$lang}['summary'], ENT_QUOTES, 'utf-8') ?></textarea>
-							
+							<textarea id="summary_<?= $lang ?>" name="summary_<?= $lang ?>" class="smallTinyTextarea h100" rel="<?= $lang ?>"><?= htmlentities(${$lang}['summary'], ENT_QUOTES, 'utf-8') ?></textarea>
 							<p class="clear h15 mb15">
 								<button id="wysiwyg_summary_<?= $lang ?>" type="button" class="light-button left" onclick="tinymce.execCommand('mceToggleEditor',false,'summary_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
 							</p>
@@ -781,8 +780,7 @@
 					<div class="element element-<?= $lang ?>">
 
 						<div>
-							<textarea id="content_<?= $lang ?>" name="content_<?= $lang ?>" class="tinyTextarea w600 h260" rel="<?= $lang ?>"><?= htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8') ?></textarea>
-							
+							<textarea id="content_<?= $lang ?>" name="content_<?= $lang ?>" class="tinyTextarea h260" rel="<?= $lang ?>"><?= htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8') ?></textarea>
 							<p class="clear h15">
 								<button id="wysiwyg_<?= $lang ?>" type="button" class="light-button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
 							</p>
@@ -797,7 +795,7 @@
 				<!-- Files -->
 				<div class="tabcontent">
 				
-					<p class="h20">
+					<p class="h30">
 						<button class="right light-button files" onclick="javascript:mediaManager.loadMediaList('file');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('file');return false;"><?= lang('ionize_label_detach_all_files') ?></button>
 					</p>
@@ -810,7 +808,7 @@
 				<!-- Music -->
 				<div class="tabcontent">
 					
-					<p class="h20">
+					<p class="h30">
 						<button class="right light-button music" onclick="javascript:mediaManager.loadMediaList('music');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('music');return false;"><?= lang('ionize_label_detach_all_musics') ?></button>
 					</p>
@@ -823,14 +821,14 @@
 				<!-- Videos -->
 				<div class="tabcontent">
 				
-					<p class="h20">
+					<p class="h30">
 						<button class="right light-button video" onclick="javascript:mediaManager.loadMediaList('video');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('video');return false;"><?= lang('ionize_label_detach_all_videos') ?></button>
 					</p>
 					
 					<dl class="first">
 						<dt>
-							<label for="add_video"><?= lang('ionize_label_add_video') ?></label>
+							<label for="addVideo"><?= lang('ionize_label_add_video') ?></label>
 						</dt>
 						<dd>
 							<textarea id="addVideo" name="addVideo" class="inputtext w300 left mr5" type="text"></textarea>
@@ -846,7 +844,7 @@
 				<!-- Pictures -->
 				<div class="tabcontent">
 				
-					<p class="h20">
+					<p class="h30">
 	<!--					<a class="fmButton right"><img src="<?= theme_url() ?>images/icon_16_plus.png" /> <?= lang('ionize_label_attach_media') ?></a>-->
 						<button class="right light-button pictures" onclick="javascript:mediaManager.loadMediaList('picture');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
 						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('picture');return false;"><?= lang('ionize_label_detach_all_pictures') ?></button>

@@ -31,13 +31,19 @@ class Article extends MY_admin
 	 */
 	protected $no_htmlspecialchars = array('content', 'subtitle');
 
-
 	/**
 	 * Fields on wich no XSS filtering is done
 	 * 
 	 * @var array
 	 */
 	protected $no_xss_filter = array('content');
+
+	/**
+	 * Data array representing one article
+	 *
+	 * @var array
+	 */
+	protected $data = array();
 
 
 	/**
@@ -48,14 +54,14 @@ class Article extends MY_admin
 	{
 		parent::__construct();
 
-		$this->load->model('menu_model', '', true);
-		$this->load->model('page_model', '', true);
-		$this->load->model('article_model', '', true);
-		$this->load->model('category_model', '', true);
-		$this->load->model('article_type_model', '', true);
-		$this->load->model('tag_model', '', true);
-		$this->load->model('extend_field_model', '', true);
-		$this->load->model('url_model', '', true);
+		$this->load->model('menu_model', '', TRUE);
+		$this->load->model('page_model', '', TRUE);
+		$this->load->model('article_model', '', TRUE);
+		$this->load->model('category_model', '', TRUE);
+		$this->load->model('article_type_model', '', TRUE);
+		$this->load->model('tag_model', '', TRUE);
+		$this->load->model('extend_field_model', '', TRUE);
+		$this->load->model('url_model', '', TRUE);
 		
 		$this->load->library('structure');
 		
@@ -99,7 +105,7 @@ class Article extends MY_admin
 		$page_article = $this->article_model->get_all_context();
 		
 		// Get pages
-		$pages = $this->page_model->get_lang_list(false, Settings::get_lang('default'));
+		$pages = $this->page_model->get_lang_list(NULL, Settings::get_lang('default'));
 
 		
 		// Add page data to each context
@@ -201,12 +207,12 @@ class Article extends MY_admin
 	 * @param	string 	page ID. Article parent.
 	 *
 	 */
-	function create($id_page = NULL) 
+	function create($id_page = NULL)
 	{
 		// Page
 		if ( ! is_null($id_page))
 		{
-			$page = $this->page_model->get($id_page);
+			$page = $this->page_model->get_by_id($id_page);
 		}
 		else
 		{
@@ -287,17 +293,17 @@ class Article extends MY_admin
 		if(count($datas) > 0)
 		{
 			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
-			$this->template['article_views'] = form_dropdown('view', $datas, false, 'class="select w160"');
+			$this->template['article_views'] = form_dropdown('view', $datas, FALSE, 'class="select w160"');
 		}
 
 		// Categories
 		$categories = $this->category_model->get_categories_select();
-		$this->template['categories'] =	form_dropdown('categories[]', $categories, false, 'class="select" multiple="multiple"');
+		$this->template['categories'] =	form_dropdown('categories[]', $categories, FALSE, 'class="select" multiple="multiple"');
 
 
 		// Article types
 		$types = $this->article_type_model->get_types_select();
-		$this->template['article_types'] =	form_dropdown('id_type', $types, false, 'class="select"');
+		$this->template['article_types'] =	form_dropdown('id_type', $types, FALSE, 'class="select"');
 		
 		// Extends fields
 		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('article');
@@ -454,7 +460,7 @@ class Article extends MY_admin
 		// Edit article if ID exists
 		if ( ! is_null($id_article) )
 		{
-			$article = $this->article_model->get($id_article);
+			$article = $this->article_model->get_by_id($id_article);
 
 			if( ! empty($article) )
 			{
@@ -494,7 +500,7 @@ class Article extends MY_admin
 					$this->template['link_type'] = $context['link_type'];
 					$this->template['main_parent'] = $context['main_parent'];
 					
-					$pages = $this->page_model->get_parent_array(array('id_page' => $id_page), array(), Settings::get_lang('default'));
+					$pages = $this->page_model->get_parent_array($id_page, array(), Settings::get_lang('default'));
 					
 					$breadcrump = array();
 					foreach($pages as $page)
@@ -530,7 +536,7 @@ class Article extends MY_admin
 		// Edit article if ID exists
 		if ( ! is_null($id_article) )
 		{
-			$article = $this->article_model->get($id_article);
+			$article = $this->article_model->get_by_id($id_article);
 
 			if( ! empty($article) )
 			{
@@ -697,7 +703,7 @@ class Article extends MY_admin
 		$article = $this->article_model->get_context($id_article, $id_page);
 
 		// Page datas
-		$page = $this->page_model->get($id_page, Settings::get_lang('default'));
+		$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 		
 		// Dropdown article views (templates)
 		$views = array();
@@ -819,7 +825,7 @@ class Article extends MY_admin
 		
 		$copy = $this->input->post('copy');
 
-		if ((!empty($id_page)) && (!empty($id_article)))
+		if ( !empty($id_page) && !empty($id_article))
 		{
 			// Get the original context
 			$original_context = $this->article_model->get_context($id_article, $id_page_origin);
@@ -835,9 +841,11 @@ class Article extends MY_admin
 			
 			// Check if no article has the same URL in case of copy
 			$copy_allowed = TRUE;
+
 			if ($copy)
 			{
 				// Get all page URLs
+				/*
 				$page_urls = $this->url_model->get_collection('page', $id_page);
 				
 				// Article lang data
@@ -856,6 +864,7 @@ class Article extends MY_admin
 						}
 					}
 				}
+				*/
 			}
 			
 			if ($copy_allowed == FALSE)
@@ -875,7 +884,7 @@ class Article extends MY_admin
 					Cache()->clear_cache();
 	
 					// Get the page, menu and articles details for the JSON answer
-					$page = $this->page_model->get($id_page, Settings::get_lang('default'));
+					$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 					$page['id_article'] = $id_article;
 	
 					$menu = $this->menu_model->get_from_page($id_page);
@@ -969,6 +978,9 @@ class Article extends MY_admin
 
 			if ($affected_rows > 0)
 			{
+				// Clean URL table
+				$this->url_model->clean_table();
+
 				// Update ordering
 				$ordering = $this->article_model->get_articles_ordering($id_page);
 				
@@ -1013,7 +1025,7 @@ class Article extends MY_admin
 			{
 				case 'page' :
 					
-					$link = $this->page_model->get(array('id_page' => $context['link_id']), Settings::get_lang('default'));
+					$link = $this->page_model->get_by_id($context['link_id'], Settings::get_lang('default'));
 					
 					// Correct missing link
 					if ( empty($link) )
@@ -1028,7 +1040,7 @@ class Article extends MY_admin
 				case 'article' :
 					
 					$link_rel = explode('.', $context['link_id']);
-					$link = $this->article_model->get(array('id_article' => $link_rel[1]), Settings::get_lang('default'));
+					$link = $this->article_model->get_by_id($link_rel[1], Settings::get_lang('default'));
 					
 					// Correct missing link
 					if ( empty($link) )
@@ -1093,13 +1105,13 @@ class Article extends MY_admin
 			switch($link_type)
 			{
 				case 'page' :
-					$link = $this->page_model->get(array('id_page' => $link_rel), Settings::get_lang('default'));
+					$link = $this->page_model->get_by_id($link_rel, Settings::get_lang('default'));
 					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 					break;
 					
 				case 'article' :
 					$rel = explode('.', $link_rel);
-					$link = $this->article_model->get(array('id_article' => $rel[1]), Settings::get_lang('default'));
+					$link = $this->article_model->get_by_id($rel[1], Settings::get_lang('default'));
 					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 					break;
 				
@@ -1253,7 +1265,7 @@ class Article extends MY_admin
 		}
 
 		// Context page, if any
-		$this->template['page'] = $this->page_model->get(array('id_page' => $this->input->post('id_page')), Settings::get_lang('default'));
+		$this->template['page'] = $this->page_model->get_by_id($this->input->post('id_page'), Settings::get_lang('default'));
 
 		
 		// Dropdowns Views
@@ -1263,7 +1275,7 @@ class Article extends MY_admin
 		$views = isset($views['article']) ? $views['article'] : array() ;
 		if(count($views) > 0)
 		{
-			if ( ! isset($source_article['view'])) $source_article['view'] = false;
+			if ( ! isset($source_article['view'])) $source_article['view'] = FALSE;
 			$views = array('' => lang('ionize_select_default_view')) + $views; 
 
 			$this->template['views'] = form_dropdown('article_view', $views, $source_article['view'], 'class="select w160"');
@@ -1276,7 +1288,7 @@ class Article extends MY_admin
 		$types = $this->article_type_model->get_types_select();
 		$types = array('' => lang('ionize_select_no_type')) + $types; 
 		$this->template['all_types'] = $types;
-		if ( ! isset($source_article['id_type'])) $source_article['id_type'] = false;
+		if ( ! isset($source_article['id_type'])) $source_article['id_type'] = FALSE;
 
 		$this->template = array_merge($this->template, $source_article);
 
@@ -1292,7 +1304,7 @@ class Article extends MY_admin
 		$datas = $this->page_model->get_lang_list(array('id_menu' => '1'), Settings::get_lang('default'));
 		$parents = array();
 		($parents_array = $this->structure->get_parent_select($datas) ) ? $parents += $parents_array : '';
-		$this->template['parent_select'] = form_dropdown('dup_id_page', $parents, false, 'id="dup_id_page" class="select"');
+		$this->template['parent_select'] = form_dropdown('dup_id_page', $parents, FALSE, 'id="dup_id_page" class="select"');
 		
 		$this->output('article_duplicate');
 	}
@@ -1512,15 +1524,16 @@ class Article extends MY_admin
 	 */
 	function delete($id)
 	{
-		$article = $this->article_model->get(array('id_article' => $id));
-	
 		$affected_rows = $this->article_model->delete($id);
 		
-		// Delete was successfull
+		// Delete was successful
 		if ($affected_rows > 0)
 		{
 			// Clear the cache
 			Cache()->clear_cache();
+
+			// Clean URL table
+			$this->url_model->clean_table();
 
 			// Remove deleted article from DOM
 			$this->callback[] = array(
@@ -1615,7 +1628,7 @@ class Article extends MY_admin
 		{
 			foreach ($fields as $field)
 			{
-				if ( $field != 'url' && $this->input->post($field.'_'.$language['lang']) !== false)
+				if ( $field != 'url' && $this->input->post($field.'_'.$language['lang']) !== FALSE)
 				{
 					$content = $this->input->post($field.'_'.$language['lang']);
 					

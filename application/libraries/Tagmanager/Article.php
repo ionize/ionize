@@ -209,11 +209,11 @@ class TagManager_Article extends TagManager
 		{
 			// Set Limit
 			$limit = ( ! empty($tag->locals->page['pagination']) && ($tag->locals->page['pagination'] > 0) ) ? $tag->locals->page['pagination'] : FALSE;
-			
+
 			if ($limit == FALSE && $num > 0) $limit = $num;
-			
-			$where['limit'] = $limit;
-			
+
+			if ($limit !== FALSE) $where['limit'] = $limit;
+
 			if ($from_categories !== FALSE)
 			{
 				$articles = self::$ci->article_model->get_from_categories(
@@ -460,10 +460,6 @@ class TagManager_Article extends TagManager
 	 */
 	function get_articles_from_one_article($tag, $where, $filter)
 	{
-		$page = & $tag->locals->page;
-	
-		$articles = array();
-		
 		$uri_segments = self::$uri_segments;
 		$name = array_pop(array_slice($uri_segments, -1));
 
@@ -489,38 +485,24 @@ class TagManager_Article extends TagManager
 	/**
 	 * Get one article from the URL
 	 *
+	 * @param 	array 	row from URL table
+	 *
+	 * @return array
 	 */
-	function get_article_from_url()
+	public static function get_article_from_url($article_url = array())
 	{
-		$uri_segments = self::$uri_segments;
-		$uri_config = self::$ci->config->item('special_uri');
-		
-		// $uri_segments[1] : Special URI segement, like "category"
-		if (count($uri_segments) > 1 && ! array_key_exists($uri_segments[1], $uri_config))
-		{
-			$name = array_pop(array_slice($uri_segments, -1));
-	
-			$where = array(
-				'article_lang.url' => $name,
-				'limit' => 1
-			);
-	
-			$articles =  self::$ci->article_model->get_lang_list
-			(
-				$where, 
-				Settings::get_lang()
-			);
-			
-			if ( ! empty($articles))
-			{
-				return array_shift($articles);
-			}
-		}	
-		return array();
+		$article = array();
+
+		if ( empty($article_url))
+			$article_url = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
+
+		if ($article_url['type'] == 'article')
+			$article = self::$ci->article_model->get_by_id($article_url['id_entity'], Settings::get_lang('current'));
+
+		return $article;
 	}
-	
-	
-	// ------------------------------------------------------------------------
+
+		// ------------------------------------------------------------------------
 	
 	
 	/**
@@ -597,7 +579,7 @@ class TagManager_Article extends TagManager
 						if ( ! empty($target_article))
 						{
 							// Get the article's parent page
-							$parent_page = self::$ci->page_model->get($rel[0], Settings::get_lang('current'));
+							$parent_page = self::$ci->page_model->get_by_id($rel[0], Settings::get_lang('current'));
 							
 							if ( ! empty($parent_page))
 								$article['url'] = $parent_page[$page_url] . '/' . $target_article['url'];
@@ -606,7 +588,7 @@ class TagManager_Article extends TagManager
 					// Page
 					else
 					{
-						$target_page = self::$ci->page_model->get($page['link_id'], Settings::get_lang('current'));
+						$target_page = self::$ci->page_model->get_by_id($page['link_id'], Settings::get_lang('current'));
 						$article['url'] = $target_page[$page_url];
 					}
 					
@@ -922,7 +904,7 @@ class TagManager_Article extends TagManager
 		$separator = ( ! empty($tag->attr['separator'])) ? $tag->attr['separator'] : ' | ';	
 		
 		// Make a link from each category or not. Default : TRUE
-		$link = ( ! empty($tag->attr['link']) && $tag->attr['link'] == 'false') ? FALSE : TRUE;	
+		$link = ( ! empty($tag->attr['link']) && $tag->attr['link'] == 'false') ? FALSE : TRUE;
 
 		// Field to return for each category. "title" by default, but can be "name", "subtitle'
 		$field =  ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : 'title';

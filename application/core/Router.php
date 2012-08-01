@@ -169,7 +169,7 @@ class CI_Router
 			if(isset($_GET[$this->config->item('module_trigger')]))
 			{
 				$this->module = trim($this->uri->_filter_uri($_GET[$this->config->item('module_trigger')]));
-				
+
 				// check if it is installed
 				include APPPATH . 'config/modules.php';
 				

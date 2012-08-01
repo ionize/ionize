@@ -138,7 +138,7 @@ class Article_type extends MY_admin
 		
 		if ($parent && $id_parent)
 		{
-			$article = $this->article_model->get($where = array('id_article'=> $id_parent));
+			$article = $this->article_model->get_by_id($id_parent);
 	
 			if (!empty($article))
 				$current_type = $article['id_type'];

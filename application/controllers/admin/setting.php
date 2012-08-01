@@ -245,7 +245,7 @@ class Setting extends MY_admin
 		if (Settings::get('maintenance_page') != '')
 		{
 			$this->load->model('page_model', '', true);
-			$this->template['page'] = $this->page_model->get(Settings::get('maintenance_page'), Settings::get_lang('default'));
+			$this->template['page'] = $this->page_model->get_by_id(Settings::get('maintenance_page'), Settings::get_lang('default'));
 		}
 
 		$this->output('setting_maintenance_page');
@@ -274,7 +274,7 @@ class Setting extends MY_admin
 		{
 			$this->load->model('page_model', '', true);
 
-			$page = $this->page_model->get($id_page, Settings::get_lang('default'));
+			$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 		
 			$options = array(
 				CURLOPT_RETURNTRANSFER => true, // return web page
@@ -600,7 +600,7 @@ class Setting extends MY_admin
 		// Settings to save
 		$settings = array(	'files_path', 
 							'media_thumb_size', 'picture_max_width', 'picture_max_height', 'media_upload_mode',
-							'filemanager_file_types');
+							'filemanager_file_types', 'no_source_picture');
 		
 		// Allowed filemanager file extensions
 		$filemanager_file_types = $this->input->post('allowed_type');
@@ -1268,7 +1268,10 @@ class Setting extends MY_admin
 					// Set the view ame (filename without .php extension)
 					$file->name = str_replace('.php', '', $file->getFilename());
 					
-					$views[] = $file;
+					if(substr($path, 0, 1) != '.')
+					{
+						$views[] = $file;
+					}
 				}
 			}
 		}

@@ -18,7 +18,7 @@
 
 class Page extends Base_Controller
 {
-	function index()
+	public function index()
 	{
 		// Init the Page TagManager
 		TagManager_Page::init();

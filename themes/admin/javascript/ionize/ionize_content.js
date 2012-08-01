@@ -340,7 +340,7 @@ ION.append({
 				}
 			});
 			
-			new Tips(element + ' .help', {'className' : 'tooltip'});
+			new Tips(element + ' .help', {'className' : 'tooltip', 'text': 'rel', 'title' : 'title'});
 		}
 	},
 	

@@ -26,7 +26,6 @@ class TagManager_Page extends TagManager
 	
 	protected static $user = FALSE;
 	
-
 	protected static $categories = FALSE;
 	
 	protected static $_article = array();
@@ -68,13 +67,6 @@ class TagManager_Page extends TagManager
 		
 		// Breadrumb
 		'breadcrumb' =>			'tag_breadcrumb',
-		
-			
-		// Articles
-		
-		// Categories
-		
-		// Archives
 	);
 
 
@@ -100,7 +92,6 @@ class TagManager_Page extends TagManager
 
 		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
 
-
 		// Get pages and add them to the context
 		self::$context->globals->pages = Pages::get_pages();
 
@@ -114,7 +105,6 @@ class TagManager_Page extends TagManager
 
 		// Current page
 		$page = self::$context->globals->page;
-
 
 		if ( ! empty($page['link']))
 		{
@@ -149,7 +139,13 @@ class TagManager_Page extends TagManager
 		}
 		
 		// Can we get one article from the URL ?
-		$article = TagManager_Article::get_article_from_url();
+		$article = array();
+
+		$article_url = self::get_entity();
+		if ($article_url['type'] == 'article')
+		{
+			$article = TagManager_Article::get_article_from_url($article_url);
+		}
 
 		if ( ! empty($article))
 		{
@@ -194,28 +190,17 @@ class TagManager_Page extends TagManager
 		return self::$_entity;
 	}
 
+
 	// ------------------------------------------------------------------------
 
 
-
-	/** 
+	/**
 	 * Get the current page data.
 	 * 
 	 * @param	FTL_Context		FTL_ArrayContext array object
 	 * @param	string			Page name
 	 * @return	array			Array of the page data. Can be empty.
-	protected static function get_current_page($page_name)
-	{
-		// Ignore the page named 'page' and get the home page
-		if ($page_name == 'page')
-		{
-			return self::get_home_page();
-		}
-		else
-		{
-			return self::get_page($page_name);
-		}
-	}
+	 *
 	 */
 	protected static function get_current_page()
 	{
@@ -234,10 +219,11 @@ class TagManager_Page extends TagManager
 			}
 			else
 			{
+				// return self::get_page(self::$ci->uri->segment(3));
 				// Asked entity : Page or article
 				$entity = self::get_entity();
 
-				// One Article
+				// Article
 				if ( ! empty($entity['type']) && $entity['type'] == 'article')
 				{
 					$paths = explode('/', $entity['path_ids']);
@@ -245,16 +231,21 @@ class TagManager_Page extends TagManager
 					
 					return self::get_page_by_id($id_page);
 				}
-				
+
 				// Special URI : category, archive, pagination
  				if ( self::get_special_uri())
  				{
-	 				trace('special URI : ' . self::$_special_uri);
  					$uri = self::get_page_path_from_special_uri();
- 					
- 				}
- 				
-				return self::get_page_by_url($uri);
+					return self::get_page_by_url($uri);
+				}
+
+				// Return the found page
+				if ( ! empty($entity['id_entity']))
+					return self::get_page_by_id($entity['id_entity']);
+
+				// Module page in parents page ?
+				// If nothing : returns empty array -> 404
+				return self::get_module_page();
 			}
 		}
 	}
@@ -321,7 +312,7 @@ class TagManager_Page extends TagManager
 	{
 		$special_uri = self::get_special_uri();
 
-		return implode('/', array_slice(self::$ci->uri->segment_array(), 2, self::$_special_uri_segment  ));
+		return implode('/', array_slice(self::$ci->uri->segment_array(), 2, $special_uri  ));
 	}
 	
 
@@ -420,6 +411,32 @@ class TagManager_Page extends TagManager
 		}
 	
 		return array();	
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_module_page()
+	{
+		$segments = self::$ci->uri->segment_array();
+
+		// Limit the array to not consider the first "page" segment.
+		$segments = array_slice($segments, 2);
+
+		while( ! empty($segments))
+		{
+			array_pop($segments);
+			$uri_string = implode('/', $segments);
+			$page = self::get_page_by_url($uri_string);
+
+			if (! empty($page) && $page['used_by_module'] == TRUE)
+			{
+				return $page;
+			}
+		}
+
+		return array();
 	}
 
 
@@ -934,6 +951,7 @@ class TagManager_Page extends TagManager
 			isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
 			
 			// Pagination theme config
+			$config = array();
 			$cf = Theme::get_theme_path().'config/pagination.php';
 			if (is_file($cf))
 			{

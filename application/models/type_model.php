@@ -24,9 +24,31 @@ class Type_model extends Base_model
 	 * Gets list as array (id => name)
 	 * 
 	 */
-	function get_types_select()
+	function get_select($parent = NULL, $nothing_value = NULL)
 	{
-		return $this->get_items_select($this->table, 'name', NULL, 'ordering ASC');
+ 		$data = array();
+		
+		if ( ! is_null($nothing_value))
+			$data = array('' => $nothing_value);
+
+		if ( ! is_null($parent))
+			$this->{$this->db_group}->where('parent', $parent);
+
+ 		$this->{$this->db_group}->order_by('ordering', 'ASC');
+			
+		$query = $this->{$this->db_group}->get($this->table);
+
+		if($query->num_rows() > 0)
+		{
+			$result = $query->result_array();
+			
+			foreach($result as $item)
+			{
+				$data[$item['id_type']] = $item['title'];
+			}
+		}			
+
+		return $data;
 	}
 
 

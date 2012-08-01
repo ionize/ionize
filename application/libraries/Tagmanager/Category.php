@@ -29,6 +29,7 @@ class TagManager_Category extends TagManager
 		'categories:active_class' => 	'tag_category_active_class',
 		'categories:title' => 			'tag_category_title',
 		'categories:subtitle' => 		'tag_category_subtitle',	
+		'categories:name' =>			'tag_category_name',
 	);
 
 	public static function init()
@@ -200,6 +201,7 @@ class TagManager_Category extends TagManager
 
 	public static function tag_category_subtitle($tag) { return self::wrap($tag, $tag->locals->category['subtitle']); }
 
+	public static function tag_category_name($tag) { return self::wrap($tag, $tag->locals->category['name']); }
 
 
 }
