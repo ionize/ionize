@@ -60,7 +60,6 @@ class Installer
 		
 		$this->lang = array_merge($this->lang, $lang);
 
-
 		// Get all available translations
 		$dirs = scandir(ROOTPATH.'application/language');
 		
@@ -197,7 +196,6 @@ class Installer
 		}
 		else
 		{
-			
 			$this->_save_database_settings();
 		}
 	}
@@ -249,13 +247,11 @@ class Installer
 		}
 		else
 		{
-			GLOBAL $base_url;
-
 			$this->_save_user();
 			
 			$this->db_connect();
 
-			header("Location: ".$base_url.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
+			header("Location: ".BASEURL.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
 
 /*
 			// Check if the DB was migrated : If yes, no sample data install
@@ -263,11 +259,11 @@ class Installer
 		
 			if ($query->num_rows() > 1)
 			{
-				header("Location: ".$base_url.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
+				header("Location: ".BASEURL.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
 			}
 			else
 			{
-				header("Location: ".$base_url.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
+				header("Location: ".BASEURL.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
 			}
 */
 		}
@@ -285,18 +281,16 @@ class Installer
 	{
 		if ( ! isset($_POST['action']))
 		{
-			GLOBAL $base_url;
-
 			$this->db_connect();
 
 			// Check if the DB was migrated : If yes, no sample data install
 			$query = $this->db->get('page');
 			if ($query->num_rows() > 2)
 			{
-				header("Location: ".$base_url.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
+				header("Location: ".BASEURL.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
 			}
 
-			$this->template['base_url'] = $base_url;
+			$this->template['base_url'] = BASEURL;
 			$this->output('data');
 		}
 		else
@@ -370,8 +364,7 @@ class Installer
 
 			 */
 
-			GLOBAL $base_url;
-			header("Location: ".$base_url.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
+			header("Location: ".BASEURL.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
 
 		}
 	}
@@ -573,8 +566,7 @@ class Installer
 			{
 			}
 	
-			GLOBAL $base_url;
-			header("Location: ".$base_url.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
+			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 		}
 	}
 
@@ -631,14 +623,8 @@ class Installer
 	 */
 	function settings()
 	{
-
 		if ( ! isset($_POST['action']))
 		{
-			// Init Settings
-//			$data = array('lang_code', 'lang_name');
-
-//			$this->_feed_blank_template($data);
-
 			$this->template['lang_code'] = 'en';
 			$this->template['lang_name'] = 'english';
 			$this->template['admin_url'] = 'admin';
@@ -651,8 +637,7 @@ class Installer
 
 			if ($ret)
 			{
-				GLOBAL $base_url;
-				header("Location: ".$base_url.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
+				header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 			}
 			else
 			{
@@ -671,8 +656,6 @@ class Installer
 	 */
 	function finish()
 	{
-		GLOBAL $base_url;
-
 		// Get the Language config file
 		include(APPPATH.'config/language.php');
 
@@ -841,7 +824,7 @@ class Installer
 			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
 		}
 
-		$this->template['base_url'] = $base_url;
+		$this->template['base_url'] = BASEURL;
 		$this->output('finish');
 	}
 
@@ -855,8 +838,6 @@ class Installer
 	 */
 	function _save_database_settings()
 	{
-		GLOBAL $base_url;
-
 		$fields = array('db_driver', 'db_hostname', 'db_name', 'db_username');
 
 		// Migration ? If yes, it will be set to true before the installer try to create the tables
@@ -892,7 +873,7 @@ class Installer
 			$this->_send_error('database', lang('database_error_coud_not_connect'), $_POST);
 		}
 		
-		
+
 		/* 
 		 * If database don't exists, create it !
 		 *
@@ -936,7 +917,7 @@ class Installer
 			{
 				$this->_send_error('database', lang('database_error_writing_config_file'), $_POST);
 			}
-			
+
 			// Check if one Ionize table already exists. If yes, this is a migration
 			if ($this->db->table_exists('setting') == true)
 			{
@@ -991,19 +972,19 @@ class Installer
 
 		if ( ! empty($migration_files))
 		{
-			header("Location: ".$base_url.'install/?step=migrate&lang='.$this->template['lang'], TRUE, 302);
+			header("Location: ".BASEURL.'install/?step=migrate&lang='.$this->template['lang'], TRUE, 302);
 		}
 		else
 		{
 			// If the installer just created the tables go to the Settings panel
 			if ($this_is_a_migration == FALSE)
 			{
-				header("Location: ".$base_url.'install/?step=settings&lang='.$this->template['lang'], TRUE, 302);
+				header("Location: ".BASEURL.'install/?step=settings&lang='.$this->template['lang'], TRUE, 302);
 			}
 			// Else, go to the user creation step
 			else
 			{
-				header("Location: ".$base_url.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
+				header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 			}
 		}
 	}
@@ -1636,7 +1617,7 @@ class Installer
 		$conf .= "\$db['default']['dbprefix'] = '';\n";
 		$conf .= "\$db['default']['swap_pre'] = '';\n";
 		$conf .= "\$db['default']['pconnect'] = TRUE;\n";
-		$conf .= "\$db['default']['db_debug'] = FALSE;\n";
+		$conf .= "\$db['default']['db_debug'] = TRUE;\n";
 		$conf .= "\$db['default']['cache_on'] = FALSE;\n";
 		$conf .= "\$db['default']['cachedir'] = '';\n";
 		$conf .= "\$db['default']['char_set'] = 'utf8';\n";
