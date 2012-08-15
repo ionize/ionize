@@ -470,8 +470,6 @@ class Base_model extends CI_Model
 
 		$this->_process_where($where);
 
-
-
 		// Make sure we have only one time each element
 		$this->{$this->db_group}->distinct();
 
@@ -487,7 +485,7 @@ class Base_model extends CI_Model
 		$this->{$this->db_group}->select($this->table.'.*', FALSE);
 
 		$query = $this->{$this->db_group}->get($this->table);
-		log_message('error', $this->{$this->db_group}->last_query());
+		// log_message('error', $this->{$this->db_group}->last_query());
 
 		if($query->num_rows() > 0)
 		{

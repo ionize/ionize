@@ -13,25 +13,33 @@
 		<?php endif; ?>
 
 
-		<!-- 
+		<!--
 			We explicitely get the articles which don't have any type set.
 		-->
-		<ion:articles type="">
-			
-			<!-- 
-				In the "Blog" page edition panel of Ionize, we set the views of articles for this page :
-				
-				List view : 	"Blog Post List"
-								This view will be used for the post list
-								
-				Article View : 	"Blog Post"
-								This view will be used for one post single view
-				
-			-->
-			<ion:article />
-		
-		</ion:articles>
-	
+		<ion:article>
+
+			<div class="post">
+
+				<h2><ion:title /></h2>
+				<ion:date format="complete" />
+
+				<ion:medias type="picture">
+
+					<img src="<ion:src folder="540" />" />
+
+				</ion:medias>
+
+				<!-- Categories -->
+				<p class="categories">
+					<ion:translation term="categories" /> : <ion:categories separator=", " />
+				</p>
+
+
+				<ion:content />
+
+			</div>
+		</ion:article>
+
 	</div>
 	
 
@@ -67,18 +75,6 @@
 		</div>
 
 
-		<div class="side-block">
-			
-			<ion:widget name="weather" id="FRXX0076" unit="c" />
-
-		</div>
-		
-		<div class="side-block">
-			
-			<ion:widget name="rss" url="http://www.ecrans.fr/spip.php?page=backend" nb="3" />
-
-		</div>
-		
 	</div>
 
 </div>

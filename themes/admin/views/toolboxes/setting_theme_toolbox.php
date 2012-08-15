@@ -11,12 +11,6 @@
 	 */
 	ION.setFormSubmit('viewsForm', 'viewsFormSubmit', 'setting/save_views');
 
-	/**
-	 * Options show / hide button
-	 *
-	 */
-	ION.initSideColumn();
-
 
 	/**
 	 * Save with CTRL+s

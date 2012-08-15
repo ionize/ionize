@@ -154,12 +154,9 @@ class TagManager_Page extends TagManager
 		}
 
 		if ( ! empty($article))
-		{
 			self::$_article = $article;
-			$page['view'] = ($page['view_single'] != FALSE) ? $page['view_single'] : $page['view'];
-		}
-		
-		self::$view = ($page['view'] != FALSE) ? $page['view'] : Theme::get_default_view('page');
+
+		self::$view = self::get_page_view($page);
 
 		self::render();
 	}
@@ -1541,7 +1538,28 @@ class TagManager_Page extends TagManager
 		}
 		return $data;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	private static function get_page_view($page)
+	{
+		$view = FALSE;
+
+		if ( ! empty(self::$_article))
+			$view = ($page['view_single'] != FALSE) ? $page['view_single'] : $page['view'];
+		else
+			$view = $page['view'];
+
+		$view_path = Theme::get_theme_path().'views/'.$view.EXT;
+
+		// Return the Ionize core view
+		if ( ! file_exists($view_path) OR empty($view))
+			$view = Theme::get_default_view('page');
+
+		return $view;
+	}
 	
 	// ------------------------------------------------------------------------
 	

@@ -136,13 +136,25 @@ class Article_model extends Base_model
 		// Default ordering
 		if ( empty($where['order_by']))
 			$where['order_by'] = $this->parent_table.'.ordering ASC';
-			// $this->{$this->db_group}->order_by($this->parent_table.'.ordering', 'ASC');
 
 		// Correction on $where['id_page']
 		if (is_array($where) && isset($where['id_page']) )
 		{
 			$where[$this->parent_table.'.id_page'] = $where['id_page'];
 			unset($where['id_page']);
+		}
+
+		// Correction on $where['where_in']
+		if (isset($where['where_in']))
+		{
+			foreach($where['where_in'] as $key => $value)
+			{
+				if ($key == 'id_page')
+				{
+					$where['where_in'][$this->parent_table.'.id_page'] = $value;
+					unset($where['where_in']['id_page']);
+				}
+			}
 		}
 
 		// Published filter

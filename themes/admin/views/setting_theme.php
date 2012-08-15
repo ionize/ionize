@@ -1,25 +1,7 @@
 
-<div id="sidecolumn" class="close">
-	
-	<!- Informations -->
-	<div class="info">
-
-		<dl class="small compact">
-			<dt><label><?=lang('ionize_label_current_theme')?></label></dt>
-			<dd><?= Settings::get('theme');?></dd>
-		</dl>
-
-	</div>
-
-
-</div> <!-- /sidecolumn -->
-
-	
-
 <!-- Main Column -->
 <div id="maincolumn">
 
-		
 	<h2 class="main themes" id="main-title"><?= lang('ionize_title_themes') ?></h2>
 
 	<!-- Tabs -->
@@ -152,13 +134,6 @@
 	// Tabs
 	new TabSwapper({tabsContainer: 'themeTab', sectionsContainer: 'themeTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'langTab' });
 
-	/**
-	 * Options Accordion
-	 *
-	 */
-	// ION.initAccordion('.toggler', 'div.element');
-
-
 
 	/**
 	 * Adds Sortable function to the user list table
@@ -173,9 +148,7 @@
 	$$('.viewEdit').each(function(item)
 	{
 		var rel = item.getProperty('rel');
-		
 		var id = rel.replace(/\//gi, '');
-
 		var form = 'formView' + id;
 
 		item.addEvent('click', function(e)
@@ -189,7 +162,7 @@
 				var contentEl = w.el.contentWrapper;
 				var mfw = contentEl.getElement('.CodeMirror-wrapping');
 				mfw.setStyle('height', contentEl.getSize().y - 70);
-			}
+			};
 			
 			var wOptions = 
 			{
@@ -274,7 +247,6 @@
 			new MUI.Window(wOptions);
 		});
 	});
-
 
 	/**
 	 * Database form action

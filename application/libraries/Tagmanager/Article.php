@@ -74,7 +74,9 @@ class TagManager_Article extends TagManager
 	
 	/**
 	 * Get Articles
-	 * @param	
+	 *
+	 * @param	FTL_Binding
+	 * @return	Array
 	 *
 	 * 1. Try to get the articles from a special URI
 	 * 2. Get the articles from the current page
@@ -97,10 +99,12 @@ class TagManager_Article extends TagManager
 		$use_pagination = (isset($tag->attr['pagination']) && $tag->attr['pagination'] == 'TRUE') ? TRUE : FALSE;
 
 		// Don't use the "article_list_view" setting set through Ionize
-		$keep_view = (isset($tag->attr['keep_view'])) ? TRUE : FALSE;
+		// Todo : Remove ?
+		// $keep_view = (isset($tag->attr['keep_view'])) ? TRUE : FALSE;
 
 		// Use this view for each article if more than one article
-		$list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
+		// TODO : Remove ?
+		// $list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
 
 		$type = $tag->getAttribute('type');
 
@@ -108,9 +112,6 @@ class TagManager_Article extends TagManager
 		$num = (isset($tag->attr['limit'])) ? self::get_attribute($tag, 'limit') : 0 ;
 		if ($num == 0)
 			$num = (isset($tag->attr['num'])) ? self::get_attribute($tag, 'num') : 0 ;
-
-		// Get the special URI config array (see /config/ionize.php)
-		$uri_config = self::$ci->config->item('special_uri');
 
 		// filter & "with" tag compatibility
 		// create a SQL filter
@@ -169,12 +170,12 @@ class TagManager_Article extends TagManager
 			// If not empty, filter articles on id_page
 			if ( ! empty($in_pages))
 			{
-				$where['id_page in'] = '('.implode(',', $in_pages).')';
+				$where['where_in'] = array('id_page' => $in_pages);
 			}
 			// else return nothing. Seems the asked page doesn't exists...
 			else
 			{
-				return;
+				return $articles;
 			}
 		}
 		else if ($scope == 'parent')
@@ -193,20 +194,6 @@ class TagManager_Article extends TagManager
 		else
 		{
 			$where['id_page'] = $tag->locals->page['id_page'];
-
-			/*
-			// Return the asked article and that's it...
-			if ($_article = TagManager_Page::get_article())
-			{
-				$articles[] = $_article;
-				self::init_articles_urls($articles);
-				return $articles;
-			}
-			else
-			{	
-				$where['id_page'] = $tag->locals->page['id_page'];
-			}
-			*/
 		}
 
 		/* Get the articles
@@ -253,10 +240,10 @@ class TagManager_Article extends TagManager
 		
 		$nb_articles = count($articles);
 		// Correct the articles URLs
-		if ($nb_articles > 0)
-		{
+//		if ($nb_articles > 0)
+//		{
 			self::init_articles_urls($articles);
-		}
+//		}
 		
 		// Here, we are in an article list configuration : More than one article, page display
 		// If the article-list view exists, we will force the article to adopt this view.
@@ -519,9 +506,8 @@ class TagManager_Article extends TagManager
 		return $article;
 	}
 
-		// ------------------------------------------------------------------------
-	
-	
+	// ------------------------------------------------------------------------
+
 	/**
 	 * Inits articles URLs
 	 * Get the contexts of all given articles and define each article correct URL
@@ -531,16 +517,14 @@ class TagManager_Article extends TagManager
 	{
 		// Page URL index to use
 		$page_url = (config_item('url_mode') == 'short') ? 'url' : 'path';
-	
+
 		// Array of all articles IDs
 		$articles_id = array();
 		foreach($articles as $article)
 			$articles_id[] = $article['id_article'];
 		
-
 		// Articles contexts of all articles
 		$pages_context = self::$ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
-
 		
 		// Add pages contexts data to articles
 		foreach($articles as &$article)
@@ -551,7 +535,7 @@ class TagManager_Article extends TagManager
 				if ($context['id_article'] == $article['id_article'])
 					$contexts[] = $context;
 			}
-			
+
 			$page = array_shift($contexts);
 
 			// Get the context of the Main Parent
@@ -563,10 +547,10 @@ class TagManager_Article extends TagManager
 						$page = $context;
 				}
 			}
-			
-			// Basic article URL : its name in fact
+
+			// Basic article URL : its lang URL (without "http://")
 			$url = $article['url'];
-			
+
 			// Link ?
 			if ($page['link_type'] != '' )
 			{
@@ -575,13 +559,13 @@ class TagManager_Article extends TagManager
 				{
 					$article['url'] = $page['link'];
 				}
-				
+
 				// Email
 				else if ($page['link_type'] == 'email')
 				{
 					$article['url'] = auto_link($page['link'], 'both', TRUE);
 				}
-				
+
 				// Internal
 				else
 				{
@@ -591,13 +575,13 @@ class TagManager_Article extends TagManager
 						// Get the article to which this page links
 						$rel = explode('.', $page['link_id']);
 						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
-						
+
 						// Of course, only if not empty...
 						if ( ! empty($target_article))
 						{
 							// Get the article's parent page
 							$parent_page = self::$ci->page_model->get_by_id($rel[0], Settings::get_lang('current'));
-							
+
 							if ( ! empty($parent_page))
 								$article['url'] = $parent_page[$page_url] . '/' . $target_article['url'];
 						}
@@ -608,15 +592,15 @@ class TagManager_Article extends TagManager
 						$target_page = self::$ci->page_model->get_by_id($page['link_id'], Settings::get_lang('current'));
 						$article['url'] = $target_page[$page_url];
 					}
-					
+
 					// Correct the URL : Lang + Base URL
 					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 					{
 						$article['url'] =  Settings::get_lang('current'). '/' . $article['url'];
 					}
 					$article['url'] = base_url() . $article['url'];
-					
-				}	
+
+				}
 			}
 			// Standard URL
 			else
@@ -627,20 +611,24 @@ class TagManager_Article extends TagManager
 				}
 				else
 				{
-					$article['url'] = base_url() . $page[$page_url] . '/' . $url;			
+					$article['url'] = base_url() . $page[$page_url] . '/' . $url;
 				}
-			}			
+			}
 		}
 	}
 
 
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * Returns the current article content
+	 * Try first to get the current article (from URL)
+	 * Then the article from locals.
 	 *
 	 * @param	FTL_Binding object
-	 * @return
+	 * @return	String
+	 *
 	 */
 	public static function tag_article($tag)
 	{
@@ -653,52 +641,62 @@ class TagManager_Article extends TagManager
 		// Returned string
 		$str = '';
 
-		if ($_article = TagManager_Page::get_article())
+		$_article = TagManager_Page::get_article();
+
+		if ( ! empty($_article))
 		{
-			$articles[] = $_article;
+			$_articles = array($_article);
+		}
+		else
+			$_articles = array($tag->locals->article);
+			//$_articles = $tag->locals->page['articles'];
 
-			self::prepare_articles($tag, $articles);
+		// Add data like URL to each article
+		// and finally render each article
+		if ( ! empty($_articles))
+		{
+			$_articles = self::prepare_articles($tag, $_articles);
 
-			self::init_articles_urls($articles);
+			$count = count($_articles);
 
-			// Add data like URL to each article
-			// and finally render each article
-			if ( ! empty($articles))
+			foreach($_articles as $key=>$article)
 			{
-				self::prepare_articles($tag, $articles);
+				// Render the article
+				$tag->locals->article = $article;
+				$tag->locals->index = $key;
+				$tag->locals->count = $count;
 
-				$count = count($tag->locals->page['articles']);
-
-				foreach($tag->locals->page['articles'] as $key=>$article)
+				// Parse the article's view if the article tag is single (<ion:article />)
+				if($tag->is_single())
 				{
-					// Render the article
-					$tag->locals->article = $article;
-					$tag->locals->index = $key;
-					$tag->locals->count = $count;
+					$str .= self::find_and_parse_article_view($tag, $article);
+				}
+				// Else expand the tag
+				else
+				{
 					$str .= $tag->expand();
 				}
 			}
-
-			$output = self::wrap($tag, $str);
-
-			// Tag cache
-			self::set_cache($tag, $output);
-
-			return $output;
 		}
 
-		return '';
+		$output = self::wrap($tag, $str);
+
+		// Tag cache
+		self::set_cache($tag, $output);
+
+		return $output;
 	}
 
-	// ------------------------------------------------------------------------
 
+	// ------------------------------------------------------------------------
 
 
 	/**
 	 * Returns the articles tag content
 	 *
 	 * @param	FTL_Binding object
-	 * @return
+	 * @return	String
+	 *
 	 */
 	public static function tag_articles($tag)
 	{
@@ -710,22 +708,7 @@ class TagManager_Article extends TagManager
 
 		// Returned string
 		$str = '';
-/*
-		// Page from locals
-		$pages =&  $tag->locals->pages;
 
-		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? self::get_attribute($tag, 'paragraph') : FALSE ;
-
-		// auto_link
-		$auto_link = (isset($tag->attr['auto_link']) && strtolower($tag->attr['auto_link'] == 'false') ) ? FALSE : TRUE ;
-
-		// view
-		$view = (isset($tag->attr['view']) ) ? $tag->attr['view'] : FALSE;
-
-		// Last part of the URI
-		$uri_last_part = array_pop(explode('/', uri_string()));
-*/
 		/* Get the articles
 		 *
 		 */
@@ -753,9 +736,9 @@ class TagManager_Article extends TagManager
 			}
 		}
 
-// Experimental : To allow tags in articles
-// Needs to be improved 		
-//		$str = $tag->parse_as_nested($str);
+		// Experimental : To allow tags in articles
+		// Needs to be improved
+		// $str = $tag->parse_as_nested($str);
 		
 		$output = self::wrap($tag, $str);
 		
@@ -772,78 +755,24 @@ class TagManager_Article extends TagManager
 	/**
 	 * Returns the article tag content
 	 * To be used inside an "articles" tag
-	 * 
+	 * Only looks for locals->article
+	 *
 	 * @param	FTL_Binding object
-	 * @return 
+	 * @return	String
 	 */
 	public static function tag_articles_article($tag)
 	{
-		// View : Overwrite each defined article view by the passed one
-		// It is possible to bypass the Article view by set it to ''
-		$view = (isset($tag->attr['view'] )) ? $tag->attr['view'] : FALSE ;
-		
-		// Kind of article : Get only the article linked to the given view
-		$type = (isset($tag->attr['type'] )) ? $tag->attr['type'] : FALSE ;
-		
-		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? $tag->attr['paragraph'] : FALSE ;
-
 		if ( ! empty($tag->locals->article))
 		{
 			// Current article (set by tag_articles() )
 			$article = &$tag->locals->article;
 
-			/*
-			 * Article View
-			 * If no view : First, try to get the pages defined article_list view
-			 *				Second, get the pages defined article view
-			 *				Else, get the default view
-			 */
-			if ($view === FALSE)
-			{
-				// The article defined view
-				$view = $article['view'];
-
-				// If article has no defined view : view to 0, nothing or FALSE
-				if ( $view == FALSE OR $view == '')
-				{				
-					// First and second step : The page defined views for articles
-					// Need to be discussed...
-					$view = $tag->globals->page['article_view'] ? $tag->globals->page['article_view'] : $tag->globals->page['article_list_view'];
-				}
-			}
-			
-			// Paragraph limiter
-			if ($paragraph !== FALSE)
-			{
-				$article['content'] = tag_limiter($article['content'], 'p', $paragraph);
-			}
-
-			// View rendering
-			if (empty($view))
-			{
-				$view = Theme::get_default_view('article');
-				
-				// Returns the default view ('article') if found in the theme folder
-				if (file_exists(Theme::get_theme_path().'views/'.$view.EXT))
-				{
-					return $tag->parse_as_nested(file_get_contents(Theme::get_theme_path().'views/'.$view.EXT));
-				}
-				return $tag->parse_as_nested(file_get_contents(APPPATH.'views/'.$view.EXT));
-			}
-			else
-			{
-				if ( ! file_exists(Theme::get_theme_path().'views/'.$view.EXT))
-				{
-					return self::show_tag_error($tag->name, '<b>Cannot find view file "'.Theme::get_theme_path().'views/'.$view.EXT.'".');
-				}
-				return $tag->parse_as_nested(file_get_contents(Theme::get_theme_path().'views/'.$view.EXT));
-			}
+			return self::find_and_parse_article_view($tag, $article);
 		}
 		return self::show_tag_error($tag->name, '<b>This article doesn\'t exists</b>');
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -1385,9 +1314,19 @@ class TagManager_Article extends TagManager
 		}
 		
 		return '';
-	}	
+	}
 
-
+	/**
+	 * Prepare the articles array
+	 *
+	 * @static
+	 *
+	 * @param FTL_Binding	$tag
+	 * @param Array 		$articles
+	 *
+	 * @return	Array		Articles
+	 *
+	 */
 	private static function prepare_articles($tag, $articles)
 	{
 		// Articles index starts at 1.
@@ -1411,9 +1350,7 @@ class TagManager_Article extends TagManager
 		{
 			// Force the view if the "view" attribute is defined
 			if ($view !== FALSE)
-			{
 				$articles[$key]['view'] = $view;
-			}
 
 			$articles[$key]['active_class'] = '';
 // Correct this
@@ -1443,6 +1380,38 @@ class TagManager_Article extends TagManager
 
 		// Set the articles
 		$tag->locals->page['articles'] = $articles;
+
+		return $articles;
+	}
+
+
+	private static function find_and_parse_article_view(FTL_Binding $tag, $article)
+	{
+		// Try to get the view defined for article
+		if ( $article['view'] == FALSE OR $article['view'] == '')
+		{
+			if (count($tag->locals->page['articles']) == 1)
+				$article['view'] = $tag->globals->page['article_view'];
+			else
+				$article['view'] = $tag->globals->page['article_list_view'];
+		}
+
+		// Default article view
+		if (empty($article['view']))
+			$article['view'] = Theme::get_default_view('article');
+
+		// View path
+		$view_path = Theme::get_theme_path().'views/'.$article['view'].EXT;
+
+		// Return the Ionize default's theme view
+		if ( ! file_exists($view_path))
+		{
+			$view_path = Theme::get_theme_path().'views/'.Theme::get_default_view('article').EXT;
+			if ( ! file_exists($view_path))
+				$view_path = APPPATH.'views/'.Theme::get_default_view('article').EXT;
+		}
+
+		return $tag->parse_as_nested(file_get_contents($view_path));
 	}
 }
 

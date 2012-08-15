@@ -274,7 +274,7 @@ $lang['ionize_label_id'] = 'ID';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_permanent_url'] = 'Permanent URL';
 $lang['ionize_label_view'] = 'View';
-$lang['ionize_label_page_single_view'] = 'Single View';
+$lang['ionize_label_page_single_view'] = 'Single Article View';
 $lang['ionize_label_article_template'] = 'Article view';
 
 $lang['ionize_label_title'] = 'Title';

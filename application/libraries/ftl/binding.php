@@ -207,5 +207,5 @@ class FTL_Binding
 }
 
 
-/* End of file tag_binding.php */
-/* Location: /cygdrive/x/LOL/0web_dev/wwwroot/CMS2/application/libraries/tag_binding.php */
+/* End of file binding.php */
+/* Location: /application/libraries/binding.php */
