@@ -20,26 +20,9 @@
 		?>
 
 
-		<!-- Tabs -->
-		<div id="articlesTab" class="mainTabs">
-			
-			<ul class="tab-menu">
-			
-				<li><a><span><?= lang('ionize_title_articles') ?></span></a></li>
-				<li><a><span><?= lang('ionize_title_categories') ?></span></a></li>
-				<li><a><span><?= lang('ionize_title_types') ?></span></a></li>
-				<li><a title="<?= lang('ionize_help_flags') ?>"><span><?= lang('ionize_label_flags') ?></span></a></li>
-			
-			</ul>
-			<div class="clear"></div>
-		
-		</div>
-
 
 		<!-- Articles list -->
-		<div id="articlesTabContent">
-			<div class="tabcontent">
-	
+
 				<!-- Article list filtering -->
 				<form id="filterArticles">
 					<label class="left" title="<?= lang('ionize_help_article_filter') ?>"><?= lang('ionize_label_article_filter') ?></label>
@@ -160,189 +143,6 @@
 			
 				</table>
 				
-			</div>
-			
-			
-			<!-- Categories -->
-			<div class="tabcontent">
-			
-				<div class="tabsidecolumn">
-				
-					<h3><?= lang('ionize_title_category_new') ?></h3>
-					
-					<form name="newCategoryForm" id="newCategoryForm" action="<?= admin_url() ?>category/save">
-					
-						<!-- Name -->
-						<dl class="small">
-							<dt>
-								<label for="name"><?=lang('ionize_label_name')?></label>
-							</dt>
-							<dd>
-								<input id="name" name="name" class="inputtext required" type="text" value="" />
-							</dd>
-						</dl>
-						
-						<fieldset id="blocks">
-							
-							<!-- Category Lang Tabs -->
-							<div id="categoryTab" class="mainTabs transparent">
-								
-								<ul class="tab-menu">
-									<?php foreach(Settings::get_languages() as $l) :?>
-										<li class="tab_category" rel="<?= $l['lang'] ?>"><a><span><?= ucfirst($l['name']) ?></span></a></li>
-									<?php endforeach ;?>
-								</ul>
-								<div class="clear"></div>
-							
-							</div>
-
-							<!-- Category Content -->
-							<div id="categoryTabContent">
-
-								<?php foreach(Settings::get_languages() as $l) :?>
-									
-									<?php $lang = $l['lang']; ?>
-						
-									<div class="tabcontentcat">
-						
-										<!-- title -->
-										<dl class="small">
-											<dt>
-												<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
-											</dt>
-											<dd>
-												<input id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="inputtext" type="text" value=""/>
-											</dd>
-										</dl>
-						
-										<!-- subtitle -->
-										<dl class="small">
-											<dt>
-												<label for="subtitle_<?= $lang ?>"><?= lang('ionize_label_subtitle') ?></label>
-											</dt>
-											<dd>
-												<input id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="inputtext" type="text" value=""/>
-											</dd>
-										</dl>
-						
-										<!-- description -->
-										<dl class="small">
-											<dt>
-												<label for="descriptionCategory<?= $lang ?>"><?= lang('ionize_label_description') ?></label>
-											</dt>
-											<dd>
-												<textarea id="descriptionCategory<?= $lang ?>" name="description_<?= $lang ?>" class="tinyCategory" rel="<?= $lang ?>"></textarea>
-											</dd>
-										</dl>
-						
-									</div>
-
-								<?php endforeach ;?>
-							
-							</div>
-							
-							<!-- save button -->
-							<dl class="small">
-								<dt>&#160;</dt>
-								<dd>
-									<button id="bSaveNewCategory" type="button" class="button yes"><?= lang('ionize_button_save') ?></button>
-								</dd>
-							</dl>
-							
-						</fieldset>
-					</form>
-				
-				</div>
-	
-	
-				<div class="tabcolumn pt15" id="categoriesContainer">
-				
-				</div>
-				
-			</div>
-	
-	
-			<!-- Types -->
-			<div class="tabcontent">
-	
-	
-				<!-- New type -->
-				<div class="tabsidecolumn">
-				
-					<h3><?= lang('ionize_title_type_new') ?></h3>
-				
-					<form name="newTypeForm" id="newTypeForm" action="<?= admin_url() ?>article_type/save">
-					
-						<!-- Name -->
-						<dl class="small">
-							<dt>
-								<label for="type"><?=lang('ionize_label_type')?></label>
-							</dt>
-							<dd>
-								<input id="type" name="type" class="inputtext" type="text" value="" />
-							</dd>
-						</dl>
-
-						<!-- Flag -->
-						<dl class="small">
-							<dt>
-								<label for="flag0" title="<?= lang('ionize_help_flag') ?>"><?= lang('ionize_label_flag') ?></label>
-							</dt>
-								<dd>
-									<label class="flag flag0"><input id="flag0" name="type_flag" class="inputradio" type="radio" value="0" /></label>
-									<label class="flag flag1"><input name="type_flag" class="inputradio" type="radio" value="1" /></label>
-									<label class="flag flag2"><input name="type_flag" class="inputradio" type="radio" value="2" /></label>
-									<label class="flag flag3"><input name="type_flag" class="inputradio" type="radio" value="3" /></label>
-									<label class="flag flag4"><input name="type_flag" class="inputradio" type="radio" value="4" /></label>
-									<label class="flag flag5"><input name="type_flag" class="inputradio" type="radio" value="5" /></label>
-									<label class="flag flag6"><input name="type_flag" class="inputradio" type="radio" value="6" /></label>
-								</dd>
-							</dt>
-						</dl>
-
-						<!-- Description -->
-						<dl class="small">
-							<dt>
-								<label for="descriptionType"><?=lang('ionize_label_description')?></label>
-							</dt>
-							<dd>
-								<textarea id="descriptionType" name="description" class="tinyType"></textarea>
-							</dd>
-						</dl>
-						
-						<!-- save button -->
-						<dl class="small">
-							<dt>&#160;</dt>
-							<dd>
-								<button id="bSaveNewType" type="button" class="button yes"><?= lang('ionize_button_save') ?></button>
-							</dd>
-						</dl>
-					</form>
-				</div>
-				
-	
-				<!-- Existing types -->
-				<div class="tabcolumn pt15" id="articleTypesContainer"></div>
-			</div>
-			
-			
-			<!-- Articles Markers -->
-			<div class="tabcontent">
-	
-				<form name="flagsForm" id="flagsForm">
-				
-					<label class="flag flag1" for="flag1"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag1" name="flag1" value="<?= Settings::get('flag1') ?>" /><br/>
-					<label class="flag flag2" for="flag2"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag2" name="flag2" value="<?= Settings::get('flag2') ?>" /><br/>
-					<label class="flag flag3" for="flag3"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag3" name="flag3" value="<?= Settings::get('flag3') ?>" /><br/>
-					<label class="flag flag4" for="flag4"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag4" name="flag4" value="<?= Settings::get('flag4') ?>" /><br/>
-					<label class="flag flag5" for="flag5"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag5" name="flag5" value="<?= Settings::get('flag5') ?>" /><br/>
-					<label class="flag flag6" for="flag5"></label><input type="text" class="inputtext w180 ml10" id="flag6" name="flag6" value="<?= Settings::get('flag6') ?>" /><br/>
-				
-				
-					<label></label><button  id="bSaveFlags" type="button" class="button yes ml20 mt10"><?= lang('ionize_button_save') ?></button>
-				</form>
-			</div>
-		</div>
 	</div>
 
 
@@ -368,66 +168,11 @@
 	ION.initLabelHelpLinks('#articlesTable');
 	ION.initLabelHelpLinks('#filterArticles');
 
-
-	// Categories list
-	ION.HTML(admin_url + 'category/get_list', '', {'update': 'categoriesContainer'});
-
-
-	// New category Form submit
-	$('bSaveNewCategory').addEvent('click', function(e) {
-		e.stop();
-		ION.sendData(admin_url + 'category/save', $('newCategoryForm'));
-	});
-	
-	
-	/** 
-	 * New category tabs (langs)
-	 */
-	new TabSwapper({tabsContainer: 'categoryTab', sectionsContainer: 'categoryTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontentcat', cookieName: 'categoryTab' });
-
-	/**
-	 * TinyEditors
-	 * Must be called after tabs init.
-	 *
-	 */
-	ION.initTinyEditors('.tab_category', '#categoryTabContent .tinyCategory', 'small');
-
-
-	// Type list
-	ION.HTML(admin_url + 'article_type/get_list', '', {'update': 'articleTypesContainer'});
-
-
-	// New Type Form submit
-	$('bSaveNewType').addEvent('click', function(e) {
-		e.stop();
-		ION.sendData(admin_url + 'article_type/save', $('newTypeForm'));
-	});
-
-
-	/**
-	 * Flags save button
-	 *
-	 */
-	$('bSaveFlags').addEvent('click', function(e) {
-		e.stop();
-		ION.sendData(admin_url + 'setting/save_flags', $('flagsForm'));
-	});
-	
-
-	/**
-	 * Articles Tabs
-	 *
-	 */
-	new TabSwapper({tabsContainer: 'articlesTab', sectionsContainer: 'articlesTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articlesTab' });
-
-
-
 	/**
 	 * Table action icons
 	 *
 	$$('#articlesTable .delete').each(function(item)
 	{
-	
 		ION.initItemDeleteEvent(item, 'article');
 	});
 	 */

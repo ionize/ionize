@@ -41,10 +41,9 @@
 				</div>
 	
 	
-				<h3 class="toggler1"><?= lang('ionize_title_filter_userslist') ?></h3>
+				<h3><?= lang('ionize_title_filter_userslist') ?></h3>
 	
-				<div class="element1">
-				
+
 					<!-- User list filter -->
 					<form name="usersFilter" id="usersFilter" method="post"action="<?= admin_url() ?>users/users_list">
 					
@@ -104,92 +103,10 @@
 							</dd>
 						</dl>
 					</form>
-				</div>
-	
-	
-				<h3 class="toggler1"><?= lang('ionize_title_add_user') ?></h3>
-				
-				<div class="element1">
-					
-					<form name="newUserForm" id="newUserForm" method="post" action="<?= admin_url() ?>users/save">
-		
-						<!-- Username -->
-						<dl class="small">
-							<dt>
-								<label for="username"><?=lang('ionize_label_username')?></label>
-							</dt>
-							<dd>
-								<input id="username" name="username" class="inputtext w140" type="text" value="" />
-							</dd>
-						</dl>
-						
-						<!-- Screen name -->
-						<dl class="small">
-							<dt>
-								<label for="screen_name"><?=lang('ionize_label_screen_name')?></label>
-							</dt>
-							<dd>
-								<input id="screen_name" name="screen_name" class="inputtext w140" type="text" value="" />
-							</dd>
-						</dl>
-						
-						<!-- Group -->
-						<dl class="small">
-							<dt>
-								<label for="group_FK"><?=lang('ionize_label_group')?></label>
-							</dt>
-							<dd>
-								<select name="id_group" class="select">
-									<?php foreach($groups as $group) :?>
-									
-										<option value="<?= $group['id_group'] ?>"><?= $group['group_name'] ?></option>
-									
-									<?php endforeach ;?>
-								</select>
-							</dd>
-						</dl>
-						
-						<!-- Email -->
-						<dl class="small">
-							<dt>
-								<label for="email"><?=lang('ionize_label_email')?></label>
-							</dt>
-							<dd>
-								<input id="email" name="email" class="inputtext w140" type="text" value="" />
-							</dd>
-						</dl>
-						
-						<!-- Password -->
-						<dl class="small">
-							<dt>
-								<label for="password"><?=lang('ionize_label_password')?></label>
-							</dt>
-							<dd>
-								<input id="password" name="password" class="inputtext w120" type="password" value="" />
-							</dd>
-						</dl>
-		
-						<!-- Password confirm -->
-						<dl class="small">
-							<dt>
-								<label for="password2"><?=lang('ionize_label_password2')?></label>
-							</dt>
-							<dd>
-								<input id="password2" name="password2" class="inputtext w120" type="password" value="" />
-							</dd>
-						</dl>
-		
-						<!-- Submit button  -->
-						<dl class="small">
-							<dt>&#160;</dt>
-							<dd>
-								<input id="submit_new_user" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
-							</dd>
-						</dl>
-		
-					</form>
-				</div>
+
 			</div>
+	
+
 				
 			<!-- Users list -->
 			<div class="tabcolumn">
@@ -201,74 +118,6 @@
 	
 		<!-- Existing groups table -->
 		<div class="tabcontent">
-	
-			<!-- New group -->
-			<div class="tabsidecolumn">
-			
-				<h3><?= lang('ionize_title_add_group') ?></h3>
-				
-				<form name="newGroupForm" id="newGroupForm" method="post" action="<?= admin_url() ?>groups/save">
-	
-					<!-- Group name -->
-					<dl class="small">
-						<dt>
-							<label for="slug"><?=lang('ionize_label_group_name')?></label>
-						</dt>
-						<dd>
-							<input id="slug" name="slug" class="inputtext w140" type="text" value="" />
-						</dd>
-					</dl>
-					
-					<!-- Group Title -->
-					<dl class="small">
-						<dt>
-							<label for="group_name"><?=lang('ionize_label_group_title')?></label>
-						</dt>
-						<dd>
-							<input id="group_name" name="group_name" class="inputtext w140" type="text" value="" />
-						</dd>
-					</dl>
-					
-					<!-- Description -->
-					<dl class="small">
-						<dt>
-							<label for="description"><?=lang('ionize_label_group_description')?></label>
-						</dt>
-						<dd>
-							<input id="description" name="description" class="inputtext w140" type="text" value="" />
-						</dd>
-					</dl>
-					
-					<!-- Level -->
-					<dl class="small">
-						<dt>
-							<label for="level"><?=lang('ionize_label_group_level')?></label>
-						</dt>
-						<dd>
-							<?php if($this->connect->is('super-admins')) :?>
-								<input name="level" class="inputtext w100" value=""/>
-							<?php else: ?>
-								<select name="level" class="select">
-									<?php foreach($groups as $group) :?>
-									
-										<option value="<?= $group['level'] ?>"><?= $group['group_name'] ?></option>
-									
-									<?php endforeach ;?>
-								</select>
-							<?php endif; ?>
-						</dd>
-					</dl>
-					
-					<!-- Submit button  -->
-					<dl class="small">
-						<dt>&#160;</dt>
-						<dd>
-							<input id="submit_new_group" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
-						</dd>
-					</dl>
-	
-				</form>
-			</div>
 	
 			<!-- Groups list -->
 			<div class="tabcolumn">
@@ -321,8 +170,8 @@
 					
 					<?php foreach($meta_data as $meta) :?>
 					<dd>
-							<input id="meta_<?= $meta['Field'] ?>" name="metas[]" type="checkbox" value="<?= $meta['Field'] ?>" />
-							<label for="meta_<?= $meta['Field'] ?>"><?= $meta['Field'] ?></label>
+							<input id="meta_<?= $meta['field'] ?>" name="metas[]" type="checkbox" value="<?= $meta['field'] ?>" />
+							<label for="meta_<?= $meta['field'] ?>"><?= $meta['field'] ?></label>
 							<br/>
 					</dd>
 					<?php endforeach ;?>
@@ -358,17 +207,9 @@
 	 * Panel toolbox
 	 *
 	 */
-	ION.initToolbox('empty_toolbox');
-
+	ION.initToolbox('users_toolbox');
 
 	/**
-	 * Options Accordion
-	 *
-	 */
-	ION.initAccordion('.toggler1', 'div.element1', false, 'usersAccordion');
-
-
-	/** 
 	 * Tabs init
 	 *
 	 */
@@ -392,17 +233,9 @@
 	 * Init help tips on label
 	 *
 	 */
-	ION.initLabelHelpLinks('#newUserForm');
 	ION.initLabelHelpLinks('#newGroupForm');
 	ION.initLabelHelpLinks('#userExportForm');
 
-	/**
-	 * New user form action
-	 * see init.js for more information about this method
-	 */
-	ION.setFormSubmit('newUserForm', 'submit_new_user', 'users/save');
-	ION.setFormSubmit('newGroupForm', 'submit_new_group', 'groups/save');
-//	ION.setFormSubmit('userExportForm', 'submit_user_export', $('userExportForm').action);
 
 	/**
 	 * Filter users list
@@ -433,12 +266,12 @@
 	{
 		item.addEvent('click', function(e)
 		{
-//			var e = new Event(e).stop();
 			e.stop();
 			var id = item.getProperty('rel');
+
 			ION.formWindow(	
-				id, 							// object ID
-				'groupForm',					// Form ID
+				'group' + id, 					// object ID
+				'groupForm' + id,				// Form ID
 				'ionize_title_group_edit', 		// Window title
 				'groups/edit/' + id,			// Window content URL
 				{width: 340, height: 230}		// Window options

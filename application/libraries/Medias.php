@@ -123,7 +123,7 @@ class Medias
 					$dim = explode(',', $size);
 
 					$settings['width'] = $dim[0];
-					$settings['height'] = $dim[1];
+					$settings['height'] = ( ! empty($dim[1])) ? $dim[1] : $dim[0];
 
 					// check size attribut
 					if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}a$/', $thumb_folder))

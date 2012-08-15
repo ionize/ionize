@@ -63,7 +63,7 @@ class Settings
 	 *													)
 	 *										 )
 	 *
-	 * @return string	The setting value
+	 * @return mixed	The setting value
 	 */
 	public static function get($key, $lang = false)
 	{

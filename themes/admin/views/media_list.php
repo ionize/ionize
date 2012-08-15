@@ -39,11 +39,11 @@
 		?>
 		
 		<li class="sortme" id="<?= $media['type'] ?>_<?= $media['id_media'] ?>">
-			<img class="icon right help" onclick="javascript:mediaManager.detachMedia('<?= $media['type'] ?>', '<?= $media['id_media'] ?>');" src="<?= theme_url() ?>images/icon_16_delete.png" alt="<?= lang('ionize_label_detach_media') ?>" />
+			<a class="icon right unlink" onclick="javascript:mediaManager.detachMedia('<?= $media['type'] ?>', '<?= $media['id_media'] ?>');" title="<?= lang('ionize_label_detach_media') ?>"></a>
 			<?php if( ! empty($media['lang_display'])) :?>
 				<a class="right mr10 " href="<?= $edit_href ?>"><?=lang('ionize_label_media_display_limited_to_lang')?> : <img src="<?= theme_url() ?>/images/world_flags/flag_<?= $media['lang_display']; ?>.gif" /></a>
 			<?php endif ;?>
-			<img class="icon left drag pr5" src="<?= theme_url() ?>images/icon_16_ordering.png" />
+			<span class="icon left drag"></span>
 			<a class="icon edit left mr5 ml5 help" href="<?= $edit_href ?>" title="<?= lang('ionize_label_edit') ?>"></a>
 			<a class="icon info left help ml5" title="<?= $media['path'] ?>" rel="<?= $details ?>"></a>
 			<a class="left ml10 help" href="<?= $edit_href ?>" title="<?= lang('ionize_label_edit') ?>"><?php if ($this->connect->is('super-admins') ) :?><?= $media['id_media'] ?> : <?php endif ;?><?= $media['file_name'] ?></a>

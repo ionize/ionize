@@ -349,7 +349,7 @@ class System_check extends MY_admin
 		
 		$result = array(
 			'title' => lang('ionize_title_check_views'),
-			'result_status' => 'success'
+			'status' => 'success'
 		);
 		
 		$views_folder = (FCPATH.'themes/'.Settings::get('theme').'/views/');
@@ -385,9 +385,9 @@ class System_check extends MY_admin
 		
 		// Correct
 		if ($nb > 0)
-			$result['result_text'] = lang('ionize_message_check_corrected');
+			$result['message'] = lang('ionize_message_check_corrected');
 		else
-			$result['result_text'] = lang('ionize_message_check_ok');
+			$result['message'] = lang('ionize_message_check_ok');
 		
 		// Result view
 		$view = $this->load->view('system_check_result', $result, TRUE);

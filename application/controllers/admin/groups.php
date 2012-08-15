@@ -37,8 +37,8 @@ class Groups extends MY_admin
 
 //		$this->connect->restrict('editors');
 
-		$this->base_model->set_table('user_groups');
-		$this->base_model->set_pk_name('id_group');
+		// Users model
+		$this->load->model('group_model', '', true);
 
 		// Current connected user level
 		$user = $this->connect->get_current_user();
@@ -50,7 +50,7 @@ class Groups extends MY_admin
 
 
 	/**
-	 * Do nothing. See users.php
+	 * Do nothing.
 	 *
 	 */
 	function index()
@@ -79,6 +79,17 @@ class Groups extends MY_admin
 	// ------------------------------------------------------------------------
 
 
+	function get_form()
+	{
+		$this->template['group'] = $this->group_model->feed_blank_template();
+
+		$this->output('group');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Update one group
 	 *
@@ -89,7 +100,6 @@ class Groups extends MY_admin
 		
 		if ($id_group !== FALSE)
 		{
-			
 			// Update array
 			$data = array(
 						'slug' =>			$this->input->post('slug'),
@@ -100,7 +110,7 @@ class Groups extends MY_admin
 
 			
 			// Update the group
-			$this->base_model->update($id_group, $data);
+			$this->group_model->update($id_group, $data);
 
 			// UI update panels
 			$this->update[] = array(
@@ -132,10 +142,10 @@ class Groups extends MY_admin
 				);
 		
 		// Save new user only if it not exists
-		if (!$this->base_model->exists(array('slug' => $data['slug'])))
+		if (!$this->group_model->exists(array('slug' => $data['slug'])))
 		{
 			// DB insertion
-			$this->base_model->insert($data);
+			$this->group_model->insert($data);
 
 			// UI update panels
 			$this->update[] = array(
@@ -168,7 +178,7 @@ class Groups extends MY_admin
 		// - No users in the group
 		// - Group level must be < current connected user
 
-		$affected_rows = $this->base_model->delete($id);
+		$affected_rows = $this->group_model->delete($id);
 
 		if ($affected_rows > 0)
 		{

@@ -64,7 +64,7 @@
 
 <script type="text/javascript">
 
-	ION.windowResize('article_type<?= $id_type ?>', {width:400, height:200});
+	ION.windowResize('article_type<?= $id_type ?>', {width:450, height:230});
 
 	tinyMCE.init(ION.tinyMceSettings('tinyType<?= $UNIQ ?>', 240, 120, 'small'));
 

@@ -35,9 +35,6 @@ class Users extends MY_admin
 	{
 		parent::__construct();
 
-		$this->base_model->set_table('users');
-		$this->base_model->set_pk_name('id_user');
-
 		// Users model
 		$this->load->model('users_model', '', true);
 
@@ -60,7 +57,7 @@ class Users extends MY_admin
 	function index($page=1, $nb=30)
 	{
 		// 
-		$this->template['users_count_all'] = $this->base_model->count_all();
+		$this->template['users_count_all'] = $this->users_model->count_all();
 		
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = $this->connect->model->get_groups(array('order_by'=>'level DESC', 'level <=' => $this->current_user_level));
@@ -68,17 +65,7 @@ class Users extends MY_admin
 		// Send the current user's level to the view
 		$this->template['current_user_level'] = $this->current_user_level;
 
-		// Meta data list
-		$meta_data = $this->base_model->field_data('users_meta');
-		
-		// Filter meta data : Don't add PK
-		foreach ($meta_data as $field)
-		{
-			if ($field['Field'] != 'id_user')
-			{
-				$this->template['meta_data'][] = $field;
-			}
-		}
+		$this->template['meta_data'] = $this->users_model->get_meta();
 
 		$this->output('users');
 	}
@@ -159,9 +146,25 @@ class Users extends MY_admin
 		$this->template['groups'] = array_filter($this->connect->model->get_groups(array('order_by'=>'level')), array($this, '_filter_groups'));
 		
 		// Get users meta data
-		$this->template['meta_data_fields'] =  $this->users_model->get_meta_fields();
-		$this->template['meta_data'] = $this->users_model->get_meta($id, $this->template['meta_data_fields']);
-		
+		$this->template['meta_data'] = $this->users_model->get_meta($id);
+
+		$this->output('user');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	function get_form()
+	{
+		$this->template['user'] = $this->users_model->feed_blank_template();
+
+		// Get groups list filtered on level <= current_user level
+		$this->template['groups'] = array_filter($this->connect->model->get_groups(array('order_by'=>'level')), array($this, '_filter_groups'));
+
+		// Get users meta data
+		$this->template['meta_data'] = $this->users_model->get_meta();
+
 		$this->output('user');
 	}
 
@@ -201,7 +204,7 @@ class Users extends MY_admin
 			}
 
 			// Update the user
-			$this->base_model->update($id_user, $data);
+			$this->users_model->update($id_user, $data);
 			
 			// Update the user's meta
 			$this->users_model->save_meta($id_user, $_POST);
@@ -251,10 +254,10 @@ class Users extends MY_admin
 			
 			
 			// Save new user only if it not exists
-			if ( ! $this->base_model->exists(array('username' => $data['username'])))
+			if ( ! $this->users_model->exists(array('username' => $data['username'])))
 			{
 				// DB insertion
-				$id = $this->base_model->insert($data);
+				$id = $this->users_model->insert($data);
 
 				// Update the user's meta
 				$this->users_model->save_meta($id, $_POST);
@@ -298,7 +301,13 @@ class Users extends MY_admin
 			if ($affected_rows > 0)
 			{
 				$this->id = $id;
-				
+
+				// UI update panels
+				$this->update[] = array(
+					'element' => 'mainPanel',
+					'url' => admin_url() . 'users'
+				);
+
 				$this->success(lang('ionize_message_user_deleted'));
 			}
 			else

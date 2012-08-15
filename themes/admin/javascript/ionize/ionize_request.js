@@ -67,7 +67,7 @@ ION.append({
 				if (mode == 'HTML')
 					ION.HTML(url, data, options);
 				else
-					ION.JSON(url, data);
+					ION.JSON(url, data, options);
 			}
 		});
 	},
@@ -95,10 +95,13 @@ ION.append({
 		// Cleans URLs
 		url = ION.cleanUrl(url);
 
-		var onSuccess = function(responseJSON, responseText) {};
-		if (typeOf(options) != 'null' && typeOf(options.onSuccess) != 'null') { onSuccess = options.onSuccess; }
+        var onRequest = function() {};
+        var onSuccess = function(responseJSON, responseText) {};
 
-		return {
+        if (typeOf(options) != 'null' && typeOf(options.onRequest) != 'null') { onRequest = options.onRequest; }
+        if (typeOf(options) != 'null' && typeOf(options.onSuccess) != 'null') { onSuccess = options.onSuccess; }
+
+        return {
 			url: admin_url + url, 
 			method: 'post',
 			loadMethod: 'xhr',
@@ -106,6 +109,7 @@ ION.append({
 			onRequest: function()
 			{
 				MUI.showSpinner();
+                onRequest();
 			},
 			onFailure: function(xhr) 
 			{

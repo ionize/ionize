@@ -522,11 +522,11 @@ class MY_Admin extends MY_Controller
 	 */
 	public $id;
 	
-	/* Javascript callback function 
-	 * Not implemented yet
+	/*
+	 * Javascript callback array
 	 *
 	 */
-	public $callback;
+	public $callback = array();
 
 	/*
 	 * Modules Addons
@@ -740,7 +740,7 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
     	 * Sends a JSON javascript object
     	 *  
     	 */
-    	if ($this->is_xhr() === true)
+    	if ($this->is_xhr() === TRUE)
     	{
 			// Basic JSON answser
     		$data = array (    	

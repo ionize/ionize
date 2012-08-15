@@ -21,13 +21,9 @@ Ionize.initializeDesktop = function(){
 						{
 							id: 'structurePanel',
 							title: '',
+							cssClass: 'panelAlt',
 							content: [
-//								{url: admin_url + 'core/get_structure'},
-								{
-									url: admin_url + 'tree'
-//									method:'post',
-//									data: {'id_parent':'0'}
-								},
+								{url: admin_url + 'tree'},
 								{
 									name: 'toolbox',
 									position: 'header',
@@ -61,11 +57,20 @@ Ionize.initializeDesktop = function(){
 	});
 };
 
+
+
 // Initialize MochaUI when the DOM is ready
 window.addEvent('load', function()
 {
 	MUI.initialize({path:{root:theme_url + 'javascript/mochaui/'}});
-	Ionize.initializeDesktop();
 	MUI.register('MUI.Windows', MUI.Windows);
+
+	Ionize.initializeDesktop();
+
+	Ionize.User.initialize();
+
+//	console.log(Ionize.User.getCurrentUser());
+//	console.log(Ionize.User.getGroupLevel());
+
 });
 

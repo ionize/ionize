@@ -91,6 +91,12 @@
 
 <script type="text/javascript">
 
+	/**
+	 * Window resize
+	 *
+	 */
+	ION.windowResize('category<?= $id_category ?>', {width:550, height:400});
+
 	/** 
 	 * Tabs init
 	 *
@@ -106,11 +112,6 @@
 	 */
 	ION.initTinyEditors('.tab_edit_category<?= $id_category ?>', '#categoryTabContent<?= $id_category ?> .tinyCategory', 'small', {'height':120});
 
-	/**
-	 * Window resize
-	 *
-	 */
-	ION.windowResize('category<?= $id_category ?>', {width:420});
-	
+
 
 </script>

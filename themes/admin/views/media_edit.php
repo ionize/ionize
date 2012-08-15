@@ -33,9 +33,9 @@ if($type == 'picture')
 
 	<!-- Music file -->
 	<?php if($type == 'music') :?>
-	<div style="float:right;">
-		<embed src="<?= theme_url() ?>flash/mp3Player/mp3player_simple.swf?mp3=<?= base_url().$path ?>" loop="false" menu="false" quality="high" wmode="transparent" width="224" height="20" name="track_<?= $id_media ?>" align="middle" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
-	</div>
+		<div style="float:right;">
+			<embed src="<?= theme_url() ?>flash/mp3Player/mp3player_simple.swf?mp3=<?= base_url().$path ?>" loop="false" menu="false" quality="high" wmode="transparent" width="224" height="20" name="track_<?= $id_media ?>" align="middle" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+		</div>
 	<?php endif ;?>
 	
 	<!-- Video file -->
@@ -187,8 +187,8 @@ if($type == 'picture')
 						<label for="title_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_title') ?></label>
 					</dt>
 					<dd>
-						<input id="title_<?= $lang_code ?><?= $type.$id_media ?>" name="title_<?= $lang_code ?>" class="inputtext w200" type="text" value="<?= ${$lang_code}['title'] ?>"/>
-						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('title_<?= $lang_code ?><?= $type.$id_media ?>');"/>
+						<input id="title_<?= $lang_code ?><?= $type.$id_media ?>" name="title_<?= $lang_code ?>" class="inputtext" type="text" value="<?= ${$lang_code}['title'] ?>"/>
+						<a class="icon clearfield" data-id="title_<?= $lang_code ?><?= $type.$id_media ?>"></a>
 					</dd>
 				</dl>
 		
@@ -208,8 +208,8 @@ if($type == 'picture')
 						<label for="alt_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_alt') ?></label>
 					</dt>
 					<dd>
-						<input id="alt_<?= $lang_code ?><?= $type.$id_media ?>" name="alt_<?= $lang_code ?>" class="inputtext w200" type="text" value="<?= ${$lang_code}['alt'] ?>"/>
-						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('alt_<?= $lang_code ?><?= $type.$id_media ?>');"/>
+						<input id="alt_<?= $lang_code ?><?= $type.$id_media ?>" name="alt_<?= $lang_code ?>" class="inputtext" type="text" value="<?= ${$lang_code}['alt'] ?>"/>
+						<a class="icon clearfield" data-id="alt_<?= $lang_code ?><?= $type.$id_media ?>"></a>
 					</dd>
 				</dl>
 		
@@ -219,8 +219,8 @@ if($type == 'picture')
 						<label for="description_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_description') ?></label>
 					</dt>
 					<dd>
-						<input id="description_<?= $lang_code ?><?= $type.$id_media ?>" name="description_<?= $lang_code ?>" class="inputtext w200" type="text" value="<?= ${$lang_code}['description'] ?>"/>
-						<img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png"  onclick="javascript:ION.clearField('description_<?= $lang_code ?><?= $type.$id_media ?>');"/>
+						<input id="description_<?= $lang_code ?><?= $type.$id_media ?>" name="description_<?= $lang_code ?>" class="inputtext" type="text" value="<?= ${$lang_code}['description'] ?>"/>
+						<a class="icon clearfield" data-id="description_<?= $lang_code ?><?= $type.$id_media ?>"></a>
 					</dd>
 				</dl>
 
@@ -284,25 +284,37 @@ if($type == 'picture')
 				<!-- Container -->
 				<dl class="small">
 					<dt><label for="container_<?= $type.$id_media ?>"><?=lang('ionize_label_media_container')?></label></dt>
-					<dd><input id="container_<?= $type.$id_media ?>" name="container" class="inputtext w200" type="text" value="<?= $container ?>" /></dd>
+					<dd>
+						<input id="container_<?= $type.$id_media ?>" name="container" class="inputtext" type="text" value="<?= $container ?>" />
+						<a class="icon clearfield" data-id="container_<?= $type.$id_media ?>"></a>
+					</dd>
 				</dl>
 			
 				<!-- Copyright -->
 				<dl class="small">
 					<dt><label for="copyright"><?=lang('ionize_label_copyright')?></label></dt>
-					<dd><input id="copyright_<?= $type.$id_media ?>" name="copyright" class="inputtext w200" type="text" value="<?= $copyright ?>" /></dd>
+					<dd>
+						<input id="copyright_<?= $type.$id_media ?>" name="copyright" class="inputtext" type="text" value="<?= $copyright ?>" />
+						<a class="icon clearfield" data-id="copyright_<?= $type.$id_media ?>"></a>
+					</dd>
 				</dl>
 			
 				<!-- Link (URL) -->
 				<dl class="small">
 					<dt><label for="link"><?=lang('ionize_label_link')?></label></dt>
-					<dd><input id="link_<?= $type.$id_media ?>" name="link" type="text" class="inputtext w200" value="<?= $link ?>" /><img class="inputicon" src="<?= theme_url() ?>images/icon_16_clear_field.png" onclick="javascript:ION.clearField('link_<?= $type.$id_media ?>');"/></dd>
+					<dd>
+						<input id="link_<?= $type.$id_media ?>" name="link" type="text" class="inputtext" value="<?= $link ?>" />
+						<a class="icon clearfield" data-id="link_<?= $type.$id_media ?>"></a>
+					</dd>
 				</dl>
 			
 				<!-- Date -->
 				<dl class="small">
 					<dt><label for="date_<?= $type.$id_media ?>"><?=lang('ionize_label_date')?></label></dt>
-					<dd><input id="date_<?= $type.$id_media ?>" name="date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($date, Settings::get('date_format'). ' %H:%i:%s') ?>" /></dd>
+					<dd>
+						<input id="date_<?= $type.$id_media ?>" name="date" type="text" class="inputtext date" value="<?= humanize_mdate($date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+						<a class="icon clearfield date" data-id="date_<?= $type.$id_media ?>"></a>
+					</dd>
 				</dl>
 
 				<!-- extend fields goes here... -->
@@ -435,6 +447,11 @@ if($type == 'picture')
 	 *
 	 */
 	ION.initDatepicker();
+
+	/**
+	 * Clear Field Init
+	 */
+	ION.initClearField('#mediaForm<?= $id_media ?>');
 
 	/** 
 	 * Tabs init

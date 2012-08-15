@@ -16,10 +16,7 @@
  */
 class TagManager_Category extends TagManager
 {
-	protected static $uri_segments = array();
-
 	protected static $categories = FALSE;
-
 
 	public static $tag_definitions = array
 	(

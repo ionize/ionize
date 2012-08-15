@@ -19,7 +19,9 @@ $id = $id_element_definition;
 		<?php if ($name == '') :?>
 			<input id="elementName<?= $id ?>" type="text" class="inputtext w120 left" />
 			
-			<button id="elementDefinitionSave<?= $id ?>" type="button" class="light-button left ml10" value="Save"><?= lang('ionize_label_element_set_name') ?></button>
+				<a id="elementDefinitionSave<?= $id ?>" class="light button left ml10">
+					<i class="icon-save"></i><?= lang('ionize_label_element_set_name') ?>
+				</a>
 			
 			<script type="text/javascript">
 			
@@ -84,7 +86,9 @@ $id = $id_element_definition;
 				
 				<!-- Add Field button -->
 				<?php if ($id != 0) :?>
-					<input type="button" class="light-button plus mb5 ml5 add_field" value="Add field" rel="<?= $id ?>"></input>
+					<a class="light button mb5 ml5 add_field" rel="<?= $id ?>">
+						<i class="icon-plus"></i><?php echo lang('ionize_label_element_add_field'); ?>
+					</a>
 				<?php endif ;?>
 				
 				<ul class="fields" id="fields<?= $id ?>" rel="<?= $id ?>">

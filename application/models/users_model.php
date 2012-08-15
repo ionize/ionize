@@ -12,7 +12,7 @@
 // ------------------------------------------------------------------------
 
 /**
- * Ionize Media Model
+ * Ionize Users Model
  *
  * @package		Ionize
  * @subpackage	Models
@@ -69,11 +69,11 @@ class Users_model extends Base_model
 				
 		return $data;
 	}
-	
+
 
 	// ------------------------------------------------------------------------
-	
-	
+
+
 	/**
 	 * Returns one user's meta data
 	 *
@@ -81,28 +81,30 @@ class Users_model extends Base_model
 	 *
 	 * @return	Array	User's meta data associative array
 	 *
-	 */	
-	function get_meta($id, $fields)
+	 */
+	function get_meta($id = NULL)
 	{
-		// The returned array will contains the correct keys
-		$data = array_fill_keys($fields, '');
-		
-		$this->{$this->db_group}->where($this->pk_name, $id);
-		
-		$query = $this->{$this->db_group}->get($this->meta_table);
-		
-		if ( $query->num_rows() > 0 )
-		{
-			$metas = $query->row_array();
+		$fields = $this->field_data($this->meta_table);
 
-			if ( ! empty($metas))
+		if ( ! is_null($id))
+		{
+			$this->{$this->db_group}->where($this->pk_name, $id);
+
+			$query = $this->{$this->db_group}->get($this->meta_table);
+
+			if ( $query->num_rows() > 0 )
 			{
-				foreach($fields as $field)
-					$data[$field] = $metas[$field];
+				$metas = $query->row_array();
+
+				if ( ! empty($metas))
+				{
+					foreach($fields as $key => &$field)
+						$field['value'] = $metas[$field['field']];
+				}
 			}
 		}
-		
-		return $data;
+
+		return $fields;
 	}
 
 
@@ -120,9 +122,8 @@ class Users_model extends Base_model
 		$data = array();
 		
 		$query = $this->{$this->db_group}->query("SHOW COLUMNS FROM " . $this->meta_table);
-	
 		$fields = $query->result_array();
-		
+
 		foreach($fields as $field)
 		{
 			if ($field['Field'] != $this->pk_name)

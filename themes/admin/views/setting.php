@@ -2,9 +2,9 @@
 <!-- Main Column -->
 <div id="maincolumn">
 
-
+<!--
 	<input id="settingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_save_settings') ?>" />
-
+-->
 	<h2 class="main website" id="main-title"><?= lang('ionize_title_site_settings') ?></h2>
 	
 	<!-- Title & Meta keywords & Meta description -->

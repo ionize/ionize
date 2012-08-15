@@ -13,320 +13,6 @@
 	<!-- JS storing element -->
 	<input type="hidden" id="memory" />
 
-	<div id="sidecolumn" class="close">
-
-		<!-- Main informations -->
-		<div class="info">
-
-			<?php if ($id_article != '') :?>
-
-
-				<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
-					<dl class="small compact">
-						<dt><label><?= lang('ionize_label_date') ?></label></dt>
-						<dd><?= humanize_mdate($logical_date, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($logical_date, '%H:%i:%s') ?></span></dd>
-					</dl>
-				<?php endif ;?>
-
-				<dl class="small compact">
-					<dt><label><?= lang('ionize_label_created') ?></label></dt>
-					<dd><?= humanize_mdate($created, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($created, '%H:%i:%s') ?></span></dd>
-				</dl>
-		
-				<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
-					<dl class="small compact">
-						<dt><label><?= lang('ionize_label_updated') ?></label></dt>
-						<dd><?= humanize_mdate($updated, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($updated, '%H:%i:%s') ?></span></dd>
-					</dl>
-				<?php endif ;?>
-				
-				<?php if (humanize_mdate($publish_on, Settings::get('date_format')) != '') :?>
-					<dl class="small compact">
-						<dt><label><?= lang('ionize_label_publish_on') ?></label></dt>
-						<dd><?= humanize_mdate($publish_on, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($publish_on, '%H:%i:%s') ?></span></dd>
-					</dl>
-				<?php endif ;?>
-			
-			<?php endif ;?>
-				
-
-			<!-- Link ? -->
-			<?php if ($id_article != '') :?>
-			
-				<div id="linkContainer"></div>
-				
-			<?php endif ;?>
-
-
-
-			<!-- Modules PlaceHolder -->
-			<?php if ( ! empty($id_article)) :?>
-			
-				<?= get_modules_addons('article', 'side_top'); ?>
-			
-			
-			<?php endif ;?>
-
-
-		</div>
-			
-
-
-		<div id="options">
-
-			<!-- Options -->
-			<h3 class="toggler toggler-options"><?= lang('ionize_title_attributes') ?></h3>
-		
-			<div class="element element-options">
-
-				<!-- Indexed content -->
-				<dl class="small">
-					<dt>
-						<label for="indexed" title="<?= lang('ionize_help_indexed') ?>"><?= lang('ionize_label_indexed') ?></label>
-					</dt>
-					<dd>
-						<input id="indexed" name="indexed" type="checkbox" class="inputcheckbox" <?php if ($indexed == 1):?> checked="checked" <?php endif;?> value="1" />
-					</dd>
-				</dl>
-
-				<!-- Categories -->
-				<dl class="small">
-					<dt>
-						<label for="categories"><?= lang('ionize_label_categories') ?></label>
-					</dt>
-					<dd>
-						<div id="categories">
-							<?= $categories ?>
-						</div>
-						
-						<!-- Category create button -->
-						<a onclick="javascript:ION.formWindow('category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
-
-					</dd>
-				</dl>
-
-				<!-- Existing Article -->
-				<?php if( ! empty($id_article)) :?>
-
-					<!-- Parent pages list -->
-					<dl class="small dropPageInArticle">
-						<dt>
-							<label for="parents" title="<?= lang('ionize_help_article_context') ?>"><?= lang('ionize_label_parents') ?></label>
-						</dt>
-						<dd>
-						
-							<div id="parents">
-								<ul class="parent_list" id="parent_list">
-								
-									<?php foreach ($pages_list as $page) :?>
-										
-										<?php
-											
-											$title = ($page['title'] != '') ? $page['title'] : $page['name'];
-											
-											// All REL or ID which permit the DOM identification of one article MUST be written like this.
-											// $rel = $page['id_page']. '.' .$id_article;
-										?>
-								
-										<li rel="<?= $page['id_page'] ?>.<?= $id_article ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?= $title ?></a></li>
-								
-									<?php endforeach ;?>
-									
-								</ul>
-								<!--
-								<input type="text" id="new_parent" class="inputtext w140 italic empty nofocus droppable" alt="<?= lang('ionize_label_drop_page_here') ?>"></input>
-								-->
-							</div>
-						</dd>
-					</dl>
-				
-				<?php endif ;?>
-					
-
-			
-
-				<!-- Flag 
-				<dl class="small">
-					<dt>
-						<label for="flag0" title="<?= lang('ionize_help_flag') ?>"><?= lang('ionize_label_flag') ?></label>
-					</dt>
-						<dd>
-							<label class="flag flag0"><input id="flag0" name="flag" class="inputradio" type="radio" <?php if ($flag == 0):?> checked="checked" <?php endif;?> value="0" /></label>
-							<label class="flag flag1"><input name="flag" class="inputradio" type="radio" <?php if ($flag == 1):?> checked="checked" <?php endif;?> value="1" /></label>
-							<label class="flag flag2"><input name="flag" class="inputradio" type="radio" <?php if ($flag == 2):?> checked="checked" <?php endif;?> value="2" /></label>
-							<label class="flag flag3"><input name="flag" class="inputradio" type="radio" <?php if ($flag == 3):?> checked="checked" <?php endif;?> value="3" /></label>
-							<label class="flag flag4"><input name="flag" class="inputradio" type="radio" <?php if ($flag == 4):?> checked="checked" <?php endif;?> value="4" /></label>
-							<label class="flag flag5"><input name="flag" class="inputradio" type="radio" <?php if ($flag == 5):?> checked="checked" <?php endif;?> value="5" /></label>
-						</dd>
-					</dt>
-				</dl>
-				
-				-->
-
-			</div>
-			
-			
-			
-			<!-- Advanced options 
-			<h3 class="toggler"><?= lang('ionize_title_advanced') ?></h3>
-			
-			<div class="element">
-
-
-				<!-- Tags 
-				<dl class="small">
-					<dt>
-						<label for="template"><?= lang('ionize_label_tags') ?></label>
-					</dt>
-					<dd>
-						<textarea id="tags" name="tags" class="inputtext w140 h40" type="text" onkeyup="formManager.toLowerCase(this, 'tags');"><?= $tags ?></textarea>
-					</dd>
-				</dl>
-				
-				<!-- Existing Tags 
-				<dl class="small last">
-					<dt>
-						<label for="template"><?= lang('ionize_label_existing_tags') ?></label>
-					</dt>
-					<dd><?= $existing_tags ?></dd>
-				</dl>
-				
-
-			</div>
-
-			-->
-			
-			
-			<!-- Dates -->
-			<h3 class="toggler toggler-options"><?= lang('ionize_title_dates') ?></h3>
-			
-			<div class="element element-options">
-				<dl class="small">
-					<dt>
-						<label for="logical_date"><?= lang('ionize_label_date') ?></label>
-					</dt>
-					<dd>
-						<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
-					</dd>
-				</dl>
-				<dl class="small">
-					<dt>
-						<label for="publish_on"><?= lang('ionize_label_publish_on') ?></label>
-					</dt>
-					<dd>
-						<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?= humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s') ?>" />
-					</dd>
-				</dl>
-			
-				<dl class="small last">
-					<dt>
-						<label for="publish_off"><?= lang('ionize_label_publish_off') ?></label>
-					</dt>
-					<dd>
-						<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s') ?>" />
-					</dd>
-				</dl>
-			
-			
-			</div>
-
-			<!-- Comments 
-			<h3 class="toggler"><?= lang('ionize_title_comments') ?></h3>
-			
-			<div class="element">
-
-				<dl class="small">
-					<dt>
-						<label for="comment_allow"><?= lang('ionize_label_comment_allow') ?></label>
-					</dt>
-					<dd>
-						<input id="comment_allow" name="comment_allow" type="checkbox" class="inputcheckbox" <?php if ($comment_allow == 1):?> checked="checked" <?php endif;?>  />
-					</dd>
-				</dl>
-
-				<dl class="small">
-					<dt>
-						<label for="comment_autovalid"><?= lang('ionize_label_comment_autovalid') ?></label>
-					</dt>
-					<dd>
-						<input id="comment_autovalid" name="comment_autovalid" type="checkbox" class="inputcheckbox" <?php if ($comment_autovalid == 1):?> checked="checked" <?php endif;?>  />
-					</dd>
-				</dl>
-
-				<dl class="small last">
-					<dt>
-						<label for="comment_expire"><?= lang('ionize_label_comment_expire') ?></label>
-					</dt>
-					<dd>
-						<input id="comment_expire" name="comment_expire" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($comment_expire, Settings::get('date_format'). ' %H:%i:%s') ?>" />
-					</dd>
-				</dl>
-
-			</div>
-			
-			-->
-
-
-			<!-- Copy Content -->
-			<?php if( ! empty($id_article)) :?>
-
-				<h3 class="toggler toggler-options"><?= lang('ionize_title_content') ?></h3>
-				
-				<div class="element element-options">
-				
-					<dl class="small">
-						<dt>
-							<label for="lang_copy_from" title="<?= lang('ionize_help_copy_content') ?>"><?= lang('ionize_label_copy_content') ?></label>
-						</dt>
-						<dd>
-							<div class="w100 left">
-								<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
-									<?php foreach(Settings::get_languages() as $language) :?>
-										<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
-									<?php endforeach ;?>
-								</select>
-								
-								<br/>
-							
-								<select name="lang_copy_to" id="lang_copy_to" class="w100 select mt5">
-									<?php foreach(Settings::get_languages() as $language) :?>
-										<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
-									<?php endforeach ;?>
-								</select>
-							
-							</div>
-							<div class="w30 h50 left ml5" style="background:url(<?= theme_url() ?>images/icon_24_from_to.png) no-repeat 50% 50%;"></div>
-						</dd>
-					</dl>
-				
-					<!-- Submit button  -->
-					<dl class="small">
-						<dt>&#160;</dt>
-						<dd>
-							<input type="submit" value="<?= lang('ionize_button_copy_content') ?>" class="submit" id="copy_lang">
-						</dd>
-					</dl>
-				
-				</div>
-
-			<?php endif ;?>
-			
-			
-			<!-- Modules PlaceHolder -->
-			<?php if ( ! empty($id_article)) :?>
-			
-				<?= get_modules_addons('article', 'side_bottom'); ?>
-			
-			
-			<?php endif ;?>
-			
-			
-		</div>	<!-- /options -->
-	
-	</div> <!-- /sidecolumn -->
-
-
-
 	<div id="maincolumn">
 
 		<fieldset>
@@ -343,23 +29,18 @@
 
 			<h2 class="main article" id="main-title"><?= $title ?></h2>
 
-			<?php if( ! empty($breadcrump)) :?>
+			<div style="margin: -15px 0pt 20px 72px;">
+				<p>
+					<?php if ($this->connect->is('super-admins') ) :?>
+						<span class="lite">ID : </span>
+						<?= $id_article ?>
+					<?php endif ;?>
 
-				<div style="margin: -15px 0pt 20px 72px;">
-							
-					<p>
-						<?php if ($this->connect->is('super-admins') ) :?>
-							<span class="lite">ID : </span>
-							<?= $id_article ?> | 
-						<?php endif ;?>
-				
-						<span class="lite"><?= lang('ionize_label_article_context_edition') ?> : </span><?=$breadcrump?>
-						
-					</p>
-					
-				</div>
-			
-			<?php endif ;?>
+					<?php if( ! empty($breadcrump)) :?>
+						| <span class="lite"><?= lang('ionize_label_article_context_edition') ?> : </span><?=$breadcrump?>
+					<?php endif ;?>
+				</p>
+			</div>
 
 
 
@@ -448,7 +129,7 @@
 								<?php endif ;?>
 								
 								<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext h80" name="cf_<?= $extend_field['id_extend_field'] ?>"><?= $extend_field['content'] ?></textarea>
+									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php else :?> autogrow <?php endif ;?> inputtext" name="cf_<?= $extend_field['id_extend_field'] ?>"><?= $extend_field['content'] ?></textarea>
 								<?php endif ;?>
 								
 								<!-- Checkbox -->
@@ -597,7 +278,7 @@
 							<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
 						</dt>
 						<dd>
-							<textarea id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="textarea title" type="text"><?= ${$lang}['title'] ?></textarea>
+							<textarea id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="textarea title autogrow" type="text"><?= ${$lang}['title'] ?></textarea>
 						</dd>
 					</dl>
 
@@ -611,7 +292,7 @@
 								<label for="subtitle_<?= $lang ?>"><?= lang('ionize_label_subtitle') ?></label>
 							</dt>
 							<dd>
-								<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="textarea subtitleTiny" type="text"><?= ${$lang}['subtitle'] ?></textarea>
+								<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="textarea text autogrow" type="text"><?= ${$lang}['subtitle'] ?></textarea>
 								<!-- <a class="icon edit subtitle"></a> -->
 							</dd>
 						</dl>
@@ -768,7 +449,7 @@
 						<div>
 							<textarea id="summary_<?= $lang ?>" name="summary_<?= $lang ?>" class="smallTinyTextarea h100" rel="<?= $lang ?>"><?= htmlentities(${$lang}['summary'], ENT_QUOTES, 'utf-8') ?></textarea>
 							<p class="clear h15 mb15">
-								<button id="wysiwyg_summary_<?= $lang ?>" type="button" class="light-button left" onclick="tinymce.execCommand('mceToggleEditor',false,'summary_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
+								<a id="wysiwyg_summary_<?= $lang ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'summary_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></a>
 							</p>
 						</div>
 
@@ -782,7 +463,7 @@
 						<div>
 							<textarea id="content_<?= $lang ?>" name="content_<?= $lang ?>" class="tinyTextarea h260" rel="<?= $lang ?>"><?= htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8') ?></textarea>
 							<p class="clear h15">
-								<button id="wysiwyg_<?= $lang ?>" type="button" class="light-button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></button>
+								<a id="wysiwyg_<?= $lang ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></a>
 							</p>
 						</div>
 					
@@ -796,8 +477,12 @@
 				<div class="tabcontent">
 				
 					<p class="h30">
-						<button class="right light-button files" onclick="javascript:mediaManager.loadMediaList('file');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
-						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('file');return false;"><?= lang('ionize_label_detach_all_files') ?></button>
+						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
+							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+						</a>
+						<a class="left light button unlink" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
+							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_files') ?>
+						</a>
 					</p>
 					
 					<ul id="fileContainer" class="sortable-container">
@@ -809,8 +494,12 @@
 				<div class="tabcontent">
 					
 					<p class="h30">
-						<button class="right light-button music" onclick="javascript:mediaManager.loadMediaList('music');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
-						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('music');return false;"><?= lang('ionize_label_detach_all_musics') ?></button>
+						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
+							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+						</a>
+						<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
+							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_musics') ?>
+						</a>
 					</p>
 					
 					<ul id="musicContainer" class="sortable-container">
@@ -822,8 +511,12 @@
 				<div class="tabcontent">
 				
 					<p class="h30">
-						<button class="right light-button video" onclick="javascript:mediaManager.loadMediaList('video');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
-						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('video');return false;"><?= lang('ionize_label_detach_all_videos') ?></button>
+						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
+							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+						</a>
+						<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
+							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_videos') ?>
+						</a>
 					</p>
 					
 					<dl class="first">
@@ -831,8 +524,10 @@
 							<label for="addVideo"><?= lang('ionize_label_add_video') ?></label>
 						</dt>
 						<dd>
-							<textarea id="addVideo" name="addVideo" class="inputtext w300 left mr5" type="text"></textarea>
-							<button id="btnAddVideo" class="left light-button plus"><?= lang('ionize_button_add_video') ?></button>
+							<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
+							<a id="btnAddVideo" class="left light button">
+								<i class="icon-plus"></i><?= lang('ionize_button_add_video') ?>
+							</a>
 						</dd>
 					</dl>
 					
@@ -846,14 +541,19 @@
 				
 					<p class="h30">
 	<!--					<a class="fmButton right"><img src="<?= theme_url() ?>images/icon_16_plus.png" /> <?= lang('ionize_label_attach_media') ?></a>-->
-						<button class="right light-button pictures" onclick="javascript:mediaManager.loadMediaList('picture');return false;"><?= lang('ionize_label_reload_media_list') ?></button>
-						<button class="left light-button delete" onclick="javascript:mediaManager.detachMediaByType('picture');return false;"><?= lang('ionize_label_detach_all_pictures') ?></button>
-						<button class="left light-button refresh" onclick="javascript:mediaManager.initThumbsForParent();return false;"><?= lang('ionize_label_init_all_thumbs') ?></button>
-	
+
+						<a class="button light right" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
+							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+						</a>
+						<a class="button light left" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
+							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_pictures') ?>
+						</a>
+						<a class="button light left" onclick="javascript:mediaManager.initThumbsForParent();return false;">
+							<i class="icon-process"></i><?= lang('ionize_label_init_all_thumbs') ?>
+						</a>
 					</p>
 				
-					<div id="pictureContainer" class="sortable-container">
-					</div>
+					<div id="pictureContainer" class="sortable-container"></div>
 	
 				</div>
 			</div>
@@ -877,17 +577,16 @@
 <script type="text/javascript">
 
 	/**
-	 * Options Accordion
+	 * Accordions
 	 *
 	 */
-	ION.initAccordion('.toggler-options', 'div.element-options', true, 'articleAccordion');
-
 	<?php foreach (Settings::get_languages() as $lang) :?>
 
 		ION.initAccordion('.toggler-<?= $lang['lang']?>', 'div.element-<?= $lang['lang']?>', true, 'articleAccordion-<?= $lang['lang']?>');
 
 	<?php endforeach ;?>
-		
+
+	ION.initFormAutoGrow();
 
 	/**
 	 * Init help tips on label
@@ -896,7 +595,6 @@
 	 */
 	ION.initLabelHelpLinks('#articleForm');
 
-
 	/**
 	 * Panel toolbox
 	 * Init the panel toolbox is mandatory !!! 
@@ -904,13 +602,11 @@
 	 */
 	ION.initToolbox('article_toolbox');
 	
-	
 	/**
 	 * Article element in each of its parent context
 	 * 
 	 */
 	ION.initDroppable();
-	 
 	 
 	/**
 	 * Calendars init
@@ -918,15 +614,7 @@
 	 */
 	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
 
-	/**
-	 * Add links on each parent page
-	 *
-	 */
-	$$('#parent_list li.parent_page').each(function(item, idx)
-	{
-		ION.addParentPageEvents(item);
-	});
-	 
+
 	// Auto-generate Main title
 	$$('.tabcontent .title').each(function(input, idx)
 	{
@@ -947,40 +635,15 @@
 	<?php endif; ?>
 
 
-	// Copy content
-	if ($('copy_lang'))
-	{
-		$('copy_lang').addEvent('click', function(e)
-		{
-			e.stop();
-	
-			var url = admin_url + 'lang/copy_lang_content';
-	
-			var data = {
-				'case': 'article',
-				'id_article': $('id_article').value,
-				'rel': $('rel').value,
-				'from' : $('lang_copy_from').value,
-				'to' : $('lang_copy_to').value
-			};
-		 	
-	 		ION.sendData(url, data);
-		});
-	}
-	
-	
-	// Article ordering : 
+	// Article ordering :
 	// - Show / hide article list depending on Ordering select
 	// - Update the article select list after parent change
 	if ($('id_page'))
 	{
 		$('ordering_select').addEvent('change', function(e)
 		{
-//			var e = new Event(e).stop();
 			e.stop();
-
 			var el = e.target;
-			
 			if (el.value == 'after'){ $('ordering_after').setStyle('display', 'block');}
 			else { $('ordering_after').setStyle('display', 'none');	}
 		});
@@ -992,19 +655,11 @@
 	 */
 	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content', 'meta_title'));
 	
-	var nbCategories = ($('categories').getElements('option')).length;
-	if (nbCategories > 5)
-	{
-		$$('#categories select').setStyles({
-			'height': (nbCategories * 15) + 'px'
-		});
-	}
-	
+
 	/** 
 	 * Show current tabs
 	 */
 	var articleTab = new TabSwapper({tabsContainer: 'articleTab', sectionsContainer: 'articleTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleTab' });
-	new TabSwapper({tabsContainer: 'permanentUrlTab', sectionsContainer: 'permanentUrlTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'permanentUrlTab' });
 
 
 	/**
@@ -1017,18 +672,6 @@
 	
 	<?php if (!empty($id_article)) :?>
 	
-		/**
-		 * Indexed XHR update
-		 * Categories XHR update
-		 *
-		 */
-		// Indexed
-		$('indexed').addEvent('click', function(e)
-		{
-			var value = (this.checked) ? '1' : '0';
-			ION.JSON('article/update_field', {'field': 'indexed', 'value': value, 'id_article': $('id_article').value});
-		});
-
 		// Dates
 		/*
 		ION.datePicker.options['onClose'] = function()	
@@ -1036,25 +679,6 @@
 			ION.JSON('article/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_article': $('id_article').value});
 		}
 		*/
-
-		// Categories
-		var categoriesSelect = $('categories').getFirst('select');
-		categoriesSelect.addEvent('change', function(e)
-		{
-			var ids = new Array();
-			var sel = this;
-			for (var i = 0; i < sel.options.length; i++) {
-				if (sel.options[i].selected) ids.push(sel.options[i].value);
-			}		
-			ION.JSON('article/update_categories', {'categories': ids, 'id_article': $('id_article').value});
-		});
-
-		
-		// Link to page or article or what else...
-		if ($('linkContainer'))
-		{
-			ION.HTML(admin_url + 'article/get_link', {'id_page': '<?= $id_page ?>', 'id_article': '<?= $id_article ?>'}, {'update': 'linkContainer'});
-		}
 
 
 		/**
@@ -1083,21 +707,16 @@
 			return false;
 		});
 		
-		
-
-		/** 
+		/**
 		 * Media Manager & tabs events
 		 *
 		 */
 		mediaManager.initParent('article', '<?= $id_article ?>');
-		
 		mediaManager.loadMediaList('file');
 		mediaManager.loadMediaList('music');
 		mediaManager.loadMediaList('picture');
 		mediaManager.loadMediaList('video');
 		
-
-
 	<?php endif ;?>
 
 </script>

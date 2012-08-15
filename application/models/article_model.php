@@ -807,11 +807,8 @@ log_message('error', $this->{$this->db_group}->last_query());
 			$data['updated'] = date('Y-m-d H:i:s');
 
 		// Dates
-		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
-		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
-		$data['comment_expire'] = ($data['comment_expire']) ? getMysqlDatetime($data['comment_expire'], Settings::get('date_format')) : '0000-00-00';
-		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
-			
+		$data = $this->_set_dates($data);
+
 		// Article saving
 		return parent::save($data, $lang_data);
 	}
@@ -1660,6 +1657,19 @@ log_message('error', $this->{$this->db_group}->last_query());
 		$this->{$this->db_group}->where('('.$filter.')');
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	protected function _set_dates($data)
+	{
+		$data['publish_on'] = (isset($data['publish_on']) && $data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
+		$data['publish_off'] = (isset($data['publish_off']) && $data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
+		$data['logical_date'] = (isset($data['logical_date']) && $data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
+		$data['comment_expire'] = (isset($data['comment_expire']) && $data['comment_expire']) ? getMysqlDatetime($data['comment_expire'], Settings::get('date_format')) : '0000-00-00';
+
+		return $data;
+	}
 
 	// ------------------------------------------------------------------------
 

@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS article (
   comment_autovalid char(1) default '0',
   comment_expire datetime,
   flag smallint(1) default 0,
+  has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY  (id_article)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT='0.9.7';
 
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS article_media (
   id_media int(11) UNSIGNED NOT NULL default 0,
   ordering int(11) UNSIGNED default 9999,
   url varchar(255) default NULL,
+  lang_display varchar(3) DEFAULT NULL,
   PRIMARY KEY  (id_article,id_media)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
@@ -180,10 +182,10 @@ CREATE TABLE IF NOT EXISTS extend_field (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci  AUTO_INCREMENT=1 COMMENT='0.9.7';
 
 CREATE TABLE IF NOT EXISTS extend_field_lang (
-  id_extend_field int(11) unsigned NOT NULL,
-  lang char(3) NOT NULL,
-  label varchar(255),
-  PRIMARY KEY  (id_extend_field, lang)
+    id_extend_field int(11) unsigned NOT NULL,
+    lang char(3) NOT NULL,
+    label varchar(255),
+    PRIMARY KEY  (id_extend_field, lang)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -314,6 +316,7 @@ CREATE TABLE IF NOT EXISTS page (
   id_page int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   id_parent int(11) UNSIGNED NOT NULL default 0,
   id_menu int(11) UNSIGNED NOT NULL default 0,
+  id_type smallint(2) NOT NULL default 0,
   id_subnav int(11) UNSIGNED NOT NULL default 0, 
   name varchar(255) default NULL,
   ordering int(11) UNSIGNED default 0,
@@ -328,10 +331,11 @@ CREATE TABLE IF NOT EXISTS page (
   updated datetime NOT NULL,
   logical_date datetime NOT NULL default '0000-00-00 00:00:00',
   appears tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+  has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
   view varchar(50) default NULL										COMMENT 'Page view',
   view_single varchar(50) default NULL								COMMENT 'Single Article Page view',
   article_list_view VARCHAR(50) default NULL						COMMENT 'Article list view for each article linked to this page',
-	  article_view varchar(50) default NULL								COMMENT 'Article detail view for each article linked to this page',
+  article_view varchar(50) default NULL								COMMENT 'Article detail view for each article linked to this page',
   article_order VARCHAR(50) NOT NULL DEFAULT 'ordering'				COMMENT 'Article order in this page. Can be "ordering", "date"',
   article_order_direction VARCHAR(50) NOT NULL DEFAULT 'ASC',	
   link varchar(255) default ''										COMMENT 'Link to internal / external resource',
@@ -341,6 +345,7 @@ CREATE TABLE IF NOT EXISTS page (
   pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
   id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
+  used_by_module tinyint(1) unsigned NULL,
   PRIMARY KEY  (id_page),
   KEY idx_page_id_parent (id_parent),
   KEY idx_page_level (level),
@@ -396,6 +401,7 @@ CREATE TABLE IF NOT EXISTS page_media (
   id_page int(11) UNSIGNED NOT NULL default 0,
   id_media int(11) UNSIGNED NOT NULL default 0,
   ordering int(11) UNSIGNED default 9999,
+  lang_display varchar(3) DEFAULT NULL,
   PRIMARY KEY  (id_page,id_media)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='0.9.7';
 
@@ -430,6 +436,22 @@ CREATE TABLE IF NOT EXISTS type (
   PRIMARY KEY (id_type)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS url (
+  id_url int(11) unsigned NOT NULL AUTO_INCREMENT,
+  id_entity int(11) unsigned NOT NULL,
+  type varchar(10) NOT NULL,
+  canonical smallint(1) NOT NULL DEFAULT '0',
+  active smallint(1) NOT NULL DEFAULT '0',
+  lang varchar(3) NOT NULL,
+  path varchar(255) NOT NULL DEFAULT '',
+  path_ids varchar(50),
+  full_path_ids varchar(50),
+  creation_date datetime NOT NULL,
+  PRIMARY KEY (id_url),
+  KEY idx_url_type (type),
+  KEY idx_url_active (active),
+  KEY idx_url_lang (lang)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS users (
   id_user int(11) unsigned NOT NULL auto_increment,
@@ -438,6 +460,10 @@ CREATE TABLE IF NOT EXISTS users (
   last_visit timestamp NULL default NULL,
   username varchar(50) collate utf8_unicode_ci NOT NULL,
   screen_name varchar(50) collate utf8_unicode_ci default NULL,
+  firstname varchar(100) NOT NULL,
+  lastname varchar(100) DEFAULT NULL,
+  birth_date datetime DATETIME NOT NULL,
+  gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
   password varchar(255) collate utf8_unicode_ci NOT NULL,
   email varchar(120) collate utf8_unicode_ci NOT NULL,
   salt varchar(50) collate utf8_unicode_ci NULL,
@@ -470,14 +496,14 @@ CREATE TABLE IF NOT EXISTS user_groups (
 
 TRUNCATE TABLE login_tracker;
 
-INSERT INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
-INSERT INTO user_groups VALUES (2, 5000, 'admins', 'Admins', NULL);
-INSERT INTO user_groups VALUES (3, 1000, 'editors', 'Editors', NULL);
-INSERT INTO user_groups VALUES (4, 100, 'users', 'Users', NULL);
-INSERT INTO user_groups VALUES (5, 50, 'pending', 'Pending', NULL);
-INSERT INTO user_groups VALUES (6, 10, 'guests', 'Guests', NULL);
-INSERT INTO user_groups VALUES (7, -10, 'banned', 'Banned', NULL);
-INSERT INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
+INSERT IGNORE INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
+INSERT IGNORE INTO user_groups VALUES (2, 5000, 'admins', 'Admins', NULL);
+INSERT IGNORE INTO user_groups VALUES (3, 1000, 'editors', 'Editors', NULL);
+INSERT IGNORE INTO user_groups VALUES (4, 100, 'users', 'Users', NULL);
+INSERT IGNORE INTO user_groups VALUES (5, 50, 'pending', 'Pending', NULL);
+INSERT IGNORE INTO user_groups VALUES (6, 10, 'guests', 'Guests', NULL);
+INSERT IGNORE INTO user_groups VALUES (7, -10, 'banned', 'Banned', NULL);
+INSERT IGNORE INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
 
 DELETE FROM setting WHERE name='cache';
 DELETE FROM setting WHERE name='cache_time';
@@ -488,31 +514,33 @@ DELETE FROM setting WHERE name='ftp_password';
 DELETE FROM setting WHERE name='picture_copyright';
 
 
-INSERT INTO setting VALUES (2, 'website_email', '', NULL);
-INSERT INTO setting VALUES (3, 'files_path', 'files', NULL);
-INSERT INTO setting VALUES (4, 'cache', '0', NULL);
-INSERT INTO setting VALUES (5, 'cache_time', '150', NULL);
-INSERT INTO setting VALUES (6, 'theme', 'default', NULL);
-INSERT INTO setting VALUES (7, 'theme_admin', 'admin', NULL);
-INSERT INTO setting VALUES (14, 'google_analytics', '', NULL);
-INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemanager', NULL);
-INSERT INTO setting VALUES (23, 'show_help_tips', '1', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'website_email', '', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'cache', '0', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'cache_time', '150', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'theme', 'default', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'theme_admin', 'admin', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'google_analytics', '', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'filemanager', 'mootools-filemanager', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'show_help_tips', '1', NULL);
 
-INSERT INTO setting VALUES (24, 'display_connected_label', '1', NULL);
-INSERT INTO setting VALUES (25, 'texteditor', 'tinymce', NULL);
-INSERT INTO setting VALUES (26, 'media_thumb_size', '120', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'display_connected_label', '1', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'texteditor', 'tinymce', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'media_thumb_size', '120', NULL);
 
-INSERT INTO setting VALUES (27, 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', NULL);
-INSERT INTO setting VALUES (28, 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);
-INSERT INTO setting VALUES (29, 'tinybuttons3', 'tablecontrols', NULL);
-INSERT INTO setting VALUES (30, 'displayed_admin_languages', 'en', NULL);
-INSERT INTO setting VALUES (31, 'date_format', '%Y.%m.%d', NULL);
-INSERT INTO setting VALUES (32, 'force_lang_urls', '0', NULL);
-INSERT INTO setting VALUES (33, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
-INSERT INTO setting VALUES (37, 'picture_max_width','',NULL),
-INSERT INTO setting VALUES (38, 'picture_max_height','',NULL),
-INSERT INTO setting VALUES (40, 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf',NULL),
-INSERT INTO setting VALUES (41, 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong',NULL),
+INSERT IGNORE INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'displayed_admin_languages', 'en', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'date_format', '%Y.%m.%d', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'force_lang_urls', '0', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'picture_max_width','',NULL);
+INSERT IGNORE INTO setting VALUES ('', 'picture_max_height','',NULL);
+INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf',NULL);
+INSERT IGNORE INTO setting VALUES ('', 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong',NULL);
+INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);
+
 
 
 DELETE FROM setting WHERE name='default_admin_lang';
@@ -525,7 +553,7 @@ DELETE FROM setting WHERE name='media_upload_mode';
 INSERT INTO setting VALUES ('', 'media_upload_mode', 'multiple', NULL);
 
 
-INSERT INTO menu (id_menu, name, title) VALUES 
+INSERT IGNORE INTO menu (id_menu, name, title) VALUES
 	(1 , 'main', 'Main menu'),
 	(2 , 'system', 'System menu');
 		

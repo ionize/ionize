@@ -56,12 +56,24 @@ class Lang extends MY_admin
 			$this->template['online_'.$lang['lang']] = $lang['online'];
 		}
 
-		$this->output('lang');
+		$this->output('lang/lang');
 	}
 
 
 	// ------------------------------------------------------------------------
 
+	public function get_options()
+	{
+		$this->output('lang/options');
+
+	}
+
+	// ------------------------------------------------------------------------
+
+	function get_form()
+	{
+		$this->output('lang/lang_new');
+	}
 
 	/**
 	 * Saves a new language
@@ -125,11 +137,8 @@ class Lang extends MY_admin
 			}
 	
 			// UI panel to update after saving
-			$this->update[] = array(
-				'element' => 'mainPanel',
-				'url' => admin_url() . 'lang'
-			);
-			
+			$this->_reload_panel();
+
 			// Answer send
 			$this->success(lang('ionize_message_lang_saved'));
 		}
@@ -153,10 +162,14 @@ class Lang extends MY_admin
 		$tables = array('page', 'article', 'media');
 	
 		$deleted_rows = $this->lang_model->clean_lang_tables($tables);
-	
-		// Answer send
-		$this->success(lang('ionize_message_lang_tables_cleaned'));
-		
+
+		$result = array(
+			'title' => lang('ionize_button_clean_lang_tables'),
+			'status' => 'success',
+			'message' => lang('ionize_message_lang_tables_cleaned'),
+		);
+
+		$this->xhr_output($result);
 	}
 
 
@@ -322,22 +335,26 @@ class Lang extends MY_admin
 			$this->error(lang('ionize_message_lang_file_not_saved'));
 		}
 
-		// Force lang URLs ?
-		$data = array('name' => 'force_lang_urls', 'content' => $this->input->post('force_lang_urls'));
-		$this->settings_model->save_setting($data);
-		
-		
 		// UI update panels
-		$this->update[] = array(
-			'element' => 'mainPanel',
-			'url' => admin_url() . 'lang'
-		);
+		$this->_reload_panel();
 
 		$this->success(lang('ionize_message_lang_updated'));
 	}
 
 
 	// ------------------------------------------------------------------------
+
+	function save_options()
+	{
+		// Force lang URLs ?
+		$data = array('name' => 'force_lang_urls', 'content' => $this->input->post('force_lang_urls'));
+		$this->settings_model->save_setting($data);
+
+		// UI update panels
+		$this->_reload_panel();
+
+		$this->success(lang('ionize_message_lang_updated'));
+	}
 
 
 	/** 
@@ -381,13 +398,9 @@ class Lang extends MY_admin
 		if ($affected_rows > 0)
 		{
 			$this->id = $lang;
-			
-			// Update array
-			$this->update[] = array(
-				'element' => 'mainPanel',
-				'url' => admin_url() . 'lang'
-			);
-			
+
+			$this->_reload_panel();
+
 			// Answer send
 			$this->success(lang('ionize_message_lang_deleted'));
 		}
@@ -398,6 +411,39 @@ class Lang extends MY_admin
 		}
 	}
 
+
+	function _reload_panel()
+	{
+		// Panels Update array
+		$this->update[] = array(
+			'element' => 'mainPanel',
+			'url' => admin_url() . 'lang',
+			'title' => lang('ionize_menu_languages')
+		);
+
+		/*
+		$this->callback[] = array(
+			'fn' => 'ION.updateElement',
+			'args' => array(
+				'element'=> 'mainPanel',
+				'url' => 'lang'
+			)
+		);
+		*/
+
+		/*
+		$this->callback = array(
+			array(
+				'fn' => 'ION.splitPanel',
+				'args' => array(
+					'urlMain'=> admin_url() . 'lang',
+					'urlOptions'=> admin_url() . 'lang/get_options',
+					'title'=> lang('ionize_menu_languages')
+				)
+			)
+		);
+		*/
+	}
 
 	// ------------------------------------------------------------------------
 

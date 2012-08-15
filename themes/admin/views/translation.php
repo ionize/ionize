@@ -29,21 +29,17 @@
 		<!-- Theme translations -->
 		<div class="tabcontent">
 
-			<form name="themeTranslationForm" id="themeTranslationForm" method="post">
+			<form name="themeTranslationForm" id="themeTranslationForm" method="post" action="">
 
 				<input type="hidden" name="file_name" value="<?= Settings::get('theme') ?>"></input>
 
-				<div class="toolbox nobr">
-					<input id="themeTranslationFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save') ?>" />
-				</div>
-				<div class="toolbox">
-					<input type="button" class="toolbar-button btnExpand" value="<?= lang('ionize_label_expand_all') ?>" rel="themeTogglers"/>
-				</div>
-				<div class="toolbox">
-					<input type="button" class="toolbar-button plus" id="btnAddTranslation" value="<?= lang('ionize_label_add_translation') ?>" />
-				</div>
+				<!-- Buttons -->
+				<input id="themeTranslationFormSubmit" type="button" class="submit right ml5" value="<?= lang('ionize_button_save') ?>" />
+				<a class="button light btnExpand right ml5" rel="themeTogglers"><?= lang('ionize_label_expand_all') ?></a>
+				<a class="button light right ml5" id="btnAddTranslation">
+					<i class="icon-plus"></i><?= lang('ionize_label_add_translation') ?>
+				</a>
 
-		
 				<fieldset id="blocks" class="clear">
 		
 					<?php
@@ -141,9 +137,10 @@
 					</div>
 					
 					<!-- Expand button -->
-					<div class="toolbox">
-						<input type="button" class="toolbar-button btnExpand" value="<?= lang('ionize_label_expand_all') ?>" rel="<?= $module ?>Togglers" />
-					</div>
+					<a class="button light btnExpand right" rel="<?= $module ?>Togglers">
+						<i class="icon-expand"></i><?= lang('ionize_label_expand_all') ?>
+					</a>
+
 					<p>
 						<?= lang('ionize_text_module_translation_file_exist_for') ?> : <strong><?= implode(', ', $module_translation_files[($module)]) ?></strong>
 					</p>

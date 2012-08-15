@@ -67,12 +67,12 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 
 /* Panel Layout */
 /* Columns */
-.column { position: relative; overflow: hidden; /* Required by IE6 */ }
+.column { float: left; position: relative; overflow: hidden; /* Required by IE6 */ }
 
 /* Panels */
-.panel { position: relative; overflow: auto; background: #f8f8f8; border-bottom: 1px solid #b9b9b9; clear:both; }
+.panel { position: relative; overflow: auto; background: #fff; border-bottom: 1px solid #b9b9b9; clear:both; }
 .panelWrapper.collapsed .panel-header { border-bottom: 0; }
-.panelAlt { background: #f2f2f2; }
+.panelAlt { background: #f5f5f5; }
 .bottomPanel .panel { border-bottom: 0; }
 .pad { padding: 8px; }
 #mainPanel2 { background: #fff; }

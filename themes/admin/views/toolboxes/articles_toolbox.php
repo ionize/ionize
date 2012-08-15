@@ -1,6 +1,8 @@
 
-<div class="toolbox divider">
-	<input type="button" class="toolbar-button" id="newArticleToolbarButton" value="<?= lang('ionize_title_create_article') ?>" />
+<div class="divider">
+	<a class="button light" id="newArticleToolbarButton">
+		<i class="icon-article add"></i><?= lang('ionize_title_create_article') ?>
+	</a>
 </div>
 
 <div class="toolbox"></div>

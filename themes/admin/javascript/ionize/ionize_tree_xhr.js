@@ -33,7 +33,7 @@ ION.TreeXhr = new Class({
 		
 		this.elementIcon_Model = new Element('div', {'class': 'tree-img drag'});
 		this.plusMinus_Model = new Element('div', {'class': 'tree-img plus'});
-		this.lineNode_Model = new Element('div', {'class': 'tree-img line node'});
+		// this.lineNode_Model = new Element('div', {'class': 'tree-img line node'});
 		this.treeLine_Model = new Element('div', {'class': 'tree-img'});
 		
 		this.action_Model = new Element('span', {'class': 'action', 'styles': { 'display':'none' }});
@@ -193,8 +193,8 @@ ION.TreeXhr = new Class({
 		
 		// Action element
 		var action = this.action_Model.clone();
-		var iconOnline = this.icon_Model.clone().adopt(new Element('a').addClass('status').addClass(online).addClass(type + flat_id).setProperty('rel', rel));
-		action.adopt(iconOnline);
+        var iconOnline = new Element('a').addClass('icon').addClass('status').addClass(online).addClass(type + flat_id).setProperty('rel', rel);
+        action.adopt(iconOnline);
 		
 		// Title element 
 		var link = this.span_Model.clone().addClass('title');
@@ -216,9 +216,9 @@ ION.TreeXhr = new Class({
 			li.addClass('folder').addClass('page');
 			
 			// Icon : Add Article
-			action.adopt(this.icon_Model.clone().adopt(new Element('a').addClass('addArticle').addClass('article').setProperty('rel', rel)));
-			
-			// Actions
+            action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('rel', rel));
+
+            // Actions
 			this.addPageActionLinks(action);
 
 			// Folder icon
@@ -246,8 +246,11 @@ ION.TreeXhr = new Class({
 			li.addClass('file').addClass(type + id);
 			
 			// Icon : unlink
-			var iconUnlink = this.icon_Model.clone().adopt(new Element('a', {'class': 'unlink', 'rel': rel}));
-			action.adopt(iconUnlink);
+			if (Ionize.User.getGroupLevel() > 5000)
+			{
+                var iconUnlink = new Element('a', {'class': 'icon unlink', 'rel': rel});
+                action.adopt(iconUnlink);
+			}
 
 			// File icon
 			if (element.indexed == '0') icon.addClass('sticky');
@@ -412,11 +415,19 @@ ION.TreeXhr = new Class({
 		// Edit Element
 		else
 		{
+			ION.splitPanel({
+				'urlMain': admin_url + type + '/edit/' + el.getProperty('rel'),
+				'urlOptions': admin_url + type + '/get_options/' + el.getProperty('rel'),
+				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')
+			});
+
+			/*
 			MUI.Content.update({
 				'element': $(self.mainpanel),
 				'url': admin_url + type + '/edit/' + el.getProperty('rel'),
 				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')	
 			});
+			*/
 		}		
 	},
 	

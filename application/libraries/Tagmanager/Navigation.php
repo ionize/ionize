@@ -24,8 +24,6 @@ require_once APPPATH.'libraries/Pages.php';
 
 class TagManager_Navigation extends TagManager
 {
-	protected static $uri_segments = array();
-
 	public static $tag_definitions = array
 	(
 		'navigation' => 					'tag_navigation',

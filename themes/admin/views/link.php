@@ -41,7 +41,7 @@
 			$('link_title').addEvent('click', function(e){
 				MUI.Content.update({
 					'element': $(ION.mainpanel),
-					'url': 'admin/<?= $link_type ?>/edit/<?= $link_id ?>'
+					'url': '<?= $link_type ?>/edit/<?= $link_id ?>'
 				});
 			});
 		}
@@ -57,7 +57,7 @@
 			<br/>
 		</dt>
 		<dd>
-			<textarea id="link" class="inputtext w140 h40 droppable" alt="<?= lang('ionize_label_drop_link_here') ?>"></textarea>
+			<textarea id="link" class="inputtext h40 droppable" alt="<?= lang('ionize_label_drop_link_here') ?>"></textarea>
 			<br />
 			<a id="add_link"><?= lang('ionize_label_add_link') ?></a>
 		</dd>

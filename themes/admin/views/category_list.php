@@ -14,7 +14,7 @@
 
 	<li class="sortme category<?= $category['id_category'] ?>" id="category_<?= $category['id_category'] ?>" rel="<?= $category['id_category'] ?>">
 		<a class="icon delete right" rel="<?= $category['id_category'] ?>"></a>
-		<img class="icon left drag pr5" src="<?= theme_url() ?>images/icon_16_ordering.png" />
+		<span class="icon left drag mr5"></span>
 		<a class="left pl5 title" rel="<?= $category['id_category'] ?>"><?= $category['name'] ?></a>
 	</li>
 <?php endforeach ;?>

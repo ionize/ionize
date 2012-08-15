@@ -12,59 +12,6 @@
 	</div>
 
 
-	<div id="options">
-		
-		<!-- Themes -->
-		<h3 class="toggler"><?=lang('ionize_title_themes')?></h3>
-
-		<div class="element">
-
-			<form name="themesForm" id="themesForm" method="post" action="<?= admin_url() ?>setting/save_themes">
-
-				<!-- Theme -->
-				<dl class="small">
-					<dt>
-						<label for="theme"><?=lang('ionize_label_theme')?></label>
-					</dt>
-					<dd>
-						<select class="select" name="theme">
-							<?php foreach($themes as $theme) :?>
-								<option value="<?= $theme ?>" <?php if($theme == Settings::get('theme') ) :?>selected="selected"<?php endif; ?>><?= $theme ?></option>
-							<?php endforeach ;?>
-						</select>
-					</dd>
-				</dl>
-
-				<!-- Theme Admin -->
-				<dl class="small">
-					<dt>
-						<label for="theme_admin"><?=lang('ionize_label_theme_admin')?></label>
-					</dt>
-					<dd>
-						<select class="select" name="theme_admin">
-							<?php foreach($themes_admin as $theme) :?>
-								<option value="<?= $theme ?>" <?php if($theme == Settings::get('theme_admin') ) :?>selected="selected"<?php endif; ?>><?= $theme ?></option>
-							<?php endforeach ;?>
-						</select>
-					</dd>
-				</dl>
-
-				<!-- Submit button  -->
-				<dl class="small">
-					<dt>&#160;</dt>
-					<dd>
-						<input id="themesFormSubmit" type="submit" class="submit" value="<?= lang('ionize_button_save_themes') ?>" />
-					</dd>
-				</dl>
-				<br/>
-
-			</form>
-
-		</div> <!-- /element -->
-				
-			
-	</div> <!-- /togglers -->
-
 </div> <!-- /sidecolumn -->
 
 	
@@ -75,67 +22,121 @@
 		
 	<h2 class="main themes" id="main-title"><?= lang('ionize_title_themes') ?></h2>
 
-	<!-- Views list -->
-	<h3 class="mt20"><?=lang('ionize_title_views_list')?> : <?= Settings::get('theme') ?></h3>
+	<!-- Tabs -->
+	<div id="themeTab" class="mainTabs mt20">
+		<ul class="tab-menu">
+			<li><a><?=lang('ionize_title_views_list')?> : <?= Settings::get('theme') ?></a></li>
+			<li><a><?= lang('ionize_title_options') ?></a></li>
+		</ul>
+		<div class="clear"></div>
+	</div>
 
-	<!--<div class="element">-->
 
-		<form name="viewsForm" id="viewsForm" method="post" action="<?= admin_url() ?>setting/save_views">
+	<div id="themeTabContent">
 
-		<div id="viewsTableContainer">
+		<!-- Theme views -->
+		<div class="tabcontent">
 
-			<!-- Views table list -->
-			<table class="list" id="viewsTable">
+			<form name="viewsForm" id="viewsForm" method="post" action="<?= admin_url() ?>setting/save_views">
 
-				<thead>
-					<tr>
-						<th axis="string" style="width:20px;"></th>
-						<th axis="string"><?= lang('ionize_label_view_filename') ?></th>
-						<th axis="string"><?= lang('ionize_label_view_folder') ?></th>
-						<th><?= lang('ionize_label_view_name') ?></th>
-						<th><?= lang('ionize_label_view_type') ?></th>				
-					</tr>
-				</thead>
+				<div id="viewsTableContainer">
 
-				<tbody>
-				
-				<?php foreach($files as $file) :?>
-					
-					<?php
-						$rel = $file->path . $file->name;
-					?>
-					
-					<tr>
-						<td><a class="icon edit viewEdit" rel="<?= $rel ?>"></a></td>
-						<td><a class="viewEdit" rel="<?= $rel ?>"><?= $file->name ?></a></td>
-						<td><?= $file->path ?> </td>
-						<td>
-							<input type="text" class="inputtext w160" name="viewdefinition_<?= $rel ?>" value="<?= $file->definition ?>" />
-						</td>	
-						<td>
-							<select class="select" name="viewtype_<?= $rel ?>">
-								<option value=""><?= lang('ionize_select_no_type') ?></option>
-								<option <?php if($file->type == 'page') :?> selected="selected" <?php endif ;?> value="page">Page</option>
-								<option <?php if($file->type == 'article') :?> selected="selected" <?php endif ;?> value="article">Article</option>
-							</select>
-						</td>
-					</tr>
+					<!-- Views table list -->
+					<table class="list" id="viewsTable">
 
-				<?php endforeach ;?>
-				
-				</tbody>
+						<thead>
+							<tr>
+								<th axis="string" style="width:20px;"></th>
+								<th axis="string"><?= lang('ionize_label_view_filename') ?></th>
+								<th axis="string"><?= lang('ionize_label_view_folder') ?></th>
+								<th><?= lang('ionize_label_view_name') ?></th>
+								<th><?= lang('ionize_label_view_type') ?></th>
+							</tr>
+						</thead>
 
-			</table>
+						<tbody>
+
+						<?php foreach($files as $file) :?>
+
+							<?php
+								$rel = $file->path . $file->name;
+							?>
+
+							<tr>
+								<td><a class="icon edit viewEdit" rel="<?= $rel ?>"></a></td>
+								<td><a class="viewEdit" rel="<?= $rel ?>"><?= $file->name ?></a></td>
+								<td><?= $file->path ?> </td>
+								<td>
+									<input type="text" class="inputtext w160" name="viewdefinition_<?= $rel ?>" value="<?= $file->definition ?>" />
+								</td>
+								<td>
+									<select class="select" name="viewtype_<?= $rel ?>">
+										<option value=""><?= lang('ionize_select_no_type') ?></option>
+										<option <?php if($file->type == 'page') :?> selected="selected" <?php endif ;?> value="page">Page</option>
+										<option <?php if($file->type == 'article') :?> selected="selected" <?php endif ;?> value="article">Article</option>
+									</select>
+								</td>
+							</tr>
+
+						<?php endforeach ;?>
+
+						</tbody>
+
+					</table>
+
+				</div>
+
+			</form>
+		</div>
+
+		<!-- Options -->
+		<div class="tabcontent">
+
+			<form name="themesForm" id="themesForm" method="post" action="<?= admin_url() ?>setting/save_themes">
+
+				<!-- Theme -->
+				<dl>
+					<dt>
+						<label for="theme"><?=lang('ionize_label_theme')?></label>
+					</dt>
+					<dd>
+						<select class="select" name="theme">
+							<?php foreach($themes as $theme) :?>
+							<option value="<?= $theme ?>" <?php if($theme == Settings::get('theme') ) :?>selected="selected"<?php endif; ?>><?= $theme ?></option>
+							<?php endforeach ;?>
+						</select>
+					</dd>
+				</dl>
+
+				<!-- Theme Admin -->
+				<dl>
+					<dt>
+						<label for="theme_admin"><?=lang('ionize_label_theme_admin')?></label>
+					</dt>
+					<dd>
+						<select class="select" name="theme_admin">
+							<?php foreach($themes_admin as $theme) :?>
+							<option value="<?= $theme ?>" <?php if($theme == Settings::get('theme_admin') ) :?>selected="selected"<?php endif; ?>><?= $theme ?></option>
+							<?php endforeach ;?>
+						</select>
+					</dd>
+				</dl>
+
+				<!-- Submit button  -->
+				<dl>
+					<dt>&#160;</dt>
+					<dd>
+						<input id="themesFormSubmit" type="submit" class="submit" value="<?= lang('ionize_button_save_themes') ?>" />
+					</dd>
+				</dl>
+
+			</form>
 
 		</div>
 
-	</form>
-	
-	<br />
-	<br />
-	
-	<!--</div>-->
-	
+	</div>
+
+
 
 </div> <!-- /maincolumn -->
 
@@ -148,12 +149,14 @@
 	 */
 	ION.initToolbox('setting_theme_toolbox');
 
+	// Tabs
+	new TabSwapper({tabsContainer: 'themeTab', sectionsContainer: 'themeTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'langTab' });
 
 	/**
 	 * Options Accordion
 	 *
 	 */
-	ION.initAccordion('.toggler', 'div.element');
+	// ION.initAccordion('.toggler', 'div.element');
 
 
 

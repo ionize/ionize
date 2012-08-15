@@ -174,9 +174,13 @@ Object.append(Asset, {
 			var myRules = mySheet.cssRules ? mySheet.cssRules : mySheet.rules;
 			selector=selector.toLowerCase();
 			for (var i = 0; i < myRules.length; i++){
-				if (myRules[i].selectorText.toLowerCase() == selector){
-					return myRules[i];
-				}
+                // Partikule : check typeOf
+                if (typeOf(myRules[i].selectorText) != 'null')
+                {
+				    if (myRules[i].selectorText.toLowerCase() == selector){
+					    return myRules[i];
+				    }
+                }
 			}
 		}
 		return false;

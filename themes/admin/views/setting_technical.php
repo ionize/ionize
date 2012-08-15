@@ -18,7 +18,7 @@
 		<ul class="tab-menu">
 			
 			<li id="media_settings"><a><?= lang('ionize_title_media_management') ?></a></li>
-			<li id="thumbs_settings"><a><?= lang('ionize_title_thumbs') ?></a></li>
+			<!--<li id="thumbs_settings"><a><?= lang('ionize_title_thumbs') ?></a></li>-->
 			<li id="article_settings"><a><?= lang('ionize_title_article_management') ?></a></li>
 			<li id="database_settings"><a><?= lang('ionize_title_database') ?></a></li>
 			<li id="email_settings"><a><?= lang('ionize_title_mail_send') ?></a></li>
@@ -135,6 +135,21 @@
 						</div>
 					
 					<?php endforeach ;?>
+
+					<h3><?=lang('ionize_title_no_source_picture')?></h3>
+					<p class="mb15"><?= lang('ionize_text_no_source_picture') ?></p>
+
+					<!-- Thumb name -->
+					<dl class="small">
+						<dt>
+							<label for="no_source_picture"><?=lang('ionize_label_no_source_picture')?></label>
+						</dt>
+						<dd>
+							<input id="no_source_picture" name="no_source_picture" type="text" class="inputtext" value="<?php echo Settings::get('no_source_picture'); ?>" />
+						</dd>
+					</dl>
+
+
 				</div>
 			
 			</form>			
@@ -143,6 +158,8 @@
 		
 		
 		<!-- Thumbnails -->
+		<?php
+		/*
 		<div class="tabcontent pt10">
 
 
@@ -308,7 +325,9 @@
 					<?php endif ;?>	
 				</form>
 			</div>
-		</div>		
+		</div>
+		*/
+		?>
 		
 
 		<!-- Article management -->
@@ -329,7 +348,7 @@
 				<dl class="mb20">
 					<!-- TinyMCE Block Format (Select) -->
 					<dt>
-						<label for="texteditor" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
+						<label for="tinyblockformats" title="<?=lang('ionize_help_tinyblockformats')?>"><?=lang('ionize_label_tinyblockformats')?></label>
 					</dt>
 					<dd>
 						<input class="inputtext w360 mb5" id="tinyblockformats" name="tinyblockformats" type="text" value="<?= Settings::get('tinyblockformats') ?>"/><br />
@@ -340,7 +359,7 @@
 				<dl class="mb20">
 					<!-- TinyMCE toolbar buttons -->
 					<dt>
-						<label for="texteditor" title="<?=lang('ionize_help_tinybuttons')?>"><?=lang('ionize_label_tinybuttons')?></label>
+						<label title="<?=lang('ionize_help_tinybuttons')?>"><?=lang('ionize_label_tinybuttons')?></label>
 					</dt>
 					<dd>
 						1 <input class="inputtext w360 mb5" id="tinybuttons1" name="tinybuttons1" type="text" value="<?= Settings::get('tinybuttons1') ?>"/><br />
@@ -355,7 +374,7 @@
 				<dl class="last mb20">
 					<!-- TinyMCE Block Format (Select) -->
 					<dt>
-						<label for="article_allowed_tags" title="<?=lang('ionize_help_article_allowed_tags')?>"><?=lang('ionize_label_article_allowed_tags')?></label>
+						<label title="<?=lang('ionize_help_article_allowed_tags')?>"><?=lang('ionize_label_article_allowed_tags')?></label>
 					</dt>
 					<dd>
 	
@@ -497,7 +516,7 @@
 				<!-- Mail path -->
 				<dl>
 					<dt>
-						<label for="smtp_protocol"><?=lang('ionize_label_smtp_protocol')?></label>
+						<label for="protocol"><?=lang('ionize_label_smtp_protocol')?></label>
 					</dt>
 					<dd>
 						<select name="protocol" id="protocol" onchange="javascript:changeEmailDetails();" class="select">
@@ -745,7 +764,7 @@
 							</dt>
 							<dd>
 								<span><?= lang('ionize_label_your_ip') ?> : <?= $_SERVER['REMOTE_ADDR'] ?></span><br/>
-								<textarea name="maintenance_ips" class="h50 w140"><?= $maintenance_ips ?></textarea>
+								<textarea name="maintenance_ips" id="maintenance_ips" class="h50 w140"><?= $maintenance_ips ?></textarea>
 							</dd>
 						</dl>
 		

@@ -20,7 +20,6 @@
  */
 class TagManager_Element extends TagManager
 {
-
 	private static $allowed_parents = array ('articles','article','page');
 
 	private static $got_elements_def = false;

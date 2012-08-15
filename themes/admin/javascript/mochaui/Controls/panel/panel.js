@@ -75,6 +75,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		// If panel has no ID, give it one.
 		this.id = this.options.id = this.options.id || 'panel' + (++MUI.idCount);
 		MUI.set(this.id, this);
+
 		if (this.options.drawOnInit) this.draw();
 	},
 
@@ -271,6 +272,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 	},
 
 	collapse: function(){
+
 		var panelWrapper = this.el.element;
 		var options = this.options;
 
@@ -279,10 +281,11 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		// Then collapse the column.
 		var expandedSiblings = [];
 
-		panelWrapper.getAllPrevious('.panelWrapper').each(function(sibling){
+		panelWrapper.getAllPrevious('.panelWrapper').each(function(sibling)
+		{
 			var panel = sibling.getElement('.panel');
-// Partikule
-// if (!panel)....
+			// Partikule
+			// if (!panel)....
 			if (!panel || !panel.id) return;
 			if (!MUI.get(panel.id).isCollapsed) expandedSiblings.push(panel.id);
 		});
@@ -325,9 +328,13 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				.removeClass('expanded');
 		MUI.panelHeight(options.container, this.el.panel, 'collapsing');
 		MUI.panelHeight(); // Run this a second time for panels within panels
-		this.el.collapseToggle.removeClass('panel-collapsed')
+		// Partikule : if...
+		if (this.el.collapseToggle)
+		{
+			this.el.collapseToggle.removeClass('panel-collapsed')
 				.addClass('panel-expand')
 				.setProperty('title', 'Expand Panel');
+		}
 		if (fireevent) this.fireEvent('collapse', [this]);
 
 		MUI.desktop.setDesktopSize();
@@ -346,17 +353,23 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 				.removeClass('collapsed');
 		MUI.panelHeight(this.options.container, this.el.panel, 'expanding');
 		MUI.panelHeight(); // Run this a second time for panels within panels
-		this.el.collapseToggle.removeClass('panel-expand')
+		// Partikule : if...
+		if (this.el.collapseToggle)
+		{
+			this.el.collapseToggle.removeClass('panel-expand')
 				.addClass('panel-collapsed')
 				.setProperty('title', 'Collapse Panel');
+		}
 		this.fireEvent('expand', [this]);
 
 		return this;
 	},
 
 	toggle: function(){
-		if (this.isCollapsed) this.expand();
-		else this.collapse();
+		if (this.isCollapsed)
+			this.expand();
+		else
+			this.collapse();
 		return this;
 	},
 

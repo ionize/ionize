@@ -1,5 +1,5 @@
 
-<h2 class="main help mb20"><?= $title ?></h2>
+<h2 class="main help mb20"><?= html_entity_decode($title); ?></h2>
 
 
 <?php foreach($data as $d) :?>

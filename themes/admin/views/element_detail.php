@@ -18,7 +18,9 @@
 ?>
 
 <?php if ($id_element == '') :?>
-	<button id="elementAddBackButton" class=" light-button back"><?= lang('ionize_label_back_to_element_list') ?></button>
+	<a id="elementAddBackButton" class="light button back">
+		<i class="icon-back"></i><?= lang('ionize_label_back_to_element_list') ?>
+	</a>
 <?php endif ;?>
 
 <div class="mt10">

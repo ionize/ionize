@@ -40,12 +40,16 @@
 					<?php endif ;?>
 					<li><a class="navlink" href="page/create/0" title="<?= lang('ionize_title_new_page') ?>"><?= lang('ionize_menu_page') ?></a></li>
 					<li><a class="navlink" href="article/list_articles" title="<?= lang('ionize_title_articles') ?>"><?= lang('ionize_menu_articles') ?></a></li>
-					<li><a class="navlink" href="translation" title="<?= lang('ionize_title_translation') ?>"><?= lang('ionize_menu_translation') ?></a></li>
+					<li><a class="navlink" href="category" title="<?= lang('ionize_title_categories') ?>"><?= lang('ionize_menu_categories') ?></a></li>
+
+					<li class="divider"><a class="navlink" href="translation" title="<?= lang('ionize_title_translation') ?>"><?= lang('ionize_menu_translation') ?></a></li>
 					<li class="divider"><a id="mediamanagerlink" href="media/get_media_manager" title="<?= lang('ionize_menu_media_manager') ?>"><?= lang('ionize_menu_media_manager') ?></a></li>
 					<?php if ($this->connect->is('super-admins')) :?>
-						<li class="divider"><a class="navlink" href="element_definition/index" title="<?= lang('ionize_menu_content_elements') ?>"><?= lang('ionize_menu_content_elements') ?></a></li>
-					<?php endif ;?>
-					<?php if ($this->connect->is('super-admins') ) :?>
+<!--
+						<li class="divider"><a class="navlink" href="type/index" title="<?= lang('ionize_menu_content_types') ?>"><?= lang('ionize_menu_content_types') ?></a></li>
+-->
+					<li class="divider"><a class="navlink" href="article_type/index" title="<?= lang('ionize_menu_types') ?>"><?= lang('ionize_menu_types') ?></a></li>
+					<li><a class="navlink" href="element_definition/index" title="<?= lang('ionize_menu_content_elements') ?>"><?= lang('ionize_menu_content_elements') ?></a></li>
 						<li><a class="navlink" href="extend_field/index" title="<?= lang('ionize_menu_extend_fields') ?>"><?= lang('ionize_menu_extend_fields') ?></a></li>
 					<?php endif ;?>
 				</ul>
@@ -67,7 +71,7 @@
 			<?php endif ;?>
 			<li><a class="returnFalse"><?= lang('ionize_menu_tools') ?></a>
 				<ul>
-					<li><a href="https://www.google.com/analytics/reporting/login" target="_blank">Google Analytics</a></li>
+					<li><a href="https://www.google.com/analytics/web/" target="_blank">Google Analytics</a></li>
 					<li><a class="navlink" href="system_check"><?=lang('ionize_menu_system_check')?></a></li>
 				</ul>
 			</li>
@@ -133,7 +137,19 @@
 			});
 		});
 	});
-	
+
+	/*
+	$('langNavLink').addEvent('click', function(event)
+	{
+		event.preventDefault();
+
+		ION.splitPanel({
+			urlMain: admin_url + ION.cleanUrl(this.getProperty('href')),
+			urlOptions: admin_url + 'lang/get_options',
+			title: this.getProperty('title')
+		})
+	});
+	*/
 
 	$('mediamanagerlink').addEvent('click', function(event)
 	{

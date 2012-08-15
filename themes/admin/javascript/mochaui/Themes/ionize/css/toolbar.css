@@ -21,6 +21,11 @@
 .toolbardock div.tabs ul { padding-top:0; }
 .toolbardock div.tabs { margin-top:2px; }
 
+.toolbardock .buttonbar .icon {
+    margin:4px;
+}
+
+
 div.panel-header div.tabs { margin:0; border-bottom: 1px solid #D3D3D3; }
 div.panel-header div.tabs ul { height:28px; overflow:hidden }
 
@@ -39,6 +44,7 @@ div.panel-header div.tabs ul { height:28px; overflow:hidden }
 .toolbar span.imgButton .imgButton span img { padding: 0 0 2px; position: relative; top: 6px; }
 .toolbar span.icon { line-height:24px; font-size:14px;padding: 0; background-repeat: no-repeat; background-position: center; border: 1px solid transparent; }
 .toolbar span.icon:hover { border: 1px solid #a0a0a0; -moz-border-radius: 3px; border-radius: 3px; }
+
 .toolbar select.theme { line-height:24px; margin: 3px 0 4px 0; }
 * html .toolbar .searchField, * html .toolbar .searchButton { /* IE6 Hack */ margin-top: -1px; }
 * html .toolbar .button { /* IE6 Hack */ vertical-align: top; margin-top: 0; height:25px; }

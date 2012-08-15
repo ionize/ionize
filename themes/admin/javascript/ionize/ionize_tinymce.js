@@ -28,6 +28,7 @@ ION.append({
 //					extended_valid_elements  : "ion:*, a[href</<ion:*]",
 					verify_html : false,
 					relative_urls : false,
+					convert_urls : false,
 					auto_cleanup_word : false,
 					plugins : 'inlinepopups,advimage,advlink,spellchecker,nonbreaking',
 					theme_advanced_toolbar_location : 'top',
@@ -60,6 +61,7 @@ ION.append({
 //					extended_valid_elements  : "ion:*, a[href</<ion:*]",
 					verify_html : false,
 					relative_urls : false,
+					convert_urls : false,
 					auto_cleanup_word : false,
 					plugins : 'pdw, inlinepopups,codemirror,safari,nonbreaking,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
 					flash_menu : 'false',
@@ -172,7 +174,6 @@ ION.append({
 				if (typeOf(tiny) == 'object')
 				{
 //					console.log(tiny.id + ' in memory.');
-//					console.log();
 				}
 			});
 			

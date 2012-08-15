@@ -39,12 +39,12 @@ class Category extends MY_admin
 
 
 	/**
-	 * Index
+	 * Displays the categories panel
 	 *
 	 */
 	function index()
 	{
-		return;
+		$this->output('categories');
 	}
 
 
@@ -52,8 +52,7 @@ class Category extends MY_admin
 
 
 	/**
-	 * Prints out the categories list and form
-	 * called by edition form window
+	 * Prints out the category form
 	 *
 	 * @param	string	parent. Element from which we edit the categories list
 	 * @param	string	parent ID
@@ -104,8 +103,7 @@ class Category extends MY_admin
 		$this->output('categories');
 	}
 	 */
-	
-	
+
 	/**
 	 * Return categories list
 	 *
@@ -117,7 +115,6 @@ class Category extends MY_admin
 		$this->category_model->feed_blank_template($this->template);
 		$this->category_model->feed_blank_lang_template($this->template);
 		
-	
 		// Categories list
 		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
@@ -336,7 +333,7 @@ class Category extends MY_admin
 	 * Prepare data before saving
 	 *
 	 */
-	function _prepare_data($xhr = FALSE) 
+	function _prepare_data($xhr = FALSE)
 	{
 		// Standard fields
 		$fields = $this->db->list_fields('category');
@@ -357,7 +354,7 @@ class Category extends MY_admin
 		{
 			foreach ($fields as $field)
 			{
-				if ( $this->input->post($field.'_'.$language['lang']) !== false)
+				if ( $this->input->post($field.'_'.$language['lang']) !== FALSE)
 				{
 					$this->lang_data[$language['lang']][$field] = $this->input->post($field.'_'.$language['lang']);
 				}

@@ -1,25 +1,35 @@
-<div class="toolbox divider nobr" id="tArticleFormSubmit">
-	<input id="articleFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save_article') ?>" />
+<div class="divider nobr" id="tArticleFormSubmit">
+	<a id="articleFormSubmit" class="button submit">
+		<?= lang('ionize_button_save_article') ?>
+	</a>
 </div>
 
-<div class="toolbox divider nobr" id="tArticleDeleteButton">
-	<input id="articleDeleteButton" type="button" class="button no" value="<?= lang('ionize_button_delete') ?>" />
+<div class="divider nobr" id="tArticleDeleteButton">
+	<a id="articleDeleteButton" class="button no">
+		<?= lang('ionize_button_delete') ?>
+	</a>
 </div>
 
-<div class="toolbox divider">
-	<input type="button" class="toolbar-button" id="sidecolumnSwitcher" value="<?= lang('ionize_label_hide_options') ?>" />
+<div class="divider">
+	<a class="button light" id="sideColumnSwitcher">
+		<i class="icon-options"></i><?= lang('ionize_label_options') ?>
+	</a>
 </div>
 
-<div class="toolbox divider" id="tArticleDuplicateButton">
-	<span class="iconWrapper" id="articleDuplicateButton"><img src="<?= theme_url() ?>images/icon_16_copy_article.gif" width="16" height="16" alt="<?= lang('ionize_button_duplicate_article') ?>" title="<?= lang('ionize_button_duplicate_article') ?>" /></span>
+<div class="divider" id="tArticleDuplicateButton">
+	<a class="icon duplicate" id="articleDuplicateButton" title="<?= lang('ionize_button_duplicate_article') ?>"></a>
 </div>
 
-<div class="toolbox divider" id="tArticleAddContentElement">
-	<input id="addContentElement" type="button" class="toolbar-button element" value="<?= lang('ionize_label_add_content_element') ?>" />
+<div class="divider" id="tArticleAddContentElement">
+	<a id="addContentElement" class="button light" >
+		<i class="icon-element"></i><?= lang('ionize_label_add_content_element') ?>
+	</a>
 </div>
 
-<div class="toolbox" id="tArticleMediaButton">
-	<input id="addMedia" type="button" class="fmButton toolbar-button pictures" value="<?= lang('ionize_label_attach_media') ?>"/>
+<div class="divider" id="tArticleMediaButton">
+	<a id="addMedia" class="fmButton button light">
+		<i class="icon-pictures"></i><?= lang('ionize_label_attach_media') ?>
+	</a>
 </div>
 
 <script type="text/javascript">
@@ -49,10 +59,6 @@
 	else
 	{
 		// Delete button
-/*		
-		$('articleDeleteButton').setProperty('rel', id);
-		ION.initItemDeleteEvent($('articleDeleteButton'), 'article');
-*/
 	 	var url = admin_url + 'article/delete/';
 		ION.initRequestEvent($('articleDeleteButton'), url + id, {'redirect':true}, {'confirm':true,'message': Lang.get('ionize_confirm_element_delete')})
 
@@ -64,15 +70,12 @@
 			
 			// Article's current context (page)
 			var rel = ($('rel').value).split(".");
-			
 			var data = {'id_page': rel[0]};
-			
 			ION.formWindow(	'DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:520, height:280}, data);
 		});
 		
 		$('addMedia').addEvent('click', function(e)
 		{
-//			var e = new Event(e).stop();
 			e.stop();
 			mediaManager.initParent('article', $('id_article').value);
 			mediaManager.toggleFileManager();

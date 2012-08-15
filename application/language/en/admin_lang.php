@@ -91,6 +91,8 @@ $lang['ionize_button_toggle_header'] = 'Toggle header';
 $lang['ionize_menu_dashboard'] = 'Dashboard';
 $lang['ionize_menu_content'] = 'Content';
 $lang['ionize_menu_articles'] = 'Articles';
+$lang['ionize_menu_categories'] = 'Categories';
+$lang['ionize_menu_types'] = 'Articles Types';
 $lang['ionize_menu_translation'] = 'Translations';
 $lang['ionize_menu_modules'] = 'Modules';
 $lang['ionize_menu_tools'] = 'Tools';
@@ -132,6 +134,7 @@ $lang['ionize_menu_content_elements'] = 'Content Elements';
 $lang['ionize_title_welcome'] = 'Welcome to Ionize';
 $lang['ionize_title_structure'] = 'Structure';
 $lang['ionize_title_options'] = 'Options';
+$lang['ionize_title_setup'] = 'Setup';
 $lang['ionize_title_attributes'] = 'Attributes';
 $lang['ionize_title_operation'] = 'Operations';
 $lang['ionize_title_advanced'] = 'Advanced options';
@@ -197,6 +200,7 @@ $lang['ionize_title_element_field_edit'] = 'Edit Field';
 $lang['ionize_title_element_fields'] = 'Fields';
 
 $lang['ionize_label_element_set_name'] = 'Save name';
+$lang['ionize_label_element_add_field'] = 'Add field';
 $lang['ionize_label_content_element'] = 'Content Element';
 $lang['ionize_label_add_content_element'] = 'Add Element';
 $lang['ionize_label_back_to_element_list'] = 'Back to Elements';
@@ -309,6 +313,7 @@ $lang['ionize_label_groups'] = 'Groups';
 $lang['ionize_label_installed'] = 'Installed';
 $lang['ionize_label_hide_options'] = 'Hide Options';
 $lang['ionize_label_show_options'] = 'Show Options';
+$lang['ionize_label_options'] = 'Options';
 
 $lang['ionize_label_copy_to_other_languages'] = 'Copy to other languages';
 
@@ -323,6 +328,8 @@ $lang['ionize_help_flag'] = 'An internal marked, just to be organized.';
 $lang['ionize_help_flags'] = 'Internal markers, just to be organized.';
 $lang['ionize_help_help'] = 'Displays the help tooltips like the one you\'re currently reading. Or not.. :-)';
 $lang['ionize_help_copy_to_other_languages'] = 'Copy to other languages';
+
+$lang['ionize_description_flags'] = 'Flags are used by articles types and add a colored flag to give a visual help about the type of each article.<br/>';
 
 
 /*
@@ -405,6 +412,8 @@ $lang['ionize_message_lang_not_ordered'] = 'Languages not ordered';
 $lang['ionize_message_lang_updated'] = 'Languages updated';
 $lang['ionize_notify_advanced_language'] = 'Use these functions only if you know what you are doing.';
 $lang['ionize_button_clean_lang_tables'] = 'Clean lang tables';
+$lang['ionize_text_clean_lang_tables'] = 'Removes all lang content for languages which don\'t exists anymore';
+
 $lang['ionize_button_copy_content'] = 'Copy content';
 $lang['ionize_help_clean_lang_tables'] = 'Clean the content of lang tables by removing all content for non existing languages.';
 $lang['ionize_help_copy_content'] = 'Copy the element content from one language to another. Copy of all content (titles, subtitle, content, etc.)';
@@ -873,6 +882,7 @@ $lang['ionize_label_drag_to_page'] = 'Drag to a page';
 $lang['ionize_label_article_edit_context'] = 'Settings';
 $lang['ionize_label_article_filter'] = 'Filter';
 $lang['ionize_label_article_context_edition'] = 'Editing context';
+$lang['ionize_label_new_lang'] = 'Create a lang';
 
 $lang['ionize_message_article_not_saved'] = 'Article not saved : Missing data';
 $lang['ionize_message_article_saved'] = 'Article saved';
@@ -920,7 +930,7 @@ $lang['ionize_title_category_new'] = 'New category';
 $lang['ionize_title_category_edit'] = 'Category : Edit';
 $lang['ionize_title_category_exist'] = 'Existing categories';
 
-$lang['ionize_title_types'] = 'Types';
+$lang['ionize_title_types'] = 'Articles Types';
 $lang['ionize_title_types_exist'] = 'Existing types';
 $lang['ionize_title_type_new'] = 'New type';
 $lang['ionize_title_type_edit'] = 'Article type edit';

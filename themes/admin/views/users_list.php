@@ -95,7 +95,6 @@
 	 */
 	new SortableTable('usersTable',{sortOn: 0, sortBy: 'ASC'});
 	
-	
 	/**
 	 * User Edit window
 	 *
@@ -106,10 +105,9 @@
 		{
 			e.stop();
 			var id = item.getProperty('rel');
-			var wid = 'user' + id;			// Window ID. Ex: wuser120
 			ION.formWindow(
-				wid, 						// object ID
-				'userForm',					// Form ID
+				'user'+ id, 				// Window ID
+				'userForm'+ id,				// Form ID
 				'ionize_title_user_edit', 	// Window title
 				'users/edit/' + id,			// Window content URL
 				{width: 400, resize:true}	// Window options

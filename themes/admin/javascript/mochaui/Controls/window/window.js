@@ -337,8 +337,13 @@ MUI.Window.implement({
 
 		// Check if window already exists and is not in progress of closing
 		if (this.el.windowEl && !this.isClosing){
-			// Restore if minimized
-			if (this.isMinimized) this._restoreMinimized();
+
+            // Restore if minimized
+            // Partikule correction
+            var instance = MUI.get(this.id);
+            if (instance.isMinimized) instance._restoreMinimized();
+            // /Partikule correction
+			// if (this.isMinimized) this._restoreMinimized();
 
 			// Expand and focus if collapsed
 			else if (this.isCollapsed){

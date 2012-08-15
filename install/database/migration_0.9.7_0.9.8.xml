@@ -84,15 +84,24 @@
 		ALTER TABLE `page` ADD `view_single` VARCHAR( 50 ) DEFAULT NULL; 
 	</query>
 
-	<query>
+    <query>
+        ALTER TABLE  `page` ADD  `id_type` smallint( 2 ) NOT NULL;
+    </query>
+
+
+    <query>
 		ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL;
 	</query>
 
-	<query>
-		ALTER TABLE  `page` ADD  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority';
-	</query>
+    <query>
+        ALTER TABLE  `page` ADD  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority';
+    </query>
 
-	<query>
+    <query>
+        ALTER TABLE  `page` ADD  used_by_module tinyint(1) unsigned NULL COMMENT 'This page is used by one module';
+    </query>
+
+    <query>
 		UPDATE page SET id_subnav = id_page;
 	</query>
 
@@ -121,6 +130,8 @@
 		  PRIMARY KEY (`id_type`)
 		) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
  	</query>
+
+
 
 	<query>ALTER TABLE article ENGINE = InnoDB;</query>
 	<query>ALTER TABLE article_category ENGINE = InnoDB;</query>
@@ -195,6 +206,7 @@
 	<query>ALTER TABLE `users_meta` COMMENT = '';</query>
 	<query>ALTER TABLE `user_groups` COMMENT = '';</query>
 
+    <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);</query>
 
 
 </sql>

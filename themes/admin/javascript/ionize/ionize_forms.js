@@ -72,11 +72,17 @@ ION.append({
 	 * @param	string		Element to update
 	 * @param	string		Element update URL
 	 */
-	sendForm: function(url)
+	sendForm: function(url, form)
 	{
+		if (!form) {
+			form = '';
+		}
+		else {
+			form = $(form);
+		}
 		ION.updateRichTextEditors();
 
-		new Request.JSON(ION.getFormObject(url)).send();
+		new Request.JSON(ION.getFormObject(url, form)).send();
 	},
 
 	/**
@@ -111,9 +117,7 @@ ION.append({
 			var func = function()
 			{
 				var options = ION.getFormObject(url, $(form));
-				
 				var r = new Request.JSON(options);
-				
 				r.send();
 			};
 		
@@ -122,7 +126,6 @@ ION.append({
 			$(button).addEvent('click', function(e)
 			{
 				e.stop();
-				
 				ION.confirmation('conf' + button.id, func, confirm.message);
 			});
 		}
@@ -140,9 +143,7 @@ ION.append({
 				
 				// Get the form
 				var options = ION.getFormObject(url, $(form));
-				
 				var r = new Request.JSON(options);
-				
 				r.send();
 			});
 		}
@@ -157,9 +158,7 @@ ION.append({
 			var func = function()
 			{
 				var options = ION.getFormObject(url, $(form));
-				
 				var r = new Request.JSON(options);
-				
 				r.send();
 			};
 		
@@ -168,7 +167,6 @@ ION.append({
 			$(button).addEvent('change', function(e)
 			{
 				e.stop();
-				
 				ION.confirmation('conf' + button.id, func, confirm.message);
 			});
 		}
@@ -186,9 +184,7 @@ ION.append({
 				
 				// Get the form
 				var options = ION.getFormObject(url, $(form));
-				
 				var r = new Request.JSON(options);
-				
 				r.send();
 			});
 		}

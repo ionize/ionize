@@ -195,7 +195,6 @@ var IonizeMediaManager = new Class(
 				// Feed the container with responseJSON content		
 				container.set('html', responseJSON.content);
 
-	
 				var self = this;
 				// Init the sortable 
 				sortableMedia = new Sortables(container, {
@@ -228,7 +227,7 @@ var IonizeMediaManager = new Class(
 				}));
 	
 				// Set tips
-				new Tips('#' + this.containers.get(responseJSON.type) + ' .help', {'className' : 'tooltip', 'text': 'rel', 'title' : 'title'});
+				this.tips = new Tips('#' + this.containers.get(responseJSON.type) + ' .help', {'className' : 'tooltip', 'text': 'rel', 'title' : 'title'});
 			}
 			// If no media, feed the content HMTLDomElement with transmitted message
 			else
@@ -311,7 +310,13 @@ var IonizeMediaManager = new Class(
 	{
 		// Show the spinner
 		MUI.showSpinner();
-		
+
+		if (this.tips)
+		{
+			this.tips.hide();
+			this.tips.detach('#' + type + '_' + id + ' .help');
+		}
+
 		var xhr = new Request.JSON(
 		{
 			url: this.adminUrl + 'media/detach_media/' + type + '/' + this.parent + '/' + this.idParent + '/' + id,

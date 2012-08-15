@@ -49,7 +49,7 @@ class TagManager
 
 	public static $view = '';
 
-	protected static $uri_segments = array();
+	public static $uri_segments = array();
 
 
 	/**

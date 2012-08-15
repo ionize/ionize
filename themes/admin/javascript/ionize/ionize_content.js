@@ -108,75 +108,63 @@ ION.append({
 
 	
 	/**
-	 * Adds effect to sideColumn
+	 * SideColumn open / close
 	 *
 	 */
 	initSideColumn: function()
 	{
-		// element to slide & linked button
-		var maincolumn = $('maincolumn');
-		var element = $('sidecolumn');		
-		var button = $('sidecolumnSwitcher');
-		
-		if (button && element)
+		var button = $('sideColumnSwitcher');
+
+		if (button)
 		{
-			// button event
-			button.addEvent('click', function(e)
+			var sideColumn = MUI.get('splitPanel_sideColumn');
+
+			button.addEvent('click', function()
 			{
-				e.stop();
-				
-				if (this.retrieve('status') == 'close')
+				sideColumn.toggle();
+
+				if (sideColumn.isCollapsed == true)
 				{
-					element.removeClass('close');
-					maincolumn.addClass('sidecolumn');
-	
-					this.set('value', Lang.get('ionize_label_hide_options'));
-					this.store('status', 'open');
-	
-					Cookie.write('sidecolumn', 'open');
-					
+					// ION.setButtonLabel(button, Lang.get('ionize_label_show_options'), 'icon-options');
+					Cookie.write('sidecolumn', 'collapsed');
 				}
 				else
 				{
-					element.addClass('close');
-					maincolumn.removeClass('sidecolumn');
-					
-					this.set('value', Lang.get('ionize_label_show_options'));
-					this.store('status', 'close');
-					Cookie.write('sidecolumn', 'close');
+					// ION.setButtonLabel(button, Lang.get('ionize_label_hide_options'), 'icon-options');
+					Cookie.write('sidecolumn', 'expanded');
 				}
-				
 			});
-			
-			/*
-			 * Get the cookie stored option state and apply
-			 */
-			var pos = Cookie.read('sidecolumn');
-	
-			if (typeOf(pos) != 'null' && pos == 'open')
-			{
-				element.removeClass('close');
-				maincolumn.addClass('sidecolumn');
-	
-				button.store('status', 'open');
-				button.set('value', Lang.get('ionize_label_hide_options'));
 
-			}
+			// Get the cookie stored option state and apply
+			/*
+			var pos = Cookie.read('sidecolumn');
+
+			if (typeOf(pos) != 'null' && pos == 'expanded')
+				ION.setButtonLabel(button, Lang.get('ionize_label_hide_options'), 'icon-options');
 			else
-			{
-				element.addClass('close');
-				maincolumn.removeClass('sidecolumn');
-				
-				button.set('value', Lang.get('ionize_label_show_options'));
-				button.store('status', 'close');
-				
-				/*
-				*/
-			}
+				ION.setButtonLabel(button, Lang.get('ionize_label_show_options'), 'icon-options');
+			*/
+		}
+		else
+		{
+			console.log('initSideColumn ERROR : #sideColumnSwitcher button not found in toolbox');
 		}
 	},
 
-	
+	initFormAutoGrow: function()
+	{
+		$$('.autogrow').each(function(item){
+			new Form.AutoGrow(item, {
+				minHeightFactor: 1
+			});
+		});
+	},
+
+	setButtonLabel: function(button, label, icon)
+	{
+		button.set('html', '<i class="' + icon + '"></i>' + label);
+	},
+
 	/**
 	 * Updates multiple elements
 	 *
@@ -311,7 +299,7 @@ ION.append({
 				inputOutputFormat: date_format + ' H:i:s', 
 				allowEmpty:true, 
 				useFadeInOut:false, 
-				positionOffset: {x:-30,y:0},
+				positionOffset: {x:-60,y:0},
 				onSelect: function(d, input)
 				{
 					// console.log(input.getProperty('data-item'));
@@ -332,7 +320,7 @@ ION.append({
 	{
 		if (show_help_tips == '1')
 		{
-			$$(element + ' label').each(function(el, id)
+			$$(element + '.help, ' + element + ' label').each(function(el, id)
 			{
 				if (el.getProperty('title'))
 				{
@@ -343,6 +331,30 @@ ION.append({
 			new Tips(element + ' .help', {'className' : 'tooltip', 'text': 'rel', 'title' : 'title'});
 		}
 	},
+	
+	initSelectableText: function()
+	{
+		$$('.selectable').each(function(item)
+		{
+			item.addEvent('click', function(e)
+			{
+				if (document.selection)
+				{
+					var div = document.body.createTextRange();
+					div.moveToElementText(item);
+					div.select();
+				}
+				else
+				{
+					var div = document.createRange();
+					div.setStartBefore(item);
+					div.setEndAfter(item) ;
+					window.getSelection().addRange(div);
+				}
+			});
+		});
+	},
+	
 	
 	emptyDomElement: function(element)
 	{
@@ -443,17 +455,18 @@ ION.append({
 			dest.set('html', src.value);
 		}
 	},
-	
-/**
- * Todo : Write this method.
- * Attach function on droppable
- * 
- * Todo 2 : Rewrite addDragnDrop()
- * in tree structure first check if droppable has this function end execute it
- * if droppable doesn't have function then execute draggable function
- * if droppable have function than don't execute draggable functions
- *
- */
+
+
+	/**
+	 * Todo : Write this method.
+	 * Attach function on droppable
+	 *
+	 * Todo 2 : Rewrite addDragnDrop()
+	 * in tree structure first check if droppable has this function end execute it
+	 * if droppable doesn't have function then execute draggable function
+	 * if droppable have function than don't execute draggable functions
+	 *
+	 */
 	linkDropMethod: function(droppable, functions)
 	{
 	
@@ -519,7 +532,6 @@ ION.append({
 							if (droppable.hasClass(funcName))
 							{
 								dropCB = callbacks[funcName];
-								console.log('found...' + dropCB);
 								dropCB.delay(100, null, [element, droppable, event]);
 						//		ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
 							}
@@ -601,11 +613,33 @@ ION.append({
 		});
 	},
 	
-	
+	initClearField: function(selector)
+	{
+		$$(selector + ' .clearfield').each(function(item, idx)
+		{
+			if(item.hasClass('date'))
+			{
+				var dataInput = $(item.getAttribute('data-id'));
+				var visibleInput = dataInput.getPrevious('input');
+
+				item.addEvent('click', function(e) {
+					e.stop();
+					visibleInput.value = '';
+					dataInput.value = '';
+				});
+			}
+			else
+			{
+				item.addEvent('click', function(e) {
+					e.stop();
+					ION.clearField(item.getAttribute('data-id'));
+				});
+			}
+		});
+	},
 	
 	/*
 	 * Not working yet
-	 */
 	addClearField:function(input)
 	{
 		if (typeOf($(input)) != 'null')
@@ -614,67 +648,9 @@ ION.append({
 			$(input).addClass('left');
 		}
 	},
-	
+	*/
 
 
-	/*
-	 * Splitted Article panel init
-	 * Test
-	 *
-	 */
-	editArticle: function(id, title) 
-	{
-		if ($('mainPanel')) {			
-			
-			MUI.Content.update({
-				'element': $('mainPanel'),
-				'url': admin_url + 'desktop/get/empty',
-				'title': title,
-				onContentLoaded: function(c)
-				{
-					new MUI.Column({
-						container: 'mainPanel',
-						id: 'mainColumn2',
-						placement: 'main',
-						width: null,
-						resizeLimit: [100, 300]
-					});
-		
-					new MUI.Column({
-						container: 'mainPanel',
-						id: 'sideColumn2',
-						placement: 'right',
-						width: 290,
-						resizeLimit: [290, 400]
-					});
-					
-					// mainPanel
-					new MUI.Panel({
-						id: 'splitPanel_mainPanel',
-						title: title,
-						loadMethod: 'xhr',
-						contentURL: admin_url + 'article/edit/' + id,
-						padding: { top: 15, right: 15, bottom: 8, left: 15 },
-						addClass: 'maincolumn',
-						column: 'mainColumn2',
-						collapsible: false,
-						header: false
-					});
-					
-					new MUI.Panel({
-						id: 'articlePanel',
-						title: Lang.get('ionize_title_article_settings'),
-						contentURL: admin_url + 'article/options/' + id,
-						column: 'sideColumn2'
-					//	addClass: 'maincolumn'
-				//,tabsURL: admin_url + 'desktop/get/tabs/article_tabs'
-					});
-				}
-			});
-		}
-	},
-
-	
 	initAutocompleter: function(input, options)
 	{
 		var searchUrl = ION.cleanUrl(options.searchUrl);
@@ -722,51 +698,6 @@ ION.append({
 		});
 	},
 	
-	
-	
-	
-	// ------------------------------------------------------------------------
-	// / Rewritten functions
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Test function to get all the elements
-	 *
-	 
-	getContentElements: function(parent, id_parent)
-	{
-		// ION.JSON(admin_url + 'element/get_elements', {'parent': parent, 'id_parent': id_parent});
-		var r = new Request.JSON(
-		{
-			url: admin_url + 'element/get_elements', 
-			method: 'post',
-			loadMethod: 'xhr',
-			data:
-			{
-				'parent': parent,
-				'id_parent': id_parent
-			},
-			onSuccess: function(responseJSON, responseText)
-			{
-				$each(responseJSON, function(item, idx)
-				{
-					console.log(item.name);
-					
-					$each(item.elements, function(element, idx)
-					{
-						console.log('-' + element.id_element);
-		
-						$each(element.fields, function(field, idx)
-						{
-							console.log('--' + field.label);
-						});
-					});
-				});
-			}
-		}).send();
-	},	
-	*/
-
 	/**
 	 * Insert Content Elements Definition tabs
 	 *
@@ -920,10 +851,8 @@ ION.append({
 			tabs.each(function(tab, idx)
 			{
 				var section = tab.retrieve('section');
-				
 //				console.log(idx);
 //				console.log(section.getChildren());
-				
 			});
 		}
 	},
@@ -1010,7 +939,6 @@ ION.append({
 	 */
 	removeLink: function()
 	{
-		
 		// remove form data
 		$('link').set('text', '').setProperty('value','').fireEvent('change');
 		$('link_type').value='';
@@ -1111,15 +1039,15 @@ ION.append({
 	 * If the edited article is a link to one page or article in the tree, 
 	 * the icon of the "linked to" element will chnage, to show this link.
 	 *
-	 */
 	updateTreeLinkIcon: function(args)
 	{		
 		// Remove link icon from all articles in trees
 		$$('.tree .file').removeClass('filelink');
 		$$('.tree .folder').removeClass('folderlink');
 	},
-	
-	
+	 */
+
+
 	updateArticleOrder: function(args)
 	{
 		var articleContainer = $('articleContainer' + args.id_page);
@@ -1167,7 +1095,6 @@ ION.append({
 		var parent = (id_parent != '0') ? $('page_' + id_parent) : $(id_tree);
 		var id_container = (id_parent != '0') ? 'pageContainer' + id_parent : 'pageContainerTree' + args.menu.id_menu ;
 
-		
 		// link Title in tree (A tag)
 		var el_link = '.title.page' + id;
 
@@ -1241,8 +1168,6 @@ ION.append({
 		{
 			element.getFirst('.folder').addClass('hidden');
 		}
-		
-		
 	},
 	
 	
@@ -1327,34 +1252,22 @@ ION.append({
 	 * Add events (edit context, unlink) on given parent page element
 	 *
 	 */
-
-// TODO : Replace by ION.initRequestEvent...
-
 	addParentPageEvents: function(item)
 	{
 		var rel = (item.getProperty('rel')).split(".");
 		var id_page = rel[0];
 		var id_article = rel[1];
-		var flat_rel = id_page + 'x' + id_article;
-				
-		var edit_url = admin_url + 'article/edit_context/' + id_page + '/' + id_article;
-		var unlink_url = admin_url + 'article/unlink/' + id_page + '/' + id_article;
 
-		var titleInput = $('title_' + Lang.get('default')).value;
-		var urlInput = $('url_' + Lang.get('default')).value;
-		
-		var articleTitle = (titleInput != '') ? titleInput : urlInput;
+		var unlink_url = admin_url + 'article/unlink/' + id_page + '/' + id_article;
 
 		// Event on page name anchor
 		var a = item.getElement('a.page');
 		a.addEvent('click', function(e) {
 			e.stop();
-//			MUI.formWindow('ArticleContext' + flat_rel, 'formArticleContext'+flat_rel, Lang.get('ionize_title_article_context'), edit_url, {width:500, height:350});
-			MUI.Content.update({
-				'element': $('mainPanel'),
-				'loadMethod': 'xhr',
-				'url': admin_url + 'page/edit/' + id_page,
-				'title': Lang.get('ionize_title_edit_page')	
+			ION.splitPanel({
+				'urlMain': admin_url + 'page/edit/' + id_page,
+				'urlOptions' : admin_url + 'page/get_options/' + id_page,
+				'title': Lang.get('ionize_title_edit_page')
 			});
 		});
 		
@@ -1402,9 +1315,7 @@ ION.append({
 				});
 				
 				ION.notification('success', Lang.get('ionize_message_article_lang_copied'));
-				
-//				item.getParent().highlight();
-				
+				// item.getParent().highlight();
 			});
 		})
 	},
@@ -1433,7 +1344,6 @@ ION.append({
 		// Old Parent
 		rel = ($('rel').value).split(".");
 		var old_id_parent = (rel.length > 1) ? rel[1] : rel[0];
-		
 		
 		var data = {
 			'id_element': id_element,
@@ -1502,37 +1412,6 @@ ION.append({
 		ION.linkArticleToPage(id_article, id_page, '0', event);
 	},
 
-	
-/*
-	removeElementLink: function()
-	{
-		// Receiver's element type
-		var receiver_type = $('element').value;
-		var rel = $('rel').value;
-		
-		new Request.JSON({
-			url: admin_url + receiver_type + '/remove_link',
-			method: 'post',
-			loadMethod: 'xhr',
-			data: {
-				'receiver_rel': rel
-			},
-			onSuccess: function(responseJSON, responseText)
-			{
-				// empty the textarea
-				$('link').set('text', '').setProperty('value','').fireEvent('change');
-
-				ION.notification('success', Lang.get('ionize_message_operation_ok'));
-
-				// JS Callback
-				if (responseJSON && responseJSON.callback)
-				{
-					ION.execCallbacks(responseJSON.callback);
-				}
-			}
-		}).send();
-	},
-*/
 
 	dropElementAsLink: function(link_type, element, droppable)
 	{

@@ -14,7 +14,7 @@
 
 	<li class="sortme article_type<?= $type['id_type'] ?>" id="article_type_<?= $type['id_type'] ?>" rel="<?= $type['id_type'] ?>">
 		<a class="icon delete right" rel="<?= $type['id_type'] ?>"></a>
-		<img class="icon left drag pr5" src="<?= theme_url() ?>images/icon_16_ordering.png" />
+		<span class="icon left drag mr5"></span>
 		<a class="left pl5 title" rel="<?= $type['id_type'] ?>">
 			<span class="flag flag<?= $type['type_flag'] ?>"></span>
 			<?= $type['type'] ?>

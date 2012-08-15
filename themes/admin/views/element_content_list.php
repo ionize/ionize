@@ -39,7 +39,7 @@ $width = (100 / $nbLang);
 	<li class="sortme element element<?= $id_element ?>" id="element<?= $id_element ?>" rel="<?= $id_element ?>">
 
 		<a class="icon delete right absolute mr10" rel="<?= $id_element ?>"></a>
-		<img class="icon drag left absolute" src="<?= theme_url() ?>images/icon_16_ordering.png" />
+		<span class="icon left drag absolute"></span>
 		<div style="position:absolute;top:3px;left:40px;font-size:20px;color:#ddd;"><?= $element['ordering'] ?></div>
 
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">

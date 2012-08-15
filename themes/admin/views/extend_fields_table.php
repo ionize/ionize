@@ -20,8 +20,8 @@
 		<li class="sortme extend_field<?= $extend['id_extend_field'] ?>" id="extend_field_<?= $extend['id_extend_field'] ?>" rel="<?= $extend['id_extend_field'] ?>">
 			<a class="icon delete right" rel="<?= $extend['id_extend_field'] ?>"></a>
 			<?php if($extend['global'] == '1') :?><span class="right lite mr10"><?=lang('ionize_label_extend_field_global')?></span><?php endif ;?>
-			<img class="icon left drag" src="<?= theme_url() ?>images/icon_16_ordering.png" />
-			<a class="left pl5 edit" rel="<?= $extend['id_extend_field'] ?>" title="<?= $extend['name'] ?> : <?= $extend['description'] ?>"><?= $extend['name'] ?> | <?= $extend['label'] ?></a>
+			<span class="icon left drag"></span>
+			<a class="left ml5 edit" rel="<?= $extend['id_extend_field'] ?>" title="<?= $extend['name'] ?> : <?= $extend['description'] ?>"><?= $extend['name'] ?> | <?= $extend['label'] ?></a>
 		</li>
 		
 		<?php endif ;?>

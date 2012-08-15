@@ -188,7 +188,7 @@ ION.append({
 			maximizable: false,
 			contentBgColor: '#fff'			
 		};
-		
+
 		// Extends the window options
 		if (typeOf(wOptions) != 'null') { options =  Object.append(options, wOptions);}
 

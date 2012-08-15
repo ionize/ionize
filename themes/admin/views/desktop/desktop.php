@@ -54,6 +54,11 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/cwcrop/ysr-crop.js"></script>
 <link type="text/css" rel="stylesheet" href="<?= theme_url() ?>javascript/cwcrop/ysr-crop.css" />
 
+<!-- Form Autogrow -->
+<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-class-extras.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/Form.AutoGrow.js"></script>
+
+
 <!-- swfObject -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/swfobject.js"></script>
 
@@ -66,7 +71,7 @@
 <script type="text/javascript">
 	
 	/** 
-	 * Global base_url value.
+	 * Global JS variables.
 	 * Used by mocha-init and should be used by any javascript class or method which needs to access to resources
 	 */
 	var base_url = '<?= base_url() ?>';
@@ -75,7 +80,7 @@
 	var admin_url = '<?= base_url().Settings::get_lang('current') ?>/<?=config_item('admin_url')?>/';
 	var date_format = '<?= Settings::get('date_format'); ?>';
 
-	/** 
+	/**
 	 * Show help tips.
 	 * Used by mocha init-content
 	 */
@@ -121,6 +126,7 @@
 <!-- Ionize -->
 <!-- In a production environment, these files should be grouped and compressed -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_core.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_panels.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_window.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_request.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_content.js"></script>
@@ -131,6 +137,7 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_tinymce.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_tree_xhr.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_list_filter.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_user.js"></script>
 
 
 <!-- Mootools Filemanager -->
@@ -163,7 +170,6 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager_ionize.css" />
 <!--[if IE 7]><link rel="stylesheet" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager_ie7.css" /><![endif]-->
-
 
 <!-- TinyMCE -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce_src.js"></script>

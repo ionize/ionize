@@ -39,12 +39,12 @@ class Article_type extends MY_admin
 
 
 	/**
-	 * Index
+	 * Displays the existing types list
 	 *
 	 */
 	function index()
 	{
-		return;
+		$this->output('article_types');
 	}
 
 

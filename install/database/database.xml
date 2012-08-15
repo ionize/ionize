@@ -322,7 +322,8 @@
 			  id_page int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  id_parent int(11) UNSIGNED NOT NULL default 0,
 			  id_menu int(11) UNSIGNED NOT NULL default 0,
-			  id_subnav int(11) UNSIGNED NOT NULL default 0, 
+              id_type smallint(2) NOT NULL default 0,
+              id_subnav int(11) UNSIGNED NOT NULL default 0,
 			  name varchar(255) default NULL,
 			  ordering int(11) UNSIGNED default 0,
 			  level int(11) UNSIGNED NOT NULL default 0,
@@ -350,6 +351,7 @@
 			  pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
 			  id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   			  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
+              used_by_module tinyint(1) unsigned NULL,
 			  PRIMARY KEY  (id_page),
 			  KEY idx_page_id_parent (id_parent),
 			  KEY idx_page_level (level),
@@ -444,7 +446,7 @@
 		</query>
 
 		<query>
-			CREATE TABLE url (
+			CREATE TABLE IF NOT EXISTS url (
 			  id_url int(11) unsigned NOT NULL AUTO_INCREMENT,
 			  id_entity int(11) unsigned NOT NULL,
 			  type varchar(10) NOT NULL,
@@ -459,7 +461,7 @@
 			  KEY idx_url_type (type),
 			  KEY idx_url_active (active),
 			  KEY idx_url_lang (lang)
-			) ENGINE=InnoDB AUTO_INCREMENT=808 DEFAULT CHARSET=utf8;
+			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 		</query>
 
 		<query>
@@ -470,7 +472,11 @@
 			  last_visit timestamp NULL default NULL,
 			  username varchar(50) collate utf8_unicode_ci NOT NULL,
 			  screen_name varchar(50) collate utf8_unicode_ci default NULL,
-			  password varchar(255) collate utf8_unicode_ci NOT NULL,
+              firstname varchar(100) NOT NULL,
+              lastname varchar(100) DEFAULT NULL,
+              birth_date datetime DATETIME NOT NULL,
+              gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
+              password varchar(255) collate utf8_unicode_ci NOT NULL,
 			  email varchar(120) collate utf8_unicode_ci NOT NULL,
 			  salt varchar(50) collate utf8_unicode_ci NULL,
 			  PRIMARY KEY  (id_user),
@@ -510,14 +516,14 @@
 
 		<query>TRUNCATE TABLE login_tracker;</query>
 		
-		<query>INSERT INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', '');</query>
-		<query>INSERT INTO user_groups VALUES (2, 5000, 'admins', 'Admins', '');</query>
-		<query>INSERT INTO user_groups VALUES (3, 1000, 'editors', 'Editors', '');</query>
-		<query>INSERT INTO user_groups VALUES (4, 100, 'users', 'Users', '');</query>
-		<query>INSERT INTO user_groups VALUES (5, 50, 'pending', 'Pending', '');</query>
-		<query>INSERT INTO user_groups VALUES (6, 10, 'guests', 'Guests', '');</query>
-		<query>INSERT INTO user_groups VALUES (7, -10, 'banned', 'Banned', '');</query>
-		<query>INSERT INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (2, 5000, 'admins', 'Admins', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (3, 1000, 'editors', 'Editors', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (4, 100, 'users', 'Users', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (5, 50, 'pending', 'Pending', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (6, 10, 'guests', 'Guests', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (7, -10, 'banned', 'Banned', '');</query>
+		<query>INSERT IGNORE INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', '');</query>
 
 		<query>DELETE FROM setting WHERE name='cache';</query>
 		<query>DELETE FROM setting WHERE name='cache_time';</query>
@@ -527,34 +533,35 @@
 		<query>DELETE FROM setting WHERE name='ftp_password';</query>
 		<query>DELETE FROM setting WHERE name='picture_copyright';</query>
 
-		<query>INSERT INTO setting VALUES (2, 'website_email', '', '');</query>
-		<query>INSERT INTO setting VALUES (3, 'files_path', 'files', '');</query>
-		<query>INSERT INTO setting VALUES (6, 'theme', 'default', '');</query>
-		<query>INSERT INTO setting VALUES (7, 'theme_admin', 'admin', '');</query>
-		<query>INSERT INTO setting VALUES (14, 'google_analytics', '', '');</query>
-		<query>INSERT INTO setting VALUES (15, 'filemanager', 'mootools-filemanager', '');</query>
-		<query>INSERT INTO setting VALUES (23, 'show_help_tips', '1', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'website_email', '', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'default', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'theme_admin', 'admin', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'google_analytics', '', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'filemanager', 'mootools-filemanager', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'show_help_tips', '1', '');</query>
 
-		<query>INSERT INTO setting VALUES (24, 'display_connected_label', '1', '');</query>
-		<query>INSERT INTO setting VALUES (25, 'texteditor', 'tinymce', '');</query>
-		<query>INSERT INTO setting VALUES (26, 'media_thumb_size', '120', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'display_connected_label', '1', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'texteditor', 'tinymce', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'media_thumb_size', '120', '');</query>
 
-		<query>INSERT INTO setting VALUES (27, 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', '');</query>
-		<query>INSERT INTO setting VALUES (28, 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', '');</query>
-		<query>INSERT INTO setting VALUES (29, 'tinybuttons3', 'tablecontrols', '');</query>
-		<query>INSERT INTO setting VALUES (30, 'displayed_admin_languages', 'en', '');</query>
-		<query>INSERT INTO setting VALUES (31, 'date_format', '%Y.%m.%d', '');</query>
-		<query>INSERT INTO setting VALUES (32, 'force_lang_urls', '0', '');</query>
-		<query>INSERT INTO setting VALUES (33, 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', '');</query>
-		<query>INSERT INTO setting VALUES ('', 'article_allowed_tags', 'h2,h3,h4,h5,h6,em,img,iframe,table,object,thead,tbody,tfoot,tr,th,td,param,embed,map,p,a,ul,ol,li,br,b,strong', '');</query>
-		<query>INSERT INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'displayed_admin_languages', 'en', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'date_format', '%Y.%m.%d', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'force_lang_urls', '0', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'article_allowed_tags', 'h2,h3,h4,h5,h6,em,img,iframe,table,object,thead,tbody,tfoot,tr,th,td,param,embed,map,p,a,ul,ol,li,br,b,strong', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', '');</query>
 
-		<query>INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', '');</query>
-		<query>INSERT INTO setting VALUES ('', 'ionize_version', '0.9.8', '');</query>
-		<query>INSERT INTO setting VALUES ('', 'media_upload_mode', 'single', '');</query>
-	
-		<query>
-			INSERT INTO menu (id_menu, name, title) VALUES 
+		<query>INSERT IGNORE INTO setting VALUES ('', 'default_admin_lang', 'en', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '0.9.8', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'media_upload_mode', 'single', '');</query>
+
+        <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);</query>
+        <query>
+			INSERT IGNORE INTO menu (id_menu, name, title) VALUES
 				(1 , 'main', 'Main menu'),
 				(2 , 'system', 'System menu');
 		</query>

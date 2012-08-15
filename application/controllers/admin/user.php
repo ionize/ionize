@@ -67,7 +67,7 @@ class User extends My_Admin
 		$uri_lang = Settings::get_uri_lang();
 
 		// If the user is already logged and if he is in the correct minimum group, go to Admin
-		if($this->connect->logged_in() && $this->connect->is('editors', true))
+		if($this->connect->logged_in() && $this->connect->is('editors', TRUE))
 		{
 			redirect(base_url().$uri_lang.'/'.config_item('admin_url'));
 		}
@@ -143,6 +143,38 @@ class User extends My_Admin
 
 
 	/**
+	 * Return the current user or NULL if not connected
+	 *
+	 */
+	function get_current_user()
+	{
+		$user = Connect()->get_current_user();
+
+		if ( $user !== FALSE)
+		{
+			// Removes the password, even it is encoded
+			if (isset($user['password'])) unset($user['password']);
+			if (isset($user['salt'])) unset($user['salt']);
+
+			// Returns the current user as JSON object
+			if ($this->is_xhr())
+			{
+				echo json_encode($user);
+				exit();
+			}
+			else
+			{
+				return $user;
+			}
+		}
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Try to validate the user login form
 	 *
 	 */
@@ -165,7 +197,7 @@ class User extends My_Admin
 
 		$this->form_validation->set_rules($rules);
 
-		return ($this->form_validation->run() === true);
+		return ($this->form_validation->run() === TRUE);
 	}
 	
 }

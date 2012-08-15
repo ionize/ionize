@@ -1,20 +1,21 @@
 <?php if( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
-* Simpleform tags
-*
-* @author	Ionize Dev Team
-*/
+ * Simpleform tags
+ *
+ * @author	Ionize Dev Team
+ *
+ */
 class Simpleform_Tags
 {
 	/**
-	* Index
-	*
-	* Returns the requested action.
-	*
-	* @access	public
-	* @return	mixed
-	*/
+	 * Index
+	 *
+	 * @param	FTL_Binding
+	 *
+	 * @return	string
+	 *
+	 */
 	public static function index(FTL_Binding $tag)
 	{
 		$ci = &get_instance();
@@ -27,29 +28,33 @@ class Simpleform_Tags
 	}
 	
 	/**
-	* Print simpleform
-	*
-	* @access	public
-	* @return	parsed view
-	*/
+	 * Print simpleform
+	 *
+	 * @param	FTL_Binding
+	 *
+	 * @return	parsed view
+	 *
+	 */
 	public static function simple_form(FTL_Binding $tag)
-	{   
-		return $tag->parse_as_nested(file_get_contents(MODPATH . 'Simpleform/views/form_view' . EXT));
+	{ 
+		$view = $tag->attr['view'];	
+			
+		return $tag->parse_as_nested(file_get_contents(MODPATH . 'Simpleform/views/'. $view . EXT));
 	}
 	
 	/**
-	* Validation tag
-	*
-	* @access	public
-	* @usage	<ion:quote:validation 	[attr="has_errors"] [form_name="<form_name>"] [is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown. If form_name is set, it'll only check for errors for the specified form.
-	* 									[attr="error_string"] // Returns an error string if has_errors is true
-	* 									[attr="has_notices"] [form_name="<form_name>"] [is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown. If form_name is set, it'll only check for errors for the specified form.
-	* 									[attr="notice_string"] // Returns a notice string if has_notices is true
-	* 									[attr="has_success"] [form_name="<form_name>"] [is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown. If form_name is set, it'll only check for errors for the specified form. Is true if data was saved.
-	* 									[attr="success_string"] // Returns a success string if has_success is true
-	*			/>
-	* @return	mixed
-	*/
+	 * Validation tag
+	 *
+	 * @param	FTL_Binding
+	 * @usage	<ion:quote:validation 	[attr="has_errors"] [form_name="<form_name>"] [is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown. If form_name is set, it'll only check for errors for the specified form.
+	 * 									[attr="error_string"] // Returns an error string if has_errors is true
+	 * 									[attr="has_notices"] [form_name="<form_name>"] [is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown. If form_name is set, it'll only check for errors for the specified form.
+	 * 									[attr="notice_string"] // Returns a notice string if has_notices is true
+	 * 									[attr="has_success"] [form_name="<form_name>"] [is_like="<1/0>"] // Container-tag. If true, the inner html/tags will be shown. If form_name is set, it'll only check for errors for the specified form. Is true if data was saved.
+	 * 									[attr="success_string"] // Returns a success string if has_success is true
+	 *			/>
+	 * @return	mixed
+	 */
 	public static function validation(FTL_Binding $tag)
 	{
 		$ci = &get_instance();
@@ -85,7 +90,10 @@ class Simpleform_Tags
 	/**
 	 * Returns a field value from a form
 	 *
+	 * @param	FTL_Binding
 	 * @usage	<ion:simpleform:field [attr="<field_name>"]	[from_post_data="<form_name>"]		// The wished field from the given form
+	 *
+	 * @return 	String
 	 *
 	 */
 	public static function field(FTL_Binding $tag)

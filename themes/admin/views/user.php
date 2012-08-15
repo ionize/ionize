@@ -4,9 +4,15 @@
  * Modal window for Editing an user
  *
  */
+
+if ( ! empty($user['id_user']))
+	$action = 'update';
+else
+	$action = 'save';
+
 ?>
 
-<form name="userForm" id="userForm" action="<?= admin_url() ?>users/update">
+<form name="userForm<?= $user['id_user'] ?>" id="userForm<?= $user['id_user'] ?>" action="<?= admin_url() ?>users/<?= $action ?>">
 
 	<!-- Hidden fields -->
 	<input id="user_PK" name="user_PK" type="hidden" value="<?= $user['id_user'] ?>" />
@@ -39,7 +45,7 @@
 			<label for="email" ><?=lang('ionize_label_email')?></label>
 		</dt>
 		<dd>
-			<input id="email" name="email" class="inputtext w200" type="text" value="<?= $user['email'] ?>" />
+			<input id="email" name="email" class="inputtext" type="text" value="<?= $user['email'] ?>" />
 		</dd>
 	</dl>
 
@@ -88,14 +94,16 @@
 	<!-- Meta data -->
 	<h3><?=lang('ionize_title_user_meta')?></h3>
 
-	<?php foreach($meta_data_fields as $field) :?>
+	<?php foreach($meta_data as $key => $field) :?>
 
 		<dl class="small">
 			<dt>
-				<label for="<?= $field ?>"><?= $field ?></label>
+				<label for="<?= $key ?>"><?= $key ?></label>
 			</dt>
 			<dd>
-				<input id="<?= $field ?>" name="<?= $field ?>" class="inputtext i120" type="text" value="<?= $meta_data[$field] ?>" />
+				<?php
+					echo form_build_field($field);
+				?>
 			</dd>
 		</dl>
 
@@ -108,5 +116,25 @@
 	<button id="bCanceluser<?= $user['id_user'] ?>"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
 </div>
 
+<script type="text/javascript">
 
+
+	/**
+	 * TinyEditors
+	 * Must be called after tabs init.
+	 *
+	 */
+	/*
+	 *  TODO : Create a tinyMCE init which launch the non translated editors
+	 * 	ION.initTinyEditors('.tab_article', '#articleTabContent .tinyTextarea');
+	 * 	Purpose : Init tinyMCE from user's meta potential fields
+	 *
+	 */
+
+	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
+
+	ION.initLabelHelpLinks('#userForm<?= $user['id_user'] ?>');
+
+
+</script>
 

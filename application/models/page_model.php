@@ -58,7 +58,7 @@ class Page_model extends Base_model
 	 * @return	array		array of media
 	 *
 	 */
-	function get($where, $lang = NULL) 
+	function get($where, $lang = NULL)
 	{
 		$data = $this->get_lang_list($where, $lang);
 
@@ -181,11 +181,9 @@ class Page_model extends Base_model
 	 *
 	 */
 	function save($data, $lang_data)
-	{	
+	{
 		// Dates
-		$data['publish_on'] = ($data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
-		$data['publish_off'] = ($data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
-		$data['logical_date'] = ($data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
+		$data = $this->_set_dates($data);
 
 		// Creation date
 		if( ! $data['id_page'] OR $data['id_page'] == '' )
@@ -201,19 +199,8 @@ class Page_model extends Base_model
 		// Be sure URLs are unique
 		// $this->set_unique_urls($lang_data, $data['id_page']);
 
-
 		// Clean metas data
-		foreach($lang_data as $lang => $row)
-		{
-			foreach($row as $key => $value)
-			{
-				if ($key == 'meta_description')
-					$lang_data[$lang][$key] = preg_replace('[\"]', '', $value);
-
-				if ($key == 'meta_keywords')
-					$lang_data[$lang][$key] = preg_replace('/[\"\.;]/i  ', '', $value);
-			}
-		}
+		$lang_data = $this->_clean_meta_data($lang_data);
 
 		// Base model save method call
 		return parent::save($data, $lang_data);
@@ -232,7 +219,7 @@ class Page_model extends Base_model
 	 */
 	function correct_integrity($page, $page_lang)
 	{
-		$this->update_links($page, $page_lang);
+		// $this->update_links($page, $page_lang);
 		
 		$this->update_pages_menu($page['id_page'], $page['id_menu']);
 	}
@@ -336,9 +323,9 @@ class Page_model extends Base_model
 	 * @returns	Int		Nuber of affected rows
 	 *
 	 */
-	function update_home_page($id_page=false)
+	function update_home_page($id_page=FALSE)
 	{
-		if ($id_page !== false)
+		if ($id_page !== FALSE)
 		{
 			$data = array(
 				'home' => 0
@@ -474,7 +461,7 @@ class Page_model extends Base_model
 	function save_urls($id_page)
 	{
 		$CI =& get_instance();
-		$CI->load->model('url_model', '', true);
+		$CI->load->model('url_model', '', TRUE);
 		
 		$nb = 0;
 
@@ -533,8 +520,8 @@ class Page_model extends Base_model
 	function save_linked_articles_urls($id_page)
 	{
 		$CI =& get_instance();
-		$CI->load->model('article_model', '', true);
-		$CI->load->model('url_model', '', true);
+		$CI->load->model('article_model', '', TRUE);
+		$CI->load->model('url_model', '', TRUE);
 
 		$articles = $this->get_list(array('id_page' => $id_page, 'main_parent' => '1'), 'page_article');
 		
@@ -666,21 +653,56 @@ class Page_model extends Base_model
 	 * Filters the pages on published one
 	 *
 	 */
-	protected function filter_on_published($on = true, $lang = NULL)
+	protected function filter_on_published($on = TRUE, $lang = NULL)
 	{
-		if ($on === true)
+		if ($on === TRUE)
 		{
 			$this->{$this->db_group}->where($this->table.'.online', '1');		
 	
 			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
 				$this->{$this->db_group}->where($this->lang_table.'.online', '1');		
 	
-			$this->{$this->db_group}->where('((publish_off > ', 'now()', false);
-			$this->{$this->db_group}->or_where('publish_off = ', '0)' , false);
+			$this->{$this->db_group}->where('((publish_off > ', 'now()', FALSE);
+			$this->{$this->db_group}->or_where('publish_off = ', '0)' , FALSE);
 		
-			$this->{$this->db_group}->where('(publish_on < ', 'now()', false);
-			$this->{$this->db_group}->or_where('publish_on = ', '0))' , false);
+			$this->{$this->db_group}->where('(publish_on < ', 'now()', FALSE);
+			$this->{$this->db_group}->or_where('publish_on = ', '0))' , FALSE);
 		}	
+	}
+
+
+	/**
+	 * Cleans the meta_keywords and meta_description and returns the cleaned data array
+	 *
+	 * @param $data
+	 *
+	 * @return mixed
+	 *
+	 */
+	protected function _clean_meta_data($data)
+	{
+		foreach($data as $lang => $row)
+		{
+			foreach($row as $key => $value)
+			{
+				if ($key == 'meta_description')
+					$data[$lang][$key] = preg_replace('[\"]', '', $value);
+
+				if ($key == 'meta_keywords')
+					$data[$lang][$key] = preg_replace('/[\"\.;]/i  ', '', $value);
+			}
+		}
+		return $data;
+	}
+
+
+	protected function _set_dates($data)
+	{
+		$data['publish_on'] = (isset($data['publish_on']) && $data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
+		$data['publish_off'] = (isset($data['publish_off']) && $data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
+		$data['logical_date'] = (isset($data['logical_date']) && $data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
+
+		return $data;
 	}
 
 }

@@ -17,10 +17,6 @@
  */
 class TagManager_Archive extends TagManager
 {
-/*
-	protected static $uri_segments = array();
-*/
-
 	public static $tag_definitions = array
 	(
 		'archive' =>				'tag_archive',

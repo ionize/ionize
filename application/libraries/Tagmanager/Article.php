@@ -17,12 +17,26 @@
  */
 class TagManager_Article extends TagManager
 {
-
-	protected static $uri_segments = array();
-
-
 	public static $tag_definitions = array
 	(
+		'article' => 				'tag_article',
+		'article:id_article' => 	'tag_article_id',
+		'article:active_class' => 	'tag_article_active_class',
+		'article:view' => 			'tag_article_view',
+		'article:author' => 		'tag_article_author_name',
+		'article:author_email' => 	'tag_article_author_email',
+		'article:name' => 			'tag_article_name',
+		'article:title' => 		    'tag_article_title',
+		'article:subtitle' => 		'tag_article_subtitle',
+		'article:summary' => 		'tag_article_summary',
+		'article:meta_title' =>     'tag_article_meta_title',
+		'article:date' => 			'tag_article_date',
+		'article:content' => 		'tag_article_content',
+		'article:url' => 			'tag_article_url',
+		'article:link' => 			'tag_article_link',
+		'article:categories' => 	'tag_article_categories',
+		'article:readmore' => 		'tag_article_readmore',
+
 		'articles' => 				'tag_articles',
 		'articles:article' => 		'tag_articles_article',
 		'articles:id_article' => 	'tag_article_id',
@@ -88,7 +102,7 @@ class TagManager_Article extends TagManager
 		// Use this view for each article if more than one article
 		$list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
 
-		$type = ( isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
+		$type = $tag->getAttribute('type');
 
 		// Number of article limiter
 		$num = (isset($tag->attr['limit'])) ? self::get_attribute($tag, 'limit') : 0 ;
@@ -110,15 +124,14 @@ class TagManager_Article extends TagManager
 		 * "pages" : 		one or more page names. Not done for the moment
 		 *
 		 */
-		$scope = (isset($tag->attr['scope']) && $tag->attr['scope'] != '' ) ? $tag->attr['scope'] : FALSE;
+		$scope = $tag->getAttribute('scope');
 
 		// from page name ?
-		// $from_page = (isset($tag->attr['from']) && $tag->attr['from'] !='' ) ? $tag->attr['from'] : FALSE;
-		$from_page = (isset($tag->attr['from']) && $tag->attr['from'] !='' ) ? self::get_attribute($tag, 'from') : FALSE;
+		$from_page = $tag->getAttribute('from') ;
 
 		// from categories ? 
-		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
-		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
+		$from_categories = $tag->getAttribute('from_categories');
+		$from_categories_condition = ($tag->getAttribute('from_categories_condition') != NULL && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 
 		/*
 		 * Preparing WHERE on articles
@@ -126,11 +139,11 @@ class TagManager_Article extends TagManager
 		 *
 		 */
 		// Order. Default order : ordering ASC
-		$order_by = (isset($tag->attr['order_by']) && $tag->attr['order_by'] != '') ? $tag->attr['order_by'] : 'ordering ASC';
+		$order_by = ($tag->getAttribute('order_by') != NULL) ? $tag->attr['order_by'] : 'ordering ASC';
 		$where = array('order_by' => $order_by);
 
 		// Add type to the where array
-		if ($type !== FALSE)
+		if ($type !== NULL)
 		{
 			if ($type == '')
 				$where['article_type.type'] = 'NULL';
@@ -139,7 +152,7 @@ class TagManager_Article extends TagManager
 		}
 
 		// If a page name is set, returns only articles from this page
-		if ($from_page !== FALSE)
+		if ($from_page !== NULL)
 		{
 			// Get the asked page details
 			$asked_pages = explode(',', $from_page);
@@ -179,6 +192,9 @@ class TagManager_Article extends TagManager
 		// Get only articles from current page
 		else
 		{
+			$where['id_page'] = $tag->locals->page['id_page'];
+
+			/*
 			// Return the asked article and that's it...
 			if ($_article = TagManager_Page::get_article())
 			{
@@ -190,6 +206,7 @@ class TagManager_Article extends TagManager
 			{	
 				$where['id_page'] = $tag->locals->page['id_page'];
 			}
+			*/
 		}
 
 		/* Get the articles
@@ -214,7 +231,7 @@ class TagManager_Article extends TagManager
 
 			if ($limit !== FALSE) $where['limit'] = $limit;
 
-			if ($from_categories !== FALSE)
+			if ($from_categories !== NULL)
 			{
 				$articles = self::$ci->article_model->get_from_categories(
 					$where,
@@ -243,7 +260,7 @@ class TagManager_Article extends TagManager
 		
 		// Here, we are in an article list configuration : More than one article, page display
 		// If the article-list view exists, we will force the article to adopt this view.
-		// Not so much clean to do that in the get_article funtion but for the moment just helpfull...
+		// Not so much clean to do that in the get_article function but for the moment just helpful...
 		foreach ($articles as $k=>$article)
 		{
 			if (empty($article['view']))
@@ -616,16 +633,72 @@ class TagManager_Article extends TagManager
 		}
 	}
 
-	
+
 	// ------------------------------------------------------------------------
-	
+
+	/**
+	 * Returns the current article content
+	 *
+	 * @param	FTL_Binding object
+	 * @return
+	 */
+	public static function tag_article($tag)
+	{
+		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+
+		// Tag cache
+		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
+			return $str;
+
+		// Returned string
+		$str = '';
+
+		if ($_article = TagManager_Page::get_article())
+		{
+			$articles[] = $_article;
+
+			self::prepare_articles($tag, $articles);
+
+			self::init_articles_urls($articles);
+
+			// Add data like URL to each article
+			// and finally render each article
+			if ( ! empty($articles))
+			{
+				self::prepare_articles($tag, $articles);
+
+				$count = count($tag->locals->page['articles']);
+
+				foreach($tag->locals->page['articles'] as $key=>$article)
+				{
+					// Render the article
+					$tag->locals->article = $article;
+					$tag->locals->index = $key;
+					$tag->locals->count = $count;
+					$str .= $tag->expand();
+				}
+			}
+
+			$output = self::wrap($tag, $str);
+
+			// Tag cache
+			self::set_cache($tag, $output);
+
+			return $output;
+		}
+
+		return '';
+	}
+
+	// ------------------------------------------------------------------------
+
 
 
 	/**
 	 * Returns the articles tag content
-	 * 
-	 * @param	FTL_Binding object 
-	 * @return 
+	 *
+	 * @param	FTL_Binding object
+	 * @return
 	 */
 	public static function tag_articles($tag)
 	{
@@ -637,7 +710,7 @@ class TagManager_Article extends TagManager
 
 		// Returned string
 		$str = '';
-
+/*
 		// Page from locals
 		$pages =&  $tag->locals->pages;
 
@@ -652,7 +725,7 @@ class TagManager_Article extends TagManager
 
 		// Last part of the URI
 		$uri_last_part = array_pop(explode('/', uri_string()));
-		
+*/
 		/* Get the articles
 		 *
 		 */
@@ -662,56 +735,14 @@ class TagManager_Article extends TagManager
 		$random = (isset($tag->attr['random'])) ? (bool) $tag->attr['random'] : FALSE;
 		if($random) shuffle ($articles);
 		
-		// Number of articles
-		$count = count($articles);
-		
 		// Add data like URL to each article
 		// and finally render each article
 		if ( ! empty($articles))
 		{
-			// Articles index starts at 1.
-			$index = 1;
-		
-			foreach($articles as $key => $article)
-			{
-				// Force the view if the "view" attribute is defined
-				if ($view !== FALSE)
-				{	
-					$articles[$key]['view'] = $view;
-				}
-	
-				$articles[$key]['active_class'] = '';
-// Correct this				
-				if (!empty($tag->attr['active_class']))
-				{
-					$article_url = array_pop(explode('/', $article['url']));
-					if ($uri_last_part == $article_url)
-					{
-						$articles[$key]['active_class'] = $tag->attr['active_class'];
-					}
-				}
+			self::prepare_articles($tag, $articles);
 
-				// Limit to x paragraph if the attribute is set
-				if ($paragraph !== FALSE)
-					$articles[$key]['content'] = tag_limiter($article['content'], 'p', $paragraph);
-
-				// Autolink the content
-				if ($auto_link)
-					$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
-				
-				
-				// Article's index
-				$articles[$key]['index'] = $index++;
-				
-				// Article's count
-				$articles[$key]['count'] = $count;
-			}
-
-			// Set the articles
-			$tag->locals->page['articles'] = $articles;
-	
 			$count = count($tag->locals->page['articles']);
-			
+
 			foreach($tag->locals->page['articles'] as $key=>$article)
 			{
 				// Render the article
@@ -946,14 +977,14 @@ class TagManager_Article extends TagManager
 		$category_uri = $uri_config['category'];
 
 		// Get the categories from current article
-		$categories = $tag->locals->article['categories'];	
+
+		$categories = ( ! empty($tag->locals->article['categories'])) ? $tag->locals->article['categories'] : array();
 
 		// Build the anchor array
 		foreach($categories as $category)
 		{
 			$category_string = '';
-			
-			
+
 			if ($subtag !== FALSE)
 			{
 				// Set the local category, to get the class from current category
@@ -1057,12 +1088,9 @@ class TagManager_Article extends TagManager
 		// Page URL index to use
 		$page_url = (config_item('url_mode') == 'short') ? 'url' : 'path';
 
-		
 		// If lang attribute is set to TRUE, force the lang code to be in the URL
 		// Usefull only if the website has only one language
 		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
-		
-		
 		
 		// If link, return the link
 		if ($tag->locals->article['link_type'] != '' )
@@ -1078,7 +1106,6 @@ class TagManager_Article extends TagManager
 			{
 				return auto_link($tag->locals->article['link'], 'both', TRUE);
 			}
-			
 			
 			// If link to one article, get the page to build the complete link
 			if($tag->locals->article['link_type'] == 'article')
@@ -1263,7 +1290,68 @@ class TagManager_Article extends TagManager
 		
 		return $wished_article;
 	}
-	
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Set the parent scope
+	 *
+	 * @param	Object  FTL_Binding object
+	 *
+	 * @return  Array   Where condition
+	 *                  If the "level" attribute isn't correct, returns the current page condition
+	 *
+	 * @usage
+	 * <ion articles scope="parent" level="-1" all-parents="<TRUE/FALSE>">
+	 *
+	 * The "level" attribute can be positive, negative, or not set.
+	 * If negative, the level will be defined by comparison to the current page level.
+	 * For example, if the current page has the level 4, level="-3" will consider the
+	 * parent page which has the level "1".
+	 * If positive, it will return the parent page at the exact asked level.
+	 * For example, if the current page is at level 4, level="2" will consider the
+	 * parent page which is at level 2.
+	 * Default value : -1 (one level up parent)
+	 *
+	 * The "all" attribute is used to set if the full parent path is to be used, means
+	 * including the pages which has not the flag "has URL" checked in Ionize.
+	 * Default value : FALSE
+	 *
+	 */
+	static function set_parent_scope($tag)
+	{
+		$where = array();
+
+		// ID page from where get the articles
+		$id_page = NULL;
+
+		// Tag attributes
+		$level = $tag->getAttribute('level');
+		$all_parents = ( $tag->getAttribute('all-parents') == TRUE) ? TRUE : FALSE;
+
+		// Path IDs
+		if ($all_parents)
+			$path_ids = explode('/', $tag->locals->page['full_path_ids']);
+		else
+			$path_ids = explode('/', $tag->locals->page['path_ids']);
+
+		// Level
+		if (is_null($level))
+			$level = -1;
+
+		if ($level < 0)
+			$level = $tag->locals->page['level'] + $level;
+
+		if (isset($path_ids[$level]))
+			$id_page = $path_ids[$level];
+
+		if ( ! is_null($id_page))
+			$where['id_page'] = $id_page;
+
+		return $where;
+	}
+
+
 
 	/**
 	 * Processes the next / previous article tags result
@@ -1299,6 +1387,63 @@ class TagManager_Article extends TagManager
 		return '';
 	}	
 
+
+	private static function prepare_articles($tag, $articles)
+	{
+		// Articles index starts at 1.
+		$index = 1;
+
+		// view
+		$view = (isset($tag->attr['view']) ) ? $tag->attr['view'] : FALSE;
+
+		// paragraph limit ?
+		$paragraph = (isset($tag->attr['paragraph'] )) ? self::get_attribute($tag, 'paragraph') : FALSE ;
+
+		// auto_link
+		$auto_link = (isset($tag->attr['auto_link']) && strtolower($tag->attr['auto_link'] == 'false') ) ? FALSE : TRUE ;
+
+		// Last part of the URI
+		$uri_last_part = array_pop(explode('/', uri_string()));
+
+		$count = count($articles);
+
+		foreach($articles as $key => $article)
+		{
+			// Force the view if the "view" attribute is defined
+			if ($view !== FALSE)
+			{
+				$articles[$key]['view'] = $view;
+			}
+
+			$articles[$key]['active_class'] = '';
+// Correct this
+			if (!empty($tag->attr['active_class']))
+			{
+				$article_url = array_pop(explode('/', $article['url']));
+				if ($uri_last_part == $article_url)
+				{
+					$articles[$key]['active_class'] = $tag->attr['active_class'];
+				}
+			}
+
+			// Limit to x paragraph if the attribute is set
+			if ($paragraph !== FALSE)
+				$articles[$key]['content'] = tag_limiter($article['content'], 'p', $paragraph);
+
+			// Autolink the content
+			if ($auto_link)
+				$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
+
+			// Article's index
+			$articles[$key]['index'] = $index++;
+
+			// Article's count
+			$articles[$key]['count'] = $count;
+		}
+
+		// Set the articles
+		$tag->locals->page['articles'] = $articles;
+	}
 }
 
 TagManager_Article::init();

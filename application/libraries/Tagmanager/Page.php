@@ -20,7 +20,7 @@ require_once APPPATH.'libraries/Pages.php';
 
 class TagManager_Page extends TagManager
 {	
-	protected static $_inited = false;
+	protected static $_inited = FALSE;
 	
 	protected static $pagination_uri = '';
 	
@@ -41,6 +41,13 @@ class TagManager_Page extends TagManager
 	
 	public static $tag_definitions = array
 	(
+		// pages
+		'pages' => 				'tag_pages',
+		'pages:title' => 		'tag_page_title',
+		'pages:subtitle' => 	'tag_page_subtitle',
+		'pages:url' => 			'tag_page_url',
+		'pages:content' => 		'tag_page_content',
+
 		// Page
 		'period' => 			'tag_period',
 		'pagination' =>			'tag_pagination',
@@ -51,12 +58,9 @@ class TagManager_Page extends TagManager
 		'prev_page' =>			'tag_prev_page',
 		'next_article' =>		'tag_next_article',
 		'prev_article' =>		'tag_prev_article',
-		
-		
-		// Page
-/*
+
 		'page' => 				'tag_page',
-*/
+
 		'id_page' => 			'tag_page_id',
 		'page:name' => 			'tag_page_name',
 		'page:url' => 			'tag_page_url',
@@ -64,7 +68,9 @@ class TagManager_Page extends TagManager
 		'subtitle' => 			'tag_page_subtitle',
 		'meta_title' => 		'tag_page_meta_title',
 		'content' =>			'tag_page_content',
-		
+
+
+
 		// Breadrumb
 		'breadcrumb' =>			'tag_breadcrumb',
 	);
@@ -150,10 +156,10 @@ class TagManager_Page extends TagManager
 		if ( ! empty($article))
 		{
 			self::$_article = $article;
-			$page['view'] = ($page['view_single'] != false) ? $page['view_single'] : $page['view'];
+			$page['view'] = ($page['view_single'] != FALSE) ? $page['view_single'] : $page['view'];
 		}
 		
-		self::$view = ($page['view'] != false) ? $page['view'] : Theme::get_default_view('page');
+		self::$view = ($page['view'] != FALSE) ? $page['view'] : Theme::get_default_view('page');
 
 		self::render();
 	}
@@ -202,7 +208,7 @@ class TagManager_Page extends TagManager
 	 * @return	array			Array of the page data. Can be empty.
 	 *
 	 */
-	protected static function get_current_page()
+	public static function get_current_page()
 	{
 		$uri = self::$ci->uri->uri_string();
 
@@ -326,7 +332,7 @@ class TagManager_Page extends TagManager
 	 * @param	FTL_Context		FTL_ArrayContext array object
 	 * @return	Array			Home page data array or an empty array if no home page is found
 	 */
-	protected static function get_home_page()
+	public static function get_home_page()
 	{
 		if( ! empty(self::$context->globals->pages))
 		{
@@ -359,7 +365,7 @@ class TagManager_Page extends TagManager
 	 * @param	string	Page name
 	 * @return	array	Page data array
 	 */
-	protected static function get_page($page_name)
+	public static function get_page($page_name)
 	{
 		foreach(self::$context->globals->pages as $p)
 		{
@@ -381,7 +387,7 @@ class TagManager_Page extends TagManager
 	 * @return	array	Page data array
 	 *
 	 */
-	protected static function get_page_by_url($url)
+	public static function get_page_by_url($url)
 	{
 		foreach(self::$context->globals->pages as $p)
 		{
@@ -397,20 +403,38 @@ class TagManager_Page extends TagManager
 
 	/**
 	 * Get one page from its ID
-	 * 
+	 *
 	 * @param	string	Page ID
 	 * @return	array	Page data array
 	 *
 	 */
-	protected static function get_page_by_id($id_page)
+	public static function get_page_by_id($id_page)
 	{
 		foreach(self::$context->globals->pages as $p)
 		{
 			if ($p['id_page'] == $id_page)
 				return $p;
 		}
-	
-		return array();	
+
+		return array();
+	}
+
+	/**
+	 * Get one page from its code
+	 *
+	 * @param	string	Page code
+	 * @return	array	Page data array
+	 *
+	 */
+	public static function get_page_by_code($code)
+	{
+		foreach(self::$context->globals->pages as $p)
+		{
+			if ($p['name'] == $code)
+				return $p;
+		}
+
+		return array();
 	}
 
 
@@ -527,53 +551,11 @@ class TagManager_Page extends TagManager
 
 
 
-	// ------------------------------------------------------------------------
-
-
-	function set_parent_scope($tag)
-	{
-		$where = array();
-		$in_pages = array();
-	
-		$id_parent = $tag->locals->page['id_parent'];
-		
-		/**
-		 * NOT DONE FOR THE MOMENT
-		 * IDEA :
-		 * Use the parent tag to define a parent scope : 
-		 * Means not only the article from the current page parent can be displayed, but also the 
-		 * articles from parent / parent
-		 *
-		$scope_level = ( ! empty($tag->attr['scope_level'])) ? $tag->attr['scope_level'] : FALSE;
-		
-		// Scope level can be equal to 0 : first level
-		if ($scope_level !== FALSE)
-		{
-		}
-		 */
-		
-		// Get all pages ID where the parent is the current parent ID
-		// Sister pages from current parent page
-		$parents = self::$ci->page_model->get_list(array('id_parent' => $id_parent));
-
-		// Page from locals
-		$pages =&  $tag->locals->pages;
-
-		foreach($parents as $page)
-			$in_pages[] = $page['id_page'];
-		
-		// If not empty, filter articles on id_page
-		if ( ! empty($in_pages))
-			$where['id_page in'] = '('.implode(',', $in_pages).')';
-			
-		return $where;
-	}
-
 
 	// ------------------------------------------------------------------------
 	
 
-	function set_global_scope($tag)
+	function set_global_scope(FTL_Binding $tag)
 	{
 		$where = array();
 		$in_pages = array();
@@ -590,11 +572,105 @@ class TagManager_Page extends TagManager
 		return $where;
 	}
 
+	public static function tag_page(FTL_Binding $tag)
+	{
+		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+
+		// Tag cache
+		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
+			return $str;
+
+		// Returned string
+		$str = '';
+
+		$id = $tag->getAttribute('id');
+
+		if (strval((int)$id) == (string) $id)
+			$page = self::get_page_by_id($id);
+		else
+			$page = self::get_page_by_code($id);
+
+		if ( ! empty($page))
+		{
+			// Render the article
+			$tag->locals->page = $page;
+			$tag->locals->index = 0;
+			$tag->locals->count = 1;
+			$str .= $tag->expand();
+		}
+		$output = self::wrap($tag, $str);
+
+		// Tag cache
+		self::set_cache($tag, $output);
+
+		return $output;
+	}
+
+		/**
+	 * @static
+	 *
+	 * @param $tag
+	 *
+	 * @return mixed
+	 */
+	public static function tag_pages(FTL_Binding $tag)
+	{
+		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+
+		// Tag cache
+//		if ($cache == TRUE && ($str = self::get_cache(FTL_Binding $tag)) !== FALSE)
+//			return $str;
+
+		// Returned string
+		$str = '';
+
+		$parent = $tag->getAttribute('parent');
+		$mode = ( ! is_null($tag->getAttribute('mode'))) ? $tag->getAttribute('mode') : 'flat';
+		$levels = $tag->getAttribute('levels');
+		$parent_page = NULL;
+
+		if ( ! is_null($parent))
+		{
+			if (strval((int)$parent) == (string) $parent)
+				$parent_page = self::get_page_by_id($parent);
+			else
+				$parent_page = self::get_page_by_code($parent);
+		}
+
+		if ( ! empty($parent_page))
+		{
+			if ($mode == 'tree')
+				$pages = Structure::get_tree_navigation($tag->globals->pages, $parent_page['id_page']);
+			else
+				$pages = Structure::get_nested_structure($tag->globals->pages, array(), $parent_page['id_page']);
+		}
+		else
+		{
+			$pages = $tag->locals->pages;
+		}
+
+		$count = count($pages);
+
+		foreach($pages as $key => $page)
+		{
+			// Render the article
+			$tag->locals->page = $page;
+			$tag->locals->index = $key;
+			$tag->locals->count = $count;
+			$str .= $tag->expand();
+		}
+		$output = self::wrap($tag, $str);
+
+		// Tag cache
+		self::set_cache($tag, $output);
+
+		return $output;
+	}
 
 	// ------------------------------------------------------------------------
 	
 
-	public static function tag_last_item($tag)
+	public static function tag_last_item(FTL_Binding $tag)
 	{
 		$value = (isset($tag->attr['value']) ) ? $tag->attr['value'] : TRUE;
 		
@@ -611,7 +687,7 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 	
 
-	public static function tag_first_item($tag)
+	public static function tag_first_item(FTL_Binding $tag)
 	{
 		$value = (isset($tag->attr['value']) ) ? $tag->attr['value'] : TRUE;
 		
@@ -676,10 +752,10 @@ class TagManager_Page extends TagManager
 				if ($scope !== FALSE)
 				{
 					if ($scope == 'parent')
-						$where = self::set_parent_scope($tag);
+						$where = self::set_parent_scope(FTL_Binding $tag);
 			
 					if ($scope == 'global')
-						$where = self::set_global_scope($tag);
+						$where = self::set_global_scope(FTL_Binding $tag);
 				}
 				else
 				{
@@ -842,7 +918,7 @@ class TagManager_Page extends TagManager
 	 * Returns the page absolute URL
 	 *
 	 */
-	public static function tag_absolute_url($tag)
+	public static function tag_absolute_url(FTL_Binding $tag)
 	{
 		return $tag->locals->page['absolute_url'];
 	}
@@ -863,7 +939,7 @@ class TagManager_Page extends TagManager
 	 * Main class name, id, open tag, close tag, every options from cI in fact ! 
 	 *
 	 */
-	public static function tag_pagination($tag)
+	public static function tag_pagination(FTL_Binding $tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -1033,7 +1109,7 @@ class TagManager_Page extends TagManager
 	 * 
 	 */
 /*
-    public static function tag_page($tag)    
+    public static function tag_page(FTL_Binding $tag)    
     {
 		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
 		
@@ -1069,11 +1145,11 @@ class TagManager_Page extends TagManager
 	}
 */
 	
-	public static function tag_page_id($tag) { return self::wrap($tag, $tag->locals->page['id_page']); }
-	public static function tag_page_name($tag) { return self::wrap($tag, $tag->locals->page['name']); }
-    public static function tag_page_url($tag)	{ return self::wrap($tag, $tag->locals->page['url']); }
-	public static function tag_page_subtitle($tag) { return self::wrap($tag, $tag->locals->page['subtitle']); }
-	public static function tag_page_date($tag) { return self::format_date($tag, $tag->locals->page['date']); }
+	public static function tag_page_id(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->page['id_page']); }
+	public static function tag_page_name(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->page['name']); }
+    public static function tag_page_url(FTL_Binding $tag)	{ return self::wrap($tag, $tag->locals->page['url']); }
+	public static function tag_page_subtitle(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->page['subtitle']); }
+	public static function tag_page_date(FTL_Binding $tag) { return self::format_date($tag, $tag->locals->page['date']); }
 
 
 	// ------------------------------------------------------------------------
@@ -1090,7 +1166,7 @@ class TagManager_Page extends TagManager
      * @returns     String        The page title, wrapped or not by the optional defined tags.
      *
      */
-    public static function tag_page_title($tag)    
+    public static function tag_page_title(FTL_Binding $tag)    
     {
         // Is the asked title from another page ?
         $from = (isset($tag->attr['from'])) ? $tag->attr['from'] : FALSE ;
@@ -1121,7 +1197,7 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 	
 	
-	public static function tag_page_meta_title($tag)
+	public static function tag_page_meta_title(FTL_Binding $tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -1192,7 +1268,7 @@ class TagManager_Page extends TagManager
 	 *
 	 *
 	 */
-	public static function tag_page_medias($tag)
+	public static function tag_page_medias(FTL_Binding $tag)
 	{
 		$medias = ( ! empty($tag->locals->page['medias'])) ? $tag->locals->page['medias'] : FALSE;
 		
@@ -1207,7 +1283,7 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 	
 	
-	public static function tag_page_content($tag)
+	public static function tag_page_content(FTL_Binding $tag)
 	{
 		$content = ( ! empty($tag->locals->page['content'])) ? $tag->locals->page['content'] : '';
 
@@ -1299,7 +1375,7 @@ class TagManager_Page extends TagManager
 	 *							This calls the function "get_next_prev_page" in the helper /application/helpers/navigation_helper.php"
 	 *
 	 */
-	public static function tag_next_page($tag)
+	public static function tag_next_page(FTL_Binding $tag)
 	{
 		$page = self::get_adjacent_page($tag, 'next');
 	
@@ -1321,7 +1397,7 @@ class TagManager_Page extends TagManager
 	 *							This calls the function "get_next_prev_page" in the helper /application/helpers/navigation_helper.php"
 	 *
 	 */
-	public static function tag_prev_page($tag)
+	public static function tag_prev_page(FTL_Binding $tag)
 	{
 		$page = self::get_adjacent_page($tag, 'prev');
 	
@@ -1381,7 +1457,7 @@ class TagManager_Page extends TagManager
 	 * @return	String	The parsed view
 	 * 
 	 */
-	public static function tag_breadcrumb($tag)
+	public static function tag_breadcrumb(FTL_Binding $tag)
 	{
 		// Anchor enclosing tag 
 		$subtag_open = (isset($tag->attr['subtag'])) ? '<' . $tag->attr['subtag'] . '>' : '';
@@ -1474,7 +1550,7 @@ class TagManager_Page extends TagManager
 	 * Renders the <ion:articles /> last_article sub tag
 	 *
 	 */
-	public static function tag_last_articles_article($tag)
+	public static function tag_last_articles_article(FTL_Binding $tag)
 	{
 		return self::tag_articles_article($tag);
 	}

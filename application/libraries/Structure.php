@@ -78,7 +78,7 @@ class Structure{
 	 * @param	array	Optional. Articles array
 	 *
 	 */
-	function get_nested_structure(&$data, &$arr, $parent, $startDepth, $maxDepth=FALSE, $articles=FALSE)
+	function get_nested_structure(&$data, &$arr, $parent, $startDepth=0, $maxDepth=FALSE, $articles=FALSE)
 	{
 		if ($maxDepth !== FALSE && $maxDepth-- == 0) return;
 		$index = 0;

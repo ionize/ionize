@@ -51,6 +51,11 @@ form .inputtext {
 	padding:4px;
 	width:150px;
 }
+form .inputtext:focus {
+	background:#f5f5f5;
+	border:1px solid #fff;
+}
+
 form div {
 	margin-bottom:5px;
 }

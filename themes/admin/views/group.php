@@ -4,9 +4,16 @@
  * Modal window for Editing a group
  *
  */
+
+if ( ! empty($group['id_group']))
+	$action = 'update';
+else
+	$action = 'save';
+
+
 ?>
 
-<form name="groupForm" id="groupForm" action="<?= admin_url() ?>groups/update">
+<form name="groupForm<?= $group['id_group'] ?>" id="groupForm<?= $group['id_group'] ?>" action="<?= admin_url() ?>groups/<?= $action ?>">
 
 	<!-- Hidden fields -->
 	<input id="group_PK" name="group_PK" type="hidden" value="<?= $group['id_group'] ?>" />
@@ -54,6 +61,6 @@
 </form>
 
 <div class="buttons">
-	<button id="bSave<?= $group['id_group'] ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
-	<button id="bCancel<?= $group['id_group'] ?>"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
+	<button id="bSavegroup<?= $group['id_group'] ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
+	<button id="bCancelgroup<?= $group['id_group'] ?>"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
 </div>
