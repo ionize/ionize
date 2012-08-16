@@ -37,7 +37,10 @@ class TagManager_Page extends TagManager
 	
 	// Int. Segment index of $ci->uri->uri_string() of the special URI
 	protected static $_special_uri_segment = NULL;
-	
+
+	// Logical URI segment array (without the default controller and the function name segments)
+	protected static $_uri_segment_array = NULL;
+
 	
 	public static $tag_definitions = array
 	(
@@ -60,7 +63,6 @@ class TagManager_Page extends TagManager
 		'prev_article' =>		'tag_prev_article',
 
 		'page' => 				'tag_page',
-
 		'id_page' => 			'tag_page_id',
 		'page:name' => 			'tag_page_name',
 		'page:url' => 			'tag_page_url',
@@ -68,8 +70,6 @@ class TagManager_Page extends TagManager
 		'subtitle' => 			'tag_page_subtitle',
 		'meta_title' => 		'tag_page_meta_title',
 		'content' =>			'tag_page_content',
-
-
 
 		// Breadrumb
 		'breadcrumb' =>			'tag_breadcrumb',
@@ -156,7 +156,7 @@ class TagManager_Page extends TagManager
 		if ( ! empty($article))
 			self::$_article = $article;
 
-		self::$view = self::get_page_view($page);
+		self::$view = self::_get_page_view($page);
 
 		self::render();
 	}
@@ -268,11 +268,9 @@ class TagManager_Page extends TagManager
 		if ( is_null(self::$_special_uri))
 		{
 			$uri_config = self::$ci->config->item('special_uri');
-			$segments = self::$ci->uri->segment_array();
-			
-			// Limit the array to the potential special URI, and avoid taking the first "page" segment.
-			$segment_index = count($segments) - 3;
-			$segments = array_slice($segments, 2);
+
+			$segments = self::get_uri_segment_array();
+			$segment_index = count($segments) - 1;
 
 			while( ! empty($segments))
 			{
@@ -288,7 +286,32 @@ class TagManager_Page extends TagManager
 		}
 		return self::$_special_uri;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the current segment array, without the default controller and function names
+	 *
+	 * @return string|null
+	 *
+	 */
+	function get_uri_segment_array()
+	{
+		if ( is_null(self::$_uri_segment_array))
+		{
+			$segments = self::$ci->uri->segment_array();
+			$segments = array_slice($segments, 2);
+			self::$_uri_segment_array = $segments;
+		}
+		return self::$_uri_segment_array;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return the special URI segment index regarding to self::$ci->uri->segment_array()
 	 *
@@ -304,8 +327,28 @@ class TagManager_Page extends TagManager
 		}
 		return self::$_special_uri_segment;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Return the last part of the URI
+	 *
+	 * @return 	string|null
+	 */
+	function get_last_uri_part()
+	{
+		$uri_segments = self::get_uri_segment_array();
+		if ( ! is_null($uri_segments))
+			return array_pop(array_slice($uri_segments, -1));
+
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns the page path without the special URI path
 	 *
@@ -313,9 +356,9 @@ class TagManager_Page extends TagManager
 	 */
 	function get_page_path_from_special_uri()
 	{
-		$special_uri = self::get_special_uri();
+		$slice = array_slice(self::get_uri_segment_array(), 0, self::get_special_uri_segment()  );
 
-		return implode('/', array_slice(self::$ci->uri->segment_array(), 2, $special_uri  ));
+		return implode('/', $slice);
 	}
 	
 
@@ -440,10 +483,8 @@ class TagManager_Page extends TagManager
 
 	public function get_module_page()
 	{
-		$segments = self::$ci->uri->segment_array();
-
 		// Limit the array to not consider the first "page" segment.
-		$segments = array_slice($segments, 2);
+		$segments = self::get_uri_segment_array();
 
 		while( ! empty($segments))
 		{
@@ -452,9 +493,7 @@ class TagManager_Page extends TagManager
 			$page = self::get_page_by_url($uri_string);
 
 			if (! empty($page) && $page['used_by_module'] == TRUE)
-			{
 				return $page;
-			}
 		}
 
 		return array();
@@ -1209,8 +1248,7 @@ class TagManager_Page extends TagManager
 		if ($special_uri !== FALSE && ! array_key_exists($special_uri, $uri_config) )
 		{
 			// Try to find an article with the name of the last part of the URL.
-			$uri_segments = self::$uri_segments;
-			$name = array_pop(array_slice($uri_segments, -1));
+			$name = self::get_last_uri_part();
 
 			$article =  self::$ci->article_model->get(
 				array('name' => $name), 
@@ -1541,27 +1579,6 @@ class TagManager_Page extends TagManager
 
 
 	// ------------------------------------------------------------------------
-
-
-	private static function get_page_view($page)
-	{
-		$view = FALSE;
-
-		if ( ! empty(self::$_article))
-			$view = ($page['view_single'] != FALSE) ? $page['view_single'] : $page['view'];
-		else
-			$view = $page['view'];
-
-		$view_path = Theme::get_theme_path().'views/'.$view.EXT;
-
-		// Return the Ionize core view
-		if ( ! file_exists($view_path) OR empty($view))
-			$view = Theme::get_default_view('page');
-
-		return $view;
-	}
-	
-	// ------------------------------------------------------------------------
 	
 	
 	/**
@@ -1615,6 +1632,28 @@ class TagManager_Page extends TagManager
 			return FALSE;
 		}
 		return TRUE;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	private static function _get_page_view($page)
+	{
+		$view = FALSE;
+
+		if ( ! empty(self::$_article))
+			$view = ($page['view_single'] != FALSE) ? $page['view_single'] : $page['view'];
+		else
+			$view = $page['view'];
+
+		$view_path = Theme::get_theme_path().'views/'.$view.EXT;
+
+		// Return the Ionize core view
+		if ( ! file_exists($view_path) OR empty($view))
+			$view = Theme::get_default_view('page');
+
+		return $view;
 	}
 
 }

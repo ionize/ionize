@@ -128,7 +128,7 @@ class TagManager_Article extends TagManager
 		$scope = $tag->getAttribute('scope');
 
 		// from page name ?
-		$from_page = $tag->getAttribute('from') ;
+		$from_page = $tag->getAttribute('from');
 
 		// from categories ? 
 		$from_categories = $tag->getAttribute('from_categories');
@@ -147,12 +147,15 @@ class TagManager_Article extends TagManager
 		if ($type !== NULL)
 		{
 			if ($type == '')
+			{
 				$where['article_type.type'] = 'NULL';
+				$type = NULL;
+			}
 			else
 				$where['article_type.type'] = $type;
 		}
 
-		// If a page name is set, returns only articles from this page
+		// If a page name or ID is set, returns only articles from this page
 		if ($from_page !== NULL)
 		{
 			// Get the asked page details
@@ -160,10 +163,12 @@ class TagManager_Article extends TagManager
 
 			$in_pages = array();
 			
-			// Check if one lang URL of each page can be used for filter
+			// Check if the page code or ID of each page can be used for filter
 			foreach($pages as $page)
 			{
 				if (in_array($page['name'], $asked_pages))
+					$in_pages[] = $page['id_page'];
+				elseif(in_array($page['id_page'], $asked_pages))
 					$in_pages[] = $page['id_page'];
 			}
 
@@ -200,12 +205,10 @@ class TagManager_Article extends TagManager
 		 *
 		 */
 		// If a special URI exists, get the articles from it.
-		if ( ! is_null($special_uri) && $from_page === FALSE && $type === FALSE)
+		if ( ! is_null($special_uri) && is_null($from_page) && (is_null($type)))
 		{
 			if (method_exists(__CLASS__, 'get_articles_from_'.$special_uri))
-			{
 				$articles = call_user_func(array(__CLASS__, 'get_articles_from_'.$special_uri), $tag, $where, $filter);
-			}
 		}
 		// Get all the page articles
 		// If Pagination is active, set the limit. This articles result is the first page of pagination
@@ -357,7 +360,7 @@ class TagManager_Article extends TagManager
 		// Get the start index for the SQL limit query param : last part of the URL
 		$uri_segments = self::$uri_segments;
 		$start_index = array_pop(array_slice($uri_segments, -1));
-		
+
 		// URI of the category segment
 		$cat_segment_pos = TagManager_Page::get_special_uri_segment();
 		
@@ -505,6 +508,7 @@ class TagManager_Article extends TagManager
 
 		return $article;
 	}
+
 
 	// ------------------------------------------------------------------------
 
