@@ -40,7 +40,7 @@ class Media extends MY_admin
 
 		// Models
 		$this->load->model('media_model');
-		$this->load->model('extend_field_model', '', true);
+		$this->load->model('extend_field_model', '', TRUE);
 
 		// Librairies
 		$this->load->library('medias');
@@ -150,7 +150,7 @@ class Media extends MY_admin
 		if ($event != 'upload')
 		{
 //			$this->Filemanager->fireEvent(!is_null($event) ? $event : null);
-			$this->Filemanagerwithaliassupport->fireEvent(!is_null($event) ? $event : null);
+			$this->Filemanagerwithaliassupport->fireEvent(!is_null($event) ? $event : NULL);
 		}
 		else
 		{
@@ -265,15 +265,15 @@ class Media extends MY_admin
 		{
 			// Media List view
 			if ($type == 'picture')
-				$view = $this->load->view('media_picture_list', $data, true);
+				$view = $this->load->view('media_picture_list', $data, TRUE);
 			else
-				$view = $this->load->view('media_list', $data, true);
+				$view = $this->load->view('media_list', $data, TRUE);
 			
 			// Addon data to the answer			
 			$output_data = array('type' => $type, 'content' => $view);
 			
 			// Answer send
-			$this->success(null, $output_data);
+			$this->success(NULL, $output_data);
 		}
 	}
 
@@ -525,8 +525,6 @@ class Media extends MY_admin
 	{
 		$pictures =	$this->media_model->get_list($parent, $id_parent, 'picture');
 
-		$return = true;
-
 		foreach($pictures as $picture)
 		{
 			try
@@ -574,6 +572,21 @@ class Media extends MY_admin
 	}
 
 
+	function delete_thumbs()
+	{
+		$thumb_path = DOCPATH . Settings::get('files_path'). '/.thumbs/';
+		delete_files($thumb_path, TRUE);
+
+		$result = array(
+			'title' => lang('ionize_title_delete_thumbs'),
+			'status' => 'success',
+			'message' => lang('ionize_message_thumbs_deleted'),
+		);
+
+		$this->xhr_output($result);
+
+	}
+
 	// ------------------------------------------------------------------------
 
 
@@ -588,7 +601,7 @@ class Media extends MY_admin
 	 */
 	function detach_media($type, $parent, $id_parent, $id_media) 
 	{
-		if ($parent !== false && $id_parent !== false && $id_media !== false)
+		if ($parent !== FALSE && $id_parent !== FALSE && $id_media !== FALSE)
 		{			
 			// Clear the cache
 			Cache()->clear_cache();
@@ -625,9 +638,9 @@ class Media extends MY_admin
 	 * @param	string 	parent ID
 	 *
 	 */
-	function detach_media_by_type($parent, $id_parent, $type = false)
+	function detach_media_by_type($parent, $id_parent, $type = FALSE)
 	{
-		if ($parent !== false && $id_parent !== false && $type !== false)
+		if ($parent !== FALSE && $id_parent !== FALSE && $type !== FALSE)
 		{
 			// Clear the cache
 			Cache()->clear_cache();
@@ -755,7 +768,7 @@ class Media extends MY_admin
 
 		foreach ($fields as $field)
 		{
-			if ( $this->input->post($field) !== false)
+			if ( $this->input->post($field) !== FALSE)
 			{
 				$data[$field] = $this->input->post($field);
 			}
@@ -770,7 +783,7 @@ class Media extends MY_admin
 		{
 			foreach ($fields as $field)
 			{
-				if ( $this->input->post($field.'_'.$language['lang']) !== false)
+				if ( $this->input->post($field.'_'.$language['lang']) !== FALSE)
 					$lang_data[$language['lang']][$field] = $this->input->post($field.'_'.$language['lang']);
 			}
 		}
@@ -813,7 +826,7 @@ class Media extends MY_admin
 			$this->medias->delete_squares($media);
 		}
 		
-		if ( $this->id !== false )
+		if ( $this->id !== FALSE )
 		{
 			// Error Message
 			$this->callback = array(
@@ -824,7 +837,6 @@ class Media extends MY_admin
 			);
 
 			$this->response();
-
 
 //			$this->success(lang('ionize_message_media_data_saved'));
 		}
@@ -892,9 +904,6 @@ class Media extends MY_admin
         header("Content-Type: $mime");
         header("Expires: $expires");
         header("Cache-Control: max-age=$expire");
-/*
-        header("Pragma: !invalid");
-*/
         header("Content-Length: $size");
 
         echo $content;
@@ -910,6 +919,7 @@ class Media extends MY_admin
 	 * @access	private
 	 *
 	 * @param	string	Picture ID
+	 * @throws 	Exception
 	 *
 	 * Thumb settings : Array(
 	 *						max_width : max width
@@ -1186,7 +1196,7 @@ class Media extends MY_admin
 
 			$getID3 = new getID3;
 			$getID3->setOption(array('encoding'=>'UTF-8'));
-			getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.php', __FILE__, true);
+			getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.php', __FILE__, TRUE);
 
 
 			$tagwriter = new getid3_writetags;
@@ -1204,7 +1214,7 @@ class Media extends MY_admin
 			}
 			return TRUE;
 		}
-		return FALSE;		
+		return FALSE;
 	}
 	
 	

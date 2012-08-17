@@ -548,18 +548,22 @@
 						<a class="button light left" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
 							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_pictures') ?>
 						</a>
+						<?php
+						/*
 						<a class="button light left" onclick="javascript:mediaManager.initThumbsForParent();return false;">
 							<i class="icon-process"></i><?= lang('ionize_label_init_all_thumbs') ?>
 						</a>
+						*/
+						?>
 					</p>
-				
+
 					<div id="pictureContainer" class="sortable-container"></div>
-	
+
 				</div>
 			</div>
 
 		</fieldset>
-		
+
 	</div>
 
 </form>

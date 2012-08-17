@@ -1086,6 +1086,7 @@ $lang['ionize_title_rebuild_articles_urls'] = 'Rebuild of Articles URLs';
 $lang['ionize_title_clean_media'] = 'Clean Media';
 $lang['ionize_title_check_reports'] = 'Reports';
 $lang['ionize_title_broken_media_links'] = 'Media broken links';
+$lang['ionize_title_delete_thumbs'] = 'Delete thumbs';
 
 
 
@@ -1095,7 +1096,7 @@ $lang['ionize_text_check_page_level'] = 'Checks the page level integrity and cor
 $lang['ionize_text_check_article_context'] = 'Checks if all articles which have only one page context have the page as "Main Parent".<br/>Corrects if needed.';
 $lang['ionize_text_clean_media'] = 'Removes the non used medias from media tables. Do not removes any media file.';
 $lang['ionize_text_broken_media_links'] = 'Lists the media files which are in media table (means used) but not found on the server (file missing).';
-
+$lang['ionize_text_delete_thumbs'] = 'Deletes all the picture\'s thumbnails. The thumbnails will be created again once a visitor access the page using them';
 $lang['ionize_title_label_write_rights'] = 'Write rights';
 
 
@@ -1104,6 +1105,7 @@ $lang['ionize_message_check_ok'] = 'OK';
 $lang['ionize_message_check_folder_nok'] = 'No Write rights';
 $lang['ionize_message_nb_media_cleaned'] = ' media cleaned';
 $lang['ionize_message_no_broken_media_links'] = 'No broken media found';
+$lang['ionize_message_thumbs_deleted'] = 'Thumbnails deleted';
 
 $lang['ionize_label_square_crop_area'] = 'Square crop area';
 $lang['ionize_label_top_left'] = 'top-left';

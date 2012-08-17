@@ -114,6 +114,15 @@
 						</td>
 						<td class="middle"><?php echo lang('ionize_text_clean_lang_tables'); ?></td>
 					</tr>
+					<!-- Thumbs delete -->
+					<tr>
+						<td class="middle right pr10">
+							<a class="button light check-btn" data-href="media/delete_thumbs">
+								<i class="icon-pictures"></i><?php echo lang('ionize_title_delete_thumbs'); ?>
+							</a>
+						</td>
+						<td class="middle"><?php echo lang('ionize_text_delete_thumbs'); ?></td>
+					</tr>
 
 
 				</tbody>
