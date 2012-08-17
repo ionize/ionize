@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS article_lang (
 CREATE TABLE IF NOT EXISTS article_media (
   id_article int(11) UNSIGNED NOT NULL default 0,
   id_media int(11) UNSIGNED NOT NULL default 0,
+  online tinyint(1) UNSIGNED NOT NULL default 1,
   ordering int(11) UNSIGNED default 9999,
   url varchar(255) default NULL,
   lang_display varchar(3) DEFAULT NULL,
@@ -400,6 +401,7 @@ CREATE TABLE IF NOT EXISTS page_lang (
 CREATE TABLE IF NOT EXISTS page_media (
   id_page int(11) UNSIGNED NOT NULL default 0,
   id_media int(11) UNSIGNED NOT NULL default 0,
+  online tinyint(1) UNSIGNED NOT NULL default 1,
   ordering int(11) UNSIGNED default 9999,
   lang_display varchar(3) DEFAULT NULL,
   PRIMARY KEY  (id_page,id_media)
@@ -462,7 +464,7 @@ CREATE TABLE IF NOT EXISTS users (
   screen_name varchar(50) collate utf8_unicode_ci default NULL,
   firstname varchar(100) NOT NULL,
   lastname varchar(100) DEFAULT NULL,
-  birth_date datetime NOT NULL,
+  birth_date datetime DATETIME NOT NULL,
   gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
   password varchar(255) collate utf8_unicode_ci NOT NULL,
   email varchar(120) collate utf8_unicode_ci NOT NULL,

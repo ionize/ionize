@@ -131,9 +131,17 @@
 		) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
  	</query>
 
+    <query>
+        ALTER TABLE `page_media` ADD online tinyint(1) UNSIGNED NOT NULL default 1;
+    </query>
+
+    <query>
+        ALTER TABLE `article_media` ADD online tinyint(1) UNSIGNED NOT NULL default 1;
+    </query>
 
 
-	<query>ALTER TABLE article ENGINE = InnoDB;</query>
+
+    <query>ALTER TABLE article ENGINE = InnoDB;</query>
 	<query>ALTER TABLE article_category ENGINE = InnoDB;</query>
 	<query>ALTER TABLE article_comment ENGINE = InnoDB;</query>
 	<query>ALTER TABLE article_lang ENGINE = InnoDB;</query>
