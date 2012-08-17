@@ -14,46 +14,51 @@ require_once strtr(dirname(__FILE__), '\\', '/') .'/../helpers/trace_helper.php'
 class CI_Router
 {
 	public $config;
-	public $routes 		= array();
-	public $error_routes	= array();
-	public $uri_protocol 	= 'auto';
-	public $default_controller;
+	public $routes = array();
+	public $error_routes = array();
+	public $uri_protocol = 'auto';
+	public $default_controller = NULL;
 	public $scaffolding_request = FALSE; // Must be set to FALSE
 
-	/**
+	/*
 	 * The name of the module currently in.
 	 */
-	public $module			= false;
-	/**
-	 * The path to the module.
+	public $module = FALSE;
+
+	/*
+	 * Path to the module.
 	 */
-	public $module_path		= false;
-	/**
+	public $module_path	= FALSE;
+
+	/*
 	 * Class and controller file name
 	 */
-	public $class			= '';
-	/**
+	public $class = '';
+
+	/*
 	 * Method to be called
 	 */
-	public $method			= 'index';
-	/**
+	public $method = 'index';
+
+	/*
 	 * Directory with the controller in.
 	 */
-	public $directory		= '';
-	/**
+	public $directory = '';
+
+	/*
 	 * Language key to use.
 	 */
-	public $lang_key		= '';
-	/**
+	public $lang_key = '';
+
+	/*
 	 * List of languages which can be used.
 	 * 
 	 * Format: array(lang_abbreviation => human_readable_english)
 	 */
-	public $lang_dict		= array();
-	/**
-	 * List of language abbreviations to ignore.
-	 */
-	public $lang_ignore		= array();
+	public $lang_dict = array();
+
+
+	public $lang_online = array();
 
 
 	function __construct()
@@ -68,20 +73,16 @@ class CI_Router
 		$this->uri = load_class('URI');
 		
 		// default language abbreviation
-		$this->lang_key = $this->config->item('language_abbr');
+		$this->lang_key = $this->config->item('default_lang_code');
 
 		// all available website languages
-		$this->lang_dict = $this->config->item('lang_uri_abbr');
+		$this->lang_dict = $this->config->item('available_languages');
 		
- 		$this->lang_online = $this->config->item('lang_online_abbr');
-                
-		// ignore lang array
-		$this->lang_ignore = (Array) $this->config->item('lang_ignore');
+ 		$this->lang_online = $this->config->item('online_languages');
 
 		$this->_calc_modpath_apppath_diff();
 
 		$this->_set_routing();
-
 
 		// If maintenance mode, don't go further
 		if (config_item('maintenance') == 1 && $this->uri->segment(1) != config_item('admin_url'))
@@ -115,8 +116,6 @@ class CI_Router
 				die();
 			}
 		}
-		
-
 		log_message('debug', "Router Class Initialized");
 	}
 
@@ -181,7 +180,7 @@ class CI_Router
 				else
 				{
 					// no module with that name exists
-					$this->module = false;
+					$this->module = FALSE;
 				}
 			}
 
@@ -200,13 +199,8 @@ class CI_Router
 			}
 			else
 			{
-				// Browser detection : need to be rewritten
-				// This function does not return the good language in case of root ("/") URL
-				// It just returns the first found browser lang code, which can be incorrect.
-				// $this->detect_language();
-
-				// No browser detection : Ionize defined default lang code.
-				$this->set_default_language();
+				// Lang detection : Cookie, Browser
+				$this->detect_language();
 			}
 		}
 		else
@@ -216,17 +210,17 @@ class CI_Router
 			
 			// use the default controller
 			if(empty($this->uri->uri_string))
-			{
 				$this->load_default_uri();
-			}
+
 			$this->uri->_remove_url_suffix();
 			
 			// clean the uri and explode it
 			$this->explode_segments($this->uri->uri_string);
-			
-			// LANGUAGE:
-			// check if we have a valid language key there
-			if($key = $this->validate_lang_key($raw_key = current($this->uri->segments)))
+
+			$raw_key = current($this->uri->segments);
+
+			// Language key : check if we have a valid language key there
+			if($key = $this->validate_lang_key($raw_key))
 			{
 				$this->lang_key = $key;
 
@@ -253,15 +247,15 @@ class CI_Router
 			}
 			else
 			{
-				// No browser detection : Ionize defined default lang code.
-				$this->set_default_language();
-				
-				// Browser detection : need to be rewritten
-				// This function does not return the good language in case of root ("/") URL
-				// It just returns the first found browser lang code, which can be incorrect.
-//				$this->detect_language();
+				// Lang detection : Cookie, Browser
+				$this->detect_language();
+
+				if ($raw_key == $this->get_default_controller())
+				{
+					$this->redirect_home_to_lang_url();
+				}
 			}
-			// END LANGUAGE
+			// END Language key
 			
 			
 			// get the generated module file and see if we can match to a module
@@ -341,9 +335,7 @@ class CI_Router
 			$val = trim($val);
 
 			if($val != '')
-			{
 				$this->uri->segments[] = $val;
-			}
 		}
 	}
 
@@ -351,13 +343,13 @@ class CI_Router
 
 	/**
 	 * Tries to match the segments to a route.
-	 *
-	 * @return array
+	 * @param	array
+	 * @return	array
 	 */
 	public function match_to_routes($segments)
 	{
 		// get the routes, reverse so we load the module's routes.php last - overwriting the others
-		$files = array_reverse(Finder::find_file('routes', 'config', false, true));
+		$files = array_reverse(Finder::find_file('routes', 'config', FALSE, TRUE));
 
 		foreach($files as $f)
 		{
@@ -372,8 +364,7 @@ class CI_Router
 		// we may have an empty route here, because the first segment could have been a module
 		if(empty($segments))
 		{
-			// $default = empty($routes['default_controller']) ? false : $routes['default_controller'];
-			$default = empty($this->routes['default_controller']) ? false : $this->routes['default_controller'];
+			$default = empty($this->routes['default_controller']) ? FALSE : $this->routes['default_controller'];
 
 			if( ! $default)
 			{
@@ -422,8 +413,8 @@ class CI_Router
 
 	/**
 	 * Finds the correct controller and creates the rerouted segments.
-	 *
-	 * @return void
+	 * @param	array
+	 * @return  void
 	 */
 	public function find_controller($segments)
 	{
@@ -476,7 +467,7 @@ class CI_Router
 	{
 		include APPPATH . 'config/routes.php';
 		
-		$default = empty($route['default_controller']) ? false : $route['default_controller'];
+		$default = empty($route['default_controller']) ? FALSE : $route['default_controller'];
 		
 		if( ! $default)
 		{
@@ -485,101 +476,79 @@ class CI_Router
 
 		$this->uri->uri_string = $default;
 	}
-	
+
+
 	// ------------------------------------------------------------------------
 
-	/**
-	 * Detects the language automatically from the browser data.
-	 * 
-	 * @return void
-	 */
-	public function detect_language()
+
+	public function get_default_controller()
 	{
-		// Because CI 2.0 Reactor loads the Security Class after the Router in CodeIgniter.
-		// And because Input depends on Security
-		$this->config->set_item('global_xss_filtering', FALSE);
-		
-		$input = load_class('Input', 'core');
-		
-		$this->config->set_item('global_xss_filtering', TRUE);
-		
-		// If this script doesn't find a valid language, the really default one will be set
-		$valid_language_found = false;
-
-		// check browser's languages
-		$accepted_langs = $input->server('HTTP_ACCEPT_LANGUAGE');
-
-		if($accepted_langs !== false)
+		if (is_null($this->default_controller))
 		{
-			$accepted_langs = explode(",", strtolower($accepted_langs));
-
-			foreach($accepted_langs as $lang)
-			{
-				// ignore everything after ';', and '-' if present
-				$lang = array_shift(explode('-', array_shift(explode(';', $lang))));
-
-				if($key = $this->validate_lang_key($lang))
-				{
-					$this->lang_key = $key;
-
-					$this->apply_language();
-
-					$valid_language_found = true;
-					
-					break;
-				}
-			}
+			include APPPATH . 'config/routes.php';
+			$this->default_controller = $route['default_controller'];
 		}
-		
-		if ($valid_language_found === false)
-		{
-			$this->lang_key = $this->config->item('language_abbr');
-//			$this->lang_key = $this->config->item('default_lang');
-			$this->apply_language();
-		}
+
+		return $this->default_controller;
 	}
 
-	
 	// ------------------------------------------------------------------------
 
 	/**
-	 * Set the default language regarding the URL (admin or not) if no URI lang segment is detected
+	 * Set the default language regarding the URL (for admin)
+	 * and regarding the Cookie or the Browser's user's language
 	 *
 	 * @return void
+	 *
 	 */
-	public function set_default_language()
+	public function detect_language()
 	{
 		$segments = array_values($this->uri->segment_array());
 
 		// Check for admin language file
 		if ($segments[0] == config_item('admin_url') OR (isset($segments[1]) && $segments[1] == config_item('admin_url')) )
 		{
-			$this->lang_key = $this->config->item('default_lang');
+			$this->lang_key = $this->config->item('default_admin_lang');
 		}
 		else
 		{
-			$selected_language = ( ! empty($_COOKIE['ion_selected_language'])) ? $_COOKIE['ion_selected_language'] : FALSE ;
-			
-			if($selected_language)
+			$selected_language = NULL;
+			$raw_key = current($this->uri->segments);
+
+			// Case of Home page with Cookie : The asked lang code is the default one
+			if (
+				$raw_key == $this->get_default_controller() &&
+				!empty($_COOKIE['ion_selected_language'])
+			)
 			{
-				// Use lang preferrence from cookie
+				$selected_language = $this->config->item('default_lang_code');
+			}
+			// Try to get the cookie
+			else
+			{
+				$selected_language = ( ! empty($_COOKIE['ion_selected_language'])) ? $_COOKIE['ion_selected_language'] : NULL ;
+			}
+
+			if( ! is_null($selected_language))
+			{
+				// Use lang preference from cookie
 				$this->lang_key = $selected_language;
 			}
 			else
 			{
-				// Define user lang by browser preferrence
-				$user_lang = (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : '';
+				// Define user lang by browser preferences
+				$browser_lang = (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : '';
 
-				if($user_lang != '' && $user_lang != $this->config->item('language_abbr') && !empty($this->lang_dict[$user_lang]) && !empty($this->lang_online[$user_lang]))
-					$this->lang_key = $user_lang;
+				if(
+					$browser_lang != ''
+					&& $browser_lang != $this->config->item('default_lang_code')
+					&& !empty($this->lang_dict[$browser_lang])
+					&& !empty($this->lang_online[$browser_lang])
+				)
+					$this->lang_key = $browser_lang;
 				else
-					$this->lang_key = $this->config->item('language_abbr');
+					$this->lang_key = $this->config->item('default_lang_code');
 			}
-
-			/**
-			 * Default
-			 */
-			//$this->lang_key = $this->config->item('language_abbr');
 		}
 		
 		$this->apply_language();
@@ -589,10 +558,37 @@ class CI_Router
 	// ------------------------------------------------------------------------
 
 	/**
+	 * Checks and redirect properly the Home page to the URL
+	 * containing the lang code, if needed
+	 *
+	 * Note :
+	 * Inside pages redirect could not work as $rawkey set by _set_routing can be another lang.
+	 *
+	 */
+	public function redirect_home_to_lang_url()
+	{
+		if (
+			count($this->lang_online) > 1 &&
+			$this->lang_key != $this->config->item('default_lang_code')
+		)
+		{
+			$url = config_item('base_url').$this->lang_key;
+
+			log_message('debug', 'Router : Detected lang code : ' . $this->lang_key);
+			log_message('debug', 'Router : Redirect to : '. $url);
+
+			// 302 Found
+			header('HTTP/1.1 302 Found');
+			header('Location: '.$url, TRUE, 302);
+		}
+	}
+
+
+	/**
 	 * Validates a language key and returns the filtered variant.
 	 * 
 	 * @param  scalar
-	 * @return string|false
+	 * @return string|FALSE
 	 */
 	public function validate_lang_key($key)
 	{
@@ -600,10 +596,10 @@ class CI_Router
 		
 		$segments = array_values($this->uri->segment_array());
 
-// If installer warning, the users languages are detected ! 
+// If installer warning, the users languages are detected !
 // Not important, but not so clean, should be correctly implemented !
 
-		// Check for admin language file
+		// Admin lang key
 		if ($segments[0] == config_item('admin_url') OR (isset($segments[1]) && $segments[1] == config_item('admin_url')) )
 		{
 			if (is_file(APPPATH.'language/'.$key.'/admin_lang'.EXT))
@@ -616,16 +612,20 @@ class CI_Router
 			}
 		}
 		// User defined languages
-		else if(isset($this->lang_dict[$key]) && ! in_array($key, $this->lang_ignore))
+		else if
+		(
+			!empty($this->lang_dict[$key])
+			&& !empty($this->lang_online[$key])
+		)
 		{
-			return $key;		
+			return $key;
 		}
 		else
 		{
 			log_message('debug', 'Router: The key "'.$key.'" was not a valid language key.');
-			
-			return false;
 		}
+
+		return FALSE;
 	}
 	
 	// ------------------------------------------------------------------------
@@ -639,16 +639,7 @@ class CI_Router
 	{
 		log_message('debug', 'Router: Applying the language key "'.$this->lang_key.'".');
 		
-		if ($this->lang_key != config_item('language_abbr'))
-		{
-//			trace($this->lang_key);
-//			trace(config_item('language_abbr'));
-		}
-//			header("Location: ".config_item('base_url').$this->lang_key, TRUE, 302);
-	
-		$this->config->set_item('language_abbr', $this->lang_key);
-	
-	//	$this->config->set_item('language', $this->lang_dict[$this->lang_key]);
+		$this->config->set_item('detected_lang_code', $this->lang_key);
 	}
 
 	// ------------------------------------------------------------------------

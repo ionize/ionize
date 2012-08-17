@@ -157,8 +157,8 @@ if( ! function_exists('get_language_navigation'))
 	function get_language_navigation($items)
 	{
 		$nav = '';
-		
-		foreach($items as $key => $lang)
+
+		foreach($items as $lang)
 		{
 			$active = ( ! empty($lang['active_class'])) ? ' class="'.$lang['active_class'].'" ' : '';
 			

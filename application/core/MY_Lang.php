@@ -15,26 +15,25 @@ class MY_Lang extends CI_Lang
 	 * @access	public
 	 * @param	mixed	the name of the language file to be loaded. Can be an array
 	 * @param	string	the language (english, etc.)
+	 * @param	boolean	value to return : FALSE by default
 	 * @return	mixed
 	 */
 	function load($langfile = '', $idiom = '', $return = FALSE)
 	{
 		$CI =& get_instance();
 		
-		// REMOVED EXT ON THE LINE BELOW, Martin Wernståhl
+		// Remove extension
 		$langfile = str_replace(EXT, '', str_replace('_lang.', '', $langfile)).'_lang';
 
 		if (in_array($langfile, $this->is_loaded, TRUE))
-		{
-			return;
-		}
+			return FALSE;
 
 		if ($idiom == '')
 		{
 			if (isset($CI->config))
 			{
-				$deft_lang = $CI->config->item('language_abbr');
-				$idiom = ($deft_lang == '') ? 'en' : $deft_lang;
+				$deft_lang = $CI->config->item('detected_lang_code');
+				$idiom = ($deft_lang == '') ? $CI->config->item('default_lang_code') : $deft_lang;
 			}
 			// So Installer can output CI errors through MY_Language
 			else
@@ -45,22 +44,14 @@ class MY_Lang extends CI_Lang
 
 		// find the files to load, allow extended lang files
 		$files = Finder::find_file($idiom . '/' . $langfile, 'language', 99);
-		
+		/*
 		if(empty($files))
 		{
 			// Try with the last defualt language... 
 			$idiom = $CI->config->item('language');
 			$files = Finder::find_file($idiom . '/' . $langfile, 'language', 99);
-
-			/*
-			 * Do not display the error, so the views can be loaded, even the content isn't translated
-			 *
-			if(empty($files))
-			{
-				show_error('Unable to load the requested language file: language/'.$idiom.'/'.$langfile);
-			}
-			*/
 		}
+		*/
 		
 		// reverse the array, so we let the extending language files load last
 		foreach(array_reverse($files) as $f)
@@ -72,7 +63,7 @@ class MY_Lang extends CI_Lang
 		if ( ! isset($lang))
 		{
 			log_message('error', 'Language file contains no data: language/'.$idiom.'/'.$langfile);
-			return;
+			return FALSE;
 		}
 		
 		if ($return == TRUE)
@@ -87,5 +78,28 @@ class MY_Lang extends CI_Lang
 		log_message('debug', 'Language file loaded: language/'.$idiom.'/'.$langfile);
 		return TRUE;
 	}
+
+
+	/**
+	 * Fetch a single line of text from the language array
+	 * Modified : the original method doesn't log the key of the not found language key.
+	 *
+	 * @access	public
+	 * @param	string	$line	the language line
+	 * @return	string
+	 */
+	function line($line = '')
+	{
+		$returned_line = ($line == '' OR ! isset($this->language[$line])) ? FALSE : $this->language[$line];
+
+		// Because killer robots like unicorns!
+		if ($returned_line === FALSE)
+		{
+			log_message('error', 'Could not find the language line "'.$line.'"');
+		}
+
+		return $returned_line;
+	}
+
 }
 

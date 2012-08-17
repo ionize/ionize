@@ -47,13 +47,17 @@
 
 	<div id="header" class="span-22 prepend-1 append-1">
 
+		<ul id="languages">
+			<ion:languages />
+		</ul>
+
 		<div class="span-12">
 			<div id="logo">
 				<h1><ion:site_title /></h1>
 				<a title="<ion:site_title />" href="<ion:base_url />"><ion:meta_title /></a>
 			</div>
 		</div>
-		
+
 		<div class="span-10 last searchform">
 
 			<!-- Form using the "Search" module

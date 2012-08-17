@@ -189,7 +189,7 @@ class TagManager_Page extends TagManager
 	{
 		if ( is_null(self::$_entity))
 			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
-	
+
 		return self::$_entity;
 	}
 

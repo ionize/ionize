@@ -100,13 +100,13 @@ class MY_Controller extends CI_Controller
 			// If installer class is already here, avoid site access
 			if (!empty($installer))
 			{
-				// Get languages codes from availables languages folder/translation file
+				// Get languages codes from available languages folder/translation file
 				$languages = $this->settings_model->get_admin_langs();
 				
-				if ( ! in_array(config_item('language_abbr'), $languages))
-					$this->config->set_item('language_abbr', config_item('default_lang'));
+				if ( ! in_array(config_item('detected_lang_code'), $languages))
+					$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
 				
-				$this->lang->load('admin', config_item('language_abbr'));
+				$this->lang->load('admin', config_item('detected_lang_code'));
 				
 				Theme::set_theme('admin');
 				
@@ -299,10 +299,7 @@ class Base_Controller extends MY_Controller
 		 *
 		 */
 		Settings::set('menus', $this->menu_model->get_list());
-		
-		  
-		
-		
+
 		/*
 		 * Language
 		 *
@@ -319,7 +316,6 @@ class Base_Controller extends MY_Controller
 			Settings::set_all_languages_online();
 		}
 
-		
 		// Simple languages code array, used to detect if Routers found language is in DB languages
 		$online_lang_codes = array();
 		foreach(Settings::get_online_languages() as $language)
@@ -327,40 +323,35 @@ class Base_Controller extends MY_Controller
 			$online_lang_codes[] = $language['lang'];
 		}
 
-
-		// If Router detected that the lang code is not in DB languages, set it to the DB default one
-		if ( ! in_array(config_item('language_abbr'), $online_lang_codes))
+		// If the lang code detected by the Router is not in the DB languages, set it to the DB default one
+		if ( ! in_array(config_item('detected_lang_code'), $online_lang_codes))
 		{
-			// Settings::get_lang('default') returns the DB default lang code
 			Settings::set('current_lang', Settings::get_lang('default'));
-			
-			$this->config->set_item('language_abbr', Settings::get_lang('default'));
+			$this->config->set_item('detected_lang_code', Settings::get_lang('default'));
 		}
 		else
 		{
 			// Store the current lang code (found by Router) to Settings
-			Settings::set('current_lang', config_item('language_abbr'));		
+			Settings::set('current_lang', config_item('detected_lang_code'));
 		}
 
 		// Set lang preferrence cookie
 		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
 		
 		if( ! empty($_COOKIE['ion_selected_language']))
-		{
 			setcookie('ion_selected_language', '', time() - 3600, '/', $host);
-		}
-		
+
 		setcookie('ion_selected_language', Settings::get_lang(), time() + 3600, '/', $host);
 
 		// Lang dependant settings for the current language : Meta, etc.
-		Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('language_abbr')), 'name','content');
+		Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
 
 
 		/*
 		 * Static language
 		 *
 		 */
-		$lang_folder = Theme::get_theme_path().'language/'.Settings::get_lang().'/';
+		// $lang_folder = Theme::get_theme_path().'language/'.Settings::get_lang().'/';
 		$lang_files = array();
 
 		// Core languages files : Including except "admin_lang.php"
@@ -425,11 +416,7 @@ class Base_Controller extends MY_Controller
 				}
 			}
 		}
-		
-		
 		require_once APPPATH.'libraries/Tagmanager.php';
-
-		
 	}
 
 /*
@@ -581,7 +568,7 @@ class MY_Admin extends MY_Controller
 		Settings::set('displayed_admin_languages', explode(',', Settings::get('displayed_admin_languages')));
 
 		// Set Router's found language code as current language
-		Settings::set('current_lang', config_item('language_abbr'));
+		Settings::set('current_lang', config_item('detected_lang_code'));
 
 		// Load the current language translations file
 		$this->lang->load('admin', Settings::get_lang());

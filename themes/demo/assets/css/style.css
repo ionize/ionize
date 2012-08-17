@@ -82,6 +82,7 @@ p {
 	padding-top:20px;
 	padding-bottom:30px;
 	height: 70px;
+	position: relative;
 }
 #header-left{width:640px; float:left;}
 #header-right{width:300px; float:left;}
@@ -115,7 +116,31 @@ p {
 	left:0;
 	z-index:2;
 }
-
+#languages {
+	position: absolute;
+	right:0;
+	top:8px;
+}
+#languages, #languages li {list-style: none outside none;}
+#languages li{
+	display: block;
+	float:left;
+	margin:0 3px;
+}
+#languages li a{
+	font-size: 0.9em;
+	padding:5px;
+	color: #b4b4b4;
+	text-decoration: none;
+}
+#languages li a:hover,
+#languages li a.active:hover{
+	border-bottom: solid 1px #dadada;
+	color:#5f5f5f;
+}
+#languages li a.active{
+	border-bottom: dotted 1px #dadada;
+}
 #viewport404 {
 	height: 509px;
     overflow: hidden;

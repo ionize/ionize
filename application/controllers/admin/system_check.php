@@ -110,84 +110,6 @@ class System_check extends MY_admin
 		$this->response();
 	}
 	
-	/**
-	 * Check if all langs defined in DB are set in the config file
-	 *
-	function check_lang()
-	{
-		$result = array(
-			'title' => lang('ionize_title_check_lang'),
-			'result_status' => 'success',
-			'result_text' => lang('ionize_message_check_ok')
-		);
-		
-		// Get the languages : DB + config/language.php
-		$db_languages = Settings::get_languages();
-		$config_languages = config_item('lang_uri_abbr');
-		
-		// Check differences between DB and config/language.php file
-		$result_status = TRUE;
-		
-		foreach($db_languages as $lang)
-		{
-			if ( ! array_key_exists($lang['lang'], $config_languages))
-			{
-				$result_status = FALSE;
-			}
-		}
-		
-		// Correct if needed
-		if ($result_status == FALSE)
-		{
-			// Default language
-			$def_lang = '';
-			
-			// Available languages array
-			$lang_uri_abbr = array();
-			
-			foreach($db_languages as $l)
-			{
-				// Set default lang code
-				if ($l['def'] == '1')
-					$def_lang = $l['lang'];
-				
-				$lang_uri_abbr[$l['lang']] = $l['name'];
-			}
-
-			$this->config_model->change('language.php', 'language_abbr', $def_lang);
-
-			if ( ! empty($lang_uri_abbr))
-			{
-				$this->config_model->change('language.php', 'lang_uri_abbr', $lang_uri_abbr);
-			}
-
-			$result['result_text'] = lang('ionize_message_check_corrected');
-			
-		}
-		
-		// Result view
-		$view = $this->load->view('system_check_result', $result, TRUE);
-		
-		$this->callback = array(
-			array (
-				'fn' => 'ION.appendDomElement',
-				'args' => array	(
-					'system_check_report',
-					$view
-				)
-			)
-			,
-			array (
-				'fn' => 'ION.JSON',
-				'args' => array	(
-					'system_check/check_page_level'
-				)
-			)
-		);
-
-		$this->response();
-	}
-	*/
 	function check_lang()
 	{
 		$result = array(
@@ -198,14 +120,14 @@ class System_check extends MY_admin
 
 		// Get the languages : DB + config/language.php
 		$db_languages = Settings::get_languages();
-		$config_languages = config_item('lang_uri_abbr');
+		$config_available_languages = config_item('available_languages');
 
 		// Check differences between DB and config/language.php file
 		$result_status = TRUE;
 
 		foreach($db_languages as $lang)
 		{
-			if ( ! array_key_exists($lang['lang'], $config_languages))
+			if ( ! array_key_exists($lang['lang'], $config_available_languages))
 			{
 				$result_status = FALSE;
 			}
@@ -218,7 +140,7 @@ class System_check extends MY_admin
 			$def_lang = '';
 
 			// Available languages array
-			$lang_uri_abbr = array();
+			$available_languages = array();
 
 			foreach($db_languages as $l)
 			{
@@ -226,14 +148,14 @@ class System_check extends MY_admin
 				if ($l['def'] == '1')
 					$def_lang = $l['lang'];
 
-				$lang_uri_abbr[$l['lang']] = $l['name'];
+				$available_languages[$l['lang']] = $l['name'];
 			}
 
-			$this->config_model->change('language.php', 'language_abbr', $def_lang);
+			$this->config_model->change('language.php', 'default_lang_code', $def_lang);
 
-			if ( ! empty($lang_uri_abbr))
+			if ( ! empty($available_languages))
 			{
-				$this->config_model->change('language.php', 'lang_uri_abbr', $lang_uri_abbr);
+				$this->config_model->change('language.php', 'available_languages', $available_languages);
 			}
 
 			$result['message'] = lang('ionize_message_check_corrected');

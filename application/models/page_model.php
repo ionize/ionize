@@ -151,17 +151,31 @@ class Page_model extends Base_model
 			$lang = Settings::get_lang('default');
 
 		// URL paths
-		$this->{$this->db_group}->select('path, path_ids, full_path_ids');
+		$this->{$this->db_group}->select('url.path, url.path_ids, url.full_path_ids');
 		$this->{$this->db_group}->join(
-		   $this->url_table,
-			$this->table.".id_page = " .$this->url_table.".id_entity AND ".
+			$this->url_table. ' as url',
+			$this->table.".id_page = url.id_entity AND ".
 			   "(".
-			   $this->url_table.".type = 'page' AND " .
-			   $this->url_table.".active = 1 AND ".
-			   $this->url_table.".lang = '". $lang ."'" .
+					"url.type = 'page' AND ".
+					"url.active = 1 AND ".
+					"url.lang = '". $lang ."'".
 			   ")",
 		   'left'
 		);
+
+		// Lang URL paths
+		$this->{$this->db_group}->select("group_concat(url2.path separator ';') as url_paths");
+		$this->{$this->db_group}->select("group_concat(url2.lang separator ';') as url_langs");
+		$this->{$this->db_group}->join(
+			$this->url_table . ' as url2',
+			$this->table.".id_page = url2.id_entity AND ".
+				"(".
+					"url2.type = 'page' AND ".
+					"url2.active = 1 ".
+				")",
+			'left'
+		);
+		$this->{$this->db_group}->group_by($this->table.'.id_page');
 
 		return parent::get_lang_list($where, $lang);
 	}

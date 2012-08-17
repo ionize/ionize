@@ -440,7 +440,7 @@ class Setting extends MY_admin
 		}
 		else
 		{
-			$displayed_admin_languages = config_item('default_lang');
+			$displayed_admin_languages = config_item('default_admin_lang');
 		}
 
 		$data = array(
@@ -462,7 +462,7 @@ class Setting extends MY_admin
 		
 		// Correct the default Admin panel language
 		if ( ! in_array($default_admin_lang, explode(',',$displayed_admin_languages)))
-			$default_admin_lang = config_item('language');
+			$default_admin_lang = config_item('default_admin_lang');
 
 		// Answer
 		$this->callback = array(

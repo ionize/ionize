@@ -65,13 +65,13 @@ class Settings
 	 *
 	 * @return mixed	The setting value
 	 */
-	public static function get($key, $lang = false)
+	public static function get($key, $lang = FALSE)
 	{
-		if ($lang !== false)
+		if ($lang !== FALSE)
 		{
-			return isset(self::$settings[$lang][$key]) ? self::$settings[$lang][$key] : false;
+			return isset(self::$settings[$lang][$key]) ? self::$settings[$lang][$key] : FALSE;
 		}
-		return (isset(self::$settings[$key]) ? self::$settings[$key] : false);
+		return (isset(self::$settings[$key]) ? self::$settings[$key] : FALSE);
 	}
 
 
@@ -263,24 +263,23 @@ class Settings
 	 *
 	 *					If no type is given, returns the current lang code
 	 *		
-	 * @return string	The lang code
+	 * @return string|null	The lang code, NULL if no one is found
 	 *
 	 */
 	public static function get_lang($type = 'current')
 	{
-		$lang = '';
+		$lang = NULL;
 	
 		$languages = self::$settings['languages'];
 
 		switch ($type)
 		{
 			case 'first':
+
 				$lang = $languages[0]['lang'];
 				break;
 
 			case 'default':
-				
-				$lang = NULL;
 				
 				foreach($languages as $l)
 				{
@@ -288,20 +287,21 @@ class Settings
 						$lang = $l['lang'];
 				}
 				
-				// If no default lang set, returns the first found in DB
-				$lang = (is_null($lang)) ? $languages[0]['lang'] : $lang;
+				// If no default lang set, returns the Config file default one
+				if (is_null($lang))
+					$lang = config_item('default_lang_code');
 
 				break;
 
 			case 'current':
+
 				$lang = self::$settings['current_lang'];
 				break;
 		}
-
 		return $lang;
 	}
-	
-	
+
+
 	public static function get_mimes_types()
 	{
 //		global $mimes;

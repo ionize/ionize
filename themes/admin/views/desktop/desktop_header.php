@@ -45,11 +45,8 @@
 					<li class="divider"><a class="navlink" href="translation" title="<?= lang('ionize_title_translation') ?>"><?= lang('ionize_menu_translation') ?></a></li>
 					<li class="divider"><a id="mediamanagerlink" href="media/get_media_manager" title="<?= lang('ionize_menu_media_manager') ?>"><?= lang('ionize_menu_media_manager') ?></a></li>
 					<?php if ($this->connect->is('super-admins')) :?>
-<!--
-						<li class="divider"><a class="navlink" href="type/index" title="<?= lang('ionize_menu_content_types') ?>"><?= lang('ionize_menu_content_types') ?></a></li>
--->
-					<li class="divider"><a class="navlink" href="article_type/index" title="<?= lang('ionize_menu_types') ?>"><?= lang('ionize_menu_types') ?></a></li>
-					<li><a class="navlink" href="element_definition/index" title="<?= lang('ionize_menu_content_elements') ?>"><?= lang('ionize_menu_content_elements') ?></a></li>
+						<li class="divider"><a class="navlink" href="article_type/index" title="<?= lang('ionize_menu_types') ?>"><?= lang('ionize_menu_types') ?></a></li>
+						<li><a class="navlink" href="element_definition/index" title="<?= lang('ionize_menu_content_elements') ?>"><?= lang('ionize_menu_content_elements') ?></a></li>
 						<li><a class="navlink" href="extend_field/index" title="<?= lang('ionize_menu_extend_fields') ?>"><?= lang('ionize_menu_extend_fields') ?></a></li>
 					<?php endif ;?>
 				</ul>

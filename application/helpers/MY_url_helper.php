@@ -267,22 +267,22 @@ if( ! function_exists('url_title'))
 * version 0.2
 * @author Luis <luis@piezas.org.es>
 * @modified by Ionut <contact@quasiperfect.eu>
-*/
 if( ! function_exists('alt_site_url'))
 {
 	function alt_site_url($uri = '')
 	{
 	    $CI =& get_instance();
-	//    $actual_lang=$CI->uri->segment(1);
-	    
+
 		global $RTR;
 		$original_route = explode('/', $RTR->uri->_parse_request_uri());
 		$actual_lang = ( ! isset($original_route[1]) )  ? false : $original_route[1];
 	    
 	    $languages=$CI->config->item('languages');
 	    $languages_useimg=$CI->config->item('lang_useimg');
-	    $ignore_lang=$CI->config->item('lang_ignore');
-	    if (empty($actual_lang))
+
+		$ignore_lang=$CI->config->item('lang_ignore');
+
+		if (empty($actual_lang))
 	    {
 	        $uri=$ignore_lang.$CI->uri->uri_string();
 	        $actual_lang=$ignore_lang;
@@ -336,6 +336,7 @@ if( ! function_exists('alt_site_url'))
 	    return $alt_url;
 	}
 }
+*/
 
 
 // ------------------------------------------------------------------------

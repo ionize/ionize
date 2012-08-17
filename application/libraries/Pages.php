@@ -49,7 +49,7 @@ class Pages
 	 */
 	public static function get_pages($lang = NULL)
 	{
-		if ($lang == NULL) $lang = Settings::get_lang();
+		if ($lang == NULL) $lang = Settings::get_lang('current');
 
 		self::$ci->load->model('page_model');
 
@@ -99,7 +99,8 @@ class Pages
 		{
 			// Set the page complete URL
 			$page['absolute_url'] = '';
-			
+			$url = ($short_mode) ? $page['url'] : $page['path'];
+
 			// Link
 			if ($page['link_type'] != '' )
 			{
@@ -132,8 +133,8 @@ class Pages
 							{
 								if ($p['id_page'] == $target_article['id_page'])
 								{
-									$url = ($short_mode) ? $page['url'] : $page['path'];
-									$page['absolute_url'] = $url . '/' . $target_article['url'];
+									$p_url = ($short_mode) ? $p['url'] : $p['path'];
+									$page['absolute_url'] = $p_url . '/' . $target_article['url'];
 								}
 							}
 						}
@@ -176,7 +177,7 @@ class Pages
 					else
 					{
 						// If page URL if already set because of a link, don't replace it.
-						$url = ($short_mode) ? $page['url'] : $page['path'];
+						// $url = ($short_mode) ? $page['url'] : $page['path'];
 						$page['absolute_url'] = ($page['absolute_url'] != '') ? $lang . '/' . $page['absolute_url'] : $lang . '/' . $url;
 					}
 	
@@ -187,14 +188,13 @@ class Pages
 				}
 				else
 				{
-
 					if ($page['home'] == 1)
 					{
 						$page['absolute_url'] = base_url();
 					}
 					else
 					{
-						$url = ($short_mode) ? $page['url'] : $page['path'];
+						// $url = ($short_mode) ? $page['url'] : $page['path'];
 						$page['absolute_url'] = base_url() . $url;
 					}
 					// Set the lang code depending URL (used by language subtag)
@@ -202,14 +202,16 @@ class Pages
 				}
 			}
 
+			// Explode the concatenated URLs infos
+			$page_url_langs = explode(';', $page['url_langs']);
+			$page_url_path = explode(';', $page['url_paths']);
 
 			foreach (Settings::get_online_languages() as $language)
 			{
 				if ($page['home'] == 1 )
 				{
 					// Default language : No language code in the URL for the home page
-					// default : if (Settings::get_lang('default') == $language['lang'])
-					if (Settings::get_lang('current') == $language['lang'])
+					if (Settings::get_lang('default') == $language['lang'])
 					{
 						$page['absolute_urls'][$language['lang']] = base_url();
 					}
@@ -222,7 +224,17 @@ class Pages
 				// Other pages : lang code in URL
 				else
 				{
-					$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $page['urls'][$language['lang']];
+					if ( ! $short_mode)
+					{
+						// The index of the processed lang code will be the index of the path
+						$index = array_search($language['lang'], $page_url_langs);
+						$url = ($index !== FALSE) ? $page_url_path[$index] : '';
+						$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $url;
+					}
+					else
+					{
+						$page['absolute_urls'][$language['lang']] = base_url() . $language['lang'] . '/' . $page['urls'][$language['lang']];
+					}
 				}
 			}
 			

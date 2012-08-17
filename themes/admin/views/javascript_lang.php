@@ -22,11 +22,11 @@ var Lang = new Hash({
 	
 	<?php foreach($this->lang->language as $key=>$text) :?>'<?= $key ?>': '<?= addslashes(str_replace(array("\r\n", "\r", "\n", "\t"), ' ', $text)) ?>',<?php endforeach ;?>
 
-	'current': '<?= $this->config->item('language_abbr'); ?>',
+	'current': '<?= $this->config->item('detected_lang_code'); ?>',
 	'first': '<?= Settings::get_lang('first') ?>',
 	'default': '<?= Settings::get_lang('default') ?>',
 	
-	'languages': new Array('<?= implode("','", array_keys($this->config->item('lang_uri_abbr'))); ?>')
+	'languages': new Array('<?= implode("','", array_keys($this->config->item('available_languages'))); ?>')
 
 });
 

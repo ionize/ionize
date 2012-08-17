@@ -583,13 +583,7 @@ class TagManager_Navigation extends TagManager
 	{
 		self::$ci =& get_instance(); 
 		
-/*
-		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
-		self::$uri_segments = explode('/', $uri);
-*/
-
 		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
-
 
 		// Returned data
 		$infos = array(
@@ -597,7 +591,6 @@ class TagManager_Navigation extends TagManager
 			'page' => self::$uri_segments[0],
 			'article' => ''
 		);
-		
 		
 		// Get the special URI config array (see /config/ionize.php)
 		$uri_config = self::$ci->config->item('special_uri');
