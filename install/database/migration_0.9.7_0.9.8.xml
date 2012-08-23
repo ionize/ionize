@@ -52,7 +52,7 @@
 
 
 	<query>
-			CREATE TABLE url (
+			CREATE TABLE IF NOT EXISTS url (
 			  id_url int(11) unsigned NOT NULL AUTO_INCREMENT,
 			  id_entity int(11) unsigned NOT NULL,
 			  type varchar(10) NOT NULL,
@@ -215,6 +215,5 @@
 	<query>ALTER TABLE `user_groups` COMMENT = '';</query>
 
     <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);</query>
-
 
 </sql>

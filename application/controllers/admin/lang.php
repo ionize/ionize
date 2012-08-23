@@ -309,8 +309,6 @@ class Lang extends MY_admin
 
 			($this->input->post('default_lang') == $lang['lang']) ? $data['def'] = '1' : $data['def'] = '0';
 
-			// Check if the 
-
 			if (($lang['lang'] != $data['lang']) && $this->lang_model->exists( array( 'lang' =>  $data['lang'] ) ) )
 			{
 				$this->error(lang('ionize_message_lang_code_already_exists'));
@@ -399,6 +397,9 @@ class Lang extends MY_admin
 		{
 			$this->id = $lang;
 
+			// Updates the default lang if needed
+			$this->_update_default_lang();
+
 			$this->_reload_panel();
 
 			// Answer send
@@ -445,6 +446,36 @@ class Lang extends MY_admin
 		*/
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	function _update_default_lang($default_lang_code = NULL)
+	{
+		$languages = $this->lang_model->get_list(array('order_by' => 'ordering ASC'));
+
+		if ( ! empty($languages))
+		{
+			$found_default_lang = FALSE;
+			foreach ($languages as $language)
+			{
+				if ($language['def'] == '1')
+					$found_default_lang = TRUE;
+			}
+
+			if ($found_default_lang == FALSE)
+			{
+				$languages = $this->lang_model->get_all();
+				$language = array_shift($languages);
+				if (!empty($language))
+				{
+					$this->lang_model->update($language->lang, array('def'=>1));
+				}
+			}
+		}
+	}
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -489,7 +520,6 @@ class Lang extends MY_admin
 		$conf .='|'."\n";
 		$conf .='*/'."\n\n";
 
-		// Not changed here
 		$conf .= "// Default admin language code\n";
 		$conf .= "\$config['default_admin_lang'] = '".config_item('default_admin_lang')."';\n\n";
 

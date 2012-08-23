@@ -63,21 +63,6 @@ $config['texteditors'] = array('tinymce');
 
 /*
 |--------------------------------------------------------------------------
-| Ionize Default Language code
-|--------------------------------------------------------------------------
-|
-| Nothing to do with CI default language : This is the really default language code
-| used by Ionize when no other is available.
-| For example, if user use a swedish browser with only swedish and has set 'oz' as default DB language,
-| the admin section can only use this very default language code 
-|
-*/
-
-$config['default_lang'] = "en";
-
-
-/*
-|--------------------------------------------------------------------------
 | Ionize Special URI definition
 |--------------------------------------------------------------------------
 |

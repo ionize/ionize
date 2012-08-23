@@ -103,11 +103,6 @@ class Installer
 	 */
 	function check_config()
 	{
-		/*
-		 * Settings checks
-		 *
-		 */
-		 
 		// PHP version >= 5
 		$this->template['php_version'] = version_compare(substr(phpversion(), 0, 3), '5.0', '>=');
 
@@ -123,11 +118,6 @@ class Installer
 		// GD lib
 		$this->template['gd_lib'] = function_exists('imagecreatetruecolor');
 		
-		/*
-		 * Folder access rights checks
-		 *
-		 */
-
 		// Check files rights
 		$files = array(
 			'application/config/config.php',
@@ -152,28 +142,21 @@ class Installer
 		foreach($folders as $folder)
 			$check_folders[$folder] = $this->_test_dir(ROOTPATH . $folder, true);
 		
-		
 		$this->template['check_files'] = $check_files;
 		$this->template['check_folders'] = $check_folders;
 
-		
-		/*
-		 * Message to user if one setting is false
-		 *
-		 */
+		// Message to user if one setting is false
 		foreach($this->template as $config)
 		{
 			if ( ! $config)
 			{
 				$this->template['next'] = false;
-				
 				$this->_send_error('check_config', lang('config_check_errors'));
 			}
 		}
 		
 		// Outputs the view
 		$this->output('check_config');
-		
 	}
 
 	
@@ -238,11 +221,7 @@ class Installer
 			{
 				$this->template['encryption_key'] = $this->generateEncryptKey();
 			}
-			else
-			{
-//				$this->template['encryption_key'] =$config['encryption_key'];
-			}
-			
+
 			$this->output('user');
 		}
 		else
@@ -252,20 +231,6 @@ class Installer
 			$this->db_connect();
 
 			header("Location: ".BASEURL.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
-
-/*
-			// Check if the DB was migrated : If yes, no sample data install
-			$query = $this->db->get('page');
-		
-			if ($query->num_rows() > 1)
-			{
-				header("Location: ".BASEURL.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
-			}
-			else
-			{
-				header("Location: ".BASEURL.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
-			}
-*/
 		}
 	}
 	
@@ -295,13 +260,8 @@ class Installer
 		}
 		else
 		{
-			// include config/database.php
+			// Install DATABASE example data
 			require(ROOTPATH . 'application/config/database.php');
-			
-			/* 
-			 * Install DATABASE example data
-			 *
-			 */
 			
 			// Connect to DB
 			$config = $db['default'];
@@ -413,10 +373,7 @@ class Installer
 		{
 			$this->db_connect();
 	
-			/*
-			 * Migration process start
-			 *
-			 */
+			// Migration
 			foreach ($migration_files as $file)
 			{
 				$xml = simplexml_load_file('./database/'.$file);
@@ -429,10 +386,7 @@ class Installer
 				}
 			}
 
-			/*
-			 * Rebuild the config/language.php file for consistency
-			 *
-			 */
+			// Rebuild the config/language.php file for consistency
 			$query = $this->db->get('lang');
 			if ($query->num_rows() > 0)
 			{
@@ -560,12 +514,9 @@ class Installer
 
 			/*
 			 * Migration to 0.9.8
-			 *
+			 * Nothing to do.
 			 */
-			if (in_array('migration_0.9.7_0.9.8.xml', $migration_files))
-			{
-			}
-	
+
 			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 		}
 	}
@@ -609,7 +560,6 @@ class Installer
 				var_dump($decoded_pass);
 			}						
 		}
-	
 	}
 
 	// --------------------------------------------------------------------
@@ -785,7 +735,7 @@ class Installer
 					'url' => 'welcome-article-url',
 					'title' => 'Welcome to Ionize',
 					'url' => 'welcome-article-url',
-					'content' => '<p>For more information about building a website with Ionize, you can:</p> <ul><li>Download & read <a href="http://www.ionizecms.com">the Documentation</a></li><li>Visit <a href="http://www.ionizecms.com/forum">the Community Forum</a></li><li>Have a look at <a href="http://www.ionizecms.com/forum">the Community Wiki</a></li></ul><p>Have fun !</p>'
+					'content' => '<p>For more information about building a website with Ionize, you can:</p> <ul><li>Download & read <a href="http://www.ionizecms.com">the Documentation</a></li><li>Visit <a href="http://www.ionizecms.com/forum">the Community Forum</a></li></ul><p>Have fun !</p>'
 				);
 
 				$this->db->insert('article_lang', $data);
@@ -1015,7 +965,6 @@ class Installer
 			include(APPPATH.'config/config.php');
 			include(APPPATH.'config/connect.php');
 
-		
 			if ($config['encryption_key'] == '')
 			{
 
@@ -1027,20 +976,7 @@ class Installer
 				{
 					$this->_send_error('user', lang('settings_error_write_rights_config'), $_POST);
 				}
-/*
-				$config_file = @file_get_contents(APPPATH . 'config/config' . EXT);
-	
-				$config_file = str_replace("\$config['encryption_key'] = '';", "\$config['encryption_key'] = '".$_POST['encryption_key']."';", $config_file);
-				
-				$ret = @file_put_contents(APPPATH . 'config/config' . EXT, $config_file);
-				
-				if ( ! $ret)
-				{
-					$this->_send_error('user', lang('settings_error_write_rights_config'), $_POST);
-				}
-*/
 			}
-
 		}
 
 		/*
@@ -1153,9 +1089,6 @@ class Installer
 			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
 		}
 
-		
-		
-		
 		// DB save
 		$this->db_connect();
 		
@@ -1211,7 +1144,6 @@ class Installer
 	}
 
 
-
 	// --------------------------------------------------------------------
 
 
@@ -1226,8 +1158,6 @@ class Installer
 		require('../application/config/connect.php');
 		return substr(md5(uniqid(rand(), true)), 0, $config['salt_length']);
 	}
-
-	
 
 	
 	// --------------------------------------------------------------------
@@ -1638,16 +1568,20 @@ class Installer
 		// Default language
 		$def_lang = '';
 
-		// Available languages array
-		$lang_uri_abbr = array();
-		
+		// Available / Online languages array
+		$available_languages = array();
+		$online_languages = array();
+
 		foreach($data as $l)
 		{
 			// Set defualt lang code
 			if ($l['def'] == '1')
 				$def_lang = $l['lang'];
-			
-			$lang_uri_abbr[$l['lang']] = $l['name'];
+
+			$available_languages[$l['lang']] = $l['name'];
+
+			if($l['online'] == '1')
+				$online_languages[$l['lang']] = $l['name'];
 		}
 
 		// Language file save
@@ -1659,21 +1593,31 @@ class Installer
 		$conf .='| -------------------------------------------------------------------'."\n";
 		$conf .='| Contains the available languages definitions for the front-end.'."\n";
 		$conf .='| Auto-generated by Ionizes Language administration.'."\n";
+		$conf .='| Changes made in this file will be overwritten by languages save in Ionize.'."\n";
 		$conf .='|'."\n";
-		$conf .='| IMPORTANT : '."\n";
-		$conf .='| This file has no impact on ionizes admin languages.'."\n";
-		$conf .='| For Admin languages modification, see application/languages/  '."\n";
 		$conf .='|'."\n";
-		$conf .='*/'."\n\n";		
-		
-		$conf .= "// default language abbreviation\n";
-		$conf .= "\$config['language_abbr'] = '".$def_lang."';\n\n";
-		
-		$conf .= "// available languages\n";
-		$conf .= "\$config['lang_uri_abbr'] = ".dump_variable($lang_uri_abbr)."\n\n";
-		
-		$conf .= "// ignore these language abbreviation : not used for the moment \n";
-		$conf .= "\$config['lang_ignore'] = array();\n";
+		$conf .='*/'."\n\n";
+
+		$conf .= "// Default admin language code\n";
+		$conf .= "\$config['default_admin_lang'] = 'en';\n\n";
+
+		$conf .= "// Default language code\n";
+		$conf .= "// This code depends on the language defined through the Ionize admin panel\n";
+		$conf .= "// and will never change during the request process \n";
+		$conf .= "\$config['default_lang_code'] = '".$def_lang."';\n\n";
+
+		$conf .= "// Used language code\n";
+		$conf .= "// Dynamically changed by the Router depending on the browser, cookie or asked URL\n";
+		$conf .= "// By default, Ionize set it to the default lang code.\n";
+		$conf .= "\$config['detected_lang_code'] = '".$def_lang."';\n\n";
+
+		$conf .= "// Available languages\n";
+		$conf .= "// Languages set through Ionize. Includes offline languages\n";
+		$conf .= "\$config['available_languages'] = ".dump_variable($available_languages)."\n\n";
+
+		$conf .= "// Online languages\n";
+		$conf .= "// Languages set online through Ionize.\n";
+		$conf .= "\$config['online_languages'] = ".dump_variable($online_languages)."\n\n";
 
 		// files end
 		$conf .= "\n\n";
@@ -1775,7 +1719,6 @@ class Installer
 		$key = sha1($config['encryption_key'] . $hash);
 
 		return mcrypt_decrypt(MCRYPT_BLOWFISH, substr($key, 0, 56), base64_decode($str), MCRYPT_MODE_CFB, substr($config['encryption_key'], 0, 8));
-
 	}
 
 	// --------------------------------------------------------------------
@@ -1790,7 +1733,6 @@ class Installer
 		$key = sha1($config['encrypt_key'] . $hash);
 
 		return mcrypt_decrypt(MCRYPT_BLOWFISH, substr($key, 0, 56), base64_decode($str), MCRYPT_MODE_CFB, substr($config['encrypt_key'], 0, 8));
-
 	}
 
 
@@ -1840,7 +1782,7 @@ function &get_instance()
  *
  * @param  mixed
  * @param  int
- * @return str
+ * @return string
  */
 function dump_variable($data, $indent = 0)
 {
