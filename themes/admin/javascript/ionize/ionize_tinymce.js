@@ -26,6 +26,7 @@ ION.append({
 					dialog_type : 'modal',
 					inlinepopups_skin: 'ionizeMce',
 //					extended_valid_elements  : "ion:*, a[href</<ion:*]",
+//					extended_valid_elements : "iframe[align<bottom?left?middle?right?top|class|frameborder|height|id|longdesc|marginheight|marginwidth|name|scrolling<auto?no?yes|src|style|title|width]",
 					verify_html : false,
 					relative_urls : false,
 					convert_urls : false,
@@ -59,6 +60,7 @@ ION.append({
 					dialog_type : 'modal',
 					inlinepopups_skin: 'ionizeMce',
 //					extended_valid_elements  : "ion:*, a[href</<ion:*]",
+//					extended_valid_elements : "iframe[align<bottom?left?middle?right?top|class|frameborder|height|id|longdesc|marginheight|marginwidth|name|scrolling<auto?no?yes|src|style|title|width]",
 					verify_html : false,
 					relative_urls : false,
 					convert_urls : false,
@@ -80,7 +82,6 @@ ION.append({
 		            pdw_toggle_on : 1,
 		            pdw_toggle_toolbars : '2,3',
 					file_browser_callback: 'ION.openTinyFilemanager',
-	
 					formats : {
 						alignleft : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'left'},
 						aligncenter : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'center'},

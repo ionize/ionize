@@ -462,9 +462,11 @@
 
 						<div>
 							<textarea id="content_<?= $lang ?>" name="content_<?= $lang ?>" class="tinyTextarea h260" rel="<?= $lang ?>"><?= htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8') ?></textarea>
+							<!--
 							<p class="clear h15">
 								<a id="wysiwyg_<?= $lang ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></a>
 							</p>
+							-->
 						</div>
 					
 					</div>

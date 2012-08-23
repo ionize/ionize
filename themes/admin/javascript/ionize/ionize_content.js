@@ -607,7 +607,7 @@ ION.append({
 			item.addEvent('click', function(e)
 			{
 				e.stop();
-				ION.dataWindow(table + 'Help', 'Help', 'desktop/help/' + table + '/' + title, {resize:true});
+				ION.dataWindow(table + 'Help', 'Help', 'desktop/help', {resize:true}, {title:title, table:table});
 				return false;
 			});
 		});

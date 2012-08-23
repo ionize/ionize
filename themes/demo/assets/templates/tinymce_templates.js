@@ -13,7 +13,6 @@ function getTinyTemplates(path_to_templates)
 			description : "Div 50%"
 		}
 	);
-	console.log(path_to_templates+ "div_50.html");
-	
+
 	return template_templates; 
 }

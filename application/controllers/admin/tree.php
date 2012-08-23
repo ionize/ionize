@@ -38,9 +38,6 @@ class Tree extends MY_Admin {
 		$this->load->model('menu_model', '', true);
 		$this->load->model('page_model', '', true);
 		$this->load->model('article_model', '', true);
-		
-		// Librairies
-//		$this->load->library('structure');
 	}
 
 	

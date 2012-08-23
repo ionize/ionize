@@ -649,7 +649,7 @@ class Installer
 			
 
 			// 404 article lang data
-			$langs = array_keys($config['lang_uri_abbr']);
+			$langs = array_keys($config['available_languages']);
 
 			foreach ($langs as $lang)
 			{
@@ -714,7 +714,7 @@ class Installer
 			
 
 			// Article lang data
-			$langs = array_keys($config['lang_uri_abbr']);
+			$langs = array_keys($config['available_languages']);
 
 			foreach ($langs as $lang)
 			{
@@ -743,7 +743,7 @@ class Installer
 		}
 
 		// Default settings
-		$langs = array_keys($config['lang_uri_abbr']);
+		$langs = array_keys($config['available_languages']);
 
 		foreach ($langs as $lang)
 		{

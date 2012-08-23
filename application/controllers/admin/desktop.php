@@ -113,8 +113,11 @@ class Desktop extends MY_Admin
 	 * Opens a help window
 	 *
 	 */
-	function help($table, $title='')
+	function help()
 	{
+		$table = $this->input->post('table');
+		$title = $this->input->post('title');
+
 		$this->load->model($table.'_model', '', TRUE);
 		
 		$this->template['data'] = $this->{$table.'_model'}->get_list();

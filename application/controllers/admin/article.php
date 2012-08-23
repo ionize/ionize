@@ -1610,17 +1610,28 @@ class Article extends MY_admin
 
 		foreach(Settings::get_languages() as $language)
 		{
+
 			foreach ($fields as $field)
 			{
-				if ( $field != 'url' && $this->input->post($field.'_'.$language['lang']) !== FALSE)
+				// Do not filter
+				if ( in_array($field, $this->no_xss_filter))
 				{
+					$content = $_REQUEST[$field.'_'.$language['lang']];
+					$content = stripslashes($content);
+
+				}
+				// Filter
+				else
 					$content = $this->input->post($field.'_'.$language['lang']);
-					
+
+
+				if ( $field != 'url' && $content !== FALSE)
+				{
 					// Allowed tags filter
 					$allowed_tags = explode(',', Settings::get('article_allowed_tags'));
 					$allowed_tags = '<' . implode('>,<', $allowed_tags ) . '>';
-					$content = strip_tags($content, $allowed_tags);
 
+					$content = strip_tags($content, $allowed_tags);
 					$this->lang_data[$language['lang']][$field] = $content;
 				}
 				// URL : Fill with the correct URLs array data
