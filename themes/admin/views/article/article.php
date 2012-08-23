@@ -659,7 +659,7 @@
 	 * Copy Lang data to other languages dynamically
 	 *
 	 */
-	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content', 'meta_title'));
+	ION.initCopyLang('.copyLang', Array('title', 'summary', 'subtitle', 'url', 'content'));
 	
 
 	/** 

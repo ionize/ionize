@@ -1297,9 +1297,12 @@ ION.append({
 					{
 						if (l != lang)
 						{
-							if ($(item + '_' + l))
+							if (typeOf($(item + '_' + l)) != 'null')
 							{
-								if ($(item + '_' + l).hasClass('tinyTextarea') && tinymce != undefined)
+								if (
+									($(item + '_' + l).hasClass('tinyTextarea') ||  $(item + '_' + l).hasClass('smallTinyTextarea'))
+									&& tinymce != undefined
+								)
 								{
 									var tiny = tinymce.EditorManager.get(item + '_' + l);
 									if (tiny)
