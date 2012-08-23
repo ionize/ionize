@@ -1,7 +1,7 @@
 RewriteEngine On
 
 # The RewriteBase / instruction is commented. Remove the "#" to uncomment
-RewriteBase /
+# RewriteBase /
 
 # Memory Limit
 # php_value memory_limit 256M
