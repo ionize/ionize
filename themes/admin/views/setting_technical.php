@@ -764,7 +764,7 @@
 							</dt>
 							<dd>
 								<span><?= lang('ionize_label_your_ip') ?> : <?= $_SERVER['REMOTE_ADDR'] ?></span><br/>
-								<textarea name="maintenance_ips" id="maintenance_ips" class="h50 w140"><?= $maintenance_ips ?></textarea>
+								<textarea name="maintenance_ips" id="maintenance_ips" class="h50 w140"><?= (! empty($maintenance_ips)) ? $maintenance_ips : $_SERVER['REMOTE_ADDR'] ?></textarea>
 							</dd>
 						</dl>
 		
@@ -776,7 +776,7 @@
 									<label title="<?=lang('ionize_label_maintenance_page_help')?>"><?=lang('ionize_title_maintenance_page')?></label>
 								</dt>
 								<dd>
-									<div id="maintenancePageContainer"></div>				
+									<div id="maintenancePageContainer"></div>
 								</dd>
 							</dl>
 							

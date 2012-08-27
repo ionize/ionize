@@ -536,6 +536,7 @@ $lang['ionize_title_maintenance'] = 'Maintenance';
 $lang['ionize_title_maintenance_page'] = 'Maintenance Page';
 $lang['ionize_label_maintenance'] = 'In maintenance';
 $lang['ionize_label_maintenance_ips'] = 'Restrict to IPs';
+$lang['ionize_message_error_maintenance_ip_required'] = 'Maintenance ip required!';
 $lang['ionize_drop_maintenance_page_here'] = 'Drop the wished maintenance page here...';
 $lang['ionize_label_maintenance_help'] = 'When checked, the website will display a maintenance message. Ionize stays available during maintenance.';
 $lang['ionize_label_maintenance_ips_help'] = 'The front-end website will be visible for these IPs only';
