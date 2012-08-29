@@ -421,7 +421,7 @@ class Article extends MY_admin
 				}
 
 				// Reloads the page edition panel
-				$this->_reload_panel($this->data['id_page'], $id_article);
+				$this->_reload_panel($this->data['id_page'], $this->id);
 
 				// Answer
 				$this->success(lang('ionize_message_article_saved'));
