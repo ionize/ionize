@@ -261,13 +261,17 @@ class Setting extends MY_admin
 	 */
 	function set_maintenance_page()
 	{
-		$id_page = $this->input->post('id_page');
+		// $id_page = $this->input->post('id_page');
 
+		$page_id = explode('.', $this->input->post('id_page'));
+
+		$id_page = (count($page_id) > 1) ? $page_id[0] : $this->input->post('id_page');
+		
 		$data = array(
 			'name' => 'maintenance_page',
 			'content' => $id_page
 		);
-		
+
 		$this->settings_model->save_setting($data);
 
 		if ($id_page)
@@ -309,6 +313,7 @@ class Setting extends MY_admin
 		Settings::set('maintenance_page', $id_page);
 		
 		$this->get_maintenance_page();
+
 	}
 	
 	
@@ -793,36 +798,45 @@ class Setting extends MY_admin
 	 */
 	function save_maintenance()
 	{
+		if($this->input->post('maintenance_ips') != '') {
+			// Maintenance Mode
+	/*		$data = array(
+						'name' => 'maintenance',
+						'content' => $this->input->post('maintenance')
+					);
+			
+			$this->settings_model->save_setting($data);
+	*/
+	//		$maintenance = 
+			if ($this->config_model->change('ionize.php', 'maintenance', $this->input->post('maintenance')) == FALSE)
+				$this->error(lang('ionize_message_error_writing_ionize_file'));				
 
-		// Maintenance Mode
-/*		$data = array(
-					'name' => 'maintenance',
-					'content' => $this->input->post('maintenance')
-				);
-		
-		$this->settings_model->save_setting($data);
-*/
-//		$maintenance = 
-		if ($this->config_model->change('ionize.php', 'maintenance', $this->input->post('maintenance')) == FALSE)
-			$this->error(lang('ionize_message_error_writing_ionize_file'));				
 
+			// Allowed IPs
+			$ips = explode("\n", $this->input->post('maintenance_ips'));
+			
+			if ($this->config_model->change('ionize.php', 'maintenance_ips', $ips) == FALSE)
+				$this->error(lang('ionize_message_error_writing_ionize_file'));				
+			
+			
+			// UI panel to update after saving
+			$this->update[] = array(
+				'element' => 'mainPanel',
+				'url' => admin_url() . 'setting/technical'
+			);
 
-		// Allowed IPs
-		$ips = explode("\n", $this->input->post('maintenance_ips'));
-		
-		if ($this->config_model->change('ionize.php', 'maintenance_ips', $ips) == FALSE)
-			$this->error(lang('ionize_message_error_writing_ionize_file'));				
-		
-		
-		// UI panel to update after saving
-		$this->update[] = array(
-			'element' => 'mainPanel',
-			'url' => admin_url() . 'setting/technical'
-		);
+			// Answer
+			$this->success(lang('ionize_message_operation_ok'));
+		} else {
+			// Send Error Message
+            $this->callback[] = array
+                (
+                'fn' => 'ION.notification',
+                'args' => array('error', lang('ionize_message_error_maintenance_ip_required'))
+            );
 
-		// Answer
-		$this->success(lang('ionize_message_operation_ok'));				
-
+            $this->response();
+		}
 	
 	}
 	
