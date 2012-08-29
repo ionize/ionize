@@ -51,7 +51,7 @@ class Menu extends MY_admin
 
 		$this->template['menus'] = $menus;
 
-		$this->output('menu');
+		$this->output('menu/menu');
 	}
 
 	// ------------------------------------------------------------------------
