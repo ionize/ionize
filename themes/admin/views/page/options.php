@@ -490,7 +490,7 @@
 		<?php if ($id_page != '') :?>
 
 			<!-- Modules PlaceHolder -->
-			<?= get_modules_addons('page', 'side_bottom'); ?>
+			<?= get_modules_addons('page', 'options_bottom'); ?>
 
 		<?php endif ;?>
 
