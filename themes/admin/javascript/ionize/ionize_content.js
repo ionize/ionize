@@ -151,9 +151,13 @@ ION.append({
 		}
 	},
 
-	initFormAutoGrow: function()
+	initFormAutoGrow: function(formId)
 	{
-		$$('.autogrow').each(function(item){
+		var selector = '.autogrow';
+		if (typeOf(formId) != 'null')
+			selector = '#' + formId + ' .autogrow';
+
+		$$(selector).each(function(item){
 			new Form.AutoGrow(item, {
 				minHeightFactor: 1
 			});
@@ -185,11 +189,12 @@ ION.append({
 	},
 
 	/**
-	 * Updates one element
+	 * Updates one / several DOM elements
+	 * based on one HTML Request result
 	 *
 	 * @param	Object	Options
 	 *					'url' : URL of the controller to call
-	 *					'element' : ID of the DOM element to update
+	 *					'element' : ID, selectors of the DOM element(s) to update
 	 *
 	 */
 	updateElement: function (options)
@@ -200,9 +205,25 @@ ION.append({
 		// If the panel doesn't exists, try to update directly one DomHTMLElement
 		if ( ! MUI.get(options.element) )
 		{
+			var elements = (options.element).split(',');
+			elements.each(function(item, idx){
+				item = item.trim();
+				var firstChar = item.substring(0,1);
+				if (firstChar != '.' && firstChar != '#') item = '#' + item;
+				elements[idx] = item;
+			});
+			elements = elements.join(',');
+			elements = $$(elements);
+
 			new Request.HTML({
 				'url': options.url,
-				'update': $(options.element)
+				onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
+				{
+					elements.each(function(element){
+						$(element).set('html', responseHTML);
+						Browser.exec(responseJavaScript);
+					});
+				}
 			}).send()
 		}
 		else

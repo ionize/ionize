@@ -143,6 +143,12 @@ if($type == 'picture')
 </div>
 
 
+<?php if ($id_media != '') :?>
+	<!-- Modules PlaceHolder -->
+	<?= get_modules_addons('media', 'main_top'); ?>
+<?php endif ;?>
+
+
 <!-- Media form -->
 <form name="mediaForm<?= $id_media ?>" id="mediaForm<?= $id_media ?>" action="<?= admin_url() ?>media/save">
 

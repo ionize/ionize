@@ -58,6 +58,13 @@ License:
 	margin: 10px 0 5px 15px;
 	padding:0;
 }
+#splitPanel_sidePanel_pad .element .element-content {
+	padding: 0 0 10px 10px;
+}
+
+#splitPanel_sidePanel_pad div.droppable {
+	margin-bottom: 10px;
+}
 #sidecolumn.close {
 	display:none;
 	width:0;
@@ -368,6 +375,14 @@ div.summary {
 	padding:10px;
 	margin-bottom:10px;
 	border-radius: 5px;	-moz-border-radius: 5px;-webkit-border-radius: 5px;
+}
+
+/* window Notify box */
+.mochaContentNotify.error {
+	background-color: #b00;
+	color:#fff;
+	padding:10px;
+	margin-bottom: 15px;
 }
 
 /* Sortable Containers

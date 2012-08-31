@@ -40,7 +40,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 :focus { outline: none; }
 
 /* Structure */
-body { text-align: left; font-family: "lucida grande",tahoma,verdana,arial,sans-serif; font-size: 11px; line-height: 18px; color: #3f3f3f; }
+body { text-align: left; font-family: "lucida grande",tahoma,verdana,arial,sans-serif; font-size: 11px; line-height: 18px; color: #3f3f3f; overflow: hidden;}
 
 /* Typography */
 h2, h3, h4 { margin: 0 0 10px 0; padding: 0 0 3px 0; font-weight: bold; }

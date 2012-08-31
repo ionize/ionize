@@ -506,6 +506,7 @@ class Article extends MY_admin
 
 			if( ! empty($article) )
 			{
+				// Loads the modules addons
 				$this->load_modules_addons($article);
 
 				// Page context of the current edited article

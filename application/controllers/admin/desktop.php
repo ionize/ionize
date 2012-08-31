@@ -32,6 +32,9 @@ class Desktop extends MY_Admin
 
 	function index()
 	{
+		$modules = array();
+		include APPPATH . 'config/modules.php';
+		$this->template['modules'] = $modules;
 
 		$this->get('desktop/desktop');
 	}

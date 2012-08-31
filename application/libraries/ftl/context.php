@@ -178,7 +178,11 @@ class FTL_Context
 		}
 		else
 		{
-			show_error('Error in definition of tag "'.$name.'", the associated <b>static function</b> "'.$call.'" cannot be called.');
+			return $this->show_error(
+				'Error in definition of tag "'.$name.'"',
+				'the associated <b>static function</b> "'.$call.'" cannot be called.'
+			);
+			// show_error('Error in definition of tag "'.$name.'", the associated <b>static function</b> "'.$call.'" cannot be called.');
 		}
 		
 		// jump out
@@ -221,10 +225,7 @@ class FTL_Context
 			
 			// Start
 			$c =& $this->tree;
-//echo('<pre>');
-//var_dump($this->tree);
-//echo('</pre>');
-			
+
 			// Go through the whole name
 			while( ! empty($path_chunks))
 			{
@@ -268,7 +269,15 @@ class FTL_Context
 	 */
 	public function tag_missing($name, $args = array(), $block = null)
 	{
-		throw new Exception('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
+		// trigger_error('Name: "'.$name.'", scope: "'.$this->current_nesting().'".');
+		// show_error('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
+		// throw new Exception('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
+
+		$title = 'Tag missing';
+		$message = '<b>'.$name.'</b>, scope: <b>'.$this->current_nesting().'</b>';
+		return $this->show_error($title, $message);
+
+		return '<p><span style="color:#b00;">Tag missing:</span> <b>'.$name.'</b>, scope: <b>'.$this->current_nesting().'</b>.</p>';
 	}
 	
 	// --------------------------------------------------------------------
@@ -283,6 +292,14 @@ class FTL_Context
 	function current_nesting()
 	{
 		return implode(':', $this->tag_name_stack);
+	}
+
+
+	// --------------------------------------------------------------------
+
+	function show_error($title, $message)
+	{
+		return '<p><span style="color:#b00;font-weight:bold;">' . $title . ':</span> ' . $message . '.</p>';
 	}
 }
 

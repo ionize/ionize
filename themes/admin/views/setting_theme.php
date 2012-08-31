@@ -223,7 +223,7 @@
 								$('contentview_' + id).value = mirrorFrame.mirror.getCode();
 
 								// Get the form
-								var options = ION.getFormObject(formUrl, $(form));
+								var options = ION.getJSONRequestOptions(formUrl, $(form));
 
 								var r = new Request.JSON(options);
 

@@ -30,7 +30,6 @@ fieldset {
 	border:none;
 }
 
-
 .panel dl.first,
 .mocha dl.first {
 	margin-top: 10px;
@@ -116,7 +115,9 @@ dl.required dd input, dl.required dd textarea, dl.required dd select {
 .mochaContent dl {
 	min-width: inherit;
 }
-
+.mochaContent textarea {
+	width: 96%;
+}
 
 /* Form Elements
 ---------------------------------------------------------------- */
@@ -382,3 +383,11 @@ a.button i{
 	vertical-align: top;
 	margin-top: 0;	
 }
+
+/* Form Validation */
+.validation-passed { border-color: #99cc99 !important; }
+/* This style is applied to input fields after successful validation */
+.validation-advice { background-color: #fff; color: #b00; margin: 0; padding: 0; }
+/* This style is applied to the error messages */
+.validation-failed { border-color: #b00 !important; }
+/* This style is applied to input fields after validation failed */

@@ -1885,7 +1885,7 @@ class Base_model extends CI_Model
 		}
 	
 		$this->{$this->db_group}->delete($table);
-				
+
 		return (int) $this->{$this->db_group}->affected_rows();
 	}
 
@@ -2189,11 +2189,12 @@ class Base_model extends CI_Model
 	 */
 	function list_fields($table = NULL)
 	{
+		$table = ( ! is_null($table)) ? $table : $this->table ;
+
 		if (isset($this->_list_fields[$this->db_group.'_'.$table]))
 			return $this->_list_fields[$this->db_group.'_'.$table];
 		
-		if ( ! is_null($table))
-			$this->_list_fields[$this->db_group.'_'.$table] = $this->{$this->db_group}->list_fields($table);
+		$this->_list_fields[$this->db_group.'_'.$table] = $this->{$this->db_group}->list_fields($table);
 		
 		return $this->_list_fields[$this->db_group.'_'.$table];
 	}

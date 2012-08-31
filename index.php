@@ -234,12 +234,10 @@ if (defined('ENVIRONMENT'))
 	// Path to the public web folder
 	if (realpath(FCPATH.$doc_folder) !== FALSE)
 	{
-//		$doc_path = realpath($doc_folder);
 		$doc_path = realpath(FCPATH.$doc_folder);
 	}
 	else
 	{
-//		$doc_path = realpath($_SERVER['DOCUMENT_ROOT']);
 		$doc_path = FCPATH;
 	}
 

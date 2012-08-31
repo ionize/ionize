@@ -1,71 +1,6 @@
 ION.append({
 
 	/**
-	 * Returns the Ionize form object
-	 *
-	 * @param	string		URL to send the form data. With or without the base URL prefix. Will be cleaned.
-	 * @param	mixed		Form data
-	 */
-	getFormObject: function(url, data)
-	{
-		if (!data) {
-			data = '';
-		}
-
-		// Cleans URLs
-		url = ION.cleanUrl(url);
-
-		return {
-			url: admin_url + url, 
-			method: 'post',
-			loadMethod: 'xhr',
-			data: data,
-			onRequest: function()
-			{
-				MUI.showSpinner();
-			},
-			onFailure: function(xhr) 
-			{
-				MUI.hideSpinner();
-
-				// Error notification
-				ION.notification('error', xhr.responseJSON);
-			},
-			onSuccess: function(responseJSON, responseText)
-			{
-				MUI.hideSpinner();
-				
-				// Update the elements transmitted through JSON
-				if (responseJSON && responseJSON.update)
-				{
-					// Updates all the elements in the update array
-					// look at init-content.js for more details
-					ION.updateElements(responseJSON.update);
-				}
-
-				// JS Callback
-				if (responseJSON && responseJSON.callback)
-				{
-					ION.execCallbacks(responseJSON.callback);
-				}
-	
-				// User notification
-				if (responseJSON && responseJSON.message_type)
-				{
-					if (responseJSON.message_type == 'error')
-					{
-						ION.error(responseJSON.message);
-					}
-					else
-					{
-						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
-					}
-				}
-			}
-		};
-	},
-
-	/**
 	 * Get the associated form object and send it directly
 	 *
 	 * @param	string		URL to send the form data
@@ -82,7 +17,7 @@ ION.append({
 		}
 		ION.updateRichTextEditors();
 
-		new Request.JSON(ION.getFormObject(url, form)).send();
+		new Request.JSON(ION.getJSONRequestOptions(url, form)).send();
 	},
 
 	/**
@@ -96,7 +31,7 @@ ION.append({
 	{
 		ION.updateRichTextEditors();
 
-		new Request.JSON(ION.getFormObject(url, data)).send();
+		new Request.JSON(ION.getJSONRequestOptions(url, data)).send();
 	},
 
 
@@ -111,12 +46,30 @@ ION.append({
 	 */
 	setFormSubmit: function(form, button, url, confirm)
 	{
+		// Form Validation
+		var fv = new Form.Validator.Inline(form, {
+			stopOnFailure: true,
+			errorPrefix: '',
+			showError: function(element) {
+				element.show();
+				/*
+				myFx = element.get('reveal');
+				myFx.set('reveal', {
+					duration: 'short',
+					transition: 'bounce:easeOut'
+				});
+				myFx.reveal();
+				*/
+			}
+		});
+
 		// Add the form submit event with a confirmation window
 		if ($(button) && (typeOf(confirm) == 'object'))
 		{
 			var func = function()
 			{
-				var options = ION.getFormObject(url, $(form));
+				var options = ION.getJSONRequestOptions(url, $(form));
+
 				var r = new Request.JSON(options);
 				r.send();
 			};
@@ -137,18 +90,31 @@ ION.append({
 			$(button).addEvent('click', function(e)
 			{
 				e.stop();
-				
-				// tinyMCE and CKEditor trigerSave
-				ION.updateRichTextEditors();
-				
-				// Get the form
-				var options = ION.getFormObject(url, $(form));
-				var r = new Request.JSON(options);
-				r.send();
+
+				var parent = $(form).getParent('.mocha');
+				var result = fv.validate();
+
+				if ( ! result)
+				{
+					new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
+				}
+				else
+				{
+					// tinyMCE and CKEditor trigerSave
+					ION.updateRichTextEditors();
+
+					// Get the form
+					var options = ION.getJSONRequestOptions(url, $(form));
+
+					var r = new Request.JSON(options);
+					r.send();
+
+					// Close the window
+					parent.close();
+				}
 			});
 		}
 	},
-
 
 	setChangeSubmit: function(form, button, url, confirm)
 	{
@@ -157,7 +123,8 @@ ION.append({
 		{
 			var func = function()
 			{
-				var options = ION.getFormObject(url, $(form));
+				var options = ION.getJSONRequestOptions(url, $(form));
+
 				var r = new Request.JSON(options);
 				r.send();
 			};
@@ -183,7 +150,8 @@ ION.append({
 				ION.updateRichTextEditors();
 				
 				// Get the form
-				var options = ION.getFormObject(url, $(form));
+				var options = ION.getJSONRequestOptions(url, $(form));
+
 				var r = new Request.JSON(options);
 				r.send();
 			});

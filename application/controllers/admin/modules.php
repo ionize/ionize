@@ -146,12 +146,16 @@ class Modules extends MY_admin
 		include APPPATH . 'config/modules.php';
 
 		// Load the module XML config file
-		if ( ! $xml = simplexml_load_file(MODPATH . $module_folder . '/config.xml') )
+		$config_path = MODPATH . $module_folder . '/config.xml';
+
+		if ( ! file_exists($config_path) )
 		{
 			$this->error(lang('ionize_message_module_install_error_no_config'));
 		}
 		else
 		{
+			$xml = simplexml_load_file($config_path);
+
 			// Get the pages
 			$this->load->model('page_model', '', TRUE);
 			$pages = $this->page_model->get_list();
@@ -178,8 +182,6 @@ class Modules extends MY_admin
 					if ( ! in_array($module_uri, $disable_controller)) $disable_controller[] = $module_uri;
 
 				// Install module database tables
-				$db = $xml->database;
-
 				if ( (bool)$xml->database == 1)
 				{
 					$errors = array();
@@ -318,7 +320,7 @@ class Modules extends MY_admin
 	 * 
 	 * @param	SimpleXMLElement	Database XML object
 	 *
-	 * @returns Array		Array of tables names which failed to install
+	 * @return 	Array				Array of tables names which failed to install
 	 *
 	 */
 	function install_database($database)
@@ -408,8 +410,11 @@ class Modules extends MY_admin
 
 	/**
 	 * Installs the module database based on a separated simple XML script
-	 * 
+	 *
 	 * @param	String	File name
+	 * @param	String	Module's folder
+	 *
+	 * @return	array	Array of errors
 	 *
 	 * The database.xml script must look like the database.xml install file :
 	 *
@@ -451,13 +456,17 @@ class Modules extends MY_admin
 	function install_database_script($script, $module_folder)
 	{
 		$errors = array();
-		
-		if ( ! $xml = simplexml_load_file(MODPATH . $module_folder . '/' . $script) )
+
+		$script_path = MODPATH . $module_folder . '/' . $script;
+
+		if ( ! file_exists($script_path))
 		{
 			$errors[] = 'SQL File ' . $script . ' cannot be found.';
 		}
 		else
 		{
+			$xml = simplexml_load_file($script_path);
+
 			// Get tables & content
 			$tables = $xml->xpath('/sql/tables/query');
 			$content = $xml->xpath('/sql/content/query');

@@ -12,15 +12,13 @@ ION.append({
 
 	HTML: function(url, data, options)
 	{
-		if ( ! options.update)
-			new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
+		if (typeOf(options) == 'null' || typeOf(options.update) == 'null')
+		{
+			ION.notification('error', 'No "update" HTML Element in your request');
+		}
 		else
 		{
-			if (options.update)
-			{
-				if ($(options.update))
-					new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
-			}
+			new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
 		}
 	},
 
@@ -76,10 +74,8 @@ ION.append({
 	/**
 	 * Returns the JSON Request options object
 	 * 
-	 * @usage : No direct use. Use MUI.JSON() instead.
+	 * @usage : No direct use. Use ION.JSON() instead.
 	 * 
-	 * NOTE : SHOULD REPLACE THE MUI.getFormObject() FUNCTION !!!
-	 *
 	 * @param	String		URL to send the form data. With or without the base URL prefix. Will be cleaned.
 	 * @param	Object		Form data to send as POST
 	 * @param	Object		Options
@@ -88,6 +84,7 @@ ION.append({
 	 */
 	getJSONRequestOptions: function(url, data, options)
 	{
+
 		if (!data) {
 			data = '';
 		}
@@ -139,17 +136,10 @@ ION.append({
 				}
 	
 				// User notification
-				if (responseJSON && responseJSON.message_type)
+				if (responseJSON && typeOf(responseJSON.message_type != 'null'))
 				{
-/*					if (responseJSON.message_type == 'error')
-					{
-						ION.error(responseJSON.message);
-					}
-					else
-					{
-*/
+					if (responseJSON.message_type != '')
 						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
-//					}
 				}
 			}
 		};
@@ -159,10 +149,8 @@ ION.append({
 	/**
 	 * Returns the HTML Request options object
 	 * 
-	 * @usage : No direct use. Use MUI.JSON() instead.
+	 * @usage : No direct use. Use ION.HTML() instead.
 	 * 
-	 * NOTE : SHOULD REPLACE THE MUI.getFormObject() FUNCTION !!!
-	 *
 	 * @param	string		URL to send the form data. With or without the base URL prefix. Will be cleaned.
 	 * @param	mixed		Form data
 	 * @param	object		Options

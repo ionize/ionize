@@ -30,7 +30,6 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.3.2-full-nocompat.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.3.2.1-yc.js"></script>
 
-
 <!-- Mootools 1.4.1
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-core-1.4.1-full-nocompat-yc.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-more-1.4.0.1-yc.js"></script>
@@ -57,7 +56,6 @@
 <!-- Form Autogrow -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-class-extras.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/Form.AutoGrow.js"></script>
-
 
 <!-- swfObject -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/swfobject.js"></script>
@@ -122,7 +120,6 @@
 <!-- UI initialization -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mochaui/init.js"></script>
 
-
 <!-- Ionize -->
 <!-- In a production environment, these files should be grouped and compressed -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_core.js"></script>
@@ -137,8 +134,8 @@
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_tinymce.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_tree_xhr.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_list_filter.js"></script>
+<script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_notify.js"></script>
 <script type="text/javascript" src="<?= theme_url() ?>javascript/ionize/ionize_user.js"></script>
-
 
 <!-- Mootools Filemanager -->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/FileManager.js"></script>
@@ -164,9 +161,6 @@
 	}
 
 </script>
-<!--
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js"></script>
--->
 <script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager_ionize.css" />
 <!--[if IE 7]><link rel="stylesheet" href="<?= theme_url() ?>javascript/mootools-filemanager/Assets/Css/FileManager_ie7.css" /><![endif]-->
@@ -229,9 +223,17 @@
 	var tinyButtons3 = '<?= Settings::get('tinybuttons3'); ?>';
 	var tinyBlockFormats = '<?= Settings::get('tinyblockformats'); ?>';
 
-
 </script>
 
+<!-- Module's CSS / JS files -->
+<?php foreach($modules as $module):?>
+	<?php if (file_exists(MODPATH.$module.'/assets/css/admin.css')): ?>
+		<link rel="stylesheet" href="<?= base_url() ?>modules/<?php echo strtolower($module) ;?>/assets/css/admin.css" type="text/css" />
+	<?php endif;?>
+	<?php if (file_exists(MODPATH.$module.'/assets/javascript/admin.js')): ?>
+		<script type="text/javascript" src="<?= base_url() ?>modules/<?php echo strtolower($module) ;?>/assets/javascript/admin.js"></script>
+	<?php endif;?>
+<?php endforeach; ?>
 
 </head>
 <body>

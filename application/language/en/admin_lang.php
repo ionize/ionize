@@ -385,6 +385,9 @@ $lang['button_delete_installer_done_site'] = 'Done! Go to website';
 $lang['ionize_message_item_used_by_data_no_delete'] = 'This item is used and can\'t be deleted';
 $lang['ionize_message_url_not_found'] = 'URL not found';
 $lang['ionize_message_url_got_404'] = 'This URL returns a 404 page';
+$lang['ionize_message_form_validation_error'] = 'Some data are missing or incorrect';
+$lang['ionize_message_form_validation_please_correct'] = 'Please correct the form data';
+
 
 /*
 |--------------------------------------------------------------------------

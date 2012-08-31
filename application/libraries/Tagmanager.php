@@ -158,7 +158,6 @@ class TagManager
 
 		$tag_definitions = $vars['tag_definitions'];
 
-		// Use of module name as namespace for the module to avoid modules tags collision
 		foreach ($tag_definitions as $tag => $method)
 		{
 			// Regular tag declaration					
@@ -214,22 +213,27 @@ class TagManager
 				// add module enclosing tag
 				self::$tags[$module] = $class.'::index';
 
-				
-				// Use of module name as namespace for the module to avoid modules tags collision
 				foreach ($methods as $method)
-				{																
-					// Allow to extend core tags using "tag_extension_map" static array
-					
-					if (isset($vars["tag_extension_map"]) && isset($vars["tag_extension_map"][$method]))
+				{
+					$tag_name = explode('_', $method);
+
+					if ($tag_name[0] == 'tag')
 					{
-						self::$tags[$vars["tag_extension_map"][$method]] = $class.'::'.$method;
+						// Regular tag declaration
+						$tag_name = $tag_name[1];
+
+						// Use of module name as namespace for the module to avoid modules tags collision
+						self::$tags[$module.':'.$tag_name] = $class.'::'.$method;
 					}
-					
-					// Regular tag declaration					
-					else
-					{
-						self::$tags[$module.':'.$method] = $class.'::'.$method;
-					}
+				}
+
+				// Load tags from the tag_definitions array : Overwrites auto-load
+				$tag_definitions = ! empty($vars["tag_definitions"]) ? $vars["tag_definitions"] : array();
+				foreach($tag_definitions as $scope => $method)
+				{
+					// Only loads scopes linked to one existing method
+					if (in_array($method, $methods))
+						self::$tags[$scope] = $class.'::'.$method;
 				}
 
 				return TRUE;
@@ -1427,7 +1431,6 @@ class TagManager
 		
 		if ( ! empty ($value) )
 			return $open_tag . $prefix . $value . $close_tag;
-//			return $open_tag . $prefix . htmlentities($value, ENT_QUOTES, "UTF-8") . $close_tag;
 		else
 			return '';
 	}
@@ -1600,6 +1603,24 @@ class TagManager
 
 		ob_end_clean();
 		return $buffer;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Loads a CI model
+	 *
+	 * @param	String		Model name to load
+	 * @param	String		Logical model name
+	 *
+	 */
+	protected static function load_model($model_name, $new_name='')
+	{
+		$ci =  &get_instance();
+
+		if (!isset($ci->{$new_name})) $ci->load->model($model_name, $new_name, true);
 	}
 }
 

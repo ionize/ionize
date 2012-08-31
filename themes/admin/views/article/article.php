@@ -42,8 +42,6 @@
 				</p>
 			</div>
 
-
-
 		<!-- New article -->
 		<?php else :?>
 			

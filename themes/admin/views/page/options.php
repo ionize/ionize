@@ -63,7 +63,7 @@
 		<?php if ($id_page != '') :?>
 
 			<!-- Modules PlaceHolder -->
-			<?= get_modules_addons('page', 'side_top'); ?>
+			<?= get_modules_addons('page', 'options_top'); ?>
 
 		<?php endif ;?>
 

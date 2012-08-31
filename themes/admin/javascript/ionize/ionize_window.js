@@ -117,7 +117,6 @@ ION.append({
 		new MUI.Modal(options);		
 	},
 
-	
 	/**
 	 * Ionize generic form window
 	 * Use to load a window which contains a form 
@@ -134,6 +133,7 @@ ION.append({
 		// Cleans URLs
 		wUrl = ION.cleanUrl(wUrl);
 
+		// Window options
 		var options  = 
 		{
 			id: 'w' + id,
@@ -147,9 +147,13 @@ ION.append({
 				{
 					// Get the form action URL and adds 'true' so the transport is set to XHR
 					var formUrl = $(form).getProperty('action');
+
 					// Set the form submit button action and send the DOM Element to update with the according URL
 					ION.setFormSubmit(form, ('bSave' + id), formUrl);
-	
+
+
+
+
 					// Add the cancel event if cancel button exists
 					// All buttons name starts with 'b'
 					if (bCancel = $('bCancel' + id))
@@ -162,6 +166,7 @@ ION.append({
 					}
 					
 					// Event on save button
+					/*
 					if (bSave = $('bSave' + id))
 					{
 						bSave.addEvent('click', function(e)
@@ -176,6 +181,7 @@ ION.append({
 							closeFunc.delay(50);
 						});
 					}
+					*/
 					
 					// Window resize
 					if (typeOf(wOptions) != 'null' && wOptions.resize == true)
@@ -301,7 +307,7 @@ ION.append({
 	},
 	
 	/**
-	 * Returns the buttons yes / no HTMLDOMElement
+	 * Returns the buttons yes/no HTMLDOMElement
 	 *
 	 * @param	string		Window ID (to link with the close button)
 	 * @param	string		URL or Callback JS function to call if yes answer
@@ -368,11 +374,21 @@ ION.append({
 	 * @param	String		Windows ID, without the Mocha prefix (w)
 	 *
 	 */
-	windowResize: function(id, size)
+	windowResize: function(id, size, resize, centered )
 	{
+		var mps = $('mainPanel').getSize();
+		var window = $('w' + id).retrieve('instance');
+		var windowEl = $('w' + id).getElement('.mochaContent');
+
+		// resize = (typeOf(resize) == 'null') ? 'both' : resize;
+		// var resizeHeight = !!(resize == 'both' || resize == 'height');
+		// var resizeWidth = !!(resize == 'both' || resize == 'width');
+		var centered = !! (typeOf(centered) == 'null');
+
 		// windows content size
 		var cs = false;
-		var gotSize = $('w' + id + '_content').getSize();
+		var gotSize = windowEl.getSize();
+
 		if (typeOf(size) == 'object')
 		{
 			cs = {};
@@ -384,16 +400,13 @@ ION.append({
 			cs = gotSize;
 		}
 
-		// main panel content size
-		var mps = $('mainPanel').getSize();
-
 		if ((cs.y + 80) < mps.y)
 		{
-			$('w' + id).retrieve('instance').resize({height: cs.y + 10, width: cs.x, centered:true, top:70 });
+			window.resize({height: cs.y + 10, width: cs.x, centered:centered, top:70 });
 		}
 		else
 		{
-			$('w' + id).retrieve('instance').resize({height: mps.y - 30, width: cs.x, centered:true, top:70 });						
+			window.resize({height: mps.y - 30, width: cs.x, centered:centered, top:70 });
 		}
 	
 	},
