@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title><?= Settings::get('site_title') ?></title>
+	<title><?= lang('ionize_login') . ' | ' . Settings::get('site_title') ?></title>
 	<meta http-equiv="imagetoolbar" content="no" />
 	<link rel="shortcut icon" href="<?= theme_url() ?>images/favicon.ico" type="image/x-icon" />
 

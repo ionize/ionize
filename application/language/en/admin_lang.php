@@ -36,6 +36,7 @@
 | Admin login panel
 |--------------------------------------------------------------------------
 */
+$lang['ionize_administration'] = 'Administration';
 $lang['ionize_home'] = 'Home';
 $lang['ionize_login'] = 'Login';
 $lang['ionize_logout'] = 'Logout';
