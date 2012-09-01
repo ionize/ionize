@@ -1322,10 +1322,10 @@ ION.append({
 							{
 								if (
 									($(item + '_' + l).hasClass('tinyTextarea') ||  $(item + '_' + l).hasClass('smallTinyTextarea'))
-									&& (typeof tinymce != undefined)
+									&& tinyMCE != undefined
 								)
 								{
-									var tiny = tinymce.EditorManager.get(item + '_' + l);
+									var tiny = tinyMCE.EditorManager.get(item + '_' + l);
 									if (tiny)
 										tiny.setContent($(item + '_' + lang).value);
 								}
