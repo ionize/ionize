@@ -1408,7 +1408,8 @@ class TagManager
 		$class = self::get_attribute($tag, 'class');
 		$id = self::get_attribute($tag, 'id');
 		$prefix = self::get_attribute($tag, 'prefix', '');
-		
+		$suffix = self::get_attribute($tag, 'suffix', '');
+
 		if ( ! empty($class)) $class = ' class="'.$class.'"';
 		if ( ! empty($id)) $id = ' id="'.$id.'"';
 		
@@ -1430,7 +1431,7 @@ class TagManager
 		}
 		
 		if ( ! empty ($value) )
-			return $open_tag . $prefix . $value . $close_tag;
+			return $open_tag . $prefix . $value . $suffix . $close_tag;
 		else
 			return '';
 	}
@@ -1618,9 +1619,7 @@ class TagManager
 	 */
 	protected static function load_model($model_name, $new_name='')
 	{
-		$ci =  &get_instance();
-
-		if (!isset($ci->{$new_name})) $ci->load->model($model_name, $new_name, true);
+		if (!isset(self::$ci->{$new_name})) self::$ci->load->model($model_name, $new_name, true);
 	}
 }
 
