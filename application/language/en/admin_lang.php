@@ -1118,6 +1118,15 @@ $lang['ionize_label_top_left'] = 'top-left';
 $lang['ionize_label_middle'] = 'middle';
 $lang['ionize_label_bottom_right'] = 'bottom-right';
 
+/*
+|--------------------------------------------------------------------------
+| Admin : Help /  About Us
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_label_about_us_author'] = 'Author';
+$lang['ionize_label_about_us_contributors'] = 'Contributors';
+$lang['ionize_label_about_us_thaks_to'] = 'Thanks to';
+$lang['ionize_label_about_us_license'] = 'License';
 
 
 
