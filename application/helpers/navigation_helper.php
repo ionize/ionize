@@ -52,7 +52,7 @@ if( ! function_exists('get_navigation'))
 			// Adds the suffix if defined in /application/config.php
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
-			$nav .= '<li' . $active . '><a ' . $active . 'href="' . $page['absolute_url'] . '">'.$title. '</a></li>';
+			$nav .= '<li' . $active . '><a ' . $active . 'href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a></li>';
 		}
 		
 		return $nav;
@@ -92,7 +92,7 @@ if( ! function_exists('get_tree_navigation'))
 
 				$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
 				
-				$tree .= '<li'.$class.'><a'.$class.' href="' . $page['absolute_url'] . '">'.$title. '</a>';
+				$tree .= '<li'.$class.'><a'.$class.' href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a>';
 		
 				if (!empty($page['children']))
 					 $tree .= get_tree_navigation($page['children']);
