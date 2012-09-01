@@ -41,13 +41,3 @@
 	<button id="bCancellang"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
 </div>
 
-<script type="text/javascript">
-
-	/**
-	 * Window resize
-	 *
-	 */
-	ION.windowResize('lang', {width:350, height:200});
-
-
-</script>

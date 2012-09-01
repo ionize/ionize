@@ -31,13 +31,3 @@
 	<button id="bCancelmenu"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
 </div>
 
-<script type="text/javascript">
-
-	/**
-	 * Window resize
-	 *
-	 */
-	ION.windowResize('menu', {width:350, height:100});
-
-
-</script>

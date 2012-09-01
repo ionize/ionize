@@ -170,8 +170,10 @@ $lang['ionize_modal_error_title'] = 'Error';
 | Menus 
 |--------------------------------------------------------------------------
 */
-$lang['ionize_title_add_menu'] = 'Add menu';
+$lang['ionize_title_add_menu'] = 'Add Menu';
+$lang['ionize_title_create_menu'] = 'Create Menu';
 $lang['ionize_button_save_new_menu'] = 'Save Menu';
+$lang['ionize_button_create_menu'] = 'Create Menu';
 
 $lang['ionize_title_existing_menu'] = 'Existing menu';
 $lang['ionize_message_menu_saved'] = 'Menu saved';
@@ -886,7 +888,7 @@ $lang['ionize_label_drag_to_page'] = 'Drag to a page';
 $lang['ionize_label_article_edit_context'] = 'Settings';
 $lang['ionize_label_article_filter'] = 'Filter';
 $lang['ionize_label_article_context_edition'] = 'Editing context';
-$lang['ionize_label_new_lang'] = 'Create a lang';
+$lang['ionize_label_new_lang'] = 'Create Language';
 
 $lang['ionize_message_article_not_saved'] = 'Article not saved : Missing data';
 $lang['ionize_message_article_saved'] = 'Article saved';
