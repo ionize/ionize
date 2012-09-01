@@ -18,7 +18,7 @@ class MY_Lang extends CI_Lang
 	 * @param	boolean	value to return : FALSE by default
 	 * @return	mixed
 	 */
-	function load($langfile = '', $idiom = '', $return = FALSE)
+	function load($langfile = '', $idiom = '', $return = FALSE, $add_suffix = TRUE, $alt_path = '')
 	{
 		$CI =& get_instance();
 		

@@ -302,10 +302,12 @@ class TagManager_Media extends TagManager
 		}
 		$title = self::get_value('media', 'title', $tag);
 
+		/*
 		if ( is_null($title) || $title == '')
 		{
 			$title = self::get_value('media', 'file_name', $tag);
 		}
+		*/
 		
 		return self::wrap($tag, $title);
 	}

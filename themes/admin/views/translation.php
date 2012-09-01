@@ -4,12 +4,14 @@
 	<h2 class="main languages" id="main-title"><?= lang('ionize_title_translation') ?></h2>
 	
 	<div class="subtitle">
-	<form>
-		<label class="left"><?= lang('ionize_label_article_filter') ?></label>
-		<input id="search_translation" type="text" class="inputtext w340 left"></input>
-		<a id="cleanFilter" class="icon clearfield left ml5"></a>
-		<div class="clear"></div>
-	</form>
+		<form>
+			<div class="w400 relative">
+				<label class="left"><?= lang('ionize_label_article_filter') ?></label>
+				<input id="search_translation" type="text" class="inputtext w300 left"></input>
+				<a id="cleanFilter" class="icon clearfield left ml5"></a>
+				<div class="clear"></div>
+			</div>
+		</form>
 	
 	</div>
 	
@@ -98,9 +100,9 @@
 				</fieldset>
 			</form>
 			<!-- Term block model -->
-			<ul id="termModel"  style="display:none;">
+			<ul id="termModel" style="display:none;">
 				<li><span class="toggler"></span><input type="text" class="inputtext w300"></input></li>
-				<div class="translation ml15">
+				<div class="translation ml15 model">
 					<?php foreach(Settings::get_languages() as $language) :?>
 						<?php $lang = $language['lang']; ?>
 						<div style="float:left;width:<?=$width?>%;margin-right:2%">
@@ -379,11 +381,12 @@
 				c = c + el.value;
 			});
 			
-			
 			var m = c.match(search);
 			
-			if ( (m))
+			if ( (m) )
+			{
 				el.show();
+			}
 			else
 				el.hide();
 		});
@@ -411,7 +414,8 @@
 		
 		$$('.translation').each(function(el)
 		{
-			var ul = el.getParent('ul').show();
+			if ( ! el.hasClass('model'))
+				var ul = el.getParent('ul').show();
 		});
 	});
 	

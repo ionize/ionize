@@ -177,9 +177,21 @@
 		INSERT INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', NULL);
 	</query>
 
+    <query>
+        ALTER TABLE `article` DROP `online`;
+    </query>
+    <query>
+        ALTER TABLE `article` DROP `ordering`;
+    </query>
+    <query>
+        ALTER TABLE `article` DROP `id_page`;
+    </query>
+    <query>
+        ALTER TABLE `article` DROP `view`;
+    </query>
 
 
-	<query>ALTER TABLE `article` COMMENT = '0.9.7';</query>
+    <query>ALTER TABLE `article` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_category` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_comment` COMMENT = '0.9.7';</query>
 	<query>ALTER TABLE `article_lang` COMMENT = '0.9.7';</query>

@@ -419,7 +419,7 @@
 			  id_setting int(11) UNSIGNED NOT NULL auto_increment,
 			  name varchar(255) NOT NULL,
 			  content text not null,
-			  lang varchar(3) not null,
+			  lang varchar(3) not null default '',
 			  PRIMARY KEY (id_setting)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 		</query>
@@ -514,6 +514,7 @@
 	
 
 		<query>DROP INDEX idx_unq_setting ON setting;</query>
+        <query>alter table setting change lang lang varchar(3) not null default '';</query>
 		<query>CREATE UNIQUE INDEX idx_unq_setting ON setting (name, lang);</query>
 
 		<query>TRUNCATE TABLE login_tracker;</query>
@@ -533,9 +534,10 @@
 		<query>DELETE FROM setting WHERE name='ftp_host';</query>
 		<query>DELETE FROM setting WHERE name='ftp_user';</query>
 		<query>DELETE FROM setting WHERE name='ftp_password';</query>
-		<query>DELETE FROM setting WHERE name='picture_copyright';</query>
+        <query>DELETE FROM setting WHERE name='picture_copyright';</query>
+        <query>DELETE FROM setting WHERE name='filemanager';</query>
 
-		<query>INSERT IGNORE INTO setting VALUES ('', 'website_email', '', '');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'website_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'default', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme_admin', 'admin', '');</query>

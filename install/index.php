@@ -66,10 +66,10 @@ require_once($application_folder. '/core/finder/finder.php');		// So My_Language
 
 
 // Installer class
-if (file_exists('./class/installer.php'))
+if (file_exists('./class/Installer.php'))
 {
 
-	require './class/installer.php';
+	require './class/Installer.php';
 
 	$installer = new Installer();
 

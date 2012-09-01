@@ -10,7 +10,6 @@ License:
 
 */
 
-
 /* Structure
 ---------------------------------------------------------------- */
 
@@ -1049,6 +1048,9 @@ dl#link_info dd {
 /* Standard sizes, margin, padding, border radiuses
 ---------------------------------------------------------------- */
 
+.relative {
+	position: relative;
+}
 /* Standard border radius */
 .r5 {-webkit-border-radius: 5px !important; -moz-border-radius: 5px !important; border-radius: 5px !important;}
 .r10 {-webkit-border-radius: 10px !important; -moz-border-radius: 10px !important; border-radius: 10px !important;}

@@ -514,10 +514,29 @@ class Installer
 
 			/*
 			 * Migration to 0.9.8
-			 * Nothing to do.
+			 * Put url_mode to 'short'
 			 */
+			if (in_array('migration_0.9.7_0.9.8.xml', $migration_files))
+			{
+				require_once('./class/Config.php');
 
-			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
+				// Save version
+				$conf = new ION_Config(APPPATH.'config/', 'ionize.php');
+				$conf->set_config('url_mode', 'short');
+				$conf->save();
+			}
+
+			/*
+			 * Migration to 0.9.9
+			 *
+			 */
+			if (in_array('migration_0.9.8_0.9.9.xml', $migration_files))
+			{
+
+			}
+
+
+				header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 		}
 	}
 
@@ -1547,7 +1566,7 @@ class Installer
 		$conf .= "\$db['default']['dbprefix'] = '';\n";
 		$conf .= "\$db['default']['swap_pre'] = '';\n";
 		$conf .= "\$db['default']['pconnect'] = TRUE;\n";
-		$conf .= "\$db['default']['db_debug'] = TRUE;\n";
+		$conf .= "\$db['default']['db_debug'] = FALSE;\n";
 		$conf .= "\$db['default']['cache_on'] = FALSE;\n";
 		$conf .= "\$db['default']['cachedir'] = '';\n";
 		$conf .= "\$db['default']['char_set'] = 'utf8';\n";
