@@ -838,7 +838,7 @@
 	 * New Thumb form action
 	 * see ionize-form.js for more information about this method
 	 */
-	ION.setFormSubmit('thumbForm', 'submit_thumb', 'setting/save_thumb/true', 'mainPanel', 'setting/technical');
+//	ION.setFormSubmit('thumbForm', 'submit_thumb', 'setting/save_thumb/true', 'mainPanel', 'setting/technical');
 
 	/**
 	 * SMTP form action
@@ -992,7 +992,7 @@
 	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
-	ION.setFormSubmit('thumbsSettingsForm', 'thumbsSettingsFormSubmit', 'setting/save_thumbs');
+//	ION.setFormSubmit('thumbsSettingsForm', 'thumbsSettingsFormSubmit', 'setting/save_thumbs');
 	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
 	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');
 
