@@ -1311,7 +1311,7 @@ ION.append({
 				
 				if (tinyMCE != undefined)
 					tinyMCE.triggerSave();
-				
+
 				elements.each(function(item, idx)
 				{
 					langs.each(function(l)
@@ -1322,7 +1322,7 @@ ION.append({
 							{
 								if (
 									($(item + '_' + l).hasClass('tinyTextarea') ||  $(item + '_' + l).hasClass('smallTinyTextarea'))
-									&& tinymce != undefined
+									&& (typeof tinymce != undefined)
 								)
 								{
 									var tiny = tinymce.EditorManager.get(item + '_' + l);
