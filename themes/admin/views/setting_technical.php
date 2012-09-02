@@ -2,14 +2,11 @@
 <!-- Main Column -->
 <div id="maincolumn">
 
-
 	<h2 class="main settings" id="main-title"><?= lang('ionize_title_technical_settings') ?></h2>
 	
 	<!-- Subtitle -->
 	<div class="subtitle">
 	</div>
-
-
 
 
 	<!-- Tabs -->
@@ -18,7 +15,6 @@
 		<ul class="tab-menu">
 			
 			<li id="media_settings"><a><?= lang('ionize_title_media_management') ?></a></li>
-			<!--<li id="thumbs_settings"><a><?= lang('ionize_title_thumbs') ?></a></li>-->
 			<li id="article_settings"><a><?= lang('ionize_title_article_management') ?></a></li>
 			<li id="database_settings"><a><?= lang('ionize_title_database') ?></a></li>
 			<li id="email_settings"><a><?= lang('ionize_title_mail_send') ?></a></li>
@@ -156,180 +152,6 @@
 
 		</div>		
 		
-		
-		<!-- Thumbnails -->
-		<?php
-		/*
-		<div class="tabcontent pt10">
-
-
-			<div class="tabsidecolumn">
-				
-				<h3><?=lang('ionize_title_thumb_new')?></h3>
-				
-				<form name="thumbForm" id="thumbForm" method="post" action="<?= admin_url() ?>setting/save_thumb">
-	
-					<!-- Thumb name -->
-					<dl class="small">
-						<dt>
-							<label for="thumb_name_new"><?=lang('ionize_label_thumb_dir')?></label>
-						</dt>
-						<dd>
-							<input id="thumb_name_new" name="thumb_name_new" type="text" class="inputtext" value="" />
-						</dd>
-					</dl>
-	
-					<!-- Thumb size ? -->
-					<dl class="small">
-						<dt>
-							<label for="thumb_size_new"><?=lang('ionize_label_thumb_size')?></label>
-						</dt>
-						<dd>
-							<input id="thumb_size_new" name="thumb_size_new" type="text" class="inputtext" value="" />
-						</dd>
-					</dl>
-	
-					<!-- Thumb ref size (width or height) ? -->
-					<dl class="small">
-						<dt>
-							<label><?=lang('ionize_label_thumb_sizeref')?></label>
-						</dt>
-						<dd>
-							<input class="inputradiobox" type="radio" name="thumb_sizeref_new" id="thumb_sizeref_new1" value="width" checked="checked" /><label for="thumb_sizeref_new1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
-							<input class="inputradiobox" type="radio" name="thumb_sizeref_new" id="thumb_sizeref_new2" value="height" /><label for="thumb_sizeref_new2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
-						</dd>
-					</dl>
-	
-					<!-- Thumb square resize ? -->
-					<dl class="small">
-						<dt>
-							<label for="thumb_square_new"><?=lang('ionize_label_thumb_square')?></label>
-						</dt>
-						<dd>
-							<input class="inputcheckbox" type="checkbox" name="thumb_square_new" id="thumb_square_new" value="true" />
-						</dd>
-					</dl>
-	
-					<!-- Thumb unsharp mask ? -->
-					<dl class="small">
-						<dt>
-							<label for="thumb_unsharp_new"><?=lang('ionize_label_thumb_unsharp')?></label>
-						</dt>
-						<dd>
-							<input class="inputcheckbox" type="checkbox" name="thumb_unsharp_new" id="thumb_unsharp_new" value="true" />
-						</dd>
-					</dl>
-	
-					<!-- Submit button  -->
-					<dl class="small last">
-						<dt>&#160;</dt>
-						<dd>
-							<input id="submit_thumb" type="submit" class="submit" value="<?= lang('ionize_button_add') ?>" />
-						</dd>
-					</dl>
-	
-				</form>
-			</div>
-
-			<div class="tabcolumn">
-			
-				<form name="thumbsSettingsForm" id="thumbsSettingsForm" method="post">
-
-					<?php if ( ! empty($thumbs)) :?>
-					
-						<p class="h30"><input id="thumbsSettingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_update_thumbs') ?>" /></p>
-						
-						<ul class="list" id="thumbs">
-							
-							<?php 
-								foreach($thumbs as $thumb)
-								{
-									$settings = explode(",", $thumb['content']);
-									$setting = array(
-										'dir' =>	substr($thumb['name'], strpos($thumb['name'], '_') + 1 ),
-										'sizeref' => 	$settings[0],
-										'size' => 	$settings[1],
-										'square' => isset($settings[2]) ? $settings[2] : '0',
-										'unsharp' => isset($settings[3]) ? $settings[3] : '0'
-									);
-									
-								?>
-								
-								<li id="<?=$thumb['id_setting']?>" class="">	
-									
-									<!-- Dir -->
-									<dl>
-										<dt>
-											<label for="thumb_name_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_dir')?></label>
-										</dt>
-										<dd>
-											<input name="thumb_name_<?=$thumb['id_setting']?>" id="thumb_name_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['dir'] ?>"/>
-											<img title="<?=lang('ionize_label_delete')?>" id="delThumb_<?=$thumb['id_setting']?>" class="inputicon pointer right" src="<?= theme_url() ?>images/icon_16_delete.png" />
-										</dd>
-									</dl>
-					
-									<!-- Size -->
-									<dl>
-										<dt>
-											<label for="thumb_size_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_size')?></label>
-										</dt>
-										<dd>
-											<input name="thumb_size_<?=$thumb['id_setting']?>" id="thumb_size_<?=$thumb['id_setting']?>" class="inputtext w140" type="text" value="<?= $setting['size'] ?>"/>
-										</dd>
-									</dl>
-					
-									<!-- Size Reference -->
-									<dl>
-										<dt>
-											<label><?=lang('ionize_label_thumb_sizeref')?></label>
-										</dt>
-										<dd>
-											<input <?php if ($setting['sizeref'] == 'width'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>1" value="width" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>1"><?=lang('ionize_label_thumb_sizeref_width')?></label>
-											<input <?php if ($setting['sizeref'] == 'height'):?>checked="checked"<?php endif;?> class="inputradiobox" type="radio" name="thumb_sizeref_<?=$thumb['id_setting']?>" id="thumb_sizeref_<?=$thumb['id_setting']?>2" value="height" /><label for="thumb_sizeref_<?=$thumb['id_setting']?>2"><?=lang('ionize_label_thumb_sizeref_height')?></label>
-										</dd>
-									</dl>
-				
-									<!-- Square ? -->
-									<dl>
-										<dt>
-											<label for="thumb_square_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_square')?></label>
-										</dt>
-										<dd>
-											<input <?php if ($setting['square'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_square_<?=$thumb['id_setting']?>" value="true" />
-										</dd>
-									</dl>
-					
-									<!-- Unsharp ? -->
-									<dl>
-										<dt>
-											<label for="thumb_unsharp_<?=$thumb['id_setting']?>"><?=lang('ionize_label_thumb_unsharp')?></label>
-										</dt>
-										<dd>
-											<input <?php if ($setting['unsharp'] == 'true'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="thumb_unsharp_<?=$thumb['id_setting']?>" value="true" />
-										</dd>
-									</dl>
-									
-								</li>
-							
-								
-								<?php
-								}
-								?>
-					
-						</ul>
-					
-					<?php else :?>
-					
-						<p class="lite"><?= lang('ionize_text_no_thumbnails') ?></p>
-					
-					<?php endif ;?>	
-				</form>
-			</div>
-		</div>
-		*/
-		?>
-		
-
 		<!-- Article management -->
 		<div class="tabcontent">
 			
@@ -829,38 +651,18 @@
 
 
 	/**
-	 * Database form action
+	 * Forms actions
 	 * see ionize-form.js for more information about this method
 	 */
 	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true', 'mainPanel', 'setting/technical');
-
-	/**
-	 * New Thumb form action
-	 * see ionize-form.js for more information about this method
-	 */
-//	ION.setFormSubmit('thumbForm', 'submit_thumb', 'setting/save_thumb/true', 'mainPanel', 'setting/technical');
-
-	/**
-	 * SMTP form action
-	 * see ionize-form.js for more information about this method
-	 */
 	ION.setFormSubmit('smtpForm', 'submit_smtp', 'setting/save_smtp/true', 'mainPanel', 'setting/technical');
-	
-	/**
-	 * Cache form action
-	 */
 	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache', 'mainPanel', 'setting/technical');
-
+	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
+	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
+	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');
 
 	ION.initRequestEvent($('clear_cache'), 'setting/clear_cache');
-
-
-	/**
-	 * Maintenance form action
-	 */
-	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance', 'mainPanel', 'setting/technical');
-
-
 
 
 	/**
@@ -888,27 +690,6 @@
 	});
 
 
-
-	/** 
-	 * Add Confirmation window on thumb delete icons
-	 * See ionize_window.js for more information about this method
-	 *
-	 */
-	if ($('thumbs'))
-	{
-		$('thumbs').getElements('li').each(function(item)
-		{
-			var id = item.id;
-			
-			ION.addConfirmation('confirm' + id, 
-								'delThumb_' + id, 
-								'setting/delete_thumb/' + id, 
-								'ionize_confirm_element_delete'
-								);
-		});
-	}
-
-
 	/**
 	 * Restore tinyButtons toolbar to default config
 	 *
@@ -927,8 +708,6 @@
 	});
 
 
-
-	
 	/**
 	 * Show / hides Email details depending on the selected protocol
 	 *
@@ -984,19 +763,14 @@
 				});	
 			});
 		});	
-	}	
+	}
 
 
 	/**
 	 * Views form
 	 * see ionize-form.js for more information about this method
 	 */
-	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
-//	ION.setFormSubmit('thumbsSettingsForm', 'thumbsSettingsFormSubmit', 'setting/save_thumbs');
-	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
-	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');
-
-//	ION.setFormSubmit('settingsForm', 'settingsFormSubmit', 'setting/save_technical');
+	// ION.setFormSubmit('settingsForm', 'settingsFormSubmit', 'setting/save_technical');
 
 	/**
 	 * Save with CTRL+s

@@ -83,7 +83,7 @@ class TagManager_Article extends TagManager
 	 * 3. Filter on the article name if the article name is in URI segment 1
 	 *
 	 */
-	function get_articles($tag)
+	function get_articles(FTL_Binding $tag)
 	{
 		$articles = array();
 
@@ -283,7 +283,7 @@ class TagManager_Article extends TagManager
 	 * @return	Array	Array of articles
 	 *
 	 */
-	function get_articles_from_pagination($tag, $where, $filter)
+	function get_articles_from_pagination(FTL_Binding $tag, $where, $filter)
 	{
 		$page = & $tag->locals->page;
 		
@@ -353,7 +353,7 @@ class TagManager_Article extends TagManager
 	 * @return	Array	Array of articles
 	 *
 	 */
-	function get_articles_from_category($tag, $where, $filter)
+	function get_articles_from_category(FTL_Binding $tag, $where, $filter)
 	{
 		$page = & $tag->locals->page;
 
@@ -402,7 +402,7 @@ class TagManager_Article extends TagManager
 	 * @return	Array	Array of articles
 	 *
 	 */
-	function get_articles_from_archives($tag, $where, $filter)
+	function get_articles_from_archives(FTL_Binding $tag, $where, $filter)
 	{
 		$articles = array();
 		
@@ -465,7 +465,7 @@ class TagManager_Article extends TagManager
 	 *
 	 * @return	Array	Array of articles
 	 */
-	function get_articles_from_one_article($tag, $where, $filter)
+	function get_articles_from_one_article(FTL_Binding $tag, $where, $filter)
 	{
 		$uri_segments = self::$uri_segments;
 		$name = array_pop(array_slice($uri_segments, -1));
@@ -519,17 +519,17 @@ class TagManager_Article extends TagManager
 	 */
 	private function init_articles_urls(&$articles)
 	{
-		// Page URL index to use
-		$page_url = (config_item('url_mode') == 'short') ? 'url' : 'path';
+		// Page URL key to use
+		$page_url_key = (config_item('url_mode') == 'short') ? 'url' : 'path';
 
 		// Array of all articles IDs
 		$articles_id = array();
 		foreach($articles as $article)
 			$articles_id[] = $article['id_article'];
-		
+
 		// Articles contexts of all articles
 		$pages_context = self::$ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
-		
+
 		// Add pages contexts data to articles
 		foreach($articles as &$article)
 		{
@@ -587,14 +587,14 @@ class TagManager_Article extends TagManager
 							$parent_page = self::$ci->page_model->get_by_id($rel[0], Settings::get_lang('current'));
 
 							if ( ! empty($parent_page))
-								$article['url'] = $parent_page[$page_url] . '/' . $target_article['url'];
+								$article['url'] = $parent_page[$page_url_key] . '/' . $target_article['url'];
 						}
 					}
 					// Page
 					else
 					{
 						$target_page = self::$ci->page_model->get_by_id($page['link_id'], Settings::get_lang('current'));
-						$article['url'] = $target_page[$page_url];
+						$article['url'] = $target_page[$page_url_key];
 					}
 
 					// Correct the URL : Lang + Base URL
@@ -611,11 +611,12 @@ class TagManager_Article extends TagManager
 			{
 				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 				{
-					$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page[$page_url] . '/' . $url;
+
+					$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page[$page_url_key] . '/' . $url;
 				}
 				else
 				{
-					$article['url'] = base_url() . $page[$page_url] . '/' . $url;
+					$article['url'] = base_url() . $page[$page_url_key] . '/' . $url;
 				}
 			}
 		}
@@ -634,7 +635,7 @@ class TagManager_Article extends TagManager
 	 * @return	String
 	 *
 	 */
-	public static function tag_article($tag)
+	public static function tag_article(FTL_Binding $tag)
 	{
 		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
 
@@ -702,7 +703,7 @@ class TagManager_Article extends TagManager
 	 * @return	String
 	 *
 	 */
-	public static function tag_articles($tag)
+	public static function tag_articles(FTL_Binding $tag)
 	{
 		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
 
@@ -764,7 +765,7 @@ class TagManager_Article extends TagManager
 	 * @param	FTL_Binding object
 	 * @return	String
 	 */
-	public static function tag_articles_article($tag)
+	public static function tag_articles_article(FTL_Binding $tag)
 	{
 		if ( ! empty($tag->locals->article))
 		{
@@ -780,9 +781,12 @@ class TagManager_Article extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	public static function tag_article_id($tag) { return self::wrap($tag, $tag->locals->article['id_article']); }
+	public static function tag_article_id(FTL_Binding $tag)
+	{
+		return self::wrap($tag, $tag->locals->article['id_article']);
+	}
 
-	public static function tag_article_name($tag)
+	public static function tag_article_name(FTL_Binding $tag)
 	{
 		if ( ! empty($tag->attr['from']))
 		{
@@ -792,7 +796,7 @@ class TagManager_Article extends TagManager
 		return self::wrap($tag, self::get_value('article', 'name', $tag));
 	}
 	
-	public static function tag_article_title($tag)
+	public static function tag_article_title(FTL_Binding $tag)
 	{
 		if ( ! empty($tag->attr['from']))
 		{
@@ -802,7 +806,7 @@ class TagManager_Article extends TagManager
 		return self::wrap($tag, self::get_value('article', 'title', $tag));
 	}
 	
-	public static function tag_article_subtitle($tag)
+	public static function tag_article_subtitle(FTL_Binding $tag)
 	{
 		if ( ! empty($tag->attr['from']))
 		{
@@ -812,7 +816,7 @@ class TagManager_Article extends TagManager
 		return self::wrap($tag, self::get_value('article', 'subtitle', $tag));
 	}
 
-	public static function tag_article_summary($tag)
+	public static function tag_article_summary(FTL_Binding $tag)
 	{
 		if ( ! empty($tag->attr['from']))
 		{
@@ -823,21 +827,21 @@ class TagManager_Article extends TagManager
 	}
 
 	
-	public static function tag_article_date($tag)
+	public static function tag_article_date(FTL_Binding $tag)
 	{ 
 		if ( ! empty($tag->attr['from']))
 		{
-			$tag->attr['name'] = 'date';
+			$tag->setAttribute('name', 'date');
 			return self::tag_field($tag);
 		}
 		return self::wrap($tag, self::format_date($tag, $tag->locals->article['date']));
 	}
 	
-	public static function tag_article_meta_title($tag)
+	public static function tag_article_meta_title(FTL_Binding $tag)
 	{
 		if ( ! empty($tag->attr['from']))
 		{
-			$tag->attr['name'] = 'meta_title';
+			$tag->setAttribute('name', 'meta_title');
 			return self::tag_field($tag);
 		}
 		return self::wrap($tag, self::get_value('article', 'meta_title', $tag));
@@ -857,7 +861,7 @@ class TagManager_Article extends TagManager
 	 *			Example : <li><a>... here is the anchor ... </a></li>
 	 *
 	 */
-	public static function tag_article_categories($tag)
+	public static function tag_article_categories(FTL_Binding $tag)
 	{
 		$data = array();
 
@@ -964,7 +968,7 @@ class TagManager_Article extends TagManager
 	 * Returns informations about the link
 	 *
 	 */
-	public static function tag_article_link($tag)
+	public static function tag_article_link(FTL_Binding $tag)
 	{
 		// paragraph limit ?
 		$attr = (isset($tag->attr['attr'] )) ? $tag->attr['attr'] : FALSE ;
@@ -989,7 +993,7 @@ class TagManager_Article extends TagManager
 	 * Returns the article content
 	 *
 	 */
-	public static function tag_article_content($tag)
+	public static function tag_article_content(FTL_Binding $tag)
 	{
 		// paragraph limit ?
 		$paragraph = (isset($tag->attr['paragraph'] )) ? (Int)self::get_attribute($tag, 'paragraph') : FALSE ;
@@ -1014,7 +1018,7 @@ class TagManager_Article extends TagManager
 	 * If the link or the article is set, this tag will return the link instead of the URL to the article.
 	 *
 	 */
-	public static function tag_article_url($tag) 
+	public static function tag_article_url(FTL_Binding $tag)
 	{
 		$url = '';
 		
@@ -1023,30 +1027,33 @@ class TagManager_Article extends TagManager
 
 		// If lang attribute is set to TRUE, force the lang code to be in the URL
 		// Usefull only if the website has only one language
-		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
-		
+		// $lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
+
+		$article = $tag->get('article');
+
 		// If link, return the link
-		if ($tag->locals->article['link_type'] != '' )
+		if ($article['link_type'] != '' )
 		{
 			// External link
-			if ($tag->locals->article['link_type'] == 'external')
+			if ($article['link_type'] == 'external')
 			{
-				return $tag->locals->article['link'];
+				return $article['link'];
 			}
 			
 			// Mail link : TODO
-			if ($tag->locals->article['link_type'] == 'email')
+			if ($article['link_type'] == 'email')
 			{
-				return auto_link($tag->locals->article['link'], 'both', TRUE);
+				return auto_link($article['link'], 'both', TRUE);
 			}
 			
 			// If link to one article, get the page to build the complete link
-			if($tag->locals->article['link_type'] == 'article')
+			if($article['link_type'] == 'article')
 			{
 				// Get the article to which this article links
-				$rel = explode('.', $tag->locals->article['link_id']);
+				$rel = explode('.', $article['link_id']);
+
 				$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
-				
+
 				// If more than one parent, links to to first found
 				// Normally, target link articles should not be duplicated in the tree
 				// $parent_page = array_values(array_filter($tag->globals->pages, create_function('$row','return $row["id_page"] == "'. $target_article['id_page'] .'";')));
@@ -1081,13 +1088,13 @@ class TagManager_Article extends TagManager
 				// }
 				foreach($tag->globals->pages as $p)
 				{
-					if ($p['id_page'] == $tag->locals->article['link_id'])
+					if ($p['id_page'] == $article['link_id'])
 						return $p['absolute_url'];
 				}
 			}
 		}
 
-		$url = $tag->locals->article['url'];
+		$url = $article['url'];
 
 		// Adds the suffix if defined in /application/config.php
 		if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
@@ -1099,11 +1106,11 @@ class TagManager_Article extends TagManager
 	// ------------------------------------------------------------------------
 
 	
-	public static function tag_article_view($tag) { return $tag->locals->article['view']; }
+	public static function tag_article_view(FTL_Binding $tag) { return $tag->locals->article['view']; }
 
 
 
-	public static function tag_article_author_name($tag)
+	public static function tag_article_author_name(FTL_Binding $tag)
 	{
 		// Get the users if they're not defined
 		if (!isset($tag->globals->users))
@@ -1122,7 +1129,7 @@ class TagManager_Article extends TagManager
 	}
 
 
-	public static function tag_article_author_email($tag)
+	public static function tag_article_author_email(FTL_Binding $tag)
 	{
 		// Get the users if they're not defined
 		if (!isset($tag->globals->users))
@@ -1141,7 +1148,7 @@ class TagManager_Article extends TagManager
 	}
 
 
-	public function tag_article_readmore($tag)
+	public function tag_article_readmore(FTL_Binding $tag)
 	{
 		$term = (isset($tag->attr['term']) ) ? $tag->attr['term'] : '';
 		$paragraph = (isset($tag->attr['paragraph'] )) ? $tag->attr['paragraph'] : FALSE ;
@@ -1159,12 +1166,12 @@ class TagManager_Article extends TagManager
 	
 	
 
-	public static function tag_article_index($tag)
+	public static function tag_article_index(FTL_Binding $tag)
 	{
 		return $tag->locals->article['index'];
 	}
 	
-	public static function tag_article_count($tag)
+	public static function tag_article_count(FTL_Binding $tag)
 	{
 		// Redirect to the global count tag if items is set as attribute. Means we want to count something else.
 		if (isset($tag->attr['items']))
@@ -1178,7 +1185,7 @@ class TagManager_Article extends TagManager
 	
 	// ------------------------------------------------------------------------
 	
-	public static function tag_prev_article($tag)
+	public static function tag_prev_article(FTL_Binding $tag)
 	{
 		$article = self::get_adjacent_article($tag, 'prev');
 	
@@ -1186,7 +1193,7 @@ class TagManager_Article extends TagManager
 	}
 
 
-	public static function tag_next_article($tag)
+	public static function tag_next_article(FTL_Binding $tag)
 	{
 		$article = self::get_adjacent_article($tag, 'next');
 	
@@ -1194,7 +1201,7 @@ class TagManager_Article extends TagManager
 	}
 
 	
-	private static function get_adjacent_article($tag, $mode='prev')
+	private static function get_adjacent_article(FTL_Binding $tag, $mode='prev')
 	{
 		$page = $tag->locals->page;
 		
@@ -1251,7 +1258,7 @@ class TagManager_Article extends TagManager
 	 * Default value : FALSE
 	 *
 	 */
-	static function set_parent_scope($tag)
+	static function set_parent_scope(FTL_Binding $tag)
 	{
 		$where = array();
 
@@ -1291,7 +1298,7 @@ class TagManager_Article extends TagManager
 	 * Internal use only.
 	 *	 
 	 */
-	private static function process_next_prev_article($tag, $article)
+	private static function process_next_prev_article(FTL_Binding $tag, $article)
 	{
 		if ($article != FALSE)
 		{
@@ -1331,7 +1338,7 @@ class TagManager_Article extends TagManager
 	 * @return	Array		Articles
 	 *
 	 */
-	private static function prepare_articles($tag, $articles)
+	private static function prepare_articles(FTL_Binding $tag, $articles)
 	{
 		// Articles index starts at 1.
 		$index = 1;

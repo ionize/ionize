@@ -7,9 +7,10 @@
 /**
  * The representation of the tag which is passed to the tag functions.
  * 
- * @package FTL_Parser
- * @author Martin Wernstahl <m4rw3r@gmail.com>
- * @copyright Copyright (c) 2008, Martin Wernstahl <m4rw3r@gmail.com>
+ * @package		FTL_Parser
+ * @author		Martin Wernstahl <m4rw3r@gmail.com>
+ * @modified	Ionize team
+ * @copyright	Copyright (c) 2008, Martin Wernstahl <m4rw3r@gmail.com>
  */
 class FTL_Binding
 {
@@ -56,13 +57,14 @@ class FTL_Binding
 	public $block;
 	
 	/**
-	 * Init.
+	 * Constructor
 	 * 
 	 * @param  FTL_Context	 The context this tag binding is attached to
 	 * @param  FTL_VarStack	 The local vars
 	 * @param  string		 The tag name
 	 * @param  array 		 The tag attributes (name => value)
 	 * @param  array 		 The nested block
+	 *
 	 */
 	function __construct($context, $locals, $name, $attr, $block)
 	{
@@ -76,6 +78,7 @@ class FTL_Binding
 	 * Evaluates all tags inside the block (if any), and then returns the result.
 	 * 
 	 * @return string
+	 *
 	 */
 	public function expand()
 	{
@@ -86,16 +89,18 @@ class FTL_Binding
 	 * Returns true if the current tag is a single tag (ends with "/>").
 	 * 
 	 * @return bool
+	 *
 	 */
 	public function is_single()
 	{
-		return $this->block == null;
+		return $this->block == NULL;
 	}
 	
 	/**
 	 * Returns true if the current tag is a block.
 	 * 
 	 * @return bool
+	 *
 	 */
 	public function is_double()
 	{
@@ -108,6 +113,7 @@ class FTL_Binding
 	 * Returns it like this: "parent:child:grandchild", including the current tag.
 	 * 
 	 * @return string
+	 *
 	 */
 	public function nesting()
 	{
@@ -118,16 +124,19 @@ class FTL_Binding
 	 * Fires a tag missing error for the current tag.
 	 * 
 	 * @return string
+	 *
 	 */
 	public function missing()
 	{
 		return $this->context->tag_missing($this->name, $this->attr, $this->block);
 	}
 	
-	
 	/**
 	 * Returns one attribute value
 	 * returns NULL if the attribute isn't set.
+	 *
+	 * @param	String		key
+	 * @return	mixed		NULL is the attribute isn't set, TRUE if the attribute is 'true', FALSE if the attribute is 'false'
 	 *
 	 */
 	public function getAttribute($attr)
@@ -140,10 +149,29 @@ class FTL_Binding
 		
 		return (isset($this->attr[$attr]) && strtolower($this->attr[$attr]) != 'false') ? $this->attr[$attr] : FALSE;
 	}
-	
+
+	/**
+	 * Set one tag attribute
+	 *
+	 * @param	String		key
+	 * @param	mixed		value
+	 *
+	 * @return FTL_Binding	Current tag
+	 *
+	 */
+	public function setAttribute($key, $value)
+	{
+		$this->attr[$key] = $value;
+
+		return $this;
+	}
 	
 	/**
 	 * Returns one local var
+	 *
+	 * @param	String		Local tag var name
+	 *
+	 * @return	mixed		Local tag var value
 	 *
 	 */
 	public function get($local)
@@ -151,18 +179,21 @@ class FTL_Binding
 		return $this->locals->{$local};
 	}
 	
-	
 	/**
 	 * Set one local var
+	 *
+	 * @param	String			key
+	 * @param	String			value
+	 *
+	 * @return	FTL_Binding		The current tag
 	 *
 	 */
 	public function set($key, $value)
 	{
 		$this->locals->{$key} = $value;
+
+		return $this;
 	}
-	
-	
-	
 	
 	/**
 	 * Renders another tag.
@@ -170,14 +201,19 @@ class FTL_Binding
 	 * @param  string		The tag name
 	 * @param  array 		The arguments passed
 	 * @param  array|string	The block data
+	 *
 	 * @return string
+	 *
 	 */
-	public function render($tag, $args = array(), $block = null)
+	public function render($tag, $args = array(), $block = NULL)
 	{
 		return $this->context->render_tag($tag, $args, $block);
 	}
-	
-	
+
+	/**
+	 * @param mixed	$data
+	 *
+	 */
 	public function set_context_data($data)
 	{
 		$this->context->set_data($data);
@@ -186,10 +222,12 @@ class FTL_Binding
 	/**
 	 * Parses a template fragment as a nested block.
 	 * 
-	 * @param  string
-	 * @return string
+	 * @param	string
+	 * @param	boolean		Has the template PHP data
+	 * @return	string
+	 *
 	 */
-	public function parse_as_nested($string, $php_data = false)
+	public function parse_as_nested($string, $php_data = FALSE)
 	{
 		// unset the current parser, so we won't interfere and maybe replace it
 		$tmp = $this->context->parser;
@@ -208,4 +246,4 @@ class FTL_Binding
 
 
 /* End of file binding.php */
-/* Location: /application/libraries/binding.php */
+/* Location: /application/libraries/ftl/binding.php */

@@ -46,73 +46,73 @@ ION.append({
 	 */
 	setFormSubmit: function(form, button, url, confirm)
 	{
-		// Form Validation
-		var fv = new Form.Validator.Inline(form, {
-			stopOnFailure: true,
-			errorPrefix: '',
-			showError: function(element) {
-				element.show();
-				/*
-				myFx = element.get('reveal');
-				myFx.set('reveal', {
-					duration: 'short',
-					transition: 'bounce:easeOut'
-				});
-				myFx.reveal();
-				*/
-			}
-		});
-
-		// Add the form submit event with a confirmation window
-		if ($(button) && (typeOf(confirm) == 'object'))
+		if (typeOf($(form))!='null' && typeOf($(button)) != 'null')
 		{
-			var func = function()
-			{
-				var options = ION.getJSONRequestOptions(url, $(form));
-
-				var r = new Request.JSON(options);
-				r.send();
-			};
-		
-			// Form submit or button event
-			$(button).removeEvents('click');
-			$(button).addEvent('click', function(e)
-			{
-				e.stop();
-				ION.confirmation('conf' + button.id, func, confirm.message);
-			});
-		}
-		// Add the form submit button event without confirmation
-		else if ($(button))
-		{
-			// Form submit or button event
-			$(button).removeEvents('click');
-			$(button).addEvent('click', function(e)
-			{
-				e.stop();
-
-				var parent = $(form).getParent('.mocha');
-				var result = fv.validate();
-
-				if ( ! result)
-				{
-					new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
+			// Form Validation
+			var fv = new Form.Validator.Inline(form, {
+				stopOnFailure: true,
+				errorPrefix: '',
+				showError: function(element) {
+					element.show();
 				}
-				else
-				{
-					// tinyMCE and CKEditor trigerSave
-					ION.updateRichTextEditors();
+			});
 
-					// Get the form
+			// Add the form submit event with a confirmation window
+			if ($(button) && (typeOf(confirm) == 'object'))
+			{
+				var func = function()
+				{
 					var options = ION.getJSONRequestOptions(url, $(form));
 
 					var r = new Request.JSON(options);
 					r.send();
+				};
 
-					// Close the window
-					parent.close();
-				}
-			});
+				// Form submit or button event
+				$(button).removeEvents('click');
+				$(button).addEvent('click', function(e)
+				{
+					e.stop();
+					ION.confirmation('conf' + button.id, func, confirm.message);
+				});
+			}
+			// Add the form submit button event without confirmation
+			else if ($(button))
+			{
+				// Form submit or button event
+				$(button).removeEvents('click');
+				$(button).addEvent('click', function(e)
+				{
+					e.stop();
+
+					var parent = $(form).getParent('.mocha');
+					var result = fv.validate();
+
+					if ( ! result)
+					{
+						new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
+					}
+					else
+					{
+						// tinyMCE and CKEditor trigerSave
+						ION.updateRichTextEditors();
+
+						// Get the form
+						var options = ION.getJSONRequestOptions(url, $(form));
+
+						var r = new Request.JSON(options);
+						r.send();
+
+						// Close the window
+						if (typeOf(parent) != 'null')
+							parent.close();
+					}
+				});
+			}
+		}
+		else
+		{
+			console.log('ION.setFormSubmit() error : The form "' + form + '" or the button "' + button + '" do not exist.');
 		}
 	},
 

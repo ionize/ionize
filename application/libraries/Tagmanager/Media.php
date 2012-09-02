@@ -173,21 +173,20 @@ class TagManager_Media extends TagManager
 	// ------------------------------------------------------------------------
 	
 
-	public static function tag_medias($tag)
+	public static function tag_medias(FTL_Binding $tag)
 	{
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : self::get_parent_tag($tag);;
+		$from = $tag->getAttribute('from');
+		if (is_null($from)) $from = self::get_parent_tag($tag);
 
-		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
+		// $obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
+		$obj = $tag->get($from);
 
 		if ( is_null($obj) )
-		{
-			$obj = $tag->locals->page;
-		}
-		
+			$obj = $tag->get('page');
+
 		if ( isset($obj['medias']))
 		{
 			$medias = $obj['medias'];
-
 			return self::wrap($tag, self::get_medias($tag, $medias));
 		}
 	}

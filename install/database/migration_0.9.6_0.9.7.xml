@@ -92,6 +92,28 @@
 			and page_article.`link_type` = 'article';
 	</query>
 
+    <query>
+        update page_article pa,
+        (
+            select p1.*
+            from page_article p1
+            where p1.id_article in
+            (
+                select p2.link_id
+                from page_article p2
+                where
+                    p2.link_type = 'article'
+                    and LOCATE('.', p2.link_id) = 0
+                    group by p2.id_article
+                    having COUNT(p2.id_page) = 1
+            )
+        ) as pa2
+        set
+        pa.link_id = CONCAT(pa2.id_page, '.', pa2.id_article)
+        where pa.link_type = 'article'
+        and LOCATE('.', pa2.link_id) = 0;
+    </query>
+
 	<query>
 		ALTER TABLE  `page` ADD  `id_subnav` INT( 11 ) NOT NULL;
 	</query>
@@ -114,18 +136,26 @@
 		ALTER TABLE  `page_lang` ADD  `nav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
 	</query>
 
-	<query>
-		ALTER TABLE `article_lang` DROP `link`;
-	</query>
+    <query>
+        ALTER TABLE `article_lang` DROP `link`;
+    </query>
+    <query>
+        ALTER TABLE `article_lang` DROP `link_type`;
+    </query>
+    <query>
+        ALTER TABLE `article_lang` DROP `link_id`;
+    </query>
+    <query>
+        ALTER TABLE `article` DROP `link`;
+    </query>
+    <query>
+        ALTER TABLE `article` DROP `link_type`;
+    </query>
+    <query>
+        ALTER TABLE `article` DROP `link_id`;
+    </query>
 
-	<query>
-		ALTER TABLE `article_lang` DROP `link_type`;
-	</query>
-	<query>
-		ALTER TABLE `article_lang` DROP `link_id`;
-	</query>
-
-	<query>
+    <query>
 		ALTER TABLE `article` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
 	</query>
 

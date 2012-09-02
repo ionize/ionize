@@ -31,7 +31,7 @@ class TagManager
 	
 	protected static $module_folders = array();
 	
-	protected $trigger_else = 0;
+	protected static $trigger_else = 0;
 	
 	static $ci;
 
@@ -96,6 +96,7 @@ class TagManager
 	 * Initializes the FTL Manager.
 	 * 
 	 * @return void
+	 *
 	 */
 	public static function init()
 	{
@@ -146,6 +147,8 @@ class TagManager
 	 * Autoloads tags from core TagManagers
 	 * located in /libraries/Tagmanager
 	 *
+	 * @param	String	File name
+	 *
 	 */
 	public static function autoload($file_name)
 	{
@@ -173,7 +176,9 @@ class TagManager
 	 * Autoloads tag carrying classes from modules.
 	 * 
 	 * @param  string	<module_name>_<tag_definition_file_name>
+	 *
 	 * @return bool
+	 *
 	 */
 	public static function autoload_module_tags($class)
 	{
@@ -243,6 +248,7 @@ class TagManager
 				log_message('warning', 'Cannot find tag definitions for module "'.self::$module_folders[$module].'".');
 			}
 		}
+		return FALSE;
 	}
 	
 	
@@ -252,8 +258,8 @@ class TagManager
 	/**
 	 * Adds tags from modules.
 	 * 
-	 * @param  FTL_Context
 	 * @return void
+	 *
 	 */
 	public static function add_module_tags()
 	{
@@ -271,7 +277,9 @@ class TagManager
 	 * Adds the tags for the current class and loaded classes
 	 * 
 	 * @param  FTL_Context
+	 *
 	 * @return void
+	 *
 	 */
 	public final function add_tags()
 	{
@@ -289,7 +297,9 @@ class TagManager
 	 * Adds global tags to the context.
 	 * 
 	 * @param  FTL_Context
+	 *
 	 * @return void
+	 *
 	 */
 	public function add_globals()
 	{
@@ -323,8 +333,16 @@ class TagManager
 		self::$context->globals->menus = Settings::get('menus');
 	}
 
-	
-	
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 *
+	 * @param String
+	 *
+	 * @return string
+	 */
 	public static function parse($string)
 	{
 		$p = new FTL_Parser(self::$context, array('tag_prefix' => self::$tag_prefix));
@@ -333,8 +351,17 @@ class TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
 
-	public static function render($view = NULL, $return = false)
+
+	/**
+	 *
+	 * @param null $view
+	 * @param bool $return
+	 *
+	 * @return mixed|string
+	 */
+	public static function render($view = NULL, $return = FALSE)
 	{
 		$ci =& get_instance();
 
@@ -345,7 +372,7 @@ class TagManager
 		// We can now check if the file is a PHP one or a FTL one
 		if (substr($parsed, 0, 5) == '<?php')
 		{
-			$parsed = $ci->load->view($view, array(), true);					
+			$parsed = $ci->load->view($view, array(), TRUE);
 		}
 		else
 		{
@@ -353,14 +380,14 @@ class TagManager
 
 			if (Connect()->is('editors') && Settings::get('display_connected_label') == '1' )
 			{
-				$injected_html = $ci->load->view('core/logged_as_editor', array(), true);	
+				$injected_html = $ci->load->view('core/logged_as_editor', array(), TRUE);
 				
 				$parsed = str_replace('</body>', $injected_html, $parsed);
 			}
 		}
 		
 		// Full page cache ?
-		if (isset($context->globals->page['_cached']))
+		if (isset(self::$context->globals->page['_cached']))
 		{
 			/*
 			 * Write the full page cache file
@@ -374,23 +401,37 @@ class TagManager
 			return $parsed;
 		else
 			$ci->output->set_output($parsed);
+
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
 	 * Adds a var to the global vars array
 	 * Useful to send a variable to a tag.
-	 * 
+	 *
+	 * @param String 	Name
+	 * @param String 	Value
+	 *
 	 */
 	public static function set_global($name, $value)
 	{
 		self::$context->globals->vars[$name] = $value;
 	}
 
+
 	// ------------------------------------------------------------------------
 
 
-	public static function has_cache($tag)
+	/**
+	 *
+	 *
+	 * @param FTL_Binding 	tag
+	 *
+	 */
+	public static function has_cache(FTL_Binding $tag)
 	{
 	} 		
 
@@ -401,9 +442,12 @@ class TagManager
 	/**
 	 * Cache or returns one tag cache
 	 *
+	 * @param	FTL_Binding		tag
+	 *
+	 * @return	String
 	 *
 	 */
-	public static function get_cache($tag)
+	public static function get_cache(FTL_Binding $tag)
 	{
 		$id = self::get_tag_cache_id($tag);
 
@@ -417,9 +461,13 @@ class TagManager
 	/**
 	 * Cache or returns one tag cache
 	 *
+	 * @param	FTL_Binding		tag
+	 * @param	String
+	 *
+	 * @return	boolean / void
 	 *
 	 */
-	public static function set_cache($tag, $output)
+	public static function set_cache(FTL_Binding $tag, $output)
 	{
 		if (isset($tag->attr['nocache'])) return FALSE;
 		
@@ -470,11 +518,14 @@ class TagManager
 	/**
 	 * Returns one tag unique ID, regarding the tag attributes
 	 *
+	 * @param	FTL_Binding		tag
+	 *
+	 * @return	String
 	 *
 	 */
-	public static function get_tag_cache_id($tag)
+	public static function get_tag_cache_id(FTL_Binding $tag)
 	{
-		if (isset($tag->attr['nocache'])) return FALSE;		
+		if (isset($tag->attr['nocache'])) return FALSE;
 	
 		$ci =& get_instance();
 		
@@ -491,7 +542,6 @@ class TagManager
 	}
 	
 
-
 	// ------------------------------------------------------------------------
 
 
@@ -499,13 +549,14 @@ class TagManager
 	 * Returns a dynamic attribute value
 	 * Used with attributes which can get data from a database field.
 	 *
-	 * @param	FTL_Binding object		The current tag object
-	 * @param	String					Attributes name
+	 * @param	FTL_Binding		tag
+	 * @param	String			Attributes name
+	 * @param	boolean			wished return. FALSE by default
 	 *
 	 * @return	Mixed	The attribute value of false if nothing is found
 	 *
 	 */
-	protected static function get_attribute($tag, $attr, $return=FALSE)
+	protected static function get_attribute(FTL_Binding $tag, $attr, $return=FALSE)
 	{
 		// Try to get the couple array:field
 		// "array" is the data array. For example "page" or "article"
@@ -537,7 +588,7 @@ class TagManager
 					// exemple : $tag->locals->page[ion_field]
 					if ( ! isset($element[self::$extend_field_prefix.$ar[1]]))
 					{
-						return false;
+						return FALSE;
 					}
 					else
 					{
@@ -546,7 +597,7 @@ class TagManager
 						{
 							return $element[self::$extend_field_prefix.$ar[1]];
 						}
-						return false;
+						return FALSE;
 					}
 				}
 				else
@@ -559,7 +610,7 @@ class TagManager
 					}
 					else
 					{
-						return false;
+						return FALSE;
 					}
 				}
 			}
@@ -570,7 +621,7 @@ class TagManager
 
 
 	// ------------------------------------------------------------------------
-	// Tags definition stars here
+	// Tags definition
 	// ------------------------------------------------------------------------
 
 
@@ -578,15 +629,18 @@ class TagManager
 	 * Returns a trace of one $tag->object
 	 * ONLY TO BE USED IN DEV !!!
 	 *
+	 * @param	FTL_Binding		tag
+	 * @return	String
+	 *
 	 */
 	public static function tag_debug($tag)
 	{
 		// local var name
-		$name = (isset($tag->attr['name']) ) ? $tag->attr['name'] : false;
+		$name = (isset($tag->attr['name']) ) ? $tag->attr['name'] : FALSE;
 
-		$obj = isset($tag->locals->{$name}) ? $tag->locals->{$name} : null;
+		$obj = isset($tag->locals->{$name}) ? $tag->locals->{$name} : NULL;
 
-		if ( ! is_null($obj) && $name != false)
+		if ( ! is_null($obj) && $name != FALSE)
 		{
 			trace($tag->locals->{$name});
 		}	
@@ -595,26 +649,42 @@ class TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
 
-	public static function tag_if($tag)
+
+	/**
+	 *
+	 * @param	FTL_Binding		tag
+	 *
+	 * @return	string / void
+	 *
+	 */
+	public static function tag_if(FTL_Binding $tag)
 	{
-		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : FALSE;
-		$condition = ( ! empty($tag->attr['condition'])) ? $tag->attr['condition'] : FALSE;
+		$field = $tag->getAttribute('field');
+		$condition = $tag->getAttribute('condition');
+
 		$result = FALSE;
 
-		if ($field && $condition)
+		if (!is_null($field) && !is_null($condition))
 		{
 			$obj_name = self::get_parent_tag($tag);
 
 			if ( ! empty($tag->locals->{$obj_name}[$field] ))
 			{
 				$value = $tag->locals->{$obj_name}[$field];
+
 				eval("\$result = ('".$value."'".$condition.") ? TRUE : FALSE;");
 				
 				if ($result)
 					return $tag->expand();
+				else
+				{
+					self::$trigger_else++;
+				}
 			}
 		}
+		return '';
 	}
 
 
@@ -622,15 +692,42 @@ class TagManager
 
 
 	/**
-	 * Stores a var
+	 *
+	 * @param	FTL_Binding		tag
+	 *
+	 * @return	String
+	 *
+	 */
+	public function tag_else(FTL_Binding $tag)
+	{
+		if(self::$trigger_else > 0)
+		{
+			self::$trigger_else--;
+
+			return $tag->expand();
+		}
+
+		return '';
+	}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Stores a var int the given scope
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return String
+	 *
 	 * @usage	<ion:set var="foo" value="bar" scope="<local|global>" />
 	 *
 	 */
-	public static function tag_set($tag)
+	public static function tag_set(FTL_Binding $tag)
 	{
-		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : null;
+		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : NULL;
 		$scope = ( !empty ($tag->attr['scope'])) ? $tag->attr['scope'] : 'locals';
-		$value = ( !empty ($tag->attr['value'])) ? $tag->attr['value'] : null;
+		$value = ( !empty ($tag->attr['value'])) ? $tag->attr['value'] : NULL;
 
 		if ( ! is_null($var))
 		{
@@ -649,9 +746,9 @@ class TagManager
 	 * @usage	<ion:get var="foo" scope="<local|global>" />
 	 *
 	 */
-	public static function tag_get($tag)
+	public static function tag_get(FTL_Binding $tag)
 	{
-		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : null;
+		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : NULL;
 		$scope = ( !empty ($tag->attr['scope'])) ? $tag->attr['scope'] : 'locals';
 
 		if ( ! is_null($var) && !empty($tag->{$scope}->vars[$var]))
@@ -669,14 +766,18 @@ class TagManager
 	/**
 	 * Returns the base URL of the website, with or without lang code in the URL
 	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return String
+	 *
 	 */
-	public static function tag_base_url($tag) 
+	public static function tag_base_url(FTL_Binding $tag)
 	{
 		// don't display the lang URL (by default)
-		$lang_url = false;
+		$lang_url = FALSE;
 
 		// Set all languages online if connected as editor or more
-		if( Connect()->is('editors', true))
+		if( Connect()->is('editors', TRUE))
 		{
 			Settings::set_all_languages_online();
 		}
@@ -698,9 +799,15 @@ class TagManager
 
 	
 	// ------------------------------------------------------------------------
-	
-	
-	public static function tag_list($tag)
+
+
+	/**
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_list(FTL_Binding $tag)
 	{
 		$objects = (isset($tag->attr['objects']) ) ? $tag->attr['objects'] : FALSE;
 		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
@@ -762,12 +869,11 @@ class TagManager
 							// Because the operator isn't takken in account
 							//
 							// trace($ob[$filter[0]].$filter[1].'='.$filter[2]);
+							$result = FALSE;
 							eval("\$result = '" . $ob[$filter[0]]."'".$filter[1]."='".$filter[2]."';");
 
 							if ($result)
-							{
 								$fields[] = $ob;
-							}
 						}
 					}
 						
@@ -790,6 +896,7 @@ class TagManager
 		return '';
 	}
 
+
 	// ------------------------------------------------------------------------
 	
 	
@@ -800,12 +907,12 @@ class TagManager
 	 *						'item' : 	items to count inside the collection
 	 *						'filter' : 	Filter the items
 	 * 
-	 * @param				FTL_Binding Object		Tag
+	 * @param			FTL_Binding		Tag
 	 *
-	 * @returns 			Int	Number of items
+	 * @return 			Int	Number of items
 	 *
 	 */
-	public static function tag_count($tag)
+	public static function tag_count(FTL_Binding $tag)
 	{
 		// Object type : page, article, media
 		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : self::get_parent_tag($tag);;
@@ -862,12 +969,14 @@ class TagManager
 	 * If nothing is found, he tries to get a core field value
 	 * It is possible to force the core value by setting the "core" attribute to true
 	 *
-	 * @usage : <ion:field name="<field_name>" from="<table_name>" <core="true"> />
+	 * @param	FTL_Binding		Tag
 	 *
-	 * @return String	The field value
+	 * @usage	<ion:field name="<field_name>" from="<table_name>" <core="true"> />
+	 *
+	 * @return	String	The field value
 	 *
 	 */
-	public static function tag_field($tag)
+	public static function tag_field(FTL_Binding $tag)
 	{
 		// Object type : page, article, media
 		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
@@ -1009,7 +1118,7 @@ class TagManager
 			if(isset($tag->attr['php']) && $tag->attr['php'] == 'true')
 			{
 				$data = ( ! empty($tag->attr['data'])) ? $tag->attr['data'] : array();
-				return self::$ci->load->view($view, $data, true);
+				return self::$ci->load->view($view, $data, TRUE);
 			}
 			else
 			{
@@ -1069,7 +1178,7 @@ class TagManager
 				if ( ! $autolink)
 					return self::wrap($tag, self::$ci->lang->language[$term]);
 
-				return self::wrap($tag, auto_link(self::$ci->lang->language[$term], 'both', true));
+				return self::wrap($tag, auto_link(self::$ci->lang->language[$term], 'both', TRUE));
 			}
 			// Return the term index prefixed by "#" if no translation is found
 			else
@@ -1196,7 +1305,7 @@ class TagManager
 		$item = (isset($tag->attr['item'] )) ? $tag->attr['item'] : FALSE ;
 		$is_like = (isset($tag->attr['is_like'] )) ? $tag->attr['is_like'] : FALSE ;
 	
-		if ($item !== false)
+		if ($item !== FALSE)
 		{
 			if ($is_like !== FALSE && config_item($item) == $is_like)
 				return $tag->expand();
@@ -1220,9 +1329,9 @@ class TagManager
 	public static function tag_setting($tag)
 	{
 		// Setting item asked
-		$item = (isset($tag->attr['item'] )) ? $tag->attr['item'] : false ;
+		$item = (isset($tag->attr['item'] )) ? $tag->attr['item'] : FALSE ;
 	
-		if ($item !== false)
+		if ($item !== FALSE)
 		{
 			return Settings::get($item);
 		}
@@ -1240,9 +1349,9 @@ class TagManager
 	 */
 	public static function tag_name($tag) 
 	{
-		$use_global = isset($tag->attr['use_global']) ? true : false;
+		$use_global = isset($tag->attr['use_global']) ? TRUE : FALSE;
 		
-		if ($use_global == true)
+		if ($use_global == TRUE)
 		{
 			return $tag->globals->page['name'];
 		}
@@ -1424,7 +1533,7 @@ class TagManager
 			$value = self::helper_process($value, $helper);
 		}
 
-		if ($html_tag !== false)
+		if ($html_tag !== FALSE)
 		{
 			$open_tag = '<' . $html_tag . $id . $class . '>';
 			$close_tag = '</' . $html_tag .'>';
@@ -1443,14 +1552,19 @@ class TagManager
 	/**
 	 * Format the given date and return the expanded tag
 	 *
+	 * @param	FTL_Binding		tag
+	 * @param	String			date
+	 *
+	 * @return 	String
+	 *
 	 */
-	protected static function format_date($tag, $date)
+	protected static function format_date(FTL_Binding $tag, $date)
 	{
 		$date = strtotime($date);
 		
 		if ($date)
 		{
-			$format = ( ! empty($tag->attr['format'])) ? $tag->attr['format'] : 'Y-m-d H:i:s';		
+			$format =  ! is_null($tag->getAttribute('format')) ? $tag->getAttribute('format') : 'Y-m-d H:i:s' ;
 
 			if ($format != 'Y-m-d H:i:s')
 			{
@@ -1459,12 +1573,6 @@ class TagManager
 				 	// Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
 					$format = lang('dateformat_'.$format);
 				}
-
-		//		else
-		//		{
-		//			$format = 'Y-m-d H:i:s';
-		//		}
-
 			}
 
 			$segments = explode(' ', $format);
@@ -1494,7 +1602,7 @@ class TagManager
 	 * Return the parent tag name or 'page' if not found
 	 *
 	 */
-	protected static function get_parent_tag($tag)
+	protected static function get_parent_tag(FTL_Binding $tag)
 	{
 		$tag_name = 'page';
 		
@@ -1619,7 +1727,7 @@ class TagManager
 	 */
 	protected static function load_model($model_name, $new_name='')
 	{
-		if (!isset(self::$ci->{$new_name})) self::$ci->load->model($model_name, $new_name, true);
+		if (!isset(self::$ci->{$new_name})) self::$ci->load->model($model_name, $new_name, TRUE);
 	}
 }
 
