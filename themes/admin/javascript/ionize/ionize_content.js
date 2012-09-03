@@ -1309,7 +1309,7 @@ ION.append({
 				var lang = item.getProperty('rel');
 				var langs = Lang.get('languages');
 				
-				if (tinyMCE != undefined)
+				if (typeof tinyMCE != undefined)
 					tinyMCE.triggerSave();
 
 				elements.each(function(item, idx)
@@ -1322,7 +1322,7 @@ ION.append({
 							{
 								if (
 									($(item + '_' + l).hasClass('tinyTextarea') ||  $(item + '_' + l).hasClass('smallTinyTextarea'))
-									&& tinyMCE != undefined
+									&& (typeof tinyMCE != undefined)
 								)
 								{
 									var tiny = tinyMCE.EditorManager.get(item + '_' + l);
