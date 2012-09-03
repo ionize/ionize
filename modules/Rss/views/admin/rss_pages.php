@@ -32,6 +32,6 @@
 */
 $$('#rssPageList li .unlink').each(function(item)
 {
-	ION.initRequestEvent(item, '<?php echo base_url() ?>admin/module/rss/rss/remove_page', {'id_page': item.getProperty('rel')});
+	ION.initRequestEvent(item, '<?php echo admin_url() ?>module/rss/rss/remove_page', {'id_page': item.getProperty('rel')});
 });
 </script>
