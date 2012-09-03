@@ -31,6 +31,7 @@ class TagManager_Article extends TagManager
 		'article:summary' => 		'tag_article_summary',
 		'article:meta_title' =>     'tag_article_meta_title',
 		'article:date' => 			'tag_article_date',
+		'article:updated' => 		'tag_article_updated',
 		'article:content' => 		'tag_article_content',
 		'article:url' => 			'tag_article_url',
 		'article:link' => 			'tag_article_link',
@@ -50,6 +51,7 @@ class TagManager_Article extends TagManager
 		'articles:summary' => 		'tag_article_summary',
 		'articles:meta_title' =>    'tag_article_meta_title',
 		'articles:date' => 			'tag_article_date',
+		'articles:updated' =>		'tag_article_updated',
 		'articles:content' => 		'tag_article_content',
 		'articles:url' => 			'tag_article_url',
 		'articles:link' => 			'tag_article_link',
@@ -835,6 +837,16 @@ class TagManager_Article extends TagManager
 			return self::tag_field($tag);
 		}
 		return self::wrap($tag, self::format_date($tag, $tag->locals->article['date']));
+	}
+	
+	public static function tag_article_updated(FTL_Binding $tag)
+	{ 
+		if ( ! empty($tag->attr['from']))
+		{
+			$tag->setAttribute('name', 'updated');
+			return self::tag_field($tag);
+		}
+		return self::wrap($tag, self::format_date($tag, $tag->locals->article['updated']));
 	}
 	
 	public static function tag_article_meta_title(FTL_Binding $tag)
