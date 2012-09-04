@@ -777,18 +777,20 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 			foreach($this->modules as $uri => $folder)
 			{
 				// Get the module Class modules/Module_Name/controllers/admin/module_name.php
-				if ( ! class_exists($folder) && file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) )
-					require_once(MODPATH.$folder.'/controllers/admin/'.$uri.EXT);
-
-				if (method_exists($folder, '_addons'))
-				{
-					// Module path
-					$module_path = MODPATH.ucfirst($folder).'/';
-		
-					// Add the module path to the finder
-					array_push(Finder::$paths, $module_path);
-
-					$addons[$uri] = call_user_func(array($folder, '_addons'), $data);
+				if (file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) ) {
+					if ( ! class_exists($folder) )
+						require_once(MODPATH.$folder.'/controllers/admin/'.$uri.EXT);
+	
+					if (method_exists($folder, '_addons'))
+					{
+						// Module path
+						$module_path = MODPATH.ucfirst($folder).'/';
+			
+						// Add the module path to the finder
+						array_push(Finder::$paths, $module_path);
+	
+						$addons[$uri] = call_user_func(array($folder, '_addons'), $data);
+					}
 				}
 			}
 			
