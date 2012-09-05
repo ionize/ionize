@@ -21,6 +21,8 @@ view="test_tag_get"
 
 // Navigation
 view="test_tag_navigation"
+view="test_tag_languages_menu"
+
 
 */
 ?>

@@ -15,7 +15,7 @@
 
 <ion:navigation helper="false" tag="ul">
 	<li>
-		<a href="<ion:url />">
+		<a <ion:href />>
 			<ion:id /> : <ion:url /><ion:is_active> <span class="red">(is active)</span></ion:is_active>
 		</a>
 	</li>
