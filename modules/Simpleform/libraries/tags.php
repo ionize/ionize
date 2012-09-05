@@ -35,7 +35,7 @@ class Simpleform_Tags
 	 * @return	parsed view
 	 *
 	 */
-	public static function simple_form(FTL_Binding $tag)
+	public static function tag_simple_form(FTL_Binding $tag)
 	{ 
 		$view = $tag->attr['view'];	
 			
@@ -55,7 +55,7 @@ class Simpleform_Tags
 	 *			/>
 	 * @return	mixed
 	 */
-	public static function validation(FTL_Binding $tag)
+	public static function tag_validation(FTL_Binding $tag)
 	{
 		$ci = &get_instance();
 		
@@ -96,7 +96,7 @@ class Simpleform_Tags
 	 * @return 	String
 	 *
 	 */
-	public static function field(FTL_Binding $tag)
+	public static function tag_field(FTL_Binding $tag)
 	{
 		$ret = '';
 		

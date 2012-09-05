@@ -119,7 +119,7 @@ License:
 .tree-img.sticky { background-position: -144px -16px;  margin-right:5px;} 			/* File */
 .tree-img.filelink { background-position: -176px -16px;  margin-right:5px;} 			/* Link to File */
 .tree-img.folderlink { background-position: -378px 50%;  margin-right:5px;} 			/* Link to Folder */
-.tree-img.file.link { background-position: -160px -16px;  margin-right:5px;} 			/* Link to ... */
+.tree-img.file.link { background-position: -192px -16px;  margin-right:5px;} 			/* Link to ... */
 .tree-img.sticky.link { background-position: -176px -16px;  margin-right:5px;} 			/* Link to ... */
 
 /* Last file child node line  */

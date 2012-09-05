@@ -1,6 +1,6 @@
 
 <!-- Success message -->
-<ion:simpleform:validation request="form" attr="has_success" form_name="contact" is_like="1">
+<ion:simpleform:validation attr="has_success" form_name="contact" is_like="1">
 
 	<p><ion:translation term="module_simpleform_text_thanks" /></p>
 
@@ -16,7 +16,7 @@
 		
 		<h1><ion:translation term="module_simpleform_text_error" /></h1>
 	
-		<ion:simpleform:validation request="form" attr="error_string" /></div>
+		<ion:simpleform:validation attr="error_string" form_name="contact" />
 	
 	</ion:simpleform:validation>
 

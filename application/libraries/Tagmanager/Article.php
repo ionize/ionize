@@ -1148,7 +1148,7 @@ class TagManager_Article extends TagManager
 	}
 
 
-	public function tag_article_readmore(FTL_Binding $tag)
+	public static function tag_article_readmore(FTL_Binding $tag)
 	{
 		$term = (isset($tag->attr['term']) ) ? $tag->attr['term'] : '';
 		$paragraph = (isset($tag->attr['paragraph'] )) ? $tag->attr['paragraph'] : FALSE ;

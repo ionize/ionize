@@ -182,7 +182,6 @@ class FTL_Context
 				'Error in definition of tag "'.$name.'"',
 				'the associated <b>static function</b> "'.$call.'" cannot be called.'
 			);
-			// show_error('Error in definition of tag "'.$name.'", the associated <b>static function</b> "'.$call.'" cannot be called.');
 		}
 		
 		// jump out
@@ -276,8 +275,6 @@ class FTL_Context
 		$title = 'Tag missing';
 		$message = '<b>'.$name.'</b>, scope: <b>'.$this->current_nesting().'</b>';
 		return $this->show_error($title, $message);
-
-		return '<p><span style="color:#b00;">Tag missing:</span> <b>'.$name.'</b>, scope: <b>'.$this->current_nesting().'</b>.</p>';
 	}
 	
 	// --------------------------------------------------------------------

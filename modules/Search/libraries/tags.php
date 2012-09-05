@@ -20,7 +20,12 @@
  */
 class Search_Tags extends TagManager
 {
-	
+	public static $tag_definitions = array
+	(
+		"search:searchresults:no_results" => 	"tag_no_results",
+	);
+
+
 	/**
 	 * Base search module tag
 	 * The index function of this class refers to the <ion:search /> tag
@@ -51,7 +56,7 @@ class Search_Tags extends TagManager
 	 * @usage	<ion:searchform />
 	 *
 	 */
-	public static function searchform(FTL_Binding $tag)
+	public static function tag_searchform(FTL_Binding $tag)
 	{
 		$CI =& get_instance();
 	
@@ -83,7 +88,7 @@ class Search_Tags extends TagManager
 	 * Useful if the form is sent again after an unsuccessful search
 	 *
 	 */
-	public static function status_message(FTL_Binding $tag)
+	public static function tag_status_message(FTL_Binding $tag)
 	{
 		// Local results are set : Means the search process was done
 		// Because the form will only be displayed again after unsuccesful search, if the var is set, it means no results were found.
@@ -106,7 +111,7 @@ class Search_Tags extends TagManager
 	 * Used to display the results on a new page
 	 *
 	 */
-	public static function result_page(FTL_Binding $tag)
+	public static function tag_result_page(FTL_Binding $tag)
 	{
 		// Local results are set : Means the search process was done
 		if ( isset($tag->locals->result_page))
@@ -128,9 +133,10 @@ class Search_Tags extends TagManager
 	 * Search results tag
 	 * Parent tag for results
 	 *
+	 * @usage	<ion:searchresults>
 	 *
 	 */
-	public static function searchresults(FTL_Binding $tag)
+	public static function tag_searchresults(FTL_Binding $tag)
 	{
 		$CI =& get_instance();
 		
@@ -203,7 +209,7 @@ class Search_Tags extends TagManager
 	 *			</ion:searchresults>
 	 *
 	 */
-	public static function results(FTL_Binding $tag)
+	public static function tag_results(FTL_Binding $tag)
 	{
 		$str = '';
 		$index = 0;
@@ -230,7 +236,7 @@ class Search_Tags extends TagManager
 	 * Displays the content of the tag if no results
 	 *
 	 */
-	public static function no_results(FTL_Binding $tag)
+	public static function tag_no_results(FTL_Binding $tag)
 	{
 		if( empty($tag->locals->results))
 		{
@@ -247,7 +253,7 @@ class Search_Tags extends TagManager
 	 * Returns the searched term
 	 *
 	 */
-	public static function realm(FTL_Binding $tag)
+	public static function tag_realm(FTL_Binding $tag)
 	{
 		$str = '';
 		
@@ -267,11 +273,11 @@ class Search_Tags extends TagManager
 	 * Returns one asked field of the current result.
 	 * If you query result contains the field 'title', you can retrieve it with this tag.
 	 *
-	 * @usage		<ion:result field="title" />
+	 * @usage		<ion:search:result field="title" />
 	 *
 	 *
 	 */
-	public static function result(FTL_Binding $tag)
+	public static function tag_result(FTL_Binding $tag)
 	{
 		$field = (isset($tag->attr['field']) ) ? $tag->attr['field'] : false;
 		
@@ -290,13 +296,13 @@ class Search_Tags extends TagManager
 	 * Return one result title
 	 * Nested in <ion:results>
 	 *
-	 * @usage : <ion:results>
+	 * @usage : <ion:search:results>
 	 *				<ion:title>
 	 *				...
-	 *			</ion:results>
+	 *			</ion:search:results>
 	 *
 	 */
-	public static function title(FTL_Binding $tag)
+	public static function tag_title(FTL_Binding $tag)
 	{
 		return $tag->locals->result['title'];
 	}
@@ -309,12 +315,15 @@ class Search_Tags extends TagManager
 	 * Returns the result URL
 	 *
 	 */
-	public static function url(FTL_Binding $tag)
+	public static function tag_url(FTL_Binding $tag)
 	{
 		// Page URL index to use
 		$page_url = (config_item('url_mode') == 'short') ? 'page_url' : 'path';
-	
-	
+
+		$from = $tag->getAttribute('from');
+		if ($from == 'page')
+			return $tag->locals->result[$page_url];
+
 		return $tag->locals->result[$page_url].'/'.$tag->locals->result['url'];
 	}
 
@@ -326,7 +335,7 @@ class Search_Tags extends TagManager
 	 * Returns each result article's content
 	 *
 	 */
-	public static function content(FTL_Binding $tag)
+	public static function tag_content(FTL_Binding $tag)
 	{
 		// paragraph limit ?
 		$paragraph = (isset($tag->attr['paragraph'] )) ? (int)self::get_attribute($tag, 'paragraph') : FALSE ;
@@ -348,7 +357,10 @@ class Search_Tags extends TagManager
 	 * Returns each result article's date
 	 *
 	 */
-	public static function date($tag) { return self::wrap($tag, self::format_date($tag, $tag->locals->result['date'])); }
+	public static function tag_date($tag)
+	{
+		return self::wrap($tag, self::format_date($tag, $tag->locals->result['date']));
+	}
 	
 
 	// ------------------------------------------------------------------------
@@ -358,7 +370,10 @@ class Search_Tags extends TagManager
 	 * Returns number of articles found
 	 *
 	 */
-	public static function nb_results($tag) { return self::wrap($tag, $tag->locals->nb_results); }
+	public static function tag_nb_results($tag)
+	{
+		return self::wrap($tag, $tag->locals->nb_results);
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -369,7 +384,10 @@ class Search_Tags extends TagManager
 	 *
 	 */
 
-	public static function nb_found($tag) { return self::wrap($tag, $tag->locals->result['nb_found']); }
+	public static function tag_nb_found($tag)
+	{
+		return self::wrap($tag, $tag->locals->result['nb_found']);
+	}
 
 
 }

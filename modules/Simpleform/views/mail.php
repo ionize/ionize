@@ -59,7 +59,7 @@
 					<table border="0" width="880" style="border:0; width: 880px; margin: 0 auto;">
 						<tr>
 							<td>
-								<h1><ion:translation term="module_simpleform_email_title" /></h1>
+								<h1><ion:translation term="module_simpleform_contact_email_title" /></h1>
 								
 								<p>
 									<strong><ion:translation term="module_simpleform_field_name" /></strong> : 

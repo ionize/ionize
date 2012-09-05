@@ -16,6 +16,9 @@ class MY_Lang extends CI_Lang
 	 * @param	mixed	the name of the language file to be loaded. Can be an array
 	 * @param	string	the language (english, etc.)
 	 * @param	boolean	value to return : FALSE by default
+	 * @param	String
+	 * @param	String
+	 *
 	 * @return	mixed
 	 */
 	function load($langfile = '', $idiom = '', $return = FALSE, $add_suffix = TRUE, $alt_path = '')
@@ -47,7 +50,7 @@ class MY_Lang extends CI_Lang
 		/*
 		if(empty($files))
 		{
-			// Try with the last defualt language... 
+			// Try with the last default language...
 			$idiom = $CI->config->item('language');
 			$files = Finder::find_file($idiom . '/' . $langfile, 'language', 99);
 		}

@@ -42,7 +42,7 @@ if( ! function_exists('lang'))
 	{
 		$CI =& get_instance();
 		$line = $CI->lang->line($key);
-	
+
 		$line = (!$line) ? '#'.$key.'' : $line;
 	
 		if ($id != '')

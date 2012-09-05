@@ -626,12 +626,14 @@ class TagManager_Page extends TagManager
 		else
 			$page = self::get_page_by_code($id);
 
+		if (empty($page))
+			$page = self::$context->globals->page;
+
 		if ( ! empty($page))
 		{
-			// Render the article
-			$tag->locals->page = $page;
-			$tag->locals->index = 0;
-			$tag->locals->count = 1;
+			$tag->set('page', $page);
+			$tag->set('index', 0);
+			$tag->set('count', 1);
 			$str .= $tag->expand();
 		}
 		$output = self::wrap($tag, $str);

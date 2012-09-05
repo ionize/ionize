@@ -1,52 +1,27 @@
 <?php
 
+/**
+ * User's translations
+ *
+ */
+
+$lang['module_simpleform_contact_email_subject'] = "Message du site";
+$lang['module_simpleform_contact_email_title'] = "Quelqu'un vous a envoyé un message depuis le site";
+
+// User's callbacks error message
+// $lang['module_simpleform_error_xxx'] : xxx is the form field name
+$lang['module_simpleform_error_name'] = "Le champ <strong>%s</strong> est requis.";
+$lang['module_simpleform_error_message'] = "Le champ <strong>%s</strong> est requis.";
+
+/**
+ * End of User's translations
+ */
+
+
 $lang['module_simpleform_about'] = "Ce module permet l'ajout de formulaires simples à votre site.";
 $lang['module_simpleform_doc_title'] = "Comment configurer ce module";
-$lang['module_simpleform_doc_content'] = "
-	<h4>1. Paramétrer le fichier config.php :</h4>
-	<p>Chaque formulaire est déclaré dans le fichier <b>/modules/Simpleform/config/config.php</b><p>
-	<pre>
-// XXXXX représente le nom de votre formulaire.
-// Example pour un formulaire nommé 'contact': \$config['simpleform_contact_email'] = 'yourname@yourdomain.tld';
+$lang['module_simpleform_doc_content'] = "Lisez le fichier <b>install.html</b> pour en savoir plus.";
 
-\$config['simpleform_XXXXX_email'] = 'yourname@yourdomain.tld';
-
-// Titre de l'email : Index de la traduction du fichier de langue : Simpleform/language/xxx/simpleform_lang.php
-// Dans le cas ci-dessous,  \$lang['module_simpleform_email_title'] sera utilisé comme titrre de mail pour ce formulaire
-
-\$config['simpleform_XXXXX_email_title'] = 'module_simpleform_email_title';
-
-// Vue d'email à utiliser pour l'envoi des données (sans l'extension .php)
-// Cette vue doit être placée dans /modules/Simpleform/views
-
-\$config['simpleform_XXXXX_email_view'] = 'mail';
-
-// Champs et règles du formulaire
-
-\$config['simpleform_XXXXX'] = array(
-	'name' => 'trim|required|min_length[4]|xss_clean',
-	'email' => 'trim|required|min_length[5]|valid_email|xss_clean',
-	'message' => 'required|xss_clean',
-	'city' => 'antispam'
-);
-	</pre>
-
-	<h4>2. Créer la page ou l'article contenant le formulaire</h4>
-	<p>
-		Pour créer un formulaire, crééz simplement une vue, déclarez-la et liez-la à une page ou un article
-	</p>
-	<p>
-		Cette vue contiendra les tags du module Simpleforms. <br/>
-		La vue <b>views/form_view.php</b> est un bon exemple.
-	</p>
-	
-	<h4>3. Modifiez la librairie : libraries/simpleform_action.php file</h4>
-	<p>
-		La méthode nommée <b>process_data()</b> se charge de traiter le formulaire si besoin.<br/>
-		Modifiez cette méthode pour qu'elle corresponde à vos besoins.
-	</p>
-	
-";
 
 $lang['module_simpleform_field_email'] = "Email";
 $lang['module_simpleform_field_name'] = "Nom";
@@ -76,17 +51,13 @@ $lang['module_simpleform_all_fields_required'] = "Tous les champs sont obigatoir
 $lang['module_simpleform_button_send'] = "Envoyer";
 $lang['module_simpleform_button_save'] = "Sauvegarder";
 
-$lang['module_simpleform_text_error'] = "Oups, une erreur est survenue...";
+$lang['module_simpleform_title_success'] = "Message envoyé";
+$lang['module_simpleform_title_thanks'] = "Merci !";
+$lang['module_simpleform_title_errors'] = "Une erreur est survenue...";
+
+$lang['module_simpleform_text_error'] = "Une erreur est survenue...";
 $lang['module_simpleform_text_success'] = "Votre message est envoyé !";
-$lang['module_simpleform_text_thanks'] = "Merci pour votre message. Nous alons vous répondre très vite.";
-
-$lang['module_simpleform_text_vip_success'] = "Votre demande VIP est envoyée !";
-$lang['module_simpleform_text_vip_thanks'] = "Nous vous répondrons très rapidement.";
-
-$lang['module_simpleform_email_title'] = "Quelqu'un vous a envoyé un message depuis le site";
-$lang['module_simpleform_vip_email_title'] = "Demande VIP !";
-
-
+$lang['module_simpleform_text_thanks'] = "Merci pour votre message. Nous allons vous répondre très vite.";
 
 $lang['module_simpleform_error_javascript_required'] = "Javascript doit être activé sur votre navigateur pour envoyer ce message.";
 $lang['module_simpleform_error_required'] = "Le champ <strong>%s</strong> est obligatoire.";
