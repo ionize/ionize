@@ -12,7 +12,7 @@ To use this branch :
 * Choose the theme "ftl"
 * Edit the theme view : /themes/ftl/page.php
 
-
+* Log what's happening : in a console, run tail -f /<your_ionize_folder/application/logs/log-<current_date>.log
 
 
 
