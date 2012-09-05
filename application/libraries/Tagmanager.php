@@ -61,6 +61,12 @@ class TagManager
 	 */
 	public static $tag_definitions = array
 	(
+		// Generic tags
+		'id' => 'tag_id',
+		'url' => 'tag_url',
+		'get' => 'tag_get',
+
+		// System / Core tags
 		'debug' =>				'tag_debug',
 		'field' =>				'tag_field',
 		'list' =>				'tag_list',
@@ -79,7 +85,7 @@ class TagManager
 		'if' =>					'tag_if',
 		'else' =>				'tag_else',
 		'set' =>				'tag_set',
-		'get' =>				'tag_get',
+//		'get' =>				'tag_get',
 		'count' => 				'tag_count',
 		'php' =>				'tag_php',
 		'jslang' =>				'tag_jslang',
@@ -87,6 +93,98 @@ class TagManager
 		
 		'global:get' =>			'tag_global_get'
 	);
+
+
+	// TESTS ------------------------------------------------------------------------
+
+
+	public static function tag_id(FTL_Binding $tag)
+	{
+		$parents = self::_get_nesting_array($tag);
+
+		foreach($parents as $parent)
+		{
+			$obj = $tag->get($parent);
+
+			if (isset($obj['id']))
+				return $obj['id'];
+
+			if ( ! is_null($obj) && isset($obj['id_'.$parent]))
+				return $obj['id_'.$parent];
+		}
+		return '';
+	}
+
+	public static function tag_url(FTL_Binding $tag)
+	{
+		return self::_get_from_locals($tag, 'absolute_url');
+	}
+
+
+	public static function tag_get(FTL_Binding $tag)
+	{
+		return self::_get_formatted_from_locals($tag, $tag->getAttribute('key'));
+	}
+
+
+	protected static function _get_formatted_from_locals(FTL_Binding $tag, $key=NULL)
+	{
+		$value = self::_get_from_locals($tag, $key);
+
+		// If "format" attribute is defined, suppose the field is a date ...
+		if ( ! is_null($tag->getAttribute('format')))
+			$value = self::format_date($tag, $value);
+
+		if ( ! is_null($value))
+			return self::wrap($tag, $value);
+
+		return $value;
+	}
+
+
+	protected static function _get_from_locals(FTL_Binding $tag, $key=NULL)
+	{
+		$value = NULL;
+
+		$parents = self::_get_nesting_array($tag);
+
+		foreach($parents as $parent)
+		{
+			$obj = $tag->get($parent);
+
+			if ( ! is_null($obj) )
+			{
+				if (isset($obj[$key]))
+				{
+					$value = $obj[$key];
+					break;
+				}
+
+				// Try Extend fields
+				if ( isset($obj[self::$extend_field_prefix.$key]))
+				{
+					$value = $obj[self::$extend_field_prefix.$key];
+
+					break;
+				}
+			}
+		}
+
+		return $value;
+	}
+
+
+	protected static function _get_nesting_array(FTL_Binding $tag)
+	{
+		log_message('error', 'NESTING : ' . $tag->nesting());
+
+		$parents = array_reverse(explode(':', $tag->nesting()));
+		array_shift($parents);
+		return $parents;
+	}
+
+
+	// /TESTS ------------------------------------------------------------------------
 
 
 	// ------------------------------------------------------------------------
@@ -234,6 +332,7 @@ class TagManager
 
 				// Load tags from the tag_definitions array : Overwrites auto-load
 				$tag_definitions = ! empty($vars["tag_definitions"]) ? $vars["tag_definitions"] : array();
+
 				foreach($tag_definitions as $scope => $method)
 				{
 					// Only loads scopes linked to one existing method
@@ -387,7 +486,7 @@ class TagManager
 		}
 		
 		// Full page cache ?
-		if (isset(self::$context->globals->page['_cached']))
+		if (isset(self::$context->globals->_page['_cached']))
 		{
 			/*
 			 * Write the full page cache file
@@ -581,11 +680,11 @@ class TagManager
 				$element = $tag->locals->$ar[0];
 			
 				// First : try to get the field in the standard fields
-				// exemple : $tag->locals->page[field]
+				// exemple : $tag->locals->_page[field]
 				if ( ! isset($element[$ar[1]]))
 				{
 					// Second : Try to get the field in the extend fields
-					// exemple : $tag->locals->page[ion_field]
+					// exemple : $tag->locals->_page[ion_field]
 					if ( ! isset($element[self::$extend_field_prefix.$ar[1]]))
 					{
 						return FALSE;
@@ -745,7 +844,6 @@ class TagManager
 	 * Gets a stored var
 	 * @usage	<ion:get var="foo" scope="<local|global>" />
 	 *
-	 */
 	public static function tag_get(FTL_Binding $tag)
 	{
 		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : NULL;
@@ -758,8 +856,9 @@ class TagManager
 		
 		return '';
 	}
+	 */
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -1021,7 +1120,7 @@ class TagManager
 				// return self::wrap($tag, self::get_value($from, $name, $tag));
 			}
 
-			// Try to get the extend field value			
+			// Try to get the extend field value
 			if ( isset($obj[self::$extend_field_prefix.$name]))
 			{
 				// If "format" attribute is defined, suppose the field is a date ...
@@ -1353,11 +1452,11 @@ class TagManager
 		
 		if ($use_global == TRUE)
 		{
-			return $tag->globals->page['name'];
+			return $tag->globals->_page['name'];
 		}
 		else
 		{
-			return $tag->locals->page['name'];
+			return $tag->locals->_page['name'];
 		}
 	}
 
@@ -1388,9 +1487,9 @@ class TagManager
 	 */
 	public static function tag_meta_keywords($tag)
 	{
-		if( ! empty($tag->locals->page['meta_keywords']))
+		if( ! empty($tag->locals->_page['meta_keywords']))
 		{
-			return $tag->locals->page['meta_keywords'];
+			return $tag->locals->_page['meta_keywords'];
 		}
 		return Settings::get('meta_keywords');
 	}
@@ -1407,9 +1506,9 @@ class TagManager
 	 */
 	public static function tag_meta_description($tag)
 	{
-		if( ! empty($tag->locals->page['meta_description']))
+		if( ! empty($tag->locals->_page['meta_description']))
 		{
-			return $tag->locals->page['meta_description'];
+			return $tag->locals->_page['meta_description'];
 		}
 		return Settings::get('meta_description');
 	}
@@ -1529,9 +1628,7 @@ class TagManager
 		if ( ! empty($tag->attr['function'])) $value = self::php_process($value, $tag->attr['function'] );
 
 		if ($helper !== FALSE)
-		{
 			$value = self::helper_process($value, $helper);
-		}
 
 		if ($html_tag !== FALSE)
 		{

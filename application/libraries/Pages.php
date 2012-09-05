@@ -237,6 +237,7 @@ class Pages
 					}
 				}
 			}
+			
 		}
 	}
 	

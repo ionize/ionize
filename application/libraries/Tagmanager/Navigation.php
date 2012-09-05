@@ -24,11 +24,17 @@ require_once APPPATH.'libraries/Pages.php';
 
 class TagManager_Navigation extends TagManager
 {
+	static protected $_current_language = NULL;
+
 	public static $tag_definitions = array
 	(
 		'navigation' => 					'tag_navigation',
-		'navigation:active_class' =>		'tag_navigation_active_class',			
-		'navigation:url' =>					'tag_navigation_url',			
+		'navigation:is_active' =>			'tag_is_active',
+
+		'navigation:active_class' =>		'tag_navigation_active_class',
+		'navigation:url' =>					'tag_navigation_url',
+		'navigation:href' =>				'tag_navigation_href',
+
 		'tree_navigation' => 				'tag_tree_navigation',
 		'tree_navigation:active_class' =>	'tag_navigation_active_class',			
 		'sub_navigation' => 				'tag_sub_navigation',
@@ -37,10 +43,13 @@ class TagManager_Navigation extends TagManager
 		// Languages
 		'languages' =>				'tag_languages',
 		'languages:language' =>		'tag_languages_language',
-		'languages:name' =>			'tag_languages_name',
-		'languages:code' =>			'tag_languages_code',
-		'languages:active_class' =>	'tag_languages_active_class',
-		'languages:url' =>			'tag_languages_url'
+		'language' =>				'tag_language',
+
+		'language:name' =>			'tag_language_name',
+		'language:code' =>			'tag_language_code',
+		'language:active_class' =>	'tag_language_active_class',
+		'language:is_default' =>	'tag_language_is_default',
+		'language:is_active' =>		'tag_is_active',
 	);
 	
 	
@@ -52,9 +61,9 @@ class TagManager_Navigation extends TagManager
 	 * @usage	
 	 *
 	 */
-	public static function tag_navigation($tag)
+	public static function tag_navigation(FTL_Binding $tag)
 	{
-		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+		$cache = ($tag->getAttribute('cache') == 'off' ) ? FALSE : TRUE;
 		
 		$error_message = '';
 		
@@ -67,15 +76,11 @@ class TagManager_Navigation extends TagManager
 
 		// Helper / No helper ?
 		// $tag->attr['no_helper'] : Will disapear in next versions... replaced by $tag->attr['helper']
-		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
-		$helper = (isset($tag->attr['helper'])) ? $tag->attr['helper'] : 'navigation';
+		$helper = ( is_null($tag->getAttribute('helper'))) ? 'navigation' : $tag->getAttribute('helper');
 		
 		// Get the asked lang if any
-		$lang = (isset($tag->attr['lang'])) ? $tag->attr['lang'] : FALSE;
-		
-		if ($helper == 'false' OR $no_helper == TRUE)
-			$helper = FALSE;
-		
+		$lang = $tag->getAttribute('lang');
+
 		// Menu : Main menu by default
 		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
 		$id_menu = 1;
@@ -93,7 +98,7 @@ class TagManager_Navigation extends TagManager
 
 
 		// Current page
-		$current_page =& $tag->locals->page;
+		$current_page = $tag->get('_page');
 
 		// Attribute : active CSS class
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
@@ -105,7 +110,7 @@ class TagManager_Navigation extends TagManager
 		 *
 		 */
 		// Pages : Current lang OR asked lang code pages.
-		$global_pages = ($lang !== FALSE && Settings::get_lang() != $lang) ? Pages::get_pages($lang) : $tag->globals->pages;
+		$global_pages = ( ! is_null($lang) && Settings::get_lang() != $lang) ? Pages::get_pages($lang) : $tag->globals->pages;
 
 		// Add the active class key
 		$id_current_page = ( ! empty($current_page['id_page'])) ? $current_page['id_page'] : FALSE;
@@ -116,6 +121,8 @@ class TagManager_Navigation extends TagManager
 		{
 			// Add the active_class key
 			$page['active_class'] = in_array($page['id_page'], $active_pages) ? $active_class : '';
+			$page['active'] = in_array($page['id_page'], $active_pages) ? TRUE : FALSE;
+			$page['id_navigation'] = $page['id_page'];
 		}
 
 		// Filter by menu and asked level : We only need the asked level pages !
@@ -138,11 +145,11 @@ class TagManager_Navigation extends TagManager
 			foreach($global_pages as $p)
 			{
 				// Child pages of id_subnav
-				if ($p['id_parent'] == $tag->locals->page['id_subnav'])
+				if ($p['id_parent'] == $tag->locals->_page['id_subnav'])
 					$pages[] = $p;
 
 				// Parent page is the id_subnav page
-				if ($p['id_page'] == $tag->locals->page['id_subnav'])
+				if ($p['id_page'] == $tag->locals->_page['id_subnav'])
 					$parent_page = $p;
 			}
 		}
@@ -162,8 +169,6 @@ class TagManager_Navigation extends TagManager
 					$parent_pages[] = $p;
 			}
 			
-			// $parent_page = array_values(array_filter($parent_pages, create_function('$row','return $row["active_class"] != "";')));
-			// $parent_page = ( ! empty($parent_page)) ? $parent_page[0] : FALSE;
 			foreach($parent_pages as $p)
 			{
 				if ($p['active_class'] != '')
@@ -174,7 +179,6 @@ class TagManager_Navigation extends TagManager
 		// Filter the current level pages on the link with parent page
 		if ( ! empty($parent_page ))
 		{
-			// $pages = array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $parent_page['id_page'] .'";'));
 			$o_pages = $pages;
 			$pages = array();
 			foreach($o_pages as $p)
@@ -217,7 +221,11 @@ class TagManager_Navigation extends TagManager
 		{
 			foreach($pages as $index => $p)
 			{
-				$tag->locals->page = $p;
+				// $tag->set('_page', $p);
+				// $tag->locals->_page = $p;
+				$tag->set('navigation', $p);
+				$tag->set('active', $p['active']);
+
 				$tag->locals->index = $index;
 				$str .= $tag->expand();
 			}
@@ -233,21 +241,35 @@ class TagManager_Navigation extends TagManager
 		return self::show_tag_error($tag->name, $error_message);
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	public static function tag_is_active(FTL_Binding $tag)
+	{
+		$is_active = ($tag->getAttribute('is') === FALSE) ? FALSE : TRUE;
+
+		if ($is_active == $tag->get('active'))
+			return $tag->expand();
+
+		return '';
+	}
+
 	
 	// ------------------------------------------------------------------------
 
 
-	public static function tag_sub_navigation_title($tag)
+	public static function tag_sub_navigation_title(FTL_Binding $tag)
 	{
-		if ($tag->locals->page['subnav_title']  != '')
+		if ($tag->locals->_page['subnav_title']  != '')
 		{
-			return self::wrap($tag, $tag->locals->page['subnav_title']);
+			return self::wrap($tag, $tag->locals->_page['subnav_title']);
 		}
 		else
 		{
 			foreach($tag->globals->pages as $page)
 			{
-				if ($page['id_page'] == $tag->locals->page['id_subnav'])
+				if ($page['id_page'] == $tag->locals->_page['id_subnav'])
 				{
 					return self::wrap($tag, $page['subnav_title']);
 				}
@@ -265,11 +287,13 @@ class TagManager_Navigation extends TagManager
 	 *
 	 * @param	FTL_Binding object
 	 *
+	 * @return string
+	 *
 	 */
-	public static function tag_tree_navigation($tag)
+	public static function tag_tree_navigation(FTL_Binding $tag)
 	{
 		// Current page
-		$page = $tag->locals->page;
+		$page = $tag->locals->_page;
 	
 		// If 404 : Put empty vars, so the menu will prints out without errors
 		if ( !isset($page['id_page']))
@@ -316,11 +340,6 @@ class TagManager_Navigation extends TagManager
 		$class = (isset($tag->attr['class']) ) ? $tag->attr['class'] : NULL ;
 		if (strpos($active_class, 'class') !== FALSE) $active_class= str_replace('\'', '"', $active_class);
 		
-		// Attribute : Use lang_url or url ?
-//		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] === 'TRUE') ? TRUE : FALSE ;
-//		if ($lang_url == FALSE)
-//			$lang_url = (isset($tag->attr['lang_url']) && $tag->attr['lang_url'] === 'TRUE') ? TRUE : FALSE ;
-		
 		// Attribute : Helper to use to print out the tree navigation
 		$helper = (isset($tag->attr['helper']) && $tag->attr['helper'] != '' ) ? $tag->attr['helper'] : 'navigation';
 		
@@ -331,7 +350,7 @@ class TagManager_Navigation extends TagManager
 		self::$ci->load->helper($helper);
 
 		// Page from locals : By ref because of active_class definition
-		$pages =&  $tag->locals->pages;
+		$pages =&  $tag->locals->_pages;
 
 		/* Get the reference parent page ID
 		 * Note : this is depending on the whished level.
@@ -460,55 +479,65 @@ class TagManager_Navigation extends TagManager
 
 	// ------------------------------------------------------------------------
 
-
-	public static function tag_navigation_active_class($tag) { return isset($tag->locals->page['active_class']) ? $tag->locals->page['active_class'] : ''; }
+	/**
+	 * Returns the active class string, as set through the <ion:navigation active_class="" /> attribute
+	 *
+	 * @param $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_navigation_active_class(FTL_Binding $tag)
+	{
+		return self::_get_from_locals($tag, 'active_class');
+	}
 	
 
 	// ------------------------------------------------------------------------
 
 
 	/** 
-	 * Return the URL of a navigation menu item.
+	 * Return the URL of a navigation item.
+	 *
+	 * @param	FTL_Binding
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	<ion:languages [helper="helper:helper_method"]>
+	 * 				...
+	 * 			<ion:languages>
 	 *
 	 */
-	public static function tag_navigation_url($tag) 
+	public static function tag_navigation_url(FTL_Binding $tag)
 	{
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		$lang_url = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' ) ? TRUE : FALSE;
-		
-		if ($tag->locals->page['link'] != '' && $tag->locals->page['link_type'] == 'external')
-		{
-			return $tag->locals->page['absolute_url'];
-		}
-		
-		/*
-		 * In this case, the <ion:url /> tag of the <ion:navigation /> tag forces the lang code to be in the URL
-		 * Because the function init_pages_urls() has already put the lang code, this check is only useful
-		 * for internal link if the lang code isn't set by init_pages_urls()
-		 *
-		 */
-		if ($lang_url === TRUE)
-		{
-			if (strpos($tag->locals->page['absolute_url'], base_url().Settings::get_lang()) === FALSE)
-			{
-				$tag->locals->page['absolute_url'] = str_replace(base_url(), base_url().Settings::get_lang() . '/', $tag->locals->page['absolute_url']);
-			}
-		}
-		
-		return $tag->locals->page['absolute_url'];
-	}
-	
+		$has_url = self::_get_from_locals($tag, 'has_url');
 
-	// ------------------------------------------------------------------------
+		if (intval($has_url) == 1)
+			return self::_get_from_locals($tag, 'absolute_url');
+		else
+			return '#';
+	}
+
+
+	public static function tag_navigation_href(FTL_Binding $tag)
+	{
+
+	}
+
+
 
 	/**
 	 * Languages tag
 	 * 
-	 * @param	FTL_Binding		The binded tag to parse
+	 * @param	FTL_Binding
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	<ion:languages [helper="helper:helper_method"]>
+	 * 				...
+	 * 			<ion:languages>
 	 *
 	 */
-	public static function tag_languages($tag)
+	public static function tag_languages(FTL_Binding $tag)
 	{
 		$languages = Settings::get_online_languages();
 
@@ -518,19 +547,24 @@ class TagManager_Navigation extends TagManager
 		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
 
 		// helper
-		$helper = (isset($tag->attr['helper']) ) ? $tag->attr['helper'] : 'navigation';
-
-		// No helper ?
-		$no_helper = (isset($tag->attr['no_helper']) ) ? TRUE : FALSE;
+		$helper = $tag->getAttribute('helper');
 
 		$str = '';
 
 		foreach($languages as &$lang)
 		{
-			$tag->locals->lang = $lang;
+			// Lang send to helper
+			$lang['absolute_url'] = $tag->locals->_page['absolute_urls'][$lang['lang']];
+			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
+			$lang['active'] = $lang['lang'] == Settings::get_lang('current');
+			$lang['id'] = $lang['lang'];
 
-			$tag->locals->url = $lang['url'] = $tag->locals->page['absolute_urls'][$lang['lang']];
-			$tag->locals->active = $lang['active_class'] = ($lang['lang'] == Settings::get_lang('current') ) ? $active_class : '';
+			// Tag locals
+			$tag->set('language', $lang);
+			$tag->set('id', $lang['lang']);
+			$tag->set('absolute_url', $lang['absolute_url']);
+			$tag->set('active_class', $lang['active_class']);
+			$tag->set('active', $lang['active']);
 
 			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
 			{
@@ -538,43 +572,182 @@ class TagManager_Navigation extends TagManager
 			}
 		}
 
-		// Get helper method
-		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_language_navigation';
-		$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-
-		// load the helper
-		self::$ci->load->helper($helper);
-
-		// Return the helper function result
-		if (function_exists($helper_function) && $no_helper === FALSE)
+		// Try to return the helper function result
+		if ( ! is_null($helper))
 		{
-			$nav = call_user_func($helper_function, $languages);
+			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_language_navigation';
+			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
+
+			self::$ci->load->helper($helper);
+
+			if (function_exists($helper_function))
+			{
+				$nav = call_user_func($helper_function, $languages);
 			
-			return self::wrap($tag, $nav);
+				return self::wrap($tag, $nav);
+			}
 		}
-		else
-		{
-			return self::wrap($tag, $str);
-		}
+
+		return self::wrap($tag, $str);
 	}
 
 
-	// ------------------------------------------------------------------------
-	
-
 	/**
-	 * Languages nested tags
-	 * 
-	 * @param	FTL_Binding		The binded tag to parse
+	 * Language tag in the context of its parent 'languages"
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	<ion:languages>
+	 * 				<ion:language>
+	 * 					<ion:name />
+	 * 				</ion:language>
+	 * 			<ion:languages>
+	 *
+	 * 			Shortcut mode :
+	 * 			<ion:languages>
+	 * 				<ion:language:name />
+	 * 			<ion:languages>
 	 *
 	 */
-	public static function tag_languages_language($tag) { return $tag->locals->lang['name']; }
-	public static function tag_languages_name($tag) { return $tag->locals->lang['name']; }
-	public static function tag_languages_code($tag) { return $tag->locals->lang['lang']; }
-	public static function tag_languages_url($tag) { return $tag->locals->url; }
-	public static function tag_languages_active_class($tag) { return $tag->locals->active; }
-	
-	
+	public static function tag_languages_language(FTL_Binding $tag)
+	{
+		return $tag->expand();
+	}
+
+
+	/**
+	 * Standalone language tag
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	<ion:language>
+	 * 				<ion:code />
+	 * 				<ion:name />
+	 * 				<ion:url />
+	 * 				<ion:is_default />
+	 * 				<ion:is_active />
+	 * 			</ion:language>
+	 */
+	public static function tag_language(FTL_Binding $tag)
+	{
+		if (is_null(self::$_current_language))
+		{
+			foreach(Settings::get_languages() as $language)
+			{
+				if ($language['lang'] == Settings::get_lang())
+				{
+					$language['id'] = $language['lang'];
+					$language['absolute_url'] = $tag->locals->_page['absolute_urls'][$language['lang']];
+					self::$_current_language = $language;
+					break;
+				}
+			}
+		}
+		$tag->set('language', self::$_current_language);
+
+		return $tag->expand();
+	}
+
+
+	/**
+	 * Returns the long language name
+	 * Example : English
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	<ion:language>
+	 * 				<ion:name [tag="span" class="colored"] />
+	 * 			</ion:language>
+	 *
+	 * 			Shortcut mode :
+	 * 			<ion:language:name [tag="span" class="colored"] />
+	 */
+	public static function tag_language_name(FTL_Binding $tag)
+	{
+		return self::_get_formatted_from_locals($tag, 'name');
+	}
+
+
+	/**
+	 * Returns the language code
+	 * Example : en
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	<ion:language>
+	 * 				<ion:code [tag="span" class="colored"] />
+	 * 			</ion:language>
+	 *
+	 * 			Shortcut mode :
+	 * 			<ion:language:code [tag="span" class="colored"] />
+	 */
+	public static function tag_language_code(FTL_Binding $tag)
+	{
+		return self::_get_formatted_from_locals($tag, 'lang');
+	}
+
+
+	/**
+	 * Returns the language active class
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	<ion:language>
+	 * 				<li class="lang <ion:active_class />">...</li>
+	 * 			</ion:language>
+	 *
+	 * 			Shortcut mode :
+	 * 			<ion:language:active_class />
+	 *
+	 */
+	public static function tag_language_active_class(FTL_Binding $tag)
+	{
+		return self::_get_from_locals($tag, 'active_class');
+	}
+
+
+	/**
+	 * Displays the nested HTML if the current language is the default one.
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	<ion:language>
+	 * 				<ion:is_default>
+	 * 					This language is the default one
+	 * 				</ion:is_default>
+	 *
+	 * 				<ion:is_default is="false">
+	 * 					This language is not the default one
+	 * 				</ion:is_default>
+	 * 			</ion:language>
+	 *
+	 * 			Shortcut mode :
+	 * 			<ion:language:is_default [is=false]></ion:language:is_default>
+	 *
+	 */
+	public static function tag_language_is_default(FTL_Binding $tag)
+	{
+		$is_default = ($tag->getAttribute('is') === FALSE) ? 0 : 1;
+
+		if ($is_default == intval(self::_get_from_locals($tag, 'def')))
+			return $tag->expand();
+
+		return '';
+	}
+
+
 	/**
 	 * Get the current URL and feed the URL infos
 	 * 

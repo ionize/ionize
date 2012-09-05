@@ -65,8 +65,8 @@ class FTL_Context
 	/**
 	 * Defines a tag.
 	 * 
-	 * @param  string    The name of the tags (nestings are separated with ":")
-	 * @param  callable  The function/method to be called
+	 * @param  string	Name of the tags (nestings are separated with ":")
+	 * @param  String	Method to be called
 	 * @return void
 	 */
 	public function define_tag($name, $callable)
@@ -114,17 +114,22 @@ class FTL_Context
 	 * 
 	 * @param  string  The tag name
 	 * @param  array   The args
-	 * @param  array   The nested block
+	 * @param  array/null   The nested block
+	 *
+	 * @return mixed
+	 *
 	 */
 	public function render_tag($name, $args = array(), $block = null)
 	{
+// log_message('error', 'render_tag : ' . $name. ' ');
+
 		// do we have a compund tag?
 		if(($pos = strpos($name, ':')) != 0)
 		{
 			// split them and parse them separately, as if they are nested
 			$name1 = substr($name, 0, $pos);
 			$name2 = substr($name, $pos + 1);
-
+// log_message('error', '  compund => name1: ' . $name1 . ', name2:'.$name2);
 			return $this->render_tag($name1, array(), array(
 					'name' => $name2,
 					'args' => $args,
@@ -137,11 +142,13 @@ class FTL_Context
 
 			if(is_string($qname) && array_key_exists($qname, $this->definitions))
 			{
+// log_message('error', 'RENDER $qname : ' . $qname);
 				// render
 				return $this->stack($name, $args, $block, $this->definitions[$qname]);
 			}
 			else
 			{
+// log_message('error', 'TAG missing : ' . $name);
 				return $this->tag_missing($name, $args, $block);
 			}
 		}
@@ -156,18 +163,26 @@ class FTL_Context
 	 * @param  array	The tag args
 	 * @param  array 	The nested block
 	 * @param  callable	The function/method to call
+	 *
 	 * @return string
 	 */
 	protected function stack($name, $args, $block, $call)
 	{
+$_func_name=$call;
+if (is_array($_func_name))
+	$_func_name = $_func_name[0].'::'.$_func_name[1];
+log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
+
 		// get previous locals, to let the data "stack"
 		$previous = end($this->tag_binding_stack);
+
 		$previous_locals = $previous == null ? $this->globals : $previous->locals;
-		
+//		$previous_locals = $previous == null ? null : $previous->locals;
+
 		// create the stack and binding
 		$locals = new FTL_VarStack($previous_locals);
 		$binding = new FTL_Binding($this, $locals, $name, $args, $block);
-		
+// log_message('error', print_r(get_object_vars($binding), true));
 		$this->tag_binding_stack[] = $binding;
 		$this->tag_name_stack[]    = $name;
 		
@@ -197,6 +212,7 @@ class FTL_Context
 	 * Makes a qualified guess of the tag definition requested depending on the current nesting.
 	 * 
 	 * @param  string  The name of the tag
+	 *
 	 * @return string
 	 */
 	function qualified_tag_name($name)
@@ -205,7 +221,7 @@ class FTL_Context
 		$path_chunks = array_merge($this->tag_name_stack, array($name));
 		// For literal matches
 		$path = implode(':', $path_chunks);
-		
+// log_message('error', 'qualified_tag_name : ' . $path);
 		// Check if we have a tag or a variable
 		if( ! isset($this->definitions[$path]) && ! isset($this->globals->hash[$name]))
 		{
@@ -264,6 +280,7 @@ class FTL_Context
 	 * @param  string The tag name
 	 * @param  array  The tag parameters
 	 * @param  array  The nested block
+	 *
 	 * @return string Or abort if needed (default)
 	 */
 	public function tag_missing($name, $args = array(), $block = null)
@@ -291,6 +308,16 @@ class FTL_Context
 		return implode(':', $this->tag_name_stack);
 	}
 
+	function set_global($key, $value)
+	{
+		$this->globals->{$key} = $value;
+		return $this;
+	}
+
+	function get_global($key)
+	{
+		return $this->globals->{$key};
+	}
 
 	// --------------------------------------------------------------------
 

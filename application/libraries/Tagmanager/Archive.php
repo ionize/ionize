@@ -106,7 +106,7 @@ class TagManager_Archive extends TagManager
 		// Get the archives infos		
 		$archives = self::$ci->article_model->get_archives_list
 		(
-			array('id_page' => $tag->locals->page['id_page']), 
+			array('id_page' => $tag->locals->_page['id_page']), 
 			Settings::get_lang(),
 			$filter,
 			$with_month,
@@ -139,15 +139,15 @@ class TagManager_Archive extends TagManager
 					$period = lang(strtolower($period));
 
 				$row['period'] = $period . ' ' . $year;
-				$row['url'] = base_url() . $tag->locals->page[$page_url] . '/' . $uri_config['archives'] . '/' . $year . '/' . $month ;
-				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->page[$page_url] . '/' .  $uri_config['archives'] . '/' . $year . '/' . $month ;
+				$row['url'] = base_url() . $tag->locals->_page[$page_url] . '/' . $uri_config['archives'] . '/' . $year . '/' . $month ;
+				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->_page[$page_url] . '/' .  $uri_config['archives'] . '/' . $year . '/' . $month ;
 				$row['active_class'] = ($year.$month == $current_archive) ? $active_class : '';
 			}
 			else
 			{
 				$row['period'] = $year;
-				$row['url'] = base_url() . $tag->locals->page[$page_url] . '/' . $uri_config['archives'] . '/' . $year;
-				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->page[$page_url] . '/' .  $uri_config['archives'] . '/' . $year;
+				$row['url'] = base_url() . $tag->locals->_page[$page_url] . '/' . $uri_config['archives'] . '/' . $year;
+				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->_page[$page_url] . '/' .  $uri_config['archives'] . '/' . $year;
 				$row['active_class'] = ($year == $current_archive) ? $active_class : '';
 			}
 		}

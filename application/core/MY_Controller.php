@@ -236,7 +236,7 @@ class Base_Controller extends MY_Controller
     {
         parent::__construct();
 
-// $this->output->enable_profiler(true);
+ $this->output->enable_profiler(true);
 		
 		// Unlock filtering if admin or editor users is logged in
 //		$this->load->library('connect');
@@ -451,7 +451,7 @@ class Base_Controller extends MY_Controller
 		}
 		
 		// Full page cache ?
-		if (isset($context->globals->page['_cached']))
+		if (isset($context->globals->_page['_cached']))
 		{
 			/*
 			 * Write the full page cache file

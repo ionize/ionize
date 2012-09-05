@@ -44,6 +44,7 @@ class TagManager_Page extends TagManager
 	
 	public static $tag_definitions = array
 	(
+
 		// pages
 		'pages' => 				'tag_pages',
 		'pages:title' => 		'tag_page_title',
@@ -51,7 +52,10 @@ class TagManager_Page extends TagManager
 		'pages:url' => 			'tag_page_url',
 		'pages:content' => 		'tag_page_content',
 
+
 		// Page
+		'page' => 				'tag_page',
+
 		'period' => 			'tag_period',
 		'pagination' =>			'tag_pagination',
 		'absolute_url' =>		'tag_absolute_url',
@@ -62,7 +66,6 @@ class TagManager_Page extends TagManager
 		'next_article' =>		'tag_next_article',
 		'prev_article' =>		'tag_prev_article',
 
-		'page' => 				'tag_page',
 		'id_page' => 			'tag_page_id',
 		'page:name' => 			'tag_page_name',
 		'page:url' => 			'tag_page_url',
@@ -76,7 +79,6 @@ class TagManager_Page extends TagManager
 	);
 
 
-	// ------------------------------------------------------------------------
 
 
 	/**
@@ -99,18 +101,19 @@ class TagManager_Page extends TagManager
 		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
 
 		// Get pages and add them to the context
-		self::$context->globals->pages = Pages::get_pages();
+//		self::$context->globals->pages = Pages::get_pages();
+		self::$context->set_global('pages', Pages::get_pages());
 
 // Pagination URI
 //		$uri_config = self::$ci->config->item('special_uri');
 //		$uri_config = array_flip($uri_config);
 //		self::pagination_uri = $uri_config['pagination'];
 	
-		// Set self::$context->globals->page
+		// Set self::$context->globals->_page
 		self::add_globals();
 
 		// Current page
-		$page = self::$context->globals->page;
+		$page = self::$context->globals->_page;
 
 		if ( ! empty($page['link']))
 		{
@@ -170,10 +173,11 @@ class TagManager_Page extends TagManager
 		parent::add_globals();
 
 		// Get current asked page
-		self::$context->globals->page = self::get_current_page();
+		// self::$context->globals->_page = self::get_current_page();
+		self::$context->set_global('_page', self::get_current_page());
 
 		// Show 404 if no page
-		if(empty(self::$context->globals->page))
+		if(empty(self::$context->globals->_page))
 		{
 			self::set_404();
 		}
@@ -529,7 +533,7 @@ class TagManager_Page extends TagManager
 			die();
 		}
 
-		self::$context->globals->page = self::get_page('404');
+		self::$context->globals->_page = self::get_page('404');
 	}	
 
 
@@ -542,7 +546,7 @@ class TagManager_Page extends TagManager
 	 */
 	public function set_page_data($data)
 	{
-		self::$context->globals->page = array(
+		self::$context->globals->_page = array(
 			'id_page' => ( ! empty($data['id_page'])) ? $data['id_page'] : 0,
 			'view' => ( ! empty($data['view'])) ? $data['view'] : '',
 			'title' => ( ! empty($data['title'])) ? $data['title'] : '',
@@ -597,7 +601,7 @@ class TagManager_Page extends TagManager
 		$in_pages = array();
 
 		// Page from locals
-		$pages =&  $tag->locals->pages;
+		$pages =&  $tag->locals->_pages;
 
 		// Get only articles from autorized pages
 		foreach($pages as $page)
@@ -620,14 +624,17 @@ class TagManager_Page extends TagManager
 		$str = '';
 
 		$id = $tag->getAttribute('id');
-
-		if (strval((int)$id) == (string) $id)
-			$page = self::get_page_by_id($id);
+		if ( is_null($id))
+		{
+			$page = self::$context->globals->_page;
+		}
 		else
-			$page = self::get_page_by_code($id);
-
-		if (empty($page))
-			$page = self::$context->globals->page;
+		{
+			if (strval((int)$id) == (string) $id)
+				$page = self::get_page_by_id($id);
+			else
+				$page = self::get_page_by_code($id);
+		}
 
 		if ( ! empty($page))
 		{
@@ -635,13 +642,12 @@ class TagManager_Page extends TagManager
 			$tag->set('index', 0);
 			$tag->set('count', 1);
 			$str .= $tag->expand();
+			$str = self::wrap($tag, $str);
+
+			// Tag cache
+			self::set_cache($tag, $str);
 		}
-		$output = self::wrap($tag, $str);
-
-		// Tag cache
-		self::set_cache($tag, $output);
-
-		return $output;
+		return $str;
 	}
 
 		/**
@@ -684,7 +690,7 @@ class TagManager_Page extends TagManager
 		}
 		else
 		{
-			$pages = $tag->locals->pages;
+			$pages = $tag->locals->_pages;
 		}
 
 		$count = count($pages);
@@ -692,7 +698,7 @@ class TagManager_Page extends TagManager
 		foreach($pages as $key => $page)
 		{
 			// Render the article
-			$tag->locals->page = $page;
+			$tag->locals->_page = $page;
 			$tag->locals->index = $key;
 			$tag->locals->count = $count;
 			$str .= $tag->expand();
@@ -751,7 +757,7 @@ class TagManager_Page extends TagManager
 	 *
 	function count_articles($tag, $filter)
 	{
-		if ( ! isset($tag->locals->page['nb_articles']))
+		if ( ! isset($tag->locals->_page['nb_articles']))
 		{
 			$nb = 0;
 		
@@ -797,7 +803,7 @@ class TagManager_Page extends TagManager
 				}
 				else
 				{
-					$where = array('id_page'=>$tag->locals->page['id_page']);
+					$where = array('id_page'=>$tag->locals->_page['id_page']);
 				}
 
 				
@@ -826,7 +832,7 @@ class TagManager_Page extends TagManager
 		}
 		else
 		{
-			return $tag->locals->page['nb_articles'];
+			return $tag->locals->_page['nb_articles'];
 		}
 	}
 	 */
@@ -854,7 +860,7 @@ class TagManager_Page extends TagManager
 		{
 			$nb = self::$ci->article_model->count_articles_from_category
 			(
-				array('id_page'=>$tag->locals->page['id_page']),
+				array('id_page'=>$tag->locals->_page['id_page']),
 				$category_name,
 				Settings::get_lang('current'),
 				$filter
@@ -885,7 +891,7 @@ class TagManager_Page extends TagManager
 		if ( ! is_null($year))
 		{
 			$nb = self::$ci->article_model->count_articles_from_archives(
-				array('id_page'=>$tag->locals->page['id_page']),
+				array('id_page'=>$tag->locals->_page['id_page']),
 				$year,
 				$month,
 				Settings::get_lang('current'),
@@ -958,7 +964,7 @@ class TagManager_Page extends TagManager
 	 */
 	public static function tag_absolute_url(FTL_Binding $tag)
 	{
-		return $tag->locals->page['absolute_url'];
+		return $tag->locals->_page['absolute_url'];
 	}
 
 
@@ -996,7 +1002,7 @@ class TagManager_Page extends TagManager
 		$per_page = (isset($tag->attr['per_page']) && is_int( (int) $tag->attr['per_page']) ) ? $tag->attr['per_page'] : FALSE;
 
 		if ($per_page === FALSE)
-			$per_page = (isset($tag->locals->page['pagination']) && $tag->locals->page['pagination'] > 0) ? $tag->locals->page['pagination'] : FALSE;
+			$per_page = (isset($tag->locals->_page['pagination']) && $tag->locals->_page['pagination'] > 0) ? $tag->locals->_page['pagination'] : FALSE;
 
 		// Filter
 		$filter = (isset($tag->attr['filter'])) ? $tag->attr['filter'] : FALSE;
@@ -1042,11 +1048,11 @@ class TagManager_Page extends TagManager
 		
 		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
 		{
-			$base_url = base_url() . Settings::get_lang('current') . '/'. $tag->locals->page['url'] . '/' . $uri_addon . $pagination_uri;
+			$base_url = base_url() . Settings::get_lang('current') . '/'. $tag->locals->_page['url'] . '/' . $uri_addon . $pagination_uri;
 		}
 		else
 		{
-			$base_url = base_url() . $tag->locals->page['url'] . '/' . $uri_addon . $pagination_uri;		
+			$base_url = base_url() . $tag->locals->_page['url'] . '/' . $uri_addon . $pagination_uri;		
 		}
 		
 		/*
@@ -1056,10 +1062,10 @@ class TagManager_Page extends TagManager
 		$id = (isset($tag->attr['id'])) ? ' id="' . $tag->attr['id'] .'" ' : '';
 
 		// Article count :
-		$tag->locals->page['nb_articles'] = self::count_articles($tag, $filter);
+		$tag->locals->_page['nb_articles'] = self::count_articles($tag, $filter);
 
 		// Pagination setup
-		if ($per_page > 0 && $tag->locals->page['nb_articles'] > $per_page)
+		if ($per_page > 0 && $tag->locals->_page['nb_articles'] > $per_page)
 		{
 			// Load CI Pagination Lib
 			isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
@@ -1114,7 +1120,7 @@ class TagManager_Page extends TagManager
 				(
 					'base_url' => $base_url,
 					'per_page' => $per_page,
-					'total_rows' => $tag->locals->page['nb_articles'],
+					'total_rows' => $tag->locals->_page['nb_articles'],
 					'num_links' => 3,
 					'cur_page' => $cur_page,
 					'first_link' => lang('first_link'),			// "First" text : see /theme/your_theme/language/xx/pagination_lang.php
@@ -1128,12 +1134,12 @@ class TagManager_Page extends TagManager
 			self::$ci->pagination->initialize($pagination_config); 
 
 			// Create the links
-			$tag->locals->page['pagination_links'] = self::$ci->pagination->create_links();
+			$tag->locals->_page['pagination_links'] = self::$ci->pagination->create_links();
 
 			// Tag cache
-			self::set_cache($tag, $tag->locals->page['pagination_links']);
+			self::set_cache($tag, $tag->locals->_page['pagination_links']);
 		
-			return $tag->locals->page['pagination_links'];
+			return $tag->locals->_page['pagination_links'];
 		}
 	}
 
@@ -1151,7 +1157,7 @@ class TagManager_Page extends TagManager
     {
 		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
 		
-		$page = $tag->locals->page;
+		$page = $tag->locals->_page;
 		
         // Is the asked title from another page ?
         $from = (isset($tag->attr['from'])) ? $tag->attr['from'] : FALSE ;
@@ -1161,7 +1167,7 @@ class TagManager_Page extends TagManager
             $up = (isset($tag->attr['up'])) ? $tag->attr['up'] : 1 ;
             
             // Get the Breadcrumbs array
-            $breacrumbs = self::get_breadcrumb_array($tag->locals->page, $tag->locals->pages, Settings::get_lang() );
+            $breacrumbs = self::get_breadcrumb_array($tag->locals->_page, $tag->locals->_pages, Settings::get_lang() );
             
             // Filter appearing pages
             $breacrumbs = array_values(array_filter($breacrumbs, array(__CLASS__, '_filter_appearing_pages')));
@@ -1183,11 +1189,11 @@ class TagManager_Page extends TagManager
 	}
 */
 	
-	public static function tag_page_id(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->page['id_page']); }
-	public static function tag_page_name(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->page['name']); }
-    public static function tag_page_url(FTL_Binding $tag)	{ return self::wrap($tag, $tag->locals->page['url']); }
-	public static function tag_page_subtitle(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->page['subtitle']); }
-	public static function tag_page_date(FTL_Binding $tag) { return self::format_date($tag, $tag->locals->page['date']); }
+	public static function tag_page_id(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->_page['id_page']); }
+	public static function tag_page_name(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->_page['name']); }
+    public static function tag_page_url(FTL_Binding $tag)	{ return self::wrap($tag, $tag->locals->_page['absolute_url']); }
+	public static function tag_page_subtitle(FTL_Binding $tag) { return self::wrap($tag, $tag->locals->_page['subtitle']); }
+	public static function tag_page_date(FTL_Binding $tag) { return self::format_date($tag, $tag->locals->_page['date']); }
 
 
 	// ------------------------------------------------------------------------
@@ -1214,7 +1220,7 @@ class TagManager_Page extends TagManager
             $up = (isset($tag->attr['up'])) ? $tag->attr['up'] : 1 ;
             
             // Get the Breadcrumbs array
-            $breacrumbs = self::get_breadcrumb_array($tag->locals->page, $tag->locals->pages, Settings::get_lang() );
+            $breacrumbs = self::get_breadcrumb_array($tag->locals->_page, $tag->locals->_pages, Settings::get_lang() );
             
             // Filter appearing pages
             $breacrumbs = array_values(array_filter($breacrumbs, array(__CLASS__, '_filter_appearing_pages')));
@@ -1228,7 +1234,7 @@ class TagManager_Page extends TagManager
             }
         }
         
-        return self::wrap($tag, $tag->locals->page['title']);
+        return self::wrap($tag, $tag->locals->_page['title']);
     }
     
 
@@ -1262,15 +1268,15 @@ class TagManager_Page extends TagManager
 		}
 		
 		// First, try to get the meta title
-		if ( $meta_title == '' && ! empty($tag->locals->page['meta_title']) )
+		if ( $meta_title == '' && ! empty($tag->locals->_page['meta_title']) )
 		{
-			$meta_title = $tag->locals->page['meta_title'];
+			$meta_title = $tag->locals->_page['meta_title'];
 		}
 
 		// If no meta title, get the title as alternative
-		if ( $meta_title == '' && ! empty($tag->locals->page['title']) )
+		if ( $meta_title == '' && ! empty($tag->locals->_page['title']) )
 		{
-			$meta_title = $tag->locals->page['title'];		
+			$meta_title = $tag->locals->_page['title'];		
 		}
 		
 		// Remove HTML tags from meta title
@@ -1307,7 +1313,7 @@ class TagManager_Page extends TagManager
 	 */
 	public static function tag_page_medias(FTL_Binding $tag)
 	{
-		$medias = ( ! empty($tag->locals->page['medias'])) ? $tag->locals->page['medias'] : FALSE;
+		$medias = ( ! empty($tag->locals->_page['medias'])) ? $tag->locals->_page['medias'] : FALSE;
 		
 		if ( $medias !== FALSE)
 		{
@@ -1322,7 +1328,7 @@ class TagManager_Page extends TagManager
 	
 	public static function tag_page_content(FTL_Binding $tag)
 	{
-		$content = ( ! empty($tag->locals->page['content'])) ? $tag->locals->page['content'] : '';
+		$content = ( ! empty($tag->locals->_page['content'])) ? $tag->locals->_page['content'] : '';
 
 		return $content;
 	}
@@ -1358,7 +1364,7 @@ class TagManager_Page extends TagManager
 
 		$level = isset($tag->attr['level']) ? $tag->attr['level'] : 0;
 		
-		$current_page =& $tag->locals->page;
+		$current_page =& $tag->locals->_page;
 		
 		// Order the pages.		
 		$ordered_pages = array();
@@ -1505,11 +1511,11 @@ class TagManager_Page extends TagManager
 		$starting_level = (isset($tag->attr['starting_level']) ) ? $tag->attr['starting_level'] : FALSE;
 
 		// Current page ID
-		$current_page_id = $tag->globals->page['id_page'];
+		$current_page_id = $tag->globals->_page['id_page'];
 		
 		// Get the Breadcrumbs array
 		$lang = Settings::get_lang();
-		$breacrumbs = self::get_breadcrumb_array($tag->locals->page, $tag->locals->pages, $lang );
+		$breacrumbs = self::get_breadcrumb_array($tag->locals->_page, $tag->locals->_pages, $lang );
 		
 		// Filter appearing pages
 		$breacrumbs = array_values(array_filter($breacrumbs, array(__CLASS__, '_filter_appearing_pages')));

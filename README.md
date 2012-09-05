@@ -1,7 +1,22 @@
-Ionize CMS
-====================
+Ionize CMS : Tag test
+=======================
 
-Current version : 0.9.7
+Version : 0.9.8
+
+### Tag test branch
+
+To use this branch :
+
+* Install Ionize
+* Replace your DB content with the one in the file : tag_test_database.sql
+* Choose the theme "ftl"
+* Edit the theme view : /themes/ftl/page.php
+
+
+
+
+
+### About Ionize
 
 Ionize is a free professional and natively multilingual PHP CMS, developped with user experience in mind.
 

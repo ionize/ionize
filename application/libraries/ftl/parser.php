@@ -83,6 +83,7 @@ class FTL_Parser{
 	public function parse($text)
 	{
 		$tree = $this->generate_tree($text);
+
 		return $this->render($tree);
 	}
 	
@@ -184,7 +185,8 @@ class FTL_Parser{
 			list(, $pre_match, $is_end_tag, $tag, $args, $is_individual, $string) = $matches;
 			
 			$this->current[] = $pre_match;
-			
+// log_message('error', 'pre_parse tag : ' . $tag);
+
 			// Is it an individual tag?
 			if( ! empty($is_individual))
 			{

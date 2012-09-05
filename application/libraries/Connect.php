@@ -46,7 +46,7 @@ class Connect {
 	 * @notice Not yet implemented
 	 * @var bool
 	 */
-	public $verify_user = true;
+	public $verify_user = TRUE;
 	
 	/**
 	 * If to redirect the user to a page which previously
@@ -62,7 +62,7 @@ class Connect {
 	 * 
 	 * @var bool
 	 */
-	public $login_redirect_to_blocked = true;
+	public $login_redirect_to_blocked = TRUE;
 
 	/**
 	 * Sets how Connect will act in the event of a blocked user.
@@ -77,7 +77,7 @@ class Connect {
 	 * @var array
 	 */
 	public $remember_me = array(
-							'on' 			=> true, 
+							'on' 			=> TRUE,
 							'duration' 		=> 604800, // 7 days
 							'cookie_name' 	=> 'rememberconnect');
 	/**
@@ -173,6 +173,14 @@ class Connect {
 	protected $current_user = FALSE;
 
 	/**
+	 * Local cache for groups
+	 * (avoids multiple DB queries)
+	 *
+	 * @var array
+	 */
+	protected $groups = array();
+
+	/**
 	 * Contains the Connect instance.
 	 *
 	 * @var Connect
@@ -235,7 +243,7 @@ class Connect {
 		$user_pk = $this->model->users_pk;
 
 		// if a user is already logged in, load him
-		if($this->session->userdata($user_pk) !== false)
+		if($this->session->userdata($user_pk) !== FALSE)
 		{
 			$this->current_user = $this->model->find_user(array($user_pk => $this->session->userdata($user_pk)));
 		}
@@ -250,7 +258,7 @@ class Connect {
 			$str = substr($data, 14, -14);
 			
 			// match the hash
-			if($hash == base64_encode(sha1($str . strrev($this->encryption_key), true)))
+			if($hash == base64_encode(sha1($str . strrev($this->encryption_key), TRUE)))
 			{
 				// decrypt
 				$array = unserialize($CI->encrypt->decode($str));
@@ -345,7 +353,7 @@ class Connect {
 	 * @param bool			If to remember the user, to auto-login next time
 	 * @return bool
 	 */
-	public function login($identification, $password = false, $remember = false)
+	public function login($identification, $password = FALSE, $remember = FALSE)
 	{
 		// if we have no password and an array, the password may be in the array
 		if($password === FALSE && is_array($identification))
@@ -384,7 +392,7 @@ class Connect {
 				
 				$this->error = $this->set_error_message('connect_blocked', (is_numeric($this->time_left()) ? 'in '.$this->time_left().' seconds.' : 'later.'));
 				
-				return FALSE;		
+				return FALSE;
 			}
 		}
 		
@@ -443,7 +451,7 @@ class Connect {
 	 * @param  string  uri string to redirect to (Optional)
 	 * @return void
 	 */
-	public function logout($redirect = false)
+	public function logout($redirect = FALSE)
 	{
 		$user_pk = $this->model->users_pk;
 
@@ -493,7 +501,7 @@ class Connect {
 					 'expiry_date' => mktime() + $this->remember_me['duration']);
 
 		$str = $CI->encrypt->encode(serialize($str));
-		$hash = base64_encode(sha1($str . strrev($this->encryption_key), true));
+		$hash = base64_encode(sha1($str . strrev($this->encryption_key), TRUE));
 		
 		$cookie = substr($hash, 0, 14) .$str. substr($hash, -14);
 		
@@ -578,7 +586,7 @@ class Connect {
 	 * 				  continue even if access is denied
 	 * @return bool
 	 */
-	public function restrict($cond = 'users', $return = false)
+	public function restrict($cond = 'users', $return = FALSE)
 	{
 		$CI =& get_instance();
 
@@ -607,7 +615,7 @@ class Connect {
 			{
 				foreach((Array)$cond['ip'] as $to_match)
 				{
-					if(strpos($to_match, '*') === false)
+					if(strpos($to_match, '*') === FALSE)
 						continue;
 
 					$segs = explode('.', $to_match);
@@ -650,10 +658,14 @@ class Connect {
 		// Check for the usual visitors...
 		if(isset($cond['group']))
 		{
-			// fetch all groups
-			$q = $CI->db->where_in('slug', (Array) $cond['group'])->get($this->model->groups_table);
+			if (empty($this->groups))
+			{
+				// fetch all groups
+				$q = $CI->db->where_in('slug', (Array) $cond['group'])->get($this->model->groups_table);
+				$this->groups = $q->result_array();
+			}
 
-			foreach($q->result_array() as $group)
+			foreach($this->groups as $group)
 			{
 				if($group && ($user['group'][$this->model->groups_pk] == $group[$this->model->groups_pk] OR $user['group']['level'] > $group['level']))
 				{
@@ -688,7 +700,7 @@ class Connect {
 	 */
 	public function is($cond = 'users')
 	{
-		return $this->restrict($cond, true);
+		return $this->restrict($cond, TRUE);
 	}
 
 
@@ -709,7 +721,7 @@ class Connect {
 	 */
     public function is_not($cond = 'users')
 	{
-		return ( ! $this->restrict($cond, true));
+		return ( ! $this->restrict($cond, TRUE));
 	}
 
 
@@ -939,14 +951,14 @@ class Connect {
 	 * @param mixed The condition needed, default: a user is required
 	 *              This parameter is takes the same data as Connect:require()
 	 */
-	public function deny($required_cond = false)
+	public function deny($required_cond = FALSE)
 	{
 		$CI =& get_instance();
 	
 		switch($this->on_restrict)
 		{
 			case 'redirect':
-				if($this->restrict_type_redirect['flash_msg'] != false)
+				if($this->restrict_type_redirect['flash_msg'] != FALSE)
 				{
 					if($this->restrict_type_redirect['flash_use_lang'])
 					{
@@ -1062,7 +1074,7 @@ class Connect {
 	 **/	
 	public function get_salt()
 	{
-		return substr(md5(uniqid(rand(), true)), 0, $this->salt_length);
+		return substr(md5(uniqid(rand(), TRUE)), 0, $this->salt_length);
 	}
 
 
