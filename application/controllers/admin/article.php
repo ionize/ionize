@@ -574,6 +574,7 @@ class Article extends MY_admin
 
 				// Merge article's data with template
 				$this->template = array_merge($this->template, $article);
+				$this->article_model->feed_lang_template($id_article, $this->template);
 
 				// Linked pages list
 				$this->template['pages_list'] = $this->article_model->get_pages_list($id_article);

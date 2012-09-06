@@ -76,41 +76,35 @@ class TagManager_Navigation extends TagManager
 
 		// Helper / No helper ?
 		// $tag->attr['no_helper'] : Will disapear in next versions... replaced by $tag->attr['helper']
-		$helper = ( is_null($tag->getAttribute('helper'))) ? 'navigation' : $tag->getAttribute('helper');
+		$helper = $tag->getAttribute('helper', 'navigation');
 		
 		// Get the asked lang if any
 		$lang = $tag->getAttribute('lang');
 
 		// Menu : Main menu by default
-		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
+		$menu_name = $tag->getAttribute('menu', 'main');
 		$id_menu = 1;
-		foreach($tag->globals->menus as $menu)
+		foreach(self::registry('menus') as $menu)
 		{
 			if ($menu_name == $menu['name'])
 				$id_menu = $menu['id_menu'];
 		}
 		
 		// Navigation level. FALSE if not defined
-		$asked_level = isset($tag->attr['level']) ? $tag->attr['level'] : FALSE;
+		$asked_level = $tag->getAttribute('level', FALSE);
 
 		// Display hidden navigation elements ?
-		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
-
+		$display_hidden = $tag->getAttribute('display_hidden', FALSE);
 
 		// Current page
-		$current_page = $tag->get('_page');
+		$current_page = self::registry('page');
 
 		// Attribute : active CSS class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
+		$active_class = $tag->getAttribute('active_class', 'active');
 		if (strpos($active_class, 'class') !== FALSE) $active_class= str_replace('\'', '"', $active_class);
 		
-
-		/*
-		 * Getting menu data
-		 *
-		 */
 		// Pages : Current lang OR asked lang code pages.
-		$global_pages = ( ! is_null($lang) && Settings::get_lang() != $lang) ? Pages::get_pages($lang) : $tag->globals->pages;
+		$global_pages = ( ! is_null($lang) && Settings::get_lang() != $lang) ? Pages::get_pages($lang) : self::registry('pages');
 
 		// Add the active class key
 		$id_current_page = ( ! empty($current_page['id_page'])) ? $current_page['id_page'] : FALSE;
@@ -121,7 +115,7 @@ class TagManager_Navigation extends TagManager
 		{
 			// Add the active_class key
 			$page['active_class'] = in_array($page['id_page'], $active_pages) ? $active_class : '';
-			$page['active'] = in_array($page['id_page'], $active_pages) ? TRUE : FALSE;
+			$page['is_active'] = in_array($page['id_page'], $active_pages) ? TRUE : FALSE;
 			$page['id_navigation'] = $page['id_page'];
 		}
 
@@ -145,11 +139,11 @@ class TagManager_Navigation extends TagManager
 			foreach($global_pages as $p)
 			{
 				// Child pages of id_subnav
-				if ($p['id_parent'] == $tag->locals->_page['id_subnav'])
+				if ($p['id_parent'] == $current_page['id_subnav'])
 					$pages[] = $p;
 
 				// Parent page is the id_subnav page
-				if ($p['id_page'] == $tag->locals->_page['id_subnav'])
+				if ($p['id_page'] == $current_page['id_subnav'])
 					$parent_page = $p;
 			}
 		}
@@ -161,7 +155,6 @@ class TagManager_Navigation extends TagManager
 		// Get the parent page from one level upper
 		if ($asked_level > 0)
 		{
-			// $parent_pages = array_filter($global_pages, create_function('$row','return $row["level"] == "'. ($asked_level-1) .'";'));
 			$parent_pages = array();
 			foreach($global_pages as $p)
 			{
@@ -221,12 +214,10 @@ class TagManager_Navigation extends TagManager
 		{
 			foreach($pages as $index => $p)
 			{
-				// $tag->set('_page', $p);
-				// $tag->locals->_page = $p;
 				$tag->set('navigation', $p);
-				$tag->set('active', $p['active']);
+				$tag->set('is_active', $p['is_active']);
 
-				$tag->locals->index = $index;
+				$tag->set('index', $index);
 				$str .= $tag->expand();
 			}
 
@@ -249,7 +240,7 @@ class TagManager_Navigation extends TagManager
 	{
 		$is_active = ($tag->getAttribute('is') === FALSE) ? FALSE : TRUE;
 
-		if ($is_active == $tag->get('active'))
+		if ($is_active == $tag->get('is_active'))
 			return $tag->expand();
 
 		return '';
@@ -284,18 +275,24 @@ class TagManager_Navigation extends TagManager
 
 	/**
 	 * Return a tree navigation based on the given helper.
+	 * One helper is needed to use this tag.
+	 * The default helper is /application/helpers/navigation_helper->get_tree_navigation()
+	 * If you wish to change the
 	 *
 	 * @param	FTL_Binding object
 	 *
-	 * @return string
+	 * @return 	string
+	 *
+	 * @usage	<ion:tree_navigation [helper="navigation::your_helper_method"] />
 	 *
 	 */
 	public static function tag_tree_navigation(FTL_Binding $tag)
 	{
 		// Current page
-		$page = $tag->locals->_page;
-	
+		$page = self::registry('page');
+
 		// If 404 : Put empty vars, so the menu will prints out without errors
+		/*
 		if ( !isset($page['id_page']))
 		{
 			$page = array(
@@ -303,45 +300,47 @@ class TagManager_Navigation extends TagManager
 				'id_parent' => ''
 			);
 		}
+		*/
 
 		// Menu : Main menu by default
-		$menu_name = isset($tag->attr['menu']) ? $tag->attr['menu'] : 'main';
+		$menu_name = $tag->getAttribute('menu', 'main');
 		$id_menu = 1;
-		foreach($tag->globals->menus as $menu)
+
+		foreach(self::registry('menus') as $menu)
 		{
 			if ($menu_name == $menu['name'])
 			{
 				$id_menu = $menu['id_menu'];
+				break;
 			}	
 		}
 		
-		// If set, attribute level, else parent page level + 1
-		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : 0 ;
-//		$from_level = (isset($tag->attr['level']) ) ? $tag->attr['level'] : FALSE ;
+		// Attribute level, else parent page level + 1
+		$from_level = $tag->getAttribute('level', 0);
 
-		// If set, depth
-		$depth = (isset($tag->attr['depth']) ) ? $tag->attr['depth'] : -1;
-		
+		// Depth
+		$depth = $tag->getAttribute('depth', -1);
+
 		// Attribute : active class, first_class, last_class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
-		$first_class = (isset($tag->attr['first_class']) ) ? $tag->attr['first_class'] : '';
-		$last_class = (isset($tag->attr['last_class']) ) ? $tag->attr['last_class'] : '';
+		$active_class = $tag->getAttribute('active_class', 'active');
+		$first_class = $tag->getAttribute('first_class', '');
+		$last_class = $tag->getAttribute('last_class', '');
 
 		// Display hidden navigation elements ?
-		$display_hidden = isset($tag->attr['display_hidden']) ? TRUE : FALSE;
+		$display_hidden = $tag->getAttribute('display_hidden', FALSE);
 
 		// Includes articles as menu elements
-		$with_articles = isset($tag->attr['articles']) ? TRUE : FALSE;
+		$with_articles = $tag->getAttribute('articles', FALSE);
 
 		// Attribute : HTML Tree container ID & class attribute
-		$id = (isset($tag->attr['id']) ) ? $tag->attr['id'] : NULL ;
+		$id = $tag->getAttribute('id');
 		if (strpos($id, 'id') !== FALSE) $id= str_replace('\'', '"', $id);
 
-		$class = (isset($tag->attr['class']) ) ? $tag->attr['class'] : NULL ;
+		$class = $tag->getAttribute('class');
 		if (strpos($active_class, 'class') !== FALSE) $active_class= str_replace('\'', '"', $active_class);
 		
 		// Attribute : Helper to use to print out the tree navigation
-		$helper = (isset($tag->attr['helper']) && $tag->attr['helper'] != '' ) ? $tag->attr['helper'] : 'navigation';
+		$helper =  $tag->getAttribute('helper', 'navigation');
 		
 		// Get helper method
 		$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_tree_navigation';
@@ -350,7 +349,8 @@ class TagManager_Navigation extends TagManager
 		self::$ci->load->helper($helper);
 
 		// Page from locals : By ref because of active_class definition
-		$pages =&  $tag->locals->_pages;
+		// $pages =  $tag->locals->_pages;
+		$pages = self::registry('pages');
 
 		/* Get the reference parent page ID
 		 * Note : this is depending on the whished level.
@@ -372,13 +372,10 @@ class TagManager_Navigation extends TagManager
 		 *		   |_ design			2
 		 *				|_ offer		3		<- We are here.
 		 *				|_ portfolio	3	
-		 *
 		 */
 		$page_level = (isset($page['level'])) ? $page['level'] : 0;
-		$parent_page = array();
 
 		// Asked Level exists
-	 
 		$parent_page = array(
 			'id_page' => ($from_level > 0) ? $page['id_page'] : 0,
 			'id_parent' => isset($page['id_parent']) ? $page['id_parent'] : 0
@@ -405,7 +402,6 @@ class TagManager_Navigation extends TagManager
 		// Find out the wished parent page 
 		while ($page_level >= $from_level && $from_level > 0)
 		{
-			// $potential_parent_page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $parent_page['id_parent'] .'";')));
 			$potential_parent_page = array();
 			foreach($pages as $p)
 			{
@@ -415,7 +411,6 @@ class TagManager_Navigation extends TagManager
 					break;
 				}
 			}
-			// if (isset($potential_parent_page[0]))
 			if ( ! empty($potential_parent_page))
 			{
 				$parent_page = $potential_parent_page;
@@ -439,7 +434,6 @@ class TagManager_Navigation extends TagManager
 		if ($display_hidden === FALSE)
 			$nav_pages = array_values(array_filter($pages, array('TagManager_Page', '_filter_appearing_pages')));
 
-		// $nav_pages = array_filter($nav_pages, create_function('$row','return ($row["id_menu"] == "'. $id_menu .'") ;'));
 		$final_nav_pages = $nav_pages_list = array();
 		foreach($nav_pages as $k => $np)
 		{
@@ -474,6 +468,7 @@ class TagManager_Navigation extends TagManager
 		// Return the helper function
 		if (function_exists($helper_function))
 			return call_user_func($helper_function, $tree, $id, $class, $first_class, $last_class);
+
 	}
 
 
@@ -513,16 +508,31 @@ class TagManager_Navigation extends TagManager
 
 		if (intval($has_url) == 1)
 			return self::_get_from_locals($tag, 'absolute_url');
-		else
-			return '#';
+
+		return '#';
 	}
 
 
+	/**
+	 * Builds and return the href attribute
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
 	public static function tag_navigation_href(FTL_Binding $tag)
 	{
+		$has_url = self::_get_from_locals($tag, 'has_url');
 
+		if (intval($has_url) == 1)
+		{
+			$str = 'href="' . self::_get_from_locals($tag, 'absolute_url') . '"';
+
+			return $str;
+		}
+
+		return '';
 	}
-
 
 
 	/**
@@ -540,11 +550,12 @@ class TagManager_Navigation extends TagManager
 	public static function tag_languages(FTL_Binding $tag)
 	{
 		$languages = Settings::get_online_languages();
+		$page = self::registry('page');
 
 //		$infos = self::get_url_infos();
 		
 		// Current active language class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
+		$active_class = $tag->getAttribute('active_class', 'active');
 
 		// helper
 		$helper = $tag->getAttribute('helper');
@@ -554,7 +565,7 @@ class TagManager_Navigation extends TagManager
 		foreach($languages as &$lang)
 		{
 			// Lang send to helper
-			$lang['absolute_url'] = $tag->locals->_page['absolute_urls'][$lang['lang']];
+			$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
 			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
 			$lang['active'] = $lang['lang'] == Settings::get_lang('current');
 			$lang['id'] = $lang['lang'];
@@ -636,12 +647,14 @@ class TagManager_Navigation extends TagManager
 	{
 		if (is_null(self::$_current_language))
 		{
+			$page = self::registry('page');
+
 			foreach(Settings::get_languages() as $language)
 			{
 				if ($language['lang'] == Settings::get_lang())
 				{
 					$language['id'] = $language['lang'];
-					$language['absolute_url'] = $tag->locals->_page['absolute_urls'][$language['lang']];
+					$language['absolute_url'] = $page['absolute_urls'][$language['lang']];
 					self::$_current_language = $language;
 					break;
 				}

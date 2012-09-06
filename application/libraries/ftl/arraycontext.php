@@ -19,6 +19,28 @@
 class FTL_ArrayContext extends FTL_Context
 {
 	/**
+	 * The registry container.
+	 *
+	 * @var FTL_VarStack
+	 */
+	protected $_registry;
+
+
+	/**
+	 * Init.
+	 *
+	 * Creates a var_stack.
+	 */
+	function __construct()
+	{
+		$this->_registry = new FTL_VarStack();
+
+		parent::__construct();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Sets the data to be used by this array context.
 	 * 
 	 * <code>
@@ -56,7 +78,42 @@ class FTL_ArrayContext extends FTL_Context
 	{
 		$this->globals->hash = array_merge($data, $this->globals->hash);
 	}
-	
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Register data to the registry
+	 * Used to store data shared by tags of the context.
+	 * (Tags method must not use "globals" to store shared data)
+	 *
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return FTL_ArrayContext
+	 *
+	 */
+	function register($key, $value)
+	{
+		$this->_registry->{$key} = $value;
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Gets one data from the registry
+	 *
+	 * @param $key
+	 *
+	 * @return mixed
+	 */
+	function registry($key)
+	{
+		return $this->_registry->{$key};
+	}
+
+	// --------------------------------------------------------------------
+
 	/**
 	 * This searches the vars for the tag and renders it if it is present.
 	 * 
@@ -66,7 +123,7 @@ class FTL_ArrayContext extends FTL_Context
 	 *	Block tags:
 	 *		use_globals - If to use the globals instead of the local vars
 	 */
-	public function tag_missing($name, $args = array(), $block = null)
+	public function tag_missing($name, $args = array(), $block = NULL)
 	{
 		if(isset($args['use_globals']) && strtolower($args['use_globals']) == 'yes')
 		{
@@ -85,7 +142,7 @@ class FTL_ArrayContext extends FTL_Context
 		{
 			// get previous locals
 			$previous = end($this->tag_binding_stack);
-			$previous_locals = $previous == null ? $this->globals : $previous->locals;
+			$previous_locals = $previous == NULL ? $this->globals : $previous->locals;
 			
 			// do we have a matching key?
 			if(isset($previous_locals->$name))
@@ -145,7 +202,7 @@ class FTL_ArrayContext extends FTL_Context
 					$param = array($to_render);
 					
 					// get parameter (zero isn't acceptable)
-					if(($start = strpos($call, '[')) != false && ($end = strpos($call, ']')) != false)
+					if(($start = strpos($call, '[')) != FALSE && ($end = strpos($call, ']')) != FALSE)
 					{
 						// we've got a parameter, extract it
 						$param[] = substr($call, $start + 1, $end - $start - 1);
@@ -154,7 +211,6 @@ class FTL_ArrayContext extends FTL_Context
 					
 					// TODO: Let it have a list of valid callbacks to validate against
 					// to prevent calls to potentially harmful methods
-					
 					if(is_callable($call))
 					{
 						$to_render = call_user_func_array($call, $param);
@@ -162,7 +218,6 @@ class FTL_ArrayContext extends FTL_Context
 					// just ignore if it doesn't exist
 				}
 			}
-			
 			return $to_render;
 		}
 	}

@@ -130,19 +130,31 @@ class FTL_Binding
 	{
 		return $this->context->tag_missing($this->name, $this->attr, $this->block);
 	}
-	
+
+	/**
+	 * Return all the attributes of the tag
+	 *
+	 * @return array
+	 *
+	 */
+	public function getAttributes()
+	{
+		return $this->attr;
+	}
+
 	/**
 	 * Returns one attribute value
 	 * returns NULL if the attribute isn't set.
 	 *
 	 * @param	String		key
+	 * @param	mixed		Value to return if the attribute is not set. NULL by default.
 	 * @return	mixed		NULL is the attribute isn't set, TRUE if the attribute is 'true', FALSE if the attribute is 'false'
 	 *
 	 */
-	public function getAttribute($attr)
+	public function getAttribute($attr, $return_if_null = NULL)
 	{
 		if ( ! isset($this->attr[$attr]))
-			return NULL;
+			return $return_if_null;
 		
 		if (isset($this->attr[$attr]) && strtolower($this->attr[$attr]) == 'true')
 			return TRUE;

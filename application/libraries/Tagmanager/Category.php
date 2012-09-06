@@ -89,7 +89,7 @@ class TagManager_Category extends TagManager
 	{
 		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
 
-		$from_page = ( ! empty($tag->attr['from'])) ? TagManager_Page::get_page_by_id($tag->attr['from']) : self::$context->globals->_page;
+		$from_page = ( ! empty($tag->attr['from'])) ? TagManager_Page::get_page_by_id($tag->attr['from']) : self::$context->registry('page');
 		
 		$uri_segments = self::$uri_segments;
 		$category_uri = array_pop(array_slice($uri_segments, -1));
@@ -136,7 +136,7 @@ class TagManager_Category extends TagManager
 		if (($str = self::get_cache($tag)) !== FALSE)
 			return $str;
 
-		$from_page = ( ! empty($tag->attr['from'])) ? TagManager_Page::get_page_by_id($tag->attr['from']) : self::$context->globals->_page;
+		$from_page = ( ! empty($tag->attr['from'])) ? TagManager_Page::get_page_by_id($tag->attr['from']) : self::$context->registry('page');
 	
 		// Store of all categories
 		if (self::$categories === FALSE)

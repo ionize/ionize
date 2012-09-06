@@ -272,10 +272,63 @@
 					-->
 
 
+		<!-- SEO -->
+		<h3 class="toggler"><?= lang('ionize_title_seo') ?></h3>
+
+		<div class="element">
+			<!-- Meta_Description -->
+			<h4 class="help" title="<?= lang('ionize_help_article_meta_description') ?>"><?= lang('ionize_label_meta_description') ?></h4>
+
+			<div class="small optionInputTab">
+				<div id="metaDescriptionTab" class="mainTabs small gray">
+					<ul class="tab-menu">
+						<?php foreach(Settings::get_languages() as $language) :?>
+						<li><a><?= ucfirst($language['lang']) ?></a></li>
+						<?php endforeach ;?>
+					</ul>
+					<div class="clear"></div>
+				</div>
+				<div id="metaDescriptionTabContent" >
+
+					<?php foreach(Settings::get_languages() as $language) :?>
+					<div class="tabcontent">
+						<textarea id="meta_description_<?= $language['lang'] ?>" name="meta_description_<?= $language['lang'] ?>" class="autogrow"><?= ${$language['lang']}['meta_description'] ?></textarea>
+					</div>
+					<?php endforeach ;?>
+
+				</div>
+			</div>
+
+
+			<!-- Meta_Keywords -->
+			<h4 class="help" title="<?= lang('ionize_help_article_meta_keywords') ?>"><?= lang('ionize_label_meta_keywords') ?></h4>
+			<div class="small optionInputTab">
+				<div id="metaKeywordsTab" class="mainTabs small gray">
+					<ul class="tab-menu">
+						<?php foreach(Settings::get_languages() as $language) :?>
+						<li><a><?= ucfirst($language['lang']) ?></a></li>
+						<?php endforeach ;?>
+					</ul>
+					<div class="clear"></div>
+				</div>
+				<div id="metaKeywordsTabContent" >
+
+					<?php foreach(Settings::get_languages() as $language) :?>
+					<div class="tabcontent">
+						<textarea id="meta_keywords_<?= $language['lang'] ?>" name="meta_keywords_<?= $language['lang'] ?>" class="autogrow"><?= ${$language['lang']}['meta_keywords'] ?></textarea>
+					</div>
+					<?php endforeach ;?>
+
+				</div>
+			</div>
+
+		</div>
+
+
 		<!-- Copy Content -->
 		<?php if( ! empty($id_article)) :?>
 
-		<h3 class="toggler toggler-options"><?= lang('ionize_title_content') ?></h3>
+		<h3 class="toggler toggler-options"><?= lang('ionize_title_operation') ?></h3>
 
 		<div class="element element-options">
 
@@ -367,6 +420,8 @@
 		ION.addParentPageEvents(item);
 	});
 
+	new TabSwapper({tabsContainer: 'metaDescriptionTab', sectionsContainer: 'metaDescriptionTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaDescriptionTab'	});
+	new TabSwapper({tabsContainer: 'metaKeywordsTab', sectionsContainer: 'metaKeywordsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaKeywordsTab' });
 
 	// Copy content from one lang to another
 	if ($('copy_lang'))

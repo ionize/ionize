@@ -19,6 +19,6 @@
 <ion:page id="3">
 	<ion:articles>
 		<h3>Article ID : <ion:article:id/></h3>
-		<p>Article title : <ion:title/></p>
+		<p>Article title : <ion:article:title/></p>
 	</ion:articles>
 </ion:page>

@@ -9,24 +9,34 @@
 
 <?php
 /*
+ * Views :
+ *
 // Page ID
-view="test_page_id"
+test_page_id
 
 // Article, Article ID
-view="test_article_id_1"
-view="test_article_id_2"
+test_article_id_1
+test_article_id_2
 
 // Get
-view="test_tag_get"
+test_tag_get
 
 // Navigation
-view="test_tag_navigation"
-view="test_tag_languages_menu"
+test_tag_navigation
+test_tag_languages_menu
+test_tag_tree_navigation
+
+// TODO :
+test_site_tags : 			keywords, meta, config item, etc. in all lang
+test_tag_media_page :		Medias from pages
+test_tag_media_article :	Medias from articles
+
+test_tag_medias_module : 	Medias within one module
 
 
 */
 ?>
-<ion:partial view="test_tag_navigation" />
+<ion:partial view="test_site_tags" />
 
 
 

@@ -73,7 +73,7 @@ class FTL_Context
 	{
 		$this->definitions[$name] = $callable;
 		
-		if(strpos($name, ':') === false)
+		if(strpos($name, ':') === FALSE)
 		{
 			// No nesting, no need for a reverse mapping tree
 			return;
@@ -119,7 +119,7 @@ class FTL_Context
 	 * @return mixed
 	 *
 	 */
-	public function render_tag($name, $args = array(), $block = null)
+	public function render_tag($name, $args = array(), $block = NULL)
 	{
 // log_message('error', 'render_tag : ' . $name. ' ');
 
@@ -176,7 +176,7 @@ log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
 		// get previous locals, to let the data "stack"
 		$previous = end($this->tag_binding_stack);
 
-		$previous_locals = $previous == null ? $this->globals : $previous->locals;
+		$previous_locals = $previous == NULL ? $this->globals : $previous->locals;
 //		$previous_locals = $previous == null ? null : $previous->locals;
 
 		// create the stack and binding
@@ -283,7 +283,7 @@ log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
 	 *
 	 * @return string Or abort if needed (default)
 	 */
-	public function tag_missing($name, $args = array(), $block = null)
+	public function tag_missing($name, $args = array(), $block = NULL)
 	{
 		// trigger_error('Name: "'.$name.'", scope: "'.$this->current_nesting().'".');
 		// show_error('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
@@ -308,12 +308,33 @@ log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
 		return implode(':', $this->tag_name_stack);
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set one data as global.
+	 * The tag corresponding to the key will be usable from every context
+	 *
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return FTL_Context
+	 */
 	function set_global($key, $value)
 	{
 		$this->globals->{$key} = $value;
 		return $this;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Return one global key value
+	 *
+	 * @param $key
+	 *
+	 * @return mixed
+	 *
+	 */
 	function get_global($key)
 	{
 		return $this->globals->{$key};

@@ -1,5 +1,5 @@
 
-<h1>&lt;ion:navigation /></h1>
+<h1>&lt;ion:tree_navigation /></h1>
 
 <pre>
 &lt;ion:navigation helper="false" tag="ul">
@@ -13,12 +13,6 @@
 
 <h3>Result</h3>
 
-<ion:navigation helper="false" tag="ul">
-	<li>
-		<a <ion:href /> >
-			<ion:id /> : <ion:url /><ion:is_active> <span class="red">(is active)</span></ion:is_active>
-		</a>
-	</li>
-</ion:navigation>
+<ion:tree_navigation />
 
 

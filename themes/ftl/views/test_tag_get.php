@@ -29,7 +29,7 @@
 &lt;ion:page id="3">
 	&lt;ion:articles>
 		&lt;ul>
-			&lt;li>&lt;ion:article:get key="extend1" />&lt;/li>
+			&lt;li>For Article ID &lt;ion:article:id/> : &lt;ion:article:get key="extend1" />&lt;/li>
 		&lt;/ul>
 	&lt;/ion:articles>
 &lt;/ion:page>
@@ -40,7 +40,7 @@
 <ion:page id="3">
 	<ion:articles>
 		<ul>
-			<li><ion:article:get key="extend1" /></li>
+			<li>For Article ID <ion:article:id/> : <ion:article:get key="extend1" /></li>
 		</ul>
 	</ion:articles>
 </ion:page>

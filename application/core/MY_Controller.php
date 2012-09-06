@@ -590,6 +590,7 @@ class MY_Admin extends MY_Controller
 			
 			if (is_file($lang_file))
 			{
+				$lang = array();
 				include $lang_file;
 				$this->lang->language = array_merge($this->lang->language, $lang);
 				unset($lang);

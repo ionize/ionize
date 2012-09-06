@@ -29,8 +29,8 @@ class TagManager_Element extends TagManager
 	public static $tag_definitions = array
 	(
 		'elements' => 'tag_elements',
-		'elements:index' => 'tag_element_index',
-		'elements:count' => 'tag_element_count',
+//		'elements:index' => 'tag_element_index',
+//		'elements:count' => 'tag_element_count',
 		'elements:field' => 'tag_element_field',
 		'elements:fields' => 'tag_element_fields',
 		'elements:attribute' => 'tag_element_attribute',
@@ -82,30 +82,34 @@ class TagManager_Element extends TagManager
 	 * Returns 
 	 *
 	 */
-	public static function tag_elements($tag)
+	public static function tag_elements(FTL_Binding $tag)
 	{
 		// Returned string
 		$str = '';
 		
 		// Wished element definition name
-		$element_definition_name = (!empty($tag->attr['type'])) ? $tag->attr['type'] : FALSE ;
+		$element_definition_name = $tag->getAttribute('type');
 
 		// Limit ?
 		$limit = (!empty($tag->attr['limit'])) ? (int)$tag->attr['limit'] : FALSE ;
 		
 		// Parent. can be set or not
-		$parent = (!empty($tag->attr['from'])) ? $tag->attr['from'] : FALSE ;
+		$parent = $tag->getAttribute('from');
 		$parent_name = NULL;
 		$parent_object = NULL;
 		$id_parent = NULL;
 
-		if ($element_definition_name !== FALSE)
+		if (!is_null($element_definition_name))
 		{
 			// Current page parent
-			if ($parent == FALSE)
+			if (is_null($parent))
 			{
 				$obj_tag = NULL;
-				
+
+				/*
+				 * @TODO : Replace this and use : self::_get_nesting_array()
+				 *
+				 */
 				// Get the tag path
 				$tag_path = explode(':', $tag->nesting());
 

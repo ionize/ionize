@@ -923,6 +923,8 @@ $lang['ionize_help_article_context'] = 'Edit the article\'s page context data';
 $lang['ionize_help_missing_translated_content'] = 'Some language content translation is missing';
 $lang['ionize_help_orphan_article'] = 'Orphan article. Not linked to any page.';
 $lang['ionize_help_article_filter'] = 'Filter articles (not fully implemented)';
+$lang['ionize_help_article_meta_description'] = 'Replace the parent description';
+$lang['ionize_help_article_meta_keywords'] = 'Replace the parent keywords';
 
 $lang['ionize_button_duplicate_article'] = 'Duplicate article';
 
