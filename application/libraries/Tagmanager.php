@@ -820,17 +820,22 @@ class TagManager
 	 */
 	public static function tag_if(FTL_Binding $tag)
 	{
-		$field = $tag->getAttribute('key');
-		$condition = $tag->getAttribute('condition');
+		$keys = $tag->getAttribute('key');
+		$expression = $tag->getAttribute('condition');
 
 		$result = FALSE;
 		self::$trigger_else = 0;
 
-		if (!is_null($field) && !is_null($condition))
+		if (!is_null($keys) && !is_null($expression))
 		{
-			$value = $tag->getValue($field);
-			$test = str_replace($field, $value, $condition);
-			$return = @eval("\$result = (".$test.") ? TRUE : FALSE;");
+			$keys = explode('|', $keys);
+			foreach($keys as $key)
+			{
+				$value = $tag->getValue($key);
+				$expression = str_replace($key, $value, $expression);
+			}
+
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
 
 			if ($return === NULL)
 			{
@@ -843,7 +848,7 @@ class TagManager
 			}
 			else
 			{
-				return self::show_tag_error('if', 'Condition incorrect: if (' .$test. ')');
+				return self::show_tag_error('if', 'Condition incorrect: if (' .$expression. ')');
 			}
 		}
 		return '';
