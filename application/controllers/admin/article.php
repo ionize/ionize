@@ -610,6 +610,31 @@ class Article extends MY_admin
 
 	// ------------------------------------------------------------------------
 
+	/**
+	 * Updates the page name
+	 *
+	 */
+	public function update_name()
+	{
+		$id_page = $this->input->post('id_page');
+		$id_article = $this->input->post('id');
+		$value = $this->input->post('value');
+
+		if ($id_article && !empty($value))
+		{
+			$result = $this->article_model->update(array('id_article' => $id_article), array('name' => $value));
+
+			if ($result)
+			{
+				$this->_reload_panel($id_page, $id_article);
+			}
+		}
+		$this->response();
+	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	public function update_field()
 	{

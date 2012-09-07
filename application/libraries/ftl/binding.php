@@ -337,7 +337,7 @@ class FTL_Binding
 	{
 		$this->context->set_data($data);
 	}
-	
+
 	/**
 	 * Parses a template fragment as a nested block.
 	 * 

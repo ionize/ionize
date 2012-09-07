@@ -824,23 +824,26 @@ class TagManager
 		$condition = $tag->getAttribute('condition');
 
 		$result = FALSE;
+		self::$trigger_else = 0;
 
 		if (!is_null($field) && !is_null($condition))
 		{
 			$value = $tag->getValue($field);
+			$test = str_replace($field, $value, $condition);
+			$return = @eval("\$result = (".$test.") ? TRUE : FALSE;");
 
-log_message('error', 'IF value : ' . $value);
-log_message('error', 'IF $condition : ' . $condition);
-			$condition = str_replace($field, $value, $condition);
-
-			// eval("\$result = ('".$value."'".$condition.") ? TRUE : FALSE;");
-			eval("\$result = (".$condition.") ? TRUE : FALSE;");
-
-			if ($result)
-				return $tag->expand();
+			if ($return === NULL)
+			{
+				if ($result)
+					return $tag->expand();
+				else
+				{
+					self::$trigger_else++;
+				}
+			}
 			else
 			{
-				self::$trigger_else++;
+				return self::show_tag_error('if', 'Condition incorrect: if (' .$test. ')');
 			}
 		}
 		return '';
@@ -859,6 +862,7 @@ log_message('error', 'IF $condition : ' . $condition);
 	 */
 	public function tag_else(FTL_Binding $tag)
 	{
+		log_message('error', 'trigger else : ' . self::$trigger_else);
 		if(self::$trigger_else > 0)
 		{
 			self::$trigger_else--;
@@ -1871,8 +1875,6 @@ log_message('error', 'IF $condition : ' . $condition);
 	 */
 	protected static function show_tag_error($tag_name, $message, $template = 'error_tag')
 	{
-		$message = '<p>'.implode('</p><p>', ( ! is_array($message)) ? array($message) : $message).'</p>';
-
 		ob_start();
 		include(APPPATH.'errors/'.$template.EXT);
 		$buffer = ob_get_contents();

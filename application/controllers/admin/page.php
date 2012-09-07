@@ -587,6 +587,30 @@ class Page extends MY_admin
 
 	// ------------------------------------------------------------------------
 
+	/**
+	 * Updates the page name
+	 *
+	 */
+	public function update_name()
+	{
+		$id_page = $this->input->post('id');
+		$value = $this->input->post('value');
+
+		if ($id_page && !empty($value))
+		{
+			$result = $this->page_model->update(array('id_page' => $id_page), array('name' => $value));
+
+			if ($result)
+			{
+				$this->_reload_panel($id_page);
+			}
+		}
+		$this->response();
+	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Updates one page's field

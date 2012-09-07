@@ -18,7 +18,6 @@
 	<input type="hidden" name="rel" id="rel" value="<?= $id_page ?>.<?= $id_article ?>" />
 	<input type="hidden" name="created" value="<?= $created ?>" />
 	<input type="hidden" name="author" value="<?= $author ?>" />
-	<input type="hidden" name="name" id="name" value="<?= $name ?>" />
 	<input type="hidden" name="main_parent" id="main_parent" value="<?= $main_parent ?>" />
 	<input type="hidden" name="has_url" id="has_url" value="<?= $has_url ?>" />
 
@@ -27,6 +26,18 @@
 	<div class="info">
 
 		<?php if ($id_article != '') :?>
+
+			<?php if ($this->connect->is('super-admins')) :?>
+
+				<dl class="compact small">
+					<dt><label><?= lang('ionize_label_name') ?></label></dt>
+					<dd>
+						<a class="edit dynamic-input" data-id="<?= $id_article ?>" data-name="name" data-id_page="<?= $id_page ?>" data-url="article/update_name"><?= $name ?></a>
+					</dd>
+				</dl>
+
+			<?php endif ;?>
+
 
 
 		<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
@@ -367,7 +378,7 @@
 
 		</div>
 
-			<?php endif ;?>
+		<?php endif ;?>
 
 
 		<?php if ( ! empty($id_article)) :?>
@@ -477,12 +488,18 @@
 			});
 		}
 
-	// Link to page or article or what else...
+		// Link to page or article or what else...
 		if ($('linkContainer'))
 		{
 			ION.HTML(admin_url + 'article/get_link', {'id_page': '<?= $id_page ?>', 'id_article': '<?= $id_article ?>'}, {'update': 'linkContainer'});
 		}
 
-		<?php endif; ?>
+		/**
+		 * Name Edit
+		 *
+		 */
+		ION.initInputChange('#articleOptionsForm .dynamic-input');
+
+	<?php endif; ?>
 
 </script>

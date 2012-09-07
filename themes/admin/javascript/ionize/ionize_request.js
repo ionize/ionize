@@ -69,7 +69,64 @@ ION.append({
 			}
 		});
 	},
-	
+
+
+	initInputChange: function(selectors, updateSelectors)
+	{
+		$$(selectors).each(function(item, idx)
+		{
+			var id = item.getProperty('data-id');
+
+			// input name
+			var name = item.getProperty('data-name');
+
+			var url = item.getProperty('data-url');
+
+			var input = new Element('input', {'id':id, 'type': 'text', 'class':'inputtext', 'name':name, 'value': item.get('text')});
+			input.addEvent('keypress', function(event)
+			{
+				if (event.key == 'enter')
+				{
+					event.stop();
+					input.fireEvent('blur');
+					return false;
+				}
+			});
+
+
+
+			var post = {};
+
+			Array.each(item.attributes, function(item, idx)
+			{
+				if ((item.name).substring(0,4) == 'data')
+					post[(item.name).substring(5)] = item.value;
+			});
+			post['selector'] = updateSelectors;
+
+			input.addEvent('blur', function(e)
+			{
+				var value = (input.value).trim();
+				if (value != '' && value != item.get('text'))
+				{
+					post.value = value;
+					item.set('text', value);
+					ION.sendData(url, post);
+				}
+				input.setProperty('value', value);
+				input.hide();
+				item.show();
+			});
+
+			input.inject(item, 'before').hide();
+
+			item.addEvent('click', function(e)
+			{
+				input.show().focus();
+				item.hide();
+			});
+		});
+	},
 	
 	/**
 	 * Returns the JSON Request options object

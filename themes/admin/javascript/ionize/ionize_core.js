@@ -111,8 +111,6 @@ ION.append({
 			Cookie.write(name, list.join(','));
 		}
 	}
-	
-
 });
 
 

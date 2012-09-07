@@ -59,7 +59,7 @@
 			<p class="red">Youpiii ! </p>
 		</ion:article:if>
 		<ion:article:else>
-			<p>...</p>
+			<p>... no youpi ...</p>
 		</ion:article:else>
 	</ion:articles>
 </ion:page>
