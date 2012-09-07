@@ -24,6 +24,17 @@
 
 		<?php if ($id_page != '') :?>
 
+			<?php if ($this->connect->is('super-admins')) :?>
+
+				<dl class="compact small">
+					<dt><label for="name"><?= lang('ionize_label_name') ?></label></dt>
+					<dd>
+						<a class="edit name left" data-name="name" data-url="'page/update_field'"><?= $name ?></a>
+					</dd>
+				</dl>
+
+			<?php endif ;?>
+
 			<dl class="compact small">
 				<dt><label><?= lang('ionize_label_status') ?></label></dt>
 				<dd>
@@ -631,5 +642,37 @@
 
 		ION.sendData(url, data);
 	});
+
+	/**
+	 * Name Edit
+	 *
+	 */
+	$$('#pageOptionsForm .edit').each(function(item, idx)
+	{
+		var id = item.getProperty('data-id');
+		var name = item.getProperty('data-name');
+		var url = item.getProperty('data-url');
+
+		var input = new Element('input', {'id':id, 'type': 'text', 'class':'inputtext', 'name':name, 'value': item.get('text')});
+
+		input.addEvent('blur', function(e)
+		{
+			if (input.value != '')
+			{
+				ION.sendData(url, {'id':id, 'field': 'name', 'value':input.value, selector:'.page a.name[rel='+id+']' });
+			}
+			input.hide();
+			item.show();
+		});
+
+		input.inject(item, 'before').hide();
+
+		item.addEvent('click', function(e)
+		{
+			input.show().focus();
+			item.hide();
+		});
+	});
+
 
 </script>

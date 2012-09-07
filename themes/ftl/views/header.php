@@ -25,6 +25,27 @@
 		.red {
 			color:#b00;
 		}
+		li a.active:after{
+			content:" (is active)";
+			color: #b00;
+		}
+		ul.boxes {
+			list-style: none;
+			margin: 0;padding: 0;
+			overflow: hidden;
+		}
+		ul.boxes li {
+			float: left;
+			margin: 0 10px 10px 0;
+			padding:5px;
+			background-color: #f3f3f3;
+		}
+		ul.boxes li.first {
+			float:none;
+		}
+		ul.boxes li.last {
+			border-right: 5px solid #b00;
+		}
 	</style>
 </head>
 

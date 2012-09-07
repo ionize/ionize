@@ -36,11 +36,12 @@ class Medias
 
 
 	/**
-	 * @param $media
-	 * @param $conds
-	 * @param $fail_src_path
+	 * @param array
+	 * @param array
+	 * @param string
 	 *
 	 * @return string
+	 *
 	 */
 	public function get_src($media, $conds, $fail_picture_path=NULL)
 	{
@@ -70,7 +71,7 @@ class Medias
 
 			$size_error = FALSE;
 			$background_error = FALSE;
-			$thumb_folder = self::_get_thumb_folder($conds);
+			$thumb_folder = $this->get_thumb_folder($conds);
 
 			switch($settings['method'])
 			{
@@ -787,6 +788,7 @@ class Medias
 			}
 		}
 
+		$mimes_ionize = array();
 		include(APPPATH.'/config/mimes_ionize.php');
 
 		$extension = substr(strrchr($no_source_picture_file,'.'),1);
@@ -808,7 +810,7 @@ class Medias
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 
-		$size_folder = self::_get_thumb_folder($conds);
+		$size_folder = $this->get_thumb_folder($conds);
 
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
@@ -819,7 +821,7 @@ class Medias
 	}
 
 
-	private static function _get_thumb_folder($conds)
+	public function get_thumb_folder($conds)
 	{
 		if(isset($conds['square']) && $conds['square'] == TRUE)
 		{
@@ -871,7 +873,7 @@ class Medias
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 
-		$size_folder = self::_get_thumb_folder($conds);
+		$size_folder = $this->get_thumb_folder($conds);
 
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 

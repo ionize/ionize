@@ -9,9 +9,14 @@
 
 <?php
 /*
- * Views :
+ * Replace the called view with one of these test views
  *
-// Page ID
+
+// Site / Others
+test_site_tags : 			keywords, meta, config item, etc. in all lang
+test_tag_if :				Conditional tag
+
+// Page
 test_page_id
 
 // Article, Article ID
@@ -26,17 +31,17 @@ test_tag_navigation
 test_tag_languages_menu
 test_tag_tree_navigation
 
-// TODO :
-test_site_tags : 			keywords, meta, config item, etc. in all lang
+// Medias
 test_tag_media_page :		Medias from pages
-test_tag_media_article :	Medias from articles
+test_tag_media_articles :	Medias from articles
 
+// TODO :
 test_tag_medias_module : 	Medias within one module
 
 
 */
 ?>
-<ion:partial view="test_site_tags" />
+<ion:partial view="test_tag_if" />
 
 
 

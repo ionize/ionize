@@ -122,14 +122,14 @@ class FTL_Context
 	public function render_tag($name, $args = array(), $block = NULL)
 	{
 // log_message('error', 'render_tag : ' . $name. ' ');
-
+//log_message('error', print_r($args, true));
+//log_message('error', print_r($block, true));
 		// do we have a compund tag?
 		if(($pos = strpos($name, ':')) != 0)
 		{
 			// split them and parse them separately, as if they are nested
 			$name1 = substr($name, 0, $pos);
 			$name2 = substr($name, $pos + 1);
-// log_message('error', '  compund => name1: ' . $name1 . ', name2:'.$name2);
 			return $this->render_tag($name1, array(), array(
 					'name' => $name2,
 					'args' => $args,
@@ -168,6 +168,7 @@ class FTL_Context
 	 */
 	protected function stack($name, $args, $block, $call)
 	{
+
 $_func_name=$call;
 if (is_array($_func_name))
 	$_func_name = $_func_name[0].'::'.$_func_name[1];
@@ -175,14 +176,11 @@ log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
 
 		// get previous locals, to let the data "stack"
 		$previous = end($this->tag_binding_stack);
-
 		$previous_locals = $previous == NULL ? $this->globals : $previous->locals;
-//		$previous_locals = $previous == null ? null : $previous->locals;
 
 		// create the stack and binding
 		$locals = new FTL_VarStack($previous_locals);
 		$binding = new FTL_Binding($this, $locals, $name, $args, $block);
-// log_message('error', print_r(get_object_vars($binding), true));
 		$this->tag_binding_stack[] = $binding;
 		$this->tag_name_stack[]    = $name;
 		
@@ -349,4 +347,4 @@ log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
 }
 
 /* End of file context.php */
-/* Location: ./application/libraries/xt_parser/context.php */
+/* Location: ./application/libraries/ftl/context.php */

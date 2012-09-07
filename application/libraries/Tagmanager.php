@@ -65,12 +65,16 @@ class TagManager
 	public static $tag_definitions = array
 	(
 		// Generic tags
+		// Common objects have at least these values, in DB or set through the tag method
 		'id' => 			'tag_id',
 		'url' => 			'tag_url',
 		'get' => 			'tag_get',
-		'index' => 			'tag_index',
-		'count' => 			'tag_count',
-		'title' => 			'tag_title',
+		'index' => 			'tag_simple_value',
+		'count' => 			'tag_simple_value',
+		'name' => 			'tag_simple_value',
+		'title' => 			'tag_simple_value',
+		'subtitle' => 		'tag_simple_value',
+		'date' => 			'tag_simple_date',
 
 		// System / Core tags
 //		'field' =>				'tag_field',
@@ -80,7 +84,6 @@ class TagManager
 		'partial' => 			'tag_partial',
 		'widget' =>				'tag_widget',
 		'translation' => 		'tag_translation',
-		'name' => 				'tag_name',
 		'site_title' => 		'tag_site_title',
 		'meta_title' => 		'tag_meta_title',
 		'meta_keywords' => 		'tag_meta_keywords',
@@ -90,7 +93,6 @@ class TagManager
 		'if' =>					'tag_if',
 		'else' =>				'tag_else',
 		'set' =>				'tag_set',
-//		'get' =>				'tag_get',
 		'jslang' =>				'tag_jslang',
 		'browser' =>			'tag_browser',
 		
@@ -98,6 +100,44 @@ class TagManager
 
 
 	// TESTS ------------------------------------------------------------------------
+
+	/**
+	 * Returns the "name" value if set
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	Can be used with several tags.
+	 * 			<ion:language>
+	 * 				<ion:name [tag="span" class="colored"] />
+	 * 			</ion:language>
+	 *
+	 * 			Shortcut mode :
+	 * 			<ion:language:name [tag="span" class="colored"] />
+	 */
+	public static function tag_simple_value(FTL_Binding $tag)
+	{
+		$value = $tag->getValue();
+
+		if ( ! is_null($value))
+			return self::wrap($tag, $value);
+
+		return $value;
+	}
+
+	public static function tag_simple_date(FTL_Binding $tag)
+	{
+		$value = $tag->getValue();
+
+		if ( ! is_null($tag->getAttribute('format')))
+			$value = self::format_date($tag, $value);
+
+		if ( ! is_null($value))
+			return self::wrap($tag, $value);
+
+		return $value;
+	}
 
 	/**
 	 * Returns the object ID
@@ -109,36 +149,14 @@ class TagManager
 	 */
 	public static function tag_id(FTL_Binding $tag)
 	{
-		$parents = self::_get_nesting_array($tag);
+		$value = $tag->getValue();
 
-		foreach($parents as $parent)
-		{
-			$obj = $tag->get($parent);
+		// Try with the DB key name
+		if (is_null($value))
+			$value = $tag->getValue('id_' . $tag->getParentName());
 
-			if (isset($obj['id']))
-				return $obj['id'];
-
-			if ( ! is_null($obj) && isset($obj['id_'.$parent]))
-				return $obj['id_'.$parent];
-		}
-		return '';
+		return $value;
 	}
-
-	public static function tag_index(FTL_Binding $tag)
-	{
-		return self::_get_from_locals($tag, 'index');
-	}
-
-	public static function tag_count(FTL_Binding $tag)
-	{
-		return self::_get_from_locals($tag, 'count');
-	}
-
-	public static function tag_title(FTL_Binding $tag)
-	{
-		return self::_get_formatted_from_locals($tag, 'title');
-	}
-
 
 	/**
 	 * Returns the object absolute's URL
@@ -150,7 +168,13 @@ class TagManager
 	 */
 	public static function tag_url(FTL_Binding $tag)
 	{
-		return self::_get_from_locals($tag, 'absolute_url');
+		$value = $tag->getValue('absolute_url');
+
+		// Fall down to URL
+		if (is_null($value))
+			$value = $tag->getValue();
+
+		return $value;
 	}
 
 
@@ -166,7 +190,7 @@ class TagManager
 	public static function tag_get(FTL_Binding $tag)
 	{
 		$key = $tag->getAttribute('key');
-		$value = self::_get_formatted_from_locals($tag, $key);
+		$value = self::get_formatted_from_tag_data($tag, $key);
 
 		// @TODO
 		// if (is_null($value) && !is_null($tag->getAttribute('or')))
@@ -184,9 +208,9 @@ class TagManager
 	 * @return null|string
 	 *
 	 */
-	protected static function _get_formatted_from_locals(FTL_Binding $tag, $key=NULL)
+	public static function get_formatted_from_tag_data(FTL_Binding $tag, $key=NULL)
 	{
-		$value = self::_get_from_locals($tag, $key);
+		$value = self::get_from_tag_data($tag, $key);
 
 		// If "format" attribute is defined, suppose the field is a date ...
 		if ( ! is_null($tag->getAttribute('format')))
@@ -200,8 +224,17 @@ class TagManager
 
 
 	/**
-	 * Return one key from the direct parent tag or NULL if no data
+	 * Return one key from the tag data array or NULL if no data
+	 * The tag is supposed to have one data array, which has the same
+	 * name than his direct parent tag.
+	 *
+	 * Note :
+	 *		To set a data array from one tag method, use $tag->set('data_array_name', $value);
+	 *
 	 * Example :
+	 * In this example, we call the tag "get"
+	 * Its parent is "page"
+	 * page is supposed to have one data array called "page"
 	 * <ion:page:get key="id_page" /> : returns the field "id_page" from parent "page"
 	 *
 	 * @param FTL_Binding $tag
@@ -209,66 +242,18 @@ class TagManager
 	 *
 	 * @return null
 	 */
-	protected static function _get_from_locals(FTL_Binding $tag, $key=NULL)
+	public static function get_from_tag_data(FTL_Binding $tag, $key=NULL)
 	{
-		$value = NULL;
+		$value = $tag->getValue($key);
 
-		$parents = self::_get_nesting_array($tag);
-
-		foreach($parents as $parent)
-		{
-			$obj = $tag->get($parent);
-
-// DEBUG
-if ($parent == 'article' && $key == 'absolute_url')
-{
-	log_message('error', print_r($obj, true));
-}
-// /DEBUG
-
-			if ( ! is_null($obj) )
-			{
-				if (isset($obj[$key]))
-				{
-					$value = $obj[$key];
-					break;
-				}
-
-				// Try Extend fields
-				if ( isset($obj[self::$extend_field_prefix.$key]))
-				{
-					$value = $obj[self::$extend_field_prefix.$key];
-					break;
-				}
-			}
-		}
+		if (is_null($value))
+			$value = $tag->getValue(self::$extend_field_prefix.$key);
 
 		return $value;
 	}
 
 
-	/**
-	 * Returns the tag parents array, start with the closest parent
-	 *
-	 * @param FTL_Binding $tag
-	 *
-	 * @return array
-	 *
-	 */
-	protected static function _get_nesting_array(FTL_Binding $tag)
-	{
-// log_message('error', 'NESTING : ' . $tag->nesting());
-
-		$parents = array_reverse(explode(':', $tag->nesting()));
-		array_shift($parents);
-		return $parents;
-	}
-
-
 	// /TESTS ------------------------------------------------------------------------
-
-
-	// ------------------------------------------------------------------------
 
 
 	/**
@@ -835,27 +820,27 @@ if ($parent == 'article' && $key == 'absolute_url')
 	 */
 	public static function tag_if(FTL_Binding $tag)
 	{
-		$field = $tag->getAttribute('field');
+		$field = $tag->getAttribute('key');
 		$condition = $tag->getAttribute('condition');
 
 		$result = FALSE;
 
 		if (!is_null($field) && !is_null($condition))
 		{
-			$obj_name = self::get_parent_tag($tag);
+			$value = $tag->getValue($field);
 
-			if ( ! empty($tag->locals->{$obj_name}[$field] ))
+log_message('error', 'IF value : ' . $value);
+log_message('error', 'IF $condition : ' . $condition);
+			$condition = str_replace($field, $value, $condition);
+
+			// eval("\$result = ('".$value."'".$condition.") ? TRUE : FALSE;");
+			eval("\$result = (".$condition.") ? TRUE : FALSE;");
+
+			if ($result)
+				return $tag->expand();
+			else
 			{
-				$value = $tag->locals->{$obj_name}[$field];
-
-				eval("\$result = ('".$value."'".$condition.") ? TRUE : FALSE;");
-				
-				if ($result)
-					return $tag->expand();
-				else
-				{
-					self::$trigger_else++;
-				}
+				self::$trigger_else++;
 			}
 		}
 		return '';
@@ -956,16 +941,13 @@ if ($parent == 'article' && $key == 'absolute_url')
 	 */
 	public static function tag_base_url(FTL_Binding $tag)
 	{
-		// don't display the lang URL (by default)
-		$lang_url = FALSE;
-
 		// Set all languages online if connected as editor or more
 		if( Connect()->is('editors', TRUE))
 		{
 			Settings::set_all_languages_online();
 		}
 
-		if (isset($tag->attr['lang']) && strtolower($tag->attr['lang']) == 'true')
+		if ($tag->getAttribute('lang') == TRUE)
 		{
 			if (count(Settings::get_online_languages()) > 1 )
 			{
@@ -1279,7 +1261,8 @@ if ($parent == 'article' && $key == 'absolute_url')
 	 * Loads a partial view from a FTL tag
 	 * Callback function linked to the tag <ion:partial />
 	 * 
-	 * @param	FTL_Binding		The binded tag to parse
+	 * @param	FTL_Binding
+	 * @return 	string
 	 *
 	 */
 	public static function tag_partial(FTL_Binding $tag)
@@ -1293,7 +1276,7 @@ if ($parent == 'article' && $key == 'absolute_url')
 		{
 			if( $tag->getAttribute('php') == TRUE)
 			{
-				$data = ( ! is_null($tag->getAttribute('data'))) ? $tag->getAttribute('data') : array();
+				$data = $tag->getAttribute('data', array());
 				return self::$ci->load->view($view, $data, TRUE);
 			}
 			else
@@ -1316,7 +1299,9 @@ if ($parent == 'article' && $key == 'absolute_url')
 	 * Loads a widget
 	 * Callback function linked to the tag <ion:widget />
 	 * 
-	 * @param	FTL_Binding		The binded tag to parse
+	 * @param	FTL_Binding
+	 *
+	 * @return	string
 	 *
 	 */
 	public static function tag_widget(FTL_Binding $tag)
@@ -1373,7 +1358,10 @@ if ($parent == 'article' && $key == 'absolute_url')
 	/**
 	 * Return a JSON object of all translation items and one "Lang" object which gives you access
 	 * to the translations through "set" and "get" functions. 
-	 * 
+	 *
+	 * @param	FTL_Binding
+	 * @return 	string
+	 *
 	 * @usage	Put this tag in the header / footer of your view : 
 	 *			<ion:jslang [framework="jQuery" object="Lang"] />
 	 *
@@ -1387,18 +1375,17 @@ if ($parent == 'article' && $key == 'absolute_url')
 	 *				$('my_div').set('text', my_text);
 	 *			</script>
 	 *
-	 *
 	 */
 	public static function tag_jslang(FTL_Binding $tag)
 	{
 		// Returned Object name
-		$object = ( ! is_null($tag->getAttribute('object'))) ? $tag->getAttribute('object') : 'Lang' ;
+		$object = $tag->getAttribute('object', 'Lang');
 
 		// Files from where load the langs
 		$files = ( ! is_null($tag->getAttribute('files'))) ? explode(',', $tag->getAttribute('files')) : array(Theme::get_theme());
 		
 		// JS framework
-		$fm = ( ! is_null($tag->getAttribute('framework'))) ? $tag->getAttribute('framework') : 'jQuery' ;
+		$fm = $tag->getAttribute('framework', 'jQuery');
 		
 		// Returned language array
 		$translations = array();
@@ -1525,23 +1512,6 @@ if ($parent == 'article' && $key == 'absolute_url')
 
 
 	/**
-	 * Shared tags callback functions
-	 *
-	 * @param	FTL_Binding
-	 *
-	 * @return 	string
-	 *
-	 */
-	public static function tag_name(FTL_Binding $tag)
-	{
-		return self::_get_from_locals($tag, 'name');
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * Returns the website title
 	 * 
 	 * @param  FTL_Binding
@@ -1575,7 +1545,8 @@ if ($parent == 'article' && $key == 'absolute_url')
 		return Settings::get('site_title');
 	}
 
-		/**
+
+	/**
 	 * Returns the local meta keywords if found, otherwise the global ones.
 	 * 
 	 * @param  FTL_Binding
@@ -1672,9 +1643,8 @@ if ($parent == 'article' && $key == 'absolute_url')
 		$value = $tag->getAttribute('value');
 		$is = $tag->getAttribute('is');
 		
-		$return = $tag->getAttribute('return');
-		$return = ( ! empty($return)) ? TRUE : FALSE ;
-	
+		$return = $tag->getAttribute('return') == TRUE ? TRUE : FALSE;
+
 		$result = NULL;
 		
 		if ( ! is_null($method))
@@ -1712,11 +1682,11 @@ if ($parent == 'article' && $key == 'absolute_url')
 	{
 		$open_tag = $close_tag = '';
 
-		$html_tag = self::get_attribute($tag, 'tag');
-		$class = self::get_attribute($tag, 'class');
-		$id = self::get_attribute($tag, 'id');
-		$prefix = self::get_attribute($tag, 'prefix', '');
-		$suffix = self::get_attribute($tag, 'suffix', '');
+		$html_tag = $tag->getAttribute('tag', FALSE);
+		$class = $tag->getAttribute('class', '');
+		$id = $tag->getAttribute('id', '');
+		$prefix = $tag->getAttribute('prefix', '');
+		$suffix = $tag->getAttribute('suffix', '');
 
 		if ( ! empty($class)) $class = ' class="'.$class.'"';
 		if ( ! empty($id)) $id = ' id="'.$id.'"';
@@ -1798,7 +1768,6 @@ if ($parent == 'article' && $key == 'absolute_url')
 	/**
 	 * Return the parent tag name or 'page' if not found
 	 *
-	 */
 	protected static function get_parent_tag(FTL_Binding $tag)
 	{
 		$tag_name = 'page';
@@ -1822,6 +1791,7 @@ if ($parent == 'article' && $key == 'absolute_url')
 		
 		return $tag_name;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------

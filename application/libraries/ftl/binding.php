@@ -55,7 +55,13 @@ class FTL_Binding
 	 * @var array|string
 	 */
 	public $block;
-	
+
+
+	protected $parent_name = NULL;
+
+	protected $parents = array();
+
+
 	/**
 	 * Constructor
 	 * 
@@ -142,6 +148,11 @@ class FTL_Binding
 		return $this->attr;
 	}
 
+	public function getStack()
+	{
+		return $this->context->get_binding_stack();
+	}
+
 	/**
 	 * Returns one attribute value
 	 * returns NULL if the attribute isn't set.
@@ -177,7 +188,103 @@ class FTL_Binding
 
 		return $this;
 	}
-	
+
+
+	/**
+	 * Return the current FTL_Binding parent
+	 * If no name is given, return the very first parent.
+	 *
+	 * @param string/null
+	 *
+	 * @return FTL_Binding
+	 *
+	 */
+	public function getParent($parent_name = NULL)
+	{
+		$stack = $this->getStack();
+
+		if (is_null($parent_name))
+		{
+			$parent_name = $this->getParentName();
+			if ( ! isset($this->parents[$parent_name]))
+			{
+				array_pop($stack);
+				$this->parents[$parent_name] = end($stack);
+			}
+		}
+		else
+		{
+			if ( ! isset($this->parents[$parent_name]))
+			{
+				foreach($stack as $binding)
+				{
+					if ($binding->name == $parent_name)
+					{
+						$this->parents[$parent_name] = $binding;
+						break;
+					}
+				}
+				if (!isset($this->parents[$parent_name]))
+					$this->parents[$parent_name] = NULL;
+			}
+		}
+		return $this->parents[$parent_name];
+	}
+
+
+	public function getParentName()
+	{
+		if (is_null($this->parent_name))
+		{
+			$parents = array_reverse(explode(':', $this->nesting()));
+			array_shift($parents);
+			$this->parent_name = array_shift($parents);
+		}
+		return $this->parent_name;
+	}
+
+	/**
+	 * Return the expected value from the data array of the tag.
+	 * The data array has the same name than the tag's parent tag
+	 * The key, if not set, it supposed to be the current tag name.
+	 *
+	 * Example :
+	 * 		<t:user:name />
+	 *
+	 * The callback function of the tag "user" is supposed to set one data
+	 * array called "user" to the tag :
+	 * $tag->set('user', array('name'=>'Josh', 'group'=>'admin');
+	 *
+	 * the callback function of the tag "name" returns the name value like this :
+	 * return $tag->getValue();
+	 *
+	 *
+	 * @param null
+	 * @param null
+	 *
+	 * @return null
+	 */
+	public function getValue($key = NULL, $data_array_name = NULL)
+	{
+		if (is_null($key))
+			$key = $this->name;
+
+		if (is_null($data_array_name))
+			$data_array_name = $this->getParentName();
+
+		$data_array = $this->get($data_array_name);
+
+		if (isset($data_array[$key]))
+			return $data_array[$key];
+
+		return NULL;
+	}
+
+	public function setValue($value)
+	{
+
+	}
+
 	/**
 	 * Returns one local var
 	 *
@@ -186,9 +293,9 @@ class FTL_Binding
 	 * @return	mixed		Local tag var value
 	 *
 	 */
-	public function get($local)
+	public function get($key)
 	{
-		return $this->locals->{$local};
+		return $this->locals->{$key};
 	}
 	
 	/**

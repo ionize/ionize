@@ -273,9 +273,9 @@
 
 
 		<!-- SEO -->
-		<h3 class="toggler"><?= lang('ionize_title_seo') ?></h3>
+		<h3 class="toggler toggler-options"><?= lang('ionize_title_seo') ?></h3>
 
-		<div class="element">
+		<div class="element element-options">
 			<!-- Meta_Description -->
 			<h4 class="help" title="<?= lang('ionize_help_article_meta_description') ?>"><?= lang('ionize_label_meta_description') ?></h4>
 
@@ -420,8 +420,8 @@
 		ION.addParentPageEvents(item);
 	});
 
-	new TabSwapper({tabsContainer: 'metaDescriptionTab', sectionsContainer: 'metaDescriptionTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaDescriptionTab'	});
-	new TabSwapper({tabsContainer: 'metaKeywordsTab', sectionsContainer: 'metaKeywordsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'metaKeywordsTab' });
+	new TabSwapper({tabsContainer: 'metaDescriptionTab', sectionsContainer: 'metaDescriptionTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleMetaDescriptionTab'	});
+	new TabSwapper({tabsContainer: 'metaKeywordsTab', sectionsContainer: 'metaKeywordsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleMetaKeywordsTab' });
 
 	// Copy content from one lang to another
 	if ($('copy_lang'))

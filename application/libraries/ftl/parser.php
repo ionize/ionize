@@ -160,7 +160,6 @@ class FTL_Parser{
 				$str .= $this->context->render_tag($element['name'], $element['args'], $element['content']);
 			}
 		}
-		
 		return $str;
 	}
 	
@@ -183,9 +182,8 @@ class FTL_Parser{
 			unset($data);
 			
 			list(, $pre_match, $is_end_tag, $tag, $args, $is_individual, $string) = $matches;
-			
+
 			$this->current[] = $pre_match;
-// log_message('error', 'pre_parse tag : ' . $tag);
 
 			// Is it an individual tag?
 			if( ! empty($is_individual))
@@ -291,5 +289,5 @@ class FTL_Parser{
 	}
 }
 
-/* End of file FTL_parser.php */
+/* End of file parser.php */
 /* Location: ./application/libraries/ftl/parser.php */

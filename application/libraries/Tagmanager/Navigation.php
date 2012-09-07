@@ -29,14 +29,15 @@ class TagManager_Navigation extends TagManager
 	public static $tag_definitions = array
 	(
 		'navigation' => 					'tag_navigation',
-		'navigation:is_active' =>			'tag_is_active',
-
-		'navigation:active_class' =>		'tag_navigation_active_class',
 		'navigation:url' =>					'tag_navigation_url',
 		'navigation:href' =>				'tag_navigation_href',
+		'navigation:active_class' =>		'tag_simple_value',
+		'navigation:is_active' =>			'tag_is_active',
 
 		'tree_navigation' => 				'tag_tree_navigation',
-		'tree_navigation:active_class' =>	'tag_navigation_active_class',			
+		'tree_navigation:active_class' =>	'tag_simple_value',
+		'tree_navigation:is_active' =>		'tag_is_active',
+
 		'sub_navigation' => 				'tag_sub_navigation',
 		'sub_navigation_title' => 			'tag_sub_navigation_title',
 
@@ -45,9 +46,8 @@ class TagManager_Navigation extends TagManager
 		'languages:language' =>		'tag_languages_language',
 		'language' =>				'tag_language',
 
-		'language:name' =>			'tag_language_name',
 		'language:code' =>			'tag_language_code',
-		'language:active_class' =>	'tag_language_active_class',
+		'language:active_class' =>	'tag_simple_value',
 		'language:is_default' =>	'tag_language_is_default',
 		'language:is_active' =>		'tag_is_active',
 	);
@@ -474,21 +474,6 @@ class TagManager_Navigation extends TagManager
 
 	// ------------------------------------------------------------------------
 
-	/**
-	 * Returns the active class string, as set through the <ion:navigation active_class="" /> attribute
-	 *
-	 * @param $tag
-	 *
-	 * @return string
-	 */
-	public static function tag_navigation_active_class(FTL_Binding $tag)
-	{
-		return self::_get_from_locals($tag, 'active_class');
-	}
-	
-
-	// ------------------------------------------------------------------------
-
 
 	/** 
 	 * Return the URL of a navigation item.
@@ -504,10 +489,10 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_navigation_url(FTL_Binding $tag)
 	{
-		$has_url = self::_get_from_locals($tag, 'has_url');
+		$has_url = $tag->getValue('has_url');
 
 		if (intval($has_url) == 1)
-			return self::_get_from_locals($tag, 'absolute_url');
+			return self::wrap($tag, $tag->getValue('absolute_url'));
 
 		return '#';
 	}
@@ -522,11 +507,11 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_navigation_href(FTL_Binding $tag)
 	{
-		$has_url = self::_get_from_locals($tag, 'has_url');
+		$has_url = $tag->getValue('has_url');
 
 		if (intval($has_url) == 1)
 		{
-			$str = 'href="' . self::_get_from_locals($tag, 'absolute_url') . '"';
+			$str = 'href="' . $tag->getValue('absolute_url') . '"';
 
 			return $str;
 		}
@@ -666,26 +651,6 @@ class TagManager_Navigation extends TagManager
 	}
 
 
-	/**
-	 * Returns the long language name
-	 * Example : English
-	 *
-	 * @param 	FTL_Binding $tag
-	 *
-	 * @return 	null|string
-	 *
-	 * @usage	<ion:language>
-	 * 				<ion:name [tag="span" class="colored"] />
-	 * 			</ion:language>
-	 *
-	 * 			Shortcut mode :
-	 * 			<ion:language:name [tag="span" class="colored"] />
-	 */
-	public static function tag_language_name(FTL_Binding $tag)
-	{
-		return self::_get_formatted_from_locals($tag, 'name');
-	}
-
 
 	/**
 	 * Returns the language code
@@ -704,28 +669,7 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_language_code(FTL_Binding $tag)
 	{
-		return self::_get_formatted_from_locals($tag, 'lang');
-	}
-
-
-	/**
-	 * Returns the language active class
-	 *
-	 * @param 	FTL_Binding $tag
-	 *
-	 * @return 	null|string
-	 *
-	 * @usage	<ion:language>
-	 * 				<li class="lang <ion:active_class />">...</li>
-	 * 			</ion:language>
-	 *
-	 * 			Shortcut mode :
-	 * 			<ion:language:active_class />
-	 *
-	 */
-	public static function tag_language_active_class(FTL_Binding $tag)
-	{
-		return self::_get_from_locals($tag, 'active_class');
+		return self::wrap($tag, $tag->getValue('lang'));
 	}
 
 
@@ -754,7 +698,7 @@ class TagManager_Navigation extends TagManager
 	{
 		$is_default = ($tag->getAttribute('is') === FALSE) ? 0 : 1;
 
-		if ($is_default == intval(self::_get_from_locals($tag, 'def')))
+		if ($is_default == intval($tag->getValue('def')))
 			return $tag->expand();
 
 		return '';
@@ -767,8 +711,6 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function get_url_infos()
 	{
-		self::$ci =& get_instance(); 
-		
 		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
 
 		// Returned data

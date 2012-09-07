@@ -49,21 +49,12 @@ class TagManager_Page extends TagManager
 		// Page
 		'page' => 				'tag_page',
 
-		'period' => 			'tag_period',
 		'pagination' =>			'tag_pagination',
-		'absolute_url' =>		'tag_absolute_url',
 		'next_page' =>			'tag_next_page',
 		'prev_page' =>			'tag_prev_page',
 		'next_article' =>		'tag_next_article',
 		'prev_article' =>		'tag_prev_article',
 
-		'page:name' => 			'tag_page_name',
-//		'page:url' => 			'tag_page_url',
-//		'title' => 				'tag_page_title',
-		'subtitle' => 			'tag_page_subtitle',
-//		'meta_title' => 		'tag_page_meta_title',
-
-		// Breadrumb
 		'breadcrumb' =>			'tag_breadcrumb',
 	);
 
@@ -480,22 +471,6 @@ class TagManager_Page extends TagManager
 
 
 	/**
-	 * Return the current article
-	 *
-	 * @return array
-	 *
-	function get_article()
-	{
-		return self::registry('article');
-		// return self::$_article;
-	}
-	 */
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * Set 404 page
 	 *
 	 * @return void
@@ -550,32 +525,11 @@ class TagManager_Page extends TagManager
 
 
 	// ------------------------------------------------------------------------
-	
-
-	function set_global_scope(FTL_Binding $tag)
-	{
-		$where = array();
-		$in_pages = array();
-
-		// Page from locals
-		$pages =&  $tag->locals->_pages;
-
-		// Get only articles from autorized pages
-		foreach($pages as $page)
-			$in_pages[] = $page['id_page'];
-
-		$where['id_page in'] = '('.implode(',', $in_pages).')';
-		
-		return $where;
-	}
-
-
-	// ------------------------------------------------------------------------
 
 
 	public static function tag_page(FTL_Binding $tag)
 	{
-		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+		$cache = ($tag->getAttribute('cache') == 'off') ? FALSE : TRUE;
 
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
@@ -602,6 +556,7 @@ class TagManager_Page extends TagManager
 			$tag->set('page', $page);
 			$tag->set('index', 0);
 			$tag->set('count', 1);
+
 			$str .= $tag->expand();
 			$str = self::wrap($tag, $str);
 
@@ -620,7 +575,7 @@ class TagManager_Page extends TagManager
 	 */
 	public static function tag_pages(FTL_Binding $tag)
 	{
-		$cache = (isset($tag->attr['cache']) && $tag->attr['cache'] == 'off' ) ? FALSE : TRUE;
+		$cache = ($tag->getAttribute('cache') == 'off') ? FALSE : TRUE;
 
 		// Tag cache
 //		if ($cache == TRUE && ($str = self::get_cache(FTL_Binding $tag)) !== FALSE)
@@ -843,145 +798,6 @@ class TagManager_Page extends TagManager
 		
 			return $page['pagination_links'];
 		}
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_page_name(FTL_Binding $tag)
-	{
-		return self::_get_formatted_from_locals($tag, 'name');
-	}
-/*
-    public static function tag_page_url(FTL_Binding $tag)
-	{
-		return self::_get_formatted_from_locals($tag, 'absolute_url');
-	}
-*/
-	public static function tag_page_subtitle(FTL_Binding $tag)
-	{
-		return self::_get_formatted_from_locals($tag, 'subtitle');
-	}
-
-	public static function tag_page_date(FTL_Binding $tag)
-	{
-		return self::_get_formatted_from_locals($tag, 'date');
-	}
-
-
-	// ------------------------------------------------------------------------
-	
-
-	/**
-     * Return the page title
-     *
-     * @usage : <ion:title [tag="h2" from="parent" up="2" ] />
-     *
-     *            The "from" attribute works with th "up" attribute. up="2" means the parent from the parent, etc.
-     *            If the "up" attribute isn't set when using "parent", it will be set to 1.Means the returned title will be the one of the parent page of the current page.
-     *            
-     * @returns     String        The page title, wrapped or not by the optional defined tags.
-     *
-    public static function tag_page_title(FTL_Binding $tag)
-    {
-		return self::_get_formatted_from_locals($tag, 'title');
-    }
-	 */
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the current meta_title
-	 *
-	 * @param FTL_Binding $tag
-	 *
-	 * @return String
-	 *
-	public static function tag_page_meta_title(FTL_Binding $tag)
-	{
-		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
-			return $str;
-
-		$meta_title = '';
-
-		// Get the potential special URI
-		$uri_config = self::$ci->config->item('special_uri');
-		$special_uri = (isset(self::$uri_segments[1])) ? self::$uri_segments[1] : FALSE;
-		
-		if ($special_uri !== FALSE && ! array_key_exists($special_uri, $uri_config) )
-		{
-			// Try to find an article with the name of the last part of the URL.
-			$name = self::get_last_uri_part();
-
-			$article =  self::$ci->article_model->get(
-				array('name' => $name), 
-				Settings::get_lang()
-			);
-
-			if ( ! empty ($article['meta_title']))
-				$meta_title = $article['meta_title'];
-		}
-
-		$page = self::$context->registry('page');
-
-		// First, try to get the meta title
-		if ( $meta_title == '' && ! empty($page['meta_title']) )
-			$meta_title = $page['meta_title'];
-
-		// If no meta title, get the title as alternative
-		if ( $meta_title == '' && ! empty($page['title']) )
-			$meta_title = $page['title'];
-
-		// Remove HTML tags from meta title
-		$meta_title = strip_tags($meta_title);
-		
-		// Tag cache
-		self::set_cache($tag, self::wrap($tag, $meta_title));
-		
-		return self::wrap($tag, $meta_title);
-	}
-	 */
-
-
-	// ------------------------------------------------------------------------
-	
-
-	/**
-	 * Returns the medias tag content
-	 *
-	 * @param	FTL_Binding
-	 * @return	string
-	 *
-	 * @attributes	range	Range of media to display. Starts at 0.
-	 *						If only one number is provided, returns all the medias from this index 
-	 *						if the attribute "num" is not set
-	 * 						example of use : 	<ion:medias range="2,4" />
-	 *											<ion:medias range="2" />
-	 *
-	 *				num		Number of pictures to display.
-	 *						Combined to the "range" attribute, you can display x medias from a given start index.
-	 * 						example of use : 	Display 2 first medias : 
-	 *					 						<ion:medias num="2" />
-	 *											Display 3 medias starting from index 2 :
-	 *											<ion:medias range="2" num="3" />
-	 *
-	 *
-	 */
-	public static function tag_page_medias(FTL_Binding $tag)
-	{
-
-		// $medias = ( ! empty($tag->locals->_page['medias'])) ? $tag->locals->_page['medias'] : FALSE;
-		$medias = self::_get_from_locals('medias');
-		
-		if ( $medias !== FALSE)
-		{
-			return self::wrap($tag, TagManager_Media::get_medias($tag, $medias));
-		}
-		return '';
 	}
 
 

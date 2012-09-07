@@ -76,5 +76,5 @@ class FTL_VarStack
 	}
 }
 
-/* End of file var_stack.php */
-/* Location: ./application/libraries/xt_parser/var_stack.php */
+/* End of file varstack.php */
+/* Location: ./application/libraries/ftl/varstack.php */

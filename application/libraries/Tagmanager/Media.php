@@ -11,7 +11,7 @@
  */
 
 /**
- * Ionize Tagmanager Login Class
+ * Ionize Tagmanager Media Class
  *
  * Manage users login Form
  *
@@ -26,24 +26,19 @@ class TagManager_Media extends TagManager
 	(
 		'medias' => 			'tag_medias',
 
-		'medias:id_media' => 	'tag_media_id',
-		'medias:alt' => 		'tag_media_alt',
-		'medias:base_path' => 	'tag_media_base_path',
-		'medias:path' => 		'tag_media_path',				// Can do nesting, no change if not nested ('path' => 'tag_src')
-		'medias:src' => 		'tag_media_src',
-		'medias:size' => 		'tag_media_size',
-		'medias:title' => 		'tag_media_title',
-		'medias:link' => 		'tag_media_link',
-		'medias:file_name' => 	'tag_media_file_name',
-		'medias:description' => 'tag_media_description',
-		'medias:copyright' => 	'tag_media_copyright',
-		'medias:index' => 		'tag_media_index',
-		'medias:count' => 		'tag_media_count',
-		'medias:date' => 		'tag_media_date',
+		'media' =>				'tag_media',
+		'media:src' => 			'tag_media_src',
+		'media:thumb_folder' => 'tag_media_thumb_folder',
+		'media:size' => 		'tag_media_size',
 		'medias:extension' =>	'tag_media_extension',
-		
-		// One media
-		'media' =>				'tag_media'
+
+		'media:alt' => 			'tag_simple_value',
+		'media:base_path' => 	'tag_simple_value',
+		'media:path' => 		'tag_simple_value',
+		'media:link' => 		'tag_simple_value',
+		'media:file_name' => 	'tag_simple_value',
+		'medias:description' => 'tag_simple_value',
+		'medias:copyright' => 	'tag_simple_value',
 	);
 	
 
@@ -51,31 +46,29 @@ class TagManager_Media extends TagManager
 	 * Get the medias regarding the type
 	 *
 	 */
-	public static function get_medias($tag, $medias)
+	public static function get_medias(FTL_Binding $tag, $medias)
 	{
 		// Media type
-		$type = (isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
-
-		// Attribute. Used by tag_media
-//		$attr = (isset($tag->attr['attr']) ) ? $tag->attr['attr'] : FALSE;
+		$type = $tag->getAttribute('type');
 
 		// Media extension
-		$extension = (isset($tag->attr['extension']) ) ? $tag->attr['extension'] : FALSE;
-		
+		$extension = $tag->getAttribute('extension');
+
 		// Number of wished displayed medias
-		$limit = (isset($tag->attr['limit'] )) ? $tag->attr['limit'] : FALSE;
-		
-		// num. DEPRECATED : Use limit instead
-		if ($limit === FALSE)
-		{
-			$limit = (isset($tag->attr['num'])) ? $tag->attr['num'] : FALSE;
-		}
+		$limit = $tag->getAttribute('limit');
+
+		// DEPRECATED : Use limit instead. For compat. reasons
+		if (is_null($limit))
+			$limit = $tag->getAttribute('num');
 
 		// Range : Start and stop index, coma separated
-		$range = (isset($tag->attr['range'] )) ? explode(',', $tag->attr['range']) : FALSE;
+		$range = $tag->getAttribute('range');
+		if (!is_null($range))
+			$range = explode(',', $range);
+
 		$from = $to = FALSE;
 		
-		if ($range !== FALSE)
+		if (is_array($range))
 		{
 			$from = $range[0];
 			$to = (isset($range[1]) && $range[1] >= $range[0]) ? $range[1] : FALSE;
@@ -85,15 +78,12 @@ class TagManager_Media extends TagManager
 		// If set to "list", will return the media list, coma separated.
 		// Usefull for javascript
 		// Not yet implemented
-		$return = ( ! empty($tag->attr['return'])) ? $tag->attr['return'] : FALSE;
+		$return = $tag->getAttribute('return', FALSE);
 
 		$i = 0;
-		
-		$tag->locals->count = 0;
-		
-		if ($type !== FALSE)
+
+		if ( ! is_null($type))
 		{
-			$str = '';
 			$filtered_medias = array();
 
 			if ( ! empty($medias))
@@ -102,7 +92,7 @@ class TagManager_Media extends TagManager
 				// filter by type
 				foreach($medias as $media)
 				{
-					if ($media['type'] == $type && ($i < $limit OR $limit === FALSE) )
+					if ($media['type'] == $type && ($i < $limit OR is_null($limit)) )
 					{
 						// Only filter on lang if lang_display is set for the media
 						if ( ! empty($media['lang_display']))
@@ -116,7 +106,7 @@ class TagManager_Media extends TagManager
 				}
 				
 				// Filter by extension if needed
-				if ($extension !== FALSE)
+				if (!is_null($extension))
 				{
 					$extension = explode(',', $extension);
 					
@@ -132,8 +122,6 @@ class TagManager_Media extends TagManager
 					}
 				}
 
-				// 
-
 				// Range / Limit ?
 				if ($range !== FALSE)
 				{
@@ -147,26 +135,10 @@ class TagManager_Media extends TagManager
 				{
 					$filtered_medias = array_slice($filtered_medias, 0, $limit);
 				}
-				
-				// Stores the final number of medias
-				$count = count($filtered_medias);
-				 
-				foreach($filtered_medias as $index => $media)
-				{
-					$i++;
-					$tag->locals->media = $media;
-					$tag->locals->index = $i;
-					$tag->locals->count = $count;
-					$tag->locals->media['index'] = $i;
-					$str .= $tag->expand();
-				}
 			}
-			return $str;
+			return $filtered_medias;
 		}
-		else
-		{
-			return;
-		}
+		return $medias;
 	}
 
 
@@ -175,20 +147,42 @@ class TagManager_Media extends TagManager
 
 	public static function tag_medias(FTL_Binding $tag)
 	{
-		$from = $tag->getAttribute('from');
-		if (is_null($from)) $from = self::get_parent_tag($tag);
+		$str = '';
 
-		// $obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-		$obj = $tag->get($from);
+//		$from = $tag->getAttribute('from');
+//		if (is_null($from)) $from = self::get_parent_tag($tag);
 
-		if ( is_null($obj) )
-			$obj = $tag->get('page');
+//		$obj = $tag->get($from);
 
-		if ( isset($obj['medias']))
+		// Fallback to page object
+//		if ( is_null($obj) ) $obj = $tag->get('page');
+
+		$medias = $tag->getValue();
+
+		if ( ! empty($medias))
 		{
-			$medias = $obj['medias'];
-			return self::wrap($tag, self::get_medias($tag, $medias));
+			// Filter the parent's medias
+			$medias = self::get_medias($tag, $medias);
+
+			// Set the filtered medias to the tag
+//			$tag->set('medias', $medias);
+
+			$count = count($medias);
+
+			foreach($medias as $key => $media)
+			{
+				// Each media has its index and the number of displayed media
+				$media['index'] = $key;
+				$media['count'] = $count;
+
+				$tag->set('media', $media);
+				$tag->set('count', $count);
+				$tag->set('index', $key);
+
+				$str .= $tag->expand();
+			}
 		}
+		return $str;
 	}
 
 	// ------------------------------------------------------------------------
@@ -198,190 +192,20 @@ class TagManager_Media extends TagManager
 	 * Returns one media
 	 *
 	 */
-	public static function tag_media($tag)
+	public static function tag_media(FTL_Binding $tag)
 	{
-		// thumb folder name (without the 'thumb_' prefix)
-		$type = (isset($tag->attr['type']) ) ? $tag->attr['type'] : FALSE;
-		$attr = (isset($tag->attr['attr']) ) ? $tag->attr['attr'] : FALSE;
-		$index = (isset($tag->attr['index']) && intval($tag->attr['index']) > 0 ) ? $tag->attr['index'] : '1';
-		$random = (isset($tag->attr['random']) && $tag->attr['random'] == 'TRUE' ) ? TRUE : FALSE;
-		$extension = (isset($tag->attr['extension']) ) ? $tag->attr['extension'] : FALSE;
-		
-		$medias = array();
-		
-		if ($type !== FALSE && $attr != FALSE)
-		{
-			$parent = self::get_parent_tag($tag);
-			
-			if (isset($tag->locals->{$parent}))
-			{
-				$medias = $tag->locals->{$parent}['medias'];
-			}
-			
-			$filtered_medias = array();
-
-			if ( ! empty($medias))
-			{
-				// First get the correct media type
-				// filter by type
-				foreach($medias as $media)
-				{
-					if ($media['type'] == $type)
-					{
-						$filtered_medias[] = $media;
-					}
-				}
-				
-				// Filter by extension if needed
-				if ($extension !== FALSE)
-				{
-					$extension = explode(',', $extension);
-					
-					$tmp_medias = $filtered_medias;
-					$filtered_medias = array();
-					
-					foreach($tmp_medias as $media)
-					{
-						$ext = substr($media['file_name'], strrpos($media['file_name'], '.') +1 );
-						
-						if (in_array($ext, $extension))
-						{
-							$filtered_medias[] = $media;
-						}
-					}
-				}
-				
-				// Now, return the asked field
-				if ( ! empty($filtered_medias))
-				{
-//					if ($random == TRUE)
-//					{
-//						$index = rand(0, count($filtered_medias - 1));
-//					}
-					
-					if ( ! empty($filtered_medias[$index - 1 ]))
-					{
-						$media = $filtered_medias[$index - 1 ];
-
-						// SRC attribute
-						if ($attr == 'src')
-						{
-							$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
-							
-							// Media source complete URL
-							if ($folder !== FALSE) 
-								return base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
-							else
-								return base_url() . $media['path'];
-						}
-
-						return $media[$attr];
-					}
-				}
-			}
-		}
+		return $tag->expand();
 	}
 	
-	
-	// ------------------------------------------------------------------------
-
 
 	/**
-	 * Media Title
-	 * @return 		Media Title or title of the asked parent tag.
-	 * @usage 		<ion:title [or="<subtitle|alt|description|...>" from="<article|page>"] />
-	 *
-	 */
-	public static function tag_media_title($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'title';
-			return self::tag_field($tag);
-		}
-		$title = self::get_value('media', 'title', $tag);
-
-		/*
-		if ( is_null($title) || $title == '')
-		{
-			$title = self::get_value('media', 'file_name', $tag);
-		}
-		*/
-		
-		return self::wrap($tag, $title);
-	}
-	
-	
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_media_alt($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'alt';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('media', 'alt', $tag));
-	}	
-	
-	
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_media_description($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'description';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('media', 'description', $tag));
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_media_date($tag)
-	{
-		if ( ! empty($tag->attr['from']))
-		{
-			$tag->attr['name'] = 'date';
-			return self::tag_field($tag);
-		}
-		return self::wrap($tag, self::get_value('media', 'date', $tag));
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Simple Media tags
-	 *
-	 */
-	public static function tag_media_link($tag) { return self::wrap($tag, $tag->locals->media['link']); }
-	public static function tag_media_file_name($tag) { return self::wrap($tag, $tag->locals->media['file_name']); }
-	public static function tag_media_base_path($tag) { return $tag->locals->media['base_path']; }
-	public static function tag_media_id($tag) { return $tag->locals->media['id_media']; }
-	public static function tag_media_path($tag) { return $tag->locals->media['path']; }
-	public static function tag_media_copyright($tag) { return self::wrap($tag, $tag->locals->media['copyright']); }
-	public static function tag_media_index($tag) { return $tag->locals->index; }
-	public static function tag_media_count($tag) { return $tag->locals->count; }
-
-	
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the media complete URL
+	 * Returns the media complete src URL
 	 * 
 	 * @usage : <ion:src [size="200" square="<true|false>" unsharp="true|false"]  />
 	 *			For pictures, if size is set, returns the path to one thumb with this size
 	 *
 	 */
-	public static function tag_media_src($tag)
+	public static function tag_media_src(FTL_Binding $tag)
 	{
 		$media = $tag->get('media');
 
@@ -394,21 +218,13 @@ class TagManager_Media extends TagManager
 				
 				return base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
 			}
-			else if ($tag->getAttribute('size') !== NULL && $media['type'] == 'picture')
+			else if ($media['type'] == 'picture')
 			{
-				$ci =& get_instance();
-				$ci->load->library('medias');
-
-				$settings['size'] = $tag->getAttribute('size');
-				$settings['master'] = $tag->getAttribute('master');
-				$settings['square'] = $tag->getAttribute('square');
-				$settings['adaptive'] = $tag->getAttribute('adaptive');
-				$settings['watermark'] = $tag->getAttribute('watermark');
-				$settings['background'] = $tag->getAttribute('background');
-				$settings['unsharp'] = $tag->getAttribute('unsharp');
-				$settings['start'] = $tag->getAttribute('start');				// Used by Square crop
-
-				return $ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
+				$settings = self::_get_src_settings($tag);
+				
+				self::$ci->load->library('medias');
+				
+				return self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
 			}
 
 			return base_url() . $media['path'];
@@ -420,14 +236,19 @@ class TagManager_Media extends TagManager
 	
 	// ------------------------------------------------------------------------
 
+	public static function tag_media_thumb_folder(FTL_Binding $tag)
+	{
+		return self::_get_thumb_folder($tag);
+	}
+
 
 	/**
 	 * Returns the media size
 	 *
-	 * @usage : <ion:size folder="medium" dim="width|height" />
+	 * @usage : <ion:size dim="width|height" />
 	 *
 	 */
-	public static function tag_media_size($tag)
+	public static function tag_media_size(FTL_Binding $tag)
 	{
 		// thumb folder name (without the 'thumb_' prefix)
 		$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
@@ -472,12 +293,12 @@ class TagManager_Media extends TagManager
 	 * @todo 	To write.
 	 *			Use of Filemanager->getFileInfo()
 	 *			Pro : 	Easy to implement
-	 *			Cons : 	Strong dependency on the .thimbs folder and the .nfo file created by FileManager.
+	 *			Cons : 	Strong dependency on the .thumbs folder and the .nfo file created by FileManager.
 	 *			
 	 * @usage : <ion:info folder="medium" attribute="width|height" />
 	 *
 	 */
-	public static function tag_media_info($tag)
+	public static function tag_media_info(FTL_Binding $tag)
 	{
 		// thumb folder name (without the 'thumb_' prefix)
 		$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
@@ -508,12 +329,12 @@ class TagManager_Media extends TagManager
 	 * @usage : <ion:extension />
 	 *
 	 */
-	public static function tag_media_extension($tag)
+	public static function tag_media_extension(FTL_Binding $tag)
 	{
-		$extension = substr(strrchr($tag->locals->media['file_name'], '.'), 1);
+		$file_name = $tag->getValue('file_name');
+		$extension = substr(strrchr($file_name, '.'), 1);
 		return self::wrap($tag, $extension);
 	}
-
 
 
 	// ------------------------------------------------------------------------
@@ -546,91 +367,45 @@ class TagManager_Media extends TagManager
 		return FALSE;
 	}
 	
-	/*
-	private static function _get_thumb_file_path($tag, $media)
+
+	// ------------------------------------------------------------------------
+
+
+	protected static function _get_src_settings(FTL_Binding $tag)
 	{
-		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
+		$setting_keys = array
+		(
+			'size',
+			'master',
+			'square',
+			'adaptive',
+			'watermark',
+			'background',
+			'unsharp',
+			'start',		// Used by Square crop
+		);
+		$settings = array_fill_keys($setting_keys, '');
+		$parent = $tag->getParent();
 
-		$size = $tag->getAttribute('size');
-		//$file_prefix = $tag->getAttribute('square') ? 'square_' : '';
-		
-		$size_folder = self::_get_thumb_folder($tag);
+		if ( !is_null($parent))
+			$settings = array_merge($settings, $parent->getAttributes(), $tag->getAttributes());
+		else
+			$settings = array_merge($settings, $tag->getAttributes());
 
-		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
-		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
-		$thumb_path = $thumb_base_path . $thumb_path_segment;
-		$thumb_file_path = $thumb_path . $size_folder . '/' . $media['file_name'];
-		
-		return $thumb_file_path;
+		return $settings;
 	}
-	*/
-	
-	
-/*
 
-	private static function _get_thumb_url($tag, $media)
+
+	// ------------------------------------------------------------------------
+
+
+	private static function _get_thumb_folder(FTL_Binding $tag)
 	{
-		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
-		
-		$size = $tag->getAttribute('size');
-		$size_folder = self::_get_thumb_folder($tag);
+		self::$ci->load->library('medias');
 
-		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
-		
-		return base_url() . Settings::get('files_path') . '/' . $thumb_folder . '/' . $thumb_path_segment . $size_folder . '/' . $media['file_name'];
-	}
-*/
-/*
-	private static function _get_picture_url($tag, $media)
-	{
-		return base_url() . $media['path'];
-	}
-*/
+		$settings = self::_get_src_settings($tag);
 
-	private static function _get_thumb_folder($tag)
-	{
-		if($tag->getAttribute('square'))
-		{
-			return $tag->getAttribute('size') . 'x' . $tag->getAttribute('size');
-		}
-		
-		// width is fixed
-		if($tag->getAttribute('master') == 'width')
-		{
-			return $tag->getAttribute('size') . 'x';
-		}
-		
-		// height is fixed
-		if($tag->getAttribute('master') == 'height')
-		{
-			return 'x' . $tag->getAttribute('size');
-		}
-		
-		if($tag->getAttribute('adaptive'))
-		{
-			$size = $tag->getAttribute('size');
-			$folder_parts = explode(',', $size);
-			
-			if(isset($folder_parts[1]))
-				return trim($folder_parts[0]) . 'x' . trim($folder_parts[1]) . 'a';
-			
-			return '';
-		}
-		
-		if( ! is_null($tag->getAttribute('background')))
-		{
-			$size = $tag->getAttribute('size');
-			$folder_parts = explode(',', $size);
-			
-			if(isset($folder_parts[1]))
-				return trim($folder_parts[0]) . 'x' . trim($folder_parts[1]) . 'e';
-			
-			return '';
-
-		}
-		
-		// The wider side of image
-		return $tag->getAttribute('size');
+		return self::$ci->medias->get_thumb_folder($settings);
 	}
 	
 }

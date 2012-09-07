@@ -115,6 +115,19 @@ class FTL_ArrayContext extends FTL_Context
 	// --------------------------------------------------------------------
 
 	/**
+	 * Return the binding stack
+	 *
+	 * @return array|FTL_Binding
+	 *
+	 */
+	public function get_binding_stack()
+	{
+		return $this->tag_binding_stack;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * This searches the vars for the tag and renders it if it is present.
 	 * 
 	 * Parameters:
@@ -223,5 +236,5 @@ class FTL_ArrayContext extends FTL_Context
 	}
 }
 
-/* End of file array_context.php */
-/* Location: ./application/libraries/xt_parser/array_context.php */
+/* End of file arraycontext.php */
+/* Location: ./application/libraries/ftl/arraycontext.php */

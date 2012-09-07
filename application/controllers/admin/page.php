@@ -623,7 +623,6 @@ class Page extends MY_admin
 				$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 				$menu = $this->menu_model->get($page['id_menu']);
 				
-//				$page = array_merge($this->page_model->get_lang(Settings::get_lang('default')), $page);
 				$page['title'] = htmlspecialchars_decode($page['title'], ENT_QUOTES);
 				$page['element'] = 'page';
 				$page['menu'] = $menu;
