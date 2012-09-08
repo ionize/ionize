@@ -35,7 +35,7 @@ class TagManager_Archive extends TagManager
 	}
 	
 	
-	public static function tag_archive($tag)
+	public static function tag_archive(FTL_Binding $tag)
 	{
 		// Current archive
 		$arc_segment = TagManager_Page::get_special_uri();
@@ -199,7 +199,10 @@ class TagManager_Archive extends TagManager
 	 * Use tag_archives_url
 	 * @deprecated
 	 */
-	public static function tag_archives_lang_url($tag) { return ($tag->locals->archive['lang_url'] != '' ) ? $tag->locals->archive['lang_url'] : '' ; }
+	public static function tag_archives_lang_url($tag)
+	{
+		return ($tag->locals->archive['lang_url'] != '' ) ? $tag->locals->archive['lang_url'] : '' ;
+	}
 	
 	
 	public static function tag_archives_period($tag) { return ($tag->locals->archive['period'] != '' ) ? $tag->locals->archive['period'] : '' ; }

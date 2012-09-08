@@ -236,20 +236,6 @@ class TagManager_Navigation extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	public static function tag_is_active(FTL_Binding $tag)
-	{
-		$is_active = ($tag->getAttribute('is') === FALSE) ? FALSE : TRUE;
-
-		if ($is_active == $tag->get('is_active'))
-			return $tag->expand();
-
-		return '';
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
 	public static function tag_sub_navigation_title(FTL_Binding $tag)
 	{
 		if ($tag->locals->_page['subnav_title']  != '')

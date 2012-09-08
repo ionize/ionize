@@ -14,7 +14,9 @@
 
 // Site / Others
 test_site_tags : 			keywords, meta, config item, etc. in all lang
-test_tag_if :				Conditional tag
+test_tag_if :				Expression Test tag
+test_tag_get :				Get any field from object, with DB field name
+
 
 // Page
 test_page_id
@@ -22,9 +24,7 @@ test_page_id
 // Article, Article ID
 test_article_id_1
 test_article_id_2
-
-// Get
-test_tag_get
+test_content_iframe :		Content test : embedded iFrames from Youtube and Google maps
 
 // Navigation
 test_tag_navigation
@@ -35,13 +35,24 @@ test_tag_tree_navigation
 test_tag_media_page :		Medias from pages
 test_tag_media_articles :	Medias from articles
 
-// TODO :
-test_tag_medias_module : 	Medias within one module
+// Categories
+test_tag_categories
 
+// @TODO :
+test_tag_medias_module : 		Medias within one module
+test_tag_article_categories :	Categories of one article
+test_tag_article_author : 		Author's data from one article
+								Join the user table in SQL directly !
+test_tag_elements
+test_tag_media_size
+test_subnavigation_tag			Remove ???
+test_tag_pagination
+
+test_temp : 				Temp dev's tests
 
 */
 ?>
-<ion:partial view="test_tag_if" />
+<ion:partial view="test_article_id_2" />
 
 
 

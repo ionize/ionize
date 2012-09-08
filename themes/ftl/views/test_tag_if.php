@@ -1,8 +1,8 @@
 
 <h1>&lt;ion:if /></h1>
-<p>Conditional tag : Expand the HTML between the tag if the result of the condition is true</p>
+<p>Conditional tag : Expand the HTML between the tag if the result of the expression is true</p>
 
-<h2>Test 1 : Condition with one integer value</h2>
+<h2>Test 1 : Expression with one integer value</h2>
 <p>
 	Medias are displayed inside one UL HTML element.<br/>
 	Each 2 medias, we want to cloase this UL and open a new one<br/>
@@ -18,7 +18,7 @@
 				&lt;li>
 					&lt;img src="&lt;ion:src size='200' />" />
 				&lt;/li>
-				&lt;ion:if key="index" condition="(index+1)%2==0">
+				&lt;ion:if key="index" expression="(index+1)%2==0">
 					&lt;/ul>
 					&lt;ul class="boxes">
 				&lt;/ion:if>
@@ -37,7 +37,7 @@
 				<li>
 					<img src="<ion:src size='200' />" />
 				</li>
-				<ion:if key="index" condition="(index+1)%2==0">
+				<ion:if key="index" expression="(index+1)%2==0">
 					</ul>
 					<ul class="boxes">
 				</ion:if>
@@ -48,7 +48,7 @@
 
 <hr />
 
-<h2>Test 2 : Condition with one string</h2>
+<h2>Test 2 : Expression with one string</h2>
 <p>
 	The page 3 has one article which has the code "article-30".<br/>
 	We will check the code for each article, and if it is "article-30", we display "Youpiii"<br/>
@@ -57,7 +57,7 @@
 &lt;ion:page id="3">
 	&lt;ion:articles>
 		&lt;ion:article:title tag="h3"/>
-		&lt;ion:article:if key="name" condition="'name' == 'article-30'">
+		&lt;ion:article:if key="name" expression="'name' == 'article-30'">
 			&lt;p class="red">Youpiii ! &lt;/p>
 		&lt;/ion:article:if>
 		&lt;ion:article:else>
@@ -72,7 +72,7 @@
 <ion:page id="3">
 	<ion:articles>
 		<ion:article:title tag="h3"/>
-		<ion:article:if key="name" condition="'name' == 'article-30'">
+		<ion:article:if key="name" expression="'name' == 'article-30'">
 			<p class="red">Youpiii ! </p>
 		</ion:article:if>
 		<ion:article:else>
@@ -91,7 +91,7 @@
 	&lt;p>Page ID : &lt;b>&lt;ion:id/>&lt;/b>&lt;/p>
 	&lt;p>Page name : &lt;b>&lt;ion:name/>&lt;/b>&lt;/p>
 
-	&lt;ion:if key="name|id_page" condition="'name' == 'test-page' && id_page==3">
+	&lt;ion:if key="name|id_page" expression="'name' == 'test-page' && id_page==3">
 		&lt;p class="red">Youpiii ! &lt;/p>
 	&lt;/ion:if>
 &lt;/ion:page>
@@ -103,14 +103,14 @@
 	<p>Page ID : <b><ion:id/></b></p>
 	<p>Page name : <b><ion:name/></b></p>
 
-	<ion:if key="name|id_page" condition="'name' == 'test-page' && id_page==3">
+	<ion:if key="name|id_page" expression="'name' == 'test-page' && id_page==3">
 		<p class="red">Youpiii ! </p>
 	</ion:if>
 </ion:page>
 
 <hr />
 
-<h2>Test 3 : Error in condition</h2>
+<h2>Test 3 : Error in expression</h2>
 <p>
 	The condition has an error<br/>
 	It outputs one error message<br/>
@@ -118,7 +118,7 @@
 
 <pre>
 &lt;ion:page id="3">
-	&lt;ion:if key="name" condition="name = 2">
+	&lt;ion:if key="name" expression="name = 2">
 		&lt;p class="red">Youpiii ! &lt;/p>
 	&lt;/ion:if>
 &lt;/ion:page>
@@ -127,7 +127,7 @@
 <h3>Result</h3>
 
 <ion:page id="3">
-	<ion:if key="name" condition="name = 2">
+	<ion:if key="name" expression="name = 2">
 		<p class="red">Youpiii ! </p>
 	</ion:if>
 </ion:page>

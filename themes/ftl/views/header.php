@@ -25,9 +25,16 @@
 		.red {
 			color:#b00;
 		}
-		li a.active:after{
+		li a.active:after,
+		li.active:after{
 			content:" (is active)";
 			color: #b00;
+		}
+		li a.my-active-class:after,
+		li.my-active-class:after{
+			content:" (is active)";
+			font-size: 20px;
+			color: #08b;
 		}
 		ul.boxes {
 			list-style: none;

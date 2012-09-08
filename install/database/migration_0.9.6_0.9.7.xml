@@ -44,10 +44,19 @@
 			ADD `id_element` INT( 11 ) UNSIGNED NOT NULL;
 	</query>
 	<query>
-		ALTER TABLE `article_type` ADD `description` TEXT NOT NULL, ADD `type_flag` TINYINT(1) NOT NULL DEFAULT 0;
+		ALTER TABLE `article_type` ADD `description` TEXT NOT NULL;
 	</query>
 
-	<query>
+    <query>
+        ALTER TABLE article drop id_type;
+    </query>
+
+    <query>
+        update article set flag=0;
+    </query>
+
+
+    <query>
 		ALTER TABLE `media` ADD `container` VARCHAR( 255 ) NOT NULL DEFAULT '';
 	</query>
 	

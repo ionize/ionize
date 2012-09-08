@@ -32,6 +32,7 @@ class Article_model extends Base_model
 	public $page_lang_table =			'page_lang';
 	public $parent_table =				'page_article';
 	public $url_table =					'url';
+	public $user_table = 				'users';
 
 	/* Contains table name wich should be used for each filter get.
 	 * Purpose : Avoid Ambiguous SQL quey when 2 fields have the same name.
@@ -169,6 +170,24 @@ class Article_model extends Base_model
 		// Add Type to query
 		$this->{$this->db_group}->select($this->type_table.'.type');
 		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
+
+		// Add authors
+		$this->{$this->db_group}->select(
+			$this->user_table.'.join_date',
+			$this->user_table.'.last_visit',
+			$this->user_table.'.screen_name as name',
+			$this->user_table.'.firstname',
+			$this->user_table.'.lastname',
+			$this->user_table.'.birthdate',
+			$this->user_table.'.gender',
+			$this->user_table.'.email'
+		);
+		$this->{$this->db_group}->join(
+			$this->user_table,
+			$this->user_table.'.username = ' .$this->table.'.author',
+			'left'
+		);
+
 
 		// Base_model->get_lang_list()
 		$articles =  parent::get_lang_list($where, $lang);

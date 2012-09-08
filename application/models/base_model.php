@@ -499,7 +499,6 @@ class Base_model extends CI_Model
 			// Add extended fields if necessary
 			$this->add_extend_fields($data, $this->table, $lang);
 
-
 			// Add URLs for each language
 			if ($this->table == 'page' OR $this->table == 'article')
 				$this->add_lang_urls($data, $this->table, $lang);

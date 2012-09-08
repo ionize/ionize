@@ -81,6 +81,7 @@ class TagManager
 //		'list' =>				'tag_list',
 		'config' => 			'tag_config',
 		'base_url' =>			'tag_base_url',
+		'home_url' =>			'tag_base_url',				// Kind alias for <ion:base_url />
 		'partial' => 			'tag_partial',
 		'widget' =>				'tag_widget',
 		'translation' => 		'tag_translation',
@@ -97,163 +98,6 @@ class TagManager
 		'browser' =>			'tag_browser',
 		
 	);
-
-
-	// TESTS ------------------------------------------------------------------------
-
-	/**
-	 * Returns the "name" value if set
-	 *
-	 * @param 	FTL_Binding $tag
-	 *
-	 * @return 	null|string
-	 *
-	 * @usage	Can be used with several tags.
-	 * 			<ion:language>
-	 * 				<ion:name [tag="span" class="colored"] />
-	 * 			</ion:language>
-	 *
-	 * 			Shortcut mode :
-	 * 			<ion:language:name [tag="span" class="colored"] />
-	 */
-	public static function tag_simple_value(FTL_Binding $tag)
-	{
-		$value = $tag->getValue();
-
-		if ( ! is_null($value))
-			return self::wrap($tag, $value);
-
-		return $value;
-	}
-
-	public static function tag_simple_date(FTL_Binding $tag)
-	{
-		$value = $tag->getValue();
-
-		if ( ! is_null($tag->getAttribute('format')))
-			$value = self::format_date($tag, $value);
-
-		if ( ! is_null($value))
-			return self::wrap($tag, $value);
-
-		return $value;
-	}
-
-	/**
-	 * Returns the object ID
-	 *
-	 * @param FTL_Binding $tag
-	 *
-	 * @return string
-	 *
-	 */
-	public static function tag_id(FTL_Binding $tag)
-	{
-		$value = $tag->getValue();
-
-		// Try with the DB key name
-		if (is_null($value))
-			$value = $tag->getValue('id_' . $tag->getParentName());
-
-		return $value;
-	}
-
-	/**
-	 * Returns the object absolute's URL
-	 *
-	 * @param FTL_Binding $tag
-	 *
-	 * @return null
-	 *
-	 */
-	public static function tag_url(FTL_Binding $tag)
-	{
-		$value = $tag->getValue('absolute_url');
-
-		// Fall down to URL
-		if (is_null($value))
-			$value = $tag->getValue();
-
-		return $value;
-	}
-
-
-	/**
-	 * Returns one key from object
-	 * @TODO	See how to implement alternatives if the value is null or empty string
-	 *
-	 * @param FTL_Binding $tag
-	 *
-	 * @return null|string
-	 *
-	 */
-	public static function tag_get(FTL_Binding $tag)
-	{
-		$key = $tag->getAttribute('key');
-		$value = self::get_formatted_from_tag_data($tag, $key);
-
-		// @TODO
-		// if (is_null($value) && !is_null($tag->getAttribute('or')))
-
-		return $value;
-	}
-
-
-	/**
-	 * Return one formatted key from the direct parent tag or NULL if no data
-	 *
-	 * @param FTL_Binding $tag
-	 * @param null        $key
-	 *
-	 * @return null|string
-	 *
-	 */
-	public static function get_formatted_from_tag_data(FTL_Binding $tag, $key=NULL)
-	{
-		$value = self::get_from_tag_data($tag, $key);
-
-		// If "format" attribute is defined, suppose the field is a date ...
-		if ( ! is_null($tag->getAttribute('format')))
-			$value = self::format_date($tag, $value);
-
-		if ( ! is_null($value))
-			return self::wrap($tag, $value);
-
-		return $value;
-	}
-
-
-	/**
-	 * Return one key from the tag data array or NULL if no data
-	 * The tag is supposed to have one data array, which has the same
-	 * name than his direct parent tag.
-	 *
-	 * Note :
-	 *		To set a data array from one tag method, use $tag->set('data_array_name', $value);
-	 *
-	 * Example :
-	 * In this example, we call the tag "get"
-	 * Its parent is "page"
-	 * page is supposed to have one data array called "page"
-	 * <ion:page:get key="id_page" /> : returns the field "id_page" from parent "page"
-	 *
-	 * @param FTL_Binding $tag
-	 * @param null        $key
-	 *
-	 * @return null
-	 */
-	public static function get_from_tag_data(FTL_Binding $tag, $key=NULL)
-	{
-		$value = $tag->getValue($key);
-
-		if (is_null($value))
-			$value = $tag->getValue(self::$extend_field_prefix.$key);
-
-		return $value;
-	}
-
-
-	// /TESTS ------------------------------------------------------------------------
 
 
 	/**
@@ -468,21 +312,6 @@ class TagManager
 	 */
 	public function add_globals()
 	{
-		// Add all basic settings to the globals
-		/*
-		$settings = Settings::get_settings();	
-
-		foreach($settings as $k=>$v)
-		{
-			// Do not add the languages array
-			if ( ! is_array($v))
-				$con->globals->$k = $v;	
-		}
-		*/
-
-		// Stores vars
-		// self::$context->globals->vars = array();
-		
 		// Global settings
 		self::$context->set_global('site_title', Settings::get('site_title'));
 		self::$context->set_global('google_analytics', Settings::get('google_analytics'));
@@ -496,6 +325,63 @@ class TagManager
 		
 		// Menus
 		self::register('menus', Settings::get('menus'));
+	}
+
+
+
+
+
+	/**
+	 * Return one formatted key from the direct parent tag or NULL if no data
+	 *
+	 * @param FTL_Binding $tag
+	 * @param null        $key
+	 *
+	 * @return null|string
+	 *
+	 */
+	public static function get_formatted_from_tag_data(FTL_Binding $tag, $key=NULL)
+	{
+		$value = self::get_from_tag_data($tag, $key);
+
+		// If "format" attribute is defined, suppose the field is a date ...
+		if ( ! is_null($tag->getAttribute('format')))
+			$value = self::format_date($tag, $value);
+
+		if ( ! is_null($value))
+			return self::wrap($tag, $value);
+
+		return $value;
+	}
+
+
+	/**
+	 * Return one key from the tag data array or NULL if no data
+	 * The tag is supposed to have one data array, which has the same
+	 * name than his direct parent tag.
+	 *
+	 * Note :
+	 *		To set a data array from one tag method, use $tag->set('data_array_name', $value);
+	 *
+	 * Example :
+	 * In this example, we call the tag "get"
+	 * Its parent is "page"
+	 * page is supposed to have one data array called "page"
+	 * <ion:page:get key="id_page" /> : returns the field "id_page" from parent "page"
+	 *
+	 * @param FTL_Binding $tag
+	 * @param null        $key
+	 *
+	 * @return null
+	 */
+	public static function get_from_tag_data(FTL_Binding $tag, $key=NULL)
+	{
+		$value = $tag->getValue($key);
+
+		if (is_null($value))
+			$value = $tag->getValue(self::$extend_field_prefix.$key);
+
+		return $value;
 	}
 
 
@@ -569,23 +455,6 @@ class TagManager
 			$ci->output->set_output($parsed);
 
 	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Adds a var to the global vars array
-	 * Useful to send a variable to a tag.
-	 *
-	 * @param String 	Name
-	 * @param String 	Value
-	 *
-	public static function set_global($name, $value)
-	{
-		self::$context->globals->vars[$name] = $value;
-	}
-	 */
 
 
 	// ------------------------------------------------------------------------
@@ -806,6 +675,188 @@ class TagManager
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Used for all tags which must return one tag stored value.
+	 *
+	 * Stored value :
+	 * Value set with : $tag->set('my_value', $my_value);
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 */
+	public static function tag_stored_value(FTL_Binding $tag)
+	{
+		$key = $tag->name;
+		$is = $tag->getAttribute('is');
+		$expression = $tag->getAttribute('expression');
+
+		$value = $tag->get($key);
+
+		if ( ! is_null($value))
+			return self::wrap($tag, $value);
+	}
+
+
+	/**
+	 * Returns the "name" value if set
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	null|string
+	 *
+	 * @usage	Can be used with several tags.
+	 * 			<ion:language>
+	 * 				<ion:name [tag="span" class="colored"] />
+	 * 			</ion:language>
+	 *
+	 * 			Shortcut mode :
+	 * 			<ion:language:name [tag="span" class="colored"] />
+	 *
+	 * @note	The tag is supposed to have one data array which has the
+	 * 			same name than the tag's parent.
+	 * 			In the above example :
+	 * 			- The tag <ion:name /> is looking for one data array called 'language'
+	 * 			- In this data array, the tag <ion:name /> will return the 'name' index
+	 *
+	 */
+	public static function tag_simple_value(FTL_Binding $tag)
+	{
+		$is = $tag->getAttribute('is');
+		$expression = $tag->getAttribute('expression');
+
+		// 1. Try to get from tag's data array
+		$value = $tag->getValue();
+
+		// 2. Fall down to tag locals storage
+		if (is_null($value))
+			$value = $tag->get($tag->name);
+
+		// "is" and "expression" cannot be used together.
+		if ( ! is_null($is) )
+		{
+			if (strtolower($is == 'true')) $is = TRUE;
+			if (strtolower($is == 'false')) $is = FALSE;
+
+			if ($value == $is)
+				return self::wrap($tag, $tag->expand());
+			else
+				self::$trigger_else++;
+		}
+		else if (! is_null($expression) )
+		{
+			$result = FALSE;
+			$expression = str_replace($tag->name, $value, $expression);
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+
+			if ($return === NULL)
+			{
+				if ($result)
+					return self::wrap($tag, $tag->expand());
+				else
+					self::$trigger_else++;
+			}
+		}
+		else
+		{
+			if ( ! is_null($value))
+				return self::wrap($tag, $value);
+		}
+
+		return '';
+	}
+
+	public static function tag_simple_date(FTL_Binding $tag)
+	{
+		$value = $tag->getValue();
+
+		if ( ! is_null($tag->getAttribute('format')))
+			$value = self::format_date($tag, $value);
+
+		if ( ! is_null($value))
+			return self::wrap($tag, $value);
+
+		return $value;
+	}
+
+
+	/**
+	 * Simply expand the tag.
+	 * If declared as tag_expand, the tag will simply expand its children
+	 *
+	 * @param 	FTL_Binding
+	 *
+	 * @return 	string
+	 *
+	 * @usage	In tag definition array
+	 *
+	 */
+	public static function tag_expand(FTL_Binding $tag)
+	{
+		return $tag->expand();
+	}
+
+	/**
+	 * Returns the object ID
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_id(FTL_Binding $tag)
+	{
+		$value = $tag->getValue();
+
+		// Try with the DB key name
+		if (is_null($value))
+			$value = $tag->getValue('id_' . $tag->getParentName());
+
+		return $value;
+	}
+
+	/**
+	 * Returns the object absolute's URL
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return null
+	 *
+	 */
+	public static function tag_url(FTL_Binding $tag)
+	{
+		$value = $tag->getValue('absolute_url');
+
+		// Fall down to URL
+		if (is_null($value))
+			$value = $tag->getValue();
+
+		return $value;
+	}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns one key from object
+	 * @TODO	See how to implement alternatives if the value is null or empty string
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return null|string
+	 *
+	 */
+	public static function tag_get(FTL_Binding $tag)
+	{
+		$key = $tag->getAttribute('key');
+		$value = self::get_formatted_from_tag_data($tag, $key);
+
+		// @TODO
+		// if (is_null($value) && !is_null($tag->getAttribute('or')))
+
+		return $value;
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -821,7 +872,7 @@ class TagManager
 	public static function tag_if(FTL_Binding $tag)
 	{
 		$keys = $tag->getAttribute('key');
-		$expression = $tag->getAttribute('condition');
+		$expression = $tag->getAttribute('expression');
 
 		$result = FALSE;
 		self::$trigger_else = 0;
@@ -831,7 +882,13 @@ class TagManager
 			$keys = explode('|', $keys);
 			foreach($keys as $key)
 			{
+				// 1. Try to get the value from tag's data array
 				$value = $tag->getValue($key);
+
+				// 2. Fall down to to tag's locals
+				if (is_null($value))
+					$value = $tag->get($key);
+
 				$expression = str_replace($key, $value, $expression);
 			}
 
@@ -840,11 +897,9 @@ class TagManager
 			if ($return === NULL)
 			{
 				if ($result)
-					return $tag->expand();
+					return self::wrap($tag, $tag->expand());
 				else
-				{
 					self::$trigger_else++;
-				}
 			}
 			else
 			{
@@ -905,37 +960,39 @@ class TagManager
 		return $value;
 	}
 
-	public static function store(FTL_Binding $tag)
-	{
-
-	}
-
-	public static function retrieve(FTL_Binding $tag)
-	{
-
-	}
 
 	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Gets a stored var
-	 * @usage	<ion:get var="foo" scope="<local|global>" />
-	 *
-	public static function tag_get(FTL_Binding $tag)
-	{
-		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : NULL;
-		$scope = ( !empty ($tag->attr['scope'])) ? $tag->attr['scope'] : 'locals';
 
-		if ( ! is_null($var) && !empty($tag->{$scope}->vars[$var]))
-		{
-			return $tag->{$scope}->vars[$var];
-		}
-		
+	/**
+	 * Expands the tag content if the element is active
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	In tag method :
+	 *			$tag->set('is_active', TRUE);
+	 *
+	 * 			In views :
+	 * 			<ion:my_tag:is_active>
+	 * 				This will be displayed if active
+	 * 			</ion:my_tag:is_active>
+	 *
+	 * 			<ion:my_tag:is_active is='false' >
+	 * 				This will be displayed if not active
+	 * 			</ion:my_tag:is_active>
+	 *
+	 *
+	 */
+	public static function tag_is_active(FTL_Binding $tag)
+	{
+		$is_active = ($tag->getAttribute('is') === FALSE) ? FALSE : TRUE;
+
+		if ($is_active == $tag->get('is_active') OR $is_active == $tag->getValue('is_active'))
+			return $tag->expand();
+
 		return '';
 	}
-	 */
-
 
 	// ------------------------------------------------------------------------
 
@@ -971,7 +1028,7 @@ class TagManager
 		return base_url();
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 

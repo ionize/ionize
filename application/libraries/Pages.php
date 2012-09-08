@@ -240,8 +240,22 @@ class Pages
 			
 		}
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function get_home_page_url()
+	{
+		$url = base_url();
+
+		if (Settings::get_lang('default') != Settings::get_lang())
+			$url .= Settings::get_lang() . '/';
+
+		return $url;
+	}
+
+
 	// ------------------------------------------------------------------------
 	
 	

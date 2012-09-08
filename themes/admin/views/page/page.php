@@ -666,12 +666,6 @@
 
 	<?php if ( ! empty($id_page)) :?>
 
-		// Auto-generates URL
-		<?php foreach (Settings::get_languages() as $lang) :?>
-
-			ION.initCorrectUrl('title_<?= $lang['lang']?>', 'url_<?= $lang['lang']?>');
-
-		<?php endforeach ;?>
 
 		/*
 		 * Articles List
@@ -700,6 +694,13 @@
 		mediaManager.loadMediaList('picture');
 
 	<?php else: ?>
+
+		// Auto-generates URL
+		<?php foreach (Settings::get_languages() as $lang) :?>
+
+			ION.initCorrectUrl('title_<?= $lang['lang']?>', 'url_<?= $lang['lang']?>');
+
+		<?php endforeach ;?>
 
 		// Current & parent page ID
 		var id_current = ($('id_page').value) ? $('id_page').value : '0';

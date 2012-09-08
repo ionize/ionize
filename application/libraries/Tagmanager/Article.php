@@ -27,8 +27,11 @@ class TagManager_Article extends TagManager
 		'article:active_class' => 	'tag_simple_value',
 		'article:view' => 			'tag_simple_value',
 
-		'article:author' => 		'tag_article_author_name',
-		'article:author_email' => 	'tag_article_author_email',
+		'article:author' => 		'tag_author',
+		'article:author:name' => 	'tag_simple_value',
+		'article:author:email' => 	'tag_simple_value',
+
+//		'article:author_email' => 	'tag_article_author_email',
 		'article:content' => 		'tag_article_content',
 		'article:categories' => 	'tag_article_categories',
 	);
@@ -634,7 +637,6 @@ class TagManager_Article extends TagManager
 		}
 		else
 			$_articles = array($tag->get('article'));
-			//$_articles = $tag->locals->_page['articles'];
 
 		// Add data like URL to each article
 		// and finally render each article
@@ -647,7 +649,7 @@ class TagManager_Article extends TagManager
 
 			$count = count($_articles);
 
-			foreach($_articles as $key=>$article)
+			foreach($_articles as $key => $article)
 			{
 				// Render the article
 				$tag->set('article', $article);
@@ -703,10 +705,14 @@ class TagManager_Article extends TagManager
 		 */
 		$_articles = self::get_articles($tag);
 
-		// Make articles in random order
-		$random = (isset($tag->attr['random'])) ? (bool) $tag->attr['random'] : FALSE;
-		if($random) shuffle ($articles);
-		
+		$count = count($_articles);
+		$tag->set('count', $count);
+
+		// Stop here if asked : Needed by aggregation tags
+		if ($tag->getAttribute('loop') === FALSE)
+			return $tag->expand();
+
+
 		// Add data like URL to each article
 		// and finally render each article
 		if ( ! empty($_articles))
@@ -714,7 +720,9 @@ class TagManager_Article extends TagManager
 			$_articles = self::prepare_articles($tag, $_articles);
 			$tag->set('articles', $_articles);
 
-			$count = count($_articles);
+			// Make articles in random order
+			if ( $tag->getAttribute('random') == TRUE)
+				shuffle ($articles);
 
 			foreach($_articles as $key=>$article)
 			{
@@ -893,7 +901,7 @@ class TagManager_Article extends TagManager
 		// paragraph limit ?
 		$paragraph = $tag->getAttribute('paragraph');
 
-		$content = $tag->locals->article['content'];
+		$content = $tag->getValue('content');
 
 		// Limit to x paragraph if the attribute is set
 		if ( ! is_null($paragraph))
@@ -902,6 +910,11 @@ class TagManager_Article extends TagManager
 		return self::wrap($tag, $content);
 	}
 
+
+	public static function tag_article_author(FTL_Binding $tag)
+	{
+		$tag->expand();
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -918,7 +931,7 @@ class TagManager_Article extends TagManager
 
 		foreach($tag->globals->users as $user)
 		{
-			if ($user['username'] == $tag->locals->article['author'])
+			if ($user['username'] == $tag->getValue('author'))
 				return self::wrap($tag, $user['screen_name']);
 		}
 

@@ -16,17 +16,26 @@
  */
 class TagManager_Category extends TagManager
 {
-	protected static $categories = FALSE;
+	/**
+	 * Categories local storage
+	 *
+	 */
+	protected static $categories = array();
+
+
+	/**
+	 * Current visited category URI
+	 *
+	 */
+	protected static $category_uri = NULL;
+
 
 	public static $tag_definitions = array
 	(
-		'category' =>					'tag_category',
 		'categories' => 				'tag_categories',
-		'categories:url' => 			'tag_category_url',
-		'categories:active_class' => 	'tag_category_active_class',
-		'categories:title' => 			'tag_category_title',
-		'categories:subtitle' => 		'tag_category_subtitle',	
-		'categories:name' =>			'tag_category_name',
+		'category' =>					'tag_category',
+		'category:is_active' => 		'tag_is_active',
+		'category:active_class' => 		'tag_simple_value',
 	);
 
 	public static function init()
@@ -37,86 +46,82 @@ class TagManager_Category extends TagManager
 
 
 	/**
-	 * Returns the categories regarding the given page
+	 * Returns the categories
+	 *
+	 * @param	FTL_Binding
+	 * @param	array/null
+	 *
+	 * @return	array
 	 *
 	 */
-	function get_categories($tag, $page)
+	protected function get_categories(FTL_Binding $tag, $page = NULL)
 	{
 		// Categories model
-		isset(self::$ci->category_model) OR self::$ci->load->model('category_model');
-		
-		$page_url = (config_item('url_mode') == 'short') ? 'url' : 'path';
+		// isset(self::$ci->category_model) OR self::$ci->load->model('category_model');
+		self::$ci->load->model('category_model');
 
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
-		
+		$page_url = '';
+
+		// CSS class to use for the current category
+		$active_class = $tag->getAttribute('active_class', 'active');
+
 		// Asked category
-		$uri_segments = self::$uri_segments;
-		$category_uri = array_pop(array_slice($uri_segments, -1));
+		$category_uri = self::get_category_uri();
 
 		// Get categories from this page articles
-		$categories = self::$ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
-		
+		if ( ! is_null($page))
+		{
+			$page_url = $page['absolute_url'] .'/';
+			$categories = self::$ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
+		}
+		// No page set : The URL of each category will look like base URL of the website.
+		else
+		{
+			$page_url = Pages::get_home_page_url();
+
+			$categories = self::$ci->category_model->get_lang_list(
+				array('order_by' => 'ordering ASC'),
+				Settings::get_lang()
+			);
+		}
+
 		// Flip the URI config array to have the category index first
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-		
+		$uri_config = array_flip(self::$ci->config->item('special_uri'));
+
 		// Add the URL to the category to each category row
-		// Also add the active class		
+		// Also add the active class
 		foreach($categories as $key => $category)
 		{
-			$categories[$key]['url'] = 			base_url() . $page[$page_url] . '/' . $uri_config['category'] . '/' . $category['name'];
-			$categories[$key]['lang_url'] = 	base_url() . Settings::get_lang() . '/' . $page[$page_url] . '/' . $uri_config['category'] . '/' . $category['name'];
+			$categories[$key]['url'] = 			$page_url . $uri_config['category'] . '/' . $category['name'];
+			$categories[$key]['lang_url'] = 	$page_url . $uri_config['category'] . '/' . $category['name'];
+
+			// Active category ?
 			$categories[$key]['active_class'] = ($category['name'] == $category_uri) ? $active_class : '';
+			$categories[$key]['is_active'] = 	($category['name'] == $category_uri) ? TRUE : FALSE;
 		}
 	
 		// Reorder array keys
 		return array_values($categories);
 	}
-	
-
-
-
 
 
 	/**
-	 * Return the current category
-	 * 
-	 * @param	FTLBinding		Current tag
-	 * @param	String			Wished returned value ('name', 'title', etc.)
+	 * Returns the current category URI
+	 *
+	 * @return string
 	 *
 	 */
-	public static function tag_category($tag)
+	protected function get_category_uri()
 	{
-		$field = ( ! empty($tag->attr['field'])) ? $tag->attr['field'] : NULL;
-
-		$from_page = ( ! empty($tag->attr['from'])) ? TagManager_Page::get_page_by_id($tag->attr['from']) : self::$context->registry('page');
-		
-		$uri_segments = self::$uri_segments;
-		$category_uri = array_pop(array_slice($uri_segments, -1));
-
-		// Categorie prefix in the returned string. Exemple "Category "
-		$category_value = NULL;
-
-		// Store categories in Globals, so no multiple time retrieve
-		if (self::$categories === FALSE)
+		if ( is_null(self::$category_uri))
 		{
-			self::$categories = self::get_categories($tag, $from_page);
+			$uri_segments = self::$uri_segments;
+			self::$category_uri = array_pop(array_slice($uri_segments, -1));
 		}
-
-		foreach(self::$categories as $category)
-		{
-			if ($category['name'] == $category_uri)
-			{
-				$category_value = ( ! empty($category[$field])) ? $category[$field] : $category_uri;
-			}
-		}
-		if ( ! is_null($category_value))
-		{
-			return self::wrap($tag, $category_value);
-		}
+		return self::$category_uri;
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 	
 	
@@ -128,27 +133,50 @@ class TagManager_Category extends TagManager
 	 * Categories tag
 	 * Get the categories list from within the current page or globally
 	 *
+	 * @param	FTL_Binding
+	 *
+	 * @return	string
+	 *
+	 * @usage	<ion:categories all="true">
+	 * 				...
+	 * 			</ion:categories>
 	 *
 	 */
-	public static function tag_categories($tag)
+	public static function tag_categories(FTL_Binding $tag)
 	{
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
 			return $str;
 
-		$from_page = ( ! empty($tag->attr['from'])) ? TagManager_Page::get_page_by_id($tag->attr['from']) : self::$context->registry('page');
-	
-		// Store of all categories
-		if (self::$categories === FALSE)
-		{
-			self::$categories = self::get_categories($tag, $from_page);
-		}
+		// Local storage key
+		$lsk = 'all';
+
+		// Get all categories ?
+		$page = $tag->get('page');
+		if (is_null($page))
+			$lsk = $page['name'];
+
+		if ( ! isset(self::$categories[$lsk]))
+			self::$categories[$lsk] = self::get_categories($tag, $page);
 
 		// Tag expand
 		$str = '';
-		foreach(self::$categories as $category)
+		$count = count(self::$categories[$lsk]);
+		$tag->set('count', $count);
+
+		// Stop here if asked : Needed by aggregation tags
+		if ($tag->getAttribute('loop') === FALSE)
+			return $tag->expand();
+
+		foreach(self::$categories[$lsk] as $key => $category)
 		{
-			$tag->locals->category = $category;
+			$category['index'] = $key;
+			$category['count'] = $count;
+
+			$tag->set('category', $category);
+			$tag->set('count', $count);
+			$tag->set('index', $key);
+
 			$str .= $tag->expand();
 		}
 
@@ -160,46 +188,56 @@ class TagManager_Category extends TagManager
 		return $output;
 	}
 
-	
-	// ------------------------------------------------------------------------
-
-
 	/**
-	 * Categories tags callback functions
+	 * On category tag
+	 *
+	 * @param	FTL_Binding
+	 *
+	 * @return	string
+	 *
+	 * @usage	<ion:categories>
+	 * 				<ion:category current="true">
+	 * 					<ion:title />
+	 * 					<ion:name />
+	 * 					<ion:url />
+	 * 				<ion:category>
+	 *			</ion:categories>
+	 *
+	 * 			or :
+	 * 			<ion:categories>
+	 * 				<ion:category:title current="true">
+	 * 				<ion:category:name current="true">
+	 * 				<ion:category:url current="true">
+	 *			</ion:categories>
+	 *
 	 *
 	 */
-	public static function tag_category_url($tag) 
-	{ 
-		// don't display the lang URL (by default)
-		$lang_url = FALSE;
+	public static function tag_category(FTL_Binding $tag)
+	{
+		$str = '';
 
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE' )
+		$limit_to_current = $tag->getAttribute('current');
+
+		$category_uri = self::get_category_uri();
+
+		$category = $tag->get('category');
+
+		// Limit to the current category
+		if (! is_null($limit_to_current))
 		{
-			$lang_url = TRUE;
+			if ($category['name'] == $category_uri)
+			{
+				$str = $tag->expand();
+				return self::wrap($tag, $str);
+			}
+			return '';
 		}
-
-		// Only returns the URL containing the lang code when languages > 1
-		// or atribute lang set to TRUE
-		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
+		else
 		{
-			return $tag->locals->category['lang_url'];
+			$str = $tag->expand();
+			return self::wrap($tag, $str);
 		}
-
-		return $tag->locals->category['url'];
 	}
-
-
-
-	public static function tag_category_active_class($tag) { return ($tag->locals->category['active_class'] != '' ) ? $tag->locals->category['active_class'] : '' ; }
-
-    public static function tag_category_title($tag) { return self::wrap($tag, $tag->locals->category['title']); }
-
-	public static function tag_category_subtitle($tag) { return self::wrap($tag, $tag->locals->category['subtitle']); }
-
-	public static function tag_category_name($tag) { return self::wrap($tag, $tag->locals->category['name']); }
-
 
 }
 

@@ -16,7 +16,6 @@
 &lt;ion:page>
 	&lt;ion:articles>
 		&lt;ion:article:title tag="h3"/>
-		&lt;ion:article:content />
 		&lt;ul class="boxes">
 			&lt;ion:article:medias>
 				&lt;ion:media size='200' square='true' unsharp='true'>
@@ -39,7 +38,6 @@
 <ion:page>
 	<ion:articles>
 		<ion:article:title tag="h3"/>
-		<ion:article:content />
 		<ul class="boxes">
 			<ion:article:medias>
 				<ion:media size='200' square='true' unsharp='true'>

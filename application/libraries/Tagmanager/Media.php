@@ -149,14 +149,6 @@ class TagManager_Media extends TagManager
 	{
 		$str = '';
 
-//		$from = $tag->getAttribute('from');
-//		if (is_null($from)) $from = self::get_parent_tag($tag);
-
-//		$obj = $tag->get($from);
-
-		// Fallback to page object
-//		if ( is_null($obj) ) $obj = $tag->get('page');
-
 		$medias = $tag->getValue();
 
 		if ( ! empty($medias))
@@ -164,10 +156,19 @@ class TagManager_Media extends TagManager
 			// Filter the parent's medias
 			$medias = self::get_medias($tag, $medias);
 
-			// Set the filtered medias to the tag
-//			$tag->set('medias', $medias);
+			// hmmm....
+			//	$tag->set('medias', $medias);
 
 			$count = count($medias);
+			$tag->set('count', $count);
+
+			// Stop here if asked : Needed by aggregation tags
+			if ($tag->getAttribute('loop') === FALSE)
+				return $tag->expand();
+
+			// Make medias in random order
+			if ( $tag->getAttribute('random') == TRUE)
+				shuffle ($medias);
 
 			foreach($medias as $key => $media)
 			{
@@ -277,44 +278,6 @@ class TagManager_Media extends TagManager
 					return ($dim == 'width') ? $d['0'] : $d['1'];
 				}
 			}
-		}
-		return '';
-	}
-	
-	
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Returns the media info
-	 *
-	 * @note 	Not yet written.
-	 *
-	 * @todo 	To write.
-	 *			Use of Filemanager->getFileInfo()
-	 *			Pro : 	Easy to implement
-	 *			Cons : 	Strong dependency on the .thumbs folder and the .nfo file created by FileManager.
-	 *			
-	 * @usage : <ion:info folder="medium" attribute="width|height" />
-	 *
-	 */
-	public static function tag_media_info(FTL_Binding $tag)
-	{
-		// thumb folder name (without the 'thumb_' prefix)
-		$folder = (isset($tag->attr['folder']) ) ? 'thumb_' . $tag->attr['folder'] : FALSE;
-
-		$attribute = (isset($tag->attr['attribute']) ) ? $tag->attr['attribute'] : FALSE;
-
-		$media = $tag->locals->media;
-
-		if (isset($media['info']))
-		{
-			return $media['info'][$attribute];
-		}
-		else
-		{
-			/* TODO */
-
 		}
 		return '';
 	}

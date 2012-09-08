@@ -514,17 +514,166 @@ class TagManager_Page extends TagManager
 				if ($v['id_parent'] == $parent)
 					$children[] = $v;
 			}
-			
+
 			foreach ($children as $child)
 			{
 				$arr[] = $child;
 				self::order_pages($data, $arr, $child['id_page']);
 			}
 		}
-	} 
+	}
 
 
 	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the breadcrumb data
+	 *
+	 * @param	Array	The starting page
+	 * @param	Array	All the pages
+	 * @param	String	Current language code
+	 * @param	Array
+	 *
+	 *
+	 * @return	Array	Array of pages name (in the current language)
+	 *
+	 */
+	private static function get_breadcrumb_array($page, $pages, $lang, $data = array())
+	{
+		$parent = NULL;
+
+		if (isset($page['id_parent']) ) // && $page['id_parent'] != '0')
+		{
+			// Find the parent
+			for($i=0; $i<count($pages) ; $i++)
+			{
+				if ($pages[$i]['id_page'] == $page['id_parent'])
+				{
+					$parent = $pages[$i];
+					$data = self::get_breadcrumb_array($parent, $pages, $lang, $data);
+					break;
+				}
+			}
+
+			$data[] = $page;
+		}
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return an adjacent page
+	 * Internal use
+	 *
+	 * @param	FTL_Binding object
+	 * @param	String				Mode. 'prev' or 'next'
+	 *
+	 * @return	Mixed				Page array or FALSE if no page was found.
+	 *
+	 */
+	private static function get_adjacent_page(FTL_Binding $tag, $mode='prev')
+	{
+		$mode = ($mode=='prev') ? -1 : 1;
+
+		$menu_name = $tag->getAttribute('menu');
+		$menu_name = is_null($menu_name) ? 'main' : $menu_name;
+		$id_menu = 1;
+
+		$current_page = self::$context->registry('page');
+
+		foreach(self::$context->registry('menus') as $menu)
+		{
+			if ($menu_name == $menu['name'])
+			{
+				$id_menu = $menu['id_menu'];
+			}
+		}
+
+		$level = is_null($tag->getAttribute('level')) ? 0 : $tag->getAttribute('level');
+
+		// Order the pages.
+		/*
+		 *  pages_ordered is not set !
+		 *
+		$ordered_pages = array();
+		if ( empty($tag->globals->pages_ordered))
+		{
+			self::order_pages($tag->globals->pages, $ordered_pages);
+			$tag->globals->pages = $ordered_pages;
+			$tag->globals->pages_ordered = TRUE;
+		}
+		 */
+
+		// Filter by menu and asked level : We only need the asked level pages !
+		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
+		$pages = array();
+		foreach(self::$context->registry('pages') as $p)
+		{
+			if ($p['level'] == $level && $p['id_menu'] == $id_menu)
+				$pages[] = $p;
+		}
+
+		// Filter on 'appears'=>'1'
+		$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_appearing_pages')));
+
+		foreach($pages as $idx => $page)
+		{
+			if ($page['id_page'] == $current_page['id_page'])
+			{
+				if (!empty($pages[$idx + $mode]))
+				{
+					return $pages[$idx + $mode];
+				}
+			}
+		}
+
+		return FALSE;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Processes the next / previous page tags result
+	 * Internal use only.
+	 *
+	 */
+	private static function process_next_prev_page(FTL_Binding $tag, $page)
+	{
+		if ($page != FALSE)
+		{
+			// helper
+			$helper = $tag->getAttribute('helper', 'navigation');
+
+			// Get helper method
+			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_next_prev_page';
+			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
+
+			// Prefix ?
+			$prefix = $tag->getAttribute('prefix', '');
+
+			// load the helper
+			self::$ci->load->helper($helper);
+
+			// Return the helper function result
+			if (function_exists($helper_function))
+			{
+				$return = call_user_func($helper_function, $page, $prefix);
+
+				return self::wrap($tag, $return);
+			}
+		}
+
+		return '';
+	}
+
+
+	// -- TAGS DEFINITION ------------------------------------------------------------------------
 
 
 	public static function tag_page(FTL_Binding $tag)
@@ -803,79 +952,6 @@ class TagManager_Page extends TagManager
 
 	// ------------------------------------------------------------------------
 
-	
-	/**
-	 * Return an adjacent page
-	 * Internal use
-	 *
-	 * @param	FTL_Binding object 
-	 * @param	String				Mode. 'prev' or 'next'
-	 *
-	 * @return	Mixed				Page array or FALSE if no page was found.
-	 *
-	 */
-	private static function get_adjacent_page(FTL_Binding $tag, $mode='prev')
-	{
-		$mode = ($mode=='prev') ? -1 : 1;
-		
-		$menu_name = $tag->getAttribute('menu');
-		$menu_name = is_null($menu_name) ? 'main' : $menu_name;
-		$id_menu = 1;
-
-		$current_page = self::$context->registry('page');
-
-		foreach(self::$context->registry('menus') as $menu)
-		{
-			if ($menu_name == $menu['name'])
-			{
-				$id_menu = $menu['id_menu'];
-			}	
-		}
-
-		$level = is_null($tag->getAttribute('level')) ? 0 : $tag->getAttribute('level');
-		
-		// Order the pages.
-		/*
-		 *  pages_ordered is not set ! 
-		 * 
-		$ordered_pages = array();
-		if ( empty($tag->globals->pages_ordered))
-		{
-			self::order_pages($tag->globals->pages, $ordered_pages);
-			$tag->globals->pages = $ordered_pages;
-			$tag->globals->pages_ordered = TRUE;
-		}
-		 */
-
-		// Filter by menu and asked level : We only need the asked level pages !
-		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
-		$pages = array();
-		foreach(self::$context->registry('pages') as $p)
-		{
-			if ($p['level'] == $level && $p['id_menu'] == $id_menu)
-				$pages[] = $p;
-		}
-		
-		// Filter on 'appears'=>'1'
-		$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_appearing_pages')));
-		
-		foreach($pages as $idx => $page)
-		{
-			if ($page['id_page'] == $current_page['id_page'])
-			{
-				if (!empty($pages[$idx + $mode]))
-				{
-					return $pages[$idx + $mode];
-				}
-			}
-		}
-		
-		return FALSE;
-	}
-
-
-	// ------------------------------------------------------------------------
-
 
 	/**
 	 * Next page tag
@@ -916,59 +992,21 @@ class TagManager_Page extends TagManager
 	
 		return self::process_next_prev_page($tag, $page);
 	}
-	
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Processes the next / previous page tags result
-	 * Internal use only.
-	 *	 
-	 */
-	private static function process_next_prev_page(FTL_Binding $tag, $page)
-	{
-		if ($page != FALSE)
-		{
-			// helper
-			$helper = $tag->getAttribute('helper', 'navigation');
-
-			// Get helper method
-			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_next_prev_page';
-			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-	
-			// Prefix ?
-			$prefix = $tag->getAttribute('prefix', '');
-	
-			// load the helper
-			self::$ci->load->helper($helper);
-			
-			// Return the helper function result
-			if (function_exists($helper_function))
-			{
-				$return = call_user_func($helper_function, $page, $prefix);
-				
-				return self::wrap($tag, $return);
-			}
-		}
-		
-		return '';
-	}	
 
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Displays the breacrumb : You are here !!!
-	 * 
-	 * @param	FTL_Binding object 
+	 *
+	 * @param	FTL_Binding object
 	 * @return	String	The parsed view
-	 * 
+	 *
 	 */
 	public static function tag_breadcrumb(FTL_Binding $tag)
 	{
-		// Anchor enclosing tag 
+		// Anchor enclosing tag
 		$subtag_open = ( ! is_null($tag->getAttribute('subtag'))) ? '<' . $tag->getAttribute('subtag') . '>' : '';
 		$subtag_close = ( ! is_null($tag->getAttribute('subtag'))) ? '</' . $tag->getAttribute('subtag') . '>' : '';
 
@@ -977,7 +1015,7 @@ class TagManager_Page extends TagManager
 			$separator = htmlentities(html_entity_decode($separator));
 
 		$starting_level = $tag->getAttribute('starting_level', FALSE);
-		
+
 		// Pages && page
 		$pages = self::$context->registry('pages');
 		$page = self::$context->registry('page');
@@ -985,10 +1023,10 @@ class TagManager_Page extends TagManager
 		// Get the Breadcrumbs array
 		$lang = Settings::get_lang();
 		$breadcrumb = self::get_breadcrumb_array($page, $pages, $lang );
-		
+
 		// Filter appearing pages
 		$breadcrumb = array_values(array_filter($breadcrumb, array(__CLASS__, '_filter_appearing_pages')));
-		
+
 		if ($starting_level != FALSE)
 		{
 			$new_breadcrumb = array();
@@ -1006,7 +1044,7 @@ class TagManager_Page extends TagManager
 		for($i=0; $i<count($breadcrumb); $i++)
 		{
 			$url = $breadcrumb[$i]['absolute_url'];
-			
+
 			// Adds the suffix if defined
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
@@ -1014,46 +1052,12 @@ class TagManager_Page extends TagManager
 
 			$return .= $subtag_open . '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' . $subtag_close;
 		}
-		
+
 		return self::wrap($tag, $return);
 	}
-	
-	
-	/**
-	 * Returns the breadcrumb data
-	 *
-	 * @param	Array	The starting page
-	 * @param	Array	All the pages
-	 * @param	String	Current language code
-	 * @param	Array
-	 *
-	 *
-	 * @return	Array	Array of pages name (in the current language)
-	 *
-	 */
-	private static function get_breadcrumb_array($page, $pages, $lang, $data = array())
-	{
-		$parent = NULL;
-		
-		if (isset($page['id_parent']) ) // && $page['id_parent'] != '0')
-		{
-			// Find the parent
-			for($i=0; $i<count($pages) ; $i++)
-			{
-				if ($pages[$i]['id_page'] == $page['id_parent'])
-				{
-					$parent = $pages[$i];
-					$data = self::get_breadcrumb_array($parent, $pages, $lang, $data);
-					break;
-				}
-			}
-			
-			$data[] = $page;
-		}
-		return $data;
-	}
 
-	
+
+
 	// ------------------------------------------------------------------------
 
 

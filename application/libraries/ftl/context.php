@@ -130,7 +130,9 @@ class FTL_Context
 			// split them and parse them separately, as if they are nested
 			$name1 = substr($name, 0, $pos);
 			$name2 = substr($name, $pos + 1);
-			return $this->render_tag($name1, array(), array(
+
+			// return $this->render_tag($name1, array(), array(
+			return $this->render_tag($name1, $args, array(
 					'name' => $name2,
 					'args' => $args,
 					'content' => $block
