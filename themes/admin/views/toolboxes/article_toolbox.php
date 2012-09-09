@@ -71,7 +71,14 @@
 			// Article's current context (page)
 			var rel = ($('rel').value).split(".");
 			var data = {'id_page': rel[0]};
-			ION.formWindow(	'DuplicateArticle', 'newArticleForm', 'ionize_title_duplicate_article', 'article/duplicate/' + id + '/' + url, {width:520, height:280}, data);
+			ION.formWindow(
+				'DuplicateArticle',
+				'newArticleForm',
+				'ionize_title_duplicate_article',
+				'article/duplicate/' + id + '/' + url,
+				{width:520, height:320},
+				data
+			);
 		});
 		
 		$('addMedia').addEvent('click', function(e)

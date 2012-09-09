@@ -219,11 +219,12 @@
 	$('usersListTab').addEvent('click', function()
 	{
 		if ( ! this.retrieve('loaded'))
-		{ 
-			ION.updateElement({
-				'url': 'users/users_list',
-				'element': 'usersList'
-			});
+		{
+			ION.HTML(
+				'users/users_list',
+				{},
+				{update:'usersList'}
+			);
 		}
 	});
 	$('usersListTab').fireEvent('click');

@@ -9,8 +9,7 @@
 <ion:page id="3">
 	<ion:articles>
 		<h3>Article ID : <ion:article:id/> - Title : <ion:article:title/></h3>
-		<p>Article categories : </p>
-		<ion:article:categories link="true" separator=" &bull; "/>
+		<ion:article:content paragraph="1" />
 	</ion:articles>
 </ion:page>
 

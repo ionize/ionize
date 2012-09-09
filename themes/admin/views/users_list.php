@@ -55,7 +55,7 @@
 	
 	<?php foreach($users as $user) :?>
 		
-		<tr class="users<?= $user['id_user'] ?>">
+		<tr class="users<?= $user['id_user'] ?> users">
 			<td><?= $user['id_user'] ?></td>
 			<td><a class="user" id="user<?= $user['id_user'] ?>" rel="<?= $user['id_user'] ?>" href="<?= admin_url() ?>users/edit/<?= $user['id_user'] ?>"><?= $user['username'] ?></a></td>
 			<td><?= $user['screen_name'] ?></td>
@@ -93,8 +93,8 @@
 	 * Sortable on the current users list table
 	 *
 	 */
-	new SortableTable('usersTable',{sortOn: 0, sortBy: 'ASC'});
-	
+ 	new SortableTable('usersTable',{sortOn: 0, sortBy: 'ASC'});
+
 	/**
 	 * User Edit window
 	 *
