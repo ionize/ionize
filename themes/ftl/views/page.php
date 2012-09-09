@@ -25,6 +25,10 @@ test_page_id
 test_article_id_1
 test_article_id_2
 test_content_iframe :		Content test : embedded iFrames from Youtube and Google maps
+test_article_categories :	Categories from each article
+test_article_user : 		User who wrote the article in Ionize
+test_article_prev_next :	Previous / Next article builder
+
 
 // Navigation
 test_tag_navigation
@@ -40,19 +44,19 @@ test_tag_categories
 
 // @TODO :
 test_tag_medias_module : 		Medias within one module
-test_tag_article_categories :	Categories of one article
-test_tag_article_author : 		Author's data from one article
-								Join the user table in SQL directly !
+
 test_tag_elements
 test_tag_media_size
-test_subnavigation_tag			Remove ???
+test_tag_subnavigation			Remove ???
 test_tag_pagination
+
+
 
 test_temp : 				Temp dev's tests
 
 */
 ?>
-<ion:partial view="test_article_id_2" />
+<ion:partial view="test_article_prev_next" />
 
 
 

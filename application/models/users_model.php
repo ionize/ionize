@@ -23,6 +23,10 @@
 
 class Users_model extends Base_model 
 {
+
+	public $group_table = 'user_groups';
+
+
 	/**
 	 * Constructor
 	 *
@@ -35,6 +39,26 @@ class Users_model extends Base_model
 		$this->table =		'users';
 		$this->pk_name = 	'id_user';
 		$this->meta_table = 'users_meta';
+	}
+
+
+	function get($where)
+	{
+		$jt = $this->group_table;
+
+		$select = array(
+			'level',
+			'slug',
+			'group_name',
+			'description',
+		);
+
+		foreach($select as &$field)	$field = $jt.'.'.$field;
+
+		$this->{$this->db_group}->select(implode(',', $select));
+		$this->{$this->db_group}->join($jt, $jt.'.id_group = '.$this->table . '.id_group');
+
+		return  parent::get($where);
 	}
 
 

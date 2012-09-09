@@ -27,13 +27,14 @@ class TagManager_Article extends TagManager
 		'article:active_class' => 	'tag_simple_value',
 		'article:view' => 			'tag_simple_value',
 
-		'article:author' => 		'tag_author',
-		'article:author:name' => 	'tag_simple_value',
-		'article:author:email' => 	'tag_simple_value',
-
-//		'article:author_email' => 	'tag_article_author_email',
 		'article:content' => 		'tag_article_content',
 		'article:categories' => 	'tag_article_categories',
+
+		'article:next' => 	'tag_next_article',
+		'article:prev' => 	'tag_prev_article',
+
+
+
 	);
 
 	// ------------------------------------------------------------------------
@@ -62,6 +63,11 @@ class TagManager_Article extends TagManager
 	 */
 	function get_articles(FTL_Binding $tag)
 	{
+
+// @TODO : Write local cache
+
+log_message('error', ' -- CALL : get_articles()' );
+
 		$articles = array();
 
 		// Local tag page
@@ -708,30 +714,26 @@ class TagManager_Article extends TagManager
 		$count = count($_articles);
 		$tag->set('count', $count);
 
+		$_articles = self::prepare_articles($tag, $_articles);
+		$tag->set('articles', $_articles);
+
+		// Make articles in random order
+		if ( $tag->getAttribute('random') == TRUE)
+			shuffle ($articles);
+
 		// Stop here if asked : Needed by aggregation tags
 		if ($tag->getAttribute('loop') === FALSE)
 			return $tag->expand();
 
-
 		// Add data like URL to each article
 		// and finally render each article
-		if ( ! empty($_articles))
+		foreach($_articles as $key=>$article)
 		{
-			$_articles = self::prepare_articles($tag, $_articles);
-			$tag->set('articles', $_articles);
+			$tag->set('article', $article);
+			$tag->set('index', $key);
+			$tag->set('count', $count);
 
-			// Make articles in random order
-			if ( $tag->getAttribute('random') == TRUE)
-				shuffle ($articles);
-
-			foreach($_articles as $key=>$article)
-			{
-				$tag->set('article', $article);
-				$tag->set('index', $key);
-				$tag->set('count', $count);
-
-				$str .= $tag->expand();
-			}
+			$str .= $tag->expand();
 		}
 
 		// Experimental : To allow tags in articles
@@ -779,108 +781,66 @@ class TagManager_Article extends TagManager
 	/**
 	 * Returns HTML categories links wrapped by the given tag
 	 *
-	 * @TODO : 	Add the open and closing tag for each anchor.
-	 *			Example : <li><a>... here is the anchor ... </a></li>
+	 * @param	FTL_Binding
+	 *
+	 * @return	string
+	 *
+	 * @usage	<ion:article:categories [tag="ul" child-tag="li" link="true" separator=" &bull; "] />
+	 *
 	 *
 	 */
 	public static function tag_article_categories(FTL_Binding $tag)
 	{
 		$data = array();
 
-		// Tag's article
-		$article = $tag->get('article');
+		$categories = TagManager_Category::get_categories($tag);
 
-		// Page URL index to use
-		$page_url = (config_item('url_mode') == 'short') ? 'url' : 'path';
-		
-		// HTML Separatorof each category
+		// HTML Separator of each category
 		$separator = $tag->getAttribute('separator', ' | ');
 		
 		// Make a link from each category or not. Default : TRUE
 		$link = $tag->getAttribute('link', FALSE);
 
-		// Field to return for each category. "title" by default, but can be "name", "subtitle'
-		$field =  $tag->getAttribute('field', 'title');
+		// Field to return for each category.
+		$field =  $tag->getAttribute('key', 'title');
 
-		// don't display the lang URL (by default)
-		$lang_url = '';
+		// Child tag : HTML tag for each element
+		$child_tag =  $tag->getAttribute('child-tag');
+		$child_class =  $tag->getAttribute('child-class');
 
-		// Global tag and class, for memory
-		$html_tag =  $tag->getAttribute('tag', FALSE);
-		$class =  $tag->getAttribute('class', FALSE);
-		
-		// Tag and class for each category, if set.
-		$subtag =  $tag->getAttribute('subtag', FALSE);
-
-
-		// If lang attribute is set to TRUE, force the lang code to be in the URL
-		// Usefull only if the website has only one language
-		if ($tag->getAttribute('lang') == 'TRUE' )
-		{
-			$lang_url = TRUE;
-		}
-
-		// Only returns the URL containing the lang code when languages > 1
-		// or atribute lang set to TRUE
-		if (count(Settings::get_online_languages()) > 1 OR $lang_url === TRUE)
-		{
-			$lang_url = Settings::get_lang().'/';
-		}
-		
-		// Current page
-		$page = $tag->locals->_page;
-	
-			
-		// Get the category URI segment from /config/ionize.php config file
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-
-		$category_uri = $uri_config['category'];
-
-		// Get the categories from current article
-
-		$categories = ( ! empty($article['categories'])) ? $article['categories'] : array();
+		// Separator attribute is not compatible with child-tag
+		if ( ! is_null($child_tag))
+			$separator = FALSE;
 
 		// Build the anchor array
 		foreach($categories as $category)
 		{
-			$category_string = '';
-
-			if ($subtag !== FALSE)
-			{
-				// Set the local category, to get the class from current category
-				$tag->locals->category = $category;
-				$subclass = self::get_attribute($tag, 'subclass');
-				$subtag = self::get_attribute($tag, 'subtag');
-				
-				// Replace the class and tag by the subclass and subtag
-				$tag->attr['class'] = $subclass;
-				$tag->attr['tag'] = $subtag;
-	
-				$category_string = self::wrap($tag, $category[$field]);
-			}
-			else
-			{
-				$category_string = $category[$field];
-			}
-			
-			$url = anchor(base_url().$lang_url.$page[$page_url].'/'.$category_uri.'/'.$category['name'], $category_string);
+			$str = $category[$field];
+			$tag->set('category', $category);
 
 			if ($link == TRUE)
-				$category_string = $url;
-			
-			$data[] = $category_string;
-			
-// To make nested tags working...
-//			$category['url'] = $url;
-//			$tag->locals->category = $category;
-//			$tag->expand();
-			
+				$str = anchor($category['url'], $str);
+
+			if ( ! is_null($child_tag))
+			{
+				// Replace the class and tag by the child tag & class
+				$html_tag =  $tag->getAttribute('tag');
+				$html_class =  $tag->getAttribute('class');
+
+				$tag->setAttribute('tag', $child_tag);
+				$tag->setAttribute('class', $child_class);
+
+				// Process the child rendering
+				$str = self::wrap($tag, $str);
+
+				// Restore the tag & class for parent
+				$tag->setAttribute('tag', $html_tag);
+				$tag->setAttribute('class', $html_class);
+			}
+
+			$data[] = $str;
 		}
 
-		$tag->attr['tag'] = $html_tag;
-		$tag->attr['class'] = $class;
-		
 		return self::wrap($tag, implode($separator, $data));
 	}
 
@@ -911,63 +871,13 @@ class TagManager_Article extends TagManager
 	}
 
 
-	public static function tag_article_author(FTL_Binding $tag)
-	{
-		$tag->expand();
-	}
-
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_article_author_name(FTL_Binding $tag)
-	{
-		// Get the users if they're not defined
-		if (!isset($tag->globals->users))
-		{
-			self::$ci->base_model->set_table('users');
-			$tag->globals->users = self::$ci->base_model->get_list();
-		}
-		self::$ci->base_model->set_table('users');
-
-		foreach($tag->globals->users as $user)
-		{
-			if ($user['username'] == $tag->getValue('author'))
-				return self::wrap($tag, $user['screen_name']);
-		}
-
-		return '';
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_article_author_email(FTL_Binding $tag)
-	{
-		// Get the users if they're not defined
-		if (!isset($tag->globals->users))
-		{
-			self::$ci->base_model->set_table('users');
-			$tag->globals->users = self::$ci->base_model->get_list();
-		}
-		
-		foreach($tag->globals->users as $user)
-		{
-			if ($user['username'] == $tag->locals->article['author'])
-				return self::wrap($tag, $user['email']);
-		}
-
-		return '';
-	}
-
-
 	// ------------------------------------------------------------------------
 	
 	public static function tag_prev_article(FTL_Binding $tag)
 	{
 		$article = self::get_adjacent_article($tag, 'prev');
 	
-		return self::process_next_prev_article($tag, $article);
+		return self::process_prev_next_article($tag, $article);
 	}
 
 
@@ -978,7 +888,7 @@ class TagManager_Article extends TagManager
 	{
 		$article = self::get_adjacent_article($tag, 'next');
 	
-		return self::process_next_prev_article($tag, $article);
+		return self::process_prev_next_article($tag, $article);
 	}
 
 
@@ -987,32 +897,28 @@ class TagManager_Article extends TagManager
 
 	private static function get_adjacent_article(FTL_Binding $tag, $mode='prev')
 	{
-		$page = $tag->get('page');
+		$found_article = NULL;
 
-		$tag->set('from', $page['id_page']);
+		// Articles & Current article
+		$articles = $tag->get('articles');
+		$article = self::registry('article');
 
-		$articles = self::get_articles($tag);
-		
-		$uri = self::$uri_segments;
-		$uri = array_pop($uri);
-		
-		$wished_article = array();
-		
 		$enum = ($mode=='prev') ? -1 : 1;
 		
-		foreach($articles as $key => $article)
+		foreach($articles as $key => $_article)
 		{
-			if ($article['name'] == $uri)
+			if ($_article['id_article'] == $article['id_article'])
 			{
 				if ( ! empty($articles[$key + $enum]))
 				{
-					$wished_article = $articles[$key + $enum];
+					$found_article = $articles[$key + $enum];
 					break;
 				}
 			}
 		}
+		$tag->set('article', $found_article);
 		
-		return $wished_article;
+		return $found_article;
 	}
 
 	// ------------------------------------------------------------------------
@@ -1076,7 +982,6 @@ class TagManager_Article extends TagManager
 	}
 
 
-
 	/**
 	 * Processes the next / previous article tags result
 	 * Internal use only.
@@ -1087,34 +992,27 @@ class TagManager_Article extends TagManager
 	 * @return string
 	 *	 
 	 */
-	private static function process_next_prev_article(FTL_Binding $tag, $article)
+	private static function process_prev_next_article(FTL_Binding $tag, $article=NULL)
 	{
-		if ($article != FALSE)
+		if ( ! is_null($article))
 		{
-			// helper
-			$helper = $tag->getAttribute('helper', 'navigation');
+			$value_key = $tag->getAttribute('display', 'title');
+			$value = $tag->getValue($value_key);
 
-			// Get helper method
-			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_next_prev_article';
-			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-	
-			// Prefix ?
-			$helper = $tag->getAttribute('prefix', '');
-
-			// load the helper
-			self::$ci->load->helper($helper);
-			
-			// Return the helper function result
-			if (function_exists($helper_function))
+			// Build the A HTML element ?
+			// This is not compatible with the helper attribute, which need a "pure" value
+			if (is_null($tag->getAttribute('helper')) && $tag->getAttribute('href') === TRUE)
 			{
-				$return = call_user_func($helper_function, $article, $prefix);
-				
-				return self::wrap($tag, $return);
+				$url = $tag->getValue('url');
+				$value = self::create_href($tag, $url);
 			}
+
+			return self::wrap($tag, $value);
 		}
 		
 		return '';
 	}
+
 
 	/**
 	 * Prepare the articles array

@@ -420,6 +420,14 @@ function auto_link($str, $type = 'both', $popup = FALSE)
 	return $str;
 }
 
+if( ! function_exists('validate_url'))
+{
+	function validate_url($url)
+	{
+		$pattern = "/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i";
+		return (bool) preg_match($pattern, $url);
+	}
+}
 
 /**
  * Returns the HTTP answer for one URL or FALSE if the URL wasn't found
@@ -447,7 +455,11 @@ if( ! function_exists('check_url'))
 			}
 			return FALSE;
 		}
-		return '200';
+		else
+		{
+			return @fsockopen("$url", 80, $errno, $errstr, 30);
+		}
+		return FALSE;
 	}
 }
 

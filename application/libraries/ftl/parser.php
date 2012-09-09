@@ -252,13 +252,12 @@ class FTL_Parser{
 	{
 		$arguments = array();
 		
-		preg_match_all('@(\w+?)\s*=\s*(\'|")(.*?)\2@', $string, $matches, PREG_SET_ORDER);
+		preg_match_all('@([\w-]+?)\s*=\s*(\'|")(.*?)\2@', $string, $matches, PREG_SET_ORDER);
 		
 		foreach($matches as $match)
 		{
 			$arguments[$match[1]] = $match[3];
 		}
-		
 		return $arguments;
 	}
 	

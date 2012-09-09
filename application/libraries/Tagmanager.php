@@ -32,7 +32,7 @@ class TagManager
 	protected static $module_folders = array();
 	
 	protected static $trigger_else = 0;
-	
+
 	static $ci;
 
 //	protected static $_cache = array();
@@ -74,6 +74,7 @@ class TagManager
 		'name' => 			'tag_simple_value',
 		'title' => 			'tag_simple_value',
 		'subtitle' => 		'tag_simple_value',
+		'description' => 	'tag_simple_value',
 		'date' => 			'tag_simple_date',
 
 		// System / Core tags
@@ -813,15 +814,17 @@ class TagManager
 		if (is_null($value))
 			$value = $tag->getValue('id_' . $tag->getParentName());
 
-		return $value;
+		return self::wrap($tag, $value);
 	}
 
 	/**
 	 * Returns the object absolute's URL
 	 *
-	 * @param FTL_Binding $tag
+	 * @param 	FTL_Binding $tag
 	 *
-	 * @return null
+	 * @return 	string
+	 *
+	 * @usage	<ion:url [href="TRUE" title="title/name" attributes="rel=3" popup="TRUE" ] />
 	 *
 	 */
 	public static function tag_url(FTL_Binding $tag)
@@ -832,7 +835,10 @@ class TagManager
 		if (is_null($value))
 			$value = $tag->getValue();
 
-		return $value;
+		// Creates one A HTML element if the tag attribute "href" is set to true
+		$value = self::create_href($tag, $value);
+
+		return self::wrap($tag, $value);
 	}
 
 	// ------------------------------------------------------------------------
@@ -1731,7 +1737,37 @@ class TagManager
 
 
 	// ------------------------------------------------------------------------
-	
+
+	/**
+	 * Creates and return one formatted HTML A element
+	 *
+	 * @param 	FTL_Binding
+	 * @param	string
+	 *
+	 * @return 	string
+	 *
+	 */
+	public static function create_href(FTL_Binding $tag, $url)
+	{
+		if ($tag->getAttribute('href') === TRUE)
+		{
+			if (validate_url($url))
+			{
+				$title = $url;
+				$title_key = $tag->getAttribute('display', 'title');
+				$attributes = $tag->getAttribute('attributes');
+
+				if ( ! is_null($tag->getValue($title_key)))
+					$title = $tag->getValue($title_key);
+
+				if ($tag->getAttribute('popup') === TRUE)
+					$url = anchor_popup($url, $title, $attributes);
+				else
+					$url = anchor($url, $title, $attributes);
+			}
+		}
+		return $url;
+	}
 	
 	/**
 	 * Wraps a tag value depending on the given HTML tag
@@ -1751,20 +1787,29 @@ class TagManager
 		$html_tag = $tag->getAttribute('tag', FALSE);
 		$class = $tag->getAttribute('class', '');
 		$id = $tag->getAttribute('id', '');
-		$prefix = $tag->getAttribute('prefix', '');
-		$suffix = $tag->getAttribute('suffix', '');
+		$prefix = $tag->getAttribute('prefix');
+		$suffix = $tag->getAttribute('suffix');
 
 		if ( ! empty($class)) $class = ' class="'.$class.'"';
 		if ( ! empty($id)) $id = ' id="'.$id.'"';
 
 		// helper
-		$helper = $tag->getAttribute('helper', FALSE);
+		$helper = $tag->getAttribute('helper');
 
 		// PHP : Process the value through the passed in function name.
-		if ( ! empty($tag->attr['function'])) $value = self::php_process($value, $tag->attr['function'] );
+		if ( ! is_null($tag->getAttribute('function')))
+			$value = self::php_process($value, $tag->getAttribute('function') );
 
-		if ($helper !== FALSE)
+		// Helper
+		if ( ! is_null($helper))
 			$value = self::helper_process($value, $helper);
+
+		// Prefix / Suffix
+		if ( ! is_null($prefix))
+			$value = self::prefix_suffix_process($value, $prefix);
+
+		if ( ! is_null($suffix))
+			$value = self::prefix_suffix_process($value, $suffix, 2);
 
 		if ($html_tag !== FALSE)
 		{
@@ -1773,7 +1818,7 @@ class TagManager
 		}
 		
 		if ( ! empty ($value) )
-			return $open_tag . $prefix . $value . $suffix . $close_tag;
+			return $open_tag . $value . $close_tag;
 		else
 			return '';
 	}
@@ -1828,34 +1873,39 @@ class TagManager
 
 
 	// ------------------------------------------------------------------------
-	
-	
-	
+
 	/**
-	 * Return the parent tag name or 'page' if not found
+	 * @TODO : 	Project function
+	 * 			Should return the HTMl attributes as formatted string
+	 * 			Gives ability to write one expression to get dynamic data
+	 *			Not so usable ...
 	 *
-	protected static function get_parent_tag(FTL_Binding $tag)
+	 * @param 	FTL_Binding $tag
+	 * @param 	string      $attr
+	 *
+	public static function process_html_tag_attributes(FTL_Binding $tag, $attr='tag-attributes')
 	{
-		$tag_name = 'page';
-		
-		// Get the tag path
-		$tag_path = explode(':', $tag->nesting());
+		$expression = $tag->getAttribute($attr);
 
-		// Remove the current tag from the path
-		array_pop($tag_path);
+		if ( ! is_null($expression))
+		{
+			$keys = explode('|', $keys);
+			foreach($keys as $key)
+			{
+				// 1. Try to get the value from tag's data array
+				$value = $tag->getValue($key);
 
-		// If no parent, the default parent is 'page'
-		$obj_tag = (count($tag_path) > 0) ? array_pop($tag_path) : $tag_name;
-		
-		if ($obj_tag == 'partial') $obj_tag = array_pop($tag_path);
-		
-		// Parent name. Removes plural from parent tag name if any.
-		if (substr($obj_tag, -1) == 's')
-			$tag_name = substr($obj_tag, 0, -1);
-		else if($obj_tag != '')
-			$tag_name = $obj_tag;
-		
-		return $tag_name;
+				// 2. Fall down to to tag's locals
+				if (is_null($value))
+					$value = $tag->get($key);
+
+				$expression = str_replace($key, $value, $expression);
+			}
+
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+
+
+		}
 	}
 	 */
 
@@ -1920,7 +1970,36 @@ class TagManager
 		
 		return $value;	
 	}
-	
+
+	/**
+	 * Add one prefix / suffix to the given value
+	 * If the prefix or suffix looks like a translation call, try to translate
+	 *
+	 *
+	 * @param string
+	 * @param string		Prefix / Suffix
+	 * @param int 			1 : prefix mode, 2 : suffix mode
+	 *
+	 *
+	 * @return string
+	 */
+	protected static function prefix_suffix_process($value, $string, $mode=1)
+	{
+		if (substr(trim($string), 0, 5) == 'lang(')
+		{
+			$translated_string = FALSE;
+			$return = @eval("\$translated_string = ".trim($string).";");
+
+			if ($return === NULL)
+				$string = $translated_string;
+			else
+				$string = self::$context->show_error('Prefix or Suffix incorrect', $string);
+		}
+
+		$value = $mode == 1 ? $string . $value : $value . $string;
+
+		return $value;
+	}
 	
 	// ------------------------------------------------------------------------
 

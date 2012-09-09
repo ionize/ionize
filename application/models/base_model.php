@@ -224,28 +224,34 @@ class Base_model extends CI_Model
 
 		if ( ! is_null($lang))
 		{
-			$this->{$this->db_group}->select('t1.*, t2.*', FALSE);
-			$this->{$this->db_group}->join($this->lang_table.' t2', 't2.'.$this->pk_name.' = t1.'.$this->pk_name, 'inner');
-			$this->{$this->db_group}->where('t2.lang', $lang);		
+			$this->{$this->db_group}->select($this->table.'.*,'.$this->lang_table.'.*', FALSE);
+			$this->{$this->db_group}->join(
+				$this->lang_table,
+				$this->lang_table.'.'.$this->pk_name.' = '.$this->table.'.'.$this->pk_name,
+				'inner'
+			);
+			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 		else
 		{
-			$this->{$this->db_group}->select('t1.*', FALSE);
+			$this->{$this->db_group}->select($this->table.'.*', FALSE);
 		}
 	
 		if ( is_array($where) )
 		{
 			foreach ($where as $key => $value)
 			{
-				$this->{$this->db_group}->where('t1.'.$key, $value);
+				$this->{$this->db_group}->where($this->table.'.'.$key, $value);
 			}
 		}
 		else
 		{
-			$this->{$this->db_group}->where('t1.'.$this->pk_name, $where);
+			$this->{$this->db_group}->where($this->table.'.'.$this->pk_name, $where);
 		}
 		
-		$query = $this->{$this->db_group}->get($this->table.' t1');
+		$query = $this->{$this->db_group}->get($this->table);
+
+		// log_message('error', $this->{$this->db_group}->last_query());
 
 		if ( $query->num_rows() > 0)
 		{
@@ -485,7 +491,6 @@ class Base_model extends CI_Model
 		$this->{$this->db_group}->select($this->table.'.*', FALSE);
 
 		$query = $this->{$this->db_group}->get($this->table);
-		// log_message('error', $this->{$this->db_group}->last_query());
 
 		if($query->num_rows() > 0)
 		{
@@ -2183,6 +2188,7 @@ class Base_model extends CI_Model
 	 * List fields from one table of the current DB group
 	 * and stores the result locally.
 	 *
+	 * @param	string
 	 * @return	Array	List of table fields
 	 *
 	 */
@@ -2258,7 +2264,32 @@ class Base_model extends CI_Model
 		}
 	}
 
+/*
+ * @TODO : Finish.
+ *
+	function join($joined_table, $fields, $condition, $source_table = NULL, $how = NULL)
+	{
+		$select = '';
+		$prefix = '';
+		$select_table_name = $joined_table;
+		$join_table_name = $joined_table;
 
+		if (is_array($joined_table) && isset($joined_table[1]))
+		{
+			$select_table_name = $joined_table[0] . ' as ' . $joined_table[1];
+			$join_table_name = $joined_table[1];
+			$prefix = $joined_table[1] . '.';
+		}
+
+		foreach($fields as $key => $field)
+		{
+			if ( $key > 0) $select .= ',';
+			$select .= $prefix.$joined_table.'.'.$field;
+		}
+		$this->{$this->db_group}->select($select);
+		$this->{$this->db_group}->join($join_table_name, $join_table_name.'.');
+	}
+*/
 }
 
 

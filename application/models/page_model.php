@@ -66,73 +66,26 @@ class Page_model extends Base_model
 			return $data[0];
 
 		return array();
-/*
-		$data = array();
-
-		if ( ! is_null($lang))
-		{
-			$this->{$this->db_group}->select('t1.*, t2.*, type.id_type', false);
-			$this->{$this->db_group}->join($this->lang_table.' t2', 't2.'.$this->pk_name.' = t1.'.$this->pk_name, 'inner');
-			$this->{$this->db_group}->where('t2.lang', $lang);
-
-			// URL depends on  lang, it is not possible to get it outside one lang query
-			$this->{$this->db_group}->select('path, path_ids, full_path_ids');
-			$this->{$this->db_group}->join(
-				$this->url_table,
-				"t1.id_page = " .$this->url_table.".id_entity AND ".
-					"(".
-					$this->url_table.".type = 'page' AND " .
-					$this->url_table.".active = 1 AND ".
-					$this->url_table.".lang = '". $lang ."'" .
-					")",
-				'left'
-			);
-		}
-		else
-		{
-			$this->{$this->db_group}->select('t1.*, type.id_type', false);	
-		}
-		
-		// Link to type
-		$this->{$this->db_group}->join($this->type_table.' type', 'type.id_type = t1.id_type', 'left');
-
-		// Add Url to the request
-		// Left join, because the page must be get, even the URL wasn't built.
-		//$this->{$this->db_group}->select('url.path');
-		//$this->{$this->db_group}->join('url', 't1.'.$this->pk_name.' = url.id_entity', 'left');
-
-		if ( is_array($where) )
-		{
-			foreach ($where as $key => $value)
-			{
-				$this->{$this->db_group}->where('t1.'.$key, $value);
-			}
-		}
-		else
-		{
-			$this->{$this->db_group}->where('t1.'.$this->pk_name, $where);
-		}
-		
-		$query = $this->{$this->db_group}->get($this->table.' t1');
-
-		if ( $query->num_rows() > 0)
-		{
-			$data = $query->row_array();
-			$query->free_result();
-				
-			// Add medias to data array
-			if (in_array($this->table, $this->with_media_table))
-				$this->add_linked_media($data, $this->table, $lang);
-			
-		}
-	*/
-//		return $data;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get one page by its ID
+	 *
+	 * @param      $id
+	 * @param null $lang
+	 *
+	 * @return array
+	 *
+	 */
 	public function get_by_id($id, $lang = NULL)
 	{
 		return $this->get(array('page.id_page' => $id), $lang);
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -191,7 +144,7 @@ class Page_model extends Base_model
 	 * @param	array		Page data table
 	 * @param	array		Page Lang depending data table
 	 *
-	 * @return	string		The inserted / updated page ID
+	 * @return	int			The inserted / updated page ID
 	 *
 	 */
 	function save($data, $lang_data)
