@@ -43,12 +43,14 @@ test_tag_media_articles :	Medias from articles
 test_tag_categories
 
 // @TODO :
+test_pagination
+test_tag_archives
+
 test_tag_medias_module : 		Medias within one module
 
 test_tag_elements
 test_tag_media_size
 test_tag_subnavigation			Remove ???
-test_tag_pagination
 
 
 
@@ -56,7 +58,7 @@ test_temp : 				Temp dev's tests
 
 */
 ?>
-<ion:partial view="test_article_prev_next" />
+<ion:partial view="test_pagination" />
 
 
 

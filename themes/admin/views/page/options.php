@@ -197,9 +197,7 @@
 						<label for="id_parent"><?= lang('ionize_label_parent') ?></label>
 					</dt>
 					<dd>
-						<div id="parentSelectContainer">
-
-						</div>
+						<div id="parentSelectContainer"></div>
 					</dd>
 				</dl>
 

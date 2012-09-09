@@ -28,7 +28,7 @@
 	<!-- Name / URL -->
 	<dl class="small required">
 		<dt>
-			<label for="dup_url"><?=lang('ionize_label_url')?></label>
+			<label for="dup_url"><?=lang('ionize_label_name')?></label>
 		</dt>
 		<dd>
 			<input id="dup_url" name="dup_url" class="inputtext w260" type="text" value="<?= $name ?>" />
@@ -51,7 +51,7 @@
 			<label for="dup_id_page"><?= lang('ionize_label_page') ?></label>
 		</dt>
 		<dd>
-			<?= $parent_select ?>
+			<div id="dupArticleParentSelectContainer"></div>
 		</dd>
 	</dl>	
 
@@ -111,19 +111,22 @@
 </div>
 
 
-<script type="text/jaavscript">
+<script type="text/javascript">
 
-	// Update parent select list when menu change
-	$('dup_id_menu').addEvent('change', function(e)
+	$('dup_id_menu').addEvent('change', function()
 	{
-		e.stop();
-		
-		var xhr = new Request.HTML(
-		{
-			url: admin_url + 'page/get_parents_select/' + $('dup_id_menu').value,
-			method: 'post',
-			update: 'dup_id_page'
-		}).send();
+		ION.HTML(
+			admin_url + 'page/get_parents_select',
+			{
+				'id_menu' : $('dup_id_menu').value,
+				'id_current': 0,
+				'id_parent': 0,
+				'element_id': 'dup_id_page'
+			},
+			{'update': 'dupArticleParentSelectContainer'}
+		);
 	});
+	$('dup_id_menu').fireEvent('change');
+
 
 </script>

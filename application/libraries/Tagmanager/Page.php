@@ -68,8 +68,7 @@ class TagManager_Page extends TagManager
 	 */
 	public static function init()
 	{
- 		// parent::init('Page');
-		self::$ci =& get_instance(); 
+		self::$ci =& get_instance();
 
 		// Article model
 		self::$ci->load->model('article_model');
@@ -131,7 +130,6 @@ class TagManager_Page extends TagManager
 
 		if ( ! empty($article))
 			self::register('article', $article);
-			// self::$_article = $article;
 
 		self::$view = self::_get_page_view($page);
 

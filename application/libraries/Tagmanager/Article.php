@@ -101,10 +101,6 @@ log_message('error', ' -- CALL : get_articles()' );
 		// Number of article limiter
 		$num = $tag->getAttribute('limit', 0);
 
-		// @DEPRECATED : "limit" should be used instead.
-		if ($num == 0)
-			$num = $tag->getAttribute('num', 0);
-
 		// filter & "with" tag compatibility
 		// create a SQL filter
 		$filter = $tag->getAttribute('filter', FALSE);
@@ -635,12 +631,10 @@ log_message('error', ' -- CALL : get_articles()' );
 		// Returned string
 		$str = '';
 
-		$_article = TagManager_Page::get_article();
-
+		// Registry article : Catch from URL
+		$_article = self::registry('article');
 		if ( ! empty($_article))
-		{
 			$_articles = array($_article);
-		}
 		else
 			$_articles = array($tag->get('article'));
 
@@ -872,7 +866,8 @@ log_message('error', ' -- CALL : get_articles()' );
 
 
 	// ------------------------------------------------------------------------
-	
+
+
 	public static function tag_prev_article(FTL_Binding $tag)
 	{
 		$article = self::get_adjacent_article($tag, 'prev');
@@ -921,7 +916,9 @@ log_message('error', ' -- CALL : get_articles()' );
 		return $found_article;
 	}
 
+
 	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Set the parent scope
@@ -982,6 +979,9 @@ log_message('error', ' -- CALL : get_articles()' );
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Processes the next / previous article tags result
 	 * Internal use only.
@@ -1012,6 +1012,9 @@ log_message('error', ' -- CALL : get_articles()' );
 		
 		return '';
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -1074,9 +1077,6 @@ log_message('error', ' -- CALL : get_articles()' );
 			$articles[$key]['count'] = $count;
 		}
 
-		// Set the articles
-		// $tag->set('articles', $articles);
-
 		return $articles;
 	}
 
@@ -1126,5 +1126,5 @@ log_message('error', ' -- CALL : get_articles()' );
 	}
 }
 
-TagManager_Article::init();
+// TagManager_Article::init();
 

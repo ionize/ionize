@@ -18,15 +18,21 @@
 
 
 
+<h2>Next / Previous Article</h2>
 
-<h2></h2>
+<pre>
+&lt;h3>Current Article&lt;/h3>
+&lt;h4>&lt;ion:article:id /> : &lt;ion:article:title />&lt;/h4>
 
-<h3>Result</h3>
+&lt;h3>Next and previuous&lt;/h3>
+&lt;ion:articles:article:prev loop="false" href="true" tag="p" prefix="lang('previous_article')" />
+&lt;ion:articles:article:next loop="false" href="true" tag="p" prefix="lang('next_article')" />
+</pre>
+	
+<h3>Current Article</h3>
+<h4><ion:article:id /> : <ion:article:title /></h4>
 
-<ion:articles>
-	<h4><ion:article:id /> : <ion:article:title /></h4>
-</ion:articles>
-
+<h3>Next and previuous</h3>
 <ion:articles:article:prev loop="false" href="true" tag="p" prefix="lang('previous_article')" />
 <ion:articles:article:next loop="false" href="true" tag="p" prefix="lang('next_article')" />
 

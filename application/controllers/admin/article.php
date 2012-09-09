@@ -1346,12 +1346,6 @@ class Article extends MY_admin
 		$datas = $this->menu_model->get_select();
 		$this->template['menus'] =	form_dropdown('dup_id_menu', $datas, '1', 'id="dup_id_menu" class="select"');
 
-		// Dropdown parents
-		$datas = $this->page_model->get_lang_list(array('id_menu' => '1'), Settings::get_lang('default'));
-		$parents = array();
-		($parents_array = $this->structure->get_parent_select($datas) ) ? $parents += $parents_array : '';
-		$this->template['parent_select'] = form_dropdown('dup_id_page', $parents, FALSE, 'id="dup_id_page" class="select"');
-		
 		$this->output('article/duplicate');
 	}
 
