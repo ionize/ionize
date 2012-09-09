@@ -221,6 +221,9 @@ class TagManager_Media extends TagManager
 			}
 			else if ($media['type'] == 'picture')
 			{
+				if (is_null($tag->getAttribute('size')))
+					return base_url() . $media['path'];
+				
 				$settings = self::_get_src_settings($tag);
 				
 				self::$ci->load->library('medias');
