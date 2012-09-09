@@ -331,6 +331,7 @@ $lang['ionize_help_flag'] = 'An internal marked, just to be organized.';
 $lang['ionize_help_flags'] = 'Internal markers, just to be organized.';
 $lang['ionize_help_help'] = 'Displays the help tooltips like the one you\'re currently reading. Or not.. :-)';
 $lang['ionize_help_copy_to_other_languages'] = 'Copy to other languages';
+$lang['ionize_help_duplicate_article'] = 'You need at least to change the <b class="required">Name</b> of the article, which is the unique identifier for the article.';
 
 $lang['ionize_description_flags'] = 'Flags are used by articles types and add a colored flag to give a visual help about the type of each article.<br/>';
 

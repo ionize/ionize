@@ -12,16 +12,17 @@
 	<?php endif ;?>
 
 	<div class="summary">
-	
+
 		<dl class="small">
-			<dt>
-				<label><?=lang('ionize_label_title')?></label>
-			</dt>
-			<dd class="lite">
-				<strong><?= $title ?></strong>
-			</dd>
+			<dt><label><?=lang('ionize_label_title')?></label></dt>
+			<dd class="lite"><strong><?= $title ?></strong></dd>
 		</dl>
-		
+
+		<dl class="small">
+			<dt><label></dt>
+			<dd class="lite"><?php echo lang('ionize_help_duplicate_article');?></dd>
+		</dl>
+
 	</div>
 
 

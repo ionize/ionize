@@ -319,7 +319,7 @@
 
 	
 					<!-- extend fields goes here... -->
-					<?php if ( ! empty($extend_fields)) :?>
+					<?php if ( $has_translated_extend_fields && ! empty($extend_fields)) :?>
 						
 						<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_title_extend_fields') ?></h3>
 			

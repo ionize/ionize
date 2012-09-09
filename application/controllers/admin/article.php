@@ -313,8 +313,10 @@ class Article extends MY_admin
 		$this->template['article_types'] =	form_dropdown('id_type', $types, FALSE, 'class="select"');
 		
 		// Extends fields
-		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('article');
-		
+		$extend_fields = $this->extend_field_model->get_element_extend_fields('article');
+		$this->template['has_translated_extend_fields'] = $this->_has_translated_extend_fields($extend_fields);
+		$this->template['extend_fields'] = $extend_fields;
+
 		// Context data initialized when article creation
 		$this->template['online'] = '0';
 		$this->template['main_parent'] = '1';
@@ -517,9 +519,11 @@ class Article extends MY_admin
 				$this->article_model->feed_lang_template($id_article, $this->template);
 
 				// Extends fields
-				$this->template['extend_fields'] = array();
-				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('article', $id_article);
-				
+				$extend_fields = $this->extend_field_model->get_element_extend_fields('article', $id_article);
+				$this->template['has_translated_extend_fields'] = $this->_has_translated_extend_fields($extend_fields);
+				$this->template['extend_fields'] = $extend_fields;
+
+
 				// Link : Depending on the context
 				$context = $this->article_model->get_context($id_article, $id_page);
 				
@@ -1699,6 +1703,29 @@ class Article extends MY_admin
 	}
 
 
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Return TRUE if the extend fields array contains at least one translated extend field
+	 *
+	 * @param $extend_fields
+	 *
+	 * @return bool
+	 *
+	 */
+	protected function _has_translated_extend_fields($extend_fields)
+	{
+		$result = FALSE;
+		foreach($extend_fields as $ef)
+		{
+			if ($ef['translated'] == 1)
+			{
+				$result = TRUE;
+				break;
+			}
+		}
+		return $result;
+	}
 	// ------------------------------------------------------------------------
 
 
