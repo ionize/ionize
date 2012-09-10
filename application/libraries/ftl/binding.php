@@ -137,6 +137,12 @@ class FTL_Binding
 		return $this->context->tag_missing($this->name, $this->attr, $this->block);
 	}
 
+
+	public function getStack()
+	{
+		return $this->context->get_binding_stack();
+	}
+
 	/**
 	 * Return all the attributes of the tag
 	 *
@@ -148,9 +154,22 @@ class FTL_Binding
 		return $this->attr;
 	}
 
-	public function getStack()
+	/**
+	 * Set multiple attributes
+	 *
+	 * @param array
+	 * @param mixed
+	 *
+	 */
+	public function setAttributes($attrs)
 	{
-		return $this->context->get_binding_stack();
+		if (is_array($attrs))
+		{
+			foreach($attrs as $key => $value)
+			{
+				$this->setAttribute($key, $value);
+			}
+		}
 	}
 
 	/**
@@ -280,10 +299,13 @@ class FTL_Binding
 		return NULL;
 	}
 
+	/*
+	 *
 	public function setValue($value)
 	{
 
 	}
+	*/
 
 	/**
 	 * Returns one local var

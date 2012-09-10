@@ -54,7 +54,6 @@ class TagManager
 
 	public static $uri_segments = array();
 
-
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
 	 * 
@@ -168,6 +167,7 @@ class TagManager
 		// Get public vars
 		$vars = get_class_vars($class);
 
+		// Merge tags definition
 		$tag_definitions = $vars['tag_definitions'];
 
 		foreach ($tag_definitions as $tag => $method)
@@ -576,7 +576,7 @@ class TagManager
 
 		return $tag->name . $uri;
 	}
-	
+
 
 	// ------------------------------------------------------------------------
 
@@ -591,7 +591,6 @@ class TagManager
 	 *
 	 * @return	Mixed	The attribute value of false if nothing is found
 	 *
-	 */
 	protected static function get_attribute(FTL_Binding $tag, $attr, $return=FALSE)
 	{
 		// Try to get the couple array:field
@@ -655,6 +654,7 @@ class TagManager
 
 		return $return;
 	}
+	*/
 
 
 	protected function registry($key)
@@ -678,6 +678,7 @@ class TagManager
 
 	/**
 	 * Used for all tags which must return one tag stored value.
+	 * @TODO : Check if really needed
 	 *
 	 * Stored value :
 	 * Value set with : $tag->set('my_value', $my_value);
@@ -714,6 +715,14 @@ class TagManager
 	 *
 	 * 			Shortcut mode :
 	 * 			<ion:language:name [tag="span" class="colored"] />
+	 *
+	 * 			Test mode :
+	 * 			<ion:language:code is="fr">This will be displayed if code = 'fr'</ion:language:code>
+	 *
+	 * 			Expression test mode :
+	 * 			<ion:articles:article:index expression="index%3==0">
+	 * 				This will be displayed every 3 articles
+	 * 			</ion:articles:article:index>
 	 *
 	 * @note	The tag is supposed to have one data array which has the
 	 * 			same name than the tag's parent.
@@ -759,10 +768,12 @@ class TagManager
 					self::$trigger_else++;
 			}
 		}
-		else
+		else if ( ! is_null($value))
 		{
-			if ( ! is_null($value))
-				return self::wrap($tag, $value);
+			// Process PHP, helper, prefix/suffix
+			$value = self::value_process($tag, $value);
+
+			return self::wrap($tag, $value);
 		}
 
 		return '';
@@ -772,14 +783,30 @@ class TagManager
 	{
 		$value = $tag->getValue();
 
-		if ( ! is_null($tag->getAttribute('format')))
-			$value = self::format_date($tag, $value);
+		$value = self::format_date($tag, $value);
+
+		// Process PHP, helper, prefix/suffix
+		$value = self::value_process($tag, $value);
 
 		if ( ! is_null($value))
 			return self::wrap($tag, $value);
 
 		return $value;
 	}
+
+	/**
+	 * This kind of tag will avoid looping of its parent tag
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_no_loop(FTL_Binding $tag)
+	{
+		return $tag->expand();
+	}
+
 
 
 	/**
@@ -1787,29 +1814,9 @@ class TagManager
 		$html_tag = $tag->getAttribute('tag', FALSE);
 		$class = $tag->getAttribute('class', '');
 		$id = $tag->getAttribute('id', '');
-		$prefix = $tag->getAttribute('prefix');
-		$suffix = $tag->getAttribute('suffix');
 
 		if ( ! empty($class)) $class = ' class="'.$class.'"';
 		if ( ! empty($id)) $id = ' id="'.$id.'"';
-
-		// helper
-		$helper = $tag->getAttribute('helper');
-
-		// PHP : Process the value through the passed in function name.
-		if ( ! is_null($tag->getAttribute('function')))
-			$value = self::php_process($value, $tag->getAttribute('function') );
-
-		// Helper
-		if ( ! is_null($helper))
-			$value = self::helper_process($value, $helper);
-
-		// Prefix / Suffix
-		if ( ! is_null($prefix))
-			$value = self::prefix_suffix_process($value, $prefix);
-
-		if ( ! is_null($suffix))
-			$value = self::prefix_suffix_process($value, $suffix, 2);
 
 		if ($html_tag !== FALSE)
 		{
@@ -1838,34 +1845,37 @@ class TagManager
 	 */
 	protected static function format_date(FTL_Binding $tag, $date)
 	{
-		$date = strtotime($date);
-		
-		if ($date)
+		if ( ! is_null($tag->getAttribute('format')))
 		{
-			$format = $tag->getAttribute('format', 'Y-m-d H:i:s');
+			$date = strtotime($date);
 
-			if ($format != 'Y-m-d H:i:s')
+			if ($date)
 			{
-				if (lang('dateformat_'.$format) != '#dateformat_'.$format)
+				$format = $tag->getAttribute('format', 'Y-m-d H:i:s');
+
+				if ($format != 'Y-m-d H:i:s')
 				{
-				 	// Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
-					$format = lang('dateformat_'.$format);
+					if (lang('dateformat_'.$format) != '#dateformat_'.$format)
+					{
+						// Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
+						$format = lang('dateformat_'.$format);
+					}
 				}
+
+				$segments = explode(' ', $format);
+
+				foreach($segments as $key => $segment)
+				{
+					$tmp = (String) date($segment, $date);
+
+					if (preg_match('/D|l|F|M/', $segment))
+						$tmp = lang(strtolower($tmp));
+
+					$segments[$key] = $tmp;
+				}
+
+				return implode(' ', $segments);
 			}
-
-			$segments = explode(' ', $format);
-
-			foreach($segments as $key => $segment)
-			{
-				$tmp = (String) date($segment, $date);
-
-				if (preg_match('/D|l|F|M/', $segment))
-					$tmp = lang(strtolower($tmp));
-
-				$segments[$key] = $tmp;
-			}
-			
-			return implode(' ', $segments);
 		}
 
 		return $tag->expand();
@@ -1914,6 +1924,38 @@ class TagManager
 
 
 	/**
+	 * Processes the value through PHP function, helper, prefix/suffix
+	 * Adds the corresponding attributes to the tags using this method.
+	 *
+	 * @param FTL_Binding $tag
+	 * @param             $value
+	 *
+	 * @return Mixed|string
+	 *
+	 */
+	public static function value_process(FTL_Binding $tag, $value)
+	{
+		if ( ! is_null($value))
+		{
+			// PHP : Process the value through the passed in function name.
+			$value = self::php_process($value, $tag->getAttribute('function') );
+
+			// Helper
+			$value = self::helper_process($value, $tag->getAttribute('helper'));
+
+			// Prefix / Suffix
+			$value = self::prefix_suffix_process($value, $tag->getAttribute('prefix'));
+			$value = self::prefix_suffix_process($value, $tag->getAttribute('suffix'));
+		}
+
+		return $value;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Process the input through the called functions and return the result
 	 * 
 	 * @param	Mixed				The value to process
@@ -1923,15 +1965,17 @@ class TagManager
 	 */
 	protected static function php_process($value, $functions)
 	{
-		if ( ! is_array($functions))
-			$functions = explode(',', $functions);
-		
-		foreach($functions as $func)
+		if ( ! is_null($functions))
 		{
-			if (function_exists($func))
-				$value = $func($value);
+			if ( ! is_array($functions))
+				$functions = explode(',', $functions);
+
+			foreach($functions as $func)
+			{
+				if (function_exists($func))
+					$value = $func($value);
+			}
 		}
-		
 		return $value;
 	}
 
@@ -1949,23 +1993,26 @@ class TagManager
 	 */
 	protected static function helper_process($value, $helper)
 	{
-		$helper = explode(':', $helper);
-
-		$helper_name = ( ! empty($helper[0])) ? $helper[0] : FALSE;
-		$helper_func = ( ! empty($helper[1])) ? $helper[1] : FALSE;
-		
-		$helper_args = ( ! empty($helper[2])) ? explode(",", $helper[2]) : array();
-		
-		if($helper_name !== FALSE && $helper_func !== FALSE)
+		if ( ! is_null($helper))
 		{
-			self::$ci->load->helper($helper_name);
-			
-			array_unshift($helper_args, $value);
+			$helper = explode(':', $helper);
 
-			if (function_exists($helper_func))
-				$value = call_user_func_array($helper_func, $helper_args);
-			else
-				return self::show_tag_error('Tagmanager', 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
+			$helper_name = ( ! empty($helper[0])) ? $helper[0] : FALSE;
+			$helper_func = ( ! empty($helper[1])) ? $helper[1] : FALSE;
+
+			$helper_args = ( ! empty($helper[2])) ? explode(",", $helper[2]) : array();
+
+			if($helper_name !== FALSE && $helper_func !== FALSE)
+			{
+				self::$ci->load->helper($helper_name);
+
+				array_unshift($helper_args, $value);
+
+				if (function_exists($helper_func))
+					$value = call_user_func_array($helper_func, $helper_args);
+				else
+					return self::show_tag_error('Tagmanager', 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
+			}
 		}
 		
 		return $value;	
@@ -1985,19 +2032,21 @@ class TagManager
 	 */
 	protected static function prefix_suffix_process($value, $string, $mode=1)
 	{
-		if (substr(trim($string), 0, 5) == 'lang(')
+		if ( ! is_null($string))
 		{
-			$translated_string = FALSE;
-			$return = @eval("\$translated_string = ".trim($string).";");
+			if (substr(trim($string), 0, 5) == 'lang(')
+			{
+				$translated_string = FALSE;
+				$return = @eval("\$translated_string = ".trim($string).";");
 
-			if ($return === NULL)
-				$string = $translated_string;
-			else
-				$string = self::$context->show_error('Prefix or Suffix incorrect', $string);
+				if ($return === NULL)
+					$string = $translated_string;
+				else
+					$string = self::$context->show_error('Prefix or Suffix incorrect', $string);
+			}
+
+			$value = $mode == 1 ? $string . $value : $value . $string;
 		}
-
-		$value = $mode == 1 ? $string . $value : $value . $string;
-
 		return $value;
 	}
 	

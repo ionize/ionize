@@ -1506,30 +1506,16 @@ log_message('error', $this->{$this->db_group}->last_query());
 		// Add Type to query
 		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
 
-		// Where ?
-		if (is_array($where) )
-		{
-			foreach ($where as $key => $value)
-			{
-				// id_page must be searched in page_article table
-				if (strpos($key, 'id_page') !== FALSE)
-					$key = str_replace('id_page', $this->parent_table.'.id_page', $key);
-				else
-					$key = $this->table.'.'.$key;
-				
-				$this->{$this->db_group}->where($key, $value, FALSE);
-			}
-		}
+		// Process the $where array
+		if (isset($where['order_by'])) unset($where['order_by']);
+		$this->_process_where($where);
 
 		// Filter on users filter
 		if ( $filter !== FALSE)
 			$this->_set_filter($filter);
-		
-		// The publish filter
-		$this->filter_on_published(self::$publish_filter);
 
 		$nb = $this->{$this->db_group}->count_all_results($this->table);
-		
+
 		return $nb;
 	}
 
@@ -1648,6 +1634,20 @@ log_message('error', $this->{$this->db_group}->last_query());
 	
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	protected function _process_where($where)
+	{
+		if (isset($where['id_page']))
+		{
+			$where[$this->parent_table.'.id_page'] = $where['id_page'];
+			unset($where['id_page']);
+		}
+
+		parent::_process_where($where);
+	}
 
 
 	// ------------------------------------------------------------------------

@@ -47,9 +47,19 @@ class FTL_Context
 	 * @var array(string)
 	 */
 	protected $tag_name_stack = array();
-	
+
+	/**
+	 * The just rendered tag name
+	 * Stored by render_tag() for memory
+	 *
+	 * @var string
+	 */
+	// protected $rendered_tags = array();
+
+
 	// --------------------------------------------------------------------
-		
+
+
 	/**
 	 * Init.
 	 * 
@@ -121,9 +131,6 @@ class FTL_Context
 	 */
 	public function render_tag($name, $args = array(), $block = NULL)
 	{
-// log_message('error', 'render_tag : ' . $name. ' ');
-//log_message('error', print_r($args, true));
-//log_message('error', print_r($block, true));
 		// do we have a compund tag?
 		if(($pos = strpos($name, ':')) != 0)
 		{
@@ -131,7 +138,7 @@ class FTL_Context
 			$name1 = substr($name, 0, $pos);
 			$name2 = substr($name, $pos + 1);
 
-			// return $this->render_tag($name1, array(), array(
+//			return $this->render_tag($name1, array(), array(
 			return $this->render_tag($name1, $args, array(
 					'name' => $name2,
 					'args' => $args,
@@ -142,15 +149,23 @@ class FTL_Context
 		{
 			$qname = $this->qualified_tag_name($name);
 
+			/*
+			if (isset($args['loop']) && strtolower($args['loop']) == 'false' && in_array($qname, $this->rendered_tags))
+			{
+				log_message('error', 'DO NOT RENDER : ' . $qname);
+				return '';
+			}
+			*/
+
 			if(is_string($qname) && array_key_exists($qname, $this->definitions))
 			{
-// log_message('error', 'RENDER $qname : ' . $qname);
+				// $this->rendered_tags[] = $qname;
+
 				// render
 				return $this->stack($name, $args, $block, $this->definitions[$qname]);
 			}
 			else
 			{
-// log_message('error', 'TAG missing : ' . $name);
 				return $this->tag_missing($name, $args, $block);
 			}
 		}
@@ -171,10 +186,12 @@ class FTL_Context
 	protected function stack($name, $args, $block, $call)
 	{
 
+/*
 $_func_name=$call;
 if (is_array($_func_name))
 	$_func_name = $_func_name[0].'::'.$_func_name[1];
 log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
+*/
 
 		// get previous locals, to let the data "stack"
 		$previous = end($this->tag_binding_stack);

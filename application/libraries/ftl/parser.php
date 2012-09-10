@@ -54,22 +54,24 @@ class FTL_Parser{
 	 * @var array
 	 */
 	protected $php_data;
-	
+
+
 	/**
 	 * @param  FTL_Context	The context to use
 	 * @param  array 		The other options
+	 *
 	 */
-	function __construct($context = false, $options = array())
+	function __construct($context = FALSE, $options = array())
 	{
 		if(is_array($context) && empty($options))
 		{
 			$options = $context;
-			$context = isset($options['context']) ? $options['context'] : null;
+			$context = isset($options['context']) ? $options['context'] : NULL;
 		}
 		
 		$this->context = $context instanceof FTL_Context ? $context : new FTL_Context();
 		$this->tag_prefix = isset($options['tag_prefix']) ? $options['tag_prefix'] : 't';
-		$this->php_data = isset($options['php_data']) ? $options['php_data'] : false;
+		$this->php_data = isset($options['php_data']) ? $options['php_data'] : FALSE;
 	}
 	
 	// --------------------------------------------------------------------
@@ -111,7 +113,7 @@ class FTL_Parser{
 	// --------------------------------------------------------------------
 		
 	/**
-	 * Renders the block tree to a sigle string.
+	 * Renders the block tree to a single string.
 	 * 
 	 * @param  array The block tree structure
 	 * @return string
@@ -147,9 +149,9 @@ class FTL_Parser{
 		{
 			$stack = array($stack);
 		}
-		
+
 		$str = '';
-		foreach((Array) $stack as $element)
+		foreach((Array) $stack as $key => $element)
 		{
 			if(is_string($element))
 			{

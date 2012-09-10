@@ -32,9 +32,6 @@ class TagManager_Article extends TagManager
 
 		'article:next' => 	'tag_next_article',
 		'article:prev' => 	'tag_prev_article',
-
-
-
 	);
 
 	// ------------------------------------------------------------------------
@@ -42,7 +39,8 @@ class TagManager_Article extends TagManager
 	
 	public static function init()
 	{
-		self::$uri_segments = explode('/', self::$ci->uri->uri_string());	
+		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
+
 /*
 		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
 		self::$uri_segments = explode('/', $uri);
@@ -65,7 +63,6 @@ class TagManager_Article extends TagManager
 	{
 
 // @TODO : Write local cache
-
 log_message('error', ' -- CALL : get_articles()' );
 
 		$articles = array();
@@ -83,10 +80,12 @@ log_message('error', ' -- CALL : get_articles()' );
 		// Get the potential special URI
 		$special_uri = TagManager_Page::get_special_uri();
 
-		// Use Pagination
-		// The "articles" tag must explicitely indicates it want to use pagination. 
-		// This explicit declaration is done to avoid all articles tags on one page using the same pagination value.
-		$use_pagination = $tag->getAttribute('pagination', FALSE);
+		// Pagination : First : tag, second : page
+		$pagination = $tag->getAttribute('pagination');
+		if (is_null($pagination))
+			$pagination = $page['pagination'];
+
+		log_message('error', 'pagnitation : ' . $pagination);
 
 		// Don't use the "article_list_view" setting set through Ionize
 		// Todo : Remove ?
@@ -99,7 +98,7 @@ log_message('error', ' -- CALL : get_articles()' );
 		$type = $tag->getAttribute('type');
 
 		// Number of article limiter
-		$num = $tag->getAttribute('limit', 0);
+		$nb_to_display = $tag->getAttribute('limit', 0);
 
 		// filter & "with" tag compatibility
 		// create a SQL filter
@@ -116,7 +115,8 @@ log_message('error', ' -- CALL : get_articles()' );
 		$scope = $tag->getAttribute('scope');
 
 		// from page name ?
-		$from_page = $tag->getAttribute('from');
+// @TODO : See how to display articles from multiple pages
+//		$from_page = $tag->getAttribute('from');
 
 		// from categories ? 
 		$from_categories = $tag->getAttribute('from_categories');
@@ -144,6 +144,7 @@ log_message('error', ' -- CALL : get_articles()' );
 		}
 
 		// If a page name or ID is set, returns only articles from this page
+/*
 		if ($from_page !== NULL)
 		{
 			// Get the asked page details
@@ -171,44 +172,43 @@ log_message('error', ' -- CALL : get_articles()' );
 				return $articles;
 			}
 		}
-		else if ($scope == 'parent')
+**
+ * @TODO : Replace $scope = parent by "level -1" or "parent -1"
+ */
+		if ($scope == 'parent')
 		{
 			$where += self::set_parent_scope($tag);
 		}
+/*
 		else if ($scope == 'global')
 		{
 			$where += self::set_global_scope($tag);
 		}
-		else if ($scope == 'this')
-		{
-			$where += array('id_page' => $page['id_page']);
-		}
+*/
 		// Get only articles from current page
 		else
 		{
 			$where['id_page'] = $page['id_page'];
 		}
 
+log_message('error', 'get_articles() $special_uri : ' . $special_uri);
 		/* Get the articles
 		 *
 		 */
 		// If a special URI exists, get the articles from it.
-		if ( ! is_null($special_uri) && is_null($from_page) && (is_null($type)))
+		if ( ! is_null($special_uri) && (is_null($type)))
 		{
 			if (method_exists(__CLASS__, 'get_articles_from_'.$special_uri))
 				$articles = call_user_func(array(__CLASS__, 'get_articles_from_'.$special_uri), $tag, $where, $filter);
 		}
 		// Get all the page articles
-		// If Pagination is active, set the limit. This articles result is the first page of pagination
-		else 
+		else
 		{
-			// Set Limit
-			$limit = ( ! empty($page['pagination']) && ($page['pagination'] > 0) ) ? $page['pagination'] : FALSE;
-
-			if ($limit == FALSE && $num > 0) $limit = $num;
-
+			// Set Limit : First : pagination, Second : limit
+			$limit = $pagination > 0 ? $pagination : FALSE;
+			if ($limit === FALSE && $nb_to_display > 0) $limit = $nb_to_display;
 			if ($limit !== FALSE) $where['limit'] = $limit;
-
+log_message('error', 'limit : ' . $limit);
 			if ($from_categories !== NULL)
 			{
 				$articles = self::$ci->article_model->get_from_categories(
@@ -227,29 +227,28 @@ log_message('error', ' -- CALL : get_articles()' );
 					$filter
 				);
 			}
+
 		}
-		
-		$nb_articles = count($articles);
+
+		// Pagination needs the total number of articles
+		if ($pagination)
+		{
+			$nb_total_articles = self::$ci->article_model->count_articles(
+				$where,
+				$lang = Settings::get_lang(),
+				$filter
+			);
+			$tag->set('nb_total_articles', $nb_total_articles);
+			log_message('error', '$nb_total_articles : ' . $nb_total_articles);
+		}
 
 		self::init_articles_urls($articles);
 
 		// Here, we are in an article list configuration : More than one article, page display
 		// If the article-list view exists, we will force the article to adopt this view.
 		// Not so much clean to do that in the get_article function but for the moment just helpful...
-		foreach ($articles as $k=>$article)
-		{
-			if (empty($article['view']))
-			{
-				if ($nb_articles > 1 && ! empty($article['article_list_view']))
-				{
-					$articles[$k]['view'] = $article['article_list_view'];
-				}
-				else if (! empty($article['article_view']))
-				{
-					$articles[$k]['view'] = $article['article_view'];
-				}
-			}
-		}
+		self::init_articles_views($articles);
+
 
 		return $articles;
 	}
@@ -277,45 +276,23 @@ log_message('error', ' -- CALL : get_articles()' );
 		// Load CI Pagination Lib
 		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
 	
-		// Number of displayed articles / page
-		// If no pagination : redirect to the current page
-		$per_page = (isset($page['pagination']) && $page['pagination'] > 0) ? $page['pagination'] : redirect(self::$uri_segments[0]);
+		// Pagination : First : tag, second : page
+		$pagination = $tag->getAttribute('pagination');
+		if (is_null($pagination))
+			$pagination = $page['pagination'];
 
-		// from categories ? 
-		$from_categories = (isset($tag->attr['from_categories']) && $tag->attr['from_categories'] != '') ? self::get_attribute($tag, 'from_categories') : FALSE;
-		$from_categories_condition = (isset($tag->attr['from_categories_condition']) && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
-		
+		if ( ! $pagination) redirect($page['absolute_url'], 'location', 301);
+
 		$where['offset'] = (int)$start_index;
-		$where['limit'] =  (int)$per_page;
-		
-		if ($from_categories !== FALSE)
-		{
-			$articles = self::$ci->article_model->get_from_categories(
-				$where,
-				explode(',', $from_categories),
-				$from_categories_condition,
-				$lang = Settings::get_lang(),
-				$filter
-			);
-		}
-		else
-		{
-			$articles = self::$ci->article_model->get_lang_list(
-				$where,
-				$lang = Settings::get_lang(),
-				$filter
-			);
-		}
+		$where['limit'] =  (int)$pagination;
 
-		// Set the view
-		// Rule : If page has article_list_view defined, used this one.
-		if($page['article_list_view'] != FALSE)
-		{
-			foreach ($articles as $k=>$article)
-			{
-				$articles[$k]['view'] = $page['article_list_view'];
-			}
-		}
+		$articles = self::$ci->article_model->get_lang_list(
+			$where,
+			$lang = Settings::get_lang(),
+			$filter
+		);
+
+		self::init_articles_views($articles);
 
 		return $articles;
 	}
@@ -609,6 +586,29 @@ log_message('error', ' -- CALL : get_articles()' );
 
 	// ------------------------------------------------------------------------
 
+	private function init_articles_views(&$articles)
+	{
+		$nb = count($articles);
+
+		foreach ($articles as $k=>$article)
+		{
+			if (empty($article['view']))
+			{
+				if ($nb > 1 && ! empty($article['article_list_view']))
+				{
+					$articles[$k]['view'] = $article['article_list_view'];
+				}
+				else if (! empty($article['article_view']))
+				{
+					$articles[$k]['view'] = $article['article_view'];
+				}
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Returns the current article content
@@ -732,7 +732,7 @@ log_message('error', ' -- CALL : get_articles()' );
 
 		// Experimental : To allow tags in articles
 		// $str = $tag->parse_as_nested($str);
-		
+
 		$output = self::wrap($tag, $str);
 		
 		// Tag cache
@@ -896,7 +896,23 @@ log_message('error', ' -- CALL : get_articles()' );
 
 		// Articles & Current article
 		$articles = $tag->get('articles');
-		$article = self::registry('article');
+
+		// Articles is empty when the parent tag "articles" is not in nesting
+/*		if (empty($articles))
+		{
+*/
+			$articles = self::prepare_articles($tag, self::get_articles($tag));
+			$count = count($articles);
+			$tag->set('count', $count);
+			$tag->set('articles', $articles);
+//		}
+
+// trace($articles);
+
+		// Get the article : Fall down to registry if no one found in tag
+		$article = $tag->get('article');
+//		trace('call ' .$tag->nesting());
+//		trace(' - article : ' .$article['id_article']);
 
 		$enum = ($mode=='prev') ? -1 : 1;
 		
@@ -1006,6 +1022,9 @@ log_message('error', ' -- CALL : get_articles()' );
 				$url = $tag->getValue('url');
 				$value = self::create_href($tag, $url);
 			}
+
+			// Process PHP, helper, prefix/suffix
+			$value = self::value_process($tag, $value);
 
 			return self::wrap($tag, $value);
 		}
@@ -1126,5 +1145,5 @@ log_message('error', ' -- CALL : get_articles()' );
 	}
 }
 
-// TagManager_Article::init();
+TagManager_Article::init();
 

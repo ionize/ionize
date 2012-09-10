@@ -212,20 +212,13 @@ class TagManager_Media extends TagManager
 
 		if ( ! empty($media))
 		{
-			// Compatibility with older version of Ionize
-			if ( ! is_null($tag->getAttribute('folder')))
+			if ($media['type'] == 'picture')
 			{
-				$folder = 'thumb_' . $tag->getAttribute('folder');
-				
-				return base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
-			}
-			else if ($media['type'] == 'picture')
-			{
-				if (is_null($tag->getAttribute('size')) OR $tag->getAttribute('size') == '')
+				$settings = self::_get_src_settings($tag);
+
+				if (empty($settings['size']))
 					return base_url() . $media['path'];
 
-				$settings = self::_get_src_settings($tag);
-				
 				self::$ci->load->library('medias');
 				
 				return self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
