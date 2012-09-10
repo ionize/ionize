@@ -29,16 +29,6 @@ class TagManager_Pagination extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	public static function init()
-	{
-		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
-		self::$uri_segments = explode('/', $uri);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
 	/**
 	 * Returns the current category URI
 	 *

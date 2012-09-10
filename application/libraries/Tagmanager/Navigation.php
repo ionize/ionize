@@ -75,7 +75,6 @@ class TagManager_Navigation extends TagManager
 		$str = '';
 
 		// Helper / No helper ?
-		// $tag->attr['no_helper'] : Will disapear in next versions... replaced by $tag->attr['helper']
 		$helper = $tag->getAttribute('helper', 'navigation');
 		
 		// Get the asked lang if any
@@ -191,17 +190,20 @@ class TagManager_Navigation extends TagManager
 			// Get helper method
 			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';
 			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-	
+
 			// load the helper
 			self::$ci->load->helper($helper);
 			
 			// Return the helper function result
 			if (function_exists($helper_function))
 			{
-				//$nav = call_user_func($helper_function, $pages);
-				$tag->attr['helper'] = $helper.':'.$helper_function;
-				
-				$output = self::wrap($tag, $pages);
+				// Set the helper
+				$tag->setAttribute('helper', $helper.':'.$helper_function);
+
+				// Process the helper
+				$value = self::helper_process($pages, $tag->getAttribute('helper'));
+
+				$output = self::wrap($tag, $value);
 				
 				// Tag cache
 				self::set_cache($tag, $output);

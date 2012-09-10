@@ -1,15 +1,9 @@
 
 <h1>&lt;ion:categories /></h1>
 
-<h2>Navigation menu</h2>
-<ion:navigation helper="false" tag="ul">
-	<li>
-		<a <ion:href /> >
-			<ion:id /> : <ion:url /><ion:is_active> <span class="red">(is active)</span></ion:is_active>
-		</a>
-	</li>
-</ion:navigation>
+<ion:tree_navigation />
 
+<hr/>
 
 <h2>Categories Settings</h2>
 <?php

@@ -19,53 +19,13 @@ class TagManager_Archive extends TagManager
 {
 	public static $tag_definitions = array
 	(
-		'archive' =>				'tag_archive',
 		'archives' =>				'tag_archives',
-		'archives:url' => 			'tag_archives_url',
-		'archives:lang_url' => 		'tag_archives_lang_url',
-		'archives:period' => 		'tag_archives_period',
-		'archives:nb' => 			'tag_archives_nb',
-		'archives:active_class' => 	'tag_archives_active_class'
-	
+		'archive' =>				'tag_archive',
+		'archive:period' => 		'tag_simple_value',
+		'archives:active_class' => 	'tag_simple_value',
 	);
 
-	public static function init()
-	{
-		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
-	}
-	
-	
-	public static function tag_archive(FTL_Binding $tag)
-	{
-		// Current archive
-		$arc_segment = TagManager_Page::get_special_uri();
-		$arc_segment_pos = TagManager_Page::get_special_uri_segment();
 
-		$year = isset(self::$uri_segments[$arc_segment_pos + 1]) ? self::$uri_segments[$arc_segment_pos + 1] : '' ;
-		$month = isset(self::$uri_segments[$arc_segment_pos + 2]) ? self::$uri_segments[$arc_segment_pos + 2] : '' ;
-		
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-		$archive_uri = $uri_config['archives'];
-		
-		if ($arc_segment == $archive_uri)
-		{
-			$timestamp = '';
-			if ($year != '' && $month !='')
-				$timestamp = mktime(0, 0, 0, $month, 1, $year);
-			else if ($year != '')
-				$timestamp = mktime(0, 0, 0, 0, 1, $year);
-			
-			if ($timestamp != '')
-			{
-				$date = (string) date('Y-m-d H:i:s', $timestamp);
-	
-				return self::format_date($tag, $date);
-			}
-		}
-				
-		return '';
-	}
 
 
 	/**
@@ -173,25 +133,40 @@ class TagManager_Archive extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Archives tags callback functions
-	 *
-	 */
-	public static function tag_archives_url($tag) 
-	{ 
-		// with lang code in the URL ?
-		$lang = (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE') ? TRUE : FALSE ;
+	public static function tag_archive(FTL_Binding $tag)
+	{
+		// Current archive
+		$arc_segment = TagManager_Page::get_special_uri();
+		$arc_segment_pos = TagManager_Page::get_special_uri_segment();
 
-		if (isset($tag->attr['lang']) && $tag->attr['lang'] == 'TRUE')
+		$year = isset(self::$uri_segments[$arc_segment_pos + 1]) ? self::$uri_segments[$arc_segment_pos + 1] : '' ;
+		$month = isset(self::$uri_segments[$arc_segment_pos + 2]) ? self::$uri_segments[$arc_segment_pos + 2] : '' ;
+
+		$uri_config = self::$ci->config->item('special_uri');
+		$uri_config = array_flip($uri_config);
+		$archive_uri = $uri_config['archives'];
+
+		if ($arc_segment == $archive_uri)
 		{
-			// Only returns the URL containing the lang code when languages > 1
-			if (count(Settings::get_online_languages()) > 1)
+			$timestamp = '';
+			if ($year != '' && $month !='')
+				$timestamp = mktime(0, 0, 0, $month, 1, $year);
+			else if ($year != '')
+				$timestamp = mktime(0, 0, 0, 0, 1, $year);
+
+			if ($timestamp != '')
 			{
-				return $tag->locals->archive['lang_url'];
+				$date = (string) date('Y-m-d H:i:s', $timestamp);
+
+				return self::format_date($tag, $date);
 			}
 		}
-		return $tag->locals->archive['url']; 
+
+		return '';
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/** 
@@ -211,6 +186,5 @@ class TagManager_Archive extends TagManager
 
 }
 
-TagManager_Archive::init();
 
 

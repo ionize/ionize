@@ -1,9 +1,8 @@
 
 <h1>Medias from current page articles</h1>
 
-	<ion:tree_navigation />
-
-	<hr/>
+<ion:tree_navigation />
+<hr/>
 
 <h3>Test</h3>
 

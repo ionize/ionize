@@ -2,7 +2,7 @@
 
 <ion:tree_navigation />
 
-<h2></h2>
+<hr/>
 
 <pre>
 &lt;ion:page id="3">
