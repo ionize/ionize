@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.9)
 # Database: ionize_ftl
-# Generation Time: 2012-09-05 10:33:38 +0000
+# Generation Time: 2012-09-10 11:48:33 +0000
 # ************************************************************
 
 
@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS `article`;
 
 CREATE TABLE `article` (
   `id_article` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `author` varchar(55) COLLATE utf8_unicode_ci DEFAULT NULL,
   `updater` varchar(55) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime NOT NULL,
@@ -42,18 +42,24 @@ CREATE TABLE `article` (
   `comment_expire` datetime DEFAULT NULL,
   `flag` smallint(1) DEFAULT '0',
   `has_url` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `code` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id_article`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 LOCK TABLES `article` WRITE;
 /*!40000 ALTER TABLE `article` DISABLE KEYS */;
 
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`, `has_url`)
+INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`, `has_url`, `code`)
 VALUES
-	(10,'404',NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,NULL,'0','0',NULL,0,1),
-	(20,'welcome','','admin','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-05 13:28:23','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
-	(30,'article-1','admin','admin','2012-09-04 12:45:34','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-05 12:00:30','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
-	(40,'article-2','admin','admin','2012-09-04 12:45:44','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-05 10:47:58','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1);
+	(10,'404',NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,NULL,'0','0',NULL,0,1,'404'),
+	(20,'welcome3','','admin','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-08 09:24:21','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'welcome'),
+	(30,'article-30','admin','admin','2012-09-04 12:45:34','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:54:37','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'article-1'),
+	(40,'article-40','admin','admin','2012-09-04 12:45:44','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:47:59','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'article-2'),
+	(41,'iframe-in-content','admin','admin','2012-09-08 09:25:02','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-08 09:40:13','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(42,'article-50','admin',NULL,'2012-09-09 13:41:33','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 13:41:33','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(43,'article-60','admin','admin','2012-09-09 17:06:34','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 17:10:04','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(44,'article-70','admin','admin','2012-09-09 21:31:44','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:32:20','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(45,'article-80','admin','admin','2012-09-09 21:44:13','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:46:18','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'');
 
 /*!40000 ALTER TABLE `article` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -69,6 +75,21 @@ CREATE TABLE `article_category` (
   `id_category` int(11) unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `article_category` WRITE;
+/*!40000 ALTER TABLE `article_category` DISABLE KEYS */;
+
+INSERT INTO `article_category` (`id_article`, `id_category`)
+VALUES
+	(20,3),
+	(41,2),
+	(30,3),
+	(40,1),
+	(42,1),
+	(43,3),
+	(45,3);
+
+/*!40000 ALTER TABLE `article_category` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table article_comment
@@ -120,12 +141,22 @@ INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `m
 VALUES
 	(10,'en','404','404',NULL,NULL,NULL,'<p>The content you asked was not found !</p>',NULL,NULL,1),
 	(10,'fr','404',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
-	(20,'en','welcome-article-url','Title 20...','','','','<p>Content 20...</p>',NULL,NULL,1),
-	(20,'fr','welcome-article-url',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
-	(30,'en','article-30','Title 30...','','','','<p>Content 30...</p>',NULL,NULL,1),
-	(30,'fr','article-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
-	(40,'en','article-40','Title 40...','','','','<p>Content 40 ...</p>',NULL,NULL,1),
-	(40,'fr','article-40',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1);
+	(20,'en','welcome-article-url','Title 20... et hop','','','','<p>Content Article 20...</p>','','',1),
+	(20,'fr','welcome-article-url','Titre Article 20... et hop','','','','','','',1),
+	(30,'en','article-30','Title Article 30...','','','','<p>Content Article 30...</p>','','',1),
+	(30,'fr','article-30','Titre Article 30...','','','','<p>Contenu Article 30...</p>','','',1),
+	(40,'en','article-40','Title Article 40...','','Window Title from Article 40...','','<p>Content Article 40 ...</p>','Keyword Article 40...','English Description Article 40....',1),
+	(40,'fr','article-40','Titre Article 40...','','','','<p>Contenu Article 40...</p>','Mot clé Article 40...','Description française Article 40...',1),
+	(41,'en','iframe-in-content','iFrame in Content','','','','<p>iFrame YouTube video :</p>\n<p><iframe width=\"600\" height=\"450\" src=\"http://youtu.be/GUEZCxBcM78\" frameborder=\"0\"></iframe></p>\n<p>Google Map :</p>\n<p><iframe width=\"425\" height=\"350\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"https://www.google.com/maps?f=q&amp;source=s_q&amp;hl=fr&amp;geocode=&amp;q=Seremban+Negeri+Sembilan+Malaysia+permata+1&amp;aq=&amp;sll=2.723983,101.947645&amp;sspn=0.087448,0.153637&amp;ie=UTF8&amp;hq=&amp;hnear=Jalan+Permata+1,+Taman+Permata,+70200+Seremban,+Negeri+Sembilan,+Malaisie&amp;t=m&amp;z=14&amp;ll=2.728023,101.92695&amp;output=embed\"></iframe><br /><a href=\"https://www.google.com/maps?f=q&amp;source=embed&amp;hl=fr&amp;geocode=&amp;q=Seremban+Negeri+Sembilan+Malaysia+permata+1&amp;aq=&amp;sll=2.723983,101.947645&amp;sspn=0.087448,0.153637&amp;ie=UTF8&amp;hq=&amp;hnear=Jalan+Permata+1,+Taman+Permata,+70200+Seremban,+Negeri+Sembilan,+Malaisie&amp;t=m&amp;z=14&amp;ll=2.728023,101.92695\" style=\"color: #0000ff; text-align: left;\">Agrandir le plan</a></p>','','',1),
+	(41,'fr','iframe-in-content','iFrame in Content','','','','<p>iFrame YouTube video :</p>\n<p><iframe width=\"600\" height=\"450\" src=\"http://youtu.be/GUEZCxBcM78\" frameborder=\"0&quot;\"></iframe></p>\n<p>Google Map :</p>\n<p><iframe width=\"425\" height=\"350\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"https://www.google.com/maps?f=q&amp;source=s_q&amp;hl=fr&amp;geocode=&amp;q=Seremban+Negeri+Sembilan+Malaysia+permata+1&amp;aq=&amp;sll=2.723983,101.947645&amp;sspn=0.087448,0.153637&amp;ie=UTF8&amp;hq=&amp;hnear=Jalan+Permata+1,+Taman+Permata,+70200+Seremban,+Negeri+Sembilan,+Malaisie&amp;t=m&amp;z=14&amp;ll=2.728023,101.92695&amp;output=embed\"></iframe><br /><a href=\"https://www.google.com/maps?f=q&amp;source=embed&amp;hl=fr&amp;geocode=&amp;q=Seremban+Negeri+Sembilan+Malaysia+permata+1&amp;aq=&amp;sll=2.723983,101.947645&amp;sspn=0.087448,0.153637&amp;ie=UTF8&amp;hq=&amp;hnear=Jalan+Permata+1,+Taman+Permata,+70200+Seremban,+Negeri+Sembilan,+Malaisie&amp;t=m&amp;z=14&amp;ll=2.728023,101.92695\" style=\"color: #0000ff; text-align: left;\">Agrandir le plan</a></p>','','',1),
+	(42,'en','article-50','Title Article 50...','','','','<p>Content Article 50...</p>',NULL,NULL,1),
+	(42,'fr','article-50','Titre Article 50...','','','','<p>Contenu Article 50...</p>',NULL,NULL,1),
+	(43,'en','article-60','Title Article 60...','','','','<p>Content Article 60...</p>','','',1),
+	(43,'fr','article-60','Titre Article 60...','','','','<p>Contenu Article 60...</p>','','',1),
+	(44,'en','article-70','Title Article 70...','','','','<p>Content Article 70...</p>','','',1),
+	(44,'fr','article-70','Titre Article 70...','','','','<p>Contenu Article 70...</p>','','',1),
+	(45,'en','article-80','Title Article 80...','','','','<p>Content Article 80...</p>','','',1),
+	(45,'fr','article-80','Titre Article 80...','','','','<p>Contenu Article 80...</p>','','',1);
 
 /*!40000 ALTER TABLE `article_lang` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -146,6 +177,17 @@ CREATE TABLE `article_media` (
   PRIMARY KEY (`id_article`,`id_media`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `article_media` WRITE;
+/*!40000 ALTER TABLE `article_media` DISABLE KEYS */;
+
+INSERT INTO `article_media` (`id_article`, `id_media`, `online`, `ordering`, `url`, `lang_display`)
+VALUES
+	(30,2,1,2,NULL,NULL),
+	(30,4,1,1,NULL,NULL),
+	(40,1,1,1,NULL,NULL);
+
+/*!40000 ALTER TABLE `article_media` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table article_tag
@@ -205,6 +247,17 @@ CREATE TABLE `category` (
   PRIMARY KEY (`id_category`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+
+INSERT INTO `category` (`id_category`, `name`, `ordering`)
+VALUES
+	(1,'art-contemporain',2),
+	(2,'design',3),
+	(3,'fashion',1);
+
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table category_lang
@@ -221,6 +274,20 @@ CREATE TABLE `category_lang` (
   PRIMARY KEY (`id_category`,`lang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `category_lang` WRITE;
+/*!40000 ALTER TABLE `category_lang` DISABLE KEYS */;
+
+INSERT INTO `category_lang` (`id_category`, `lang`, `title`, `subtitle`, `description`)
+VALUES
+	(1,'en','Contemporary Art','',''),
+	(1,'fr','Art contemporain','',''),
+	(2,'en','Design','',''),
+	(2,'fr','Design','',''),
+	(3,'en','Fashion','',''),
+	(3,'fr','Mode','','');
+
+/*!40000 ALTER TABLE `category_lang` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table element
@@ -255,6 +322,15 @@ CREATE TABLE `element_definition` (
   PRIMARY KEY (`id_element_definition`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `element_definition` WRITE;
+/*!40000 ALTER TABLE `element_definition` DISABLE KEYS */;
+
+INSERT INTO `element_definition` (`id_element_definition`, `name`, `description`, `ordering`)
+VALUES
+	(1,'toto','',0);
+
+/*!40000 ALTER TABLE `element_definition` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table element_definition_lang
@@ -269,6 +345,16 @@ CREATE TABLE `element_definition_lang` (
   PRIMARY KEY (`id_element_definition`,`lang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `element_definition_lang` WRITE;
+/*!40000 ALTER TABLE `element_definition_lang` DISABLE KEYS */;
+
+INSERT INTO `element_definition_lang` (`id_element_definition`, `lang`, `title`)
+VALUES
+	(1,'en',''),
+	(1,'fr','');
+
+/*!40000 ALTER TABLE `element_definition_lang` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table extend_field
@@ -355,7 +441,13 @@ LOCK TABLES `extend_fields` WRITE;
 INSERT INTO `extend_fields` (`id_extend_fields`, `id_extend_field`, `parent`, `id_parent`, `lang`, `content`, `ordering`, `id_element`)
 VALUES
 	(1,1,'',20,'','Extend 1 content...',0,0),
-	(2,1,'',30,'','Extend 1 Article 30 content...',0,0);
+	(2,1,'',30,'','Extend 1 Article 30 content...',0,0),
+	(3,1,'',40,'','Extend 1 default content...',0,0),
+	(4,1,'',41,'','Extend 1 default content...',0,0),
+	(5,1,'',42,'','Extend 1 default content...',0,0),
+	(6,1,'',43,'','Extend 1 default content...',0,0),
+	(7,1,'',44,'','Extend 1 default content...',0,0),
+	(8,1,'',45,'','Extend 1 default content...',0,0);
 
 /*!40000 ALTER TABLE `extend_fields` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -436,6 +528,19 @@ CREATE TABLE `media` (
   PRIMARY KEY (`id_media`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `media` WRITE;
+/*!40000 ALTER TABLE `media` DISABLE KEYS */;
+
+INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`, `square_crop`)
+VALUES
+	(1,'picture','IMG_8359.jpg','files/pictures/IMG_8359.jpg','files/pictures/','','','0000-00-00 00:00:00','','m'),
+	(2,'picture','IMG_8447.jpg','files/pictures/IMG_8447.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
+	(3,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
+	(4,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
+	(5,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m');
+
+/*!40000 ALTER TABLE `media` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table media_lang
@@ -452,6 +557,16 @@ CREATE TABLE `media_lang` (
   PRIMARY KEY (`id_media`,`lang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `media_lang` WRITE;
+/*!40000 ALTER TABLE `media_lang` DISABLE KEYS */;
+
+INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`)
+VALUES
+	('en',1,'One burman munk','',''),
+	('fr',1,'Moine birman','','');
+
+/*!40000 ALTER TABLE `media_lang` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table menu
@@ -583,8 +698,9 @@ LOCK TABLES `page` WRITE;
 INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_type`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `has_url`, `view`, `view_single`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`, `used_by_module`)
 VALUES
 	(1,0,2,0,0,'404',0,0,1,0,NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,1,NULL,NULL,NULL,NULL,'ordering','ASC','',NULL,'',0,5,0,5,NULL),
-	(2,0,1,0,0,'welcome',0,0,1,1,NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',1,1,NULL,NULL,NULL,NULL,'ordering','ASC','',NULL,'',0,5,0,5,NULL),
-	(3,0,1,0,0,'test-page',1,0,1,0,'admin','admin','2012-09-04 12:45:10','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-05 17:20:35','0000-00-00 00:00:00',1,0,'','',NULL,'','ordering','ASC','',NULL,'',0,5,0,5,0);
+	(2,0,1,0,0,'welcome',0,0,1,1,NULL,'admin','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-10 18:27:00','0000-00-00 00:00:00',1,1,'','',NULL,'','ordering','ASC','',NULL,'',0,5,0,5,0),
+	(3,4,1,0,0,'test-page',1,1,1,0,'admin','admin','2012-09-04 12:45:10','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-10 16:47:02','0000-00-00 00:00:00',1,1,'','',NULL,'','ordering','ASC','',NULL,'',3,5,0,5,0),
+	(4,0,1,0,0,'thats-my-page',2,0,1,0,'admin','admin','2012-09-08 10:06:20','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-10 18:27:24','0000-00-00 00:00:00',1,1,'','',NULL,'','ordering','ASC','',NULL,'',0,5,0,5,0);
 
 /*!40000 ALTER TABLE `page` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -615,10 +731,15 @@ LOCK TABLES `page_article` WRITE;
 
 INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`)
 VALUES
-	(1,10,1,NULL,0,NULL,'','','',0),
-	(2,20,1,NULL,0,NULL,'','','',0),
+	(1,10,1,NULL,0,NULL,'','','',1),
+	(2,20,1,NULL,1,NULL,'','','',1),
+	(2,41,1,NULL,2,NULL,'','','',1),
 	(3,30,1,NULL,1,NULL,'','','',1),
-	(3,40,1,NULL,2,NULL,'','','',1);
+	(3,40,1,NULL,2,NULL,'','','',1),
+	(3,42,1,NULL,3,NULL,'','','',1),
+	(3,43,0,'0',4,0,'','','',1),
+	(3,44,1,'0',5,0,'','','',1),
+	(3,45,1,'0',6,0,'','','',1);
 
 /*!40000 ALTER TABLE `page_article` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -652,10 +773,12 @@ INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, 
 VALUES
 	('en',1,'404','','404',NULL,'','',NULL,NULL,NULL,1),
 	('fr',1,'404','',NULL,NULL,'','',NULL,NULL,NULL,1),
-	('en',2,'welcome-url','','Welcome',NULL,'','',NULL,NULL,NULL,1),
-	('fr',2,'welcome-url','',NULL,NULL,'','',NULL,NULL,NULL,1),
-	('en',3,'test-page','','Test page','','','','','','',1),
-	('fr',3,'test-page','','','','','','','','',1);
+	('en',2,'welcome-url','','Welcome','','','','','','',1),
+	('fr',2,'welcome-url','','Bienvenue','','','','','','',1),
+	('en',3,'test-page','','Test page','','','','Window Title Page 3...','English Description Page 3....','Keyword Page 3',1),
+	('fr',3,'page-de-test','','Page de test','','','','Titre fenêtre Page 3','Description française page 3...','Mot clé Page 3',1),
+	('en',4,'thats-my-page','','That\'s my page','','','','','','',1),
+	('fr',4,'thats-my-page','','Ma page','','','','','','',1);
 
 /*!40000 ALTER TABLE `page_lang` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -675,6 +798,22 @@ CREATE TABLE `page_media` (
   PRIMARY KEY (`id_page`,`id_media`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+LOCK TABLES `page_media` WRITE;
+/*!40000 ALTER TABLE `page_media` DISABLE KEYS */;
+
+INSERT INTO `page_media` (`id_page`, `id_media`, `online`, `ordering`, `lang_display`)
+VALUES
+	(2,1,1,1,NULL),
+	(2,2,1,2,NULL),
+	(2,3,1,3,NULL),
+	(2,4,1,5,NULL),
+	(2,5,1,4,NULL),
+	(3,1,1,2,NULL),
+	(3,2,1,3,NULL),
+	(3,3,1,1,NULL);
+
+/*!40000 ALTER TABLE `page_media` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table page_user_groups
@@ -732,7 +871,12 @@ VALUES
 	(21,'ionize_version','0.9.8',''),
 	(22,'media_upload_mode','single',''),
 	(23,'no_source_picture','default.png',''),
-	(24,'site_title','My website','en');
+	(24,'site_title','My website','en'),
+	(25,'meta_keywords','keyword 1, keyword2','en'),
+	(26,'meta_description','Website description','en'),
+	(27,'meta_keywords','mot clé 1, mot clé 2','fr'),
+	(28,'meta_description','Description du site','fr'),
+	(29,'site_title','Mon site web','fr');
 
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -797,12 +941,32 @@ LOCK TABLES `url` WRITE;
 
 INSERT INTO `url` (`id_url`, `id_entity`, `type`, `canonical`, `active`, `lang`, `path`, `path_ids`, `full_path_ids`, `creation_date`)
 VALUES
-	(9,3,'page',1,1,'en','test-page','3','3','2012-09-05 17:20:35'),
-	(10,3,'page',1,1,'fr','test-page','3','3','2012-09-05 17:20:35'),
-	(11,30,'article',1,1,'en','test-page/article-30','3/30','3/30','2012-09-05 17:20:35'),
-	(12,30,'article',1,1,'fr','test-page/article-30','3/30','3/30','2012-09-05 17:20:35'),
-	(13,40,'article',1,1,'en','test-page/article-40','3/40','3/40','2012-09-05 17:20:35'),
-	(14,40,'article',1,1,'fr','test-page/article-40','3/40','3/40','2012-09-05 17:20:35');
+	(33,1,'page',1,1,'en','404','1','1','2012-09-06 13:21:22'),
+	(34,1,'page',1,1,'fr','404','1','1','2012-09-06 13:21:22'),
+	(35,10,'article',1,1,'en','404/404','1/10','1/10','2012-09-06 13:21:22'),
+	(36,10,'article',1,1,'fr','404/404','1/10','1/10','2012-09-06 13:21:22'),
+	(249,2,'page',1,1,'en','welcome-url','2','2','2012-09-10 18:27:00'),
+	(250,2,'page',1,1,'fr','welcome-url','2','2','2012-09-10 18:27:00'),
+	(251,20,'article',1,1,'en','welcome-url/welcome-article-url','2/20','2/20','2012-09-10 18:27:00'),
+	(252,20,'article',1,1,'fr','welcome-url/welcome-article-url','2/20','2/20','2012-09-10 18:27:00'),
+	(253,41,'article',1,1,'en','welcome-url/iframe-in-content','2/41','2/41','2012-09-10 18:27:00'),
+	(254,41,'article',1,1,'fr','welcome-url/iframe-in-content','2/41','2/41','2012-09-10 18:27:00'),
+	(255,4,'page',1,1,'en','thats-my-page','4','4','2012-09-10 18:27:23'),
+	(256,4,'page',1,1,'fr','thats-my-page','4','4','2012-09-10 18:27:23'),
+	(257,3,'page',1,1,'en','thats-my-page/test-page','4/3','4/3','2012-09-10 18:27:23'),
+	(258,3,'page',1,1,'fr','thats-my-page/page-de-test','4/3','4/3','2012-09-10 18:27:24'),
+	(259,30,'article',1,1,'en','thats-my-page/test-page/article-30','4/3/30','4/3/30','2012-09-10 18:27:24'),
+	(260,30,'article',1,1,'fr','thats-my-page/page-de-test/article-30','4/3/30','4/3/30','2012-09-10 18:27:24'),
+	(261,40,'article',1,1,'en','thats-my-page/test-page/article-40','4/3/40','4/3/40','2012-09-10 18:27:24'),
+	(262,40,'article',1,1,'fr','thats-my-page/page-de-test/article-40','4/3/40','4/3/40','2012-09-10 18:27:24'),
+	(263,42,'article',1,1,'en','thats-my-page/test-page/article-50','4/3/42','4/3/42','2012-09-10 18:27:24'),
+	(264,42,'article',1,1,'fr','thats-my-page/page-de-test/article-50','4/3/42','4/3/42','2012-09-10 18:27:24'),
+	(265,43,'article',1,1,'en','thats-my-page/test-page/article-60','4/3/43','4/3/43','2012-09-10 18:27:24'),
+	(266,43,'article',1,1,'fr','thats-my-page/page-de-test/article-60','4/3/43','4/3/43','2012-09-10 18:27:24'),
+	(267,44,'article',1,1,'en','thats-my-page/test-page/article-70','4/3/44','4/3/44','2012-09-10 18:27:24'),
+	(268,44,'article',1,1,'fr','thats-my-page/page-de-test/article-70','4/3/44','4/3/44','2012-09-10 18:27:24'),
+	(269,45,'article',1,1,'en','thats-my-page/test-page/article-80','4/3/45','4/3/45','2012-09-10 18:27:24'),
+	(270,45,'article',1,1,'fr','thats-my-page/page-de-test/article-80','4/3/45','4/3/45','2012-09-10 18:27:24');
 
 /*!40000 ALTER TABLE `url` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -870,7 +1034,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id_user`, `id_group`, `join_date`, `last_visit`, `username`, `screen_name`, `firstname`, `lastname`, `birth_date`, `gender`, `password`, `email`, `salt`)
 VALUES
-	(1,1,'2012-09-04 11:45:56','2012-09-04 11:46:23','admin','Admin','',NULL,'0000-00-00 00:00:00',NULL,'OKg52nwiollKAlW7CQ==','admin@partikule.net','e404e23654682ad0');
+	(1,1,'2012-09-04 11:45:56','2012-09-08 09:23:49','admin','Admin','',NULL,'0000-00-00 00:00:00',NULL,'OKg52nwiollKAlW7CQ==','admin@partikule.net','e404e23654682ad0');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
