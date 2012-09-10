@@ -5,19 +5,18 @@
 <!-- Footer -->
 <div id="footer" class="container">
 
-	<!-- Articles from one defined page
-		 Take care : The page "footer" must not change its URL !
-	-->
-	<ion:articles from="footer" limit="3">
-	
-		<div class="span-33<?php if('<ion:index />' == '1') :?> prepend-1<?php endif ;?>">
+    <ion:page id="9">
+        <!-- Articles from one defined page
+             Take care : The page "footer" must not change its URL !
+        -->
+        <ion:articles limit="3">
 
-			<!-- Each article uses its own view, as set in Ionize -->
-			<ion:article />
-			
-		</div>
-		
-	</ion:articles>
+            <!-- Footer Article view -->
+            <ion:partial view="article_footer" />
+
+        </ion:articles>
+
+    </ion:page>
 
 </div>
 
@@ -30,10 +29,8 @@
 		<div id="copyright">More info on <a href="http://ionizecms.com" onclick="window.open(this.href,'_blank');return false;">Ionize CMS website</a>.</div>
 		
 		<div id="footermenu">
-			<ul>
-				<!-- Footer navigation menu : Simply the base level -->
-				<ion:navigation tag="ul" level="0" />
-			</ul>
+            <!-- Footer navigation menu : Simply the base level -->
+            <ion:navigation tag="ul" level="0" />
 		</div>
 	
 	</div>

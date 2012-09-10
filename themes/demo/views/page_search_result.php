@@ -1,4 +1,4 @@
-<ion:partial path="header" />
+<ion:partial view="header" />
 
 
 <div class="span-22 prepend-1 append-1">

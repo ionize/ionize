@@ -7,16 +7,20 @@
 	
 	<div class="span-22 prepend-1 last">
 
-		<!-- Articles with the type "intro" -->
-		<ion:articles type="intro">
-			
-			<!-- Article Title -->
-			<ion:title tag="h2" />
-			
-			<!-- Article Content -->
-			<ion:content />
-		
-		</ion:articles>	
+        <!-- Articles with the type "intro" -->
+        <ion:page:articles type="intro">
+
+            <ion:article>
+
+                <!-- Article Title -->
+                <ion:article:title tag="h2" />
+
+                <!-- Article Content -->
+                <ion:article:content />
+
+            </ion:article>
+
+        </ion:page:articles>
 	
 	</div>
 	
@@ -157,27 +161,28 @@
 		Contact page articles 
 	-->
 	<div class="span-9 last contact-article">
-		
-		<!-- Displaying Article -->
-		<ion:articles type="">
-			
-				
-			<!-- Article Title -->
-			<ion:title tag="h2" />
-			
-			<!-- Article Content -->
-			<ion:content />
-			
-			
-			<!-- Article's media, if any -->
-			<ion:medias type="picture">
-				
-				<img src="<ion:src folder="430" />" />
-			
-			</ion:medias>
-			
-		
-		</ion:articles>
+
+        <!-- Displaying Article -->
+        <ion:page:articles type="">
+
+            <ion:article>
+
+                <!-- Article Title -->
+                <ion:article:title tag="h2" />
+
+                <!-- Article Content -->
+                <ion:article:content />
+
+                <!-- Article's media, if any -->
+                <ion:medias type="picture">
+
+                    <img src="<ion:media:src size="430" master="width" unsharp="true" />" />
+
+                </ion:medias>
+
+            </ion:article>
+
+        </ion:page:articles>
 		
 	</div>
 	

@@ -1,4 +1,4 @@
-<ion:partial view="header" />
+<ion:partial view="header" xmlns:ion="http://www.w3.org/1999/html"/>
 
 <div class="span-22 prepend-1 append-1">
 	<div id="home-slider" >
@@ -33,25 +33,29 @@
 	 * See the produced source in your browser
 	 *
 	 */
-	<ion:medias type="picture">
-	
-		images.push('<ion:src folder="940" />');
-		
-		/**
-		 * Title and description of each picture is processed by the PHP function "addslashes"
-		 * to prevent hangs if the string contains quotes.
-		 *
-		 */
-		titles.push('<ion:title function="addslashes" />');
-		descriptions.push('<ion:description function="addslashes" />');
-		
-		/**
-		 * range_x stores the total number of pictures linked to the page
-		 *
-		 */
-		range_x = <ion:count />;
-	
-	</ion:medias>
+    <ion:page:medias type="picture">
+
+        <ion:media>
+
+            images.push('<ion:media:src size="940,614" adaptive="adaptive_resize" unsharp="true" />');
+
+            /**
+             * Title and description of each picture is processed by the PHP function "addslashes"
+             * to prevent hangs if the string contains quotes.
+             *
+             */
+            titles.push('<ion:media:title function="addslashes" />');
+            descriptions.push('<ion:media:description function="addslashes" />');
+
+            /**
+             * range_x stores the total number of pictures linked to the page
+             *
+             */
+            range_x = <ion:media:count />;
+
+        </ion:media>
+
+    </ion:page:medias>
 	
    	/**
    	 * The Wall init
@@ -105,37 +109,42 @@
 <div class="span-22 prepend-1 append-1">
 
 	<!-- Page's subtitle -->
-	<h2 class="title"><ion:subtitle /></h2>
+	<h2 class="title"><ion:page:subtitle /></h2>
 	
 	<!-- Home page articles
 		 Loop into articles without "type"
 	-->
-	<ion:articles limit="3" type="">
+    <ion:page:articles limit="3" type="">
 
-		<div class="span-33 home <?php if('<ion:index />' == 3) :?> last<?php endif;?>">
-	
-		
-			<!-- We display only one picture of each article
-				 So, even the editor makes a mistake by linking 2 pictures, the website design will stay correct
-			-->
-			<ion:medias type="picture" limit="1">
-				<div class="imgborder" >
-					<div class="img" style="background:url(<ion:src folder="280" />);height:130px;"></div>
-				</div>
-			</ion:medias>
+        <ion:article>
 
-			<!-- Article's title 
-				 Could also be written <ion:title tag="h2" /> 
-				 if we don't want to display an empty tag if the article has no title
-			-->
-			<h2><ion:title /></h2>
-			
-			<!-- Article's content -->
-			<ion:content />
-			
-		</div>
-		
-	</ion:articles>
+            <div class="span-33 home <ion:if key="index" expression="index==3"> last</ion:if>">
+
+                <!-- We display only one picture of each article
+                     So, even the editor makes a mistake by linking 2 pictures, the website design will stay correct
+                -->
+                <ion:article:medias type="picture" limit="1">
+                    <ion:media>
+                        <div class="imgborder" >
+                            <div class="img" style="background:url(<ion:media:src size="280" master="width" unsharp="true" />);height:130px;"></div>
+                        </div>
+                    </ion:media>
+                </ion:article:medias>
+
+                <!-- Article's title
+                     Could also be written <ion:title tag="h2" />
+                     if we don't want to display an empty tag if the article has no title
+                -->
+                <h2><ion:article:title /></h2>
+
+                <!-- Article's content -->
+                <ion:article:content />
+
+            </div>
+
+        </ion:article>
+
+    </ion:page:articles>
 	
 	
 	<hr />
@@ -145,16 +154,20 @@
     	<!-- Article in the one-fourth column of the home page.
     		 We limit the displayed article to this type
     	-->
-    	<ion:articles type="one-fourth">
-    	
-    		<!-- Article's title
-    			 In this case, the H2 tag is only displayed if one title is set for the article
-    		-->
-    		<ion:title tag="h2" />
-    		
-    		<ion:content />
-    	
-    	</ion:articles>
+        <ion:page:articles type="one-fourth">
+
+                <ion:article>
+
+                    <!-- Article's title
+                         In this case, the H2 tag is only displayed if one title is set for the article
+                    -->
+                    <ion:article:title tag="h2" />
+
+                    <ion:article:content />
+
+                </ion:article>
+
+        </ion:page:articles>
     
     </div>
     
@@ -175,24 +188,35 @@
     		 For each article, we only display the first paragrph of the content.
     		 We also limit the picture display to the first one.
     	-->
-    	<ion:articles from="blog" limit="2">
-    	
-			<!-- In this pecial case, we don't care about article's title -->
-			<div class="home-last-post">
-				
-				<ion:medias type="picture" limit="1">
-					<img src="<ion:src folder="150" />" alt="" class="left imgborder"/>				
-				</ion:medias>
-				
-				<!-- The title is a link to the post -->
-				<h3><a href="<ion:url />"><ion:title /></a></h3>
-				
-				<!-- Content limited to the first paragraph -->
-				<ion:content paragraph="1" />
+        <ion:page id="6">
 
-			</div>
+            <ion:articles limit="2">
 
-    	</ion:articles>
+                <ion:article>
+
+                    <!-- In this pecial case, we don't care about article's title -->
+                    <div class="home-last-post">
+
+                        <ion:medias type="picture" limit="1">
+                            <ion:media>
+                                <img src="<ion:media:src size="150" master="width" unsharp="true" />" alt="<ion:media:alt />" class="left imgborder"/>
+                            </ion:media>
+                        </ion:medias>
+
+                        <!-- The title is a link to the post -->
+                        <h3><a href="<ion:url />"><ion:article:title /></a></h3>
+
+                        <!-- Content limited to the first paragraph -->
+                        <ion:article:content paragraph="1" />
+
+                    </div>
+
+                </ion:article>
+
+            </ion:articles>
+
+        </ion:page>
+
 
     </div>
 
