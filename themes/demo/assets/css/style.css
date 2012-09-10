@@ -385,7 +385,7 @@ ul.links li a{
 	padding: 6px 0 6px 15px;
 	text-decoration: none;
 }
-ul.links li a:hover{
+ul.links li a:hover, ul.links li a.active {
 	background-color: #fcfcfc;
 }
 

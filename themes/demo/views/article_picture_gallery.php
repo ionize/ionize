@@ -1,3 +1,4 @@
+<ion:article>
 
 <!--
 	Article used as a picture gallery
@@ -7,26 +8,25 @@
 
 
 	
-	<h2><ion:title /></h2>
+	<ion:article:title tag="h2" />
 
 	<!-- The content as introduction text -->
-	<ion:content />
+	<ion:article:content />
 	
 	<!-- Loop in pictures linked to the article -->
-	<ion:medias type="picture">
-		
-		<!-- Link to the full sized picture -->
-		<a href="<ion:src />" rel="lightbox-<ion:id_article />" title="<ion:title function="addslashes" /> : <ion:description function="addslashes" />" class="imgborder gallery-thumb<?php if (<ion:index/>%5 == 0) :?> last<?php endif ;?>">
+	<ion:article:medias type="picture">
 
-			<!-- 
-				The displayed thumb comes from the folder 145
-				Thumb Folder name in Ionize (Settings > Advanced Settings > Thumbails) : 145
-				Physical thumb folder : /files/<picture_folder>/thumb_145
-			-->
-			<img src="<ion:src folder="150" />" alt="<ion:alt />" />
-		</a>
+        <!-- Link to the full sized picture -->
+        <a href="<ion:media:src />" rel="lightbox-<ion:article:get key="id_article" />" title="<ion:media:title function="addslashes" /> : <ion:media:description function="addslashes" />" class="imgborder gallery-thumb<ion:media:if key="index" expression="index%5 == 0"> last</ion:media:if>">
+
+            <!--
+                The displayed thumb comes from the folder 145
+                Thumb Folder name in Ionize (Settings > Advanced Settings > Thumbails) : 145
+                Physical thumb folder : /files/<picture_folder>/thumb_145
+            -->
+            <img src="<ion:media:src size="150" square="true" unsharp="true" />" alt="<ion:media:alt />" />
+        </a>
 				
-	</ion:medias>
+	</ion:article:medias>
 
-
-
+</ion:article>

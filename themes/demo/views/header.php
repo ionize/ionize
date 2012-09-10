@@ -42,14 +42,17 @@
 </head>
 
 <body>
-
+<!-- <center>Elapsed Time : {elapsed_time}</center> -->
 <div id="container" class="container">
 
 	<div id="header" class="span-22 prepend-1 append-1">
 
-		<ul id="languages">
-			<ion:languages />
-		</ul>
+        <!-- Language Navigation
+             View : <ul id="languages">
+                        <li>....</li>
+                    </ul>
+        -->
+        <ion:languages tag="ul" id="languages" />
 
 		<div class="span-12">
 			<div id="logo">

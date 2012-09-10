@@ -1,14 +1,18 @@
 
 <!-- Basic Article view -->
 
-<ion:title tag="h2" class="pagetitle" />
+<ion:article:title tag="h2" class="pagetitle" />
 
-<ion:content />
+<ion:article:content />
 
 
 <ion:medias type="picture">
 
-	<img src="<ion:src folder="430" />" />
+    <ion:media size="430" master="width" unsharp="false">
+
+        <img src="<ion:media:src />" />
+
+    </ion:media>
 
 </ion:medias>
 

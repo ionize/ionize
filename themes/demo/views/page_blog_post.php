@@ -4,41 +4,49 @@
 <div class="span-24">
 
 	<div class="span-14 prepend-1 colborder blog">
-	
-
-		<?php if ('<ion:category field="title" />' != '') :?>
-
-			<p id="category_highlight"><em>//</em> <ion:translation term="you_are_browsing_category" /> : <span><ion:category field="title" /></span></p>	
-	
-		<?php endif; ?>
 
 
-		<!--
-			We explicitely get the articles which don't have any type set.
-		-->
-		<ion:article>
 
-			<div class="post">
+        <!-- If category is active show the active category name -->
+        <ion:categories:category:is_active>
 
-				<h2><ion:title /></h2>
-				<ion:date format="complete" />
+            <p id="category_highlight"><em>//</em> <ion:translation term="you_are_browsing_category" /> : <span><ion:category:title /></span></p>
 
-				<ion:medias type="picture">
-
-					<img src="<ion:src folder="540" />" />
-
-				</ion:medias>
-
-				<!-- Categories -->
-				<p class="categories">
-					<ion:translation term="categories" /> : <ion:categories separator=", " />
-				</p>
+        </ion:categories:category:is_active>
 
 
-				<ion:content />
 
-			</div>
-		</ion:article>
+            <ion:article>
+                <!--
+                    We explicitely get the articles which don't have any type set.
+                -->
+
+                <div class="post">
+
+                    <ion:article:title tag="h2" />
+
+                    <ion:article:date format="complete" />
+
+                    <ion:article:medias type="picture">
+
+                        <ion:media>
+                            <img src="<ion:src size="540" master="width" unsharp="true" />" />
+                        </ion:media>
+
+                    </ion:article:medias>
+
+                    <!-- Categories -->
+                    <p class="categories">
+                        <ion:translation term="categories" /> : <ion:article:categories separator=", " />
+                    </p>
+
+
+                    <ion:article:content />
+
+                </div>
+
+            </ion:article>
+
 
 	</div>
 	
@@ -48,14 +56,16 @@
 		<div class="side-block">
 		
 			<h2><ion:translation term="title_categories" /></h2>
-			
-			<ul class="links">
-				<ion:categories>
-				
-					<li><a class="<ion:active_class />" href="<ion:url />"><ion:title /></a></li>
-					
-				</ion:categories>
-			</ul>
+
+            <ion:page>
+
+                <ion:categories all='true' tag="ul" class="links" active_class="active">
+                    <li>
+                        <a <ion:category:is_active> class="<ion:category:active_class />" </ion:category:is_active>  href="<ion:category:url />"><ion:category:title /></a>
+                    </li>
+                </ion:categories>
+
+            </ion:page>
 		
 		</div>
 		
