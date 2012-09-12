@@ -75,6 +75,38 @@
 
 <?php
 /*
+ * Extended Tags Examples
+ *
+
+// Site / Others
+
+
+// Page
+
+
+// Article, Article ID
+
+
+// Pagination
+
+
+// Navigation
+extended_tree_navigation_tag_test
+
+// Medias
+
+
+// Categories
+
+
+// Archives
+
+
+
+*/
+?>
+<?php
+/*
  * Replace the called view with one of these test views
  *
 
