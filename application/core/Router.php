@@ -210,10 +210,11 @@ class CI_Router
 			
 			// use the default controller
 			if(empty($this->uri->uri_string))
-				$this->load_default_uri();
+//				$this->load_default_uri();
+				$this->uri->uri_string = '';
 
 			$this->uri->_remove_url_suffix();
-			
+
 			// clean the uri and explode it
 			$this->explode_segments($this->uri->uri_string);
 
@@ -228,16 +229,16 @@ class CI_Router
 				
 				// remove the language key
 				array_shift($this->uri->segments);
-				
+
 				if(empty($this->uri->segments))
 				{
 					// load the default uri again
-					$this->load_default_uri();
-					
-					$this->uri->_remove_url_suffix();
-					
+					// $this->load_default_uri();
+					// $this->uri->_remove_url_suffix();
 					// clean the uri and explode it
-					$this->explode_segments($this->uri->uri_string);
+					// $this->explode_segments($this->uri->uri_string);
+
+					$this->uri->uri_string = '';
 				}
 				else
 				{
@@ -250,7 +251,8 @@ class CI_Router
 				// Lang detection : Cookie, Browser
 				$this->detect_language();
 
-				if ($raw_key == $this->get_default_controller())
+				// if ($raw_key == $this->get_default_controller())
+				if ($raw_key == '')
 				{
 					$this->redirect_home_to_lang_url();
 				}
@@ -506,7 +508,7 @@ class CI_Router
 		$segments = array_values($this->uri->segment_array());
 
 		// Check for admin language file
-		if ($segments[0] == config_item('admin_url') OR (isset($segments[1]) && $segments[1] == config_item('admin_url')) )
+		if ((isset($segments[0]) && $segments[0] == config_item('admin_url')) OR (isset($segments[1]) && $segments[1] == config_item('admin_url')) )
 		{
 			$this->lang_key = $this->config->item('default_admin_lang');
 		}
@@ -517,7 +519,8 @@ class CI_Router
 
 			// Case of Home page with Cookie : The asked lang code is the default one
 			if (
-				$raw_key == $this->get_default_controller() &&
+//				$raw_key == $this->get_default_controller() &&
+				$raw_key == '' &&
 				!empty($_COOKIE['ion_selected_language'])
 			)
 			{
@@ -574,8 +577,8 @@ class CI_Router
 		{
 			$url = config_item('base_url').$this->lang_key;
 
-			log_message('debug', 'Router : Detected lang code : ' . $this->lang_key);
-			log_message('debug', 'Router : Redirect to : '. $url);
+			log_message('error', 'Router : Detected lang code : ' . $this->lang_key);
+			log_message('error', 'Router : Redirect to : '. $url);
 
 			// 302 Found
 			header('HTTP/1.1 302 Found');
@@ -600,7 +603,13 @@ class CI_Router
 // Not important, but not so clean, should be correctly implemented !
 
 		// Admin lang key
-		if ($segments[0] == config_item('admin_url') OR (isset($segments[1]) && $segments[1] == config_item('admin_url')) )
+		if (
+			(isset($segments[0]) && $segments[0] == config_item('admin_url'))
+			OR (
+				isset($segments[1])
+				&& $segments[1] == config_item('admin_url')
+			)
+		)
 		{
 			if (is_file(APPPATH.'language/'.$key.'/admin_lang'.EXT))
 			{

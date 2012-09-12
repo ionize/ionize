@@ -436,12 +436,15 @@ class TagManager_Navigation extends TagManager
 		$articles = FALSE;
 		if ($with_articles == TRUE)
 		{
+			/*
 			$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
 			$uri_segments = explode('/', $uri);
+			*/
+			$uri_segments = self::get_uri_segments();
 			$current_article_uri = array_pop($uri_segments);
 
 			$tag->attr['scope'] = 'global';
-			$articles = TagManager_Page::get_articles($tag);
+			$articles = TagManager_Article::get_articles($tag);
 			
 			foreach($articles as &$article)
 			{
@@ -699,12 +702,12 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function get_url_infos()
 	{
-		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
+		$uri_segments = self::get_uri_segments();
 
 		// Returned data
 		$infos = array(
 			'type' => 'page',
-			'page' => self::$uri_segments[0],
+			'page' => $uri_segments[0],
 			'article' => ''
 		);
 		
@@ -712,20 +715,20 @@ class TagManager_Navigation extends TagManager
 		$uri_config = self::$ci->config->item('special_uri');
 
 		// Get the potential special URI
-		$special_uri = (isset(self::$uri_segments[1]) && array_key_exists(self::$uri_segments[1], $uri_config)) ? self::$uri_segments[1] : FALSE;
+		$special_uri = (isset($uri_segments[1]) && array_key_exists($uri_segments[1], $uri_config)) ? $uri_segments[1] : FALSE;
 		
 		// If a special URI exists, get the articles from it.
 		if ($special_uri !== FALSE)
 		{
 			$infos['type'] = 'special';
-			$infos['page'] = self::$uri_segments[0];
+			$infos['page'] = $uri_segments[0];
 		}
 		// Get one article through his name in the URL
-		else if (isset(self::$uri_segments[1]))
+		else if (isset($uri_segments[1]))
 		{
 			$infos['type'] = 'article';
 			$infos['page'] = $uri_segments[0];
-			$infos['article'] = self::$uri_segments[1];
+			$infos['article'] = $uri_segments[1];
 		}
 
 		return $infos;		

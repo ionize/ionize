@@ -26,7 +26,7 @@ class TagManager_Media extends TagManager
 	(
 		'medias' => 			'tag_medias',
 
-		'media' =>				'tag_media',
+		'media' =>				'tag_expand',
 		'media:src' => 			'tag_media_src',
 		'media:thumb_folder' => 'tag_media_thumb_folder',
 		'media:size' => 		'tag_media_size',
@@ -186,18 +186,9 @@ class TagManager_Media extends TagManager
 		return $str;
 	}
 
+
 	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Returns one media
-	 *
-	 */
-	public static function tag_media(FTL_Binding $tag)
-	{
-		return $tag->expand();
-	}
-	
+
 
 	/**
 	 * Returns the media complete src URL
@@ -366,9 +357,7 @@ class TagManager_Media extends TagManager
 
 		return self::$ci->medias->get_thumb_folder($settings);
 	}
-	
 }
-
 
 /* End of file Media.php */
 /* Location: /application/libraries/Tagmanager/Media.php */

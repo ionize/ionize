@@ -1,4 +1,7 @@
-<h1>&lt;ion:article:id />, &lt;ion:id /></h1>
+<h1>Articles from current page</h1>
+<ion:tree_navigation />
+<hr/>
+
 
 <ul>
 	<li>Get the articles from the current page</li>
@@ -24,7 +27,7 @@
 		<h3>Article ID : <ion:article:id/></h3>
 		<ion:article>
 			<h4><ion:id /> : <ion:title/></h4>
-			<ion:content/>
+			<ion:content paragraph="1" />
 		</ion:article>
 	</ion:articles>
 </ion:page>

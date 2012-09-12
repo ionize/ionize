@@ -1,4 +1,7 @@
-<h1>&lt;ion:article:id /></h1>
+<h1>Article from one given page</h1>
+<ion:tree_navigation />
+<hr/>
+
 
 <pre>
 &lt;p>Current page ID : &lt;ion:page:id />&lt;/p>

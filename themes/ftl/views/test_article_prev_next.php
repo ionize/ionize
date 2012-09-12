@@ -1,21 +1,12 @@
 <h1>Previous / Next article</h1>
+<ion:tree_navigation />
 
-<h2>Navigation menus</h2>
-
-<h3>Pages : </h3>
-<ion:navigation helper="false" tag="ul">
-	<li>
-		<a <ion:href /> >
-		<ion:id /> : <ion:url /><ion:is_active> <span class="red">(is active)</span></ion:is_active>
-		</a>
-	</li>
-</ion:navigation>
+<hr/>
 
 <h3>Articles</h3>
 <ion:articles tag="ul">
 	<ion:article:url href="true" tag="li" display="title"/>
 </ion:articles>
-
 
 
 <h2>Next / Previous Article</h2>

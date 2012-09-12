@@ -1,8 +1,11 @@
-<h1>&lt;ion:article:categories /></h1>
+<h1>Categories</h1>
+<ion:tree_navigation />
 
 <p>
 	Used in the context of the parent "<b>article</b>" tag, the <b>categories</b> tag displays the article's categories.
 </p>
+
+<hr/>
 
 <h2>Categories as simple string</h2>
 

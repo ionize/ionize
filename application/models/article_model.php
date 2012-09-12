@@ -171,173 +171,12 @@ class Article_model extends Base_model
 		$this->{$this->db_group}->select($this->type_table.'.type');
 		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
 
-
 		// Base_model->get_lang_list()
 		$articles =  parent::get_lang_list($where, $lang);
 
 		$this->add_categories($articles, $lang);
 
 		return $articles;
-		/*
-		if (is_array($where) )
-		{
-
-				// Perform conditions from the $where array
-			foreach(array('limit', 'offset', 'order_by', 'like') as $key)
-			{
-				if(isset($where[$key]))
-				{
-					call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
-					unset($where[$key]);
-				}
-			}
-
-			foreach ($where as $key => $value)
-			{
-				// Join to context table (page_article) if needed
-				if (strpos($key, 'id_page') !== FALSE)
-				{
-					// id_page must be searched in page_article table
-					$key = str_replace('id_page', $this->parent_table.'.id_page', $key);
-
-					// Add article's context page views
-					// $this->{$this->db_group}->select('article_list_view, article_view');
-					// $this->{$this->db_group}->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
-				}
-
-				$protect = true;
-
-				if (in_array(substr($key, -2), array('in', 'is')) )
-				{
-					$protect = FALSE;
-				}
-				// NULL value : Create an "where value is NULL" constraint
-				if ($value == 'NULL')
-				{
-					$this->{$this->db_group}->where($key. ' IS NULL', NULL, FALSE);
-				}
-				else
-				{
-					if (strpos($key, '.') > 0)
-					{
-						$this->{$this->db_group}->where($key, $value, $protect);
-					}
-					else
-					{
-						$this->{$this->db_group}->where($this->table.'.'.$key, $value, $protect);
-					}
-				}
-			}
-		}
-
-		// Add the SQL publish filter if mandatory
-		$this->filter_on_published(self::$publish_filter, $lang);
-
-		// Filter on users filter
-		if ( $filter !== FALSE)	$this->_set_filter($filter);
-
-		// Add the 'date' field to the query
-		$this->{$this->db_group}->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
-
-		// Make sure we have only one time each element
-		$this->{$this->db_group}->distinct();
-
-		// Main data select						
-		$this->{$this->db_group}->select($this->table.'.*', FALSE);
-
-		// Lang data
-		if ( ! is_null($lang) || ! $lang == FALSE)
-		{
-			$this->{$this->db_group}->select($this->lang_table.'.*');
-			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'left');
-			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
-
-			// Add URL path to query
-			// URL depends on  lang, it is not possible to get it outside one lang query
-			$this->{$this->db_group}->select('path, path_ids, full_path_ids');
-			$this->{$this->db_group}->join(
-				$this->url_table,
-				$this->table.".id_article = " .$this->url_table.".id_entity AND ".
-					"(". 
-						$this->url_table.".type = 'article' AND " .
-						$this->url_table.".active = 1 AND ".
-						$this->url_table.".lang = '". $lang ."'" .
-					")",
-				'left'
-			);
-		}
-
-		// Add Type to query
-		$this->{$this->db_group}->select($this->type_table.'.type');
-		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
-		
-
-		// DB Query
-		$query = $this->{$this->db_group}->get($this->table);
-log_message('error', $this->{$this->db_group}->last_query());
-
-		if($query && $query->num_rows() > 0)
-		{
-			$data = $query->result_array();
-			$query->free_result();
-
-			// Add linked medias to the "media" index of the data array		
-			if (in_array($this->table, $this->with_media_table))
-				$this->add_linked_media($data, $this->table, $lang);
-					
-			// Add extended fields if necessary
-			$this->add_extend_fields($data, $this->table, $lang);
-			
-			// Add URLs for each language
-			$this->add_lang_urls($data, $this->table, $lang);
-		}
-
-		// Add Categories to each article
-		$categories = $art_cat = array();
-		
-		$this->{$this->db_group}->join($this->category_lang_table, $this->category_table.'.id_category = ' .$this->category_lang_table.'.id_category', 'left');
-		
-		if ( ! is_null($lang))
-		{
-			$this->{$this->db_group}->where($this->category_lang_table.'.lang', $lang);
-		}
-		$query = $this->{$this->db_group}->get($this->category_table);
-		
-		if($query->num_rows() > 0)
-		{
-			$categories = $query->result_array();
-
-			// Get categories articles table content
-			$query = $this->{$this->db_group}->get($this->article_category_table);
-			
-			// table of links between articles and categories
-			if($query->num_rows() > 0) $art_cat = $query->result_array();			
-		}
-
-		// Add entry to each data array element
-		foreach ($data as &$article)
-		{
-			$article['categories'] = array();
-			if ( ! empty($categories))
-			{
-				foreach($art_cat as $cat)
-				{
-					if($article['id_article'] == $cat['id_article'])
-					{
-//						$article['categories'] = array_merge($article['categories'], array_filter($categories, create_function('$row', 'return $row["id_category"] == "'. $cat['id_category'] .'";')));
-						foreach($categories as $c)
-						{
-							if ($c['id_category'] == $cat['id_category'])
-								$article['categories'][] = $c;
-						}
-					}
-				}
-			}
-		}
-		
-		return $data;
-		*/
-
 	}
 
 	// ------------------------------------------------------------------------
@@ -347,6 +186,7 @@ log_message('error', $this->{$this->db_group}->last_query());
 	 * Get one article parent pages list
 	 *
 	 * @param 	int		Article's ID
+	 * @return	array
 	 *
 	 */
 	function get_pages_list($id_article)
@@ -1289,7 +1129,7 @@ log_message('error', $this->{$this->db_group}->last_query());
 	 * @return	array	Articles array
 	 *
 	 */	
-	function get_from_category($where=FALSE, $category, $lang, $filter=FALSE)
+	function get_from_category($where=array(), $category, $lang, $filter=FALSE)
 	{
 		$this->{$this->db_group}->join('article_category t5', $this->table.'.id_article = t5.id_article', 'inner');
 		$this->{$this->db_group}->join('category t6', 't6.id_category = t5.id_category', 'inner');
@@ -1318,7 +1158,7 @@ log_message('error', $this->{$this->db_group}->last_query());
 	 * @return	array	Articles array
 	 *
 	 */	
-	function get_from_categories($where=FALSE, $categories, $categories_condition, $lang, $filter=FALSE)
+	function get_from_categories($where=array(), $categories, $categories_condition, $lang, $filter=FALSE)
 	{
 
 		$this->{$this->db_group}->join('article_category tac', $this->table.'.id_article = tac.id_article', 'inner');
@@ -1355,8 +1195,86 @@ log_message('error', $this->{$this->db_group}->last_query());
 	// ------------------------------------------------------------------------
 
 
+	function add_pagination_filter($pagination, $start_index)
+	{
+		$this->{$this->db_group}->limit((int)$pagination);
+		$this->{$this->db_group}->offset((int)$start_index);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	function add_archives_filter($year, $month = NULL)
+	{
+		if ($year == '1970')
+		{
+			$this->{$this->db_group}->where(
+				'(
+					IF(
+						article.logical_date !=0, article.logical_date,
+						IF(
+							article.publish_on !=0, article.publish_on,
+							article.created
+						)
+					) = "0000-00-00 00:00:00"
+				)'
+			);
+		}
+		else if ( ! is_null($month))
+		{
+			// Compatibility with 'MONTH' SQL function : month < 10 without firts '0'
+			$period = $year.intval($month);
+			$this->{$this->db_group}->where(
+				'(
+					IF (
+						article.logical_date !=0, CONCAT(YEAR(article.logical_date), MONTH(article.logical_date)),
+						IF (
+							article.publish_on !=0, CONCAT(YEAR(article.publish_on), MONTH(article.publish_on)),
+							CONCAT(YEAR(article.created), MONTH(article.created))
+						)
+					) = \''.$period.'\'
+				)'
+			);
+		}
+		else
+		{
+			$this->{$this->db_group}->where(
+				'(
+					IF(
+						article.logical_date !=0, YEAR(article.logical_date),
+						IF(
+							article.publish_on !=0, YEAR(article.publish_on),
+							YEAR(article.created)
+						)
+					) = \'' . $year .'\'
+				)'
+			);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	function add_category_filter($category, $lang)
+	{
+		$this->{$this->db_group}->join('article_category', $this->table.'.id_article = article_category.id_article', 'inner');
+		$this->{$this->db_group}->join('category', 'category.id_category = article_category.id_category', 'inner');
+		$this->{$this->db_group}->join('category_lang', 'category_lang.id_category = category.id_category', 'inner');
+
+		$this->{$this->db_group}->where('category.name', $category);
+		$this->{$this->db_group}->where('category_lang.lang', $lang);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Gets the articles from a given archive
+	 *
+	 * Period 197001
 	 *
 	 * @param	Array		Array of condition to be used by the SQL query
 	 * @param	String		Year, YYYY
@@ -1366,25 +1284,30 @@ log_message('error', $this->{$this->db_group}->last_query());
 	 *
 	 * @return	array
 	 */
-	function get_from_archives($where=FALSE, $year, $month, $lang, $filter=FALSE)
+	/*
+	function get_from_archives($where=array(), $year, $month, $lang, $filter=FALSE)
 	{
-		$period = $year;
-		
-		// If month is not null
-		if ( ! is_null($month))
+		if ($year == '1970')
+		{
+			$having = 'date = "0000-00-00 00:00:00"';
+		}
+		else if ( ! is_null($month))
 		{
 			// Compatibility with 'MONTH' SQL function : month < 10 without firts '0'
 			$period = $year.intval($month);
-			
-			$this->{$this->db_group}->having('CONCAT(YEAR(date), MONTH(date)) = \'' . $period .'\'' );
+			$having = 'CONCAT(YEAR(date), MONTH(date)) = \'' . $period .'\'';
 		}
 		else
 		{
-			$this->{$this->db_group}->having('YEAR(date) = \'' . $period .'\'' );
+			$having = 'YEAR(date) = \'' . $year .'\'';
 		}
+		$this->{$this->db_group}->having($having);
 
-		return $this->get_lang_list($where, $lang, $filter);
+		$articles =  $this->get_lang_list($where, $lang, $filter);
+
+		return $articles;
 	}
+	*/
 
 
 	// ------------------------------------------------------------------------
@@ -1393,46 +1316,67 @@ log_message('error', $this->{$this->db_group}->last_query());
 	/**
 	 * 
 	 */
-	function get_archives_list($where=FALSE, $lang=NULL, $filter=FALSE, $month=FALSE, $order_by='period DESC')
+	function get_archives_list($where=array(), $lang=NULL, $filter=FALSE, $month=FALSE, $order_by='period DESC')
 	{
 		$data = array();
 	
 		if ($month === true)
 		{
-			$this->{$this->db_group}->select('if (logical_date !=0, CONCAT(YEAR(logical_date), DATE_FORMAT(logical_date, "%m")), if(publish_on != 0, CONCAT(YEAR(publish_on), DATE_FORMAT(publish_on, "%m")), CONCAT(YEAR(created), DATE_FORMAT(created, "%m")))) AS period, count(1) as nb', FALSE);
+			$this->{$this->db_group}->select(
+				'
+				if(
+					article.logical_date !=0, CONCAT(YEAR(article.logical_date), DATE_FORMAT(article.logical_date, "%m")),
+					if(
+						article.publish_on != 0, CONCAT(YEAR(article.publish_on), DATE_FORMAT(article.publish_on, "%m")),
+						if(
+							article.created !=0, CONCAT(YEAR(article.created), DATE_FORMAT(article.created, "%m")), "197001"
+						)
+					)
+				) AS period, count(1) as nb
+				',
+				FALSE
+			);
 		}
 		else
 		{
-			$this->{$this->db_group}->select('if (logical_date !=0, YEAR(logical_date), if(publish_on != 0, YEAR(publish_on), YEAR(created))) AS period, count(1) as nb', FALSE);
+			$this->{$this->db_group}->select(
+				'
+				if(
+					article.logical_date !=0, YEAR(article.logical_date),
+					if(
+						article.publish_on != 0, YEAR(article.publish_on),
+						if (
+							article.created !=0, YEAR(article.created), "1970"
+						)
+					)
+				) AS period, count(1) as nb',
+				FALSE
+			);
 		}
 		
 		$this->{$this->db_group}->group_by('period');
 		$this->{$this->db_group}->order_by($order_by);
 
-		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
-		$this->{$this->db_group}->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'inner');
+		$this->{$this->db_group}->select($this->parent_table.'.id_page', FALSE);
+		$this->{$this->db_group}->join(
+			$this->parent_table,
+			$this->parent_table.'.id_article = ' .$this->table.'.id_article',
+			'inner'
+		);
 
 		// Lang data
 		if ( ! is_null($lang))
 		{
-			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
+			$this->{$this->db_group}->join(
+				$this->lang_table,
+				$this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table,
+				'inner'
+			);
 			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 
 		// Where ?
-		if (is_array($where) )
-		{
-			foreach ($where as $key => $value)
-			{
-				// id_page must be searched in page_article table
-				if (strpos($key, 'id_page') !== FALSE)
-					$key = str_replace('id_page', $this->parent_table.'.id_page', $key);
-				else
-					$key = $this->table.'.'.$key;
-				
-				$this->{$this->db_group}->where($key, $value);
-			}
-		}
+		$this->_process_where($where);
 
 		// Filter on users filter
 		if ( $filter !== FALSE)
@@ -1515,6 +1459,8 @@ log_message('error', $this->{$this->db_group}->last_query());
 			$this->_set_filter($filter);
 
 		$nb = $this->{$this->db_group}->count_all_results($this->table);
+
+		// log_message('error', print_r($this->{$this->db_group}->last_query(), true));
 
 		return $nb;
 	}

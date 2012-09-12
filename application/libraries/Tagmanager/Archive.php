@@ -20,171 +20,153 @@ class TagManager_Archive extends TagManager
 	public static $tag_definitions = array
 	(
 		'archives' =>				'tag_archives',
-		'archive' =>				'tag_archive',
+		'archive' =>				'tag_expand',
 		'archive:period' => 		'tag_simple_value',
 		'archives:active_class' => 	'tag_simple_value',
 	);
 
 
+	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Get the archives tag
-	 *
-	 *
-	 */
-	public static function tag_archives($tag)
+	public static function get_archives(FTL_Binding $tag)
 	{
-		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
-			return $str;
-		
-		// Page field to use as URL. For compat.
-		$page_url = (config_item('url_mode') == 'short') ? 'url' : 'path';
+		// Categories model
+		self::$ci->load->model('article_model');
 
-		
-		// Period format
-		$format = (isset($tag->attr['format']) ) ? $tag->attr['format'] : 'F';
+		// Page
+		$page = $tag->get('page');
+		if (is_null($page))
+			$page = self::registry('page');
+
+		// Period format. see : http://php.net/manual/fr/function.date.php
+		$format = $tag->getAttribute('format', 'F');
 
 		// Attribute : active class
-		$active_class = (isset($tag->attr['active_class']) ) ? $tag->attr['active_class'] : 'active';
+		$active_class = $tag->getAttribute('active_class', 'active');
 
 		// filter
-		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
+		$filter = $tag->getAttribute('filter', FALSE);
 
 		// month
-		$with_month = (isset($tag->attr['with_month']) ) ? TRUE : FALSE;
+		$with_month = $tag->getAttribute('month');
 
 		// order
-		$order = (isset($tag->attr['order']) && $tag->attr['order'] == 'ASC' ) ? 'period ASC' : 'period DESC';
+		$order = $tag->getAttribute('order');
+		$order = $order == 'ASC' ? 'period ASC' : 'period DESC';
 
-		// Current archive
-		$arc_segment_pos = TagManager_Page::get_special_uri_segment();
-		$current_archive = isset(self::$uri_segments[$arc_segment_pos + 1]) ? self::$uri_segments[$arc_segment_pos + 1] : '' ;
-		$current_archive .= isset(self::$uri_segments[$arc_segment_pos + 2]) ? self::$uri_segments[$arc_segment_pos + 2] : '' ;
+		// Archive string : 'yyyy' or 'yyyy.mm'. Used for CSS active class
+		$_archive_string = '';
 
-		// Get the archives infos		
+		// Archive URI args
+		$args = self::get_special_uri_array('archives');
+		if ( ! empty($args))
+		{
+			$_archive_string = isset($args[0]) ? $args[0] : '';
+			$_archive_string .= isset($args[1]) ? '.'.$args[1] : '';
+		}
+
+		// Archives URI segment, as set in the config file
+		$archives_uri_segment = self::get_config_special_uri_segment('archives');
+
+		// Get the archives
 		$archives = self::$ci->article_model->get_archives_list
 		(
-			array('id_page' => $tag->locals->_page['id_page']), 
+			array('id_page' => $page['id_page']),
 			Settings::get_lang(),
 			$filter,
 			$with_month,
 			$order
 		);
 
-
 		// Translated period array
 		$month_formats = array('D', 'l', 'F', 'M');
 
-		// Flip the URI config array to have the category index first
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
+		$page_url = ! is_null($page) ? $page['absolute_url'] .'/' : Pages::get_home_page_url();
 
 		foreach ($archives as &$row)
 		{
 			$year = 	substr($row['period'],0,4);
 			$month = 	substr($row['period'],4);
-			
+
 			if ($month != '')
 			{
 				$month = (strlen($month) == 1) ? '0'.$month : $month;
 
 				$timestamp = mktime(0, 0, 0, $month, 1, $year);
-    
+
 				// Get date in the wished format
 				$period = (String) date($format, $timestamp);
 
+				// Translate the period month
 				if (in_array($format, $month_formats))
 					$period = lang(strtolower($period));
 
-				$row['period'] = $period . ' ' . $year;
-				$row['url'] = base_url() . $tag->locals->_page[$page_url] . '/' . $uri_config['archives'] . '/' . $year . '/' . $month ;
-				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->_page[$page_url] . '/' .  $uri_config['archives'] . '/' . $year . '/' . $month ;
-				$row['active_class'] = ($year.$month == $current_archive) ? $active_class : '';
+				$row['period'] =	$period . ' ' . $year;
+				$row['url'] =		$page_url . $archives_uri_segment . '/' . $year . '/' . $month ;
+				$row['active_class'] = ($year.'.'.$month == $_archive_string) ? $active_class : '';
 			}
 			else
 			{
-				$row['period'] = $year;
-				$row['url'] = base_url() . $tag->locals->_page[$page_url] . '/' . $uri_config['archives'] . '/' . $year;
-				$row['lang_url'] = base_url() . Settings::get_lang() . '/' . $tag->locals->_page[$page_url] . '/' .  $uri_config['archives'] . '/' . $year;
-				$row['active_class'] = ($year == $current_archive) ? $active_class : '';
+				$row['period'] =	$year;
+				$row['url'] =		$page_url . $archives_uri_segment . '/' . $year;
+				$row['active_class'] = ($year == $_archive_string) ? $active_class : '';
 			}
 		}
 
+		return $archives;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Archives tag
+	 * Displays the links to each archive page
+	 *
+	 * @param	FTL_Binding
+	 * @return 	string
+	 *
+	 * @usage	<ion:archives [month='true'] />
+	 *
+	 */
+	public static function tag_archives(FTL_Binding $tag)
+	{
+		// Tag cache
+		if (($str = self::get_cache($tag)) !== FALSE)
+			return $str;
+
+		$archives = self::get_archives($tag);
 
 		// Tag expand
 		$str = '';
+		$count = count($archives);
+		$tag->set('count', $count);
 
-		foreach($archives as $archive)
+		// Stop here if asked : Needed by aggregation tags
+		if ($tag->getAttribute('loop') === FALSE)
+			return $tag->expand();
+
+		// Child tags loop and expand
+		foreach($archives as $key => $archive)
 		{
-			$tag->locals->archive = $archive;
+			// Nb articles in this archive page
+			$archive['count'] = $archive['nb'];
+			$archive['index'] = $key;
+
+			$tag->set('archive', $archive);
+			$tag->set('count', $archive['nb']);
+			$tag->set('index', $key);
+
 			$str .= $tag->expand();
-			
 		}
+
+		$output = self::wrap($tag, $str);
 
 		// Tag cache
-		self::set_cache($tag, $str);
-		
-		return $str;
+		self::set_cache($tag, $output);
+
+		return $output;
 	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	public static function tag_archive(FTL_Binding $tag)
-	{
-		// Current archive
-		$arc_segment = TagManager_Page::get_special_uri();
-		$arc_segment_pos = TagManager_Page::get_special_uri_segment();
-
-		$year = isset(self::$uri_segments[$arc_segment_pos + 1]) ? self::$uri_segments[$arc_segment_pos + 1] : '' ;
-		$month = isset(self::$uri_segments[$arc_segment_pos + 2]) ? self::$uri_segments[$arc_segment_pos + 2] : '' ;
-
-		$uri_config = self::$ci->config->item('special_uri');
-		$uri_config = array_flip($uri_config);
-		$archive_uri = $uri_config['archives'];
-
-		if ($arc_segment == $archive_uri)
-		{
-			$timestamp = '';
-			if ($year != '' && $month !='')
-				$timestamp = mktime(0, 0, 0, $month, 1, $year);
-			else if ($year != '')
-				$timestamp = mktime(0, 0, 0, 0, 1, $year);
-
-			if ($timestamp != '')
-			{
-				$date = (string) date('Y-m-d H:i:s', $timestamp);
-
-				return self::format_date($tag, $date);
-			}
-		}
-
-		return '';
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/** 
-	 * Deprecated, will be deleted in the next version 
-	 * Use tag_archives_url
-	 * @deprecated
-	 */
-	public static function tag_archives_lang_url($tag)
-	{
-		return ($tag->locals->archive['lang_url'] != '' ) ? $tag->locals->archive['lang_url'] : '' ;
-	}
-	
-	
-	public static function tag_archives_period($tag) { return ($tag->locals->archive['period'] != '' ) ? $tag->locals->archive['period'] : '' ; }
-	public static function tag_archives_nb($tag) { return ($tag->locals->archive['nb'] != '' ) ? $tag->locals->archive['nb'] : '' ; }
-	public static function tag_archives_active_class($tag) { return ($tag->locals->archive['active_class'] != '' ) ? $tag->locals->archive['active_class'] : '' ; }
-
 }
-
-
-

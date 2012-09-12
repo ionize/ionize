@@ -1,5 +1,4 @@
-<h1>&lt;ion:archives /></h1>
-
+<h1>Archives & Pagination</h1>
 <ion:tree_navigation />
 <hr/>
 
@@ -24,8 +23,25 @@
 </ion:archives>
 
 <h2>Archives articles list</h2>
+<pre>
+&lt;!-- Articles list -->
+&lt;ion:articles pagination="2" >
+	&lt;ion:article:title tag="h3" />
+	&lt;ion:article:content paragraph="1" />
+&lt;/ion:articles>
 
-<ion:articles>
+&lt;!-- Pagination menu -->
+&lt;ion:articles:pagination pagination="2" loop="false" />
+</pre>
+
+id page : <ion:page:id />
+
+<!-- Articles list -->
+
+<ion:articles pagination="2" >
 	<ion:article:title tag="h3" />
 	<ion:article:content paragraph="1" />
 </ion:articles>
+
+<!-- Pagination menu -->
+<ion:articles:pagination pagination="2" loop="false" />

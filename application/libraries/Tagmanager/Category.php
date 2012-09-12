@@ -42,16 +42,6 @@ class TagManager_Category extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	public static function init()
-	{
-		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
-		self::$uri_segments = explode('/', $uri);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
 	/**
 	 * Returns the categories
 	 *
@@ -84,7 +74,7 @@ class TagManager_Category extends TagManager
 			$active_class = $tag->getAttribute('active_class', 'active');
 
 			// Asked category
-			$category_uri = self::get_category_uri();
+			$asked_category_name = self::get_asked_category_uri();
 
 			// Check if the element has one category array
 			if (isset($element['categories']))
@@ -94,7 +84,10 @@ class TagManager_Category extends TagManager
 			// Get categories from this page articles
 			else if ( ! is_null($page))
 			{
-				$categories = self::$ci->category_model->get_categories_from_pages($page['id_page'], Settings::get_lang());
+				$categories = self::$ci->category_model->get_categories_from_pages(
+					$page['id_page'],
+					Settings::get_lang()
+				);
 			}
 			// No page set : The URL of each category will look like base URL of the website.
 			else
@@ -107,19 +100,18 @@ class TagManager_Category extends TagManager
 
 			$page_url = ! is_null($page) ? $page['absolute_url'] .'/' : Pages::get_home_page_url();
 
-			// Flip the URI config array to have the category index first
-			$uri_config = array_flip(self::$ci->config->item('special_uri'));
+			$category_uri_segment = self::get_config_special_uri_segment('category');
 
 			// Add the URL to the category to each category row
 			// Also add the active class
 			foreach($categories as $key => $category)
 			{
-				$categories[$key]['url'] = 			$page_url . $uri_config['category'] . '/' . $category['name'];
-				$categories[$key]['lang_url'] = 	$page_url . $uri_config['category'] . '/' . $category['name'];
+				$categories[$key]['url'] = 			$page_url . $category_uri_segment . '/' . $category['name'];
+				$categories[$key]['lang_url'] = 	$page_url . $category_uri_segment . '/' . $category['name'];
 
 				// Active category ?
-				$categories[$key]['active_class'] = ($category['name'] == $category_uri) ? $active_class : '';
-				$categories[$key]['is_active'] = 	($category['name'] == $category_uri) ? TRUE : FALSE;
+				$categories[$key]['active_class'] = ($category['name'] == $asked_category_name) ? $active_class : '';
+				$categories[$key]['is_active'] = 	($category['name'] == $asked_category_name) ? TRUE : FALSE;
 			}
 
 			self::$categories[$lsk] = array_values($categories);
@@ -138,14 +130,13 @@ class TagManager_Category extends TagManager
 	 * @return string
 	 *
 	 */
-	public static function get_category_uri()
+	public static function get_asked_category_uri()
 	{
-		if ( is_null(self::$category_uri))
-		{
-			$uri_segments = self::$uri_segments;
-			self::$category_uri = array_pop(array_slice($uri_segments, -1));
-		}
-		return self::$category_uri;
+		$category_array = self::get_special_uri_array('category');
+		if ( ! empty($category_array[0]))
+			return $category_array[0];
+
+		return NULL;
 	}
 
 
@@ -182,6 +173,7 @@ class TagManager_Category extends TagManager
 		if ($tag->getAttribute('loop') === FALSE)
 			return $tag->expand();
 
+		// Child tags loop and expand
 		foreach($categories as $key => $category)
 		{
 			$category['index'] = $key;

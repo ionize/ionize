@@ -30,61 +30,47 @@ class TagManager_Pagination extends TagManager
 
 
 	/**
-	 * Returns the current category URI
+	 * Returns the pagination base URL
+	 * Adds all special URI element to the URL they're found
 	 *
+	 * @param FTL_Binding
 	 * @return string
 	 *
 	 */
-	public static function get_pagination_uri()
+	public static function get_pagination_base_url(FTL_Binding $tag)
 	{
-		if ( is_null(self::$pagination_uri))
+		$pagination_base_uri = '';
+
+		$page = $tag->get('page');
+		if (is_null($page)) $page = self::registry('page');
+
+		$special_uri_array = self::get_special_uri_array();
+
+		if ( ! is_null($special_uri_array))
 		{
-			$uri_segments = self::$uri_segments;
-			self::$pagination_uri = array_pop(array_slice($uri_segments, -1));
+			foreach($special_uri_array as $code => $args)
+			{
+				if ($code != 'pagination')
+				{
+					$pagination_base_uri .= '/' . self::get_config_special_uri_segment($code);
+					$pagination_base_uri .= '/' . implode('/', $args);
+				}
+			}
 		}
-		return self::$pagination_uri;
+
+		$pagination_base_uri = $page['absolute_url'] . $pagination_base_uri .'/';
+		$pagination_base_uri .= self::get_config_special_uri_segment('pagination');
+
+		return $pagination_base_uri;
 	}
 
 
 	// ------------------------------------------------------------------------
 
-	/**
-	 * Pagination tag
-	 *
-	 * Main class name, id, open tag, close tag, every options from cI in fact !
-	 *
-	 * @configuration
-	 * 		/themes/<my_theme>/config/pagination.php
-	 * 		Set the open / close HTML tags for each tag
-	 *
-	 * 		/themes/<my_theme>/language/xx/pagination_lang.php
-	 * 		Set the translations items :
-	 * 		- first_link
-	 * 		- last_link
-	 * 		- prev_link
-	 * 		- next_link
-	 *
-	 */
-	public static function tag_pagination(FTL_Binding $tag)
+
+	public static function get_pagination_config(FTL_Binding $tag)
 	{
-		// Tag cache
-		if (($str = self::get_cache($tag)) !== FALSE)
-			return $str;
-
-		// Current considered page
-		$page = $tag->get('page');
-
-		// Pagination configuration array
 		$pagination_config = array();
-
-		// Number of displayed articles : tag attribute has priority 1.
-		$nb_to_display = $tag->getAttribute('pagination');
-		if (is_null($nb_to_display))
-			$nb_to_display = $page['pagination'];
-
-		// Get the special URI config array (see /config/ionize.php)
-		$uri_config = array_flip(self::$ci->config->item('special_uri'));
-		$pagination_uri = $uri_config['pagination'];
 
 		// CSS class / id
 		$html_class = $tag->getAttribute('class');
@@ -95,10 +81,6 @@ class TagManager_Pagination extends TagManager
 		if ( ! is_null($html_id))
 			$html_id = ' class="' . $html_id .'" ';
 
-		// Load CI Pagination Lib
-		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
-
-		// Pagination theme config
 		$cf = Theme::get_theme_path().'config/pagination'.EXT;
 		if ( ! is_file($cf))
 			$cf = APPPATH.'config/pagination'.EXT;
@@ -106,7 +88,7 @@ class TagManager_Pagination extends TagManager
 		if (is_file($cf))
 		{
 			$config = array();
-			require_once($cf);
+			require($cf);
 			$pagination_config = $config['pagination'];
 			unset($config);
 		}
@@ -141,15 +123,59 @@ class TagManager_Pagination extends TagManager
 			$pagination_config['num_tag_close'] = 		'</' . $ptag . '>';
 		}
 
-		// Current page
-		$uri_segments = self::$uri_segments;
-		$cur_page = (in_array($pagination_uri, self::$uri_segments)) ? array_pop(array_slice($uri_segments, -1)) : 1;
+		return $pagination_config;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Pagination tag
+	 *
+	 * Main class name, id, open tag, close tag, every options from cI in fact !
+	 *
+	 * @configuration
+	 * 		/themes/<my_theme>/config/pagination.php
+	 * 		Set the open / close HTML tags for each tag
+	 *
+	 * 		/themes/<my_theme>/language/xx/pagination_lang.php
+	 * 		Set the translations items :
+	 * 		- first_link
+	 * 		- last_link
+	 * 		- prev_link
+	 * 		- next_link
+	 *
+	 */
+	public static function tag_pagination(FTL_Binding $tag)
+	{
+		// Tag cache
+		if (($str = self::get_cache($tag)) !== FALSE)
+			return $str;
+
+		// Current page : 1. Asked page, 2. Down to current
+		$page = $tag->get('page');
+			if (is_null($page)) $page = self::registry('page');
+
+		// Number of displayed articles : tag attribute has priority 1.
+		$nb_to_display = $tag->getAttribute('pagination');
+		if (is_null($nb_to_display))
+			$nb_to_display = $page['pagination'];
+
+		// Load CI Pagination Lib
+		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
+
+		// Current pagination page
+		$args = self::get_special_uri_array('pagination');
+		$cur_page = isset($args[0]) ? $args[0] : NULL;
+
+		$pagination_base_url = self::get_pagination_base_url($tag);
 
 		// Pagination tag config init
 		$pagination_config = array_merge(
-			$pagination_config,
+			self::get_pagination_config($tag),
 			array (
-				'base_url' => $page['absolute_url'] . '/'. $pagination_uri,
+				'base_url' => $pagination_base_url,
 				'per_page' => $nb_to_display,
 				'total_rows' => $tag->get('nb_total_articles'),
 				'num_links' => 3,

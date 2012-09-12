@@ -18,27 +18,17 @@
 require_once APPPATH.'libraries/Pages.php';
 
 class TagManager_Page extends TagManager
-{	
-	protected static $_inited = FALSE;
-	
-	protected static $pagination_uri = '';
-	
+{
 	protected static $user = FALSE;
 	
-	protected static $categories = FALSE;
-	
-	protected static $_article = array();
-	
-	// Entity asked by the URL (usually 'page' or 'article')
+	/**
+	 * Entity from URL.
+	 * usually 'page' or 'article'
+	 *
+	 * @var string
+	 */
 	protected static $_entity = NULL;
 	
-	protected static $_special_uri = NULL;
-	
-	// Int. Segment index of $ci->uri->uri_string() of the special URI
-	protected static $_special_uri_segment = NULL;
-
-	// Logical URI segment array (without the default controller and the function name segments)
-	protected static $_uri_segment_array = NULL;
 
 	
 	public static $tag_definitions = array
@@ -77,8 +67,6 @@ class TagManager_Page extends TagManager
 		// Helpers
 		self::$ci->load->helper('text');
 
-		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
-
 		// Pages, Page
 		self::register('pages', Pages::get_pages());
 		self::register('page', self::get_current_page());
@@ -110,7 +98,7 @@ class TagManager_Page extends TagManager
 				// Article
 				if ($page['link_type'] == 'article')
 				{
-					if (count(self::$uri_segments) == 1)
+					if (count(self::get_uri_segments()) == 1)
 					{
 						redirect($page['absolute_url']);
 					}
@@ -124,7 +112,8 @@ class TagManager_Page extends TagManager
 		$article_url = self::get_entity();
 		if ($article_url['type'] == 'article')
 		{
-			$article = TagManager_Article::get_article_from_url($article_url);
+			// $article = TagManager_Article::get_article_from_url($article_url);
+			$article = self::$ci->url_model->get_by_url($article_url);
 		}
 
 		if ( ! empty($article))
@@ -170,7 +159,7 @@ class TagManager_Page extends TagManager
 		$uri = self::$ci->uri->uri_string();
 
 		// Ignore the page named 'page' and get the home page
-		if ($uri == 'page')
+		if ($uri == '')
 		{
 			$page = self::get_home_page();
 		}
@@ -195,10 +184,13 @@ class TagManager_Page extends TagManager
 				}
 
 				// Special URI : category, archive, pagination
- 				else if ( self::get_special_uri())
+ 				else if ( ! is_null(self::get_special_uri_array()))
  				{
  					$uri = self::get_page_path_from_special_uri();
-					$page = self::get_page_by_url($uri);
+					if ($uri == '')
+						$page = self::get_home_page();
+					else
+						$page = self::get_page_by_url($uri);
 				}
 
 				// Return the found page
@@ -217,6 +209,9 @@ class TagManager_Page extends TagManager
 			self::set_404_output();
 		}
 
+		// Add index to identify current page
+		$page['__current__'] = TRUE;
+
 		return $page;
 	}
 
@@ -225,97 +220,21 @@ class TagManager_Page extends TagManager
 
 
 	/**
-	 * Return the internal special URI code
-	 * See config/ionize.php -> $config['special_uri']
-	 *		
-	 * Archives : 	page/subpage/archive/2012/07 : segments -2 
-	 * Category : 	page/subpage/category/webdesign : segments -1
-	 * Pagination : page/subpage/page/5 : segments -1
-	 *
-	 */
-	function get_special_uri()
-	{
-		if ( is_null(self::$_special_uri))
-		{
-			$uri_config = self::$ci->config->item('special_uri');
-
-			$segments = self::get_uri_segment_array();
-			$segment_index = count($segments) - 1;
-
-			while( ! empty($segments))
-			{
-				$segment = array_pop($segments);
-				if ($segment_index !=0 && array_key_exists($segment, $uri_config))
-				{
-					self::$_special_uri_segment = $segment_index;
-					self::$_special_uri = $uri_config[$segment];
-					break;
-				}
-				$segment_index--;
-			}
-		}
-		return self::$_special_uri;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the current segment array, without the default controller and function names
-	 *
-	 * @return string|null
-	 *
-	 */
-	function get_uri_segment_array()
-	{
-		if ( is_null(self::$_uri_segment_array))
-		{
-			$segments = self::$ci->uri->segment_array();
-			$segments = array_slice($segments, 2);
-			self::$_uri_segment_array = $segments;
-		}
-		return self::$_uri_segment_array;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Return the special URI segment index regarding to self::$ci->uri->segment_array()
-	 *
-	 * @return 		int		Segment index
-	 *
-	 *
-	 */
-	function get_special_uri_segment()
-	{
-		if ( is_null(self::$_special_uri))
-		{
-			self::get_special_uri();
-		}
-		return self::$_special_uri_segment;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * Return the last part of the URI
+	 * @NOTE : 	NOT USED
+	 * 			2012.09.11
 	 *
 	 * @return 	string|null
-	 */
 	function get_last_uri_part()
 	{
-		$uri_segments = self::get_uri_segment_array();
+		$uri_segments = self::get_uri_segments();
 
 		if ( ! is_null($uri_segments))
 			return array_pop(array_slice($uri_segments, -1));
 
 		return NULL;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -329,9 +248,20 @@ class TagManager_Page extends TagManager
 	 */
 	function get_page_path_from_special_uri()
 	{
-		$slice = array_slice(self::get_uri_segment_array(), 0, self::get_special_uri_segment()  );
+		$uri_config = array_flip(self::$ci->config->item('special_uri'));
+		$special_uri_array = self::get_special_uri_array();
+		$uri_string = '';
 
-		return implode('/', $slice);
+		foreach ($special_uri_array as $code => $args)
+		{
+			$arg_string = implode('/', $args);
+			$uri_string .= '/'.$uri_config[$code] . '/' . $arg_string;
+		}
+
+		$page_path = str_replace($uri_string, '', self::$ci->uri->uri_string());
+		$page_path = trim($page_path, '/');
+
+		return $page_path;
 	}
 	
 
@@ -448,7 +378,7 @@ class TagManager_Page extends TagManager
 	public function get_module_page()
 	{
 		// Limit the array to not consider the first "page" segment.
-		$segments = self::get_uri_segment_array();
+		$segments = self::get_uri_segments();
 
 		while( ! empty($segments))
 		{

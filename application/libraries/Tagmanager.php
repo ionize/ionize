@@ -52,7 +52,32 @@ class TagManager
 
 	public static $view = '';
 
-	public static $uri_segments = array();
+	/**
+	 * URI segment array
+	 * @var array
+	 */
+	public static $uri_segments = NULL;
+
+	/**
+	 * Segment index of $ci->uri->uri_string() of the special URI
+	 * @var int
+	 */
+	public static $special_uri_segment_index = NULL;
+
+	/**
+	 * Special URI segment array
+	 * @var array
+	 */
+	public static $special_uri_segments = NULL;
+
+	/**
+	 * Special URI string
+	 * @var string
+	 */
+	public static $special_uri = NULL;
+
+
+	public static $special_uri_array = NULL;
 
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
@@ -122,7 +147,7 @@ class TagManager
 		// This file contains definition for installed modules only.
 		include APPPATH.'config/modules.php';
 		
-		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
+		self::get_uri_segments();
 
 		// Put modules arrays keys to lowercase
 		if (!empty($modules))
@@ -669,6 +694,241 @@ class TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return the internal special URI code
+	 * See config/ionize.php -> $config['special_uri']
+	 *
+	 * Also sets : self::$special_uri_segment
+	 *
+	 * Archives : 	page/subpage/archive/2012/07 : segments -2
+	 * Category : 	page/subpage/category/webdesign : segments -1
+	 * Pagination : page/subpage/page/5 : segments -1
+	 *
+	 */
+	public static function get_special_uri()
+	{
+		if ( is_null(self::$special_uri))
+		{
+			$uri_config = self::$ci->config->item('special_uri');
+			$segments = self::get_uri_segments();
+			$segment_index = count($segments) - 1;
+
+			while( ! empty($segments))
+			{
+				$segment = array_pop($segments);
+
+				if (array_key_exists($segment, $uri_config))
+				{
+					self::$special_uri_segment_index = $segment_index;
+					self::$special_uri = $uri_config[$segment];
+					break;
+				}
+				$segment_index--;
+			}
+		}
+		return self::$special_uri;
+	}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return the special URI segment index regarding to self::$ci->uri->segment_array()
+	 * When the key isn't passed, the function tries to get one special URI
+	 * from all the keys stored in the config file and stores the result.
+	 * IMPORTANT : To not set the key is to use with care.
+	 *
+	 * @param	string		Special URI key.
+	 * @return 		int		Segment index
+	 *
+	 *
+	 */
+	public static function get_special_uri_segment_index($key = NULL)
+	{
+		// Return the index from $key
+		if ( ! is_null($key))
+		{
+			// $uri_config = self::$ci->config->item('special_uri');
+			$searched_segment = self::get_config_special_uri_segment($key);
+			$segments = self::get_uri_segments();
+			$segment_index = count($segments) - 1;
+
+			while( ! empty($segments))
+			{
+				$segment = array_pop($segments);
+
+				if ($segment == $searched_segment)
+				{
+					return $segment_index;
+				}
+				$segment_index--;
+			}
+			return NULL;
+		}
+		// Try to find one special URI and stores its index.
+		else
+		{
+			if ( is_null(self::$special_uri))
+			{
+				self::get_special_uri();
+			}
+			return self::$special_uri_segment_index;
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the special URI segments.
+	 * If no key is passed, returns the first found special uri segments.
+	 *
+	 * Example : 	URI string : /my_page/archives/2012/08
+	 *				Returned segments :
+	 * 				array(2012, 08)
+	 *
+	 * @param 	string $key
+	 *
+	 * @return 	array|null
+	 *
+	 */
+	public static function get_special_uri_segments($key = NULL)
+	{
+		if ( ! is_null($key))
+		{
+			$index = self::get_special_uri_segment_index($key);
+			$segments = array_slice(self::get_uri_segments(), $index + 1);
+			return $segments;
+		}
+		else
+		{
+			if ( is_null(self::$special_uri_segments))
+			{
+				self::$special_uri_segments = array_slice(self::get_uri_segments(), self::get_special_uri_segment_index() + 1);
+			}
+			return self::$special_uri_segments;
+		}
+	}
+
+
+	public static function get_special_uri_array($key = NULL)
+	{
+		if (is_null(self::$special_uri_array))
+		{
+			$uri_config = self::$ci->config->item('special_uri');
+			$segments = self::get_uri_segments();
+			$segment_index = count($segments) - 1;
+
+			$found_uri_segments = array();
+
+			while( ! empty($segments))
+			{
+				$segment = array_pop($segments);
+
+				if (array_key_exists($segment, $uri_config))
+				{
+					if (is_null(self::$special_uri_array))
+						self::$special_uri_array = array();
+
+					self::$special_uri_array[$uri_config[$segment]] = array_reverse($found_uri_segments);
+					$found_uri_segments = array();
+				}
+				else
+				{
+					$found_uri_segments[] = $segment;
+				}
+				$segment_index--;
+			}
+			if (is_array(self::$special_uri_array))
+				self::$special_uri_array = array_reverse(self::$special_uri_array);
+		}
+
+		if ( ! is_null($key) && is_array(self::$special_uri_array) && array_key_exists($key, self::$special_uri_array))
+			return self::$special_uri_array[$key];
+
+		return self::$special_uri_array;
+	}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the current segment array, without the default controller and function names
+	 *
+	 * @return string|null
+	 *
+	 */
+	public static function get_uri_segments()
+	{
+		if ( is_null(self::$uri_segments))
+		{
+			$segments = self::$ci->uri->segment_array();
+			$segments = array_slice($segments, 2);
+			self::$uri_segments = $segments;
+		}
+		return self::$uri_segments;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the special URI as it is set in $config['special_uri']
+	 * for one given special URI code
+	 *
+	 * see : /application/config/ionize.php
+	 *
+	 * @param 	string
+	 *
+	 * @return	string
+	 *
+	 */
+	public static function get_config_special_uri_segment($key)
+	{
+		$uri_config = array_flip(self::$ci->config->item('special_uri'));
+
+		if (isset($uri_config[$key]))
+			return $uri_config[$key];
+
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return the special URI segment position in the current URL
+	 * for one given special URI key
+	 *
+	 * @param 	string
+	 *
+	 * @return 	int|null
+	 *
+	public static function get_config_special_uri_segment_index($key)
+	{
+		$uri_config = self::$ci->config->item('special_uri');
+		$segments = self::get_uri_segments();
+		$segment_index = count($segments) - 1;
+
+		while( ! empty($segments))
+		{
+			$segment = array_pop($segments);
+
+			if (array_key_exists($segment, $uri_config) && $uri_config[$segment] == $key)
+			{
+				return $segment_index;
+			}
+			$segment_index--;
+		}
+		return NULL;
+	}
+	 */
 
 
 	// ------------------------------------------------------------------------

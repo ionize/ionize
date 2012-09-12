@@ -20,6 +20,7 @@
 		}
 
 		h2 {
+			margin-top: 2em;
 			border-bottom: solid 1px #eee;
 		}
 		.red {
@@ -87,14 +88,16 @@ test_tag_get :				Get any field from object, with DB field name
 test_page_id
 
 // Article, Article ID
-test_article_id_1
-test_article_id_2
+test_articles_from_current_page
+test_articles_from_one_page
+test_content_iframe :			Content test : embedded iFrames from Youtube and Google maps
+test_article_categories :		Categories from each article
+test_article_user : 			User who wrote the article in Ionize
+test_article_prev_next :		Previous / Next article builder
 
-test_content_iframe :		Content test : embedded iFrames from Youtube and Google maps
-test_article_categories :	Categories from each article
-test_article_user : 		User who wrote the article in Ionize
-test_article_prev_next :	Previous / Next article builder
-test_article_pagination : 	Pagination of articles
+// Pagination
+test_pagination : 				Pagination of articles
+test_pagination_archives : 		Pagination of articles withing archives
 
 // Navigation
 test_tag_navigation
@@ -106,15 +109,15 @@ test_tag_media_page :		Medias from pages
 test_tag_media_articles :	Medias from articles
 
 // Categories
-test_tag_categories
+test_tag_categories : 		Categories listing : All, used by article in the current page
 
 // Archives
-test_tag_archives
+test_tag_archives			Archives tag
 
 
 // @TODO :
-test_tag_article_archives :			Archives tag
-test_categories_and_pagination : 	Pagination of articles withing categories
+
+test_pagination_categories : 	Pagination of articles withing categories
 test_tag_medias_module : 			Medias within one module
 
 test_tag_elements : 				Content Elements
@@ -127,8 +130,6 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_tag_archives" />
-
-<ion:navigation/>
+<ion:partial view="test_tag_categories" />
 
 

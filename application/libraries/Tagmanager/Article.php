@@ -36,20 +36,10 @@ class TagManager_Article extends TagManager
 
 	// ------------------------------------------------------------------------
 	
-	
-	public static function init()
-	{
-		self::$uri_segments = explode('/', self::$ci->uri->uri_string());
 
-/*
-		$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
-		self::$uri_segments = explode('/', $uri);
-*/
-	}
-
-	
 	/**
 	 * Get Articles
+	 * @TODO : 	Write local cache
 	 *
 	 * @param	FTL_Binding
 	 * @return	Array
@@ -59,66 +49,55 @@ class TagManager_Article extends TagManager
 	 * 3. Filter on the article name if the article name is in URI segment 1
 	 *
 	 */
-	function get_articles(FTL_Binding $tag)
+	public static function get_articles(FTL_Binding $tag)
 	{
-
-// @TODO : Write local cache
-log_message('error', ' -- CALL : get_articles()' );
-
-		$articles = array();
-
-		// Local tag page
+		// Page. 1. Local one, 2. Current page (should never arrived except if the tag is used without the 'page' parent tag)
 		$page = $tag->get('page');
-
-		// This should never arrived except if the user uses the tag outside from one parent tag
 		if (empty($page))
 			$page = self::registry('page');
 
-		// Pages from registry
-		$pages = self::registry('pages');
+		// Set by Page::get_current_page()
+		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
 
-		// Get the potential special URI
-		$special_uri = TagManager_Page::get_special_uri();
-
-		// Pagination : First : tag, second : page
+		// Pagination : 1. tag, 2. page
 		$pagination = $tag->getAttribute('pagination');
-		if (is_null($pagination))
-			$pagination = $page['pagination'];
+		if (is_null($pagination)) $pagination = $page['pagination'];
 
-		log_message('error', 'pagnitation : ' . $pagination);
+		// Type filter, limit, SQL filter
+		$type = $tag->getAttribute('type');
+		$nb_to_display = ! $pagination ? $tag->getAttribute('limit', 0) : 0;
+		$filter = $tag->getAttribute('filter', FALSE);
+
+
+		// URL based process of special URI only allowed on current page
+		$special_uri_array = self::get_special_uri_array();
+
+		if ($is_current_page && ! is_null($special_uri_array))
+		{
+			foreach($special_uri_array as $_callback => $args)
+			{
+				if (method_exists(__CLASS__, 'add_articles_filter_'.$_callback))
+					call_user_func(array(__CLASS__, 'add_articles_filter_'.$_callback), $tag, $args);
+			}
+		}
+
+		if ($pagination)
+		{
+			// If pagination is only set by the tag : case of page 1
+			if ( is_null($special_uri_array) OR ! array_key_exists('pagination', $special_uri_array))
+				self::add_articles_filter_pagination($tag);
+		}
+
 
 		// Don't use the "article_list_view" setting set through Ionize
 		// Todo : Remove ?
 		// $keep_view = (isset($tag->attr['keep_view'])) ? TRUE : FALSE;
 
-		// Use this view for each article if more than one article
-		// TODO : Remove ?
-		// $list_view = (isset($tag->attr['list_view'])) ? $tag->attr['list_view'] : FALSE;
 
-		$type = $tag->getAttribute('type');
 
-		// Number of article limiter
-		$nb_to_display = $tag->getAttribute('limit', 0);
 
-		// filter & "with" tag compatibility
-		// create a SQL filter
-		$filter = $tag->getAttribute('filter', FALSE);
-
-		/* Scope can be : 
-		 * not defined : 	means current page
-		 * "page" :			current page
-		 * "parent" :		parent page
-		 * "global" :		all pages from the website
-		 * "pages" : 		one or more page names. Not done for the moment
-		 *
-		 */
-		$scope = $tag->getAttribute('scope');
-
-		// from page name ?
-// @TODO : See how to display articles from multiple pages
-//		$from_page = $tag->getAttribute('from');
-
-		// from categories ? 
+		// from categories ?
+// @TODO : Find a way to display articles from a given category : filter ?
 		$from_categories = $tag->getAttribute('from_categories');
 		$from_categories_condition = ($tag->getAttribute('from_categories_condition') != NULL && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 
@@ -128,14 +107,13 @@ log_message('error', ' -- CALL : get_articles()' );
 		 *
 		 */
 		// Order. Default order : ordering ASC
-		$order_by = ($tag->getAttribute('order_by') != NULL) ? $tag->attr['order_by'] : 'ordering ASC';
+		$order_by = $tag->getAttribute('order_by', 'ordering ASC');
 		$where = array('order_by' => $order_by);
 
 		// Add type to the where array
-		if ($type !== NULL)
+		if ( ! is_null($type))
 		{
-			if ($type == '')
-			{
+			if ($type == '') {
 				$where['article_type.type'] = 'NULL';
 				$type = NULL;
 			}
@@ -143,114 +121,154 @@ log_message('error', ' -- CALL : get_articles()' );
 				$where['article_type.type'] = $type;
 		}
 
-		// If a page name or ID is set, returns only articles from this page
+
 /*
-		if ($from_page !== NULL)
-		{
-			// Get the asked page details
-			$asked_pages = explode(',', $from_page);
-
-			$in_pages = array();
-			
-			// Check if the page code or ID of each page can be used for filter
-			foreach($pages as $page)
-			{
-				if (in_array($page['name'], $asked_pages))
-					$in_pages[] = $page['id_page'];
-				elseif(in_array($page['id_page'], $asked_pages))
-					$in_pages[] = $page['id_page'];
-			}
-
-			// If not empty, filter articles on id_page
-			if ( ! empty($in_pages))
-			{
-				$where['where_in'] = array('id_page' => $in_pages);
-			}
-			// else return nothing. Seems the asked page doesn't exists...
-			else
-			{
-				return $articles;
-			}
-		}
-**
  * @TODO : Replace $scope = parent by "level -1" or "parent -1"
- */
+ *
 		if ($scope == 'parent')
 		{
 			$where += self::set_parent_scope($tag);
 		}
-/*
-		else if ($scope == 'global')
-		{
-			$where += self::set_global_scope($tag);
-		}
 */
+
 		// Get only articles from current page
-		else
-		{
-			$where['id_page'] = $page['id_page'];
-		}
+		$where['id_page'] = $page['id_page'];
 
-log_message('error', 'get_articles() $special_uri : ' . $special_uri);
-		/* Get the articles
-		 *
-		 */
-		// If a special URI exists, get the articles from it.
-		if ( ! is_null($special_uri) && (is_null($type)))
-		{
-			if (method_exists(__CLASS__, 'get_articles_from_'.$special_uri))
-				$articles = call_user_func(array(__CLASS__, 'get_articles_from_'.$special_uri), $tag, $where, $filter);
-		}
-		// Get all the page articles
-		else
-		{
-			// Set Limit : First : pagination, Second : limit
-			$limit = $pagination > 0 ? $pagination : FALSE;
-			if ($limit === FALSE && $nb_to_display > 0) $limit = $nb_to_display;
-			if ($limit !== FALSE) $where['limit'] = $limit;
-log_message('error', 'limit : ' . $limit);
-			if ($from_categories !== NULL)
-			{
-				$articles = self::$ci->article_model->get_from_categories(
-					$where,
-					explode(',', $from_categories),
-					$from_categories_condition,
-					$lang = Settings::get_lang(),
-					$filter
-				);
-			}
-			else
-			{
-				$articles = self::$ci->article_model->get_lang_list(
-					$where,
-					$lang = Settings::get_lang(),
-					$filter
-				);
-			}
+		// Set Limit : First : pagination, Second : limit
+		$limit = $pagination > 0 ? $pagination : FALSE;
+		if ($limit === FALSE && $nb_to_display > 0) $limit = $nb_to_display;
+		if ($limit !== FALSE) $where['limit'] = $limit;
 
-		}
+		// Get articles
+		$articles = self::$ci->article_model->get_lang_list(
+			$where,
+			$lang = Settings::get_lang(),
+			$filter
+		);
 
 		// Pagination needs the total number of articles
 		if ($pagination)
 		{
-			$nb_total_articles = self::$ci->article_model->count_articles(
-				$where,
-				$lang = Settings::get_lang(),
-				$filter
-			);
+			$nb_total_articles = self::count_nb_total_articles($tag, $where, $filter);
 			$tag->set('nb_total_articles', $nb_total_articles);
-			log_message('error', '$nb_total_articles : ' . $nb_total_articles);
 		}
 
 		self::init_articles_urls($articles);
 
-		// Here, we are in an article list configuration : More than one article, page display
-		// If the article-list view exists, we will force the article to adopt this view.
-		// Not so much clean to do that in the get_article function but for the moment just helpful...
 		self::init_articles_views($articles);
 
-
 		return $articles;
+	}
+
+
+	/**
+	 * Return the number of articles, excluding the pagination filter.
+	 *
+	 * @param FTL_Binding $tag
+	 * @param array       $where
+	 * @param             $filter
+	 *
+	 * @return int
+	 *
+	 */
+	function count_nb_total_articles(FTL_Binding $tag, $where = array(), $filter)
+	{
+		$page = $tag->get('page');
+		if (empty($page)) $page = self::registry('page');
+
+		// Set by Page::get_current_page()
+		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
+
+		$special_uri_array = self::get_special_uri_array();
+
+		// Nb articles for current page
+		if ($is_current_page)
+		{
+			// Filters (except pagination)
+			if (! is_null($special_uri_array))
+			{
+				foreach($special_uri_array as $_callback => $args)
+				{
+					if ($_callback != 'pagination' && method_exists(__CLASS__, 'add_articles_filter_'.$_callback))
+						call_user_func(array(__CLASS__, 'add_articles_filter_'.$_callback), $tag, $args);
+				}
+			}
+		}
+
+		$nb_total_articles = self::$ci->article_model->count_articles(
+			$where,
+			$lang = Settings::get_lang(),
+			$filter
+		);
+
+		return $nb_total_articles;
+	}
+
+
+	/**
+	 * Adds one category filter
+	 *
+	 * @param FTL_Binding $tag
+	 * @param array       $args
+	 *
+	 */
+	function add_articles_filter_category(FTL_Binding $tag, $args = array())
+	{
+		$category_name = ( ! empty($args[0])) ? $args[0] : NULL;
+
+		if ( ! is_null($category_name))
+		{
+			self::$ci->article_model->add_category_filter(
+				$category_name,
+				Settings::get_lang()
+			);
+		}
+	}
+
+
+	/**
+	 * Adds one pagination filter
+	 *
+	 * @param FTL_Binding $tag
+	 * @param array       $args
+	 *
+	 * @return null
+	 */
+	function add_articles_filter_pagination(FTL_Binding $tag, $args = array())
+	{
+		// Page
+		$page = $tag->get('page');
+		if (is_null($page)) $page = self::registry('page');
+
+		$start_index = ! empty($args[0]) ? $args[0] : NULL;
+
+		// Pagination : First : tag, second : page
+		$pagination = $tag->getAttribute('pagination');
+		if (is_null($pagination))
+			$pagination = $page['pagination'];
+
+		// Exit if no info about pagination can be found.
+		if ( ! $pagination)
+			return NULL;
+
+		self::$ci->article_model->add_pagination_filter($pagination, $start_index);
+	}
+
+
+	/**
+	 * Adds one archives filter
+	 *
+	 * @param FTL_Binding $tag
+	 * @param array       $args
+	 */
+	function add_articles_filter_archives(FTL_Binding $tag, $args = array())
+	{
+		// Month / year
+		$year =  (! empty($args[0]) ) ?	$args[0] : FALSE;
+		$month =  (! empty($args[1]) ) ? $args[1] : NULL;
+
+		if ($year)
+			self::$ci->article_model->add_archives_filter($year, $month);
 	}
 
 
@@ -265,12 +283,11 @@ log_message('error', 'limit : ' . $limit);
 	 *
 	 * @return	Array	Array of articles
 	 *
-	 */
 	function get_articles_from_pagination(FTL_Binding $tag, $where, $filter)
 	{
 		$page = $tag->get('page');
 		
-		$uri_segments = self::$uri_segments;
+		$uri_segments = self::get_uri_segments();
 		$start_index = array_pop(array_slice($uri_segments, -1));
 
 		// Load CI Pagination Lib
@@ -281,7 +298,9 @@ log_message('error', 'limit : ' . $limit);
 		if (is_null($pagination))
 			$pagination = $page['pagination'];
 
-		if ( ! $pagination) redirect($page['absolute_url'], 'location', 301);
+		// Exit if no info about pagination can be found.
+		if ( ! $pagination)
+			return array();
 
 		$where['offset'] = (int)$start_index;
 		$where['limit'] =  (int)$pagination;
@@ -296,15 +315,14 @@ log_message('error', 'limit : ' . $limit);
 
 		return $articles;
 	}
-	
-	
-	// ------------------------------------------------------------------------
+	 */
 
+
+	// ------------------------------------------------------------------------
 
 	/**
 	 * Get articles linked to a category
 	 * Called if special URI "category" is found. See tag_articles()
-	 * Uses the self::$uri_segments var to determine the category name
 	 *
 	 * @param	FTL_Binding
 	 * @param	Array	SQL Condition array
@@ -312,7 +330,6 @@ log_message('error', 'limit : ' . $limit);
 	 *
 	 * @return	Array	Array of articles
 	 *
-	 */
 	function get_articles_from_category(FTL_Binding $tag, $where, $filter)
 	{
 		$articles = array();
@@ -320,14 +337,14 @@ log_message('error', 'limit : ' . $limit);
 		$page = $tag->get('page');
 
 		// Get the start index for the SQL limit query param : last part of the URL
-		$uri_segments = self::$uri_segments;
+		$uri_segments = self::get_uri_segments();
 		$start_index = array_pop(array_slice($uri_segments, -1));
 
 		// URI of the category segment
-		$cat_segment_pos = TagManager_Page::get_special_uri_segment();
+		$cat_segment_pos = self::get_special_uri_segment_index();
 		
-		$cat_code =  (! empty(self::$uri_segments[$cat_segment_pos + 1]) ) ? 
-						self::$uri_segments[$cat_segment_pos + 1] : 
+		$cat_code =  (! empty($uri_segments[$cat_segment_pos + 1]) ) ?
+						$uri_segments[$cat_segment_pos + 1] :
 						FALSE;
 		if ($cat_code)
 		{
@@ -346,105 +363,10 @@ log_message('error', 'limit : ' . $limit);
 		}
 		return $articles;
 	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Get articles linked from a period
-	 * Called if special URI "archives" is found. See tag_articles()
-	 * Uses the self::$uri_segments var to determine the category name
-	 *
-	 * @param	FTL_Binding
-	 * @param	Array	SQL Condition array
-	 * @param	String	Filter string
-	 *
-	 * @return	Array	Array of articles
-	 *
 	 */
-	function get_articles_from_archives(FTL_Binding $tag, $where, $filter)
-	{
-		$articles = array();
-		
-		$page = $tag->get('page');
 
-		$start_index = 0;
 
-		// Get the start index for the SQL limit query param : last part of the URL only if the 4th URI segmenet (pagination) is set
-// TODO
-// TODO
-		if (isset(self::$uri_segments[4]))
-		{
-			$uri_segments = self::$uri_segments;
-			$start_index = array_pop(array_slice($uri_segments, -1));
-		}
-// /TODO
 
-		$arc_segment_pos = TagManager_Page::get_special_uri_segment();
-
-		// Year : one index after the seg. pos
-		$year =  (! empty(self::$uri_segments[$arc_segment_pos + 1]) ) ? 
-					self::$uri_segments[$arc_segment_pos + 1] : 
-					FALSE;
-		
-		// Month : 2 index after the seg. pos. NULL because of SQL query
-		$month =  (! empty(self::$uri_segments[$arc_segment_pos + 2]) ) ? 
-					self::$uri_segments[$arc_segment_pos + 2] : 
-					NULL;
-		
-		if ($year)
-		{
-			$where['offset'] = $start_index;
-			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
-
-			$articles =  self::$ci->article_model->get_from_archives
-			(
-				$where, 
-				$year, 
-				$month, 
-				Settings::get_lang(),
-				$filter
-			);
-		}
-		
-		return $articles;
-	}
-	
-
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Returns one named article from website
-	 * In this case, the current pag s not important, the URL asked article will be displayed.
-	 * Gives the ability to display a given article at any place of the website.
-	 *
-	 * @param	FTL_Binding
-	 * @param	Array	SQL Condition array
-	 * @param	String	Filter string
-	 *
-	 * @return	Array	Array of articles
-	 */
-	function get_articles_from_one_article(FTL_Binding $tag, $where, $filter)
-	{
-		$uri_segments = self::$uri_segments;
-		$name = array_pop(array_slice($uri_segments, -1));
-
-		$where = array(
-			'article_lang.url' => $name,
-			'limit' => 1
-		);
-
-		$articles =  self::$ci->article_model->get_lang_list
-		(
-			$where, 
-			Settings::get_lang(),
-			$filter
-		);
-				
-		return $articles;
-	}
 
 
 	// ------------------------------------------------------------------------
@@ -456,7 +378,6 @@ log_message('error', 'limit : ' . $limit);
 	 * @param 	array 	row from URL table
 	 *
 	 * @return array
-	 */
 	public static function get_article_from_url($article_url = array())
 	{
 		$article = array();
@@ -469,6 +390,7 @@ log_message('error', 'limit : ' . $limit);
 
 		return $article;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -631,42 +553,55 @@ log_message('error', 'limit : ' . $limit);
 		// Returned string
 		$str = '';
 
-		// Registry article : Catch from URL
+		// Registry article : First : Registry (URL ask), Second : Stored one
 		$_article = self::registry('article');
-		if ( ! empty($_article))
-			$_articles = array($_article);
-		else
-			$_articles = array($tag->get('article'));
+		if (empty($_article)) $_article = $tag->get('article');
+
+		$_articles = array();
+		if ( ! empty($_article)) $_articles = array($_article);
 
 		// Add data like URL to each article
 		// and finally render each article
 		if ( ! empty($_articles))
 		{
 			$_articles = self::prepare_articles($tag, $_articles);
+			$_article = $_articles[0];
 
 			// Add articles to the tag
-			$tag->set('articles', $_articles);
+			// $tag->set('articles', $_articles);
 
-			$count = count($_articles);
+			// Render the article
+			$tag->set('article', $_article);
+			$tag->set('index', 0);
+			$tag->set('count', 1);
 
-			foreach($_articles as $key => $article)
-			{
-				// Render the article
-				$tag->set('article', $article);
-				$tag->set('index', $key);
-				$tag->set('count', $count);
+			// Parse the article's view if the article tag is single (<ion:article />)
+			if($tag->is_single())
+				$str .= self::find_and_parse_article_view($tag, $article);
+			// Else expand the tag
+			else
+				$str .= $tag->expand();
 
-				// Parse the article's view if the article tag is single (<ion:article />)
-				if($tag->is_single())
-				{
-					$str .= self::find_and_parse_article_view($tag, $article);
-				}
-				// Else expand the tag
-				else
-				{
-					$str .= $tag->expand();
-				}
-			}
+			/*
+			   foreach($_articles as $key => $article)
+			   {
+				   // Render the article
+				   $tag->set('article', $article);
+				   $tag->set('index', $key);
+				   $tag->set('count', $count);
+
+				   // Parse the article's view if the article tag is single (<ion:article />)
+				   if($tag->is_single())
+				   {
+					   $str .= self::find_and_parse_article_view($tag, $article);
+				   }
+				   // Else expand the tag
+				   else
+				   {
+					   $str .= $tag->expand();
+				   }
+			   }
+   */
 		}
 
 		$output = self::wrap($tag, $str);
@@ -894,25 +829,13 @@ log_message('error', 'limit : ' . $limit);
 	{
 		$found_article = NULL;
 
-		// Articles & Current article
-		$articles = $tag->get('articles');
-
-		// Articles is empty when the parent tag "articles" is not in nesting
-/*		if (empty($articles))
-		{
-*/
-			$articles = self::prepare_articles($tag, self::get_articles($tag));
-			$count = count($articles);
-			$tag->set('count', $count);
-			$tag->set('articles', $articles);
-//		}
-
-// trace($articles);
+		$articles = self::prepare_articles($tag, self::get_articles($tag));
+		$count = count($articles);
+		$tag->set('count', $count);
+		$tag->set('articles', $articles);
 
 		// Get the article : Fall down to registry if no one found in tag
 		$article = $tag->get('article');
-//		trace('call ' .$tag->nesting());
-//		trace(' - article : ' .$article['id_article']);
 
 		$enum = ($mode=='prev') ? -1 : 1;
 		
