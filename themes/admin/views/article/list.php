@@ -192,7 +192,11 @@
 		// Edit link
 		item.addEvent('click', function(e) {
 			e.stop();
-			MUI.Content.update({'element': $('mainPanel'),'url': admin_url + 'article/edit/' + id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
+            ION.splitPanel({
+                'urlMain': admin_url + 'article/edit/' + id_article,
+                'urlOptions': admin_url + 'article/get_options/' + id_article,
+                'title': Lang.get('ionize_title_edit_article') + ' : ' + title
+            });
 		});
 	});
 
