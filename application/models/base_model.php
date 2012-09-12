@@ -251,8 +251,6 @@ class Base_model extends CI_Model
 		
 		$query = $this->{$this->db_group}->get($this->table);
 
-		// log_message('error', $this->{$this->db_group}->last_query());
-
 		if ( $query->num_rows() > 0)
 		{
 			$data = $query->row_array();

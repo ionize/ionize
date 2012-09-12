@@ -1460,8 +1460,6 @@ class Article_model extends Base_model
 
 		$nb = $this->{$this->db_group}->count_all_results($this->table);
 
-		// log_message('error', print_r($this->{$this->db_group}->last_query(), true));
-
 		return $nb;
 	}
 

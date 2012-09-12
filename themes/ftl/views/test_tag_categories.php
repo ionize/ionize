@@ -13,18 +13,23 @@
 <h2>All categories</h2>
 <p>
 	Use of the tag outside from any page tag.<br/>
-	The context fo the parent page isn't set !
+	The context fo the parent page isn't set.<br/>
+	Counts all articles / category
 </p>
 <pre>
 &lt;ion:categories all='true' tag="ul">
 	&lt;li>
-		&lt;a href="&lt;ion:category:url />">Code : &lt;ion:category:name /> -  Title : &lt;ion:category:title />&lt;/a>
+		&lt;a &lt;ion:category:is_active> class="&lt;ion:category:active_class />" &lt;/ion:category:is_active>  href="&lt;ion:category:url />">
+			&lt;ion:category:title /> - (&lt;ion:nb_articles /> articles)
+		&lt;/a>
 	&lt;/li>
 &lt;/ion:categories>
 </pre>
-<ion:categories all='true' tag="ul" active_class="my-active-class">
+<ion:categories tag="ul" active_class="my-active-class">
 	<li>
-		<a <ion:category:is_active> class="<ion:category:active_class />" </ion:category:is_active>  href="<ion:category:url />">Code : <ion:category:name /> -  Title : <ion:category:title /></a>
+		<a <ion:category:is_active> class="<ion:category:active_class />" </ion:category:is_active>  href="<ion:category:url />">
+			<ion:category:title /> - (<ion:nb_articles /> articles)
+		</a>
 	</li>
 </ion:categories>
 
@@ -34,15 +39,12 @@
 
 
 <h2>Categories used by articles linked to the current page</h2>
-<p>
-	We simply don't use the attribute <b>"all"</b>.
-</p>
 <pre>
 &lt;ion:page>
 	&lt;ion:categories tag="ul">
 		&lt;ion:category>
 			&lt;li>
-				&lt;a href="&lt;ion:url />">Code : &lt;ion:name /> - Title : &lt;ion:title />&lt;/a>
+				&lt;a href="&lt;ion:url />">&lt;ion:title /> - (&lt;ion:nb_articles /> articles)&lt;/a>
 			&lt;/li>
 		&lt;/ion:category>
 	&lt;/ion:categories>
@@ -53,7 +55,7 @@
 	<ion:categories tag="ul">
 		<ion:category>
 			<li>
-				<a href="<ion:url />">Code : <ion:name /> - Title : <ion:title /></a>
+				<a href="<ion:url />"><ion:title /> - (<ion:nb_articles /> articles)</a>
 			</li>
 		</ion:category>
 	</ion:categories>
@@ -67,9 +69,12 @@
 	If one category link is clicked in the previous link list,
 	this articles list will only display the articles linked to this category
 </p>
+<p>
+	Filter on Category : <b class="red"><ion:category:current:title /></b>
+</p>
 <ion:articles>
 	<ion:article:title tag="h3" />
-	<ion:article:content paragraph="1" />
+	<ion:article:categories link="true" separator=" &bull; "/><br/>
 </ion:articles>
 
 <hr/>

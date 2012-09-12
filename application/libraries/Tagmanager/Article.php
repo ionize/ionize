@@ -255,6 +255,9 @@ class TagManager_Article extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Adds one archives filter
 	 *
@@ -270,103 +273,6 @@ class TagManager_Article extends TagManager
 		if ($year)
 			self::$ci->article_model->add_archives_filter($year, $month);
 	}
-
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Pagination articles
-	 *
-	 * @param	FTL_Binding
-	 * @param	Array		SQL Condition array
-	 * @param	String		Filter string
-	 *
-	 * @return	Array	Array of articles
-	 *
-	function get_articles_from_pagination(FTL_Binding $tag, $where, $filter)
-	{
-		$page = $tag->get('page');
-		
-		$uri_segments = self::get_uri_segments();
-		$start_index = array_pop(array_slice($uri_segments, -1));
-
-		// Load CI Pagination Lib
-		isset(self::$ci->pagination) OR self::$ci->load->library('pagination');
-	
-		// Pagination : First : tag, second : page
-		$pagination = $tag->getAttribute('pagination');
-		if (is_null($pagination))
-			$pagination = $page['pagination'];
-
-		// Exit if no info about pagination can be found.
-		if ( ! $pagination)
-			return array();
-
-		$where['offset'] = (int)$start_index;
-		$where['limit'] =  (int)$pagination;
-
-		$articles = self::$ci->article_model->get_lang_list(
-			$where,
-			$lang = Settings::get_lang(),
-			$filter
-		);
-
-		self::init_articles_views($articles);
-
-		return $articles;
-	}
-	 */
-
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Get articles linked to a category
-	 * Called if special URI "category" is found. See tag_articles()
-	 *
-	 * @param	FTL_Binding
-	 * @param	Array	SQL Condition array
-	 * @param	String	Filter string
-	 *
-	 * @return	Array	Array of articles
-	 *
-	function get_articles_from_category(FTL_Binding $tag, $where, $filter)
-	{
-		$articles = array();
-
-		$page = $tag->get('page');
-
-		// Get the start index for the SQL limit query param : last part of the URL
-		$uri_segments = self::get_uri_segments();
-		$start_index = array_pop(array_slice($uri_segments, -1));
-
-		// URI of the category segment
-		$cat_segment_pos = self::get_special_uri_segment_index();
-		
-		$cat_code =  (! empty($uri_segments[$cat_segment_pos + 1]) ) ?
-						$uri_segments[$cat_segment_pos + 1] :
-						FALSE;
-		if ($cat_code)
-		{
-			// Limit
-			$where['offset'] = $start_index;
-			if ((int)$page['pagination'] > 0) $where['limit'] =  (int)$page['pagination'];
-
-			// Get the articles
-			$articles = self::$ci->article_model->get_from_category
-			(
-				$where, 
-				$cat_code, 
-				Settings::get_lang(),
-				$filter
-			);
-		}
-		return $articles;
-	}
-	 */
-
-
-
 
 
 	// ------------------------------------------------------------------------
@@ -947,7 +853,7 @@ class TagManager_Article extends TagManager
 			}
 
 			// Process PHP, helper, prefix/suffix
-			$value = self::value_process($tag, $value);
+			$value = self::process_value($tag, $value);
 
 			return self::wrap($tag, $value);
 		}

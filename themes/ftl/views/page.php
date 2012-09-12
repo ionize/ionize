@@ -82,7 +82,7 @@
 test_site_tags : 			keywords, meta, config item, etc. in all lang
 test_tag_if :				Expression Test tag
 test_tag_get :				Get any field from object, with DB field name
-
+test_trace :				Output's one print_r() of one tag locals.
 
 // Page
 test_page_id
@@ -98,6 +98,7 @@ test_article_prev_next :		Previous / Next article builder
 // Pagination
 test_pagination : 				Pagination of articles
 test_pagination_archives : 		Pagination of articles withing archives
+test_pagination_categories : 	Pagination of articles withing categories
 
 // Navigation
 test_tag_navigation
@@ -109,7 +110,7 @@ test_tag_media_page :		Medias from pages
 test_tag_media_articles :	Medias from articles
 
 // Categories
-test_tag_categories : 		Categories listing : All, used by article in the current page
+test_tag_categories : 		Categories listing
 
 // Archives
 test_tag_archives			Archives tag
@@ -117,7 +118,6 @@ test_tag_archives			Archives tag
 
 // @TODO :
 
-test_pagination_categories : 	Pagination of articles withing categories
 test_tag_medias_module : 			Medias within one module
 
 test_tag_elements : 				Content Elements
@@ -130,6 +130,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_tag_categories" />
-
-
+<ion:partial view="test_trace" />

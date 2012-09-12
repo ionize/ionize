@@ -18,7 +18,7 @@
 <ion:archives month="true" tag="ul">
 	<li>
 		<a class="<ion:archive:active_class />" href="<ion:archive:url />">
-			<ion:archive:period /> - (<ion:archive:count /> articles)
+			<ion:archive:period /> - (<ion:archive:nb_articles /> articles)
 		</a>
 	</li>
 </ion:archives>

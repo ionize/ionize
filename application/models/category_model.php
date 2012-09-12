@@ -40,6 +40,8 @@ class Category_model extends Base_model
 	 * @param	string	parent name
 	 * @param	int		parent ID
 	 *
+	 * @return array
+	 *
 	 */
 	function get_current_categories($parent, $parent_id)
 	{
@@ -76,7 +78,7 @@ class Category_model extends Base_model
 						where page_article.id_page=' . $id_page . '
 						and article_lang.lang = \''. $lang .'\'';
 		
-		
+
 		// Add the publish filter
 		$sql .= $this->filter_on_published(self::$publish_filter, $lang);
 
@@ -85,6 +87,7 @@ class Category_model extends Base_model
 				)
 				order by category.ordering
 				';
+		trace($sql);
 
 		$data = array();
 
@@ -96,7 +99,66 @@ class Category_model extends Base_model
 		return $data;
 	
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns categories list
+	 * If id_page is set, returns those which are used by the page articles.
+	 * If id_page is not set, return the whole used categories
+	 *
+	 * @param null $id_page
+	 *
+	 * @param null $lang
+	 *
+	 * @return array
+	 *
+	 */
+	function get_categories_list($id_page=NULL, $lang=NULL)
+	{
+		$this->{$this->db_group}->select('category.name, category_lang.*, count(1) as nb', FALSE);
+
+		$this->{$this->db_group}->join(
+			'page_article',
+			'page_article.id_article = article.id_article',
+			'inner'
+		);
+		$this->{$this->db_group}->join(
+			'article_category',
+			'article_category.id_article = page_article.id_article',
+			'inner'
+		);
+		$this->{$this->db_group}->join(
+			'category',
+			'category.id_category = article_category.id_category',
+			'inner'
+		);
+		$this->{$this->db_group}->join(
+			'category_lang',
+			'category_lang.id_category = category.id_category',
+			'left'
+		);
+
+		if ( ! is_null($id_page))
+			$this->{$this->db_group}->where('page_article.id_page', $id_page);
+
+		$this->{$this->db_group}->where('category_lang.lang', $lang);
+
+		$this->{$this->db_group}->group_by('category.id_category');
+		$this->{$this->db_group}->order_by('category.ordering');
+
+		$data = array();
+
+		$query = $this->{$this->db_group}->get('article');
+
+		if ( $query->num_rows() > 0 )
+			$data = $query->result_array();
+
+		return $data;
+	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -105,11 +167,11 @@ class Category_model extends Base_model
 	 * Filters the articles on published one
 	 *
 	 */
-	protected function filter_on_published($on = true, $lang = NULL)
+	protected function filter_on_published($on = TRUE, $lang = NULL)
 	{
 		$sql = '';
 		
-		if ($on === true)
+		if ($on === TRUE)
 		{
 			$sql .= ' 
 					and page_article.online = \'1\'

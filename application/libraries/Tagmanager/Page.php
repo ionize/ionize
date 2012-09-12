@@ -187,6 +187,7 @@ class TagManager_Page extends TagManager
  				else if ( ! is_null(self::get_special_uri_array()))
  				{
  					$uri = self::get_page_path_from_special_uri();
+
 					if ($uri == '')
 						$page = self::get_home_page();
 					else
@@ -258,6 +259,7 @@ class TagManager_Page extends TagManager
 			$uri_string .= '/'.$uri_config[$code] . '/' . $arg_string;
 		}
 
+		$uri_string = trim($uri_string, '/');
 		$page_path = str_replace($uri_string, '', self::$ci->uri->uri_string());
 		$page_path = trim($page_path, '/');
 

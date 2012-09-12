@@ -101,6 +101,8 @@ class TagManager
 		'description' => 	'tag_simple_value',
 		'date' => 			'tag_simple_date',
 
+		'trace' =>			'tag_trace',
+
 		// System / Core tags
 //		'field' =>				'tag_field',
 //		'list' =>				'tag_list',
@@ -993,9 +995,6 @@ class TagManager
 	 */
 	public static function tag_simple_value(FTL_Binding $tag)
 	{
-		$is = $tag->getAttribute('is');
-		$expression = $tag->getAttribute('expression');
-
 		// 1. Try to get from tag's data array
 		$value = $tag->getValue();
 
@@ -1003,40 +1002,7 @@ class TagManager
 		if (is_null($value))
 			$value = $tag->get($tag->name);
 
-		// "is" and "expression" cannot be used together.
-		if ( ! is_null($is) )
-		{
-			if (strtolower($is == 'true')) $is = TRUE;
-			if (strtolower($is == 'false')) $is = FALSE;
-
-			if ($value == $is)
-				return self::wrap($tag, $tag->expand());
-			else
-				self::$trigger_else++;
-		}
-		else if (! is_null($expression) )
-		{
-			$result = FALSE;
-			$expression = str_replace($tag->name, $value, $expression);
-			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
-
-			if ($return === NULL)
-			{
-				if ($result)
-					return self::wrap($tag, $tag->expand());
-				else
-					self::$trigger_else++;
-			}
-		}
-		else if ( ! is_null($value))
-		{
-			// Process PHP, helper, prefix/suffix
-			$value = self::value_process($tag, $value);
-
-			return self::wrap($tag, $value);
-		}
-
-		return '';
+		return self::output_value($tag, $value);
 	}
 
 	public static function tag_simple_date(FTL_Binding $tag)
@@ -1046,7 +1012,7 @@ class TagManager
 		$value = self::format_date($tag, $value);
 
 		// Process PHP, helper, prefix/suffix
-		$value = self::value_process($tag, $value);
+		$value = self::process_value($tag, $value);
 
 		if ( ! is_null($value))
 			return self::wrap($tag, $value);
@@ -1066,7 +1032,6 @@ class TagManager
 	{
 		return $tag->expand();
 	}
-
 
 
 	/**
@@ -2020,10 +1985,49 @@ class TagManager
 			else
 				return $result;
 		}
-	}	
+	}
 
 
 	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Outputs the dump of one tag local variable
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_trace(FTL_Binding $tag)
+	{
+		$value = NULL;
+
+		$key = $tag->getAttribute('key');
+		$parent = $tag->getAttribute('parent');
+
+		if (is_null($key))
+		{
+			$value = $tag->get($tag->getParentName());
+		}
+		else
+		{
+			if ( ! is_null($parent))
+			{
+				$parent= $tag->getParent($parent);
+				$value = $parent->get($key);
+			}
+			else
+				$value = $tag->get($key);
+		}
+
+		$str = '<pre>'.print_r($value, TRUE).'</pre>';
+		return $str;
+	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Creates and return one formatted HTML A element
@@ -2184,6 +2188,60 @@ class TagManager
 
 
 	/**
+	 * Processes and outputs one simple value.
+	 *
+	 * 1. Check for expression and comparison attributes
+	 * 2. Execute process_value() if no expression / comparison
+	 * 3. Execute wrap() and outputs the value
+	 *
+	 * @param	FTL_Binding
+	 * @param	mixed
+	 *
+	 * @return string
+	 *
+	 */
+	public static function output_value(FTL_Binding $tag, $value)
+	{
+		$is = $tag->getAttribute('is');
+		$expression = $tag->getAttribute('expression');
+
+		// "is" and "expression" cannot be used together.
+		if ( ! is_null($is) )
+		{
+			if (strtolower($is == 'true')) $is = TRUE;
+			if (strtolower($is == 'false')) $is = FALSE;
+
+			if ($value == $is)
+				return self::wrap($tag, $tag->expand());
+			else
+				self::$trigger_else++;
+		}
+		else if (! is_null($expression) )
+		{
+			$result = FALSE;
+			$expression = str_replace($tag->name, $value, $expression);
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+
+			if ($return === NULL)
+			{
+				if ($result)
+					return self::wrap($tag, $tag->expand());
+				else
+					self::$trigger_else++;
+			}
+		}
+		else if ( ! is_null($value))
+		{
+			// Process PHP, helper, prefix/suffix
+			$value = self::process_value($tag, $value);
+
+			return self::wrap($tag, $value);
+		}
+
+		return '';
+	}
+
+	/**
 	 * Processes the value through PHP function, helper, prefix/suffix
 	 * Adds the corresponding attributes to the tags using this method.
 	 *
@@ -2193,7 +2251,7 @@ class TagManager
 	 * @return Mixed|string
 	 *
 	 */
-	public static function value_process(FTL_Binding $tag, $value)
+	public static function process_value(FTL_Binding $tag, $value)
 	{
 		if ( ! is_null($value))
 		{

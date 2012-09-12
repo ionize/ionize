@@ -36,6 +36,7 @@ class TagManager_Category extends TagManager
 		'category' =>					'tag_expand',
 		'category:is_active' => 		'tag_is_active',
 		'category:active_class' => 		'tag_simple_value',
+		'category:current' =>			'tag_category_current',
 	);
 
 
@@ -76,29 +77,21 @@ class TagManager_Category extends TagManager
 			// Asked category
 			$asked_category_name = self::get_asked_category_uri();
 
-			// Check if the element has one category array
+			// Check if the element has one category array (eg. for Articles)
 			if (isset($element['categories']))
 			{
 				$categories = $element['categories'];
 			}
-			// Get categories from this page articles
-			else if ( ! is_null($page))
-			{
-				$categories = self::$ci->category_model->get_categories_from_pages(
-					$page['id_page'],
-					Settings::get_lang()
-				);
-			}
-			// No page set : The URL of each category will look like base URL of the website.
 			else
 			{
-				$categories = self::$ci->category_model->get_lang_list(
-					array('order_by' => 'ordering ASC'),
+				$id_page = ! is_null($page) ? $page['id_page'] : NULL;
+				$categories = self::$ci->category_model->get_categories_list(
+					$id_page,
 					Settings::get_lang()
 				);
 			}
 
-			$page_url = ! is_null($page) ? $page['absolute_url'] .'/' : Pages::get_home_page_url();
+			$page_url = ! is_null($page) ? trim($page['absolute_url'], '/') .'/' : Pages::get_home_page_url();
 
 			$category_uri_segment = self::get_config_special_uri_segment('category');
 
@@ -177,10 +170,10 @@ class TagManager_Category extends TagManager
 		foreach($categories as $key => $category)
 		{
 			$category['index'] = $key;
-			$category['count'] = $count;
+			$category['nb_articles'] = $category['nb'];
 
 			$tag->set('category', $category);
-			$tag->set('count', $count);
+			$tag->set('nb_articles', $category['nb']);
 			$tag->set('index', $key);
 
 			$str .= $tag->expand();
@@ -192,5 +185,35 @@ class TagManager_Category extends TagManager
 		self::set_cache($tag, $output);
 
 		return $output;
+	}
+
+
+	/**
+	 * Get the current URL asked category
+	 *
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 */
+	public static function tag_category_current(FTL_Binding $tag)
+	{
+		// Asked category
+		$url_category_name = self::get_asked_category_uri();
+
+		// Category detail
+		if ( ! is_null($url_category_name))
+		{
+			$category = self::$ci->category_model->get
+			(
+				array('name' => $url_category_name),
+				Settings::get_lang()
+			);
+
+			$tag->set('current', $category);
+
+			return $tag->expand();
+		}
+		return '';
 	}
 }

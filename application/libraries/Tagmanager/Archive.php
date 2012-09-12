@@ -152,11 +152,11 @@ class TagManager_Archive extends TagManager
 		foreach($archives as $key => $archive)
 		{
 			// Nb articles in this archive page
-			$archive['count'] = $archive['nb'];
+			$archive['nb_articles'] = $archive['nb'];
 			$archive['index'] = $key;
 
 			$tag->set('archive', $archive);
-			$tag->set('count', $archive['nb']);
+			$tag->set('nb_articles', $archive['nb']);
 			$tag->set('index', $key);
 
 			$str .= $tag->expand();
