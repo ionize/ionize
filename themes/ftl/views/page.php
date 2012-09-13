@@ -162,4 +162,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_trace" />
+<ion:partial view="test_tag_categories" />

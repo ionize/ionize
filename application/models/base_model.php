@@ -713,11 +713,13 @@ class Base_model extends CI_Model
 	/**
 	 * Gets items key and value as an associative array
 	 *
-	 * @param	string	Elements table name
-	 * @param	string	Value field name
-	 * @param	string	Zero value name. Usefull when feeding a selectbox
-	 * @param	string	Orderby SQL string 
-	 * @param	String	Glue between data if value is an array
+	 * @param	array
+	 * @param	string			index of the field to get
+	 * @param	null|string		Value to display fo "no value"
+	 * @param 	null|string		order by string
+	 * @param	string
+	 *
+	 * @return array
 	 *
 	 */
 	function get_items_select($items_table, $field, $nothing_value = NULL, $order_by = NULL, $glue="")
@@ -990,7 +992,7 @@ class Base_model extends CI_Model
 	 * @return 	int		Saved element ID
 	 *
 	 */
-	function save($data, $dataLang = FALSE)
+	function save($data, $dataLang = array())
 	{
 		/*
 		 * Base data save
@@ -1019,7 +1021,7 @@ class Base_model extends CI_Model
 		/*
 		 * Lang data save
 		 */
-		if ( ($dataLang !== FALSE) && ( !empty($dataLang) ) )
+		if ( ! empty($dataLang) )
 		{
 			foreach(Settings::get_languages() as $language)
 			{

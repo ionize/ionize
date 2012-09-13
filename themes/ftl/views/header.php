@@ -20,6 +20,7 @@
 		}
 
 		h2 {
+			margin-top: 2em;
 			border-bottom: solid 1px #eee;
 		}
 		.red {
@@ -50,6 +51,10 @@
 		}
 		ul.boxes li.last {
 			border-right: 5px solid #b00;
+		}
+		hr {
+			border:none;
+			border-bottom: 1px solid #ccc;
 		}
 	</style>
 </head>

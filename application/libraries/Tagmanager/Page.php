@@ -107,13 +107,10 @@ class TagManager_Page extends TagManager
 		}
 		
 		// Can we get one article from the URL ?
-		$article = array();
-
-		$article_url = self::get_entity();
-		if ($article_url['type'] == 'article')
+		$entity = self::get_entity();
+		if ($entity['type'] == 'article')
 		{
-			// $article = TagManager_Article::get_article_from_url($article_url);
-			$article = self::$ci->url_model->get_by_url($article_url);
+			$article = self::$ci->article_model->get_by_id($entity['id_entity'], Settings::get_lang());
 		}
 
 		if ( ! empty($article))

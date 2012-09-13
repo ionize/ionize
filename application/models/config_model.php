@@ -44,6 +44,13 @@ class Config_model extends Base_model
 
 	// --------------------------------------------------------------------
 
+
+	/**
+	 * Opens one config file
+	 *
+	 * @param	string			config file name
+	 * @param 	null|string		Module name
+	 */
 	public function open_file($config_file, $module = NULL)
 	{
 		// Module config file ?
@@ -68,6 +75,10 @@ class Config_model extends Base_model
 	/**
 	 * Sets a config value
 	 *
+	 * @param $key
+	 * @param $val
+	 *
+	 * @return bool
 	 */
 	public function set_config($key, $val)
 	{
@@ -94,10 +105,6 @@ class Config_model extends Base_model
 				else if (strtolower($val) == 'false')
 					$val = var_export(FALSE, TRUE);
 
-// Hangs with preg_replace			
-//				else if (strval(intval($val)) == $val)
-//					$val = intval($val);
-				
 				else $val = "'".$val."'";
 			}
 			if ($type == 'boolean') $val = ($val ? var_export(TRUE, TRUE) : var_export(FALSE, TRUE) );
@@ -128,6 +135,7 @@ class Config_model extends Base_model
 	 * @param	Mixed	value to set to the key
 	 * @param	String	Module name, in case of a module config file
 	 *
+	 * @return bool|int
 	 */
 	public function change($config_file, $key, $val, $module = NULL)
 	{
@@ -144,6 +152,8 @@ class Config_model extends Base_model
 
 	/**
 	 * Saves the config file
+	 *
+	 * @return bool
 	 *
 	 */
 	public function save()

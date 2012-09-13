@@ -681,17 +681,14 @@ class Article extends MY_admin
 
 		if ($id_article)
 		{
-			$result = $this->article_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $id_article);
+			$this->article_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $id_article);
 
-			if ($result)
-			{
-				$this->callback[] = array(
-					'fn' => 'ION.notification',
-					'args' => array('success', lang('ionize_message_article_saved'))
-				);
+			$this->callback[] = array(
+				'fn' => 'ION.notification',
+				'args' => array('success', lang('ionize_message_article_saved'))
+			);
 
-				$this->response();
-			}
+			$this->response();
 		}
 	}
 
@@ -713,8 +710,6 @@ class Article extends MY_admin
 			'fn' => 'ION.updateArticleContext',
 			'args' => array($contexts)
 		);
-		
-		// $this->response();
 	}
 
 	// ------------------------------------------------------------------------

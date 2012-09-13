@@ -466,15 +466,11 @@ class TagManager_Article extends TagManager
 		$_articles = array();
 		if ( ! empty($_article)) $_articles = array($_article);
 
-		// Add data like URL to each article
-		// and finally render each article
+		// Add data like URL to each article and render the article
 		if ( ! empty($_articles))
 		{
 			$_articles = self::prepare_articles($tag, $_articles);
 			$_article = $_articles[0];
-
-			// Add articles to the tag
-			// $tag->set('articles', $_articles);
 
 			// Render the article
 			$tag->set('article', $_article);
@@ -483,31 +479,10 @@ class TagManager_Article extends TagManager
 
 			// Parse the article's view if the article tag is single (<ion:article />)
 			if($tag->is_single())
-				$str .= self::find_and_parse_article_view($tag, $article);
+				$str .= self::find_and_parse_article_view($tag, $_article);
 			// Else expand the tag
 			else
 				$str .= $tag->expand();
-
-			/*
-			   foreach($_articles as $key => $article)
-			   {
-				   // Render the article
-				   $tag->set('article', $article);
-				   $tag->set('index', $key);
-				   $tag->set('count', $count);
-
-				   // Parse the article's view if the article tag is single (<ion:article />)
-				   if($tag->is_single())
-				   {
-					   $str .= self::find_and_parse_article_view($tag, $article);
-				   }
-				   // Else expand the tag
-				   else
-				   {
-					   $str .= $tag->expand();
-				   }
-			   }
-   */
 		}
 
 		$output = self::wrap($tag, $str);
@@ -541,15 +516,13 @@ class TagManager_Article extends TagManager
 		// Returned string
 		$str = '';
 
-		/* Get the articles
-		 *
-		 */
+		// Articles
 		$_articles = self::get_articles($tag);
+		$_articles = self::prepare_articles($tag, $_articles);
 
+		// Tag data
 		$count = count($_articles);
 		$tag->set('count', $count);
-
-		$_articles = self::prepare_articles($tag, $_articles);
 		$tag->set('articles', $_articles);
 
 		// Make articles in random order
@@ -837,7 +810,7 @@ class TagManager_Article extends TagManager
 	 * @return string
 	 *	 
 	 */
-	private static function process_prev_next_article(FTL_Binding $tag, $article=NULL)
+	private static function process_prev_next_article(FTL_Binding $tag, $article = NULL)
 	{
 		if ( ! is_null($article))
 		{
