@@ -87,6 +87,7 @@ class MY_Controller extends CI_Controller
 		//	Each setting is accessible through : 
 		//	Settings::get('setting_name');
 		Settings::set_settings_from_list($this->settings_model->get_settings(), 'name','content');
+        Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('default_lang_code')), 'name','content');
 
 		/*
 		 * Security : No access if install folder is already there
