@@ -21,18 +21,26 @@
  */
 class MY_Controller extends CI_Controller 
 {
-	/* Template array
-	 * This array will be send to the view in case of standard output
+	/**
+	 * Views data array
+	 * Will be send to the view in case of standard output
 	 * Used by $this->output
+	 * @var array
 	 */
 	protected $template = array();
 
-	/* Default FTL tag
+	/**
+	 * Default FTL tag prefix
+	 * @var string
 	 */
 	protected $context_tag = 'ion';
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
-	 * Contructor
+	 * Constructor
 	 *
 	 */
     public function __construct()
@@ -40,7 +48,7 @@ class MY_Controller extends CI_Controller
 		parent::__construct();
 
 		// Check the database settings
-		if ($this->test_database_config() === false)
+		if ($this->test_database_config() === FALSE)
 		{
 			redirect(base_url().'install/');
 			die();
@@ -56,44 +64,25 @@ class MY_Controller extends CI_Controller
 		}
 
 		// Models
-		$this->load->model('base_model', '', true);
-		$this->load->model('settings_model', '', true);
+		$this->load->model('base_model', '', TRUE);
+		$this->load->model('settings_model', '', TRUE);
 
 		// Helpers
 		$this->load->helper('file');
 		$this->load->helper('trace');
 		
-		/*
-		 * Language / Languages
-		 *
-		 */
 		// Get all the website languages from DB and store them into config file "languages" key
 		$languages = $this->settings_model->get_languages();
-
-		// Put DB languages array to Settings
-		Settings::set_languages($languages);	
-
-
-		if( Connect()->is('editors', true))
-		{
+		Settings::set_languages($languages);
+		if( Connect()->is('editors', TRUE))
 			Settings::set_all_languages_online();
-		}
 
-		/*
-		 * Settings
-		 *
-		 */
-		// 	Lang independant settings : google analytics string, filemanager, etc.
-		//	Each setting is accessible through : 
-		//	Settings::get('setting_name');
+		// 	Settings : google analytics string, filemanager, etc.
+		//	Each setting is accessible through Settings::get('setting_name');
 		Settings::set_settings_from_list($this->settings_model->get_settings(), 'name','content');
         Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
 
-		/*
-		 * Security : No access if install folder is already there
-		 *
-		 */
-		// Try to find the installer class
+		// Try to find the installer class : No access if install folder is already there
 		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
 
 		// If installer class is already here, avoid site access
@@ -160,6 +149,9 @@ class MY_Controller extends CI_Controller
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns true if database settings seems to be correct
 	 *
@@ -170,11 +162,15 @@ class MY_Controller extends CI_Controller
 				
 		if ($db[$active_group]['hostname'] == '' || $db[$active_group]['username'] == '' || $db[$active_group]['database'] == '')
 		{
-			return false;
+			return FALSE;
 		}
-		return true;
+		return TRUE;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	public function get_modules_config()
 	{
 		// Modules config include
@@ -197,12 +193,15 @@ class MY_Controller extends CI_Controller
 			}
 		}
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Outputs XHR data
 	 * If the passed data is an array or an object, it will converted to json.
-	 * else, the strig will be send.
+	 * else, the string will be send.
 	 *
 	 * @param	Array	Optional. Array of data. will be converted into a JSON String
 	 *
@@ -234,12 +233,8 @@ class Base_Controller extends MY_Controller
     {
         parent::__construct();
 
- $this->output->enable_profiler(true);
+ $this->output->enable_profiler(TRUE);
 		
-		// Unlock filtering if admin or editor users is logged in
-//		$this->load->library('connect');
-
-
 		$this->connect = Connect::get_instance();
 
 		// Libraries
@@ -250,36 +245,21 @@ class Base_Controller extends MY_Controller
 //		require_once APPPATH.'libraries/ftl/parser.php';
 
 		// Models
-//		$this->load->model('structure_model', '', true);
-		$this->load->model('menu_model', '', true);
+		$this->load->model('menu_model', '', TRUE);
 
 		// Modules config
 		$this->get_modules_config();
 
-
-		/*
-		 * Installed modules
-		 *
-		 */
+		// Add path to installed modules
 		require(APPPATH.'config/modules.php');
 		$installed_modules = $modules;
-		
 		foreach($installed_modules as $module)
-		{
-			// Path to Module
 			Finder::add_path(MODPATH.$module.'/');
-		}
 
-
-		/*
-		 * Theme
-		 *
-		 */
 		// Set the current theme
 		Theme::set_theme(Settings::get('theme'));
 
-		// Theme config file
-		// Overwrite Ionize standard config.
+		// Theme config file : Overwrites Ionize standard config.
 		if (is_file($file = Theme::get_theme_path().'config/config.php'))
 		{
 			include($file);
@@ -292,36 +272,30 @@ class Base_Controller extends MY_Controller
 			}
 		}
 
-		/*
-		 * Menus
-		 *
-		 */
+		// Menus
 		Settings::set('menus', $this->menu_model->get_list());
 
-		/*
-		 * Language
-		 *
-		 */
-		// Get all the website languages from DB and store them into config file "languages" key
-// Already done by My_Controller
-//		$languages = $this->settings_model->get_languages();
+
+/*
+ * Already done by My_Controller
+ * Test and remove
+ *
+		$languages = $this->settings_model->get_languages();
 
 		// Put all DB languages array to Settings
-// Already done by My_Controller
-//		Settings::set_languages($languages);
+
+		Settings::set_languages($languages);
 
 		// Set all languages online if conected as editor or more
-		if( Connect()->is('editors', true))
+		if( Connect()->is('editors', TRUE))
 		{
 			Settings::set_all_languages_online();
 		}
-
+*/
 		// Simple languages code array, used to detect if Routers found language is in DB languages
 		$online_lang_codes = array();
 		foreach(Settings::get_online_languages() as $language)
-		{
 			$online_lang_codes[] = $language['lang'];
-		}
 
 		// If the lang code detected by the Router is not in the DB languages, set it to the DB default one
 		if ( ! in_array(config_item('detected_lang_code'), $online_lang_codes))
@@ -346,46 +320,34 @@ class Base_Controller extends MY_Controller
 		// Lang dependant settings for the current language : Meta, etc.
 		Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
 
-
-		/*
-		 * Static language
-		 *
-		 */
-		// $lang_folder = Theme::get_theme_path().'language/'.Settings::get_lang().'/';
+		// Static translations
 		$lang_files = array();
-
+		$lang_folder = APPPATH . 'language/' . Settings::get_lang();
 		// Core languages files : Including except "admin_lang.php"
-		if (is_dir(APPPATH.'language/'.Settings::get_lang()))
+		if (is_dir($lang_folder))
 		{
-			$lang_files = glob(APPPATH.'language/'.Settings::get_lang().'/*_lang.php', GLOB_BRACE);
+			$lang_files = glob($lang_folder.'/*_lang.php', GLOB_BRACE);
 			foreach($lang_files as $key => $lang_file)
 			{
-				if ($lang_file == APPPATH.'language/'.Settings::get_lang().'/admin_lang.php')
+				if ($lang_file == $lang_folder.'/admin_lang.php')
 				{
 					unset($lang_files[$key]);
 				}
 			}
 		}
 
-		
-		// Theme languages files : Including. Can be empty
+		// Theme static translations
 		$lf = glob(FCPATH.Theme::get_theme_path().'language/'.Settings::get_lang().'/*_lang.php');
 		if ( !empty($lf))
 			$lang_files = array_merge($lf, (Array)$lang_files);
 
-
-		// Modules
+		// Modules static translations
 		foreach($installed_modules as $module)
 		{
 			// Languages files : Including. Can be empty
 			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
 			array_push($lang_files, $lang_file);
 		}
-
-
-		// Widgets languages translations loading
-		// Now done by the Widget library
-
 
 		// Load all modules lang files
 		if ( ! empty($lang_files))
@@ -418,61 +380,10 @@ class Base_Controller extends MY_Controller
 		}
 		require_once APPPATH.'libraries/Tagmanager.php';
 	}
-
-/*
-	protected function parse($string, $context, $tag_prefix = 'ion')
-	{
-		$p = new FTL_Parser($context, array('tag_prefix' => $tag_prefix));
-
-		return $p->parse($string);
-	}
-
-	
-	protected function render($view, &$context = null, $return = false)
-	{
-		// Loads the view to parse
-		$parsed = Theme::load($view);
-
-		// We can now check if the file is a PHP one or a FTL one
-		if (substr($parsed, 0, 5) == '<?php')
-		{
-			$parsed = $this->load->view($view, array(), true);					
-		}
-		else
-		{
-			$parsed = $this->parse($parsed, $context);
-
-			if (Connect()->is('editors') && Settings::get('display_connected_label') == '1' )
-			{
-				$injected_html = $this->load->view('core/logged_as_editor', array(), true);	
-				
-				$parsed = str_replace('</body>', $injected_html, $parsed);
-			}
-		}
-		
-		// Full page cache ?
-		if (isset($context->globals->_page['_cached']))
-		{
-			/*
-			 * Write the full page cache file
-			 *
-			 *
-		}
-		
-		
-		// Returns the result or output it directly
-		if ($return)
-			return $parsed;
-		else
-			$this->output->set_output($parsed);
-	}
-*/
 }
 
 
-
 // ------------------------------------------------------------------------
-
 
 
 /**
@@ -483,46 +394,58 @@ class Base_Controller extends MY_Controller
  */
 class MY_Admin extends MY_Controller
 {
-	/* Response message type
+	/**
+	 * Response message type
 	 * Used by controller to send answer to request
 	 * can be 'error', 'notice', 'success'
 	 *
+	 * @var string
 	 */
 	public $message_type = '';
 	
-	/* Response message to the user
+	/**
+	 * Response message to the user
 	 * Human understandable message
 	 *
+	 * @var string
 	 */
 	public $message = '';
 	
-	/* Array of HTMLDomElement to update with corresponding update URL
+	/**
+	 * Array of HTMLDomElement to update with corresponding update URL
 	 * Array (
 	 *		'htmlDomElement' => 'controller/method/'
 	 * );
 	 *
+	 * @var array
 	 */
 	public $update = array();
 	
-	/* Current element ID
+	/**
+	 * Current element ID
 	 *
+	 * @var int
 	 */
 	public $id;
 	
-	/*
+	/**
 	 * Javascript callback array
 	 *
+	 * @var array
 	 */
 	public $callback = array();
 
-	/*
-	 * Modules Addons
+	/**
+	 * Modules backedn Addons
 	 *
+	 * @var array
 	 */
 	public $modules_addons = array();
-	
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Constructor
 	 *
@@ -537,17 +460,12 @@ class MY_Admin extends MY_Controller
 		Connect()->restrict_type_redirect = array(
 					'uri' => config_item('admin_url').'/user/login',
 					'flash_msg' => 'You have been denied access to %s',
-					'flash_use_lang' => false,
+					'flash_use_lang' => FALSE,
 					'flash_var' => 'error');
 
-//	$this->output->enable_profiler(true);
+		$this->output->enable_profiler(FALSE);
 
-		// PHP standard session is mandatory for FileManager authentication
-		// and other external lib
-//		session_start();
-
-		
-		// Librairies
+		// Connect library
 		$this->connect = Connect::get_instance();
 		
 		// Current user		
@@ -556,15 +474,8 @@ class MY_Admin extends MY_Controller
 		// Set the admin theme as current theme
 		Theme::set_theme('admin');
 		
-
-		/*
-		 * Admin languages : Depending on installed translations in /application/languages/
-		 * The Admin translations are only stored in the translation file /application/languages/xx/admin_lang.php
-		 *
-		 */
 		// Set admin lang codes array
 		Settings::set('admin_languages', $this->settings_model->get_admin_langs());
-
 		Settings::set('displayed_admin_languages', explode(',', Settings::get('displayed_admin_languages')));
 
 		// Set Router's found language code as current language
@@ -573,14 +484,10 @@ class MY_Admin extends MY_Controller
 		// Load the current language translations file
 		$this->lang->load('admin', Settings::get_lang());
 
-
-		/*
-		 * Modules config
-		 *
-		 */
+		// Modules config
 		$this->get_modules_config();
 
-		// Including all modules languages files
+		// Modules translation files
 		require(APPPATH.'config/modules.php');
 		$this->modules = $modules;
 
@@ -597,54 +504,15 @@ class MY_Admin extends MY_Controller
 			}
 		}
 		
-		/*
-		 * Loads all Module's addons
-		 *
-		 */
-//		$this->_load_modules_addons();
-		
-		
-		
-		// Load all modules lang files
-/*
-Look how to make Modules translations available in javascript 
-Notice : $yhis->lang object is transmitted to JS through load->view('javascript_lang')
- 
-		if ( ! empty($lang_files))
-		{
-			foreach($lang_files as $l)
-			{
-				if (is_file($l))
-				{
-//					$logical_name = substr($l, strripos($l, '/') +1);
-//					$logical_name = str_replace('_lang.php', '', $logical_name);
-//					$this->lang->load($logical_name, Settings::get_lang());
-
-					include $l;
-					$this->lang->language = array_merge($this->lang->language, $lang);
-					unset($lang);
-
-				}
-			}
-		}
-*/
-
-	
-		/*
-		 * Settings
-		 *
-		 */
-
 		// @TODO : Remove this thing from the global CMS. Not more mandatory, but necessary for compatibility with historical version
 		// Available menus
 		// Each menu was a root node in which you can put several pages, wich are composing a menu.
 		// Was never really implemented in ionize historical version, but already used as : menus[0]...
 		Settings::set('menus', config_item('menus'));
 
-		
-		// Don't want to cache this content
+		// No cache for backend
 		$this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
-		$this->output->set_header("Cache-Control: post-check=0, pre-check=0", false);
+		$this->output->set_header("Cache-Control: post-check=0, pre-check=0", FALSE);
 		$this->output->set_header("Pragma: no-cache");
     }
     
@@ -659,7 +527,7 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 	 * @param	array		Additional data to put to the answer. Optional.
 	 *
 	 */
-    public function error($message, $addon_data = null)
+    public function error($message, $addon_data = NULL)
     {
     	$this->message_type = 'error';
     	$this->message = $message;
@@ -683,7 +551,7 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 	 * @param	array		Additional data to put to the answer. Optional.
 	 *
 	 */
-    public function success($message, $addon_data = null)
+    public function success($message, $addon_data = NULL)
     {
     	$this->message_type = 'success';
     	$this->message = $message;
@@ -702,7 +570,7 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 	 * @param	array		Additional data to put to the answer. Optional.
 	 *
 	 */
-    public function notice($message, $addon_data = null)
+    public function notice($message, $addon_data = NULL)
     {
     	$this->message_type = 'notice';
     	$this->message = $message;
@@ -722,7 +590,7 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
      * @param	array	Additional data to put to the answer. Optional.
      *
      */
-    public function response($addon_data = null)
+    public function response($addon_data = NULL)
     {
     	/* XHR request : JSON answer
     	 * Sends a JSON javascript object
@@ -754,20 +622,28 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 			exit();
     	}
     }
-    
-    /**
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
      * Load the modules addons
      * Called by each Core controller method (Page, Article) which displays modules addon views
      *
-     * @param	Array	Optional data array to pass to the module's _addons() method
+     * @param	array	Optional data array to pass to the module's _addons() method
      *					for example the page data array, so the module addon can retrieve the current edited page
-     *
+     * @return 	array
+	 *
      */
     protected function load_modules_addons($data = array())
     {
     	return $this->_load_modules_addons($data);
     }
-    
+
+
+	// ------------------------------------------------------------------------
+
 
 	private function _load_modules_addons($data)
 	{
@@ -798,30 +674,19 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 			return $addons;
 		}	
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Retrieves all the modules addons views
 	 *
 	 * @param	String	Parent type. 'page', 'article', etc.
-	 * @param	String	Name of the placehoder	 
+	 * @param	String	Name of the placehoder
 	 *
-	function get_modules_addons($type, $placeholder)
-	{
-		$return = '';
-
-		foreach($this->modules_addons as $key => $addon)
-		{
-			if ( $key == $type  &&  !empty($addon[$placeholder]))
-			{
-				foreach($addon[$placeholder] as $content)
-					$return .= $content;
-			}
-		}
-
-		return $return;
-	}
+	 * @return 	string
 	 */
-
 	function get_modules_addons($type, $placeholder)
 	{
 		$return = '';
@@ -840,42 +705,39 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 
 		return $return;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Adds on addon to a core element
 	 * This function must be called from _addons() module's function.
 	 *
-	 * @param	String		Core Element to add the addon to. Can be 'page', 'article', 'media'
-	 * @param	String		Placeholder which will display the addon
+	 * @param	string
+	 * @param	string		Core Element to add the addon to. Can be 'page', 'article', 'media'
+	 * @param	string		Placeholder which will display the addon.
 	 *  					- 'side_top' : Side Column, Top
 	 *  					- 'side_bottom' : Side Column, Bottom
 	 *  					- 'main_top' : Main Column, Top
 	 *  					- 'main_bottom' : Main Column, Top
 	 *  					- 'toolbar' : Top toolbar
+	 * @param	string
+	 * @param	array
 	 *
 	 */
-/*
-	public function load_addon_view($type, $placeholder, $view, $data = array())
-	{
-		$this->modules_addons[$type][$placeholder][] = $this->load->view($view, $data, true);
-	}
-*/
 	public function load_addon_view($module_name, $type, $placeholder, $view, $data = array())
 	{
-		// trace(Finder::$paths);
-
-//		$this->modules_addons[$module_name][$type][$placeholder][] = $this->load->view($view, $data, true);
-
 		$this->modules_addons[$module_name][$type][$placeholder][] = $this->load->_ci_load(array(
 			'_ci_path' => MODPATH.ucfirst($module_name).'/views/'.$view.EXT, 
 			'_ci_vars' => $this->load->_ci_object_to_array($data), 
-			'_ci_return' => true
+			'_ci_return' => TRUE
 		));
-
-
 	}
 }
 
+
+// ------------------------------------------------------------------------
 
 
 /**
@@ -889,12 +751,15 @@ Notice : $yhis->lang object is transmitted to JS through load->view('javascript_
 
 abstract class Module_Admin extends MY_Admin
 {
+	/**
+	 * @var CI_Controller
+	 */
 	protected $parent;
 	
 	/**
 	 * Constructor
 	 *
-	 * @param	CI object	The CI object ($this)
+	 * @param	CI_Controller
 	 *
 	 */
 	final public function __construct(CI_Controller $c)
@@ -902,11 +767,16 @@ abstract class Module_Admin extends MY_Admin
 		$this->parent = $c;
 		$this->construct();
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * The deported construct function
 	 * Should be called instead of parent::__construct by inherited classes
 	 *
+	 * @return mixed
 	 */
 	abstract protected function construct();
 	
@@ -914,6 +784,12 @@ abstract class Module_Admin extends MY_Admin
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $prop
+	 *
+	 * @return mixed
+	 *
+	 */
 	public function __get($prop)
 	{
 		if(property_exists($this->parent, $prop))
@@ -923,7 +799,6 @@ abstract class Module_Admin extends MY_Admin
 		else
 		{
 	 		show_error(get_class($this).'->'.$prop.'() doesn\'t exist.', 206, 'Missing property');
-//			throw new Exception('Missing property');
 		}
 	}
 	
@@ -931,6 +806,13 @@ abstract class Module_Admin extends MY_Admin
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $method
+	 * @param $param
+	 *
+	 * @return mixed
+	 *
+	 */
 	public function __call($method, $param)
 	{
 	 	if(method_exists($this->parent, $method))
@@ -940,7 +822,6 @@ abstract class Module_Admin extends MY_Admin
 	 	else
 	 	{
 	 		show_error(get_class($this).'->'.$method.'() doesn\'t exist.', 206, get_class($this). ' controller Error');
-//	 		throw new BadMethodCallException(get_class($this).'::'.$method);
 	 	}
 	}
 
@@ -949,11 +830,13 @@ abstract class Module_Admin extends MY_Admin
 
 
 	/**
-	 * Returns a simple view
+	 * Outputs a simple view
 	 * Available from each module
 	 *
+	 * @param bool $view
+	 *
 	 */
-	public function get($view = false)
+	public function get($view = FALSE)
 	{
 		$args = func_get_args();
 		$args = implode('/', $args);
@@ -961,7 +844,6 @@ abstract class Module_Admin extends MY_Admin
 		$this->output($args);
 	}
 }
-
 
 /* End of file MY_Controller.php */
 /* Location: ./application/libraries/MY_Controller.php */
