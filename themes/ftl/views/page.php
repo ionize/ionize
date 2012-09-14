@@ -66,15 +66,9 @@
 	<:ion:partial view="header" />
 -->
 
-<!--
-<pre>
-<p>Pages IDs : 2, 3</p>
-<p>Articles IDs : 10,20,30,40</p>
-</pre>
--->
 
 <?php
-/*
+/**
  * Extended Tags Examples
  *
 
@@ -104,10 +98,10 @@ extended_tree_navigation_tag_test
 
 
 */
-?>
-<?php
-/*
- * Replace the called view with one of these test views
+
+/**
+ * Tags Simple examples
+ * Replace the view used in the below partial tag with the name of the view to test
  *
 
 // Site / Others
@@ -162,4 +156,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_tag_categories" />
+<ion:partial view="test_pagination" />

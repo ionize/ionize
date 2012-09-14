@@ -73,14 +73,13 @@ $config['texteditors'] = array('tinymce');
 | - limit the number of displayed articles on one page (pagination)
 | _ Getting articles by time period (acrhives)
 |
-| Array ( 'user_choosen_uri' => 'internal_uri' );
+| Array ( 'user_chosen_uri' => 'internal_uri' );
 |
 | Notice : Don't change the 'internal_uri' on standard functionnalities without knowing what you do ! 
 */
 $config['special_uri'] = array(	'category' => 'category',
 								'page' => 'pagination',
 								'archive' => 'archives',
-								'post' => 'one_article'
 							  );
 
 

@@ -76,7 +76,10 @@ class TagManager
 	 */
 	public static $special_uri = NULL;
 
-
+	/**
+	 * Special URI array of internal function / args
+	 * @var null|array
+	 */
 	public static $special_uri_array = NULL;
 
 	/**
@@ -817,6 +820,32 @@ class TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return the special URI array or just one special URI args array.
+	 *
+	 * /application/config/ionize.php defines the special URIs and the corresponding user's chosen URIs :
+	 * $config['special_uri'] = array(
+	 *		'user_chosen_uri' => 'internal_uri'
+	 * );
+	 *
+	 * This method checks the URL segments, looks for "user_chosen_uri" and returns one array containing,
+	 * for each "internal_uri", the asked args.
+	 * Example of return :
+	 * array(
+	 * 		'internal_uri' => array(
+	 * 			0 => 'foo'
+	 * 			1 => 5
+	 * 		)
+	 * );
+	 *
+	 * @param null|string	If set, return the args array of the given "internal_uri"
+	 *
+	 * @return array|null
+	 *
+	 */
 	public static function get_special_uri_array($key = NULL)
 	{
 		if (is_null(self::$special_uri_array))
@@ -854,6 +883,7 @@ class TagManager
 
 		return self::$special_uri_array;
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -901,37 +931,6 @@ class TagManager
 	}
 
 
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Return the special URI segment position in the current URL
-	 * for one given special URI key
-	 *
-	 * @param 	string
-	 *
-	 * @return 	int|null
-	 *
-	public static function get_config_special_uri_segment_index($key)
-	{
-		$uri_config = self::$ci->config->item('special_uri');
-		$segments = self::get_uri_segments();
-		$segment_index = count($segments) - 1;
-
-		while( ! empty($segments))
-		{
-			$segment = array_pop($segments);
-
-			if (array_key_exists($segment, $uri_config) && $uri_config[$segment] == $key)
-			{
-				return $segment_index;
-			}
-			$segment_index--;
-		}
-		return NULL;
-	}
-	 */
-
 
 	// ------------------------------------------------------------------------
 	// Tags definition
@@ -961,6 +960,9 @@ class TagManager
 		if ( ! is_null($value))
 			return self::wrap($tag, $value);
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -1005,6 +1007,10 @@ class TagManager
 		return self::output_value($tag, $value);
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	public static function tag_simple_date(FTL_Binding $tag)
 	{
 		$value = $tag->getValue();
@@ -1020,6 +1026,10 @@ class TagManager
 		return $value;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * This kind of tag will avoid looping of its parent tag
 	 *
@@ -1032,6 +1042,9 @@ class TagManager
 	{
 		return $tag->expand();
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -1049,6 +1062,10 @@ class TagManager
 	{
 		return $tag->expand();
 	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Returns the object ID
@@ -1068,6 +1085,10 @@ class TagManager
 
 		return self::wrap($tag, $value);
 	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Returns the object absolute's URL
@@ -1092,6 +1113,7 @@ class TagManager
 
 		return self::wrap($tag, $value);
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -1191,6 +1213,7 @@ class TagManager
 		return '';
 	}
 
+
 	// ------------------------------------------------------------------------
 
 
@@ -1220,6 +1243,7 @@ class TagManager
 
 
 	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Expands the tag content if the element is active
@@ -1251,6 +1275,7 @@ class TagManager
 
 		return '';
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -1292,6 +1317,7 @@ class TagManager
 
 	/**
 	 * Returns one list from a given field
+	 * @TODO : Rewrite this method for 0.9.9
 	 *
 	 * @param FTL_Binding $tag
 	 *
@@ -1385,197 +1411,6 @@ class TagManager
 		return '';
 	}
 	*/
-
-
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Returns the count of an item collection
-	 *
-	 * @tag_attributes		'from' : 	collection name
-	 *						'item' : 	items to count inside the collection
-	 *						'filter' : 	Filter the items
-	 * 
-	 * @param			FTL_Binding		Tag
-	 *
-	 * @return 			Int	Number of items
-	 *
-	public static function tag_count(FTL_Binding $tag)
-	{
-		// Object type : page, article, media
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : self::get_parent_tag($tag);;
-
-		// Item to count
-		$items = (isset($tag->attr['items']) ) ? $tag->attr['items'] : FALSE;
-
-		// Filter on one field
-		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
-
-		// Get the obj
-		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-
-		if ( ! is_null($obj) )
-		{
-			if($items != FALSE && isset( $obj[$items]) )
-			{
-				$items = $obj[$items];
-			}
-			else
-			{
-				$items = $obj;
-			}
-			if ($filter !== FALSE)
-			{
-				// Normalize egality
-				$filter = preg_replace("#[=*]{1,12}#", '==', $filter);
-		
-				// Test condition
-				$condition = preg_replace("#([\w]*)(\s*==\s*|\s*!==\s*)([a-zA-Z0-9'])#", '$row[\'\1\']\2\3', $filter);
-
-				$items = @array_filter($items, create_function('$row','return ('.$condition.');'));
-
-				if ($items == FALSE && ! is_array($items))
-				{
-					return self::show_tag_error($tag->name, '<b>Your filter contains an error : </b><br/>'.$filter);
-				}
-				
-				return count($items);
-			}
-			return count($items);
-		}
-		return 0;
-	}
-	*/
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Get one field from a data array
-	 * Used to get extended fields values
-	 * First, this tag tries to get and extended field value.
-	 * If nothing is found, he tries to get a core field value
-	 * It is possible to force the core value by setting the "core" attribute to true
-	 *
-	 * @param	FTL_Binding		Tag
-	 *
-	 * @usage	<ion:field name="<field_name>" from="<table_name>" <core="true"> />
-	 *
-	 * @return	String	The field value
-	 *
-	public static function tag_field(FTL_Binding $tag)
-	{
-		// Object type : page, article, media
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
-		
-		// Name of the field to get
-		$name = (isset($tag->attr['name']) ) ? $tag->attr['name'] : FALSE;
-		
-		// Format of the returned field (useful for dates)
-		$format = (isset($tag->attr['format']) ) ? $tag->attr['format'] : FALSE;
-		
-		// Force to get the field name from core. To be used when the field has the same name as one core field
-		$force_core = (isset($tag->attr['core']) && $tag->attr['core'] == TRUE ) ? TRUE : FALSE;
-
-		// Current tag : parent tag
-		if ($from == FALSE && $force_core == FALSE )
-		{
-			$from = self::get_parent_tag($tag);
-		}
-
-		$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
-
-		if ( ! is_null($obj) && $name != FALSE)
-		{
-			$value = '';
-
-			// If force core field value, return it.
-			// Must be used in case one extend field has the same name than one core field.
-			// @TODO : Think about one more clean solution.
-			if ($force_core === TRUE && ! empty($obj[$name]))
-			{
-				// return self::wrap($tag, $obj[$name]);
-				$value = self::get_value($from, $name, $tag);
-				
-				if ($value != '')
-				{
-					if ($format !== FALSE)
-						return self::wrap($tag, self::format_date($tag, $value));
-				
-					return self::wrap($tag, $value);
-				}
-			}
-
-			// Try to get the extend field value
-			if ( isset($obj[self::$extend_field_prefix.$name]))
-			{
-				// If "format" attribute is defined, suppose the field is a date ...
-				if ($format !== FALSE && $obj[self::$extend_field_prefix.$name] != '')
-					return self::wrap($tag, (self::format_date($tag, $obj[self::$extend_field_prefix.$name])));
-
-				return self::wrap($tag, $obj[self::$extend_field_prefix.$name]);
-			}
-			// Else, get the core field value
-			else
-			{
-				// return self::wrap($tag, $obj[$name]);
-				$value = self::get_value($from, $name, $tag);
-				
-				if ($value != '')
-				{
-					if ($format !== FALSE)
-						return self::wrap($tag, self::format_date($tag, $value));
-				
-					return self::wrap($tag, $value);
-				}
-			}
-		}
-
-		return '';
-	}
-	*/
-
-
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Get the value of one tag key
-	 * To be used in tag function. No direct use.
-	 * Takes care about alternatives (attribute "or")
-	 *
-	 * @param 	String 			Local object to get the value from
-	 * @param 	String 			Default asked key. If the tag if <ion:title />, this value must be 'title'
-	 * @param 	FTL_Binding		The binded tag to parse
-	 *
-	 * @usage : $value = get_value('media', 'title', $tag)
-	 *
-	 * @TODO : Globalize this method ( done : used by tag_field())
-	 *
-	public static function get_value($obj, $key, $tag)
-	{
-		// thumb folder name (without the 'thumb_' prefix)
-		$or = (isset($tag->attr['or']) ) ? explode(',', $tag->attr['or']) : FALSE;
-
-		$value = ( ! empty($tag->locals->{$obj}[$key])) ? $tag->locals->{$obj}[$key] : '';
-
-		if ($value == '' && $or !== FALSE)
-		{
-			foreach ($or as $alternative)
-			{
-				if ( ! empty($tag->locals->{$obj}[$alternative]))
-				{
-					$value = $tag->locals->{$obj}[$alternative];
-					break;
-				}
-			}
-		}
-		
-		return $value;
-	}
-	 */
 
 
 	// ------------------------------------------------------------------------
@@ -1747,12 +1582,6 @@ class TagManager
 		
 		$js = "var $object = $json;";
 		
-		/*
-		$.extend(Lang, {
-			get: function(key) { return this[key]; },
-			set: function(key, value) { this[key] = value;}
-		});
-		*/
 		switch($fm)
 		{
 			case 'jQuery':
@@ -1849,6 +1678,15 @@ class TagManager
 
 	// ------------------------------------------------------------------------
 
+
+	/**
+	 * Returns the curent meta title
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
 	public static function tag_meta_title(FTL_Binding $tag)
 	{
 		$article = self::registry('article');
@@ -1868,6 +1706,9 @@ class TagManager
 		 */
 		return Settings::get('site_title');
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -2059,7 +1900,11 @@ class TagManager
 		}
 		return $url;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Wraps a tag value depending on the given HTML tag
 	 *
@@ -2148,6 +1993,7 @@ class TagManager
 
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * @TODO : 	Project function
 	 * 			Should return the HTMl attributes as formatted string
@@ -2177,8 +2023,6 @@ class TagManager
 			}
 
 			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
-
-
 		}
 	}
 	 */
@@ -2240,6 +2084,10 @@ class TagManager
 
 		return '';
 	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Processes the value through PHP function, helper, prefix/suffix
@@ -2336,17 +2184,20 @@ class TagManager
 		return $value;	
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Add one prefix / suffix to the given value
 	 * If the prefix or suffix looks like a translation call, try to translate
-	 *
 	 *
 	 * @param string
 	 * @param string		Prefix / Suffix
 	 * @param int 			1 : prefix mode, 2 : suffix mode
 	 *
-	 *
 	 * @return string
+	 *
 	 */
 	protected static function prefix_suffix_process($value, $string, $mode=1)
 	{
@@ -2367,7 +2218,8 @@ class TagManager
 		}
 		return $value;
 	}
-	
+
+
 	// ------------------------------------------------------------------------
 
 

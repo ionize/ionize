@@ -34,6 +34,7 @@ class TagManager_Article extends TagManager
 		'article:prev' => 	'tag_prev_article',
 	);
 
+
 	// ------------------------------------------------------------------------
 	
 
@@ -59,31 +60,44 @@ class TagManager_Article extends TagManager
 		// Set by Page::get_current_page()
 		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
 
-		// Pagination : 1. tag, 2. page
-		$pagination = $tag->getAttribute('pagination');
-		if (is_null($pagination)) $pagination = $page['pagination'];
+		// Pagination
+		$tag_pagination = $tag->getAttribute('pagination');
+		$ionize_pagination = $page['pagination'];
 
 		// Type filter, limit, SQL filter
 		$type = $tag->getAttribute('type');
-		$nb_to_display = ! $pagination ? $tag->getAttribute('limit', 0) : 0;
-		$filter = $tag->getAttribute('filter', FALSE);
-
+		$nb_to_display = $tag->getAttribute('limit', 0);
+		$filter = $tag->getAttribute('filter');
 
 		// URL based process of special URI only allowed on current page
 		$special_uri_array = self::get_special_uri_array();
 
-		if ($is_current_page && ! is_null($special_uri_array))
+		if ($is_current_page)
 		{
-			foreach($special_uri_array as $_callback => $args)
+			// Special URI process
+			if (! is_null($special_uri_array))
 			{
-				if (method_exists(__CLASS__, 'add_articles_filter_'.$_callback))
-					call_user_func(array(__CLASS__, 'add_articles_filter_'.$_callback), $tag, $args);
+				foreach($special_uri_array as $_callback => $args)
+				{
+					if (method_exists(__CLASS__, 'add_articles_filter_'.$_callback))
+						call_user_func(array(__CLASS__, 'add_articles_filter_'.$_callback), $tag, $args);
+				}
 			}
+			// Deactivate "limit" if one pagination is set
+			if ($tag_pagination OR $ionize_pagination) $nb_to_display = 0;
+		}
+		else
+		{
+			// Deactivate Ionize pagination (Only available of the current page)
+			$ionize_pagination = NULL;
+
+			// Deactivate limit if the "pagination" attribute is set
+			if ($tag_pagination) $nb_to_display = 0;
 		}
 
-		if ($pagination)
+		// If pagination is only set by the tag : Call the pagination filter
+		if ($tag_pagination)
 		{
-			// If pagination is only set by the tag : case of page 1
 			if ( is_null($special_uri_array) OR ! array_key_exists('pagination', $special_uri_array))
 				self::add_articles_filter_pagination($tag);
 		}
@@ -131,13 +145,13 @@ class TagManager_Article extends TagManager
 		}
 */
 
-		// Get only articles from current page
+		// Get only articles from the detected page
 		$where['id_page'] = $page['id_page'];
 
 		// Set Limit : First : pagination, Second : limit
-		$limit = $pagination > 0 ? $pagination : FALSE;
-		if ($limit === FALSE && $nb_to_display > 0) $limit = $nb_to_display;
-		if ($limit !== FALSE) $where['limit'] = $limit;
+		$limit = $tag_pagination ? $tag_pagination : $ionize_pagination;
+		if ( ! $limit && $nb_to_display > 0) $limit = $nb_to_display;
+		if ( $limit ) $where['limit'] = $limit;
 
 		// Get articles
 		$articles = self::$ci->article_model->get_lang_list(
@@ -146,8 +160,8 @@ class TagManager_Article extends TagManager
 			$filter
 		);
 
-		// Pagination needs the total number of articles
-		if ($pagination)
+		// Pagination needs the total number of articles, without the pagination filter
+		if ($tag_pagination OR $ionize_pagination)
 		{
 			$nb_total_articles = self::count_nb_total_articles($tag, $where, $filter);
 			$tag->set('nb_total_articles', $nb_total_articles);
@@ -161,17 +175,20 @@ class TagManager_Article extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return the number of articles, excluding the pagination filter.
 	 *
-	 * @param FTL_Binding $tag
-	 * @param array       $where
-	 * @param             $filter
+	 * @param FTL_Binding
+	 * @param array
+	 * @param null|string
 	 *
 	 * @return int
 	 *
 	 */
-	function count_nb_total_articles(FTL_Binding $tag, $where = array(), $filter)
+	function count_nb_total_articles(FTL_Binding $tag, $where = array(), $filter=NULL)
 	{
 		$page = $tag->get('page');
 		if (empty($page)) $page = self::registry('page');
@@ -205,6 +222,9 @@ class TagManager_Article extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Adds one category filter
 	 *
@@ -224,6 +244,9 @@ class TagManager_Article extends TagManager
 			);
 		}
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -279,31 +302,10 @@ class TagManager_Article extends TagManager
 
 
 	/**
-	 * Get one article from the URL
-	 *
-	 * @param 	array 	row from URL table
-	 *
-	 * @return array
-	public static function get_article_from_url($article_url = array())
-	{
-		$article = array();
-
-		if ( empty($article_url))
-			$article_url = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
-
-		if ($article_url['type'] == 'article')
-			$article = self::$ci->article_model->get_by_id($article_url['id_entity'], Settings::get_lang('current'));
-
-		return $article;
-	}
-	 */
-
-
-	// ------------------------------------------------------------------------
-
-	/**
 	 * Inits articles URLs
 	 * Get the contexts of all given articles and define each article correct URL
+	 *
+	 * @param $articles
 	 *
 	 */
 	private function init_articles_urls(&$articles)
@@ -414,6 +416,13 @@ class TagManager_Article extends TagManager
 
 	// ------------------------------------------------------------------------
 
+
+	/**
+	 * Inits, for each article, the view to use.
+	 *
+	 * @param $articles
+	 *
+	 */
 	private function init_articles_views(&$articles)
 	{
 		$nb = count($articles);
@@ -762,7 +771,6 @@ class TagManager_Article extends TagManager
 	 * including the pages which has not the flag "has URL" checked in Ionize.
 	 * Default value : FALSE
 	 *
-	 */
 	static function set_parent_scope(FTL_Binding $tag)
 	{
 		$where = array();
@@ -795,6 +803,7 @@ class TagManager_Article extends TagManager
 
 		return $where;
 	}
+	 */
 
 
 	// ------------------------------------------------------------------------
@@ -900,6 +909,9 @@ class TagManager_Article extends TagManager
 
 		return $articles;
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
