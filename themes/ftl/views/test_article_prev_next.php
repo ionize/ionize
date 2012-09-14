@@ -15,17 +15,17 @@
 &lt;h3>Current Article&lt;/h3>
 &lt;h4>&lt;ion:article:id /> : &lt;ion:article:title />&lt;/h4>
 
-&lt;h3>Next and previuous&lt;/h3>
-&lt;ion:article:prev loop="false" href="true" tag="p" prefix="lang('previous_article')" />
-&lt;ion:article:next loop="false" href="true" tag="p" prefix="lang('next_article')" />
+&lt;h3>Next and previous&lt;/h3>
+&lt;ion:article:prev href="true" tag="p" prefix="lang('previous_article')" />
+&lt;ion:article:next href="true" tag="p" prefix="lang('next_article')" />
 </pre>
 	
 <h3>Current Article</h3>
 <h4><ion:article:id /> : <ion:article:title /></h4>
 
-<h3>Next and previuous</h3>
-<ion:article:prev loop="false" href="true" tag="p" prefix="lang('previous_article')" />
-<ion:article:next loop="false" href="true" tag="p" prefix="lang('next_article')" />
+<h3>Next and previous</h3>
+<ion:article:prev href="true" tag="p" prefix="lang('previous_article')" />
+<ion:article:next href="true" tag="p" prefix="lang('next_article')" />
 
 
 

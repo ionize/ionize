@@ -143,7 +143,7 @@ test_tag_archives			Archives tag
 
 
 // @TODO :
-
+test_tag_breadcrumb
 test_tag_medias_module : 			Medias within one module
 
 test_tag_elements : 				Content Elements
@@ -156,4 +156,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_pagination" />
+<ion:partial view="test_article_prev_next" />

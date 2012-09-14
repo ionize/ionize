@@ -1918,25 +1918,34 @@ class TagManager
 	 */
 	protected static function wrap(FTL_Binding $tag, $value)
 	{
-		$open_tag = $close_tag = '';
+		$html_tag = $tag->getAttribute('tag');
 
-		$html_tag = $tag->getAttribute('tag', FALSE);
-		$class = $tag->getAttribute('class', '');
-		$id = $tag->getAttribute('id', '');
+		// Inform the parent that the value has been wrapped
+		if ($html_tag)
+			$tag->getParent()->setAttribute('__wrap_called__', TRUE);
 
-		if ( ! empty($class)) $class = ' class="'.$class.'"';
-		if ( ! empty($id)) $id = ' id="'.$id.'"';
-
-		if ($html_tag !== FALSE)
+		if ($tag->getAttribute('__wrap_called__') !== TRUE)
 		{
-			$open_tag = '<' . $html_tag . $id . $class . '>';
-			$close_tag = '</' . $html_tag .'>';
+			$open_tag = $close_tag = '';
+
+			$class = $tag->getAttribute('class', '');
+			$id = $tag->getAttribute('id', '');
+
+			if ( ! empty($class)) $class = ' class="'.$class.'"';
+			if ( ! empty($id)) $id = ' id="'.$id.'"';
+
+			if ($html_tag)
+			{
+				$open_tag = '<' . $html_tag . $id . $class . '>';
+				$close_tag = '</' . $html_tag .'>';
+			}
+
+			if ( ! empty ($value) )
+				return $open_tag . $value . $close_tag;
+			else
+				return '';
 		}
-		
-		if ( ! empty ($value) )
-			return $open_tag . $value . $close_tag;
-		else
-			return '';
+		return $value;
 	}
 	
 

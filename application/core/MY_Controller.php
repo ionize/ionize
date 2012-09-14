@@ -233,7 +233,7 @@ class Base_Controller extends MY_Controller
     {
         parent::__construct();
 
- $this->output->enable_profiler(TRUE);
+// $this->output->enable_profiler(TRUE);
 		
 		$this->connect = Connect::get_instance();
 

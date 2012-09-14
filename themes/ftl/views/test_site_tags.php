@@ -1,15 +1,13 @@
-
 <h1>Website tags</h1>
+<ion:tree_navigation />
 
-<h2>Navigation menu to articles</h2>
-<p>To test meta keywords, meta description, window title, every tag that could be overwritten by articles settings</p>
-<ion:page id="3">
-	<ul>
-		<ion:articles>
-			<li>Go to article : <a href="<ion:article:url />"><ion:article:title /></a></li>
-		</ion:articles>
-	</ul>
-</ion:page>
+<ul>
+	<ion:articles:article tag="li">
+		<a href="<ion:url/>"><ion:title /></a>
+	</ion:articles:article>
+</ul>
+
+<hr/>
 
 <pre>
 &lt;p>Site title 			&lt;b>&lt;ion:site_title />&lt;/b>&lt;/p>
@@ -20,7 +18,11 @@
 
 <h3>Result</h3>
 
-<p>Site title 		<b><ion:site_title /></b></p>
-<p>Window title 		<b><ion:meta_title /></b></p>
+<p>Site title : 			<b><ion:site_title /></b></p>
+<p>Base URL : 			<b><ion:base_url /></b></p>
+<p>Home page URL : 			<b><ion:home_url /></b></p>
+<p>Window title :		<b><ion:meta_title /></b></p>
 <p>Meta keywords : 		<b><ion:meta_keywords /></b></p>
-<p>Meta description : 		<b><ion:meta_description /></b></p>
+<p>Meta description : 	<b><ion:meta_description /></b></p>
+
+<p>Browser : 			<b><ion:browser /></b></p>

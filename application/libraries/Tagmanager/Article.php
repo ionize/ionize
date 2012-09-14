@@ -488,18 +488,16 @@ class TagManager_Article extends TagManager
 
 			// Parse the article's view if the article tag is single (<ion:article />)
 			if($tag->is_single())
-				$str .= self::find_and_parse_article_view($tag, $_article);
+				$str = self::find_and_parse_article_view($tag, $_article);
 			// Else expand the tag
 			else
-				$str .= $tag->expand();
+				$str = self::wrap($tag, $tag->expand());
 		}
 
-		$output = self::wrap($tag, $str);
-
 		// Tag cache
-		self::set_cache($tag, $output);
+		self::set_cache($tag, $str);
 
-		return $output;
+		return $str;
 	}
 
 
@@ -556,12 +554,13 @@ class TagManager_Article extends TagManager
 		// Experimental : To allow tags in articles
 		// $str = $tag->parse_as_nested($str);
 
-		$output = self::wrap($tag, $str);
+		// No wrap for loop tags
+		$str = self::wrap($tag, $str);
 		
 		// Tag cache
-		self::set_cache($tag, $output);
+		self::set_cache($tag, $str);
 		
-		return $output;
+		return $str;
 	}
 
 	
@@ -588,7 +587,7 @@ class TagManager_Article extends TagManager
 			return self::find_and_parse_article_view($tag, $tag->get('article'));
 		}
 
-		return $tag->expand();
+		return self::wrap($tag, $tag->expand());
 	}
 
 

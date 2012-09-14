@@ -218,27 +218,6 @@ class TagManager_Page extends TagManager
 
 
 	/**
-	 * Return the last part of the URI
-	 * @NOTE : 	NOT USED
-	 * 			2012.09.11
-	 *
-	 * @return 	string|null
-	function get_last_uri_part()
-	{
-		$uri_segments = self::get_uri_segments();
-
-		if ( ! is_null($uri_segments))
-			return array_pop(array_slice($uri_segments, -1));
-
-		return NULL;
-	}
-	 */
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * Returns the page path without the special URI path
 	 *
 	 * @return string
@@ -568,6 +547,10 @@ class TagManager_Page extends TagManager
 	 * Processes the next / previous page tags result
 	 * Internal use only.
 	 *
+	 * @param FTL_Binding $tag
+	 * @param array
+	 *
+	 * @return string
 	 */
 	private static function process_next_prev_page(FTL_Binding $tag, $page)
 	{
@@ -602,6 +585,12 @@ class TagManager_Page extends TagManager
 	// -- TAGS DEFINITION ------------------------------------------------------------------------
 
 
+	/**
+	 * @param FTL_Binding $tag
+	 *
+	 * @return String
+	 *
+	 */
 	public static function tag_page(FTL_Binding $tag)
 	{
 		$cache = ($tag->getAttribute('cache') == 'off') ? FALSE : TRUE;
@@ -633,7 +622,8 @@ class TagManager_Page extends TagManager
 			$tag->set('count', 1);
 
 			$str .= $tag->expand();
-			$str = self::wrap($tag, $str);
+
+			$str .= self::wrap($tag, $str);
 
 			// Tag cache
 			self::set_cache($tag, $str);
@@ -641,10 +631,13 @@ class TagManager_Page extends TagManager
 		return $str;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
-	 * @static
 	 *
-	 * @param $tag
+	 * @param FTL_Binding
 	 *
 	 * @return mixed
 	 */
@@ -709,8 +702,12 @@ class TagManager_Page extends TagManager
 
 	/**
 	 * Next page tag
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
 	 * @usage		<ion:next_page [ prefix="Next page : " menu="main|system|..." level="0|1|..." helper="helper_name:function_name" ] />
-	 *				Attributes : 
+	 *				Attributes :
 	 *				prefix :	Prefix to add before the next page anchor. Can be free text or a static translation item index.
 	 *				menu :		By default will be "main"
 	 *				level :		The wished pages level to consider
@@ -752,23 +749,28 @@ class TagManager_Page extends TagManager
 
 
 	/**
-	 * Displays the breacrumb : You are here !!!
+	 * Displays the breacrumb : You are here !
 	 *
 	 * @param	FTL_Binding object
 	 * @return	String	The parsed view
 	 *
+	 * @usage	<ion:breadcrumb [level="2" separator=" &bull; " tag="ul" class="breadcrumb" child-tag="li" child-class="breadcrump-item"] />
+	 *
 	 */
 	public static function tag_breadcrumb(FTL_Binding $tag)
 	{
-		// Anchor enclosing tag
-		$subtag_open = ( ! is_null($tag->getAttribute('subtag'))) ? '<' . $tag->getAttribute('subtag') . '>' : '';
-		$subtag_close = ( ! is_null($tag->getAttribute('subtag'))) ? '</' . $tag->getAttribute('subtag') . '>' : '';
+		// Child tag : HTML tag for each element
+		$child_tag =  $tag->getAttribute('child-tag');
+		$child_class =  $tag->getAttribute('child-class');
+		$child_class = ! is_null($child_class) ? ' class="'.$child_class.'"': '';
+
+		// Child tag cosmetic
+		$child_tag_open = ! is_null($child_tag) ? '<' . $child_tag . $child_class . '>' : '';
+		$child_tag_close = ! is_null($child_tag) ? '</' . $child_tag .'>' : '';
 
 		$separator = $tag->getAttribute('separator', ' &raquo; ');
-		if ($separator != ' &raquo; ')
-			$separator = htmlentities(html_entity_decode($separator));
 
-		$starting_level = $tag->getAttribute('starting_level', FALSE);
+		$level = $tag->getAttribute('level', FALSE);
 
 		// Pages && page
 		$pages = self::$context->registry('pages');
@@ -781,15 +783,21 @@ class TagManager_Page extends TagManager
 		// Filter appearing pages
 		$breadcrumb = array_values(array_filter($breadcrumb, array(__CLASS__, '_filter_appearing_pages')));
 
-		if ($starting_level != FALSE)
+		if ($level != FALSE)
 		{
 			$new_breadcrumb = array();
 			foreach($breadcrumb as $b)
 			{
-				if ($b['level'] >= $starting_level)
+				if ($b['level'] >= $level)
 					$new_breadcrumb[] = $b;
 			}
 			$breadcrumb = $new_breadcrumb;
+		}
+
+		// Add Home page ?
+		if ($tag->getAttribute('home') == TRUE)
+		{
+
 		}
 
 		// Build the links
@@ -803,8 +811,7 @@ class TagManager_Page extends TagManager
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
 			$return .= ($return != '') ? $separator : '';
-
-			$return .= $subtag_open . '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' . $subtag_close;
+			$return .= $child_tag_open . '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' . $child_tag_close;
 		}
 
 		return self::wrap($tag, $return);
