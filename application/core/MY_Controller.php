@@ -87,40 +87,37 @@ class MY_Controller extends CI_Controller
 		//	Each setting is accessible through : 
 		//	Settings::get('setting_name');
 		Settings::set_settings_from_list($this->settings_model->get_settings(), 'name','content');
-        Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('default_lang_code')), 'name','content');
+        Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
 
 		/*
 		 * Security : No access if install folder is already there
 		 *
 		 */
-//		if (config_item('protect_installer') == TRUE)
-//		{
-			// Try to find the installer class
-			$installer = glob(BASEPATH.'../*/class/installer'.EXT);
+		// Try to find the installer class
+		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
 
-			// If installer class is already here, avoid site access
-			if (!empty($installer))
-			{
-				// Get languages codes from available languages folder/translation file
-				$languages = $this->settings_model->get_admin_langs();
-				
-				if ( ! in_array(config_item('detected_lang_code'), $languages))
-					$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
-				
-				$this->lang->load('admin', config_item('detected_lang_code'));
-				
-				Theme::set_theme('admin');
-				
-				// Set the view to output
-				$this->output('delete_installer');
-				
-				// Display the view directly
-				$this->output->_display();
-				
-				// Don't do anything more
-				die();
-			}
-//		}
+		// If installer class is already here, avoid site access
+		if (!empty($installer))
+		{
+			// Get languages codes from available languages folder/translation file
+			$languages = $this->settings_model->get_admin_langs();
+
+			if ( ! in_array(config_item('detected_lang_code'), $languages))
+				$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
+
+			$this->lang->load('admin', config_item('detected_lang_code'));
+
+			Theme::set_theme('admin');
+
+			// Set the view to output
+			$this->output('delete_installer');
+
+			// Display the view directly
+			$this->output->_display();
+
+			// Don't do anything more
+			die();
+		}
     }
 
 
@@ -306,10 +303,12 @@ class Base_Controller extends MY_Controller
 		 *
 		 */
 		// Get all the website languages from DB and store them into config file "languages" key
-		$languages = $this->settings_model->get_languages();
+// Already done by My_Controller
+//		$languages = $this->settings_model->get_languages();
 
 		// Put all DB languages array to Settings
-		Settings::set_languages($languages);	
+// Already done by My_Controller
+//		Settings::set_languages($languages);
 
 		// Set all languages online if conected as editor or more
 		if( Connect()->is('editors', true))
