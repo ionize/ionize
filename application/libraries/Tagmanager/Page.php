@@ -623,7 +623,7 @@ class TagManager_Page extends TagManager
 
 			$str .= $tag->expand();
 
-			$str .= self::wrap($tag, $str);
+			// $str .= self::wrap($tag, $str);
 
 			// Tag cache
 			self::set_cache($tag, $str);
