@@ -2,7 +2,7 @@
 <ion:tree_navigation />
 <hr/>
 
-<h2>Categories used by articles linked to the current page</h2>
+<h2>Categories used by the articles of the current page</h2>
 <pre>
 &lt;ion:page>
 	&lt;ion:categories tag="ul">
@@ -29,15 +29,41 @@
 
 
 <h2>Current category articles list</h2>
+<p>
+	<b class="red">How it works : </b>
+</p>
+<ol>
+    <li>Click on one category above to activate the category filter</li>
+    <li>Click on one pagination link</li>
+</ol>
 
 <p>
-	Filter on Category : <b class="red"><ion:category:current:title /></b>
+	Current Category Filter :
+	<b class="red">
+		<ion:category:current:title expression="!=''">
+			<ion:category:current:title/>
+		</ion:category:current:title>
+		<ion:else>
+			No category filter, please click first on one category above !
+		</ion:else>
+	</b>
 </p>
+
+<pre>
+&lt;ion:articles pagination="2">
+    &lt;ion:article:title tag="h3" />
+    Categories of this article : &lt;ion:article:categories link="true" separator=" &bull; " />
+&lt;/ion:articles>
+
+&lt;!-- Pagination menu -->
+&lt;ion:articles:pagination pagination="2" tag="p" />
+</pre>
+
+<h3>Result</h3>
 <ion:articles pagination="2">
-	<ion:article:title tag="h3" />
-	<ion:article:categories link="true" separator=" &bull; " tag="p" />
-	<ion:article:content paragraph="1" />
+	<ion:article:title tag="h4" />
+	Categories of this article : <ion:article:categories link="true" separator=" &bull; " />
 </ion:articles>
 
 <!-- Pagination menu -->
-<ion:articles:pagination pagination="2" loop="false" />
+<ion:articles:pagination pagination="2" tag="p" />

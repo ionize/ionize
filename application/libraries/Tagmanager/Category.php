@@ -18,18 +18,21 @@ class TagManager_Category extends TagManager
 {
 	/**
 	 * Categories local storage
-	 *
+	 * @var array
 	 */
 	protected static $categories = array();
 
-
 	/**
 	 * Current visited category URI
-	 *
+	 * @var null
 	 */
 	protected static $category_uri = NULL;
 
-
+	/**
+	 * Tags callbacks definition array
+	 *
+	 * @var array
+	 */
 	public static $tag_definitions = array
 	(
 		'categories' => 				'tag_categories',
@@ -145,7 +148,7 @@ class TagManager_Category extends TagManager
 	 * @return	string
 	 *
 	 * @usage	<ion:categories>
-	 *
+	 *				...
 	 * 			</ion:categories>
 	 *
 	 */
@@ -188,13 +191,16 @@ class TagManager_Category extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Get the current URL asked category
-	 *
 	 *
 	 * @param 	FTL_Binding $tag
 	 *
 	 * @return 	string
+	 *
 	 */
 	public static function tag_category_current(FTL_Binding $tag)
 	{
@@ -209,11 +215,13 @@ class TagManager_Category extends TagManager
 				array('name' => $url_category_name),
 				Settings::get_lang()
 			);
-
 			$tag->set('current', $category);
-
-			return $tag->expand();
 		}
-		return '';
+		else
+		{
+			$tag->set('current', array());
+		}
+
+		return $tag->expand();
 	}
 }

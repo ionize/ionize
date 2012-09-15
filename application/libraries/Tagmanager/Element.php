@@ -210,7 +210,7 @@ class TagManager_Element extends TagManager
 			return $str;					
 		
 		}
-		return self::show_tag_error($tag->name, '<b>The "type" attribute is mandatory</b>');
+		return self::show_tag_error($tag, '<b>The "type" attribute is mandatory</b>');
 	}
 
 
@@ -271,7 +271,7 @@ class TagManager_Element extends TagManager
 			return '';
 		}
 
-		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
+		return self::show_tag_error($tag, '<b>The "name" attribute is mandatory</b>');
 	}
 	
 	
@@ -333,7 +333,7 @@ class TagManager_Element extends TagManager
 			}
 			return '';
 		}
-		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
+		return self::show_tag_error($tag, '<b>The "name" attribute is mandatory</b>');
 
 	}
 
@@ -371,10 +371,10 @@ class TagManager_Element extends TagManager
 			{
 				return $tag->locals->element[$attr];
 			}
-			return self::show_tag_error($tag->name, '<b>The attribute "'.$attr.'" doesn\'t exists.</b>');
+			return self::show_tag_error($tag, '<b>The attribute "'.$attr.'" doesn\'t exists.</b>');
 		}
 
-		return self::show_tag_error($tag->name, '<b>The "name" attribute is mandatory</b>');
+		return self::show_tag_error($tag, '<b>The "name" attribute is mandatory</b>');
 	}
 	
 	

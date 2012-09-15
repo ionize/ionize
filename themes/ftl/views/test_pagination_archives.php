@@ -31,7 +31,7 @@
 &lt;/ion:articles>
 
 &lt;!-- Pagination menu -->
-&lt;ion:articles:pagination pagination="2" loop="false" />
+&lt;ion:articles:pagination pagination="2" />
 </pre>
 
 id page : <ion:page:id />
@@ -44,4 +44,4 @@ id page : <ion:page:id />
 </ion:articles>
 
 <!-- Pagination menu -->
-<ion:articles:pagination pagination="2" loop="false" />
+<ion:articles:pagination pagination="2" />

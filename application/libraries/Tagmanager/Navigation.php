@@ -201,7 +201,7 @@ class TagManager_Navigation extends TagManager
 				$tag->setAttribute('helper', $helper.':'.$helper_function);
 
 				// Process the helper
-				$value = self::helper_process($pages, $tag->getAttribute('helper'));
+				$value = self::helper_process($tag, $pages, $tag->getAttribute('helper'));
 
 				$output = self::wrap($tag, $value);
 				
@@ -231,7 +231,7 @@ class TagManager_Navigation extends TagManager
 			return $output;
 		}
 		
-		return self::show_tag_error($tag->name, $error_message);
+		return self::show_tag_error($tag, $error_message);
 	}
 
 

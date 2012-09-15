@@ -11,7 +11,7 @@
 &lt;/ion:articles>
 	
 &lt;!-- Pagination -->
-&lt;ion:articles:pagination pagination="2" loop="false" />
+&lt;ion:articles:pagination pagination="2" />
 </pre>
 
 <h3>Result</h3>
@@ -22,6 +22,6 @@
 </ion:articles>
 
 <!-- Pagination -->
-<ion:articles:pagination pagination="2" loop="false" />
+<ion:articles:pagination pagination="2" />
 
 

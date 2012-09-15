@@ -1143,7 +1143,7 @@ class TagManager
 
 
 	/**
-	 *
+	 * @TODO : Replace with the expression test with the most generic eval_expression() method
 	 * @param	FTL_Binding		tag
 	 *
 	 * @return	string / void
@@ -1159,6 +1159,8 @@ class TagManager
 
 		if (!is_null($keys) && !is_null($expression))
 		{
+			$_orig_expression = $expression;
+
 			$keys = explode('|', $keys);
 			foreach($keys as $key)
 			{
@@ -1183,7 +1185,7 @@ class TagManager
 			}
 			else
 			{
-				return self::show_tag_error('if', 'Condition incorrect: if (' .$expression. ')');
+				return self::show_tag_error($tag, 'Condition incorrect: ' .$_orig_expression);
 			}
 		}
 		return '';
@@ -2071,16 +2073,20 @@ class TagManager
 		}
 		else if (! is_null($expression) )
 		{
-			$result = FALSE;
-			$expression = str_replace($tag->name, $value, $expression);
-			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+			$result = self::eval_expression($tag, $expression);
 
-			if ($return === NULL)
+			switch($result)
 			{
-				if ($result)
+				case TRUE:
 					return self::wrap($tag, $tag->expand());
-				else
+					break;
+
+				case FALSE:
 					self::$trigger_else++;
+					break;
+
+				case NULL:
+					return self::show_tag_error($tag, 'Condition incorrect: ' . $expression);
 			}
 		}
 		else if ( ! is_null($value))
@@ -2116,7 +2122,7 @@ class TagManager
 			$value = self::php_process($value, $tag->getAttribute('function') );
 
 			// Helper
-			$value = self::helper_process($value, $tag->getAttribute('helper'));
+			$value = self::helper_process($tag, $value, $tag->getAttribute('helper'));
 
 			// Prefix / Suffix
 			$value = self::prefix_suffix_process($value, $tag->getAttribute('prefix'));
@@ -2160,13 +2166,14 @@ class TagManager
 
 	/**
 	 * Process the input through the called functions and return the result
-	 * 
+	 *
+	 * @param	FTL_Binding
 	 * @param	Mixed				The value to process
 	 * @param	String / Array		String or array of PHP functions
 	 *
 	 * @return	Mixed				The processed result
 	 */
-	protected static function helper_process($value, $helper)
+	protected static function helper_process(FTL_Binding $tag, $value, $helper)
 	{
 		if ( ! is_null($helper))
 		{
@@ -2186,7 +2193,7 @@ class TagManager
 				if (function_exists($helper_func))
 					$value = call_user_func_array($helper_func, $helper_args);
 				else
-					return self::show_tag_error('Tagmanager', 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
+					return self::show_tag_error($tag, 'Error when calling <b>'.$helper_name.'->'.$helper_func.'</b>. This helper function doesn\'t exist');
 			}
 		}
 		
@@ -2233,17 +2240,127 @@ class TagManager
 
 
 	/**
+	 * Evaluates one expression
+	 *
+	 * @param FTL_Binding
+	 * @param $expression
+	 * @param $key
+	 * @param $value
+	 *
+	 * @return bool|null		TRUE if the evaluation returns TRUE
+	 * 							FALSE if the evaluation returns FALSE
+	 * 							NULL if the evaluation can't be done (error in expression or $value NULL)
+	 */
+	protected static function eval_expression(FTL_Binding $tag, $expression)
+	{
+		// PHP error handling method
+		register_shutdown_function(
+			array('TagManager', 'handle_eval_shutdown'),
+			$tag
+		);
+
+		// Result and return
+		$return = NULL;
+		$result = FALSE;
+
+		// If no key, we compare the value of the tag name
+		$keys = $tag->getAttribute('key');
+		if (is_null($keys))
+			$keys = $tag->name;
+
+		// Make an array from keys
+		$keys = explode(',', $keys);
+		$test_value = NULL;
+
+		foreach($keys as $idx => $key)
+		{
+			$key = trim($key);
+
+			// 1. Try to get the value from tag's data array
+			$value = $tag->getValue($key);
+
+			// 2. Fall down to to tag's locals
+			if (is_null($value))
+				$value = $tag->get($key);
+
+			if ($idx == 0 && strpos($expression, $key) === FALSE)
+				$expression = $key . $expression;
+
+			$test_value = (is_string($value) OR is_null($value)) ? "'".$value."'" : $value;
+
+			$expression = str_replace($key, $test_value, $expression);
+		}
+
+		// If at least one tested value was not NULL
+		if ( ! is_null($test_value))
+		{
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+		}
+		if ($return === NULL OR is_null($test_value))
+		{
+			if ($result)
+				return TRUE;
+			else
+				return FALSE;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Handles the eval_expression() PHP fatal error.
+	 * Called when the expression evaluation generates one fatal error
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 */
+	public static function handle_eval_shutdown(FTL_Binding $tag)
+	{
+		$error = error_get_last();
+		if($error !== NULL)
+		{
+			$msg = self::show_tag_error($tag,
+				'Fatal PHP error : ' . $error['message'] . '<br/>' .
+				'in expression : ' . $tag->getAttribute('expression')
+				//	. '<br/>PHP original error : <br/>'.
+				//	$error['message'] . ' in ' . $error['file']
+			);
+			echo $msg;
+			die();
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Displays an error concerning one tag use
 	 * 
-	 * @param	String		Tag name (used in the template)
+	 * @param	FTL_Binding
 	 * @param	String		Message
 	 * @param	String		Error template
 	 *
 	 * @return	String		Error message
 	 *
 	 */
-	protected static function show_tag_error($tag_name, $message, $template = 'error_tag')
+	protected static function show_tag_error(FTL_Binding $tag, $message, $template = 'error_tag')
 	{
+		// Build the tag string as written in the view
+		$attributes = $tag->getAttributes();
+		$attr_str = '';
+		foreach($attributes as $key=> $value)
+			$attr_str .= ' '.$key .'="'.$value.'"';
+
+		// Used by APPPATH.'errors/'.$template.EXT
+		$tag_name = '&lt;'.self::$tag_prefix .':' .$tag->nesting() .' ' . $attr_str .'>';
+
 		ob_start();
 		include(APPPATH.'errors/'.$template.EXT);
 		$buffer = ob_get_contents();

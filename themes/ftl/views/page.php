@@ -126,6 +126,7 @@ test_pagination : 				Pagination of articles
 test_pagination_archives : 		Pagination of articles withing archives
 test_pagination_categories : 	Pagination of articles withing categories
 
+
 // Navigation
 test_tag_navigation
 test_tag_languages_menu
@@ -156,4 +157,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_article_prev_next" />
+<ion:partial view="test_pagination_categories" />

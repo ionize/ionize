@@ -164,7 +164,7 @@ class TagManager_Article extends TagManager
 		if ($tag_pagination OR $ionize_pagination)
 		{
 			$nb_total_articles = self::count_nb_total_articles($tag, $where, $filter);
-			$tag->set('nb_total_articles', $nb_total_articles);
+			$tag->set('nb_total_items', $nb_total_articles);
 		}
 
 		self::init_articles_urls($articles);
@@ -536,19 +536,23 @@ class TagManager_Article extends TagManager
 		if ( $tag->getAttribute('random') == TRUE)
 			shuffle ($articles);
 
-		// Stop here if asked : Needed by aggregation tags
-		if ($tag->getAttribute('loop') === FALSE)
-			return $tag->expand();
-
 		// Add data like URL to each article
 		// and finally render each article
 		foreach($_articles as $key=>$article)
 		{
-			$tag->set('article', $article);
-			$tag->set('index', $key);
-			$tag->set('count', $count);
+			// Stop here if asked : Needed by aggregation tags (eg. pagination)
+			if ($tag->getAttribute('loop') === FALSE)
+			{
+				return $tag->expand();
+			}
+			else
+			{
+				$tag->set('article', $article);
+				$tag->set('index', $key);
+				$tag->set('count', $count);
 
-			$str .= $tag->expand();
+				$str .= $tag->expand();
+			}
 		}
 
 		// Experimental : To allow tags in articles

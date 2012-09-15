@@ -14,12 +14,10 @@
 class TagManager_Pagination extends TagManager
 {
 	/**
-	 * Pagination URI
+	 * Tags callbacks definition array
 	 *
+	 * @var array
 	 */
-	protected static $pagination_uri = NULL;
-
-
 	public static $tag_definitions = array
 	(
 		'pagination' =>			'tag_pagination',
@@ -68,6 +66,14 @@ class TagManager_Pagination extends TagManager
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Return the Pagination lib config array
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return array
+	 *
+	 */
 	public static function get_pagination_config(FTL_Binding $tag)
 	{
 		$pagination_config = array();
@@ -94,31 +100,38 @@ class TagManager_Pagination extends TagManager
 		}
 
 		// Pagination config from tag
-		if ( ! is_null($ptag = $tag->getAttribute('full_tag')) ) {
+		if ( ! is_null($ptag = $tag->getAttribute('full_tag')) OR ! is_null($ptag = $tag->getAttribute('tag')) )
+		{
 			$pagination_config['full_tag_open'] = 		'<' . $ptag . $html_id . $html_class . '>';
 			$pagination_config['full_tag_close'] = 		'</' . $ptag . '>';
 		}
-		if ( ! is_null($ptag = $tag->getAttribute('first_tag')) ) {
+		if ( ! is_null($ptag = $tag->getAttribute('first_tag')) )
+		{
 			$pagination_config['first_tag_open'] = 		'<' . $ptag . '>';
 			$pagination_config['first_tag_close'] = 	'</' . $ptag . '>';
 		}
-		if ( ! is_null($ptag = $tag->getAttribute('last_tag')) ) {
+		if ( ! is_null($ptag = $tag->getAttribute('last_tag')) )
+		{
 			$pagination_config['last_tag_open'] = 		'<' . $ptag . '>';
 			$pagination_config['last_tag_close'] = 		'</' . $ptag . '>';
 		}
-		if ( ! is_null($ptag = $tag->getAttribute('cur_tag')) ) {
+		if ( ! is_null($ptag = $tag->getAttribute('cur_tag')) )
+		{
 			$pagination_config['cur_tag_open'] = 		'<' . $ptag . '>';
 			$pagination_config['cur_tag_close'] = 		'</' . $ptag . '>';
 		}
-		if ( ! is_null($ptag = $tag->getAttribute('next_tag'))  ) {
+		if ( ! is_null($ptag = $tag->getAttribute('next_tag'))  )
+		{
 			$pagination_config['next_tag_open'] = 		'<' . $ptag . '>';
 			$pagination_config['next_tag_close'] = 		'</' . $ptag . '>';
 		}
-		if ( ! is_null($ptag = $tag->getAttribute('prev_tag')) ) {
+		if ( ! is_null($ptag = $tag->getAttribute('prev_tag')) )
+		{
 			$pagination_config['prev_tag_open'] = 		'<' . $ptag . '>';
 			$pagination_config['prev_tag_close'] = 		'</' . $ptag . '>';
 		}
-		if ( ! is_null($ptag = $tag->getAttribute('num_tag')) ) {
+		if ( ! is_null($ptag = $tag->getAttribute('num_tag')) )
+		{
 			$pagination_config['num_tag_open'] = 		'<' . $ptag . '>';
 			$pagination_config['num_tag_close'] = 		'</' . $ptag . '>';
 		}
@@ -153,6 +166,10 @@ class TagManager_Pagination extends TagManager
 		if (($str = self::get_cache($tag)) !== FALSE)
 			return $str;
 
+		// Tell the parent loop tag to not loop. Named without internal prefix "__"
+		// because it can be used by users as tag attribute
+		$tag->getParent()->setAttribute('loop', FALSE);
+
 		// Current page : 1. Asked page, 2. Down to current
 		$page = $tag->get('page');
 			if (is_null($page)) $page = self::registry('page');
@@ -169,19 +186,17 @@ class TagManager_Pagination extends TagManager
 		$args = self::get_special_uri_array('pagination');
 		$cur_page = isset($args[0]) ? $args[0] : NULL;
 
-		$pagination_base_url = self::get_pagination_base_url($tag);
-
 		// Pagination tag config init
 		$pagination_config = array_merge(
 			self::get_pagination_config($tag),
 			array (
-				'base_url' => $pagination_base_url,
+				'base_url' => self::get_pagination_base_url($tag),
 				'per_page' => $nb_to_display,
-				'total_rows' => $tag->get('nb_total_articles'),
+				'total_rows' => $tag->get('nb_total_items'),	// Got from parent tag data array
 				'num_links' => 3,
 				'cur_page' => $cur_page,
-				'first_link' => lang('first_link'),			// "First" text : see /theme/your_theme/language/xx/pagination_lang.php
-				'last_link' => lang('last_link'),			// "Last" text
+				'first_link' => lang('first_link'),				// "First" text : see /theme/your_theme/language/xx/pagination_lang.php
+				'last_link' => lang('last_link'),				// "Last" text
 				'next_link' => lang('next_link'),
 				'prev_link' => lang('prev_link')
 			)
