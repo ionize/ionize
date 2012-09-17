@@ -184,7 +184,9 @@ INSERT INTO `article_media` (`id_article`, `id_media`, `online`, `ordering`, `ur
 VALUES
 	(30,2,1,2,NULL,NULL),
 	(30,4,1,1,NULL,NULL),
-	(40,1,1,1,NULL,NULL);
+	(40,1,1,1,NULL,NULL),
+	(30,6,1,1,NULL,NULL),
+	(30,7,1,2,NULL,NULL);
 
 /*!40000 ALTER TABLE `article_media` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -537,7 +539,9 @@ VALUES
 	(2,'picture','IMG_8447.jpg','files/pictures/IMG_8447.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
 	(3,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
 	(4,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
-	(5,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m');
+	(5,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
+	(6,'video','wall_e_headphones_vignette.mp4','files/wall_e_headphones_vignette.mp4','files/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m'),
+	(7,'video','watch?v=d4RiUy23e9s','http://www.youtube.com/watch?v=d4RiUy23e9s','http://www.youtube.com/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m');
 
 /*!40000 ALTER TABLE `media` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -563,7 +567,9 @@ LOCK TABLES `media_lang` WRITE;
 INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`)
 VALUES
 	('en',1,'One burman munk','',''),
-	('fr',1,'Moine birman','','');
+	('fr',1,'Moine birman','',''),
+	('en',6,'Local Video From Page','','MP4 File Format'),
+	('en',7,'Video From Youtube','','Video added from Page - Videos - Add Video Url section');
 
 /*!40000 ALTER TABLE `media_lang` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -810,7 +816,9 @@ VALUES
 	(2,5,1,4,NULL),
 	(3,1,1,2,NULL),
 	(3,2,1,3,NULL),
-	(3,3,1,1,NULL);
+	(3,3,1,1,NULL),
+	(2,6,1,1,NULL),
+	(2,7,1,2,NULL);
 
 /*!40000 ALTER TABLE `page_media` ENABLE KEYS */;
 UNLOCK TABLES;

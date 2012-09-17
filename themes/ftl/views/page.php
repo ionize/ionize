@@ -88,7 +88,9 @@
 extended_tree_navigation_tag_test
 
 // Medias
-
+extended_medias_page_tag_test_1 // Sizing Images
+extended_medias_page_tag_test_2 // Medias From Page (Types : Picture, Video)
+extended_medias_article_tag_test_2 // Medias From Article (Types : Picture, Video)
 
 // Categories
 
@@ -157,4 +159,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_pagination_categories" />
+<ion:partial view="extended_medias_article_tag_test_2" render="true" />
