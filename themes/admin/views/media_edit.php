@@ -34,7 +34,20 @@ if($type == 'picture')
 	<!-- Music file -->
 	<?php if($type == 'music') :?>
 		<div style="float:right;">
-			<embed src="<?= theme_url() ?>flash/mp3Player/mp3player_simple.swf?mp3=<?= base_url().$path ?>" loop="false" menu="false" quality="high" wmode="transparent" width="224" height="20" name="track_<?= $id_media ?>" align="middle" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+			<embed
+                src="<?= theme_url() ?>flash/mp3Player/mp3player_simple.swf?mp3=<?= base_url().$path ?>"
+                loop="false"
+                menu="false"
+                quality="high"
+                wmode="transparent"
+                width="224"
+                height="20"
+                name="track_<?= $id_media ?>"
+                align="middle"
+                allowScriptAccess="sameDomain"
+                type="application/x-shockwave-flash"
+                pluginspage="http://www.macromedia.com/go/getflashplayer"
+            />
 		</div>
 	<?php endif ;?>
 	
@@ -50,20 +63,19 @@ if($type == 'picture')
 		
 		<?php else :?>
 
-			<div style="float:right;"  id="video<?= $id_media ?>"></div>
-		
-			<script type="text/javascript">
-				
-				var s1 = new SWFObject('<?= theme_url() ?>flash/mediaplayer/player.swf','player','170','145','9');
-				s1.addParam('allowfullscreen','true');
-				s1.addParam('allowscriptaccess','always');
-				
-				s1.addParam('flashvars','file=<?=base_url().$path?>');
-				
-				s1.write('video<?= $id_media ?>');
-				
-			</script>
-	
+			<div style="float:right;"  id="video<?= $id_media ?>">
+                <embed
+                    flashvars="file=<?=base_url().$path?>&autostart=false"
+                    allowfullscreen="true"
+                    allowscriptaccess="always"
+                    id="video<?= $id_media ?>"
+                    name="video<?= $id_media ?>"
+                    src="<?= theme_url() ?>flash/mediaplayer/player.swf"
+                    width="170"
+                    height="145"
+                />
+            </div>
+
 			<h3><?= lang('ionize_title_informations') ?></h3>
 		
 		<?php endif ;?>
