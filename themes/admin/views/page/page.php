@@ -509,6 +509,18 @@
 					</a>
 				</p>
 
+                <dl class="first">
+                    <dt>
+                        <label for="addVideo"><?= lang('ionize_label_add_video') ?></label>
+                    </dt>
+                    <dd>
+                        <textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
+                        <a id="btnAddVideo" class="left light button">
+                            <i class="icon-plus"></i><?= lang('ionize_button_add_video') ?>
+                        </a>
+                    </dd>
+                </dl>
+
 				<ul id="videoContainer" class="sortable-container">
 					<span><?= lang('ionize_message_no_video') ?></span>
 				</ul>
@@ -681,6 +693,23 @@
 		$('desktop').store('tabSwapper', pageTab);
 		ION.getContentElements('page', '<?= $id_page ?>');
 
+        /**
+         * Add Video button
+         *
+         */
+        $('btnAddVideo').addEvent('click', function()
+        {
+            if ($('addVideo').value !='')
+            {
+                ION.JSON('media/add_external_media', {
+                    'type': 'video',
+                    'parent': 'page',
+                    'id_parent': '<?= $id_page ?>',
+                    'path': $('addVideo').value
+                });
+            }
+            return false;
+        });
 		
 		/**
 		 * Loads media only when clicking the tab
