@@ -542,7 +542,7 @@
 		
 						<dl>
 							<dt>
-								<label for="admin_url" title="<?=lang('ionize_help_setting_admin_url')?>"><?= lang('ionize_title_admin_url') ?></label>
+								<label for="admin_url"><?= lang('ionize_title_admin_url') ?></label>
 							</dt>
 							<dd>
 								<input id="admin_url" name="admin_url" class="inputtext w120" value="<?=config_item('admin_url')?>" /><br/>
