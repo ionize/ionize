@@ -21,17 +21,14 @@ class TagManager_Article extends TagManager
 	(
 		'articles' => 				'tag_articles',
 		'articles:article' => 		'tag_articles_article',
-		'article' => 				'tag_article',
 
+		'article' => 				'tag_article',
 		'article:summary' => 		'tag_simple_value',
+		'article:content' => 		'tag_article_content',
 		'article:active_class' => 	'tag_simple_value',
 		'article:view' => 			'tag_simple_value',
-
-		'article:content' => 		'tag_article_content',
-		'article:categories' => 	'tag_article_categories',
-
-		'article:next' => 	'tag_next_article',
-		'article:prev' => 	'tag_prev_article',
+		'article:next' => 			'tag_next_article',
+		'article:prev' => 			'tag_prev_article',
 	);
 
 
@@ -592,76 +589,6 @@ class TagManager_Article extends TagManager
 		}
 
 		return self::wrap($tag, $tag->expand());
-	}
-
-
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Returns HTML categories links wrapped by the given tag
-	 *
-	 * @param	FTL_Binding
-	 *
-	 * @return	string
-	 *
-	 * @usage	<ion:article:categories [tag="ul" child-tag="li" link="true" separator=" &bull; "] />
-	 *
-	 *
-	 */
-	public static function tag_article_categories(FTL_Binding $tag)
-	{
-		$data = array();
-
-		$categories = TagManager_Category::get_categories($tag);
-
-		// HTML Separator of each category
-		$separator = $tag->getAttribute('separator', ' | ');
-		
-		// Make a link from each category or not. Default : TRUE
-		$link = $tag->getAttribute('link', FALSE);
-
-		// Field to return for each category.
-		$field =  $tag->getAttribute('key', 'title');
-
-		// Child tag : HTML tag for each element
-		$child_tag =  $tag->getAttribute('child-tag');
-		$child_class =  $tag->getAttribute('child-class');
-
-		// Separator attribute is not compatible with child-tag
-		if ( ! is_null($child_tag))
-			$separator = FALSE;
-
-		// Build the anchor array
-		foreach($categories as $category)
-		{
-			$str = $category[$field];
-			$tag->set('category', $category);
-
-			if ($link == TRUE)
-				$str = anchor($category['url'], $str);
-
-			if ( ! is_null($child_tag))
-			{
-				// Replace the class and tag by the child tag & class
-				$html_tag =  $tag->getAttribute('tag');
-				$html_class =  $tag->getAttribute('class');
-
-				$tag->setAttribute('tag', $child_tag);
-				$tag->setAttribute('class', $child_class);
-
-				// Process the child rendering
-				$str = self::wrap($tag, $str);
-
-				// Restore the tag & class for parent
-				$tag->setAttribute('tag', $html_tag);
-				$tag->setAttribute('class', $html_class);
-			}
-
-			$data[] = $str;
-		}
-
-		return self::wrap($tag, implode($separator, $data));
 	}
 
 
