@@ -108,7 +108,8 @@ extended_medias_article_tag_test_2 // Medias From Article (Types : Picture, Vide
 
 // Site / Others
 test_site_tags : 			keywords, meta, config item, etc. in all lang
-test_tag_if :				Expression Test tag
+test_condition_tag_if :		Condition Test tag
+test_condition :			Expression Test tag
 test_tag_get :				Get any field from object, with DB field name
 test_trace :				Output's one print_r() of one tag locals.
 
@@ -159,4 +160,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="extended_medias_article_tag_test_2" render="true" />
+<ion:partial view="test_condition_tag_if" render="true" />
