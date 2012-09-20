@@ -83,6 +83,10 @@ class TagManager
 	public static $special_uri_array = NULL;
 
 
+	public static $shutdown_callback = NULL;
+	public static $shutdown_callback_args = NULL;
+
+
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
 	 * 
@@ -175,6 +179,10 @@ class TagManager
 		self::add_globals();
 		self::add_tags();
 		self::add_module_tags();
+
+		register_shutdown_function(
+			array('TagManager', 'call_shutdown')
+		);
 	}
 
 
@@ -2293,8 +2301,6 @@ class TagManager
 	 *
 	 * @param FTL_Binding
 	 * @param $expression
-	 * @param $key
-	 * @param $value
 	 *
 	 * @return bool|null		TRUE if the evaluation returns TRUE
 	 * 							FALSE if the evaluation returns FALSE
@@ -2303,8 +2309,8 @@ class TagManager
 	protected static function eval_expression(FTL_Binding $tag, $expression)
 	{
 		// PHP error handling method
-		register_shutdown_function(
-			array('TagManager', 'handle_eval_shutdown'),
+		self::register_shutdown(
+			'self::handle_eval_shutdown',
 			$tag
 		);
 
@@ -2348,13 +2354,74 @@ class TagManager
 		if ($return === NULL OR is_null($test_value))
 		{
 			if ($result)
+			{
+				if (self::$trigger_else > 0)
+					self::$trigger_else--;
 				return TRUE;
+			}
 			else
 				return FALSE;
 		}
 		else
 		{
 			return NULL;
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Registers one method as shutdown function
+	 * Needed because register_shutdown_function() stacks functions
+	 *
+	 * @param $callback
+	 * @param $tag
+	 *
+	 */
+	private static function register_shutdown($callback, $tag)
+	{
+		if(is_callable($callback))
+		{
+			self::unregister_shutdown();
+			self::$shutdown_callback = $callback;
+			self::$shutdown_callback_args = $tag;
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Unregister the shutdown function
+	 *
+	 */
+	private static function unregister_shutdown()
+	{
+		self::$shutdown_callback = NULL;
+		self::$shutdown_callback_args = NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Calls the registered shutdown method
+	 * This method is registered as "shutdown function" by self::init()
+	 *
+	 */
+	public static function call_shutdown()
+	{
+		if ( ! is_null(self::$shutdown_callback))
+		{
+			$callback = self::$shutdown_callback;
+			if(is_callable($callback))
+			{
+				call_user_func($callback, self::$shutdown_callback_args);
+			}
 		}
 	}
 
@@ -2375,7 +2442,7 @@ class TagManager
 		if($error !== NULL)
 		{
 			$msg = self::show_tag_error($tag,
-				'Fatal PHP error : ' . $error['message'] . '<br/>' .
+				'PHP error : ' . $error['message'] . '<br/>' .
 				'in expression : ' . $tag->getAttribute('expression')
 				//	. '<br/>PHP original error : <br/>'.
 				//	$error['message'] . ' in ' . $error['file']

@@ -160,4 +160,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_condition_tag_if" render="true" />
+<ion:partial view="test_condition" render="true" />
