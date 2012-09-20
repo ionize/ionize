@@ -1,9 +1,6 @@
-
 <h1>&lt;ion:page />, &lt;ion:id /></h1>
-
-<pre>
-
-</pre>
+<ion:tree_navigation />
+<hr/>
 
 <p>From the current page, get articles</p>
 <p>Foreach article : </p>

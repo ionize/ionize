@@ -82,6 +82,7 @@ class TagManager
 	 */
 	public static $special_uri_array = NULL;
 
+
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
 	 * 
@@ -126,7 +127,6 @@ class TagManager
 		'set' =>				'tag_set',
 		'jslang' =>				'tag_jslang',
 		'browser' =>			'tag_browser',
-		
 	);
 
 
@@ -1031,23 +1031,6 @@ class TagManager
 
 
 	/**
-	 * This kind of tag will avoid looping of its parent tag
-	 *
-	 * @param FTL_Binding $tag
-	 *
-	 * @return string
-	 *
-	 */
-	public static function tag_no_loop(FTL_Binding $tag)
-	{
-		return $tag->expand();
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * Simply expand the tag.
 	 * If declared as tag_expand, the tag will simply expand its children
 	 *
@@ -1151,8 +1134,64 @@ class TagManager
 	 */
 	public static function tag_if(FTL_Binding $tag)
 	{
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+
+		$keys = $tag->getAttribute('key');
+		$expression = $_orig_expression = $tag->getAttribute('expression');
+
+		$return = NULL;
+		$result = FALSE;
+
+		// Make an array from keys
+		$keys = explode(',', $keys);
+		$test_value = NULL;
+
+		foreach($keys as $idx => $key)
+		{
+			$key = trim($key);
+
+			// 1. Try to get the value from tag's data array
+			$value = $tag->getValue($key);
+
+			// 2. Fall down to to tag's locals
+			if (is_null($value))
+				$value = $tag->get($key);
+
+			if ($idx == 0 && strpos($expression, $key) === FALSE)
+				$expression = $key . $expression;
+
+			if (is_string($value))
+				$value = addslashes($value);
+
+			$test_value = (is_string($value) OR is_null($value)) ? "'".$value."'" : $value;
+
+			$expression = str_replace($key, $test_value, $expression);
+
+		}
+
+		// If at least one tested value was not NULL
+		if ( ! is_null($test_value))
+		{
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+		}
+		if ($return === NULL OR is_null($test_value))
+		{
+			if ($result)
+				return self::wrap($tag, $tag->expand());
+			else
+				self::$trigger_else++;
+		}
+		else
+		{
+			return self::show_tag_error($tag, 'Condition incorrect: ' .$_orig_expression);
+		}
+
+
+		/*
 		$keys = $tag->getAttribute('key');
 		$expression = $tag->getAttribute('expression');
+
 
 		$result = FALSE;
 		self::$trigger_else = 0;
@@ -1189,6 +1228,7 @@ class TagManager
 			}
 		}
 		return '';
+		*/
 	}
 
 
@@ -1204,7 +1244,9 @@ class TagManager
 	 */
 	public function tag_else(FTL_Binding $tag)
 	{
-		log_message('error', 'trigger else : ' . self::$trigger_else);
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+
 		if(self::$trigger_else > 0)
 		{
 			self::$trigger_else--;
@@ -1428,6 +1470,9 @@ class TagManager
 	 */
 	public static function tag_partial(FTL_Binding $tag)
 	{
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+
 		$view = $tag->getAttribute('view');
 
 		// Compatibility reason
@@ -1923,8 +1968,8 @@ class TagManager
 		$html_tag = $tag->getAttribute('tag');
 
 		// Inform the parent that the value has been wrapped
-		if ($html_tag)
-			$tag->getParent()->setAttribute('__wrap_called__', TRUE);
+//		if ($html_tag)
+//			$tag->getParent()->setAttribute('__wrap_called__', TRUE);
 
 		if ($tag->getAttribute('__wrap_called__') !== TRUE)
 		{

@@ -1695,7 +1695,6 @@ class Base_model extends CI_Model
 		$fields = NULL;
 		$rows = $this->get_lang($id);
 
-//		foreach(Settings::get_languages() as $language)
 		foreach($this->get_languages() as $language)
 		{
 			$lang = $language['lang'];

@@ -2,6 +2,14 @@
 
 
 <pre>
+&lt;ion:page id="2">
+    &lt;ion:articles>
+        &lt;ion:article>
+            &lt;h3>&lt;ion:id /> : &lt;ion:title/>&lt;/h3>
+            &lt;ion:content />
+        &lt;/ion:article>
+    &lt;/ion:articles>
+&lt;/ion:page>
 </pre>
 
 <h3>Result</h3>

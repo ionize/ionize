@@ -48,7 +48,7 @@ class FTL_Binding
 	 * @var object
 	 */
 	public $globals;
-	
+
 	/**
 	 * The block containing children for this tag.
 	 * 
@@ -56,10 +56,23 @@ class FTL_Binding
 	 */
 	public $block;
 
-
+	/**
+	 * Tag parent name
+	 *
+	 * @var null|string
+	 */
 	protected $parent_name = NULL;
 
-	protected $parents = array();
+
+	protected $data_parent = NULL;
+
+	/**
+	 * Is the tag one process tag ?
+	 * Process tags are not considered as "parent" in the tag tree
+	 *
+	 * @var bool
+	 */
+	protected $process_tag = FALSE;
 
 
 	/**
@@ -143,6 +156,29 @@ class FTL_Binding
 		return $this->context->get_binding_stack();
 	}
 
+
+	/**
+	 * Set the tag as process one
+	 *
+	 */
+	public function setAsProcessTag()
+	{
+		$this->process_tag = TRUE;
+	}
+
+
+	/**
+	 * Returns TRUE if the current tag is one processing tag
+	 *
+	 * @return bool
+	 *
+	 */
+	public function isProcessTag()
+	{
+		return $this->process_tag;
+	}
+
+
 	/**
 	 * Return all the attributes of the tag
 	 *
@@ -220,37 +256,73 @@ class FTL_Binding
 	 */
 	public function getParent($parent_name = NULL)
 	{
-		$stack = $this->getStack();
+		$stack = array_reverse($this->getStack());
+
+		$parent = NULL;
 
 		if (is_null($parent_name))
-		{
 			$parent_name = $this->getParentName();
-			if ( ! isset($this->parents[$parent_name]))
-			{
-				array_pop($stack);
-				$this->parents[$parent_name] = end($stack);
-			}
-		}
-		else
+
+		foreach($stack as $binding)
 		{
-			if ( ! isset($this->parents[$parent_name]))
+			if ($binding->name == $parent_name)
 			{
-				foreach($stack as $binding)
-				{
-					if ($binding->name == $parent_name)
-					{
-						$this->parents[$parent_name] = $binding;
-						break;
-					}
-				}
-				if (!isset($this->parents[$parent_name]))
-					$this->parents[$parent_name] = NULL;
+				$parent = $binding;
+				break;
 			}
 		}
-		return $this->parents[$parent_name];
+
+		return $parent;
 	}
 
 
+	/**
+	 * Returns the first real data parent tag
+	 *
+	 * @param string/null
+	 *
+	 * @return FTL_Binding
+	 *
+	 */
+	public function getDataParent($stack = NULL)
+	{
+		if (is_null($this->data_parent))
+		{
+			if (is_null($stack))
+				$stack = array_reverse($this->getStack());
+
+			$parent = NULL;
+
+			$parent_name = $this->getParentName();
+
+			foreach($stack as $binding)
+			{
+				array_shift($stack);
+				if ($binding->name == $parent_name)
+				{
+					if ($binding->isProcessTag() == TRUE)
+					{
+						$this->data_parent = $binding->getDataParent($stack);
+					}
+					else
+					{
+						$parent = $binding;
+						$this->data_parent = $parent;
+					}
+					break;
+				}
+			}
+		}
+
+		return $this->data_parent;
+	}
+
+
+	/**
+	 * Return the tag's first parent name
+	 *
+	 * @return mixed|null|string
+	 */
 	public function getParentName()
 	{
 		if (is_null($this->parent_name))
@@ -261,6 +333,25 @@ class FTL_Binding
 		}
 		return $this->parent_name;
 	}
+
+
+	/**
+	 * Returns the first data tag parent's name
+	 *
+	 * @return null|string
+	 */
+	public function getDataParentName()
+	{
+		if (is_null($this->data_parent))
+		{
+			$this->data_parent = $this->getDataParent();
+		}
+		if ( ! is_null($this->data_parent))
+			return $this->data_parent->name;
+
+		return NULL;
+	}
+
 
 	/**
 	 * Return the expected value from the data array of the tag.
@@ -289,7 +380,7 @@ class FTL_Binding
 			$key = $this->name;
 
 		if (is_null($data_array_name))
-			$data_array_name = $this->getParentName();
+			$data_array_name = $this->getDataParentName();
 
 		$data_array = $this->get($data_array_name);
 

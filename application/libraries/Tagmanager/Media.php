@@ -335,12 +335,15 @@ class TagManager_Media extends TagManager
 			'start',		// Used by Square crop
 		);
 		$settings = array_fill_keys($setting_keys, '');
-		$parent = $tag->getParent();
+
+/*		$parent = $tag->getParent();
 
 		if ( !is_null($parent))
 			$settings = array_merge($settings, $parent->getAttributes(), $tag->getAttributes());
 		else
 			$settings = array_merge($settings, $tag->getAttributes());
+*/
+		$settings = array_merge($settings, $tag->getAttributes());
 
 		return $settings;
 	}
