@@ -1178,7 +1178,11 @@ class TagManager
 		if ($return === NULL OR is_null($test_value))
 		{
 			if ($result)
+			{
+				if (self::$trigger_else > 0)
+					self::$trigger_else--;
 				return self::wrap($tag, $tag->expand());
+			}
 			else
 				self::$trigger_else++;
 		}
