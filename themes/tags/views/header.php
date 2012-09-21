@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>FTL tests</title>
+	<title>Ionize TAGS</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<style>
 		html{
