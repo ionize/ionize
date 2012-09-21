@@ -895,9 +895,13 @@ MUI.Window.implement({
 			windowEl.close();
 		}.bind(this));
 
-		if (this.options.type == 'window'){
+		if (this.options.type == 'window')
+		{
 			windowEl.addEvent('mousedown', function(e){
-				if (Browser.ie) e.stop();
+				if (Browser.ie && parseInt(Browser.version) < 9) {
+					e.stop();
+				}
+				// if (Browser.ie) e.stop();
 				this.focus();
 				if (windowEl.getStyle('top').toInt() < -this.options.shadowBlur){
 					windowEl.setStyle('top', -this.options.shadowBlur);
