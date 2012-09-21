@@ -3,6 +3,14 @@
 <hr/>
 
 <pre>
+&lt;ion:page parent="-1">
+    &lt;ion:articles>
+        &lt;ion:article>
+            &lt;ion:title tag="h3" />
+            &lt;ion:content paragraph="1" />
+        &lt;/ion:article>
+    &lt;/ion:articles>
+&lt;/ion:page>
 </pre>
 
 <h3>Result</h3>

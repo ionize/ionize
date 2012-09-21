@@ -2,9 +2,9 @@
 <ion:tree_navigation />
 
 <ul>
-	<ion:articles:article tag="li">
+	<ion:page:articles:article tag="li">
 		<a href="<ion:url/>"><ion:title /></a>
-	</ion:articles:article>
+	</ion:page:articles:article>
 </ul>
 
 <hr/>

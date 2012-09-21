@@ -25,7 +25,7 @@
 
 <h2>Archives articles list</h2>
 
-<ion:articles>
+<ion:page:articles>
 	<ion:article:title tag="h3" />
 	<ion:article:content paragraph="1" />
-</ion:articles>
+</ion:page:articles>

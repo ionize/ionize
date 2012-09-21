@@ -33,6 +33,7 @@ class Article_model extends Base_model
 	public $parent_table =				'page_article';
 	public $url_table =					'url';
 	public $user_table = 				'users';
+	public $menu_table = 				'menu';
 
 	/* Contains table name wich should be used for each filter get.
 	 * Purpose : Avoid Ambiguous SQL quey when 2 fields have the same name.
@@ -138,13 +139,29 @@ class Article_model extends Base_model
 	 */
 	public function get_lang_list($where = array(), $lang = NULL, $filter = FALSE)
 	{
-		// Context table
+		// Page_Article table
 		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
-		$this->{$this->db_group}->join($this->parent_table, $this->parent_table.'.id_article = ' .$this->table.'.id_article', 'left');
+		$this->{$this->db_group}->join(
+			$this->parent_table,
+			$this->parent_table.'.id_article = ' .$this->table.'.id_article',
+			'left'
+		);
 
 		// Page table
 		$this->{$this->db_group}->select('article_list_view, article_view');
-		$this->{$this->db_group}->join($this->page_table, $this->page_table.'.id_page = ' .$this->parent_table.'.id_page', 'left');
+		$this->{$this->db_group}->join(
+			$this->page_table,
+			$this->page_table.'.id_page = ' .$this->parent_table.'.id_page',
+			'left'
+		);
+
+		// Menu table
+		$this->{$this->db_group}->select('menu.id_menu, menu.name as menu_name');
+		$this->{$this->db_group}->join(
+			$this->menu_table,
+			$this->menu_table.'.id_menu = ' .$this->page_table.'.id_menu',
+			'left'
+		);
 
 		// Default ordering
 		if ( empty($where['order_by']))

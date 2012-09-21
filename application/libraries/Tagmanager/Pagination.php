@@ -187,7 +187,8 @@ class TagManager_Pagination extends TagManager
 		$cur_page = isset($args[0]) ? $args[0] : NULL;
 
 		// Pagination tag config init
-		$pagination_config = array_merge(
+		$pagination_config = array_merge
+		(
 			self::get_pagination_config($tag),
 			array (
 				'base_url' => self::get_pagination_base_url($tag),

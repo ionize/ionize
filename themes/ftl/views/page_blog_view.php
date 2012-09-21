@@ -28,7 +28,7 @@
 
 </ion:page:articles>
 
-<ion:articles:pagination pagination="3" />
+<ion:page:articles:pagination pagination="3" />
 
 
 <ion:partial view="footer" />

@@ -50,20 +50,20 @@
 </p>
 
 <pre>
-&lt;ion:articles pagination="2">
-    &lt;ion:article:title tag="h3" />
+&lt;ion:page:articles pagination="2">
+    &lt;ion:article:title tag="h4" />
     Categories of this article : &lt;ion:article:categories link="true" separator=" &bull; " />
-&lt;/ion:articles>
+&lt;/ion:page:articles>
 
 &lt;!-- Pagination menu -->
-&lt;ion:articles:pagination pagination="2" tag="p" />
+&lt;ion:page:articles:pagination pagination="2" tag="p" />
 </pre>
 
 <h3>Result</h3>
-<ion:articles pagination="2">
+<ion:page:articles pagination="2">
 	<ion:article:title tag="h4" />
 	Categories of this article : <ion:article:categories link="true" separator=" &bull; " />
-</ion:articles>
+</ion:page:articles>
 
 <!-- Pagination menu -->
-<ion:articles:pagination pagination="2" tag="p" />
+<ion:page:articles:pagination pagination="2" tag="p" />

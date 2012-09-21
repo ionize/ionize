@@ -1,8 +1,11 @@
 <h1>&lt;ion:article:user /></h1>
+<ion:tree_navigation />
+<hr/>
 
 <p>
 	Displays information about the user who wrote the article in Ionize.
 </p>
+<hr/>
 
 <pre>
 &lt;ion:page id="3">

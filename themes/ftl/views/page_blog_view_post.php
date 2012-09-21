@@ -25,12 +25,12 @@
 
 <hr/>
 
-<ion:articles limit="3">
+<ion:page:articles limit="3">
 	<ion:article>
 		<ion:title tag="h4"/>
 		<ion:content ellipsize="32,1" />
 	</ion:article>
-</ion:articles>
+</ion:page:articles>
 
 <ion:partial view="footer" />
 

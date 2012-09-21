@@ -9,13 +9,13 @@
 <hr/>
 
 <pre>
-&lt;ion:articles>
-	&lt;ion:article:title tag="h3" />
-	&lt;ion:article:trace />
-&lt;/ion:articles>
+&lt;ion:page:articles>
+    &lt;ion:article:title tag="h3" />
+    &lt;ion:article:trace />
+&lt;/ion:page:articles>
 </pre>	
-<ion:articles>
+<ion:page:articles>
 	<ion:article:title tag="h3" />
 	<ion:article:trace />
-</ion:articles>
+</ion:page:articles>
 

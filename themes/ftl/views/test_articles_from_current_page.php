@@ -2,7 +2,6 @@
 <ion:tree_navigation />
 <hr/>
 
-
 <ul>
 	<li>Get the articles from the current page</li>
 	<li>For each article, use the "article" tag and call &lt;ion:id/> to display its ID</li>

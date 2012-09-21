@@ -25,23 +25,22 @@
 <h2>Archives articles list</h2>
 <pre>
 &lt;!-- Articles list -->
-&lt;ion:articles pagination="2" >
-	&lt;ion:article:title tag="h3" />
-	&lt;ion:article:content paragraph="1" />
-&lt;/ion:articles>
+&lt;ion:page:articles pagination="2" >
+    &lt;ion:article:title tag="h3" />
+    &lt;ion:article:content paragraph="1" />
+&lt;/ion:page:articles>
 
 &lt;!-- Pagination menu -->
-&lt;ion:articles:pagination pagination="2" />
+&lt;ion:page:articles:pagination pagination="2" />
 </pre>
 
 id page : <ion:page:id />
 
 <!-- Articles list -->
-
-<ion:articles pagination="2" >
+<ion:page:articles pagination="2" >
 	<ion:article:title tag="h3" />
 	<ion:article:content paragraph="1" />
-</ion:articles>
+</ion:page:articles>
 
 <!-- Pagination menu -->
-<ion:articles:pagination pagination="2" />
+<ion:page:articles:pagination pagination="2" />

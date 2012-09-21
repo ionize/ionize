@@ -72,10 +72,10 @@
 <p>
 	Filter on Category : <b class="red"><ion:category:current:title /></b>
 </p>
-<ion:articles>
+<ion:page:articles>
 	<ion:article:title tag="h3" />
 	<ion:article:categories link="true" separator=" &bull; "/><br/>
-</ion:articles>
+</ion:page:articles>
 
 <hr/>
 

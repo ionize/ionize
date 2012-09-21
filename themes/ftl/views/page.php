@@ -114,13 +114,15 @@ test_tag_get :				Get any field from object, with DB field name
 test_trace :				Output's one print_r() of one tag locals.
 
 // Page
-test_page_id
+
 test_tag_breadcrumb
 
 // Article, Article ID
 test_articles_from_current_page		Articles from current page
 test_articles_from_one_page			Articles from one given page
 test_articles_from_parent_page		Articles from one choosen parent page
+test_articles_from_website			Articles from whole website
+test_articles_in_articles			Nested articles into articles tag
 test_content_iframe :				Content test : embedded iFrames from Youtube and Google maps
 test_article_categories :			Categories from each article
 test_article_user : 				User who wrote the article in Ionize
@@ -158,4 +160,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_articles_from_parent_page"  />
+<ion:partial view="test_articles_from_website"  />

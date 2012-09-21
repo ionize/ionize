@@ -1,12 +1,11 @@
 <h1>Previous / Next article</h1>
 <ion:tree_navigation />
-
 <hr/>
 
 <h3>Articles</h3>
-<ion:articles tag="ul">
+<ion:page:articles tag="ul">
 	<ion:article:url href="true" tag="li" display="title"/>
-</ion:articles>
+</ion:page:articles>
 
 
 <h2>Next / Previous Article</h2>

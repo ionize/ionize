@@ -10,7 +10,7 @@
  *
  * IMPORTANT :
  * Do not modify this file.
- * It will be overwritten when migrating to a new release.
+ * It will be overwritten when migrating to a new Ionize release.
  *
  */
 $config['pagination'] = array

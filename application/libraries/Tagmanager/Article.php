@@ -51,8 +51,8 @@ class TagManager_Article extends TagManager
 	{
 		// Page. 1. Local one, 2. Current page (should never arrived except if the tag is used without the 'page' parent tag)
 		$page = $tag->get('page');
-		if (empty($page))
-			$page = self::registry('page');
+//		if (empty($page))
+//			$page = self::registry('page');
 
 		// Set by Page::get_current_page()
 		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
@@ -116,7 +116,7 @@ class TagManager_Article extends TagManager
 		 *
 		 */
 		// Order. Default order : ordering ASC
-		$order_by = $tag->getAttribute('order_by', 'ordering ASC');
+		$order_by = $tag->getAttribute('order-by', 'ordering ASC');
 		$where = array('order_by' => $order_by);
 
 		// Add type to the where array
@@ -131,7 +131,8 @@ class TagManager_Article extends TagManager
 		}
 
 		// Get only articles from the detected page
-		$where['id_page'] = $page['id_page'];
+		if ( ! empty($page))
+			$where['id_page'] = $page['id_page'];
 
 		// Set Limit : First : pagination, Second : limit
 		$limit = $tag_pagination ? $tag_pagination : $ionize_pagination;
