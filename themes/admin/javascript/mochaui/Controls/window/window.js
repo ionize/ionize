@@ -901,7 +901,6 @@ MUI.Window.implement({
 				if (Browser.ie && parseInt(Browser.version) < 9) {
 					e.stop();
 				}
-				// if (Browser.ie) e.stop();
 				this.focus();
 				if (windowEl.getStyle('top').toInt() < -this.options.shadowBlur){
 					windowEl.setStyle('top', -this.options.shadowBlur);
