@@ -11,13 +11,13 @@
                     &lt;ion:media>
                         &lt;img src="&lt;ion:media:src />" />
                         &lt;p>
-                            &lt;ion:media:if key="title" expression="'title' != ''">
+                            &lt;ion:media:if key="title" expression="title != ''">
                                 Title : &lt;ion:media:title />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="alt" expression="'alt' != ''">
+                            &lt;ion:media:if key="alt" expression="alt != ''">
                                 Alt : &lt;ion:media:alt />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="description" expression="'description' != ''">
+                            &lt;ion:media:if key="description" expression="description != ''">
                                 Description : &lt;ion:media:description />&lt;br />
                             &lt;/ion:media:if>
                             Type : &lt;b>Picture&lt;/b>&lt;br/>
@@ -38,13 +38,13 @@
                     &lt;ion:media>
                         &lt;img src="&lt;ion:media:src size="200" master="width" unsharp="true" />" />
                         &lt;p>
-                            &lt;ion:media:if key="title" expression="'title' != ''">
+                            &lt;ion:media:if key="title" expression="title != ''">
                                 Title : &lt;ion:media:title />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="alt" expression="'alt' != ''">
+                            &lt;ion:media:if key="alt" expression="alt != ''">
                                 Alt : &lt;ion:media:alt />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="description" expression="'description' != ''">
+                            &lt;ion:media:if key="description" expression="description != ''">
                                 Description : &lt;ion:media:description />&lt;br />
                             &lt;/ion:media:if>
                             Type : &lt;b>Picture&lt;/b>&lt;br/>
@@ -63,13 +63,13 @@
                     &lt;ion:media>
                         &lt;img src="&lt;ion:media:src size="250" master="height" unsharp="true" />" />
                         &lt;p>
-                            &lt;ion:media:if key="title" expression="'title' != ''">
+                            &lt;ion:media:if key="title" expression="title != ''">
                                 Title : &lt;ion:media:title />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="alt" expression="'alt' != ''">
+                            &lt;ion:media:if key="alt" expression="alt != ''">
                                 Alt : &lt;ion:media:alt />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="description" expression="'description' != ''">
+                            &lt;ion:media:if key="description" expression="description != ''">
                                 Description : &lt;ion:media:description />&lt;br />
                             &lt;/ion:media:if>
                             Type : &lt;b>Picture&lt;/b>&lt;br/>
@@ -88,13 +88,13 @@
                     &lt;ion:media>
                         &lt;img src="&lt;ion:media:src size="250,150" adaptive="adaptive_resize" unsharp="true" />" />
                         &lt;lt;p>
-                            &lt;ion:media:if key="title" expression="'title' != ''">
+                            &lt;ion:media:if key="title" expression="title != ''">
                                 Title : &lt;ion:media:title />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="alt" expression="'alt' != ''">
+                            &lt;ion:media:if key="alt" expression="alt != ''">
                                 Alt : &lt;ion:media:alt />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="description" expression="'description' != ''">
+                            &lt;ion:media:if key="description" expression="description != ''">
                                 Description : &lt;ion:media:description />&lt;br />
                             &lt;/ion:media:if>
                             Type : &lt;b>Picture&lt;/b>&lt;br/>
@@ -113,13 +113,13 @@
                     &lt;ion:media>
                         &lt;img src="&lt;ion:media:src size="250" square="true" unsharp="true" />" />
                         &lt;p>
-                            &lt;ion:media:if key="title" expression="'title' != ''">
+                            &lt;ion:media:if key="title" expression="title != ''">
                                 Title : &lt;ion:media:title />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="alt" expression="'alt' != ''">
+                            &lt;ion:media:if key="alt" expression="alt != ''">
                                 Alt : &lt;ion:media:alt />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="description" expression="'description' != ''">
+                            &lt;ion:media:if key="description" expression="description != ''">
                                 Description : &lt;ion:media:description />&lt;br />
                             &lt;/ion:media:if>
                             Type : &lt;b>Picture&lt;/b>&lt;br/>
@@ -143,13 +143,13 @@
                 <ion:media>
                     <img src="<ion:media:src />" />
                     <p>
-                        <ion:media:if key="title" expression="'title' != ''">
+                        <ion:media:if key="title" expression="title != ''">
                             Title : <ion:media:title /><br />
                         </ion:media:if>
-                        <ion:media:if key="alt" expression="'alt' != ''">
+                        <ion:media:if key="alt" expression="alt != ''">
                             Alt : <ion:media:alt /><br />
                         </ion:media:if>
-                        <ion:media:if key="description" expression="'description' != ''">
+                        <ion:media:if key="description" expression="description != ''">
                             Description : <ion:media:description /><br />
                         </ion:media:if>
                         Type : <b>Picture</b><br/>
@@ -170,13 +170,13 @@
                 <ion:media>
                     <img src="<ion:media:src size="200" master="width" unsharp="true" />" />
                     <p>
-                        <ion:media:if key="title" expression="'title' != ''">
+                        <ion:media:if key="title" expression="title != ''">
                             Title : <ion:media:title /><br />
                         </ion:media:if>
-                        <ion:media:if key="alt" expression="'alt' != ''">
+                        <ion:media:if key="alt" expression="alt != ''">
                             Alt : <ion:media:alt /><br />
                         </ion:media:if>
-                        <ion:media:if key="description" expression="'description' != ''">
+                        <ion:media:if key="description" expression="description != ''">
                             Description : <ion:media:description /><br />
                         </ion:media:if>
                         Type : <b>Picture</b><br/>
@@ -195,13 +195,13 @@
                 <ion:media>
                     <img src="<ion:media:src size="250" master="height" unsharp="true" />" />
                     <p>
-                        <ion:media:if key="title" expression="'title' != ''">
+                        <ion:media:if key="title" expression="title != ''">
                             Title : <ion:media:title /><br />
                         </ion:media:if>
-                        <ion:media:if key="alt" expression="'alt' != ''">
+                        <ion:media:if key="alt" expression="alt != ''">
                             Alt : <ion:media:alt /><br />
                         </ion:media:if>
-                        <ion:media:if key="description" expression="'description' != ''">
+                        <ion:media:if key="description" expression="description != ''">
                             Description : <ion:media:description /><br />
                         </ion:media:if>
                         Type : <b>Picture</b><br/>
@@ -220,13 +220,13 @@
                 <ion:media>
                     <img src="<ion:media:src size="250,150" adaptive="adaptive_resize" unsharp="true" />" />
                     <p>
-                        <ion:media:if key="title" expression="'title' != ''">
+                        <ion:media:if key="title" expression="title != ''">
                             Title : <ion:media:title /><br />
                         </ion:media:if>
-                        <ion:media:if key="alt" expression="'alt' != ''">
+                        <ion:media:if key="alt" expression="alt != ''">
                             Alt : <ion:media:alt /><br />
                         </ion:media:if>
-                        <ion:media:if key="description" expression="'description' != ''">
+                        <ion:media:if key="description" expression="description != ''">
                             Description : <ion:media:description /><br />
                         </ion:media:if>
                         Type : <b>Picture</b><br/>
@@ -245,13 +245,13 @@
                 <ion:media>
                     <img src="<ion:media:src size="250" square="true" unsharp="true" />" />
                     <p>
-                        <ion:media:if key="title" expression="'title' != ''">
+                        <ion:media:if key="title" expression="title != ''">
                             Title : <ion:media:title /><br />
                         </ion:media:if>
-                        <ion:media:if key="alt" expression="'alt' != ''">
+                        <ion:media:if key="alt" expression="alt != ''">
                             Alt : <ion:media:alt /><br />
                         </ion:media:if>
-                        <ion:media:if key="description" expression="'description' != ''">
+                        <ion:media:if key="description" expression="description != ''">
                             Description : <ion:media:description /><br />
                         </ion:media:if>
                         Type : <b>Picture</b><br/>

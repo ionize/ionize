@@ -9,13 +9,13 @@
                     &lt;ion:media>
                         &lt;img src="&lt;ion:media:src size="250" master="width" unsharp="true" />" />
                         &lt;p>
-                            &lt;ion:media:if key="title" expression="'title' != ''">
+                            &lt;ion:media:if key="title" expression="title != ''">
                                 &lt;b>Title : &lt;/b>&lt;ion:media:title />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="alt" expression="'alt' != ''">
+                            &lt;ion:media:if key="alt" expression="alt != ''">
                                 &lt;b>Alt : &lt;/b>&lt;ion:media:alt />&lt;br />
                             &lt;/ion:media:if>
-                            &lt;ion:media:if key="description" expression="'description' != ''">
+                            &lt;ion:media:if key="description" expression="description != ''">
                                 &lt;b>Description : &lt;/b>&lt;ion:media:description />&lt;br />
                             &lt;/ion:media:if>
                             &lt;b>Fie Extention : &lt;/b>&lt;ion:media:extension />&lt;/b>&lt;br />
@@ -40,13 +40,13 @@
                     <ion:media>
                         <img src="<ion:media:src size="250" master="width" unsharp="true" />" />
                         <p>
-                            <ion:media:if key="title" expression="'title' != ''">
+                            <ion:media:if key="title" expression="title != ''">
                                 <b>Title : </b><ion:media:title /><br />
                             </ion:media:if>
-                            <ion:media:if key="alt" expression="'alt' != ''">
+                            <ion:media:if key="alt" expression="alt != ''">
                                 <b>Alt : </b><ion:media:alt /><br />
                             </ion:media:if>
-                            <ion:media:if key="description" expression="'description' != ''">
+                            <ion:media:if key="description" expression="description != ''">
                                 <b>Description : </b><ion:media:description /><br />
                             </ion:media:if>
                             <b>Fie Extention : </b><ion:media:extension /></b><br />
@@ -66,12 +66,12 @@
     &lt;ul class="boxes">
         &lt;ion:page:medias type="video">
             &lt;ion:media>
-                &lt;ion:media:if key="base_path" expression="'base_path' == 'http://www.youtube.com/'">
+                &lt;ion:media:if key="base_path" expression="base_path == 'http://www.youtube.com/'">
                     &lt;li>
                         &lt;video width="560" height="315" id="player&lt;ion:media:get key="id_media" />">
                         &lt;source type="video/youtube" src="&lt;ion:media:get key="path" />" />
                         &lt;/video>
-                        &lt;ion:media:if key="title|description" expression="'title' != '' || 'description' != ''">
+                        &lt;ion:media:if key="title|description" expression="title != '' || description != ''">
                             &lt;p>
                                 &lt;ion:media:title tag="h3" />
                                 &lt;ion:alt tag="p" />
@@ -80,23 +80,23 @@
                         &lt;/ion:media:if>
                     &lt;/li>
                 &lt;/ion:media:if>
-                &lt;ion:media:if key="base_path" expression="'base_path' != 'http://www.youtube.com/'">
+                &lt;ion:media:if key="base_path" expression="base_path != 'http://www.youtube.com/'">
                     &lt;li>
                         &lt;video width="320" height="240" poster="&lt;ion:base_url />&lt;ion:media:get key="base_path" />&lt;?= current(explode(".", '&lt;ion:media:file_name />')) ?>.jpg" controls="controls" preload="none">
                         &lt;!-- MP4 source must come first for iOS -->
-                        &lt;ion:media:if key="extension" expression="'extension' == 'mp4'">
+                        &lt;ion:media:if key="extension" expression="extension == 'mp4'">
                             &lt;source type="video/mp4" src="&lt;ion:src />" />
                         &lt;/ion:media:if>
                         &lt;!-- WebM for Firefox 4 and Opera -->
-                        &lt;ion:media:if key="extension" expression="'extension' == 'ogg'">
+                        &lt;ion:media:if key="extension" expression="extension == 'ogg'">
                             &lt;source type="video/ogg" src="&lt;ion:src />" />
                         &lt;/ion:media:if>
                         &lt;!-- OGG for Firefox 3 -->
-                        &lt;ion:media:if key="extension" expression="'extension' == 'webm'">
+                        &lt;ion:media:if key="extension" expression="extension == 'webm'">
                             &lt;source type="video/webm" src="&lt;ion:src />" />
                         &lt;/ion:media:if>
                         &lt;!-- Fallback flash player for no-HTML5 browsers with JavaScript turned off -->
-                        &lt;ion:media:if key="extension" expression="'extension' == 'mp4'">
+                        &lt;ion:media:if key="extension" expression="extension == 'mp4'">
                             &lt;object width="320" height="240" type="application/x-shockwave-flash" data="&lt;ion:theme_url />assets/media_element/flashmediaelement.swf">
                                 &lt;param name="movie" value="&lt;ion:theme_url />assets/media_element/flashmediaelement.swf" />
                                 &lt;param name="flashvars" value="controls=true&poster=&lt;ion:base_url />&lt;ion:media:get key="base_path" />&lt;?= current(explode(".", '&lt;ion:media:file_name />')) ?>.jpg&file=&lt;ion:src />" />
@@ -104,7 +104,7 @@
                             &lt;/object>
                         &lt;/ion:media:if>
                         &lt;/video>
-                        &lt;ion:media:if key="title|description" expression="'title' != '' || 'description' != ''">
+                        &lt;ion:media:if key="title|description" expression="title != '' || description != ''">
                             &lt;p>
                                 &lt;ion:media:title tag="h3" />
                                 &lt;ion:alt tag="p" />
@@ -127,12 +127,12 @@
     <ul class="boxes">
         <ion:page:medias type="video">
             <ion:media>
-                <ion:media:if key="base_path" expression="'base_path' == 'http://www.youtube.com/'">
+                <ion:media:if key="base_path" expression="base_path == 'http://www.youtube.com/'">
                     <li>
                         <video width="560" height="315" id="player<ion:media:get key="id_media" />">
                             <source type="video/youtube" src="<ion:media:get key="path" />" />
                         </video>
-                        <ion:media:if key="title|description" expression="'title' != '' || 'description' != ''">
+                        <ion:media:if key="title,description" expression="title != '' || description != ''">
                             <p>
                                 <ion:media:title tag="h3" />
                                 <ion:alt tag="p" />
@@ -141,23 +141,23 @@
                         </ion:media:if>
                     </li>
                 </ion:media:if>
-                <ion:media:if key="base_path" expression="'base_path' != 'http://www.youtube.com/'">
+                <ion:media:if key="base_path" expression="base_path != 'http://www.youtube.com/'">
                     <li>
                         <video width="320" height="240" poster="<ion:base_url /><ion:media:get key="base_path" /><?= current(explode(".", '<ion:media:file_name />')) ?>.jpg" controls="controls" preload="none">
                             <!-- MP4 source must come first for iOS -->
-                            <ion:media:if key="extension" expression="'extension' == 'mp4'">
+                            <ion:media:if key="extension" expression="extension == 'mp4'">
                                 <source type="video/mp4" src="<ion:src />" />
                             </ion:media:if>
                             <!-- WebM for Firefox 4 and Opera -->
-                            <ion:media:if key="extension" expression="'extension' == 'ogg'">
+                            <ion:media:if key="extension" expression="extension == 'ogg'">
                                 <source type="video/ogg" src="<ion:src />" />
                             </ion:media:if>
                             <!-- OGG for Firefox 3 -->
-                            <ion:media:if key="extension" expression="'extension' == 'webm'">
+                            <ion:media:if key="extension" expression="extension == 'webm'">
                                 <source type="video/webm" src="<ion:src />" />
                             </ion:media:if>
                             <!-- Fallback flash player for no-HTML5 browsers with JavaScript turned off -->
-                            <ion:media:if key="extension" expression="'extension' == 'mp4'">
+                            <ion:media:if key="extension" expression="extension == 'mp4'">
                                 <object width="320" height="240" type="application/x-shockwave-flash" data="<ion:theme_url />assets/media_element/flashmediaelement.swf">
                                     <param name="movie" value="<ion:theme_url />assets/media_element/flashmediaelement.swf" />
                                     <param name="flashvars" value="controls=true&poster=<ion:base_url /><ion:media:get key="base_path" /><?= current(explode(".", '<ion:media:file_name />')) ?>.jpg&file=<ion:src />" />
@@ -165,7 +165,7 @@
                                 </object>
                             </ion:media:if>
                         </video>
-                        <ion:media:if key="title|description" expression="'title' != '' || 'description' != ''">
+                        <ion:media:if key="title,description" expression="title != '' || description != ''">
                             <p>
                                 <ion:media:title tag="h3" />
                                 <ion:alt tag="p" />
