@@ -71,7 +71,7 @@
                         &lt;video width="560" height="315" id="player&lt;ion:media:get key="id_media" />">
                         &lt;source type="video/youtube" src="&lt;ion:media:get key="path" />" />
                         &lt;/video>
-                        &lt;ion:media:if key="title|description" expression="title != '' || description != ''">
+                        &lt;ion:media:if key="title,description" expression="title != '' || description != ''">
                             &lt;p>
                                 &lt;ion:media:title tag="h3" />
                                 &lt;ion:alt tag="p" />
@@ -104,7 +104,7 @@
                             &lt;/object>
                         &lt;/ion:media:if>
                         &lt;/video>
-                        &lt;ion:media:if key="title|description" expression="title != '' || description != ''">
+                        &lt;ion:media:if key="title,description" expression="title != '' || description != ''">
                             &lt;p>
                                 &lt;ion:media:title tag="h3" />
                                 &lt;ion:alt tag="p" />
