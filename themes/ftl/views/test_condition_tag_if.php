@@ -1,5 +1,7 @@
 <h1>Conditions : &lt;ion:if /></h1>
 <p>The "if" tag expands the HTML between the tag if the result of the expression is true</p>
+<ion:tree_navigation />
+
 <hr/>
 
 <h2>Test 1 : Expression with one integer value</h2>

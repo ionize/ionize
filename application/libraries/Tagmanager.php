@@ -1979,9 +1979,9 @@ class TagManager
 	{
 		$html_tag = $tag->getAttribute('tag');
 
-		// Inform the parent that the value has been wrapped
-//		if ($html_tag)
-//			$tag->getParent()->setAttribute('__wrap_called__', TRUE);
+		// Inform the parent that the value has already been wrapped
+		if ($html_tag)
+			$tag->getParent()->setAttribute('__wrap_called__', TRUE);
 
 		if ($tag->getAttribute('__wrap_called__') !== TRUE)
 		{
@@ -2181,6 +2181,9 @@ class TagManager
 			// Helper
 			$value = self::helper_process($tag, $value, $tag->getAttribute('helper'));
 
+			// Text process
+			$value = self::process_string($tag, $value);
+
 			// Prefix / Suffix
 			$value = self::prefix_suffix_process($value, $tag->getAttribute('prefix'));
 			$value = self::prefix_suffix_process($value, $tag->getAttribute('suffix'));
@@ -2189,6 +2192,52 @@ class TagManager
 		return $value;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Processes one string by adding text helper attributes
+	 *
+	 * @param	FTL_Binding 	$tag
+	 * @param	String			$value
+	 *
+	 * @usage	<ion:content />
+	 *
+	 */
+	public function process_string(FTL_Binding $tag, $value)
+	{
+		// paragraph & words limit ?
+		$paragraph = $tag->getAttribute('paragraph');
+		$words = $tag->getAttribute('words');
+		$chars = $tag->getAttribute('characters');
+		$ellipsize = $tag->getAttribute('ellipsize');
+
+		// Limit to x paragraph if the attribute is set
+		if ( ! is_null($paragraph))
+			$value = tag_limiter($value, 'p', intval($paragraph));
+
+		// Limit to x words
+		if ( ! is_null($words))
+			$value = word_limiter($value, $words);
+
+		// Limit to x characters
+		if ( ! is_null($chars))
+			$value = character_limiter($value, $chars);
+
+		// Ellipsize the text
+		// See : http://codeigniter.com/user_guide/helpers/text_helper.html
+		if ( ! is_null($ellipsize))
+		{
+			$ellipsize = explode(',', $ellipsize);
+			if ( ! isset($ellipsize[0])) $ellipsize[0] = 32;
+			if ( ! isset($ellipsize[1])) $ellipsize[1] = .5;
+			if (floatval($ellipsize[1]) > 0.99)	$ellipsize[1] = 0.99;
+			$value = ellipsize($value, intval($ellipsize[0]), floatval($ellipsize[1]));
+		}
+
+		return $value;
+	}
 
 	// ------------------------------------------------------------------------
 

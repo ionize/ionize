@@ -86,10 +86,12 @@ class Page extends MY_admin
 
 	/** 
 	 * Create one page
-	 * @param	string		Menu ID
+	 *
+	 * @param	int		Menu ID
+	 * @param	int		Parent page ID
 	 *
 	 */
-	public function create($id_menu)
+	public function create($id_menu, $id_parent=NULL)
 	{	
 		$this->load_modules_addons();
 	
@@ -105,7 +107,6 @@ class Page extends MY_admin
 		$datas = $this->menu_model->get_select();
 		$this->template['menus'] =	form_dropdown('id_menu', $datas, $id_menu, 'id="id_menu" class="select"');
 		
-
 		// Dropdowns Views : Get $view var from my_theme/config/views.php
 		$views = array();
 		if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
@@ -130,12 +131,13 @@ class Page extends MY_admin
 
 		// Access groups : authorizations
 		$groups = $this->page_model->get_groups_select();
-//		$this->template['groups'] =	form_dropdown('groups[]', $groups, false, 'class="select" multiple="multiple"');
+		// $this->template['groups'] =	form_dropdown('groups[]', $groups, false, 'class="select" multiple="multiple"');
 		$this->template['groups'] =	form_dropdown('id_group', $groups, FALSE, 'class="select"');
 		
 		$this->template['priority'] = '5';
 		$this->template['has_url'] = '1';
-		
+		$this->template['id_parent'] = $id_parent;
+
 		/*
 		 * Extend fields
 		 *
@@ -598,6 +600,8 @@ class Page extends MY_admin
 
 		if ($id_page && !empty($value))
 		{
+			$value = $this->page_model->get_unique_name($value, $id_page);
+
 			$result = $this->page_model->update(array('id_page' => $id_page), array('name' => $value));
 
 			if ($result)
@@ -1009,6 +1013,8 @@ class Page extends MY_admin
 
 		// Update the page name (not used anymore in the frontend)
 		$this->data['name'] = $urls[Settings::get_lang('default')];
+		$this->data['name'] = $this->page_model->get_unique_name($this->data['name'], $this->input->post('id_page'));
+
 
 		// Lang data
 		$fields = $this->db->list_fields('page_lang');

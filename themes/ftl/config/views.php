@@ -3,7 +3,9 @@
 $views = array (
   'page' => 
   array (
-    'page' => 'Page'
+    'page_blog_view_post' => 'Blog Post view',
+    'page_blog_view' => 'Blog view',
+    'page' => 'Page',
   ),
 );
 

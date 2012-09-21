@@ -762,6 +762,38 @@ class Base_model extends CI_Model
 	}
 
 
+
+	// ------------------------------------------------------------------------
+
+
+	function get_unique_name($name, $id_to_exclude=NULL, $table=NULL, $postfix = 1)
+	{
+		$table = (!is_null($table)) ? $table : $this->table;
+
+		$name = url_title(convert_accented_characters($name));
+
+		$where = array('name' => $name);
+
+		if (!is_null($id_to_exclude) && $id_to_exclude != FALSE)
+			$where['id_'.$table.' !='] = $id_to_exclude;
+
+		$exists = $this->exists($where);
+
+		if ($exists)
+		{
+			if ($postfix > 1 OR (substr($name, -2, count($name) -2) == '-' && intval(substr($name, -1)) != 0 ))
+				$name = substr($name, 0, -2);
+
+			$name = $name . '-' . $postfix;
+
+			return $this->get_unique_name($name, $id_to_exclude, $table, $postfix + 1);
+		}
+
+		return $name;
+	}
+
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -1952,9 +1984,9 @@ class Base_model extends CI_Model
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 		
-		$query = $this->{$this->db_group}->get_where($table, $where);
+		$query = $this->{$this->db_group}->get_where($table, $where, FALSE);
 
-		if ($query->num_rows() > 0) 
+		if ($query->num_rows() > 0)
 			return TRUE;
 		else
 			return FALSE;

@@ -4,6 +4,7 @@
 	Remind : "Value" tags are supposed to return one value, by opposition to "Loop" tags, which are
 	used to loop inside a data collection.
 </p>
+<ion:tree_navigation />
 
 <hr/>
 

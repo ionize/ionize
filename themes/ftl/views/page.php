@@ -115,20 +115,21 @@ test_trace :				Output's one print_r() of one tag locals.
 
 // Page
 test_page_id
+test_tag_breadcrumb
 
 // Article, Article ID
-test_articles_from_current_page
-test_articles_from_one_page
-test_content_iframe :			Content test : embedded iFrames from Youtube and Google maps
-test_article_categories :		Categories from each article
-test_article_user : 			User who wrote the article in Ionize
-test_article_prev_next :		Previous / Next article builder
+test_articles_from_current_page		Articles from current page
+test_articles_from_one_page			Articles from one given page
+test_articles_from_parent_page		Articles from one choosen parent page
+test_content_iframe :				Content test : embedded iFrames from Youtube and Google maps
+test_article_categories :			Categories from each article
+test_article_user : 				User who wrote the article in Ionize
+test_article_prev_next :			Previous / Next article builder
 
 // Pagination
 test_pagination : 				Pagination of articles
 test_pagination_archives : 		Pagination of articles withing archives
 test_pagination_categories : 	Pagination of articles withing categories
-
 
 // Navigation
 test_tag_navigation
@@ -147,17 +148,14 @@ test_tag_archives			Archives tag
 
 
 // @TODO :
-test_tag_breadcrumb
+test_tag_store : 					Store one value to reuse it in the same view
 test_tag_medias_module : 			Medias within one module
-
 test_tag_elements : 				Content Elements
 test_tag_subnavigation				Remove ???
-
-
 
 test_temp : 				Temp dev's tests
 
 */
 ?>
 
-<ion:partial view="test_condition" render="true" />
+<ion:partial view="test_articles_from_parent_page"  />

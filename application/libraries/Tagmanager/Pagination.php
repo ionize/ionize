@@ -1,14 +1,14 @@
 <?php
-	/**
-	 * Ionize
-	 *
-	 * @package		Ionize
-	 * @author		Ionize Dev Team
-	 * @license		http://ionizecms.com/doc-license
-	 * @link		http://ionizecms.com
-	 * @since		Version 0.9.9
-	 *
-	 */
+/**
+ * Ionize
+ *
+ * @package		Ionize
+ * @author		Ionize Dev Team
+ * @license		http://ionizecms.com/doc-license
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.9
+ *
+ */
 
 
 class TagManager_Pagination extends TagManager

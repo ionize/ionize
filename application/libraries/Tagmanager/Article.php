@@ -24,7 +24,7 @@ class TagManager_Article extends TagManager
 
 		'article' => 				'tag_article',
 		'article:summary' => 		'tag_simple_value',
-		'article:content' => 		'tag_article_content',
+		'article:content' => 		'tag_simple_value',
 		'article:active_class' => 	'tag_simple_value',
 		'article:view' => 			'tag_simple_value',
 		'article:next' => 			'tag_next_article',
@@ -105,8 +105,6 @@ class TagManager_Article extends TagManager
 		// $keep_view = (isset($tag->attr['keep_view'])) ? TRUE : FALSE;
 
 
-
-
 		// from categories ?
 // @TODO : Find a way to display articles from a given category : filter ?
 		$from_categories = $tag->getAttribute('from_categories');
@@ -131,16 +129,6 @@ class TagManager_Article extends TagManager
 			else
 				$where['article_type.type'] = $type;
 		}
-
-
-/*
- * @TODO : Replace $scope = parent by "level -1" or "parent -1"
- *
-		if ($scope == 'parent')
-		{
-			$where += self::set_parent_scope($tag);
-		}
-*/
 
 		// Get only articles from the detected page
 		$where['id_page'] = $page['id_page'];
@@ -595,32 +583,6 @@ class TagManager_Article extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Returns the article content
-	 *
-	 * @param	FTL_Binding
-	 *
-	 * @return	String
-	 *
-	 */
-	public static function tag_article_content(FTL_Binding $tag)
-	{
-		// paragraph limit ?
-		$paragraph = $tag->getAttribute('paragraph');
-
-		$content = $tag->getValue('content');
-
-		// Limit to x paragraph if the attribute is set
-		if ( ! is_null($paragraph))
-			$content = tag_limiter($content, 'p', intval($paragraph));
-
-		return self::wrap($tag, $content);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
 	public static function tag_prev_article(FTL_Binding $tag)
 	{
 		$article = self::get_adjacent_article($tag, 'prev');
@@ -672,68 +634,6 @@ class TagManager_Article extends TagManager
 		
 		return $found_article;
 	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Set the parent scope
-	 *
-	 * @param	Object  FTL_Binding object
-	 *
-	 * @return  Array   Where condition
-	 *                  If the "level" attribute isn't correct, returns the current page condition
-	 *
-	 * @usage
-	 * <ion articles scope="parent" level="-1" all-parents="<TRUE/FALSE>">
-	 *
-	 * The "level" attribute can be positive, negative, or not set.
-	 * If negative, the level will be defined by comparison to the current page level.
-	 * For example, if the current page has the level 4, level="-3" will consider the
-	 * parent page which has the level "1".
-	 * If positive, it will return the parent page at the exact asked level.
-	 * For example, if the current page is at level 4, level="2" will consider the
-	 * parent page which is at level 2.
-	 * Default value : -1 (one level up parent)
-	 *
-	 * The "all" attribute is used to set if the full parent path is to be used, means
-	 * including the pages which has not the flag "has URL" checked in Ionize.
-	 * Default value : FALSE
-	 *
-	static function set_parent_scope(FTL_Binding $tag)
-	{
-		$where = array();
-
-		// ID page from where get the articles
-		$id_page = NULL;
-
-		// Tag attributes
-		$level = $tag->getAttribute('level');
-		$all_parents = ( $tag->getAttribute('all-parents') == TRUE) ? TRUE : FALSE;
-
-		// Path IDs
-		if ($all_parents)
-			$path_ids = explode('/', $tag->locals->_page['full_path_ids']);
-		else
-			$path_ids = explode('/', $tag->locals->_page['path_ids']);
-
-		// Level
-		if (is_null($level))
-			$level = -1;
-
-		if ($level < 0)
-			$level = $tag->locals->_page['level'] + $level;
-
-		if (isset($path_ids[$level]))
-			$id_page = $path_ids[$level];
-
-		if ( ! is_null($id_page))
-			$where['id_page'] = $id_page;
-
-		return $where;
-	}
-	 */
 
 
 	// ------------------------------------------------------------------------

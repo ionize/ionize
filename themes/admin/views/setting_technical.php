@@ -202,11 +202,10 @@
 	
 						<?php
 							$tags = array(
-								'tag1' => array('h1','h2','h3','h4','h5','h6','em','img'),
-								'tag2' => array('iframe','table','object','div','span','dl','pre','code'),
-								'tag3' => array('dfn','samp','kbd','var','cite','q','big','small'),
-								'tag4' => array('hr', 'link','address','legend','abbr','sub','sup','ins'),
-								'tag5' => array('blockquote', 'form')
+								'tag1' => array('h1','h2','h3','h4','h5','h6','em','img','audio','video'),
+								'tag2' => array('iframe','div','span','table','object','form','dl','pre','code','legend'),
+								'tag3' => array('dfn','samp','kbd','var','cite','mark','q','hr','big','small'),
+								'tag4' => array('link','address','abbr','sub','sup','ins','blockquote','bdi','bdo'),
 							);
 						?>
 	

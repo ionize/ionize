@@ -38,6 +38,7 @@ class TagManager_Page extends TagManager
 
 		// Page
 		'page' => 				'tag_page',
+		'page:view' => 			'tag_page_view',
 
 		'next_page' =>			'tag_next_page',
 		'prev_page' =>			'tag_prev_page',
@@ -603,16 +604,44 @@ class TagManager_Page extends TagManager
 		$str = '';
 
 		$id = $tag->getAttribute('id');
-		if ( is_null($id))
-		{
+		$parent = $tag->getAttribute('parent');
+
+		// No ID
+		if ( is_null($id) )
 			$page = self::$context->registry('page');
-		}
 		else
 		{
 			if (strval((int)$id) == (string) $id)
 				$page = self::get_page_by_id($id);
 			else
 				$page = self::get_page_by_code($id);
+		}
+
+		// Get the asked parent page : From current page or from page ID
+		if (!is_null($parent))
+		{
+			$all_parents = ( $tag->getAttribute('all-parents') == TRUE) ? TRUE : FALSE;
+
+			// Path IDs
+			if ($all_parents)
+				$path_ids = explode('/', $page['full_path_ids']);
+			else
+				$path_ids = explode('/', $page['path_ids']);
+
+			if ($parent == 0) $parent = -1;
+			if ($parent > 0) $parent = -$parent;
+
+			$level = $page['level'] + $parent;
+
+			if (isset($path_ids[$level]))
+			{
+				$page = self::get_page_by_id($path_ids[$level]);
+			}
+			else
+			{
+				// One parent was asked, but no one was found : no page and that's it.
+				$page = NULL;
+			}
 		}
 
 		if ( ! empty($page))
@@ -623,12 +652,27 @@ class TagManager_Page extends TagManager
 
 			$str .= $tag->expand();
 
-			// $str .= self::wrap($tag, $str);
-
 			// Tag cache
 			self::set_cache($tag, $str);
 		}
 		return $str;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the current used page view
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_page_view(FTL_Binding $tag)
+	{
+		return self::output_value($tag, self::$view);
 	}
 
 
@@ -794,15 +838,18 @@ class TagManager_Page extends TagManager
 			$breadcrumb = $new_breadcrumb;
 		}
 
-		// Add Home page ?
-		if ($tag->getAttribute('home') == TRUE)
-		{
-
-		}
-
 		// Build the links
 		$return = '';
 
+		// Add Home page ?
+		if ($tag->getAttribute('home') == TRUE)
+		{
+			$home_page = self::get_home_page();
+			$url = $home_page['absolute_url'];
+			$return .= $child_tag_open . '<a href="'.$url.'">'.$home_page['title'].'</a>' . $child_tag_close;
+		}
+
+		// Pages
 		for($i=0; $i<count($breadcrumb); $i++)
 		{
 			$url = $breadcrumb[$i]['absolute_url'];
@@ -813,6 +860,21 @@ class TagManager_Page extends TagManager
 			$return .= ($return != '') ? $separator : '';
 			$return .= $child_tag_open . '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' . $child_tag_close;
 		}
+
+		// Current Article ?
+		if ($tag->getAttribute('article') == TRUE)
+		{
+			$article = self::registry('article');
+
+			if ($article)
+			{
+				$return .= ($return != '') ? $separator : '';
+				$return .= $child_tag_open .$article['title'] . $child_tag_close;
+			}
+		}
+
+		// Prefix process
+		$return = self::prefix_suffix_process($return, $tag->getAttribute('prefix'));
 
 		return self::wrap($tag, $return);
 	}
@@ -884,10 +946,8 @@ class TagManager_Page extends TagManager
 	 * @return bool|String
 	 *
 	 */
-	private static function _get_page_view($page)
+	private static function _get_page_view(&$page)
 	{
-		$view = FALSE;
-
 		$article = self::registry('article');
 
 		if ( ! empty($article))

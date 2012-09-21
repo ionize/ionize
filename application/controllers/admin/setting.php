@@ -551,9 +551,11 @@ class Setting extends MY_admin
 		if (in_array('dl', $tags)) $tags = array_merge($tags, array('dt','dd'));
 		if (in_array('img', $tags)) $tags = array_merge($tags, array('map','area'));
 		if (in_array('form', $tags)) $tags = array_merge($tags, array('input','button','fieldset','label','textarea','legend','optgroup','option','select'));
-		
+		if (in_array('audio', $tags)) $tags = array_merge($tags, array('source'));
+		if (in_array('video', $tags)) $tags = array_merge($tags, array('source'));
+
 		// Standard allowed tags
-		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong'));
+		$tags = array_merge($tags, array('p','a','ul','ol','li','br','b','strong','i',));
 		
 		$article_allowed_tags = array(
 			'name' => 'article_allowed_tags',

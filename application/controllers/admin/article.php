@@ -626,6 +626,8 @@ class Article extends MY_admin
 
 		if ($id_article && !empty($value))
 		{
+			$value = $this->article_model->get_unique_name($value, $id_article);
+
 			$result = $this->article_model->update(array('id_article' => $id_article), array('name' => $value));
 
 			if ($result)
@@ -1408,13 +1410,9 @@ class Article extends MY_admin
 				// Used by JS Tree to detect if article in inserted in tree or not
 				$this->data['inserted'] = TRUE;
 
-				// Panels Update array
-				$this->update[] = array(
-					'element' => 'mainPanel',
-					'url' => admin_url() . 'article/edit/'.$this->data['id_page'].'.'.$id_new_article,
-					'title' => lang('ionize_title_edit_article')
-				);
-				
+				// Panels Update
+				$this->_reload_panel($this->data['id_page'], $id_new_article);
+
 				$this->callback[] = array(
 					'fn' => $menu['name'].'Tree.insertElement',
 					'args' => array($this->data, 'article')
@@ -1621,6 +1619,7 @@ class Article extends MY_admin
 
 		// Update the name (not used anymore in the frontend, but used in the backend)
 		$this->data['name'] = $urls[Settings::get_lang('default')];
+		$this->data['name'] = $this->article_model->get_unique_name($this->data['name'], $this->input->post('id_article'));
 
 		/*
 		 * Lang data

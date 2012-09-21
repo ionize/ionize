@@ -37,7 +37,7 @@ ION.TreeXhr = new Class({
 		this.treeLine_Model = new Element('div', {'class': 'tree-img'});
 		
 		this.action_Model = new Element('span', {'class': 'action', 'styles': { 'display':'none' }});
-		this.icon_Model = new Element('span', {'class': 'icon'});
+		// this.icon_Model = new Element('span', {'class': 'icon'});
 		this.span_Model = new Element('span');
 		this.title_Model = new Element('a', {'class': 'title'});
 		
@@ -215,8 +215,9 @@ ION.TreeXhr = new Class({
 		{
 			li.addClass('folder').addClass('page');
 			
-			// Icon : Add Article
-            action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('rel', rel));
+			// Icons : Add Article, Add page
+			action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('rel', rel));
+			action.adopt(new Element('a').addClass('addPage').addClass('icon').addClass('page').addClass('add').setProperty('data-page', id).setProperty('data-menu', element.id_menu));
 
             // Actions
 			this.addPageActionLinks(action);
@@ -373,6 +374,7 @@ ION.TreeXhr = new Class({
 		}
 	},
 
+
 	/**
 	 * Adds a link to a tree LI DOM element
 	 *
@@ -432,7 +434,6 @@ ION.TreeXhr = new Class({
 	},
 	
 	
-
 	getParentContainer: function(id_parent)
 	{
 		// Parent DOM Element (usually a folder LI)
@@ -447,7 +448,6 @@ ION.TreeXhr = new Class({
 	},
 
 
-
 	/**
 	 * Adds Actions Buttons Events on one page Element
 	 *
@@ -456,6 +456,7 @@ ION.TreeXhr = new Class({
 	 */
 	addPageActionLinks: function(el)
 	{
+		// Add Article
 		var a = el.getElement('a.addArticle');
 		var id = a.rel;
 		var p = $(this.mainpanel);
@@ -470,7 +471,19 @@ ION.TreeXhr = new Class({
 				'title': Lang.get('ionize_title_create_article')
 			});
 		});
-		
+
+		// Add Page
+		a = el.getElement('a.add.page');
+		a.addEvent('click', function(e)
+		{
+			e.stop();
+			MUI.Content.update({
+				'element': p,
+				'url': admin_url + 'page/create/' + a.getProperty('data-menu') + '/' + a.getProperty('data-page'),
+				'title': Lang.get('ionize_title_create_page')
+			});
+		});
+
 	},
 
 	

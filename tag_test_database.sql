@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.5.9)
 # Database: ionize_ftl
-# Generation Time: 2012-09-10 11:48:33 +0000
+# Generation Time: 2012-09-21 06:36:33 +0000
 # ************************************************************
 
 
@@ -53,13 +53,21 @@ INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `pu
 VALUES
 	(10,'404',NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,NULL,'0','0',NULL,0,1,'404'),
 	(20,'welcome3','','admin','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-08 09:24:21','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'welcome'),
-	(30,'article-30','admin','admin','2012-09-04 12:45:34','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:54:37','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'article-1'),
+	(30,'article-30','admin','admin','2012-09-04 12:45:34','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 13:54:48','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'article-1'),
 	(40,'article-40','admin','admin','2012-09-04 12:45:44','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:47:59','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'article-2'),
-	(41,'iframe-in-content','admin','admin','2012-09-08 09:25:02','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-08 09:40:13','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(41,'iframe','admin','admin','2012-09-08 09:25:02','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-08 09:40:13','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
 	(42,'article-50','admin',NULL,'2012-09-09 13:41:33','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 13:41:33','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
 	(43,'article-60','admin','admin','2012-09-09 17:06:34','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 17:10:04','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
 	(44,'article-70','admin','admin','2012-09-09 21:31:44','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:32:20','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
-	(45,'article-80','admin','admin','2012-09-09 21:44:13','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:46:18','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'');
+	(45,'article-80','admin','admin','2012-09-09 21:44:13','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-09 21:46:18','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(46,'post-1','admin','admin','2012-09-21 09:47:29','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 10:07:34','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(47,'',NULL,NULL,'2012-09-21 09:48:34','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 09:48:34','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(48,'',NULL,NULL,'2012-09-21 09:48:39','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 09:48:39','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(49,'',NULL,NULL,'2012-09-21 09:48:46','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 09:48:46','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(50,'post-2','admin','admin','2012-09-21 10:00:51','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 10:24:59','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(51,'post-3','admin','admin','2012-09-21 10:01:15','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 10:25:08','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(52,'post-4','admin','admin','2012-09-21 10:25:41','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 10:25:51','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,''),
+	(53,'post-5','admin','admin','2012-09-21 10:26:03','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 10:26:11','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1,'');
 
 /*!40000 ALTER TABLE `article` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -82,11 +90,11 @@ INSERT INTO `article_category` (`id_article`, `id_category`)
 VALUES
 	(20,3),
 	(41,2),
-	(30,3),
 	(40,1),
 	(42,1),
 	(43,3),
-	(45,3);
+	(45,3),
+	(30,3);
 
 /*!40000 ALTER TABLE `article_category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -143,7 +151,7 @@ VALUES
 	(10,'fr','404',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1),
 	(20,'en','welcome-article-url','Title 20... et hop','','','','<p>Content Article 20...</p>','','',1),
 	(20,'fr','welcome-article-url','Titre Article 20... et hop','','','','','','',1),
-	(30,'en','article-30','Title Article 30...','','','','<p>Content Article 30...</p>','','',1),
+	(30,'en','article-30','Title Article 30...','','','<p>Summary article 30</p>','<p>Content Article 30...</p>','','',1),
 	(30,'fr','article-30','Titre Article 30...','','','','<p>Contenu Article 30...</p>','','',1),
 	(40,'en','article-40','Title Article 40...','','Window Title from Article 40...','','<p>Content Article 40 ...</p>','Keyword Article 40...','English Description Article 40....',1),
 	(40,'fr','article-40','Titre Article 40...','','','','<p>Contenu Article 40...</p>','Mot clé Article 40...','Description française Article 40...',1),
@@ -156,7 +164,17 @@ VALUES
 	(44,'en','article-70','Title Article 70...','','','','<p>Content Article 70...</p>','','',1),
 	(44,'fr','article-70','Titre Article 70...','','','','<p>Contenu Article 70...</p>','','',1),
 	(45,'en','article-80','Title Article 80...','','','','<p>Content Article 80...</p>','','',1),
-	(45,'fr','article-80','Titre Article 80...','','','','<p>Contenu Article 80...</p>','','',1);
+	(45,'fr','article-80','Titre Article 80...','','','','<p>Contenu Article 80...</p>','','',1),
+	(46,'en','post-1','Blog post 1','','','','<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>\n\n<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>\n<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>\n','','',1),
+	(46,'fr','post-1','Blog post 1','','','','<p>Le <strong>Lorem Ipsum</strong> est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l\'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n\'a pas fait que survivre cinq siècles, mais s\'est aussi adapté à la bureautique informatique, sans que son contenu n\'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.</p>\n<p>On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions, et empêche de se concentrer sur la mise en page elle-même. L\'avantage du Lorem Ipsum sur un texte générique comme \'Du texte. Du texte. Du texte.\' est qu\'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour \'Lorem Ipsum\' vous conduira vers de nombreux sites qui n\'en sont encore qu\'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d\'y rajouter de petits clins d\'oeil, voire des phrases embarassantes).</p>\n<p>Contrairement à une opinion répandue, le Lorem Ipsum n\'est pas simplement du texte aléatoire. Il trouve ses racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C., le rendant vieux de 2000 ans. Un professeur du Hampden-Sydney College, en Virginie, s\'est intéressé à un des mots latins les plus obscurs, consectetur, extrait d\'un passage du Lorem Ipsum, et en étudiant tous les usages de ce mot dans la littérature classique, découvrit la source incontestable du Lorem Ipsum. Il provient en fait des sections 1.10.32 et 1.10.33 du \"De Finibus Bonorum et Malorum\" (Des Suprêmes Biens et des Suprêmes Maux) de Cicéron. Cet ouvrage, très populaire pendant la Renaissance, est un traité sur la théorie de l\'éthique. Les premières lignes du Lorem Ipsum, \"Lorem ipsum dolor sit amet...\", proviennent de la section 1.10.32.</p>','','',1),
+	(50,'en','post-2','Blog post 2','','','','<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>\n<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>\n<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>','','',1),
+	(50,'fr','post-2','Blog post 2','','','','<p>Le <strong>Lorem Ipsum</strong> est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l\'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n\'a pas fait que survivre cinq siècles, mais s\'est aussi adapté à la bureautique informatique, sans que son contenu n\'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.</p>\n<p>On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions, et empêche de se concentrer sur la mise en page elle-même. L\'avantage du Lorem Ipsum sur un texte générique comme \'Du texte. Du texte. Du texte.\' est qu\'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour \'Lorem Ipsum\' vous conduira vers de nombreux sites qui n\'en sont encore qu\'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d\'y rajouter de petits clins d\'oeil, voire des phrases embarassantes).</p>\n<p>Contrairement à une opinion répandue, le Lorem Ipsum n\'est pas simplement du texte aléatoire. Il trouve ses racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C., le rendant vieux de 2000 ans. Un professeur du Hampden-Sydney College, en Virginie, s\'est intéressé à un des mots latins les plus obscurs, consectetur, extrait d\'un passage du Lorem Ipsum, et en étudiant tous les usages de ce mot dans la littérature classique, découvrit la source incontestable du Lorem Ipsum. Il provient en fait des sections 1.10.32 et 1.10.33 du \"De Finibus Bonorum et Malorum\" (Des Suprêmes Biens et des Suprêmes Maux) de Cicéron. Cet ouvrage, très populaire pendant la Renaissance, est un traité sur la théorie de l\'éthique. Les premières lignes du Lorem Ipsum, \"Lorem ipsum dolor sit amet...\", proviennent de la section 1.10.32.</p>','','',1),
+	(51,'en','post-3','Blog post 3','','','','<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>\n<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>\n<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>','','',1),
+	(51,'fr','post-3','Blog post 3','','','','<p>Le <strong>Lorem Ipsum</strong> est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l\'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n\'a pas fait que survivre cinq siècles, mais s\'est aussi adapté à la bureautique informatique, sans que son contenu n\'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.</p>\n<p>On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions, et empêche de se concentrer sur la mise en page elle-même. L\'avantage du Lorem Ipsum sur un texte générique comme \'Du texte. Du texte. Du texte.\' est qu\'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour \'Lorem Ipsum\' vous conduira vers de nombreux sites qui n\'en sont encore qu\'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d\'y rajouter de petits clins d\'oeil, voire des phrases embarassantes).</p>\n<p>Contrairement à une opinion répandue, le Lorem Ipsum n\'est pas simplement du texte aléatoire. Il trouve ses racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C., le rendant vieux de 2000 ans. Un professeur du Hampden-Sydney College, en Virginie, s\'est intéressé à un des mots latins les plus obscurs, consectetur, extrait d\'un passage du Lorem Ipsum, et en étudiant tous les usages de ce mot dans la littérature classique, découvrit la source incontestable du Lorem Ipsum. Il provient en fait des sections 1.10.32 et 1.10.33 du \"De Finibus Bonorum et Malorum\" (Des Suprêmes Biens et des Suprêmes Maux) de Cicéron. Cet ouvrage, très populaire pendant la Renaissance, est un traité sur la théorie de l\'éthique. Les premières lignes du Lorem Ipsum, \"Lorem ipsum dolor sit amet...\", proviennent de la section 1.10.32.</p>','','',1),
+	(52,'en','post-4','Blog post 4','','','','<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>\n<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>\n<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>','','',1),
+	(52,'fr','post-4','Blog post 4','','','','<p>Le <strong>Lorem Ipsum</strong> est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l\'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n\'a pas fait que survivre cinq siècles, mais s\'est aussi adapté à la bureautique informatique, sans que son contenu n\'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.</p>\n<p>On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions, et empêche de se concentrer sur la mise en page elle-même. L\'avantage du Lorem Ipsum sur un texte générique comme \'Du texte. Du texte. Du texte.\' est qu\'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour \'Lorem Ipsum\' vous conduira vers de nombreux sites qui n\'en sont encore qu\'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d\'y rajouter de petits clins d\'oeil, voire des phrases embarassantes).</p>\n<p>Contrairement à une opinion répandue, le Lorem Ipsum n\'est pas simplement du texte aléatoire. Il trouve ses racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C., le rendant vieux de 2000 ans. Un professeur du Hampden-Sydney College, en Virginie, s\'est intéressé à un des mots latins les plus obscurs, consectetur, extrait d\'un passage du Lorem Ipsum, et en étudiant tous les usages de ce mot dans la littérature classique, découvrit la source incontestable du Lorem Ipsum. Il provient en fait des sections 1.10.32 et 1.10.33 du \"De Finibus Bonorum et Malorum\" (Des Suprêmes Biens et des Suprêmes Maux) de Cicéron. Cet ouvrage, très populaire pendant la Renaissance, est un traité sur la théorie de l\'éthique. Les premières lignes du Lorem Ipsum, \"Lorem ipsum dolor sit amet...\", proviennent de la section 1.10.32.</p>','','',1),
+	(53,'en','post-5','Blog post 5','','','','<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>\n<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>\n<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>','','',1),
+	(53,'fr','post-5','Blog post 5','','','','<p>Le <strong>Lorem Ipsum</strong> est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l\'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n\'a pas fait que survivre cinq siècles, mais s\'est aussi adapté à la bureautique informatique, sans que son contenu n\'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.</p>\n<p>On sait depuis longtemps que travailler avec du texte lisible et contenant du sens est source de distractions, et empêche de se concentrer sur la mise en page elle-même. L\'avantage du Lorem Ipsum sur un texte générique comme \'Du texte. Du texte. Du texte.\' est qu\'il possède une distribution de lettres plus ou moins normale, et en tout cas comparable avec celle du français standard. De nombreuses suites logicielles de mise en page ou éditeurs de sites Web ont fait du Lorem Ipsum leur faux texte par défaut, et une recherche pour \'Lorem Ipsum\' vous conduira vers de nombreux sites qui n\'en sont encore qu\'à leur phase de construction. Plusieurs versions sont apparues avec le temps, parfois par accident, souvent intentionnellement (histoire d\'y rajouter de petits clins d\'oeil, voire des phrases embarassantes).</p>\n<p>Contrairement à une opinion répandue, le Lorem Ipsum n\'est pas simplement du texte aléatoire. Il trouve ses racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C., le rendant vieux de 2000 ans. Un professeur du Hampden-Sydney College, en Virginie, s\'est intéressé à un des mots latins les plus obscurs, consectetur, extrait d\'un passage du Lorem Ipsum, et en étudiant tous les usages de ce mot dans la littérature classique, découvrit la source incontestable du Lorem Ipsum. Il provient en fait des sections 1.10.32 et 1.10.33 du \"De Finibus Bonorum et Malorum\" (Des Suprêmes Biens et des Suprêmes Maux) de Cicéron. Cet ouvrage, très populaire pendant la Renaissance, est un traité sur la théorie de l\'éthique. Les premières lignes du Lorem Ipsum, \"Lorem ipsum dolor sit amet...\", proviennent de la section 1.10.32.</p>','','',1);
 
 /*!40000 ALTER TABLE `article_lang` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -184,9 +202,9 @@ INSERT INTO `article_media` (`id_article`, `id_media`, `online`, `ordering`, `ur
 VALUES
 	(30,2,1,2,NULL,NULL),
 	(30,4,1,1,NULL,NULL),
-	(40,1,1,1,NULL,NULL),
 	(30,6,1,1,NULL,NULL),
-	(30,7,1,2,NULL,NULL);
+	(30,7,1,2,NULL,NULL),
+	(40,1,1,1,NULL,NULL);
 
 /*!40000 ALTER TABLE `article_media` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -449,7 +467,12 @@ VALUES
 	(5,1,'',42,'','Extend 1 default content...',0,0),
 	(6,1,'',43,'','Extend 1 default content...',0,0),
 	(7,1,'',44,'','Extend 1 default content...',0,0),
-	(8,1,'',45,'','Extend 1 default content...',0,0);
+	(8,1,'',45,'','Extend 1 default content...',0,0),
+	(9,1,'',46,'','Extend 1 default content...',0,0),
+	(10,1,'',50,'','Extend 1 default content...',0,0),
+	(11,1,'',51,'','Extend 1 default content...',0,0),
+	(12,1,'',52,'','Extend 1 default content...',0,0),
+	(13,1,'',53,'','Extend 1 default content...',0,0);
 
 /*!40000 ALTER TABLE `extend_fields` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -536,12 +559,12 @@ LOCK TABLES `media` WRITE;
 INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`, `square_crop`)
 VALUES
 	(1,'picture','IMG_8359.jpg','files/pictures/IMG_8359.jpg','files/pictures/','','','0000-00-00 00:00:00','','m'),
-	(2,'picture','IMG_8447.jpg','files/pictures/IMG_8447.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
+	(2,'picture','IMG_8447.jpg','files/pictures/IMG_8447.jpg','files/pictures/','','','0000-00-00 00:00:00','','m'),
 	(3,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
-	(4,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
+	(4,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/','','','0000-00-00 00:00:00','','m'),
 	(5,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
-	(6,'video','wall_e_headphones_vignette.mp4','files/wall_e_headphones_vignette.mp4','files/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m'),
-	(7,'video','watch?v=d4RiUy23e9s','http://www.youtube.com/watch?v=d4RiUy23e9s','http://www.youtube.com/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m');
+	(6,'video','wall_e_headphones_vignette.mp4','files/wall_e_headphones_vignette.mp4','files/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
+	(7,'video','watch?v=d4RiUy23e9s','http://www.youtube.com/watch?v=d4RiUy23e9s','http://www.youtube.com/',NULL,'','0000-00-00 00:00:00',NULL,'m');
 
 /*!40000 ALTER TABLE `media` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -568,6 +591,10 @@ INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`)
 VALUES
 	('en',1,'One burman munk','',''),
 	('fr',1,'Moine birman','',''),
+	('en',2,'hop','',''),
+	('fr',2,'','',''),
+	('en',4,'L&quot;elephant','',''),
+	('fr',4,'','',''),
 	('en',6,'Local Video From Page','','MP4 File Format'),
 	('en',7,'Video From Youtube','','Video added from Page - Videos - Add Video Url section');
 
@@ -706,7 +733,8 @@ VALUES
 	(1,0,2,0,0,'404',0,0,1,0,NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,1,NULL,NULL,NULL,NULL,'ordering','ASC','',NULL,'',0,5,0,5,NULL),
 	(2,0,1,0,0,'welcome',0,0,1,1,NULL,'admin','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-10 18:27:00','0000-00-00 00:00:00',1,1,'','',NULL,'','ordering','ASC','',NULL,'',0,5,0,5,0),
 	(3,4,1,0,0,'test-page',1,1,1,0,'admin','admin','2012-09-04 12:45:10','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-10 16:47:02','0000-00-00 00:00:00',1,1,'','',NULL,'','ordering','ASC','',NULL,'',3,5,0,5,0),
-	(4,0,1,0,0,'thats-my-page',2,0,1,0,'admin','admin','2012-09-08 10:06:20','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-10 18:27:24','0000-00-00 00:00:00',1,1,'','',NULL,'','ordering','ASC','',NULL,'',0,5,0,5,0);
+	(4,0,1,0,0,'thats-my-page',2,0,1,0,'admin','admin','2012-09-08 10:06:20','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-10 18:27:24','0000-00-00 00:00:00',1,1,'','',NULL,'','ordering','ASC','',NULL,'',0,5,0,5,0),
+	(5,0,1,0,0,'play-with-views',3,0,1,0,'admin','admin','2012-09-21 08:06:44','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-09-21 10:43:01','0000-00-00 00:00:00',1,1,'page_blog_view','page_blog_view_post',NULL,'','ordering','ASC','',NULL,'',0,5,0,5,0);
 
 /*!40000 ALTER TABLE `page` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -740,12 +768,17 @@ VALUES
 	(1,10,1,NULL,0,NULL,'','','',1),
 	(2,20,1,NULL,1,NULL,'','','',1),
 	(2,41,1,NULL,2,NULL,'','','',1),
-	(3,30,1,NULL,1,NULL,'','','',1),
-	(3,40,1,NULL,2,NULL,'','','',1),
-	(3,42,1,NULL,3,NULL,'','','',1),
-	(3,43,0,'0',4,0,'','','',1),
-	(3,44,1,'0',5,0,'','','',1),
-	(3,45,1,'0',6,0,'','','',1);
+	(3,43,1,'0',1,0,'','','',1),
+	(3,44,1,'0',2,0,'','','',1),
+	(3,45,1,'0',3,0,'','','',1),
+	(4,30,1,NULL,1,NULL,'','','',1),
+	(4,40,1,NULL,2,NULL,'','','',1),
+	(4,42,1,NULL,3,NULL,'','','',1),
+	(5,46,1,'0',1,0,'','','',1),
+	(5,50,1,'0',2,0,'','','',1),
+	(5,51,1,'0',3,0,'','','',1),
+	(5,52,1,'0',4,0,'','','',1),
+	(5,53,1,'0',5,0,'','','',1);
 
 /*!40000 ALTER TABLE `page_article` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -784,7 +817,9 @@ VALUES
 	('en',3,'test-page','','Test page','','','','Window Title Page 3...','English Description Page 3....','Keyword Page 3',1),
 	('fr',3,'page-de-test','','Page de test','','','','Titre fenêtre Page 3','Description française page 3...','Mot clé Page 3',1),
 	('en',4,'thats-my-page','','That\'s my page','','','','','','',1),
-	('fr',4,'thats-my-page','','Ma page','','','','','','',1);
+	('fr',4,'thats-my-page','','Ma page','','','','','','',1),
+	('en',5,'play-with-views','','Play with views','','','','','','',1),
+	('fr',5,'page-avec-vues','','Page avec vues','','','','','','',1);
 
 /*!40000 ALTER TABLE `page_lang` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -814,11 +849,11 @@ VALUES
 	(2,3,1,3,NULL),
 	(2,4,1,5,NULL),
 	(2,5,1,4,NULL),
+	(2,6,1,2,NULL),
+	(2,7,1,1,NULL),
 	(3,1,1,2,NULL),
 	(3,2,1,3,NULL),
-	(3,3,1,1,NULL),
-	(2,6,1,1,NULL),
-	(2,7,1,2,NULL);
+	(3,3,1,1,NULL);
 
 /*!40000 ALTER TABLE `page_media` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -963,18 +998,36 @@ VALUES
 	(256,4,'page',1,1,'fr','thats-my-page','4','4','2012-09-10 18:27:23'),
 	(257,3,'page',1,1,'en','thats-my-page/test-page','4/3','4/3','2012-09-10 18:27:23'),
 	(258,3,'page',1,1,'fr','thats-my-page/page-de-test','4/3','4/3','2012-09-10 18:27:24'),
-	(259,30,'article',1,1,'en','thats-my-page/test-page/article-30','4/3/30','4/3/30','2012-09-10 18:27:24'),
-	(260,30,'article',1,1,'fr','thats-my-page/page-de-test/article-30','4/3/30','4/3/30','2012-09-10 18:27:24'),
-	(261,40,'article',1,1,'en','thats-my-page/test-page/article-40','4/3/40','4/3/40','2012-09-10 18:27:24'),
-	(262,40,'article',1,1,'fr','thats-my-page/page-de-test/article-40','4/3/40','4/3/40','2012-09-10 18:27:24'),
-	(263,42,'article',1,1,'en','thats-my-page/test-page/article-50','4/3/42','4/3/42','2012-09-10 18:27:24'),
-	(264,42,'article',1,1,'fr','thats-my-page/page-de-test/article-50','4/3/42','4/3/42','2012-09-10 18:27:24'),
+	(259,30,'article',1,0,'en','thats-my-page/test-page/article-30','4/3/30','4/3/30','2012-09-10 18:27:24'),
+	(260,30,'article',1,0,'fr','thats-my-page/page-de-test/article-30','4/3/30','4/3/30','2012-09-10 18:27:24'),
+	(261,40,'article',1,0,'en','thats-my-page/test-page/article-40','4/3/40','4/3/40','2012-09-10 18:27:24'),
+	(262,40,'article',1,0,'fr','thats-my-page/page-de-test/article-40','4/3/40','4/3/40','2012-09-10 18:27:24'),
+	(263,42,'article',1,0,'en','thats-my-page/test-page/article-50','4/3/42','4/3/42','2012-09-10 18:27:24'),
+	(264,42,'article',1,0,'fr','thats-my-page/page-de-test/article-50','4/3/42','4/3/42','2012-09-10 18:27:24'),
 	(265,43,'article',1,1,'en','thats-my-page/test-page/article-60','4/3/43','4/3/43','2012-09-10 18:27:24'),
 	(266,43,'article',1,1,'fr','thats-my-page/page-de-test/article-60','4/3/43','4/3/43','2012-09-10 18:27:24'),
 	(267,44,'article',1,1,'en','thats-my-page/test-page/article-70','4/3/44','4/3/44','2012-09-10 18:27:24'),
 	(268,44,'article',1,1,'fr','thats-my-page/page-de-test/article-70','4/3/44','4/3/44','2012-09-10 18:27:24'),
 	(269,45,'article',1,1,'en','thats-my-page/test-page/article-80','4/3/45','4/3/45','2012-09-10 18:27:24'),
-	(270,45,'article',1,1,'fr','thats-my-page/page-de-test/article-80','4/3/45','4/3/45','2012-09-10 18:27:24');
+	(270,45,'article',1,1,'fr','thats-my-page/page-de-test/article-80','4/3/45','4/3/45','2012-09-10 18:27:24'),
+	(289,5,'page',1,1,'en','play-with-views','5','5','2012-09-21 10:43:01'),
+	(290,5,'page',1,1,'fr','page-avec-vues','5','5','2012-09-21 10:43:01'),
+	(291,46,'article',1,1,'en','play-with-views/post-1','5/46','5/46','2012-09-21 10:43:01'),
+	(292,46,'article',1,1,'fr','page-avec-vues/post-1','5/46','5/46','2012-09-21 10:43:01'),
+	(293,50,'article',1,1,'en','play-with-views/post-2','5/50','5/50','2012-09-21 10:43:01'),
+	(294,50,'article',1,1,'fr','page-avec-vues/post-2','5/50','5/50','2012-09-21 10:43:01'),
+	(295,51,'article',1,1,'en','play-with-views/post-3','5/51','5/51','2012-09-21 10:43:01'),
+	(296,51,'article',1,1,'fr','page-avec-vues/post-3','5/51','5/51','2012-09-21 10:43:01'),
+	(297,52,'article',1,1,'en','play-with-views/post-4','5/52','5/52','2012-09-21 10:43:01'),
+	(298,52,'article',1,1,'fr','page-avec-vues/post-4','5/52','5/52','2012-09-21 10:43:01'),
+	(299,53,'article',1,1,'en','play-with-views/post-5','5/53','5/53','2012-09-21 10:43:01'),
+	(300,53,'article',1,1,'fr','page-avec-vues/post-5','5/53','5/53','2012-09-21 10:43:01'),
+	(305,30,'article',1,1,'en','thats-my-page/article-30','4/30','4/30','2012-09-21 13:24:20'),
+	(306,30,'article',1,1,'fr','thats-my-page/article-30','4/30','4/30','2012-09-21 13:24:20'),
+	(307,40,'article',1,1,'en','thats-my-page/article-40','4/40','4/40','2012-09-21 13:24:23'),
+	(308,40,'article',1,1,'fr','thats-my-page/article-40','4/40','4/40','2012-09-21 13:24:23'),
+	(309,42,'article',1,1,'en','thats-my-page/article-50','4/42','4/42','2012-09-21 13:24:26'),
+	(310,42,'article',1,1,'fr','thats-my-page/article-50','4/42','4/42','2012-09-21 13:24:26');
 
 /*!40000 ALTER TABLE `url` ENABLE KEYS */;
 UNLOCK TABLES;
