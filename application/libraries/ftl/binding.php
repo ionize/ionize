@@ -279,7 +279,7 @@ class FTL_Binding
 	/**
 	 * Returns the first real data parent tag
 	 *
-	 * @param string/null
+	 * @param array|null		The reversed stack (start with the last grandchild
 	 *
 	 * @return FTL_Binding
 	 *
@@ -289,11 +289,14 @@ class FTL_Binding
 		if (is_null($this->data_parent))
 		{
 			if (is_null($stack))
+			{
 				$stack = array_reverse($this->getStack());
-
+				array_shift($stack);
+			}
 			$parent = NULL;
 
-			$parent_name = $this->getParentName();
+			// Get the parent name, but with the stack in the good order
+			$parent_name = $this->getParentName(array_reverse($stack));
 
 			foreach($stack as $binding)
 			{
@@ -321,17 +324,22 @@ class FTL_Binding
 	/**
 	 * Return the tag's first parent name
 	 *
+	 * @param array|null			Stack, in normal order (not reversed)
 	 * @return mixed|null|string
+	 *
 	 */
-	public function getParentName()
+	public function getParentName($stack=NULL)
 	{
-		if (is_null($this->parent_name))
+		if (is_null($stack))
 		{
-			$parents = array_reverse(explode(':', $this->nesting()));
-			array_shift($parents);
-			$this->parent_name = array_shift($parents);
+			$stack = $this->getStack();
+			array_pop($stack);
 		}
-		return $this->parent_name;
+
+		$stack = array_reverse($stack);
+		$binding = array_shift($stack);
+
+		return $binding->name;
 	}
 
 

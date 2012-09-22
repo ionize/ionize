@@ -96,4 +96,4 @@ test_temp : 				Temp dev's tests
 */
 ?>
 
-<ion:partial view="test_articles_from_website"  />
+<ion:partial view="test_session"  />

@@ -1885,6 +1885,13 @@ class TagManager
 			else
 				return $result;
 		}
+
+		// set the value
+		$tag->set('browser', $result);
+
+		$tag->expand();
+
+		return $result;
 	}
 
 
@@ -1893,6 +1900,9 @@ class TagManager
 
 	public static function tag_session(FTL_Binding $tag)
 	{
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+
 		if( ! isset(self::$ci->session))
 			self::$ci->load->library('session');
 
@@ -1933,11 +1943,28 @@ class TagManager
 	 */
 	public static function tag_session_set(FTL_Binding $tag)
 	{
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+
 		$key = $tag->getAttribute('key');
 		$value = $tag->getAttribute('value');
 
 		if ( ! is_null($key))
-			self::$ci->session->set_userdata($key, $value);
+		{
+			// Set the given value
+			if ( ! is_null($value))
+				self::$ci->session->set_userdata($key, $value);
+			else
+			{
+				$parent = $tag->getDataParent();
+
+				if ( ! is_null($parent))
+				{
+					if ($value = $parent->get($parent->name))
+						self::$ci->session->set_userdata($key, $value);
+				}
+			}
+		}
 	}
 
 

@@ -40,13 +40,11 @@ class Rss extends Widget
 			}
 			$data['posts'] = $posts;
 			
-	// trace($posts);
-
 			return $this->render('rss', $data);
 		}
 		else
 		{
-			return $this->show_error(lang('widget_weather_url_not_reachable') . '<br/>' . $url);
+			return $this->show_error(lang('widget_rss_url_not_reachable') . '<br/>' . $url);
 		}
 	}
 } 
