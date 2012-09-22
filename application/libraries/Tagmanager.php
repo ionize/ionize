@@ -109,14 +109,10 @@ class TagManager
 		'description' => 	'tag_simple_value',
 		'date' => 			'tag_simple_date',
 
-		'trace' =>			'tag_trace',
-
 		// System / Core tags
-//		'field' =>				'tag_field',
-//		'list' =>				'tag_list',
 		'config' => 			'tag_config',
 		'base_url' =>			'tag_base_url',
-		'home_url' =>			'tag_base_url',				// Kind alias for <ion:base_url />
+		'home_url' =>			'tag_base_url',				// Alias for <ion:base_url />
 		'partial' => 			'tag_partial',
 		'widget' =>				'tag_widget',
 		'translation' => 		'tag_translation',
@@ -131,6 +127,10 @@ class TagManager
 		'set' =>				'tag_set',
 		'jslang' =>				'tag_jslang',
 		'browser' =>			'tag_browser',
+		'session' =>			'tag_session',
+		'session:set' =>		'tag_session_set',
+		'session:get' =>		'tag_session_get',
+		'trace' =>				'tag_trace',
 	);
 
 
@@ -1891,6 +1891,59 @@ class TagManager
 	// ------------------------------------------------------------------------
 
 
+	public static function tag_session(FTL_Binding $tag)
+	{
+		if( ! isset(self::$ci->session))
+			self::$ci->load->library('session');
+
+		return $tag->expand();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Displays one session variable
+	 * Expands or not the tag if the "if" or "expression" attributes are set
+	 *
+	 * @usage	<ion:session:get key="session_var_name" [is="foo" expression="session_var_name == 'bar'" ] />
+	 *
+	 */
+	public static function tag_session_get(FTL_Binding $tag)
+	{
+		$key = $tag->getAttribute('key');
+
+		if ( ! is_null($key))
+		{
+			return self::output_value($tag, self::$ci->session->userdata($key));
+		}
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Set one session variable
+	 *
+	 * @usage	<ion:session:set key="foo" value="bar" />
+	 *
+	 */
+	public static function tag_session_set(FTL_Binding $tag)
+	{
+		$key = $tag->getAttribute('key');
+		$value = $tag->getAttribute('value');
+
+		if ( ! is_null($key))
+			self::$ci->session->set_userdata($key, $value);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Outputs the dump of one tag local variable
 	 *
@@ -2124,7 +2177,12 @@ class TagManager
 			if (strtolower($is == 'false')) $is = FALSE;
 
 			if ($value == $is)
+			{
+				if (self::$trigger_else > 0)
+					self::$trigger_else--;
+
 				return self::wrap($tag, $tag->expand());
+			}
 			else
 				self::$trigger_else++;
 		}
@@ -2135,6 +2193,8 @@ class TagManager
 			switch($result)
 			{
 				case TRUE:
+					if (self::$trigger_else > 0)
+						self::$trigger_else--;
 					return self::wrap($tag, $tag->expand());
 					break;
 
@@ -2404,8 +2464,6 @@ class TagManager
 		{
 			if ($result)
 			{
-				if (self::$trigger_else > 0)
-					self::$trigger_else--;
 				return TRUE;
 			}
 			else

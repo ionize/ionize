@@ -84,6 +84,8 @@ test_tag_archives			Archives tag
 
 
 // @TODO :
+test_session :				Play with Session through Tags
+test_cookies :				Play with cookies through Tags
 test_tag_store : 					Store one value to reuse it in the same view
 test_tag_medias_module : 			Medias within one module
 test_tag_elements : 				Content Elements
