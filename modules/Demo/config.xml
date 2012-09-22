@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
 	<name>Demo Module</name>
-	<description>Demo module for modules developpers</description>
+	<description>Authors Demo module</description>
 	<uri_segment>demo</uri_segment>
-	
-	<!-- Has this module an admin panel ? -->
-	<has_admin>true</has_admin>
-	
-	<!-- Group who can access to the admin panel of the module -->
-	<access_group>editors</access_group>
-	
-	<!-- Module's DB tables. These tables will be installed at module installation -->
-	<database>
-		<table name="demo_module" if_not_exists="true" engine="InnoDB" default_charset="utf8" collate="utf8_unicode_ci" auto_increment="1">
-			<primary_key>id</primary_key>
-			<column name="id" type="int" length="11" attributes="UNSIGNED" zerofill="NOT NULL" auto_increment="true" ></column>
-			<column name="id_user" type="int" length="11" attributes="UNSIGNED" zerofill="NOT NULL"></column>
-			<column name="title" type="int" length="1" attributes="UNSIGNED"></column><!-- 0: male, 1: female-->
-			<column name="firstname" type="varchar" length="255" zerofill="NOT NULL"></column>
-			<column name="company" type="varchar" length="255"></column>
-		</table>
-	</database>
+
+    <!-- Has this module an admin panel ? -->
+    <has_admin>true</has_admin>
+
+    <!--
+        Group who can access to the admin panel of the module
+        Groups can be :
+        - super-admins
+        - admins
+        - editors
+    -->
+    <access_group>editors</access_group>
+
+    <!-- Module's Database installation script. -->
+    <database script="database.xml"></database>
+
 </module>

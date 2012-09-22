@@ -1,95 +1,77 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Demo Module Admin Controller
- *
- * This is the Ionize's admin panel for this module
- *
- * @author		Ionize Dev Team
- *
- *
- */
-
-class Demo extends Module_Admin 
+* Module admin controller
+*
+*
+*/
+class Demo extends Module_Admin
 {
 	/**
-	 * Constructor
-	 *
-	 */
-	function construct(){}
-
-
-	// ------------------------------------------------------------------------
-
+	* Constructor
+	*
+	* @access	public
+	* @return	void
+	*/
+	public function construct()
+	{
+	}
 
 	/**
-	 * Admin panel
-	 * Called from the modules list
-	 *
-	 */
-	function index()
+	* Admin panel
+	* Called from the modules list.
+	*
+	* @access	public
+	* @return	parsed view
+	*/
+	public function index()
 	{
 		$this->output('admin/demo');
 	}
-	
+
 	
 	// ------------------------------------------------------------------------
 	
 	
 	/**
-	 * Saves module's settings in /modules/Demo/config/config.php file
+	 * Adds "Addons" to core panels
+	 * When set, this function will be automatically called for each core panel.
 	 *
-	 */	
-	function save_config()
-	{
-		$this->load->model('config_model');
-		
-		// The config model needs the module folder name to load the config.php file
-		$this->config_model->open_file('config.php', $this->router->module_path);
-		
-		// Set the config items
-		$this->config_model->set_config('module_demo_true_false', ($this->input->post('module_demo_true_false') == '1') ? TRUE : FALSE);
-		$this->config_model->set_config('module_demo_string', $this->input->post('module_demo_string'));
-		
-		// Save the config items
-		if (FALSE === $this->config_model->save() )
-		{
-			$this->error(lang('ionize_message_operation_nok'));
-		}
-		else
-		{
-			// Updates the main panel
-			$this->update[] = array(
-				'element' => 'mainPanel',
-				'url' => admin_url() . 'module/demo/demo/index',
-				'title' => config_item('module_name')
-			);
-					
-			$this->success(lang('ionize_message_settings_saved'));
-		}
-	}
-	
-	
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Saves module's database fields
-	 * Add fields if they don't exist
+	 * One addon is a view from the module which will be displayed in a core panel,
+	 * to add some interaction with the current edited element (page, article)
+	 *
+	 * 
+	 * Core Panels which accepts addons :
+	 *  - article : Article Edition Panel
+	 *  - page : Page Edition Panel
+	 *  - media : Media Edition Panel
+	 *
+	 * Placeholders :
+	 * In each "Core Panel", some placeholder are defined :
+	 *  - 'options_top' : 		Options panel, Top
+	 *  - 'options_bottom' : 	Options panel, Bottom
+	 *  - 'main_top' : 			Main Panel, Top
+	 *  - 'main_bottom' : 		Main Panel, Bottom (Not implemented)
+	 *  - 'toolbar' : 			Top toolbar (Not implemented)
+	 * 
+	 * @param	Array			The current edited object (page, article, ...)
 	 *
 	 */
-	function save_database_fields()
-	{
-	}
-
-
-	function _addons()
+	public function _addons($object = array())
 	{
 		$CI =& get_instance();
 		
-	}	
-
-
+		// Send the article to the view
+		$data['article'] = $object;
+		
+		// Options panel Top Addon
+		$CI->load_addon_view(
+			'demo',								// Module folder
+			'article',							// Parent panel code
+			'options_top',						// Placehoder
+			'admin/addons/article/options', 	// View to display in the placeholder
+			$data								// Data send to the view
+		);
+	}
 }
-/* End of file usermanager.php */
-/* Location: ./modules/Usermanager/controllers/admin/usermanager.php */
+

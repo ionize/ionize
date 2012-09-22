@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
-	<name>FancyUpload Module</name>
-	<description>Gives users the ability to upload files to your website, in the directory of your choice</description>
-	<uri_segment>fancyupload</uri_segment>
-	<has_admin>true</has_admin>
-	<access_group>editors</access_group>
-</module>

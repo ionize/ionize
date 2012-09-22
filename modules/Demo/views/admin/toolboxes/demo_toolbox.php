@@ -1,39 +1,24 @@
 
-
-<div class="toolbox divider">
-	<a id="reloadDemoModulePanel" href="<?= admin_url() ?>module/demo/demo/index" rel="<?= config_item('module_name') ?>" class="icon refresh"></a>
+<div class="divider">
+	<a class="button light" id="newAuthorToolbarButton">
+		<i class="icon-plus"></i><?= lang('module_demo_button_create_author') ?>
+	</a>
 </div>
 
 <script type="text/javascript">
 
-	/**
-	 * Options show / hide button
-	 *
-	 */
-//	MUI.initSideColumn();
-
-
-	/**
-	 * Refresh the Demo module's admin panel
-	 *
-	 */
-	$('reloadDemoModulePanel').addEvent('click', function(e)
+	$('newAuthorToolbarButton').addEvent('click', function(e)
 	{
-		e.stop();
-		
-		ION.updateContent({
-			element: $('mainPanel'),
-			title: this.getProperty('rel'),
-			url : this.getProperty('href')
-		});
+		ION.formWindow(
+			'author',
+			'authorForm',
+			Lang.get('module_demo_label_new_author'),
+			admin_url + 'module/demo/author/create',
+			{
+				'width':350,
+				'height':200
+			}
+		);
 	});
-
-
-	/**
-	 * Form action
-	 * see mocha/init-forms.js for more information about this method
-	 */
-//	MochaUI.setFormSubmit('demoForm', 'demoFormSubmit', 'module/demo/demo/save');
-
 
 </script>

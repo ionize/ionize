@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sql>
+	<name>Ionize Demo Module Database Creation</name>
+	<version>1.0</version>
+	<license>Open Source MIT license</license>
+
+	<!--
+		Module's tables
+		Prefixed by module_<module name> to avoid collision
+	-->
+	<tables>
+
+		<!--
+			Author table
+			One author has a name and a gender
+		-->
+		<query>
+			CREATE TABLE IF NOT EXISTS module_demo_author (
+				id_author INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+				gender TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
+				name VARCHAR(255) NOT NULL,
+				PRIMARY KEY (id_author)
+			)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 1
+			DEFAULT CHARACTER SET = utf8
+			COLLATE = utf8_unicode_ci;
+		</query>
+
+		<!--
+			Author lang table
+			The author's bio or description should be available for each language
+		-->
+		<query>
+			CREATE TABLE IF NOT EXISTS module_demo_author_lang (
+				id_author INT UNSIGNED NOT NULL,
+				lang VARCHAR(3) NOT NULL,
+				description VARCHAR(3000) NULL,
+				PRIMARY KEY (id_author,lang)
+			)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = utf8
+			COLLATE = utf8_unicode_ci;
+		</query>
+
+		<!-- 
+			Author media table
+			One author can have a photo
+		-->
+		<query>
+			CREATE TABLE IF NOT EXISTS module_demo_author_media (
+				id_author INT(11) UNSIGNED NOT NULL,
+				id_media INT(11) UNSIGNED NOT NULL DEFAULT 1,
+				ordering INT(11) UNSIGNED NULL DEFAULT 9999,
+				PRIMARY KEY (id_author, id_media)
+			)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = utf8
+			COLLATE = utf8_unicode_ci;
+		</query>
+		
+		<!--
+			Link table
+			One author is linked to one page, article, other parent
+		-->
+		<query>
+			CREATE TABLE IF NOT EXISTS module_demo_links (
+				parent CHAR(25) NOT NULL,
+				id_parent INT(11) UNSIGNED NOT NULL,
+				id_author INT UNSIGNED NOT NULL,
+				ordering INT(11) UNSIGNED NULL DEFAULT 9999,
+				PRIMARY KEY (parent,id_parent,id_author)
+			)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = utf8
+			COLLATE = utf8_unicode_ci;
+		</query>
+		
+	</tables>
+
+	<!--
+		Content inserted at module's installation
+	-->
+	<content>
+	
+		<query>
+			INSERT IGNORE INTO module_demo_author (id_author, name, gender)
+			VALUES
+			(1, 'Roberto Chansez', 1),
+			(2, 'Elisabeth Fueller', 2),
+			(3, 'Emile Durand', 1);
+		</query>
+
+		<query>
+			INSERT IGNORE INTO module_demo_author_lang (id_author,lang,description)
+			VALUES
+			(1, 'en', 'Known as a famous explorator, he discovered more than 50 new kind of animals'),
+			(2, 'en', 'World known artist and designer'),
+			(3, 'en', 'Famous TV speakering in Marioland');
+		</query>
+
+	</content>
+</sql>
