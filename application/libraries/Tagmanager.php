@@ -108,6 +108,8 @@ class TagManager
 		'subtitle' => 		'tag_simple_value',
 		'description' => 	'tag_simple_value',
 		'date' => 			'tag_simple_date',
+		'created' => 		'tag_simple_date',
+		'updated' => 		'tag_simple_date',
 
 		// System / Core tags
 		'config' => 			'tag_config',
@@ -1011,7 +1013,11 @@ class TagManager
 		// 2. Fall down to tag locals storage
 		if (is_null($value))
 			$value = $tag->get($tag->name);
-
+		else
+		{
+			// Add to local storage, so other tags can use it
+			$tag->set($tag->name, $value);
+		}
 		return self::output_value($tag, $value);
 	}
 
@@ -1024,6 +1030,9 @@ class TagManager
 		$value = $tag->getValue();
 
 		$value = self::format_date($tag, $value);
+
+		// Add to local storage, so other tags can use it
+		$tag->set($tag->name, $value);
 
 		// Process PHP, helper, prefix/suffix
 		$value = self::process_value($tag, $value);
