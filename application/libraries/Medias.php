@@ -32,7 +32,42 @@ class Medias
 	 */
 	public static $no_picture_source = "no_picture_source_smiley.png";
 
+
+	protected static $allowed_resize_method = array
+	(
+		'square', 		// Square picture
+		'adaptive', 	// Adapted to the size
+		'border', 		// Adds borders to picture, doesn't crop
+		'width', 		// Master size : width
+		'height',		// Master size : height
+		'wider_side', 	// Default value, not method needs to be set to use this one.
+	);
+
+	/**
+	 * Default resize method
+	 * Allowed methods :
+	 *
+	 * @var string
+	 *
+	 */
+	public static $default_resize_method = 'wider_side';
+
+
+	/**
+	 * Default border color for 'border' resize method
+	 *
+	 * @var string
+	 *
+	 */
+	public static $default_border_color = '#555';
+
+	// ------------------------------------------------------------------------
+
+
 	function __construct(){}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -43,44 +78,44 @@ class Medias
 	 * @return string
 	 *
 	 */
-	public function get_src($media, $conds, $fail_picture_path=NULL)
+	public function get_src($media, $settings, $fail_picture_path=NULL)
 	{
 		if ( ! file_exists(DOCPATH.$media['path']))
 		{
 			$media = $this->_get_no_source_picture($fail_picture_path);
 		}
 
-		$thumb_file_path = self::_get_thumb_file_path($media, $conds);
+		$thumb_file_path = self::_get_thumb_file_path($media, $settings);
 
 		// Create the thumb if it doesn't exists
-		if ( ! file_exists($thumb_file_path))
+		if ( ! file_exists($thumb_file_path) OR $settings['refresh'] == TRUE)
 		{
-			$settings = array();
+			// Resize method
+			if (
+				empty($settings['method']) OR
+				! in_array($settings['method'], self::$allowed_resize_method)
+			)
+				$settings['method'] = self::$default_resize_method;
 
-			$settings['method'] = 'wider_side';
-
-			if( ! empty($conds['square'])) $settings['method'] = 'square';
-			if(! empty($conds['master']) && $conds['master'] == 'width') $settings['method'] = 'fixed_width'; // width is fixed
-			if(! empty($conds['master']) && $conds['master'] == 'height') $settings['method'] = 'fixed_height'; // height is fixed
-			if(! empty($conds['adaptive'])) $settings['method'] = 'adaptive_resize';
-
-			if( ! empty($conds['background'])) $settings['method'] = 'border_add';
-
-			$settings['watermark'] = ( ! empty($conds['watermark'])) ? $conds['watermark'] : '';
-			$settings['unsharp'] = ( ! empty($conds['unsharp'])) ? $conds['unsharp'] : FALSE;
+			// Other options
+			// $settings['watermark'] = ( ! empty($conds['watermark'])) ? $conds['watermark'] : '';
+			$settings['unsharp'] = ( ! empty($settings['unsharp'])) ? $settings['unsharp'] : FALSE;
 
 			$size_error = FALSE;
 			$background_error = FALSE;
-			$thumb_folder = $this->get_thumb_folder($conds);
+			$thumb_folder = $this->get_thumb_folder($settings);
+
+			// User asked size check
+			$size = explode(',', $settings['size']);
 
 			switch($settings['method'])
 			{
 				case 'square':
 
-					$settings['width'] = $conds['size'];
-					$settings['height'] = $conds['size'];
+					$settings['width'] = $size[0];
+					$settings['height'] = $size[0];
 
-					$settings['square_crop'] = (empty($conds['start'])) ? $media['square_crop'] : $conds['start'];
+					$settings['square_crop'] = (empty($settings['start'])) ? $media['square_crop'] : $settings['start'];
 
 					// check size attribut
 					if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}$/', $thumb_folder))
@@ -88,9 +123,9 @@ class Medias
 
 					break;
 
-				case 'fixed_width':
+				case 'width':
 
-					$settings['width'] = $conds['size'];
+					$settings['width'] = $size[0];
 
 					// check size attribut
 					if(!preg_match('/^([0-9]){1,4}x$/', $thumb_folder))
@@ -98,9 +133,9 @@ class Medias
 
 					break;
 
-				case 'fixed_height':
+				case 'height':
 
-					$settings['height'] = $conds['size'];
+					$settings['height'] = $size[0];
 
 					// check size attribut
 					if(!preg_match('/^x([0-9]){1,4}$/', $thumb_folder))
@@ -108,9 +143,10 @@ class Medias
 
 					break;
 
+				// Default resize method
 				case 'wider_side';
 
-					$settings['size'] = $conds['size'];
+					$settings['size'] = $size[0];
 
 					// check size attribut
 					if(!preg_match('/^([0-9]){1,4}$/', $thumb_folder))
@@ -118,13 +154,10 @@ class Medias
 
 					break;
 
-				case 'adaptive_resize':
+				case 'adaptive':
 
-					$size = $conds['size'];
-					$dim = explode(',', $size);
-
-					$settings['width'] = $dim[0];
-					$settings['height'] = ( ! empty($dim[1])) ? $dim[1] : $dim[0];
+					$settings['width'] = $size[0];
+					$settings['height'] = ( ! empty($size[1])) ? $size[1] : $size[0];
 
 					// check size attribut
 					if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}a$/', $thumb_folder))
@@ -132,26 +165,22 @@ class Medias
 
 					break;
 
-				case 'border_add':
+				case 'border':
 
-					$size = $conds['size'];
-					$dim = explode(',', $size);
-
-					$settings['width'] = $dim[0];
-					$settings['height'] = $dim[1];
-
-					$settings['background'] = $conds['background'];
+					$settings['width'] = $size[0];
+					$settings['height'] = ( ! empty($size[1])) ? $size[1] : $size[0];
+					$settings['color'] = empty($settings['color']) ? self::$default_border_color : $settings['color'];
 
 					// check background color
 					if(
-						!preg_match('/^([A-Fa-f0-9]){6}$/', $settings['background'])
-						&& !preg_match('/^([A-Fa-f0-9]){3}$/', $settings['background'])
-						&& !preg_match('/^#([A-Fa-f0-9]){6}$/', $settings['background'])
-						&& !preg_match('/^#([A-Fa-f0-9]){3}$/', $settings['background'])
+						!preg_match('/^([A-Fa-f0-9]){6}$/', $settings['color'])
+						&& !preg_match('/^([A-Fa-f0-9]){3}$/', $settings['color'])
+						&& !preg_match('/^#([A-Fa-f0-9]){6}$/', $settings['color'])
+						&& !preg_match('/^#([A-Fa-f0-9]){3}$/', $settings['color'])
 					)
 						$background_error = TRUE;
 
-					// check size attribut
+					// check size attribute
 					if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}e$/', $thumb_folder))
 						$size_error = TRUE;
 
@@ -175,11 +204,14 @@ class Medias
 			{
 				return base_url() . Settings::get('files_path') . '/' . $fail_picture_path;
 			}
-			return self::_get_picture_url($media, $conds);
+			return self::_get_picture_url($media, $settings);
 		}
 
-		return self::_get_thumb_url($media, $conds);
+		return self::_get_thumb_url($media, $settings);
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	public function create_thumb($source_path, $dest_path, $settings = array())
@@ -255,8 +287,11 @@ class Medias
 		}
 		return FALSE;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	public function create_thumb_onthefly($source_path, $dest_path, $settings = array())
 	{
 		// Result of the process
@@ -313,7 +348,7 @@ class Medias
 		$ci_settings['new_image'] = $dest_path;
 		$ci_settings['maintain_ratio'] = TRUE;
 		$ci_settings['quality'] = $quality;	
-		$ci_settings['unsharpmask'] = FALSE;
+		$ci_settings['unsharpmask'] = $settings['unsharp'];
 
 		switch($settings['method'])
 		{
@@ -376,7 +411,7 @@ class Medias
 				
 				break;
 			
-			case 'fixed_width':
+			case 'width':
 				
 				
 				$ci_settings['width'] = $settings['width'];
@@ -391,7 +426,7 @@ class Medias
 				
 				break;
 			
-			case 'fixed_height':
+			case 'height':
 				
 				$ci_settings['height'] = $settings['height'];
 				$ci_settings['width'] = intval($settings['height']  * $dim['width'] / $dim['height']);
@@ -422,7 +457,7 @@ class Medias
 
 				break;
 				
-			case 'adaptive_resize':
+			case 'adaptive':
 								
 				$params = self::calculate_crop_params($dim['width'], $dim['height'], $settings['width'], $settings['height'], 'crop');
 				
@@ -452,58 +487,56 @@ class Medias
 				
 				break;
 				
-				case 'border_add':
+			case 'border':
 					
-					if(!empty($create_func))
+				if(!empty($create_func))
+				{
+					$params = self::calculate_crop_params($dim['width'], $dim['height'], $settings['width'], $settings['height'], 'expand');
+
+					$ci_settings['width'] = $params['resize_width'];
+					$ci_settings['height'] = $params['resize_height'];
+
+					$ci_settings['maintain_ratio'] = FALSE;
+
+					$CI->image_lib->clear();
+					$CI->image_lib->initialize($ci_settings);
+
+					if ( $CI->image_lib->resize() )
 					{
-					
-						$params = self::calculate_crop_params($dim['width'], $dim['height'], $settings['width'], $settings['height'], 'expand');
+						$imagefile = $CI->image_lib->full_dst_path;
 
-						$ci_settings['width'] = $params['resize_width'];
-						$ci_settings['height'] = $params['resize_height'];
+						$color = self::get_color_from_html_color($settings['color']);
 
-						$ci_settings['maintain_ratio'] = FALSE;
+						$imcanvas = imagecreatetruecolor($settings['width'], $settings['height']);
+						imagefill($imcanvas, 0, 0, $color);
 
-						$CI->image_lib->clear();
-						$CI->image_lib->initialize($ci_settings);
+						$image = $create_func($imagefile);
 
-						if ( $CI->image_lib->resize() )
-						{
-							$imagefile = $CI->image_lib->full_dst_path;
+						$src_w = imagesx($image);
+						$src_h = imagesy($image);
 
-							$color = self::get_color_from_html_color($settings['background']);
-							
-							$imcanvas = imagecreatetruecolor($settings['width'], $settings['height']);
-							imagefill($imcanvas, 0, 0, $color);
+						imagecopyresampled(
+							$imcanvas,
+							$image,
+							$params['x_axis'],
+							$params['y_axis'],
+							0,
+							0,
+							$src_w,
+							$src_h,
+							$src_w,
+							$src_h
+						);
 
-							$image = $create_func($imagefile);
+						if($save_func == 'imagegif')
+							$save_func($imcanvas, $imagefile);
+						else
+							$save_func($imcanvas, $imagefile, $quality);
 
-							$src_w = imagesx($image);
-							$src_h = imagesy($image);
-
-							imagecopyresampled(
-								$imcanvas, 
-								$image, 
-								$params['x_axis'],
-								$params['y_axis'],	
-								0,
-								0,					
-								$src_w,
-								$src_h,
-								$src_w,
-								$src_h
-							);
-
-							if($save_func == 'imagegif')
-								$save_func($imcanvas, $imagefile);
-							else
-								$save_func($imcanvas, $imagefile, $quality);
-							
-							imagedestroy($imcanvas);
-							imagedestroy($image);
-						}
-					
+						imagedestroy($imcanvas);
+						imagedestroy($image);
 					}
+				}
 
 				break;
 				
@@ -514,8 +547,11 @@ class Medias
 
 		return $result;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	public function create_thumb_folder($thumb_path)
 	{
 		// Create directory is not exists
@@ -574,8 +610,10 @@ class Medias
 		}
 		return FALSE;
 	}
-	
+
+
 	//-------------------------------------------------------------------------
+
 
 	/**
 	 * 
@@ -622,9 +660,11 @@ class Medias
 		}
 		return $data;
 	}
-	
+
+
 	//-------------------------------------------------------------------------
-	
+
+
 	/**
 	 * 
 	 * Calculate int color value from html hex color code (rgb) (3 or 6 digits)
@@ -658,7 +698,8 @@ class Medias
 		
 		return $color;
 	}
-	
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -668,7 +709,6 @@ class Medias
 	 * watermark is file inside 'files' folder, filename: 'watermark.png'
 	 *
 	 */
-	
 	public function embed_watermark($filepath, $watermark_positions)
 	{
 		$CI =& get_instance();
@@ -724,7 +764,11 @@ class Medias
 			}
 		}	
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	public function delete_squares($media)
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
@@ -756,10 +800,16 @@ class Medias
 		}
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return a pseudo media data array based on the no source picture
 	 *
-	 * @param null $no_source_picture_file
+	 * @param 	null|string
+	 *
+	 * @return 	array
 	 *
 	 */
 	private function _get_no_source_picture($no_source_picture_file = NULL)
@@ -806,11 +856,14 @@ class Medias
 	}
 
 
-	private function _get_thumb_file_path($media, $conds)
+	// ------------------------------------------------------------------------
+
+
+	private function _get_thumb_file_path($media, $settings)
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 
-		$size_folder = $this->get_thumb_folder($conds);
+		$size_folder = $this->get_thumb_folder($settings);
 
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
@@ -821,59 +874,63 @@ class Medias
 	}
 
 
-	public function get_thumb_folder($conds)
+	// ------------------------------------------------------------------------
+
+
+	public function get_thumb_folder($settings)
 	{
-		if(isset($conds['square']) && $conds['square'] == TRUE)
+		if (empty($settings['method']))
+			$settings['method'] = self::$default_resize_method;
+
+		// Some check regarding size
+		$size = explode(',', $settings['size']);
+		if (empty($size))
+				return '';
+
+		if ($settings['method'] == 'square')
 		{
-			return $conds['size'] . 'x' . $conds['size'];
+			return $size[0] . 'x' . $size[0];
 		}
 
-		// width is fixed
-		if (isset($conds['master']))
+		// Master width method
+		if ($settings['method'] == 'width' OR $settings['method'] == 'height')
 		{
-			if($conds['master'] == 'width')
-			{
-				return$conds['size'] . 'x';
-			}
+			// width is fixed
+			if($settings['method'] == 'width')
+				return $size[0] . 'x';
 
 			// height is fixed
-			if($conds['master'] == 'height')
-			{
-				return 'x' . $conds['size'];
-			}
+			if($settings['method'] == 'height')
+				return 'x' . $size[0];
 		}
 
-		if( isset($conds['adaptive']))
+		if ($settings['method'] == 'adaptive')
 		{
-			$size = $conds['size'];
-			$folder_parts = explode(',', $size);
+			if (empty($size[1])) $size[1] = $size[0];
 
-			if(isset($folder_parts[1]))
-				return trim($folder_parts[0]) . 'x' . trim($folder_parts[1]) . 'a';
-
-			return '';
+			return trim($size[0]) . 'x' . trim($size[1]) . 'a';
 		}
 
-		if( isset( $conds['background']) && ! is_null($conds['background']))
+		if ($settings['method'] == 'border')
 		{
-			$size = $conds['size'];
-			$folder_parts = explode(',', $size);
+			if (empty($size[1])) $size[1] = $size[0];
 
-			if(isset($folder_parts[1]))
-				return trim($folder_parts[0]) . 'x' . trim($folder_parts[1]) . 'e';
-
-			return '';
+			return trim($size[0]) . 'x' . trim($size[1]) . 'e';
 		}
 
-		// The wider side of image
-		return $conds['size'];
+		// Default
+		return $size[0];
 	}
 
-	private function _get_thumb_url($media, $conds)
+
+	// ------------------------------------------------------------------------
+
+
+	private function _get_thumb_url($media, $settings)
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 
-		$size_folder = $this->get_thumb_folder($conds);
+		$size_folder = $this->get_thumb_folder($settings);
 
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 
@@ -881,10 +938,17 @@ class Medias
 	}
 
 
-	private function _get_picture_url($media, $conds)
+	// ------------------------------------------------------------------------
+
+
+	private function _get_picture_url($media, $settings)
 	{
 		return base_url() . $media['path'];
 	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	private function _get_clean_picture_filename($filename)
 	{
@@ -895,7 +959,5 @@ class Medias
 
 		return $filename;
 	}
-
 }
-
 

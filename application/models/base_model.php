@@ -481,8 +481,14 @@ class Base_model extends CI_Model
 		if ( ! is_null($lang))
 		{
 			$this->{$this->db_group}->select($this->lang_table.'.*');
-			$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.'.$this->pk_name.' = ' .$this->table.'.'.$this->pk_name, 'left');
-			$this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
+			$this->{$this->db_group}->join(
+				$this->lang_table,
+				$this->lang_table.'.'.$this->pk_name.' = ' .$this->table.'.'.$this->pk_name .
+					' AND ' . $this->lang_table.'.lang = \'' . $lang . '\''
+				,
+				'left'
+			);
+			// $this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 
 		// Main data select			

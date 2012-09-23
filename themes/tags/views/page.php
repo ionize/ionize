@@ -46,6 +46,7 @@ test_condition_tag_if :		Condition Test tag
 test_condition :			Expression Test tag
 test_tag_get :				Get any field from object, with DB field name
 test_trace :				Output's one print_r() of one tag locals.
+test_session :				Play with Session through Tags
 
 // Page
 
@@ -73,8 +74,9 @@ test_tag_languages_menu
 test_tag_tree_navigation
 
 // Medias
-test_tag_media_page :		Medias from pages
-test_tag_media_articles :	Medias from articles
+test_medias_pictures :		Pictures options
+test_medias_from_page :		Medias from pages
+test_medias_from_article :	Medias from articles
 
 // Categories
 test_tag_categories : 		Categories listing
@@ -84,16 +86,13 @@ test_tag_archives			Archives tag
 
 
 // @TODO :
-test_session :				Play with Session through Tags
 test_cookies :				Play with cookies through Tags
 test_tag_store : 					Store one value to reuse it in the same view
 test_tag_medias_module : 			Medias within one module
 test_tag_elements : 				Content Elements
 test_tag_subnavigation				Remove ???
 
-test_temp : 				Temp dev's tests
-
 */
 ?>
 
-<ion:partial view="test_session"  />
+<ion:partial view="test_medias_pictures"  />

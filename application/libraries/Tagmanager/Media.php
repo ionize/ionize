@@ -22,6 +22,16 @@
  */
 class TagManager_Media extends TagManager
 {
+	/**
+	 * Default resize method
+	 * 4 methods are allowed : 'square', 'adaptive', 'border', 'wider_side'
+	 *
+	 * @var string
+	 *
+	 */
+	public static $default_resize_method = 'wider_side';
+
+
 	public static $tag_definitions = array
 	(
 		'medias' => 			'tag_medias',
@@ -40,13 +50,16 @@ class TagManager_Media extends TagManager
 		'medias:description' => 'tag_simple_value',
 		'medias:copyright' => 	'tag_simple_value',
 	);
-	
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
-	 * Get the medias regarding the type
+	 * Filters the medias regarding the type, extension, range.
 	 *
 	 */
-	public static function get_medias(FTL_Binding $tag, $medias)
+	public static function filter_medias(FTL_Binding $tag, $medias)
 	{
 		// Media type
 		$type = $tag->getAttribute('type');
@@ -142,6 +155,35 @@ class TagManager_Media extends TagManager
 	}
 
 
+	public static function get_medias(FTL_Binding $tag)
+	{
+		self::load_model('media_model');
+		// Pagination ?
+		// $tag_pagination = $tag->getAttribute('pagination');
+
+		// Type filter, limit, SQL filter
+		$type = $tag->getAttribute('type');
+		$limit = $tag->getAttribute('limit', 0);
+		$filter = $tag->getAttribute('filter');
+
+		// Order. Default order : ordering ASC
+		$order_by = $tag->getAttribute('order_by', 'date DESC');
+		$where = array('order_by' => $order_by);
+
+		// Add type / limit to the where array
+		if ( ! is_null($type)) $where['type'] = 'picture';
+		if ( $limit ) $where['limit'] = $limit;
+
+		// Get from DB
+		$medias = self::$ci->media_model->get_lang_list(
+			$where,
+			$lang = Settings::get_lang(),
+			$filter
+		);
+
+		return $medias;
+	}
+
 	// ------------------------------------------------------------------------
 	
 
@@ -149,12 +191,16 @@ class TagManager_Media extends TagManager
 	{
 		$str = '';
 
+		// Get the parent 'medias' data array.
 		$medias = $tag->getValue();
 
+		// Get all medias id no parent data
+		if (empty($medias) && $tag->getDataParent() == NULL)
+			$medias = self::get_medias($tag);
 		if ( ! empty($medias))
 		{
 			// Filter the parent's medias
-			$medias = self::get_medias($tag, $medias);
+			$medias = self::filter_medias($tag, $medias);
 
 			// hmmm....
 			//	$tag->set('medias', $medias);
@@ -325,25 +371,31 @@ class TagManager_Media extends TagManager
 	{
 		$setting_keys = array
 		(
+			'method',		// 'square', 'adaptive', 'border', 'width', 'height'
 			'size',
-			'master',
-			'square',
-			'adaptive',
 			'watermark',
-			'background',
 			'unsharp',
-			'start',		// Used by Square crop
+			'start',		// attribute for 'square' method
+			'color',		// attribute for 'border' method
+			'refresh',
 		);
+
 		$settings = array_fill_keys($setting_keys, '');
 
-/*		$parent = $tag->getParent();
-
+		// <ion:medias /> parent
+		$parent = $tag->getParent('medias');
 		if ( !is_null($parent))
-			$settings = array_merge($settings, $parent->getAttributes(), $tag->getAttributes());
-		else
-			$settings = array_merge($settings, $tag->getAttributes());
-*/
+			$settings = array_merge($settings, $parent->getAttributes());
+
+		// <ion:media /> parent
+		$parent = $tag->getParent('media');
+		if ( !is_null($parent))
+			$settings = array_merge($settings, $parent->getAttributes());
+
 		$settings = array_merge($settings, $tag->getAttributes());
+
+		if (empty($settings['method']))
+			$settings['method'] = self::$default_resize_method;
 
 		return $settings;
 	}

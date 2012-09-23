@@ -20,11 +20,7 @@ if($type == 'picture')
 	<!-- Picture file -->
 	<?php if($type == 'picture') :?>
 		<?php
-//			$file_path = Settings::get('files_path').'/';
-//			$thumb_base_url = base_url().$file_path.'.thumbs/';
 			$thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
-//			$thumb_path = str_replace($file_path, '', $path);
-//			$thumb_url =	$thumb_base_url.$thumb_path;
 		 ?>
 		<div class="picture" style="float:right;margin:0;">
 		<div class="thumb" style="width:<?= $thumb_size ?>px;height:<?= $thumb_size ?>px;background-image:url(<?= admin_url(TRUE) . 'media/get_thumb/'.$id_media.'/'.time()  ?>);"></div>
@@ -181,7 +177,7 @@ if($type == 'picture')
 					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
 				<?php endforeach ;?>
 				<?php if($type == 'picture') :?>
-					<li class="right"><a><span><?= lang('ionize_title_thumbnail'); ?></span></a></li>
+					<li class="right"><a><span><?= lang('ionize_title_options'); ?></span></a></li>
 				<?php endif ;?>
 				<li class="right"><a><span><?= lang('ionize_title_details'); ?></span></a></li>
 			</ul>

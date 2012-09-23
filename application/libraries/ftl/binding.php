@@ -339,7 +339,10 @@ class FTL_Binding
 		$stack = array_reverse($stack);
 		$binding = array_shift($stack);
 
-		return $binding->name;
+		if (is_object($binding))
+			return $binding->name;
+		else
+			return NULL;
 	}
 
 

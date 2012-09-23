@@ -50,9 +50,11 @@ class Media_model extends Base_model
 	/** 
 	 * Get media list for one defined parent
 	 *
-	 * @param	string	Media type. Can be 'picture', 'music', 'video', 'file'
-	 * @param	string	parent. Example : 'article', 'page'
-	 * @param	string	Parent ID
+	 * @param	string		Parent type. 'article', 'page'
+	 * @param	int			Parent ID
+	 * @param	string|null	Media type. Can be 'picture', 'music', 'video', 'file'
+	 *
+	 * @return	array		List of medias
 	 *
 	 */
 	public function get_list($parent, $id_parent, $type=NULL)
@@ -87,6 +89,39 @@ class Media_model extends Base_model
 				$data = $query->result_array();
 		}
 		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param array $where
+	 * @param null  $lang
+	 *
+	 * @return array
+	 *
+	 */
+	public function get_lang_list($where = array(), $lang = NULL)
+	{
+		// Correction on $where['id_media']
+		if (is_array($where) && isset($where['id_media']) )
+		{
+			$where[$this->table.'.id_media'] = $where['id_media'];
+			unset($where['id_media']);
+		}
+
+		// Correction on all non declared parent tables
+		foreach ($where as $key => $val)
+		{
+			if (strpos($val, 'id_media') === 0)
+			{
+				$val = $this->table . '.' . $val;
+				$where[$key] = $val;
+			}
+		}
+
+		return parent::get_lang_list($where, $lang);
 	}
 
 

@@ -116,7 +116,7 @@ class TagManager_Article extends TagManager
 		 *
 		 */
 		// Order. Default order : ordering ASC
-		$order_by = $tag->getAttribute('order-by', 'ordering ASC');
+		$order_by = $tag->getAttribute('order_by', 'ordering ASC');
 		$where = array('order_by' => $order_by);
 
 		// Add type to the where array
@@ -139,7 +139,7 @@ class TagManager_Article extends TagManager
 		if ( ! $limit && $nb_to_display > 0) $limit = $nb_to_display;
 		if ( $limit ) $where['limit'] = $limit;
 
-		// Get articles
+		// Get from DB
 		$articles = self::$ci->article_model->get_lang_list(
 			$where,
 			$lang = Settings::get_lang(),
