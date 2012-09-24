@@ -1,7 +1,7 @@
 Ionize CMS : Tag test
 =======================
 
-Version : 0.9.8
+Version : 0.9.9
 
 ### Tag test branch
 
