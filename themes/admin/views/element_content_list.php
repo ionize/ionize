@@ -39,13 +39,14 @@ $width = (100 / $nbLang);
 	<li class="sortme element element<?= $id_element ?>" id="element<?= $id_element ?>" rel="<?= $id_element ?>">
 
 		<a class="icon delete right absolute mr10" rel="<?= $id_element ?>"></a>
+        <a class="icon edit right absolute mr30" rel="<?= $id_element ?>"></a>
 		<span class="icon left drag absolute"></span>
 		<div style="position:absolute;top:3px;left:40px;font-size:20px;color:#ddd;"><?= $element['ordering'] ?></div>
 
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">
 
 			<?php if(count($element['fields']) > 1) :?>
-			<span class="toggler right mr10" style="display:block;height:16px;" rel="<?= $id_element ?>">
+			<span class="toggler right mr40" style="display:block;height:16px;" rel="<?= $id_element ?>">
 				<a class="left" rel="<?= $id_element ?>"><?= lang('ionize_label_see_element_detail') ?></a>
 			</span>
 			<?php endif ;?>
@@ -388,7 +389,7 @@ $width = (100 / $nbLang);
 	<?php endif ;?>
 
 	// Edit on each element
-	$$('#elements<?= $id_def ?> li.element a.title').each(function(item)
+	$$('#elements<?= $id_def ?> li.element a.title, #elements<?= $id_def ?> li.element .edit').each(function(item)
 	{
 		item.addEvent('click', function(e)
 		{
