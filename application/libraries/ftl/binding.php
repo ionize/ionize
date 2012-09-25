@@ -254,10 +254,36 @@ class FTL_Binding
 	 * @return FTL_Binding
 	 *
 	 */
-	public function getParent($parent_name = NULL)
+	public function getParent($parent_name = NULL, $all = TRUE, $stack = NULL)
 	{
-		$stack = array_reverse($this->getStack());
+		if (is_null($stack))
+		{
+			$stack = array_reverse($this->getStack());
+			array_shift($stack);
+		}
 
+		$parent = NULL;
+
+		// Get the parent name, but with the stack in the good order
+		if (is_null($parent_name))
+			$parent_name = $this->getParentName(array_reverse($stack));
+
+		foreach($stack as $binding)
+		{
+			array_shift($stack);
+			if ($binding->name == $parent_name)
+			{
+				if ($all == FALSE && $binding->isProcessTag() == TRUE)
+					$parent = $binding->getParent($parent_name, $all, $stack);
+				else
+					$parent = $binding;
+
+				break;
+			}
+		}
+		return $parent;
+
+/*
 		$parent = NULL;
 
 		if (is_null($parent_name))
@@ -273,6 +299,7 @@ class FTL_Binding
 		}
 
 		return $parent;
+*/
 	}
 
 
@@ -284,8 +311,15 @@ class FTL_Binding
 	 * @return FTL_Binding
 	 *
 	 */
-	public function getDataParent($stack = NULL)
+//	public function getDataParent($stack = NULL)
+	public function getDataParent()
 	{
+		if (is_null($this->data_parent))
+			$this->data_parent = $this->getParent(NULL, FALSE);
+
+		return $this->data_parent;
+
+		/*
 		if (is_null($this->data_parent))
 		{
 			if (is_null($stack))
@@ -318,6 +352,7 @@ class FTL_Binding
 		}
 
 		return $this->data_parent;
+		*/
 	}
 
 
@@ -343,6 +378,23 @@ class FTL_Binding
 			return $binding->name;
 		else
 			return NULL;
+	}
+
+	/**
+	 * Return
+	 * @param string     $attribute
+	 * @param null 		$parent_name
+	 *
+	 * @return mixed|null
+	 */
+	public function getParentAttribute($attribute, $parent_name = NULL)
+	{
+		$parent = $this->getParent($parent_name);
+
+		if ($parent)
+			return $parent->getAttribute($attribute);
+
+		return NULL;
 	}
 
 
@@ -437,7 +489,16 @@ class FTL_Binding
 
 		return $this;
 	}
-	
+
+	/**
+	 *
+	 */
+	public function remove($key)
+	{
+		unset($this->locals{$key});
+		return $this;
+	}
+
 	/**
 	 * Renders another tag.
 	 * 

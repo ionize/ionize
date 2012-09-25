@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS users (
   screen_name varchar(50) collate utf8_unicode_ci default NULL,
   firstname varchar(100) NOT NULL,
   lastname varchar(100) DEFAULT NULL,
-  birth_date datetime NOT NULL,
+  birthdate datetime NOT NULL,
   gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
   password varchar(255) collate utf8_unicode_ci NOT NULL,
   email varchar(120) collate utf8_unicode_ci NOT NULL,

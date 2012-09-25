@@ -26,6 +26,9 @@
 		.red {
 			color:#b00;
 		}
+		.green {
+			color:#0b0;
+		}
 		li a.active:after {
 			content:" (is active)";
 			color: #b00;
@@ -56,7 +59,26 @@
 			border:none;
 			border-bottom: 1px solid #ccc;
 		}
+		form {
+			border: solid 1px #eee;
+			padding:10px;
+			background-color: #fcfcfc;
+		}
+		label {
+			cursor: pointer;
+			display: block;
+		}
+		input {
+			margin-bottom: 10px;
+			border: solid 1px #ccc;
+			padding: 4px;
+		}
+        input[type=submit] {
+			cursor: pointer;
+        }
+
 	</style>
+	<script type="text/javascript" src="<ion:theme_url/>assets/javascript/jquery.min.js"></script>
 </head>
 
 <body>

@@ -105,9 +105,7 @@ class Connect_model extends CI_Model
 		$result = $this->get_users($identification);
 
 		if(empty($result))
-		{
-			return false;
-		}
+			return NULL;
 
 		$user = array_shift($result);
 		
@@ -117,7 +115,6 @@ class Connect_model extends CI_Model
 		}
 
 		return $user;
-
 	}
 	
 	
@@ -190,6 +187,11 @@ class Connect_model extends CI_Model
 	
 	public function save_user($user_data = array())
 	{
+		$fields = $this->db->list_fields($this->users_table);
+		foreach($user_data as $key => $value)
+			if  (! in_array($key, $fields))
+				unset($user_data[$key]);
+
 		return $this->db->insert($this->users_table, $user_data);
 	}
 	

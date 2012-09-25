@@ -294,7 +294,7 @@ class TagManager_Article extends TagManager
 	 * @param $articles
 	 *
 	 */
-	private function init_articles_urls(&$articles)
+	public function init_articles_urls(&$articles)
 	{
 		// Page URL key to use
 		$page_url_key = (config_item('url_mode') == 'short') ? 'url' : 'path';
@@ -579,7 +579,6 @@ class TagManager_Article extends TagManager
 
 		return self::wrap($tag, $tag->expand());
 	}
-
 
 	// ------------------------------------------------------------------------
 

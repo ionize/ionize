@@ -20,9 +20,28 @@
  */
 class Search_Tags extends TagManager
 {
+	protected static $_articles = NULL;
+
+	/**
+	 * Tags definition
+	 *
+	 * @var array
+	 *
+	 */
 	public static $tag_definitions = array
 	(
-		"search:searchresults:no_results" => 	"tag_no_results",
+		'search:form' => 				'tag_search_form',
+		'search:results' => 			'tag_search_results',
+		'search:realm' =>				'tag_simple_value',
+		'search:results:result' => 		'tag_expand',
+		'search:results:count' => 		'tag_search_results_count',
+
+		// title, subtitle are common tags, set by TagManager.
+		// content, summary are not
+		'search:results:result:summary' => 		'tag_simple_value',
+		'search:results:result:content' => 		'tag_simple_value',
+		'search:results:result:nb_words' => 	'tag_simple_value',
+		'search:results:result:page_url' => 	'tag_url',
 	);
 
 
@@ -39,9 +58,16 @@ class Search_Tags extends TagManager
 	 */
 	public static function index(FTL_Binding $tag)
 	{
-		$str = $tag->expand();
-		
-		return $str;
+		// POST realm
+		$realm = self::$ci->input->post('realm');
+
+		// CI returns FALSE. But FALSE is a value !
+		if ($realm == FALSE)
+			$realm = NULL;
+
+		$tag->set('realm', $realm);
+
+		return $tag->expand();
 	}
 
 
@@ -49,83 +75,23 @@ class Search_Tags extends TagManager
 
 	
 	/**
-	 * Search form tag
-	 * 
-	 * Returns the search form view
+	 * Display the search form
 	 *
-	 * @usage	<ion:searchform />
+	 * @usage	<ion:search:form />
 	 *
 	 */
-	public static function tag_searchform(FTL_Binding $tag)
+	public static function tag_search_form(FTL_Binding $tag)
 	{
-		$CI =& get_instance();
-	
-		$searchForm_action = (isset($tag->attr['result_page']) ) ? $tag->attr['result_page'] : '';
-		$tag->locals->result_page = $searchForm_action;
+		// $searchForm_action = (isset($tag->attr['result_page']) ) ? $tag->attr['result_page'] : '';
+		// $tag->locals->result_page = $searchForm_action;
 		
-		
-		// If the realm data was posted, the form will not be displayed
-		// Useful when results should be displayed on the same page as the search form
-//		if ($realm = $CI->input->post('realm'))
-//		{
-//			return '';
-//		}
-//		else
-//		{
-			$tag->expand();
+		$tag->expand();
 			
-			// the tag returns the content of this view :
-			return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search_form'.EXT));
-//		}
+		// the tag returns the content of this view :
+		return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search_form'.EXT));
 	}
+
 	
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Form status message tag
-	 * Useful if the form is sent again after an unsuccessful search
-	 *
-	 */
-	public static function tag_status_message(FTL_Binding $tag)
-	{
-		// Local results are set : Means the search process was done
-		// Because the form will only be displayed again after unsuccesful search, if the var is set, it means no results were found.
-		if ( isset($tag->locals->results))
-		{
-			return lang('module_search_message_no_results');
-		}
-		else
-		{
-			return lang('module_search_fill_the_field');
-		}
-	}
-	
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Form action tag
-	 * Used to display the results on a new page
-	 *
-	 */
-	public static function tag_result_page(FTL_Binding $tag)
-	{
-		// Local results are set : Means the search process was done
-		if ( isset($tag->locals->result_page))
-		{
-			return $tag->locals->result_page;
-		}
-		else
-		{
-			return "";
-		}
-	}
-	
-	
-
 	// ------------------------------------------------------------------------
 
 
@@ -133,261 +99,123 @@ class Search_Tags extends TagManager
 	 * Search results tag
 	 * Parent tag for results
 	 *
-	 * @usage	<ion:searchresults>
+	 * @param	FTL_Binding
+	 * @return 	string
+	 * @usage	<ion:search:results>
 	 *
 	 */
-	public static function tag_searchresults(FTL_Binding $tag)
+	public static function tag_search_results(FTL_Binding $tag)
 	{
-		$CI =& get_instance();
-		
 		$str = '';
-		
-		// Add the realm to the local var, so it can be retrieved
-		$tag->locals->realm = $CI->input->post('realm');
-		
-		// Did we got the POST realm ?
-		$realm = $CI->input->post('realm');
-	
-		$tag->locals->results = array();
-		
+
+		// POST realm
+		$realm = $tag->get('realm');
+
+		$tag->set('count', 0);
+
 		if ($realm !== FALSE && $realm != '')
 		{
-			// Loads the serach module model
-			$CI->load->model('search_model', '', true);
-			
 			// Get the results
-			$articles = $CI->search_model->get_articles($realm);
-			
-			// If result, expand the tag
-			if ( ! empty($articles))
+			if (is_null(self::$_articles))
 			{
-				// arrays of keys, for multisorting
-				$knum = $kdate = array();
-				
-				foreach($articles as $key => &$article)
+				// Loads the serach module model
+				self::$ci->load->model('search_model', '', TRUE);
+
+				$articles = self::$ci->search_model->get_articles($realm);
+
+				if ( ! empty($articles))
 				{
-					// set number of found words
-					preg_match_all('#'.$tag->locals->realm.'#i', $article['title'].' '.$article['content'], $match);
-					$num = count($match[0]);
+					// arrays of keys, for multisorting
+					$knum = $kdate = array();
 
-					$article['nb_found'] = $knum[$key] = $num;
-					$kdate[$key] = strtotime($article['date']);
+					foreach($articles as $key => &$article)
+					{
+						// set number of found words
+						preg_match_all('#'.$realm.'#i', $article['title'].' '.$article['content'], $match);
+						$num = count($match[0]);
+
+						$article['nb_words'] = $knum[$key] = $num;
+						$kdate[$key] = strtotime($article['date']);
+					}
+
+					// Sort the results by realm occurences DESC first, by date DESC second.
+					array_multisort($knum, SORT_DESC, SORT_NUMERIC, $kdate, SORT_DESC, SORT_NUMERIC, $articles);
 				}
-				
-				// Sort the results by realm occurences DESC first, by date DESC second.			
-				array_multisort($knum, SORT_DESC, SORT_NUMERIC, $kdate, SORT_DESC, SORT_NUMERIC, $articles);
-				
-				// Put the results to the local results var
-				$tag->locals->results = $articles;
-				$tag->locals->nb_results = count($articles);
+
+				// Init the articles URLs
+				TagManager_Article::init_articles_urls($articles);
+
+				// Adds the page URL to each article
+				self::init_pages_urls($articles);
+
+				self::$_articles = $articles;
 			}
-			// If no results, display a message or returns another view, the form view, whatever you want in fact...
-			else
+
+			// Add the number of result to the tag data
+			$count = count(self::$_articles);
+
+			$tag->set('count', $count);
+			$tag->set('results', self::$_articles);
+
+
+			foreach(self::$_articles as $key => $_article)
 			{
-				// Do nothing, the tag "no_result" will display the message or the form again.
+				// The tag should at least do 1 expand to get the child "loop" attribute
+				if ($tag->getAttribute('loop') === FALSE)
+				{
+					return $tag->expand();
+				}
+				else
+				{
+					$tag->set('result', $_article);
+					$tag->set('count', $count);
+					$tag->set('index', $key);
+
+					$str .= $tag->expand();
+				}
 			}
 		}
-		
-		$str .= $tag->expand();
-		
-		return $str;
-	}
 
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Nested in <ion:searchresults> tag
-	 * Feeds each result
-	 *
-	 * @usage : <ion:searchresults>
-	 *				<ion:results>
-	 *					<ion:title/>
-	 *					...
-	 *				</ion:results>
-	 *			</ion:searchresults>
-	 *
-	 */
-	public static function tag_results(FTL_Binding $tag)
-	{
-		$str = '';
-		$index = 0;
-		
-		foreach($tag->locals->results as $article)
-		{
-			// Add each article as the current local result
-			$index += 1;
-			$article['index'] = $index;
-			$tag->locals->result = $article;
-			
-			// Expand the tag : Means the children tags of this tag will get the above defined "result" 
+		// Expand the tag if no articles : Allows the children tags to be processed even not results were found
+		// Must not be done if articles or this add one unwanted expand.
+		if (empty(self::$_articles))
 			$str .= $tag->expand();
-		}	
-	
+
 		return $str;
 	}
-	
+
 
 	// ------------------------------------------------------------------------
 
 
 	/**
-	 * Displays the content of the tag if no results
+	 * Returns the number of results
 	 *
+	 * @param	FTL_Binding
+	 * @return 	string
 	 */
-	public static function tag_no_results(FTL_Binding $tag)
+	public static function tag_search_results_count(FTL_Binding $tag)
 	{
-		if( empty($tag->locals->results))
+		$tag->getParent()->setAttribute('loop', FALSE);
+		return self::tag_simple_value($tag);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Adds the page URL to the articles array
+	 *
+	 * @param $articles
+	 */
+	protected static function init_pages_urls(&$articles)
+	{
+		foreach($articles as &$article)
 		{
-			return $tag->expand();
+			$segments = explode('/', $article['url']);
+			array_pop($segments);
+			$article['page_url'] = implode('/', $segments) . '/';
 		}
-	
 	}
-	
-	
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Returns the searched term
-	 *
-	 */
-	public static function tag_realm(FTL_Binding $tag)
-	{
-		$str = '';
-		
-		if( ! empty($tag->locals->realm))
-		{
-			$str = $tag->locals->realm;
-		}
-		
-		return $str;
-	}
-	
-	
-	// ------------------------------------------------------------------------
-	
-
-	/**
-	 * Returns one asked field of the current result.
-	 * If you query result contains the field 'title', you can retrieve it with this tag.
-	 *
-	 * @usage		<ion:search:result field="title" />
-	 *
-	 *
-	 */
-	public static function tag_result(FTL_Binding $tag)
-	{
-		$field = (isset($tag->attr['field']) ) ? $tag->attr['field'] : false;
-		
-		if ($field && ( ! empty($tag->locals->result[$field])))
-		{
-			return self::wrap($tag, $tag->locals->result[$field]);
-		}
-		return '';
-	}
-
-	
-	// ------------------------------------------------------------------------
-	
-
-	/**
-	 * Return one result title
-	 * Nested in <ion:results>
-	 *
-	 * @usage : <ion:search:results>
-	 *				<ion:title>
-	 *				...
-	 *			</ion:search:results>
-	 *
-	 */
-	public static function tag_title(FTL_Binding $tag)
-	{
-		return $tag->locals->result['title'];
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the result URL
-	 *
-	 */
-	public static function tag_url(FTL_Binding $tag)
-	{
-		// Page URL index to use
-		$page_url = (config_item('url_mode') == 'short') ? 'page_url' : 'path';
-
-		$from = $tag->getAttribute('from');
-		if ($from == 'page')
-			return $tag->locals->result[$page_url];
-
-		return $tag->locals->result[$page_url].'/'.$tag->locals->result['url'];
-	}
-
-	
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Returns each result article's content
-	 *
-	 */
-	public static function tag_content(FTL_Binding $tag)
-	{
-		// paragraph limit ?
-		$paragraph = (isset($tag->attr['paragraph'] )) ? (int)self::get_attribute($tag, 'paragraph') : FALSE ;
-
-		$content = $tag->locals->result['content'];
-
-		// Limit to x paragraph if the attribute is set
-		if ($paragraph !== FALSE)
-			$content = tag_limiter($content, 'p', $paragraph);
-
-		return self::wrap($tag, $content);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns each result article's date
-	 *
-	 */
-	public static function tag_date($tag)
-	{
-		return self::wrap($tag, self::format_date($tag, $tag->locals->result['date']));
-	}
-	
-
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Returns number of articles found
-	 *
-	 */
-	public static function tag_nb_results($tag)
-	{
-		return self::wrap($tag, $tag->locals->nb_results);
-	}
-
-
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Returns number of term occurences for each article found
-	 *
-	 */
-
-	public static function tag_nb_found($tag)
-	{
-		return self::wrap($tag, $tag->locals->result['nb_found']);
-	}
-
-
 }

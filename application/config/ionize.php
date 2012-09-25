@@ -138,5 +138,83 @@ $config['maintenance_ips'] = array (
 );
 
 
+/*
+|--------------------------------------------------------------------------
+| Forms configuration
+|--------------------------------------------------------------------------
+|
+| For each form, set the emails to be send and the validation rules
+|
+*/
+$config['forms'] = array
+(
+	// Form name
+	'register' => array
+	(
+		// Emails which will be send when the form is properly processed
+		'emails' => array
+		(
+			array
+			(
+				// Can be :
+				// - Plain Email address : my.name@mydomain.com
+				// - 'user' to send it to the email of the form
+				// - 'website' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
+				'email' => 'website',
+				// Language term index, as set in language/xx/form_lang.php
+				'subject' => 'mail_website_registration_title',
+				// View file to use for the email
+				'view' => 'mail_website_registration',
+			),
+			array(
+				'email' => 'user',
+				'subject' => 'mail_user_registration_title',
+				'view' => 'mail_user_registration',
+			),
+		),
+		// Each field of the form
+		'fields' => array(
+			'firstname' => array(
+				'rules' => 'trim|required|xss_clean',
+				'label' => 'form_label_firstname',
+			),
+			'lastname' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_lastname',
+			),
+			'email' => array(
+				// CI rules
+				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
+				// Label translated index, as set in language/xx/form_lang.php
+				// Will be used to display the label name in error messages
+				'label' => 'form_label_email',
+			),
+			'password' => array(
+				'rules' => 'trim|required|min_length[4]|xss_clean',
+				// 'rules' => 'trim|required|min_length[4]|matches[password2]|xss_clean',
+				'label' => 'form_label_password',
+			),
+			/*
+			'password2' => array(
+				'rules' => 'trim|required|min_length[4]|xss_clean',
+				'label' => 'form_label_password_confirmation',
+				// If set to FALSE, ths field will not be saved to DB
+				'save' => FALSE,
+			),
+			*/
+			/*
+			'birthdate' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_birthdate',
+			),
+			'website' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_website',
+			),
+			*/
+		),
+	),
+);
+
 /* End of file ionize.php */
 /* Location: ./application/config/ionize.php */

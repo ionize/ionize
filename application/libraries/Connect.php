@@ -817,7 +817,8 @@ class Connect {
 		
 		// need username and password to process further
 		if( ! isset($user_data['username']) OR ! isset($user_data['email']) OR ! isset($user_data['password']))
-		{			
+//		if( isset($user_data['email']) OR ! isset($user_data['password']))
+		{
 			$this->error = $this->set_error_message('connect_missing_parameters', implode(', ', array_diff(array('username', 'email', 'password'), array_keys($user_data))));
 
 			return FALSE;
@@ -826,7 +827,8 @@ class Connect {
 		// @TODO: Make also that depending on the config file, if the login is done by the email, then it must check for duplicate too, 
 		// anyway the form validation will also take care of that problem before the connect lib is called.
 		if ( ! $this->model->find_user($user_data['username']))
-		{									
+//		if ( ! $this->model->find_user($user_data['email']))
+		{
 			// Set the salt
 			if( ! isset($user_data['salt']))
 			    $user_data['salt'] = $this->get_salt();

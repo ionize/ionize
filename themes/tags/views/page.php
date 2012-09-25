@@ -60,7 +60,7 @@ test_articles_from_website			Articles from whole website
 test_articles_in_articles			Nested articles into articles tag
 test_content_iframe :				Content test : embedded iFrames from Youtube and Google maps
 test_article_categories :			Categories from each article
-test_article_user : 				User who wrote the article in Ionize
+test_article_writer : 				User who wrote the article in Ionize
 test_article_prev_next :			Previous / Next article builder
 
 // Pagination
@@ -86,13 +86,16 @@ test_tag_archives			Archives tag
 
 
 // @TODO :
-test_cookies :				Play with cookies through Tags
-test_tag_store : 					Store one value to reuse it in the same view
-test_tag_medias_module : 			Medias within one module
-test_tag_elements : 				Content Elements
-test_tag_subnavigation				Remove ???
+test_cookies :					Play with cookies through Tags
+test_tag_store : 				Store one value to reuse it in the same view
+test_tag_medias_module : 		Medias within one module
+test_tag_elements : 			Content Elements
+test_tag_subnavigation			Remove ???
+
+test_module_search
+test_module_simpleform
 
 */
 ?>
 
-<ion:partial view="test_medias_pictures"  />
+<ion:partial view="test_user"  />

@@ -267,6 +267,10 @@ class TagManager
 				// add module enclosing tag
 				self::$tags[$module] = $class.'::index';
 
+				/*
+				 * Decision for 0.9.9 :
+				 * - All modules tags must be registered in self::tag_definitions
+				 *
 				foreach ($methods as $method)
 				{
 					$tag_name = explode('_', $method);
@@ -280,6 +284,7 @@ class TagManager
 						self::$tags[$module.':'.$tag_name] = $class.'::'.$method;
 					}
 				}
+				*/
 
 				// Load tags from the tag_definitions array : Overwrites auto-load
 				$tag_definitions = ! empty($vars["tag_definitions"]) ? $vars["tag_definitions"] : array();
@@ -1876,7 +1881,7 @@ class TagManager
 		$value = $tag->getAttribute('value');
 		$is = $tag->getAttribute('is');
 		
-		$return = $tag->getAttribute('return') == TRUE ? TRUE : FALSE;
+		$return = $tag->getAttribute('return') == FALSE ? FALSE : TRUE;
 
 		$result = NULL;
 		
@@ -1887,20 +1892,11 @@ class TagManager
 			else
 				$result = self::$ci->agent->{$method}();
 		}
-		if ($result == $is)
-		{
-			if ( ! $return)
-				return $tag->expand();
-			else
-				return $result;
-		}
 
 		// set the value
 		$tag->set('browser', $result);
-
 		$tag->expand();
-
-		return $result;
+		return self::output_value($tag, $result);
 	}
 
 
@@ -1954,6 +1950,8 @@ class TagManager
 	{
 		// Set this tag as "process tag"
 		$tag->setAsProcessTag();
+
+		// $tag->setAttribute('return', FALSE);
 
 		$key = $tag->getAttribute('key');
 		$value = $tag->getAttribute('value');

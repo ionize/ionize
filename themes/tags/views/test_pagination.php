@@ -16,12 +16,12 @@
 
 <h3>Result</h3>
 <!-- Articles list -->
-<ion:page:articles pagination="2">
+<ion:page:articles pagination="3">
 	<h3><ion:article:title/></h3>
 	<ion:article:content paragraph="1" />
 </ion:page:articles>
 
 <!-- Pagination -->
-<ion:page:articles:pagination pagination="2" />
+<ion:page:articles:pagination pagination="3" />
 
 

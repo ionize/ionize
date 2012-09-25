@@ -4,7 +4,7 @@
  *
  * Default Pagination language file
  *
- * Copy this file to /themes/<my_theme/config/pagination.php
+ * Copy this file to /themes/<my_theme/language/xx/pagination_lang.php
  * to replace these translations with your one.
  *
  * IMPORTANT :

@@ -3,14 +3,13 @@
 class Demo_Tags extends TagManager
 {
 	/**
-	 * Tag declaration
-	 * These declaration will overwrite the autoload of tags
+	 * Tags declaration
 	 *
 	 * @var array
 	 *
-	 * @usage	"<scope>" => "<method_in_this_class>"
+	 * @usage	"<tag scope>" => "<method_in_this_class>"
 	 * 			Examples :
-	 * 			"articles:hello" => "my_hello_method"
+	 * 			"articles:hello" => "my_hello_method" : The tag "hello" will be usable as child of "articles"
 	 * 			"demo:authors" => "my_authors_method"
 	 */
 	public static $tag_definitions = array
