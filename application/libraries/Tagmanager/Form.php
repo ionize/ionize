@@ -17,9 +17,8 @@
  */
 class TagManager_Form extends TagManager
 {
-	// Additional errors, notices, success
+	// Additional errors, success
 	public static $additional_errors = array();
-	public static $additional_notices = array();
 	public static $additional_success = array();
 
 	protected static $_inited = FALSE;
@@ -53,11 +52,11 @@ class TagManager_Form extends TagManager
 		'form' => 								'tag_form',
 		'form:field' => 						'tag_expand',
 		'form:error' => 						'tag_expand',
-		'form:validation' => 					'tag_form_validation',
+		'form:validation' => 					'tag_expand',
+		'form:validation:result' => 			'tag_form_validation_result',
+
 		'form:validation:success' => 			'tag_form_validation_success',
 		'form:validation:error' => 				'tag_form_validation_error',
-		'form:validation:success:string' => 	'tag_form_validation_success_string',
-		'form:validation:error:string' => 		'tag_form_validation_error_string',
 	);
 
 
@@ -102,25 +101,45 @@ class TagManager_Form extends TagManager
 			}
 		}
 
-		return self::wrap($tag, $tag->expand());
+		return $tag->expand();
 	}
 
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * Return one form field value
+	 * Used to fill again the form after submit if validation fails.
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return mixed|string
+	 *
+	 * @usage	<ion:form:field:form_name:field_name />
+	 *
+	 * 			Example with the form called 'register' and the input called 'firstname' :
+	 * 			<ion:form:field:register:firstname />
+	 */
 	public static function tag_form_field_value(FTL_Binding $tag)
 	{
-		// $form = $tag->getAttribute('form');
 		$form = $tag->getParentName();
+
+		// Try to get the "form" tag parent
+		$data_parent = $tag->getParent('form')->getParent();
+
 		// Default return value
 		$default = $tag->getAttribute('default');
 
-		if (!is_null($form))
+		if ( ! is_null($form))
 		{
 			if ($form == self::$posting_form_name)
 			{
 				return self::$ci->input->post($tag->name);
+			}
+			// No post data : try to get the field from from tag parent
+			if (is_object($data_parent))
+			{
+				return $tag->getValue($tag->name, $data_parent->name);
 			}
 		}
 		if (!is_null($default))
@@ -135,17 +154,26 @@ class TagManager_Form extends TagManager
 
 	/**
 	 * Return one single form field error
+	 *
 	 * @param FTL_Binding $tag
 	 *
 	 * @return string
 	 *
 	 * @usage	Output mode :
-	 * 			<ion:error:field_name form="form_name" />
+	 * 			<ion:error:form_name:field_name />
 	 *
 	 * 			Conditional mode :
-	 * 			<ion:error:field_name form="form_name is="true">
+	 * 			<ion:error:form_name:field_name is="true">
 	 * 				... this will be displayed ...
 	 * 			</ion:error:field_name>
+	 *
+	 * 			Example with the form called register and the input called 'firstname' :
+	 * 			<ion:error:register:firstname is='true'>
+	 * 				... this will be displayed ...
+	 * 			</ion:error:register:firstname>
+	 *
+	 * 			Example which return the asked value in case of error :
+	 * 			<ion:error:register:firstname is='true' return='class="error"'>
 	 *
 	 */
 	public static function tag_form_error_value(FTL_Binding $tag)
@@ -156,10 +184,20 @@ class TagManager_Form extends TagManager
 		{
 			if ($form == self::$posting_form_name)
 			{
-				if (!empty(self::$ci->form_validation->_error_array[$tag->name]))
+				// Validate or get the validation result
+				self::validate($form);
+
+				if ( ! empty(self::$ci->form_validation->_error_array[$tag->name]))
 				{
 					if ($tag->getAttribute('is') === TRUE)
+					{
+						// Return the value asked by the "return" attribute
+						if ( ! is_null($return = $tag->getAttribute('return')))
+							return self::wrap($tag, $return);
+
+						// or expand the tag
 						return $tag->expand();
+					}
 					else
 						return self::output_value($tag, self::$ci->form_validation->_error_array[$tag->name]);
 				}
@@ -177,19 +215,24 @@ class TagManager_Form extends TagManager
 	 *
 	 * @return string
 	 */
-	public static function tag_form_validation(FTL_Binding $tag)
+	public static function tag_form_validation_result(FTL_Binding $tag)
 	{
-		$form = $tag->getAttribute('name');
+		$form = $tag->getAttribute('form');
 		$is = $tag->getAttribute('is', TRUE);
 
-		$result = self::validate($form);
+		// Validate only if the $form is posted
+		if ($form == self::$posting_form_name)
+			$result = self::validate($form);
+		// Consider the validation fails (or wasn't done)
+		else
+			$result = FALSE;
 
 		if ($result == $is)
 			return self::wrap($tag, $tag->expand());
 
 		return '';
-	}
 
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -198,33 +241,56 @@ class TagManager_Form extends TagManager
 	 * @param FTL_Binding $tag
 	 *
 	 * @return string
+	 *
 	 */
 	public static function tag_form_validation_success(FTL_Binding $tag)
 	{
-		$is = $tag->getAttribute('is', TRUE);
+		$is = $tag->getAttribute('is');
+		$key = $tag->getAttribute('key');
 
-		if ( ! $is == empty(self::$additional_success))
-			return self::wrap($tag, $tag->expand());
+		$form_name = self::_get_form_name($tag);
 
-		return '';
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * @param FTL_Binding $tag
-	 *
-	 * @return string
-	 */
-	public static function tag_form_validation_error(FTL_Binding $tag)
-	{
-		$is = $tag->getAttribute('is', TRUE);
-
-		if ($is == self::$ci->form_validation->error_string())
+		if (self::$posting_form_name == $form_name)
 		{
-			return self::wrap($tag, $tag->expand());
+			self::validate(self::$posting_form_name);
+
+			// Expand mode
+			if ( ! is_null($is))
+			{
+				// No key ask : Check the additional success array
+				if (is_null($key))
+				{
+					if ( ! $is == empty(self::$additional_success))
+						return self::wrap($tag, $tag->expand());
+				}
+				else
+				{
+					if ( ! $is == empty(self::$additional_success[$key]))
+						return self::wrap($tag, $tag->expand());
+				}
+			}
+			// Return mode
+			else
+			{
+				if (is_null($key))
+				{
+					if ( ! empty(self::$additional_success))
+					{
+						$str = '';
+						foreach (self::$additional_success as $val)
+							$str .= "<span>".$val."</span>";
+
+						return self::wrap($tag, $str);
+					}
+				}
+				else
+				{
+					if ( ! empty(self::$additional_success[$key]))
+					{
+						return self::wrap($tag, self::$additional_success[$key]);
+					}
+				}
+			}
 		}
 
 		return '';
@@ -235,44 +301,64 @@ class TagManager_Form extends TagManager
 
 
 	/**
+	 * Displays the complete error string
+	 * (containing all errors)
+	 *
 	 * @param FTL_Binding $tag
 	 *
 	 * @return string
-	 */
-	public static function tag_form_validation_success_string(FTL_Binding $tag)
-	{
-		$ret = '';
-
-		foreach (self::$additional_success as $val)
-			$ret .= "<p>".$val."</p>";
-
-		return $ret;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * @param FTL_Binding $tag
 	 *
-	 * @return string
 	 */
-	public static function tag_form_validation_error_string(FTL_Binding $tag)
+	public static function tag_form_validation_error(FTL_Binding $tag)
 	{
-		$form_name = $tag->getAttribute('name');
+		$is = $tag->getAttribute('is');
+		$key = $tag->getAttribute('key');
 
-		// Try to get the form name from validation tag
-		if (is_null($form_name))
-			$form_name = $tag->getParentAttribute('name','validation');
-
+		$form_name = self::_get_form_name($tag);
 
 		// Add potential additional errors to the CI validation error string
-		self::check_additional_errors($form_name);
+		$has_errors = self::check_additional_errors($form_name);
 
-		if ($string = self::$ci->form_validation->error_string())
-			return self::output_value($tag, $string);
+		if (self::$posting_form_name == $form_name)
+		{
+			self::validate(self::$posting_form_name);
 
+			// Expand mode
+			if ( ! is_null($is))
+			{
+				// Global errors check
+				if (is_null($key))
+				{
+					if ( $is == $has_errors)
+						return self::wrap($tag, $tag->expand());
+				}
+				// Check one given error
+				else
+				{
+					if ( ! empty(self::$ci->form_validation->_error_array[$key]))
+						return self::wrap($tag, $tag->expand());
+				}
+			}
+			// Value return mode
+			else
+			{
+				// Global errors check
+				if (is_null($key))
+				{
+					// Remove the default <p> tag around each
+					self::$ci->form_validation->set_error_delimiters('<span>', '</span>');
+					if ($string = self::$ci->form_validation->error_string())
+						return self::output_value($tag, $string);
+				}
+				else
+				{
+					if ( ! empty(self::$ci->form_validation->_error_array[$key]))
+					{
+						return self::output_value($tag, self::$ci->form_validation->_error_array[$key]);
+					}
+				}
+			}
+		}
 		return '';
 	}
 
@@ -289,8 +375,11 @@ class TagManager_Form extends TagManager
 	 */
 	public static function validate($form_name)
 	{
-		$forms = config_item('forms');
-		$form = isset($forms[$form_name]) ? $forms[$form_name] : NULL;
+		// Load Validation because this method can be from outside the "<ion:form />" tag
+		if ( ! isset(self::$ci->form_validation))
+			self::$ci->load->library('form_validation');
+
+		$form = self::get_form_settings($form_name);
 
 		// Do not validate the form if the form is not defined
 		if (is_null($form))
@@ -363,7 +452,7 @@ class TagManager_Form extends TagManager
 			else
 				self::$fvr[$form_name] = FALSE;
 		}
-		// No fields defined bu form declared : Validation OK
+		// No fields defined but form declared : Validation OK
 		if ( ! isset(self::$fvr[$form_name]))
 			self::$fvr[$form_name] = TRUE;
 
@@ -448,6 +537,7 @@ class TagManager_Form extends TagManager
 	 */
 	public static function check_additional_errors($form_name)
 	{
+		// Add Additional errors to the CI validation errors array
 		foreach (self::$additional_errors as $key => $val)
 			self::$ci->form_validation->_error_array[$key] = $val;
 
@@ -455,8 +545,7 @@ class TagManager_Form extends TagManager
 		{
 			// Reorder errors regarding the $config definition
 			// Additional errors does not respect the rules order...
-			$forms = config_item('forms');
-			$fields =  ! empty($forms[$form_name]['fields']) ? $forms[$form_name]['fields'] : array();
+			$fields = self::get_form_fields($form_name, TRUE);
 
 			$result = array();
 			foreach ($fields as $field => $settings)
@@ -464,6 +553,11 @@ class TagManager_Form extends TagManager
 				if (isset(self::$ci->form_validation->_error_array[$field]))
 					$result[$field] = self::$ci->form_validation->_error_array[$field];
 			}
+			// Add custom errors (not in form fields) at the end
+			foreach (self::$ci->form_validation->_error_array as $key => $value)
+				if ( ! in_array($key, array_keys($result)))
+					$result[$key] = $value;
+
 			self::$ci->form_validation->_error_array = $result;
 
 			// Cleaning
@@ -474,6 +568,13 @@ class TagManager_Form extends TagManager
 		return FALSE;
 	}
 
+	public static function get_form_settings($form_name)
+	{
+		$forms = config_item('forms');
+		$form = isset($forms[$form_name]) ? $forms[$form_name] : NULL;
+
+		return $form;
+	}
 
 	/**
 	 * Returns the array of form fields
@@ -486,8 +587,7 @@ class TagManager_Form extends TagManager
 	 */
 	public static function get_form_fields($form_name, $all = FALSE)
 	{
-		$forms = config_item('forms');
-		$form = isset($forms[$form_name]) ? $forms[$form_name] : NULL;
+		$form = self::get_form_settings($form_name);
 
 		$fields = array();
 
@@ -507,15 +607,36 @@ class TagManager_Form extends TagManager
 
 	public static function get_form_emails($form_name)
 	{
-		$forms = config_item('forms');
-		$form = isset($forms[$form_name]) ? $forms[$form_name] : NULL;
+		$form = self::get_form_settings($form_name);
 
 		$emails = array();
+
 		if (is_null($form)) return $emails;
 
 		$emails = ! empty($form['emails']) ? $form['emails'] : array();
 
 		return $emails;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Returns the form name
+	 * Try to get the form name : 1. Form tag, 2. From parent validation tag
+	 *
+	 * @param 	FTL_Binding $tag
+	 * @return	string
+	 *
+	 */
+	private static function _get_form_name(FTL_Binding $tag)
+	{
+		$form_name = $tag->getAttribute('form');
+
+		if (is_null($form_name))
+			$form_name = $tag->getParentAttribute('form','validation');
+
+		return $form_name;
 	}
 
 	// ------------------------------------------------------------------------

@@ -18,21 +18,24 @@
 class TagManager_User extends TagManager
 {
 	/**
-	 *
-	 * @var null
-	 */
-	// protected static $user = NULL;
-
-	/**
+	 * TRUE if the form data were processed
 	 * @var bool
 	 */
 	protected static $processed = FALSE;
 
-	protected static $got_user = FALSE;
+
+	/**
+	 * Stores the current user
+	 *
+	 * @var null
+	 *
+	 */
+	protected static $user = NULL;
+
 
 	public static $tag_definitions = array
 	(
-		// Basic data
+		// User data
 		'user' => 				'tag_user',
 		'user:name' => 			'tag_user_name',
 		'user:join_date' =>		'tag_simple_date',
@@ -41,7 +44,7 @@ class TagManager_User extends TagManager
 		'user:firstname' => 	'tag_simple_value',
 		'user:lastname' => 		'tag_simple_value',
 		'user:gender' => 		'tag_simple_value',
-		'user:birth_date' => 	'tag_simple_value',
+		'user:birthdate' => 	'tag_simple_value',
 
 		// Advanced
 		/*
@@ -50,11 +53,13 @@ class TagManager_User extends TagManager
 		 * - register
 		 *
 		 */
-		'user:login' =>			'tag_user_login',
 		'user:register' =>		'tag_user_register',
 		'user:logged' =>		'tag_user_logged',
 
 	);
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -67,35 +72,32 @@ class TagManager_User extends TagManager
 	{
 		self::load_model('users_model');
 
-		// Processes Form data
+		// Do these once
 		if (self::$processed === FALSE)
 		{
+			// Process form data
 			self::process_data($tag);
+
+			// Set the current user
+			self::$user = Connect()->get_current_user();
+
 			self::$processed = TRUE;
 		}
 
-		// Get the current user : Only once
-		if (self::$got_user === FALSE)
-		{
-			$user = Connect()->get_current_user();
+		// Do this everytime the tag is called
+		if (self::$user) $tag->set('user', self::$user);
 
-			if ($user)
-				$tag->set('user', $user);
-
-			self::$got_user = TRUE;
-		}
-
-		return self::wrap($tag, $tag->expand());
+		return $tag->expand();
 	}
 
 
-	public static function tag_user_login(FTL_Binding $tag)
-	{
-	}
+	// ------------------------------------------------------------------------
 
 
 	public static function tag_user_logged(FTL_Binding $tag)
 	{
+		$tag->setAsProcessTag();
+
 		$is = $tag->getAttribute('is');
 
 		if (is_null($is)) $is = TRUE;
@@ -112,6 +114,7 @@ class TagManager_User extends TagManager
 			return '';
 		}
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -130,10 +133,15 @@ class TagManager_User extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
 
 	protected function process_data(FTL_Binding $tag)
 	{
 		$form_name = self::$ci->input->post('form');
+
+		// Form settings
+		$form_settings = TagManager_Form::get_form_settings($form_name);
 
 		if ($form_name)
 		{
@@ -141,6 +149,7 @@ class TagManager_User extends TagManager
 			{
 				// Logout
 				case 'logout':
+
 					if (Connect()->logged_in())
 					{
 						Connect()->logout();
@@ -150,13 +159,23 @@ class TagManager_User extends TagManager
 
 				// Login
 				case 'login':
-					if ( ! Connect()->logged_in())
+
+					if (TagManager_Form::validate('login'))
 					{
-						$user = array(
-							'email' => self::$ci->input->post('email'),
-							'password' => self::$ci->input->post('password')
-						);
-						Connect()->login($user);
+						if ( ! Connect()->logged_in())
+						{
+							$user = array(
+								'email' => self::$ci->input->post('email'),
+								'password' => self::$ci->input->post('password')
+							);
+
+							$result = Connect()->login($user);
+
+							if ($result)
+								TagManager_Form::set_additional_success('login', lang($form_settings['success']));
+							else
+								TagManager_Form::set_additional_error('login', lang($form_settings['error']));
+						}
 					}
 					break;
 
@@ -175,55 +194,23 @@ class TagManager_User extends TagManager
 					$user['username'] = $user['email'];
 					$user['join_date'] = date('Y-m-d H:i:s');
 
-//					if ( ! Connect()->register($user))
-//					{
-//						trace(Connect()->error);
-//					}
-//					else
-//					{
-//						$user = Connect()->get_user($user['username']);
+					if ( ! Connect()->register($user))
+					{
+						return FALSE;
+						/*
+						throw new Exception(
+							'User:process_data()->register : User Registration impossible.'
+						);
+						*/
+					}
+					else
+					{
+						$user = Connect()->get_user($user['username']);
+						$user['activation_key'] = Connect()->calc_activation_key($user);
 
-//						$activation_key = Connect()->calc_activation_key($user);
-//trace('activaion key :' . $activation_key);
 						// Send Emails
-						$emails = TagManager_Form::get_form_emails('register');
-						$website_email = Settings::get('site_email') ? Settings::get('site_email') : NULL;
-
-						foreach($emails as $email_setting)
-						{
-trace($email_setting);
-							$email = $email_setting['email'];
-
-							// Get potential website / user email
-							switch($email)
-							{
-								case 'website':
-									$email = (Settings::get('site_email') != '') ? Settings::get('site_email') : NULL;
-									break;
-
-								case 'user':
-									$email = $user['email'];
-									break;
-							}
-
-							// Send the email
-							if ( ! is_null($email))
-							{
-								// Email Lib
-								if ( ! isset(self::$ci->email)) self::$ci->load->library('email');
-
-								// Subject / From / To
-								self::$ci->email->subject(lang($email_setting['subject']));
-								self::$ci->email->from($website_email, Settings::get("site_title"));
-								self::$ci->email->to($email);
-
-								// View
-								$view_file = Theme::load($email_setting['view']);
-trace($view_file);
-
-							}
-						}
-//					}
+						self::send_emails($tag, 'register', $user);
+					}
 					break;
 
 				// Get password back
@@ -236,15 +223,105 @@ trace($view_file);
 
 				// Save profile
 				case 'profile':
+
+					// Lost connection
+					if(($current_user = Connect()->get_current_user()) == FALSE)
+					{
+						TagManager_Form::set_additional_error('profile', lang('form_not_logged'));
+						return FALSE;
+					}
+
+					// Delete the profile
+					if (self::$ci->input->post('delete'))
+					{
+
+					}
+					else
+					{
+						if (TagManager_Form::validate('profile'))
+						{
+							$fields = TagManager_Form::get_form_fields('profile');
+							if ( is_null($fields))
+								show_error('No definition for the form "profile"');
+
+							$fields = array_fill_keys($fields, FALSE);
+							$user = array_merge($fields, self::$ci->input->post());
+
+							// Compliant with Connect, based on username
+							$user['username'] = $user['email'];
+							$user['id_user'] = $current_user['id_user'];
+
+							$result = Connect()->update($user);
+
+							// If error here, it can only be on the email, which already exists in the DB
+							if ( ! $result)
+							{
+								TagManager_Form::set_additional_error('email', lang($form_settings['error']));
+							}
+							else
+							{
+
+								TagManager_Form::set_additional_success('profile', lang($form_settings['success']));
+							}
+						}
+					}
 					break;
 			}
 		}
-		trace('post');
-
-		$post = self::$ci->input->post();
-
-		trace($post);
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected function send_emails(FTL_Binding $tag, $form_name, $user)
+	{
+		$emails = TagManager_Form::get_form_emails('register');
+		$website_email = Settings::get('site_email') ? Settings::get('site_email') : NULL;
+
+		foreach($emails as $email_setting)
+		{
+			$email = $email_setting['email'];
+
+			// Get potential website / user email
+			switch($email)
+			{
+				case 'website':
+					$email = (Settings::get('site_email') != '') ? Settings::get('site_email') : NULL;
+					break;
+
+				case 'user':
+					$email = $user['email'];
+					break;
+			}
+
+			// Send the email
+			if ( ! is_null($email))
+			{
+				$subject = lang($email_setting['subject']);
+
+				// Tag data. Current context : <ion:user />
+				$tag->set('email_subject', $subject);
+				$tag->set('user', $user);
+
+				// Email Lib
+				if ( ! isset(self::$ci->email)) self::$ci->load->library('email');
+
+				// Subject / From / To
+				self::$ci->email->subject($subject);
+				self::$ci->email->from($website_email, Settings::get("site_title"));
+				self::$ci->email->to($email);
+
+				// View
+				$view_content = $tag->parse_as_nested(Theme::load($email_setting['view']));
+				self::$ci->email->message($view_content);
+				@self::$ci->email->send();
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**

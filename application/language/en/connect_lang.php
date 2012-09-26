@@ -14,13 +14,13 @@
 */
 
 // Main library language elements
-$lang['connect_login_failed'] = 'The login information you provided could not be authentificated. Either the username or the password you entered are wrong. Please try again.';
+$lang['connect_login_failed'] = 'The login information you provided could not be authenticated. Either the username or the password you entered are wrong. Please try again.';
 $lang['connect_access_denied'] = 'You have been denied access to %s';
 $lang['connect_missing_parameters']	= 'The parameter(s) %s was missing';
 $lang['connect_parameter_error'] = 'The parameter passed to %s is wrong.';
 $lang['connect_user_save_impossible'] = 'We were not able to save your data into our system, please try again or contact us.';
 $lang['connect_user_already_exists'] = 'There is already a user existing in our system with the same data. Please try to use another username or email address.';
-$lang['connect_blocked'] = 'You have been blocked because of too many failed logins, please try again %s';
+$lang['connect_blocked'] = 'You have been blocked because of too many failed login, please try again %s';
 $lang['connect_cannot_ban_yourself'] = 'You cannot ban yourself.';
 $lang['connect_register_success'] = 'You have successfully registered.';
 $lang['connect_register_success_verify_user'] = 'You have successfully registered but we must verify your data. An e-mail has been sent to you, please check it and click the activation link in the message to activate your account.';

@@ -60,22 +60,33 @@
 			border-bottom: 1px solid #ccc;
 		}
 		form {
-			border: solid 1px #eee;
 			padding:10px;
 			background-color: #fcfcfc;
 		}
 		label {
 			cursor: pointer;
 			display: block;
+			margin-top: 10px;
 		}
 		input {
-			margin-bottom: 10px;
 			border: solid 1px #ccc;
 			padding: 4px;
+			margin-bottom: 2px;
+		}
+		input.error, textarea.error {
+			border-color: #c00;
 		}
         input[type=submit] {
 			cursor: pointer;
+			margin-top: 10px;
         }
+		form p {
+			margin:0;
+		}
+		div.left{
+			float:left;
+			margin-left:20px;
+		}
 
 	</style>
 	<script type="text/javascript" src="<ion:theme_url/>assets/javascript/jquery.min.js"></script>

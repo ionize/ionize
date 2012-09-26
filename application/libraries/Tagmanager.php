@@ -118,6 +118,7 @@ class TagManager
 		'partial' => 			'tag_partial',
 		'widget' =>				'tag_widget',
 		'translation' => 		'tag_translation',
+		'lang' => 				'tag_translation',			// Alias for <ion:translation />
 		'site_title' => 		'tag_site_title',
 		'meta_title' => 		'tag_meta_title',
 		'meta_keywords' => 		'tag_meta_keywords',
@@ -132,7 +133,11 @@ class TagManager
 		'session' =>			'tag_session',
 		'session:set' =>		'tag_session_set',
 		'session:get' =>		'tag_session_get',
+
+		// Development tags
 		'trace' =>				'tag_trace',
+		'nesting' =>			'tag_nesting',
+
 	);
 
 
@@ -1560,9 +1565,10 @@ class TagManager
 	{
 		// Kind of article : Get only the article linked to the given view
 		$term = $tag->getAttribute('item');
-		
+
 		if (is_null($term))	$term = $tag->getAttribute('term');
-		
+		if (is_null($term))	$term = $tag->getAttribute('key');
+
 		if ( ! is_null($term))
 		{
 			$autolink = ($tag->getAttribute('autolink') == FALSE) ? FALSE : TRUE;
@@ -2012,6 +2018,10 @@ class TagManager
 		return $str;
 	}
 
+	public static function tag_nesting(FTL_Binding $tag)
+	{
+		return $tag->nesting();
+	}
 
 	// ------------------------------------------------------------------------
 

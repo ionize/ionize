@@ -148,9 +148,31 @@ $config['maintenance_ips'] = array (
 */
 $config['forms'] = array
 (
-	// Form name
+	// Login Form
+	'login' => array
+	(
+		// Success message Language index, as set in language/xx/form_lang.php
+		'success' => 'form_login_success_message',
+		'error' => 'form_login_error_message',
+		'fields' => array
+		(
+			'email' => array(
+				// CI rules
+				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
+				// Label translated index, as set in language/xx/form_lang.php
+				// Will be used to display the label name in error messages
+				'label' => 'form_label_email',
+			),
+			'password' => array(
+				'rules' => 'trim|required|min_length[4]|xss_clean',
+				'label' => 'form_label_password',
+			),
+		)
+	),
+	// Register Form
 	'register' => array
 	(
+		'success' => 'form_register_success_message',
 		// Emails which will be send when the form is properly processed
 		'emails' => array
 		(
@@ -164,16 +186,18 @@ $config['forms'] = array
 				// Language term index, as set in language/xx/form_lang.php
 				'subject' => 'mail_website_registration_title',
 				// View file to use for the email
-				'view' => 'mail_website_registration',
+				'view' => 'mail/website_registration',
 			),
-			array(
+			array
+			(
 				'email' => 'user',
 				'subject' => 'mail_user_registration_title',
-				'view' => 'mail_user_registration',
+				'view' => 'mail/user_registration',
 			),
 		),
 		// Each field of the form
-		'fields' => array(
+		'fields' => array
+		(
 			'firstname' => array(
 				'rules' => 'trim|required|xss_clean',
 				'label' => 'form_label_firstname',
@@ -183,10 +207,7 @@ $config['forms'] = array
 				'label' => 'form_label_lastname',
 			),
 			'email' => array(
-				// CI rules
 				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
-				// Label translated index, as set in language/xx/form_lang.php
-				// Will be used to display the label name in error messages
 				'label' => 'form_label_email',
 			),
 			'password' => array(
@@ -212,6 +233,37 @@ $config['forms'] = array
 				'label' => 'form_label_website',
 			),
 			*/
+		),
+	),
+	'profile' => array
+	(
+		'success' => 	'form_profile_success_message',
+		'error' => 		'form_profile_error_message',
+		'fields' => array
+		(
+			'firstname' => array(
+				'rules' => 'trim|required|xss_clean',
+				'label' => 'form_label_firstname',
+			),
+			'lastname' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_lastname',
+			),
+			'email' => array(
+				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
+				'label' => 'form_label_email',
+			),
+			'gender' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_gender',
+			),
+			'birthdate' => array(
+				'label' => 'form_label_birthdate',
+			),
+			'password' => array(
+				'rules' => 'trim|min_length[4]|xss_clean',
+				'label' => 'form_label_password',
+			),
 		),
 	),
 );

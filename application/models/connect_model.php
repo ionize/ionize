@@ -91,14 +91,18 @@ class Connect_model extends CI_Model
 			$this->error = $this->connect->set_error_message('connect_parameter_error', 'Connect_model::find_user()');
 		}
 
+		/*
+		 * Removed to be compliant with cond array containing value like :
+		 * 'my_field !=' => 'my_value'
+		 *
+		*/
 		$fields = $this->db->list_fields($this->users_table);
-		
+
 		foreach($identification as $key => $data)
 		{
 			if ( ! in_array($key, $fields))
 				unset($identification[$key]);
 		}
-
 
 		array_merge($identification, array('limit' => 1));
 
@@ -130,7 +134,7 @@ class Connect_model extends CI_Model
 	 * @return array  Array with User_records in it (groups are also stored in the user record)
 	 */
 	public function get_users($cond = array())
-	{		
+	{
 		foreach(array('limit', 'offset', 'order_by', 'like') as $key)
 		{
 			if(isset($cond[$key]))
@@ -143,7 +147,7 @@ class Connect_model extends CI_Model
 		$cond = $this->correct_ambiguous_conditions($cond);
 		
 		$this->db->join($this->groups_table, $this->users_table.'.'.$this->groups_pk.' = '.$this->groups_table.'.'.$this->groups_pk, 'left');
-		
+
 		$query = $this->db->get_where($this->users_table, $cond);
 
 		$result = array();
@@ -188,6 +192,7 @@ class Connect_model extends CI_Model
 	public function save_user($user_data = array())
 	{
 		$fields = $this->db->list_fields($this->users_table);
+
 		foreach($user_data as $key => $value)
 			if  (! in_array($key, $fields))
 				unset($user_data[$key]);
@@ -196,6 +201,25 @@ class Connect_model extends CI_Model
 	}
 	
 	
+	// --------------------------------------------------------------------
+
+
+	public function update_user($user_data = array())
+	{
+		$fields = $this->db->list_fields($this->users_table);
+
+		$id_user = $user_data[$this->users_pk];
+
+		foreach($user_data as $key => $value)
+			if  (! in_array($key, $fields))
+				unset($user_data[$key]);
+
+		$this->db->where($this->users_pk, $id_user);
+
+		return $this->db->update($this->users_table, $user_data);
+	}
+
+
 	// --------------------------------------------------------------------
 	
 	

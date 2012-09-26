@@ -253,7 +253,6 @@ class FTL_Binding
 	 *
 	 * @return FTL_Binding
 	 *
-	 */
 	public function getParent($parent_name = NULL, $all = TRUE, $stack = NULL)
 	{
 		if (is_null($stack))
@@ -282,26 +281,80 @@ class FTL_Binding
 			}
 		}
 		return $parent;
-
-/*
+	}
+	*/
+	public function getParent($parent_name = NULL, $all = TRUE)
+	{
 		$parent = NULL;
 
 		if (is_null($parent_name))
-			$parent_name = $this->getParentName();
-
-		foreach($stack as $binding)
 		{
-			if ($binding->name == $parent_name)
+			// Correct the nesting, because it is depending on the context, not on the tag
+			// means the found and returned parent will have the same nesting
+			$nesting = explode(':', $this->nesting());
+			while ( ! empty($nesting))
 			{
-				$parent = $binding;
-				break;
+				$last = array_pop($nesting);
+				if ($last == $this->name)
+				{
+					break;
+				}
+			}
+			$parent_name = ! empty($nesting) ? array_pop($nesting) : NULL;
+		}
+
+		// We're supposed to have one parent name
+		if ( ! is_null($parent_name))
+		{
+			$stack = array_reverse($this->getStack());
+			array_shift($stack);
+
+			foreach($stack as $binding)
+			{
+				array_shift($stack);
+				if ($binding->name == $parent_name)
+				{
+					if ($all == FALSE && $binding->isProcessTag() == TRUE)
+						$parent = $binding->getParent($parent_name, $all);
+					else
+						$parent = $binding;
+
+					break;
+				}
 			}
 		}
 
 		return $parent;
-*/
-	}
 
+		/*
+		if (is_null($stack))
+		{
+			$stack = array_reverse($this->getStack());
+			array_shift($stack);
+		}
+
+		$parent = NULL;
+
+		// Get the parent name, but with the stack in the good order
+		if (is_null($parent_name))
+			$parent_name = $this->getParentName(array_reverse($stack));
+
+		foreach($stack as $binding)
+		{
+			array_shift($stack);
+			if ($binding->name == $parent_name)
+			{
+				if ($all == FALSE && $binding->isProcessTag() == TRUE)
+					$parent = $binding->getParent($parent_name, $all, $stack);
+				else
+					$parent = $binding;
+
+				break;
+			}
+		}
+		return $parent;
+		*/
+	}
 
 	/**
 	 * Returns the first real data parent tag
@@ -365,6 +418,22 @@ class FTL_Binding
 	 */
 	public function getParentName($stack=NULL)
 	{
+		$nesting = explode(':', $this->nesting());
+		while ( ! empty($nesting))
+		{
+			$last = array_pop($nesting);
+			if ($last == $this->name)
+			{
+				break;
+			}
+		}
+
+		if ( ! empty($nesting))
+			return array_pop($nesting);
+
+		return NULL;
+
+		/*
 		if (is_null($stack))
 		{
 			$stack = $this->getStack();
@@ -378,6 +447,7 @@ class FTL_Binding
 			return $binding->name;
 		else
 			return NULL;
+		*/
 	}
 
 	/**
@@ -441,7 +511,6 @@ class FTL_Binding
 	{
 		if (is_null($key))
 			$key = $this->name;
-
 		if (is_null($data_array_name))
 			$data_array_name = $this->getDataParentName();
 
@@ -495,7 +564,7 @@ class FTL_Binding
 	 */
 	public function remove($key)
 	{
-		unset($this->locals{$key});
+		unset($this->locals->{$key});
 		return $this;
 	}
 

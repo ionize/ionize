@@ -869,6 +869,61 @@ class Connect {
 	}
 
 
+	/**
+	 * Updates one User
+	 * The user can be different from the current connected user.
+	 *
+	 * @param array $user_data
+	 *
+	 * @return bool
+	 *
+	 */
+	public function update($user_data = array())
+	{
+		$clear_password = NULL;
+		// Update or not the password
+		if ( ! empty($user_data['password']) OR $user_data['password'] != '')
+		{
+			$clear_password = $user_data['password'];
+			$user_data['salt'] = $this->get_salt();
+			$user_data['password'] = $this->encrypt($user_data['password'], $user_data);
+		}
+		elseif (isset($user_data['password']))
+			unset($user_data['password']);
+
+		if ( isset($user_data['id_user']))
+		{
+			// Try to find one user with the same username but different ID
+			$db_user = $this->model->find_user($user_data['username']);
+
+			if ( ! empty($db_user) && $db_user['id_user'] != $user_data['id_user'])
+			{
+				$this->error = $this->set_error_message('connect_user_already_exists');
+			}
+			else
+			{
+				$db_user = $this->model->find_user(array('id_user' =>$user_data['id_user']));
+
+				// Username has changed : the password needs to be refreshed
+				if ($user_data['username'] != $db_user['username'])
+				{
+					$user_data['salt'] = $this->get_salt();
+					$password = ! is_null($clear_password) ? $clear_password : $this->decrypt($db_user['password'], $db_user);
+					$user_data['password'] = $this->encrypt($password, $user_data);
+				}
+
+				$nb = $this->model->update_user($user_data);
+
+				if ($nb)
+					$this->current_user = $this->model->find_user($user_data['username']);
+
+				return $nb;
+			}
+		}
+
+		return FALSE;
+	}
+
 	// --------------------------------------------------------------------
 
 
