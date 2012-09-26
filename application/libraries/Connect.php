@@ -924,6 +924,21 @@ class Connect {
 		return FALSE;
 	}
 
+
+	// --------------------------------------------------------------------
+
+	public function delete($user_data = array())
+	{
+		$user = $this->model->find_user($user_data);
+
+		if ($user)
+		{
+			return $this->model->delete_user($user['id_user']);
+		}
+		return FALSE;
+	}
+
+
 	// --------------------------------------------------------------------
 
 

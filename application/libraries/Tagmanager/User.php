@@ -196,12 +196,7 @@ class TagManager_User extends TagManager
 
 					if ( ! Connect()->register($user))
 					{
-						return FALSE;
-						/*
-						throw new Exception(
-							'User:process_data()->register : User Registration impossible.'
-						);
-						*/
+						TagManager_Form::set_additional_error('register', lang('form_register_error_message'));
 					}
 					else
 					{
@@ -215,6 +210,9 @@ class TagManager_User extends TagManager
 
 				// Get password back
 				case 'password_back':
+
+					trace('password back');
+
 					break;
 
 				// Activate account
@@ -234,7 +232,9 @@ class TagManager_User extends TagManager
 					// Delete the profile
 					if (self::$ci->input->post('delete'))
 					{
-
+						$result = Connect()->delete($current_user);
+						Connect()->logout();
+						TagManager_Form::set_additional_success('profile', lang('form_profile_account_deleted'));
 					}
 					else
 					{
@@ -260,7 +260,6 @@ class TagManager_User extends TagManager
 							}
 							else
 							{
-
 								TagManager_Form::set_additional_success('profile', lang($form_settings['success']));
 							}
 						}

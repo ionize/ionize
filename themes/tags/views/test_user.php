@@ -269,12 +269,11 @@
 			<p>To keep the current one, leave empty</p>
             <input type="password" name="password" id="password-profile" />
 
+            <label for="delete-profile"><ion:lang key="form_label_delete_account" /></label>
+			<input type="checkbox" name="delete" value="1" id="delete-profile" />
 
             <br/>
 			<input type="submit" value="Save profile" />
-
-
-
 
 		</form>
 

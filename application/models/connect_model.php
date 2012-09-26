@@ -219,6 +219,15 @@ class Connect_model extends CI_Model
 		return $this->db->update($this->users_table, $user_data);
 	}
 
+	// --------------------------------------------------------------------
+
+
+	public function delete_user($id_user)
+	{
+		$this->db->where($this->users_pk, $id_user);
+
+		return $this->db->delete($this->users_table);
+	}
 
 	// --------------------------------------------------------------------
 	

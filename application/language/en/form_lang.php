@@ -29,6 +29,7 @@ $lang['form_label_birthdate'] = 'Birthdate';
 $lang['form_label_gender'] = 'Gender';
 $lang['form_label_password'] = 'Password';
 $lang['form_label_password_confirmation'] = 'Password confirm';
+$lang['form_label_delete_account'] = 'Delete account';
 
 /*
  * Buttons
@@ -62,6 +63,7 @@ $lang['form_register_success_message'] = "You successfully registered.";
 $lang['form_register_error_message'] = "Error : Registration not successful.";
 $lang['form_profile_success_message'] = "Profile data saved";
 $lang['form_profile_error_message'] = "This user already exists. Please change your username or email";
+$lang['form_profile_account_deleted'] = "Account deleted";
 
 /*
  * Validation Errors
