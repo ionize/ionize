@@ -28,9 +28,27 @@ class User extends Base_Controller {
 	 * By default, the controller will send the user to the login screen
 	 *
 	 */
-	function index()
+	public function index()
 	{
-		$this->login();
+		echo ('user');
+
+		// $this->login();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Activates one user account
+	 *
+	 */
+	public function activate($email, $activation_code)
+	{
+
+		echo $email;
+		echo '<br/>';
+		echo $activation_code;
 	}
 
 
@@ -39,8 +57,9 @@ class User extends Base_Controller {
 
 	/**
 	 * Logs one user
+	 * TODO : To rewrite.
+	 * The main idea is it is able to log one user through Ajax.
 	 *
-	 */
 	function login()
 	{
 		if( ! empty($_POST))
@@ -79,6 +98,7 @@ class User extends Base_Controller {
 			redirect($_SERVER['HTTP_REFERER']);
 		}
 	}
+	*/
 
 
 	// ------------------------------------------------------------------------
@@ -94,34 +114,17 @@ class User extends Base_Controller {
  	}
 
 
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Anti spam
-	 * If the field "name" is empty (not filled by javascript), message that javascript is needed
-	 * Ensure that most of the bots could not use the form
-	 *
-	 */
-	function antispam($str)
-	{
-		if ($str != config_item('form_antispam_key'))
-		{
-			$this->form_validation->set_message('antispam', lang('contact_form_javascript_needed'));
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}	
-
 
 	// ------------------------------------------------------------------------
 
 
 	private function _try_validate_login()
 	{
+		/*
+		 * TODO :
+		 * Should get the rules from "login" form defined in the config array.
+		 *
+		 */
 		$rules = array(
 			array(
 				'field'   => 'check',
@@ -142,7 +145,7 @@ class User extends Base_Controller {
 		
 		$this->form_validation->set_rules($rules);
 		
-		return ($this->form_validation->run() === true);
+		return ($this->form_validation->run() === TRUE);
 	}
 }
 

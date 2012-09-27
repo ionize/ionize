@@ -47,9 +47,9 @@ test_condition :			Expression Test tag
 test_tag_get :				Get any field from object, with DB field name
 test_trace :				Output's one print_r() of one tag locals.
 test_session :				Play with Session through Tags
+test_tag_lang :				Lang tag
 
 // Page
-
 test_tag_breadcrumb
 
 // Article, Article ID

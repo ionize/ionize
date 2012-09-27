@@ -728,6 +728,15 @@ class Connect {
 	// --------------------------------------------------------------------
 
 
+	public function find_user($user_data = array(), $with_group = TRUE)
+	{
+		return $this->model->find_user($user_data, $with_group);
+	}
+
+
+	// --------------------------------------------------------------------
+
+
 	/**
 	 * Returns the user based on his login name
 	 *

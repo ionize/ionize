@@ -117,8 +117,8 @@ class TagManager
 		'home_url' =>			'tag_base_url',				// Alias for <ion:base_url />
 		'partial' => 			'tag_partial',
 		'widget' =>				'tag_widget',
-		'translation' => 		'tag_translation',
-		'lang' => 				'tag_translation',			// Alias for <ion:translation />
+		'translation' => 		'tag_lang',					// Alias for <ion:lang />
+		'lang' => 				'tag_lang',
 		'site_title' => 		'tag_site_title',
 		'meta_title' => 		'tag_meta_title',
 		'meta_keywords' => 		'tag_meta_keywords',
@@ -1561,7 +1561,7 @@ class TagManager
 	 * @return 	string
 	 *
 	 */
-	public static function tag_translation(FTL_Binding $tag)
+	public static function tag_lang(FTL_Binding $tag)
 	{
 		// Kind of article : Get only the article linked to the given view
 		$term = $tag->getAttribute('item');
@@ -1569,23 +1569,22 @@ class TagManager
 		if (is_null($term))	$term = $tag->getAttribute('term');
 		if (is_null($term))	$term = $tag->getAttribute('key');
 
+		$swap = $tag->getAttribute('swap');
+		if ( ! is_null($swap))
+			$swap = self::get_lang_swap($tag);
+
 		if ( ! is_null($term))
 		{
-			$autolink = ($tag->getAttribute('autolink') == FALSE) ? FALSE : TRUE;
-		
-			if (array_key_exists($term, self::$ci->lang->language) && self::$ci->lang->language[$term] != '') 
-			{
-				if ( ! $autolink)
-					return self::wrap($tag, self::$ci->lang->language[$term]);
+			$autolink = $tag->getAttribute('autolink', TRUE);
 
-				return self::wrap($tag, auto_link(self::$ci->lang->language[$term], 'both', TRUE));
-			}
-			// Return the term index prefixed by "#" if no translation is found
-			else
-			{
-				return '#'.$term;
-			}
+			$line = lang($term, $swap);
+
+			if ( ! $autolink)
+				return self::wrap($tag, $line);
+
+			return self::wrap($tag, auto_link($line, 'both', TRUE));
 		}
+		
 		return '';
 	}
 	
@@ -2119,37 +2118,37 @@ class TagManager
 	 */
 	protected static function format_date(FTL_Binding $tag, $date)
 	{
-		if ( ! is_null($tag->getAttribute('format')))
+		// Distinguish datetime form date DB values
+		$default_format = (strlen($date) > 10) ? 'Y-m-d H:i:s' : 'Y-m-d';
+
+		$date = strtotime($date);
+
+		if ($date)
 		{
-			$date = strtotime($date);
+			$format = $tag->getAttribute('format', $default_format);
 
-			if ($date)
+			if ($format != 'Y-m-d H:i:s')
 			{
-				$format = $tag->getAttribute('format', 'Y-m-d H:i:s');
-
-				if ($format != 'Y-m-d H:i:s')
+				if (lang('dateformat_'.$format) != '#dateformat_'.$format)
 				{
-					if (lang('dateformat_'.$format) != '#dateformat_'.$format)
-					{
-						// Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
-						$format = lang('dateformat_'.$format);
-					}
+					// Date translations are located in the files : /themes/your_theme/language/xx/date_lang.php
+					$format = lang('dateformat_'.$format);
 				}
-
-				$segments = explode(' ', $format);
-
-				foreach($segments as $key => $segment)
-				{
-					$tmp = (String) date($segment, $date);
-
-					if (preg_match('/D|l|F|M/', $segment))
-						$tmp = lang(strtolower($tmp));
-
-					$segments[$key] = $tmp;
-				}
-
-				return implode(' ', $segments);
 			}
+
+			$segments = explode(' ', $format);
+
+			foreach($segments as $key => $segment)
+			{
+				$tmp = (String) date($segment, $date);
+
+				if (preg_match('/D|l|F|M/', $segment))
+					$tmp = lang(strtolower($tmp));
+
+				$segments[$key] = $tmp;
+			}
+
+			return implode(' ', $segments);
 		}
 
 		return $tag->expand();
@@ -2634,6 +2633,57 @@ class TagManager
 
 		ob_end_clean();
 		return $buffer;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected static function get_lang_swap(FTL_Binding $tag)
+	{
+		$swap = $tag->getAttribute('swap');
+
+		if ( ! is_null($swap))
+		{
+			$swap = explode(',', $swap);
+			$swap = array_map('trim', $swap);
+
+			// Try to get internal swap values
+			foreach($swap as &$str)
+			{
+				if (strpos($str, '::') !== FALSE)
+				{
+					$seg = explode('::', $str);
+
+					// The asked key must be set
+					if ( ! empty($seg[1]))
+					{
+						// Get from global value
+						if ($seg[0] == 'global')
+						{
+							$str = self::$context->get_global($seg[1]);
+						}
+						// Get from parent tag
+						else
+						{
+							$parent = NULL;
+
+							// Parent not set : current parent
+							if ($seg[0] == '')
+								$parent = $tag->getDataParent();
+							else
+								$parent = $tag->getParent($seg[0]);
+
+							if ( ! is_null($parent))
+								$str = $parent->getValue($seg[1], $parent->name);
+							else
+								$str = '';
+						}
+					}
+				}
+			}
+		}
+		return $swap;
 	}
 
 

@@ -2022,9 +2022,11 @@ class Base_model extends CI_Model
 	 * @return	Array		Array of fields data
 	 *
 	 */
-	function field_data($table, $with_pk = FALSE)
+	function field_data($table=NULL, $with_pk = FALSE)
 	{
 		$data = array();
+
+		$table = ( ! is_null($table)) ? $table : $this->table ;
 
 		$query = $this->{$this->db_group}->query("SHOW FULL COLUMNS FROM " . $table);
 

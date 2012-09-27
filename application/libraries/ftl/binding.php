@@ -514,10 +514,13 @@ class FTL_Binding
 		if (is_null($data_array_name))
 			$data_array_name = $this->getDataParentName();
 
-		$data_array = $this->get($data_array_name);
+		if ( ! is_null($key) && ! is_null($data_array_name))
+		{
+			$data_array = $this->get($data_array_name);
 
-		if (isset($data_array[$key]))
-			return $data_array[$key];
+			if (isset($data_array[$key]))
+				return $data_array[$key];
+		}
 
 		return NULL;
 	}

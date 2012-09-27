@@ -62,7 +62,7 @@
     </style>
 </head>
 <body>
-<center>
+
     <table border="0" width="100%" cellpadding="0" cellspacing="0" style="border:0; width: 100%;">
         <tr>
             <td class="bg_fade">
@@ -78,13 +78,12 @@
                                 <ion:lang key="form_label_lastname"/> : <ion:lastname />, <br/>
                                 <ion:lang key="form_label_email"/> : <ion:email />, <br/>
 							</p>
-
                         </td>
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
-</center>
+
 </body>
 </html>

@@ -38,17 +38,12 @@
  */
 if( ! function_exists('lang'))
 {
-	function lang($key, $id = '')
+	function lang($key, $swap = NULL)
 	{
 		$CI =& get_instance();
-		$line = $CI->lang->line($key);
+		$line = $CI->lang->line($key, $swap);
 
 		$line = (!$line) ? '#'.$key.'' : $line;
-	
-		if ($id != '')
-		{
-			$line = '<label for="'.$id.'">'.$line."</label>";
-		}
 	
 		return $line;
 	}

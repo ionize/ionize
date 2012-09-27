@@ -184,14 +184,14 @@ $config['forms'] = array
 				// - 'website' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
 				'email' => 'website',
 				// Language term index, as set in language/xx/form_lang.php
-				'subject' => 'mail_website_registration_title',
+				'subject' => 'mail_website_registration_subject',
 				// View file to use for the email
 				'view' => 'mail/website_registration',
 			),
 			array
 			(
 				'email' => 'user',
-				'subject' => 'mail_user_registration_title',
+				'subject' => 'mail_user_registration_subject',
 				'view' => 'mail/user_registration',
 			),
 		),
@@ -263,6 +263,28 @@ $config['forms'] = array
 			'password' => array(
 				'rules' => 'trim|min_length[4]|xss_clean',
 				'label' => 'form_label_password',
+			),
+		),
+	),
+	'password' => array
+	(
+		'success' => 	'form_password_success_message',
+		'error' => 		'form_password_error_message',
+		'not_found' => 	'form_password_not_found_message',
+		'fields' => array
+		(
+			'email' => array(
+				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
+				'label' => 'form_label_email',
+			),
+		),
+		'emails' => array
+		(
+			array
+			(
+				'email' => 'user',
+				'subject' => 'mail_user_password_title',
+				'view' => 'mail/user_password',
 			),
 		),
 	),

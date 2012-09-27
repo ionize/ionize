@@ -85,13 +85,18 @@ class MY_Lang extends CI_Lang
 
 	/**
 	 * Fetch a single line of text from the language array
-	 * Modified : the original method doesn't log the key of the not found language key.
+	 * Modified :
+	 * - the original method doesn't log the key of the not found language key.
+	 * - Added swapping of string capabilities
+	 *
 	 *
 	 * @access	public
 	 * @param	string	$line	the language line
+	 * @param	array
 	 * @return	string
+	 *
 	 */
-	function line($line = '')
+	function line($line = '', $swap = NULL)
 	{
 		$returned_line = ($line == '' OR ! isset($this->language[$line])) ? FALSE : $this->language[$line];
 
@@ -99,6 +104,18 @@ class MY_Lang extends CI_Lang
 		if ($returned_line === FALSE)
 		{
 			log_message('error', 'Could not find the language line "'.$line.'"');
+		}
+		else
+		{
+			if ( ! is_null($swap))
+			{
+				if ( ! is_array($swap))	$swap = array($swap);
+				$args = array_map('trim', $swap);
+				$scount = substr_count($returned_line, '%');
+				while (count($args) < $scount) array_push($args, '%s');
+
+				$returned_line = vsprintf($returned_line, $args);
+			}
 		}
 
 		return $returned_line;

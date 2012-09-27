@@ -41,16 +41,22 @@
 $route['default_controller'] = 'page';
 $route['404_override'] = 'page';
 
-/* Route to Admin panel
+/*
+ * Route to Admin panel
  */
 $route[config_item('admin_url')] = 'admin/desktop';
 $route[config_item('admin_url').'(/.*)?'] = 'admin$1';
 
-
-/* Route to default controller
+/*
+ * Route to the User controller
  */
-// $route['(\w{2})/(.*)'] = '$2'; 
-$route['(.*)'] = $route['default_controller'].'/index/$1'; 
+$route['user'] = "user/index/$1";
+$route['user(/.*)?'] = 'user/$1';
+
+/*
+ * Route to default controller
+ */
+$route['(.*)'] = $route['default_controller'].'/index/$1';
 
 
 /* End of file routes.php */

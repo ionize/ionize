@@ -441,6 +441,9 @@ class CI_Router
 				// set the method if we have one
 				if( ! empty($params))
 				{
+					while($params[0] =='')
+						array_shift($params);
+
 					$this->method = array_shift($params);
 				}
 

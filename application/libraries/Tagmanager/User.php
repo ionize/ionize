@@ -32,19 +32,17 @@ class TagManager_User extends TagManager
 	 */
 	protected static $user = NULL;
 
-
+	/**
+	 * Only few tags are described here
+	 * Common tags are set dynamically, from DB fields.
+	 *
+	 * @var array
+	 */
 	public static $tag_definitions = array
 	(
 		// User data
 		'user' => 				'tag_user',
 		'user:name' => 			'tag_user_name',
-		'user:join_date' =>		'tag_simple_date',
-		'user:last_visit' =>	'tag_simple_date',
-		'user:email' => 		'tag_simple_value',
-		'user:firstname' => 	'tag_simple_value',
-		'user:lastname' => 		'tag_simple_value',
-		'user:gender' => 		'tag_simple_value',
-		'user:birthdate' => 	'tag_simple_value',
 
 		// Advanced
 		/*
@@ -63,6 +61,8 @@ class TagManager_User extends TagManager
 
 
 	/**
+	 * Parent <ion:user /> tag
+	 *
 	 * @param 	FTL_Binding
 	 *
 	 * @return 	string
@@ -75,6 +75,17 @@ class TagManager_User extends TagManager
 		// Do these once
 		if (self::$processed === FALSE)
 		{
+			// Set dynamics tags
+			$fields = self::$ci->users_model->field_data();
+
+			foreach($fields as $field => $info)
+			{
+				if (in_array($info['type'], array('date', 'datetime', 'timestamp')))
+					self::$context->define_tag('user:' . $field, array(__CLASS__, 'tag_simple_date'));
+				else
+					self::$context->define_tag('user:' . $field, array(__CLASS__, 'tag_simple_value'));
+			}
+
 			// Process form data
 			self::process_data($tag);
 
@@ -94,6 +105,13 @@ class TagManager_User extends TagManager
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Expands the children if the user is logged in.
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
 	public static function tag_user_logged(FTL_Binding $tag)
 	{
 		$tag->setAsProcessTag();
@@ -136,6 +154,15 @@ class TagManager_User extends TagManager
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Executed the very first time the <ion:user /> tag is called.
+	 * Processes the form POST data.
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return bool
+	 *
+	 */
 	protected function process_data(FTL_Binding $tag)
 	{
 		$form_name = self::$ci->input->post('form');
@@ -182,41 +209,86 @@ class TagManager_User extends TagManager
 				// Register
 				case 'register':
 
-					// Get user's allowed fields
-					$fields = TagManager_Form::get_form_fields('register');
-					if ( is_null($fields))
-						show_error('No definition for the form "register"');
-
-					$fields = array_fill_keys($fields, FALSE);
-					$user = array_merge($fields, self::$ci->input->post());
-
-					// Compliant with Connect, based on username
-					$user['username'] = $user['email'];
-					$user['join_date'] = date('Y-m-d H:i:s');
-
-					if ( ! Connect()->register($user))
+					if (TagManager_Form::validate('register'))
 					{
-						TagManager_Form::set_additional_error('register', lang('form_register_error_message'));
-					}
-					else
-					{
-						$user = Connect()->get_user($user['username']);
-						$user['activation_key'] = Connect()->calc_activation_key($user);
+						// Get user's allowed fields
+						$fields = TagManager_Form::get_form_fields('register');
+						if ( is_null($fields))
+							show_error('No definition for the form "register"');
 
-						// Send Emails
-						self::send_emails($tag, 'register', $user);
+						$fields = array_fill_keys($fields, FALSE);
+						$user = array_merge($fields, self::$ci->input->post());
+
+						// Compliant with Connect, based on username
+						$user['username'] = $user['email'];
+						$user['join_date'] = date('Y-m-d H:i:s');
+
+						if ( ! Connect()->register($user))
+						{
+							TagManager_Form::set_additional_error('register', lang('form_register_error_message'));
+						}
+						else
+						{
+							// Set the activation key tag
+							self::$context->define_tag('user:activation_key', array(__CLASS__, 'tag_simple_value'));
+
+							// Get the user saved in DB
+							$user = Connect()->get_user($user['username']);
+							$user['activation_key'] = Connect()->calc_activation_key($user);
+							$user['password'] = Connect()->decrypt($user['password'], $user);
+
+							// Send Emails
+							self::send_emails($tag, 'register', $user);
+
+							TagManager_Form::set_additional_success('register', lang($form_settings['success']));
+						}
 					}
 					break;
 
-				// Get password back
-				case 'password_back':
+				// Get new password
+				case 'password':
 
-					trace('password back');
+					if (TagManager_Form::validate('password'))
+					{
+						$user = Connect()->find_user(array(
+							'email' => self::$ci->input->post('email')
+						));
+
+						if ($user)
+						{
+							// Save the user with this new password
+							$new_password = Connect()->get_random_password(8);
+							$user['password'] = $new_password;
+
+							if ( ! Connect()->update($user))
+							{
+								TagManager_Form::set_additional_error('password', lang($form_settings['error']));
+							}
+							else
+							{
+								$user = Connect()->find_user($user);
+								$activation_key = Connect()->calc_activation_key($user);
+trace($activation_key);
+								// Put the clear password to the user
+								$user['password'] = $new_password;
+trace($user);
+								// Send Emails
+								self::send_emails($tag, 'password', $user);
+
+								TagManager_Form::set_additional_success('password', lang($form_settings['success']));
+							}
+						}
+						else
+						{
+							TagManager_Form::set_additional_error('password', lang($form_settings['not_found']));
+						}
+					}
 
 					break;
 
 				// Activate account
 				case 'activation':
+
 					break;
 
 				// Save profile
@@ -275,7 +347,7 @@ class TagManager_User extends TagManager
 
 	protected function send_emails(FTL_Binding $tag, $form_name, $user)
 	{
-		$emails = TagManager_Form::get_form_emails('register');
+		$emails = TagManager_Form::get_form_emails($form_name);
 		$website_email = Settings::get('site_email') ? Settings::get('site_email') : NULL;
 
 		foreach($emails as $email_setting)
@@ -292,12 +364,16 @@ class TagManager_User extends TagManager
 				case 'user':
 					$email = $user['email'];
 					break;
+
+				default:
+					$email = NULL;
+					break;
 			}
 
 			// Send the email
 			if ( ! is_null($email))
 			{
-				$subject = lang($email_setting['subject']);
+				$subject = lang($email_setting['subject'], Settings::get('site_title'));
 
 				// Tag data. Current context : <ion:user />
 				$tag->set('email_subject', $subject);
@@ -314,6 +390,8 @@ class TagManager_User extends TagManager
 				// View
 				$view_content = $tag->parse_as_nested(Theme::load($email_setting['view']));
 				self::$ci->email->message($view_content);
+
+				// Send silently
 				@self::$ci->email->send();
 			}
 		}

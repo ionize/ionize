@@ -5,13 +5,17 @@
 <hr/>
 
 <!--
+
 	User login Status
--->
+
+------------------------------------------------------------------------------ -->
 
 <ion:user:logged is="true">
     <p>
 		<b>Status : </b>User <span class="red"><ion:user:name /></span> logged in
 	</p>
+	<!-- User data, as stored in the user tag -->
+	<ion:user:trace />
 	<p>
 		First name : <b><ion:user:firstname /></b><br/>
 		Last name : <b><ion:user:lastname /></b><br/>
@@ -24,9 +28,13 @@
     <p><b>Status : </b> <span class="red">User not logged in</span></p>
 </ion:user:logged>
 
+
 <!--
-	Login / Logout Forms
--->
+
+	Login / Logout / Password back
+
+------------------------------------------------------------------------------ -->
+
 <div class="left">
     <h2>Login</h2>
 
@@ -103,7 +111,7 @@
 
     <form method="post" action="">
 
-        <input type="hidden" name="form" value="password_back" />
+        <input type="hidden" name="form" value="password" />
 
         <label for="email-back"><ion:lang key="form_label_email" /></label>
         <input type="text" name="email" id="email-back" />
@@ -121,8 +129,11 @@
 
 
 <!--
-	Registration Form
--->
+
+	Registration
+
+------------------------------------------------------------------------------ -->
+
 <div class="left">
 
     <h2>Registration</h2>
@@ -145,14 +156,13 @@
    -->
     <ion:form:validation:result form="register">
 
-        <p class="green">Form validation success !</p>
-
-        <!-- Success validation -->
+        <!-- Success validation message test -->
         <ion:form:validation:success form="register" is="true">
-            <p class="green"><b>Validation OK</b></p>
-            <!-- Success string -->
-            <ion:form:validation:success form="register"/>
-        </ion:form:validation:success>
+
+			<!-- Success message display -->
+            <ion:form:validation:success form="register" tag="p" class="green"/>
+
+		</ion:form:validation:success>
 
     </ion:form:validation:result>
 
@@ -206,14 +216,13 @@
 </div>
 
 
+
+<!--
+
+	Profile
+
+------------------------------------------------------------------------------ -->
 <div class="left">
-
-
-
-
-
-
-
 
     <h2>Profile</h2>
     <ion:user:logged is="false">
