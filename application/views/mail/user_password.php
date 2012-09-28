@@ -2,10 +2,10 @@
 /**
  * Ionize
  *
- * Default Email template for User registration
- * This email is supposed to be send to the website's email
+ * Default Email template for : User password
+ * This email send a new password to the user
  *
- * Copy this file to /themes/<my_theme/mail/website_registration.php
+ * Copy this file to /themes/<my_theme/mail/user_password.php
  * to replace it by yours.
  *
  * IMPORTANT :
@@ -16,7 +16,7 @@
 /**
  * Available tags in this template :
  * - ion:email:subject
- * -
+ * - ion:user
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -56,21 +56,40 @@
 </head>
 <body>
 
-    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="border:0; width: 100%;">
+    <table border="0" width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td class="bg_fade">
-                <table border="0" width="880" style="border:0; width: 880px; margin: 0 auto;">
+                <table border="0" width="880">
                     <tr>
                         <td>
-                            <h1><ion:email_subject /></h1>
+                            <!--
+								Dear ....
+							-->
+                            <h1><ion:lang key="mail_user_password_intro" swap="user::firstname" /></h1>
 
-							<p><ion:lang key="mail_website_registration_message" /></p>
+                            <!--
+								New account login information
+							-->
+                            <p><ion:lang key="mail_user_password_message" swap="global::site_title" /></p>
+                            <p>
+                                <ion:lang key="form_label_login"/> : <b><ion:username /></b>, <br/>
+                                <ion:lang key="form_label_password"/> : <b><ion:password /></b> <br/>
+                            </p>
 
-							<p>
-                                <ion:lang key="form_label_firstname"/> : <ion:firstname />, <br/>
-                                <ion:lang key="form_label_lastname"/> : <ion:lastname />, <br/>
-                                <ion:lang key="form_label_email"/> : <ion:email />, <br/>
-							</p>
+							<!--
+								This account isn't activated ?
+								Send the activation data again (as they have changed with the new password
+							-->
+							<ion:group:level expression="level<100">
+
+                                <p><ion:lang key="mail_user_registration_activate" /></p>
+                                <p>
+                                    <a href="<ion:home_url />user/activate/<ion:user:email />/<ion:user:activation_key />">
+                                        <ion:home_url />user/activate/<ion:user:email />/<ion:user:activation_key />
+                                    </a>
+                                </p>
+                            </ion:group:level>
+
                         </td>
                     </tr>
                 </table>

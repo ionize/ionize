@@ -154,6 +154,8 @@ $config['forms'] = array
 		// Success message Language index, as set in language/xx/form_lang.php
 		'success' => 'form_login_success_message',
 		'error' => 'form_login_error_message',
+		'not_found' => 'form_login_not_found_message',
+		'not_activated' => 'form_login_not_activated_message',
 		'fields' => array
 		(
 			'email' => array(
@@ -206,6 +208,10 @@ $config['forms'] = array
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_lastname',
 			),
+			'screen_name' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_screen_name',
+			),
 			'email' => array(
 				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
 				'label' => 'form_label_email',
@@ -249,6 +255,10 @@ $config['forms'] = array
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_lastname',
 			),
+			'screen_name' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_screen_name',
+			),
 			'email' => array(
 				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
 				'label' => 'form_label_email',
@@ -283,7 +293,7 @@ $config['forms'] = array
 			array
 			(
 				'email' => 'user',
-				'subject' => 'mail_user_password_title',
+				'subject' => 'mail_user_password_subject',
 				'view' => 'mail/user_password',
 			),
 		),

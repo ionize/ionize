@@ -23,11 +23,19 @@
 			margin-top: 2em;
 			border-bottom: solid 1px #eee;
 		}
+		.red, .green {
+			padding:3px 5px 2px;
+		}
 		.red {
-			color:#b00;
+			color:#fff;
+			background-color: #b00;
 		}
 		.green {
-			color:#0b0;
+			color:#fff;
+			background-color: #0b0;
+		}
+		.note {
+			color:#888;
 		}
 		li a.active:after {
 			content:" (is active)";
@@ -85,7 +93,10 @@
 		}
 		div.left{
 			float:left;
-			margin-left:20px;
+			margin-right:20px;
+		}
+		div.bloc{
+			width: 30%;
 		}
 
 	</style>

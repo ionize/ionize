@@ -156,7 +156,7 @@ class Connect_model extends CI_Model
 		{
 			$result[] = $this->split_user_group($row);
 		}
-		
+
 		return $result;
 	}
 	
@@ -208,15 +208,20 @@ class Connect_model extends CI_Model
 	{
 		$fields = $this->db->list_fields($this->users_table);
 
-		$id_user = $user_data[$this->users_pk];
+		$id_user = isset($user_data[$this->users_pk]) ? $user_data[$this->users_pk] : NULL;
 
-		foreach($user_data as $key => $value)
-			if  (! in_array($key, $fields))
-				unset($user_data[$key]);
+		if ( ! is_null($id_user))
+		{
+			foreach($user_data as $key => $value)
+				if  (! in_array($key, $fields))
+					unset($user_data[$key]);
 
-		$this->db->where($this->users_pk, $id_user);
+			$this->db->where($this->users_pk, $id_user);
 
-		return $this->db->update($this->users_table, $user_data);
+			return $this->db->update($this->users_table, $user_data);
+		}
+
+		return 0;
 	}
 
 	// --------------------------------------------------------------------
@@ -365,7 +370,6 @@ class Connect_model extends CI_Model
 			unset($data[$col]);
 		}
 
-		$data[$this->groups_pk] = $g_data[$this->groups_pk];
 		$data['group'] = $g_data;
 
 		return $data;

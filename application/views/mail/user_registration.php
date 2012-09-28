@@ -2,7 +2,7 @@
 /**
  * Ionize
  *
- * Default Email template for User registration
+ * Default Email template for : User registration
  * This email is send to the user who just created one account.
  *
  * Copy this file to /themes/<my_theme/mail/user_registration.php
@@ -16,7 +16,7 @@
 /**
  * Available tags in this template :
  * - ion:email:subject
- * -
+ * - ion:user
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -41,13 +41,6 @@
             text-align: left;
             line-height: 1.2em;
             font-weight: normal;
-        }
-        label{
-            display: block;
-            width: 70px;
-            float: left;
-            text-align: right;
-            margin-right: 10px;
         }
         p{margin-bottom: 10px;}
         a:link, a:visited, a:active, a:hover{
@@ -86,10 +79,10 @@
 							<!--
 								User's account activation link
 							-->
-							<p><ion:lang key="mail_user_registration_message2" /> :</p>
+							<p><ion:lang key="mail_user_registration_activate" /> :</p>
 							<p>
 								<a href="<ion:home_url />user/activate/<ion:user:email />/<ion:user:activation_key />">
-                                    <ion:home_url />user/activate/<ion:user:email />/<ion:activation_key />
+                                    <ion:home_url />user/activate/<ion:user:email />/<ion:user:activation_key />
 								</a>
 							</p>
 

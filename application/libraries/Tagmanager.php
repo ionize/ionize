@@ -1017,8 +1017,11 @@ class TagManager
 	 */
 	public static function tag_simple_value(FTL_Binding $tag)
 	{
+		// Optional : data array from where to get the data
+		$from = $tag->getAttribute('from');
+
 		// 1. Try to get from tag's data array
-		$value = $tag->getValue();
+		$value = $tag->getValue(NULL, $from);
 
 		// 2. Fall down to tag locals storage
 		if (is_null($value))
@@ -1028,6 +1031,7 @@ class TagManager
 			// Add to local storage, so other tags can use it
 			$tag->set($tag->name, $value);
 		}
+
 		return self::output_value($tag, $value);
 	}
 
@@ -1584,7 +1588,7 @@ class TagManager
 
 			return self::wrap($tag, auto_link($line, 'both', TRUE));
 		}
-		
+
 		return '';
 	}
 	
@@ -2238,11 +2242,12 @@ class TagManager
 				case TRUE:
 					if (self::$trigger_else > 0)
 						self::$trigger_else--;
-					return self::wrap($tag, $tag->expand());
+					return $tag->expand();
 					break;
 
 				case FALSE:
 					self::$trigger_else++;
+					return '';
 					break;
 
 				case NULL:
@@ -2254,10 +2259,13 @@ class TagManager
 			// Process PHP, helper, prefix/suffix
 			$value = self::process_value($tag, $value);
 
+			// Make sub tags like "nesting" or "trace" working
+			$tag->expand();
+
 			return self::wrap($tag, $value);
 		}
 
-		return '';
+		return $tag->expand();
 	}
 
 
@@ -2492,8 +2500,7 @@ class TagManager
 
 			if ($idx == 0 && strpos($expression, $key) === FALSE)
 				$expression = $key . $expression;
-
-			$test_value = (is_string($value) OR is_null($value)) ? "'".$value."'" : $value;
+			$test_value = ( (! $value == (string)(float)$value) OR is_null($value)) ? "'".$value."'" : $value;
 
 			$expression = str_replace($key, $test_value, $expression);
 		}
@@ -2501,7 +2508,7 @@ class TagManager
 		// If at least one tested value was not NULL
 		if ( ! is_null($test_value))
 		{
-			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+			$return = eval("\$result = (".$expression.") ? TRUE : FALSE;");
 		}
 		if ($return === NULL OR is_null($test_value))
 		{

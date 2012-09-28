@@ -882,6 +882,9 @@ class Connect {
 	 * Updates one User
 	 * The user can be different from the current connected user.
 	 *
+	 * Important :
+	 * - Only data which should be updated and the id_user must be send.
+	 *
 	 * @param array $user_data
 	 *
 	 * @return bool
@@ -890,7 +893,8 @@ class Connect {
 	public function update($user_data = array())
 	{
 		$clear_password = NULL;
-		// Update or not the password
+
+		// Update the password : Send in "clear" version
 		if ( ! empty($user_data['password']) OR $user_data['password'] != '')
 		{
 			$clear_password = $user_data['password'];

@@ -511,6 +511,7 @@ class FTL_Binding
 	{
 		if (is_null($key))
 			$key = $this->name;
+
 		if (is_null($data_array_name))
 			$data_array_name = $this->getDataParentName();
 
@@ -518,7 +519,7 @@ class FTL_Binding
 		{
 			$data_array = $this->get($data_array_name);
 
-			if (isset($data_array[$key]))
+			if (is_array($data_array) && isset($data_array[$key]))
 				return $data_array[$key];
 		}
 
@@ -608,9 +609,14 @@ class FTL_Binding
 		// unset the current parser, so we won't interfere and maybe replace it
 		$tmp = $this->context->parser;
 		unset($this->context->parser);
-		
-		$parser = new FTL_Parser(array('context' => $this->context, 'tag_prefix' => $tmp->tag_prefix, 'php_data' => $php_data));
-		
+
+		$parser = new FTL_Parser(array
+		(
+			'context' => $this->context,
+			'tag_prefix' => $tmp->tag_prefix,
+			'php_data' => $php_data
+		));
+
 		$str = $parser->parse($string, $php_data);
 		
 		// reset
@@ -618,6 +624,7 @@ class FTL_Binding
 		
 		return $str;
 	}
+
 }
 
 

@@ -2,6 +2,14 @@
 
 class User extends Base_Controller {
 
+	/**
+	 * Group ID to put the activated users in.
+	 *
+	 * @var int
+	 *
+	 */
+	protected $activation_group_id = 4;
+
 
 	function __construct()
 	{
@@ -43,12 +51,18 @@ class User extends Base_Controller {
 	 * Activates one user account
 	 *
 	 */
-	public function activate($email, $activation_code)
+	public function activate($email, $activation_key)
 	{
+		$result = Connect()->activate($email, $activation_key);
 
-		echo $email;
-		echo '<br/>';
-		echo $activation_code;
+		if ( ! $result)
+		{
+			echo ('Activation code not valid.');
+		}
+		else
+		{
+			echo 'User activated';
+		}
 	}
 
 

@@ -24,6 +24,7 @@ $lang['form_label_email'] = 'Email';
 $lang['form_label_name'] = 'Name';
 $lang['form_label_firstname'] = 'First Name';
 $lang['form_label_lastname'] = 'Last Name';
+$lang['form_label_screen_name'] = 'Screen Name';
 $lang['form_label_username'] = 'User name';
 $lang['form_label_birthdate'] = 'Birthdate';
 $lang['form_label_gender'] = 'Gender';
@@ -48,14 +49,20 @@ $lang['form_button_answer'] = "Answer";
  * Emails
  *
  */
+// Registration : Email to the website email
 $lang['mail_website_registration_subject'] = "Someone registered on the website";
 $lang['mail_website_registration_message'] = "Here are the details of this new member.";
 
-// Email to user
+// Registration : Email to user
 $lang['mail_user_registration_subject'] = "Registration on %s";
 $lang['mail_user_registration_intro'] = "Dear %s,";
-$lang['mail_user_registration_message'] = "You just registered on %s.<br/>Here are your login information.";
-$lang['mail_user_registration_message2'] = "Before login, you need to activate your account through this link :";
+$lang['mail_user_registration_message'] = "You just registered on <b>%s</b>.<br/>Here are your login information.";
+$lang['mail_user_registration_activate'] = "Before login, you need to activate your account through this link :";
+
+// New Password : Email to user
+$lang['mail_user_password_subject'] = "New password for your account on %s";
+$lang['mail_user_password_intro'] = "Dear %s,";
+$lang['mail_user_password_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Here are your new login information:";
 
 
 /*
@@ -67,7 +74,9 @@ $lang['mail_user_registration_message2'] = "Before login, you need to activate y
 $lang['form_not_logged'] = "You're not logged in.";
 
 $lang['form_login_success_message'] = "You successfully logged in.";
-$lang['form_login_error_message'] = "Login error : Check your credentials.";
+$lang['form_login_error_message'] = "Error : Check your login / password.";
+$lang['form_login_not_found_message'] = "User not found.";
+$lang['form_login_not_activated_message'] = "This account is not activated. Check your emails and click on the activation link.";
 
 $lang['form_register_success_message'] = "You successfully registered.";
 $lang['form_register_error_message'] = "Error : Registration not successful.";
@@ -79,6 +88,7 @@ $lang['form_profile_account_deleted'] = "Account deleted";
 $lang['form_password_error_message'] = "One error happens.";
 $lang['form_password_not_found_message'] = "This email seems not to be in our system";
 $lang['form_password_success_message'] = "One email with you new password has just been sent to you.";
+
 
 /*
  * Validation Errors

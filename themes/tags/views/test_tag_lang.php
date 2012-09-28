@@ -23,7 +23,23 @@
 
 
 <h2>Display string with dynamic data from website</h2>
+
+<p>
+	In this example, we use positioning of swapped string : <b>%s$1</b> and <b>%s$2</b></p>
+<p>
+	That means that in the attribute <b>swap="global::site_title, user::email"</b>, "site_title" is the 1st string, "email" the 2nd.
+</p>
+<p>
+	<b class="red">Important</b><br/>
+	When using positioning, take care your that string in the language file is wrapped by single quotes and not double quotes.<br/>
+	Using positioning and double quotes will fire one PHP error.<br/>
+	This is due to the used native PHP function.
+</p>
 <pre>
+&lt;!-- In your language file : -->
+$lang['lang_tag_string_3'] = 'This is the website title : &lt;b class="red">%1$s&lt;/b>, and if you are logged in, your email is : &lt;b class="green">%2$s&lt;/b> !';
+
+&lt;!-- In the view : -->
 &lt;ion:user:lang key="lang_tag_string_3" swap="global::site_title, user::email" />
 </pre>
 

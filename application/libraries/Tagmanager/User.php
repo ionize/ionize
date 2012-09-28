@@ -32,6 +32,16 @@ class TagManager_User extends TagManager
 	 */
 	protected static $user = NULL;
 
+
+	/**
+	 * Stores the current user's group
+	 *
+	 * @var null
+	 *
+	 */
+	protected static $group = NULL;
+
+
 	/**
 	 * Only few tags are described here
 	 * Common tags are set dynamically, from DB fields.
@@ -41,8 +51,12 @@ class TagManager_User extends TagManager
 	public static $tag_definitions = array
 	(
 		// User data
-		'user' => 				'tag_user',
-		'user:name' => 			'tag_user_name',
+		'user' => 					'tag_user',
+		'user:name' => 				'tag_user_name',
+		'user:activation_key' =>	'tag_simple_value',
+		'user:group' => 			'tag_user_group',
+		'user:group:name' => 		'tag_user_group_name',
+		'user:group:title' => 		'tag_user_group_title',
 
 		// Advanced
 		/*
@@ -71,19 +85,29 @@ class TagManager_User extends TagManager
 	public static function tag_user(FTL_Binding $tag)
 	{
 		self::load_model('users_model');
+		self::load_model('group_model');
 
 		// Do these once
 		if (self::$processed === FALSE)
 		{
-			// Set dynamics tags
-			$fields = self::$ci->users_model->field_data();
+			// To avoid looping if process data calls "<ion:user />" again
+			self::$processed = TRUE;
 
-			foreach($fields as $field => $info)
+			// Set dynamics tags
+			$user_fields = self::$ci->users_model->field_data();
+			$group_fields = self::$ci->group_model->field_data();
+
+			foreach($user_fields as $field => $info)
 			{
 				if (in_array($info['type'], array('date', 'datetime', 'timestamp')))
 					self::$context->define_tag('user:' . $field, array(__CLASS__, 'tag_simple_date'));
 				else
 					self::$context->define_tag('user:' . $field, array(__CLASS__, 'tag_simple_value'));
+			}
+			// Group data are also available in the user array
+			foreach($group_fields as $field => $info)
+			{
+				self::$context->define_tag('user:group:' . $field, array(__CLASS__, 'tag_simple_value'));
 			}
 
 			// Process form data
@@ -92,11 +116,13 @@ class TagManager_User extends TagManager
 			// Set the current user
 			self::$user = Connect()->get_current_user();
 
-			self::$processed = TRUE;
 		}
 
 		// Do this everytime the tag is called
-		if (self::$user) $tag->set('user', self::$user);
+		if (self::$user) {
+			$tag->set('user', self::$user);
+			$tag->set('group', self::$user['group']);
+		}
 
 		return $tag->expand();
 	}
@@ -138,7 +164,9 @@ class TagManager_User extends TagManager
 
 
 	/**
-	 * Returns the screen name of the user (complete name)
+	 * Returns the found name of the user
+	 * 1. Screen name if set
+	 * 2. Firstname and Lastname if screen name not set
 	 *
 	 * @param FTL_Binding $tag
 	 *
@@ -147,7 +175,72 @@ class TagManager_User extends TagManager
 	 */
 	public static function tag_user_name(FTL_Binding $tag)
 	{
-		return self::output_value($tag, $tag->getValue('screen_name'));
+		$value = $tag->getValue('screen_name');
+		if (is_null($value) OR $value == '')
+		{
+			$value = $tag->getValue('firstname') . ' ' . $tag->getValue('lastname');
+		}
+		return self::output_value($tag, $value);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Current user's group
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_user_group(FTL_Binding $tag)
+	{
+		if (isset(self::$user['group']))
+			$tag->set('group', self::$user['group']);
+
+		return $tag->expand();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * More logical key for 'slug' in group table.
+	 * @TODO : Correct 'slug' in DB and replace it by 'name'
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_user_group_name(FTL_Binding $tag)
+	{
+		$name = $tag->getValue('slug', 'group');
+
+		return self::output_value($tag, $name);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * More logical key for 'group_name' in group table.
+	 * @TODO : Correct 'group_name' in DB and replace it by 'title'
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_user_group_title(FTL_Binding $tag)
+	{
+		$group_name = $tag->getValue('group_name', 'group');
+
+		return self::output_value($tag, $group_name);
 	}
 
 
@@ -191,17 +284,35 @@ class TagManager_User extends TagManager
 					{
 						if ( ! Connect()->logged_in())
 						{
-							$user = array(
-								'email' => self::$ci->input->post('email'),
-								'password' => self::$ci->input->post('password')
-							);
+							$email = self::$ci->input->post('email');
+							$db_user = Connect()->find_user(array('email'=>$email));
 
-							$result = Connect()->login($user);
+							if ($db_user)
+							{
+								// Account not allowed to login
+								if ($db_user['group']['level'] < 100)
+								{
+									TagManager_Form::set_additional_error('login', lang($form_settings['not_activated']));
+								}
+								else
+								{
+									$user = array(
+										'email' => $email,
+										'password' => self::$ci->input->post('password')
+									);
 
-							if ($result)
-								TagManager_Form::set_additional_success('login', lang($form_settings['success']));
+									$result = Connect()->login($user);
+
+									if ($result)
+										TagManager_Form::set_additional_success('login', lang($form_settings['success']));
+									else
+										TagManager_Form::set_additional_error('login', lang($form_settings['error']));
+								}
+							}
 							else
-								TagManager_Form::set_additional_error('login', lang($form_settings['error']));
+							{
+								TagManager_Form::set_additional_error('login', lang($form_settings['not_found']));
+							}
 						}
 					}
 					break;
@@ -229,13 +340,10 @@ class TagManager_User extends TagManager
 						}
 						else
 						{
-							// Set the activation key tag
-							self::$context->define_tag('user:activation_key', array(__CLASS__, 'tag_simple_value'));
-
 							// Get the user saved in DB
 							$user = Connect()->get_user($user['username']);
-							$user['activation_key'] = Connect()->calc_activation_key($user);
 							$user['password'] = Connect()->decrypt($user['password'], $user);
+							$user['activation_key'] = Connect()->calc_activation_key($user);
 
 							// Send Emails
 							self::send_emails($tag, 'register', $user);
@@ -266,12 +374,14 @@ class TagManager_User extends TagManager
 							}
 							else
 							{
-								$user = Connect()->find_user($user);
+								// Get the user again, to calculate his activation key
+								$user = Connect()->find_user($user['username']);
 								$activation_key = Connect()->calc_activation_key($user);
-trace($activation_key);
-								// Put the clear password to the user
+
+								// Put the clear password to the user's data, for the email
 								$user['password'] = $new_password;
-trace($user);
+								$user['activation_key'] = $activation_key;
+
 								// Send Emails
 								self::send_emails($tag, 'password', $user);
 
@@ -362,7 +472,7 @@ trace($user);
 					break;
 
 				case 'user':
-					$email = $user['email'];
+					$email = isset($user['email']) ? $user['email'] : NULL;
 					break;
 
 				default:
@@ -377,7 +487,12 @@ trace($user);
 
 				// Tag data. Current context : <ion:user />
 				$tag->set('email_subject', $subject);
+
+				// Data has to be set manually, because when called, <ion:user /> gets the current user
+				// and if no user is connected, these data will be empty, so not available for the email
+				// template
 				$tag->set('user', $user);
+				$tag->set('group', $user['group']);
 
 				// Email Lib
 				if ( ! isset(self::$ci->email)) self::$ci->load->library('email');
@@ -389,6 +504,7 @@ trace($user);
 
 				// View
 				$view_content = $tag->parse_as_nested(Theme::load($email_setting['view']));
+
 				self::$ci->email->message($view_content);
 
 				// Send silently

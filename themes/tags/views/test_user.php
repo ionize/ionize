@@ -1,6 +1,7 @@
 <h1>User</h1>
 
 <p>
+
 </p>
 <hr/>
 
@@ -10,33 +11,50 @@
 
 ------------------------------------------------------------------------------ -->
 
+<h2>User Infos</h2>
+
 <ion:user:logged is="true">
+
     <p>
-		<b>Status : </b>User <span class="red"><ion:user:name /></span> logged in
-	</p>
-	<!-- User data, as stored in the user tag -->
-	<ion:user:trace />
-	<p>
-		First name : <b><ion:user:firstname /></b><br/>
-		Last name : <b><ion:user:lastname /></b><br/>
-		Email : <b><ion:user:email /></b><br/>
-		Birthdate : <b><ion:user:birthdate /></b><br/>
-		Gender : <b><ion:user:gender /></b><br/>
-	</p>
+        <b>Status : </b>User <span class="green"><ion:user:name /></span> logged in
+    </p>
+
+    <div class="left">
+		<!-- User data, as stored in the user tag -->
+		<p>
+			First name : <b><ion:user:firstname /></b><br/>
+			Last name : <b><ion:user:lastname /></b><br/>
+			Email : <b><ion:user:email /></b><br/>
+			Birthdate : <b><ion:user:birthdate /></b><br/>
+			Gender : <b><ion:user:gender /></b><br/>
+		</p>
+	</div>
+
+    <div class="left">
+		<p>
+			Group : <b><ion:user:group:name /></b><br />
+			Group Title : <b><ion:user:group:title /></b><br />
+			Group Level : <b><ion:user:group:level /></b><br />
+		</p>
+	</div>
 </ion:user:logged>
+
 <ion:user:logged is="false">
     <p><b>Status : </b> <span class="red">User not logged in</span></p>
 </ion:user:logged>
 
+<hr style="clear:both;" />
+
 
 <!--
 
-	Login / Logout / Password back
+	Login / Logout
 
 ------------------------------------------------------------------------------ -->
 
-<div class="left">
-    <h2>Login</h2>
+<div class="bloc left">
+
+	<h2>Login</h2>
 
 	<!--
 		Global Success message
@@ -76,15 +94,13 @@
 
     </ion:user:logged>
     <ion:else>
-        <p>
-			User logged in.<br/>
-			First logout to be able to login.
-		</p>
+        <p>User <ion:user:name tag="span" class="green" /> logged in.</p>
+		<p>First logout to be able to login.</p>
     </ion:else>
 
 
 	<!--
-		Logout Form
+		Logout
 	-->
     <h2>Logout</h2>
 
@@ -97,32 +113,13 @@
 
     </ion:user:logged>
     <ion:else>
+        <span class="red">User not logged in</span>
+
         <p>
-			User not logged in.<br/>
 			First login to be able to logout.
 		</p>
     </ion:else>
 
-
-	<!--
-		Password Back
-	-->
-    <h2>Password Back</h2>
-
-    <form method="post" action="">
-
-        <input type="hidden" name="form" value="password" />
-
-        <label for="email-back"><ion:lang key="form_label_email" /></label>
-        <input type="text" name="email" id="email-back" />
-
-        <input type="submit" value="Get Password back" />
-
-    </form>
-
-    <h2>Account Activation</h2>
-    <p>Activation link...</p>
-    <p></p>
 
 
 </div>
@@ -130,11 +127,11 @@
 
 <!--
 
-	Registration
+	Registration / Password back
 
 ------------------------------------------------------------------------------ -->
 
-<div class="left">
+<div class="bloc left">
 
     <h2>Registration</h2>
 
@@ -198,6 +195,11 @@
 				<ion:form:error:register:lastname tag="p" class="red" />
 				<br/>
 
+				<label for="screen_name-reg">Displayed Screen name</label>
+				<input type="text" id="screen_name-reg" name="screen_name" value="<ion:form:field:register:screen_name />" />
+				<ion:form:error:register:screen_name tag="p" class="red" />
+				<br/>
+
 				<label for="email-reg">Email</label>
 				<input type="text" id="email-reg" name="email" value="<ion:form:field:register:email />"/>
 				<ion:form:error:register:email tag="p" class="red" />
@@ -213,6 +215,40 @@
 		</ion:user:logged>
 
     </ion:form:validation:result>
+
+
+    <!--
+	   Password Back
+	-->
+    <h2>Password Back</h2>
+
+    <ion:user:logged is="true">
+		<p>
+			The "password back" form is supposed to be available only if the user isn't logged in.
+		</p>
+	</ion:user:logged>
+
+    <ion:user:logged is="false">
+
+		<!-- Success / Error messages -->
+		<ion:form:validation:success form="password" tag="p" class="green" />
+		<ion:form:validation:error form="password" tag="p" class="red" />
+
+		<form method="post" action="">
+
+			<input type="hidden" name="form" value="password" />
+
+			<label for="email-back"><ion:lang key="form_label_email" /></label>
+			<input type="text" name="email" id="email-back" />
+
+			<br/>
+			<input type="submit" value="Get Password back" />
+
+		</form>
+
+	</ion:user:logged>
+
+
 </div>
 
 
@@ -222,13 +258,15 @@
 	Profile
 
 ------------------------------------------------------------------------------ -->
-<div class="left">
+<div class="bloc left">
 
     <h2>Profile</h2>
     <ion:user:logged is="false">
-    	<p>
-			User must be logged in to edit his profile
-		</p>
+
+		<span class="red">User not logged in</span>
+
+        <p>User must be logged in to edit his profile</p>
+
 	</ion:user:logged>
 
 	<!--
@@ -263,6 +301,13 @@
             <input type="text" name="lastname" id="lastname-profile" value="<ion:user:form:field:profile:lastname />"/>
             <ion:form:error:profile:lastname tag="p" class="red" />
 
+            <label for="screen_name-profile">
+                <ion:lang key="form_label_screen_name" />
+            </label>
+            <input type="text" id="screen_name-profile" name="screen_name" value="<ion:form:field:profile:screen_name />" />
+            <ion:form:error:profile:screen_name tag="p" class="red" />
+            <br/>
+
             <label for="email-profile" <ion:form:error:profile:email is='true' return=' class="red"' /> >
 				<ion:lang key="form_label_email" />
 			</label>
@@ -271,11 +316,10 @@
 
             <label for="birthdate-profile"><ion:lang key="form_label_birthdate" /></label>
             <input type="text" name="birthdate" id="birthdate-profile"  value="<ion:user:form:field:profile:birthdate />"/>
-            <p>Example of Bithdate format : 1975-05-31</p>
-
+            <p class="note">Example of Bithdate format : 1975-05-31</p>
 
             <label for="password-profile"><ion:lang key="form_label_password" /></label>
-			<p>To keep the current one, leave empty</p>
+			<p class="note">To keep the current one, leave empty</p>
             <input type="password" name="password" id="password-profile" />
 
             <label for="delete-profile"><ion:lang key="form_label_delete_account" /></label>
