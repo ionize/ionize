@@ -37,6 +37,13 @@
 		.note {
 			color:#888;
 		}
+		.error {
+			color:#b00;
+		}
+		.input-error{
+			color:#b00;
+			margin-top: -8px;
+		}
 		li a.active:after {
 			content:" (is active)";
 			color: #b00;
@@ -74,12 +81,12 @@
 		label {
 			cursor: pointer;
 			display: block;
-			margin-top: 10px;
+			padding:3px 0 0;
 		}
 		input {
 			border: solid 1px #ccc;
 			padding: 4px;
-			margin-bottom: 2px;
+			margin-bottom: 10px;
 		}
 		input.error, textarea.error {
 			border-color: #c00;
@@ -88,16 +95,26 @@
 			cursor: pointer;
 			margin-top: 10px;
         }
-		form p {
+        input[type=radio],
+        input[type=checkbox] {
+			margin-bottom: 0;
+		}
+        form p {
 			margin:0;
 		}
-		div.left{
+		.left {
 			float:left;
+		}
+		div.left{
 			margin-right:20px;
 		}
 		div.bloc{
 			width: 30%;
 		}
+		.clear{
+			clear: both;
+		}
+		.mb10{margin-bottom: 10px;}
 
 	</style>
 	<script type="text/javascript" src="<ion:theme_url/>assets/javascript/jquery.min.js"></script>

@@ -433,6 +433,13 @@ class TagManager_User extends TagManager
 							$user['username'] = $user['email'];
 							$user['id_user'] = $current_user['id_user'];
 
+							// Checkboxes and multiselect
+							foreach($user as $key => $data)
+							{
+								if (is_array($data))
+									$user[$key] = implode(',', $data);
+							}
+
 							$result = Connect()->update($user);
 
 							// If error here, it can only be on the email, which already exists in the DB
@@ -511,42 +518,5 @@ class TagManager_User extends TagManager
 				@self::$ci->email->send();
 			}
 		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the form fields as defined in $config['forms'][$form_name]
-	 * If no definition, returns NULL
-	 *
-	 * @param string
-	 * @param bool
-	 *
-	 * @return array|null
-	 *
-	 */
-	protected function _get_user_model_fields($form_name, $all = FALSE)
-	{
-		$forms = config_item('forms');
-		$form = isset($forms[$form_name]) ? $forms[$form_name] : NULL;
-
-		$fields = array();
-
-		if (is_null($form)) return NULL;
-
-		if ($all == TRUE)
-			$fields = array_keys($form['fields']);
-		else
-		{
-			foreach ($form['fields'] as $key => $field)
-				if (!isset($field['save']) OR $field['save'] != FALSE)
-					$fields[] = $key;
-		}
-		if (empty($fields))
-			return NULL;
-
-		return $fields;
 	}
 }

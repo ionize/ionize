@@ -264,7 +264,8 @@ $config['forms'] = array
 				'label' => 'form_label_email',
 			),
 			'gender' => array(
-				'rules' => 'trim|xss_clean',
+				'type' => 'radio',
+				'rules' => 'required',
 				'label' => 'form_label_gender',
 			),
 			'birthdate' => array(

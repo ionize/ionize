@@ -30,8 +30,6 @@ class TagManager_Form extends TagManager
 	 */
 	protected static $posting_form_name = NULL;
 
-
-
 	/**
 	 * Form validation result array.
 	 * Do validation only once
@@ -47,16 +45,23 @@ class TagManager_Form extends TagManager
 	protected static $fvr = array();
 
 
+	protected static $input_selected_attributes = array
+	(
+		'radio' => 'checked="true"',
+		'checkbox' => 'checked="true"',
+		'select' => 'selected="true"',
+	);
+
+
 	public static $tag_definitions = array
 	(
 		'form' => 								'tag_form',
 		'form:field' => 						'tag_expand',
+		'form:radio' => 						'tag_expand',
+		'form:checkbox' => 						'tag_expand',
+		'form:select' => 						'tag_expand',
 		'form:error' => 						'tag_expand',
-		'form:validation' => 					'tag_expand',
-		'form:validation:result' => 			'tag_form_validation_result',
 
-		'form:validation:success' => 			'tag_form_validation_success',
-		'form:validation:error' => 				'tag_form_validation_error',
 	);
 
 
@@ -85,17 +90,52 @@ class TagManager_Form extends TagManager
 
 			// Form fields fill / error callbacks
 			$forms = config_item('forms');
+
+			// Create dynamic tags regarding the declared forms
 			foreach ($forms as $form => $settings)
 			{
-				self::$context->define_tag('form:field:'.$form, array(__CLASS__, 'tag_expand'));
-				self::$context->define_tag('form:error:'.$form, array(__CLASS__, 'tag_expand'));
+				self::$context->define_tag('form:'.$form, array(__CLASS__, 'tag_expand'));
+				self::$context->define_tag('form:'.$form.':validation', array(__CLASS__, 'tag_expand'));
+				self::$context->define_tag('form:'.$form.':validation:result', array(__CLASS__, 'tag_form_validation_result'));
+				self::$context->define_tag('form:'.$form.':validation:success', array(__CLASS__, 'tag_form_validation_success'));
+				self::$context->define_tag('form:'.$form.':validation:error', array(__CLASS__, 'tag_form_validation_error'));
 
+				self::$context->define_tag('form:field:'.$form, array(__CLASS__, 'tag_expand'));
+				self::$context->define_tag('form:radio:'.$form, array(__CLASS__, 'tag_expand'));
+				self::$context->define_tag('form:checkbox:'.$form, array(__CLASS__, 'tag_expand'));
+				self::$context->define_tag('form:select:'.$form, array(__CLASS__, 'tag_expand'));
+
+				// Fields individual errors
+				self::$context->define_tag('form:'.$form.':error', array(__CLASS__, 'tag_expand'));
+
+				// Form refill after error / Fields individual errors : one tag / field
 				if ( ! empty($settings['fields']))
 				{
 					foreach ($settings['fields'] as $field => $field_setting)
 					{
-						self::$context->define_tag('form:field:'.$form.':'. $field, array(__CLASS__, 'tag_form_field_value'));
-						self::$context->define_tag('form:error:'.$form.':'. $field, array(__CLASS__, 'tag_form_error_value'));
+						// Field Error string
+						self::$context->define_tag('form:'.$form.':error:'. $field, array(__CLASS__, 'tag_form_error_value'));
+
+						// One method / field type
+						$type = empty($field_setting['type']) ? 'input' : $field_setting['type'];
+
+						switch($type)
+						{
+							case 'radio':
+								self::$context->define_tag('form:'.$form.':radio:'. $field, array(__CLASS__, 'tag_form_radio_value'));
+								break;
+
+							case 'checkbox':
+								self::$context->define_tag('form:'.$form.':checkbox:'. $field, array(__CLASS__, 'tag_form_checkbox_value'));
+								break;
+
+							case 'select':
+								self::$context->define_tag('form:'.$form.':select:'. $field, array(__CLASS__, 'tag_form_select_value'));
+								break;
+
+							default:
+								self::$context->define_tag('form:'.$form.':field:'. $field, array(__CLASS__, 'tag_form_field_value'));
+						}
 					}
 				}
 			}
@@ -107,6 +147,7 @@ class TagManager_Form extends TagManager
 
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * Return one form field value
 	 * Used to fill again the form after submit if validation fails.
@@ -115,14 +156,14 @@ class TagManager_Form extends TagManager
 	 *
 	 * @return mixed|string
 	 *
-	 * @usage	<ion:form:field:form_name:field_name />
+	 * @usage	<ion:form:(form_name):field:(field_name) />
 	 *
 	 * 			Example with the form called 'register' and the input called 'firstname' :
-	 * 			<ion:form:field:register:firstname />
+	 * 			<ion:form:register:field:firstname />
 	 */
 	public static function tag_form_field_value(FTL_Binding $tag)
 	{
-		$form = $tag->getParentName();
+		$form_name = $tag->getParent('field')->getParentName();
 
 		// Try to get the "form" tag parent
 		$data_parent = $tag->getParent('form')->getParent();
@@ -130,9 +171,10 @@ class TagManager_Form extends TagManager
 		// Default return value
 		$default = $tag->getAttribute('default');
 
-		if ( ! is_null($form))
+		if ( ! is_null($form_name))
 		{
-			if ($form == self::$posting_form_name)
+			// The form was posted
+			if ($form_name == self::$posting_form_name)
 			{
 				return self::$ci->input->post($tag->name);
 			}
@@ -153,6 +195,165 @@ class TagManager_Form extends TagManager
 
 
 	/**
+	 * Returns 'checked="true"' if the radiobox has to be checked
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	In this example :
+	 *			- the form name is "profile"
+	 * 			- the radio name is "gender"
+	 *			<input type="radio" name="gender" value="1" <ion:user:form:profile:radio:gender value="1" default="true" /> />
+	 *			<input type="radio" name="gender" value="2" <ion:user:form:profile:radio:gender value="2" /> />
+	 *			<input type="radio" name="gender" value="3" <ion:user:form:profile:radio:gender value="3" /> />
+	 *
+	 */
+	public static function tag_form_radio_value(FTL_Binding $tag)
+	{
+		$form_name = $tag->getParent('radio')->getParentName();
+		return self::get_form_selected_attribute($tag, $form_name, 'radio');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Returns 'checked="true"' if the checkbox has to be checked
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	In this example :
+	 *			- the form name is "profile"
+	 * 			- the checkboxes name is "gender"
+	 *			<input type="checkbox" name="gender[]" value="1" <ion:user:form:profile:checkbox:gender value="1" default="true" /> />
+	 *			<input type="checkbox" name="gender[]" value="2" <ion:user:form:profile:checkbox:gender value="2" /> />
+	 *			<input type="checkbox" name="gender[]" value="3" <ion:user:form:profile:checkbox:gender value="3" /> />
+	 *
+	 */
+	public static function tag_form_checkbox_value(FTL_Binding $tag)
+	{
+		$form_name = $tag->getParent('checkbox')->getParentName();
+		return self::get_form_selected_attribute($tag, $form_name, 'checkbox');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns 'selected="true"' if the option has to be selected
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	In this example :
+	 *			- the form name is "profile"
+	 * 			- the select name is "gender", it can be multiple
+	 * 			<select type="select" name="gender[]" multiple="true">
+	 *				<option value="1" <ion:user:form:profile:select:gender value='1' />>Male</option>
+	 *				<option value="2" <ion:user:form:profile:select:gender value='2'  default='true'/>>Female</option>
+	 *				<option value="3" <ion:user:form:profile:select:gender value='3' />>I don't know</option>
+	 *			</select>
+	 */
+	public static function tag_form_select_value(FTL_Binding $tag)
+	{
+		$form_name = $tag->getParent('select')->getParentName();
+		return self::get_form_selected_attribute($tag, $form_name, 'select');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns, depending on the type of the field, the corresponding HTML tag attribute
+	 * mandatory to decide if the data has to be selected or not.
+	 *
+	 * @param FTL_Binding $tag
+	 * @param             $form_name
+	 * @param             $type
+	 *
+	 * @return string
+	 *
+	 */
+	protected static function get_form_selected_attribute(FTL_Binding $tag, $form_name, $type)
+	{
+		// Try to get the "form" tag parent
+		$data_parent = $tag->getParent('form')->getParent();
+
+		// Is this value the default one ?
+		$default = $tag->getAttribute('default');
+
+		// Value of the selectable (radio, select, checkbox)
+		$value = $tag->getAttribute('value');
+
+		if ( ! is_null($form_name))
+		{
+			$found_value = NULL;
+
+			// The form was posted
+			if ($form_name == self::$posting_form_name)
+			{
+				$found_value = self::$ci->input->post($tag->name);
+
+				// Multiple data : checkboxes or select multiple
+				if (is_array($found_value))
+				{
+					foreach($found_value as $val)
+					{
+						if ($value == $val)
+						{
+							$found_value = $val;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				// Try to get one stored value from the parent tag
+				if (is_object($data_parent))
+				{
+					$found_value = $tag->getValue($tag->name, $data_parent->name);
+
+					// Correct multiple data in the same field
+					// This has no impact if IDs are stored in one relation table.
+					if ($type == 'checkbox' OR $type == 'select')
+					{
+						$found_value = explode(',', $found_value);
+						foreach ($found_value as $val)
+						{
+							if ($value == $val)
+							{
+								$found_value = $val;
+								break;
+							}
+						}
+					}
+					// Correct if no value was found in the array
+					if (is_array($found_value)) $found_value = NULL;
+				}
+
+				// If default is set, Set the default value if nothing was found
+				if ( ! $found_value && ! is_null($default))
+					$found_value = $value;
+			}
+
+			if ($value == $found_value)
+				return self::$input_selected_attributes[$type];
+		}
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Return one single form field error
 	 *
 	 * @param FTL_Binding $tag
@@ -160,32 +361,32 @@ class TagManager_Form extends TagManager
 	 * @return string
 	 *
 	 * @usage	Output mode :
-	 * 			<ion:error:form_name:field_name />
+	 * 			<ion:form:form_name:error:field_name />
 	 *
 	 * 			Conditional mode :
-	 * 			<ion:error:form_name:field_name is="true">
+	 * 			<ion:form:form_name:error:field_name is="true">
 	 * 				... this will be displayed ...
-	 * 			</ion:error:field_name>
+	 * 			</ion:form:form_name:error:field_name>
 	 *
 	 * 			Example with the form called register and the input called 'firstname' :
-	 * 			<ion:error:register:firstname is='true'>
+	 * 			<ion:form:register:error:firstname is='true'>
 	 * 				... this will be displayed ...
-	 * 			</ion:error:register:firstname>
+	 * 			</ion:form:register:error:firstname>
 	 *
 	 * 			Example which return the asked value in case of error :
-	 * 			<ion:error:register:firstname is='true' return='class="error"'>
+	 * 			<ion:form:register:error:firstname is='true' return='class="error"'>
 	 *
 	 */
 	public static function tag_form_error_value(FTL_Binding $tag)
 	{
-		$form = $tag->getParentName();
+		$form_name = $tag->getParent('error')->getParentName();
 
-		if ( ! is_null($form))
+		if ( ! is_null($form_name))
 		{
-			if ($form == self::$posting_form_name)
+			if ($form_name == self::$posting_form_name)
 			{
 				// Validate or get the validation result
-				self::validate($form);
+				self::validate($form_name);
 
 				if ( ! empty(self::$ci->form_validation->_error_array[$tag->name]))
 				{
@@ -211,21 +412,30 @@ class TagManager_Form extends TagManager
 
 
 	/**
-	 * @param FTL_Binding $tag
+	 * @param 	FTL_Binding
 	 *
-	 * @return string
+	 * @return 	string
+	 *
+	 * @usage	<ion:form_name:validation:result [is="true/false"] >
+	 * 				...
+	 * 			</ion:form_name:validation:result>
+	 *
 	 */
 	public static function tag_form_validation_result(FTL_Binding $tag)
 	{
-		$form = $tag->getAttribute('form');
+		$form_name = $tag->getParent('validation')->getParentName();
 		$is = $tag->getAttribute('is', TRUE);
 
 		// Validate only if the $form is posted
-		if ($form == self::$posting_form_name)
-			$result = self::validate($form);
+		if ($form_name == self::$posting_form_name)
+		{
+			$result = self::validate($form_name);
+		}
 		// Consider the validation fails (or wasn't done)
 		else
+		{
 			$result = FALSE;
+		}
 
 		if ($result == $is)
 			return self::wrap($tag, $tag->expand());
@@ -233,6 +443,7 @@ class TagManager_Form extends TagManager
 		return '';
 
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -242,16 +453,24 @@ class TagManager_Form extends TagManager
 	 *
 	 * @return string
 	 *
+	 * @usage	<ion:form_name:validation:success [is="true/false"] >
+	 * 				...
+	 * 			</ion:form_name:validation:success>
 	 */
 	public static function tag_form_validation_success(FTL_Binding $tag)
 	{
 		$is = $tag->getAttribute('is');
 		$key = $tag->getAttribute('key');
 
-		$form_name = self::_get_form_name($tag);
+		// Old way : Needs the attribute form="form_name"
+		// $form_name = self::_get_form_name($tag);
+
+		// New way
+		$form_name = $tag->getParent('validation')->getParentName();
 
 		if (self::$posting_form_name == $form_name)
 		{
+
 			self::validate(self::$posting_form_name);
 
 			// Expand mode
@@ -304,9 +523,14 @@ class TagManager_Form extends TagManager
 	 * Displays the complete error string
 	 * (containing all errors)
 	 *
-	 * @param FTL_Binding $tag
+	 * @param 	FTL_Binding
 	 *
-	 * @return string
+	 * @return 	string
+	 *
+	 * @usage	<ion:form:form_name:validation:error />
+	 *
+	 * 			Example with the form called 'profile' :
+	 * 			<ion:form:profile:validation:error />
 	 *
 	 */
 	public static function tag_form_validation_error(FTL_Binding $tag)
@@ -314,7 +538,7 @@ class TagManager_Form extends TagManager
 		$is = $tag->getAttribute('is');
 		$key = $tag->getAttribute('key');
 
-		$form_name = self::_get_form_name($tag);
+		$form_name = $tag->getParent('validation')->getParentName();
 
 		// Add potential additional errors to the CI validation error string
 		$has_errors = self::check_additional_errors($form_name);
@@ -359,6 +583,10 @@ class TagManager_Form extends TagManager
 				}
 			}
 		}
+		// No posted form : No errors
+		if ($is == FALSE)
+			return $tag->expand();
+
 		return '';
 	}
 
@@ -403,22 +631,6 @@ class TagManager_Form extends TagManager
 
 					// See : http://codeigniter.com/user_guide/libraries/form_validation.html#translatingfn
 					self::$ci->form_validation->set_rules($field, $label, $rules);
-
-					/*
-					 * Checkboxes : Has to be tested !
-					 * Not done for the moment
-					 *
-					if (!($rules['default_value'] === FALSE))
-					 if ($this->CI->input->post($field_name) === FALSE)
-						 if (!$rules['special_field'] === 'checkbox') // Because of Checkboxes
-							 $_POST[$field_name] = $rules['default_value'];
-
-					if ($this->CI->input->post($field_name) === FALSE)
-					 $_POST[$field_name] = '';
-
-					if ($this->CI->input->post($field_name) === "on" && $rules['special_field'] === "checkbox")
-					 $_POST[$field_name] = '1';
-					*/
 
 					// User's callback rules
 					// Callbacks rules cannot be executed by CI_Form_validation()
@@ -513,6 +725,8 @@ class TagManager_Form extends TagManager
 
 
 	/**
+	 * Sets one additional succes message
+	 *
 	 * @param $key
 	 * @param $val
 	 *
@@ -568,6 +782,17 @@ class TagManager_Form extends TagManager
 		return FALSE;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the config settings for one form name
+	 *
+	 * @param $form_name
+	 *
+	 * @return null
+	 */
 	public static function get_form_settings($form_name)
 	{
 		$forms = config_item('forms');
@@ -576,8 +801,12 @@ class TagManager_Form extends TagManager
 		return $form;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
-	 * Returns the array of form fields
+	 * Returns the array of form fields, as set in the forms config file
 	 *
 	 * @param string	$form_name
 	 * @param bool 		$all
@@ -605,6 +834,17 @@ class TagManager_Form extends TagManager
 		return $fields;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the emails settings of one form, as set in the forms config file.
+	 * @param $form_name
+	 *
+	 * @return array
+	 *
+	 */
 	public static function get_form_emails($form_name)
 	{
 		$form = self::get_form_settings($form_name);
@@ -618,26 +858,6 @@ class TagManager_Form extends TagManager
 		return $emails;
 	}
 
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Returns the form name
-	 * Try to get the form name : 1. Form tag, 2. From parent validation tag
-	 *
-	 * @param 	FTL_Binding $tag
-	 * @return	string
-	 *
-	 */
-	private static function _get_form_name(FTL_Binding $tag)
-	{
-		$form_name = $tag->getAttribute('form');
-
-		if (is_null($form_name))
-			$form_name = $tag->getParentAttribute('form','validation');
-
-		return $form_name;
-	}
 
 	// ------------------------------------------------------------------------
 
@@ -660,6 +880,4 @@ class TagManager_Form extends TagManager
 		foreach($rules as $rule)
 			self::$ci->form_validation->set_message($rule, lang('form_error_' . $rule));
 	}
-
-
 }
