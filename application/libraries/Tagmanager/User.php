@@ -58,16 +58,8 @@ class TagManager_User extends TagManager
 		'user:group:name' => 		'tag_user_group_name',
 		'user:group:title' => 		'tag_user_group_title',
 
-		// Advanced
-		/*
-		 * User should be able to :
-		 * - login / logout
-		 * - register
-		 *
-		 */
-		'user:register' =>		'tag_user_register',
+		// Expands the tag if the user is logged in
 		'user:logged' =>		'tag_user_logged',
-
 	);
 
 

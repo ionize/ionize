@@ -80,7 +80,7 @@ $autoload['helper'] = array('url', 'form', 'dump_variable', 'language', 'date');
 |
 */
 
-$autoload['config'] = array('ionize');
+$autoload['config'] = array('ionize', 'forms');
 
 
 /*

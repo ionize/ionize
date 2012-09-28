@@ -88,8 +88,18 @@ class TagManager_Form extends TagManager
 			if (self::$ci->input->post('form'))
 				self::$posting_form_name = self::$ci->input->post('form');
 
-			// Form fields fill / error callbacks
+			// Get forms settings
 			$forms = config_item('forms');
+
+			if (is_file($file = Theme::get_theme_path().'config/forms.php'))
+			{
+				include($file);
+				if ( ! empty($config['forms']))
+				{
+					$forms = array_merge($forms, $config['forms']);
+					unset($config);
+				}
+			}
 
 			// Create dynamic tags regarding the declared forms
 			foreach ($forms as $form => $settings)

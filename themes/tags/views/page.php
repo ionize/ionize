@@ -84,6 +84,9 @@ test_tag_categories : 		Categories listing
 // Archives
 test_tag_archives			Archives tag
 
+// User
+test_user					User and Form tags
+test_form_theme				Theme defined form
 
 // @TODO :
 test_cookies :					Play with cookies through Tags
@@ -98,4 +101,4 @@ test_module_simpleform
 */
 ?>
 
-<ion:partial view="test_user"  />
+<ion:partial view="test_form_theme"  />

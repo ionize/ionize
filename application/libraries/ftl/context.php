@@ -306,9 +306,14 @@ log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
 		// show_error('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
 		// throw new Exception('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
 
-		$title = 'Tag missing';
-		$message = '<b>'.$name.'</b>, scope: <b>'.$this->current_nesting().'</b>';
-		return $this->show_error($title, $message);
+		// Config item from CI
+		$log_threshold = config_item('log_threshold');
+		if ($log_threshold)
+		{
+			$title = 'Tag missing';
+			$message = '<b>'.$name.'</b>, scope: <b>'.$this->current_nesting().'</b>';
+			return $this->show_error($title, $message);
+		}
 	}
 	
 	// --------------------------------------------------------------------
