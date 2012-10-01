@@ -44,6 +44,9 @@
 			color:#b00;
 			margin-top: -8px;
 		}
+		li {
+			padding:2px 0;
+		}
 		li a.active:after {
 			content:" (is active)";
 			color: #b00;

@@ -5,7 +5,7 @@
  * Default Email template for : User password
  * This email send a new password to the user
  *
- * Copy this file to /themes/<my_theme/mail/user_password.php
+ * Copy this file to /themes/<your_theme>/mail/user_password.php
  * to replace it by yours.
  *
  * IMPORTANT :
@@ -14,15 +14,14 @@
  *
  */
 /**
- * Available tags in this template :
- * - ion:email:subject
- * - ion:user
+ * Available tags in this template : <ion:data />
+ *
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title><ion:email:subject /></title>
+    <title><ion:data:subject /></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="Content-Language" content="<ion:current_lang />" />
     <style type="text/css">
@@ -65,30 +64,30 @@
                             <!--
 								Dear ....
 							-->
-                            <h1><ion:lang key="mail_user_password_intro" swap="user::firstname" /></h1>
+                            <h1><ion:data:lang key="mail_user_password_intro" swap="data::firstname" /></h1>
 
                             <!--
 								New account login information
 							-->
                             <p><ion:lang key="mail_user_password_message" swap="global::site_title" /></p>
                             <p>
-                                <ion:lang key="form_label_login"/> : <b><ion:username /></b>, <br/>
-                                <ion:lang key="form_label_password"/> : <b><ion:password /></b> <br/>
+                                <ion:lang key="form_label_login"/> : <b><ion:data:username /></b>, <br/>
+                                <ion:lang key="form_label_password"/> : <b><ion:data:password /></b> <br/>
                             </p>
 
 							<!--
 								This account isn't activated ?
 								Send the activation data again (as they have changed with the new password
 							-->
-							<ion:group:level expression="level<100">
+							<ion:data:level expression="level<100">
 
                                 <p><ion:lang key="mail_user_registration_activate" /></p>
                                 <p>
-                                    <a href="<ion:home_url />user/activate/<ion:user:email />/<ion:user:activation_key />">
-                                        <ion:home_url />user/activate/<ion:user:email />/<ion:user:activation_key />
+                                    <a href="<ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />">
+                                        <ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />
                                     </a>
                                 </p>
-                            </ion:group:level>
+                            </ion:data:level>
 
                         </td>
                     </tr>

@@ -102,12 +102,8 @@ class TagManager_User extends TagManager
 				self::$context->define_tag('user:group:' . $field, array(__CLASS__, 'tag_simple_value'));
 			}
 
-			// Process form data
-			self::process_data($tag);
-
 			// Set the current user
 			self::$user = Connect()->get_current_user();
-
 		}
 
 		// Do this everytime the tag is called
@@ -240,20 +236,20 @@ class TagManager_User extends TagManager
 
 
 	/**
-	 * Executed the very first time the <ion:user /> tag is called.
 	 * Processes the form POST data.
+	 * This method is declared as form "process" method in /application/config/forms.php for each form.
+	 * We could declare one method / form, but we decided to process all user's form with this one.
 	 *
-	 * @param FTL_Binding $tag
-	 *
-	 * @return bool
+	 * @param 	FTL_Binding		'init' tag (not the user one because this method is run before any tag parsing)
+	 *							This tag is supposed to be only used to send Emails.
+	 * 							With this tag, Emails views have access to the global tags, but not to any other
+	 * 							object tag.
+	 * @return 	void
 	 *
 	 */
-	protected function process_data(FTL_Binding $tag)
+	public static function process_data(FTL_Binding $tag)
 	{
 		$form_name = self::$ci->input->post('form');
-
-		// Form settings
-		$form_settings = TagManager_Form::get_form_settings($form_name);
 
 		if ($form_name)
 		{
@@ -264,8 +260,10 @@ class TagManager_User extends TagManager
 
 					if (Connect()->logged_in())
 					{
-						Connect()->logout();
-						$tag->remove('user');
+						// Potentially redirect to the page setup in /application/config/forms.php
+						$redirect = TagManager_Form::get_form_redirect();
+
+						Connect()->logout($redirect);
 					}
 					break;
 
@@ -284,7 +282,8 @@ class TagManager_User extends TagManager
 								// Account not allowed to login
 								if ($db_user['group']['level'] < 100)
 								{
-									TagManager_Form::set_additional_error('login', lang($form_settings['not_activated']));
+									$message = TagManager_Form::get_form_message('not_activated');
+									TagManager_Form::set_additional_error('login', $message);
 								}
 								else
 								{
@@ -296,14 +295,26 @@ class TagManager_User extends TagManager
 									$result = Connect()->login($user);
 
 									if ($result)
-										TagManager_Form::set_additional_success('login', lang($form_settings['success']));
+									{
+										// Potentially redirect to the page setup in /application/config/forms.php
+										$redirect = TagManager_Form::get_form_redirect();
+											if ($redirect !== FALSE) redirect($redirect);
+
+										// If redirect is commented, this success message will be available.
+										$message = TagManager_Form::get_form_message('success');
+										TagManager_Form::set_additional_success('login', $message);
+									}
 									else
-										TagManager_Form::set_additional_error('login', lang($form_settings['error']));
+									{
+										$message = TagManager_Form::get_form_message('error');
+										TagManager_Form::set_additional_error('login', $message);
+									}
 								}
 							}
 							else
 							{
-								TagManager_Form::set_additional_error('login', lang($form_settings['not_found']));
+								$message = TagManager_Form::get_form_message('not_found');
+								TagManager_Form::set_additional_error('login', $message);
 							}
 						}
 					}
@@ -328,19 +339,37 @@ class TagManager_User extends TagManager
 
 						if ( ! Connect()->register($user))
 						{
-							TagManager_Form::set_additional_error('register', lang('form_register_error_message'));
+							$message = TagManager_Form::get_form_message('error');
+							TagManager_Form::set_additional_error('register', $message);
 						}
 						else
 						{
 							// Get the user saved in DB
 							$user = Connect()->get_user($user['username']);
-							$user['password'] = Connect()->decrypt($user['password'], $user);
-							$user['activation_key'] = Connect()->calc_activation_key($user);
 
-							// Send Emails
-							self::send_emails($tag, 'register', $user);
+							if (is_array($user))
+							{
+								// Must be set before set the clear password
+								$user['activation_key'] = Connect()->calc_activation_key($user);
 
-							TagManager_Form::set_additional_success('register', lang($form_settings['success']));
+								$user['password'] = Connect()->decrypt($user['password'], $user);
+
+								// Create data array and Send Emails
+								$data = array_merge($user, $user['group']);
+								TagManager_Email::send_form_emails($tag, 'password', $data);
+
+								$message = TagManager_Form::get_form_message('success');
+								TagManager_Form::set_additional_success('register', $message);
+
+								// Potentially redirect to the page setup in /application/config/forms.php
+								$redirect = TagManager_Form::get_form_redirect();
+								if ($redirect !== FALSE) redirect($redirect);
+							}
+							else
+							{
+								$message = TagManager_Form::get_form_message('error');
+								TagManager_Form::set_additional_error('register', $message);
+							}
 						}
 					}
 					break;
@@ -362,7 +391,8 @@ class TagManager_User extends TagManager
 
 							if ( ! Connect()->update($user))
 							{
-								TagManager_Form::set_additional_error('password', lang($form_settings['error']));
+								$message = TagManager_Form::get_form_message('error');
+								TagManager_Form::set_additional_error('password', $message);
 							}
 							else
 							{
@@ -375,14 +405,21 @@ class TagManager_User extends TagManager
 								$user['activation_key'] = $activation_key;
 
 								// Send Emails
-								self::send_emails($tag, 'password', $user);
+								$data = array_merge($user, $user['group']);
+								TagManager_Email::send_form_emails($tag, 'password', $data);
 
-								TagManager_Form::set_additional_success('password', lang($form_settings['success']));
+								$message = TagManager_Form::get_form_message('success');
+								TagManager_Form::set_additional_success('password', $message);
+
+								// Potentially redirect to the page setup in /application/config/forms.php
+								$redirect = TagManager_Form::get_form_redirect();
+								if ($redirect !== FALSE) redirect($redirect);
 							}
 						}
 						else
 						{
-							TagManager_Form::set_additional_error('password', lang($form_settings['not_found']));
+							$message = TagManager_Form::get_form_message('not_found');
+							TagManager_Form::set_additional_error('password', $message);
 						}
 					}
 
@@ -391,6 +428,9 @@ class TagManager_User extends TagManager
 				// Activate account
 				case 'activation':
 
+					// Done through one old plain CI controller for the moment.
+					// Adding tags for this task adds more complexity for nothing
+					// (create one page, set the page in Ionize... this all is not needed for account activation)
 					break;
 
 				// Save profile
@@ -399,7 +439,8 @@ class TagManager_User extends TagManager
 					// Lost connection
 					if(($current_user = Connect()->get_current_user()) == FALSE)
 					{
-						TagManager_Form::set_additional_error('profile', lang('form_not_logged'));
+						$message = TagManager_Form::get_form_message('not_logged');
+						TagManager_Form::set_additional_error('profile', $message);
 						return FALSE;
 					}
 
@@ -407,8 +448,13 @@ class TagManager_User extends TagManager
 					if (self::$ci->input->post('delete'))
 					{
 						$result = Connect()->delete($current_user);
-						Connect()->logout();
-						TagManager_Form::set_additional_success('profile', lang('form_profile_account_deleted'));
+
+						$message = TagManager_Form::get_form_message('deleted');
+						TagManager_Form::set_additional_success('profile', $message);
+
+						// Potentially redirect to the page setup in /application/config/forms.php
+						$redirect = TagManager_Form::get_form_redirect();
+						Connect()->logout($redirect);
 					}
 					else
 					{
@@ -437,77 +483,21 @@ class TagManager_User extends TagManager
 							// If error here, it can only be on the email, which already exists in the DB
 							if ( ! $result)
 							{
-								TagManager_Form::set_additional_error('email', lang($form_settings['error']));
+								$message = TagManager_Form::get_form_message('error');
+								TagManager_Form::set_additional_error('email', $message);
 							}
 							else
 							{
-								TagManager_Form::set_additional_success('profile', lang($form_settings['success']));
+								$message = TagManager_Form::get_form_message('success');
+								TagManager_Form::set_additional_success('profile', $message);
+
+								// Potentially redirect to the page setup in /application/config/forms.php
+								$redirect = TagManager_Form::get_form_redirect();
+								if ($redirect !== FALSE) redirect($redirect);
 							}
 						}
 					}
 					break;
-			}
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	protected function send_emails(FTL_Binding $tag, $form_name, $user)
-	{
-		$emails = TagManager_Form::get_form_emails($form_name);
-		$website_email = Settings::get('site_email') ? Settings::get('site_email') : NULL;
-
-		foreach($emails as $email_setting)
-		{
-			$email = $email_setting['email'];
-
-			// Get potential website / user email
-			switch($email)
-			{
-				case 'website':
-					$email = (Settings::get('site_email') != '') ? Settings::get('site_email') : NULL;
-					break;
-
-				case 'user':
-					$email = isset($user['email']) ? $user['email'] : NULL;
-					break;
-
-				default:
-					$email = NULL;
-					break;
-			}
-
-			// Send the email
-			if ( ! is_null($email))
-			{
-				$subject = lang($email_setting['subject'], Settings::get('site_title'));
-
-				// Tag data. Current context : <ion:user />
-				$tag->set('email_subject', $subject);
-
-				// Data has to be set manually, because when called, <ion:user /> gets the current user
-				// and if no user is connected, these data will be empty, so not available for the email
-				// template
-				$tag->set('user', $user);
-				$tag->set('group', $user['group']);
-
-				// Email Lib
-				if ( ! isset(self::$ci->email)) self::$ci->load->library('email');
-
-				// Subject / From / To
-				self::$ci->email->subject($subject);
-				self::$ci->email->from($website_email, Settings::get("site_title"));
-				self::$ci->email->to($email);
-
-				// View
-				$view_content = $tag->parse_as_nested(Theme::load($email_setting['view']));
-
-				self::$ci->email->message($view_content);
-
-				// Send silently
-				@self::$ci->email->send();
 			}
 		}
 	}

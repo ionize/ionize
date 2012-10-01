@@ -364,48 +364,12 @@ class FTL_Binding
 	 * @return FTL_Binding
 	 *
 	 */
-//	public function getDataParent($stack = NULL)
 	public function getDataParent()
 	{
 		if (is_null($this->data_parent))
 			$this->data_parent = $this->getParent(NULL, FALSE);
 
 		return $this->data_parent;
-
-		/*
-		if (is_null($this->data_parent))
-		{
-			if (is_null($stack))
-			{
-				$stack = array_reverse($this->getStack());
-				array_shift($stack);
-			}
-			$parent = NULL;
-
-			// Get the parent name, but with the stack in the good order
-			$parent_name = $this->getParentName(array_reverse($stack));
-
-			foreach($stack as $binding)
-			{
-				array_shift($stack);
-				if ($binding->name == $parent_name)
-				{
-					if ($binding->isProcessTag() == TRUE)
-					{
-						$this->data_parent = $binding->getDataParent($stack);
-					}
-					else
-					{
-						$parent = $binding;
-						$this->data_parent = $parent;
-					}
-					break;
-				}
-			}
-		}
-
-		return $this->data_parent;
-		*/
 	}
 
 
@@ -432,22 +396,6 @@ class FTL_Binding
 			return array_pop($nesting);
 
 		return NULL;
-
-		/*
-		if (is_null($stack))
-		{
-			$stack = $this->getStack();
-			array_pop($stack);
-		}
-
-		$stack = array_reverse($stack);
-		$binding = array_shift($stack);
-
-		if (is_object($binding))
-			return $binding->name;
-		else
-			return NULL;
-		*/
 	}
 
 	/**
@@ -623,6 +571,17 @@ class FTL_Binding
 		$this->context->parser = $tmp;
 		
 		return $str;
+	}
+
+	public function parse_as_standalone($tag_prefix, $string)
+	{
+		$parser = new FTL_Parser(array
+		(
+			'context' => $this->context,
+			'tag_prefix' => $tag_prefix,
+		));
+
+		return $parser->parse($string);
 	}
 
 }

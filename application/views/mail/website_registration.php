@@ -5,7 +5,7 @@
  * Default Email template for User registration
  * This email is supposed to be send to the website's email
  *
- * Copy this file to /themes/<my_theme/mail/website_registration.php
+ * Copy this file to /themes/<your_theme>/mail/website_registration.php
  * to replace it by yours.
  *
  * IMPORTANT :
@@ -13,16 +13,11 @@
  * It will be overwritten when migrating to a new Ionize release.
  *
  */
-/**
- * Available tags in this template :
- * - ion:email:subject
- * -
- */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title><ion:email:subject /></title>
+    <title><ion:data:subject /></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="Content-Language" content="<ion:current_lang />" />
     <style type="text/css">
@@ -62,14 +57,14 @@
                 <table border="0" width="880" style="border:0; width: 880px; margin: 0 auto;">
                     <tr>
                         <td>
-                            <h1><ion:email_subject /></h1>
+                            <h1><ion:data:subject /></h1>
 
 							<p><ion:lang key="mail_website_registration_message" /></p>
 
 							<p>
-                                <ion:lang key="form_label_firstname"/> : <ion:firstname />, <br/>
-                                <ion:lang key="form_label_lastname"/> : <ion:lastname />, <br/>
-                                <ion:lang key="form_label_email"/> : <ion:email />, <br/>
+                                <ion:lang key="form_label_firstname"/> : <ion:data:firstname />, <br/>
+                                <ion:lang key="form_label_lastname"/> : <ion:data:lastname />, <br/>
+                                <ion:lang key="form_label_email"/> : <ion:data:email />, <br/>
 							</p>
                         </td>
                     </tr>

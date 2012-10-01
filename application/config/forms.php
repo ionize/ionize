@@ -13,11 +13,18 @@ $config['forms'] = array
 	// Login Form
 	'login' => array
 	(
+		'process' => 'TagManager_User::process_data',
+		// Redirection after process. Can be 'home' or 'referer' for the $_SERVER['HTTP_REFERER'] value.
+		// If not set, doesn't redirect
+		'redirect' => 'referer',
 		// Message Language index, as set in language/xx/form_lang.php
-		'success' => 'form_login_success_message',
-		'error' => 'form_login_error_message',
-		'not_found' => 'form_login_not_found_message',
-		'not_activated' => 'form_login_not_activated_message',
+		'messages' => array
+		(
+			'success' => 'form_login_success_message',
+			'error' => 'form_login_error_message',
+			'not_found' => 'form_login_not_found_message',
+			'not_activated' => 'form_login_not_activated_message',
+		),
 		'fields' => array
 		(
 			'email' => array(
@@ -33,18 +40,29 @@ $config['forms'] = array
 			),
 		)
 	),
+	'logout' =>array
+	(
+		'process' => 'TagManager_User::process_data',
+		'redirect' => 'home',
+	),
 	// Register Form
 	'register' => array
 	(
-		'success' => 'form_register_success_message',
+		'process' => 'TagManager_User::process_data',
+		'redirect' => 'referer',
+		'messages' => array
+		(
+			'success' => 'form_register_success_message',
+			'error' => 'form_register_error_message',
+		),
 		// Emails which will be send when the form is properly processed
 		'emails' => array
 		(
 			array
 			(
-				// Can be :
-				// - Plain Email address : my.name@mydomain.com
-				// - 'user' to send it to the email of the form
+				// Values can be :
+				// - One plain Email address : my.name@mydomain.com
+				// - 'form' to send it to the email of the form data
 				// - 'website' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
 				'email' => 'website',
 				// Language term index, as set in language/xx/form_lang.php
@@ -54,7 +72,7 @@ $config['forms'] = array
 			),
 			array
 			(
-				'email' => 'user',
+				'email' => 'form',
 				'subject' => 'mail_user_registration_subject',
 				'view' => 'mail/user_registration',
 			),
@@ -105,8 +123,15 @@ $config['forms'] = array
 	),
 	'profile' => array
 	(
-		'success' => 	'form_profile_success_message',
-		'error' => 		'form_profile_error_message',
+		'process' => 'TagManager_User::process_data',
+		'redirect' => 'referer',
+		'messages' => array
+		(
+			'success' => 	'form_profile_success_message',
+			'error' => 		'form_profile_error_message',
+			'deleted' => 	'form_profile_account_deleted',
+			'not_logged' =>	'form_not_logged',
+		),
 		'fields' => array
 		(
 			'firstname' => array(
@@ -141,9 +166,13 @@ $config['forms'] = array
 	),
 	'password' => array
 	(
-		'success' => 	'form_password_success_message',
-		'error' => 		'form_password_error_message',
-		'not_found' => 	'form_password_not_found_message',
+		'process' => 'TagManager_User::process_data',
+		'messages' => array
+		(
+			'success' => 	'form_password_success_message',
+			'error' => 		'form_password_error_message',
+			'not_found' => 	'form_password_not_found_message',
+		),
 		'fields' => array
 		(
 			'email' => array(
@@ -155,7 +184,7 @@ $config['forms'] = array
 		(
 			array
 			(
-				'email' => 'user',
+				'email' => 'form',
 				'subject' => 'mail_user_password_subject',
 				'view' => 'mail/user_password',
 			),

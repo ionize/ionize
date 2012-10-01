@@ -1,6 +1,6 @@
 RewriteEngine On
 
-# The RewriteBase / instruction is commented. Remove the "#" to uncomment
+# RewriteBase
 # RewriteBase /
 
 # Memory Limit
@@ -24,6 +24,9 @@ RewriteEngine On
 # Redirect www.domain.com to domain.com
 # RewriteCond %{HTTP_HOST} !^domain.com$ [NC]
 # RewriteRule ^(.*)$ http://domain.com/$1 [L,R=301]
+
+# Disallow .svn access if you're using SVN
+# RedirectMatch 404 /\\.svn(/.*|$)
 
 # Uncomment these lines to display the off.html page to other IP than the one bellow
 # RewriteCond %{REMOTE_ADDR} !^127.0.0.1$

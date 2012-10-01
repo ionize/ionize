@@ -1,0 +1,102 @@
+<?php
+/**
+ * Ionize
+ *
+ * @package		Ionize
+ * @author		Ionize Dev Team
+ * @license		http://ionizecms.com/doc-license
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.9
+ *
+ */
+
+
+/**
+ * Email TagManager
+ *
+ */
+class TagManager_Email extends TagManager
+{
+
+	/**
+	 * Sends Emails as defined in the forms.php config file.
+	 * Important : This method receives the "form" tag
+	 *
+	 * @param FTL_Binding	Form tag
+	 * @param string
+	 * @param array       	Array of data send to the Email view.
+	 * 						Each key of this array will be available in the view by :
+	 * 						<ion:data:key />
+	 *
+	 * 						The passed array should look like this :
+	 * 						array(
+	 * 							'email' => 'user email',		// Email of the user (POST, DB...)
+	 * 							'key1' => 'value1,				// Makes <ion:data:key1 /> available in the Email view
+	 * 						);
+	 *
+	 */
+	public static function send_form_emails(FTL_Binding $tag, $form_name, $data = array())
+	{
+		// Set the 'data' tag from the received data array
+		self::$context->define_tag('data', array(__CLASS__, 'tag_expand'));
+
+		foreach($data as $key=>$value)
+			if ( ! is_array($value) && ! is_object($value))
+				self::$context->define_tag('data:'.$key, array(__CLASS__, 'tag_simple_value'));
+
+		// Get all declared emails configuration data from forms.php config file
+		$emails = TagManager_Form::get_form_emails($form_name);
+
+		// Get the 'sender' email : Must be set in Ionize : Settings > Advanced settings > Email
+		$website_email = Settings::get('site_email') ? Settings::get('site_email') : NULL;
+
+		// Send all defined emails
+		foreach($emails as $email_setting)
+		{
+			$email = $email_setting['email'];
+
+			// Get potential website / form email
+			switch($email)
+			{
+				case 'website':
+					$email = (Settings::get('site_email') != '') ? Settings::get('site_email') : NULL;
+					break;
+
+				case 'form':
+					$email = isset($data['email']) ? $data['email'] : self::$ci->input->post('email');
+					break;
+
+				default:
+					$email = NULL;
+					break;
+			}
+
+			// Send the email
+			if ( $email )
+			{
+				// Subject, adds the website title as swap text : diplayed in title if the %s key is used.
+				$subject = lang($email_setting['subject'], Settings::get('site_title'));
+				$data['subject'] = $subject;
+
+				// Set the "data tag" array of data.
+				$tag->set('data', $data);
+
+				// Email Lib
+				if ( ! isset(self::$ci->email)) self::$ci->load->library('email');
+
+				// Subject / From / To
+				self::$ci->email->subject($subject);
+				self::$ci->email->from($website_email, Settings::get("site_title"));
+				self::$ci->email->to($email);
+
+				// View & Message content
+				$view_content = $tag->parse_as_standalone(self::$tag_prefix, Theme::load($email_setting['view']));
+
+				self::$ci->email->message($view_content);
+
+				// Send silently
+				@self::$ci->email->send();
+			}
+		}
+	}
+}

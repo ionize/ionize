@@ -44,10 +44,16 @@ class TagManager
 	protected static $extend_field_prefix = 'ion_';
 
 	/**
+	 * Current tag context
+	 *
 	 * @var	FTL_ArrayContext
 	 */
 	public static $context;
-	
+
+	/**
+	 * Tags prefix
+	 * @var string
+	 */
 	public static $tag_prefix = 'ion';
 
 	public static $view = '';
@@ -82,9 +88,27 @@ class TagManager
 	 */
 	public static $special_uri_array = NULL;
 
-
+	/**
+	 * Shutdown callback
+	 * Currently used if one expression evaluation hangs
+	 * @var null
+	 */
 	public static $shutdown_callback = NULL;
 	public static $shutdown_callback_args = NULL;
+
+	/**
+	 * Declared forms
+	 *
+	 * @var null
+	 */
+	public static $forms = NULL;
+
+
+	/**
+	 * The current posting form name if any
+	 * @var null/string
+	 */
+	public static $posting_form_name = NULL;
 
 
 	/**
@@ -177,15 +201,16 @@ class TagManager
 		
 		// Load automatically all TagManagers defined in /libraries/Tagmanager
 		$tagmanagers = glob(APPPATH.'libraries/Tagmanager/*'.EXT);
-		
+		$tagmanagers = array_merge($tagmanagers, glob(FCPATH.Theme::get_theme_path().'libraries/Tagmanager/*'.EXT));
+
 		foreach ($tagmanagers as $tagmanager)
-		{
-			self::autoload(array_pop(explode('/', $tagmanager)));
-		}
-		
+			self::autoload($tagmanager);
+
 		self::add_globals();
 		self::add_tags();
 		self::add_module_tags();
+
+		self::process_form();
 
 		register_shutdown_function(
 			array('TagManager', 'call_shutdown')
@@ -194,8 +219,83 @@ class TagManager
 
 
 	// ------------------------------------------------------------------------
-	
-	
+
+
+	/**
+	 * Processes potential posted form.
+	 *
+	 * Done before any tag rendering, so the processing methods can set classes data before
+	 * all other tags use them.
+	 * Example : When the user logs in, the Connect() class need to set the current user
+	 * so the <ion:user /> tag can get this information independently from <ion:form tag />
+	 *
+	 */
+	public static function process_form()
+	{
+		// Posting form name
+		if (self::$ci->input->post('form'))
+			self::$posting_form_name = self::$ci->input->post('form');
+		else
+			return;
+
+		// Get forms settings
+		if ($f = self::$posting_form_name)
+		{
+			$forms = self::get_form_settings();
+
+			if ( !empty($forms[$f]['process']))
+			{
+				// Create one dummy parent tag
+				$tag = new FTL_Binding(self::$context, self::$context->globals, 'init', array(), NULL);
+
+				call_user_func($forms[$f]['process'], $tag);
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the config settings for one form name
+	 *
+	 * @param $form_name
+	 *
+	 * @return null/array
+	 *
+	 */
+	public static function get_form_settings($form_name = NULL)
+	{
+		if (is_null(self::$forms))
+		{
+			// Get forms settings
+			$forms = config_item('forms');
+
+			if (is_file($file = Theme::get_theme_path().'config/forms.php'))
+			{
+				include($file);
+				if ( ! empty($config['forms']))
+				{
+					$forms = array_merge($forms, $config['forms']);
+					unset($config);
+				}
+			}
+			self::$forms = $forms;
+		}
+
+		if ( ! is_null($form_name) && isset(self::$forms[$form_name]))
+		{
+			return self::$forms[$form_name];
+		}
+
+		return self::$forms;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Autoloads tags from core TagManagers
 	 * located in /libraries/Tagmanager
@@ -203,11 +303,12 @@ class TagManager
 	 * @param	String	File name
 	 *
 	 */
-	public static function autoload($file_name)
+	public static function autoload($file_path)
 	{
-		$class = 'tagmanager_' . strtolower(str_replace(EXT, '', $file_name));
+		require_once $file_path;
 
-		require_once APPPATH.'libraries/Tagmanager/'.$file_name;
+		$file_name = array_pop(explode('/', $file_path));
+		$class = 'tagmanager_' . strtolower(str_replace(EXT, '', $file_name));
 
 		// Get public vars
 		$vars = get_class_vars($class);
@@ -217,7 +318,7 @@ class TagManager
 
 		foreach ($tag_definitions as $tag => $method)
 		{
-			// Regular tag declaration					
+			// Regular tag declaration
 			self::$tags[$tag] = $class.'::'.$method;
 		}
 	}
@@ -1568,14 +1669,16 @@ class TagManager
 	public static function tag_lang(FTL_Binding $tag)
 	{
 		// Kind of article : Get only the article linked to the given view
-		$term = $tag->getAttribute('item');
+		$term = $tag->getAttribute('key');
 
 		if (is_null($term))	$term = $tag->getAttribute('term');
-		if (is_null($term))	$term = $tag->getAttribute('key');
+		if (is_null($term))	$term = $tag->getAttribute('item');
 
 		$swap = $tag->getAttribute('swap');
 		if ( ! is_null($swap))
 			$swap = self::get_lang_swap($tag);
+
+
 
 		if ( ! is_null($term))
 		{
@@ -2021,10 +2124,45 @@ class TagManager
 		return $str;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	public static function tag_nesting(FTL_Binding $tag)
 	{
 		return $tag->nesting();
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the Home URL
+	 *
+	 * @return string
+	 *
+	 */
+	public static function get_home_url()
+	{
+		// Set all languages online if connected as editor or more
+		if( Connect()->is('editors', TRUE))
+		{
+			Settings::set_all_languages_online();
+		}
+
+		if (count(Settings::get_online_languages()) > 1 )
+		{
+			// if the current lang is the default one : don't return the lang code
+			if (Settings::get_lang() != Settings::get_lang('default'))
+			{
+				return base_url() . Settings::get_lang() .'/';
+			}
+		}
+
+		return base_url();
+	}
+
 
 	// ------------------------------------------------------------------------
 

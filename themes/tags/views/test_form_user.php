@@ -176,12 +176,21 @@
 			<p class="red"><b>Errors during validation</b></p>
 		</ion:form:register:validation:error>
 
+		<!--
+			Only display the Registration Form if the user isn't looged in.
+		-->
 		<ion:user:logged is="false">
-
-            <ion:form:register:validation:error is="false">
+			
+			<!-- 
+				Displayed if the form wasn't posted
+			-->
+            <ion:form:register:posted is="false">
 				<p>Please fill in the registration form to create one account.</p>
-            </ion:form:register:validation:error>
-
+            </ion:form:register:posted>
+			
+			<!--
+				Form
+			-->
 			<form method="post" action="">
 				<input type="hidden" name="form" value="register" />
 
@@ -303,7 +312,7 @@
             <label for="screen_name-profile">
                 <ion:lang key="form_label_screen_name" />
             </label>
-            <input type="text" id="screen_name-profile" name="screen_name" value="<ion:form:profile:field:screen_name />" />
+            <input type="text" id="screen_name-profile" name="screen_name" value="<ion:user:form:profile:field:screen_name />" />
             <ion:form:profile:error:screen_name tag="p" class="input-error" />
             <br/>
 
@@ -482,10 +491,16 @@
 
 	&lt;ion:user:logged is="false">
 
-		&lt;ion:form:register:validation:error is="false">
+		&lt;!-- 
+			Displayed if the form wasn't posted
+		-->
+		&lt;ion:form:register:posted is="false">
 			&lt;p>Please fill in the registration form to create one account.&lt;/p>
-		&lt;/ion:form:register:validation:error>
+		&lt;/ion:form:register:posted>
 
+		&lt;!-- 
+			Form
+		-->
 		&lt;form method="post" action="">
 			&lt;input type="hidden" name="form" value="register" />
 
@@ -594,7 +609,7 @@
 		&lt;label for="screen_name-profile">
 			&lt;ion:lang key="form_label_screen_name" />
 		&lt;/label>
-		&lt;input type="text" id="screen_name-profile" name="screen_name" value="&lt;ion:form:profile:field:screen_name />" />
+		&lt;input type="text" id="screen_name-profile" name="screen_name" value="&lt;ion:user:form:profile:field:screen_name />" />
 		&lt;ion:form:profile:error:screen_name tag="p" class="input-error" />
 		&lt;br/>
 

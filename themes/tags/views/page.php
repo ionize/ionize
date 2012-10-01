@@ -85,8 +85,8 @@ test_tag_categories : 		Categories listing
 test_tag_archives			Archives tag
 
 // User
-test_user					User and Form tags
-test_form_theme				Theme defined form
+test_form_user				User and Form tags (login / logout / register / profile)
+test_form_contact			Contact form : Theme defined form
 
 // @TODO :
 test_cookies :					Play with cookies through Tags
@@ -101,4 +101,4 @@ test_module_simpleform
 */
 ?>
 
-<ion:partial view="test_form_theme"  />
+<ion:partial view="test_form_contact"  />

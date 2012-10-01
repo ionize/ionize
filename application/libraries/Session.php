@@ -103,7 +103,7 @@ class CI_Session  {
 		}
 		else
 		{
-			return ( ! isset($_SESSION[$item])) ? false : $_SESSION[$item];
+			return ( ! isset($_SESSION[$item])) ? FALSE : $_SESSION[$item];
 		}
 	}
 
@@ -190,17 +190,17 @@ class CI_Session  {
 		if ( ! isset( $_SESSION['regenerated'] ) )
 		{
 			$_SESSION['regenerated'] = time();
-			return false;
+			return FALSE;
 		}
 
 		$expiry_time = time() - $this->session_id_ttl;
 
 		if ( $_SESSION['regenerated'] <=  $expiry_time )
 		{
-			return true;
+			return TRUE;
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -223,6 +223,17 @@ class CI_Session  {
 				$this->set_userdata($flash_key, $val);
 			}
 		}
+	}
+
+	/**
+	 * Sometimes, you set one flash data but you regret it.
+	 * With this method, you can change your mind.
+	 *
+	 */
+	function unset_flashdata($key)
+	{
+		$flash_key = $this->flash_key.':new:'.$key;
+		$this->unset_userdata(array($flash_key => ''));
 	}
 
 	/**

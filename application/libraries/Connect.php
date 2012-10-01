@@ -927,7 +927,7 @@ class Connect {
 
 				$nb = $this->model->update_user($user_data);
 
-				if ($nb)
+				if ($nb && $this->current_user)
 					$this->current_user = $this->model->find_user($user_data['username']);
 
 				return $nb;

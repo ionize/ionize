@@ -57,6 +57,15 @@ class User extends Base_Controller {
 
 		if ( ! $result)
 		{
+			/*
+			 * To debug activation
+			 *
+			$user = Connect()->find_user($email);
+			trace($user);
+			trace('Received : ' . $activation_key);
+			trace('Calculated : ' . Connect()->calc_activation_key($user));
+			 */
+
 			echo ('Activation code not valid.');
 		}
 		else

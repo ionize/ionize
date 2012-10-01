@@ -24,13 +24,6 @@ class TagManager_Form extends TagManager
 	protected static $_inited = FALSE;
 
 	/**
-	 * Name of the form which post data
-	 *
-	 * @var null
-	 */
-	protected static $posting_form_name = NULL;
-
-	/**
 	 * Form validation result array.
 	 * Do validation only once
 	 *
@@ -61,7 +54,6 @@ class TagManager_Form extends TagManager
 		'form:checkbox' => 						'tag_expand',
 		'form:select' => 						'tag_expand',
 		'form:error' => 						'tag_expand',
-
 	);
 
 
@@ -89,17 +81,7 @@ class TagManager_Form extends TagManager
 				self::$posting_form_name = self::$ci->input->post('form');
 
 			// Get forms settings
-			$forms = config_item('forms');
-
-			if (is_file($file = Theme::get_theme_path().'config/forms.php'))
-			{
-				include($file);
-				if ( ! empty($config['forms']))
-				{
-					$forms = array_merge($forms, $config['forms']);
-					unset($config);
-				}
-			}
+			$forms = self::get_form_settings();
 
 			// Create dynamic tags regarding the declared forms
 			foreach ($forms as $form => $settings)
@@ -109,6 +91,7 @@ class TagManager_Form extends TagManager
 				self::$context->define_tag('form:'.$form.':validation:result', array(__CLASS__, 'tag_form_validation_result'));
 				self::$context->define_tag('form:'.$form.':validation:success', array(__CLASS__, 'tag_form_validation_success'));
 				self::$context->define_tag('form:'.$form.':validation:error', array(__CLASS__, 'tag_form_validation_error'));
+				self::$context->define_tag('form:'.$form.':posted', array(__CLASS__, 'tag_form_posted'));
 
 				self::$context->define_tag('form:field:'.$form, array(__CLASS__, 'tag_expand'));
 				self::$context->define_tag('form:radio:'.$form, array(__CLASS__, 'tag_expand'));
@@ -422,6 +405,33 @@ class TagManager_Form extends TagManager
 
 
 	/**
+	 * Expands if the Form was passed through the validation process
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_form_posted(FTL_Binding $tag)
+	{
+		$form_name = $tag->getParentName();
+		$is = $tag->getAttribute('is', TRUE);
+		$posted = FALSE;
+
+		if ($form_name == self::$posting_form_name)
+			$posted = TRUE;
+
+		if ($posted == $is)
+			return $tag->expand();
+
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * @param 	FTL_Binding
 	 *
 	 * @return 	string
@@ -471,42 +481,57 @@ class TagManager_Form extends TagManager
 	{
 		$is = $tag->getAttribute('is');
 		$key = $tag->getAttribute('key');
-
-		// Old way : Needs the attribute form="form_name"
-		// $form_name = self::_get_form_name($tag);
-
-		// New way
 		$form_name = $tag->getParent('validation')->getParentName();
 
-		if (self::$posting_form_name == $form_name)
+		// 'additional_success' values
+		$values = NULL;
+
+		$fd = self::$ci->session->flashdata($form_name);
+
+		if ( ! empty($fd['additional_success']))
 		{
+			$values = $fd['additional_success'];
+		}
+		else
+		{
+			if (self::$posting_form_name == $form_name)
+			{
+				// We're not in 'redirect mode' : Remove the flash session data
+				self::$ci->session->unset_flashdata($form_name);
 
-			self::validate(self::$posting_form_name);
+				// Validate the form if it wasn't done
+				self::validate(self::$posting_form_name);
+				$values = self::$additional_success;
+			}
+		}
 
+		if ( ! is_null($values))
+		{
 			// Expand mode
 			if ( ! is_null($is))
 			{
-				// No key ask : Check the additional success array
+				// No key ask : Check against the additional success array
 				if (is_null($key))
 				{
-					if ( ! $is == empty(self::$additional_success))
+					if ( ! $is == empty($values))
 						return self::wrap($tag, $tag->expand());
 				}
 				else
 				{
-					if ( ! $is == empty(self::$additional_success[$key]))
+					if ( ! $is == empty($values[$key]))
 						return self::wrap($tag, $tag->expand());
 				}
 			}
-			// Return mode
+			// Output mode
 			else
 			{
 				if (is_null($key))
 				{
-					if ( ! empty(self::$additional_success))
+					if ( ! empty($values))
 					{
 						$str = '';
-						foreach (self::$additional_success as $val)
+						if (is_string($values)) $values = array($values);
+						foreach ($values as $val)
 							$str .= "<span>".$val."</span>";
 
 						return self::wrap($tag, $str);
@@ -514,9 +539,9 @@ class TagManager_Form extends TagManager
 				}
 				else
 				{
-					if ( ! empty(self::$additional_success[$key]))
+					if ( ! empty($values[$key]))
 					{
-						return self::wrap($tag, self::$additional_success[$key]);
+						return self::wrap($tag, $fd[$key]);
 					}
 				}
 			}
@@ -547,52 +572,85 @@ class TagManager_Form extends TagManager
 	{
 		$is = $tag->getAttribute('is');
 		$key = $tag->getAttribute('key');
-
 		$form_name = $tag->getParent('validation')->getParentName();
 
-		// Add potential additional errors to the CI validation error string
-		$has_errors = self::check_additional_errors($form_name);
+		// 'additional_error' values
+		$values = NULL;
 
-		if (self::$posting_form_name == $form_name)
+		$fd = self::$ci->session->flashdata($form_name);
+
+		if ( ! empty($fd['additional_error']))
 		{
-			self::validate(self::$posting_form_name);
+			$values = $fd['additional_error'];
+		}
+		else
+		{
+			// Adds additional errors to the CI Validation error array
+			self::check_additional_errors($form_name);
 
+			if (self::$posting_form_name == $form_name)
+			{
+				// We're not in 'redirect mode' : Remove the flash session data
+				self::$ci->session->unset_flashdata($form_name);
+
+				// Validate the form if it wasn't done
+				self::validate(self::$posting_form_name);
+
+				// No key : Get the string
+				if (is_null($key))
+				{
+					self::$ci->form_validation->set_error_delimiters('<span>', '</span>');
+					$values = self::$ci->form_validation->error_string();
+				}
+				else
+				{
+					$values = self::$ci->form_validation->_error_array;
+				}
+			}
+		}
+
+		if ( ! is_null($values))
+		{
 			// Expand mode
 			if ( ! is_null($is))
 			{
-				// Global errors check
+				// No key ask : Check against the additional success array
 				if (is_null($key))
 				{
-					if ( $is == $has_errors)
+					if ( ! $is == empty($values))
 						return self::wrap($tag, $tag->expand());
 				}
-				// Check one given error
 				else
 				{
-					if ( ! empty(self::$ci->form_validation->_error_array[$key]))
+					if ( ! $is == empty($values[$key]))
 						return self::wrap($tag, $tag->expand());
 				}
 			}
-			// Value return mode
+			// Output mode
 			else
 			{
-				// Global errors check
 				if (is_null($key))
 				{
-					// Remove the default <p> tag around each
-					self::$ci->form_validation->set_error_delimiters('<span>', '</span>');
-					if ($string = self::$ci->form_validation->error_string())
-						return self::output_value($tag, $string);
+					if ( ! empty($values))
+					{
+						$str = '';
+						if (is_string($values)) $values = array($values);
+						foreach ($values as $val)
+							$str .= "<span>".$val."</span>";
+
+						return self::wrap($tag, $str);
+					}
 				}
 				else
 				{
-					if ( ! empty(self::$ci->form_validation->_error_array[$key]))
+					if ( ! empty($values[$key]))
 					{
-						return self::output_value($tag, self::$ci->form_validation->_error_array[$key]);
+						return self::wrap($tag, $fd[$key]);
 					}
 				}
 			}
 		}
+
 		// No posted form : No errors
 		if ($is == FALSE)
 			return $tag->expand();
@@ -622,8 +680,7 @@ class TagManager_Form extends TagManager
 		// Do not validate the form if the form is not defined
 		if (is_null($form))
 		{
-			self::$fvr[$form_name] = FALSE;
-			return FALSE;
+			return self::$fvr[$form_name] = FALSE;
 		}
 
 		// If rules are defined in the config file...
@@ -686,7 +743,7 @@ class TagManager_Form extends TagManager
 
 
 	/**
-	 * TO CHECK !!!!!
+	 * @TODO : TO TEST and correct if needed !!!!!
 	 *
 	 * @param $row
 	 *
@@ -728,6 +785,16 @@ class TagManager_Form extends TagManager
 	public static function set_additional_error($key, $val)
 	{
 		self::$additional_errors[$key] = $val;
+
+		// Put additional success to flash session
+		$fd = self::$ci->session->flashdata(self::$posting_form_name);
+
+		if ($fd)
+			$fd['additional_error'][$key] = $val;
+		else
+			$fd = array('additional_error' => array($key => $val));
+
+		self::$ci->session->set_flashdata(array(self::$posting_form_name => $fd));
 	}
 
 
@@ -743,7 +810,18 @@ class TagManager_Form extends TagManager
 	 */
 	public static function set_additional_success($key, $val)
 	{
+		// Traditional way : Will be available if no redirect
 		self::$additional_success[$key] = $val;
+
+		// Put additional success to flash session
+		$fd = self::$ci->session->flashdata(self::$posting_form_name);
+
+		if ($fd)
+			$fd['additional_success'][$key] = $val;
+		else
+			$fd = array('additional_success' => array($key => $val));
+
+		self::$ci->session->set_flashdata(array(self::$posting_form_name => $fd));
 	}
 
 
@@ -803,12 +881,31 @@ class TagManager_Form extends TagManager
 	 *
 	 * @return null
 	 */
-	public static function get_form_settings($form_name)
+	public static function get_form_settings($form_name = NULL)
 	{
-		$forms = config_item('forms');
-		$form = isset($forms[$form_name]) ? $forms[$form_name] : NULL;
+		if (is_null(self::$forms))
+		{
+			// Get forms settings
+			$forms = config_item('forms');
 
-		return $form;
+			if (is_file($file = Theme::get_theme_path().'config/forms.php'))
+			{
+				include($file);
+				if ( ! empty($config['forms']))
+				{
+					$forms = array_merge($forms, $config['forms']);
+					unset($config);
+				}
+			}
+			self::$forms = $forms;
+		}
+
+		if ( ! is_null($form_name) && isset(self::$forms[$form_name]))
+		{
+			return self::$forms[$form_name];
+		}
+
+		return self::$forms;
 	}
 
 
@@ -857,17 +954,62 @@ class TagManager_Form extends TagManager
 	 */
 	public static function get_form_emails($form_name)
 	{
-		$form = self::get_form_settings($form_name);
-
-		$emails = array();
-
-		if (is_null($form)) return $emails;
+		$form = self::get_form_settings(self::$posting_form_name);
 
 		$emails = ! empty($form['emails']) ? $form['emails'] : array();
 
 		return $emails;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get one message from the posted form and automatically translate it
+	 *
+	 * @param string
+	 * @param string
+	 * @param string/array
+	 *
+	 * @return mixed
+	 */
+	public static function get_form_message($key, $swap=NULL)
+	{
+		$form = self::get_form_settings(self::$posting_form_name);
+
+		$messages = ! empty($form['messages']) ? $form['messages'] : array();
+
+		$message = ! empty($messages[$key]) ? lang($messages[$key], $swap) : '';
+
+		return $message;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Gets the posted form redirection directive.
+	 *
+	 * @return bool|string
+	 *
+	 */
+	public static function get_form_redirect()
+	{
+		$form = self::get_form_settings(self::$posting_form_name);
+
+		$redirect = FALSE;
+
+		if ( isset($form['redirect']))
+		{
+			$wish = $form['redirect'];
+			if ($wish == 'home') $redirect = self::get_home_url();
+			if ($wish == 'referer') $redirect = $_SERVER['HTTP_REFERER'];
+		}
+
+		return $redirect;
+	}
 
 	// ------------------------------------------------------------------------
 
