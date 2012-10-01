@@ -1406,7 +1406,6 @@ class TagManager
 	 *
 	 * @usage	<ion:set var="foo" value="bar" scope="<local|global>" />
 	 *
-	 */
 	public static function tag_set(FTL_Binding $tag)
 	{
 		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : NULL;
@@ -1420,6 +1419,7 @@ class TagManager
 		
 		return $value;
 	}
+	*/
 
 
 	// ------------------------------------------------------------------------

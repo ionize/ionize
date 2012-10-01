@@ -250,39 +250,11 @@ class FTL_Binding
 	 * If no name is given, return the very first parent.
 	 *
 	 * @param string/null
+	 * @param boolean
 	 *
 	 * @return FTL_Binding
 	 *
-	public function getParent($parent_name = NULL, $all = TRUE, $stack = NULL)
-	{
-		if (is_null($stack))
-		{
-			$stack = array_reverse($this->getStack());
-			array_shift($stack);
-		}
-
-		$parent = NULL;
-
-		// Get the parent name, but with the stack in the good order
-		if (is_null($parent_name))
-			$parent_name = $this->getParentName(array_reverse($stack));
-
-		foreach($stack as $binding)
-		{
-			array_shift($stack);
-			if ($binding->name == $parent_name)
-			{
-				if ($all == FALSE && $binding->isProcessTag() == TRUE)
-					$parent = $binding->getParent($parent_name, $all, $stack);
-				else
-					$parent = $binding;
-
-				break;
-			}
-		}
-		return $parent;
-	}
-	*/
+	 */
 	public function getParent($parent_name = NULL, $all = TRUE)
 	{
 		$parent = NULL;
@@ -312,12 +284,17 @@ class FTL_Binding
 			foreach($stack as $binding)
 			{
 				array_shift($stack);
+
 				if ($binding->name == $parent_name)
 				{
 					if ($all == FALSE && $binding->isProcessTag() == TRUE)
-						$parent = $binding->getParent($parent_name, $all);
+					{
+						$parent = $binding->getParent(NULL, FALSE);
+					}
 					else
+					{
 						$parent = $binding;
+					}
 
 					break;
 				}
