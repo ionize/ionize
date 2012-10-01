@@ -63,7 +63,6 @@ class FTL_Binding
 	 */
 	protected $parent_name = NULL;
 
-
 	protected $data_parent = NULL;
 
 	/**
@@ -150,12 +149,10 @@ class FTL_Binding
 		return $this->context->tag_missing($this->name, $this->attr, $this->block);
 	}
 
-
 	public function getStack()
 	{
 		return $this->context->get_binding_stack();
 	}
-
 
 	/**
 	 * Set the tag as process one
@@ -165,7 +162,6 @@ class FTL_Binding
 	{
 		$this->process_tag = TRUE;
 	}
-
 
 	/**
 	 * Returns TRUE if the current tag is one processing tag
@@ -177,7 +173,6 @@ class FTL_Binding
 	{
 		return $this->process_tag;
 	}
-
 
 	/**
 	 * Return all the attributes of the tag
@@ -244,7 +239,6 @@ class FTL_Binding
 		return $this;
 	}
 
-
 	/**
 	 * Return the current FTL_Binding parent
 	 * If no name is given, return the very first parent.
@@ -302,35 +296,6 @@ class FTL_Binding
 		}
 
 		return $parent;
-
-		/*
-		if (is_null($stack))
-		{
-			$stack = array_reverse($this->getStack());
-			array_shift($stack);
-		}
-
-		$parent = NULL;
-
-		// Get the parent name, but with the stack in the good order
-		if (is_null($parent_name))
-			$parent_name = $this->getParentName(array_reverse($stack));
-
-		foreach($stack as $binding)
-		{
-			array_shift($stack);
-			if ($binding->name == $parent_name)
-			{
-				if ($all == FALSE && $binding->isProcessTag() == TRUE)
-					$parent = $binding->getParent($parent_name, $all, $stack);
-				else
-					$parent = $binding;
-
-				break;
-			}
-		}
-		return $parent;
-		*/
 	}
 
 	/**
@@ -348,7 +313,6 @@ class FTL_Binding
 
 		return $this->data_parent;
 	}
-
 
 	/**
 	 * Return the tag's first parent name
@@ -392,7 +356,6 @@ class FTL_Binding
 		return NULL;
 	}
 
-
 	/**
 	 * Returns the first data tag parent's name
 	 *
@@ -409,7 +372,6 @@ class FTL_Binding
 
 		return NULL;
 	}
-
 
 	/**
 	 * Return the expected value from the data array of the tag.
@@ -451,14 +413,6 @@ class FTL_Binding
 		return NULL;
 	}
 
-	/*
-	 *
-	public function setValue($value)
-	{
-
-	}
-	*/
-
 	/**
 	 * Returns one local var
 	 *
@@ -489,6 +443,11 @@ class FTL_Binding
 	}
 
 	/**
+	 * Removes one key from the locals vars.
+	 *
+	 * @param	string			key to remove
+	 *
+	 * @return 	FTL_Binding
 	 *
 	 */
 	public function remove($key)
@@ -550,6 +509,14 @@ class FTL_Binding
 		return $str;
 	}
 
+	/**
+	 * Parses one tag as a standalone one.
+	 *
+	 * @param $tag_prefix
+	 * @param $string
+	 *
+	 * @return string
+	 */
 	public function parse_as_standalone($tag_prefix, $string)
 	{
 		$parser = new FTL_Parser(array
@@ -560,7 +527,6 @@ class FTL_Binding
 
 		return $parser->parse($string);
 	}
-
 }
 
 
