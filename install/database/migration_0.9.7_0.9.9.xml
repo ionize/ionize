@@ -19,11 +19,11 @@
 	</query>
 
 	<query>
-		update setting set content='0.9.8' where name = 'ionize_version';
+		update setting set content='0.9.9' where name = 'ionize_version';
 	</query>
 
 	<query>
-		ALTER TABLE `users` ADD `birth_date` DATETIME NOT NULL;
+		ALTER TABLE `users` ADD `birthdate` DATETIME NOT NULL;
 	</query>
 
 	<query>

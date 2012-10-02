@@ -193,21 +193,27 @@ class Installer
 	 */
 	function configure_user()
 	{
+		// Check if an Admin user already exists in the DB
+		$this->template['skip'] = FALSE;
+
+		$this->db_connect();
+
+		$this->db->where('id_group', '1');
+		$query = $this->db->get('users');
+
+		if ($query->num_rows() > 0)
+		{
+			$this->template['skip'] = TRUE;
+		}
+
+
 		if ( ! isset($_POST['action']))
 		{
-			// Check if an Admin user already exists in the DB
-			$this->template['skip'] = FALSE;
-			
-			$this->db_connect();
-
-			$this->db->where('id_group', '1');
-			$query = $this->db->get('users');
-			
-			if ($query->num_rows() > 0)
+			// Skip TRUE and no POST = Admin user already exists
+			if ($this->template['skip'] == TRUE)
 			{
 				$this->template['message_type'] = 'error';
 				$this->template['message'] = lang('user_info_admin_exists');
-				$this->template['skip'] = TRUE;
 			}
 			
 			// Prepare data
@@ -351,7 +357,7 @@ class Installer
 		
 			if ( ! empty($migration_files))
 			{
-				if (in_array('migration_0.9.7_0.9.8.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';			
+				if (in_array('migration_0.9.7_0.9.9.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';
 				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';			
 				if (in_array('migration_0.9.5_0.9.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.5</b>';			
 				if (in_array('migration_0.9.4_0.9.5.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.4</b>';			
@@ -401,6 +407,8 @@ class Installer
 			 */
 			if (in_array('migration_0.93_0.9.4.xml', $migration_files))
 			{
+				log_message('debug', 'Migration from 0.9.3');
+
 				$query = $this->db->get('users');
 				
 				if ($query->num_rows() > 0)
@@ -427,6 +435,8 @@ class Installer
 			 */
 			if (in_array('migration_0.9.4_0.9.5.xml', $migration_files))
 			{
+				log_message('debug', 'Migration from 0.9.5');
+
 				// Get the encryption key and move it to config/config.php
 				$enc = false;
 				$config = array();
@@ -495,6 +505,8 @@ class Installer
 			 */
 			if (in_array('migration_0.9.6_0.9.7.xml', $migration_files))
 			{
+				log_message('debug', 'Migration from 0.9.6');
+
 				// Updates the users account
 				$query = $this->db->get('users');
 				
@@ -513,11 +525,13 @@ class Installer
 			}
 
 			/*
-			 * Migration to 0.9.8
+			 * Migration to 0.9.9
 			 * Put url_mode to 'short'
 			 */
-			if (in_array('migration_0.9.7_0.9.8.xml', $migration_files))
+			if (in_array('migration_0.9.7_0.9.9.xml', $migration_files))
 			{
+				log_message('debug', 'Migration from 0.9.7');
+
 				require_once('./class/Config.php');
 
 				// Save version
@@ -527,16 +541,16 @@ class Installer
 			}
 
 			/*
-			 * Migration to 0.9.9
+			 * Migration to 1.0
+			 * Coming soon...
 			 *
 			 */
-			if (in_array('migration_0.9.8_0.9.9.xml', $migration_files))
+			if (in_array('migration_0.9.9_1.0.xml', $migration_files))
 			{
-
+				log_message('debug', 'Migration from 0.9.9');
 			}
 
-
-				header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
+			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 		}
 	}
 
@@ -974,7 +988,6 @@ class Installer
 		// Config library
 		require_once('./class/Config.php');
 
-
 		/*
 		 * Saves the new encryption key
 		 *
@@ -1252,7 +1265,7 @@ class Installer
 				$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 				$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 				$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-				$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+				$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 			}
 	
 			
@@ -1284,7 +1297,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 				}
 			}
 	
@@ -1313,7 +1326,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 				}
 			}
 
@@ -1339,7 +1352,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 				}
 			}
 
@@ -1363,7 +1376,7 @@ class Installer
 				{
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 				}
 			}
 			
@@ -1386,7 +1399,7 @@ class Installer
 				if ($migrate_from == true)
 				{
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 				}
 			}
 			
@@ -1397,15 +1410,13 @@ class Installer
 			 */
 			if (empty($migration_xml))
 			{
-				$migrate_from = false;
-				
 				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
 				$version = isset($version['content']) ? $version['content'] : '';
 				$version = str_replace('.', '', $version);
 				
 				if (intval($version) <= 97)
 				{
-					$migration_xml[] = 'migration_0.9.7_0.9.8.xml';
+					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 				}
 			}
 

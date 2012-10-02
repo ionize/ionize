@@ -252,6 +252,7 @@ $lang['ionize_label_unlink'] = 'Unlink';
 $lang['ionize_label_status'] = 'Status';
 $lang['ionize_label_max_upload_size'] = 'Max Upload';
 $lang['ionize_label_file_uploads'] = 'Upload ?';
+$lang['ionize_label_environment'] = 'Environment';
 $lang['ionize_label_site_email'] = 'Website Email';
 $lang['ionize_label_linkto'] = 'Link to...';
 $lang['ionize_label_drop_link_here'] = 'drop a link here...';
@@ -332,6 +333,8 @@ $lang['ionize_help_flags'] = 'Internal markers, just to be organized.';
 $lang['ionize_help_help'] = 'Displays the help tooltips like the one you\'re currently reading. Or not.. :-)';
 $lang['ionize_help_copy_to_other_languages'] = 'Copy to other languages';
 $lang['ionize_help_duplicate_article'] = 'You need at least to change the <b class="required">Name</b> of the article, which is the unique identifier for the article.';
+$lang['ionize_help_environment'] = 'ENVIRONMENT constant, as set in index.php';
+$lang['ionize_help_environment_flag'] = 'The ENVIRONMENT constant of your website is set to <b>%s</b> in the index.php.<br/>Before going live, change it to : <b>production</b>';
 
 $lang['ionize_description_flags'] = 'Flags are used by articles types and add a colored flag to give a visual help about the type of each article.<br/>';
 
@@ -623,6 +626,7 @@ $lang['ionize_label_refresh_antispam_key'] = 'Refresh the key';
 $lang['ionize_label_texteditor'] = 'Text editor';
 
 $lang['ionize_title_db_version'] = 'Database';
+$lang['ionize_title_php_version'] = 'PHP';
 $lang['ionize_title_php_version'] = 'PHP';
 
 $lang['ionize_message_database_not_saved'] = 'Incorrect database settings';

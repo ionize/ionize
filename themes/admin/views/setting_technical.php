@@ -236,7 +236,6 @@
 			</form>
 		</div>		
 
-
 		<!-- Database -->
 		<div class="tabcontent pt10">
 
@@ -314,7 +313,6 @@
 			</form>
 
 		</div>
-		
 		
 		<!-- Email -->
 		<div class="tabcontent pt10">
@@ -429,15 +427,17 @@
 			</form>
 		</div>
 		
-		
 		<!-- System -->
 		<div class="tabcontent pt20">
-		
 		
 			<div class="tabsidecolumn">
 				
 				<h3><?=lang('ionize_title_informations')?></h3>
 
+				<dl class="small compact">
+					<dt><label title="<?=lang('ionize_help_environment')?>"><?=lang('ionize_label_environment')?></label></dt>
+					<dd><?= ENVIRONMENT ?></dd>
+				</dl>
 				<dl class="small compact">
 					<dt><label><?=lang('ionize_title_php_version')?></label></dt>
 					<dd><?= phpversion() ?></dd>
@@ -640,10 +640,11 @@
 	/**
 	 * Init help tips on label
 	 *
-	 */
 	ION.initLabelHelpLinks('#settingsForm');
 	ION.initLabelHelpLinks('#cacheForm');
 	ION.initLabelHelpLinks('#maintenanceForm');
+     */
+	ION.initLabelHelpLinks('#settingsTabContent');
 
 
 	var settingsTab = new TabSwapper({tabsContainer: 'settingsTab', sectionsContainer: 'settingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'settingsTab' });

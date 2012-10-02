@@ -1,5 +1,5 @@
 --
--- Ionize 0.9.8 SQL creation tables
+-- Ionize 0.9.9 SQL creation tables
 --
 
 
@@ -549,7 +549,7 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 
 DELETE FROM setting WHERE name='ionize_version';
-INSERT INTO setting VALUES ('', 'ionize_version', '0.9.8', NULL);
+INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9', NULL);
 
 DELETE FROM setting WHERE name='media_upload_mode';
 INSERT INTO setting VALUES ('', 'media_upload_mode', 'multiple', NULL);

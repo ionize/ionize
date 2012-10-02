@@ -22,7 +22,11 @@ body {
 	position: relative;
 	background:url(../images/application_login_window_bg.jpg) no-repeat top left;
 }
-
+#preprod-flag {
+	width:130px;background-color: #c00;color: #fff;position: absolute;top:0;left:10px;
+	z-index: 100000;margin-right: auto;margin-left: auto;padding:5px 5px;text-align: center;
+	font-size: 11px;
+}
 #version {
 	color:#c2d0e0;
 	font-size: 10px;

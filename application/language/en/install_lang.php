@@ -36,7 +36,7 @@ $lang['write_config_dir'] = 	'<b>/application/config/</b>';
 $lang['write_files'] = 			'<b>/files/*</b>';
 $lang['write_themes'] = 		'<b>/themes/*</b>';
 $lang['config_check_errors'] = 	'Some base requirement are not OK.<br/>Please correct them to continue the installation.';
-$lang['welcome_text'] = 		"<p>Welcome ! These steps will help you install Ionize.</p>";
+$lang['welcome_text'] = 		"<p>Welcome ! These steps will help you to install Ionize.</p>";
 $lang['write_check_text'] = 	"<p>The following folders and files need to be writable...</p>";
 // $lang['system_check_text'] = 	"<p>Ionize needs all of these settings to be OK.</p>";
 

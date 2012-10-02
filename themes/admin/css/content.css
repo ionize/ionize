@@ -47,6 +47,12 @@ License:
 .tabcolumn{
 	margin-right:40%;
 }
+#preprod-flag {
+	width:130px;background-color: #c00;color: #fff;position: absolute;top:0;
+	z-index: 100000;margin-right: auto;margin-left: 185px;padding:4px 5px;text-align: center;
+	cursor: help;
+}
+
 
 /* Sidecolumn Elements
 ---------------------------------------------------------------- */
@@ -85,22 +91,6 @@ License:
 	width:94%;
 }
 
-/*
-#sidecolumn .element form {
-	margin-bottom:10px;
-}
-#options h3 {
-	border-bottom: solid 1px #d5d9dc;
-}
-#sidecolumn ul {
-	list-style: none;
-}
-
-#options h4 {
-	margin: 10px 0 5px 15px;
-}
-
-*/
 
 /* Accordion togglers
 ---------------------------------------------------------------- */
@@ -134,7 +124,6 @@ li.offline { opacity:0.7; }
 .loading.right {
 	background-position: 100% 50%;
 }
-
 
 /* Icons */
 .icon { cursor: pointer; }

@@ -55,6 +55,11 @@
 
 
 <body>
+	<?php if (ENVIRONMENT == 'development' OR ENVIRONMENT == 'testing'): ?>
+		<div id="preprod-flag">
+			<?php echo strtoupper(ENVIRONMENT); ?>
+		</div>
+	<?php endif; ?>
 
 	<!-- Content -->
 	<div id="content" class="content" onKeyPress="javascript:doSubmit(event);">
