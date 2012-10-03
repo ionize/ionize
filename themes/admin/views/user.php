@@ -57,8 +57,8 @@ else
 		<dd>
 			<select name="id_group" class="select">
 				<?php foreach($groups as $group) :?>
-				
-					<option value="<?= $group['id_group'] ?>" <?php if($user['id_group'] == $group['id_group']) :?> selected="selected" <?php endif ;?> ><?= $group['group_name'] ?></option>
+
+					<option value="<?= $group['id_group'] ?>" <?php if($user['group']['id_group'] == $group['id_group']) :?> selected="selected" <?php endif ;?> ><?= $group['group_name'] ?></option>
 				
 				<?php endforeach ;?>
 			</select>

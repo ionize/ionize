@@ -91,7 +91,7 @@ class TagManager_Element extends TagManager
 		$element_definition_name = $tag->getAttribute('type');
 
 		// Limit ?
-		$limit = (!empty($tag->attr['limit'])) ? (int)$tag->attr['limit'] : FALSE ;
+		$limit = ($tag->getAttribute('limit')) ? (int)$tag->getAttribute('limit') : FALSE ;
 		
 		// Parent. can be set or not
 		$parent = $tag->getAttribute('from');
@@ -237,8 +237,8 @@ class TagManager_Element extends TagManager
 	public static function tag_element_fields_attribute($tag)
 	{
 		// Wished field attribute
-		$attr = ( ! empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
-		$autolink = ( ! empty($tag->attr['autolink'])) ? TRUE : FALSE ;
+		$attr = $tag->getAttribute('name', FALSE);
+		$autolink = ($tag->getAttribute('autolink')) ? TRUE : FALSE ;
 		
 		if ($attr !== FALSE)
 		{
@@ -254,7 +254,7 @@ class TagManager_Element extends TagManager
 				}
 				
 				// Translated Element
-				if ($field['translated'] == '1')
+				if ($field['translated'] == '1' && $attr != 'label')
 				{
 					if (isset($field[Settings::get_lang('current')]['content']))
 					{
@@ -298,7 +298,7 @@ class TagManager_Element extends TagManager
 	public static function tag_element_field($tag)
 	{
 		// Wished element definition name
-		$field_name = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
+		$field_name = $tag->getAttribute('name', FALSE);
 
 		if ($field_name !== FALSE)
 		{
@@ -363,7 +363,7 @@ class TagManager_Element extends TagManager
 	public static function tag_element_attribute($tag)
 	{
 		// Wished field attribute
-		$attr = (!empty($tag->attr['name'])) ? $tag->attr['name'] : FALSE ;
+		$attr = $tag->getAttribute('name', FALSE);;
 
 		if ($attr !== FALSE)
 		{

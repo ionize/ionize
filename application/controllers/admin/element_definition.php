@@ -418,7 +418,7 @@ class Element_definition extends MY_Admin {
 	function get_element_list()
 	{
 		// Elements
-		$elements = $this->element_definition_model->get_lang_list(array('name <>' => '', 'order_by' => 'ordering ASC'), Settings::get_lang('default') );
+		$elements = $this->element_definition_model->get_lang_list(array('name <>' => '', 'order_by' => 'ordering ASC'), Settings::get_lang() );
 		
 		$this->template['elements'] = '';
 		foreach($elements as $key => &$element)
@@ -429,6 +429,7 @@ class Element_definition extends MY_Admin {
 			foreach($element['fields'] as &$field)
 			{
 				$field['type_name'] = self::$type_names[$field['type']];
+		                $field['label'] = $this->extend_field_model->get_label($field['id_extend_field']);
 			}
 
 			if (count($element['fields']) == 0)
