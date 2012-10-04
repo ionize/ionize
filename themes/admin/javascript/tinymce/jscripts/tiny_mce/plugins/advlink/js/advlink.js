@@ -19,6 +19,7 @@ function changeClass() {
 	f.classes.value = getSelectValue(f, 'classlist');
 }
 
+
 function init() {
 	tinyMCEPopup.resizeToInnerSize();
 
@@ -31,6 +32,9 @@ function init() {
 	document.getElementById('hrefbrowsercontainer').innerHTML = getBrowserHTML('hrefbrowser','href','file','advlink');
 	document.getElementById('popupurlbrowsercontainer').innerHTML = getBrowserHTML('popupurlbrowser','popupurl','file','advlink');
 	document.getElementById('targetlistcontainer').innerHTML = getTargetListHTML('targetlist','target');
+
+	// Ionize href container
+	document.getElementById('ionizehrefbrowsercontainer').innerHTML = getIonizeHrefBrowserHTML('ionizehrefbrower', 'href', 'ionize', 'advlink');
 
 	// Link list
 	html = getLinkListHTML('linklisthref','href');
@@ -113,6 +117,10 @@ function init() {
 
 		selectByValue(formObj, 'classlist', inst.dom.getAttrib(elm, 'class'), true);
 		selectByValue(formObj, 'targetlist', inst.dom.getAttrib(elm, 'target'), true);
+
+		// Ionize href name
+		getIonizeHrefName();
+
 	} else
 		addClassesToList('classlist', 'advlink_styles');
 }
@@ -526,6 +534,68 @@ function getTargetListHTML(elm_id, target_form_element) {
 
 	return html;
 }
+
+/**
+ *
+ * @param id                    'hrefbrowser'
+ * @param target_form_element   'href'
+ * @param type                  'ionize'
+ * @param prefix                'advlink'
+ * @return {String}
+ */
+function getIonizeHrefBrowserHTML(id, target_form_element)
+{
+	var html = "";
+	html += '<a id="' + id + '_link" onclick="getIonizeHrefBrowser(\''+ target_form_element +'\')" onmousedown="return false;" class="ionizebrowse">';
+	html += '<span id="' + id + '" title="' + tinyMCEPopup.getLang('browse') + '">&nbsp;</span></a>';
+
+	return html;
+}
+
+function getIonizeHrefName()
+{
+	var formObj = document.forms[0];
+	var href = formObj.href;
+	var val = href.value;
+	var nameContainer = document.getElementById('ionizehrefnamecontainer');
+
+	if (val != '' && val.indexOf('{{') > -1)
+	{
+		tinyMCEPopup.execCommand(
+			"mceIonizeHrefName",
+			true,
+			{
+				href: val,
+				func: function (name)
+				{
+					nameContainer.innerHTML = name;
+				}
+			}
+		);
+	}
+}
+
+function getIonizeHrefBrowser(target_form_element)
+{
+	tinyMCEPopup.execCommand(
+		"mceIonizeHrefBrowser",
+		true,
+		{
+			func: function (ionizeHref)
+			{
+				setFormValue(target_form_element, ionizeHref);
+				try
+				{
+					getIonizeHrefName();
+					document.getElementById(target_form_element).onchange();
+				}
+				catch (d) {}
+			}
+		}
+	);
+}
+
+
 
 // While loading
 preinit();

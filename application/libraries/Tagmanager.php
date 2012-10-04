@@ -126,7 +126,7 @@ class TagManager
 		'url' => 			'tag_url',
 		'get' => 			'tag_get',
 		'index' => 			'tag_simple_value',
-		'count' => 			'tag_simple_value',
+		'count' => 			'tag_count',
 		'name' => 			'tag_simple_value',
 		'title' => 			'tag_simple_value',
 		'subtitle' => 		'tag_simple_value',
@@ -1140,6 +1140,80 @@ class TagManager
 	// ------------------------------------------------------------------------
 
 
+	public static function tag_simple_content(FTL_Binding $tag)
+	{
+		// Optional : data array from where to get the data
+		$from = $tag->getAttribute('from');
+
+		// 1. Try to get from tag's data array
+		$value = $tag->getValue(NULL, $from);
+
+		// 2. Fall down to tag locals storage
+		if (is_null($value))
+			$value = $tag->get($tag->name);
+		else
+		{
+			// Add to local storage, so other tags can use it
+			$tag->set($tag->name, $value);
+		}
+
+		$current = array();
+		$short_url_mode = config_item('url_mode') == 'short' ? TRUE : FALSE;
+
+		while(preg_match('%([\w\W]*?){{([\w.:]*)}}([\w\W]*)%', $value, $matches))
+		{
+			list(,$pre_match, $entity, $value) = $matches;
+			$current[] = $pre_match;
+
+			$entity = explode(':', $entity);
+			if ( empty($entity)) continue;
+
+			$type = $entity[0];
+			$ref = ! empty($entity[1]) ? explode('.', $entity[1]) : NULL;
+			if (is_null($ref) OR empty($ref)) continue;
+
+			$id_article = NULL;
+			if ($type == 'article' && isset($ref[1]))
+				$id_article = $ref[1];
+
+			$id_page = $ref[0];
+
+			$path = ( ! is_null($id_article)) ? $id_page . '/' . $id_article : $id_page;
+			$url = self::$ci->url_model->get_entity_url_from_path($type, $path, Settings::get_lang());
+
+			if (empty($url['path'])) continue;
+
+			$url = $url['path'];
+
+			if ($id_article && $short_url_mode)
+			{
+				$url = explode('/', $url);
+				$url = array_slice($url, count($url)-2);
+				$url = implode('/', $url);
+			}
+
+			$page = TagManager_Page::get_page_by_id($id_page);
+
+			if ($page['home'] == 1)
+				$base_url = self::get_home_url();
+			else
+				$base_url = self::get_base_url();
+
+			$url = $base_url .$url;
+
+			$current[] = $url;
+		}
+
+		$current[] = $value;
+		$value = implode('', $current);
+
+		return self::output_value($tag, $value);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	public static function tag_simple_date(FTL_Binding $tag)
 	{
 		$value = $tag->getValue();
@@ -1251,6 +1325,28 @@ class TagManager
 		// if (is_null($value) && !is_null($tag->getAttribute('or')))
 
 		return $value;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return the number of elements in the data array.
+	 * The data array correponding tag has to :
+	 * 1. Set the 'count' value
+	 * 2. Test if the attribute 'loop' is set and not loop if TRUE
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return null|string
+	 *
+	 */
+	public static function tag_count(FTL_Binding $tag)
+	{
+		$tag->getParent()->setAttribute('loop', FALSE);
+
+		return self::tag_simple_value($tag);
 	}
 
 
@@ -1476,17 +1572,17 @@ class TagManager
 			Settings::set_all_languages_online();
 		}
 
-		if ($tag->getAttribute('lang') == TRUE)
-		{
+//		if ($tag->getAttribute('lang') == TRUE)
+//		{
 			if (count(Settings::get_online_languages()) > 1 )
 			{
 				// if the current lang is the default one : don't return the lang code
-				if (Settings::get_lang() != Settings::get_lang('default'))
-				{
+//				if (Settings::get_lang() != Settings::get_lang('default'))
+//				{
 					return base_url() . Settings::get_lang() .'/';
-				}
+//				}
 			}
-		}
+//		}
 
 		return base_url();
 	}
@@ -2163,6 +2259,21 @@ class TagManager
 		return base_url();
 	}
 
+
+	public static function get_base_url()
+	{
+		if( Connect()->is('editors', TRUE))
+		{
+			Settings::set_all_languages_online();
+		}
+
+		if (count(Settings::get_online_languages()) > 1 )
+		{
+			return base_url() . Settings::get_lang() .'/';
+		}
+
+		return base_url();
+	}
 
 	// ------------------------------------------------------------------------
 

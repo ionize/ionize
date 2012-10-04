@@ -13,15 +13,16 @@ ION.TreeXhr = new Class({
 	/**
 	 * @constructor
 	 *
-	 * @param		String		container		HTML DOM Element ID which will contains the tree
-	 * @param		String		id_menu			Menu name
+	 * @param	id_container    string		HTML DOM Element ID which will contains the tree
+	 * @param	id_menu         string		Menu ID
+	 * @param	options         object		Options
 	 *
 	 */
-	initialize: function(container, id_menu)
+	initialize: function(id_container, id_menu, options)
 	{
 		this.click_timer = null;
-		
-		this.container = $(container);
+		this.id_container = id_container;
+		this.container = $(id_container);
 		this.container.store('tree', this);
 		
 		this.id_menu = id_menu;
@@ -33,21 +34,18 @@ ION.TreeXhr = new Class({
 		
 		this.elementIcon_Model = new Element('div', {'class': 'tree-img drag'});
 		this.plusMinus_Model = new Element('div', {'class': 'tree-img plus'});
-		// this.lineNode_Model = new Element('div', {'class': 'tree-img line node'});
 		this.treeLine_Model = new Element('div', {'class': 'tree-img'});
 		
 		this.action_Model = new Element('span', {'class': 'action', 'styles': { 'display':'none' }});
-		// this.icon_Model = new Element('span', {'class': 'icon'});
 		this.span_Model = new Element('span');
 		this.title_Model = new Element('a', {'class': 'title'});
 		
 		this.opened = new Array();
-		if (Cookie.read('tree')) this.opened = (Cookie.read('tree')).split(',');
+		if (Cookie.read(this.id_container)) this.opened = (Cookie.read(this.id_container)).split(',');
 		
 		this.get(0);
 	},
 
-	
 	/**
 	 * Gets one tree
 	 *
@@ -102,7 +100,6 @@ ION.TreeXhr = new Class({
 		}).send();
 	},
 	
-
 	/**
 	 * Inject or return an existing container for elements (page or articles)
 	 *
@@ -152,18 +149,17 @@ ION.TreeXhr = new Class({
 		}
 		else
 		{
+			// Creates a new container
 			if (erase == true)
 			{
 				container.empty();
 				if (typeOf(this.itemManagers[type][container.id]) != 'null')
 					delete this.itemManagers[type][container.id];
 			}
-
 		}
 
 		return container;
 	},
-	
 	
 	/**
 	 * Inserts one element (page / article) in a container (UL)
@@ -185,9 +181,10 @@ ION.TreeXhr = new Class({
 
 		if (title == '') title = element.name;
 		
-		var container = this.injectContainer(type, id_parent)
-		
-		var li = new Element('li').setProperty('id', type + '_' + flat_id).addClass(online).addClass(type + flat_id).setProperty('rel', rel);
+		var container = this.injectContainer(type, id_parent);
+
+		// Element
+		var li = new Element('li').setProperty('id', this.id_container + '_' + type + '_' + flat_id).addClass(online).addClass(type + flat_id).setProperty('rel', rel);
 		li.store('loaded', false);
 		li.store('id_' + type, id);
 		
@@ -204,7 +201,8 @@ ION.TreeXhr = new Class({
 					.set('text', String.htmlspecialchars_decode(title));
 		link.adopt(a);
 		li.adopt(action, link);
-		this.addEditLink(li, type);
+
+		this.addTitleClickEvent(li, type);
 		
 		// Icon
 		var icon = this.elementIcon_Model.clone();
@@ -307,13 +305,12 @@ ION.TreeXhr = new Class({
 		// Mouse over effect : Show / Hide actions
 		this.addMouseOver(li);
 		
-		// Open the foldr if cookie says...
+		// Open the folder if cookie says...
 		if (type == 'page' && this.opened.contains(id))
 		{
 			this.get(id);
 		}
 	},
-	
 	
 	/**
 	 * Plus / Minus folder icon click event	
@@ -333,7 +330,6 @@ ION.TreeXhr = new Class({
 		else
 			this.updateOpenClose(folder);
 	},
-	
 	
 	/**
 	 * Displays / Hides content, updates Plus / Minus icons
@@ -356,7 +352,7 @@ ION.TreeXhr = new Class({
 			folderContents.each(function(ul){ ul.setStyle('display', 'none');});
 			folder.removeClass('f-open');
 			
-			ION.listDelFromCookie('tree', folder.retrieve('id_page'));
+			ION.listDelFromCookie(this.id_container, folder.retrieve('id_page'));
 		}
 		else
 		{
@@ -367,13 +363,12 @@ ION.TreeXhr = new Class({
 			folderContents.each(function(ul){ ul.setStyle('display', 'block'); });
 			folder.addClass('f-open');
 			
-			ION.listAddToCookie('tree', folder.retrieve('id_page'));
-			
+			ION.listAddToCookie(this.id_container, folder.retrieve('id_page'));
+
 			$('btnStructureExpand').store('status', 'expand');
 			$('btnStructureExpand').value = Lang.get('ionize_label_collapse_all');
 		}
 	},
-
 
 	/**
 	 * Adds a link to a tree LI DOM element
@@ -382,7 +377,7 @@ ION.TreeXhr = new Class({
 	 * @param	String			logical tree element type. "page" or "article"
 	 *
 	 */
-	addEditLink: function(el, type)
+	addTitleClickEvent: function(el, type)
 	{
 		var a = el.getElement('a.title');
 		var self = this;
@@ -401,7 +396,6 @@ ION.TreeXhr = new Class({
 			}
 		});		
 	},
-	
 	
 	relaySingleOrDoubleClick: function(e, self, el, type, clicks)
 	{
@@ -422,31 +416,21 @@ ION.TreeXhr = new Class({
 				'urlOptions': admin_url + type + '/get_options/' + el.getProperty('rel'),
 				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')
 			});
-
-			/*
-			MUI.Content.update({
-				'element': $(self.mainpanel),
-				'url': admin_url + type + '/edit/' + el.getProperty('rel'),
-				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')	
-			});
-			*/
-		}		
+		}
 	},
-	
 	
 	getParentContainer: function(id_parent)
 	{
 		// Parent DOM Element (usually a folder LI)
-		var parentEl = 'page_' + id_parent;
+		var parentEl = this.id_container + '_page_' + id_parent;
 
 		if (typeOf($(parentEl)) == 'null')
 			parentEl = this.container;
 		else
 			parentEl = $(parentEl);
-			
+
 		return parentEl;
 	},
-
 
 	/**
 	 * Adds Actions Buttons Events on one page Element
@@ -483,10 +467,8 @@ ION.TreeXhr = new Class({
 				'title': Lang.get('ionize_title_create_page')
 			});
 		});
-
 	},
 
-	
 	addMouseOver: function(node)
 	{
 		node.addEvent('mouseover', function(ev){
@@ -506,3 +488,187 @@ ION.TreeXhr = new Class({
 	}
 });
 
+
+
+
+
+/**
+ *  Ionize Browser Tree class
+ *  Build the website structure tree for one tree browser usage
+ *
+ *  @author	Partikule Studio
+ *  @since	0.9.9
+ *
+ */
+ION.BrowerTreeXhr = new Class({
+
+	Extends: ION.TreeXhr,
+
+	/**
+	 * Dedicated method for Browser tree : Different actions, no edit on title
+	 *
+	 * @param element
+	 * @param type
+	 */
+	insertElement: function(element, type)
+	{
+		// Inject or get the container
+		var self = this;
+		var id = (type == 'page') ? element.id_page : element.id_article;
+		var id_parent = (type == 'page') ? element.id_parent : element.id_page;
+
+		var flat_id = (type == 'page') ? element.id_page : element.id_page + 'x' + element.id_article;
+		var rel = (type == 'page') ? element.id_page : element.id_page + '.' + element.id_article;
+		var online = (element.online == '1') ? 'online' : 'offline';
+
+		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
+		var type_description = (typeOf(element.type_description) != 'null' && element.type_description != '') ? ' : ' + element.type_description : '';
+
+		if (title == '') title = element.name;
+
+		var container = this.injectContainer(type, id_parent);
+
+		// Element
+		var li = new Element('li').setProperty('id', this.id_container + '_' + type + '_' + flat_id).addClass(online).addClass(type + flat_id).setProperty('rel', rel);
+		li.store('loaded', false);
+		li.store('id_' + type, id);
+
+		// Action element
+		var action = this.action_Model.clone();
+
+		// Link Icon
+		if (Ionize.User.getGroupLevel() > 5000)
+		{
+			var iconLink = new Element('a', {'class': 'icon link', 'rel': rel});
+
+			iconLink.addEvent('click', function(e)
+			{
+				e.stop();
+				clearTimeout(self.click_timer);
+				self.click_timer = self.relaySingleOrDoubleClick.delay(700, self, [e, self, iconLink, type, 1]);
+			});
+			action.adopt(iconLink);
+		}
+
+		// Title element
+		var link = this.span_Model.clone().addClass('title');
+		var a = this.title_Model.clone()
+			.addClass(online).addClass(type + flat_id).addClass('title')
+			.setProperty('rel', rel).setProperty('title', title + type_description).setProperty('data-type', type).setProperty('data-id', id)
+			.set('text', String.htmlspecialchars_decode(title));
+		link.adopt(a);
+		li.adopt(action, link);
+
+		this.addTitleClickEvent(li, type);
+
+		// Icon
+		var icon = this.elementIcon_Model.clone();
+		icon.inject(li, 'top');
+
+		// Page
+		if (type == 'page')
+		{
+			li.addClass('folder').addClass('page');
+
+			// Folder icon
+			icon.addClass('folder');
+			if (element.appears == '0') icon.addClass('hidden');
+
+			// if home page, remove home from the old home page
+			if (element.home == '1')
+			{
+				$$('.folder.home').removeClass('home');
+				icon.addClass('home');
+			}
+
+			// plus / minus icon
+			var pm = this.plusMinus_Model.clone().addEvent('click', this.openclose.bind(this)).inject(li, 'top');
+
+			li.inject(container, 'bottom');
+		}
+		// Article
+		else
+		{
+			li.addClass('file').addClass(type + id);
+
+
+			// File icon
+			if (element.indexed == '0') icon.addClass('sticky');
+			else icon.addClass('file');
+
+			// Link icon
+			if (element.link != '') icon.addClass('link');
+
+			// Flag span : User's flag first, then Type flag
+			var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
+			var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
+			if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
+
+			// Item node line
+			this.treeLine_Model.clone().inject(li, 'top').addClass('line').addClass('node');
+
+			// Inject LI at the correct position
+			var lis = container.getChildren('li');
+			if (element.ordering == '1')
+			{
+				li.inject(container, 'top');
+			}
+			else
+			{
+				if (typeOf(lis[element.ordering -2]) != 'null')
+					li.inject(lis[element.ordering -2], 'after');
+				else
+					li.inject(container, 'bottom');
+			}
+		}
+
+		// Get the parent : Build tree lines (nodes)
+		li.getParents('li').each(function(parent){
+			self.treeLine_Model.clone().inject(li, 'top');
+		});
+
+		// Mouse over effect : Show / Hide actions
+		this.addMouseOver(li);
+
+		// Open the folder if cookie says...
+		if (type == 'page' && this.opened.contains(id))
+		{
+			this.get(id);
+		}
+	},
+
+
+	relaySingleOrDoubleClick: function(e, self, el, type, clicks)
+	{
+		// IE7 / IE8 event problem
+		if( ! Browser.ie)
+			if (e) e.stop();
+
+		// Open page
+		if (clicks === 2 && type == 'page')
+		{
+			self.openclose(e);
+		}
+		// Edit Element
+		else
+		{
+			var rel = el.getProperty('rel');
+
+			// Get the window container
+			var windowContainer = this.container.getParent('.mocha');
+
+			// If one container, fire the select Event
+			if (typeOf(windowContainer) != 'null')
+			{
+				// Get the MUI window instance
+				var win = windowContainer.retrieve('instance');
+				win.fireEvent('select', [rel]);
+			}
+			else
+			{
+				// Fire self.select Event
+				self.fireEvent('select', [rel]);
+			}
+		}
+	}
+});

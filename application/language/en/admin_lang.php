@@ -497,7 +497,6 @@ $lang['ionize_button_export'] = 'Export';
 | Admin : Settings
 |--------------------------------------------------------------------------
 */
-
 $lang['ionize_label_site_title'] = 'Website title';
 
 $lang['ionize_message_settings_saved'] = 'Settings saved';
@@ -1042,14 +1041,14 @@ $lang['ionize_message_delete_translation'] = 'Delete this translation item?';
 $lang['ionize_help_modules_translation'] = 'Available static translations for modules.<br/>These terms can be used in your theme views through <dfn><\ion:translation term="term" /></dfn>.<br/>If you want to overwrite some of them, add your translation in each term textarea.';
 				
 
-
 /*
 |--------------------------------------------------------------------------
-| Admin : Media Manager
+| Admin : Media Manager / Tree brower
 |--------------------------------------------------------------------------
 */
 $lang['ionize_image_manager'] = 'Pictures';
 $lang['ionize_file_manager'] = 'Files';
+$lang['ionize_title_tree_browser'] = 'Click on one element to select it...';
 
 
 /*

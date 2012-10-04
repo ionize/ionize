@@ -528,7 +528,7 @@ class TagManager_Navigation extends TagManager
 		$languages = Settings::get_online_languages();
 		$page = self::registry('page');
 
-//		$infos = self::get_url_infos();
+		// $infos = self::get_url_infos();
 		
 		// Current active language class
 		$active_class = $tag->getAttribute('active_class', 'active');
@@ -538,24 +538,35 @@ class TagManager_Navigation extends TagManager
 
 		$str = '';
 
-		foreach($languages as &$lang)
+		$tag->set('count', count($languages));
+
+		foreach($languages as $idx => &$lang)
 		{
-			// Lang send to helper
-			$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
-			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
-			$lang['active'] = $lang['lang'] == Settings::get_lang('current');
-			$lang['id'] = $lang['lang'];
-
-			// Tag locals
-			$tag->set('language', $lang);
-			$tag->set('id', $lang['lang']);
-			$tag->set('absolute_url', $lang['absolute_url']);
-			$tag->set('active_class', $lang['active_class']);
-			$tag->set('active', $lang['active']);
-
-			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
+			// Stop here if asked : Needed by aggregation tags (eg. pagination)
+			if ($tag->getAttribute('loop') === FALSE)
 			{
-				$str .= $tag->expand();
+				return $tag->expand();
+			}
+			else
+			{
+				// Lang send to helper
+				$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
+				$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
+				$lang['active'] = $lang['lang'] == Settings::get_lang('current');
+				$lang['id'] = $lang['lang'];
+
+				// Tag locals
+				$tag->set('language', $lang);
+				$tag->set('id', $lang['lang']);
+				$tag->set('absolute_url', $lang['absolute_url']);
+				$tag->set('active_class', $lang['active_class']);
+				$tag->set('active', $lang['active']);
+				$tag->set('index', $idx);
+
+				if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
+				{
+					$str .= $tag->expand();
+				}
 			}
 		}
 
@@ -699,7 +710,6 @@ class TagManager_Navigation extends TagManager
 	/**
 	 * Get the current URL and feed the URL infos
 	 * 
-	 */
 	public static function get_url_infos()
 	{
 		$uri_segments = self::get_uri_segments();
@@ -733,6 +743,7 @@ class TagManager_Navigation extends TagManager
 
 		return $infos;		
 	}
+	 */
 
 }
 

@@ -464,8 +464,6 @@ class Article extends MY_admin
 
 		$this->_prepare_options_data();
 
-		// trace($this->data);
-
 		// Saves article to DB and get the saved ID
 		$this->id = $this->article_model->save($this->data, $this->lang_data);
 
@@ -863,7 +861,7 @@ class Article extends MY_admin
 		{
 			// Get the original context
 			$original_context = $this->article_model->get_context($id_article, $id_page_origin);
-			
+
 			// Clean of context : On copy
 			if ($copy) {
 				$original_context['online'] = '0';
@@ -872,7 +870,7 @@ class Article extends MY_admin
 				
 			// Ordering : last position
 			$original_context['ordering'] = $this->_get_ordering('last', $id_page);
-			
+
 			// Check if no article has the same URL in case of copy
 			$copy_allowed = TRUE;
 
@@ -925,18 +923,24 @@ class Article extends MY_admin
 					
 					// Articles
 					$articles = $this->article_model->get_lang_list(array('id_article'=>$id_article, 'id_page'=>$id_page), Settings::get_lang('default'));
-	
+
+					// Context : To get the inserted context
+					$inserted_context = $this->article_model->get_context($id_article, $id_page, Settings::get_lang('default'));
+
 					// Set the article
 					$article = array();
 					if ( ! empty($articles))
 					{
 						$article = $articles[0];
 						$article['title'] = htmlspecialchars_decode($article['title'], ENT_QUOTES);
-						
+
+						// Correct online information
+						$article['online'] = $inserted_context['online'];
+
 						// Used by JS Tree to detect if article is inserted in tree or not
 						$article['inserted'] = TRUE;
 					}
-	
+
 					$this->callback = array
 					(
 						// Add the page to the Article parents list
@@ -1046,7 +1050,7 @@ class Article extends MY_admin
 
 	public function get_link()
 	{
-		// Get the articel in the context of the page
+		// Get the article in the context of the page
 		$id_page = $this->input->post('id_page');
 		$id_article = $this->input->post('id_article');
 

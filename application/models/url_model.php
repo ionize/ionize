@@ -137,7 +137,7 @@ class Url_model extends Base_model
 	 *			than one page !
 	 *
 	 */
-	function get_by_url($url, $lang = NULL)
+	public function get_by_url($url, $lang = NULL)
 	{
 		$url = trim($url, '/');
 
@@ -183,7 +183,7 @@ class Url_model extends Base_model
 	 * @param	Boolean		Only active URLs. 1 default
 	 *
 	 */
-	function get_collection($type, $id_entity, $lang = 'all', $active = TRUE)
+	public function get_collection($type, $id_entity, $lang = 'all', $active = TRUE)
 	{
 		$where = array(
 			'type' => $type,
@@ -203,7 +203,7 @@ class Url_model extends Base_model
 		return array();
 	}
 
-	function get_entity_urls($type='page', $id_entity = NULL)
+	public function get_entity_urls($type='page', $id_entity = NULL)
 	{
 		$urls = array();
 
@@ -222,6 +222,40 @@ class Url_model extends Base_model
 	}
 
 	/**
+	 *
+	 * @param string	Pseudo path : xx/yy
+	 * @param string	Lang code
+	 *
+	 * @return array
+	 */
+	public function get_entity_url_from_path($type, $path, $lang)
+	{
+		$url = array();
+
+		// Check if we can extract the entity ID to secure the SQL request
+		$id_entity = explode('/', $path);
+		$id_entity = end($id_entity);
+
+		$this->{$this->db_group}->where('full_path_ids like \'%'.$path.'\'');
+		$this->{$this->db_group}->where(array(
+			'id_entity' => $id_entity,
+			'type'=> $type,
+			'active'=> 1,
+			'lang'=>$lang
+		));
+
+		$query = $this->{$this->db_group}->get($this->table);
+
+		if ($query->num_rows() > 0)
+		{
+			$url = $query->row_array();
+		}
+		return $url;
+	}
+
+
+
+	/**
 	 * Update the entity lang table with one new URL
 	 *
 	 * @param	String		Entity type. 'article, 'page'
@@ -230,7 +264,7 @@ class Url_model extends Base_model
 	 * @param	String		URL
 	 * 
 	 */
-	function update_entity_url($type, $id_entity, $lang, $url)
+	public function update_entity_url($type, $id_entity, $lang, $url)
 	{
 		$table = $type . '_lang';
 
@@ -254,14 +288,14 @@ class Url_model extends Base_model
 	}
 	
 	
-	function delete_empty_urls()
+	public function delete_empty_urls()
 	{
 		$this->{$this->db_group}->where(array('path' => ''));
 		return $this->{$this->db_group}->delete('url');
 	}
 	
 	
-	function delete($type, $id_entity)
+	public function delete($type, $id_entity)
 	{
 		$where = array(
 			'type' => $type,
@@ -279,7 +313,7 @@ class Url_model extends Base_model
 	 * @return int	Number of affected rows
 	 *
 	 */
-	function clean_table()
+	public function clean_table()
 	{
 		$sql = "
 			delete u from url u
@@ -310,7 +344,7 @@ class Url_model extends Base_model
 	 * @return	boolean		TRUE if another entity URL exists
 	 *
 	 */
-	function is_existing_url($type, $id_entity, $url, $lang='all')
+	public function is_existing_url($type, $id_entity, $url, $lang='all')
 	{
 		$urls = $this->get_existing_urls($type, $id_entity, $url, $lang);
 
@@ -354,7 +388,7 @@ class Url_model extends Base_model
 	 * @param	String		URL
 	 *
 	 */
-	function get_unique_url($type, $id_entity, $lang, $url, $id = 1)
+	public function get_unique_url($type, $id_entity, $lang, $url, $id = 1)
 	{
 		$this->clean_table();
 

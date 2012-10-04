@@ -82,6 +82,17 @@ ION.append({
 		            pdw_toggle_on : 1,
 		            pdw_toggle_toolbars : '2,3',
 					file_browser_callback: 'ION.openTinyFilemanager',
+					// Could be nice to do it through one dedicated callback, but seems not possible
+					// ionize_hrefbrowser_callback: 'ION.openIonizeHrefBrowserCallback',
+					setup : function(ed) {
+						// Register mceIonizeHrefBrowser, called by advlink plugin (modified plugin)
+						ed.addCommand('mceIonizeHrefBrowser', function(ui, v) {
+							ION.openIonizeHrefBrowser(ed, ui, v);
+						});
+						ed.addCommand('mceIonizeHrefName', function(ui, v) {
+							ION.getIonizeHrefName(ed, ui, v);
+						});
+					},
 					formats : {
 						alignleft : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'left'},
 						aligncenter : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'center'},
@@ -102,7 +113,6 @@ ION.append({
 	},
 	
 	
-
 	/**
 	 * Init TinyMCE on tabbed selectors
 	 * @param	string	CSS tabs selectors
@@ -252,6 +262,77 @@ ION.append({
 				}
 			}
 		}).send();
+	},
+
+
+	/**
+	 * Opens the Ionize Href browser
+	 * @param ed    TinyMCEPopup editor object
+	 * @param ui    bool
+	 * @param v     value send to this method when called by advlink.getIonizeHrefBrowser()
+	 *              see : advlink.js
+	 *              {
+	 *                  func: function(e){...}
+	 *              }
+	 */
+	openIonizeHrefBrowser: function(ed, ui, v)
+	{
+		// Set the MUI Window on the top of Tiny's modals
+		// tinyMCE modals are stored at 300000, Dialogs at 400000
+		MUI.Windows.indexLevel = 350000;
+
+		// 1. Open the browser window
+		var ionWindow = ION.dataWindow(
+			'ionizeHrefBrowser',
+			Lang.get('ionize_title_tree_browser'),
+			admin_url + 'tree/browser',
+			{
+				width: 400,
+				height: 300,
+				// The tree fires the onSelect event on its parent window, if any.
+				// Get the element reference
+				onSelect: function(rel)
+				{
+					var element = 'page';
+					if (rel.indexOf('.') > 0) element = 'article';
+
+					v.func('{{' + element + ':' + rel + '}}');
+					this.close();
+				}
+			}
+		);
+	},
+
+	getIonizeHrefName: function(ed, ui, v)
+	{
+		var mceHref = v.href;
+
+		mceHref = mceHref.replace('{{', '');
+		mceHref = mceHref.replace('}}', '');
+
+		var entity = mceHref.split(':');
+		var type = entity[0];
+		var rel = entity[1];
+
+		ION.JSON(
+			admin_url + 'tree/get_entity',
+			{
+				'type':type,
+				'rel':rel
+			},
+			{
+				onSuccess:function(responseJSON, responseText)
+				{
+					var breadcrumb = responseJSON.page.title;
+
+					if (typeOf(responseJSON.article) != 'null')
+						breadcrumb = breadcrumb + ' > ' + responseJSON.article.title;
+
+					v.func(breadcrumb);
+				}
+			}
+		);
 	}
+
 });
 

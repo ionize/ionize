@@ -23,8 +23,8 @@ class TagManager_Article extends TagManager
 		'articles:article' => 		'tag_articles_article',
 
 		'article' => 				'tag_article',
-		'article:summary' => 		'tag_simple_value',
-		'article:content' => 		'tag_simple_value',
+		'article:summary' => 		'tag_simple_content',
+		'article:content' => 		'tag_simple_content',
 		'article:active_class' => 	'tag_simple_value',
 		'article:view' => 			'tag_simple_value',
 		'article:next' => 			'tag_next_article',

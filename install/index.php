@@ -1,6 +1,6 @@
 <?php
 
-define('VERSION', '0.9.8');
+define('VERSION', '0.9.9');
 
 
 $base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");

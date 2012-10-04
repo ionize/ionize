@@ -43,7 +43,8 @@ class Tree_model extends Base_Model
 	/** 
 	 * Return the menu items (pages) table
 	 *
-	 * @param Array		SQL conditions
+	 * @param 	array		SQL conditions
+	 * @return 	array
 	 *
 	 */
 	function get_pages($where)
@@ -80,9 +81,12 @@ class Tree_model extends Base_Model
 
 	// ------------------------------------------------------------------------
 
+
 	/**
+	 * Get articles linked to one page
 	 *
-	 * @param	Array	Array of pages
+	 * @param	array	Array of pages
+	 * @return	array
 	 *
 	 */
 	function get_articles($where)
@@ -124,12 +128,15 @@ class Tree_model extends Base_Model
 		return $data;
 	}
 
+
 	// ------------------------------------------------------------------------
 
 
 	/** 
 	 * Return the users menus, but not the 2 system ones : main and system.
-	 * @param $menu  Menu name
+	 *
+	 * @param 	int	ID Menu
+	 * @return 	array
 	 *
 	 */
 	function get_users_menus($id_menu = NULL)
@@ -144,7 +151,6 @@ class Tree_model extends Base_Model
 			
 		return $data;
 	}	
-	
 }
 /* End of file tree_model.php */
 /* Location: ./application/models/tree_model.php */

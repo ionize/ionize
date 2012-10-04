@@ -17,6 +17,7 @@ margin:8px 8px 0 8px;
 
 html {background:#fff;}
 td {font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px;}
+td.no-padding{padding: 0;}
 textarea {resize:none;outline:none;}
 a:link, a:visited {color:black;}
 a:hover {color:#2B6FB6;}
@@ -61,6 +62,13 @@ a.pickcolor span {display:block; width:20px; height:16px; background:url(../../i
 .mceOldBoxModel a.pickcolor span {width:21px; height:17px;}
 a.pickcolor:hover span {background-color:#B2BBD0;}
 a.pickcolor:hover span.disabled {}
+
+/* Ionize Browse */
+a.ionizebrowse span {display:block; width:20px; height:18px; background:url(../../img/icons.gif) -280px 0; border:1px solid #FFF; margin-left:1px;text-decoration: none;}
+.mceOldBoxModel a.ionizebrowse span {width:22px; height:20px;}
+a.ionizebrowse:hover span {border:1px solid #0A246A; background-color:#B2BBD0;}
+a.ionizebrowse span.disabled {border:1px solid white; opacity:0.3; -ms-filter:'alpha(opacity=30)'; filter:alpha(opacity=30)}
+a.ionizebrowse:hover span.disabled {border:1px solid white; background-color:transparent;}
 
 /* Charmap */
 table.charmap {border:1px solid #AAA; text-align:center}

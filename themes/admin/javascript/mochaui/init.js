@@ -69,16 +69,6 @@ window.addEvent('load', function()
 
 	Ionize.User.initialize();
 
-	/*
-	window.addEvent('keypress', function(event)
-	{
-		if (event.key == 'enter')
-		{
-			event.stopPropagation();
-		}
-	});
-	*/
-
 //	console.log(Ionize.User.getCurrentUser());
 //	console.log(Ionize.User.getGroupLevel());
 

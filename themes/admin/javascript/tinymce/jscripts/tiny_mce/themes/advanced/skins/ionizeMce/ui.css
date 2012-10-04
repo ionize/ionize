@@ -51,6 +51,9 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 .ionizeMceSkin table td {
 	vertical-align: middle
 }
+.ionizeMceSkin table td.no-padding {
+	padding:0;
+}
 
 /* Containers */
 .ionizeMceSkin table {
@@ -123,9 +126,7 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 	padding-top: 1px;
 	padding-bottom: 3px;
 	vertical-align: top;
-/*	background-color: #F0F0EE;*/
 	background-color: none;
-/*	background: url(img/mceToolbar-bg.png) top left;*/
 }
 
 .ionizeMceSkin .mceIframeContainer {
