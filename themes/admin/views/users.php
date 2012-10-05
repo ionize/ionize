@@ -1,5 +1,7 @@
 <?php
 
+    log_message('error', 'View File Loaded : users.php');
+
 /**
  * Displays the list of all users
  *
@@ -9,14 +11,14 @@
 
 <div id="maincolumn">
 
-	<h2 class="main groups" id="main-title"><?= lang('ionize_title_users') ?></h2>
+	<h2 class="main groups" id="main-title"><?php echo lang('ionize_title_users') ?></h2>
 
 	<!-- Tabs -->
 	<div id="usersTab" class="mainTabs mt20">
 		<ul class="tab-menu">
-			<li id="usersListTab"><a><?= lang('ionize_title_existing_users') ?></a></li>
-			<li><a><?= lang('ionize_title_existing_groups') ?></a></li>
-			<li><a><?= lang('ionize_title_users_export') ?></a></li>
+			<li id="usersListTab"><a><?php echo lang('ionize_title_existing_users') ?></a></li>
+			<li><a><?php echo lang('ionize_title_existing_groups') ?></a></li>
+			<li><a><?php echo lang('ionize_title_users_export') ?></a></li>
 		</ul>
 		<div class="clear"></div>
 	</div>
@@ -31,37 +33,37 @@
 				<!-- Infos about all users -->
 				<div class="info mb10">
 					<dl class="small compact">
-						<dt><label><?= lang('ionize_label_users_count') ?></label></dt>
-						<dd><?= $users_count_all ?></dd>
+						<dt><label><?php echo lang('ionize_label_users_count') ?></label></dt>
+						<dd><?php echo $users_count_all ?></dd>
 					</dl>
 					<dl class="small compact">
-						<dt><label><?= lang('ionize_label_last_registered') ?></label></dt>
+						<dt><label><?php echo lang('ionize_label_last_registered') ?></label></dt>
 						<dd></dd>
 					</dl>
 				</div>
 	
 	
-				<h3><?= lang('ionize_title_filter_userslist') ?></h3>
+				<h3><?php echo lang('ionize_title_filter_userslist') ?></h3>
 	
 
 					<!-- User list filter -->
-					<form name="usersFilter" id="usersFilter" method="post"action="<?= admin_url() ?>users/users_list">
+					<form name="usersFilter" id="usersFilter" method="post"action="<?php echo admin_url() ?>users/users_list">
 					
 						<!-- Users / page -->
 						<dl class="small">
-							<dt><label for="filter_nb"><?= lang('ionize_label_users_per_page') ?></label></dt>
+							<dt><label for="filter_nb"><?php echo lang('ionize_label_users_per_page') ?></label></dt>
 							<dd><input type="text" class="inputtext w60" id="filter_nb" name="nb" value="50" /></dd>
 						</dl>
 		
 						<!-- Group -->
 						<dl class="small">
-							<dt><label for="filter_id_group"><?= lang('ionize_label_group') ?></label></dt>
+							<dt><label for="filter_id_group"><?php echo lang('ionize_label_group') ?></label></dt>
 							<dd>
 								<select name="slug"  id="filter_slug" class="select">
-									<option value=""><?= lang('ionize_label_all_groups') ?></option>
+									<option value=""><?php echo lang('ionize_label_all_groups') ?></option>
 									<?php foreach($groups as $group) :?>
 									
-										<option value="<?= $group['slug'] ?>"><?= $group['group_name'] ?></option>
+										<option value="<?php echo $group['slug'] ?>"><?php echo $group['group_name'] ?></option>
 									
 									<?php endforeach ;?>
 								</select>
@@ -70,26 +72,26 @@
 		
 						<!-- ID -->
 						<dl class="small">
-							<dt><label for="filter_username"><?= lang('ionize_label_username') ?></label></dt>
+							<dt><label for="filter_username"><?php echo lang('ionize_label_username') ?></label></dt>
 							<dd><input type="text" class="inputtext w140" id="filter_username" name="username" value="" /></dd>
 						</dl>
 						
 						
 						<!-- Screen name -->
 						<dl class="small">
-							<dt><label for="filter_screenname"><?= lang('ionize_label_screen_name') ?></label></dt>
+							<dt><label for="filter_screenname"><?php echo lang('ionize_label_screen_name') ?></label></dt>
 							<dd><input type="text" class="inputtext w140" id="filter_screenname" name="screenname" value="" /></dd>
 						</dl>
 						
 						<!-- Email -->
 						<dl class="small">
-							<dt><label for="filter_email"><?= lang('ionize_label_email') ?></label></dt>
+							<dt><label for="filter_email"><?php echo lang('ionize_label_email') ?></label></dt>
 							<dd><input type="text" class="inputtext w140" id="filter_email" name="email" value="" /></dd>
 						</dl>
 						
 						<!-- Last registered -->
 						<dl class="small">
-							<dt><label for="filter_registered"><?= lang('ionize_label_last_registered') ?></label></dt>
+							<dt><label for="filter_registered"><?php echo lang('ionize_label_last_registered') ?></label></dt>
 							<dd><input type="checkbox" class="inputcheckbox" id="filter_registered" name="registered" value="1" /></dd>
 						</dl>
 						
@@ -99,7 +101,7 @@
 						<dl class="small">
 							<dt>&#160;</dt>
 							<dd>
-								<input id="submit_filter" type="submit" class="submit" value="<?= lang('ionize_button_filter') ?>" />
+								<input id="submit_filter" type="submit" class="submit" value="<?php echo lang('ionize_button_filter') ?>" />
 							</dd>
 						</dl>
 					</form>
@@ -125,11 +127,11 @@
 			
 					<thead>
 						<tr>
-							<th axis="string"><?= lang('ionize_label_id') ?></th>
-							<th axis="string"><?= lang('ionize_label_group_name') ?></th>
-							<th axis="string"><?= lang('ionize_label_group_title') ?></th>
-							<th axis="number"><?= lang('ionize_label_group_level') ?></th>
-							<th axis="string"><?= lang('ionize_label_group_description') ?></th>				
+							<th axis="string"><?php echo lang('ionize_label_id') ?></th>
+							<th axis="string"><?php echo lang('ionize_label_group_name') ?></th>
+							<th axis="string"><?php echo lang('ionize_label_group_title') ?></th>
+							<th axis="number"><?php echo lang('ionize_label_group_level') ?></th>
+							<th axis="string"><?php echo lang('ionize_label_group_description') ?></th>
 							<th></th>
 						</tr>
 					</thead>
@@ -138,15 +140,15 @@
 					
 					<?php foreach($groups as $group) :?>
 						
-						<tr class="groups<?= $group['id_group'] ?>">
-							<td><?= $group['id_group'] ?></td>
-							<td><a class="group" id="group<?= $group['id_group'] ?>" rel="<?= $group['id_group'] ?>" href="<?= admin_url() ?>groups/edit/<?= $group['id_group'] ?>"><?= $group['slug'] ?></a></td>
-							<td><?= $group['group_name'] ?></td>
-							<td><?= $group['level'] ?></td>
-							<td><?= $group['description'] ?></td>
+						<tr class="groups<?php echo $group['id_group'] ?>">
+							<td><?php echo $group['id_group'] ?></td>
+							<td><a class="group" id="group<?php echo $group['id_group'] ?>" rel="<?php echo $group['id_group'] ?>" href="<?php echo admin_url() ?>groups/edit/<?php echo $group['id_group'] ?>"><?php echo $group['slug'] ?></a></td>
+							<td><?php echo $group['group_name'] ?></td>
+							<td><?php echo $group['level'] ?></td>
+							<td><?php echo $group['description'] ?></td>
 							<td>
 								<?php if( $current_user_level > $group['level']) :?>
-									<a class="icon delete" rel="<?= $group['id_group'] ?>"></a>
+									<a class="icon delete" rel="<?php echo $group['id_group'] ?>"></a>
 								<?php endif ;?>
 							</td>
 						</tr>
@@ -163,15 +165,15 @@
 		<!-- Export tool -->
 		<div class="tabcontent">
 		
-			<form name="userExportForm" id="userExportForm" method="post" action="<?= admin_url() ?>users/export">
+			<form name="userExportForm" id="userExportForm" method="post" action="<?php echo admin_url() ?>users/export">
 	
 				<dl>
-					<dt><?= lang('ionize_label_export_meta') ?></dt>
+					<dt><?php echo lang('ionize_label_export_meta') ?></dt>
 					
 					<?php foreach($meta_data as $meta) :?>
 					<dd>
-							<input id="meta_<?= $meta['field'] ?>" name="metas[]" type="checkbox" value="<?= $meta['field'] ?>" />
-							<label for="meta_<?= $meta['field'] ?>"><?= $meta['field'] ?></label>
+							<input id="meta_<?php echo $meta['field'] ?>" name="metas[]" type="checkbox" value="<?php echo $meta['field'] ?>" />
+							<label for="meta_<?php echo $meta['field'] ?>"><?php echo $meta['field'] ?></label>
 							<br/>
 					</dd>
 					<?php endforeach ;?>
@@ -179,7 +181,7 @@
 				</dl>
 				
 				<dl>
-					<dt><?= lang('ionize_label_export_format') ?></dt>
+					<dt><?php echo lang('ionize_label_export_format') ?></dt>
 					<dd>
 						<input id="format" name="format" type="radio" checked="checked" value="csv" />
 						<label for="format">CSV</label>
@@ -189,7 +191,7 @@
 				<dl>
 					<dt>&#160;</dt>
 					<dd>
-						<input id="submit_user_export" type="submit" class="submit" value="<?= lang('ionize_button_export') ?>" />
+						<input id="submit_user_export" type="submit" class="submit" value="<?php echo lang('ionize_button_export') ?>" />
 					</dd>
 				</dl>
 				

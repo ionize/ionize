@@ -5,13 +5,14 @@
  * When the article parent is changed, the article "ordering after" select dropdown is reloaded
  *
  */
+    log_message('error', 'View File Loaded : article_ordering_select.php');
 ?>
 
 
 <?php foreach($articles as $article) :?>
 	<?php
-	$title = ($article['title'] != '') ? $article['title'] : $article['name'];
+	    $title = ($article['title'] != '') ? $article['title'] : $article['name'];
 	?>
-	<option value="<?= $article['id_article'] ?>"><?= $title ?></option>
+	<option value="<?php echo $article['id_article']; ?>"><?php echo $title; ?></option>
 <?php endforeach ;?>
 

@@ -1,4 +1,5 @@
 <?php
+    log_message('error', 'View File Loaded : users_list.php');
 
 /**
  * Users list
@@ -11,7 +12,7 @@
 
 <?php if( ! empty($filter)) :?>
 
-	<p><strong><?= lang('ionize_label_filter_result') ?> : </strong><?= $users_count ?></p>
+	<p><strong><?php echo lang('ionize_label_filter_result') ?> : </strong><?php echo $users_count ?></p>
 
 <?php endif; ?>
 
@@ -23,7 +24,7 @@
 			for($i=1; $i<=$users_pages; $i++)
 			{
 			?>
-				<li><a <?php if($i == $current_page) :?>class="current"<?php endif; ?> rel="<?= $i ?>"><?= $i ?></a></li>
+				<li><a <?php if($i == $current_page) :?>class="current"<?php endif; ?> rel="<?php echo $i ?>"><?php echo $i ?></a></li>
 			<?php
 			}
 		}
@@ -35,12 +36,12 @@
 
 	<thead>
 		<tr>
-			<th axis="string"><?= lang('ionize_label_id') ?></th>
-			<th axis="string"><?= lang('ionize_label_username') ?></th>
-			<th axis="string"><?= lang('ionize_label_screen_name') ?></th>
-			<th axis="string"><?= lang('ionize_label_group') ?></th>
-			<th axis="string"><?= lang('ionize_label_email') ?></th>				
-			<th axis="string"><?= lang('ionize_label_join_date') ?></th>				
+			<th axis="string"><?php echo lang('ionize_label_id') ?></th>
+			<th axis="string"><?php echo lang('ionize_label_username') ?></th>
+			<th axis="string"><?php echo lang('ionize_label_screen_name') ?></th>
+			<th axis="string"><?php echo lang('ionize_label_group') ?></th>
+			<th axis="string"><?php echo lang('ionize_label_email') ?></th>
+			<th axis="string"><?php echo lang('ionize_label_join_date') ?></th>
 			<th></th>
 		</tr>
 	</thead>
@@ -55,17 +56,17 @@
 	
 	<?php foreach($users as $user) :?>
 		
-		<tr class="users<?= $user['id_user'] ?> users">
-			<td><?= $user['id_user'] ?></td>
-			<td><a class="user" id="user<?= $user['id_user'] ?>" rel="<?= $user['id_user'] ?>" href="<?= admin_url() ?>users/edit/<?= $user['id_user'] ?>"><?= $user['username'] ?></a></td>
-			<td><?= $user['screen_name'] ?></td>
-			<td><?= $user['group']['group_name'] ?></td>
-			<td><?= $user['email'] ?></td>
+		<tr class="users<?php echo $user['id_user'] ?> users">
+			<td><?php echo $user['id_user'] ?></td>
+			<td><a class="user" id="user<?php echo $user['id_user'] ?>" rel="<?php echo $user['id_user'] ?>" href="<?php echo admin_url() ?>users/edit/<?php echo $user['id_user'] ?>"><?php echo $user['username'] ?></a></td>
+			<td><?php echo $user['screen_name'] ?></td>
+			<td><?php echo $user['group']['group_name'] ?></td>
+			<td><?php echo $user['email'] ?></td>
 			<td>
-				<?= humanize_mdate($user['join_date'], Settings::get('date_format')) ?>
+				<?php echo humanize_mdate($user['join_date'], Settings::get('date_format')) ?>
 			</td>
 			<td>
-				<a class="icon delete" rel="<?= $user['id_user'] ?>"></a>
+				<a class="icon delete" rel="<?php echo $user['id_user'] ?>"></a>
 			</td>
 		</tr>
 
@@ -127,7 +128,7 @@
 			e.stop();
 
 			new Request.HTML({
-				url: admin_url + 'users/users_list/' + this.getProperty('rel') + '/<?= $nb ?>',
+				url: admin_url + 'users/users_list/' + this.getProperty('rel') + '/<?php echo $nb ?>',
 				method: 'post',
 				loadMethod: 'xhr',
 				data: $('usersFilter'),

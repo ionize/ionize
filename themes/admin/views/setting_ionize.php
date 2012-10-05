@@ -1,24 +1,25 @@
-
-
+<?php
+    log_message('error', 'View File Loaded : setting_ionize.php');
+?>
 
 <!-- Main Column -->
 <div id="maincolumn">
 
-	<h2 class="main ionize" id="main-title"><?= lang('ionize_title_ionize_settings') ?></h2>
+	<h2 class="main ionize" id="main-title"><?php echo lang('ionize_title_ionize_settings'); ?></h2>
 
 	<!-- Subtitle -->
 	<div class="subtitle">
-		<p><?= lang('ionize_onchange_ionize_settings')?></p>
+		<p><?php echo lang('ionize_onchange_ionize_settings'); ?></p>
 	</div>
 
 
 	<!-- Tabs -->
 	<div id="ionizeSettingsTab" class="mainTabs">
 		<ul class="tab-menu">
-			<li id="ui_visual_settings"><a><?= lang('ionize_title_visual_help') ?></a></li>
-			<li id="ui_language_settings"><a><?= lang('ionize_title_admin_panel_languages') ?></a></li>
-			<li id="ui_datetime_settings"><a><?= lang('ionize_title_admin_panel_datetime') ?></a></li>
-			<li><a title="<?= lang('ionize_help_flags') ?>"><span><?= lang('ionize_label_flags') ?></span></a></li>
+			<li id="ui_visual_settings"><a><?php echo lang('ionize_title_visual_help'); ?></a></li>
+			<li id="ui_language_settings"><a><?php echo lang('ionize_title_admin_panel_languages'); ?></a></li>
+			<li id="ui_datetime_settings"><a><?php echo lang('ionize_title_admin_panel_datetime'); ?></a></li>
+			<li><a title="<?php echo lang('ionize_help_flags'); ?>"><span><?php echo lang('ionize_label_flags'); ?></span></a></li>
 		</ul>
 		<div class="clear"></div>
 	</div>
@@ -33,7 +34,7 @@
 
 			<dl>
 				<dt>
-					<label for="show_help_tips" title="<?= lang('ionize_help_help') ?>"><?=lang('ionize_label_show_help_tips')?></label>
+					<label for="show_help_tips" title="<?php echo lang('ionize_help_help'); ?>"><?php echo lang('ionize_label_show_help_tips'); ?></label>
 				</dt>
 				<dd>
 					<input class="inputcheckbox" type="checkbox" name="show_help_tips" id="show_help_tips" <?php if (Settings::get('show_help_tips') == '1'):?> checked="checked" <?php endif;?> value="1" />
@@ -42,7 +43,7 @@
 	
 			<dl>
 				<dt>
-					<label for="display_connected_label" title="<?= lang('ionize_help_display_connected_label') ?>"><?=lang('ionize_label_display_connected_label')?></label>
+					<label for="display_connected_label" title="<?php echo lang('ionize_help_display_connected_label'); ?>"><?php echo lang('ionize_label_display_connected_label'); ?></label>
 				</dt>
 				<dd>
 					<input class="inputcheckbox" type="checkbox" name="display_connected_label" id="display_connected_label" <?php if (Settings::get('display_connected_label') == '1'):?> checked="checked" <?php endif;?> value="1" />
@@ -66,15 +67,15 @@
 				<tbody>
 					<?php foreach(Settings::get('admin_languages') as $lang) :?>
 					<tr>
-						<td class="center"><img src="<?= theme_url() ?>images/world_flags/flag_<?= $lang ?>.gif" alt="<?= $lang ?>" class="mt2" /></td>
+						<td class="center"><img src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" alt="<?php echo $lang; ?>" class="mt2" /></td>
 						<td class="center">
-							<label for="display_lang_<?= $lang ?>"><?= $lang ?></label>
+							<label for="display_lang_<?php echo $lang; ?>"><?php echo $lang; ?></label>
 						</td>
 						<td class="center">
-							<input <?php if(in_array($lang, $displayed_admin_languages)) :?>checked="checked" <?php endif ;?>id="display_lang_<?= $lang ?>" class="inputcheckbox" name="displayed_admin_languages[]" type="checkbox" value="<?= $lang ?>" />
+							<input <?php if(in_array($lang, $displayed_admin_languages)) :?>checked="checked" <?php endif ;?>id="display_lang_<?php echo $lang; ?>" class="inputcheckbox" name="displayed_admin_languages[]" type="checkbox" value="<?php echo $lang; ?>" />
 						</td>
 						<td class="center">
-							<input <?php if(Settings::get('default_admin_lang') == $lang) :?>checked="checked" <?php endif ;?>id="default_admin_lang_<?= $lang ?>" class="inputcheckbox " name="default_admin_lang" type="radio" value="<?= $lang ?>" />
+							<input <?php if(Settings::get('default_admin_lang') == $lang) :?>checked="checked" <?php endif ;?>id="default_admin_lang_<?php echo $lang; ?>" class="inputcheckbox " name="default_admin_lang" type="radio" value="<?php echo $lang; ?>" />
 						</td>
 					</tr>
 					<?php endforeach ;?>
@@ -104,19 +105,19 @@
 		<!-- Flags -->
 		<div class="tabcontent">
 
-			<p class="info"><?= lang('ionize_description_flags'); ?></p>
+			<p class="info"><?php echo lang('ionize_description_flags'); ?></p>
 
 			<form name="flagsForm" id="flagsForm">
 
-				<label class="flag flag1" for="flag1"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag1" name="flag1" value="<?= Settings::get('flag1') ?>" /><br/>
-				<label class="flag flag2" for="flag2"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag2" name="flag2" value="<?= Settings::get('flag2') ?>" /><br/>
-				<label class="flag flag3" for="flag3"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag3" name="flag3" value="<?= Settings::get('flag3') ?>" /><br/>
-				<label class="flag flag4" for="flag4"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag4" name="flag4" value="<?= Settings::get('flag4') ?>" /><br/>
-				<label class="flag flag5" for="flag5"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag5" name="flag5" value="<?= Settings::get('flag5') ?>" /><br/>
-				<label class="flag flag6" for="flag5"></label><input type="text" class="inputtext w180 ml10" id="flag6" name="flag6" value="<?= Settings::get('flag6') ?>" /><br/>
+				<label class="flag flag1" for="flag1"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag1" name="flag1" value="<?php echo Settings::get('flag1'); ?>" /><br/>
+				<label class="flag flag2" for="flag2"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag2" name="flag2" value="<?php echo Settings::get('flag2'); ?>" /><br/>
+				<label class="flag flag3" for="flag3"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag3" name="flag3" value="<?php echo Settings::get('flag3'); ?>" /><br/>
+				<label class="flag flag4" for="flag4"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag4" name="flag4" value="<?php echo Settings::get('flag4'); ?>" /><br/>
+				<label class="flag flag5" for="flag5"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag5" name="flag5" value="<?php echo Settings::get('flag5'); ?>" /><br/>
+				<label class="flag flag6" for="flag5"></label><input type="text" class="inputtext w180 ml10" id="flag6" name="flag6" value="<?php echo Settings::get('flag6'); ?>" /><br/>
 
 
-				<label></label><button  id="bSaveFlags" type="button" class="button yes ml20 mt10"><?= lang('ionize_button_save') ?></button>
+				<label></label><button  id="bSaveFlags" type="button" class="button yes ml20 mt10"><?php echo lang('ionize_button_save'); ?></button>
 			</form>
 		</div>
 

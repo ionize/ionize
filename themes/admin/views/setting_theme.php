@@ -1,14 +1,16 @@
-
+<?php
+    log_message('error', 'View File Loaded : setting_theme.php');
+?>
 <!-- Main Column -->
 <div id="maincolumn">
 
-	<h2 class="main themes" id="main-title"><?= lang('ionize_title_themes') ?></h2>
+	<h2 class="main themes" id="main-title"><?php echo lang('ionize_title_themes'); ?></h2>
 
 	<!-- Tabs -->
 	<div id="themeTab" class="mainTabs mt20">
 		<ul class="tab-menu">
-			<li><a><?=lang('ionize_title_views_list')?> : <?= Settings::get('theme') ?></a></li>
-			<li><a><?= lang('ionize_title_options') ?></a></li>
+			<li><a><?php echo lang('ionize_title_views_list'); ?> : <?php echo Settings::get('theme'); ?></a></li>
+			<li><a><?php echo lang('ionize_title_options'); ?></a></li>
 		</ul>
 		<div class="clear"></div>
 	</div>
@@ -19,7 +21,7 @@
 		<!-- Theme views -->
 		<div class="tabcontent">
 
-			<form name="viewsForm" id="viewsForm" method="post" action="<?= admin_url() ?>setting/save_views">
+			<form name="viewsForm" id="viewsForm" method="post" action="<?php echo admin_url(); ?>setting/save_views">
 
 				<div id="viewsTableContainer">
 
@@ -29,10 +31,10 @@
 						<thead>
 							<tr>
 								<th axis="string" style="width:20px;"></th>
-								<th axis="string"><?= lang('ionize_label_view_filename') ?></th>
-								<th axis="string"><?= lang('ionize_label_view_folder') ?></th>
-								<th><?= lang('ionize_label_view_name') ?></th>
-								<th><?= lang('ionize_label_view_type') ?></th>
+								<th axis="string"><?php echo lang('ionize_label_view_filename'); ?></th>
+								<th axis="string"><?php echo lang('ionize_label_view_folder'); ?></th>
+								<th><?php echo lang('ionize_label_view_name'); ?></th>
+								<th><?php echo lang('ionize_label_view_type'); ?></th>
 							</tr>
 						</thead>
 
@@ -45,15 +47,15 @@
 							?>
 
 							<tr>
-								<td><a class="icon edit viewEdit" rel="<?= $rel ?>"></a></td>
-								<td><a class="viewEdit" rel="<?= $rel ?>"><?= $file->name ?></a></td>
-								<td><?= $file->path ?> </td>
+								<td><a class="icon edit viewEdit" rel="<?php echo $rel; ?>"></a></td>
+								<td><a class="viewEdit" rel="<?php echo $rel; ?>"><?php echo $file->name; ?></a></td>
+								<td><?php echo $file->path; ?> </td>
 								<td>
-									<input type="text" class="inputtext w160" name="viewdefinition_<?= $rel ?>" value="<?= $file->definition ?>" />
+									<input type="text" class="inputtext w160" name="viewdefinition_<?php echo $rel; ?>" value="<?php echo $file->definition; ?>" />
 								</td>
 								<td>
-									<select class="select" name="viewtype_<?= $rel ?>">
-										<option value=""><?= lang('ionize_select_no_type') ?></option>
+									<select class="select" name="viewtype_<?php echo $rel; ?>">
+										<option value=""><?php echo lang('ionize_select_no_type'); ?></option>
 										<option <?php if($file->type == 'page') :?> selected="selected" <?php endif ;?> value="page">Page</option>
 										<option <?php if($file->type == 'article') :?> selected="selected" <?php endif ;?> value="article">Article</option>
 									</select>
@@ -74,17 +76,17 @@
 		<!-- Options -->
 		<div class="tabcontent">
 
-			<form name="themesForm" id="themesForm" method="post" action="<?= admin_url() ?>setting/save_themes">
+			<form name="themesForm" id="themesForm" method="post" action="<?php echo admin_url(); ?>setting/save_themes">
 
 				<!-- Theme -->
 				<dl>
 					<dt>
-						<label for="theme"><?=lang('ionize_label_theme')?></label>
+						<label for="theme"><?php echo lang('ionize_label_theme'); ?></label>
 					</dt>
 					<dd>
 						<select class="select" name="theme">
-							<?php foreach($themes as $theme) :?>
-							<option value="<?= $theme ?>" <?php if($theme == Settings::get('theme') ) :?>selected="selected"<?php endif; ?>><?= $theme ?></option>
+							<?php foreach($themes as $theme): ?>
+							<option value="<?php echo $theme; ?>" <?php if($theme == Settings::get('theme') ): ?>selected="selected"<?php endif; ?>><?php echo $theme; ?></option>
 							<?php endforeach ;?>
 						</select>
 					</dd>
@@ -93,12 +95,12 @@
 				<!-- Theme Admin -->
 				<dl>
 					<dt>
-						<label for="theme_admin"><?=lang('ionize_label_theme_admin')?></label>
+						<label for="theme_admin"><?php echo lang('ionize_label_theme_admin'); ?></label>
 					</dt>
 					<dd>
 						<select class="select" name="theme_admin">
 							<?php foreach($themes_admin as $theme) :?>
-							<option value="<?= $theme ?>" <?php if($theme == Settings::get('theme_admin') ) :?>selected="selected"<?php endif; ?>><?= $theme ?></option>
+							<option value="<?php echo $theme; ?>" <?php if($theme == Settings::get('theme_admin') ) :?>selected="selected"<?php endif; ?>><?php echo $theme; ?></option>
 							<?php endforeach ;?>
 						</select>
 					</dd>
@@ -108,7 +110,7 @@
 				<dl>
 					<dt>&#160;</dt>
 					<dd>
-						<input id="themesFormSubmit" type="submit" class="submit" value="<?= lang('ionize_button_save_themes') ?>" />
+						<input id="themesFormSubmit" type="submit" class="submit" value="<?php echo lang('ionize_button_save_themes'); ?>" />
 					</dd>
 				</dl>
 
@@ -184,13 +186,13 @@
 							tabMode: 'shift',
 							parserfile: ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js', 'tokenizephp.js', 'parsephp.js', 'parsephphtmlmixed.js'],
 							stylesheet: [
-								'<?= theme_url() ?>javascript/codemirror/css/basic.css',
-								'<?= theme_url() ?>javascript/codemirror/css/xmlcolors.css',
-								'<?= theme_url() ?>javascript/codemirror/css/jscolors.css',
-								'<?= theme_url() ?>javascript/codemirror/css/csscolors.css',
-								'<?= theme_url() ?>javascript/codemirror/css/phpcolors.css'
+								'<?php echo theme_url(); ?>javascript/codemirror/css/basic.css',
+								'<?php echo theme_url(); ?>javascript/codemirror/css/xmlcolors.css',
+								'<?php echo theme_url(); ?>javascript/codemirror/css/jscolors.css',
+								'<?php echo theme_url(); ?>javascript/codemirror/css/csscolors.css',
+								'<?php echo theme_url(); ?>javascript/codemirror/css/phpcolors.css'
 							],
-							path: '<?= theme_url() ?>javascript/codemirror/js/',
+							path: '<?php echo theme_url(); ?>javascript/codemirror/js/',
 							lineNumbers: true
 						});
 

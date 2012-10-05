@@ -4,12 +4,13 @@
  * Categories panel
  *
  */
+log_message('error', 'View File Loaded : categories.php');
 
 ?>
 <div id="maincolumn">
 
 	<!-- Title -->
-	<h2 class="main categories"><?= lang('ionize_title_categories') ?></h2>
+	<h2 class="main categories"><?php echo lang('ionize_title_categories'); ?></h2>
 
 	<!--
 		Categories container

@@ -1,13 +1,14 @@
 <?php
 
-// trace($elements);
+//    log_message('error', print_r($elements, TRUE));
+    log_message('error', 'View File Loaded : element_definition_list.php');
 
 ?>
 
 
 <?php foreach($elements as $element) :?>
 
-	<?php $this->load->view('element_definition', $element) ?>
+	<?php $this->load->view('element_definition', $element); ?>
 
 <?php endforeach ;?>
 

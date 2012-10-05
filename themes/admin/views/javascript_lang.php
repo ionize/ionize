@@ -15,18 +15,18 @@
  * @link		http://www.partikule.net
  *
  */
-
+    log_message('error', 'View File Loaded : javascript_lang.php');
 ?>
 
 var Lang = new Hash({
 	
-	<?php foreach($this->lang->language as $key=>$text) :?>'<?= $key ?>': '<?= addslashes(str_replace(array("\r\n", "\r", "\n", "\t"), ' ', $text)) ?>',<?php endforeach ;?>
+	<?php foreach($this->lang->language as $key=>$text) :?>'<?php echo $key; ?>': '<?php echo addslashes(str_replace(array("\r\n", "\r", "\n", "\t"), ' ', $text)); ?>',<?php endforeach ;?>
 
-	'current': '<?= $this->config->item('detected_lang_code'); ?>',
-	'first': '<?= Settings::get_lang('first') ?>',
-	'default': '<?= Settings::get_lang('default') ?>',
+	'current': '<?php echo $this->config->item('detected_lang_code'); ?>',
+	'first': '<?php echo Settings::get_lang('first'); ?>',
+	'default': '<?php echo Settings::get_lang('default'); ?>',
 	
-	'languages': new Array('<?= implode("','", array_keys($this->config->item('available_languages'))); ?>')
+	'languages': new Array('<?php echo implode("','", array_keys($this->config->item('available_languages'))); ?>')
 
 });
 

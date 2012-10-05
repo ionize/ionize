@@ -1,21 +1,23 @@
-
+<?php
+    log_message('error', 'View File Loaded : system_check.php');
+?>
 <!-- Main Column -->
 <div id="maincolumn">
 
 	<!-- Title -->
-	<h2 class="main system-check" id="main-title"><?= lang('ionize_title_system_check') ?></h2>
+	<h2 class="main system-check" id="main-title"><?php echo lang('ionize_title_system_check'); ?></h2>
 
 	<!-- Subtitle -->
 	<div class="subtitle">
-		<p><?= lang('ionize_text_system_check')?></p>
+		<p><?php echo lang('ionize_text_system_check'); ?></p>
 	</div>
 
 
 	<div id="checkTab" class="mainTabs">
 		<ul class="tab-menu">
-			<li id="infoTab"><a><?= lang('ionize_title_informations') ?></a></li>
-			<li id="toolTab"><a><?= lang('ionize_dashboard_title_tools') ?></a></li>
-			<li id="reportTab"><a><?= lang('ionize_title_check_reports') ?></a></li>
+			<li id="infoTab"><a><?php echo lang('ionize_title_informations'); ?></a></li>
+			<li id="toolTab"><a><?php echo lang('ionize_dashboard_title_tools'); ?></a></li>
+			<li id="reportTab"><a><?php echo lang('ionize_title_check_reports'); ?></a></li>
 		</ul>
 		<div class="clear"></div>
 	</div>
@@ -29,18 +31,18 @@
 			<table class="list m0">
 				<thead>
 				<tr>
-					<th><?= lang('ionize_title_check_folder')?></th>
-					<th class="center"><?= lang('ionize_title_label_write_rights')?></th>
+					<th><?php echo lang('ionize_title_check_folder'); ?></th>
+					<th class="center"><?php echo lang('ionize_title_label_write_rights'); ?></th>
 				</tr>
 				</thead>
 				<tbody>
 					<?php foreach ($folders as $folder):?>
 						<tr>
-							<td><?= $folder['path'] ?></td>
+							<td><?php echo $folder['path']; ?></td>
 							<?php if ($folder['write'] == TRUE):?>
-								<td class="center"><span class="success"><?= lang('ionize_message_check_ok') ?></span></td>
+								<td class="center"><span class="success"><?php echo lang('ionize_message_check_ok'); ?></span></td>
 							<?php else: ?>
-								<td class="center"><span class="error"><?= lang('ionize_message_check_folder_nok') ?></span></td>
+								<td class="center"><span class="error"><?php echo lang('ionize_message_check_folder_nok'); ?></span></td>
 							<?php endif; ?>
 						</tr>
 					<?php endforeach; ?>

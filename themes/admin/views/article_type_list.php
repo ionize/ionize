@@ -5,6 +5,7 @@
  * Called through XHR by : /views/articles.php
  *
  */
+    log_message('error', 'View File Loaded : article_type_list.php');
 
 ?>
 
@@ -12,12 +13,12 @@
 
 <?php foreach($types as $type) :?>
 
-	<li class="sortme article_type<?= $type['id_type'] ?>" id="article_type_<?= $type['id_type'] ?>" rel="<?= $type['id_type'] ?>">
-		<a class="icon delete right" rel="<?= $type['id_type'] ?>"></a>
+	<li class="sortme article_type<?php echo $type['id_type']; ?>" id="article_type_<?php echo $type['id_type']; ?>" rel="<?php echo $type['id_type']; ?>">
+		<a class="icon delete right" rel="<?php echo $type['id_type']; ?>"></a>
 		<span class="icon left drag mr5"></span>
-		<a class="left pl5 title" rel="<?= $type['id_type'] ?>">
-			<span class="flag flag<?= $type['type_flag'] ?>"></span>
-			<?= $type['type'] ?>
+		<a class="left pl5 title" rel="<?php echo $type['id_type']; ?>">
+			<span class="flag flag<?php echo $type['type_flag']; ?>"></span>
+			<?php echo $type['type']; ?>
 		</a>
 	</li>
 

@@ -1,5 +1,7 @@
 <?php
 
+    log_message('error', 'View File Loaded : user.php');
+
 /**
  * Modal window for Editing an user
  *
@@ -12,53 +14,53 @@ else
 
 ?>
 
-<form name="userForm<?= $user['id_user'] ?>" id="userForm<?= $user['id_user'] ?>" action="<?= admin_url() ?>users/<?= $action ?>">
+<form name="userForm<?php echo $user['id_user'] ?>" id="userForm<?php echo $user['id_user'] ?>" action="<?php echo admin_url() ?>users/<?php echo $action ?>">
 
 	<!-- Hidden fields -->
-	<input id="user_PK" name="user_PK" type="hidden" value="<?= $user['id_user'] ?>" />
-	<input id="join_date" name="join_date" type="hidden" value="<?= $user['join_date'] ?>" />
-	<input id="salt" name="salt" type="hidden" value="<?= $user['salt'] ?>" />
+	<input id="user_PK" name="user_PK" type="hidden" value="<?php echo $user['id_user'] ?>" />
+	<input id="join_date" name="join_date" type="hidden" value="<?php echo $user['join_date'] ?>" />
+	<input id="salt" name="salt" type="hidden" value="<?php echo $user['salt'] ?>" />
 	
 	<!-- Username -->
 	<dl class="small">
 		<dt>
-			<label for="username"><?=lang('ionize_label_username')?></label>
+			<label for="username"><?php echo lang('ionize_label_username')?></label>
 		</dt>
 		<dd>
-			<input id="username" name="username" class="inputtext" type="text" value="<?= $user['username'] ?>" />
+			<input id="username" name="username" class="inputtext" type="text" value="<?php echo $user['username'] ?>" />
 		</dd>
 	</dl>
 
 	<!-- Screen Name -->
 	<dl class="small">
 		<dt>
-			<label for="screen_name"><?=lang('ionize_label_screen_name')?></label>
+			<label for="screen_name"><?php echo lang('ionize_label_screen_name')?></label>
 		</dt>
 		<dd>
-			<input id="screen_name" name="screen_name" class="inputtext" type="text" value="<?= $user['screen_name'] ?>" />
+			<input id="screen_name" name="screen_name" class="inputtext" type="text" value="<?php echo $user['screen_name'] ?>" />
 		</dd>
 	</dl>
 
 	<!-- Email -->
 	<dl class="small">
 		<dt>
-			<label for="email" ><?=lang('ionize_label_email')?></label>
+			<label for="email" ><?php echo lang('ionize_label_email')?></label>
 		</dt>
 		<dd>
-			<input id="email" name="email" class="inputtext" type="text" value="<?= $user['email'] ?>" />
+			<input id="email" name="email" class="inputtext" type="text" value="<?php echo $user['email'] ?>" />
 		</dd>
 	</dl>
 
 	<!-- Group -->
 	<dl class="small">
 		<dt>
-			<label for="email"><?=lang('ionize_label_group')?></label>
+			<label for="email"><?php echo lang('ionize_label_group')?></label>
 		</dt>
 		<dd>
 			<select name="id_group" class="select">
 				<?php foreach($groups as $group) :?>
 
-					<option value="<?= $group['id_group'] ?>" <?php if($user['group']['id_group'] == $group['id_group']) :?> selected="selected" <?php endif ;?> ><?= $group['group_name'] ?></option>
+					<option value="<?php echo $group['id_group'] ?>" <?php if($user['group']['id_group'] == $group['id_group']) :?> selected="selected" <?php endif ;?> ><?php echo $group['group_name'] ?></option>
 				
 				<?php endforeach ;?>
 			</select>
@@ -67,13 +69,13 @@ else
 	
 
 	<!-- New password -->
-	<h3><?=lang('ionize_title_change_password')?></h3>
+	<h3><?php echo lang('ionize_title_change_password')?></h3>
 
 
 	<!-- Password -->
 	<dl class="small">
 		<dt>
-			<label for="password"><?=lang('ionize_label_password')?></label>
+			<label for="password"><?php echo lang('ionize_label_password')?></label>
 		</dt>
 		<dd>
 			<input id="password" name="password" class="inputtext i120" type="password" value="" />
@@ -83,7 +85,7 @@ else
 	<!-- Password confirm -->
 	<dl class="small">
 		<dt>
-			<label for="password2"><?=lang('ionize_label_password2')?></label>
+			<label for="password2"><?php echo lang('ionize_label_password2')?></label>
 		</dt>
 		<dd>
 			<input id="password2" name="password2" class="inputtext i120" type="password" value="" />
@@ -92,13 +94,13 @@ else
 
 	
 	<!-- Meta data -->
-	<h3><?=lang('ionize_title_user_meta')?></h3>
+	<h3><?php echo lang('ionize_title_user_meta')?></h3>
 
 	<?php foreach($meta_data as $key => $field) :?>
 
 		<dl class="small">
 			<dt>
-				<label for="<?= $key ?>"><?= $key ?></label>
+				<label for="<?php echo $key ?>"><?php echo $key ?></label>
 			</dt>
 			<dd>
 				<?php
@@ -112,8 +114,8 @@ else
 </form>
 
 <div class="buttons">
-	<button id="bSaveuser<?= $user['id_user'] ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
-	<button id="bCanceluser<?= $user['id_user'] ?>"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
+	<button id="bSaveuser<?php echo $user['id_user'] ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close') ?></button>
+	<button id="bCanceluser<?php echo $user['id_user'] ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel') ?></button>
 </div>
 
 <script type="text/javascript">
@@ -133,7 +135,7 @@ else
 
 	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
 
-	ION.initLabelHelpLinks('#userForm<?= $user['id_user'] ?>');
+	ION.initLabelHelpLinks('#userForm<?php echo $user['id_user'] ?>');
 
 
 </script>

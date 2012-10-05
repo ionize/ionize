@@ -4,52 +4,53 @@
  * Modal window for Picture Crop
  *
  */
+    log_message('error', 'View File Loaded : media_picture_crop.php');
 $minSize = (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120;
 ?>
 
-<div id="imgCropContainer<?= $id_media ?>">
+<div id="imgCropContainer<?php echo $id_media; ?>">
 	<div id="imgouter" class="imgouter">
 
-		<div id="cropframe<?= $id_media ?>" class="cropframe" style="background-image: url('<?= base_url().$path ?>?t=<?= $UNIQ ?>')">
-			<div id="draghandle<?= $id_media ?>" class="draghandle"></div>
-			<div id="resizeHandleXY<?= $id_media ?>" class="resizeHandle resizeHandleXY"></div>
-			<div id="cropinfo<?= $id_media ?>" class="cropinfo" rel="Click to crop">
-				<div title="Click to crop" id="cropbtn<?= $id_media ?>" class="cropbtn"></div>
-				<div id="cropdims<?= $id_media ?>" class="cropdims"></div>
+		<div id="cropframe<?php echo $id_media; ?>" class="cropframe" style="background-image: url('<?php echo base_url().$path; ?>?t=<?php echo $UNIQ; ?>')">
+			<div id="draghandle<?php echo $id_media; ?>" class="draghandle"></div>
+			<div id="resizeHandleXY<?php echo $id_media; ?>" class="resizeHandle resizeHandleXY"></div>
+			<div id="cropinfo<?php echo $id_media; ?>" class="cropinfo" rel="Click to crop">
+				<div title="Click to crop" id="cropbtn<?php echo $id_media; ?>" class="cropbtn"></div>
+				<div id="cropdims<?php echo $id_media; ?>" class="cropdims"></div>
 			</div>
 		</div>
 	
-		<div id="imglayer<?= $id_media ?>" class="imglayer" style="width: <?= $size['width'] ?>px; height: <?= $size['height'] ?>px; padding: 1px; background-position: center center; background-image: url('<?= base_url().$path ?>?t=<?= $UNIQ ?>')"></div>
+		<div id="imglayer<?php echo $id_media; ?>" class="imglayer" style="width: <?php echo $size['width']; ?>px; height: <?php echo $size['height']; ?>px; padding: 1px; background-position: center center; background-image: url('<?php echo base_url().$path; ?>?t=<?php echo $UNIQ; ?>')"></div>
 	</div>
 </div>
 
 <script type="text/javascript">
 
-var ch<?= $id_media ?>;
+var ch<?php echo $id_media; ?>;
 window.addEvent("domready", function()
 {
-	ch<?= $id_media ?> = new CwCrop(
+	ch<?php echo $id_media; ?> = new CwCrop(
 	{
-		cropframe: 'cropframe<?= $id_media ?>',
-		imgframe: 'imglayer<?= $id_media ?>',
-		cropdims: 'cropdims<?= $id_media ?>',
-		cropbtn: 'cropbtn<?= $id_media ?>',
-		draghandle: 'draghandle<?= $id_media ?>',
-		resizehandle: 'resizeHandleXY<?= $id_media ?>',
+		cropframe: 'cropframe<?php echo $id_media; ?>',
+		imgframe: 'imglayer<?php echo $id_media; ?>',
+		cropdims: 'cropdims<?php echo $id_media; ?>',
+		cropbtn: 'cropbtn<?php echo $id_media; ?>',
+		draghandle: 'draghandle<?php echo $id_media; ?>',
+		resizehandle: 'resizeHandleXY<?php echo $id_media; ?>',
 		
 		initialposition: {x: 0, y: 0},
-		minsize: {x: <?= $minSize ?>, y: <?= $minSize ?>},
+		minsize: {x: <?php echo $minSize; ?>, y: <?php echo $minSize; ?>},
 		maxratio: {x: 10, y: 10},
-		maxsize: {x: <?= $size['width'] ?>, y:<?= $size['height'] ?>},
+		maxsize: {x: <?php echo $size['width']; ?>, y:<?php echo $size['height']; ?>},
 		onCrop: function(values)
 		{
-			ION.JSON('media/crop', {'path':'<?= $path ?>', 'coords': values, 'id_media': '<?= $id_media ?>'});
+			ION.JSON('media/crop', {'path':'<?php echo $path; ?>', 'coords': values, 'id_media': '<?php echo $id_media; ?>'});
 		}
 	});
-	var size = $('imgCropContainer<?= $id_media ?>').getParent('div.mochaContentWrapper').getSize();
+	var size = $('imgCropContainer<?php echo $id_media; ?>').getParent('div.mochaContentWrapper').getSize();
 	if (Browser.ie7)
 	{
-		$('imgCropContainer<?= $id_media ?>').getParent('div.mochaContentWrapper').setStyles({
+		$('imgCropContainer<?php echo $id_media; ?>').getParent('div.mochaContentWrapper').setStyles({
 			'position': 'relative'
 		});
 	}

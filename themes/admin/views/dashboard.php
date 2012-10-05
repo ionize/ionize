@@ -1,41 +1,44 @@
+<?php
+    log_message('error', 'View File Loaded : dashboard.php');
+?>
 <div id="maincolumn">
 
 	<div style="overflow:hidden;">
 
 		<!-- Icon create a page -->
 		<div class="desktopIcon" id="iconAddPage">
-			<img src="<?= theme_url() ?>images/icon_48_page.png" />
-			<p><a><?= lang('ionize_dashboard_icon_add_page') ?></a></p>
+			<img src="<?php echo theme_url(); ?>images/icon_48_page.png" />
+			<p><a><?php echo lang('ionize_dashboard_icon_add_page'); ?></a></p>
 		</div>
 		
 		<!-- Icon Articles -->
 		<div class="desktopIcon" id="iconArticles">
-			<img src="<?= theme_url() ?>images/icon_48_articles.png" />
-			<p><a><?= lang('ionize_dashboard_icon_articles') ?></a></p>
+			<img src="<?php echo theme_url(); ?>images/icon_48_articles.png" />
+			<p><a><?php echo lang('ionize_dashboard_icon_articles'); ?></a></p>
 		</div>
 		
 		<!-- Icon Media Manager -->
 		<div class="desktopIcon" id="iconMediaManager">
-			<img src="<?= theme_url() ?>images/icon_48_media.png" />
-			<p><a><?= lang('ionize_dashboard_icon_mediamanager') ?></a></p>
+			<img src="<?php echo theme_url(); ?>images/icon_48_media.png" />
+			<p><a><?php echo lang('ionize_dashboard_icon_mediamanager'); ?></a></p>
 		</div>
 		
 		<!-- Icon Static translations -->
 		<div class="desktopIcon" id="iconTranslation">
-			<img src="<?= theme_url() ?>images/icon_48_languages.png" />
-			<p><a><?= lang('ionize_dashboard_icon_translation') ?></a></p>
+			<img src="<?php echo theme_url(); ?>images/icon_48_languages.png" />
+			<p><a><?php echo lang('ionize_dashboard_icon_translation'); ?></a></p>
 		</div>
 		
 		<div class="desktopIcon" id="iconGA">
-			<img src="<?= theme_url() ?>images/icon_48_stats.png" />
-			<p><a><?= lang('ionize_dashboard_icon_google_analytics') ?></a></p>
+			<img src="<?php echo theme_url(); ?>images/icon_48_stats.png" />
+			<p><a><?php echo lang('ionize_dashboard_icon_google_analytics'); ?></a></p>
 		</div>
 	
 	</div>
 
 	<?php if ( ! empty($modules)) :?>
 
-		<h3 class="mt20"><?= lang('ionize_menu_modules') ?></h3>
+		<h3 class="mt20"><?php echo lang('ionize_menu_modules'); ?></h3>
 
 		<div style="overflow:hidden;">
 
@@ -44,8 +47,8 @@
 				<?php if(Connect()->is($module['access_group'])) :?>
 				
 					<div class="desktopIcon desktopModuleIcon">
-						<img src="<?= base_url() ?>modules/<?= $module['folder'] ?>/assets/images/icon_48_module.png" />
-						<p><a title="<?= $module['name'] ?>" href="module/<?= $uri ?>/<?= $uri ?>/index"><?= $module['name'] ?></a></p>
+						<img src="<?php echo base_url(); ?>modules/<?php echo $module['folder']; ?>/assets/images/icon_48_module.png" />
+						<p><a title="<?php echo $module['name']; ?>" href="module/<?php echo $uri; ?>/<?php echo $uri; ?>/index"><?php echo $module['name']; ?></a></p>
 					</div>
 				
 				<?php endif ;?>								
@@ -60,16 +63,16 @@
 	<div id="infos" class="mt20">	
 
 		<!-- Last connected users -->
-		<h3 class="toggler"><?= lang('ionize_dashboard_title_last_connected_users') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_dashboard_title_last_connected_users'); ?></h3>
 		
 		<div class="element pl15">
 			<table class="list mb20" id="usersList">
 			
 				<thead>
 					<tr>
-						<th axis="string"><?= lang('ionize_label_screen_name') ?></th>
-						<th axis="string"><?= lang('ionize_label_last_visit') ?></th>
-						<th axis="string"><?= lang('ionize_label_email') ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_screen_name'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_last_visit'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_email'); ?></th>				
 					</tr>
 				</thead>
 				<tbody>
@@ -77,9 +80,9 @@
 					<?php foreach($users as $user) :?>
 						
 						<tr>
-							<td><?= $user['screen_name'] ?></td>
-							<td><?= humanize_mdate($user['last_visit'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
-							<td><?= mailto($user['email']) ?></td>
+							<td><?php echo $user['screen_name']; ?></td>
+							<td><?php echo humanize_mdate($user['last_visit'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
+							<td><?php echo mailto($user['email']); ?></td>
 						</tr>
 			
 					<?php endforeach ;?>
@@ -91,16 +94,16 @@
 		
 		<!-- Last registered users -->
 		<?php if ( ! empty($last_registered_users)) :?>
-		<h3 class="toggler"><?= lang('ionize_dashboard_title_last_registered_users') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_dashboard_title_last_registered_users'); ?></h3>
 		
 		<div class="element pl15">
 			<table class="list mb20" id="lastusersList">
 			
 				<thead>
 					<tr>
-						<th axis="string"><?= lang('ionize_label_screen_name') ?></th>
-						<th axis="string"><?= lang('ionize_label_join_date') ?></th>
-						<th axis="string"><?= lang('ionize_label_email') ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_screen_name'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_join_date'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_email'); ?></th>				
 					</tr>
 				</thead>
 				<tbody>
@@ -108,9 +111,9 @@
 					<?php foreach($last_registered_users as $user) :?>
 						
 						<tr>
-							<td><?= $user['screen_name'] ?></td>
-							<td><?= humanize_mdate($user['join_date'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
-							<td><?= mailto($user['email']) ?></td>
+							<td><?php echo $user['screen_name']; ?></td>
+							<td><?php echo humanize_mdate($user['join_date'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
+							<td><?php echo mailto($user['email']); ?></td>
 						</tr>
 			
 					<?php endforeach ;?>
@@ -124,7 +127,7 @@
 
 		
 		<!-- Last updated articles -->
-		<h3 class="toggler"><?= lang('ionize_dashboard_title_last_modified_articles') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_dashboard_title_last_modified_articles'); ?></h3>
 		
 		<div class="element pl15">
 		
@@ -132,12 +135,12 @@
 			
 				<thead>
 					<tr>
-						<th axis="string"><?= lang('ionize_label_article') ?></th>
-						<th axis="string"><?= lang('ionize_label_pages') ?></th>
-						<th axis="string"><?= lang('ionize_label_author') ?></th>
-						<th axis="string"><?= lang('ionize_label_updater') ?></th>
-						<th axis="string"><?= lang('ionize_label_created') ?></th>				
-						<th axis="string"><?= lang('ionize_label_updated') ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_author'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_created'); ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_updated'); ?></th>				
 					</tr>
 				</thead>
 			
@@ -164,12 +167,12 @@
 					?>
 
 					<tr>
-						<td><a class="article" title="<?= lang('ionize_label_edit') ?>" rel="0.<?= $article['id_article'] ?>"><span class="flag flag<?= $article['flag'] ?>"></span><?= $title ?></a></td>
-						<td <?php if(empty($pages_link)) :?>class="alert"<?php endif; ?>><a title="<?= lang('ionize_label_edit') ?>"><?= $pages_link ?></a></td>
-						<td><?= $article['author'] ?></td>
-						<td><?= $article['updater'] ?></td>
-						<td><?= humanize_mdate($article['created'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
-						<td><?= humanize_mdate($article['updated'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
+						<td><a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="0.<?php echo $article['id_article']; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a></td>
+						<td <?php if(empty($pages_link)) :?>class="alert"<?php endif; ?>><a title="<?php echo lang('ionize_label_edit'); ?>"><?php echo $pages_link; ?></a></td>
+						<td><?php echo $article['author']; ?></td>
+						<td><?php echo $article['updater']; ?></td>
+						<td><?php echo humanize_mdate($article['created'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
+						<td><?php echo humanize_mdate($article['updated'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
 					</tr>
 			
 				<?php endforeach ;?>
@@ -183,7 +186,7 @@
 		<!-- Orphan pages : Page linked to menu 0 -->
 		<?php if ( ! empty($orphan_pages)) :?>
 
-		<h3 class="toggler"><?= lang('ionize_dashboard_title_orphan_pages') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_dashboard_title_orphan_pages'); ?></h3>
 
 		<div class="element pl15">
 			
@@ -191,11 +194,11 @@
 			
 				<thead>
 					<tr>
-						<th axis="string"><?= lang('ionize_label_page') ?></th>
-						<th axis="string"><?= lang('ionize_label_author') ?></th>
-						<th axis="string"><?= lang('ionize_label_updater') ?></th>
-						<th axis="string"><?= lang('ionize_label_created') ?></th>				
-						<th axis="string"><?= lang('ionize_label_page_delete_date') ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_page'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_author'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_created'); ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_page_delete_date'); ?></th>				
 					</tr>
 				</thead>
 			
@@ -208,11 +211,11 @@
 					?>
 
 					<tr>
-						<td><a title="<?= lang('ionize_label_edit') ?>" rel="<?= $page['id_page'] ?>" class="page"><?= $title ?></a></td>
-						<td><?= $page['author'] ?></td>
-						<td><?= $page['updater'] ?></td>
-						<td><?= humanize_mdate($page['created'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
-						<td><?= humanize_mdate($page['updated'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
+						<td><a title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $page['id_page']; ?>" class="page"><?php echo $title; ?></a></td>
+						<td><?php echo $page['author']; ?></td>
+						<td><?php echo $page['updater']; ?></td>
+						<td><?php echo humanize_mdate($page['created'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
+						<td><?php echo humanize_mdate($page['updated'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
 					</tr>
 			
 				<?php endforeach ;?>
@@ -229,7 +232,7 @@
 		<!-- Orphan articles : no linked to any page -->
 		<?php if ( ! empty($orphan_articles)) :?>
 
-		<h3 class="toggler"><?= lang('ionize_dashboard_title_orphan_articles') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_dashboard_title_orphan_articles'); ?></h3>
 
 		<div class="element pl15">
 			
@@ -237,11 +240,11 @@
 			
 				<thead>
 					<tr>
-						<th axis="string"><?= lang('ionize_label_article') ?></th>
-						<th axis="string"><?= lang('ionize_label_author') ?></th>
-						<th axis="string"><?= lang('ionize_label_updater') ?></th>
-						<th axis="string"><?= lang('ionize_label_created') ?></th>				
-						<th axis="string"><?= lang('ionize_label_page_delete_date') ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_author'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
+						<th axis="string"><?php echo lang('ionize_label_created'); ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_page_delete_date'); ?></th>				
 					</tr>
 				</thead>
 			
@@ -253,12 +256,12 @@
 						$title = ($article['title'] != '') ? $article['title'] : $article['name'];
 					?>
 
-					<tr class="0x<?= $article['id_article'] ?>">
-						<td><a class="article" title="<?= lang('ionize_label_edit') ?>" rel="0.<?= $article['id_article'] ?>"><span class="flag flag<?= $article['flag'] ?>"></span><?= $title ?></a></td>
-						<td><?= $article['author'] ?></td>
-						<td><?= $article['updater'] ?></td>
-						<td><?= humanize_mdate($article['created'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
-						<td><?= humanize_mdate($article['updated'], Settings::get('date_format'). ' %H:%i:%s') ?></td>
+					<tr class="0x<?php echo $article['id_article']; ?>">
+						<td><a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="0.<?php echo $article['id_article']; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a></td>
+						<td><?php echo $article['author']; ?></td>
+						<td><?php echo $article['updater']; ?></td>
+						<td><?php echo humanize_mdate($article['created'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
+						<td><?php echo humanize_mdate($article['updated'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
 					</tr>
 			
 				<?php endforeach ;?>

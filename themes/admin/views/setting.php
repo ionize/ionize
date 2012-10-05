@@ -1,11 +1,13 @@
-
+<?php
+    log_message('error', 'View File Loaded : setting.php');
+?>
 <!-- Main Column -->
 <div id="maincolumn">
 
 <!--
-	<input id="settingsFormSubmit" type="button" class="submit right" value="<?= lang('ionize_button_save_settings') ?>" />
+	<input id="settingsFormSubmit" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" />
 -->
-	<h2 class="main website" id="main-title"><?= lang('ionize_title_site_settings') ?></h2>
+	<h2 class="main website" id="main-title"><?php echo lang('ionize_title_site_settings'); ?></h2>
 	
 	<!-- Title & Meta keywords & Meta description -->
 	<fieldset id="blocks">
@@ -14,10 +16,10 @@
 		<div id="webSettingsTab" class="mainTabs">
 			<ul class="tab-menu">
 				<?php foreach(Settings::get_languages() as $l) :?>
-					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
+					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?php echo ucfirst($l['name']); ?></span></a></li>
 				<?php endforeach ;?>
-				<li id="ga_settings"><a><?= lang('ionize_title_google_analytics') ?></a></li>
-				<li id="seo_settings"><a><?= lang('ionize_title_seo') ?></a></li>
+				<li id="ga_settings"><a><?php echo lang('ionize_title_google_analytics'); ?></a></li>
+				<li id="seo_settings"><a><?php echo lang('ionize_title_seo'); ?></a></li>
 			</ul>
 			<div class="clear"></div>
 		</div>
@@ -26,7 +28,7 @@
 		<div id="webSettingsTabContent">
 
 
-			<form name="settingsForm" id="settingsForm" method="post" action="<?= admin_url() ?>setting/save">
+			<form name="settingsForm" id="settingsForm" method="post" action="<?php echo admin_url(); ?>setting/save">
 
 				<!-- Tabs content blocks -->
 				<?php foreach(Settings::get_languages() as $language) :?>
@@ -36,28 +38,28 @@
 						<!-- Title -->
 						<dl>
 							<dt>
-								<label for="site_title_<?=$language['lang']?>"><?=lang('ionize_label_site_title')?></label>
+								<label for="site_title_<?php echo $language['lang']; ?>"><?php echo lang('ionize_label_site_title'); ?></label>
 							</dt>
 							<dd>
-								<input name="site_title_<?=$language['lang']?>" id="site_title_<?=$language['lang']?>" class="inputtext w360" type="text" value="<?=Settings::get('site_title', $language['lang']) ?>"/>
+								<input name="site_title_<?php echo $language['lang']; ?>" id="site_title_<?php echo $language['lang']; ?>" class="inputtext w360" type="text" value="<?php echo Settings::get('site_title', $language['lang']); ?>"/>
 							</dd>
 						</dl>
 		
 						<dl>
 							<dt>
-								<label for="meta_description_<?=$language['lang']?>"><?=lang('ionize_label_meta_description')?></label>
+								<label for="meta_description_<?php echo $language['lang']; ?>"><?php echo lang('ionize_label_meta_description'); ?></label>
 							</dt>
 							<dd>
-								<textarea name="meta_description_<?=$language['lang']?>" id="meta_description_<?=$language['lang']?>" class="w360 h60"><?=Settings::get('meta_description', $language['lang']) ?></textarea>
+								<textarea name="meta_description_<?php echo $language['lang']; ?>" id="meta_description_<?php echo $language['lang']; ?>" class="w360 h60"><?php echo Settings::get('meta_description', $language['lang']); ?></textarea>
 							</dd>
 						</dl>
 		
 						<dl>
 							<dt>
-								<label for="meta_keywords_<?=$language['lang']?>"><?=lang('ionize_label_meta_keywords')?></label>
+								<label for="meta_keywords_<?php echo $language['lang']; ?>"><?php echo lang('ionize_label_meta_keywords'); ?></label>
 							</dt>
 							<dd>
-								<textarea name="meta_keywords_<?=$language['lang']?>" id="meta_keywords_<?=$language['lang']?>" class="w360 h60"><?=Settings::get('meta_keywords', $language['lang']) ?></textarea>
+								<textarea name="meta_keywords_<?php echo $language['lang']; ?>" id="meta_keywords_<?php echo $language['lang']; ?>" class="w360 h60"><?php echo Settings::get('meta_keywords', $language['lang']); ?></textarea>
 							</dd>
 						</dl>
 		
@@ -71,10 +73,10 @@
 				<div class="tabcontent">
 					<dl class="last">
 						<dt>
-							<label for="google_analytics" title="<?=lang('ionize_help_setting_google_analytics')?>"><?=lang('ionize_label_google_analytics')?></label>
+							<label for="google_analytics" title="<?php echo lang('ionize_help_setting_google_analytics'); ?>"><?php echo lang('ionize_label_google_analytics'); ?></label>
 						</dt>
 						<dd>
-							<textarea name="google_analytics" id="google_analytics" class="w360 h160"><?= htmlentities(stripslashes(Settings::get('google_analytics')), ENT_QUOTES, 'utf-8') ?></textarea>
+							<textarea name="google_analytics" id="google_analytics" class="w360 h160"><?php echo htmlentities(stripslashes(Settings::get('google_analytics')), ENT_QUOTES, 'utf-8'); ?></textarea>
 						</dd>
 					</dl>
 				</div>
@@ -88,14 +90,14 @@
 				
 				
 				<!-- Compress Sitemap XML -->
-				<form name="sitemapGzipForm" id="sitemapGzipForm" method="post" action="<?= admin_url() ?>setting/save_setting">
+				<form name="sitemapGzipForm" id="sitemapGzipForm" method="post" action="<?php echo admin_url(); ?>setting/save_setting">
 
 					<input type="hidden" name="config_file" value="sitemaps" />
 					<input type="hidden" name="setting" value="sitemaps_gzip" />
 					
 					<dl class="last">
 						<dt>
-							<label for="sitemaps_gzip" title="<?=lang('ionize_help_setting_sitemaps_gzip')?>"><?=lang('ionize_label_sitemaps_gzip')?></label>
+							<label for="sitemaps_gzip" title="<?php echo lang('ionize_help_setting_sitemaps_gzip'); ?>"><?php echo lang('ionize_label_sitemaps_gzip'); ?></label>
 						</dt>
 						<dd>
 							<input class="inputcheckbox" <?php if (config_item('sitemaps_gzip') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="setting_value" id="sitemaps_gzip" value="true" />
@@ -104,10 +106,10 @@
 				</form>
 				
 				
-				<h3><?= lang('ionize_title_sitemap_search_engine') ?></h3>
+				<h3><?php echo lang('ionize_title_sitemap_search_engine'); ?></h3>
 				
 				<!-- Sitemaps Search Engines -->
-				<form name="sitemapUrlForm" id="sitemapUrlForm" method="post" action="<?= admin_url() ?>setting/save_setting">
+				<form name="sitemapUrlForm" id="sitemapUrlForm" method="post" action="<?php echo admin_url(); ?>setting/save_setting">
 					
 					<input type="hidden" name="config_file" value="sitemaps" />
 					<input type="hidden" name="type" value="array" />
@@ -115,26 +117,26 @@
 					
 					<div class="summary r10">
 					
-						<p><?= lang('ionize_text_sitemaps_url_list') ?> :</p>
-						<p><textarea class="w400 h80" name="setting_value"><?= implode("\n", config_item('sitemaps_search_engines')) ?></textarea></p>
-						<input id="submit_sitemap_url" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+						<p><?php echo lang('ionize_text_sitemaps_url_list'); ?> :</p>
+						<p><textarea class="w400 h80" name="setting_value"><?php echo implode("\n", config_item('sitemaps_search_engines')); ?></textarea></p>
+						<input id="submit_sitemap_url" type="submit" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
 						
 					</div>
 				</form>
 				
 				
 				<!-- Permalink Ping -->
-				<h3 class="mt20"><?= lang('ionize_title_permalink_ping_server') ?></h3>
+				<h3 class="mt20"><?php echo lang('ionize_title_permalink_ping_server'); ?></h3>
 
-				<form name="pingUrlForm" id="pingUrlForm" method="post" action="<?= admin_url() ?>setting/save_seo_urls">
+				<form name="pingUrlForm" id="pingUrlForm" method="post" action="<?php echo admin_url(); ?>setting/save_seo_urls">
 					
 					<input type="hidden" name="type" value="permalink_ping" />
 
 					<div class="summary r10">
 
-						<p><?= lang('ionize_text_ping_url_list') ?> :</p>
-						<p><textarea class="w400 h80" name="urls"><?= str_replace("|", "\n", Settings::get('permalink_ping_urls')) ?></textarea></p>
-						<input id="submit_ping_url" type="submit" class="submit" value="<?= lang('ionize_button_save') ?>" />
+						<p><?php echo lang('ionize_text_ping_url_list'); ?> :</p>
+						<p><textarea class="w400 h80" name="urls"><?php echo str_replace("|", "\n", Settings::get('permalink_ping_urls')); ?></textarea></p>
+						<input id="submit_ping_url" type="submit" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
 						
 					</div>
 				</form>

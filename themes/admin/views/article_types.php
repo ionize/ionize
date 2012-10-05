@@ -4,13 +4,14 @@
  * Article types panel
  *
  */
+    log_message('error', 'View File Loaded : article_types.php');
 
 ?>
 
 <div id="maincolumn">
 
 	<!-- Title -->
-	<h2 class="main article_types"><?= lang('ionize_title_types') ?></h2>
+	<h2 class="main article_types"><?php echo lang('ionize_title_types'); ?></h2>
 
 	<!--
 		Types container

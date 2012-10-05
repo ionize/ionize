@@ -4,7 +4,7 @@
  * Modal window for Media metadata edition
  *
  */
-
+    log_message('error', 'View File Loaded : media_edit.php');
 $pictureSize = NULL;
 
 if($type == 'picture')
@@ -21,9 +21,9 @@ if($type == 'picture')
 	<?php if($type == 'picture') :?>
 		<?php
 			$thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
-		 ?>
+		?>
 		<div class="picture" style="float:right;margin:0;">
-		<div class="thumb" style="width:<?= $thumb_size ?>px;height:<?= $thumb_size ?>px;background-image:url(<?= admin_url(TRUE) . 'media/get_thumb/'.$id_media.'/'.time()  ?>);"></div>
+		<div class="thumb" style="width:<?php echo $thumb_size; ?>px;height:<?php echo $thumb_size; ?>px;background-image:url(<?php echo admin_url(TRUE) . 'media/get_thumb/'.$id_media.'/'.time(); ?>);"></div>
 		</div>
 	<?php endif ;?>
 
@@ -31,14 +31,14 @@ if($type == 'picture')
 	<?php if($type == 'music') :?>
 		<div style="float:right;">
 			<embed
-                src="<?= theme_url() ?>flash/mp3Player/mp3player_simple.swf?mp3=<?= base_url().$path ?>"
+                src="<?php echo theme_url(); ?>flash/mp3Player/mp3player_simple.swf?mp3=<?php echo base_url().$path; ?>"
                 loop="false"
                 menu="false"
                 quality="high"
                 wmode="transparent"
                 width="224"
                 height="20"
-                name="track_<?= $id_media ?>"
+                name="track_<?php echo $id_media; ?>"
                 align="middle"
                 allowScriptAccess="sameDomain"
                 type="application/x-shockwave-flash"
@@ -52,27 +52,27 @@ if($type == 'picture')
 		
 		<?php if($is_external == TRUE) :?>
 
-			<iframe  style="float:right;" width="170" height="145" src="<?= $path?>" frameborder="0" allowfullscreen></iframe>
+			<iframe  style="float:right;" width="170" height="145" src="<?php echo $path?>" frameborder="0" allowfullscreen></iframe>
 		
-			<h3><?= lang('ionize_title_informations') ?></h3>
+			<h3><?php echo lang('ionize_title_informations'); ?></h3>
 
 		
 		<?php else :?>
 
-			<div style="float:right;"  id="video<?= $id_media ?>">
+			<div style="float:right;"  id="video<?php echo $id_media; ?>">
                 <embed
-                    flashvars="file=<?=base_url().$path?>&autostart=false"
+                    flashvars="file=<?php echobase_url().$path?>&autostart=false"
                     allowfullscreen="true"
                     allowscriptaccess="always"
-                    id="video<?= $id_media ?>"
-                    name="video<?= $id_media ?>"
-                    src="<?= theme_url() ?>flash/mediaplayer/player.swf"
+                    id="video<?php echo $id_media; ?>"
+                    name="video<?php echo $id_media; ?>"
+                    src="<?php echo theme_url(); ?>flash/mediaplayer/player.swf"
                     width="170"
                     height="145"
                 />
             </div>
 
-			<h3><?= lang('ionize_title_informations') ?></h3>
+			<h3><?php echo lang('ionize_title_informations'); ?></h3>
 		
 		<?php endif ;?>
 	<?php endif ;?>
@@ -81,7 +81,7 @@ if($type == 'picture')
 	<!-- Picture file -->
 	<?php if($type == 'picture') :?>
 
-		<h3><?= lang('ionize_title_informations') ?></h3>
+		<h3><?php echo lang('ionize_title_informations'); ?></h3>
 		
 		<!-- Thumbs status -->
 		<dl class="small">
@@ -95,13 +95,13 @@ if($type == 'picture')
 				?>
 
 				<dt>
-					<label><?=substr($thumb['name'], strpos($thumb['name'], '_') + 1) ?> : <?= $size ?></label>
+					<label><?php echo substr($thumb['name'], strpos($thumb['name'], '_') + 1); ?> : <?php echo $size; ?></label>
 				</dt>
 				<dd>
 					<?php if (file_exists(DOCPATH.$base_path.$thumb['name'].'/'.$file_name)) :?>
-						<img src="<?= theme_url() ?>images/icon_16_ok.png" />
+						<img src="<?php echo theme_url(); ?>images/icon_16_ok.png" />
 					<?php else: ?>
-						<img src="<?= theme_url() ?>images/icon_16_delete.png" />
+						<img src="<?php echo theme_url(); ?>images/icon_16_delete.png" />
 					<?php endif; ?>
 				</dd>
 	
@@ -116,11 +116,11 @@ if($type == 'picture')
 		<?php if($is_external == FALSE) :?>
 
 			<dt>
-				<label><?= lang('ionize_label_file_size') ?></label>
+				<label><?php echo lang('ionize_label_file_size'); ?></label>
 			</dt>
 			<dd>
 				<?php if (file_exists(DOCPATH . $path)) :?>
-					<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )) ?> ko
+					<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )); ?> ko
 				<?php else :?>
 					<?php echo(lang('ionize_exception_no_source_file')) ;?>
 				<?php endif ;?>
@@ -128,8 +128,8 @@ if($type == 'picture')
 				<?php if($type == 'picture') :?>
 					 - 
 					<?php if ( ! is_null($pictureSize)) :?>
-						<?php echo($pictureSize['0']) ?> x <?php echo($pictureSize['1']) ?> px
-						<br /><a id="imageCropLink<?= $id_media ?>">crop image</a>
+						<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
+						<br /><a id="imageCropLink<?php echo $id_media; ?>">crop image</a>
 					<?php endif ;?> 
 				<?php endif ;?>
 			</dd>		
@@ -138,7 +138,7 @@ if($type == 'picture')
 	</dl>
 	<dl class="small">
 		<dt>
-			<label><?= lang('ionize_label_file_path') ?></label>
+			<label><?php echo lang('ionize_label_file_path'); ?></label>
 		</dt>
 		<dd>
 			<?php echo auto_link($path, 'both', true) ;?>
@@ -153,39 +153,39 @@ if($type == 'picture')
 
 <?php if ($id_media != '') :?>
 	<!-- Modules PlaceHolder -->
-	<?= get_modules_addons('media', 'main_top'); ?>
+	<?php echo get_modules_addons('media', 'main_top'); ?>
 <?php endif ;?>
 
 
 <!-- Media form -->
-<form name="mediaForm<?= $id_media ?>" id="mediaForm<?= $id_media ?>" action="<?= admin_url() ?>media/save">
+<form name="mediaForm<?php echo $id_media; ?>" id="mediaForm<?php echo $id_media; ?>" action="<?php echo admin_url(); ?>media/save">
 
-	<input type="hidden" name="id_media" value="<?= $id_media ?>" />
-	<input type="hidden" name="type" value="<?= $type ?>" />
+	<input type="hidden" name="id_media" value="<?php echo $id_media; ?>" />
+	<input type="hidden" name="type" value="<?php echo $type; ?>" />
 
 	<!-- Context data -->
-	<input type="hidden" name="parent" value="<?= $parent ?>" />
-	<input type="hidden" name="id_parent" value="<?= $id_parent ?>" />
+	<input type="hidden" name="parent" value="<?php echo $parent; ?>" />
+	<input type="hidden" name="id_parent" value="<?php echo $id_parent; ?>" />
 
 	<!-- Lang data -->
 	<fieldset id="picture-lang">
 		
 		<!-- Tabs -->
-		<div id="mediaTab<?= $UNIQ ?>" class="mainTabs">
+		<div id="mediaTab<?php echo $UNIQ; ?>" class="mainTabs">
 			<ul class="tab-menu">
 				<?php foreach(Settings::get_languages() as $l) :?>
-					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?= ucfirst($l['name']) ?></span></a></li>
+					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?php echo ucfirst($l['name']); ?></span></a></li>
 				<?php endforeach ;?>
 				<?php if($type == 'picture') :?>
-					<li class="right"><a><span><?= lang('ionize_title_options'); ?></span></a></li>
+					<li class="right"><a><span><?php echo lang('ionize_title_options'); ?></span></a></li>
 				<?php endif ;?>
-				<li class="right"><a><span><?= lang('ionize_title_details'); ?></span></a></li>
+				<li class="right"><a><span><?php echo lang('ionize_title_details'); ?></span></a></li>
 			</ul>
 			<div class="clear"></div>
 		</div>
 
 
-		<div id="mediaTabContent<?= $UNIQ ?>">	
+		<div id="mediaTabContent<?php echo $UNIQ; ?>">	
 
 
 			<!-- Translated Meta data -->
@@ -193,16 +193,16 @@ if($type == 'picture')
 
 			<?php $lang_code = $language['lang']; ?>
 			
-			<div class="tabcontent<?= $UNIQ ?>">
+			<div class="tabcontent<?php echo $UNIQ; ?>">
 
 				<!-- title -->
 				<dl class="small">
 					<dt>
-						<label for="title_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_title') ?></label>
+						<label for="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_title'); ?></label>
 					</dt>
 					<dd>
-						<input id="title_<?= $lang_code ?><?= $type.$id_media ?>" name="title_<?= $lang_code ?>" class="inputtext" type="text" value="<?= ${$lang_code}['title'] ?>"/>
-						<a class="icon clearfield" data-id="title_<?= $lang_code ?><?= $type.$id_media ?>"></a>
+						<input id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="title_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['title']; ?>"/>
+						<a class="icon clearfield" data-id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
 		
@@ -212,29 +212,29 @@ if($type == 'picture')
 					<dt>
 						<label</label>
 					</dt>
-					<dd class="lite"><?= lang('ionize_message_alt_desc_for_mp3') ?></dd>
+					<dd class="lite"><?php echo lang('ionize_message_alt_desc_for_mp3'); ?></dd>
 				</dl>
 				<?php endif ;?>
 		
 				<!-- alternative text -->
 				<dl class="small">
 					<dt>
-						<label for="alt_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_alt') ?></label>
+						<label for="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_alt'); ?></label>
 					</dt>
 					<dd>
-						<input id="alt_<?= $lang_code ?><?= $type.$id_media ?>" name="alt_<?= $lang_code ?>" class="inputtext" type="text" value="<?= ${$lang_code}['alt'] ?>"/>
-						<a class="icon clearfield" data-id="alt_<?= $lang_code ?><?= $type.$id_media ?>"></a>
+						<input id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="alt_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['alt']; ?>"/>
+						<a class="icon clearfield" data-id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
 		
 				<!-- description -->
 				<dl class="small">
 					<dt>
-						<label for="description_<?= $lang_code ?><?= $type.$id_media ?>"><?= lang('ionize_label_description') ?></label>
+						<label for="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_description'); ?></label>
 					</dt>
 					<dd>
-						<input id="description_<?= $lang_code ?><?= $type.$id_media ?>" name="description_<?= $lang_code ?>" class="inputtext" type="text" value="<?= ${$lang_code}['description'] ?>"/>
-						<a class="icon clearfield" data-id="description_<?= $lang_code ?><?= $type.$id_media ?>"></a>
+						<input id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="description_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['description']; ?>"/>
+						<a class="icon clearfield" data-id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
 
@@ -247,14 +247,14 @@ if($type == 'picture')
 								<?php
 									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
 								?>
-								<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
+								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
 							</dt>
 							<dd>
 								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" class="inputtext w340" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" value="<?= $extend_field[$lang_code]['content'] ?>" />
+									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="inputtext w340" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" value="<?php echo $extend_field[$lang_code]['content']; ?>" />
 								<?php endif ;?>
 								<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>" class="inputtext w340 h80" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang_code ?>"><?= $extend_field[$lang_code]['content'] ?></textarea>
+									<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="inputtext w340 h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>"><?php echo $extend_field[$lang_code]['content']; ?></textarea>
 								<?php endif ;?>
 							</dd>
 						</dl>	
@@ -267,67 +267,67 @@ if($type == 'picture')
 
 			<!-- Thumbnails preferences -->
 			<?php if($type == 'picture') :?>
-				<div class="tabcontent<?= $UNIQ ?>">
+				<div class="tabcontent<?php echo $UNIQ; ?>">
 					
 					<!-- Thumbnail square crop area -->
 					<dl class="small">
-						<dt><?= lang('ionize_label_square_crop_area') ?>&nbsp;&nbsp;</dt>
+						<dt><?php echo lang('ionize_label_square_crop_area'); ?>&nbsp;&nbsp;</dt>
 						<dd>
-							<input id="square_crop_<?= $id_media ?>_1" name="square_crop" type="radio" value="tl"<?php if ($square_crop == 'tl'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_1"><?= lang('ionize_label_top_left') ?></label></input><br />
-							<input id="square_crop_<?= $id_media ?>_2" name="square_crop" type="radio" value="m"<?php if ($square_crop == 'm'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_2"><?= lang('ionize_label_middle') ?></label></input><br />
-							<input id="square_crop_<?= $id_media ?>_3" name="square_crop" type="radio" value="br"<?php if ($square_crop == 'br'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?= $id_media ?>_3"><?= lang('ionize_label_bottom_right') ?></label></input>
+							<input id="square_crop_<?php echo $id_media; ?>_1" name="square_crop" type="radio" value="tl"<?php if ($square_crop == 'tl'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?php echo $id_media; ?>_1"><?php echo lang('ionize_label_top_left'); ?></label></input><br />
+							<input id="square_crop_<?php echo $id_media; ?>_2" name="square_crop" type="radio" value="m"<?php if ($square_crop == 'm'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?php echo $id_media; ?>_2"><?php echo lang('ionize_label_middle'); ?></label></input><br />
+							<input id="square_crop_<?php echo $id_media; ?>_3" name="square_crop" type="radio" value="br"<?php if ($square_crop == 'br'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?php echo $id_media; ?>_3"><?php echo lang('ionize_label_bottom_right'); ?></label></input>
 						</dd>
 					</dl>
 
 				</div>
 			<?php endif ;?>
 			
-			<div class="tabcontent<?= $UNIQ ?>">
+			<div class="tabcontent<?php echo $UNIQ; ?>">
 
 				<!-- Lang display -->
 				<dl class="small">
-					<dt><label for="lang_<?= $type.$id_media ?>"><?=lang('ionize_label_media_limit_display_to_lang')?></label></dt>
+					<dt><label for="lang_<?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_media_limit_display_to_lang'); ?></label></dt>
 					<dd>
-						<input type="radio" name="lang_display" id="display_all" value="" <?php if($context_data['lang_display'] == ''):?>checked="checked"<?php endif ;?>/><label for="display_all"><?=lang('ionize_label_media_no_limit_display')?></label>
+						<input type="radio" name="lang_display" id="display_all" value="" <?php if($context_data['lang_display'] == ''):?>checked="checked"<?php endif ;?>/><label for="display_all"><?php echo lang('ionize_label_media_no_limit_display'); ?></label>
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<input id="display_<?= $language['lang']; ?>" type="radio" name="lang_display" value="<?= $language['lang']; ?>"  <?php if($context_data['lang_display'] == $language['lang']):?>checked="checked"<?php endif ;?>/><label for="display_<?= $language['lang']; ?>"><img alt="<?= $language['lang']; ?>" src="<?= theme_url() ?>/images/world_flags/flag_<?= $language['lang']; ?>.gif" /></label>
+						<input id="display_<?php echo $language['lang']; ?>" type="radio" name="lang_display" value="<?php echo $language['lang']; ?>"  <?php if($context_data['lang_display'] == $language['lang']):?>checked="checked"<?php endif ;?>/><label for="display_<?php echo $language['lang']; ?>"><img alt="<?php echo $language['lang']; ?>" src="<?php echo theme_url(); ?>/images/world_flags/flag_<?php echo $language['lang']; ?>.gif" /></label>
 						<?php endforeach; ?>
 					</dd>
 				</dl>
 			
 				<!-- Container -->
 				<dl class="small">
-					<dt><label for="container_<?= $type.$id_media ?>"><?=lang('ionize_label_media_container')?></label></dt>
+					<dt><label for="container_<?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_media_container'); ?></label></dt>
 					<dd>
-						<input id="container_<?= $type.$id_media ?>" name="container" class="inputtext" type="text" value="<?= $container ?>" />
-						<a class="icon clearfield" data-id="container_<?= $type.$id_media ?>"></a>
+						<input id="container_<?php echo $type.$id_media; ?>" name="container" class="inputtext" type="text" value="<?php echo $container; ?>" />
+						<a class="icon clearfield" data-id="container_<?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
 			
 				<!-- Copyright -->
 				<dl class="small">
-					<dt><label for="copyright"><?=lang('ionize_label_copyright')?></label></dt>
+					<dt><label for="copyright"><?php echo lang('ionize_label_copyright'); ?></label></dt>
 					<dd>
-						<input id="copyright_<?= $type.$id_media ?>" name="copyright" class="inputtext" type="text" value="<?= $copyright ?>" />
-						<a class="icon clearfield" data-id="copyright_<?= $type.$id_media ?>"></a>
+						<input id="copyright_<?php echo $type.$id_media; ?>" name="copyright" class="inputtext" type="text" value="<?php echo $copyright; ?>" />
+						<a class="icon clearfield" data-id="copyright_<?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
 			
 				<!-- Link (URL) -->
 				<dl class="small">
-					<dt><label for="link"><?=lang('ionize_label_link')?></label></dt>
+					<dt><label for="link"><?php echo lang('ionize_label_link'); ?></label></dt>
 					<dd>
-						<input id="link_<?= $type.$id_media ?>" name="link" type="text" class="inputtext" value="<?= $link ?>" />
-						<a class="icon clearfield" data-id="link_<?= $type.$id_media ?>"></a>
+						<input id="link_<?php echo $type.$id_media; ?>" name="link" type="text" class="inputtext" value="<?php echo $link; ?>" />
+						<a class="icon clearfield" data-id="link_<?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
 			
 				<!-- Date -->
 				<dl class="small">
-					<dt><label for="date_<?= $type.$id_media ?>"><?=lang('ionize_label_date')?></label></dt>
+					<dt><label for="date_<?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_date'); ?></label></dt>
 					<dd>
-						<input id="date_<?= $type.$id_media ?>" name="date" type="text" class="inputtext date" value="<?= humanize_mdate($date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
-						<a class="icon clearfield date" data-id="date_<?= $type.$id_media ?>"></a>
+						<input id="date_<?php echo $type.$id_media; ?>" name="date" type="text" class="inputtext date" value="<?php echo humanize_mdate($date, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
+						<a class="icon clearfield date" data-id="date_<?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
 
@@ -341,7 +341,7 @@ if($type == 'picture')
 								<?php
 									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
 								?>
-								<label for="cf_<?= $extend_field['id_extend_field'] ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
+								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
 							</dt>
 							<dd>
 								<?php
@@ -349,11 +349,11 @@ if($type == 'picture')
 								?>
 							
 								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext w200" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
+									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w200" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content']; ?>" />
 								<?php endif ;?>
 								
 								<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext w340 h80" name="cf_<?= $extend_field['id_extend_field'] ?>"><?= $extend_field['content'] ?></textarea>
+									<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext w340 h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
 								<?php endif ;?>
 								
 								<!-- Checkbox -->
@@ -372,7 +372,7 @@ if($type == 'picture')
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 			
 											?>
-											<input type="checkbox" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>[]" value="<?= $key ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
+											<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
 											<?php
 											$i++;
 										}
@@ -394,7 +394,7 @@ if($type == 'picture')
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 			
 											?>
-											<input type="radio" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $key ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
+											<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $key; ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
 											<?php
 											$i++;
 										}
@@ -408,7 +408,7 @@ if($type == 'picture')
 										$pos = explode("\n", $extend_field['value']);
 										$saved = 	explode(',', $extend_field['content']);
 									?>
-									<select name="cf_<?= $extend_field['id_extend_field']?>">
+									<select name="cf_<?php echo $extend_field['id_extend_field']; ?>">
 									<?php
 										$i = 0; 
 										foreach($pos as $values)
@@ -417,7 +417,7 @@ if($type == 'picture')
 											$key = $vl[0];
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 											?>
-											<option value="<?= $key ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?= $value ?></option>
+											<option value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?php echo $value; ?></option>
 											<?php
 											$i++;
 										}
@@ -429,7 +429,7 @@ if($type == 'picture')
 								<!-- Date & Time -->
 								<?php if ($extend_field['type'] == '7') :?>
 								
-									<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext w120 date" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
+									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content']; ?>" />
 									
 								<?php endif ;?>
 								
@@ -449,8 +449,8 @@ if($type == 'picture')
 </form>
 
 <div class="buttons">
-	<button id="bSave<?= $type.$id_media ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
-	<button id="bCancel<?= $type.$id_media ?>"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
+	<button id="bSave<?php echo $type.$id_media; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bCancel<?php echo $type.$id_media; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
 
@@ -465,13 +465,13 @@ if($type == 'picture')
 	/**
 	 * Clear Field Init
 	 */
-	ION.initClearField('#mediaForm<?= $id_media ?>');
+	ION.initClearField('#mediaForm<?php echo $id_media; ?>');
 
 	/** 
 	 * Tabs init
 	 *
 	 */
-	new TabSwapper({tabsContainer: 'mediaTab<?= $UNIQ ?>', sectionsContainer: 'mediaTabContent<?= $UNIQ ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?= $UNIQ ?>' });
+	new TabSwapper({tabsContainer: 'mediaTab<?php echo $UNIQ; ?>', sectionsContainer: 'mediaTabContent<?php echo $UNIQ; ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?php echo $UNIQ; ?>' });
 
 	
 	/**
@@ -480,12 +480,12 @@ if($type == 'picture')
 	 */
 	
 	<?php if ( ! is_null($pictureSize)) :?>
-	if (typeOf($('imageCropLink<?= $id_media ?>')) != 'null')
+	if (typeOf($('imageCropLink<?php echo $id_media; ?>')) != 'null')
 	{
-		$('imageCropLink<?= $id_media ?>').addEvent('click', function()
+		$('imageCropLink<?php echo $id_media; ?>').addEvent('click', function()
 		{
 			// Should be : 'maximizable': true, 
-			ION.dataWindow('ImageCrop<?= $id_media ?>', Lang.get('ionize_label_media_crop_picture'), 'media/get_crop/<?= $id_media ?>', {width:660, height:480, padding:0});
+			ION.dataWindow('ImageCrop<?php echo $id_media; ?>', Lang.get('ionize_label_media_crop_picture'), 'media/get_crop/<?php echo $id_media; ?>', {width:660, height:480, padding:0});
 		});
 	}
 	<?php endif ;?>

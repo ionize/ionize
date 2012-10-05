@@ -1,8 +1,10 @@
-
+<?php
+    log_message('error', 'View File Loaded : element_definitions.php');
+?>
 <div id="maincolumn">
 	
 	<!-- Existing elements -->
-	<h2 class="main elements"><?= lang('ionize_title_content_element_list') ?></h2>
+	<h2 class="main elements"><?php echo lang('ionize_title_content_element_list'); ?></h2>
 	
 	<ul id="elementContainer" class="sortable-container mt20"></ul>
 	

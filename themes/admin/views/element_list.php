@@ -5,6 +5,7 @@
  * Called by view : element_add (when the user clicks on the "Add Element" button)
  *
  */
+    log_message('error', 'View File Loaded : element_list.php');
 ?>
 
 <?php foreach($elements as $element) :?>
@@ -16,30 +17,30 @@
 	
 	?>
 
-	<li class="sortme element_definition" id="element_definition_<?= $id ?>" rel="<?= $id ?>">
+	<li class="sortme element_definition" id="element_definition_<?php echo $id; ?>" rel="<?php echo $id; ?>">
 
-		<a class="icon plus left" rel="<?=$id?>"></a>
-		<a class="left pl10 plus" rel="<?= $id ?>"><?= $title ?></a>
+		<a class="icon plus left" rel="<?php echo $id; ?>"></a>
+		<a class="left pl10 plus" rel="<?php echo $id; ?>"><?php echo $title; ?></a>
 	
-		<span class="toggler right" style="display:block;height:16px;" rel="<?= $id ?>">
-			<a class="left" rel="<?= $id ?>"><?= lang('ionize_label_see_element_detail') ?></a>
+		<span class="toggler right" style="display:block;height:16px;" rel="<?php echo $id; ?>">
+			<a class="left" rel="<?php echo $id; ?>"><?php echo lang('ionize_label_see_element_detail'); ?></a>
 		</span>
 	
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">
 			
-			<div class="pt5" id="add_def_<?= $id ?>">
+			<div class="pt5" id="add_def_<?php echo $id; ?>">
 				
-				<ul class="fields" id="fields<?= $id ?>" rel="<?= $id ?>">
+				<ul class="fields" id="fields<?php echo $id; ?>" rel="<?php echo $id; ?>">
 
 					<?php foreach($element['fields'] as $field) :?>
-						<li class="" rel="<?= $field['id_extend_field'] ?>">
-							<span class="lite right mr10" rel="<?= $field['id_extend_field'] ?>">
-								<?= $field['type_name'] ?>
+						<li class="" rel="<?php echo $field['id_extend_field']; ?>">
+							<span class="lite right mr10" rel="<?php echo $field['id_extend_field']; ?>">
+								<?php echo $field['type_name']; ?>
 								<?php if($field['translated'] == '1') :?>
-									 / <?= lang('ionize_label_multilingual') ?>
+									 / <?php echo lang('ionize_label_multilingual'); ?>
 								<?php endif ;?>
 							</span>
-							<span class="left ml10" rel="<?= $field['id_extend_field'] ?>"><?= $field['label'] ?></span>
+							<span class="left ml10" rel="<?php echo $field['id_extend_field']; ?>"><?php echo $field['label']; ?></span>
 						</li>
 					<?php endforeach ;?>
 				</ul>
@@ -66,7 +67,7 @@ $$('li.element_definition .plus').each(function(item)
 	{
 		var id = item.getProperty('rel');
 
-		ION.HTML('element_definition/get_element_detail', {'id_element_definition': id, 'parent': '<?= $parent?>', 'id_parent': '<?= $id_parent?>'}, {'update': 'elementAddContainer' });		
+		ION.HTML('element_definition/get_element_detail', {'id_element_definition': id, 'parent': '<?php echo $parent; ?>', 'id_parent': '<?php echo $id_parent; ?>'}, {'update': 'elementAddContainer' });
 	});
 });
 

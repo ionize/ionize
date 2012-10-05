@@ -5,6 +5,7 @@
  * Called through XHR by : /views/articles.php
  *
  */
+    log_message('error', 'View File Loaded : category_list.php');
 
 ?>
 
@@ -12,10 +13,10 @@
 
 <?php foreach($categories as $category) :?>
 
-	<li class="sortme category<?= $category['id_category'] ?>" id="category_<?= $category['id_category'] ?>" rel="<?= $category['id_category'] ?>">
-		<a class="icon delete right" rel="<?= $category['id_category'] ?>"></a>
+	<li class="sortme category<?php echo $category['id_category']; ?>" id="category_<?php echo $category['id_category']; ?>" rel="<?php echo $category['id_category']; ?>">
+		<a class="icon delete right" rel="<?php echo $category['id_category']; ?>"></a>
 		<span class="icon left drag mr5"></span>
-		<a class="left pl5 title" rel="<?= $category['id_category'] ?>"><?= $category['name'] ?></a>
+		<a class="left pl5 title" rel="<?php echo $category['id_category']; ?>"><?php echo $category['name']; ?></a>
 	</li>
 <?php endforeach ;?>
 

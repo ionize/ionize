@@ -6,6 +6,8 @@
  *
  */
 
+    log_message('error', 'View File Loaded : element_content_list.php');
+
 // trace($definition);
 
 $elements = $definition['elements'];
@@ -18,7 +20,7 @@ $width = (100 / $nbLang);
 
 ?>
 
-<ul id="elements<?= $id_def ?>" class="sortable-container">
+<ul id="elements<?php echo $id_def; ?>" class="sortable-container">
 
 <?php foreach($elements as $element) :?>
 
@@ -36,18 +38,18 @@ $width = (100 / $nbLang);
 	
 	?>
 
-	<li class="sortme element element<?= $id_element ?>" id="element<?= $id_element ?>" rel="<?= $id_element ?>">
+	<li class="sortme element element<?php echo $id_element; ?>" id="element<?php echo $id_element; ?>" rel="<?php echo $id_element; ?>">
 
-		<a class="icon delete right absolute mr10" rel="<?= $id_element ?>"></a>
-        <a class="icon edit right absolute mr30" rel="<?= $id_element ?>"></a>
+		<a class="icon delete right absolute mr10" rel="<?php echo $id_element; ?>"></a>
+        <a class="icon edit right absolute mr30" rel="<?php echo $id_element; ?>"></a>
 		<span class="icon left drag absolute"></span>
-		<div style="position:absolute;top:3px;left:40px;font-size:20px;color:#ddd;"><?= $element['ordering'] ?></div>
+		<div style="position:absolute;top:3px;left:40px;font-size:20px;color:#ddd;"><?php echo $element['ordering']; ?></div>
 
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">
 
 			<?php if(count($element['fields']) > 1) :?>
-			<span class="toggler right mr40" style="display:block;height:16px;" rel="<?= $id_element ?>">
-				<a class="left" rel="<?= $id_element ?>"><?= lang('ionize_label_see_element_detail') ?></a>
+			<span class="toggler right mr40" style="display:block;height:16px;" rel="<?php echo $id_element; ?>">
+				<a class="left" rel="<?php echo $id_element; ?>"><?php echo lang('ionize_label_see_element_detail'); ?></a>
 			</span>
 			<?php endif ;?>
 
@@ -60,7 +62,7 @@ $width = (100 / $nbLang);
 				 */
 				?>
 				<?php if ($i == 1) :?>
-					<div class="pt5" id="def_<?= $id_element ?>">
+					<div class="pt5" id="def_<?php echo $id_element; ?>">
 				<?php endif ;?>
 
 
@@ -74,7 +76,7 @@ $width = (100 / $nbLang);
 					
 					<dl class="small m0">
 						<dt class="lite">
-							<label title="<?= $field['description'] ?>"><?= $field['label'] ?></label>
+							<label title="<?php echo $field['description']; ?>"><?php echo $field['label']; ?></label>
 						</dt>
 						<dd class="pl30">
 							<?php
@@ -84,7 +86,7 @@ $width = (100 / $nbLang);
 							 */
 							?>
 							<?php if ($i == 0) :?>
-								<a class="title" rel="<?= $id_element ?>">
+								<a class="title" rel="<?php echo $id_element; ?>">
 							<?php endif ;?>
 
 							
@@ -93,7 +95,7 @@ $width = (100 / $nbLang);
 							?>
 						
 							<?php if ($field['type'] == '1' OR $field['type'] == '2' OR $field['type'] == '3') :?>
-								<?= substr($field['content'],0, 30) ?>
+								<?php echo substr($field['content'],0, 30); ?>
 							<?php endif ;?>
 							
 			
@@ -114,7 +116,7 @@ $width = (100 / $nbLang);
 			
 										?>
 											<?php if (in_array($key, $saved)) :?>
-												<?= $value ?>
+												<?php echo $value; ?>
 											<?php endif ;?>
 										<?php
 										$i++;
@@ -138,7 +140,7 @@ $width = (100 / $nbLang);
 			
 										?>
 											<?php if ($field['content'] == $key) :?>
-												<?= $value ?>
+												<?php echo $value; ?>
 											<?php endif ;?>
 											
 										<?php
@@ -163,7 +165,7 @@ $width = (100 / $nbLang);
 										$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 										?>
 										<?php if (in_array($key, $saved)) :?>
-											<?= $value ?>
+											<?php echo $value; ?>
 										<?php endif ;?>
 	
 										<?php
@@ -175,7 +177,7 @@ $width = (100 / $nbLang);
 							<!-- Date & Time -->
 							<?php if ($field['type'] == '7') :?>
 	
-								<?= humanize_mdate($field['content'], Settings::get('date_format'). ' %H:%i:%s') ?>
+								<?php echo humanize_mdate($field['content'], Settings::get('date_format'). ' %H:%i:%s'); ?>
 								
 							<?php endif ;?>
 							
@@ -199,7 +201,7 @@ $width = (100 / $nbLang);
 					<dl class="small m0">
 
 						<dt class="lite">
-							<label title="<?= $field['description'] ?>">
+							<label title="<?php echo $field['description']; ?>">
 								<?php
 								/*
 								 * Adds an edit link
@@ -207,10 +209,10 @@ $width = (100 / $nbLang);
 								 */
 								?>
 								<?php if ($i == 0) :?>
-									<a class="edit title " rel="<?= $id_element ?>">
+									<a class="edit title " rel="<?php echo $id_element; ?>">
 								<?php endif ;?>
 							
-								<?= $field['label'] ?>
+								<?php echo $field['label']; ?>
 								
 								<?php if ($i == 0) :?>
 									</a>
@@ -222,12 +224,12 @@ $width = (100 / $nbLang);
 
 						<?php foreach(Settings::get_languages() as $language) :?>
 						
-							<div class="left" style="width:<?= $width ?>%;overflow:hidden;">
+							<div class="left" style="width:<?php echo $width; ?>%;overflow:hidden;">
 						
 							<?php $lang = $language['lang']; ?>
 								
 								<div class="left w20">
-									<img class="mt3 mb3" src="<?=theme_url()?>images/world_flags/flag_<?=$lang?>.gif" />
+									<img class="mt3 mb3" src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang?>.gif" />
 								</div>
 								
 								<div class="ml30">
@@ -239,7 +241,7 @@ $width = (100 / $nbLang);
 									?>
 								
 									<?php if ($field['type'] == '1' OR $field['type'] == '2' OR $field['type'] == '3') :?>
-										<?= character_limiter($field[$lang]['content'], 30) ?>
+										<?php echo character_limiter($field[$lang]['content'], 30); ?>
 									<?php endif ;?>
 									
 					
@@ -260,7 +262,7 @@ $width = (100 / $nbLang);
 					
 												?>
 													<?php if (in_array($key, $saved)) :?>
-														<?= $value ?>
+														<?php echo $value; ?>
 													<?php endif ;?>
 												<?php
 												$i++;
@@ -284,7 +286,7 @@ $width = (100 / $nbLang);
 					
 												?>
 													<?php if ($field[$lang]['content'] == $key) :?>
-														<?= $value ?>
+														<?php echo $value; ?>
 													<?php endif ;?>
 													
 												<?php
@@ -309,7 +311,7 @@ $width = (100 / $nbLang);
 												$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 												?>
 												<?php if (in_array($key, $saved)) :?>
-													<?= $value ?>
+													<?php echo $value; ?>
 												<?php endif ;?>
 			
 												<?php
@@ -321,7 +323,7 @@ $width = (100 / $nbLang);
 									<!-- Date & Time -->
 									<?php if ($field['type'] == '7') :?>
 			
-										<?= humanize_mdate($field[$lang]['content'], Settings::get('date_format'). ' %H:%i:%s') ?>
+										<?php echo humanize_mdate($field[$lang]['content'], Settings::get('date_format'). ' %H:%i:%s'); ?>
 										
 									<?php endif ;?>
 								
@@ -371,25 +373,25 @@ $width = (100 / $nbLang);
 	 * itemManager
 	 *
 	 */
-	var elementsManager<?= $id_def ?> = new ION.ItemManager({
-		'container': 'elements<?= $id_def ?>', 
+	var elementsManager<?php echo $id_def; ?> = new ION.ItemManager({
+		'container': 'elements<?php echo $id_def; ?>', 
 		'element':'element', 
-		'parent_element': '<?= $parent ?>', 
-		'id_parent':'<?= $id_parent ?>',
+		'parent_element': '<?php echo $parent; ?>', 
+		'id_parent':'<?php echo $id_parent; ?>',
 		'sortable': true
 	});
 
 
 	// Add toggler to each definition
 	<?php if(count($element['fields']) > 1) :?>
-	$$('#elements<?= $id_def ?> li.element .toggler').each(function(el)
+	$$('#elements<?php echo $id_def; ?> li.element .toggler').each(function(el)
 	{
 		ION.initListToggler(el, $('def_' + el.getProperty('rel')));
 	});
 	<?php endif ;?>
 
 	// Edit on each element
-	$$('#elements<?= $id_def ?> li.element a.title, #elements<?= $id_def ?> li.element .edit').each(function(item)
+	$$('#elements<?php echo $id_def; ?> li.element a.title, #elements<?php echo $id_def; ?> li.element .edit').each(function(item)
 	{
 		item.addEvent('click', function(e)
 		{

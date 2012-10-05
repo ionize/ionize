@@ -4,32 +4,33 @@
  * Modal window for Type creation / edition
  *
  */
+    log_message('error', 'View File Loaded : article_type.php');
 ?>
 
-<form name="article_typeForm<?= $id_type ?>" id="article_typeForm<?= $id_type ?>" action="<?= admin_url() ?>article_type/save">
+<form name="article_typeForm<?php echo $id_type; ?>" id="article_typeForm<?php echo $id_type; ?>" action="<?php echo admin_url(); ?>article_type/save">
 
 	<!-- Hidden fields -->
-	<input id="id_type" name="id_type" type="hidden" value="<?= $id_type ?>" />
-	<input id="parent" name="parent" type="hidden" value="<?= $parent ?>" />
-	<input id="id_parent" name="id_parent" type="hidden" value="<?= $id_parent ?>" />
+	<input id="id_type" name="id_type" type="hidden" value="<?php echo $id_type; ?>" />
+	<input id="parent" name="parent" type="hidden" value="<?php echo $parent; ?>" />
+	<input id="id_parent" name="id_parent" type="hidden" value="<?php echo $id_parent; ?>" />
 
 	<!-- Name -->
 	<dl class="small">
 		<dt>
-			<label for="type"><?=lang('ionize_label_type')?></label>
+			<label for="type"><?php echo lang('ionize_label_type'); ?></label>
 		</dt>
 		<dd>
-			<input id="type" name="type" class="inputtext required" type="text" value="<?= $type ?>" />
+			<input id="type" name="type" class="inputtext required" type="text" value="<?php echo $type; ?>" />
 		</dd>
 	</dl>
 	
 	<!-- Flag -->
 	<dl class="small">
 		<dt>
-			<label for="flag0<?= $UNIQ ?>" title="<?= lang('ionize_help_flag') ?>"><?= lang('ionize_label_flag') ?></label>
+			<label for="flag0<?php echo $UNIQ; ?>" title="<?php echo lang('ionize_help_flag'); ?>"><?php echo lang('ionize_label_flag'); ?></label>
 		</dt>
 			<dd>
-				<label class="flag flag0"><input id="flag0<?= $UNIQ ?>" name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 0):?> checked="checked" <?php endif;?> value="0" /></label>
+				<label class="flag flag0"><input id="flag0<?php echo $UNIQ; ?>" name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 0):?> checked="checked" <?php endif;?> value="0" /></label>
 				<label class="flag flag1"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 1):?> checked="checked" <?php endif;?> value="1" /></label>
 				<label class="flag flag2"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 2):?> checked="checked" <?php endif;?> value="2" /></label>
 				<label class="flag flag3"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 3):?> checked="checked" <?php endif;?> value="3" /></label>
@@ -43,10 +44,10 @@
 	<!-- Description -->
 	<dl class="small">
 		<dt>
-			<label for="description<?= $UNIQ ?>"><?=lang('ionize_label_description')?></label>
+			<label for="description<?php echo $UNIQ; ?>"><?php echo lang('ionize_label_description'); ?></label>
 		</dt>
 		<dd>
-			<textarea id="description<?= $UNIQ ?>" name="description" class="tinyType<?= $UNIQ ?> w240 h120"><?= $description ?></textarea>
+			<textarea id="description<?php echo $UNIQ; ?>" name="description" class="tinyType<?php echo $UNIQ; ?> w240 h120"><?php echo $description; ?></textarea>
 		</dd>
 	</dl>
 	
@@ -58,15 +59,15 @@
 	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
-	<button id="bSavearticle_type<?= $id_type ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_save_close') ?></button>
-	<button id="bCancelarticle_type<?= $id_type ?>"  type="button" class="button no right"><?= lang('ionize_button_cancel') ?></button>
+	<button id="bSavearticle_type<?php echo $id_type; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bCancelarticle_type<?php echo $id_type; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
 <script type="text/javascript">
 
-	ION.windowResize('article_type<?= $id_type ?>', {width:450, height:230});
+	ION.windowResize('article_type<?php echo $id_type; ?>', {width:450, height:230});
 
-	tinyMCE.init(ION.tinyMceSettings('tinyType<?= $UNIQ ?>', 240, 120, 'small'));
+	tinyMCE.init(ION.tinyMceSettings('tinyType<?php echo $UNIQ; ?>', 240, 120, 'small'));
 
 
 </script>

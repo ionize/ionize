@@ -1,8 +1,10 @@
+<?php
+    log_message('error', 'View File Loaded : help.php');
+?>
+<h2 class="main help mb20"><?php echo html_entity_decode($title); ?></h2>
 
-<h2 class="main help mb20"><?= html_entity_decode($title); ?></h2>
 
-
-<?php foreach($data as $d) :?>
+<?php foreach($data as $d): ?>
 
 	<?php
 		$title = '';
@@ -18,22 +20,22 @@
 		}
 	?>
 
-	<h2 class="mb0"><?= $title ?></h2>
+	<h2 class="mb0"><?php echo $title; ?></h2>
 
-	<p><?= $d['description'] ?></p>
+	<p><?php echo $d['description']; ?></p>
 
 <?php endforeach ;?>
 
 <div class="buttons">
-	<button id="bClose<?= $UNIQ ?>" type="button" class="button yes right mr40"><?= lang('ionize_button_ok') ?></button>
+	<button id="bClose<?php echo $UNIQ; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_ok'); ?></button>
 </div>
 
 <script type="text/javascript">
 
 	// Event on btn No : Simply close the window
-	$('bClose<?= $UNIQ ?>').addEvent('click', function() 
+	$('bClose<?php echo $UNIQ; ?>').addEvent('click', function()
 	{
-		ION.closeWindow($('w<?= $table ?>Help'));
+		ION.closeWindow($('w<?php echo $table; ?>Help'));
 	}.bind(this));
 
 </script>

@@ -4,7 +4,8 @@
  * Media list
  *
  */
-// trace($items);
+    log_message('error', 'View File Loaded : media_list.php');
+//    log_message('error', print_r($items, TRUE));
 ?>
 
 <?php if ( !empty($items)) :?>

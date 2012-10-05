@@ -1,12 +1,14 @@
-
+<?php
+    log_message('error', 'View File Loaded : translation.php');
+?>
 <div id="maincolumn">
 
-	<h2 class="main languages" id="main-title"><?= lang('ionize_title_translation') ?></h2>
+	<h2 class="main languages" id="main-title"><?php echo lang('ionize_title_translation'); ?></h2>
 	
 	<div class="subtitle">
 		<form>
 			<div class="w400 relative">
-				<label class="left"><?= lang('ionize_label_article_filter') ?></label>
+				<label class="left"><?php echo lang('ionize_label_article_filter'); ?></label>
 				<input id="search_translation" type="text" class="inputtext w300 left"></input>
 				<a id="cleanFilter" class="icon clearfield left ml5"></a>
 				<div class="clear"></div>
@@ -20,8 +22,8 @@
 	<!-- Tabs -->
 	<div id="translationsTab" class="mainTabs clear mt20">
 		<ul class="tab-menu">
-			<li id="theme_translations"><a><?= lang('ionize_tab_current_theme') ?></a></li>
-			<li id="modules_translations"><a><?= lang('ionize_tab_modules') ?></a></li>
+			<li id="theme_translations"><a><?php echo lang('ionize_tab_current_theme'); ?></a></li>
+			<li id="modules_translations"><a><?php echo lang('ionize_tab_modules'); ?></a></li>
 		</ul>
 		<div class="clear"></div>
 	</div>
@@ -33,13 +35,13 @@
 
 			<form name="themeTranslationForm" id="themeTranslationForm" method="post" action="">
 
-				<input type="hidden" name="file_name" value="<?= Settings::get('theme') ?>"></input>
+				<input type="hidden" name="file_name" value="<?php echo Settings::get('theme'); ?>"></input>
 
 				<!-- Buttons -->
-				<input id="themeTranslationFormSubmit" type="button" class="submit right ml5" value="<?= lang('ionize_button_save') ?>" />
-				<a class="button light btnExpand right ml5" rel="themeTogglers"><?= lang('ionize_label_expand_all') ?></a>
+				<input id="themeTranslationFormSubmit" type="button" class="submit right ml5" value="<?php echo lang('ionize_button_save'); ?>" />
+				<a class="button light btnExpand right ml5" rel="themeTogglers"><?php echo lang('ionize_label_expand_all'); ?></a>
 				<a class="button light right ml5" id="btnAddTranslation">
-					<i class="icon-plus"></i><?= lang('ionize_label_add_translation') ?>
+					<i class="icon-plus"></i><?php echo lang('ionize_label_add_translation'); ?>
 				</a>
 
 				<fieldset id="blocks" class="clear">
@@ -64,19 +66,19 @@
 							<ul class="term">
 							
 								<li>
-									<span class="toggler left" style="display:block;height:16px;" rel="<?= $el_id ?>"></span><input type="text" class="left inputtext w300 transinput" id="key_<?= $el_id ?>" name="key_<?= $el_id ?>" value="<?= $term ?>"></input>
-									<a class="left icon delete ml5" rel="<?= $el_id ?>"></a>
+									<span class="toggler left" style="display:block;height:16px;" rel="<?php echo $el_id; ?>"></span><input type="text" class="left inputtext w300 transinput" id="key_<?php echo $el_id; ?>" name="key_<?php echo $el_id; ?>" value="<?php echo $term; ?>"></input>
+									<a class="left icon delete ml5" rel="<?php echo $el_id; ?>"></a>
 								</li>
 								
-								<div class="translation pl5" id="el_<?= $el_id ?>">
+								<div class="translation pl5" id="el_<?php echo $el_id; ?>">
 								
 									<?php foreach(Settings::get_languages() as $language) :?>
 								
 										<?php $lang = $language['lang']; ?>
 										
-										<div style="float:left;width:<?=$width?>%;margin-right:2%;">
-											<label for="<?=$lang?>_<?= $el_id ?>"><?=$language['name']?></label>
-											<textarea name="value_<?=$lang?>_<?= $el_id ?>" id="<?=$lang?>_<?= $el_id ?>" class="transtext h60 ml5" style="width:100%;"><?= $theme_translations[$lang][$term] ?></textarea>
+										<div style="float:left;width:<?php echo $width?>%;margin-right:2%;">
+											<label for="<?php echo $lang; ?>_<?php echo $el_id; ?>"><?php echo $language['name']; ?></label>
+											<textarea name="value_<?php echo $lang; ?>_<?php echo $el_id; ?>" id="<?php echo $lang; ?>_<?php echo $el_id; ?>" class="transtext h60 ml5" style="width:100%;"><?php echo $theme_translations[$lang][$term]; ?></textarea>
 										</div>
 										
 									<?php endforeach ;?>
@@ -84,7 +86,7 @@
 									<p class="pl5 lite small clear">
 										<?php if( ! empty($theme_terms['views'][$term]) ) :?>
 										
-											<?= $theme_terms['views'][$term] ?>
+											<?php echo $theme_terms['views'][$term]; ?>
 										
 										<?php endif ;?>
 									
@@ -105,9 +107,9 @@
 				<div class="translation ml15 model">
 					<?php foreach(Settings::get_languages() as $language) :?>
 						<?php $lang = $language['lang']; ?>
-						<div style="float:left;width:<?=$width?>%;margin-right:2%">
-							<label for="<?=$lang?>_"><?=$language['name']?></label>
-							<textarea name="value_<?=$lang?>_" class="h60 ml5" style="width:100%;"></textarea>
+						<div style="float:left;width:<?php echo $width?>%;margin-right:2%">
+							<label for="<?php echo $lang?>_"><?php echo $language['name']?></label>
+							<textarea name="value_<?php echo $lang?>_" class="h60 ml5" style="width:100%;"></textarea>
 						</div>
 					<?php endforeach ;?>
 					<p class="clear"></p>
@@ -123,33 +125,33 @@
 				$width = (100 / $nbLang) - 3;
 			?>
 			
-			<p class="mb20"><?= lang('ionize_help_modules_translation') ?></p>
+			<p class="mb20"><?php echo lang('ionize_help_modules_translation'); ?></p>
 
 			<?php foreach($module_translations as $module => $terms) :?>
 				
-				<h3><?= $module ?></h3>
+				<h3><?php echo $module; ?></h3>
 				
-				<form name="<?= $module ?>TranslationForm" id="<?= $module ?>TranslationForm" method="post">
+				<form name="<?php echo $module; ?>TranslationForm" id="<?php echo $module; ?>TranslationForm" method="post">
 					
-					<input type="hidden" name="file_name" value="module_<?= $module ?>"></input>
+					<input type="hidden" name="file_name" value="module_<?php echo $module; ?>"></input>
 					
 					<!-- Save button -->
 					<div class="toolbox nobr">
-						<input id="<?= $module ?>TranslationFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save') ?>" />
+						<input id="<?php echo $module; ?>TranslationFormSubmit" type="button" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
 					</div>
 					
 					<!-- Expand button -->
-					<a class="button light btnExpand right" rel="<?= $module ?>Togglers">
-						<i class="icon-expand"></i><?= lang('ionize_label_expand_all') ?>
+					<a class="button light btnExpand right" rel="<?php echo $module; ?>Togglers">
+						<i class="icon-expand"></i><?php echo lang('ionize_label_expand_all'); ?>
 					</a>
 
 					<p>
-						<?= lang('ionize_text_module_translation_file_exist_for') ?> : <strong><?= implode(', ', $module_translation_files[($module)]) ?></strong>
+						<?php echo lang('ionize_text_module_translation_file_exist_for'); ?> : <strong><?php echo implode(', ', $module_translation_files[($module)]); ?></strong>
 					</p>
 
 					<fieldset class="clear mb20">
 					
-						<div id="<?= $module ?>Togglers" class="togglers">
+						<div id="<?php echo $module; ?>Togglers" class="togglers">
 			
 			
 							<?php foreach($terms as $term => $values) :?>
@@ -160,22 +162,22 @@
 								
 								<ul class="term clear">
 								
-									<li class="toggler" rel="<?= $el_id ?>">
+									<li class="toggler" rel="<?php echo $el_id; ?>">
 										<span class="left" style="display:block;height:16px;"></span>
-										<span class="left"><i class="lite transtext"><?= $term ?></i></span>
-										<input type="hidden" id="key_<?= $el_id ?>" name="key_<?= $el_id ?>" value="<?= $term ?>"></input>
+										<span class="left"><i class="lite transtext"><?php echo $term; ?></i></span>
+										<input type="hidden" id="key_<?php echo $el_id; ?>" name="key_<?php echo $el_id; ?>" value="<?php echo $term; ?>"></input>
 									</li>
 									
-									<div class="translation pl5 clear" id="el_<?= $el_id ?>">
+									<div class="translation pl5 clear" id="el_<?php echo $el_id; ?>">
 									
 										<?php foreach(Settings::get_languages() as $language) :?>
 									
 											<?php $lang = $language['lang']; ?>
 											
-											<div style="float:left;width:<?=$width?>%;margin-right:2%;">
-												<label class="m0" for="<?=$lang?>_<?= $el_id ?>"><?=$language['name']?></label>
-												<textarea name="value_<?=$lang?>_<?= $el_id ?>" id="<?=$lang?>_<?= $el_id ?>" class="transtext h60" style="width:100%;"><?= $values[$lang]['theme'] ?></textarea>
-												<i class="lite transtext"><?= $values[$lang]['default'] ?></i>
+											<div style="float:left;width:<?php echo $width?>%;margin-right:2%;">
+												<label class="m0" for="<?php echo $lang?>_<?php echo $el_id; ?>"><?php echo $language['name']?></label>
+												<textarea name="value_<?php echo $lang?>_<?php echo $el_id; ?>" id="<?php echo $lang?>_<?php echo $el_id; ?>" class="transtext h60" style="width:100%;"><?php echo $values[$lang]['theme']; ?></textarea>
+												<i class="lite transtext"><?php echo $values[$lang]['default']; ?></i>
 											</div>
 											
 										<?php endforeach ;?>
@@ -183,7 +185,7 @@
 										<p class="pl5 lite small clear">
 											<?php if( ! empty($theme_terms['views'][$term]) ) :?>
 											
-												<?= $theme_terms['views'][$term] ?>
+												<?php echo $theme_terms['views'][$term]; ?>
 											
 											<?php endif ;?>
 										</p>
@@ -201,7 +203,7 @@
 				
 				<script type="text/javascript">
 
-					ION.setFormSubmit('<?= $module ?>TranslationForm', '<?= $module ?>TranslationFormSubmit', 'translation/save');
+					ION.setFormSubmit('<?php echo $module; ?>TranslationForm', '<?php echo $module; ?>TranslationFormSubmit', 'translation/save');
 
 				</script>
 				
