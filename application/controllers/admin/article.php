@@ -867,7 +867,7 @@ class Article extends MY_admin
 				$original_context['online'] = '0';
 				$original_context['main_parent'] = '0';
 			}
-				
+
 			// Ordering : last position
 			$original_context['ordering'] = $this->_get_ordering('last', $id_page);
 
@@ -968,6 +968,9 @@ class Article extends MY_admin
 					// Article moved ?
 					if ($copy == FALSE && $id_page_origin != FALSE)
 					{
+						// Check and correct content of other articles if they refers to this one from their content
+						$this->article_model->correct_internal_links($id_article, $id_page_origin, $id_page);
+
 						// Unlink from first parent : Corrects also the main parent
 						$affected_rows = $this->article_model->unlink($id_article, $id_page_origin);
 						

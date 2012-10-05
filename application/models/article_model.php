@@ -584,7 +584,7 @@ class Article_model extends Base_model
 		
 		$nb = 0;
 		
-		// Article main context 
+		// Article main context
 		$context = $this->get_main_context($id_article);
 
 		if ( ! empty($context))
@@ -767,7 +767,40 @@ class Article_model extends Base_model
 
 	// ------------------------------------------------------------------------
 
-	
+
+	public function correct_internal_links($id_article, $id_old_page, $id_page)
+	{
+		$articles = array();
+		$old_link_code = '{{article:'.$id_old_page.'.'.$id_article.'}}';
+		$new_link_code = '{{article:'.$id_page.'.'.$id_article.'}}';
+
+		$this->{$this->db_group}->where('content like \'%' . $old_link_code . '%\'');
+		$query = $this->{$this->db_group}->get($this->lang_table);
+
+		if ($query->num_rows() > 0)
+		{
+			$articles = $query->result_array();
+
+			foreach($articles as $article)
+			{
+				$content = $article['content'];
+
+				$content = str_replace($old_link_code, $new_link_code, $content);
+				$this->{$this->db_group}->where(
+					array(
+						'id_article' => $article['id_article'],
+						'lang' => $article['lang']
+					)
+				);
+				$this->{$this->db_group}->update($this->lang_table, array('content'=>$content));
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Updates all other articles / pages links when saving one article
 	 *

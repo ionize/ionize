@@ -203,6 +203,7 @@ class Url_model extends Base_model
 		return array();
 	}
 
+
 	public function get_entity_urls($type='page', $id_entity = NULL)
 	{
 		$urls = array();
@@ -221,8 +222,13 @@ class Url_model extends Base_model
 		return $urls;
 	}
 
+
 	/**
+	 * Get one URL from the last part(s) of one path
+	 * Ex : 20/30 : Check usually for article
+	 * 		35 : 	Check usually for page
 	 *
+	 * @param string	Type : 'article', 'page', ...
 	 * @param string	Pseudo path : xx/yy
 	 * @param string	Lang code
 	 *
@@ -253,6 +259,79 @@ class Url_model extends Base_model
 		return $url;
 	}
 
+
+	/**
+	 * Parses the passed string and replace internal links by their URL.
+	 *
+	 * @param $string
+	 *
+	 * @return string
+	 *
+	 */
+	public function parse_internal_links($string)
+	{
+		self::$ci->load->model('page_model', '', TRUE);
+
+		$short_url_mode = config_item('url_mode') == 'short' ? TRUE : FALSE;
+
+		$current = array();
+
+		while(preg_match('%([\w\W]*?){{([\w.:]*)}}([\w\W]*)%', $string, $matches))
+		{
+			list(,$pre_match, $entity, $string) = $matches;
+			$current[] = $pre_match;
+
+			$entity = explode(':', $entity);
+			if ( empty($entity)) continue;
+
+			$type = $entity[0];
+			$ref = ! empty($entity[1]) ? explode('.', $entity[1]) : NULL;
+			if (is_null($ref) OR empty($ref)) continue;
+
+			$id_article = NULL;
+			if ($type == 'article' && isset($ref[1]))
+				$id_article = $ref[1];
+
+			$id_page = $ref[0];
+
+			$path = ( ! is_null($id_article)) ? $id_page . '/' . $id_article : $id_page;
+			$url = $this->get_entity_url_from_path($type, $path, Settings::get_lang());
+
+			if (empty($url['path'])) continue;
+
+			$url = $url['path'];
+
+			if ($id_article && $short_url_mode)
+			{
+				$url = explode('/', $url);
+				$url = array_slice($url, count($url)-2);
+				$url = implode('/', $url);
+			}
+
+			// $page = TagManager_Page::get_page_by_id($id_page);
+			$page = self::$ci->page_model->get_by_id($id_page);
+
+			if ($page['home'] == 1)
+				$base_url = $this->get_home_url();
+			else
+				$base_url = $this->get_base_url();
+
+			$url = $base_url .$url;
+
+			$current[] = $url;
+		}
+
+		$current[] = $string;
+		$string = implode('', $current);
+
+		return $string;
+	}
+
+
+	public function replace_internal_links($string, $old_link, $new_link)
+	{
+
+	}
 
 
 	/**
@@ -406,6 +485,56 @@ class Url_model extends Base_model
 
 		return $url;
 	}
-	
+
+
+
+	/**
+	 * Returns the Base URL
+	 *
+	 * @return string
+	 *
+	 */
+	public function get_base_url()
+	{
+		if( Connect()->is('editors', TRUE))
+		{
+			Settings::set_all_languages_online();
+		}
+
+		if (count(Settings::get_online_languages()) > 1 )
+		{
+			return base_url() . Settings::get_lang() .'/';
+		}
+
+		return base_url();
+	}
+
+
+	/**
+	 * Returns the Home URL
+	 *
+	 * @return string
+	 *
+	 */
+	public static function get_home_url()
+	{
+		// Set all languages online if connected as editor or more
+		if( Connect()->is('editors', TRUE))
+		{
+			Settings::set_all_languages_online();
+		}
+
+		if (count(Settings::get_online_languages()) > 1 )
+		{
+			// if the current lang is the default one : don't return the lang code
+			if (Settings::get_lang() != Settings::get_lang('default'))
+			{
+				return base_url() . Settings::get_lang() .'/';
+			}
+		}
+
+		return base_url();
+	}
+
 }
 

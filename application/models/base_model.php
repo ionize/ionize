@@ -33,6 +33,9 @@ class Base_model extends CI_Model
 	
 	public $db_group = 'default';
 
+
+	public static $ci = NULL;
+
 	/*
 	 * Table name
 	 *
@@ -180,6 +183,8 @@ class Base_model extends CI_Model
 			return;
 		}
 		self::$_inited = TRUE;
+
+		self::$ci =& get_instance();
 
 // Doesn't work with multiple DB
 //		$CI =& get_instance();

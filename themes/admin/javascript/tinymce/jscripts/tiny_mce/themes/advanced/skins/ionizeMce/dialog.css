@@ -69,6 +69,7 @@ a.ionizebrowse span {display:block; width:20px; height:18px; background:url(../.
 a.ionizebrowse:hover span {border:1px solid #0A246A; background-color:#B2BBD0;}
 a.ionizebrowse span.disabled {border:1px solid white; opacity:0.3; -ms-filter:'alpha(opacity=30)'; filter:alpha(opacity=30)}
 a.ionizebrowse:hover span.disabled {border:1px solid white; background-color:transparent;}
+span.error{color:#b00;}
 
 /* Charmap */
 table.charmap {border:1px solid #AAA; text-align:center}

@@ -1157,55 +1157,7 @@ class TagManager
 			$tag->set($tag->name, $value);
 		}
 
-		$current = array();
-		$short_url_mode = config_item('url_mode') == 'short' ? TRUE : FALSE;
-
-		while(preg_match('%([\w\W]*?){{([\w.:]*)}}([\w\W]*)%', $value, $matches))
-		{
-			list(,$pre_match, $entity, $value) = $matches;
-			$current[] = $pre_match;
-
-			$entity = explode(':', $entity);
-			if ( empty($entity)) continue;
-
-			$type = $entity[0];
-			$ref = ! empty($entity[1]) ? explode('.', $entity[1]) : NULL;
-			if (is_null($ref) OR empty($ref)) continue;
-
-			$id_article = NULL;
-			if ($type == 'article' && isset($ref[1]))
-				$id_article = $ref[1];
-
-			$id_page = $ref[0];
-
-			$path = ( ! is_null($id_article)) ? $id_page . '/' . $id_article : $id_page;
-			$url = self::$ci->url_model->get_entity_url_from_path($type, $path, Settings::get_lang());
-
-			if (empty($url['path'])) continue;
-
-			$url = $url['path'];
-
-			if ($id_article && $short_url_mode)
-			{
-				$url = explode('/', $url);
-				$url = array_slice($url, count($url)-2);
-				$url = implode('/', $url);
-			}
-
-			$page = TagManager_Page::get_page_by_id($id_page);
-
-			if ($page['home'] == 1)
-				$base_url = self::get_home_url();
-			else
-				$base_url = self::get_base_url();
-
-			$url = $base_url .$url;
-
-			$current[] = $url;
-		}
-
-		$current[] = $value;
-		$value = implode('', $current);
+		$value = self::$ci->url_model->parse_internal_links($value);
 
 		return self::output_value($tag, $value);
 	}
@@ -2260,6 +2212,9 @@ class TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	public static function get_base_url()
 	{
 		if( Connect()->is('editors', TRUE))
@@ -2274,6 +2229,7 @@ class TagManager
 
 		return base_url();
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -2955,7 +2911,10 @@ class TagManager
 	 */
 	protected static function load_model($model_name, $new_name='')
 	{
-		if (!isset(self::$ci->{$new_name})) self::$ci->load->model($model_name, $new_name, TRUE);
+		$found = Finder::find_file($model_name, 'models');
+		if ( ! empty($found))
+			self::$ci->load->model($model_name, $new_name, TRUE);
+			// if (!isset(self::$ci->{$new_name})) self::$ci->load->model($model_name, $new_name, TRUE);
 	}
 }
 

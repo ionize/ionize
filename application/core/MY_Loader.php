@@ -119,11 +119,11 @@ class MY_Loader extends CI_Loader{
 	{
 		$CI =& get_instance();
 
-// Why show the user a message ? Simply do nothing should be more appropriate.
+		// Why show the user a message ? Simply do nothing should be more appropriate.
 		if(isset($CI->$name))
 		{
 			return;
-//			show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
+			// show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
 		}
 
 		if (is_array($model))

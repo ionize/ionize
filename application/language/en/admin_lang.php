@@ -1049,6 +1049,7 @@ $lang['ionize_help_modules_translation'] = 'Available static translations for mo
 $lang['ionize_image_manager'] = 'Pictures';
 $lang['ionize_file_manager'] = 'Files';
 $lang['ionize_title_tree_browser'] = 'Click on one element to select it...';
+$lang['ionize_message_internal_link_not_found'] = 'Error : Internal link not found';
 
 
 /*

@@ -323,12 +323,19 @@ ION.append({
 			{
 				onSuccess:function(responseJSON, responseText)
 				{
-					var breadcrumb = responseJSON.page.title;
+					if(typeOf(responseJSON.page) != 'null')
+					{
+						var breadcrumb = responseJSON.page.title;
 
-					if (typeOf(responseJSON.article) != 'null')
-						breadcrumb = breadcrumb + ' > ' + responseJSON.article.title;
+						if (typeOf(responseJSON.article) != 'null')
+							breadcrumb = breadcrumb + ' > ' + responseJSON.article.title;
 
-					v.func(breadcrumb);
+						v.func(breadcrumb);
+					}
+					else
+					{
+						v.func('<span class="error">' + Lang.get('ionize_message_internal_link_not_found') + '</span>');
+					}
 				}
 			}
 		);
