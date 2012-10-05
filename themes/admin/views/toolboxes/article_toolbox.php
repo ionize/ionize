@@ -55,6 +55,7 @@
 		$('tArticleDuplicateButton').hide();
 		$('tArticleAddContentElement').hide();
 		$('tArticleMediaButton').hide();
+        $('sideColumnSwitcher').hide();
 	}
 	else
 	{

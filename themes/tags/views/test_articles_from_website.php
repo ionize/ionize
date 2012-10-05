@@ -18,7 +18,7 @@
 </pre>
 
 <h3>Result</h3>
-<ion:articles filter="menu.name='main' and indexed=1" order-by="date DESC" limit="3">
+<ion:articles filter="menu.name='main' and indexed=1" order_by="date DESC" limit="3">
 	<ion:article>
 		<ion:title tag="h3" />
 		<ion:content paragraph="1" />
