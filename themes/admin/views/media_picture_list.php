@@ -48,7 +48,7 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 			<a class="icon process left mr5 help" href="javascript:mediaManager.initThumbs('<?php echo $media['id_media']; ?>');" title="<?php echo lang('ionize_label_init_thumb'); ?>"></a>
 			<a class="icon info left help" title="<?php if ($this->connect->is('super-admins') ) :?><?php echo $media['id_media']; ?> : <?php endif ;?><?php echo $path; ?>" rel="<?php echo $details; ?>"></a>
 			<?php if( ! empty($media['lang_display'])) :?>
-				<a class="icon left ml5 help"  title="<?php echolang('ionize_label_media_display_limited_to_lang'); ?> : <?php echo $media['lang_display']; ?>" href="<?php echo $edit_href; ?>"><img alt="<?php echo lang('ionize_label_media_display_limited_to_lang'); ?> : <?php echo $media['lang_display']; ?>" src="<?php echo theme_url(); ?>/images/world_flags/flag_<?php echo $media['lang_display']; ?>.gif" /></a>
+				<a class="icon left ml5 help"  title="<?php echo lang('ionize_label_media_display_limited_to_lang'); ?> : <?php echo $media['lang_display']; ?>" href="<?php echo $edit_href; ?>"><img alt="<?php echo lang('ionize_label_media_display_limited_to_lang'); ?> : <?php echo $media['lang_display']; ?>" src="<?php echo theme_url(); ?>/images/world_flags/flag_<?php echo $media['lang_display']; ?>.gif" /></a>
 			<?php endif ;?>
 		</p>
 	</div>

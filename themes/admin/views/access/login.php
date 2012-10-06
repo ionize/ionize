@@ -80,7 +80,7 @@
 		
 		
 				<div>
-					<label for="username"><?php echolang('ionize_login_name'); ?></label>
+					<label for="username"><?php echo lang('ionize_login_name'); ?></label>
 					<?php echo form_input(array('name' 		=> 'username',
 										'id' 		=> 'username',
 										'value' 	=> set_value('username'),
@@ -88,7 +88,7 @@
 				</div>
 		
 				<div>
-					<label for="password"><?php echolang('ionize_login_password'); ?></label>
+					<label for="password"><?php echo lang('ionize_login_password'); ?></label>
 					<?php echo form_password(array(	'name' 		=> 'password',
 											'id' 		=> 'password',
 											'value' 	=> set_value('password'),
