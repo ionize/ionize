@@ -61,7 +61,7 @@ class Extend_field_model extends Base_model
 			$this->db->select($this->lang_table . '.label');
 			$this->db->from($this->table);
 			$this->db->join($this->lang_table, $this->table . '.' . $this->pk_name . ' = ' . $this->lang_table . '.' . $this->pk_name, 'inner');
-			$this->db->where($this->lang_table . '.lang', Settings::get_lang());
+			$this->db->where($this->lang_table . '.lang', Settings::get_lang('default'));
 			$this->db->where($this->table . '.' . $this->pk_name, $id_extend_field);
 			
 			$label = $this->db->get();
