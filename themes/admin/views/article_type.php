@@ -4,7 +4,7 @@
  * Modal window for Type creation / edition
  *
  */
-    log_message('error', 'View File Loaded : article_type.php');
+
 ?>
 
 <form name="article_typeForm<?php echo $id_type; ?>" id="article_typeForm<?php echo $id_type; ?>" action="<?php echo admin_url(); ?>article_type/save">

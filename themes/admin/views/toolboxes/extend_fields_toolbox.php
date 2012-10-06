@@ -1,6 +1,6 @@
 
 <div class="toolbox divider">
-	<input type="button" class="toolbar-button plus extends" id="addextendfield" value="<?= lang('ionize_title_extend_field_new') ?>" />
+	<input type="button" class="toolbar-button plus extends" id="addextendfield" value="<?php echo lang('ionize_title_extend_field_new'); ?>" />
 </div>
 
 

@@ -4,7 +4,7 @@
  * Displays out all the extends fields
  *
  */
-    log_message('error', 'View File Loaded : extend_fields.php');
+
 ?>
 
 

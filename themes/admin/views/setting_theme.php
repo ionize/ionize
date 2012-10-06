@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : setting_theme.php');
-?>
+
 <!-- Main Column -->
 <div id="maincolumn">
 

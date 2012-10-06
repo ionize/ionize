@@ -1,6 +1,5 @@
 <?php
 
-    log_message('error', 'View File Loaded : element_definition.php');
     $id = $id_element_definition;
 
 ?>
@@ -89,7 +88,7 @@
 				<!-- Add Field button -->
 				<?php if ($id != 0) :?>
 					<a class="light button mb5 ml5 add_field" rel="<?php echo $id; ?>">
-						<i class="icon-plus"></i><?php echo lang('ionize_label_element_add_field');; ?>
+						<i class="icon-plus"></i><?php echo lang('ionize_label_element_add_field'); ?>
 					</a>
 				<?php endif ;?>
 				

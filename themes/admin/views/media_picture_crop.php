@@ -4,7 +4,6 @@
  * Modal window for Picture Crop
  *
  */
-    log_message('error', 'View File Loaded : media_picture_crop.php');
 $minSize = (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb_size') : 120;
 ?>
 

@@ -4,7 +4,6 @@
  * View used by extend_field controller to display again the extend fields table after an ADD / DELETE of one extend field
  *
  */
-    log_message('error', 'View File Loaded : extend_fields_table.php');
 
 ?>
 

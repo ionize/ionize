@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : sitemap.php');
-?>
+
 <!-- Main Column -->
 <div id="maincolumn">
 

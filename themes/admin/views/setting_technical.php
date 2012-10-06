@@ -1,10 +1,8 @@
-<?php
-    log_message('error', 'View File Loaded : setting_technical.php');
-?>
+
 <!-- Main Column -->
 <div id="maincolumn">
 
-	<h2 class="main settings" id="main-title"><?= lang('ionize_title_technical_settings'); ?></h2>
+	<h2 class="main settings" id="main-title"><?php echo lang('ionize_title_technical_settings'); ?></h2>
 	
 	<!-- Subtitle -->
 	<div class="subtitle">

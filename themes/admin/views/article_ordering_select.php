@@ -5,7 +5,7 @@
  * When the article parent is changed, the article "ordering after" select dropdown is reloaded
  *
  */
-    log_message('error', 'View File Loaded : article_ordering_select.php');
+
 ?>
 
 

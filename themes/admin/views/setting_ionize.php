@@ -1,6 +1,3 @@
-<?php
-    log_message('error', 'View File Loaded : setting_ionize.php');
-?>
 
 <!-- Main Column -->
 <div id="maincolumn">

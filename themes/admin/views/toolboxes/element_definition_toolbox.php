@@ -1,6 +1,6 @@
 
 <div class="toolbox divider">
-	<input type="button" class="toolbar-button plus" id="addElementButton" value="<?= lang('ionize_label_create_element') ?>" />
+	<input type="button" class="toolbar-button plus" id="addElementButton" value="<?php echo lang('ionize_label_create_element'); ?>" />
 </div>
 
 <script type="text/javascript">

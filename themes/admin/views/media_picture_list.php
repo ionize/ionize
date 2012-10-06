@@ -6,8 +6,6 @@
  *
  */
 
-    log_message('error', 'View File Loaded : media_picture_list.php');
-
 // Basic vars
 $file_path = Settings::get('files_path').'/';
 

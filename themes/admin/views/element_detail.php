@@ -7,7 +7,6 @@
  * When saving, creates an element instance through : element/save
  *
  */
-    log_message('error', 'View File Loaded : element_detail.php');
 
 	/*
 	 * These values are empty when adding a new element

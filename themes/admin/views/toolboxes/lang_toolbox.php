@@ -1,7 +1,7 @@
 
 <div class="divider">
 	<a class="button light" id="newLangToolbarButton">
-		<i class="icon-plus"></i><?= lang('ionize_label_new_lang') ?>
+		<i class="icon-plus"></i><?php echo lang('ionize_label_new_lang'); ?>
 	</a>
 </div>
 

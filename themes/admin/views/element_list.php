@@ -5,7 +5,7 @@
  * Called by view : element_add (when the user clicks on the "Add Element" button)
  *
  */
-    log_message('error', 'View File Loaded : element_list.php');
+
 ?>
 
 <?php foreach($elements as $element) :?>

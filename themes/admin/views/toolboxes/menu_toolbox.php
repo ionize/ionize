@@ -1,10 +1,11 @@
+
 <div class="toolbox divider nobr">
-	<input id="existingMenuFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save') ?>" />
+	<input id="existingMenuFormSubmit" type="button" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
 </div>
 
 <div class="divider">
 	<a class="button light" id="newMenuToolbarButton">
-		<i class="icon-plus"></i><?= lang('ionize_button_create_menu') ?>
+		<i class="icon-plus"></i><?php echo lang('ionize_button_create_menu'); ?>
 	</a>
 </div>
 

@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : setting_maintenance_page.php');
-?>
+
 <?php if( ! empty($page)) :?>
 
 	<?php

@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : info.php');
-?>
+
 <div id="debug"></div>
 
 

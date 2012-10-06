@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : element_edit.php');
-?>
+
 	
 <!-- Existing elements -->
 <h2 class="main elements"><?php echo lang('ionize_title_edit_content_element'); ?></h2>

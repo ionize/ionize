@@ -5,7 +5,7 @@
  * Used by element/add_element/ when the user clicks on the "Add Element" button
  *
  */
-    log_message('error', 'View File Loaded : element_add.php');
+
 ?>
 
 	

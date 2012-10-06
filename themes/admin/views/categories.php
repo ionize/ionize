@@ -4,7 +4,6 @@
  * Categories panel
  *
  */
-log_message('error', 'View File Loaded : categories.php');
 
 ?>
 <div id="maincolumn">

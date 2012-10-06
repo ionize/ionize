@@ -1,4 +1,4 @@
-	<!-- 
+	<!--
 	
 		Filters form : 
 		- Pages
@@ -9,7 +9,7 @@
 	<div id="maincolumn">
 		
 
-		<h2 class="main articles" id="main-title"><?= lang('ionize_title_articles') ?></h2>
+		<h2 class="main articles" id="main-title"><?php echo lang('ionize_title_articles'); ?></h2>
 
 		<?php
 		
@@ -25,8 +25,8 @@
 
 				<!-- Article list filtering -->
 				<form id="filterArticles">
-					<label class="left" title="<?= lang('ionize_help_article_filter') ?>"><?= lang('ionize_label_article_filter') ?></label>
-					<input id="contains" type="text" class="inputtext w160 left"></input>
+					<label class="left" title="<?php echo lang('ionize_help_article_filter'); ?>"><?php echo lang('ionize_label_article_filter'); ?></label>
+					<input id="contains" type="text" class="inputtext w160 left" />
 					<a id="cleanFilter" class="icon clearfield left ml5"></a>
 				</form>
 	
@@ -35,10 +35,10 @@
 			
 					<thead>
 						<tr>
-							<th><?= lang('ionize_label_title') ?></th>
-							<th axis="string"><?= lang('ionize_label_pages') ?></th>
-							<th axis="string" style="width:<?= $flag_width ?>px;"><?= lang('ionize_label_content_for_lang') ?></th>
-							<th class="right" style="width:70px;"><?= lang('ionize_label_actions') ?></th>
+							<th><?php echo lang('ionize_label_title'); ?></th>
+							<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
+							<th axis="string" style="width:<?php echo $flag_width; ?>px;"><?php echo lang('ionize_label_content_for_lang'); ?></th>
+							<th class="right" style="width:70px;"><?php echo lang('ionize_label_actions'); ?></th>
 						</tr>
 					</thead>
 		
@@ -77,18 +77,18 @@
 							$online_html = implode('', $online);
 						?>
 		
-						<tr class="article<?= $article['id_article'] ?>">
+						<tr class="article<?php echo $article['id_article']; ?>">
 							
 	
 							<td style="overflow:hidden;" class="title">
 	
 								<div style="overflow:hidden;">
-									<span class="toggler left" rel="content<?= $article['id_article'] ?>">
-										<a class="left article" rel="0.<?= $article['id_article'] ?>"><span class="flag flag<?= $article['flag'] ?>"></span><?= $title ?></a>
+									<span class="toggler left" rel="content<?php echo $article['id_article']; ?>">
+										<a class="left article" rel="0.<?php echo $article['id_article']; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a>
 									</span>
 								</div>
 								
-								<div id="content<?= $article['id_article'] ?>" class="content">
+								<div id="content<?php echo $article['id_article']; ?>" class="content">
 		
 									<div class="text">
 										
@@ -96,12 +96,12 @@
 									
 											<?php $lang = $language['lang']; ?>
 											
-											<div style="width:<?=$width?>%;" class="mr10 left langcontent<?php if($language['def'] == '1') :?> dl<?php endif ;?>">
+											<div style="width:<?php echo $width; ?>%;" class="mr10 left langcontent<?php if($language['def'] == '1') :?> dl<?php endif ;?>">
 												
-												<img class="pr5" src="<?= theme_url() ?>images/world_flags/flag_<?= $lang ?>.gif" />
+												<img class="pr5" src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" />
 												
 												<div>
-													<?= strip_tags($article['langs'][$lang]['content'], ('<p>,<ul>,<ol>,<li>,<h1>,<h2>,<h3>')) ?>
+													<?php echo strip_tags($article['langs'][$lang]['content'], ('<p>,<ul>,<ol>,<li>,<h1>,<h2>,<h3>')); ?>
 												</div>
 											
 											</div>
@@ -115,23 +115,23 @@
 							
 							<td>
 								<?php if(empty($pages_html)) :?>
-									<img class="help" src="<?= theme_url() ?>images/icon_16_alert.png" title="<?= lang('ionize_help_orphan_article') ?>" />
+									<img class="help" src="<?php echo theme_url(); ?>images/icon_16_alert.png" title="<?php echo lang('ionize_help_orphan_article'); ?>" />
 								<?php endif; ?>
 								
-								<?= $pages_html ?>
+								<?php echo $pages_html; ?>
 							</td>
 							
 							<td>
-								<?= $content_html ?>
-								<?php if(count($content) < $nbLang) :?><img class="help" src="<?= theme_url() ?>images/icon_16_alert.png"  title="<?= lang('ionize_help_missing_translated_content') ?>" /><?php endif; ?>
+								<?php echo $content_html; ?>
+								<?php if(count($content) < $nbLang) :?><img class="help" src="<?php echo theme_url(); ?>images/icon_16_alert.png"  title="<?php echo lang('ionize_help_missing_translated_content'); ?>" /><?php endif; ?>
 							</td>
 							
-				<!--			<td><?= $online_html ?></td> -->
+				<!--			<td><?php echo $online_html; ?></td> -->
 							
 							<td>
-								<a class="icon right delete" rel="<?= $article['id_article'] ?>"></a>
-								<a class="icon right duplicate mr5" rel="<?= $article['id_article'] ?>|<?= $article['name'] ?>"></a>
-								<a class="icon right edit mr5" rel="<?= $article['id_article'] ?>" title="<?= $title ?>"></a>
+								<a class="icon right delete" rel="<?php echo $article['id_article']; ?>"></a>
+								<a class="icon right duplicate mr5" rel="<?php echo $article['id_article']; ?>|<?php echo $article['name']; ?>"></a>
+								<a class="icon right edit mr5" rel="<?php echo $article['id_article']; ?>" title="<?php echo $title; ?>"></a>
 							</td>
 							
 		

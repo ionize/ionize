@@ -4,7 +4,7 @@
  * Modal window for Media metadata edition
  *
  */
-    log_message('error', 'View File Loaded : media_edit.php');
+
 $pictureSize = NULL;
 
 if($type == 'picture')

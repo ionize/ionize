@@ -1,11 +1,9 @@
-<?php
-    log_message('error', 'View File Loaded : link.php');
-?>
+
 <?php if( ! empty($link)) :?>
 
 	<dl class="small dropArticleAsLink dropPageAsLink">
 		<dt>
-			<label title="<?= lang('ionize_help_page_link'); ?>"><?= lang('ionize_label_linkto'); ?></label>
+			<label title="<?php echo lang('ionize_help_page_link'); ?>"><?php echo lang('ionize_label_linkto'); ?></label>
 			<br/>
 		</dt>
 		<dd>
@@ -13,13 +11,13 @@
 			
 				<li class="sortme">
 		
-					<a class="left link-img <?= $link_type; ?>" ></a>
+					<a class="left link-img <?php echo $link_type; ?>" ></a>
 			
 					<!-- Unlink icon -->
 					<a class="icon unlink right"></a>
 			
 					<!-- Title -->
-					<a id="link_title" style="overflow:hidden;height:16px;display:block;" class="pl5 pr10" title="<?= $link; ?>"><?= $link; ?></a>
+					<a id="link_title" style="overflow:hidden;height:16px;display:block;" class="pl5 pr10" title="<?php echo $link; ?>"><?php echo $link; ?></a>
 		
 				</li>
 		
@@ -31,10 +29,10 @@
 		
 		$$('#linkList li .unlink').each(function(item)
 		{
-			ION.initRequestEvent(item, '<?= $parent; ?>/remove_link', {'rel':'<?= $rel; ?>'}, {'update':'linkContainer'});
+			ION.initRequestEvent(item, '<?php echo $parent; ?>/remove_link', {'rel':'<?php echo $rel; ?>'}, {'update':'linkContainer'});
 		});
 		
-		if ('<?= $link_type; ?>' == 'external')
+		if ('<?php echo $link_type; ?>' == 'external')
 		{
 			$('link_title').addEvent('click', function(e){window.open(this.get('text'))});
 		}
@@ -43,7 +41,7 @@
 			$('link_title').addEvent('click', function(e){
 				MUI.Content.update({
 					'element': $(ION.mainpanel),
-					'url': '<?= $link_type; ?>/edit/<?= $link_id; ?>'
+					'url': '<?php echo $link_type; ?>/edit/<?php echo $link_id; ?>'
 				});
 			});
 		}

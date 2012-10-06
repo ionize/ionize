@@ -2,16 +2,16 @@
 <!-- Main Column -->
 <div id="maincolumn">
 
-	<h2 class="main languages" id="main-title"><?= lang('ionize_title_language') ?></h2>
+	<h2 class="main languages" id="main-title"><?php echo lang('ionize_title_language'); ?></h2>
 
 	<!-- Tabs -->
 	<div id="langTab" class="mainTabs">
 
 		<ul class="tab-menu">
 
-			<li id="langExistingTab"><a><?= lang('ionize_title_existing_languages') ?></a></li>
-			<li id="langContentTab"><a><?= lang('ionize_title_content') ?></a></li>
-			<li id="langUrlTab"><a><?= lang('ionize_title_options') ?></a></li>
+			<li id="langExistingTab"><a><?php echo lang('ionize_title_existing_languages'); ?></a></li>
+			<li id="langContentTab"><a><?php echo lang('ionize_title_content'); ?></a></li>
+			<li id="langUrlTab"><a><?php echo lang('ionize_title_options'); ?></a></li>
 
 		</ul>
 		<div class="clear"></div>
@@ -23,20 +23,20 @@
 		<!-- Existing languages -->
 		<div class="tabcontent">
 
-			<form name="existingLangForm" id="existingLangForm" method="post" action="<?= admin_url() ?>lang/update">
+			<form name="existingLangForm" id="existingLangForm" method="post" action="<?php echo admin_url(); ?>lang/update">
 
 				<?php if (!$languages = Settings::get_languages()) :?>
 
-					<p><?= lang('ionize_message_no_languages') ;?></p>
+					<p><?php echo lang('ionize_message_no_languages') ;?></p>
 
 				<?php else : ?>
 
 					<!-- Submit button -->
 					<p class="h30">
-						<input id="existingLangFormSubmit" type="button" class="right submit" value="<?= lang('ionize_button_update') ?>" />
+						<input id="existingLangFormSubmit" type="button" class="right submit" value="<?php echo lang('ionize_button_update'); ?>" />
 					</p>
 
-					<input name="current_default_lang" id="current_default_lang" type="hidden" value="<?= Settings::get_lang('default'); ?>"/>
+					<input name="current_default_lang" id="current_default_lang" type="hidden" value="<?php echo Settings::get_lang('default'); ?>"/>
 
 					<!-- Sortable UL -->
 					<ul id="langContainer" class="sortable pb20">
@@ -48,23 +48,23 @@
 								$name = $lang['name'];
 							?>
 
-							<li id="lang_<?= $code ?>" class="sortme h100" rel="<?= $code ?>">
+							<li id="lang_<?php echo $code; ?>" class="sortme h100" rel="<?php echo $code; ?>">
 
 								<!-- Drag icon -->
 								<div class="drag left h100">
-									<img src="<?= theme_url() ?>images/icon_16_ordering.png" />
+									<img src="<?php echo theme_url(); ?>images/icon_16_ordering.png" />
 								</div>
 
 								<!-- Lang Code -->
 								<dl class="small">
 									<dt>
-										<label for="lang_<?= $code ?>"><?=lang('ionize_label_code')?></label>
+										<label for="lang_<?php echo $code; ?>"><?php echo lang('ionize_label_code'); ?></label>
 									</dt>
 									<dd>
-										<input name="lang_<?= $code ?>" id="lang_<?=$code?>" class="inputtext" type="text" value="<?= $code ?>"/>
+										<input name="lang_<?php echo $code; ?>" id="lang_<?php echo$code?>" class="inputtext" type="text" value="<?php echo $code; ?>"/>
 
 										<!-- Delete button -->
-										<a class="icon right delete" rel="<?= $code ?>"></a>
+										<a class="icon right delete" rel="<?php echo $code; ?>"></a>
 
 									</dd>
 								</dl>
@@ -72,30 +72,30 @@
 								<!-- Name -->
 								<dl class="small">
 									<dt>
-										<label for="name_<?= $code ?>"><?=lang('ionize_label_name')?></label>
+										<label for="name_<?php echo $code; ?>"><?php echo lang('ionize_label_name'); ?></label>
 									</dt>
 									<dd>
-										<input name="name_<?= $code ?>" id="name_<?=$code?>" class="inputtext" type="text" value="<?= $name ?>"/>
+										<input name="name_<?php echo $code; ?>" id="name_<?php echo$code?>" class="inputtext" type="text" value="<?php echo $name; ?>"/>
 									</dd>
 								</dl>
 
 								<!-- Online ? -->
 								<dl class="small">
 									<dt>
-										<label for="online_<?= $code ?>"><?=lang('ionize_label_online')?></label>
+										<label for="online_<?php echo $code; ?>"><?php echo lang('ionize_label_online'); ?></label>
 									</dt>
 									<dd>
-										<input id="online_<?= $code ?>" name="online_<?= $code ?>" <?php if ($lang['online'] == '1'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" value="1" />
+										<input id="online_<?php echo $code; ?>" name="online_<?php echo $code; ?>" <?php if ($lang['online'] == '1'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" value="1" />
 									</dd>
 								</dl>
 
 								<!-- Default ? -->
 								<dl class="small">
 									<dt>
-										<label for="def_<?= $code ?>"><?=lang('ionize_label_default')?></label>
+										<label for="def_<?php echo $code; ?>"><?php echo lang('ionize_label_default'); ?></label>
 									</dt>
 									<dd>
-										<input id="def_<?= $code ?>" <?php if (Settings::get_lang('default') == $code ):?>checked="checked"<?php endif;?> type="radio" name="default_lang" class="inputradio" value="<?= $code ?>" />
+										<input id="def_<?php echo $code; ?>" <?php if (Settings::get_lang('default') == $code ):?>checked="checked"<?php endif;?> type="radio" name="default_lang" class="inputradio" value="<?php echo $code; ?>" />
 									</dd>
 								</dl>
 
@@ -116,13 +116,13 @@
 
 			<dl class="small">
 				<dt>
-					<label for="lang_copy_from" title="<?= lang('ionize_help_copy_all_content') ?>"><?= lang('ionize_label_copy_all_content') ?></label>
+					<label for="lang_copy_from" title="<?php echo lang('ionize_help_copy_all_content'); ?>"><?php echo lang('ionize_label_copy_all_content'); ?></label>
 				</dt>
 				<dd>
 					<div class="w100 left">
 						<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
+							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
@@ -130,12 +130,12 @@
 
 						<select name="lang_copy_to" id="lang_copy_to" class="w100 select mt5">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
+							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
 					</div>
-					<div class="w30 h50 left ml5" style="background:url(<?= theme_url() ?>images/icon_24_from_to.png) no-repeat 50% 50%;"></div>
+					<div class="w30 h50 left ml5" style="background:url(<?php echo theme_url(); ?>images/icon_24_from_to.png) no-repeat 50% 50%;"></div>
 				</dd>
 			</dl>
 
@@ -143,7 +143,7 @@
 			<dl class="small">
 				<dt>&#160;</dt>
 				<dd>
-					<input type="submit" value="<?= lang('ionize_button_copy_content') ?>" class="submit" id="copy_lang">
+					<input type="submit" value="<?php echo lang('ionize_button_copy_content'); ?>" class="submit" id="copy_lang">
 				</dd>
 			</dl>
 
@@ -153,11 +153,11 @@
 		<!-- URLs -->
 		<div class="tabcontent">
 
-			<form name="optionsLangForm" id="optionsLangForm" method="post" action="<?= admin_url() ?>lang/update">
+			<form name="optionsLangForm" id="optionsLangForm" method="post" action="<?php echo admin_url(); ?>lang/update">
 
 				<dl>
 					<dt>
-						<label for="force_lang_urls"><?=lang('ionize_label_force_lang_urls')?></label>
+						<label for="force_lang_urls"><?php echo lang('ionize_label_force_lang_urls'); ?></label>
 					</dt>
 					<dd>
 						<input <?php if (Settings::get('force_lang_urls') == '1'):?>checked="checked"<?php endif;?> class="inputcheckbox" type="checkbox" name="force_lang_urls" id="force_lang_urls" value="1" />
@@ -167,7 +167,7 @@
 				<dl class="last">
 					<dt></dt>
 					<dd>
-						<input id="optionsLangFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save') ?>" />
+						<input id="optionsLangFormSubmit" type="button" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
 					</dd>
 				</dl>
 
@@ -175,12 +175,12 @@
 
 			<?php
 			/*
-			<p><?=lang('ionize_notify_advanced_language')?></p>
+			<p><?php echo lang('ionize_notify_advanced_language'); ?></p>
 
 			<form name="cleanLangForm" id="cleanLangForm" method="post">
 
-				<input id="submit_clean" type="submit" class="submit" value="<?= lang('ionize_button_clean_lang_tables') ?>" />
-				<label title="<?= lang('ionize_help_clean_lang_tables') ?>"></label>
+				<input id="submit_clean" type="submit" class="submit" value="<?php echo lang('ionize_button_clean_lang_tables'); ?>" />
+				<label title="<?php echo lang('ionize_help_clean_lang_tables'); ?>"></label>
 
 			</form>
 			*/

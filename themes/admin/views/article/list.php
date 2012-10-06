@@ -1,6 +1,6 @@
 
 
-<ul id="articleList<?= $id_page ?>" class="sortable-container">
+<ul id="articleList<?php echo $id_page; ?>" class="sortable-container">
 
 <?php
 	$nbLang = count(Settings::get_languages());
@@ -35,29 +35,29 @@
 	
 	?>
 
-	<li id="articleinpage<?= $article['id_article'] ?>" class="sortme article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>">
+	<li id="articleinpage<?php echo $article['id_article']; ?>" class="sortme article<?php echo $article['id_article']; ?> article<?php echo $flat_rel; ?> <?php echo $status ;?>" rel="<?php echo $rel; ?>">
 		
 		<!-- Drag icon -->
 		<span class="icon left drag mr5"></span>
 
 		<!-- Status icon -->
-		<a class="icon right mr5 status article<?= $article['id_article'] ?> article<?= $flat_rel ?> <?= $status ;?>" rel="<?= $rel ?>"></a>
+		<a class="icon right mr5 status article<?php echo $article['id_article']; ?> article<?php echo $flat_rel; ?> <?php echo $status ;?>" rel="<?php echo $rel; ?>"></a>
 
 		<!-- Unlink icon -->
-		<a class="icon right mr5 unlink" rel="<?= $rel ?>" title="<?= lang('ionize_label_unlink') ?>"></a>
+		<a class="icon right mr5 unlink" rel="<?php echo $rel; ?>" title="<?php echo lang('ionize_label_unlink'); ?>"></a>
 		
 		
 		<!-- Flags : Available content for language -->
-		<span style="width:<?=$flag_width?>px;display:block;height:16px;" class="right mr10 ml10"><?= $content_html ?></span>
+		<span style="width:<?php echo$flag_width?>px;display:block;height:16px;" class="right mr10 ml10"><?php echo $content_html; ?></span>
 
 	
 
 		<!-- Type -->
-		<span class="right ml10 type-block" rel="<?= $rel ?>">
+		<span class="right ml10 type-block" rel="<?php echo $rel; ?>">
 			
-			<select id="type<?= $flat_rel ?>" class="select w80 type left" style="padding:0;" rel="<?= $rel ?>">
+			<select id="type<?php echo $flat_rel; ?>" class="select w80 type left" style="padding:0;" rel="<?php echo $rel; ?>">
 				<?php foreach($all_article_types as $idx => $type) :?>
-					<option <?php if ($article['id_type'] == $idx) :?>selected="selected"<?php endif; ?>  value="<?= $idx ?>"><?= $type ?></option>
+					<option <?php if ($article['id_type'] == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
 				<?php endforeach ;?>
 			</select>
 
@@ -66,9 +66,9 @@
 		<!-- Used view -->
 		<span class="right ml10">
 		
-			<select id="view<?= $flat_rel ?>" class="select w110 view" style="padding:0;" rel="<?= $rel ?>">
+			<select id="view<?php echo $flat_rel; ?>" class="select w110 view" style="padding:0;" rel="<?php echo $rel; ?>">
 				<?php foreach($all_article_views as $idx => $view) :?>
-					<option <?php if ($article['view'] == $idx) :?>selected="selected"<?php endif; ?> value="<?= $idx ?>"><?= $view ?></option>
+					<option <?php if ($article['view'] == $idx) :?>selected="selected"<?php endif; ?> value="<?php echo $idx; ?>"><?php echo $view; ?></option>
 				<?php endforeach ;?>
 			</select>
 		
@@ -76,11 +76,11 @@
 		
 		<!-- Main parent page -->
 		<?php if (count($article['pages']) > 1) :?>
-			<span class="right type-block" rel="<?= $rel ?>">
+			<span class="right type-block" rel="<?php echo $rel; ?>">
 				
-				<select id="amp<?= $flat_rel ?>" class="select w100 parent left" style="padding:0;" rel="<?= $rel ?>">
+				<select id="amp<?php echo $flat_rel; ?>" class="select w100 parent left" style="padding:0;" rel="<?php echo $rel; ?>">
 					<?php foreach($article['pages'] as $page) :?>
-						<option <?php if ($page['main_parent'] == '1') :?>selected="selected"<?php endif; ?> value="<?= $page['id_page'] ?>"><?= $page['title'] ?></option>
+						<option <?php if ($page['main_parent'] == '1') :?>selected="selected"<?php endif; ?> value="<?php echo $page['id_page']; ?>"><?php echo $page['title']; ?></option>
 					<?php endforeach ;?>
 				</select>
 	
@@ -88,7 +88,7 @@
 		<?php endif ;?>
 
 		<!-- Title (draggable) -->
-		<a style="overflow:hidden;height:16px;display:block;" class=" pl5 pr10 article article<?= $flat_rel ?> <?= $status ;?>" title="<?= lang('ionize_label_edit') ?> / <?= lang('ionize_label_drag_to_page') ?>" rel="<?= $rel ?>"><span class="flag flag<?= $article['flag'] ?>"></span><?= $title ?></a>
+		<a style="overflow:hidden;height:16px;display:block;" class=" pl5 pr10 article article<?php echo $flat_rel; ?> <?php echo $status ;?>" title="<?php echo lang('ionize_label_edit'); ?> / <?php echo lang('ionize_label_drag_to_page'); ?>" rel="<?php echo $rel; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a>
 	</li>
 
 <?php endforeach ;?>
@@ -101,7 +101,7 @@
 	 * Articles view / type select for articles list
 	 *
 	 */
-	$$('#articleList<?= $id_page ?> .type').each(function(item, idx)
+	$$('#articleList<?php echo $id_page; ?> .type').each(function(item, idx)
 	{
 		var rel = item.getAttribute('rel').split(".");
 
@@ -127,7 +127,7 @@
 //		ION.initArticleTypeEvent(item);
 	});
 
-	$$('#articleList<?= $id_page ?> .view').each(function(item, idx)
+	$$('#articleList<?php echo $id_page; ?> .view').each(function(item, idx)
 	{
 		var rel = item.getAttribute('rel').split(".");
 
@@ -153,7 +153,7 @@
 //		ION.initArticleViewEvent(item);
 	});
 	
-	$$('#articleList<?= $id_page ?> .parent').each(function(item, idx)
+	$$('#articleList<?php echo $id_page; ?> .parent').each(function(item, idx)
 	{
 		var rel = item.getAttribute('rel').split(".");
 
@@ -181,7 +181,7 @@
 	 * Makes article title draggable
 	 *
 	 */
-	$$('#articleList<?= $id_page ?> .article').each(function(item, idx)
+	$$('#articleList<?php echo $id_page; ?> .article').each(function(item, idx)
 	{
 		var id_article = item.getProperty('rel');
 		var title = item.get('text');
@@ -204,7 +204,7 @@
 	 * Article list itemManager
 	 *
 	 */
-	articleManager = new ION.ArticleManager({container: 'articleList<?= $id_page ?>', 'id_parent':'<?= $id_page ?>'});
+	articleManager = new ION.ArticleManager({container: 'articleList<?php echo $id_page; ?>', 'id_parent':'<?php echo $id_page; ?>'});
 
 	
 </script>

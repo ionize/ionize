@@ -1,5 +1,4 @@
 <?php
-    log_message('error', 'View File Loaded : users_list.php');
 
 /**
  * Users list

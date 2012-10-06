@@ -1,7 +1,5 @@
 <?php
 
-    log_message('error', 'View File Loaded : user.php');
-
 /**
  * Modal window for Editing an user
  *
@@ -24,7 +22,7 @@ else
 	<!-- Username -->
 	<dl class="small">
 		<dt>
-			<label for="username"><?php echo lang('ionize_label_username')?></label>
+			<label for="username"><?php echo lang('ionize_label_username'); ?></label>
 		</dt>
 		<dd>
 			<input id="username" name="username" class="inputtext" type="text" value="<?php echo $user['username'] ?>" />
@@ -34,7 +32,7 @@ else
 	<!-- Screen Name -->
 	<dl class="small">
 		<dt>
-			<label for="screen_name"><?php echo lang('ionize_label_screen_name')?></label>
+			<label for="screen_name"><?php echo lang('ionize_label_screen_name'); ?></label>
 		</dt>
 		<dd>
 			<input id="screen_name" name="screen_name" class="inputtext" type="text" value="<?php echo $user['screen_name'] ?>" />
@@ -44,7 +42,7 @@ else
 	<!-- Email -->
 	<dl class="small">
 		<dt>
-			<label for="email" ><?php echo lang('ionize_label_email')?></label>
+			<label for="email" ><?php echo lang('ionize_label_email'); ?></label>
 		</dt>
 		<dd>
 			<input id="email" name="email" class="inputtext" type="text" value="<?php echo $user['email'] ?>" />
@@ -54,7 +52,7 @@ else
 	<!-- Group -->
 	<dl class="small">
 		<dt>
-			<label for="email"><?php echo lang('ionize_label_group')?></label>
+			<label for="email"><?php echo lang('ionize_label_group'); ?></label>
 		</dt>
 		<dd>
 			<select name="id_group" class="select">
@@ -69,13 +67,13 @@ else
 	
 
 	<!-- New password -->
-	<h3><?php echo lang('ionize_title_change_password')?></h3>
+	<h3><?php echo lang('ionize_title_change_password'); ?></h3>
 
 
 	<!-- Password -->
 	<dl class="small">
 		<dt>
-			<label for="password"><?php echo lang('ionize_label_password')?></label>
+			<label for="password"><?php echo lang('ionize_label_password'); ?></label>
 		</dt>
 		<dd>
 			<input id="password" name="password" class="inputtext i120" type="password" value="" />
@@ -85,7 +83,7 @@ else
 	<!-- Password confirm -->
 	<dl class="small">
 		<dt>
-			<label for="password2"><?php echo lang('ionize_label_password2')?></label>
+			<label for="password2"><?php echo lang('ionize_label_password2'); ?></label>
 		</dt>
 		<dd>
 			<input id="password2" name="password2" class="inputtext i120" type="password" value="" />
@@ -94,7 +92,7 @@ else
 
 	
 	<!-- Meta data -->
-	<h3><?php echo lang('ionize_title_user_meta')?></h3>
+	<h3><?php echo lang('ionize_title_user_meta'); ?></h3>
 
 	<?php foreach($meta_data as $key => $field) :?>
 

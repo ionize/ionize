@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : help.php');
-?>
+
 <h2 class="main help mb20"><?php echo html_entity_decode($title); ?></h2>
 
 

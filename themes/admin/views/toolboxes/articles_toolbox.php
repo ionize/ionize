@@ -1,7 +1,7 @@
 
 <div class="divider">
 	<a class="button light" id="newArticleToolbarButton">
-		<i class="icon-article add"></i><?= lang('ionize_title_create_article') ?>
+		<i class="icon-article add"></i><?php echo lang('ionize_title_create_article'); ?>
 	</a>
 </div>
 

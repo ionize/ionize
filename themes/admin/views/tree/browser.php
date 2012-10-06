@@ -1,10 +1,11 @@
+
 <!-- Menus -->
 <?php foreach($menus as $menu) :?>
 
-	<h3 rel="<?= $menu['id_menu'] ?>">
-		<?= $menu['title'] ?>
+	<h3 rel="<?php echo $menu['id_menu'] ?>">
+		<?php echo $menu['title']; ?>
 	</h3>
-	<div class="treeContainer" id="browser_<?= $menu['name'].'Tree' ?>"></div>
+	<div class="treeContainer" id="browser_<?php echo $menu['name'].'Tree'; ?>"></div>
 
 <?php endforeach ;?>
 
@@ -13,7 +14,7 @@
 
     // Build the menus trees
 	<?php foreach($menus as $menu) :?>
-		var browser_<?= $menu['name'] ?>Tree = new ION.BrowerTreeXhr('browser_<?= $menu['name'] ?>Tree', '<?= $menu['id_menu'] ?>');
+		var browser_<?php echo $menu['name']; ?>Tree = new ION.BrowerTreeXhr('browser_<?php echo $menu['name']; ?>Tree', '<?php echo $menu['id_menu']; ?>');
 	<?php endforeach ;?>
 
 </script>

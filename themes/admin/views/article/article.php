@@ -1,14 +1,13 @@
-
-<form name="articleForm" id="articleForm" method="post" action="<?=site_url(config_item('admin_url').'/article/save/'.$id_article)?>">
+<form name="articleForm" id="articleForm" method="post" action="<?php echo site_url(config_item('admin_url').'/article/save/'.$id_article); ?>">
 
 	<input type="hidden" name="element" id="element" value="article" />
-	<input type="hidden" name="id_article" id="id_article" value="<?= $id_article ?>" />
-	<input type="hidden" name="rel" id="rel" value="<?= $id_page ?>.<?= $id_article ?>" />
-	<input type="hidden" name="created" value="<?= $created ?>" />
-	<input type="hidden" name="author" value="<?= $author ?>" />
-	<input type="hidden" name="name" id="name" value="<?= $name ?>" />
-	<input type="hidden" name="main_parent" id="main_parent" value="<?= $main_parent ?>" />
-	<input type="hidden" name="has_url" id="has_url" value="<?= $has_url ?>" />
+	<input type="hidden" name="id_article" id="id_article" value="<?php echo $id_article; ?>" />
+	<input type="hidden" name="rel" id="rel" value="<?php echo $id_page; ?>.<?php echo $id_article; ?>" />
+	<input type="hidden" name="created" value="<?php echo $created; ?>" />
+	<input type="hidden" name="author" value="<?php echo $author; ?>" />
+	<input type="hidden" name="name" id="name" value="<?php echo $name; ?>" />
+	<input type="hidden" name="main_parent" id="main_parent" value="<?php echo $main_parent; ?>" />
+	<input type="hidden" name="has_url" id="has_url" value="<?php echo $has_url; ?>" />
 	
 	<!-- JS storing element -->
 	<input type="hidden" id="memory" />
@@ -27,17 +26,17 @@
 			
 			?>
 
-			<h2 class="main article" id="main-title"><?= $title ?></h2>
+			<h2 class="main article" id="main-title"><?php echo $title; ?></h2>
 
 			<div style="margin: -15px 0pt 20px 72px;">
 				<p>
 					<?php if ($this->connect->is('super-admins') ) :?>
 						<span class="lite">ID : </span>
-						<?= $id_article ?>
+						<?php echo $id_article; ?>
 					<?php endif ;?>
 
 					<?php if( ! empty($breadcrump)) :?>
-						| <span class="lite"><?= lang('ionize_label_article_context_edition') ?> : </span><?=$breadcrump?>
+						| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?> : </span><?php echo$breadcrump?>
 					<?php endif ;?>
 				</p>
 			</div>
@@ -45,16 +44,16 @@
 		<!-- New article -->
 		<?php else :?>
 			
-			<h2 class="main article" id="main-title"><?= lang('ionize_title_new_article') ?></h2>
+			<h2 class="main article" id="main-title"><?php echo lang('ionize_title_new_article'); ?></h2>
 			
-			<input type="hidden" name="id_page" id="id_page" value="<?= $id_page ?>" />
+			<input type="hidden" name="id_page" id="id_page" value="<?php echo $id_page; ?>" />
 			
 			<!-- Where is the article ? -->
 			<dl>
-				<dt><label><?= lang('ionize_label_article_in') ?></label></dt>
-				<dd class="lite"><?= $menu ?> 
+				<dt><label><?php echo lang('ionize_label_article_in'); ?></label></dt>
+				<dd class="lite"><?php echo $menu; ?> 
 					<?php foreach ($breadcrumbs as $breadcrumb) :?>
-						> <?= $breadcrumb['title'] ?>
+						> <?php echo $breadcrumb['title']; ?>
 					<?php endforeach ;?>
 				</dd>
 			</dl>	
@@ -63,16 +62,16 @@
 			<!-- Ordering -->
 			<dl>
 				<dt >
-					<label for="ordering_select"><?= lang('ionize_label_ordering') ?></label>
+					<label for="ordering_select"><?php echo lang('ionize_label_ordering'); ?></label>
 				</dt>
 				<dd>
 					<select name="ordering_select" id="ordering_select" class="select">
 						<?php if($id_article) :?>
-							<option value="<?= $ordering ?>"><?= $ordering ?></option>
+							<option value="<?php echo $ordering; ?>"><?php echo $ordering; ?></option>
 						<?php endif ;?>
-						<option value="first"><?= lang('ionize_label_ordering_first') ?></option>
-						<option value="last"><?= lang('ionize_label_ordering_last') ?></option>
-						<option id="ordering_select_after" value="after" <?php if( empty($articles)) :?>style="display:none"<?php endif ;?>><?= lang('ionize_label_ordering_after') ?></option>	
+						<option value="first"><?php echo lang('ionize_label_ordering_first'); ?></option>
+						<option value="last"><?php echo lang('ionize_label_ordering_last'); ?></option>
+						<option id="ordering_select_after" value="after" <?php if( empty($articles)) :?>style="display:none"<?php endif ;?>><?php echo lang('ionize_label_ordering_after'); ?></option>	
 					</select>
 				</dd>
 				<dd>
@@ -81,7 +80,7 @@
 							<?php
 								$title = ($article['title'] != '') ? $article['title'] : $article['name'];
 							?>
-							<option value="<?= $article['id_article'] ?>"><?= $title ?></option>
+							<option value="<?php echo $article['id_article']; ?>"><?php echo $title; ?></option>
 						<?php endforeach ;?>
 					</select>
 				</dd>
@@ -91,7 +90,7 @@
 			<!-- Online / Offline -->
 			<dl class="mb20">
 				<dt>
-					<label for="online" title="<?= lang('ionize_help_article_online') ?>"><?= lang('ionize_label_article_online') ?></label>
+					<label for="online" title="<?php echo lang('ionize_help_article_online'); ?>"><?php echo lang('ionize_label_article_online'); ?></label>
 				</dt>
 				<dd>
 					<div>
@@ -115,7 +114,7 @@
 								<?php
 									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
 								?>
-								<label for="cf_<?= $extend_field['id_extend_field'] ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
+								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
 							</dt>
 							<dd>
 								<?php
@@ -123,11 +122,11 @@
 								?>
 							
 								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
+									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
 								<?php endif ;?>
 								
 								<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?= $extend_field['id_extend_field'] ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php else :?> autogrow <?php endif ;?> inputtext" name="cf_<?= $extend_field['id_extend_field'] ?>"><?= $extend_field['content'] ?></textarea>
+									<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php else :?> autogrow <?php endif ;?> inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
 								<?php endif ;?>
 								
 								<!-- Checkbox -->
@@ -146,7 +145,7 @@
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 
 											?>
-											<input type="checkbox" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>[]" value="<?= $key ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
+											<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
 											<?php
 											$i++;
 										}
@@ -168,7 +167,7 @@
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 
 											?>
-											<input type="radio" id= "cf_<?= $extend_field['id_extend_field'].$i ?>" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $key ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>"><?= $value ?></label></input><br/>
+											<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $key; ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
 											<?php
 											$i++;
 										}
@@ -182,7 +181,7 @@
 										$pos = explode("\n", $extend_field['value']);
 										$saved = 	explode(',', $extend_field['content']);
 									?>
-									<select name="cf_<?= $extend_field['id_extend_field']?>">
+									<select name="cf_<?php echo $extend_field['id_extend_field']; ?>">
 									<?php
 										$i = 0; 
 										foreach($pos as $values)
@@ -191,7 +190,7 @@
 											$key = $vl[0];
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 											?>
-											<option value="<?= $key ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?= $value ?></option>
+											<option value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?php echo $value; ?></option>
 											<?php
 											$i++;
 										}
@@ -202,7 +201,7 @@
 								<!-- Date & Time -->
 								<?php if ($extend_field['type'] == '7') :?>
 								
-									<input id="cf_<?= $extend_field['id_extend_field'] ?>" class="inputtext w120 date" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>" value="<?= $extend_field['content']  ?>" />
+									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
 									
 								<?php endif ;?>
 								
@@ -224,14 +223,14 @@
 					
 					<?php foreach(Settings::get_languages() as $language) :?>
 					
-						<li class="tab_article<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?= $language['lang'] ?>"><a><?= ucfirst($language['name']) ?></a></li>
+						<li class="tab_article<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
 					
 					<?php endforeach ;?>
 					
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="fileTab"><a><?= lang('ionize_label_files') ?></a></li>
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="musicTab"><a><?= lang('ionize_label_music') ?></a></li>
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="videoTab"><a><?= lang('ionize_label_videos') ?></a></li>
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?= lang('ionize_label_pictures') ?></a></li>
+					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
+					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="musicTab"><a><?php echo lang('ionize_label_music'); ?></a></li>
+					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="videoTab"><a><?php echo lang('ionize_label_videos'); ?></a></li>
+					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?php echo lang('ionize_label_pictures'); ?></a></li>
 
 				</ul>
 				<div class="clear"></div>
@@ -245,11 +244,11 @@
 					
 				<?php $lang = $language['lang']; ?>
 
-				<div class="tabcontent <?= $lang ?>">
+				<div class="tabcontent <?php echo $lang; ?>">
 
 					<!-- Copy data -->
 					<p class="clear h15">
-						<a class="right icon copy copyLang" rel="<?= $lang ?>" title="<?= lang('ionize_label_copy_to_other_languages') ?>"></a>
+						<a class="right icon copy copyLang" rel="<?php echo $lang; ?>" title="<?php echo lang('ionize_label_copy_to_other_languages'); ?>"></a>
 					</p>
 
 					<!-- Online -->
@@ -257,40 +256,40 @@
 					
 						<dl>
 							<dt>
-								<label for="online_<?= $lang ?>" title="<?= lang('ionize_help_article_content_online') ?>"><?= lang('ionize_label_article_content_online') ?></label>
+								<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_content_online'); ?>"><?php echo lang('ionize_label_article_content_online'); ?></label>
 							</dt>
 							<dd>
-								<input id="online_<?= $lang ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?= $lang ?>" class="inputcheckbox" type="checkbox" value="1"/>
+								<input id="online_<?php echo $lang; ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?php echo $lang; ?>" class="inputcheckbox" type="checkbox" value="1"/>
 							</dd>
 						</dl>
 					
 					<?php else :?>
 					
-						<input id="online_<?= $lang ?>" name="online_<?= $lang ?>" type="hidden" value="1"/>
+						<input id="online_<?php echo $lang; ?>" name="online_<?php echo $lang; ?>" type="hidden" value="1"/>
 					
 					<?php endif ;?>
 
 					<!-- title -->
 					<dl class="first">
 						<dt>
-							<label for="title_<?= $lang ?>"><?= lang('ionize_label_title') ?></label>
+							<label for="title_<?php echo $lang; ?>"><?php echo lang('ionize_label_title'); ?></label>
 						</dt>
 						<dd>
-							<textarea id="title_<?= $lang ?>" name="title_<?= $lang ?>" class="textarea title autogrow" type="text"><?= ${$lang}['title'] ?></textarea>
+							<textarea id="title_<?php echo $lang; ?>" name="title_<?php echo $lang; ?>" class="textarea title autogrow" type="text"><?php echo ${$lang}['title']; ?></textarea>
 						</dd>
 					</dl>
 
 					<!-- Toggler : More : SEO, Online.. -->
 <!--
-					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_title_seo') ?></h3>
+					<h3 class="toggler toggler-<?php echo $lang; ?>"><?php echo lang('ionize_title_seo'); ?></h3>
 -->
 						<!-- sub title -->
 						<dl>
 							<dt>
-								<label for="subtitle_<?= $lang ?>"><?= lang('ionize_label_subtitle') ?></label>
+								<label for="subtitle_<?php echo $lang; ?>"><?php echo lang('ionize_label_subtitle'); ?></label>
 							</dt>
 							<dd>
-								<textarea id="subtitle_<?= $lang ?>" name="subtitle_<?= $lang ?>" class="textarea text autogrow" type="text"><?= ${$lang}['subtitle'] ?></textarea>
+								<textarea id="subtitle_<?php echo $lang; ?>" name="subtitle_<?php echo $lang; ?>" class="textarea text autogrow" type="text"><?php echo ${$lang}['subtitle']; ?></textarea>
 								<!-- <a class="icon edit subtitle"></a> -->
 							</dd>
 						</dl>
@@ -298,10 +297,10 @@
 						<!-- URL -->
 						<dl class="mt15">
 							<dt>
-								<label for="url_<?= $lang ?>"><?= lang('ionize_label_url') ?></label>
+								<label for="url_<?php echo $lang; ?>"><?php echo lang('ionize_label_url'); ?></label>
 							</dt>
 							<dd>
-								<input id="url_<?= $lang ?>" name="url_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['url'] ?>"/>
+								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo ${$lang}['url']; ?>"/>
 							</dd>
 						</dl>
 				
@@ -309,10 +308,10 @@
 						<!-- Meta Title : Browser window title -->
 						<dl class="mb20">
 							<dt>
-								<label for="meta_title_<?= $lang ?>" title="<?= lang('ionize_help_article_window_title') ?>"><?= lang('ionize_label_meta_title') ?></label>
+								<label for="meta_title_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_window_title'); ?>"><?php echo lang('ionize_label_meta_title'); ?></label>
 							</dt>
 							<dd>
-								<input id="meta_title_<?= $lang ?>" name="meta_title_<?= $lang ?>" class="inputtext" type="text" value="<?= ${$lang}['meta_title'] ?>"/>
+								<input id="meta_title_<?php echo $lang; ?>" name="meta_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo ${$lang}['meta_title']; ?>"/>
 							</dd>
 						</dl>
 				
@@ -321,9 +320,9 @@
 					<!-- extend fields goes here... -->
 					<?php if ( $has_translated_extend_fields && ! empty($extend_fields)) :?>
 						
-						<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_title_extend_fields') ?></h3>
+						<h3 class="toggler toggler-<?php echo $lang; ?>"><?php echo lang('ionize_title_extend_fields'); ?></h3>
 			
-						<div class="element element-<?= $lang ?>">
+						<div class="element element-<?php echo $lang; ?>">
 
 						<?php foreach($extend_fields as $extend_field) :?>
 							<?php if ($extend_field['translated'] == '1') :?>
@@ -333,7 +332,7 @@
 										<?php
 											$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
 										?>
-										<label for="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" title="<?= $extend_field['description'] ?>"><?= $label ?></label>
+										<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
 									</dt>
 									<dd>
 										<?php
@@ -341,11 +340,11 @@
 										?>
 					
 										<?php if ($extend_field['type'] == '1') :?>
-											<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $extend_field[$lang]['content'] ?>" />
+											<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field[$lang]['content']; ?>" />
 										<?php endif ;?>
 										
 										<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
-											<textarea id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext h80" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>"><?= $extend_field[$lang]['content'] ?></textarea>
+											<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
 										<?php endif ;?>
 										
 										<!-- Checkbox -->
@@ -365,7 +364,7 @@
 													$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 		
 													?>
-													<input type="checkbox" id= "cf_<?= $extend_field['id_extend_field'].$i ?>_<?= $lang ?>" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>[]" value="<?= $key ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>_<?= $lang ?>"><?= $value ?></label></input><br/>
+													<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
 													<?php
 													$i++;
 												}
@@ -387,7 +386,7 @@
 													$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 		
 													?>
-													<input type="radio" id= "cf_<?= $extend_field['id_extend_field'].$i ?>_<?= $lang ?>" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $key ?>" <?php if ($extend_field[$lang]['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?= $extend_field['id_extend_field'] . $i ?>_<?= $lang ?>"><?= $value ?></label></input><br/>
+													<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $key; ?>" <?php if ($extend_field[$lang]['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
 													<?php
 													$i++;
 												}
@@ -401,7 +400,7 @@
 												$pos = explode("\n", $extend_field['value']);
 												$saved = 	explode(',', $extend_field[$lang]['content']);
 											?>
-											<select name="cf_<?= $extend_field['id_extend_field']?>_<?= $lang ?>">
+											<select name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>">
 											<?php
 												$i = 0; 
 												foreach($pos as $values)
@@ -410,7 +409,7 @@
 													$key = $vl[0];
 													$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 													?>
-													<option value="<?= $key ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?= $value ?></option>
+													<option value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?php echo $value; ?></option>
 													<?php
 													$i++;
 												}
@@ -421,7 +420,7 @@
 										<!-- Date & Time -->
 										<?php if ($extend_field['type'] == '7') :?>
 										
-											<input id="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" class="inputtext w120 date" type="text" name="cf_<?= $extend_field['id_extend_field'] ?>_<?= $lang ?>" value="<?= $extend_field['content']  ?>" />
+											<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field['content'] ; ?>" />
 											
 										<?php endif ;?>
 
@@ -440,29 +439,29 @@
 
 
 					<!-- Summary -->
-					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_label_summary') ?></h3>
+					<h3 class="toggler toggler-<?php echo $lang; ?>"><?php echo lang('ionize_label_summary'); ?></h3>
 					
-					<div class="element element-<?= $lang ?>">
+					<div class="element element-<?php echo $lang; ?>">
 
 						<div>
-							<textarea id="summary_<?= $lang ?>" name="summary_<?= $lang ?>" class="smallTinyTextarea h100" rel="<?= $lang ?>"><?= htmlentities(${$lang}['summary'], ENT_QUOTES, 'utf-8') ?></textarea>
+							<textarea id="summary_<?php echo $lang; ?>" name="summary_<?php echo $lang; ?>" class="smallTinyTextarea h100" rel="<?php echo $lang; ?>"><?php echo htmlentities(${$lang}['summary'], ENT_QUOTES, 'utf-8'); ?></textarea>
 							<p class="clear h15 mb15">
-								<a id="wysiwyg_summary_<?= $lang ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'summary_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></a>
+								<a id="wysiwyg_summary_<?php echo $lang; ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'summary_<?php echo $lang; ?>');return false;"><?php echo lang('ionize_label_toggle_editor'); ?></a>
 							</p>
 						</div>
 
 					</div>
 
 					<!-- Text -->
-					<h3 class="toggler toggler-<?= $lang ?>"><?= lang('ionize_label_text') ?></h3>
+					<h3 class="toggler toggler-<?php echo $lang; ?>"><?php echo lang('ionize_label_text'); ?></h3>
 		
-					<div class="element element-<?= $lang ?>">
+					<div class="element element-<?php echo $lang; ?>">
 
 						<div>
-							<textarea id="content_<?= $lang ?>" name="content_<?= $lang ?>" class="tinyTextarea h260" rel="<?= $lang ?>"><?= htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8') ?></textarea>
+							<textarea id="content_<?php echo $lang; ?>" name="content_<?php echo $lang; ?>" class="tinyTextarea h260" rel="<?php echo $lang; ?>"><?php echo htmlentities(${$lang}['content'], ENT_QUOTES, 'utf-8'); ?></textarea>
 							<!--
 							<p class="clear h15">
-								<a id="wysiwyg_<?= $lang ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?= $lang ?>');return false;"><?= lang('ionize_label_toggle_editor') ?></a>
+								<a id="wysiwyg_<?php echo $lang; ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'content_<?php echo $lang; ?>');return false;"><?php echo lang('ionize_label_toggle_editor'); ?></a>
 							</p>
 							-->
 						</div>
@@ -478,10 +477,10 @@
 				
 					<p class="h30">
 						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
-							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 						</a>
 						<a class="left light button unlink" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
-							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_files') ?>
+							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
 						</a>
 					</p>
 					
@@ -495,10 +494,10 @@
 					
 					<p class="h30">
 						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
-							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 						</a>
 						<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
-							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_musics') ?>
+							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_musics'); ?>
 						</a>
 					</p>
 					
@@ -512,21 +511,21 @@
 				
 					<p class="h30">
 						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
-							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 						</a>
 						<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
-							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_videos') ?>
+							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_videos'); ?>
 						</a>
 					</p>
 					
 					<dl class="first">
 						<dt>
-							<label for="addVideo"><?= lang('ionize_label_add_video') ?></label>
+							<label for="addVideo"><?php echo lang('ionize_label_add_video'); ?></label>
 						</dt>
 						<dd>
 							<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
 							<a id="btnAddVideo" class="left light button">
-								<i class="icon-plus"></i><?= lang('ionize_button_add_video') ?>
+								<i class="icon-plus"></i><?php echo lang('ionize_button_add_video'); ?>
 							</a>
 						</dd>
 					</dl>
@@ -540,18 +539,18 @@
 				<div class="tabcontent">
 				
 					<p class="h30">
-	<!--					<a class="fmButton right"><img src="<?= theme_url() ?>images/icon_16_plus.png" /> <?= lang('ionize_label_attach_media') ?></a>-->
+	<!--					<a class="fmButton right"><img src="<?php echo theme_url(); ?>images/icon_16_plus.png" /> <?php echo lang('ionize_label_attach_media'); ?></a>-->
 
 						<a class="button light right" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
-							<i class="icon-refresh"></i><?= lang('ionize_label_reload_media_list') ?>
+							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 						</a>
 						<a class="button light left" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
-							<i class="icon-unlink"></i><?= lang('ionize_label_detach_all_pictures') ?>
+							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_pictures'); ?>
 						</a>
 						<?php
 						/*
 						<a class="button light left" onclick="javascript:mediaManager.initThumbsForParent();return false;">
-							<i class="icon-process"></i><?= lang('ionize_label_init_all_thumbs') ?>
+							<i class="icon-process"></i><?php echo lang('ionize_label_init_all_thumbs'); ?>
 						</a>
 						*/
 						?>
@@ -586,7 +585,7 @@
 	 */
 	<?php foreach (Settings::get_languages() as $lang) :?>
 
-		ION.initAccordion('.toggler-<?= $lang['lang']?>', 'div.element-<?= $lang['lang']?>', true, 'articleAccordion-<?= $lang['lang']?>');
+		ION.initAccordion('.toggler-<?php echo $lang['lang']; ?>', 'div.element-<?php echo $lang['lang']; ?>', true, 'articleAccordion-<?php echo $lang['lang']; ?>');
 
 	<?php endforeach ;?>
 
@@ -633,7 +632,7 @@
 	<?php if ($id_article == '') :?>
 		<?php foreach (Settings::get_languages() as $lang) :?>
 
-			ION.initCorrectUrl('title_<?= $lang['lang']?>', 'url_<?= $lang['lang']?>');
+			ION.initCorrectUrl('title_<?php echo $lang['lang']; ?>', 'url_<?php echo $lang['lang']; ?>');
 
 		<?php endforeach ;?>
 	<?php endif; ?>
@@ -690,7 +689,7 @@
 		 *
 		 */
 		$('desktop').store('tabSwapper', articleTab);
-		ION.getContentElements('article', '<?= $id_article ?>');
+		ION.getContentElements('article', '<?php echo $id_article; ?>');
 		
 		
 		/**
@@ -704,7 +703,7 @@
 				ION.JSON('media/add_external_media', {
 					'type': 'video', 
 					'parent': 'article', 
-					'id_parent': '<?= $id_article ?>',
+					'id_parent': '<?php echo $id_article; ?>',
 					'path': $('addVideo').value
 				});
 			}
@@ -715,7 +714,7 @@
 		 * Media Manager & tabs events
 		 *
 		 */
-		mediaManager.initParent('article', '<?= $id_article ?>');
+		mediaManager.initParent('article', '<?php echo $id_article; ?>');
 		mediaManager.loadMediaList('file');
 		mediaManager.loadMediaList('music');
 		mediaManager.loadMediaList('picture');

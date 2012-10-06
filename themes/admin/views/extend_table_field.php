@@ -4,7 +4,6 @@
  * Modal window for extend field creation / edition
  *
  */
-    log_message('error', 'View File Loaded : extend_table_field.php');
 
 ?>
 

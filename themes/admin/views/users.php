@@ -1,7 +1,5 @@
 <?php
 
-    log_message('error', 'View File Loaded : users.php');
-
 /**
  * Displays the list of all users
  *

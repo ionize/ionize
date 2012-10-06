@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : element_definitions.php');
-?>
+
 <div id="maincolumn">
 	
 	<!-- Existing elements -->

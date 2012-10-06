@@ -6,7 +6,6 @@
  *
  */
 
-    log_message('error', 'View File Loaded : element_content_list.php');
 
 // trace($definition);
 

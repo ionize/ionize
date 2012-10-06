@@ -1,7 +1,6 @@
 <?php
 
 //    log_message('error', print_r($elements, TRUE));
-    log_message('error', 'View File Loaded : element_definition_list.php');
 
 ?>
 

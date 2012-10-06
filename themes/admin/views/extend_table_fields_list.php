@@ -4,7 +4,6 @@
  * View used by extend_table controller to display the extend table details
  *
  */
-    log_message('error', 'View File Loaded : extend_table_fields_list.php');
 
 ?>
 

@@ -4,7 +4,6 @@
  * Modal window for Editing a group
  *
  */
-    log_message('error', 'View File Loaded : group.php');
 
 if ( ! empty($group['id_group']))
 	$action = 'update';

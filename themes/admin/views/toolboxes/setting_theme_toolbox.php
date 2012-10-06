@@ -1,5 +1,6 @@
+
 <div class="toolbox divider nobr">
-	<input id="viewsFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save') ?>" />
+	<input id="viewsFormSubmit" type="button" class="submit" value="<?php lang('ionize_button_save'); ?>" />
 </div>
 
 

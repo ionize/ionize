@@ -1,34 +1,35 @@
+
 <div class="divider nobr" id="tArticleFormSubmit">
 	<a id="articleFormSubmit" class="button submit">
-		<?= lang('ionize_button_save_article') ?>
+		<?php echo lang('ionize_button_save_article'); ?>
 	</a>
 </div>
 
 <div class="divider nobr" id="tArticleDeleteButton">
 	<a id="articleDeleteButton" class="button no">
-		<?= lang('ionize_button_delete') ?>
+		<?php echo lang('ionize_button_delete'); ?>
 	</a>
 </div>
 
 <div class="divider">
 	<a class="button light" id="sideColumnSwitcher">
-		<i class="icon-options"></i><?= lang('ionize_label_options') ?>
+		<i class="icon-options"></i><?php echo lang('ionize_label_options'); ?>
 	</a>
 </div>
 
 <div class="divider" id="tArticleDuplicateButton">
-	<a class="icon duplicate" id="articleDuplicateButton" title="<?= lang('ionize_button_duplicate_article') ?>"></a>
+	<a class="icon duplicate" id="articleDuplicateButton" title="<?php echo lang('ionize_button_duplicate_article'); ?>"></a>
 </div>
 
 <div class="divider" id="tArticleAddContentElement">
 	<a id="addContentElement" class="button light" >
-		<i class="icon-element"></i><?= lang('ionize_label_add_content_element') ?>
+		<i class="icon-element"></i><?php echo lang('ionize_label_add_content_element'); ?>
 	</a>
 </div>
 
 <div class="divider" id="tArticleMediaButton">
 	<a id="addMedia" class="fmButton button light">
-		<i class="icon-pictures"></i><?= lang('ionize_label_attach_media') ?>
+		<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
 	</a>
 </div>
 

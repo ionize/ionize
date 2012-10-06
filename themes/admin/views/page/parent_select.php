@@ -10,10 +10,10 @@ $element_id = (!empty($element_id)) ? $element_id : 'id_parent';
 
 ?>
 
-<select name="<?= $element_id ?>" id="<?= $element_id ?>" class="select">
+<select name="<?php echo $element_id; ?>" id="<?php echo $element_id; ?>" class="select">
 
 	<?php foreach($pages as $id => $title) :?>
-		<option value="<?= $id ?>"<?php if ($id_selected==$id) :?> selected="selected"<?php endif; ?>><?= strip_tags($title) ?></option>
+		<option value="<?php echo $id; ?>"<?php if ($id_selected==$id) :?> selected="selected"<?php endif; ?>><?php echo strip_tags($title); ?></option>
 	<?php endforeach ;?>
 
 </select>
@@ -22,10 +22,10 @@ $element_id = (!empty($element_id)) ? $element_id : 'id_parent';
 
 	if (Browser.ie || (Browser.firefox && Browser.version < 4))
 	{
-		var selected = $('<?= $element_id ?>').getElement('option[selected=selected]');
+		var selected = $('<?php echo $element_id; ?>').getElement('option[selected=selected]');
 		selected.setProperty('selected', 'selected');
 
-		if ('<?= $element_id ?>' == 'id_parent')
+		if ('<?php echo $element_id; ?>' == 'id_parent')
 		{
 			if ($('origin_id_parent').value == '0')
 				$('id_parent').getFirst('option').setProperty('selected', 'selected');

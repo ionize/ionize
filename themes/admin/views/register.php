@@ -1,6 +1,3 @@
-<?php
-    log_message('error', 'View File Loaded : register.php');
-?>
 	<?php echo form_open(current_url(), array('id' => 'register', 'class' => 'register')); ?>
 
     <?php if(validation_errors()): ?>

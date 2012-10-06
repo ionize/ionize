@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : translation.php');
-?>
+
 <div id="maincolumn">
 
 	<h2 class="main languages" id="main-title"><?php echo lang('ionize_title_translation'); ?></h2>
@@ -108,8 +106,8 @@
 					<?php foreach(Settings::get_languages() as $language) :?>
 						<?php $lang = $language['lang']; ?>
 						<div style="float:left;width:<?php echo $width?>%;margin-right:2%">
-							<label for="<?php echo $lang?>_"><?php echo $language['name']?></label>
-							<textarea name="value_<?php echo $lang?>_" class="h60 ml5" style="width:100%;"></textarea>
+							<label for="<?php echo $lang; ?>_"><?php echo $language['name']; ?></label>
+							<textarea name="value_<?php echo $lang; ?>_" class="h60 ml5" style="width:100%;"></textarea>
 						</div>
 					<?php endforeach ;?>
 					<p class="clear"></p>
@@ -175,8 +173,8 @@
 											<?php $lang = $language['lang']; ?>
 											
 											<div style="float:left;width:<?php echo $width?>%;margin-right:2%;">
-												<label class="m0" for="<?php echo $lang?>_<?php echo $el_id; ?>"><?php echo $language['name']?></label>
-												<textarea name="value_<?php echo $lang?>_<?php echo $el_id; ?>" id="<?php echo $lang?>_<?php echo $el_id; ?>" class="transtext h60" style="width:100%;"><?php echo $values[$lang]['theme']; ?></textarea>
+												<label class="m0" for="<?php echo $lang; ?>_<?php echo $el_id; ?>"><?php echo $language['name']; ?></label>
+												<textarea name="value_<?php echo $lang; ?>_<?php echo $el_id; ?>" id="<?php echo $lang; ?>_<?php echo $el_id; ?>" class="transtext h60" style="width:100%;"><?php echo $values[$lang]['theme']; ?></textarea>
 												<i class="lite transtext"><?php echo $values[$lang]['default']; ?></i>
 											</div>
 											

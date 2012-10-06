@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : about.php');
-?>
+
 <p class="version"><?php echo($this->config->item('version')) ;?></p>
 
 <p><strong><?php echo lang('ionize_label_about_us_author'); ?> : </strong> <a href="http://www.ionizecms.com/">Ionize Dev Team</a></p>

@@ -1,12 +1,12 @@
 
 <div class="divider">
 	<a class="button light" id="newUserToolbarButton">
-		<i class="icon-plus"></i><?= lang('ionize_title_add_user') ?>
+		<i class="icon-plus"></i><?php echo lang('ionize_title_add_user'); ?>
 	</a>
 </div>
 <div class="divider">
 	<a class="button light" id="newGroupToolbarButton">
-		<i class="icon-plus"></i><?= lang('ionize_title_add_group') ?>
+		<i class="icon-plus"></i><?php echo lang('ionize_title_add_group'); ?>
 	</a>
 </div>
 

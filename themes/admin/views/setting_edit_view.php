@@ -1,7 +1,5 @@
 <?php
 
-    log_message('error', 'View File Loaded : setting_edit_view.php');
-
 	$id = str_replace('/', '', $path).$view;
 
 ?>

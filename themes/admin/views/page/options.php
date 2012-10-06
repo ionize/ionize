@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Ionize
  *
@@ -10,13 +11,13 @@
  */
 
 ?>
-<form name="pageOptionsForm" id="pageOptionsForm" method="post" action="<?= admin_url() . 'page/save_options'?>">
+<form name="pageOptionsForm" id="pageOptionsForm" method="post" action="<?php echo admin_url() . 'page/save_options'?>">
 
 	<input type="hidden" name="element" id="element" value="page" />
-	<input type="hidden" name="id_menu" value="<?= $id_menu ?>" />
-	<input type="hidden" name="created" value="<?= $created ?>" />
-	<input type="hidden" name="id_page" id="id_page" value="<?= $id_page ?>" />
-	<input type="hidden" id="origin_id_parent" value="<?= $id_parent ?>" />
+	<input type="hidden" name="id_menu" value="<?php echo $id_menu; ?>" />
+	<input type="hidden" name="created" value="<?php echo $created; ?>" />
+	<input type="hidden" name="id_page" id="id_page" value="<?php echo $id_page; ?>" />
+	<input type="hidden" id="origin_id_parent" value="<?php echo $id_parent; ?>" />
 
 
 	<!-- Informations -->
@@ -25,18 +26,18 @@
 		<?php if ($id_page != '') :?>
 
 			<dl class="compact small">
-				<dt><label><?= lang('ionize_label_status') ?></label></dt>
+				<dt><label><?php echo lang('ionize_label_status'); ?></label></dt>
 				<dd>
-					<a id="iconPageStatus" class="icon page<?= $id_page ?> <?=($online == '1') ? 'online' : 'offline' ;?>"></a>
+					<a id="iconPageStatus" class="icon page<?php echo $id_page; ?> <?php echo($online == '1') ? 'online' : 'offline' ;?>"></a>
 				</dd>
 			</dl>
 
 			<?php if ($this->connect->is('super-admins')) :?>
 
 				<dl class="compact small">
-					<dt><label><?= lang('ionize_label_name') ?></label></dt>
+					<dt><label><?php echo lang('ionize_label_name'); ?></label></dt>
 					<dd>
-						<a class="edit dynamic-input left" data-id="<?= $id_page ?>" data-name="name" data-url="page/update_name"><?= $name ?></a>
+						<a class="edit dynamic-input left" data-id="<?php echo $id_page; ?>" data-name="name" data-url="page/update_name"><?php echo $name; ?></a>
 					</dd>
 				</dl>
 
@@ -45,20 +46,20 @@
 
 			<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
 				<dl class="small compact">
-					<dt><label><?= lang('ionize_label_date') ?></label></dt>
-					<dd><?= humanize_mdate($logical_date, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($logical_date, '%H:%i:%s') ?></span></dd>
+					<dt><label><?php echo lang('ionize_label_date'); ?></label></dt>
+					<dd><?php echo humanize_mdate($logical_date, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($logical_date, '%H:%i:%s'); ?></span></dd>
 				</dl>
 			<?php endif ;?>
 
 			<dl class="compact small">
-				<dt><label><?= lang('ionize_label_created') ?></label></dt>
-				<dd><?= humanize_mdate($created, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($created, '%H:%i:%s') ?></span></dd>
+				<dt><label><?php echo lang('ionize_label_created'); ?></label></dt>
+				<dd><?php echo humanize_mdate($created, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($created, '%H:%i:%s'); ?></span></dd>
 			</dl>
 
 			<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
 				<dl class="compact small">
-					<dt><label><?= lang('ionize_label_updated') ?></label></dt>
-					<dd><?= humanize_mdate($updated, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($updated, '%H:%i:%s') ?></span></dd>
+					<dt><label><?php echo lang('ionize_label_updated'); ?></label></dt>
+					<dd><?php echo humanize_mdate($updated, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($updated, '%H:%i:%s'); ?></span></dd>
 				</dl>
 			<?php endif ;?>
 
@@ -75,13 +76,13 @@
 		<?php if ($id_page != '') :?>
 
 			<!-- Modules PlaceHolder -->
-			<?= get_modules_addons('page', 'options_top'); ?>
+			<?php echo get_modules_addons('page', 'options_top'); ?>
 
 		<?php endif ;?>
 
 
 		<!-- Options -->
-		<h3 class="toggler"><?= lang('ionize_title_attributes') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_title_attributes'); ?></h3>
 
 		<div class="element">
 
@@ -91,7 +92,7 @@
 				<!-- Appears as menu item in menu ? -->
 				<dl class="small">
 					<dt>
-						<label for="appears" title="<?= lang('ionize_help_appears') ?>"><?= lang('ionize_label_appears') ?></label>
+						<label for="appears" title="<?php echo lang('ionize_help_appears'); ?>"><?php echo lang('ionize_label_appears'); ?></label>
 					</dt>
 					<dd>
 						<input id="appears" name="appears" type="checkbox" class="inputcheckbox" <?php if ($appears == 1):?> checked="checked" <?php endif;?> value="1" />
@@ -103,7 +104,7 @@
 			<!-- Has one URL ? Means is reachable through its URL -->
 			<dl class="small">
 				<dt>
-					<label for="has_url" title="<?= lang('ionize_help_has_url') ?>"><?= lang('ionize_label_has_url') ?></label>
+					<label for="has_url" title="<?php echo lang('ionize_help_has_url'); ?>"><?php echo lang('ionize_label_has_url'); ?></label>
 				</dt>
 				<dd>
 					<input id="has_url" name="has_url" type="checkbox" class="inputcheckbox" <?php if ($has_url == 1):?> checked="checked" <?php endif;?> value="1" />
@@ -114,10 +115,10 @@
 			<?php if ( ! empty($types)) :?>
 			<dl class="small">
 				<dt>
-					<label for="id_type" title="<?= lang('ionize_help_page_type') ?>"><?= lang('ionize_label_type') ?></label>
+					<label for="id_type" title="<?php echo lang('ionize_help_page_type'); ?>"><?php echo lang('ionize_label_type'); ?></label>
 				</dt>
 				<dd>
-					<?= $types ?>
+					<?php echo $types; ?>
 				</dd>
 			</dl>
 			<?php endif ;?>
@@ -126,10 +127,10 @@
 			<?php if ($id_page !='' && isset($views)) :?>
 			<dl class="small">
 				<dt>
-					<label for="view" title="<?= lang('ionize_help_page_view') ?>"><?= lang('ionize_label_view') ?></label>
+					<label for="view" title="<?php echo lang('ionize_help_page_view'); ?>"><?php echo lang('ionize_label_view'); ?></label>
 				</dt>
 				<dd>
-					<?= $views ?>
+					<?php echo $views; ?>
 				</dd>
 			</dl>
 			<?php endif ;?>
@@ -138,10 +139,10 @@
 			<?php if ($id_page !='' && isset($single_views)) :?>
 			<dl class="small<?php if (!isset($article_views) && ! isset($article_list_views)) :?> last<?php endif ;?>">
 				<dt>
-					<label for="view" title="<?= lang('ionize_help_page_single_view') ?>"><?= lang('ionize_label_page_single_view') ?></label>
+					<label for="view" title="<?php echo lang('ionize_help_page_single_view'); ?>"><?php echo lang('ionize_label_page_single_view'); ?></label>
 				</dt>
 				<dd>
-					<?= $single_views ?>
+					<?php echo $single_views; ?>
 				</dd>
 			</dl>
 			<?php endif ;?>
@@ -150,10 +151,10 @@
 			<?php if (isset($article_list_views)) :?>
 			<dl class="small<?php if (!isset($article_views)) :?> last<?php endif ;?>">
 				<dt>
-					<label for="article_list_view" title="<?= lang('ionize_help_article_list_template') ?>"><?= lang('ionize_label_article_list_template') ?></label>
+					<label for="article_list_view" title="<?php echo lang('ionize_help_article_list_template'); ?>"><?php echo lang('ionize_label_article_list_template'); ?></label>
 				</dt>
 				<dd>
-					<?= $article_list_views ?>
+					<?php echo $article_list_views; ?>
 				</dd>
 			</dl>
 			<?php endif ;?>
@@ -162,10 +163,10 @@
 			<?php if (isset($article_views)) :?>
 			<dl class="small last">
 				<dt>
-					<label for="article_view" title="<?= lang('ionize_help_article_template') ?>"><?= lang('ionize_label_article_template') ?></label>
+					<label for="article_view" title="<?php echo lang('ionize_help_article_template'); ?>"><?php echo lang('ionize_label_article_template'); ?></label>
 				</dt>
 				<dd>
-					<?= $article_views ?>
+					<?php echo $article_views; ?>
 				</dd>
 			</dl>
 			<?php endif ;?>
@@ -177,24 +178,24 @@
 		<!-- Parent -->
 		<?php if ($id_page != '') :?>
 
-			<h3 class="toggler"><?= lang('ionize_title_page_parent') ?></h3>
+			<h3 class="toggler"><?php echo lang('ionize_title_page_parent'); ?></h3>
 
 			<div class="element">
 
 				<!-- Menu -->
 				<dl class="small">
 					<dt>
-						<label for="id_menu"><?= lang('ionize_label_menu') ?></label>
+						<label for="id_menu"><?php echo lang('ionize_label_menu'); ?></label>
 					</dt>
 					<dd>
-						<?= $menus ?>
+						<?php echo $menus; ?>
 					</dd>
 				</dl>
 
 				<!-- Parent -->
 				<dl class="small last">
 					<dt>
-						<label for="id_parent"><?= lang('ionize_label_parent') ?></label>
+						<label for="id_parent"><?php echo lang('ionize_label_parent'); ?></label>
 					</dt>
 					<dd>
 						<div id="parentSelectContainer"></div>
@@ -207,34 +208,34 @@
 
 
 		<!-- Dates -->
-		<h3 class="toggler"><?= lang('ionize_title_dates') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_title_dates'); ?></h3>
 
 		<div class="element">
 			<dl class="small">
 				<dt>
-					<label for="logical_date"><?= lang('ionize_label_date') ?></label>
+					<label for="logical_date"><?php echo lang('ionize_label_date'); ?></label>
 				</dt>
 				<dd>
-					<input id="logical_date" name="logical_date" type="text" class="inputtext date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+					<input id="logical_date" name="logical_date" type="text" class="inputtext date" value="<?php echo humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="logical_date"></a>
 				</dd>
 			</dl>
 			<dl class="small">
 				<dt>
-					<label for="publish_on" title="<?= lang('ionize_help_publish_on') ?>"><?= lang('ionize_label_publish_on') ?></label>
+					<label for="publish_on" title="<?php echo lang('ionize_help_publish_on'); ?>"><?php echo lang('ionize_label_publish_on'); ?></label>
 				</dt>
 				<dd>
-					<input id="publish_on" name="publish_on" type="text" class="inputtext date" value="<?= humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+					<input id="publish_on" name="publish_on" type="text" class="inputtext date" value="<?php echo humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="publish_on"></a>
 				</dd>
 			</dl>
 
 			<dl class="small last">
 				<dt>
-					<label for="publish_off" title="<?= lang('ionize_help_publish_off') ?>"><?= lang('ionize_label_publish_off') ?></label>
+					<label for="publish_off" title="<?php echo lang('ionize_help_publish_off'); ?>"><?php echo lang('ionize_label_publish_off'); ?></label>
 				</dt>
 				<dd>
-					<input id="publish_off" name="publish_off" type="text" class="inputtext date"  value="<?= humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+					<input id="publish_off" name="publish_off" type="text" class="inputtext date"  value="<?php echo humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="publish_off"></a>
 				</dd>
 			</dl>
@@ -243,24 +244,24 @@
 		<!-- Subnavigation -->
 		<?php if ($id_page != '') :?>
 
-			<h3 class="toggler"><?= lang('ionize_title_sub_navigation') ?></h3>
+			<h3 class="toggler"><?php echo lang('ionize_title_sub_navigation'); ?></h3>
 
 			<div class="element">
 
 				<!-- Subnav Menu -->
 				<dl class="small">
 					<dt>
-						<label for="id_subnav_menu"><?= lang('ionize_label_menu') ?></label>
+						<label for="id_subnav_menu"><?php echo lang('ionize_label_menu'); ?></label>
 					</dt>
 					<dd>
-						<?= $subnav_menu ?>
+						<?php echo $subnav_menu; ?>
 					</dd>
 				</dl>
 
 				<!-- ID sub navigation Page -->
 				<dl class="small last">
 					<dt>
-						<label for="id_subnav"><?= lang('ionize_label_page') ?></label>
+						<label for="id_subnav"><?php echo lang('ionize_label_page'); ?></label>
 					</dt>
 					<dd>
 						<div id="subnavSelectContainer"></div>
@@ -276,7 +277,7 @@
 					<div id="subnavTitleTab" class="mainTabs small gray">
 						<ul class="tab-menu">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<li><a><?= lang('ionize_label_title') ?> <?= ucfirst($language['lang']) ?></a></li>
+							<li><a><?php echo lang('ionize_label_title'); ?> <?php echo ucfirst($language['lang']); ?></a></li>
 							<?php endforeach ;?>
 						</ul>
 						<div class="clear"></div>
@@ -285,7 +286,7 @@
 
 						<?php foreach(Settings::get_languages() as $language) :?>
 						<div class="tabcontent">
-							<textarea id="subnav_title_<?= $language['lang'] ?>" name="subnav_title_<?= $language['lang'] ?>" class="autogrow"><?= ${$language['lang']}['subnav_title'] ?></textarea>
+							<textarea id="subnav_title_<?php echo $language['lang']; ?>" name="subnav_title_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['subnav_title']; ?></textarea>
 						</div>
 						<?php endforeach ;?>
 
@@ -297,14 +298,14 @@
 
 
 		<!-- Advanced Options -->
-		<h3 class="toggler"><?= lang('ionize_title_advanced') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_title_advanced'); ?></h3>
 
 		<div class="element">
 
 			<!-- Home page -->
 			<dl class="small">
 				<dt>
-					<label for="home" title="<?= lang('ionize_help_home_page') ?>"><?= lang('ionize_label_home_page') ?></label>
+					<label for="home" title="<?php echo lang('ionize_help_home_page'); ?>"><?php echo lang('ionize_label_home_page'); ?></label>
 				</dt>
 				<dd>
 					<input id="home" name="home" type="checkbox" class="inputcheckbox" <?php if ($home == 1):?> checked="checked" <?php endif;?> value="1" />
@@ -314,7 +315,7 @@
 			<!-- Used by module -->
 			<dl class="small">
 				<dt>
-					<label for="used_by_module" title="<?= lang('ionize_help_page_used_by_module') ?>"><?= lang('ionize_label_page_used_by_module') ?></label>
+					<label for="used_by_module" title="<?php echo lang('ionize_help_page_used_by_module'); ?>"><?php echo lang('ionize_label_page_used_by_module'); ?></label>
 				</dt>
 				<dd>
 					<input id="used_by_module" name="used_by_module" type="checkbox" class="inputcheckbox" <?php if ($used_by_module == 1):?> checked="checked" <?php endif;?> value="1" />
@@ -324,30 +325,30 @@
 			<!-- Pagination -->
 			<dl class="small last">
 				<dt>
-					<label for="pagination" title="<?= lang('ionize_help_pagination') ?>"><?= lang('ionize_label_pagination_nb') ?></label>
+					<label for="pagination" title="<?php echo lang('ionize_help_pagination'); ?>"><?php echo lang('ionize_label_pagination_nb'); ?></label>
 				</dt>
 				<dd>
-					<input id="pagination" name="pagination" type="text" class="inputtext w40" value="<?= $pagination ?>" />
+					<input id="pagination" name="pagination" type="text" class="inputtext w40" value="<?php echo $pagination; ?>" />
 				</dd>
 			</dl>
 		</div>
 
 
 		<!-- SEO -->
-		<h3 class="toggler"><?= lang('ionize_title_seo') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_title_seo'); ?></h3>
 
 		<div class="element">
 
 			<!-- Priority -->
 			<dl class="small">
 				<dt>
-					<label for="priority" title="<?= lang('ionize_help_sitemap_priority') ?>"><?= lang('ionize_label_sitemap_priority') ?></label>
+					<label for="priority" title="<?php echo lang('ionize_help_sitemap_priority'); ?>"><?php echo lang('ionize_label_sitemap_priority'); ?></label>
 				</dt>
 				<dd>
 					<select name="priority" id="priority" class="inputtext w40">
 						<?php for($i=0; $i<=10; $i++) :?>
 
-						<option value="<?= $i ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?= $i ?></option>
+						<option value="<?php echo $i; ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?php echo $i; ?></option>
 
 						<?php endfor; ?>
 					</select>
@@ -355,13 +356,13 @@
 			</dl>
 
 			<!-- Meta_Description -->
-			<h4 class="help" title="<?= lang('ionize_help_page_meta') ?>"><?= lang('ionize_label_meta_description') ?></h4>
+			<h4 class="help" title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
 
 			<div class="small optionInputTab">
 				<div id="metaDescriptionTab" class="mainTabs small gray">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?= ucfirst($language['lang']) ?></a></li>
+						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
 						<?php endforeach ;?>
 					</ul>
 					<div class="clear"></div>
@@ -370,7 +371,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_description_<?= $language['lang'] ?>" name="meta_description_<?= $language['lang'] ?>" class="autogrow"><?= ${$language['lang']}['meta_description'] ?></textarea>
+						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_description']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 
@@ -379,12 +380,12 @@
 
 
 			<!-- Meta_Keywords -->
-			<h4 class="help" title="<?= lang('ionize_help_page_meta') ?>"><?= lang('ionize_label_meta_keywords') ?></h4>
+			<h4 class="help" title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
 			<div class="small optionInputTab">
 				<div id="metaKeywordsTab" class="mainTabs small gray">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?= ucfirst($language['lang']) ?></a></li>
+						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
 						<?php endforeach ;?>
 					</ul>
 					<div class="clear"></div>
@@ -393,7 +394,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_keywords_<?= $language['lang'] ?>" name="meta_keywords_<?= $language['lang'] ?>" class="autogrow"><?= ${$language['lang']}['meta_keywords'] ?></textarea>
+						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_keywords']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 
@@ -405,16 +406,16 @@
 
 
 		<!-- Access authorization -->
-		<h3 class="toggler"><?= lang('ionize_title_authorization') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_title_authorization'); ?></h3>
 
 		<div class="element">
 			<dl class="small last">
 				<dt>
-					<label for="template"><?= lang('ionize_label_groups') ?></label>
+					<label for="template"><?php echo lang('ionize_label_groups'); ?></label>
 				</dt>
 				<dd>
 					<div id="groups">
-						<?= $groups ?>
+						<?php echo $groups; ?>
 					</div>
 				</dd>
 			</dl>
@@ -422,20 +423,20 @@
 
 
 		<!-- Operations on Page -->
-		<h3 class="toggler"><?= lang('ionize_title_operation') ?></h3>
+		<h3 class="toggler"><?php echo lang('ionize_title_operation'); ?></h3>
 
 		<div class="element">
 
 			<!-- Copy Content -->
 			<dl class="small">
 				<dt>
-					<label for="lang_copy_from" title="<?= lang('ionize_help_copy_content') ?>"><?= lang('ionize_label_copy_content') ?></label>
+					<label for="lang_copy_from" title="<?php echo lang('ionize_help_copy_content'); ?>"><?php echo lang('ionize_label_copy_content'); ?></label>
 				</dt>
 				<dd>
 					<div class="w100 left">
 						<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
+							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
@@ -443,19 +444,19 @@
 
 						<select name="lang_copy_to" id="lang_copy_to" class="w100 select mt5">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
+							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
 					</div>
-					<div class="w30 h50 left ml5" style="background:url(<?= theme_url() ?>images/icon_24_from_to.png) no-repeat 50% 50%;"></div>
+					<div class="w30 h50 left ml5" style="background:url(<?php echo theme_url(); ?>images/icon_24_from_to.png) no-repeat 50% 50%;"></div>
 				</dd>
 			</dl>
 
 			<!-- Inlude article content  -->
 			<dl class="small">
 				<dt>
-					<label for="copy_article" title="<?= lang('ionize_help_copy_article_content') ?>"><?= lang('ionize_label_copy_article_content') ?></label></dt>
+					<label for="copy_article" title="<?php echo lang('ionize_help_copy_article_content'); ?>"><?php echo lang('ionize_label_copy_article_content'); ?></label></dt>
 				<dd>
 					<input type="checkbox" name="copy_article" id="copy_article" value="1" />
 				</dd>
@@ -465,7 +466,7 @@
 			<dl class="small last">
 				<dt>&#160;</dt>
 				<dd>
-					<input type="submit" value="<?= lang('ionize_button_copy_content') ?>" class="submit" id="copy_lang">
+					<input type="submit" value="<?php echo lang('ionize_button_copy_content'); ?>" class="submit" id="copy_lang">
 				</dd>
 			</dl>
 
@@ -474,12 +475,12 @@
 				<hr class="ml10" />
 
 				<dl class="small compact mt10">
-					<dt><label for="reorder_direction" title="<?=lang('ionize_label_help_articles_reorder')?>"><?= lang('ionize_label_article_reorder') ?></label></dt>
+					<dt><label for="reorder_direction" title="<?php echo lang('ionize_label_help_articles_reorder'); ?>"><?php echo lang('ionize_label_article_reorder'); ?></label></dt>
 					<dd>
 						<select name="reorder_direction" id="reorder_direction" class="select">
 
-							<option value="DESC"><?= lang('ionize_label_date_desc') ?></option>
-							<option value="ASC"><?= lang('ionize_label_date_asc') ?></option>
+							<option value="DESC"><?php echo lang('ionize_label_date_desc'); ?></option>
+							<option value="ASC"><?php echo lang('ionize_label_date_asc'); ?></option>
 
 						</select>
 					</dd>
@@ -489,7 +490,7 @@
 				<dl class="small last">
 					<dt>&#160;</dt>
 					<dd>
-						<input type="submit" value="<?= lang('ionize_button_reorder') ?>" class="submit mt10" id="button_reorder_articles">
+						<input type="submit" value="<?php echo lang('ionize_button_reorder'); ?>" class="submit mt10" id="button_reorder_articles">
 					</dd>
 				</dl>
 			<?php endif ;?>
@@ -500,7 +501,7 @@
 		<?php if ($id_page != '') :?>
 
 			<!-- Modules PlaceHolder -->
-			<?= get_modules_addons('page', 'options_bottom'); ?>
+			<?php echo get_modules_addons('page', 'options_bottom'); ?>
 
 		<?php endif ;?>
 
@@ -517,7 +518,7 @@
 		// Link to page or article or what else...
 		if ($('linkContainer'))
 		{
-			ION.HTML(admin_url + 'page/get_link', {'id_page': '<?= $id_page ?>'}, {'update': 'linkContainer'});
+			ION.HTML(admin_url + 'page/get_link', {'id_page': '<?php echo $id_page; ?>'}, {'update': 'linkContainer'});
 		}
 
 		/**
@@ -533,7 +534,7 @@
 		   */
 
 		// Page status
-		ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?= $id_page ?>');
+		ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
 
 //		var id_current = ($('id_page').value) ? $('id_page').value : '0';
 //		var id_parent = ($('origin_id_parent').value) ? $('origin_id_parent').value : '0';
@@ -545,7 +546,7 @@
 				{
 					'id_menu' : $('id_subnav_menu').value,
 					'id_current': 0,
-					'id_parent': '<?= $id_subnav ?>',
+					'id_parent': '<?php echo $id_subnav; ?>',
 					'element_id' : 'id_subnav'
 				},
 				{
@@ -596,7 +597,7 @@
 	 * Calendars init
 	 *
 	 */
-	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
+	ION.initDatepicker('<?php echo Settings::get('date_format'); ?>');
 
 	// Current & parent page ID
 	var id_current = ($('id_page').value) ? $('id_page').value : '0';

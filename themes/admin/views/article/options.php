@@ -11,15 +11,15 @@
 
 ?>
 
-<form name="articleOptionsForm" id="articleOptionsForm" method="post" action="<?= admin_url() . 'article/save_options'?>">
+<form name="articleOptionsForm" id="articleOptionsForm" method="post" action="<?php echo admin_url() . 'article/save_options'?>">
 
 	<input type="hidden" name="element" id="element" value="article" />
-	<input type="hidden" name="id_article" id="id_article" value="<?= $id_article ?>" />
-	<input type="hidden" name="rel" id="rel" value="<?= $id_page ?>.<?= $id_article ?>" />
-	<input type="hidden" name="created" value="<?= $created ?>" />
-	<input type="hidden" name="author" value="<?= $author ?>" />
-	<input type="hidden" name="main_parent" id="main_parent" value="<?= $main_parent ?>" />
-	<input type="hidden" name="has_url" id="has_url" value="<?= $has_url ?>" />
+	<input type="hidden" name="id_article" id="id_article" value="<?php echo $id_article; ?>" />
+	<input type="hidden" name="rel" id="rel" value="<?php echo $id_page; ?>.<?php echo $id_article; ?>" />
+	<input type="hidden" name="created" value="<?php echo $created; ?>" />
+	<input type="hidden" name="author" value="<?php echo $author; ?>" />
+	<input type="hidden" name="main_parent" id="main_parent" value="<?php echo $main_parent; ?>" />
+	<input type="hidden" name="has_url" id="has_url" value="<?php echo $has_url; ?>" />
 
 
 	<!-- Informations -->
@@ -30,9 +30,9 @@
 			<?php if ($this->connect->is('super-admins')) :?>
 
 				<dl class="compact small">
-					<dt><label><?= lang('ionize_label_name') ?></label></dt>
+					<dt><label><?php echo lang('ionize_label_name'); ?></label></dt>
 					<dd>
-						<a class="edit dynamic-input" data-id="<?= $id_article ?>" data-name="name" data-id_page="<?= $id_page ?>" data-url="article/update_name"><?= $name ?></a>
+						<a class="edit dynamic-input" data-id="<?php echo $id_article; ?>" data-name="name" data-id_page="<?php echo $id_page; ?>" data-url="article/update_name"><?php echo $name; ?></a>
 					</dd>
 				</dl>
 
@@ -42,27 +42,27 @@
 
 		<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
 			<dl class="small compact">
-				<dt><label><?= lang('ionize_label_date') ?></label></dt>
-				<dd><?= humanize_mdate($logical_date, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($logical_date, '%H:%i:%s') ?></span></dd>
+				<dt><label><?php echo lang('ionize_label_date'); ?></label></dt>
+				<dd><?php echo humanize_mdate($logical_date, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($logical_date, '%H:%i:%s'); ?></span></dd>
 			</dl>
 			<?php endif ;?>
 
 		<dl class="small compact">
-			<dt><label><?= lang('ionize_label_created') ?></label></dt>
-			<dd><?= humanize_mdate($created, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($created, '%H:%i:%s') ?></span></dd>
+			<dt><label><?php echo lang('ionize_label_created'); ?></label></dt>
+			<dd><?php echo humanize_mdate($created, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($created, '%H:%i:%s'); ?></span></dd>
 		</dl>
 
 		<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
 			<dl class="small compact">
-				<dt><label><?= lang('ionize_label_updated') ?></label></dt>
-				<dd><?= humanize_mdate($updated, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($updated, '%H:%i:%s') ?></span></dd>
+				<dt><label><?php echo lang('ionize_label_updated'); ?></label></dt>
+				<dd><?php echo humanize_mdate($updated, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($updated, '%H:%i:%s'); ?></span></dd>
 			</dl>
 			<?php endif ;?>
 
 		<?php if (humanize_mdate($publish_on, Settings::get('date_format')) != '') :?>
 			<dl class="small compact">
-				<dt><label><?= lang('ionize_label_publish_on') ?></label></dt>
-				<dd><?= humanize_mdate($publish_on, Settings::get('date_format')) ?> <span class="lite"><?= humanize_mdate($publish_on, '%H:%i:%s') ?></span></dd>
+				<dt><label><?php echo lang('ionize_label_publish_on'); ?></label></dt>
+				<dd><?php echo humanize_mdate($publish_on, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($publish_on, '%H:%i:%s'); ?></span></dd>
 			</dl>
 			<?php endif ;?>
 
@@ -86,19 +86,19 @@
 		<?php if ( ! empty($id_article)) :?>
 
 			<!-- Modules PlaceHolder -->
-			<?= get_modules_addons('article', 'options_top'); ?>
+			<?php echo get_modules_addons('article', 'options_top'); ?>
 
 		<?php endif ;?>
 
 		<!-- Options -->
-		<h3 class="toggler toggler-options"><?= lang('ionize_title_attributes') ?></h3>
+		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_attributes'); ?></h3>
 
 		<div class="element element-options">
 
 			<!-- Indexed content -->
 			<dl class="small">
 				<dt>
-					<label for="indexed" title="<?= lang('ionize_help_indexed') ?>"><?= lang('ionize_label_indexed') ?></label>
+					<label for="indexed" title="<?php echo lang('ionize_help_indexed'); ?>"><?php echo lang('ionize_label_indexed'); ?></label>
 				</dt>
 				<dd>
 					<input id="indexed" name="indexed" type="checkbox" class="inputcheckbox" <?php if ($indexed == 1):?> checked="checked" <?php endif;?> value="1" />
@@ -108,15 +108,15 @@
 			<!-- Categories -->
 			<dl class="small">
 				<dt>
-					<label for="categories"><?= lang('ionize_label_categories') ?></label>
+					<label for="categories"><?php echo lang('ionize_label_categories'); ?></label>
 				</dt>
 				<dd>
 					<div id="categories">
-						<?= $categories ?>
+						<?php echo $categories; ?>
 					</div>
 
 					<!-- Category create button -->
-					<a onclick="javascript:ION.formWindow('category', 'categoryForm', '<?= lang('ionize_title_category_new') ?>', 'category/get_form/article/<?= $id_article ?>', {width:360, height:230})"><?= lang('ionize_label_new_category') ?></a>
+					<a onclick="javascript:ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})"><?php echo lang('ionize_label_new_category'); ?></a>
 
 				</dd>
 			</dl>
@@ -127,7 +127,7 @@
 			<!-- Parent pages list -->
 			<dl class="small dropPageInArticle">
 				<dt>
-					<label for="parents" title="<?= lang('ionize_help_article_context') ?>"><?= lang('ionize_label_parents') ?></label>
+					<label for="parents" title="<?php echo lang('ionize_help_article_context'); ?>"><?php echo lang('ionize_label_parents'); ?></label>
 				</dt>
 				<dd>
 
@@ -144,13 +144,13 @@
 							// $rel = $page['id_page']. '.' .$id_article;
 							?>
 
-							<li rel="<?= $page['id_page'] ?>.<?= $id_article ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?= $title ?></a></li>
+							<li rel="<?php echo $page['id_page']; ?>.<?php echo $id_article; ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?php echo $title; ?></a></li>
 
 							<?php endforeach ;?>
 
 						</ul>
 						<!--
-										<input type="text" id="new_parent" class="inputtext w140 italic empty nofocus droppable" alt="<?= lang('ionize_label_drop_page_here') ?>"></input>
+										<input type="text" id="new_parent" class="inputtext w140 italic empty nofocus droppable" alt="<?php echo lang('ionize_label_drop_page_here'); ?>"></input>
 										-->
 					</div>
 				</dd>
@@ -163,7 +163,7 @@
 
 
 		<!-- Advanced options
-					<h3 class="toggler"><?= lang('ionize_title_advanced') ?></h3>
+					<h3 class="toggler"><?php echo lang('ionize_title_advanced'); ?></h3>
 
 					<div class="element">
 
@@ -171,19 +171,19 @@
 						<!-- Tags
 						<dl class="small">
 							<dt>
-								<label for="template"><?= lang('ionize_label_tags') ?></label>
+								<label for="template"><?php echo lang('ionize_label_tags'); ?></label>
 							</dt>
 							<dd>
-								<textarea id="tags" name="tags" class="inputtext w140 h40" type="text" onkeyup="formManager.toLowerCase(this, 'tags');"><?= $tags ?></textarea>
+								<textarea id="tags" name="tags" class="inputtext w140 h40" type="text" onkeyup="formManager.toLowerCase(this, 'tags');"><?php echo $tags; ?></textarea>
 							</dd>
 						</dl>
 
 						<!-- Existing Tags
 						<dl class="small last">
 							<dt>
-								<label for="template"><?= lang('ionize_label_existing_tags') ?></label>
+								<label for="template"><?php echo lang('ionize_label_existing_tags'); ?></label>
 							</dt>
-							<dd><?= $existing_tags ?></dd>
+							<dd><?php echo $existing_tags; ?></dd>
 						</dl>
 
 
@@ -193,34 +193,34 @@
 
 
 		<!-- Dates -->
-		<h3 class="toggler toggler-options"><?= lang('ionize_title_dates') ?></h3>
+		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_dates'); ?></h3>
 
 		<div class="element element-options">
 			<dl class="small">
 				<dt>
-					<label for="logical_date"><?= lang('ionize_label_date') ?></label>
+					<label for="logical_date"><?php echo lang('ionize_label_date'); ?></label>
 				</dt>
 				<dd>
-					<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?= humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+					<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?php echo humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="logical_date"></a>
 				</dd>
 			</dl>
 			<dl class="small">
 				<dt>
-					<label for="publish_on"><?= lang('ionize_label_publish_on') ?></label>
+					<label for="publish_on"><?php echo lang('ionize_label_publish_on'); ?></label>
 				</dt>
 				<dd>
-					<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?= humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+					<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?php echo humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="publish_on"></a>
 				</dd>
 			</dl>
 
 			<dl class="small last">
 				<dt>
-					<label for="publish_off"><?= lang('ionize_label_publish_off') ?></label>
+					<label for="publish_off"><?php echo lang('ionize_label_publish_off'); ?></label>
 				</dt>
 				<dd>
-					<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+					<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?php echo humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="publish_off"></a>
 				</dd>
 			</dl>
@@ -229,13 +229,13 @@
 		</div>
 
 		<!-- Comments
-					<h3 class="toggler"><?= lang('ionize_title_comments') ?></h3>
+					<h3 class="toggler"><?php echo lang('ionize_title_comments'); ?></h3>
 
 					<div class="element">
 
 						<dl class="small">
 							<dt>
-								<label for="comment_allow"><?= lang('ionize_label_comment_allow') ?></label>
+								<label for="comment_allow"><?php echo lang('ionize_label_comment_allow'); ?></label>
 							</dt>
 							<dd>
 								<input id="comment_allow" name="comment_allow" type="checkbox" class="inputcheckbox" <?php if ($comment_allow == 1):?> checked="checked" <?php endif;?>  />
@@ -244,7 +244,7 @@
 
 						<dl class="small">
 							<dt>
-								<label for="comment_autovalid"><?= lang('ionize_label_comment_autovalid') ?></label>
+								<label for="comment_autovalid"><?php echo lang('ionize_label_comment_autovalid'); ?></label>
 							</dt>
 							<dd>
 								<input id="comment_autovalid" name="comment_autovalid" type="checkbox" class="inputcheckbox" <?php if ($comment_autovalid == 1):?> checked="checked" <?php endif;?>  />
@@ -253,10 +253,10 @@
 
 						<dl class="small last">
 							<dt>
-								<label for="comment_expire"><?= lang('ionize_label_comment_expire') ?></label>
+								<label for="comment_expire"><?php echo lang('ionize_label_comment_expire'); ?></label>
 							</dt>
 							<dd>
-								<input id="comment_expire" name="comment_expire" type="text" class="inputtext w120 date"  value="<?= humanize_mdate($comment_expire, Settings::get('date_format'). ' %H:%i:%s') ?>" />
+								<input id="comment_expire" name="comment_expire" type="text" class="inputtext w120 date"  value="<?php echo humanize_mdate($comment_expire, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 							</dd>
 						</dl>
 
@@ -266,17 +266,17 @@
 
 
 		<!-- SEO -->
-		<h3 class="toggler toggler-options"><?= lang('ionize_title_seo') ?></h3>
+		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_seo'); ?></h3>
 
 		<div class="element element-options">
 			<!-- Meta_Description -->
-			<h4 class="help" title="<?= lang('ionize_help_article_meta_description') ?>"><?= lang('ionize_label_meta_description') ?></h4>
+			<h4 class="help" title="<?php echo lang('ionize_help_article_meta_description'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
 
 			<div class="small optionInputTab">
 				<div id="metaDescriptionTab" class="mainTabs small gray">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?= ucfirst($language['lang']) ?></a></li>
+						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
 						<?php endforeach ;?>
 					</ul>
 					<div class="clear"></div>
@@ -285,7 +285,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_description_<?= $language['lang'] ?>" name="meta_description_<?= $language['lang'] ?>" class="autogrow"><?= ${$language['lang']}['meta_description'] ?></textarea>
+						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_description']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 
@@ -294,12 +294,12 @@
 
 
 			<!-- Meta_Keywords -->
-			<h4 class="help" title="<?= lang('ionize_help_article_meta_keywords') ?>"><?= lang('ionize_label_meta_keywords') ?></h4>
+			<h4 class="help" title="<?php echo lang('ionize_help_article_meta_keywords'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
 			<div class="small optionInputTab">
 				<div id="metaKeywordsTab" class="mainTabs small gray">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?= ucfirst($language['lang']) ?></a></li>
+						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
 						<?php endforeach ;?>
 					</ul>
 					<div class="clear"></div>
@@ -308,7 +308,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_keywords_<?= $language['lang'] ?>" name="meta_keywords_<?= $language['lang'] ?>" class="autogrow"><?= ${$language['lang']}['meta_keywords'] ?></textarea>
+						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_keywords']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 
@@ -321,19 +321,19 @@
 		<!-- Copy Content -->
 		<?php if( ! empty($id_article)) :?>
 
-		<h3 class="toggler toggler-options"><?= lang('ionize_title_operation') ?></h3>
+		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_operation'); ?></h3>
 
 		<div class="element element-options">
 
 			<dl class="small">
 				<dt>
-					<label for="lang_copy_from" title="<?= lang('ionize_help_copy_content') ?>"><?= lang('ionize_label_copy_content') ?></label>
+					<label for="lang_copy_from" title="<?php echo lang('ionize_help_copy_content'); ?>"><?php echo lang('ionize_label_copy_content'); ?></label>
 				</dt>
 				<dd>
 					<div class="w100 left">
 						<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
+							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
@@ -341,12 +341,12 @@
 
 						<select name="lang_copy_to" id="lang_copy_to" class="w100 select mt5">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?= $language['lang'] ?>"><?= ucfirst($language['name']) ?></option>
+							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
 					</div>
-					<div class="w30 h50 left ml5" style="background:url('<?= theme_url() ?>images/icon_24_from_to.png') no-repeat 50% 50%;"></div>
+					<div class="w30 h50 left ml5" style="background:url('<?php echo theme_url(); ?>images/icon_24_from_to.png') no-repeat 50% 50%;"></div>
 				</dd>
 			</dl>
 
@@ -354,7 +354,7 @@
 			<dl class="small">
 				<dt>&#160;</dt>
 				<dd>
-					<input type="submit" value="<?= lang('ionize_button_copy_content') ?>" class="submit" id="copy_lang">
+					<input type="submit" value="<?php echo lang('ionize_button_copy_content'); ?>" class="submit" id="copy_lang">
 				</dd>
 			</dl>
 
@@ -366,7 +366,7 @@
 		<?php if ( ! empty($id_article)) :?>
 
 			<!-- Modules PlaceHolder -->
-			<?= get_modules_addons('article', 'options_bottom'); ?>
+			<?php echo get_modules_addons('article', 'options_bottom'); ?>
 
 		<?php endif ;?>
 
@@ -473,7 +473,7 @@
 		// Link to page or article or what else...
 		if ($('linkContainer'))
 		{
-			ION.HTML(admin_url + 'article/get_link', {'id_page': '<?= $id_page ?>', 'id_article': '<?= $id_article ?>'}, {'update': 'linkContainer'});
+			ION.HTML(admin_url + 'article/get_link', {'id_page': '<?php echo $id_page; ?>', 'id_article': '<?php echo $id_article; ?>'}, {'update': 'linkContainer'});
 		}
 
 		/**

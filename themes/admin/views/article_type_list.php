@@ -5,7 +5,6 @@
  * Called through XHR by : /views/articles.php
  *
  */
-    log_message('error', 'View File Loaded : article_type_list.php');
 
 ?>
 

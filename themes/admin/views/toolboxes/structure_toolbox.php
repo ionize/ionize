@@ -1,9 +1,10 @@
+
 <div class="toolbox divider">
-	<input type="button" class="toolbar-button" id="btnStructureExpand" value="<?= lang('ionize_label_collapse_all') ?>" />
+	<input type="button" class="toolbar-button" id="btnStructureExpand" value="<?php echo lang('ionize_label_collapse_all'); ?>" />
 </div>
 
 <div class="toolbox ml5" id="toggleHeaderButton">
-	<span class="iconWrapper"><img src="<?= theme_url() ?>images/icon_16_screen.png" width="16" height="16" alt="<?= lang('ionize_button_toggle_header') ?>" title="<?= lang('ionize_button_toggle_header') ?>" /></span>
+	<span class="iconWrapper"><img src="<?php echo theme_url(); ?>images/icon_16_screen.png" width="16" height="16" alt="<?php echo lang('ionize_button_toggle_header'); ?>" title="<?php echo lang('ionize_button_toggle_header'); ?>" /></span>
 </div>
 
 

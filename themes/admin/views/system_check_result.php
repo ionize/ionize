@@ -1,7 +1,5 @@
 <?php
 
-    log_message('error', 'View File Loaded : system_check_result.php');
-
     /**
      * Displays one result for a system check
      * Called through XHR by : /admin/system_check.php

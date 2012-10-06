@@ -4,7 +4,7 @@
  * Modal window for extend field creation / edition
  *
  */
-    log_message('error', 'View File Loaded : extend_field.php');
+
 ?>
 
 <form name="extendfieldForm" id="extendfieldForm<?php echo $id_extend_field; ?>" action="<?php echo admin_url(); ?>extend_field/save">

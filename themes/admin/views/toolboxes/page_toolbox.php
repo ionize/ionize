@@ -1,37 +1,37 @@
 
 <div class="divider nobr" id="tPageFormSubmit">
 	<a id="pageFormSubmit" class="button submit">
-		<?= lang('ionize_button_save_page') ?>
+		<?php echo lang('ionize_button_save_page'); ?>
 	</a>
 </div>
 
 <div class="divider nobr" id="tPageDeleteButton">
 	<a id="pageDeleteButton" class="button no">
-		<?= lang('ionize_button_delete') ?>
+		<?php echo lang('ionize_button_delete'); ?>
 	</a>
 </div>
 
 <div class="divider" id="tSideColumnSwitcher">
 	<a class="button light" id="sideColumnSwitcher">
-		<i class="icon-options"></i><?= lang('ionize_label_options') ?>
+		<i class="icon-options"></i><?php echo lang('ionize_label_options'); ?>
 	</a>
 </div>
 
 <div class="divider" id="tPageAddContentElement">
 	<a id="addContentElement" class="button light" >
-		<i class="icon-element"></i><?= lang('ionize_label_add_content_element') ?>
+		<i class="icon-element"></i><?php echo lang('ionize_label_add_content_element'); ?>
 	</a>
 </div>
 
 <div class="divider" id="tPageMediaButton">
 	<a id="addMedia" class="fmButton button light">
-		<i class="icon-pictures"></i><?= lang('ionize_label_attach_media') ?>
+		<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
 	</a>
 </div>
 
 <div class="divider" id="tPageAddArticle">
 	<a id="addArticle" class="fmButton button light">
-		<i class="icon-article add"></i><?= lang('ionize_label_add_article') ?>
+		<i class="icon-article add"></i><?php echo lang('ionize_label_add_article'); ?>
 	</a>
 </div>
 

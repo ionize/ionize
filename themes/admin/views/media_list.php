@@ -4,7 +4,7 @@
  * Media list
  *
  */
-    log_message('error', 'View File Loaded : media_list.php');
+
 //    log_message('error', print_r($items, TRUE));
 ?>
 
@@ -39,15 +39,15 @@
 		
 		?>
 		
-		<li class="sortme" id="<?= $media['type'] ?>_<?= $media['id_media'] ?>">
-			<a class="icon right unlink" onclick="javascript:mediaManager.detachMedia('<?= $media['type'] ?>', '<?= $media['id_media'] ?>');" title="<?= lang('ionize_label_detach_media') ?>"></a>
+		<li class="sortme" id="<?php echo $media['type']; ?>_<?php echo $media['id_media']; ?>">
+			<a class="icon right unlink" onclick="javascript:mediaManager.detachMedia('<?php echo $media['type']; ?>', '<?php echo $media['id_media']; ?>');" title="<?php echo lang('ionize_label_detach_media'); ?>"></a>
 			<?php if( ! empty($media['lang_display'])) :?>
-				<a class="right mr10 " href="<?= $edit_href ?>"><?=lang('ionize_label_media_display_limited_to_lang')?> : <img src="<?= theme_url() ?>/images/world_flags/flag_<?= $media['lang_display']; ?>.gif" /></a>
+				<a class="right mr10 " href="<?php echo $edit_href; ?>"><?php echo lang('ionize_label_media_display_limited_to_lang'); ?> : <img src="<?php echo theme_url(); ?>/images/world_flags/flag_<?php echo $media['lang_display']; ?>.gif" /></a>
 			<?php endif ;?>
 			<span class="icon left drag"></span>
-			<a class="icon edit left mr5 ml5 help" href="<?= $edit_href ?>" title="<?= lang('ionize_label_edit') ?>"></a>
-			<a class="icon info left help ml5" title="<?= $media['path'] ?>" rel="<?= $details ?>"></a>
-			<a class="left ml10 help" href="<?= $edit_href ?>" title="<?= lang('ionize_label_edit') ?>"><?php if ($this->connect->is('super-admins') ) :?><?= $media['id_media'] ?> : <?php endif ;?><?= $media['file_name'] ?></a>
+			<a class="icon edit left mr5 ml5 help" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>"></a>
+			<a class="icon info left help ml5" title="<?php echo $media['path']; ?>" rel="<?php echo $details; ?>"></a>
+			<a class="left ml10 help" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>"><?php if ($this->connect->is('super-admins') ) :?><?php echo $media['id_media']; ?> : <?php endif ;?><?php echo $media['file_name']; ?></a>
 		</li>
 
 	<?php endforeach ;?>

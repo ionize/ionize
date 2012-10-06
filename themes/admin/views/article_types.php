@@ -4,7 +4,6 @@
  * Article types panel
  *
  */
-    log_message('error', 'View File Loaded : article_types.php');
 
 ?>
 

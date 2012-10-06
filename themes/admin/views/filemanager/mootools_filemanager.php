@@ -1,4 +1,3 @@
-
 <div id="mootools-filemanager"></div>
 
 <script type="text/javascript">	
@@ -8,7 +7,7 @@ ION.initToolbox();
 // Get the tokken, get the options...
 var xhr = new Request.JSON(
 {
-	url: '<?= admin_url() ?>media/get_tokken',
+	url: '<?php echo admin_url(); ?>media/get_tokken',
 	method: 'post',
 	onSuccess: function(responseJSON, responseText)
 	{

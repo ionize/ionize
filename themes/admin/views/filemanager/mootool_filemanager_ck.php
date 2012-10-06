@@ -9,33 +9,33 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-1.2.4-core-yc.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-1.2.4.4-more-yc.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-1.2.4-core-yc.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-1.2.4.4-more-yc.js"></script>
 
 
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mocha/source/Core/Core.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mocha/source/Layout/Layout.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mocha/source/Layout/Dock.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mocha/source/Window/Window.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mocha/source/Window/Modal.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mocha/source/Core/Core.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mocha/source/Layout/Layout.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mocha/source/Layout/Dock.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mocha/source/Window/Window.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mocha/source/Window/Modal.js"></script>
 
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/FileManager.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/FileManager.js"></script>
 
 <?php if (is_file(BASEPATH.'../'.Theme::get_theme_path().'javascript/mootools-filemanager/Language/Language.'.Settings::get_lang().'.js')) :?>
-	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Language/Language.<?= Settings::get_lang() ?>.js"></script>
+	<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Language/Language.<?php echo Settings::get_lang(); ?>.js"></script>
 <?php else :?>
-	<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Language/Language.en.js"></script>
+	<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Language/Language.en.js"></script>
 <?php endif ;?>	
 
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Additions.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader/Fx.ProgressBar.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader/Swiff.Uploader.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Uploader.js"></script>
-<script type="text/javascript" src="<?= theme_url() ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Additions.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Uploader/Fx.ProgressBar.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Uploader/Swiff.Uploader.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Uploader.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
 
 
-<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Css/FileManager.css" />
-<link rel="stylesheet" media="all" type="text/css" href="<?= theme_url() ?>javascript/mootools-filemanager/Css/Additions.css" />
+<link rel="stylesheet" media="all" type="text/css" href="<?php echo theme_url(); ?>javascript/mootools-filemanager/Css/FileManager.css" />
+<link rel="stylesheet" media="all" type="text/css" href="<?php echo theme_url(); ?>javascript/mootools-filemanager/Css/Additions.css" />
 
 
 <style>
@@ -59,8 +59,8 @@ div.filemanager-infos {
 	{
 		var complete = function(path, file)
 		{
-			var url = '<?php echo base_url() ?>' + path;
-			window.opener.CKEDITOR.tools.callFunction('<?php echo $CKEditorFuncNum ?>', url);
+			var url = '<?php echo base_url(); ?>' + path;
+			window.opener.CKEDITOR.tools.callFunction('<?php echo $CKEditorFuncNum; ?>', url);
 			window.close();
 		};
 
@@ -68,7 +68,7 @@ div.filemanager-infos {
 		// Get the tokken, get the options...
 		var xhr = new Request.JSON(
 		{
-			url: '<?= admin_url() ;?>media/get_tokken',
+			url: '<?php echo admin_url() ;?>media/get_tokken',
 			method: 'post',
 			onSuccess: function(responseJSON, responseText)
 			{
@@ -76,9 +76,9 @@ div.filemanager-infos {
 				if (responseJSON && responseJSON.tokken != '')
 				{
 			        var options = {
-						baseURL: '<?= base_url() ;?>',
-						url: '<?= admin_url() ;?>media/filemanager',
-						assetBasePath: '<?= theme_url() ?>javascript/mootools-filemanager/Assets',
+						baseURL: '<?php echo base_url() ;?>',
+						url: '<?php echo admin_url() ;?>media/filemanager',
+						assetBasePath: '<?php echo theme_url(); ?>javascript/mootools-filemanager/Assets',
 						language: '<?php echo Settings::get_lang() ;?>',
 						selectable: true,
 						'uploadAuthData': responseJSON.tokken,

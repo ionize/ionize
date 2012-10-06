@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : modules.php');
-?>
+
 <div id="maincolumn">
 
 	<h3><?php echo lang('ionize_title_modules_list'); ?></h3>

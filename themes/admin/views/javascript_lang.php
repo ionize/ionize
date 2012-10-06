@@ -15,7 +15,7 @@
  * @link		http://www.partikule.net
  *
  */
-    log_message('error', 'View File Loaded : javascript_lang.php');
+
 ?>
 
 var Lang = new Hash({

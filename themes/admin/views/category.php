@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : category.php');
-?>
+
 <!-- Category edit view - Modal window -->
 
 <form name="categoryForm<?php echo $id_category; ?>" id="categoryForm<?php echo $id_category; ?>" action="<?php echo admin_url(); ?>category/save">

@@ -4,7 +4,7 @@
  * Modal window for element field creation / edition
  *
  */
-    log_message('error', 'View File Loaded : element_field.php');
+
 
 $id = $id_extend_field;
 

@@ -1,6 +1,4 @@
-<?php
-    log_message('error', 'View File Loaded : dashboard.php');
-?>
+
 <div id="maincolumn">
 
 	<div style="overflow:hidden;">

@@ -1,13 +1,14 @@
+
 <div class="toolbox divider nobr">
-	<input id="translationFormSubmit" type="button" class="submit" value="<?= lang('ionize_button_save') ?>" />
+	<input id="translationFormSubmit" type="button" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
 </div>
 
 <div class="toolbox divider">
-	<input type="button" class="toolbar-button" id="btnExpand" value="<?= lang('ionize_label_expand_all') ?>" />
+	<input type="button" class="toolbar-button" id="btnExpand" value="<?php echo lang('ionize_label_expand_all'); ?>" />
 </div>
 
 <div class="toolbox">
-	<input type="button" class="toolbar-button plus" id="btnAddTranslation" value="<?= lang('ionize_label_add_translation') ?>" />
+	<input type="button" class="toolbar-button plus" id="btnAddTranslation" value="<?php echo lang('ionize_label_add_translation'); ?>" />
 </div>
 
 <script type="text/javascript">
