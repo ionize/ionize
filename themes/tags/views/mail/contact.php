@@ -60,7 +60,7 @@
 							Important : to swap text in the translated string, the 'lang' tag must be called
 							with the 'data' tag as parent.
 						-->
-                        <p><ion:data:lang key="mail_contact_message" swap="global::site_title, data::heard" /></p>
+                        <p><ion:data:lang key="mail_contact_message" swap="global::site_title, data::heard, data::email" autolink="false"/></p>
 
 						<p><ion:lang key="mail_contact_message2" /></p>
 

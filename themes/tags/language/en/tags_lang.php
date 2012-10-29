@@ -34,7 +34,7 @@ $lang['form_message_success'] = 'Thanks. Data sent successfully.';
 // Translated strings used in the contact form sent email
 $lang['mail_contact_subject'] = 'Thanks for your interest on %s';
 $lang['mail_contact_dear'] = 'Dear %s,';
-$lang['mail_contact_message'] = 'You heard about <b>%s</b> through <b>%s</b> and we thank you very much for your interest.';
+$lang['mail_contact_message'] = 'You heard about <b>%s</b> through <b>%s</b> and we thank you very much for your interest. Your email is %s.';
 $lang['mail_contact_message2'] = 'Here are the data you just send us:';
 $lang['mail_contact_thanks'] = 'The whole team of <b>%s</b> thanks you.';
 

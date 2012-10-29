@@ -84,7 +84,7 @@ test_tag_categories : 		Categories listing
 // Archives
 test_tag_archives			Archives tag
 
-// User
+// User / Form
 test_form_user				User and Form tags (login / logout / register / profile)
 test_form_contact			Contact form : Theme defined form
 

@@ -98,7 +98,7 @@ class Medias
 				$settings['method'] = self::$default_resize_method;
 
 			// Other options
-			// $settings['watermark'] = ( ! empty($conds['watermark'])) ? $conds['watermark'] : '';
+			$settings['watermark'] = ( ! empty($settings['watermark'])) ? $settings['watermark'] : '';
 			$settings['unsharp'] = ( ! empty($settings['unsharp'])) ? $settings['unsharp'] : FALSE;
 
 			$size_error = FALSE;
