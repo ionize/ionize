@@ -25,8 +25,6 @@
 class Translation extends MY_admin 
 {
 	// Reg Expression used to find translation items in views files.
-//	private $reg_key = '% term=\"([- \w:]+?)\" *\/>%';
-
 	private $reg_keys = array(
 		'% term=\"([- \w:]+?)\" *\/>%',
 		'% lang key=\"([- \w:]+?)\" *\/>%',
@@ -168,17 +166,22 @@ class Translation extends MY_admin
 					$idx = substr($key,4);
 					
 					$term = $_REQUEST[$key];
-					
+
 					if ($term != '')
 					{
 						$value = $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)];
-						
+$value = stripslashes($value);
+						log_message('error', $value);
+
+
 						if ( ! get_magic_quotes_gpc())
 						{
 							$value = addslashes($value);
 						}
 						$value = str_replace("\\'", "'", $value);
-						$data .= "\$lang['".$term."'] = \"".$value."\";\n"; 
+						$value = str_replace("'", "\'", $value);
+
+						$data .= "\$lang['".$term."'] = '".$value."';\n";
 					}
 				}
 			}

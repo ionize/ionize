@@ -96,9 +96,8 @@ test_tag_elements : 			Content Elements
 test_tag_subnavigation			Remove ???
 
 test_module_search
-test_module_simpleform
 
 */
 ?>
 
-<ion:partial view="test_form_contact"  />
+<ion:partial view="test_tag_lang"  />

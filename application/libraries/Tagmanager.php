@@ -1724,9 +1724,7 @@ class TagManager
 
 		$swap = $tag->getAttribute('swap');
 		if ( ! is_null($swap))
-			$swap = self::get_lang_swap($tag);
-
-
+			$swap = self::get_lang_swap($tag, $swap);
 
 		if ( ! is_null($term))
 		{
@@ -1742,8 +1740,7 @@ class TagManager
 
 		return '';
 	}
-	
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -2851,9 +2848,9 @@ class TagManager
 	// ------------------------------------------------------------------------
 
 
-	protected static function get_lang_swap(FTL_Binding $tag)
+	protected static function get_lang_swap(FTL_Binding $tag, $swap)
 	{
-		$swap = $tag->getAttribute('swap');
+		// $swap = $tag->getAttribute('swap');
 
 		if ( ! is_null($swap))
 		{
