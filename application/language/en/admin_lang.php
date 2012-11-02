@@ -628,7 +628,6 @@ $lang['ionize_label_texteditor'] = 'Text editor';
 
 $lang['ionize_title_db_version'] = 'Database';
 $lang['ionize_title_php_version'] = 'PHP';
-$lang['ionize_title_php_version'] = 'PHP';
 
 $lang['ionize_message_database_not_saved'] = 'Incorrect database settings';
 $lang['ionize_message_database_not_exist'] = 'The selected database doesn\'t exist';
