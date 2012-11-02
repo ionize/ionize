@@ -15,7 +15,7 @@ class Demo_Tags extends TagManager
 	public static $tag_definitions = array
 	(
 		"articles:authors" => 			"core_articles_authors",
-		"articles:authors:author" => 	"tag_author",
+		"article:authors:author" => 	"tag_author",
 		"demo:authors:author" =>		"tag_author"
 	);
 
@@ -96,14 +96,16 @@ class Demo_Tags extends TagManager
 			$author = $tag->get('author');
 
 			if ( ! empty($author[$field]))
-				return self::wrap($tag, $author[$field]);
+			{
+				return self::output_value($tag, $author[$field]);
+			}
 		}
 
 		// Here we have the choice :
 		// - Ether return nothing if the field attribute isn't set or doesn't exist
 		// - Ether silently return ''
 		return self::show_tag_error(
-			'author',
+			$tag,
 			'The attribute <b>"field"</b> is not set or the field doesn\'t exists.'
 		);
 
@@ -135,7 +137,7 @@ class Demo_Tags extends TagManager
 		self::load_model('demo_author_model', 'author_model');
 
 		// Get the article from local tag var :
-		// The 'articles' tag is a parent of this tag and has set the 'article' var.
+		// The 'article' tag is a parent of this tag and has the 'article' data array set.
 		$article = $tag->get('article');
 
 		$authors = self::$ci->author_model->get_linked_author('article', $article['id_article']);

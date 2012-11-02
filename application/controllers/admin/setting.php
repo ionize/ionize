@@ -1147,6 +1147,29 @@ class Setting extends MY_admin
 
 	// ------------------------------------------------------------------------
 
+
+	function backup_database()
+	{
+		// Needed helpers
+		$this->load->helper('download');
+
+		$this->load->dbutil();
+
+		// Backup the DB
+		$prefs = array(
+			'format' => 'zip',
+			'filename' => 'dbbackup.sql',
+			'newline' => "\r\n"
+		);
+
+		$backup = $this->dbutil->backup($prefs);
+
+		force_download('dbbackup.gz', $backup);
+	}
+
+
+	// ------------------------------------------------------------------------
+
 	
 	/**
 	 * Saves SMTP settings

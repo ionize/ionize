@@ -540,6 +540,7 @@ $lang['ionize_title_seo'] = 'SEO';
 $lang['ionize_title_permalink_ping_server'] = 'Permalink Ping servers';
 $lang['ionize_title_sitemap_search_engine'] = 'Sitemap Ping Search Engines';
 $lang['ionize_title_system'] = 'System';
+$lang['ionize_title_db_backup'] = 'Database backup';
 
 $lang['ionize_title_maintenance'] = 'Maintenance';
 $lang['ionize_title_maintenance_page'] = 'Maintenance Page';
@@ -578,6 +579,7 @@ $lang['ionize_label_tinyblockformats'] = 'TinyMCE Format Select';
 $lang['ionize_label_restore_tinyblockformats'] = 'Restore TinyMCE default Format Select';
 $lang['ionize_label_ping_url'] = 'URL';
 $lang['ionize_label_sitemap_url'] = 'URL';
+$lang['ionize_label_db_backup'] = 'Get the database backup file';
 
 $lang['ionize_text_sitemaps_url_list'] = 'List of URLs to add (separated by a carriage return)';
 $lang['ionize_text_ping_url_list'] = 'List of URLs to add (separated by a carriage return)';

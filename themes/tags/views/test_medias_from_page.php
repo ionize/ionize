@@ -24,8 +24,8 @@
 
 <ion:page>
     <h4>Media from page ID : <ion:page:id /></h4>
-    <ul class="boxes">
-        <ion:medias size="200" method="square" unsharp="true">
+
+        <ion:medias size="200" method="square" unsharp="true" tag="ul" class="boxes">
             <ion:media>
                 <li>
                     <img src="<ion:src />" />
@@ -36,5 +36,6 @@
                 </li>
             </ion:media>
         </ion:medias>
-    </ul>
 </ion:page>
+
+

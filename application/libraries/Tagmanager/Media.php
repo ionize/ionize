@@ -155,6 +155,9 @@ class TagManager_Media extends TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	public static function get_medias(FTL_Binding $tag)
 	{
 		self::load_model('media_model');
@@ -184,6 +187,7 @@ class TagManager_Media extends TagManager
 		return $medias;
 	}
 
+
 	// ------------------------------------------------------------------------
 	
 
@@ -197,20 +201,24 @@ class TagManager_Media extends TagManager
 		// Get all medias id no parent data
 		if (empty($medias) && $tag->getDataParent() == NULL)
 			$medias = self::get_medias($tag);
+
 		if ( ! empty($medias))
 		{
 			// Filter the parent's medias
 			$medias = self::filter_medias($tag, $medias);
 
 			// hmmm....
-			//	$tag->set('medias', $medias);
+			$tag->set('medias', $medias);
 
 			$count = count($medias);
 			$tag->set('count', $count);
 
 			// Stop here if asked : Needed by aggregation tags
 			if ($tag->getAttribute('loop') === FALSE)
-				return $tag->expand();
+			{
+				$str .= $tag->expand();
+				return self::wrap($tag, $str);
+			}
 
 			// Make medias in random order
 			if ( $tag->getAttribute('random') == TRUE)
@@ -229,7 +237,9 @@ class TagManager_Media extends TagManager
 				$str .= $tag->expand();
 			}
 		}
-		return $str;
+		return self::wrap($tag, $str);
+
+		// return $str;
 	}
 
 

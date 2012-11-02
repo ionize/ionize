@@ -239,84 +239,97 @@
 		<!-- Database -->
 		<div class="tabcontent pt10">
 
-			<form name="databaseForm" id="databaseForm" method="post" action="<?php echo admin_url(); ?>setting/save_database">
+	        <div class="tabsidecolumn">
 
-				<p class="h30"><input id="submit_database" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
+                <!-- Database backup -->
+                <h3><?php echo lang('ionize_title_db_backup'); ?></h3>
 
-				<dl>
-					<dt>
-						&nbsp;
-					</dt>
-					<dd>
-						<p class="lite"><?php echo lang('ionize_onchange_ionize_settings'); ?></p>
-					</dd>
-				</dl>
+                <p>
+                    <a id="bdBackup" href="admin/setting/backup_database"><?php echo lang('ionize_label_db_backup'); ?></a>
+                </p>
 
-				<!-- Driver -->
-				<dl>
-					<dt>
-						<label for="db_driver"><?php echo lang('ionize_label_db_driver'); ?></label>
-					</dt>
-					<dd>
-						<select name="db_driver" id="db_driver" class="select">
-							<option <?php if ($this->db->platform() == 'mysql'):?>selected="selected"<?php endif;?>  value="mysql">MySQL</option>
-							<option <?php if ($this->db->platform() == 'mysqli'):?>selected="selected"<?php endif;?>  value="mysqli">MySQLi</option>
-							<option <?php if ($this->db->platform() == 'mssql'):?>selected="selected"<?php endif;?>  value="mssql">MS SQL</option>
-							<option <?php if ($this->db->platform() == 'postgre'):?>selected="selected"<?php endif;?>  value="postgre">Postgre SQL</option>
-							<option <?php if ($this->db->platform() == 'oci8'):?>selected="selected"<?php endif;?>  value="oci8">Oracle</option>
-							<option <?php if ($this->db->platform() == 'sqlite'):?>selected="selected"<?php endif;?>  value="sqlite">SQLite</option>
-							<option <?php if ($this->db->platform() == 'odbc'):?>selected="selected"<?php endif;?>  value="odbc">ODBC</option>
-						</select>
-					</dd>
-				</dl>
-				
-				<!-- Host -->
-				<dl>
-					<dt>
-						<label for="db_host"><?php echo lang('ionize_label_db_host'); ?></label>
-					</dt>
-					<dd>
-						<input id="db_host" name="db_host" class="inputtext w140" type="text" value="<?php echo $db_host; ?>" />
-					</dd>
-				</dl>
+			</div>
 
-				<!-- Database -->
-				<dl>
-					<dt>
-						<label for="db_name"><?php echo lang('ionize_label_db_name'); ?></label>
-					</dt>
-					<dd>
-						<input id="db_name" name="db_name" class="inputtext w140" type="text" value="<?php echo $db_name; ?>" />
-					</dd>
-				</dl>
+            <div class="tabcolumn">
 
-				<!-- User -->
-				<dl>
-					<dt>
-						<label for="db_user"><?php echo lang('ionize_label_db_user'); ?></label>
-					</dt>
-					<dd>
-						<input id="db_user" name="db_user" class="inputtext w140" type="text" value="<?php echo $db_user; ?>" />
-					</dd>
-				</dl>
+                <form name="databaseForm" id="databaseForm" method="post" action="<?php echo admin_url(); ?>setting/save_database">
 
-				<!-- Password -->
-				<dl>
-					<dt>
-						<label for="db_pass"><?php echo lang('ionize_label_db_pass'); ?></label>
-					</dt>
-					<dd>
-						<input id="db_pass" name="db_pass" class="inputtext w140" type="password" value="" />
-					</dd>
-				</dl>
+                    <p class="h30"><input id="submit_database" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
 
-			</form>
+                    <dl>
+                        <dt>
+                            &nbsp;
+                        </dt>
+                        <dd>
+                            <p class="lite"><?php echo lang('ionize_onchange_ionize_settings'); ?></p>
+                        </dd>
+                    </dl>
+
+                    <!-- Driver -->
+                    <dl>
+                        <dt>
+                            <label for="db_driver"><?php echo lang('ionize_label_db_driver'); ?></label>
+                        </dt>
+                        <dd>
+                            <select name="db_driver" id="db_driver" class="select">
+                                <option <?php if ($this->db->platform() == 'mysql'):?>selected="selected"<?php endif;?>  value="mysql">MySQL</option>
+                                <option <?php if ($this->db->platform() == 'mysqli'):?>selected="selected"<?php endif;?>  value="mysqli">MySQLi</option>
+                                <option <?php if ($this->db->platform() == 'mssql'):?>selected="selected"<?php endif;?>  value="mssql">MS SQL</option>
+                                <option <?php if ($this->db->platform() == 'postgre'):?>selected="selected"<?php endif;?>  value="postgre">Postgre SQL</option>
+                                <option <?php if ($this->db->platform() == 'oci8'):?>selected="selected"<?php endif;?>  value="oci8">Oracle</option>
+                                <option <?php if ($this->db->platform() == 'sqlite'):?>selected="selected"<?php endif;?>  value="sqlite">SQLite</option>
+                                <option <?php if ($this->db->platform() == 'odbc'):?>selected="selected"<?php endif;?>  value="odbc">ODBC</option>
+                            </select>
+                        </dd>
+                    </dl>
+
+                    <!-- Host -->
+                    <dl>
+                        <dt>
+                            <label for="db_host"><?php echo lang('ionize_label_db_host'); ?></label>
+                        </dt>
+                        <dd>
+                            <input id="db_host" name="db_host" class="inputtext w140" type="text" value="<?php echo $db_host; ?>" />
+                        </dd>
+                    </dl>
+
+                    <!-- Database -->
+                    <dl>
+                        <dt>
+                            <label for="db_name"><?php echo lang('ionize_label_db_name'); ?></label>
+                        </dt>
+                        <dd>
+                            <input id="db_name" name="db_name" class="inputtext w140" type="text" value="<?php echo $db_name; ?>" />
+                        </dd>
+                    </dl>
+
+                    <!-- User -->
+                    <dl>
+                        <dt>
+                            <label for="db_user"><?php echo lang('ionize_label_db_user'); ?></label>
+                        </dt>
+                        <dd>
+                            <input id="db_user" name="db_user" class="inputtext w140" type="text" value="<?php echo $db_user; ?>" />
+                        </dd>
+                    </dl>
+
+                    <!-- Password -->
+                    <dl>
+                        <dt>
+                            <label for="db_pass"><?php echo lang('ionize_label_db_pass'); ?></label>
+                        </dt>
+                        <dd>
+                            <input id="db_pass" name="db_pass" class="inputtext w140" type="password" value="" />
+                        </dd>
+                    </dl>
+
+                </form>
+			</div>
 
 		</div>
 		
 		<!-- Email -->
 		<div class="tabcontent pt10">
-		
 			<form name="smtpForm" id="smtpForm" method="post" action="<?php echo admin_url(); ?>setting/save_smtp">
 			
 				<p class="h30"><input id="submit_smtp" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
@@ -461,7 +474,6 @@
 			</div>
 			
 			<div class="tabcolumn">
-		
 		
 				<h3 class="toggler"><?php echo lang('ionize_title_encryption_key'); ?></h3>
 		
@@ -640,14 +652,11 @@
 	/**
 	 * Init help tips on label
 	 *
-	ION.initLabelHelpLinks('#settingsForm');
-	ION.initLabelHelpLinks('#cacheForm');
-	ION.initLabelHelpLinks('#maintenanceForm');
      */
 	ION.initLabelHelpLinks('#settingsTabContent');
 
-
 	var settingsTab = new TabSwapper({tabsContainer: 'settingsTab', sectionsContainer: 'settingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'settingsTab' });
+
 
 
 	/**
@@ -679,8 +688,6 @@
 		Lang.get('ionize_confirm_change_admin_url')
 	);
 	
-
-
 	$('antispamRefresh').addEvent('click', function(e)
 	{
 		e.stop();
