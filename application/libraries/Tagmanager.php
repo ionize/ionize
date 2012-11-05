@@ -2433,9 +2433,12 @@ class TagManager
 				return self::wrap($tag, $tag->expand());
 			}
 			else
+			{
 				self::$trigger_else++;
+				return '';
+			}
 		}
-		else if (! is_null($expression) )
+		else if ( ! is_null($expression) )
 		{
 			$result = self::eval_expression($tag, $expression);
 
@@ -2444,7 +2447,8 @@ class TagManager
 				case TRUE:
 					if (self::$trigger_else > 0)
 						self::$trigger_else--;
-					return $tag->expand();
+
+					return self::wrap($tag, $tag->expand());
 					break;
 
 				case FALSE:

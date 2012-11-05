@@ -2,7 +2,7 @@
 
 
 <?php
-/**
+/*
  * Extended Tags Examples
  *
 
@@ -32,10 +32,9 @@ extended_medias_article_tag_test_2 // Medias From Article (Types : Picture, Vide
 // Archives
 
 
-
 */
 
-/**
+/*
  * Tags Simple examples
  * Replace the view used in the below partial tag with the name of the view to test
  *
@@ -48,6 +47,9 @@ test_tag_get :				Get any field from object, with DB field name
 test_trace :				Output's one print_r() of one tag locals.
 test_session :				Play with Session through Tags
 test_tag_lang :				Lang tag
+test_module_demo : 			Test of the module "Demo". The module needs to be installed to get this example running
+
+
 
 // Page
 test_tag_breadcrumb
@@ -98,6 +100,7 @@ test_tag_subnavigation			Remove ???
 test_module_search
 
 */
+
 ?>
 
-<ion:partial view="test_tag_lang"  />
+<ion:partial view="test_module_demo"  />

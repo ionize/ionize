@@ -41,7 +41,7 @@ class Setting extends MY_admin
 		parent::__construct();
 		
 		$this->load->config('sitemaps');
-		$this->load->model('config_model', '', true);
+		$this->load->model('config_model', '', TRUE);
 	}
 
 
@@ -176,7 +176,7 @@ class Setting extends MY_admin
 		$handle = opendir(FCPATH.'themes');
 		if ($handle)
 		{
-			while ( false !== ($theme = readdir($handle)) )
+			while ( FALSE !== ($theme = readdir($handle)) )
 			{
 				// make sure we don't map silly dirs like .svn, or . or ..
 				if (substr($theme, 0, 1) != "." && $theme != 'index.html' && $theme != '@eaDir' && substr($theme,0,5) != 'admin')
@@ -244,7 +244,7 @@ class Setting extends MY_admin
 	{
 		if (Settings::get('maintenance_page') != '')
 		{
-			$this->load->model('page_model', '', true);
+			$this->load->model('page_model', '', TRUE);
 			$this->template['page'] = $this->page_model->get_by_id(Settings::get('maintenance_page'), Settings::get_lang('default'));
 		}
 
@@ -276,22 +276,22 @@ class Setting extends MY_admin
 
 		if ($id_page)
 		{
-			$this->load->model('page_model', '', true);
+			$this->load->model('page_model', '', TRUE);
 
 			$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 		
 			$options = array(
-				CURLOPT_RETURNTRANSFER => true, // return web page
-				CURLOPT_HEADER => false, // don't return headers
-				CURLOPT_FOLLOWLOCATION => true, // follow redirects
+				CURLOPT_RETURNTRANSFER => TRUE, // return web page
+				CURLOPT_HEADER => FALSE, // don't return headers
+				CURLOPT_FOLLOWLOCATION => TRUE, // follow redirects
 				CURLOPT_ENCODING => "", // handle all encodings
 				CURLOPT_USERAGENT => "ionize", // who am i
-				CURLOPT_AUTOREFERER => true, // set referer on redirect
+				CURLOPT_AUTOREFERER => TRUE, // set referer on redirect
 				CURLOPT_CONNECTTIMEOUT => 120, // timeout on connect
 				CURLOPT_TIMEOUT => 120, // timeout on response
 				CURLOPT_MAXREDIRS => 10, // stop after 10 redirects
 				CURLOPT_SSL_VERIFYHOST => 0, // don't verify ssl
-				CURLOPT_SSL_VERIFYPEER => false, //
+				CURLOPT_SSL_VERIFYPEER => FALSE, //
 				CURLOPT_VERBOSE => 1 //
 			);
  
@@ -731,7 +731,7 @@ class Setting extends MY_admin
 		
 		$conf  = "<?php if ( ! defined('BASEPATH')){exit('Invalid file request');}\n\n";
 	 
-		$conf .= "\$views = " . (String) var_export($viewsArray, true) .";\n";
+		$conf .= "\$views = " . (String) var_export($viewsArray, TRUE) .";\n";
 		
 		// files end
 		$conf .= "\n\n";
@@ -1069,9 +1069,9 @@ class Setting extends MY_admin
 			'database'    =>  $_POST['db_name'],
 			'dbdriver'    =>  $_POST['db_driver'],
 			'dbprefix'    =>  '',
-			'pconnect'    =>  true,
-			'db_debug'    =>  true,
-			'cache_on'    =>  false,
+			'pconnect'    =>  TRUE,
+			'db_debug'    =>  TRUE,
+			'cache_on'    =>  FALSE,
 			'cachedir'    =>  '',
 			'char_set'    =>  'utf8',
 			'dbcollat'    =>  'utf8_unicode_ci'
@@ -1088,7 +1088,7 @@ class Setting extends MY_admin
 		
 		// Try to connect to the DB
 		$dsn = $db_config['dbdriver'].'://'.$db_config['username'].':'.$db_config['password'].'@'.$db_config['hostname'].'/'.$db_config['database'];
-		$db = DB($dsn, true, true);
+		$db = DB($dsn, TRUE, TRUE);
 		$db->db_connect();
 		
 		// Check if database exists !
@@ -1114,7 +1114,7 @@ class Setting extends MY_admin
 					$val = '"'.$val.'"';
 				else
 				{
-					$val = ($val === true ) ? "true" : "false";
+					$val = ($val === TRUE ) ? "true" : "false";
 				}
 				
 				$conf .= "\$db['default']['".$key."'] = ".$val.";\n";        
@@ -1148,6 +1148,10 @@ class Setting extends MY_admin
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Backups and force download of the backup zip file.
+	 *
+	 */
 	function backup_database()
 	{
 		// Needed helpers

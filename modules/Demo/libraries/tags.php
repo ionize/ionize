@@ -4,6 +4,7 @@ class Demo_Tags extends TagManager
 {
 	/**
 	 * Tags declaration
+	 * To be available, each tag must be declared in this static array.
 	 *
 	 * @var array
 	 *
@@ -14,9 +15,11 @@ class Demo_Tags extends TagManager
 	 */
 	public static $tag_definitions = array
 	(
-		"articles:authors" => 			"core_articles_authors",
+		// <ion:article:authors /> calls the method “core_articles_authors”
+		"demo:authors" =>				"tag_authors",
+		"demo:authors:author" =>		"tag_author",
+		"article:authors" => 			"core_article_authors",
 		"article:authors:author" => 	"tag_author",
-		"demo:authors:author" =>		"tag_author"
 	);
 
 
@@ -129,7 +132,7 @@ class Demo_Tags extends TagManager
 	 *				<ion:articles>
 	 *
 	 */
-	public static function core_articles_authors(FTL_Binding $tag)
+	public static function core_article_authors(FTL_Binding $tag)
 	{
 		$str = '';
 

@@ -106,7 +106,7 @@ class TagManager_User extends TagManager
 			self::$user = Connect()->get_current_user();
 		}
 
-		// Do this everytime the tag is called
+		// Do this every time the tag is called
 		if (self::$user) {
 			$tag->set('user', self::$user);
 			$tag->set('group', self::$user['group']);
