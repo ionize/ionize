@@ -76,13 +76,6 @@ class Base_model extends CI_Model
 	private $extend_field_prefix = 	'ion_';
 
 	/*
-	 * Stores if we already got or not the extended fields definition
-	 * If we already got them, they don't need to be loaded once more...
-	 *
-	 */
-	protected $got_extend_fields_def = FALSE;
-	
-	/*
 	 * Array of extended fields definition
 	 * Contains all the extended fields definition for a type of data.
 	 * "page" is a type of data.
@@ -509,7 +502,7 @@ class Base_model extends CI_Model
 			// Add linked medias to the "media" index of the data array		
 			if (in_array($this->table, $this->with_media_table))
 				$this->add_linked_media($data, $this->table, $lang);
-					
+
 			// Add extended fields if necessary
 			$this->add_extend_fields($data, $this->table, $lang);
 
@@ -570,13 +563,16 @@ class Base_model extends CI_Model
 	// ------------------------------------------------------------------------
 
 
-	protected function get_extend_fields_definition()
+	protected function get_extend_fields_definition($parent = NULL)
 	{
-		if ($this->got_extend_fields_def == FALSE)
+		if ( ! isset($this->extend_fields_def[$parent]))
 		{
-			$this->set_extend_fields_definition($this->table);
+			if ( ! isset(self::$ci->extend_field_model))
+				self::$ci->load->model('extend_field_model');
+
+			$this->extend_fields_def[$parent] = self::$ci->extend_field_model->get_list(array('extend_field.parent' => $parent));
 		}
-		return $this->extend_fields_def;
+		return $this->extend_fields_def[$parent];
 	}
 
 
@@ -987,38 +983,6 @@ class Base_model extends CI_Model
 			
 			// Set this to true so we don't get the extend field def a second time for an object of same kind
 			$this->got_elements_def = TRUE;
-		}
-	}
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Get the extend fields definition and store them in the private property "extend_fields_def"
-	 *
-	 * @param	String	Parent type
-	 * @return	Array	Extend fields definition array
-	 *
-	 */
-	protected function set_extend_fields_definition($parent)
-	{
-		$CI =& get_instance();
-		
-		if ($CI->db->table_exists('extend_field'))
-		{
-			// Loads the model if it isn't loaded
-			if (!isset($CI->extend_field_model))
-				$CI->load->model('extend_field_model');
-				
-			// Get the extend fields definition if not already got
-			if ($this->got_extend_fields_def == FALSE)
-			{
-				// Store the extend fields definition
-				$this->extend_fields_def = $CI->extend_field_model->get_list(array('extend_field.parent' => $parent));
-				
-				// Set this to true so we don't get the extend field def a second time for an object of same kind
-				$this->got_extend_fields_def = TRUE;
-			}
 		}
 	}
 
@@ -1441,11 +1405,9 @@ class Base_model extends CI_Model
 	 */
 	protected function add_elements(&$data, $parent, $lang)
 	{	
-		$CI =& get_instance();
-
 		// Loads the model if it isn't loaded
-		if (!isset($CI->element_definition_model))
-			$CI->load->model('element_definition_model');
+		if (!isset(self::$ci->element_definition_model))
+			self::$ci->load->model('element_definition_model');
 
 
 		// get the elements definition array
@@ -1458,27 +1420,9 @@ class Base_model extends CI_Model
 		{
 			$ids[] = $d['id_'.$parent];
 		}
-/*		
-		// Get all definitions
-		$definitions = $this->get_lang_list(array('order_by' => 'ordering ASC'), Settings::get_lang('default'));
 
-		if ( ! is_null($lang))
-		{
-			$this->{$this->db_group}->select($this->element_definition_lang_table.'.*');
-			$this->{$this->db_group}->join($this->element_definition_table, $this->element_definition_lang_table.'.id_'.$this->element_definition_table.' = ' .$this->element_definition_table.'.id_'.$this->element_definition_table, 'inner');			
-			$this->{$this->db_group}->order_by($this->element_definition_table.'ordering', 'ASC');
-			$this->{$this->db_group}->where($this->element_definition_lang_table.'.lang', $lang);
-
-			$query = $this->{$this->db_group}->get($this->element_definition_lang_table);
-
-		}
-*/
-		$elements = $CI->element_definition_model->get_definitions_from_parent($parent);
-
-
+		$elements = self::$ci->element_definition_model->get_definitions_from_parent($parent);
 		// trace($elements);
-
-
 	}
 
 	// ------------------------------------------------------------------------
@@ -1495,9 +1439,9 @@ class Base_model extends CI_Model
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{	
 		// get the extend fields definition array
-		$this->set_extend_fields_definition($this->table);
+		$efd = $this->get_extend_fields_definition($parent);
 
-		if ($this->{$this->db_group}->table_exists('extend_field'))
+		if ( ! empty($efd) )
 		{
 			// If the data array is one simple array
 			$data_is_simple_array = FALSE;
@@ -1520,7 +1464,11 @@ class Base_model extends CI_Model
 				// Get the extend fields details, filtered on parents ID
 				$this->{$this->db_group}->where(array('extend_field.parent'=>$parent));
 				$this->{$this->db_group}->where_in('id_parent', $ids);
-				$this->{$this->db_group}->join($this->extend_fields_table, $this->extend_field_table.'.id_'.$this->extend_field_table.' = ' .$this->extend_fields_table.'.id_'.$this->extend_field_table, 'inner');
+				$this->{$this->db_group}->join(
+					$this->extend_fields_table,
+					$this->extend_field_table.'.id_'.$this->extend_field_table.' = ' .$this->extend_fields_table.'.id_'.$this->extend_field_table,
+					'inner'
+				);
 
 				$query = $this->{$this->db_group}->get($this->extend_field_table);
 
@@ -1528,8 +1476,8 @@ class Base_model extends CI_Model
 				if ( $query->num_rows() > 0)
 					$extend_fields = $query->result_array();
 
+
 				// Filter the result by lang : Only returns the not translated data and the given language translated data
-				// $result = array_filter($result,  create_function('$row','return ($row["lang"] == "'. $lang .'" || $row["lang"] == "" );'));
 				$filtered_result = array();
 				foreach($extend_fields as $res)
 				{
@@ -1543,17 +1491,17 @@ class Base_model extends CI_Model
 					// Store the extend definition array
 					// Not usefull for the moment.
 					// Can be used for debugging
-					// $d['_extend_fields_definition'] = $this->get_extend_fields_definition();
+					// $d['_extend_fields_definition'] = $this->get_extend_fields_definition($parent);
 
 					// First set the extend fields of the data row to the default value. So it exists...
-					foreach ($this->extend_fields_def as $e)
+					foreach ($efd as $e)
 					{
 						$d[$this->extend_field_prefix.$e['name']] = $e['default_value'];
 					}
 
 					// Feeds the extend fields
 					// Each extend field will be prefixed to avoid collision with standard fields names
-					foreach ($extend_fields as $e)
+					foreach ($filtered_result as $e)
 					{
 						if (empty($e['content']) && !empty($e['default_value']))
 							$e['content'] = $e['default_value'];
