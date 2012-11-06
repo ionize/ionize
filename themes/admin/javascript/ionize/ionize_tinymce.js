@@ -128,67 +128,92 @@ ION.append({
 	{
 		var textareas = $$(container_selector);
 		var mode = mode;
-		
-		$$(tab_selector).each(function(tab)
+
+		if (typeOf(tab_selector) == 'null')
 		{
-			// Current tab language or identifier
-			var tab_rel = tab.getProperty('rel');
-		
 			textareas.each(function(target)
 			{
-				// Current area language or identifier (related to tab)
-				var target_rel = target.getProperty('rel');
-				
-				if (tab_rel == target_rel)
+				// First remove tiny editor of object with this ID.
+				(tinyMCE.editors).each(function(tiny)
 				{
-					// Tab click : Init TinyMCE
-					tab.addEvent('click', function(e)
+					if (typeOf(tiny) != 'null')
 					{
-						var ed = tinyMCE.editors[target.id];
-		
-						if (typeOf(ed) != 'object')
+						if (tiny.id == target.id)
 						{
-							tinyMCE.init(ION.tinyMceSettings(target.id, mode, options));
-						}
-					});
-					// Remove tiny editor of object with this ID.
-					(tinyMCE.editors).each(function(tiny)
-					{
-						if (typeOf(tiny) != 'null')
-						{
-							if (tiny.id == target.id)
-							{
-								tinyMCE.remove(tiny);
-							}
-						}
-					});
-					
-					// Init Tiny on the visible tab
-					if (tab.hasClass('selected'))
-					{
-						var ed = tinyMCE.editors[target.id];
-
-						if (typeOf(ed) == 'null')
-						{
-							setTimeout(function() {
-								tinyMCE.init(ION.tinyMceSettings(target.id, mode, options));
-							}, 50);
+							tinyMCE.remove(tiny);
 						}
 					}
-				}
-			});
-
-			// Debug : List of active tiny object in memory
-			
-			(tinyMCE.editors).each(function(tiny)
-			{
-				if (typeOf(tiny) == 'object')
+				});
+				var ed = tinyMCE.editors[target.id];
+				if (typeOf(ed) != 'object')
 				{
-//					console.log(tiny.id + ' in memory.');
+					tinyMCE.init(ION.tinyMceSettings(target.id, mode, options));
 				}
 			});
-			
-		});
+		}
+		else
+		{
+			$$(tab_selector).each(function(tab)
+			{
+				// Current tab language or identifier
+				var tab_rel = tab.getProperty('rel');
+
+				textareas.each(function(target)
+				{
+					// Current area language or identifier (related to tab)
+					var target_rel = target.getProperty('rel');
+
+					if (tab_rel == target_rel)
+					{
+						// Tab click : Init TinyMCE
+						tab.addEvent('click', function(e)
+						{
+							var ed = tinyMCE.editors[target.id];
+
+							if (typeOf(ed) != 'object')
+							{
+								tinyMCE.init(ION.tinyMceSettings(target.id, mode, options));
+							}
+						});
+						// Remove tiny editor of object with this ID.
+						(tinyMCE.editors).each(function(tiny)
+						{
+							if (typeOf(tiny) != 'null')
+							{
+								if (tiny.id == target.id)
+								{
+									tinyMCE.remove(tiny);
+								}
+							}
+						});
+
+						// Init Tiny on the visible tab
+						if (tab.hasClass('selected'))
+						{
+							var ed = tinyMCE.editors[target.id];
+
+							if (typeOf(ed) == 'null')
+							{
+								setTimeout(function() {
+									tinyMCE.init(ION.tinyMceSettings(target.id, mode, options));
+								}, 50);
+							}
+						}
+					}
+				});
+
+				// Debug : List of active tiny object in memory
+				/*
+				(tinyMCE.editors).each(function(tiny)
+				{
+					if (typeOf(tiny) == 'object')
+					{
+						console.log(tiny.id + ' in memory.');
+					}
+				});
+				*/
+			});
+		}
 	},
 
 

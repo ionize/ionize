@@ -116,7 +116,9 @@
 
 		<?php endif ;?>
 
-			<!-- extend fields goes here... -->
+			<!-- Extend Fields (Main) -->
+			<div id="pageExtendFields">
+
 				<?php foreach($extend_fields as $extend_field) :?>
 				
 					<?php if ($extend_field['translated'] != '1') :?>
@@ -136,9 +138,15 @@
 								<?php if ($extend_field['type'] == '1') :?>
 									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
 								<?php endif ;?>
-								
-								<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
+
+                                <!-- Textarea -->
+								<?php if ($extend_field['type'] == '2') :?>
+                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
+								<?php endif ;?>
+
+                                <!-- Textarea with editor -->
+								<?php if ($extend_field['type'] == '3') :?>
+                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="smallTinyTextarea inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
 								<?php endif ;?>
 
 								<!-- Checkbox -->
@@ -214,7 +222,8 @@
 								<?php if ($extend_field['type'] == '7') :?>
 								
 									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
-									
+                                	<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>"></a>
+
 								<?php endif ;?>
 								
 							</dd>
@@ -223,6 +232,7 @@
 					<?php endif ;?>
 				<?php endforeach ;?>
 
+			</div>
 		</fieldset>
 
 
@@ -235,7 +245,9 @@
 				<ul class="tab-menu">
 					
 					<?php foreach(Settings::get_languages() as $language) :?>
-						<li <?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><?php echo ucfirst($language['name']); ?></a></li>
+
+						<li class="tab_page<?php if($language['def'] == '1') :?> dl<?php endif ;?>"rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
+
 					<?php endforeach ;?>
 					
 					<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
@@ -285,7 +297,7 @@
 
 						<dl>
 							<dt>
-								<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_content_online'); ?>"><?php echo lang('ionize_label_page_content_online'); ?></label>
+								<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_content_online'); ?>"><?php echo lang('ionize_label_online_in'); ?> <?php echo ucfirst($language['name']); ?></label>
 							</dt>
 							<dd>
 								<input id="online_<?php echo $lang; ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?php echo $lang; ?>" class="inputcheckbox" type="checkbox" value="1"/>
@@ -320,7 +332,7 @@
 
 
 					<!-- URL -->
-					<dl class="mt15">
+					<dl>
 						<dt>
 							<label for="url_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_url'); ?>"><?php echo lang('ionize_label_url'); ?></label>
 						</dt>
@@ -346,7 +358,7 @@
 					</dl>
 
 					<!-- Meta title : used for browser window title -->
-					<dl class="mb20">
+					<dl>
 						<dt>
 							<label for="meta_title_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_window_title'); ?>"><?php echo lang('ionize_label_meta_title'); ?></label>
 						</dt>
@@ -354,8 +366,6 @@
 							<input id="meta_title_<?php echo $lang; ?>" name="meta_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo ${$lang}['meta_title']; ?>"/>
 						</dd>
 					</dl>
-
-
 
 					<!-- extend fields goes here... -->
 						<?php foreach($extend_fields as $extend_field) :?>
@@ -377,8 +387,14 @@
 											<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field[$lang]['content']; ?>" />
 										<?php endif ;?>
 										
-										<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
-											<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext <?php if($extend_field['type'] == '3'):?> tinyTextarea <?php else:?>autogrow <?php endif ;?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
+                                        <!-- Textarea -->
+										<?php if ($extend_field['type'] == '2') :?>
+                                        	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="text autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
+										<?php endif ;?>
+
+                                        <!-- Textarea with editor -->
+										<?php if ($extend_field['type'] == '3') :?>
+                                        	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="smallTinyTextarea h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" rel="<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
 										<?php endif ;?>
 
 										<!-- Checkbox -->
@@ -450,6 +466,15 @@
 											?>
 											</select>
 										<?php endif ;?>
+
+                                        <!-- Date & Time -->
+										<?php if ($extend_field['type'] == '7') :?>
+
+                                        	<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field['content'] ; ?>" />
+                                        	<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"></a>
+
+										<?php endif ;?>
+
 
 									</dd>
 								</dl>	
@@ -557,13 +582,6 @@
 
 		</fieldset>
 		
-		
-
-
-
-
-		
-		
 		<!-- Articles -->
 		<?php if($id_page) :?>
 
@@ -654,7 +672,7 @@
 	 *
 	 */
 	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
-
+    ION.initClearField('#pageForm');
 
 	/**
 	 * Copy Lang data to other languages dynamically
@@ -676,6 +694,16 @@
 	// Tabs
 	var pageTab = new TabSwapper({tabsContainer: 'pageTab', sectionsContainer: 'pageTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'mainTab' });
 
+    /**
+     * TinyEditors
+     * Must be called after tabs init.
+     *
+     */
+    ION.initTinyEditors(null, '#pageExtendFields .tinyTextarea');
+    ION.initTinyEditors(null, '#pageExtendFields .smallTinyTextarea', 'small', {'height':80});
+
+    ION.initTinyEditors('.tab_page', '#pageTabContent .tinyTextarea');
+    ION.initTinyEditors('.tab_page', '#pageTabContent .smallTinyTextarea', 'small', {'height':80});
 
 	<?php if ( ! empty($id_page)) :?>
 

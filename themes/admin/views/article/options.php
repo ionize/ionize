@@ -400,8 +400,6 @@
 	 *
 	 */
 	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
-
-
 	ION.initClearField('#articleOptionsForm');
 
 	/**

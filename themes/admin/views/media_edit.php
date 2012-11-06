@@ -142,9 +142,7 @@ if($type == 'picture')
 		</dt>
 		<dd>
 			<?php echo auto_link($path, 'both', true) ;?>
-
 		</dd>
-	
 	</dl>
 
 	
@@ -174,12 +172,14 @@ if($type == 'picture')
 		<div id="mediaTab<?php echo $UNIQ; ?>" class="mainTabs">
 			<ul class="tab-menu">
 				<?php foreach(Settings::get_languages() as $l) :?>
-					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?php echo ucfirst($l['name']); ?></span></a></li>
+					<li class="tab_media<?php if($l['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $l['lang']; ?>"><a><span><?php echo ucfirst($l['name']); ?></span></a></li>
 				<?php endforeach ;?>
+
 				<?php if($type == 'picture') :?>
 					<li class="right"><a><span><?php echo lang('ionize_title_options'); ?></span></a></li>
 				<?php endif ;?>
-				<li class="right"><a><span><?php echo lang('ionize_title_details'); ?></span></a></li>
+
+				<li class="tab_media right" rel="details"><a><span><?php echo lang('ionize_title_details'); ?></span></a></li>
 			</ul>
 			<div class="clear"></div>
 		</div>
@@ -187,82 +187,89 @@ if($type == 'picture')
 
 		<div id="mediaTabContent<?php echo $UNIQ; ?>">	
 
-
 			<!-- Translated Meta data -->
 			<?php foreach(Settings::get_languages() as $language) :?>
 
-			<?php $lang_code = $language['lang']; ?>
-			
-			<div class="tabcontent<?php echo $UNIQ; ?>">
+				<?php $lang_code = $language['lang']; ?>
 
-				<!-- title -->
-				<dl class="small">
-					<dt>
-						<label for="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_title'); ?></label>
-					</dt>
-					<dd>
-						<input id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="title_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['title']; ?>"/>
-						<a class="icon clearfield" data-id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
-					</dd>
-				</dl>
-		
-				<?php if(pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == 'mp3') :?>
-				
-				<dl class="small mt10">
-					<dt>
-						<label</label>
-					</dt>
-					<dd class="lite"><?php echo lang('ionize_message_alt_desc_for_mp3'); ?></dd>
-				</dl>
-				<?php endif ;?>
-		
-				<!-- alternative text -->
-				<dl class="small">
-					<dt>
-						<label for="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_alt'); ?></label>
-					</dt>
-					<dd>
-						<input id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="alt_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['alt']; ?>"/>
-						<a class="icon clearfield" data-id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
-					</dd>
-				</dl>
-		
-				<!-- description -->
-				<dl class="small">
-					<dt>
-						<label for="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_description'); ?></label>
-					</dt>
-					<dd>
-						<input id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="description_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['description']; ?>"/>
-						<a class="icon clearfield" data-id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
-					</dd>
-				</dl>
+				<div class="tabcontent<?php echo $UNIQ; ?>">
 
-				<!-- extend fields goes here... -->
-				<?php foreach($extend_fields as $extend_field) :?>
-					<?php if ($extend_field['translated'] == '1') :?>
-					
-						<dl class="small">
-							<dt>
-								<?php
-									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-								?>
-								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
-							</dt>
-							<dd>
-								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="inputtext w340" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" value="<?php echo $extend_field[$lang_code]['content']; ?>" />
-								<?php endif ;?>
-								<?php if ($extend_field['type'] == '2' || $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="inputtext w340 h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>"><?php echo $extend_field[$lang_code]['content']; ?></textarea>
-								<?php endif ;?>
-							</dd>
-						</dl>	
-							
+					<!-- title -->
+					<dl class="small">
+						<dt>
+							<label for="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_title'); ?></label>
+						</dt>
+						<dd>
+							<input id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="title_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['title']; ?>"/>
+							<a class="icon clearfield" data-id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
+						</dd>
+					</dl>
+
+					<?php if(pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == 'mp3') :?>
+
+					<dl class="small mt10">
+						<dt>
+							<label</label>
+						</dt>
+						<dd class="lite"><?php echo lang('ionize_message_alt_desc_for_mp3'); ?></dd>
+					</dl>
 					<?php endif ;?>
-				<?php endforeach ;?>
 
-			</div>
+					<!-- alternative text -->
+					<dl class="small">
+						<dt>
+							<label for="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_alt'); ?></label>
+						</dt>
+						<dd>
+							<input id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="alt_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['alt']; ?>"/>
+							<a class="icon clearfield" data-id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
+						</dd>
+					</dl>
+
+					<!-- description -->
+					<dl class="small">
+						<dt>
+							<label for="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_description'); ?></label>
+						</dt>
+						<dd>
+							<input id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="description_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['description']; ?>"/>
+							<a class="icon clearfield" data-id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
+						</dd>
+					</dl>
+
+					<!-- extend fields goes here... -->
+					<?php foreach($extend_fields as $extend_field) :?>
+						<?php if ($extend_field['translated'] == '1') :?>
+
+							<dl class="small">
+								<dt>
+									<?php
+										$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
+									?>
+									<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
+								</dt>
+								<dd>
+									<?php if ($extend_field['type'] == '1') :?>
+										<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="inputtext w340" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" value="<?php echo $extend_field[$lang_code]['content']; ?>" />
+									<?php endif ;?>
+
+                                    <!-- Textarea -->
+									<?php if ($extend_field['type'] == '2') :?>
+                                    <textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="text autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>"><?php echo $extend_field[$lang_code]['content']; ?></textarea>
+									<?php endif ;?>
+
+                                    <!-- Textarea with editor -->
+									<?php if ($extend_field['type'] == '3') :?>
+                                    <textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="smallTinyTextarea h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" rel="<?php echo $lang_code; ?>"><?php echo $extend_field[$lang_code]['content']; ?></textarea>
+									<?php endif ;?>
+
+								</dd>
+							</dl>
+
+						<?php endif ;?>
+					<?php endforeach ;?>
+
+				</div>
 			<?php endforeach ;?>
 
 			<!-- Thumbnails preferences -->
@@ -331,10 +338,10 @@ if($type == 'picture')
 					</dd>
 				</dl>
 
-				<!-- extend fields goes here... -->
+				<!-- Extend Fields (Main) -->
 				<?php foreach($extend_fields as $extend_field) :?>
 				
-					<?php if ($extend_field['translated'] != '1') :?>
+						<?php if ($extend_field['translated'] != '1') :?>
 					
 						<dl class="small">
 							<dt>
@@ -352,10 +359,17 @@ if($type == 'picture')
 									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w200" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content']; ?>" />
 								<?php endif ;?>
 								
-								<?php if ($extend_field['type'] == '2' OR $extend_field['type'] == '3') :?>
-									<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="<?php if($extend_field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext w340 h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
+                                <!-- Textarea -->
+								<?php if ($extend_field['type'] == '2') :?>
+                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
 								<?php endif ;?>
-								
+
+                                <!-- Textarea with editor -->
+								<?php if ($extend_field['type'] == '3') :?>
+                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="smallTinyTextarea inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>" rel="details"><?php echo $extend_field['content']; ?></textarea>
+								<?php endif ;?>
+
+
 								<!-- Checkbox -->
 								<?php if ($extend_field['type'] == '4') :?>
 									
@@ -430,15 +444,17 @@ if($type == 'picture')
 								<?php if ($extend_field['type'] == '7') :?>
 								
 									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content']; ?>" />
-									
+									<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>"></a>
+
 								<?php endif ;?>
 								
 							</dd>
 						</dl>	
 							
 					<?php endif ;?>
-				<?php endforeach ;?>
-		
+
+					<?php endforeach ;?>
+
 			</div>
 		
 		</div>
@@ -473,8 +489,16 @@ if($type == 'picture')
 	 */
 	new TabSwapper({tabsContainer: 'mediaTab<?php echo $UNIQ; ?>', sectionsContainer: 'mediaTabContent<?php echo $UNIQ; ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?php echo $UNIQ; ?>' });
 
-	
-	/**
+    /**
+     * TinyEditors
+     * Must be called after tabs init.
+     *
+     */
+    ION.initTinyEditors('.tab_media', '#mediaTabContent<?php echo $UNIQ; ?> .tinyTextarea');
+    ION.initTinyEditors('.tab_media', '#mediaTabContent<?php echo $UNIQ; ?> .smallTinyTextarea', 'small', {'height':80});
+
+
+    /**
 	 * Opens the crop window if picture
 	 *
 	 */

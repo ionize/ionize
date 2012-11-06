@@ -719,6 +719,7 @@ $lang['ionize_title_help_articles_types'] = 'About Types';
 
 $lang['ionize_label_page_online'] = 'Page Online';
 $lang['ionize_label_page_content_online'] = 'Online for this language';
+$lang['ionize_label_online_in'] = 'Online in';
 $lang['ionize_label_articles'] = 'Articles';
 $lang['ionize_label_add_article'] = 'Add Article';
 $lang['ionize_label_appears'] = 'Display in nav';
