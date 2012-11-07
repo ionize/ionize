@@ -3,18 +3,16 @@
 <hr/>
 
 
-<h2>Article Informations (Title, Summary, Content)</h2>
+<h2>Article Informations (Title, Content)</h2>
 
 <pre>
     &lt;ion:article>
         &lt;ion:title tag="h3" />
-        &lt;ion:summary tag="blockquote" />
         &lt;ion:content />
     &lt;/ion:article>
 </pre>
 <ion:article>
     <ion:title tag="h3" />
-    <ion:summary tag="blockquote" />
     <ion:content />
 </ion:article>
 <h2>Get All Medias From Current Article (Type = Picture, Sizing Method = Master => width)</h2>
