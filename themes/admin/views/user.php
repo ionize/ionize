@@ -58,7 +58,7 @@ else
 			<select name="id_group" class="select">
 				<?php foreach($groups as $group) :?>
 
-					<option value="<?php echo $group['id_group'] ?>" <?php if($user['group']['id_group'] == $group['id_group']) :?> selected="selected" <?php endif ;?> ><?php echo $group['group_name'] ?></option>
+					<option value="<?php echo $group['id_group'] ?>" <?php if(! empty ($user['group']['id_group']) && $user['group']['id_group'] == $group['id_group']) :?> selected="selected" <?php endif ;?> ><?php echo $group['group_name'] ?></option>
 				
 				<?php endforeach ;?>
 			</select>
