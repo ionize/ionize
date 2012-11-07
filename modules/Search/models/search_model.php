@@ -101,7 +101,6 @@ class Search_model extends Base_model
 			'('.
 			' article_lang.title LIKE ' . $realm .
 			' OR article_lang.subtitle LIKE '. $realm .
-			' OR article_lang.summary LIKE '. $realm .
 			' OR article_lang.content LIKE ' . $realm .
 			')'
 		);

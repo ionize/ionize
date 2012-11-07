@@ -456,22 +456,6 @@
 					<?php endif ;?>
 
 
-
-					<!-- Summary
-					<h3 class="toggler toggler-<?php echo $lang; ?>"><?php echo lang('ionize_label_summary'); ?></h3>
-					
-					<div class="element element-<?php echo $lang; ?>">
-
-						<div>
-							<textarea id="summary_<?php echo $lang; ?>" name="summary_<?php echo $lang; ?>" class="smallTinyTextarea h100" rel="<?php echo $lang; ?>"><?php echo htmlentities(${$lang}['summary'], ENT_QUOTES, 'utf-8'); ?></textarea>
-							<p class="clear h15 mb15">
-								<a id="wysiwyg_summary_<?php echo $lang; ?>" class="light button left" onclick="tinymce.execCommand('mceToggleEditor',false,'summary_<?php echo $lang; ?>');return false;"><?php echo lang('ionize_label_toggle_editor'); ?></a>
-							</p>
-						</div>
-
-					</div>
-					-->
-
 					<!-- Text -->
 					<h3 class=" toggler-<?php echo $lang; ?>"><?php echo lang('ionize_label_text'); ?></h3>
 		
@@ -679,7 +663,7 @@
 	 * Copy Lang data to other languages dynamically
 	 *
 	 */
-	ION.initCopyLang('.copyLang', Array('title', 'summary', 'subtitle', 'url', 'content'));
+	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content'));
 	
 
 	/** 

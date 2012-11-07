@@ -38,7 +38,6 @@ class Search_Tags extends TagManager
 
 		// title, subtitle are common tags, set by TagManager.
 		// content, summary are not
-		'search:results:result:summary' => 		'tag_simple_value',
 		'search:results:result:content' => 		'tag_simple_value',
 		'search:results:result:nb_words' => 	'tag_simple_value',
 		'search:results:result:page_url' => 	'tag_url',
