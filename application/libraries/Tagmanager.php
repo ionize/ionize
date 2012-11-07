@@ -201,7 +201,9 @@ class TagManager
 		
 		// Load automatically all TagManagers defined in /libraries/Tagmanager
 		$tagmanagers = glob(APPPATH.'libraries/Tagmanager/*'.EXT);
-		$tagmanagers = array_merge($tagmanagers, glob(FCPATH.Theme::get_theme_path().'libraries/Tagmanager/*'.EXT));
+		$theme_tagmanagers = glob(FCPATH.Theme::get_theme_path().'libraries/Tagmanager/*'.EXT);
+		if ( ! empty($theme_tagmanagers))
+			$tagmanagers = array_merge($tagmanagers, $theme_tagmanagers);
 
 		foreach ($tagmanagers as $tagmanager)
 			self::autoload($tagmanager);
