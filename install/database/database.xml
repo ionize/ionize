@@ -486,15 +486,6 @@
 		</query>
 
 		<query>
-			CREATE TABLE IF NOT EXISTS users_meta (
-			  id_user int(11) unsigned NOT NULL,
-			  newsletter tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
-			  phone varchar(20) collate utf8_unicode_ci default NULL,
-			  PRIMARY KEY  (id_user)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; 
-		</query>
-
-		<query>
 			CREATE TABLE IF NOT EXISTS user_groups (
 			  id_group smallint(4) UNSIGNED NOT NULL auto_increment,
 			  level int(11) default NULL,

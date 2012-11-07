@@ -65,8 +65,6 @@ class Users extends MY_admin
 		// Send the current user's level to the view
 		$this->template['current_user_level'] = $this->current_user_level;
 
-		$this->template['meta_data'] = $this->users_model->get_meta();
-
 		$this->output('users');
 	}
 
@@ -145,9 +143,6 @@ class Users extends MY_admin
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = array_filter($this->connect->model->get_groups(array('order_by'=>'level')), array($this, '_filter_groups'));
 		
-		// Get users meta data
-		$this->template['meta_data'] = $this->users_model->get_meta($id);
-
 		$this->output('user');
 	}
 
@@ -161,9 +156,6 @@ class Users extends MY_admin
 
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = array_filter($this->connect->model->get_groups(array('order_by'=>'level')), array($this, '_filter_groups'));
-
-		// Get users meta data
-		$this->template['meta_data'] = $this->users_model->get_meta();
 
 		$this->output('user');
 	}
@@ -205,9 +197,6 @@ class Users extends MY_admin
 
 			// Update the user
 			$this->users_model->update($id_user, $data);
-			
-			// Update the user's meta
-			$this->users_model->save_meta($id_user, $_POST);
 			
 			// UI update panels
 			$this->update[] = array(
@@ -258,9 +247,6 @@ class Users extends MY_admin
 			{
 				// DB insertion
 				$id = $this->users_model->insert($data);
-
-				// Update the user's meta
-				$this->users_model->save_meta($id, $_POST);
 
 				// UI update panels
 				$this->update[] = array(
@@ -336,10 +322,8 @@ class Users extends MY_admin
 		// Load download helper
 		$this->load->helper('download');
 		
-		$metas = ( ! empty($_POST['metas']) ) ? $_POST['metas'] : array();
-		
-		// Get users & users meta data
-		$users = $this->users_model->get_list($metas);
+		// Get users
+		$users = $this->users_model->get_list();
 		
 		// If users, get the format
 		if (!empty($users))

@@ -164,20 +164,7 @@
 		<div class="tabcontent">
 		
 			<form name="userExportForm" id="userExportForm" method="post" action="<?php echo admin_url() ?>users/export">
-	
-				<dl>
-					<dt><?php echo lang('ionize_label_export_meta') ?></dt>
 					
-					<?php foreach($meta_data as $meta) :?>
-					<dd>
-							<input id="meta_<?php echo $meta['field'] ?>" name="metas[]" type="checkbox" value="<?php echo $meta['field'] ?>" />
-							<label for="meta_<?php echo $meta['field'] ?>"><?php echo $meta['field'] ?></label>
-							<br/>
-					</dd>
-					<?php endforeach ;?>
-					
-				</dl>
-				
 				<dl>
 					<dt><?php echo lang('ionize_label_export_format') ?></dt>
 					<dd>

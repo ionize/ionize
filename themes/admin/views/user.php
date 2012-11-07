@@ -91,7 +91,7 @@ else
 	</dl>
 
 	
-	<!-- Meta data -->
+	<?php /*
 	<h3><?php echo lang('ionize_title_user_meta'); ?></h3>
 
 	<?php foreach($meta_data as $key => $field) :?>
@@ -108,6 +108,8 @@ else
 		</dl>
 
 	<?php endforeach ;?>
+	*/
+	?>
 	
 </form>
 

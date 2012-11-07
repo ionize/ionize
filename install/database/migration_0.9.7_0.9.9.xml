@@ -174,7 +174,6 @@
 	<query>ALTER TABLE setting ENGINE = InnoDB;</query>
 	<query>ALTER TABLE tag ENGINE = InnoDB;</query>
 	<query>ALTER TABLE users ENGINE = InnoDB;</query>
-	<query>ALTER TABLE users_meta ENGINE = InnoDB;</query>
 	<query>ALTER TABLE user_groups ENGINE = InnoDB;</query>
 	
 
@@ -211,7 +210,6 @@
 	<query>ALTER TABLE `setting` COMMENT = '';</query>
 	<query>ALTER TABLE `tag` COMMENT = '';</query>
 	<query>ALTER TABLE `users` COMMENT = '';</query>
-	<query>ALTER TABLE `users_meta` COMMENT = '';</query>
 	<query>ALTER TABLE `user_groups` COMMENT = '';</query>
 
     <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);</query>
