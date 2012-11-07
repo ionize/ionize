@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS article_lang (
   title varchar(255) default NULL,
   subtitle varchar(255) default NULL,
   meta_title varchar(255) default NULL,
-  summary longtext,
   content longtext,
   meta_keywords varchar(255) default NULL,
   meta_description varchar(255) default NULL,
