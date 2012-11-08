@@ -500,7 +500,7 @@ ION.TreeXhr = new Class({
  *  @since	0.9.9
  *
  */
-ION.BrowerTreeXhr = new Class({
+ION.BrowserTreeXhr = new Class({
 
 	Extends: ION.TreeXhr,
 

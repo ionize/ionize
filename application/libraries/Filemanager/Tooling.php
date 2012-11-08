@@ -17,7 +17,12 @@
  */
 
 
-
+if (!function_exists('fnmatch'))
+{
+	function fnmatch($pattern, $string) {
+		return @preg_match('/^' . strtr(addcslashes($pattern, '\\.+^$(){}=!<>|'), array('*' => '.*', '?' => '.?')) . '$/i', $string);
+	}
+}
 
 if (!function_exists('safe_glob'))
 {
@@ -138,7 +143,7 @@ if (!function_exists('safe_glob'))
 if (!function_exists('http_build_query_ex'))
 {
 	if (!defined('PHP_QUERY_RFC1738')) define('PHP_QUERY_RFC1738', 1); // encoding is performed per RFC 1738 and the application/x-www-form-urlencoded media type, which implies that spaces are encoded as plus (+) signs.
-	if (!defined('PHP_QUERY_RFC3986')) define('PHP_QUERY_RFC3986', 2); // encoding is performed according to » RFC 3986, and spaces will be percent encoded (%20).
+	if (!defined('PHP_QUERY_RFC3986')) define('PHP_QUERY_RFC3986', 2); // encoding is performed according to ï¿½ RFC 3986, and spaces will be percent encoded (%20).
 
 	function http_build_query_ex($data, $prefix = '', $sep = '', $key = '', $enc_type = PHP_QUERY_RFC1738)
 	{

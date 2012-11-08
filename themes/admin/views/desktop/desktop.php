@@ -228,10 +228,10 @@
 <!-- Module's CSS / JS files -->
 <?php foreach($modules as $module):?>
 	<?php if (file_exists(MODPATH.$module.'/assets/css/admin.css')): ?>
-		<link rel="stylesheet" href="<?php echo base_url(); ?>modules/<?php echo strtolower($module) ;?>/assets/css/admin.css" type="text/css" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>modules/<?php echo $module ;?>/assets/css/admin.css" type="text/css" />
 	<?php endif;?>
 	<?php if (file_exists(MODPATH.$module.'/assets/javascript/admin.js')): ?>
-		<script type="text/javascript" src="<?php echo base_url(); ?>modules/<?php echo strtolower($module) ;?>/assets/javascript/admin.js"></script>
+		<script type="text/javascript" src="<?php echo base_url(); ?>modules/<?php echo $module ;?>/assets/javascript/admin.js"></script>
 	<?php endif;?>
 <?php endforeach; ?>
 
