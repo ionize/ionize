@@ -539,8 +539,6 @@ function getTargetListHTML(elm_id, target_form_element) {
  *
  * @param id                    'hrefbrowser'
  * @param target_form_element   'href'
- * @param type                  'ionize'
- * @param prefix                'advlink'
  * @return {String}
  */
 function getIonizeHrefBrowserHTML(id, target_form_element)

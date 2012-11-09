@@ -1095,20 +1095,6 @@ ION.append({
 			});
 		});
 	},
-	
-	
-	/**
-	 * Updates the folder or file icon when editing an article or a page
-	 * If the edited article is a link to one page or article in the tree, 
-	 * the icon of the "linked to" element will chnage, to show this link.
-	 *
-	updateTreeLinkIcon: function(args)
-	{		
-		// Remove link icon from all articles in trees
-		$$('.tree .file').removeClass('filelink');
-		$$('.tree .folder').removeClass('folderlink');
-	},
-	 */
 
 
 	updateArticleOrder: function(args)
@@ -1133,103 +1119,6 @@ ION.append({
 				var el = articleList.getElement('li.article' + args.id_page + 'x' + order[i]);
 				el.inject(articleList, 'top');
 			}
-		}
-	},
-	
-	
-	/**
-	 * Updates one page in the tree
-	 *
-	 */	
-	updateTreePage: function(args)
-	{
-		var title = (args.nav_title !='') ? args.nav_title : args.title;
-		if (title == '') title = args.url;
-		var id = args.id_page;
-		var id_parent = args.id_parent;
-		var status = (args.online == '1') ? 'online' : 'offline';
-		var home_page = (args.home && args.home == '1') ? true : false;
-		var element = $('page_' + id);
-		
-		// Parent ID from the page in the tree, before update
-		var id_tree_parent = element.getParent('ul').id;
-		
-		var id_tree = args.menu.name + 'Tree';
-		var parent = (id_parent != '0') ? $('page_' + id_parent) : $(id_tree);
-		var id_container = (id_parent != '0') ? 'pageContainer' + id_parent : 'pageContainerTree' + args.menu.id_menu ;
-
-		// link Title in tree (A tag)
-		var el_link = '.title.page' + id;
-
-		// Update the link text
-		$$(el_link).set('text', title);
-		
-		// Update  Online/Offline class
-		element.removeClass('offline').removeClass('online').addClass(status);
-
-		// if the container doesn't exists, create it
-		if ( ! (container = $(id_container)) && typeOf($(parent)) != 'null')
-		{
-			container = new Element('ul', {'id': 'pageContainer' + id_parent, 'class':'pageContainer', 'rel':id_parent });
-			
-			// If the parent already contains an article container, inject the page container before.
-			if (articleContainer = $('articleContainer' + id_parent))
-			{
-				container.inject(articleContainer, 'before');
-			}
-			else
-			{
-				container.inject($('page_' + id_parent), 'bottom');
-			}
-		
-			// Update visibility of container regarding the parent
-			if ( ! (parent.hasClass('f-open'))) { container.setStyle('display', 'none'); }
-		}
-		
-		// Moves the element in the tree
-		if ( id_tree_parent != id_container )
-		{
-			if (typeOf(container) != 'null')
-			{
-				var childs = container.getChildren();
-				
-				// Put the page in the last position in the container
-				container.adopt(element);
-	
-				// Update tree lines
-				var pNbLines = parent.getChildren('.tree-img').length;
-				var eNbLines = element.getChildren('.tree-img').length;
-				
-				var treeline = 	new Element('div', {'class': 'tree-img line'});
-				var lis = element.getElements('li');
-				lis.push(element);
-				
-				lis.each(function(li)
-				{
-					for (var i=0; i < eNbLines -2; i++) { (li.getFirst()).dispose();}
-					for (var i=0; i < pNbLines -1; i++) { treeline.clone().inject(li, 'top'); }
-				});
-				
-				// Update the relevant ID
-				element.setProperty('rel', id);
-			}
-			else
-			{
-				element.dispose();
-			}
-		}
-		
-		// Update Home page icon, if mandatory
-		if (home_page == true)
-		{
-			$$('.folder').removeClass('home');
-			element.getFirst('.folder').addClass('home');
-		}
-		
-		element.getFirst('.folder').removeClass('hidden');
-		if (args.appears == '0')
-		{
-			element.getFirst('.folder').addClass('hidden');
 		}
 	},
 	

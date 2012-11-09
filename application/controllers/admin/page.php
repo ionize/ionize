@@ -423,8 +423,8 @@ class Page extends MY_admin
 			strip_html($page);
 
 			$this->callback[] = array(
-				'fn' => 'ION.updateTreePage',
-				'args' => $page
+				'fn' => $page['menu']['name'].'Tree.updateElement',
+				'args' => array($page, 'page')
 			);
 		}
 
@@ -661,8 +661,8 @@ class Page extends MY_admin
 				);
 
 				$this->callback[] = array(
-					'fn' => 'ION.updateTreePage',
-					'args' => $page
+					'fn' => $page['menu']['name'].'Tree.updateElement',
+					'args' => array($page, 'page')
 				);
 
 				$this->response();

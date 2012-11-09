@@ -63,7 +63,6 @@
 		$('tArticleAddContentElement').hide();
 		$('tArticleMediaButton').hide();
         $('sideColumnSwitcher').hide();
-		$('editionModeSwitcher').hide();
 	}
 	else
 	{
@@ -102,16 +101,15 @@
 		{
 			ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'article', 'id_parent': id});
 		});
-
-		// Edition Mode button
-        $('editionModeSwitcher').addEvent('click', function(e)
-        {
-            ION.toggleEditMode('article', '.article-header');
-        });
-
 	}
-		
-	/**
+
+    // Edition Mode button
+    $('editionModeSwitcher').addEvent('click', function(e)
+    {
+        ION.toggleEditMode('article', '.article-header');
+    });
+
+    /**
 	 * Options show / hide button
 	 *
 	 */

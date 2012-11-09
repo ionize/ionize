@@ -70,7 +70,7 @@ ION.TreeXhr = new Class({
 
 				var pageContainer = self.injectContainer('page', id_parent, true);
 				var articleContainer = self.injectContainer('article', id_parent, true);
-				
+
 				// Build tree
 				pages.each(function(page) {
 					self.insertElement(page, 'page');
@@ -84,8 +84,11 @@ ION.TreeXhr = new Class({
 				var parentContainer = self.getParentContainer(id_parent);
 				
 				// Set the item managers (see ION.ItemManager)
-				self.itemManagers['page'][pageContainer.id] = new ION.ItemManager({'container': pageContainer.id, 'element':'page', 'sortable':true });
-				self.itemManagers['article'][articleContainer.id] = new ION.ArticleManager({ 'container': articleContainer.id, 'id_parent': id_parent});
+				var pid = pageContainer.retrieve('id');
+				var aid = articleContainer.retrieve('id');
+
+				self.itemManagers['page'][pid] = new ION.ItemManager({'container': pageContainer, 'element':'page', 'sortable':true });
+				self.itemManagers['article'][aid] = new ION.ArticleManager({ 'container': articleContainer, 'id_parent': id_parent});
 
 				// Stores that the content is loaded
 				parentContainer.store('loaded', true);
@@ -107,8 +110,20 @@ ION.TreeXhr = new Class({
 	injectContainer: function(type, id_parent, erase)
 	{
 		var parentContainer = this.getParentContainer(id_parent);
-
 		var container = parentContainer.getFirst('ul.' + type + 'Container');
+
+		// Force new container
+		if (erase == true)
+		{
+			if (typeOf(container) != 'null')
+			{
+				var cid = container.retrieve('id');
+				container.dispose();
+				container = null;
+				if (typeOf(this.itemManagers[type][cid]) != 'null')
+					delete this.itemManagers[type][cid];
+			}
+		}
 
 		if (typeOf(container) == 'null')
 		{
@@ -118,21 +133,24 @@ ION.TreeXhr = new Class({
 			if (id_parent == '0')
 			{
 				container.addClass('tree');
-				container.id = type + 'ContainerTree' + this.id_menu;
+				container.store('id', type + 'ContainerTree' + this.id_menu);
 			}
 			else
 			{
-				container.id = type + 'Container' + id_parent;
+				container.store('id', type + 'Container' + id_parent);
 			}
-			
+
 			container.addClass(type + 'Container');
-			
+
 			// Try to inject page container before the article container, else at the bottom
 			var injected = false;
+/*
 			if (type == 'page')
 			{
+
 				if (typeOf($('articleContainer' + id_parent)) != 'null')
 				{
+console.log('inject page before articles');
 					container.inject($('articleContainer' + id_parent), 'before');
 					injected = true;
 				}
@@ -142,20 +160,12 @@ ION.TreeXhr = new Class({
 			{
 				container.inject(parentContainer, 'bottom');
 			}
-			
+*/
+			container.inject(parentContainer, 'bottom');
+
 			// Hide the parentContainer if it should be, but not for the root.
 			if (id_parent != 0)
 				if ( ! (parentContainer.hasClass('f-open'))) { container.setStyle('display', 'none');}
-		}
-		else
-		{
-			// Creates a new container
-			if (erase == true)
-			{
-				container.empty();
-				if (typeOf(this.itemManagers[type][container.id]) != 'null')
-					delete this.itemManagers[type][container.id];
-			}
 		}
 
 		return container;
@@ -227,7 +237,7 @@ ION.TreeXhr = new Class({
 			// if home page, remove home from the old home page
 			if (element.home == '1')
 			{
-				$$('.folder.home').removeClass('home');
+				this.container.getElements('.folder.home').removeClass('home');
 				icon.addClass('home');
 			}
 			
@@ -298,8 +308,9 @@ ION.TreeXhr = new Class({
 		// The element was dynamically inserted through XHR
 		if (typeOf(element.inserted) != 'null')
 		{
-			if (typeOf(this.itemManagers[type][container.id]) != 'null')
-				(this.itemManagers[type][container.id]).init();
+			var cid = container.retrieve('id');
+			if (typeOf(this.itemManagers[type][cid]) != 'null')
+				(this.itemManagers[type][cid]).init();
 		}
 		
 		// Mouse over effect : Show / Hide actions
@@ -311,7 +322,60 @@ ION.TreeXhr = new Class({
 			this.get(id);
 		}
 	},
-	
+
+	/**
+	 * Updates one element in the Tree
+	 * @param element
+	 * @param type
+	 */
+	updateElement:function(element, type)
+	{
+		var id = (type == 'page') ? element.id_page : element.id_article;
+		var selector = (type == 'page') ? '.folder.' + type + id : '.file.' + type + id;
+		var status = (element.online == '1') ? 'online' : 'offline';
+		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
+		if (title == '') title = element.name;
+
+		// Items to update
+		var items = this.container.getElements(selector);
+
+		// Page
+		if (type == 'page')
+		{
+			this.container.getElements('.folder').removeClass('home');
+		}
+
+
+		// Common updates
+		items.each(function(item)
+		{
+			// Title
+			item.getElement('a.title').set('text', title);
+
+			// Status
+			item.removeClass('offline').removeClass('online').addClass(status);
+
+			// Page
+			if (type == 'page')
+			{
+				// Home page icon
+				var home_page = (element.home && element.home == '1') ? true : false;
+				if (home_page)
+				{
+					item.getFirst('.folder').addClass('home');
+				}
+
+				// Displayed in navigation ?
+				item.getFirst('.folder').removeClass('hidden');
+				if (element.appears == '0')
+				{
+					item.getFirst('.folder').addClass('hidden');
+				}
+			}
+		});
+
+	},
+
 	/**
 	 * Plus / Minus folder icon click event	
 	 *
@@ -577,6 +641,7 @@ ION.BrowserTreeXhr = new Class({
 			// if home page, remove home from the old home page
 			if (element.home == '1')
 			{
+
 				$$('.folder.home').removeClass('home');
 				icon.addClass('home');
 			}

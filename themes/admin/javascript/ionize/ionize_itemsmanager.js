@@ -41,6 +41,7 @@ ION.ItemManager = new Class({
 
 		// Options
 		this.setOptions(options);
+
 		this.container = $(this.options.container);
 		if (this.options.controller == false) this.options.controller = this.options.element;
 
@@ -73,8 +74,9 @@ ION.ItemManager = new Class({
 	{
 		var self = this;
  		var url = this.adminUrl + this.options.controller + '/delete/';
-		
-		$$('#' + this.options.container + ' .delete').each(function(item)
+		var items = this.container.getElements('.delete');
+
+		items.each(function(item)
 		{
 			ION.initRequestEvent(item, url + item.getProperty('rel'), {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
 		});
@@ -86,10 +88,10 @@ ION.ItemManager = new Class({
 	 */
 	initStatusEvents: function()
 	{
-
 		var url = this.adminUrl + this.options.controller;
+		var items = this.container.getElements('.status');
 
-		$$('#' + this.options.container + ' .status').each(function(item, idx)
+		items.each(function(item, idx)
 		{
 			ION.initRequestEvent(item, url + '/switch_online/' + item.getProperty('rel'));
 		});
@@ -281,8 +283,9 @@ ION.ArticleManager = new Class({
 	initStatusEvents: function()
 	{
 		var url = this.adminUrl + 'article/switch_online/';
-		
-		$$('#' + this.options.container + ' .status').each(function(item, idx)
+		var items = this.container.getElements('.status');
+
+		items.each(function(item, idx)
 		{
 			var rel = (item.getProperty('rel')).split(".");
 			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1]);
@@ -292,8 +295,9 @@ ION.ArticleManager = new Class({
 	initUnlinkEvents: function()
 	{
 		var url = this.adminUrl + 'article/unlink/';
+		var items = this.container.getElements('.unlink');
 
-		$$('#' + this.options.container + ' .unlink').each(function(item,idx)
+		items.each(function(item,idx)
 		{
 			var rel = (item.getProperty('rel')).split(".");
 			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1], {}, {message: Lang.get('ionize_confirm_article_page_unlink')});
