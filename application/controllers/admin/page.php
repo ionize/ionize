@@ -1131,12 +1131,15 @@ class Page extends MY_admin
 	 */
 	protected function _reload_panel($id_page)
 	{
+		$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
+		$title = empty($page['title']) ? $page['name'] : $page['title'];
+
 		$this->callback[] =	array(
 			'fn' => 'ION.splitPanel',
 			'args' => array(
 				'urlMain'=> admin_url() . 'page/edit/'.$id_page,
 				'urlOptions'=> admin_url() . 'page/get_options/'.$id_page,
-				'title'=> lang('ionize_title_edit_page')
+				'title'=> lang('ionize_title_edit_page') . ' : ' . $title
 			)
 		);
 	}

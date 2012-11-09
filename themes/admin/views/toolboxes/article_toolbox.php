@@ -12,9 +12,15 @@
 </div>
 
 <div class="divider">
-	<a class="button light" id="sideColumnSwitcher">
-		<i class="icon-options"></i><?php echo lang('ionize_label_options'); ?>
-	</a>
+    <a class="button light" id="sideColumnSwitcher">
+        <i class="icon-options"></i><?php echo lang('ionize_label_options'); ?>
+    </a>
+</div>
+
+<div class="divider">
+    <a class="button light" id="editionModeSwitcher">
+        <i class="icon-edit_article"></i><?php echo lang('ionize_button_edit_mode'); ?>
+    </a>
 </div>
 
 <div class="divider" id="tArticleDuplicateButton">
@@ -57,6 +63,7 @@
 		$('tArticleAddContentElement').hide();
 		$('tArticleMediaButton').hide();
         $('sideColumnSwitcher').hide();
+		$('editionModeSwitcher').hide();
 	}
 	else
 	{
@@ -64,7 +71,6 @@
 	 	var url = admin_url + 'article/delete/';
 		ION.initRequestEvent($('articleDeleteButton'), url + id, {'redirect':true}, {'confirm':true,'message': Lang.get('ionize_confirm_element_delete')})
 
-		
 		// Duplicate button
 		$('articleDuplicateButton').addEvent('click', function(e)
 		{
@@ -82,7 +88,8 @@
 				data
 			);
 		});
-		
+
+		// Add Media button
 		$('addMedia').addEvent('click', function(e)
 		{
 			e.stop();
@@ -95,8 +102,13 @@
 		{
 			ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'article', 'id_parent': id});
 		});
-		
-		
+
+		// Edition Mode button
+        $('editionModeSwitcher').addEvent('click', function(e)
+        {
+            ION.toggleEditMode('article', '.article-header');
+        });
+
 	}
 		
 	/**

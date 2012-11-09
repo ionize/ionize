@@ -238,17 +238,6 @@
 </head>
 <body>
 
-<?php if (ENVIRONMENT == 'development' OR ENVIRONMENT == 'testing'): ?>
-	<div id="preprod-flag">
-        <span class="help" title="<?php echo lang('ionize_help_environment_flag', ENVIRONMENT); ?>">
-		<?php echo strtoupper(ENVIRONMENT); ?>
-		</span>
-	</div>
-	<script type="text/javascript">
-        ION.initLabelHelpLinks('#preprod-flag');
-	</script>
-<?php endif; ?>
-
 <div id="desktop" class="desktop"></div>
 
 </body>

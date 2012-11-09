@@ -165,7 +165,7 @@ class TagManager_Page extends TagManager
 		{
 			if (config_item('url_mode') == 'short')
 			{
-				$page = self::get_page_by_code(self::$ci->uri->segment(3));
+				$page = self::get_page_by_short_url(self::$ci->uri->segment(3));
 			}
 			else
 			{
@@ -306,7 +306,7 @@ class TagManager_Page extends TagManager
 
 	/**
 	 * Get one page from its URL
-	 * 
+	 *
 	 * @param	string	Page name
 	 * @return	array	Page data array
 	 *
@@ -318,8 +318,30 @@ class TagManager_Page extends TagManager
 			if ($p['path'] == $url)
 				return $p;
 		}
-	
-		return array();	
+
+		return array();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get one page from its short URL
+	 *
+	 * @param	string	Page short URL
+	 * @return	array	Page data array
+	 *
+	 */
+	public static function get_page_by_short_url($url)
+	{
+		foreach(self::$context->registry('pages') as $p)
+		{
+			if ($p['url'] == $url)
+				return $p;
+		}
+
+		return array();
 	}
 
 

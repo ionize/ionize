@@ -68,6 +68,48 @@ ION.append({
 	},
 
 
+	/**
+	 * Initialize the Edit mode
+	 * Hides the selectors if the cookie is set to true
+	 *
+	 * @param element
+	 * @param selectors
+	 */
+	initEditMode: function(element, selectors)
+	{
+		var cookieName = 'editmode-' + element;
+		var activated = Cookie.read(cookieName);
+
+		if (typeOf(activated) != 'null' && activated == 'true')
+		{
+			$$(selectors).hide();
+		}
+	},
+
+
+	/**
+	 * Toggles the Edit mode for the given element
+	 *
+	 * @param element
+	 * @param selectors
+	 */
+	toggleEditMode: function(element, selectors)
+	{
+		var cookieName = 'editmode-' + element;
+		var activated = Cookie.read(cookieName);
+
+		if (typeOf(activated) != 'null' && activated == 'true')
+		{
+			$$(selectors).show();
+			Cookie.write(cookieName, 'false');
+		}
+		else
+		{
+			$$(selectors).hide();
+			Cookie.write(cookieName, 'true');
+		}
+	},
+
 
 	/** 
 	 * Creates Accordion

@@ -933,6 +933,7 @@ $lang['ionize_help_article_meta_description'] = 'Replace the parent description'
 $lang['ionize_help_article_meta_keywords'] = 'Replace the parent keywords';
 
 $lang['ionize_button_duplicate_article'] = 'Duplicate article';
+$lang['ionize_button_edit_mode'] = 'Edit Mode';
 
 
 /*

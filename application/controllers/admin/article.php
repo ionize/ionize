@@ -400,7 +400,6 @@ class Article extends MY_admin
 			// Remove HTML tags from returned array
 			strip_html($this->data);
 
-
 			// Insert Case
 			if ( empty($id_article) )
 			{
@@ -1858,12 +1857,15 @@ class Article extends MY_admin
 	 */
 	protected function _reload_panel($id_page, $id_article)
 	{
+		$article = $this->article_model->get_by_id($id_article, Settings::get_lang('default'));
+		$title = empty($article['title']) ? $article['name'] : $article['title'];
+
 		$this->callback[] =	array(
 			'fn' => 'ION.splitPanel',
 			'args' => array(
 				'urlMain'=> admin_url() . 'article/edit/'.$id_page.'.'.$id_article,
 				'urlOptions'=> admin_url() . 'article/get_options/'.$id_page.'.'.$id_article,
-				'title'=> lang('ionize_title_edit_article')
+				'title'=> lang('ionize_title_edit_article') . ' : ' . $title
 			)
 		);
 	}
