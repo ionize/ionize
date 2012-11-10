@@ -572,6 +572,9 @@ class TagManager
 
 		// Loads the view to parse
 		$view = ($view != NULL) ? $view : self::$view;
+
+		log_message('debug', 'Tagmanager::render() : Render of the view : ' . $view);
+
 		$parsed = Theme::load($view);
 
 		// We can now check if the file is a PHP one or a FTL one
@@ -2284,8 +2287,8 @@ class TagManager
 		$html_tag = $tag->getAttribute('tag');
 
 		// Inform the parent that the value has already been wrapped
-		if ($html_tag)
-			$tag->getParent()->setAttribute('__wrap_called__', TRUE);
+		if ($html_tag && $parent = $tag->getParent())
+			$parent->setAttribute('__wrap_called__', TRUE);
 
 		if ($tag->getAttribute('__wrap_called__') !== TRUE)
 		{

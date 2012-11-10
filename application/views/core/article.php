@@ -1,6 +1,5 @@
 <div class="article">
 
-
 	<ion:title tag="h3" />
 	
 	<!-- Formatted date -->
