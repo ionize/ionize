@@ -112,6 +112,11 @@ class TagManager_Page extends TagManager
 			$article = self::$ci->article_model->get_by_id($entity['id_entity'], Settings::get_lang());
 		}
 
+		/**
+		 * @TODO :
+		 * Write the backend choice...
+		 *
+		 *
 		// Entity should be at least one page. If not, 404.
 		if (is_null($entity) && ! empty(self::$ci->uri->segments[4]))
 		{
@@ -119,6 +124,7 @@ class TagManager_Page extends TagManager
 			self::register('page', $page);
 			self::set_404_output();
 		}
+		*/
 
 		if ( ! empty($article))
 			self::register('article', $article);
