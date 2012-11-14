@@ -337,10 +337,6 @@ class Page extends MY_admin
 			// Save linked access groups authorizations
 			// $this->base_model->join_items_keys_to('user_groups', $this->input->post('groups'), 'page', $this->id);
 
-
-			// Save the Urls
-			$this->page_model->save_urls($saved_id);
-			
 			// Save the Sitemap
 			$this->structure->build_sitemap();
 
@@ -411,6 +407,9 @@ class Page extends MY_admin
 
 			// Save Page
 			$this->page_model->save($this->data, $this->lang_data);
+
+			// Save the Urls
+			$this->page_model->save_urls($id);
 
 			// Save Home page
 			if ($this->data['home'] == '1')
