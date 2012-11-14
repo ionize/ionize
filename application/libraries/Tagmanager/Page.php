@@ -29,8 +29,6 @@ class TagManager_Page extends TagManager
 	 */
 	protected static $_entity = NULL;
 	
-
-	
 	public static $tag_definitions = array
 	(
 		// pages
@@ -115,7 +113,7 @@ class TagManager_Page extends TagManager
 		}
 
 		// Entity should be at least one page. If not, 404.
-		if (is_null($entity) && ! empty(self::$ci->uri->segments[3]))
+		if (is_null($entity) && ! empty(self::$ci->uri->segments[4]))
 		{
 			$page = self::get_page_by_code('404');
 			self::register('page', $page);
