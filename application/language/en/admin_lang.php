@@ -1018,7 +1018,7 @@ $lang['ionize_message_field_name_sql_reserved'] = 'The field name you choose is 
 $lang['ionize_help_ef_parent'] = 'Limit this extend field to a kind of parent or not';
 $lang['ionize_help_ef_global'] = 'Is the extend field always visible for each element ?';
 $lang['ionize_help_ef_name'] = 'Key to use with the field tag. Example : &#8249;ion:get key=&#34;field-name&#34; /&#8250;';
-$lang['ionize_help_ef_values'] = 'key:value, separated by a line break';
+$lang['ionize_help_ef_values'] = 'value:label, separated by a line break';
 $lang['ionize_help_ef_default_value'] = 'If select, radio or checkbox, put the key';
 $lang['ionize_help_ef_description'] = 'Displayed user help about this field, like this tooltip';
 $lang['ionize_help_label_label'] = 'Displayed label of this field, in Ionize';

@@ -109,9 +109,17 @@ class TagManager_Page extends TagManager
 		
 		// Can we get one article from the URL ?
 		$entity = self::get_entity();
-		if ($entity['type'] == 'article')
+		if ( $entity['type'] == 'article')
 		{
 			$article = self::$ci->article_model->get_by_id($entity['id_entity'], Settings::get_lang());
+		}
+
+		// Entity should be at least one page. If not, 404.
+		if (is_null($entity) && ! empty(self::$ci->uri->segments[3]))
+		{
+			$page = self::get_page_by_code('404');
+			self::register('page', $page);
+			self::set_404_output();
 		}
 
 		if ( ! empty($article))
@@ -135,7 +143,9 @@ class TagManager_Page extends TagManager
 	public function get_entity()
 	{
 		if ( is_null(self::$_entity))
+		{
 			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
+		}
 
 		return self::$_entity;
 	}
@@ -405,7 +415,7 @@ class TagManager_Page extends TagManager
 	 *
 	 */
 	public function set_404_output()
-	{	
+	{
 		self::$ci->output->set_header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 
 		$ext = array_pop(explode('.', array_pop(self::$ci->uri->segment_array())));
@@ -835,6 +845,14 @@ class TagManager_Page extends TagManager
 		$child_tag_close = ! is_null($child_tag) ? '</' . $child_tag .'>' : '';
 
 		$separator = $tag->getAttribute('separator', ' &raquo; ');
+		$separator_tag = $tag->getAttribute('separator_tag');
+		$separator_class = $tag->getAttribute('separator_class');
+		$separator_class = ! is_null($separator_class) ? ' class="'.$separator_class.'"': '';
+
+		if (!is_null($separator_tag))
+		{
+			$separator = '<' . $separator_tag . $separator_class . '>'.$separator.'</' . $separator_tag .'>';
+		}
 
 		$level = $tag->getAttribute('level', FALSE);
 
@@ -868,19 +886,23 @@ class TagManager_Page extends TagManager
 		{
 			$home_page = self::get_home_page();
 			$url = $home_page['absolute_url'];
-			$return .= $child_tag_open . '<a href="'.$url.'">'.$home_page['title'].'</a>' . $child_tag_close;
+			$return .= $child_tag_open . '<a href="'.$url.'">'.$home_page['title'].'</a>' . $separator . $child_tag_close;
 		}
 
 		// Pages
-		for($i=0; $i<count($breadcrumb); $i++)
+		$nb_pages = count($breadcrumb);
+		for($i=0; $i<$nb_pages; $i++)
 		{
 			$url = $breadcrumb[$i]['absolute_url'];
 
 			// Adds the suffix if defined
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
-			$return .= ($return != '') ? $separator : '';
-			$return .= $child_tag_open . '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' . $child_tag_close;
+			$return .= $child_tag_open . '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' ;
+			if ($i<($nb_pages-1))
+				$return .= $separator;
+
+			$return .= $child_tag_close;
 		}
 
 		// Current Article ?

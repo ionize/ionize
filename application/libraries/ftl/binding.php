@@ -174,6 +174,17 @@ class FTL_Binding
 		return $this->process_tag;
 	}
 
+
+	/**
+	 * Returns the tag's name
+	 *
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+
 	/**
 	 * Return all the attributes of the tag
 	 *
@@ -406,6 +417,9 @@ class FTL_Binding
 		{
 			$data_array = $this->get($data_array_name);
 
+			if (is_null($data_array))
+				$data_array = $this->get('data');
+
 			if (is_array($data_array) && isset($data_array[$key]))
 				return $data_array[$key];
 		}
@@ -421,9 +435,12 @@ class FTL_Binding
 	 * @return	mixed		Local tag var value
 	 *
 	 */
-	public function get($key)
+	public function get($key, $scope='local')
 	{
-		return $this->locals->{$key};
+		if ($scope == 'global')
+			return $this->globals->{$key};
+		else
+			return $this->locals->{$key};
 	}
 	
 	/**
@@ -435,9 +452,12 @@ class FTL_Binding
 	 * @return	FTL_Binding		The current tag
 	 *
 	 */
-	public function set($key, $value)
+	public function set($key, $value, $scope='local')
 	{
-		$this->locals->{$key} = $value;
+		if ($scope == 'global')
+			$this->globals->{$key} = $value;
+		else
+			$this->locals->{$key} = $value;
 
 		return $this;
 	}

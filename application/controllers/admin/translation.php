@@ -26,8 +26,8 @@ class Translation extends MY_admin
 {
 	// Reg Expression used to find translation items in views files.
 	private $reg_keys = array(
-		'% term=\"([- \w:]+?)\" *\/>%',
-		'% lang key=\"([- \w:]+?)\" *\/>%',
+		"%ion:lang[\s]*term=\"([- \w:]+?)\" *\/>%",
+		"%ion:lang[\s]*key=\"([- \w:]+?)\" *\/>%",
 		'% Lang.get\(([- \w:\']+?)\)%'
 	);
 
@@ -170,9 +170,7 @@ class Translation extends MY_admin
 					if ($term != '')
 					{
 						$value = $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)];
-$value = stripslashes($value);
-						log_message('error', $value);
-
+						$value = stripslashes($value);
 
 						if ( ! get_magic_quotes_gpc())
 						{
@@ -287,56 +285,7 @@ $value = stripslashes($value);
 	
 	}
 	
-	
-	// ------------------------------------------------------------------------
 
-
-	/**
-	 * Get the array of items to translate
-	 * 
-	 * @return array	A simple array of unique items to translate, used for saving
-	 *
-	function _get_terms()
-	{
-		// File helper
-		$this->load->helper('file');
-
-		// Theme views folder
-		$path = FCPATH.'themes/'.Settings::get('theme').'/views';
-		
-		// Returned items array
-		$items = array();
-
-		if (is_dir($path))
-		{
-			$dir_iterator = new RecursiveDirectoryIterator($path);
-			$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
-	
-			foreach ($iterator as $file)
-			{
-				if ($file->isFile() && (substr($file->getFilename(), 0, 1) != ".") )
-				{
-					$content = read_file($file->getPath() . '/' . $file->getFilename());
-					
-					if (preg_match_all($this->reg_key, $content, $matches))
-					{
-						foreach($matches[1] as $term)
-						{
-							if (!in_array($term, $items))
-							{
-								$items[] = $term;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return $items;
-	}
-	 */
-	
-	
 	// ------------------------------------------------------------------------
 
 

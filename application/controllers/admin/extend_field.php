@@ -193,7 +193,10 @@ class Extend_field extends MY_admin
 		{
 			if ($this->extend_field_model->delete($id) > 0)
 			{
-				// Delete all the extend fields objects from cutom_fields table
+				// Extend Field lang table
+				$this->extend_field_model->delete(array('id_extend_field'=>$id), 'extend_field_lang');
+
+				// Delete all the extend fields objects from extend_fields table
 				$this->extend_field_model->delete_extend_fields($id);
 				
 				// Update array

@@ -297,11 +297,14 @@ class Medias
 		// Result of the process
 		$result = FALSE;
 
+		if (!file_exists(FCPATH.$source_path))
+			return $result;
+
 		// $dest_path = $this->_get_clean_picture_filename($dest_path);
 
 		$CI =& get_instance();
 		$CI->load->library('image_lib');
-		
+
 		$dim = self::get_image_dimensions($source_path);
 
 		$create_func = '';
@@ -413,7 +416,6 @@ class Medias
 			
 			case 'width':
 				
-				
 				$ci_settings['width'] = $settings['width'];
 				$ci_settings['height'] = intval($settings['width']  * $dim['height'] / $dim['width']);
 				
@@ -458,9 +460,9 @@ class Medias
 				break;
 				
 			case 'adaptive':
-								
+
 				$params = self::calculate_crop_params($dim['width'], $dim['height'], $settings['width'], $settings['height'], 'crop');
-				
+
 				$ci_settings['width'] = $params['resize_width'];
 				$ci_settings['height'] = $params['resize_height'];
 				
@@ -539,7 +541,6 @@ class Medias
 				}
 
 				break;
-				
 		}
 		
 		if($type == 'jpeg' && ! empty ($settings['watermark']) && file_exists($dest_path))

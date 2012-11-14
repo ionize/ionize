@@ -6,11 +6,7 @@
  *
  */
 
-
-// trace($definition);
-
 $elements = $definition['elements'];
-// trace($elements);
 
 $id_def = $definition['id_element_definition'];
 

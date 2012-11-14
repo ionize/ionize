@@ -50,8 +50,11 @@ class TagManager_Article extends TagManager
 	{
 		// Page. 1. Local one, 2. Current page (should never arrived except if the tag is used without the 'page' parent tag)
 		$page = $tag->get('page');
-//		if (empty($page))
-//			$page = self::registry('page');
+
+		// Only get all articles (no limit to one page) if asked.
+		// Filter by current page by default
+		if (empty($page) && $tag->getAttribute('all') == NULL)
+			$page = self::registry('page');
 
 		// Set by Page::get_current_page()
 		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
@@ -98,14 +101,8 @@ class TagManager_Article extends TagManager
 				self::add_articles_filter_pagination($tag);
 		}
 
-
-		// Don't use the "article_list_view" setting set through Ionize
-		// Todo : Remove ?
-		// $keep_view = (isset($tag->attr['keep_view'])) ? TRUE : FALSE;
-
-
 		// from categories ?
-// @TODO : Find a way to display articles from a given category : filter ?
+		// @TODO : Find a way to display articles from a given category : filter ?
 		$from_categories = $tag->getAttribute('from_categories');
 		$from_categories_condition = ($tag->getAttribute('from_categories_condition') != NULL && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 
@@ -115,7 +112,7 @@ class TagManager_Article extends TagManager
 		 *
 		 */
 		// Order. Default order : ordering ASC
-		$order_by = $tag->getAttribute('order_by', 'ordering ASC');
+		$order_by = $tag->getAttribute('order_by', 'id_page, ordering ASC');
 		$where = array('order_by' => $order_by);
 
 		// Add type to the where array
@@ -579,13 +576,15 @@ class TagManager_Article extends TagManager
 		return self::wrap($tag, $tag->expand());
 	}
 
+
 	// ------------------------------------------------------------------------
 
 
 	public static function tag_prev_article(FTL_Binding $tag)
 	{
 		$article = self::get_adjacent_article($tag, 'prev');
-	
+		$tag->set('data', $article);
+
 		return self::process_prev_next_article($tag, $article);
 	}
 
@@ -596,7 +595,8 @@ class TagManager_Article extends TagManager
 	public static function tag_next_article(FTL_Binding $tag)
 	{
 		$article = self::get_adjacent_article($tag, 'next');
-	
+		$tag->set('data', $article);
+
 		return self::process_prev_next_article($tag, $article);
 	}
 
@@ -609,9 +609,6 @@ class TagManager_Article extends TagManager
 		$found_article = NULL;
 
 		$articles = self::prepare_articles($tag, self::get_articles($tag));
-		$count = count($articles);
-		$tag->set('count', $count);
-		$tag->set('articles', $articles);
 
 		// Get the article : Fall down to registry if no one found in tag
 		$article = $tag->get('article');
@@ -629,8 +626,7 @@ class TagManager_Article extends TagManager
 				}
 			}
 		}
-		$tag->set('article', $found_article);
-		
+
 		return $found_article;
 	}
 
@@ -650,26 +646,11 @@ class TagManager_Article extends TagManager
 	 */
 	private static function process_prev_next_article(FTL_Binding $tag, $article = NULL)
 	{
-		if ( ! is_null($article))
-		{
-			$value_key = $tag->getAttribute('display', 'title');
-			$value = $tag->getValue($value_key);
+		$str = '';
+		if ($article)
+			$str = self::wrap($tag, $tag->expand());
 
-			// Build the A HTML element ?
-			// This is not compatible with the helper attribute, which need a "pure" value
-			if (is_null($tag->getAttribute('helper')) && $tag->getAttribute('href') === TRUE)
-			{
-				$url = $tag->getValue('url');
-				$value = self::create_href($tag, $url);
-			}
-
-			// Process PHP, helper, prefix/suffix
-			$value = self::process_value($tag, $value);
-
-			return self::wrap($tag, $value);
-		}
-		
-		return '';
+		return $str;
 	}
 
 
@@ -734,6 +715,10 @@ class TagManager_Article extends TagManager
 
 			// Article's count
 			$articles[$key]['count'] = $count;
+
+			// Article's ID
+			$articles[$key]['id'] = $articles[$key]['id_article'];
+
 		}
 
 		return $articles;

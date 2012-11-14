@@ -1403,39 +1403,6 @@ class Base_model extends CI_Model
 	 * @param	String	Lang code
 	 *
 	 */
-	protected function add_elements(&$data, $parent, $lang)
-	{	
-		// Loads the model if it isn't loaded
-		if (!isset(self::$ci->element_definition_model))
-			self::$ci->load->model('element_definition_model');
-
-
-		// get the elements definition array
-		$this->set_elements_definition($lang);
-
-		// Get the elements ID to filter the SQL on...
-		$ids = array();
-		
-		foreach ($data as $d)
-		{
-			$ids[] = $d['id_'.$parent];
-		}
-
-		$elements = self::$ci->element_definition_model->get_definitions_from_parent($parent);
-		// trace($elements);
-	}
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Add extended fields and their values if website settings allow it.
-	 * 
-	 * @param	Array	Data array. By ref.
-	 * @param	String	Parent type. can be "page", "article", etc.
-	 * @param	String	Lang code
-	 *
-	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{	
 		// get the extend fields definition array

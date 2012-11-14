@@ -23,6 +23,7 @@ class Element_definition_model extends Base_model
 	
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * Returns the array of all definitions which have element defined for the given parent
 	 *

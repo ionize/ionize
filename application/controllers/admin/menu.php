@@ -130,8 +130,6 @@ class Menu extends MY_admin
 
 			if (($menu['name'] != $data['name']) && $this->base_model->exists( array( 'name' =>  $data['name'] ) ) )
 			{
-				trace($menu['name']);
-				trace($data['name']);
 				$this->error(lang('ionize_message_menu_already_exists'));
 			}
 			

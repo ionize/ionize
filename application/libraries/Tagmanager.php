@@ -482,7 +482,7 @@ class TagManager
 	}
 
 
-
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -493,7 +493,6 @@ class TagManager
 	 *
 	 * @return null|string
 	 *
-	 */
 	public static function get_formatted_from_tag_data(FTL_Binding $tag, $key=NULL)
 	{
 		$value = self::get_from_tag_data($tag, $key);
@@ -507,6 +506,10 @@ class TagManager
 
 		return $value;
 	}
+	 */
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -1276,12 +1279,10 @@ class TagManager
 	public static function tag_get(FTL_Binding $tag)
 	{
 		$key = $tag->getAttribute('key');
-		$value = self::get_formatted_from_tag_data($tag, $key);
 
-		// @TODO
-		// if (is_null($value) && !is_null($tag->getAttribute('or')))
+		$value = $tag->get($key, 'global');
 
-		return $value;
+		return self::output_value($tag, $value);
 	}
 
 
@@ -1455,24 +1456,15 @@ class TagManager
 	 *
 	 * @param FTL_Binding $tag
 	 *
-	 * @return String
+	 * @return void
 	 *
-	 * @usage	<ion:set var="foo" value="bar" scope="<local|global>" />
+	 * @usage	<ion:set var="foo" value="bar" />
 	 *
+	 */
 	public static function tag_set(FTL_Binding $tag)
 	{
-		$var = ( !empty ($tag->attr['var'])) ? $tag->attr['var'] : NULL;
-		$scope = ( !empty ($tag->attr['scope'])) ? $tag->attr['scope'] : 'locals';
-		$value = ( !empty ($tag->attr['value'])) ? $tag->attr['value'] : NULL;
-
-		if ( ! is_null($var))
-		{
-			$tag->{$scope}->{$var} = $value;
-		}
-		
-		return $value;
+		$tag->set($tag->getAttribute('key'), $tag->getAttribute('value'), 'global');
 	}
-	*/
 
 
 	// ------------------------------------------------------------------------
@@ -1550,7 +1542,7 @@ class TagManager
 
 	/**
 	 * Returns one list from a given field
-	 * @TODO : Rewrite this method for 0.9.9
+	 * @TODO : Rewrite this method for 1.0
 	 *
 	 * @param FTL_Binding $tag
 	 *
@@ -1915,31 +1907,62 @@ class TagManager
 
 
 	/**
-	 * Returns the curent meta title
+	 * Returns the current meta title
 	 *
 	 * @param FTL_Binding $tag
 	 *
 	 * @return string
 	 *
+	 * @usage	<ion:meta_title with_site_title="true" position="before/after" separator=" - " />
+	 *
 	 */
 	public static function tag_meta_title(FTL_Binding $tag)
 	{
+		$title = NULL;
+
+		$page = self::registry('page');
 		$article = self::registry('article');
 
-		if ( ! empty($article['meta_title']))
-			return $article['meta_title'];
+		$with_site_title = $tag->getAttribute('with_site_title');
 
+		if ( ! empty($article))
+		{
+			if ( ! empty($article['meta_title']))
+				$title = $article['meta_title'];
+			else if ( ! empty($article['title']))
+				$title = $article['title'];
+		}
 		else
 		{
-			$page = self::registry('page');
 			if ( ! empty($page['meta_title']))
-				return $page['meta_title'];
+				$title = $page['meta_title'];
+			else if ( ! empty($page['title']))
+				$title = $page['title'];
 		}
-		/*
-		 * @TODO : Set it on the Admin side.
-		 *
-		 */
-		return Settings::get('site_title');
+
+		if ( $with_site_title )
+		{
+			$position = $tag->getAttribute('position', 'before');
+			$separator =$tag->getAttribute('separator', ' - ');
+
+			if ( ! is_null($title))
+			{
+				if ($position == 'before')
+				{
+					$title = Settings::get('site_title') . $separator . $title;
+				}
+				else
+				{
+					$title =  $title . $separator . Settings::get('site_title');
+				}
+			}
+			else
+			{
+				$title = Settings::get('site_title');
+			}
+		}
+
+		return $title;
 	}
 
 
@@ -2485,7 +2508,12 @@ class TagManager
 
 	/**
 	 * Processes the value through PHP function, helper, prefix/suffix
-	 * Adds the corresponding attributes to the tags using this method.
+	 * Adds the following attributes to the tags using this method :
+	 * - function
+	 * - helper
+	 * - prefix
+	 * - suffix
+	 * - autolink
 	 *
 	 * @param FTL_Binding $tag
 	 * @param             $value

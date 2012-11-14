@@ -1,9 +1,3 @@
-<?php
-
-// trace($elements);
-
-?>
-
 
 <?php foreach($elements as $element) :?>
 

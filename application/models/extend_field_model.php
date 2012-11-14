@@ -39,24 +39,51 @@ class Extend_field_model extends Base_model
 		$this->set_lang_table('extend_field_lang');
 		
 		// Stores the extends fields instances
-		$this->elements_table =		'extend_fields';
+		$this->elements_table =	'extend_fields';
 	}
 
 
-	function get_list($where = array())
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param array $where
+	 *
+	 * @return array
+	 */
+	public function get_list($where = array())
 	{
 		$where['order_by'] = 'ordering ASC';
 		return parent::get_list($where);
 	}
-	
-	
-	function get_lang_list($where = array(), $lang)
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param array $where
+	 * @param null  $lang
+	 *
+	 * @return array
+	 */
+	public function get_lang_list($where = array(), $lang)
 	{
 		$where['order_by'] = 'ordering ASC';
 		return parent::get_lang_list($where, $lang);
 	}
 
-	function get_label($id_extend_field){
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $id_extend_field
+	 *
+	 * @return string
+	 */
+	public function get_label($id_extend_field)
+	{
 		if($id_extend_field != '') {
 			$this->db->select($this->lang_table . '.label');
 			$this->db->from($this->table);
@@ -71,6 +98,8 @@ class Extend_field_model extends Base_model
 		}
 		return 'Need a "$id_extend_field"';
 	}
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -78,15 +107,14 @@ class Extend_field_model extends Base_model
 	 * Get the current extend fields and their values for one parent element
 	 * Used by backend, as all the languages data are also got
 	 *
-	 * @param	string	parent name
-	 * @param	int		parent ID
+	 * @param	string		parent name
+	 * @param	null		parent ID
+	 *
+	 * @return 	array
 	 *
 	 */
-	function get_element_extend_fields($parent, $id_parent=null)
+	function get_element_extend_fields($parent, $id_parent=NULL)
 	{
-		$data = array();
-		$extend_fields = array();
-		
 		// Element extend fields
 		$where = array('parent'=>$parent);
 		$extend_fields = $this->get_list($where);
@@ -153,8 +181,10 @@ class Extend_field_model extends Base_model
 	/**
 	 * Saves extend fields data
 	 *
+	 * @param	string	Parent type
 	 * @param	int		Current parent element ID. Can be the page ID, the article ID...
-	 * @param	Array	$_POST data array
+	 * @param	array	$_POST data array
+	 * @return  void
 	 *
 	 */
 	function save_data($parent, $id, $data)
@@ -237,6 +267,9 @@ class Extend_field_model extends Base_model
 	 * Delete all the extend fields elements corresponding to a extend field definition
 	 * Can be very dangerous !
 	 *
+	 * @param $id
+	 *
+	 * @return mixed
 	 */
 	function delete_extend_fields($id)
 	{

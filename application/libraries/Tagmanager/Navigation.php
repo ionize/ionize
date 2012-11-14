@@ -150,7 +150,7 @@ class TagManager_Navigation extends TagManager
 		// Filter on 'appears'=>'1'
 		if ($display_hidden == FALSE)
 			$pages = array_values(array_filter($pages, array('TagManager_Page', '_filter_appearing_pages')));
-		
+
 		// Get the parent page from one level upper
 		if ($asked_level > 0)
 		{
@@ -201,7 +201,7 @@ class TagManager_Navigation extends TagManager
 				$tag->setAttribute('helper', $helper.':'.$helper_function);
 
 				// Process the helper
-				$value = self::helper_process($tag, $pages, $tag->getAttribute('helper'));
+				$value = self::helper_process($tag, $pages, $helper.':'.$helper_function);
 
 				$output = self::wrap($tag, $value);
 				

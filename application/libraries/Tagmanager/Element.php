@@ -20,21 +20,19 @@
  */
 class TagManager_Element extends TagManager
 {
-	private static $allowed_parents = array ('articles','article','page');
+	private static $elements_def = NULL;
 
-	private static $got_elements_def = false;
-	
-	private static $elements_def = array();
+	/**
+	 * Array of elements ID for which tags are already be defined by set_element_tags()
+	 *
+	 * @var array
+	 */
+	private static $has_element_tags = array();
 
 	public static $tag_definitions = array
 	(
-		'elements' => 'tag_elements',
-//		'elements:index' => 'tag_element_index',
-//		'elements:count' => 'tag_element_count',
-		'elements:field' => 'tag_element_field',
-		'elements:fields' => 'tag_element_fields',
-		'elements:attribute' => 'tag_element_attribute',
-		'elements:fields:attribute' => 'tag_element_fields_attribute'	
+		'element' => 'tag_element',
+		'element:items' => 'tag_element_items',
 	);
 	
 
@@ -47,170 +45,152 @@ class TagManager_Element extends TagManager
 	 * @param	String	Parent type
 	 * @return	Array	Extend fields definition array
 	 */
-	private function set_elements_definition($lang)
+	private function get_elements_definition($lang)
 	{
-		self::$ci->load->model('element_definition_model', '', true);
-		
 		// Get the extend fields definition if not already got
-		if (self::$got_elements_def == false)
+		if (self::$elements_def == NULL)
 		{
+			self::$ci->load->model('element_definition_model', '', TRUE);
+
 			// Store the extend fields definition
 			self::$elements_def = self::$ci->element_definition_model->get_lang_list(NULL, $lang);
-			
-			// Set this to true so we don't get the extend field def a second time for an object of same kind
-			self::$got_elements_def = true;
 		}
+
+		return self::$elements_def;
 	}
-	
+
+
 	// ------------------------------------------------------------------------
 
-	
+
+	/**
+	 * Return the Element Definition ID from its key or NULL if no one was found.
+	 *
+	 * @param $definition_name
+	 *
+	 * @return null
+	 */
 	protected static function get_definition_id_from_name($definition_name)
 	{
-		foreach(self::$elements_def as $ed)
+		$elements_definitions = self::get_elements_definition(Settings::get_lang('current'));
+
+		foreach($elements_definitions as $ed)
 		{
 			if ($ed['name'] == $definition_name)
 				return $ed['id_element_definition'];
 		}
+
+		return NULL;
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
 
 	/**
-	 * Returns 
+	 * Returns one Element definition from its name (key)
 	 *
+	 * @param $definition_name
+	 *
+	 * @return null
 	 */
-	public static function tag_elements(FTL_Binding $tag)
+	protected static function get_definition_from_name($definition_name)
+	{
+		$elements_definitions = self::get_elements_definition(Settings::get_lang('current'));
+
+		foreach($elements_definitions as $ed)
+		{
+			if ($ed['name'] == $definition_name)
+				return $ed;
+		}
+
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns one Element definition from its ID
+	 *
+	 * @param $id_element_definition
+	 *
+	 * @return null
+	 */
+	protected static function get_definition_from_id($id_element_definition)
+	{
+		$elements_definitions = self::get_elements_definition(Settings::get_lang('current'));
+
+		foreach($elements_definitions as $ed)
+		{
+			if ($ed['id_element_definition'] == $id_element_definition)
+				return $ed;
+		}
+
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Element tag
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_element(FTL_Binding $tag)
 	{
 		// Returned string
 		$str = '';
-		
-		// Wished element definition name
-		$element_definition_name = $tag->getAttribute('type');
 
-		// Limit ?
-		$limit = ($tag->getAttribute('limit')) ? (int)$tag->getAttribute('limit') : FALSE ;
-		
-		// Parent. can be set or not
-		$parent = $tag->getAttribute('from');
-		$parent_name = NULL;
-		$parent_object = NULL;
-		$id_parent = NULL;
+		// Wished element definition name
+		$element_definition_name = $tag->getAttribute('key');
 
 		if (!is_null($element_definition_name))
 		{
-			// Current page parent
-			if (is_null($parent))
+			$parent = $tag->getParent();
+			$parent_type = $parent->getName();
+
+			$id_parent = $parent->getValue('id_'.$parent_type, $parent_type);
+
+			// CI Model
+			self::$ci->load->model('element_model', '', TRUE);
+
+			// Get the corresponding element definition ID
+			$id_element_definition = self::get_definition_id_from_name($element_definition_name);
+			$element_definition = self::get_definition_from_id($id_element_definition);
+
+			// Get the items
+			$items = self::$ci->element_model->get_fields_from_parent($parent_type, $id_parent, Settings::get_lang(), $id_element_definition);
+
+			$tag->set('items', $items);
+
+			if ( ! empty($items) OR $tag->getAttribute('display') == TRUE)
 			{
-				$obj_tag = NULL;
+				// Set "title" value : Processed by the default title tag
+				$tag->set('title', $element_definition['title']);
 
-				/*
-				 * @TODO : Replace this and use : self::_get_nesting_array()
-				 *
-				 */
-				// Get the tag path
-				$tag_path = explode(':', $tag->nesting());
+				// Internal data : Used by sub tags
+				$tag->set('parent', $parent_type);
+				$tag->set('id_parent', $id_parent);
+				$tag->set('id_element_definition', $id_element_definition);
 
-				// Remove the current tag from the path
-				while ( ! empty($tag_path))
-				{
-					$obj_tag = array_pop($tag_path);
-					if (in_array($obj_tag, self::$allowed_parents))
-						break;
-				}
+				// Create dynamic child tags for <ion:element />
+				self::set_element_tags($id_element_definition);
 
-				// If no parent, the default parent is 'page'
-				// $obj_tag = (count($tag_path) > 0) ? array_pop($tag_path) : 'page';
-				if ($obj_tag == NULL OR $obj_tag == 'elements') $obj_tag = 'page';
-				
-				// Parent name. Removes plural from parent tag name if any.
-				if (substr($obj_tag, -1) == 's')
-					$parent = substr($obj_tag, 0, -1);
-				else
-					$parent = $obj_tag;
-
-				// The Parent object
-				$parent_object = $tag->locals->{$parent};
-				$id_parent = $parent_object['id_' . $parent];
-			}
-			// Get the parent from another page
-			else
-			{
-				$parent_def = explode(':', $parent);
-				$parent = $parent_def[0];
-				$parent_name = $parent_def[1];
-
-				switch($parent)
-				{
-					case 'page' :
-						
-						if (isset($tag->locals->{$parent}))
-						{
-							foreach($tag->globals->pages as $page)
-							{
-								if($page['url'] == $parent_name)
-								{
-									$id_parent = $page['id_page'];
-								}
-							}
-						}
-						break;
-					
-					// Get the article
-					case 'article' :
-						
-						$article = 	self::$ci->article_model->get(array('name' => $parent_name));
-						
-						if ( ! empty($article))
-						{
-							$id_parent = $article['id_article'];
-						}
-						
-						break;
-				}
+				$str = self::wrap($tag, $tag->expand());
 			}
 
-			// Allowed parent ? Great, let's get the definition
-			if ( ! is_null($id_parent) && in_array($parent, self::$allowed_parents) )
-			{
-				// CI Model
-				self::$ci->load->model('element_model', '', true);
-			
-				// Get only one time the definition
-				self::set_elements_definition(Settings::get_lang('current'));
-				
-				// Get the corresponding element definition ID
-				$id_element_definition = self::get_definition_id_from_name($element_definition_name);
-
-				$elements = self::$ci->element_model->get_fields_from_parent($parent, $id_parent, Settings::get_lang(), $id_element_definition);
-
-				// Process the elements
-				if (!empty($elements['elements']))
-				{
-					$count = count($elements['elements']);
-					$limit = ($limit == FALSE OR $limit > $count) ? $count : $limit;
-					
-					for($i = 0; $i < $limit; $i++)
-					{
-						$element = $elements['elements'][$i];
-						
-						$element['title'] =  $elements['title'];
-						$element['name'] =  $elements['name'];
-						
-						$tag->locals->element = $element;
-						$tag->locals->index = $i +1;
-						$tag->locals->count = $limit;
-						$str .= $tag->expand();
-					}
-				}
-			}
-	
-			return $str;					
-		
+			return $str;
 		}
-		return self::show_tag_error($tag, '<b>The "type" attribute is mandatory</b>');
+		else
+		{
+			show_error('TagManager : Please use the attribute <b>"key"</b> when using the tag <b>elements</b>');
+		}
 	}
 
 
@@ -218,178 +198,161 @@ class TagManager_Element extends TagManager
 
 
 	/**
-	 * Returns one field value
-	 * 
-	 * @usage : 
+	 * Element's items tag
 	 *
-	 *			<ion:elements type="my_element_name" [from="page:my_page" limit="5"]>
-	 *			    
-	 *			    <select>
-	 *			    	<!-- Loop through all the element's fields -->
-	 *			    	<ion:fields>
-	 *			    		<!-- Display the value of the field
-	 *			    		<option value="<ion:attribute name="content" />"><ion:attribute name="label" /></option>
-	 *			    	</ion:fields>
-	 *			    </select>
-	 *			</ion:elements>
+	 * @param FTL_Binding $tag
 	 *
+	 * @return string
 	 */
-	public static function tag_element_fields_attribute($tag)
+	public static function tag_element_items(FTL_Binding $tag)
 	{
-		// Wished field attribute
-		$attr = $tag->getAttribute('name', FALSE);
-		$autolink = ($tag->getAttribute('autolink')) ? TRUE : FALSE ;
-		
-		if ($attr !== FALSE)
-		{
-			if (isset($tag->locals->field[$attr]))
-			{
-				$field = $tag->locals->field;
-				$value = $field[$attr];
-
-				// Date
-				if ($field['type'] == '7')
-				{
-					$value = self::format_date($tag, $value);
-				}
-				
-				// Translated Element
-				if ($field['translated'] == '1' && $attr != 'label')
-				{
-					if (isset($field[Settings::get_lang('current')]['content']))
-					{
-						$value = $field[Settings::get_lang('current')][$attr];
-					}
-				}
-				
-				// Autolink				
-				if ($autolink == TRUE)
-					$value = auto_link($value, 'both', TRUE);
-
-				return self::wrap($tag, $value );
-			}
-			return '';
-		}
-
-		return self::show_tag_error($tag, '<b>The "name" attribute is mandatory</b>');
-	}
-	
-	
-	/**
-	 * Returns the value of one element field
-	 *
-	 * @usage : 
-	 *
-	 *			<ion:elements type="my_element_name" [from="page:my_page" limit="5"]>
-	 *		
-	 *				<span class="date"><ion:field name="date" format="d" /></span> 
-	 *				<span class="month"><ion:field name="date" format="M" /></span>
-	 *
-	 *				<span class="location">
-	 *					<ion:field name="city"/>
-	 *					<small><ion:field name="location" /> | <ion:field name="country" /></small>
-	 *				</span>
-	 *
-	 *			</ion:elements>
-	 *
-	 *
-	 *
-	 */
-	public static function tag_element_field($tag)
-	{
-		// Wished element definition name
-		$field_name = $tag->getAttribute('name', FALSE);
-
-		if ($field_name !== FALSE)
-		{
-			$element = $tag->locals->element;
-
-			if (!empty($element['fields'][$field_name]))
-			{
-				$field = $element['fields'][$field_name];
-				
-				// Date
-				if ($field['type'] == '7')
-				{
-					$field['content'] = self::format_date($tag, $field['content']);
-				}
-				
-				// Translated Element
-				if ($field['translated'] == '1')
-				{
-					if (isset($field[Settings::get_lang('current')]['content']))
-					{
-						$field['content'] = $field[Settings::get_lang('current')]['content'];
-					}
-				}
-				
-				// Textarea or Rich Text content
-				if ($field['type'] == '2' OR $field['type'] == '3')
-				{
-					$field['content'] = auto_link($field['content'], 'both', TRUE);
-				}
-				
-				return self::wrap($tag, $field['content'] );
-			}
-			return '';
-		}
-		return self::show_tag_error($tag, '<b>The "name" attribute is mandatory</b>');
-
-	}
-
-
-	// ------------------------------------------------------------------------
-	
-	
-	public static function tag_element_fields($tag)
-	{
-		$element = $tag->locals->element;
 		$str = '';
-		if (!empty($element['fields']))
+
+		// Limit ?
+		$limit = ($tag->getAttribute('limit')) ? (int)$tag->getAttribute('limit') : FALSE;
+
+		$items = $tag->get('items');
+
+		// Process the elements
+		if ( ! empty($items['elements']))
 		{
-			foreach($element['fields'] as $field)
+			$count = count($items['elements']);
+			$limit = ($limit == FALSE OR $limit > $count) ? $count : $limit;
+
+			$tag->set('count', $limit);
+
+			for($i = 0; $i < $limit; $i++)
 			{
-				$tag->locals->field = $field;
+				$element = $items['elements'][$i];
+
+				$tag->set('element', $element);
+				$tag->set('index', $i);
+				$tag->set('count', $limit);
+
 				$str .= $tag->expand();
+			}
+
+			$str = self::wrap($tag, $str);
+		}
+
+		return $str;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 *
+	 * @TODO : Modify this method for the 1.0 release
+	 *
+	 * @param FTL_Binding $tag
+	 */
+	public static function tag_element_item_field_values(FTL_Binding $tag)
+	{
+		$str = '';
+
+		$element = $tag->get('element');
+
+		$field_name = $tag->getParentName();
+
+		if (isset($element['fields'][$field_name]))
+		{
+			$field = $element['fields'][$field_name];
+
+			// All available values for this multi-value field
+			$all_values = explode("\n", $field['value']);
+			$values = array();
+			foreach($all_values as $value)
+			{
+				$key_val = explode(':', $value);
+				$values[$key_val[0]] = $key_val[1];
+			}
+			// Values selected by the user
+			$selected_values = explode(',', $field['content']);
+
+			foreach($selected_values as $selected_value)
+			{
+				foreach($values as $value => $label)
+				{
+					if ($value == $selected_value)
+					{
+						$tag->set('value', $value);
+						$tag->set('label', $label);
+						$str .= self::wrap($tag, $tag->expand());
+					}
+				}
 			}
 		}
 		return $str;
 	}
-	
+
 
 	// ------------------------------------------------------------------------
-	
-	
-	public static function tag_element_attribute($tag)
-	{
-		// Wished field attribute
-		$attr = $tag->getAttribute('name', FALSE);;
 
-		if ($attr !== FALSE)
+
+	/**
+	 * Element field generic tag
+	 * 
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_element_item_field(FTL_Binding $tag)
+	{
+		$element = $tag->get('element');
+
+		$field_key = $tag->getName();
+
+		if (isset($element['fields'][$field_key]))
 		{
-			if (isset($tag->locals->element[$attr]))
-			{
-				return $tag->locals->element[$attr];
-			}
-			return self::show_tag_error($tag, '<b>The attribute "'.$attr.'" doesn\'t exists.</b>');
+			$tag->set($field_key, $element['fields'][$field_key]);
 		}
 
-		return self::show_tag_error($tag, '<b>The "name" attribute is mandatory</b>');
-	}
-	
-	
-	
-	public static function tag_element_index($tag)
-	{
-		return $tag->locals->index;
+		return self::wrap($tag, $tag->expand());
 	}
 
-	public static function tag_element_count($tag)
-	{
-		return $tag->locals->count;
-	}
 
-	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Creates, for each field of the element, the tags :
+	 * 	<ion:field />
+	 * 	<ion:field:label />
+	 * 	<ion:field:default_value />
+	 * 	<ion:field:type />
+	 * 	<ion:field:content />
+	 *
+	 * @param $id_element_definition
+	 */
+	private static function set_element_tags($id_element_definition)
+	{
+		// Get the fields from this element definition
+		$element_fields = self::$ci->element_model->get_fields_from_definition_id($id_element_definition);
+
+		if ( ! isset(self::$has_element_tags[$id_element_definition]))
+		{
+			foreach ($element_fields as $field)
+			{
+				self::$context->define_tag('element:items:'.$field['name'], array(__CLASS__, 'tag_element_item_field'));
+				self::$context->define_tag('element:items:'.$field['name'].':label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:items:'.$field['name'].':default_value', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:items:'.$field['name'].':type', array(__CLASS__, 'tag_simple_value'));
+
+				self::$context->define_tag('element:items:'.$field['name'].':values', array(__CLASS__, 'tag_element_item_field_values'));
+				self::$context->define_tag('element:items:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:items:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
+
+				if ($field['type'] != '7')
+					self::$context->define_tag('element:items:'.$field['name'].':content', array(__CLASS__, 'tag_simple_value'));
+				else
+					self::$context->define_tag('element:items:'.$field['name'].':content', array(__CLASS__, 'tag_simple_date'));
+			}
+
+			self::$has_element_tags[$id_element_definition] = TRUE;
+		}
+	}
 }
 
 /* End of file Element.php */

@@ -1539,12 +1539,6 @@ class Article_model extends Base_model
 	 */
 	private function _set_filter($filter = NULL)
 	{
-/*
-		if (preg_match_all("#(^([a-z0-9\s]+)(!=|=)([a-z0-9\/'\s!=]+))#i", $filter, $matches))
-		{
-			trace($matches);
-		}
-*/
 		if ( ! is_null($filter))
 			$this->{$this->db_group}->where('('.$filter.')');
 	}

@@ -20,7 +20,7 @@ $id = $id_extend_field;
 	<input id="ordering" name="ordering" type="hidden" value="<?php echo $ordering; ?>" />
 
 
-	<!-- Contexte -->
+	<!-- Context -->
 	<div class="summary">
 		<dl class="small">
 			<dt class="lite">
