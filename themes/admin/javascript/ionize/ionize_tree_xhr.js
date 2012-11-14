@@ -24,6 +24,9 @@ ION.TreeXhr = new Class({
 		this.id_container = id_container;
 		this.container = $(id_container);
 		this.container.store('tree', this);
+
+		// Ionize structure trees container
+		this.ionizeTrees = $('structurePanel');
 		
 		this.id_menu = id_menu;
 		
@@ -95,8 +98,8 @@ ION.TreeXhr = new Class({
 		
 				// Opens the folder
 				if (id_parent != 0)
-					self.updateOpenClose(parentContainer);
-				
+					self.open(parentContainer);
+
 				// Fires the event
 				self.fireEvent('get', self);
 			}
@@ -144,23 +147,7 @@ ION.TreeXhr = new Class({
 
 			// Try to inject page container before the article container, else at the bottom
 			var injected = false;
-/*
-			if (type == 'page')
-			{
 
-				if (typeOf($('articleContainer' + id_parent)) != 'null')
-				{
-console.log('inject page before articles');
-					container.inject($('articleContainer' + id_parent), 'before');
-					injected = true;
-				}
-			}
-			
-			if (injected == false)
-			{
-				container.inject(parentContainer, 'bottom');
-			}
-*/
 			container.inject(parentContainer, 'bottom');
 
 			// Hide the parentContainer if it should be, but not for the root.
@@ -324,12 +311,15 @@ console.log('inject page before articles');
 	},
 
 	/**
-	 * Updates one element in the Tree
+	 * Updates one element in the Trees
+	 * Considers this.ionizeTrees, which contains more than one tree
+	 *
 	 * @param element
 	 * @param type
 	 */
 	updateElement:function(element, type)
 	{
+		var self = this;
 		var id = (type == 'page') ? element.id_page : element.id_article;
 		var selector = (type == 'page') ? '.folder.' + type + id : '.file.' + type + id;
 		var status = (element.online == '1') ? 'online' : 'offline';
@@ -337,14 +327,13 @@ console.log('inject page before articles');
 		if (title == '') title = element.name;
 
 		// Items to update
-		var items = this.container.getElements(selector);
+		var items = this.ionizeTrees.getElements(selector);
 
 		// Page
 		if (type == 'page')
 		{
-			this.container.getElements('.folder').removeClass('home');
+			this.ionizeTrees.getElements('.folder').removeClass('home');
 		}
-
 
 		// Common updates
 		items.each(function(item)
@@ -358,6 +347,8 @@ console.log('inject page before articles');
 			// Page
 			if (type == 'page')
 			{
+				// console.log(element);
+
 				// Home page icon
 				var home_page = (element.home && element.home == '1') ? true : false;
 				if (home_page)
@@ -370,6 +361,16 @@ console.log('inject page before articles');
 				if (element.appears == '0')
 				{
 					item.getFirst('.folder').addClass('hidden');
+				}
+
+				// Moved ?
+				var pageContainer = item.getParent('ul.pageContainer');
+				var old_parent_id = pageContainer.getProperty('rel');
+
+				if (old_parent_id != element.id_parent)
+				{
+					item.destroy();
+					self.get(element.id_parent);
 				}
 			}
 		});
@@ -402,35 +403,56 @@ console.log('inject page before articles');
 	 */
 	updateOpenClose: function(folder)
 	{
-		// All childrens UL
-		var folderContents = folder.getChildren('ul');
-		var folderIcon = folder.getChildren('div.folder');
-		
 		// Is the folder Open ? Yes ? Close it (Hide the content)
 		if (folder.hasClass('f-open'))
 		{
-			var pmIcon = folder.getFirst('div.tree-img.minus');
-			pmIcon.addClass('plus').removeClass('minus');
-			
-			folderIcon.removeClass('open');
-			folderContents.each(function(ul){ ul.setStyle('display', 'none');});
-			folder.removeClass('f-open');
-			
-			ION.listDelFromCookie(this.id_container, folder.retrieve('id_page'));
+			this.close(folder);
 		}
 		else
 		{
+			this.open(folder);
+		}
+	},
+
+	open: function(folder)
+	{
+		if ( ! folder.hasClass('f-open'))
+		{
+			// All childrens UL
+			var folderContents = folder.getChildren('ul');
+			var folderIcon = folder.getChildren('div.folder');
+
 			var pmIcon = folder.getFirst('div.tree-img.plus');
-			pmIcon.addClass('minus').removeClass('plus');
-		
+			if (typeOf(pmIcon) !=  'null')
+				pmIcon.addClass('minus').removeClass('plus');
+
 			folderIcon.addClass('open');
 			folderContents.each(function(ul){ ul.setStyle('display', 'block'); });
 			folder.addClass('f-open');
-			
+
 			ION.listAddToCookie(this.id_container, folder.retrieve('id_page'));
 
 			$('btnStructureExpand').store('status', 'expand');
 			$('btnStructureExpand').value = Lang.get('ionize_label_collapse_all');
+		}
+	},
+
+	close: function(folder)
+	{
+		if (folder.hasClass('f-open'))
+		{
+			// All childrens UL
+			var folderContents = folder.getChildren('ul');
+			var folderIcon = folder.getChildren('div.folder');
+
+			var pmIcon = folder.getFirst('div.tree-img.minus');
+			pmIcon.addClass('plus').removeClass('minus');
+
+			folderIcon.removeClass('open');
+			folderContents.each(function(ul){ ul.setStyle('display', 'none');});
+			folder.removeClass('f-open');
+
+			ION.listDelFromCookie(this.id_container, folder.retrieve('id_page'));
 		}
 	},
 
