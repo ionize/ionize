@@ -163,8 +163,12 @@ class Page_model extends Base_model
 			$data['updated'] = date('Y-m-d H:i:s');			
 		}
 
-		// Be sure URLs are unique
-		// $this->set_unique_urls($lang_data, $data['id_page']);
+		// Correct level regarding to the parent
+		if (isset($data['id_parent']))
+		{
+			$parent_array = $this->get_parent_array($data['id_parent']);
+			$data['level'] = count($parent_array);
+		}
 
 		// Clean metas data
 		$lang_data = $this->_clean_meta_data($lang_data);
