@@ -703,8 +703,8 @@
 	 */
 	$('texteditor_default').addEvent('click', function()
 	{
-		$('tinybuttons1').value = 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image';
-		$('tinybuttons2').value = 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,nonbreaking,|,template,|,codemirror';
+		$('tinybuttons1').value = 'pdw_toggle,fullscreen,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image';
+		$('tinybuttons2').value = 'undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,nonbreaking,|,template,|,codemirror';
 		$('tinybuttons3').value = 'tablecontrols';
 	
 	});

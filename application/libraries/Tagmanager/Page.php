@@ -20,7 +20,13 @@ require_once APPPATH.'libraries/Pages.php';
 class TagManager_Page extends TagManager
 {
 	protected static $user = FALSE;
-	
+
+	/**
+	 * Ordered pages, used by get_adjacent_page()
+	 * @var null
+	 */
+	protected static $ordered_pages = NULL;
+
 	/**
 	 * Entity from URL.
 	 * usually 'page' or 'article'
@@ -31,18 +37,11 @@ class TagManager_Page extends TagManager
 	
 	public static $tag_definitions = array
 	(
-		// pages
 		'pages' => 				'tag_pages',
-
-		// Page
 		'page' => 				'tag_page',
 		'page:view' => 			'tag_page_view',
-
-		'next_page' =>			'tag_next_page',
-		'prev_page' =>			'tag_prev_page',
-		'next_article' =>		'tag_next_article',
-		'prev_article' =>		'tag_prev_article',
-
+		'page:next' =>			'tag_next_page',
+		'page:prev' =>			'tag_prev_page',
 		'breadcrumb' =>			'tag_breadcrumb',
 	);
 
@@ -525,9 +524,11 @@ class TagManager_Page extends TagManager
 		$menu_name = is_null($menu_name) ? 'main' : $menu_name;
 		$id_menu = 1;
 
-		$current_page = self::$context->registry('page');
+		// $current_page = self::$context->registry('page');
+		// Get the current page: Fall down to registry if no one found in tag
+		$current_page = $tag->get('page');
 
-		foreach(self::$context->registry('menus') as $menu)
+		foreach(self::registry('menus') as $menu)
 		{
 			if ($menu_name == $menu['name'])
 			{
@@ -537,23 +538,16 @@ class TagManager_Page extends TagManager
 
 		$level = is_null($tag->getAttribute('level')) ? 0 : $tag->getAttribute('level');
 
-		// Order the pages.
-		/*
-		 *  pages_ordered is not set !
-		 *
-		$ordered_pages = array();
-		if ( empty($tag->globals->pages_ordered))
+		// Order the pages, because the are not.
+		if (is_null(self::$ordered_pages))
 		{
-			self::order_pages($tag->globals->pages, $ordered_pages);
-			$tag->globals->pages = $ordered_pages;
-			$tag->globals->pages_ordered = TRUE;
+			self::$ordered_pages = array();
+			self::order_pages(self::registry('pages'), self::$ordered_pages);
 		}
-		 */
 
 		// Filter by menu and asked level : We only need the asked level pages !
-		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
 		$pages = array();
-		foreach(self::$context->registry('pages') as $p)
+		foreach(self::$ordered_pages as $p)
 		{
 			if ($p['level'] == $level && $p['id_menu'] == $id_menu)
 				$pages[] = $p;
@@ -589,8 +583,14 @@ class TagManager_Page extends TagManager
 	 *
 	 * @return string
 	 */
-	private static function process_next_prev_page(FTL_Binding $tag, $page)
+	private static function process_prev_next_page(FTL_Binding $tag, $page = NULL)
 	{
+		$str = '';
+		if ($page)
+			$str = self::wrap($tag, $tag->expand());
+
+		return $str;
+/*
 		if ($page != FALSE)
 		{
 			// helper
@@ -616,6 +616,7 @@ class TagManager_Page extends TagManager
 		}
 
 		return '';
+*/
 	}
 
 
@@ -798,8 +799,9 @@ class TagManager_Page extends TagManager
 	public static function tag_next_page(FTL_Binding $tag)
 	{
 		$page = self::get_adjacent_page($tag, 'next');
-	
-		return self::process_next_prev_page($tag, $page);
+		$tag->set('data', $page);
+
+		return self::process_prev_next_page($tag, $page);
 	}
 
 
@@ -820,8 +822,9 @@ class TagManager_Page extends TagManager
 	public static function tag_prev_page(FTL_Binding $tag)
 	{
 		$page = self::get_adjacent_page($tag, 'prev');
-	
-		return self::process_next_prev_page($tag, $page);
+		$tag->set('data', $page);
+
+		return self::process_prev_next_page($tag, $page);
 	}
 
 

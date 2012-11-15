@@ -307,6 +307,11 @@ class Url_model extends Base_model
 				$url = array_slice($url, count($url)-2);
 				$url = implode('/', $url);
 			}
+			else if ($short_url_mode)
+			{
+				$url = explode('/', $url);
+				$url = array_pop($url);
+			}
 
 			// $page = TagManager_Page::get_page_by_id($id_page);
 			$page = self::$ci->page_model->get_by_id($id_page);
