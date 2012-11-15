@@ -45,12 +45,12 @@ var Observer = new Class({
 	},
 
 	clear: function() {
-		$clear(this.timeout || null);
+		clearTimeout(this.timeout || null);
 		return this;
 	},
 
 	pause: function(){
-		if (this.timer) $clear(this.timer);
+		if (this.timer) clearInterval(this.timer);
 		else this.element.removeEvent('keyup', this.bound);
 		return this.clear();
 	},

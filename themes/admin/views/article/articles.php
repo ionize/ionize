@@ -24,11 +24,13 @@
 		<!-- Articles list -->
 
 				<!-- Article list filtering -->
+				<div class="relative h20 w270">
 				<form id="filterArticles">
 					<label class="left" title="<?php echo lang('ionize_help_article_filter'); ?>"><?php echo lang('ionize_label_article_filter'); ?></label>
-					<input id="contains" type="text" class="inputtext w160 left" />
+					<input id="contains" type="text" class="inputtext w180 left" />
 					<a id="cleanFilter" class="icon clearfield left ml5"></a>
 				</form>
+				</div>
 	
 				
 				<table class="list" id="articlesTable">
@@ -181,7 +183,15 @@
 
 	$$('#articlesTable .delete').each(function(item)
 	{
-		ION.initRequestEvent(item, url + item.getProperty('rel'), {}, {'message': confirmDeleteMessage})
+		ION.initRequestEvent(
+			item,
+			url + item.getProperty('rel'),
+			{},
+			{
+				'confirm':true,
+				'message': confirmDeleteMessage
+			}
+		);
 	});
 
 
@@ -308,27 +318,28 @@
 			var c = el.get('html');
 			var tr = el.getParent('tr');
 			var m = c.match(search);
-			
+
+			tr.setStyle('display', 'none');
+
 			if ( (m))
 			{
-				tr.setStyles({'background-color':'#FDFCED'});
 				h = c;
 				h = h.replace(reg, '');
 
 				m.each(function(item){
 					h = h.replace(item, '<span class="highlight">' + item + '</span>');
-				})
+				});
 				el.set('html', h);
-				tr.setStyle('visibility', 'visible');
+                tr.removeProperty('style');
+                tr.setStyle('visibility', 'visible');
 			}
 			else
 			{
-				tr.removeProperty('style');
 				h = c.replace(reg, '');
 				el.set('html', h);
 			}
 		});
-	}
+	};
 
 
 	$('contains').addEvent('keyup', function(e)
@@ -341,7 +352,7 @@
 		{
 			if (this.timeoutID)
 			{
-				$clear(this.timeoutID);
+                clearInterval(this.timeoutID);
 			}
 			this.timeoutID = filterArticles.delay(500, this, search);
 		}
@@ -349,7 +360,7 @@
 	
 	$('cleanFilter').addEvent('click', function(e)
 	{
-		var reg = new RegExp('<span class="highlight"[^><]*>|<.span[^><]*>','g')
+		var reg = new RegExp('<span class="highlight"[^><]*>|<.span[^><]*>','g');
 
 		$('contains').setProperty('value','').set('text', '');
 

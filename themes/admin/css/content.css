@@ -620,7 +620,9 @@ table.list div.content div.text {
 	overflow: hidden;
 }
 table.list div.content div.text div.langcontent.dl{
-	background:url(../images/bg_tab_default_lang.png) no-repeat top right;
+	background-image:url(../images/bg_tab_default_lang.png);
+	background-position: top right;
+	background-repeat: no-repeat;
 }
 table.list div.content div.text div.langcontent{
 	border: solid 1px #fff;
@@ -1234,17 +1236,29 @@ dl#link_info dd {
 .w40 {	width:40px !important; }
 .w50 {	width:50px !important; }
 .w60 {	width:60px !important; }
+.w70 {	width:70px !important; }
 .w80 {	width:80px !important; }
+.w90 {	width:90px !important; }
 .w100 {	width:100px !important; }
+.w110 {	width:110px !important; }
 .w120 {	width:120px !important; }
+.w130 {	width:130px !important; }
 .w140 {	width:140px !important; }
+.w150 {	width:150px !important; }
 .w160 {	width:160px !important; }
+.w170 {	width:170px !important; }
 .w180 {	width:180px !important; }
+.w190 {	width:190px !important; }
 .w200 {	width:220px !important; }
+.w210 {	width:210px !important; }
 .w220 {	width:220px !important; }
+.w230 {	width:230px !important; }
 .w240 {	width:240px !important; }
+.w250 {	width:250px !important; }
 .w260 {	width:260px !important; }
+.w270 {	width:270px !important; }
 .w280 {	width:280px !important; }
+.w290 {	width:290px !important; }
 .w300 {	width:300px !important; }
 .w320 {	width:320px !important; }
 .w340 {	width:340px !important; }
@@ -1262,7 +1276,9 @@ dl#link_info dd {
 .h40 {	height:40px !important; }
 .h50 {	height:50px !important; }
 .h60 {	height:60px !important; }
+.h70 {	height:70px !important; }
 .h80 {	height:80px !important; }
+.h90 {	height:90px !important; }
 .h100 {	height:100px !important; }
 .h120 {	height:120px !important; }
 .h140 {	height:140px !important; }
