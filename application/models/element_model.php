@@ -384,6 +384,10 @@ class Element_model extends Base_model
 						// if value is an array...
 						if (is_array($value)) {	$value = implode(',', $value); }
 
+						// If value is one date
+						if ($extend_field['type'] == '7')
+							$value = str_replace('.', '-', $value);
+
 						$data['content'] = $value;	
 
 						// Update

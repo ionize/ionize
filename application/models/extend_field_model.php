@@ -191,7 +191,7 @@ class Extend_field_model extends Base_model
 	{
 		// Get all extends fields with this element OR kind of parent
 		$extend_fields = (!empty($data['id_element_definition'])) ? $this->get_list(array('id_element_definition' => $data['id_element_definition'])) : $this->get_list(array('parent' => $parent));
-		
+
 		foreach ($extend_fields as $extend_field)
 		{
 			// Link between extend_field and the current parent
@@ -217,7 +217,6 @@ class Extend_field_model extends Base_model
 					$data['content'] = '';
 					$data['lang'] = '';
 					$data['id_parent'] = $id;
-//					$data['parent'] = $parent;
 
 					// id of the extend field
 					$key = explode('_', $k);
@@ -236,6 +235,10 @@ class Extend_field_model extends Base_model
 						{
 							$value = implode(',', $value);
 						}
+
+						// If value is one date
+						if ($extend_field['type'] == '7')
+							$value = str_replace('.', '-', $value);
 
 						$data['content'] = $value;	
 

@@ -298,7 +298,6 @@ ION.append({
 			{
 				this.fx.toggle();
 				this.toggleClass('expand');
-				this.getParent().toggleClass('highlight');				// Not tip top
 			});
 		}
 	},
