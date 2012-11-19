@@ -459,6 +459,13 @@ class Article extends MY_admin
 		$rel = explode(".", $rel);
 		$id_page = $this->data['id_page'] = ( !empty($rel[1] )) ? $rel[0] : '0';
 
+		// Get the page if not 0.
+		/*
+		$page = NULL;
+		if ($id_page != 0)
+			$page = $this->page_model->get_by_id($id_page);
+		*/
+
 		$id_article = $this->input->post('id_article');
 
 		$this->_prepare_options_data();
@@ -471,6 +478,19 @@ class Article extends MY_admin
 
 		// Context update
 		$this->update_contexts($id_article);
+
+		// Updates the Tree
+		/*
+		if ( ! is_null($page))
+		{
+			$article = $this->article_model->get_by_id($id_article, Settings::get_lang('default'));
+
+			$this->callback[] = array(
+				'fn' => $page['menu']['name'].'Tree.updateElement',
+				'args' => array($article, 'article')
+			);
+		}
+		*/
 
 		// Reloads the page edition panel
 		$this->_reload_panel($id_page, $id_article);
@@ -1857,6 +1877,9 @@ class Article extends MY_admin
 	 */
 	protected function _reload_panel($id_page, $id_article)
 	{
+		$page = $this->page_model->get_by_id($id_page);
+		$page['menu'] = $this->menu_model->get($page['id_menu']);
+
 		$article = $this->article_model->get_by_id($id_article, Settings::get_lang('default'));
 		$title = empty($article['title']) ? $article['name'] : $article['title'];
 
@@ -1868,6 +1891,11 @@ class Article extends MY_admin
 				'title'=> lang('ionize_title_edit_article') . ' : ' . $title
 			)
 		);
+		$this->callback[] = array(
+			'fn' => $page['menu']['name'].'Tree.updateElement',
+			'args' => array($article, 'article')
+		);
+
 	}
 
 

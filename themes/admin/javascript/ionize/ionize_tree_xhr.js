@@ -257,6 +257,7 @@ ION.TreeXhr = new Class({
 			
 			// Flag span : User's flag first, then Type flag
 			var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
+			if (typeOf(flag) == 'null') flag = 0;
 			var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
 			if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
 			
@@ -339,7 +340,14 @@ ION.TreeXhr = new Class({
 		items.each(function(item)
 		{
 			// Title
-			item.getElement('a.title').set('text', title);
+			var aTitle = item.getElement('a.title');
+			aTitle.set('text', title);
+
+			// Flag span : User's flag first, then Type flag
+			var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
+			if (typeOf(flag) == 'null') flag = 0;
+			var span = new Element('span', {'class':'flag flag' + flag}).inject(aTitle, 'top');
+			if ((flag != '' || flag != '0') && Browser.ie7) aTitle.setStyle('padding-left','6px');
 
 			// Status
 			item.removeClass('offline').removeClass('online').addClass(status);

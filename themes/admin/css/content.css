@@ -996,6 +996,9 @@ span.flag, .tree li span.flag {
 .tree li span.flag {
 	margin-right: 4px;
 }
+.tree li span.flag0{
+	margin-right: 0;
+}
 span.flag1, span.flag2, span.flag3, span.flag4, span.flag5, span.flag6	{ width:4px; margin-right: 4px;}
 .flag.flag1 {background-color: #de9a8f;}
 .flag.flag2 {background-color: #eec37f;}

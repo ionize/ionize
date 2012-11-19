@@ -420,11 +420,6 @@ class Page extends MY_admin
 
 			// Remove HTML tags from returned array
 			strip_html($page);
-
-			$this->callback[] = array(
-				'fn' => $page['menu']['name'].'Tree.updateElement',
-				'args' => array($page, 'page')
-			);
 		}
 
 		// Reloads the page edition panel
@@ -1131,6 +1126,8 @@ class Page extends MY_admin
 	protected function _reload_panel($id_page)
 	{
 		$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
+		$page['menu'] = $this->menu_model->get($page['id_menu']);
+
 		$title = empty($page['title']) ? $page['name'] : $page['title'];
 
 		$this->callback[] =	array(
@@ -1140,6 +1137,11 @@ class Page extends MY_admin
 				'urlOptions'=> admin_url() . 'page/get_options/'.$id_page,
 				'title'=> lang('ionize_title_edit_page') . ' : ' . $title
 			)
+		);
+
+		$this->callback[] = array(
+			'fn' => $page['menu']['name'].'Tree.updateElement',
+			'args' => array($page, 'page')
 		);
 	}
 }
