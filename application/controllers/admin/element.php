@@ -103,20 +103,26 @@ class Element extends MY_Admin {
 			{
 				$this->id = $id_element;
 			
-				// Check if the element definition has some elements...
-				$elements = $this->element_model->get_elements(array('id_element_definition' => $element['id_element_definition'], 'parent' => $element['parent'], 'id_parent' => $element['id_parent']) );
-				
 				// Reload Elements definitions list
 				$this->callback = array
 				(
 					array(
-						'fn' => 'ION.deleteDomElements',
-						'args' => '.element'.$id_element
-					)
+						'fn' => 'ION.updateContentTabs',
+						'args' => array
+						(
+							$element['parent'],
+							$element['id_parent']
+						)
+					),
 				);
+
+
 				// Deletes the tab if the element defintion has no elements
 				// Not implemented yet...
 				/*
+				// Check if the element definition has some elements...
+				$elements = $this->element_model->get_elements(array('id_element_definition' => $element['id_element_definition'], 'parent' => $element['parent'], 'id_parent' => $element['id_parent']) );
+
 				if ( empty($elements))
 				{
 					array_push(
@@ -140,7 +146,7 @@ class Element extends MY_Admin {
 	// ------------------------------------------------------------------------
 	
 	
-	function save_ordering()
+	function save_ordering($parent, $id_parent)
 	{
 		$order = $this->input->post('order');
 		
@@ -151,7 +157,19 @@ class Element extends MY_Admin {
 
 			// Saves the new ordering
 			$this->element_model->save_ordering($order);
-			
+
+			$this->callback = array
+			(
+				array(
+					'fn' => 'ION.updateContentTabs',
+					'args' => array
+					(
+						$parent,
+						$id_parent
+					)
+				),
+			);
+
 			// Answer
 			$this->success(lang('ionize_message_element_ordered'));
 		}
@@ -175,20 +193,20 @@ class Element extends MY_Admin {
 		$id_element = $this->input->post('id_element');
 		$parent = $this->input->post('parent');
 		$id_parent = $this->input->post('id_parent');
-		
+
 		if (!empty($parent) && !empty($id_parent))
 		{
 			// Clear the cache
 			Cache()->clear_cache();
 
 			$id_element_definition = $this->input->post('id_element_definition');
-			
-			$element_definition = $this->element_definition_model->get(array('id_element_definition' => $id_element_definition) );
+
+			// $element_definition = $this->element_definition_model->get(array('id_element_definition' => $id_element_definition) );
 			
 			// Save Element and extend fields
-			$id_element = $this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
+			$this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
 			
-			// Get 
+			// Get Elements
 			$this->callback = array
 			(
 				array(

@@ -443,6 +443,7 @@ class Element_definition extends MY_Admin {
 		$element_list = $this->load->view('element_list', $data, TRUE);
 		
 		echo($element_list);
+		die();
 	}
 	
 	

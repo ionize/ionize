@@ -200,6 +200,7 @@ li.offline { opacity:0.7; }
 .icon.zoomout,		.button i.icon-zoomout		{background-position: -80px -48px;}
 .icon.lang,			.button i.icon-lang			{background-position: -48px -112px;}
 .icon.urls,			.button i.icon-urls			{background-position: -64px -112px;}
+.icon.table,		.button i.icon-table		{background-position: -144px -96px;}
 
 .icon.folder,			.button i.icon-folder			{background-position: 0 -16px;}
 .icon.folder.open,		.button i.icon-folder.open			{background-position: -16px -16px;}

@@ -343,9 +343,6 @@ $('saveElementFormSubmit<?php echo $id_element; ?>').addEvent('click', function(
 {
 	e.stop();
 	
-	// Show spinner
-	MUI.showSpinner();
-	
 	// New Element : Add current opened parent / parent_id to the form
 	if ($('element') && $('id_element<?php echo $id_element; ?>').value == '')
 	{
@@ -365,14 +362,25 @@ $('saveElementFormSubmit<?php echo $id_element; ?>').addEvent('click', function(
 		// mandatory for text save. See how to externalize without make it too complex.
 		if (typeof tinyMCE != "undefined")
 			tinyMCE.triggerSave();
+
+		/*
 		if (typeof CKEDITOR != "undefined")
 		{
 			for (instance in CKEDITOR.instances)
 				CKEDITOR.instances[instance].updateElement();
 		}
+		*/
 		
 		// Get the form
-		var options = ION.getJSONRequestOptions('element/save', $('elementForm<?php echo $id_element; ?>'), {'onSuccess': function(){ION.closeWindow($('wcontentElement<?php echo $id_element; ?>'))}});
+		var options = ION.getJSONRequestOptions(
+			'element/save',
+			$('elementForm<?php echo $id_element; ?>'),
+			{
+				'onSuccess': function()	{
+					ION.closeWindow($('wcontentElement<?php echo $id_element; ?>'))
+				}
+			}
+		);
 		
 		var r = new Request.JSON(options);
 		

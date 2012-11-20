@@ -227,7 +227,7 @@ class TagManager_Media extends TagManager
 			foreach($medias as $key => $media)
 			{
 				// Each media has its index and the number of displayed media
-				$media['index'] = $key;
+				$media['index'] = $key + 1;
 				$media['count'] = $count;
 
 				$tag->set('media', $media);

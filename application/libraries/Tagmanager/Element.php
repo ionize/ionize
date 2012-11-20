@@ -33,6 +33,7 @@ class TagManager_Element extends TagManager
 	(
 		'element' => 'tag_element',
 		'element:items' => 'tag_element_items',
+		'element:items:item' => 'tag_expand',
 	);
 	
 
@@ -223,10 +224,11 @@ class TagManager_Element extends TagManager
 
 			for($i = 0; $i < $limit; $i++)
 			{
-				$element = $items['elements'][$i];
+				$item = $items['elements'][$i];
 
-				$tag->set('element', $element);
-				$tag->set('index', $i);
+				// item : One element instance
+				$tag->set('item', $item);
+				$tag->set('index', $i+1);
 				$tag->set('count', $limit);
 
 				$str .= $tag->expand();
@@ -244,21 +246,24 @@ class TagManager_Element extends TagManager
 
 	/**
 	 *
-	 * @TODO : Modify this method for the 1.0 release
+	 * @TODO : 	Modify this method for the 1.0 release
+	 * 			Should return the select, radio, checkbox values
 	 *
-	 * @param FTL_Binding $tag
+	 * @param 	FTL_Binding $tag
+	 * @return	string
 	 */
 	public static function tag_element_item_field_values(FTL_Binding $tag)
 	{
 		$str = '';
 
-		$element = $tag->get('element');
+		$item = $tag->get('item');
 
 		$field_name = $tag->getParentName();
 
-		if (isset($element['fields'][$field_name]))
+		if (isset($item['fields'][$field_name]))
 		{
-			$field = $element['fields'][$field_name];
+
+			$field = $item['fields'][$field_name];
 
 			// All available values for this multi-value field
 			$all_values = explode("\n", $field['value']);
@@ -287,6 +292,31 @@ class TagManager_Element extends TagManager
 		return $str;
 	}
 
+	public static function tag_element_item_field_options(FTL_Binding $tag)
+	{
+		$str = '';
+
+		$item = $tag->get('item');
+
+		$field_name = $tag->getParentName();
+
+		if (isset($item['fields'][$field_name]))
+		{
+			$field = $item['fields'][$field_name];
+
+			// All available values for this multi-value field
+			$all_values = explode("\n", $field['value']);
+			$values = array();
+			foreach($all_values as $value)
+			{
+				$val_label = explode(':', $value);
+				$tag->set('value', $val_label[0]);
+				$tag->set('label', $val_label[1]);
+				$str .= self::wrap($tag, $tag->expand());
+			}
+		}
+		return $str;
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -300,13 +330,13 @@ class TagManager_Element extends TagManager
 	 */
 	public static function tag_element_item_field(FTL_Binding $tag)
 	{
-		$element = $tag->get('element');
+		$item = $tag->get('item');
 
 		$field_key = $tag->getName();
 
-		if (isset($element['fields'][$field_key]))
+		if (isset($item['fields'][$field_key]))
 		{
-			$tag->set($field_key, $element['fields'][$field_key]);
+			$tag->set($field_key, $item['fields'][$field_key]);
 		}
 
 		return self::wrap($tag, $tag->expand());
@@ -339,6 +369,10 @@ class TagManager_Element extends TagManager
 				self::$context->define_tag('element:items:'.$field['name'].':label', array(__CLASS__, 'tag_simple_value'));
 				self::$context->define_tag('element:items:'.$field['name'].':default_value', array(__CLASS__, 'tag_simple_value'));
 				self::$context->define_tag('element:items:'.$field['name'].':type', array(__CLASS__, 'tag_simple_value'));
+
+				self::$context->define_tag('element:items:'.$field['name'].':options', array(__CLASS__, 'tag_element_item_field_options'));
+				self::$context->define_tag('element:items:'.$field['name'].':options:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:items:'.$field['name'].':options:value', array(__CLASS__, 'tag_simple_value'));
 
 				self::$context->define_tag('element:items:'.$field['name'].':values', array(__CLASS__, 'tag_element_item_field_values'));
 				self::$context->define_tag('element:items:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));

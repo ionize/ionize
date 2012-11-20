@@ -336,6 +336,9 @@ class Element_model extends Base_model
 			);
 			$this->{$this->db_group}->insert('element', $element);
 			$id_element = $this->{$this->db_group}->insert_id();
+
+			// Reorder
+			$this->_reorder($parent, $id_parent, $id_element_definition);
 		}
 		
 		// Save fields
@@ -424,7 +427,9 @@ class Element_model extends Base_model
 	public function delete($id)
 	{
 		$affected_rows = 0;
-		
+
+		$element = $this->get(array('id_element' => $id));
+
 		// Check if exists
 		if( $this->exists(array($this->pk_name => $id)) )
 		{
@@ -433,6 +438,13 @@ class Element_model extends Base_model
 			
 			// Extend fields content delete
 			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->fields_table);
+
+			$this->_reorder(
+				$element['parent'],
+				$element['id_parent'],
+				$element['id_element_definition']
+			);
+
 		}
 		
 		return $affected_rows;
@@ -535,12 +547,11 @@ class Element_model extends Base_model
 	private function _get_ordering($place, $parent, $id_parent, $id_element_definition)
 	{
 
-		$ordering = '0';
+		$ordering = '1';
 
 		switch($place)
 		{
 			case 'first' :
-			
 				break;
 			
 			case 'last' :
@@ -551,13 +562,32 @@ class Element_model extends Base_model
 					'id_parent' => $id_parent,
 					'parent' => $parent
 				);
-				$ordering = count($this->get_elements($cond));
+				$ordering = count($this->get_elements($cond)) + 1;
 				
 				break;
 		}
 		return $ordering;
 	}
 
+	private function _reorder($parent, $id_parent, $id_element_definition)
+	{
+		$cond = array(
+			'parent' => $parent,
+			'id_parent' => $id_parent,
+			'id_element_definition' => $id_element_definition,
+			'order_by' => 'element.ordering ASC, element.id_element DESC'
+		);
+
+		$elements = $this->get_elements($cond);
+
+		foreach($elements as $key => $element)
+		{
+			$this->{$this->db_group}
+				->where($this->pk_name,	$element['id_element'])
+				->update($this->table, array('ordering' => $key+1)
+			);
+		}
+	}
 
 }
 

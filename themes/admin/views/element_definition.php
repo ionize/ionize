@@ -4,114 +4,136 @@ $id = $id_element_definition;
 
 ?>
 
-<li class="sortme nohover element_definition" id="element_definition_<?= $id ?>" rel="<?= $id ?>">
+<li class="sortme nohover element_definition" id="element_definition_<?php echo $id ;?>" rel="<?php echo $id ;?>">
 
 
     <div class="h20">
 
-        <a class="icon delete right" rel="<?= $id ?>"></a>
+        <a class="icon delete right" rel="<?php echo $id ;?>"></a>
 
         <span class="icon left drag mr10"></span>
 
         <?php if ($name == '') :?>
-			<input id="elementName<?= $id ?>" type="text" class="inputtext w120 left" />
 
-			<button id="elementDefinitionSave<?= $id ?>" type="button" class="light-button left ml10" value="Save"><?= lang('ionize_label_element_set_name') ?></button>
+			<input id="elementName<?php echo $id ;?>" type="text" class="inputtext w120 left" />
+
+			<button id="elementDefinitionSave<?php echo $id ;?>" type="button" class="light-button left ml10" value="Save"><?php echo lang('ionize_label_element_set_name') ;?></button>
 
 			<script type="text/javascript">
 
-				$('elementDefinitionSave<?= $id ?>').addEvent('click', function()
+				$('elementDefinitionSave<?php echo $id ;?>').addEvent('click', function()
 				{
-					ION.sendData('element_definition/save_field', {'id':'<?= $id ?>', 'field': 'name', 'value': $('elementName<?= $id ?>').value, selector:'.element_definition a.name[rel=<?= $id ?>]'});
+					ION.sendData('element_definition/save_field', {'id':'<?php echo $id ;?>', 'field': 'name', 'value': $('elementName<?php echo $id ;?>').value, selector:'.element_definition a.name[rel=<?php echo $id ;?>]'});
 				});
 
-				$('elementName<?= $id ?>').focus();
-				$('element_definition_<?= $id ?>').addClass('stripped');
+				$('elementName<?php echo $id ;?>').focus();
+				$('element_definition_<?php echo $id ;?>').addClass('stripped');
 
 			</script>
 
         <?php else :?>
-        	<a class="edit name left" rel="<?= $id ?>"><?= $name ?></a>
-        <?php endif ;?>
-    </div>
+
+        	<a class="edit name left" rel="<?php echo $id ;?>"><?php echo $name ;?></a>
+
+		<?php endif ;?>
+
+
+	</div>
 
     <?php if ($name != '') :?>
 
-    <div class="clear mt10 mr20 ml40 ">
+		<div class="clear mt10 mr20 ml40 ">
 
-        <!-- Tabs -->
-        <div id="elementDefinitonTab<?= $id ?>" class="mainTabs transparent">
+			<!-- Tabs -->
+			<div id="elementDefinitonTab<?php echo $id ;?>" class="mainTabs transparent">
 
-            <ul class="tab-menu">
-                <?php foreach(Settings::get_languages() as $language) :?>
-                	<li <?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><?= ucfirst($language['name']) ?></a></li>
-                <?php endforeach ;?>
-            </ul>
-            <div class="clear"></div>
+				<ul class="tab-menu">
+					<?php foreach(Settings::get_languages() as $language) :?>
+						<li <?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><?php echo ucfirst($language['name']) ;?></a></li>
+					<?php endforeach ;?>
+				</ul>
+				<div class="clear"></div>
 
-        </div>
+			</div>
 
-        <div id="elementDefinitonTabContent<?= $id ?>" class="ml20 mr20 mb10">
+			<div id="elementDefinitionTabContent<?php echo $id ;?>" class="ml20 mr20 mb10">
 
-            <!-- Text block -->
-            <?php foreach(Settings::get_languages() as $language) :?>
+				<!-- Text block -->
+				<?php foreach(Settings::get_languages() as $language) :?>
 
-				<?php
+					<?php
 
-				$lang = $language['lang'];
-				$aTitle = lang('ionize_label_change').' '.lang('ionize_label_title');
+					$lang = $language['lang'];
+					$aTitle = lang('ionize_label_change').' '.lang('ionize_label_title');
 
-				?>
+					?>
 
-				<div class="tabcontent">
-					<a class="edit title left" rel="<?= $id ?>.<?= $lang ?>" title="<?= $aTitle ?>"><?= ${$lang}['title'] ?></a>
+					<div class="tabcontent">
+						<a class="edit title left" rel="<?php echo $id ;?>.<?php echo $lang ;?>" title="<?php echo $aTitle ;?>"><?php echo ${$lang}['title'] ;?></a>
+					</div>
+
+				<?php endforeach ;?>
+
+			</div>
+
+			<hr />
+
+			<!-- Fields -->
+			<div style="overflow:hidden;clear:both;">
+
+				<div class="pt5" id="def_<?php echo $id ;?>">
+
+					<!-- Add Field button -->
+					<?php if ($id != 0) :?>
+						<input type="button" class="light-button plus mb5 ml5 add_field" value="Add field" rel="<?php echo $id ;?>" />
+					<?php endif ;?>
+
+					<ul class="fields" id="fields<?php echo $id ;?>" rel="<?php echo $id ;?>">
+
+						<?php foreach($fields as $field) :?>
+							<li class="sortme element_field" rel="<?php echo $field['id_extend_field'] ;?>" id="element_field<?php echo $field['id_extend_field'] ;?>">
+								<span class="icon left drag"></span>
+
+								<a class="icon delete right" rel="<?php echo $field['id_extend_field'] ;?>"></a>
+
+								<span class="lite right mr10" rel="<?php echo $field['id_extend_field'] ;?>">
+									<?php echo $field['type_name'] ;?>
+									<?php if($field['translated'] == '1') :?>
+									/ <?php echo lang('ionize_label_multilingual') ;?>
+									<?php endif ;?>
+								</span>
+
+								<a class="left ml10 edit_field" rel="<?php echo $field['id_extend_field'] ;?>"><?php echo $field['name'] ;?></a>
+							</li>
+						<?php endforeach ;;?>
+					</ul>
 				</div>
-
-            <?php endforeach ;?>
-
-        </div>
-
-        <hr />
-
-        <!-- Fields -->
-        <div style="overflow:hidden;clear:both;">
-
-            <div class="pt5" id="def_<?= $id ?>">
-
-                <!-- Add Field button -->
-                <?php if ($id != 0) :?>
-                	<input type="button" class="light-button plus mb5 ml5 add_field" value="Add field" rel="<?= $id ?>"></input>
-                <?php endif ;?>
-
-                <ul class="fields" id="fields<?= $id ?>" rel="<?= $id ?>">
-
-                    <?php foreach($fields as $field) :?>
-						<li class="sortme element_field" rel="<?= $field['id_extend_field'] ?>" id="element_field<?= $field['id_extend_field'] ?>">
-                            <span class="icon left drag"></span>
-
-							<a class="icon delete right" rel="<?= $field['id_extend_field'] ?>"></a>
-
-							<span class="lite right mr10" rel="<?= $field['id_extend_field'] ?>">
-								<?= $field['type_name'] ?>
-								<?php if($field['translated'] == '1') :?>
-								/ <?= lang('ionize_label_multilingual') ?>
-								<?php endif ;?>
-							</span>
-
-							<a class="left ml10 edit_field" rel="<?= $field['id_extend_field'] ?>"><?= $field['name'] ?></a>
-						</li>
-                    <?php endforeach ;?>
-                </ul>
-            </div>
-        </div>
+			</div>
 
 
-    </div>
+            <!-- Order items by... button -->
+			<?php
+
+			/*
+			 * @TODO : 	Define the ordering when adding one element
+			 * 			Planned for 1.0
+			 *
+			<hr/>
+
+			<label for=""><? echo lang('ionize_next_element_will_be') ?></label>
+			<select class="inputtext" name="order_by">
+				<option value="-1" label="Descroissant"><?php echo lang('ionize_label_first') ;?></option>
+				<option value="1" label="Croissant"><?php echo lang('ionize_label_last') ;?></option>
+			</select>
+			*/
+			?>
+
+		</div>
 
     <?php endif ;?>
 
 
 </li>
 <script type="text/javascript">
-    new TabSwapper({tabsContainer: 'elementDefinitonTab<?= $id ?>', sectionsContainer: 'elementDefinitonTabContent<?= $id ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent'});
+    new TabSwapper({tabsContainer: 'elementDefinitonTab<?php echo $id ;?>', sectionsContainer: 'elementDefinitionTabContent<?php echo $id ;?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent'});
 </script>

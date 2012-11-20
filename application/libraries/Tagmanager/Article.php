@@ -520,7 +520,7 @@ class TagManager_Article extends TagManager
 
 		// Add data like URL to each article
 		// and finally render each article
-		foreach($_articles as $key=>$article)
+		foreach($_articles as $key => $article)
 		{
 			// Stop here if asked : Needed by aggregation tags (eg. pagination)
 			if ($tag->getAttribute('loop') === FALSE)
@@ -530,7 +530,9 @@ class TagManager_Article extends TagManager
 			else
 			{
 				$tag->set('article', $article);
-				$tag->set('index', $key);
+
+				// Set by self::prepare_articles()
+				// $tag->set('index', $key);
 				$tag->set('count', $count);
 
 				$str .= $tag->expand();
