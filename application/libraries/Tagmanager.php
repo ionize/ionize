@@ -110,6 +110,23 @@ class TagManager
 	 */
 	public static $posting_form_name = NULL;
 
+	/**
+	 * Array of parents for which tags are already be defined by create_extend_tags()
+	 *
+	 * @var array
+	 */
+	private static $has_extend_tags = array();
+
+	/**
+	 * Array of Extend Fields definition
+	 * array
+	 * (
+	 * 		'extend_field_name' => Array Extend Field Definition
+	 * )
+	 * @var null
+	 */
+	private static $extends_def = array();
+
 
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
@@ -134,6 +151,7 @@ class TagManager
 		'date' => 			'tag_simple_date',
 		'created' => 		'tag_simple_date',
 		'updated' => 		'tag_simple_date',
+		'extend' =>			'tag_extend',
 
 		// System / Core tags
 		'config' => 			'tag_config',
@@ -1197,6 +1215,216 @@ class TagManager
 
 
 	/**
+	 * Sets the extend tag parent
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 * @usage	<ion:page:extend />
+	 * 			<ion:article:extend />
+	 */
+	public static function tag_extend(FTL_Binding $tag)
+	{
+		$parent = $tag->getParentName();
+
+		$tag->set('__extend_parent__', $parent);
+
+		return $tag->expand();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Individual extend tag
+	 * Stores the value 'extend' : Definition of the asked Extend Field
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 * @usage	<ion:extend:extend_name />
+	 *
+	 */
+	public static function tag_extend_field(FTL_Binding $tag)
+	{
+		$extend_field_name = $tag->getName();
+
+		if (isset(self::$extends_def[$extend_field_name]))
+		{
+			$extend = self::$extends_def[$extend_field_name];
+
+			$tag->set('extend', $extend);
+
+			return $tag->expand();
+		}
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns one key of the Extend Field definition array
+	 * Generic tag defined by self::create_extend_tags()
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 * @usage	<ion:extend:extend_name:label />
+	 * 			<ion:extend:extend_name:type />
+	 * 			<ion:extend:extend_name:default_value />
+	 *
+	 */
+	public static function tag_extend_field_definition_key(FTL_Binding $tag)
+	{
+		$extend = $tag->get('extend');
+		$key = $tag->getName();
+
+		$value = isset($extend[$key]) ? $extend[$key] : NULL;
+
+		if ( ! is_null($value))
+		{
+			return self::output_value($tag, $value);
+		}
+
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns one Extend Field value
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_extend_field_value(FTL_Binding $tag)
+	{
+		// Extend Field Definition, as set by self::create_extend_tags()
+		$extend = $tag->get('extend');
+		$key = $extend['name'];
+
+		$value = $tag->getValue(self::$extend_field_prefix . $key, $extend['parent']);
+
+		/*
+		 * $extend['type'] possible values :
+		 *  1 : Input
+		 *  2 : Textarea
+		 *  3 : Textarea with Editor
+		 *  4 : Checkboxes
+		 *  5 : Radio boxes
+		 *  6 : Select
+		 *  7 : Datetime
+		 */
+		switch ($extend['type'])
+		{
+			// TextArea
+			case '2':
+			case '3':
+				$value = self::$ci->url_model->parse_internal_links($value);
+				break;
+
+			case '7':
+				$value = self::format_date($tag, $value);
+				break;
+
+			default:
+				break;
+		}
+
+		$tag->set($tag->getName(), $value);
+
+		return self::output_value($tag, $value);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Available options for the Extend Field if his type is checkbox, radiobox, select
+	 *
+	 * @param 	FTL_Binding $tag
+	 * @return 	string
+	 *
+	 */
+	public static function tag_extend_field_options(FTL_Binding $tag)
+	{
+		$str = '';
+
+		$extend = $tag->get('extend');
+
+		if (in_array($extend['type'], array('4', '5', '6')))
+		{
+			$all_values = explode("\n", $extend['value']);
+
+			foreach($all_values as $value)
+			{
+				$val_label = explode(':', $value);
+				$tag->set('value', $val_label[0]);
+				$tag->set('label', $val_label[1]);
+				$str .= self::wrap($tag, $tag->expand());
+			}
+		}
+		return $str;
+	}
+
+
+	/**
+	 *
+	 * @TODO : 	Modify this method for the 1.0 release
+	 * 			Should return the select, radio, checkbox values
+	 *
+	 * @param 	FTL_Binding $tag
+	 * @return	string
+	 */
+	public static function tag_extend_field_values(FTL_Binding $tag)
+	{
+		$str = '';
+
+		$extend = $tag->get('extend');
+
+		if (in_array($extend['type'], array('4', '5', '6')))
+		{
+			// All available values for this multi-value field
+			$all_values = explode("\n", $extend['value']);
+			$values = array();
+
+			foreach($all_values as $value)
+			{
+				$val_label = explode(':', $value);
+				$values[$val_label[0]] = $val_label[1];
+			}
+			// Values selected by the user
+			$selected_values = explode(',', $tag->getValue(self::$extend_field_prefix . $extend['name'], $extend['parent']));
+
+			foreach($selected_values as $selected_value)
+			{
+				foreach($values as $value => $label)
+				{
+					if ($value == $selected_value)
+					{
+						$tag->set('value', $value);
+						$tag->set('label', $label);
+						$str .= self::wrap($tag, $tag->expand());
+					}
+				}
+			}
+		}
+		return $str;
+	}
+
+
+
+	/**
 	 * Simply expand the tag.
 	 * If declared as tag_expand, the tag will simply expand its children
 	 *
@@ -1280,10 +1508,20 @@ class TagManager
 	{
 		$key = $tag->getAttribute('key');
 
+		// Value set through <ion:set ../>
 		$value = $tag->get($key, 'global');
+
+		// Try to get the Extend Field value
+		if (is_null($value))
+		{
+			$key = $tag->getAttribute('key');
+			$value = $tag->getValue($key);
+		}
 
 		return self::output_value($tag, $value);
 	}
+
+
 
 
 	// ------------------------------------------------------------------------
@@ -2729,10 +2967,10 @@ class TagManager
 		foreach($keys as $idx => $key)
 		{
 			$key = trim($key);
-
+log_message('error', $key);
 			// 1. Try to get the value from tag's data array
 			$value = $tag->getValue($key);
-
+log_message('error', $value);
 			// 2. Fall down to to tag's locals
 			if (is_null($value))
 				$value = $tag->get($key);
@@ -2761,6 +2999,40 @@ class TagManager
 		else
 		{
 			return NULL;
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function create_extend_tags(FTL_Binding $tag, $parent)
+	{
+		if ( ! isset(self::$has_extend_tags[$parent]))
+		{
+			$extend_fields_definitions = self::$ci->base_model->get_extend_fields_definition($parent, Settings::get_lang('current'));
+
+			foreach ($extend_fields_definitions as $field)
+			{
+				self::$extends_def[$field['name']] = $field;
+				self::$context->define_tag($parent.':extend:'.$field['name'], array(__CLASS__, 'tag_extend_field'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':label', array(__CLASS__, 'tag_extend_field_definition_key'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':type', array(__CLASS__, 'tag_extend_field_definition_key'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':default_value', array(__CLASS__, 'tag_extend_field_definition_key'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':value', array(__CLASS__, 'tag_extend_field_value'));
+
+				self::$context->define_tag($parent.':extend:'.$field['name'].':options', array(__CLASS__, 'tag_extend_field_options'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':options:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':options:value', array(__CLASS__, 'tag_simple_value'));
+
+				self::$context->define_tag($parent.':extend:'.$field['name'].':values', array(__CLASS__, 'tag_extend_field_values'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
+
+
+			}
+
+			self::$has_extend_tags[$parent] = TRUE;
 		}
 	}
 

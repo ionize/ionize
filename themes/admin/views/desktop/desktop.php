@@ -221,6 +221,9 @@
 	var tinyButtons1 = '<?php echo Settings::get('tinybuttons1'); ?>';
 	var tinyButtons2 = '<?php echo Settings::get('tinybuttons2'); ?>';
 	var tinyButtons3 = '<?php echo Settings::get('tinybuttons3'); ?>';
+	var smallTinyButtons1 = '<?php echo Settings::get('smalltinybuttons1'); ?>';
+	var smallTinyButtons2 = '<?php echo Settings::get('smalltinybuttons2'); ?>';
+	var smallTinyButtons3 = '<?php echo Settings::get('smalltinybuttons3'); ?>';
 	var tinyBlockFormats = '<?php echo Settings::get('tinyblockformats'); ?>';
 
 </script>

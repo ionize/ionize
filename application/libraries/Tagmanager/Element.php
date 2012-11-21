@@ -23,7 +23,7 @@ class TagManager_Element extends TagManager
 	private static $elements_def = NULL;
 
 	/**
-	 * Array of elements ID for which tags are already be defined by set_element_tags()
+	 * Array of elements ID for which tags are already be defined by create_element_tags()
 	 *
 	 * @var array
 	 */
@@ -181,7 +181,7 @@ class TagManager_Element extends TagManager
 				$tag->set('id_element_definition', $id_element_definition);
 
 				// Create dynamic child tags for <ion:element />
-				self::set_element_tags($id_element_definition);
+				self::create_element_tags($id_element_definition);
 
 				$str = self::wrap($tag, $tag->expand());
 			}
@@ -306,7 +306,7 @@ class TagManager_Element extends TagManager
 
 			// All available values for this multi-value field
 			$all_values = explode("\n", $field['value']);
-			$values = array();
+
 			foreach($all_values as $value)
 			{
 				$val_label = explode(':', $value);
@@ -356,7 +356,7 @@ class TagManager_Element extends TagManager
 	 *
 	 * @param $id_element_definition
 	 */
-	private static function set_element_tags($id_element_definition)
+	private static function create_element_tags($id_element_definition)
 	{
 		// Get the fields from this element definition
 		$element_fields = self::$ci->element_model->get_fields_from_definition_id($id_element_definition);

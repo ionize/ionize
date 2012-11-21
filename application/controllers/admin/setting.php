@@ -538,7 +538,10 @@ class Setting extends MY_admin
 	function save_article()
 	{
 		// Settings to save
-		$settings = array('tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats');
+		$settings = array(
+			'tinybuttons1','tinybuttons2','tinybuttons3','tinyblockformats',
+			'smalltinybuttons1','smalltinybuttons2','smalltinybuttons3',
+		);
 
 		// Save settings to DB
 		$this->_save_settings($settings);

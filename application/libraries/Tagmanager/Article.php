@@ -505,6 +505,9 @@ class TagManager_Article extends TagManager
 		// Returned string
 		$str = '';
 
+		// Extend Fields tags
+		self::create_extend_tags($tag, 'article');
+
 		// Articles
 		$_articles = self::get_articles($tag);
 		$_articles = self::prepare_articles($tag, $_articles);

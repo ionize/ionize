@@ -204,6 +204,9 @@ class TagManager_Media extends TagManager
 
 		if ( ! empty($medias))
 		{
+			// Extend Fields tags
+			self::create_extend_tags($tag, 'media');
+
 			// Filter the parent's medias
 			$medias = self::filter_medias($tag, $medias);
 

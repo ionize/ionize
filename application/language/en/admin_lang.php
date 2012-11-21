@@ -572,6 +572,7 @@ $lang['ionize_label_db_user'] = 'User';
 $lang['ionize_label_db_pass'] = 'Password';
 $lang['ionize_label_google_analytics'] = 'Google Analytics';
 $lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';
+$lang['ionize_label_small_tinybuttons'] = 'Toolbar Small TinyMCE';
 $lang['ionize_label_restore_tinybuttons'] = 'Restore TinyMCE default toolbar';
 $lang['ionize_label_help_tinybuttons'] = 'TinyMCE toolbar buttons help';
 $lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';

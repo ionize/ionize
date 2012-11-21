@@ -654,6 +654,9 @@ class TagManager_Page extends TagManager
 				$page = self::get_page_by_code($id);
 		}
 
+		// Extend Fields tags
+		self::create_extend_tags($tag, 'page');
+
 		// Get the asked parent page : From current page or from page ID
 		if (!is_null($parent))
 		{

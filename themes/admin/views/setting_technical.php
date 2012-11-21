@@ -192,7 +192,21 @@
 					
 				</dl>
 				
-	
+				<dl class="mb20">
+					<!-- TinyMCE toolbar buttons -->
+					<dt>
+						<label title="<?php echo lang('ionize_help_tinybuttons'); ?>"><?php echo lang('ionize_label_small_tinybuttons'); ?></label>
+					</dt>
+					<dd>
+						1 <input class="inputtext w360 mb5" id="smalltinybuttons1" name="smalltinybuttons1" type="text" value="<?php echo Settings::get('smalltinybuttons1'); ?>"/><br />
+						2 <input class="inputtext w360 mb5" id="smalltinybuttons2" name="smalltinybuttons2" type="text" value="<?php echo Settings::get('smalltinybuttons2'); ?>"/><br />
+						3 <input class="inputtext w360" id="smalltinybuttons3" name="smalltinybuttons3" type="text" value="<?php echo Settings::get('smalltinybuttons3'); ?>"/><br />
+						<a id="small_texteditor_default"><?php echo lang('ionize_label_restore_tinybuttons'); ?></a> | <a target="_blank" href="http://www.tinymce.com/wiki.php/Buttons/controls"><?php echo lang('ionize_label_help_tinybuttons'); ?></a>
+					</dd>
+
+				</dl>
+
+
 				<dl class="last mb20">
 					<!-- TinyMCE Block Format (Select) -->
 					<dt>
@@ -707,6 +721,13 @@
 		$('tinybuttons2').value = 'undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,nonbreaking,|,template,|,codemirror';
 		$('tinybuttons3').value = 'tablecontrols';
 	
+	});
+	$('small_texteditor_default').addEvent('click', function()
+	{
+		$('smalltinybuttons1').value = 'bold,italic,|,bullist,numlist,|,link,unlink,image,|,nonbreaking';
+		$('smalltinybuttons2').value = '';
+		$('smalltinybuttons3').value = '';
+
 	});
 
 	$('texteditor_default_tinyblockformats').addEvent('click', function()

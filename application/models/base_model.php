@@ -563,14 +563,18 @@ class Base_model extends CI_Model
 	// ------------------------------------------------------------------------
 
 
-	protected function get_extend_fields_definition($parent = NULL)
+	public function get_extend_fields_definition($parent = NULL, $lang = NULL)
 	{
 		if ( ! isset($this->extend_fields_def[$parent]))
 		{
 			if ( ! isset(self::$ci->extend_field_model))
 				self::$ci->load->model('extend_field_model');
 
-			$this->extend_fields_def[$parent] = self::$ci->extend_field_model->get_list(array('extend_field.parent' => $parent));
+			if (is_null($lang))
+				$this->extend_fields_def[$parent] = self::$ci->extend_field_model->get_list(array('extend_field.parent' => $parent));
+			else
+				$this->extend_fields_def[$parent] = self::$ci->extend_field_model->get_lang_list(array('extend_field.parent' => $parent), $lang);
+
 		}
 		return $this->extend_fields_def[$parent];
 	}
