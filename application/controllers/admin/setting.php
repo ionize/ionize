@@ -1306,7 +1306,7 @@ class Setting extends MY_admin
 			
 			foreach ($iterator as $file)
 			{
-				if ($file->isFile() && (substr($file->getFilename(), 0, 1) != "." && strpos($file->getFilename(), '@') === FALSE) )
+				if ($file->isFile() && (substr($file->getFilename(), 0, 1) != "." && strpos($file->getFilename(), '@') === FALSE && substr($file->getFilename(), -3) == 'php') )
 				{
 					// Set a human readable path
 					$path = str_replace($theme_path, '', $file->getPath());
