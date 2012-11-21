@@ -103,4 +103,4 @@ test_module_search
 
 ?>
 
-<ion:partial view="test_content_elements"  />
+<ion:partial view="test_extend_fields"  />

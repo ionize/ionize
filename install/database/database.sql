@@ -522,6 +522,10 @@ INSERT IGNORE INTO setting VALUES ('', 'media_thumb_size', '120', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons1', 'bold,italic,|,bullist,numlist,|,link,unlink,image,|,nonbreaking', '');
+INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons2', '', '');
+INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons3', '', '');
+
 INSERT IGNORE INTO setting VALUES ('', 'displayed_admin_languages', 'en', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'date_format', '%Y.%m.%d', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'force_lang_urls', '0', NULL);

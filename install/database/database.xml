@@ -541,6 +541,9 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons1', 'bold,italic,|,bullist,numlist,|,link,unlink,image,|,nonbreaking', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons2', '', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons3', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'displayed_admin_languages', 'en', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'date_format', '%Y.%m.%d', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'force_lang_urls', '0', '');</query>

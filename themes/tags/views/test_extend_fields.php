@@ -4,8 +4,25 @@
 To use this view, you need :
 </p>
 <ul>
-	<li>One Extend field, not translated, with the name "extend1"</li>
-	<li>One Extend field, translated, with the name "extend2"</li>
+	<li>One Extend field, not translated, with the name "colors" :
+		<ul>
+			<li>Parent : Articles</li>
+			<li>Name : colors</li>
+			<li>Type : "checkbox"</li>
+			<li>Values :<br/>
+				1:Red<br/>
+				2:Green<br/>
+				3:Blue<br/>
+			</li>
+			<li>Defualt Value : 2</li>
+		</ul>
+	</li>
+	<li>One Extend field, translated, with the name "description":
+		<ul>
+			<li>Parent : Articles</li>
+			<li>Name : description</li>
+		</ul>
+	</li>
 </ul>
 
 <hr/>
@@ -21,8 +38,30 @@ To use this view, you need :
 	<ion:articles>
 		<ion:article>
 			<ion:title tag="h3" />
-			<p>Extend 1 : <b><ion:get key="extend1"/></b></p>
-			<p>Extend 2 : <b><ion:get key="extend2"/></b></p>
+
+			<h4>Extend "colors"</h4>
+            <ion:extend:colors>
+                <p>
+                    <b>Available options</b> :<br/>
+					<ion:options>
+						&nbsp;&nbsp;&nbsp;<ion:value/> : <ion:label/><br/>
+					</ion:options>
+				</p>
+                <p>
+					<b>Values</b> :<br/>
+                	<ion:values>
+                    	&nbsp;&nbsp;&nbsp;<ion:value/> : <ion:label/><br/>
+                	</ion:values>
+                </p>
+            </ion:extend:colors>
+
+            <h4>Extend "description"</h4>
+            <ion:extend:description>
+				<p><b>Label : </b><ion:label /></p>
+				<p><b>Content : </b></p>
+				<ion:value />
+            </ion:extend:description>
+
 		</ion:article>
 	</ion:articles>
 </ion:page>
