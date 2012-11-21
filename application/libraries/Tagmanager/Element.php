@@ -245,6 +245,50 @@ class TagManager_Element extends TagManager
 
 
 	/**
+	 * Returns the value of one field (content)
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_element_item_field_value(FTL_Binding $tag)
+	{
+		$value = NULL;
+
+		$item = $tag->get('item');
+
+		$field_name = $tag->getParentName();
+
+		if (isset($item['fields'][$field_name]))
+		{
+			$field = $item['fields'][$field_name];
+
+			$value = $field['content'];
+
+			switch ($field['type'])
+			{
+				// TextArea
+				case '2':
+				case '3':
+					$value = self::$ci->url_model->parse_internal_links($value);
+					break;
+
+				case '7':
+					$value = self::format_date($tag, $value);
+					break;
+
+				default:
+					break;
+			}
+		}
+		return self::output_value($tag, $value);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 *
 	 * @TODO : 	Modify this method for the 1.0 release
 	 * 			Should return the select, radio, checkbox values
@@ -262,7 +306,6 @@ class TagManager_Element extends TagManager
 
 		if (isset($item['fields'][$field_name]))
 		{
-
 			$field = $item['fields'][$field_name];
 
 			// All available values for this multi-value field
@@ -378,10 +421,7 @@ class TagManager_Element extends TagManager
 				self::$context->define_tag('element:items:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
 				self::$context->define_tag('element:items:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
 
-				if ($field['type'] != '7')
-					self::$context->define_tag('element:items:'.$field['name'].':content', array(__CLASS__, 'tag_simple_value'));
-				else
-					self::$context->define_tag('element:items:'.$field['name'].':content', array(__CLASS__, 'tag_simple_date'));
+				self::$context->define_tag('element:items:'.$field['name'].':value', array(__CLASS__, 'tag_element_item_field_value'));
 			}
 
 			self::$has_element_tags[$id_element_definition] = TRUE;

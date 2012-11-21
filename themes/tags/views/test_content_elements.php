@@ -39,20 +39,20 @@ To use this view, you need one Content Element, with 2 fields :
 
 						Field : <b><ion:url:label /></b><br/>
 						Type : <b><ion:url:type /></b><br/>
-						Content : <b><ion:url:content /></b><br/>
+						Value : <b><ion:url:value /></b><br/>
 						Default value : <b><ion:url:default_value /></b>
 						<hr/>
 
 						Field : <b><ion:style:label /></b><br/>
 						Type : <b><ion:style:type /></b><br/>
-                        Content : <b><ion:style:content /></b><br/>
+                        Value : <b><ion:style:content /></b><br/>
                         Default value : <b><ion:style:default_value /></b>
 
 						<!-- Display selected values (checkbox, radio, select) -->
 						<hr/>
                         Field : <b><ion:colors:label /></b><br/>
                         Type : <b><ion:colors:type /></b><br/>
-                        Content : <b><ion:colors:content /></b><br/>
+                        Value : <b><ion:colors:value /></b><br/>
 
 
 						<ion:colors>
