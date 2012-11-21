@@ -1759,17 +1759,14 @@ class TagManager
 			Settings::set_all_languages_online();
 		}
 
-//		if ($tag->getAttribute('lang') == TRUE)
-//		{
-			if (count(Settings::get_online_languages()) > 1 )
+		if (count(Settings::get_online_languages()) > 1 )
+		{
+			// if the current lang is the default one : don't return the lang code
+			if (Settings::get_lang('current') != Settings::get_lang('default'))
 			{
-				// if the current lang is the default one : don't return the lang code
-//				if (Settings::get_lang() != Settings::get_lang('default'))
-//				{
-					return base_url() . Settings::get_lang() .'/';
-//				}
+				return base_url() . Settings::get_lang() .'/';
 			}
-//		}
+		}
 
 		return base_url();
 	}
