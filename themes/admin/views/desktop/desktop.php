@@ -136,6 +136,7 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_list_filter.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_notify.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_user.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js"></script>
 
 <!-- Mootools Filemanager -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/FileManager.js"></script>
@@ -238,10 +239,20 @@
 	<?php endif;?>
 <?php endforeach; ?>
 
+
 </head>
 <body>
 
 <div id="desktop" class="desktop"></div>
+<script type="text/javascript">
+
+    Ionize.Tracker.initialize({
+        'parent':'desktop'
+    });
+
+    Ionize.Tracker.startTracking();
+
+</script>
 
 </body>
 </html>

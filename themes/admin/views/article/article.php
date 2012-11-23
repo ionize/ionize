@@ -1,6 +1,15 @@
+<?php
+
+$tracker_title = ${Settings::get_lang('default')}['title'];
+if ($tracker_title == '')
+	$tracker_title = $name;
+
+?>
+
 <form name="articleForm" id="articleForm" method="post" action="<?php echo site_url(config_item('admin_url').'/article/save/'.$id_article); ?>">
 
 	<input type="hidden" name="element" id="element" value="article" />
+	<input type="hidden" class="data-tracker" name="data_tracker" data-element="article" data-id="<?php echo $id_article; ?>" data-title="<?php echo $tracker_title; ?>" data-url="article/edit/<?php echo $id_page; ?>.<?php echo $id_article; ?>" />
 	<input type="hidden" name="id_article" id="id_article" value="<?php echo $id_article; ?>" />
 	<input type="hidden" name="rel" id="rel" value="<?php echo $id_page; ?>.<?php echo $id_article; ?>" />
 	<input type="hidden" name="created" value="<?php echo $created; ?>" />
@@ -26,7 +35,10 @@
 
 				?>
 
-				<h2 class="main article" id="main-title"><?php echo $title; ?></h2>
+	            <div id="article-tracker-<?php echo $id_article; ?>"></div>
+
+
+    	        <h2 class="main article" id="main-title"><?php echo $title; ?></h2>
 
 				<div style="margin: -15px 0pt 20px 72px;">
 					<p>
@@ -98,6 +110,7 @@
 				</dl>
 
 			<?php endif ;?>
+
 
         	<div id="articleExtendFields">
 

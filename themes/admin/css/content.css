@@ -362,6 +362,7 @@ div.notify.alert { background:url(../images/icon_48_alert.png) #f3f3f3 no-repeat
 /* Windows Summary. Media edition window */
 div.summary {
 	overflow:auto;
+	position: relative;
 	background:#f2f2f2;
 	padding:10px;
 	margin-bottom:10px;
@@ -955,8 +956,56 @@ div.translation {
 	text-align:center;
 	line-height: 13px;
 }
+.desktopUserIcon{
+	float:left;
+	margin: 3px 6px 0 6px;
+	width:150px;
+	padding:5px;
+	background-repeat: no-repeat;
+	background-color: #f3f3f3;
+	background-position: 7px 7px;
+	text-align:center;
+	cursor: pointer;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.desktopUserIcon.editing{
+	background-image: url(../images/icon_16_edit.png);
+}
+.desktopUserIcon span{
+	line-height: 14px;
+	display: block;
+}
+.desktopUserIcon .name {
+}
+.desktopUserIcon .avatar {
+	background-image: url(../images/icon_48_user.png);
+	height: 48px;
+	width: 48px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.desktopUserIcon a {
+	display: block;
+}
 
-
+.desktopUserIcon .action.editing {
+	color:#D12F19;
+}
+.desktopUserIcon .action.inactive {
+	color:#777;
+}
+.tracker-flag {
+	background-color: #CC0000;
+	color: #FFFFFF;
+	padding: 2px 10px;
+	text-align:right;
+	position:absolute;
+	top:0;
+	right:0;
+}
 
 /* Flags Elements
 ---------------------------------------------------------------- */

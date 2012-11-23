@@ -69,6 +69,7 @@ $lang['ionize_dashboard_title_settings'] = 'Settings';
 
 $lang['ionize_dashboard_title_last_modified_articles'] = 'Last updated articles';
 $lang['ionize_dashboard_title_last_connected_users'] = 'Last connected users';
+$lang['ionize_dashboard_title_current_connected_users'] = 'Current connected users';
 $lang['ionize_dashboard_title_last_registered_users'] = 'Last registered users';
 $lang['ionize_dashboard_title_orphan_pages'] = 'Orphan pages';
 $lang['ionize_dashboard_title_orphan_articles'] = 'Orphan articles';
@@ -154,6 +155,7 @@ $lang['title_ionize_installation'] = 'Ionize Installation';
 
 $lang['ionize_title_site_settings'] = 'Website settings';
 $lang['ionize_title_technical_settings'] = 'Advanced  settings';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -318,6 +320,8 @@ $lang['ionize_label_installed'] = 'Installed';
 $lang['ionize_label_hide_options'] = 'Hide Options';
 $lang['ionize_label_show_options'] = 'Show Options';
 $lang['ionize_label_options'] = 'Options';
+
+$lang['ionize_label_tracker_edited_by'] = 'Currently edited by';
 
 $lang['ionize_label_copy_to_other_languages'] = 'Copy to other languages';
 

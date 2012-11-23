@@ -14,8 +14,12 @@ if($type == 'picture')
 
 ?>
 
+
+
 <!-- Media summary -->
 <div class="summary">
+
+    <div id="media-tracker-<?php echo $id_media; ?>"></div>
 
 	<!-- Picture file -->
 	<?php if($type == 'picture') :?>
@@ -160,6 +164,7 @@ if($type == 'picture')
 
 	<input type="hidden" name="id_media" value="<?php echo $id_media; ?>" />
 	<input type="hidden" name="type" value="<?php echo $type; ?>" />
+    <input type="hidden" class="data-tracker" name="data_tracker" data-element="media" data-id="<?php echo $id_media; ?>" data-title="<?php echo $file_name; ?>" data-url="" />
 
 	<!-- Context data -->
 	<input type="hidden" name="parent" value="<?php echo $parent; ?>" />
