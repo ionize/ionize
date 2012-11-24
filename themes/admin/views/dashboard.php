@@ -145,7 +145,7 @@
 				<thead>
 					<tr>
 						<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
-						<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
+						<!--<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>-->
 						<th axis="string"><?php echo lang('ionize_label_author'); ?></th>
 						<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
 						<th axis="string"><?php echo lang('ionize_label_created'); ?></th>				
@@ -159,25 +159,13 @@
 					
 					<?php
 						$title = ($article['title'] != '') ? $article['title'] : $article['name'];
-						
-						// Article parent pages links
-						$pages = array();
-	
-						foreach($article['pages'] as $page)
-						{
-							if (!empty($page['page']))
-							{
-								$page_title = (! empty($page['page']['title'])) ? $page['page']['title'] : $page['page']['name'];
-								$pages[] = '<a class="page" rel="'.$page['id_page'].'" >' . $page_title . '</a>';
-							}
-						}					
-						$pages_link = implode(', ', $pages);
-
 					?>
 
 					<tr>
-						<td><a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="0.<?php echo $article['id_article']; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a></td>
-						<td <?php if(empty($pages_link)) :?>class="alert"<?php endif; ?>><a title="<?php echo lang('ionize_label_edit'); ?>"><?php echo $pages_link; ?></a></td>
+						<td>
+							<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a><br/>
+							<span class="lite pl5"> > <?php echo $article['breadcrumb']; ?></span>
+						</td>
 						<td><?php echo $article['author']; ?></td>
 						<td><?php echo $article['updater']; ?></td>
 						<td><?php echo humanize_mdate($article['created'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
