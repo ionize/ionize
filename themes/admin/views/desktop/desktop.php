@@ -244,16 +244,15 @@
 <body>
 
 <div id="desktop" class="desktop"></div>
-<script type="text/javascript">
 
-    Ionize.Tracker.initialize({
-        'parent':'desktop'
-    });
-
-    Ionize.Tracker.startTracking();
-
-</script>
-
+<?php if (Settings::get('enable_backend_tracker') == '1') :?>
+	<script type="text/javascript">
+		Ionize.Tracker.initialize({
+			'parent':'desktop'
+		});
+		Ionize.Tracker.startTracking();
+	</script>
+<?php endif; ?>
 </body>
 </html>
 

@@ -511,6 +511,8 @@ $lang['ionize_title_admin_panel_languages'] =  'Administration interface languag
 $lang['ionize_title_admin_panel_datetime'] =  'Date and Time';
 $lang['ionize_label_display_connected_label'] = 'Connected label';
 $lang['ionize_help_display_connected_label'] = 'Displays a label on the top left of the website when you\'re connected to the Admin panel';
+$lang['ionize_label_enable_backend_tracker'] = 'Backend tracker';
+$lang['ionize_help_enable_backend_tracker'] = 'Displays users logged to the backend on the dashboard / displays one alert flag on content when it is edited by another user.';
 $lang['ionize_onchange_ionize_settings'] = 'The Administration panel will reload after saving these settings.';
 
 $lang['ionize_label_sitemaps_gzip'] = 'Compress Sitemap';

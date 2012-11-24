@@ -61,10 +61,14 @@
 	<div id="infos" class="mt20">
 
     	<!-- Current connected users -->
-    	<h3 class="toggler"><?php echo lang('ionize_dashboard_title_current_connected_users'); ?></h3>
-        <div class="element pl15">
-			<div class="pb15"  id="trackerCurrentConnectedUsers"></div>
-		</div>
+		<?php if (Settings::get('enable_backend_tracker') == '1') :?>
+
+			<h3 class="toggler"><?php echo lang('ionize_dashboard_title_current_connected_users'); ?></h3>
+			<div class="element pl15">
+				<div class="pb15"  id="trackerCurrentConnectedUsers"></div>
+			</div>
+
+		<?php endif; ?>
 
 		<!-- Last connected users -->
     	<h3 class="toggler"><?php echo lang('ionize_dashboard_title_last_connected_users'); ?></h3>

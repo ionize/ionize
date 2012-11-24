@@ -456,7 +456,13 @@ class Setting extends MY_admin
 
 
 		// Other Settings to save
-		$settings = array('show_help_tips', 'display_connected_label', 'date_format', 'default_admin_lang');
+		$settings = array(
+			'show_help_tips',
+			'display_connected_label',
+			'date_format',
+			'default_admin_lang',
+			'enable_backend_tracker',
+		);
 
 		// Save settings to DB
 		$this->_save_settings($settings);

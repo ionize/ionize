@@ -47,6 +47,15 @@
 				</dd>
 			</dl>
 	
+			<dl>
+				<dt>
+					<label for="enable_backend_tracker" title="<?php echo lang('ionize_help_enable_backend_tracker'); ?>"><?php echo lang('ionize_label_enable_backend_tracker'); ?></label>
+				</dt>
+				<dd>
+					<input class="inputcheckbox" type="checkbox" name="enable_backend_tracker" id="enable_backend_tracker" <?php if (Settings::get('enable_backend_tracker') == '1'):?> checked="checked" <?php endif;?> value="1" />
+				</dd>
+			</dl>
+
 		</div>
 
 		<!-- Admin panel displayed languages -->
