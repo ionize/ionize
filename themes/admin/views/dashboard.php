@@ -299,20 +299,15 @@
 	
 	articles.each(function(item, idx)
 	{
-		var rel = (item.getProperty('rel')).split(".");
-		var id_page = rel[0];
-		var id_article = rel[1];
-
-		var title = item.get('text');
-		
 		item.addEvent('click', function(e){
 			e.stop();
-			MUI.Content.update({
-				'element': $('mainPanel'),
-				'loadMethod': 'xhr',
-				'url': admin_url + 'article/edit/'+id_page+'.'+id_article,'title': Lang.get('ionize_title_edit_article') + ' : ' + title});
+            ION.splitPanel({
+                'urlMain': admin_url + 'article/edit/' + item.getProperty('rel'),
+                'urlOptions': admin_url + 'article/get_options/' + item.getProperty('rel'),
+                'title': Lang.get('ionize_title_edit_article') + ' : ' + item.get('text')
+            });
 		});
-		
+
 		// Make draggable to tree
 		ION.addDragDrop(item, '.dropArticleInPage,.dropArticleAsLink,.folder', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
 	});
