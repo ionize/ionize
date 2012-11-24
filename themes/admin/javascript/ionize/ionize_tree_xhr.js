@@ -344,9 +344,9 @@ ION.TreeXhr = new Class({
 			aTitle.set('text', title);
 
 			// Flag span : User's flag first, then Type flag
-			var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
-			if (typeOf(flag) == 'null') flag = 0;
+			var flag = (element.id_type != '') ? element.type_flag : '0';
 			var span = new Element('span', {'class':'flag flag' + flag}).inject(aTitle, 'top');
+
 			if ((flag != '' || flag != '0') && Browser.ie7) aTitle.setStyle('padding-left','6px');
 
 			// Status
@@ -355,8 +355,6 @@ ION.TreeXhr = new Class({
 			// Page
 			if (type == 'page')
 			{
-				// console.log(element);
-
 				// Home page icon
 				var home_page = (element.home && element.home == '1') ? true : false;
 				if (home_page)

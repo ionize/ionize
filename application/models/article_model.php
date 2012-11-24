@@ -197,8 +197,12 @@ class Article_model extends Base_model
 		$this->{$this->db_group}->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
 
 		// Add Type to query
-		$this->{$this->db_group}->select($this->type_table.'.type');
-		$this->{$this->db_group}->join($this->type_table, $this->parent_table.'.id_type = ' .$this->type_table.'.id_type', 'left');
+		$this->{$this->db_group}->select($this->type_table.'.type, ' . $this->type_table.'.type_flag');
+		$this->{$this->db_group}->join(
+			$this->type_table,
+			$this->parent_table.'.id_type = ' .$this->type_table.'.id_type',
+			'left'
+		);
 
 		// Base_model->get_lang_list()
 		$articles =  parent::get_lang_list($where, $lang);
