@@ -17,7 +17,7 @@
 <ion:archives month="true" tag="ul">
 	<li>
 		<a class="<ion:archive:active_class />" href="<ion:archive:url />">
-			<ion:archive:period /> - (<ion:archive:count /> articles)
+			<ion:archive:period /> - (<ion:archive:count /> count) - (<ion:archive:nb_articles /> articles)
 		</a>
 	</li>
 </ion:archives>
@@ -33,8 +33,6 @@
 &lt;!-- Pagination menu -->
 &lt;ion:page:articles:pagination pagination="2" />
 </pre>
-
-id page : <ion:page:id />
 
 <!-- Articles list -->
 <ion:page:articles pagination="2" >

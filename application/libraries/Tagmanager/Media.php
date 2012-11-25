@@ -210,22 +210,14 @@ class TagManager_Media extends TagManager
 			// Filter the parent's medias
 			$medias = self::filter_medias($tag, $medias);
 
-			// hmmm....
-			$tag->set('medias', $medias);
-
 			$count = count($medias);
 			$tag->set('count', $count);
-
-			// Stop here if asked : Needed by aggregation tags
-			if ($tag->getAttribute('loop') === FALSE)
-			{
-				$str .= $tag->expand();
-				return self::wrap($tag, $str);
-			}
 
 			// Make medias in random order
 			if ( $tag->getAttribute('random') == TRUE)
 				shuffle ($medias);
+
+			$tag->set('medias', $medias);
 
 			foreach($medias as $key => $media)
 			{
@@ -241,8 +233,6 @@ class TagManager_Media extends TagManager
 			}
 		}
 		return self::wrap($tag, $str);
-
-		// return $str;
 	}
 
 

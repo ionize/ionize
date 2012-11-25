@@ -152,6 +152,7 @@ class TagManager
 		'created' => 		'tag_simple_date',
 		'updated' => 		'tag_simple_date',
 		'extend' =>			'tag_extend',
+		'list' =>			'tag_list',
 
 		// System / Core tags
 		'config' => 			'tag_config',
@@ -1540,9 +1541,12 @@ class TagManager
 	 */
 	public static function tag_count(FTL_Binding $tag)
 	{
-		$tag->getParent()->setAttribute('loop', FALSE);
-
-		return self::tag_simple_value($tag);
+		if ($tag->getParent()->get('__loop__') !== FALSE)
+		{
+			$tag->getParent()->set('__loop__', FALSE);
+			return self::tag_simple_value($tag);
+		}
+		return '';
 	}
 
 
@@ -1614,49 +1618,6 @@ class TagManager
 		{
 			return self::show_tag_error($tag, 'Condition incorrect: ' .$_orig_expression);
 		}
-
-
-		/*
-		$keys = $tag->getAttribute('key');
-		$expression = $tag->getAttribute('expression');
-
-
-		$result = FALSE;
-		self::$trigger_else = 0;
-
-		if (!is_null($keys) && !is_null($expression))
-		{
-			$_orig_expression = $expression;
-
-			$keys = explode('|', $keys);
-			foreach($keys as $key)
-			{
-				// 1. Try to get the value from tag's data array
-				$value = $tag->getValue($key);
-
-				// 2. Fall down to to tag's locals
-				if (is_null($value))
-					$value = $tag->get($key);
-
-				$expression = str_replace($key, $value, $expression);
-			}
-
-			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
-
-			if ($return === NULL)
-			{
-				if ($result)
-					return self::wrap($tag, $tag->expand());
-				else
-					self::$trigger_else++;
-			}
-			else
-			{
-				return self::show_tag_error($tag, 'Condition incorrect: ' .$_orig_expression);
-			}
-		}
-		return '';
-		*/
 	}
 
 
@@ -1774,103 +1735,84 @@ class TagManager
 
 	// ------------------------------------------------------------------------
 
-
 	/**
-	 * Returns one list from a given field
-	 * @TODO : Rewrite this method for 1.0
+	 * Returns the parent tag collection items in list
 	 *
 	 * @param FTL_Binding $tag
 	 *
 	 * @return string
+	 */
 	public static function tag_list(FTL_Binding $tag)
 	{
-		$objects = (isset($tag->attr['objects']) ) ? $tag->attr['objects'] : FALSE;
-		$from = (isset($tag->attr['from']) ) ? $tag->attr['from'] : FALSE;
-		$field = (isset($tag->attr['field']) ) ? $tag->attr['field'] : FALSE;
-		$separator = (isset($tag->attr['separator']) ) ? $tag->attr['separator'] : ',';
-		$filter = (isset($tag->attr['filter']) ) ? $tag->attr['filter'] : FALSE;
-		$prefix = (isset($tag->attr['prefix']) ) ? $tag->attr['prefix'] : '';
-		$filters = NULL;
+		// Stop is already processed
+		if ($tag->getParent()->get('__loop__') === FALSE)
+			return '';
 
-		if ($objects != FALSE)
+		$data = array();
+
+		// Collection to consider : parent tag name
+		$collection_name = $tag->getParentName();
+		$collection = $tag->get($collection_name);
+
+		// HTML Separator of each collection item
+		$separator = $tag->getAttribute('separator', ', ');
+
+		if ( ! empty($collection))
 		{
-			if ($from == FALSE)
-			{
-				$from = self::get_parent_tag($tag);
-			}
-			if ($from == FALSE)
-			{
-				$from = 'page';
-			}
-			
-			$obj = isset($tag->locals->{$from}) ? $tag->locals->{$from} : NULL;
+			// Create one HTML A element, pointing to the element item URL, if any.
+			$link = $tag->getAttribute('link', FALSE);
 
-			if ( ! is_null($obj) && $field != FALSE)
+			// Field to return for each collection item.
+			$key =  $tag->getAttribute('key', 'title');
+
+			// Child tag : HTML tag for each collection item
+			$child_tag =  $tag->getAttribute('child-tag');
+			$child_class =  $tag->getAttribute('child-class');
+
+			// Separator attribute is not compatible with child-tag
+			if ( ! is_null($child_tag))
+				$separator = FALSE;
+
+			// Build the anchor array
+			foreach($collection as $item)
 			{
-				if ( ! empty($obj[$objects]))
+				// Return something if the item key exists
+				if (isset($item[$key]))
 				{
-					// Set the prefix
-					$prefix = (function_exists($prefix)) ? call_user_func($prefix) : $prefix;
+					$value = $item[$key];
 
-					// Prepare filtering
-					if ($filter)
+					if ($link == TRUE && isset($item['url']))
 					{
-						$filters = array();
-						$operators = array ('!=', '=');
-						
-						$filter_list = explode(',', str_replace(' ', '', $filter));
-						
-						foreach ($operators as $op)
-						{
-							foreach($filter_list as $key => $fl)
-							{
-								$fr = explode($op, $fl);
-								if ( $fr[0] !== $fl )
-								{
-									$filters[] = array($fr[0], $op, $fr[1]);
-									unset($filter_list[$key]);
-								}
-							}
-						}
+						$value = anchor($item['url'], $value);
 					}
-					
-					$fields = array();
-					foreach($filters as $filter)
-					{
-						// $fields += array_filter($obj[$objects], create_function('$row', 'return $row["'.$filter[0].'"]'.$filter[1].'="'.$filter[2].'";'));
-						foreach($obj[$objects] as $ob)
-						{
-							// TODO : Rewrite
-							// Because the operator isn't takken in account
-							//
-							// trace($ob[$filter[0]].$filter[1].'='.$filter[2]);
-							$result = FALSE;
-							eval("\$result = '" . $ob[$filter[0]]."'".$filter[1]."='".$filter[2]."';");
 
-							if ($result)
-								$fields[] = $ob;
-						}
-					}
-						
-
-					$return = array();
-					foreach($fields as $row)
+					if ( ! is_null($child_tag))
 					{
-						if ( ! empty($row[$field]))
-						{
-							$return[] = $prefix.$row[$field];
-						}
+						// Replace the class and tag by the child tag & class
+						$html_tag =  $tag->getAttribute('tag');
+						$html_class =  $tag->getAttribute('class');
+
+						$tag->setAttribute('tag', $child_tag);
+						$tag->setAttribute('class', $child_class);
+
+						// Process the child rendering
+						$value = self::wrap($tag, $value);
+
+						// Restore the tag & class for parent
+						$tag->setAttribute('tag', $html_tag);
+						$tag->setAttribute('class', $html_class);
 					}
-					// Safe about prefix
-					unset($tag->attr['prefix']);
-					return self::wrap($tag, implode($separator, $return));
+
+					$data[] = $value;
 				}
 			}
 		}
-		
-		return '';
+
+		// Lock loop
+		$tag->getParent()->set('__loop__', FALSE);
+
+		return self::wrap($tag, implode($separator, $data));
 	}
-	*/
 
 
 	// ------------------------------------------------------------------------
@@ -2565,7 +2507,9 @@ class TagManager
 			}
 
 			if ( ! empty ($value) )
+			{
 				return $open_tag . $value . $close_tag;
+			}
 			else
 				return '';
 		}

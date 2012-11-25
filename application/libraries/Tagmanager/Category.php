@@ -41,7 +41,7 @@ class TagManager_Category extends TagManager
 		'category:active_class' => 		'tag_simple_value',
 		'category:current' =>			'tag_category_current',
 
-		'article:categories' => 		'tag_article_categories',
+//		'article:categories' => 		'tag_article_categories',
 	);
 
 
@@ -86,6 +86,10 @@ class TagManager_Category extends TagManager
 			if (isset($element['categories']))
 			{
 				$categories = $element['categories'];
+
+				// Fix the 'nb' key (nb_articles using this category)
+				foreach($categories as $key=>$category)
+					$categories[$key]['nb'] = '1';
 			}
 			else
 			{
@@ -162,14 +166,10 @@ class TagManager_Category extends TagManager
 
 		$categories = self::get_categories($tag);
 
-		// Tag expand
 		$str = '';
 		$count = count($categories);
+		$tag->set('categories', $categories);
 		$tag->set('count', $count);
-
-		// Stop here if asked : Needed by aggregation tags
-		if ($tag->getAttribute('loop') === FALSE)
-			return $tag->expand();
 
 		// Child tags loop and expand
 		foreach($categories as $key => $category)
@@ -246,12 +246,12 @@ class TagManager_Category extends TagManager
 	{
 		$data = array();
 
-		$categories = TagManager_Category::get_categories($tag);
+		$categories = self::get_categories($tag);
 
 		// HTML Separator of each category
 		$separator = $tag->getAttribute('separator', ' | ');
 
-		// Make a link from each category or not. Default : TRUE
+		// Make a link from each category or not. Default : FALSE
 		$link = $tag->getAttribute('link', FALSE);
 
 		// Field to return for each category.

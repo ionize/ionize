@@ -162,13 +162,12 @@ class TagManager_Pagination extends TagManager
 	 */
 	public static function tag_pagination(FTL_Binding $tag)
 	{
+		if ($tag->getParent()->get('__loop__') === FALSE)
+			return '';
+
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
 			return $str;
-
-		// Tell the parent loop tag to not loop. Named without internal prefix "__"
-		// because it can be used by users as tag attribute
-		$tag->getParent()->setAttribute('loop', FALSE);
 
 		// Current page : 1. Asked page, 2. Down to current
 		$page = $tag->get('page');
@@ -211,6 +210,9 @@ class TagManager_Pagination extends TagManager
 
 		// Tag cache
 		self::set_cache($tag, $page['pagination_links']);
+
+		// No loop
+		$tag->getParent()->set('__loop__', FALSE);
 
 		return $page['pagination_links'];
 	}

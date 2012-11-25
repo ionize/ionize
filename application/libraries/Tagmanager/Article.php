@@ -515,37 +515,29 @@ class TagManager_Article extends TagManager
 		// Tag data
 		$count = count($_articles);
 		$tag->set('count', $count);
-		$tag->set('articles', $_articles);
 
 		// Make articles in random order
 		if ( $tag->getAttribute('random') == TRUE)
 			shuffle ($articles);
 
+		$tag->set('articles', $_articles);
+
 		// Add data like URL to each article
 		// and finally render each article
 		foreach($_articles as $key => $article)
 		{
-			// Stop here if asked : Needed by aggregation tags (eg. pagination)
-			if ($tag->getAttribute('loop') === FALSE)
-			{
-				return $tag->expand();
-			}
-			else
-			{
-				$tag->set('article', $article);
+			$tag->set('article', $article);
 
-				// Set by self::prepare_articles()
-				// $tag->set('index', $key);
-				$tag->set('count', $count);
+			// Set by self::prepare_articles()
+			// $tag->set('index', $key);
+			$tag->set('count', $count);
 
-				$str .= $tag->expand();
-			}
+			$str .= $tag->expand();
 		}
 
 		// Experimental : To allow tags in articles
 		// $str = $tag->parse_as_nested($str);
 
-		// No wrap for loop tags
 		$str = self::wrap($tag, $str);
 		
 		// Tag cache

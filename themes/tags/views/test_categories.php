@@ -28,7 +28,7 @@
 <ion:categories tag="ul" active_class="my-active-class">
 	<li>
 		<a <ion:category:is_active> class="<ion:category:active_class />" </ion:category:is_active>  href="<ion:category:url />">
-			<ion:category:title /> - (<ion:nb_articles /> articles)
+			<ion:category:title /> - (<ion:category:nb_articles /> articles)
 		</a>
 	</li>
 </ion:categories>
@@ -74,7 +74,10 @@
 </p>
 <ion:page:articles>
 	<ion:article:title tag="h3" />
+	Categories of this article, displayed in list :
+	<ion:article:categories:list link="true" separator=" &bull; "/><br/>
 	<ion:article:categories link="true" separator=" &bull; "/><br/>
+    Count : <ion:article:categories:count /><br/>
 </ion:page:articles>
 
 <hr/>
@@ -82,19 +85,17 @@
 <h2>Categories count</h2>
 
 <h3>Number of categories</h3>
-<p>
-	The use of the attribute <b>loop="false"</b> tells the <b>categories</b> tag to not loop through its children.<br/>
-	If not set, it will display the number of categories ... the number of categories time !
-</p>
+<p>Only website's used categories are count.</p>
 <pre>
-	&lt;ion:categories:count loop="false" />	
+&lt;ion:categories:count />
 </pre>
-<ion:categories:count loop="false" />
+
+<p><ion:categories:count /></p>
 
 
 <h3>Number of categories used by articles in the current page</h3>
 
 <pre>
-&lt;ion:page:categories:count loop="false" />
+&lt;ion:page:categories:count />
 </pre>
-<ion:page:categories:count loop="false" />
+<ion:page:categories:count />

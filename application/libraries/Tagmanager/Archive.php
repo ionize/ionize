@@ -144,10 +144,6 @@ class TagManager_Archive extends TagManager
 		$count = count($archives);
 		$tag->set('count', $count);
 
-		// Stop here if asked : Needed by aggregation tags
-		if ($tag->getAttribute('loop') === FALSE)
-			return $tag->expand();
-
 		// Child tags loop and expand
 		foreach($archives as $key => $archive)
 		{

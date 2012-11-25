@@ -2,7 +2,10 @@
 <ion:tree_navigation />
 
 <p>
-	Used in the context of the parent "<b>article</b>" tag, the <b>categories</b> tag displays the article's categories.
+	Used in the context of the parent "<b>&lt;ion:article /></b>" tag, the <b>&lt;ion:categories /></b> tag displays the article's categories.
+</p>
+<p>
+	Some categories must exist and must be linked to some articles to see the result
 </p>
 
 <hr/>
@@ -39,6 +42,6 @@
 	<ion:articles>
 		<h3>Article ID : <ion:article:id/> - Title : <ion:article:title/></h3>
 		<p>Article categories : </p>
-		<ion:article:categories tag="ul" child-tag="li" link="true" />
+		<ion:article:categorie	s tag="ul" child-tag="li" link="true" />
 	</ion:articles>
 </ion:page>

@@ -149,14 +149,6 @@ class FTL_Context
 		{
 			$qname = $this->qualified_tag_name($name);
 
-			/*
-			if (isset($args['loop']) && strtolower($args['loop']) == 'false' && in_array($qname, $this->rendered_tags))
-			{
-				log_message('error', 'DO NOT RENDER : ' . $qname);
-				return '';
-			}
-			*/
-
 			if(is_string($qname) && array_key_exists($qname, $this->definitions))
 			{
 				// $this->rendered_tags[] = $qname;

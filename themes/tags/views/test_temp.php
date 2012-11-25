@@ -1,30 +1,19 @@
-<h1>Buggy tag</h1>
+<h1>Test</h1>
 <ion:tree_navigation />
 
-<h3>Articles</h3>
-<ion:page:articles tag="ul">
-    <ion:article:url href="true" tag="li" display="title"/>
+<ion:page:articles>
+    <ion:article:title tag="h3" />
+    Categories of this article, displayed in list :
+    <ion:article:categories:list link="true" separator=" &bull; "/><br/>
+    Count : <ion:article:categories:count /><br/>
 </ion:page:articles>
 
-<h2>Current Article details</h2>
-<ion:article>
-    <ion:medias type="picture" tag="ul" class="boxes">
+<hr />
 
-        <ion:media tag="li">
+Articles list : <br/>
 
-            <img src="<ion:src size='200' />" />
-
-            <ion:if key='alt' expression="alt != ''">
-				ALT is SET !!!
-			</ion:if>
-			<ion:else>
-                <ion:get key="file_name" tag="p"/>
-			</ion:else>
-
-        </ion:media>
-
-    </ion:medias>
-
-</ion:article>
+<p>
+	<ion:page:articles:list link="true" />
+</p>
 
 
