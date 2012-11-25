@@ -892,7 +892,7 @@ class TagManager_Page extends TagManager
 		$return = '';
 
 		// Add Home page ?
-		if ($tag->getAttribute('home') == TRUE)
+		if ($tag->getAttribute('home') == TRUE && $page['home'] == 0)
 		{
 			$home_page = self::get_home_page();
 			$url = $home_page['absolute_url'];

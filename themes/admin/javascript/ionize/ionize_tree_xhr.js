@@ -344,7 +344,8 @@ ION.TreeXhr = new Class({
 			aTitle.set('text', title);
 
 			// Flag span : User's flag first, then Type flag
-			var flag = (element.id_type != '') ? element.type_flag : '0';
+			var flag = (typeOf(element.type_flag) != 'null') ? element.type_flag : '0';
+
 			var span = new Element('span', {'class':'flag flag' + flag}).inject(aTitle, 'top');
 
 			if ((flag != '' || flag != '0') && Browser.ie7) aTitle.setStyle('padding-left','6px');
