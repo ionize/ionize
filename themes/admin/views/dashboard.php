@@ -149,7 +149,7 @@
 						<th axis="string"><?php echo lang('ionize_label_author'); ?></th>
 						<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
 						<th axis="string"><?php echo lang('ionize_label_created'); ?></th>				
-						<th axis="string"><?php echo lang('ionize_label_updated'); ?></th>				
+						<th axis="string"><?php echo lang('ionize_label_updated'); ?></th>
 					</tr>
 				</thead>
 			
@@ -163,8 +163,11 @@
 
 					<tr>
 						<td>
-							<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a><br/>
-							<span class="lite pl5"> > <?php echo $article['breadcrumb']; ?></span>
+							<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>">
+								<span class="icon edit mr5 left"></span>
+								<?php echo $title; ?><br/>
+								<span class="lite pl20"> > <?php echo $article['breadcrumb']; ?></span>
+                            </a>
 						</td>
 						<td><?php echo $article['author']; ?></td>
 						<td><?php echo $article['updater']; ?></td>
@@ -208,7 +211,12 @@
 					?>
 
 					<tr>
-						<td><a title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $page['id_page']; ?>" class="page"><?php echo $title; ?></a></td>
+						<td>
+							<a title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $page['id_page']; ?>" class="page">
+                                <span class="icon edit mr5"></span>
+								<?php echo $title; ?>
+							</a>
+						</td>
 						<td><?php echo $page['author']; ?></td>
 						<td><?php echo $page['updater']; ?></td>
 						<td><?php echo humanize_mdate($page['created'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
@@ -254,7 +262,12 @@
 					?>
 
 					<tr class="0x<?php echo $article['id_article']; ?>">
-						<td><a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="0.<?php echo $article['id_article']; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a></td>
+						<td>
+							<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="0.<?php echo $article['id_article']; ?>">
+								<span class="icon edit mr5 left"></span>
+								<?php echo $title; ?>
+							</a>
+						</td>
 						<td><?php echo $article['author']; ?></td>
 						<td><?php echo $article['updater']; ?></td>
 						<td><?php echo humanize_mdate($article['created'], Settings::get('date_format'). ' %H:%i:%s'); ?></td>
