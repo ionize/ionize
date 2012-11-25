@@ -142,18 +142,20 @@ if( ! function_exists('get_tree_navigation'))
 	}
 }
 
-/**
- * Returns a HTML UL formatted nested tree menu from a pages nested array
- * Used by <ion:languages /> to print out the languages menu
- *
- * @param	Array		Array of pages
- * @param	Array		Array of container UL (first one) attributes. Can contains 'id' and 'class'
- *
- * @return	String		HTML UL formatted string
- *
- */
 if( ! function_exists('get_language_navigation'))
 {
+	/**
+	 * Returns a HTML UL formatted nested tree menu from a pages nested array
+	 * Used by <ion:languages /> to print out the languages menu
+	 *
+	 * @deprecated
+	 *
+	 * @param	Array		Array of pages
+	 * @param	Array		Array of container UL (first one) attributes. Can contains 'id' and 'class'
+	 *
+	 * @return	String		HTML UL formatted string
+	 *
+	 */
 	function get_language_navigation($items)
 	{
 		$nav = '';
@@ -170,12 +172,18 @@ if( ! function_exists('get_language_navigation'))
 }
 
 
-/**
- * Returns the previous / next page enclosed in the given tag
- *
- */
 if( ! function_exists('get_next_prev_page'))
 {
+	/**
+	 * Returns the previous / next page enclosed in the given tag
+	 *
+	 * @deprecated	Use the <ion:page:next /> and <ion:page:prev /> tags
+	 *
+	 * @param $page
+	 * @param $prefix
+	 *
+	 * @return string
+	 */
 	function get_next_prev_page($page, $prefix)
 	{
 		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
@@ -189,12 +197,14 @@ if( ! function_exists('get_next_prev_page'))
 }
 
 
-/**
- * Returns the previous / next article enclosed in the given tag
- * 
- */
 if( ! function_exists('get_next_prev_article'))
 {
+	/**
+	 * Returns the previous / next article enclosed in the given tag
+	 *
+	 * @deprecated	Use the <ion:article:next /> and <ion:article:prev /> tags
+	 *
+	 */
 	function get_next_prev_article($article, $prefix)
 	{
 		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;

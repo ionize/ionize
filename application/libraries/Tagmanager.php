@@ -2685,8 +2685,8 @@ class TagManager
 		// "is" and "expression" cannot be used together.
 		if ( ! is_null($is) )
 		{
-			if (strtolower($is == 'true')) $is = TRUE;
-			if (strtolower($is == 'false')) $is = FALSE;
+			if (strtolower($is) == 'true') $is = TRUE;
+			if (strtolower($is) == 'false') $is = FALSE;
 
 			if ($value == $is)
 			{

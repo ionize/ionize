@@ -48,7 +48,9 @@ class TagManager_Navigation extends TagManager
 
 		'language:code' =>			'tag_language_code',
 		'language:active_class' =>	'tag_simple_value',
-		'language:is_default' =>	'tag_language_is_default',
+		'language:default' =>		'tag_language_default',
+		'language:online' =>		'tag_simple_value',
+
 		'language:is_active' =>		'tag_is_active',
 	);
 	
@@ -64,8 +66,6 @@ class TagManager_Navigation extends TagManager
 	public static function tag_navigation(FTL_Binding $tag)
 	{
 		$cache = ($tag->getAttribute('cache') == 'off' ) ? FALSE : TRUE;
-		
-		$error_message = '';
 		
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
@@ -528,8 +528,6 @@ class TagManager_Navigation extends TagManager
 		$languages = Settings::get_online_languages();
 		$page = self::registry('page');
 
-		// $infos = self::get_url_infos();
-		
 		// Current active language class
 		$active_class = $tag->getAttribute('active_class', 'active');
 
@@ -647,6 +645,7 @@ class TagManager_Navigation extends TagManager
 				}
 			}
 		}
+
 		$tag->set('language', self::$_current_language);
 
 		return $tag->expand();
@@ -671,79 +670,15 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_language_code(FTL_Binding $tag)
 	{
-		return self::wrap($tag, $tag->getValue('lang'));
+		return self::output_value($tag, $tag->getValue('lang'));
 	}
 
-
-	/**
-	 * Displays the nested HTML if the current language is the default one.
-	 *
-	 * @param 	FTL_Binding $tag
-	 *
-	 * @return 	null|string
-	 *
-	 * @usage	<ion:language>
-	 * 				<ion:is_default>
-	 * 					This language is the default one
-	 * 				</ion:is_default>
-	 *
-	 * 				<ion:is_default is="false">
-	 * 					This language is not the default one
-	 * 				</ion:is_default>
-	 * 			</ion:language>
-	 *
-	 * 			Shortcut mode :
-	 * 			<ion:language:is_default [is=false]></ion:language:is_default>
-	 *
-	 */
-	public static function tag_language_is_default(FTL_Binding $tag)
+	public static function tag_language_default(FTL_Binding $tag)
 	{
-		$is_default = ($tag->getAttribute('is') === FALSE) ? 0 : 1;
-
-		if ($is_default == intval($tag->getValue('def')))
-			return $tag->expand();
-
-		return '';
+		return self::output_value($tag, $tag->getValue('def'));
 	}
 
 
-	/**
-	 * Get the current URL and feed the URL infos
-	 * 
-	public static function get_url_infos()
-	{
-		$uri_segments = self::get_uri_segments();
-
-		// Returned data
-		$infos = array(
-			'type' => 'page',
-			'page' => $uri_segments[0],
-			'article' => ''
-		);
-		
-		// Get the special URI config array (see /config/ionize.php)
-		$uri_config = self::$ci->config->item('special_uri');
-
-		// Get the potential special URI
-		$special_uri = (isset($uri_segments[1]) && array_key_exists($uri_segments[1], $uri_config)) ? $uri_segments[1] : FALSE;
-		
-		// If a special URI exists, get the articles from it.
-		if ($special_uri !== FALSE)
-		{
-			$infos['type'] = 'special';
-			$infos['page'] = $uri_segments[0];
-		}
-		// Get one article through his name in the URL
-		else if (isset($uri_segments[1]))
-		{
-			$infos['type'] = 'article';
-			$infos['page'] = $uri_segments[0];
-			$infos['article'] = $uri_segments[1];
-		}
-
-		return $infos;		
-	}
-	 */
 
 }
 

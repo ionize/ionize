@@ -14,6 +14,7 @@
 		&lt;h3>Article ID : &lt;ion:article:id/>&lt;/h3>
 		&lt;ion:article>
 			&lt;h4>&lt;ion:id /> : &lt;ion:title/>&lt;/h4>
+			&lt;h5>&lt;ion:date format="medium"/>&lt;/h5>
 			&lt;ion:content/>
 		&lt;/ion:article>
 	&lt;/ion:articles>
@@ -26,6 +27,7 @@
 		<h3>Article ID : <ion:article:id/></h3>
 		<ion:article>
 			<h4><ion:id /> : <ion:title/></h4>
+			<h5><ion:date format="medium"/></h5>
 			<ion:content paragraph="1" />
 		</ion:article>
 	</ion:articles>
