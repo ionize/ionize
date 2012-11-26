@@ -103,4 +103,4 @@ test_module_search
 
 ?>
 
-<ion:partial view="test_categories"  />
+<ion:partial view="test_articles_from_one_page" />

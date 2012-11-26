@@ -18,8 +18,8 @@
 
 <p>Current page ID : <ion:page:id /></p>
 
-<h2>Articles from page 3</h2>
-<ion:page id="3">
+<h2>Articles from page 4</h2>
+<ion:page id="4">
 	<ion:articles>
 		<h3>Article ID : <ion:article:id/></h3>
 		<p>Article title : <ion:article:title/></p>

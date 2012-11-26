@@ -75,7 +75,7 @@ class TagManager_Navigation extends TagManager
 		$str = '';
 
 		// Helper / No helper ?
-		$helper = $tag->getAttribute('helper', 'navigation');
+		$helper = $tag->getAttribute('helper');
 		
 		// Get the asked lang if any
 		$lang = $tag->getAttribute('lang');
@@ -185,11 +185,11 @@ class TagManager_Navigation extends TagManager
 				$pages = array();
 		}
 
-		if ($helper !== FALSE)
+		if ( ! is_null($helper))
 		{
 			// Get helper method
 			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';
-			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
+			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : 'navigation';
 
 			// load the helper
 			self::$ci->load->helper($helper);

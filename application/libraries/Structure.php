@@ -66,19 +66,18 @@ class Structure{
 	// ------------------------------------------------------------------------
 	
 	
-	/** 
+	/**
 	 * Get the nested pages array from DB result_array
 	 * Recursive method
 	 *
-	 * @param	array	By ref. Array of pages
-	 * @param	array	By ref. Array to feed
-	 * @param	int		Parent page ID
-	 * @param	int		Level to start
-	 * @param	int		Level to end
-	 * @param	array	Optional. Articles array
-	 *
+	 * @param      $data
+	 * @param      $arr
+	 * @param      $parent
+	 * @param int  $startDepth
+	 * @param bool $maxDepth
+	 * @param bool $articles
 	 */
-	function get_nested_structure(&$data, &$arr, $parent, $startDepth=0, $maxDepth=FALSE, $articles=FALSE)
+	public static function get_nested_structure(&$data, &$arr, $parent, $startDepth=0, $maxDepth=FALSE, $articles=FALSE)
 	{
 		if ($maxDepth !== FALSE && $maxDepth-- == 0) return;
 		$index = 0;
@@ -86,7 +85,6 @@ class Structure{
 		
 		if (is_array($data))
 		{
-			// $children = array_values(array_filter($data, create_function('$row','return $row["id_parent"] == "'. $parent .'";')));
 			$children = array();
 			foreach($data as $d)
 			{
@@ -100,7 +98,6 @@ class Structure{
 
 				if ($articles)
 				{
-					// $arr[$index]['articles'] = array_values(array_filter($articles, create_function('$row','return $row["id_page"] == "'. $child['id_page'] .'";')));
 					foreach($articles as $article)
 					{
 						if ($article['id_page'] == $child['id_page'])
@@ -127,7 +124,7 @@ class Structure{
 	 *		  )
 	 *
 	 */
-	function get_parent_select($data, $id_page=false)
+	function get_parent_select($data, $id_page=FALSE)
 	{
 		// Pages array
 		$arr = array();
@@ -154,7 +151,7 @@ class Structure{
 	 * @return	array	Simple array of pages
 	 *
 	 */
-	function _get_parent_select_items($items, $id_page=false)
+	function _get_parent_select_items($items, $id_page=FALSE)
 	{
 		$tree = array();
 		

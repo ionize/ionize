@@ -645,7 +645,10 @@ class TagManager_Page extends TagManager
 
 		// No ID
 		if ( is_null($id) )
-			$page = self::$context->registry('page');
+			if (is_null($tag->get('page')))
+				$page = self::$context->registry('page');
+			else
+				$page = $tag->get('page');
 		else
 		{
 			if (strval((int)$id) == (string) $id)
@@ -720,6 +723,10 @@ class TagManager_Page extends TagManager
 
 
 	/**
+	 * Returns pages from one given parent page
+	 *
+	 * @TODO	Check and finish writing
+	 * 			Planned for 1.0
 	 *
 	 * @param FTL_Binding
 	 *
@@ -737,7 +744,7 @@ class TagManager_Page extends TagManager
 		$str = '';
 
 		$parent = $tag->getAttribute('parent');
-		$mode = ( ! is_null($tag->getAttribute('mode'))) ? $tag->getAttribute('mode') : 'flat';
+		$mode = $tag->getAttribute('mode', 'flat');
 		$levels = $tag->getAttribute('levels');
 		$parent_page = NULL;
 
@@ -749,12 +756,17 @@ class TagManager_Page extends TagManager
 				$parent_page = self::get_page_by_code($parent);
 		}
 
+		$data = self::registry('pages');
+
 		if ( ! empty($parent_page))
 		{
 			if ($mode == 'tree')
-				$pages = Structure::get_tree_navigation($tag->globals->pages, $parent_page['id_page']);
+				$pages = Structure::get_tree_navigation($data, $parent_page['id_page']);
 			else
-				$pages = Structure::get_nested_structure($tag->globals->pages, array(), $parent_page['id_page']);
+			{
+				$pages = array();
+				Structure::get_nested_structure($data, $pages, $parent_page['id_page']);
+			}
 		}
 		else
 		{

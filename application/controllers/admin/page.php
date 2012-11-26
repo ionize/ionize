@@ -351,6 +351,9 @@ class Page extends MY_admin
 			// New page : Simply reloads the panel
 			if ( empty($id))
 			{
+				// Save the Urls
+				$this->page_model->save_urls($id);
+
 				// Used by JS Tree to detect if page in inserted in tree or not
 				$page['inserted'] = TRUE;
 				
