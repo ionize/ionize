@@ -1184,7 +1184,10 @@ class TagManager
 			$tag->set($tag->name, $value);
 		}
 
-		$value = self::$ci->url_model->parse_internal_links($value);
+        $int_link = strpos($value, '{{');
+
+        if (FALSE !== $int_link)
+            $value = self::$ci->url_model->parse_internal_links($value);
 
 		return self::output_value($tag, $value);
 	}
