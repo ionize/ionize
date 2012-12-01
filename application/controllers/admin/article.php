@@ -1860,8 +1860,14 @@ class Article extends MY_admin
 		$page = $this->page_model->get_by_id($id_page);
 		$page['menu'] = $this->menu_model->get($page['id_menu']);
 
-		$article = $this->article_model->get_by_id($id_article, Settings::get_lang('default'));
-		$title = empty($article['title']) ? $article['name'] : $article['title'];
+		// Main data
+		$article = $this->article_model->get_by_id($id_article);
+
+		$article_lang = $this->article_model->get_by_id($id_article, Settings::get_lang('default'));
+		$title = empty($article_lang['title']) ? $article_lang['name'] : $article_lang['title'];
+
+		// Correcting some lang data
+		$article_lang['online'] = $article['online'];
 
 		$this->callback[] =	array(
 			'fn' => 'ION.splitPanel',
@@ -1873,7 +1879,7 @@ class Article extends MY_admin
 		);
 		$this->callback[] = array(
 			'fn' => $page['menu']['name'].'Tree.updateElement',
-			'args' => array($article, 'article')
+			'args' => array($article_lang, 'article')
 		);
 
 	}

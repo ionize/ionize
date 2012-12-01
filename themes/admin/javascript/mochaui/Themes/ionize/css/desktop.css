@@ -22,13 +22,16 @@
 
 
 /* Ionize specific */
-#desktopHeader { background: url(../images/application_header_bg.gif) repeat-x;}
+#desktopHeader {
+	background: url(../images/bg-gray-dark.png) repeat-x;
+}
 #desktopBar {
 	background: url(../images/application_header_logo.jpg) no-repeat;
 	background-position: left 0;
 }
 #structurePanel_pad {
 	padding: 15px 0 8px 15px !important;
+	background: url(../images/bg-gray-light.png);
 }
 #about_contentWrapper {
 	background: #e5e5e5 url(../images/application_about_window_bg.jpg) top left no-repeat;
@@ -72,7 +75,7 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 /* Panels */
 .panel { position: relative; overflow: auto; background: #fff; border-bottom: 1px solid #b9b9b9; clear:both; }
 .panelWrapper.collapsed .panel-header { border-bottom: 0; }
-.panelAlt { background: #f5f5f5; }
+.panelAlt { background: url(../images/bg-gray-light.png);}
 .bottomPanel .panel { border-bottom: 0; }
 .pad { padding: 8px; }
 #mainPanel2 { background: #fff; }
@@ -82,7 +85,6 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .panel-collapse { background: url(../images/collapse-expand.gif) left top no-repeat; padding-right:5px }
 .panel-expand { background: url(../images/collapse-expand.gif) left -16px no-repeat; }
 .icon16 { margin: 4px 0 0 2px; cursor: pointer; }
-
 .panel-footer { position: relative; width: 100%; background: #f9f9f9; height: 30px; overflow: hidden; border-bottom: 1px solid #b9b9b9; padding: 0 0 0 8px; }
 .bottomPanel .panel-footer { border-top: 1px solid #b9b9b9; border-bottom: 0; }
 .collapsed .panel-footer { display: none; }

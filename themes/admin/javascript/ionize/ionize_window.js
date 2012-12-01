@@ -84,15 +84,6 @@ ION.append({
 		
 		// Open the confirmation modal window
 		new MUI.Modal(options);
-		
-		/*
-		MUI.create({
-			'control':'MUI.Modal',
-			'options': options
-		});
-		*/
-		
-		
 	},
 
 	/**
@@ -318,8 +309,8 @@ ION.append({
 	_getConfirmationButtons:  function(id, callback)
 	{
 		// Btn Yes / No creation
-		var btnYes = new Element('button', {'class':'button yes right mr35'}).set('text', Lang.get('ionize_button_confirm'));
-		var btnNo = new Element('button', {'class':'button no '}).set('text', Lang.get('ionize_button_cancel'));
+		var btnYes = new Element('button', {'class':'button yes right'}).set('text', Lang.get('ionize_button_confirm'));
+		var btnNo = new Element('button', {'class':'button no right'}).set('text', Lang.get('ionize_button_cancel'));
 	
 		// Event on btn No : Simply close the window
 		btnNo.addEvent('click', function() 
@@ -339,7 +330,6 @@ ION.append({
 			 * Case Callback : 	Execution of callback function
 			 *
 			 */
-			
 			// URL case
 			if ( (callback + '').indexOf('/') > -1 )
 			{

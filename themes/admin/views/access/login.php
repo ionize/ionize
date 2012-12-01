@@ -47,6 +47,27 @@
 			window.top.location.reload(true);
 		}
 
+        window.addEvent('domready', function()
+		{
+            function fixchromeyellow()
+            {
+				console.log(navigator.userAgent.toLowerCase().indexOf("safari"));
+                if (
+					navigator.userAgent.toLowerCase().indexOf("chrome") >= 0
+                    ||(navigator.userAgent.toLowerCase().indexOf("safari") >= 0)
+				)
+                {
+                    $$('input["input:-webkit-autofill"]').each(function(el)
+                    {
+						console.log('coucou');
+                        el.clone(true,true).inject(el,"after");
+                        el.dispose();
+                    });
+                }
+            }
+            window.setTimeout(fixchromeyellow, 50);
+
+        });
 
 	</script>
 	
@@ -102,12 +123,8 @@
 		
 			<?php echo form_close(); ?>
 
-
 		</div>
-	
 	</div>
-	<!-- Content : end -->
 </body>
-
 </html>
 

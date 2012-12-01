@@ -351,9 +351,6 @@ class Page extends MY_admin
 			// New page : Simply reloads the panel
 			if ( empty($id))
 			{
-				// Save the Urls
-				$this->page_model->save_urls($id);
-
 				// Used by JS Tree to detect if page in inserted in tree or not
 				$page['inserted'] = TRUE;
 				
@@ -985,7 +982,10 @@ class Page extends MY_admin
 		if ($this->input->post('id_page'))
 			$this->data['updater'] = $current_user['username'];
 		else
+		{
 			$this->data['author'] =  $current_user['username'];
+			$this->data['appears'] =  $this->input->post('appears');
+		}
 
 		// Unset Ordering if no new page : Saved by page ordering in tree view
 		if (!$this->input->post('id_page') || $this->input->post('id_page') == '')

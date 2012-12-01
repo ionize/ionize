@@ -259,7 +259,8 @@
                 <h3><?php echo lang('ionize_title_db_backup'); ?></h3>
 
                 <p>
-                    <a id="bdBackup" href="<?php echo admin_url(); ?>setting/backup_database"><?php echo lang('ionize_label_db_backup'); ?></a>
+
+                    <a class="button light" id="bdBackup" href="<?php echo admin_url(); ?>setting/backup_database"><i class="icon-database"></i><?php echo lang('ionize_label_db_backup'); ?></a>
                 </p>
 
 			</div>

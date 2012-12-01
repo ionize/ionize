@@ -172,7 +172,7 @@ ION.TreeXhr = new Class({
 		var flat_id = (type == 'page') ? element.id_page : element.id_page + 'x' + element.id_article;
 		var rel = (type == 'page') ? element.id_page : element.id_page + '.' + element.id_article;
 		var online = (element.online == '1') ? 'online' : 'offline'; 
-		
+
 		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
 		var type_description = (typeOf(element.type_description) != 'null' && element.type_description != '') ? ' : ' + element.type_description : '';
 
@@ -326,7 +326,6 @@ ION.TreeXhr = new Class({
 		var status = (element.online == '1') ? 'online' : 'offline';
 		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
 		if (title == '') title = element.name;
-
 		// Items to update
 		var items = this.ionizeTrees.getElements(selector);
 

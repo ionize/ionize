@@ -128,9 +128,8 @@ Ionize.Tracker.append(
 
 	updateElementTrackers:function(users)
 	{
-		var elements = new Array('article')
 		var cUser = Ionize.User.getCurrentUser();
-
+		$$('.tracker-flag').removeClass('tracker-flag');
 		users.each(function(user)
 		{
 			if (user.id_user != cUser.id_user)

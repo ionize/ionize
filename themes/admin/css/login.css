@@ -6,7 +6,7 @@ body {
 	margin:0;
 	font-family:"Arial", sans-serif !important;
 	font-size:1em;
-	background-color:#f2f2f2;
+	background: url(../images/bg-gray-light.png);
 }
 .content {
 	position:relative;
@@ -16,7 +16,7 @@ body {
 }
 #loginWindow {
 	margin:100px auto 0 auto;
-	padding:90px 0 0 0;
+	padding:85px 0 0 0;
 	width:466px;
 	height:166px;
 	position: relative;
@@ -31,7 +31,7 @@ body {
 	color:#c2d0e0;
 	font-size: 10px;
 	position: absolute;
-	bottom:30px;
+	bottom:20px;
 	left: 46px;
 }
 
@@ -51,7 +51,6 @@ form .inputtext {
 	border:1px solid #fff;
 	font-family:  "lucida grande",tahoma,verdana,arial,sans-serif;
 	font-size:0.83em;
-	background-color:#fff;
 	padding:4px;
 	width:150px;
 }
@@ -60,6 +59,11 @@ form .inputtext:focus {
 	border:1px solid #fff;
 	padding:4px;
 }
+input[type="text"], input[type="password"], textarea, select {
+	outline: none;
+	-webkit-appearance: none;
+}
+:focus { background-color: #fff; }
 
 form div {
 	margin-bottom:5px;

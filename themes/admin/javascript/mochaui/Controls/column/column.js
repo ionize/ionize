@@ -237,7 +237,7 @@ MUI.Column = new NamedClass('MUI.Column', {
 		return this;
 	},
 
-	expand : function(){
+	expand: function(){
 		var column = this.el.column;
 
 		column.setStyle('width', this.oldWidth);

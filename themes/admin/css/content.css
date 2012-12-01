@@ -40,13 +40,15 @@ License:
 	position: relative;
 	min-height:300px;
 	padding:5px 10px 5px 15px;
-	background-color: #f3f3f3;
-	border: solid 1px #f3f3f3;
+	background: url(../images/bg-gray-light.png);
 	-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;
 }
+
 .tabcolumn{
 	margin-right:40%;
 }
+
+
 #preprod-flag {
 	width:120px;background-color: #c00;color: #fff;position: absolute;top:0px;
 	z-index: 100000;margin-right: auto;margin-left: 185px;padding:2px 5px;text-align: center;
@@ -191,7 +193,7 @@ li.offline { opacity:0.7; }
 .icon.arrow-left, 	.button i.icon-arrow-left	{background-position: -48px -32px;}
 .icon.process,		.button i.icon-process		{background-position: -112px -80px;}
 .icon.calendar,		.button i.icon-calendar		{background-position: -48px -80px;}
-.icon.element,		.button i.icon-element		{background-position: -112px -48px;}
+.icon.element,		.button i.icon-element		{background-position: -112px -48px;margin-top:0;}
 .icon.print,		.button i.icon-print		{background-position: -144px -32px;}
 .icon.alert,		.button i.icon-alert		{background-position: -32px -64px;}
 .icon.expand,		.button i.icon-expand		{background-position: -128px -80px;}
@@ -363,7 +365,7 @@ div.notify.alert { background:url(../images/icon_48_alert.png) #f3f3f3 no-repeat
 div.summary {
 	overflow:auto;
 	position: relative;
-	background:#f2f2f2;
+	background: url(../images/bg-gray-light.png);
 	padding:10px;
 	margin-bottom:10px;
 	border-radius: 5px;	-moz-border-radius: 5px;-webkit-border-radius: 5px;
@@ -392,13 +394,13 @@ div.summary {
 	float:left;
 	margin:0 10px 10px 0;
 	padding:4px;
-	background-color: #f2f2f2;
+	background: url(../images/bg-gray-light.png);
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 }
 .picture:hover {
-	background-color: #dee6f0;
+	background: url(../images/bg-gray-medium.png);
 }
 .picture .thumb,
 .thumb{
@@ -441,7 +443,7 @@ ul.list li {
 }
 li.sortme:hover,
 ul.list li:hover {
-	background-color: #f2f2f2;
+	background: url(../images/bg-gray-light.png);
 }
 li.sortme .icon {
 	margin-left:5px;
@@ -821,7 +823,7 @@ div.tab.noline {
 	margin-right: 8px;
 }
 .tab-content li {
-	background-color:#f2f2f2;
+	background: url(../images/bg-gray-light.png);
 	cursor:pointer;
 	float:left;
 	height:24px;
@@ -944,7 +946,7 @@ div.translation {
 	border-radius: 4px;
 }
 .desktopIcon:hover {
-	background: #f3f3f3;
+	background: url(../images/bg-gray-light.png);
 }
 
 .desktopIcon p a, .desktopIcon p a:hover {

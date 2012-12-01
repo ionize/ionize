@@ -49,7 +49,7 @@ License:
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }
 .tree li.highlight {
-	background-color: #e1e3e4;
+	background: url(../images/bg-gray-medium.png);
 }
 .tree li a {
 	text-decoration: none;
@@ -71,7 +71,7 @@ License:
 	right: 0;
 	top:0;
 	height:18px;
-	background-color: #e1e3e4;
+	background: url(../images/bg-gray-medium.png);
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }
 .tree li .icon{

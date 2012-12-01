@@ -266,64 +266,105 @@ input.submit{
 	padding-right: 14px;
 }
 
-
-/* Yes button, No button, Submit */
-.button {
-    color:#fff;
-	margin: 0 2px;
-	height: 18px;
-    line-height: 18px;
-    padding: 2px 6px;
-	background:url(../images/button-bg.jpg) no-repeat 0 50%;
-    display: inline-block;
-}
-.button:hover {	background:url(../images/button-bg.jpg) no-repeat -200px 50%; }
-
-.button.yes { background:url(../images/button-yes-bg.jpg) no-repeat 0 50%; }
-.button.yes:hover { background:url(../images/button-yes-bg.jpg) no-repeat -200px 50%; }
-.mocha.modal .button.yes {margin-right: 35px;}
-.button.no { background:url(../images/button-no-bg.jpg) no-repeat 0 50% #bbb;}
-.button.no:hover { background:url(../images/button-no-bg.jpg) no-repeat -200px 50%;}
+/* Buttons */
 
 .button.left {float:left;}
 .button.right {float:right;}
 
-.submit { background:url(../images/submit-bg.jpg) no-repeat 0 50%; }
-.submit:hover {	background:url(../images/submit-bg.jpg) no-repeat -200px 50%; }
+.submit,
+a.button.submit {
+	background:url(../images/submit-bg.jpg) no-repeat 0 50%;
+	color:#fff;
+	border:solid 1px #fff;
+}
+.submit:hover,
+a.button.submit:hover {
+	background:url(../images/submit-bg.jpg) no-repeat -200px 50%;
+	color:#fff;
+	border:solid 1px #fff;
+}
 
+.button,
+a.button {
+	background: url(../images/bg-gray-light.png);
+	color:#098ED1;
+	border:1px solid #bbb;
+	border-radius: 2px;
+	margin:0;
+	cursor:pointer;
+	font-size:11px;
+	padding:2px 6px;
+	vertical-align: middle;
+	height:auto;
+	display: inline-block;
+	vertical-align: middle;
+}
+.button:hover
+a.button:hover {
+	background: url(../images/bg-gray-medium.png);
+	border:1px solid #bbb;
+
+}
+.button i,
 a.button i{
     width:16px;
     height: 16px;
     display: inline-block;
     float: left;
     margin-right:5px;
+	margin-top: 1px;
     background:transparent url(../images/icons_16.png) no-repeat 0 0;
 }
+
+/* Special buttons */
+.button.yes,
+.button.yes:hover,
+a.button.yes,
+a.button.yes:hover,
+.button.no,
+.button.no:hover,
+a.button.no,
+a.button.no:hover,
+.button.submit ,
+.button.submit:hover,
+a.button.submit ,
+a.button.submit:hover {
+	border:solid 1px #fff;
+	color:#fff;
+}
+
+.button.yes, a.button.yes { background:url(../images/button-yes-bg.jpg) no-repeat 0 50%; }
+.button.yes:hover, a.button.yes:hover { background:url(../images/button-yes-bg.jpg) no-repeat -200px 50%; }
+.button.no, a.button.no { background:url(../images/button-no-bg.jpg) no-repeat 0 50% #bbb; }
+.button.no:hover, a.button.no:hover { background:url(../images/button-no-bg.jpg) no-repeat -200px 50%; }
+
+.mocha .button.yes { margin-right: 40px;margin-left:10px;}
+.mocha.modal .button.yes{ margin-right: 35px;}
 
 /* Light buttons */
 .button.light {
     border: 1px solid transparent;
     background: none;
-    color:#098ED1;
-    margin:0;
-    cursor:pointer;
-    font-size:11px;
-    padding:2px 6px;
-    vertical-align: middle;
-    height:auto;
-    display: inline-block;
-    vertical-align: middle;
 }
 .button.light:hover {
     border:1px solid #bbb;
-    background-color: #fff !important;
+	background: url(../images/bg-gray-light.png);
 }
 
+/* Buttons specific context */
+.tabsidecolumn .button.light,
+.panelAlt .button.light {
+}
+.tabsidecolumn .button.light:hover,
+.panelAlt .button.light:hover {
+	border:1px solid #bbb;
+	background: #fff;
+}
 
 /* Toolbar button */
 .toolbar-button,
 .light-button {
-	-moz-border-radius:4px;
+	border-radius:2px;
 	font-family:Arial,Helvetica,sans-serif;
 	border: 1px solid transparent;
 	background-color: transparent;

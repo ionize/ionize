@@ -89,6 +89,7 @@ ION.append({
 
 	/**
 	 * Toggles the Edit mode for the given element
+	 * selectors is the class to add to each element which should be show / hidden
 	 *
 	 * @param element
 	 * @param selectors
@@ -101,11 +102,14 @@ ION.append({
 		if (typeOf(activated) != 'null' && activated == 'true')
 		{
 			$$(selectors).show();
+			$('toggleHeaderButton').fireEvent('show');
 			Cookie.write(cookieName, 'false');
 		}
 		else
 		{
 			$$(selectors).hide();
+			$('toggleHeaderButton').fireEvent('hide');
+			$('sideColumnSwitcher').fireEvent('hide');
 			Cookie.write(cookieName, 'true');
 		}
 	},
@@ -156,36 +160,53 @@ ION.append({
 	initSideColumn: function()
 	{
 		var button = $('sideColumnSwitcher');
+		var cookieName = 'sidecolumn';
 
 		if (button)
 		{
-			var sideColumn = MUI.get('splitPanel_sideColumn');
+			button.store('column', MUI.get('splitPanel_sideColumn'));
 
-			button.addEvent('click', function()
-			{
-				sideColumn.toggle();
+			button.addEvents({
+				'click' : function(e)
+				{
+					e.stop();
+					if (Cookie.read(cookieName))
+						opened = (Cookie.read(cookieName));
 
-				if (sideColumn.isCollapsed == true)
+					if (opened == 'false')
+						this.fireEvent('show');
+					else
+						this.fireEvent('hide');
+				},
+				'show': function(e)
 				{
-					// ION.setButtonLabel(button, Lang.get('ionize_label_show_options'), 'icon-options');
-					Cookie.write('sidecolumn', 'collapsed');
-				}
-				else
+					ION.setButtonLabel(button, Lang.get('ionize_label_hide_options'), 'icon-options');
+					var column = this.retrieve('column');
+					if (column.isCollapsed == true)
+					{
+						column.expand();
+						Cookie.write(cookieName, 'true');
+					}
+				},
+				'hide': function(e)
 				{
-					// ION.setButtonLabel(button, Lang.get('ionize_label_hide_options'), 'icon-options');
-					Cookie.write('sidecolumn', 'expanded');
+					ION.setButtonLabel(button, Lang.get('ionize_label_show_options'), 'icon-options');
+					var column = this.retrieve('column');
+					if (column.isCollapsed == false)
+					{
+						column.collapse();
+						Cookie.write(cookieName, 'false');
+					}
 				}
 			});
 
-			// Get the cookie stored option state and apply
-			/*
-			var pos = Cookie.read('sidecolumn');
+			// Init
+			var opened = Cookie.read(cookieName);
 
-			if (typeOf(pos) != 'null' && pos == 'expanded')
-				ION.setButtonLabel(button, Lang.get('ionize_label_hide_options'), 'icon-options');
+			if (typeOf(opened) != 'null' && opened == 'true')
+				button.fireEvent('show');
 			else
-				ION.setButtonLabel(button, Lang.get('ionize_label_show_options'), 'icon-options');
-			*/
+				button.fireEvent('hide');
 		}
 		else
 		{

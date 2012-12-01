@@ -20,9 +20,9 @@ ION.append({
 		{
 			// Collapse / Expanded status from cookie
 			var isCollapsed = false;
-			var pos = Cookie.read('sidecolumn');
+			var opened = Cookie.read('sidecolumn');
 
-			if (typeOf(pos) != 'null' && pos == 'collapsed')
+			if (typeOf(opened) != 'null' && opened == 'false')
 				isCollapsed = true;
 
 			MUI.Content.update({

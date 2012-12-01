@@ -15,30 +15,43 @@
 	 * ToggleHeader Button
 	 *
 	 */
-	$('toggleHeaderButton').addEvent('click', function(e)
+    $('toggleHeaderButton').store('header', 'desktopHeader');
+
+    $('toggleHeaderButton').addEvents(
 	{
-		e.stop();
-		var cn = 'desktopHeader';
-		var el = $(cn);
-		var opened = 'true';
-		
-		if (Cookie.read(cn))
+        'click': function(e)
 		{
-			opened = (Cookie.read(cn));
-		}
-		if (opened == 'false')
+            e.stop();
+            var header = this.retrieve('header');
+            var opened = 'true';
+
+            if (Cookie.read(header))
+                opened = (Cookie.read(header));
+
+            if (opened == 'false')
+                this.fireEvent('show');
+            else
+                this.fireEvent('hide');
+
+		},
+        'show': function(e)
 		{
-			Cookie.write(cn, 'true');
-			el.show();
-		}
-		else
+			var header = this.retrieve('header');
+			Cookie.write(header, 'true');
+			$(header).show();
+            MUI.get('desktop').setDesktopSize();
+        },
+        'hide': function(e)
 		{
-			Cookie.write(cn, 'false');
-			el.hide();
-		}
-		MUI.get('desktop').setDesktopSize();
+			var header = this.retrieve('header');
+			$(header).hide();
+			Cookie.write(header, 'false');
+            MUI.get('desktop').setDesktopSize();
+        }
 	});
-	
+
+
+
 	/**
 	 * Init desktopHeader status from cookie
 	 *
