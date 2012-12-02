@@ -176,7 +176,7 @@ class FTL_Parser{
 	protected function pre_parse($string)
 	{
 		// The Correct Regex for proper XML: '%([\w\W]*?)(<' . $this->tag_prefix . ':([\w:]+?)(\s+(?:\w+\s*=\s*(?:"[^"]*?"|\'[^\']*?\')\s*)*|)>|</' . $this->tag_prefix . ':([\w:]+?)\s*>)([\w\W]*)%'
-		while(preg_match('%([\w\W]*?)<(/)?' . $this->tag_prefix . ':([\w:]+)([^>]*?)(/)?>([\w\W]*)%', $string, $matches))
+		while(preg_match('%([\w\W]*?)<(/)?' . $this->tag_prefix . ':([\w-:]+)([^>]*?)(/)?>([\w\W]*)%', $string, $matches))
 		{
 			// Reset so we won't overwrite the stuff
 			unset($tmp);

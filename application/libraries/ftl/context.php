@@ -177,14 +177,6 @@ class FTL_Context
 	 */
 	protected function stack($name, $args, $block, $call)
 	{
-
-/*
-$_func_name=$call;
-if (is_array($_func_name))
-	$_func_name = $_func_name[0].'::'.$_func_name[1];
-log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
-*/
-
 		// get previous locals, to let the data "stack"
 		$previous = end($this->tag_binding_stack);
 		$previous_locals = $previous == NULL ? $this->globals : $previous->locals;
@@ -230,7 +222,7 @@ log_message('error', 'stack : ' . $name. ' => call : '.$_func_name);
 		$path_chunks = array_merge($this->tag_name_stack, array($name));
 		// For literal matches
 		$path = implode(':', $path_chunks);
-// log_message('error', 'qualified_tag_name : ' . $path);
+
 		// Check if we have a tag or a variable
 		if( ! isset($this->definitions[$path]) && ! isset($this->globals->hash[$name]))
 		{
