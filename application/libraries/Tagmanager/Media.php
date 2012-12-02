@@ -86,7 +86,7 @@ class TagManager_Media extends TagManager
 			$from = $range[0];
 			$to = (isset($range[1]) && $range[1] >= $range[0]) ? $range[1] : FALSE;
 		}
-		
+
 		// Return list ?
 		// If set to "list", will return the media list, coma separated.
 		// Usefull for javascript
@@ -134,14 +134,16 @@ class TagManager_Media extends TagManager
 						}
 					}
 				}
-
 				// Range / Limit ?
-				if ($range !== FALSE)
+				if ( ! is_null($range))
 				{
-					$length = ($to !== FALSE) ? $to - $from + 1 : count($filtered_medias) - $from;
-					
+
+					$length = ($to !== FALSE) ? $to + 1 - $from  : count($filtered_medias) + 1 - $from;
+
 					if ($limit > 0 && $limit < $length) $length = $limit;
-					
+
+					$from = $from -1;
+
 					$filtered_medias = array_slice($filtered_medias, $from, $length);
 				}
 				else if ($limit > 0)
