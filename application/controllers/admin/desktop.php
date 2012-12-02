@@ -23,7 +23,6 @@
  */
 class Desktop extends MY_Admin 
 {
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -128,7 +127,7 @@ class Desktop extends MY_Admin
 
 		$this->template['title'] = $title;
 		
-		$this->output('help');
+		$this->output('desktop/help');
 	}
 }
 

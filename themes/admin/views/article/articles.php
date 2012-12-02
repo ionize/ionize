@@ -216,7 +216,12 @@
 		item.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.Content.update({'element': $('mainPanel'),'loadMethod': 'xhr','url':	admin_url + 'article/edit/0.' + id_article, 'title': Lang.get('ionize_title_edit_article') + ' : ' + title	});
+            ION.contentUpdate({
+				'element': $('mainPanel'),
+				'loadMethod': 'xhr',
+				'url':	admin_url + 'article/edit/0.' + id_article,
+				'title': Lang.get('ionize_title_edit_article') + ' : ' + title
+			});
 		});
 	});
 

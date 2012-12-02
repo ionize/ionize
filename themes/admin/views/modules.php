@@ -130,10 +130,9 @@
 	{
 		item.addEvent('click', function(e)
 		{
-//			var e = new Event(e).stop();
 			e.stop();
-			
-			MUI.Content.update({
+
+            ION.contentUpdate({
 				element: $('mainPanel'),
 				title: item.get('rel'),
 				url : item.getProperty('href')

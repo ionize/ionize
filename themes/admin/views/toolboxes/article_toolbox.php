@@ -104,16 +104,13 @@
 	}
 
     // Edition Mode button
-    $('editionModeSwitcher').addEvent('click', function(e)
-    {
-        ION.toggleEditMode('article', '.article-header');
-    });
+	ION.initEditMode('editionModeSwitcher', 'article', '.article-header');
 
     /**
 	 * Options show / hide button
 	 *
 	 */
-	ION.initSideColumn();
+	ION.initSideColumn('sideColumnSwitcher');
 	
 	/**
 	 * Save with CTRL+s

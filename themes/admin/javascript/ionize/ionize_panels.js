@@ -2,7 +2,7 @@ ION.append({
 
 	/**
 	 *
-	 * @param Object    Options object
+	 * @param options    Options object
 	 *
 	 * @usage
 	 *

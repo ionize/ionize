@@ -11,7 +11,7 @@
  * @author		Partikule
  * @copyright	Copyright (c) 2009, Partikule
  * @category	Javascript
- * @since		Version 1.0
+ * @since		Version 0.9.6
  * @link		http://www.partikule.net
  *
  */

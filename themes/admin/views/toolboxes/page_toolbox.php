@@ -88,8 +88,8 @@
 		$('addArticle').addEvent('click', function(e)
 		{
 			e.stop();
-			
-			MUI.Content.update({
+
+            ION.contentUpdate({
 				'element': $('mainPanel'),
 				'loadMethod': 'xhr',
 				'url': admin_url + 'article/create/' + id,
@@ -102,7 +102,7 @@
 	 * Options show / hide button
 	 *
 	 */
-	ION.initSideColumn();
+	ION.initSideColumn('sideColumnSwitcher');
 
 	/**
 	 * Save with CTRL+s

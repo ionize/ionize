@@ -58,7 +58,7 @@ class Extend_table extends MY_admin
 			'auto_increment' => ''
 		);
 
-		$this->output('extend_table_field');
+		$this->output('extend/table_field');
 	}
 	
 	
@@ -176,7 +176,7 @@ class Extend_table extends MY_admin
 			);
 		}
 	
-		$this->output('extend_table_field');
+		$this->output('extend/table_field');
 	}
 	
 	
@@ -214,7 +214,7 @@ class Extend_table extends MY_admin
 			$this->template['extends'] = $this->extend_table_model->get_extend_table_fields($table);
 			$this->template['table'] = $table;
 
-	    	$this->output('extend_table_fields_list');
+	    	$this->output('extend/table_fields_list');
 	    }
 	}
 	

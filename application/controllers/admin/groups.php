@@ -72,7 +72,7 @@ class Groups extends MY_admin
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = array_filter($this->connect->model->get_groups(), array($this, '_filter_groups'));
 				
-		$this->output('group');
+		$this->output('user/group');
 	}
 
 
@@ -83,7 +83,7 @@ class Groups extends MY_admin
 	{
 		$this->template['group'] = $this->group_model->feed_blank_template();
 
-		$this->output('group');
+		$this->output('user/group');
 	}
 
 

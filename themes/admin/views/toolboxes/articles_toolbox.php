@@ -17,7 +17,7 @@
 	$('newArticleToolbarButton').addEvent('click', function(e)
 	{
 		e.stop();
-		MUI.Content.update({
+        ION.contentUpdate({
 			'element': $(ION.mainpanel),
 			'loadMethod': 'xhr',
 			'url': admin_url + 'article/create',

@@ -47,8 +47,7 @@ class Extend_field extends MY_admin
 	 */
 	function index()
 	{
-		$this->output('extend_fields');
-		
+		$this->output('extend/index');
 	}
 
 
@@ -72,7 +71,7 @@ class Extend_field extends MY_admin
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
 		
-		$this->output('extend_field');
+		$this->output('extend/field');
 	}
 
 	
@@ -91,7 +90,7 @@ class Extend_field extends MY_admin
 		$this->extend_field_model->feed_template($id, $this->template);
 		$this->extend_field_model->feed_lang_template($id, $this->template);
 
-		$this->output('extend_field');
+		$this->output('extend/field');
 	}
 
 
@@ -135,7 +134,7 @@ class Extend_field extends MY_admin
 		$this->template['parents'] = $parents;
 		$this->template['extend_fields'] = $extend_fields;
 		
-    	$this->output('extend_fields_table');
+    	$this->output('extend/fields_table');
 	}
 
 	

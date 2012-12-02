@@ -1,5 +1,20 @@
 ION.append({
-	
+
+	contentUpdate:function(options)
+	{
+		var user = Ionize.User.getLoggedUser();
+
+		if (typeOf(user) != 'null')
+		{
+			options.url = admin_url + ION.cleanUrl(options.url);
+			MUI.Content.update(options);
+		}
+		else
+		{
+			ION.reload();
+		}
+	},
+
 	/** 
 	 * Updates the mainPanel toolbox
 	 *
@@ -72,60 +87,75 @@ ION.append({
 	 * Initialize the Edit mode
 	 * Hides the selectors if the cookie is set to true
 	 *
-	 * @param element
-	 * @param selectors
+	 * @param button_id       HTML DOM ID of the switcher button
+	 * @param element       'article', 'page', 'media', etc.
+	 * @param selectors     HTML Dom Elements selectors to show / hide
+	 *
 	 */
-	initEditMode: function(element, selectors)
+	initEditMode: function(button_id, element, selectors)
 	{
+		var button = $(button_id);
 		var cookieName = 'editmode-' + element;
-		var activated = Cookie.read(cookieName);
 
-		if (typeOf(activated) != 'null' && activated == 'true')
+		if (button)
 		{
-			$$(selectors).hide();
+			button.store('selectors', selectors);
+
+			button.addEvents({
+				'click' : function(e)
+				{
+					e.stop();
+					if (Cookie.read(cookieName))
+						activated = Cookie.read(cookieName);
+
+					if (activated == 'false')
+						this.fireEvent('activate');
+					else
+						this.fireEvent('deactivate');
+				},
+				'activate': function(e)
+				{
+					$$(selectors).hide();
+					$('toggleHeaderButton').fireEvent('hide');
+					$('sideColumnSwitcher').fireEvent('hide');
+					Cookie.write(cookieName, 'true');
+					ION.setButtonLabel(button, Lang.get('ionize_button_full_mode'), 'icon-edit_article');
+				},
+				'deactivate': function(e)
+				{
+					$$(selectors).show();
+					$('toggleHeaderButton').fireEvent('show');
+					Cookie.write(cookieName, 'false');
+					ION.setButtonLabel(button, Lang.get('ionize_button_edit_mode'), 'icon-edit_article');
+				}
+			});
+
+			// Init
+			var activated = Cookie.read(cookieName);
+
+			if (typeOf(activated) != 'null' && activated == 'true')
+				button.fireEvent('activate');
+			else
+				button.fireEvent('deactivate');
 		}
 	},
 
 
 	/**
-	 * Toggles the Edit mode for the given element
-	 * selectors is the class to add to each element which should be show / hidden
-	 *
-	 * @param element
-	 * @param selectors
-	 */
-	toggleEditMode: function(element, selectors)
-	{
-		var cookieName = 'editmode-' + element;
-		var activated = Cookie.read(cookieName);
-
-		if (typeOf(activated) != 'null' && activated == 'true')
-		{
-			$$(selectors).show();
-			$('toggleHeaderButton').fireEvent('show');
-			Cookie.write(cookieName, 'false');
-		}
-		else
-		{
-			$$(selectors).hide();
-			$('toggleHeaderButton').fireEvent('hide');
-			$('sideColumnSwitcher').fireEvent('hide');
-			Cookie.write(cookieName, 'true');
-		}
-	},
-
-
-	/** 
 	 * Creates Accordion
-	 * @param	string 	HTMLElement ID
-	 *	
+	 * @param togglers
+	 * @param elements
+	 * @param openAtStart
+	 * @param cookieName
+	 * @return {Fx.Accordion}
+	 *
 	 */
 	initAccordion: function(togglers, elements, openAtStart, cookieName) 
 	{
 		// Hack IE 7 : No Accordion
 		if (Browser.ie == true && Browser.version < 8)
 		{
-			return;
+			return false;
 		}
 		var cookieDays = 999;
 		var disp = (typeOf(openAtStart) != 'null') ? 0 : -1;
@@ -156,57 +186,64 @@ ION.append({
 	/**
 	 * SideColumn open / close
 	 *
+	 * @param button_id       HTML DOM ID of the switcher button
+	 *
 	 */
-	initSideColumn: function()
+	initSideColumn: function(button_id)
 	{
-		var button = $('sideColumnSwitcher');
+		var button = $(button_id);
 		var cookieName = 'sidecolumn';
 
-		if (button)
+		if (typeOf(button) != 'null')
 		{
-			button.store('column', MUI.get('splitPanel_sideColumn'));
+			var column = MUI.get('splitPanel_sideColumn');
 
-			button.addEvents({
-				'click' : function(e)
-				{
-					e.stop();
-					if (Cookie.read(cookieName))
-						opened = (Cookie.read(cookieName));
+			if (column)
+			{
+				button.store('column', column);
 
-					if (opened == 'false')
-						this.fireEvent('show');
-					else
-						this.fireEvent('hide');
-				},
-				'show': function(e)
-				{
-					ION.setButtonLabel(button, Lang.get('ionize_label_hide_options'), 'icon-options');
-					var column = this.retrieve('column');
-					if (column.isCollapsed == true)
+				button.addEvents({
+					'click' : function(e)
 					{
-						column.expand();
-						Cookie.write(cookieName, 'true');
-					}
-				},
-				'hide': function(e)
-				{
-					ION.setButtonLabel(button, Lang.get('ionize_label_show_options'), 'icon-options');
-					var column = this.retrieve('column');
-					if (column.isCollapsed == false)
+						e.stop();
+						if (Cookie.read(cookieName))
+							opened = (Cookie.read(cookieName));
+
+						if (opened == 'false')
+							this.fireEvent('show');
+						else
+							this.fireEvent('hide');
+					},
+					'show': function(e)
 					{
-						column.collapse();
-						Cookie.write(cookieName, 'false');
+						ION.setButtonLabel(button, Lang.get('ionize_label_hide_options'), 'icon-options');
+						var column = this.retrieve('column');
+						if (column.isCollapsed == true)
+						{
+							column.expand();
+							Cookie.write(cookieName, 'true');
+						}
+					},
+					'hide': function(e)
+					{
+						ION.setButtonLabel(button, Lang.get('ionize_label_show_options'), 'icon-options');
+						var column = this.retrieve('column');
+						if (column.isCollapsed == false)
+						{
+							column.collapse();
+							Cookie.write(cookieName, 'false');
+						}
 					}
-				}
-			});
+				});
 
-			// Init
-			var opened = Cookie.read(cookieName);
+				// Init
+				var opened = Cookie.read(cookieName);
 
-			if (typeOf(opened) != 'null' && opened == 'true')
-				button.fireEvent('show');
-			else
-				button.fireEvent('hide');
+				if (typeOf(opened) != 'null' && opened == 'true')
+					button.fireEvent('show');
+				else
+					button.fireEvent('hide');
+			}
 		}
 		else
 		{
@@ -1094,7 +1131,8 @@ ION.append({
 		edit.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.Content.update({
+
+			ION.contentUpdate({
 				element: $('mainPanel'),
 				title: Lang.get('ionize_title_menu'),
 				url : admin_url + 'menu'		

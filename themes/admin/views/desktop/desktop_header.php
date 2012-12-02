@@ -111,17 +111,9 @@
 		</ul>
 	</div>
 	
+	<div id="desktopNavToolbar_spinner" class="spinner"></div>
 
-	<div id="desktopNavToolbar_spinner" class="spinner"></div>		
-
-
-	<!--
-	<div class="toolbox">
-		<div id="spinnerWrapper"><div id="spinner"></div></div>		
-	</div>
-	-->
-	
-</div><!-- /desktopNavbar -->
+</div>
 
 
 </div>
@@ -137,38 +129,25 @@
 		item.addEvent('click', function(event)
 		{
 			event.preventDefault();
-			
-			MUI.Content.update({
-				url: admin_url + ION.cleanUrl(this.getProperty('href')),
-				element: 'mainPanel',
+
+			ION.contentUpdate({
+            	element : 'mainPanel',
+                url: this.getProperty('href'),
 				title: this.getProperty('title')
 			});
 		});
 	});
 
-	/*
-	$('langNavLink').addEvent('click', function(event)
-	{
-		event.preventDefault();
-
-		ION.splitPanel({
-			urlMain: admin_url + ION.cleanUrl(this.getProperty('href')),
-			urlOptions: admin_url + 'lang/get_options',
-			title: this.getProperty('title')
-		})
-	});
-	*/
-
 	$('mediamanagerlink').addEvent('click', function(event)
 	{
 		event.preventDefault();
-		
-		MUI.Content.update({
-			url: admin_url + ION.cleanUrl(this.getProperty('href')),
-			element: 'mainPanel',
-			title: this.getProperty('title'),
-			padding: {top: 0, right: 0, bottom: 0, left: 0}
-		});
+
+        ION.contentUpdate({
+            element: 'mainPanel',
+            url: this.getProperty('href'),
+            title: this.getProperty('title'),
+            padding: {top: 0, right: 0, bottom: 0, left: 0}
+        });
 	});
 
 
@@ -179,7 +158,7 @@
 		new MUI.Modal({
 			id: 'about',
 			title: 'MUI',
-			content: {url: admin_url + 'desktop/get/about'},
+			content: {url: admin_url + 'desktop/get/system/about'},
 			type: 'modal2',
 			width: 360,
 			height: 210,

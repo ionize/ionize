@@ -44,7 +44,7 @@ class Article_type extends MY_admin
 	 */
 	function index()
 	{
-		$this->output('article_types');
+		$this->output('type/article_panel');
 	}
 
 
@@ -69,39 +69,12 @@ class Article_type extends MY_admin
 		
 		$this->template['types'] = $this->article_type_model->get_list();
 
-		$this->output('article_type');
+		$this->output('type/article');
 	}
 
 
 	// ------------------------------------------------------------------------
 
-	
-	/**
-	 * Get categories Ordering list view
-	 * Parent and Parent ID are passed in order to keep this information in the view
-	 * Purpose : Parent categories selectbox refreshing after ordering
-	 *
-	 * @param	string	parent type. Can be 'article', 'page', etc.
-	 * @param	string	parent ID. 	 
-	 *
-	 * @return string	HTML categories select box
-	 *
-	function get_types($parent = FALSE, $id_parent = FALSE)
-	{
-		// Feed new type form with blank data.
-		$this->article_type_model->feed_blank_template($this->template);
-
-		// Pass the parent informations to the template
-		$this->template['parent'] = $parent;
-		$this->template['id_parent'] = $id_parent;
-	
-
-		// Types list
-		$this->template['types'] = $this->article_type_model->get_list(array('order_by'=>'ordering ASC'));
-
-		$this->output('article_types');
-	}
-	 */
 
 	function get_list()
 	{
@@ -111,7 +84,7 @@ class Article_type extends MY_admin
 		// Types list
 		$this->template['types'] = $this->article_type_model->get_list(array('order_by' => 'ordering ASC'));
 
-		$this->output('article_type_list');
+		$this->output('type/article_list');
 	}
 
 	// ------------------------------------------------------------------------	
@@ -171,7 +144,7 @@ class Article_type extends MY_admin
 		
 		$this->template['types'] = $this->article_type_model->get_list();
 
-		$this->output('article_type');
+		$this->output('type/article');
 	}
 
 	

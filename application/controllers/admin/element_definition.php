@@ -60,7 +60,7 @@ class Element_definition extends MY_Admin {
 	 */
 	function index()
 	{
-		$this->output('element_definitions');
+		$this->output('element/definition/index');
 	}
 	
 
@@ -82,7 +82,7 @@ class Element_definition extends MY_Admin {
 		
 		$this->template = array_merge($data, $lang_data);
 		
-		$html = $this->load->view('element_definition', $this->template, TRUE);
+		$html = $this->load->view('element/definition', $this->template, TRUE);
 
 		$this->callback = array
 		(
@@ -141,7 +141,7 @@ class Element_definition extends MY_Admin {
 
 		$this->template['elements'] = $elements;
 		
-		$this->output('element_definition_list');
+		$this->output('element/definition/list');
 	}
 	
 
@@ -440,7 +440,7 @@ class Element_definition extends MY_Admin {
 		$data['parent'] = $this->input->post('parent');
 		$data['id_parent'] = $this->input->post('id_parent');
 		
-		$element_list = $this->load->view('element_list', $data, TRUE);
+		$element_list = $this->load->view('element/list', $data, TRUE);
 		
 		echo($element_list);
 		die();
@@ -486,7 +486,7 @@ class Element_definition extends MY_Admin {
 		$this->template['parent'] = $this->input->post('parent');
 		$this->template['id_parent'] = $this->input->post('id_parent');
 		
-		$this->output('element_detail');
+		$this->output('element/detail');
 	}
 }
 

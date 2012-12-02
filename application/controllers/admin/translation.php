@@ -122,7 +122,7 @@ class Translation extends MY_admin
 		$this->template['module_translation_files'] = $module_translation_files;
 
 		
-		$this->output('translation');
+		$this->output('lang/translation');
 	}
 
 

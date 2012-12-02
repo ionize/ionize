@@ -541,7 +541,7 @@ ION.TreeXhr = new Class({
 		a.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.Content.update({
+			ION.contentUpdate({
 				'element': p,
 				'url': admin_url + 'article/create/' + id,
 				'title': Lang.get('ionize_title_create_article')
@@ -553,7 +553,7 @@ ION.TreeXhr = new Class({
 		a.addEvent('click', function(e)
 		{
 			e.stop();
-			MUI.Content.update({
+			ION.contentUpdate({
 				'element': p,
 				'url': admin_url + 'page/create/' + a.getProperty('data-menu') + '/' + a.getProperty('data-page'),
 				'title': Lang.get('ionize_title_create_page')

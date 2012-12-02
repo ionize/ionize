@@ -1,7 +1,7 @@
 
 <?php foreach($elements as $element) :?>
 
-<?php $this->load->view('element_definition', $element) ?>
+<?php $this->load->view('element/definition', $element) ?>
 
 <?php endforeach ;?>
 

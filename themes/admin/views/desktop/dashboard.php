@@ -296,7 +296,7 @@
 	 * Init the panel toolbox is mandatory !!! 
 	 *
 	 */
-	ION.initToolbox('dashboard_toolbox');
+	ION.initToolbox('empty_toolbox');
 
 
 	/**
@@ -337,7 +337,7 @@
 		
 		item.addEvent('click', function(e){
 			e.stop();
-			MUI.Content.update({
+            ION.contentUpdate({
 				'element': $('mainPanel'),
 				'loadMethod': 'xhr',
 				'url': admin_url + 'page/edit/'+id,'title': Lang.get('ionize_title_edit_page') + ' : ' + title});
@@ -348,7 +348,7 @@
 	// Main Icons actions
 	$('iconAddPage').addEvent('click', function(e){
 		e.stop();
-		MUI.Content.update({
+        ION.contentUpdate({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_title_new_page'),
 			url : admin_url + 'page/create/0'
@@ -357,7 +357,7 @@
 	
 	$('iconArticles').addEvent('click', function(e){
 		e.stop();
-		MUI.Content.update({
+        ION.contentUpdate({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_title_articles'),
 			url : admin_url + 'article/list_articles'		
@@ -366,7 +366,7 @@
 	
 	$('iconMediaManager').addEvent('click', function(e){
 		e.stop();
-		MUI.Content.update({
+        ION.contentUpdate({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_menu_media_manager'),
 			url : admin_url + 'media/get_media_manager',
@@ -376,7 +376,7 @@
 
 	$('iconTranslation').addEvent('click', function(e){
 		e.stop();
-		MUI.Content.update({
+        ION.contentUpdate({
 			element: $('mainPanel'),
 			title: Lang.get('ionize_title_translation'),
 			url : admin_url + 'translation/'
@@ -397,7 +397,7 @@
 		var title = a.getProperty('title');
 		
 		item.addEvent('click', function(e){
-			MUI.Content.update({
+            ION.contentUpdate({
 				element: $('mainPanel'),
 				title: title,
 				url : admin_url + ION.cleanUrl(href)

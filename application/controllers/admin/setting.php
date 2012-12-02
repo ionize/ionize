@@ -56,7 +56,7 @@ class Setting extends MY_admin
 	{
 		$this->_get_settings();
 		
-		$this->output('setting');
+		$this->output('setting/index');
 	}
 
 
@@ -69,7 +69,7 @@ class Setting extends MY_admin
 
 		$this->_get_settings();
 	
-		$this->output('setting_ionize');
+		$this->output('setting/ionize');
 	}
 	
 	
@@ -158,7 +158,7 @@ class Setting extends MY_admin
 		$this->template['maintenance_ips'] = implode("\n", config_item('maintenance_ips'));
 
 
-		$this->output('setting_technical');
+		$this->output('setting/technical');
 	}
 
 
@@ -229,7 +229,7 @@ class Setting extends MY_admin
 		$this->template['files'] = $files;
 
 		
-		$this->output('setting_theme');
+		$this->output('setting/theme');
 	}
 
 
@@ -248,7 +248,7 @@ class Setting extends MY_admin
 			$this->template['page'] = $this->page_model->get_by_id(Settings::get('maintenance_page'), Settings::get_lang('default'));
 		}
 
-		$this->output('setting_maintenance_page');
+		$this->output('setting/maintenance_page');
 	}
 	
 	
@@ -361,7 +361,7 @@ class Setting extends MY_admin
 
 		$this->template['content'] = $content;
 
-		$this->output('setting_edit_view');
+		$this->output('setting/edit_view');
 	}
 
 	// ------------------------------------------------------------------------

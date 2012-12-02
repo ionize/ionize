@@ -31,7 +31,7 @@ Ionize.Tracker.append(
 
 	startTracking: function()
 	{
-		this.user = Ionize.User.getCurrentUser();
+		this.user = Ionize.User.getUser();
 		clearInterval(this.updateInt);
 		this.updateInt = this.updateTrackingData.periodical(this.updateDelay, this);
 	},
@@ -41,7 +41,7 @@ Ionize.Tracker.append(
 		var self = this;
 
 		var data = {
-			'user':Ionize.User.getCurrentUser(),
+			'user':Ionize.User.getUser(),
 			'elements':this.getDomEditedElements()
 		};
 
@@ -128,7 +128,7 @@ Ionize.Tracker.append(
 
 	updateElementTrackers:function(users)
 	{
-		var cUser = Ionize.User.getCurrentUser();
+		var cUser = Ionize.User.getUser();
 		$$('.tracker-flag').removeClass('tracker-flag');
 		users.each(function(user)
 		{

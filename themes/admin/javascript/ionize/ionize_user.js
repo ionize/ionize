@@ -18,36 +18,40 @@ Ionize.User.append(
 
 	initialize: function(options)
 	{
-		this.getCurrentUser();
+		this.getUser();
 		return this;
 	},
 
-	getCurrentUser: function()
+	getLoggedUser: function()
+	{
+		var user = null;
+
+		new Request.JSON(
+		{
+			url: admin_url + 'user/get_current_user',
+			method: 'post',
+			loadMethod: 'xhr',
+			async: false,
+			onFailure: function(xhr)
+			{
+				return null;
+			},
+			onSuccess: function(responseJSON)
+			{
+				user = responseJSON;
+			}
+		}).send();
+
+		return user;
+	},
+
+	getUser: function()
 	{
 		if (typeOf(this.user) == 'null')
 		{
-			var self = this;
-			new Request.JSON(
-			{
-				url: admin_url + 'user/get_current_user',
-				method: 'post',
-				loadMethod: 'xhr',
-				async: false,
-				onFailure: function(xhr)
-				{
-					console.log('Ionize.User->getCurrentUser() : User not found OR not connected');
-				},
-				onSuccess: function(responseJSON)
-				{
-					self.user = responseJSON;
-					return self.user;
-				}
-			}).send();
+			this.user = this.getLoggedUser();
 		}
-		else
-		{
-			return this.user;
-		}
+		return this.user;
 	},
 
 	getAuthorizations: function()
@@ -154,19 +158,3 @@ Ionize.User.append(
 	}
 });
 
-/*
-ION.User = (ION.User || new NamedClass('ION.User', {}));
-ION.User.implement({
-
-	Implements: [Events, Options],
-
-	initialize: function(options){
-		this.name = options.name;
-	},
-
-	getName: function()
-	{
-		return this.name;
-	}
-});
-*/

@@ -624,7 +624,7 @@ if ($tracker_title == '')
     /**
      * Init the Edit Mode
 	 */
-	ION.initEditMode('article', '.article-header');
+    ION.initEditMode('editionModeSwitcher', 'article', '.article-header');
 
 	/**
 	 * Article element in each of its parent context

@@ -79,7 +79,7 @@ class System_check extends MY_admin
 
 		$this->template['folders'] = $folders;
 
-		$this->output('system_check');
+		$this->output('system/check');
 	}
 	
 	
@@ -312,7 +312,7 @@ class System_check extends MY_admin
 			$result['message'] = lang('ionize_message_check_ok');
 		
 		// Result view
-		$view = $this->load->view('system_check_result', $result, TRUE);
+		$view = $this->load->view('system/check_result', $result, TRUE);
 
 
 		$this->callback = array(

@@ -27,13 +27,18 @@ ION.append({
 	 */
 	reload: function(args)
 	{
-		window.top.location = this.baseUrl + args.url;
+		var url = this.adminUrl;
+		if (typeOf(args) != 'null')
+			url = this.baseUrl + args.url;
+
+		window.top.location = url;
 	},
-	
+
+
 	/**
 	 * Generates a random key
-	 * @param	int		Size of the returned key
-	 * @return	String	A random key
+	 *
+	 * @param	size		Size of the returned key
 	 */
 	generateKey: function(size)
 	{
@@ -76,11 +81,8 @@ ION.append({
 	},
 
 
-// HERE 
-// HERE
-	
 	/**
-	 * Add tree element to cookie
+	 * Add one list of values to cookie
 	 *
 	 */
 	listAddToCookie: function(name, value)
@@ -97,7 +99,7 @@ ION.append({
 
 	
 	/**
-	 * Remove tree elements from cookie
+	 * Remove one list of values from cookie
 	 *
 	 */
 	listDelFromCookie: function(name, value)

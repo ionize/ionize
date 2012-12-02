@@ -465,15 +465,6 @@ var IonizeMediaManager = new Class(
 					mcImageManager.open('fileManagerForm','hiddenFile', false, this.addMedia.bind(this));
 					break;
 				
-				case 'ezfilemanager':
-					
-					var url = this.themeUrl + 'javascript/tinymce/jscripts/tiny_mce/plugins/ezfilemanager/ezfilemanager.php?type=file&sa=1';
-					var xPos = (window.screen.availWidth/2) - (w/2);
-					var yPos = 60;
-					var config = 'width=750, height=450, left='+xPos+', top='+yPos+', toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no';
-					var w = window.open(url, 'filemanager', config);
-					w.focus();
-					break;
 
                 case 'kcfinder':
 

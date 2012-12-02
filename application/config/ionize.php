@@ -36,9 +36,6 @@ $config['url_mode'] = 'full';
 | - filemanager :		Moxiecode MceFilemanager / ImageManager (licensed module, not provided with ionize)
 | - tinyBrowser :		http://www.lunarvis.com/
 |
-| A third filemanager implementation is in study : 
-| - ezFilemanager :		http://www.webnaz.net/ezfilemanager/
-|
 | All the filemanagers must be put in the directory :
 | /javascript/tinymce/jscripts/tiny_mce/plugins
 |

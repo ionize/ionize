@@ -57,7 +57,7 @@ class Element_field extends MY_Admin
 		$this->template['element'] = $element;
 		$this->template['id_element_definition'] = $id_element_definition;
 		
-		$this->output('element_field');
+		$this->output('element/field');
 	}
 	
 	
@@ -81,7 +81,7 @@ class Element_field extends MY_Admin
 		// Pass the parent informations to the template
 		$this->template['element'] = $element;
 
-		$this->output('element_field');
+		$this->output('element/field');
 	}
 
 
@@ -241,7 +241,6 @@ class Element_field extends MY_Admin
 				}
 			}
 		}
-
 	}
 
 }

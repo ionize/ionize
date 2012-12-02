@@ -39,7 +39,7 @@
 		else
 		{
 			$('link_title').addEvent('click', function(e){
-				MUI.Content.update({
+                ION.contentUpdate({
 					'element': $(ION.mainpanel),
 					'url': '<?php echo $link_type; ?>/edit/<?php echo $link_id; ?>'
 				});

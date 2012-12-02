@@ -51,7 +51,6 @@
 		{
             function fixchromeyellow()
             {
-				console.log(navigator.userAgent.toLowerCase().indexOf("safari"));
                 if (
 					navigator.userAgent.toLowerCase().indexOf("chrome") >= 0
                     ||(navigator.userAgent.toLowerCase().indexOf("safari") >= 0)
@@ -59,7 +58,6 @@
                 {
                     $$('input["input:-webkit-autofill"]').each(function(el)
                     {
-						console.log('coucou');
                         el.clone(true,true).inject(el,"after");
                         el.dispose();
                     });

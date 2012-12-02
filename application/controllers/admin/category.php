@@ -44,7 +44,7 @@ class Category extends MY_admin
 	 */
 	function index()
 	{
-		$this->output('categories');
+		$this->output('category/index');
 	}
 
 
@@ -69,7 +69,7 @@ class Category extends MY_admin
 		
 		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
-		$this->output('category');
+		$this->output('category/category');
 	}
 
 
@@ -118,7 +118,7 @@ class Category extends MY_admin
 		// Categories list
 		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
-		$this->output('category_list');
+		$this->output('category/list');
 	}
 
 
@@ -174,7 +174,7 @@ class Category extends MY_admin
 		
 		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
-		$this->output('category');
+		$this->output('category/category');
 	}
 
 	

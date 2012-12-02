@@ -72,29 +72,29 @@ class Media extends MY_admin
 		{
 			// TinyMCE FileManager
 			case 'filemanager' :
-				
+
 				// Filemanager view
 				$this->output('filemanager/filemanager');
 				break;
-				
+
 			case 'tinybrowser' :
-				
+
 				$this->template['mode'] = (is_null($mode)) ? 'file' : 'image';
-				
+
 				$this->output('filemanager/tinybrowser');
 				break;
-				
+
 			case 'kcfinder' :
-				
+
 				$this->output('filemanager/kcfinder');
 				break;
-			
+
 			case 'mootools-filemanager' :
 
 				$this->output('filemanager/mootools_filemanager');
 				break;
-			
-				
+
+
 		}
 	}
 
@@ -265,9 +265,9 @@ class Media extends MY_admin
 		{
 			// Media List view
 			if ($type == 'picture')
-				$view = $this->load->view('media_picture_list', $data, TRUE);
+				$view = $this->load->view('media/picture/list', $data, TRUE);
 			else
-				$view = $this->load->view('media_list', $data, TRUE);
+				$view = $this->load->view('media/list', $data, TRUE);
 			
 			// Addon data to the answer			
 			$output_data = array('type' => $type, 'content' => $view);
@@ -295,7 +295,7 @@ class Media extends MY_admin
 		$this->template['path'] = $path;
 		$this->template['size'] = $size;
 		
-		$this->output('media_picture_crop');	
+		$this->output('media/picture/crop');
 	}
 
 	
@@ -740,7 +740,7 @@ class Media extends MY_admin
 		// Modules addons
 		$this->load_modules_addons($this->template);
 
-		$this->output('media_edit');	
+		$this->output('media/edit');
 	}
 	
 
@@ -784,7 +784,7 @@ class Media extends MY_admin
 			foreach ($fields as $field)
 			{
 				if ( $this->input->post($field.'_'.$language['lang']) !== FALSE)
-					$lang_data[$language['lang']][$field] = htmlentities($this->input->post($field.'_'.$language['lang']), ENT_QUOTES, 'utf-8');
+					$lang_data[$language['lang']][$field] = htmlentities($this->input->post($field.'_'.$language['lang']));
 			}
 		}
 

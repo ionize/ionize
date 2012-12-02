@@ -451,6 +451,9 @@ li.sortme .icon {
 }
 
 /* Parent list */
+ul.parent_list {
+	list-style: none;
+}
 ul.parent_list li{
 	height:18px;
 	overflow: hidden;

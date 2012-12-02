@@ -88,7 +88,7 @@
 	 * Gets all the Ionize lang items and put them into a Lang hash object
 	 * To get an item : Lang.get('php_lang_item_key');
 	 */
-	<?php $this->load->view('javascript_lang');	?>
+	<?php $this->load->view('desktop/javascript_lang');	?>
 
 </script>
 

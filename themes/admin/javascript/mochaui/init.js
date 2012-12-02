@@ -69,7 +69,7 @@ window.addEvent('load', function()
 
 	Ionize.User.initialize();
 
-//	console.log(Ionize.User.getCurrentUser());
+//	console.log(Ionize.User.getUser());
 //	console.log(Ionize.User.getGroupLevel());
 
 });

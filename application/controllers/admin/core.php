@@ -86,7 +86,7 @@ class Core extends MY_Admin {
 	 */
 	function get_info()
 	{
-		$this->output('info');
+		// $this->output('info');
 	}
 
 

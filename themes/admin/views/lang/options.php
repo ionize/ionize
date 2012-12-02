@@ -109,12 +109,6 @@
 
 <script type="text/javascript">
 
-	/**
-	 * Options show / hide button
-	 *
-	 */
-	ION.initSideColumn();
-
 
 	/**
 	 * New lang form action

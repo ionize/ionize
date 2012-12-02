@@ -99,7 +99,7 @@ class MY_Controller extends CI_Controller
 			Theme::set_theme('admin');
 
 			// Set the view to output
-			$this->output('delete_installer');
+			$this->output('system/delete_installer');
 
 			// Display the view directly
 			$this->output->_display();

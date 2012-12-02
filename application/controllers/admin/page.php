@@ -675,33 +675,41 @@ class Page extends MY_admin
 		
 		$page = $this->page_model->get_by_id($id_page);
 		$link_type = $page['link_type'];
+		$title = NULL;
+
+		if (in_array($link_type, array('page', 'article')))
+		{
+			if ($link_type == 'article')
+			{
+				$link_rel = explode('.', $page['link_id']);
+				$link_id = isset($link_rel[1]) ? $link_rel[1] : NULL;
+			}
+			else
+			{
+				$link_id = $page['link_id'];
+			}
+			$link = $this->{$link_type.'_model'}->get_by_id($link_id, Settings::get_lang('default'));
+
+			if ( ! empty($link))
+			{
+				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+			}
+			// The destination doesn't exists anymore : remove the link
+			else
+			{
+				$this->_remove_link($id_page);
+			}
+		}
+		// External link
+		else
+		{
+			$title = $page['link'];
+		}
 
 		$this->template = array('parent' => 'page');
 
-		if ( ! empty($page['link']) )		
+		if ( ! is_null($title))
 		{
-			$title = NULL;
-			
-			// Prep the Link
-			switch($page['link_type'])
-			{
-				case 'page' :
-					$link = $this->page_model->get_by_id($page['link_id'], Settings::get_lang('default'));
-					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
-					break;
-					
-				case 'article' :
-					$link_rel = explode('.', $page['link_id']);
-					$link = $this->article_model->get_by_id($link_rel[1], Settings::get_lang('default'));
-					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
-					break;
-				
-				case 'external' :
-					$link_rel = '';
-					$title = $page['link'];
-					break;
-			}
-
 			$this->template = array(
 				'parent' => 'page',
 				'rel' => $id_page,
@@ -711,7 +719,7 @@ class Page extends MY_admin
 			);
 		}
 
-		$this->output('link');
+		$this->output('shared/link');
 	}
 	
 
@@ -841,14 +849,7 @@ class Page extends MY_admin
 			// Clear the cache
 			Cache()->clear_cache();
 
-			$context = array(
-				'link_type' => '',
-				'link_id' => '',
-				'link' => ''
-			);
-
-			// Save the context		
-			$this->page_model->update(array('id_page' => $id_page), $context);
+			$this->_remove_link($id_page);
 
 			$this->callback = array(
 				array(
@@ -909,6 +910,22 @@ class Page extends MY_admin
 		{
 			$this->error(lang('ionize_message_operation_nok'));
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected function _remove_link($id_page)
+	{
+		$context = array(
+			'link_type' => '',
+			'link_id' => '',
+			'link' => ''
+		);
+
+		// Save the context
+		$this->page_model->update(array('id_page' => $id_page), $context);
 	}
 
 

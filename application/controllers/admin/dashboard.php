@@ -181,7 +181,7 @@ class Dashboard extends MY_Admin {
 		$this->template['last_registered_users'] = $last_registered_users;	
 
 
-		$this->output('dashboard');		
+		$this->output('desktop/dashboard');
 	}
 
 }

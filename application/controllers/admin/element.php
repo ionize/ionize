@@ -79,7 +79,7 @@ class Element extends MY_Admin {
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
 		
-		$this->output('element_content_list');
+		$this->output('element/content_list');
 	}
 	
 
@@ -269,7 +269,7 @@ class Element extends MY_Admin {
 		$this->template['ordering'] = $element['ordering'];
 		$this->template['id_element'] = $id_element;
 		
-		$this->output('element_detail');
+		$this->output('element/detail');
 
 	}
 	
@@ -287,7 +287,7 @@ class Element extends MY_Admin {
 		$this->template['parent'] = $this->input->post('parent');
 		$this->template['id_parent'] = $this->input->post('id_parent');
 
-		$this->output('element_add');
+		$this->output('element/add');
 	}
 	
 

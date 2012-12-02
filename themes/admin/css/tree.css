@@ -14,12 +14,17 @@ License:
 .treetitle {
 	margin-right:15px;
 	position: relative;
+	border-radius: 10px;
+	padding-left:5px;
+	margin-left:-4px;
+	margin-bottom: 5px;
 }
 .treetitle .action {
 	display:none;
 	position: absolute;
-	right:0;
-	top:0;
+	padding-top:1px;
+	right:5px;
+	top:2px;
 }
 .treetitle:hover .action {
 	display:block;
@@ -31,8 +36,8 @@ License:
 .tree {
 	font-size: 11px;
 	line-height: 16px;
-	margin: 10px 12px 10px 0px;
-	overflow: hidden;
+	margin: 6px 12px 10px 0;
+
 }
 .tree ul {
 	margin: 0;
@@ -46,6 +51,8 @@ License:
 	list-style-type: none;
 	white-space: nowrap;
 	position: relative;
+	padding:1px 0px;
+	margin:-1px 0;
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }
 .tree li.highlight {
@@ -69,7 +76,7 @@ License:
 .tree li .action{
 	position: absolute;
 	right: 0;
-	top:0;
+	top:2px;
 	height:18px;
 	background: url(../images/bg-gray-medium.png);
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
@@ -92,6 +99,7 @@ License:
 	float:left;
 	height:16px;
 	width:16px;
+	margin-top:1px;
     background:transparent url(../images/icons_16.png) repeat scroll;
 }
 .tree-img.line { background-position: 0 0; } 				/* Standard tree line */

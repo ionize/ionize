@@ -484,7 +484,7 @@
 				</dl>
 				<dl class="small compact">
 					<dt>&nbsp;</dt>
-					<dd><a href="<?php echo base_url() . config_item('admin_url'); ?>/desktop/get/phpinfo" target="_blank">Complete PHP Info</a></dd>
+					<dd><a href="<?php echo base_url() . config_item('admin_url'); ?>/desktop/get/system/phpinfo" target="_blank">Complete PHP Info</a></dd>
 				</dl>
 			</div>
 			

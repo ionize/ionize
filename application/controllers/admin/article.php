@@ -1116,7 +1116,7 @@ class Article extends MY_admin
 			}
 		}
 
-		$this->output('link');
+		$this->output('shared/link');
 	}
 
 
@@ -1525,7 +1525,7 @@ class Article extends MY_admin
 		// Articles array
 		$this->template['articles'] = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
 		
-		$this->output('article_ordering_select');
+		$this->output('article/ordering_select');
 	}
 
 

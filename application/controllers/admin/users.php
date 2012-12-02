@@ -65,7 +65,7 @@ class Users extends MY_admin
 		// Send the current user's level to the view
 		$this->template['current_user_level'] = $this->current_user_level;
 
-		$this->output('users');
+		$this->output('user/index');
 	}
 
 
@@ -125,7 +125,7 @@ class Users extends MY_admin
 		$this->template['users_pages'] = ceil($this->template['users_count'] / $nb);
 		
 		// XHR answer
-    	$this->output('users_list');
+    	$this->output('user/list');
 	}
 	
 	
@@ -143,7 +143,7 @@ class Users extends MY_admin
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = array_filter($this->connect->model->get_groups(array('order_by'=>'level')), array($this, '_filter_groups'));
 		
-		$this->output('user');
+		$this->output('user/user');
 	}
 
 
@@ -157,7 +157,7 @@ class Users extends MY_admin
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = array_filter($this->connect->model->get_groups(array('order_by'=>'level')), array($this, '_filter_groups'));
 
-		$this->output('user');
+		$this->output('user/user');
 	}
 
 
