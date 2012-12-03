@@ -828,22 +828,28 @@ class Media extends MY_admin
 		
 		if ( $this->id !== FALSE )
 		{
-			// Error Message
+			// Success Message
 			$this->callback = array(
 				array(
 					'fn' => 'mediaManager.loadMediaList',
 					'args' => $media['type']
+				),
+				array(
+					'fn' => 'ION.notification',
+					'args' => array('success', lang('ionize_message_media_data_saved'))
 				)
 			);
-
-			$this->response();
-
-//			$this->success(lang('ionize_message_media_data_saved'));
 		}
 		else
 		{
-			$this->success(lang('ionize_message_media_data_not_saved'));
+			// Error Message
+			$this->callback[] = array
+			(
+				'fn' => 'ION.notification',
+				'args' => array('error', lang('ionize_message_media_data_not_saved'))
+			);
 		}
+		$this->response();
 	}
 
 
