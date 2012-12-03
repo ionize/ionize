@@ -784,7 +784,7 @@ class Media extends MY_admin
 			foreach ($fields as $field)
 			{
 				if ( $this->input->post($field.'_'.$language['lang']) !== FALSE)
-					$lang_data[$language['lang']][$field] = htmlentities($this->input->post($field.'_'.$language['lang']));
+					$lang_data[$language['lang']][$field] = htmlentities($this->input->post($field.'_'.$language['lang']), ENT_QUOTES, 'utf-8');
 			}
 		}
 
