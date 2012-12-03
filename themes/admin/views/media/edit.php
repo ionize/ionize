@@ -307,6 +307,7 @@ if($type == 'picture')
 					</dd>
 				</dl>
 
+
 				<!-- Copyright -->
 				<dl class="small">
 					<dt><label for="copyright"><?php echo lang('ionize_label_copyright'); ?></label></dt>
@@ -324,7 +325,7 @@ if($type == 'picture')
 						<a class="icon clearfield" data-id="link_<?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
-			
+
 				<!-- Date -->
 				<dl class="small">
 					<dt><label for="date_<?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_date'); ?></label></dt>
