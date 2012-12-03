@@ -334,6 +334,7 @@ if($type == 'picture')
 						<a class="icon clearfield date" data-id="date_<?php echo $type.$id_media; ?>"></a>
 					</dd>
 				</dl>
+				
 
 				<!-- Extend Fields (Main) -->
 				<?php foreach($extend_fields as $extend_field) :?>
