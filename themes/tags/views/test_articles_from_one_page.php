@@ -22,6 +22,7 @@
 <ion:page id="4">
 	<ion:articles>
 		<h3>Article ID : <ion:article:id/></h3>
-		<p>Article title : <ion:article:title/></p>
+		<p>Article title : <strong><ion:article:title /></strong></p>
+		<p>Article index : <strong><ion:article:index /></strong></p>
 	</ion:articles>
 </ion:page>

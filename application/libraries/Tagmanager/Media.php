@@ -37,10 +37,10 @@ class TagManager_Media extends TagManager
 		'medias' => 			'tag_medias',
 
 		'media' =>				'tag_expand',
-		'media:src' => 			'tag_media_src',
+//		'media:src' => 			'tag_media_src',
+		'media:src' => 			'tag_simple_value',
 		'media:thumb_folder' => 'tag_media_thumb_folder',
 		'media:size' => 		'tag_media_size',
-		'medias:extension' =>	'tag_media_extension',
 
 		'media:alt' => 			'tag_simple_value',
 		'media:base_path' => 	'tag_simple_value',
@@ -49,6 +49,8 @@ class TagManager_Media extends TagManager
 		'media:file_name' => 	'tag_simple_value',
 		'medias:description' => 'tag_simple_value',
 		'medias:copyright' => 	'tag_simple_value',
+		'medias:extension' => 	'tag_simple_value',
+		'medias:mime' => 		'tag_simple_value',
 	);
 
 
@@ -209,6 +211,9 @@ class TagManager_Media extends TagManager
 			// Extend Fields tags
 			self::create_extend_tags($tag, 'media');
 
+			// Medias lib, to process the "src" value
+			self::$ci->load->library('medias');
+
 			// Filter the parent's medias
 			$medias = self::filter_medias($tag, $medias);
 
@@ -218,6 +223,22 @@ class TagManager_Media extends TagManager
 			// Make medias in random order
 			if ( $tag->getAttribute('random') == TRUE)
 				shuffle ($medias);
+
+			// Process additional data : src, extension
+			foreach($medias as $key => $media)
+			{
+				$src = base_url() . $media['path'];
+
+				if ($media['type'] == 'picture')
+				{
+					$settings = self::_get_src_settings($tag);
+
+					if ( ! empty($settings['size']))
+						$src = self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
+				}
+
+				$medias[$key]['src'] = $src;
+			}
 
 			$tag->set('medias', $medias);
 
@@ -321,23 +342,6 @@ class TagManager_Media extends TagManager
 	}
 	
 	
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Returns the media extension
-	 *
-	 * @usage : <ion:extension />
-	 *
-	 */
-	public static function tag_media_extension(FTL_Binding $tag)
-	{
-		$file_name = $tag->getValue('file_name');
-		$extension = substr(strrchr($file_name, '.'), 1);
-		return self::wrap($tag, $extension);
-	}
-
-
 	// ------------------------------------------------------------------------
 
 

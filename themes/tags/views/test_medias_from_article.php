@@ -23,12 +23,13 @@
     &lt;/ion:articles>
 &lt;/ion:page>
 </pre>
-	
+
+
 <ion:page>
     <ion:articles>
         <ion:article:title tag="h3"/>
         <ul class="boxes">
-            <ion:article:medias size="200" method="square" unsharp="true">
+            <ion:article:medias type="picture" size="100" method="square" unsharp="true">
                 <ion:media>
                     <li>
                         <img src="<ion:src />" />
@@ -42,3 +43,26 @@
         </ul>
     </ion:articles>
 </ion:page>
+
+<ion:page>
+    <ion:articles>
+        <ion:article:title tag="h3"/>
+        <ul class="boxes">
+            <ion:article:medias type="picture" size="100" method="square" unsharp="true" range="3,5">
+                <ion:media>
+                    <li>
+                        <img src="<ion:src />" />
+                        <p>
+                            Media ID <b><ion:id /></b><br/>
+                            Title : <b><ion:title /></b><br/>
+							Path : <b><ion:path /></b>
+							Base : <b><ion:base_path /></b>
+                        </p>
+                    </li>
+                </ion:media>
+            </ion:article:medias>
+        </ul>
+    </ion:articles>
+</ion:page>
+
+

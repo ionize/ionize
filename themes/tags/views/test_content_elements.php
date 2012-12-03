@@ -37,10 +37,10 @@ To use this view, you need one Content Element, with 2 fields :
 
 						<h4><ion:item:index /></h4>
 
-						Field : <b><ion:url:label /></b><br/>
-						Type : <b><ion:url:type /></b><br/>
-						Value : <b><ion:url:value /></b><br/>
-						Default value : <b><ion:url:default_value /></b>
+						Field : <b><ion:name-surname:label /></b><br/>
+						Type : <b><ion:name-surname:type /></b><br/>
+						Value : <b><ion:name-surname:value helper="url:auto_link" /></b><br/>
+						Default value : <b><ion:name-surname:default_value /></b>
 						<hr/>
 
 						Field : <b><ion:style:label /></b><br/>

@@ -67,7 +67,7 @@ class Article_model extends Base_model
 	 *
 	 * @param	string		where array
 	 * @param	string		Optional. Lang code
-	 * @return	array		array of media
+	 * @return	array		array
 	 *
 	 */
 	public function get($where, $lang = NULL)

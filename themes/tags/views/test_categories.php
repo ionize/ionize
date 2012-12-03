@@ -76,7 +76,6 @@
 	<ion:article:title tag="h3" />
 	Categories of this article, displayed in list :
 	<ion:article:categories:list link="true" separator=" &bull; "/><br/>
-	<ion:article:categories link="true" separator=" &bull; "/><br/>
     Count : <ion:article:categories:count /><br/>
 </ion:page:articles>
 
