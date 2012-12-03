@@ -37,7 +37,7 @@ License:
 	font-size: 11px;
 	line-height: 16px;
 	margin: 6px 12px 10px 0;
-
+	overflow: hidden;
 }
 .tree ul {
 	margin: 0;

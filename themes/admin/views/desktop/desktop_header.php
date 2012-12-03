@@ -14,12 +14,11 @@
 	</script>
 <?php endif; ?>
 
-
+<a id="logoAnchor" class="navlink" href="dashboard"></a>
 <div class="desktopTitlebarWrapper">
+
 	<div class="desktopTitlebar">
 		<h1 class="applicationTitle">ionize <?php echo($this->config->item('version')) ;?></h1>
-		<a id="logoAnchor"></a>
-		
 		<div class="topNav">
 			<ul class="menu-right">
 				<li><?php echo lang('ionize_logged_as'); ?> : <?php echo $current_user['screen_name']; ?></li>

@@ -306,16 +306,7 @@ if($type == 'picture')
 						<?php endforeach; ?>
 					</dd>
 				</dl>
-			
-				<!-- Container -->
-				<dl class="small">
-					<dt><label for="container_<?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_media_container'); ?></label></dt>
-					<dd>
-						<input id="container_<?php echo $type.$id_media; ?>" name="container" class="inputtext" type="text" value="<?php echo $container; ?>" />
-						<a class="icon clearfield" data-id="container_<?php echo $type.$id_media; ?>"></a>
-					</dd>
-				</dl>
-			
+
 				<!-- Copyright -->
 				<dl class="small">
 					<dt><label for="copyright"><?php echo lang('ionize_label_copyright'); ?></label></dt>
