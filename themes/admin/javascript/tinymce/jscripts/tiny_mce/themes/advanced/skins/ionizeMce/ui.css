@@ -12,16 +12,13 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 }
 #mce_fullscreen_parent {
 	width:auto;
-	margin: 20px;
-	height:92% !important;
-	-webkit-border-radius: 10px !important; -moz-border-radius: 10px !important; border-radius: 10px !important;
+	margin: 0px;
+	height:100% !important;
 	background-color: #fff;
-	box-shadow: rgba(0, 0, 0, 0.4) 0 0 20px;
-	-moz-box-shadow: rgba(0, 0, 0, 0.4) 0 0 20px;
-	-webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 0 20px;
 }
 #mce_fullscreen_tbl {
-	margin: 10px;
+	margin: 0 10px;
+	padding-top:5px;
 }
 
 /* Reset */
