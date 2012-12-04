@@ -322,11 +322,10 @@ class Page extends MY_admin
 			// Save Page
 			$saved_id = $this->page_model->save($this->data, $this->lang_data);
 
-			// Correct DB integrity : links URL and names, children pages menus
+			// Correct Pages levels
+			// TODO : Move this into the model.
 			if ( ! empty($id) )
 			{
-				$this->page_model->correct_integrity($this->data, $this->lang_data);
-				
 				// Correct pages levels regarding parents.
 				$this->system_check_model->check_page_level(TRUE);
 			}

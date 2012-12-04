@@ -27,7 +27,8 @@ ION.TreeXhr = new Class({
 
 		// Ionize structure trees container
 		this.ionizeTrees = $('structurePanel');
-		
+		this.scrollerElement = $('structurePanel_pad');
+
 		this.id_menu = id_menu;
 		
 		this.mainpanel = ION.mainpanel;
@@ -44,8 +45,18 @@ ION.TreeXhr = new Class({
 		this.title_Model = new Element('a', {'class': 'title'});
 		
 		this.opened = new Array();
-		if (Cookie.read(this.id_container)) this.opened = (Cookie.read(this.id_container)).split(',');
-		
+		this.getOpenedFromCookie();
+
+		this.scroller = new Scroller(this.ionizeTrees, {
+			onChange: function(x, y)
+			{
+				var scroll = this.element.getScroll();
+				console.log('scroller.onChange: ', x, y, scroll);
+				this.element.scrollTo(scroll.x, y);
+			}
+		});
+
+
 		this.get(0);
 	},
 
@@ -90,8 +101,8 @@ ION.TreeXhr = new Class({
 				var pid = pageContainer.retrieve('id');
 				var aid = articleContainer.retrieve('id');
 
-				self.itemManagers['page'][pid] = new ION.ItemManager({'container': pageContainer, 'element':'page', 'sortable':true });
-				self.itemManagers['article'][aid] = new ION.ArticleManager({ 'container': articleContainer, 'id_parent': id_parent});
+				self.itemManagers['page'][pid] = new ION.ItemManager({'container': pageContainer, 'element':'page', 'sortable':true, 'scrollerElement':self.ionizeTrees });
+				self.itemManagers['article'][aid] = new ION.ArticleManager({ 'container': articleContainer, 'id_parent': id_parent });
 
 				// Stores that the content is loaded
 				parentContainer.store('loaded', true);
@@ -371,9 +382,11 @@ ION.TreeXhr = new Class({
 
 				// Moved ?
 				var pageContainer = item.getParent('ul.pageContainer');
+				var treeContainer = item.getParent('div.treeContainer');
+				var old_id_menu = treeContainer.getProperty('data-id-menu');
 				var old_parent_id = pageContainer.getProperty('rel');
 
-				if (old_parent_id != element.id_parent)
+				if (old_parent_id != element.id_parent || old_id_menu != element.id_menu)
 				{
 					item.destroy();
 					self.get(element.id_parent);
@@ -437,6 +450,7 @@ ION.TreeXhr = new Class({
 			folder.addClass('f-open');
 
 			ION.listAddToCookie(this.id_container, folder.retrieve('id_page'));
+			this.getOpenedFromCookie();
 
 			$('btnStructureExpand').store('status', 'expand');
 			$('btnStructureExpand').value = Lang.get('ionize_label_collapse_all');
@@ -459,6 +473,7 @@ ION.TreeXhr = new Class({
 			folder.removeClass('f-open');
 
 			ION.listDelFromCookie(this.id_container, folder.retrieve('id_page'));
+			this.getOpenedFromCookie();
 		}
 	},
 
@@ -527,7 +542,7 @@ ION.TreeXhr = new Class({
 	/**
 	 * Adds Actions Buttons Events on one page Element
 	 *
-	 * @param	DOMElement		tree LI
+	 * @param	el  DOMElement tree LI
 	 *
 	 */
 	addPageActionLinks: function(el)
@@ -577,6 +592,17 @@ ION.TreeXhr = new Class({
 		{
 			this.getChildren('.action').setStyle('display', 'none');
 		});
+	},
+
+	/**
+	 * Updates the array of opened items
+	 */
+	getOpenedFromCookie:function()
+	{
+		if (Cookie.read(this.id_container))
+			this.opened = (Cookie.read(this.id_container)).split(',');
+		else
+			this.opened = new Array();
 	}
 });
 

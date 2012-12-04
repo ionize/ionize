@@ -14,7 +14,6 @@
 <form name="pageOptionsForm" id="pageOptionsForm" method="post" action="<?php echo admin_url() . 'page/save_options'?>">
 
 	<input type="hidden" name="element" id="element" value="page" />
-	<input type="hidden" name="id_menu" value="<?php echo $id_menu; ?>" />
 	<input type="hidden" name="created" value="<?php echo $created; ?>" />
 	<input type="hidden" name="id_page" id="id_page" value="<?php echo $id_page; ?>" />
 	<input type="hidden" id="origin_id_parent" value="<?php echo $id_parent; ?>" />
@@ -598,6 +597,7 @@
 	 *
 	 */
 	ION.initDatepicker('<?php echo Settings::get('date_format'); ?>');
+    ION.initClearField('#pageOptionsForm');
 
 	// Current & parent page ID
 	var id_current = ($('id_page').value) ? $('id_page').value : '0';

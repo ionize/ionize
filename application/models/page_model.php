@@ -90,7 +90,13 @@ class Page_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	function get_lang_list($where = NULL, $lang = NULL)
+	/**
+	 * @param null $where
+	 * @param null $lang
+	 *
+	 * @return array
+	 */
+	public function get_lang_list($where = NULL, $lang = NULL)
 	{
 		// Order by ordering field
 		$this->{$this->db_group}->order_by($this->table.'.level', 'ASC');
@@ -147,27 +153,26 @@ class Page_model extends Base_model
 	 * @return	int			The inserted / updated page ID
 	 *
 	 */
-	function save($data, $lang_data)
+	public function save($data, $lang_data)
 	{
 		// Dates
 		$data = $this->_set_dates($data);
-
-		// Creation date
-		if( ! $data['id_page'] OR $data['id_page'] == '' )
-		{
-			$data['created'] = date('Y-m-d H:i:s');
-		}
-		// Update date
-		else
-		{
-			$data['updated'] = date('Y-m-d H:i:s');			
-		}
 
 		// Correct level regarding to the parent
 		if (isset($data['id_parent']))
 		{
 			$parent_array = $this->get_parent_array($data['id_parent']);
 			$data['level'] = count($parent_array);
+		}
+
+		// Correct child pages
+		if ( ! empty($data['id_page']))
+		{
+			$page = $this->get_by_id($data['id_page']);
+			if ($page['id_menu'] != $data['id_menu'])
+			{
+				$this->update_pages_menu($data['id_page'], $data['id_menu']);
+			}
 		}
 
 		// Clean metas data
@@ -182,24 +187,13 @@ class Page_model extends Base_model
 
 
 	/**
-	 * Calls all integrity corrections functions
+	 * Updates one page children page menu ID value
 	 *
-	 * @param	array		Article array
-	 * @param	array		Article lang data array
+	 * @param $id_page
+	 * @param $id_menu
 	 *
 	 */
-	function correct_integrity($page, $page_lang)
-	{
-		// $this->update_links($page, $page_lang);
-		
-		$this->update_pages_menu($page['id_page'], $page['id_menu']);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-	
-	function update_pages_menu($id_page, $id_menu)
+	public function update_pages_menu($id_page, $id_menu)
 	{
 		$sql = "update page
 				set id_menu='".$id_menu."'
@@ -230,7 +224,7 @@ class Page_model extends Base_model
 	 * @param	array		Article lang data array
 	 *
 	 */
-	function update_links($page, $page_lang)
+	public function update_links($page, $page_lang)
 	{
 		$id_page = 		$page['id_page'];
 		$page_lang = 	$page_lang[Settings::get_lang('default')];
@@ -266,20 +260,6 @@ class Page_model extends Base_model
 			)
 		);
 		$this->{$this->db_group}->update('page_article');
-		
-
-		// Update of articles (lang table) which link to this page
-		/*
-		$sql = "update article_lang as al
-					inner join article as a on a.id_article = al.id_article
-					inner join page_lang as p on p.id_page = a.link_id
-				set al.link = p.url
-				where a.link_type='page'
-				and al.lang = p.lang
-				and a.link_id = " . $id_page;
-		
-		$this->{$this->db_group}->query($sql);
-		*/
 	}
 
 
@@ -290,11 +270,11 @@ class Page_model extends Base_model
 	 * Updates the home page
 	 * Set all pages home value to 0 except the passed page ID
 	 *
-	 * @param	Int		Page ID to exclude
-	 * @returns	Int		Nuber of affected rows
+	 * @param bool/int $id_page
 	 *
+	 * @return int
 	 */
-	function update_home_page($id_page=FALSE)
+	public function update_home_page($id_page=FALSE)
 	{
 		if ($id_page !== FALSE)
 		{
@@ -324,7 +304,7 @@ class Page_model extends Base_model
 	 *
 	 * @return 	int		Affected rows number
 	 */
-	function delete($id)
+	public function delete($id)
 	{
 		$affected_rows = 0;
 		
@@ -370,7 +350,7 @@ class Page_model extends Base_model
 	 * used to feed selectbox of groups
 	 *
 	 */
-	function get_groups_select()
+	public function get_groups_select()
 	{
 		return $this->get_items_select('user_groups', 'group_name', lang('ionize_select_everyone'), 'level DESC');
 	}
@@ -382,11 +362,11 @@ class Page_model extends Base_model
 	/**
 	 * Get the current groups from parent element
 	 *
-	 * @param	string	parent name
-	 * @param	int		parent ID
+	 * @param $parent_id
 	 *
+	 * @return array
 	 */
-	function get_current_groups($parent_id)
+	public function get_current_groups($parent_id)
 	{
 		return $this->get_joined_items_keys('user_groups', $this->table, $parent_id);
 	}
@@ -398,12 +378,13 @@ class Page_model extends Base_model
 	/** 
 	 * Returns one page parents array
 	 *
-	 * @param	int	P	age ID
+	 * @param	int		Page ID
 	 * @param	array	Empty data array.
+	 * @param	string	Lang code
 	 *
 	 * @return	array	Parent array
 	 */
-	function get_parent_array($id_page, $data = array(), $lang = NULL)
+	public function get_parent_array($id_page, $data = array(), $lang = NULL)
 	{
 		$result = $this->get_by_id($id_page, $lang);
 
@@ -429,7 +410,7 @@ class Page_model extends Base_model
 	 * @return	int		Number of inserted / updated Urls
 	 *
 	 */
-	function save_urls($id_page)
+	public function save_urls($id_page)
 	{
 		$CI =& get_instance();
 		$CI->load->model('url_model', '', TRUE);
@@ -487,8 +468,15 @@ class Page_model extends Base_model
 
 		return $nb;
 	}
-	
-	function save_linked_articles_urls($id_page)
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $id_page
+	 */
+	public function save_linked_articles_urls($id_page)
 	{
 		$CI =& get_instance();
 		$CI->load->model('article_model', '', TRUE);
@@ -504,7 +492,11 @@ class Page_model extends Base_model
 			$CI->article_model->save_urls($article['id_article']);
 		}
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Rebuild all the Url of all / one page
 	 * If no page id is given, rebuilds all the URLs
@@ -513,7 +505,7 @@ class Page_model extends Base_model
 	 * @return	int		Number of inserted / updated Urls
 	 *
 	 */
-	function rebuild_urls($id_page = NULL)
+	public function rebuild_urls($id_page = NULL)
 	{
 		$nb = 0;
 
@@ -533,7 +525,10 @@ class Page_model extends Base_model
 		
 		return $nb;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Returns all contexts page's lang data as an array of pages.
@@ -544,7 +539,7 @@ class Page_model extends Base_model
 	 * @return	array		Array of articles
 	 *
 	 */
-	function get_lang_contexts($id_article, $lang)
+	public function get_lang_contexts($id_article, $lang)
 	{
 		$data = array();
 		
@@ -561,10 +556,10 @@ class Page_model extends Base_model
 			$this->{$this->db_group}->select('url.path');
 			$this->{$this->db_group}->join('url', $this->table.'.'.$this->pk_name.' = url.id_entity', 'inner');			
 			$this->{$this->db_group}->where(array('url.type' => 'page', 'active' => 1));
-			if ( ! is_null($lang))		
+
+			if ( ! is_null($lang))
 				$this->{$this->db_group}->where(array('url.lang' => $lang));			
 
-	
 			$this->{$this->db_group}->where(array($this->lang_table.'.lang' => $lang));
 			
 			if ( ! is_array($id_article) )
@@ -587,13 +582,13 @@ class Page_model extends Base_model
 
 
 	/** 
-	 * Spread autorisations from parents to children pages
+	 * Spread authorizations from parents to children pages
 	 *
 	 * @param	array	By ref. The pages array
 	 * @param	int		The current parent page ID
 	 *
 	 */
-	function spread_authorizations(&$pages, $id_parent=0)
+	public function spread_authorizations(&$pages, $id_parent=0)
 	{
 		if ( ! empty($pages))
 		{
@@ -620,9 +615,11 @@ class Page_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Filters the pages on published one
 	 *
+	 * @param bool $on
+	 * @param null $lang
 	 */
 	protected function filter_on_published($on = TRUE, $lang = NULL)
 	{
@@ -640,6 +637,9 @@ class Page_model extends Base_model
 			$this->{$this->db_group}->or_where('publish_on = ', '0))' , FALSE);
 		}	
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -667,11 +667,28 @@ class Page_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Sets the correct dates to the page array
+	 *
+	 * @param $data
+	 *
+	 * @return array
+	 */
 	protected function _set_dates($data)
 	{
 		$data['publish_on'] = (isset($data['publish_on']) && $data['publish_on']) ? getMysqlDatetime($data['publish_on'], Settings::get('date_format')) : '0000-00-00';
 		$data['publish_off'] = (isset($data['publish_off']) && $data['publish_off']) ? getMysqlDatetime($data['publish_off'], Settings::get('date_format')) : '0000-00-00';
 		$data['logical_date'] = (isset($data['logical_date']) && $data['logical_date']) ? getMysqlDatetime($data['logical_date'], Settings::get('date_format')) : '0000-00-00';
+
+		// Creation date
+		if( ! $data['id_page'] OR $data['id_page'] == '' )
+			$data['created'] = date('Y-m-d H:i:s');
+		// Update date
+		else
+			$data['updated'] = date('Y-m-d H:i:s');
 
 		return $data;
 	}

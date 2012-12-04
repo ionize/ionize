@@ -26,14 +26,14 @@
 <!--[if IE 9]><link rel="stylesheet" href="<?php echo theme_url(); ?>css/ie9.css" /><![endif]-->
 <!--[if lt IE 9]><script type="text/javascript" src="<?php echo theme_url(); ?>javascript/excanvas_r43_compressed.js"></script><![endif]-->
 
-<!-- Mootools 1.3.2 -->
+<!-- Mootools 1.3.2
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.3.2-full-nocompat.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.3.2.1-yc.js"></script>
+-->
+<!-- Mootools 1.4.5  -->
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
 
-<!-- Mootools 1.4.1
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.1-full-nocompat-yc.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1-yc.js"></script>
- -->
 
 <!-- Drag Clone -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/drag.clone.js"></script>

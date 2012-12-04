@@ -10,6 +10,9 @@ License:
 
 */
 
+.treeContainer{
+	position: relative;
+}
 
 .treetitle {
 	margin-right:15px;
@@ -38,6 +41,7 @@ License:
 	line-height: 16px;
 	margin: 6px 12px 10px 0;
 	overflow: hidden;
+	position: relative;
 }
 .tree ul {
 	margin: 0;

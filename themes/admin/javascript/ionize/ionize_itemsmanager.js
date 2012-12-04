@@ -27,12 +27,13 @@ ION.ItemManager = new Class({
 		'method': 'save_ordering',
 		'confirmDelete': true,
 		'confirmDeleteMessage': Lang.get('ionize_confirm_element_delete'),
-		'sortable': false
+		'sortable': false,
+		'scrollerElement': false
 	},
 	
 	/**
 	 * @constructor
-	 * @param	Object	Options object
+	 * @param	options	Options object
 	 *
 	 */
 	initialize: function(options)
@@ -64,7 +65,24 @@ ION.ItemManager = new Class({
 		{
 			this.makeSortable();
 		}
+
+		// Parent scroller area
+		/*
+		if (this.options.scrollerElement)
+		{
+			this.scrollerPanel = (this.options.scrollerElement).getFirst('div');
+			this.scroller = new Scroller(this.options.scrollerElement, {
+				onChange: function(x, y)
+				{
+					// restrict scrolling to Y direction only!
+					var scroll = this.element.getScroll();
+					this.element.scrollTo(scroll.x, y);
+				}
+			});
+		}
+		*/
 	},
+
 
 	/**
 	 * Adds the delete Event on each .delete anchor in the list
@@ -118,18 +136,69 @@ ION.ItemManager = new Class({
 
 			// Init the sortable 
 			this.sortables = new Sortables(list, {
+
 				revert: true,
 				handle: '.drag',
 				clone: true,
 				constrain: true,
 				opacity: 0.5,
+				/*
+				dragOptions: {
+					onDrag: function(el, e)
+					{
+						console.log('sp:'+self.scrollerPanel.getPosition().y);
+						console.log('se:'+self.options.scrollerElement.getPosition().y);
+						console.log('el:'+el.getPosition().y);
+						console.log('m :' +this.mouse.now.y);
+						console.log('co:' + self.container.getPosition().y)
+
+						el.setStyles({
+							display: 'block',
+							position: 'absolute',
+							'z-index' :100000,
+							top: this.mouse.now.y - d
+						});
+						self.scroller.getCoords(e);
+
+					},
+					onBeforeStart: function(el)
+					{
+						var dpos = self.container.getPosition();
+						var mouse_start = this.mouse.start;	// contains the event.page.x/y values
+						dpos.mouse_start = mouse_start;
+						el.store('delta_pos', dpos);
+					}
+				},
+				*/
+				onStart:function(el)
+				{
+					if (typeOf(self.scroller) != 'null')
+					{
+						/*
+						var dpos = self.options.scrollerElement.getPosition();
+						// fetch this Drag.Move instance:
+						el.store('delta_pos', dpos);
+						self.scroller.options.area = self.options.scrollerElement.getSize().y * 0.2;
+
+						self.scroller.start();
+						*/
+					}
+				},
+				onSort:function(el, clone)
+				{
+				},
 				onComplete: function(item, clone)
 				{
+					if (typeOf(self.scroller) != 'null')
+					{
+						// self.scroller.stop();
+					}
+
 					// Hides the current sorted element (correct a Mocha bug on hidding modal window)
 					item.removeProperty('style');
 
-					// Get the new order					
-					var serialized = this.serialize(0, function (element, index) 
+					// Get the new order
+					var serialized = this.serialize(0, function (element, index)
 					{
 						// Check for the not removed clone
 						if (element.id != '')
@@ -144,7 +213,7 @@ ION.ItemManager = new Class({
 
 					// Items sorting
 					self.sortItemList(serialized);
-				}			
+				}
 			});
 
 			// Store the sortables in the container, for further access

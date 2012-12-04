@@ -9,7 +9,7 @@
 		</span>
 		<?php echo $menu['title']; ?>
 	</h3>
-	<div class="treeContainer" id="<?php echo $menu['name'].'Tree'; ?>"></div>
+	<div class="treeContainer" id="<?php echo $menu['name'].'Tree'; ?>" data-id-menu="<?php echo $menu['id_menu']; ?>"></div>
 
 <?php endforeach ;?>
 
