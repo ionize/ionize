@@ -31,7 +31,7 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.3.2.1-yc.js"></script>
 -->
 <!-- Mootools 1.4.5  -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
 
 
