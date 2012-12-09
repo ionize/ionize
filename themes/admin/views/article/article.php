@@ -595,15 +595,6 @@ if ($tracker_title == '')
 
 <script type="text/javascript">
 
-	/**
-	 * Accordions
-	 *
-	 */
-	<?php foreach (Settings::get_languages() as $lang) :?>
-
-		// ION.initAccordion('.toggler-<?php echo $lang['lang']; ?>', 'div.element-<?php echo $lang['lang']; ?>', true, 'articleAccordion-<?php echo $lang['lang']; ?>');
-
-	<?php endforeach ;?>
 
 	ION.initFormAutoGrow();
 
@@ -743,7 +734,7 @@ if ($tracker_title == '')
 		mediaManager.loadMediaList('music');
 		mediaManager.loadMediaList('picture');
 		mediaManager.loadMediaList('video');
-		
+
 	<?php endif ;?>
 
 </script>

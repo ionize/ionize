@@ -31,7 +31,8 @@ ION.append({
 		if (typeOf(args) != 'null')
 			url = this.baseUrl + args.url;
 
-		window.top.location = url;
+		top.location.href = url;
+		// window.top.location = url;
 	},
 
 

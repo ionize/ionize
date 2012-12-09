@@ -51,7 +51,7 @@ ION.TreeXhr = new Class({
 			onChange: function(x, y)
 			{
 				var scroll = this.element.getScroll();
-				console.log('scroller.onChange: ', x, y, scroll);
+				// console.log('scroller.onChange: ', x, y, scroll);
 				this.element.scrollTo(scroll.x, y);
 			}
 		});
@@ -518,14 +518,26 @@ ION.TreeXhr = new Class({
 		// Edit Element
 		else
 		{
-			ION.splitPanel({
-				'urlMain': admin_url + type + '/edit/' + el.getProperty('rel'),
-				'urlOptions': admin_url + type + '/get_options/' + el.getProperty('rel'),
-				'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')
-			});
+			var func = function()
+			{
+				ION.splitPanel({
+					'urlMain': admin_url + type + '/edit/' + el.getProperty('rel'),
+					'urlOptions': admin_url + type + '/get_options/' + el.getProperty('rel'),
+					'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')
+				});
+			};
+			if (ION.hasUnsavedData == true)
+			{
+				ION.confirmation('confunsaved', func, Lang.get('ionize_message_unsaved_element_quit'));
+				return false;
+			}
+			func();
 		}
 	},
-	
+
+	editElement: function(type, el)
+	{},
+
 	getParentContainer: function(id_parent)
 	{
 		// Parent DOM Element (usually a folder LI)

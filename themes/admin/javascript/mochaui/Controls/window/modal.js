@@ -56,6 +56,7 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 		modalOverlay.addEvent('click', function(){
 			var instance = MUI.get(MUI.currentModal.id);
 			if (instance.options.modalOverlayClose) MUI.currentModal.close();
+
 		});
 		
 		if (Browser.ie6){
@@ -77,10 +78,7 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 		MUI.Modal.modalOverlayCloseMorph = new Fx.Morph($('modalOverlay'), {
 			'duration': 150,
 			onComplete: function(){
-				$('modalOverlay').hide();
-				if (Browser.ie6){
-					$('modalFix').hide();
-				}
+				$('modalOverlay').destroy();
 			}.bind(this)
 		});
 	},

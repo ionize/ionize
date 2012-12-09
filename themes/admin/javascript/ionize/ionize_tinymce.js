@@ -30,7 +30,7 @@ ION.append({
 					convert_urls : false,
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
-					plugins : 'inlinepopups,advimage,advlink,spellchecker,nonbreaking,,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
+					plugins : 'save,inlinepopups,advimage,advlink,spellchecker,nonbreaking,,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
 					theme_advanced_toolbar_location : 'top',
 					theme_advanced_toolbar_align : 'left',
 					theme_advanced_resizing : true,
@@ -47,6 +47,13 @@ ION.append({
 					*/
 					content_css : tinyCSS,
 					file_browser_callback: 'ION.openTinyFilemanager',
+					save_onsavecallback:function(ed)
+					{
+						var submit = ed.formElement.retrieve('submit');
+						if (typeOf(submit) != 'null')
+							submit.fireEvent('click');
+						return false;
+					},
 					setup : function(ed) {
 						// Register mceIonizeHrefBrowser, called by advlink plugin (modified plugin)
 						ed.addCommand('mceIonizeHrefBrowser', function(ui, v) {
@@ -54,6 +61,9 @@ ION.append({
 						});
 						ed.addCommand('mceIonizeHrefName', function(ui, v) {
 							ION.getIonizeHrefName(ed, ui, v);
+						});
+						ed.onKeyUp.add(function(ed, e) {
+							ION.setUnsavedData();
 						});
 					}
 				};
@@ -81,7 +91,7 @@ ION.append({
 					convert_urls : false,
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
-					plugins : 'pdw, inlinepopups,codemirror,safari,nonbreaking,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
+					plugins : 'pdw,save,inlinepopups,codemirror,safari,nonbreaking,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
 					flash_menu : 'false',
 					theme_advanced_toolbar_location : 'top',
 					theme_advanced_toolbar_align : 'left',
@@ -98,6 +108,13 @@ ION.append({
 		            pdw_toggle_on : 1,
 		            pdw_toggle_toolbars : '2,3',
 					file_browser_callback: 'ION.openTinyFilemanager',
+					save_onsavecallback:function(ed)
+					{
+						var submit = ed.formElement.retrieve('submit');
+						if (typeOf(submit) != 'null')
+							submit.fireEvent('click');
+						return false;
+					},
 					// Could be nice to do it through one dedicated callback, but seems not possible
 					// ionize_hrefbrowser_callback: 'ION.openIonizeHrefBrowserCallback',
 					setup : function(ed) {
@@ -107,6 +124,9 @@ ION.append({
 						});
 						ed.addCommand('mceIonizeHrefName', function(ui, v) {
 							ION.getIonizeHrefName(ed, ui, v);
+						});
+						ed.onKeyUp.add(function(ed, e) {
+							ION.setUnsavedData();
 						});
 					},
 					formats : {

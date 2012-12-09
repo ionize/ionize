@@ -1,5 +1,24 @@
 ION.append({
 
+	hasUnsavedData: false,
+
+	setUnsavedData:function()
+	{
+		ION.hasUnsavedData = true;
+	},
+
+	initSaveWarning:function(form)
+	{
+		ION.hasUnsavedData = false;
+		var formInputs = $(form).getElements('input');
+		formInputs.append($(form).getElements('textarea'));
+		formInputs.addEvent('change', function(event)
+		{
+			ION.hasUnsavedData = true;
+		});
+	},
+
+
 	/**
 	 * Get the associated form object and send it directly
 	 *
@@ -57,6 +76,12 @@ ION.append({
 				}
 			});
 
+			// Warning if changed but not saved
+			ION.initSaveWarning(form);
+
+			// Stores the button in the form
+			$(form).store('submit', $(button));
+
 			// Add the form submit event with a confirmation window
 			if ($(button) && (typeOf(confirm) == 'object'))
 			{
@@ -72,7 +97,7 @@ ION.append({
 				$(button).removeEvents('click');
 				$(button).addEvent('click', function(e)
 				{
-					e.stop();
+					if (typeOf(e) != 'null') e.stop();
 					ION.confirmation('conf' + button.id, func, confirm.message);
 				});
 			}
@@ -83,7 +108,7 @@ ION.append({
 				$(button).removeEvents('click');
 				$(button).addEvent('click', function(e)
 				{
-					e.stop();
+					if (typeOf(e) != 'null') e.stop();
 
 					var parent = $(form).getParent('.mocha');
 					var result = fv.validate();
@@ -184,7 +209,7 @@ ION.append({
 			});
 		}
 	},
-	
+
 	updateRichTextEditors: function()
 	{
 		if (typeof tinyMCE != "undefined")

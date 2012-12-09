@@ -1,4 +1,16 @@
 <h1 xmlns="http://www.w3.org/1999/html">Medias from  articles</h1>
+
+<p>If you limit the display of one media to one language, it will not be displayed for the other languages.
+<br/>If no limit is set to one media (by default), it will be displayed for all languages.</p>
+<ion:languages tag="ul">
+    <li>
+        <a href="<ion:language:url />">
+            <ion:language:name />
+        </a>
+    </li>
+</ion:languages>
+
+
 <ion:tree_navigation />
 <hr/>
 
@@ -24,6 +36,7 @@
 &lt;/ion:page>
 </pre>
 
+<h2>All medias</h2>
 
 <ion:page>
     <ion:articles>
@@ -44,19 +57,18 @@
     </ion:articles>
 </ion:page>
 
+<h2>Range of medias</h2>
 <ion:page>
     <ion:articles>
         <ion:article:title tag="h3"/>
         <ul class="boxes">
-            <ion:article:medias type="picture" size="100" method="square" unsharp="true" range="3,5">
+            <ion:article:medias type="picture" size="100" method="square" unsharp="true" range="2,3">
                 <ion:media>
                     <li>
                         <img src="<ion:src />" />
                         <p>
                             Media ID <b><ion:id /></b><br/>
                             Title : <b><ion:title /></b><br/>
-							Path : <b><ion:path /></b>
-							Base : <b><ion:base_path /></b>
                         </p>
                     </li>
                 </ion:media>
@@ -64,5 +76,4 @@
         </ul>
     </ion:articles>
 </ion:page>
-
 

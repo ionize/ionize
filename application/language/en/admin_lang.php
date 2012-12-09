@@ -398,6 +398,7 @@ $lang['ionize_message_url_not_found'] = 'URL not found';
 $lang['ionize_message_url_got_404'] = 'This URL returns a 404 page';
 $lang['ionize_message_form_validation_error'] = 'Some data are missing or incorrect';
 $lang['ionize_message_form_validation_please_correct'] = 'Please correct the form data';
+$lang['ionize_message_unsaved_element_quit'] = 'This element has changed but isn\'t saved. Do you want to leave ?';
 
 
 /*

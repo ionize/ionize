@@ -793,7 +793,9 @@ MUI.Window.implement({
 		}
 
 		if (!MUI.options.advancedEffects){
-			if ((this.options.type == 'modal' || this.options.type == 'modal2') && $$('.modal').length < 2) $('modalOverlay').setStyle('opacity', 0);
+			if ((this.options.type == 'modal' || this.options.type == 'modal2') && $$('.modal').length < 2) {
+				$('modalOverlay').destroy();
+			}
 			this._doClosingJobs();
 		} else {
 			// Redraws IE windows without shadows since IE messes up canvas alpha when you change element opacity
