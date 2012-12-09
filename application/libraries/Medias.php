@@ -80,6 +80,7 @@ class Medias
 	 */
 	public function get_src($media, $settings, $fail_picture_path=NULL)
 	{
+
 		if ( ! file_exists(DOCPATH.$media['path']))
 		{
 			$media = $this->_get_no_source_picture($fail_picture_path);
@@ -816,7 +817,10 @@ class Medias
 	private function _get_no_source_picture($no_source_picture_file = NULL)
 	{
 		// No "no source picture"
-		if ( ! ($no_source_picture_file))
+		if (
+			! $no_source_picture_file OR
+			! file_exists(DOCPATH . Settings::get('files_path') .'/' . $no_source_picture_file)
+		)
 		{
 			$no_source_picture_file = self::$no_picture_source;
 
@@ -851,6 +855,12 @@ class Medias
 			'base_path' => Settings::get('files_path') .'/',
 			'extension' => $extension,
 			'mime' => $mimes_ionize['picture'][$extension],
+			'square_crop' => 'm',
+			'title' => '',
+			'alt' => '',
+			'description' => '',
+			'copyright' => '',
+			'id_media' => 0,
 		);
 
 		return $media;

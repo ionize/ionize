@@ -265,8 +265,13 @@ var jsGET = {
 		};
 
 		var self = this;
+
+
 		return setInterval(function() {
-			self.pollHash();
+			if (typeof(self.pollHash) != 'undefined')
+			{
+				self.pollHash();
+			}
 		}, (freq || 500));
 	},
 	removeListener: function(listenerID) { // use the interval ID returned by addListener
