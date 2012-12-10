@@ -241,9 +241,6 @@ class Base_Controller extends MY_Controller
 		$this->load->library('structure');	
 		$this->load->library('widget');
 
-		// FTL parser
-//		require_once APPPATH.'libraries/ftl/parser.php';
-
 		// Models
 		$this->load->model('menu_model', '', TRUE);
 

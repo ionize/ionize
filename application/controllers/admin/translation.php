@@ -61,7 +61,7 @@ class Translation extends MY_admin
 
 		// Get translated items from theme languages files
 		$theme_translations = $this->_get_theme_translations();
-		
+
 		// Get terms form installed modules
 		$modules_terms = $this->_get_terms_from_modules();
 		
@@ -71,7 +71,6 @@ class Translation extends MY_admin
 		// Get, for each module, the lang codes for which a default translation file exists
 		$module_translation_files = $this->_get_modules_translation_files();
 		
-
 		if ( ! empty($theme_terms['term']))
 		{
 			$terms = array_fill_keys($theme_terms['term'],'');
@@ -111,17 +110,13 @@ class Translation extends MY_admin
 			}
 		}
 
-
 		$this->template['terms'] = $terms;
-		
 		$this->template['theme_terms'] = $theme_terms;
 		$this->template['theme_translations'] = $theme_translations;
-
 		$this->template['modules_terms'] = $modules_terms;
 		$this->template['module_translations'] = $module_translations;
 		$this->template['module_translation_files'] = $module_translation_files;
 
-		
 		$this->output('lang/translation');
 	}
 
@@ -267,7 +262,7 @@ class Translation extends MY_admin
 
 			// Try writing the language file
 			try  {
-				write_file($path.'/'.Settings::get('theme').'_lang.php', $data);
+				write_file($path.'/theme_lang.php', $data);
 			}
 			catch (Exception $e) {
 				$this->error(lang('ionize_message_language_file_creation_fail'));
@@ -516,16 +511,14 @@ class Translation extends MY_admin
 		// Theme folder
 		$path = FCPATH.'themes/'.Settings::get('theme');
 
-
 		// Read the template language directory
 		foreach(Settings::get_languages() as $language)
 		{
-			$lang_files = array();
 			$lang_code = $language['lang'];
 			$items[$lang_code] = array();
 			
 			// Translation file name. Named [theme_name]_lang.php
-			$file = $path.'/language/'.$lang_code.'/'.Settings::get('theme').'_lang.php';
+			$file = $path.'/language/'.$lang_code.'/theme_lang.php';
 
 			// Include the file if it exists
 			if (file_exists($file))
