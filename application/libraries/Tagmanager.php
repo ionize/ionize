@@ -2911,10 +2911,16 @@ class TagManager
 		foreach($keys as $idx => $key)
 		{
 			$key = trim($key);
-log_message('error', $key);
 			// 1. Try to get the value from tag's data array
 			$value = $tag->getValue($key);
-log_message('error', $value);
+
+			$expression = str_replace('.gt', '>', $expression);
+			$expression = str_replace('.lt', '<', $expression);
+			$expression = str_replace('.eq', '==', $expression);
+			// Not convinced...
+			// $expression = str_replace('.leqt', '<=', $expression);
+			// $expression = str_replace('.geqt', '>=', $expression);
+
 			// 2. Fall down to to tag's locals
 			if (is_null($value))
 				$value = $tag->get($key);
@@ -2929,7 +2935,7 @@ log_message('error', $value);
 		// If at least one tested value was not NULL
 		if ( ! is_null($test_value))
 		{
-			$return = eval("\$result = (".$expression.") ? TRUE : FALSE;");
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
 		}
 		if ($return === NULL OR is_null($test_value))
 		{
