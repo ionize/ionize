@@ -1,35 +1,9 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
-| Ionize Language file
-| Language : English
-| Translater : Guardian, 13th Sept 2010
-|
-| Usage :
-| Form labels :				ionize_label_*
-| Form buttons :			ionize_button_*
-| Menu items :				ionize_menu_*
-| Page titles, titles :		ionize_title_*
-| Messages :				ionize_message_*
-|							ionize_*_message_*
-| Notification :			ionize_notify_*
-|							ionize_*_notify_*
-| Help (inline) :			ionize_help_*
-|
-| Notes : 	Modules translation items should begin with the prefix 'module_name'
-|			Example :
-|			$lang['module_fancyupload_label_folder'] = 		'Destination folder';
-|
-| Label documentation :	Each label should have a "title" attribute set
-| 						The title attribute value helps the user to understand what use he can made from a field
-|						Example : 
-|						Label : $lang['ionize_label_appears'] = 'Appears in nav';
-|						Label title : $lang['ionize_help_appears'] = 'The item will be visible in the navigation';
-|
+| Ionize Backend Language file
 |--------------------------------------------------------------------------
 */
-
 
 /*
 |--------------------------------------------------------------------------
@@ -668,10 +642,10 @@ $lang['ionize_message_setting_saved'] = 'Setting saved';
 
 $lang['ionize_help_setting_google_analytics'] = 'The complete Google script, as copied from the Google Analytics website';
 $lang['ionize_help_setting_files_path'] = 'Indicates the base media folder. Doesn\'t change the physical folder name';
-$lang['ionize_help_setting_media_type_picture'] = 'File Extensions, comma seperated';
-$lang['ionize_help_setting_media_type_music'] = 'File Extensions, comma seperated';
-$lang['ionize_help_setting_media_type_video'] = 'File Extensions, comma seperated';
-$lang['ionize_help_setting_media_type_file'] = 'File Extensions, comma seperated';
+$lang['ionize_help_setting_media_type_picture'] = 'File Extensions, comma separated';
+$lang['ionize_help_setting_media_type_music'] = 'File Extensions, comma separated';
+$lang['ionize_help_setting_media_type_video'] = 'File Extensions, comma separated';
+$lang['ionize_help_setting_media_type_file'] = 'File Extensions, comma separated';
 $lang['ionize_help_media_thumb_size'] = 'Size of system thumbnail, in pixels';
 $lang['ionize_help_tinybuttons'] = 'See TinyMCE documentation';
 $lang['ionize_help_setting_picture_max_height'] = 'Picture which exceed these size will be resized during the Upload process.';
@@ -1114,8 +1088,6 @@ $lang['ionize_title_check_reports'] = 'Reports';
 $lang['ionize_title_broken_media_links'] = 'Media broken links';
 $lang['ionize_title_delete_thumbs'] = 'Delete thumbs';
 
-
-
 $lang['ionize_text_rebuild_urls'] = 'Rebuilds the whole pages and articles URLs.<br/> Removes the old URLs in the URL table.';
 $lang['ionize_text_check_lang'] = 'Check if all languages defined in DB are set in the config file.<br/> Corrects the config file if needed.';
 $lang['ionize_text_check_page_level'] = 'Checks the page level integrity and correct if needed.';
@@ -1147,6 +1119,3 @@ $lang['ionize_label_about_us_author'] = 'Author';
 $lang['ionize_label_about_us_contributors'] = 'Contributors';
 $lang['ionize_label_about_us_thaks_to'] = 'Thanks to';
 $lang['ionize_label_about_us_license'] = 'License';
-
-
-

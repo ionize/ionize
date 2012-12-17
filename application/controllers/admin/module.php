@@ -69,8 +69,15 @@ class Module extends MY_admin
 		array_unshift(Finder::$paths, $module_path);
 
 		// Includes the module Class file
-		if ( ! class_exists($module_controller) )
+		if ( ! class_exists($module_controller) && file_exists($module_path.'controllers/admin/'.$module_controller.EXT))
+		{
 			include($module_path.'controllers/admin/'.$module_controller.EXT);
+		}
+		else
+		{
+			echo('Class <b>' . ucfirst($module_controller) . '</b> not found in :<br/><b>'. $module_path.'controllers/admin/</b>');
+			die();
+		}
 
 		// Create an instance of the module controller
 		$obj = new $module_controller($this);

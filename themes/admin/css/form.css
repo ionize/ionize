@@ -204,6 +204,11 @@ textarea.droppable.empty {
 	border: dashed 1px #ccc;
 	-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;
 }
+div.droppable.hover,
+input.droppable.hover,
+textarea.droppable.hover {
+	background-color: #df8;
+}
 div.droppable.nofocus,
 input.nofocus,
 input.droppable.nofocus,
@@ -432,3 +437,13 @@ a.button.submit:hover {
 /* This style is applied to the error messages */
 .validation-failed { border-color: #b00 !important; }
 /* This style is applied to input fields after validation failed */
+
+/* Upload */
+ul.list .upload-item a {
+	float:right;
+	height: 16px;
+	width: 16px;
+	background: url(../images/icons_16.png) no-repeat 0 0;
+	background-position: -160px -64px;
+	text-indent: -999em;
+}

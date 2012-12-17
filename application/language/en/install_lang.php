@@ -2,7 +2,11 @@
 
 $lang = array();
 
-/* General */
+/*
+|--------------------------------------------------------------------------
+| General
+|--------------------------------------------------------------------------
+*/
 $lang['title_ionize_installation'] = 		'Installation';
 
 $lang['title_system_check'] = 		'System check result';
@@ -24,7 +28,11 @@ $lang['nav_end'] = 'End';
 $lang['nav_data'] = 'Demo data';
 
 
-/* System check */
+/*
+|--------------------------------------------------------------------------
+| System check
+|--------------------------------------------------------------------------
+*/
 $lang['php_version'] = 			'PHP >= 5';
 $lang['php_version_found'] = 	'PHP version';
 $lang['mysql_support'] = 		'MySQL support';
@@ -38,13 +46,14 @@ $lang['write_themes'] = 		'<b>/themes/*</b>';
 $lang['config_check_errors'] = 	'Some base requirement are not OK.<br/>Please correct them to continue the installation.';
 $lang['welcome_text'] = 		"<p>Welcome ! These steps will help you to install Ionize.</p>";
 $lang['write_check_text'] = 	"<p>The following folders and files need to be writable...</p>";
-// $lang['system_check_text'] = 	"<p>Ionize needs all of these settings to be OK.</p>";
-
 $lang['title_folder_check'] = 	"These folders needs to be writable";
 $lang['title_files_check'] = 	"These files needs to be writable";
- 
 
-/* Database */
+/*
+|--------------------------------------------------------------------------
+| Database
+|--------------------------------------------------------------------------
+*/
 $lang['database_driver'] = 			'Driver';
 $lang['database_hostname'] = 		'Hostname';
 $lang['database_name'] = 			'Database';
@@ -65,13 +74,15 @@ $lang['database_error_coud_not_write_database'] = 		"<b>Error :</b><br/> Impossi
 $lang['database_error_coud_not_create_database'] = "The installer cannot create the database. Check your database name or your rights";
 $lang['database_error_no_ionize_tables'] = 			"The database you selected seems not to be an Ionize database. Please check again.";
 $lang['database_error_no_users_to_migrate'] = 		"To user account to upgrade";
-
 $lang['database_migration_from'] = 			'This database needs an upgrade.<br/>Upgrade from version : ';
-
 $lang['database_migration_text'] = 		"<p class=\"error\"><b>NOTICE :</b><br/> The database will now be upgraded.<b><br/>Please backup your database before this upgrade.</p>";
 
 
-/* Settings */
+/*
+|--------------------------------------------------------------------------
+| Settings
+|--------------------------------------------------------------------------
+*/
 $lang['lang_code'] = 		'Code (2 chars)';
 $lang['lang_name'] = 		'Label';
 $lang['settings_default_lang_title'] = 		'Default language';
@@ -86,8 +97,11 @@ $lang['settings_admin_url_title'] = 		'Administration panel URL';
 $lang['settings_admin_url_text'] = 		'It is strongly recommended to change the default one.';
 $lang['admin_url'] = 'Admin URL';
 
-
-/* User */
+/*
+|--------------------------------------------------------------------------
+| User
+|--------------------------------------------------------------------------
+*/
 $lang['user_introduction'] = 	'You will connect to the Administration panel with this login.';
 $lang['username'] = 			'Login (min. 4 chars)';
 $lang['screen_name'] = 			'Full name';
@@ -100,24 +114,18 @@ $lang['user_error_email_not_valid'] = 			'Email seems not to be valid. Please co
 $lang['user_error_passwords_not_equal'] = 		'Password and confirmation password are not equal.	';
 $lang['user_info_admin_exists'] = 		'An administrator user already exists in the database.<br/>You can skip this step if you wish not to create or update an Admin account.';
 $lang['encryption_key'] = 			'Encryption Key';
-$lang['encryption_key_text'] = 		"Ionize needs an 128 bits Encryption Key.<br />
-									This key will encode the users account and all sensitive data.<br/>
-									It will be written in the <b>/application/config/config.php</b> file.";
+$lang['encryption_key_text'] = 		"Ionize needs an 128 bits Encryption Key.<br />This key will encode the users account and all sensitive data.<br/>It will be written in the <b>/application/config/config.php</b> file.";
 $lang['no_encryption_key_found'] = 	"The encryption key was not found. the user account were not migrated. <b>You must create a new Admin user</b>.";
 
 
-/* Example data */
-$lang['data_install_intro'] = 	"<p>If this is the first time you use Ionize, it's strongly recommended you install the sample website.<br/>
-								This website includes : </p>
-								<ul>
-									<li>A complete set of data, useful to test Ionize,</li>
-									<li>1 working example theme</li>
-								</ul>
-								";
-$lang['title_skip_this_step'] = 	"Skip this step";
+/*
+|--------------------------------------------------------------------------
+| Data
+|--------------------------------------------------------------------------
+*/
+$lang['data_install_intro'] = 	"<p>If this is the first time you use Ionize, it's strongly recommended you install the sample website.<br/>This website includes : </p><ul><li>A complete set of data, useful to test Ionize,</li><li>1 working example theme</li></ul>";
+$lang['title_skip_this_step'] = "Skip this step";
 
-
-/* Finish screen */
 $lang['title_finish'] = 		'Installation completed';
 $lang['finish_text'] = 			'<b>IMPORTANT</b>: <br/>You have to delete the "<b>/install</b>" folder manually before accessing the website or the admin section.';
 $lang['button_go_to_admin'] = 	'Go to admin';

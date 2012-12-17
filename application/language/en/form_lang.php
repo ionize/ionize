@@ -1,25 +1,27 @@
 <?php
-/**
- * Ionize
- *
- * Default Forms language file
- *
- * Copy this file to /themes/<my_theme/language/xx/form_lang.php
- * to replace these translations with your one.
- *
- * IMPORTANT :
- * Do not modify this file.
- * It will be overwritten when migrating to a new Ionize release.
- *
- */
+/*
+|--------------------------------------------------------------------------
+| Ionize Form library Language file
+|
+| Copy this file to /themes/<my_theme/language/xx/form_lang.php
+| to replace these translations with your one.
+|
+| IMPORTANT :
+| Do not modify this file.
+| It will be overwritten when migrating to a new Ionize release.
+|
+|--------------------------------------------------------------------------
+*/
+
 
 /*
- * Labels
- * To be used for form lables.
- * Also used by Form Validation to display "human" name for each field in the errors messages.
- * Declared as "label" for each fields of forms set in /config/ionize.php
- *
- */
+|--------------------------------------------------------------------------
+| Labels
+| To be used for form lables.
+| Also used by Form Validation to display "human" name for each field in the errors messages.
+| Declared as "label" for each fields of forms set in /config/ionize.php
+|--------------------------------------------------------------------------
+*/
 $lang['form_label_email'] = 'Email';
 $lang['form_label_name'] = 'Name';
 $lang['form_label_firstname'] = 'First Name';
@@ -34,9 +36,10 @@ $lang['form_label_password_confirmation'] = 'Password confirm';
 $lang['form_label_delete_account'] = 'Delete account';
 
 /*
- * Buttons
- *
- */
+|--------------------------------------------------------------------------
+| Buttons
+|--------------------------------------------------------------------------
+*/
 $lang['form_button_send'] = "Send";
 $lang['form_button_save'] = "Save";
 $lang['form_button_register'] = "Register";
@@ -46,9 +49,10 @@ $lang['form_button_post'] = "Post";
 $lang['form_button_answer'] = "Answer";
 
 /*
- * Emails
- *
- */
+|--------------------------------------------------------------------------
+| Emails
+|--------------------------------------------------------------------------
+*/
 // Registration : Email to the website email
 $lang['mail_website_registration_subject'] = "Someone registered on the website";
 $lang['mail_website_registration_message'] = "Here are the details of this new member.";
@@ -64,13 +68,13 @@ $lang['mail_user_password_subject'] = "New password for your account on %s";
 $lang['mail_user_password_intro'] = "Dear %s,";
 $lang['mail_user_password_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Here are your new login information:";
 
-
 /*
- * Messages
- * Success messages for login / registration forms
- * Declared as 'success' for each form in form setup : /config/ionize.php
- *
- */
+|--------------------------------------------------------------------------
+| Messages
+| Success messages for login / registration forms
+| Declared as 'success' for each form in form setup : /config/ionize.php
+|--------------------------------------------------------------------------
+*/
 $lang['form_not_logged'] = "You're not logged in.";
 
 $lang['form_login_success_message'] = "You successfully logged in.";
@@ -89,11 +93,11 @@ $lang['form_password_error_message'] = "One error happens.";
 $lang['form_password_not_found_message'] = "This email seems not to be in our system";
 $lang['form_password_success_message'] = "One email with you new password has just been sent to you.";
 
-
 /*
- * Validation Errors
- * 
- */
+|--------------------------------------------------------------------------
+| Validation Errors
+|--------------------------------------------------------------------------
+*/
 $lang['form_error_javascript_required'] = "You need to have javascript activated to send this form.";
 $lang['form_error_spam'] = "Thank you for your good Spam !";
 $lang['form_error_required'] = "The <strong>%s</strong> field is required.";

@@ -73,7 +73,12 @@
 				<tbody>
 					<?php foreach(Settings::get('admin_languages') as $lang) :?>
 					<tr>
-						<td class="center"><img src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" alt="<?php echo $lang; ?>" class="mt2" /></td>
+						<td class="center">
+                            <?php if (file_exists(Theme::get_theme_path().'images/world_flags/flag_'.$lang.'.gif')) :?>
+        						<img src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" alt="<?php echo $lang; ?>" class="mt2" /></td>
+							<?php else: ?>
+								?
+							<?php endif; ?>
 						<td class="center">
 							<label for="display_lang_<?php echo $lang; ?>"><?php echo $lang; ?></label>
 						</td>

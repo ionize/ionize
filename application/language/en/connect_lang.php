@@ -1,10 +1,7 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
-| Connect library Language file
-| Language : 	English
-| Translater :	Partikule Studio
+| Ionize Connect library Language file
 |
 | This lang file can be replaced by a theme one.
 | Simply copy this file in the folder /themes/your_theme/language/xx/
@@ -60,6 +57,3 @@ $lang['connect_user_activated_error'] = 'Something went wrong with the account y
 $lang['connect_admin_activated_message'] = 'This account is activated now.<br/>A mail was just sent to the user to inform him.';
 $lang['connect_admin_activated_error'] = 'Something went wrong with the account you are trying to activate.Maybe have you already activated it, or maybe are you using the wrong informations?';
 
-
-/* End of file connect_lang.php */
-/* Location: ./application/language/en/connect_lang.php */
