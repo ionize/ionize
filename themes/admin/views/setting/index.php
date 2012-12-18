@@ -175,12 +175,6 @@
 	 */
 	new TabSwapper({tabsContainer: 'webSettingsTab', sectionsContainer: 'webSettingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'webSettingsTab' });
 
-	/**
-	 * Views form
-	 * see ionize-form.js for more information about this method
-	 */
-	ION.setFormSubmit('settingsForm', 'settingsFormSubmit', 'setting/save');
-
 
 	/**
 	 * SEO URLs forms action
@@ -191,12 +185,6 @@
 
 	
 	ION.setChangeSubmit('sitemapGzipForm', 'sitemaps_gzip', 'setting/save_setting', 'mainPanel', 'setting/technical');
-
-	/**
-	 * Save with CTRL+s
-	 *
-	 */
-	ION.addFormSaveEvent('settingsFormSubmit');
 
 
 </script>

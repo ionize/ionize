@@ -16,6 +16,6 @@
 	 * Save with CTRL+s
 	 *
 	 */
-	ION.addFormSaveEvent('settingsForm');
+	ION.addFormSaveEvent('settingsFormSubmit');
 
 </script>
