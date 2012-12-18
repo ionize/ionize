@@ -522,17 +522,9 @@ if (function_exists('UploadIsAuthenticated'))
 
 if (!defined('DEVELOPMENT')) define('DEVELOPMENT', 0);   // make sure this #define is always known to us
 
-
-/*
-require(strtr(dirname(__FILE__), '\\', '/') . '/Tooling.php');
-require(strtr(dirname(__FILE__), '\\', '/') . '/Image.class.php');
-require(strtr(dirname(__FILE__), '\\', '/') . '/Assets/getid3/getid3.php');
-*/
 require(strtr(dirname(__FILE__), '\\', '/') . '/Filemanager/Tooling.php');
 require(strtr(dirname(__FILE__), '\\', '/') . '/Filemanager/Image.class.php');
 require(strtr(dirname(__FILE__), '\\', '/') . '/getid3/getid3.php');
-
-
 
 // the jpeg quality for the largest thumbnails (smaller ones are automatically done at increasingly higher quality)
 define('MTFM_THUMBNAIL_JPEG_QUALITY', 80);
@@ -550,17 +542,8 @@ define('MTFM_MIN_GETID3_CACHESIZE', 16);
 // allow MTFM to use finfo_open() to help us produce mime types for files. This is slower than the basic file extension to mimetype mapping
 define('MTFM_USE_FINFO_OPEN', false);
 
-
-
-
-
-
 // flags for clean_ID3info_results()
 define('MTFM_CLEAN_ID3_STRIP_EMBEDDED_IMAGES',      0x0001);
-
-
-
-
 
 
 /**
@@ -864,10 +847,6 @@ $data = ' . var_export($this->store, true) . ';' . PHP_EOL;
 
 
 
-
-
-
-
 class MTFMCache
 {
 	protected $store;           // assoc. array: stores cached data
@@ -979,10 +958,6 @@ class MTFMCache
 
 
 
-
-
-
-
 class FileManager
 {
 	protected $options;
@@ -996,9 +971,8 @@ class FileManager
 
 	public function __construct($options)
 	{
-		$this->options = array_merge(array(
-			
-
+		$this->options = array_merge(array
+		(
 			/*
 			 * Note that all default paths as listed below are transformed to DocumentRoot-based paths
 			 * through the getRealPath() invocations further below:
@@ -1024,12 +998,11 @@ class FileManager
 			/* ^^^ this last one is easily circumnavigated if it's about images: when you can view 'em, you can 'download' them anyway.
 			 *     However, for other mime types which are not previewable / viewable 'in their full bluntal nugity' ;-) , this will
 			 *     be a strong deterent.
-			 *
-			 *     Think Springer Verlag and PDFs, for instance. You can have 'em, but only /after/ you've ...
 			 */
 			'allowExtChange' => false,
 			'safe' => true,
 			'filter' => null,
+			'allowed_extensions' => null,		// Array of allowed extensions. Bypass the 'safe' mode.
 			'chmod' => 0777,
 			'cleanFileName' => TRUE,
 			'ViewIsAuthorized_cb' => null,
@@ -1152,10 +1125,6 @@ class FileManager
 	}
 
 
-
-
-
-
 	/**
 	 * Generalized 'view' handler, which produces a directory listing.
 	 *
@@ -1168,8 +1137,6 @@ class FileManager
 		$dir = $this->legal_url_path2file_path($legal_url);
 		$doubledot = null;
 		$coll = null;
-
-// log_message('error', '_onView : ' .  $dir);
 
 		if (is_dir($dir))
 		{
@@ -2269,13 +2236,14 @@ class FileManager
 			$meta = null;
 			if (!empty($file_arg))
 			{
-				if (!$this->IsHiddenNameAllowed($file_arg))
+				if ( ! $this->IsHiddenNameAllowed($file_arg))
 				{
 					$v_ex_code = 'fmt_not_allowed';
 				}
 				else
 				{
 					$filename = $this->getUniqueName($file_arg, $dir);
+
 					if ($filename !== null)
 					{
 						/*
@@ -2288,8 +2256,12 @@ class FileManager
 						if ($this->options['safe'])
 						{
 							$fi = pathinfo($filename);
-							$fi['extension'] = $this->getSafeExtension(isset($fi['extension']) ? $fi['extension'] : '');
-							$filename = $fi['filename'] . ((isset($fi['extension']) && strlen($fi['extension']) > 0) ? '.' . $fi['extension'] : '');
+
+							if ( ! in_array($fi['extension'], $this->options['allowed_extensions']))
+							{
+								$fi['extension'] = $this->getSafeExtension(isset($fi['extension']) ? $fi['extension'] : '');
+								$filename = $fi['filename'] . ((isset($fi['extension']) && strlen($fi['extension']) > 0) ? '.' . $fi['extension'] : '');
+							}
 						}
 
 						$legal_url = $legal_dir_url . $filename;
@@ -2300,6 +2272,7 @@ class FileManager
 						// so we cache the last entries.
 						$meta = $this->getFileInfo($tmppath, $legal_url);
 						$mime = $meta->getMimeType();
+
 						if (!$this->IsAllowedMimeType($mime, $mime_filters))
 						{
 							$v_ex_code = 'extension';
@@ -2330,11 +2303,13 @@ class FileManager
 				'preliminary_json' => $jserr,
 				'validation_failure' => $v_ex_code
 			);
+
 			if (!empty($this->options['UploadIsAuthorized_cb']) && function_exists($this->options['UploadIsAuthorized_cb']) && !$this->options['UploadIsAuthorized_cb']($this, 'upload', $fileinfo))
 			{
 				$v_ex_code = $fileinfo['validation_failure'];
 				if (empty($v_ex_code)) $v_ex_code = 'authorized';
 			}
+
 			if (!empty($v_ex_code))
 				throw new FileManagerException($v_ex_code);
 
@@ -2346,7 +2321,6 @@ class FileManager
 			$mime = $fileinfo['mime'];
 			$mime_filter = $fileinfo['mime_filter'];
 			$mime_filters = $fileinfo['mime_filters'];
-			//$tmppath = $fileinfo['tmp_filepath'];
 			$resize_imgs = $fileinfo['resize'];
 			$jserr = $fileinfo['preliminary_json'];
 
@@ -2355,7 +2329,7 @@ class FileManager
 
 			//if (!isset($fileinfo['extension']))
 			//  throw new FileManagerException('extension');
-			
+
 			// Creates safe file names
 			if ($this->options['cleanFileName'])
 			{
@@ -2761,7 +2735,7 @@ class FileManager
 
 		$url = $this->legal2abs_url_path($legal_url);
 		$filename = basename($url);
-// log_message('error', '$url : ' . $url);
+
 		// must transform here so alias/etc. expansions inside url_path2file_path() get a chance:
 		$file = $this->url_path2file_path($url);
 
@@ -2988,7 +2962,9 @@ class FileManager
 					// use the abilities of modify_json4exception() to munge/format the exception message:
 					$jsa = array('error' => '');
 					$this->modify_json4exception($jsa, $emsg, 'path = ' . $url);
-					$postdiag_err_HTML .= "\n" . '<p class="err_info">' . $jsa['error'] . '</p>';
+
+					// Partikule : Do not display errors concerning getID3()
+					// $postdiag_err_HTML .= "\n" . '<p class="err_info">' . $jsa['error'] . '</p>';
 
 					if (strpos($emsg, 'img_will_not_fit') !== false)
 					{
@@ -3370,7 +3346,7 @@ class FileManager
 
 		if ($preview_HTML === null)
 		{
-			$preview_HTML = '${nopreview}';
+			$preview_HTML = '<div class="center">${nopreview}</div>';
 		}
 
 		if (!empty($preview_HTML))
@@ -3378,10 +3354,13 @@ class FileManager
 			//$content .= '<h3>${preview}</h3>';
 			$content .= '<div class="filemanager-preview-content">' . $preview_HTML . '</div>';
 		}
+		/*
+		 * Partikule : Do not display errors about getID3()
 		if (!empty($postdiag_err_HTML))
 		{
 			$content .= '<div class="filemanager-errors">' . $postdiag_err_HTML . '</div>';
 		}
+		*/
 		if (!empty($postdiag_dump_HTML) && $metaHTML_mode)
 		{
 			$content .= '<div class="filemanager-diag-dump">' . $postdiag_dump_HTML . '</div>';
@@ -3998,30 +3977,29 @@ class FileManager
 	 */
 	public function getSafeExtension($extension, $safe_extension = 'txt', $mandatory_extension = 'txt')
 	{
-		if (!is_string($extension) || $extension === '') // can't use 'empty($extension)' as "0" is a valid extension itself.
+		if (!is_string($extension) || $extension === '')
 		{
-			//enforce a mandatory extension, even when there isn't one (due to filtering or original input producing none)
 			return (!empty($mandatory_extension) ? $mandatory_extension : (!empty($safe_extension) ? $safe_extension : $extension));
 		}
 		$extension = strtolower($extension);
 		switch ($extension)
 		{
-		case 'exe':
-		case 'dll':
-		case 'com':
-		case 'sys':
-		case 'bat':
-		case 'pl':
-		case 'sh':
-		case 'php':
-		case 'php3':
-		case 'php4':
-		case 'php5':
-		case 'phps':
-			return (!empty($safe_extension) ? $safe_extension : $extension);
+			case 'exe':
+			case 'dll':
+			case 'com':
+			case 'sys':
+			case 'bat':
+			case 'pl':
+			case 'sh':
+			case 'php':
+			case 'php3':
+			case 'php4':
+			case 'php5':
+			case 'phps':
+				return (!empty($safe_extension) ? $safe_extension : $extension);
 
-		default:
-			return $extension;
+			default:
+				return $extension;
 		}
 	}
 
@@ -4189,7 +4167,7 @@ class FileManager
 
 		$largeDir = (!$smallIcon ? 'Large/' : '');
 		$url_path = $this->options['URLpath4assets'] . 'Images/Icons/' . $largeDir . $ext . '.png';
-//log_message('error', 'getIcon : ' . ($url_path));
+
 		$path = (is_file($this->url_path2file_path($url_path)))
 			? $url_path
 			: $this->options['URLpath4assets'] . 'Images/Icons/' . $largeDir . 'default.png';
@@ -4626,8 +4604,6 @@ class FileManager
 	public function url_path2file_path($url_path)
 	{
 		$url_path = $this->rel2abs_url_path($url_path);
-//log_message('error', 'url_path2file_path :' . $url_path);
-//log_message('error', 'FileSystemPath4SiteDocumentRoot :' . $this->options['FileSystemPath4SiteDocumentRoot']);
 		$path = $this->options['FileSystemPath4SiteDocumentRoot'] . $url_path;
 
 		return $path;

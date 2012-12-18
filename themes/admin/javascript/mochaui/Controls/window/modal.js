@@ -33,14 +33,20 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 
 		if (!$('modalOverlay')){
 			this._modalInitialize();
+			this.modalSizeEvent = this._setModalSize.bind(this);
+			window.addEvent('resize', this.modalSizeEvent);
+			/*
 			window.addEvent('resize', function(){
 				this._setModalSize();
 			}.bind(this));
+			*/
 		}
 		this.parent(options);
 	},
 
-	_modalInitialize: function(){
+	_modalInitialize: function()
+	{
+		var self = this;
 		var modalOverlay = new Element('div', {
 			'id': 'modalOverlay',
 			'styles': {
@@ -55,8 +61,11 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 
 		modalOverlay.addEvent('click', function(){
 			var instance = MUI.get(MUI.currentModal.id);
-			if (instance.options.modalOverlayClose) MUI.currentModal.close();
-
+			if (instance.options.modalOverlayClose)
+			{
+				window.removeEvent('resize', self.modalSizeEvent);
+				MUI.currentModal.close();
+			}
 		});
 		
 		if (Browser.ie6){
@@ -77,7 +86,9 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 		});
 		MUI.Modal.modalOverlayCloseMorph = new Fx.Morph($('modalOverlay'), {
 			'duration': 150,
-			onComplete: function(){
+			onComplete: function()
+			{
+				window.removeEvent('resize', this.modalSizeEvent);
 				$('modalOverlay').destroy();
 			}.bind(this)
 		});

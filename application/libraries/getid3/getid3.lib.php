@@ -14,7 +14,7 @@
 class getid3_lib
 {
 
-	static function PrintHexBytes($string, $hex=true, $spaces=true, $htmlsafe=true) {
+	static function PrintHexBytes($string, $hex=true, $spaces=true, $htmlencoding='UTF-8') {
 		$returnstring = '';
 		for ($i = 0; $i < strlen($string); $i++) {
 			if ($hex) {
@@ -26,8 +26,11 @@ class getid3_lib
 				$returnstring .= ' ';
 			}
 		}
-		if ($htmlsafe) {
-			$returnstring = htmlentities($returnstring);
+		if (!empty($htmlencoding)) {
+			if ($htmlencoding === true) {
+				$htmlencoding = 'UTF-8'; // prior to getID3 v1.9.0 the function's 4th parameter was boolean
+			}
+			$returnstring = htmlentities($returnstring, ENT_QUOTES, $htmlencoding);
 		}
 		return $returnstring;
 	}
@@ -264,7 +267,8 @@ class getid3_lib
 		}
 		for ($i = 0; $i < $bytewordlen; $i++) {
 			if ($synchsafe) { // disregard MSB, effectively 7-bit bytes
-				$intvalue = $intvalue | (ord($byteword{$i}) & 0x7F) << (($bytewordlen - 1 - $i) * 7);
+				//$intvalue = $intvalue | (ord($byteword{$i}) & 0x7F) << (($bytewordlen - 1 - $i) * 7); // faster, but runs into problems past 2^31 on 32-bit systems
+				$intvalue += (ord($byteword{$i}) & 0x7F) * pow(2, ($bytewordlen - 1 - $i) * 7);
 			} else {
 				$intvalue += ord($byteword{$i}) * pow(256, ($bytewordlen - 1 - $i));
 			}
@@ -411,6 +415,16 @@ class getid3_lib
 	}
 
 
+	static function ksort_recursive(&$theArray) {
+		ksort($theArray);
+		foreach ($theArray as $key => $value) {
+			if (is_array($value)) {
+				self::ksort_recursive($theArray[$key]);
+			}
+		}
+		return true;
+	}
+
 	static function fileextension($filename, $numextensions=1) {
 		if (strstr($filename, '.')) {
 			$reversedfilename = strrev($filename);
@@ -427,16 +441,13 @@ class getid3_lib
 	}
 
 
-	static function PlaytimeString($playtimeseconds) {
-		$sign = (($playtimeseconds < 0) ? '-' : '');
-		$playtimeseconds = abs($playtimeseconds);
-		$contentseconds = round((($playtimeseconds / 60) - floor($playtimeseconds / 60)) * 60);
-		$contentminutes = floor($playtimeseconds / 60);
-		if ($contentseconds >= 60) {
-			$contentseconds -= 60;
-			$contentminutes++;
-		}
-		return $sign.intval($contentminutes).':'.str_pad($contentseconds, 2, 0, STR_PAD_LEFT);
+	static function PlaytimeString($seconds) {
+		$sign = (($seconds < 0) ? '-' : '');
+		$seconds = abs($seconds);
+		$H = floor( $seconds                            / 3600);
+		$M = floor(($seconds - (3600 * $H)            ) /   60);
+		$S = round( $seconds - (3600 * $H) - (60 * $M)        );
+		return $sign.($H ? $H.':' : '').($H ? str_pad($M, 2, '0', STR_PAD_LEFT) : intval($M)).':'.str_pad($S, 2, 0, STR_PAD_LEFT);
 	}
 
 
@@ -509,10 +520,32 @@ class getid3_lib
 		return ($returnkey ? $minkey : $minvalue);
 	}
 
+	static function XML2array($XMLstring) {
+		if (function_exists('simplexml_load_string')) {
+			if (function_exists('get_object_vars')) {
+				$XMLobject = simplexml_load_string($XMLstring);
+				return self::SimpleXMLelement2array($XMLobject);
+			}
+		}
+		return false;
+	}
+
+	static function SimpleXMLelement2array($XMLobject) {
+		if (!is_object($XMLobject) && !is_array($XMLobject)) {
+			return $XMLobject;
+		}
+		$XMLarray = (is_object($XMLobject) ? get_object_vars($XMLobject) : $XMLobject);
+		foreach ($XMLarray as $key => $value) {
+			$XMLarray[$key] = self::SimpleXMLelement2array($value);
+		}
+		return $XMLarray;
+	}
+
 
 	// Allan Hansen <ahØartemis*dk>
-	// getid3_lib::md5_data() - returns md5sum for a file from starting position to absolute end position
+	// getid3_lib::md5_data() - returns md5sum for a file from startuing position to absolute end position
 	static function hash_data($file, $offset, $end, $algorithm) {
+		static $tempdir = '';
 		if (!getid3_lib::intValueSupported($end)) {
 			return false;
 		}
@@ -564,15 +597,22 @@ class getid3_lib
 
 			}
 			if (preg_match('#(1|ON)#i', ini_get('safe_mode'))) {
-				$ThisFileInfo['warning'][] = 'PHP running in Safe Mode - backtick operator not available, using slower non-system-call '.$algorithm.' algorithm';
+				//throw new Exception('PHP running in Safe Mode - backtick operator not available, using slower non-system-call '.$algorithm.' algorithm');
 				break;
 			}
 			return substr(`$commandline`, 0, $hash_length);
 		}
 
+		if (empty($tempdir)) {
+			// yes this is ugly, feel free to suggest a better way
+			require_once(dirname(__FILE__).'/getid3.php');
+			$getid3_temp = new getID3();
+			$tempdir = $getid3_temp->tempdir;
+			unset($getid3_temp);
+		}
 		// try to create a temporary file in the system temp directory - invalid dirname should force to system temp dir
-		if (($data_filename = tempnam(GETID3_TEMP_DIR, 'getID3')) === false) {
-			// can't find anywhere to create a temp file, just die
+		if (($data_filename = tempnam($tempdir, 'gI3')) === false) {
+			// can't find anywhere to create a temp file, just fail
 			return false;
 		}
 
@@ -580,32 +620,42 @@ class getid3_lib
 		$result = false;
 
 		// copy parts of file
-		ob_start();
-		if ($fp = fopen($file, 'rb')) {
-			ob_end_clean();
-			ob_start();
-			if ($fp_data = fopen($data_filename, 'wb')) {
-				fseek($fp, $offset, SEEK_SET);
-				$byteslefttowrite = $end - $offset;
-				while (($byteslefttowrite > 0) && ($buffer = fread($fp, GETID3_FREAD_BUFFER_SIZE))) {
-					$byteswritten = fwrite($fp_data, $buffer, $byteslefttowrite);
-					$byteslefttowrite -= $byteswritten;
-				}
-				fclose($fp_data);
-				$result = $hash_function($data_filename);
-			} else {
-				$errormessage = ob_get_contents();
-				ob_end_clean();
-			}
-			fclose($fp);
-		} else {
-			$errormessage = ob_get_contents();
-			ob_end_clean();
+		try {
+			getid3_lib::CopyFileParts($file, $data_filename, $offset, $end - $offset);
+			$result = $hash_function($data_filename);
+		} catch (Exception $e) {
+			throw new Exception('getid3_lib::CopyFileParts() failed in getid_lib::hash_data(): '.$e->getMessage());
 		}
 		unlink($data_filename);
 		return $result;
 	}
 
+	static function CopyFileParts($filename_source, $filename_dest, $offset, $length) {
+		if (!getid3_lib::intValueSupported($offset + $length)) {
+			throw new Exception('cannot copy file portion, it extends beyond the '.round(PHP_INT_MAX / 1073741824).'GB limit');
+		}
+		if (is_readable($filename_source) && is_file($filename_source) && ($fp_src = fopen($filename_source, 'rb'))) {
+			if (($fp_dest = fopen($filename_dest, 'wb'))) {
+				if (fseek($fp_src, $offset, SEEK_SET) == 0) {
+					$byteslefttowrite = $length;
+					while (($byteslefttowrite > 0) && ($buffer = fread($fp_src, min($byteslefttowrite, getID3::FREAD_BUFFER_SIZE)))) {
+						$byteswritten = fwrite($fp_dest, $buffer, $byteslefttowrite);
+						$byteslefttowrite -= $byteswritten;
+					}
+					return true;
+				} else {
+					throw new Exception('failed to seek to offset '.$offset.' in '.$filename_source);
+				}
+				fclose($fp_dest);
+			} else {
+				throw new Exception('failed to create file for writing '.$filename_dest);
+			}
+			fclose($fp_src);
+		} else {
+			throw new Exception('failed to open file for reading '.$filename_source);
+		}
+		return false;
+	}
 
 	static function iconv_fallback_int_utf8($charval) {
 		if ($charval < 128) {
@@ -895,21 +945,15 @@ class getid3_lib
 			return $string;
 		}
 
-		// iconv() available
+		// iconv() availble
 		if (function_exists('iconv')) {
-
-			ob_start();
 			if ($converted_string = @iconv($in_charset, $out_charset.'//TRANSLIT', $string)) {
-				ob_end_clean();
 				switch ($out_charset) {
 					case 'ISO-8859-1':
 						$converted_string = rtrim($converted_string, "\x00");
 						break;
 				}
 				return $converted_string;
-			} else {
-				$errormessage = ob_get_contents();
-				ob_end_clean();
 			}
 
 			// iconv() may sometimes fail with "illegal character in input string" error message
@@ -945,6 +989,7 @@ class getid3_lib
 
 
 	static function MultiByteCharString2HTML($string, $charset='ISO-8859-1') {
+		$string = (string) $string; // in case trying to pass a numeric (float, int) string, would otherwise return an empty string
 		$HTMLstring = '';
 
 		switch ($charset) {
@@ -1092,20 +1137,20 @@ class getid3_lib
 
 
 	static function GetDataImageSize($imgData, &$imageinfo) {
+		static $tempdir = '';
+		if (empty($tempdir)) {
+			// yes this is ugly, feel free to suggest a better way
+			require_once(dirname(__FILE__).'/getid3.php');
+			$getid3_temp = new getID3();
+			$tempdir = $getid3_temp->tempdir;
+			unset($getid3_temp);
+		}
 		$GetDataImageSize = false;
-		if ($tempfilename = tempnam(GETID3_TEMP_DIR, 'getID3')) {
-			ob_start();
-			if ($tmp = fopen($tempfilename, 'wb')) {
-				ob_end_clean();
+		if ($tempfilename = tempnam($tempdir, 'gI3')) {
+			if (is_writable($tempfilename) && is_file($tempfilename) && ($tmp = fopen($tempfilename, 'wb'))) {
 				fwrite($tmp, $imgData);
 				fclose($tmp);
-				ob_start();
-				$GetDataImageSize = GetImageSize($tempfilename, $imageinfo);
-				$errormessage = ob_get_contents();
-				ob_end_clean();
-			} else {
-				$errormessage = ob_get_contents();
-				ob_end_clean();
+				$GetDataImageSize = @GetImageSize($tempfilename, $imageinfo);
 			}
 			unlink($tempfilename);
 		}
@@ -1179,6 +1224,11 @@ class getid3_lib
 
 			// Copy to ['comments_html']
 			foreach ($ThisFileInfo['comments'] as $field => $values) {
+				if ($field == 'picture') {
+					// pictures can take up a lot of space, and we don't need multiple copies of them
+					// let there be a single copy in [comments][picture], and not elsewhere
+					continue;
+				}
 				foreach ($values as $index => $value) {
 					if (is_array($value)) {
 						$ThisFileInfo['comments_html'][$field][$index] = $value;
@@ -1188,6 +1238,7 @@ class getid3_lib
 				}
 			}
 		}
+		return true;
 	}
 
 
@@ -1255,6 +1306,10 @@ class getid3_lib
 			$GETID3_ERRORARRAY[] = $diemessage;
 		}
 		return false;
+	}
+
+	public static function trimNullByte($string) {
+		return trim($string, "\x00");
 	}
 
 }

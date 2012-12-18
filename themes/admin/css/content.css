@@ -51,7 +51,7 @@ License:
 
 #preprod-flag {
 	width:120px;background-color: #c00;color: #fff;position: absolute;top:0px;
-	z-index: 100000;margin-right: auto;margin-left: 185px;padding:2px 5px;text-align: center;
+	z-index: 50;margin-right: auto;margin-left: 185px;padding:2px 5px;text-align: center;
 	cursor: help;
 }
 

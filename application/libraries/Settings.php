@@ -115,9 +115,9 @@ class Settings
 
 
 	/**
-	 *
-	 *
-	 *
+	 * @param $list
+	 * @param $key_field
+	 * @param $value_field
 	 */
 	public static function set_lang_settings($list, $key_field, $value_field)
 	{
@@ -191,6 +191,9 @@ class Settings
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Sets all the languages online
 	 *
@@ -209,6 +212,9 @@ class Settings
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	public static function get_default_admin_lang()
 	{
 		$default_admin_lang = self::get('default_admin_lang');
@@ -220,8 +226,11 @@ class Settings
 		
 		return $default_admin_lang;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	public static function get_uri_lang()
 	{
 		$str = preg_replace("|/*(.+?)/*$|", "\\1", str_replace(base_url(), '', current_url()));
@@ -302,12 +311,14 @@ class Settings
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	public static function get_mimes_types()
 	{
-//		global $mimes;
-	
 		if (self::$mimes == FALSE)
 		{
+			$mimes_ionize = array();
 			if (@require_once(APPPATH.'config/mimes_ionize'.EXT))
 			{
 				self::$mimes = $mimes_ionize;
@@ -317,24 +328,22 @@ class Settings
 
 		return self::$mimes;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	public static function get_allowed_extensions($type = FALSE)
 	{
 		$allowed_extensions = array();
-		
-		if (self::$mimes == FALSE)
-		{
-			require_once(APPPATH.'config/mimes_ionize'.EXT);	
-			self::$mimes = $mimes_ionize;
-		}
-		
+
+		$mimes_ionize = self::get_mimes_types();
 
 		$filemanager_file_types = explode(',', self::get('filemanager_file_types'));
 
 		if ($type == FALSE)
 		{
-			foreach(self::$mimes as $type)
+			foreach($mimes_ionize as $type)
 			{
 				foreach($type as $ext => $mime)
 				{
@@ -345,9 +354,9 @@ class Settings
 		}
 		else
 		{
-			if ( ! empty(self::$mimes[$type]))
+			if ( ! empty($mimes_ionize[$type]))
 			{
-				foreach(self::$mimes[$type] as $ext => $mime)
+				foreach($mimes_ionize[$type] as $ext => $mime)
 				{
 					if (in_array($ext, $filemanager_file_types))
 						$allowed_extensions[] = $ext;
@@ -357,13 +366,16 @@ class Settings
 		
 		return $allowed_extensions;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	public static function get_allowed_mimes()
 	{
 		$allowed_mimes = array();
-		
-		require_once(APPPATH.'config/mimes_ionize'.EXT);
+
+		$mimes_ionize = self::get_mimes_types();
 
 		$filemanager_file_types = explode(',', self::get('filemanager_file_types'));
 		
@@ -371,8 +383,19 @@ class Settings
 		{
 			foreach($type as $ext => $mime)
 			{
-				if ( ! in_array($mime, $allowed_mimes) && in_array($ext, $filemanager_file_types))
-					$allowed_mimes[] = $mime;
+				if (is_array($mime))
+				{
+					foreach($mime as $item)
+					{
+						if ( ! in_array($item, $allowed_mimes) && in_array($ext, $filemanager_file_types))
+							$allowed_mimes[] = $item;
+					}
+				}
+				else
+				{
+					if ( ! in_array($mime, $allowed_mimes) && in_array($ext, $filemanager_file_types))
+						$allowed_mimes[] = $mime;
+				}
 			}
 		}
 		return $allowed_mimes;

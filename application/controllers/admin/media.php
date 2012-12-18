@@ -46,10 +46,9 @@ class Media extends MY_admin
 		$this->load->library('medias');
 		$this->load->library('image_lib');
 
-		
 		// Remove protection if the filemanager is called on upload
 		// Purpose : Allow upload.
-		// Check is done in the method.
+		// Security check is done in the method.
 		if ($this->uri->segment(3) == 'filemanager' && $this->uri->segment(4) == 'upload')
 		{
 			$this->connect->folder_protection = array();	
@@ -64,8 +63,9 @@ class Media extends MY_admin
 	 * Display the filemanager
 	 * Used for standalone display in the "Content->Medias" panel of Ionize
 	 *
+	 * @param null $mode
 	 */
-	function get_media_manager($mode = NULL)
+	public function get_media_manager($mode = NULL)
 	{
 		// Open the file manager regarding to settings
 		switch(Settings::get('filemanager'))
@@ -106,13 +106,11 @@ class Media extends MY_admin
 	 * Mootools FileManager loader
 	 * Equiv. to the "manager.php" file in mootools-filemanager Demo folder.
 	 *
-	 * @param	String		Event to call. Calls Filemanager->on[$event](). Exemple : The URL /media/filemanager/detail calls Filemanager->onDetail()
-	 * @param	String		The directory to upload. Only used if $event is "upload"
-	 * @param	Boolean		Should the picture be resized ? 1 for yes.
-	 * @param	String		Tokken used to check if the user is connected.
-	 *
+	 * @param null $event
+	 * @param bool $resize
+	 * @param bool $uploadAuthData
 	 */
-	function filemanager($event = NULL, $resize = FALSE, $uploadAuthData = FALSE)
+	public function filemanager($event = NULL, $resize = FALSE, $uploadAuthData = FALSE)
 	{
 		// Get allowed mimes
 		$allowed_mimes = implode(',', Settings::get_allowed_mimes());
@@ -124,8 +122,6 @@ class Media extends MY_admin
 			'URLpath4assets' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
 //			'URLpath4thumbnails' => '/' . trim(Settings::get('files_path'), '/') . '/.thumbs',
 			'URLpath4thumbnails' => Settings::get('files_path') . '/.thumbs',
-			
-			
 			'upload' => TRUE,
 			'destroy' => TRUE,
 			'create' => TRUE,
@@ -138,7 +134,8 @@ class Media extends MY_admin
 				'height' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : 2000
 			),
 			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
-			'filter' => $allowed_mimes
+			'filter' => $allowed_mimes,
+			'allowed_extensions' => Settings::get_allowed_extensions(),
 		);
 
 //		$this->load->library('Filemanager', $params);
@@ -154,31 +151,28 @@ class Media extends MY_admin
 		}
 		else
 		{
-			if ($event == 'upload')
-			{
-				// Flash mode (Multiple files) : PHPSESSID is send
-				if ( ! empty($_POST['PHPSESSID']))
-					$session_data = $this->session->switchSession($_POST['PHPSESSID']);
-				
-				// Get the original session tokken
-				$tokken = $this->session->userdata('uploadTokken');
-				
-				// Get the sent tokken & compare
-				$sent_tokken = ( ! empty($_POST['uploadTokken'])) ? $_POST['uploadTokken'] : '';
+			// Flash mode (Multiple files) : PHPSESSID is send
+			if ( ! empty($_POST['PHPSESSID']))
+				$session_data = $this->session->switchSession($_POST['PHPSESSID']);
 
-				// Only upload if tokkens match
-				if ($tokken == $sent_tokken)
-				{
+			// Get the original session tokken
+			$tokken = $this->session->userdata('uploadTokken');
+
+			// Get the sent tokken & compare
+			$sent_tokken = ( ! empty($_POST['uploadTokken'])) ? $_POST['uploadTokken'] : '';
+
+			// Only upload if tokkens match
+			if ($tokken == $sent_tokken)
+			{
 //					$this->Filemanager->fireEvent($event);
-					$this->Filemanagerwithaliassupport->fireEvent($event);
-				}
-				else
-				{
-					$this->xhr_output(array(
-						'status' => 0,
-						'error' => lang('ionize_session_expired')
-					));
-				}
+				$this->Filemanagerwithaliassupport->fireEvent($event);
+			}
+			else
+			{
+				$this->xhr_output(array(
+					'status' => 0,
+					'error' => lang('ionize_session_expired')
+				));
 			}
 		}
 		
@@ -188,31 +182,17 @@ class Media extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	
-	/**
-	 * Called by ckEditor
-	 * CKEDITOR.config.filebrowserBrowseUrl
-	 *
-	 */
-	function ckfilemanager()
-	{
-		$data['CKEditorFuncNum'] = $_REQUEST['CKEditorFuncNum'];
-	
-		$this->output('filemanager/mootools_filemanager_ck', $data);	
-	}
-
-	// ------------------------------------------------------------------------
-
 
 	/**
-	 * Returns a tokken based on the current session ID + the encryption key : md5($this->session->userdata('session_id') . config_item('encryption_key'))
+	 * Returns a tokken based on the current session ID + the encryption key :
+	 * md5($this->session->userdata('session_id') . config_item('encryption_key'))
 	 * If the user isn't connected, returns an empty string
 	 *
 	 * Called through XHR when the filemanager is opened.
 	 * The tokken is send with the uploaded data and checked before anything is uploaded
 	 *
 	 */
-	function get_tokken()
+	public function get_tokken()
 	{
 		if (Connect()->is('editors'))
 		{
@@ -278,6 +258,13 @@ class Media extends MY_admin
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $id_media
+	 *
+	 */
 	function get_crop($id_media)
 	{
 		$picture = $this->media_model->get($id_media);
@@ -298,8 +285,14 @@ class Media extends MY_admin
 		$this->output('media/picture/crop');
 	}
 
-	
-	function crop()
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 *
+	 */
+	public function crop()
 	{
 		$coords = $this->input->post('coords');
 		$id_media = $this->input->post('id_media');
@@ -361,15 +354,11 @@ class Media extends MY_admin
 	 * Add one media to a parent
 	 * Creates also thumbnails for picture if type = 'picture'
 	 *
-	 * @param	string	Media type. Can be 'picture', 'music', 'video', 'file'
-	 * @param	string	parent. Example : 'article', 'page'
-	 * @param	string	Parent ID
-	 * @param	string	Deprecated.
-	 *					The path is send through post
-	 *					Complete path, including media file name, to the medium
-	 *
+	 * @param $type			Media type. Can be 'picture', 'music', 'video', 'file'
+	 * @param $parent		parent. Example : 'article', 'page'
+	 * @param $id_parent	Parent ID
 	 */
-	function add_media($type, $parent, $id_parent) 
+	public function add_media($type, $parent, $id_parent)
 	{
 		// Clear the cache
 		Cache()->clear_cache();
@@ -443,9 +432,14 @@ class Media extends MY_admin
 		}
 	}
 
-	
-	
-	function add_external_media()
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 *
+	 */
+	public function add_external_media()
 	{
 		// Clear the cache
 		Cache()->clear_cache();
@@ -515,13 +509,14 @@ class Media extends MY_admin
 
 	/** 
 	 * Init all the thumbs fo a given parent
+	 *
 	 * @param	string	parent type
 	 * @param	string	parent ID
 	 *
 	 * @TODO : Improve the errors management
 	 *
 	 */
-	function init_thumbs_for_parent($parent, $id_parent)
+	public function init_thumbs_for_parent($parent, $id_parent)
 	{
 		$pictures =	$this->media_model->get_list($parent, $id_parent, 'picture');
 
@@ -554,7 +549,7 @@ class Media extends MY_admin
 	 * @param	string	Picture ID
 	 *
 	 */
-	function init_thumbs($id)
+	public function init_thumbs($id)
 	{
 		try
 		{
@@ -572,7 +567,13 @@ class Media extends MY_admin
 	}
 
 
-	function delete_thumbs()
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 *
+	 */
+	public function delete_thumbs()
 	{
 		$thumb_path = DOCPATH . Settings::get('files_path'). '/.thumbs/';
 		delete_files($thumb_path, TRUE);
@@ -587,6 +588,7 @@ class Media extends MY_admin
 
 	}
 
+
 	// ------------------------------------------------------------------------
 
 
@@ -599,7 +601,7 @@ class Media extends MY_admin
 	 * @param	string		medium ID
 	 *
 	 */
-	function detach_media($type, $parent, $id_parent, $id_media) 
+	public function detach_media($type, $parent, $id_parent, $id_media)
 	{
 		if ($parent !== FALSE && $id_parent !== FALSE && $id_media !== FALSE)
 		{			
@@ -638,7 +640,7 @@ class Media extends MY_admin
 	 * @param	string 	parent ID
 	 *
 	 */
-	function detach_media_by_type($parent, $id_parent, $type = FALSE)
+	public function detach_media_by_type($parent, $id_parent, $type = FALSE)
 	{
 		if ($parent !== FALSE && $id_parent !== FALSE && $type !== FALSE)
 		{
@@ -669,7 +671,7 @@ class Media extends MY_admin
 	 * @param	string	parent ID
 	 *
 	 */
-	function save_ordering($parent, $id_parent)
+	public function save_ordering($parent, $id_parent)
 	{
 		$order = $this->input->post('order');
 		
@@ -702,7 +704,7 @@ class Media extends MY_admin
 	 * @param int		Parent ID (context in which the media is linked)
 	 *
 	 */
-	function edit($type, $id, $parent, $id_parent)
+	public function edit($type, $id, $parent, $id_parent)
 	{
 		$this->media_model->feed_template($id, $this->template);
 		$this->media_model->feed_lang_template($id, $this->template);
@@ -751,7 +753,7 @@ class Media extends MY_admin
 	 * Saves one media metadata
 	 *
 	 */
-	function save()
+	public function save()
 	{
 		// Clear the cache
 		Cache()->clear_cache();
@@ -853,7 +855,10 @@ class Media extends MY_admin
 	}
 
 
-	function get_thumb($id)
+	// ------------------------------------------------------------------------
+
+
+	public function get_thumb($id)
 	{
 		// Header data
 		$mime = self::$DEFAULT_TYPE;
@@ -901,7 +906,10 @@ class Media extends MY_admin
 	}
 
 
-	function push_thumb($content, $mime = NULL, $expire = NULL)
+	// ------------------------------------------------------------------------
+
+
+	public function push_thumb($content, $mime = NULL, $expire = NULL)
 	{
         if ($expire === NULL) $expire = self::$DEFAULT_EXPIRE;
         $expires = gmdate("D, d M Y H:i:s", time() + $expire) . " GMT";
@@ -916,6 +924,7 @@ class Media extends MY_admin
         
         die();
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -933,7 +942,7 @@ class Media extends MY_admin
 	 *						unsharp : 	unsharp filter on thumb (true, false)
 	 *					 )
 	 */
-	function _init_thumbs($id)
+	public function _init_thumbs($id)
 	{
 		// Pictures data from database
 		$picture = $this->media_model->get($id);
@@ -985,146 +994,13 @@ class Media extends MY_admin
 
 
 	/**
-	 * Create one thumbnail
-	 *
-	 * @param	string	Full path to the source image, including image file name
-	 * @param	string	Full path to the destination image, including image file name
-	 * @param	array	Thumb settings array
-	 *
-	 */
-/*
-	function _create_thumbnail($source_image, $new_image, $settings)
-	{
-		// Get images data : sizes
-		$imgData = array();
-		
-		// Max memory needed
-		$max_size = 0;
-		
-		// Get the image dimensions
-		$dim = $this->get_image_dimensions($source_image);
-		$imgData['image_width'] = $dim['width'];
-		$imgData['image_height'] = $dim['height'];
-		
-		// CI Image_lib config array
-		$config['source_image'] =	$source_image;
-		$config['new_image'] =		$new_image;
-		$config['quality'] =		'90';
-		$config['maintain_ratio'] = true;
-		$config['unsharpmask'] =	$settings['unsharp'];
-		
-		$config2 = array();
-
-		// Non square picture
-		if( empty($settings['square']) || $settings['square'] != 'true' )
-		{
-			// Master dim as choosen size ref
-			$config['master_dim'] =	$settings['sizeref'];
-		}
-		// Square picture
-		else 
-		{
-			if ($imgData['image_width'] >= $imgData['image_height']) 
-				$config['master_dim'] =	$config2['master_dim'] = 'height';
-			else 
-				$config['master_dim'] =	$config2['master_dim'] = 'width';
-				
-		}
-		
-		// Delete existing thumb
-		if (is_file($new_image))
-		{
-			// Change the file rights
-			if ( ! @chmod($new_image, 0777))
-			{
-	//			throw new Exception(lang('ionize_exception_chmod') );
-			}
-			
-			// Delete the old thumb file
-			if ( ! @unlink($new_image))
-			{
-	//			throw new Exception(lang('ionize_exception_unlink') );
-			}
-		}
-		
-		// Resize only if image size greather than thumb wished size
-		// If greather, copy the source to the thumb destination folder
-		if ($imgData['image_'.$config['master_dim']] >= $settings['size'])
-		{
-			$config['width'] =	$config['height'] =	$settings['size']; 		// Resize on master_dim. Used to keep ratio.
-		
-			$this->image_lib->clear();
-			$this->image_lib->initialize($config);
-
-			// Thumbnail creation
-			if ( ! $this->image_lib->resize() )
-			{
-				throw new Exception(lang('ionize_exception_image_resize') );
-			} 
-			
-			// Crop to square if necessary
-			if(!empty($settings['square']) && $settings['square'] == 'true') 
-			{
-				// CI Image_lib config array
-				$config2['source_image'] =	$this->image_lib->full_dst_path;
-				
-				// Calculate x and y axis
-				$config2['x_axis'] = $config2['y_axis'] = '0';
-				
-				// Get image dimension before crop
-				$dim = $this->get_image_dimensions($this->image_lib->full_dst_path);
-
-				// Center the scare
-				if ($dim['width'] > $dim['height'])
-				{
-					$config2['x_axis'] = ($dim['width'] - $config['width']) / 2;
-				}
-				else
-				{
-					$config2['y_axis'] = ($dim['height'] - $config['height']) / 2;
-				}
-
-				$config2['new_image'] =		'';
-				$config2['unsharpmask'] =	false;
-				$config2['maintain_ratio'] = false;
-				$config2['height'] =		$settings['size'];
-				$config2['width'] =			$settings['size'];
-				$this->image_lib->clear();
-				$this->image_lib->initialize($config2);
-				
-				if ( true !== $this->image_lib->crop() )
-				{
-					throw new Exception(lang('ionize_exception_image_crop') );
-				}
-			}
-			
-			// Change the mod of the generated file
-			if ( ! @chmod($new_image, 0777))
-			{
-//				throw new Exception(lang('ionize_exception_chmod') . ' : ' . $new_image);
-			}
-		}
-		else 
-		{
-			if ( ! @copy($source_image, $new_image) )
-			{
-				throw new Exception(lang('ionize_exception_copy') . ' : ' . $source_image);
-			}
-		}
-	}
-*/
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * Get the dimensions of a picture
 	 *
 	 * @param	string	Complete path to the image file
 	 * @return	array	Array of dimension.
 	 *					'width' : contains the width
 	 *					'height' : contains the height
+	 * @throws Exception
 	 *
 	 */
 	private function get_image_dimensions($path)
@@ -1155,6 +1031,12 @@ class Media extends MY_admin
 
 	// ------------------------------------------------------------------------
 
+
+	/**
+	 * @param $path
+	 *
+	 * @return array
+	 */
 	private function get_ID3($path)
 	{
 		$tags = array_fill_keys(self::$MP3_ID3, '');
@@ -1177,7 +1059,16 @@ class Media extends MY_admin
 		
 		return $tags;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $data
+	 * @param $tags
+	 *
+	 */
 	private function set_ID3(&$data, $tags)
 	{
 		// Displayed datas
@@ -1193,7 +1084,16 @@ class Media extends MY_admin
 			$data[$lang['lang']]['alt'] = $data[$lang['lang']]['description'] = $tags['artist'] . ' - ' . $tags['album'] . ' : ' . $tags['title'];
 		}
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * @param $path
+	 * @param $tags
+	 *
+	 * @return bool
+	 */
 	private function write_ID3($path, $tags)
 	{
 		if ( is_file(DOCPATH.$path) )
@@ -1222,8 +1122,17 @@ class Media extends MY_admin
 		}
 		return FALSE;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $path
+	 * @param $ext
+	 *
+	 * @return bool
+	 */
 	private function is($path, $ext)
 	{
 		if (pathinfo(DOCPATH.$path, PATHINFO_EXTENSION) == $ext)
