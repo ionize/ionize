@@ -33,7 +33,7 @@
 
 			<form name="themeTranslationForm" id="themeTranslationForm" method="post" action="">
 
-				<input type="hidden" name="file_name" value="<?php echo Settings::get('theme'); ?>"></input>
+				<input type="hidden" name="file_name" value="theme"></input>
 
 				<!-- Buttons -->
 				<input id="themeTranslationFormSubmit" type="button" class="submit right ml5" value="<?php echo lang('ionize_button_save'); ?>" />
