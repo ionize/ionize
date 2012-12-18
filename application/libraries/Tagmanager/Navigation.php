@@ -65,8 +65,8 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_navigation(FTL_Binding $tag)
 	{
-		$cache = ($tag->getAttribute('cache') == 'off' ) ? FALSE : TRUE;
-		
+		$cache = $tag->getAttribute('cache', TRUE);
+
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
 			return $str;

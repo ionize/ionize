@@ -551,7 +551,7 @@
 								<label for="clear_cache"  title="<?php echo lang('ionize_help_clear_cache'); ?>"><?php echo lang('ionize_label_clear_cache'); ?></label>
 							</dt>
 							<dd>
-								<input id="clear_cache" type="button" class="button m0" value="<?php echo lang('ionize_button_clear_cache'); ?>" />
+								<input id="clear_cache" type="button" class="submit m0" value="<?php echo lang('ionize_button_clear_cache'); ?>" />
 							</dd>
 						</dl>
 		

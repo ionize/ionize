@@ -683,10 +683,13 @@ class TagManager
 	 */
 	public static function set_cache(FTL_Binding $tag, $output)
 	{
-		if (isset($tag->attr['nocache'])) return FALSE;
-		
+		$cache = $tag->getAttribute('cache', TRUE);
+
+		if ( ! $cache)
+			return FALSE;
+
 		$id = self::get_tag_cache_id($tag);
-		
+
 		Cache()->store($id, $output);
 	} 		
 
@@ -739,18 +742,14 @@ class TagManager
 	 */
 	public static function get_tag_cache_id(FTL_Binding $tag)
 	{
-		if (isset($tag->attr['nocache'])) return FALSE;
-	
-		$ci =& get_instance();
-		
 		$uri =	config_item('base_url').				// replaced $ci->config->item(....
 				Settings::get_lang('current').
 				config_item('index_page').
-				$ci->uri->uri_string();
-		
-		asort($tag->attr);
-		
-		$uri .= serialize($tag->attr);
+				self::$ci->uri->uri_string();
+
+		$attr = $tag->getAttributes();
+		asort($attr);
+		$uri .= serialize($attr);
 
 		return $tag->name . $uri;
 	}

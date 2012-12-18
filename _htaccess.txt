@@ -3,6 +3,9 @@ RewriteEngine On
 # The RewriteBase / instruction is commented. Remove the "#" to uncomment
 # RewriteBase /
 
+# Only needed for some hosts, if the front returns 403.
+# Options +FollowSymlinks
+
 # Memory Limit
 # php_value memory_limit 256M
 # php_value max_execution_time 18000

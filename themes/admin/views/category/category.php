@@ -64,7 +64,7 @@
 					<!-- description -->
 					<dl class="small">
 						<dt>
-							<label title="<?php echo lang('ionize_label_help_description'); ?>" for="description_<?php echo $lang; ?><?php echo $id_category; ?>"><?php echo lang('ionize_label_description'); ?></label>
+							<label for="description_<?php echo $lang; ?><?php echo $id_category; ?>"><?php echo lang('ionize_label_description'); ?></label>
 						</dt>
 						<dd>
 							<textarea id="description_<?php echo $lang; ?><?php echo $id_category; ?>" name="description_<?php echo $lang; ?>" class="tinyCategory w220 h120" rel="<?php echo $lang; ?>"><?php echo ${$lang}['description']; ?></textarea>

@@ -42,7 +42,7 @@ class Category extends MY_admin
 	 * Displays the categories panel
 	 *
 	 */
-	function index()
+	public function index()
 	{
 		$this->output('category/index');
 	}
@@ -58,7 +58,7 @@ class Category extends MY_admin
 	 * @param	string	parent ID
 	 *
 	 */
-	function get_form($parent = FALSE, $id_parent = FALSE)
+	public function get_form($parent = FALSE, $id_parent = FALSE)
 	{
 		$this->category_model->feed_blank_template($this->template);
 		$this->category_model->feed_blank_lang_template($this->template);
@@ -77,38 +77,10 @@ class Category extends MY_admin
 
 	
 	/**
-	 * Get categories Ordering list view
-	 * Parent and Parent ID are passed in order to keep this information in the view
-	 * Purpose : Parent categories selectbox refreshing after ordering
-	 *
-	 * @param	string	parent type. Can be 'article', 'page', etc.
-	 * @param	string	parent ID. 	 
-	 *
-	 * @return string	HTML categories select box
-	 *
-	function get_categories($parent = FALSE, $id_parent = FALSE)
-	{
-		// Pass the parent informations to the template
-		$this->template['parent'] = $parent;
-		$this->template['id_parent'] = $id_parent;
-
-		// New category form feed
-		$this->category_model->feed_blank_template($this->template);
-		$this->category_model->feed_blank_lang_template($this->template);
-		
-	
-		// Categories list
-		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
-
-		$this->output('categories');
-	}
-	 */
-
-	/**
 	 * Return categories list
 	 *
 	 */
-	function get_list()
+	public function get_list()
 	{
 
 		// New category form feed
@@ -135,7 +107,7 @@ class Category extends MY_admin
 	 * @return string	HTML categories select box
 	 *
 	 */
-	function get_select($parent = FALSE, $id_parent = FALSE)
+	public function get_select($parent = FALSE, $id_parent = FALSE)
 	{
 		// Get data formed to feed the category select box
 		$categories = $this->category_model->get_categories_select();
@@ -162,7 +134,7 @@ class Category extends MY_admin
 	 * @param	string	parent ID
 	 *
 	 */
-	function edit($id, $parent = FALSE, $id_parent = FALSE)
+	public function edit($id, $parent = FALSE, $id_parent = FALSE)
 	{
 
 		$this->category_model->feed_template($id, $this->template);
@@ -185,7 +157,7 @@ class Category extends MY_admin
 	 * Saves one category
 	 *
 	 */
-	function save()
+	public function save()
 	{
 		if( $this->input->post('name') != '' ) {
 
@@ -201,15 +173,7 @@ class Category extends MY_admin
 				// Save data
 				$this->id = $this->category_model->save($this->data, $this->lang_data);
 				
-				// Get data for answer
-//				$data = $this->category_model->get($this->id, Settings::get_lang('default'));
-				
-				
-				/*
-				 * JSON Update array
-				 * If parent is defined in form, the categories selectbox of the parent will be updated
-				 *
-				 */
+				// JSON Update array : If parent is defined in form, the categories selectbox of the parent will be updated
 				if ($this->input->post('parent') != '')
 				{
 					$this->update[] = array(
@@ -217,22 +181,21 @@ class Category extends MY_admin
 						'url' => 'category/get_select/'.$this->input->post('parent').'/'.$this->input->post('id_parent')
 					);
 				}
-				
-				// Finally, update the categories list (categories item manager)
-//				$data['type'] = 'category';
-//				$data['rel'] = $this->id;
-				
-				$this->callback = array(
-					array(
-						'fn' => 'ION.HTML',
-						'args' => array('category/get_list', '', array('update' => 'categoriesContainer'))
-					),
-					array(
-						'fn' => 'ION.clearFormInput',
-						'args' => array('form' => 'newCategoryForm')
-					)
-				);
-				
+				// We suppose we are in the categories manager
+				else
+				{
+					$this->callback = array(
+						array(
+							'fn' => 'ION.HTML',
+							'args' => array('category/get_list', '', array('update' => 'categoriesContainer'))
+						),
+						array(
+							'fn' => 'ION.clearFormInput',
+							'args' => array('form' => 'newCategoryForm')
+						)
+					);
+				}
+
 				$this->success(lang('ionize_message_category_saved'));
 			}
 		}
@@ -253,7 +216,7 @@ class Category extends MY_admin
 	 * @param	string 	Parent table name. optional
 	 * @param	int 	Parent ID. Optional
 	 */
-	function delete($id, $parent = FALSE, $id_parent = FALSE)
+	public function delete($id, $parent = FALSE, $id_parent = FALSE)
 	{
 		if ($id && $id != '')
 		{
@@ -301,7 +264,7 @@ class Category extends MY_admin
 	 * Saves categories ordering
 	 * 
 	 */
-	function save_ordering($parent = FALSE, $id_parent = FALSE)
+	public function save_ordering($parent = FALSE, $id_parent = FALSE)
 	{
 		$order = $this->input->post('order');
 		
@@ -333,7 +296,7 @@ class Category extends MY_admin
 	 * Prepare data before saving
 	 *
 	 */
-	function _prepare_data($xhr = FALSE)
+	private function _prepare_data($xhr = FALSE)
 	{
 		// Standard fields
 		$fields = $this->db->list_fields('category');

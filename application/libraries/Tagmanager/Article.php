@@ -441,7 +441,7 @@ class TagManager_Article extends TagManager
 	 */
 	public static function tag_article(FTL_Binding $tag)
 	{
-		$cache = ($tag->getAttribute('cache') == 'off') ? FALSE : TRUE;
+		$cache = $tag->getAttribute('cache', TRUE);
 
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
@@ -496,7 +496,7 @@ class TagManager_Article extends TagManager
 	 */
 	public static function tag_articles(FTL_Binding $tag)
 	{
-		$cache = ($tag->getAttribute('cache') == 'off') ? FALSE : TRUE;
+		$cache = $tag->getAttribute('cache', TRUE);
 
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
