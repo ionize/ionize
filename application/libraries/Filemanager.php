@@ -2754,15 +2754,17 @@ class FileManager
 			$mime2 = $this->getMimeFromExt($file);
 			$meta->store('mime_type from file extension', $mime2);
 
-			$bad_ext = ($mime2 != $mime);
-			if ($bad_ext)
-			{
-				$iconspec = 'is.' + $this->getExtFromMime($mime);
-			}
-			else
-			{
-				$iconspec = $filename;
-			}
+//			$bad_ext = ($mime2 != $mime);
+//			if ($bad_ext)
+//			{
+//				$iconspec = 'is.' + $this->getExtFromMime($mime);
+//			}
+//			else
+//			{
+//				$iconspec = $filename;
+//			}
+
+            $iconspec = $filename;
 
 			if (!$this->IsAllowedMimeType($mime, $mime_filters))
 				throw new FileManagerException('extension');
