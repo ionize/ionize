@@ -179,6 +179,12 @@
 	</script>
 <?php endif ;?>
 
+<!-- TinyMCE user's Setup addon -->
+<?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/javascript/tinyMCE.js' )) :?>
+	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/javascript/tinyMCE.js"></script>
+<?php endif ;?>
+
+
 <script type="text/javascript">
 	/**
 	 * Global filemanager

@@ -65,12 +65,12 @@ ION.append({
 						ed.onKeyUp.add(function(ed, e) {
 							ION.setUnsavedData();
 						});
+						ION.tinySmallOnSetup(ed);
 					}
 				};
 				return settings;
 				break;
 			
-
 			default:
 
 				var settings = {
@@ -128,6 +128,7 @@ ION.append({
 						ed.onKeyUp.add(function(ed, e) {
 							ION.setUnsavedData();
 						});
+						ION.tinyOnSetup(ed);
 					},
 					formats : {
 						alignleft : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'left'},
@@ -400,7 +401,29 @@ ION.append({
 				}
 			}
 		);
-	}
+	},
+
+
+	/**
+	 * Called at tinyMCE setup
+	 * Can be overidden by user's theme JS if located in :
+	 * /themes/my_theme/assets/javascript/tinyMCE.js
+	 *
+	 * @param ed
+	 *
+	 */
+	tinyOnSetup:function(ed){},
+
+
+	/**
+	 * Called at tinyMCE small editors setup
+	 * Can be overidden by user's theme JS if located in :
+	 * /themes/my_theme/assets/javascript/tinyMCE.js
+	 *
+	 * @param ed
+	 *
+	 */
+	tinySmallOnSetup:function(ed){}
 
 });
 
