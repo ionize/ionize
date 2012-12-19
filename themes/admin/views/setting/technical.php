@@ -117,7 +117,13 @@
 										<tr>
 											<td class="right pr10"><?php echo $ext; ?> </td>
 											<td>
-												<label for="allowed_type_<?php echo $ext; ?>" class="m0"><?php echo $mime; ?></label>
+												<label for="allowed_type_<?php echo $ext; ?>" class="m0">
+													<?php if (is_array($mime)): ?>
+														<?php echo(implode('<br/>', $mime)); ?>
+													<?php else: ?>
+														<?php echo $mime; ?>
+													<?php endif;?>
+												</label>
 											</td>
 											<td class="center">
 												<input <?php if(in_array($ext, $filemanager_file_types)) :?>checked="checked" <?php endif ;?>id="allowed_type_<?php echo $ext; ?>" class="inputcheckbox" name="allowed_type[]" type="checkbox" value="<?php echo $ext; ?>" />
