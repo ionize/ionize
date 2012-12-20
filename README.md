@@ -1,4 +1,4 @@
-Ionize CMS : Tag test
+Ionize CMS
 =======================
 
 Version : 0.9.9
