@@ -2,19 +2,7 @@ Ionize CMS : Tag test
 =======================
 
 Version : 0.9.9
-
-### Tag test branch
-
-To use this branch :
-
-* Install Ionize
-* Replace your DB content with the one in the file : tag_test_database.sql
-* Choose the theme "ftl"
-* Edit the theme view : /themes/ftl/page.php
-
-* Log what's happening : in a console, run tail -f /<your_ionize_folder/application/logs/log-<current_date>.log
-
-
+Released on december 2012
 
 ### About Ionize
 
@@ -24,15 +12,17 @@ Ionize is dedicated to webdesigners and web agencies to simply make their client
 
 Official website : http://www.ionizecms.com
 
-Translations : http://mygengo.com/string/p/ionize-language-packs-1
-
 ![Screenshot](https://github.com/ionize/ionize/raw/master/files/screenshot_ionize_dashboard.jpg)
 
 ### Authors
 
 * [Michel-Ange Kuntz](http://www.partikule.net)
-* [Martin Wernstahl]
 * [Christophe Prudent](http://www.toopixel.ch)
+
+### Contributors
+* [İskender Totoğlu](http://www.altivebir.com.tr)
+* Martin Wernstahl
+
 
 ### Installation
 
@@ -41,7 +31,7 @@ We will not be responsible for any loose of data.
 
 These instruction takes in account that this version is in developement.
 
-* From Ionize 0.9.6
+* From Ionize 0.9.x
   * Copy your database, you will start working with this copy,
   * Go in your 0.9.6 config/config.php file and copy your encryption key in the new config/config.php file,
   * Launch the installer : http://your_domain/install
@@ -56,6 +46,10 @@ These instruction takes in account that this version is in developement.
   
 
 ### Code Migration
+
+* From Ionize 0.9.x
+  * Tags were rewritten for a more logical use. Please refer to the documentation to see how to migrate your views.
+
 
 * From Ionize 0.9.6
   * Articles Tag : Change your <ion:article filter="title:!=''" > attributes from "title:!=''" to "title !=''" (remove ":")
