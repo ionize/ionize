@@ -1,4 +1,4 @@
-Copyright (c) 2009-2011 Partikule Studio
+Copyright (c) 2009-2013 Partikule Studio
 
 This software is released under the Open Source MIT license.
 
