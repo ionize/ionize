@@ -2,6 +2,7 @@ Ionize CMS
 =======================
 
 Version : 0.9.9
+
 Released on december 2012
 
 ### About Ionize
@@ -36,7 +37,9 @@ These instruction takes in account that this version is in developement.
   * Go in your 0.9.6 config/config.php file and copy your encryption key in the new config/config.php file,
   * Launch the installer : http://your_domain/install
   * The installer will migrate the database and the user accounts
-  
+
+
+
 * From Ionize 0.9.7 (dev version)
   * Copy your database, you will start working with this copy,
   * Go in your 0.9.6 config/config.php file and copy your encryption key in the new config/config.php file,
@@ -49,6 +52,7 @@ These instruction takes in account that this version is in developement.
 
 * From Ionize 0.9.x
   * Tags were rewritten for a more logical use. Please refer to the documentation to see how to migrate your views.
+
 
 
 * From Ionize 0.9.6
