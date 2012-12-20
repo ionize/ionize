@@ -8,7 +8,7 @@
 
 <hr/>
 
-<h2>Test 1 : Expression with one integer value</h2>
+<h2>Expression with one integer value</h2>
 <p>
 	Medias are displayed inside one UL HTML element.<br/>
 	Each 2 medias, we want to close this UL and open a new one<br/>
@@ -38,12 +38,12 @@
 
 <ion:page>
 	<ul class="boxes">
-		<ion:medias type="picture">
-			<ion:media size='200' square='true'>
+		<ion:medias type="picture" size='200' square='true'>
+			<ion:media >
 				<li>
-					<img src="<ion:src size='200' />" />
+					<img src="<ion:src />" />
 				</li>
-				<ion:index expression="(index+1)%2==0">
+				<ion:index expression="index%2==0">
 					</ul>
 					<ul class="boxes">
 				</ion:index>
@@ -51,10 +51,43 @@
 		</ion:medias>
 	</ul>
 </ion:page>
-
 <hr />
 
-<h2>Test 2 : Expression with one string</h2>
+
+
+<h2>Expression with one string</h2>
+
+
+<ion:page>
+    <ul class="boxes">
+        <ion:medias type="picture" size='150' method='square'>
+            <ion:media >
+                <li>
+                    <img src="<ion:src />" /><br/>
+					<p>
+						<ion:index />
+						<ion:title />
+						<ion:index expression="index>=3">
+							youpiii
+						</ion:index>
+					</p>
+                </li>
+                <ion:index expression="index%2==0">
+    				</ul>
+    				<ul class="boxes">
+        		</ion:index>
+        	</ion:media>
+        </ion:medias>
+    </ul>
+</ion:page>
+<hr />
+
+
+
+
+
+
+<h2>Expression with one string</h2>
 <p>
 	The page 3 has one article which has the code "article-30".<br/>
 	We will check the code for each article, and if it is "article-30", we display "Youpiii"<br/>
@@ -91,7 +124,7 @@
 
 
 
-<h2>Test 3 : Error in expression</h2>
+<h2>Error in expression</h2>
 <p>
 	The condition has an error ("=" instead of "==")<br/>
 	It outputs one error message<br/>

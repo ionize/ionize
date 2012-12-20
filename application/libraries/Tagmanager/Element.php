@@ -31,9 +31,12 @@ class TagManager_Element extends TagManager
 
 	public static $tag_definitions = array
 	(
-		'element' => 'tag_element',
-		'element:items' => 'tag_element_items',
-		'element:items:item' => 'tag_expand',
+		'element' => 				'tag_element',
+		'element:items' => 			'tag_element_items',
+		'element:items:item' => 	'tag_expand',
+
+		// TODO : Add description to backend, by lang
+		'element:description' => 'tag_simple_value',
 	);
 	
 
@@ -43,7 +46,7 @@ class TagManager_Element extends TagManager
 	/**
 	 * Get the elements definition and store them in the private property "elements_def"
 	 *
-	 * @param	String	Parent type
+	 * @param	String	lang code
 	 * @return	Array	Extend fields definition array
 	 */
 	private function get_elements_definition($lang)
@@ -58,30 +61,6 @@ class TagManager_Element extends TagManager
 		}
 
 		return self::$elements_def;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Return the Element Definition ID from its key or NULL if no one was found.
-	 *
-	 * @param $definition_name
-	 *
-	 * @return null
-	 */
-	protected static function get_definition_id_from_name($definition_name)
-	{
-		$elements_definitions = self::get_elements_definition(Settings::get_lang('current'));
-
-		foreach($elements_definitions as $ed)
-		{
-			if ($ed['name'] == $definition_name)
-				return $ed['id_element_definition'];
-		}
-
-		return NULL;
 	}
 
 
@@ -113,23 +92,52 @@ class TagManager_Element extends TagManager
 
 
 	/**
-	 * Returns one Element definition from its ID
+	 * @param FTL_Binding $tag
 	 *
-	 * @param $id_element_definition
+	 * @return string
 	 *
-	 * @return null
 	 */
-	protected static function get_definition_from_id($id_element_definition)
+	public static function tag_element_detail(FTL_Binding $tag)
 	{
-		$elements_definitions = self::get_elements_definition(Settings::get_lang('current'));
+		// Returned string
+		$str = '';
 
-		foreach($elements_definitions as $ed)
+		$definition = self::get_definition_from_name($tag->name);
+
+		// "title" value : Processed by the default title tag
+		$tag->set('title', $definition['title']);
+		$tag->set('description', $definition['description']);
+
+		// Get the parent
+		$parent = $tag->get('__element_parent__');
+		$parent_type = $parent->getName();
+		$id_parent = $parent->getValue('id_'.$parent_type, $parent_type);
+
+		// Get the items
+		$id_element_definition = $definition['id_element_definition'];
+		self::$ci->load->model('element_model', '', TRUE);
+		$items = self::$ci->element_model->get_fields_from_parent($parent_type, $id_parent, Settings::get_lang(), $id_element_definition);
+
+		$tag->set('items', $items);
+
+		if ( ! empty($items) OR $tag->getAttribute('display') == TRUE)
 		{
-			if ($ed['id_element_definition'] == $id_element_definition)
-				return $ed;
+			// Set "title" value : Processed by the default title tag
+			$tag->set('title', $definition['title']);
+			$tag->set('description', $definition['description']);
+
+			// Internal data : Used by sub tags
+			$tag->set('parent', $parent_type);
+			$tag->set('id_parent', $id_parent);
+			$tag->set('id_element_definition', $id_element_definition);
+
+			// Create dynamic child tags for <ion:element />
+			self::create_element_tags($definition);
+
+			$str = self::wrap($tag, $tag->expand());
 		}
 
-		return NULL;
+		return $str;
 	}
 
 
@@ -137,61 +145,28 @@ class TagManager_Element extends TagManager
 
 
 	/**
-	 * Element tag
-	 *
 	 * @param FTL_Binding $tag
 	 *
 	 * @return string
+	 *
 	 */
 	public static function tag_element(FTL_Binding $tag)
 	{
-		// Returned string
-		$str = '';
+		// Store the parent
+		$parent = $tag->getParent();
+		$tag->set('__element_parent__', $parent);
 
-		// Wished element definition name
-		$element_definition_name = $tag->getAttribute('key');
+		// Get all the element definition potentially linked to the parent.
+		$elements_definitions = self::get_elements_definition(Settings::get_lang('current'));
 
-		if (!is_null($element_definition_name))
+		// Create dynamical tags
+		foreach($elements_definitions as $definition)
 		{
-			$parent = $tag->getParent();
-			$parent_type = $parent->getName();
-
-			$id_parent = $parent->getValue('id_'.$parent_type, $parent_type);
-
-			// CI Model
-			self::$ci->load->model('element_model', '', TRUE);
-
-			// Get the corresponding element definition ID
-			$id_element_definition = self::get_definition_id_from_name($element_definition_name);
-			$element_definition = self::get_definition_from_id($id_element_definition);
-
-			// Get the items
-			$items = self::$ci->element_model->get_fields_from_parent($parent_type, $id_parent, Settings::get_lang(), $id_element_definition);
-
-			$tag->set('items', $items);
-
-			if ( ! empty($items) OR $tag->getAttribute('display') == TRUE)
-			{
-				// Set "title" value : Processed by the default title tag
-				$tag->set('title', $element_definition['title']);
-
-				// Internal data : Used by sub tags
-				$tag->set('parent', $parent_type);
-				$tag->set('id_parent', $id_parent);
-				$tag->set('id_element_definition', $id_element_definition);
-
-				// Create dynamic child tags for <ion:element />
-				self::create_element_tags($id_element_definition);
-
-				$str = self::wrap($tag, $tag->expand());
-			}
-
-			return $str;
+			log_message('error', 'element:'.$definition['name']);
+			self::$context->define_tag('element:'.$definition['name'], array(__CLASS__, 'tag_element_detail'));
 		}
-		else
-		{
-			show_error('TagManager : Please use the attribute <b>"key"</b> when using the tag <b>elements</b>');
-		}
+
+		return $tag->expand();
 	}
 
 
@@ -335,6 +310,16 @@ class TagManager_Element extends TagManager
 		return $str;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
 	public static function tag_element_item_field_options(FTL_Binding $tag)
 	{
 		$str = '';
@@ -360,6 +345,7 @@ class TagManager_Element extends TagManager
 		}
 		return $str;
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -397,31 +383,35 @@ class TagManager_Element extends TagManager
 	 * 	<ion:field:type />
 	 * 	<ion:field:content />
 	 *
-	 * @param $id_element_definition
+	 * @param $definition
+	 *
 	 */
-	private static function create_element_tags($id_element_definition)
+	private static function create_element_tags($definition)
 	{
 		// Get the fields from this element definition
-		$element_fields = self::$ci->element_model->get_fields_from_definition_id($id_element_definition);
+		$id_element_definition = $definition['id_element_definition'];
+		$definition_name = $definition['name'];
+
+		$element_fields = self::$ci->element_model->get_fields_from_definition_id($definition['id_element_definition']);
 
 		if ( ! isset(self::$has_element_tags[$id_element_definition]))
 		{
 			foreach ($element_fields as $field)
 			{
-				self::$context->define_tag('element:items:'.$field['name'], array(__CLASS__, 'tag_element_item_field'));
-				self::$context->define_tag('element:items:'.$field['name'].':label', array(__CLASS__, 'tag_simple_value'));
-				self::$context->define_tag('element:items:'.$field['name'].':default_value', array(__CLASS__, 'tag_simple_value'));
-				self::$context->define_tag('element:items:'.$field['name'].':type', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'], array(__CLASS__, 'tag_element_item_field'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':default_value', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':type', array(__CLASS__, 'tag_simple_value'));
 
-				self::$context->define_tag('element:items:'.$field['name'].':options', array(__CLASS__, 'tag_element_item_field_options'));
-				self::$context->define_tag('element:items:'.$field['name'].':options:label', array(__CLASS__, 'tag_simple_value'));
-				self::$context->define_tag('element:items:'.$field['name'].':options:value', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':options', array(__CLASS__, 'tag_element_item_field_options'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':options:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':options:value', array(__CLASS__, 'tag_simple_value'));
 
-				self::$context->define_tag('element:items:'.$field['name'].':values', array(__CLASS__, 'tag_element_item_field_values'));
-				self::$context->define_tag('element:items:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
-				self::$context->define_tag('element:items:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':values', array(__CLASS__, 'tag_element_item_field_values'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
 
-				self::$context->define_tag('element:items:'.$field['name'].':value', array(__CLASS__, 'tag_element_item_field_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':value', array(__CLASS__, 'tag_element_item_field_value'));
 			}
 
 			self::$has_element_tags[$id_element_definition] = TRUE;

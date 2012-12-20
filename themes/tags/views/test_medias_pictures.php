@@ -28,9 +28,11 @@
 &lt;/div>	
 </pre>
 <div>
-    <ion:medias type="picture" size="200" refresh="true">
+<ion:page:articles:article>
+    <ion:medias type="picture" size="150" refresh="true">
         <img src="<ion:media:src  />" />
     </ion:medias>
+</ion:page:articles:article>
 </div>
 
 
@@ -51,9 +53,12 @@
 </pre>
 	
 <div>
-    <ion:medias type="picture" size="150" method="height" refresh="true">
+    <ion:page:articles:article>
+	<ion:medias type="picture" size="100" method="height" refresh="true">
         <img src="<ion:media:src  />" />
     </ion:medias>
+    </ion:page:articles:article>
+
 </div>
 
 <h3>All pictures will be 150px width</h3>
@@ -65,9 +70,13 @@
 &lt;/div>
 </pre>
 <div>
+    <ion:page:articles:article>
+
     <ion:medias type="picture" size="150" method="width" refresh="true">
         <img src="<ion:media:src  />" />
     </ion:medias>
+    </ion:page:articles:article>
+
 </div>
 
 	
@@ -85,9 +94,13 @@
 </pre>
 
 <div>
-	<ion:medias type="picture" size="200" method="border" refresh="true" color="#930031" >
+    <ion:page:articles:article>
+
+	<ion:medias type="picture" size="150" method="border" refresh="true" color="#930031" >
 		<img src="<ion:media:src  />" style="border-radius: 10px;"/>
 	</ion:medias>
+        </ion:page:articles:article>
+
 </div>
 
 
@@ -104,9 +117,13 @@
 &lt;/div>
 </pre>
 <div>
-    <ion:medias type="picture" size="250,180" method="adaptive" refresh="true" >
+    <ion:page:articles:article>
+
+    <ion:medias type="picture" size="180,140" method="adaptive" refresh="true" >
         <img src="<ion:media:src  />" />
     </ion:medias>
+        </ion:page:articles:article>
+
 </div>
 
 
@@ -134,7 +151,11 @@
 </pre>
 
 <div>
-    <ion:medias type="picture" size="200" method="square" refresh="true" limit="3" order_by="id_media DESC">
+    <ion:page:articles:article>
+
+	<ion:medias type="picture" size="200" method="square" refresh="true" limit="3" order_by="id_media DESC">
         <img src="<ion:media:src  />" />
     </ion:medias>
+        </ion:page:articles:article>
+
 </div>

@@ -26,49 +26,53 @@ To use this view, you need one Content Element, with 2 fields :
 
 			<ion:title tag="h3" />
 
-			<ion:element key="link">
+<h2>Nouveau : </h2>
 
-				<h4>Element Definition : <ion:title /></h4>
-				<h4>Items :</h4>
+			<ion:element:link>
 
-				<ion:items tag="ul" class="boxes">
+				<ion:title tag="h3" />
+				<ion:description tag="p" />
 
-					<li>
+                <ion:items tag="ul" class="boxes">
 
-						<h4><ion:item:index /></h4>
+                    <li>
+                        <h4><ion:index /></h4>
 
-						Field : <b><ion:name-surname:label /></b><br/>
-						Type : <b><ion:name-surname:type /></b><br/>
-						Value : <b><ion:name-surname:value helper="url:auto_link" /></b><br/>
-						Default value : <b><ion:name-surname:default_value /></b>
-						<hr/>
+                        Field : <b><ion:name-surname:label /></b><br/>
+                        Type : <b><ion:name-surname:type /></b><br/>
+                        Value : <b><ion:name-surname:value helper="url:auto_link" /></b><br/>
+                        Default value : <b><ion:name-surname:default_value /></b>
+                        <hr/>
 
-						Field : <b><ion:style:label /></b><br/>
-						Type : <b><ion:style:type /></b><br/>
+                        Field : <b><ion:style:label /></b><br/>
+                        Type : <b><ion:style:type /></b><br/>
                         Value : <b><ion:style:content /></b><br/>
                         Default value : <b><ion:style:default_value /></b>
-
-						<!-- Display selected values (checkbox, radio, select) -->
-						<hr/>
+                        <!-- Display selected values (checkbox, radio, select) -->
+                        <hr/>
                         Field : <b><ion:colors:label /></b><br/>
                         Type : <b><ion:colors:type /></b><br/>
                         Value : <b><ion:colors:value /></b><br/>
 
 
-						<ion:colors>
-							Options : <br/>
-							<ion:options>
+                        <ion:colors>
+                            Options : <br/>
+                            <ion:options>
                                 &nbsp;&nbsp;&nbsp;<ion:value/> : <ion:label/><br/>
-							</ion:options>
-							Selected values :<br/>
-							<ion:values>
+                            </ion:options>
+                            Selected values :<br/>
+                            <ion:values>
                                 &nbsp;&nbsp;&nbsp;<ion:value/> : <ion:label/><br/>
-							</ion:values>
-						</ion:colors>
-					</li>
+                            </ion:values>
+                        </ion:colors>
 
+					</li>
 				</ion:items>
 
-			</ion:element>
+
+			</ion:element:link>
+
+
+
 
 </ion:page:articles:article>

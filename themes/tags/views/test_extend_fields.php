@@ -14,7 +14,7 @@ To use this view, you need :
 				2:Green<br/>
 				3:Blue<br/>
 			</li>
-			<li>Defualt Value : 2</li>
+			<li>Default Value : 2</li>
 		</ul>
 	</li>
 	<li>One Extend field, translated, with the name "description":

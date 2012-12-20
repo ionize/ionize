@@ -590,33 +590,6 @@ class TagManager_Page extends TagManager
 			$str = self::wrap($tag, $tag->expand());
 
 		return $str;
-/*
-		if ($page != FALSE)
-		{
-			// helper
-			$helper = $tag->getAttribute('helper', 'navigation');
-
-			// Get helper method
-			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_next_prev_page';
-			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;
-
-			// Prefix ?
-			$prefix = $tag->getAttribute('prefix', '');
-
-			// load the helper
-			self::$ci->load->helper($helper);
-
-			// Return the helper function result
-			if (function_exists($helper_function))
-			{
-				$return = call_user_func($helper_function, $page, $prefix);
-
-				return self::wrap($tag, $return);
-			}
-		}
-
-		return '';
-*/
 	}
 
 

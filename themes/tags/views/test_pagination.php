@@ -3,6 +3,7 @@
 
 <hr/>
 
+<h2>Pagination with attribute value</h2>
 <pre>
 &lt;!-- Articles list -->
 &lt;ion:page:articles pagination="2">
@@ -14,7 +15,6 @@
 &lt;ion:page:articles:pagination pagination="2" />
 </pre>
 
-<h3>Result</h3>
 <!-- Articles list -->
 <ion:page:articles pagination="3">
 	<h3><ion:article:title/></h3>
@@ -25,3 +25,11 @@
 <ion:page:articles:pagination pagination="3" />
 
 
+<h2>Pagination set by Ionize</h2>
+<ion:page:articles>
+    <h3><ion:article:title/></h3>
+    <ion:article:content paragraph="1" />
+</ion:page:articles>
+
+<!-- Pagination -->
+<ion:page:articles:pagination />
