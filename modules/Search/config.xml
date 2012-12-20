@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
-	<name>Search Module</name>
-	<description>Search the content of the site</description>
-	<uri_segment>search</uri_segment>
-	<has_admin>false</has_admin>
-</module>

@@ -287,7 +287,6 @@ class Users extends MY_admin
 			if ($affected_rows > 0)
 			{
 				$this->id = $id;
-<<<<<<< HEAD
 
 				// UI update panels
 				$this->update[] = array(
@@ -295,18 +294,7 @@ class Users extends MY_admin
 					'url' => admin_url() . 'users'
 				);
 
-=======
-				
-				/** Remove deleted items from DOM **/
-				$this->callback[] = array(
-					'fn' => 'ION.deleteDomElements',
-					'args' => array('.users' . $id)
-				);
-				
-				/** Send answer **/
->>>>>>> 37ae275c480b6d3e0b24d07a92920ce8f2b8b12e
 				$this->success(lang('ionize_message_user_deleted'));
-				$this->response();
 			}
 			else
 			{

@@ -56,10 +56,6 @@ class Sitemap_model extends Base_model
 			'page_lang.online' =>'1'
 		));
 		
-<<<<<<< HEAD
-=======
-		// Added by ukyo : For lang support xml output!
->>>>>>> 37ae275c480b6d3e0b24d07a92920ce8f2b8b12e
 		(!empty($lang)) ? $this->{$this->db_group}->where(array('page_lang.lang' => $lang)) : '';
 		
 		$this->{$this->db_group}->join('page_lang', 'page.id_page = page_lang.id_page');

@@ -73,21 +73,7 @@ class Extend_field_model extends Base_model
 		return parent::get_lang_list($where, $lang);
 	}
 
-	function get_label($id_extend_field){
-		if($id_extend_field != '') {
-			$this->db->select($this->lang_table . '.label');
-			$this->db->from($this->table);
-			$this->db->join($this->lang_table, $this->table . '.' . $this->pk_name . ' = ' . $this->lang_table . '.' . $this->pk_name, 'inner');
-			$this->db->where($this->lang_table . '.lang', Settings::get_lang());
-			$this->db->where($this->table . '.' . $this->pk_name, $id_extend_field);
-			
-			$label = $this->db->get();
-			$label = $label->row_array();
-			
-			return (!empty($label['label'])) ? $label['label'] : '';
-		}
-		return 'Need a "$id_extend_field"';
-	}
+
 	// ------------------------------------------------------------------------
 
 
