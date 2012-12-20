@@ -50,6 +50,10 @@
 		ALTER TABLE `media` ADD `square_crop` enum('tl','m','br') NOT NULL DEFAULT 'm';
 	</query>
 
+	<query>
+		ALTER TABLE `media` drop `container`;
+	</query>
+
 
 	<query>
 			CREATE TABLE IF NOT EXISTS url (

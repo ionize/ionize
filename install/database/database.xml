@@ -429,6 +429,16 @@
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 		</query>
 
+        <query>
+            CREATE TABLE tracker (
+                id_user int(11) unsigned NOT NULL,
+                ip_address varchar(32) DEFAULT NULL,
+                element varchar(50) DEFAULT NULL,
+                id_element int(11) DEFAULT NULL,
+                last_time datetime DEFAULT NULL,
+                elements varchar(3000) DEFAULT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS `type` (

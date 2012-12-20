@@ -2,9 +2,6 @@
 -- Ionize 0.9.9 SQL creation tables
 --
 
-
-
-		
 CREATE TABLE IF NOT EXISTS article (
   id_article int(11) UNSIGNED NOT NULL auto_increment,
   name varchar(255) default NULL,
@@ -423,6 +420,14 @@ CREATE TABLE IF NOT EXISTS tag (
 	PRIMARY KEY  (id_tag)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
+CREATE TABLE tracker (
+  id_user int(11) unsigned NOT NULL,
+  ip_address varchar(32) DEFAULT NULL,
+  element varchar(50) DEFAULT NULL,
+  id_element int(11) DEFAULT NULL,
+  last_time datetime DEFAULT NULL,
+  elements varchar(3000) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS type (
   id_type int(11) unsigned NOT NULL AUTO_INCREMENT,
