@@ -212,6 +212,9 @@ class TagManager_Category extends TagManager
 		// Category detail
 		if ( ! is_null($url_category_name))
 		{
+			// Categories model
+			self::$ci->load->model('category_model');
+
 			$category = self::$ci->category_model->get
 			(
 				array('name' => $url_category_name),

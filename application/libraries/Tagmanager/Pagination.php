@@ -100,7 +100,7 @@ class TagManager_Pagination extends TagManager
 		}
 
 		// Pagination config from tag
-		if ( ! is_null($ptag = $tag->getAttribute('full_tag')) OR ! is_null($ptag = $tag->getAttribute('tag')) )
+		if ( ! is_null($ptag = $tag->getAttribute('full_tag')) )
 		{
 			$pagination_config['full_tag_open'] = 		'<' . $ptag . $html_id . $html_class . '>';
 			$pagination_config['full_tag_close'] = 		'</' . $ptag . '>';

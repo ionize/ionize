@@ -112,6 +112,7 @@ class TagManager_Navigation extends TagManager
 
 		foreach($global_pages as &$page)
 		{
+			$page['title'] = $page['nav_title'] !='' ? $page['nav_title'] : $page['title'];
 			// Add the active_class key
 			$page['active_class'] = in_array($page['id_page'], $active_pages) ? $active_class : '';
 			$page['is_active'] = in_array($page['id_page'], $active_pages) ? TRUE : FALSE;
@@ -185,7 +186,7 @@ class TagManager_Navigation extends TagManager
 				$pages = array();
 		}
 
-		if ( ! is_null($helper))
+		if ( $helper)
 		{
 			// Get helper method
 			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';

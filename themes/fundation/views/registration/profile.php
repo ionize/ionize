@@ -1,1 +1,0 @@
-<ion:usermanager request="profile" />

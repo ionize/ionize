@@ -839,7 +839,7 @@ class TagManager_Page extends TagManager
 		$child_tag_open = ! is_null($child_tag) ? '<' . $child_tag . $child_class . '>' : '';
 		$child_tag_close = ! is_null($child_tag) ? '</' . $child_tag .'>' : '';
 
-		$separator = $tag->getAttribute('separator', ' &raquo; ');
+		$separator = $tag->getAttribute('separator', '&nbsp;&raquo;&nbsp;');
 		$separator_tag = $tag->getAttribute('separator_tag');
 		$separator_class = $tag->getAttribute('separator_class');
 		$separator_class = ! is_null($separator_class) ? ' class="'.$separator_class.'"': '';
@@ -907,8 +907,8 @@ class TagManager_Page extends TagManager
 
 			if ($article)
 			{
-				$return .= ($return != '') ? $separator : '';
-				$return .= $child_tag_open .$article['title'] . $child_tag_close;
+				$separator = ($return != '') ? $separator : '';
+				$return .= $child_tag_open . $separator .$article['title'] . $child_tag_close;
 			}
 		}
 
