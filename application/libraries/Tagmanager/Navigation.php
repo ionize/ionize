@@ -544,7 +544,7 @@ class TagManager_Navigation extends TagManager
 			// Lang send to helper
 			$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
 			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
-			$lang['active'] = $lang['lang'] == Settings::get_lang('current');
+			$lang['is_active'] = $lang['lang'] == Settings::get_lang('current');
 			$lang['id'] = $lang['lang'];
 
 			// Tag locals
