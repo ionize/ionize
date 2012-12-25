@@ -564,11 +564,7 @@ class TagManager_Navigation extends TagManager
 			$tag->set('id', $lang['lang']);
 			$tag->set('absolute_url', $lang['absolute_url']);
 			$tag->set('active_class', $lang['active_class']);
-<<<<<<< HEAD
 			$tag->set('is_active', $lang['is_active']);
-=======
-			$tag->set('active', $lang['is_active']);
->>>>>>> 69bdd9db0d2faf3832fb64fd4e9ab9f5407fdec2
 			$tag->set('index', $idx);
 
 			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
