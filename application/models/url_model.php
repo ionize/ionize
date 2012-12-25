@@ -142,15 +142,19 @@ class Url_model extends Base_model
 		$url = trim($url, '/');
 
 		$where = array(
-			'path' => $url,
 			'active' => 1
 		);
+
+		if (config_item('url_mode') == 'full')
+			$where['path'] = $url;
+		else
+			$this->{$this->db_group}->like('path', $url, 'before');
 
 		if ( is_null($lang))
 			$lang = Settings::get_lang('current');
 
 		$where['lang'] = $lang;
-		
+
 		$this->{$this->db_group}->where($where);
 		$query = $this->{$this->db_group}->get($this->table);
 

@@ -27,14 +27,7 @@ class TagManager_Page extends TagManager
 	 */
 	protected static $ordered_pages = NULL;
 
-	/**
-	 * Entity from URL.
-	 * usually 'page' or 'article'
-	 *
-	 * @var string
-	 */
-	protected static $_entity = NULL;
-	
+
 	public static $tag_definitions = array
 	(
 		'pages' => 				'tag_pages',
@@ -131,26 +124,6 @@ class TagManager_Page extends TagManager
 		self::$view = self::_get_page_view($page);
 
 		self::render();
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the current entity asked by the URL ('page' or 'article')
-	 *
-	 * @return array
-	 *
-	 */
-	public function get_entity()
-	{
-		if ( is_null(self::$_entity))
-		{
-			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
-		}
-
-		return self::$_entity;
 	}
 
 

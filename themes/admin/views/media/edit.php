@@ -87,31 +87,6 @@ if($type == 'picture')
 
 		<h3><?php echo lang('ionize_title_informations'); ?></h3>
 		
-		<!-- Thumbs status -->
-		<dl class="small">
-			<?php foreach($thumbs as $thumb) :?>
-
-				<?php
-				
-					$size = explode(',', $thumb['content']);
-					$size = $size[1];
-				
-				?>
-
-				<dt>
-					<label><?php echo substr($thumb['name'], strpos($thumb['name'], '_') + 1); ?> : <?php echo $size; ?></label>
-				</dt>
-				<dd>
-					<?php if (file_exists(DOCPATH.$base_path.$thumb['name'].'/'.$file_name)) :?>
-						<img src="<?php echo theme_url(); ?>images/icon_16_ok.png" />
-					<?php else: ?>
-						<img src="<?php echo theme_url(); ?>images/icon_16_delete.png" />
-					<?php endif; ?>
-				</dd>
-	
-			<?php endforeach ;?>
-		</dl>
-
 	<?php endif ;?>
 
 	<!-- File size in ko -->

@@ -88,6 +88,23 @@ class TagManager
 	 */
 	public static $special_uri_array = NULL;
 
+
+	/**
+	 * Information about URI : Asked object...
+	 *
+	 * @var null
+	 *
+	 */
+	public static $uri_info = NULL;
+
+	/**
+	 * Entity from URL.
+	 * usually 'page' or 'article'
+	 *
+	 * @var string
+	 */
+	public static $_entity = NULL;
+
 	/**
 	 * Shutdown callback
 	 * Currently used if one expression evaluation hangs
@@ -157,7 +174,10 @@ class TagManager
 		// System / Core tags
 		'config' => 			'tag_config',
 		'base_url' =>			'tag_base_url',
-		'home_url' =>			'tag_base_url',				// Alias for <ion:base_url />
+		'home_url' =>			'tag_home_url',
+		'lang_url' =>			'tag_lang_url',
+		'uri' =>				'tag_uri',
+		'uri:entity' =>			'tag_simple_value',
 		'partial' => 			'tag_partial',
 		'widget' =>				'tag_widget',
 		'translation' => 		'tag_lang',					// Alias for <ion:lang />
@@ -1078,6 +1098,24 @@ class TagManager
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the current entity asked by the URL ('page' or 'article')
+	 *
+	 * @return array
+	 *
+	 */
+	public function get_entity()
+	{
+		if ( is_null(self::$_entity))
+		{
+			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
+		}
+		return self::$_entity;
+	}
+
 
 	// ------------------------------------------------------------------------
 	// Tags definition
@@ -1499,6 +1537,32 @@ class TagManager
 
 
 	/**
+	 * Returns information about the current URI
+	 * - Kind of object
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 */
+	public static function tag_uri(FTL_Binding $tag)
+	{
+		if (is_null(self::$uri_info))
+		{
+			$entity = self::get_entity();
+
+			self::$uri_info = array(
+				'entity' =>  $entity['type']
+			);
+		}
+		$tag->set('uri', self::$uri_info);
+
+		return $tag->expand();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Returns one key from object
 	 * @TODO	See how to implement alternatives if the value is null or empty string
 	 *
@@ -1716,6 +1780,38 @@ class TagManager
 	 */
 	public static function tag_base_url(FTL_Binding $tag)
 	{
+		return base_url();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the Home URL
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_home_url(FTL_Binding $tag)
+	{
+		return self::get_home_url();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the lang URL
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_lang_url(FTL_Binding $tag)
+	{
 		// Set all languages online if connected as editor or more
 		if( Connect()->is('editors', TRUE))
 		{
@@ -1724,11 +1820,7 @@ class TagManager
 
 		if (count(Settings::get_online_languages()) > 1 )
 		{
-			// if the current lang is the default one : don't return the lang code
-			if (Settings::get_lang('current') != Settings::get_lang('default'))
-			{
-				return base_url() . Settings::get_lang() .'/';
-			}
+			return base_url() . Settings::get_lang() .'/';
 		}
 
 		return base_url();
@@ -1813,7 +1905,7 @@ class TagManager
 		// Lock loop
 		$tag->getParent()->set('__loop__', FALSE);
 
-		return self::wrap($tag, implode($separator, $data));
+		return self::output_value($tag, implode($separator, $data));
 	}
 
 
@@ -2856,18 +2948,23 @@ class TagManager
 	{
 		if ( ! is_null($string))
 		{
-			if (substr(trim($string), 0, 5) == 'lang(')
+			$segments = explode('.', $string);
+			$prefix_suffix = '';
+
+			foreach($segments as $segment)
 			{
-				$translated_string = FALSE;
-				$return = @eval("\$translated_string = ".trim($string).";");
+				$segment = trim($segment);
+				if (substr(trim($segment), 0, 5) == 'lang(')
+					$translated_string = FALSE;
+				$return = @eval("\$translated_string = ".trim($segment).";");
 
 				if ($return === NULL)
-					$string = $translated_string;
+					$prefix_suffix .= $translated_string;
 				else
-					$string = self::$context->show_error('Prefix or Suffix incorrect', $string);
+					$prefix_suffix .= $segment;
 			}
 
-			$value = $mode == 1 ? $string . $value : $value . $string;
+			$value = $mode == 1 ? $prefix_suffix . $value : $value . $prefix_suffix;
 		}
 		return $value;
 	}
