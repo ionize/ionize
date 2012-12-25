@@ -124,6 +124,12 @@ if ($tracker_title == '')
 
 		<?php endif ;?>
 
+            <?php if ($id_page != '') :?>
+
+                <!-- Modules PlaceHolder -->
+                <?php echo get_modules_addons('page', 'main_top'); ?>
+
+            <?php endif ;?>
 
         	<!-- Extend Fields (Main) -->
 			<div id="pageExtendFields">

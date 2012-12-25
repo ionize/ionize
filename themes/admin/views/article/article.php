@@ -111,6 +111,12 @@ if ($tracker_title == '')
 
 			<?php endif ;?>
 
+            <?php if ( ! empty($id_article)) :?>
+
+                <!-- Modules PlaceHolder -->
+                <?php echo get_modules_addons('article', 'main_top'); ?>
+
+            <?php endif ;?>
 
         	<div id="articleExtendFields">
 
