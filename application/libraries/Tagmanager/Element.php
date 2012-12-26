@@ -238,6 +238,10 @@ class TagManager_Element extends TagManager
 		{
 			$field = $item['fields'][$field_name];
 
+			// Use lang key content if the fields is on translated one
+			if ($field['translated'] == 1 && isset($field[Settings::get_lang()]))
+				$field = $field[Settings::get_lang()];
+
 			$value = $field['content'];
 
 			switch ($field['type'])
