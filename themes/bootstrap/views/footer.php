@@ -1,17 +1,18 @@
     <!-- FOOTER -->
-    <footer id="footer" class="container-fluid">
+    <footer id="footer">
+		<div class="container">
         <div class="row-fluid">
             <ion:page id="footer">
 				<ion:articles>
 					<ion:article>
-						<div class="span4">
+						<div class="span4 first">
 							<ion:title tag="h4" />
-							<div class="clearfix mb10"></div>
 							<ion:content />
 						</div>
 					</ion:article>
 				</ion:articles>
             </ion:page>
+        </div>
         </div>
     </footer>
 

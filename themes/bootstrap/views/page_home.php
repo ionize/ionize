@@ -29,26 +29,40 @@
 
 	</ion:page>
 
-	<section class="container">
+	<div class="container">
 
-		<!-- Page : Current -->
+		<!-- Page title -->
+        <ion:page:title tag="h1"/>
+
+        <!-- Page's subtitle -->
+        <ion:page:subtitle tag="h2"/>
+
+
+        <!-- Page : Current -->
 		<ion:page>
 
-			<div class="span-12">
-				<ion:articles type="">
-					<ion:article>
-						<ion:title tag="h3" />
-						<ion:content helper="text:word_limiter:20" />
-					</ion:article>
-				</ion:articles>
+			<div class="row">
+				<div calss="span12">
+					<ion:articles type="">
+						<ion:article>
+                            <div class="span3">
+							<ion:title tag="h3" />
+							<ion:content helper="text:word_limiter:20" />
+							</div>
+						</ion:article>
+					</ion:articles>
+
+                </div>
             </div>
 
 		</ion:page>
 
 		<!-- Page : Blog | Articles Limit : 3 -->
 		<ion:page id="blog">
-			<div class="span8">
-				<ion:lang key="home_last_post" tag="h2" class="dotted-title" />
+			<div class="row">
+				<div class="span12">
+                    <ion:lang key="home_last_post" tag="h2" class="dotted-title" />
+				</div>
 				<ul class="thumbnails">
 					<ion:articles limit="3">
 						<li class="span4">
@@ -56,7 +70,7 @@
 								<div class="thumbnail">
 									<ion:medias type="picture" limit="1">
 										<ion:media size="280,193" method="adaptive">
-											<img class="img-polaroid" src="<ion:src />" alt="<ion:alt />" />
+											<img src="<ion:src />" alt="<ion:alt />" />
 										</ion:media>
 									</ion:medias>
 									<div class="caption">
@@ -72,6 +86,6 @@
 			</div>
 		</ion:page>
 
-	</section>
+	</div>
 
 <ion:partial view="footer" />
