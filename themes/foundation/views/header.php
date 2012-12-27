@@ -20,10 +20,10 @@
 	<title><ion:meta_title /> | <ion:site_title /></title>
   
 	<!-- Included CSS Files -->
-	<link rel="stylesheet" href="<ion:theme_url />assets/stylesheets/foundation.css">
+	<link rel="stylesheet" href="<ion:theme_url />assets/stylesheets/foundation.min.css">
 	<link rel="stylesheet" href="<ion:theme_url />assets/stylesheets/app.css">
 
-    <script type="text/javascript" src="<ion:theme_url />javascripts/jquery.js"></script>
+    <script type="text/javascript" src="<ion:theme_url />javascripts/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="<ion:theme_url />javascripts/foundation.min.js"></script>
     <script type="text/javascript" src="<ion:theme_url />javascripts/jquery.foundation.topbar.js"></script>
     <script type="text/javascript" src="<ion:theme_url />javascripts/jquery.foundation.orbit.js"></script>

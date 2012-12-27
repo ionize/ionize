@@ -1,0 +1,33 @@
+body {
+	padding-top: 40px;
+}
+.carousel img {
+	min-width: 100%;
+	left:0;
+	top: 0;
+}
+.carousel .item {
+	height: 350px;
+}
+.carousel-caption {
+	background-color: transparent;
+	margin-top: 100px;
+	max-width: 550px;
+	padding: 0 20px;
+	color: #fff;
+	top:100px;
+	left:50px;
+}
+#footer {
+	background-color: #f3f3f3;
+}
+@media (min-width: 768px) and (max-width: 979px) {
+	body{
+		padding-top: 0;
+	}
+}
+@media (max-width: 767px) {
+	body{
+		padding-top: 0;
+	}
+}}
