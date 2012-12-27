@@ -143,6 +143,9 @@
         ALTER TABLE `article_media` ADD online tinyint(1) UNSIGNED NOT NULL default 1;
     </query>
 
+    <query>
+        delete from setting where name like 'thumb_%';
+    </query>
 
 
     <query>ALTER TABLE article ENGINE = InnoDB;</query>
