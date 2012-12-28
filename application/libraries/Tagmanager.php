@@ -3023,7 +3023,9 @@ class TagManager
 
 			if ($idx == 0 && strpos($expression, $key) === FALSE)
 				$expression = $key . $expression;
-			$test_value = ( (! $value == (string)(float)$value) OR is_null($value)) ? "'".$value."'" : $value;
+			$test_value = ( (! $value == (string)(float)$value) OR is_null($value) OR $value=='') ? "'".$value."'" : $value;
+
+			// if (gettype($test_value) == 'string' && $test_value == '') $test_value = "'".$test_value."'";
 
 			$expression = str_replace($key, $test_value, $expression);
 		}
@@ -3040,7 +3042,9 @@ class TagManager
 				return TRUE;
 			}
 			else
+			{
 				return FALSE;
+			}
 		}
 		else
 		{
