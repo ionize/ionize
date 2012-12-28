@@ -79,9 +79,10 @@ if (file_exists('./class/Installer.php'))
 	 *
 	 */
 	require('./helpers/language_helper.php');
+	require(BASEPATH.'helpers/file_helper.php');
 	require(BASEPATH.'helpers/email_helper.php');
 	require(APPPATH.'helpers/trace_helper.php');
-	
+
 	
 	/*
 	 * GET step

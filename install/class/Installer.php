@@ -288,30 +288,19 @@ class Installer
 			}
 			else
 			{
-				$file = fopen('./database/demo_data.sql', 'r');
-				
-				if (is_resource($file))
+				$file = read_file('./database/demo_data.sql');
+
+				$requests = explode(';'."\n", $file);
+
+				foreach($requests as $request)
 				{
-					$statements = array('INSERT', 'UPDATE', 'DELETE', 'TRUNCA');
-				
-					// Insert base content
-					while(!feof($file))
-					{
-						$request = fgets($file);
-						
-						if (in_array(substr($request,0,6), $statements))
-						{
-							$ret = $this->db->simple_query($request);
-						}
-					}
-					fclose($file);				
+					$this->db->simple_query($request);
 				}
-				
+
 				// Get languages and update the language config file
 				$query = $this->db->get('lang');
 				$data = $query->result_array();
 				$this->_save_language_config_file($data);
-
 			}
 
 			/* 
