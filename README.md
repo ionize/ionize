@@ -7,9 +7,11 @@ Released on december 2012
 
 ### About Ionize
 
-Ionize is a free professional and natively multilingual PHP CMS, developped with user experience in mind.
+Ionize is a free professional and natively multilingual PHP CMS, developed with user experience in mind.
 
 Ionize is dedicated to webdesigners and web agencies to simply make their clients happy.
+
+Ionize uses the PHP framework CodeIgniter.
 
 Official website : http://www.ionizecms.com
 
