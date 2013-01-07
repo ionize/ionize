@@ -573,7 +573,7 @@ class TagManager_Article extends TagManager
 			return self::find_and_parse_article_view($tag, $tag->get('article'));
 		}
 
-		return self::wrap($tag, $tag->expand());
+		return $tag->expand();
 	}
 
 
