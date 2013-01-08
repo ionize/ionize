@@ -16,8 +16,6 @@
 		
 		$path = substr($media['path'], strpos($media['path'], '/') + 1);
 		
-		// $edit_href = "javascript:ION.formWindow('". $media['type'].$media['id_media'] ."', 'mediaForm". $media['id_media'] ."', '" . $media['file_name'] ."', '". admin_url(TRUE) ."media/edit/picture/". $media['id_media'] . "/" . $parent ."/" . $id_parent ."', {width:520,height:430,resize:false})";
-
 		$edit_href = "javascript:ION.formWindow(
 						'". $media['type'].$media['id_media'] ."',
 						'mediaForm". $media['id_media'] ."', 
@@ -47,7 +45,13 @@
 			<span class="icon left drag"></span>
 			<a class="icon edit left mr5 ml5 help" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>"></a>
 			<a class="icon info left help ml5" title="<?php echo $media['path']; ?>" rel="<?php echo $details; ?>"></a>
-			<a class="left ml10 help" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>"><?php if ($this->connect->is('super-admins') ) :?><?php echo $media['id_media']; ?> : <?php endif ;?><?php echo $media['file_name']; ?></a>
+			<a class="left ml10 help" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>">
+				<?php if ($this->connect->is('super-admins') ) :?><?php echo $media['id_media']; ?> : <?php endif ;?>
+				<?php if ($media['provider'] !== ''): ?>
+					<?php echo $media['provider']; ?> :
+				<?php endif ;?>
+				<?php echo $media['file_name']; ?>
+			</a>
 		</li>
 
 	<?php endforeach ;?>

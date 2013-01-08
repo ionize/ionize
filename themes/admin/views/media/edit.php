@@ -54,7 +54,7 @@ if($type == 'picture')
 	<!-- Video file -->
 	<?php if($type == 'video') :?>
 		
-		<?php if($is_external == TRUE) :?>
+		<?php if($provider != '') :?>
 
 			<iframe  style="float:right;" width="170" height="145" src="<?php echo $path?>" frameborder="0" allowfullscreen></iframe>
 		
@@ -92,7 +92,7 @@ if($type == 'picture')
 	<!-- File size in ko -->
 	<dl class="small">
 
-		<?php if($is_external == FALSE) :?>
+		<?php if($provider == '') :?>
 
 			<dt>
 				<label><?php echo lang('ionize_label_file_size'); ?></label>

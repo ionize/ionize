@@ -29,7 +29,6 @@ class Media extends MY_admin
 	
 	protected static $MP3_ID3 = array('album', 'artist', 'title', 'year');
 
-
 	/**
 	 * Constructor
 	 *
@@ -456,8 +455,17 @@ class Media extends MY_admin
 
 		if ($path != FALSE)
 		{
+			// Get the array of information concerning this service
+			$provider = '';
+			$info = $this->get_service_info($path);
+			if (!is_null($info))
+			{
+				$path = $info['path'];
+				$provider = $info['provider'];
+			}
+
 			// DB Insert
-			$id = $this->media_model->insert_media($type, $path);
+			$id = $this->media_model->insert_media($type, $path, $provider);
 		
 			// Parent linking
 			if (!$this->media_model->attach_media($type, $parent, $id_parent, $id)) 
@@ -728,13 +736,14 @@ class Media extends MY_admin
 		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('media', $id);
 		
 		// Location : 'http:' / 'files'
+		/*
 		$location = array_shift(explode('/', $this->template['path']));
 		if ($location == 'http:')
 			$this->template['is_external'] = TRUE;
 		else
 			$this->template['is_external'] = FALSE;
-		
-		$this->template['location'] = $location;
+		*/
+		// $this->template['location'] = $location;
 		
 		// context data
 		$this->template['context_data'] = $this->media_model->get_context_data($id, $parent, $id_parent);
@@ -1123,6 +1132,66 @@ class Media extends MY_admin
 		return FALSE;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Return service info array about the external service
+	 *
+	 * Detects :
+	 * - Youtube
+	 * - Vimeo
+	 * - Dailymotion
+	 *
+	 * @param $path
+	 *
+	 * @return array|null
+	 */
+	private function get_service_info($path)
+	{
+		$file_name = substr( strrchr($path, '/') ,1 );
+		$base_path = str_replace($file_name, '', $path);
+
+		// Youtube
+		if (
+			substr($file_name, 0, 8) == 'watch?v='
+			OR substr($base_path,0, 22) == 'http://www.youtube.com'
+		)
+		{
+			$file_name = str_replace('watch?v=', '', $file_name);
+			if ($pos = strpos($file_name, '&') > 1)
+				$file_name = substr($file_name, 0, $pos);
+
+			$service = array(
+				'path' => 'http://www.youtube.com/embed/' . $file_name,
+				'provider' => 'youtube'
+			);
+			return $service;
+		}
+
+		// Vimeo
+		if ($base_path == 'http://vimeo.com/')
+		{
+			$service = array(
+				'path' => 'http://player.vimeo.com/video/' . $file_name,
+				'provider' => 'vimeo'
+			);
+			return $service;
+		}
+
+		// Dailymotion
+		if ($base_path == 'http://www.dailymotion.com/video/')
+		{
+			$file_name = substr($file_name,0, strpos($file_name, '_'));
+			$service = array(
+				'path' => 'http://www.dailymotion.com/embed/video/' .$file_name,
+				'provider' => 'dailymotion'
+			);
+			return $service;
+		}
+
+		return NULL;
+	}
 
 	// ------------------------------------------------------------------------
 

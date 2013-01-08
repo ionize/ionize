@@ -73,7 +73,7 @@
 			  KEY idx_url_lang (lang)
 			) ENGINE=InnoDB AUTO_INCREMENT=808 DEFAULT CHARSET=utf8;
 	</query>	
-	
+
 	<query>
 		ALTER TABLE `page` ADD has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1;
 	</query>
@@ -147,6 +147,9 @@
         delete from setting where name like 'thumb_%';
     </query>
 
+    <query>
+        ALTER TABLE `media` ADD provider varchar(50) NOT NULL DEFAULT  '';
+    </query>
 
     <query>ALTER TABLE article ENGINE = InnoDB;</query>
 	<query>ALTER TABLE article_category ENGINE = InnoDB;</query>

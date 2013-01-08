@@ -137,7 +137,7 @@ class Media_model extends Base_model
 	 * @return	boolean	TRUE if succeed, FALSE if errors
 	 *
 	 */
-	function insert_media($type, $path)
+	function insert_media($type, $path, $provider=NULL)
 	{
 		if ($path) {
 
@@ -157,6 +157,7 @@ class Media_model extends Base_model
 			$data['path'] = 	 $path;
 			$data['file_name'] = $file_name;
 			$data['base_path'] = $base_path;
+			$data['provider'] = ! is_null($provider) ? $provider : '';
 			
 			// Update if exists
 			$query = $this->get_where(array('path'=>$path));
