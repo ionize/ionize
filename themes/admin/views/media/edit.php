@@ -65,7 +65,7 @@ if($type == 'picture')
 
 			<div style="float:right;"  id="video<?php echo $id_media; ?>">
                 <embed
-                    flashvars="file=<?php echobase_url().$path?>&autostart=false"
+                    flashvars="file=<?php echo base_url().$path?>&autostart=false"
                     allowfullscreen="true"
                     allowscriptaccess="always"
                     id="video<?php echo $id_media; ?>"

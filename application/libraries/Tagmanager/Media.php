@@ -69,6 +69,9 @@ class TagManager_Media extends TagManager
 		// Media extension
 		$extension = $tag->getAttribute('extension');
 
+		// Provider : For external medias
+		$provider = $tag->getAttribute('provider');
+
 		// Number of wished displayed medias
 		$limit = $tag->getAttribute('limit');
 
@@ -136,6 +139,31 @@ class TagManager_Media extends TagManager
 						}
 					}
 				}
+
+				// Provider ?
+				if (!is_null($provider))
+				{
+					$tmp_medias = $filtered_medias;
+					$filtered_medias = array();
+
+					if ($provider == 'all')
+					{
+						foreach($tmp_medias as $media)
+						{
+							if ($media['provider'] != '')
+								$filtered_medias[] = $media;
+						}
+					}
+					else
+					{
+						foreach($tmp_medias as $media)
+						{
+							if ($media['provider'] == $provider)
+								$filtered_medias[] = $media;
+						}
+					}
+				}
+
 				// Range / Limit ?
 				if ( ! is_null($range))
 				{

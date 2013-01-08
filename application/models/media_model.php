@@ -41,6 +41,8 @@ class Media_model extends Base_model
 		$this->table =		'media';
 		$this->pk_name = 	'id_media';
 		$this->lang_table = 'media_lang';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 
@@ -102,7 +104,7 @@ class Media_model extends Base_model
 	 * @return array
 	 *
 	 */
-	public function get_lang_list($where = array(), $lang = NULL)
+	public function get_lang_list($where = array(), $lang = NULL, $filter = NULL)
 	{
 		// Correction on $where['id_media']
 		if (is_array($where) && isset($where['id_media']) )
@@ -120,6 +122,9 @@ class Media_model extends Base_model
 				$where[$key] = $val;
 			}
 		}
+
+		if ( ! is_null($filter))
+			$this->_set_filter($filter);
 
 		return parent::get_lang_list($where, $lang);
 	}
@@ -437,6 +442,13 @@ class Media_model extends Base_model
 
 		return $brokens;
 	}
+
+	private function _set_filter($filter = NULL)
+	{
+		if ( ! is_null($filter))
+			$this->{$this->db_group}->where('('.$filter.')');
+	}
+
 }
 
 
