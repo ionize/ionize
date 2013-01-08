@@ -13,10 +13,10 @@ class MY_Lang extends CI_Lang
 	 * Modified to take the config->default_language in account
 	 *
 	 * @access	public
-	 * @param	mixed	the name of the language file to be loaded. Can be an array
-	 * @param	string	the language (english, etc.)
-	 * @param	boolean	value to return : FALSE by default
-	 * @param	String
+	 * @param	mixed	Name of the language file to be loaded. Can be an array
+	 * @param	string	Language (english, etc.)
+	 * @param	bool	value to return : FALSE by default
+	 * @param	bool
 	 * @param	String
 	 *
 	 * @return	mixed

@@ -55,8 +55,6 @@ class Connect_model extends CI_Model
 	 */
 	function __construct()
     {
-        parent::__construct();
-
 		$this->load->config('connect');
 
 		$this->users_table 	= config_item('users_table');
@@ -65,6 +63,7 @@ class Connect_model extends CI_Model
 		$this->groups_table = config_item('groups_table');
 		$this->groups_pk 	= config_item('groups_table_pk');
 
+		log_message('debug', __CLASS__ . " Class Initialized");
     }
 	
 	

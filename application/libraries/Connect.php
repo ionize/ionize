@@ -592,15 +592,11 @@ class Connect {
 
 		// normalize:
 		if( ! is_array($cond))
-		{
 			$cond = array($cond);
-		}
 
 		// again:
 		if( ! isset($cond['group']) && ! isset($cond['user']) && ! isset($cond['ip']))
-		{
-			$cond = array('group' => $cond);
-		}
+			$cond = array('group' => $cond[0]);
 
 		if(isset($cond['ip']))
 		{
@@ -640,7 +636,7 @@ class Connect {
 
 		if(($user = $this->get_current_user()) == FALSE)
 		{
-			// You have no identificaion, get lost!
+			// You have no identification, get lost!
 			if($return)
 				return FALSE;
 
@@ -655,23 +651,20 @@ class Connect {
 				return TRUE;
 			}
 		}
+
 		// Check for the usual visitors...
 		if(isset($cond['group']))
 		{
-			if (empty($this->groups))
-			{
-				// fetch all groups
-				$q = $CI->db->where_in('slug', (Array) $cond['group'])->get($this->model->groups_table);
-				$this->groups = $q->result_array();
-			}
+			// fetch asked group
+			$q = $CI->db->where_in('slug', (Array) $cond['group'])->get($this->model->groups_table);
+			$asked_group = $q->row_array();
 
-			foreach($this->groups as $group)
+			if(
+				$user['group'][$this->model->groups_pk] == $asked_group[$this->model->groups_pk]
+				OR $user['group']['level'] > $asked_group['level']
+			)
 			{
-				if($group && ($user['group'][$this->model->groups_pk] == $group[$this->model->groups_pk] OR $user['group']['level'] > $group['level']))
-				{
-					// You have finished this test, now on to the oncoming experiments...
-					return TRUE;
-				}
+				return TRUE;
 			}
 		}
 

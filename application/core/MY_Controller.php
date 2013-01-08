@@ -75,26 +75,41 @@ class MY_Controller extends CI_Controller
 		$languages = $this->settings_model->get_languages();
 		Settings::set_languages($languages);
 		if( Connect()->is('editors', TRUE))
+		{
+			log_message('debug', 'MY_Controller : EDITOR LOGGED IN');
 			Settings::set_all_languages_online();
+		}
+
+		// Validate and set the detected language code regarding the available languages
+		$detected_lang_code = config_item('detected_lang_code');
+		Settings::validate_detected_lang_code();
+
+		// Load the Connect() lib lang file
+		if ($detected_lang_code != config_item('detected_lang_code'))
+			$this->lang->load('connect');
+
 
 		// 	Settings : google analytics string, filemanager, etc.
 		//	Each setting is accessible through Settings::get('setting_name');
 		Settings::set_settings_from_list($this->settings_model->get_settings(), 'name','content');
-        Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
+        Settings::set_settings_from_list($this->settings_model->get_lang_settings(Settings::get('detected_lang_code')), 'name','content');
 
 		// Try to find the installer class : No access if install folder is already there
 		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
 
 		// If installer class is already here, avoid site access
-		if (!empty($installer))
+		if ( ! empty($installer))
 		{
 			// Get languages codes from available languages folder/translation file
+			/*
 			$languages = $this->settings_model->get_admin_langs();
 
 			if ( ! in_array(config_item('detected_lang_code'), $languages))
 				$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
+			*/
+			Settings::validate_detected_lang_code(TRUE);
 
-			$this->lang->load('admin', config_item('detected_lang_code'));
+			$this->lang->load('admin', Settings::get('detected_lang_code'));
 
 			Theme::set_theme('admin');
 
@@ -107,7 +122,9 @@ class MY_Controller extends CI_Controller
 			// Don't do anything more
 			die();
 		}
-    }
+
+		log_message('debug', __CLASS__. " Class Initialized");
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -295,6 +312,7 @@ class Base_Controller extends MY_Controller
 			$online_lang_codes[] = $language['lang'];
 
 		// If the lang code detected by the Router is not in the DB languages, set it to the DB default one
+		/*
 		if ( ! in_array(config_item('detected_lang_code'), $online_lang_codes))
 		{
 			Settings::set('current_lang', Settings::get_lang('default'));
@@ -302,9 +320,12 @@ class Base_Controller extends MY_Controller
 		}
 		else
 		{
-			// Store the current lang code (found by Router) to Settings
+			// Store the current lang code (found by Router and validated by Settings) to Settings
 			Settings::set('current_lang', config_item('detected_lang_code'));
 		}
+		*/
+		// Settings::set('current_lang', Settings::get('detected_lang_code'));
+
 
 		// Set lang preferrence cookie
 		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
@@ -315,7 +336,7 @@ class Base_Controller extends MY_Controller
 		setcookie('ion_selected_language', Settings::get_lang(), time() + 3600, '/', $host);
 
 		// Lang dependant settings for the current language : Meta, etc.
-		Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
+		Settings::set_settings_from_list($this->settings_model->get_lang_settings(Settings::get('detected_lang_code')), 'name','content');
 
 		// Static translations
 		$lang_files = array();
@@ -375,6 +396,9 @@ class Base_Controller extends MY_Controller
 				}
 			}
 		}
+
+		log_message('debug', __CLASS__. " Class Initialized");
+
 		require_once APPPATH.'libraries/Tagmanager.php';
 	}
 }
@@ -476,7 +500,8 @@ class MY_Admin extends MY_Controller
 		Settings::set('displayed_admin_languages', explode(',', Settings::get('displayed_admin_languages')));
 
 		// Set Router's found language code as current language
-		Settings::set('current_lang', config_item('detected_lang_code'));
+		Settings::validate_detected_lang_code(TRUE);
+		// Settings::set('current_lang', Settings::get('detected_lang_code'));
 
 		// Load the current language translations file
 		$this->lang->load('admin', Settings::get_lang());
@@ -511,7 +536,9 @@ class MY_Admin extends MY_Controller
 		$this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
 		$this->output->set_header("Cache-Control: post-check=0, pre-check=0", FALSE);
 		$this->output->set_header("Pragma: no-cache");
-    }
+
+		log_message('debug', __CLASS__ ." Class Initialized");
+	}
     
 
 	// ------------------------------------------------------------------------
@@ -761,6 +788,8 @@ abstract class Module_Admin extends MY_Admin
 	 */
 	final public function __construct(CI_Controller $c)
 	{
+		log_message('debug', __CLASS__. " Class Initialized");
+
 		$this->parent = $c;
 		$this->construct();
 	}

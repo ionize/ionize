@@ -103,4 +103,4 @@ test_module_search
 
 ?>
 
-<ion:partial view="test_medias_from_article" />
+<ion:partial view="test_languages_menu" />

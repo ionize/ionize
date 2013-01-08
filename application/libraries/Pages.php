@@ -284,11 +284,6 @@ class Pages
 		}
 		return TRUE;
 	}
-
-	
 }
 
 Pages::init();
-
-/* End of file Pages.php */
-/* Location: /application/libraries/Pages.php */

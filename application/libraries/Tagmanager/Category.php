@@ -76,6 +76,8 @@ class TagManager_Category extends TagManager
 		// Set the local cache data
 		if ( ! isset(self::$categories[$lsk]))
 		{
+			$categories = array();
+
 			// CSS class to use for the current category
 			$active_class = $tag->getAttribute('active_class', 'active');
 
@@ -91,7 +93,8 @@ class TagManager_Category extends TagManager
 				foreach($categories as $key=>$category)
 					$categories[$key]['nb'] = '1';
 			}
-			else
+			// If no categories, get all, but only for page type element
+			else if($element_name == 'page')
 			{
 				$id_page = ! is_null($page) ? $page['id_page'] : NULL;
 				$categories = self::$ci->category_model->get_categories_list(
@@ -212,6 +215,9 @@ class TagManager_Category extends TagManager
 		// Category detail
 		if ( ! is_null($url_category_name))
 		{
+			// Categories model
+			self::$ci->load->model('category_model');
+
 			$category = self::$ci->category_model->get
 			(
 				array('name' => $url_category_name),

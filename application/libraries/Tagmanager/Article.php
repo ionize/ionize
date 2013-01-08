@@ -450,6 +450,9 @@ class TagManager_Article extends TagManager
 		// Returned string
 		$str = '';
 
+		// Extend Fields tags
+		self::create_extend_tags($tag, 'article');
+
 		// Registry article : First : Registry (URL ask), Second : Stored one
 		$_article = self::registry('article');
 		if (empty($_article)) $_article = $tag->get('article');
@@ -570,7 +573,7 @@ class TagManager_Article extends TagManager
 			return self::find_and_parse_article_view($tag, $tag->get('article'));
 		}
 
-		return self::wrap($tag, $tag->expand());
+		return $tag->expand();
 	}
 
 

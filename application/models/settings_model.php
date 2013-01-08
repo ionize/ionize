@@ -20,7 +20,7 @@
  * @author		Ionize Dev Team
  */
 
-class Settings_Model extends Base_model 
+class Settings_model extends Base_model
 {
 
 	public function __construct()
@@ -31,6 +31,8 @@ class Settings_Model extends Base_model
 		$this->set_pk_name('id_setting');
 		
 		$this->load->helper('path_helper');
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

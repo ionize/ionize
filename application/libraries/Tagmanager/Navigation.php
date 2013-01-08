@@ -112,6 +112,7 @@ class TagManager_Navigation extends TagManager
 
 		foreach($global_pages as &$page)
 		{
+			$page['title'] = $page['nav_title'] !='' ? $page['nav_title'] : $page['title'];
 			// Add the active_class key
 			$page['active_class'] = in_array($page['id_page'], $active_pages) ? $active_class : '';
 			$page['is_active'] = in_array($page['id_page'], $active_pages) ? TRUE : FALSE;
@@ -185,7 +186,7 @@ class TagManager_Navigation extends TagManager
 				$pages = array();
 		}
 
-		if ( ! is_null($helper))
+		if ( $helper)
 		{
 			// Get helper method
 			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_navigation';
@@ -436,20 +437,32 @@ class TagManager_Navigation extends TagManager
 		$articles = FALSE;
 		if ($with_articles == TRUE)
 		{
-			/*
-			$uri = preg_replace("|/*(.+?)/*$|", "\\1", self::$ci->uri->uri_string);
-			$uri_segments = explode('/', $uri);
-			*/
-			$uri_segments = self::get_uri_segments();
-			$current_article_uri = array_pop($uri_segments);
+			$entity = self::get_entity();
+			$id_active_article = ($entity['type'] == 'article') ? $entity['id_entity'] : NULL;
 
-			$tag->attr['scope'] = 'global';
-			$articles = TagManager_Article::get_articles($tag);
-			
-			foreach($articles as &$article)
+			foreach($final_nav_pages as $key=>$p)
 			{
-				if (array_pop(explode('/', $article['url'])) == $current_article_uri)
-					$article['active_class'] = $active_class;
+				// TODO : Change for future "Articles" lib call
+				$tag->set('page', $p);
+
+				$articles = TagManager_Article::get_articles($tag);
+
+				// Set active article
+				if ( ! is_null($id_active_article))
+				{
+					foreach($articles as $akey => $a)
+					{
+						if ($a['id_article'] == $id_active_article)
+						{
+							$articles[$akey]['active_class'] = $active_class;
+							$articles[$akey]['is_active'] = TRUE;
+
+						}
+					}
+				}
+
+
+				$final_nav_pages[$key]['articles'] = $articles;
 			}
 		}
 
@@ -543,7 +556,7 @@ class TagManager_Navigation extends TagManager
 			// Lang send to helper
 			$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
 			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
-			$lang['active'] = $lang['lang'] == Settings::get_lang('current');
+			$lang['is_active'] = $lang['lang'] == Settings::get_lang('current');
 			$lang['id'] = $lang['lang'];
 
 			// Tag locals
@@ -551,7 +564,7 @@ class TagManager_Navigation extends TagManager
 			$tag->set('id', $lang['lang']);
 			$tag->set('absolute_url', $lang['absolute_url']);
 			$tag->set('active_class', $lang['active_class']);
-			$tag->set('active', $lang['active']);
+			$tag->set('is_active', $lang['is_active']);
 			$tag->set('index', $idx);
 
 			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)

@@ -44,7 +44,8 @@ class Page_model extends Base_model
 		$this->type_table = 'type';
 		$this->extend_field_table = 'extend_field';
 		$this->extend_fields_table = 'extend_fields';
-		
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 	// ------------------------------------------------------------------------

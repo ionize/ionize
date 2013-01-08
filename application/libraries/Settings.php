@@ -26,7 +26,6 @@
 
 class Settings
 {
-
 	public static $settings = array();
 	
 	public static $online_languages = array();
@@ -150,8 +149,66 @@ class Settings
 	// ------------------------------------------------------------------------
 
 
+	public static function validate_detected_lang_code($admin=FALSE)
+	{
+		$ci =& get_instance();
+		$validated = FALSE;
+		$detected_lang_code = config_item('detected_lang_code');
+		if ( ! $admin)
+		{
+			foreach(self::get_online_languages() as $item)
+			{
+				if ($item['lang'] == $detected_lang_code)
+					$validated = TRUE;
+			}
+		}
+		else
+		{
+			foreach(self::get('displayed_admin_languages') as $lang_code)
+			{
+				if ($lang_code == $detected_lang_code)
+					$validated = TRUE;
+			}
+		}
+
+		if ( ! $validated)
+		{
+			if ( ! $admin)
+				$ci->config->set_item('detected_lang_code', config_item('default_lang_code'));
+			else
+				$ci->config->set_item('detected_lang_code', config_item('default_admin_lang'));
+
+			log_message('error', 'Settings: Corrected detected lang code to: ' . config_item('detected_lang_code'));
+		}
+
+		self::set('detected_lang_code', config_item('detected_lang_code'));
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function is_language_online($lang_code)
+	{
+		$is_online = FALSE;
+		foreach(self::get_online_languages() as $lang)
+		{
+			if ($lang['lang'] == $lang_code)
+			{
+				$is_online = TRUE;
+				break;
+			}
+		}
+		return $is_online;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/** 
-	 * Returns the config file array called "languages"
+	 * Returns all the languages
+	 * (online or not)
 	 *
 	 * @return array	The languages array
 	 *
@@ -304,7 +361,7 @@ class Settings
 
 			case 'current':
 
-				$lang = self::$settings['current_lang'];
+				$lang = self::$settings['detected_lang_code'];
 				break;
 		}
 		return $lang;

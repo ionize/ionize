@@ -14,6 +14,8 @@ class Article_type_model extends Base_model
 
 		$this->table =		'article_type';
 		$this->pk_name 	=	'id_type';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

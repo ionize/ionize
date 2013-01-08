@@ -19,6 +19,8 @@ class Element_model extends Base_model
 		$this->definition_pk_name = 'id_element_definition';
 
 		$this->fields_table = 'extend_fields';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 	
 	

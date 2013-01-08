@@ -39,6 +39,8 @@ class Config_model extends Base_model
 			self::$path = realpath(APPPATH.'config').'/';
 		}
 		parent::__construct();
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 	
 

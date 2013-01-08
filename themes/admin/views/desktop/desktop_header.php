@@ -16,7 +16,6 @@
 
 <a id="logoAnchor" class="navlink" href="dashboard"></a>
 <div class="desktopTitlebarWrapper">
-
 	<div class="desktopTitlebar">
 		<h1 class="applicationTitle">ionize <?php echo($this->config->item('version')) ;?></h1>
 		<div class="topNav">
@@ -31,11 +30,8 @@
 				</li>
 			</ul>
 		</div>
-
-
 	</div>
 </div>
-
 
 <div id="desktopNav" class="desktopNav">
 
@@ -43,7 +39,7 @@
 
 		<ul>
 			<li><a class="navlink" href="dashboard" title="<?php echo lang('ionize_title_welcome'); ?>"><?php echo lang('ionize_menu_dashboard'); ?></a></li>
-			<li><a class="returnFalse"><?php echo lang('ionize_menu_content'); ?></a>	
+			<li><a class="returnFalse"><?php echo lang('ionize_menu_content'); ?></a>
 				<ul>
 					<?php if($this->connect->is('super-admins')) :?>
 						<li><a class="navlink" href="menu" title="<?php echo lang('ionize_title_menu'); ?>"><?php echo lang('ionize_menu_menu'); ?></a></li>
@@ -68,7 +64,7 @@
 					<?php foreach($modules as $uri => $module) :?>
 						<?php if($this->connect->is($module['access_group'])) :?>
 							<li><a class="navlink" id="<?php echo $uri; ?>ModuleLink" href="module/<?php echo $uri; ?>/<?php echo $uri; ?>/index" title="<?php echo $module['name']; ?>"><?php echo $module['name']; ?></a></li>
-						<?php endif ;?>								
+						<?php endif ;?>
 					<?php endforeach ;?>
 					<?php if($this->connect->is('admins')) :?>
 						<li class="divider"><a class="navlink" href="modules" title="<?php echo lang('ionize_title_modules'); ?>"><?php echo lang('ionize_menu_modules_admin'); ?></a></li>
@@ -82,7 +78,7 @@
 					<li><a class="navlink" href="system_check"><?php echo lang('ionize_menu_system_check'); ?></a></li>
 				</ul>
 			</li>
-		
+
 			<li><a class="returnFalse"><?php echo lang('ionize_menu_settings'); ?></a>
 				<ul>
 					<li><a class="navlink" href="setting/ionize" title="<?php echo lang('ionize_menu_ionize_settings'); ?>"><?php echo lang('ionize_menu_ionize_settings'); ?></a></li>
@@ -102,7 +98,7 @@
 			<li><a class="returnFalse"><?php echo lang('ionize_menu_help'); ?></a>
 				<ul>
 					<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?>
-						<li><a id="docLink" href="../user-guide/index.html" target="_blank"><?php echo lang('ionize_menu_documentation'); ?></a></li>								
+						<li><a id="docLink" href="../user-guide/index.html" target="_blank"><?php echo lang('ionize_menu_documentation'); ?></a></li>
 					<?php endif; ?>
 					<li<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?> class="divider"<?php endif; ?>><a id="aboutLink" href="<?php echo theme_url(); ?>views/about.html"><?php echo lang('ionize_menu_about'); ?></a></li>
 				</ul>

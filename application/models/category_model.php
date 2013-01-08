@@ -15,6 +15,8 @@ class Category_model extends Base_model
 		$this->table =		'category';
 		$this->pk_name 	=	'id_category';
 		$this->lang_table = 'category_lang';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

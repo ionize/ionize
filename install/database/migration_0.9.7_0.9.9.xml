@@ -50,6 +50,10 @@
 		ALTER TABLE `media` ADD `square_crop` enum('tl','m','br') NOT NULL DEFAULT 'm';
 	</query>
 
+	<query>
+		ALTER TABLE `media` drop `container`;
+	</query>
+
 
 	<query>
 			CREATE TABLE IF NOT EXISTS url (
@@ -139,6 +143,9 @@
         ALTER TABLE `article_media` ADD online tinyint(1) UNSIGNED NOT NULL default 1;
     </query>
 
+    <query>
+        delete from setting where name like 'thumb_%';
+    </query>
 
 
     <query>ALTER TABLE article ENGINE = InnoDB;</query>

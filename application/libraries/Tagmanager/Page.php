@@ -27,14 +27,7 @@ class TagManager_Page extends TagManager
 	 */
 	protected static $ordered_pages = NULL;
 
-	/**
-	 * Entity from URL.
-	 * usually 'page' or 'article'
-	 *
-	 * @var string
-	 */
-	protected static $_entity = NULL;
-	
+
 	public static $tag_definitions = array
 	(
 		'pages' => 				'tag_pages',
@@ -131,26 +124,6 @@ class TagManager_Page extends TagManager
 		self::$view = self::_get_page_view($page);
 
 		self::render();
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Returns the current entity asked by the URL ('page' or 'article')
-	 *
-	 * @return array
-	 *
-	 */
-	public function get_entity()
-	{
-		if ( is_null(self::$_entity))
-		{
-			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string());
-		}
-
-		return self::$_entity;
 	}
 
 
@@ -839,7 +812,7 @@ class TagManager_Page extends TagManager
 		$child_tag_open = ! is_null($child_tag) ? '<' . $child_tag . $child_class . '>' : '';
 		$child_tag_close = ! is_null($child_tag) ? '</' . $child_tag .'>' : '';
 
-		$separator = $tag->getAttribute('separator', ' &raquo; ');
+		$separator = $tag->getAttribute('separator', '&nbsp;&raquo;&nbsp;');
 		$separator_tag = $tag->getAttribute('separator_tag');
 		$separator_class = $tag->getAttribute('separator_class');
 		$separator_class = ! is_null($separator_class) ? ' class="'.$separator_class.'"': '';
@@ -907,8 +880,8 @@ class TagManager_Page extends TagManager
 
 			if ($article)
 			{
-				$return .= ($return != '') ? $separator : '';
-				$return .= $child_tag_open .$article['title'] . $child_tag_close;
+				$separator = ($return != '') ? $separator : '';
+				$return .= $child_tag_open . $separator .$article['title'] . $child_tag_close;
 			}
 		}
 

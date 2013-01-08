@@ -38,6 +38,8 @@ class Users_model extends Base_model
 
 		$this->table =		'users';
 		$this->pk_name = 	'id_user';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

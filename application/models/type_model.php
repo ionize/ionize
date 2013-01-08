@@ -14,6 +14,8 @@ class Type_model extends Base_model
 
 		$this->table =		'type';
 		$this->pk_name 	=	'id_type';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

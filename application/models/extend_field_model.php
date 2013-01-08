@@ -40,6 +40,8 @@ class Extend_field_model extends Base_model
 		
 		// Stores the extends fields instances
 		$this->elements_table =	'extend_fields';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

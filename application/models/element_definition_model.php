@@ -17,7 +17,8 @@ class Element_definition_model extends Base_model
 		$this->lang_table = 'element_definition_lang';
 
 		$this->element_table = 'element';
-		
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 	
 	

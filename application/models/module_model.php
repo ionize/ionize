@@ -32,6 +32,8 @@ class Module_Model extends Base_model
 
 		$this->set_table('setting');
 		$this->set_pk_name('id_setting');
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

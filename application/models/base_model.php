@@ -161,14 +161,14 @@ class Base_model extends CI_Model
 	 */
 	public function __construct()
 	{
-		parent::__construct();
-		
+		// parent::__construct();
+
 		if (is_null($this->db_group))
 		{
 			include(APPPATH . 'config/database.php');
 			$this->db_group = $active_group;
 		}
-		
+
 		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE);
 
 		if(self::$_inited)

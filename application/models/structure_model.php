@@ -31,8 +31,9 @@ class Structure_model extends Base_Model
 	 */
 	public function __construct()
 	{
-		// Call the Model constructor
 		parent::__construct();
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

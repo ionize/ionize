@@ -57,6 +57,8 @@ class Article_model extends Base_model
 		$this->set_table('article');
 		$this->set_pk_name('id_article');
 		$this->set_lang_table('article_lang');
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

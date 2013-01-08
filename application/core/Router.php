@@ -63,6 +63,8 @@ class CI_Router
 
 	function __construct()
 	{
+		log_message('debug', "Router Class Initialized");
+
 		// Load the config class
 		$this->config = load_class('Config');
 		
@@ -77,7 +79,7 @@ class CI_Router
 
 		// all available website languages
 		$this->lang_dict = $this->config->item('available_languages');
-		
+
  		$this->lang_online = $this->config->item('online_languages');
 
 		$this->_calc_modpath_apppath_diff();
@@ -116,7 +118,6 @@ class CI_Router
 				die();
 			}
 		}
-		log_message('debug', "Router Class Initialized");
 	}
 
 	/**
@@ -549,7 +550,7 @@ class CI_Router
 					$browser_lang != ''
 					&& $browser_lang != $this->config->item('default_lang_code')
 					&& !empty($this->lang_dict[$browser_lang])
-					&& !empty($this->lang_online[$browser_lang])
+//					&& !empty($this->lang_online[$browser_lang])
 				)
 					$this->lang_key = $browser_lang;
 				else
@@ -602,8 +603,8 @@ class CI_Router
 		
 		$segments = array_values($this->uri->segment_array());
 
-// If installer warning, the users languages are detected !
-// Not important, but not so clean, should be correctly implemented !
+		// If installer warning, the users languages are detected !
+		// Not important, but not so clean, should be correctly implemented !
 
 		// Admin lang key
 		if (
@@ -620,21 +621,22 @@ class CI_Router
 			}
 			else
 			{
-				log_message('debug', 'Router: The key "'.$key.'" was not a valid admin language key.');
+				log_message('debug', 'Router: Admin: The key "'.$key.'" was not a valid admin language key.');
 			}
 		}
 		// User defined languages
 		else if
 		(
-			!empty($this->lang_dict[$key])
-			&& !empty($this->lang_online[$key])
+			! empty($this->lang_dict[$key])
+//			&& ! empty($this->lang_online[$key])
 		)
 		{
+			log_message('debug', 'Router: Validated lang key: "'.$key.'"');
 			return $key;
 		}
 		else
 		{
-			log_message('debug', 'Router: The key "'.$key.'" was not a valid language key.');
+			log_message('debug', 'Router: Frontend: The key "'.$key.'" was not a valid language key.');
 		}
 
 		return FALSE;
@@ -651,7 +653,11 @@ class CI_Router
 	{
 		log_message('debug', 'Router: Applying the language key "'.$this->lang_key.'".');
 		
+		// Detected lang code can change after Router's detection
 		$this->config->set_item('detected_lang_code', $this->lang_key);
+
+		// Store the URI asked lang code : This will not and must not change after here.
+		$this->config->set_item('uri_lang_code', $this->lang_key);
 	}
 
 	// ------------------------------------------------------------------------

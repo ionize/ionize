@@ -36,6 +36,8 @@ class Menu_model extends Base_model
 		
 		$this->table =		'menu';
 		$this->pk_name = 	'id_menu';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

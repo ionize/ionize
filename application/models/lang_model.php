@@ -35,6 +35,8 @@ class Lang_model extends Base_model
 
 		$this->set_table('lang');
 		$this->set_pk_name('lang');
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

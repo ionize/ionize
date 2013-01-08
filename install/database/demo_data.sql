@@ -12,45 +12,55 @@
 TRUNCATE TABLE `lang`;
 INSERT INTO `lang` (`lang`, `name`, `online`, `def`, `ordering`) VALUES	('en','english','1','1',1);
 
-UPDATE `setting` SET `content`='demo' WHERE `name`='theme';
+UPDATE setting SET `content`='foundation' WHERE `name`='theme';
 
 DELETE FROM `setting` WHERE `name`='site_title';
-INSERT INTO `setting` VALUES('', 'site_title', 'My Website', 'en');
-
-INSERT INTO `setting` VALUES ('','thumb_430','width,430,,',NULL);
-INSERT INTO `setting` VALUES ('','thumb_540','width,540,,',NULL);
-INSERT INTO `setting` VALUES ('','thumb_150','width,150,true,true',NULL);
-INSERT INTO `setting` VALUES ('','thumb_940','width,940,,',NULL);
-INSERT INTO `setting` VALUES ('','thumb_280','width,280,,true',NULL);
+INSERT INTO `setting` VALUES('', 'site_title', 'Ionize CMS', 'en');
 
 
 -- 
 -- Article
 -- 
 TRUNCATE `article`;
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(1, '404', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, NULL, '0', '0', NULL, 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(2, 'welcome-article-url', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 11:44:13', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(4, 'home-example', '', '', '2011-07-05 18:27:14', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 20:10:56', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(5, 'article-type', '', '', '2011-07-05 19:35:29', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 20:12:33', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(6, 'footer-article', '', '', '2011-07-12 17:04:09', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 16:32:45', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(7, 'footer-views', '', '', '2011-07-12 17:04:58', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 16:31:59', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(8, 'follow-us', '', '', '2011-07-12 17:05:23', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 16:43:57', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(9, 'examples-introduction', '', '', '2011-07-12 19:04:22', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 16:40:45', '0000-00-00 00:00:00', 1, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(10, 'one-blog-post', '', '', '2011-07-13 21:16:43', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-07-13 21:16:43', '0000-00-00 00:00:00', 1, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(11, 'another-post', '', '', '2011-07-13 23:33:48', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-07-14 00:49:22', '0000-00-00 00:00:00', 1, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(13, 'corporate-information', '', '', '2011-07-27 06:55:23', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-24 18:57:48', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(31, 'picture-gallery', '', '', '2011-08-24 20:54:34', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 11:34:30', '0000-00-00 00:00:00', 1, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(32, 'for-developpers', '', '', '2011-08-25 11:43:39', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 11:44:49', '0000-00-00 00:00:00', 0, 0, '', '', '0000-00-00 00:00:00', 0);
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`) VALUES(34, 'modules', '', '', '2011-08-25 16:45:04', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 20:13:38', '0000-00-00 00:00:00', 1, 0, '', '', '0000-00-00 00:00:00', 0);
+INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`, `has_url`)
+VALUES
+	(1,'404','demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-10 09:18:48','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(4,'welcome-to-ionize','demo','demo','2012-11-17 12:48:59','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-20 17:05:20','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(5,'article-1','demo','demo','2012-11-17 13:58:21','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 15:47:36','0000-00-00 00:00:00',1,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(6,'article-2','demo','demo','2012-11-17 13:58:41','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 15:47:57','0000-00-00 00:00:00',1,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(7,'article-3','demo','demo','2012-11-17 13:59:04','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 15:52:39','0000-00-00 00:00:00',1,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(8,'article-4','demo','demo','2012-11-17 13:59:25','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 15:52:46','0000-00-00 00:00:00',1,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(9,'article-5','demo','demo','2012-11-17 14:10:38','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 15:52:52','0000-00-00 00:00:00',1,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(10,'article-6','demo','demo','2012-11-17 14:17:28','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 15:52:58','0000-00-00 00:00:00',1,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(11,'easy-edition','demo','demo','2012-11-21 10:44:50','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-21 10:44:50','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(12,'multilingual','demo','demo','2012-11-21 10:46:28','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-21 10:46:28','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(13,'userfriendly','demo','demo','2012-11-21 10:46:50','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-21 10:46:50','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(14,'template-system','demo','demo','2012-11-21 10:47:12','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-06 11:20:03','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(15,'about-us','demo','demo','2012-11-21 11:42:13','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-27 01:15:33','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(16,'footer-resources','demo','demo','2012-11-21 11:52:42','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 16:33:05','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(17,'service-1','demo','demo','2012-12-06 14:34:27','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-27 01:15:00','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(18,'service-2','demo','demo','2012-12-06 14:38:25','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 17:00:37','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(19,'service-3','demo','demo','2012-12-06 14:38:44','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 17:00:47','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(20,'service-4','demo','demo','2012-12-06 14:39:08','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 17:00:54','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(24,'contact-informations','demo','demo','2012-12-07 10:01:46','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:39:02','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(26,'our-location','demo','demo','2012-12-07 10:07:56','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 20:04:28','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(27,'whats-ionize','demo','demo','2012-12-21 16:27:54','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 16:27:54','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(28,'can-i-help','demo','demo','2012-12-21 16:30:01','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 16:30:10','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(29,'send-us-a-message','demo','demo','2012-12-21 17:04:43','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 17:04:43','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(30,'not-logged-in','demo','demo','2012-12-22 10:54:43','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 10:54:43','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
+	(31,'hello','demo','demo','2012-12-22 11:15:04','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 11:42:04','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1);
 
 
 -- 
 -- Article_category
 -- 
 TRUNCATE `article_category`;
-INSERT INTO `article_category` (`id_article`, `id_category`) VALUES(10, 1);
-INSERT INTO `article_category` (`id_article`, `id_category`) VALUES(11, 1);
-INSERT INTO `article_category` (`id_article`, `id_category`) VALUES(11, 2);
+INSERT INTO `article_category` (`id_article`, `id_category`)
+VALUES
+	(4,1),
+	(5,1),
+	(5,2),
+	(6,2);
 
 
 -- 
@@ -58,62 +68,86 @@ INSERT INTO `article_category` (`id_article`, `id_category`) VALUES(11, 2);
 -- 
 
 TRUNCATE `article_lang`;
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(1, 'en', '404', '404', NULL, NULL, NULL, '<p>The content you asked was not found !</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(2, 'en', 'welcome-article-url', 'Welcome to Ionize', '', '', NULL, '<p>For more information about building a website with Ionize, you can:</p>\n<ul>\n<li>Download &amp; read <a href="http://www.ionizecms.com">the Documentation</a></li>\n<li>Visit <a href="http://www.ionizecms.com/forum">the Community Forum</a></li>\n</ul>\n<p>Have fun !</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(4, 'en', 'home-example', 'Some examples ?', '', '', NULL, '<p>The Examples page introduce more complex use of tags.</p>\n<p>Don''t hesitate to have a look at the "views" sources files.</p>\n<p>If you don''t know what''s a view, look at <a target="_blank" href="http://doc.ionizecms.com">the ionize documentation</a>.</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(5, 'en', 'article-type', 'Article''s type', '', '', NULL, '<p>Articles "types" helps the webdesigner to define where will be displayed which article.</p>\n<p>This article has the type "one-fourth", that means it will be displayed just here.</p>\n<p>The three above articles have no type defined.<br />In this case, the Ionize article tag retrieves the articles "without type" and limits the retrieved number of articles to 3, so the design isn''t broken.</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(6, 'en', 'footer-article', 'Footer article', '', '', NULL, '<p>This article has the view "Footer" and is located in the page called "Footer".<br />Views define how one content will be displayed.</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(7, 'en', 'footer-views', 'More about views', '', '', NULL, '<p>Views are PHP files. They can be declared as "Page" or "Article" in Ionize. Then, they will be available when editing a page.</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(8, 'en', 'follow-us', 'Follow us', '', '', NULL, '<p><a href="/rss/">RSS</a> (The RSS icon links to the RSS module)</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(9, 'en', 'examples-introduction', 'Examples introduction', '', '', NULL, '<p>These example data and the used template are very useful for webdesigners and developpers who want to create an Ionize based website.</p>\n<p>To see the code used to build these examples :</p>\n<ul>\n<li>Get the view name used for each example article in the Ionize Admin panel,</li>\n<li>Edit the corresponding view file &#40;in /themes/demo/views&#41;</li>\n</ul>\n<p>For more documentation, visit the documentation website : http://doc.ionizecms.com</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(10, 'en', 'one-blog-post', 'One blog post', '', '', NULL, '<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(11, 'en', 'another-post', 'Another post', '', '', NULL, '<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(13, 'en', 'corporate-information', 'Corporate Information', '', '', NULL, '<ul>\n<li><img class="left" src="/files/website/icon-home.png" />Ionize Corp.<br />5 design street,<br />10000 TheCity</li>\n<li><img class="left" src="/files/website/icon-phone.png" />From 7.00 AM to 7.00 PM at :<br />+44 01 02 03 04 05</li>\n<li><img class="left" src="/files/website/icon-email.png" />For all request :<br />our-email@our-domain.com</li>\n</ul>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(31, 'en', 'picture-gallery', 'Picture Gallery Example', '', '', NULL, '<p>This is an article with pictures linked to.<br />This article uses the view called "Picture Gallery".<br />Location of the view file  : <strong>themes/demo/views/article_picture_gallery.php</strong></p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(32, 'en', 'for-developpers', 'For developpers', '', '', NULL, '<p>The last version of Ionize is always available on GitHub :</p>\n<p>http://www.github.com/ionize/ionize/</p>', NULL, NULL, 1);
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `summary`, `content`, `meta_keywords`, `meta_description`, `online`) VALUES(34, 'en', 'modules', 'Modules', '', '', NULL, '<p>Out of the box, Ionize comes with 4 modules :</p>\n<h3>Search Module</h3>\n<p>This module looks in the whole website for articles containing the searched word.</p>\n<p>In the Demo Theme, you will find :</p>\n<ul>\n<li>the form and the call to this module in the view <strong>/themes/demo/header.php</strong></li>\n<li>the search result page in the view <strong>/themes/demo/page_search_result.php</strong></li>\n</ul>\n<p>To use it : </p>\n<ul>\n<li>Create a page, let''s say its URL is <strong>my-search-result</strong></li>\n<li>Set the URL of this page as action of the form containing the search field</li>\n<li>The search input text must have its name set to <strong>"realm"</strong></li>\n</ul>\n<h3>Simpleform module</h3>\n<p>Used to build simple forms for your website.</p>\n<p>The view <strong>/themes/demo/page_contact.php</strong> will help you building your form. This module also has an Admin panel, which display some help about installation.</p>\n<h3>RSS module</h3>\n<p>Creates RSS feeds in multiple languages.</p>\n<p>The Admin panel of this module let you drag''n''drop pages from which you want to make a syndication feed.</p>\n<p>The syndication URL is displayed and depends on the URL you define for the module at installation. Just add a link to this syndication URL, and that''s it !</p>\n<h3>User Manager module</h3>\n<p>This module is a complete set which let end users suscribe and connect to the website.</p>\n<p>Some features :</p>\n<ul>\n<li>Subscription form for users (highly configurable)</li>\n<li>Subscription confirmation by mail (account activation by user, by admin)</li>\n<li>Member panel for each user.</li>\n</ul>', NULL, NULL, 1);
+INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `content`, `meta_keywords`, `meta_description`, `online`)
+VALUES
+	(1,'en','404','Can\'t find requested page','','','<p class=\"justify\">Maecenas arcu massa; varius non accumsan nec, commodo vitae felis! Quisque luctus, lorem vel elementum aliquam, lorem nulla dignissim velit, id placerat libero ipsum eget sapien. Cras erat risus, pellentesque ut auctor quis, fringilla vel elit. Cras nisl dolor, vulputate eget molestie ut, sollicitudin non dui.</p>\n<h4 class=\"justify\">Reasons</h4>\n<ul>\n<li>Lorem ipsum dolor sit amet</li>\n<li>Consectetur adipiscing elit</li>\n<li>Nulla volutpat aliquam velit\n<ul>\n<li>Phasellus iaculis neque</li>\n<li>Purus sodales ultricies</li>\n<li>Vestibulum laoreet porttitor sem</li>\n<li>Ac tristique libero volutpat at</li>\n</ul>\n</li>\n<li>Faucibus porta lacus fringilla vel</li>\n</ul>','','',1),
+	(4,'en','the-power-of-php','The power of PHP','','','<p>The Ionize CMS uses CodeIgniter, a powerful and lightweight PHP framework. For CodeIgniter developpers, starting developping on Ionize will be really easy as building a CI application !</p>','','',1),
+	(5,'en','article-1','One blog post','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(6,'en','article-2','Another blog post','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(7,'en','article-3','We got something...','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(8,'en','article-4','Say it differently','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(9,'en','article-5','10 incredible items !','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(10,'en','article-6','Send mail to your friends !','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(11,'en','easy-edition','Easy edition','','','<p>Copy / paste content from any word processing software. Inline links are automatically converted to hyperlinks. Emails are safely encoded to avoid spam.</p>',NULL,NULL,1),
+	(12,'en','multilingual','Multilingual','','','<p>You can create as much languages as you need for your website. Every content can be translated : posts, static elements in templates, media data, etc.</p>',NULL,NULL,1),
+	(13,'en','userfriendly','Userfriendly','','','<p>Your website structure is logical. Managing elements such as pages, articles or medias is easily done by drag\'n\'drop!</p>',NULL,NULL,1),
+	(14,'en','template-system','Template System','','','<p>Each page or article can have a dedicated template, templates can be embeded in each others. The tag language of Ionize is simple and fully documented.</p>','','',1),
+	(15,'en','about-us-1','About Us','','','<p>Duis diam tortor, suscipit sed varius id, dictum interdum tortor. Vivamus vel sapien vitae metus aliquet vehicula. Cras nec odio a dui sagittis semper? Nullam non luctus nisl. Cras ante ante, elementum a porta sit amet, aliquet in felis. Cras dictum metus non felis fermentum in mattis nisl dignissim. Suspendisse suscipit diam id ipsum elementum sed commodo massa ullamcorper. Curabitur tincidunt enim at ipsum aliquam a sagittis eros vulputate. Etiam elementum gravida ipsum eget congue. Pellentesque tempus facilisis odio, at porta nibh pulvinar vel.</p>\n<p>Donec rutrum lectus eget enim aliquet in sollicitudin elit vestibulum. Sed iaculis mi quis ipsum congue elementum. Proin turpis urna, rutrum id vehicula et, cursus vel purus. Proin tincidunt, odio sed congue ultricies; risus erat rhoncus leo, in fringilla elit libero vel metus. Sed adipiscing, orci vitae iaculis laoreet, ante nibh facilisis sem, ac pulvinar nunc risus sit amet nisl.</p>','','',1),
+	(16,'en','footer-resources','Online resources','','','<p><strong>Community</strong> : Ionize\'s forum<br /><strong>Project hosting</strong> : Ionize on github</p>\n<p><strong>Last version</strong> : Download Ionize</p>\n<p><strong>Contact</strong> : team@ionizecms.com</p>','','',1),
+	(17,'en','some-of-our-services','What we do for you','','','<p>Suspendisse nec erat lacus? Morbi pharetra elit ac nibh ornare a vulputate urna dictum?</p>\n<p>Vestibulum eu justo sit amet nulla adipiscing imperdiet. Nullam venenatis tortor nec mauris viverra at rutrum lacus ultricies. Sed condimentum aliquet congue! Aenean sed justo sapien.</p>\n<p>Fusce ut turpis mauris. Phasellus ac felis arcu, semper rhoncus nisi? Quisque tortor nisl; convallis et varius vel, ullamcorper sit amet neque. Sed semper aliquam rutrum.</p>\n<p>Phasellus ac nisl et quam laoreet interdum ultrices vel dui. Mauris et urna sed tortor molestie blandit quis vel sapien. Cras tempus sollicitudin magna eu faucibus. Nulla dapibus pharetra dapibus.</p>','','',1),
+	(18,'en','service-1','Service 1','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p>\n<p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p>\n<p>Faucibus porta lacus fringilla vel.</p>','','',1),
+	(19,'en','service-2','Service 2','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p>\n<p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p>\n<p>Faucibus porta lacus fringilla vel.</p>','','',1),
+	(20,'en','service-3','Service 3','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p>\n<p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p>\n<p>Faucibus porta lacus fringilla vel.</p>','','',1),
+	(24,'en','contact-informations','Contact Informations','','','<p><strong>Ionize CMS</strong><br /> 123 Flower street,<br /> 75005 Paris, France</p>\n<p><strong>Tel</strong> : +33 012345678<strong><br />Email : </strong>team@ionizecms.com</p>','','',1),
+	(26,'en','our-location','Our location','','','<p><iframe width=\"100%\" height=\"250\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"https://maps.google.fr/maps?f=q&amp;source=s_q&amp;hl=fr&amp;geocode=&amp;aq=&amp;sll=48.876161,2.377124&amp;sspn=0.007296,0.018175&amp;gl=fr&amp;g=villa+Marcel+Lods&amp;ie=UTF8&amp;hq=&amp;ll=48.876161,2.377124&amp;spn=0.001824,0.004544&amp;t=m&amp;z=16&amp;output=embed\"></iframe></p>','','',1),
+	(27,'en','whats-ionize','What\'s Ionize ?','','','\n\n<p>Ionize is an Open Source content management system created by webdesigners for webdesigners.</p>\n<p>Originally <a title=\"Ionize\'s creators\" href=\"http://www.ionizecms.com/en/about\">created by Partikule Studio and Toopixel</a> for their clients, Ionize is today an OpenSource project, so everybody can build easy to maintain websites.</p>\n\n',NULL,NULL,1),
+	(28,'en','can-i-help','Can I help ?','','','<p>Because talent is nothing without involvement, we are looking for motivated coders and webdesigners to join the project team.</p>\n<p>You have a module idea ?<br />You want to make some improvement ?<br />You wants to get involved in a promising CMS ?</p>','','',1),
+	(29,'en','send-us-a-message','Send us a message !','','','',NULL,NULL,1),
+	(30,'en','not-logged-in','Not logged in','','','',NULL,NULL,1),
+	(31,'en','hello','Hello','','','<p>Welcome to your account management page.</p>','','',1);
 
 
 -- 
 -- Article_media
 -- 
 TRUNCATE `article_media`;
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(2, 10, 1, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(4, 3, 1, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(10, 13, 2, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(11, 7, 1, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(31, 1, 4, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(31, 3, 5, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(31, 7, 6, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(31, 10, 1, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(31, 13, 2, NULL);
-INSERT INTO `article_media` (`id_article`, `id_media`, `ordering`, `url`) VALUES(32, 7, 2, NULL);
+INSERT INTO `article_media` (`id_article`, `id_media`, `online`, `ordering`, `url`, `lang_display`)
+VALUES
+	(4,3,1,1,NULL,NULL),
+	(5,6,1,2,NULL,NULL),
+	(5,7,1,3,NULL,NULL),
+	(5,8,1,1,NULL,NULL),
+	(6,5,1,1,NULL,NULL),
+	(7,7,1,1,NULL,NULL),
+	(8,3,1,1,NULL,NULL),
+	(9,8,1,1,NULL,NULL),
+	(10,4,1,1,NULL,NULL),
+	(15,5,1,2,NULL,NULL),
+	(17,3,1,1,NULL,NULL);
 
 
 -- 
 -- Article_type
 -- 
 TRUNCATE `article_type`;
-INSERT INTO `article_type` (`id_type`, `type`, `ordering`, `description`, `type_flag`) VALUES(1, 'three-fourth', 0, 'Type set to articles in three fourth blocs.', 0);
-INSERT INTO `article_type` (`id_type`, `type`, `ordering`, `description`, `type_flag`) VALUES(2, 'one-fourth', 0, 'Type set to articles in one fourth blocs.', 0);
-INSERT INTO `article_type` (`id_type`, `type`, `ordering`, `description`, `type_flag`) VALUES(3, 'intro', 0, 'Everywhere an intro article is needed...', 0);
+INSERT INTO `article_type` (`id_type`, `type`, `ordering`, `description`, `type_flag`)
+VALUES
+	(4,'bloc',0,'',5),
+	(5,'not-logged-in',0,'',1),
+	(6,'logged-in',0,'',4);
 
 
 -- 
 -- Category
 -- 
 TRUNCATE `category`;
-INSERT INTO `category` (`id_category`, `name`, `ordering`) VALUES(1, 'web-design', 0);
-INSERT INTO `category` (`id_category`, `name`, `ordering`) VALUES(2, 'travel', 0);
+INSERT INTO `category` (`id_category`, `name`, `ordering`)
+VALUES
+	(1,'ionize',0),
+	(2,'website',0);
+
 
 
 -- 
 -- Category_lang
 -- 
-
 TRUNCATE `category_lang`;
-INSERT INTO `category_lang` (`id_category`, `lang`, `title`, `subtitle`, `description`) VALUES(1, 'en', 'Web Design', '', '');
-INSERT INTO `category_lang` (`id_category`, `lang`, `title`, `subtitle`, `description`) VALUES(2, 'en', 'Travel', '', '');
+INSERT INTO `category_lang` (`id_category`, `lang`, `title`, `subtitle`, `description`)
+VALUES
+	(1,'en','Ionize CMS','',''),
+	(2,'en','Website','',''),
+	(2,'fr','','',''),
+	(2,'tr','','','');
 
 
 -- 
@@ -121,17 +155,23 @@ INSERT INTO `category_lang` (`id_category`, `lang`, `title`, `subtitle`, `descri
 -- 
 
 TRUNCATE `media`;
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(1, 'picture', 'IMG_8632.jpg', 'files/pictures/IMG_8632.jpg', 'files/pictures/', 'Michel-Ange Kuntz', '', '2007-02-25 17:02:29', '');
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(2, 'picture', 'IMG_8643.jpg', 'files/pictures/IMG_8643.jpg', 'files/pictures/', '', '', '0000-00-00 00:00:00', '');
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(3, 'picture', 'IMG_8963.jpg', 'files/pictures/IMG_8963.jpg', 'files/pictures/', 'Michel-Ange Kuntz', '', '0000-00-00 00:00:00', '');
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(4, 'picture', 'IMG_9338.jpg', 'files/pictures/IMG_9338.jpg', 'files/pictures/', 'Michel-Ange Kuntz', '', '0000-00-00 00:00:00', '');
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(7, 'picture', 'IMG_8447.jpg', 'files/pictures/IMG_8447.jpg', 'files/pictures/', 'Michel-Ange Kuntz', '', '0000-00-00 00:00:00', '');
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(8, 'picture', 'IMG_9448.jpg', 'files/pictures/IMG_9448.jpg', 'files/pictures/', NULL, '', '0000-00-00 00:00:00', NULL);
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(9, 'picture', 'IMG_8350.jpg', 'files/pictures/IMG_8350.jpg', 'files/pictures/', NULL, '', '0000-00-00 00:00:00', NULL);
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(10, 'picture', 'IMG_8359.jpg', 'files/pictures/IMG_8359.jpg', 'files/pictures/', 'Michel-Ange Kuntz', '', '0000-00-00 00:00:00', '');
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(11, 'picture', 'IMG_4475.jpg', 'files/pictures/IMG_4475.jpg', 'files/pictures/', NULL, '', '0000-00-00 00:00:00', NULL);
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(12, 'picture', 'IMG_7634.jpg', 'files/pictures/IMG_7634.jpg', 'files/pictures/', NULL, '', '0000-00-00 00:00:00', NULL);
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `container`, `date`, `link`) VALUES(13, 'picture', 'IMG_8645.jpg', 'files/pictures/IMG_8645.jpg', 'files/pictures/', 'Michel-Ange Kuntz', '', '0000-00-00 00:00:00', '');
+INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `date`, `link`, `square_crop`)
+VALUES
+	(3,'picture','screenshot_ionize_dashboard.jpg','files/screenshot_ionize_dashboard.jpg','files/',NULL,'0000-00-00 00:00:00',NULL,'m'),
+	(4,'picture','IMG_8359.jpg','files/pictures/IMG_8359.jpg','files/pictures/','','0000-00-00 00:00:00','','m'),
+	(5,'picture','IMG_8447.jpg','files/pictures/IMG_8447.jpg','files/pictures/','','0000-00-00 00:00:00','','m'),
+	(6,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/','','0000-00-00 00:00:00','','m'),
+	(7,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/','','0000-00-00 00:00:00','','m'),
+	(8,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,'0000-00-00 00:00:00',NULL,'m'),
+	(9,'picture','wall_e_headphones_vignette.jpg','files/wall_e_headphones_vignette.jpg','files/',NULL,'0000-00-00 00:00:00',NULL,'m'),
+	(10,'picture','ionize_article_095.jpg','files/ionize/ionize_article_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
+	(11,'picture','ionize_dashboard_095.jpg','files/ionize/ionize_dashboard_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
+	(12,'picture','ionize_languages_095.jpg','files/ionize/ionize_languages_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
+	(13,'picture','ionize_login_window_095.jpg','files/ionize/ionize_login_window_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
+	(14,'picture','ionize_multiple_windows_095.jpg','files/ionize/ionize_multiple_windows_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
+	(15,'picture','ionize_option_panel_095.jpg','files/ionize/ionize_option_panel_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
+	(16,'picture','ionize_page_edit_095.jpg','files/ionize/ionize_page_edit_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
+	(17,'picture','ionize_picture_data_095.jpg','files/ionize/ionize_picture_data_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m');
 
 
 -- 
@@ -139,21 +179,31 @@ INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copy
 -- 
 
 TRUNCATE `media_lang`;
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`) VALUES('en', 1, 'Monywa, Burma', '', 'In the mountain of Monywa, more than two thousand caves were built in honor of Budha.');
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`) VALUES('en', 2, 'Monywa wall paints', '', 'These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.');
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`) VALUES('en', 3, 'Bagan temples', '', 'In the Bagan valley, some temples have marvelous 16th century fresco, sadly touchable by visitors.');
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`) VALUES('en', 4, 'Inle lake silk', '', 'The Inle lake silk is made from Lotus plant fibers.');
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`) VALUES('en', 7, 'Mandalay', '', 'One working day in the historical capital of Burma.');
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`) VALUES('en', 10, 'Mingun', '', 'Alot of young munks live in a monastery next to the Hsinbyume pagoda');
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`) VALUES('en', 13, 'Monywa fresco', '', 'In the 16th century, the maze of caves has been forgotten, preserving them until today.');
+INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`)
+VALUES
+	('en',4,'Mingun','Alot of young munks live in a monastery next to the Hsinbyume pagoda','Alot of young munks live in a monastery next to the Hsinbyume pagoda'),
+	('en',5,'Mandalay','One working day in the historical capital of Burma.','One working day in the historical capital of Burma.'),
+	('en',6,'Monywa, Burma','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.'),
+	('en',7,'Monywa wall paints','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.'),
+	('en',10,'Edit Article','','With Ionize CMS, edit instantly your content in all languages'),
+	('en',11,'Dashboard','','Ionize CMS dashboard gives an overview of the last actions on your website'),
+	('en',12,'Nativelly Multilingual','','Every language can be setup by the user !'),
+	('en',13,'Login Screen Ionize CMS','','Ionize login of the Admin Panel'),
+	('en',14,'Windowed Workspace','','Make work easier !'),
+	('en',15,'So Friendly !','','Every component in Ionize CMS is userfriendly'),
+	('en',16,'','',''),
+	('en',17,'','','');
 
 
 -- 
 -- Menu
 -- 
 TRUNCATE `menu`;
-INSERT INTO `menu` (`id_menu`, `name`, `title`, `ordering`) VALUES(1, 'main', 'Main menu', NULL);
-INSERT INTO `menu` (`id_menu`, `name`, `title`, `ordering`) VALUES(2, 'system', 'System menu', NULL);
+INSERT INTO `menu` (`id_menu`, `name`, `title`, `ordering`)
+VALUES
+	(1,'main','Main menu',NULL),
+	(2,'system','System menu',NULL);
+
 
 
 -- 
@@ -161,15 +211,16 @@ INSERT INTO `menu` (`id_menu`, `name`, `title`, `ordering`) VALUES(2, 'system', 
 -- 
 
 TRUNCATE `page`;
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(1, 0, 2, 0, '404', 0, 0, 1, 0, '0', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-24 22:51:41', '0000-00-00 00:00:00', 0, '404', '', '', '0', '0', '', NULL, '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(2, 0, 1, 0, 'welcome-url', 1, 0, 1, 1, '0', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-07-05 19:50:40', '0000-00-00 00:00:00', 1, 'page_home', '0', '', '0', '0', '', '', '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(3, 0, 1, 0, 'contact', 6, 0, 1, 0, '0', '', '2011-07-05 17:29:30', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-07-27 06:53:26', '0000-00-00 00:00:00', 1, 'page_contact', '0', '', '0', '0', '', NULL, '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(4, 0, 1, 0, 'examples', 2, 0, 1, 0, '0', '', '2011-07-05 17:29:45', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 11:30:50', '0000-00-00 00:00:00', 1, '', '', '', '0', '0', '', '', '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(6, 0, 1, 0, 'blog', 5, 0, 1, 0, '0', '', '2011-07-05 17:36:21', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-07-13 21:08:29', '0000-00-00 00:00:00', 1, 'page_blog', 'article_blog_post_list', 'article_blog_post_detail', '0', '0', '', NULL, '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(8, 0, 2, 0, 'search-result', 1, 0, 1, 0, '0', '', '2011-07-12 16:33:29', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-07-12 16:54:38', '0000-00-00 00:00:00', 0, 'page_search_result', '0', '', '0', '0', '', NULL, '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(9, 0, 2, 0, 'footer', 2, 0, 1, 0, '', '0', '2011-07-12 17:03:22', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, '0', '0', '0', '0', '0', '', NULL, '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(10, 4, 1, 4, 'picture-gallery', 2, 1, 1, 0, '0', '', '2011-07-14 00:35:27', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 11:29:48', '0000-00-00 00:00:00', 1, '', '', '', '0', '0', '', NULL, '', 0, 0, 0, 5);
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `view`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `pagination_nb`, `id_group`, `priority`) VALUES(14, 4, 1, 0, 'modules', 1, 1, 1, 0, '0', '', '2011-08-25 11:26:51', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2011-08-25 16:44:37', '0000-00-00 00:00:00', 1, '', '', '', '0', '0', '', NULL, '', 0, 0, 0, 5);
+INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_type`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `has_url`, `view`, `view_single`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `id_group`, `priority`, `used_by_module`)
+VALUES
+	(1,0,2,0,0,'404',0,0,1,0,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:42:05','0000-00-00 00:00:00',0,1,'','','','','ordering','ASC','',NULL,'',0,0,5,0),
+	(2,0,1,0,0,'welcome',1,0,1,1,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-23 01:05:34','0000-00-00 00:00:00',1,1,'page_home','','','','ordering','ASC','',NULL,'',0,0,5,0),
+	(3,0,1,0,0,'about-ionize-cms',5,0,1,0,'demo','demo','2012-11-17 09:42:18','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-06 16:27:42','0000-00-00 00:00:00',1,1,'pages/page_standard','pages/page_standard',NULL,'','ordering','ASC','',NULL,'',0,0,5,0),
+	(4,0,1,0,0,'contact',6,0,1,0,'demo','demo','2012-11-17 09:42:35','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:34:59','0000-00-00 00:00:00',1,1,'page_contact','','','','ordering','ASC','',NULL,'',0,0,5,0),
+	(6,0,1,0,0,'blog',2,0,1,0,'demo','demo','2012-11-17 13:57:58','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:07:43','0000-00-00 00:00:00',1,1,'page_blog','page_blog_post','','','ordering','ASC','',NULL,'',3,0,5,0),
+	(8,0,1,0,0,'services',4,0,1,0,'demo','demo','2012-11-20 22:12:25','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 16:53:44','0000-00-00 00:00:00',1,1,'','','','','ordering','ASC','',NULL,'',0,0,5,0),
+	(9,0,2,0,0,'footer',1,0,1,0,'demo','demo','2012-11-21 11:52:24','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-21 11:52:30','0000-00-00 00:00:00',0,1,'','',NULL,'','ordering','ASC','',NULL,'',0,0,5,0),
+	(10,0,1,0,0,'my-account',7,0,1,0,'demo','demo','2012-12-21 20:11:47','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 10:53:57','0000-00-00 00:00:00',1,1,'page_my_account','',NULL,'','ordering','ASC','',NULL,'',0,0,5,0);
 
 
 --
@@ -177,20 +228,32 @@ INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_subnav`, `name`, `ord
 --
 
 TRUNCATE `page_article`;
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(1, 1, 1, '404', 0, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(2, 2, 1, NULL, 2, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(2, 4, 1, NULL, 3, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(2, 5, 1, NULL, 5, 2, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(2, 32, 1, NULL, 4, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(3, 13, 1, NULL, 1, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(4, 9, 1, NULL, 1, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(6, 10, 1, NULL, 3, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(6, 11, 1, NULL, 4, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(9, 6, 1, 'article_footer', 1, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(9, 7, 1, 'article_footer', 2, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(9, 8, 1, 'article_footer', 3, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(10, 31, 1, 'article_picture_gallery', 1, NULL, '', '', '', 1);
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`) VALUES(14, 34, 1, NULL, 1, NULL, '', '', '', 1);
+INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`)
+VALUES
+	(1,1,1,NULL,0,NULL,'','','',1),
+	(2,11,1,NULL,4,0,'','','',1),
+	(2,12,1,NULL,3,0,'','','',1),
+	(2,13,1,NULL,2,0,'','','',1),
+	(2,14,1,NULL,1,0,'','','',1),
+	(3,15,1,NULL,1,NULL,'','','',1),
+	(4,24,1,NULL,2,4,'','','',1),
+	(4,26,1,NULL,3,4,'','','',1),
+	(4,29,1,NULL,1,NULL,'','','',1),
+	(6,5,1,NULL,1,NULL,'','','',1),
+	(6,6,1,NULL,2,NULL,'','','',1),
+	(6,7,1,NULL,3,NULL,'','','',1),
+	(6,8,1,NULL,4,NULL,'','','',1),
+	(6,9,1,NULL,5,NULL,'','','',1),
+	(6,10,1,'0',6,0,'','','',1),
+	(8,17,1,NULL,1,NULL,'','','',1),
+	(8,18,1,NULL,2,4,'','','',1),
+	(8,19,1,NULL,3,4,'','','',1),
+	(8,20,1,NULL,4,4,'','','',1),
+	(9,16,1,NULL,3,NULL,'','','',1),
+	(9,27,1,NULL,1,NULL,'','','',1),
+	(9,28,1,NULL,2,NULL,'','','',1),
+	(10,30,1,NULL,2,5,'','','',1),
+	(10,31,1,NULL,1,6,'','','',1);
 
 
 -- 
@@ -198,27 +261,66 @@ INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering
 -- 
 		
 TRUNCATE `page_lang`;
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 1, '404', '', '404', '', '', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 2, 'welcome-url', '', 'Welcome', 'More about Ionize ?', '', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 3, 'contact', '', 'Contact', '', '', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 4, 'examples', '', 'Examples', '', 'Some examples', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 6, 'blog', '', 'Blog', '', '', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 8, 'search-result', '', 'Search Results', '', '', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 9, 'footer', '', 'Footer', '', '', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 10, 'picture-gallery', '', 'Picture Gallery', '', '', '', '', '', '', 1);
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`) VALUES('en', 14, 'modules', '', 'Modules', '', '', '', '', '', '', 1);
+INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`)
+VALUES
+	('en',1,'404','','404','Can\'t find requested page !','','','','','',1),
+	('en',2,'home','','Ionize CMS','the most professional friendly CMS ever made.','Home','','Welcome To Ionize CMS','','',1),
+	('en',3,'about-ionize-cms','','About Us','Some info about us !','','','','','',1),
+	('en',4,'contact','','Contact','Find us, send us one message','','','','','',1),
+	('en',6,'blog','','Blog','Interesting stories ','','','','','',1),
+	('en',8,'services','','Services','The very great services we can provide to make you happy','','','','','',1),
+	('en',9,'footer','','Footer','','','','','','',1),
+	('en',10,'my-account','','My account','','','','','','',1);
 
 
 -- 
--- Contenu de la table page_media
+-- Page_media
 -- 
 TRUNCATE `page_media`;
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(1, 1, 4);
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(1, 3, 5);
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(1, 7, 3);
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(1, 10, 6);
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(1, 13, 7);
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(2, 1, 1);
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(2, 3, 3);
-INSERT INTO `page_media` (`id_page`, `id_media`, `ordering`) VALUES(2, 7, 2);
+INSERT INTO `page_media` (`id_page`, `id_media`, `online`, `ordering`, `lang_display`)
+VALUES
+	(2,4,1,13,NULL),
+	(2,5,1,10,NULL),
+	(2,6,1,1,NULL),
+	(2,7,1,11,NULL),
+	(2,8,1,12,NULL);
 
+--
+-- URL
+--
+TRUNCATE `url`;
+INSERT INTO `url` (`id_url`, `id_entity`, `type`, `canonical`, `active`, `lang`, `path`, `path_ids`, `full_path_ids`, `creation_date`)
+VALUES
+	(596,4,'article',1,1,'en','home/the-power-of-php','2/4','2/4','2012-12-23 01:05:34'),
+	(601,1,'page',1,1,'en','404','1','1','2012-12-28 19:56:07'),
+	(602,1,'article',1,1,'en','404/404','1/1','1/1','2012-12-28 19:56:07'),
+	(603,2,'page',1,1,'en','home','2','2','2012-12-28 19:56:07'),
+	(604,11,'article',1,1,'en','home/easy-edition','2/11','2/11','2012-12-28 19:56:07'),
+	(605,12,'article',1,1,'en','home/multilingual','2/12','2/12','2012-12-28 19:56:07'),
+	(606,13,'article',1,1,'en','home/userfriendly','2/13','2/13','2012-12-28 19:56:07'),
+	(607,14,'article',1,1,'en','home/template-system','2/14','2/14','2012-12-28 19:56:07'),
+	(608,3,'page',1,1,'en','about-ionize-cms','3','3','2012-12-28 19:56:07'),
+	(609,15,'article',1,1,'en','about-ionize-cms/about-us-1','3/15','3/15','2012-12-28 19:56:07'),
+	(610,4,'page',1,1,'en','contact','4','4','2012-12-28 19:56:07'),
+	(611,24,'article',1,1,'en','contact/contact-informations','4/24','4/24','2012-12-28 19:56:07'),
+	(612,26,'article',1,1,'en','contact/our-location','4/26','4/26','2012-12-28 19:56:07'),
+	(613,29,'article',1,1,'en','contact/send-us-a-message','4/29','4/29','2012-12-28 19:56:07'),
+	(614,6,'page',1,1,'en','blog','6','6','2012-12-28 19:56:07'),
+	(615,5,'article',1,1,'en','blog/article-1','6/5','6/5','2012-12-28 19:56:07'),
+	(616,6,'article',1,1,'en','blog/article-2','6/6','6/6','2012-12-28 19:56:07'),
+	(617,7,'article',1,1,'en','blog/article-3','6/7','6/7','2012-12-28 19:56:07'),
+	(618,8,'article',1,1,'en','blog/article-4','6/8','6/8','2012-12-28 19:56:07'),
+	(619,9,'article',1,1,'en','blog/article-5','6/9','6/9','2012-12-28 19:56:07'),
+	(620,10,'article',1,1,'en','blog/article-6','6/10','6/10','2012-12-28 19:56:07'),
+	(621,8,'page',1,1,'en','services','8','8','2012-12-28 19:56:07'),
+	(622,17,'article',1,1,'en','services/some-of-our-services','8/17','8/17','2012-12-28 19:56:07'),
+	(623,18,'article',1,1,'en','services/service-1','8/18','8/18','2012-12-28 19:56:07'),
+	(624,19,'article',1,1,'en','services/service-2','8/19','8/19','2012-12-28 19:56:07'),
+	(625,20,'article',1,1,'en','services/service-3','8/20','8/20','2012-12-28 19:56:07'),
+	(626,9,'page',1,1,'en','footer','9','9','2012-12-28 19:56:07'),
+	(627,16,'article',1,1,'en','footer/footer-resources','9/16','9/16','2012-12-28 19:56:07'),
+	(628,27,'article',1,1,'en','footer/whats-ionize','9/27','9/27','2012-12-28 19:56:07'),
+	(629,28,'article',1,1,'en','footer/can-i-help','9/28','9/28','2012-12-28 19:56:07'),
+	(630,10,'page',1,1,'en','my-account','10','10','2012-12-28 19:56:07'),
+	(631,30,'article',1,1,'en','my-account/not-logged-in','10/30','10/30','2012-12-28 19:56:07'),
+	(632,31,'article',1,1,'en','my-account/hello','10/31','10/31','2012-12-28 19:56:07');

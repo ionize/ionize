@@ -79,4 +79,4 @@ table.mceItemTable {
 script {
 	border:solid dashed #000;
 }
-
+p:after{content:" ¶";color:#ccc}

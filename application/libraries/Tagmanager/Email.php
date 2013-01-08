@@ -17,6 +17,7 @@
  */
 class TagManager_Email extends TagManager
 {
+	public static $tag_definitions = array();
 
 	/**
 	 * Sends Emails as defined in the forms.php config file.

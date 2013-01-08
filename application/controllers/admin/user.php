@@ -63,7 +63,10 @@ class User extends My_Admin
 	function login()
 	{
 		$default_admin_lang = Settings::get_default_admin_lang();
-		
+
+		// TODO :
+		// - Replace by : config_item('uri_lang_code');
+		// - Remove / Rewrite Settings::get_uri_lang()
 		$uri_lang = Settings::get_uri_lang();
 
 		// If the user is already logged and if he is in the correct minimum group, go to Admin

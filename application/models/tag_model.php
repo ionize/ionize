@@ -35,6 +35,8 @@ class Tag_model extends Base_model
 
 		$this->table =		'tag';
 		$this->pk_name = 	'id_tag';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

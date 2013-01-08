@@ -35,6 +35,8 @@ class Url_model extends Base_model
 
 		$this->set_table('url');
 		$this->set_pk_name('id_url');
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 	
@@ -149,27 +151,30 @@ class Url_model extends Base_model
 		if ( is_null($lang))
 			$lang = Settings::get_lang('current');
 
-		$where['lang'] = $lang;
-		
-		$this->{$this->db_group}->where($where);
-		$query = $this->{$this->db_group}->get($this->table);
-
-		if ($query->num_rows() > 0)
+		// check, because $lang can be the URI Router's detected lang code
+		if (Settings::is_language_online($lang))
 		{
-			$result = $query->result_array();
-			
-			if (count($result >1))
+			$where['lang'] = $lang;
+
+			$this->{$this->db_group}->where($where);
+			$query = $this->{$this->db_group}->get($this->table);
+
+			if ($query->num_rows() > 0)
 			{
-				foreach($result as $row)
+				$result = $query->result_array();
+
+				if (count($result >1))
 				{
-					if ($row['type'] == 'page')
-						return $row;
+					foreach($result as $row)
+					{
+						if ($row['type'] == 'page')
+							return $row;
+					}
 				}
+
+				return array_pop($result);
 			}
-			
-			return array_pop($result);
 		}
-		
 		return NULL;
 	}
 	

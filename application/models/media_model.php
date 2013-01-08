@@ -41,6 +41,8 @@ class Media_model extends Base_model
 		$this->table =		'media';
 		$this->pk_name = 	'id_media';
 		$this->lang_table = 'media_lang';
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 

@@ -38,6 +38,7 @@ class Extend_table_model extends Base_model
 		
 		$this->load->dbforge();
 
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 	
 	
@@ -125,7 +126,7 @@ class Extend_table_model extends Base_model
 				$this->create_extend_table($parent_table);
 			}
 			
-			return $this->{$this->db_group}forge->add_column($extend_table, $field);
+			return $this->{$this->db_group}->forge->add_column($extend_table, $field);
 		}
 	}
 	
@@ -172,34 +173,16 @@ class Extend_table_model extends Base_model
 				);
 				
 				// Add PRIMARY KEY of the parent table as KEY of the extend table
-				$this->{$this->db_group}forge->add_key($field->name);
+				$this->{$this->db_group}->forge->add_key($field->name);
 			}
 			
 			// Add all keys to the table
-			$this->{$this->db_group}forge->add_field($keys);
+			$this->{$this->db_group}->forge->add_field($keys);
 			
 			// Creates table IF NOT EXISTS
-			return $this->{$this->db_group}forge->create_table($parent_table.'_extend', TRUE);
+			return $this->{$this->db_group}->forge->create_table($parent_table.'_extend', TRUE);
 		}
 		
 		return FALSE;
 	}
-	
-	
-	// ------------------------------------------------------------------------
-	
-	
-	/**
-	 * Deletes one extend table field
-	 *
-	 */
-	private function delete_extend_table()
-	{
-	
-	}
-	
-		
 }
-
-/* End of file extend_table_model.php */
-/* Location: ./application/models/extend_table.php */

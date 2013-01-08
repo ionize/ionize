@@ -33,6 +33,8 @@ class Tracker_model extends Base_Model
 		parent::__construct();
 
 		$this->set_table('tracker');
+
+		log_message('debug', __CLASS__ . " Class Initialized");
 	}
 
 
