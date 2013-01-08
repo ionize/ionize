@@ -1159,7 +1159,8 @@ class Media extends MY_admin
 		)
 		{
 			$file_name = str_replace('watch?v=', '', $file_name);
-			if ($pos = strpos($file_name, '&') > 1)
+
+			if (($pos = strpos($file_name, '&')) > 1)
 				$file_name = substr($file_name, 0, $pos);
 
 			$service = array(
