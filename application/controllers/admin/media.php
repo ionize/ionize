@@ -1003,6 +1003,76 @@ class Media extends MY_admin
 
 
 	/**
+	 * Return service info array about the external service
+	 *
+	 * Detects :
+	 * - Youtube
+	 * - Vimeo
+	 * - Dailymotion
+	 *
+	 * @param $path
+	 *
+	 * @return array|null
+	 */
+	private function get_service_info($path)
+	{
+		$file_name = substr( strrchr($path, '/') ,1 );
+		$base_path = str_replace($file_name, '', $path);
+
+		// Youtube
+		if (
+			substr($file_name, 0, 6) == 'watch?'
+			OR substr($base_path,0, 22) == 'http://www.youtube.com'
+		)
+		{
+			$file_name = str_replace('watch?', '', $file_name);
+			$segments = explode('&', $file_name);
+
+			foreach($segments as $seg)
+			{
+				if (substr($seg,0,2) == 'v=')
+				{
+					$file_name = substr($seg, 2);
+					break;
+				}
+			}
+
+			$service = array(
+				'path' => 'http://www.youtube.com/embed/' . $file_name,
+				'provider' => 'youtube'
+			);
+			return $service;
+		}
+
+		// Vimeo
+		if ($base_path == 'http://vimeo.com/')
+		{
+			$service = array(
+				'path' => 'http://player.vimeo.com/video/' . $file_name,
+				'provider' => 'vimeo'
+			);
+			return $service;
+		}
+
+		// Dailymotion
+		if ($base_path == 'http://www.dailymotion.com/video/')
+		{
+			$file_name = substr($file_name,0, strpos($file_name, '_'));
+			$service = array(
+				'path' => 'http://www.dailymotion.com/embed/video/' .$file_name,
+				'provider' => 'dailymotion'
+			);
+			return $service;
+		}
+
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Get the dimensions of a picture
 	 *
 	 * @param	string	Complete path to the image file
@@ -1130,68 +1200,6 @@ class Media extends MY_admin
 			return TRUE;
 		}
 		return FALSE;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Return service info array about the external service
-	 *
-	 * Detects :
-	 * - Youtube
-	 * - Vimeo
-	 * - Dailymotion
-	 *
-	 * @param $path
-	 *
-	 * @return array|null
-	 */
-	private function get_service_info($path)
-	{
-		$file_name = substr( strrchr($path, '/') ,1 );
-		$base_path = str_replace($file_name, '', $path);
-
-		// Youtube
-		if (
-			substr($file_name, 0, 8) == 'watch?v='
-			OR substr($base_path,0, 22) == 'http://www.youtube.com'
-		)
-		{
-			$file_name = str_replace('watch?v=', '', $file_name);
-
-			if (($pos = strpos($file_name, '&')) > 1)
-				$file_name = substr($file_name, 0, $pos);
-
-			$service = array(
-				'path' => 'http://www.youtube.com/embed/' . $file_name,
-				'provider' => 'youtube'
-			);
-			return $service;
-		}
-
-		// Vimeo
-		if ($base_path == 'http://vimeo.com/')
-		{
-			$service = array(
-				'path' => 'http://player.vimeo.com/video/' . $file_name,
-				'provider' => 'vimeo'
-			);
-			return $service;
-		}
-
-		// Dailymotion
-		if ($base_path == 'http://www.dailymotion.com/video/')
-		{
-			$file_name = substr($file_name,0, strpos($file_name, '_'));
-			$service = array(
-				'path' => 'http://www.dailymotion.com/embed/video/' .$file_name,
-				'provider' => 'dailymotion'
-			);
-			return $service;
-		}
-
-		return NULL;
 	}
 
 	// ------------------------------------------------------------------------
