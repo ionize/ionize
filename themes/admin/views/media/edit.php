@@ -54,18 +54,15 @@ if($type == 'picture')
 	<!-- Video file -->
 	<?php if($type == 'video') :?>
 		
-		<?php if($is_external == TRUE) :?>
+		<?php if($provider != '') :?>
 
 			<iframe  style="float:right;" width="170" height="145" src="<?php echo $path?>" frameborder="0" allowfullscreen></iframe>
-		
-			<h3><?php echo lang('ionize_title_informations'); ?></h3>
-
 		
 		<?php else :?>
 
 			<div style="float:right;"  id="video<?php echo $id_media; ?>">
                 <embed
-                    flashvars="file=<?php echobase_url().$path?>&autostart=false"
+                    flashvars="file=<?php echo base_url().$path?>&autostart=false"
                     allowfullscreen="true"
                     allowscriptaccess="always"
                     id="video<?php echo $id_media; ?>"
@@ -76,55 +73,41 @@ if($type == 'picture')
                 />
             </div>
 
-			<h3><?php echo lang('ionize_title_informations'); ?></h3>
-		
 		<?php endif ;?>
 	<?php endif ;?>
-	
 
-	<!-- Picture file -->
-	<?php if($type == 'picture') :?>
 
-		<h3><?php echo lang('ionize_title_informations'); ?></h3>
-		
+	<h3><?php echo lang('ionize_title_informations'); ?></h3>
+
+	<?php if($provider != '') :?>
+
+		<?php echo auto_link($path, 'both', true) ;?>
+
+	<?php else: ?>
+
+		<?php echo auto_link(base_url().$path, 'both', true) ;?>
+    	<br/>
+
+		<?php if (file_exists(DOCPATH . $path)) :?>
+			<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )); ?> ko
+		<?php else :?>
+			<?php echo(lang('ionize_exception_no_source_file')) ;?>
+		<?php endif ;?>
+
+		<?php if($type == 'picture') :?>
+			-
+			<?php if ( ! is_null($pictureSize)) :?>
+				<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
+				<br />
+				<a id="imageCropLink<?php echo $id_media; ?>" class="light button white mt10">
+					<i class="icon-crop"></i>
+					<?php echo lang('ionize_label_media_crop_picture'); ?>
+				</a>
+				<?php endif ;?>
+			<?php endif ;?>
+
 	<?php endif ;?>
 
-	<!-- File size in ko -->
-	<dl class="small">
-
-		<?php if($is_external == FALSE) :?>
-
-			<dt>
-				<label><?php echo lang('ionize_label_file_size'); ?></label>
-			</dt>
-			<dd>
-				<?php if (file_exists(DOCPATH . $path)) :?>
-					<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )); ?> ko
-				<?php else :?>
-					<?php echo(lang('ionize_exception_no_source_file')) ;?>
-				<?php endif ;?>
-			
-				<?php if($type == 'picture') :?>
-					 - 
-					<?php if ( ! is_null($pictureSize)) :?>
-						<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
-						<br /><a id="imageCropLink<?php echo $id_media; ?>">crop image</a>
-					<?php endif ;?> 
-				<?php endif ;?>
-			</dd>		
-		
-		<?php endif ;?>
-	</dl>
-	<dl class="small">
-		<dt>
-			<label><?php echo lang('ionize_label_file_path'); ?></label>
-		</dt>
-		<dd>
-			<?php echo auto_link($path, 'both', true) ;?>
-		</dd>
-	</dl>
-
-	
 </div>
 
 

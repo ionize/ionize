@@ -104,7 +104,7 @@ class Media_model extends Base_model
 	 * @return array
 	 *
 	 */
-	public function get_lang_list($where = array(), $lang = NULL)
+	public function get_lang_list($where = array(), $lang = NULL, $filter = NULL)
 	{
 		// Correction on $where['id_media']
 		if (is_array($where) && isset($where['id_media']) )
@@ -123,6 +123,9 @@ class Media_model extends Base_model
 			}
 		}
 
+		if ( ! is_null($filter))
+			$this->_set_filter($filter);
+
 		return parent::get_lang_list($where, $lang);
 	}
 
@@ -139,7 +142,7 @@ class Media_model extends Base_model
 	 * @return	boolean	TRUE if succeed, FALSE if errors
 	 *
 	 */
-	function insert_media($type, $path)
+	function insert_media($type, $path, $provider=NULL)
 	{
 		if ($path) {
 
@@ -159,6 +162,7 @@ class Media_model extends Base_model
 			$data['path'] = 	 $path;
 			$data['file_name'] = $file_name;
 			$data['base_path'] = $base_path;
+			$data['provider'] = ! is_null($provider) ? $provider : '';
 			
 			// Update if exists
 			$query = $this->get_where(array('path'=>$path));
@@ -438,6 +442,13 @@ class Media_model extends Base_model
 
 		return $brokens;
 	}
+
+	private function _set_filter($filter = NULL)
+	{
+		if ( ! is_null($filter))
+			$this->{$this->db_group}->where('('.$filter.')');
+	}
+
 }
 
 

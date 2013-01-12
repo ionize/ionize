@@ -84,6 +84,14 @@ class MY_Controller extends CI_Controller
 		$detected_lang_code = config_item('detected_lang_code');
 		Settings::validate_detected_lang_code();
 
+		$uri_lang_code = config_item('uri_lang_code');
+		if ( empty($uri_lang_code) && config_item('detected_lang_code') != config_item('default_lang_code'))
+		{
+			redirect(base_url().config_item('detected_lang_code'));
+		}
+
+		//
+
 		// Load the Connect() lib lang file
 		if ($detected_lang_code != config_item('detected_lang_code'))
 			$this->lang->load('connect');
@@ -100,13 +108,7 @@ class MY_Controller extends CI_Controller
 		// If installer class is already here, avoid site access
 		if ( ! empty($installer))
 		{
-			// Get languages codes from available languages folder/translation file
-			/*
-			$languages = $this->settings_model->get_admin_langs();
-
-			if ( ! in_array(config_item('detected_lang_code'), $languages))
-				$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
-			*/
+			// Validate Admin lang for installer
 			Settings::validate_detected_lang_code(TRUE);
 
 			$this->lang->load('admin', Settings::get('detected_lang_code'));

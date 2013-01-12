@@ -361,7 +361,8 @@ a.button.submit:hover {
 .panelAlt .button.light {
 }
 .tabsidecolumn .button.light:hover,
-.panelAlt .button.light:hover {
+.panelAlt .button.light:hover,
+.summary .button.light:hover{
 	border:1px solid #bbb;
 	background: #fff;
 }

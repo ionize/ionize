@@ -1111,7 +1111,7 @@ class TagManager
 	{
 		if ( is_null(self::$_entity))
 		{
-			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string(), config_item('uri_lang_code'));
+			self::$_entity = self::$ci->url_model->get_by_url(self::$ci->uri->uri_string(), config_item('route_lang_code'));
 		}
 		return self::$_entity;
 	}

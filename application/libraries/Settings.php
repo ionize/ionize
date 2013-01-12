@@ -149,11 +149,17 @@ class Settings
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Validate or correct the Router's detected language
+	 *
+	 * @param bool $admin
+	 */
 	public static function validate_detected_lang_code($admin=FALSE)
 	{
 		$ci =& get_instance();
 		$validated = FALSE;
 		$detected_lang_code = config_item('detected_lang_code');
+
 		if ( ! $admin)
 		{
 			foreach(self::get_online_languages() as $item)
@@ -178,7 +184,7 @@ class Settings
 			else
 				$ci->config->set_item('detected_lang_code', config_item('default_admin_lang'));
 
-			log_message('error', 'Settings: Corrected detected lang code to: ' . config_item('detected_lang_code'));
+			log_message('debug', 'Settings: Corrected detected lang code to: ' . config_item('detected_lang_code'));
 		}
 
 		self::set('detected_lang_code', config_item('detected_lang_code'));

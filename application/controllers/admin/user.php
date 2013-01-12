@@ -65,7 +65,7 @@ class User extends My_Admin
 		$default_admin_lang = Settings::get_default_admin_lang();
 
 		// TODO :
-		// - Replace by : config_item('uri_lang_code');
+		// - Replace by : config_item('route_lang_code');
 		// - Remove / Rewrite Settings::get_uri_lang()
 		$uri_lang = Settings::get_uri_lang();
 

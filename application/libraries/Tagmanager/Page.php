@@ -242,6 +242,13 @@ class TagManager_Page extends TagManager
 	 */
 	public static function get_home_page()
 	{
+		// If the asked lang is not online (for non admin only)
+		$uri_lang_code = config_item('uri_lang_code');
+		if ( ! empty($uri_lang_code) && config_item('uri_lang_code') != config_item('detected_lang_code'))
+			return array();
+
+		// If asked home page is default but detected lang doesn't match default
+
 		$pages = self::registry('pages');
 
 		if( ! empty($pages))
