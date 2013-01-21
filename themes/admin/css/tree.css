@@ -62,6 +62,9 @@ License:
 .tree li.highlight {
 	background: url(../images/bg-gray-medium.png);
 }
+.tree li.highlight .action{
+	background: url(../images/bg-gray-medium.png);
+}
 .tree li a {
 	text-decoration: none;
 }
@@ -82,7 +85,7 @@ License:
 	right: 0;
 	top:2px;
 	height:18px;
-	background: url(../images/bg-gray-medium.png);
+	/*background: url(../images/bg-gray-medium.png);*/
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }
 .tree li .icon{

@@ -40,7 +40,8 @@ ION.TreeXhr = new Class({
 		this.plusMinus_Model = new Element('div', {'class': 'tree-img plus'});
 		this.treeLine_Model = new Element('div', {'class': 'tree-img'});
 		
-		this.action_Model = new Element('span', {'class': 'action', 'styles': { 'display':'none' }});
+		// this.action_Model = new Element('span', {'class': 'action', 'styles': { 'display':'none' }});
+		this.action_Model = new Element('span', {'class': 'action'});
 		this.span_Model = new Element('span');
 		this.title_Model = new Element('a', {'class': 'title'});
 		
@@ -590,19 +591,47 @@ ION.TreeXhr = new Class({
 
 	addMouseOver: function(node)
 	{
+		node.getChildren('.action .page').setStyle('display', 'none');
+		node.getChildren('.action .article').setStyle('display', 'none');
+		node.getChildren('.action .unlink').setStyle('display', 'none');
+		node.getChildren('.action .status').setStyle('display', 'none');
+
+		if (node.hasClass('offline'))
+			node.getChildren('.action .status').setStyle('display', 'block');
+
 		node.addEvent('mouseover', function(ev){
 			ev.stopPropagation();
 			ev.stop();
 			this.addClass('highlight');
-			this.getParent().getParent().getChildren('.action').setStyle('display', 'none');
+			this.getParent().getParent().getChildren('.action .page').setStyle('display', 'none');
+			this.getParent().getParent().getChildren('.action .unlink').setStyle('display', 'none');
+			this.getParent().getParent().getChildren('.action .article').setStyle('display', 'none');
+
+			if ( ! this.getParent().getParent().hasClass('offline') )
+				this.getParent().getParent().getChildren('.action .status').setStyle('display', 'none');
+
 			this.getChildren('.action').setStyle('display', 'block');
+			this.getChildren('.action .page').setStyle('display', 'block');
+			this.getChildren('.action .unlink').setStyle('display', 'block');
+			this.getChildren('.action .article').setStyle('display', 'block');
+			this.getChildren('.action .status').setStyle('display', 'block');
 		});
 		node.addEvent('mouseout', function(ev){
 			this.removeClass('highlight');
 		});
 		node.addEvent('mouseleave', function(e)
 		{
-			this.getChildren('.action').setStyle('display', 'none');
+			// this.getParent().getChildren('.action').setStyle('display', 'none');
+			if (node.hasClass('offline'))
+			{
+				this.getChildren('.action .unlink').setStyle('display', 'none');
+				this.getChildren('.action .page').setStyle('display', 'none');
+				this.getChildren('.action .article').setStyle('display', 'none');
+			}
+			else
+			{
+				this.getChildren('.action').setStyle('display', 'none');
+			}
 		});
 	},
 
