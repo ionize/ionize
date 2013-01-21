@@ -241,6 +241,7 @@ CREATE TABLE IF NOT EXISTS media (
 	path varchar(500) NOT NULL						COMMENT 'Complete path to the medium, including media file name, excluding host name',
 	base_path varchar(500) NOT NULL					COMMENT 'medium folder base path, excluding host name',
 	copyright varchar(128) default NULL,
+	provider varchar(255) default NULL,
 	date datetime NOT NULL							COMMENT 'Medium date',
 	link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
 	square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',

@@ -49,6 +49,10 @@
 	<query>
 		ALTER TABLE `media` ADD `square_crop` enum('tl','m','br') NOT NULL DEFAULT 'm';
 	</query>
+	
+	<query>
+		ALTER TABLE `media` ADD `provider` varchar(255) DEFAULT NULL;
+	</query>
 
 	<query>
 		ALTER TABLE `media` drop `container`;

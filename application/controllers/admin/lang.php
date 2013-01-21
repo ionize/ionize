@@ -541,6 +541,10 @@ class Lang extends MY_admin
 		$conf .= "// Languages set online through Ionize.\n";
 		$conf .= "\$config['online_languages'] = ".dump_variable($online_languages)."\n\n";
 
+		$conf .= "// Set by Router only during language detection\n";
+		$conf .= "\$config['uri_lang_code'] = '';\n";
+		$conf .= "\$config['route_lang_code'] = '';\n\n";
+
 		// files end
 		$conf .= "\n\n";
 		$conf .= '/* End of file language.php */'."\n";
