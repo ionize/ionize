@@ -88,6 +88,8 @@ class Medias
 
 		$thumb_file_path = self::_get_thumb_file_path($media, $settings);
 
+		$settings['refresh'] = isset($settings['refresh']) ? $settings['refresh'] : FALSE;
+
 		// Create the thumb if it doesn't exists
 		if ( ! file_exists($thumb_file_path) OR $settings['refresh'] == TRUE)
 		{

@@ -94,9 +94,17 @@ MUI.Modal = new NamedClass('MUI.Modal', {
 		});
 	},
 
-	_setModalSize: function(){
-		$('modalOverlay').setStyle('height', document.getCoordinates().height);
-		if (Browser.ie6) $('modalFix').setStyle('height', document.getCoordinates().height);
+	_setModalSize: function()
+	{
+		if (typeOf($('modalOverlay')) == 'null')
+		{
+			window.removeEvent('resize', this.modalSizeEvent);
+		}
+		else
+		{
+			$('modalOverlay').setStyle('height', document.getCoordinates().height);
+			if (Browser.ie6) $('modalFix').setStyle('height', document.getCoordinates().height);
+		}
 	}
 
 });

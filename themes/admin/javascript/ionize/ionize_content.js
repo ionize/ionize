@@ -6,6 +6,7 @@ ION.append({
 
 		if (typeOf(user) != 'null')
 		{
+			options.method = 'post';
 			options.url = admin_url + ION.cleanUrl(options.url);
 			MUI.Content.update(options);
 		}
@@ -41,7 +42,8 @@ ION.append({
 		
 			MUI.Content.update({
 				element: 'mainPanel_headerToolbox',
-				url: admin_url + 'desktop/get/toolboxes/' + toolbox_url
+				url: admin_url + 'desktop/get/toolboxes/' + toolbox_url,
+				onLoaded: cb
 			});
 		}
 		else
@@ -1485,8 +1487,18 @@ ION.append({
 			$$(args.selector).removeClass('online').addClass('offline');
 		}
 	},
-	
-	
+
+	switchCss: function(args)
+	{
+		if (args.add == 1) {
+			$$(args.selector).addClass(args.class);
+		}
+		else
+		{
+			$$(args.selector).removeClass(args.class);
+		}
+	},
+
 	/**
 	 * Removes all DOM elements which display the link between a page and an article
 	 * Based on the used of <li rel="id_page.id_article" />

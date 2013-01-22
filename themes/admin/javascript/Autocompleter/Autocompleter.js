@@ -61,7 +61,7 @@ var Autocompleter = new Class({
 		this.element = $(element);
 		this.setOptions(options);
 		this.build();
-		this.observer = new Observer(this.element, this.prefetch.bind(this), $merge({
+		this.observer = new Observer(this.element, this.prefetch.bind(this), Object.merge({
 			'delay': this.options.delay
 		}, this.options.observerOptions));
 		this.queryValue = null;
@@ -98,16 +98,16 @@ var Autocompleter = new Class({
 		if (!this.options.separator.test(this.options.separatorSplit)) {
 			this.options.separatorSplit = this.options.separator;
 		}
-		this.fx = (!this.options.fxOptions) ? null : new Fx.Tween(this.choices, $merge({
+		this.fx = (!this.options.fxOptions) ? null : new Fx.Tween(this.choices, Object.merge({
 			'property': 'opacity',
 			'link': 'cancel',
 			'duration': 200
 		}, this.options.fxOptions)).addEvent('onStart', Chain.prototype.clearChain).set(0);
 		this.element.setProperty('autocomplete', 'off')
-			.addEvent((Browser.Engine.trident || Browser.Engine.webkit) ? 'keydown' : 'keypress', this.onCommand.bind(this))
-			.addEvent('click', this.onCommand.bind(this, [false]))
-			.addEvent('focus', this.toggleFocus.create({bind: this, arguments: true, delay: 100}))
-			.addEvent('blur', this.toggleFocus.create({bind: this, arguments: false, delay: 100}));
+			.addEvent((Browser.ie || Browser.safari || Browser.chrome) ? 'keydown' : 'keypress', this.onCommand.bind(this))
+			.addEvent('click', this.onCommand.bind(this, false))
+			.addEvent('focus', this.toggleFocus.bind(this, true))
+			.addEvent('blur', this.toggleFocus.bind(this, false));
 	},
 
 	destroy: function() {
@@ -221,7 +221,7 @@ var Autocompleter = new Class({
 			var value = this.element.value;
 			if (this.options.forceSelect) value = this.opted;
 			if (this.options.autoTrim) {
-				value = value.split(this.options.separatorSplit).filter($arguments(0)).join(this.options.separator);
+				value = value.split(this.options.separatorSplit).filter(arguments[0]).join(this.options.separator);
 			}
 			this.observer.setValue(value);
 		}
@@ -346,8 +346,8 @@ var Autocompleter = new Class({
 	 */
 	addChoiceEvents: function(el) {
 		return el.addEvents({
-			'mouseover': this.choiceOver.bind(this, [el]),
-			'click': this.choiceSelect.bind(this, [el])
+			'mouseover': this.choiceOver.bind(this, el),
+			'click': this.choiceSelect.bind(this, el)
 		});
 	}
 });
@@ -355,7 +355,7 @@ var Autocompleter = new Class({
 var OverlayFix = new Class({
 
 	initialize: function(el) {
-		if (Browser.Engine.trident) {
+		if (Browser.ie) {
 			this.element = $(el);
 			this.relative = this.element.getOffsetParent();
 			this.fix = new Element('iframe', {
@@ -377,7 +377,7 @@ var OverlayFix = new Class({
 			var coords = this.element.getCoordinates(this.relative);
 			delete coords.right;
 			delete coords.bottom;
-			this.fix.setStyles($extend(coords, {
+			this.fix.setStyles(Object.append(coords, {
 				'display': '',
 				'zIndex': (this.element.getStyle('zIndex') || 1) - 1
 			}));
@@ -399,7 +399,7 @@ var OverlayFix = new Class({
 Element.implement({
 
 	getSelectedRange: function() {
-		if (!Browser.Engine.trident) return {start: this.selectionStart, end: this.selectionEnd};
+		if (!Browser.ie) return {start: this.selectionStart, end: this.selectionEnd};
 		var pos = {start: 0, end: 0};
 		var range = this.getDocument().selection.createRange();
 		if (!range || range.parentElement() != this) return pos;
@@ -420,7 +420,7 @@ Element.implement({
 	},
 
 	selectRange: function(start, end) {
-		if (Browser.Engine.trident) {
+		if (Browser.ie) {
 			var diff = this.value.substr(start, end - start).replace(/\r/g, '').length;
 			start = this.value.substr(0, start).replace(/\r/g, '').length;
 			var range = this.createTextRange();

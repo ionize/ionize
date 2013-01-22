@@ -26,7 +26,7 @@ Autocompleter.Request = new Class({
 	},
 
 	query: function(){
-		var data = $unlink(this.options.postData) || {};
+		var data = Object.clone(this.options.postData) || {};
 		data[this.options.postVar] = this.queryValue;
 		var indicator = $(this.options.indicator);
 		if (indicator) indicator.setStyle('display', '');
@@ -57,7 +57,7 @@ Autocompleter.Request.JSON = new Class({
 
 	initialize: function(el, url, options) {
 		this.parent(el, options);
-		this.request = new Request.JSON($merge({
+		this.request = new Request.JSON(Object.merge({
 			'url': url,
 			'link': 'cancel'
 		}, this.options.ajaxOptions)).addEvent('onComplete', this.queryResponse.bind(this));
@@ -76,7 +76,7 @@ Autocompleter.Request.HTML = new Class({
 
 	initialize: function(el, url, options) {
 		this.parent(el, options);
-		this.request = new Request.HTML($merge({
+		this.request = new Request.HTML(Object.merge({
 			'url': url,
 			'link': 'cancel',
 			'update': this.choices

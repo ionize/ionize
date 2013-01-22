@@ -49,8 +49,9 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 
 		value:			'',				// the currently selected tab's value
 		selectedTab:	null,			// the currently selected tab
-		position:		null			// container is a panel or window this tell tabs where the tabs should go, 'header' or 'footer'
+		position:		null,			// container is a panel or window this tell tabs where the tabs should go, 'header' or 'footer'
 
+		target:         null
 		//onTabSelected:null			// event: when a node is checked
 	},
 
@@ -60,9 +61,12 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 
 		// If tabs has no ID, give it one.
 		this.id = this.options.id = this.options.id || 'tabs' + (++MUI.idCount);
+
 		MUI.set(this.id, this);
 
 		if(this.options.drawOnInit && this.options.tabs.length > 0) this.draw();
+		//else this.initializeTabs(options.container,options.target);
+		else this.fromHTML(options.container);
 	},
 
 	draw: function(container){
@@ -102,7 +106,7 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 
 		if (!isNew){
 			div.removeClass('toolbar');
-			if (o.selectedTab) o.selectedTab.element.fireEvent('click');
+			if (typeOf(o.selectedTab) != 'null') o.selectedTab.element.fireEvent('click');
 			return this;
 		}
 
@@ -112,7 +116,7 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 			if (div.getParent() == null) div.inject(container);
 
 			// select current tab
-			if (o.selectedTab) o.selectedTab.fireEvent('click');
+			if (typeOf(o.selectedTab) != 'null') o.selectedTab.fireEvent('click');
 		}.bind(this);
 		if (!isNew || typeOf(container) == 'element') addToContainer();
 		else window.addEvent('domready', addToContainer);
@@ -183,6 +187,78 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 		} else {
 			this.fireEvent('tabSelected', [tab, value, this, e]);
 		}
+	},
+
+	initializeTabs: function(el, target)
+	{
+		var self = this;
+
+		// This is to fix a glitch that occurs in IE8 RC1 when dynamically switching themes
+		$(el).setStyle('list-style', 'none');
+
+		$(el).getElements('li').each(function(listitem)
+		{
+			var link = listitem.getFirst('a').addEvent('click', function(e){
+				e.preventDefault();
+			});
+			listitem.addEvent('click', function(e)
+			{
+				self.select(this, el);
+				console.log('coucou');
+				var uOptions = {
+					instance: el,
+					element: el,
+			//		content: content,
+					url: link.get('href')
+				};
+				MUI.Content.update(uOptions);
+				/*
+				MUI.updateContent({
+					'element':  $(target),
+					'url':      link.get('href')
+				});
+				*/
+
+			});
+		});
+	},
+
+	select: function(el, parent){
+		$(parent).getChildren().each(function(listitem){
+			listitem.removeClass('sel');
+		});
+		el.addClass('sel');
+	},
+
+	fromHTML: function(el){
+		var self = this;
+		var o = self.options;
+		if (!el) el = $(o.id);
+		else el = $(el);
+		if (!el) return;
+
+		var tabs = [];
+		el.getElements('li').each(function(li){
+			var tab = {};
+
+			var value = li.get('id');
+			if (!value) value = 'tab' + (++MUI.idCount);
+
+			var a = li.getElement('a');
+			var title = a.get('title');
+
+			tab[o.valueField] = value;
+			tab[o.textField] = a.get('text');
+			tab[o.urlField] = a.get('href');
+			if (title) tab[o.titleField] = title;
+
+			tabs.push(tab);
+		});
+		el.empty();
+		o.tabs = tabs;
+		self.draw();
 	}
+
+
 
 });

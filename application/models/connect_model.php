@@ -460,6 +460,9 @@ class Connect_model extends CI_Model
 	}
 
 
+	// --------------------------------------------------------------------
+
+
 	function correct_ambiguous_conditions($array)
 	{
 		if (is_array($array))

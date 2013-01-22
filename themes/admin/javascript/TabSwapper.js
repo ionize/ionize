@@ -150,6 +150,17 @@ var TabSwapper = new Class({
 		}
 		return false;
 	},
+	clickRecall: function()
+	{
+		idx = this.recall();
+		if (idx)
+		{
+			var tab = this.tabs[idx];
+			tab.fireEvent('click');
+			return true;
+		}
+		return false;
+	},
 	hideSection: function(idx) {
 		var tab = this.tabs[idx];
 		if (!tab) return this;

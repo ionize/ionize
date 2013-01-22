@@ -54,6 +54,7 @@ class Users_model extends Base_model
 
 		foreach($select as &$field)	$field = $jt.'.'.$field;
 
+		$this->{$this->db_group}->select('users.*');
 		$this->{$this->db_group}->select(implode(',', $select));
 		$this->{$this->db_group}->join($jt, $jt.'.id_group = '.$this->table . '.id_group');
 
@@ -103,6 +104,34 @@ class Users_model extends Base_model
 		}
 		return $affected_rows;	
 	}
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * @param      $email
+	 * @param null $id_user
+	 *
+	 * @return bool
+	 *
+	 */
+	public function user_with_same_email_exists($email, $id_user = NULL)
+	{
+		$user = $this->get(array('email' => $email));
+
+		if ( ! is_null($id_user) && $id_user != FALSE)
+		{
+			if ( ! empty($user) && $user['id_user'] != $id_user)
+				return TRUE;
+		}
+		else
+		{
+			if ( ! empty($user))
+				return TRUE;
+		}
+		return FALSE;
+	}
+
 }
 /* End of file users_model.php */
 /* Location: ./application/models/users_model.php */

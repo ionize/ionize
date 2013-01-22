@@ -37,6 +37,8 @@ class User extends My_Admin
 		$this->connect->folder_protection = array();
 		// Could also be written :
 		// Connect()->folder_protection = array();
+
+		$this->load->model('users_model');
 	}
 
 
@@ -210,6 +212,22 @@ class User extends My_Admin
 		$this->form_validation->set_rules($rules);
 
 		return ($this->form_validation->run() === TRUE);
+	}
+
+
+	/**
+	 * Must be called by XHR
+	 * Returns 1 if true, 0 if false
+	 *
+	 */
+	function check_email_exists()
+	{
+		$id_user = $this->input->post('id_user');
+		$email = $this->input->post('email');
+
+		$exists = $this->users_model->user_with_same_email_exists($email, $id_user);
+
+		$this->xhr_output($exists);
 	}
 	
 }

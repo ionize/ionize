@@ -154,7 +154,7 @@ input, textarea, select {
 }
 input.required, textarea.required, select.required{
 	border-color: #b00;
-	border-color: #666;
+	border-color: #e2800d;
 }
 textarea{
 	border:1px solid #bbb;
@@ -186,9 +186,9 @@ textarea:focus {
 	border:1px solid #098ED1;
 }
 
-input.italic {
-	font-style: italic;
-}
+input.italic {font-style: italic;}
+input.center {text-align: center}
+
 div.droppable,
 input.droppable,
 textarea.droppable {

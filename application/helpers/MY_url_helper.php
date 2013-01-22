@@ -216,6 +216,18 @@ if( ! function_exists('lang_url'))
 	}
 }
 
+if( ! function_exists('current_lang_url'))
+{
+	/**
+	 * Returns the base_url for current lang
+	 * @return string
+	 */
+	function current_lang_url()
+	{
+		return base_url().Settings::get_lang('current').'/';
+	}
+}
+
 
 // ------------------------------------------------------------------------
 

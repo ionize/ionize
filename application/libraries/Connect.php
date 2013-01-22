@@ -697,6 +697,55 @@ class Connect {
 	}
 
 
+	// --------------------------------------------------------------------
+
+
+	public function is_level($level=-100, $return = FALSE)
+	{
+		if(($user = $this->get_current_user()) == FALSE)
+		{
+			if($return)
+				return FALSE;
+
+			$this->deny();
+		}
+		$user_level = $user['group']['level'];
+
+		if ($level <= $user_level)
+		{
+			return TRUE;
+		}
+		// deny access
+		if($return)
+			return FALSE;
+	}
+
+
+	// --------------------------------------------------------------------
+
+
+	public function is_level_between($level_bottom = -10, $level_up = -10, $return = FALSE)
+	{
+		if(($user = $this->get_current_user()) == FALSE)
+		{
+			if($return)
+				return FALSE;
+
+			$this->deny();
+		}
+		$user_level = $user['group']['level'];
+
+		if ($user_level >= $level_bottom && $user_level <= $level_up)
+		{
+			return TRUE;
+		}
+
+		// deny access
+		if($return)
+			return FALSE;
+	}
+
+
     // --------------------------------------------------------------------
 
 

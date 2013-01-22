@@ -457,7 +457,17 @@ class CI_Router
 			array_unshift($params, array_pop($segments));
 		}
 
-		// Yell !
+		// Get the 404 override
+		if ( ! empty($this->routes['404_override']))
+		{
+			$x = explode('/', $this->routes['404_override']);
+			$method = isset($x[1]) ? $x[1] : 'index';
+			$this->class = $x[0];
+			$this->method = $method;
+			$this->uri->rsegments = array($this->class, $this->method);
+			return;
+		}
+
 		show_404(implode('/', $params));
 	}
 	

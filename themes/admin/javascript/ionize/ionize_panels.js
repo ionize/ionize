@@ -69,6 +69,7 @@ ION.append({
 								header: false,
 								id: 'splitPanel_sidePanel',
 								cssClass: 'panelAlt',
+								padding:typeOf(options.paddingOptions != 'null') ? options.paddingOptions : 8,
 								content: {
 									url: options.urlOptions,
 									onLoaded: function(){

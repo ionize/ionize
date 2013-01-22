@@ -332,11 +332,37 @@ class Base_model extends CI_Model
 	 * @return	object	A row object
 	 *
 	 */
-	public function get_row_array($id = NULL)
+	public function get_row_array($where = FALSE, $table = FALSE)
 	{
-		$this->{$this->db_group}->where($this->pk_name, $id);
-		$query = $this->{$this->db_group}->get($this->table);
-		
+		$table = ($table == FALSE) ? $this->table : $table;
+
+
+		if ( is_array($where) )
+		{
+			// Perform conditions from the $where array
+			foreach(array('limit', 'offset', 'order_by', 'like') as $key)
+			{
+				if(isset($where[$key]))
+				{
+					call_user_func(array($this->db, $key), $where[$key]);
+					unset($where[$key]);
+				}
+			}
+			if (isset($where['where_in']))
+			{
+				foreach($where['where_in'] as $key => $value)
+				{
+					if ( ! empty($value))
+						$this->db->where_in($key, $value);
+				}
+				unset($where['where_in']);
+			}
+
+			$this->db->where($where);
+		}
+
+		$query = $this->db->get($table);
+
 		return $query->row_array();
 	}
 
@@ -773,6 +799,55 @@ class Base_model extends CI_Model
 	}
 
 
+	/**
+	 * Same as get_items_select() but takking a lang tabe field as label
+	 *
+	 */
+	function get_lang_items_select($items_table, $field, $lang, $nothing_value = NULL, $order_by = NULL, $glue="")
+	{
+		$data = array();
+
+		// Add the Zero value item
+		if ( ! is_null($nothing_value))
+			$data = array('0' => $nothing_value);
+
+		// Items table primary key detection
+		$fields = $this->{$this->db_group}->list_fields($items_table);
+		$items_table_pk = $fields[0];
+
+		// ORDER BY
+		if ( ! is_null($order_by))
+			$this->{$this->db_group}->order_by($order_by);
+
+		// Join Lang table
+		$this->{$this->db_group}->join($items_table.'_lang', $items_table.'_lang.'.$items_table_pk.'='.$items_table.'.'.$items_table_pk);
+		$this->{$this->db_group}->where($items_table.'_lang.lang', $lang);
+
+		// Query
+		$query = $this->{$this->db_group}->get($items_table);
+
+
+		if($query->num_rows() > 0)
+		{
+			foreach($query->result() as $row)
+			{
+				if (is_array($field))
+				{
+					$value = array();
+					foreach($field as $f)
+					{
+						$value[] = $row->$f;
+					}
+					$data[$row->$items_table_pk] = implode($glue, $value);
+				}
+				else
+				{
+					$data[$row->$items_table_pk] = $row->$field;
+				}
+			}
+		}
+		return $data;
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -803,6 +878,40 @@ class Base_model extends CI_Model
 		return $name;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return the max value of one given field
+	 *
+	 * @param      $field
+	 * @param null $table
+	 * @param null $where
+	 *
+	 * @return bool
+	 *
+	 */
+	public function get_max($field, $table=NULL, $where=NULL)
+	{
+		$table = ( ! is_null($table)) ? $table : $this->table ;
+
+		$this->db->select_max($field, 'maximum');
+
+		if (! is_null($where))
+		{
+			$this->db->where($where);
+		}
+
+		$query = $this->db->get($table);
+
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			return $row->maximum;
+		}
+		return FALSE;
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -1776,11 +1885,13 @@ class Base_model extends CI_Model
 	 * @return	the last inserted id
 	 *
 	 */
-	public function insert($data = NULL)
+	public function insert($data = NULL, $table = FALSE)
 	{
-		$data = $this->clean_data($data);
-		
-		$this->{$this->db_group}->insert($this->table, $data);
+		$table = (FALSE !== $table) ? $table : $this->table;
+
+		$data = $this->clean_data($data, $table);
+
+		$this->{$this->db_group}->insert($table, $data);
 		
 		return $this->{$this->db_group}->insert_id();
 	}

@@ -873,7 +873,7 @@ class Media extends MY_admin
 		$mime = self::$DEFAULT_TYPE;
 
 		// Pictures data from database
-		$picture = $this->media_model->get($id);
+		$picture = $id ? $this->media_model->get($id) : FALSE;
 
 		// Path to the picture
 		if ($picture && file_exists($picture_path = DOCPATH.$picture['path']))

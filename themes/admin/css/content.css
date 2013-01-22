@@ -204,6 +204,8 @@ li.offline { opacity:0.7; }
 .icon.urls,			.button i.icon-urls			{background-position: -64px -112px;}
 .icon.table,		.button i.icon-table		{background-position: -144px -96px;}
 .icon.crop,		    .button i.icon-crop		{background-position: -96px -112px;}
+.icon.list,		    .button i.icon-list		    {background-position: -112px -112px;}
+.icon.card,		    .button i.icon-card		    {background-position: -128px -112px;}
 
 .icon.folder,			.button i.icon-folder			{background-position: 0 -16px;}
 .icon.folder.open,		.button i.icon-folder.open			{background-position: -16px -16px;}
@@ -314,11 +316,11 @@ h2.main.pictured {
 
 #maincolumn h2.main, 
 .mochaContent h2.main { 
-	color:#ccc;
+	color:#555;
 	border-bottom:none;
-	padding-left:68px;
+	padding-left:56px;
 	line-height:48px;
-	max-height:96px;
+	max-height:68px;
 	height:48px;
 	overflow: hidden;
 }
@@ -334,17 +336,16 @@ h2.main.pictured {
 }
 #maincolumn h3,
 #maincolumn h4 {
-	margin: 10px 0 10px 0; padding: 0 0 3px 0; font-weight: bold; }
+	margin: 10px 0 10px 0; padding: 0 0 3px 0; font-weight: bold;
 }
 .mochaContent h3 {
 	border-bottom: 1px solid #D5D9DC;
 }
-/*
-#maincolumn .subtitle {
-	margin-left:68px;
-}
-*/
 
+div.main.subtitle {
+	font-weight: normal;
+	margin: -15px 0 10px 58px;
+}
 
 
 /* Content special blocs
@@ -480,7 +481,25 @@ ul.parent_list li{
 .panel li.list.hover:hover {
 	background-color: #cef;
 }
+.panel li.sortme:hover,
+.panel ul.list li:hover {
+	background: url(../images/bg-gray-medium.png);
+	border: solid 1px #ddd;
+}
+.panel li.sortme.nohover:hover,
+.panel ul.list li.nohover:hover {
+	background:#fff;
+	border: solid 1px #ddd;
+}
 
+
+/* LI during drag */
+li.list.ondrag {
+	background: url(../images/bg-gray-medium.png);
+	border: solid 1px #ddd;
+	padding: 2px 8px;
+	border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;
+}
 
 /* Horizontal list of items */
 ul.inline {
@@ -1097,11 +1116,21 @@ dl#link_info dd {
 	cursor: pointer;
 }
 
-/* Standard sizes, margin, padding, border radiuses
+/* Standard sizes, margin, padding, border radius
 ---------------------------------------------------------------- */
 
-.relative {
-	position: relative;
+.relative {position: relative;}
+.absolute {position: absolute;}
+.pointer{cursor: pointer;}
+.red {color:#b00 !important;}
+.absolute{position: absolute;}
+
+.unselectable {
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 /* Standard border radius */
 .r5 {-webkit-border-radius: 5px !important; -moz-border-radius: 5px !important; border-radius: 5px !important;}
@@ -1331,6 +1360,7 @@ dl#link_info dd {
 .h15 {	height:15px !important; }
 .h18 {	height:18px !important; }
 .h20 {	height:20px !important; }
+.h25 {	height:25px !important; }
 .h30 {	height:30px !important; }
 .h40 {	height:40px !important; }
 .h50 {	height:50px !important; }
@@ -1341,7 +1371,9 @@ dl#link_info dd {
 .h100 {	height:100px !important; }
 .h120 {	height:120px !important; }
 .h140 {	height:140px !important; }
+.h150 {	height:150px !important; }
 .h160 {	height:160px !important; }
+.h170 {	height:170px !important; }
 .h180 {	height:180px !important; }
 .h200 {	height:220px !important; }
 .h220 {	height:220px !important; }
