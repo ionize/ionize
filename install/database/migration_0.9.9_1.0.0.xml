@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<sql>
+
+	<query>
+		update setting set content='1.0.0' where name = 'ionize_version';
+	</query>
+
+    <query>
+        ALTER TABLE `media` ADD provider varchar(50) NOT NULL DEFAULT  '';
+    </query>
+
+
+</sql>

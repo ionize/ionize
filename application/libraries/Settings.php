@@ -318,11 +318,11 @@ class Settings
 	{
 		if (self::$mimes == FALSE)
 		{
-			$mimes_ionize = array();
+			$mimes = array();
 			if (@require_once(APPPATH.'config/mimes_ionize'.EXT))
 			{
-				self::$mimes = $mimes_ionize;
-				unset($mimes_ionize);
+				self::$mimes = $mimes;
+				unset($mimes);
 			}
 		}
 
@@ -337,13 +337,13 @@ class Settings
 	{
 		$allowed_extensions = array();
 
-		$mimes_ionize = self::get_mimes_types();
+		$mimes = self::get_mimes_types();
 
 		$filemanager_file_types = explode(',', self::get('filemanager_file_types'));
 
 		if ($type == FALSE)
 		{
-			foreach($mimes_ionize as $type)
+			foreach($mimes as $type)
 			{
 				foreach($type as $ext => $mime)
 				{
@@ -354,9 +354,9 @@ class Settings
 		}
 		else
 		{
-			if ( ! empty($mimes_ionize[$type]))
+			if ( ! empty($mimes[$type]))
 			{
-				foreach($mimes_ionize[$type] as $ext => $mime)
+				foreach($mimes[$type] as $ext => $mime)
 				{
 					if (in_array($ext, $filemanager_file_types))
 						$allowed_extensions[] = $ext;
@@ -375,11 +375,11 @@ class Settings
 	{
 		$allowed_mimes = array();
 
-		$mimes_ionize = self::get_mimes_types();
+		$mimes = self::get_mimes_types();
 
 		$filemanager_file_types = explode(',', self::get('filemanager_file_types'));
 		
-		foreach($mimes_ionize as $type)
+		foreach($mimes as $type)
 		{
 			foreach($type as $ext => $mime)
 			{

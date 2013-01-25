@@ -115,12 +115,9 @@ class Media extends MY_admin
 		$allowed_mimes = implode(',', Settings::get_allowed_mimes());
 
 		$params = array (
-			'URLpath4FileManagedDirTree' => Settings::get('files_path') . '/',
-//			'URLpath4FileManagedDirTree' => '/' . trim(Settings::get('files_path'), '/') . '/',
-//			'FileSystemPath4SiteDocumentRoot' => DOCPATH,
-			'URLpath4assets' => Theme::get_theme_path().'javascript/mootools-filemanager/Assets',
-//			'URLpath4thumbnails' => '/' . trim(Settings::get('files_path'), '/') . '/.thumbs',
-			'URLpath4thumbnails' => Settings::get('files_path') . '/.thumbs',
+			'filesDir' => '/'.Settings::get('files_path') . '/',
+			'thumbsDir' => '/'.Settings::get('files_path') . '/.thumbs/.backend/',
+			'assetsDir' => '/themes/' . config_item('admin_url') . '/javascript/filemanager/assets/', // theme_url().'javascript/filemanager/assets/',
 			'upload' => TRUE,
 			'destroy' => TRUE,
 			'create' => TRUE,
@@ -137,20 +134,23 @@ class Media extends MY_admin
 			'allowed_extensions' => Settings::get_allowed_extensions(),
 		);
 
-//		$this->load->library('Filemanager', $params);
-		$this->load->library('Filemanagerwithaliassupport', $params);
+		$this->load->library('Filemanager', $params);
 
 		// Fires the Event called by FileManager.js
 		// The answer of this called id a JSON object
 		// If no event is givven, it will call the "display" event
 		if ($event != 'upload')
 		{
-//			$this->Filemanager->fireEvent(!is_null($event) ? $event : null);
-			$this->Filemanagerwithaliassupport->fireEvent(!is_null($event) ? $event : NULL);
+			$this->Filemanager->fireEvent( ! is_null($event) ? $event : null);
 		}
 		else
 		{
+			$this->Filemanager->fireEvent($event);
+
+
+
 			// Flash mode (Multiple files) : PHPSESSID is send
+			/*
 			if ( ! empty($_POST['PHPSESSID']))
 				$session_data = $this->session->switchSession($_POST['PHPSESSID']);
 
@@ -163,8 +163,7 @@ class Media extends MY_admin
 			// Only upload if tokkens match
 			if ($tokken == $sent_tokken)
 			{
-//					$this->Filemanager->fireEvent($event);
-				$this->Filemanagerwithaliassupport->fireEvent($event);
+				$this->Filemanager->fireEvent($event);
 			}
 			else
 			{
@@ -173,6 +172,7 @@ class Media extends MY_admin
 					'error' => lang('ionize_session_expired')
 				));
 			}
+			*/
 		}
 		
 		die();

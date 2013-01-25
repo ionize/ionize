@@ -140,7 +140,10 @@ class Setting extends MY_admin
 
 		// Thumbs settings
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
-		
+
+		// Resize on Upload
+		$this->template['resize_on_upload'] = Settings::get('resize_on_upload');
+
 		
 		// Cache
 		$this->template['cache_enabled'] = config_item('cache_enabled');
@@ -620,7 +623,7 @@ class Setting extends MY_admin
 	{
 		// Settings to save
 		$settings = array(	'files_path', 
-							'media_thumb_size', 'picture_max_width', 'picture_max_height', 'media_upload_mode',
+							'media_thumb_size', 'resize_on_upload', 'picture_max_width', 'picture_max_height', 'media_upload_mode',
 							'filemanager_file_types', 'no_source_picture');
 		
 		// Allowed filemanager file extensions

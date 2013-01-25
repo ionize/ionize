@@ -1,0 +1,1253 @@
+/*
+
+Ionize Filemanager CSS
+
+Copyright:
+	Copyright (c) 2009/2010 Ionize Dev Team.
+
+License:
+	MIT-style license.
+
+*/
+div.filemanager-container {
+	display: none;
+}
+div.filemanager * {
+	outline: 0;
+}
+div.filemanager a img {
+	border: 0;
+}
+
+div.filemanager-container,
+div.filemanager,
+div.filemanager button,
+div.filemanager label,
+div.filemanager h1 {
+	width: auto;
+	margin: 0;
+	font: normal 11px "lucida grande",tahoma,verdana,arial,sans-serif;;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+/* filemanager */
+div.filemanager {
+	background: #fff;
+	position: absolute;
+	width: 75%;
+	height: 75%;
+}
+
+div.filemanager-header {
+	position: absolute;
+	top: -25px;
+	left: 0px;
+	width: auto;
+	margin-left:100px;
+	height: 14px;
+	padding: 3px 0px;
+	background: transparent;
+	overflow: hidden;
+}
+
+/* filemanager-menu */
+div.filemanager div.filemanager-menu {
+	height: 24px;
+	border-bottom: 1px solid #BEBEBE;
+	border-left: 1px solid #BEBEBE;
+	background: url("../../../../images/bg-gray-medium.png");
+	overflow: hidden;
+	padding:3px 5px;
+}
+
+div.filemanager button {
+	cursor: pointer;
+	height: 24px;
+	padding: 2px 6px;
+	color: #098ED1;
+	clear: none;
+	border:1px solid #bbb;
+	background: #fff;
+	border-radius: 2px 2px 2px 2px;
+}
+div.filemanager-engine-trident4 button,
+div.filemanager-engine-trident5 button {
+	padding: 0 .25em;
+	overflow: visible;
+}
+
+div.filemanager-menu button {
+	float: left;
+}
+
+div.filemanager button:hover,
+div.filemanager button.hover,
+div.filemanager button:focus {
+	border:1px solid #bbb;
+	background: url(../../../../images/bg-gray-light.png);
+
+}
+
+div.filemanager button.disabled,
+div.filemanager button.disabled:hover,
+div.filemanager button.disabled:focus,
+div.filemanager button.filemanager-open.disabled,
+div.filemanager button.filemanager-open.disabled:hover,
+div.filemanager button.filemanager-open.disabled:focus {
+	cursor: default;
+	color: #666;
+	text-shadow: none;
+	background: none;
+	border-color: #bababa;
+	opacity: 0.5;
+}
+
+div.filemanager button.filemanager-open {
+	background: url(../../../../images/submit-bg.jpg) no-repeat scroll 0 50% transparent;
+	color:#fff;
+	border-color: #fff;
+	cursor: pointer;
+	float:right;
+	margin-right:20px;
+}
+
+div.filemanager button.filemanager-open:hover {
+	color:#fff;
+	border-color: #fff;
+	background: url(../../../../images/submit-bg.jpg) no-repeat scroll -200px 50% transparent;
+}
+
+
+div.loader {
+	width: 16px;
+	height: 16px;
+	background: url("../images/loader.gif") no-repeat;
+}
+div.filemanager-header div.loader {
+	position: absolute;
+	top: 5px;
+	right: 20px;
+}
+div.filemanager-browserheader div.loader {
+	position: absolute;
+	top: 34px;
+	right: 18px;
+	z-index: 100;
+}
+div.filemanager-preview div.loader {
+	position: relative;
+	left: 50%;
+	right: auto;
+	margin-left: -8px;
+}
+
+/* filemanager-browserscroll */
+div.filemanager div.filemanager-browserscroll {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+div.filemanager div.filemanager-browserscroll.hover {
+	background-color: #df8;
+}
+div.filemanager div.filemanager-browserscroll li.list {
+	background-color:transparent;
+	border:none;
+	padding:0;
+	height: 21px;
+}
+div.filemanager div.filemanager-browserscroll li.thumb {
+	height: 54px;
+}
+
+div.filemanager ul {
+	margin: 0;
+	padding: 0;
+	position: relative;
+	line-height: 1.8em;
+	zoom: 1;                  /*:: < IE 9.0    :: Microsoft Internet Explorer hack */
+}
+div.filemanager ul li {
+	background: none;
+	list-style-image: none;
+	list-style-type: none;
+	list-style: none;
+	line-height: 1.8em;
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+}
+
+div.filemanager div.filemanager-browsercontainer {
+	height: 100%;
+	width: 30%;
+	min-width: 189px;
+	border: 0;
+	border-right: 1px solid #bebebe;
+	background: url("../../../../images/bg-gray-medium.png") repeat scroll 0 0 transparent;
+	overflow: hidden;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 26px;
+	padding:2px 0;
+	border-bottom: 1px solid #bebebe;
+	text-align: center;
+	position: relative;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader a.listType {
+	display: inline-block;
+	float: right;
+	width: 16px;
+	height: 16px;
+	margin: 5px;
+	cursor: pointer;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader a.listType#toggle_side_list {
+	background: url("../images/application_side_list.png") no-repeat;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader a.listType#toggle_side_boxes {
+	background: url("../images/application_side_boxes.png") no-repeat;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader a#show_dir_thumb_gallery {
+	background: url("../images/application_side_thumbs.png") no-repeat top left;
+	height: 16px;
+	width: 16px;
+	display: inline-block;
+	float: right;
+	margin: 5px;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader a.create-folder {
+	background: url("../images/icon_16_folder_add.png") no-repeat top left;
+	height: 16px;
+	width: 16px;
+	display: inline-block;
+	float: left;
+	margin: 5px;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader a#drag_n_drop {
+	display: inline-block;
+	float: right;
+	margin: 5px 3% 0 0;
+	cursor: help;
+	background-image: url("../images/drag_n_drop.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 16px;
+	overflow: hidden;
+	background-position: 0px -16px;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging {
+	display: inline-block;
+	float: right;
+	margin: 1px 3% 0 0;
+	height: 19px;
+	padding: 4px 5px 0 5px;
+	border-left: 1px solid #BEBEBE;
+	border-right: 1px solid #BEBEBE;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a {
+	display: inline-block;
+	margin: 0 2px;
+}
+
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_first {
+	background-image: url("../images/go_first.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 10px;
+	overflow: hidden;
+	background-position: 50% 50%;
+
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_previous {
+	background-image: url("../images/go_previous.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 7px;
+	overflow: hidden;
+	background-position: 50% 50%;
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_next {
+	background-image: url("../images/go_next.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 7px;
+	overflow: hidden;
+	background-position: 50% 50%;
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_last {
+	background-image: url("../images/go_last.png");
+	background-repeat: no-repeat;
+	height: 16px;
+	width: 10px;
+	overflow: hidden;
+	background-position: 50% 50%;
+	position: relative;
+}
+div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging #paging_info {
+	margin: 0 10px;
+	height: 16px;
+	position: relative;
+	top: -4px;
+	overflow: hidden;
+}
+div.filemanager-browsercontainer div.filemanager-browsercommand {
+	left: 0;
+	bottom: 80px;
+	width: 100%;
+	height: 80px;
+	border-top: 1px solid #bebebe;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+div.filemanager-browsercontainer div.filemanager-browsercommand #fm_upload_dnd{
+	width: 200px;
+	height: 40px;
+	background: url("../../../../images/bg-gray-light.png");
+	margin:5px;
+}
+
+
+div.filemanager-container span.fi {
+	height: 21px;
+	line-height: 1.8em;
+	padding-left: 5px;
+	color: #000;
+	text-decoration: none;
+	display: block;
+	white-space: nowrap;
+	cursor: pointer;
+	border-radius: 10px;
+}
+
+div.filemanager-container span.thumb {
+	height: 48px;
+	padding: 3px 0 3px 3px;
+	margin: 0;
+	overflow: hidden;
+}
+
+div.filemanager-container span.fi.hover {
+	background: #E2EBF6;
+	background:url("../../../../images/bg-gray-medium-plus.png") repeat scroll 0 0 transparent;
+}
+
+div.filemanager-container span.fi span,
+div.filemanager-container span.thumb {
+	white-space: nowrap;
+	display: block;
+	vertical-align: middle;   /* pretty useless, but keep it in? */
+	overflow: visible;
+}
+
+div.filemanager-container span.thumb span {
+	margin-top: 12px;
+}
+
+div.filemanager-container span.thumb span.thumb {
+	float: left;
+	width: 48px;
+	height: 48px;
+	vertical-align: middle;
+	text-align: center;
+	margin: 0 5px 0 0;
+	padding: 0;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+div.filemanager-container span.list span.list {
+	float: left;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	text-align: center;
+	margin: 0 5px 0 0;
+	padding: 0;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+
+
+div.filemanager-container span.drag span,
+div.filemanager-engine-trident4 ul li span.fi span,
+div.filemanager-engine-trident5 ul li span.fi span,
+div.filemanager-engine-presto   ul li span.fi span,
+div.filemanager                 ul li:hover span.fi span {
+	overflow: hidden;
+}
+
+div.filemanager ul li span.dir {
+	background-color: transparent;
+}
+
+div.filemanager ul li span.droppable,
+div.filemanager-gallery ul.droppable {
+	background-color: #99b7e7;
+}
+
+ul.filemanager-browser a,
+ul.filemanager-browser span {
+	position: relative;
+}
+ul.filemanager-browser span.list span.fm-thumb-bg{
+	margin-top: 1px;
+}
+div.filemanager ul li span.thumb.selected,
+div.filemanager ul li span.fi.selected {
+	background: #8EAAD6;
+	color: #eee;
+	outline: none;
+}
+
+div.filemanager-container span.fi img {
+	float: left;
+	margin: 3px 3px 0 0;
+}
+
+div.filemanager-container span.file img {
+	border: none;
+	margin-top: 5px;
+}
+
+div.filemanager-container span.fi img.browser-icon {
+	float: right;
+	border: none;
+	margin-top: 3px;
+}
+
+div.filemanager-container span.thumb img.browser-icon {
+	margin-top: 16px;
+}
+
+div.filemanager-container span.move img.browser-icon {
+	display: none;
+}
+
+div.filemanager span.notice {
+	position: absolute;
+	bottom: 16px;
+	left: 16px;
+}
+
+div.filemanager a.filemanager-close {
+	display: block;
+	position: absolute;
+	right: 6px;
+	top: -23px;
+	height: 16px;
+	width: 16px;
+	background: url("../images/close.png") no-repeat;
+	cursor: pointer;
+}
+div.filemanager a.filemanager-close:hover {
+	background-position: 0px -16px;
+}
+div.filemanager div.filemanager-close img {
+	padding: 2px;
+}
+
+div.filemanager-panel {
+	position: absolute;
+	top: 0;
+	min-width: 250px;
+	height: 100%;
+	line-height: 1.6em;
+	background-color: #fff;
+	left: 30% !important;
+	width: 70% !important;
+}
+
+div.filemanager-infos {
+	padding: 0 1%;
+	overflow: auto;
+	border-left: 1px solid #BEBEBE;
+}
+
+div.filemanager-head {
+	height: 30px;
+	overflow: hidden;
+}
+
+img.filemanager-icon {
+	float: left;
+	margin: 8px 10px 8px 0;
+}
+
+div.filemanager h1 {
+	margin: 0;
+	padding: 0;
+	height: 30px;
+	line-height: 30px;
+	color: #333;
+	font-size: 16px;
+	letter-spacing: 1px;
+	overflow: hidden;
+	white-space: nowrap;
+	background-color: transparent;
+}
+
+div.filemanager h2,
+div.filemanager h3 {
+	margin: 0;
+	border-top: 1px solid #bebebe;
+	font-weight: bold;
+	padding: 2px 0 0 5px;
+	clear: both;
+}
+
+div.filemanager div.filemanager-info-area {
+	border-top: 1px solid #bebebe;
+	padding: 5px 0 0 0;
+	clear: both;
+}
+div.filemanager div.filemanager-preview-content {
+	border-top: 1px solid #bebebe;
+	padding: 2px 0 0 0;
+	clear: both;
+}
+div.filemanager div.filemanager-preview-content i{
+	margin:20px 0;
+	display: block;
+}
+
+div.filemanager div.filemanager-errors {
+	border-top: 1px solid #bebebe;
+	padding: 2px 0 0 0;
+	clear: both;
+}
+div.filemanager div.filemanager-diag-dump {
+	border-top: 1px solid #bebebe;
+	padding: 2px 0 0 0;
+	clear: both;
+}
+
+div.filemanager h2 {
+	font-size: 14px;
+}
+
+div.filemanager h3 {
+	font-size: 12px;
+}
+
+div.filemanager dl {
+	margin: 5px 0;
+	width: 100%;
+	clear: both;
+	overflow: auto;
+}
+
+div.filemanager dt,
+div.filemanager dd {
+	float: left;
+	line-height: 20px;
+	font-size: 11px;
+}
+
+div.filemanager dt {
+	clear: both;
+	width: 22%;
+	margin-left: 5%;
+	font-weight: bold;
+}
+
+div.filemanager dd {
+	white-space: nowrap;
+	margin:0 0 0 10px;
+	width:auto;
+}
+
+div.filemanager div.margin {
+	margin-left: 15px;
+}
+
+div.filemanager a.filemanager-dir-title {
+	padding:1px 8px 2px 10px;
+	font-weight: bold;
+	float:left;
+	text-decoration: none;
+	color: #666;
+}
+div.filemanager a.filemanager-dir-title:hover {
+	color: #999;
+}
+
+div.filemanager input.filemanager-dir {
+	margin-top: -4px;
+	background-color: #fbfbfb;
+	background-image: none !important;
+	border: 1px solid #ccc;
+	width: 70%;
+	padding: 1px 5px;
+	font-size: 14px;
+}
+div.filemanager .filemanager-dir span {
+	float:left;
+	padding:0 2px;
+	color:#666;
+}
+div.filemanager span.filemanager-dir a.icon {
+	padding: 1px 5px 1px 22px;
+	text-decoration: none;
+	background: url("../images/icons/directory.png") 2px 0 no-repeat;
+	color: #000;
+	float: left;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+	width:auto;
+}
+div.filemanager span.filemanager-dir span.icon {
+	border: none;
+	padding: 1px 5px 1px 20px;
+	background: url("../images/icons/directory.png") 2px 0 no-repeat;
+	color: #999;
+}
+
+div.filemanager span.filemanager-dir a.icon:hover {
+	text-decoration: none;
+	background-color: #fff;
+}
+
+div.filemanager span.filemanager-dir a.selected,
+div.filemanager span.filemanager-dir a.selected:hover {
+	margin: 0 1px;
+	background-color: transparent;
+	border: none;
+	cursor: auto;
+}
+
+div.filemanager-preview {
+	margin-top: 5px;
+}
+div.filemanager-preview p{
+	text-align:center;
+}
+
+div.filemanager-preview img.preview {
+	margin: 0 auto 1em;
+	display: block;
+	border: 1px solid #fff;
+}
+
+div.filemanager-preview img.preview:hover {
+	border: 1px solid #666;
+}
+div.filemanager-preview img.preview.filemanager-loading {
+	background: url("../images/loader.gif") center center no-repeat;
+}
+
+
+div.filemanager-preview ul li img,
+div.filemanager-uploader ul li img {
+	margin-top: 2px;
+	margin-right: 4px;
+	float: left;
+}
+
+div.filemanager-preview p.tech_info {
+	font-size: 9px;
+	line-height: 1.2em;
+}
+
+div.filemanager-preview p.err_info {
+	color: red;
+	font-weight: bold;
+}
+
+div.filemanager-preview div.preview_err_report {
+	background-color: #fcc;
+}
+
+div.filemanager-preview ul,
+div.filemanager-uploader ul,
+div.filemanager-preview div.textpreview {
+	border: 1px solid #bebebe;
+	background: #fff;
+	padding: 2px;
+	margin: 1em auto;
+	width: 490px;
+	height: 280px;
+	overflow: auto;
+}
+
+div.filemanager-preview div.textpreview pre {
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+}
+
+div.filemanager-preview div.object {
+	width: 100%;
+	text-align: center;
+	overflow: hidden;
+}
+
+div.filemanager-container img.browser-add {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+}
+
+/* UPLOAD */
+div.filemanager-container .file span {
+	padding: 0 5px 0 0;
+}
+
+div.filemanager-container .file .file-size {
+	color: #666;
+}
+
+div.filemanager-container .file .file-cancel {
+	cursor: pointer;
+	padding-left: 5px;
+	float: right;
+}
+div.filemanager-container .file .file-progress {
+	margin-top: 5px;
+	float: right;
+	width: 125px;
+	height: 12px;
+	background-image: url("../images/progress.gif");
+}
+
+/* FM Resize */
+div.filemanager label.filemanager-resize{
+	width: auto;
+	float: left;
+	margin-left: 5px;
+	line-height: 24px;
+	color: #098ED1;
+	cursor: pointer;
+	padding:0 5px;
+}
+div.filemanager label.filemanager-resize input{
+	margin-right:3px;
+}
+div.filemanager label.filemanager-resize label{
+}
+
+
+div.filemanager label.filemanager-resize span {
+	width: 20%;
+	overflow: hidden;
+}
+
+div.filemanager label.filemanager-resize div.checkbox {
+	float: left;
+	height: 12px;
+	width: 16px;
+	background: url("../images/checkbox.png") no-repeat;
+}
+
+div.filemanager label.filemanager-resize div.checkboxChecked {
+	background-position: 0 -12px;
+}
+
+/* SELECTED FILE */
+div.selected-file img {
+	vertical-align: bottom;
+	padding: 0 3px 0 0;
+}
+div.selected-file span {
+	line-height: 16px;
+}
+div.selected-file .file-cancel {
+	cursor: pointer;
+	padding: 0 0 0 5px;
+}
+
+
+/* GALLERY */
+div.filemanager button.filemanager-serialize {
+	font-weight: bold;
+}
+
+div.filemanager-gallery {
+	position: absolute;
+	/* z-index: 1000; */
+	width: 798px;        /* 9 images wide + optional scrollbar; old 750px value was ~ 8.5 so pretty useless */
+	height: 144px;
+	display: none;
+	font-family: Tahoma, sans-serif;
+	font-size: 12px;
+	border: 1px solid #bebebe;
+	border-top: 0;
+	background: #eee;
+}
+
+div.filemanager-gallery div.howto {
+	position: absolute;
+	left: 50px;
+	top: 60px;
+	color: #666;
+	font-size: 18px;
+	font-style: italic;
+}
+
+div.filemanager-gallery ul {
+	height: 122px;     /* 2 rows @ 60px + ul padding */
+	margin: 7px 6px;
+	padding: 4px;
+	overflow: auto;
+	overflow-x: hidden;
+	border: 1px solid #bebebe;
+	background: #f2f2f2;
+}
+
+div.filemanager-gallery ul li {
+	position: relative;
+	display: inline-block;
+	float: left;
+	margin: 0 2px;
+	width: 80px;
+	height: 60px;
+	list-style: none;
+	background: url("../images/loader.gif") center center no-repeat;
+}
+
+div.filemanager-gallery ul li div.gallery-image {
+	padding: 2px;
+	cursor: pointer;
+}
+
+div.filemanager-gallery ul li div.gallery-image img {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+div.filemanager-gallery ul li img.filemanager-remove {
+	position: absolute;
+	right: -2px; /* place the red X inside the li entirely; otherwise the adjacent image may partly obscure it */
+	top: -1px;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+div.filemanager-wrapper {
+	position: absolute;
+	width: 272px;
+	height: 410px;
+	font-size: 12px;
+	border: 1px solid #bebebe;
+	background: #eee;
+	border-radius: 5px;
+}
+
+div.filemanager-wrapper div.img {
+	width: 260px;
+	height: 260px;
+	margin: 5px;
+	border: 1px solid #bebebe;
+	background: #fff;
+}
+
+div.filemanager-wrapper span {
+	display: block;
+	margin: 3px 8px 1px;
+	font-weight: bold;
+}
+
+div.filemanager-wrapper textarea {
+	padding: 2px;
+	width: 256px;
+	height: 80px;
+	margin: 3px 5px 0;
+	border: 1px solid #bebebe;
+	background: #fff;
+}
+
+div.filemanager-wrapper button {
+	margin: 3px 7px;
+}
+
+img.filemanager-clone {
+	cursor: pointer;
+}
+
+/* TIPS */
+.tip-filebrowser {
+	/* z-index: 1201; */
+}
+.tip-filebrowser .tip {
+	background: #000;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	border: none;
+}
+
+.tip-filebrowser .tip-title {
+	color: #fff;
+	font: normal 9px verdana, arial, Tahoma, sans-serif;
+	padding: 1px 4px;
+	line-height: 21px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.tip-filebrowser .tip-text {
+	display: none;
+}
+
+/* THUMBNAILS IN PREVIEW LIST */
+div.filemanager-details {
+	overflow: auto;
+	height: 100%;
+}
+div.filemanager-filelist {
+	padding: 5px;
+	border-top: 1px solid #bebebe;
+}
+div.filemanager-filelist .fi, div.gallery-image {
+	position: relative;
+	display: inline-block;
+	float: left;
+	margin: 3px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-o-border-radius: 4px;
+	text-align: center;
+	white-space: nowrap;
+	cursor: pointer;
+	overflow: hidden;
+	background: url("../../../../images/bg-gray-light.png");
+}
+div.gallery-image {
+	float: none;
+}
+div.filemanager-filelist .fi:hover, div.gallery-image:hover {
+	background-color: #dee6f0;
+}
+div.filemanager-filelist .fi:hover .name {
+	color: #098ED1;
+}
+div.filemanager-filelist .fi .dir-gal-thumb-bg {
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+div.filemanager-filelist .fi .name {
+	overflow: hidden;
+	font-weight: normal;
+	opacity: 0.7;
+	overflow: hidden;
+	position: absolute;
+	bottom:0;
+}
+
+
+/* Extra (Tech.) Info / Diagnostics in preview pane */
+
+/*
+div.filemanager div.filemanager-diag-dump {
+	display: none;
+}
+*/
+
+div.filemanager div.filemanager-diag-dump ul {
+	width: auto;
+	height: auto;
+	background: inherit;
+	border-top: 1px solid #BEBEBE;
+	border-bottom: 1px solid #E7E7E7;
+	border-left: 0;
+	border-right: 0;
+	margin: 5px 0 5px 10px;
+}
+
+div.filemanager div.filemanager-diag-dump ul.dump_level_00 {
+	border: 0;
+}
+
+div.filemanager div.filemanager-diag-dump li span.key {
+	margin-right: 2em;
+	display: inline-block;
+	width: 150px;
+	font-weight: bold;
+}
+
+/*
+ * overlarger series ~ golden ratio: 0010, 0016, 0025, 0040, ...
+ *
+ * Use these classes to tweak the look of the detail info dump.
+ */
+div.filemanager div.filemanager-diag-dump li span.key.overlarger0016 {
+	width: auto;    /* prevent key text from overlapping the data; that looks really ugly. */
+}
+
+div.filemanager div.filemanager-diag-dump li {
+	white-space: normal;
+}
+
+div.filemanager div.filemanager-diag-dump li img {
+	/* embedded images should not float in here */
+	float: none;
+}
+
+/*  the thumbnails gallery displayed in the preview/detail pane */
+#gallery-tn-container
+{
+	margin: 15px;
+	padding: 5px;
+	border: 1px solid #b2a0a0;
+	background: #fffafa;
+	box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
+	-moz-box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
+	-webkit-box-shadow: rgba(255, 0, 0, 0.3) 0 0 10px;
+}
+
+#gallery-tn-container div
+{
+	float: left;
+	margin: 5px;
+}
+
+#gallery-tn-container div a
+{
+	display: block;
+	border: 1px solid #b2a0a0;
+	background: #eee2e2;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#gallery-tn-container div a img
+{
+	padding: 0;
+	margin: 0;
+	border: 0 none;
+}
+
+#gallery-tn-container
+{
+	overflow: auto;
+}
+
+
+div.filemanager-menu form {
+	width:auto;
+}
+div.filemanager .center {
+	text-align: center;
+}
+
+/* Upload
+div.filemanager .button.upload {
+	background: url("../images/icon_16_upload.png") no-repeat top left;
+	height: 16px;
+	width: 16px;
+	display: inline-block;
+	float: left;
+	margin: 5px;
+}
+*/
+.filemanager-upload {
+	clear: both;
+}
+.filemanager-upload .list{
+	position: relative;
+	height: auto;
+	overflow: hidden;
+	width: 100%;
+}
+.filemanager-upload .list .item{
+	width: 100px;
+	height: 100px;
+	float: left;
+	margin: 10px 5px 0 5px;
+	overflow: hidden;
+	position: relative;
+	background-color: #fff;
+	background-position: 50% 33%;
+	border-radius: 10px;
+	background-repeat: no-repeat;
+	border:solid 1px #BEBEBE;
+}
+.filemanager-upload .list .item img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100px;
+}
+.filemanager-upload .list .item .text {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
+	margin: 10px;
+	position: relative;
+	z-index: 2;
+}
+.filemanager-upload .list .item .progress {
+	background: none repeat scroll 0 0 #bbb;
+	border-radius: 10px;
+	bottom: 10px;
+	color: #FFFFFF;
+	position: absolute;
+	text-align: center;
+	margin: 0 10px;
+	height: 10px;
+	width: 80px;
+}
+.filemanager-upload .list .item .progress .progress-bar{
+	background: none repeat scroll 0 0 #098ED1;
+	border-radius: 10px;
+	line-height: 10px;
+	width: 0;
+	height: 10px;
+	font-size: 8px;
+}
+.filemanager-upload .list .item .delete {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	height: 16px;
+	width: 16px;
+	background: url("../images/destroy.png") no-repeat top left;
+	cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Addition */
+/* upload */
+
+.filemanager-uploader ul.filemanager-uploader-list {
+	padding: 2px 5px;
+}
+
+.filemanager-uploader li.file img.icon, .filemanager-uploader li.file img.file-cancel {
+	position: relative;
+	top: 3px;
+}
+.filemanager-uploader li.file img.icon {
+	padding-right: 4px;
+}
+
+/* Overlay */
+div.filemanager-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: none;
+	background: #aaa;
+}
+
+/* Dialog */
+div.filemanager-overlay-dialog {
+	background: #fff;
+}
+
+div.filemanager-dialog {
+	position: absolute;
+	display: none;
+	width: 230px;
+	padding-bottom: 40px;
+	color: #bebebe;
+	background: rgba(0, 0, 0, 0.8);
+	border-radius: 2px;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+	-o-box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+}
+
+div.filemanager-dialog-engine-trident {	background: #000;}
+div.filemanager-dialog-engine-trident4 {width: 249px;}
+div.filemanager-dialog a {	color: #aaa;}
+div.filemanager-dialog a:hover { text-decoration: none;}
+div.filemanager-dialog div { }
+
+div.filemanager-dialog input, div.filemanager-dialog select {
+	width: 94%;
+	margin: 15px 2%;
+	padding: 4px;
+	border: 1px solid #bebebe;
+	background: #fff;
+	color: #333;
+	font-size: 12px;
+}
+div.filemanager-dialog .filemanager-dialog-content {
+	padding:15px;
+}
+
+div.filemanager-dialog-engine-trident4 input, div.filemanager-dialog-engine-trident5 input {
+	width: 80%;
+}
+
+div.filemanager-dialog button {
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
+	width: auto;
+	background: none repeat scroll 0 0 #FFFFFF;
+	border: 1px solid #BBBBBB;
+	border-radius: 2px 2px 2px 2px;
+	clear: none;
+	color: #098ED1;
+	cursor: pointer;
+	height: 22px;
+	padding: 2px 6px;
+	margin: 0;
+}
+div.filemanager-dialog button.filemanager-dialog-confirm {
+	background: url(../../../../images/submit-bg.jpg) no-repeat scroll 0 50% transparent;
+	color:#fff;
+	border-color: #fff;
+}
+div.filemanager-dialog button.filemanager-dialog-confirm:hover {
+	background: url(../../../../images/submit-bg.jpg) no-repeat scroll -200px 50% transparent;
+}
+
+
+div.filemanager-dialog-engine-trident4 button, div.filemanager-dialog-engine-trident5 button {
+	padding: 0 .25em;
+	overflow: visible;
+}
+
+div.filemanager-dialog button.filemanager-dialog-decline {
+	color:#fff;
+	right: auto;
+	left: 15px;
+	background: url(../../../../images/button-no-bg.jpg) no-repeat scroll 0 50% transparent;
+}
+div.filemanager-dialog button.filemanager-dialog-decline:hover {
+	background: url(../../../../images/button-no-bg.jpg) no-repeat scroll -200px 50% transparent;
+}
+
+div.filemanager-dialog-content h2{
+	font-size: 12px;
+}
+div.filemanager-dialog-content h2 div{
+	margin:0;
+}
+/* NoFlash.upload */
+div.filemanager #filemanager_upload_Filedata {
+	width: auto;
+	font-size: 11px;
+}
+

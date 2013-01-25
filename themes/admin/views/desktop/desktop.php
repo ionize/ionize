@@ -53,9 +53,10 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/cwcrop/ysr-crop.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/cwcrop/ysr-crop.css" />
 
-<!-- Form Autogrow -->
+<!-- Mootools Extra -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-class-extras.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.AutoGrow.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Fx.ProgressBar.js"></script>
 
 <!-- swfObject -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/swfobject.js"></script>
@@ -138,6 +139,8 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_user.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js"></script>
 
+<?php
+/*
 <!-- Mootools Filemanager -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/FileManager.js"></script>
 <?php if (is_file(BASEPATH.'../'.Theme::get_theme_path().'javascript/mootools-filemanager/Language/Language.'.Settings::get_lang().'.js')) :?>
@@ -165,6 +168,26 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="<?php echo theme_url(); ?>javascript/mootools-filemanager/Assets/Css/FileManager_ionize.css" />
 <!--[if IE 7]><link rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mootools-filemanager/Assets/Css/FileManager_ie7.css" /><![endif]-->
+*/
+?>
+
+<!-- DropZone -->
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/Request.Blob.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML5.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML4.js"></script>
+
+
+<!-- Ionize Filemanager -->
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/filemanager.js"></script>
+<?php
+	if (is_file(BASEPATH.'../'.Theme::get_theme_path().'javascript/filemanager/language/Language.'.Settings::get_lang().'.js'))
+		$filemanager_lang = Settings::get_lang();
+	else
+		$filemanager_lang = 'en';
+?>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/language/Language.<?php echo $filemanager_lang ?>.js"></script>
+
 
 <!-- TinyMCE -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce_src.js"></script>
@@ -207,6 +230,7 @@
 		fileButton:'.fmButton',
 		wait:'waitPicture',
 		mode:'<?php echo Settings::get('filemanager'); ?>',
+        resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
 		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,		
 		pictureArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('picture')); ?>'),
 		musicArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('music')); ?>'),

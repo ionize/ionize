@@ -1,0 +1,36 @@
+div.filemanager div.filemanager-browserscroll {
+	position: relative;
+}
+
+div.filemanager-infos {
+	width: auto;
+}
+
+div.filemanager dl {
+	margin: 5px 0 10px 0;
+	width: 100%;
+	clear: both;
+	overflow: auto;
+	position: relative;
+}
+
+div.filemanager-details {
+	position: relative;
+	overflow-x: hidden;
+	height: 100%;
+}
+
+#mootools-filemanager div.filemanager div.filemanager-menu {
+	width: 350px;
+	background-color: transparent;
+}
+
+div.filemanager button,
+div.filemanager-dialog button{
+	display: inline;
+	overflow: visible;
+}
+
+div.filemanager-container span.fi span {
+	overflow:hidden;
+}

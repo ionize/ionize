@@ -4,11 +4,11 @@
 | MIME TYPES
 | -------------------------------------------------------------------
 | This file contains an array of mime types.  
-| It is used by the Media / Settings classes to identify allowed mimes
+| It is used by the Media / Settings / Filemanager classes to identify allowed mimes
 |
 */
 
-$mimes_ionize = array(
+$mimes = array(
 	'picture' => array(
 		'bmp' =>	'image/bmp',
 		'gif' =>	'image/gif',
@@ -37,30 +37,38 @@ $mimes_ionize = array(
 		'asf' =>	'video/x-ms-asf',
 		'rm' =>		'video/x-realvideo',
 		'rmvb' =>	'video/x-realvideo',
+		'vob' =>	'video/mpeg',
 	),
 	'music'	=> array(
 		'aif' =>	'audio/x-aiff',
 		'aifc' =>	'audio/x-aiff',
 		'aiff' =>	'audio/x-aiff',
 		'au' =>		'audio/basic',
+		'kar' =>	'audio/midi',
 		'mid' =>	'audio/midi',
 		'midi' =>	'audio/midi',
+		'mka' =>	'audio/x-matroska',
 		'mp2' =>	'audio/mpeg',
 		'mp3' => 	array('audio/mpeg', 'audio/mpg', 'audio/mpeg3', 'audio/mp3'),
+		'mpga' =>	'audio/mpeg',
 		'ra' =>		'audio/x-realaudio',
 		'ram' =>	'audio/x-pn-realaudio',
 		'rpm' =>	'audio/x-pn-realaudio-plugin',
 		'wav' =>	'audio/x-wav',
 	),
 	'file'	=> array(
+		'ai' =>		'application/postscript',
 		'csv' =>	array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel'),
 		'doc' =>	array('application/msword','application/octet-stream'),
 		'docx' =>	'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		'dvi' =>	'application/x-dvi',
+		'dwg' =>	'application/acad',
 		'eps' =>	'application/postscript',
 		'exe' =>	array('application/octet-stream', 'application/x-msdownload'),
 		'gtar' =>	'application/x-gtar',
 		'gz' =>		'application/x-gzip',
 		'iso' =>	'application/x-isoview',
+		'js' =>		'application/x-javascript',
 		'lha' =>	'application/octet-stream',
 		'lzh' =>	'application/octet-stream',
 		'pdf' =>	array('application/pdf', 'application/x-download'),
@@ -73,6 +81,7 @@ $mimes_ionize = array(
 		'rar' =>	'application/x-rar',
 		'rtf' =>	'text/rtf',
 		'tar' =>	'application/x-tar',
+		'tgz' =>	array('application/x-compressed', 'application/x-tar'),
 		'txt' =>	array('text/plain', 'text/x-log'),
 		'xlc' =>	'application/vnd.ms-excel',
 		'xll' =>	'application/vnd.ms-excel',
@@ -83,6 +92,3 @@ $mimes_ionize = array(
 	)
 );
 	
-
-/* End of file mimes_ionize.php */
-/* Location: ./system/application/config/mimes_ionize.php */

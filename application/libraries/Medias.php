@@ -845,7 +845,7 @@ class Medias
 			}
 		}
 
-		$mimes_ionize = array();
+		$mimes = array();
 		include(APPPATH.'/config/mimes_ionize.php');
 
 		$extension = substr(strrchr($no_source_picture_file,'.'),1);
@@ -856,7 +856,7 @@ class Medias
 			'path' => Settings::get('files_path') .'/' . $no_source_picture_file,
 			'base_path' => Settings::get('files_path') .'/',
 			'extension' => $extension,
-			'mime' => $mimes_ionize['picture'][$extension],
+			'mime' => $mimes['picture'][$extension],
 			'square_crop' => 'm',
 			'title' => '',
 			'alt' => '',

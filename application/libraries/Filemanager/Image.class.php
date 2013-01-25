@@ -18,8 +18,9 @@
  *    - 1.01 small fixes in process method and add set memory limit to a higher value
  */
 
-
-define('IMAGE_PROCESSING_MEMORY_MAX_USAGE', 64); // memory_limit setting, in Megabytes; increase when Image class reports too often the images don't fit in memory.
+// memory_limit setting, in Megabytes; increase when Image class reports too often the images don't fit in memory.
+// Origin : 64
+define('IMAGE_PROCESSING_MEMORY_MAX_USAGE', 256);
 
 class Image {
 	/**
@@ -50,15 +51,21 @@ class Image {
 	 */
 	public function __construct($file)
 	{
+log_message('error', '----- Image() ------ ');
 		$this->dirty = false;
 
 		$this->meta = self::checkFileForProcessing($file);
+
+log_message('error', 'meta[fileinfo][memory_limit] : ' . $this->meta['fileinfo']['memory_limit']);
 
 		// only set the new memory limit of IMAGE_PROCESSING_MEMORY_MAX_USAGE MB when the configured one is smaller:
 		if ($this->meta['fileinfo']['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
 		{
 			ini_set('memory_limit', IMAGE_PROCESSING_MEMORY_MAX_USAGE . 'M'); //  handle large images
+log_message('error', 'SET NEW memory limit INI : ' . trim(ini_get('memory_limit')));
 		}
+
+// log_message('error', 'IMAGE_PROCESSING_MEMORY_MAX_USAGE : ' . IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024);
 
 		$this->file = $file;
 
@@ -81,6 +88,7 @@ class Image {
 		}
 		else
 		{
+			ini_set('gd.jpeg_ignore_warning', 1);
 			$this->image = @imagecreatefromjpeg($file);
 			if (!$this->image) throw new Exception('imagecreate_failed:imagecreatefromjpeg');
 		}
@@ -138,6 +146,7 @@ class Image {
 	public static function guestimateRequiredMemorySpace($file)
 	{
 		$val = trim(ini_get('memory_limit'));
+
 		$last = strtoupper(substr($val, -1, 1));
 		$val = floatval($val); // discards the KMG postfix, allow $val to carry values beyond 2..4G
 		switch($last)
@@ -160,7 +169,6 @@ class Image {
 			'mem_in_use' => $in_use,
 			'path' => $file
 			);
-
 		if(file_exists($file))
 		{
 			$raw_size = @filesize($file);
@@ -172,7 +180,7 @@ class Image {
 				$width = $img[0];
 				$height = $img[1];
 				$rv['imageinfo'] = $img;
-				$rv['imageinfo_extra'] = $info_ex;
+				// $rv['imageinfo_extra'] = $info_ex;
 
 				// assume RGBA8, i.e. 4 bytes per pixel
 				// ... having had a good look with memory_get_usage() and memory_get_peak_usage(), it turns out we need
@@ -219,6 +227,7 @@ class Image {
 			// else: this file does not exist!
 			$rv['not_an_image_file'] = true;
 		}
+// log_message('error', print_r($rv, true));
 		return $rv;
 	}
 
@@ -231,14 +240,13 @@ class Image {
 	public static function checkFileForProcessing($file)
 	{
 		$finfo = self::guestimateRequiredMemorySpace($file);
+
 		if (!empty($finfo['not_an_image_file']))
 			throw new Exception('no_imageinfo');
 
 		// is it a valid file existing on disk?
 		if (!isset($finfo['imageinfo']))
 			throw new Exception('no_imageinfo');
-
-		$file = $finfo['path'];
 
 		// only set the new memory limit of IMAGE_PROCESSING_MEMORY_MAX_USAGE MB when the configured one is smaller:
 		if ($finfo['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)

@@ -355,7 +355,13 @@ a.button.submit:hover {
     border:1px solid #bbb;
 	background: url(../images/bg-gray-light.png);
 }
-
+.button.disabled,
+.button.disabled:hover {
+	cursor:default;
+	background: none;
+	color:#777;
+	opacity: 0.5;
+}
 /* Buttons specific context */
 .tabsidecolumn .button.light,
 .panelAlt .button.light {

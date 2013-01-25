@@ -51,13 +51,22 @@
 			
 					<dl class="small">
 						<dt>
+							<label for="resize_on_upload"><?php echo lang('ionize_label_setting_resize_on_upload'); ?></label>
+						</dt>
+						<dd>
+                            <input <?php if($resize_on_upload == 1) :?>checked="checked" <?php endif ;?> name="resize_on_upload" id="resize_on_upload"  class="inputcheckbox" type="checkbox" value="1" />
+						</dd>
+					</dl>
+					
+					<dl class="small">
+						<dt>
 							<label for="picture_max_width" title="<?php echo lang('ionize_help_setting_picture_max_width'); ?>"><?php echo lang('ionize_label_setting_picture_max_width'); ?></label>
 						</dt>
 						<dd>
 							<input name="picture_max_width" id="picture_max_width" class="inputtext w40" type="text" value="<?php echo Settings::get('picture_max_width'); ?>"/>
 						</dd>
 					</dl>
-					
+
 					<dl class="small">
 						<dt>
 							<label for="picture_max_height" title="<?php echo lang('ionize_help_setting_picture_max_height'); ?>"><?php echo lang('ionize_label_setting_picture_max_height'); ?></label>

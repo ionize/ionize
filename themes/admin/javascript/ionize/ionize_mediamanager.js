@@ -21,12 +21,14 @@ var IonizeMediaManager = new Class(
     options: {
 		parent:			false,
 		idParent:		false,
-		mode:			'',								// 'mcFileManager', 'tinyBrower', 'ezfilemanager', 'kcfinder',
+		mode:			'',								// TODO : Remove
 		musicArray:		Array('mp3'),					// Array of authorized files extensions
 		pictureArray:	Array('jpg', 'gif', 'png', 'jpeg'),
 		videoArray:		Array('flv', 'fv4'),
 		fileArray:		Array(),
-		thumbSize:		120
+		thumbSize:		120,
+	    resizeOnUpload: false,
+	    standalone:     false
     },
 
 	initialize: function(options)
@@ -39,18 +41,18 @@ var IonizeMediaManager = new Class(
 		
 		this.themeUrl =		theme_url;
 
+		this.standalone =   options.standalone;
 		this.idParent =		options.idParent;
 		this.parent =		options.parent;
 
 		// Containers storing
 		this.containers = 	new Hash({
-							 'picture' : options.pictureContainer,
-							 'music' : options.musicContainer,
-							 'video': options.videoContainer,
-							 'file': options.fileContainer
-							});
+			'picture' : options.pictureContainer,
+			'music' : options.musicContainer,
+			'video': options.videoContainer,
+			'file': options.fileContainer
+		});
 		// Filemanager mode
-//		this.mode =			options.mode;
 		this.mode = 'mootools-filemanager';
 
 		// Filemanager opening buttons
@@ -111,9 +113,6 @@ var IonizeMediaManager = new Class(
 		}
 		else
 		{
-			// Complete relative path to the media
-//			var path =	url.replace(/\//g, "~");
-
 			// Send the media to link
 			var xhr = new Request.JSON(
 			{
@@ -446,138 +445,104 @@ var IonizeMediaManager = new Class(
 	 * Opens fileManager
 	 *
 	 */
-	toggleFileManager:function() 
+	toggleFileManager:function(options)
 	{
+		var standalone = this.options.standalone;
+
+		if (typeOf(options) != 'null')
+			standalone = options.standalone;
+
 		// If no parent exists : don't show the filemanager but an error message	
-		if ( ! this.idParent || this.idParent == '')
+		if ( (standalone == false ) && (! this.idParent || this.idParent == ''))
 		{
 			ION.notification('error', Lang.get('ionize_message_please_save_first'));
 		}
 		else
 		{
-			switch (this.mode)
+			// Exit if another fileManager is already running
+			if ($('filemanagerWindow'))
 			{
-				case 'filemanager': 
-					mcImageManager.init({
-						remove_script_host : false,
-						iframe : false
-					});
-					mcImageManager.open('fileManagerForm','hiddenFile', false, this.addMedia.bind(this));
-					break;
-				
+				var inst = $('filemanagerWindow').retrieve('instance');
 
-                case 'kcfinder':
+				// Re-open window if minimized or shake if triing to open another FM
+				if (inst.isMinimized)
+				{
+					inst.restore();
+				}
+				else
+				{
+					$('filemanagerWindow').shake();
+				}
 
-                    var url = this.themeUrl + 'javascript/kcfinder/browse.php?type=pictures&lng='+Lang['current'];+'&noselect=1&opener=custom';
-                    var xPos = (window.screen.availWidth/2) - (750/2);
-                    var yPos = window.screen.availHeight/4;
-                    var config = 'width=750, height=450, left='+xPos+', top='+yPos+', toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no';
-                    window.KCFinder = {};
-                    window.KCFinder.media = this;
-                    window.KCFinder.callBack = function(url) {
-                        window.KCFinder.media.addMedia(url);
-                        window.KCFinder = null;
-                    };
-                    var w = window.open(url, 'kcfinder', config);
-                    w.focus();
-                    break;
-
-				case 'mootools-filemanager':
-					
-					// Init of the FileManager is done in the desktop.php view.
-
-					// Exit if another fileManager is already running
-					if ($('filemanagerWindow'))
-					{
-						var inst = $('filemanagerWindow').retrieve('instance');
-						
-						// Re-open window if minimized or shake if triing to open another FM
-						if (inst.isMinimized) 
-						{
-							inst.restore();
-						}
-						else
-						{
-							$('filemanagerWindow').shake(); 
-						}
-
-						return;
-					}
-
-					// Referer to ionizeMediaManager
-					var self = this;
-					
-					// First try to get a tokken : The tokken is only returned if the user is connected.
-					var xhr = new Request.JSON(
-					{
-						url: admin_url + 'media/get_tokken',
-						method: 'post',
-						onSuccess: function(responseJSON, responseText)
-						{
-							// Open the filemanager if the tokken isn't empty
-							if (responseJSON && responseJSON.tokken != '')
-							{
-								// Correct windows levels : Get the current highest level.			
-								MUI.Windows._getWithHighestZIndex();							// stores the highest level in MUI.highestZindex
-								var zidx = (MUI.Windows.highestZindex).toInt();
-								
-								MUI.Windows.indexLevel = zidx + 100;						// Mocha window z-index
-// See how to do that
-//								this.SwiffZIndex = zidx + 200;								// Uploader index
-//								document.id(this.tips).setStyle('zIndex', zidx + 500);		// Tips
-								
-								// fileManager init
-								filemanager = new FileManager({
-									url: admin_url + 'media/filemanager',
-									URLpath4assets: theme_url + 'javascript/mootools-filemanager/Assets',
-//									assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
-									standalone: false,
-									thumbSmallSize: 120,
-									createFolders: true,
-									destroy: true,
-									rename: true,
-									move_or_copy: true,
-									language: Lang.get('current'),
-									selectable: true,
-									hideOnSelect: false,
-									thumbSize: self.options.thumbSize,
-									'onComplete': self.addMedia.bind(self),
-									propagateData: {'uploadTokken': responseJSON.tokken},
-									parentContainer: 'filemanagerWindow_contentWrapper',
-									mkServerRequestURL: function(fm_obj, request_code, post_data)
-									{
-										return {
-											url: fm_obj.options.url + '/' + request_code,
-											data: post_data
-										};
-									}
-								});
-
-								// MUI Window creation
-								var options = ION.getFilemanagerWindowOptions();
-								
-								options.content = filemanager.show();
-								
-								options.onResizeOnDrag = function()
-								{
-									filemanager.fitSizes();
-								}
-								
-								self.window = new MUI.Window(options);
-								self.window.filemanager = filemanager;
-							}
-							else
-							{
-								ION.notification('error', Lang.get('ionize_session_expired'));
-							}
-						}
-					}, self).send();
-
-					break;
-				
-				default : 
-					ION.notification('error', 'No mode set for mediaManager');
+				return;
 			}
+
+			// Referer to ionizeMediaManager
+			var self = this;
+
+			// First try to get a tokken : The tokken is only returned if the user is connected.
+			var xhr = new Request.JSON(
+			{
+				url: admin_url + 'media/get_tokken',
+				method: 'post',
+				onSuccess: function(responseJSON, responseText)
+				{
+					// Open the filemanager if the tokken isn't empty
+					if (responseJSON && responseJSON.tokken != '')
+					{
+						// Correct windows levels : Get the current highest level.
+						MUI.Windows._getWithHighestZIndex();							// stores the highest level in MUI.highestZindex
+						var zidx = (MUI.Windows.highestZindex).toInt();
+
+						MUI.Windows.indexLevel = zidx + 100;						// Mocha window z-index
+
+						filemanager = new Filemanager({
+							url: admin_url + 'media/filemanager',
+							assetsUrl: theme_url + 'javascript/filemanager/assets',
+							standalone: false,
+							thumbSmallSize: 120,
+							createFolders: true,
+							destroy: true,
+							rename: true,
+							upload: true,
+							resizeOnUpload: self.options.resizeOnUpload,
+							move_or_copy: true,
+							language: Lang.get('current'),
+							selectable: true,
+							hideOnSelect: false,
+							thumbSize: self.options.thumbSize,
+							'onComplete': self.addMedia.bind(self),
+							propagateData: {'uploadTokken': responseJSON.tokken},
+							parentContainer: 'filemanagerWindow_contentWrapper',
+							mkServerRequestURL: function(fm_obj, request_code, post_data)
+							{
+								return {
+									url: fm_obj.options.url + '/' + request_code,
+									data: post_data
+								};
+							}
+						});
+
+						// MUI Window creation
+						var options = ION.getFilemanagerWindowOptions();
+
+						options.content = filemanager.show();
+
+						options.onResizeOnDrag = function()
+						{
+							filemanager.fitSizes();
+						}
+
+						self.window = new MUI.Window(options);
+						self.window.filemanager = filemanager;
+					}
+					else
+					{
+						ION.notification('error', Lang.get('ionize_session_expired'));
+					}
+				}
+			}, self).send();
+
 		}
 	}
 });
@@ -593,10 +558,10 @@ ION.append({
 		// Window size
 		var wSize = {
 			'width': 890,
-			'height': 500,
+			'height': 340,
 			'x': 70,
 			'y': null
-		}
+		};
 		
 		// Get the size stored in the cookie, if any.
 		if (Cookie.read('fm'))
@@ -614,7 +579,7 @@ ION.append({
 		var options  = 
 		{
 			id: 'filemanagerWindow',
-			title: 'Filemanager',
+			title: 'File Manager',
 			container: document.body,
 			width: wSize.width,
 			height: wSize.height,

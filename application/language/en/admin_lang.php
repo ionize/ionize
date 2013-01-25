@@ -548,6 +548,7 @@ $lang['ionize_label_thumb_unsharp'] = 'Unsharp filter';
 $lang['ionize_label_thumb_list'] = 'Picture list';
 $lang['ionize_label_thumb_edition'] = 'Picture edition';
 $lang['ionize_label_thumbs_system'] = 'Picture list / edit';
+$lang['ionize_label_setting_resize_on_upload'] = 'Resize on upload';
 $lang['ionize_label_setting_picture_max_width'] = 'Pictures max. Width';
 $lang['ionize_label_setting_picture_max_height'] = 'Pictures max. Height';
 $lang['ionize_label_media_upload_mode'] = 'Upload Mode';
