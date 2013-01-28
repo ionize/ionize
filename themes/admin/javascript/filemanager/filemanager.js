@@ -575,7 +575,7 @@ var Filemanager = new Class({
 	{
 		var orig_height = 24;
 		var listSize = this.uploadZoneList.getSize();
-		if (listSize.y > 0) listSize.y += 10;
+		if (listSize.y > 0) listSize.y += 20;
 		var y = (listSize.y > this.options.menuMaxHeight) ? this.options.menuMaxHeight : listSize.y;
 		this.menu.setStyle('height', orig_height + y);
 
@@ -3178,7 +3178,7 @@ var Filemanager = new Class({
 	 */
 	addMenuButton: function(name)
 	{
-		var el = new Element('button', {'class': 'filemanager-' + name,	text: this.language[name]}).inject(this.menu, 'top');
+		var el = new Element('button', {'class': 'filemanager-' + name + ' button green',	text: this.language[name]}).inject(this.menu, 'top');
 
 		if (this[name+'_on_click'])
 			el.addEvent('click', this[name+'_on_click'].bind(this));
@@ -3480,7 +3480,7 @@ Filemanager.Dialog = new Class({
 		}
 
 		Array.each(this.options.buttons, function(v) {
-			new Element('button', {'class': 'filemanager-dialog-' + v, text: this.options.language[v]}).addEvent('click', (function(e) {
+			new Element('button', {'class': 'button filemanager-dialog-' + v, text: this.options.language[v]}).addEvent('click', (function(e) {
 				if (e) e.stop();
 				this.fireEvent(v).fireEvent('close');
 				//if (!this.options.hideOverlay)

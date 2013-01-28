@@ -276,20 +276,6 @@ input.submit{
 .button.left {float:left;}
 .button.right {float:right;}
 
-/*
-.submit,
-a.button.submit {
-	background:url(../images/submit-bg.jpg) no-repeat 0 50%;
-	color:#fff;
-	border:solid 1px #fff;
-}
-.submit:hover,
-a.button.submit:hover {
-	background:url(../images/submit-bg.jpg) no-repeat -200px 50%;
-	color:#fff;
-	border:solid 1px #fff;
-}
-*/
 .button,
 a.button {
 	background: url(../images/bg-gray-light.png);
@@ -341,8 +327,11 @@ a.button.submit:hover {
 
 .button.yes,
 a.button.yes,
+.button.green,
+a.button.green,
 .submit,
 a.button.submit{
+	color:#fff;
 	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
 	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
 	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
@@ -354,6 +343,8 @@ a.button.submit{
 }
 .button.yes:hover,
 a.button.yes:hover,
+.button.green:hover,
+a.button.green:hover,
 .submit:hover,
 a.button.submit:hover{
 	background-image: linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
@@ -366,7 +357,10 @@ a.button.submit:hover{
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#70b439, endColorstr=#338a05)";
 
 }
-.button.no, a.button.no {
+.button.no, a.button.no,
+.button.cancel, a.button.cancel,
+.button.red, a.button.red {
+	color:#fff;
 	background-image: linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
 	background-image: -o-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
 	background-image: -moz-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
@@ -375,9 +369,10 @@ a.button.submit:hover{
 	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(182,60,26)),color-stop(0.61, rgb(216,86,72)));
 	/* ie8 */
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d85648, endColorstr=#b63b1a)";
-
 }
-.button.no:hover, a.button.no:hover {
+.button.no:hover, a.button.no:hover,
+.button.cancel:hover, a.button.cancel:hover,
+.button.red:hover, a.button.red:hover {
 	background-image: linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
 	background-image: -o-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
 	background-image: -moz-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
@@ -400,13 +395,25 @@ a.button.submit:hover{
     border:1px solid #bbb;
 	background: url(../images/bg-gray-light.png);
 }
+
+button.disabled,
 .button.disabled,
+.button.green.disabled,
+.button.ok.disabled,
+.button.submit.disabled,
+.button.red.disabled,
+.button.no.disabled,
+.button.cancel.disabled,
 .button.disabled:hover {
 	cursor:default;
 	background: none;
-	color:#777;
+	color: #555;
 	opacity: 0.5;
+	border-color: #bababa;
+	text-shadow: none;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)";
 }
+
 /* Buttons specific context */
 .tabsidecolumn .button.light,
 .panelAlt .button.light {

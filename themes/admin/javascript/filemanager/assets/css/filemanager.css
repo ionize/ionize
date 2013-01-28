@@ -13,6 +13,7 @@ License:
 /**
  * Styles for outside Ionize usage
  * Uncomment to display clean buttons
+ * Not tested.
  *
 
 .left {float:left;}
@@ -28,6 +29,37 @@ License:
     margin: 0;
     padding: 2px 6px;
     vertical-align: middle;
+}
+div.filemanager .button.green {
+	color:#fff;
+	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -ms-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
+}
+
+div.filemanager .button.green:hover {
+	color:#fff;
+	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -ms-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
+}
+div.filemanager .button.disabled,
+div.filemanager .button.disabled:hover {
+	cursor:default;
+	background: none;
+	color: #555;
+	opacity: 0.5;
+	border-color: #bababa;
+	text-shadow: none;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)";
 }
 
 */
@@ -79,71 +111,21 @@ div.filemanager div.filemanager-menu {
 	height: 24px;
 	border-bottom: 1px solid #BEBEBE;
 	border-left: 1px solid #BEBEBE;
-	background: url("../../../../images/bg-gray-medium.png");
+	background: #f3f3f3 url("../../../../images/bg-gray-medium.png");
 	overflow: hidden;
 	padding:3px 5px;
 	max-height: 260px;
-}
-
-div.filemanager button {
-	cursor: pointer;
-	height: 24px;
-	padding: 2px 6px;
-	color: #098ED1;
-	clear: none;
-	border:1px solid #bbb;
-	background: #fff;
-	border-radius: 2px 2px 2px 2px;
-}
-div.filemanager-engine-trident4 button,
-div.filemanager-engine-trident5 button {
-	padding: 0 .25em;
-	overflow: visible;
 }
 
 /* FM button */
 div.filemanager-menu button {
 	float: left;
 }
-
-div.filemanager button:hover,
-div.filemanager button.hover,
-div.filemanager button:focus {
-	border:1px solid #bbb;
-	background: url(../../../../images/bg-gray-light.png);
-
-}
-
-div.filemanager button.disabled,
-div.filemanager button.disabled:hover,
-div.filemanager button.disabled:focus,
-div.filemanager button.filemanager-open.disabled,
-div.filemanager button.filemanager-open.disabled:hover,
-div.filemanager button.filemanager-open.disabled:focus {
-	cursor: default;
-	color: #666;
-	text-shadow: none;
-	background: none;
-	border-color: #bababa;
-	opacity: 0.5;
-}
-
 div.filemanager button.filemanager-open {
-	background: url(../../../../images/submit-bg.jpg) no-repeat scroll 0 50% transparent;
-	color:#fff;
-	border-color: #fff;
 	cursor: pointer;
 	float:right;
-	margin-right:20px;
+	margin-right:15px;
 }
-
-div.filemanager button.filemanager-open:hover {
-	color:#fff;
-	border-color: #fff;
-	background: url(../../../../images/submit-bg.jpg) no-repeat scroll -200px 50% transparent;
-}
-
-
 div.loader {
 	width: 16px;
 	height: 16px;
@@ -212,7 +194,7 @@ div.filemanager div.filemanager-browsercontainer {
 	min-width: 189px;
 	border: 0;
 	border-right: 1px solid #bebebe;
-	background: url("../../../../images/bg-gray-medium.png") repeat scroll 0 0 transparent;
+	background: #f3f3f3 url("../../../../images/bg-gray-medium.png") repeat scroll 0 0;
 	overflow: hidden;
 }
 
@@ -367,8 +349,7 @@ div.filemanager-container span.thumb {
 }
 
 div.filemanager-container span.fi.hover {
-	background: #E2EBF6;
-	background:url("../../../../images/bg-gray-medium-plus.png") repeat scroll 0 0 transparent;
+	background: url("../../../../images/bg-gray-medium-plus.png") repeat scroll 0 0 transparent;
 }
 
 div.filemanager-container span.fi span,
@@ -751,7 +732,7 @@ div.filemanager label.filemanager-resize input{
 	margin-right:5px;
 	margin-top:4px;
 }
-/* Start Upload button */
+/* Start Upload button : In Upload files list */
 .button.filemanager-start-upload {
 	height: 100px;
 	line-height: 100px;
@@ -1063,7 +1044,6 @@ div.filemanager .center {
 	clear: both;
 	max-height: 230px;
 	overflow-y: auto;
-	border-bottom: 1px solid #CCCCCC;
 	padding-bottom: 10px;
 }
 .filemanager-upload .list{
@@ -1071,7 +1051,6 @@ div.filemanager .center {
 	height: auto;
 	overflow: hidden;
 	width: 100%;
-	padding-bottom: 10px;
 }
 .filemanager-upload .list .item{
 	width: 100px;
@@ -1178,19 +1157,7 @@ body.hover div.filemanager-upload-overlay {
 	display: block;
 	z-index: 1000000;
 }
-/*
-.filemanager-uploader ul.filemanager-uploader-list {
-	padding: 2px 5px;
-}
 
-.filemanager-uploader li.file img.icon, .filemanager-uploader li.file img.file-cancel {
-	position: relative;
-	top: 3px;
-}
-.filemanager-uploader li.file img.icon {
-	padding-right: 4px;
-}
-*/
 /* Overlay */
 div.filemanager-overlay {
 	position: absolute;
@@ -1247,23 +1214,30 @@ div.filemanager-dialog button {
 	bottom: 15px;
 	right: 15px;
 	width: auto;
-	background: none repeat scroll 0 0 #FFFFFF;
-	border: 1px solid #BBBBBB;
-	border-radius: 2px 2px 2px 2px;
 	clear: none;
-	color: #098ED1;
 	cursor: pointer;
-	height: 22px;
 	padding: 2px 6px;
-	margin: 0;
 }
 div.filemanager-dialog button.filemanager-dialog-confirm {
-	background: url(../../../../images/submit-bg.jpg) no-repeat scroll 0 50% transparent;
 	color:#fff;
-	border-color: #fff;
+	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -ms-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
 }
 div.filemanager-dialog button.filemanager-dialog-confirm:hover {
-	background: url(../../../../images/submit-bg.jpg) no-repeat scroll -200px 50% transparent;
+	color:#fff;
+	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -ms-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
+}
 }
 
 
@@ -1273,13 +1247,27 @@ div.filemanager-dialog-engine-trident4 button, div.filemanager-dialog-engine-tri
 }
 
 div.filemanager-dialog button.filemanager-dialog-decline {
-	color:#fff;
 	right: auto;
 	left: 15px;
-	background: url(../../../../images/button-no-bg.jpg) no-repeat scroll 0 50% transparent;
+	color:#fff;
+	background-image: linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
+	background-image: -o-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
+	background-image: -moz-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
+	background-image: -webkit-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
+	background-image: -ms-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(182,60,26)),color-stop(0.61, rgb(216,86,72)));
+	/* ie8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d85648, endColorstr=#b63b1a)";
 }
 div.filemanager-dialog button.filemanager-dialog-decline:hover {
-	background: url(../../../../images/button-no-bg.jpg) no-repeat scroll -200px 50% transparent;
+	background-image: linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
+	background-image: -o-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
+	background-image: -moz-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
+	background-image: -webkit-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
+	background-image: -ms-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(144,26,0)),color-stop(0.61, rgb(208,43,28)));
+	/* ie8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d02a1c, endColorstr=#901a00)";
 }
 
 div.filemanager-dialog-content h2{
