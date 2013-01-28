@@ -79,9 +79,11 @@ MUI.Persist = Object.append((MUI.Persist || {}), {
 	Providers: {},						// hash used to store the providers initialized below.
 
 	ProviderTests: {					// hash of test functions used to test for the different providers
+		/*
 		'Gears': function(){
 			return (window.google && window.google.gears) ? true : false;
 		},
+		*/
 
 		'WhatWG': function(){
 			if (!window.openDatabase) return false;
@@ -208,7 +210,7 @@ MUI.Persist = Object.append((MUI.Persist || {}), {
 		}
 	}
 });
-
+/*
 MUI.Persist.Providers.Gears = new Class({
 
 	Implements: [Events,Options],
@@ -283,7 +285,7 @@ MUI.Persist.Providers.Gears = new Class({
 	}
 
 });
-
+*/
 MUI.Persist.Providers.WhatWG = new Class({
 
 	Implements: [Events,Options],
@@ -645,7 +647,7 @@ MUI.Persist.Providers.Flash = new Class({
  * The contents of gears_init.js; we need this because Chrome supports
  * Gears out of the box, but still requires this constructor.  Note that
  * if you include gears_init.js then this function does nothing.
- */
+ *
 (function(){
 	// We are already defined. Hooray!
 	if (window.google && google.gears) return;
@@ -684,3 +686,4 @@ MUI.Persist.Providers.Flash = new Class({
 	if (!window.google) google = {};
 	if (!google.gears) google.gears = {factory: F};
 })();
+*/

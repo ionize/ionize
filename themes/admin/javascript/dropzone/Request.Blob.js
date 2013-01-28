@@ -34,16 +34,7 @@ Request.Blob = new Class({
 		emulation: false,
 		trackProgress: false // used only for non-blob uploads (in Safari)
 	},
-/*
-	initialize: function(options)
-	{
-		this.xhr = new Browser.Request();
-		this.formData = new FormData();
-		this.setOptions(options);
-		this.headers = this.options.headers;
-	},
 
-*/
 	send: function (blob, options) {
 	
 		if (!this.check(options)) return this;

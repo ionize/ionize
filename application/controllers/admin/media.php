@@ -66,35 +66,7 @@ class Media extends MY_admin
 	 */
 	public function get_media_manager($mode = NULL)
 	{
-		// Open the file manager regarding to settings
-		switch(Settings::get('filemanager'))
-		{
-			// TinyMCE FileManager
-			case 'filemanager' :
-
-				// Filemanager view
-				$this->output('filemanager/filemanager');
-				break;
-
-			case 'tinybrowser' :
-
-				$this->template['mode'] = (is_null($mode)) ? 'file' : 'image';
-
-				$this->output('filemanager/tinybrowser');
-				break;
-
-			case 'kcfinder' :
-
-				$this->output('filemanager/kcfinder');
-				break;
-
-			case 'mootools-filemanager' :
-
-				$this->output('filemanager/mootools_filemanager');
-				break;
-
-
-		}
+		$this->output('filemanager/filemanager');
 	}
 
 
@@ -117,7 +89,7 @@ class Media extends MY_admin
 		$params = array (
 			'filesDir' => '/'.Settings::get('files_path') . '/',
 			'thumbsDir' => '/'.Settings::get('files_path') . '/.thumbs/.backend/',
-			'assetsDir' => '/themes/' . config_item('admin_url') . '/javascript/filemanager/assets/', // theme_url().'javascript/filemanager/assets/',
+			'assetsDir' => '/themes/admin/javascript/filemanager/assets/',
 			'upload' => TRUE,
 			'destroy' => TRUE,
 			'create' => TRUE,

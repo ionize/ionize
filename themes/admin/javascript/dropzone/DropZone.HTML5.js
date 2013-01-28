@@ -30,7 +30,10 @@ DropZone.HTML5 = new Class({
 	},
 	
 	bound: {},
-	
+
+	/**
+	 *
+	 */
 	activate: function ()
 	{
 		this.parent();
@@ -78,7 +81,6 @@ DropZone.HTML5 = new Class({
 				'drop': function (e)
 				{
 					e.stop();
-					
 					if(e.event.dataTransfer)
 						this.addFiles(e.event.dataTransfer.files);
 
@@ -104,12 +106,16 @@ DropZone.HTML5 = new Class({
 		this._activateHTMLButton();
 		
 	},
-	
-	upload: function ()
+
+
+	/**
+	 *
+	 */
+	upload: function()
 	{
 		this.fileList.each(function(file, i)
 		{
-			if (file.checked && !file.uploading && this.nCurrentUploads < this.options.max_queue)
+			if (file.checked && ! file.uploading && this.nCurrentUploads < this.options.max_queue)
 			{
 				// Upload only checked and new files
 				file.uploading = true;
@@ -122,6 +128,14 @@ DropZone.HTML5 = new Class({
 		this.parent();
 	},
 
+
+	/**
+	 *
+	 * @param file
+	 * @param start
+	 * @param resume
+	 * @private
+	 */
 	_html5Send: function (file, start, resume)
 	{
 		var item;
@@ -171,22 +185,11 @@ DropZone.HTML5 = new Class({
 			'X-File-Resume': resume
 		};
 
-		// Add post data to the headers ( -> avoid using query string)
-		Object.each(file.postData, function(value, index)
+		// Add file additional vars to the headers ( -> avoid using query string)
+		Object.each(file.vars, function(value, index)
 		{
 			headers['X-' + String.capitalize(index)] = value;
 		});
-
-		// Add call-specific vars
-		/*
-		var url = this.url + '&' + Object.toQueryString(
-		{
-			'X-Requested-With': 'XMLHttpRequest',
-			'X-File-Name': file.name,
-			'X-File-Size': file.size,
-			'X-File-Id': file.id,
-			'X-File-Resume': resume
-		});*/
 
 		// Send request
 		var xhr = new Request.Blob({
@@ -212,7 +215,7 @@ DropZone.HTML5 = new Class({
 				
 				if(typeof this.fileList[file.id] != 'undefined' && !this.fileList[file.id].cancelled)
 				{
-					if (this._checkResponse(response))
+					if (this._noResponseError(response))
 					{
 						// || total >= file.size // sometimes the size is measured wrong and fires too early?
 						if (response.finish == true)
@@ -259,11 +262,21 @@ DropZone.HTML5 = new Class({
 		xhr.send(chunk);
 	},
 
-	cancel: function (id, item)
+
+	/**
+	 *
+	 * @param id
+	 * @param item
+	 */
+	cancel: function(id, item)
 	{
 		this.parent(id, item);
 	},
-	
+
+
+	/**
+	 *
+	 */
 	kill: function()
 	{
 		this.parent();
@@ -277,10 +290,21 @@ DropZone.HTML5 = new Class({
 			'drop': this.bound.stopEvent
 		});
 	},
-	
-	
+
+	reset: function()
+	{
+		this.parent();
+
+		if(this.hiddenContainer) this.hiddenContainer.empty();
+	},
+
 	/* Private methods */
-	_newInput: function (){
+
+	/**
+	 *
+	 * @private
+	 */
+	_newInput: function(){
 		
 		this.parent();
 		
@@ -293,7 +317,15 @@ DropZone.HTML5 = new Class({
 
 		}.bind(this));
 	},
-	
+
+
+	/**
+	 *
+	 * @param item
+	 * @param file
+	 * @param response
+	 * @private
+	 */
 	_itemError: function(item, file, response)
 	{
 		this.parent(item, file, response);
@@ -302,11 +334,6 @@ DropZone.HTML5 = new Class({
 			this._queueComplete();
 		else if (this.nCurrentUploads != 0 && this.nCurrentUploads < this.options.max_queue)
 			this.upload();
-	},
-	
-	_stopEvent: function(e)
-	{
-		e.stop();
 	}
-
+	
 });

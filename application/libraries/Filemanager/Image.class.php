@@ -51,21 +51,15 @@ class Image {
 	 */
 	public function __construct($file)
 	{
-log_message('error', '----- Image() ------ ');
 		$this->dirty = false;
 
 		$this->meta = self::checkFileForProcessing($file);
-
-log_message('error', 'meta[fileinfo][memory_limit] : ' . $this->meta['fileinfo']['memory_limit']);
 
 		// only set the new memory limit of IMAGE_PROCESSING_MEMORY_MAX_USAGE MB when the configured one is smaller:
 		if ($this->meta['fileinfo']['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
 		{
 			ini_set('memory_limit', IMAGE_PROCESSING_MEMORY_MAX_USAGE . 'M'); //  handle large images
-log_message('error', 'SET NEW memory limit INI : ' . trim(ini_get('memory_limit')));
 		}
-
-// log_message('error', 'IMAGE_PROCESSING_MEMORY_MAX_USAGE : ' . IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024);
 
 		$this->file = $file;
 
@@ -227,7 +221,7 @@ log_message('error', 'SET NEW memory limit INI : ' . trim(ini_get('memory_limit'
 			// else: this file does not exist!
 			$rv['not_an_image_file'] = true;
 		}
-// log_message('error', print_r($rv, true));
+
 		return $rv;
 	}
 

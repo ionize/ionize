@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title><?php echo lang('ionize_administration') . ' | ' . (Settings::get('site_title') ? Settings::get('site_title') : ''); ?></title>
@@ -139,38 +139,6 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_user.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js"></script>
 
-<?php
-/*
-<!-- Mootools Filemanager -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/FileManager.js"></script>
-<?php if (is_file(BASEPATH.'../'.Theme::get_theme_path().'javascript/mootools-filemanager/Language/Language.'.Settings::get_lang().'.js')) :?>
-	<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Language/Language.<?php echo Settings::get_lang(); ?>.js"></script>
-<?php else :?>
-	<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Language/Language.en.js"></script>
-<?php endif ;?>	
-
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Uploader/Fx.ProgressBar.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Uploader/Swiff.Uploader.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Uploader.js"></script>
-
-<!-- Flash test. No Flash means the NoFlash MTFM Uploader needs to be loaded -->
-<!-- If the player < 9, no Flash upload -->
-<script type="text/javascript">
-
-	var upload_mode = '<?php echo Settings::get('media_upload_mode'); ?>';
-	
-	if(swfobject.ua.pv[0] < 9 || upload_mode=='single')
-	{
-		Asset.javascript('<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/NoFlash.Uploader.js');
-	}
-
-</script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-filemanager/Source/Gallery.js"></script>
-<link rel="stylesheet" media="all" type="text/css" href="<?php echo theme_url(); ?>javascript/mootools-filemanager/Assets/Css/FileManager_ionize.css" />
-<!--[if IE 7]><link rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mootools-filemanager/Assets/Css/FileManager_ie7.css" /><![endif]-->
-*/
-?>
-
 <!-- DropZone -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/Request.Blob.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.js"></script>
@@ -231,7 +199,8 @@
 		wait:'waitPicture',
 		mode:'<?php echo Settings::get('filemanager'); ?>',
         resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
-		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,		
+        uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
+		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,
 		pictureArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('picture')); ?>'),
 		musicArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('music')); ?>'),
 		videoArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('video')); ?>'),

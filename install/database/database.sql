@@ -535,8 +535,6 @@ INSERT IGNORE INTO setting VALUES ('', 'displayed_admin_languages', 'en', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'date_format', '%Y.%m.%d', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'force_lang_urls', '0', NULL);
 INSERT IGNORE INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'picture_max_width','',NULL);
-INSERT IGNORE INTO setting VALUES ('', 'picture_max_height','',NULL);
 INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf',NULL);
 INSERT IGNORE INTO setting VALUES ('', 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong',NULL);
 INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);
@@ -551,7 +549,11 @@ DELETE FROM setting WHERE name='ionize_version';
 INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9', NULL);
 
 DELETE FROM setting WHERE name='media_upload_mode';
-INSERT INTO setting VALUES ('', 'media_upload_mode', 'multiple', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '0', '');
+INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');
+INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');
+
 
 
 INSERT IGNORE INTO menu (id_menu, name, title) VALUES

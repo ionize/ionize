@@ -12,8 +12,10 @@ license: MIT-style license
 authors:
   - Mateusz Cyrankiewicz
   - Juan Lago
+  - Michel-Ange Kuntz
 
-requires: [Core/Class, Core/Object, Core/Element.Event, Core/Fx.Elements, Core/Fx.Tween]
+
+ requires: [Core/Class, Core/Object, Core/Element.Event, Core/Fx.Elements, Core/Fx.Tween]
 
 provides: [DropZone]
 
@@ -24,8 +26,8 @@ var DropZone = new Class({
 
 	Implements: [Options, Events],
 
-	options: {
-		
+	options:
+	{
 		// UI Elements
 		/*
 		The class accomodates to use what's available:
@@ -35,11 +37,20 @@ var DropZone = new Class({
 		- drop area and ui_list can be the same element
 		- drop area and ui_button can be the same element
 		*/
-		
 		ui_button: null,
 		ui_list: null,
 		ui_drop_area: null,
-		
+
+		// Translated terms
+		lang:{
+			'start_upload': 'Start Upload',
+			'select_files': 'Select files to Upload'
+		},
+
+		// Form & File input prefix
+		ui_form_prefix: 'dropzone_form_',
+		ui_file_input_prefix: 'file_',
+
 		// Settings
 		url: null,
 		accept: '*/*',
@@ -50,28 +61,25 @@ var DropZone = new Class({
 		min_file_size: 1,
 		max_file_size: 0,
 		block_size: 502000, // Juan doesn't recommend less than 101400 and more than 502000
-		vars: { // additional to be sent to backend
-			'is_drop_zone': true // example..
-		},
-		gravity_center: null, // an element after which hidden DropZone elements are output
 
-		postData: {}    // Optional POST data. Can be send through header (HTML5) or added to FormData (HTML4)
+		// additional to be sent to backend
+		vars: {},
+		gravity_center: null // an element after which hidden DropZone elements are output
 
 		// Events
 		/*
-		onReset: function (method) {},
-		onSelectError: function (error, filename, filesize) {},
-		onAddFiles: function () {},
-		onUploadStart: function (){}, // start of queue
-		onUploadComplete: function (num_uploaded){}, // end of queue
-		onUploadProgress: function (perc) {}, // on progress of queue
-		onItemAdded: function (element, file, imageData) {}, // listener should add HTML for the item (get params like file.name, file.size), imageData is sent only for images
-		onItemCancel: function (element, file) {},
-		onItemComplete: function (item, file, response) {},
-		onItemError: function (item, file, response) {},
-		onItemProgress: function (item, perc) {}
+			onReset: function (method) {},
+			onSelectError: function (error, filename, filesize) {},
+			onAddFiles: function () {},
+			onUploadStart: function (){}, // start of queue
+			onUploadComplete: function (num_uploaded){}, // end of queue
+			onUploadProgress: function (perc) {}, // on progress of queue
+			onItemAdded: function (element, file, imageData) {}, // listener should add HTML for the item (get params like file.name, file.size), imageData is sent only for images
+			onItemCancel: function (element, file) {},
+			onItemComplete: function (item, file, response) {},
+			onItemError: function (item, file, response) {},
+			onItemProgress: function (item, perc) {}
 		*/
-	
 	},
 	
 	// Vars
@@ -135,18 +143,30 @@ var DropZone = new Class({
 	},
 
 
-	setPostData:function(key, value)
+	/**
+	 * Sets one optional var
+	 * This var will be sent by POST (HTML4 mode)
+	 * and through HTTP headers (HTML5 mode)
+	 * @param key
+	 * @param value
+	 */
+	setVar:function(key, value)
 	{
-		this.options.postData[key] = value;
+		this.options.vars[key] = value;
 	},
 
 
-	// adds files before upload
+	/**
+	 * Adds files before upload
+	 * @param files
+	 * @return {Boolean}
+	 */
 	addFiles: function(files)
 	{
-		// Clone the object, to avoid chnage of
-		var postData = Object.clone(this.options.postData);
+		// Clone the vars options object, to avoid byref value
+		var vars = Object.clone(this.options.vars);
 
+		// Add Files to fileList, Call _addNewItem()
 		for (var i = 0, f; f = files[i]; i++)
 		{
 			var fname = f.name || f.fileName;
@@ -173,13 +193,14 @@ var DropZone = new Class({
 				uniqueid: String.uniqueID(),
 				checked: true,
 				name: fname,
-				type: f.type || f.extension || this._getFileExtension(fname),
+				path: f.path || fname,
+				type: (f.type || f.extension || this._getFileExtension(fname)).toLowerCase(),
 				size: fsize,
 				uploaded: false,
 				uploading: false,
 				progress: 0,
 				error: false,
-				postData: postData
+				vars: vars
 			};
 			
 			if (this.uiList) this._addNewItem(this.fileList[this.fileList.length - 1]);
@@ -190,9 +211,12 @@ var DropZone = new Class({
 
 		if (this.options.autostart) this.upload();
 	},
-	
-	// starts upload
-	upload: function ()
+
+
+	/**
+	 * Starts Upload
+	 */
+	upload: function()
 	{
 		if( ! this.isUploading)
 		{
@@ -203,8 +227,12 @@ var DropZone = new Class({
 		}
 	},
 	
-	// cancels a specified item
-	
+
+	/**
+	 * Cancels a specified item
+	 * @param id
+	 * @param item
+	 */
 	cancel: function(id, item)
 	{
 		if(this.fileList[id]){
@@ -226,7 +254,10 @@ var DropZone = new Class({
 		this.fireEvent('onItemCancel', [item]);
 	},
 	
-	// kill at will
+
+	/**
+	 * kill at will
+	 */
 	kill: function()
 	{
 		// cancel all
@@ -235,50 +266,73 @@ var DropZone = new Class({
 			this.cancel(f.id);
 		}, this);
 	},
-	
-	
-	
-	
-	
-	
-	
+
+
+	/**
+	 *
+	 */
+	reset: function()
+	{
+		// Add vars to URL (query string)
+		// this.url = this.options.url + ((!this.options.url.match('\\?')) ? '?' : '&') + Object.toQueryString(this.options.vars);
+
+		// Nop, var must be added to POST data to allow controllers which does not permit query string data
+		// to process upload
+		this.url = this.options.url;
+		this.fileList = new Array();
+		this.lastInput = undefined; // stores new, currently unused hidden input field
+		this.nCurrentUploads = 0;
+		this.nUploaded = 0;
+		this.nErrors = 0;
+		this.nCancelled = 0;
+		this.queuePercent = 0;
+		this.isUploading = false;
+		this.setVar('file_input_prefix', this.options.ui_file_input_prefix);
+
+		// Not done here : HTML4 mode adds one input after each file select
+		this._newInput();
+
+		this.fireEvent('reset', [this.method]);
+	},
+
+
 	/* Private methods */
 		
-	// Activate button used by HTML4 & HTML5 uploads
-	
-	_activateHTMLButton: function (){
-	
+	/**
+	 * Activate button used by HTML4 & HTML5 uploads
+	 *
+	 */
+	_activateHTMLButton: function()
+	{
 		if(!this.uiButton) return;
 
 		this.uiButton.removeClass('disabled');
-		this.uiButton.addEvent('click', function (e) {
+
+		this.uiButton.addEvent('click', function (e)
+		{
 			e.stop();
-			
+
 			// Click trigger for input[type=file] only works in FF 4.x, IE and Chrome
-			if(this.options.multiple || (!this.options.multiple && !this.isUploading)) this.lastInput.click();
+			if( this.options.multiple || ( ! this.options.multiple && ! this.isUploading)) this.lastInput.click();
 
 		}.bind(this));
-		
 	},
 
-	_unactivateHTMLButton: function ()
+
+	/**
+	 * Creates hidden input elements to handle file uploads nicely
+	 * @param formcontainer
+	 * @private
+	 */
+	_newInput: function(formcontainer)
 	{
-		if(!this.uiButton) return;
-		this.uiButton.removeEvents();
-		this.uiButton.addClass('disabled');
-	},
-
-
-	// creates hidden input elements to handle file uploads nicely
-	_newInput: function (formcontainer) {
-				
 		if(!formcontainer) formcontainer = this.hiddenContainer;
 		
 		// Input File
 		this.lastInput = new Element('input',
 		{
-			id: 'tbxFile_' + this._countInputs(),
-			name: 'tbxFile_' + this._countInputs(),
+			id: this.options.ui_file_input_prefix + this._countInputs(),
+			name: this.options.ui_file_input_prefix + this._countInputs(),
 			type: 'file',
 			size: 1,
 			styles: {
@@ -298,30 +352,60 @@ var DropZone = new Class({
 		} else {
 			this.lastInput.setStyle('visibility', 'hidden');
 		}
+
+		return this.lastInput;
 	},
 
-	_positionInput: function () {
-		
-		if(!this.uiButton && true) return;
+	/**
+	 *
+	 * @private
+	 */
+	_positionInput: function()
+	{
+		// if(!this.uiButton && true) return;
 		
 		// Get addFile attributes
-		var btn = this.uiButton,
-			btncoords = btn.getCoordinates(btn.getOffsetParent());
+		// var btn = this.uiButton,
+		//	btncoords = btn.getCoordinates(btn.getOffsetParent());
+
+		// Only solution for IE9, so it trigger correctly the file input click
+		// Tried :
+		// - Inject of the existing label before the file input : failed :
+		//      this.uiButton.setProperty('for', this.lastInput.id);
+		//      this.uiButton.inject(this.lastInput, 'after');
+
+		if (this.uiButton)
+		{
+			this.uiButton.dispose();
+			this.uiButton = null;
+		}
+
+		// Must be a label
+		// See : http://jsfiddle.net/djibouti33/uP7A9/
+		// http://stackoverflow.com/questions/10667856/form-submit-ie-access-denied-same-domain
+		var label = new Element('label',
+		{
+			'text': this.options.lang.select_files,
+			'for': this.lastInput.id,
+			'class':'left button'
+		}).inject(this.lastInput, 'before');
+
+		new Element('i', {'class':'icon-upload'}).inject(label, 'top');
 
 		this.lastInput.setStyles({
-			top: btncoords.top,
-			left: btncoords.left - 1,
-			width: btncoords.width + 2,
-			// Extra space for cover button border
-			height: btncoords.height,
+			position: 'absolute',
+			left: '-9999em',
 			opacity: 0.0001,
-			// Opera opacity ninja trick
 			'-moz-opacity': 0
 		});
-
 	},
 
-	_updateQueueProgress: function ()
+
+	/**
+	 *
+	 * @private
+	 */
+	_updateQueueProgress: function()
 	{
 		var perc = 0,
 			n_checked = 0;
@@ -340,17 +424,28 @@ var DropZone = new Class({
 		
 		this.fireEvent('onUploadProgress', [this.queuePercent, this.nUploaded + this.nCurrentUploads, this.fileList.length-this.nCancelled]);
 	},
-	
+
+
+	/**
+	 *
+	 * @private
+	 */
 	_queueComplete: function()
 	{
 		this.isUploading = false;
-		
+
 		this.fireEvent('uploadComplete', [this.nUploaded, this.nErrors]);
 		
 		if(this.nErrors==0) this.reset();
 	},
-	
-	
+
+
+	/**
+	 *
+	 * @param item
+	 * @param perc
+	 * @private
+	 */
 	_itemProgress: function(item, perc)
 	{
 		this.fireEvent('itemProgress', [item, perc]);
@@ -358,6 +453,14 @@ var DropZone = new Class({
 		this._updateQueueProgress();
 	},
 
+
+	/**
+	 *
+	 * @param item
+	 * @param file
+	 * @param response
+	 * @private
+	 */
 	_itemComplete: function(item, file, response)
 	{
 		if(file.cancelled) return;
@@ -376,11 +479,18 @@ var DropZone = new Class({
 		this.fireEvent('onItemComplete', [item, file, response]);
 		
 		if(this.nCurrentUploads <= 0 && this.nUploaded + this.nErrors + this.nCancelled == this.fileList.length) this._queueComplete();
-		
 	},
 
-	_itemError: function(item, file, response){
-		
+
+	/**
+	 *
+	 * @param item
+	 * @param file
+	 * @param response
+	 * @private
+	 */
+	_itemError: function(item, file, response)
+	{
 		this.nCurrentUploads--;
 		this.nErrors++;
 		
@@ -392,10 +502,15 @@ var DropZone = new Class({
 		this.fireEvent('onItemError', [item, file, response]);
 		
 		if(this.nCurrentUploads <= 0) this._queueComplete();
-		
-	},	
-	
-	_addNewItem: function (file)
+	},
+
+
+	/**
+	 *
+	 * @param file
+	 * @private
+	 */
+	_addNewItem: function(file)
 	{
 		// create a basic wrapper for the thumb
 		var item = new Element('div', {
@@ -430,67 +545,104 @@ var DropZone = new Class({
 				window.URL.revokeObjectURL(img.src);
 				img.destroy();
 			}.bind(this));
-			
+
 			img.src = window.URL.createObjectURL(file.file);
 			this.gravityCenter.adopt(img);
-			
 		}
 		else
 		{
 			this.fireEvent('itemAdded', [item, file]);
 		}
-		
+
+		// Adds a button to start the upload
+		if (this.options.autostart == false && ! this.uiListUploadButton )
+		{
+			this.uiListUploadButton = new Element('a',{
+					'class':'button filemanager-start-upload',
+					'text': this.options.lang.start_upload}
+			).addEvent('click', function(){
+				this.upload();
+			}.bind(this)).inject(this.uiList);
+		}
+
+		return item;
 	},
 
-	_getInputs: function ()
+
+	/**
+	 *
+	 * @return {*}
+	 * @private
+	 */
+	_getInputs: function()
 	{
 		return this.hiddenContainer.getElements('input[type=file]');
 	},
 
-	_getForms: function ()
+
+	/**
+	 *
+	 * @return {*}
+	 * @private
+	 */
+	_getForms: function()
 	{
 		return this.hiddenContainer.getElements('form');
 	},
 
-	_countInputs: function ()
+
+	/**
+	 *
+	 * @return {*}
+	 * @private
+	 */
+	_countInputs: function()
 	{
 		var containers = this._getInputs();
 		return containers.length;
 	},
-	
+
+	_countItems:function()
+	{
+		var items = this.uiList.getElements('.item');
+		return items.length;
+	},
+
+
+	/**
+	 *
+	 * @param filename
+	 * @return {*}
+	 * @private
+	 */
 	_getFileExtension: function(filename)
 	{
 		return filename.split('.').pop();
 	},
-	
-	reset: function()
-	{
-		// Add vars to URL (query string)
-		// this.url = this.options.url + ((!this.options.url.match('\\?')) ? '?' : '&') + Object.toQueryString(this.options.vars);
 
-		// Nop, var must be added to POST data to allow controllers which does not permit query string data
-		// to process upload
-		this.url = this.options.url;
-		this.fileList = new Array();
-		this.lastInput = undefined; // stores new, currently unused hidden input field
-		this.nCurrentUploads = 0;
-		this.nUploaded = 0;
-		this.nErrors = 0;
-		this.nCancelled = 0;
-		this.queuePercent = 0;
-		this.isUploading = false;
-		
-		if(this.hiddenContainer) this.hiddenContainer.empty();
-		
-		this._newInput();
-		
-		this.fireEvent('reset', [this.method]);
-	},
-	
-	// Change handling response to what you use in backend here..
-	_checkResponse: function(response)
+
+
+
+	/**
+	 * Change handling response to what you use in backend here..
+	 * @param response
+	 * @return {Boolean}
+	 * @private
+	 */
+	_noResponseError: function(response)
 	{
 		return (response.error == 0);
+	},
+
+
+	/**
+	 *
+	 * @param e
+	 * @private
+	 */
+	_stopEvent: function(e)
+	{
+		e.stop();
 	}
 
 });

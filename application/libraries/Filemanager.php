@@ -509,11 +509,7 @@ class FileManager
 		{
 			$this->options['URIpath4RequestScript'] = $this->getURIpath4RequestScript();
 		}
-// log_message('error', 'URIpath4RequestScript : ' . $this->options['URIpath4RequestScript']);
-
-
-
-
+		// log_message('error', 'URIpath4RequestScript : ' . $this->options['URIpath4RequestScript']);
 
 		$this->managedBaseDir = $this->url_path2file_path($this->options['filesDir']);
 
@@ -1374,16 +1370,29 @@ class FileManager
 	 */
 	protected function onUpload()
 	{
-		if ($this->is_HTML5_upload())
+		try
 		{
-			$response = $this->HTML5_upload();
-		}
-		else
-		{
-			$response = $this->HTML4_upload();
-		}
+			// Upload global authorization ?
+			if ( ! $this->options['upload'])
+				throw new Exception('disabled:upload');
 
-		$this->sendHttpHeaders(array('Content-type: application/json'));
+			if ($this->is_HTML5_upload())
+			{
+				$response = $this->HTML5_upload();
+				$this->sendHttpHeaders(array('Content-type: application/json'));
+			}
+			else
+			{
+				$response = $this->HTML4_upload();
+			}
+		}
+		catch(Exception $e)
+		{
+			$response = array(
+				'error' => $e->getMessage(),
+				'finish' => TRUE
+			);
+		}
 
 		echo json_encode($response);
 	}
@@ -1392,7 +1401,6 @@ class FileManager
 
 	protected function HTML5_upload()
 	{
-
 		$max_upload = self::convert_size(ini_get('upload_max_filesize'));
 		$max_post = self::convert_size(ini_get('post_max_size'));
 		$memory_limit = self::convert_size(ini_get('memory_limit'));
@@ -1415,29 +1423,30 @@ class FileManager
 			'error' 	=> UPLOAD_ERR_OK,
 			'finish' 	=> FALSE,
 		);
-log_message('error', 'HTML 5 UPLOAD : ' . $directory);
 
 		try
 		{
-			// Upload global authorization ?
-			if (!$this->options['upload'])
-				throw new Exception('disabled:upload');
+			$filename = $response['name'];
 
-			// Size
+			// Size OK ?
 			if ($response['size'] > $limit)
 				throw new Exception('${backend.size}');
-
-			$legal_dir_url = $this->get_legal_url($directory . '/');
-			$dir = $this->get_full_path($legal_dir_url);
-
-			// No resume : Get one unique filename
-			$filename = $response['name'];
-			if ( ! $resume_flag)
-				$filename = $this->getUniqueName($response['name'], $dir);
 
 			// Allowed extension ?
 			if ( ! $this->isAllowedExtension($filename))
 				throw new Exception('${backend.extension}');
+
+			// Full dir path
+			$legal_dir_url = $this->get_legal_url($directory . '/');
+			$dir = $this->get_full_path($legal_dir_url);
+
+			// No resume : Get one unique filename
+			if ( ! $resume_flag)
+			{
+				$filename = $this->getUniqueName($response['name'], $dir);
+				// TODO : Check, test
+				// $response['name'] = $filename;
+			}
 
 			// Authorization callback
 			$fileinfo = array(
@@ -1465,8 +1474,9 @@ log_message('error', 'HTML 5 UPLOAD : ' . $directory);
 				$filename = $this->cleanFilename($filename, array(), '_');
 
 			// full file path
-			$legal_url = $legal_dir_url . $filename;
-			$file_path = $this->get_full_path($legal_url);
+			// $legal_url = $legal_dir_url . $filename;
+			// $file_path = $this->get_full_path($legal_url);
+			$file_path = $dir . $filename;
 
 			if (file_put_contents($file_path, file_get_contents('php://input'), $resume_flag) === FALSE)
 			{
@@ -1503,18 +1513,70 @@ log_message('error', 'HTML 5 UPLOAD : ' . $directory);
 
 	protected function HTML4_upload()
 	{
-		log_message('error', '--- HTML 4 UPLOAD !!! ---');
-		log_message('error', print_r($_POST, TRUE));
-		log_message('error', print_r($_FILES, TRUE));
+		$file_input_prefix = $_POST['file_input_prefix'];
+		$directory = ! empty($_POST['directory']) ? $_POST['directory'] : '';
+		$filter = ! empty($_POST['filter']) ? $_POST['filter'] : NULL;
+		$resize = (bool) ! empty($_POST['resize']) ? $_POST['resize'] : FALSE;
 
-		$response = array(
-			'id'    	=> '',
-			'name'  	=> '',
-			'size'  	=> '',
-			'error' 	=> UPLOAD_ERR_OK,
-			'finish' => TRUE,
-		);
+		// Upload file using traditional method
+		$response = array();
 
+		try
+		{
+			foreach ($_FILES as $k => $file)
+			{
+				$response = array(
+					'key' => 			(int)substr($k, strpos($k, $file_input_prefix) + strlen($file_input_prefix)),
+					'name' => 			basename($file['name']),
+					'upload_name' => 	$file['name'],
+					'size' => 			$file['size'],
+					'error' => 			$file['error'],
+					'finish' => 		FALSE,
+				);
+
+				if ($response['error'] == 0)
+				{
+					// Full dir path
+					$legal_dir_url = $this->get_legal_url($directory . '/');
+					$dir = $this->get_full_path($legal_dir_url);
+
+					$filename = $this->getUniqueName($response['name'], $dir);
+					$file_path = $dir . $filename;
+
+					// Allowed extension ?
+					if ( ! $this->isAllowedExtension($filename))
+						throw new Exception('${backend.extension}');
+
+					if (move_uploaded_file($file['tmp_name'], $file_path) === FALSE)
+					{
+						throw new Exception('${backend.path_not_writable}');
+					}
+					else
+					{
+						$response['finish'] = TRUE;
+
+						// Prevent execution
+						@chmod($file_path, $this->options['chmod'] & 0666);
+
+						// Resize after upload if asked
+						$mime = $this->getMimeFromExtension($filename);
+						if ($this->startsWith($mime, 'image/') && $resize == TRUE)
+						{
+							$this->resizePicture($file_path);
+						}
+					}
+				}
+				else
+				{
+					// log_message('error', '.... File ERROR ....');
+				}
+			}
+		}
+		catch(Exception $e)
+		{
+			$response['error'] = $e->getMessage();
+			$response['finish'] = TRUE;
+		}
 
 		return $response;
 	}
@@ -1542,7 +1604,7 @@ log_message('error', 'HTML 5 UPLOAD : ' . $directory);
 	 */
 	public function is_HTML5_upload()
 	{
-		return empty($_FILES);
+		return (empty($_FILES) && empty($_POST));
 	}
 
 	public function getHttpHeaders()
@@ -4005,7 +4067,7 @@ log_message('error', 'HTML 5 UPLOAD : ' . $directory);
 
 		$fi = pathinfo($str);
 		$filename = $fi['filename'];
-		$ext = strtolower($fi['extension']);
+		$ext = (! empty($fi['extension'])) ? strtolower($fi['extension']) : '';
 
 		$clean = @iconv('UTF-8', 'ASCII//IGNORE', $filename);
 		$clean = preg_replace("/[^a-zA-Z0-9\/_.|+ -]/", '_', $clean);

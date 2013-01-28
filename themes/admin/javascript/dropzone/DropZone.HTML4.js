@@ -10,6 +10,7 @@ license: MIT-style license
 authors:
   - Mateusz Cyrankiewicz
   - Juan Lago
+  - Michel-Ange Kuntz
 
 requires: [DropZone]
 
@@ -22,20 +23,21 @@ DropZone.HTML4 = new Class({
 
 	Extends: DropZone,
 
-	initialize: function (options)
+	initialize: function(options)
 	{
 		this.setOptions(options);
-		
 		this.method = 'HTML4';
-		
 		this.activate();
 	},
-	
-	activate: function ()
+
+	bound: {},
+
+	activate: function()
 	{
 		// Setup some options
 		this.options.multiple = false;
-		
+
+		// Upload iFrame
 		this.iframe = new IFrame({
 			id: 'dropZoneUploadIframe',
 			name: 'dropZoneUploadIframe',
@@ -43,115 +45,205 @@ DropZone.HTML4 = new Class({
 				display: 'none'
 			}
 		});
-		
+
+		// Init the fileList (never reset by reset() )
+		this.fileList = new Array();
+		this.lastInput = undefined;
+		this.nCurrentUploads = 0;
+		this.nUploaded = 0;
+		this.setVar('file_input_prefix', this.options.ui_file_input_prefix);
+
+		// Creates uiButton, uiList, hiddenContainer
 		this.parent();
-		
-		this.iframe.addEvent('load', function ()
+
+		// Load Event on iFrame
+		this.iframe.addEvent('load', function()
 		{
-			//var icdb = this.iframe.contentWindow.document.body;
 			var response = this.iframe.contentWindow.document.body.innerHTML;
-			
-			if (response != '') {
-								
+
+			if (response != '')
+			{
 				this.isUploading = false;
 
+				// Will process the next form
 				this.upload();
-				
-				try
-				{
-					// substring to avoid problems in Chrome, which adds a <pre> object to text
-					response = JSON.decode(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1), true);
-					
-				} catch(e){
-					//
-				}
-				
-				var file = this.fileList[response.key];
-				
-				var item;
-				if (this.uiList && response)
-				{
-// HERE !!!
-console.log('#dropzone_item_' + file.uniqueid + '_' + file.id);
-					var item = this.uiList.getElement('#dropzone_item_' + file.uniqueid + '_' + file.id);
-				}
-				
-				if (this._checkResponse(response))
-				{
-					file.uploaded = true;
 
-					// Complete file information from server side
-					file.size = response.size;
-					
-					this._itemComplete(item, file, response);
-										
-				} else {
-					
-					this._itemError(item, file, response);
+				// substring to avoid problems in Chrome, which adds a <pre> object to text
+				try	{
+					response = JSON.decode(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1), true);
+				}
+				catch(e){}
+
+				var file = this.fileList[response.key];
+
+				if (file)
+				{
+					var item = null;
+
+					if (this.uiList && response)
+						item = this.uiList.getElement('#dropzone_item_' + file.uniqueid + '_' + file.id);
+
+					if (file && item)
+					{
+						if (this._noResponseError(response))
+						{
+							file.uploaded = true;
+
+							// Complete file information from server side
+							file.size = response.size;
+
+							this._itemComplete(item, file, response);
+						}
+						else
+						{
+							this._itemError(item, file, response);
+						}
+					}
 				}
 			}
 		}.bind(this)).inject(this.hiddenContainer);
 
-		// this._buildBase();
-
 		// Trigger for html file input
 		this._activateHTMLButton();
+
+		// First Form Input
+		this._newInput();
 	},
-	
-	upload: function ()
+
+	addFiles: function(files)
+	{
+		this.parent(files);
+
+
+		this._newInput();
+	},
+
+	/**
+	 * Starts the upload
+	 *
+	 */
+	upload: function()
 	{
 		if (!this.isUploading)
 		{
-			this._getForms().each(function (el, id)
+			// Each form = one file to upload
+			forms = this._getForms();
+			// the last form (no selected file) must not be uploaded
+			forms.pop();
+			var delay_value = 0;
+			forms.each(function(formElement, id)
 			{
 				var file = this.fileList[id];
-				
+
+				// if (file != undefined && ! this.isUploading)
 				if (file != undefined && !this.isUploading)
 				{
-					if (file.checked && !file.uploading)
+					if (file.checked && ! file.uploading)
 					{
-						file.uploading = true;
+						this.fileList[id].uploading = true;
+
+						// Fake progression...
 						var perc = file.progress = 50;
-						
+
 						if (this.uiList)
 						{
 							var item = this.uiList.getElement('#dropzone_item_' + this.fileList[id].uniqueid + '_' + file.id);
+							this._itemProgress(item, perc);
 						}
-						this._itemProgress(item, perc);
-						
+
 						this.isUploading = true;
 						this.nCurrentUploads++;
-						var submit = el.submit();
+
+						// Add file additional vars to form as inputs before submit
+						Object.each(file.vars, function(value, index) {
+							formElement.adopt(new Element('input', {'type': 'hidden', 'name':index, 'value':value}));
+						});
+
+						formElement.submit();
 					}
 				}
 			}.bind(this));
-			
+
 			this.parent();
 		}
 	},
 
-	_getInputFileName: function (el)
+
+	/**
+	 *
+	 * @param id
+	 * @param item
+	 */
+	cancel: function(id, item)
+	{
+		this.parent(id, item);
+	},
+
+
+	/**
+	 *
+	 */
+	kill: function()
+	{
+		this.parent();
+
+		// remove events
+		if(this.uiDropArea) $(document.body).removeEvents(
+			{
+				'dragenter': this.bound.stopEvent,
+				'dragleave': this.bound.stopEvent,
+				'dragover': this.bound.stopEvent,
+				'drop': this.bound.stopEvent
+			});
+	},
+
+	reset: function()
+	{
+		this.url = this.options.url;
+
+		this.nErrors = 0;
+		this.nCancelled = 0;
+		this.queuePercent = 0;
+		this.isUploading = false;
+
+		this.fireEvent('reset', [this.method]);
+	},
+
+
+	/**
+	 *
+	 * @param el
+	 * @return {*}
+	 * @private
+	 */
+	_getInputFileName: function(el)
 	{
 		var pieces = el.get('value').split(/(\\|\/)/g);
 
 		return pieces[pieces.length - 1];
 	},
 
-	cancel: function (id, item)
-	{
-		this.parent(id, item);
-	},
-	
-	
+
 	/* Private methods */
-	
-	_newInput: function ()
+
+	/**
+	 *
+	 * @private
+	 */
+	_newInput: function()
 	{
+		// Remove all existing forms labels
+		var forms = this._getForms();
+		forms.each(function(form) {
+			var label = form.getElement('label');
+			if (label) label.destroy();
+		});
+
 		// create form
 		var formcontainer = new Element('form',
 		{
-			id: 'tbxFile_' + this._countInputs(),
-			name: 'frmFile_' + this._countInputs(),
+			id: this.options.ui_form_prefix + this._countInputs(),
+			name: this.options.ui_form_prefix + this._countInputs(),
 			enctype: 'multipart/form-data',
 			encoding: 'multipart/form-data',
 			method: 'post',
@@ -170,15 +262,16 @@ console.log('#dropzone_item_' + file.uniqueid + '_' + file.id);
 		}
 		
 		// call parent
-		this.parent(formcontainer);
+		var lastInput = this.parent(formcontainer);
 		
 		// add interaction to input
-		this.lastInput.addEvent('change', function (e)
+		lastInput.addEvent('change', function (e)
 		{
 			e.stop();
-			
+
 			this.addFiles([{
-				name: this._getInputFileName(this.lastInput),
+				name: this._getInputFileName(lastInput),
+				path: lastInput.value,
 				type: null,
 				size: null
 			}]);

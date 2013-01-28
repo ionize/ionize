@@ -41,7 +41,7 @@ Form.Upload = new Class({
 	},
 
 	modernUpload: function(input){
-console.log('modernUpload');
+
 		this.modern = true;
 
 		var form = input.getParent('form');
@@ -111,7 +111,6 @@ console.log('modernUpload');
 	},
 
 	legacyUpload: function(input){
-console.log('legacyUpload');
 
 		var rows = [];
 

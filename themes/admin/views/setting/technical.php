@@ -48,8 +48,17 @@
 							<input name="files_path" id="files_path" class="inputtext" type="text" value="<?php echo Settings::get('files_path'); ?>"/>
 						</dd>
 					</dl>
-			
-					<dl class="small">
+
+                    <dl class="small">
+                        <dt>
+                            <label for="upload_autostart"><?php echo lang('ionize_label_setting_upload_autostart'); ?></label>
+                        </dt>
+                        <dd>
+                            <input <?php if($upload_autostart == 1) :?>checked="checked" <?php endif ;?> name="upload_autostart" id="upload_autostart"  class="inputcheckbox" type="checkbox" value="1" />
+                        </dd>
+                    </dl>
+
+                    <dl class="small">
 						<dt>
 							<label for="resize_on_upload"><?php echo lang('ionize_label_setting_resize_on_upload'); ?></label>
 						</dt>
@@ -85,15 +94,6 @@
 						</dd>
 					</dl>
 					
-					<dl class="small mt20">
-						<dt>
-							<label title="<?php echo lang('ionize_help_media_upload_mode'); ?>"><?php echo lang('ionize_label_media_upload_mode'); ?></label>
-						</dt>
-						<dd>
-							<input type="radio" name="media_upload_mode" id="media_upload_mode1" value="single" <?php if(Settings::get('media_upload_mode') == 'single'):?>checked="checked"<?php endif;?> /><label for="media_upload_mode1"><?php echo lang('ionize_label_media_upload_mode_single'); ?></label><br/>
-							<input type="radio" name="media_upload_mode" id="media_upload_mode2" value="multiple" <?php if(Settings::get('media_upload_mode') == 'multiple'):?>checked="checked"<?php endif;?>/><label for="media_upload_mode2"><?php echo lang('ionize_label_media_upload_mode_multiple'); ?></label>
-						</dd>
-					</dl>
 				</div>
 				
 				<!-- Allowed Mimes -->

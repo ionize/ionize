@@ -9,6 +9,29 @@ License:
 	MIT-style license.
 
 */
+
+/**
+ * Styles for outside Ionize usage
+ * Uncomment to display clean buttons
+ *
+
+.left {float:left;}
+.button, a.button {
+    background: #eee;
+    border: 1px solid #BBBBBB;
+    border-radius: 2px 2px 2px 2px;
+    color: #098ED1;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 11px;
+    height: auto;
+    margin: 0;
+    padding: 2px 6px;
+    vertical-align: middle;
+}
+
+*/
+
 div.filemanager-container {
 	display: none;
 }
@@ -59,6 +82,7 @@ div.filemanager div.filemanager-menu {
 	background: url("../../../../images/bg-gray-medium.png");
 	overflow: hidden;
 	padding:3px 5px;
+	max-height: 260px;
 }
 
 div.filemanager button {
@@ -77,6 +101,7 @@ div.filemanager-engine-trident5 button {
 	overflow: visible;
 }
 
+/* FM button */
 div.filemanager-menu button {
 	float: left;
 }
@@ -652,13 +677,6 @@ div.filemanager-preview img.preview.filemanager-loading {
 }
 
 
-div.filemanager-preview ul li img,
-div.filemanager-uploader ul li img {
-	margin-top: 2px;
-	margin-right: 4px;
-	float: left;
-}
-
 div.filemanager-preview p.tech_info {
 	font-size: 9px;
 	line-height: 1.2em;
@@ -674,7 +692,6 @@ div.filemanager-preview div.preview_err_report {
 }
 
 div.filemanager-preview ul,
-div.filemanager-uploader ul,
 div.filemanager-preview div.textpreview {
 	border: 1px solid #bebebe;
 	background: #fff;
@@ -723,39 +740,30 @@ div.filemanager-container .file .file-progress {
 	background-image: url("../images/progress.gif");
 }
 
-/* FM Resize */
+/* Resize button */
 div.filemanager label.filemanager-resize{
-	width: auto;
 	float: left;
-	margin-left: 5px;
-	line-height: 24px;
-	color: #098ED1;
-	cursor: pointer;
-	padding:0 5px;
+	margin-left:5px;
+	height: 20px;
 }
 div.filemanager label.filemanager-resize input{
-	margin-right:3px;
+	float:left;
+	margin-right:5px;
+	margin-top:4px;
 }
-div.filemanager label.filemanager-resize label{
+/* Start Upload button */
+.button.filemanager-start-upload {
+	height: 100px;
+	line-height: 100px;
+	margin-top: 10px;
+	padding: 0 10px;
+	border-radius: 10px;
+	background: #8ac05e;
+	color: #fff;
 }
-
-
-div.filemanager label.filemanager-resize span {
-	width: 20%;
-	overflow: hidden;
+.button.filemanager-start-upload:hover {
+	background: #70b439;
 }
-
-div.filemanager label.filemanager-resize div.checkbox {
-	float: left;
-	height: 12px;
-	width: 16px;
-	background: url("../images/checkbox.png") no-repeat;
-}
-
-div.filemanager label.filemanager-resize div.checkboxChecked {
-	background-position: 0 -12px;
-}
-
 /* SELECTED FILE */
 div.selected-file img {
 	vertical-align: bottom;
@@ -949,6 +957,7 @@ div.filemanager-filelist .fi .name {
 	overflow: hidden;
 	position: absolute;
 	bottom:0;
+	background: #eee;
 }
 
 
@@ -1050,24 +1059,19 @@ div.filemanager .center {
 	text-align: center;
 }
 
-/* Upload
-div.filemanager .button.upload {
-	background: url("../images/icon_16_upload.png") no-repeat top left;
-	height: 16px;
-	width: 16px;
-	display: inline-block;
-	float: left;
-	margin: 5px;
-}
-*/
 .filemanager-upload {
 	clear: both;
+	max-height: 230px;
+	overflow-y: auto;
+	border-bottom: 1px solid #CCCCCC;
+	padding-bottom: 10px;
 }
 .filemanager-upload .list{
 	position: relative;
 	height: auto;
 	overflow: hidden;
 	width: 100%;
+	padding-bottom: 10px;
 }
 .filemanager-upload .list .item{
 	width: 100px;
@@ -1077,7 +1081,7 @@ div.filemanager .button.upload {
 	overflow: hidden;
 	position: relative;
 	background-color: #fff;
-	background-position: 50% 33%;
+	background-position: 50% 25%;
 	border-radius: 10px;
 	background-repeat: no-repeat;
 	border:solid 1px #BEBEBE;
@@ -1086,7 +1090,28 @@ div.filemanager .button.upload {
 	position: absolute;
 	left: 0;
 	top: 0;
+	/*
 	width: 100px;
+	*/
+}
+.filemanager-upload .list .item p {
+	text-align: center;
+	position: absolute;
+	bottom: 27px;
+	line-height: 10px;
+	height: 10px;
+	white-space: nowrap;
+	padding:0 4%;
+	width: 92%;
+}
+.filemanager-upload .list .item p span {
+	white-space: nowrap;
+	font-size: 9px;
+	text-shadow:1px 1px 1px white;
+	background-color: #fff;
+	padding:1px 3px;
+	border-radius: 10px;
+	opacity: 0.7;
 }
 .filemanager-upload .list .item .text {
 	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
@@ -1134,8 +1159,26 @@ div.filemanager .button.upload {
 
 
 /* Addition */
-/* upload */
-
+/* Upload */
+div.filemanager label.button {
+	line-height: 20px;
+}
+div.filemanager-upload-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: none;
+	width: 100%;
+	height: 100%;
+	opacity: .5;
+	z-index: -1;
+	background: #ccc url(../images/upload_overlay_icon.png) no-repeat 50% 50%;
+}
+body.hover div.filemanager-upload-overlay {
+	display: block;
+	z-index: 1000000;
+}
+/*
 .filemanager-uploader ul.filemanager-uploader-list {
 	padding: 2px 5px;
 }
@@ -1147,7 +1190,7 @@ div.filemanager .button.upload {
 .filemanager-uploader li.file img.icon {
 	padding-right: 4px;
 }
-
+*/
 /* Overlay */
 div.filemanager-overlay {
 	position: absolute;
@@ -1244,10 +1287,5 @@ div.filemanager-dialog-content h2{
 }
 div.filemanager-dialog-content h2 div{
 	margin:0;
-}
-/* NoFlash.upload */
-div.filemanager #filemanager_upload_Filedata {
-	width: auto;
-	font-size: 11px;
 }
 

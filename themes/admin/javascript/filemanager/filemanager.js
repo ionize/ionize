@@ -66,6 +66,7 @@ var Filemanager = new Class({
 		move_or_copy: false,
 		download: false,
 		resizeOnUpload: false,
+		uploadAutostart: false,
 		createFolders: false,
 		filter: '',
 		detailInfoMode: '',               // (string) whether you want to receive extra metadata on select/etc. and/or view this metadata in the preview pane (modes: '', '+metaHTML', '+metaJSON'. Modes may be combined)
@@ -334,7 +335,6 @@ var Filemanager = new Class({
 		if (this.options.download) this.addMenuButton('download');
 		if (this.options.selectable) this.addMenuButton('open');
 
-
 		this.info = new Element('div', {'class': 'filemanager-infos'});
 
 		this.info_head = new Element('div', {
@@ -595,22 +595,41 @@ var Filemanager = new Class({
 	{
 		var self = this;
 
+		// Overlay
+		this.uploadOverlay = new Element('div', {'class':'filemanager-upload-overlay'}).inject(document.body, 'top');
+
+		this.uploadOverlay.addEvents({
+			'mouseout': function(e)
+			{
+				document.body.removeClass('hover');
+			}.bind(this),
+			'mouseup': function(e)
+			{
+				document.body.removeClass('hover');
+			}.bind(this)
+		});
+
 		// Button
-		this.uploadButton = new Element('a', {'class': 'button left'}).inject(this.menu);
-		this.uploadButton.set('text', this.language.upload);
+		/* Must be a label, to trigger the file input in IE */
+		this.uploadButton = new Element('label', {'class': 'button left'}).inject(this.menu);
+		this.uploadButton.set('text', Lang.get('ionize_label_select_files_to_upload'));
 		new Element('i', {'class':'icon-upload'}).inject(this.uploadButton, 'top');
 
 		// Resize on upload ?
 		this.uploadResize = new Element('input', {type:'checkbox', 'class': 'checkbox', value: '1', id:'filemanager-resize-checkbox'});
-		if (self.options.resizeOnUpload) this.uploadResize.setProperty('checked', 'checked');
+		if (this.options.resizeOnUpload) this.uploadResize.setProperty('checked', 'checked');
 		this.uploadResize.addEvent('click', function()
 		{
-			self.filemanagerUpload.setPostData('resize', (self.uploadResize.checked ? 1 : 0));
+			self.filemanagerUpload.setVar('resize', (self.uploadResize.checked ? 1 : 0));
 		});
-		var label = new Element('label', {'class': 'filemanager-resize', 'for':'filemanager-resize-checkbox'}).adopt(
+		var label = new Element('label', {'class': 'filemanager-resize button', 'for':'filemanager-resize-checkbox'}).adopt(
 			this.uploadResize,
 			new Element('span', {text: this.language.resizeImages})
 		).inject(this.menu);
+
+		// Method Info : HTML5, HTML4, other...
+		this.uploadMethodInfo = new Element('div', {'class':'left ml10 pt5 lite'}).inject(this.menu);
+
 
 		// Upload Zone
 		this.uploadZone = new Element('div', {'class': 'filemanager-upload'}).inject(this.menu);
@@ -618,19 +637,34 @@ var Filemanager = new Class({
 
 		this.filemanagerUpload = new DropZone(
 		{
-			method: 'HTML4',
+// method: 'HTML4',
+			autostart: this.options.uploadAutostart,
 			ui_button: this.uploadButton,
 			ui_list: this.uploadZoneList,
-			ui_drop_area: this.filemanager, // this.browserScroll,
+			ui_drop_area: document.body, //this.filemanager,
 			url: this.getUploadUrl(),
 			onReset:function(method)
 			{
 				this.url = self.getUploadUrl();
 
 				// Init of resize option
-				this.setPostData('resize', (self.uploadResize.checked ? 1 : 0));
-				this.setPostData('filter', self.options.filter);
-				this.setPostData('directory', (self.CurrentDir) ? self.CurrentDir.path : '/');
+				this.setVar('resize', (self.uploadResize.checked ? 1 : 0));
+				this.setVar('filter', self.options.filter);
+				this.setVar('directory', (self.CurrentDir) ? self.CurrentDir.path : '/');
+
+				// Info concerning the mode
+				var infoText = '';
+				if (this.method == 'HTML5')
+					infoText = "Mode drag'n'drop, multifiles";
+				else
+					infoText = "Mono selection";
+
+				if (this.options.autostart == true)
+					infoText += ", autostart";
+				else
+					infoText += ", manual start";
+
+				self.uploadMethodInfo.set('text', infoText);
 			},
 			onItemAdded: function(item, file, imagedata)
 			{
@@ -656,14 +690,69 @@ var Filemanager = new Class({
 					var img = new Element('img', {'src': imagedata}).inject(item, 'top').setStyle('opacity', .7);
 					var dim = img.getSize();
 					if (dim.y < dim.x)
-						img.setStyles({'height':dim.x+'px', 'width':'auto'});
+						img.setStyles({'height':'100px', 'width':'auto'});
+					else
+						img.setStyles({'height':'auto', 'width':'100px'});
 				}
 				else
 				{
-					var ext = (file.name).split('.').pop();
-					item.setStyles({
-						'background-image': 'url(' + self.assetsUrl + 'images/icons/large/' + ext + '.png' + ')'
-					});
+					var img_loaded = false;
+
+					// Firefox does no provide the full path to the file
+					if ( ! Browser.firefox && ['image','jpg','jpeg','png','gif','bmp'].contains((file.type).toLowerCase()))
+					{
+						var img = Asset.image(file.path,
+						{
+							onLoad: function()
+							{
+								var display_image = true;
+
+								if (Browser.ie && this.fileSize > 10000000)
+								{
+									display_image = false;
+									this.destroy();
+								}
+
+								if (display_image)
+								{
+									var domImg = new Element('img', {'src': 'file://' + file.path});
+									domImg.setStyles({'opacity':0}).inject(document.body);
+									var dim = domImg.getSize();
+
+									if (dim.y < dim.x)
+										domImg.setStyles({'height':'100px', 'width':'auto'});
+									else
+										domImg.setStyles({'height':'auto', 'width':'100px'});
+
+									domImg.inject(item, 'top').setStyles({'opacity':.7});
+
+									// item.getElement('p').destroy();
+									item.setStyles({'background-image': 'none'});
+
+									img_loaded = true;
+								}
+						    },
+							onError: function()	{
+								img_loaded = false;
+							}
+						});
+					}
+
+					// Image could not be loaded, or until the image is loaded
+					if (img_loaded == false)
+					{
+						var ext = (file.name).split('.').pop();
+						item.setStyles({
+							'background-image': 'url(' + self.assetsUrl + 'images/icons/large/' + ext + '.png' + ')'
+						});
+						var text = file.name;
+						if (text.length > 15)
+						{
+							text = text.slice(0,4) + ' … ' + text.slice(-11);
+						}
+						var p = new Element('p').adopt(new Element('span', {'text': text}));
+						p.inject(item, 'top');
+					}
 				}
 
 				if (item.retrieve('progress'))
@@ -698,12 +787,13 @@ var Filemanager = new Class({
 				var dim = 80;
 				item.getElement('.progress-bar').tween('width', dim);
 				item.getElement('.progress-bar').innerHTML = '100 %';
-				item.getElement('.delete').destroy();
+				// item.getElement('.delete').destroy();
 
 				var img = item.getElement('img');
 				if (img)
 					item.getElement('img').setStyle('opacity', 1);
 
+				// Remove item from DOM
 				item.fade(0).get('tween').chain(function() {
 					this.element.destroy();
 					self.resizeMenu();
@@ -711,6 +801,7 @@ var Filemanager = new Class({
 			},
 			onItemCancel: function(item)
 			{
+				// Remove item from DOM
 				item.fade(0).get('tween').chain(function() {
 					this.element.destroy();
 					self.resizeMenu();
@@ -720,6 +811,7 @@ var Filemanager = new Class({
 			{
 				self.showError('' + response.error);
 
+				// Remove item from DOM
 				item.fade(0).get('tween').chain(function() {
 					this.element.destroy();
 					self.resizeMenu();
@@ -731,8 +823,17 @@ var Filemanager = new Class({
 			onUploadProgress: function(perc){},
 			onUploadComplete: function(num_uploaded)
 			{
-				 // if (dir == currentDir)
-				 self.load(self.CurrentDir.path);
+				var dz = this;
+				(function()
+				{
+					if (dz._countItems() <= 0 && dz.uiListUploadButton)
+					{
+						dz.uiListUploadButton.destroy();
+						dz.uiListUploadButton = undefined;
+						self.resizeMenu();
+					}
+					self.load(self.CurrentDir.path);
+				}).delay(1000);
 			}
 		});
 	},
@@ -1988,7 +2089,7 @@ var Filemanager = new Class({
 		this.browser.empty();
 
 		// Change the FilemanagerUpload directory data : For upload
-		this.filemanagerUpload.setPostData('directory', (this.CurrentDir) ? this.CurrentDir.path : '/');
+		this.filemanagerUpload.setVar('directory', (this.CurrentDir) ? this.CurrentDir.path : '/');
 
 		// Adding the thumbnail list in the preview panel: blow away any pre-existing list now, as we'll generate a new one now:
 		this.dir_filelist.empty();
@@ -3332,6 +3433,7 @@ Filemanager.Dialog = new Class({
 		 * onDecline: function() {},
 		 * onClose: function() {},
 		 */
+		container: document.body,
 		request: null,
 		buttons: ['confirm', 'decline'],
 		language: {},
@@ -3342,7 +3444,7 @@ Filemanager.Dialog = new Class({
 	initialize: function(title, options) {
 		this.setOptions(options);
 		this.dialogOpen = false;
-
+		this.container = this.options.container;
 		this.content_el = new Element('div', {
 			'class': 'filemanager-dialog-content'
 		}).adopt(
@@ -3442,25 +3544,25 @@ Filemanager.Dialog = new Class({
 			}
 		}
 		this.el.center().fade(1).get('tween').chain((function() {
-				// Safari / Chrome have trouble focussing on things not yet fully rendered!
-				// see   http://stackoverflow.com/questions/2074347/focus-not-working-in-safari-or-chrome
-				// and   http://www.mkyong.com/javascript/focus-is-not-working-in-ie-solution/
-				if (autofocus_el)
+			// Safari / Chrome have trouble focussing on things not yet fully rendered!
+			// see   http://stackoverflow.com/questions/2074347/focus-not-working-in-safari-or-chrome
+			// and   http://www.mkyong.com/javascript/focus-is-not-working-in-ie-solution/
+			if (autofocus_el)
+			{
+				if (0)                  // the delay suggested as a fix there is part of the fade()...
 				{
-					if (0)                  // the delay suggested as a fix there is part of the fade()...
-					{
-						(function(el) {
-							el.focus();
-						}).delay(1, this, [autofocus_el]);
-					}
-					else
-					{
-						//autofocus_el.set('tabIndex', 0);   // http://code.google.com/p/chromium/issues/detail?id=27868#c15
-						// ^-- not needed.  When you debug JS in a Webkit browser, you're toast when it comes to getting input field focus, period.   :-(
-						autofocus_el.focus();
-					}
+					(function(el) {
+						el.focus();
+					}).delay(1, this, [autofocus_el]);
 				}
-			}).bind(this));
+				else
+				{
+					//autofocus_el.set('tabIndex', 0);   // http://code.google.com/p/chromium/issues/detail?id=27868#c15
+					// ^-- not needed.  When you debug JS in a Webkit browser, you're toast when it comes to getting input field focus, period.   :-(
+					autofocus_el.focus();
+				}
+			}
+		}).bind(this));
 
 		self.fireEvent('show');
 
