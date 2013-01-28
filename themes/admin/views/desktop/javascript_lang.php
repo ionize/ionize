@@ -19,7 +19,6 @@
 ?>
 <?php
 	$items = addslashes(str_replace(array("\r\n", "\r", "\n", "\t"), ' ', json_encode($this->lang)));
-	log_message('error', print_r($items, true));
 ?>
 var Lang = JSON.decode('<?php echo $items; ?>', true);
 Object.append(Lang, {
