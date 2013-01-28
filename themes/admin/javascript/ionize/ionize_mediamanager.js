@@ -29,6 +29,7 @@ var IonizeMediaManager = new Class(
 		thumbSize:		120,
 	    resizeOnUpload: false,
 	    uploadAutostart: false,
+	    uploadMode:     '',
 	    standalone:     false
     },
 
@@ -509,6 +510,7 @@ var IonizeMediaManager = new Class(
 							move_or_copy: true,
 							resizeOnUpload: self.options.resizeOnUpload,
 							uploadAutostart: self.options.uploadAutostart,
+							uploadMode: self.options.uploadMode,
 							language: Lang.get('current'),
 							selectable: true,
 							hideOnSelect: false,

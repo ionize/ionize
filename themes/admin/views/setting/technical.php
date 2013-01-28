@@ -51,12 +51,27 @@
 
                     <dl class="small">
                         <dt>
-                            <label for="upload_autostart"><?php echo lang('ionize_label_setting_upload_autostart'); ?></label>
+                            <label for="upload_autostart" title="<?php echo lang('ionize_help_upload_autostart'); ?>"><?php echo lang('ionize_label_setting_upload_autostart'); ?></label>
                         </dt>
                         <dd>
                             <input <?php if($upload_autostart == 1) :?>checked="checked" <?php endif ;?> name="upload_autostart" id="upload_autostart"  class="inputcheckbox" type="checkbox" value="1" />
                         </dd>
                     </dl>
+
+                    <dl class="small">
+                        <dt>
+                            <label><?php echo lang('ionize_label_upload_mode'); ?></label>
+                        </dt>
+                        <dd>
+                            <input type="radio" name="upload_mode" id="upload_mode1" value="" <?php if(Settings::get('upload_mode') == ''):?>checked="checked"<?php endif;?> /><label for="upload_mode1" title="<?php echo lang('ionize_help_upload_mode_auto'); ?>"><?php echo lang('ionize_label_upload_mode_auto'); ?></label><br/>
+                            <input type="radio" name="upload_mode" id="upload_mode2" value="html4" <?php if(Settings::get('upload_mode') == 'html4'):?>checked="checked"<?php endif;?>/><label for="upload_mode2" title="<?php echo lang('ionize_help_upload_mode_html4'); ?>"><?php echo lang('ionize_label_upload_mode_html4'); ?></label><br/>
+                            <input type="radio" name="upload_mode" id="upload_mode3" value="html5" <?php if(Settings::get('upload_mode') == 'html5'):?>checked="checked"<?php endif;?>/><label for="upload_mode3" title="<?php echo lang('ionize_help_upload_mode_html5'); ?>"><?php echo lang('ionize_label_upload_mode_html5'); ?></label>
+                        </dd>
+                    </dl>
+
+
+
+
 
                     <dl class="small">
 						<dt>

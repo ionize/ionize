@@ -67,6 +67,7 @@ var Filemanager = new Class({
 		download: false,
 		resizeOnUpload: false,
 		uploadAutostart: false,
+		uploadMode: '',
 		createFolders: false,
 		filter: '',
 		detailInfoMode: '',               // (string) whether you want to receive extra metadata on select/etc. and/or view this metadata in the preview pane (modes: '', '+metaHTML', '+metaJSON'. Modes may be combined)
@@ -637,7 +638,7 @@ var Filemanager = new Class({
 
 		this.filemanagerUpload = new DropZone(
 		{
-// method: 'HTML4',
+			method: this.options.uploadMode,
 			autostart: this.options.uploadAutostart,
 			ui_button: this.uploadButton,
 			ui_list: this.uploadZoneList,
@@ -655,14 +656,14 @@ var Filemanager = new Class({
 				// Info concerning the mode
 				var infoText = '';
 				if (this.method == 'HTML5')
-					infoText = "Mode drag'n'drop, multifiles";
+					infoText = 'Mode : ' + Lang.get('ionize_help_upload_mode_html5');
 				else
-					infoText = "Mono selection";
+					infoText = 'Mode : ' + Lang.get('ionize_help_upload_mode_html4');
 
 				if (this.options.autostart == true)
-					infoText += ", autostart";
+					infoText += ", Autostart";
 				else
-					infoText += ", manual start";
+					infoText += ", no Autostart";
 
 				self.uploadMethodInfo.set('text', infoText);
 			},

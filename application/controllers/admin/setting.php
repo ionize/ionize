@@ -144,6 +144,7 @@ class Setting extends MY_admin
 		// Media : Resize on Upload
 		$this->template['resize_on_upload'] = Settings::get('resize_on_upload');
 		$this->template['upload_autostart'] = Settings::get('upload_autostart');
+		$this->template['upload_mode'] = Settings::get('upload_mode');
 
 		
 		// Cache
@@ -624,7 +625,7 @@ class Setting extends MY_admin
 	{
 		// Settings to save
 		$settings = array(	'files_path', 
-							'media_thumb_size', 'resize_on_upload', 'picture_max_width', 'picture_max_height', 'upload_autostart',
+							'media_thumb_size', 'resize_on_upload', 'upload_mode', 'picture_max_width', 'picture_max_height', 'upload_autostart',
 							'filemanager_file_types', 'no_source_picture');
 		
 		// Allowed filemanager file extensions

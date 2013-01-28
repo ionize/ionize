@@ -200,6 +200,7 @@
 		mode:'<?php echo Settings::get('filemanager'); ?>',
         resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
         uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
+        uploadMode: '<?php echo Settings::get('upload_mode'); ?>',
 		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,
 		pictureArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('picture')); ?>'),
 		musicArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('music')); ?>'),

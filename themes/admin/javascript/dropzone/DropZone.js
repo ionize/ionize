@@ -99,7 +99,8 @@ var DropZone = new Class({
 		* and initiate based on that
 		* note: swap bits here to make Flash preferred to HTML5
 		*/
-		this.method = options.method; // ONLY FOR DEBUGGING!
+		if (options.method != '')
+			this.method = (options.method).toUpperCase();
 
 		// Check HTML5 support & if module is available
 		if ( ! this.method && window.File && window.FileList && window.Blob && typeof DropZone['HTML5'] != 'undefined')

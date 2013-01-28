@@ -553,6 +553,7 @@ INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '0', '');
 INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');
+INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');
 
 
 

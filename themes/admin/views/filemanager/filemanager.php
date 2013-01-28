@@ -25,6 +25,7 @@ var xhr = new Request.JSON(
                 move_or_copy: true,
                 resizeOnUpload: '<?php echo Settings::get("resize_on_upload") ?>',
                 uploadAutostart: '<?php echo Settings::get("upload_autostart") ?>',
+                uploadMode: '<?php echo Settings::get("upload_mode") ?>',
 				standalone: false,
 				selectable: false,
 				hideOnClick: false,
