@@ -1,5 +1,4 @@
 
-
 ION.append({
 	
 	tinyMceSettings: function(id, mode, options)
@@ -269,9 +268,16 @@ ION.append({
 				{
 					var fmOptions = {
 						url: admin_url + 'media/filemanager',
-						URLpath4assets: theme_url + 'javascript/mootools-filemanager/Assets',
-//						assetBasePath: theme_url + 'javascript/mootools-filemanager/Assets',
+						assetsUrl: theme_url + 'javascript/filemanager/assets',
 						standalone: false,
+						createFolders: true,
+						destroy: true,
+						rename: true,
+						upload: true,
+						move_or_copy: true,
+						resizeOnUpload: Settings.get('resize_on_upload'),
+						uploadAutostart: Settings.get('upload_autostart'),
+						uploadMode: Settings.get('upload_mode'),
 						language: Lang.get('current'),
 						selectable: true,
 						hideOnClick: true,
@@ -301,7 +307,7 @@ ION.append({
 					}
 					
 					// Init FM
-					var filemanager = new FileManager(fmOptions);
+					var filemanager = new Filemanager(fmOptions);
 					
 					// MUI Window creation
 					var options = ION.getFilemanagerWindowOptions();

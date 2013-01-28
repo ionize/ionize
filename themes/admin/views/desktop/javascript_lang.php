@@ -17,16 +17,19 @@
  */
 
 ?>
-
-var Lang = new Hash({
-	
-	<?php foreach($this->lang->language as $key=>$text) :?>'<?php echo $key; ?>': '<?php echo addslashes(str_replace(array("\r\n", "\r", "\n", "\t"), ' ', $text)); ?>',<?php endforeach ;?>
-
+<?php
+	$items = addslashes(str_replace(array("\r\n", "\r", "\n", "\t"), ' ', json_encode($this->lang)));
+	log_message('error', print_r($items, true));
+?>
+var Lang = JSON.decode('<?php echo $items; ?>', true);
+Object.append(Lang, {
+	get: function(key)
+	{
+		return this.language[key];
+	},
 	'current': '<?php echo $this->config->item('detected_lang_code'); ?>',
 	'first': '<?php echo Settings::get_lang('first'); ?>',
 	'default': '<?php echo Settings::get_lang('default'); ?>',
-	
+
 	'languages': new Array('<?php echo implode("','", array_keys($this->config->item('available_languages'))); ?>')
-
 });
-

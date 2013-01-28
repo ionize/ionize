@@ -90,6 +90,7 @@
 	 * To get an item : Lang.get('php_lang_item_key');
 	 */
 	<?php $this->load->view('desktop/javascript_lang');	?>
+	<?php $this->load->view('desktop/javascript_settings');	?>
 
 </script>
 
