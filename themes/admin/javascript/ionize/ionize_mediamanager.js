@@ -561,7 +561,7 @@ ION.append({
 		// Window size
 		var wSize = {
 			'width': 800,
-			'height': 420,
+			'height': 360,
 			'x': 70,
 			'y': null
 		};

@@ -250,6 +250,17 @@ class FTL_Binding
 		return $this;
 	}
 
+
+	public function removeAttribute($key)
+	{
+		if (isset($this->attr[$key]))
+			unset($this->attr[$key]);
+
+		return $this;
+	}
+
+
+
 	/**
 	 * Return the current FTL_Binding parent
 	 * If no name is given, return the very first parent.

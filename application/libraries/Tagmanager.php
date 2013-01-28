@@ -1520,16 +1520,29 @@ class TagManager
 	 */
 	public static function tag_url(FTL_Binding $tag)
 	{
-		$value = $tag->getValue('absolute_url');
+		// Optional : data array from where to get the data
 
-		// Fall down to URL
+		$from = $tag->getAttribute('from');
+
+		// 1. Try to get from tag's data array
+		$value = $tag->getValue('absolute_url', $from);
+
 		if (is_null($value))
 			$value = $tag->getValue();
+
+		// 2. Fall down to tag locals storage
+		if (is_null($value))
+			$value = $tag->get($tag->name);
+		else
+		{
+			// Add to local storage, so other tags can use it
+			$tag->set($tag->name, $value);
+		}
 
 		// Creates one A HTML element if the tag attribute "href" is set to true
 		$value = self::create_href($tag, $value);
 
-		return self::wrap($tag, $value);
+		return self::output_value($tag, $value);
 	}
 
 
@@ -2723,6 +2736,9 @@ class TagManager
 		// "is" and "expression" cannot be used together.
 		if ( ! is_null($is) )
 		{
+			// Do not pass the attribute to child
+			$tag->removeAttribute('is');
+
 			if (strtolower($is) == 'true') $is = TRUE;
 			if (strtolower($is) == 'false') $is = FALSE;
 
@@ -2741,6 +2757,9 @@ class TagManager
 		}
 		else if ( ! is_null($expression) )
 		{
+			// Do not pass the attribute to child
+			$tag->removeAttribute('expression');
+
 			$result = self::eval_expression($tag, $expression);
 
 			switch($result)
@@ -3013,6 +3032,8 @@ class TagManager
 			$expression = str_replace('.gt', '>', $expression);
 			$expression = str_replace('.lt', '<', $expression);
 			$expression = str_replace('.eq', '==', $expression);
+			$expression = str_replace('.neq', '!=', $expression);
+
 			// Not convinced...
 			// $expression = str_replace('.leqt', '<=', $expression);
 			// $expression = str_replace('.geqt', '>=', $expression);
@@ -3035,6 +3056,7 @@ class TagManager
 		{
 			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
 		}
+
 		if ($return === NULL OR is_null($test_value))
 		{
 			if ($result)
