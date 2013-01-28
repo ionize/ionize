@@ -134,9 +134,9 @@ var Filemanager = new Class({
 
 		var dbg_cnt = 0;
 
-		// Load Assets
-		this.loadAssets();
-
+		// Load Assets : DEV only
+		// Add : mediaManager.toggleFileManager({standalone:true}); to init.js->onLoaded()
+		// this.loadAssets();
 
 		this.RequestQueue = new Request.Queue({
 			concurrent: 3,              // 3 --> 75% max load on a quad core server
@@ -562,10 +562,6 @@ var Filemanager = new Class({
 	 */
 	loadAssets: function()
 	{
-		/*
-		 Asset.javascript(__MFM_ASSETS_DIR__+'/js/milkbox/milkbox.js');
-		 Asset.css(__MFM_ASSETS_DIR__+'/js/milkbox/css/milkbox.css');
-		 */
 		Asset.css(this.assetsUrl + 'css/filemanager.css');
 		if (Browser.ie && Browser.version <= 7) {
 			Asset.css(this.assetsUrl +'css/filemanager_ie7.css');
@@ -629,7 +625,12 @@ var Filemanager = new Class({
 		).inject(this.menu);
 
 		// Method Info : HTML5, HTML4, other...
-		this.uploadMethodInfo = new Element('div', {'class':'left ml10 pt5 lite'}).inject(this.menu);
+		this.uploadInfo = new Element('div', {'class':'filemanager-method-info ml10 pt5 lite'}).inject(this.filemanager);
+		/*
+		var windowFooter = $('filemanagerWindow_footer');
+		if (windowFooter)
+			this.uploadInfo.inject(windowFooter);
+			*/
 
 
 		// Upload Zone
@@ -665,7 +666,7 @@ var Filemanager = new Class({
 				else
 					infoText += ", no Autostart";
 
-				self.uploadMethodInfo.set('text', infoText);
+				self.uploadInfo.set('text', infoText);
 			},
 			onItemAdded: function(item, file, imagedata)
 			{
@@ -2086,6 +2087,7 @@ var Filemanager = new Class({
 		});
 
 		this.root = j.root;
+
 		this.CurrentDir = j.this_dir;
 		this.browser.empty();
 
@@ -2211,7 +2213,7 @@ var Filemanager = new Class({
 			this.browser_paging.show();
 		else
 			this.browser_paging.hide();
-//		this.browser_paging.fade(paging_now);
+
 		// fix for MSIE8: also fade out the pagination icons themselves
 		if (!paging_now)
 		{
@@ -2473,16 +2475,16 @@ var Filemanager = new Class({
 					// update this one alongside the 'el':
 					dg_el = this.dir_gallery_item_maker(file.icon48, file);
 
-					el = (function(file, dg_el) {           // Closure
+					el = (function(file, dg_el)
+					{
 						var iconpath = this.assetsUrl + 'images/icons/' + (this.listType === 'thumb' ? 'large/' : '') + 'default-error.png';
 						var list_row = this.list_row_maker((this.listType === 'thumb' ? file.icon48 : file.icon), file);
-
 						var tx_cfg = this.options.mkServerRequestURL(this, 'detail', {
-										directory: this.dirname(file.path),
-										file: file.name,
-										filter: this.options.filter,
-										mode: 'direct' + this.options.detailInfoMode
-									});
+							directory: this.dirname(file.path),
+							file: file.name,
+							filter: this.options.filter,
+							mode: 'direct' + this.options.detailInfoMode
+						});
 
 						var req = new Filemanager.Request({
 							url: tx_cfg.url,
@@ -2517,12 +2519,14 @@ var Filemanager = new Class({
 								}
 							}).bind(this),
 							onError: (function(text, error) {
+								// List thumb
 								list_row.getElement('span.fm-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
-								dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+								// Detail thumb
+								dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + this.assetsUrl + 'images/icons/large/default-error.png)');
 							}).bind(this),
 							onFailure: (function(xmlHttpRequest) {
 								list_row.getElement('span.fm-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
-								dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + iconpath + ')');
+								dg_el.getElement('div.dir-gal-thumb-bg').setStyle('background-image', 'url(' + this.assetsUrl + 'images/icons/large/default-error.png)');
 							}).bind(this)
 						}, this);
 

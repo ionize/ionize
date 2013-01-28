@@ -48,7 +48,10 @@ Ionize.initializeDesktop = function(){
 								url: admin_url + 'desktop/get/toolboxes/empty_toolbox'
 							}
 						],
-						collapsible: false
+						collapsible: false,
+						onLoaded: function()
+						{
+						}
 	//					,onResize: Ionize.updateResizeElements
 					}]
 				}
@@ -68,6 +71,7 @@ window.addEvent('load', function()
 	Ionize.initializeDesktop();
 
 	Ionize.User.initialize();
+
 
 //	console.log(Ionize.User.getUser());
 //	console.log(Ionize.User.getGroupLevel());

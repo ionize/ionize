@@ -373,7 +373,7 @@ class Page extends MY_admin
 				$this->callback[] = array(
 					'fn' => 'ION.sendForm',
 					'args' => array(
-						admin_url() . 'page/save_options',
+						'page/save_options',
 						'pageOptionsForm'
 					)
 				);

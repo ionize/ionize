@@ -433,7 +433,7 @@ class Article extends MY_admin
 				$this->callback[] = array(
 					'fn' => 'ION.sendForm',
 					'args' => array(
-						admin_url() . 'article/save_options',
+						'article/save_options',
 						'articleOptionsForm'
 					)
 				);

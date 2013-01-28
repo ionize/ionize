@@ -1,4 +1,4 @@
-<div id="mootools-filemanager"></div>
+<div id="filemanager"></div>
 
 <script type="text/javascript">	
 
@@ -42,7 +42,7 @@ var xhr = new Request.JSON(
 			});
 			
 			var content = filemanager.show();
-			content.inject($('mootools-filemanager'));
+			content.inject($('filemanager'));
 		}
 	}
 }).send();

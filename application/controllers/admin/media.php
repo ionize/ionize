@@ -87,9 +87,11 @@ class Media extends MY_admin
 		$allowed_mimes = implode(',', Settings::get_allowed_mimes());
 
 		$params = array (
-			'filesDir' => '/'.Settings::get('files_path') . '/',
-			'thumbsDir' => '/'.Settings::get('files_path') . '/.thumbs/.backend/',
-			'assetsDir' => '/themes/admin/javascript/filemanager/assets/',
+			'filesDir' => ''.Settings::get('files_path') . '/',
+			'thumbsDir' => ''.Settings::get('files_path') . '/.thumbs/.backend/',
+			'assetsDir' => 'themes/admin/javascript/filemanager/assets/',
+			'documentRoot' => DOCPATH,
+			'baseUrl' => base_url(),
 			'upload' => TRUE,
 			'destroy' => TRUE,
 			'create' => TRUE,

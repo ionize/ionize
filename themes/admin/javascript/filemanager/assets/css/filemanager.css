@@ -483,6 +483,13 @@ div.filemanager-infos {
 	border-left: 1px solid #BEBEBE;
 }
 
+div.filemanager-method-info {
+	position: absolute;
+	z-index: 3;
+	bottom: -20px;
+	left:0;
+}
+
 div.filemanager-head {
 	height: 30px;
 	overflow: hidden;

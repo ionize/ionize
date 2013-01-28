@@ -148,6 +148,7 @@
 
 
 <!-- Ionize Filemanager -->
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/filemanager/assets/css/filemanager.css" />
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/filemanager.js"></script>
 <?php
 	if (is_file(BASEPATH.'../'.Theme::get_theme_path().'javascript/filemanager/language/Language.'.Settings::get_lang().'.js'))
