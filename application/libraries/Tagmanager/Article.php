@@ -329,28 +329,28 @@ class TagManager_Article extends TagManager
 			$url = $article['url'];
 
 			// Link ?
-			if ($page['link_type'] != '' )
+			if ($article['link_type'] != '' )
 			{
 				// External
-				if ($page['link_type'] == 'external')
+				if ($article['link_type'] == 'external')
 				{
-					$article['url'] = $page['link'];
+					$article['url'] = $article['link'];
 				}
 
 				// Email
-				else if ($page['link_type'] == 'email')
+				else if ($article['link_type'] == 'email')
 				{
-					$article['url'] = auto_link($page['link'], 'both', TRUE);
+					$article['url'] = auto_link($article['link'], 'both', TRUE);
 				}
 
 				// Internal
 				else
 				{
 					// Article
-					if($page['link_type'] == 'article')
+					if($article['link_type'] == 'article')
 					{
 						// Get the article to which this page links
-						$rel = explode('.', $page['link_id']);
+						$rel = explode('.', $article['link_id']);
 						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
 
 						// Of course, only if not empty...
@@ -366,7 +366,7 @@ class TagManager_Article extends TagManager
 					// Page
 					else
 					{
-						$target_page = self::$ci->page_model->get_by_id($page['link_id'], Settings::get_lang('current'));
+						$target_page = self::$ci->page_model->get_by_id($article['link_id'], Settings::get_lang('current'));
 						$article['url'] = $target_page[$page_url_key];
 					}
 
