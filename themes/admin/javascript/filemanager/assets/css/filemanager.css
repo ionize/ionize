@@ -97,11 +97,11 @@ div.filemanager {
 div.filemanager-header {
 	position: absolute;
 	top: -25px;
-	left: 0px;
+	left: 0;
 	width: auto;
-	margin-left:100px;
+	margin-left:105px;
 	height: 14px;
-	padding: 3px 0px;
+	padding: 3px 0;
 	background: transparent;
 	overflow: hidden;
 }
@@ -175,7 +175,7 @@ div.filemanager ul {
 	padding: 0;
 	position: relative;
 	line-height: 1.8em;
-	zoom: 1;                  /*:: < IE 9.0    :: Microsoft Internet Explorer hack */
+	zoom: 1;                 /*:: < IE 9.0    :: Microsoft Internet Explorer hack */
 }
 div.filemanager ul li {
 	background: none;
@@ -242,15 +242,13 @@ div.filemanager-browsercontainer div.filemanager-browserheader a.create-folder {
 
 div.filemanager-browsercontainer div.filemanager-browserheader a#drag_n_drop {
 	display: inline-block;
-	float: right;
-	margin: 5px 3% 0 0;
-	cursor: help;
-	background-image: url("../images/drag_n_drop.png");
-	background-repeat: no-repeat;
 	height: 16px;
 	width: 16px;
 	overflow: hidden;
-	background-position: 0px -16px;
+	float: right;
+	margin: 5px 3% 0 0;
+	cursor: help;
+	background: url("../images/drag_n_drop.png") no-repeat 0 -16px;
 }
 
 div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging {
@@ -269,40 +267,31 @@ div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a
 }
 
 div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_first {
-	background-image: url("../images/go_first.png");
-	background-repeat: no-repeat;
+	background: url("../images/go_first.png") no-repeat 50% 50%;
 	height: 16px;
 	width: 10px;
 	overflow: hidden;
-	background-position: 50% 50%;
-
 	position: relative;
 }
 div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_previous {
-	background-image: url("../images/go_previous.png");
-	background-repeat: no-repeat;
+	background: url("../images/go_previous.png") no-repeat 50% 50%;
 	height: 16px;
 	width: 7px;
 	overflow: hidden;
-	background-position: 50% 50%;
 	position: relative;
 }
 div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_next {
-	background-image: url("../images/go_next.png");
-	background-repeat: no-repeat;
+	background: url("../images/go_next.png") no-repeat 50% 50%;
 	height: 16px;
 	width: 7px;
 	overflow: hidden;
-	background-position: 50% 50%;
 	position: relative;
 }
 div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging a#paging_goto_last {
-	background-image: url("../images/go_last.png");
-	background-repeat: no-repeat;
+	background: url("../images/go_last.png") no-repeat 50% 50%;
 	height: 16px;
 	width: 10px;
 	overflow: hidden;
-	background-position: 50% 50%;
 	position: relative;
 }
 div.filemanager-browsercontainer div.filemanager-browserheader #fm_view_paging #paging_info {
@@ -663,7 +652,6 @@ div.filemanager-preview img.preview:hover {
 div.filemanager-preview img.preview.filemanager-loading {
 	background: url("../images/loader.gif") center center no-repeat;
 }
-
 
 div.filemanager-preview p.tech_info {
 	font-size: 9px;

@@ -582,7 +582,7 @@ ION.append({
 		var options  = 
 		{
 			id: 'filemanagerWindow',
-			title: 'File Manager',
+			title: 'Media Manager',
 			container: document.body,
 			width: wSize.width,
 			height: wSize.height,
