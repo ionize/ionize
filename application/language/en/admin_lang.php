@@ -270,6 +270,7 @@ $lang['ionize_label_hide_options'] = 'Hide Options';
 $lang['ionize_label_show_options'] = 'Show Options';
 $lang['ionize_label_options'] = 'Options';
 $lang['ionize_label_tracker_edited_by'] = 'Currently edited by';
+$lang['ionize_label_tracker_status_sleeping'] = 'Sleeping...';
 $lang['ionize_label_copy_to_other_languages'] = 'Copy to other languages';
 $lang['ionize_help_has_url'] = 'If checked, the element has one URL and is reachable through its URL.';
 $lang['ionize_help_status'] = 'If connected as admin, you will see this element on the website even it is not online';

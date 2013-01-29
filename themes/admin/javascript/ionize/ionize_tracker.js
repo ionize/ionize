@@ -107,7 +107,7 @@ Ionize.Tracker.append(
 
 				if ( ! elements)
 				{
-					var action = new Element('span',{'class': 'action inactive'}).set('text', 'sleeping');
+					var action = new Element('span',{'class': 'action inactive'}).set('text', Lang.get('ionize_label_tracker_status_sleeping'));
 					action.inject(div);
 				}
 
