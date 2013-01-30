@@ -50,9 +50,9 @@
 					<td><img src="<?php echo theme_url(); ?>images/icon_16_<?php if($module['installed']): ?>ok<?php else: ?>nok<?php endif; ?>.png" /></td>
 					<td>
 						<?php if($module['installed']): ?>
-							<a class="moduleUninstall" href="<?php echo admin_url(); ?>modules/uninstall/<?php echo $module['folder']; ?>"><?php echo lang('ionize_label_module_uninstall'); ?>
+							<a class="moduleUninstall" href="modules/uninstall/<?php echo $module['folder']; ?>"><?php echo lang('ionize_label_module_uninstall'); ?>
 						<?php else :?>
-							<a class="moduleInstall" rel="<?php echo $module['folder']; ?>" href="<?php echo admin_url(); ?>modules/install/<?php echo $module['folder']; ?>"><?php echo lang('ionize_label_module_install'); ?>
+							<a class="moduleInstall" rel="<?php echo $module['folder']; ?>" href="modules/install/<?php echo $module['folder']; ?>"><?php echo lang('ionize_label_module_install'); ?>
 						<?php endif; ?>
 					</td>
 				</tr>

@@ -536,7 +536,7 @@ class Setting extends MY_admin
 		// UI panel to update after saving
 		$this->update[] = array(
 			'element' => 'mainPanel',
-			'url' => admin_url() . 'setting/technical'
+			'url' => 'setting/technical'
 		);
 
 		$this->success(lang('ionize_message_settings_saved'));
@@ -610,7 +610,7 @@ class Setting extends MY_admin
 		// UI panel to update after saving
 		$this->update[] = array(
 			'element' => 'mainPanel',
-			'url' => admin_url() . 'setting/technical'
+			'url' => 'setting/technical'
 		);
 
 		$this->success(lang('ionize_message_settings_saved'));
@@ -669,7 +669,7 @@ class Setting extends MY_admin
 		// UI panel to update after saving
 		$this->update[] = array(
 			'element' => 'mainPanel',
-			'url' => admin_url() . 'setting/technical'
+			'url' => 'setting/technical'
 		);
 
 		$this->success(lang('ionize_message_settings_saved'));
@@ -796,7 +796,7 @@ class Setting extends MY_admin
 				// UI panel to update after saving
 				$this->update[] = array(
 					'element' => 'mainPanel',
-					'url' => admin_url() . 'setting/technical'
+					'url' => 'setting/technical'
 				);
 
 				// Answer
@@ -843,7 +843,7 @@ class Setting extends MY_admin
 			// UI panel to update after saving
 			$this->update[] = array(
 				'element' => 'mainPanel',
-				'url' => admin_url() . 'setting/technical'
+				'url' => 'setting/technical'
 			);
 
 			// Answer
@@ -889,7 +889,7 @@ class Setting extends MY_admin
 		// UI panel to update after saving
 		$this->update[] = array(
 			'element' => 'mainPanel',
-			'url' => admin_url() . 'setting'
+			'url' => 'setting'
 		);
 
 		// Answer
@@ -993,7 +993,7 @@ class Setting extends MY_admin
 		// UI panel to update after saving
 		$this->update[] = array(
 			'element' => 'mainPanel',
-			'url' => admin_url() . 'setting/technical'
+			'url' => 'setting/technical'
 		);
 
 		// Answer
@@ -1054,7 +1054,7 @@ class Setting extends MY_admin
 			// UI panel to update after saving
 			$this->update[] = array(
 				'element' => 'mainPanel',
-				'url' =>  admin_url() . 'setting/technical'
+				'url' =>  'setting/technical'
 			);
 
 			$this->success(lang('ionize_message_thumb_deleted'));				
@@ -1150,7 +1150,7 @@ class Setting extends MY_admin
 				// UI panel to update after saving : Structure panel
 				$this->update[] = array(
 					'element' => 'structurePanel',
-					'url' => admin_url() . 'tree'
+					'url' => 'tree'
 				);
 
 				$this->success(lang('ionize_message_database_saved'));				

@@ -541,6 +541,9 @@ class TagManager_Article extends TagManager
 		// Experimental : To allow tags in articles
 		// $str = $tag->parse_as_nested($str);
 
+		if ($count == 0)
+			$str = $tag->expand();
+
 		$str = self::wrap($tag, $str);
 		
 		// Tag cache

@@ -1,5 +1,5 @@
 /**
- * Ionize 0.9.7
+ * Ionize 1.0.0
  * "Demo" theme example data
  * These data are provided as demo content for the theme "Demo"
  *

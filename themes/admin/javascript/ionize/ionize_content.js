@@ -1562,12 +1562,17 @@ ION.append({
 		// Cleans URLs
 		url = url.replace(admin_url, '');
 
+		// Be sure the admin url without lang is also removed
+		var admin_uri = Settings.get('admin_url');
+		if (admin_uri)
+			url = url.replace(base_url + admin_uri + '/', '');
+
 		// Base URL contains the lang code. Try to clean without the lang code
 		url = url.replace(admin_url.replace(Lang.get('current') + '/', ''), '');
 
 		url = url.replace(base_url + Lang.get('current') + '/', '');
 		url = url.replace(base_url, '');
-		
+
 		return url;
 	},
 

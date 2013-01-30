@@ -283,6 +283,10 @@ class TagManager_Media extends TagManager
 				$str .= $tag->expand();
 			}
 		}
+		else
+		{
+			$str = $tag->expand();
+		}
 		return self::wrap($tag, $str);
 	}
 

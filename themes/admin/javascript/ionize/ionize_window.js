@@ -142,9 +142,6 @@ ION.append({
 					// Set the form submit button action and send the DOM Element to update with the according URL
 					ION.setFormSubmit(form, ('bSave' + id), formUrl);
 
-
-
-
 					// Add the cancel event if cancel button exists
 					// All buttons name starts with 'b'
 					if (bCancel = $('bCancel' + id))

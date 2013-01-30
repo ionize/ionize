@@ -396,6 +396,7 @@ $lang['ionize_message_lang_content_copied'] = 'Lang content copy successful';
 $lang['ionize_title_users'] = 'Users management';
 $lang['ionize_title_user_edit'] = 'User edit';
 $lang['ionize_title_existing_users'] = 'Users';
+$lang['ionize_title_existing_powerusers'] = 'Power Users';
 $lang['ionize_title_existing_groups'] = 'Groups';
 $lang['ionize_title_group_edit'] = 'Group edit';
 $lang['ionize_title_add_user'] = 'Add one user';

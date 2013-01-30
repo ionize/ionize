@@ -470,7 +470,9 @@ class MY_Admin extends MY_Controller
 
 		// Set the admin theme as current theme
 		Theme::set_theme('admin');
-		
+
+		Settings::set('admin_url', config_item('admin_url'));
+
 		// Set admin lang codes array
 		Settings::set('admin_languages', $this->settings_model->get_admin_langs());
 		Settings::set('displayed_admin_languages', explode(',', Settings::get('displayed_admin_languages')));
