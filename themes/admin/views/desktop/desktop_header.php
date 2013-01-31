@@ -133,17 +133,20 @@
 		});
 	});
 
-	$('mediamanagerlink').addEvent('click', function(event)
+	if ($('mediamanagerlink'))
 	{
-		event.preventDefault();
+		$('mediamanagerlink').addEvent('click', function(event)
+		{
+			event.preventDefault();
 
-        ION.contentUpdate({
-            element: 'mainPanel',
-            url: this.getProperty('href'),
-            title: this.getProperty('title'),
-            padding: {top: 0, right: 0, bottom: 0, left: 0}
-        });
-	});
+			ION.contentUpdate({
+				element: 'mainPanel',
+				url: this.getProperty('href'),
+				title: this.getProperty('title'),
+				padding: {top: 0, right: 0, bottom: 0, left: 0}
+			});
+		});
+	}
 
 
 	$('aboutLink').addEvent('click', function(event)
