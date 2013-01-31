@@ -21,7 +21,7 @@
 	$settings = json_encode(Settings::get_settings());
 ?>
 var Settings = {
-	'setting' : JSON.decode('<?php echo $settings; ?>', true)
+	'setting' : JSON.decode('<?php echo addslashes($settings); ?>', true)
 }
 Object.append(Settings, {
 	get: function(key)
