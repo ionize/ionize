@@ -521,6 +521,9 @@ div.filemanager div.filemanager-preview-content {
 	padding: 2px 0 0 0;
 	clear: both;
 }
+div.filemanager div.filemanager-preview-content .txt{
+	padding:20px;
+}
 div.filemanager div.filemanager-preview-content i{
 	margin:20px 0;
 	display: block;
