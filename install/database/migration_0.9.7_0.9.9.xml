@@ -58,6 +58,10 @@
 		ALTER TABLE `media` drop `container`;
 	</query>
 
+	<query>
+        ALTER TABLE `media` ADD provider varchar(50) NOT NULL DEFAULT  '';
+	</query>
+
 
 	<query>
 			CREATE TABLE IF NOT EXISTS url (

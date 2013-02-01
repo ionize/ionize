@@ -43,6 +43,8 @@
 		var theme_url = '<ion:theme_url />';
 	</script>
 
+	<ion:google_analytics />
+
 </head>
 
 <body>

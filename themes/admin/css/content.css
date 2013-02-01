@@ -45,7 +45,8 @@ License:
 }
 
 .tabcolumn{
-	margin-right:40%;
+	float: left;
+	width: 60%;
 }
 
 

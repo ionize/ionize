@@ -304,7 +304,8 @@ var DatePicker = new Class({
 			this.slider.setStyle('left', -this.bodysize.x).tween('left', -this.bodysize.x, 0);
 		} else if (fx == 'fade') {
 			this.slider.setStyle('left', 0);
-			this.oldContents.setStyle('left', 0).set('tween', { duration: this.options.animationDuration / 2 }).tween('opacity', 1, 0);
+			// this.oldContents.setStyle('left', 0).set('tween', { duration: this.options.animationDuration / 2 }).tween('opacity', 1, 0);
+			this.oldContents.setStyle('left', this.bodysize.x).set('tween', { duration: this.options.animationDuration / 2 }).tween('opacity', 1, 0);
 			this.newContents.setStyles({ opacity: 0, left: 0}).set('tween', { duration: this.options.animationDuration }).tween('opacity', 0, 1);
 		}
 	},
