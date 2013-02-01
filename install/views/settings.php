@@ -52,11 +52,11 @@
 	<p><?php echo lang('settings_admin_url_text') ?></p>
 
 	<dl>
-		<dt style="width:200px;">
+		<dt style="width:300px;">
 			<label for="admin_url"><?= BASEURL ?></label>
 		</dt>
 		<dd>
-			<input name="admin_url" id="admin_url" type="text" class="inputtext w120" value="<?php echo $admin_url ?>"></input>
+			<input name="admin_url" id="admin_url" type="text" class="inputtext w100" value="<?php echo $admin_url ?>"></input>
 		</dd>
 	</dl>
 
