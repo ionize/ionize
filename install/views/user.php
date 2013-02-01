@@ -102,7 +102,7 @@
 	<input type="submit" class="button yes right" value="<?php echo lang('button_save_next_step') ?>" />
 
 	<?php if ( !empty($skip)) :?>
-		<button type="button" class="button left" onclick="javascript:location.href='?step=data&lang=<?php echo $lang ?>';"><?php echo lang('button_skip_next_step') ?></button>
+		<button type="button" class="button info left" onclick="javascript:location.href='?step=data&lang=<?php echo $lang ?>';"><?php echo lang('button_skip_next_step') ?></button>
 	<?php endif ;?>
 
 

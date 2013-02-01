@@ -19,5 +19,5 @@
 <br/>
 
 <button type="button" class="button yes right" onclick="javascript:location.href='<?php echo $base_url ?>';"><?php echo lang('button_go_to_site') ?></button>
-<button type="button" class="button right" onclick="javascript:location.href='<?php echo $base_url.config_item('admin_url') ?>';"><?php echo lang('button_go_to_admin') ?></button>
+<button type="button" class="button info right" onclick="javascript:location.href='<?php echo $base_url.config_item('admin_url') ?>';"><?php echo lang('button_go_to_admin') ?></button>
 

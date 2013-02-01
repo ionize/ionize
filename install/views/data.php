@@ -20,7 +20,7 @@
 	<?php echo lang('data_install_intro') ?>
 
 	<input type="submit" class="button right yes" value="<?php echo lang('button_install_test_data') ?>" />
-	<input type="button" class="button left" onclick="javascript:location.href='<?php echo $base_url ?>install/?step=finish&lang=<?php echo $lang ?>';" value="<?php echo lang('button_skip_next_step') ?>" />
+	<input type="button" class="button info left" onclick="javascript:location.href='<?php echo $base_url ?>install/?step=finish&lang=<?php echo $lang ?>';" value="<?php echo lang('button_skip_next_step') ?>" />
 
 </form>
 

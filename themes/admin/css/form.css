@@ -383,6 +383,31 @@ a.button.submit:hover{
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d02a1c, endColorstr=#901a00)";
 }
 
+.button.info, a.button.info,
+.button.blue, a.button.blue {
+	background-image: linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
+	background-image: -o-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
+	background-image: -moz-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
+	background-image: -webkit-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
+	background-image: -ms-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #33619D),color-stop(0.6, #5F95C1));
+	/* ie8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#5F95C1, endColorstr=#33619D)";
+}
+
+.button.info:hover, a.button.info:hover,
+.button.blue:hover, a.button.blue:hover {
+	background-image: linear-gradient(bottom, #05438B 0%, #397EB3 60%);
+	background-image: -o-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
+	background-image: -moz-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
+	background-image: -webkit-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
+	background-image: -ms-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #05438B),color-stop(0.6, #397EB3));
+	/* ie8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#397EB3, endColorstr=#05438B)";
+}
+
+
 .mocha .button.yes { margin-right: 40px;margin-left:10px;}
 .mocha.modal .button.yes{ margin-right: 35px;}
 
