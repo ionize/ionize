@@ -118,7 +118,7 @@ if($type == 'picture')
 
 
 <!-- Media form -->
-<form name="mediaForm<?php echo $id_media; ?>" id="mediaForm<?php echo $id_media; ?>" action="<?php echo admin_url(); ?>media/save">
+<form name="mediaForm<?php echo $id_media; ?>" id="mediaForm<?php echo $id_media; ?>" action="media/save">
 
 	<input type="hidden" name="id_media" value="<?php echo $id_media; ?>" />
 	<input type="hidden" name="type" value="<?php echo $type; ?>" />
