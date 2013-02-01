@@ -1,27 +1,36 @@
 /**
- * Ionize 1.0.0
+ * Ionize 0.9.9.X
  * "Demo" theme example data
  * These data are provided as demo content for the theme "Demo"
+ * --#-- is used as SQL request separator bu the installer.
  *
  */
 
 
 --
--- Base DATA
+-- Base data
 --
 TRUNCATE TABLE `lang`;
-INSERT INTO `lang` (`lang`, `name`, `online`, `def`, `ordering`) VALUES	('en','english','1','1',1);
+--#--
 
+INSERT INTO `lang` (`lang`, `name`, `online`, `def`, `ordering`) VALUES	('en','english','1','1',1);
+--#--
 UPDATE setting SET `content`='foundation' WHERE `name`='theme';
+--#--
 
 DELETE FROM `setting` WHERE `name`='site_title';
+--#--
+
 INSERT INTO `setting` VALUES('', 'site_title', 'Ionize CMS', 'en');
+--#--
 
 
 -- 
 -- Article
 -- 
 TRUNCATE `article`;
+--#--
+
 INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`, `has_url`)
 VALUES
 	(1,'404','demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-10 09:18:48','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
@@ -49,58 +58,66 @@ VALUES
 	(29,'send-us-a-message','demo','demo','2012-12-21 17:04:43','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 17:04:43','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
 	(30,'not-logged-in','demo','demo','2012-12-22 10:54:43','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 10:54:43','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
 	(31,'hello','demo','demo','2012-12-22 11:15:04','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 11:42:04','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1);
+--#--
 
 
 -- 
 -- Article_category
 -- 
 TRUNCATE `article_category`;
+--#--
+
 INSERT INTO `article_category` (`id_article`, `id_category`)
 VALUES
 	(4,1),
 	(5,1),
 	(5,2),
 	(6,2);
+--#--
 
 
 -- 
 -- Article_lang
 -- 
-
 TRUNCATE `article_lang`;
+--#--
+
 INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `content`, `meta_keywords`, `meta_description`, `online`)
 VALUES
-	(1,'en','404','Can\'t find requested page','','','<p class=\"justify\">Maecenas arcu massa; varius non accumsan nec, commodo vitae felis! Quisque luctus, lorem vel elementum aliquam, lorem nulla dignissim velit, id placerat libero ipsum eget sapien. Cras erat risus, pellentesque ut auctor quis, fringilla vel elit. Cras nisl dolor, vulputate eget molestie ut, sollicitudin non dui.</p>\n<h4 class=\"justify\">Reasons</h4>\n<ul>\n<li>Lorem ipsum dolor sit amet</li>\n<li>Consectetur adipiscing elit</li>\n<li>Nulla volutpat aliquam velit\n<ul>\n<li>Phasellus iaculis neque</li>\n<li>Purus sodales ultricies</li>\n<li>Vestibulum laoreet porttitor sem</li>\n<li>Ac tristique libero volutpat at</li>\n</ul>\n</li>\n<li>Faucibus porta lacus fringilla vel</li>\n</ul>','','',1),
+	(1,'en','404','Can\'t find requested page','','','<p>Maecenas massa. varius non accumsan nec, commodo vitae felis! Quisque luctus, lorem vel elementum aliquam, lorem nulla dignissim velit, id placerat libero ipsum eget sapien. Cras erat risus, pellentesque ut auctor quis, fringilla vel elit. Cras nisl dolor, vulputate eget molestie ut, sollicitudin non dui.</p><h4>Reasons</h4><ul><li>Lorem ipsum dolor sit amet</li><li>Consectetur adipiscing elit</li><li>Nulla volutpat aliquam velit<ul><li>Phasellus iaculis neque</li><li>Purus sodales ultricies</li><li>Vestibulum laoreet porttitor sem</li><li>Ac tristique libero volutpat at</li></ul></li><li>Faucibus porta lacus fringilla vel</li></ul>','','',1),
 	(4,'en','the-power-of-php','The power of PHP','','','<p>The Ionize CMS uses CodeIgniter, a powerful and lightweight PHP framework. For CodeIgniter developpers, starting developping on Ionize will be really easy as building a CI application !</p>','','',1),
-	(5,'en','article-1','One blog post','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
-	(6,'en','article-2','Another blog post','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
-	(7,'en','article-3','We got something...','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
-	(8,'en','article-4','Say it differently','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
-	(9,'en','article-5','10 incredible items !','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
-	(10,'en','article-6','Send mail to your friends !','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>\n<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>\n<p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(5,'en','article-1','One blog post','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam. est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p><p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(6,'en','article-2','Another blog post','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam. est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p><p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(7,'en','article-3','We got something...','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam. est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p><p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(8,'en','article-4','Say it differently','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam. est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p><p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(9,'en','article-5','10 incredible items !','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam. est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p><p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
+	(10,'en','article-6','Send mail to your friends !','','','<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam. est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p><p>Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.</p>','','',1),
 	(11,'en','easy-edition','Easy edition','','','<p>Copy / paste content from any word processing software. Inline links are automatically converted to hyperlinks. Emails are safely encoded to avoid spam.</p>',NULL,NULL,1),
 	(12,'en','multilingual','Multilingual','','','<p>You can create as much languages as you need for your website. Every content can be translated : posts, static elements in templates, media data, etc.</p>',NULL,NULL,1),
 	(13,'en','userfriendly','Userfriendly','','','<p>Your website structure is logical. Managing elements such as pages, articles or medias is easily done by drag\'n\'drop!</p>',NULL,NULL,1),
 	(14,'en','template-system','Template System','','','<p>Each page or article can have a dedicated template, templates can be embeded in each others. The tag language of Ionize is simple and fully documented.</p>','','',1),
-	(15,'en','about-us-1','About Us','','','<p>Duis diam tortor, suscipit sed varius id, dictum interdum tortor. Vivamus vel sapien vitae metus aliquet vehicula. Cras nec odio a dui sagittis semper? Nullam non luctus nisl. Cras ante ante, elementum a porta sit amet, aliquet in felis. Cras dictum metus non felis fermentum in mattis nisl dignissim. Suspendisse suscipit diam id ipsum elementum sed commodo massa ullamcorper. Curabitur tincidunt enim at ipsum aliquam a sagittis eros vulputate. Etiam elementum gravida ipsum eget congue. Pellentesque tempus facilisis odio, at porta nibh pulvinar vel.</p>\n<p>Donec rutrum lectus eget enim aliquet in sollicitudin elit vestibulum. Sed iaculis mi quis ipsum congue elementum. Proin turpis urna, rutrum id vehicula et, cursus vel purus. Proin tincidunt, odio sed congue ultricies; risus erat rhoncus leo, in fringilla elit libero vel metus. Sed adipiscing, orci vitae iaculis laoreet, ante nibh facilisis sem, ac pulvinar nunc risus sit amet nisl.</p>','','',1),
-	(16,'en','footer-resources','Online resources','','','<p><strong>Community</strong> : Ionize\'s forum<br /><strong>Project hosting</strong> : Ionize on github</p>\n<p><strong>Last version</strong> : Download Ionize</p>\n<p><strong>Contact</strong> : team@ionizecms.com</p>','','',1),
-	(17,'en','some-of-our-services','What we do for you','','','<p>Suspendisse nec erat lacus? Morbi pharetra elit ac nibh ornare a vulputate urna dictum?</p>\n<p>Vestibulum eu justo sit amet nulla adipiscing imperdiet. Nullam venenatis tortor nec mauris viverra at rutrum lacus ultricies. Sed condimentum aliquet congue! Aenean sed justo sapien.</p>\n<p>Fusce ut turpis mauris. Phasellus ac felis arcu, semper rhoncus nisi? Quisque tortor nisl; convallis et varius vel, ullamcorper sit amet neque. Sed semper aliquam rutrum.</p>\n<p>Phasellus ac nisl et quam laoreet interdum ultrices vel dui. Mauris et urna sed tortor molestie blandit quis vel sapien. Cras tempus sollicitudin magna eu faucibus. Nulla dapibus pharetra dapibus.</p>','','',1),
-	(18,'en','service-1','Service 1','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p>\n<p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p>\n<p>Faucibus porta lacus fringilla vel.</p>','','',1),
-	(19,'en','service-2','Service 2','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p>\n<p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p>\n<p>Faucibus porta lacus fringilla vel.</p>','','',1),
-	(20,'en','service-3','Service 3','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p>\n<p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p>\n<p>Faucibus porta lacus fringilla vel.</p>','','',1),
-	(24,'en','contact-informations','Contact Informations','','','<p><strong>Ionize CMS</strong><br /> 123 Flower street,<br /> 75005 Paris, France</p>\n<p><strong>Tel</strong> : +33 012345678<strong><br />Email : </strong>team@ionizecms.com</p>','','',1),
+	(15,'en','about-us-1','About Us','','','<p>Duis diam tortor, suscipit sed varius id, dictum interdum tortor. Vivamus vel sapien vitae metus aliquet vehicula. Cras nec odio a dui sagittis semper? Nullam non luctus nisl. Cras ante ante, elementum a porta sit amet, aliquet in felis. Cras dictum metus non felis fermentum in mattis nisl dignissim. Suspendisse suscipit diam id ipsum elementum sed commodo massa ullamcorper. Curabitur tincidunt enim at ipsum aliquam a sagittis eros vulputate. Etiam elementum gravida ipsum eget congue. Pellentesque tempus facilisis odio, at porta nibh pulvinar vel.</p><p>Donec rutrum lectus eget enim aliquet in sollicitudin elit vestibulum. Sed iaculis mi quis ipsum congue elementum. Proin turpis urna, rutrum id vehicula et, cursus vel purus. Proin tincidunt, odio sed congue ultricies. Risus erat rhoncus leo, in fringilla elit libero vel metus. Sed adipiscing, orci vitae iaculis laoreet, ante nibh facilisis sem, ac pulvinar nunc risus sit amet nisl.</p>','','',1),
+	(16,'en','footer-resources','Online resources','','','<p><strong>Community</strong> : Ionize\'s forum<br /><strong>Project hosting</strong> : Ionize on github</p><p><strong>Last version</strong> : Download Ionize</p><p><strong>Contact</strong> : team@ionizecms.com</p>','','',1),
+	(17,'en','some-of-our-services','What we do for you','','','<p>Suspendisse nec erat lacus? Morbi pharetra elit ac nibh ornare a vulputate urna dictum?</p><p>Vestibulum eu justo sit amet nulla adipiscing imperdiet. Nullam venenatis tortor nec mauris viverra at rutrum lacus ultricies. Sed condimentum aliquet congue! Aenean sed justo sapien.</p><p>Fusce ut turpis mauris. Phasellus ac felis arcu, semper rhoncus nisi? Quisque tortor nisl; convallis et varius vel, ullamcorper sit amet neque. Sed semper aliquam rutrum.</p><p>Phasellus ac nisl et quam laoreet interdum ultrices vel dui. Mauris et urna sed tortor molestie blandit quis vel sapien. Cras tempus sollicitudin magna eu faucibus. Nulla dapibus pharetra dapibus.</p>','','',1),
+	(18,'en','service-1','Service 1','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p><p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p><p>Faucibus porta lacus fringilla vel.</p>','','',1),
+	(19,'en','service-2','Service 2','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p><p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p><p>Faucibus porta lacus fringilla vel.</p>','','',1),
+	(20,'en','service-3','Service 3','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p><p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p><p>Faucibus porta lacus fringilla vel.</p>','','',1),
+	(24,'en','contact-informations','Contact Informations','','','<p><strong>Ionize CMS</strong><br /> 123 Flower street,<br /> 75005 Paris, France</p><p><strong>Tel</strong> : +33 012345678<strong><br />Email : </strong>team@ionizecms.com</p>','','',1),
 	(26,'en','our-location','Our location','','','<p><iframe width=\"100%\" height=\"250\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"https://maps.google.fr/maps?f=q&amp;source=s_q&amp;hl=fr&amp;geocode=&amp;aq=&amp;sll=48.876161,2.377124&amp;sspn=0.007296,0.018175&amp;gl=fr&amp;g=villa+Marcel+Lods&amp;ie=UTF8&amp;hq=&amp;ll=48.876161,2.377124&amp;spn=0.001824,0.004544&amp;t=m&amp;z=16&amp;output=embed\"></iframe></p>','','',1),
-	(27,'en','whats-ionize','What\'s Ionize ?','','','\n\n<p>Ionize is an Open Source content management system created by webdesigners for webdesigners.</p>\n<p>Originally <a title=\"Ionize\'s creators\" href=\"http://www.ionizecms.com/en/about\">created by Partikule Studio and Toopixel</a> for their clients, Ionize is today an OpenSource project, so everybody can build easy to maintain websites.</p>\n\n',NULL,NULL,1),
-	(28,'en','can-i-help','Can I help ?','','','<p>Because talent is nothing without involvement, we are looking for motivated coders and webdesigners to join the project team.</p>\n<p>You have a module idea ?<br />You want to make some improvement ?<br />You wants to get involved in a promising CMS ?</p>','','',1),
+	(27,'en','whats-ionize','What\'s Ionize ?','','','<p>Ionize is an Open Source content management system created by webdesigners for webdesigners.</p><p>Originally <a title=\"Ionize\'s creators\" href=\"http://www.ionizecms.com/en/about\">created by Partikule Studio and Toopixel</a> for their clients, Ionize is today an OpenSource project, so everybody can build easy to maintain websites.</p>',NULL,NULL,1),
+	(28,'en','can-i-help','Can I help ?','','','<p>Because talent is nothing without involvement, we are looking for motivated coders and webdesigners to join the project team.</p><p>You have a module idea ?<br />You want to make some improvement ?<br />You wants to get involved in a promising CMS ?</p>','','',1),
 	(29,'en','send-us-a-message','Send us a message !','','','',NULL,NULL,1),
 	(30,'en','not-logged-in','Not logged in','','','',NULL,NULL,1),
 	(31,'en','hello','Hello','','','<p>Welcome to your account management page.</p>','','',1);
+--#--
 
 
 -- 
 -- Article_media
 -- 
 TRUNCATE `article_media`;
+--#--
+
 INSERT INTO `article_media` (`id_article`, `id_media`, `online`, `ordering`, `url`, `lang_display`)
 VALUES
 	(4,3,1,1,NULL,NULL),
@@ -114,27 +131,34 @@ VALUES
 	(10,4,1,1,NULL,NULL),
 	(15,5,1,2,NULL,NULL),
 	(17,3,1,1,NULL,NULL);
+--#--
 
 
 -- 
 -- Article_type
 -- 
 TRUNCATE `article_type`;
+--#--
+
 INSERT INTO `article_type` (`id_type`, `type`, `ordering`, `description`, `type_flag`)
 VALUES
 	(4,'bloc',0,'',5),
 	(5,'not-logged-in',0,'',1),
 	(6,'logged-in',0,'',4);
+--#--
 
 
 -- 
 -- Category
 -- 
 TRUNCATE `category`;
+--#--
+
 INSERT INTO `category` (`id_category`, `name`, `ordering`)
 VALUES
 	(1,'ionize',0),
 	(2,'website',0);
+--#--
 
 
 
@@ -142,19 +166,23 @@ VALUES
 -- Category_lang
 -- 
 TRUNCATE `category_lang`;
+--#--
+
 INSERT INTO `category_lang` (`id_category`, `lang`, `title`, `subtitle`, `description`)
 VALUES
 	(1,'en','Ionize CMS','',''),
 	(2,'en','Website','',''),
 	(2,'fr','','',''),
 	(2,'tr','','','');
+--#--
 
 
 -- 
 -- Media
 -- 
-
 TRUNCATE `media`;
+--#--
+
 INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `date`, `link`, `square_crop`)
 VALUES
 	(3,'picture','screenshot_ionize_dashboard.jpg','files/screenshot_ionize_dashboard.jpg','files/',NULL,'0000-00-00 00:00:00',NULL,'m'),
@@ -172,13 +200,15 @@ VALUES
 	(15,'picture','ionize_option_panel_095.jpg','files/ionize/ionize_option_panel_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
 	(16,'picture','ionize_page_edit_095.jpg','files/ionize/ionize_page_edit_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m'),
 	(17,'picture','ionize_picture_data_095.jpg','files/ionize/ionize_picture_data_095.jpg','files/ionize/','','0000-00-00 00:00:00','','m');
+--#--
 
 
 -- 
 -- Media_lang
 -- 
-
 TRUNCATE `media_lang`;
+--#--
+
 INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`)
 VALUES
 	('en',4,'Mingun','Alot of young munks live in a monastery next to the Hsinbyume pagoda','Alot of young munks live in a monastery next to the Hsinbyume pagoda'),
@@ -193,24 +223,29 @@ VALUES
 	('en',15,'So Friendly !','','Every component in Ionize CMS is userfriendly'),
 	('en',16,'','',''),
 	('en',17,'','','');
+--#--
 
 
 -- 
 -- Menu
 -- 
 TRUNCATE `menu`;
+--#--
+
 INSERT INTO `menu` (`id_menu`, `name`, `title`, `ordering`)
 VALUES
 	(1,'main','Main menu',NULL),
 	(2,'system','System menu',NULL);
+--#--
 
 
 
 -- 
 -- Page
 -- 
-
 TRUNCATE `page`;
+--#--
+
 INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_type`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `has_url`, `view`, `view_single`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `id_group`, `priority`, `used_by_module`)
 VALUES
 	(1,0,2,0,0,'404',0,0,1,0,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:42:05','0000-00-00 00:00:00',0,1,'','','','','ordering','ASC','',NULL,'',0,0,5,0),
@@ -221,13 +256,15 @@ VALUES
 	(8,0,1,0,0,'services',4,0,1,0,'demo','demo','2012-11-20 22:12:25','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 16:53:44','0000-00-00 00:00:00',1,1,'','','','','ordering','ASC','',NULL,'',0,0,5,0),
 	(9,0,2,0,0,'footer',1,0,1,0,'demo','demo','2012-11-21 11:52:24','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-21 11:52:30','0000-00-00 00:00:00',0,1,'','',NULL,'','ordering','ASC','',NULL,'',0,0,5,0),
 	(10,0,1,0,0,'my-account',7,0,1,0,'demo','demo','2012-12-21 20:11:47','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 10:53:57','0000-00-00 00:00:00',1,1,'page_my_account','',NULL,'','ordering','ASC','',NULL,'',0,0,5,0);
+--#--
 
 
 --
 -- Page_article
 --
-
 TRUNCATE `page_article`;
+--#--
+
 INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`)
 VALUES
 	(1,1,1,NULL,0,NULL,'','','',1),
@@ -254,6 +291,7 @@ VALUES
 	(9,28,1,NULL,2,NULL,'','','',1),
 	(10,30,1,NULL,2,5,'','','',1),
 	(10,31,1,NULL,1,6,'','','',1);
+--#--
 
 
 -- 
@@ -261,6 +299,8 @@ VALUES
 -- 
 		
 TRUNCATE `page_lang`;
+--#--
+
 INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`)
 VALUES
 	('en',1,'404','','404','Can\'t find requested page !','','','','','',1),
@@ -271,12 +311,15 @@ VALUES
 	('en',8,'services','','Services','The very great services we can provide to make you happy','','','','','',1),
 	('en',9,'footer','','Footer','','','','','','',1),
 	('en',10,'my-account','','My account','','','','','','',1);
+--#--
 
 
 -- 
 -- Page_media
 -- 
 TRUNCATE `page_media`;
+--#--
+
 INSERT INTO `page_media` (`id_page`, `id_media`, `online`, `ordering`, `lang_display`)
 VALUES
 	(2,4,1,13,NULL),
@@ -284,11 +327,14 @@ VALUES
 	(2,6,1,1,NULL),
 	(2,7,1,11,NULL),
 	(2,8,1,12,NULL);
+--#--
 
 --
 -- URL
 --
 TRUNCATE `url`;
+--#--
+
 INSERT INTO `url` (`id_url`, `id_entity`, `type`, `canonical`, `active`, `lang`, `path`, `path_ids`, `full_path_ids`, `creation_date`)
 VALUES
 	(596,4,'article',1,1,'en','home/the-power-of-php','2/4','2/4','2012-12-23 01:05:34'),
@@ -324,3 +370,4 @@ VALUES
 	(630,10,'page',1,1,'en','my-account','10','10','2012-12-28 19:56:07'),
 	(631,30,'article',1,1,'en','my-account/not-logged-in','10/30','10/30','2012-12-28 19:56:07'),
 	(632,31,'article',1,1,'en','my-account/hello','10/31','10/31','2012-12-28 19:56:07');
+--#--

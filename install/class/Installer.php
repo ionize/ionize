@@ -290,7 +290,7 @@ class Installer
 			{
 				$file = read_file('./database/demo_data.sql');
 
-				$requests = explode(';'."\n", $file);
+				$requests = explode('--#--', $file);
 
 				foreach($requests as $request)
 				{
