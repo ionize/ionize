@@ -547,10 +547,10 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 
 DELETE FROM setting WHERE name='ionize_version';
-INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9', NULL);
+INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9.1', NULL);
 
 DELETE FROM setting WHERE name='media_upload_mode';
-INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '0', '');
+INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');

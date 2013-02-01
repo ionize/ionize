@@ -12,15 +12,12 @@
 --
 TRUNCATE TABLE `lang`;
 --#--
-
 INSERT INTO `lang` (`lang`, `name`, `online`, `def`, `ordering`) VALUES	('en','english','1','1',1);
 --#--
 UPDATE setting SET `content`='foundation' WHERE `name`='theme';
 --#--
-
 DELETE FROM `setting` WHERE `name`='site_title';
 --#--
-
 INSERT INTO `setting` VALUES('', 'site_title', 'Ionize CMS', 'en');
 --#--
 
