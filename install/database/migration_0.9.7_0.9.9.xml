@@ -19,7 +19,7 @@
 	</query>
 
 	<query>
-		update setting set content='0.9.9' where name = 'ionize_version';
+		update setting set content='0.9.9.2' where name = 'ionize_version';
 	</query>
 
 	<query>

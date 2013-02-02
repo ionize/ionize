@@ -67,7 +67,7 @@ class Extend_field_model extends Base_model
 	 *
 	 * @return array
 	 */
-	public function get_lang_list($where = array(), $lang)
+	public function get_lang_list($where = array(), $lang = NULL)
 	{
 		$where['order_by'] = 'ordering ASC';
 		return parent::get_lang_list($where, $lang);
