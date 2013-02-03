@@ -22,15 +22,15 @@
  *
  */
 
-class Base_model extends CI_Model 
+class Base_model extends CI_Model
 {
 	/*
 	 * Stores if this model is already loaded or not.
 	 *
-	 */ 
+	 */
 	protected static $_inited = FALSE;
-	
-	
+
+
 	public $db_group = 'default';
 
 
@@ -47,7 +47,7 @@ class Base_model extends CI_Model
 	 *
 	 */
 	public $pk_name = NULL;
-	
+
 	/*
 	 * Lang table of elements
 	 * For example, "page" has a corresponding lang table called "page_lang"
@@ -59,7 +59,7 @@ class Base_model extends CI_Model
 	 * Extended fields definition table
 	 * This table contains definition of each extended field
 	 *
-	 */ 
+	 */
 	public $extend_field_table = 	'extend_field';
 
 	/*
@@ -81,7 +81,7 @@ class Base_model extends CI_Model
 	 * "page" is a type of data.
 	 */
 	protected $extend_fields_def = array();
-	
+
 
 	public $limit 	= NULL;		// Query Limit
 	public $offset 	= NULL;		// Query Offset
@@ -94,7 +94,7 @@ class Base_model extends CI_Model
 	 */
 	protected static $publish_filter = TRUE;
 
-	
+
 	/*
 	 * Array of table names on which media can be linked
 	 *
@@ -108,12 +108,12 @@ class Base_model extends CI_Model
 	 */
 	protected $with_elements = array('page', 'article');
 
-	
+
 	/*
 	 * Elements definition table
 	 * This table contains definition of each element
 	 *
-	 */ 
+	 */
 	public $element_definition_table = 		'element_definition';
 	public $element_definition_lang_table = 	'element_definition_lang';
 
@@ -130,27 +130,27 @@ class Base_model extends CI_Model
 	 *
 	 */
 	protected $got_elements_def = FALSE;
-	
+
 	/*
 	 * Array of elements definition
 	 * Contains all the elements definition.
 	 */
 	protected $elements_def = array();
-	
+
 	/*
 	 * Array of languages
 	 *
 	 */
 	protected $_languages = NULL;
 
-	
+
 	/*
 	 * Local store of list_fields results
 	 *
 	 */
 	protected $_list_fields = array();
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -162,13 +162,13 @@ class Base_model extends CI_Model
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		if (is_null($this->db_group))
 		{
 			include(APPPATH . 'config/database.php');
 			$this->db_group = $active_group;
 		}
-		
+
 		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE);
 
 		if(self::$_inited)
@@ -183,7 +183,7 @@ class Base_model extends CI_Model
 //		$CI =& get_instance();
 //		$CI->{$this->db_group} = $CI->load->database($this->db_group, TRUE);
 //		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE);
-		
+
 		// Unlock the publish filter (filter on publish status of each item)
 		if (Connect()->is('editors'))
 		{
@@ -207,8 +207,8 @@ class Base_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
-	
-	/** 
+
+	/**
 	 * Get one element
 	 *
 	 * @param	string		where array
@@ -234,7 +234,7 @@ class Base_model extends CI_Model
 		{
 			$this->{$this->db_group}->select($this->table.'.*', FALSE);
 		}
-	
+
 		if ( is_array($where) )
 		{
 			foreach ($where as $key => $value)
@@ -246,27 +246,27 @@ class Base_model extends CI_Model
 		{
 			$this->{$this->db_group}->where($this->table.'.'.$this->pk_name, $where);
 		}
-		
+
 		$query = $this->{$this->db_group}->get($this->table);
 
 		if ( $query->num_rows() > 0)
 		{
 			$data = $query->row_array();
 			$query->free_result();
-				
+
 			// Add medias to data array
 			if (in_array($this->table, $this->with_media_table))
 				$this->add_linked_media($data, $this->table, $lang);
-			
+
 		}
-		
+
 		return $data;
 	}
 
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Get a resultset Where
 	 *
@@ -283,7 +283,7 @@ class Base_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Get all the records
 	 *
@@ -294,9 +294,9 @@ class Base_model extends CI_Model
 	public function get_all($table = NULL)
 	{
 		$table = (!is_null($table)) ? $table : $this->table;
-		
+
 		$query = $this->{$this->db_group}->get($table);
-		
+
 		return $query->result();
 	}
 
@@ -316,7 +316,7 @@ class Base_model extends CI_Model
 	{
 		$this->{$this->db_group}->where($this->pk_name, $id);
 		$query = $this->{$this->db_group}->get($this->table);
-		
+
 		return $query->row();
 	}
 
@@ -384,7 +384,7 @@ class Base_model extends CI_Model
 		$data = array();
 
 		$table = (!is_null($table)) ? $table : $this->table;
-		
+
 		// Perform conditions from the $where array
 		foreach(array('limit', 'offset', 'order_by', 'like') as $key)
 		{
@@ -421,32 +421,32 @@ class Base_model extends CI_Model
 		}
 
 		$this->{$this->db_group}->select($table.'.*');
-		
+
 		$query = $this->{$this->db_group}->get($table);
 
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();
 
 		$query->free_result();
-		
+
 		return $data;
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Get element lang data (from lang table only)
 	 *
 	 * @param 	string	Element ID. Optional. If not set, returns all the lang table records
 	 * @param	array	Arraylist of all translations rows
-	 *  
+	 *
 	 */
 	function get_lang($where = NULL)
 	{
 		$data = array();
-		
+
 		if ($this->lang_table != '')
 		{
 			if ( is_array($where))
@@ -466,12 +466,12 @@ class Base_model extends CI_Model
 			{
 				$this->{$this->db_group}->where($this->pk_name, $where);
 			}
-		
+
 			$query = $this->{$this->db_group}->get($this->lang_table);
 
 			if ( $query->num_rows() > 0 )
 				$data = $query->result_array();
-			
+
 			$query->free_result();
 		}
 		return $data;
@@ -488,7 +488,7 @@ class Base_model extends CI_Model
 	 *	@param	string	Language code
 	 *	@param	number	Limit to x records
 	 *	@param	string	complete LIKE String
-	 *	
+	 *
 	 *	@return	array	The complete arrayList of element, including medias
 	 *
 	 */
@@ -515,7 +515,7 @@ class Base_model extends CI_Model
 			// $this->{$this->db_group}->where($this->lang_table.'.lang', $lang);
 		}
 
-		// Main data select			
+		// Main data select
 		$this->{$this->db_group}->select($this->table.'.*', FALSE);
 
 		$query = $this->{$this->db_group}->get($this->table);
@@ -525,7 +525,7 @@ class Base_model extends CI_Model
 			$data = $query->result_array();
 			$query->free_result();
 
-			// Add linked medias to the "media" index of the data array		
+			// Add linked medias to the "media" index of the data array
 			if (in_array($this->table, $this->with_media_table))
 				$this->add_linked_media($data, $this->table, $lang);
 
@@ -555,15 +555,15 @@ class Base_model extends CI_Model
 	function get_from_urls($urls, $excluded_id)
 	{
 		$data = array();
-		
+
 		if ( ! is_array($urls))
 			$urls = array_values(array($urls));
-		
-		// Main data select						
+
+		// Main data select
 		$this->{$this->db_group}->select($this->table.'.*', FALSE);
-		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
+		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');
 		$this->{$this->db_group}->where_in($this->lang_table.'.url', $urls);
-		
+
 		// Add excluded IDs to the statement
 		if ($excluded_id !='' && !is_array($excluded_id))
 			$excluded_id = array($excluded_id);
@@ -572,16 +572,16 @@ class Base_model extends CI_Model
 		{
 			$this->{$this->db_group}->where_not_in($this->lang_table.'.id_'.$this->table, $excluded_id);
 		}
-		
-		
+
+
 		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();
 			$query->free_result();
-		}		
-		
+		}
+
 		return $data;
 	}
 
@@ -623,18 +623,18 @@ class Base_model extends CI_Model
 	function get_joined_items_keys($items_table, $parent_table, $parent_id, $prefix='')
 	{
 		$data = array();
-		
+
 		// N to N table
 		$link_table = $prefix.$parent_table.'_'.$items_table;
-		
+
 		// Items table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($items_table);
 		$items_table_pk = $fields[0];
-		
+
 		// Parent table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($parent_table);
 		$parent_table_pk = $fields[0];
-		
+
 		$this->{$this->db_group}->where($parent_table_pk, $parent_id);
 		$this->{$this->db_group}->select($items_table_pk);
 		$query = $this->{$this->db_group}->get($link_table);
@@ -643,7 +643,7 @@ class Base_model extends CI_Model
 		{
 			$data[] = $row->$items_table_pk;
 		}
-		
+
 		return $data;
 	}
 
@@ -666,10 +666,10 @@ class Base_model extends CI_Model
 	function get_linked_items($first_table, $second_table, $cond, $join=1, $prefix = '')
 	{
 		$data = array();
-		
+
 		$second_pk_name = $this->get_pk_name($second_table);
 		$first_pk_name = $this->get_pk_name($first_table);
-		
+
 		// N to N table
 		$link_table = $prefix.$first_table.'_'.$second_table;
 
@@ -687,14 +687,14 @@ class Base_model extends CI_Model
 		{
 			$this->{$this->db_group}->join($first_table, $first_table.'.'.$first_pk_name.' = '.$link_table.'.'.$first_pk_name);
 		}
-		
+
 		$query = $this->{$this->db_group}->get();
 
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();
-		}			
-		
+		}
+
 		return $data;
 	}
 
@@ -717,29 +717,29 @@ class Base_model extends CI_Model
 	function get_linked_lang_items($parent_table, $child_table, $cond, $lang, $prefix = '')
 	{
 		$data = array();
-		
+
 		$child_pk_name = $this->get_pk_name($child_table);
-		
+
 		// N to N table
 		$link_table = $prefix.$parent_table.'_'.$child_table;
-		
+
 		// Child lang table
 		$child_lang_table = $child_table.'_lang';
 
 		$this->{$this->db_group}->from($link_table);
 		$this->{$this->db_group}->where($this->correct_ambiguous_conditions($cond,$link_table) );
 		$this->{$this->db_group}->where('lang', $lang);
-		
+
 		$this->{$this->db_group}->join($child_table, $child_table.'.'.$child_pk_name.' = '.$link_table.'.'.$child_pk_name);
 		$this->{$this->db_group}->join($child_lang_table, $child_lang_table.'.'.$child_pk_name.' = '.$child_table.'.'.$child_pk_name);
-		
+
 		$query = $this->{$this->db_group}->get();
 
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();
-		}			
-		
+		}
+
 		return $data;
 	}
 
@@ -762,7 +762,7 @@ class Base_model extends CI_Model
 	function get_items_select($items_table, $field, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		$data = array();
-		
+
 		// Add the Zero value item
 		if ( ! is_null($nothing_value))
 			$data = array('0' => $nothing_value);
@@ -794,7 +794,7 @@ class Base_model extends CI_Model
 				$data[$row->$items_table_pk] = $row->$field;
 			}
 		}
-		
+
 		return $data;
 	}
 
@@ -920,21 +920,21 @@ class Base_model extends CI_Model
 	function simple_search($term, $field, $limit)
 	{
 		$data = array();
-		
+
 		$this->{$this->db_group}->like($this->table.'.'.$field, $term);
 
 		$this->{$this->db_group}->limit($limit);
-		
+
 		$this->{$this->db_group}->select($this->pk_name.','.$field);
-		
+
 		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();
 		}
-		
-		return $data;	
+
+		return $data;
 	}
 
 
@@ -948,7 +948,7 @@ class Base_model extends CI_Model
 	function get_pk_name($table)
 	{
 		$fields = $this->{$this->db_group}->field_data($table);
-		
+
 		foreach ($fields as $field)
 		{
 			if ($field->primary_key)
@@ -963,7 +963,7 @@ class Base_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Sets the current table
 	 *
@@ -1008,7 +1008,7 @@ class Base_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Adds the current table to the the which have one media table
 	 *
@@ -1022,7 +1022,7 @@ class Base_model extends CI_Model
 	{
 		if ( is_null($table))
 			$table = $this->table;
-		
+
 		if ( ! in_array($table, $this->with_media_table))
 			array_push($this->with_media_table, $table);
 	}
@@ -1041,8 +1041,8 @@ class Base_model extends CI_Model
 			$lang_data[$l['lang']]['url'] = $this->_set_unique_url($lang_data[$l['lang']]['url'], $exclude_id);
 		}
 	}
-	 */ 
-	
+	 */
+
 
 	// ------------------------------------------------------------------------
 
@@ -1051,16 +1051,16 @@ class Base_model extends CI_Model
 	{
 
 		$articles = $this->get_from_urls($url, $exclude_id);
-		
+
 		if ( ! empty($articles))
 		{
 			// Remove the existing last number
 			if ($id > 1)
 				$url = substr($url,0,-2);
-			
+
 			// Add the last ID
 			$url = $url . '-' . $id;
-			
+
 			// Check the new URL
 			return $this->_set_unique_url($url, $exclude_id, $id+1);
 		}
@@ -1087,13 +1087,13 @@ class Base_model extends CI_Model
 		// Loads the model if it isn't loaded
 		if (!isset($CI->element_definition_model))
 			$CI->load->model('element_definition_model');
-			
+
 		// Get the extend fields definition if not already got
 		if ($this->got_elements_def == FALSE)
 		{
 			// Store the extend fields definition
 			$this->elements_def = $CI->element_definition_model->get_lang_list(FALSE, $lang);
-			
+
 			// Set this to true so we don't get the extend field def a second time for an object of same kind
 			$this->got_elements_def = TRUE;
 		}
@@ -1126,7 +1126,7 @@ class Base_model extends CI_Model
 		{
 			// Remove the ID so the generated SQL will be clean (no empty String insert in the table PK field)
 			unset($data[$this->pk_name]);
-			
+
 			$this->{$this->db_group}->insert($this->table, $data);
 			$id = $this->{$this->db_group}->insert_id();
 		}
@@ -1153,7 +1153,7 @@ class Base_model extends CI_Model
 									$this->pk_name => $id,
 									'lang' => $lang
 								  );
-	
+
 						// Update
 						if( $this->exists($where, $this->lang_table))
 						{
@@ -1166,7 +1166,7 @@ class Base_model extends CI_Model
 							// Correct lang & pk field on lang data array
 							$data['lang'] = $lang;
 							$data[$this->pk_name] = $id;
-							
+
 							$this->{$this->db_group}->insert($this->lang_table, $data);
 						}
 					}
@@ -1195,17 +1195,17 @@ class Base_model extends CI_Model
 		}
 		$new_order = '';
 		$i = 1;
-		
-		while (list ($rank, $id) = each ($ordering))	
+
+		while (list ($rank, $id) = each ($ordering))
 		{
 			$this->{$this->db_group}->where($this->pk_name, $id);
 			$this->{$this->db_group}->set('ordering', $i++);
-			
+
 			// If parent table is defined, save ordering in the join table
 			if ($parent !== FALSE)
 			{
 				$parent_pk = $this->get_pk_name($parent);
-				
+
 				$this->{$this->db_group}->where($parent.'_'.$this->table.'.'.$parent_pk, $id_parent);
 				$this->{$this->db_group}->update($parent.'_'.$this->table);
 			}
@@ -1213,10 +1213,10 @@ class Base_model extends CI_Model
 			{
 				$this->{$this->db_group}->update($this->table);
 			}
-					
+
 			$new_order .= $id.",";
 		}
-		
+
 		return substr($new_order, 0, -1);
 	}
 
@@ -1238,31 +1238,31 @@ class Base_model extends CI_Model
 	function save_simple_link($parent_table, $id_parent, $child_table, $id_child, $context_data = array(), $prefix='')
 	{
 		$link_table = $prefix.$parent_table.'_'.$child_table;
-	
+
 		// PK fields
 		$parent_pk_name = $this->get_pk_name($parent_table);
 		$child_pk_name = $this->get_pk_name($child_table);
-	
+
 		if (FALSE == $this->exists(array($parent_pk_name => $id_parent, $child_pk_name => $id_child), $link_table) )
 		{
 			$data = array(
 				$parent_pk_name => $id_parent,
 				$child_pk_name => $id_child
 			);
-						
+
 			if ( ! empty($context_data) )
 			{
 				// Cleans the context data array by removing data not in context table
 				$context_data = $this->clean_data($context_data, $link_table);
-				
-				$data = array_merge($context_data, $data);				
+
+				$data = array_merge($context_data, $data);
 			}
-			
+
 			$this->{$this->db_group}->insert($link_table, $data);
 
 			return TRUE;
 		}
-		
+
 		return FALSE;
 	}
 
@@ -1296,7 +1296,7 @@ class Base_model extends CI_Model
 	{
 		// N to N table
 		$link_table = $prefix.$parent_table.'_'.$child_table;
-		
+
 		// PK fields
 		$parent_pk_name = $this->get_pk_name($parent_table);
 		$child_pk_name = $this->get_pk_name($child_table);
@@ -1308,8 +1308,8 @@ class Base_model extends CI_Model
 
 		// nb inserted items
 		$nb = 0;
-		
-		// Insert 
+
+		// Insert
 		if ( !empty($items) )
 		{
 			foreach($items as $item)
@@ -1326,7 +1326,7 @@ class Base_model extends CI_Model
 				}
 			}
 		}
-		
+
 		return $nb;
 	}
 
@@ -1337,7 +1337,7 @@ class Base_model extends CI_Model
 	/**
 	 * Unlink one parent and one child
 	 *
-	 * TODO : Replace function "delete_joined_keys" by this 
+	 * TODO : Replace function "delete_joined_keys" by this
 	 *
 	 * @param	Mixed	Parent table PK value
 	 * @param	String	Child table name
@@ -1349,7 +1349,7 @@ class Base_model extends CI_Model
 	{
 		// N to N table
 		$link_table = $prefix.$parent_table.'_'.$child_table;
-		
+
 		// PK fields
 		$parent_pk_name = $this->get_pk_name($parent_table);
 		$child_pk_name = $this->get_pk_name($child_table);
@@ -1384,7 +1384,7 @@ class Base_model extends CI_Model
 			$this->{$this->db_group}->join('media_lang', 'media.id_media = media_lang.id_media', 'left outer');
 			$this->{$this->db_group}->where('(media_lang.lang =\'', $lang.'\' OR media_lang.lang is null )', FALSE);
 		}
-		
+
 		$query = $this->{$this->db_group}->get();
 
 		$result = array();
@@ -1461,23 +1461,23 @@ class Base_model extends CI_Model
 		{
 			$ids[] = $element[$id];
 		}
-		
+
 		if ( ! empty($ids))
 		{
 			$this->{$this->db_group}->select($id .',' .$parent . '_lang.lang,' . $parent . '_lang.url');
 			$this->{$this->db_group}->where($id . ' in (' . implode(',' , $ids ) . ')' );
 			$this->{$this->db_group}->from($parent . '_lang');
-		
+
 			$query = $this->{$this->db_group}->get();
-	
+
 			$result = array();
-	
+
 			// Feed each media array
 			if($query->num_rows() > 0)
 				$result = $query->result_array();
-	
+
 			$languages = Settings::get_languages();
-			
+
 			// data must be a list of arrays
 			if (isset($data[0]) && is_array($data[0]))
 			{
@@ -1510,14 +1510,14 @@ class Base_model extends CI_Model
 
 	/**
 	 * Add extended fields and their values if website settings allow it.
-	 * 
+	 *
 	 * @param	Array	Data array. By ref.
 	 * @param	String	Parent type. can be "page", "article", etc.
 	 * @param	String	Lang code
 	 *
 	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
-	{	
+	{
 		// get the extend fields definition array
 		$efd = $this->get_extend_fields_definition($parent);
 
@@ -1627,23 +1627,23 @@ class Base_model extends CI_Model
 	{
 		// N to N table
 		$link_table = $parent_table.'_'.$items_table;
-		
+
 		// Items table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($items_table);
 		$items_table_pk = $fields[0];
-		
+
 		// Parent table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($parent_table);
 		$parent_table_pk = $fields[0];
-		
+
 		// Delete existing link between items table and parent table
 		$this->{$this->db_group}->where($parent_table_pk, $parent_id);
 		$this->{$this->db_group}->delete($link_table);
 
 		// nb inserted items
 		$nb = 0;
-		
-		// Insert 
+
+		// Insert
 		if ( !empty($items) )
 		{
 			foreach($items as $item)
@@ -1660,7 +1660,7 @@ class Base_model extends CI_Model
 				}
 			}
 		}
-		
+
 		return $nb;
 	}
 
@@ -1683,11 +1683,11 @@ class Base_model extends CI_Model
 	{
 		// N to N table
 		$link_table = $parent_table.'_'.$items_table;
-		
+
 		// Items table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($items_table);
 		$items_table_pk = $fields[0];
-		
+
 		// Parent table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($parent_table);
 		$parent_table_pk = $fields[0];
@@ -1716,15 +1716,15 @@ class Base_model extends CI_Model
 	{
 		// Current status
 		$status = $this->get_row($id)->online;
-	
+
 		// New status
 		($status == 1) ? $status = 0 : $status = 1;
 
-		// Save		
+		// Save
 		$this->{$this->db_group}->where($this->pk_name, $id);
 		$this->{$this->db_group}->set('online', $status);
 		$this->{$this->db_group}->update($this->table);
-		
+
 		return $status;
 	}
 
@@ -1778,14 +1778,14 @@ class Base_model extends CI_Model
 					$template[$lang] = $row;
 				}
 			}
-			
+
 			// Language not defined : Feed with blank data
 			if( ! isset($template[$lang]))
 			{
 				// Get lang_table fields if we don't already have them
 				if (is_null($fields))
 					$fields = $this->{$this->db_group}->list_fields($this->lang_table);
-				
+
 				// If no fields here, no lang table exists, so feed nothing
 				if ($fields)
 				{
@@ -1840,20 +1840,20 @@ class Base_model extends CI_Model
 	function feed_blank_lang_template(&$template = FALSE)
 	{
 		if ($template == FALSE) $template = array();
-	
+
 		$fields = $this->{$this->db_group}->list_fields($this->lang_table);
 
 		$fields_data = $this->field_data($this->lang_table);
-					
+
 		foreach(Settings::get_languages() as $language)
 		{
 			$lang = $language['lang'];
-			
+
 			foreach ($fields as $field)
 			{
 				$field_data = array_values(array_filter($fields_data, create_function('$row', 'return $row["field"] == "'. $field .'";')));
 				$field_data = (isset($field_data[0])) ? $field_data[0] : FALSE;
-				
+
 				$template[$lang][$field] = (isset($field_data['default'])) ? $field_data['default'] : '';
 			}
 		}
@@ -1864,9 +1864,9 @@ class Base_model extends CI_Model
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Switch the publish filter off
-	 * 
+	 *
 	 */
 	public function unlock_publish_filter()
 	{
@@ -1895,11 +1895,11 @@ class Base_model extends CI_Model
 		
 		return $this->{$this->db_group}->insert_id();
 	}
-	
+
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Update a row
 	 *
@@ -1915,7 +1915,7 @@ class Base_model extends CI_Model
 	public function update($where = NULL, $data = NULL, $table = FALSE)
 	{
 		$table = (FALSE !== $table) ? $table : $this->table;
-	
+
 		if ( is_array($where) )
 		{
 			$this->{$this->db_group}->where($where);
@@ -1925,16 +1925,16 @@ class Base_model extends CI_Model
 			$pk_name = $this->get_pk_name($table);
 			$this->{$this->db_group}->where($pk_name, $where);
 		}
-	
+
 		$this->{$this->db_group}->update($table, $data);
-		
+
 		return (int) $this->{$this->db_group}->affected_rows();
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Delete a row
 	 *
@@ -1949,7 +1949,7 @@ class Base_model extends CI_Model
 	public function delete($where = NULL, $table = FALSE)
 	{
 		$table = (FALSE !== $table) ? $table : $this->table;
-		
+
 		if ( is_array($where) )
 		{
 			$this->{$this->db_group}->where($where);
@@ -1959,16 +1959,16 @@ class Base_model extends CI_Model
 			$pk_name = $this->get_pk_name($table);
 			$this->{$this->db_group}->where($pk_name, $where);
 		}
-	
+
 		$this->{$this->db_group}->delete($table);
 
 		return (int) $this->{$this->db_group}->affected_rows();
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Count all rows in a table or count all results from the current query
 	 *
@@ -1987,14 +1987,14 @@ class Base_model extends CI_Model
 		{
 			$query = $this->{$this->db_group}->count_all($this->table);
 		}
-		
+
 		return (int) $query;
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Empty table
 	 *
@@ -2007,10 +2007,10 @@ class Base_model extends CI_Model
 		$this->{$this->db_group}->empty_table($this->table);
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Check if a record exists in a table
 	 *
@@ -2024,7 +2024,7 @@ class Base_model extends CI_Model
 	public function exists($where = NULL, $table = NULL)
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
-		
+
 		$query = $this->{$this->db_group}->get_where($table, $where, FALSE);
 
 		if ($query->num_rows() > 0)
@@ -2032,8 +2032,8 @@ class Base_model extends CI_Model
 		else
 			return FALSE;
 	}
-		
-	
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -2103,11 +2103,11 @@ class Base_model extends CI_Model
 
 		return $data;
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Check for a table field
 	 *
@@ -2119,15 +2119,15 @@ class Base_model extends CI_Model
 	function has_field($field, $table = NULL)
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
-		
+
 		$fields = $this->{$this->db_group}->list_fields($table);
 
 		if (in_array($field, $fields)) return TRUE;
-		
+
 		return FALSE;
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -2141,20 +2141,20 @@ class Base_model extends CI_Model
 	function clean_data($data, $table = FALSE)
 	{
 		$cleaned_data = array();
-	
+
 		if ( ! empty($data))
 		{
 			$table = ($table !== FALSE) ? $table : $this->table;
-			
+
 			$fields = $this->{$this->db_group}->list_fields($table);
-			
+
 			$fields = array_fill_keys($fields,'');
-	
+
 			$cleaned_data = array_intersect_key($data, $fields);
 		}
 		return $cleaned_data;
 	}
-	
+
 
 
 	// ------------------------------------------------------------------------
@@ -2169,11 +2169,11 @@ class Base_model extends CI_Model
 	 *	where ...
 	 *	ORDER BY ordering ASC;
 	 *
-	 */	
+	 */
 	public function reorder($table = NULL, $where = array())
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
-		
+
 		if ($this->has_field('ordering', $table))
 		{
 			$query = $this->{$this->db_group}->query("SET @rank=0");
@@ -2191,12 +2191,12 @@ class Base_model extends CI_Model
 			$this->{$this->db_group}->order_by('ordering ASC');
 			$this->{$this->db_group}->set('ordering', '@rank:=@rank+1', FALSE);
 			$this->{$this->db_group}->where($where);
-			
+
 			return $this->{$this->db_group}->update($table);
 		}
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -2224,7 +2224,7 @@ class Base_model extends CI_Model
 		}
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -2236,11 +2236,11 @@ class Base_model extends CI_Model
 		return $this->db_group;
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Get languages from LANG table
 	 *
 	 * @return	The lang array
@@ -2253,12 +2253,12 @@ class Base_model extends CI_Model
 
 		return $this->_languages;
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * List fields from one table of the current DB group
 	 * and stores the result locally.
 	 *
@@ -2272,9 +2272,9 @@ class Base_model extends CI_Model
 
 		if (isset($this->_list_fields[$this->db_group.'_'.$table]))
 			return $this->_list_fields[$this->db_group.'_'.$table];
-		
+
 		$this->_list_fields[$this->db_group.'_'.$table] = $this->{$this->db_group}->list_fields($table);
-		
+
 		return $this->_list_fields[$this->db_group.'_'.$table];
 	}
 
@@ -2322,6 +2322,10 @@ class Base_model extends CI_Model
 				if ($value == 'NULL')
 				{
 					$this->{$this->db_group}->where($key. ' IS NULL', NULL, FALSE);
+				}
+				//ron: what about raw commands (a between b and c) OR (d between b and c)
+				elseif($key == "RAW") {
+					$this->{$this->db_group}->where($value, NULL, FALSE);
 				}
 				else
 				{
