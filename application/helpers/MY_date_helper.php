@@ -45,7 +45,7 @@ if ( ! function_exists('isDate'))
 	}
 }
 
-/** 
+/**
  * Return DD.MM.YYYY HH:MM:SS from a MySQL datetime
  * @param	String		MySQL datetime as String
  * @return	String		French formatted datetime
@@ -53,13 +53,13 @@ if ( ! function_exists('isDate'))
  */
 if ( ! function_exists('getFrenchDatetime'))
 {
-	function getFrenchDatetime($mysqlDatetime) 
+	function getFrenchDatetime($mysqlDatetime)
 	{
-		if($mysqlDatetime != "0000-00-00 00:00:00" && $mysqlDatetime !="") 
+		if($mysqlDatetime != "0000-00-00 00:00:00" && $mysqlDatetime !="")
 		{
-			if (($timestamp = strtotime($mysqlDatetime)) == '-1') 
+			if (($timestamp = strtotime($mysqlDatetime)) == '-1')
 			{
-				return $mysqlDatetime;	
+				return $mysqlDatetime;
 			}
 			else {
 				return date("d.m.Y H:i:s", $timestamp);
@@ -71,14 +71,14 @@ if ( ! function_exists('getFrenchDatetime'))
 	}
 }
 
-/** 
+/**
  * MySQL datetime from a DD.MM.YYYY string
  * @param	String	French formatted datetime
  * @param	String	MySQL formatted datetime
  */
 if ( ! function_exists('getMysqlDatetime'))
 {
-	function getMysqlDatetime($inputDate, $inputFormat='dd.mm.yyyy') 
+	function getMysqlDatetime($inputDate, $inputFormat='dd.mm.yyyy')
 	{
 		if ($inputDate !='')
 		{
@@ -92,7 +92,9 @@ if ( ! function_exists('getMysqlDatetime'))
 				$date = $inputDate;
 				$time = '00:00:00';
 			}
-			
+
+			//maybe better for all cases: return date("Y-m-d H:i:s", strtotime(inputDate));
+
 			if ($inputFormat == '%d.%m.%Y')
 			{
 				list($day, $month, $year) = preg_split("/[\/.-]/", $date);
@@ -101,7 +103,11 @@ if ( ! function_exists('getMysqlDatetime'))
 			{
 				list($year, $month, $day) = preg_split("/[\/.-]/", $date);
 			}
-	
+			//ron: adding dd.mm.yyyy (see default inputFormat...)
+			//     in case of relying on automagical conversion
+			else
+				return date("Y-m-d H:i:s", strtotime($inputDate));
+
 			return "$year-$month-$day $time";
 		}
 	}
@@ -110,20 +116,20 @@ if ( ! function_exists('getMysqlDatetime'))
 
 if ( ! function_exists('humanize_mdate'))
 {
-	function humanize_mdate($mdate, $datestr = '%d.%m.%Y at %H:%i:%s') 
+	function humanize_mdate($mdate, $datestr = '%d.%m.%Y at %H:%i:%s')
 	{
 		if ($mdate != '' && $mdate != "0000-00-00 00:00:00")
 		{
 			$timestamp 	= strtotime($mdate);
 			$datestr 	= str_replace('%\\', '', preg_replace("/([a-z]+?){1}/i", "\\\\\\1", $datestr));
-				
+
 			return date($datestr, $timestamp);
 		}
 	}
 }
 
 
-/** 
+/**
  * Days count between 2 dates
  * @note	Not used for the moment.
 function getDaysBetween($debut, $fin) {
@@ -131,7 +137,7 @@ function getDaysBetween($debut, $fin) {
   $tDeb = explode(".", $debut);
   $tFin = explode(".", $fin);
 
-  $diff = mktime(0, 0, 0, $tFin[1], $tFin[0], $tFin[2]) - 
+  $diff = mktime(0, 0, 0, $tFin[1], $tFin[0], $tFin[2]) -
 		  mktime(0, 0, 0, $tDeb[1], $tDeb[0], $tDeb[2]);
 
   return(($diff / 86400)+1);
