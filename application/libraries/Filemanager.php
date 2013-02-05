@@ -489,7 +489,7 @@ class FileManager
 			'maxUploadSize' => 2600 * 2600 * 3,
 
 			// Extract additional data by using ID3 ?
-			'useGetID3' => false,
+			'useGetID3' => FALSE,
 
 			// Allow to specify the "Resize Large Images" tolerance level.
 			'maxImageDimension' => array('width' => 1024, 'height' => 768),
@@ -509,6 +509,8 @@ class FileManager
 			'allowed_extensions' => NULL,		// Array of allowed extensions. Bypass the 'safe' mode.
 			'chmod' => 0777,
 			'cleanFileName' => TRUE,
+			'cleanFileNameDelimiter' => '_',
+			'hashMethod' => 'sha256',
 
 			'DetailIsAuthorized_cb' => NULL,
 			'UploadIsAuthorized_cb' => NULL,
@@ -1146,7 +1148,7 @@ class FileManager
 			if ( ! empty($file_arg))
 			{
 				$filename = basename($file_arg);
-				$filename = $this->cleanFilename($filename, array(), '_');
+				$filename = $this->cleanFilename($filename);
 
 				if (!$this->IsHiddenNameAllowed($file_arg))
 				{
@@ -1398,10 +1400,12 @@ class FileManager
 
 		// Prepare the response
 		$response = array(
+			'method'	=> 'html5',
 			'id'    	=> ! empty($headers['X-File-Id']) ? $headers['X-File-Id'] : NULL,
-			'directory' => $directory,
 			'name'  	=> basename($headers['X-File-Name']),
-			'size'  	=> $headers['Content-Length'],
+			'directory' => $directory,
+			'files_dir' => $this->options['filesDir'],
+			'size'  	=> ! empty($headers['Content-Length']) ? $headers['Content-Length'] : '0',
 			'error' 	=> UPLOAD_ERR_OK,
 			'finish' 	=> FALSE,
 		);
@@ -1453,7 +1457,9 @@ class FileManager
 
 			// Creates safe file names
 			if ($this->options['cleanFileName'])
-				$filename = $this->cleanFilename($filename, array(), '_');
+			{
+				$filename = $this->cleanFilename($filename);
+			}
 
 			// Creates directory if it doesn't exists
 			if ( ! is_dir($dir))
@@ -1476,7 +1482,17 @@ class FileManager
 				// Upload finished ?
 				if (filesize($file_path) >= $headers['X-File-Size'])
 				{
+					// Relative complete path, including "files" directory
+					$path = $this->get_legal_path($legal_dir_url) . $filename;
+
 					$response['finish'] = TRUE;
+					$response['original_name'] = $response['name'];
+					$response['name'] = $filename;
+					$response['path'] = $path;
+					$response['path_hash'] = $this->getHash($path);
+
+					// Event
+					Event::fire('Filemanager.upload.success', $response);
 
 					// Prevent execution
 					@chmod($file_path, $this->options['chmod'] & 0666);
@@ -1494,6 +1510,9 @@ class FileManager
 		{
 			$response['error'] = $e->getMessage();
 			$response['finish'] = TRUE;
+
+			// Event
+			Event::fire('Filemanager.upload.error', $response);
 		}
 
 		return $response;
@@ -1516,9 +1535,11 @@ class FileManager
 			foreach ($_FILES as $k => $file)
 			{
 				$response = array(
+					'method' => 		'html4',
 					'key' => 			(int)substr($k, strpos($k, $file_input_prefix) + strlen($file_input_prefix)),
 					'name' => 			basename($file['name']),
-					'upload_name' => 	$file['name'],
+					'directory' => 		$directory,
+					'files_dir' => 		$this->options['filesDir'],
 					'size' => 			$file['size'],
 					'error' => 			$file['error'],
 					'finish' => 		FALSE,
@@ -1557,7 +1578,17 @@ class FileManager
 					}
 					else
 					{
+						// Relative complete path, including "files" directory
+						$path = $this->get_legal_path($legal_dir_url) . $filename;
+
 						$response['finish'] = TRUE;
+						$response['original_name'] = $response['name'];
+						$response['name'] = $filename;
+						$response['path'] = $path;
+						$response['path_hash'] = $this->getHash($path);
+
+						// Event
+						Event::fire('Filemanager.upload.success', $response);
 
 						// Prevent execution
 						@chmod($file_path, $this->options['chmod'] & 0666);
@@ -1572,7 +1603,11 @@ class FileManager
 				}
 				else
 				{
-					// error ...
+					$response['error'] = '1';
+					$response['finish'] = TRUE;
+
+					// Event
+					Event::fire('Filemanager.upload.error', $response);
 				}
 			}
 		}
@@ -1580,6 +1615,9 @@ class FileManager
 		{
 			$response['error'] = $e->getMessage();
 			$response['finish'] = TRUE;
+
+			// Event
+			Event::fire('Filemanager.upload.error', $response);
 		}
 
 		return $response;
@@ -3339,9 +3377,10 @@ class FileManager
 		return strpos($string, $look) === 0;
 	}
 
-	protected function cleanFilename($str, $replace=array(), $delimiter='-')
+	public function cleanFilename($str, $replace=array())
 	{
 		setlocale(LC_ALL, 'en_US');
+		$delimiter = $this->options['cleanFileNameDelimiter'];
 
 		if( !empty($replace) ) {
 			$str = str_replace((array)$replace, ' ', $str);
@@ -3446,5 +3485,16 @@ class FileManager
 				return $this->checkTitle($data, $options, ++$i);
 
 		return $data.($i ? '_' . $i : '');
+	}
+
+
+	/**
+	 * @param $str
+	 *
+	 * @return string
+	 */
+	protected function getHash($str)
+	{
+		return hash($this->options['hashMethod'], $str);
 	}
 }

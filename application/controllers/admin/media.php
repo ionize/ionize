@@ -106,6 +106,7 @@ class Media extends MY_admin
 			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
 			'filter' => $allowed_mimes,
 			'allowed_extensions' => Settings::get_allowed_extensions(),
+			'hashMethod' => config_item('files_path_hash_method'),
 		);
 
 		$this->load->library('Filemanager', $params);
@@ -344,7 +345,6 @@ class Media extends MY_admin
 		 */
 		$path = ltrim($this->input->post('path'), '/');
 		 
-		
 		// If not protocol prefix, the base URL has to be cut
 		$host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
 		$host .= "://".$_SERVER['HTTP_HOST'];
@@ -388,16 +388,29 @@ class Media extends MY_admin
 
 			$this->media_model->save($data, $data);
 		}
-		
-		// Parent linking
-		$data = '';		
 
-		if (!$this->media_model->attach_media($type, $parent, $id_parent, $id)) 
+		// Parent linking
+		$media = $this->media_model->get($id);
+		$event_data = array(
+			'element' => $parent,
+			'id_element' => $id_parent,
+			'media' => $media,
+		);
+
+
+		// Parent linking
+		if (!$this->media_model->attach_media($type, $parent, $id_parent, $id))
 		{
+			// Event
+			Event::fire('Media.link.error', $event_data);
+
 			$this->error(lang('ionize_message_media_already_attached'));
 		}
 		else 
 		{
+			// Event
+			Event::fire('Media.link.success', $event_data);
+
 			// Addon answer data
 			$output_data = array('type' => $type);
 		
@@ -417,7 +430,7 @@ class Media extends MY_admin
 		// Clear the cache
 		Cache()->clear_cache();
 
-		$path = $this->input->post('path');
+		$original_path = $path = $this->input->post('path');
 		$type = $this->input->post('type');
 		$parent = $this->input->post('parent');
 		$id_parent = $this->input->post('id_parent');
@@ -440,17 +453,28 @@ class Media extends MY_admin
 
 			// DB Insert
 			$id = $this->media_model->insert_media($type, $path, $provider);
-		
+			$media = $this->media_model->get($id);
+
+			// Event data
+			$event_data = array(
+				'element' => $parent,
+				'id_element' => $id_parent,
+				'media' => $media
+			);
+
 			// Parent linking
 			if (!$this->media_model->attach_media($type, $parent, $id_parent, $id)) 
 			{
+				// Event
+				Event::fire('Media.link.external.error', $event_data);
+
 				$this->error(lang('ionize_message_media_already_attached'));
 			}
 			else 
 			{
-				// Addon answer data
-				$output_data = array('type' => $type);
-			
+				// Event
+				Event::fire('Media.link.external.success', $event_data);
+
 				// Error Message
 				$this->callback = array(
 					array(
@@ -461,19 +485,6 @@ class Media extends MY_admin
 						'fn' => 'ION.emptyElement',
 						'args' => 'addVideo'
 					)					
-					
-				/*
-					array(
-						'fn' => 'ION.notification',
-						'args' => array('success', lang('ionize_message_media_attached'), $output_data)
-					),
-					array(
-						'fn' => 'ION.JSON',
-						'args' => array	(
-							'media/get_media_list/' . $type . '/' .  $parent . '/' . $id_parent
-						)
-					)
-				*/
 				);
 	
 				$this->response();
@@ -590,9 +601,20 @@ class Media extends MY_admin
 			// Clear the cache
 			Cache()->clear_cache();
 
+			// Event data
+			$media = $this->media_model->get($id_media);
+			$event_data = array(
+				'element' => $parent,
+				'id_element' => $id_parent,
+				'media' => $media,
+			);
+
 			// Delete succeed : Message to user
 			if ($this->media_model->delete_joined_key('media', $id_media, $parent, $id_parent) > 0)
 			{
+				// Event
+				Event::fire('Media.unlink.success', $event_data);
+
 				// Used by answer callback to delete HtmlDomElement item
 				$this->id = $id_media;
 				
@@ -605,6 +627,9 @@ class Media extends MY_admin
 			// Error Message
 			else
 			{
+				// Event
+				Event::fire('Media.unlink.error', $event_data);
+
 				$this->error(lang('ionize_message_media_not_detached'));
 			}
 		}
@@ -773,8 +798,28 @@ class Media extends MY_admin
 			}
 		}
 
+		// Event
+		$event_data = array(
+			'base' => $data,
+			'lang' => $lang_data,
+		);
+		$event_received = Event::fire('Media.save.before', $event_data);
+		$event_received = array_pop($event_received);
+		if ( ! empty($event_received['base']) && !empty($event_received['lang']))
+		{
+			$data = $event_received['base'];
+			$lang_data = $event_received['lang'];
+		}
+
 		// Database save
 		$this->id = $this->media_model->save($data, $lang_data);
+
+		// Event
+		$event_data = array(
+			'base' => $data,
+			'lang' => $lang_data,
+		);
+		Event::fire('Media.save.success', $event_data);
 
 		// Save extend fields data
 		$this->extend_field_model->save_data('media', $this->id, $_POST);
@@ -787,8 +832,7 @@ class Media extends MY_admin
 		// Save ID3 to file if MP3
 		if ( $this->is($media['path'], 'mp3') )
 		{
-			$tags = array
-			(
+			$tags = array(
 				'artist' => array($media['copyright']),
 				'title' => array($media['title']),
 				'album' => array($media['container'])
@@ -827,6 +871,8 @@ class Media extends MY_admin
 		}
 		else
 		{
+			Event::fire('Media.save.error');
+
 			// Error Message
 			$this->callback[] = array
 			(

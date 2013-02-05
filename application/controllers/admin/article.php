@@ -356,6 +356,19 @@ class Article extends MY_admin
 			// Prepare data before saving
 			$this->_prepare_data();
 
+			// Event : On before save
+			$event_data = array(
+				'base' => $this->data,
+				'lang' => $this->lang_data
+			);
+			$event_received = Event::fire('Article.save.before', $event_data);
+			$event_received = array_pop($event_received);
+			if ( ! empty($event_received['base']) && !empty($event_received['lang']))
+			{
+				$this->data = $event_received['base'];
+				$this->lang_data = $event_received['lang'];
+			}
+
 			// Saves article to DB and get the saved ID
 			$this->id = $this->article_model->save($this->data, $this->lang_data);
 
@@ -385,8 +398,14 @@ class Article extends MY_admin
 			// Save URLs
 			$this->article_model->save_urls($this->id);
 			
-			
-			/* 
+			// Event
+			$event_data = array(
+				'base' => $this->data,
+				'lang' => $this->lang_data,
+			);
+			Event::fire('Article.save.success', $event_data);
+
+			/*
 			 * JSON Answer
 			 *
 			 * Updates the structure tree
@@ -442,6 +461,8 @@ class Article extends MY_admin
 		}
 		else
 		{
+			Event::fire('Article.save.error');
+
 			$this->error(lang('ionize_message_article_needs_url_or_title'));
 		}
 

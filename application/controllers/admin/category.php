@@ -169,10 +169,30 @@ class Category extends MY_admin
 			else
 			{
 				$this->_prepare_data();
-	
+
+				// Event
+				$event_data = array(
+					'base' => $this->data,
+					'lang' => $this->lang_data,
+				);
+				$event_received = Event::fire('Category.save.before', $event_data);
+				$event_received = array_pop($event_received);
+				if ( ! empty($event_received['base']) && !empty($event_received['lang']))
+				{
+					$this->data = $event_received['base'];
+					$this->lang_data = $event_received['lang'];
+				}
+
 				// Save data
 				$this->id = $this->category_model->save($this->data, $this->lang_data);
-				
+
+				// Event
+				$event_data = array(
+					'base' => $this->data,
+					'lang' => $this->lang_data,
+				);
+				Event::fire('Category.save.success', $event_data);
+
 				// JSON Update array : If parent is defined in form, the categories selectbox of the parent will be updated
 				if ($this->input->post('parent') != '')
 				{

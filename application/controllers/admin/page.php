@@ -319,6 +319,20 @@ class Page extends MY_admin
 			// Prepare data before save
 			$this->_prepare_data();
 
+			// Event : On before save
+			$event_data = array(
+				'base' => $this->data,
+				'lang' => $this->lang_data
+			);
+			$event_received = Event::fire('Page.save.before', $event_data);
+			$event_received = array_pop($event_received);
+			if ( ! empty($event_received['base']) && !empty($event_received['lang']))
+			{
+				$this->data = $event_received['base'];
+				$this->lang_data = $event_received['lang'];
+			}
+
+
 			// Save Page
 			$saved_id = $this->page_model->save($this->data, $this->lang_data);
 
@@ -346,6 +360,13 @@ class Page extends MY_admin
 			// Remove HTML tags from returned array
 			strip_html($page);
 			$this->callback = array();
+
+			// Event
+			$event_data = array(
+				'base' => $this->data,
+				'lang' => $this->lang_data,
+			);
+			Event::fire('Page.save.success', $event_data);
 
 			// New page : Simply reloads the panel
 			if ( empty($id))
@@ -382,6 +403,8 @@ class Page extends MY_admin
 		}
 		else
 		{
+			Event::fire('Page.save.error');
+
 			$this->error(lang('ionize_message_page_needs_url_or_title'));
 		}
 	}

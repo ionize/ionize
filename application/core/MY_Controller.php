@@ -1,4 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+require APPPATH.'/libraries/REST_Controller.php';
+
+
 /**
  * Ionize
  *
@@ -223,6 +227,133 @@ class MY_Controller extends CI_Controller
 // ------------------------------------------------------------------------
 
 
+/**
+ * API_Controller Class
+ *
+ * Extends REST_Controller Controller
+ * REST_Controller extends MY_Controller
+ *
+ */
+class API_Controller extends REST_Controller
+{
+	private $error = NULL;
+	private $success = NULL;
+
+
+	/**
+	 * @param string $message
+	 * @param int    $code
+	 */
+	protected function set_error($message='', $code = 404)
+	{
+		$this->error = array(
+			'status' => 0,
+			'code' => $code,
+			'content' => $message
+		);
+	}
+
+
+	/**
+	 * @param string $message
+	 * @param int    $code
+	 */
+	protected function set_success($message='', $code = 200)
+	{
+		$this->success = array(
+			'status' => 1,
+			'code' => $code,
+			'content' => $message
+		);
+	}
+
+
+	/**
+	 * @param string $content
+	 * @param int    $code
+	 */
+	protected function send_response($content = '', $code = 200)
+	{
+		// log_message('error', 'API URL : ' . $this->uri->uri_string());
+
+		if ( ! is_null($this->error))
+		{
+			log_message('error', 'API ERROR : ' . $this->uri->uri_string());
+			$code = $this->error['code'];
+			$data = $this->error;
+		}
+		else
+		{
+			log_message('error', 'API SUCCESS : ' . $this->uri->uri_string());
+
+			if (is_null($this->success))
+				$this->set_success($content, $code);
+
+			$data = $this->success;
+		}
+
+		$this->response($data, $code);
+	}
+
+
+
+	/**
+	 * Returns the key name of the asked GET or POST var position.
+	 *
+	 * @param int    $seg
+	 * @param string $type
+	 *
+	 * @return null
+	 */
+	protected function get_segment($seg = 1, $type='get')
+	{
+		if ($type == 'get')
+			$vars = $this->get();
+		else
+			$vars = $this->post();
+
+		$vars_keys = array_keys($vars);
+		if (isset($vars_keys[$seg-1]))
+			return $vars_keys[$seg-1];
+
+		return NULL;
+	}
+
+
+	/**
+	 * Extract given segments as string from url
+	 *
+	 * @usage	get_composed_segments('exists', 'user')
+	 * 			If the URL is '/api/media/exists/folder/subfolder/file.jpg/user/3'
+	 * 			will return : 'folder/subfolder/file.jpg'
+	 *
+	 * @param $from
+	 * @param $to
+	 * @return string
+	 */
+	protected function get_composed_segments($from, $to)
+	{
+		$extract = array();
+
+		$segments = explode('/', $this->uri->uri_string());
+
+		$start = FALSE;
+
+		while ( ! empty($segments))
+		{
+			$seg = array_shift($segments);
+			if ($seg == $to) $start = FALSE;
+			if ($start) $extract[] = $seg;
+			if ($seg == $from) $start = TRUE;
+		}
+
+		return implode('/', $extract);
+	}
+}
+
+// ------------------------------------------------------------------------
+
+
 class Base_Controller extends MY_Controller
 {
 	/**
@@ -375,6 +506,10 @@ class Base_Controller extends MY_Controller
 				}
 			}
 		}
+
+		// Event
+		Event::fire('Ionize.public.load');
+
 		require_once APPPATH.'libraries/Tagmanager.php';
 	}
 }

@@ -27,7 +27,7 @@ class Media_model extends Base_model
 	private $_context_null_allowed = array(
 		'lang_display'
 	);
-	
+
 
 	/**
 	 * Constructor
@@ -138,11 +138,11 @@ class Media_model extends Base_model
 	 * Updates the media if the media complete path already exists
 	 * 
 	 * @param	string	Medium type. Can be 'picture', 'music', 'video', 'file'
-	 * @param	string	Complete path to the medium, including file name.
+	 * @param	string	Complete relative path to the medium, including file name, including the "files" folder
 	 * @return	boolean	TRUE if succeed, FALSE if errors
 	 *
 	 */
-	function insert_media($type, $path, $provider=NULL)
+	public function insert_media($type, $path, $provider=NULL)
 	{
 		if ($path) {
 
@@ -158,12 +158,13 @@ class Media_model extends Base_model
 				$base_path = str_replace($file_name, '', $path);
 			}
 
-			$data['type'] = 	 $type;
-			$data['path'] = 	 $path;
-			$data['file_name'] = $file_name;
-			$data['base_path'] = $base_path;
-			$data['provider'] = ! is_null($provider) ? $provider : '';
-			
+			$data['type'] = 	 	$type;
+			$data['path'] = 	 	$path;
+			$data['file_name'] = 	$file_name;
+			$data['base_path'] = 	$base_path;
+			$data['provider'] = 	! is_null($provider) ? $provider : '';
+			$data['path_hash'] = 	hash(config_item('files_path_hash_method'), $path);
+
 			// Update if exists
 			$query = $this->get_where(array('path'=>$path));
 			if( $query->num_rows() > 0)
@@ -203,41 +204,44 @@ class Media_model extends Base_model
 		// Parent PK , Media table
 		$parent_pk = $this->get_pk_name($parent);
 		$media_table = $parent.'_'.$this->table;
-	
-		// Get the media ordering value, regarding to the type
-		if ($this->{$this->db_group}->field_exists('ordering', $media_table))
+
+		if ($this->table_exists($media_table))
 		{
-			$this->{$this->db_group}->select_max('ordering');
-			$this->{$this->db_group}->join('media', 'media.id_media = '.$media_table.'.id_media');
+
+			// Get the media ordering value, regarding to the type
+			if ($this->{$this->db_group}->field_exists('ordering', $media_table))
+			{
+				$this->{$this->db_group}->select_max('ordering');
+				$this->{$this->db_group}->join('media', 'media.id_media = '.$media_table.'.id_media');
+				$this->{$this->db_group}->where($parent_pk, $id_parent);
+				$this->{$this->db_group}->where('media.type', $type);
+
+				$query = $this->{$this->db_group}->get($media_table);
+
+				if ($query->num_rows() > 0)
+				{
+					$row =		$query->row();
+					$ordering =	$row->ordering;
+				}
+				else
+				{
+					$ordering = 0;
+				}
+				$this->{$this->db_group}->set('ordering', $ordering += 1);
+			}
+
+			$this->{$this->db_group}->where('id_media', $id_media);
 			$this->{$this->db_group}->where($parent_pk, $id_parent);
-			$this->{$this->db_group}->where('media.type', $type);
 
 			$query = $this->{$this->db_group}->get($media_table);
 
-			if ($query->num_rows() > 0)
-			{	
-				$row =		$query->row();
-				$ordering =	$row->ordering;
+			if ($query->num_rows() == 0) {
+
+				$this->{$this->db_group}->set('id_media', $id_media);
+				$this->{$this->db_group}->set($parent_pk, $id_parent);
+
+				$this->{$this->db_group}->insert($media_table);
 			}
-			else 
-			{
-				$ordering = 0;
-			}
-			$this->{$this->db_group}->set('ordering', $ordering += 1);
-		}
-		
-		$this->{$this->db_group}->where('id_media', $id_media);
-		$this->{$this->db_group}->where($parent_pk, $id_parent);
-
-		$query = $this->{$this->db_group}->get($media_table);
-
-		if ($query->num_rows() == 0) {
-
-			$this->{$this->db_group}->set('id_media', $id_media);
-			$this->{$this->db_group}->set($parent_pk, $id_parent);
-
-			$this->{$this->db_group}->insert($media_table);
-
 			return TRUE;
 		}
 		return FALSE;
@@ -252,11 +256,13 @@ class Media_model extends Base_model
 	 * If no type, all media attached to this parent will be deleted
 	 *
 	 * @param 	string	parent type. Ex 'page', 'article'
-	 * @param	string	parent ID
+	 * @param	int		parent ID
 	 * @param	string	media type. Optional.
 	 *
+	 * @return 	int		Affected rows
+	 *
 	 */
-	function detach_media_by_type($parent, $id_parent, $type = FALSE)
+	public function detach_media_by_type($parent, $id_parent, $type = NULL)
 	{
 		// Parent PK , Media table
 		$parent_pk = $this->get_pk_name($parent);
@@ -267,7 +273,7 @@ class Media_model extends Base_model
 		 */
 		$sql = 	' DELETE first from ' . $media_table . ' AS first';
 		
-		if ($type)
+		if ( ! is_null($type))
 		{
 			$sql .= ' INNER JOIN ' . $this->table . ' AS second WHERE first.id_media = second.id_media ';
 			$sql .= ' AND second.type = \'' . $type . '\'';
@@ -277,10 +283,37 @@ class Media_model extends Base_model
 		{
 			$sql .= ' WHERE first.' . $parent_pk . ' = ' . $id_parent;
 		}
-		
+
 		$this->{$this->db_group}->query($sql);
 		
 		return (int) $this->{$this->db_group}->affected_rows();		
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Unlink all media of one given parent element
+	 *
+	 * @param $element
+	 * @param $element_id
+	 *
+	 * @return int
+	 *
+	 */
+	public function detach_all_media($element, $element_id)
+	{
+		// Parent PK , Media table
+		$element_pk = $this->get_pk_name($element);
+		$media_table = $element.'_'.$this->table;
+
+		$nb_affected = $this->delete(
+			array($element_pk => $element_id),
+			$media_table
+		);
+
+		return $nb_affected;
 	}
 
 
@@ -295,7 +328,7 @@ class Media_model extends Base_model
 	 *
 	 * @return	string	Inserted / Updated media ID
 	 */
-	function save($data, $lang_data)
+	public function save($data, $lang_data)
 	{
 		// Dates
 		$data['date'] = ($data['date']) ? getMysqlDatetime($data['date'], Settings::get('date_format')) : '0000-00-00';
@@ -310,7 +343,7 @@ class Media_model extends Base_model
 	 * Exemple : table article_media
 	 *
 	 */
-	function save_context_data($post)
+	public function save_context_data($post)
 	{
 		if ( ! empty($post['parent']))
 		{
@@ -336,9 +369,9 @@ class Media_model extends Base_model
 			}
 		}
 	}
-	
-	
-	function get_context_data($id, $parent, $id_parent)
+
+
+	public function get_context_data($id, $parent, $id_parent)
 	{
 		$data = array();
 		
@@ -364,7 +397,7 @@ class Media_model extends Base_model
 	 * @return int	Number of affected medias
 	 *
 	 */
-	function clean_table()
+	public function clean_table()
 	{
 		$tables = $this->db->list_tables();
 		$process_tables = array();
@@ -426,7 +459,44 @@ class Media_model extends Base_model
 	}
 
 
-	function get_brokens()
+	/**
+	 * Return the file type ('picture', 'music', 'video', 'file') regarding to its extension
+	 *
+	 * @param $filename
+	 *
+	 * @return	string	media type
+	 *
+	 */
+	public function get_type($filename)
+	{
+		$mimes_types = Settings::get_mimes_types();
+
+		$file_extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+		foreach($mimes_types as $type => $extension)
+		{
+			$keys = array_keys($extension);
+			if (in_array($file_extension, $keys))
+				return $type;
+		}
+
+		return 'file';
+	}
+
+
+	public function has_allowed_extension($filename)
+	{
+		$file_extension = pathinfo($filename, PATHINFO_EXTENSION);
+		$extensions = Settings::get_allowed_extensions();
+
+		if (in_array($file_extension, $extensions))
+			return TRUE;
+
+		return FALSE;
+	}
+
+
+	public function get_brokens()
 	{
 		$brokens = array();
 
@@ -434,7 +504,7 @@ class Media_model extends Base_model
 
 		foreach($medias as $media)
 		{
-			if ( ! file_exists(DOCPATH . $media->path))
+			if ( ! file_exists(DOCPATH . $media['path']))
 			{
 				$brokens[] = $media;
 			}
@@ -442,6 +512,31 @@ class Media_model extends Base_model
 
 		return $brokens;
 	}
+
+
+	/**
+	 * Init all "path"_hash" from media table
+	 *
+	 * @return int
+	 *
+	 */
+	public function init_hashes()
+	{
+		$nb = 0;
+
+		$medias = $this->get_all();
+
+		foreach($medias as $media)
+		{
+			$data = array(
+				'path_hash' => hash(config_item('files_path_hash_method'), $media['path'])
+			);
+			$nb += $this->update($media['id_media'], $data);
+		}
+
+		return $nb;
+	}
+
 
 	private function _set_filter($filter = NULL)
 	{
