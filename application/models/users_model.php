@@ -66,7 +66,7 @@ class Users_model extends Base_model
 	 * Returns the users list.
 	 *
 	 */
-	function get_list()
+	function get_list($where = NULL)
 	{
 		$data = array(); 
 	

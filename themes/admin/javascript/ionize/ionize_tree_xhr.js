@@ -183,13 +183,14 @@ ION.TreeXhr = new Class({
 		
 		var flat_id = (type == 'page') ? element.id_page : element.id_page + 'x' + element.id_article;
 		var rel = (type == 'page') ? element.id_page : element.id_page + '.' + element.id_article;
-		var online = (element.online == '1') ? 'online' : 'offline'; 
+
+		var online = (element.online == '1') ? 'online' : 'offline';
 
 		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
 		var type_description = (typeOf(element.type_description) != 'null' && element.type_description != '') ? ' : ' + element.type_description : '';
 
 		if (title == '') title = element.name;
-		
+
 		var container = this.injectContainer(type, id_parent);
 
 		// Element
@@ -201,12 +202,12 @@ ION.TreeXhr = new Class({
 		var action = this.action_Model.clone();
         var iconOnline = new Element('a').addClass('icon').addClass('status').addClass(online).addClass(type + flat_id).setProperty('rel', rel);
         action.adopt(iconOnline);
-		
-		// Title element 
+
+		// Title element
 		var link = this.span_Model.clone().addClass('title');
 		var a = this.title_Model.clone()
 					.addClass(online).addClass(type + flat_id).addClass('title')
-					.setProperty('rel', rel).setProperty('title', title + type_description).setProperty('data-type', type).setProperty('data-id', id)
+					.setProperty('rel', rel).setProperty('title', rel + ' : ' + title + type_description).setProperty('data-type', type).setProperty('data-id', id)
 					.set('text', String.htmlspecialchars_decode(title));
 		link.adopt(a);
 		li.adopt(action, link);
@@ -315,7 +316,7 @@ ION.TreeXhr = new Class({
 		
 		// Mouse over effect : Show / Hide actions
 		this.addMouseOver(li);
-		
+
 		// Open the folder if cookie says...
 		if (type == 'page' && this.opened.contains(id))
 		{
@@ -334,6 +335,8 @@ ION.TreeXhr = new Class({
 	{
 		var self = this;
 		var id = (type == 'page') ? element.id_page : element.id_article;
+		var rel = (type == 'page') ? element.id_page : element.id_page + '.' + element.id_article;
+
 		var selector = (type == 'page') ? '.folder.' + type + id : '.file.' + type + id;
 		var status = (element.online == '1') ? 'online' : 'offline';
 		var title = (typeOf(element.nav_title) != 'null' && element.nav_title != '') ? element.nav_title : element.title;
@@ -353,6 +356,9 @@ ION.TreeXhr = new Class({
 			// Title
 			var aTitle = item.getElement('a.title');
 			aTitle.set('text', title);
+
+			// A title
+			aTitle.setProperty('title', rel + ' : ' + title);
 
 			// Flag span : User's flag first, then Type flag
 			var flag = (typeOf(element.type_flag) != 'null') ? element.type_flag : '0';
@@ -489,7 +495,7 @@ ION.TreeXhr = new Class({
 	{
 		var a = el.getElement('a.title');
 		var self = this;
-		
+
 		a.addEvents(
 		{
 			'click': function(e)
@@ -713,7 +719,7 @@ ION.BrowserTreeXhr = new Class({
 		var link = this.span_Model.clone().addClass('title');
 		var a = this.title_Model.clone()
 			.addClass(online).addClass(type + flat_id).addClass('title')
-			.setProperty('rel', rel).setProperty('title', title + type_description).setProperty('data-type', type).setProperty('data-id', id)
+			.setProperty('rel', rel).setProperty('title', rel + ' : ' + title + type_description).setProperty('data-type', type).setProperty('data-id', id)
 			.set('text', String.htmlspecialchars_decode(title));
 		link.adopt(a);
 		li.adopt(action, link);

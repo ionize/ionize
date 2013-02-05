@@ -1091,7 +1091,7 @@ ION.append({
 			$$('.file .title[rel=' + rel + ']').each(function(el)
 			{
 				el.empty();
-				el.set('html', title).setProperty('title', title);
+				el.set('html', title).setProperty('title', rel + ' : ' + title);
 				
 				var flag = art.flag;
 				if (flag == '0' && art.type_flag != '') { flag = art.type_flag; }

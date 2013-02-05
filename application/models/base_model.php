@@ -2342,6 +2342,11 @@ class Base_model extends CI_Model
 		}
 	}
 
+	public function table_exists($table)
+	{
+		return $this->{$this->db_group}->table_exists($table);
+	}
+
 /*
  * @TODO : Finish.
  *

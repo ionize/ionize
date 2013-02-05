@@ -248,7 +248,7 @@ class System_check extends MY_admin
 			$report_message = '';
 			foreach($brokens as $media)
 			{
-				$report_message .= $media->path . '<br/>';
+				$report_message .= $media['path'] . '<br/>';
 			}
 		}
 

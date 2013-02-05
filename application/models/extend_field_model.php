@@ -51,10 +51,10 @@ class Extend_field_model extends Base_model
 	 *
 	 * @return array
 	 */
-	public function get_list($where = array())
+	public function get_list($where = array(), $lang = NULL)
 	{
 		$where['order_by'] = 'ordering ASC';
-		return parent::get_list($where);
+		return parent::get_list($where, $lang);
 	}
 
 
