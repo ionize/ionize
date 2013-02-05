@@ -539,7 +539,7 @@ INSERT IGNORE INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre,di
 INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf',NULL);
 INSERT IGNORE INTO setting VALUES ('', 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong',NULL);
 INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);
-INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','1', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', NULL);
 
 
 

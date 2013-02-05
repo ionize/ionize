@@ -93,8 +93,6 @@ if ( ! function_exists('getMysqlDatetime'))
 				$time = '00:00:00';
 			}
 
-			//maybe better for all cases: return date("Y-m-d H:i:s", strtotime(inputDate));
-
 			if ($inputFormat == '%d.%m.%Y')
 			{
 				list($day, $month, $year) = preg_split("/[\/.-]/", $date);
@@ -103,8 +101,6 @@ if ( ! function_exists('getMysqlDatetime'))
 			{
 				list($year, $month, $day) = preg_split("/[\/.-]/", $date);
 			}
-			//ron: adding dd.mm.yyyy (see default inputFormat...)
-			//     in case of relying on automagical conversion
 			else
 				return date("Y-m-d H:i:s", strtotime($inputDate));
 

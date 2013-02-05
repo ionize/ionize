@@ -267,12 +267,18 @@ class Url_model extends Base_model
 	/**
 	 * Parses the passed string and replace internal links by their URL.
 	 *
-	 * @param $string
+	 * @param string $string
+	 * @param string $tag_link_key		Key to return.
+	 * 									If empty, will return the URL
+	 * 									If set to other key than 'url' (eg. 'title') but the internal link has a key,
+	 * 									the internal key will be returned.
+	 *
+	 * @param string $tag_link_title	Key to use for the HTML anchor title.
 	 *
 	 * @return string
 	 *
 	 */
-	public function parse_internal_links($string)
+	public function parse_internal_links($string, $tag_link_key=NULL, $tag_link_title=NULL)
 	{
 		self::$ci->load->model('page_model', '', TRUE);
 
@@ -280,10 +286,11 @@ class Url_model extends Base_model
 
 		$current = array();
 
-		while(preg_match('%([\w\W]*?){{([\w.:]*)}}([\w\W]*)%', $string, $matches))
+		// while(preg_match('%([\w\W]*?){{([\w.:]*)}}([\w\W]*)%', $string, $matches))
+		while(preg_match('%([\w\W]*?)(?:(href=\")?){{([\w.:]*)}}([\w\W]*)%', $string, $matches))
 		{
-			list(,$pre_match, $entity, $string) = $matches;
-			$current[] = $pre_match;
+			list(,$pre_match, $href, $entity, $string) = $matches;
+			$current[] = $pre_match.$href;
 
 			$entity = explode(':', $entity);
 			if ( empty($entity)) continue;
@@ -317,8 +324,8 @@ class Url_model extends Base_model
 				$url = array_pop($url);
 			}
 
-			// $page = TagManager_Page::get_page_by_id($id_page);
-			$page = self::$ci->page_model->get_by_id($id_page);
+			// Define the URL
+			$page = self::$ci->page_model->get_by_id($id_page, Settings::get_lang());
 
 			if ($page['home'] == 1)
 				$base_url = $this->get_home_url();
@@ -327,6 +334,29 @@ class Url_model extends Base_model
 
 			$url = $base_url .$url;
 
+			// Which key to return ?
+			$link_key = ! empty($entity[2]) ? $entity[2] : $tag_link_key;
+			$link_title = ! empty($entity[3]) ? $entity[3] : $tag_link_title;
+
+			if (empty($href) && ! is_null($link_key) && $link_key != 'url' )
+			{
+				if( ! is_null($id_article))
+				{
+					$element = self::$ci->article_model->get_by_id($id_article, Settings::get_lang());
+				}
+				else
+					$element = $page;
+
+				if (isset($element[$link_key]))
+				{
+					$anchor_title = (!is_null($link_title) && isset($element[$link_title])) ? $element[$link_title] : $element[$link_key];
+					if ($anchor_title != '')
+						$url = anchor($url, $element[$link_key], array('title' => $anchor_title));
+					else
+						$url = anchor($url, $element[$link_key]);
+				}
+			}
+
 			$current[] = $url;
 		}
 
@@ -334,12 +364,6 @@ class Url_model extends Base_model
 		$string = implode('', $current);
 
 		return $string;
-	}
-
-
-	public function replace_internal_links($string, $old_link, $new_link)
-	{
-
 	}
 
 

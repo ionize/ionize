@@ -571,7 +571,7 @@
         <query>INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
 
         <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);</query>
-        <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','1', NULL);</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', NULL);</query>
         <query>
 			INSERT IGNORE INTO menu (id_menu, name, title) VALUES
 				(1 , 'main', 'Main menu'),

@@ -165,6 +165,7 @@ class Base_model extends CI_Model
 
 		if (is_null($this->db_group))
 		{
+			$active_group = 'default';
 			include(APPPATH . 'config/database.php');
 			$this->db_group = $active_group;
 		}
@@ -2323,7 +2324,6 @@ class Base_model extends CI_Model
 				{
 					$this->{$this->db_group}->where($key. ' IS NULL', NULL, FALSE);
 				}
-				//ron: what about raw commands (a between b and c) OR (d between b and c)
 				elseif($key == "RAW") {
 					$this->{$this->db_group}->where($value, NULL, FALSE);
 				}
