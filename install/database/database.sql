@@ -1,6 +1,30 @@
 --
--- Ionize 0.9.9 SQL creation tables
+-- Ionize 1.0.0 SQL creation tables
 --
+
+CREATE TABLE api_keys (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    key varchar(40) NOT NULL,
+    level int(2) NOT NULL,
+    ignore_limits tinyint(1) NOT NULL DEFAULT '0',
+    is_private_key tinyint(1) NOT NULL DEFAULT '0',
+    ip_addresses text,
+    date_created int(11) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE api_log (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    uri varchar(255) NOT NULL,
+    method varchar(6) NOT NULL,
+    params text,
+    api_key varchar(40) NOT NULL,
+    date datetime DEFAULT NULL,
+    ip_address varchar(45) NOT NULL,
+    authorized tinyint(1) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS article (
@@ -160,6 +184,20 @@ CREATE TABLE IF NOT EXISTS element_definition_lang (
 
 
 
+CREATE TABLE event_log (
+    id int(11) unsigned NOT NULL AUTO_INCREMENT,
+    status varchar(50) DEFAULT NULL,
+    message text,
+    id_user int(11) DEFAULT NULL,
+    email varchar(255) DEFAULT NULL,
+    date datetime DEFAULT NULL,
+    ip_address varchar(45) DEFAULT NULL,
+    seen tinyint(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+
 CREATE TABLE IF NOT EXISTS extend_field (
 	id_extend_field INT(11) UNSIGNED NOT NULL auto_increment,
 	name varchar(255) NOT NULL,
@@ -246,6 +284,7 @@ CREATE TABLE IF NOT EXISTS media (
 	date datetime NOT NULL							COMMENT 'Medium date',
 	link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
 	square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',
+	path_hash varchar(100) NOT NULL DEFAULT  '',
 	PRIMARY KEY  (id_media)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
@@ -547,9 +586,8 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 
 DELETE FROM setting WHERE name='ionize_version';
-INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9.2', NULL);
+INSERT INTO setting VALUES ('', 'ionize_version', '1.0.0', NULL);
 
-DELETE FROM setting WHERE name='media_upload_mode';
 INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');

@@ -3,11 +3,38 @@
 
 	<name>Ionize Database Creation script</name>
 	
-	<version>0.9.9</version>
+	<version>1.0.0</version>
 
 	<license>Open Source MIT license</license>
 
 	<tables>
+
+        <query>
+            CREATE TABLE api_keys (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            key varchar(40) NOT NULL,
+            level int(2) NOT NULL,
+            ignore_limits tinyint(1) NOT NULL DEFAULT '0',
+            is_private_key tinyint(1) NOT NULL DEFAULT '0',
+            ip_addresses text,
+            date_created int(11) NOT NULL,
+            PRIMARY KEY (id)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </query>
+
+        <query>
+            CREATE TABLE api_log (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            uri varchar(255) NOT NULL,
+            method varchar(6) NOT NULL,
+            params text,
+            api_key varchar(40) NOT NULL,
+            date datetime DEFAULT NULL,
+            ip_address varchar(45) NOT NULL,
+            authorized tinyint(1) NOT NULL,
+            PRIMARY KEY (id)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </query>
 
         <query>
 			CREATE TABLE IF NOT EXISTS article (
@@ -166,6 +193,20 @@
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 		</query>
 
+        <query>
+            CREATE TABLE event_log (
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            status varchar(50) DEFAULT NULL,
+            message text,
+            id_user int(11) DEFAULT NULL,
+            email varchar(255) DEFAULT NULL,
+            date datetime DEFAULT NULL,
+            ip_address varchar(45) DEFAULT NULL,
+            seen tinyint(1) NOT NULL DEFAULT '0',
+            PRIMARY KEY (id)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </query>
+
 		<query>
 			CREATE TABLE IF NOT EXISTS extend_field (
 				id_extend_field INT(11) UNSIGNED NOT NULL auto_increment,
@@ -254,6 +295,7 @@
 				date datetime NOT NULL							COMMENT 'Medium date',
 				link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
 				square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',
+                path_hash varchar(100) NOT NULL DEFAULT  '',
 				PRIMARY KEY  (id_media)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
@@ -535,7 +577,6 @@
 		<query>DELETE FROM setting WHERE name='ftp_password';</query>
         <query>DELETE FROM setting WHERE name='picture_copyright';</query>
         <query>DELETE FROM setting WHERE name='filemanager';</query>
-        <query>DELETE FROM setting WHERE name='media_upload_mode';</query>
 
         <query>INSERT IGNORE INTO setting VALUES ('', 'website_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
@@ -563,7 +604,7 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', '');</query>
 
 		<query>INSERT IGNORE INTO setting VALUES ('', 'default_admin_lang', 'en', '');</query>
-		<query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '0.9.9.2', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.0', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');</query>
