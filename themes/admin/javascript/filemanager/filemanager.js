@@ -333,8 +333,8 @@ var Filemanager = new Class({
 			if (this['create_on_click'])
 				createFolderButton.addEvent('click', this['create_on_click'].bind(this));
 		}
-		if (this.options.download) this.addMenuButton('download');
-		if (this.options.selectable) this.addMenuButton('open');
+		if (this.options.download) this.addMenuButton('download', 'download');
+		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
 
 		this.info = new Element('div', {'class': 'filemanager-infos'});
 
@@ -609,7 +609,7 @@ var Filemanager = new Class({
 		// Button
 		/* Must be a label, to trigger the file input in IE */
 		this.uploadButton = new Element('label', {'class': 'button left'}).inject(this.menu);
-		this.uploadButton.set('text', Lang.get('ionize_label_select_files_to_upload'));
+		this.uploadButton.set('text', Lang.language['ionize_label_select_files_to_upload']);
 		new Element('i', {'class':'icon-upload'}).inject(this.uploadButton, 'top');
 
 		// Resize on upload ?
@@ -621,7 +621,7 @@ var Filemanager = new Class({
 		});
 		var label = new Element('label', {'class': 'filemanager-resize button', 'for':'filemanager-resize-checkbox'}).adopt(
 			this.uploadResize,
-			new Element('span', {text: this.language.resizeImages})
+			new Element('span', {text: Lang.language['ionize_label_setting_resize_on_upload']})
 		).inject(this.menu);
 
 		// Method Info : HTML5, HTML4, other...
@@ -657,9 +657,9 @@ var Filemanager = new Class({
 				// Info concerning the mode
 				var infoText = '';
 				if (this.method == 'HTML5')
-					infoText = 'Mode : ' + Lang.get('ionize_help_upload_mode_html5');
+					infoText = 'Mode : ' + Lang.language['ionize_help_upload_mode_html5'];
 				else
-					infoText = 'Mode : ' + Lang.get('ionize_help_upload_mode_html4');
+					infoText = 'Mode : ' + Lang.language['ionize_help_upload_mode_html4'];
 
 				if (this.options.autostart == true)
 					infoText += ", Autostart";
@@ -911,7 +911,7 @@ var Filemanager = new Class({
 			},
 			onSuccess: (function()
 			{
-				ION.notification('success', Lang.get('ionize_operation_ok'));
+				ION.notification('success', Lang.language['ionize_operation_ok']);
 
 			}).bind(this),
 			onCancel: (function(){}),
@@ -3181,9 +3181,9 @@ var Filemanager = new Class({
 	 * @param name
 	 * @return {*}
 	 */
-	addMenuButton: function(name)
+	addMenuButton: function(name, translation)
 	{
-		var el = new Element('button', {'class': 'filemanager-' + name + ' button green',	text: this.language[name]}).inject(this.menu, 'top');
+		var el = new Element('button', {'class': 'filemanager-' + name + ' button green',	text: Lang.language[translation]}).inject(this.menu, 'top');
 
 		if (this[name+'_on_click'])
 			el.addEvent('click', this[name+'_on_click'].bind(this));

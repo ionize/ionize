@@ -207,6 +207,7 @@ $lang['ionize_label_delete'] = 'Delete';
 $lang['ionize_label_unlink'] = 'Unlink';
 $lang['ionize_label_status'] = 'Status';
 $lang['ionize_label_select_files_to_upload'] = 'Select files to Upload';
+$lang['ionize_label_select_file'] = 'Select File';
 $lang['ionize_label_max_upload_size'] = 'Max Upload';
 $lang['ionize_label_file_uploads'] = 'Upload ?';
 $lang['ionize_label_environment'] = 'Environment';
@@ -319,6 +320,7 @@ $lang['ionize_button_save_module_settings'] = 'Save settings';
 $lang['ionize_button_save_views'] = 'Save views';
 $lang['ionize_button_save_themes'] = 'Use these themes';
 $lang['ionize_button_save_settings'] = 'Save settings';
+$lang['ionize_button_start_upload'] = 'Start Upload';
 
 
 /*

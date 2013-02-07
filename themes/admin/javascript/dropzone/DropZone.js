@@ -43,8 +43,8 @@ var DropZone = new Class({
 
 		// Translated terms
 		lang:{
-			'start_upload': 'Start Upload',
-			'select_files': 'Select files to Upload'
+			'start_upload': Lang.language['ionize_button_start_upload'],
+			'select_files': Lang.language['ionize_label_select_files_to_upload']
 		},
 
 		// Form & File input prefix
