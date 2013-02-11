@@ -83,7 +83,7 @@ var DropZone = new Class({
 	},
 	
 	// Vars
-	method: null,
+    method: null,
 	flashObj: null,
 	flashloaded: false,
 	uiButton: null,
@@ -99,7 +99,7 @@ var DropZone = new Class({
 		* and initiate based on that
 		* note: swap bits here to make Flash preferred to HTML5
 		*/
-		if (options.method != '')
+		if (options.method != '' && typeof options.method != 'undefined')
 			this.method = (options.method).toUpperCase();
 
 		// Check HTML5 support & if module is available
