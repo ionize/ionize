@@ -1536,6 +1536,10 @@ class FileManager
 					if ( ! $replace)
 						$filename = $this->getUniqueName($response['name'], $dir);
 
+                    // Creates safe file names
+                    if ($this->options['cleanFileName'])
+                        $filename = $this->cleanFilename($filename, array(), '_');
+
 					// Allowed extension ?
 					if ( ! $this->isAllowedExtension($filename))
 						throw new Exception('${backend.extension}');
