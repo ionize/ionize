@@ -197,6 +197,9 @@ var Filemanager = new Class({
 
 		}).bind(this.RequestQueue);
 
+        // Define Current Lang!
+        this.options.language = Lang.current;
+
 		this.language = Object.clone(Filemanager.Language.en);
 		if (this.options.language !== 'en') {
 			this.language = Object.merge(this.language, Filemanager.Language[this.options.language]);
