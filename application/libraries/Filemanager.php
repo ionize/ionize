@@ -3369,7 +3369,7 @@ class FileManager
         $clean  = strtolower(trim($clean, '-. '));
         $clean  = preg_replace("/[\/_|+ -]+/", $separator, $clean);
         $clean  = rtrim($clean, '_-. ');
-        if ( ! empty($ext))
+        if ( ! empty($ext) && $ext != $str)
             $clean  .= '.'.$ext;
 
         return $clean;
