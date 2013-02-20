@@ -133,6 +133,25 @@ var TabSwapper = new Class({
 		this.showSection(i).save(i);
 		return this;
 	},
+	getCurrentTab:function()
+	{
+		var tab = null;
+		var i = 0;
+		if (this.now != null) {
+			i = this.now;
+		}
+		else {
+			i = this.recall();
+		}
+		this.tabs.each(function(t, idx){
+			if (i == idx)
+			{
+				tab = t;
+			}
+		}, this);
+
+		return tab;
+	},
 	save: function(index){
 		if (this.options.cookieName) 
 			Cookie.write(this.options.cookieName, index, {duration:this.options.cookieDays});

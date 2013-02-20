@@ -250,7 +250,7 @@ var DropZone = new Class({
 		
 		this.nCancelled++;
 		
-		if(this.nCurrentUploads <= 0) this._queueComplete();
+		// if(this.nCurrentUploads <= 0 ) this._queueComplete();
 		
 		this.fireEvent('onItemCancel', [item]);
 	},
@@ -559,9 +559,10 @@ var DropZone = new Class({
 		if (this.options.autostart == false && ! this.uiListUploadButton )
 		{
 			this.uiListUploadButton = new Element('a',{
-					'class':'button filemanager-start-upload',
-					'text': this.options.lang.start_upload}
-			).addEvent('click', function(){
+				'class':'button filemanager-start-upload',
+				'text': this.options.lang.start_upload}
+			).addEvent('click', function()
+			{
 				this.upload();
 			}.bind(this)).inject(this.uiList);
 		}

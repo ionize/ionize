@@ -1146,7 +1146,7 @@ class FileManager
 			if ( ! empty($file_arg))
 			{
 				$filename = basename($file_arg);
-				$filename = $this->cleanFilename($filename, array(), '_');
+				$filename = $this->cleanFilename($filename, '_');
 
 				if (!$this->IsHiddenNameAllowed($file_arg))
 				{
@@ -1453,8 +1453,7 @@ class FileManager
 
 			// Creates safe file names
 			if ($this->options['cleanFileName'])
-                $filename = $this->cleanFilename($headers['X-File-Name'], array(), '_');
-
+				$filename = $this->cleanFilename($filename, '_');
 
 			// Creates directory if it doesn't exists
 			if ( ! is_dir($dir))
@@ -1539,7 +1538,7 @@ class FileManager
 
                     // Creates safe file names
                     if ($this->options['cleanFileName'])
-                        $filename = $this->cleanFilename($file['name'], array(), '_');
+                        $filename = $this->cleanFilename($file['name'], '_');
 
 					// Allowed extension ?
 					if ( ! $this->isAllowedExtension($filename))
@@ -3339,20 +3338,9 @@ class FileManager
 		return strpos($string, $look) === 0;
 	}
 
-    protected function cleanFilename($str, $replace=array(), $separator='underscore') {
+    protected function cleanFilename($str, $delimiter='_') {
         $ext = end(explode('.', $str));
         $filename = str_replace('.' . $ext, '', $str);
-
-        switch($separator){
-            case 'underscore';
-                $separator = '_';
-                break;
-            case 'dash';
-                $separator = '-';
-                break;
-            default:
-                $separator = '_';
-        }
 
         if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT))
             include(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT);
@@ -3365,9 +3353,9 @@ class FileManager
             $clean  = preg_replace(array_keys($foreign_characters), array_values($foreign_characters), $clean);
 
         $clean  = strtolower($clean);
-        $clean  = preg_replace('/[^a-zA-Z0-9\/_.|+ -]/', $separator, $clean);
+        $clean  = preg_replace('/[^a-zA-Z0-9\/_.|+ -]/', $delimiter, $clean);
         $clean  = strtolower(trim($clean, '-. '));
-        $clean  = preg_replace("/[\/_|+ -]+/", $separator, $clean);
+        $clean  = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
         $clean  = rtrim($clean, '_-. ');
         if ( ! empty($ext) && $ext != $str)
             $clean  .= '.'.$ext;

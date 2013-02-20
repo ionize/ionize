@@ -282,17 +282,18 @@ ION.append({
 		{
 			var cb = (item.fn).split(".");
 			var func = null;
-			var obj = null;
-			
-			if (cb.length > 1) {
-				obj = window[cb[0]];
-				func = obj[cb[1]];
-			}
-			else {
-				func = window[cb];
-			}
-			
-			func.delay(100, obj, item.args);
+			var obj = window[cb.shift()];
+
+			// Find the func
+			func = obj;
+			Array.each(cb, function(item) {
+				func = func[item];
+			});
+
+			if (func)
+				(func).delay(100, obj, item.args);
+			else
+				console.log('ERROR : The function ' + item.fn + ' does not exists');
 		});
 	}
 });

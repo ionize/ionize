@@ -2841,7 +2841,7 @@ class TagManager
 
 			// Prefix / Suffix
 			$value = self::prefix_suffix_process($value, $tag->getAttribute('prefix'));
-			$value = self::prefix_suffix_process($value, $tag->getAttribute('suffix'));
+			$value = self::prefix_suffix_process($value, $tag->getAttribute('suffix'),2);
 		}
 
 		return $value;
