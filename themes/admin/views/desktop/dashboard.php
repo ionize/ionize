@@ -400,7 +400,7 @@
             ION.contentUpdate({
 				element: $('mainPanel'),
 				title: title,
-				url : admin_url + ION.cleanUrl(href)
+				url : ION.cleanUrl(href)
 			});
 		});
 	});

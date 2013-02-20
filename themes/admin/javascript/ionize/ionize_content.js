@@ -1568,9 +1568,9 @@ ION.append({
 			url = url.replace(base_url + admin_uri + '/', '');
 
 		// Base URL contains the lang code. Try to clean without the lang code
-		url = url.replace(admin_url.replace(Lang.get('current') + '/', ''), '');
+		url = url.replace(admin_url.replace(Lang.current + '/', ''), '');
 
-		url = url.replace(base_url + Lang.get('current') + '/', '');
+		url = url.replace(base_url + Lang.current + '/', '');
 		url = url.replace(base_url, '');
 
 		return url;
