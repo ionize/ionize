@@ -547,7 +547,7 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 
 DELETE FROM setting WHERE name='ionize_version';
-INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9.2', NULL);
+INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9.4', NULL);
 
 DELETE FROM setting WHERE name='media_upload_mode';
 INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');
