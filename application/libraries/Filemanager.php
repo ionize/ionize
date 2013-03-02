@@ -1146,7 +1146,7 @@ class FileManager
 			if ( ! empty($file_arg))
 			{
 				$filename = basename($file_arg);
-				$filename = $this->cleanFilename($filename, '_');
+				$filename = $this->cleanFilename($filename);
 
 				if (!$this->IsHiddenNameAllowed($file_arg))
 				{
@@ -1453,7 +1453,9 @@ class FileManager
 
 			// Creates safe file names
 			if ($this->options['cleanFileName'])
-				$filename = $this->cleanFilename($filename, '_');
+			{
+				$filename = $this->cleanFilename($filename);
+			}
 
 			// Creates directory if it doesn't exists
 			if ( ! is_dir($dir))
