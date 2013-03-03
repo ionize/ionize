@@ -93,10 +93,14 @@ class TagManager_Category extends TagManager
 				foreach($categories as $key=>$category)
 					$categories[$key]['nb'] = '1';
 			}
-			// If no categories, get all, but only for page type element
-			else if($element_name == 'page')
+			// If no element categories, get page used categories
+			else
 			{
-				$id_page = ! is_null($page) ? $page['id_page'] : NULL;
+				if($element_name == 'page')
+					$id_page = ! is_null($page) ? $page['id_page'] : NULL;
+				else
+					$id_page = NULL;
+
 				$categories = self::$ci->category_model->get_categories_list(
 					$id_page,
 					Settings::get_lang()
