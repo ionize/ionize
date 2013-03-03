@@ -117,7 +117,6 @@ class Medias
 
 					$settings['width'] = $size[0];
 					$settings['height'] = $size[0];
-
 					$settings['square_crop'] = (empty($settings['start'])) ? $media['square_crop'] : $settings['start'];
 
 					// check size attribut
@@ -161,6 +160,7 @@ class Medias
 
 					$settings['width'] = $size[0];
 					$settings['height'] = ( ! empty($size[1])) ? $size[1] : $size[0];
+					$settings['square_crop'] = (empty($settings['start'])) ? $media['square_crop'] : $settings['start'];
 
 					// check size attribut
 					if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}a$/', $thumb_folder))
@@ -379,29 +379,22 @@ class Medias
 					
 					// Center the square
 					if ($dim['width'] > $dim['height'])
-					{
 						$ci_settings['x_axis'] = ($dim['width'] - $settings['width']) / 2;
-					}
 					else
-					{
 						$ci_settings['y_axis'] = ($dim['height'] - $settings['height']) / 2;
-					}
-					
+
 					switch ($settings['square_crop'])
 					{
 						// crop top-left area
 						case 'tl':
-							
 							$ci_settings['x_axis'] = '0';
 							$ci_settings['y_axis'] = '0';
 							break;
 						
 						// crop bottom-right area
 						case 'br':
-							
 							$ci_settings['x_axis'] = $dim['width'] - $settings['width'];
 							$ci_settings['y_axis'] = $dim['height'] - $settings['height'];
-							
 							break;
 					}
 					
@@ -480,10 +473,25 @@ class Medias
 					
 					$ci_settings['width'] = $settings['width'];
 					$ci_settings['height'] = $settings['height'];
-					
 					$ci_settings['x_axis'] = $params['x_axis'];
 					$ci_settings['y_axis'] = $params['y_axis'];
-					
+
+					switch ($settings['square_crop'])
+					{
+						// crop top-left area
+						case 'tl':
+							$ci_settings['x_axis'] = '0';
+							$ci_settings['y_axis'] = '0';
+							break;
+
+						// crop bottom-right area
+						case 'br':
+							$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
+							$ci_settings['x_axis'] = $dim['width'] - $settings['width'];
+							$ci_settings['y_axis'] = $dim['height'] - $settings['height'];
+							break;
+					}
+
 					$CI->image_lib->clear();
 					$CI->image_lib->initialize($ci_settings);
 					
