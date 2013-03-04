@@ -781,35 +781,29 @@ class Medias
 	// ------------------------------------------------------------------------
 
 
-	public function delete_squares($media)
+	/**
+	 * Deletes all thumbs from one media
+	 *
+	 * @param $media
+	 */
+	public function delete_thumbs($media)
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
-
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
 		$thumb_path = $thumb_base_path . $thumb_path_segment;
-		
-		$thumb_name = $media['file_name'];
-		
-		if($handle = opendir($thumb_path))
-		{
-			while(FALSE !== ($size_folder = readdir($handle)))
-			{
-				if(preg_match('/^([0-9]){1,4}x([0-9]){1,4}$/', $size_folder))
-				{
-					$dim = explode('x', $size_folder);
-					
-					if($dim[0] == $dim[1])
-					{
-						$thumb_file_path = $thumb_path . $size_folder . '/' . $thumb_name;
-						if(file_exists($thumb_file_path))
-						{
-							unlink($thumb_file_path);
-						}
-					}
-				}
-			}
-		}
+		$file_name = $media['file_name'];
+
+		$thumb_file_path = $thumb_path . $file_name;
+
+		if(file_exists($thumb_file_path))
+			unlink($thumb_file_path);
+
+		$thumbs = glob($thumb_path.'/*/'.$file_name);
+
+		foreach($thumbs as $thumb_file_path)
+			if(file_exists($thumb_file_path))
+				unlink($thumb_file_path);
 	}
 
 

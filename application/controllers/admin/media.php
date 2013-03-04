@@ -363,20 +363,6 @@ class Media extends MY_admin
 		// DB Insert
 		$id = $this->media_model->insert_media($type, $path);
 
-		// Thumbnail creation for picture media type (if the picture isn't in a thumb folder)
-		if ($type == 'picture' && (strpos($path, '/thumb_') == FALSE))
-		{
-			try 
-			{
-				$this->_init_thumbs($id);
-			}
-			catch (Exception $e)
-			{
-				$this->error($e->getMessage());
-				return;
-			}
-		}
-
 		// Tag ID3 if MP3
 		if ($type == 'music' && $this->is($path, 'mp3'))
 		{
@@ -400,7 +386,14 @@ class Media extends MY_admin
 		{
 			// Addon answer data
 			$output_data = array('type' => $type);
-		
+
+			// Delete thumbs
+			if($type == 'picture')
+			{
+				$media = $this->media_model->get($id);
+				$this->medias->delete_thumbs($media);
+			}
+
 			$this->success(lang('ionize_message_media_attached'), $output_data);
 		}
 	}
@@ -506,7 +499,7 @@ class Media extends MY_admin
 		{
 			try
 			{
-				$this->_init_thumbs($picture['id_media']);
+				$this->medias->delete_thumbs($picture);
 			}
 			catch(Exception $e)
 			{
@@ -536,8 +529,9 @@ class Media extends MY_admin
 		try
 		{
 			// Thumbs init
-			$this->_init_thumbs($id);
-			
+			$picture = $this->media_model->get($id);
+			$this->medias->delete_thumbs($picture);
+
 			// Confirmation message
 			$this->success(lang('ionize_message_operation_ok'));
 		}
@@ -553,9 +547,10 @@ class Media extends MY_admin
 
 
 	/**
+	 * Empty the .thumbs folder
 	 *
 	 */
-	public function delete_thumbs()
+	public function delete_all_thumbs()
 	{
 		$thumb_path = DOCPATH . Settings::get('files_path'). '/.thumbs/';
 		delete_files($thumb_path, TRUE);
@@ -741,10 +736,6 @@ class Media extends MY_admin
 		// Clear the cache
 		Cache()->clear_cache();
 		
-		// Get old values
-		$id_media = $this->input->post('id_media'); 
-		$old_media_data = $this->media_model->get($id_media);
-
 		// Standard data;
 		$data = array();
 		
@@ -804,13 +795,10 @@ class Media extends MY_admin
 			$this->write_ID3($media['path'], $tags);
 		}	
 		
-		// delete picture squares if square_crop is changed
-		if($media['type'] == 'picture' && $media['square_crop'] != $old_media_data['square_crop'])
-		{
-			$this->load->library('medias');
-			$this->medias->delete_squares($media);
-		}
-		
+		// Delete picture thumbnails
+		if($media['type'] == 'picture')
+			$this->medias->delete_thumbs($media);
+
 		if ( $this->id !== FALSE )
 		{
 			// Success Message
@@ -906,70 +894,6 @@ class Media extends MY_admin
         echo $content;
         
         die();
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/** 
-	 * Init the thumbs for one picture
-	 * @access	private
-	 *
-	 * @param	string	Picture ID
-	 * @throws 	Exception
-	 *
-	 * Thumb settings : Array(
-	 *						max_width : max width
-	 *						square : 	is the thumbs cropped to square (true, false)
-	 *						unsharp : 	unsharp filter on thumb (true, false)
-	 *					 )
-	 */
-	public function _init_thumbs($id)
-	{
-		// Pictures data from database
-		$picture = $this->media_model->get($id);
-
-		// Thumbs settings
-		$this->base_model->set_table('setting');
-		$thumbs = $this->base_model->get_list(array('name like' => 'thumb_%'));
-
-		// Create other thumbs
-		if ( ! empty($thumbs))
-		{
-			$picture_path = DOCPATH . $picture['path'];
-			// Check if source file exists
-			if ( ! is_file($picture_path) )
-			{
-				throw new Exception( lang('ionize_exception_no_source_file').' : '. $picture['file_name'] );						
-			}
-	
-			// Create thumbs for each thumbs
-			foreach($thumbs as $thumb)
-			{
-				// Thumb settings : from DB.
-				$settings = explode(",", $thumb['content']);
-				$setting = array(
-								'dir' =>		$thumb['name'],
-//								'sizeref' => 	$settings[0],
-								'size' => 		$settings[1],
-								'square' => 	$settings[2],
-								'unsharp' => 	$settings[3]
-							);
-				
-				// Thumbnail creation
-				$thumb_path = DOCPATH . $picture['base_path'].$setting['dir']."/".$picture['file_name'];
-	
-				try
-				{
-					$this->medias->create_thumb($picture_path, $thumb_path, $setting);
-				}
-				catch(Exception $e)
-				{
-					throw new Exception($e->getMessage());
-				}
-			}
-		}
 	}
 
 
