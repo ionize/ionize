@@ -38,7 +38,6 @@ class TagManager_Media extends TagManager
 
 		'media' =>				'tag_expand',
 		'media:src' => 			'tag_media_src',
-//		'media:src' => 			'tag_simple_value',
 		'media:thumb_folder' => 'tag_media_thumb_folder',
 		'media:size' => 		'tag_media_size',
 

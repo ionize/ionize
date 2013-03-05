@@ -156,12 +156,6 @@ $id = $id_extend_field;
 
 <script type="text/javascript">
 
-	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#elementfieldForm<?php echo $id; ?>');
-
 	var windowEl = $('welementfield<?php echo $id; ?>');
 	var contentEl = $('welementfield<?php echo $id; ?>_content');
 

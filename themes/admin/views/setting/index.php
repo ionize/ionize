@@ -163,13 +163,6 @@
 	ION.initAccordion('.toggler', 'div.element');
 
 	/**
-	 * Init help tips on label
-	 * see init-content.js
-	 *
-	 */
-	ION.initLabelHelpLinks('#settingsForm');
-
-	/** 
 	 * Tabs init
 	 *
 	 */

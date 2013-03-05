@@ -617,6 +617,7 @@ class MY_Admin extends MY_Controller
 
 		// Load the current language translations file
 		$this->lang->load('admin', Settings::get_lang());
+		// $this->lang->load('filemanager', Settings::get_lang());
 
 		// Modules config
 		$this->get_modules_config();
@@ -711,6 +712,22 @@ class MY_Admin extends MY_Controller
     	
     	$this->response($addon_data);
     }
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function notify($status, $message, $addon_data=NULL)
+	{
+		$this->callback[] = array(
+			'fn' => 'ION.notification',
+			'args' => array(
+				$status,
+				$message
+			)
+		);
+		$this->response($addon_data);
+	}
 
 
 	// ------------------------------------------------------------------------

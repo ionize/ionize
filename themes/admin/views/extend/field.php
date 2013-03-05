@@ -167,12 +167,6 @@
 
 <script type="text/javascript">
 
-	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#extendfieldForm<?php echo $id_extend_field; ?>');
-
 	function display_value_block()
 	{
 		var id = '<?php echo $id_extend_field; ?>';

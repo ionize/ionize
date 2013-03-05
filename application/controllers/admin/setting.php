@@ -485,11 +485,8 @@ class Setting extends MY_admin
 			$this->error(lang('ionize_message_lang_file_not_saved'));
 		}
 
-		// Answer
-		$this->callback = array(
-			'fn' => 'ION.reload',
-			'args' => array('url' => $default_admin_lang.'/'.config_item('admin_url'))
-		);
+		// Set the reload CB
+		$this->_callback_reload_backend();
 
 		$this->success(lang('ionize_message_settings_saved'));
 	}
@@ -577,10 +574,8 @@ class Setting extends MY_admin
 		);
 		$this->settings_model->save_setting($article_allowed_tags);
 
-		$this->callback = array(
-			'fn' => 'ION.reload',
-			'args' => array('url' => config_item('admin_url'))
-		);
+		// Set the reload CB
+		$this->_callback_reload_backend();
 
 		$this->success(lang('ionize_message_settings_saved'));
 	}
@@ -666,14 +661,10 @@ class Setting extends MY_admin
 		// Save settings to DB
 		$this->_save_settings($settings);
 
-		// UI panel to update after saving
-		$this->update[] = array(
-			'element' => 'mainPanel',
-			'url' => 'setting/technical'
-		);
+		// Set the reload CB
+		$this->_callback_reload_backend();
 
 		$this->success(lang('ionize_message_settings_saved'));
-
 	}
 
 
@@ -1024,10 +1015,8 @@ class Setting extends MY_admin
 			}
 			else
 			{
-				$this->callback = array(
-					'fn' => 'ION.reload',
-					'args' => array('url' => $admin_url)
-				);
+				// Set the reload CB
+				$this->_callback_reload_backend();
 
 				$this->success(lang('ionize_message_settings_saved'));
 			}
@@ -1272,6 +1261,17 @@ class Setting extends MY_admin
 				$this->success(lang('ionize_message_smtp_saved'));				
 			}
 		}
+	}
+
+
+	private function _callback_reload_backend()
+	{
+		$admin_url = config_item('admin_url');
+
+		$this->callback = array(
+			'fn' => 'ION.reload',
+			'args' => array('url' => $admin_url)
+		);
 	}
 
 

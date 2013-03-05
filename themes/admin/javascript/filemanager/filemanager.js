@@ -197,6 +197,9 @@ var Filemanager = new Class({
 
 		}).bind(this.RequestQueue);
 
+        // Define Current Lang!
+        this.options.language = Lang.current;
+
 		this.language = Object.clone(Filemanager.Language.en);
 		if (this.options.language !== 'en') {
 			this.language = Object.merge(this.language, Filemanager.Language[this.options.language]);
@@ -333,8 +336,8 @@ var Filemanager = new Class({
 			if (this['create_on_click'])
 				createFolderButton.addEvent('click', this['create_on_click'].bind(this));
 		}
-		if (this.options.download) this.addMenuButton('download');
-		if (this.options.selectable) this.addMenuButton('open');
+		if (this.options.download) this.addMenuButton('download', 'download');
+		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
 
 		this.info = new Element('div', {'class': 'filemanager-infos'});
 
@@ -621,7 +624,7 @@ var Filemanager = new Class({
 		});
 		var label = new Element('label', {'class': 'filemanager-resize button', 'for':'filemanager-resize-checkbox'}).adopt(
 			this.uploadResize,
-			new Element('span', {text: this.language.resizeImages})
+			new Element('span', {text: Lang.get('ionize_label_setting_resize_on_upload')})
 		).inject(this.menu);
 
 		// Method Info : HTML5, HTML4, other...
@@ -775,7 +778,7 @@ var Filemanager = new Class({
 			onItemComplete: function(item, file, response)
 			{
 				/*
-				 * TODO : See if reloading the file list is dangerous : Can be if one iamge is currently been uploaded.
+				 * TODO : See if reloading the file list is dangerous : Can be if one image is currently been uploaded.
 				var dir = (response.directory).replace(/\/$/, '');
 				var currentDir = (self.CurrentDir.path).replace(/\/$/, '');
 				*/
@@ -834,68 +837,13 @@ var Filemanager = new Class({
 						dz.uiListUploadButton = undefined;
 						self.resizeMenu();
 					}
+
 					self.load(self.CurrentDir.path);
 				}).delay(1000);
 			}
 		});
 	},
 
-	/*
-	 *
-	 */
-	initUpload: function()
-	{
-		var self = this;
-
-		this.uploadForm = new Element('form', {'name': 'filemanagerUploadForm'}).inject(this.browserCommand);
-
-		var fieldset = new Element('fieldset').inject(this.uploadForm);
-		this.uploadInputFile = new Element('input', {type:'file', name:'files[]', multiple:'multiple'}).inject(fieldset);
-		this.uploadInputSubmit = new Element('input', {type:'submit', name:'upload', class:'input submit', value:this.language.upload}).inject(fieldset);
-		this.uploadInputSubmit.addEvent('click', function()
-		{
-			self.onUpload().bind(self);
-		});
-		this.uploadList = new Element('ul').inject(this.uploadForm);
-
-		if (this.options.resizeOnUpload)
-		{
-			this.uploadResize = new Element('div', {'class': 'checkbox'});
-			var check = (function() {
-				this.toggleClass('checkboxChecked');
-			}).bind(this.uploadResize);
-			check();
-			var label = new Element('label').adopt(
-				this.uploadResize,
-				new Element('span', {text: this.language.resizeImages})
-			).addEvent('click', check).inject(this.menu);
-		}
-
-		this.initUploadForm();
-	},
-
-	initUploadForm: function()
-	{
-		var drop = this.browserScroll;
-
-		this.uploadInputFiles = new Form.MultipleFileInput(this.uploadInputFile, this.uploadList, drop,
-		{
-			itemClass: 'upload-item',
-			onDragenter: drop.addClass.pass('hover', drop),
-			onDragleave: drop.removeClass.pass('hover', drop),
-			onDrop: (function()
-			{
-				drop.removeClass('hover');
-
-				this.onUpload();
-				/*
-				 var progressBar = new Element('img', {'class': 'file-progress', src: self.assetsUrl + 'images/bar.gif'});
-				 progressBar.inject(self.browserCommand);
-				 var progress = new Fx.ProgressBar(progressBar).set(0);
-				 */
-			}).bind(this)
-		});
-	},
 
 	onUpload: function()
 	{
@@ -3181,9 +3129,9 @@ var Filemanager = new Class({
 	 * @param name
 	 * @return {*}
 	 */
-	addMenuButton: function(name)
+	addMenuButton: function(name, translation)
 	{
-		var el = new Element('button', {'class': 'filemanager-' + name + ' button green',	text: this.language[name]}).inject(this.menu, 'top');
+		var el = new Element('button', {'class': 'filemanager-' + name + ' button green',	text: Lang.get(translation)}).inject(this.menu, 'top');
 
 		if (this[name+'_on_click'])
 			el.addEvent('click', this[name+'_on_click'].bind(this));
@@ -3533,41 +3481,11 @@ Filemanager.Dialog = new Class({
 		this.el.setStyle('display', 'block').inject(document.body);
 		this.restrictSize();
 		var autofocus_el = (this.options.autofocus_on ? this.el.getElement(this.options.autofocus_on) : (this.el.getElement('button.filemanager-dialog-confirm') || this.el.getElement('button')));
+
+		this.el.center();
+		this.el.show();
 		if (autofocus_el)
-		{
-			if (('autofocus' in autofocus_el) && !(Browser.Engine && Browser.Engine.webkit))
-			{
-				// HTML5 support: see    http://diveintohtml5.org/detect.html
-				//
-				// Unfortunately, it's not really working for me in webkit browsers (Chrome, Safari)  :-((
-				autofocus_el.set('autofocus', 'autofocus');
-				autofocus_el = null;
-			}
-			else
-			{
-				// Safari / Chrome have trouble focussing on things not yet fully rendered!
-			}
-		}
-		this.el.center().fade(1).get('tween').chain((function() {
-			// Safari / Chrome have trouble focussing on things not yet fully rendered!
-			// see   http://stackoverflow.com/questions/2074347/focus-not-working-in-safari-or-chrome
-			// and   http://www.mkyong.com/javascript/focus-is-not-working-in-ie-solution/
-			if (autofocus_el)
-			{
-				if (0)                  // the delay suggested as a fix there is part of the fade()...
-				{
-					(function(el) {
-						el.focus();
-					}).delay(1, this, [autofocus_el]);
-				}
-				else
-				{
-					//autofocus_el.set('tabIndex', 0);   // http://code.google.com/p/chromium/issues/detail?id=27868#c15
-					// ^-- not needed.  When you debug JS in a Webkit browser, you're toast when it comes to getting input field focus, period.   :-(
-					autofocus_el.focus();
-				}
-			}
-		}).bind(this));
+			autofocus_el.focus();
 
 		self.fireEvent('show');
 

@@ -1489,7 +1489,7 @@ class FileManager
 					$response['original_name'] = $response['name'];
 					$response['name'] = $filename;
 					$response['path'] = $path;
-					$response['path_hash'] = $this->getHash($path);
+					// $response['path_hash'] = $this->getHash($path);
 
 					// Event
 					Event::fire('Filemanager.upload.success', $response);
@@ -1557,6 +1557,10 @@ class FileManager
 					if ( ! $replace)
 						$filename = $this->getUniqueName($response['name'], $dir);
 
+                    // Creates safe file names
+                    if ($this->options['cleanFileName'])
+                        $filename = $this->cleanFilename($file['name'], '_');
+
 					// Allowed extension ?
 					if ( ! $this->isAllowedExtension($filename))
 						throw new Exception('${backend.extension}');
@@ -1585,7 +1589,7 @@ class FileManager
 						$response['original_name'] = $response['name'];
 						$response['name'] = $filename;
 						$response['path'] = $path;
-						$response['path_hash'] = $this->getHash($path);
+						// $response['path_hash'] = $this->getHash($path);
 
 						// Event
 						Event::fire('Filemanager.upload.success', $response);
@@ -1651,26 +1655,21 @@ class FileManager
 
 	public function getHttpHeaders()
 	{
-		// GetAllHeaders doesn't work with PHP-CGI
-		if (function_exists('getallheaders'))
-		{
-			$headers = getallheaders();
-		}
-		else
-		{
-			$headers = array(
-				'Content-Length' => $_SERVER['CONTENT_LENGTH'],
-				'X-File-Id' 	=> $_SERVER['HTTP_X_FILE_ID'],
-				'X-File-Name' 	=> $_SERVER['HTTP_X_FILE_NAME'],
-				'X-File-Resume' => $_SERVER['HTTP_X_FILE_RESUME'],
-				'X-File-Size' 	=> $_SERVER['HTTP_X_FILE_SIZE'],
-				'X-Directory' 	=> $_SERVER['X-Directory'],
-				'X-Filter' 		=> $_SERVER['X-Filter'],
-				'X-Resize' 		=> $_SERVER['X-Resize'],
-			);
-		}
+        $headers = array();
 
-		return $headers;
+        foreach ($_SERVER as $name => $value)
+        {
+            if (substr($name, 0, 5) == 'HTTP_')
+            {
+                $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                $headers[$name] = $value;
+            } else if ($name == "CONTENT_TYPE") {
+                $headers["Content-Type"] = $value;
+            } else if ($name == "CONTENT_LENGTH") {
+                $headers["Content-Length"] = $value;
+            }
+        }
+        return $headers;
 	}
 
 	/**
@@ -3377,30 +3376,30 @@ class FileManager
 		return strpos($string, $look) === 0;
 	}
 
-	public function cleanFilename($str, $replace=array())
-	{
-		setlocale(LC_ALL, 'en_US');
-		$delimiter = $this->options['cleanFileNameDelimiter'];
+    protected function cleanFilename($str, $delimiter='_') {
+        $ext = end(explode('.', $str));
+        $filename = str_replace('.' . $ext, '', $str);
 
-		if( !empty($replace) ) {
-			$str = str_replace((array)$replace, ' ', $str);
-		}
+        if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT))
+            include(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT);
+        elseif (is_file(APPPATH.'config/foreign_chars'.EXT))
+            include(APPPATH.'config/foreign_chars'.EXT);
 
-		$fi = pathinfo($str);
-		$filename = $fi['filename'];
-		$ext = (! empty($fi['extension'])) ? strtolower($fi['extension']) : '';
+        $clean  = $filename;
 
-		$clean = @iconv('UTF-8', 'ASCII//IGNORE', $filename);
-		$clean = preg_replace("/[^a-zA-Z0-9\/_.|+ -]/", '_', $clean);
-		$clean = strtolower(trim($clean, '-. '));
-		$clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-		$clean = rtrim($clean, '_-. ');
-		if ( ! empty($ext))
-			$clean .= '.'.$ext;
+        if(isset($foreign_characters))
+            $clean  = preg_replace(array_keys($foreign_characters), array_values($foreign_characters), $clean);
 
-		return $clean;
-	}
+        $clean  = strtolower($clean);
+        $clean  = preg_replace('/[^a-zA-Z0-9\/_.|+ -]/', $delimiter, $clean);
+        $clean  = strtolower(trim($clean, '-. '));
+        $clean  = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+        $clean  = rtrim($clean, '_-. ');
+        if ( ! empty($ext) && $ext != $str)
+            $clean  .= '.'.$ext;
 
+        return $clean;
+    }
 
 	/**
 	 * @param $str

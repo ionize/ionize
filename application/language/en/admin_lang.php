@@ -195,6 +195,8 @@ $lang['ionize_message_element_field_name_exists'] = 'This field already exists !
 | Labels are also commonly used for table head column titles
 |--------------------------------------------------------------------------
 */
+$lang['ionize_label_yes'] = 'Yes';
+$lang['ionize_label_no'] = 'No';
 $lang['ionize_label_change'] = 'Change';
 $lang['ionize_label_multilingual'] = 'Mutilingual';
 $lang['ionize_label_internal_id'] = 'Internal ID';
@@ -207,6 +209,7 @@ $lang['ionize_label_delete'] = 'Delete';
 $lang['ionize_label_unlink'] = 'Unlink';
 $lang['ionize_label_status'] = 'Status';
 $lang['ionize_label_select_files_to_upload'] = 'Select files to Upload';
+$lang['ionize_label_select_file'] = 'Select File';
 $lang['ionize_label_max_upload_size'] = 'Max Upload';
 $lang['ionize_label_file_uploads'] = 'Upload ?';
 $lang['ionize_label_environment'] = 'Environment';
@@ -319,6 +322,7 @@ $lang['ionize_button_save_module_settings'] = 'Save settings';
 $lang['ionize_button_save_views'] = 'Save views';
 $lang['ionize_button_save_themes'] = 'Use these themes';
 $lang['ionize_button_save_settings'] = 'Save settings';
+$lang['ionize_button_start_upload'] = 'Start Upload';
 
 
 /*
@@ -491,6 +495,7 @@ $lang['ionize_title_system'] = 'System';
 $lang['ionize_title_api'] = 'API';
 $lang['ionize_title_create_new_api_key'] = 'Create API key';
 $lang['ionize_label_create_new_api_key'] = 'Create new API key';
+$lang['ionize_button_new_api_key'] = 'New API key';
 $lang['ionize_title_db_backup'] = 'Database backup';
 $lang['ionize_title_maintenance'] = 'Maintenance';
 $lang['ionize_title_maintenance_page'] = 'Maintenance Page';
@@ -621,6 +626,13 @@ $lang['ionize_help_upload_mode_auto'] = 'Auto-detection based on browser capabil
 $lang['ionize_help_upload_mode_html4'] = "File by file selection, no Drag'n'Drop";
 $lang['ionize_help_upload_mode_html5'] = "Multiple files selection, with Drag'n'Drop";
 $lang['ionize_help_upload_autostart'] = "Upload autostart after file selection";
+
+$lang['ionize_label_api_key_hash'] = "Key";
+$lang['ionize_label_api_key_level'] = "Level";
+$lang['ionize_label_api_key_is_private'] = "Is private";
+$lang['ionize_label_api_key_ignore_limits'] = "Ignore limits";
+$lang['ionize_label_api_key_ip_addresses'] = "IP addresses";
+
 
 
 /*

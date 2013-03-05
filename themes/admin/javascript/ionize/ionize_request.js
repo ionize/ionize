@@ -12,7 +12,7 @@ ION.append({
 
 	HTML: function(url, data, options)
 	{
-		if (typeOf(options) == 'null' || typeOf(options.update) == 'null')
+		if (typeOf(options) == 'null' && typeOf(options.update) == 'null')
 		{
 			ION.notification('error', 'No "update" HTML Element in your request');
 		}
@@ -261,9 +261,7 @@ ION.append({
 	
 	/**
 	 * Execute the callbacks
-	 *
-	 * @param	Mixed.	Function name or array of functions.
-	 *
+	 * @param args      Function name or array of functions.
 	 */
 	execCallbacks: function(args)
 	{
@@ -274,7 +272,6 @@ ION.append({
 			callbacks = args;
 		}
 		else {
-//			callbacks.include(args);
 			callbacks.push(args);
 		}
 		
@@ -282,17 +279,18 @@ ION.append({
 		{
 			var cb = (item.fn).split(".");
 			var func = null;
-			var obj = null;
-			
-			if (cb.length > 1) {
-				obj = window[cb[0]];
-				func = obj[cb[1]];
-			}
-			else {
-				func = window[cb];
-			}
-			
-			func.delay(100, obj, item.args);
+			var obj = window[cb.shift()];
+
+			// Find the func
+			func = obj;
+			Array.each(cb, function(item) {
+				func = func[item];
+			});
+
+			if (func)
+				(func).delay(100, obj, item.args);
+			else
+				console.log('ERROR : The function ' + item.fn + ' does not exists');
 		});
 	}
 });

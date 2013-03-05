@@ -117,7 +117,6 @@ class Medias
 
 					$settings['width'] = $size[0];
 					$settings['height'] = $size[0];
-
 					$settings['square_crop'] = (empty($settings['start'])) ? $media['square_crop'] : $settings['start'];
 
 					// check size attribut
@@ -161,6 +160,7 @@ class Medias
 
 					$settings['width'] = $size[0];
 					$settings['height'] = ( ! empty($size[1])) ? $size[1] : $size[0];
+					$settings['square_crop'] = (empty($settings['start'])) ? $media['square_crop'] : $settings['start'];
 
 					// check size attribut
 					if(!preg_match('/^([0-9]){1,4}x([0-9]){1,4}a$/', $thumb_folder))
@@ -379,29 +379,22 @@ class Medias
 					
 					// Center the square
 					if ($dim['width'] > $dim['height'])
-					{
 						$ci_settings['x_axis'] = ($dim['width'] - $settings['width']) / 2;
-					}
 					else
-					{
 						$ci_settings['y_axis'] = ($dim['height'] - $settings['height']) / 2;
-					}
-					
+
 					switch ($settings['square_crop'])
 					{
 						// crop top-left area
 						case 'tl':
-							
 							$ci_settings['x_axis'] = '0';
 							$ci_settings['y_axis'] = '0';
 							break;
 						
 						// crop bottom-right area
 						case 'br':
-							
 							$ci_settings['x_axis'] = $dim['width'] - $settings['width'];
 							$ci_settings['y_axis'] = $dim['height'] - $settings['height'];
-							
 							break;
 					}
 					
@@ -480,10 +473,25 @@ class Medias
 					
 					$ci_settings['width'] = $settings['width'];
 					$ci_settings['height'] = $settings['height'];
-					
 					$ci_settings['x_axis'] = $params['x_axis'];
 					$ci_settings['y_axis'] = $params['y_axis'];
-					
+
+					switch ($settings['square_crop'])
+					{
+						// crop top-left area
+						case 'tl':
+							$ci_settings['x_axis'] = '0';
+							$ci_settings['y_axis'] = '0';
+							break;
+
+						// crop bottom-right area
+						case 'br':
+							$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
+							$ci_settings['x_axis'] = $dim['width'] - $settings['width'];
+							$ci_settings['y_axis'] = $dim['height'] - $settings['height'];
+							break;
+					}
+
 					$CI->image_lib->clear();
 					$CI->image_lib->initialize($ci_settings);
 					
@@ -773,35 +781,29 @@ class Medias
 	// ------------------------------------------------------------------------
 
 
-	public function delete_squares($media)
+	/**
+	 * Deletes all thumbs from one media
+	 *
+	 * @param $media
+	 */
+	public function delete_thumbs($media)
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
-
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
 		$thumb_path = $thumb_base_path . $thumb_path_segment;
-		
-		$thumb_name = $media['file_name'];
-		
-		if($handle = opendir($thumb_path))
-		{
-			while(FALSE !== ($size_folder = readdir($handle)))
-			{
-				if(preg_match('/^([0-9]){1,4}x([0-9]){1,4}$/', $size_folder))
-				{
-					$dim = explode('x', $size_folder);
-					
-					if($dim[0] == $dim[1])
-					{
-						$thumb_file_path = $thumb_path . $size_folder . '/' . $thumb_name;
-						if(file_exists($thumb_file_path))
-						{
-							unlink($thumb_file_path);
-						}
-					}
-				}
-			}
-		}
+		$file_name = $media['file_name'];
+
+		$thumb_file_path = $thumb_path . $file_name;
+
+		if(file_exists($thumb_file_path))
+			unlink($thumb_file_path);
+
+		$thumbs = glob($thumb_path.'/*/'.$file_name);
+
+		foreach($thumbs as $thumb_file_path)
+			if(file_exists($thumb_file_path))
+				unlink($thumb_file_path);
 	}
 
 

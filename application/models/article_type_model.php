@@ -26,7 +26,7 @@ class Article_type_model extends Base_model
 	 */
 	public function get_types_select()
 	{
-		return $this->get_items_select($this->table, 'type', NULL, 'ordering ASC');
+		return $this->get_items_select($this->table, 'type', NULL, NULL, 'ordering ASC');
 	}
 
 

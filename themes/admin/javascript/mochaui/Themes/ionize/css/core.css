@@ -53,7 +53,8 @@ p { margin: 0; padding: 0 0 5px 0; }
 .lite { color: #999; }
 
 /* Lists */
-ul { list-style: outside; margin: 0 0 9px 0; list-style-type: disc; }
+ul { list-style: outside; margin: 0 0 9px 0; list-style-type: disc; padding-left: 15px;}
+ol { margin: 0 0 9px 0; padding-left: 18px;}
 dt { font-weight: bold; }
 dd { padding: 0 0 9px 0; }
 

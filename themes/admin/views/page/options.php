@@ -520,23 +520,8 @@
 			ION.HTML(admin_url + 'page/get_link', {'id_page': '<?php echo $id_page; ?>'}, {'update': 'linkContainer'});
 		}
 
-		/**
-		 * XHR updates
-		 *
-		 */
-		// Dates
-		/*
-		   ION.datePicker.options['onClose'] = function()
-		   {
-			   ION.JSON('page/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_page': $('id_page').value});
-		   }
-		   */
-
 		// Page status
 		ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
-
-//		var id_current = ($('id_page').value) ? $('id_page').value : '0';
-//		var id_parent = ($('origin_id_parent').value) ? $('origin_id_parent').value : '0';
 
 		$('id_subnav_menu').addEvent('change', function()
 		{
@@ -555,7 +540,6 @@
 		});
 		$('id_subnav_menu').fireEvent('change');
 
-
 		// Reorder articles
 		$('button_reorder_articles').addEvent('click', function(e)
 		{
@@ -573,18 +557,11 @@
 
 	<?php endif; ?>
 
-
 	/**
 	 * Options Accordion
 	 *
 	 */
 	ION.initAccordion('.toggler', 'div.element', true, 'pageAccordion');
-
-	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#pageOptionsForm');
 
 	/**
 	 * Droppables init

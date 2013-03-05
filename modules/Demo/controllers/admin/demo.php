@@ -60,18 +60,22 @@ class Demo extends Module_Admin
 	public function _addons($object = array())
 	{
 		$CI =& get_instance();
-		
+		$uri = $CI->uri->uri_string();
+
 		// Send the article to the view
 		$data['article'] = $object;
 		
 		// Options panel Top Addon
-		$CI->load_addon_view(
-			'demo',								// Module folder
-			'article',							// Parent panel code
-			'options_top',						// Placehoder
-			'admin/addons/article/options', 	// View to display in the placeholder
-			$data								// Data send to the view
-		);
+		if (strpos($uri, 'article/get_options') !== FALSE)
+		{
+			$CI->load_addon_view(
+				'demo',								// Module folder
+				'article',							// Parent panel code
+				'options_top',						// Placehoder
+				'admin/addons/article/options', 	// View to display in the placeholder
+				$data								// Data send to the view
+			);
+		}
 	}
 }
 

@@ -19,7 +19,7 @@
 .toolbardock div.left { float: left }
 .toolbardock div.right { float: right }
 .toolbardock div.tabs ul { padding-top:0; }
-.toolbardock div.tabs { margin-top:2px; }
+.toolbardock div.tabs { margin-top:2px !important; }
 
 .toolbardock .buttonbar .icon {
     margin:4px;
@@ -40,7 +40,7 @@ div.panel-header div.tabs ul { height:28px; overflow:hidden }
 */
 .toolbar { margin-top: 4px; float: right; overflow: hidden; text-align: right; height: 22px; padding-bottom:2px; vertical-align:middle; }
 .toolbar img.disabled { cursor: default; }
-.toolbar .button { vertical-align: top; margin-top:0; height:24px; }
+.toolbar .button { vertical-align: middle; margin-top:0; /*height:24px;*/ height:18px; }
 .toolbar span.imgButton .imgButton span img { padding: 0 0 2px; position: relative; top: 6px; }
 .toolbar span.icon { line-height:24px; font-size:14px;padding: 0; background-repeat: no-repeat; background-position: center; border: 1px solid transparent; }
 .toolbar span.icon:hover { border: 1px solid #a0a0a0; -moz-border-radius: 3px; border-radius: 3px; }

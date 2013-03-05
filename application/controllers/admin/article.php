@@ -363,11 +363,10 @@ class Article extends MY_admin
 			);
 			$event_received = Event::fire('Article.save.before', $event_data);
 			$event_received = array_pop($event_received);
-			if ( ! empty($event_received['base']) && !empty($event_received['lang']))
-			{
+			if ( ! empty($event_received['base']))
 				$this->data = $event_received['base'];
+			if ( !empty($event_received['lang']))
 				$this->lang_data = $event_received['lang'];
-			}
 
 			// Saves article to DB and get the saved ID
 			$this->id = $this->article_model->save($this->data, $this->lang_data);
@@ -541,7 +540,6 @@ class Article extends MY_admin
 				$this->template['has_translated_extend_fields'] = $this->_has_translated_extend_fields($extend_fields);
 				$this->template['extend_fields'] = $extend_fields;
 
-
 				// Link : Depending on the context
 				$context = $this->article_model->get_context($id_article, $id_page);
 				
@@ -562,10 +560,9 @@ class Article extends MY_admin
 				{
 					$this->template['main_parent'] = '0';
 				}
-				
-				// URLs
-				// $this->template['urls'] = $this->url_model->get_collection('article', $id_article);
-								
+
+				Event::fire('Article.edit', $this->template);
+
 				$this->output('article/article');
 			}		
 		}
@@ -631,6 +628,7 @@ class Article extends MY_admin
 
 
 	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Updates the page name

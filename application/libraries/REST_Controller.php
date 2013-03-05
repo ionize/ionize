@@ -628,7 +628,7 @@ log_message('error', '=> ' . strtoupper($this->request->method) . ' : ' . $this-
 			 * If "is private key" is enabled, compare the ip address with the list
 			 * of valid ip addresses stored in the database.
 			 */
-			if(!empty($row->is_private_key))
+			if(!empty($row->is_private))
 			{
 				// Check for a list of valid ip addresses
 				if(isset($row->ip_addresses))
@@ -718,7 +718,7 @@ log_message('error', '=> ' . strtoupper($this->request->method) . ' : ' . $this-
 			'params' => $this->_args ? serialize($this->_args) : null,
 			'api_key' => isset($this->rest->key) ? $this->rest->key : '',
 			'ip_address' => $this->input->ip_address(),
-			'date' => date('Y-m-d H:i:s'),
+			'date_log' => date('Y-m-d H:i:s'),
 			'authorized' => $authorized
 		));
 	}

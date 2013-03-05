@@ -660,12 +660,6 @@ if ($tracker_title == '')
 
 	ION.initHelp('#articles .type.helpme', 'article_type', Lang.get('ionize_title_help_articles_types'));
 
-	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#pageForm');
-
 	ION.initFormAutoGrow();
 
 	/**

@@ -352,7 +352,7 @@ class Page_model extends Base_model
 	 */
 	public function get_groups_select()
 	{
-		return $this->get_items_select('user_groups', 'group_name', lang('ionize_select_everyone'), 'level DESC');
+		return $this->get_items_select('user_groups', 'group_name', NULL, lang('ionize_select_everyone'), 'level DESC');
 	}
 
 

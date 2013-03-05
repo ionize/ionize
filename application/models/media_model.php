@@ -163,7 +163,7 @@ class Media_model extends Base_model
 			$data['file_name'] = 	$file_name;
 			$data['base_path'] = 	$base_path;
 			$data['provider'] = 	! is_null($provider) ? $provider : '';
-			$data['path_hash'] = 	hash(config_item('files_path_hash_method'), $path);
+			// $data['path_hash'] = 	hash(config_item('files_path_hash_method'), $path);
 
 			// Update if exists
 			$query = $this->get_where(array('path'=>$path));

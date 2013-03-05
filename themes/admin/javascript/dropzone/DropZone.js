@@ -43,8 +43,8 @@ var DropZone = new Class({
 
 		// Translated terms
 		lang:{
-			'start_upload': 'Start Upload',
-			'select_files': 'Select files to Upload'
+			'start_upload': Lang.get('ionize_button_start_upload'),
+			'select_files': Lang.get('ionize_label_select_files_to_upload')
 		},
 
 		// Form & File input prefix
@@ -83,7 +83,7 @@ var DropZone = new Class({
 	},
 	
 	// Vars
-	method: null,
+    method: null,
 	flashObj: null,
 	flashloaded: false,
 	uiButton: null,
@@ -99,7 +99,7 @@ var DropZone = new Class({
 		* and initiate based on that
 		* note: swap bits here to make Flash preferred to HTML5
 		*/
-		if (options.method != '')
+		if (options.method != '' && typeof options.method != 'undefined')
 			this.method = (options.method).toUpperCase();
 
 		// Check HTML5 support & if module is available
@@ -250,7 +250,7 @@ var DropZone = new Class({
 		
 		this.nCancelled++;
 		
-		if(this.nCurrentUploads <= 0) this._queueComplete();
+		// if(this.nCurrentUploads <= 0 ) this._queueComplete();
 		
 		this.fireEvent('onItemCancel', [item]);
 	},
@@ -559,9 +559,10 @@ var DropZone = new Class({
 		if (this.options.autostart == false && ! this.uiListUploadButton )
 		{
 			this.uiListUploadButton = new Element('a',{
-					'class':'button filemanager-start-upload',
-					'text': this.options.lang.start_upload}
-			).addEvent('click', function(){
+				'class':'button filemanager-start-upload',
+				'text': this.options.lang.start_upload}
+			).addEvent('click', function()
+			{
 				this.upload();
 			}.bind(this)).inject(this.uiList);
 		}

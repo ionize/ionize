@@ -739,6 +739,7 @@ div.filemanager label.filemanager-resize input{
 	border-radius: 10px;
 	background: #8ac05e;
 	color: #fff;
+	float: right;
 }
 .button.filemanager-start-upload:hover {
 	background: #70b439;

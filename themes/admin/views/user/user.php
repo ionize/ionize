@@ -135,8 +135,5 @@ else
 
 	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
 
-	ION.initLabelHelpLinks('#userForm<?php echo $user['id_user'] ?>');
-
-
 </script>
 

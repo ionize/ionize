@@ -103,8 +103,6 @@
 	 */
 	new TabSwapper({tabsContainer: 'categoryTab<?php echo $id_category; ?>', sectionsContainer: 'categoryTabContent<?php echo $id_category; ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?php echo $id_category; ?>' });
 
-	ION.initLabelHelpLinks('#categoryForm<?php echo $id_category; ?>');
-
 	/**
 	 * TinyEditors
 	 * Must be called after tabs init.

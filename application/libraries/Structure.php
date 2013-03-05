@@ -290,7 +290,7 @@ class Structure{
 						// ISO 8601 format - date("c") requires PHP5
 						'lastmod' => date("c", strtotime($page['date'])),
 						'changefreq' => 'weekly',
-						'priority' => ($page['priority'] / 10)
+						'priority' => number_format(($page['priority'] / 10), 1,'.','')
 					);
 						
 					$ci->sitemaps->add_item($item);
@@ -320,7 +320,7 @@ class Structure{
 					// ISO 8601 format - date("c") requires PHP5
 					'lastmod' => date("c", strtotime($page['date'])),
 					'changefreq' => 'weekly',
-					'priority' => ($page['priority'] / 10)
+					'priority' => number_format(($page['priority'] / 10), 1,'.','')
 				);
 					
 				$ci->sitemaps->add_item($item);

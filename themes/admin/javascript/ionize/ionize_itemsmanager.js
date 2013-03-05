@@ -170,8 +170,10 @@ ION.ItemManager = new Class({
 					}
 				},
 				*/
-				onStart:function(el)
+				onStart:function(el, clone)
 				{
+					clone.addClass('clone');
+
 					if (typeOf(self.scroller) != 'null')
 					{
 						/*
@@ -198,7 +200,7 @@ ION.ItemManager = new Class({
 					item.removeProperty('style');
 
 					// Get the new order
-					var serialized = this.serialize(0, function (element, index)
+					var serialized = this.serialize(0, function(element, index)
 					{
 						// Check for the not removed clone
 						if (element.id != '')

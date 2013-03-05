@@ -17,7 +17,7 @@ var xhr = new Request.JSON(
 			var filemanager = new Filemanager({
                 url: admin_url + 'media/filemanager',
                 assetsUrl: theme_url + 'javascript/filemanager/assets',
-                language: Lang.get('current'),
+                language: Lang.current,
                 createFolders: true,
                 destroy: true,
                 rename: true,

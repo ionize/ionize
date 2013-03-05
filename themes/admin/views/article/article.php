@@ -605,13 +605,6 @@ if ($tracker_title == '')
 	ION.initFormAutoGrow();
 
 	/**
-	 * Init help tips on label
-	 * see init-content.js
-	 *
-	 */
-	ION.initLabelHelpLinks('#articleForm');
-
-	/**
 	 * Panel toolbox
 	 * Init the panel toolbox is mandatory !!! 
 	 *

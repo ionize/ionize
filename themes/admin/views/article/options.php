@@ -386,13 +386,6 @@
 	ION.initAccordion('.toggler-options', 'div.element-options', true, 'articleAccordion');
 
 	/**
-	 * Init help tips on label
-	 * see init-content.js
-	 *
-	 */
-	ION.initLabelHelpLinks('#articleOptionsForm');
-
-	/**
 	 * Article element in each of its parent context
 	 *
 	 */

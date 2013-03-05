@@ -29,6 +29,7 @@
 		<!-- Visual help : help tips and "Connected" label -->
 		<div class="tabcontent">
 
+			<!--
 			<dl>
 				<dt>
 					<label for="show_help_tips" title="<?php echo lang('ionize_help_help'); ?>"><?php echo lang('ionize_label_show_help_tips'); ?></label>
@@ -37,6 +38,7 @@
 					<input class="inputcheckbox" type="checkbox" name="show_help_tips" id="show_help_tips" <?php if (Settings::get('show_help_tips') == '1'):?> checked="checked" <?php endif;?> value="1" />
 				</dd>
 			</dl>
+			-->
 	
 			<dl>
 				<dt>
@@ -151,18 +153,7 @@
 	 * Options Accordion
 	 *
 	 */
-//	ION.initAccordion('.toggler1', 'div.element1', false, 'ionizeSettingsAccordion');
-
 	new TabSwapper({tabsContainer: 'ionizeSettingsTab', sectionsContainer: 'ionizeSettingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'ionizeSettingsTab' });
-
-
-	/**
-	 * Init help tips on label
-	 * see init-content.js
-	 *
-	 */
-	ION.initLabelHelpLinks('#ionizeSettingsForm');
-
 
 	/**
 	 * Flags save button

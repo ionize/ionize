@@ -618,7 +618,7 @@ class Article_model extends Base_model
 					}
 				}
 
-				if ( ! empty($url))
+				if ( ! empty($url) && isset($article['url']))
 				{
 					// Check if URL exists and correct it if necessary
 					$url = implode('/', $url) . '/' . $article['url'];

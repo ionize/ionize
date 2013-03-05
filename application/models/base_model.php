@@ -210,6 +210,19 @@ class Base_model extends CI_Model
 
 
 	/**
+	 * Get the model lang table name
+	 *
+	 */
+	public function get_lang_table()
+	{
+		return $this->lang_table;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	
+	/** 
 	 * Get one element
 	 *
 	 * @param	string		where array
@@ -217,7 +230,7 @@ class Base_model extends CI_Model
 	 * @return	array		array of media
 	 *
 	 */
-	function get($where, $lang = NULL)
+	public function get($where, $lang = NULL)
 	{
 		$data = array();
 
@@ -297,8 +310,8 @@ class Base_model extends CI_Model
 		$table = (!is_null($table)) ? $table : $this->table;
 
 		$query = $this->{$this->db_group}->get($table);
-
-		return $query->result();
+		
+		return $query->result_array();
 	}
 
 
@@ -380,7 +393,7 @@ class Base_model extends CI_Model
 	 * @return	array		Array of records
 	 *
 	 */
-	function get_list($where = FALSE, $table = NULL)
+	public function get_list($where = FALSE, $table = NULL)
 	{
 		$data = array();
 
@@ -444,10 +457,10 @@ class Base_model extends CI_Model
 	 * @param	array	Arraylist of all translations rows
 	 *
 	 */
-	function get_lang($where = NULL)
+	public function get_lang($where = NULL)
 	{
-		$data = array();
-
+		$data = $returned_data = array();
+		
 		if ($this->lang_table != '')
 		{
 			if ( is_array($where))
@@ -475,7 +488,12 @@ class Base_model extends CI_Model
 
 			$query->free_result();
 		}
-		return $data;
+
+		// Set lang code as record index
+		foreach($data as $lang_item)
+			$returned_data[$lang_item['lang']] = $lang_item;
+
+		return $returned_data;
 	}
 
 
@@ -493,7 +511,7 @@ class Base_model extends CI_Model
 	 *	@return	array	The complete arrayList of element, including medias
 	 *
 	 */
-	function get_lang_list($where = array(), $lang = NULL)
+	public function get_lang_list($where = array(), $lang = NULL)
 	{
 		$data = array();
 
@@ -553,7 +571,7 @@ class Base_model extends CI_Model
 	 * @returns	Array	Array of elements
 	 *
 	 */
-	function get_from_urls($urls, $excluded_id)
+	public function get_from_urls($urls, $excluded_id)
 	{
 		$data = array();
 
@@ -621,7 +639,7 @@ class Base_model extends CI_Model
 	 * @return	array		items keys simple array
 	 *
 	 */
-	function get_joined_items_keys($items_table, $parent_table, $parent_id, $prefix='')
+	public function get_joined_items_keys($items_table, $parent_table, $parent_id, $prefix='')
 	{
 		$data = array();
 
@@ -664,7 +682,7 @@ class Base_model extends CI_Model
 	 * @return	array		Array of Hashtable
 	 *
 	 */
-	function get_linked_items($first_table, $second_table, $cond, $join=1, $prefix = '')
+	public function get_linked_items($first_table, $second_table, $cond, $join=1, $prefix = '')
 	{
 		$data = array();
 
@@ -715,7 +733,7 @@ class Base_model extends CI_Model
 	 * @return	array		Array of Hashtable
 	 *
 	 */
-	function get_linked_lang_items($parent_table, $child_table, $cond, $lang, $prefix = '')
+	public function get_linked_lang_items($parent_table, $child_table, $cond, $lang, $prefix = '')
 	{
 		$data = array();
 
@@ -739,9 +757,30 @@ class Base_model extends CI_Model
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();
-		}
-
+		}			
+		
 		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param        $field
+	 * @param null   $nothing_value
+	 * @param null   $order_by
+	 * @param string $glue
+	 *
+	 * @return array
+	 */
+	public function get_form_select($field, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	{
+		$table = $this->get_table();
+		if ( ! is_null($table))
+			return $this->get_items_select($table,$field, $nothing_index, $nothing_value, $order_by, $glue );
+
+		return array();
 	}
 
 
@@ -760,13 +799,16 @@ class Base_model extends CI_Model
 	 * @return array
 	 *
 	 */
-	function get_items_select($items_table, $field, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_items_select($items_table, $field, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		$data = array();
-
+		
 		// Add the Zero value item
 		if ( ! is_null($nothing_value))
-			$data = array('0' => $nothing_value);
+		{
+			$nothing_index = (is_null($nothing_index)) ? 0 : $nothing_index;
+			$data = array($nothing_index => $nothing_value);
+		}
 
 		// Items table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($items_table);
@@ -795,22 +837,54 @@ class Base_model extends CI_Model
 				$data[$row->$items_table_pk] = $row->$field;
 			}
 		}
-
+		
 		return $data;
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
-	 * Same as get_items_select() but takking a lang tabe field as label
+	 * @param        $field
+	 * @param        $lang
+	 * @param null   $nothing_value
+	 * @param null   $order_by
+	 * @param string $glue
+	 *
+	 * @return array
 	 *
 	 */
-	function get_lang_items_select($items_table, $field, $lang, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_lang_form_select($field, $lang = NULL, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	{
+		if (is_null($lang))
+			$lang = Settings::get_lang();
+
+		$table = $this->get_table();
+		if ( ! is_null($table))
+			return $this->get_lang_items_select($table,$field, $lang, $nothing_index, $nothing_value, $order_by, $glue );
+
+		return array();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Same as get_items_select() but taking a lang table field as label
+	 *
+	 */
+	public function get_lang_items_select($items_table, $field, $lang, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		$data = array();
 
 		// Add the Zero value item
 		if ( ! is_null($nothing_value))
-			$data = array('0' => $nothing_value);
+		{
+			$nothing_index = (is_null($nothing_index)) ? 0 : $nothing_index;
+			$data = array($nothing_index => $nothing_value);
+		}
 
 		// Items table primary key detection
 		$fields = $this->{$this->db_group}->list_fields($items_table);
@@ -853,8 +927,10 @@ class Base_model extends CI_Model
 	// ------------------------------------------------------------------------
 
 
-	function get_unique_name($name, $id_to_exclude=NULL, $table=NULL, $postfix = 1)
+	public function get_unique_name($name, $id_to_exclude=NULL, $table=NULL, $postfix = 1)
 	{
+		$this->load->helper('text_helper');
+
 		$table = (!is_null($table)) ? $table : $this->table;
 
 		$name = url_title(convert_accented_characters($name));
@@ -877,6 +953,38 @@ class Base_model extends CI_Model
 		}
 
 		return $name;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_unique_field($field, $value, $id_to_exclude=NULL, $table=NULL, $postfix = 1)
+	{
+		$this->load->helper('text_helper');
+
+		$table = (!is_null($table)) ? $table : $this->table;
+
+		$value = url_title(convert_accented_characters($value));
+
+		$where = array($field => $value);
+
+		if (!is_null($id_to_exclude) && $id_to_exclude != FALSE)
+			$where['id_'.$table.' !='] = $id_to_exclude;
+
+		$exists = $this->exists($where);
+
+		if ($exists)
+		{
+			if ($postfix > 1 OR (substr($value, -2, count($value) -2) == '-' && intval(substr($value, -1)) != 0 ))
+				$value = substr($value, 0, -2);
+
+			$value = $value . '-' . $postfix;
+
+			return $this->get_unique_field($field, $value, $id_to_exclude, $table, $postfix + 1);
+		}
+
+		return $value;
 	}
 
 
@@ -918,7 +1026,7 @@ class Base_model extends CI_Model
 	// ------------------------------------------------------------------------
 
 
-	function simple_search($term, $field, $limit)
+	public function simple_search($term, $field, $limit)
 	{
 		$data = array();
 
@@ -946,7 +1054,7 @@ class Base_model extends CI_Model
 	 * Returns the first PK field nam found for the given table
 	 *
 	 */
-	function get_pk_name($table)
+	public function get_pk_name($table)
 	{
 		$fields = $this->{$this->db_group}->field_data($table);
 
@@ -1033,49 +1141,6 @@ class Base_model extends CI_Model
 
 
 	/**
-	 * Check all URLs against the articles URLs in DB and correct them if needed
-	 *
-	function set_unique_urls(&$lang_data, $exclude_id = FALSE)
-	{
-		foreach($this->get_languages() as $l)
-		{
-			$lang_data[$l['lang']]['url'] = $this->_set_unique_url($lang_data[$l['lang']]['url'], $exclude_id);
-		}
-	}
-	 */
-
-
-	// ------------------------------------------------------------------------
-
-	/*
-	function _set_unique_url($url, $exclude_id, $id=1)
-	{
-
-		$articles = $this->get_from_urls($url, $exclude_id);
-
-		if ( ! empty($articles))
-		{
-			// Remove the existing last number
-			if ($id > 1)
-				$url = substr($url,0,-2);
-
-			// Add the last ID
-			$url = $url . '-' . $id;
-
-			// Check the new URL
-			return $this->_set_unique_url($url, $exclude_id, $id+1);
-		}
-		else
-		{
-			return $url;
-		}
-	}
-	*/
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * Get the elements definition and store them in the private property "elements_def"
 	 *
 	 * @param	String	Parent type
@@ -1113,7 +1178,7 @@ class Base_model extends CI_Model
 	 * @return 	int		Saved element ID
 	 *
 	 */
-	function save($data, $dataLang = array())
+	public function save($data, $dataLang = array())
 	{
 		/*
 		 * Base data save
@@ -1131,11 +1196,23 @@ class Base_model extends CI_Model
 			$this->{$this->db_group}->insert($this->table, $data);
 			$id = $this->{$this->db_group}->insert_id();
 		}
-		// Update
+		// Update or Insert
 		else
 		{
-			$this->{$this->db_group}->where($this->pk_name, $data[$this->pk_name]);
-			$this->{$this->db_group}->update($this->table, $data);
+			$where = array($this->pk_name => $data[$this->pk_name]);
+
+			// Update
+			if( $this->exists($where, $this->table))
+			{
+				$this->{$this->db_group}->where($this->pk_name, $data[$this->pk_name]);
+				$this->{$this->db_group}->update($this->table, $data);
+			}
+			// Insert
+			else
+			{
+				$this->{$this->db_group}->insert($this->table, $data);
+			}
+
 			$id = $data[$this->pk_name];
 		}
 
@@ -1148,13 +1225,16 @@ class Base_model extends CI_Model
 			{
 				foreach($dataLang as $lang => $data)
 				{
-					if($lang == $language['lang'])
+					if ( ! is_string($lang))
+						$lang = isset($data['lang']) ? $data['lang'] : 0;
+
+					if($lang === $language['lang'])
 					{
 						$where = array(
-									$this->pk_name => $id,
-									'lang' => $lang
-								  );
-
+							$this->pk_name => $id,
+							'lang' => $lang
+						);
+	
 						// Update
 						if( $this->exists($where, $this->lang_table))
 						{
@@ -1188,7 +1268,7 @@ class Base_model extends CI_Model
 	 * @return	string	Coma separated order
 	 *
 	 */
-	function save_ordering($ordering, $parent = FALSE, $id_parent = FALSE)
+	public function save_ordering($ordering, $parent = FALSE, $id_parent = FALSE)
 	{
 		if ( ! is_array($ordering))
 		{
@@ -1236,7 +1316,7 @@ class Base_model extends CI_Model
 	 * @param	String	Link table prefix.
 	 *
 	 */
-	function save_simple_link($parent_table, $id_parent, $child_table, $id_child, $context_data = array(), $prefix='')
+	public function save_simple_link($parent_table, $id_parent, $child_table, $id_child, $context_data = array(), $prefix='')
 	{
 		$link_table = $prefix.$parent_table.'_'.$child_table;
 
@@ -1293,7 +1373,7 @@ class Base_model extends CI_Model
 	 *
 	 */
 //	function join_items_keys_to($child_table, $items, $parent_table, $parent_id, $prefix)
-	function save_multiple_links($parent_table, $parent_id, $child_table, $items, $prefix = '')
+	public function save_multiple_links($parent_table, $parent_id, $child_table, $items, $prefix = '')
 	{
 		// N to N table
 		$link_table = $prefix.$parent_table.'_'.$child_table;
@@ -1346,7 +1426,7 @@ class Base_model extends CI_Model
 	 * @param	String	Link table prefix.
 	 *
 	 */
-	function delete_simple_link($parent_table, $id_parent, $child_table, $id_child, $prefix)
+	public function delete_simple_link($parent_table, $id_parent, $child_table, $id_child, $prefix='')
 	{
 		// N to N table
 		$link_table = $prefix.$parent_table.'_'.$child_table;
@@ -1624,7 +1704,7 @@ class Base_model extends CI_Model
 	 * @return	int		number of attached items
 	 *
 	 */
-	function join_items_keys_to($items_table, $items, $parent_table, $parent_id)
+	public function join_items_keys_to($items_table, $items, $parent_table, $parent_id)
 	{
 		// N to N table
 		$link_table = $parent_table.'_'.$items_table;
@@ -1680,7 +1760,7 @@ class Base_model extends CI_Model
 	 * @return	int			number of affected rows
 	 *
 	 */
-	function delete_joined_key($items_table, $item_key, $parent_table, $parent_id)
+	public function delete_joined_key($items_table, $item_key, $parent_table, $parent_id)
 	{
 		// N to N table
 		$link_table = $parent_table.'_'.$items_table;
@@ -1713,7 +1793,7 @@ class Base_model extends CI_Model
 	 * @return 	boolean		New status
 	 *
 	 */
-	function switch_online($id)
+	public function switch_online($id)
 	{
 		// Current status
 		$status = $this->get_row($id)->online;
@@ -1740,7 +1820,7 @@ class Base_model extends CI_Model
 	 * @param	array	By ref, the template array
 	 *
 	 */
-	function feed_template($id, &$template)
+	public function feed_template($id, &$template)
 	{
 		$data = $this->get($id);
 

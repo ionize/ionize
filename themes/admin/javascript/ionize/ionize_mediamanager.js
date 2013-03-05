@@ -226,9 +226,6 @@ var IonizeMediaManager = new Class(
 				{
 					return element.getProperty('id').replace(responseJSON.type + '_','');
 				}));
-	
-				// Set tips
-				this.tips = new Tips('#' + this.containers.get(responseJSON.type) + ' .help', {'className' : 'tooltip', 'text': 'rel', 'title' : 'title'});
 			}
 			// If no media, feed the content HMTLDomElement with transmitted message
 			else
@@ -312,17 +309,10 @@ var IonizeMediaManager = new Class(
 		// Show the spinner
 		MUI.showSpinner();
 
-		if (this.tips)
-		{
-			this.tips.hide();
-			this.tips.detach('#' + type + '_' + id + ' .help');
-		}
-
 		var xhr = new Request.JSON(
 		{
 			url: this.adminUrl + 'media/detach_media/' + type + '/' + this.parent + '/' + this.idParent + '/' + id,
 			method: 'post',
-//			onSuccess: this.disposeMedia.bind(this),
 			onSuccess: function()
 			{
 				this.loadMediaList(type);
@@ -510,7 +500,7 @@ var IonizeMediaManager = new Class(
 							resizeOnUpload: self.options.resizeOnUpload,
 							uploadAutostart: self.options.uploadAutostart,
 							uploadMode: self.options.uploadMode,
-							language: Lang.get('current'),
+							language: Lang.current,
 							selectable: true,
 							hideOnSelect: false,
 							// thumbSize: self.options.thumbSize,
@@ -628,7 +618,7 @@ ION.append({
 						baseURL: baseUrl,
 						url: adminUrl + 'media/filemanager',
 						assetBasePath: baseUrl + 'themes/admin/javascript/mootools-filemanager/Assets',
-						language: Lang.get('current'),
+						language: Lang.current,
 						selectable: true,
 						hideOnClick: true,
 						onComplete: complete,

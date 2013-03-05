@@ -2,14 +2,14 @@
 -- Ionize 1.0.0 SQL creation tables
 --
 
-CREATE TABLE api_keys (
+CREATE TABLE api_key (
     id int(11) NOT NULL AUTO_INCREMENT,
-    key varchar(40) NOT NULL,
-    level int(2) NOT NULL,
+    `key` varchar(40) NOT NULL,
+    `level` int(2) NOT NULL,
     ignore_limits tinyint(1) NOT NULL DEFAULT '0',
-    is_private_key tinyint(1) NOT NULL DEFAULT '0',
+    is_private tinyint(1) NOT NULL DEFAULT '0',
     ip_addresses text,
-    date_created int(11) NOT NULL,
+    date_created datetime,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -20,7 +20,7 @@ CREATE TABLE api_log (
     method varchar(6) NOT NULL,
     params text,
     api_key varchar(40) NOT NULL,
-    date datetime DEFAULT NULL,
+    date_log datetime DEFAULT NULL,
     ip_address varchar(45) NOT NULL,
     authorized tinyint(1) NOT NULL,
     PRIMARY KEY (id)
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS media (
 	date datetime NOT NULL							COMMENT 'Medium date',
 	link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
 	square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',
-	path_hash varchar(100) NOT NULL DEFAULT  '',
+--	path_hash varchar(100) NOT NULL DEFAULT  '',
 	PRIMARY KEY  (id_media)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 

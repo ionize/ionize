@@ -114,7 +114,6 @@ DropZone.HTML4 = new Class({
 	{
 		this.parent(files);
 
-
 		this._newInput();
 	},
 
@@ -128,14 +127,16 @@ DropZone.HTML4 = new Class({
 		{
 			// Each form = one file to upload
 			forms = this._getForms();
-			// the last form (no selected file) must not be uploaded
-			forms.pop();
+
+			// the last form (no selected file) must not be uploaded, only if no autostart
+			if (this.options.autostart == false)
+				forms.pop();
+
 			var delay_value = 0;
 			forms.each(function(formElement, id)
 			{
 				var file = this.fileList[id];
 
-				// if (file != undefined && ! this.isUploading)
 				if (file != undefined && !this.isUploading)
 				{
 					if (file.checked && ! file.uploading)

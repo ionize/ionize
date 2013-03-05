@@ -9,9 +9,7 @@
 				<?php echo strtoupper(ENVIRONMENT); ?>
 			</span>
 	</div>
-	<script type="text/javascript">
-		ION.initLabelHelpLinks('#preprod-flag');
-	</script>
+
 <?php endif; ?>
 
 <a id="logoAnchor" class="navlink" href="dashboard"></a>

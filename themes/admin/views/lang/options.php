@@ -125,13 +125,6 @@
 
 	ION.initAccordion('.toggler', 'div.element', true, 'langAccordion1');
 
-	/**
-	 * Init help tips on label
-	 * see init-content.js
-	 *
-	 */
-	ION.initLabelHelpLinks('#splitPanel_sidePanel');
-
 	// Content copy confirmation callback
 	var copyLang = function()
 	{

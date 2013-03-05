@@ -218,14 +218,6 @@
 
 
 	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#newGroupForm');
-	ION.initLabelHelpLinks('#userExportForm');
-
-
-	/**
 	 * Filter users list
 	 *
 	 */

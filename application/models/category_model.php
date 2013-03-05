@@ -29,7 +29,7 @@ class Category_model extends Base_model
 	 */
 	public function get_categories_select()
 	{
-		return $this->get_items_select($this->table, 'name', lang('ionize_select_no_category'), 'ordering ASC');
+		return $this->get_items_select($this->table, 'name', NULL, lang('ionize_select_no_category'), 'ordering ASC');
 	}
 
 

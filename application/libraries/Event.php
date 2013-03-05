@@ -63,8 +63,12 @@ class Event {
 		{
 			foreach ($module_paths as $module_path)
 			{
+				$folder = basename($module_path);
+				if (in_array($folder, $modules))
+				{
 				if ( ! $details_class = self::_start_events_class($module_path))
 					continue;
+				}
 			}
 		}
 
@@ -240,7 +244,7 @@ class Event {
 				'message' => $message,
 				'id_user' => $user['id_user'],
 				'email' => $user['email'],
-				'date' => date('Y-m-d H:i:s'),
+				'date_log' => date('Y-m-d H:i:s'),
 				'ip_address' => self::$ci->input->ip_address(),
 			);
 			return self::$ci->event_model->insert($data);

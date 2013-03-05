@@ -126,12 +126,6 @@
 
 <script type="text/javascript">
 
-	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#extendtableForm');
-
 	function display_value_block()
 	{
 		$('unsigned_block').setStyle('display', 'none');
