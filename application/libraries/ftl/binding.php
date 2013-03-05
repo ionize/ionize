@@ -320,6 +320,34 @@ class FTL_Binding
 		return $parent;
 	}
 
+
+	/**
+	 * @param $parent_name
+	 * @param $data_array_name
+	 *
+	 * @return null
+	public function getDataFromParent($parent_name, $data_array_name)
+	{
+		$data = NULL;
+
+		// If asked from parent_name 'article', get the first tag called 'article'
+		$parent = $this->getParent($parent_name);
+
+		if ( ! is_null($parent))
+		{
+			// The data array of the parent called 'article' is supposed to have the key 'article'
+			$parent_data = $parent->get($parent_name);
+
+			// If the asked data are 'medias', the $parent_data array is supposed to have this array
+			if (isset($parent_data[$data_array_name]))
+				$data = $parent_data[$data_array_name];
+		}
+		return $data;
+	}
+
+	 */
+
+
 	/**
 	 * Returns the first real data parent tag
 	 *
@@ -422,7 +450,12 @@ class FTL_Binding
 			$key = $this->name;
 
 		if (is_null($data_array_name))
-			$data_array_name = $this->getDataParentName();
+		{
+			$data_array_name = $this->getAttribute('from');
+
+			if (is_null($data_array_name))
+				$data_array_name = $this->getDataParentName();
+		}
 
 		if ( ! is_null($key) && ! is_null($data_array_name))
 		{

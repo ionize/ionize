@@ -15,11 +15,15 @@
 		<?php
 		
 		$path = substr($media['path'], strpos($media['path'], '/') + 1);
-		
+
+		$title = $media['file_name'];
+		if (strlen($title) > 25)
+			$title = substr($media['file_name'], 0, 25) . '...';
+
 		$edit_href = "javascript:ION.formWindow(
 						'". $media['type'].$media['id_media'] ."',
 						'mediaForm". $media['id_media'] ."', 
-						'". $media['file_name'] ."',
+						'". $title ."',
 						'media/edit/".$media['type'] ."/". $media['id_media'] ."/". $parent ."/". $id_parent ."',
 						{width:500,height:460}
 					 );";

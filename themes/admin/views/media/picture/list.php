@@ -22,10 +22,20 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 	
 	$path = substr($media['path'], strpos($media['path'], '/') + 1);
 	$thumbUrl =	$thumb_base_url.$path;
-	// Get picture thumb size	
+
 	$details = '';
 
-	$edit_href = "javascript:ION.formWindow('". $media['type'].$media['id_media'] ."', 'mediaForm". $media['id_media'] ."', '" . $media['file_name'] ."', '". admin_url(TRUE) ."media/edit/picture/". $media['id_media'] . "/" . $parent ."/" . $id_parent ."', {width:520,height:430,resize:false})";
+	$title = $media['file_name'];
+	if (strlen($title) > 25)
+		$title = substr($media['file_name'], 0, 25) . '...';
+
+	$edit_href = "javascript:ION.formWindow(
+		'". $media['type'].$media['id_media'] ."',
+		'mediaForm". $media['id_media'] ."',
+		'" . $title ."',
+		'". admin_url(TRUE) ."media/edit/picture/". $media['id_media'] . "/" . $parent ."/" . $id_parent ."',
+		{width:520,height:430,resize:false}
+	)";
 
 	if (file_exists($media['path']))
 	{

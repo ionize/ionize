@@ -28,6 +28,7 @@ class TagManager_Article extends TagManager
 		'article:view' => 			'tag_simple_value',
 		'article:next' => 			'tag_next_article',
 		'article:prev' => 			'tag_prev_article',
+		'article:type' => 			'tag_simple_value',
 	);
 
 
@@ -367,7 +368,10 @@ class TagManager_Article extends TagManager
 					else
 					{
 						$target_page = self::$ci->page_model->get_by_id($article['link_id'], Settings::get_lang('current'));
-						$article['url'] = $target_page[$page_url_key];
+
+						// If target page is offline, 'path' is not set
+						if ( isset($target_page[$page_url_key]))
+							$article['url'] = $target_page[$page_url_key];
 					}
 
 					// Correct the URL : Lang + Base URL

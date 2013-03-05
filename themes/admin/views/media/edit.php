@@ -79,34 +79,39 @@ if($type == 'picture')
 
 	<h3><?php echo lang('ionize_title_informations'); ?></h3>
 
-	<?php if($provider != '') :?>
+	<div style="margin-right:140px">
+		<?php if($provider != '') :?>
 
-		<?php echo auto_link($path, 'both', true) ;?>
+			<p class="a-break">
+				<?php echo auto_link($path, 'both', true) ;?>
+            </p>
 
-	<?php else: ?>
+		<?php else: ?>
 
-		<?php echo auto_link(base_url().$path, 'both', true) ;?>
-    	<br/>
+			<p class="a-break">
+				<?php echo auto_link(base_url().$path, 'both', true) ;?>
+			</p>
 
-		<?php if (file_exists(DOCPATH . $path)) :?>
-			<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )); ?> ko
-		<?php else :?>
-			<?php echo(lang('ionize_exception_no_source_file')) ;?>
-		<?php endif ;?>
-
-		<?php if($type == 'picture') :?>
-			-
-			<?php if ( ! is_null($pictureSize)) :?>
-				<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
-				<br />
-				<a id="imageCropLink<?php echo $id_media; ?>" class="light button white mt10">
-					<i class="icon-crop"></i>
-					<?php echo lang('ionize_label_media_crop_picture'); ?>
-				</a>
-				<?php endif ;?>
+			<?php if (file_exists(DOCPATH . $path)) :?>
+				<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )); ?> ko
+			<?php else :?>
+				<?php echo(lang('ionize_exception_no_source_file')) ;?>
 			<?php endif ;?>
 
-	<?php endif ;?>
+			<?php if($type == 'picture') :?>
+				-
+				<?php if ( ! is_null($pictureSize)) :?>
+					<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
+					<br />
+					<a id="imageCropLink<?php echo $id_media; ?>" class="light button white mt10">
+						<i class="icon-crop"></i>
+						<?php echo lang('ionize_label_media_crop_picture'); ?>
+					</a>
+					<?php endif ;?>
+				<?php endif ;?>
+
+		<?php endif ;?>
+    </div>
 
 </div>
 

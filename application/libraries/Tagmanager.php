@@ -1245,7 +1245,10 @@ class TagManager
 
 	public static function tag_simple_date(FTL_Binding $tag)
 	{
-		$value = $tag->getValue();
+		// Optional : data array from where to get the data
+		$from = $tag->getAttribute('from');
+
+		$value = $tag->getValue(NULL, $from);
 
 		$value = self::format_date($tag, $value);
 
@@ -1701,7 +1704,7 @@ class TagManager
 			if ($result)
 			{
 				if (self::$trigger_else > 0)
-					self::$trigger_else--;
+					self::$trigger_else = 0;
 				return self::wrap($tag, $tag->expand());
 			}
 			else
@@ -2427,6 +2430,7 @@ class TagManager
 	 * Set one session variable
 	 *
 	 * @usage	<ion:session:set key="foo" value="bar" />
+	 * 			<ion:session:set key="title" />
 	 *
 	 */
 	public static function tag_session_set(FTL_Binding $tag)
@@ -2443,7 +2447,51 @@ class TagManager
 		{
 			// Set the given value
 			if ( ! is_null($value))
+			{
+				$from = $tag->getAttribute('from', $tag->getName());
+
+				if (strpos($value, 'extend:') === 0)
+				{
+					// Get asked extend name
+					$arr = explode(':', $value);
+					$field = ( isset($arr[1])) ? $arr[1] : NULL;
+					$var = ( isset($arr[2])) ? $arr[2] : NULL;
+
+					// Extends definition
+					$extend_fields_definitions = self::$ci->base_model->get_extend_fields_definition($from, Settings::get_lang('current'));
+					$extend_field = NULL;
+					foreach($extend_fields_definitions as $def)
+					{
+						if ($def['name'] == $field)
+							$extend_field = $def;
+					}
+
+					if ( ! is_null($extend_field))
+					{
+						// Get value
+						if ((is_null($var) OR ! isset($extend_field[$var])) OR $var=='value')
+						{
+							$value = $tag->getValue(self::$extend_field_prefix . $field, $from);
+						}
+						else
+						{
+							$value = isset($extend_field[$var]) ? $extend_field[$var] : NULL;
+						}
+					}
+					else
+					{
+						$msg = 'Error in tag '.$tag->nesting().': "' . $value . '" is not correct';
+						log_message('error', $msg);
+						$value = NULL;
+					}
+				}
+				else
+				{
+					$value = $tag->getValue($value, $from);
+				}
+
 				self::$ci->session->set_userdata($key, $value);
+			}
 			else
 			{
 				$parent = $tag->getDataParent();
@@ -2759,7 +2807,7 @@ class TagManager
 			if ($value == $is)
 			{
 				if (self::$trigger_else > 0)
-					self::$trigger_else--;
+					self::$trigger_else = 0;
 
 				return self::wrap($tag, $tag->expand());
 			}
@@ -2780,7 +2828,7 @@ class TagManager
 			{
 				case TRUE:
 					if (self::$trigger_else > 0)
-						self::$trigger_else--;
+						self::$trigger_else = 0;
 
 					return self::wrap($tag, $tag->expand());
 					break;

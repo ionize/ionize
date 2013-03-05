@@ -19,7 +19,7 @@
 	</query>
 
 	<query>
-		update setting set content='0.9.9.4' where name = 'ionize_version';
+		update setting set content='0.9.9.5' where name = 'ionize_version';
 	</query>
 
 	<query>
@@ -50,10 +50,6 @@
 		ALTER TABLE `media` ADD `square_crop` enum('tl','m','br') NOT NULL DEFAULT 'm';
 	</query>
 	
-	<query>
-		ALTER TABLE `media` ADD `provider` varchar(255) DEFAULT NULL;
-	</query>
-
 	<query>
 		ALTER TABLE `media` drop `container`;
 	</query>
