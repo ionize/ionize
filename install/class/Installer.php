@@ -786,6 +786,7 @@ class Installer
 		}
 
 		// VERSION
+		/*
 		require_once('./class/Config.php');
 
 		// Save version
@@ -795,6 +796,7 @@ class Installer
 		{
 			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
 		}
+		*/
 
 		$this->template['base_url'] = BASEURL;
 		$this->output('finish');
