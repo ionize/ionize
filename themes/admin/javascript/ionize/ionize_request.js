@@ -261,9 +261,7 @@ ION.append({
 	
 	/**
 	 * Execute the callbacks
-	 *
-	 * @param	Mixed.	Function name or array of functions.
-	 *
+	 * @param args      Function name or array of functions.
 	 */
 	execCallbacks: function(args)
 	{
@@ -274,7 +272,6 @@ ION.append({
 			callbacks = args;
 		}
 		else {
-//			callbacks.include(args);
 			callbacks.push(args);
 		}
 		

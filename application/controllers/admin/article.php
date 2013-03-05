@@ -520,7 +520,6 @@ class Article extends MY_admin
 				$this->template['has_translated_extend_fields'] = $this->_has_translated_extend_fields($extend_fields);
 				$this->template['extend_fields'] = $extend_fields;
 
-
 				// Link : Depending on the context
 				$context = $this->article_model->get_context($id_article, $id_page);
 				
