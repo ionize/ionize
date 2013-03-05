@@ -246,7 +246,7 @@ if($type == 'picture')
 					
 					<!-- Thumbnail square crop area -->
 					<dl class="small">
-						<dt><?php echo lang('ionize_label_square_crop_area'); ?>&nbsp;&nbsp;</dt>
+						<dt><?php echo lang('ionize_label_thumb_crop_area'); ?>&nbsp;&nbsp;</dt>
 						<dd>
 							<input id="square_crop_<?php echo $id_media; ?>_1" name="square_crop" type="radio" value="tl"<?php if ($square_crop == 'tl'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?php echo $id_media; ?>_1"><?php echo lang('ionize_label_top_left'); ?></label></input><br />
 							<input id="square_crop_<?php echo $id_media; ?>_2" name="square_crop" type="radio" value="m"<?php if ($square_crop == 'm'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?php echo $id_media; ?>_2"><?php echo lang('ionize_label_middle'); ?></label></input><br />
