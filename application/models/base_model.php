@@ -2320,7 +2320,7 @@ class Base_model extends CI_Model
 					$protect = FALSE;
 
 				// NULL value : Create an "where value is NULL" constraint
-				if ($value == 'NULL')
+				if ($value == 'NULL' && is_string($value))
 				{
 					$this->{$this->db_group}->where($key. ' IS NULL', NULL, FALSE);
 				}
