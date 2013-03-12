@@ -69,7 +69,6 @@ ION.append({
 		{
 			// Form Validation
 			var fv = new Form.Validator.Inline(form, {
-				stopOnFailure: true,
 				errorPrefix: '',
 				showError: function(element) {
 					element.show();
@@ -137,7 +136,7 @@ ION.append({
 		}
 		else
 		{
-			console.log('ION.setFormSubmit() error : The form "' + form + '" or the button "' + button + '" do not exist.');
+			// console.log('ION.setFormSubmit() error : The form "' + form + '" or the button "' + button + '" do not exist.');
 		}
 	},
 

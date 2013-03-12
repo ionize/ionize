@@ -66,13 +66,13 @@ class Pages
 		 * This adds the group ID to the childrens pages of a protected page
 		 * If you don't want this, just uncomment this line.
 		 */
-		if (Connect()->logged_in())
-			self::$user = Connect()->get_current_user();
+		if (User()->logged_in())
+			self::$user = User()->get_user();
 		 
 		self::$ci->page_model->spread_authorizations($pages);
 
 		// Filter pages regarding the authorizations
-		$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_pages_authorization')));
+//		$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_pages_authorization')));
 
 		// Set all abolute URLs one time, for perf.
 		self::init_absolute_urls($pages, $lang);
@@ -257,8 +257,14 @@ class Pages
 
 
 	// ------------------------------------------------------------------------
-	
-	
+
+	/**
+	 * TODO: Rewrite.
+	 *
+	 * @param $row
+	 *
+	 * @return bool
+	 */
 	private static function _filter_pages_authorization($row)
 	{
 		// If the page group != 0, then get the page group and check the restriction

@@ -567,7 +567,7 @@ class TagManager_Navigation extends TagManager
 			$tag->set('is_active', $lang['is_active']);
 			$tag->set('index', $idx);
 
-			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
+			if (Authority::can('access', 'admin') OR $lang['online'] == 1)
 			{
 				$str .= $tag->expand();
 			}

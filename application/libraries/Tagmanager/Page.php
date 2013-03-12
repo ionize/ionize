@@ -915,6 +915,7 @@ class TagManager_Page extends TagManager
 
 
 	/**
+	 * TODO: Rewrite
 	 * Return TRUE if the user can see the element
 	 *
 	 * @param array

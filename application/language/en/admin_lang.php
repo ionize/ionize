@@ -17,10 +17,9 @@ $lang['ionize_logout'] = 'Logout';
 $lang['ionize_goback'] = 'Back to website';
 $lang['ionize_website'] = 'See the website';
 $lang['ionize_logged_as'] = 'Logged as';
-$lang['ionize_login_name'] = 'User name';
+$lang['ionize_login_name'] = 'Login';
 $lang['ionize_login_password'] = 'Password';
 $lang['ionize_login_remember'] = 'Remember me';
-$lang['ionize_login'] = 'Login';
 $lang['ionize_forgot_password'] = 'Forgotten password ?';
 $lang['ionize_session_expired'] = 'Your session has expired. Please log in again.';
 $lang['ionize_login_error'] = 'Something wrong happens...';
@@ -435,6 +434,7 @@ $lang['ionize_message_user_not_saved'] = 'User not updated';
 $lang['ionize_message_user_saved'] = 'User saved';
 $lang['ionize_message_user_exists'] = 'User already exists in database.<br/> Change Login or Email.';
 $lang['ionize_message_user_deleted'] = 'User deleted';
+$lang['ionize_message_user_not_deleted'] = 'User not deleted';
 $lang['ionize_message_user_cannot_delete_yourself'] = 'You can\'t delete yourself!';
 $lang['ionize_message_group_updated'] = 'Group updated';
 $lang['ionize_message_group_not_saved'] = 'Group not updated';
@@ -835,7 +835,7 @@ $lang['ionize_message_article_saved'] = 'Article saved';
 $lang['ionize_message_article_name_exists'] = 'One article with the same name already exists!';
 $lang['ionize_message_article_url_exists'] = 'One article with the same URL already exists!';
 $lang['ionize_message_article_url_exists_in_page'] = 'One article with the same URL exists in this page';
-$lang['ionize_message_article_ordered'] = 'Article ordored';
+$lang['ionize_message_article_ordered'] = 'Article ordered';
 $lang['ionize_message_article_duplicate_no_name_change'] = 'The duplicated article must have another name!';
 $lang['ionize_message_article_duplicated'] = 'Article duplicated';
 $lang['ionize_message_article_not_duplicated'] = 'Article not duplicated';
@@ -1049,4 +1049,48 @@ $lang['ionize_label_about_us_contributors'] = 'Contributors';
 $lang['ionize_label_about_us_thaks_to'] = 'Thanks to';
 $lang['ionize_label_about_us_license'] = 'License';
 
+
+/*
+|--------------------------------------------------------------------------
+| Ionize 1.0.0
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_title_roles'] = 'Roles';
+$lang['ionize_title_permissions'] = 'Permissions';
+$lang['ionize_label_role'] = 'Role';
+$lang['ionize_label_role_code'] = 'Role Code';
+$lang['ionize_label_role_name'] = 'Role Name';
+$lang['ionize_label_role_level'] = 'Level';
+$lang['ionize_title_role_edit'] = 'Role Edit';
+$lang['ionize_title_add_role'] = 'Add New Role';
+$lang['ionize_title_add_user'] = 'Add New User';
+$lang['ionize_help_role_choice'] = 'Existing levels:';
+$lang['ionize_message_role_saved'] = 'Role saved';
+$lang['ionize_message_role_deleted'] = 'Role deleted';
+$lang['ionize_message_role_not_deleted'] = 'Role not deleted';
+$lang['ionize_label_back_to_role_list'] = 'Back to Roles list';
+$lang['ionize_title_permission_backend'] = 'Backend';
+$lang['ionize_title_label_backend_connect'] = 'Connect';
+$lang['ionize_title_permission_settings'] = 'Settings';
+$lang['ionize_title_permission_settings_ionize'] = 'Settings > Ionize Interface';
+$lang['ionize_title_permission_settings_languages'] = 'Settings > Languages';
+$lang['ionize_title_permission_settings_users'] = 'Settings > Users';
+$lang['ionize_title_permission_settings_themes'] = 'Settings > Themes';
+$lang['ionize_title_permission_settings_website'] = 'Settings > Website';
+$lang['ionize_title_permission_settings_advanced'] = 'Settings > Advanced';
+$lang['ionize_label_permissions_all'] = 'All';
+$lang['ionize_label_permissions_custom'] = 'Custom';
+$lang['ionize_label_allow'] = 'Allow';
+$lang['ionize_label_deny'] = 'Deny';
+$lang['ionize_label_permission_access'] = 'Access';
+$lang['ionize_label_permission_edit'] = 'Edit';
+$lang['ionize_label_permission_save'] = 'Save';
+$lang['ionize_label_permission_copy'] = 'Copy';
+$lang['ionize_label_permission_move'] = 'Move';
+$lang['ionize_label_permission_delete'] = 'Delete';
+$lang['ionize_message_role_no_save_level_too_high'] = 'Role not saved : Level must be <= to yours';
+$lang['ionize_message_role_no_delete_users_linked'] = 'Role not deleted : Users are linked !';
+$lang['ionize_help_email_can_be_used_as_login'] = 'Email can also be used as login';
+$lang['ionize_help_password_change'] = "Leave blank if you don't want to change the password";
+$lang['ionize_message_email_already_registered'] = "This Email already exists in Database.";
 

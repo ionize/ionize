@@ -267,7 +267,7 @@ class TagManager
 	 *
 	 * Done before any tag rendering, so the processing methods can set classes data before
 	 * all other tags use them.
-	 * Example : When the user logs in, the Connect() class need to set the current user
+	 * Example : When the user logs in, the User() class need to set the current user
 	 * so the <ion:user /> tag can get this information independently from <ion:form tag />
 	 *
 	 */
@@ -628,7 +628,7 @@ class TagManager
 		{
 			$parsed = self::parse($parsed, self::$context);
 
-			if (Connect()->is('editors') && Settings::get('display_connected_label') == '1' )
+			if (Authority::can('access', 'admin') && Settings::get('display_connected_label') == '1')
 			{
 				$injected_html = $ci->load->view('core/logged_as_editor', array(), TRUE);
 				
@@ -1843,7 +1843,7 @@ class TagManager
 	public static function tag_lang_url(FTL_Binding $tag)
 	{
 		// Set all languages online if connected as editor or more
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}
@@ -2565,7 +2565,7 @@ class TagManager
 	public static function get_home_url()
 	{
 		// Set all languages online if connected as editor or more
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}
@@ -2588,7 +2588,7 @@ class TagManager
 
 	public static function get_base_url()
 	{
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}

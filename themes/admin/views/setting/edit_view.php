@@ -14,7 +14,7 @@
 </form>
 
 <div class="buttons">
-	<button id="bSave<?php echo $id; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save'); ?></button>
+	<button id="bSave<?php echo $id; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save'); ?></button>
 	<button id="bCancel<?php echo $id; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 

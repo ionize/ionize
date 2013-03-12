@@ -1020,12 +1020,11 @@ class Page extends MY_admin
 			$this->data['level'] = 0;
 
 		// Author & updater
-		$current_user = $this->connect->get_current_user();
 		if ($this->input->post('id_page'))
-			$this->data['updater'] = $current_user['username'];
+			$this->data['updater'] = User()->get('username');
 		else
 		{
-			$this->data['author'] =  $current_user['username'];
+			$this->data['author'] =  User()->get('username');
 			$this->data['appears'] =  $this->input->post('appears');
 		}
 

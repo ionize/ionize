@@ -20,6 +20,7 @@
  * @category	Controllers
  * @author		Ionize Dev Team
  */
+
 class Dashboard extends MY_Admin {
 
 
@@ -29,15 +30,13 @@ class Dashboard extends MY_Admin {
 		
 		$this->load->model('page_model', '', true);
 		$this->load->model('article_model', '', true);
-		$this->load->model('users_model', '', true);
+		$this->load->model('user_model', '', true);
 	}
 
 
 	function index()
 	{
 		// Articles
-		// $articles = $this->article_model->get_list(array('order_by'=>'updated DESC'));
-
 		$articles = $this->article_model->get_lang_list(
 			array('order_by'=>'updated DESC'),
 			Settings::get_lang('default')
@@ -63,10 +62,9 @@ class Dashboard extends MY_Admin {
 		// Orphan pages
 		$orphan_pages = $this->page_model->get_lang_list(array('id_menu' => '0', 'order_by'=>'name ASC'), Settings::get_lang('default'));
 		
-		// Last connected users
-		$users = $this->connect->model->get_users(array('limit'=>'10', 'order_by' => 'last_visit DESC', 'last_visit <>' => ''));
-
-		$last_registered_users = $this->connect->model->get_users(array('limit'=>'10', 'order_by' => 'join_date DESC'));
+		// Last connected /registered users
+		$users = $this->user_model->get_list(array('limit'=>'10', 'order_by' => 'last_visit DESC', 'last_visit <>' => ''));
+		$last_registered_users = $this->user_model->get_list(array('limit'=>'10', 'order_by' => 'join_date DESC'));
 		
 		
 		// Updates on last articles

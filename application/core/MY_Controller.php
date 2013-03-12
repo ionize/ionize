@@ -51,6 +51,8 @@ class MY_Controller extends CI_Controller
 	{
 		parent::__construct();
 
+//		log_message('error', $this->get_uri());
+
 		// Check the database settings
 		if ($this->test_database_config() === FALSE)
 		{
@@ -71,6 +73,11 @@ class MY_Controller extends CI_Controller
 		$this->load->model('base_model', '', TRUE);
 		$this->load->model('settings_model', '', TRUE);
 
+		// Libraries
+		// $this->load->library('authority', NULL, 'core');
+		// $au =& load_class('authority', 'core');
+
+
 		// Helpers
 		$this->load->helper('file');
 		$this->load->helper('trace');
@@ -78,7 +85,7 @@ class MY_Controller extends CI_Controller
 		// Get all the website languages from DB and store them into config file "languages" key
 		$languages = $this->settings_model->get_languages();
 		Settings::set_languages($languages);
-		if( Connect()->is('editors', TRUE))
+		if( User()->is('editors', TRUE))
 			Settings::set_all_languages_online();
 
 		// 	Settings : google analytics string, filemanager, etc.
@@ -150,6 +157,11 @@ class MY_Controller extends CI_Controller
 	public function is_xhr()
 	{
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+	}
+
+	public function get_uri()
+	{
+		return $this->uri->uri_string();
 	}
 
 
@@ -274,8 +286,6 @@ class API_Controller extends REST_Controller
 	 */
 	protected function send_response($content = '', $code = 200)
 	{
-		// log_message('error', 'API URL : ' . $this->uri->uri_string());
-
 		if ( ! is_null($this->error))
 		{
 			log_message('error', 'API ERROR : ' . $this->uri->uri_string());
@@ -351,6 +361,7 @@ class API_Controller extends REST_Controller
 	}
 }
 
+
 // ------------------------------------------------------------------------
 
 
@@ -366,8 +377,6 @@ class Base_Controller extends MY_Controller
 
 // $this->output->enable_profiler(TRUE);
 		
-		$this->connect = Connect::get_instance();
-
 		// Libraries
 		$this->load->library('structure');	
 		$this->load->library('widget');
@@ -404,22 +413,6 @@ class Base_Controller extends MY_Controller
 		Settings::set('menus', $this->menu_model->get_list());
 
 
-/*
- * Already done by My_Controller
- * Test and remove
- *
-		$languages = $this->settings_model->get_languages();
-
-		// Put all DB languages array to Settings
-
-		Settings::set_languages($languages);
-
-		// Set all languages online if conected as editor or more
-		if( Connect()->is('editors', TRUE))
-		{
-			Settings::set_all_languages_online();
-		}
-*/
 		// Simple languages code array, used to detect if Routers found language is in DB languages
 		$online_lang_codes = array();
 		foreach(Settings::get_online_languages() as $language)
@@ -588,20 +581,15 @@ class MY_Admin extends MY_Controller
 
 		$this->load->helper('module_helper');	
 		
-		// Redirect the not authorized user to the login panel. See /application/config/connect.php
-		Connect()->restrict_type_redirect = array(
-					'uri' => config_item('admin_url').'/user/login',
-					'flash_msg' => 'You have been denied access to %s',
-					'flash_use_lang' => FALSE,
-					'flash_var' => 'error');
+		// Redirect the not authorized user to the login panel. See /application/config/user.php
+		User()->restrict_type_redirect = array(
+			'uri' => config_item('admin_url').'/auth/login',
+			'flash_msg' => 'You have been denied access to %s',
+			'flash_use_lang' => FALSE,
+			'flash_var' => 'error'
+		);
 
 		$this->output->enable_profiler(FALSE);
-
-		// Connect library
-		$this->connect = Connect::get_instance();
-		
-		// Current user		
-		$this->template['current_user'] = $this->connect->get_current_user();
 
 		// Set the admin theme as current theme
 		Theme::set_theme('admin');
@@ -619,10 +607,15 @@ class MY_Admin extends MY_Controller
 		$this->lang->load('admin', Settings::get_lang());
 		// $this->lang->load('filemanager', Settings::get_lang());
 
-		// Modules config
+		// Modules Application config
 		$this->get_modules_config();
 
+		// Modules Permissions
+		$role = User()->get_role();
+		Modules()->set_role_permissions($role['role_code']);
+
 		// Modules translation files
+		$modules = array();
 		require(APPPATH.'config/modules.php');
 		$this->modules = $modules;
 
@@ -995,6 +988,3 @@ abstract class Module_Admin extends MY_Admin
 		$this->output($args);
 	}
 }
-
-/* End of file MY_Controller.php */
-/* Location: ./application/libraries/MY_Controller.php */

@@ -1490,12 +1490,12 @@ ION.append({
 
 	switchCss: function(args)
 	{
-		if (args.add == 1) {
-			$$(args.selector).addClass(args.class);
+		if (args.add && args.add == 1) {
+			$$(args.selector).addClass(args['class']);
 		}
 		else
 		{
-			$$(args.selector).removeClass(args.class);
+			$$(args.selector).removeClass(args['class']);
 		}
 	},
 

@@ -76,8 +76,8 @@ class TagManager_User extends TagManager
 	 */
 	public static function tag_user(FTL_Binding $tag)
 	{
-		self::load_model('users_model');
-		self::load_model('group_model');
+		self::load_model('user_model');
+		self::load_model('role_model');
 
 		// Do these once
 		if (self::$processed === FALSE)
@@ -86,8 +86,8 @@ class TagManager_User extends TagManager
 			self::$processed = TRUE;
 
 			// Set dynamics tags
-			$user_fields = self::$ci->users_model->field_data();
-			$group_fields = self::$ci->group_model->field_data();
+			$user_fields = self::$ci->user_model->field_data();
+			$role_fields = self::$ci->role_model->field_data();
 
 			foreach($user_fields as $field => $info)
 			{
@@ -97,19 +97,19 @@ class TagManager_User extends TagManager
 					self::$context->define_tag('user:' . $field, array(__CLASS__, 'tag_simple_value'));
 			}
 			// Group data are also available in the user array
-			foreach($group_fields as $field => $info)
+			foreach($role_fields as $field => $info)
 			{
 				self::$context->define_tag('user:group:' . $field, array(__CLASS__, 'tag_simple_value'));
 			}
 
 			// Set the current user
-			self::$user = Connect()->get_current_user();
+			self::$user = User()->get_user();
 		}
 
 		// Do this every time the tag is called
 		if (self::$user) {
 			$tag->set('user', self::$user);
-			$tag->set('group', self::$user['group']);
+			$tag->set('group', User()->get_role());
 		}
 
 		return $tag->expand();
@@ -134,7 +134,7 @@ class TagManager_User extends TagManager
 
 		if (is_null($is)) $is = TRUE;
 
-		if (Connect()->logged_in() == $is)
+		if (User()->logged_in() == $is)
 		{
 			if (self::$trigger_else > 0)
 				self::$trigger_else--;
@@ -258,12 +258,12 @@ class TagManager_User extends TagManager
 				// Logout
 				case 'logout':
 
-					if (Connect()->logged_in())
+					if (User()->logged_in())
 					{
 						// Potentially redirect to the page setup in /application/config/forms.php
 						$redirect = TagManager_Form::get_form_redirect();
 
-						Connect()->logout($redirect);
+						User()->logout($redirect);
 					}
 					break;
 
@@ -272,15 +272,15 @@ class TagManager_User extends TagManager
 
 					if (TagManager_Form::validate('login'))
 					{
-						if ( ! Connect()->logged_in())
+						if ( ! User()->logged_in())
 						{
 							$email = self::$ci->input->post('email');
-							$db_user = Connect()->find_user(array('email'=>$email));
+							$db_user = self::$ci->user_model->find_user(array('email'=>$email));
 
 							if ($db_user)
 							{
 								// Account not allowed to login
-								if ($db_user['group']['level'] < 100)
+								if ($db_user['role_level'] < 100)
 								{
 									$message = TagManager_Form::get_form_message('not_activated');
 									TagManager_Form::set_additional_error('login', $message);
@@ -292,7 +292,7 @@ class TagManager_User extends TagManager
 										'password' => self::$ci->input->post('password')
 									);
 
-									$result = Connect()->login($user);
+									$result = User()->login($user);
 
 									if ($result)
 									{
@@ -333,11 +333,11 @@ class TagManager_User extends TagManager
 						$fields = array_fill_keys($fields, FALSE);
 						$user = array_merge($fields, self::$ci->input->post());
 
-						// Compliant with Connect, based on username
+						// Compliant with User, based on username
 						$user['username'] = $user['email'];
 						$user['join_date'] = date('Y-m-d H:i:s');
 
-						if ( ! Connect()->register($user))
+						if ( ! User()->register($user))
 						{
 							$message = TagManager_Form::get_form_message('error');
 							TagManager_Form::set_additional_error('register', $message);
@@ -345,14 +345,14 @@ class TagManager_User extends TagManager
 						else
 						{
 							// Get the user saved in DB
-							$user = Connect()->get_user($user['username']);
+							$user = self::$ci->user_model->find_user($user['username']);
 
 							if (is_array($user))
 							{
 								// Must be set before set the clear password
-								$user['activation_key'] = Connect()->calc_activation_key($user);
+								$user['activation_key'] = User()->calc_activation_key($user);
 
-								$user['password'] = Connect()->decrypt($user['password'], $user);
+								$user['password'] = User()->decrypt($user['password'], $user);
 
 								// Create data array and Send Emails
 								$data = array_merge($user, $user['group']);
@@ -379,17 +379,17 @@ class TagManager_User extends TagManager
 
 					if (TagManager_Form::validate('password'))
 					{
-						$user = Connect()->find_user(array(
+						$user = self::$ci->user_model->find_user(array(
 							'email' => self::$ci->input->post('email')
 						));
 
 						if ($user)
 						{
 							// Save the user with this new password
-							$new_password = Connect()->get_random_password(8);
+							$new_password = User()->get_random_password(8);
 							$user['password'] = $new_password;
 
-							if ( ! Connect()->update($user))
+							if ( ! User()->update($user))
 							{
 								$message = TagManager_Form::get_form_message('error');
 								TagManager_Form::set_additional_error('password', $message);
@@ -397,8 +397,8 @@ class TagManager_User extends TagManager
 							else
 							{
 								// Get the user again, to calculate his activation key
-								$user = Connect()->find_user($user['username']);
-								$activation_key = Connect()->calc_activation_key($user);
+								$user =self::$ci->user_model->find_user($user['username']);
+								$activation_key = User()->calc_activation_key($user);
 
 								// Put the clear password to the user's data, for the email
 								$user['password'] = $new_password;
@@ -437,7 +437,7 @@ class TagManager_User extends TagManager
 				case 'profile':
 
 					// Lost connection
-					if(($current_user = Connect()->get_current_user()) == FALSE)
+					if(($current_user = User()->get_user()) == NULL)
 					{
 						$message = TagManager_Form::get_form_message('not_logged');
 						TagManager_Form::set_additional_error('profile', $message);
@@ -447,14 +447,14 @@ class TagManager_User extends TagManager
 					// Delete the profile
 					if (self::$ci->input->post('delete'))
 					{
-						$result = Connect()->delete($current_user);
+						$result = User()->delete($current_user);
 
 						$message = TagManager_Form::get_form_message('deleted');
 						TagManager_Form::set_additional_success('profile', $message);
 
 						// Potentially redirect to the page setup in /application/config/forms.php
 						$redirect = TagManager_Form::get_form_redirect();
-						Connect()->logout($redirect);
+						User()->logout($redirect);
 					}
 					else
 					{
@@ -467,7 +467,7 @@ class TagManager_User extends TagManager
 							$fields = array_fill_keys($fields, FALSE);
 							$user = array_merge($fields, self::$ci->input->post());
 
-							// Compliant with Connect, based on username
+							// Compliant with User, based on username
 							$user['username'] = $user['email'];
 							$user['id_user'] = $current_user['id_user'];
 
@@ -478,7 +478,7 @@ class TagManager_User extends TagManager
 									$user[$key] = implode(',', $data);
 							}
 
-							$result = Connect()->update($user);
+							$result = User()->update($user);
 
 							// If error here, it can only be on the email, which already exists in the DB
 							if ( ! $result)

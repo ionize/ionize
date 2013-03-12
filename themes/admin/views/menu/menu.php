@@ -1,60 +1,15 @@
-
-<div id="sidecolumn" class="close">
-
-	<div id="options" class="mt20">
-
-		<!-- New Menu -->
-		<h3 class="toggler"><?php echo lang('ionize_title_add_menu'); ?></h3>
-
-		<div class="element">
-
-			<form name="newMenuForm" id="newMenuForm" method="post" action="<?php echo admin_url(); ?>menu/save">
-
-				<!-- Menu Name -->
-				<dl class="small">
-					<dt>
-						<label for="name_new"><?php echo lang('ionize_label_name'); ?></label>
-					</dt>
-					<dd>
-						<input id="name_new" name="name_new" class="inputtext w140" type="text" value="" />
-					</dd>
-				</dl>
-
-				<!-- Menu Title -->
-				<dl class="small">
-					<dt>
-						<label for="title_new"><?php echo lang('ionize_label_title'); ?></label>
-					</dt>
-					<dd>
-						<input id="title_new" name="title_new" class="inputtext w140" type="text" value=""/><br />
-					</dd>
-				</dl>
-
-				<!-- Submit button  -->
-				<dl class="small">
-					<dt>&#160;</dt>
-					<dd>
-						<input id="submit_new" type="submit" class="submit" value="<?php echo lang('ionize_button_save_new_menu'); ?>" />
-					</dd>
-				</dl>
-				
-			</form>
-
-		</div> <!-- /element -->
-
-	</div> <!-- /options -->
-
-</div> <!-- /sidecolumn -->
-
-
-<!-- Main Column -->
+<?php
+/**
+ * Menu view
+ *
+ */
+?>
 
 <div id="maincolumn">
 
-	<form name="existingMenuForm" id="existingMenuForm" method="post" action="<?php echo admin_url(); ?>menu/update">
+    <h2 class="main tree" id="main-title"><?php echo lang('ionize_menu_menu') ?></h2>
 
-	<h3><?php echo lang('ionize_title_existing_menu'); ?></h3>
-	
+    <form name="existingMenuForm" id="existingMenuForm" method="post" action="<?php echo admin_url(); ?>menu/update">
 
 	<!-- Sortable UL -->
 	<ul id="menuContainer" class="sortable">
@@ -70,7 +25,7 @@
 			<li id="menu_<?php echo $id; ?>" class="sortme" rel="<?php echo $id; ?>">
 
 				<!-- Drag icon -->
-				<div class="drag" style="float:left;height:100px;">
+				<div class="drag" style="float:left;">
 					<img src="<?php echo theme_url(); ?>images/icon_16_ordering.png" />
 				</div>
 
@@ -125,30 +80,10 @@
 
 <script type="text/javascript">
 	
-
-	/**
-	 * Form action
-	 * see init-form.js for more information about this method
-	 *
-	 */
-	ION.setFormSubmit('newMenuForm', 'submit_new', 'menu/save');
-
-	
-	/**
-	 * Panel toolbox
-	 *
-	 */
+	// Toolbox
 	ION.initToolbox('menu_toolbox');
 
-				
-	ION.initAccordion('.toggler', 'div.element', true, 'menuAccordion1');
-	
-
-
-	/*
-	 * Menu itemManager
-	 * Use of ItemManager.deleteItem, etc.
-	 */
+	// Menu manager
 	menuManager = new ION.ItemManager(
 	{
 		element: 	'menu',
@@ -157,7 +92,6 @@
 	
 	menuManager.makeSortable();
 
-	
 </script>
 
 

@@ -59,7 +59,7 @@
 	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
-	<button id="bSavearticle_type<?php echo $id_type; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bSavearticle_type<?php echo $id_type; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
 	<button id="bCancelarticle_type<?php echo $id_type; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 

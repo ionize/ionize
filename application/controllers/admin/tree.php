@@ -31,8 +31,6 @@ class Tree extends MY_Admin {
 	{
 		parent::__construct();
 
-		$this->connect->restrict('editors');
-
 		// Helpers
 		$this->load->helper('text_helper');
 		

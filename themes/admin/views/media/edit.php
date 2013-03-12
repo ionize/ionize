@@ -426,7 +426,7 @@ if($type == 'picture')
 </form>
 
 <div class="buttons">
-	<button id="bSave<?php echo $type.$id_media; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bSave<?php echo $type.$id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
 	<button id="bCancel<?php echo $type.$id_media; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 

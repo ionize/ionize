@@ -50,6 +50,7 @@ License:
 .tree li {
 	width:100%;
 	min-height:18px;
+	line-height: 18px;
 	min-width:200px;
 	clear:both;
 	list-style-type: none;
@@ -100,7 +101,9 @@ License:
 	height:16px;
 	display:block;
 }
-
+.tree li label {
+	margin:0;
+}
 /* Tree nodes */
 .tree-img {
 	float:left;

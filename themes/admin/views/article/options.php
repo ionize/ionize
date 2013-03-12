@@ -27,7 +27,7 @@
 
 		<?php if ($id_article != '') :?>
 
-			<?php if ($this->connect->is('super-admins')) :?>
+			<?php if (User()->is('super-admins') == TRUE) :?>
 
 				<dl class="compact small">
 					<dt><label><?php echo lang('ionize_label_name'); ?></label></dt>
@@ -40,30 +40,30 @@
 
 
 
-		<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
-			<dl class="small compact">
-				<dt><label><?php echo lang('ionize_label_date'); ?></label></dt>
-				<dd><?php echo humanize_mdate($logical_date, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($logical_date, '%H:%i:%s'); ?></span></dd>
-			</dl>
+			<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
+				<dl class="small compact">
+					<dt><label><?php echo lang('ionize_label_date'); ?></label></dt>
+					<dd><?php echo humanize_mdate($logical_date, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($logical_date, '%H:%i:%s'); ?></span></dd>
+				</dl>
 			<?php endif ;?>
 
-		<dl class="small compact">
-			<dt><label><?php echo lang('ionize_label_created'); ?></label></dt>
-			<dd><?php echo humanize_mdate($created, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($created, '%H:%i:%s'); ?></span></dd>
-		</dl>
-
-		<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
 			<dl class="small compact">
-				<dt><label><?php echo lang('ionize_label_updated'); ?></label></dt>
-				<dd><?php echo humanize_mdate($updated, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($updated, '%H:%i:%s'); ?></span></dd>
+				<dt><label><?php echo lang('ionize_label_created'); ?></label></dt>
+				<dd><?php echo humanize_mdate($created, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($created, '%H:%i:%s'); ?></span></dd>
 			</dl>
+
+			<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
+				<dl class="small compact">
+					<dt><label><?php echo lang('ionize_label_updated'); ?></label></dt>
+					<dd><?php echo humanize_mdate($updated, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($updated, '%H:%i:%s'); ?></span></dd>
+				</dl>
 			<?php endif ;?>
 
-		<?php if (humanize_mdate($publish_on, Settings::get('date_format')) != '') :?>
-			<dl class="small compact">
-				<dt><label><?php echo lang('ionize_label_publish_on'); ?></label></dt>
-				<dd><?php echo humanize_mdate($publish_on, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($publish_on, '%H:%i:%s'); ?></span></dd>
-			</dl>
+			<?php if (humanize_mdate($publish_on, Settings::get('date_format')) != '') :?>
+				<dl class="small compact">
+					<dt><label><?php echo lang('ionize_label_publish_on'); ?></label></dt>
+					<dd><?php echo humanize_mdate($publish_on, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($publish_on, '%H:%i:%s'); ?></span></dd>
+				</dl>
 			<?php endif ;?>
 
 		<?php endif ;?>

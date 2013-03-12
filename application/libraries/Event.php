@@ -113,7 +113,8 @@ class Event {
 	 */
 	public static function register($event, array $callback)
 	{
-		$key = get_class($callback[0]).'::'.$callback[1];
+		$class = is_object($callback[0]) ? get_class($callback[0]) : $callback[0];
+		$key = $class.'::'.$callback[1];
 		self::$_listeners[$event][$key] = $callback;
 		// log_message('error', 'Event::register() - Registered "'.$key.' with event "'.$event.'"');
 	}
@@ -148,7 +149,8 @@ class Event {
 			{
 				if (is_callable($listener))
 				{
-					log_message('error', 'Event:: Call ' . get_class($listener[0]) . '->' . $listener[1] . '()' );
+					$class = is_object($listener[0]) ? get_class($listener[0]) : $listener[0];
+					log_message('error', 'Event:: Call ' . $class . '->' . $listener[1] . '()' );
 
 					$calls[] = call_user_func($listener, $data);
 				}
@@ -238,7 +240,7 @@ class Event {
 			if ( ! isset(self::$ci->event_model))
 				self::$ci->load->model('event_model', '', TRUE);
 
-			$user = Connect()->get_current_user();
+			$user = User()->get_user();
 			$data = array(
 				'status' => $status,
 				'message' => $message,

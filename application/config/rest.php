@@ -158,12 +158,10 @@ $config['rest_database_group'] = 'default';
 | REST API Keys Table Name
 |--------------------------------------------------------------------------
 |
-| The table name in your database that stores API Keys.
-|
-|	'keys'
+| Table name in the database that stores API Keys.
 |
 */
-$config['rest_keys_table'] = 'api_keys';
+$config['rest_keys_table'] = 'api_key';
 
 /*
 |--------------------------------------------------------------------------
@@ -175,14 +173,14 @@ $config['rest_keys_table'] = 'api_keys';
 |
 |	FALSE
 
-	CREATE TABLE `api_keys` (
+	CREATE TABLE `api_key` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `key` varchar(40) NOT NULL,
 	  `level` int(2) NOT NULL,
 	  `ignore_limits` tinyint(1) NOT NULL DEFAULT '0',
 	  `is_private_key` tinyint(1)  NOT NULL DEFAULT '0',
 	  `ip_addresses` TEXT NULL DEFAULT NULL,
-	  `date_created` int(11) NOT NULL,
+	  `date_created` datetime NOT NULL,
 	  PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |
@@ -255,7 +253,7 @@ $config['rest_logs_table'] = 'api_log';
 	  `params` text DEFAULT NULL,
 	  `api_key` varchar(40) NOT NULL,
 	  `ip_address` varchar(45) NOT NULL,
-	  `time` int(11) NOT NULL,
+	  `time` datetime NOT NULL,
 	  `authorized` tinyint(1) NOT NULL,
 	  PRIMARY KEY (`id`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -279,6 +277,7 @@ $config['rest_limits_table'] = 'limits';
 |--------------------------------------------------------------------------
 | REST Enable Limits
 |--------------------------------------------------------------------------
+| @TODO : Change 'hour_started' from int to datetime
 |
 | When set to true REST_Controller will count the number of uses of each method
 | by an API key each hour. This is a general rule that can be overridden in the
@@ -326,5 +325,3 @@ $config['rest_ignore_http_accept'] = FALSE;
 */
 $config['rest_ajax_only'] = FALSE;
 
-/* End of file config.php */
-/* Location: ./system/application/config/rest.php */

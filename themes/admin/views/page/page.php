@@ -55,10 +55,7 @@ if ($tracker_title == '')
 			<!-- Breadcrumb -->
 			<div style="margin: -15px 0pt 20px 72px;">
 				<p>
-					<?php if ($this->connect->is('super-admins') ) :?>
-						<span class="lite">ID : </span>
-						<?php echo $id_page; ?> |
-					<?php endif ;?>
+					<span class="lite">ID : </span><?php echo $id_page; ?> |
 					<span class="lite"></span><?php echo$breadcrump?>
 				</p>
 			</div>

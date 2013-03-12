@@ -81,7 +81,7 @@
 	<?php endif; ?>
 
 	<!-- Content -->
-	<div id="content" class="content" onKeyPress="javascript:doSubmit(event);">
+	<div id="content" class="content" onKeyPress="doSubmit(event);">
 	
 		<div id="loginWindow" class=" clearfix">
 			
@@ -116,7 +116,7 @@
 		
 				<div class="action">
 					<!-- <?php echo form_checkbox('remember_me', 1); ?> <?php echo lang('ionize_login_remember'); ?> -->
-					<button type="submit" name="send" class="submit"><?php echo lang('ionize_login'); ?></button>
+					<input type="submit" class="submit" value="<?php echo lang('ionize_login'); ?>" />
 				</div>
 		
 			<?php echo form_close(); ?>

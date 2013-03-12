@@ -26,8 +26,6 @@ class Core extends MY_Admin {
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->connect->restrict('editors');
 	}
 
 

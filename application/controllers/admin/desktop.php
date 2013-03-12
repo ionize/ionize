@@ -29,7 +29,10 @@ class Desktop extends MY_Admin
 	}
 
 
-	function index()
+	// ------------------------------------------------------------------------
+
+
+	public function index()
 	{
 		$modules = array();
 		include APPPATH . 'config/modules.php';
@@ -37,9 +40,12 @@ class Desktop extends MY_Admin
 
 		$this->get('desktop/desktop');
 	}
-	
-	
-	function get_header()
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_header()
 	{
 		// Get the modules config file
 		$modules = array();
@@ -94,14 +100,19 @@ class Desktop extends MY_Admin
 
 		$this->get('desktop/desktop_header');
 		
-	}	
-	
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/** 
 	 * Gets a simple view
-	 * @param	string		the view name, without extension
+	 *
+	 * @param	bool|string		View name, without extension
 	 *
 	 */
-	function get($view = false)
+	public function get($view = false)
 	{
 		$this->template['view'] = $view;
 		
@@ -110,12 +121,16 @@ class Desktop extends MY_Admin
 
 		$this->output($args);
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Opens a help window
 	 *
 	 */
-	function help()
+	public function help()
 	{
 		$table = $this->input->post('table');
 		$title = $this->input->post('title');

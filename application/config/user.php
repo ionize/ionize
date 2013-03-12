@@ -6,31 +6,15 @@
 |--------------------------------------------------------------------------
 |
 | Option:  string
-| Default: 'users'
+| Default: 'user'
 |
 | This will be the name of the database table to store user login
 | information in.
 |
 */
 
-$config['users_table'] 		= 'users';
-$config['users_table_pk'] 	= 'id_user';
-
-
-/*
-|--------------------------------------------------------------------------
-| Groups database table
-|--------------------------------------------------------------------------
-|
-| Option:  string
-| Default: 'user_groups'
-|
-| This will be the name of the database table to store user groups in.
-|
-*/
-
-$config['groups_table'] 	= 'user_groups';
-$config['groups_table_pk'] 	= 'id_group';
+$config['user_table'] = 'user';
+$config['user_table_pk'] = 'id_user';
 
 
 /*
@@ -41,55 +25,13 @@ $config['groups_table_pk'] 	= 'id_group';
 | Options: true / false
 | Default: false
 |
-| true: the user will be put in the pending group until he activate by email.
+| true: the user will be put in the pending group until he activate
 |
 | false: no verification will be done and the user will be able to
 | Login directly after registration
 |
 */
 $config['verify_user'] = true;
-
-
-/*
-|--------------------------------------------------------------------------
-| Activate user by Admin
-|--------------------------------------------------------------------------
-|
-| Options: true / false
-| Default: false
-|
-| true: the user can't activate himself but needs to be activated by an administrator.
-|		overrides the $config['verify_user'] value.
-|
-| false: the user don't need to be activated by admin.
-|
-*/
-$config['activate_user_by_admin'] = false;
-
-
-/*
-|--------------------------------------------------------------------------
-| Encryption key
-|--------------------------------------------------------------------------
-|
-| Option: string
-|
-| This will be a string used by the encryption methods to calculate the
-| unique encryption key used to encrypt the passwords of the users.
-|
-| You can type a long random string or generate it from this link:
-| https://www.grc.com/passwords.htm
-|
-| This encryption key will replace the one defined in config/config.php
-| but only for the Connect lib.
-| If you wish to use the key defined in config/config.php, just comment
-| this line.
-|  
-|
-*/
-// For Ionize, the Encrytion key is located in config/config.php
-// So this MUST be leaved commented, except for versions before 0.9.5
-// $config['encryption_key'] = '';
 
 
 /*
@@ -104,37 +46,36 @@ $config['activate_user_by_admin'] = false;
 $config['salt_length'] = '16';
 
 
-
-
 /*
 |--------------------------------------------------------------------------
-| Default user group
+| Default user roles
 |--------------------------------------------------------------------------
 |
-| Option:  string, a group slug
+| Option:  string, a group code
 | Default: "users"
 |
-| This will be the group which the users will be assigned to after they
-| have been activated.
 | If the verify_user setting is set to false, the users will be assigned
 | to this group after the registration has succeeded.
 |
 */
 
-$config['default_user_group'] = 'users';
 
+// Group to which the users will be assigned to after they have been activated.
+$config['user_default_role'] = 'users';
+$config['user_banned_role'] = 'banned';
+$config['user_deactivated_role'] = 'deactivated';
+$config['user_pending_role'] = 'pending';
+$config['user_guest_role'] = 'guests';
 
 /*
 |--------------------------------------------------------------------------
 | Automated folder protection
 |--------------------------------------------------------------------------
 |
-| NOT YET IMPLEMENTED
-|
 | Option: array
 |
 | Drop the controllers you want to protect into the
-| ./application/controllers/folder_to_protect/ folder.
+| ./application/controllers/folder_to_protect/folder.
 |
 | Multiple folders can be protected and individual access settings can be
 | set for each of them.
@@ -143,10 +84,10 @@ $config['default_user_group'] = 'users';
 | only to administrators, and the ./application/controllers/protected
 | folder only to users. You can change this in the configuration below.
 |
-| You can also add aditional folders or remove existing ones from the array
+| You can also add additional folders or remove existing ones from the array
 | using the key as the folder name and the value as the level of protection.
 |
-| The protection level is sent to $this->connect->restrict(), so the syntax is the
+| The protection level is sent to $this->user->restrict(), so the syntax is the
 | same as if you would call restrict() with the array value.
 |
 | The avaible groups are by default:
@@ -168,8 +109,10 @@ $config['default_user_group'] = 'users';
 */
 
 $config['folder_protection'] = array(
-									'admin' => 'editors', // Will let only super admins to access the admin folder
-									);
+	'admin' => array(
+		'role' => array('admins')
+	),
+);
 
 
 /*
@@ -180,7 +123,7 @@ $config['folder_protection'] = array(
 | Option:  bool
 | Default: true
 |
-| This setting controls if the login() method of Connect should redirect the
+| This setting controls if the login() method of User should redirect the
 | user if a previous visit to a restricted page failed because he wasn't
 | logged in.
 |
@@ -298,7 +241,7 @@ $config['restrict_type_block'] = array('string' => 'Access Denied');
 | Oprions:
 |
 | on          - If this feature should be used, bool
-| duration    - How long Connect should remember the user, int - seconds
+| duration    - How long User should remember the user, int - seconds
 | cookie_name - The name of the cookie to save te data in, string
 */
 $config['remember_me'] = array(
@@ -416,5 +359,5 @@ $config['tracker_cleaning_probability'] = 5; // %
 $config['tracker_clean_older_than'] = 86400;
 
 
-/* End of file connect.php */
-/* Location: ./application/config/connect.php */
+/* End of file user.php */
+/* Location: ./application/config/user.php */

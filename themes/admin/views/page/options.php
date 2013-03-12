@@ -31,7 +31,7 @@
 				</dd>
 			</dl>
 
-			<?php if ($this->connect->is('super-admins')) :?>
+			<?php if (User()->is('super-admins')) :?>
 
 				<dl class="compact small">
 					<dt><label><?php echo lang('ionize_label_name'); ?></label></dt>

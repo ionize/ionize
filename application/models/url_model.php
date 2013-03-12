@@ -529,7 +529,7 @@ class Url_model extends Base_model
 	 */
 	public function get_base_url()
 	{
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}
@@ -552,7 +552,7 @@ class Url_model extends Base_model
 	public static function get_home_url()
 	{
 		// Set all languages online if connected as editor or more
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}

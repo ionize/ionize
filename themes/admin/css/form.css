@@ -147,7 +147,7 @@ label.toggler {
 }
 label[title]
 {
-	background: url("../images/icon_12_label_help.png") no-repeat scroll right 2px transparent;
+	background: url("../images/icon_12_label_help.png") no-repeat scroll right top transparent;
 	padding-right: 14px;
 	border-bottom: dotted 1px #94aec9;
 }

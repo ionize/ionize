@@ -103,7 +103,7 @@ class Cache
 		// - If some POST data are sent
 		// - Admin URL
 		// - User logged in
-		if( ! empty($_POST) OR Connect()->logged_in() != FALSE OR $URI->segments[1] == config_item('admin_url'))
+		if( ! empty($_POST) OR User()->logged_in() != FALSE OR $URI->segments[1] == config_item('admin_url'))
 		{
 			// Regenerate the page
 			return FALSE;
@@ -188,7 +188,7 @@ class Cache
 	function get($id)
 	{
 		// Do not cache for editors.
-		if (Connect()->is('editors')) return FALSE;
+		if (User()->is('editors')) return FALSE;
 	
 		if ( ! is_dir($this->cache_path) OR ! is_really_writable($this->cache_path))
 		{
@@ -244,7 +244,7 @@ class Cache
 	 */
 	function store($id, $output)
 	{
-		if ($this->cache_expiration > 0 && Connect()->is_not('editors'))
+		if ($this->cache_expiration > 0 && User()->is_not('editors'))
 		{
 			$CI =& get_instance();	
 

@@ -255,11 +255,11 @@ ION.TreeXhr = new Class({
 			li.addClass('file').addClass(type + id);
 			
 			// Icon : unlink
-			if (Ionize.User.getGroupLevel() > 5000)
-			{
+//			if (Ionize.User.getGroupLevel() > 5000)
+//			{
                 var iconUnlink = new Element('a', {'class': 'icon unlink', 'rel': rel});
                 action.adopt(iconUnlink);
-			}
+//			}
 
 			// File icon
 			if (element.indexed == '0') icon.addClass('sticky');
@@ -654,9 +654,6 @@ ION.TreeXhr = new Class({
 });
 
 
-
-
-
 /**
  *  Ionize Browser Tree class
  *  Build the website structure tree for one tree browser usage
@@ -702,8 +699,8 @@ ION.BrowserTreeXhr = new Class({
 		var action = this.action_Model.clone();
 
 		// Link Icon
-		if (Ionize.User.getGroupLevel() > 5000)
-		{
+//		if (Ionize.User.getGroupLevel() > 5000)
+//		{
 			var iconLink = new Element('a', {'class': 'icon link', 'rel': rel});
 
 			iconLink.addEvent('click', function(e)
@@ -713,7 +710,7 @@ ION.BrowserTreeXhr = new Class({
 				self.click_timer = self.relaySingleOrDoubleClick.delay(700, self, [e, self, iconLink, type, 1]);
 			});
 			action.adopt(iconLink);
-		}
+//		}
 
 		// Title element
 		var link = this.span_Model.clone().addClass('title');
@@ -838,3 +835,5 @@ ION.BrowserTreeXhr = new Class({
 		}
 	}
 });
+
+

@@ -5,14 +5,7 @@
 
 update setting set content='1.0.0' where name = 'ionize_version';
 
-
-
 ALTER TABLE media ADD provider varchar(50) NOT NULL DEFAULT  '';
-
-
-
--- ALTER TABLE media ADD path_hash varchar(100) NOT NULL DEFAULT  '';
-
 
 
 CREATE TABLE api_key (
@@ -63,7 +56,7 @@ INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query
 INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
 
 
-ALTER database ionize_099 default CHARACTER SET utf8 COLLATE utf8_general_ci;
+-- ALTER database ionize_099 default CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 ALTER TABLE article CONVERT TO CHARACTER SET utf8;
 ALTER TABLE article_comment CONVERT TO CHARACTER SET utf8;
@@ -100,3 +93,7 @@ ALTER TABLE type CONVERT TO CHARACTER SET utf8;
 ALTER TABLE url CONVERT TO CHARACTER SET utf8;
 ALTER TABLE user_groups CONVERT TO CHARACTER SET utf8;
 ALTER TABLE users CONVERT TO CHARACTER SET utf8;
+
+
+-- Migration from article to "content"
+

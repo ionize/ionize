@@ -5,7 +5,6 @@
  *
  */
 
-//    log_message('error', print_r($items, TRUE));
 ?>
 
 <?php if ( !empty($items)) :?>
@@ -50,7 +49,7 @@
 			<a class="icon edit left mr5 ml5 help" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>"></a>
 			<a class="icon info left help ml5" title="<?php echo $media['path']; ?>" rel="<?php echo $details; ?>"></a>
 			<a class="left ml10 help" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>">
-				<?php if ($this->connect->is('super-admins') ) :?><?php echo $media['id_media']; ?> : <?php endif ;?>
+				<?php echo $media['id_media']; ?> :
 				<?php if ($media['provider'] !== ''): ?>
 					<?php echo $media['provider']; ?> :
 				<?php endif ;?>

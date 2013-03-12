@@ -5,7 +5,7 @@
 
 		<!-- Icon create a page -->
 		<div class="desktopIcon" id="iconAddPage">
-			<img src="<?php echo theme_url(); ?>images/icon_48_page.png" />
+			<img src="<?php echo theme_url(); ?>images/icon_48_page_new.png" />
 			<p><a><?php echo lang('ionize_dashboard_icon_add_page'); ?></a></p>
 		</div>
 		
@@ -42,14 +42,14 @@
 
 			<?php foreach($modules as $uri => $module) :?>
 	
-				<?php if(Connect()->is($module['access_group'])) :?>
+				<?php // if(Connect()->is($module['access_group'])) :?>
 				
 					<div class="desktopIcon desktopModuleIcon">
 						<img src="<?php echo base_url(); ?>modules/<?php echo $module['folder']; ?>/assets/images/icon_48_module.png" />
 						<p><a title="<?php echo $module['name']; ?>" href="module/<?php echo $uri; ?>/<?php echo $uri; ?>/index"><?php echo $module['name']; ?></a></p>
 					</div>
 				
-				<?php endif ;?>								
+				<?php // endif ;?>
 	
 			<?php endforeach ;?>
 
@@ -60,7 +60,7 @@
 
 	<div id="infos" class="mt20">
 
-    	<!-- Current connected users -->
+    	<!-- Current logged in users -->
 		<?php if (Settings::get('enable_backend_tracker') == '1') :?>
 
 			<h3 class="toggler"><?php echo lang('ionize_dashboard_title_current_connected_users'); ?></h3>
@@ -70,7 +70,7 @@
 
 		<?php endif; ?>
 
-		<!-- Last connected users -->
+		<!-- Last logged in users -->
     	<h3 class="toggler"><?php echo lang('ionize_dashboard_title_last_connected_users'); ?></h3>
 
 

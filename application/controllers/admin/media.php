@@ -50,7 +50,7 @@ class Media extends MY_admin
 		// Security check is done in the method.
 		if ($this->uri->segment(3) == 'filemanager' && $this->uri->segment(4) == 'upload')
 		{
-			$this->connect->folder_protection = array();	
+			User()->disable_folder_protection();
 		}
 	}
 
@@ -168,7 +168,7 @@ class Media extends MY_admin
 	 */
 	public function get_tokken()
 	{
-		if (Connect()->is('editors'))
+		if (User()->is('editors'))
 		{
 			$tokken = md5(session_id() . config_item('encryption_key'));
 			

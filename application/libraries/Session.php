@@ -108,8 +108,16 @@ class CI_Session  {
 	}
 
 	/**
-    * Sets session attributes to the given values
-    */
+	 * @return mixed
+	 */
+	function all_userdata()
+	{
+		return $_SESSION;
+	}
+
+	/**
+     * Sets session attributes to the given values
+     */
 	function set_userdata($newdata = array(), $newval = '')
 	{
 		if (is_string($newdata))

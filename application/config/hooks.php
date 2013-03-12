@@ -10,53 +10,24 @@
 |
 */
 
-// Connect Library : To use in constructors
-require_once APPPATH.'libraries/Connect.php';
+// User Library : To use in constructors
+require_once APPPATH.'core/User.php';
+
+// Modules Library
+require_once APPPATH.'core/Modules.php';
+
+// User Library : To use in constructors
+require_once APPPATH.'core/Authority.php';
 
 // Cache Library : Available everywhere
-require_once APPPATH.'libraries/Cache.php';
+require_once APPPATH.'core/Cache.php';
 
 
 $hook['post_controller_constructor'][] = array (
-	'function'	=> 'init_connect',
-	'filename'	=> 'Connect.php',
-	'filepath'	=> 'libraries'
+	'function'	=> 'init_folder_protection',
+	'filename'	=> 'User.php',
+	'filepath'	=> 'core'
 );
-
-/*
-$hook['display_override'][] = array(
-	'class' => '',
-	'function' => 'remove_comments',
-	'filename' => 'remove_comments.php',
-	'filepath' => 'hooks'
-	);
-*/
-
-
-
-/*
-$hook['display_override'][] = array(
-	'class' => '',
-	'function' => 'compress',
-	'filename' => 'compress.php',
-	'filepath' => 'hooks'
-	);
-/*
-$hook['post_controller_constructor'][] = array(
-	'class'    => 'Cache',
-	'function' => 'post_controller_constructor_cache',
-	'filename' => 'Cache.php',
-	'filepath' => 'libraries',
-	'params'   => array()
-);
-$hook['cache_override'] = array(
-	'class' => 'Cache',
-	'function' => 'display_cache_override',
-	'filename' => 'Cache.php',
-	'filepath' => 'libraries',
-	'params' => array()
-);
-*/
 
 
 /* End of file hooks.php */

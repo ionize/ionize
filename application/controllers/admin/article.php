@@ -1394,7 +1394,7 @@ class Article extends MY_admin
 			 * - The author become the current connected user
 			 *
 			 */
-			$user = $this->connect->get_current_user();
+			$user = User()->get_user();
 			
 			$data = array(
 				'name' => url_title($this->input->post('dup_url')),
@@ -1632,7 +1632,7 @@ class Article extends MY_admin
 		}
 		
 		// Author & updater
-		$user = $this->connect->get_current_user();
+		$user = User()->get_user();
 		if ($this->input->post('id_article'))
 			$this->data['updater'] = $user['username'];
 		else

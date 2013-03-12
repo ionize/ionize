@@ -186,7 +186,7 @@ class Base_model extends CI_Model
 //		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE);
 
 		// Unlock the publish filter (filter on publish status of each item)
-		if (Connect()->is('editors'))
+		if (Authority::can('access', 'admin'))
 		{
 			self::unlock_publish_filter();
 		}
@@ -2044,6 +2044,51 @@ class Base_model extends CI_Model
 		$this->{$this->db_group}->delete($table);
 
 		return (int) $this->{$this->db_group}->affected_rows();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Count all rows corresponding to the passed conditions
+	 *
+	 * @param array $where
+	 * @param null  $table
+	 *
+	 * @return int
+	 */
+	public function count($where = array(), $table = NULL)
+	{
+		$table = (!is_null($table)) ? $table : $this->table;
+
+		// Perform conditions from the $where array
+		foreach(array('limit', 'offset', 'order_by', 'like') as $key)
+		{
+			if(isset($where[$key]))
+			{
+				call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
+				unset($where[$key]);
+			}
+		}
+
+		if (isset($where['where_in']))
+		{
+			foreach($where['where_in'] as $key => $value)
+			{
+				$this->{$this->db_group}->where_in($key, $value);
+			}
+			unset($where['where_in']);
+		}
+
+		if ( is_array($where) && ! empty($where) )
+		{
+			$this->{$this->db_group}->where($where);
+		}
+
+		$query = $this->{$this->db_group}->count_all_results($table);
+
+		return (int) $query;
 	}
 
 

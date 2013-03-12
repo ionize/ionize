@@ -42,8 +42,8 @@ if ($tracker_title == '')
 
 				<div style="margin: -15px 0pt 20px 72px;">
 					<p>
-						<?php if ($this->connect->is('super-admins') ) :?>
-							<span class="lite">ID : </span>
+						<?php if ( User()->is('super-admins') ) :?>
+                        	<span class="lite">ID : </span>
 							<?php echo $id_article; ?>
 						<?php endif ;?>
 

@@ -208,6 +208,7 @@ li.offline { opacity:0.7; }
 .icon.list,		    .button i.icon-list		    {background-position: -112px -112px;}
 .icon.card,		    .button i.icon-card		    {background-position: -128px -112px;}
 .icon.upload,		.button i.icon-upload		{background-position: 0 -32px;}
+.icon.mail,		    .button i.icon-mail		    {background-position: -144px -80px;}
 
 .icon.folder,			.button i.icon-folder			{background-position: 0 -16px;}
 .icon.folder.open,		.button i.icon-folder.open			{background-position: -16px -16px;}
@@ -282,7 +283,8 @@ ul.highlight{ background-color:#f3f3f3;}
 h2.main.article { background: url(../images/icon_48_article.png) no-repeat 0 0; } 
 h2.main.articles { background: url(../images/icon_48_articles.png) no-repeat 0 0; } 
 h2.main.groups { background: url(../images/icon_48_groups.png) no-repeat 0 0; } 
-h2.main.page { background: url(../images/icon_48_page.png) no-repeat 0 0; } 
+h2.main.user { background: url(../images/icon_48_user.png) no-repeat 0 0; }
+h2.main.page { background: url(../images/icon_48_page.png) no-repeat 0 0; }
 h2.main.languages { background: url(../images/icon_48_languages.png) no-repeat 0 0; } 
 h2.main.ionize { background: url(../images/icon_48_ionize_interface.png) no-repeat 0 0; } 
 h2.main.themes { background: url(../images/icon_48_settings.png) no-repeat 0 0; } 
@@ -294,6 +296,7 @@ h2.main.system-check { background: url(../images/icon_48_system_check.png) no-re
 h2.main.categories { background: url(../images/icon_48_categories.png) no-repeat 0 0; }
 h2.main.article_types { background: url(../images/icon_48_article_types.png) no-repeat 0 0; }
 h2.main.key { background: url(../images/icon_48_key.png) no-repeat 0 0; }
+h2.main.tree { background: url(../images/icon_48_tree.png) no-repeat 0 0; }
 
 h2.main.pictured {
 	color:#ccc;
@@ -321,7 +324,7 @@ h2.main.pictured {
 .mochaContent h2.main { 
 	color:#555;
 	border-bottom:none;
-	padding-left:56px;
+	padding-left:60px;
 	line-height:48px;
 	max-height:68px;
 	height:48px;
@@ -906,24 +909,28 @@ textarea.tab {
 /* Pagination links
 ---------------------------------------------------------------- */
 ul.pagination {
-	margin		 :0;
-	padding	 :0;
-	list-style	 :none;
-	overflow: hidden;
+	margin:0;
+	padding:0;
+	list-style:none;
+	overflow:hidden;
 }
 ul.pagination li {
-	margin		 :0;
-	padding	 :0 0 2px 0;
-	float		 :left;
-	list-style	 :none;
+	margin:0;
+	padding:0 0 2px 0;
+	float:left;
+	list-style:none;
 }
 ul.pagination li a {
-	padding	 :1px 3px 3px 3px;
-	display	 :block;
+	padding:1px 5px 3px 5px;
+	display:block;
+	border-radius: 3px;
+}
+ul.pagination li a:hover {
+	color:#fff;
+	background: #098ED1;
 }
 ul.pagination li a.current {
-	background	 :#36607D;
-	background	 :#000;
+	background:#36607D;
 	color:#fff;
 }
 
@@ -1303,6 +1310,12 @@ dl#link_info dd {
 .ml15 { margin-left: 15px !important; }
 .mb15 { margin-bottom: 15px !important; }
 .mr15 { margin-right: 15px !important; }
+
+.m16 { margin: 16px !important; }
+.mt16 { margin-top: 16px !important; }
+.ml16 { margin-left: 16px !important; }
+.mb16 { margin-bottom: 16px !important; }
+.mr16 { margin-right: 16px !important; }
 
 .m20 { margin: 20px !important; }
 .mt20 { margin-top: 20px !important; }
