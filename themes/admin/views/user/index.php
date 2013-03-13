@@ -15,7 +15,7 @@
 	<div id="usersTab" class="mainTabs mt20">
 		<ul class="tab-menu">
 			<li id="userListTab"><a><?php echo lang('ionize_title_existing_users') ?></a></li>
-			<?php if ( Authority::can('access', 'admin/settings/roles')) :?>
+			<?php if ( Authority::can('access', 'admin/role')) :?>
 				<li id="roleListTab"><a><?php echo lang('ionize_title_roles') ?></a></li>
 			<?php endif ;?>
 		</ul>
@@ -62,7 +62,7 @@
 
 		</div>
 
-		<?php if ( Authority::can('access', 'admin/settings/roles')) :?>
+		<?php if ( Authority::can('access', 'admin/role')) :?>
 
 		<!-- Roles -->
 		<div class="tabcontent">
@@ -107,7 +107,7 @@
 	$('userListTab').fireEvent('click');
 
 
-	<?php if ( Authority::can('access', 'admin/settings/roles')) :?>
+	<?php if ( Authority::can('access', 'admin/role')) :?>
 		// Roles list tab
 		$('roleListTab').addEvent('click', function()
 		{

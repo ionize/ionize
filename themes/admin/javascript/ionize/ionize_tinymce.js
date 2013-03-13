@@ -256,7 +256,62 @@ ION.append({
 
 	openTinyFilemanager:function(field, url, type, win)
 	{
+		var fmOptions = {
+			url: admin_url + 'media/filemanager',
+			assetsUrl: theme_url + 'javascript/filemanager/assets',
+			standalone: false,
+			createFolders: true,
+			destroy: true,
+			rename: true,
+			upload: true,
+			move_or_copy: true,
+			resizeOnUpload: Settings.get('resize_on_upload'),
+			uploadAutostart: Settings.get('upload_autostart'),
+			uploadMode: Settings.get('upload_mode'),
+			language: Lang.current,
+			selectable: true,
+			hideOnClick: true,
+			parentContainer: 'filemanagerWindow_contentWrapper',
+			mkServerRequestURL: function(fm_obj, request_code, post_data)
+			{
+				return {
+					url: fm_obj.options.url + '/' + request_code,
+					data: post_data
+				};
+			},
+			onComplete: function(path)
+			{
+				if (!win.document) return;
+				win.document.getElementById(field).value = path;
+				if (win.ImageDialog) win.ImageDialog.showPreviewImage(path, 1);
+				MUI.get('filemanagerWindow').close();
+			}
+		};
+
+		// Close existing instance of fileManager
+		var instance = MUI.get('filemanagerWindow');
+		if (instance)
+		{
+			instance.close();
+		}
+
+		// Init FM
+		var filemanager = new Filemanager(fmOptions);
+
+		// MUI Window creation
+		var winOptions = ION.getFilemanagerWindowOptions();
+		winOptions.content = filemanager.show();
+		winOptions.onResizeOnDrag = function() {	filemanager.fitSizes(); };
+
+		// Set the MUI Window on the top of Tiny's modals
+		// tinyMCE modals are stored at 300000, Dialogs at 400000
+		MUI.Windows.indexLevel = 350000;
+
+		var w = new MUI.Window(winOptions);
+		w.filemanager = filemanager;
+
 		// Get the tokken, get the options...
+		/*
 		var xhr = new Request.JSON(
 		{
 			url: admin_url + 'media/get_tokken',
@@ -330,6 +385,7 @@ ION.append({
 				}
 			}
 		}).send();
+		*/
 	},
 
 

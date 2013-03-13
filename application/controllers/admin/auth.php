@@ -34,6 +34,9 @@ class Auth extends My_Admin
 
 		// Reset the restriction
 		User()->disable_folder_protection();
+
+		// Disable xhr protection on index : let the desktop load
+		$this->disable_xhr_protection();
 	}
 
 
@@ -44,7 +47,7 @@ class Auth extends My_Admin
 	 * Logs one user on the admin panel
 	 *
 	 */
-	function login()
+	public function login()
 	{
 		$default_admin_lang = Settings::get_default_admin_lang();
 
@@ -121,15 +124,14 @@ class Auth extends My_Admin
 	 * Logout and redirect to the welcome controller.
 	 *
 	 */
-	function logout()
+	public function logout()
 	{
-		if ( ! session_name())
-			session_start();
-
-		// Delete the session
-		session_unset('isLoggedIn');
-		session_destroy();
-
+		if ( ! empty($_SESSION))
+		{
+			// Delete the session
+			session_unset('isLoggedIn');
+			session_destroy();
+		}
 		unset($_SESSION);
 
 		// Here is also the right place to set a flash message or send
@@ -148,7 +150,7 @@ class Auth extends My_Admin
 	 * Try to validate the user login form
 	 *
 	 */
-	function _try_validate_login()
+	private function _try_validate_login()
 	{
 		$this->load->library('form_validation');
 

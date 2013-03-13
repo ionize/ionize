@@ -93,26 +93,34 @@ class rule_model extends Base_model
 
 	public function save_rules($id_role, $rules, $type=NULL)
 	{
+		self::$ci->load->model('resource_model', '', TRUE);
 		$this->_delete_role_rules($id_role, $type);
 
 		$data = $resource_actions = array();
+// log_message('error', print_r($rules, true));
 
-		foreach($rules as $rule)
+		// Rules without actions, will be used for parent rules save
+		$basic_rules = array();
+
+		if ( ! empty($rules))
 		{
-			$array = explode(':', $rule);
-			$resource = $array[0];
-			$action = isset($array[1]) ? $array[1] : NULL;
+			foreach($rules as $rule)
+			{
+				$array = explode(':', $rule);
+				$resource = $array[0];
+				$action = isset($array[1]) ? $array[1] : NULL;
 
-			// Resource / Actions array
-			$actions = isset($resource_actions[$resource]) ? $resource_actions[$resource] : array();
+				// Resource / Actions array
+				$actions = isset($resource_actions[$resource]) ? $resource_actions[$resource] : array();
 
-			if ( ! is_null($action))
-				$actions[]=$action;
+				if ( ! is_null($action))
+					$actions[]=$action;
 
-			$resource_actions[$resource] = $actions;
+				$resource_actions[$resource] = $actions;
+			}
 		}
 
-		foreach($resource_actions as $resource=>$actions)
+		foreach($resource_actions as $resource => $actions)
 		{
 			$data[] = array(
 				'id_role' => $id_role,
@@ -122,9 +130,61 @@ class rule_model extends Base_model
 			);
 		}
 
+//		$all_resources = self::$ci->resource_model->get_list();
+		$all_resources = self::$ci->resource_model->get_all_resources();
+		$this->add_parent_resources_for_save($data, array_keys($resource_actions), $all_resources, $id_role);
+
+//		log_message('error', print_r($data, true));
+
 		if ( ! empty($data))
 		{
 			$this->{$this->db_group}->insert_batch($this->get_table(), $data);
+		}
+
+		// Insert also resources parents
+
+	}
+
+
+	protected function add_parent_resources_for_save(&$data, $resources, $all, $id_role)
+	{
+// 		log_message('error', print_r($all, true));
+		$new_resources = array();
+		foreach($resources as $resource)
+		{
+			foreach($all as $rec)
+			{
+				if ($resource == $rec['resource'] && ! is_null($rec['id_parent']))
+				{
+					foreach($all as $recParent)
+					{
+						if ($rec['id_parent'] == $recParent['id_resource'])
+						{
+							$new_resources[] = $recParent['resource'];
+							$found = FALSE;
+							foreach($data as $d)
+							{
+								if ($d['resource'] == $recParent['resource'])
+								{
+									$found = TRUE;
+									break;
+								}
+							}
+							if ( ! $found)
+							{
+								log_message('error', 'TO ADD : ' . $recParent['resource']);
+								$data[] = array(
+									'id_role' => $id_role,
+									'resource' => $recParent['resource'],
+									'actions' => '',
+									'permission' => 1,
+								);
+							}
+						}
+					}
+				}
+			}
+			$this->add_parent_resources_for_save($data, $new_resources, $all, $id_role);
 		}
 	}
 
@@ -135,7 +195,7 @@ class rule_model extends Base_model
 	protected function _delete_role_rules($id_role, $type)
 	{
 		$this->{$this->db_group}->where('id_role', $id_role);
-
+/*
 		// Everything but starting with 'admin/' or 'module/'
 		switch ($type)
 		{
@@ -152,7 +212,7 @@ class rule_model extends Base_model
 				$this->{$this->db_group}->where("resource like = '".$type."/%'");
 				break;
 		}
-
+*/
 		return $this->{$this->db_group}->delete($this->get_table());
 	}
 }

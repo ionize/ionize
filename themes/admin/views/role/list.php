@@ -32,7 +32,7 @@
 				<td><?php echo $role['role_name'] ?></td>
 				<td><?php echo $role['role_description'] ?></td>
 				<td>
-					<?php if( Authority::can('delete', 'admin/settings/roles')) :?>
+					<?php if( Authority::can('delete', 'admin/role')) :?>
                 		<a data-id="<?php echo $role['id_role'] ?>" class="icon delete"></a>
 					<?php endif; ?>
 				</td>

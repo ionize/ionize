@@ -1,4 +1,6 @@
 
+<h2 class="main tree" id="main-title"><?php echo lang('ionize_title_create_menu') ?></h2>
+
 <form name="menuForm" id="menuForm" method="post" action="<?php echo admin_url(); ?>menu/save">
 
 	<!-- Name -->

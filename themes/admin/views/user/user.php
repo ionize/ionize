@@ -99,7 +99,7 @@
 </form>
 
 <div class="buttons">
-	<?php if ( Authority::can('edit', 'admin/settings/users')) :?>
+	<?php if ( Authority::can('edit', 'admin/user')) :?>
 		<button id="bSaveuser<?php echo $user['id_user'] ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close') ?></button>
 	<?php endif;?>
 	<button id="bCanceluser<?php echo $user['id_user'] ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel') ?></button>

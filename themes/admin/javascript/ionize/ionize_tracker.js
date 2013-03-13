@@ -26,6 +26,9 @@ Ionize.Tracker.append(
 		this.options = options;
 		this.parent = $(options.parent);
 
+		if (this.options.updateDelay)
+			this.updateDelay = this.options.updateDelay;
+
 		return this;
 	},
 
@@ -33,6 +36,7 @@ Ionize.Tracker.append(
 	{
 		this.user = Ionize.User.getUser();
 		clearInterval(this.updateInt);
+		this.updateTrackingData.delay(1000, this);
 		this.updateInt = this.updateTrackingData.periodical(this.updateDelay, this);
 	},
 

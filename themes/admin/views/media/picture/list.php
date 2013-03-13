@@ -41,7 +41,7 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 	{
 		$weight = sprintf('%01.2f', filesize($media['path']) / (1024 )) . 'ko';
 
-		list($width, $height, $type, $attr) = @getimagesize($media['path']);
+		list($width, $height, $img_type, $attr) = @getimagesize($media['path']);
 		
 		$details = $width.' x '.$height.' px<br/>'.$weight;
 	}
@@ -53,8 +53,13 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 	<div class="picture drag" id="picture_<?php echo $media['id_media']; ?>">
 		<div class="thumb" style="width:<?php echo $thumb_size; ?>px;height:<?php echo $thumb_size; ?>px; background-image:url(<?php echo admin_url(TRUE) . 'media/get_thumb/'.$media['id_media'].'/'.time() ; ?>);"></div>
 		<p class="icons">
-			<a class="icon unlink right help" href="javascript:mediaManager.detachMedia('<?php echo $media["type"]; ?>', '<?php echo $media["id_media"]; ?>');" title="<?php echo lang('ionize_label_detach_media'); ?>"></a>
-			<a class="icon edit left mr5" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>"></a>
+
+			<?php if(Authority::can('unlink', 'admin/'.$parent.'/media/picture')) :?>
+        		<a class="icon unlink right help" href="javascript:mediaManager.detachMedia('<?php echo $media["type"]; ?>', '<?php echo $media["id_media"]; ?>');" title="<?php echo lang('ionize_label_detach_media'); ?>"></a>
+			<?php endif ;?>
+			<?php if(Authority::can('edit', 'admin/'.$parent.'/media/picture')) :?>
+				<a class="icon edit left mr5" href="<?php echo $edit_href; ?>" title="<?php echo lang('ionize_label_edit'); ?>"></a>
+			<?php endif ;?>
 			<a class="icon refresh left mr5 help" href="javascript:mediaManager.initThumbs('<?php echo $media["id_media"]; ?>');" title="<?php echo lang('ionize_label_init_thumb'); ?>"></a>
 			<a class="icon info left help" title="<?php echo $media['id_media']; ?> : <?php echo $path; ?>" rel="<?php echo $details; ?>"></a>
 			<?php if( ! empty($media['lang_display'])) :?>

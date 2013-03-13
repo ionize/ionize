@@ -40,11 +40,16 @@ class resource_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Returns the resource tree
+	 *
+	 * @return array
+	 */
 	public function get_tree()
 	{
 		$resources = $this->get_list();
 
-		$tree = $this->_build_resources_tree($resources);
+		$tree = $this->build_resources_tree($resources);
 
 		return $tree;
 	}
@@ -53,17 +58,30 @@ class resource_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	protected function _build_resources_tree(array &$elements, $id_parent = 0, $level=0)
+	/**
+	 * Builds the resource tree
+	 *
+	 * @param array $elements
+	 * @param null  $id_parent
+	 * @param int   $level
+	 *
+	 * @return array
+	 */
+	public function build_resources_tree(array &$elements, $id_parent = NULL, $level=0)
 	{
 		$branch = array();
 
-		foreach ($elements as $key=>$element)
+		foreach ($elements as $element)
 		{
-			// $resource_details = explode('/', $resource['resource_key']);
+			// $id_parent can be a string,
+			// Correct PHP buggy 'string' == 0
+			// log_message('error', $id_parent.' : '.gettype($id_parent) . ' / ' . $element['id_parent'].' : '.gettype($element['id_parent']));
+			// if ( $element['id_parent'] === 0) $element['id_parent'] = '';
+
 			if ($element['id_parent'] == $id_parent)
 			{
 				$element['level'] = $level;
-				$children = $this->_build_resources_tree($elements, $element['id_resource'], $level+1);
+				$children = $this->build_resources_tree($elements, $element['id_resource'], $level+1);
 
 				if ($children) {
 					$element['children'] = $children;
@@ -75,5 +93,24 @@ class resource_model extends Base_model
 		return $branch;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns all the available resources,
+	 * DB + Modules, merged in one array.
+	 *
+	 * @return array
+	 *
+	 */
+	public function get_all_resources()
+	{
+		$resources = $this->get_list();
+
+		$modules_resources = Modules()->get_resources();
+
+		return array_merge($resources, $modules_resources);
+	}
 
 }

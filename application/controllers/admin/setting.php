@@ -65,12 +65,6 @@ class Setting extends MY_admin
 
 	function ionize()
 	{
-		// 1. Check protection : Method in My_Controller
-		//	  See for 'access'
-
-log_message('error', 'is_xhr() : ' . $this->is_xhr());
-
-
 		$this->template['displayed_admin_languages'] = Settings::get('displayed_admin_languages');
 
 		$this->_get_settings();

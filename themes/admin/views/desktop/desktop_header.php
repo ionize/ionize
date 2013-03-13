@@ -58,7 +58,10 @@
 					<?php if(Authority::can('access', 'admin/translations')) :?>
 						<li class="divider"><a class="navlink" href="translation" title="<?php echo lang('ionize_title_translation'); ?>"><?php echo lang('ionize_menu_translation'); ?></a></li>
 					<?php endif ;?>
-					<li class="divider"><a id="mediamanagerlink" href="media/get_media_manager" title="<?php echo lang('ionize_menu_media_manager'); ?>"><?php echo lang('ionize_menu_media_manager'); ?></a></li>
+
+					<?php if(Authority::can('access', 'admin/filemanager')) :?>
+						<li class="divider"><a id="mediamanagerlink" href="media/get_media_manager" title="<?php echo lang('ionize_menu_media_manager'); ?>"><?php echo lang('ionize_menu_media_manager'); ?></a></li>
+					<?php endif ;?>
 
 					<?php if(Authority::can('access', 'admin/article/type')) :?>
 						<li class="divider"><a class="navlink" href="article_type/index" title="<?php echo lang('ionize_menu_types'); ?>"><?php echo lang('ionize_menu_types'); ?></a></li>
@@ -68,7 +71,7 @@
 						<li><a class="navlink" href="element_definition/index" title="<?php echo lang('ionize_menu_content_elements'); ?>"><?php echo lang('ionize_menu_content_elements'); ?></a></li>
 					<?php endif ;?>
 
-					<?php if(Authority::can('access', 'admin/element')) :?>
+					<?php if(Authority::can('access', 'admin/extend')) :?>
 	                    <li><a class="navlink" href="extend_field/index" title="<?php echo lang('ionize_menu_extend_fields'); ?>"><?php echo lang('ionize_menu_extend_fields'); ?></a></li>
 					<?php endif ;?>
 
@@ -81,7 +84,7 @@
 						<?php foreach(Modules()->get_installed_modules() as $key => $module) :?>
 
 							<?php if(Authority::can('access', 'module/'.$module['key'].'/admin')) :?>
-								<li><a class="navlink" id="<?php echo $module['uri']; ?>ModuleLink" href="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" title="<?php echo $module['module']; ?>"><?php echo $module['module']; ?></a></li>
+								<li><a class="navlink" id="<?php echo $module['uri']; ?>ModuleLink" href="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" title="<?php echo $module['name']; ?>"><?php echo $module['name']; ?></a></li>
 							<?php endif ;?>
 
 						<?php endforeach ;?>
@@ -92,32 +95,46 @@
 					</ul>
 				</li>
 			<?php endif ;?>
-			<li><a class="returnFalse"><?php echo lang('ionize_menu_tools'); ?></a>
-				<ul>
-					<li><a href="https://www.google.com/analytics/web/" target="_blank">Google Analytics</a></li>
-					<li><a class="navlink" href="system_check"><?php echo lang('ionize_menu_system_check'); ?></a></li>
-				</ul>
-			</li>
 
-			<li><a class="returnFalse"><?php echo lang('ionize_menu_settings'); ?></a>
-				<ul>
-					<li><a class="navlink" href="setting/ionize" title="<?php echo lang('ionize_menu_ionize_settings'); ?>"><?php echo lang('ionize_menu_ionize_settings'); ?></a></li>
-					<li><a class="navlink" href="lang" title="<?php echo lang('ionize_menu_languages'); ?>"><?php echo lang('ionize_menu_languages'); ?></a></li>
-					<?php if(Authority::can('access', 'admin/settings/users')) :?>
-						<li><a class="navlink" href="user" title="<?php echo lang('ionize_menu_users'); ?>"><?php echo lang('ionize_menu_users'); ?></a></li>
-					<?php endif ;?>
-					<?php if(Authority::can('access', 'admin/settings/themes')) :?>
-						<li><a class="navlink" href="setting/themes" title="<?php echo lang('ionize_title_theme'); ?>"><?php echo lang('ionize_menu_theme'); ?></a></li>
-					<?php endif ;?>
-					<?php if(Authority::can('access', 'admin/settings/website')) :?>
-    					<li class="divider"><a class="navlink" href="setting" title="<?php echo lang('ionize_menu_site_settings'); ?>"><?php echo lang('ionize_menu_site_settings'); ?></a></li>
-					<?php endif ;?>
-					<?php if(Authority::can('access', 'admin/settings/technical')) :?>
-						<li><a class="navlink" href="setting/technical" title="<?php echo lang('ionize_menu_site_settings_technical'); ?>"><?php echo lang('ionize_menu_site_settings_technical'); ?></a></li>
-					<?php endif ;?>
-				</ul>
-			</li>
-			<li><a class="returnFalse"><?php echo lang('ionize_menu_help'); ?></a>
+			<?php if(Authority::can('access', 'admin/tools')) :?>
+				<li><a class="returnFalse"><?php echo lang('ionize_menu_tools'); ?></a>
+					<ul>
+						<?php if(Authority::can('access', 'admin/tools/google_analytics')) :?>
+							<li><a href="https://www.google.com/analytics/web/" target="_blank">Google Analytics</a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/tools/system')) :?>
+							<li><a class="navlink" href="system_check"><?php echo lang('ionize_menu_system_check'); ?></a></li>
+						<?php endif ;?>
+					</ul>
+				</li>
+			<?php endif ;?>
+
+			<?php if(Authority::can('access', 'admin/settings')) :?>
+				<li><a class="returnFalse"><?php echo lang('ionize_menu_settings'); ?></a>
+					<ul>
+						<?php if(Authority::can('access', 'admin/settings/ionize')) :?>
+							<li><a class="navlink" href="setting/ionize" title="<?php echo lang('ionize_menu_ionize_settings'); ?>"><?php echo lang('ionize_menu_ionize_settings'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/settings/languages')) :?>
+       						<li><a class="navlink" href="lang" title="<?php echo lang('ionize_menu_languages'); ?>"><?php echo lang('ionize_menu_languages'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/users_roles')) :?>
+							<li><a class="navlink" href="user" title="<?php echo lang('ionize_menu_users'); ?>"><?php echo lang('ionize_menu_users'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/settings/themes')) :?>
+							<li><a class="navlink" href="setting/themes" title="<?php echo lang('ionize_title_theme'); ?>"><?php echo lang('ionize_menu_theme'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/settings/website')) :?>
+							<li class="divider"><a class="navlink" href="setting" title="<?php echo lang('ionize_menu_site_settings'); ?>"><?php echo lang('ionize_menu_site_settings'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/settings/technical')) :?>
+							<li><a class="navlink" href="setting/technical" title="<?php echo lang('ionize_menu_site_settings_technical'); ?>"><?php echo lang('ionize_menu_site_settings_technical'); ?></a></li>
+						<?php endif ;?>
+					</ul>
+				</li>
+			<?php endif ;?>
+
+            <li><a class="returnFalse"><?php echo lang('ionize_menu_help'); ?></a>
 				<ul>
 					<?php if (is_dir(realpath(APPPATH.'../user-guide'))) :?>
 						<li><a id="docLink" href="../user-guide/index.html" target="_blank"><?php echo lang('ionize_menu_documentation'); ?></a></li>
@@ -137,10 +154,7 @@
 
 <script type="text/javascript">
 	
-	/**
-	 * Init of all main menu links
-	 *
-	 */
+	// Init of all main menu links
 	$$('.navlink').each(function(item)
 	{
 		item.addEvent('click', function(event)

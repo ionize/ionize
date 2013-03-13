@@ -29,6 +29,11 @@
 					<img src="<?php echo theme_url(); ?>images/icon_16_ordering.png" />
 				</div>
 
+                <!-- Delete button -->
+				<?php if($id > 2 && Authority::can('delete', 'admin/menu')) :?>
+                	<a class="icon right delete" rel="<?php echo $id; ?>"></a>
+				<?php endif ;?>
+
 				<!-- Name -->
 				<dl class="small">
 					<dt>
@@ -41,10 +46,6 @@
 						
 						<input type="<?php if($id < 3) :?>hidden<?php else :?>text<?php endif ;?>" name="name_<?php echo $id; ?>" id="name_<?php echo $id; ?>" class="inputtext" value="<?php echo $name; ?>"/>
 						
-						<!-- Delete button -->
-						<?php if($id > 2) :?>
-							<a class="icon right delete" rel="<?php echo $id; ?>"></a>
-						<?php endif ;?>
 					</dd>
 				</dl>
 

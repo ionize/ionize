@@ -90,9 +90,14 @@ class Role extends MY_Admin
 		$roles = $this->role_model->get_list();
 		$this->template['roles'] = array_filter($roles, array($this, '_filter_roles'));
 
-		// All Resources
+		// All Admin Resources
 		$resources = $this->resource_model->get_tree();
 		$this->template['json_resources'] = json_encode($resources, true);
+
+		// All Modules resources
+		$modules_resources = Modules()->get_resources();
+		$resources = $this->resource_model->build_resources_tree($modules_resources);
+		$this->template['json_modules_resources'] = json_encode($resources, true);
 
 		// Role's permissions
 		$rules = $this->rule_model->get_list(array('id_role'=> $role['id_role']));
@@ -138,7 +143,7 @@ class Role extends MY_Admin
 			$id_role = $this->role_model->save($this->input->post());
 
 			// Permissions
-			if (Authority::can('access', 'admin/settings/roles/permissions'))
+			if (Authority::can('access', 'admin/role/permissions'))
 			{
 				$permission_level = $this->input->post('permission_level');
 

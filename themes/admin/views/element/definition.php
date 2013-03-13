@@ -9,7 +9,11 @@ $id = $id_element_definition;
 
     <div class="h20">
 
-        <a class="icon delete right" rel="<?php echo $id ;?>"></a>
+		<?php if ( Authority::can('delete', 'admin/element')) :?>
+
+   			<a class="icon delete right" rel="<?php echo $id ;?>"></a>
+
+		<?php endif;?>
 
         <span class="icon left drag mr10"></span>
 
@@ -84,7 +88,7 @@ $id = $id_element_definition;
 				<div class="pt5" id="def_<?php echo $id ;?>">
 
 					<!-- Add Field button -->
-					<?php if ($id != 0) :?>
+					<?php if ($id != 0 && Authority::can('edit', 'admin/element')) :?>
 						<input type="button" class="light-button plus mb5 ml5 add_field" value="Add field" rel="<?php echo $id ;?>" />
 					<?php endif ;?>
 
@@ -94,12 +98,14 @@ $id = $id_element_definition;
 							<li class="sortme element_field" rel="<?php echo $field['id_extend_field'] ;?>" id="element_field<?php echo $field['id_extend_field'] ;?>">
 								<span class="icon left drag"></span>
 
-								<a class="icon delete right" rel="<?php echo $field['id_extend_field'] ;?>"></a>
+								<?php if ( Authority::can('edit', 'admin/element')) :?>
+            						<a class="icon delete right" rel="<?php echo $field['id_extend_field'] ;?>"></a>
+								<?php endif ;?>
 
 								<span class="lite right mr10" rel="<?php echo $field['id_extend_field'] ;?>">
 									<?php echo $field['type_name'] ;?>
 									<?php if($field['translated'] == '1') :?>
-									/ <?php echo lang('ionize_label_multilingual') ;?>
+										/ <?php echo lang('ionize_label_multilingual') ;?>
 									<?php endif ;?>
 								</span>
 

@@ -35,6 +35,7 @@ $lang['ionize_dashboard_icon_mediamanager'] = 'Medias';
 $lang['ionize_dashboard_icon_translation'] = 'Translations';
 $lang['ionize_dashboard_icon_google_analytics'] = 'Analytics';
 $lang['ionize_dashboard_icon_articles'] = 'Articles';
+$lang['ionize_dashboard_icon_users'] = 'Users & Roles';
 $lang['ionize_dashboard_title_content'] = 'Content';
 $lang['ionize_dashboard_title_tools'] = 'Tools';
 $lang['ionize_dashboard_title_settings'] = 'Settings';
@@ -85,7 +86,7 @@ $lang['ionize_menu_site_settings_global'] = 'Website settings';
 $lang['ionize_menu_site_settings_translations'] = 'Static translation';
 $lang['ionize_menu_site_settings_technical'] = 'Advanced settings';
 $lang['ionize_menu_ionize_settings'] = 'Ionize interface';
-$lang['ionize_menu_users'] = 'Users...';
+$lang['ionize_menu_users'] = 'Users & Roles...';
 $lang['ionize_menu_languages'] = 'Languages...';
 $lang['ionize_menu_about'] = 'About';
 $lang['ionize_menu_documentation'] = 'Documentation';
@@ -396,7 +397,7 @@ $lang['ionize_message_lang_content_copied'] = 'Lang content copy successful';
 | Admin : Users & groups
 |--------------------------------------------------------------------------
 */
-$lang['ionize_title_users'] = 'Users management';
+$lang['ionize_title_users'] = 'Users & Roles';
 $lang['ionize_title_user_edit'] = 'User edit';
 $lang['ionize_title_existing_users'] = 'Users';
 $lang['ionize_title_existing_powerusers'] = 'Power Users';
@@ -1057,6 +1058,8 @@ $lang['ionize_label_about_us_license'] = 'License';
 */
 $lang['ionize_title_roles'] = 'Roles';
 $lang['ionize_title_permissions'] = 'Permissions';
+$lang['ionize_title_backend_permissions'] = 'Backend Permissions';
+$lang['ionize_title_modules_permissions'] = 'Modules Permissions';
 $lang['ionize_label_role'] = 'Role';
 $lang['ionize_label_role_code'] = 'Role Code';
 $lang['ionize_label_role_name'] = 'Role Name';
@@ -1080,6 +1083,7 @@ $lang['ionize_title_permission_settings_website'] = 'Settings > Website';
 $lang['ionize_title_permission_settings_advanced'] = 'Settings > Advanced';
 $lang['ionize_label_permissions_all'] = 'All';
 $lang['ionize_label_permissions_custom'] = 'Custom';
+$lang['ionize_label_allowed_resources'] = 'Allowed';
 $lang['ionize_label_allow'] = 'Allow';
 $lang['ionize_label_deny'] = 'Deny';
 $lang['ionize_label_permission_access'] = 'Access';

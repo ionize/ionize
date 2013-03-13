@@ -1343,11 +1343,12 @@ var Filemanager = new Class({
 		this.menu.adopt(this.downloadForm);
 
 		var tx_cfg = this.options.mkServerRequestURL(this, 'download', Object.merge({},
-						this.options.propagateData,
-						{
-							file: file.path,
-							filter: this.options.filter
-						}));
+			this.options.propagateData,
+			{
+				file: file.path,
+				filter: this.options.filter
+			})
+		);
 
 		this.downloadForm.action = tx_cfg.url;
 
@@ -3308,7 +3309,7 @@ Filemanager.Request = new Class({
 	initialize: function(options, filebrowser) {
 		this.parent(options);
 
-		this.options.data = Object.merge({}, filebrowser.options.propagateData, this.options.data);
+		// this.options.data = Object.merge({}, filebrowser.options.propagateData, this.options.data);
 
 		if (this.options.fmDisplayErrors)
 		{
@@ -3412,7 +3413,7 @@ Filemanager.Dialog = new Class({
 			tween: {duration: 'short'},
 			styles:
 			{
-				'z-index': this.options.zIndex
+				// 'z-index': this.options.zIndex
 			}
 		}).adopt(this.content_el);
 
@@ -3447,10 +3448,10 @@ Filemanager.Dialog = new Class({
 			events: {
 				click: this.fireEvent.pass('close', this)
 			},
-			//tween: {duration: 'short'},
+			tween: {duration: 'short'},
 			styles:
 			{
-				'z-index': this.options.zIndex - 1
+				// 'z-index': this.el.getStyle('z-index') - 1
 			}
 		});
 

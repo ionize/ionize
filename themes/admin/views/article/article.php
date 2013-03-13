@@ -246,16 +246,21 @@ if ($tracker_title == '')
 				<ul class="tab-menu">
 					
 					<?php foreach(Settings::get_languages() as $language) :?>
-					
 						<li class="tab_article<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
-					
 					<?php endforeach ;?>
-					
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="musicTab"><a><?php echo lang('ionize_label_music'); ?></a></li>
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="videoTab"><a><?php echo lang('ionize_label_videos'); ?></a></li>
-					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?php echo lang('ionize_label_pictures'); ?></a></li>
 
+					<?php if(Authority::can('access', 'admin/article/media/file')) :?>
+    					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
+					<?php endif;?>
+					<?php if(Authority::can('access', 'admin/article/media/music')) :?>
+	                    <li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="musicTab"><a><?php echo lang('ionize_label_music'); ?></a></li>
+					<?php endif;?>
+					<?php if(Authority::can('access', 'admin/article/media/video')) :?>
+	                    <li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="videoTab"><a><?php echo lang('ionize_label_videos'); ?></a></li>
+					<?php endif;?>
+					<?php if(Authority::can('access', 'admin/article/media/picture')) :?>
+	                    <li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?php echo lang('ionize_label_pictures'); ?></a></li>
+					<?php endif;?>
 				</ul>
 				<div class="clear"></div>
 			
@@ -492,95 +497,115 @@ if ($tracker_title == '')
 
 				</div>
 				<?php endforeach ;?>
-	
-	
-				<!-- Files -->
-				<div class="tabcontent">
-				
-					<p class="h30">
-						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
-							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-						</a>
-						<a class="left light button unlink" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
-							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
-						</a>
-					</p>
-					
-					<ul id="fileContainer" class="sortable-container">
-					</ul>
-	
-				</div>
-	
-				<!-- Music -->
-				<div class="tabcontent">
-					
-					<p class="h30">
-						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
-							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-						</a>
-						<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
-							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_musics'); ?>
-						</a>
-					</p>
-					
-					<ul id="musicContainer" class="sortable-container">
-					</ul>
-	
-				</div>
-	
-				<!-- Videos -->
-				<div class="tabcontent">
-				
-					<p class="h30">
-						<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
-							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-						</a>
-						<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
-							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_videos'); ?>
-						</a>
-					</p>
-					
-					<dl class="first">
-						<dt>
-							<label for="addVideo"><?php echo lang('ionize_label_add_video'); ?></label>
-						</dt>
-						<dd>
-							<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
-							<a id="btnAddVideo" class="left light button">
-								<i class="icon-plus"></i><?php echo lang('ionize_button_add_video'); ?>
+
+				<?php if(Authority::can('access', 'admin/article/media/file')) :?>
+
+					<!-- Files -->
+					<div class="tabcontent">
+
+						<p class="h30">
+							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
+								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 							</a>
-						</dd>
-					</dl>
-					
-					<ul id="videoContainer" class="sortable-container">
-					</ul>
-	
-				</div>
-	
-				<!-- Pictures -->
-				<div class="tabcontent">
-				
-					<p class="h30">
-	<!--					<a class="fmButton right"><img src="<?php echo theme_url(); ?>images/icon_16_plus.png" /> <?php echo lang('ionize_label_attach_media'); ?></a>-->
+							<?php if(Authority::can('unlink', 'admin/article/media/file')) :?>
+								<a class="left light button unlink" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
+									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
+								</a>
+							<?php endif;?>
+                        </p>
 
-						<a class="button light right" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
-							<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-						</a>
-						<a class="button light left" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
-							<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_pictures'); ?>
-						</a>
-						<?php
-						/*
-						<a class="button light left" onclick="javascript:mediaManager.initThumbsForParent();return false;">
-							<i class="icon-process"></i><?php echo lang('ionize_label_init_all_thumbs'); ?>
-						</a>
-						*/
-						?>
-					</p>
+						<ul id="fileContainer" class="sortable-container"></ul>
+					</div>
 
-					<div id="pictureContainer" class="sortable-container"></div>
+				<?php endif;?>
 
-				</div>
+				<?php if(Authority::can('access', 'admin/article/media/music')) :?>
+
+					<!-- Music -->
+					<div class="tabcontent">
+
+						<p class="h30">
+							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
+								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
+							</a>
+							<?php if(Authority::can('unlink', 'admin/article/media/music')) :?>
+								<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
+									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_musics'); ?>
+								</a>
+							<?php endif;?>
+						</p>
+
+						<ul id="musicContainer" class="sortable-container"></ul>
+					</div>
+
+				<?php endif;?>
+
+				<?php if(Authority::can('access', 'admin/article/media/video')) :?>
+
+					<!-- Videos -->
+					<div class="tabcontent">
+
+						<p class="h30">
+							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
+								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
+							</a>
+							<?php if(Authority::can('unlink', 'admin/article/media/video')) :?>
+								<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
+									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_videos'); ?>
+								</a>
+							<?php endif;?>
+						</p>
+
+						<?php if(Authority::can('link', 'admin/article/media/video')) :?>
+
+							<dl class="first">
+								<dt>
+									<label for="addVideo"><?php echo lang('ionize_label_add_video'); ?></label>
+								</dt>
+								<dd>
+									<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
+									<a id="btnAddVideo" class="left light button">
+										<i class="icon-plus"></i><?php echo lang('ionize_button_add_video'); ?>
+									</a>
+								</dd>
+							</dl>
+
+						<?php endif;?>
+
+						<ul id="videoContainer" class="sortable-container"></ul>
+
+					</div>
+
+				<?php endif;?>
+
+				<?php if(Authority::can('access', 'admin/article/media/picture')) :?>
+
+					<!-- Pictures -->
+					<div class="tabcontent">
+
+						<p class="h30">
+		<!--					<a class="fmButton right"><img src="<?php echo theme_url(); ?>images/icon_16_plus.png" /> <?php echo lang('ionize_label_attach_media'); ?></a>-->
+
+							<a class="button light right" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
+								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
+							</a>
+							<a class="button light left" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
+								<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_pictures'); ?>
+							</a>
+							<?php
+							/*
+							<a class="button light left" onclick="javascript:mediaManager.initThumbsForParent();return false;">
+								<i class="icon-process"></i><?php echo lang('ionize_label_init_all_thumbs'); ?>
+							</a>
+							*/
+							?>
+						</p>
+
+						<div id="pictureContainer" class="sortable-container"></div>
+
+					</div>
+
+				<?php endif;?>
 			</div>
 
 		</fieldset>
@@ -601,31 +626,18 @@ if ($tracker_title == '')
 
 <script type="text/javascript">
 
-
 	ION.initFormAutoGrow();
 
-	/**
-	 * Panel toolbox
-	 * Init the panel toolbox is mandatory !!! 
-	 *
-	 */
+	// Toolbox
 	ION.initToolbox('article_toolbox');
 
-    /**
-     * Init the Edit Mode
-	 */
+	// Init the Edit Mode
     ION.initEditMode('editionModeSwitcher', 'article', '.article-header');
 
-	/**
-	 * Article element in each of its parent context
-	 * 
-	 */
+	// Article element in each of its parent context
 	ION.initDroppable();
 	 
-	/**
-	 * Calendars init
-	 *
-	 */
+	// Calendars init
 	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
     ION.initClearField('#articleForm');
 
@@ -664,24 +676,13 @@ if ($tracker_title == '')
 		});
 	}
 
-	/**
-	 * Copy Lang data to other languages dynamically
-	 *
-	 */
+	// Copy Lang data to other languages dynamically
 	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content'));
 	
-
-	/** 
-	 * Show current tabs
-	 */
+	// Tabs
 	var articleTab = new TabSwapper({tabsContainer: 'articleTab', sectionsContainer: 'articleTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleTab' });
 
-
-	/**
-	 * TinyEditors
-	 * Must be called after tabs init.
-	 *
-	 */
+	// TinyEditors. Must be called after tabs init.
     ION.initTinyEditors(null, '#articleExtendFields .tinyTextarea');
     ION.initTinyEditors(null, '#articleExtendFields .smallTinyTextarea', 'small', {'height':80});
     ION.initTinyEditors('.tab_article', '#articleTabContent .tinyTextarea');
@@ -689,50 +690,44 @@ if ($tracker_title == '')
 
 	<?php if (!empty($id_article)) :?>
 	
-		// Dates
-		/*
-		ION.datePicker.options['onClose'] = function()	
-		{
-			ION.JSON('article/update_field', {'field': ION.datePicker.input.id, 'value': ION.datePicker.input.value, 'type':'date', 'id_article': $('id_article').value});
-		}
-		*/
-
-
-		/**
-		 * Get Content Elements Tabs & Elements
-		 *
-		 */
+		// Get Content Elements Tabs & Elements
 		$('desktop').store('tabSwapper', articleTab);
 		ION.getContentElements('article', '<?php echo $id_article; ?>');
-		
-		
-		/**
-		 * Add Video button
-		 *
-		 */
-		$('btnAddVideo').addEvent('click', function()
-		{
-			if ($('addVideo').value !='')
+
+		<?php if(Authority::can('link', 'admin/article/media/video')) :?>
+
+			// Add Video button
+			$('btnAddVideo').addEvent('click', function()
 			{
-				ION.JSON('media/add_external_media', {
-					'type': 'video', 
-					'parent': 'article', 
-					'id_parent': '<?php echo $id_article; ?>',
-					'path': $('addVideo').value
-				});
-			}
-			return false;
-		});
-		
-		/**
-		 * Media Manager & tabs events
-		 *
-		 */
+				if ($('addVideo').value !='')
+				{
+					ION.JSON('media/add_external_media', {
+						'type': 'video',
+						'parent': 'article',
+						'id_parent': '<?php echo $id_article; ?>',
+						'path': $('addVideo').value
+					});
+				}
+				return false;
+			});
+
+		<?php endif ;?>
+
+    	// Media Manager & tabs events
 		mediaManager.initParent('article', '<?php echo $id_article; ?>');
-		mediaManager.loadMediaList('file');
-		mediaManager.loadMediaList('music');
-		mediaManager.loadMediaList('picture');
-		mediaManager.loadMediaList('video');
+
+		<?php if(Authority::can('access', 'admin/article/media/file')) :?>
+        	mediaManager.loadMediaList('file');
+		<?php endif ;?>
+		<?php if(Authority::can('access', 'admin/article/media/music')) :?>
+        	mediaManager.loadMediaList('music');
+		<?php endif ;?>
+		<?php if(Authority::can('access', 'admin/article/media/video')) :?>
+        	mediaManager.loadMediaList('video');
+		<?php endif ;?>
+		<?php if(Authority::can('access', 'admin/article/media/picture')) :?>
+        	mediaManager.loadMediaList('picture');
+		<?php endif ;?>
 
 	<?php endif ;?>
 

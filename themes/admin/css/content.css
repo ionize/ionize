@@ -315,9 +315,18 @@ h2.main.pictured {
 	margin: -50px 0 20px 130px;
 }
 
-#maincolumn h2, 
+/*#maincolumn h2,
 #maincolumn h3 {
+*/
+.panel h2,
+.panel h3 {
 	border-bottom: solid 1px #d5d9dc;
+}
+.panel h3,
+.panel h4 {
+	margin: 10px 0 10px 0;
+	padding: 0 0 3px 0;
+	font-weight: bold;
 }
 
 #maincolumn h2.main, 
@@ -339,10 +348,6 @@ h2.main.pictured {
 .mochaContent h2.main {
 	font-size:30px;
 	margin-bottom: 10px;
-}
-#maincolumn h3,
-#maincolumn h4 {
-	margin: 10px 0 10px 0; padding: 0 0 3px 0; font-weight: bold;
 }
 .mochaContent h3 {
 	border-bottom: 1px solid #D5D9DC;
@@ -972,24 +977,53 @@ div.translation {
 }
 
 
-/* Dashboard icon
+/* Dashboard / Desktop
 ---------------------------------------------------------------- */
-.desktopIcon {
-	float:left;
-	margin: 3px 6px 0 6px;
-	width:68px;
-	padding:5px;
-	background: #fff;
-	text-align:center;
-	cursor: pointer;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;
+.row {
+	clear:both;
+	overflow: hidden;
 }
-.desktopIcon:hover {
-	background: url(../images/bg-gray-light.png);
+.desktopBloc{
+	background:url(/themes/admin/images/bg-gray-light.png);
+	border:solid 1px #e5e5e5;
+	margin-right: 2%;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.desktopBloc .desktopBlocContent h2{
+	font-size: 16px;
+	color: #999;
+	font-weight: normal;
+	border: none ;
+	margin: 0 ;
+	padding: 0 0 5px 0;
+}
+.desktopBloc .desktopBlocContent h3.toggler{
+}
+.desktopBloc.col2{
+	width: 47.23%;
+	margin-right: 2%;
+	float: left;
+}
+.desktopBloc .desktopBlocContent{
+	padding:8px 10px 10px 10px;
+	overflow: hidden;
 }
 
+.desktopIcon {
+	float:left;
+	width:70px;
+	height: 80px;
+	padding:5px;
+	text-align:center;
+	cursor: pointer;
+	border-radius: 4px;
+	margin:5px 5px 0;
+	background: none;
+}
+.desktopIcon:hover {
+	background: url(../images/bg-gray-medium.png);
+}
 .desktopIcon p a, .desktopIcon p a:hover {
 	text-decoration: none !important;
 }
@@ -999,18 +1033,24 @@ div.translation {
 	text-align:center;
 	line-height: 13px;
 }
+.desktopIcon p a{
+	display: block;
+	vertical-align: middle;
+}
+
+
+
+
 .desktopUserIcon{
 	float:left;
 	margin: 3px 6px 0 6px;
-	width:150px;
+	width:70px;
 	padding:5px;
 	background-repeat: no-repeat;
 	background-color: #f3f3f3;
-	background-position: 7px 7px;
+	background-position: right 7px;
 	text-align:center;
 	cursor: pointer;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
 	border-radius: 4px;
 	overflow: hidden;
 }
@@ -1032,6 +1072,7 @@ div.translation {
 }
 .desktopUserIcon a {
 	display: block;
+	line-height: 13px;
 }
 
 .desktopUserIcon .action.editing {

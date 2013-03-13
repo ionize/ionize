@@ -455,6 +455,29 @@
 		</query>
 
 		<query>
+            CREATE TABLE if not exists resource (
+            id_resource int(11) NOT NULL AUTO_INCREMENT,
+            id_parent int(11) unsigned DEFAULT '0',
+            resource varchar(255) NOT NULL DEFAULT '',
+            actions varchar(1000) DEFAULT '',
+            title varchar(255) DEFAULT '',
+            description varchar(1000) DEFAULT '',
+            PRIMARY KEY (id_resource),
+            UNIQUE KEY resource_key (resource)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
+
+		<query>
+            CREATE TABLE if not exists rule (
+            id_role int(11) NOT NULL,
+            resource varchar(255) NOT NULL DEFAULT '',
+            actions varchar(25) NOT NULL DEFAULT '',
+            permission smallint(1) DEFAULT NULL,
+            PRIMARY KEY (id_role,resource,actions)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
+
+		<query>
 			CREATE TABLE IF NOT EXISTS setting (
 			  id_setting int(11) UNSIGNED NOT NULL auto_increment,
 			  name varchar(255) NOT NULL,
@@ -517,9 +540,9 @@
 		</query>
 
 		<query>
-			CREATE TABLE IF NOT EXISTS users (
+			CREATE TABLE IF NOT EXISTS user (
 			  id_user int(11) unsigned NOT NULL auto_increment,
-			  id_group smallint(4) unsigned NOT NULL,
+			  id_role smallint(4) unsigned NOT NULL,
 			  join_date timestamp NULL default NULL,
 			  last_visit timestamp NULL default NULL,
 			  username varchar(50) collate utf8_unicode_ci NOT NULL,
@@ -538,14 +561,14 @@
 		</query>
 
 		<query>
-			CREATE TABLE IF NOT EXISTS user_groups (
-			  id_group smallint(4) UNSIGNED NOT NULL auto_increment,
+			CREATE TABLE IF NOT EXISTS role (
+			  id_role smallint(4) UNSIGNED NOT NULL auto_increment,
 			  level int(11) default NULL,
-			  slug varchar(25) collate utf8_unicode_ci NOT NULL,
-			  group_name varchar(100) collate utf8_unicode_ci NOT NULL,
-			  description tinytext collate utf8_unicode_ci,
-			  PRIMARY KEY (id_group),
-			  UNIQUE KEY slug (slug)
+			  role_code varchar(25) collate utf8_unicode_ci NOT NULL,
+			  role_name varchar(100) collate utf8_unicode_ci NOT NULL,
+			  role_description tinytext collate utf8_unicode_ci,
+			  PRIMARY KEY (id_role),
+			  UNIQUE KEY role_code (role_code)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 	</tables>
@@ -553,21 +576,56 @@
 
 	<content>
 	
-
 		<query>DROP INDEX idx_unq_setting ON setting;</query>
         <query>alter table setting change lang lang varchar(3) not null default '';</query>
 		<query>CREATE UNIQUE INDEX idx_unq_setting ON setting (name, lang);</query>
 
 		<query>TRUNCATE TABLE login_tracker;</query>
 		
-		<query>INSERT IGNORE INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', '');</query>
-		<query>INSERT IGNORE INTO user_groups VALUES (2, 5000, 'admins', 'Admins', '');</query>
-		<query>INSERT IGNORE INTO user_groups VALUES (3, 1000, 'editors', 'Editors', '');</query>
-		<query>INSERT IGNORE INTO user_groups VALUES (4, 100, 'users', 'Users', '');</query>
-		<query>INSERT IGNORE INTO user_groups VALUES (5, 50, 'pending', 'Pending', '');</query>
-		<query>INSERT IGNORE INTO user_groups VALUES (6, 10, 'guests', 'Guests', '');</query>
-		<query>INSERT IGNORE INTO user_groups VALUES (7, -10, 'banned', 'Banned', '');</query>
-		<query>INSERT IGNORE INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (1, 10000, 'super-admins', 'Super Admins', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (2, 5000, 'admins', 'Admins', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (3, 1000, 'editors', 'Editors', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (4, 100, 'users', 'Users', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (5, 50, 'pending', 'Pending', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (6, 10, 'guests', 'Guests', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (7, -10, 'banned', 'Banned', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (8, -100, 'deactivated', 'Deactivated', '');</query>
+
+        <query>
+            INSERT INTO resource (id_parent, resource, actions, title, description)
+            VALUES
+            (0,'admin','','Backend login','Connect to ionize backend'),
+            (0,'admin/settings','','Settings',''),
+            (2,'admin/settings/ionize','','Ionize UI',''),
+            (2,'admin/settings/languages','','Languages Management',''),
+            (2,'admin/settings/users','create,edit,delete','Users',''),
+            (2,'admin/settings/themes','edit','Themes',''),
+            (2,'admin/settings/website','','Website settings',''),
+            (2,'admin/settings/technical','','Technical settings',''),
+            (0,'admin/menu','create,edit,delete','Menu',''),
+            (0,'admin/page','create,edit,delete','Page',''),
+            (10,'admin/page/media','link,unlink','Media',''),
+            (10,'admin/page/element','add','Content Element',''),
+            (10,'admin/page/article','add','Article',''),
+            (0,'admin/article','create,edit,delete,move,copy,duplicate','Article',''),
+            (14,'admin/article/media','link, unlink','Media',''),
+            (14,'admin/article/element','add','Content Element',''),
+            (0,'admin/modules','install','Modules',''),
+            (0,'admin/translations','','Translations',''),
+            (0,'admin/filemanager','upload,rename,delete,move','Filemanager',''),
+            (0,'admin/article/type','create,edit,delete','Article Type',''),
+            (0,'admin/element','create,edit,delete','Content Element',''),
+            (0,'admin/extend','create,edit,delete','Extend Fields',''),
+            (0,'admin/system','','System',''),
+            (23,'admin/system/diagnosis/info','','Diagnosis Informations',''),
+            (23,'admin/system/diagnosis/tools','','Diagnosis Tools',''),
+            (23,'admin/system/diagnosis/reports','','Diagnosis Reports',''),
+            (14,'admin/article/category','','Manage categories',''),
+            (2,'admin/settings/roles','create,edit,delete','Roles',''),
+            (2,'admin/settings/roles/permissions','','Roles Permissions','See Role\'s permissions');
+        </query>
+
+        <query>INSERT INTO rule (id_role, resource, actions, permission) VALUES (1,'all','',1);</query>
 
 		<query>DELETE FROM setting WHERE name='cache';</query>
 		<query>DELETE FROM setting WHERE name='cache_time';</query>

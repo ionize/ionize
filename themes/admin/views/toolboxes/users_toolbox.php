@@ -1,4 +1,4 @@
-<?php if ( Authority::can('access', 'admin/settings/users/create')) :?>
+<?php if ( Authority::can('create', 'admin/user')) :?>
 
 	<div class="divider">
 		<a class="button light" id="newUserToolbarButton">
@@ -9,7 +9,7 @@
 <?php endif;?>
 
 
-<?php if ( Authority::can('access', 'admin/settings/roles/create')) :?>
+<?php if ( Authority::can('create', 'admin/role')) :?>
 
 	<div class="divider">
 		<a class="button light" id="newRoleToolbarButton">
@@ -21,7 +21,7 @@
 
 <script type="text/javascript">
 
-	<?php if ( Authority::can('access', 'admin/settings/users/create')) :?>
+	<?php if ( Authority::can('create', 'admin/user')) :?>
 
 		// New user
 		$('newUserToolbarButton').addEvent('click', function(e)
@@ -37,7 +37,7 @@
 
 	<?php endif;?>
 
-	<?php if ( Authority::can('access', 'admin/settings/roles/create')) :?>
+	<?php if ( Authority::can('create', 'admin/role')) :?>
 
 		// New Role
 		$('newRoleToolbarButton').addEvent('click', function(e)

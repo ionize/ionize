@@ -388,6 +388,7 @@ a.button.green,
 .submit,
 a.button.submit{
 	color:#fff;
+	line-height: 18px;
 	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
 	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
 	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
@@ -403,7 +404,7 @@ a.button.yes:hover,
 a.button.green:hover,
 .submit:hover,
 a.button.submit:hover{
-	background-image: linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
+	background-image: linear-gradient(bottom, rgb(39, 99, 7) 0%, rgb(112,180,57) 61%);
 	background-image: -o-linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
 	background-image: -moz-linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
 	background-image: -webkit-linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
@@ -540,8 +541,8 @@ a.button.submit:hover{
 
 
 
-.mocha .button.yes { margin-right: 40px;margin-left:10px;}
-.mocha.modal .button.yes{ margin-right: 35px;}
+.mocha .button.yes { margin-left:10px;}
+.mocha.modal .button.yes{ }
 
 /* Light buttons */
 .button.light {

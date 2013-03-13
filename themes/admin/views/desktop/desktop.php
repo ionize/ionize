@@ -251,7 +251,8 @@
 <?php if (Settings::get('enable_backend_tracker') == '1') :?>
 	<script type="text/javascript">
 		Ionize.Tracker.initialize({
-			'parent':'desktop'
+			'parent':'desktop',
+			'updateDelay':10000
 		});
 		Ionize.Tracker.startTracking();
 	</script>

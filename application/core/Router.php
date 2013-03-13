@@ -730,7 +730,6 @@ class CI_Router
 			return ($this->directory ? $this->directory.'/' : '');
 		}
 	}
-
 }
 
 

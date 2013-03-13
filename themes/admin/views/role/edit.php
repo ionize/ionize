@@ -5,13 +5,10 @@
  * Receives vars :
  * $role :				Edited role
  * $json_resources : 	Tree of all resources (JSON)
- * $json_permissions : 	Role's permissions (JSON)
+ * $json_rules : 		Role's permissions (JSON)
  * has_all : 			TRUE if the user has all permissions
  *
  */
-
-// log_message('error', print_r(json_decode($json_resources), true));
-// log_message('error', print_r(json_decode($json_rules), true));
 ?>
 
 
@@ -20,7 +17,7 @@
 			<i class="icon-back"></i><?php echo lang('ionize_label_back_to_role_list'); ?>
 		</a>
 
-		<?php if ( Authority::can('edit', 'admin/settings/roles')) :?>
+		<?php if ( Authority::can('edit', 'admin/role')) :?>
 			<a class="button green right saveRoleButton" id="saveRoleButton">
 				<?php echo lang('ionize_button_save'); ?>
 			</a>
@@ -40,10 +37,8 @@
 			</dt>
 			<dd>
 				<input id="role_code" name="role_code" class="inputtext w150 left required" type="text" value="<?php echo $role['role_code']; ?>" />
-
                 <label for="role_name" class="left ml20"><?php echo lang('ionize_label_role_name'); ?></label>
                 <input id="role_name" name="role_name" class="inputtext left w150 required" type="text" value="<?php echo $role['role_name']; ?>" />
-
 			</dd>
 		</dl>
 
@@ -74,15 +69,15 @@
             </dd>
         </dl>
 
-		<?php if ( Authority::can('access', 'admin/settings/roles/permissions')) :?>
+		<?php if ( Authority::can('access', 'admin/role/permissions')) :?>
 
-			<!-- Permissions -->
+			<h3><?php echo lang('ionize_title_backend_permissions'); ?></h3>
+
 			<dl class="small mt20">
 				<dt>
 					<label><?php echo lang('ionize_title_permissions'); ?></label>
 				</dt>
 				<dd>
-
 					<div class="mb10">
 						<label class="ml0">
 							<input id="permissionLevelCustom" type="radio" name="permission_level" class="mr5" value="custom"/>
@@ -94,22 +89,45 @@
 							<a><?php echo lang('ionize_label_permissions_all'); ?></a>
 						</label>
 					</div>
-
-					<div id="rulesContainer" class="hidden"></div>
 				</dd>
 			</dl>
 
+			<dl class="small" id="customPermissionContainer">
+                <dt>
+                    <label><?php echo lang('ionize_label_allowed_resources'); ?></label>
+                </dt>
+                <dd>
+                    <div id="rulesContainer" class="hidden"></div>
+				</dd>
+			</dl>
 
-
-
-		<?php if ( Authority::can('edit', 'admin/settings/roles')) :?>
-
-				<a class="button green right saveRoleButton" id="saveRoleButton">
-					<?php echo lang('ionize_button_save'); ?>
-				</a>
-
-			<?php endif;?>
 		<?php endif;?>
+
+
+		<?php if ( Authority::can('access', 'admin/modules/permissions')) :?>
+
+        	<h3><?php echo lang('ionize_title_modules_permissions'); ?></h3>
+
+			<dl class="small" id="modulePermissionContainer">
+				<dt>
+					<label><?php echo lang('ionize_label_allowed_resources'); ?></label>
+				</dt>
+				<dd>
+					<div id="modulesRulesContainer"></div>
+				</dd>
+			</dl>
+
+		<?php endif;?>
+
+
+		<?php if ( Authority::can('edit', 'admin/role')) :?>
+
+			<a class="button green right saveRoleButton" id="saveRoleButton">
+				<?php echo lang('ionize_button_save'); ?>
+			</a>
+
+		<?php endif;?>
+
 
 	</form>
 
@@ -125,7 +143,7 @@
             }
         });
 
-		<?php if ( Authority::can('edit', 'admin/settings/roles')) :?>
+		<?php if ( Authority::can('edit', 'admin/role')) :?>
 			$$('.saveRoleButton').each(function(item)
 			{
 				item.addEvent('click', function()
@@ -153,14 +171,14 @@
 			$('roleListTab').fireEvent('click');
 		});
 
-		<?php if ( Authority::can('access', 'admin/settings/roles/permissions')) :?>
+		<?php if ( Authority::can('access', 'admin/role/permissions')) :?>
 
 			// Permission Level checkboxes
 			$('permissionLevelAll').addEvent('click', function(evt){
-				$('rulesContainer').hide();
+				$('customPermissionContainer').hide();
 			});
 			$('permissionLevelCustom').addEvent('click', function(evt){
-				$('rulesContainer').show();
+				$('customPermissionContainer').show();
 			});
 
 			if ( ! $('permissionLevelAll').getProperty('checked'))
@@ -168,24 +186,44 @@
 				$('permissionLevelCustom').fireEvent('click');
 				$('permissionLevelCustom').setProperty('checked', 'checked');
 			}
+			else
+			{
+                $('customPermissionContainer').hide();
+			}
 
 
-        	new ION.PermissionTree(
+			var backRules = new ION.PermissionTree(
 				'rulesContainer',
 				<?php echo $json_resources ?>,
-				{
-					'key': 'id_resource',
-					'data': [
-						{'key':'resource', 'as':'resource'},
-						{'key':'title', 'as':'title'},
-						{'key':'description', 'as':'description'},
-						{'key':'actions', 'as':'actions'}
-					],
-					'rules' : <?php echo $json_rules ?>
-				}
+					{
+						'key': 'id_resource',
+						'data': [
+							{'key':'resource', 'as':'resource'},
+							{'key':'title', 'as':'title'},
+							{'key':'description', 'as':'description'},
+							{'key':'actions', 'as':'actions'}
+						],
+						'rules' : <?php echo $json_rules ?>
+					}
 			);
 
-		<?php endif;?>
+			var modRules = new ION.PermissionTree(
+				'modulesRulesContainer',
+				<?php echo $json_modules_resources ?>,
+					{
+						'key': 'id_resource',
+						'data': [
+							{'key':'resource', 'as':'resource'},
+							{'key':'title', 'as':'title'},
+							{'key':'description', 'as':'description'},
+							{'key':'actions', 'as':'actions'}
+						],
+						'rules' : <?php echo $json_rules ?>
+					}
+			);
+
+
+			<?php endif;?>
 
 	</script>
 

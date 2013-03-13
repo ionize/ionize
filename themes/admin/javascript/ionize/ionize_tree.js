@@ -30,7 +30,8 @@ ION.SimpleTree = new Class({
 	buildTree:function(items, id_parent, level)
 	{
 		var key = this.options.key;
-		var label = this.options.label;
+		var label = this.options.label;     // item key used as label
+
 		// var mlClass = 'ml' + (parseInt(level) * 20);
 		var mlClass = 'ml16';
 
@@ -49,14 +50,6 @@ ION.SimpleTree = new Class({
 			if (this.options.label)
 				new Element('a', {'class':'title', text:item[label]}).inject(item);
 
-			// plus / minus icon
-			// 			var pm = this.plusMinus_Model.clone().addEvent('click', this.openclose.bind(this)).inject(li, 'top');
-
-			var pm = new Element('div', {'class': 'tree-img plus'})
-				.addEvent('click', self.openclose.bind(self))
-				.inject(element, 'top');
-
-
 			// Add data-x attributes
 			Array.each(this.options.data, function(dataKey){
 				element.setAttribute('data-'+dataKey.as, item[dataKey.key]);
@@ -66,6 +59,11 @@ ION.SimpleTree = new Class({
 
 			if (item.children)
 				element.adopt(this.buildTree(item.children, item[key], level + 1));
+
+			// plus / minus icon
+			var pm = new Element('div', {'class': 'tree-img plus'})
+				.addEvent('click', self.openclose.bind(self))
+				.inject(element, 'top');
 
 			self.close(element);
 
@@ -144,6 +142,7 @@ ION.PermissionTree = new Class({
 	enhanceTree:function()
 	{
 		var lis = this.tree.getElements('li');
+		var self = this;
 
 		lis.each(function(li)
 		{
@@ -152,18 +151,31 @@ ION.PermissionTree = new Class({
 			var actions = li.getAttribute('data-actions');
 
 			if (actions != '')
-			{
 				this.create_actions_li(li, actions);
-			}
 
 		}.bind(this));
+
+		// Replace +/- by space if no children
+		lis = this.tree.getElements('li');
+		lis.each(function(li)
+		{
+			if (li.getChildren('ul').length == 0)
+			{
+				var pm = li.getElement('div.plus');
+				if (pm)
+				{
+					new Element('div', {'class':'tree-img line node'}).inject(pm, 'before');
+					pm.destroy();
+				}
+			}
+		});
 	},
 
 	create_resource_li:function(container)
 	{
 		var id = container.getAttribute('data-id');
-
-		var a = new Element('a', {'text': container.getAttribute('data-title'), 'title':container.getAttribute('data-description')});
+console.log();
+		var a = new Element('a', {'text': container.getAttribute('data-title'), 'title':container.getAttribute('data-resource')});
 
 		var label = new Element('label', {
 			'for':'rule' + id
@@ -205,7 +217,8 @@ ION.PermissionTree = new Class({
 		{
 			var li = new Element('li',{'data-id':'rule-' + action + id, 'class':'ml16'});
 			var spIcon = new Element('div', {'class':'tree-img line node'});
-			var a = new Element('a', {'text': action[0].toUpperCase() + action.slice(1)});
+			action = String.from(action).trim();
+			var a = new Element('a', {'text': action.capitalize()});
 
 			var label = new Element('label', {
 				'for':'rule-' + action + id

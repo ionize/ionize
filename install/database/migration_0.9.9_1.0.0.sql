@@ -10,8 +10,8 @@ ALTER TABLE media ADD provider varchar(50) NOT NULL DEFAULT  '';
 
 CREATE TABLE api_key (
     id int(11) NOT NULL AUTO_INCREMENT,
-    `key` varchar(40) NOT NULL,
-    `level` int(2) NOT NULL,
+    key varchar(40) NOT NULL,
+    level int(2) NOT NULL,
     ignore_limits tinyint(1) NOT NULL DEFAULT '0',
     is_private tinyint(1) NOT NULL DEFAULT '0',
     ip_addresses text,
@@ -54,6 +54,80 @@ INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');</query>
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');</query>
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
 INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
+
+
+
+-- User table
+create table if not exists user as select * from users;
+alter table user change id_group id_role int(11) unsigned not null;
+alter table user add primary key(id_user);
+alter table user modify id_user int(11) unsigned auto_increment;
+
+-- Role table
+create table if not exists role as select * from user_groups;
+alter table role change id_group id_role int(11) not null AUTO_INCREMENT PRIMARY KEY;
+alter table role change level role_level int(11);
+alter table role change slug role_code varchar(50);
+alter table role change group_name role_name varchar(100);
+alter table role change description role_description tinytext;
+
+
+-- Resource table
+CREATE TABLE if not exists resource (
+  id_resource int(11) NOT NULL AUTO_INCREMENT,
+  id_parent int(11) unsigned DEFAULT '0',
+  resource varchar(255) NOT NULL DEFAULT '',
+  actions varchar(1000) DEFAULT '',
+  title varchar(255) DEFAULT '',
+  description varchar(1000) DEFAULT '',
+  PRIMARY KEY (id_resource),
+  UNIQUE KEY resource_key (resource)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO resource (id_parent, resource, actions, title, description)
+VALUES
+     (0,'admin','','Backend login','Connect to ionize backend'),
+     (0,'admin/settings','','Settings',''),
+     (2,'admin/settings/ionize','','Ionize UI',''),
+     (2,'admin/settings/languages','','Languages Management',''),
+     (2,'admin/settings/users','create,edit,delete','Users',''),
+     (2,'admin/settings/themes','edit','Themes',''),
+     (2,'admin/settings/website','','Website settings',''),
+     (2,'admin/settings/technical','','Technical settings',''),
+     (0,'admin/menu','create,edit,delete','Menu',''),
+     (0,'admin/page','create,edit,delete','Page',''),
+     (10,'admin/page/media','link,unlink','Media',''),
+     (10,'admin/page/element','add','Content Element',''),
+     (10,'admin/page/article','add','Article',''),
+     (0,'admin/article','create,edit,delete,move,copy,duplicate','Article',''),
+     (14,'admin/article/media','link, unlink','Media',''),
+     (14,'admin/article/element','add','Content Element',''),
+     (0,'admin/modules','install','Modules',''),
+     (0,'admin/translations','','Translations',''),
+     (0,'admin/filemanager','upload,rename,delete,move','Filemanager',''),
+     (0,'admin/article/type','create,edit,delete','Article Type',''),
+     (0,'admin/element','create,edit,delete','Content Element',''),
+     (0,'admin/extend','create,edit,delete','Extend Fields',''),
+     (0,'admin/system','','System',''),
+     (23,'admin/system/diagnosis/info','','Diagnosis Informations',''),
+     (23,'admin/system/diagnosis/tools','','Diagnosis Tools',''),
+     (23,'admin/system/diagnosis/reports','','Diagnosis Reports',''),
+     (14,'admin/article/category','','Manage categories',''),
+     (2,'admin/settings/roles','create,edit,delete','Roles',''),
+     (2,'admin/settings/roles/permissions','','Roles Permissions','See Role\'s permissions');
+
+-- Rule table
+CREATE TABLE if not exists rule (
+  id_role int(11) NOT NULL,
+  resource varchar(255) NOT NULL DEFAULT '',
+  actions varchar(25) NOT NULL DEFAULT '',
+  permission smallint(1) DEFAULT NULL,
+  PRIMARY KEY (id_role,resource,actions)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO rule (id_role, resource, actions, permission)
+VALUES
+     (1,'all','',1);
 
 
 -- ALTER database ionize_099 default CHARACTER SET utf8 COLLATE utf8_general_ci;

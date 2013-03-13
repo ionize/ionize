@@ -41,6 +41,9 @@ namespace Ionize {
 		private static $installed_modules = NULL;
 
 
+		private static $resources = NULL;
+
+
 		// --------------------------------------------------------------------
 
 
@@ -57,12 +60,91 @@ namespace Ionize {
 		// --------------------------------------------------------------------
 
 
+		public static function get_module_config($module_folder)
+		{
+			$modules = static::get_modules();
+
+			if (isset($modules[ucfirst($module_folder)]))
+			{
+				return $modules[ucfirst($module_folder)];
+			}
+			return NULL;
+		}
+
+
+		// --------------------------------------------------------------------
+
+
+		public static function get_resources()
+		{
+			if ( is_null(static::$resources))
+			{
+				$resources = array();
+
+				$modules = static::get_installed_modules();
+
+				foreach($modules as $module_key => $module)
+				{
+					$module_key = strtolower($module_key);
+
+					$base_module_resource = 'module/' . $module_key;
+
+					// Basic Module resource (root)
+					$resources[] = array(
+						'id_resource' => $base_module_resource,
+						'id_parent' => '',
+						'resource' => $base_module_resource,
+						'actions' => '',
+						'title' => $module['name'],
+						'description' => '',
+					);
+
+					if (isset($module['resources']))
+					{
+						foreach($module['resources'] as $resource => $data)
+						{
+							$resources[] = array(
+								'id_resource' => $base_module_resource .'/' . $resource,
+								'id_parent' => ! empty($data['parent']) ? $base_module_resource .'/'.$data['parent'] : $base_module_resource,
+								'resource' => $base_module_resource .'/' . $resource,
+								'actions' => ! empty($data['actions']) ? $data['actions'] : '',
+								'title' => ! empty($data['title']) ? $data['title'] : '',
+								'description' => ! empty($data['description']) ? $data['description'] : $resource,
+							);
+						}
+					}
+				}
+
+				static::$resources = $resources;
+			}
+
+			return static::$resources;
+		}
+
+
+
+/*
+		public static function set_permissions()
+		{
+			$user = User()->get_user();
+
+			if ( ! is_null($user))
+			{
+				$modules = static::get_installed_modules();
+
+				log_message('error', print_r($modules, true));
+			}
+		}
+*/
+
+		// --------------------------------------------------------------------
+
+
 		/**
 		 * Set the permissions through the Authority class
 		 *
 		 * @param string $role_code
 		 *
-		 */
 		public static function set_role_permissions($role_code = NULL)
 		{
 			if ( ! is_null($role_code))
@@ -100,6 +182,7 @@ namespace Ionize {
 				}
 			}
 		}
+		 */
 
 
 		// --------------------------------------------------------------------
@@ -152,8 +235,8 @@ namespace Ionize {
 										static::$modules = array();
 
 									static::$modules[$folder_name] = $config;
-									unset($config);
 								}
+								unset($config);
 							}
 						}
 					}
@@ -207,9 +290,9 @@ namespace Ionize {
 namespace {
 
 	/**
-	 * Returns the authentication object, short for User::get_instance().
+	 * Returns the authentication object, short for Modules::get_instance().
 	 *
-	 * @return Ionize\User
+	 * @return Ionize\Modules
 	 */
 	function Modules()
 	{

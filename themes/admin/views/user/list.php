@@ -75,7 +75,7 @@
                         <a class="icon mail" data-email="<?php echo $user['email'] ?>"></a>
                     </td>
 					<td>
-						<?php if(User()->getId() != $user['id_user'] && Authority::can('delete', 'admin/settings/users')) :?>
+						<?php if(User()->getId() != $user['id_user'] && Authority::can('delete', 'admin/user')) :?>
 							<a class="icon delete" data-id="<?php echo $user['id_user'] ?>"></a>
 						<?php endif; ?>
 					</td>

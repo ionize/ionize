@@ -40,6 +40,8 @@ class MY_Controller extends CI_Controller
 	protected $context_tag = 'ion';
 
 
+	public $xhr_protected = FALSE;
+
 	// ------------------------------------------------------------------------
 
 
@@ -132,6 +134,8 @@ class MY_Controller extends CI_Controller
      */
     public function output($view)
     {
+		$this->xhr_protect();
+
     	// Unique ID, useful for DOM Element displayed in windows.
     	$this->template['UNIQ'] = (uniqid());
 
@@ -157,11 +161,6 @@ class MY_Controller extends CI_Controller
 	public function is_xhr()
 	{
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-	}
-
-	public function get_uri()
-	{
-		return $this->uri->uri_string();
 	}
 
 
@@ -198,11 +197,15 @@ class MY_Controller extends CI_Controller
 			foreach($config_files as $file)
 			{
 				include($file);
-				
+
 				if ( isset($config))
 				{
+					// log_message('error', print_r($config, true));
 					foreach($config as $k=>$v)
+					{
+//						log_message('error', $k);
 						$this->config->set_item($k, $v);
+					}
 	
 					unset($config);
 				}
@@ -231,7 +234,21 @@ class MY_Controller extends CI_Controller
 		
 		die();
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	public  function xhr_protect(){}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function disable_xhr_protection()
+	{
+		$this->xhr_protected = FALSE;
+	}
 } 
 // End MY_Controller
 
@@ -388,10 +405,10 @@ class Base_Controller extends MY_Controller
 		$this->get_modules_config();
 
 		// Add path to installed modules
-		require(APPPATH.'config/modules.php');
-		$installed_modules = $modules;
+		$installed_modules = Modules()->get_installed_modules();
+
 		foreach($installed_modules as $module)
-			Finder::add_path(MODPATH.$module.'/');
+			if (isset($module['folder'])) Finder::add_path(MODPATH.$module['folder'].'/');
 
 		// Set the current theme
 		Theme::set_theme(Settings::get('theme'));
@@ -465,9 +482,12 @@ class Base_Controller extends MY_Controller
 		// Modules static translations
 		foreach($installed_modules as $module)
 		{
-			// Languages files : Including. Can be empty
-			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
-			array_push($lang_files, $lang_file);
+			if (isset($module['folder']))
+			{
+				// Languages files : Including. Can be empty
+				$lang_file = MODPATH.$module['folder'].'/language/'.Settings::get_lang().'/'.strtolower($module['folder']).'_lang.php';
+				array_push($lang_files, $lang_file);
+			}
 		}
 
 		// Load all modules lang files
@@ -568,6 +588,8 @@ class MY_Admin extends MY_Controller
 	public $modules_addons = array();
 
 
+	public $xhr_protected = TRUE;
+
 	// ------------------------------------------------------------------------
 
 
@@ -579,7 +601,7 @@ class MY_Admin extends MY_Controller
     {
         parent::__construct();
 
-		$this->load->helper('module_helper');	
+		$this->load->helper('module_helper');
 		
 		// Redirect the not authorized user to the login panel. See /application/config/user.php
 		User()->restrict_type_redirect = array(
@@ -608,11 +630,12 @@ class MY_Admin extends MY_Controller
 		// $this->lang->load('filemanager', Settings::get_lang());
 
 		// Modules Application config
-		$this->get_modules_config();
+		// $this->get_modules_config();
 
 		// Modules Permissions
-		$role = User()->get_role();
-		Modules()->set_role_permissions($role['role_code']);
+		// $role = User()->get_role();
+		// Modules()->set_role_permissions($role['role_code']);
+		// Modules()->set_permissions();
 
 		// Modules translation files
 		$modules = array();
@@ -878,10 +901,45 @@ class MY_Admin extends MY_Controller
 			'_ci_return' => TRUE
 		));
 	}
+
+
+	/**
+	 * Protects against direct access to backend controllers
+	 * which must be loaded through XHR
+	 *
+	 */
+	public  function xhr_protect()
+	{
+		if ($this->is_xhr() != $this->xhr_protected)
+		{
+			log_message('error', 'Error : No XHR access : ' . $this->uri->uri_string());
+			redirect(config_item('admin_url'));
+		}
+	}
+
 }
 
 
 // ------------------------------------------------------------------------
+
+class MY_Module extends MY_Controller
+{
+	/**
+	 * Constructor
+	 *
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+
+		$config_items = Modules()->get_module_config($this->uri->segment(1));
+
+		foreach($config_items as $item => $value)
+		{
+			$this->config->set_item($item, $value);
+		}
+	}
+}
 
 
 /**

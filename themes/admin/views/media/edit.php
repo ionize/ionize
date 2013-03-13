@@ -103,7 +103,7 @@ if($type == 'picture')
 				<?php if ( ! is_null($pictureSize)) :?>
 					<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
 					<br />
-					<a id="imageCropLink<?php echo $id_media; ?>" class="light button white mt10">
+					<a id="imageCropLink<?php echo $id_media; ?>" class="light button mt10">
 						<i class="icon-crop"></i>
 						<?php echo lang('ionize_label_media_crop_picture'); ?>
 					</a>

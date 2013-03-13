@@ -34,6 +34,9 @@ class Desktop extends MY_Admin
 
 	public function index()
 	{
+		// Disable xhr protection on index : let the desktop load
+		$this->disable_xhr_protection();
+
 		$modules = array();
 		include APPPATH . 'config/modules.php';
 		$this->template['modules'] = $modules;
