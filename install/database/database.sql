@@ -580,9 +580,9 @@ INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, d
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (85,70,'admin/article/element','add','Content Element','Article > Content Element');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (86,70,'admin/article/category','','Manage categories','Article > Categories');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (100,NULL,'admin/tree','','Tree','');
-INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (101,100,'admin/tree/menu','add_page,edit','','');
-INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (102,100,'admin/tree/page','status,add_page,add_article,order','','');
-INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (103,100,'admin/tree/article','unlink,status,move,copy,order','','');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (101,100,'admin/tree/menu','add_page,edit','Menus','');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (102,100,'admin/tree/page','status,add_page,add_article,order','Pages','');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (103,100,'admin/tree/article','unlink,status,move,copy,order','Articles','');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (120,NULL,'admin/article/type','create,edit,delete','Article Type','Article types');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (150,NULL,'admin/modules','install','Modules','Modules');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (151,150,'admin/modules/permissions','','Set Permissions','Modules > Permissions');
