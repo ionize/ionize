@@ -11,13 +11,16 @@
  */
 ?>
 
-
 	<p class="h20 mb20">
 		<a class="button light left" id="backToRoleListButton">
 			<i class="icon-back"></i><?php echo lang('ionize_label_back_to_role_list'); ?>
 		</a>
 
-		<?php if ( Authority::can('edit', 'admin/role')) :?>
+		<?php if (
+			Authority::can('edit', 'admin/role') OR
+			Authority::can('access', 'admin/modules/permissions') OR
+			Authority::can('access', 'admin/role/permissions')
+		) :?>
 			<a class="button green right saveRoleButton" id="saveRoleButton">
 				<?php echo lang('ionize_button_save'); ?>
 			</a>
@@ -36,9 +39,9 @@
 				<label for="role_code"><?php echo lang('ionize_label_role_code'); ?></label>
 			</dt>
 			<dd>
-				<input id="role_code" name="role_code" class="inputtext w150 left required" type="text" value="<?php echo $role['role_code']; ?>" />
+				<input id="role_code" name="role_code" class="inputtext w150 left required" <?php if ( ! Authority::can('edit', 'admin/role')) :?> disabled="disabled" <?php endif ;?>type="text" value="<?php echo $role['role_code']; ?>" />
                 <label for="role_name" class="left ml20"><?php echo lang('ionize_label_role_name'); ?></label>
-                <input id="role_name" name="role_name" class="inputtext left w150 required" type="text" value="<?php echo $role['role_name']; ?>" />
+                <input id="role_name" name="role_name" class="inputtext left w150 required" <?php if ( ! Authority::can('edit', 'admin/role')) :?> disabled="disabled" <?php endif ;?>type="text" value="<?php echo $role['role_name']; ?>" />
 			</dd>
 		</dl>
 
@@ -49,7 +52,7 @@
 				<label for="role_description"><?php echo lang('ionize_label_description'); ?></label>
 			</dt>
 			<dd>
-				<textarea class="textarea autogrow" id="role_description" name="role_description"><?php echo $role['role_description']; ?></textarea>
+				<textarea class="textarea autogrow" id="role_description" name="role_description" <?php if ( ! Authority::can('edit', 'admin/role')) :?> disabled="disabled" <?php endif ;?>><?php echo $role['role_description']; ?></textarea>
 			</dd>
 		</dl>
 
@@ -65,7 +68,7 @@
                 <label for="role_level" title="<?php echo $str_roles ?>"><?php echo lang('ionize_label_role_level'); ?></label>
             </dt>
             <dd>
-                <input type="text" class="inputtext w50 required left mr15" name="role_level" id="role_level" value="<?php echo $role['role_level']; ?>"/>
+                <input type="text" class="inputtext w50 required left mr15" <?php if ( ! Authority::can('edit', 'admin/role')) :?> disabled="disabled" <?php endif ;?> name="role_level" id="role_level" value="<?php echo $role['role_level']; ?>"/>
             </dd>
         </dl>
 
@@ -120,7 +123,11 @@
 		<?php endif;?>
 
 
-		<?php if ( Authority::can('edit', 'admin/role')) :?>
+		<?php if (
+			Authority::can('edit', 'admin/role') OR
+			Authority::can('access', 'admin/modules/permissions') OR
+			Authority::can('access', 'admin/role/permissions')
+		) :?>
 
 			<a class="button green right saveRoleButton" id="saveRoleButton">
 				<?php echo lang('ionize_button_save'); ?>
@@ -143,7 +150,11 @@
             }
         });
 
-		<?php if ( Authority::can('edit', 'admin/role')) :?>
+		<?php if (
+			Authority::can('edit', 'admin/role') OR
+			Authority::can('access', 'admin/modules/permissions') OR
+			Authority::can('access', 'admin/role/permissions')
+		) :?>
 			$$('.saveRoleButton').each(function(item)
 			{
 				item.addEvent('click', function()
@@ -207,23 +218,25 @@
 					}
 			);
 
+		<?php endif;?>
+
+		<?php if ( Authority::can('access', 'admin/modules/permissions')) :?>
+
 			var modRules = new ION.PermissionTree(
 				'modulesRulesContainer',
 				<?php echo $json_modules_resources ?>,
-					{
-						'key': 'id_resource',
-						'data': [
-							{'key':'resource', 'as':'resource'},
-							{'key':'title', 'as':'title'},
-							{'key':'description', 'as':'description'},
-							{'key':'actions', 'as':'actions'}
-						],
-						'rules' : <?php echo $json_rules ?>
-					}
+				{
+					'key': 'id_resource',
+					'data': [
+						{'key':'resource', 'as':'resource'},
+						{'key':'title', 'as':'title'},
+						{'key':'description', 'as':'description'},
+						{'key':'actions', 'as':'actions'}
+					],
+					'rules' : <?php echo $json_rules ?>
+				}
 			);
 
-
-			<?php endif;?>
+		<?php endif;?>
 
 	</script>
-

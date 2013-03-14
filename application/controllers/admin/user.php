@@ -151,7 +151,7 @@ class User extends My_Admin
 	 * Edit one user
 	 *
 	 */
-	function edit()
+	public function edit()
 	{
 		$id_user = $this->input->post('id_user');
 
@@ -281,6 +281,23 @@ class User extends My_Admin
 			}
 		}
 		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_rules()
+	{
+		$rules = Authority::get_rules_array();
+
+		if ($this->is_xhr())
+		{
+			$data = array(
+				'rules' => $rules
+			);
+			$this->xhr_output($data);
+		}
 	}
 
 

@@ -1086,6 +1086,7 @@ $lang['ionize_label_permissions_custom'] = 'Custom';
 $lang['ionize_label_allowed_resources'] = 'Allowed';
 $lang['ionize_label_allow'] = 'Allow';
 $lang['ionize_label_deny'] = 'Deny';
+$lang['ionize_label_partial_permission'] = 'partial';
 $lang['ionize_label_permission_access'] = 'Access';
 $lang['ionize_label_permission_edit'] = 'Edit';
 $lang['ionize_label_permission_save'] = 'Save';

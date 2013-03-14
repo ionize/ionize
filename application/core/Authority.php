@@ -30,6 +30,9 @@ class Authority extends Authority\Ability {
 	private static $has_all = FALSE;
 
 
+	/**
+	 * @param $user
+	 */
 	public static function initialize($user)
     {
 		log_message('debug', "Authority Class Initialized");

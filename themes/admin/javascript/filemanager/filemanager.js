@@ -104,8 +104,8 @@ var Filemanager = new Class({
 		fill: {}                          // invoked after the fill operation has completed
 	},
 
-	initialize: function(options) {
-
+	initialize: function(options)
+	{
 		this.options.mkServerRequestURL = this.mkServerRequestURL;
 
 		this.setOptions(options);
@@ -2041,7 +2041,8 @@ var Filemanager = new Class({
 		this.browser.empty();
 
 		// Change the FilemanagerUpload directory data : For upload
-		this.filemanagerUpload.setVar('directory', (this.CurrentDir) ? this.CurrentDir.path : '/');
+		if (this.filemanagerUpload)
+			this.filemanagerUpload.setVar('directory', (this.CurrentDir) ? this.CurrentDir.path : '/');
 
 		// Adding the thumbnail list in the preview panel: blow away any pre-existing list now, as we'll generate a new one now:
 		this.dir_filelist.empty();

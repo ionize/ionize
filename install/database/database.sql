@@ -408,7 +408,7 @@ CREATE TABLE IF NOT EXISTS page_article (
 
 
 
-CREATE TABLE IF NOT EXISTS page_user_groups (
+CREATE TABLE IF NOT EXISTS page_role (
   id_page int(11) UNSIGNED NOT NULL default 0,
   ig_group smallint(4) UNSIGNED NOT NULL default 0,
   PRIMARY KEY  (id_page,ig_group)
@@ -443,7 +443,34 @@ CREATE TABLE IF NOT EXISTS page_media (
   PRIMARY KEY  (id_page,id_media)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE if not exists resource (
+  id_resource int(11) NOT NULL AUTO_INCREMENT,
+  id_parent int(11) unsigned DEFAULT '0',
+  resource varchar(255) NOT NULL DEFAULT '',
+  actions varchar(500) DEFAULT '',
+  title varchar(255) DEFAULT '',
+  description varchar(1000) DEFAULT '',
+  PRIMARY KEY (id_resource),
+  UNIQUE KEY resource_key (resource)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS role (
+  id_role smallint(4) UNSIGNED NOT NULL auto_increment,
+  level int(11) default NULL,
+  role_code varchar(25) collate utf8_unicode_ci NOT NULL,
+  role_name varchar(100) collate utf8_unicode_ci NOT NULL,
+  role_description tinytext collate utf8_unicode_ci,
+  PRIMARY KEY (id_role),
+  UNIQUE KEY role_code (role_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
+
+CREATE TABLE if not exists rule (
+  id_role int(11) NOT NULL,
+  resource varchar(255) NOT NULL DEFAULT '',
+  actions varchar(500) NOT NULL DEFAULT '',
+  permission smallint(1) DEFAULT NULL,
+  PRIMARY KEY (id_role,resource,actions)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS setting (
   id_setting int(11) UNSIGNED NOT NULL auto_increment,
@@ -519,27 +546,62 @@ CREATE TABLE IF NOT EXISTS users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1; 
 
 
-CREATE TABLE IF NOT EXISTS user_groups (
-  id_group smallint(4) UNSIGNED NOT NULL auto_increment,
-  level int(11) default NULL,
-  slug varchar(25) collate utf8_unicode_ci NOT NULL,
-  group_name varchar(100) collate utf8_unicode_ci NOT NULL,
-  description tinytext collate utf8_unicode_ci,
-  PRIMARY KEY (id_group),
-  UNIQUE KEY slug (slug)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
 
 TRUNCATE TABLE login_tracker;
 
-INSERT IGNORE INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
-INSERT IGNORE INTO user_groups VALUES (2, 5000, 'admins', 'Admins', NULL);
-INSERT IGNORE INTO user_groups VALUES (3, 1000, 'editors', 'Editors', NULL);
-INSERT IGNORE INTO user_groups VALUES (4, 100, 'users', 'Users', NULL);
-INSERT IGNORE INTO user_groups VALUES (5, 50, 'pending', 'Pending', NULL);
-INSERT IGNORE INTO user_groups VALUES (6, 10, 'guests', 'Guests', NULL);
-INSERT IGNORE INTO user_groups VALUES (7, -10, 'banned', 'Banned', NULL);
-INSERT IGNORE INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
+INSERT IGNORE INTO role VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
+INSERT IGNORE INTO role VALUES (2, 5000, 'admins', 'Admins', NULL);
+INSERT IGNORE INTO role VALUES (3, 1000, 'editors', 'Editors', NULL);
+INSERT IGNORE INTO role VALUES (4, 100, 'users', 'Users', NULL);
+INSERT IGNORE INTO role VALUES (5, 50, 'pending', 'Pending', NULL);
+INSERT IGNORE INTO role VALUES (6, 10, 'guests', 'Guests', NULL);
+INSERT IGNORE INTO role VALUES (7, -10, 'banned', 'Banned', NULL);
+INSERT IGNORE INTO role VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
+
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (1,NULL,'admin','','Backend login','Connect to ionize backend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (10,NULL,'admin/menu','create,edit,delete','Menu','Menus');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (20,NULL,'admin/translations','','Translations','Translations');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (41,40,'admin/page/article','add','Article','Page > Article');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (42,40,'admin/page/element','add','Content Element','Page > Content Element');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (50,40,'admin/page/media','','Media','Page > Media');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (51,50,'admin/page/media/picture','link,unlink, edit','Pictures','Page > Media > Pictures');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (52,50,'admin/page/media/video','link,unlink, edit','Videos','Page > Media > Videos');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (53,50,'admin/page/media/music','link,unlink, edit','Music','Page > Media > Music');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (54,50,'admin/page/media/file','link,unlink, edit','Files','Page > Media > Files');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (70,NULL,'admin/article','create,edit,delete,move,copy,duplicate','Article','Article');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (80,70,'admin/article/media','','Media','Article > Media');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (81,80,'admin/article/media/picture','link,unlink, edit','Pictures','Article > Media > Pictures');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (82,80,'admin/article/media/video','link,unlink,edit','Videos','Article > Media > Videos');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (83,80,'admin/article/media/music','link,unlink,edit','Music','Article > Media > Music');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (84,80,'admin/article/media/file','link,unlink,edit','Files','Article > Media > Files');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (85,70,'admin/article/element','add','Content Element','Article > Content Element');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (86,70,'admin/article/category','','Manage categories','Article > Categories');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (120,NULL,'admin/article/type','create,edit,delete','Article Type','Article types');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (150,NULL,'admin/modules','install','Modules','Modules');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (151,150,'admin/modules/permissions','','Set Permissions','Modules > Permissions');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (180,NULL,'admin/element','create,edit,delete','Content Element','Content Elements');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (210,NULL,'admin/extend','create,edit,delete','Extend Fields','Extend Fields');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (240,NULL,'admin/tools','','Tools','Tools');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (241,240,'admin/tools/google_analytics','','Google Analytics','Tools > Google Analytics');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (250,240,'admin/tools/system','','System Diagnosis','Tools > System');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (251,250,'admin/tools/system/information','','Information','Tools > System > Information');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (252,250,'admin/tools/system/repair','','Repair tools','Tools > System > Repair');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (253,250,'admin/tools/system/report','','Reports','Tools > System > Reports');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (270,NULL,'admin/settings','','Settings','Settings');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (271,270,'admin/settings/ionize','','Ionize UI','Settings > UI Settings');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (272,270,'admin/settings/languages','','Languages Management','Settings > Languages');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (273,270,'admin/settings/themes','edit','Themes','Settings > Themes');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (274,270,'admin/settings/website','','Website settings','Settings > Website');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (275,270,'admin/settings/technical','','Technical settings','Settings > Technical');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (300,NULL,'admin/users_roles','','Users & Roles','Users & Roles');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (301,300,'admin/user','create,edit,delete','Users','Users');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');
+
+
 
 DELETE FROM setting WHERE name='cache';
 DELETE FROM setting WHERE name='cache_time';

@@ -1,9 +1,34 @@
+<?php
+/**
+ * Dashboard
+ *
+ * Receives vars :
+ * $modules :				Installed modules to which the user has access
+ * $last_articles :			Last 10 edited / created articles
+ * $orphan_pages : 			Orphan pages
+ * $orphan_articles : 		Orphan articles
+ * $users : 				Users list
+ * $last_registered_users : Last 10 registered	Users list
+ *
+ */
+
+
+
+?>
+
+<script type="text/javascript">
+
+
+	// ION.Authority.can('do things', 'bar');
+
+</script>
+
 <div id="maincolumn">
 
 	<div class="row">
-		<div id="coreDesktopIcons" class="desktopBloc col2">
+		<div id="coreDesktopIcons" class="col<?php if ( ! empty($modules)) :?> col2<?php endif;?>">
 
-			<div class="desktopBlocContent">
+			<div class="desktopBloc">
 				<h2>Shortcuts</h2>
 
 				<?php if(Authority::can('create', 'admin/page')) :?>
@@ -58,25 +83,17 @@
 
 		<?php if ( ! empty($modules)) :?>
 
-			<div class="desktopBloc col2">
-				<div class="desktopBlocContent">
+			<div class="col col2">
+				<div class="desktopBloc">
 
 					<h2><?php echo lang('ionize_menu_modules'); ?></h2>
 
-					<?php
-						$modules = Modules()->get_installed_modules();
-					?>
-
 					<?php foreach($modules as $module) :?>
 
-						<?php if($module['has_admin'] == TRUE && Authority::can('access', 'module/'.$module['key'])) :?>
-
-							<div class="desktopIcon desktopModuleIcon" data-url="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" data-title="<?php echo $module['name']; ?>">
-								<img src="<?php echo base_url(); ?>modules/<?php echo $module['folder']; ?>/assets/images/icon_48_module.png" alt="<?php echo $module['description']; ?>" />
-								<p><a><?php echo $module['name']; ?></a></p>
-							</div>
-
-						<?php endif ;?>
+						<div class="desktopIcon desktopModuleIcon" data-url="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" data-title="<?php echo $module['name']; ?>">
+							<img src="<?php echo base_url(); ?>modules/<?php echo $module['folder']; ?>/assets/images/icon_48_module.png" alt="<?php echo $module['description']; ?>" />
+							<p><a><?php echo $module['name']; ?></a></p>
+						</div>
 
 					<?php endforeach ;?>
 				</div>
@@ -88,8 +105,8 @@
 
 	<?php if (Settings::get('enable_backend_tracker') == '1') :?>
 		<div class="row mt10">
-			<div class="desktopBloc">
-        		<div class="desktopBlocContent">
+			<div class="col">
+        		<div class="desktopBloc">
                     <h2><?php echo lang('ionize_dashboard_title_current_connected_users'); ?></h2>
                     <div class="pb15"  id="trackerCurrentConnectedUsers"></div>
 				</div>
@@ -97,11 +114,11 @@
 		</div>
 	<?php endif; ?>
 
-	<div class="row mt10">
+	<div class="row">
 
-		<div class="desktopBloc">
+		<div class="col">
 
-			<div class="desktopBlocContent">
+			<div class="desktopBloc">
 
 				<div id="infos">
 

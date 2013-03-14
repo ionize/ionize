@@ -70,6 +70,15 @@ class Rule {
         return (isset($this->_callback)) ? $this->_callback($resource) : true;
     }
 
+	public function to_array()
+	{
+		return array(
+			'allowed' => $this->_allowed,
+			'action' => $this->_action,
+			'resource' => $this->_resource,
+		);
+	}
+
     // Allow callbacks to be called
     public function __call($method, $args)
     {

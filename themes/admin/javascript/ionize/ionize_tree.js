@@ -142,7 +142,6 @@ ION.PermissionTree = new Class({
 	enhanceTree:function()
 	{
 		var lis = this.tree.getElements('li');
-		var self = this;
 
 		lis.each(function(li)
 		{
@@ -168,14 +167,34 @@ ION.PermissionTree = new Class({
 					pm.destroy();
 				}
 			}
+			// Get LI children to add "partial rights" if some aren't checked
+			var cb = li.getElement('input[type=checkbox]');
+			if (cb.getProperty('checked') == true)
+			{
+				var cbs = li.getElements('input[type=checkbox]');
+				var partial = false;
+				cbs.each(function(cb)
+				{
+					if (partial == false)
+					{
+						if (cb.getProperty('checked') != true)
+						{
+							var a = li.getElement('label a');
+							new Element('span', {'class':'lite'}).set('text', ' (' + Lang.get('ionize_label_partial_permission') + ')').inject(a, 'bottom');
+							partial = true;
+						}
+					}
+				});
+			}
+
 		});
 	},
 
 	create_resource_li:function(container)
 	{
 		var id = container.getAttribute('data-id');
-console.log();
-		var a = new Element('a', {'text': container.getAttribute('data-title'), 'title':container.getAttribute('data-resource')});
+
+		var a = new Element('a', {'text': container.getAttribute('data-title'), 'title':'action:access, resource:' + container.getAttribute('data-resource')});
 
 		var label = new Element('label', {
 			'for':'rule' + id
@@ -218,7 +237,7 @@ console.log();
 			var li = new Element('li',{'data-id':'rule-' + action + id, 'class':'ml16'});
 			var spIcon = new Element('div', {'class':'tree-img line node'});
 			action = String.from(action).trim();
-			var a = new Element('a', {'text': action.capitalize()});
+			var a = new Element('a', {'text': action.capitalize(), 'title':'action:' + action + ', resource:' + container.getAttribute('data-resource')});
 
 			var label = new Element('label', {
 				'for':'rule-' + action + id

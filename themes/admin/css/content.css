@@ -982,15 +982,26 @@ div.translation {
 .row {
 	clear:both;
 	overflow: hidden;
+	margin-bottom: 12px;
+}
+.col {
+
+}
+.col.col2{
+	width: 49%;
+	margin-right: 2%;
+	float: left;
+}
+.col.col2:last-child{
+	margin-right: 0;
 }
 .desktopBloc{
-	background:url(/themes/admin/images/bg-gray-light.png);
-	border:solid 1px #e5e5e5;
-	margin-right: 2%;
+	background: url(/themes/admin/images/bg-gray-light.png);
+	border: solid 1px #e5e5e5;
 	border-radius: 4px;
 	overflow: hidden;
 }
-.desktopBloc .desktopBlocContent h2{
+.desktopBloc h2{
 	font-size: 16px;
 	color: #999;
 	font-weight: normal;
@@ -998,14 +1009,9 @@ div.translation {
 	margin: 0 ;
 	padding: 0 0 5px 0;
 }
-.desktopBloc .desktopBlocContent h3.toggler{
+.desktopBloc h3.toggler{
 }
-.desktopBloc.col2{
-	width: 47.23%;
-	margin-right: 2%;
-	float: left;
-}
-.desktopBloc .desktopBlocContent{
+.desktopBloc {
 	padding:8px 10px 10px 10px;
 	overflow: hidden;
 }

@@ -33,6 +33,10 @@ var IonizeMediaManager = new Class(
 	    standalone:     false
     },
 
+	/**
+	 *
+	 * @param options
+	 */
 	initialize: function(options)
 	{
 		this.setOptions(options);
@@ -82,19 +86,26 @@ var IonizeMediaManager = new Class(
 			});
 		}
 	},
-	
+
+
+	/**
+	 *
+	 * @param parent
+	 * @param id_parent
+	 */
 	initParent: function(parent, id_parent)
 	{
 		this.parent = parent;
 		this.idParent = id_parent;
 	},
 	
+
 	/**
 	 * Adds one medium to the current parent
 	 * Called by callback by the file / image manager
-	 * 
-	 * @param	string	Complete URL to the media. Slashes ('/') were replaced by ~ to permit CI management
 	 *
+	 * @param url       Complete URL to the media. Slashes ('/') were replaced by ~ to permit CI management
+	 * @param file
 	 */
 	addMedia:function(url, file) 
 	{
@@ -132,6 +143,8 @@ var IonizeMediaManager = new Class(
 	 * called after 'addMedia()' success
 	 * calls 'loadMediaList' with the correct media type returned by the XHR call
 	 *
+	 * @param responseJSON
+	 * @param responseText
 	 */
 	successAddMedia: function(responseJSON, responseText)
 	{
@@ -149,8 +162,7 @@ var IonizeMediaManager = new Class(
 	 * Loads a media list through XHR regarding its type
 	 * called after a medi list loading through 'loadMediaList'
 	 *
-	 * @param	string	Media type. Can be 'picture', 'music', 'video', 'file'
-	 *
+	 * @param type  Media type. Can be 'picture', 'music', 'video', 'file'
 	 */
 	loadMediaList: function(type)
 	{
@@ -172,10 +184,9 @@ var IonizeMediaManager = new Class(
 	 * Initiliazes the media list regarding to its type
 	 * called after a media list loading through 'loadMediaList'
 	 *
-	 * @param object	JSON response object
-	 * 					responseJSON.type : media type. Can be 'picture', 'video', 'music', 'file'
-	 * 					responseJSON.content : 
-	 *
+	 * @param responseJSON  JSON response object.
+	 *                      responseJSON.type : media type. Can be 'picture', 'video', 'music', 'file'
+	 * @param responseText
 	 */
 	completeLoadMediaList: function(responseJSON, responseText)
 	{
@@ -239,14 +250,13 @@ var IonizeMediaManager = new Class(
 	},
 
 
-	/** 
+	/**
 	 * Items list ordering
 	 * called on items sorting complete
 	 * calls the XHR server ordering method
 	 *
-	 * @param	string	Media type. Can be 'picture', 'video', 'music', 'file'
-	 * @param	string	new order as a string. coma separated
-	 *
+	 * @param type          Media type. Can be 'picture', 'video', 'music', 'file'
+	 * @param serialized    new order as a string. coma separated
 	 */
 	sortItemList: function(type, serialized) 
 	{
@@ -284,9 +294,10 @@ var IonizeMediaManager = new Class(
 	},
 
 
-
-	/** 
-	 * Called when one request fails
+	/**
+	 * On request fail
+	 *
+	 * @param xhr
 	 */
 	failure: function(xhr)
 	{
@@ -300,9 +311,8 @@ var IonizeMediaManager = new Class(
 	/**
 	 * Unlink one media from his parent
 	 *
-	 * @param	string	Media type
-	 * @param	string	Media ID
-	 *
+	 * @param type  Media type
+	 * @param id    Media ID
 	 */
 	detachMedia: function(type, id) 
 	{
@@ -325,9 +335,8 @@ var IonizeMediaManager = new Class(
 	/**
 	 * Unlink all media from a parent depending on the type
 	 *
-	 * @param	string	Media type. Can be 'picture', 'music', 'video', 'file'
-	 *
-	 */	
+	 * @param type  Media type. Can be 'picture', 'music', 'video', 'file'
+	 */
 	detachMediaByType: function(type)
 	{
 		// Show the spinner
@@ -356,9 +365,8 @@ var IonizeMediaManager = new Class(
 	/**
 	 * Dispose one HTMLDomElement
 	 *
-	 * @param	object	JSON XHR request answer
-	 * @param	object	Text XHR request answer
-	 *
+	 * @param responseJSON
+	 * @param responseText
 	 */
 	disposeMedia: function(responseJSON, responseText)
 	{
@@ -379,11 +387,11 @@ var IonizeMediaManager = new Class(
 	},
 
 
-	/** 
+	/**
 	 * Init thumbnails for one picture
 	 * to be called on pictures list
-	 * @param	string	picture ID
 	 *
+	 * @param id_picture
 	 */
 	initThumbs:function(id_picture) 
 	{
@@ -433,9 +441,10 @@ var IonizeMediaManager = new Class(
 	},
 	
 	
-	/** 
+	/**
 	 * Opens fileManager
 	 *
+	 * @param options
 	 */
 	toggleFileManager:function(options)
 	{
@@ -478,15 +487,15 @@ var IonizeMediaManager = new Class(
 
 			MUI.Windows.indexLevel = zidx + 100;						// Mocha window z-index
 
-			filemanager = new Filemanager({
+			var filemanager = new Filemanager({
 				url: admin_url + 'media/filemanager',
 				assetsUrl: theme_url + 'javascript/filemanager/assets',
 				standalone: false,
 				createFolders: true,
-				destroy: true,
-				rename: true,
-				upload: true,
-				move_or_copy: true,
+				destroy: ION.Authority.can('delete', 'admin/filemanager'),
+				rename: ION.Authority.can('rename', 'admin/filemanager'),
+				upload: ION.Authority.can('upload', 'admin/filemanager'),
+				move_or_copy: ION.Authority.can('move', 'admin/filemanager'),
 				resizeOnUpload: self.options.resizeOnUpload,
 				uploadAutostart: self.options.uploadAutostart,
 				uploadMode: self.options.uploadMode,
@@ -562,55 +571,8 @@ ION.append({
 				// Hides the filemanager
 				this.filemanager.hide();
 			}
-/*			,
-			onResize: function()
-			{
-				var fm = new Hash.Cookie('fm', {duration: 365});
-				fm.erase();
-				Object.append(fm, this.el.windowEl.getCoordinates());
-			}
-*/
 		};
 		
 		return options;
 	}
-/*
-
-
-	openFilemanager: function(callback)
-	{
-		var self = this;
-
-		var xhr = new Request.JSON(
-		{
-			url: this.adminUrl + 'media/get_tokken',
-			method: 'post',
-			onSuccess: function(responseJSON, responseText)
-			{
-				// Open the filemanager if the tokken isn't empty
-				if (responseJSON && responseJSON.tokken != '')
-				{
-				
-					filemanager = new FileManager({
-						baseURL: baseUrl,
-						url: adminUrl + 'media/filemanager',
-						assetBasePath: baseUrl + 'themes/admin/javascript/mootools-filemanager/Assets',
-						language: Lang.current,
-						selectable: true,
-						hideOnClick: true,
-						onComplete: complete,
-						'uploadAuthData': responseJSON.tokken
-					});
-				
-					// Display the filemanager
-					filemanager.show();
-				}
-				else
-				{
-					ION.notification('error', Lang.get('ionize_session_expired'));
-				}
-			}
-		}, self).send();
-	}
-*/
 });

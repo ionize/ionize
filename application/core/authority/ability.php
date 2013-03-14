@@ -36,6 +36,17 @@ abstract class Ability {
 		return static::$_rules;
 	}
 
+	public static function get_rules_array()
+	{
+		$array = array();
+		foreach(static::$_rules as $rule)
+		{
+			$rule = $rule->to_array();
+			$array[] = $rule;
+		}
+		return $array;
+	}
+
 	public static function initialize($user){}
 
 

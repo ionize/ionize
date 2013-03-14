@@ -51,9 +51,7 @@ class Role extends MY_Admin
 	 * Do nothing.
 	 *
 	 */
-	public function index()
-	{
-	}
+	public function index(){}
 
 
 	// ------------------------------------------------------------------------
@@ -92,17 +90,17 @@ class Role extends MY_Admin
 
 		// All Admin Resources
 		$resources = $this->resource_model->get_tree();
-		$this->template['json_resources'] = json_encode($resources, true);
+		$this->template['json_resources'] = json_encode($resources, TRUE);
 
 		// All Modules resources
 		$modules_resources = Modules()->get_resources();
 		$resources = $this->resource_model->build_resources_tree($modules_resources);
-		$this->template['json_modules_resources'] = json_encode($resources, true);
+		$this->template['json_modules_resources'] = json_encode($resources, TRUE);
 
 		// Role's permissions
 		$rules = $this->rule_model->get_list(array('id_role'=> $role['id_role']));
 		$this->template['has_all'] = $this->_has_all_permissions($rules);
-		$this->template['json_rules'] = json_encode($rules, true);
+		$this->template['json_rules'] = json_encode($rules, TRUE);
 
 		$this->output('role/edit');
 	}
@@ -140,28 +138,25 @@ class Role extends MY_Admin
 		else
 		{
 			// Save basics
-			$id_role = $this->role_model->save($this->input->post());
-
-			// Permissions
-			if (Authority::can('access', 'admin/role/permissions'))
+			if (Authority::can('edit', 'admin/role/permissions'))
 			{
-				$permission_level = $this->input->post('permission_level');
-
-				if ($permission_level)
-				{
-					// Delete all permissions and add 'all' one
-					if ($permission_level == 'all')
-					{
-						$this->rule_model->set_all_permissions($id_role);
-					}
-					// Save custom permissions
-					else
-					{
-						$rules = $this->input->post('rules');
-						$this->rule_model->save_rules($id_role, $rules, NULL);
-					}
-				}
+				$id_role = $this->role_model->save($this->input->post());
 			}
+			else
+				$id_role = $this->input->post('id_role');
+
+			// Only saves permissions if Role ID
+			if (
+				$id_role &&
+				(
+					Authority::can('access', 'admin/role/permissions') OR
+					Authority::can('access', 'admin/modules/permissions')
+				)
+			)
+			{
+				$this->_save_rules($id_role);
+			}
+
 
 			// Reload role
 			$this->_reload_role($id_role);
@@ -212,19 +207,63 @@ class Role extends MY_Admin
 	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Roles filter callback function
-	 *
-	 */
-	public function _filter_roles($row)
+	private function _save_rules($id_role)
 	{
-		return ($row['role_level'] <= $this->current_role['role_level']) ? true : false;
+		// Posted rules & permission level
+		$rules = $this->input->post('rules');
+		$permission_level = $this->input->post('permission_level');
+
+		// Admin Permissions
+		if (Authority::can('access', 'admin/role/permissions'))
+		{
+
+			if ($permission_level)
+			{
+				// Delete all permissions and add 'all' one
+				if ($permission_level == 'all')
+				{
+					$this->rule_model->set_all_permissions($id_role);
+				}
+				// Save custom permissions
+				else
+				{
+					$this->rule_model->save_rules($id_role, $rules, 'admin');
+				}
+			}
+		}
+
+		// Modules Permissions
+		if ($permission_level != 'all' && Authority::can('access', 'admin/modules/permissions'))
+		{
+			$this->rule_model->save_rules($id_role, $rules, 'module');
+		}
+
 	}
 
 
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Roles filter callback function
+	 * @param $row
+	 *
+	 * @return bool
+	 */
+	public function _filter_roles($row)
+	{
+		return ($row['role_level'] <= $this->current_role['role_level']) ? TRUE : FALSE;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $permissions
+	 *
+	 * @return bool
+	 */
 	private function _has_all_permissions($permissions)
 	{
 		if ( ! empty($permissions))
@@ -242,6 +281,10 @@ class Role extends MY_Admin
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Reloads the Role List
+	 *
+	 */
 	private function _reload_role_list()
 	{
 		// Save options : as callback
@@ -261,6 +304,11 @@ class Role extends MY_Admin
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Reloads one Role
+	 *
+	 * @param $id_role
+	 */
 	private function _reload_role($id_role)
 	{
 		// Save options : as callback
