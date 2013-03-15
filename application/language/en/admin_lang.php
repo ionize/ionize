@@ -45,6 +45,8 @@ $lang['ionize_dashboard_title_current_connected_users'] = 'Current connected use
 $lang['ionize_dashboard_title_last_registered_users'] = 'Last registered users';
 $lang['ionize_dashboard_title_orphan_pages'] = 'Orphan pages';
 $lang['ionize_dashboard_title_orphan_articles'] = 'Orphan articles';
+$lang['ionize_dashboard_title_users'] = 'Users';
+$lang['ionize_dashboard_title_content'] = 'Content';
 
 
 /*
@@ -259,8 +261,8 @@ $lang['ionize_label_has_url'] = 'Has URL';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_meta_keywords'] = 'Keywords';
 $lang['ionize_label_meta_description']= 'Description';
-$lang['ionize_label_created'] = 'Creation date';
-$lang['ionize_label_updated'] = 'Update date';
+$lang['ionize_label_created'] = 'Created';
+$lang['ionize_label_updated'] = 'Updated';
 $lang['ionize_label_publish_on'] = 'Publish';
 $lang['ionize_label_publish_off'] = 'Unpublish';
 $lang['ionize_label_permanent_url'] = 'Permanent URL';
@@ -675,7 +677,7 @@ $lang['ionize_label_appears'] = 'Display in nav';
 $lang['ionize_label_link'] = 'Link';
 $lang['ionize_label_pagination_nb'] = 'Articles / page';
 $lang['ionize_label_article_list_template'] = 'List view';
-$lang['ionize_label_page_delete_date'] = 'Page delete date';
+$lang['ionize_label_page_delete_date'] = 'Deleted';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Home page';
 $lang['ionize_help_home_page'] = 'Home page';
