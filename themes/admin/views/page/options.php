@@ -403,18 +403,21 @@
 		</div>
 
 
-
-		<!-- Access authorization -->
-		<h3 class="toggler"><?php echo lang('ionize_title_authorization'); ?></h3>
+		<!-- Permissions -->
+		<h3 class="toggler"><?php echo lang('ionize_title_permissions'); ?></h3>
 
 		<div class="element">
 			<dl class="small last">
 				<dt>
-					<label for="template"><?php echo lang('ionize_label_groups'); ?></label>
+					<label><?php echo lang('ionize_label_frontend'); ?></label>
 				</dt>
 				<dd>
-					<div id="groups">
-						<?php echo $groups; ?>
+					<div>
+						<?php foreach($roles as $role): ?>
+							<input id="role_<?php echo $role['id_role'] ?>" type="checkbox" name="frontend_roles[]" value="<?php echo $role['id_role'] ?>">
+							<label for="role_<?php echo $role['id_role'] ?>" title="<?php echo $role['role_description'] ?>"><a><?php echo $role['role_name'] ?></a></label>
+							<br/>
+						<?php endforeach;?>
 					</div>
 				</dd>
 			</dl>

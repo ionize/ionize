@@ -260,17 +260,21 @@ if ($tracker_title == '')
 						<li class="tab_page<?php if($language['def'] == '1') :?> dl<?php endif ;?>"rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
 					<?php endforeach ;?>
 
-					<?php if(Authority::can('access', 'admin/page/media/file')) :?>
-    					<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
-					<?php endif ;?>
-					<?php if(Authority::can('access', 'admin/page/media/music')) :?>
-						<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="musicTab"><a><?php echo lang('ionize_label_music'); ?></a></li>
-					<?php endif ;?>
-					<?php if(Authority::can('access', 'admin/page/media/video')) :?>
-						<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="videoTab"><a><?php echo lang('ionize_label_videos'); ?></a></li>
-					<?php endif ;?>
-					<?php if(Authority::can('access', 'admin/page/media/picture')) :?>
-						<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?php echo lang('ionize_label_pictures'); ?></a></li>
+					<?php if ( ! empty($id_page)) :?>
+
+						<?php if(Authority::can('access', 'admin/page/media/file')) :?>
+							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/page/media/music')) :?>
+							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="musicTab"><a><?php echo lang('ionize_label_music'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/page/media/video')) :?>
+							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="videoTab"><a><?php echo lang('ionize_label_videos'); ?></a></li>
+						<?php endif ;?>
+						<?php if(Authority::can('access', 'admin/page/media/picture')) :?>
+							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?php echo lang('ionize_label_pictures'); ?></a></li>
+						<?php endif ;?>
+
 					<?php endif ;?>
 
 				</ul>
@@ -504,117 +508,121 @@ if ($tracker_title == '')
 
 				<?php endforeach ;?>
 
-				<?php if(Authority::can('access', 'admin/page/media/file')) :?>
-					<!-- Files -->
-					<div class="tabcontent">
+				<?php if ( ! empty($id_page)) :?>
 
-						<p class="h30">
-							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-							<?php if(Authority::can('unlink', 'admin/page/media/file')) :?>
+					<?php if(Authority::can('access', 'admin/page/media/file')) :?>
+						<!-- Files -->
+						<div class="tabcontent">
 
-								<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
-									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
+							<p class="h30">
+								<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
+									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 								</a>
+								<?php if(Authority::can('unlink', 'admin/page/media/file')) :?>
 
-							<?php endif ;?>
-						</p>
-
-						<ul id="fileContainer" class="sortable-container">
-							<span><?php echo lang('ionize_message_no_file'); ?></span>
-						</ul>
-
-					</div>
-				<?php endif ;?>
-
-				<?php if(Authority::can('access', 'admin/page/media/music')) :?>
-					<!-- Music -->
-					<div class="tabcontent">
-
-						<p class="h30">
-							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-							<?php if(Authority::can('unlink', 'admin/page/media/music')) :?>
-
-								<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
-									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_musics'); ?>
-								</a>
-
-							<?php endif ;?>
-
-						</p>
-
-						<ul id="musicContainer" class="sortable-container">
-							<span><?php echo lang('ionize_message_no_music'); ?></span>
-						</ul>
-
-					</div>
-				<?php endif ;?>
-
-				<?php if(Authority::can('access', 'admin/page/media/video')) :?>
-					<!-- Videos -->
-					<div class="tabcontent">
-
-						<p class="h30">
-							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-
-							<?php if(Authority::can('unlink', 'admin/page/media/video')) :?>
-
-								<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
-									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_videos'); ?>
-								</a>
-							<?php endif ;?>
-
-						</p>
-
-						<?php if(Authority::can('link', 'admin/page/media/video')) :?>
-
-							<dl class="first">
-								<dt>
-									<label for="addVideo"><?php echo lang('ionize_label_add_video'); ?></label>
-								</dt>
-								<dd>
-									<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
-									<a id="btnAddVideo" class="left light button">
-										<i class="icon-plus"></i><?php echo lang('ionize_button_add_video'); ?>
+									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
+										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
 									</a>
-								</dd>
-							</dl>
 
-						<?php endif ;?>
+								<?php endif ;?>
+							</p>
 
-						<ul id="videoContainer" class="sortable-container">
-							<span><?php echo lang('ionize_message_no_video'); ?></span>
-						</ul>
+							<ul id="fileContainer" class="sortable-container">
+								<span><?php echo lang('ionize_message_no_file'); ?></span>
+							</ul>
 
-					</div>
-				<?php endif ;?>
+						</div>
+					<?php endif ;?>
 
-				<?php if(Authority::can('access', 'admin/page/media/picture')) :?>
-					<!-- Pictures -->
-					<div class="tabcontent">
+					<?php if(Authority::can('access', 'admin/page/media/music')) :?>
+						<!-- Music -->
+						<div class="tabcontent">
 
-						<p class="h30">
-							<a class="right light button pictures" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-							<?php if(Authority::can('unlink', 'admin/page/media/picture')) :?>
-								<a class="left light button delete" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
-									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_pictures'); ?>
+							<p class="h30">
+								<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
+									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 								</a>
+								<?php if(Authority::can('unlink', 'admin/page/media/music')) :?>
+
+									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
+										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_musics'); ?>
+									</a>
+
+								<?php endif ;?>
+
+							</p>
+
+							<ul id="musicContainer" class="sortable-container">
+								<span><?php echo lang('ionize_message_no_music'); ?></span>
+							</ul>
+
+						</div>
+					<?php endif ;?>
+
+					<?php if(Authority::can('access', 'admin/page/media/video')) :?>
+						<!-- Videos -->
+						<div class="tabcontent">
+
+							<p class="h30">
+								<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
+									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
+								</a>
+
+								<?php if(Authority::can('unlink', 'admin/page/media/video')) :?>
+
+									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
+										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_videos'); ?>
+									</a>
+								<?php endif ;?>
+
+							</p>
+
+							<?php if(Authority::can('link', 'admin/page/media/video')) :?>
+
+								<dl class="first">
+									<dt>
+										<label for="addVideo"><?php echo lang('ionize_label_add_video'); ?></label>
+									</dt>
+									<dd>
+										<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
+										<a id="btnAddVideo" class="left light button">
+											<i class="icon-plus"></i><?php echo lang('ionize_button_add_video'); ?>
+										</a>
+									</dd>
+								</dl>
+
 							<?php endif ;?>
 
-						</p>
+							<ul id="videoContainer" class="sortable-container">
+								<span><?php echo lang('ionize_message_no_video'); ?></span>
+							</ul>
 
-						<div id="pictureContainer" class="sortable-container">
-							<span><?php echo lang('ionize_message_no_picture'); ?></span>
 						</div>
+					<?php endif ;?>
 
-					</div>
+					<?php if(Authority::can('access', 'admin/page/media/picture')) :?>
+						<!-- Pictures -->
+						<div class="tabcontent">
+
+							<p class="h30">
+								<a class="right light button pictures" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
+									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
+								</a>
+								<?php if(Authority::can('unlink', 'admin/page/media/picture')) :?>
+									<a class="left light button delete" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
+										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_pictures'); ?>
+									</a>
+								<?php endif ;?>
+
+							</p>
+
+							<div id="pictureContainer" class="sortable-container">
+								<span><?php echo lang('ionize_message_no_picture'); ?></span>
+							</div>
+
+						</div>
+					<?php endif ;?>
+
 				<?php endif ;?>
 			</div>
 		</fieldset>

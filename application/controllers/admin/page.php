@@ -72,7 +72,8 @@ class Page extends MY_admin
 		$this->load->model('system_check_model', '', TRUE);
 		$this->load->model('url_model', '', TRUE);
 		$this->load->model('type_model', '', TRUE);
-		
+		$this->load->model('rule_model', '', TRUE);
+
 		// Libraries
 		$this->load->library('structure');
 
@@ -260,20 +261,11 @@ class Page extends MY_admin
 			}
 
 			// Roles
-			// $roles = $this->page_model->get_roles_select();
-			$roles = $this->role_model->get_list(array('role_level <=' => User()->get('role_level')));
+			$roles = $this->role_model->get_list(array(
+				'role_level <=' => User()->get('role_level'),
+				'role_level >=' => 100,
+			));
 			$this->template['roles'] = $roles;
-log_message('error', print_r($roles, true));
-
-			// $this->template['roles'] =	form_dropdown('roles[]', $roles, NULL, 'class="select" multiple="multiple"');
-
-
-//		$groups = $this->page_model->get_groups_select();
-			// $this->template['groups'] =	form_dropdown('groups[]', $groups, false, 'class="select" multiple="multiple"');
-//		$this->template['groups'] =	form_dropdown('id_group', $groups, FALSE, 'class="select"');
-
-
-
 
 			// Types
 			$types = $this->type_model->get_select('page', lang('ionize_select_no_type'));
@@ -446,6 +438,13 @@ log_message('error', print_r($roles, true));
 
 			$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get_by_id($id));
 			$page['menu'] = $this->menu_model->get($page['id_menu']);
+
+			// Rules
+			$this->rule_model->save_element_roles_rules(
+				'page',
+				$id,
+				$this->input->post('frontend_roles')
+			);
 
 			// Remove HTML tags from returned array
 			strip_html($page);

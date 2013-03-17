@@ -50,6 +50,33 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Returns array of Roles IDs which have access to this resource
+	 *
+	 * HERE
+	 * HERE
+	 *
+	 * @TODO : Be more detailed : Include actions.
+	 *
+	 * @param        $element
+	 * @param        $element_id
+	 * @param string $type
+	 * @param int    $permission
+	 */
+	public function get_element_role_ids($element, $element_id, $type='frontend', $permission=1)
+	{
+		$resource = $type . '/' . $element . '/' . $element_id;
+
+		$this->{$this->db_group}->where('resource', $resource);
+		$this->{$this->db_group}->where('permission', $permission);
+
+
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	public function format_rules($rules)
 	{
 		$data = array();
@@ -91,6 +118,78 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Saves rules for one element
+	 *
+	 * @TODO:	Include actions
+	 *
+	 * @param        $element
+	 * @param        $element_id
+	 * @param array  $role_ids
+	 * @param string $type
+	 */
+	public function save_element_roles_rules($element, $element_id, $role_ids = array(), $type='frontend')
+	{
+		$data = array();
+
+		if ( ! empty($role_ids))
+		{
+			foreach($role_ids as $id_role)
+			{
+				$data[] = array(
+					'id_role' => $id_role,
+					'resource' => $type . '/'.$element.'/' . $element_id,
+					'permission' => 1,
+				);
+			}
+		}
+		$this->delete_element_roles_rules($element, $element_id, $role_ids = array(), $type='frontend');
+
+		if ( ! empty($data))
+			$this->{$this->db_group}->insert_batch($this->get_table(), $data);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Deletes all rules concerning roles for one element
+	 *
+	 * @TODO: 	Exclude roles for which the current logged in user has not the right to define the rules.
+	 * 			-> All Roles with role_level > current connected user.
+	 *
+	 * @param        $element
+	 * @param        $element_id
+	 * @param array  $role_ids
+	 * @param string $type
+	 *
+	 * @return mixed
+	 */
+	public function delete_element_roles_rules($element, $element_id, $role_ids = array(), $type='frontend')
+	{
+		$resource = $type . '/' . $element . '/' . $element_id;
+
+		// Filter on roles
+		if ( ! empty($role_ids))
+			$this->{$this->db_group}->where_in('id_role', $role_ids);
+
+		$this->{$this->db_group}->where('resource', $resource);
+
+		return $this->{$this->db_group}->delete($this->get_table());
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Save admin & module rules.
+	 *
+	 * @param $id_role
+	 * @param $rules
+	 * @param $type
+	 */
 	public function save_rules($id_role, $rules, $type)
 	{
 		self::$ci->load->model('resource_model', '', TRUE);
