@@ -92,7 +92,7 @@ class Category_model extends Base_model
 		);
 
 		// Filter on published
-		$this->filter_on_published(self::$publish_filter, $lang);
+		$this->_filter_on_published(self::$publish_filter, $lang);
 
 		if ( ! is_null($id_page))
 			$this->{$this->db_group}->where('page_article.id_page', $id_page);
@@ -123,7 +123,7 @@ class Category_model extends Base_model
 	 * @param null $lang
 	 *
 	 */
-	protected function filter_on_published($on = TRUE, $lang = NULL)
+	protected function _filter_on_published($on = TRUE, $lang = NULL)
 	{
 		if ($on === TRUE)
 		{

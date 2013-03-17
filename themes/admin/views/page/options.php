@@ -273,7 +273,7 @@
 				<!-- Title -->
 				<div class="small optionInputTab">
 					<!-- Tabs -->
-					<div id="subnavTitleTab" class="mainTabs small gray">
+					<div id="subnavTitleTab" class="mainTabs small">
 						<ul class="tab-menu">
 							<?php foreach(Settings::get_languages() as $language) :?>
 							<li><a><?php echo lang('ionize_label_title'); ?> <?php echo ucfirst($language['lang']); ?></a></li>
@@ -358,7 +358,7 @@
 			<h4 class="help" title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
 
 			<div class="small optionInputTab">
-				<div id="metaDescriptionTab" class="mainTabs small gray">
+				<div id="metaDescriptionTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
 						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
@@ -381,7 +381,7 @@
 			<!-- Meta_Keywords -->
 			<h4 class="help" title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
 			<div class="small optionInputTab">
-				<div id="metaKeywordsTab" class="mainTabs small gray">
+				<div id="metaKeywordsTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
 						<li><a><?php echo ucfirst($language['lang']); ?></a></li>

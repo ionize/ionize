@@ -193,7 +193,7 @@ ION.append({
 				}
 	
 				// User notification
-				if (responseJSON && typeOf(responseJSON.message_type != 'null'))
+				if (responseJSON && responseJSON.message_type != undefined)
 				{
 					if (responseJSON.message_type != '')
 						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));

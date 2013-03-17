@@ -10,6 +10,11 @@
  */
 
 ?>
+<style type="text/css">
+	.textboxlist-bit-editable:after{
+		content: "<?php echo lang('ionize_help_tag_textbox') ?>";
+	}
+</style>
 
 <form name="articleOptionsForm" id="articleOptionsForm" method="post" action="<?php echo admin_url() . 'article/save_options'?>">
 
@@ -105,7 +110,76 @@
 				</dd>
 			</dl>
 
-			<!-- Categories -->
+			<!-- Parent -->
+			<?php if( ! empty($id_article)) :?>
+
+				<!-- Parent pages list -->
+				<dl class="small dropPageInArticle">
+					<dt>
+						<label for="parents" title="<?php echo lang('ionize_help_article_context'); ?>"><?php echo lang('ionize_label_parents'); ?></label>
+					</dt>
+					<dd>
+
+						<div id="parents">
+							<ul class="parent_list" id="parent_list">
+
+								<?php foreach ($pages_list as $page) :?>
+
+									<?php
+
+									$title = ($page['title'] != '') ? $page['title'] : $page['name'];
+
+									// All REL or ID which permit the DOM identification of one article MUST be written like this.
+									// $rel = $page['id_page']. '.' .$id_article;
+									?>
+
+									<li rel="<?php echo $page['id_page']; ?>.<?php echo $id_article; ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?php echo $title; ?></a></li>
+
+								<?php endforeach ;?>
+
+							</ul>
+							<!--
+										<input type="text" id="new_parent" class="inputtext w140 italic empty nofocus droppable" alt="<?php echo lang('ionize_label_drop_page_here'); ?>"></input>
+										-->
+						</div>
+					</dd>
+				</dl>
+
+			<?php endif ;?>
+
+
+			<div class="element-options-content">
+
+				<p><?php echo lang('ionize_label_tags'); ?></p>
+				<input type="text" name="tags" value="" id="tags" />
+
+				<p><?php echo lang('ionize_label_categories'); ?></p>
+
+				<div id="categories">
+					<?php echo $categories; ?>
+				</div>
+
+				<!-- Category create button -->
+				<a class="button light" onclick="javascript:ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})">
+					<i class="icon-plus"></i>
+					<?php echo lang('ionize_label_new_category'); ?>
+				</a>
+
+			</div>
+
+
+			<!-- Tags
+			<dl class="small">
+				<dt>
+					<label for="tags"><?php echo lang('ionize_label_tags'); ?></label>
+				</dt>
+				<dd>
+					<input type="text" name="tags" value="" id="tags" />
+				</dd>
+			</dl>
+			-->
+
+			<!-- Categories
 			<dl class="small">
 				<dt>
 					<label for="categories"><?php echo lang('ionize_label_categories'); ?></label>
@@ -115,7 +189,7 @@
 						<?php echo $categories; ?>
 					</div>
 
-					<!-- Category create button -->
+					<!-- Category create button
 					<a class="button light" onclick="javascript:ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})">
 						<i class="icon-plus"></i>
 						<?php echo lang('ionize_label_new_category'); ?>
@@ -123,76 +197,10 @@
 
 				</dd>
 			</dl>
+			-->
 
-			<!-- Existing Article -->
-			<?php if( ! empty($id_article)) :?>
-
-			<!-- Parent pages list -->
-			<dl class="small dropPageInArticle">
-				<dt>
-					<label for="parents" title="<?php echo lang('ionize_help_article_context'); ?>"><?php echo lang('ionize_label_parents'); ?></label>
-				</dt>
-				<dd>
-
-					<div id="parents">
-						<ul class="parent_list" id="parent_list">
-
-							<?php foreach ($pages_list as $page) :?>
-
-							<?php
-
-							$title = ($page['title'] != '') ? $page['title'] : $page['name'];
-
-							// All REL or ID which permit the DOM identification of one article MUST be written like this.
-							// $rel = $page['id_page']. '.' .$id_article;
-							?>
-
-							<li rel="<?php echo $page['id_page']; ?>.<?php echo $id_article; ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?php echo $title; ?></a></li>
-
-							<?php endforeach ;?>
-
-						</ul>
-						<!--
-										<input type="text" id="new_parent" class="inputtext w140 italic empty nofocus droppable" alt="<?php echo lang('ionize_label_drop_page_here'); ?>"></input>
-										-->
-					</div>
-				</dd>
-			</dl>
-
-			<?php endif ;?>
 
 		</div>
-
-
-
-		<!-- Advanced options
-					<h3 class="toggler"><?php echo lang('ionize_title_advanced'); ?></h3>
-
-					<div class="element">
-
-
-						<!-- Tags
-						<dl class="small">
-							<dt>
-								<label for="template"><?php echo lang('ionize_label_tags'); ?></label>
-							</dt>
-							<dd>
-								<textarea id="tags" name="tags" class="inputtext w140 h40" type="text" onkeyup="formManager.toLowerCase(this, 'tags');"><?php echo $tags; ?></textarea>
-							</dd>
-						</dl>
-
-						<!-- Existing Tags
-						<dl class="small last">
-							<dt>
-								<label for="template"><?php echo lang('ionize_label_existing_tags'); ?></label>
-							</dt>
-							<dd><?php echo $existing_tags; ?></dd>
-						</dl>
-
-
-					</div>
-
-					-->
 
 
 		<!-- Dates -->
@@ -276,7 +284,7 @@
 			<h4 class="help" title="<?php echo lang('ionize_help_article_meta_description'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
 
 			<div class="small optionInputTab">
-				<div id="metaDescriptionTab" class="mainTabs small gray">
+				<div id="metaDescriptionTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
 						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
@@ -299,7 +307,7 @@
 			<!-- Meta_Keywords -->
 			<h4 class="help" title="<?php echo lang('ionize_help_article_meta_keywords'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
 			<div class="small optionInputTab">
-				<div id="metaKeywordsTab" class="mainTabs small gray">
+				<div id="metaKeywordsTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
 						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
@@ -402,13 +410,49 @@
 	 * Add links on each parent page
 	 *
 	 */
-	$$('#parent_list li.parent_page').each(function(item, idx)
+	$$('#parent_list li.parent_page').each(function(item)
 	{
 		ION.addParentPageEvents(item);
 	});
 
 	new TabSwapper({tabsContainer: 'metaDescriptionTab', sectionsContainer: 'metaDescriptionTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleMetaDescriptionTab'	});
 	new TabSwapper({tabsContainer: 'metaKeywordsTab', sectionsContainer: 'metaKeywordsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleMetaKeywordsTab' });
+
+	// Tags
+	var tags = new TextboxList(
+		'tags',
+		{
+			unique: true,
+			plugins: {autocomplete: {placeholder:null}}
+		}
+	);
+
+	tags.container.addClass('textboxlist-loading');
+
+	ION.JSON(
+		ION.adminUrl + 'tag/get_json_list',{},
+		{
+			onSuccess: function(r)
+			{
+				tags.plugins['autocomplete'].setValues(r);
+
+				ION.JSON(
+					ION.adminUrl + 'tag/get_json_list',
+					{
+						'parent': 'article',
+						'id_parent':'<?php echo $id_article; ?>'
+					},
+					{
+						onSuccess: function(r)
+						{
+							tags.container.removeClass('textboxlist-loading');
+							tags.plugins['autocomplete'].setSelected(r);
+						}
+					}
+				);
+			}
+		}
+	);
 
 	// Copy content from one lang to another
 	if ($('copy_lang'))

@@ -34,7 +34,7 @@ $id = $id_extend_field;
 			<dd>
 	
 				<!-- Tabs -->
-				<div id="elementFieldTab<?php echo $id; ?>" class="mainTabs transparent mt0 mb5">
+				<div id="elementFieldTab<?php echo $id; ?>" class="mainTabs mt0 mb5">
 					
 					<ul class="tab-menu">
 						

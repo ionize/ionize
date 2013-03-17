@@ -32,7 +32,6 @@ ION.append({
 			url = this.baseUrl + args.url;
 
 		top.location.href = url;
-		// window.top.location = url;
 	},
 
 

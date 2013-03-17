@@ -7,7 +7,9 @@ $lang['module_simpleform_text_success'] = '';
 $lang['module_simpleform_text_thanks'] = '';
 $lang['title_archives'] = 'Archives';
 $lang['title_categories'] = 'Categories';
+$lang['title_tags'] = 'Tags';
 $lang['you_are_browsing_category'] = 'Your are browsing category';
+$lang['you_are_browsing_tag'] = 'Your are browsing tag';
 
 $lang['title_logout'] = 'Logout';
 $lang['title_login'] = 'Login';

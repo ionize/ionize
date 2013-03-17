@@ -480,11 +480,9 @@ CREATE TABLE IF NOT EXISTS setting (
   PRIMARY KEY (id_setting)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS tag (
 	id_tag int(11) UNSIGNED NOT NULL auto_increment,
-	tag varchar(50) default NULL,
+	tag_name varchar(50) default NULL,
 	PRIMARY KEY  (id_tag)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 

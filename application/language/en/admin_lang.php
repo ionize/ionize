@@ -40,9 +40,9 @@ $lang['ionize_dashboard_title_content'] = 'Content';
 $lang['ionize_dashboard_title_tools'] = 'Tools';
 $lang['ionize_dashboard_title_settings'] = 'Settings';
 $lang['ionize_dashboard_title_last_modified_articles'] = 'Last updated articles';
-$lang['ionize_dashboard_title_last_connected_users'] = 'Last connected users';
+$lang['ionize_dashboard_title_last_connected_users'] = 'Last connected';
 $lang['ionize_dashboard_title_current_connected_users'] = 'Current connected users';
-$lang['ionize_dashboard_title_last_registered_users'] = 'Last registered users';
+$lang['ionize_dashboard_title_last_registered_users'] = 'Last registered';
 $lang['ionize_dashboard_title_orphan_pages'] = 'Orphan pages';
 $lang['ionize_dashboard_title_orphan_articles'] = 'Orphan articles';
 $lang['ionize_dashboard_title_users'] = 'Users';
@@ -1100,4 +1100,13 @@ $lang['ionize_message_role_no_delete_users_linked'] = 'Role not deleted : Users 
 $lang['ionize_help_email_can_be_used_as_login'] = 'Email can also be used as login';
 $lang['ionize_help_password_change'] = "Leave blank if you don't want to change the password";
 $lang['ionize_message_email_already_registered'] = "This Email already exists in Database.";
+
+
+$lang['ionize_menu_tags'] = "Tags";
+$lang['ionize_title_tags'] = "Tags";
+$lang['ionize_label_new_tag'] = "Add one Tag";
+$lang['ionize_button_save_tags'] = "Save Tags";
+$lang['ionize_help_tag_textbox'] = "type a new tag here";
+
+
 

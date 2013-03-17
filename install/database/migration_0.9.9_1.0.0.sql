@@ -146,6 +146,9 @@ INSERT INTO rule (id_role, resource, actions, permission)
 VALUES
      (1,'all','',1);
 
+-- Tag table
+alter table tag change tag tag_name varchar(50) not null;
+
 
 -- ALTER database ionize_099 default CHARACTER SET utf8 COLLATE utf8_general_ci;
 

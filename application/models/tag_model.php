@@ -6,7 +6,7 @@
  * @author		Ionize Dev Team
  * @license		http://ionizecms.com/doc-license
  * @link		http://ionizecms.com
- * @since		Version 0.9.0
+ * @since		Version 1.0.0
  */
 
 // ------------------------------------------------------------------------
@@ -23,6 +23,8 @@
 
 class Tag_model extends Base_model 
 {
+	private static $_MAX_TAG_LENGTH = 50;
+
 
 	/**
 	 * Model Constructor
@@ -33,8 +35,148 @@ class Tag_model extends Base_model
 	{
 		parent::__construct();
 
-		$this->table =		'tag';
-		$this->pk_name = 	'id_tag';
+		$this->set_table('tag');
+		$this->set_pk_name('id_tag');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param null $parent
+	 * @param null $id_parent
+	 *
+	 * @return array|void
+	 *
+	 */
+	public function get_list($parent=NULL, $id_parent=NULL)
+	{
+		// Get tags from one parent
+		if ( ! is_null($parent) && $this->table_exists($parent.'_tag'))
+		{
+			$this->{$this->db_group}->join(
+				$parent.'_tag',
+				$parent.'_tag.id_tag = ' . $this->get_table() .'.id_tag and ' .
+					$parent.'_tag.id_'.$parent . ' = '.  $id_parent,
+				'inner'
+			);
+
+		}
+
+		return parent::get_list();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns tags list
+	 * If id_page is set, returns those which are used by the page articles.
+	 * If id_page is not set, return the whole used categories
+	 *
+	 * @param null $id_page
+	 *
+	 * @param null $lang
+	 *
+	 * @return array
+	 *
+	 */
+	public function get_page_articles_list($id_page=NULL, $lang=NULL)
+	{
+		$this->{$this->db_group}->select('tag.tag_name, tag.tag_name as title, count(1) as nb', FALSE);
+
+		$this->{$this->db_group}->join(
+			'page_article',
+			'page_article.id_article = article.id_article',
+			'inner'
+		);
+		$this->{$this->db_group}->join(
+			'article_tag',
+			'article_tag.id_article = page_article.id_article',
+			'inner'
+		);
+		$this->{$this->db_group}->join(
+			'tag',
+			'tag.id_tag = article_tag.id_tag',
+			'inner'
+		);
+
+		// Filter on published
+		$this->_filter_on_published(self::$publish_filter, $lang);
+
+		if ( ! is_null($id_page))
+			$this->{$this->db_group}->where('page_article.id_page', $id_page);
+
+		$this->{$this->db_group}->group_by('tag.id_tag');
+
+		$data = array();
+
+		$query = $this->{$this->db_group}->get('article');
+
+		if ( $query->num_rows() > 0 )
+			$data = $query->result_array();
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $tag
+	 *
+	 * @return bool|int|the
+	 */
+	public function save($tag)
+	{
+		if ($tag != '')
+			return $this->add($tag);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves all provided tags
+	 * Deletes the others.
+	 *
+	 * @param $tags
+	 *
+	 */
+	public function save_tag_list($tags)
+	{
+		$tags = explode(',', $tags);
+
+		$tag_ids = $this->_get_tags_ids_array();
+
+		foreach($tags as $tag)
+		{
+			// New tag ? Add it !
+			if( FALSE == preg_match( '/^\d*$/'  , $tag))
+			{
+				if (strlen($tag) > self::$_MAX_TAG_LENGTH)
+					continue;
+
+				$this->add($tag);
+			}
+			else
+			{
+				// Keep existing tags : Remove them from $tag_ids array;
+				if ( in_array($tag, $tag_ids))
+					$tag_ids = array_diff($tag_ids, array($tag));
+			}
+		}
+
+		// Delete remaining ids : they are not in saved list anymore
+		if ( ! empty($tag_ids))
+		{
+			$this->{$this->db_group}->where_in('id_tag', $tag_ids);
+			$this->{$this->db_group}->delete($this->get_table());
+		}
 	}
 
 
@@ -49,123 +191,127 @@ class Tag_model extends Base_model
 	 * @param	int			Parent ID
 	 *
 	 */
-	function save_tags($tags, $parent, $id_parent)
+	public function save_element_tags($tags, $element, $id_element)
 	{
-		// Join table name
-		$join_table = $parent.'_'.$this->table;
-		
-		// Array of tags	
-		$tag_array = array();
-		
-		// First clean input tags
-		if ($tags)
+		if ($element && $id_element)
 		{
-			// Prepare tags string before insertion
-			$tags = str_replace(', ', ',', $tags);
-			$tags = str_replace('; ', ',', $tags);
-			$tags = str_replace(';', ',', $tags);
-			$tags = str_replace('"', '', $tags);
-			$tags = str_replace("'", '', $tags);
-			$tags = str_replace("/", '', $tags);
-			$tags = str_replace("\\", '', $tags);
-			$tags = str_replace("(", '', $tags);
-			$tags = str_replace(")", '', $tags);
-			$tags = str_replace("\"", '', $tags);
-			$tags = str_replace("&", '-', $tags);
-			$tags = str_replace(":", '-', $tags);
-			$tags = str_replace("*", '', $tags);
-	
-			$tags = explode(',', $tags);
-			
-			foreach ($tags as $tag)
+			$data = array();
+			$tag_ids = explode(',', $tags);
+			$join_table = $element.'_tag';
+			$element_pk = 'id_'.$element;
+
+			foreach($tag_ids as $id_tag)
 			{
-				$tag_array[] = trim($tag);
-				// $tag_array[] = strtolower($tag);
-				// $tag_array[] = preg_replace("/[^a-z0-9s]/", "", strtolower($tag));
+				// New tag ? Add it !
+				if( FALSE == preg_match( '/^\d*$/'  , $id_tag))
+				{
+					if (strlen($id_tag) > self::$_MAX_TAG_LENGTH)
+						continue;
+
+					$id_tag = $this->add($id_tag);
+				}
+
+				$data[] = array(
+					'id_tag' => $id_tag,
+					$element_pk => $id_element
+				);
+			}
+
+			if ( ! empty($data) && $this->table_exists($join_table))
+			{
+				$this->delete(array($element_pk => $id_element), $join_table);
+
+				$this->{$this->db_group}->insert_batch($join_table, $data);
 			}
 		}
-				
-		// Delete the already saved tags from parent join table
-		$this->{$this->db_group}->where('id_'.$parent, $id_parent);
-		$query = $this->{$this->db_group}->delete($join_table);
-		
-		// Update tag table
-		foreach	($tag_array as $tag)
-		{
-			$this->{$this->db_group}->where('tag', $tag);
-			$query = $this->{$this->db_group}->get($this->table, 1);
-			
-			if ($query->num_rows == 1)
-			{
-				$row = $query->row_array();
-				$id_tag = $row['id_tag'];
-			}
-			else
-			{
-				$query = $this->{$this->db_group}->insert($this->table, array('tag'=>$tag) );
-				$id_tag = $this->{$this->db_group}->insert_id();
-			}
-			
-			// Update the parent join table
-			$tag_data = array(
-							'id_'.$parent 	=> $id_parent,
-							'id_tag'	=> $id_tag
-						);
-		
-			$query = $this->{$this->db_group}->insert($join_table, $tag_data);
-		}
-		
-		// Clean up the tag table : Remove unused tags
-		// ...
 	}
 
 
 	// ------------------------------------------------------------------------
 
 
-	/** Get the tag cloud datas
-	 *  @param	$lang		Code lang. Submitted to get tag on translated articles only
-	 *	@param	$id_page	If submitted, get only the tags from articles in this page
+	/**
+	 * @param $tag
+	 *
+	 * @return bool|the
+	 *
 	 */
-	function tag_cloud($lang, $id_page=false)
+	public function add($tag)
 	{
-		$built = array();
-		
-		$sql = 	' SELECT t.tag, COUNT(t2.id_tag) as qty '
-				.'FROM (article_tags t)'
-				.' INNER JOIN article_tag t2  ON t2.id_tag = t.id_tag '
-				.' INNER JOIN article_lang t3 ON t3.id_article = t2.id_article '
-				.' INNER JOIN article t4 ON t4.id_article = t3.id_article '
-				.' WHERE t3.lang = \''.$lang.'\' '
-				.' AND t3.title is not null '
-				.' AND t3.title != \'\'' ;
+		$id_tag = $this->_tag_exists($tag);
 
-		if ($id_page)
+		if ( ! $id_tag)
 		{
-			$sql .= ' AND t4.id_page = \''.$id_page.'\'' ;
+			$tag = trim($tag);
+			return $this->insert(array('tag_name' => $tag));
 		}
-		
-		$sql .=' GROUP BY t.id_tag';
+		return $id_tag;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Filters the article  on published one
+	 *
+	 * @param bool $on
+	 * @param null $lang
+	 *
+	 */
+	protected function _filter_on_published($on = TRUE, $lang = NULL)
+	{
+		if ($on === TRUE)
+		{
+			$this->{$this->db_group}->join(
+				'article_lang',
+				'article_lang.id_article = article.id_article',
+				'left'
+			);
+
+			if ( ! is_null($lang))
+				$this->{$this->db_group}->where('article_lang.lang', $lang);
+
+			$this->{$this->db_group}->where('page_article.online', '1');
+
+			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
+				$this->{$this->db_group}->where('article_lang.online', '1');
+
+			$this->{$this->db_group}->where('((article.publish_off > ', 'now()', FALSE);
+			$this->{$this->db_group}->or_where('article.publish_off = ', '0)' , FALSE);
+
+			$this->{$this->db_group}->where('(article.publish_on < ', 'now()', FALSE);
+			$this->{$this->db_group}->or_where('article.publish_on = ', '0))' , FALSE);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the tags IDs, in one array
+	 *
+	 * @return array
+	 */
+	private function _get_tags_ids_array()
+	{
+		$data = array();
+
+		$sql = "select group_concat(id_tag) as ids from " . $this->get_table();
 
 		$query = $this->{$this->db_group}->query($sql);
-		
-//		echo($this->{$this->db_group}->last_query());
-		
-		$built = array();
-		
-		if ($query->num_rows > 0)
+
+		if ( $query->num_rows() > 0)
 		{
-			$result = $query->result_array();
-			
-			foreach ($result as $row)
+			$result = $query->row_array();
+			if ( ! is_null($result['ids']))
 			{
-				$built[$row['tag']] = $row['qty'];
+				$data = explode(',', $result['ids']);
 			}
 		}
-		
-		$query->free_result();
 
-		return $built;
+		return $data;
 	}
 
 
@@ -173,101 +319,22 @@ class Tag_model extends Base_model
 
 
 	/**
-	 * Returns all tags as string or as simple array
+	 * @param $tag
 	 *
-	 * @param	string	Type of wished return. Can be 'array' or 'string'
-	 *
+	 * @return bool
 	 */
-	function get_tags($return = 'array')
+	private function _tag_exists($tag)
 	{
-		$built = array();
-		$string = '';
+		$sql = "select id_tag from ". $this->get_table() . " where LOWER(tag_name) = " . $this->{$this->db_group}->escape($tag);
 
-		// DB query
-		$this->{$this->db_group}->select('tag');
-		$query = $this->{$this->db_group}->get($this->table);
-		
-		if ($query->num_rows() > 0)
+		$query = $this->{$this->db_group}->query($sql);
+
+		if ( $query->num_rows() > 0)
 		{
-			$result = $query->result();
-			
-			foreach ($result as $tag)
-			{
-				$built[] = $tag->tag;
-			}
-			
-			if ($return == 'string')
-			{
-				foreach ($built as $tag)
-				{
-					$string .= $tag.', ';
-				}
-					
-				$string = substr($string, 0, -2);
-			}
+			$result = $query->row_array();
+			return $result['id_tag'];
 		}
-		
-		$query->free_result();
-		
-		return ($return == 'array') ? $built : $string;
-		
-	}
 
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Gets tags from parent element
-	 *
-	 * @param	string	Parent type
-	 * @param	int		Parent ID
-	 * @param	string	Type of wished return. Can be 'array' or 'string'
-	 *
-	 * @return 	string or array	Tags string, values separated by coma
-	 *
-	 */	
-	function get_tags_from_parent($parent, $id_parent, $return = 'array')
-	{
-		$built = array();
-		$string = '';
-		
-		// Join table
-		$join_table = $parent.'_'.$this->table;
-		
-		$this->{$this->db_group}->select('tag');
-		$this->{$this->db_group}->where('id_'.$parent, $id_parent);
-		$this->{$this->db_group}->join($this->table, $this->table.'.'.$this->pk_name.' = '. $join_table.'.'.$this->pk_name, 'inner');
-		$this->{$this->db_group}->order_by($join_table.'.id_tag');
-		
-		$query = $this->{$this->db_group}->get($join_table);
-		
-		if ($query->num_rows() > 0)
-		{
-			$result = $query->result();
-			
-			foreach ($result as $tag)
-			{
-				$built[] = $tag->tag;
-			}
-			
-			if ($return == 'string')
-			{
-				foreach ($built as $tag)
-				{
-					$string .= $tag.', ';
-				}
-					
-				$string = substr($string, 0, -2);
-			}
-		}
-		
-		$query->free_result();
-		
-		return ($return == 'array') ? $built : $string;
+		return FALSE;
 	}
 }
-
-
-/* End of file tag_model.php */
-/* Location: ./application/models/tag_model.php */

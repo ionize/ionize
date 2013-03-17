@@ -42,10 +42,8 @@ if ($tracker_title == '')
 
 				<div style="margin: -15px 0pt 20px 72px;">
 					<p>
-						<?php if ( User()->is('super-admins') ) :?>
-                        	<span class="lite">ID : </span>
-							<?php echo $id_article; ?>
-						<?php endif ;?>
+						<span class="lite">ID : </span>
+						<?php echo $id_article; ?>
 
 						<?php if( ! empty($breadcrump)) :?>
 							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?> : </span><?php echo$breadcrump?>

@@ -78,6 +78,7 @@ $config['texteditors'] = array('tinymce');
 $config['special_uri'] = array(	'category' => 'category',
 								'page' => 'pagination',
 								'archive' => 'archives',
+								'tag' => 'tag',
 							  );
 
 

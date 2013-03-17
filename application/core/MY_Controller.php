@@ -200,10 +200,8 @@ class MY_Controller extends CI_Controller
 
 				if ( isset($config))
 				{
-					// log_message('error', print_r($config, true));
 					foreach($config as $k=>$v)
 					{
-//						log_message('error', $k);
 						$this->config->set_item($k, $v);
 					}
 	
@@ -632,11 +630,6 @@ class MY_Admin extends MY_Controller
 		// Modules Application config
 		// $this->get_modules_config();
 
-		// Modules Permissions
-		// $role = User()->get_role();
-		// Modules()->set_role_permissions($role['role_code']);
-		// Modules()->set_permissions();
-
 		// Modules translation files
 		$modules = array();
 		require(APPPATH.'config/modules.php');
@@ -772,7 +765,7 @@ class MY_Admin extends MY_Controller
 				'update' => $this->update,
 				'callback' => $this->callback
 			);
-			
+
 			// Puts additional data to answer
 			if ( ! empty($addon_data))
 			{

@@ -34,6 +34,8 @@ class Article_model extends Base_model
 	public $url_table =					'url';
 	public $user_table = 				'users';
 	public $menu_table = 				'menu';
+	public $tag_table = 				'tag';
+	public $tag_join_table = 			'article_tag';
 
 	/* Contains table name wich should be used for each filter get.
 	 * Purpose : Avoid Ambiguous SQL quey when 2 fields have the same name.
@@ -208,6 +210,8 @@ class Article_model extends Base_model
 		$articles =  parent::get_lang_list($where, $lang);
 
 		$this->add_categories($articles, $lang);
+
+		$this->add_tags($articles);
 
 		return $articles;
 	}
@@ -501,7 +505,8 @@ class Article_model extends Base_model
 		// Add entry to each data array element
 		foreach ($articles as $key => $article)
 		{
-			$article['categories'] = array();
+			$articles[$key]['categories'] = array();
+
 			if ( ! empty($categories))
 			{
 				foreach($art_cat as $cat)
@@ -522,7 +527,65 @@ class Article_model extends Base_model
 
 	// ------------------------------------------------------------------------
 
-	
+
+	/**
+	 *
+	 * @param array $articles
+	 *
+	 */
+	public function add_tags(&$articles = array())
+	{
+		// Add Tags to each article
+		$tags = array();
+
+		$articles_ids = array();
+		foreach($articles as $article)
+			$articles_ids[] = $article['id_article'];
+
+		if ( ! empty($articles_ids))
+		{
+			$this->{$this->db_group}->join(
+				$this->tag_join_table,
+				$this->tag_join_table.'.id_tag = ' .$this->tag_table.'.id_tag', 'inner');
+
+			$this->{$this->db_group}->where_in($this->tag_join_table.'.id_article', $articles_ids);
+
+			$this->{$this->db_group}->select(
+				$this->tag_table.'.id_tag, ' .
+				$this->tag_join_table.'.id_article, ' .
+				$this->tag_table.'.tag_name,' .
+				$this->tag_table.'.tag_name as title'
+			);
+
+			$query = $this->{$this->db_group}->get($this->tag_table);
+
+			if($query->num_rows() > 0)
+				$tags = $query->result_array();
+		}
+
+		// Add entry to each data array element
+		foreach ($articles as $key => $article)
+		{
+			$articles[$key]['tags'] = array();
+
+			if ( ! empty($tags))
+			{
+				foreach($tags as $tag)
+				{
+					if($articles[$key]['id_article'] == $tag['id_article'])
+					{
+						$articles[$key]['tags'][] = $tag;
+					}
+				}
+			}
+		}
+	}
+
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Saves the article context
 	 *
@@ -1308,13 +1371,31 @@ class Article_model extends Base_model
 
 
 	/**
+	 * Adds the tag filter to the articles get_lang_list() call
+	 *
+	 * @param int
+	 * @param int
+	 */
+	public function add_tag_filter($tag_name)
+	{
+		$this->{$this->db_group}->join('article_tag', $this->table.'.id_article = article_tag.id_article', 'inner');
+		$this->{$this->db_group}->join('tag', 'tag.id_tag = article_tag.id_tag', 'inner');
+
+		$this->{$this->db_group}->where('tag.tag_name', urldecode($tag_name));
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Gets the list of archives with number of articles linked to.
 	 *
-	 * @param array
-	 * @param null|string
-	 * @param bool
-	 * @param bool|int
-	 * @param string
+	 * @param array  $where
+	 * @param null   $lang
+	 * @param bool   $filter
+	 * @param bool   $month
+	 * @param string $order_by
 	 *
 	 * @return array
 	 *

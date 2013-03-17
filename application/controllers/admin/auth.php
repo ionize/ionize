@@ -100,12 +100,22 @@ class Auth extends My_Admin
 		{
 			if ($this->is_xhr())
 			{
+				$html = '
+					<script type="text/javascript">
+						var url = "'.config_item('admin_url').'";
+						top.location.href = url;
+					</script>'
+				;
+				echo $html;
+				exit();
+				/*
 				// Save options : as callback
-				$this->callback[] = array(
+								$this->callback[] = array(
 					'fn' => 'ION.reload',
 					'args' => array('url'=> config_item('admin_url'))
 				);
 				$this->response();
+				*/
 			}
 			else if ( ! in_array($uri_lang, Settings::get('displayed_admin_languages')) OR $uri_lang != $default_admin_lang)
 			{

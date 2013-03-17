@@ -35,6 +35,11 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.MultipleFileInput.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.Upload.js"></script>
 
+<!-- TextboxList -->
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.Binary.js"></script>
+
 <!-- Drag Clone -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/drag.clone.js"></script>
 

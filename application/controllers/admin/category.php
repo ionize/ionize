@@ -82,11 +82,6 @@ class Category extends MY_admin
 	 */
 	public function get_list()
 	{
-
-		// New category form feed
-		$this->category_model->feed_blank_template($this->template);
-		$this->category_model->feed_blank_lang_template($this->template);
-		
 		// Categories list
 		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 

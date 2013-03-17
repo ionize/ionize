@@ -1127,33 +1127,39 @@ ION.append({
 	{
 		var edit = el.getElement('.edit');
 		var add_page = el.getElement('.add_page');
-		var id_menu = add_page.getProperty('rel');
+		var id_menu = el.getProperty('data-id');
 
 		// Edit button
-		edit.addEvent('click', function(e)
+		if (edit)
 		{
-			e.stop();
+			edit.addEvent('click', function(e)
+			{
+				e.stop();
 
-			ION.contentUpdate({
-				element: $('mainPanel'),
-				title: Lang.get('ionize_title_menu'),
-				url : admin_url + 'menu'		
+				ION.contentUpdate({
+					element: $('mainPanel'),
+					title: Lang.get('ionize_title_menu'),
+					url : admin_url + 'menu'
+				});
 			});
-		});
+		}
 		
 		// Add page button
-		add_page.addEvent('click', function(e)
+		if (add_page)
 		{
-			e.stop();
-			
-			MUI.Content.update(
+			add_page.addEvent('click', function(e)
 			{
-				element: $('mainPanel'),
-				title: Lang.get('ionize_title_new_page'),
-				loadMethod: 'xhr',
-				url: admin_url + 'page/create/' + id_menu
+				e.stop();
+
+				MUI.Content.update(
+				{
+					element: $('mainPanel'),
+					title: Lang.get('ionize_title_new_page'),
+					loadMethod: 'xhr',
+					url: admin_url + 'page/create/' + id_menu
+				});
 			});
-		});
+		}
 	},
 
 

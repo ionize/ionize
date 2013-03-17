@@ -83,7 +83,8 @@ class Article extends MY_admin
 		$this->load->model('tag_model', '', TRUE);
 		$this->load->model('extend_field_model', '', TRUE);
 		$this->load->model('url_model', '', TRUE);
-		
+		$this->load->model('tag_model', '', TRUE);
+
 		$this->load->library('structure');
 		
 		$this->load->helper('string_helper');
@@ -388,9 +389,6 @@ class Article extends MY_admin
 			// Saves linked categories
 			$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $this->id);
 
-			// Saves tags
-			$this->tag_model->save_tags($this->input->post('tags'), 'article', $this->id);
-
 			// Save extend fields data
 			$this->extend_field_model->save_data('article', $this->id, $_POST);
 
@@ -488,6 +486,9 @@ class Article extends MY_admin
 
 		// Saves linked categories
 		$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $this->id);
+
+		// Saves Tags
+		$this->tag_model->save_element_tags($this->input->post('tags'), 'article', $this->id);
 
 		// Context update
 		$this->update_contexts($id_article);
@@ -601,14 +602,7 @@ class Article extends MY_admin
 				// Categories
 				$categories = $this->category_model->get_categories_select();
 				$current_categories = $this->category_model->get_current_categories('article', $id_article);
-				$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w140" multiple="multiple"');
-
-				// Tags
-				// TODO : Find a solution for tags for both back / front end
-				$this->template['tags'] =	$this->tag_model->get_tags_from_parent('article', $id_article, 'string');
-
-				// Existing tags
-				$this->template['existing_tags'] =	$this->tag_model->get_tags('string');
+				$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w100p" multiple="multiple"');
 
 				// Output
 				$this->output('article/options');

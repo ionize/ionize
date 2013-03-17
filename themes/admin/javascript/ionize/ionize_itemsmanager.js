@@ -96,7 +96,10 @@ ION.ItemManager = new Class({
 
 		items.each(function(item)
 		{
-			ION.initRequestEvent(item, url + item.getProperty('rel'), {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
+			var id = item.getProperty('data-id');
+			if ( ! id) id = item.getProperty('rel'); // Compatibility with 0.9.9.x
+
+			ION.initRequestEvent(item, url + id, {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
 		});
 	},
 
@@ -109,9 +112,12 @@ ION.ItemManager = new Class({
 		var url = this.adminUrl + this.options.controller;
 		var items = this.container.getElements('.status');
 
-		items.each(function(item, idx)
+		items.each(function(item)
 		{
-			ION.initRequestEvent(item, url + '/switch_online/' + item.getProperty('rel'));
+			var id = item.getProperty('data-id');
+			if ( ! id) id = item.getProperty('rel'); // Compatibility with 0.9.9.x
+
+			ION.initRequestEvent(item, url + '/switch_online/' + id);
 		});
 	},
 
@@ -205,7 +211,10 @@ ION.ItemManager = new Class({
 						// Check for the not removed clone
 						if (element.id != '')
 						{
-							var rel = (element.getProperty('rel')).split(".");
+							var rel = item.getProperty('data-id');
+							if ( ! rel) rel = item.getProperty('rel'); // Compatibility with 0.9.9.x
+							var rel = (rel).split(".");
+
 							var id = rel[0];
 							if (rel.length > 1) { id = rel[1]; }
 							return id;

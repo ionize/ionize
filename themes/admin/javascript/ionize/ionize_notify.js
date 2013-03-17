@@ -72,7 +72,6 @@ ION.Notify = new Class({
 			var bs = this.contentEl.getElement('.mochaContentNotify').getSize();
 
 			this.contentEl.getChildren('.validation-advice').each(function(item){
-				console.log(item);
 				bs.y += item.getSize().y;
 			});
 

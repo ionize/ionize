@@ -55,6 +55,10 @@
 	                    <li><a class="navlink" href="category" title="<?php echo lang('ionize_title_categories'); ?>"><?php echo lang('ionize_menu_categories'); ?></a></li>
 					<?php endif ;?>
 
+					<?php if(Authority::can('access', 'admin/article/tag')) :?>
+	                    <li><a class="navlink" href="tag" title="<?php echo lang('ionize_title_tags'); ?>"><?php echo lang('ionize_menu_tags'); ?></a></li>
+					<?php endif ;?>
+
 					<?php if(Authority::can('access', 'admin/translations')) :?>
 						<li class="divider"><a class="navlink" href="translation" title="<?php echo lang('ionize_title_translation'); ?>"><?php echo lang('ionize_menu_translation'); ?></a></li>
 					<?php endif ;?>

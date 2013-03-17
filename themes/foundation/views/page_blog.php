@@ -11,6 +11,11 @@
             <ion:lang key="you_are_browsing_category" /> : <ion:page:category:current:title/>
         </ion:page:category:current:title>
 
+		<!-- Current tag -->
+        <ion:page:tag:current:title expression="!=''">
+            <ion:lang key="you_are_browsing_tag" /> : <ion:page:tag:current:title/>
+        </ion:page:tag:current:title>
+
 
 		<!--
 			We get the articles which don't have any type set.
@@ -38,7 +43,10 @@
                     <!-- We limit the display to to first paragraph (first <p></p>) -->
                     <ion:content paragraph="1" />
 
-                </div>
+					<!-- Tags -->
+					<ion:article:tags:list link="true" separator=", " tag="p" class="categories" prefix="Tags :&nbsp;" />
+
+				</div>
 
 			</ion:article>
 		
@@ -53,6 +61,10 @@
 
 	<div class="three columns">
 
+		<!--
+			Categories :
+			Only categories used by articles linked to the current page are displayed
+		-->
 		<div class="side-block">
 		
 			<h3><ion:lang key="title_categories" /></h3>
@@ -60,25 +72,85 @@
 			<ul class="side-nav">
 				<ion:page:categories>
 					<li>
-						<a <ion:category:is_active> class="<ion:category:active_class />" </ion:category:is_active> href="<ion:category:url />"><ion:category:title /></a>
+						<a <ion:category:is_active> class="<ion:category:active_class />" </ion:category:is_active> href="<ion:category:url />"><ion:category:title /> (<ion:category:nb_articles />)</a>
 					</li>
 				</ion:page:categories>
 			</ul>
 		
 		</div>
-		
+
+		<!-- Archives -->
 		<div class="side-block">
 			
 			<h3><ion:lang key="title_archives" /></h3>
 			
 			<ul class="side-nav">
 				<ion:archives with_month="true">
-					<li><a class="<ion:active_class />" href="<ion:archive:url />"><ion:archive:period /></a></li>
+					<li><a class="<ion:archive:active_class />" href="<ion:archive:url />"><ion:archive:period /></a></li>
 				</ion:archives>
 			</ul>
 			
 		</div>
 
+		<!-- Tags Cloud : Through CSS -->
+		<div class="side-block">
+
+			<style type="text/css">
+
+				#tags{
+					/*text-align:center;*/
+				}
+				#tags li{
+					list-style:none;
+					display:inline-block;
+					margin:0 1px 1px 0;
+				}
+				#tags li a{
+					text-decoration:none;
+					color:#2BA6CB;
+					white-space: nowrap;
+					padding: 3px;
+					color:#fff;
+					background: #2BA6CB;
+				}
+				#tags li a:hover{
+					color:#fff;
+					background: #2BA6CB;
+					opacity: 1 !important;
+				}
+				.tag1{font-size:90%;opacity: .65;}
+				.tag2{font-size:100%;opacity: .7;}
+				.tag3{font-size:110%;opacity: .75;}
+				.tag4{font-size:120%;opacity: .8;}
+				.tag5{font-size:130%;opacity: .85;}
+				.tag6{font-size:140%;opacity: .9;}
+				.tag7{font-size:150%;opacity: .95;}
+
+			</style>
+
+			<h3><ion:lang key="title_tags" /></h3>
+			<p>CSS tags cloud</p>
+			<ul id="tags">
+				<ion:page:tags>
+					<li ><a class="tag<ion:tag:nb_articles />" href="<ion:tag:url />"><ion:tag:title /></a></li>
+				</ion:page:tags>
+			</ul>
+
+		</div>
+
+
+		<!-- Tags -->
+		<div class="side-block">
+
+			<h3><ion:lang key="title_tags" /></h3>
+
+			<ul class="side-nav">
+				<ion:page:tags>
+					<li><a class="<ion:tag:active_class />" href="<ion:tag:url />"><ion:tag:title /> (<ion:tag:nb_articles />)</a></li>
+				</ion:page:tags>
+			</ul>
+
+		</div>
 	</div>
 </div>
 

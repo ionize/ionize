@@ -3017,6 +3017,12 @@ class TagManager
 	 * Add one prefix / suffix to the given value
 	 * If the prefix or suffix looks like a translation call, try to translate
 	 *
+	 * @usage		prefix="Read more about : "
+	 * 				prefix="lang('read_more_about')"
+	 *
+	 * 				In this case, '.' separates segments :
+	 * 				prefix="'&bull; '. lang('post_in_categories') . ' : '"
+	 *
 	 * @param string
 	 * @param string		Prefix / Suffix
 	 * @param int 			1 : prefix mode, 2 : suffix mode
@@ -3034,14 +3040,16 @@ class TagManager
 			foreach($segments as $segment)
 			{
 				$segment = trim($segment);
-				if (substr(trim($segment), 0, 5) == 'lang(')
-					$translated_string = FALSE;
-				$return = @eval("\$translated_string = ".trim($segment).";");
+				$translated_string = NULL;
 
-				if ($return === NULL)
-					$prefix_suffix .= $translated_string;
-				else
-					$prefix_suffix .= $segment;
+				if (substr(trim($segment), 0, 5) == 'lang(')
+				{
+					$return = @eval("\$translated_string = ".trim($segment).";");
+					if ($return === NULL)
+						$segment = $translated_string;
+				}
+
+				$prefix_suffix .= $segment;
 			}
 
 			$value = $mode == 1 ? $prefix_suffix . $value : $value . $prefix_suffix;
@@ -3116,6 +3124,7 @@ class TagManager
 		if ( ! is_null($test_value))
 		{
 			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+
 		}
 
 		if ($return === NULL OR is_null($test_value))
@@ -3242,9 +3251,11 @@ class TagManager
 		$error = error_get_last();
 		if($error !== NULL)
 		{
+			trace($tag->getAttributes());
 			$msg = self::show_tag_error($tag,
 				'PHP error : ' . $error['message'] . '<br/>' .
-				'in expression : ' . $tag->getAttribute('expression')
+				'in expression : ' . $tag->getAttribute('expression') . '<br/>' .
+				'file : ' . $error['file']
 				//	. '<br/>PHP original error : <br/>'.
 				//	$error['message'] . ' in ' . $error['file']
 			);

@@ -49,7 +49,7 @@ $id = $id_element_definition;
 		<div class="clear mt10 mr20 ml40 ">
 
 			<!-- Tabs -->
-			<div id="elementDefinitonTab<?php echo $id ;?>" class="mainTabs transparent">
+			<div id="elementDefinitonTab<?php echo $id ;?>" class="mainTabs">
 
 				<ul class="tab-menu">
 					<?php foreach(Settings::get_languages() as $language) :?>

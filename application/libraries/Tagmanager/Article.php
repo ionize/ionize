@@ -75,7 +75,7 @@ class TagManager_Article extends TagManager
 		if ($is_current_page)
 		{
 			// Special URI process
-			if (! is_null($special_uri_array))
+			if ( ! is_null($special_uri_array))
 			{
 				foreach($special_uri_array as $_callback => $args)
 				{
@@ -225,6 +225,27 @@ class TagManager_Article extends TagManager
 				$category_name,
 				Settings::get_lang()
 			);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Adds one tag filter
+	 *
+	 * @param FTL_Binding $tag
+	 * @param array       $args
+	 *
+	 */
+	function add_articles_filter_tag(FTL_Binding $tag, $args = array())
+	{
+		$tag_name = ( ! empty($args[0])) ? $args[0] : NULL;
+
+		if ( ! is_null($tag_name))
+		{
+			self::$ci->article_model->add_tag_filter($tag_name);
 		}
 	}
 

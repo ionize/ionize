@@ -201,7 +201,6 @@ ION.TreeXhr = new Class({
 		// Action element
 		var action = this.action_Model.clone();
         var iconOnline = new Element('a').addClass('icon').addClass('status').addClass(online).addClass(type + flat_id).setProperty('rel', rel);
-        action.adopt(iconOnline);
 
 		// Title element
 		var link = this.span_Model.clone().addClass('title');
@@ -221,11 +220,19 @@ ION.TreeXhr = new Class({
 		// Page
 		if (type == 'page')
 		{
+			// Online
+			if (ION.Authority.can('status', 'admin/tree/page'))
+				action.adopt(iconOnline);
+
+
 			li.addClass('folder').addClass('page');
 			
 			// Icons : Add Article, Add page
-			action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('rel', rel));
-			action.adopt(new Element('a').addClass('addPage').addClass('icon').addClass('page').addClass('add').setProperty('data-page', id).setProperty('data-menu', element.id_menu));
+			if (ION.Authority.can('add_article', 'admin/tree/page'))
+				action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('rel', rel));
+
+			if (ION.Authority.can('add_page', 'admin/tree/page'))
+				action.adopt(new Element('a').addClass('addPage').addClass('icon').addClass('page').addClass('add').setProperty('data-page', id).setProperty('data-menu', element.id_menu));
 
             // Actions
 			this.addPageActionLinks(action);
@@ -253,13 +260,17 @@ ION.TreeXhr = new Class({
 		else
 		{
 			li.addClass('file').addClass(type + id);
-			
+
+			// Online
+			if (ION.Authority.can('status', 'admin/tree/article'))
+				action.adopt(iconOnline);
+
 			// Icon : unlink
-//			if (Ionize.User.getGroupLevel() > 5000)
-//			{
+			if (ION.Authority.can('unlink', 'admin/tree/article'))
+			{
                 var iconUnlink = new Element('a', {'class': 'icon unlink', 'rel': rel});
                 action.adopt(iconUnlink);
-//			}
+			}
 
 			// File icon
 			if (element.indexed == '0') icon.addClass('sticky');
@@ -487,9 +498,8 @@ ION.TreeXhr = new Class({
 	/**
 	 * Adds a link to a tree LI DOM element
 	 *
-	 * @param	DOMElement		tree LI
-	 * @param	String			logical tree element type. "page" or "article"
-	 *
+	 * @param el        tree LI
+	 * @param type      logical tree element type. "page" or "article"
 	 */
 	addTitleClickEvent: function(el, type)
 	{
@@ -568,31 +578,37 @@ ION.TreeXhr = new Class({
 	{
 		// Add Article
 		var a = el.getElement('a.addArticle');
-		var id = a.rel;
-		var p = $(this.mainpanel);
-		
-		// Add "Create Article" icon
-		a.addEvent('click', function(e)
+		if (a)
 		{
-			e.stop();
-			ION.contentUpdate({
-				'element': p,
-				'url': admin_url + 'article/create/' + id,
-				'title': Lang.get('ionize_title_create_article')
+			var id = a.rel;
+			var p = $(this.mainpanel);
+
+			// Add "Create Article" icon
+			a.addEvent('click', function(e)
+			{
+				e.stop();
+				ION.contentUpdate({
+					'element': p,
+					'url': admin_url + 'article/create/' + id,
+					'title': Lang.get('ionize_title_create_article')
+				});
 			});
-		});
+		}
 
 		// Add Page
 		a = el.getElement('a.add.page');
-		a.addEvent('click', function(e)
+		if (a)
 		{
-			e.stop();
-			ION.contentUpdate({
-				'element': p,
-				'url': admin_url + 'page/create/' + a.getProperty('data-menu') + '/' + a.getProperty('data-page'),
-				'title': Lang.get('ionize_title_create_page')
+			a.addEvent('click', function(e)
+			{
+				e.stop();
+				ION.contentUpdate({
+					'element': p,
+					'url': admin_url + 'page/create/' + a.getProperty('data-menu') + '/' + a.getProperty('data-page'),
+					'title': Lang.get('ionize_title_create_page')
+				});
 			});
-		});
+		}
 	},
 
 	addMouseOver: function(node)
@@ -699,18 +715,15 @@ ION.BrowserTreeXhr = new Class({
 		var action = this.action_Model.clone();
 
 		// Link Icon
-//		if (Ionize.User.getGroupLevel() > 5000)
-//		{
-			var iconLink = new Element('a', {'class': 'icon link', 'rel': rel});
+		var iconLink = new Element('a', {'class': 'icon link', 'rel': rel});
 
-			iconLink.addEvent('click', function(e)
-			{
-				e.stop();
-				clearTimeout(self.click_timer);
-				self.click_timer = self.relaySingleOrDoubleClick.delay(700, self, [e, self, iconLink, type, 1]);
-			});
-			action.adopt(iconLink);
-//		}
+		iconLink.addEvent('click', function(e)
+		{
+			e.stop();
+			clearTimeout(self.click_timer);
+			self.click_timer = self.relaySingleOrDoubleClick.delay(700, self, [e, self, iconLink, type, 1]);
+		});
+		action.adopt(iconLink);
 
 		// Title element
 		var link = this.span_Model.clone().addClass('title');
