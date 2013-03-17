@@ -1041,6 +1041,8 @@ $lang['ionize_label_square_crop_area'] = 'Square crop area';
 $lang['ionize_label_top_left'] = 'top-left';
 $lang['ionize_label_middle'] = 'middle';
 $lang['ionize_label_bottom_right'] = 'bottom-right';
+$lang['ionize_label_start_crop'] = 'Start Crop';
+$lang['ionize_help_start_crop'] = 'For Square or Adaptive picture, define the start of the displayed area';
 
 /*
 |--------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 Ionize Content CSS Addon to Mocha
 
 Copyright:
-	Copyright (c) 2009/2010 Ionize Dev Team.
+	Copyright (c) 2009/2013 Ionize Dev Team.
 
 License:
 	MIT-style license.
@@ -370,7 +370,6 @@ div.notify{
 	min-height:38px;
 	padding:16px 20px 0 65px;
 	background-color:#f2f2f2 !important;
-/*	margin-bottom:20px;*/
 	-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
 }
 div.notify.information { background:url(../images/icon_48_information.png) no-repeat top left;}
@@ -744,7 +743,7 @@ table.list div.content ul{
 	font-weight: normal;
 	color: #7A8189;
 	border:solid 1px #ddd;
-	background: url(../images/bg-gray-light.png);
+	background: #eee;
 }
 .mainTabs .tab-menu li a:hover {
 	text-decoration: none;
@@ -770,9 +769,7 @@ table.list div.content ul{
 	-webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 0 5px;
 }
 .mainTabs .tab-menu li.dl a {
-	/*background-position: right -140px;*/
-	background: #fff url(../images/tab_star_gray_bg.png) no-repeat 97% 2px;
-
+	background: #eee url(../images/tab_star_gray_bg.png) no-repeat 97% 2px;
 	padding-right: 14px;
 }
 .mainTabs .tab-menu li.dl.selected a {
@@ -967,9 +964,7 @@ div.translation {
 	overflow: hidden;
 	margin-bottom: 12px;
 }
-.col {
-
-}
+.col {}
 .col.col2{
 	width: 49%;
 	margin-right: 2%;
@@ -978,12 +973,10 @@ div.translation {
 .col.col2:last-child{
 	margin-right: 0;
 }
-
 .content-panel{}
 .content-panel-header{
 	height:30px;
 	position: relative;
-/*	border-bottom: 1px solid #D3D3D3;*/
 }
 .panelWrapper.collapsed .content-panel-header{
 	border-bottom: none;
@@ -1007,8 +1000,6 @@ div.translation {
 	padding:0;
 	margin-bottom: 12px;
 
-}
-.desktopBloc h3.toggler{
 }
 .desktopIcon {
 	float:left;
@@ -1037,9 +1028,6 @@ div.translation {
 	display: block;
 	vertical-align: middle;
 }
-
-
-
 
 .desktopUserIcon{
 	float:left;
