@@ -467,7 +467,7 @@ CREATE TABLE IF NOT EXISTS role (
 CREATE TABLE if not exists rule (
   id_role int(11) NOT NULL,
   resource varchar(255) NOT NULL DEFAULT '',
-  actions varchar(500) NOT NULL DEFAULT '',
+  actions varchar(255) NOT NULL DEFAULT '',
   permission smallint(1) DEFAULT NULL,
   PRIMARY KEY (id_role,resource,actions)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -596,7 +596,7 @@ INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, d
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (273,270,'admin/settings/themes','edit','Themes','Settings > Themes');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (274,270,'admin/settings/website','','Website settings','Settings > Website');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (275,270,'admin/settings/technical','','Technical settings','Settings > Technical');
-INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (300,NULL,'admin/users_roles','','Users & Roles','Users & Roles');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (300,NULL,'admin/users_roles','','Users / Roles','Users / Roles');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (301,300,'admin/user','create,edit,delete','Users','Users');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');

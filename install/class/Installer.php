@@ -198,8 +198,8 @@ class Installer
 
 		$this->db_connect();
 
-		$this->db->where('id_group', '1');
-		$query = $this->db->get('users');
+		$this->db->where('id_role', '1');
+		$query = $this->db->get('user');
 
 		if ($query->num_rows() > 0)
 		{
@@ -278,7 +278,7 @@ class Installer
 			// Try connect or exit
 			if ( ! $this->db->db_connect())
 			{
-				$this->_send_error('data', lang('database_error_coud_not_connect'), $_POST);
+				$this->_send_error('data', lang('database_error_could_not_connect'), $_POST);
 			}
 			
 			// The database should exists, so try to connect
@@ -947,6 +947,7 @@ class Installer
 		 */		
 		$migration_files = $this->_get_migration_files();
 
+
 		if ( ! empty($migration_files))
 		{
 			header("Location: ".BASEURL.'install/?step=migrate&lang='.$this->template['lang'], TRUE, 302);
@@ -978,7 +979,6 @@ class Installer
 	 */
 	function _save_user()
 	{
-
 		// Config library
 		require_once('./class/Config.php');
 
@@ -989,11 +989,10 @@ class Installer
 		if ( !empty($_POST['encryption_key']) && strlen($_POST['encryption_key']) > 31)
 		{
 			include(APPPATH.'config/config.php');
-			include(APPPATH.'config/connect.php');
+			include(APPPATH.'config/user.php');
 
 			if ($config['encryption_key'] == '')
 			{
-
 				$conf = new ION_Config(APPPATH.'config/', 'config.php');
 		
 				$conf->set_config('encryption_key', $_POST['encryption_key']);
@@ -1056,7 +1055,7 @@ class Installer
 		$data['join_date'] = date('Y-m-d H:i:s');
 		$data['salt'] = $this->get_salt();
 		$data['password'] = $this->_encrypt($data['password'], $data);
-		$data['id_group'] = '1';
+		$data['id_role'] = '1';
 		
 		// Clean data array
 		unset($data['password2']);
@@ -1066,18 +1065,18 @@ class Installer
 		
 		// Check if the user exists
 		$this->db->where('username', $data['username']);
-		$query = $this->db->get('users');
+		$query = $this->db->get('user');
 		
 		if ($query->num_rows() > 0)
 		{
 			// updates the user
 			$this->db->where('username', $data['username']);
-			$this->db->update('users', $data);
+			$this->db->update('user', $data);
 		}
 		else
 		{
 			// insert the user
-			$this->db->insert('users', $data);	
+			$this->db->insert('user', $data);
 		}
 	}
 
@@ -1181,7 +1180,7 @@ class Installer
 	 **/	
 	function get_salt()
 	{
-		require('../application/config/connect.php');
+		require('../application/config/user.php');
 		return substr(md5(uniqid(rand(), true)), 0, $config['salt_length']);
 	}
 
@@ -1260,6 +1259,7 @@ class Installer
 				$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 				$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 				$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+				$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 			}
 	
 			
@@ -1292,6 +1292,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}
 			}
 	
@@ -1305,22 +1306,26 @@ class Installer
 			if (empty($migration_xml))
 			{
 				$migrate_from = true;
-				
-				$fields = $this->db->field_data('users');
-	
-				foreach ($fields as $field)
+
+				if ($this->db->table_exists('users') == true)
 				{
-					if ($field->name == 'salt')
-						$migrate_from = false;
-				}
-				
-				if ($migrate_from == true)
-				{
-					$migration_xml[] = 'migration_0.93_0.9.4.xml';
-					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+					$fields = $this->db->field_data('users');
+
+					foreach ($fields as $field)
+					{
+						if ($field->name == 'salt')
+							$migrate_from = false;
+					}
+
+					if ($migrate_from == true)
+					{
+						$migration_xml[] = 'migration_0.93_0.9.4.xml';
+						$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
+						$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+						$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+						$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
+					}
 				}
 			}
 
@@ -1332,21 +1337,25 @@ class Installer
 			if (empty($migration_xml))
 			{
 				$migrate_from = false;
-				
-				$fields = $this->db->field_data('users');
 
-				foreach ($fields as $field)
+				if ($this->db->table_exists('users') == true)
 				{
-					if ($field->name == 'user_PK')
-						$migrate_from = true;
-				}
+					$fields = $this->db->field_data('users');
 
-				if ($migrate_from == true)
-				{
-					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+					foreach ($fields as $field)
+					{
+						if ($field->name == 'user_PK')
+							$migrate_from = true;
+					}
+
+					if ($migrate_from == true)
+					{
+						$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
+						$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+						$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+						$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
+					}
 				}
 			}
 
@@ -1371,6 +1380,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}
 			}
 			
@@ -1394,6 +1404,7 @@ class Installer
 				{
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}
 			}
 			
@@ -1411,7 +1422,25 @@ class Installer
 				if (intval($version) <= 97)
 				{
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}
+			}
+
+			/*
+			 * From 0.9.9
+			 *
+			 */
+			if (empty($migration_xml))
+			{
+				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
+				$version = isset($version['content']) ? $version['content'] : '';
+				$version = str_replace('.', '', $version);
+
+				if (intval($version) < 100)
+				{
+					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
+				}
+
 			}
 
 		}
@@ -1570,8 +1599,8 @@ class Installer
 		$conf .= "\$db['default']['dbdriver'] = '".$data['db_driver']."';\n";
 		$conf .= "\$db['default']['dbprefix'] = '';\n";
 		$conf .= "\$db['default']['swap_pre'] = '';\n";
-		$conf .= "\$db['default']['pconnect'] = TRUE;\n";
-		$conf .= "\$db['default']['db_debug'] = FALSE;\n";
+		$conf .= "\$db['default']['pconnect'] = FALSE;\n";
+		$conf .= "\$db['default']['db_debug'] = TRUE;\n";
 		$conf .= "\$db['default']['cache_on'] = FALSE;\n";
 		$conf .= "\$db['default']['cachedir'] = '';\n";
 		$conf .= "\$db['default']['char_set'] = 'utf8';\n";
@@ -1657,7 +1686,7 @@ class Installer
 
 
 	/**
-	 * Encrypts one password, based on the encrypt key set in config/connect.php
+	 * Encrypts one password, based on the encrypt key set in config/ascess.php
 	 *
 	 * @param	string		Password to encrypt
 	 * @param	array		User data array
@@ -1709,7 +1738,7 @@ class Installer
 
 
 	/**
-	 * Encrypts one password, based on the encrypt key set in config/connect.php
+	 * Encrypts one password, based on the encrypt key set in config file
 	 *
 	 * @param	string		Password to encrypt
 	 * @param	array		User data array

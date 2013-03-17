@@ -101,7 +101,7 @@ $config['user_guest_role'] = 'guests';
 |  - deactivated
 |
 | You can add more groups and change levels using the
-| database table user_groups.
+| database table "role".
 |
 | If you don't want to use this feature, just leave the array empty:
 | $config['folder_protection'] = array();

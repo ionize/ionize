@@ -25,7 +25,7 @@
 <form method="post" action="?step=database&lang=<?php echo $lang ?>">
 
 	<input type="hidden" name="action" value="save" />
-	<input type="hidden" name="db_driver" value="mysql" />
+	<input type="hidden" name="db_driver" value="mysqli" />
 
 	<!-- Driver 
 	<dl>
