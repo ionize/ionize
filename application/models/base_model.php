@@ -790,14 +790,14 @@ class Base_model extends CI_Model
 	/**
 	 * Gets items key and value as an associative array
 	 *
-	 * @param	array
-	 * @param	string			index of the field to get
-	 * @param	null|string		Value to display fo "no value"
-	 * @param 	null|string		order by string
-	 * @param	string
+	 * @param        $items_table
+	 * @param        $field				index of the field to get
+	 * @param null   $nothing_index
+	 * @param null   $nothing_value		Value to display fo "no value"
+	 * @param null   $order_by			order by string
+	 * @param string $glue
 	 *
 	 * @return array
-	 *
 	 */
 	public function get_items_select($items_table, $field, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{

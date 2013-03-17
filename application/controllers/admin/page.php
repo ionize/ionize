@@ -129,19 +129,11 @@ class Page extends MY_admin
 			$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, FALSE, 'class="select w160"');
 		}
 
-		// Access groups : authorizations
-		$groups = $this->page_model->get_groups_select();
-		// $this->template['groups'] =	form_dropdown('groups[]', $groups, false, 'class="select" multiple="multiple"');
-		$this->template['groups'] =	form_dropdown('id_group', $groups, FALSE, 'class="select"');
-		
 		$this->template['priority'] = '5';
 		$this->template['has_url'] = '1';
 		$this->template['id_parent'] = $id_parent;
 
-		/*
-		 * Extend fields
-		 *
-		 */
+		//  Extend fields
 		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page');
 
 		$this->output('page/page');
@@ -267,9 +259,21 @@ class Page extends MY_admin
 				$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select"');
 			}
 
-			// Group access
-			$groups = $this->page_model->get_groups_select();
-			$this->template['groups'] =	form_dropdown('id_group', $groups, $page['id_group'], 'class="select"');
+			// Roles
+			// $roles = $this->page_model->get_roles_select();
+			$roles = $this->role_model->get_list(array('role_level <=' => User()->get('role_level')));
+			$this->template['roles'] = $roles;
+log_message('error', print_r($roles, true));
+
+			// $this->template['roles'] =	form_dropdown('roles[]', $roles, NULL, 'class="select" multiple="multiple"');
+
+
+//		$groups = $this->page_model->get_groups_select();
+			// $this->template['groups'] =	form_dropdown('groups[]', $groups, false, 'class="select" multiple="multiple"');
+//		$this->template['groups'] =	form_dropdown('id_group', $groups, FALSE, 'class="select"');
+
+
+
 
 			// Types
 			$types = $this->type_model->get_select('page', lang('ionize_select_no_type'));

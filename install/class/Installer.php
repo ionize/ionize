@@ -607,6 +607,9 @@ class Installer
 		{
 			$ret = $this->_save_settings();
 
+
+
+
 			if ($ret)
 			{
 				header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
@@ -786,6 +789,7 @@ class Installer
 		}
 
 		// VERSION
+		/*
 		require_once('./class/Config.php');
 
 		// Save version
@@ -795,6 +799,7 @@ class Installer
 		{
 			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
 		}
+		*/
 
 		$this->template['base_url'] = BASEURL;
 		$this->output('finish');

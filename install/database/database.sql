@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS article_tag (
 
 CREATE TABLE IF NOT EXISTS article_type (
   id_type int(11) unsigned NOT NULL auto_increment,
-  type varchar(50) collate utf8_unicode_ci NOT NULL,
+  type varchar(50) NOT NULL,
   ordering int(11) default 0,
   description text NOT NULL default '',
   type_flag TINYINT( 1 ) NOT NULL default 0,
@@ -243,11 +243,11 @@ CREATE TABLE IF NOT EXISTS extend_fields (
 
 
 CREATE TABLE IF NOT EXISTS ion_sessions (
-  session_id varchar(40) collate utf8_unicode_ci NOT NULL default '0',
-  ip_address varchar(16) collate utf8_unicode_ci NOT NULL default '0',
-  user_agent varchar(50) collate utf8_unicode_ci NULL,
+  session_id varchar(40) NOT NULL default '0',
+  ip_address varchar(16) NOT NULL default '0',
+  user_agent varchar(50) NULL,
   last_activity int(10) unsigned NOT NULL default '0',
-  user_data text collate utf8_unicode_ci NULL,
+  user_data text NULL,
   PRIMARY KEY  (session_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS lang (
 
 
 CREATE TABLE IF NOT EXISTS login_tracker (
-  ip_address varchar(32) collate utf8_unicode_ci NOT NULL,
+  ip_address varchar(32) NOT NULL,
   first_time int(11) unsigned NOT NULL,
   failures tinyint(2) unsigned default NULL,
   PRIMARY KEY  (ip_address)
@@ -303,8 +303,8 @@ CREATE TABLE IF NOT EXISTS media_lang (
 
 CREATE TABLE IF NOT EXISTS menu (
   id_menu int(11) NOT NULL auto_increment,
-  name varchar(50) collate utf8_unicode_ci NOT NULL,
-  title varchar(50) collate utf8_unicode_ci NOT NULL,
+  name varchar(50) NOT NULL,
+  title varchar(50) NOT NULL,
   ordering int(11),
   PRIMARY KEY  (id_menu),
   UNIQUE KEY name (name)
@@ -376,7 +376,7 @@ CREATE TABLE IF NOT EXISTS page (
   article_order VARCHAR(50) NOT NULL DEFAULT 'ordering'				COMMENT 'Article order in this page. Can be "ordering", "date"',
   article_order_direction VARCHAR(50) NOT NULL DEFAULT 'ASC',	
   link varchar(255) default ''										COMMENT 'Link to internal / external resource',
-  link_type varchar(25) collate utf8_unicode_ci default NULL COMMENT '''page'', ''article'' or NULL',
+  link_type varchar(25) default NULL COMMENT '''page'', ''article'' or NULL',
   link_id varchar(20) NOT NULL default '',
   pagination tinyint(1) UNSIGNED NOT NULL DEFAULT 0						COMMENT 'Pagination use ?',
   pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
@@ -457,9 +457,9 @@ CREATE TABLE if not exists resource (
 CREATE TABLE IF NOT EXISTS role (
   id_role smallint(4) UNSIGNED NOT NULL auto_increment,
   level int(11) default NULL,
-  role_code varchar(25) collate utf8_unicode_ci NOT NULL,
-  role_name varchar(100) collate utf8_unicode_ci NOT NULL,
-  role_description tinytext collate utf8_unicode_ci,
+  role_code varchar(25) NOT NULL,
+  role_name varchar(100) NOT NULL,
+  role_description tinytext,
   PRIMARY KEY (id_role),
   UNIQUE KEY role_code (role_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
@@ -524,26 +524,24 @@ CREATE TABLE IF NOT EXISTS url (
   KEY idx_url_lang (lang)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
   id_user int(11) unsigned NOT NULL auto_increment,
-  id_group smallint(4) unsigned NOT NULL,
+  id_role smallint(4) unsigned NOT NULL,
   join_date timestamp NULL default NULL,
   last_visit timestamp NULL default NULL,
-  username varchar(50) collate utf8_unicode_ci NOT NULL,
-  screen_name varchar(50) collate utf8_unicode_ci default NULL,
+  username varchar(50) NOT NULL,
+  screen_name varchar(50) default NULL,
   firstname varchar(100) NOT NULL,
   lastname varchar(100) DEFAULT NULL,
   birthdate datetime NOT NULL,
   gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
-  password varchar(255) collate utf8_unicode_ci NOT NULL,
-  email varchar(120) collate utf8_unicode_ci NOT NULL,
-  salt varchar(50) collate utf8_unicode_ci NULL,
+  password varchar(255) NOT NULL,
+  email varchar(120) NOT NULL,
+  salt varchar(50) NULL,
   PRIMARY KEY  (id_user),
   UNIQUE KEY username (username),
-  KEY id_group (id_group)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1; 
-
-
+  KEY id_role (id_role)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
 
 TRUNCATE TABLE login_tracker;

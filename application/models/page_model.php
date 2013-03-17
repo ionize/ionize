@@ -350,9 +350,15 @@ class Page_model extends Base_model
 	 * used to feed selectbox of groups
 	 *
 	 */
-	public function get_groups_select()
+	public function get_roles_select()
 	{
-		return $this->get_items_select('user_groups', 'group_name', NULL, lang('ionize_select_everyone'), 'level DESC');
+		return $this->get_items_select(
+			'role',
+			'role_name',
+			NULL,
+			lang('ionize_select_everyone'),
+			'role_level DESC'
+		);
 	}
 
 
