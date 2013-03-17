@@ -198,6 +198,9 @@ namespace Ionize {
 		{
 			if (is_null(static::$modules))
 			{
+				static::$modules = array();
+				static::$installed_modules = array();
+
 				// Installed modules, stored in application/config/modules.php
 				$modules = array();
 				include(APPPATH.'config/modules.php');
@@ -230,9 +233,6 @@ namespace Ionize {
 										$config['installed'] = TRUE;
 										static::$installed_modules[$folder_name] = $config;
 									}
-
-									if (is_null(static::$modules))
-										static::$modules = array();
 
 									static::$modules[$folder_name] = $config;
 								}

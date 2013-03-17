@@ -1097,6 +1097,10 @@ $lang['ionize_label_permission_save'] = 'Save';
 $lang['ionize_label_permission_copy'] = 'Copy';
 $lang['ionize_label_permission_move'] = 'Move';
 $lang['ionize_label_permission_delete'] = 'Delete';
+$lang['ionize_label_frontend'] = 'Website';
+$lang['ionize_label_backend'] = 'Backend';
+
+
 $lang['ionize_message_role_no_save_level_too_high'] = 'Role not saved : Level must be <= to yours';
 $lang['ionize_message_role_no_delete_users_linked'] = 'Role not deleted : Users are linked !';
 $lang['ionize_help_email_can_be_used_as_login'] = 'Email can also be used as login';
