@@ -456,7 +456,7 @@ CREATE TABLE if not exists resource (
 
 CREATE TABLE IF NOT EXISTS role (
   id_role smallint(4) UNSIGNED NOT NULL auto_increment,
-  level int(11) default NULL,
+  role_level int(11) default NULL,
   role_code varchar(25) NOT NULL,
   role_name varchar(100) NOT NULL,
   role_description tinytext,
