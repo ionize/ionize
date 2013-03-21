@@ -23,7 +23,7 @@ require APPPATH.'/libraries/REST_Controller.php';
  * Basic Model loads and settings set.
  *
  */
-class MY_Controller extends CI_Controller 
+class MY_Controller extends CI_Controller
 {
 	/**
 	 * Views data array
@@ -538,6 +538,16 @@ class Base_Controller extends MY_Controller
 class MY_Admin extends MY_Controller
 {
 	/**
+	 * Default Authority Backend Deny views
+	 *
+	 * @var string
+	 */
+	public static $_DENY_DEFAULT_VIEW = 'authority/deny/default';
+	public static $_DENY_MAIN_VIEW = 'authority/deny/main';
+	public static $_DENY_OPTIONS_VIEW = 'authority/deny/options';
+
+
+	/**
 	 * Response message type
 	 * Used by controller to send answer to request
 	 * can be 'error', 'notice', 'success'
@@ -660,6 +670,63 @@ class MY_Admin extends MY_Controller
 		$this->output->set_header("Pragma: no-cache");
     }
     
+
+	// ------------------------------------------------------------------------
+
+
+	public function reload($element, $url, $title = NULL)
+	{
+		$args = array(
+			'element' => $element,
+			'url' => $url,
+		);
+
+		if ( ! is_null($title))
+			$args['title'] = $title;
+
+		$this->callback[] = array(
+			'fn' => 'ION.contentUpdate',
+			'args' => $args
+		);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * If the resource has one rule, checks if the User has access to the resource.
+	 * If not and $return is FALSE, displays the defined view.
+	 * If no view is defined, displays the default deny view.
+	 *
+	 * Only returns TRUE/FALSE is $return is set to TRUE.
+	 *
+	 * @param      $resource
+	 * @param null $view
+	 * @param bool $return
+	 *
+	 * @return bool
+	 */
+	public function authority_protect($resource, $view = NULL, $return=FALSE)
+	{
+		if (Authority::resource_has_rule($resource))
+		{
+			if (Authority::cannot('access', $resource))
+			{
+				if ( ! $return)
+				{
+					if ( is_null($view))
+						$view = self::$_DENY_DEFAULT_VIEW;
+
+					$this->output($view);
+				}
+
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+
 
 	// ------------------------------------------------------------------------
 

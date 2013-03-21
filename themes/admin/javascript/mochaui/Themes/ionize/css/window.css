@@ -117,7 +117,6 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .mocha.notification .mochaTitlebar { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; /* IE8 */ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 0); /* IE6 and 7*/ opacity: .0; -moz-opacity: 0; }
 .mocha.notification .mochaContentBorder { border-width: 0; }
 .mocha.notification .mochaContentWrapper { text-align: center; font-size: 12px; font-weight: bold; background: transparent; }
-
 .IE .mochaTitlebar .toolbar { margin-top:0 }
 
 /* Example Window Themes */

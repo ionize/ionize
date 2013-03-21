@@ -106,7 +106,7 @@
 							<tr>
 								<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
 								<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
-								<th axis="string"><?php echo lang('ionize_label_last_visit'); ?></th>
+								<th axis="date" class="w110"><?php echo lang('ionize_label_last_visit'); ?></th>
 							</tr>
 							</thead>
 							<tbody>
@@ -137,7 +137,7 @@
 								<tr>
 									<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
 									<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_join_date'); ?></th>
+									<th axis="date" class="w110"><?php echo lang('ionize_label_join_date'); ?></th>
 								</tr>
 								</thead>
 								<tbody>
@@ -215,8 +215,7 @@
 							<tr>
 								<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
 								<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
-								<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
-								<th axis="string"><?php echo lang('ionize_label_updated'); ?></th>
+								<th axis="date" class="w80"><?php echo lang('ionize_label_updated'); ?></th>
 							</tr>
 							</thead>
 
@@ -238,7 +237,6 @@
 									<td>
 										<span class="lite"><?php echo $article['breadcrumb']; ?></span>
 									</td>
-									<td><?php echo $article['updater']; ?></td>
 									<td><?php echo humanize_mdate($article['updated'], Settings::get('date_format')); ?></td>
 								</tr>
 
@@ -255,14 +253,16 @@
 
 						<div class="tabcontent">
 
-							<table class="list mb20" id="orphanArticlesList">
+							<p class="lite mt10">
+								<?php echo lang('ionize_help_orphan_articles') ?>
+							</p>
+
+							<table class="list mb20 mt0" id="orphanArticlesList">
 
 								<thead>
 								<tr>
 									<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_created'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_page_delete_date'); ?></th>
+									<th axis="date" class="w80"><?php echo lang('ionize_label_page_delete_date'); ?></th>
 								</tr>
 								</thead>
 
@@ -281,8 +281,6 @@
 												<?php echo $title; ?>
 											</a>
 										</td>
-										<td><?php echo $article['updater']; ?></td>
-										<td><?php echo humanize_mdate($article['created'], Settings::get('date_format')); ?></td>
 										<td><?php echo humanize_mdate($article['updated'], Settings::get('date_format')); ?></td>
 									</tr>
 
@@ -301,14 +299,16 @@
 
 						<div class="tabcontent">
 
-							<table class="list mb20" id="orphanPagesList">
+							<p class="lite mt10">
+								<?php echo lang('ionize_help_orphan_pages') ?>
+							</p>
+
+							<table class="list mb20 mt0" id="orphanPagesList">
 
 								<thead>
 								<tr>
 									<th axis="string"><?php echo lang('ionize_label_page'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_author'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_updater'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_page_delete_date'); ?></th>
+									<th axis="date" class="w80"><?php echo lang('ionize_label_page_delete_date'); ?></th>
 								</tr>
 								</thead>
 
@@ -323,12 +323,10 @@
 									<tr>
 										<td>
 											<a title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $page['id_page']; ?>" class="page">
-												<span class="icon edit mr5"></span>
+												<span class="icon edit mr5 left"></span>
 												<?php echo $title; ?>
 											</a>
 										</td>
-										<td><?php echo $page['author']; ?></td>
-										<td><?php echo $page['updater']; ?></td>
 										<td><?php echo humanize_mdate($page['updated'], Settings::get('date_format'). ' %H:%i'); ?></td>
 									</tr>
 

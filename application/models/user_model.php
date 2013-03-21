@@ -86,7 +86,7 @@ class User_model extends Base_model
 				unset($identification[$key]);
 		}
 
-		array_merge($identification, array('limit' => 1));
+		$identification = array_merge($identification, array('limit' => 1));
 
 		$user = $this->get_user($identification);
 
@@ -171,7 +171,7 @@ class User_model extends Base_model
 
 		if ( ! empty($user[$this->pk_name]))
 		{
-			$db_user = $this->find_user(array($this->pk_name, $user[$this->pk_name]));
+			$db_user = $this->find_user(array($this->pk_name => $user[$this->pk_name]));
 
 			if ( ! empty($db_user))
 			{

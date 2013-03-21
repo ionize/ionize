@@ -50,6 +50,22 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function get_from_type($type=NULL)
+	{
+		$where = NULL;
+
+		if ( ! is_null($type))
+		{
+			$where = array("resource like '".$type."/%'");
+		}
+
+		return $this->get_list($where);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns array of Roles IDs which have access to this resource
 	 *
@@ -57,19 +73,26 @@ class rule_model extends Base_model
 	 * HERE
 	 *
 	 * @TODO : Be more detailed : Include actions.
-	 *
 	 * @param        $element
 	 * @param        $element_id
 	 * @param string $type
 	 * @param int    $permission
+	 *
+	 * @return array
 	 */
 	public function get_element_role_ids($element, $element_id, $type='frontend', $permission=1)
 	{
 		$resource = $type . '/' . $element . '/' . $element_id;
 
-		$this->{$this->db_group}->where('resource', $resource);
-		$this->{$this->db_group}->where('permission', $permission);
+		$where = array(
+			'resource' => $resource,
+			'permission' => $permission
+		);
 
+		return $this->get_group_concat_array(
+			'id_role',
+			$where
+		);
 
 	}
 
@@ -121,62 +144,51 @@ class rule_model extends Base_model
 	/**
 	 * Saves rules for one element
 	 *
-	 * @TODO:	Include actions
-	 *
-	 * @param        $element
-	 * @param        $element_id
-	 * @param array  $role_ids
-	 * @param string $type
+	 * @param $resource
+	 * @param $rules
 	 */
-	public function save_element_roles_rules($element, $element_id, $role_ids = array(), $type='frontend')
+	public function save_element_roles_rules($resource, $rules)
 	{
 		$data = array();
 
-		if ( ! empty($role_ids))
+		if ( ! empty($rules))
 		{
-			foreach($role_ids as $id_role)
+			foreach($rules as $id_role => $role_rules)
 			{
-				$data[] = array(
-					'id_role' => $id_role,
-					'resource' => $type . '/'.$element.'/' . $element_id,
-					'permission' => 1,
-				);
+				$resource_actions = array();
+
+				foreach($role_rules as $rule)
+				{
+					$array = explode(':', $rule);
+					$resource = $array[0];
+					$action = isset($array[1]) ? $array[1] : NULL;
+
+					// Resource / Actions array
+					$actions = isset($resource_actions[$resource]) ? $resource_actions[$resource] : array();
+
+					if ( ! is_null($action))
+						$actions[]=$action;
+
+					$resource_actions[$resource] = $actions;
+				}
+				foreach($resource_actions as $resource => $actions)
+				{
+					$data[] = array(
+						'id_role' => $id_role,
+						'resource' => $resource,
+						'actions' => implode(',', $actions),
+						'permission' => 1,
+					);
+				}
 			}
 		}
-		$this->delete_element_roles_rules($element, $element_id, $role_ids = array(), $type='frontend');
+
+		$this->delete_element_roles_rules($resource);
 
 		if ( ! empty($data))
+		{
 			$this->{$this->db_group}->insert_batch($this->get_table(), $data);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Deletes all rules concerning roles for one element
-	 *
-	 * @TODO: 	Exclude roles for which the current logged in user has not the right to define the rules.
-	 * 			-> All Roles with role_level > current connected user.
-	 *
-	 * @param        $element
-	 * @param        $element_id
-	 * @param array  $role_ids
-	 * @param string $type
-	 *
-	 * @return mixed
-	 */
-	public function delete_element_roles_rules($element, $element_id, $role_ids = array(), $type='frontend')
-	{
-		$resource = $type . '/' . $element . '/' . $element_id;
-
-		// Filter on roles
-		if ( ! empty($role_ids))
-			$this->{$this->db_group}->where_in('id_role', $role_ids);
-
-		$this->{$this->db_group}->where('resource', $resource);
-
-		return $this->{$this->db_group}->delete($this->get_table());
+		}
 	}
 
 
@@ -232,7 +244,7 @@ class rule_model extends Base_model
 
 		$all_resources = self::$ci->resource_model->get_all_resources();
 
-		$this->add_parent_resources_for_save($data, array_keys($resource_actions), $all_resources, $id_role);
+		$this->_add_parent_resources_for_save($data, array_keys($resource_actions), $all_resources, $id_role);
 
 		if ( ! empty($data))
 		{
@@ -241,7 +253,49 @@ class rule_model extends Base_model
 	}
 
 
-	protected function add_parent_resources_for_save(&$data, $resources, $all, $id_role)
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Deletes all rules concerning all roles for one resource,
+	 * depending on the current User's level.
+	 *
+	 * @param       $resource
+	 * 				ex : 'backend/page/8'
+	 *
+	 * @return mixed
+	 */
+	public function delete_element_roles_rules($resource)
+	{
+		// First get all roles_ids from roles under the current logged in user
+		$role_ids = $this->get_group_concat_array(
+			'id_role',
+			array(
+				'role_level <=' => User()->get('role_level'),
+			),
+			'role'
+		);
+
+		// Filter on roles
+		if ( ! empty($role_ids))
+			$this->{$this->db_group}->where_in('id_role', $role_ids);
+
+		$this->{$this->db_group}->where('resource', $resource);
+
+		return $this->{$this->db_group}->delete($this->get_table());
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $data
+	 * @param $resources
+	 * @param $all
+	 * @param $id_role
+	 */
+	protected function _add_parent_resources_for_save(&$data, $resources, $all, $id_role)
 	{
 		$new_resources = array();
 
@@ -278,7 +332,7 @@ class rule_model extends Base_model
 					}
 				}
 			}
-			$this->add_parent_resources_for_save($data, $new_resources, $all, $id_role);
+			$this->_add_parent_resources_for_save($data, $new_resources, $all, $id_role);
 		}
 	}
 
@@ -286,6 +340,9 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 *
+	 */
 	protected function _delete_role_rules($id_role, $type)
 	{
 		$this->{$this->db_group}->where('id_role', $id_role);

@@ -1034,6 +1034,7 @@ $lang['ionize_title_label_write_rights'] = 'Write rights';
 $lang['ionize_message_check_corrected'] = ' corrected.';
 $lang['ionize_message_check_ok'] = 'OK';
 $lang['ionize_message_check_folder_nok'] = 'No Write rights';
+$lang['ionize_message_message_no_write_rights'] = 'No Write rights';
 $lang['ionize_message_nb_media_cleaned'] = ' media cleaned';
 $lang['ionize_message_no_broken_media_links'] = 'No broken media found';
 $lang['ionize_message_thumbs_deleted'] = 'Thumbnails deleted';
@@ -1071,20 +1072,14 @@ $lang['ionize_label_role_level'] = 'Level';
 $lang['ionize_title_role_edit'] = 'Role Edit';
 $lang['ionize_title_add_role'] = 'Add New Role';
 $lang['ionize_title_add_user'] = 'Add New User';
+$lang['ionize_title_resource_protected'] = 'Resource protected';
+$lang['ionize_subtitle_resource_protected'] = "You don't have access to this resource.<br/>If you need to have access, please ask one upper level Administrator.";
+$lang['ionize_label_access_denied'] = 'Access denied';
 $lang['ionize_help_role_choice'] = 'Existing levels:';
 $lang['ionize_message_role_saved'] = 'Role saved';
 $lang['ionize_message_role_deleted'] = 'Role deleted';
 $lang['ionize_message_role_not_deleted'] = 'Role not deleted';
 $lang['ionize_label_back_to_role_list'] = 'Back to Roles list';
-$lang['ionize_title_permission_backend'] = 'Backend';
-$lang['ionize_title_label_backend_connect'] = 'Connect';
-$lang['ionize_title_permission_settings'] = 'Settings';
-$lang['ionize_title_permission_settings_ionize'] = 'Settings > Ionize Interface';
-$lang['ionize_title_permission_settings_languages'] = 'Settings > Languages';
-$lang['ionize_title_permission_settings_users'] = 'Settings > Users';
-$lang['ionize_title_permission_settings_themes'] = 'Settings > Themes';
-$lang['ionize_title_permission_settings_website'] = 'Settings > Website';
-$lang['ionize_title_permission_settings_advanced'] = 'Settings > Advanced';
 $lang['ionize_label_permissions_all'] = 'All';
 $lang['ionize_label_permissions_custom'] = 'Custom';
 $lang['ionize_label_allowed_resources'] = 'Allowed';
@@ -1113,6 +1108,10 @@ $lang['ionize_title_tags'] = "Tags";
 $lang['ionize_label_new_tag'] = "Add one Tag";
 $lang['ionize_button_save_tags'] = "Save Tags";
 $lang['ionize_help_tag_textbox'] = "type a new tag here";
+
+
+$lang['ionize_help_orphan_pages'] = "These pages are not linked to any parent.<br/>This happens when the parent page of one page is deleted.";
+$lang['ionize_help_orphan_articles'] = "These articles are not linked to any page.<br/>To link again one article to one page, drag'n'drop it to one page in the tree.";
 
 
 

@@ -469,6 +469,7 @@ CREATE TABLE if not exists rule (
   resource varchar(255) NOT NULL DEFAULT '',
   actions varchar(255) NOT NULL DEFAULT '',
   permission smallint(1) DEFAULT NULL,
+  id_element int(11) unsigned,
   PRIMARY KEY (id_role,resource,actions)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -567,6 +568,9 @@ INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, d
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (52,50,'admin/page/media/video','link,unlink, edit','Videos','Page > Media > Videos');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (53,50,'admin/page/media/music','link,unlink, edit','Music','Page > Media > Music');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (54,50,'admin/page/media/file','link,unlink, edit','Files','Page > Media > Files');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (60,40,'admin/page/permissions','','Permission','Page > Permission');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (61,60,'admin/page/permissions/backend','','Backend','Page > Permission > Backend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (62,60,'admin/page/permissions/frontend','','Frontend','Page > Permission > Frontend');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (70,NULL,'admin/article','create,edit,delete,move,copy,duplicate','Article','Article');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (80,70,'admin/article/media','','Media','Article > Media');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (81,80,'admin/article/media/picture','link,unlink, edit','Pictures','Article > Media > Pictures');
@@ -575,6 +579,9 @@ INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, d
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (84,80,'admin/article/media/file','link,unlink,edit','Files','Article > Media > Files');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (85,70,'admin/article/element','add','Content Element','Article > Content Element');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (86,70,'admin/article/category','','Manage categories','Article > Categories');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (90,70,'admin/article/permissions','','Permission','Article > Permission');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (91,90,'admin/article/permissions/backend','','Backend','Article > Permission > Backend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (92,90,'admin/article/permissions/frontend','','Frontend','Article > Permission > Frontend');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (100,NULL,'admin/tree','','Tree','');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (101,100,'admin/tree/menu','add_page,edit','Menus','');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (102,100,'admin/tree/page','status,add_page,add_article,order','Pages','');
@@ -601,6 +608,98 @@ INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, d
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');
 
+INSERT IGNORE INTO rule (id_role, resource, actions, permission, id_element)
+  VALUES
+  (1,'all','',1,NULL),
+  (2,'admin','',1,NULL),
+  (2,'admin/article','create,edit,delete,move,copy,duplicate',1,NULL),
+  (2,'admin/article/category','',1,NULL),
+  (2,'admin/article/element','add',1,NULL),
+  (2,'admin/article/media','',1,NULL),
+  (2,'admin/article/media/file','link,unlink,edit',1,NULL),
+  (2,'admin/article/media/music','link,unlink,edit',1,NULL),
+  (2,'admin/article/media/picture','link,unlink,edit',1,NULL),
+  (2,'admin/article/media/video','link,unlink,edit',1,NULL),
+  (2,'admin/article/permissions','',1,NULL),
+  (2,'admin/article/permissions/backend','',1,NULL),
+  (2,'admin/article/permissions/frontend','',1,NULL),
+  (2,'admin/article/type','create,edit,delete',1,NULL),
+  (2,'admin/element','create,edit,delete',1,NULL),
+  (2,'admin/extend','create,edit,delete',1,NULL),
+  (2,'admin/filemanager','upload,rename,delete,move',1,NULL),
+  (2,'admin/menu','create,edit,delete',1,NULL),
+  (2,'admin/modules','install',1,NULL),
+  (2,'admin/modules/permissions','',1,NULL),
+  (2,'admin/page','create,edit,delete',1,NULL),
+  (2,'admin/page/article','add',1,NULL),
+  (2,'admin/page/element','add',1,NULL),
+  (2,'admin/page/media','',1,NULL),
+  (2,'admin/page/media/file','link,unlink,edit',1,NULL),
+  (2,'admin/page/media/music','link,unlink,edit',1,NULL),
+  (2,'admin/page/media/picture','link,unlink,edit',1,NULL),
+  (2,'admin/page/media/video','link,unlink,edit',1,NULL),
+  (2,'admin/page/permissions','',1,NULL),
+  (2,'admin/page/permissions/backend','',1,NULL),
+  (2,'admin/page/permissions/frontend','',1,NULL),
+  (2,'admin/role','create,edit,delete',1,NULL),
+  (2,'admin/role/permissions','',1,NULL),
+  (2,'admin/settings','',1,NULL),
+  (2,'admin/settings/ionize','',1,NULL),
+  (2,'admin/settings/languages','',1,NULL),
+  (2,'admin/settings/website','',1,NULL),
+  (2,'admin/tools','',1,NULL),
+  (2,'admin/tools/google_analytics','',1,NULL),
+  (2,'admin/tools/system','',1,NULL),
+  (2,'admin/tools/system/information','',1,NULL),
+  (2,'admin/tools/system/repair','',1,NULL),
+  (2,'admin/tools/system/report','',1,NULL),
+  (2,'admin/translations','',1,NULL),
+  (2,'admin/tree','',1,NULL),
+  (2,'admin/tree/article','unlink,status,move,copy,order',1,NULL),
+  (2,'admin/tree/menu','add_page,edit',1,NULL),
+  (2,'admin/tree/page','status,add_page,add_article,order',1,NULL),
+  (2,'admin/user','create,edit,delete',1,NULL),
+  (2,'admin/users_roles','',1,NULL),
+  (3,'admin','',1,NULL),
+  (3,'admin/article','create,edit,delete,move,copy,duplicate',1,NULL),
+  (3,'admin/article/category','',1,NULL),
+  (3,'admin/article/element','add',1,NULL),
+  (3,'admin/article/media','',1,NULL),
+  (3,'admin/article/media/picture','unlink',1,NULL),
+  (3,'admin/article/media/video','unlink,edit',1,NULL),
+  (3,'admin/article/permissions','',1,NULL),
+  (3,'admin/article/permissions/backend','',1,NULL),
+  (3,'admin/article/permissions/frontend','',1,NULL),
+  (3,'admin/filemanager','upload,rename,delete,move',1,NULL),
+  (3,'admin/menu','create,edit,delete',1,NULL),
+  (3,'admin/modules','',1,NULL),
+  (3,'admin/page','create,edit,delete',1,NULL),
+  (3,'admin/page/article','add',1,NULL),
+  (3,'admin/page/element','add',1,NULL),
+  (3,'admin/page/media','',1,NULL),
+  (3,'admin/page/media/file','link,unlink,edit',1,NULL),
+  (3,'admin/page/media/music','link,unlink,edit',1,NULL),
+  (3,'admin/page/media/picture','link,unlink,edit',1,NULL),
+  (3,'admin/page/media/video','link,unlink,edit',1,NULL),
+  (3,'admin/page/permissions','',1,NULL),
+  (3,'admin/page/permissions/backend','',1,NULL),
+  (3,'admin/page/permissions/frontend','',1,NULL),
+  (3,'admin/settings','',1,NULL),
+  (3,'admin/settings/ionize','',1,NULL),
+  (3,'admin/settings/languages','',1,NULL),
+  (3,'admin/settings/website','',1,NULL),
+  (3,'admin/tools','',1,NULL),
+  (3,'admin/tools/google_analytics','',1,NULL),
+  (3,'admin/tools/system','',1,NULL),
+  (3,'admin/tools/system/information','',1,NULL),
+  (3,'admin/tools/system/report','',1,NULL),
+  (3,'admin/translations','',1,NULL),
+  (3,'admin/tree','',1,NULL),
+  (3,'admin/tree/article','unlink,status,move,copy,order',1,NULL),
+  (3,'admin/tree/menu','add_page,edit',1,NULL),
+  (3,'admin/tree/page','status,add_page,add_article,order',1,NULL),
+  (3,'admin/user','create,edit,delete',1,NULL),
+  (3,'admin/users_roles','',1,NULL);
 
 
 DELETE FROM setting WHERE name='cache';

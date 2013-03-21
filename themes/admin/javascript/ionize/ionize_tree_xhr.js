@@ -180,7 +180,8 @@ ION.TreeXhr = new Class({
 		var self = this;
 		var id = (type == 'page') ? element.id_page : element.id_article;
 		var id_parent = (type == 'page') ? element.id_parent : element.id_page;
-		
+		var resource = this.getResourceName(type, id);
+
 		var flat_id = (type == 'page') ? element.id_page : element.id_page + 'x' + element.id_article;
 		var rel = (type == 'page') ? element.id_page : element.id_page + '.' + element.id_article;
 
@@ -194,144 +195,160 @@ ION.TreeXhr = new Class({
 		var container = this.injectContainer(type, id_parent);
 
 		// Element
-		var li = new Element('li').setProperty('id', this.id_container + '_' + type + '_' + flat_id).addClass(online).addClass(type + flat_id).setProperty('rel', rel);
-		li.store('loaded', false);
-		li.store('id_' + type, id);
-		
-		// Action element
-		var action = this.action_Model.clone();
-        var iconOnline = new Element('a').addClass('icon').addClass('status').addClass(online).addClass(type + flat_id).setProperty('rel', rel);
-
-		// Title element
-		var link = this.span_Model.clone().addClass('title');
-		var a = this.title_Model.clone()
-					.addClass(online).addClass(type + flat_id).addClass('title')
-					.setProperty('rel', rel).setProperty('title', rel + ' : ' + title + type_description).setProperty('data-type', type).setProperty('data-id', id)
-					.set('text', String.htmlspecialchars_decode(title));
-		link.adopt(a);
-		li.adopt(action, link);
-
-		this.addTitleClickEvent(li, type);
-		
-		// Icon
-		var icon = this.elementIcon_Model.clone();
-		icon.inject(li, 'top');
-		
-		// Page
-		if (type == 'page')
+		if (ION.Authority.can('access', resource, true))
 		{
-			// Online
-			if (ION.Authority.can('status', 'admin/tree/page'))
-				action.adopt(iconOnline);
+			var li = new Element('li').setProperty('id', this.id_container + '_' + type + '_' + flat_id).addClass(online).addClass(type + flat_id).setProperty('rel', rel);
+			li.store('loaded', false);
+			li.store('id_' + type, id);
 
+			// Action element
+			var action = this.action_Model.clone();
+	        var iconOnline = new Element('a', {'class':'icon status ' + online}).addClass(type + flat_id).setProperty('rel', rel);
 
-			li.addClass('folder').addClass('page');
-			
-			// Icons : Add Article, Add page
-			if (ION.Authority.can('add_article', 'admin/tree/page'))
-				action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('rel', rel));
+			// Title element
+			var link = this.span_Model.clone().addClass('title');
+			var a = this.title_Model.clone()
+						.addClass(online).addClass(type + flat_id).addClass('title')
+						.setProperty('rel', rel).setProperty('title', rel + ' : ' + title + type_description).setProperty('data-type', type).setProperty('data-id', id)
+						.set('text', String.htmlspecialchars_decode(title));
+			link.adopt(a);
+			li.adopt(action, link);
 
-			if (ION.Authority.can('add_page', 'admin/tree/page'))
-				action.adopt(new Element('a').addClass('addPage').addClass('icon').addClass('page').addClass('add').setProperty('data-page', id).setProperty('data-menu', element.id_menu));
+			// Edit link
+			if (ION.Authority.can('edit', resource, true))
+				this.addTitleClickEvent(li, type);
+			else
+				a.addClass('no-edit');
+				// aNoEdit = new Element('span', {'class':'icon no-edit right'}).inject(li, 'bottom');
 
-            // Actions
-			this.addPageActionLinks(action);
+			// Icon
+			var icon = this.elementIcon_Model.clone();
+			icon.inject(li, 'top');
 
-			// Folder icon
-			icon.addClass('folder');
-			if (element.appears == '0') icon.addClass('hidden');
-
-			// if home page, remove home from the old home page
-			if (element.home == '1')
+			// Page
+			if (type == 'page')
 			{
-				this.container.getElements('.folder.home').removeClass('home');
-				icon.addClass('home');
+				// Online
+				if (ION.Authority.can('status', 'admin/tree/page') && ION.Authority.can('status', resource, true))
+					action.adopt(iconOnline);
+
+				li.addClass('folder').addClass('page');
+
+				// Icons : Add Article, Add page
+				if (ION.Authority.can('add_article', 'admin/tree/page') && ION.Authority.can('add_article', resource, true))
+					action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('rel', rel));
+
+				if (ION.Authority.can('add_page', 'admin/tree/page') && ION.Authority.can('add_page', resource, true))
+					action.adopt(new Element('a').addClass('addPage').addClass('icon').addClass('page').addClass('add').setProperty('data-page', id).setProperty('data-menu', element.id_menu));
+
+	            // Actions
+				this.addPageActionLinks(action);
+
+				// Folder icon
+				icon.addClass('folder');
+				if (element.appears == '0') icon.addClass('hidden');
+
+				// if home page, remove home from the old home page
+				if (element.home == '1')
+				{
+					this.container.getElements('.folder.home').removeClass('home');
+					icon.addClass('home');
+				}
+
+				// plus / minus icon
+				var pm = this.plusMinus_Model.clone().inject(li, 'top');
+
+				if (ION.Authority.can('edit', resource, true))
+					pm.addEvent('click', this.openclose.bind(this));
+
+				// Make the title draggable : Move page
+				ION.addDragDrop(a, '.dropPageAsLink,.dropPageInArticle', 'ION.dropPageAsLink,ION.dropPageInArticle');
+
+				li.inject(container, 'bottom');
 			}
-			
-			// plus / minus icon
-			var pm = this.plusMinus_Model.clone().addEvent('click', this.openclose.bind(this)).inject(li, 'top');
-
-			// Make the title draggable : Move page
-			ION.addDragDrop(a, '.dropPageAsLink,.dropPageInArticle', 'ION.dropPageAsLink,ION.dropPageInArticle');
-
-			li.inject(container, 'bottom');
-		}
-		// Article
-		else
-		{
-			li.addClass('file').addClass(type + id);
-
-			// Online
-			if (ION.Authority.can('status', 'admin/tree/article'))
-				action.adopt(iconOnline);
-
-			// Icon : unlink
-			if (ION.Authority.can('unlink', 'admin/tree/article'))
-			{
-                var iconUnlink = new Element('a', {'class': 'icon unlink', 'rel': rel});
-                action.adopt(iconUnlink);
-			}
-
-			// File icon
-			if (element.indexed == '0') icon.addClass('sticky');
-			else icon.addClass('file');
-			
-			// Link icon
-			if (element.link != '') icon.addClass('link');
-			
-			// Flag span : User's flag first, then Type flag
-			var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
-			if (typeOf(flag) == 'null') flag = 0;
-			var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
-			if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
-			
-			// Item node line
-			this.treeLine_Model.clone().inject(li, 'top').addClass('line').addClass('node');
-
-			// Make the article name draggable
-			ION.addDragDrop(a, '.folder,.dropArticleAsLink,.dropArticleInPage', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
-
-			// Inject LI at the correct position
-			var lis = container.getChildren('li');
-			if (element.ordering == '1')
-			{
-				li.inject(container, 'top');
-			}
+			// Article
 			else
 			{
-				if (typeOf(lis[element.ordering -2]) != 'null')
-					li.inject(lis[element.ordering -2], 'after');
+				li.addClass('file').addClass(type + id);
+
+				// Online
+				if (ION.Authority.can('status', 'admin/tree/article') && ION.Authority.can('status', resource, true))
+					action.adopt(iconOnline);
+
+				// Icon : unlink
+				if (ION.Authority.can('unlink', 'admin/tree/article') && ION.Authority.can('unlink', resource, true))
+				{
+	                var iconUnlink = new Element('a', {'class': 'icon unlink', 'rel': rel});
+	                action.adopt(iconUnlink);
+				}
+
+				// File icon
+				if (element.indexed == '0') icon.addClass('sticky');
+				else icon.addClass('file');
+
+				// Link icon
+				if (element.link != '') icon.addClass('link');
+
+				// Flag span : User's flag first, then Type flag
+				var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
+				if (typeOf(flag) == 'null') flag = 0;
+				var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
+				if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
+
+				// Item node line
+				this.treeLine_Model.clone().inject(li, 'top').addClass('line').addClass('node');
+
+				// Make the article name draggable
+				ION.addDragDrop(a, '.folder,.dropArticleAsLink,.dropArticleInPage', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
+
+				// Inject LI at the correct position
+				var lis = container.getChildren('li');
+				if (element.ordering == '1')
+				{
+					li.inject(container, 'top');
+				}
 				else
-					li.inject(container, 'bottom');
+				{
+					if (typeOf(lis[element.ordering -2]) != 'null')
+						li.inject(lis[element.ordering -2], 'after');
+					else
+						li.inject(container, 'bottom');
+				}
 			}
-		}
 
-		// Get the parent : Build tree lines (nodes)
-		li.getParents('li').each(function(parent){
-			self.treeLine_Model.clone().inject(li, 'top');
-		});
+			// Get the parent : Build tree lines (nodes)
+			li.getParents('li').each(function(parent){
+				self.treeLine_Model.clone().inject(li, 'top');
+			});
 
-		// Makes the folder sortable (on folder icon)
-		if (typeOf(container.retrieve('sortables')) != 'null')
-		{
-			(container.retrieve('sortables')).addItems(li);
-		}
+			// Makes the folder sortable (on folder icon)
+			if (typeOf(container.retrieve('sortables')) != 'null')
+			{
+				(container.retrieve('sortables')).addItems(li);
+			}
 
-		// The element was dynamically inserted through XHR
-		if (typeOf(element.inserted) != 'null')
-		{
-			var cid = container.retrieve('id');
-			if (typeOf(this.itemManagers[type][cid]) != 'null')
-				(this.itemManagers[type][cid]).init();
-		}
-		
-		// Mouse over effect : Show / Hide actions
-		this.addMouseOver(li);
+			// The element was dynamically inserted through XHR
+			if (typeOf(element.inserted) != 'null')
+			{
+				var cid = container.retrieve('id');
+				if (typeOf(this.itemManagers[type][cid]) != 'null')
+					(this.itemManagers[type][cid]).init();
+			}
 
-		// Open the folder if cookie says...
-		if (type == 'page' && this.opened.contains(id))
-		{
-			this.get(id);
+			// Mouse over effect : Show / Hide actions
+			this.addMouseOver(li);
+
+			// Open the folder if cookie says...
+			if (type == 'page' && this.opened.contains(id))
+			{
+				if (ION.Authority.can('edit', resource, true))
+					this.get(id);
+				else
+				{
+					ION.listDelFromCookie(this.id_container, id);
+					this.getOpenedFromCookie();
+				}
+			}
 		}
 	},
 
@@ -666,6 +683,14 @@ ION.TreeXhr = new Class({
 			this.opened = (Cookie.read(this.id_container)).split(',');
 		else
 			this.opened = new Array();
+	},
+
+	getResourceName: function(element, id, type)
+	{
+		if (typeOf(type) == 'null')
+			type = 'backend';
+
+		return type + '/' + element + '/' + id;
 	}
 });
 

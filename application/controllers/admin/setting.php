@@ -428,6 +428,13 @@ class Setting extends MY_admin
 		// Save settings to DB
 		$this->_save_settings($settings, $lang_settings);
 
+		$this->reload(
+			'mainPanel',
+			'setting',
+			lang('ionize_menu_site_settings')
+		);
+
+
 		// Answer
 		$this->success(lang('ionize_message_settings_saved'));
 	}
@@ -751,7 +758,13 @@ class Setting extends MY_admin
 		}
 		else
 		{
-			$this->success(lang('ionize_message_views_saved'));				
+			$this->reload(
+				'mainPanel',
+				'setting/themes',
+				lang('ionize_title_theme')
+			);
+
+			$this->success(lang('ionize_message_views_saved'));
 		}
 		
 	}

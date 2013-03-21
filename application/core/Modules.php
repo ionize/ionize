@@ -122,69 +122,6 @@ namespace Ionize {
 		}
 
 
-
-/*
-		public static function set_permissions()
-		{
-			$user = User()->get_user();
-
-			if ( ! is_null($user))
-			{
-				$modules = static::get_installed_modules();
-
-				log_message('error', print_r($modules, true));
-			}
-		}
-*/
-
-		// --------------------------------------------------------------------
-
-
-		/**
-		 * Set the permissions through the Authority class
-		 *
-		 * @param string $role_code
-		 *
-		public static function set_role_permissions($role_code = NULL)
-		{
-			if ( ! is_null($role_code))
-			{
-				$modules = static::get_modules();
-
-				foreach($modules as $folder => $module)
-				{
-					if ( ! empty($module['permissions']))
-					{
-						foreach($module['permissions'] as $resource_key => $resource)
-						{
-							$resource_key = 'module/' . strtolower($folder) . '/' . $resource_key;
-
-							if ( isset($resource[$role_code]) && is_array($resource[$role_code]))
-							{
-								$rules = $resource[$role_code];
-
-								foreach($rules as $permission => $actions)
-								{
-									if ($permission == 'allow' OR $permission = 'deny')
-									{
-										$actions = explode(',', $actions);
-
-										foreach ($actions as $action)
-										{
-											$action = trim($action);
-											$permission == 'allow' ? \Authority::allow($action, $resource_key) : \Authority::deny($action, $resource_key);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		 */
-
-
 		// --------------------------------------------------------------------
 
 

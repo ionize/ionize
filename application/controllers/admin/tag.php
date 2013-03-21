@@ -119,13 +119,10 @@ class Tag extends MY_admin
 	 */
 	private function _reload_tag_panel()
 	{
-		$this->callback[] = array(
-			'fn' => 'ION.contentUpdate',
-			'args' => array(
-				'element' => 'mainPanel',
-				'url' => 'tag/index',
-				'title' => lang('ionize_title_tags'),
-			)
+		$this->reload(
+			'mainPanel',
+			'tag/index',
+			lang('ionize_title_tags')
 		);
 	}
 }

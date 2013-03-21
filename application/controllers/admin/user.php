@@ -195,6 +195,10 @@ class User extends My_Admin
 				{
 					$post['password'] = User()->encrypt($this->input->post('password'), $post);
 				}
+				else
+				{
+					unset($post['password'], $post['password2']);
+				}
 			}
 			// New
 			else

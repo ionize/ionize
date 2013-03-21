@@ -110,7 +110,7 @@ $config['user_guest_role'] = 'guests';
 
 $config['folder_protection'] = array(
 	'admin' => array(
-		'role' => array('admins')
+		'role' => array('super-admins')
 	),
 );
 

@@ -74,6 +74,16 @@ h3.treetitle {
 	display:block;
 	height: 18px;
 }
+.tree li a.title.no-edit:after {
+	content: "\00a0";
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	background: url(../images/icons_16.png) no-repeat;
+	background-position: -176px -80px;
+	right:3px;
+	top:2px;
+}
 
 .tree li img {
 	vertical-align: middle;
@@ -157,3 +167,6 @@ h3.treetitle {
 	display:none;
 }
 
+#splitPanel_sideColumn .tree {
+	margin:0;
+}

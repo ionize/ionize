@@ -82,31 +82,42 @@ fieldset {
 	width: auto;
 }
 
-/* Small DL, used in sidecolun and in some windows */
+/* Small DL, used in side column and in some windows */
 .panel dl.small,
-.mocha dl.small {
+.mocha dl.small,
+.panel dl.x-small,
+.mocha dl.x-small {
 	min-width: inherit;
 	clear:both;
 	min-height: 20px;
 }
 .panel dl.small dt,
-.mocha dl.small dt {
+.mocha dl.small dt,
+.panel dl.x-small dt,
+.mocha dl.x-small dt {
 	min-width:inherit;
 	width:130px;
 }
+.panel dl.x-small dt,
+.mocha dl.x-small dt {
+	width:90px;
+}
+
 .panel dl.small dd,
-.mocha dl.small dd {
+.mocha dl.small dd,
+.panel dl.x-small dd,
+.mocha dl.x-small dd {
 	width:auto;
 	min-width:inherit;
 	margin-left:135px;
 }
+.panel dl.x-small dd,
+.mocha dl.x-small dd {
+	margin-left:95px;
+}
 
-dl.required dt label {
-	color:#b00;
-}
-dl.required dd input, dl.required dd textarea, dl.required dd select {
-	border-color: #666;
-}
+dl.required dt label { color:#b00;}
+dl.required dd input, dl.required dd textarea, dl.required dd select { border-color: #666;}
 
 
 /* Mocha Windows correction */
@@ -299,6 +310,21 @@ input.submit{
 	padding:2px 6px;
 	height: 24px;
 	vertical-align: middle;
+}
+
+a.button.disabled,
+button.button.disabled,
+input.button.disabled,
+button.submit.disabled,
+input.submit.disabled{
+	opacity: .5;
+}
+a.button.disabled:hover,
+button.button.disabled:hover,
+input.button.disabled:hover,
+button.submit.disabled:hover,
+input.submit.disabled:hover{
+	cursor: default;
 }
 
 /* Special form elements */
@@ -572,6 +598,7 @@ a.button.submit:hover{
 
 
 
+/*
 button.disabled,
 .button.disabled,
 .button.green.disabled,
@@ -589,6 +616,7 @@ button.disabled,
 	text-shadow: none;
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)";
 }
+*/
 
 /* Buttons specific context */
 .tabsidecolumn .button.light,

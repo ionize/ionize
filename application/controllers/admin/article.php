@@ -68,6 +68,14 @@ class Article extends MY_admin
 
 
 	/**
+	 * Frontend / Backend Authority actions
+	 * @var array
+	 */
+	protected static $_AUTHORITY_BACKEND_ACTIONS = array('edit','delete','status','unlink');
+	protected static $_AUTHORITY_FRONTEND_ACTIONS = NULL;
+
+
+	/**
 	 * Constructor
 	 *
 	 */
@@ -84,6 +92,8 @@ class Article extends MY_admin
 		$this->load->model('extend_field_model', '', TRUE);
 		$this->load->model('url_model', '', TRUE);
 		$this->load->model('tag_model', '', TRUE);
+		$this->load->model('resource_model', '', TRUE);
+		$this->load->model('rule_model', '', TRUE);
 
 		$this->load->library('structure');
 		
@@ -240,10 +250,6 @@ class Article extends MY_admin
 
 		// Tags : Default no one
 		$this->template['tags'] = '';
-		
-		// Existing Tags in all other articles
-// Has to be checked
-		$this->template['existing_tags'] = $this->tag_model->get_list();
 		
 		// All other pages articles
 		$this->template['articles'] = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
@@ -490,6 +496,21 @@ class Article extends MY_admin
 		// Saves Tags
 		$this->tag_model->save_element_tags($this->input->post('tags'), 'article', $this->id);
 
+		// Rules
+		if (Authority::can('access', 'admin/article/permissions/backend'))
+		{
+			$resource = $this->_get_resource_name('backend', 'article', $this->id);
+			$this->rule_model->save_element_roles_rules($resource, $this->input->post('backend_rule'));
+		}
+
+		if (Authority::can('access', 'admin/article/permissions/frontend'))
+		{
+			$resource = $this->_get_resource_name('frontend', 'article', $this->id);
+			$this->rule_model->save_element_roles_rules($resource, $this->input->post('frontend_rule'));
+		}
+
+
+
 		// Context update
 		$this->update_contexts($id_article);
 
@@ -518,54 +539,66 @@ class Article extends MY_admin
 		$rel = explode(".", $rel);
 		$id_page = ( !empty($rel[1] )) ? $rel[0] : '0';
 		$id_article = ( !empty($rel[1] )) ? $rel[1] : NULL;
-		
-		// Edit article if ID exists
-		if ( ! is_null($id_article) )
+
+		$resource = $this->_get_resource_name('backend', 'article', $id_article);
+		$page_resource = $this->_get_resource_name('backend', 'page', $id_page);
+
+		if (
+			Authority::can('edit', 'admin/article') && Authority::can('edit', $resource, null, true)
+			&& Authority::can('edit', $page_resource, null, true)
+		)
 		{
-			$article = $this->article_model->get_by_id($id_article);
-
-			if( ! empty($article) )
+			// Edit article if ID exists
+			if ( ! is_null($id_article) )
 			{
-				// Loads the modules addons
-				$this->load_modules_addons($article);
+				$article = $this->article_model->get_by_id($id_article);
 
-				// Page context of the current edited article
-				$article['id_page'] = $id_page;
-
-				// Data & Lang Data
-				$this->template = array_merge($this->template, $article);
-				$this->article_model->feed_lang_template($id_article, $this->template);
-
-				// Extends fields
-				$extend_fields = $this->extend_field_model->get_element_extend_fields('article', $id_article);
-				$this->template['has_translated_extend_fields'] = $this->_has_translated_extend_fields($extend_fields);
-				$this->template['extend_fields'] = $extend_fields;
-
-				// Link : Depending on the context
-				$context = $this->article_model->get_context($id_article, $id_page);
-				
-				if ( ! empty($context))
+				if( ! empty($article) )
 				{
-					$this->template['main_parent'] = $context['main_parent'];
-					
-					$pages = $this->page_model->get_parent_array($id_page, array(), Settings::get_lang('default'));
-					
-					$breadcrump = array();
-					foreach($pages as $page)
+					// Loads the modules addons
+					$this->load_modules_addons($article);
+
+					// Page context of the current edited article
+					$article['id_page'] = $id_page;
+
+					// Data & Lang Data
+					$this->template = array_merge($this->template, $article);
+					$this->article_model->feed_lang_template($id_article, $this->template);
+
+					// Extends fields
+					$extend_fields = $this->extend_field_model->get_element_extend_fields('article', $id_article);
+					$this->template['has_translated_extend_fields'] = $this->_has_translated_extend_fields($extend_fields);
+					$this->template['extend_fields'] = $extend_fields;
+
+					// Link : Depending on the context
+					$context = $this->article_model->get_context($id_article, $id_page);
+
+					if ( ! empty($context))
 					{
-						$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+						$this->template['main_parent'] = $context['main_parent'];
+
+						$pages = $this->page_model->get_parent_array($id_page, array(), Settings::get_lang('default'));
+
+						// Breadcrump
+						$breadcrump = array();
+						foreach($pages as $page)
+							$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+						$this->template['breadcrump'] = implode(' > ', $breadcrump);
 					}
-					$this->template['breadcrump'] = implode(' > ', $breadcrump);
-				}
-				else
-				{
-					$this->template['main_parent'] = '0';
-				}
+					else
+					{
+						$this->template['main_parent'] = '0';
+					}
 
-				Event::fire('Article.edit', $this->template);
+					Event::fire('Article.edit', $this->template);
 
-				$this->output('article/article');
-			}		
+					$this->output('article/article');
+				}
+			}
+		}
+		else
+		{
+			$this->output(self::$_DENY_MAIN_VIEW);
 		}
 	}
 
@@ -580,32 +613,63 @@ class Article extends MY_admin
 		$id_page = ( !empty($rel[1] )) ? $rel[0] : '0';
 		$id_article = ( !empty($rel[1] )) ? $rel[1] : NULL;
 
-		// Edit article if ID exists
-		if ( ! is_null($id_article) )
+		$resource = $this->_get_resource_name('backend', 'article', $id_article);
+
+		if (Authority::can('edit', $resource, null, true))
 		{
-			$article = $this->article_model->get_by_id($id_article);
-
-			if( ! empty($article) )
+		// Edit article if ID exists
+			if ( ! is_null($id_article) )
 			{
-				$this->load_modules_addons($article);
+				$article = $this->article_model->get_by_id($id_article);
 
-				// Page context of the current edited article
-				$article['id_page'] = $id_page;
+				if( ! empty($article) )
+				{
+					$this->load_modules_addons($article);
 
-				// Merge article's data with template
-				$this->template = array_merge($this->template, $article);
-				$this->article_model->feed_lang_template($id_article, $this->template);
+					// Page context of the current edited article
+					$article['id_page'] = $id_page;
 
-				// Linked pages list
-				$this->template['pages_list'] = $this->article_model->get_pages_list($id_article);
+					// Merge article's data with template
+					$this->template = array_merge($this->template, $article);
+					$this->article_model->feed_lang_template($id_article, $this->template);
 
-				// Categories
-				$categories = $this->category_model->get_categories_select();
-				$current_categories = $this->category_model->get_current_categories('article', $id_article);
-				$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w100p" multiple="multiple"');
+					// Linked pages list
+					$this->template['pages_list'] = $this->article_model->get_pages_list($id_article);
 
-				// Output
-				$this->output('article/options');
+					// Categories
+					$categories = $this->category_model->get_categories_select();
+					$current_categories = $this->category_model->get_current_categories('article', $id_article);
+					$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w100p" multiple="multiple"');
+
+					// Permissions
+					$frontend_roles_resources = $this->resource_model->get_element_roles_resources(
+						'article',
+						$id_article,
+						self::$_AUTHORITY_FRONTEND_ACTIONS,
+						'frontend'
+					);
+					$this->template['frontend_roles_resources'] = $frontend_roles_resources;
+
+					$backend_roles_resources = $this->resource_model->get_element_roles_resources(
+						'article',
+						$id_article,
+						self::$_AUTHORITY_BACKEND_ACTIONS,
+						'backend'
+					);
+					$this->template['backend_roles_resources'] = $backend_roles_resources;
+
+					// Roles which have permission set for this page
+					$this->template['frontend_role_ids'] = $this->rule_model->get_element_role_ids('article', $id_article);
+					$this->template['backend_role_ids'] = $this->rule_model->get_element_role_ids('article', $id_article, 'backend');
+
+					// Output
+					$this->output('article/options');
+				}
+				else
+				{
+					// Article not found
+					$this->error(lang('ionize_message_article_not_exist'));
+				}
 			}
 			else
 			{
@@ -615,8 +679,7 @@ class Article extends MY_admin
 		}
 		else
 		{
-			// Article not found
-			$this->error(lang('ionize_message_article_not_exist'));
+			$this->output(self::$_DENY_DEFAULT_VIEW);
 		}
 	}
 
@@ -1593,6 +1656,14 @@ class Article extends MY_admin
 
 	// ------------------------------------------------------------------------
 
+
+	protected function _get_resource_name($type, $element, $id)
+	{
+		return $type . '/' . $element . '/' . $id;
+	}
+
+
+	// ------------------------------------------------------------------------
 
 	/** 
 	 * Prepares data before saving

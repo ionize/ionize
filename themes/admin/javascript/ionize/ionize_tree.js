@@ -130,6 +130,11 @@ ION.PermissionTree = new Class({
 
 	Extends: ION.SimpleTree,
 
+	options:
+	{
+		cb_name: 'rules[]'
+	},
+
 	initialize:function(container, items, options)
 	{
 		this.parent(container, items, options);
@@ -197,7 +202,7 @@ ION.PermissionTree = new Class({
 		var a = new Element('a', {'text': container.getAttribute('data-title'), 'title':'action:access, resource:' + container.getAttribute('data-resource')});
 
 		var label = new Element('label', {
-			'for':'rule' + id
+			'for': this.options.cb_name + id
 		}).adopt(a).inject(container, 'top');
 
 		// Because label is injected on top, the +/- icon should be injected (moved) at top again.
@@ -211,7 +216,7 @@ ION.PermissionTree = new Class({
 	{
 		var cb = new Element('input', {
 			'type':'checkbox',
-			'name':'rules[]',
+			'name': this.options.cb_name,
 			'value': value,
 			'id': container.getAttribute('for'),
 			'class':'mr5'
@@ -234,13 +239,13 @@ ION.PermissionTree = new Class({
 
 		actions.each(function(action)
 		{
-			var li = new Element('li',{'data-id':'rule-' + action + id, 'class':'ml16'});
+			var li = new Element('li',{'data-id':this.options.cb_name + '-' + action + id, 'class':'ml16'});
 			var spIcon = new Element('div', {'class':'tree-img line node'});
 			action = String.from(action).trim();
-			var a = new Element('a', {'text': action.capitalize(), 'title':'action:' + action + ', resource:' + container.getAttribute('data-resource')});
+			var a = new Element('a', {'text': action.replace('_', ' ').capitalize(), 'title':'action:' + action + ', resource:' + container.getAttribute('data-resource')});
 
 			var label = new Element('label', {
-				'for':'rule-' + action + id
+				'for':this.options.cb_name + '-' + action + id
 			}).adopt(a).inject(li, 'top');
 
 			spIcon.inject(li, 'top');

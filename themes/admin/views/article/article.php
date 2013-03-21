@@ -40,7 +40,7 @@ if ($tracker_title == '')
 
     	        <h2 class="main article" id="main-title"><?php echo $title; ?></h2>
 
-				<div style="margin: -15px 0pt 20px 72px;">
+				<div class="main subtitle">
 					<p>
 						<span class="lite">ID : </span>
 						<?php echo $id_article; ?>

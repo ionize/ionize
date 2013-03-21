@@ -134,6 +134,8 @@ class Translation extends MY_admin
 
 		$file_name = strtolower($this->input->post('file_name'));
 
+		$error = FALSE;
+
 		foreach(Settings::get_languages() as $language)
 		{
 			$lang = $language['lang'];
@@ -150,6 +152,8 @@ class Translation extends MY_admin
 					$this->error(lang('ionize_message_language_dir_creation_fail'));
 				}
 			}
+
+
 
 			// Build the file data
 			$data  = "<?php\n\n";
@@ -183,24 +187,28 @@ class Translation extends MY_admin
 			$data .= "\n".'?'.'>';
 
 			// Try writing the language file
-			try
+			$file = $path.'/'.$file_name.'_lang.php';
+			if ( ! is_really_writable($file))
 			{
-				write_file($path.'/'.$file_name.'_lang.php', $data);
+				$this->error(lang('ionize_message_message_no_write_rights'). ' : ' . Settings::get('theme').'/language/'. $lang . '/' .$file_name.'_lang.php');
+				$error = TRUE;
 			}
-			catch (Exception $e) {
-				$this->error(lang('ionize_message_language_file_creation_fail'));
-			}			
+			else
+			{
+				write_file($file, $data);
+			}
 		}
 
-		$this->update[] = array(
-			'element' => 'mainPanel',
-			'url' => admin_url() . 'translation',
-			'title' => lang('ionize_title_translation')
-		);
+		if ( ! $error)
+		{
+			$this->update[] = array(
+				'element' => 'mainPanel',
+				'url' => admin_url() . 'translation',
+				'title' => lang('ionize_title_translation')
+			);
 
-		
-		// If method arrives here, everything was OK
-		$this->success(lang('ionize_message_language_files_saved'));
+			$this->success(lang('ionize_message_language_files_saved'));
+		}
 	}
 	
 	

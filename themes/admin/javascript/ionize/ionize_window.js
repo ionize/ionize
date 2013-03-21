@@ -20,7 +20,7 @@ ION.append({
 			width: 350,
 			height: 50,
 			y: 1,
-			padding:  { top: 15, right: 12, bottom: 10, left: 12 },
+			padding:  { top: 15, right: 12, bottom: 5, left: 12 },
 			shadowBlur: 5,
 			bodyBgColor: [250, 250, 250]
 		});

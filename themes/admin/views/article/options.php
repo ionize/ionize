@@ -43,8 +43,6 @@
 
 			<?php endif ;?>
 
-
-
 			<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
 				<dl class="small compact">
 					<dt><label><?php echo lang('ionize_label_date'); ?></label></dt>
@@ -83,27 +81,24 @@
 		
 	</div>
 
-
-
+	<!-- Options -->
 	<div id="options">
 
-
+		<!-- Module Placeholder -->
 		<?php if ( ! empty($id_article)) :?>
-
-			<!-- Modules PlaceHolder -->
 			<?php echo get_modules_addons('article', 'options_top'); ?>
-
 		<?php endif ;?>
 
-		<!-- Options -->
+		<!-- Attributes -->
 		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_attributes'); ?></h3>
-
 		<div class="element element-options">
 
 			<!-- Indexed content -->
 			<dl class="small">
 				<dt>
-					<label for="indexed" title="<?php echo lang('ionize_help_indexed'); ?>"><?php echo lang('ionize_label_indexed'); ?></label>
+					<label for="indexed" title="<?php echo lang('ionize_help_indexed'); ?>">
+						<?php echo lang('ionize_label_indexed'); ?>
+					</label>
 				</dt>
 				<dd>
 					<input id="indexed" name="indexed" type="checkbox" class="inputcheckbox" <?php if ($indexed == 1):?> checked="checked" <?php endif;?> value="1" />
@@ -126,11 +121,10 @@
 								<?php foreach ($pages_list as $page) :?>
 
 									<?php
+										$title = ($page['title'] != '') ? $page['title'] : $page['name'];
 
-									$title = ($page['title'] != '') ? $page['title'] : $page['name'];
-
-									// All REL or ID which permit the DOM identification of one article MUST be written like this.
-									// $rel = $page['id_page']. '.' .$id_article;
+										// All REL or ID which permit the DOM identification of one article MUST be written like this.
+										// $rel = $page['id_page']. '.' .$id_article;
 									?>
 
 									<li rel="<?php echo $page['id_page']; ?>.<?php echo $id_article; ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?php echo $title; ?></a></li>
@@ -138,9 +132,6 @@
 								<?php endforeach ;?>
 
 							</ul>
-							<!--
-										<input type="text" id="new_parent" class="inputtext w140 italic empty nofocus droppable" alt="<?php echo lang('ionize_label_drop_page_here'); ?>"></input>
-										-->
 						</div>
 					</dd>
 				</dl>
@@ -148,64 +139,30 @@
 			<?php endif ;?>
 
 
+			<!-- Categories & Tags -->
 			<div class="element-options-content">
 
-				<p><?php echo lang('ionize_label_tags'); ?></p>
+				<!-- Tags -->
+				<h4><?php echo lang('ionize_label_tags'); ?></h4>
 				<input type="text" name="tags" value="" id="tags" />
 
-				<p><?php echo lang('ionize_label_categories'); ?></p>
-
+				<!-- Categories -->
+				<h4><?php echo lang('ionize_label_categories'); ?></h4>
 				<div id="categories">
 					<?php echo $categories; ?>
 				</div>
 
 				<!-- Category create button -->
-				<a class="button light" onclick="javascript:ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})">
+				<a class="button light mb10" onclick="javascript:ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})">
 					<i class="icon-plus"></i>
 					<?php echo lang('ionize_label_new_category'); ?>
 				</a>
 
 			</div>
-
-
-			<!-- Tags
-			<dl class="small">
-				<dt>
-					<label for="tags"><?php echo lang('ionize_label_tags'); ?></label>
-				</dt>
-				<dd>
-					<input type="text" name="tags" value="" id="tags" />
-				</dd>
-			</dl>
-			-->
-
-			<!-- Categories
-			<dl class="small">
-				<dt>
-					<label for="categories"><?php echo lang('ionize_label_categories'); ?></label>
-				</dt>
-				<dd>
-					<div id="categories">
-						<?php echo $categories; ?>
-					</div>
-
-					<!-- Category create button
-					<a class="button light" onclick="javascript:ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})">
-						<i class="icon-plus"></i>
-						<?php echo lang('ionize_label_new_category'); ?>
-					</a>
-
-				</dd>
-			</dl>
-			-->
-
-
 		</div>
-
 
 		<!-- Dates -->
 		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_dates'); ?></h3>
-
 		<div class="element element-options">
 			<dl class="small">
 				<dt>
@@ -236,54 +193,60 @@
 				</dd>
 			</dl>
 
-
 		</div>
 
-		<!-- Comments
-					<h3 class="toggler"><?php echo lang('ionize_title_comments'); ?></h3>
+		<!-- Permissions -->
+		<?php if(Authority::can('access', 'admin/article/permissions')) :?>
+			<h3 class="toggler toggler-options"><?php echo lang('ionize_title_permissions'); ?>
+				<?php if ( ! empty($frontend_role_ids) OR ! empty($backend_role_ids)) : ?>
+					<a class="icon protected right mr5" ></a>
+				<?php endif ;?>
+			</h3>
+			<div class="element element-options">
 
-					<div class="element">
+				<?php if(Authority::can('access', 'admin/article/permissions/frontend')) :?>
+					<?php if ( ! empty($frontend_roles_resources)): ?>
 
-						<dl class="small">
-							<dt>
-								<label for="comment_allow"><?php echo lang('ionize_label_comment_allow'); ?></label>
-							</dt>
+						<dl class="x-small">
+							<dt><label><?php echo lang('ionize_label_frontend'); ?></label></dt>
 							<dd>
-								<input id="comment_allow" name="comment_allow" type="checkbox" class="inputcheckbox" <?php if ($comment_allow == 1):?> checked="checked" <?php endif;?>  />
+								<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
+									<div id="roleRulesContainer<?php echo $id_role ?>"></div>
+								<?php endforeach;?>
 							</dd>
 						</dl>
 
-						<dl class="small">
-							<dt>
-								<label for="comment_autovalid"><?php echo lang('ionize_label_comment_autovalid'); ?></label>
-							</dt>
+					<?php endif ;?>
+				<?php endif ;?>
+
+				<?php if(Authority::can('access', 'admin/article/permissions/backend')) :?>
+					<?php if ( ! empty($backend_roles_resources)): ?>
+
+						<dl class="x-small">
+							<dt><label><?php echo lang('ionize_label_backend'); ?></label></dt>
 							<dd>
-								<input id="comment_autovalid" name="comment_autovalid" type="checkbox" class="inputcheckbox" <?php if ($comment_autovalid == 1):?> checked="checked" <?php endif;?>  />
+								<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
+									<div id="roleRulesContainer<?php echo $id_role ?>"></div>
+								<?php endforeach;?>
 							</dd>
 						</dl>
 
-						<dl class="small last">
-							<dt>
-								<label for="comment_expire"><?php echo lang('ionize_label_comment_expire'); ?></label>
-							</dt>
-							<dd>
-								<input id="comment_expire" name="comment_expire" type="text" class="inputtext w120 date"  value="<?php echo humanize_mdate($comment_expire, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
-							</dd>
-						</dl>
+					<?php endif;?>
+				<?php endif ;?>
 
-					</div>
-
-					-->
+			</div>
+		<?php endif ;?>
 
 
 		<!-- SEO -->
 		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_seo'); ?></h3>
-
 		<div class="element element-options">
-			<!-- Meta_Description -->
-			<h4 class="help" title="<?php echo lang('ionize_help_article_meta_description'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
 
-			<div class="small optionInputTab">
+			<!-- Meta_Description -->
+			<div class="element-options-content">
+
+				<h4 title="<?php echo lang('ionize_help_article_meta_description'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
+
 				<div id="metaDescriptionTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
@@ -296,7 +259,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_description']; ?></textarea>
+						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo ${$language['lang']}['meta_description']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 
@@ -305,8 +268,9 @@
 
 
 			<!-- Meta_Keywords -->
-			<h4 class="help" title="<?php echo lang('ionize_help_article_meta_keywords'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
-			<div class="small optionInputTab">
+			<div class="element-options-content">
+				<h4 title="<?php echo lang('ionize_help_article_meta_keywords'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
+
 				<div id="metaKeywordsTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
@@ -319,7 +283,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_keywords']; ?></textarea>
+						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo ${$language['lang']}['meta_keywords']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 
@@ -332,44 +296,43 @@
 		<!-- Copy Content -->
 		<?php if( ! empty($id_article)) :?>
 
-		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_operation'); ?></h3>
+			<h3 class="toggler toggler-options"><?php echo lang('ionize_title_operation'); ?></h3>
+			<div class="element element-options">
 
-		<div class="element element-options">
+				<dl class="small">
+					<dt>
+						<label for="lang_copy_from" title="<?php echo lang('ionize_help_copy_content'); ?>"><?php echo lang('ionize_label_copy_content'); ?></label>
+					</dt>
+					<dd>
+						<div class="w100 left">
+							<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
+								<?php foreach(Settings::get_languages() as $language) :?>
+								<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
+								<?php endforeach ;?>
+							</select>
 
-			<dl class="small">
-				<dt>
-					<label for="lang_copy_from" title="<?php echo lang('ionize_help_copy_content'); ?>"><?php echo lang('ionize_label_copy_content'); ?></label>
-				</dt>
-				<dd>
-					<div class="w100 left">
-						<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
-							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
-							<?php endforeach ;?>
-						</select>
+							<br/>
 
-						<br/>
+							<select name="lang_copy_to" id="lang_copy_to" class="w100 select mt5">
+								<?php foreach(Settings::get_languages() as $language) :?>
+								<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
+								<?php endforeach ;?>
+							</select>
 
-						<select name="lang_copy_to" id="lang_copy_to" class="w100 select mt5">
-							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
-							<?php endforeach ;?>
-						</select>
+						</div>
+						<div class="w30 h50 left ml5" style="background:url('<?php echo theme_url(); ?>images/icon_24_from_to.png') no-repeat 50% 50%;"></div>
+					</dd>
+				</dl>
 
-					</div>
-					<div class="w30 h50 left ml5" style="background:url('<?php echo theme_url(); ?>images/icon_24_from_to.png') no-repeat 50% 50%;"></div>
-				</dd>
-			</dl>
+				<!-- Submit button  -->
+				<dl class="small">
+					<dt>&#160;</dt>
+					<dd>
+						<input type="submit" value="<?php echo lang('ionize_button_copy_content'); ?>" class="submit" id="copy_lang">
+					</dd>
+				</dl>
 
-			<!-- Submit button  -->
-			<dl class="small">
-				<dt>&#160;</dt>
-				<dd>
-					<input type="submit" value="<?php echo lang('ionize_button_copy_content'); ?>" class="submit" id="copy_lang">
-				</dd>
-			</dl>
-
-		</div>
+			</div>
 
 		<?php endif ;?>
 
@@ -477,12 +440,7 @@
 
 	<?php if (!empty($id_article)) :?>
 
-		/**
-		 * Indexed XHR update
-		 * Categories XHR update
-		 *
-		 */
-			// Indexed
+		// Indexed XHR & Categories update
 		$('indexed').addEvent('click', function(e)
 		{
 			var value = (this.checked) ? '1' : '0';
@@ -514,10 +472,47 @@
 			ION.HTML(admin_url + 'article/get_link', {'id_page': '<?php echo $id_page; ?>', 'id_article': '<?php echo $id_article; ?>'}, {'update': 'linkContainer'});
 		}
 
-		/**
-		 * Name Edit
-		 *
-		 */
+		<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
+
+			var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+				'roleRulesContainer<?php echo $id_role ?>',
+				<?php echo json_encode($role_resources['resources'], true) ?>,
+				{
+					'cb_name':'backend_rule[<?php echo $id_role ?>][]',
+					'key': 'id_resource',
+					'data': [
+						{'key':'resource', 'as':'resource'},
+						{'key':'title', 'as':'title'},
+						{'key':'description', 'as':'description'},
+						{'key':'actions', 'as':'actions'}
+					],
+					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
+				}
+			);
+
+		<?php endforeach;?>
+
+		<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
+
+			var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+				'roleRulesContainer<?php echo $id_role ?>',
+				<?php echo json_encode($role_resources['resources'], true) ?>,
+				{
+					'cb_name':'frontend_rule[<?php echo $id_role ?>][]',
+					'key': 'id_resource',
+					'data': [
+						{'key':'resource', 'as':'resource'},
+						{'key':'title', 'as':'title'},
+						{'key':'description', 'as':'description'},
+						{'key':'actions', 'as':'actions'}
+					],
+					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
+				}
+			);
+
+		<?php endforeach;?>
+
+		// Name Edit
 		ION.initInputChange('#articleOptionsForm .dynamic-input');
 
 	<?php endif; ?>

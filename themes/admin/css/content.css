@@ -63,7 +63,7 @@ License:
 	border-bottom: solid 1px #d5d9dc;
 }
 #splitPanel_sidePanel_pad h4 {
-	margin: 10px 0 5px 15px;
+	margin: 5px 0px;
 	padding:0;
 }
 #splitPanel_sidePanel_pad .element .element-content {
@@ -84,7 +84,7 @@ License:
 #splitPanel_sidePanel_pad p {
 }
 #splitPanel_sidePanel_pad .element-options-content {
-	margin-left:15px;
+	margin: 0 0 15px 19px;
 }
 #splitPanel_sidePanel_pad .info dl.small dt {
 	width:100px;
@@ -211,6 +211,8 @@ li.offline { opacity:0.7; }
 .icon.card,		    .button i.icon-card		    {background-position: -128px -112px;}
 .icon.upload,		.button i.icon-upload		{background-position: 0 -32px;}
 .icon.mail,		    .button i.icon-mail		    {background-position: -144px -80px;}
+.icon.protected,    .button i.icon-protected    {background-position: -160px -80px;}
+.icon.no-edit,      .button i.no-edit           {background-position: -176px -80px;}
 
 .icon.folder,			.button i.icon-folder			{background-position: 0 -16px;}
 .icon.folder.open,		.button i.icon-folder.open			{background-position: -16px -16px;}
@@ -300,6 +302,7 @@ h2.main.article_types { background: url(../images/icon_48_article_types.png) no-
 h2.main.key { background: url(../images/icon_48_key.png) no-repeat 0 0; }
 h2.main.tree { background: url(../images/icon_48_tree.png) no-repeat 0 0; }
 h2.main.tags { background: url(../images/icon_48_tag.png) no-repeat 0 0; }
+h2.main.protected { background: url(../images/icon_48_protected.png) no-repeat 0 0; }
 
 h2.main.pictured {
 	color:#ccc;
@@ -310,10 +313,6 @@ h2.main.pictured {
 	margin-bottom:0;
 }
 
-.main.subtitle {
-	margin: -15px 0 20px 72px;
-	display:block;
-}
 .main.subtitle.pictured {
 	margin: -50px 0 20px 130px;
 }
@@ -358,7 +357,7 @@ h2.main.pictured {
 
 div.main.subtitle {
 	font-weight: normal;
-	margin: -15px 0 10px 58px;
+	margin: -15px 0 10px 62px;
 }
 
 
@@ -725,12 +724,12 @@ table.list div.content ul{
 	min-width: 310px;   /* avoid new line */
 }
 .mainTabs .tab-menu li {
-	display: block;
 	position: relative;
 	float: left;
 	margin:	0 2px 0px 2px;
 	cursor: pointer;
 	line-height: 16px;
+	display: block;
 }
 .mainTabs .tab-menu li.right {
 	float: right;
@@ -738,7 +737,7 @@ table.list div.content ul{
 .mainTabs .tab-menu li a {
 	display: block;
 	margin-left: 8px;
-	padding: 5px 15px 3px 15px;
+	padding: 5px 10px 3px 10px;
 	text-align: center;
 	font-weight: normal;
 	color: #7A8189;
@@ -780,7 +779,7 @@ table.list div.content ul{
 }
 
 .mainTabs.small {
-	margin-bottom: 0;
+	margin: 0;
 	padding-bottom: 0;
 }
 .mainTabs.small .tab-menu{
@@ -1001,6 +1000,11 @@ div.translation {
 	margin-bottom: 12px;
 
 }
+.desktopBloc .tab-menu li {
+	float: none;
+	display: inline-block;
+}
+
 .desktopIcon {
 	float:left;
 	width:70px;

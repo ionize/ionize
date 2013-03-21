@@ -10,7 +10,15 @@ ION.Authority = new Class({
 {
 	Implements: [Events, Options],
 
+	/**
+	 * User's rules
+	 */
 	rules: null,
+
+	/**
+	 * All rules, by type
+	 */
+	all_rules: Array(),
 
 	has_all: false,
 
@@ -24,7 +32,7 @@ ION.Authority = new Class({
 	 * Is called by init() with onComplete as option.
 	 *
 	 */
-	initialize:function(options)
+	initialize: function(options)
 	{
 		if (options)
 		{
@@ -37,12 +45,13 @@ ION.Authority = new Class({
 					ION.Authority.onComplete = options.onComplete;
 				}
 				ION.Authority.load_rules();
+				ION.Authority.load_all_rules();
 			}
 		}
 	},
 
 
-	load_rules:function()
+	load_rules: function()
 	{
 		new Request.JSON({
 			url: admin_url + 'user/get_rules',
@@ -53,6 +62,24 @@ ION.Authority = new Class({
 			{
 				ION.Authority.rules = responseJSON.rules;
 				ION.Authority.onSuccess();
+			}
+		}).send();
+	},
+
+
+	load_all_rules: function()
+	{
+		new Request.JSON({
+			url: admin_url + 'rule/get_all',
+			method: 'post',
+			data: {
+				'type':'backend'
+			},
+			loadMethod: 'xhr',
+			onFailure: function(xhr){},
+			onSuccess: function(responseJSON)
+			{
+				ION.Authority.all_rules = responseJSON.rules;
 			}
 		}).send();
 	},
@@ -71,26 +98,55 @@ ION.Authority = new Class({
 	},
 
 
-	get_rules:function()
+	/**
+	 * Check if one action is allowed.
+	 * If check_has_rule is set to true, if only make the check if one
+	 * permission exists for the resource.
+	 *
+	 * @param action
+	 * @param resource
+	 * @param check_has_rule
+	 * @returns {boolean}
+	 *
+	 */
+	can:function(action, resource, check_has_rule)
 	{
-		return ION.Authority.rules;
-	},
+		var can = false;
 
-
-	can:function(action, resource)
-	{
 		if (ION.Authority.has_all == true)
 			return true;
 
-		var rules = ION.Authority.get_rules();
-		var can = false;
+		if (typeOf(check_has_rule) != 'null' && ! ION.Authority.resource_has_rule(resource))
+			return true;
 
-		Object.each(rules, function(rule)
+		Object.each(ION.Authority.rules, function(rule)
 		{
 			if (action == rule.action && resource == rule.resource && rule.allowed == true)
 				can = true;
 		});
 
 		return can;
+	},
+
+
+	cannot:function(action, resource)
+	{
+		return ! (ION.Authority.can(action, resource));
+	},
+
+
+	resource_has_rule: function(resource)
+	{
+		var has = false;
+
+		Object.each(ION.Authority.all_rules, function(rule)
+		{
+			if (resource == rule.resource)
+			{
+				has = true;
+			}
+		});
+
+		return has;
 	}
 });

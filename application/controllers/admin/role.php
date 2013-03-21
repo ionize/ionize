@@ -33,7 +33,6 @@ class Role extends MY_Admin
 	{
 		parent::__construct();
 
-		// Users model
 		$this->load->model('role_model', '', TRUE);
 		$this->load->model('resource_model', '', TRUE);
 		$this->load->model('rule_model', '', TRUE);
@@ -92,7 +91,7 @@ class Role extends MY_Admin
 		$resources = $this->resource_model->get_tree();
 		$this->template['json_resources'] = json_encode($resources, TRUE);
 
-		// All Modules resources
+		// All Modules Resources
 		$modules_resources = Modules()->get_resources();
 		$resources = $this->resource_model->build_resources_tree($modules_resources);
 		$this->template['json_modules_resources'] = json_encode($resources, TRUE);

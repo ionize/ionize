@@ -1,4 +1,4 @@
-<?php if(Authority::can('edit', 'admin/page')) :?>
+<?php if(Authority::can('edit', 'admin/page') && Authority::can('edit', 'backend/page/' . $id_page, null, true)) :?>
 
 	<div class="divider nobr" id="tPageFormSubmit">
 		<a id="pageFormSubmit" class="button submit">
@@ -8,7 +8,7 @@
 
 <?php endif;?>
 
-<?php if(Authority::can('delete', 'admin/page')) :?>
+<?php if(Authority::can('delete', 'admin/page') && Authority::can('delete', 'backend/page/' . $id_page, null, true)) :?>
 
 	<div class="divider nobr" id="tPageDeleteButton">
 		<a id="pageDeleteButton" class="button no">
@@ -51,8 +51,11 @@
 
 <?php endif;?>
 
-<?php if(Authority::can('add', 'admin/page/article') OR Authority::can('create', 'admin/article')) :?>
-
+<?php if (
+		(Authority::can('add', 'admin/page/article') OR Authority::can('create', 'admin/article'))
+		&& Authority::can('add_article', 'backend/page/' . $id_page, null, true)
+	)
+:?>
 	<div class="divider" id="tPageAddArticle">
 		<a id="addArticle" class="fmButton button light">
 			<i class="icon-article add"></i><?php echo lang('ionize_label_add_article'); ?>

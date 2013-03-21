@@ -56,7 +56,7 @@
 			<label for="id_role<?php echo $user['id_user'] ?>"><?php echo lang('ionize_label_role'); ?></label>
 		</dt>
 		<dd>
-			<select name="id_role<?php echo $user['id_user'] ?>" class="select required">
+			<select name="id_role" class="select required">
 				<?php foreach($roles as $role) :?>
 
 					<option value="<?php echo $role['id_role'] ?>" <?php if($user['id_role'] == $role['id_role']) :?> selected="selected" <?php endif ;?> ><?php echo $role['role_name'] ?></option>

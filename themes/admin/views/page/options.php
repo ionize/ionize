@@ -24,12 +24,16 @@
 
 		<?php if ($id_page != '') :?>
 
-			<dl class="compact small">
-				<dt><label><?php echo lang('ionize_label_status'); ?></label></dt>
-				<dd>
-					<a id="iconPageStatus" class="icon page<?php echo $id_page; ?> <?php echo($online == '1') ? 'online' : 'offline' ;?>"></a>
-				</dd>
-			</dl>
+			<?php if (Authority::can('status', 'backend/page/' . $id_page, null, true)) :?>
+
+				<dl class="compact small">
+					<dt><label><?php echo lang('ionize_label_status'); ?></label></dt>
+					<dd>
+						<a id="iconPageStatus" class="icon left page<?php echo $id_page; ?> <?php echo($online == '1') ? 'online' : 'offline' ;?>"></a>
+					</dd>
+				</dl>
+
+			<?php endif ;?>
 
 			<?php if (User()->is('super-admins')) :?>
 
@@ -82,7 +86,6 @@
 
 		<!-- Options -->
 		<h3 class="toggler"><?php echo lang('ionize_title_attributes'); ?></h3>
-
 		<div class="element">
 
 			<!-- Existing page -->
@@ -178,7 +181,6 @@
 		<?php if ($id_page != '') :?>
 
 			<h3 class="toggler"><?php echo lang('ionize_title_page_parent'); ?></h3>
-
 			<div class="element">
 
 				<!-- Menu -->
@@ -208,7 +210,6 @@
 
 		<!-- Dates -->
 		<h3 class="toggler"><?php echo lang('ionize_title_dates'); ?></h3>
-
 		<div class="element">
 			<dl class="small">
 				<dt>
@@ -240,65 +241,107 @@
 			</dl>
 		</div>
 
-		<!-- Subnavigation -->
-		<?php if ($id_page != '') :?>
-
-			<h3 class="toggler"><?php echo lang('ionize_title_sub_navigation'); ?></h3>
-
+		<!-- Permissions -->
+		<?php if(Authority::can('access', 'admin/page/permissions')) :?>
+			<h3 class="toggler"><?php echo lang('ionize_title_permissions'); ?>
+				<?php if ( ! empty($frontend_role_ids) OR ! empty($backend_role_ids)) : ?>
+					<a class="icon protected right mr5" ></a>
+				<?php endif ;?>
+			</h3>
 			<div class="element">
 
-				<!-- Subnav Menu -->
-				<dl class="small">
-					<dt>
-						<label for="id_subnav_menu"><?php echo lang('ionize_label_menu'); ?></label>
-					</dt>
-					<dd>
-						<?php echo $subnav_menu; ?>
-					</dd>
-				</dl>
+				<?php if(Authority::can('access', 'admin/page/permissions/frontend')) :?>
+					<?php if ( ! empty($frontend_roles_resources)): ?>
+						<dl class="x-small">
+							<dt><label><?php echo lang('ionize_label_frontend'); ?></label></dt>
+							<dd>
+								<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
+									<div id="roleRulesContainer<?php echo $id_role ?>"></div>
+								<?php endforeach;?>
+							</dd>
+						</dl>
+					<?php endif ;?>
+				<?php endif ;?>
 
-				<!-- ID sub navigation Page -->
-				<dl class="small last">
-					<dt>
-						<label for="id_subnav"><?php echo lang('ionize_label_page'); ?></label>
-					</dt>
-					<dd>
-						<div id="subnavSelectContainer"></div>
-						<!--
-						<select name="id_subnav" id="id_subnav" class="select"></select>
-						-->
-					</dd>
-				</dl>
+				<?php if(Authority::can('access', 'admin/page/permissions/backend')) :?>
+					<?php if ( ! empty($backend_roles_resources)): ?>
+						<dl class="x-small">
+							<dt><label><?php echo lang('ionize_label_backend'); ?></label></dt>
+							<dd>
+								<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
+									<div id="roleRulesContainer<?php echo $id_role ?>"></div>
+								<?php endforeach;?>
+							</dd>
+						</dl>
+					<?php endif;?>
+				<?php endif ;?>
+			</div>
+		<?php endif ;?>
 
-				<!-- Title -->
-				<div class="small optionInputTab">
-					<!-- Tabs -->
-					<div id="subnavTitleTab" class="mainTabs small">
-						<ul class="tab-menu">
-							<?php foreach(Settings::get_languages() as $language) :?>
-							<li><a><?php echo lang('ionize_label_title'); ?> <?php echo ucfirst($language['lang']); ?></a></li>
-							<?php endforeach ;?>
-						</ul>
-						<div class="clear"></div>
-					</div>
-					<div id="subnavTitleTabContent" >
+		<!-- SEO -->
+		<h3 class="toggler"><?php echo lang('ionize_title_seo'); ?></h3>
+		<div class="element">
 
+			<!-- Priority -->
+			<dl class="small">
+				<dt>
+					<label for="priority" title="<?php echo lang('ionize_help_sitemap_priority'); ?>"><?php echo lang('ionize_label_sitemap_priority'); ?></label>
+				</dt>
+				<dd>
+					<select name="priority" id="priority" class="inputtext w40">
+						<?php for($i=0; $i<=10; $i++) :?>
+
+						<option value="<?php echo $i; ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?php echo $i; ?></option>
+
+						<?php endfor; ?>
+					</select>
+				</dd>
+			</dl>
+
+			<div class="element-options-content">
+
+				<!-- Meta_Description -->
+				<h4 title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
+				<div id="metaDescriptionTab" class="mainTabs small">
+					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<div class="tabcontent">
-							<textarea id="subnav_title_<?php echo $language['lang']; ?>" name="subnav_title_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['subnav_title']; ?></textarea>
-						</div>
+						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
 						<?php endforeach ;?>
-
+					</ul>
+					<div class="clear"></div>
+				</div>
+				<div id="metaDescriptionTabContent" >
+					<?php foreach(Settings::get_languages() as $language) :?>
+					<div class="tabcontent">
+						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo ${$language['lang']}['meta_description']; ?></textarea>
 					</div>
+					<?php endforeach ;?>
+				</div>
+
+
+				<!-- Meta_Keywords -->
+				<h4 title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
+				<div id="metaKeywordsTab" class="mainTabs small">
+					<ul class="tab-menu">
+						<?php foreach(Settings::get_languages() as $language) :?>
+						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
+						<?php endforeach ;?>
+					</ul>
+					<div class="clear"></div>
+				</div>
+				<div id="metaKeywordsTabContent" >
+					<?php foreach(Settings::get_languages() as $language) :?>
+					<div class="tabcontent">
+						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo ${$language['lang']}['meta_keywords']; ?></textarea>
+					</div>
+					<?php endforeach ;?>
 				</div>
 			</div>
-
-		<?php endif ;?>
+		</div>
 
 
 		<!-- Advanced Options -->
 		<h3 class="toggler"><?php echo lang('ionize_title_advanced'); ?></h3>
-
 		<div class="element">
 
 			<!-- Home page -->
@@ -332,101 +375,8 @@
 			</dl>
 		</div>
 
-
-		<!-- SEO -->
-		<h3 class="toggler"><?php echo lang('ionize_title_seo'); ?></h3>
-
-		<div class="element">
-
-			<!-- Priority -->
-			<dl class="small">
-				<dt>
-					<label for="priority" title="<?php echo lang('ionize_help_sitemap_priority'); ?>"><?php echo lang('ionize_label_sitemap_priority'); ?></label>
-				</dt>
-				<dd>
-					<select name="priority" id="priority" class="inputtext w40">
-						<?php for($i=0; $i<=10; $i++) :?>
-
-						<option value="<?php echo $i; ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?php echo $i; ?></option>
-
-						<?php endfor; ?>
-					</select>
-				</dd>
-			</dl>
-
-			<!-- Meta_Description -->
-			<h4 class="help" title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_description'); ?></h4>
-
-			<div class="small optionInputTab">
-				<div id="metaDescriptionTab" class="mainTabs small">
-					<ul class="tab-menu">
-						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
-						<?php endforeach ;?>
-					</ul>
-					<div class="clear"></div>
-				</div>
-				<div id="metaDescriptionTabContent" >
-
-					<?php foreach(Settings::get_languages() as $language) :?>
-					<div class="tabcontent">
-						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_description']; ?></textarea>
-					</div>
-					<?php endforeach ;?>
-
-				</div>
-			</div>
-
-
-			<!-- Meta_Keywords -->
-			<h4 class="help" title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
-			<div class="small optionInputTab">
-				<div id="metaKeywordsTab" class="mainTabs small">
-					<ul class="tab-menu">
-						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
-						<?php endforeach ;?>
-					</ul>
-					<div class="clear"></div>
-				</div>
-				<div id="metaKeywordsTabContent" >
-
-					<?php foreach(Settings::get_languages() as $language) :?>
-					<div class="tabcontent">
-						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow"><?php echo ${$language['lang']}['meta_keywords']; ?></textarea>
-					</div>
-					<?php endforeach ;?>
-
-				</div>
-			</div>
-
-		</div>
-
-
-		<!-- Permissions -->
-		<h3 class="toggler"><?php echo lang('ionize_title_permissions'); ?></h3>
-
-		<div class="element">
-			<dl class="small last">
-				<dt>
-					<label><?php echo lang('ionize_label_frontend'); ?></label>
-				</dt>
-				<dd>
-					<div>
-						<?php foreach($roles as $role): ?>
-							<input id="role_<?php echo $role['id_role'] ?>" type="checkbox" name="frontend_roles[]" value="<?php echo $role['id_role'] ?>">
-							<label for="role_<?php echo $role['id_role'] ?>" title="<?php echo $role['role_description'] ?>"><a><?php echo $role['role_name'] ?></a></label>
-							<br/>
-						<?php endforeach;?>
-					</div>
-				</dd>
-			</dl>
-		</div>
-
-
 		<!-- Operations on Page -->
 		<h3 class="toggler"><?php echo lang('ionize_title_operation'); ?></h3>
-
 		<div class="element">
 
 			<!-- Copy Content -->
@@ -515,7 +465,7 @@
 
 	ION.initFormAutoGrow();
 
-	<?php if (!empty($id_page)) :?>
+	<?php if ( ! empty($id_page)) :?>
 
 		// Link to page or article or what else...
 		if ($('linkContainer'))
@@ -524,24 +474,9 @@
 		}
 
 		// Page status
-		ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
+		if ($('iconPageStatus'))
+			ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
 
-		$('id_subnav_menu').addEvent('change', function()
-		{
-			ION.HTML(
-				admin_url + 'page/get_parents_select',
-				{
-					'id_menu' : $('id_subnav_menu').value,
-					'id_current': 0,
-					'id_parent': '<?php echo $id_subnav; ?>',
-					'element_id' : 'id_subnav'
-				},
-				{
-					'update': 'subnavSelectContainer'
-				}
-			);
-		});
-		$('id_subnav_menu').fireEvent('change');
 
 		// Reorder articles
 		$('button_reorder_articles').addEvent('click', function(e)
@@ -558,24 +493,55 @@
 			ION.sendData(url, data);
 		});
 
+		<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
+
+			var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+				'roleRulesContainer<?php echo $id_role ?>',
+				<?php echo json_encode($role_resources['resources'], true) ?>,
+				{
+					'cb_name':'backend_rule[<?php echo $id_role ?>][]',
+					'key': 'id_resource',
+					'data': [
+						{'key':'resource', 'as':'resource'},
+						{'key':'title', 'as':'title'},
+						{'key':'description', 'as':'description'},
+						{'key':'actions', 'as':'actions'}
+					],
+					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
+				}
+			);
+
+		<?php endforeach;?>
+
+		<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
+
+			var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+				'roleRulesContainer<?php echo $id_role ?>',
+				<?php echo json_encode($role_resources['resources'], true) ?>,
+				{
+					'cb_name':'frontend_rule[<?php echo $id_role ?>][]',
+					'key': 'id_resource',
+					'data': [
+						{'key':'resource', 'as':'resource'},
+						{'key':'title', 'as':'title'},
+						{'key':'description', 'as':'description'},
+						{'key':'actions', 'as':'actions'}
+					],
+					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
+				}
+			);
+
+		<?php endforeach;?>
+
 	<?php endif; ?>
 
-	/**
-	 * Options Accordion
-	 *
-	 */
+	// Options Accordion
 	ION.initAccordion('.toggler', 'div.element', true, 'pageAccordion');
 
-	/**
-	 * Droppables init
-	 *
-	 */
+	// Droppables init
 	ION.initDroppable();
 
-	/**
-	 * Calendars init
-	 *
-	 */
+	// Calendars
 	ION.initDatepicker('<?php echo Settings::get('date_format'); ?>');
     ION.initClearField('#pageOptionsForm');
 
@@ -624,10 +590,7 @@
 	});
 
 
-	/**
-	 * Name Edit
-	 *
-	 */
+	// Name Edition
 	ION.initInputChange('#pageOptionsForm .dynamic-input');
 
 

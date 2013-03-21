@@ -47,9 +47,11 @@
 						<li><a class="navlink" href="page/create/0" title="<?php echo lang('ionize_title_new_page'); ?>"><?php echo lang('ionize_menu_page'); ?></a></li>
 					<?php endif ;?>
 
+					<!--
 					<?php if(Authority::can('access', 'admin/article')) :?>
    						<li><a class="navlink" href="article/list_articles" title="<?php echo lang('ionize_title_articles'); ?>"><?php echo lang('ionize_menu_articles'); ?></a></li>
 					<?php endif ;?>
+					-->
 
 					<?php if(Authority::can('access', 'admin/article/category')) :?>
 	                    <li><a class="navlink" href="category" title="<?php echo lang('ionize_title_categories'); ?>"><?php echo lang('ionize_menu_categories'); ?></a></li>

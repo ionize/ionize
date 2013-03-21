@@ -28,7 +28,7 @@ class role_model extends Base_model
 	 *
 	 * @var string
 	 */
-	static $USER_ROLE_TABLE = 	'user_role';
+	static $USER_ROLE_TABLE = 'user_role';
 
 
 	// --------------------------------------------------------------------

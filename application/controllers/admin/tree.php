@@ -92,7 +92,10 @@ class Tree extends MY_Admin {
 		$id_menu = $this->input->post('id_menu');
 		
 		// Pages
-		$pages = $this->tree_model->get_pages(array('id_menu' => $id_menu, 'id_parent' => $id_parent));
+		$pages = $this->tree_model->get_pages(array(
+			'id_menu' => $id_menu,
+			'id_parent' => $id_parent)
+		);
 		
 		// Articles
 		$articles = $this->tree_model->get_articles(array(

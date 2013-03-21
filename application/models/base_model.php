@@ -385,6 +385,63 @@ class Base_model extends CI_Model
 
 
 	/**
+	 * @param       $field
+	 * @param array $where
+	 * @param null  $table
+	 *
+	 * @return string
+	 *
+	 */
+	public function get_group_concat($field, $where=array(), $table=NULL)
+	{
+		$table = is_null($table) ? $this->table : $table;
+
+		$data = '';
+
+		$this->_process_where($where, $table);
+
+		$this->{$this->db_group}->select('group_concat(distinct '.$field.') as result');
+		$query = $this->{$this->db_group}->get($table);
+
+		if ( $query->num_rows() > 0)
+		{
+			$result = $query->row_array();
+			if ( ! is_null($result['result']))
+			{
+				$data = $result['result'];
+			}
+		}
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param       $field
+	 * @param array $where
+	 * @param null  $table
+	 *
+	 * @return array
+	 *
+	 */
+	public function get_group_concat_array($field, $where=array(), $table = NULL)
+	{
+		$result = $this->get_group_concat($field, $where, $table);
+
+		if ($result != '')
+			return explode(',', $result);
+
+		return array();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Get array of records
 	 *
 	 * @access	public
@@ -393,7 +450,7 @@ class Base_model extends CI_Model
 	 * @return	array		Array of records
 	 *
 	 */
-	public function get_list($where = FALSE, $table = NULL)
+	public function get_list($where = NULL, $table = NULL)
 	{
 		$data = array();
 
@@ -433,6 +490,8 @@ class Base_model extends CI_Model
 				}
 			}
 		}
+
+		// $this->_process_where($where);
 
 		$this->{$this->db_group}->select($table.'.*');
 
@@ -2414,8 +2473,10 @@ class Base_model extends CI_Model
 	 * @param   array()     Array of conditions
 	 *
 	 */
-	protected function _process_where($where)
+	protected function _process_where($where, $table=NULL)
 	{
+		$table = (!is_null($table)) ? $table : $this->table;
+
 		// Perform conditions from the $where array
 		if ( ! empty($where) && is_array($where) )
 		{
@@ -2439,29 +2500,37 @@ class Base_model extends CI_Model
 
 			$protect = TRUE;
 
-			foreach ($where as $key => $value)
+			foreach ($where as $field => $value)
 			{
-				if (in_array(substr($key, -2), array('in', 'is')) )
-					$protect = FALSE;
+				$protect = ! (in_array(substr($field, -3), array(' in', ' is')));
+				if ( $protect)
+					$protect = ! (substr($field, -5) == ' like');
 
-				// NULL value : Create an "where value is NULL" constraint
-				if ($value == 'NULL' && is_string($value))
+				if (is_string($field))
 				{
-					$this->{$this->db_group}->where($key. ' IS NULL', NULL, FALSE);
-				}
-				elseif($key == "RAW") {
-					$this->{$this->db_group}->where($value, NULL, FALSE);
-				}
-				else
-				{
-					if (strpos($key, '.') > 0)
+					if ($value == 'NULL' && is_string($value))
 					{
-						$this->{$this->db_group}->where($key, $value, $protect);
+						$this->{$this->db_group}->where($field. ' IS NULL', NULL, FALSE);
+					}
+					elseif($field == "RAW")
+					{
+						$this->{$this->db_group}->where($value, NULL, FALSE);
 					}
 					else
 					{
-						$this->{$this->db_group}->where($this->table.'.'.$key, $value, $protect);
+						if (strpos($field, '.') > 0)
+						{
+							$this->{$this->db_group}->where($field, $value, $protect);
+						}
+						else
+						{
+							$this->{$this->db_group}->where($table.'.'.$field, $value, $protect);
+						}
 					}
+				}
+				else
+				{
+					$this->{$this->db_group}->where($value);
 				}
 			}
 		}
@@ -2472,32 +2541,6 @@ class Base_model extends CI_Model
 		return $this->{$this->db_group}->table_exists($table);
 	}
 
-/*
- * @TODO : Finish.
- *
-	function join($joined_table, $fields, $condition, $source_table = NULL, $how = NULL)
-	{
-		$select = '';
-		$prefix = '';
-		$select_table_name = $joined_table;
-		$join_table_name = $joined_table;
-
-		if (is_array($joined_table) && isset($joined_table[1]))
-		{
-			$select_table_name = $joined_table[0] . ' as ' . $joined_table[1];
-			$join_table_name = $joined_table[1];
-			$prefix = $joined_table[1] . '.';
-		}
-
-		foreach($fields as $key => $field)
-		{
-			if ( $key > 0) $select .= ',';
-			$select .= $prefix.$joined_table.'.'.$field;
-		}
-		$this->{$this->db_group}->select($select);
-		$this->{$this->db_group}->join($join_table_name, $join_table_name.'.');
-	}
-*/
 }
 
 

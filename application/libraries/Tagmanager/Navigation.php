@@ -31,6 +31,7 @@ class TagManager_Navigation extends TagManager
 		'navigation' => 					'tag_navigation',
 		'navigation:url' =>					'tag_navigation_url',
 		'navigation:href' =>				'tag_navigation_href',
+		'navigation:nav_title' =>			'tag_navigation_nav_title',
 		'navigation:active_class' =>		'tag_simple_value',
 		'navigation:is_active' =>			'tag_is_active',
 
@@ -233,6 +234,30 @@ class TagManager_Navigation extends TagManager
 		}
 		
 		return self::show_tag_error($tag, $error_message);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns first the navigation title
+	 * If no one is defined, returns the page title
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_navigation_nav_title(FTL_Binding $tag)
+	{
+		$value = $tag->getValue('nav_title');
+
+		if ($value == '')
+			$value = $tag->getValue('title');
+
+		$tag->set($tag->name, $value);
+
+		return self::output_value($tag, $value);
 	}
 
 

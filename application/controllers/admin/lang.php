@@ -415,35 +415,11 @@ class Lang extends MY_admin
 
 	function _reload_panel()
 	{
-		// Panels Update array
-		$this->update[] = array(
-			'element' => 'mainPanel',
-			'url' => admin_url() . 'lang',
-			'title' => lang('ionize_menu_languages')
+		$this->reload(
+			'mainPanel',
+			admin_url() . 'lang',
+			lang('ionize_menu_languages')
 		);
-
-		/*
-		$this->callback[] = array(
-			'fn' => 'ION.updateElement',
-			'args' => array(
-				'element'=> 'mainPanel',
-				'url' => 'lang'
-			)
-		);
-		*/
-
-		/*
-		$this->callback = array(
-			array(
-				'fn' => 'ION.splitPanel',
-				'args' => array(
-					'urlMain'=> admin_url() . 'lang',
-					'urlOptions'=> admin_url() . 'lang/get_options',
-					'title'=> lang('ionize_menu_languages')
-				)
-			)
-		);
-		*/
 	}
 
 

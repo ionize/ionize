@@ -16,15 +16,17 @@ ION.append({
 		}
 	},
 
-	/** 
+
+	/**
 	 * Updates the mainPanel toolbox
 	 *
-	 * @param	string		Name of the toolbox view to load.
-	 *						Must be located in the themes/admin/views folder
-	 * @param	function	Function to execute when the toolbox is loaded.
-	 *	
+	 * @param toolbox_url       Name of the toolbox view to load.
+	 *                          Must be located in the themes/admin/views/toolboxes folder
+	 * @param onContentLoaded   Function to execute when the toolbox is loaded.
+	 * @param data              Additional data
+	 *
 	 */
-	initToolbox: function(toolbox_url, onContentLoaded)
+	initToolbox: function(toolbox_url, onContentLoaded, data)
 	{
 		// Creates the header toolbox if it doesn't exists
 		if ( ! $('mainPanel_headerToolbox')) {
@@ -43,6 +45,8 @@ ION.append({
 			MUI.Content.update({
 				element: 'mainPanel_headerToolbox',
 				url: admin_url + 'desktop/get/toolboxes/' + toolbox_url,
+				method: 'post',
+				data: data,
 				onLoaded: cb
 			});
 		}
@@ -53,11 +57,11 @@ ION.append({
 	},
 	
 	
-	/** 
+	/**
 	 * Init a module toolbox
-	 * @param	string 	module name
-	 * @param	toolbox_url for this module
-	 *	
+	 *
+	 * @param module        module name
+	 * @param toolbox_url   toolbox_url for this module
 	 */
 	initModuleToolbox: function(module, toolbox_url)
 	{

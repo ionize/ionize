@@ -56,6 +56,14 @@ class Page extends MY_admin
 
 
 	/**
+	 * Frontend / Backend Authority actions
+	 * @var array
+	 */
+	protected static $_AUTHORITY_BACKEND_ACTIONS = array('edit','delete','status','add_page','add_article');
+	protected static $_AUTHORITY_FRONTEND_ACTIONS = NULL;
+
+
+	/**
 	 * Constructor
 	 *
 	 */
@@ -72,6 +80,7 @@ class Page extends MY_admin
 		$this->load->model('system_check_model', '', TRUE);
 		$this->load->model('url_model', '', TRUE);
 		$this->load->model('type_model', '', TRUE);
+		$this->load->model('resource_model', '', TRUE);
 		$this->load->model('rule_model', '', TRUE);
 
 		// Libraries
@@ -152,45 +161,54 @@ class Page extends MY_admin
 	 */
 	public function edit($id)
 	{
-		// Datas
-		$page = $this->page_model->get_by_id($id);
+		$resource = $this->_get_resource_name('backend', 'page', $id);
 
-		if( ! empty($page) )
+		if (Authority::can('edit', 'admin/page') && Authority::can('edit', $resource, null, true))
 		{
-			$this->load_modules_addons($page);
+			// Datas
+			$page = $this->page_model->get_by_id($id);
 
-			// Correct the menu ID (for phantom pages)
-			if ($page['id_menu'] == '0') $page['id_menu'] = '1'; 
-
-			// Data & Lang Data
-			$this->template = array_merge($this->template, $page);
-			$this->page_model->feed_lang_template($id, $this->template);
-
-			// Array of path to the element. Gives the complete URL to the element.
-			$this->template['parent_array'] = $this->page_model->get_parent_array($id);
-			
-			// Breadcrumbs
-			$pages = $this->page_model->get_parent_array($id, array(), Settings::get_lang('default'));
-			
-			$breadcrump = array();
-			foreach($pages as $page)
+			if( ! empty($page) )
 			{
-				$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+				$this->load_modules_addons($page);
+
+				// Correct the menu ID (for phantom pages)
+				if ($page['id_menu'] == '0') $page['id_menu'] = '1';
+
+				// Data & Lang Data
+				$this->template = array_merge($this->template, $page);
+				$this->page_model->feed_lang_template($id, $this->template);
+
+				// Array of path to the element. Gives the complete URL to the element.
+				$this->template['parent_array'] = $this->page_model->get_parent_array($id);
+
+				// Breadcrumbs
+				$pages = $this->page_model->get_parent_array($id, array(), Settings::get_lang('default'));
+
+				$breadcrump = array();
+				foreach($pages as $page)
+				{
+					$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+				}
+				$this->template['breadcrump'] = implode(' > ', $breadcrump);
+
+				// Extend fields
+				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
+
+				// URLs
+				$this->template['urls'] = $this->url_model->get_entity_urls('page', $id);
+
+				// Output
+				$this->output('page/page');
 			}
-			$this->template['breadcrump'] = implode(' > ', $breadcrump);
-
-			// Extend fields
-			$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
-			
-			// URLs
-			$this->template['urls'] = $this->url_model->get_entity_urls('page', $id);
-
-			// Output
-			$this->output('page/page');
+			else
+			{
+				$this->error(lang('ionize_message_page_not_exist'));
+			}
 		}
 		else
 		{
-			$this->error(lang('ionize_message_page_not_exist'));
+			$this->output(self::$_DENY_MAIN_VIEW);
 		}
 	}
 
@@ -206,85 +224,104 @@ class Page extends MY_admin
 	 */
 	public function get_options($id)
 	{
-		// Datas
-		$page = $this->page_model->get_by_id($id);
+		$resource = $this->_get_resource_name('backend', 'page', $id);
 
-		if( ! empty($page) )
+		if ($this->authority_protect($resource, self::$_DENY_OPTIONS_VIEW))
 		{
-			// Correct the menu ID (for phantom pages)
-			if ($page['id_menu'] == '0') $page['id_menu'] = '1';
+			// Datas
+			$page = $this->page_model->get_by_id($id);
 
-			// Page data
-			$this->template = array_merge($this->template, $page);
-			$this->page_model->feed_lang_template($id, $this->template);
-
-			// Load the module's addons
-			$this->load_modules_addons($page);
-
-			// Dropdown menus
-			$datas = $this->menu_model->get_select();
-			$this->template['menus'] = form_dropdown('id_menu', $datas, $this->template['id_menu'], 'id="id_menu" class="select"');
-
-			// Subnav menu
-			$subnav_page = $this->page_model->get_by_id($page['id_subnav']);
-			$selected_subnav = ( ! empty($subnav_page['id_menu'])) ? $subnav_page['id_menu'] : '-1';
-			$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $datas, $selected_subnav, 'id="id_subnav_menu" class="select"');
-
-			// Dropdowns Views
-			$views = array();
-			if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
-				require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
-
-			// Dropdown Page views
-			$datas = isset($views['page']) ? $views['page'] : array() ;
-			if(count($datas) > 0)
+			if( ! empty($page) )
 			{
+				// Correct the menu ID (for phantom pages)
+				if ($page['id_menu'] == '0') $page['id_menu'] = '1';
+
+				// Page data
+				$this->template = array_merge($this->template, $page);
+				$this->page_model->feed_lang_template($id, $this->template);
+
+				// Load the module's addons
+				$this->load_modules_addons($page);
+
+				// Dropdown menus
+				$datas = $this->menu_model->get_select();
+				$this->template['menus'] = form_dropdown('id_menu', $datas, $this->template['id_menu'], 'id="id_menu" class="select"');
+
+				// Subnav menu
+				$subnav_page = $this->page_model->get_by_id($page['id_subnav']);
+				$selected_subnav = ( ! empty($subnav_page['id_menu'])) ? $subnav_page['id_menu'] : '-1';
+				$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $datas, $selected_subnav, 'id="id_subnav_menu" class="select"');
+
+				// Dropdowns Views
+				$views = array();
+				if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
+					require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
+
+				// Dropdown Page views
+				$datas = isset($views['page']) ? $views['page'] : array() ;
+				if(count($datas) > 0)
+				{
+					$datas = array('' => lang('ionize_select_default_view')) + $datas;
+					$this->template['views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select"');
+					$this->template['single_views'] = form_dropdown('view_single', $datas, $this->template['view_single'], 'class="select"');
+				}
+
+				// Dropdown article list views (templates)
+				$datas = isset($views['article']) ? $views['article'] : array() ;
+				if(count($datas) > 0)
+				{
+					$datas = array('' => lang('ionize_select_default_view')) + $datas;
+					$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, $this->template['article_list_view'], 'class="select"');
+				}
+
+				// Dropdown article views (templates)
+				$datas = isset($views['article']) ? $views['article'] : array() ;
 				$datas = array('' => lang('ionize_select_default_view')) + $datas;
-				$this->template['views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select"');
-				$this->template['single_views'] = form_dropdown('view_single', $datas, $this->template['view_single'], 'class="select"');
-			}
+				if(count($datas) > 0)
+				{
+					$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select"');
+				}
 
-			// Dropdown article list views (templates)
-			$datas = isset($views['article']) ? $views['article'] : array() ;
-			if(count($datas) > 0)
-			{
-				$datas = array('' => lang('ionize_select_default_view')) + $datas;
-				$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, $this->template['article_list_view'], 'class="select"');
-			}
-
-			// Dropdown article views (templates)
-			$datas = isset($views['article']) ? $views['article'] : array() ;
-			$datas = array('' => lang('ionize_select_default_view')) + $datas;
-			if(count($datas) > 0)
-			{
-				$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select"');
-			}
-
-			// Roles
-			$roles = $this->role_model->get_list(array(
-				'role_level <=' => User()->get('role_level'),
-				'role_level >=' => 100,
-			));
-			$this->template['roles'] = $roles;
-
-			// Types
-			$types = $this->type_model->get_select('page', lang('ionize_select_no_type'));
-			if (count($types) > 1)
-			{
-				$this->template['types'] = form_dropdown(
-					'id_type',
-					$types,
-					$this->template['id_type'],
-					'class="select"'
+				// Roles & Rules
+				$frontend_roles_resources = $this->resource_model->get_element_roles_resources(
+					'page',
+					$id,
+					self::$_AUTHORITY_FRONTEND_ACTIONS,
+					'frontend'
 				);
-			}
+				$this->template['frontend_roles_resources'] = $frontend_roles_resources;
 
-			// Output
-			$this->output('page/options');
-		}
-		else
-		{
-			$this->error(lang('ionize_message_page_not_exist'));
+				$backend_roles_resources = $this->resource_model->get_element_roles_resources(
+					'page',
+					$id,
+					self::$_AUTHORITY_BACKEND_ACTIONS,
+					'backend'
+				);
+				$this->template['backend_roles_resources'] = $backend_roles_resources;
+
+				// Roles which have permission set for this page
+				$this->template['frontend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id);
+				$this->template['backend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id, 'backend');
+
+				// Types
+				$types = $this->type_model->get_select('page', lang('ionize_select_no_type'));
+				if (count($types) > 1)
+				{
+					$this->template['types'] = form_dropdown(
+						'id_type',
+						$types,
+						$this->template['id_type'],
+						'class="select"'
+					);
+				}
+
+				// Output
+				$this->output('page/options');
+			}
+			else
+			{
+				$this->error(lang('ionize_message_page_not_exist'));
+			}
 		}
 	}
 
@@ -440,11 +477,17 @@ class Page extends MY_admin
 			$page['menu'] = $this->menu_model->get($page['id_menu']);
 
 			// Rules
-			$this->rule_model->save_element_roles_rules(
-				'page',
-				$id,
-				$this->input->post('frontend_roles')
-			);
+			if (Authority::can('access', 'admin/page/permissions/backend'))
+			{
+				$resource = $this->_get_resource_name('backend', 'page', $id);
+				$this->rule_model->save_element_roles_rules($resource, $this->input->post('backend_rule'));
+			}
+
+			if (Authority::can('access', 'admin/page/permissions/frontend'))
+			{
+				$resource = $this->_get_resource_name('frontend', 'page', $id);
+				$this->rule_model->save_element_roles_rules($resource, $this->input->post('frontend_rule'));
+			}
 
 			// Remove HTML tags from returned array
 			strip_html($page);
@@ -478,12 +521,22 @@ class Page extends MY_admin
 		$id_current = $this->input->post('id_current');
 		$id_parent = $this->input->post('id_parent');
 		$element_id = $this->input->post('element_id');
+		$check_add_page = $this->input->post('check_add_page');
 
 		$data = $this->page_model->get_lang_list(array('id_menu' => $id_menu), Settings::get_lang('default'));
 
 		$parents = array('0' => '/');
 		($parents_array = $this->structure->get_parent_select($data, $id_current) ) ? $parents += $parents_array : '';
-		
+
+		if ($check_add_page)
+		{
+			foreach($parents as $id_page => $str)
+			{
+				if (Authority::cannot('add_page', 'backend/page/' . $id_page, NULL, TRUE))
+					unset($parents[$id_page]);
+			}
+		}
+
 		$this->template['pages'] = $parents;
 		$this->template['id_selected'] = $id_parent;
 		$this->template['element_id'] = $element_id;
@@ -938,6 +991,15 @@ class Page extends MY_admin
 		{
 			$this->error(lang('ionize_message_operation_nok'));
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected function _get_resource_name($type, $element, $id)
+	{
+		return $type . '/' . $element . '/' . $id;
 	}
 
 

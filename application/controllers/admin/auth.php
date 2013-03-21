@@ -39,6 +39,10 @@ class Auth extends My_Admin
 		$this->disable_xhr_protection();
 	}
 
+	public function index()
+	{
+		$this->login();
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -84,7 +88,7 @@ class Auth extends My_Admin
 				try
 				{
 					User()->login($_POST);
-					redirect(base_url().$uri_lang.'/'.config_item('admin_url'));
+					redirect(base_url().$uri_lang.'/'.config_item('admin_url').'/auth/login');
 				}
 				catch(Exception $e)
 				{

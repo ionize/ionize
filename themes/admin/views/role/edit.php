@@ -222,6 +222,10 @@
 
 		<?php if ( Authority::can('access', 'admin/modules/permissions')) :?>
 
+		<?php
+log_message('error', print_r(json_decode($json_modules_resources), true));
+ ?>
+
 			var modRules = new ION.PermissionTree(
 				'modulesRulesContainer',
 				<?php echo $json_modules_resources ?>,

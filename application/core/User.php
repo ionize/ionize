@@ -1357,11 +1357,6 @@ namespace {
 					$user->folder_protection[$dir]['role'] = array($role['role_code']);
 				}
 
-				 // Choices :
-				 // - Restrict give access to IP restriction, which is not the case of Authority
-				 // - Authority does not care about the role config, which is better
-				 //
-				 //
 				$user->restrict($user->folder_protection[$dir]);
 			}
 		}

@@ -117,6 +117,11 @@ class Desktop extends MY_Admin
 	 */
 	public function get($view = false)
 	{
+		$post = $this->input->post();
+
+		if (is_array($post))
+			$this->template = array_merge($this->template, $post);
+
 		$this->template['view'] = $view;
 		
 		$args = func_get_args();

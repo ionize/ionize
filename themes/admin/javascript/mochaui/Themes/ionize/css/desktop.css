@@ -30,9 +30,10 @@
 	background-position: left 0;
 }
 #structurePanel{
-/*	position:relative;*/
+/*
 	overflow-x: hidden !important;
 	overflow-y: auto !important;
+*/
 }
 #structurePanel_pad {
 	padding: 15px 0 8px 15px !important;
@@ -79,7 +80,7 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .column { float: left; position: relative; overflow: hidden; /* Required by IE6 */ }
 
 /* Panels */
-.panel { position: relative; overflow: auto; background: #fff; border-bottom: 1px solid #b9b9b9; clear:both; }
+.panel { position: relative; overflow: auto; background: #fff; border-bottom: 0px solid #b9b9b9; clear:both; }
 .panelWrapper.collapsed .panel-header { border-bottom: 0; border-top:1px solid #D3D3D3;}
 .panelAlt { background: url(../images/bg-gray-light.png);}
 .bottomPanel .panel { border-bottom: 0; }

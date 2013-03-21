@@ -53,7 +53,7 @@ if ($tracker_title == '')
 			<h2 class="main page" id="main-title"><?php echo $title; ?></h2>
 			
 			<!-- Breadcrumb -->
-			<div style="margin: -15px 0pt 20px 72px;">
+			<div class="main subtitle">
 				<p>
 					<span class="lite">ID : </span><?php echo $id_page; ?> |
 					<span class="lite"></span><?php echo$breadcrump?>
@@ -684,7 +684,7 @@ if ($tracker_title == '')
 	ION.initFormAutoGrow();
 
 	// Toolbox
-	ION.initToolbox('page_toolbox');
+	ION.initToolbox('page_toolbox', null, {'id_page': '<?php echo $id_page; ?>'});
 
 	// Droppables
 	ION.initDroppable();
@@ -783,7 +783,8 @@ if ($tracker_title == '')
 				{
 					'id_menu' : $('id_menu').value,
 					'id_current': id_current,
-					'id_parent': id_parent
+					'id_parent': id_parent,
+					'check_add_page' : true
 				},
 				{
 					'update': 'parentSelectContainer'

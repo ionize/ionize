@@ -628,7 +628,7 @@ class TagManager
 		{
 			$parsed = self::parse($parsed, self::$context);
 
-			if (Authority::can('access', 'admin') && Settings::get('display_connected_label') == '1')
+			if (User()->logged_in() && Authority::can('access', 'admin') && Settings::get('display_connected_label') == '1')
 			{
 				$injected_html = $ci->load->view('core/logged_as_editor', array(), TRUE);
 				
