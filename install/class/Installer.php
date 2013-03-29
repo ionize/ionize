@@ -600,7 +600,7 @@ class Installer
 		$this->db_connect();
 
 		// Create 404
-		if ( ! $this->_exists(array('name'=>'404')))
+		if ( ! $this->_exists(array('name'=>'404'), 'page'))
 		{
 			$page_code = '404';
 			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Can't find requested page." );
@@ -612,7 +612,7 @@ class Installer
 		}
 
 		// Create 401
-		if ( ! $this->_exists(array('name'=>'401')))
+		if ( ! $this->_exists(array('name'=>'401'), 'page'))
 		{
 			$page_code = '401';
 			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Login needed" );
@@ -624,7 +624,7 @@ class Installer
 		}
 
 		// Create 403
-		if ( ! $this->_exists(array('name'=>'403')))
+		if ( ! $this->_exists(array('name'=>'403'), 'page'))
 		{
 			$page_code = '403';
 			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Forbidden" );
