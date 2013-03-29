@@ -718,7 +718,7 @@ class Installer
 		foreach ($langs as $lang)
 		{
 			$lang_data = $this->_clean_data($data, 'article');
-			$lang_data['id_page'] = $id_page;
+			$lang_data['id_article'] = $id_article;
 			$lang_data['lang'] = $lang;
 
 			$this->db->insert('article_lang', $data);
