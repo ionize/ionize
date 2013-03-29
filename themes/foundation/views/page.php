@@ -2,8 +2,9 @@
 
 	<ion:partial view="page_header" />
 
-
-	<!-- Articles : No type -->
+	<!--
+		Articles : No type
+	-->
 	<ion:page:articles type="">
 
 		<ion:article>
@@ -41,19 +42,49 @@
 
 	</ion:page:articles>
 
-
-
-
 	<div class="row">
 
+		<!--
+			Articles : type 'bloc'
+			authorization : not set : Apply filtering
+							all : displays all articles (includes all deny_codes)
+							401 : display only 401 articles
+							403 : display only 403 articles
+							404 : display only 404 articles
+			usage :
+			authorization="all" : All articles, with or without authorizations
+			authorization="all,401,403" : Only free access articles + 401 + 403
+			authorization="401,403" : Only 401 + 403
+			authorization="401" : Only 401
+
+		-->
 		<ion:articles type="bloc">
-			<ion:article>
+			<ion:article >
 				<div class="four columns">
 					<div class="panel">
 						<ion:title tag="h5" />
-						<ion:content />
+
+						<ion:deny is=''>
+							<ion:content  />
+						</ion:deny>
+						<ion:else>
+
+							<ion:deny is='401'>
+								<ion:content paragraph="1"/>
+								<p><b>Restriction : 401</b></p>
+							</ion:deny>
+
+							<ion:deny is='403'>
+								<ion:content paragraph="1"/>
+								<p><b>Restriction : 403</b></p>
+							</ion:deny>
+
+						</ion:else>
+
 					</div>
 				</div>
+
+
 			</ion:article>
 		</ion:articles>
 

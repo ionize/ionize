@@ -593,7 +593,6 @@ class Page_model extends Base_model
 	 * @param	array	By ref. The pages array
 	 * @param	int		The current parent page ID
 	 *
-	 */
 	public function spread_authorizations(&$pages, $id_parent=0)
 	{
 		if ( ! empty($pages))
@@ -615,6 +614,33 @@ class Page_model extends Base_model
 				$this->spread_authorizations($pages, $child['id_page']);
 			}
 		}	
+	}
+	 */
+
+
+	public function spread_authorizations(&$pages, $id_parent=0)
+	{
+		if ( ! empty($pages))
+		{
+			$children = array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $id_parent .'";'));
+
+			foreach ($children as $key=>$child)
+			{
+				$resource = 'frontend/page/' . $child['id_page'];
+
+				if ($id_parent != 0)
+				{
+					// Get the parent page
+					$parent = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $id_parent .'";')));
+					$parent = $parent[0];
+
+					// Set authorization group from parent to child in the ref pages array
+					$pages[$key]['id_group'] = $parent['id_group'];
+				}
+
+				$this->spread_authorizations($pages, $child['id_page']);
+			}
+		}
 	}
 
 

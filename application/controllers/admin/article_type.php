@@ -305,7 +305,3 @@ class Article_type extends MY_admin
 		$this->data['type'] = url_title($this->data['type']);
 	}
 }
-
-
-/* End of file article_type.php */
-/* Location: ./application/controllers/admin/article_type.php */

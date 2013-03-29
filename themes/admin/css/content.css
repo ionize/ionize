@@ -212,7 +212,6 @@ li.offline { opacity:0.7; }
 .icon.upload,		.button i.icon-upload		{background-position: 0 -32px;}
 .icon.mail,		    .button i.icon-mail		    {background-position: -144px -80px;}
 .icon.protected,    .button i.icon-protected    {background-position: -160px -80px;}
-.icon.no-edit,      .button i.no-edit           {background-position: -176px -80px;}
 
 .icon.folder,			.button i.icon-folder			{background-position: 0 -16px;}
 .icon.folder.open,		.button i.icon-folder.open			{background-position: -16px -16px;}

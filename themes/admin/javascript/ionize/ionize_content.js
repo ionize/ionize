@@ -814,7 +814,7 @@ ION.append({
 			},
 			onSelection: function(selection, item, value, input)
 			{
-				var id = item.getProperty('rel');
+				var id = item.getProperty('data-id');
 				
 				if ($(update))
 				{
@@ -1092,7 +1092,7 @@ ION.append({
 			var rel = art.id_page + '.' + art.id_article;
 			
 			// Update the title
-			$$('.file .title[rel=' + rel + ']').each(function(el)
+			$$('.file .title[data-id=' + rel + ']').each(function(el)
 			{
 				el.empty();
 				el.set('html', title).setProperty('title', rel + ' : ' + title);
@@ -1104,7 +1104,7 @@ ION.append({
 			});
 			
 			// Article icons
-			$$('li.file[rel=' + rel + '] div.tree-img.drag').each(function(el)
+			$$('li.file[data-id=' + rel + '] div.tree-img.drag').each(function(el)
 			{
 				// Indexed icon
 				if (art.indexed == '1')
@@ -1169,18 +1169,18 @@ ION.append({
 
 	updateArticleOrder: function(args)
 	{
-		var articleContainer = $('articleContainer' + args.id_page);
-		var articleList = $('articleList' + args.id_page);
-		
+		var articleContainer = $$('.articleContainer[data-id=' + args.id_page + ']');
+		articleContainer = (articleContainer.length > 0) ? articleContainer[0] : false;
+
+			var articleList = $('articleList' + args.id_page);
 		var order = (args.order).split(',');
 		order = order.reverse();
 		
-		
 		for (var i=0; i< order.length; i++)
 		{
-			if (typeOf(articleContainer) != 'null')
+			if (articleContainer)
 			{
-				var el = articleContainer.getElement('#article_' + args.id_page + 'x' + order[i]);
+				var el = articleContainer.getElement('li.article' + args.id_page + 'x' + order[i]);
 				el.inject(articleContainer, 'top');
 			}
 			
@@ -1235,20 +1235,20 @@ ION.append({
 	 * Adds the DOM page element to the page parents list
 	 * called by ION.linkArticleToPage()
 	 *
-	 * <li rel="id_page.id_article" class="parent_page"><span class="link-img page"></span><a class="icon right unlink"></a><a class="page">Page Title in Default Language</a></li>
+	 * <li data-id="id_page.id_article" class="parent_page"><span class="link-img page"></span><a class="icon right unlink"></a><a class="page">Page Title in Default Language</a></li>
 	 *
 	 */
 	addPageToArticleParentListDOM: function(args)
 	{
 		if ($('parent_list'))
 		{
-			var li = new Element('li', {'rel':args.id_page + '.' + args.id_article, 'class':'parent_page'});
+			var li = new Element('li', {'data-id':args.id_page + '.' + args.id_article, 'class':'parent_page'});
 			
 			li.adopt(new Element('a', {'class':'icon right unlink'}));
 			
 			var title = (args.title !='' ) ? args.title : args.name;
 			var aPage = new Element('a', {'class': 'page'}).set('text', title).inject(li, 'bottom');
-			var span = new Element('span', {'class':'link-img page left'}).inject(aPage, 'top');
+			var span = new Element('span', {'class':'link-img page left mr5'}).inject(aPage, 'top');
 			
 			ION.addParentPageEvents(li);
 			$('parent_list').adopt(li);
@@ -1276,7 +1276,7 @@ ION.append({
 	 */
 	addParentPageEvents: function(item)
 	{
-		var rel = (item.getProperty('rel')).split(".");
+		var rel = (item.getProperty('data-id')).split(".");
 		var id_page = rel[0];
 		var id_article = rel[1];
 
@@ -1307,7 +1307,7 @@ ION.append({
 		{
 			item.addEvent('click', function()
 			{
-				var lang = item.getProperty('rel');
+				var lang = item.getProperty('data-id');
 				var langs = Lang.get('languages');
 				
 				if (typeOf(tinyMCE) != 'null')
@@ -1359,11 +1359,11 @@ ION.append({
 	dropContentElement: function(parent, element, droppable, event)
 	{
 		// Element
-		var rel = (element.getProperty('rel')).split(".");
+		var rel = (element.getProperty('data-id')).split(".");
 		var id_element = (rel.length > 1) ? rel[1] : rel[0];
 		
 		// Target
-		rel = (droppable.getProperty('rel')).split(".");
+		rel = (droppable.getProperty('data-id')).split(".");
 		var id_parent = (rel.length > 1) ? rel[1] : rel[0];
 		
 		// Old Parent
@@ -1416,10 +1416,10 @@ ION.append({
 	 */
 	dropArticleInPage: function(element, droppable, event)
 	{
-		var rel = (element.rel).split('.');
+		var rel = (element.getProperty('data-id')).split('.');
 		var id_page_origin = rel[0];
 		var id_article = rel[1];
-		var id_page = droppable.getProperty('rel');
+		var id_page = droppable.getProperty('data-id');
 		
 		if (id_page_origin != id_page)
 			ION.linkArticleToPage(id_article, id_page, id_page_origin, event);
@@ -1431,9 +1431,8 @@ ION.append({
 	 */
 	dropPageInArticle: function(element, droppable, event)
 	{
-		var id_article = $('id_article').value;
-		var id_page = droppable.getProperty('rel');
-
+		var id_article = droppable.getProperty('data-id');
+		var id_page = element.getProperty('data-id');
 		ION.linkArticleToPage(id_article, id_page, '0', event);
 	},
 
@@ -1441,7 +1440,7 @@ ION.append({
 	dropElementAsLink: function(link_type, element, droppable)
 	{
 		// Target link rel
-		var link_rel = element.getProperty('rel');
+		var link_rel = element.getProperty('data-id');
 		
 		// Receiver's element type
 		var receiver_type = $('element').value;
@@ -1516,7 +1515,7 @@ ION.append({
 	 */
 	unlinkArticleFromPageDOM: function(args)
 	{
-		$$('li[rel=' + args.id_page + '.' + args.id_article + ']').each(function(item, idx) { item.dispose(); });
+		$$('li[data-id=' + args.id_page + '.' + args.id_article + ']').each(function(item, idx) { item.dispose(); });
 	},
 	
 	

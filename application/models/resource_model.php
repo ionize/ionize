@@ -90,13 +90,23 @@ class resource_model extends Base_model
 				break;
 		}
 
+		$where['order_by'] = 'role_level DESC';
+
 		$roles= $this->get_list($where, self::$ROLE_TABLE);
 
 		$resource = $this->get_element_resource($element, $id_element, $actions, $type);
+		$resource_actions = $resource['actions'];
 
 		foreach($roles as $role)
 		{
+			$resource['actions'] = $resource_actions;
+
+			// No actions needed for super-admin
+			if ($role['role_code'] == 'super-admin')
+				$resource['actions'] = '';
+
 			$resource['title'] = $role['role_name'];
+
 			$rules = $this->get_list(
 				array(
 					'id_role' => $role['id_role'],

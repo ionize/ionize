@@ -257,7 +257,7 @@ if ($tracker_title == '')
 				<ul class="tab-menu">
 					
 					<?php foreach(Settings::get_languages() as $language) :?>
-						<li class="tab_page<?php if($language['def'] == '1') :?> dl<?php endif ;?>"rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
+						<li class="tab_page<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
 					<?php endforeach ;?>
 
 					<?php if ( ! empty($id_page)) :?>
@@ -641,7 +641,7 @@ if ($tracker_title == '')
 					<div class="clear"></div>
 				</div>
 
-				<div id="childsTabContent" class="dropArticleInPage" rel="<?php echo $id_page; ?>">
+				<div id="childsTabContent" class="dropArticleInPage" data-id="<?php echo $id_page; ?>">
 				
 					<!-- Articles List -->
 					<div class="tabcontent">

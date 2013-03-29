@@ -45,10 +45,23 @@ class Dashboard extends MY_Admin {
 		// Last 10 articles
 		$last_articles = array();
 		$max = (count($articles) > 9) ? 10 : count($articles);
+		$count = 0;
 		if ( ! empty($articles))
 		{
-			for ($i=0; $i<$max; $i++)
-				$last_articles[] = $articles[$i];
+			foreach($articles as $article)
+			{
+				if (
+					Authority::can('access', 'backend/menu/' . $article['id_menu'], NULL, TRUE)
+					&& Authority::can('access', 'backend/page/' . $article['id_page'], NULL, TRUE)
+					&& Authority::can('access', 'backend/article/' . $article['id_article'], NULL, TRUE)
+				)
+				{
+					$last_articles[] = $article;
+					$count++;
+					if ($count == $max)
+						break;
+				}
+			}
 		}
 
 		// Orphan articles
@@ -142,7 +155,4 @@ class Dashboard extends MY_Admin {
 
 		$this->output('desktop/dashboard');
 	}
-
 }
-/* End of file dashboard.php */
-/* Location: ./application/admin/controllers/dashboard.php */

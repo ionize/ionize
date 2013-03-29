@@ -245,7 +245,7 @@ class Installer
 
 
 	/**
-	 * Installs the example datas
+	 * Installs the example data
 	 *
 	 */
 	function install_data()
@@ -303,24 +303,7 @@ class Installer
 				$this->_save_language_config_file($data);
 			}
 
-			/* 
-			 * Install Themes example
-			 * Not yet implemented
-			 *
-			$zip = new ZipArchive();
-			$res = $zip->open(ROOTPATH . 'install/example_data/themes.zip');
-			if ($res === true) {
-				$zip->extractTo(ROOTPATH . 'themes/');
-				$zip->close();
-			}
-			
-			// http://se2.php.net/manual/en/function.exec.php
-			// exec(command, $printed_data, $return_value);
-
-			 */
-
 			header("Location: ".BASEURL.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
-
 		}
 	}
 
@@ -566,23 +549,6 @@ class Installer
 		}
 	}
 
-	function show_password()
-	{
-		$this->db_connect();
-		
-		// Updates the users account
-		$query = $this->db->get('users');
-		
-		if ($query->num_rows() > 0)
-		{
-			foreach ($query->result_array() as $user)
-			{
-				$decoded_pass = $this->_decrypt($user['password'], $user);
-
-				var_dump($decoded_pass);
-			}						
-		}
-	}
 
 	// --------------------------------------------------------------------
 
@@ -606,9 +572,6 @@ class Installer
 		else
 		{
 			$ret = $this->_save_settings();
-
-
-
 
 			if ($ret)
 			{
@@ -636,135 +599,55 @@ class Installer
 
 		$this->db_connect();
 
-		/*
-		 * Create base content : 404
-		 * if no 404 in the DB
-		 */
-		$this->db->where('name', '404');
-		$query = $this->db->get('page');
-	
-		if ($query->num_rows() == 0)
+		// Create 404
+		if ( ! $this->_exists(array('name'=>'404')))
 		{
-			// 404 page
-			$data = array(
-				'id_menu' => '2',
-				'name' => '404',
-				'online' => '1',
-				'appears' => '0'
-			);
-			
-			$this->db->insert('page', $data);
-			$id_page_404 = $this->db->insert_id();
+			$page_code = '404';
+			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Can't find requested page." );
+			$id_page = $this->_create_page($data);
 
-			// 404 article
-			$data = array(
-				'name' => '404'
-			);
-
-			$this->db->insert('article', $data);
-			$id_article_404 = $this->db->insert_id();
-
-			// 404 article link to 404 page
-			$data = array(
-				'id_page' => $id_page_404,
-				'id_article' => $id_article_404,
-				'online' => '1'
-			);
-			$this->db->insert('page_article', $data);
-			
-
-			// 404 article lang data
-			$langs = array_keys($config['available_languages']);
-
-			foreach ($langs as $lang)
-			{
-				// 404 lang page
-				$data = array(
-					'id_page' => $id_page_404,
-					'lang' => $lang,
-					'url' => '404',
-					'title' => '404'
-				);
-
-				$this->db->insert('page_lang', $data);
-				
-				// 404 lang article
-				$data = array(
-					'id_article' => $id_article_404,
-					'lang' => $lang,
-					'url' => '404',
-					'title' => '404',
-					'content' => '<p>The content you asked was not found !</p>'
-				);
-
-				$this->db->insert('article_lang', $data);
-			}
+			// Article
+			$data = array('name' =>$page_code, 'url'=>$page_code, 'title'=>$page_code, 'content'=>'<p>The content you asked for was not found !</p>');
+			$this->_create_article($data, $id_page);
 		}
 
-		
+		// Create 401
+		if ( ! $this->_exists(array('name'=>'401')))
+		{
+			$page_code = '401';
+			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Login needed" );
+			$id_page = $this->_create_page($data);
+
+			// Article
+			$data = array('name' =>$page_code, 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Please login", 'content'=>'<p>Please login to see this content.</p>');
+			$this->_create_article($data, $id_page);
+		}
+
+		// Create 403
+		if ( ! $this->_exists(array('name'=>'403')))
+		{
+			$page_code = '403';
+			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Forbidden" );
+			$id_page = $this->_create_page($data);
+
+			// Article
+			$data = array('name' =>$page_code, 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Forbidden", 'content'=>'<p>This content is forbidden.</p>');
+			$this->_create_article($data, $id_page);
+		}
+
+
 		// Default minimal welcome page
 		$this->db->where('id_menu', '1');
 		$query = $this->db->get('page');
 	
 		if ($query->num_rows() == 0)
 		{
-			// Welcome page
-			$data = array(
-				'id_menu' => '1',
-				'name' => 'welcome',
-				'online' => '1',
-				'appears' => '1',
-				'home' => '1',
-				'level' => '0'
-			);
-			
-			$this->db->insert('page', $data);
-			$id_page = $this->db->insert_id();
+			$data = array('id_menu'=>'1', 'name'=>'welcome', 'url'=>'welcome', 'online'=>'1', 'appears'=>'1', 'home'=>'1', 'url'=>$page_code, 'title'=>'Welcome to ionize' );
+			$id_page = $this->_create_page($data);
 
-			// Welcome article
-			$data = array(
-				'name' => 'welcome'
-			);
-
-			$this->db->insert('article', $data);
-			$id_article = $this->db->insert_id();
-
-			// Article link to page
-			$data = array(
-				'id_page' => $id_page,
-				'id_article' => $id_article,
-				'online' => '1'
-			);
-			$this->db->insert('page_article', $data);
-			
-
-			// Article lang data
-			$langs = array_keys($config['available_languages']);
-
-			foreach ($langs as $lang)
-			{
-				// Lang page
-				$data = array(
-					'id_page' => $id_page,
-					'lang' => $lang,
-					'url' => 'welcome-url',
-					'title' => 'Welcome'
-				);
-
-				$this->db->insert('page_lang', $data);
-				
-				// Lang article
-				$data = array(
-					'id_article' => $id_article,
-					'lang' => $lang,
-					'url' => 'welcome-article-url',
-					'title' => 'Welcome to Ionize',
-					'url' => 'welcome-article-url',
-					'content' => '<p>For more information about building a website with Ionize, you can:</p> <ul><li>Download & read <a href="http://www.ionizecms.com">the Documentation</a></li><li>Visit <a href="http://www.ionizecms.com/forum">the Community Forum</a></li></ul><p>Have fun !</p>'
-				);
-
-				$this->db->insert('article_lang', $data);
-			}
+			// Article
+			$data = array('name'=>'welcome', 'url'=>'welcome', 'title'=>'Welcome', 'content'=>'<p>For more information about building a website with Ionize, you can:</p> <ul><li>Download & read <a href="http://www.ionizecms.com">the Documentation</a></li><li>Visit <a href="http://www.ionizecms.com/forum">the Community Forum</a></li></ul><p>Have fun !</p>');
+			$this->_create_article($data, $id_page);
 		}
 
 		// Default settings
@@ -772,40 +655,80 @@ class Installer
 
 		foreach ($langs as $lang)
 		{
-			$this->db->where(array('lang' => $lang, 'name' => 'site_title'));
-			$query = $this->db->get('setting');
-		
-			if ($query->num_rows() == 0)
+			if ( $this->_exists(array('lang' => $lang, 'name' => 'site_title'), 'setting'))
 			{
-				// Settings
-				$data = array(
-					'name' => 'site_title',
-					'lang' => $lang,
-					'content' => 'My website'
+				$this->db->insert(
+					'setting',
+					array(
+						'name' => 'site_title',
+						'lang' => $lang,
+						'content' => 'My website'
+					)
 				);
-
-				$this->db->insert('setting', $data);
 			}
 		}
-
-		// VERSION
-		/*
-		require_once('./class/Config.php');
-
-		// Save version
-		$conf = new ION_Config(APPPATH.'config/', 'ionize.php');
-		$conf->set_config('version', VERSION);
-		if ($conf->save() == FALSE)
-		{
-			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
-		}
-		*/
 
 		$this->template['base_url'] = BASEURL;
 		$this->output('finish');
 	}
 
-	
+
+	public function _create_page($data)
+	{
+		include(APPPATH.'config/language.php');
+		$langs = array_keys($config['available_languages']);
+
+		$page_data = $this->_clean_data($data, 'page');
+		$this->db->insert('page', $page_data);
+		$id_page = $this->db->insert_id();
+
+		// Page lang data
+		if ($id_page)
+		{
+			foreach ($langs as $lang)
+			{
+				$lang_data = $this->_clean_data($data, 'page_lang');
+				$lang_data['id_page'] = $id_page;
+				$lang_data['lang'] = $lang;
+				$this->db->insert('page_lang', $lang_data);
+			}
+		}
+		return $id_page;
+	}
+
+
+	public function _create_article($data, $id_page='0')
+	{
+		include(APPPATH.'config/language.php');
+		$langs = array_keys($config['available_languages']);
+
+		$article_data = $this->_clean_data($data, 'article');
+		$this->db->insert('article', $article_data);
+		$id_article = $this->db->insert_id();
+
+		// link to page
+		$data = array(
+			'id_page' => $id_page,
+			'id_article' => $id_article,
+			'online' => isset($data['online']) ? $data['online'] : '1'
+		);
+		$this->db->insert('page_article', $data);
+
+		// Article lang data
+		foreach ($langs as $lang)
+		{
+			$lang_data = $this->_clean_data($data, 'article');
+			$lang_data['id_page'] = $id_page;
+			$lang_data['lang'] = $lang;
+
+			$this->db->insert('article_lang', $data);
+		}
+
+		return $id_article;
+	}
+
+
+
 	// --------------------------------------------------------------------
 
 
@@ -1233,11 +1156,8 @@ class Installer
 		// The database doesn't contains correct tables -> error !
 		if (($test = $this->db->query('select count(1) from setting')) != false)
 		{
-			/*
-			 * From Ionize 0.90 or 0.91
-			 * page_lang does not contains the 'online' field
-			 *
-			 */
+			// From Ionize 0.90 or 0.91
+			// page_lang does not contains the 'online' field
 			$migrate_from = true;
 	
 			$fields = $this->db->field_data('page_lang');
@@ -1262,14 +1182,10 @@ class Installer
 				$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 			}
 	
-			
-			/*
-			 * From Ionize 0.92
-			 * The 'extend_field' table does not contains the 'value' field
-			 * If it contains this field, we are already in a 0.93 verion, so no migration
-			 * If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
-			 *
-			 */
+			 // From Ionize 0.92
+			 // The 'extend_field' table does not contains the 'value' field
+			 // If it contains this field, we are already in a 0.93 verion, so no migration
+			 // If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
 			if (empty($migration_xml))
 			{
 				$migrate_from = true;
@@ -1297,12 +1213,9 @@ class Installer
 			}
 	
 	
-			/*
-			 * From Ionize 0.93
-			 * if the 'users' table field 'join_date' has the TIMESTAMP type, we will migrate the accounts.
-			 * If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
-			 *
-			 */
+			 // From Ionize 0.93
+			 // if the 'users' table field 'join_date' has the TIMESTAMP type, we will migrate the accounts.
+			 // If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
 			if (empty($migration_xml))
 			{
 				$migrate_from = true;
@@ -1329,11 +1242,7 @@ class Installer
 				}
 			}
 
-
-			/*
-			 * From Ionize 0.9.4 : the users.id_user field does not exists
-			 *
-			 */
+			 // From Ionize 0.9.4 : the users.id_user field does not exists
 			if (empty($migration_xml))
 			{
 				$migrate_from = false;
@@ -1359,10 +1268,7 @@ class Installer
 				}
 			}
 
-			/*
-			 * From Ionize 0.9.5 : the table article hasn't the 'flag' field
-			 *
-			 */
+			// From Ionize 0.9.5 : the table article hasn't the 'flag' field
 			if (empty($migration_xml))
 			{
 				$migrate_from = true;
@@ -1384,10 +1290,7 @@ class Installer
 				}
 			}
 			
-			/*
-			 * From Ionize 0.9.6 : the table extend_field does not contains the field id_element_definition
-			 *
-			 */
+			// From Ionize 0.9.6 : the table extend_field does not contains the field id_element_definition
 			if (empty($migration_xml))
 			{
 				$migrate_from = true;
@@ -1408,11 +1311,7 @@ class Installer
 				}
 			}
 			
-			/*
-			 * From 0.9.7
-			 *
-			 *
-			 */
+			// From 0.9.7
 			if (empty($migration_xml))
 			{
 				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
@@ -1426,10 +1325,7 @@ class Installer
 				}
 			}
 
-			/*
-			 * From 0.9.9
-			 *
-			 */
+			// From 0.9.9
 			if (empty($migration_xml))
 			{
 				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
@@ -1440,14 +1336,12 @@ class Installer
 				{
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}
-
 			}
-
 		}
 
-		
 		return $migration_xml;
 	}
+
 
 	// --------------------------------------------------------------------
 
@@ -1550,7 +1444,30 @@ class Installer
 		}
 	}
 
-	
+	function _clean_data($data, $table)
+	{
+		$cleaned_data = array();
+
+		if ( ! empty($data))
+		{
+			$fields = $this->db->list_fields($table);
+			$fields = array_fill_keys($fields,'');
+			$cleaned_data = array_intersect_key($data, $fields);
+		}
+		return $cleaned_data;
+	}
+
+	public function _exists($where, $table)
+	{
+		$query = $this->db->get_where($table, $where, FALSE);
+
+		if ($query->num_rows() > 0)
+			return TRUE;
+		else
+			return FALSE;
+	}
+
+
 	// --------------------------------------------------------------------
 
 

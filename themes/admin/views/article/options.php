@@ -32,7 +32,7 @@
 
 		<?php if ($id_article != '') :?>
 
-			<?php if (User()->is('super-admins') == TRUE) :?>
+			<?php if (User()->is('super-admin') == TRUE) :?>
 
 				<dl class="compact small">
 					<dt><label><?php echo lang('ionize_label_name'); ?></label></dt>
@@ -109,7 +109,7 @@
 			<?php if( ! empty($id_article)) :?>
 
 				<!-- Parent pages list -->
-				<dl class="small dropPageInArticle">
+				<dl class="small dropPageInArticle" data-id="<?php echo $id_article ?>">
 					<dt>
 						<label for="parents" title="<?php echo lang('ionize_help_article_context'); ?>"><?php echo lang('ionize_label_parents'); ?></label>
 					</dt>
@@ -122,12 +122,8 @@
 
 									<?php
 										$title = ($page['title'] != '') ? $page['title'] : $page['name'];
-
-										// All REL or ID which permit the DOM identification of one article MUST be written like this.
-										// $rel = $page['id_page']. '.' .$id_article;
 									?>
-
-									<li rel="<?php echo $page['id_page']; ?>.<?php echo $id_article; ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?php echo $title; ?></a></li>
+									<li data-id="<?php echo $page['id_page']; ?>.<?php echo $id_article; ?>" class="parent_page"><a class="icon right unlink"></a><a class="page"><span class="link-img page left mr5<?php if($page['main_parent'] == '1') :?> main-parent<?php endif; ?>"></span><?php echo $title; ?></a></li>
 
 								<?php endforeach ;?>
 
@@ -206,17 +202,36 @@
 
 				<?php if(Authority::can('access', 'admin/article/permissions/frontend')) :?>
 					<?php if ( ! empty($frontend_roles_resources)): ?>
-
 						<dl class="x-small">
 							<dt><label><?php echo lang('ionize_label_frontend'); ?></label></dt>
-							<dd>
+							<dd id="frontRoles">
 								<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
 									<div id="roleRulesContainer<?php echo $id_role ?>"></div>
 								<?php endforeach;?>
 							</dd>
 						</dl>
-
 					<?php endif ;?>
+
+					<!--
+
+					Behavior options
+					 Here :
+					 - Do not display if choosen
+					 - Remove 400 codes, has no 400 codes on articles : Hum.... to see...
+
+
+					-->
+					<div id="denyFrontAction">
+						<dl class="x-small">
+							<dt><label><?php echo lang('ionize_label_behavior'); ?></label></dt>
+							<dd>
+								<label><input type="radio" name="deny_code" class="mr5 ml5" value="401" <?php if ( $deny_code == '401'): ?>checked="checked"<?php endif;?>/><a title="<?php echo lang('ionize_help_denied_action_401') ;?>"><?php echo lang('ionize_label_denied_action_401') ;?></a></label><br/>
+								<label><input type="radio" name="deny_code" class="mr5 ml5" value="403" <?php if ( $deny_code == '403'): ?>checked="checked"<?php endif;?> /><a title="<?php echo lang('ionize_help_denied_action_403') ;?>"><?php echo lang('ionize_label_denied_action_403') ;?></a></label><br/>
+								<label><input type="radio" name="deny_code" class="mr5 ml5" value="404" <?php if ( $deny_code == '404'): ?>checked="checked"<?php endif;?> /><a title="<?php echo lang('ionize_help_denied_action_404') ;?>"><?php echo lang('ionize_label_denied_action_404') ;?></a></label>
+							</dd>
+						</dl>
+					</div>
+
 				<?php endif ;?>
 
 				<?php if(Authority::can('access', 'admin/article/permissions/backend')) :?>
@@ -438,7 +453,7 @@
 		});
 	}
 
-	<?php if (!empty($id_article)) :?>
+	<?php if ( ! empty($id_article)) :?>
 
 		// Indexed XHR & Categories update
 		$('indexed').addEvent('click', function(e)
@@ -506,11 +521,31 @@
 						{'key':'description', 'as':'description'},
 						{'key':'actions', 'as':'actions'}
 					],
-					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
+					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>,
+					'onCheck': function()
+					{
+						frontRoleCheck();
+					}
 				}
 			);
 
 		<?php endforeach;?>
+
+		var frontRoleCheck = function()
+		{
+			var checked = false;
+			var cbs = $('frontRoles').getElements('input[type=checkbox]');
+			cbs.each(function(cb) {
+				if (cb.getProperty('checked') == true)
+					checked = true;
+			});
+			if (checked)
+				$('denyFrontAction').show();
+			else
+				$('denyFrontAction').hide();
+		};
+		frontRoleCheck();
+
 
 		// Name Edit
 		ION.initInputChange('#articleOptionsForm .dynamic-input');

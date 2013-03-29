@@ -176,6 +176,8 @@ namespace Ionize {
 		 */
 		function __construct($config = array())
 		{
+			log_message('debug', "User Class Initialized");
+
 			self::$instance =& $this;
 
 			// Get CodeIgniter instance and load necessary libraries and helpers
@@ -222,9 +224,7 @@ namespace Ionize {
 			if($this->session->userdata($user_pk) !== FALSE)
 			{
 				$this->user = $this->model->find_user(array($user_pk => $this->session->userdata($user_pk)));
-				$this->get_role();
 			}
-
 			// if we have a remember me cookie - try to load it
 			elseif($this->remember['on'] && get_cookie($this->remember['cookie_name']))
 			{
@@ -274,10 +274,8 @@ namespace Ionize {
 					delete_cookie($this->remember['cookie_name']);
 				}
 			}
+			$this->get_role();
 		}
-
-
-
 
 
 		// --------------------------------------------------------------------
@@ -468,7 +466,7 @@ namespace Ionize {
 		 */
 		public function logged_in()
 		{
-			return $this->user != NULL && isset($this->user[$this->model->getPkName()]);
+			return ($this->user != NULL && isset($this->user[$this->model->getPkName()]));
 		}
 
 
@@ -484,14 +482,14 @@ namespace Ionize {
 		 */
 		public function get($key)
 		{
-			if ($this->user)
-			{
-				if (isset($this->user[$key]))
-					return $this->user[$key];
+			// User's key
+			if ($this->user && isset($this->user[$key]))
+				return $this->user[$key];
 
-				if (isset($this->role[$key]))
-					return $this->role[$key];
-			}
+			// Role key
+			if ($this->role && isset($this->role[$key]))
+				return $this->role[$key];
+
 			return NULL;
 		}
 
@@ -538,6 +536,13 @@ namespace Ionize {
 			if ( $this->user && ! $this->role)
 			{
 				$role = $this->role_model->get($this->user['id_role']);
+
+				if ( ! empty($role))
+					$this->role = $role;
+			}
+			else if ( ! $this->role)
+			{
+				$role = $this->role_model->get(array('role_code' => 'guest'));
 
 				if ( ! empty($role))
 					$this->role = $role;

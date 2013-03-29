@@ -66,13 +66,17 @@ class Pages
 		 * This adds the group ID to the childrens pages of a protected page
 		 * If you don't want this, just uncomment this line.
 		 */
-		if (User()->logged_in())
-			self::$user = User()->get_user();
-		 
-		self::$ci->page_model->spread_authorizations($pages);
+		// self::$ci->page_model->spread_authorizations($pages);
+
+
+// $logged_in = User()->logged_in() == TRUE ? 'YES' : 'NO';
+// log_message('error', 'User logged in : ' . $logged_in);
+// log_message('error', 'User Role : ' . User()->get('role_name'));
+
 
 		// Filter pages regarding the authorizations
-//		$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_pages_authorization')));
+		if (User()->get('role_level') < 1000)
+			$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_pages_authorization')));
 
 		// Set all abolute URLs one time, for perf.
 		self::init_absolute_urls($pages, $lang);
@@ -245,6 +249,9 @@ class Pages
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @return string
+	 */
 	public static function get_home_page_url()
 	{
 		$url = base_url();
@@ -258,36 +265,22 @@ class Pages
 
 	// ------------------------------------------------------------------------
 
+
 	/**
-	 * TODO: Rewrite.
-	 *
-	 * @param $row
+	 * @param $page
 	 *
 	 * @return bool
 	 */
-	private static function _filter_pages_authorization($row)
+	private static function _filter_pages_authorization($page)
 	{
-		// If the page group != 0, then get the page group and check the restriction
-		if($row['id_group'] != 0)
-		{
-			self::$ci->load->model('connect_model');
-			$page_group = FALSE;
-			
-			$groups = self::$ci->connect_model->get_groups();
-			
-			// Get the page group
-			foreach($groups as $group)
-			{
-				if ($group['id_group'] == $row['id_group']) $page_group = $group;
-			} 
+		$resource = 'frontend/page/' . $page['id_page'];
 
-			// If the current connected user has access to the page return TRUE
-			if (self::$user !== FALSE && $page_group != FALSE && self::$user['group']['level'] >= $page_group['level'])
-				return TRUE;
-			
-			// If nothing found, return FALSE
-			return FALSE;
+		if ( Authority::cannot('access', $resource, NULL, TRUE))
+		{
+			if (empty($page['deny_code']) OR $page['deny_code'] == '404' )
+				return FALSE;
 		}
+
 		return TRUE;
 	}
 }

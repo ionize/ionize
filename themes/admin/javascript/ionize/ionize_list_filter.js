@@ -103,7 +103,7 @@ ION.ListFilter = new Class({
 			
 			results.each(function(item)
 			{
-				var rel = item.getProperty('rel');
+				var rel = item.getProperty('data-id');
 	
 				if (notes_ids.contains(rel) == false)
 				{
@@ -114,7 +114,7 @@ ION.ListFilter = new Class({
 			// The magical : All folder wich aren't in the notes_ids array can be hidden;
 			this.nodes.each(function(item)
 			{
-				if ( ! notes_ids.contains(item.getProperty('rel')))
+				if ( ! notes_ids.contains(item.getProperty('data-id')))
 					item.fade('out').hide();
 			});
 			

@@ -157,6 +157,9 @@ class User extends My_Admin
 
 		$this->template['user'] = $this->user_model->get($id_user);
 
+		// Panel from which the user is edited
+		$this->template['from'] = $this->input->post('from');
+
 		// Get roles, filtered on level <= $current_role level
 		$roles = $this->role_model->get_list();
 		$this->template['roles'] = array_filter($roles, array($this, '_filter_roles'));
@@ -210,7 +213,14 @@ class User extends My_Admin
 			$this->user_model->save($post);
 
 			// Reload user list
-			$this->_reload_user_list();
+			if ( ! empty($post['from']) && $post['from'] == 'dashboard')
+			{
+				$this->_reload_dashboard();
+			}
+			else
+			{
+				$this->_reload_user_list();
+			}
 
 			// Success message
 			$this->success(lang('ionize_message_user_saved'));
@@ -338,7 +348,8 @@ class User extends My_Admin
 		return ($row['role_level'] <= $this->current_role['role_level']) ? true : false;
 	}
 
-		// ------------------------------------------------------------------------
+
+	// ------------------------------------------------------------------------
 
 
 	private function _reload_user_list()
@@ -356,7 +367,17 @@ class User extends My_Admin
 		);
 	}
 
-}
 
-/* End of file user.php */
-/* Location: ./application/controllers/admin/user.php */
+	// ------------------------------------------------------------------------
+
+
+	private function _reload_dashboard()
+	{
+		$this->update = array(
+			array(
+				'element' => 'mainPanel',
+				'url' => admin_url() . 'dashboard'
+			)
+		);
+	}
+}

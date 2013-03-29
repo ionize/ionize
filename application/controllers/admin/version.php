@@ -88,6 +88,3 @@ class Version extends MY_Admin
 	
 	*/
 }
-
-/* End of file admin.php */
-/* Location: ./application/controllers/admin/version.php */

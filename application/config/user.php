@@ -61,11 +61,11 @@ $config['salt_length'] = '16';
 
 
 // Group to which the users will be assigned to after they have been activated.
-$config['user_default_role'] = 'users';
+$config['user_default_role'] = 'user';
 $config['user_banned_role'] = 'banned';
 $config['user_deactivated_role'] = 'deactivated';
 $config['user_pending_role'] = 'pending';
-$config['user_guest_role'] = 'guests';
+$config['user_guest_role'] = 'guest';
 
 /*
 |--------------------------------------------------------------------------
@@ -110,7 +110,7 @@ $config['user_guest_role'] = 'guests';
 
 $config['folder_protection'] = array(
 	'admin' => array(
-		'role' => array('super-admins')
+		'role' => array('super-admin')
 	),
 );
 

@@ -380,9 +380,9 @@ CREATE TABLE IF NOT EXISTS page (
   link_id varchar(20) NOT NULL default '',
   pagination tinyint(1) UNSIGNED NOT NULL DEFAULT 0						COMMENT 'Pagination use ?',
   pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
-  id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
   used_by_module tinyint(1) unsigned NULL,
+  deny_code varchar(3) NULL,
   PRIMARY KEY  (id_page),
   KEY idx_page_id_parent (id_parent),
   KEY idx_page_level (level),
@@ -547,17 +547,18 @@ CREATE TABLE IF NOT EXISTS user (
 
 TRUNCATE TABLE login_tracker;
 
-INSERT IGNORE INTO role VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
-INSERT IGNORE INTO role VALUES (2, 5000, 'admins', 'Admins', NULL);
-INSERT IGNORE INTO role VALUES (3, 1000, 'editors', 'Editors', NULL);
-INSERT IGNORE INTO role VALUES (4, 100, 'users', 'Users', NULL);
+INSERT IGNORE INTO role VALUES (1, 10000, 'super-admin', 'Super Admin', NULL);
+INSERT IGNORE INTO role VALUES (2, 5000, 'admin', 'Admin', NULL);
+INSERT IGNORE INTO role VALUES (3, 1000, 'editor', 'Editor', NULL);
+INSERT IGNORE INTO role VALUES (4, 100, 'user', 'User', NULL);
 INSERT IGNORE INTO role VALUES (5, 50, 'pending', 'Pending', NULL);
-INSERT IGNORE INTO role VALUES (6, 10, 'guests', 'Guests', NULL);
+INSERT IGNORE INTO role VALUES (6, 10, 'guest', 'Guest', NULL);
 INSERT IGNORE INTO role VALUES (7, -10, 'banned', 'Banned', NULL);
 INSERT IGNORE INTO role VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
 
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (1,NULL,'admin','','Backend login','Connect to ionize backend');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (10,NULL,'admin/menu','create,edit,delete','Menu','Menus');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (20,NULL,'admin/translations','','Translations','Translations');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');

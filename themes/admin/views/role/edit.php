@@ -9,9 +9,14 @@
  * has_all : 			TRUE if the user has all permissions
  *
  */
+
+$protected_role_codes = array(
+	'guest', 'super-admin', 'pending', 'banned', 'deactivated'
+);
+
 ?>
 
-	<p class="h20 mb20">
+	<p class="h20 mb10">
 		<a class="button light left" id="backToRoleListButton">
 			<i class="icon-back"></i><?php echo lang('ionize_label_back_to_role_list'); ?>
 		</a>
@@ -33,13 +38,19 @@
 		<!-- Hidden fields -->
 		<input id="id_role" name="id_role" type="hidden" value="<?php echo $role['id_role'] ?>" />
 
+		<?php if (in_array($role['role_code'], $protected_role_codes)): ?>
+			<p class="lite left mb10 ml25">This role is used by System, its code cannot be changed</p>
+		<?php endif ;?>
+
 		<!-- Group name -->
 		<dl class="small left">
 			<dt>
 				<label for="role_code"><?php echo lang('ionize_label_role_code'); ?></label>
+
 			</dt>
 			<dd>
-				<input id="role_code" name="role_code" class="inputtext w150 left required" <?php if ( ! Authority::can('edit', 'admin/role')) :?> disabled="disabled" <?php endif ;?>type="text" value="<?php echo $role['role_code']; ?>" />
+				<input id="role_code" name="role_code" class="inputtext w150 left required" <?php if ( ! Authority::can('edit', 'admin/role') OR ( in_array($role['role_code'], $protected_role_codes))) :?> disabled="disabled" <?php endif ;?>type="text" value="<?php echo $role['role_code']; ?>" />
+
                 <label for="role_name" class="left ml20"><?php echo lang('ionize_label_role_name'); ?></label>
                 <input id="role_name" name="role_name" class="inputtext left w150 required" <?php if ( ! Authority::can('edit', 'admin/role')) :?> disabled="disabled" <?php endif ;?>type="text" value="<?php echo $role['role_name']; ?>" />
 			</dd>

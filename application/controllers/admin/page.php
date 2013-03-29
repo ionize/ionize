@@ -60,7 +60,7 @@ class Page extends MY_admin
 	 * @var array
 	 */
 	protected static $_AUTHORITY_BACKEND_ACTIONS = array('edit','delete','status','add_page','add_article');
-	protected static $_AUTHORITY_FRONTEND_ACTIONS = NULL;
+	protected static $_AUTHORITY_FRONTEND_ACTIONS = array();
 
 
 	/**
@@ -226,7 +226,7 @@ class Page extends MY_admin
 	{
 		$resource = $this->_get_resource_name('backend', 'page', $id);
 
-		if ($this->authority_protect($resource, self::$_DENY_OPTIONS_VIEW))
+		if (Authority::can('edit', $resource, null, true))
 		{
 			// Datas
 			$page = $this->page_model->get_by_id($id);
@@ -302,6 +302,10 @@ class Page extends MY_admin
 				// Roles which have permission set for this page
 				$this->template['frontend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id);
 				$this->template['backend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id, 'backend');
+
+				// Default Deny Action
+				if (empty($page['deny_code']))
+					$this->template['deny_code'] = '404';
 
 				// Types
 				$types = $this->type_model->get_select('page', lang('ionize_select_no_type'));
@@ -1254,7 +1258,3 @@ class Page extends MY_admin
 		);
 	}
 }
-
-
-/* End of file page.php */
-/* Location: ./application/controllers/admin/page.php */

@@ -36,22 +36,21 @@ ION.Authority = new Class({
 	{
 		if (options)
 		{
-			if (ION.Authority.is_initialized == false)
+			if (ION.Authority.is_initialized == false || options.refresh == true)
 			{
 				ION.Authority.is_initialized = true;
 
-				if (options && typeOf(options.onComplete) != 'null')
+				if (typeOf(options.onComplete) != 'null')
 				{
 					ION.Authority.onComplete = options.onComplete;
 				}
-				ION.Authority.load_rules();
-				ION.Authority.load_all_rules();
+				ION.Authority.loadRules();
 			}
 		}
 	},
 
 
-	load_rules: function()
+	loadRules: function()
 	{
 		new Request.JSON({
 			url: admin_url + 'user/get_rules',
@@ -61,25 +60,26 @@ ION.Authority = new Class({
 			onSuccess: function(responseJSON)
 			{
 				ION.Authority.rules = responseJSON.rules;
-				ION.Authority.onSuccess();
+				ION.Authority.loadAllRules();
 			}
 		}).send();
 	},
 
 
-	load_all_rules: function()
+	loadAllRules: function()
 	{
 		new Request.JSON({
 			url: admin_url + 'rule/get_all',
 			method: 'post',
 			data: {
-				'type':'backend'
+			//	'type':'backend'
 			},
 			loadMethod: 'xhr',
 			onFailure: function(xhr){},
 			onSuccess: function(responseJSON)
 			{
 				ION.Authority.all_rules = responseJSON.rules;
+				ION.Authority.onSuccess();
 			}
 		}).send();
 	},
@@ -116,7 +116,7 @@ ION.Authority = new Class({
 		if (ION.Authority.has_all == true)
 			return true;
 
-		if (typeOf(check_has_rule) != 'null' && ! ION.Authority.resource_has_rule(resource))
+		if (typeOf(check_has_rule) != 'null' && ! ION.Authority.resourceHasRule(resource))
 			return true;
 
 		Object.each(ION.Authority.rules, function(rule)
@@ -135,7 +135,7 @@ ION.Authority = new Class({
 	},
 
 
-	resource_has_rule: function(resource)
+	resourceHasRule: function(resource)
 	{
 		var has = false;
 

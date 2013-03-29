@@ -48,12 +48,16 @@ CREATE TABLE event_log (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-DELETE FROM setting WHERE name='media_upload_mode';</query>
-INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');</query>
-INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');</query>
-INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');</query>
-INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
-INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
+DELETE FROM setting WHERE name='media_upload_mode';
+INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');
+INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');
+INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');
+
+-- Page table
+alter table page add deny_code varchar(3) NULL;
+alter table page drop id_group;
 
 
 
@@ -73,6 +77,13 @@ alter table role change group_name role_name varchar(100);
 alter table role change description role_description tinytext;
 drop table user_groups;
 
+update role set role_name='super-admin' where role_name='super-admins';
+update role set role_name='admin' where role_name='admins';
+update role set role_name='editor' where role_name='editors';
+update role set role_name='user' where role_name='users';
+update role set role_name='guest' where role_name='guests';
+
+
 -- Resource table
 CREATE TABLE if not exists resource (
   id_resource int(11) NOT NULL AUTO_INCREMENT,
@@ -89,6 +100,7 @@ INSERT INTO resource (id_resource, id_parent, resource, actions, title, descript
 VALUES
 	(1,NULL,'admin','','Backend login','Connect to ionize backend'),
 	(10,NULL,'admin/menu','create,edit,delete','Menu','Menus'),
+	(11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions'),
 	(20,NULL,'admin/translations','','Translations','Translations'),
 	(30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager'),
 	(40,NULL,'admin/page','create,edit,delete','Page','Page'),

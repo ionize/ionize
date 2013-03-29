@@ -97,8 +97,6 @@ ION.ItemManager = new Class({
 		items.each(function(item)
 		{
 			var id = item.getProperty('data-id');
-			if ( ! id) id = item.getProperty('rel'); // Compatibility with 0.9.9.x
-
 			ION.initRequestEvent(item, url + id, {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
 		});
 	},
@@ -115,8 +113,6 @@ ION.ItemManager = new Class({
 		items.each(function(item)
 		{
 			var id = item.getProperty('data-id');
-			if ( ! id) id = item.getProperty('rel'); // Compatibility with 0.9.9.x
-
 			ION.initRequestEvent(item, url + '/switch_online/' + id);
 		});
 	},
@@ -197,10 +193,12 @@ ION.ItemManager = new Class({
 				},
 				onComplete: function(item, clone)
 				{
+					/*
 					if (typeOf(self.scroller) != 'null')
 					{
 						// self.scroller.stop();
 					}
+					*/
 
 					// Hides the current sorted element (correct a Mocha bug on hidding modal window)
 					item.removeProperty('style');
@@ -211,12 +209,11 @@ ION.ItemManager = new Class({
 						// Check for the not removed clone
 						if (element.id != '')
 						{
-							var rel = item.getProperty('data-id');
-							if ( ! rel) rel = item.getProperty('rel'); // Compatibility with 0.9.9.x
-							var rel = (rel).split(".");
-
+							var rel = element.getProperty('data-id');
+							rel = (rel).split(".");
 							var id = rel[0];
 							if (rel.length > 1) { id = rel[1]; }
+
 							return id;
 						}
 						return;
@@ -235,7 +232,7 @@ ION.ItemManager = new Class({
 			{
 				if (element.id != '')
 				{
-					var rel = (element.getProperty('rel')).split(".");
+					var rel = (element.getProperty('data-id')).split(".");
 					var id = rel[0];
 					if (rel.length > 1) { id = rel[1]; }
 					return id;
@@ -367,7 +364,7 @@ ION.ArticleManager = new Class({
 
 		items.each(function(item, idx)
 		{
-			var rel = (item.getProperty('rel')).split(".");
+			var rel = (item.getProperty('data-id')).split(".");
 			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1]);
 		});
 	},
@@ -379,7 +376,7 @@ ION.ArticleManager = new Class({
 
 		items.each(function(item,idx)
 		{
-			var rel = (item.getProperty('rel')).split(".");
+			var rel = (item.getProperty('data-id')).split(".");
 			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1], {}, {message: Lang.get('ionize_confirm_article_page_unlink')});
 		});
 	}

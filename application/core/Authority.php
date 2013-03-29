@@ -25,17 +25,38 @@ class Authority extends Authority\Ability {
 
 	private static $ci;
 
+	private static $initialized = FALSE;
+
 	private static $session;
 
 	private static $has_all = FALSE;
 
+	/**
+	 * All rules Array
+	 * Independently from any role
+	 *
+	 * @var null
+	 */
+	private static $all_rules = NULL;
+
 
 	/**
-	 * @param $user
+	 * Simple array of all resources keys linked to rules
+	 * Storage array.
+	 *
+	 * @var array
+	 */
+	private static $all_rules_keys = array();
+
+
+	/**
+	 * @param $user	Ionize\User
 	 */
 	public static function initialize($user)
     {
 		log_message('debug', "Authority Class Initialized");
+
+		static::$initialized = TRUE;
 
 		self::$ci =& get_instance();
 
@@ -45,15 +66,18 @@ class Authority extends Authority\Ability {
 		Event::register('User.logout', array(__CLASS__, 'on_logout'));
 		Event::register('User.login', array(__CLASS__, 'on_login'));
 
-		// Super Admin shortcut : Will never depend on DB.
-		if ($user->is('super-admins'))
+		if ($user->logged_in())
 		{
-			Authority::allow('manage', 'all');
-		}
-		else
-		{
-			// Set Rules from DB or session
-			self::set_rules($user);
+			// Super Admin shortcut : Will never depend on DB.
+			if ($user->is('super-admin'))
+			{
+				Authority::allow('manage', 'all');
+			}
+			else
+			{
+				// Set Rules from DB or session
+				self::set_rules($user);
+			}
 		}
     }
 
@@ -133,12 +157,14 @@ class Authority extends Authority\Ability {
 	 */
 	public static function can($action, $resource, $resource_val = NULL, $check_has_rule = FALSE)
 	{
-		if ( empty(static::$_rules)) {
+		if ( ! static::$initialized && empty(static::$_rules)) {
 			static::initialize(static::current_user());
 		}
 
 		if ($check_has_rule == TRUE && ! static::resource_has_rule($resource))
+		{
 			return TRUE;
+		}
 
 		// See if the action has been aliased to something else
 		$true_action = static::determine_action($action);
@@ -165,7 +191,7 @@ class Authority extends Authority\Ability {
 	}
 
 
-	public static function cannot($action, $resource, $resource_val = null, $check_has_rule = FALSE)
+	public static function cannot($action, $resource, $resource_val = NULL, $check_has_rule = FALSE)
 	{
 		return ! static::can($action, $resource, $resource_val, $check_has_rule);
 	}
@@ -175,15 +201,24 @@ class Authority extends Authority\Ability {
 	 * Return TRUE if the resource has at least one rule,
 	 * independently from any role
 	 *
+	 * self::$ci->load->model('resource_model', '', TRUE);
+	 * return self::$ci->resource_model->has_rule($resource);
+	 *
 	 * @param $resource
 	 *
 	 * @return mixed
 	 */
-	public function resource_has_rule($resource)
+	public static function resource_has_rule($resource)
 	{
-		self::$ci->load->model('resource_model', '', TRUE);
+		if (is_null(static::$all_rules))
+		{
+			self::$ci->load->model('rule_model', '', TRUE);
+			static::$all_rules = self::$ci->rule_model->get_list();
 
-		return self::$ci->resource_model->has_rule($resource);
+			foreach(static::$all_rules as $rule)
+				static::$all_rules_keys[] = $rule['resource'];
+		}
+		return (in_array($resource, static::$all_rules_keys));
 	}
 
 

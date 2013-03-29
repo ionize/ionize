@@ -24,14 +24,14 @@
 		// Name Edit
 		$$('#elementContainer .edit.name').each(function(item, idx)
 		{
-			var id = item.getProperty('rel');
+			var id = item.getProperty('data-id');
 			var input = new Element('input', {'type': 'text', 'class':'inputtext left w180', 'name':'name', 'value': item.get('text')});
 
 			input.addEvent('blur', function(e)
 			{
 				if (input.value != '')
 				{
-					ION.sendData('element_definition/save_field', {'id':id, 'field': 'name', 'value':input.value, selector:'.element_definition a.name[rel='+id+']' });
+					ION.sendData('element_definition/save_field', {'id':id, 'field': 'name', 'value':input.value, selector:'.element_definition a.name[data-id='+id+']' });
 				}
 				input.hide();
 				item.show();
@@ -48,7 +48,7 @@
 
 		$$('#elementContainer .edit.title').each(function(item, idx)
 		{
-			var rel = (item.getProperty('rel')).split(".");
+			var rel = (item.getProperty('data-id')).split(".");
 			var id = rel[0];
 			var lang = rel[1];
 			var title = item.getProperty('title');
@@ -66,7 +66,7 @@
 
 				if (input.value != '' && input.value != title)
 				{
-					ION.sendData('element_definition/save_lang_field', {'id':id, 'field': 'title', 'lang':lang, 'value': value, selector:'a.title[rel='+item.getProperty('rel')+']' });
+					ION.sendData('element_definition/save_lang_field', {'id':id, 'field': 'title', 'lang':lang, 'value': value, selector:'a.title[data-id='+item.getProperty('data-id')+']' });
 					item.removeClass('lite').removeClass('italic');
 				}
 
@@ -87,7 +87,7 @@
 			item.addEvent('click', function(e)
 			{
 				e.stop();
-				var id = item.getProperty('rel');
+				var id = item.getProperty('data-id');
 				ION.formWindow('elementfield'+id, 'elementfieldForm'+id, 'ionize_title_element_field_edit', 'element_field/edit', {width:400, height:330}, {'id_extend_field': id});
 			});
 		});
@@ -98,7 +98,7 @@
 			item.addEvent('click', function(e)
 			{
 				e.stop();
-				var id = this.getProperty('rel');
+				var id = this.getProperty('data-id');
 				ION.formWindow('elementfield', 'elementfieldForm', 'ionize_title_element_field_new', 'element_field/create', {width:400, height:330}, {'id_element_definition': id});
 			});
 		});

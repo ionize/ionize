@@ -116,13 +116,18 @@
 				if (run) {
 
 					var cm = ed.controlManager, tdId, id;
-					
+
 					for(i = 0; i < toolbars.length; i++){
 						tbId = ed.getParam('', 'toolbar' + (toolbars[i]).replace(' ',''));
-						id = ed.controlManager.get(tbId).id;
-						cm.setActive('pdw_toggle', 1);
-						DOM.hide(id);
-						t._resizeIframe(ed, tbId, 26);
+						// partikule correction
+						var tbCm = ed.controlManager.get(tbId);
+						if (tbCm)
+						{
+							id = tbCm.id;
+							cm.setActive('pdw_toggle', 1);
+							DOM.hide(id);
+							t._resizeIframe(ed, tbId, 26);
+						}
 					}
 				}
 			});

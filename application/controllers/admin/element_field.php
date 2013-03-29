@@ -242,8 +242,4 @@ class Element_field extends MY_Admin
 			}
 		}
 	}
-
 }
-
-/* End of file element_field.php */
-/* Location: ./application/admin/controllers/element_field.php */

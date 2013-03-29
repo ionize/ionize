@@ -168,6 +168,3 @@ class Tree extends MY_Admin {
 
 	}
 }
-
-/* End of file tree.php */
-/* Location: ./application/admin/controllers/tree.php */

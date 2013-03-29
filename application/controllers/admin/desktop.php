@@ -153,6 +153,3 @@ class Desktop extends MY_Admin
 		$this->output('desktop/help');
 	}
 }
-
-/* End of file desktop.php */
-/* Location: ./application/admin/controllers/desktop.php */

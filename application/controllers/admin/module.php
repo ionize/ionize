@@ -95,7 +95,3 @@ class Module extends MY_admin
 		call_user_func_array(array($obj, $module_func), $module_args);
 	}
 }
-
-
-/* End of file module.php */
-/* Location: ./application/controllers/admin/module.php */

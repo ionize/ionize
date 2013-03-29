@@ -10,6 +10,7 @@
  *
  */
 
+
 ?>
 <form name="pageOptionsForm" id="pageOptionsForm" method="post" action="<?php echo admin_url() . 'page/save_options'?>">
 
@@ -35,7 +36,7 @@
 
 			<?php endif ;?>
 
-			<?php if (User()->is('super-admins')) :?>
+			<?php if (User()->is('super-admin')) :?>
 
 				<dl class="compact small">
 					<dt><label><?php echo lang('ionize_label_name'); ?></label></dt>
@@ -254,13 +255,26 @@
 					<?php if ( ! empty($frontend_roles_resources)): ?>
 						<dl class="x-small">
 							<dt><label><?php echo lang('ionize_label_frontend'); ?></label></dt>
-							<dd>
+							<dd id="frontRoles">
 								<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
 									<div id="roleRulesContainer<?php echo $id_role ?>"></div>
 								<?php endforeach;?>
 							</dd>
 						</dl>
 					<?php endif ;?>
+
+					<!-- Behavior options -->
+					<div id="denyFrontAction">
+						<dl class="x-small">
+							<dt><label><?php echo lang('ionize_label_behavior'); ?></label></dt>
+							<dd>
+								<label><input type="radio" name="deny_code" class="mr5 ml5" value="401" <?php if ( $deny_code == '401'): ?>checked="checked"<?php endif;?>/><a title="<?php echo lang('ionize_help_denied_action_401') ;?>"><?php echo lang('ionize_label_denied_action_401') ;?></a></label><br/>
+								<label><input type="radio" name="deny_code" class="mr5 ml5" value="403" <?php if ( $deny_code == '403'): ?>checked="checked"<?php endif;?> /><a title="<?php echo lang('ionize_help_denied_action_403') ;?>"><?php echo lang('ionize_label_denied_action_403') ;?></a></label><br/>
+								<label><input type="radio" name="deny_code" class="mr5 ml5" value="404" <?php if ( $deny_code == '404'): ?>checked="checked"<?php endif;?> /><a title="<?php echo lang('ionize_help_denied_action_404') ;?>"><?php echo lang('ionize_label_denied_action_404') ;?></a></label>
+							</dd>
+						</dl>
+					</div>
+
 				<?php endif ;?>
 
 				<?php if(Authority::can('access', 'admin/page/permissions/backend')) :?>
@@ -474,9 +488,10 @@
 		}
 
 		// Page status
-		if ($('iconPageStatus'))
-			ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
-
+		<?php if (Authority::can('status', 'backend/page/' . $id_page, null, true)) :?>
+			if ($('iconPageStatus'))
+				ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
+		<?php endif; ?>
 
 		// Reorder articles
 		$('button_reorder_articles').addEvent('click', function(e)
@@ -493,47 +508,70 @@
 			ION.sendData(url, data);
 		});
 
-		<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
+		<?php if(Authority::can('access', 'admin/page/permissions/backend')) :?>
+			<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
 
-			var modRules<?php echo $id_role ?> = new ION.PermissionTree(
-				'roleRulesContainer<?php echo $id_role ?>',
-				<?php echo json_encode($role_resources['resources'], true) ?>,
-				{
-					'cb_name':'backend_rule[<?php echo $id_role ?>][]',
-					'key': 'id_resource',
-					'data': [
-						{'key':'resource', 'as':'resource'},
-						{'key':'title', 'as':'title'},
-						{'key':'description', 'as':'description'},
-						{'key':'actions', 'as':'actions'}
-					],
-					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
-				}
-			);
+				var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+					'roleRulesContainer<?php echo $id_role ?>',
+					<?php echo json_encode($role_resources['resources'], true) ?>,
+					{
+						'cb_name':'backend_rule[<?php echo $id_role ?>][]',
+						'key': 'id_resource',
+						'data': [
+							{'key':'resource', 'as':'resource'},
+							{'key':'title', 'as':'title'},
+							{'key':'description', 'as':'description'},
+							{'key':'actions', 'as':'actions'}
+						],
+						'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
+					}
+				);
 
-		<?php endforeach;?>
+			<?php endforeach;?>
+		<?php endif; ?>
 
-		<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
+		<?php if(Authority::can('access', 'admin/page/permissions/frontend')) :?>
+			<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
 
-			var modRules<?php echo $id_role ?> = new ION.PermissionTree(
-				'roleRulesContainer<?php echo $id_role ?>',
-				<?php echo json_encode($role_resources['resources'], true) ?>,
-				{
-					'cb_name':'frontend_rule[<?php echo $id_role ?>][]',
-					'key': 'id_resource',
-					'data': [
-						{'key':'resource', 'as':'resource'},
-						{'key':'title', 'as':'title'},
-						{'key':'description', 'as':'description'},
-						{'key':'actions', 'as':'actions'}
-					],
-					'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
-				}
-			);
+				var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+					'roleRulesContainer<?php echo $id_role ?>',
+					<?php echo json_encode($role_resources['resources'], true) ?>,
+					{
+						'cb_name':'frontend_rule[<?php echo $id_role ?>][]',
+						'key': 'id_resource',
+						'data': [
+							{'key':'resource', 'as':'resource'},
+							{'key':'title', 'as':'title'},
+							{'key':'description', 'as':'description'},
+							{'key':'actions', 'as':'actions'}
+						],
+						'rules' : <?php echo json_encode($role_resources['rules'], true) ?>,
+						'onCheck': function()
+						{
+							frontRoleCheck();
+						}
+					}
+				);
 
-		<?php endforeach;?>
-
+			<?php endforeach;?>
+		<?php endif; ?>
 	<?php endif; ?>
+
+
+	var frontRoleCheck = function()
+	{
+		var checked = false;
+		var cbs = $('frontRoles').getElements('input[type=checkbox]');
+		cbs.each(function(cb) {
+			if (cb.getProperty('checked') == true)
+				checked = true;
+		});
+		if (checked)
+			$('denyFrontAction').show();
+		else
+			$('denyFrontAction').hide();
+	};
+	frontRoleCheck();
 
 	// Options Accordion
 	ION.initAccordion('.toggler', 'div.element', true, 'pageAccordion');
@@ -589,9 +627,10 @@
 		ION.sendData(url, data);
 	});
 
-
-	// Name Edition
-	ION.initInputChange('#pageOptionsForm .dynamic-input');
+	<?php if (User()->is('super-admin')) :?>
+		// Name Edition
+		ION.initInputChange('#pageOptionsForm .dynamic-input');
+	<?php endif; ?>
 
 
 </script>

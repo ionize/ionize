@@ -88,7 +88,7 @@
 	}
 	else
 	{
-		<?php if(Authority::can('delete', 'admin/page')) :?>
+		<?php if(Authority::can('delete', 'admin/page') && Authority::can('delete', 'backend/page/' . $id_page, null, true)) :?>
 
     		// Delete button
 	 		var url = admin_url + 'page/delete/';
@@ -100,7 +100,7 @@
 		<?php if(Authority::can('add', 'admin/page/element')) :?>
 
 			// Add Content Element button
-			$('addContentElement').addEvent('click', function(e)
+			$('addContentElement').addEvent('click', function()
 			{
 				ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'page', 'id_parent': id});
 			});
@@ -126,7 +126,11 @@
 		<?php endif;?>
 
 
-		<?php if(Authority::can('add', 'admin/page/article') OR Authority::can('create', 'admin/article')) :?>
+		<?php if(
+			(Authority::can('add', 'admin/page/article') OR Authority::can('create', 'admin/article'))
+			&& Authority::can('add_article', 'backend/page/' . $id_page, null, true)
+		)
+		:?>
 
 			// Article create button link
 			$('addArticle').addEvent('click', function(e)

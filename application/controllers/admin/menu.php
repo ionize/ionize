@@ -25,6 +25,13 @@ class Menu extends MY_admin
 {
 
 	/**
+	 * Frontend / Backend Authority actions
+	 * @var array
+	 */
+	protected static $_AUTHORITY_BACKEND_ACTIONS = array();
+
+
+	/**
 	 * Constructor
 	 *
 	 */
@@ -32,8 +39,9 @@ class Menu extends MY_admin
 	{
 		parent::__construct();
 
-		$this->base_model->set_table('menu');
-		$this->base_model->set_pk_name('id_menu');
+		$this->load->model('menu_model', '', TRUE);
+		$this->load->model('rule_model', '', TRUE);
+		$this->load->model('resource_model', '', TRUE);
 	}
 
 
@@ -41,25 +49,44 @@ class Menu extends MY_admin
 
 
 	/**
-	 * Shows the existing menus
+	 * Menus list
 	 *
 	 */
 	function index()
 	{
+		$menus = $this->menu_model->get_list(array('order_by' => 'ordering ASC'));
 
-		$menus = $this->base_model->get_list(array('order_by' => 'ordering ASC'));
+		foreach($menus as &$menu)
+		{
+			$backend_roles_resources = $this->resource_model->get_element_roles_resources(
+				'menu',
+				$menu['id_menu'],
+				self::$_AUTHORITY_BACKEND_ACTIONS,
+				'backend'
+			);
+
+			$menu['backend_roles_resources'] = $backend_roles_resources;
+			$menu['backend_role_ids'] = $this->rule_model->get_element_role_ids('menu', $menu['id_menu'], 'backend');
+		}
 
 		$this->template['menus'] = $menus;
 
-		$this->output('menu/menu');
+		$this->output('menu/index');
 	}
+
 
 	// ------------------------------------------------------------------------
 
-	function get_form()
+
+	/**
+	 * New Menu
+	 *
+	 */
+	public function create()
 	{
-		$this->output('menu/menu_new');
+		$this->output('menu/menu');
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -68,37 +95,20 @@ class Menu extends MY_admin
 	 * Saves a new menu
 	 *
 	 */
-	function save()
+	public function save()
 	{
-		if( $this->input->post('name_new') != "" && $this->input->post('title_new') != "" )
+		if( $this->input->post('name') != '' && $this->input->post('title') != '' )
 		{
 			$data = array(
-						'name' => url_title($this->input->post('name_new'), 'underscore'),
-						'title' => $this->input->post('title_new')
-					);
-
-			// Save to DB
-			if ($this->base_model->exists( array( 'name' => $this->input->post('name_new') ) ) )
-			{
-				$this->base_model->update($this->input->post('name_new'), $data);
-			}
-			else
-			{
-				$this->base_model->insert($data);
-			}
-			
-			// UI panel to update after saving
-			$this->update = array(
-				array(
-					'element' => 'mainPanel',
-					'url' => admin_url() . 'menu'
-				),
-				array(
-					'element' => 'structurePanel',
-					'url' => admin_url() . 'tree'
-				)	
+				'name' => url_title($this->input->post('name'), 'underscore'),
+				'title' => $this->input->post('title')
 			);
-			
+
+			$this->menu_model->save($data);
+
+			// UI panel to update after saving
+			$this->_update_panels();
+
 			// Answer send
 			$this->success(lang('ionize_message_menu_saved'));
 		}
@@ -113,41 +123,27 @@ class Menu extends MY_admin
 
 
 	/**
-	 * Updates all the existing menus
+	 * Update one menu
 	 *
 	 */
-	function update()
+	public function update()
 	{
-		$menus = $this->base_model->get_list(array('order_by' => 'ordering ASC'));
+		log_message('error', print_r($this->input->post(), true));
+		$id = $this->input->post('id_menu');
 
-		foreach($menus as $menu)
+		if ($id)
 		{
-			// Update existing menus
-			$data = array(
-				'name' =>		url_title($this->input->post('name_'.$menu['id_menu']), 'underscore'),
-				'title' =>		$this->input->post('title_'.$menu['id_menu'])
-			);
+			$this->menu_model->update($id, $this->input->post());
 
-			if (($menu['name'] != $data['name']) && $this->base_model->exists( array( 'name' =>  $data['name'] ) ) )
+			if (Authority::can('access', 'admin/menu/permissions/backend'))
 			{
-				$this->error(lang('ionize_message_menu_already_exists'));
+				$resource = 'backend/menu/' . $id;
+				$this->rule_model->save_element_roles_rules($resource, $this->input->post('backend_rule'));
 			}
-			
-			$this->base_model->update($menu['id_menu'], $data);
-			
 		}
 
 		// UI update panels
-		$this->update = array(
-			array(
-				'element' => 'mainPanel',
-				'url' => admin_url() . 'menu'
-			),
-			array(
-				'element' => 'structurePanel',
-				'url' => admin_url() . 'tree'
-			)	
-		);
+		$this->_update_panels();
 
 		$this->success(lang('ionize_message_menu_updated'));
 	}
@@ -160,22 +156,17 @@ class Menu extends MY_admin
 	 * Saves ordering
 	 * 
 	 */
-	function save_ordering()
+	public function save_ordering()
 	{
 		$order = $this->input->post('order');
 		
 		if( $order !== FALSE )
 		{
 			// Saves the new ordering
-			$this->base_model->save_ordering($order);
+			$this->menu_model->save_ordering($order);
 			
 			// UI update panels
-			$this->update = array(
-				array(
-					'element' => 'structurePanel',
-					'url' => admin_url() . 'tree'
-				)	
-			);
+			$this->_update_panels();
 
 			// Answer send
 			$this->success(lang('ionize_message_menu_ordered'));
@@ -186,8 +177,8 @@ class Menu extends MY_admin
 			$this->error(lang('ionize_message_operation_nok'));
 		}
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -197,26 +188,14 @@ class Menu extends MY_admin
 	 * @param	string		menu ID
 	 *
 	 */
-	function delete($id)
+	public function delete($id)
 	{
-		$affected_rows = $this->base_model->delete($id);
+		$affected_rows = $this->menu_model->delete($id);
 
 		if ($affected_rows > 0)
 		{
-			$this->id = $id;
-			
-			// UI panel to update after saving
-			$this->update = array(
-				array(
-					'element' => 'mainPanel',
-					'url' => admin_url() . 'menu'
-				),
-				array(
-					'element' => 'structurePanel',
-					'url' => admin_url() . 'tree'
-				)	
-			);
-			
+			$this->_update_panels();
+
 			// Answer send
 			$this->success(lang('ionize_message_menu_deleted'));
 		}
@@ -227,8 +206,25 @@ class Menu extends MY_admin
 		}
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Updates panels
+	 *
+	 */
+	protected function _update_panels()
+	{
+		$this->update = array(
+			array(
+				'element' => 'mainPanel',
+				'url' => admin_url() . 'menu/index'
+			),
+			array(
+				'element' => 'structurePanel',
+				'url' => admin_url() . 'tree'
+			)
+		);
+	}
 }
-
-
-/* End of file menu.php */
-/* Location: ./application/controllers/admin/menu.php */

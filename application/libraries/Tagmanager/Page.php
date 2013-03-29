@@ -21,6 +21,13 @@ class TagManager_Page extends TagManager
 {
 	protected static $user = FALSE;
 
+	protected static $http_status_code = array(
+		401 => 'Unauthorized',
+		403 => 'Forbidden',
+		404 => 'Not Found',
+	);
+
+
 	/**
 	 * Ordered pages, used by get_adjacent_page()
 	 * @var null
@@ -65,6 +72,13 @@ class TagManager_Page extends TagManager
 		// Current page
 		$page = self::registry('page');
 
+		// Last option : Even the 404 wasn't found...
+		if (empty($page['id_page']))
+		{
+			echo 'Not found';
+			die();
+		}
+
 		if ( ! empty($page['link']))
 		{
 			// External redirect
@@ -96,27 +110,14 @@ class TagManager_Page extends TagManager
 				}	
 			}
 		}
-		
+
+
 		// Can we get one article from the URL ?
 		$entity = self::get_entity();
 		if ( $entity['type'] == 'article')
 		{
 			$article = self::$ci->article_model->get_by_id($entity['id_entity'], Settings::get_lang());
 		}
-
-		/**
-		 * @TODO :
-		 * Write the backend choice...
-		 *
-		 *
-		// Entity should be at least one page. If not, 404.
-		if (is_null($entity) && ! empty(self::$ci->uri->segments[4]))
-		{
-			$page = self::get_page_by_code('404');
-			self::register('page', $page);
-			self::set_404_output();
-		}
-		*/
 
 		if ( ! empty($article))
 			self::register('article', $article);
@@ -191,7 +192,18 @@ class TagManager_Page extends TagManager
 		if (is_null($page) OR empty($page))
 		{
 			$page = self::get_page_by_code('404');
-			self::set_404_output();
+			self::set_400_output(404);
+		}
+		else
+		{
+			$resource = 'frontend/page/' . $page['id_page'];
+
+			if ( Authority::cannot('access', $resource, NULL, TRUE))
+			{
+				$http_code = $page['deny_code'];
+				$page = self::get_page_by_code($page['deny_code']);
+				self::set_400_output($http_code);
+			}
 		}
 
 		// Add index to identify current page
@@ -385,14 +397,14 @@ class TagManager_Page extends TagManager
 
 
 	/**
-	 * Set 404 page
+	 * Set 400 page
 	 *
 	 * @return void
-	 *
+	 * @param int $code
 	 */
-	public function set_404_output()
+	public function set_400_output($code = 404)
 	{
-		self::$ci->output->set_header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+		self::$ci->output->set_header($_SERVER["SERVER_PROTOCOL"]." ".$code." ".self::$http_status_code[$code]);
 
 		$ext = array_pop(explode('.', array_pop(self::$ci->uri->segment_array())));
 
@@ -915,43 +927,6 @@ class TagManager_Page extends TagManager
 
 
 	/**
-	 * TODO: Rewrite
-	 * Return TRUE if the user can see the element
-	 *
-	 * @param array
-	 *
-	 * @return bool
-	 *
-	 */
-	private function _filter_pages_authorization($row)
-	{
-		// If the page group != 0, then get the page group and check the restriction
-		if($row['id_group'] != 0)
-		{
-			self::$ci->load->model('connect_model');
-			$element_group = FALSE;
-			
-			$groups = self::$ci->connect_model->get_groups();
-			
-			// Get the page group
-			foreach($groups as $group)
-			{
-				if ($group['id_group'] == $row['id_group']) $element_group = $group;
-			} 
-
-			// If the current connected user has access to the page return TRUE
-			if (self::$user !== FALSE && $element_group != FALSE && self::$user['group']['level'] >= $element_group['level'])
-				return TRUE;
-			
-			return FALSE;
-		}
-		return TRUE;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-	/**
 	 * Get the view for the asked page
 	 *
 	 * @param array
@@ -978,7 +953,6 @@ class TagManager_Page extends TagManager
 	}
 
 }
-
 
 /* End of file Page.php */
 /* Location: /application/libraries/Tagmanager/Page.php */

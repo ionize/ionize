@@ -29,11 +29,13 @@ class TagManager_Article extends TagManager
 		'article:next' => 			'tag_next_article',
 		'article:prev' => 			'tag_prev_article',
 		'article:type' => 			'tag_simple_value',
+		'article:deny_code' => 		'tag_simple_value',
+		'article:deny' => 			'tag_article_deny',
 	);
 
 
 	// ------------------------------------------------------------------------
-	
+
 
 	/**
 	 * Get Articles
@@ -63,6 +65,9 @@ class TagManager_Article extends TagManager
 		// Pagination
 		$tag_pagination = $tag->getAttribute('pagination');
 		$ionize_pagination = $page['pagination'];
+
+		// Authorizations
+		$tag_authorization = $tag->getAttribute('authorization');
 
 		// Type filter, limit, SQL filter
 		$type = $tag->getAttribute('type');
@@ -143,7 +148,14 @@ class TagManager_Article extends TagManager
 			$filter
 		);
 
+		// Filter on authorizations
+		if (User()->get('role_level') < 1000)
+		{
+			$articles = self::_filter_articles_authorization($articles, $tag_authorization);
+		}
+
 		// Pagination needs the total number of articles, without the pagination filter
+		// TODO : Integrates authorizations in articles count
 		if ($tag_pagination OR $ionize_pagination)
 		{
 			$nb_total_articles = self::count_nb_total_articles($tag, $where, $filter);
@@ -515,6 +527,41 @@ class TagManager_Article extends TagManager
 
 
 	/**
+	 *
+	 * @param FTL_Binding $tag
+	 * @return string
+	 *
+	 */
+	public static function tag_article_deny(FTL_Binding $tag)
+	{
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+
+		// 1. Try to get from tag's data array
+		$value = $tag->getValue('deny_code', 'article');
+
+		$resource = 'frontend/article/' . $tag->getValue('id_article', 'article');
+
+		if (Authority::cannot('access', $resource, NULL, TRUE))
+		{
+			return self::output_value($tag, $value);
+		}
+		else
+		{
+			if ($tag->getAttribute('is') == '')
+			{
+				self::$trigger_else = 0;
+				return self::wrap($tag, $tag->expand());
+			}
+		}
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Expand the articles
 	 *
 	 * @param	FTL_Binding object
@@ -796,6 +843,55 @@ class TagManager_Article extends TagManager
 
 		return $tag->parse_as_nested(file_get_contents($view_path));
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	private static function _filter_articles_authorization($articles, $filter_codes=NULL)
+	{
+		if ( is_string($filter_codes) ) $filter_codes = explode(',', $filter_codes);
+		$codes = array();
+
+		if ( is_array($filter_codes))
+		{
+			foreach($filter_codes as $code)
+				$codes[] = trim($code);
+		}
+
+		if (in_array('all', $codes) && count($codes) == 1)
+			return $articles;
+
+		$return = array();
+
+		foreach ($articles as $article)
+		{
+			$resource = 'frontend/article/' . $article['id_article'];
+
+			if ( Authority::cannot('access', $resource, NULL, TRUE))
+			{
+				if (empty($codes))
+					continue;
+
+				if (in_array($article['deny_code'], $codes))
+					$return[] = $article;
+			}
+			else
+			{
+				if (in_array('all', $codes))
+					$return[] = $article;
+
+				else if ( ! empty($codes))
+					continue;
+
+				else
+					$return[] = $article;
+			}
+		}
+
+		return $return;
+	}
+
 }
 
 TagManager_Article::init();

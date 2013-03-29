@@ -72,10 +72,4 @@ class Tracker extends My_Admin
 
 		$this->xhr_output($output);
 	}
-
-
-
 }
-
-/* End of file user.php */
-/* Location: ./application/controllers/admin/tracker.php */

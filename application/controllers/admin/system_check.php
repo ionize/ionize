@@ -374,7 +374,3 @@ class System_check extends MY_admin
 	}
 	
 }
-
-
-/* End of file system_check.php */
-/* Location: ./application/controllers/admin/system_check.php */

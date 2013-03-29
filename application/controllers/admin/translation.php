@@ -575,8 +575,4 @@ class Translation extends MY_admin
 
 		return $data;
 	}
-	
 }
-
-/* End of file translation.php */
-/* Location: ./application/controllers/admin/translation.php */

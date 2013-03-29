@@ -8,6 +8,8 @@
 
 $id = $id_extend_field;
 
+log_message('error', print_r($element, true));
+
 ?>
 
 <form name="elementfieldForm<?php echo $id; ?>" id="elementfieldForm<?php echo $id; ?>" action="<?php echo admin_url(); ?>element_field/save">

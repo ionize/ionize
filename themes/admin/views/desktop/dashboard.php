@@ -103,17 +103,17 @@
 						<table class="list mb20 mt10" id="usersList">
 
 							<thead>
-							<tr>
-								<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
-								<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
-								<th axis="date" class="w110"><?php echo lang('ionize_label_last_visit'); ?></th>
-							</tr>
+								<tr>
+									<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
+									<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
+									<th axis="date" class="w110"><?php echo lang('ionize_label_last_visit'); ?></th>
+								</tr>
 							</thead>
 							<tbody>
 
 							<?php foreach($users as $user) :?>
 
-								<tr>
+								<tr data-id="<?php echo $user['id_user'] ?>">
 									<td><?php echo $user['screen_name']; ?></td>
 									<td><?php echo mailto($user['email']); ?></td>
 									<td><?php echo humanize_mdate($user['last_visit'], Settings::get('date_format'). ' %H:%i'); ?></td>
@@ -134,17 +134,17 @@
 							<table class="list mb20 mt10" id="lastusersList">
 
 								<thead>
-								<tr>
-									<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
-									<th axis="date" class="w110"><?php echo lang('ionize_label_join_date'); ?></th>
-								</tr>
+									<tr>
+										<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
+										<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
+										<th axis="date" class="w110"><?php echo lang('ionize_label_join_date'); ?></th>
+									</tr>
 								</thead>
 								<tbody>
 
 								<?php foreach($last_registered_users as $user) :?>
 
-									<tr>
+									<tr data-id="<?php echo $user['id_user'] ?>">
 										<td><?php echo $user['screen_name']; ?></td>
 										<td><?php echo mailto($user['email']); ?></td>
 										<td><?php echo humanize_mdate($user['join_date'], Settings::get('date_format'). ' %H:%i'); ?></td>
@@ -162,8 +162,6 @@
 				</div>
 
 			</div>
-
-
 
 		</div>
 
@@ -229,7 +227,7 @@
 
 								<tr>
 									<td>
-										<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>">
+										<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>">
 											<span class="icon edit mr5 left"></span>
 											<?php echo $title; ?><br/>
 										</a>
@@ -276,7 +274,7 @@
 
 									<tr class="0x<?php echo $article['id_article']; ?>">
 										<td>
-											<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" rel="0.<?php echo $article['id_article']; ?>">
+											<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="0.<?php echo $article['id_article']; ?>">
 												<span class="icon edit mr5 left"></span>
 												<?php echo $title; ?>
 											</a>
@@ -322,7 +320,7 @@
 
 									<tr>
 										<td>
-											<a title="<?php echo lang('ionize_label_edit'); ?>" rel="<?php echo $page['id_page']; ?>" class="page">
+											<a title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $page['id_page']; ?>" class="page">
 												<span class="icon edit mr5 left"></span>
 												<?php echo $title; ?>
 											</a>
@@ -399,8 +397,8 @@
 		item.addEvent('click', function(e){
 			e.stop();
             ION.splitPanel({
-                'urlMain': admin_url + 'article/edit/' + item.getProperty('rel'),
-                'urlOptions': admin_url + 'article/get_options/' + item.getProperty('rel'),
+                'urlMain': admin_url + 'article/edit/' + item.getProperty('data-id'),
+                'urlOptions': admin_url + 'article/get_options/' + item.getProperty('data-id'),
                 'title': Lang.get('ionize_title_edit_article') + ' : ' + item.get('text')
             });
 		});
@@ -414,15 +412,18 @@
 
 	pages.each(function(item, idx)
 	{
-		var id = item.getProperty('rel');
+		var id = item.getProperty('data-id');
 		var title = item.get('text');
 		
-		item.addEvent('click', function(e){
+		item.addEvent('click', function(e)
+		{
 			e.stop();
-            ION.contentUpdate({
-				'element': $('mainPanel'),
-				'loadMethod': 'xhr',
-				'url': admin_url + 'page/edit/'+id,'title': Lang.get('ionize_title_edit_page') + ' : ' + title});
+
+			ION.splitPanel({
+				'urlMain': admin_url + 'page/edit/' + id,
+				'urlOptions': admin_url + 'page/get_options/' + id,
+				'title': Lang.get('ionize_title_edit_page') + ' : ' + title
+			});
 		});
 	});
 
@@ -464,7 +465,50 @@
 		});
 	});
 
+	/*
+	 * @TODO: Send the controller to use to reload the user's list
+	 *
+	 */
+	// Users : Last logged
+	$$('#usersList tbody tr').each(function(item)
+	{
+		item.addEvent('click', function(e)
+		{
+			e.stop();
+			var id = item.getProperty('data-id');
+			ION.formWindow(
+				'user'+ id,
+				'userForm'+ id,
+				'ionize_title_user_edit',
+				'user/edit',
+				{width: 400, resize:true},
+				{
+					'id_user': id,
+					'from':'dashboard'
+				}
+			);
+		});
+	});
 
+	// Users : Last registered
+	$$('#lastusersList tbody tr').each(function(item)
+	{
+		item.addEvent('click', function(e)
+		{
+			e.stop();
+			var id = item.getProperty('data-id');
+			ION.formWindow(
+				'user'+ id,
+				'userForm'+ id,
+				'ionize_title_user_edit',
+				'user/edit',
+				{width: 400, resize:true},
+				{
+					'id_user': id,
+					'from':'dashboard'
+				}
+			);
+		});
+	});
 
-	
 </script>

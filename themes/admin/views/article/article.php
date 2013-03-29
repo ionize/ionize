@@ -641,9 +641,9 @@ if ($tracker_title == '')
 
 
 	// Auto-generate Main title
-	$$('.tabcontent .title').each(function(input, idx)
+	$$('.tabcontent .title').each(function(input)
 	{
-		input.addEvent('keyup', function(e)
+		input.addEvent('keyup', function()
 		{
 			$('main-title').set('text', this.value);
 		});

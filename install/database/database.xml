@@ -390,10 +390,10 @@
 			  link_type varchar(25) default NULL COMMENT '''page'', ''article'' or NULL',
 			  link_id varchar(20) NOT NULL default '',
 			  pagination tinyint(1) UNSIGNED NOT NULL DEFAULT 0						COMMENT 'Pagination use ?',
-			  id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   			  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
               used_by_module tinyint(1) unsigned NULL,
-			  PRIMARY KEY  (id_page),
+              deny_code varchar(3) NULL,
+              PRIMARY KEY  (id_page),
 			  KEY idx_page_id_parent (id_parent),
 			  KEY idx_page_level (level),
 			  KEY idx_page_menu (id_menu) 
@@ -575,17 +575,18 @@
 
 		<query>TRUNCATE TABLE login_tracker;</query>
 		
-		<query>INSERT IGNORE INTO role VALUES (1, 10000, 'super-admins', 'Super Admins', '');</query>
-		<query>INSERT IGNORE INTO role VALUES (2, 5000, 'admins', 'Admins', '');</query>
-		<query>INSERT IGNORE INTO role VALUES (3, 1000, 'editors', 'Editors', '');</query>
-		<query>INSERT IGNORE INTO role VALUES (4, 100, 'users', 'Users', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (1, 10000, 'super-admin', 'Super Admin', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (2, 5000, 'admin', 'Admin', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (3, 1000, 'editor', 'Editor', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (4, 100, 'user', 'User', '');</query>
 		<query>INSERT IGNORE INTO role VALUES (5, 50, 'pending', 'Pending', '');</query>
-		<query>INSERT IGNORE INTO role VALUES (6, 10, 'guests', 'Guests', '');</query>
+		<query>INSERT IGNORE INTO role VALUES (6, 10, 'guest', 'Guest', '');</query>
 		<query>INSERT IGNORE INTO role VALUES (7, -10, 'banned', 'Banned', '');</query>
 		<query>INSERT IGNORE INTO role VALUES (8, -100, 'deactivated', 'Deactivated', '');</query>
 
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (1,NULL,'admin','','Backend login','Connect to ionize backend');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (10,NULL,'admin/menu','create,edit,delete','Menu','Menus');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (20,NULL,'admin/translations','','Translations','Translations');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');</query>
@@ -771,6 +772,7 @@
 
         <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', NULL);</query>
+
         <query>
 			INSERT IGNORE INTO menu (id_menu, name, title) VALUES
 				(1 , 'main', 'Main menu'),

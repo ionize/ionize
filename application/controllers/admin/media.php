@@ -1166,9 +1166,4 @@ class Media extends MY_admin
 			
 		return FALSE;
 	}
-	
 }
-
-
-/* End of file media.php */
-/* Location: ./application/controllers/admin/media.php */

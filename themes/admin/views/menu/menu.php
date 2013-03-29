@@ -1,99 +1,35 @@
-<?php
-/**
- * Menu view
- *
- */
-?>
 
-<div id="maincolumn">
+<h2 class="main tree" id="main-title"><?php echo lang('ionize_title_create_menu') ?></h2>
 
-    <h2 class="main tree" id="main-title"><?php echo lang('ionize_menu_menu') ?></h2>
+<form name="menuForm" id="menuForm" method="post" action="<?php echo admin_url(); ?>menu/save">
 
-    <form name="existingMenuForm" id="existingMenuForm" method="post" action="<?php echo admin_url(); ?>menu/update">
+	<!-- Name -->
+	<dl class="small">
+		<dt>
+			<label for="name"><?php echo lang('ionize_label_name'); ?></label>
+		</dt>
+		<dd>
+			<input id="name" name="name" class="inputtext w140" type="text" value=""/><br />
+		</dd>
+	</dl>
 
-	<!-- Sortable UL -->
-	<ul id="menuContainer" class="sortable">
+	<!-- Title  -->
+	<dl class="small">
+		<dt>
+			<label for="title"><?php echo lang('ionize_label_title'); ?></label>
+		</dt>
+		<dd>
+			<input id="title" name="title" class="inputtext w140" type="text" value="" />
+		</dd>
+	</dl>
 
-		<?php foreach($menus as $menu) :?>
+</form>
 
-			<?php
-				$name = $menu['name'];
-				$id = $menu['id_menu'];
-				$title = $menu['title'];
-			?>
-
-			<li id="menu_<?php echo $id; ?>" class="sortme" rel="<?php echo $id; ?>">
-
-				<!-- Drag icon -->
-				<div class="drag" style="float:left;">
-					<img src="<?php echo theme_url(); ?>images/icon_16_ordering.png" />
-				</div>
-
-                <!-- Delete button -->
-				<?php if($id > 2 && Authority::can('delete', 'admin/menu')) :?>
-                	<a class="icon right delete" rel="<?php echo $id; ?>"></a>
-				<?php endif ;?>
-
-				<!-- Name -->
-				<dl class="small">
-					<dt>
-						<label for="name_<?php echo $id; ?>"><?php echo lang('ionize_label_name'); ?></label>
-					</dt>
-					<dd>
-						<?php if($id < 3) :?> 
-							<input type="text" disabled="disabled" value="<?php echo $name; ?>"  class="inputtext" />
-						<?php endif ;?>
-						
-						<input type="<?php if($id < 3) :?>hidden<?php else :?>text<?php endif ;?>" name="name_<?php echo $id; ?>" id="name_<?php echo $id; ?>" class="inputtext" value="<?php echo $name; ?>"/>
-						
-					</dd>
-				</dl>
-
-				<!-- Title -->
-				<dl class="small">
-					<dt>
-						<label for="title_<?php echo $id; ?>"><?php echo lang('ionize_label_title'); ?></label>
-					</dt>
-					<dd>
-						<input name="title_<?php echo $id; ?>" id="title_<?php echo $id; ?>" class="inputtext" type="text" value="<?php echo $title; ?>"/>
-					</dd>
-				</dl>
-				
-				<!-- Internal ID -->
-				<dl class="small">
-					<dt>
-						<label><?php echo lang('ionize_label_internal_id'); ?></label>
-					</dt>
-					<dd><?php echo $id; ?></dd>
-				</dl>
-
-			</li>
-
-		<?php endforeach ;?>
-
-		</ul>
-
-	</form>
-
-
-</div> <!-- /maincolumn -->
-
-
-<script type="text/javascript">
-	
-	// Toolbox
-	ION.initToolbox('menu_toolbox');
-
-	// Menu manager
-	menuManager = new ION.ItemManager(
-	{
-		element: 	'menu',
-		container: 	'menuContainer'		
-	});
-	
-	menuManager.makeSortable();
-
-</script>
-
-
+<!-- Save / Cancel buttons
+	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
+-->
+<div class="buttons">
+	<button id="bSavemenu" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bCancelmenu"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
+</div>
 

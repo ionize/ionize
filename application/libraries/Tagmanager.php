@@ -2378,6 +2378,10 @@ class TagManager
 			else
 				$result = self::$ci->agent->{$method}();
 		}
+		else
+		{
+			$result = self::$ci->agent->browser();
+		}
 
 		// set the value
 		$tag->set('browser', $result);

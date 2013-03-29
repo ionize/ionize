@@ -2056,6 +2056,8 @@ class Base_model extends CI_Model
 	{
 		$table = (FALSE !== $table) ? $table : $this->table;
 
+		$data = $this->clean_data($data);
+
 		if ( is_array($where) )
 		{
 			$this->{$this->db_group}->where($where);
@@ -2322,6 +2324,12 @@ class Base_model extends CI_Model
 	 * @param	Array	The data array to clean
 	 * @param	String	Reference table. $this->table if not set.
 	 *
+	 */
+	/**
+	 * @param      $data
+	 * @param bool $table
+	 *
+	 * @return array
 	 */
 	function clean_data($data, $table = FALSE)
 	{

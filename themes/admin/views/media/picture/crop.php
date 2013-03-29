@@ -13,7 +13,7 @@ $minSize = (Settings::get('media_thumb_size') !='') ? Settings::get('media_thumb
 		<div id="cropframe<?php echo $id_media; ?>" class="cropframe" style="background-image: url('<?php echo base_url().$path; ?>?t=<?php echo $UNIQ; ?>')">
 			<div id="draghandle<?php echo $id_media; ?>" class="draghandle"></div>
 			<div id="resizeHandleXY<?php echo $id_media; ?>" class="resizeHandle resizeHandleXY"></div>
-			<div id="cropinfo<?php echo $id_media; ?>" class="cropinfo" rel="Click to crop">
+			<div id="cropinfo<?php echo $id_media; ?>" class="cropinfo">
 				<div title="Click to crop" id="cropbtn<?php echo $id_media; ?>" class="cropbtn"></div>
 				<div id="cropdims<?php echo $id_media; ?>" class="cropdims"></div>
 			</div>

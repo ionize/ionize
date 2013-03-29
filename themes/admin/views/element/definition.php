@@ -4,14 +4,14 @@ $id = $id_element_definition;
 
 ?>
 
-<li class="sortme nohover element_definition" id="element_definition_<?php echo $id ;?>" rel="<?php echo $id ;?>">
+<li class="sortme nohover element_definition" id="element_definition_<?php echo $id ;?>" data-id="<?php echo $id ;?>">
 
 
     <div class="h20">
 
 		<?php if ( Authority::can('delete', 'admin/element')) :?>
 
-   			<a class="icon delete right" rel="<?php echo $id ;?>"></a>
+   			<a class="icon delete right" data-id="<?php echo $id ;?>"></a>
 
 		<?php endif;?>
 
@@ -27,7 +27,7 @@ $id = $id_element_definition;
 
 				$('elementDefinitionSave<?php echo $id ;?>').addEvent('click', function()
 				{
-					ION.sendData('element_definition/save_field', {'id':'<?php echo $id ;?>', 'field': 'name', 'value': $('elementName<?php echo $id ;?>').value, selector:'.element_definition a.name[rel=<?php echo $id ;?>]'});
+					ION.sendData('element_definition/save_field', {'id':'<?php echo $id ;?>', 'field': 'name', 'value': $('elementName<?php echo $id ;?>').value, selector:'.element_definition a.name[data-id=<?php echo $id ;?>]'});
 				});
 
 				$('elementName<?php echo $id ;?>').focus();
@@ -37,7 +37,7 @@ $id = $id_element_definition;
 
         <?php else :?>
 
-        	<a class="edit name left" rel="<?php echo $id ;?>"><?php echo $name ;?></a>
+        	<a class="edit name left" data-id="<?php echo $id ;?>"><?php echo $name ;?></a>
 
 		<?php endif ;?>
 
@@ -73,7 +73,7 @@ $id = $id_element_definition;
 					?>
 
 					<div class="tabcontent">
-						<a class="edit title left" rel="<?php echo $id ;?>.<?php echo $lang ;?>" title="<?php echo $aTitle ;?>"><?php echo ${$lang}['title'] ;?></a>
+						<a class="edit title left" data-id="<?php echo $id ;?>.<?php echo $lang ;?>" title="<?php echo $aTitle ;?>"><?php echo ${$lang}['title'] ;?></a>
 					</div>
 
 				<?php endforeach ;?>
@@ -89,27 +89,27 @@ $id = $id_element_definition;
 
 					<!-- Add Field button -->
 					<?php if ($id != 0 && Authority::can('edit', 'admin/element')) :?>
-						<input type="button" class="light-button plus mb5 ml5 add_field" value="Add field" rel="<?php echo $id ;?>" />
+						<input type="button" class="light-button plus mb5 ml5 add_field" value="Add field" data-id="<?php echo $id ;?>" />
 					<?php endif ;?>
 
-					<ul class="fields" id="fields<?php echo $id ;?>" rel="<?php echo $id ;?>">
+					<ul class="fields" id="fields<?php echo $id ;?>" data-id="<?php echo $id ;?>">
 
 						<?php foreach($fields as $field) :?>
-							<li class="sortme element_field" rel="<?php echo $field['id_extend_field'] ;?>" id="element_field<?php echo $field['id_extend_field'] ;?>">
+							<li class="sortme element_field" data-id="<?php echo $field['id_extend_field'] ;?>" id="element_field<?php echo $field['id_extend_field'] ;?>">
 								<span class="icon left drag"></span>
 
 								<?php if ( Authority::can('edit', 'admin/element')) :?>
-            						<a class="icon delete right" rel="<?php echo $field['id_extend_field'] ;?>"></a>
+            						<a class="icon delete right" data-id="<?php echo $field['id_extend_field'] ;?>"></a>
 								<?php endif ;?>
 
-								<span class="lite right mr10" rel="<?php echo $field['id_extend_field'] ;?>">
+								<span class="lite right mr10" data-id="<?php echo $field['id_extend_field'] ;?>">
 									<?php echo $field['type_name'] ;?>
 									<?php if($field['translated'] == '1') :?>
 										/ <?php echo lang('ionize_label_multilingual') ;?>
 									<?php endif ;?>
 								</span>
 
-								<a class="left ml10 edit_field" rel="<?php echo $field['id_extend_field'] ;?>"><?php echo $field['name'] ;?></a>
+								<a class="left ml10 edit_field" data-id="<?php echo $field['id_extend_field'] ;?>"><?php echo $field['name'] ;?></a>
 							</li>
 						<?php endforeach ;;?>
 					</ul>
@@ -141,5 +141,13 @@ $id = $id_element_definition;
 
 </li>
 <script type="text/javascript">
-    new TabSwapper({tabsContainer: 'elementDefinitonTab<?php echo $id ;?>', sectionsContainer: 'elementDefinitionTabContent<?php echo $id ;?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent'});
+    new TabSwapper({
+		tabsContainer: 'elementDefinitonTab<?php echo $id ;?>',
+		sectionsContainer: 'elementDefinitionTabContent<?php echo $id ;?>',
+		selectedClass: 'selected',
+		deselectedClass: '',
+		tabs: 'li',
+		clickers: 'li a',
+		sections: 'div.tabcontent'
+	});
 </script>

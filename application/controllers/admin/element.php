@@ -351,12 +351,4 @@ class Element extends MY_Admin {
 		$this->response();
 	
 	}
-
-
-	// ------------------------------------------------------------------------
-
-	
 }
-
-/* End of file element.php */
-/* Location: ./application/admin/controllers/element.php */

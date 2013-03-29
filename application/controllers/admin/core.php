@@ -86,10 +86,4 @@ class Core extends MY_Admin {
 	{
 		// $this->output('info');
 	}
-
-
-	
 }
-
-/* End of file core.php */
-/* Location: ./application/admin/controllers/core.php */

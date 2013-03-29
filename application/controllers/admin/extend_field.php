@@ -134,7 +134,7 @@ class Extend_field extends MY_admin
 		$this->template['parents'] = $parents;
 		$this->template['extend_fields'] = $extend_fields;
 		
-    	$this->output('extend/fields_table');
+    	$this->output('extend/list');
 	}
 
 	
@@ -283,7 +283,3 @@ class Extend_field extends MY_admin
 		}
 	}
 }
-
-
-/* End of file extend_field.php */
-/* Location: ./application/controllers/admin/extend_field.php */

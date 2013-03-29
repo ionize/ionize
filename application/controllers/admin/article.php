@@ -126,7 +126,6 @@ class Article extends MY_admin
 		// Get pages
 		$pages = $this->page_model->get_lang_list(NULL, Settings::get_lang('default'));
 
-		
 		// Add page data to each context
 		foreach($page_article as &$pa)
 		{
@@ -134,13 +133,8 @@ class Article extends MY_admin
 			foreach($pages as $page)
 			{
 				if($page['id_page'] == $pa['id_page'])
-				{
 					$pa['page'] = $page;
-				}
-			
 			}
-			// $page = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $pa['id_page'] .'";')));
-			// $pa['page'] = (!empty($page) ? $page[0] : array() );
 		}
 		
 		// Link articles to pages
@@ -160,7 +154,6 @@ class Article extends MY_admin
 		}
 
 		$this->template['articles'] = $articles;
-
 
 		$this->output('article/articles');
 	}
@@ -188,12 +181,10 @@ class Article extends MY_admin
 			$datas = array('' => lang('ionize_select_default_view')) + $datas; 
 			$this->template['all_article_views'] = $datas;
 
-
 			// All articles type to template
 			$datas = $this->article_type_model->get_types_select();
 			$datas = array('' => lang('ionize_select_no_type')) + $datas; 
 			$this->template['all_article_types'] = $datas;
-			
 			
 			// Article's all pages contexts
 			$articles_id = array();
@@ -214,8 +205,8 @@ class Article extends MY_admin
 			$this->output('article/list');
 		}
 	}	
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -297,7 +288,6 @@ class Article extends MY_admin
 		$breadcrumbs = array_reverse($breadcrumbs);
 		$this->template['breadcrumbs'] = $breadcrumbs;
 	
-	
 		// Dropdown articles views
 		$views = array();
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
@@ -331,11 +321,11 @@ class Article extends MY_admin
 
 		$this->output('article/article');
 	}	
-	
+
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Saves one article
 	 *
@@ -544,8 +534,8 @@ class Article extends MY_admin
 		$page_resource = $this->_get_resource_name('backend', 'page', $id_page);
 
 		if (
-			Authority::can('edit', 'admin/article') && Authority::can('edit', $resource, null, true)
-			&& Authority::can('edit', $page_resource, null, true)
+			Authority::can('edit', 'admin/article') && Authority::can('edit', $resource, NULL, TRUE)
+			&& Authority::can('edit', $page_resource, NULL, TRUE)
 		)
 		{
 			// Edit article if ID exists
@@ -615,9 +605,9 @@ class Article extends MY_admin
 
 		$resource = $this->_get_resource_name('backend', 'article', $id_article);
 
-		if (Authority::can('edit', $resource, null, true))
+		if (Authority::can('edit', $resource, NULL, TRUE))
 		{
-		// Edit article if ID exists
+			// Edit article if ID exists
 			if ( ! is_null($id_article) )
 			{
 				$article = $this->article_model->get_by_id($id_article);
@@ -657,6 +647,10 @@ class Article extends MY_admin
 						'backend'
 					);
 					$this->template['backend_roles_resources'] = $backend_roles_resources;
+
+					// Default Deny Action
+					if (empty($article['deny_code']))
+						$this->template['deny_code'] = '404';
 
 					// Roles which have permission set for this page
 					$this->template['frontend_role_ids'] = $this->rule_model->get_element_role_ids('article', $id_article);
@@ -787,54 +781,10 @@ class Article extends MY_admin
 		);
 	}
 
-	// ------------------------------------------------------------------------
-
-	
-	/**
-	 * Edit the article context for the defined parent page
-	 * An article can have a view / parent
-	 *
-	function edit_context($id_page, $id_article)
-	{
-		// Article datas from page context
-		$article = $this->article_model->get_context($id_article, $id_page);
-
-		// Page datas
-		$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
-		
-		// Dropdown article views (templates)
-		$views = array();
-		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
-			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
-		
-		$datas = isset($views['article']) ? $views['article'] : array() ;
-		if(count($datas) > 0)
-		{
-			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
-			$this->template['article_views'] = form_dropdown('view', $datas, $article['view'], 'class="select"');
-		}
-		
-		// Article ordering : needs All other articles from this page
-		$this->template['articles'] = $this->article_model->get_list(array('id_page'=>$id_page, 'order_by' => 'article.ordering ASC'));
-
-		// Articles Types
-		$types = $this->article_type_model->get_types_select();
-		$this->template['article_types'] =	form_dropdown('id_type', $types, $article['id_type'], 'class="select"');
-
-		$this->template['article'] = $article;
-		$this->template['page'] = $page;
-
-		// Context ID
-		$this->template['id_context'] = $id_page.'x'.$id_article;
-		
-		$this->output('article_context');
-	}
-	 */
-
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Save the article context for the defined parent page
 	 *
@@ -865,17 +815,9 @@ class Article extends MY_admin
 			Cache()->clear_cache();
 
 			$this->update_contexts($data['id_article']);
-			// $this->response();
 
 			// Answer
 			$this->success(lang('ionize_message_article_context_saved'));
-/*
-			$this->callback[] = array
-			(
-				'fn' => 'ION.notification',
-				'args' => array('success', lang('ionize_message_article_context_saved'))
-			);
-*/
 		}
 		else
 		{
@@ -911,10 +853,11 @@ class Article extends MY_admin
 			$this->error(lang('ionize_message_operation_nok'));
 		}
 	}
-	
+
+
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	* Link an article to a page
 	* Called by XHR : ION.linkArticleToPage()
@@ -927,9 +870,7 @@ class Article extends MY_admin
 		$id_page = $this->input->post('id_page');
 		$id_article = $this->input->post('id_article');
 		$id_page_origin = $this->input->post('id_page_origin');
-		$rel = $id_page.'.'.$id_article;
-		$flat_rel = $id_page.'x'.$id_article;
-		
+
 		$copy = $this->input->post('copy');
 
 		if ( !empty($id_page) && !empty($id_article))
@@ -946,144 +887,104 @@ class Article extends MY_admin
 			// Ordering : last position
 			$original_context['ordering'] = $this->_get_ordering('last', $id_page);
 
-			// Check if no article has the same URL in case of copy
-			$copy_allowed = TRUE;
-
-			if ($copy)
+			if ($this->article_model->link_to_page($id_page, $id_article, $original_context) === TRUE)
 			{
-				// Get all page URLs
-				/*
-				$page_urls = $this->url_model->get_collection('page', $id_page);
-				
-				// Article lang data
-				$articles = $this->article_model->get_lang(array('id_article' => $id_article));
+				// Clear the cache
+				Cache()->clear_cache();
 
-				foreach($page_urls as $page_url)
+				// Get the page, menu and articles details for the JSON answer
+				$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
+				$page['id_article'] = $id_article;
+
+				$menu = $this->menu_model->get_from_page($id_page);
+
+				// Articles
+				$articles = $this->article_model->get_lang_list(array('id_article'=>$id_article, 'id_page'=>$id_page), Settings::get_lang('default'));
+
+				// Context : To get the inserted context
+				$inserted_context = $this->article_model->get_context($id_article, $id_page, Settings::get_lang('default'));
+
+				// Set the article
+				$article = array();
+				if ( ! empty($articles))
 				{
-					foreach($articles as $article)
-					{
-						if ($article['lang'] == $page_url['lang'])
-						{
-							$new_url = $page_url['path'].'/'.$article['url'];
-							
-							if ($this->url_model->is_existing_url('article', $id_article, $new_url, $article['lang']))
-								$copy_allowed = FALSE;
-						}
-					}
+					$article = $articles[0];
+					$article['title'] = htmlspecialchars_decode($article['title'], ENT_QUOTES);
+
+					// Correct online information
+					$article['online'] = $inserted_context['online'];
+
+					// Used by JS Tree to detect if article is inserted in tree or not
+					$article['inserted'] = TRUE;
 				}
-				*/
-			}
-			
-			if ($copy_allowed == FALSE)
-			{
+
 				$this->callback = array
 				(
-					'fn' => 'ION.notification',
-					'args' => array('error', lang('ionize_message_article_url_exists_in_page'))
+					// Add the page to the Article parents list
+					array(
+						'fn' => 'ION.addPageToArticleParentListDOM',
+						'args' => $page
+					),
+					// Insert the article to the parent in the structure tree
+					array(
+						'fn' => $menu['name'].'Tree.insertElement',
+						'args' => array($article, 'article')
+					),
+					// Reload the Page articles list
+					array(
+						'fn' => 'ION.reloadPageArticleList',
+						'args' => $id_page
+					),
+					// Clean the orphan article list (Dashboard) : TODO
+					array(
+						'fn' => 'ION.removeArticleFromOrphan',
+						'args' => $article
+					)
 				);
-				$this->response();
-			}
-			else
-			{		
-				if ($this->article_model->link_to_page($id_page, $id_article, $original_context) === TRUE)
+
+				// Article moved ?
+				if ($copy == FALSE && $id_page_origin != FALSE)
 				{
-					// Clear the cache
-					Cache()->clear_cache();
-	
-					// Get the page, menu and articles details for the JSON answer
-					$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
-					$page['id_article'] = $id_article;
-	
-					$menu = $this->menu_model->get_from_page($id_page);
-					
-					// Articles
-					$articles = $this->article_model->get_lang_list(array('id_article'=>$id_article, 'id_page'=>$id_page), Settings::get_lang('default'));
+					// Check and correct content of other articles if they refers to this one from their content
+					$this->article_model->correct_internal_links($id_article, $id_page_origin, $id_page);
 
-					// Context : To get the inserted context
-					$inserted_context = $this->article_model->get_context($id_article, $id_page, Settings::get_lang('default'));
+					// Unlink from first parent : Corrects also the main parent
+					$affected_rows = $this->article_model->unlink($id_article, $id_page_origin);
 
-					// Set the article
-					$article = array();
-					if ( ! empty($articles))
-					{
-						$article = $articles[0];
-						$article['title'] = htmlspecialchars_decode($article['title'], ENT_QUOTES);
+					$ordering = $this->article_model->get_articles_ordering($id_page_origin);
 
-						// Correct online information
-						$article['online'] = $inserted_context['online'];
+					$this->article_model->save_ordering($ordering, 'page', $id_page_origin);
 
-						// Used by JS Tree to detect if article is inserted in tree or not
-						$article['inserted'] = TRUE;
-					}
-
-					$this->callback = array
-					(
-						// Add the page to the Article parents list
-						array(
-							'fn' => 'ION.addPageToArticleParentListDOM',
-							'args' => $page
-						),
-						// Insert the article to the parent in the structure tree
-						array(
-							'fn' => $menu['name'].'Tree.insertElement',
-							'args' => array($article, 'article')
-						),
-						// Reload the Page articles list
-						array(
-							'fn' => 'ION.reloadPageArticleList',
-							'args' => $id_page
-						),
-						// Clean the orphan article list (Dashboard) : TODO
-						array(
-							'fn' => 'ION.removeArticleFromOrphan',
-							'args' => $article
-						)
+					$this->callback[] = array(
+						'fn' => 'ION.unlinkArticleFromPageDOM',
+						'args' => array('id_page' => $id_page_origin, 'id_article' => $id_article)
 					);
-					
-					// Article moved ?
-					if ($copy == FALSE && $id_page_origin != FALSE)
-					{
-						// Check and correct content of other articles if they refers to this one from their content
-						$this->article_model->correct_internal_links($id_article, $id_page_origin, $id_page);
 
-						// Unlink from first parent : Corrects also the main parent
-						$affected_rows = $this->article_model->unlink($id_article, $id_page_origin);
-						
-						$ordering = $this->article_model->get_articles_ordering($id_page_origin);
-						
-						$this->article_model->save_ordering($ordering, 'page', $id_page_origin);
-						
-						$this->callback[] = array(
-							'fn' => 'ION.unlinkArticleFromPageDOM',
-							'args' => array('id_page' => $id_page_origin, 'id_article' => $id_article)
-						);
-						
-						$this->callback[] = array(
-							'fn' => 'ION.notification',
-							'args' => array('success', lang('ionize_message_article_moved'))
-						);
-					}
-					else
-					{
-						$this->callback[] = array(
-							'fn' => 'ION.notification',
-							'args' => array('success', lang('ionize_message_article_linked_to_page'))
-						);
-					}
-					
-					// Context update
-					$this->update_contexts($id_article);
-
-					$this->response();
+					$this->callback[] = array(
+						'fn' => 'ION.notification',
+						'args' => array('success', lang('ionize_message_article_moved'))
+					);
 				}
+				else
+				{
+					$this->callback[] = array(
+						'fn' => 'ION.notification',
+						'args' => array('success', lang('ionize_message_article_linked_to_page'))
+					);
+				}
+
+				// Context update
+				$this->update_contexts($id_article);
+
+				$this->response();
 			}
 		}
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
-	
-	
+
+
 	/**
 	 * Unlinks one article from one page
 	 * 
@@ -1260,39 +1161,6 @@ class Article extends MY_admin
 			// Save the context		
 			$this->article_model->save_context($context);
 			
-			// Test the external link
-			/*
-			if ($link_type == 'external')
-			{
-				$check = check_url($title);
-				
-				if($check === false)
-				{
-					$this->callback[] = array
-					(
-						'fn' => 'ION.notification',
-						'args' => array	(
-							'error',
-							lang('ionize_message_url_not_found')
-						)
-					);
-					$this->response();
-				}
-				elseif($check == 404)
-				{
-					$this->callback[] = array
-					(
-						'fn' => 'ION.notification',
-						'args' => array	(
-							'error',
-							lang('ionize_message_url_got_404')
-						)
-					);
-					$this->response();
-				}
-			}
-			*/
-
 			if ($title != '')
 			{
 				$this->callback = array(
@@ -1343,11 +1211,11 @@ class Article extends MY_admin
 			$this->response();
 		}
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
-	
+
 	private function _remove_link($id_page, $id_article)
 	{
 		$context = array(
@@ -1362,7 +1230,7 @@ class Article extends MY_admin
 		return $this->article_model->save_context($context);
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -1473,10 +1341,9 @@ class Article extends MY_admin
 				// Update URLs
 				$this->article_model->save_urls($id_new_article);
 
-				/* Update the content structure tree
-				 * The data var is merged to the default lang data_lang var,
-				 * in order to send the lang values to the browser without making another SQL request
-				 */
+				// Update the content structure tree
+				// The data var is merged to the default lang data_lang var,
+				// in order to send the lang values to the browser without making another SQL request
 				$menu = $this->menu_model->get_from_page($this->input->post('dup_id_page'));
 				
 				$article = array_shift($this->article_model->get_linked_lang_items('page', 'article', array('id_article'=>$id_new_article), Settings::get_lang('default')) );
@@ -1517,7 +1384,7 @@ class Article extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Set an item online / offline depending on its current context and status
 	 *
@@ -1542,7 +1409,6 @@ class Article extends MY_admin
 			)
 		);
 
-		
 		$this->success(lang('ionize_message_operation_ok'));
 	}
 
@@ -1588,7 +1454,7 @@ class Article extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Gets the article list for the ordering select dropdown
 	 * @param	int		Page ID
@@ -1664,6 +1530,7 @@ class Article extends MY_admin
 
 
 	// ------------------------------------------------------------------------
+
 
 	/** 
 	 * Prepares data before saving
@@ -1789,6 +1656,7 @@ class Article extends MY_admin
 
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * Return TRUE if the extend fields array contains at least one translated extend field
 	 *
@@ -1810,6 +1678,8 @@ class Article extends MY_admin
 		}
 		return $result;
 	}
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -1858,7 +1728,7 @@ class Article extends MY_admin
 		}
 		return $ordering;
 	}
-	
+
 
 	// ------------------------------------------------------------------------
 
@@ -1934,10 +1804,10 @@ class Article extends MY_admin
 
 
 	/**
-	 * When called, relaods the Page Edition panel
+	 * Reloads the Page Edition panel
 	 *
-	 * @param	Page ID
-	 *
+	 * @param $id_page
+	 * @param $id_article
 	 */
 	protected function _reload_panel($id_page, $id_article)
 	{
@@ -1965,12 +1835,5 @@ class Article extends MY_admin
 			'fn' => $page['menu']['name'].'Tree.updateElement',
 			'args' => array($article_lang, 'article')
 		);
-
 	}
-
-
 }
-
-
-/* End of file article.php */
-/* Location: ./application/controllers/admin/article.php */

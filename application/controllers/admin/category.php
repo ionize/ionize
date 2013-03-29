@@ -340,7 +340,3 @@ class Category extends MY_admin
 		}
 	}
 }
-
-
-/* End of file category.php */
-/* Location: ./application/controllers/admin/category.php */

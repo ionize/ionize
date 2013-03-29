@@ -3,7 +3,7 @@
  * Modal window for Editing an user
  *
  */
-
+$from = ! empty($from) ? $from : '';
 ?>
 <?php if ($user['id_user'] == '') :?>
 	<h2 class="main user"><?php echo lang('ionize_title_add_user'); ?></h2>
@@ -18,14 +18,15 @@
 	<input id="id_user" name="id_user" type="hidden" value="<?php echo $user['id_user'] ?>" />
 	<input id="join_date" name="join_date" type="hidden" value="<?php echo $user['join_date'] ?>" />
 	<input id="salt" name="salt" type="hidden" value="<?php echo $user['salt'] ?>" />
-	
+	<input name="from" type="hidden" value="<?php echo $from ?>" />
+
 	<!-- Username -->
 	<dl class="small">
 		<dt>
 			<label for="username<?php echo $user['id_user'] ?>"><?php echo lang('ionize_login'); ?></label>
 		</dt>
 		<dd>
-			<input id="username<?php echo $user['id_user'] ?>" name="username" class="inputtext required" type="text" value="<?php echo $user['username'] ?>" />
+			<input id="username<?php echo $user['id_user'] ?>" name="username" class="inputtext required minLength:4" type="text" value="<?php echo $user['username'] ?>" />
 		</dd>
 	</dl>
 

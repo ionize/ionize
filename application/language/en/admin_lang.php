@@ -1094,6 +1094,15 @@ $lang['ionize_label_permission_move'] = 'Move';
 $lang['ionize_label_permission_delete'] = 'Delete';
 $lang['ionize_label_frontend'] = 'Website';
 $lang['ionize_label_backend'] = 'Backend';
+$lang['ionize_label_behavior'] = 'Behavior';
+$lang['ionize_label_can_see_backend'] = 'Can see (backend)';
+
+$lang['ionize_label_denied_action_401'] = 'Must login (401)';
+$lang['ionize_label_denied_action_403'] = 'Forbidden (403)';
+$lang['ionize_label_denied_action_404'] = 'Not found (404)';
+$lang['ionize_help_denied_action_401'] = 'Page in menu. Output : 401, login needed';
+$lang['ionize_help_denied_action_403'] = 'Page in menu. Output : 403, Forbidden content';
+$lang['ionize_help_denied_action_404'] = 'Page not in menu. Output : 404, Page not found';
 
 
 $lang['ionize_message_role_no_save_level_too_high'] = 'Role not saved : Level must be <= to yours';

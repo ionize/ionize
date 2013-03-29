@@ -33,7 +33,6 @@ h3.treetitle {
 .treetitle:hover .action {
 	display:block;
 }
-
 .treetitle:hover {
 	background-color: #e1e3e4;
 }
@@ -74,15 +73,26 @@ h3.treetitle {
 	display:block;
 	height: 18px;
 }
-.tree li a.title.no-edit:after {
+h3.treetitle .locked:after,
+.tree li .tree-img.no-edit:after,
+.tree li .tree-img.locked:after {
 	content: "\00a0";
 	width: 16px;
 	height: 16px;
 	position: absolute;
 	background: url(../images/icons_16.png) no-repeat;
-	background-position: -176px -80px;
-	right:3px;
-	top:2px;
+	right:-4px;
+	top:-4px;
+}
+h3.treetitle .locked:after{
+	right: auto;
+	top:-1px;
+}
+
+.tree li .tree-img.no-edit:after {background-position: 0 -128px;}
+.tree li .tree-img.locked:after,
+h3.treetitle .locked:after{
+	background-position: -16px -128px;
 }
 
 .tree li img {
@@ -97,8 +107,8 @@ h3.treetitle {
 	right: 0;
 	top:2px;
 	height:18px;
-	/*background: url(../images/bg-gray-medium.png);*/
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
+	z-index: 3;
 }
 .tree li .icon{
 	float:right;
@@ -122,6 +132,7 @@ h3.treetitle {
 	width:16px;
 	margin-top:1px;
     background:transparent url(../images/icons_16.png) repeat scroll;
+	position: relative;
 }
 .tree-img.line { background-position: 0 0; } 				/* Standard tree line */
 .tree-img.line.node { background-position: 0 0; } 		/* Line with one node after */
@@ -167,6 +178,7 @@ h3.treetitle {
 	display:none;
 }
 
-#splitPanel_sideColumn .tree {
+#splitPanel_sideColumn .tree,
+#maincolumn .tree {
 	margin:0;
 }

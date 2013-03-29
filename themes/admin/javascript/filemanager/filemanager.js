@@ -1180,12 +1180,15 @@ var Filemanager = new Class({
 			'resize': this.bound.scroll
 		});
 		// add keyboard navigation
+		/*
 		document.addEvent('keydown', this.bound.keydown);
 		document.addEvent('keyup', this.bound.keyup);
 		if ((Browser.Engine && (Browser.Engine.trident || Browser.Engine.webkit)) || (Browser.ie || Browser.chrome || Browser.safari))
 			document.addEvent('keydown', this.bound.keyboardInput);
 		else
 			document.addEvent('keypress', this.bound.keyboardInput);
+		*/
+
 		this.container.show();
 
 		this.fitSizes();

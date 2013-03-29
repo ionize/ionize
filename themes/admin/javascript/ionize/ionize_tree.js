@@ -132,14 +132,19 @@ ION.PermissionTree = new Class({
 
 	options:
 	{
-		cb_name: 'rules[]'
+		cb_name: 'rules[]',
+		onCheck: null
 	},
 
 	initialize:function(container, items, options)
 	{
-		this.parent(container, items, options);
+		// console.log(options);
 
+		this.parent(container, items, options);
 		this.rules = this.get_rules_array();
+
+		if (typeOf(options.onCheck) != 'null')
+			this.options.onCheck = options.onCheck;
 
 		this.enhanceTree();
 	},
@@ -261,6 +266,7 @@ ION.PermissionTree = new Class({
 
 	set_checkbox_event:function(cb)
 	{
+		var self = this;
 		cb.addEvent('change', function(evt)
 		{
 			var li = evt.target.getParent('li');
@@ -270,6 +276,8 @@ ION.PermissionTree = new Class({
 			childLis.each(function(item){
 				item.getElement('input').setProperty('checked', checked);
 			});
+			if (typeOf(self.options.onCheck) == 'function')
+				self.options.onCheck(self);
 		});
 	},
 

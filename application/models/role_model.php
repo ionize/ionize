@@ -46,29 +46,4 @@ class role_model extends Base_model
 		$this->table =		'role';
 		$this->pk_name = 	'id_role';
 	}
-
-
-	// --------------------------------------------------------------------
-	/*
-	public function get_user_roles($id_user)
-	{
-		$data = array();
-
-		$this->{$this->db_group}->where(self::$USER_ROLE_TABLE.'.id_user', $id_user);
-
-		$this->{$this->db_group}->join(
-			self::$USER_ROLE_TABLE,
-			self::$USER_ROLE_TABLE.'.id_role = ' .$this->get_table().'.id_role',
-			'inner'
-		);
-
-		$query = $this->{$this->db_group}->get($this->get_table());
-
-		if ( $query->num_rows() > 0)
-			$data = $query->result_array();
-
-		return $data;
-	}
-	*/
-
 }

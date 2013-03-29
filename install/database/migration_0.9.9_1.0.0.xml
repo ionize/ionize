@@ -49,8 +49,11 @@
             PRIMARY KEY (id)
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
     </query>
-    
-    
+
+    <query>alter table page add deny_code varchar(3) NULL;</query>
+    <query>alter table page drop id_group;</query>
+
+
     <query>DELETE FROM setting WHERE name='media_upload_mode';</query>
     <query>INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');</query>
     <query>INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');</query>
@@ -73,6 +76,12 @@
     <query>alter table role change description role_description tinytext;</query>
     <query>drop table user_groups;</query>
 
+    <query>update role set role_name='super-admin' where role_name='super-admins';</query>
+    <query>update role set role_name='admin' where role_name='admins';</query>
+    <query>update role set role_name='editor' where role_name='editors';</query>
+    <query>update role set role_name='user' where role_name='users';</query>
+    <query>update role set role_name='guest' where role_name='guests';</query>
+
     <query>
         CREATE TABLE if not exists resource (
             id_resource int(11) NOT NULL AUTO_INCREMENT,
@@ -88,6 +97,7 @@
 
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (1,NULL,'admin','','Backend login','Connect to ionize backend');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (10,NULL,'admin/menu','create,edit,delete','Menu','Menus');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (20,NULL,'admin/translations','','Translations','Translations');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');</query>

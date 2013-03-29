@@ -489,6 +489,3 @@ class Element_definition extends MY_Admin {
 		$this->output('element/detail');
 	}
 }
-
-/* End of file element_definition.php */
-/* Location: ./application/admin/controllers/element_definition.php */

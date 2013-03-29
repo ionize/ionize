@@ -35,27 +35,24 @@
 	
 	?>
 
-	<li id="articleinpage<?php echo $article['id_article']; ?>" class="sortme article<?php echo $article['id_article']; ?> article<?php echo $flat_rel; ?> <?php echo $status ;?>" rel="<?php echo $rel; ?>">
+	<li id="articleinpage<?php echo $article['id_article']; ?>" class="sortme article<?php echo $article['id_article']; ?> article<?php echo $flat_rel; ?> <?php echo $status ;?>" data-id="<?php echo $rel; ?>">
 		
 		<!-- Drag icon -->
 		<span class="icon left drag mr5"></span>
 
 		<!-- Status icon -->
-		<a class="icon right mr5 status article<?php echo $article['id_article']; ?> article<?php echo $flat_rel; ?> <?php echo $status ;?>" rel="<?php echo $rel; ?>"></a>
+		<a class="icon right mr5 status article<?php echo $article['id_article']; ?> article<?php echo $flat_rel; ?> <?php echo $status ;?>" data-id="<?php echo $rel; ?>"></a>
 
 		<!-- Unlink icon -->
-		<a class="icon right mr5 unlink" rel="<?php echo $rel; ?>" title="<?php echo lang('ionize_label_unlink'); ?>"></a>
-		
+		<a class="icon right mr5 unlink" data-id="<?php echo $rel; ?>" title="<?php echo lang('ionize_label_unlink'); ?>"></a>
 		
 		<!-- Flags : Available content for language -->
 		<span style="width:<?php echo$flag_width?>px;display:block;height:16px;" class="right mr10 ml10"><?php echo $content_html; ?></span>
 
-	
-
 		<!-- Type -->
-		<span class="right ml10 type-block" rel="<?php echo $rel; ?>">
+		<span class="right ml10 type-block" data-id="<?php echo $rel; ?>">
 			
-			<select id="type<?php echo $flat_rel; ?>" class="select w80 type left" style="padding:0;" rel="<?php echo $rel; ?>">
+			<select id="type<?php echo $flat_rel; ?>" class="select w80 type left" style="padding:0;" data-id="<?php echo $rel; ?>">
 				<?php foreach($all_article_types as $idx => $type) :?>
 					<option <?php if ($article['id_type'] == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
 				<?php endforeach ;?>
@@ -66,7 +63,7 @@
 		<!-- Used view -->
 		<span class="right ml10">
 		
-			<select id="view<?php echo $flat_rel; ?>" class="select w110 view" style="padding:0;" rel="<?php echo $rel; ?>">
+			<select id="view<?php echo $flat_rel; ?>" class="select w110 view" style="padding:0;" data-id="<?php echo $rel; ?>">
 				<?php foreach($all_article_views as $idx => $view) :?>
 					<option <?php if ($article['view'] == $idx) :?>selected="selected"<?php endif; ?> value="<?php echo $idx; ?>"><?php echo $view; ?></option>
 				<?php endforeach ;?>
@@ -76,9 +73,9 @@
 		
 		<!-- Main parent page -->
 		<?php if (count($article['pages']) > 1) :?>
-			<span class="right type-block" rel="<?php echo $rel; ?>">
+			<span class="right type-block" data-id="<?php echo $rel; ?>">
 				
-				<select id="amp<?php echo $flat_rel; ?>" class="select w100 parent left" style="padding:0;" rel="<?php echo $rel; ?>">
+				<select id="amp<?php echo $flat_rel; ?>" class="select w100 parent left" style="padding:0;" data-id="<?php echo $rel; ?>">
 					<?php foreach($article['pages'] as $page) :?>
 						<option <?php if ($page['main_parent'] == '1') :?>selected="selected"<?php endif; ?> value="<?php echo $page['id_page']; ?>"><?php echo $page['title']; ?></option>
 					<?php endforeach ;?>
@@ -88,7 +85,7 @@
 		<?php endif ;?>
 
 		<!-- Title (draggable) -->
-		<a style="overflow:hidden;height:16px;display:block;" class=" pl5 pr10 article article<?php echo $flat_rel; ?> <?php echo $status ;?>" title="<?php echo lang('ionize_label_edit'); ?> / <?php echo lang('ionize_label_drag_to_page'); ?>" rel="<?php echo $rel; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a>
+		<a style="overflow:hidden;height:16px;display:block;" class=" pl5 pr10 article article<?php echo $flat_rel; ?> <?php echo $status ;?>" title="<?php echo lang('ionize_label_edit'); ?> / <?php echo lang('ionize_label_drag_to_page'); ?>" data-id="<?php echo $rel; ?>"><span class="flag flag<?php echo $article['flag']; ?>"></span><?php echo $title; ?></a>
 	</li>
 
 <?php endforeach ;?>
@@ -97,13 +94,10 @@
 
 <script type="text/javascript">
 
-	/**
-	 * Articles view / type select for articles list
-	 *
-	 */
-	$$('#articleList<?php echo $id_page; ?> .type').each(function(item, idx)
+	// Articles view / type select for articles list
+	$$('#articleList<?php echo $id_page; ?> .type').each(function(item)
 	{
-		var rel = item.getAttribute('rel').split(".");
+		var rel = item.getAttribute('data-id').split(".");
 
 		item.addEvents({
 		
@@ -123,13 +117,11 @@
 				);
 			}
 		});
-
-//		ION.initArticleTypeEvent(item);
 	});
 
-	$$('#articleList<?php echo $id_page; ?> .view').each(function(item, idx)
+	$$('#articleList<?php echo $id_page; ?> .view').each(function(item)
 	{
-		var rel = item.getAttribute('rel').split(".");
+		var rel = item.getAttribute('data-id').split(".");
 
 		item.addEvents({
 		
@@ -149,13 +141,11 @@
 				);
 			}
 		});
-	
-//		ION.initArticleViewEvent(item);
 	});
 	
-	$$('#articleList<?php echo $id_page; ?> .parent').each(function(item, idx)
+	$$('#articleList<?php echo $id_page; ?> .parent').each(function(item)
 	{
-		var rel = item.getAttribute('rel').split(".");
+		var rel = item.getAttribute('data-id').split(".");
 
 		item.addEvents({
 		
@@ -174,16 +164,12 @@
 				);
 			}
 		});
-//		ION.initArticleMainParentEvent(item);
 	});
 	
-	/**
-	 * Makes article title draggable
-	 *
-	 */
-	$$('#articleList<?php echo $id_page; ?> .article').each(function(item, idx)
+	// Makes article title draggable
+	$$('#articleList<?php echo $id_page; ?> .article').each(function(item)
 	{
-		var id_article = item.getProperty('rel');
+		var id_article = item.getProperty('data-id');
 		var title = item.get('text');
 		
 		// Drag / Drop
@@ -200,11 +186,7 @@
 		});
 	});
 
-	/**
-	 * Article list itemManager
-	 *
-	 */
+	// Article list itemManager
 	articleManager = new ION.ArticleManager({container: 'articleList<?php echo $id_page; ?>', 'id_parent':'<?php echo $id_page; ?>'});
 
-	
 </script>
