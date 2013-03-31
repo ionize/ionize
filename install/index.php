@@ -130,10 +130,6 @@ if (file_exists('./class/Installer.php'))
 		case 'settings' :
 			$installer->settings();
 			break;
-		
-		case 'show_password' : 
-			$installer->show_password();
-			break;
 	}
 }
 ?>
