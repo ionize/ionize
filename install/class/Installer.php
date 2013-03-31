@@ -646,7 +646,12 @@ class Installer
 			$id_page = $this->_create_page($data);
 
 			// Article
-			$data = array('name'=>'welcome', 'url'=>'welcome', 'title'=>'Welcome', 'content'=>'<p>For more information about building a website with Ionize, you can:</p> <ul><li>Download & read <a href="http://www.ionizecms.com">the Documentation</a></li><li>Visit <a href="http://www.ionizecms.com/forum">the Community Forum</a></li></ul><p>Have fun !</p>');
+			$data = array(
+				'name'=>'welcome',
+				'url'=>'welcome',
+				'title'=>'Welcome',
+				'content'=>'<p>For more information about building a website with Ionize, you can:</p> <ul><li>Download & read <a href="http://www.ionizecms.com">the Documentation</a></li><li>Visit <a href="http://www.ionizecms.com/forum">the Community Forum</a></li></ul><p>Have fun !</p>'
+			);
 			$this->_create_article($data, $id_page);
 		}
 
@@ -703,25 +708,27 @@ class Installer
 		$langs = array_keys($config['available_languages']);
 
 		$article_data = $this->_clean_data($data, 'article');
+
 		$this->db->insert('article', $article_data);
 		$id_article = $this->db->insert_id();
 
 		// link to page
-		$data = array(
+		$link_data = array(
 			'id_page' => $id_page,
 			'id_article' => $id_article,
 			'online' => isset($data['online']) ? $data['online'] : '1'
 		);
-		$this->db->insert('page_article', $data);
+		$this->db->insert('page_article', $link_data);
 
 		// Article lang data
 		$lang_data = $this->_clean_data($data, 'article_lang');
+
 		foreach ($langs as $lang)
 		{
 			$lang_data['id_article'] = $id_article;
 			$lang_data['lang'] = $lang;
 
-			$this->db->insert('article_lang', $data);
+			$this->db->insert('article_lang', $lang_data);
 		}
 
 		return $id_article;
