@@ -11,13 +11,6 @@
 class Connect {
 
 	/**
-	 * Key used to encrypt passwords.
-	 *
-	 * @var string
-	 */
-	protected $encryption_key;
-
-	/**
 	 * Group slug for the newly created users.
 	 *
 	 * @var string
@@ -40,37 +33,37 @@ class Connect {
 	 * @var string
 	 */
 	public $banned_user_group = 'banned';
-	
+
 	/**
 	 * Verify user by email
 	 * @notice Not yet implemented
 	 * @var bool
 	 */
 	public $verify_user = TRUE;
-	
+
 	/**
 	 * If to redirect the user to a page which previously
 	 * was blocked for the user after a login.
-	 * 
+	 *
 	 * Eg.
 	 * A user tries to visit a blocked page, then he is
 	 * redirected to the login screen. Then he logs in,
 	 * after he is redirected to the page he previously tried
 	 * to visit.
-	 * 
+	 *
 	 * Note: Does only work with the block type "redirect"
-	 * 
+	 *
 	 * @var bool
 	 */
 	public $login_redirect_to_blocked = TRUE;
 
 	/**
 	 * Sets how Connect will act in the event of a blocked user.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $on_restrict = 'message';
-	
+
 	/**
 	 * The settings for the remember me feature.
 	 *
@@ -79,7 +72,9 @@ class Connect {
 	public $remember_me = array(
 							'on' 			=> TRUE,
 							'duration' 		=> 604800, // 7 days
-							'cookie_name' 	=> 'rememberconnect');
+							'code' 			=> 'rememberconnect',
+							'identity' 		=> 'rememberidentity'
+							);
 	/**
 	 * The settings for the folder protection.
 	 *
@@ -164,7 +159,7 @@ class Connect {
 	 * @var false|string
 	 */
 	public $error = FALSE;
-	
+
 	/**
 	 * Contains the current logged in user.
 	 *
@@ -193,7 +188,7 @@ class Connect {
 
 	/**
 	 * Initializes the Connect library.
-	 * 
+	 *
 	 * Fetches the current user, if logged in or a remember me cookie exists.
 	 * Also inits the internal objects.
 	 *
@@ -203,24 +198,17 @@ class Connect {
 		self::$instance =& $this;
 
 		log_message('debug', "Connect Class Initialized");
-		
+
 		// Get CodeIgniter instance and load necessary libraries and helpers
 		$CI =& get_instance();
 
-		$CI->load->library('encrypt');
-		if (function_exists('mcrypt_encrypt'))
-		{
-			$CI->encrypt->set_cipher(MCRYPT_BLOWFISH);
-			$CI->encrypt->set_mode(MCRYPT_MODE_CFB);
-		}
-		
 		$CI->load->library('session');
 		$CI->load->helper('url');
 		$CI->load->config('connect');
-		
+
 		$CI->lang->load('connect');
 		$this->lang =& $CI->lang;
-		
+
 		$CI->load->model('connect_model', 'model', TRUE);
 		$this->model =& $CI->model;
 
@@ -230,16 +218,8 @@ class Connect {
 			$this->$key = $val;
 		}
 
-		// Connect uses first the key defined in config/connect.php and then the one defined in config/config.php
-		$this->encryption_key = config_item('encryption_key');
-		
-		if($this->remember_me['on'])
-		{
-			$CI->load->helper('cookie');
-		}
-		
 		$this->session =& $CI->session;
-		
+
 		$user_pk = $this->model->users_pk;
 
 		// if a user is already logged in, load him
@@ -247,65 +227,49 @@ class Connect {
 		{
 			$this->current_user = $this->model->find_user(array($user_pk => $this->session->userdata($user_pk)));
 		}
-		
-		// if we have a remember me cookie - try to load it
-		elseif($this->remember_me['on'] && get_cookie($this->remember_me['cookie_name']))
-		{
-			$data = get_cookie($this->remember_me['cookie_name']);
-			
-			// extract the hash and the encrypted string
-			$hash = substr($data, 0, 14) . substr($data, -14);
-			$str = substr($data, 14, -14);
-			
-			// match the hash
-			if($hash == base64_encode(sha1($str . strrev($this->encryption_key), TRUE)))
-			{
-				// decrypt
-				$array = unserialize($CI->encrypt->decode($str));
-				
-				// finally, does the person "look" the same, and is his stamp still on his hand?
-				if($array['ip'] == $CI->input->ip_address() && $array['expiry_date'] > mktime() && isset($array[$user_pk]))
-				{
-					// log the user in
-					$this->current_user = $this->model->find_user(array($user_pk => $array[$user_pk]));
-					
-					// did we get him?
-					if($this->current_user)
-					{
-						// set session and last visit
-						$this->session->set_userdata($user_pk, $this->current_user[$user_pk]);
-						
-						$this->model->update_last_visit($this->current_user);
-						
-						// refresh the remember me cookie
-						$this->remember_me();
-					}
-					else
-					{
-						// user does not exist, remove cookie
-						delete_cookie($this->remember_me['cookie_name']);
-					}
+		elseif($this->remember_me['on']) {
+			$CI->load->helper('cookie');
+			$identity = get_cookie($this->remember_me['identity']);
+			$code = get_cookie($this->remember_me['code']);
+
+			// if we have a remember me cookie - load and process it
+			if( $identity && $code) {
+				//find the user with that identity AND remember code
+				//in our case identity is "username"
+				$user = $this->model->find_user(array("username" => $identity, "remember_code" => $code));
+
+				//we found a user
+				if( $user ) {
+					//this is our user - log the user in
+					$this->current_user = $user;
+
+					// set session and last visit
+					$this->session->set_userdata($user_pk, $this->current_user[$user_pk]);
+					$this->model->update_last_visit($this->current_user);
+
+					// refresh the remember me cookie
+					$this->remember_me();
+				} else {
+					// alert the server admin that we've received a tampered cookie
+					// -> we got a cookie with information about a not existing user
+					log_message('error', "Connect Class: Tampered remember me cookie received from ip ".$CI->input->ip_address());
+
+					// just delete his cookie, we're evil to all the hackers ;)
+					delete_cookie($this->remember_me['identity']);
+					delete_cookie($this->remember_me['code']);
 				}
-			}
-			else
-			{
-				// alert the server admin that we've received a tampered cookie
-				log_message('error', "Connect Class: Tampered remember me cookie received from ip ".$CI->input->ip_address());
-				
-				// just delete his cookie, we're evil to all the hackers ;)
-				delete_cookie($this->remember_me['cookie_name']);
 			}
 		}
 	}
 
 
 	// --------------------------------------------------------------------
-	
+
 
 	/**
 	 * Return error message or error status (true / false)
 	 *
-	 * You get it in the views and controllers : 
+	 * You get it in the views and controllers :
 	 * echo $this->connect->error();
 	 *
 	 * @return bool | string
@@ -331,10 +295,10 @@ class Connect {
 	    {
 	        $args = array($args);
 	    }
-		
+
 	    $line_key = $this->lang->line($line_key);
 	    $message = vsprintf($line_key, $args);
-		
+
 		return $message;
 	}
 
@@ -364,7 +328,7 @@ class Connect {
 				$remember = $identification['remember_me'];
 				unset($identification['remember_me']);
 			}
-			
+
 			// we need at least a password and then another key to filter by
 			if(count($identification) > 1 && isset($identification['password']))
 			{
@@ -373,9 +337,9 @@ class Connect {
 			}
 			else
 			{
-				// no password, or not enough data				
+				// no password, or not enough data
 				$this->error = $this->set_error_message('connect_missing_parameters', implode(' and ', array_diff(array('username', 'email'), array_keys($identification))));
-				
+
 				return FALSE;
 			}
 		}
@@ -384,22 +348,31 @@ class Connect {
 		if($this->enable_tracker === TRUE)
 		{
 			$tracker = $this->tracker();
-			
+
 			if($this->blocked())
 			{
 				list($key, $id) = each($identification);
 				$this->increment_failures($key, $id);
-				
+
 				$this->error = $this->set_error_message('connect_blocked', (is_numeric($this->time_left()) ? 'in '.$this->time_left().' seconds.' : 'later.'));
-				
+
 				return FALSE;
 			}
 		}
-		
+
 		$user = $this->model->find_user($identification);
+		//compute the password hash
+		$CI =& get_instance();
+		$CI->load->library('phpass');
+		//we will not hash the password as we do not know the
+		//salt used for the hash in the database
+		//therefor "phpass->check" exists, it calculates the password hash
+		//based on the salt in the password from the database
+
+
 
 		// did we get a user, and does the passwords match?
-		if($user != FALSE && $password == $this->decrypt($user['password'], $user))
+		if($user != FALSE && $CI->phpass->check($password, $user['password']))
 		{
 			$this->current_user = $user;
 
@@ -408,20 +381,18 @@ class Connect {
 
 			// Update the last visit
 			$this->model->update_last_visit($user);
-			
+
 			// Set the remember_me cookie
 			if($remember)
-			{
 				$this->remember_me();
-			}
-			
+
 			// redirect to a previously blocked page, if it exists
 			if($this->login_redirect_to_blocked && $this->session->userdata('connect_blocked_url'))
 			{
 				// get and then clean
 				$url = $this->session->userdata('connect_blocked_url');
 				$this->session->unset_userdata('connect_blocked_url');
-				
+
 				// redirect
 				redirect($url, 'location', 302);
 			}
@@ -434,9 +405,9 @@ class Connect {
 				list($key, $id) = each($identification);
 				$this->increment_failures($key, $id);
 			}
-			
+
 			$this->error = $this->set_error_message('connect_login_failed');
-			
+
 			return FALSE;
 		}
 	}
@@ -463,10 +434,13 @@ class Connect {
 		$this->session->unset_userdata('connect_blocked_url');
 
 		// also, wash away his stamp - so he cannot enter again without id
-		if($this->remember_me['on'])
-		{
-			delete_cookie($this->remember_me['cookie_name']);
-		}
+		$CI =& get_instance();
+		$CI->load->helper('cookie');
+		if(get_cookie($this->remember_me['code']))
+			delete_cookie($this->remember_me['code']);
+		if(get_cookie($this->remember_me['identity']))
+			delete_cookie($this->remember_me['identity']);
+
 
 		if($redirect)
 		{
@@ -480,33 +454,31 @@ class Connect {
 
 	/**
 	 * Remembers the currently logged in user.
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function remember_me()
 	{
-		$user_pk = $this->model->users_pk;
-		
 		if( ! $this->logged_in() OR ! $this->remember_me['on'])
-		{
 			return FALSE;
-		}
-		
-		$CI =& get_instance();
-		
-		$user = $this->get_current_user();
-		
-		$str = array($user_pk => $user[$user_pk],
-					 'ip' => $CI->input->ip_address(),
-					 'expiry_date' => mktime() + $this->remember_me['duration']);
 
-		$str = $CI->encrypt->encode(serialize($str));
-		$hash = base64_encode(sha1($str . strrev($this->encryption_key), TRUE));
-		
-		$cookie = substr($hash, 0, 14) .$str. substr($hash, -14);
-		
-		set_cookie($this->remember_me['cookie_name'], $cookie, $this->remember_me['duration']);
-		
+		$user = $this->get_current_user();
+
+		$CI =& get_instance();
+		$CI->load->helper('cookie');
+		//set new cookies for the current user
+		set_cookie(array(
+		    'name'   => $this->remember_me['identity'],
+		    'value'  => $user->username,
+		    'expire' => $this->remember_me['duration']
+		));
+
+		set_cookie(array(
+		    'name'   => $this->remember_me['code'],
+		    'value'  => $remember_code,
+		    'expire' => $this->remember_me['duration']
+		));
+
 		return TRUE;
 	}
 
@@ -791,7 +763,7 @@ class Connect {
 
 		if($user)
 			return $user;
-			
+
 		return FALSE;
 	}
 
@@ -865,7 +837,7 @@ class Connect {
 	{
 		$user_pk = $this->model->users_pk;
 		$group_pk = $this->model->groups_pk;
-		
+
 		// need username and password to process further
 		if( ! isset($user_data['username']) OR ! isset($user_data['email']) OR ! isset($user_data['password']))
 //		if( isset($user_data['email']) OR ! isset($user_data['password']))
@@ -875,15 +847,11 @@ class Connect {
 			return FALSE;
 		}
 
-		// @TODO: Make also that depending on the config file, if the login is done by the email, then it must check for duplicate too, 
+		// @TODO: Make also that depending on the config file, if the login is done by the email, then it must check for duplicate too,
 		// anyway the form validation will also take care of that problem before the connect lib is called.
 		if ( ! $this->model->find_user($user_data['username']))
 //		if ( ! $this->model->find_user($user_data['email']))
 		{
-			// Set the salt
-			if( ! isset($user_data['salt']))
-			    $user_data['salt'] = $this->get_salt();
-		
 			// Set the user's group
 			if($this->verify_user)
 			{
@@ -895,15 +863,28 @@ class Connect {
 				$group = $this->get_group($this->default_user_group);
 			    $user_data['id_group'] = $group['id_group'];
 			}
-			
-			// Encrypt the password and prepare data for inserting
-			$user_data['password'] = $this->encrypt($user_data['password'], $user_data);
+
+			/*
+			 * Instead of using an encryption, we know hash the password and when
+			 * logging in we compare the users password hash versus the database one
+			 *
+			 * Instead of using MD5/Sha... we use PHPass to make bruteforce
+			 * attacking a bit harder.
+			 *
+			 * We also load the library HERE to avoid a useless library load if not needed.
+			 *
+			 * Attention: there is no need to use a "salt" as the library takes care of
+			 * that itself.
+			 */
+			$CI =& get_instance();
+			$CI->load->library('phpass');
+			$user_data['password'] = $CI->phpass->hash($user_data['password']);
 
 			// User saved sucessfully?
 			if($return = $this->model->save_user($user_data))
 			{
 			    $this->error = $user_data['password'];
-				
+
 				return $return;
 			}
 			else
@@ -937,11 +918,10 @@ class Connect {
 		$clear_password = NULL;
 
 		// Update the password : Send in "clear" version
-		if ( ! empty($user_data['password']) OR $user_data['password'] != '')
+		if ( !empty($user_data['password']) )
 		{
 			$clear_password = $user_data['password'];
-			$user_data['salt'] = $this->get_salt();
-			$user_data['password'] = $this->encrypt($user_data['password'], $user_data);
+			$user_data['password'] = $this->generate_hash($user_data['password']);
 		}
 		elseif (isset($user_data['password']))
 			unset($user_data['password']);
@@ -958,14 +938,6 @@ class Connect {
 			else
 			{
 				$db_user = $this->model->find_user(array('id_user' =>$user_data['id_user']));
-
-				// Username has changed : the password needs to be refreshed
-				if ($user_data['username'] != $db_user['username'])
-				{
-					$user_data['salt'] = $this->get_salt();
-					$password = ! is_null($clear_password) ? $clear_password : $this->decrypt($db_user['password'], $db_user);
-					$user_data['password'] = $this->encrypt($password, $user_data);
-				}
 
 				$nb = $this->model->update_user($user_data);
 
@@ -1011,7 +983,7 @@ class Connect {
 		if($user && $code == $this->calc_activation_key($user))
 		{
 			$g = $this->model->find_group(array('slug' => $this->default_user_group));
-			
+
 			// Activate the user only if he is not banned (Security against using the activation link to unban)
 			if($user['group']['level'] < $g['level'] && $user['group']['level'] > 0)
 			{
@@ -1034,7 +1006,10 @@ class Connect {
 	 */
 	public function calc_activation_key($user)
 	{
-		return sha1(sha1($user['username'] . $user['email'] . $user['password']).sha1($user['salt']));
+		//hardened hash generation, no salt needed (library takes care)
+		$CI =& get_instance();
+		$CI->load->library('phpass');
+		return $CI->hash( $user['username'] . $user['email'] . $user['password'] );
 	}
 
 
@@ -1081,7 +1056,7 @@ class Connect {
 	public function deny($required_cond = FALSE)
 	{
 		$CI =& get_instance();
-	
+
 		switch($this->on_restrict)
 		{
 			case 'redirect':
@@ -1098,30 +1073,30 @@ class Connect {
 
 					$this->session->set_flashdata(array($this->restrict_type_redirect['flash_var'] => sprintf($str, $CI->uri->uri_string())));
 				}
-				
+
 				// set data to allow redirect on login
 				if( ! $this->logged_in() && $this->login_redirect_to_blocked)
 				{
 					$this->session->set_userdata('connect_blocked_url', current_url());
 				}
-				
+
 				redirect($this->restrict_type_redirect['uri']);
-				
+
 				break;
 
 			case '404':
 				show_404();
-				
+
 				break;
 
 			default:
-				
+
 				// send header and clear output
 				$CI->output->set_status_header(403);
 				$CI->output->set_output('');
-				
+
 				list($type, $value) = each($this->restrict_type_block);
-				
+
 				// what shall we do?
 				switch($type)
 				{
@@ -1129,17 +1104,17 @@ class Connect {
 					case 'view':
 						$CI->load->view($value);
 					break;
-					
+
 					// hire a painter?
 					case 'lang':
 						$CI->output->set_output($this->lang->line($value));
 					break;
-					
+
 					// or just scribble something on the site with spraypaint?
 					default:
 						$CI->output->set_output($value);
 				}
-				
+
 				// now get that forbidden sign up...
 				$CI->output->_display();
 		}
@@ -1153,56 +1128,22 @@ class Connect {
 
 
 	/**
-	 * Encrypts the password.
+	 * Generates a hash of the given password.
 	 *
 	 * @param  string		The password to encrypt
-	 * @param  array		User data array
-	 * @return string		Encrypted password
+	 * @return string		hash of the password
 	 */
-	public function encrypt($password, $user)
+	public function generate_hash($password)
 	{
 		$CI =& get_instance();
-
-		$hash 	= $CI->encrypt->sha1($user['username'] . $user['salt']);
-		$key 	= $CI->encrypt->sha1($this->encryption_key . $hash);
-
-		return $CI->encrypt->encode($password, substr($key, 0, 56));
+		//hardened hash generation, no salt needed (library takes care)
+		$CI->load->library('phpass');
+		return $CI->phpass->hash($password);
 	}
+
 
 
 	// --------------------------------------------------------------------
-
-	/**
-	 * Decrypts the password.
-	 *
-	 * @param  string		The encrypted password
-	 * @param  array		User data array
-	 * @return string		Decrypted password
-	 */
-	public function decrypt($password, $user)
-	{
-		$CI =& get_instance();
-
-		$hash 	= $CI->encrypt->sha1($user['username'] . $user['salt']);
-		$key 	= $CI->encrypt->sha1($this->encryption_key . $hash);
-
-		return $CI->encrypt->decode($password, substr($key, 0, 56));
-	}
-
-	
-	// --------------------------------------------------------------------
-
-
-	/**
-	 * Generates a random salt value.
-	 *
-	 * @return String	Hash value
-	 *
-	 **/	
-	public function get_salt()
-	{
-		return substr(md5(uniqid(rand(), TRUE)), 0, $this->salt_length);
-	}
 
 
 	/**
@@ -1211,16 +1152,16 @@ class Connect {
 	 * @param	int		Password length
 	 * @return	String	Password value
 	 *
-	 **/	
+	 **/
 	public function get_random_password($size = 8)
 	{
 		$vowels = 'aeiouyAEIOUY';
 		$consonants = 'bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ1234567890@#$';
-	 
+
 		$key = '';
 
 		$alt = time() % 2;
-		
+
 		for ($i = 0; $i < $size; $i++) {
 			if ($alt == 1) {
 				$key .= $consonants[rand() % strlen($consonants)];
@@ -1260,11 +1201,11 @@ class Connect {
 	public function tracker()
 	{
 		$CI =& get_instance();
-	
+
 		if( ! isset($this->tracker))
 		{
 			$this->tracker = array();
-			
+
 			// defaults
 			$this->tracker['failures'] = 0;
 			$this->tracker['first_time'] = time();
@@ -1284,37 +1225,37 @@ class Connect {
 
 		return $this->tracker;
 	}
-	
+
 
 	// --------------------------------------------------------------------
 
 
 	/**
 	 * Increases the failure count for the current user.
-	 * 
+	 *
 	 * Every once in a while, a log message is issued with the username/email
 	 * tried and from which ip.
-	 * 
+	 *
 	 * @param  string The id of the user (username/email)
 	 * @return void
 	 */
 	public function increment_failures($key, $id)
 	{
 		$CI =& get_instance();
-		
+
 		$this->tracker['failures'] += 1;
 
 		$this->model->save_tracker($this->tracker);
-		
+
 		$val = log($this->tracker['failures'], 10);
-		
+
 		if($val > 0 && $val % 1 == 0)
 		{
 			log_message('error', 'Connect: Many tries to login with the identification '.$key.':"'.$id.'" from ip "'.$CI->input->ip_address().'", try no '.$this->tracker['failures']);
 		}
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------
 
 
@@ -1337,7 +1278,7 @@ class Connect {
 		}
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -1354,8 +1295,8 @@ class Connect {
 
 		return $sum > 1 ? ceil($sum) : FALSE;
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -1368,24 +1309,24 @@ class Connect {
 		{
 			// no instance present, create a new one
 			$config = array();
-			
+
 			// include config
 			if(file_exists(APPPATH.'config/connect.php'))
 			{
 				include APPPATH.'config/connect.php';
 			}
-			
+
 			$dummy = new Connect($config);
 
 			// put it in the loader
 			$CI =& get_instance();
-			
+
 			$CI->load->_ci_loaded_files[] = APPPATH.'libraries/Connect.php';
 		}
-		
+
 		return self::$instance;
 	}
-	
+
 } // End of Connect class
 
 

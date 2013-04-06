@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<sql>
+
+	<query>
+		alter table extend_field drop label;
+	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `activation_code` varchar(40) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `remember_code` varchar(40) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `forgotten_password_code` varchar(40) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `users` ADD `forgotten_password_time` int(11) unsigned DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `users` drop `salt`;
+	</query>
+</sql>

@@ -16,9 +16,7 @@ else
 
 	<!-- Hidden fields -->
 	<input id="user_PK" name="user_PK" type="hidden" value="<?php echo $user['id_user'] ?>" />
-	<input id="join_date" name="join_date" type="hidden" value="<?php echo $user['join_date'] ?>" />
-	<input id="salt" name="salt" type="hidden" value="<?php echo $user['salt'] ?>" />
-	
+
 	<!-- Username -->
 	<dl class="small">
 		<dt>
@@ -59,12 +57,12 @@ else
 				<?php foreach($groups as $group) :?>
 
 					<option value="<?php echo $group['id_group'] ?>" <?php if(! empty ($user['group']['id_group']) && $user['group']['id_group'] == $group['id_group']) :?> selected="selected" <?php endif ;?> ><?php echo $group['group_name'] ?></option>
-				
+
 				<?php endforeach ;?>
 			</select>
 		</dd>
 	</dl>
-	
+
 
 	<!-- New password -->
 	<h3><?php echo lang('ionize_title_change_password'); ?></h3>
@@ -90,7 +88,7 @@ else
 		</dd>
 	</dl>
 
-	
+
 	<?php /*
 	<h3><?php echo lang('ionize_title_user_meta'); ?></h3>
 
@@ -110,7 +108,7 @@ else
 	<?php endforeach ;?>
 	*/
 	?>
-	
+
 </form>
 
 <div class="buttons">

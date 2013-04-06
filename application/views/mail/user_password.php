@@ -61,24 +61,28 @@
                 <table border="0" width="880">
                     <tr>
                         <td>
-                            <!--
-								Dear ....
-							-->
+							<?php
+								//Do not write such comments as html-comment (users will be able to read them)
+
+								//Dear ....
+							?>
                             <h1><ion:data:lang key="mail_user_password_intro" swap="data::firstname" /></h1>
 
-                            <!--
-								New account login information
-							-->
+							<?php
+								//New account login information
+							?>
                             <p><ion:lang key="mail_user_password_message" swap="global::site_title" /></p>
                             <p>
                                 <ion:lang key="form_label_login"/> : <b><ion:data:username /></b>, <br/>
                                 <ion:lang key="form_label_password"/> : <b><ion:data:password /></b> <br/>
                             </p>
 
-							<!--
-								This account isn't activated ?
-								Send the activation data again (as they have changed with the new password
-							-->
+							<?php
+								//Do not write such comments as html-comment (users will be able to read them)
+
+								//This account isn't activated ?
+								//Send the activation data again (as they have changed with the new password)
+							?>
 							<ion:data:level expression="level<100">
 
                                 <p><ion:lang key="mail_user_registration_activate" /></p>

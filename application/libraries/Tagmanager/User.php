@@ -336,6 +336,7 @@ class TagManager_User extends TagManager
 						// Compliant with Connect, based on username
 						$user['username'] = $user['email'];
 						$user['join_date'] = date('Y-m-d H:i:s');
+						$cleanPassword = $user["password"];
 
 						if ( ! Connect()->register($user))
 						{
@@ -352,10 +353,9 @@ class TagManager_User extends TagManager
 								// Must be set before set the clear password
 								$user['activation_key'] = Connect()->calc_activation_key($user);
 
-								$user['password'] = Connect()->decrypt($user['password'], $user);
-
 								// Create data array and Send Emails
 								$data = array_merge($user, $user['group']);
+								$data["password"] = $cleanPassword;
 								TagManager_Email::send_form_emails($tag, 'password', $data);
 
 								$message = TagManager_Form::get_form_message('success');
@@ -385,6 +385,11 @@ class TagManager_User extends TagManager
 
 						if ($user)
 						{
+							//ACHTUNG : hier wird sofort nach Aufruf ein neues Passwort
+							//erzeugt. Besser ist: Mail senden die einen "do it"-Link
+							//enthaelt - erst ein Klick darauf, fuehrt untenstehende
+							//aktion aus
+
 							// Save the user with this new password
 							$new_password = Connect()->get_random_password(8);
 							$user['password'] = $new_password;

@@ -439,7 +439,7 @@ class MTFMCache
 class FileManager
 {
 	protected $options;
-	
+
 	protected $getid3;
 	protected $getid3_cache;
 	protected $icon_cache;              // cache the icon paths per size (large/small) and file extension

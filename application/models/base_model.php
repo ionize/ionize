@@ -1893,7 +1893,7 @@ class Base_model extends CI_Model
 		$data = $this->clean_data($data, $table);
 
 		$this->{$this->db_group}->insert($table, $data);
-		
+
 		return $this->{$this->db_group}->insert_id();
 	}
 

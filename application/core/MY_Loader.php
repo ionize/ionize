@@ -142,7 +142,7 @@ class MY_Loader extends CI_Loader{
 
 			return;
 		}
-		
+
 		if(empty($name))
 		{
 			$name = end(explode('/', $model));
@@ -153,7 +153,7 @@ class MY_Loader extends CI_Loader{
 		{
 			return;
 		}
-		
+
 		$CI->$name = Model($model, $db_conn);
 
 		$this->_ci_models[] = $name;

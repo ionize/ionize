@@ -26,15 +26,15 @@ class Installer
 	private static $instance;
 
 	private $template;
-	
+
 	public $lang = array();
-	
+
 	public $db;
 
-	
+
 	// --------------------------------------------------------------------
 
-	
+
 	/**
 	 * Constructor
 	 *
@@ -45,24 +45,24 @@ class Installer
 
 		// Default language
 		$lang = 'en';
-		
+
 		// Check GET language
 		if (is_array($_GET) && isset($_GET['lang']) )
 		{
 			if (is_file(ROOTPATH.'application/language/'.$_GET['lang'].'/install_lang.php'))
 				$lang = $_GET['lang'];
 		}
-		
+
 		$this->template['lang'] = $lang;
-		
+
 		// Include language file and merge it to language var
 		include(ROOTPATH.'application/language/'. $lang .'/install_lang.php');
-		
+
 		$this->lang = array_merge($this->lang, $lang);
 
 		// Get all available translations
 		$dirs = scandir(ROOTPATH.'application/language');
-		
+
 		$languages = array();
 		foreach($dirs as $dir)
 		{
@@ -75,12 +75,12 @@ class Installer
 			}
 		}
 		$this->template['languages'] = $languages;
-		
+
 		// Put the current URL to template (for language selection)
 		$this->template['current_url'] = (isset($_GET['step'])) ? '?step='.$_GET['step'] : '?step=checkconfig';
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -93,7 +93,7 @@ class Installer
 		return self::$instance;
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -108,16 +108,16 @@ class Installer
 
 		// MySQL support
 		$this->template['mysql_support']  = function_exists('mysql_connect');
-		
+
 		// Safe Mode
 		$this->template['safe_mode']  = (ini_get('safe_mode')) ? FALSE : TRUE;
-		
+
 		// Files upload
 		$this->template['file_uploads'] = (ini_get('file_uploads')) ? TRUE : FALSE;
-		
+
 		// GD lib
 		$this->template['gd_lib'] = function_exists('imagecreatetruecolor');
-		
+
 		// Check files rights
 		$files = array(
 			'application/config/config.php',
@@ -137,11 +137,11 @@ class Installer
 			'files',
 			'themes'
 		);
-		
+
 		$check_folders = array();
 		foreach($folders as $folder)
 			$check_folders[$folder] = $this->_test_dir(ROOTPATH . $folder, true);
-		
+
 		$this->template['check_files'] = $check_files;
 		$this->template['check_folders'] = $check_folders;
 
@@ -154,12 +154,12 @@ class Installer
 				$this->_send_error('check_config', lang('config_check_errors'));
 			}
 		}
-		
+
 		// Outputs the view
 		$this->output('check_config');
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -174,7 +174,7 @@ class Installer
 			$data = array('db_driver', 'db_hostname', 'db_name', 'db_username');
 
 			$this->_feed_blank_template($data);
-			
+
 			$this->output('database');
 		}
 		else
@@ -183,7 +183,7 @@ class Installer
 		}
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -215,12 +215,12 @@ class Installer
 				$this->template['message_type'] = 'error';
 				$this->template['message'] = lang('user_info_admin_exists');
 			}
-			
+
 			// Prepare data
 			$data = array('username', 'screen_name', 'email', 'encryption_key');
 
 			$this->_feed_blank_template($data);
-			
+
 			// Encryption key : check if one exists
 			require(ROOTPATH . 'application/config/config.php');
 			if ($config['encryption_key'] == '')
@@ -233,14 +233,14 @@ class Installer
 		else
 		{
 			$this->_save_user();
-			
+
 			$this->db_connect();
 
 			header("Location: ".BASEURL.'install/?step=data&lang='.$this->template['lang'], TRUE, 302);
 		}
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------
 
 
@@ -268,11 +268,11 @@ class Installer
 		{
 			// Install DATABASE example data
 			require(ROOTPATH . 'application/config/database.php');
-			
+
 			// Connect to DB
 			$config = $db['default'];
 			$dsn = $config['dbdriver'].'://'.$config['username'].':'.$config['password'].'@'.$config['hostname'].'/'.$config['database'];
-			
+
 			$this->db = DB($dsn, true, true);
 
 			// Try connect or exit
@@ -280,7 +280,7 @@ class Installer
 			{
 				$this->_send_error('data', lang('database_error_coud_not_connect'), $_POST);
 			}
-			
+
 			// The database should exists, so try to connect
 			if ( ! $this->db->db_select())
 			{
@@ -303,7 +303,7 @@ class Installer
 				$this->_save_language_config_file($data);
 			}
 
-			/* 
+			/*
 			 * Install Themes example
 			 * Not yet implemented
 			 *
@@ -313,7 +313,7 @@ class Installer
 				$zip->extractTo(ROOTPATH . 'themes/');
 				$zip->close();
 			}
-			
+
 			// http://se2.php.net/manual/en/function.exec.php
 			// exec(command, $printed_data, $return_value);
 
@@ -324,10 +324,10 @@ class Installer
 		}
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
-	
+
 	/**
 	 * Migrate the DB if needed
 	 * No migration will be done if it is not needed, even this script is called.
@@ -340,41 +340,41 @@ class Installer
 		// Migration not validated
 		if ( ! isset($_POST['action']))
 		{
-		
+
 			$this->template['database_migration_text'] = '';
 			$this->template['button_label'] = lang('button_start_migrate');
-		
+
 			if ( ! empty($migration_files))
 			{
 				if (in_array('migration_0.9.7_0.9.9.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';
-				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';			
-				if (in_array('migration_0.9.5_0.9.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.5</b>';			
-				if (in_array('migration_0.9.4_0.9.5.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.4</b>';			
-				if (in_array('migration_0.93_0.9.4.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.3</b>';			
-				if (in_array('migration_0.92_0.93.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.2</b>';			
+				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';
+				if (in_array('migration_0.9.5_0.9.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.5</b>';
+				if (in_array('migration_0.9.4_0.9.5.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.4</b>';
+				if (in_array('migration_0.93_0.9.4.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.3</b>';
+				if (in_array('migration_0.92_0.93.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.2</b>';
 				if (in_array('migration_0.90_0.92.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.0</b>';
-				
-				$this->template['database_migration_text'] = lang('database_migration_text');			
+
+				$this->template['database_migration_text'] = lang('database_migration_text');
 			}
 			else
 			{
 				$this->template['button_label'] = lang('button_next_step');
 				$this->template['database_migration_from'] = lang('database_no_migration_needed');
 			}
-			
+
 			$this->output('migrate');
 		}
 		else
 		{
 			$this->db_connect();
-	
+
 			// Migration
 			foreach ($migration_files as $file)
 			{
 				$xml = simplexml_load_file('./database/'.$file);
-					
+
 				$queries = $xml->xpath('/sql/query');
-	
+
 				foreach ($queries as $query)
 				{
 					$this->db->query($query);
@@ -388,7 +388,7 @@ class Installer
 				$langs = $query->result_array();
 				$this->_save_language_config_file($langs);
 			}
-	
+
 			/*
 			 * Migration to 0.9.4
 			 * Users account migration
@@ -399,7 +399,7 @@ class Installer
 				log_message('debug', 'Migration from 0.9.3');
 
 				$query = $this->db->get('users');
-				
+
 				if ($query->num_rows() > 0)
 				{
 					foreach ($query->result_array() as $user)
@@ -407,16 +407,16 @@ class Installer
 						if ($user['salt'] == '')
 						{
 							$user['salt'] = $this->get_salt();
-							
+
 							$user['password'] = $this->_encrypt094($this->_decrypt093($user['password'], $user), $user);
-							
+
 							$this->db->where('username', $user['username']);
 							$this->db->update('users', $user);
 						}
-					}						
+					}
 				}
 			}
-			
+
 			/*
 			 * Migration to 0.9.5
 			 * Migration to Connect Lib
@@ -429,17 +429,17 @@ class Installer
 				// Get the encryption key and move it to config/config.php
 				$enc = false;
 				$config = array();
-				
+
 				if (is_file(ROOTPATH . 'application/config/access.php'))
 				{
 					include(ROOTPATH . 'application/config/access.php');
 				}
-				
+
 				if ( ! empty($config['encrypt_key']) &&  $config['encrypt_key'] != '')
 				{
 					$enc =  $config['encrypt_key'];
 				}
-				
+
 				// Write the config file and migrates users accounts
 				if ($enc !== false)
 				{
@@ -449,16 +449,16 @@ class Installer
 					$buff = '';
 					foreach ($config_file as $line)
 					{
-						if (strpos($line, "encryption_key") !== FALSE) 
+						if (strpos($line, "encryption_key") !== FALSE)
 						{
 							$line = "\$config['encryption_key'] = '".$enc."';\n";
 						}
 					    $buff .= $line;
 					}
-					
+
 					if ($buff != '')
 						$ret = @file_put_contents(APPPATH . 'config/config' . EXT, $buff);
-					
+
 					if ( ! $ret)
 					{
 						$this->_send_error('migrate', lang('settings_error_write_rights_config'), $_POST);
@@ -466,19 +466,19 @@ class Installer
 
 					// Updates the users account
 					$query = $this->db->get('users');
-					
+
 					if ($query->num_rows() > 0)
 					{
 						foreach ($query->result_array() as $user)
 						{
 							$pass = $this->_decrypt094($user['password'], $user);
 							$enc = $this->_encrypt($pass, $user);
-											
+
 							$user['password'] = $enc;
-						
+
 							$this->db->where('username', $user['username']);
 							$this->db->update('users', $user);
-						}						
+						}
 					}
 				}
 				else
@@ -498,18 +498,18 @@ class Installer
 
 				// Updates the users account
 				$query = $this->db->get('users');
-				
+
 				if ($query->num_rows() > 0)
 				{
 					foreach ($query->result_array() as $user)
 					{
 						$old_decoded_pass = $this->_decrypt096($user['password'], $user);
 						$encoded_pass = $this->_encrypt($old_decoded_pass, $user);
-						
+
 						$user['password'] = $encoded_pass;
 						$this->db->where('username', $user['username']);
 						$this->db->update('users', $user);
-					}						
+					}
 				}
 			}
 
@@ -529,6 +529,46 @@ class Installer
 				$conf->save();
 			}
 
+
+			/*
+			 * Migration to new 0.9.9 userstable
+			 * Remove salt, add forgotten password fields ...
+			 */
+			if (in_array('migration_0.9.9_userstable.xml', $migration_files))
+			{
+				log_message('debug', 'Migrate usertables of 0.9.9');
+
+				// Updates the users account with new password hashes
+				// do that BEFORE database gets modified (we need the salt
+				// for decryption)
+				//
+				// we can that in "one run" as there are not thousands of users
+				// BUT IF: database is "innodb" which is slow on updates/inserts
+				//         and you may run out of memory/execution time if you
+				//         update a table with some 1000s of users
+				$query = $this->db->get('users');
+				if ($query->num_rows() > 0) {
+					foreach ($query->result_array() as $user) {
+						$decoded_pass = $this->_decrypt($user['password'], $user);
+
+						$user['password'] = $this->hash_password($decoded_pass);
+						$this->db->update('users', $user, array('username'=>$user['username']));
+					}
+				}
+
+
+
+				$xml = simplexml_load_file('./database/'.$file);
+				$queries = $xml->xpath('/sql/query');
+
+				foreach ($queries as $query) {
+					$this->db->query($query);
+				}
+
+
+
+			}
+
 			/*
 			 * Migration to 1.0
 			 * Coming soon...
@@ -546,33 +586,33 @@ class Installer
 	function migrate_users_to_ci2()
 	{
 		$this->db_connect();
-		
+
 		// Updates the users account
 		$query = $this->db->get('users');
-		
+
 		if ($query->num_rows() > 0)
 		{
 			foreach ($query->result_array() as $user)
 			{
 				$old_decoded_pass = $this->_decrypt096($user['password'], $user);
 				$encoded_pass = $this->_encrypt($old_decoded_pass, $user);
-				
+
 				$user['password'] = $encoded_pass;
 				$this->db->where('username', $user['username']);
 				$this->db->update('users', $user);
-				
+
 				echo($user['username'] . ' : ' . 'done<br/>');
-			}						
+			}
 		}
 	}
 
 	function show_password()
 	{
 		$this->db_connect();
-		
+
 		// Updates the users account
 		$query = $this->db->get('users');
-		
+
 		if ($query->num_rows() > 0)
 		{
 			foreach ($query->result_array() as $user)
@@ -580,7 +620,7 @@ class Installer
 				$decoded_pass = $this->_decrypt($user['password'], $user);
 
 				var_dump($decoded_pass);
-			}						
+			}
 		}
 	}
 
@@ -639,7 +679,7 @@ class Installer
 		 */
 		$this->db->where('name', '404');
 		$query = $this->db->get('page');
-	
+
 		if ($query->num_rows() == 0)
 		{
 			// 404 page
@@ -649,7 +689,7 @@ class Installer
 				'online' => '1',
 				'appears' => '0'
 			);
-			
+
 			$this->db->insert('page', $data);
 			$id_page_404 = $this->db->insert_id();
 
@@ -668,7 +708,7 @@ class Installer
 				'online' => '1'
 			);
 			$this->db->insert('page_article', $data);
-			
+
 
 			// 404 article lang data
 			$langs = array_keys($config['available_languages']);
@@ -684,7 +724,7 @@ class Installer
 				);
 
 				$this->db->insert('page_lang', $data);
-				
+
 				// 404 lang article
 				$data = array(
 					'id_article' => $id_article_404,
@@ -698,11 +738,11 @@ class Installer
 			}
 		}
 
-		
+
 		// Default minimal welcome page
 		$this->db->where('id_menu', '1');
 		$query = $this->db->get('page');
-	
+
 		if ($query->num_rows() == 0)
 		{
 			// Welcome page
@@ -714,7 +754,7 @@ class Installer
 				'home' => '1',
 				'level' => '0'
 			);
-			
+
 			$this->db->insert('page', $data);
 			$id_page = $this->db->insert_id();
 
@@ -733,7 +773,7 @@ class Installer
 				'online' => '1'
 			);
 			$this->db->insert('page_article', $data);
-			
+
 
 			// Article lang data
 			$langs = array_keys($config['available_languages']);
@@ -749,7 +789,7 @@ class Installer
 				);
 
 				$this->db->insert('page_lang', $data);
-				
+
 				// Lang article
 				$data = array(
 					'id_article' => $id_article,
@@ -771,7 +811,7 @@ class Installer
 		{
 			$this->db->where(array('lang' => $lang, 'name' => 'site_title'));
 			$query = $this->db->get('setting');
-		
+
 			if ($query->num_rows() == 0)
 			{
 				// Settings
@@ -802,7 +842,7 @@ class Installer
 		$this->output('finish');
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -819,23 +859,23 @@ class Installer
 
 		// Post data
 		$data = array();
-		
+
 		// Check each mandatory POST data
 		foreach ($fields as $key)
 		{
 			if (isset($_POST[$key]))
 			{
 				$val = $_POST[$key];
-				
+
 				// Break if $val == ''
 				if ($val == '')
 				{
 					$this->_send_error('database', lang('database_error_missing_settings'), $_POST);
 				}
-				
+
 				if ( ! get_magic_quotes_gpc())
 					$val = addslashes($val);
-			
+
 				$data[$key] = trim($val);
 			}
 		}
@@ -848,7 +888,8 @@ class Installer
 		}
 		
 
-		/* 
+
+		/*
 		 * If database don't exists, create it !
 		 *
 		 */
@@ -857,11 +898,11 @@ class Installer
 			// Loads CI DB Forge class
 			require_once(BASEPATH.'database/DB_forge'.EXT);
 			require_once(BASEPATH.'database/drivers/'.$this->db->dbdriver.'/'.$this->db->dbdriver.'_forge'.EXT);
-			
+
 			$class = 'CI_DB_'.$this->db->dbdriver.'_forge';
-	
+
 			$this->dbforge = new $class();
-			
+
 			if ( ! $this->dbforge->create_database($data['db_name']))
 			{
 				$this->_send_error('database', lang('database_error_coud_not_create_database'), $_POST);
@@ -874,7 +915,7 @@ class Installer
 			}
 		}
 
-		
+
 		/*
 		 * Select database, save database config file and launch SQL table creation script
 		 *
@@ -897,32 +938,32 @@ class Installer
 			{
 				$this_is_a_migration = TRUE;
 			}
-			
+
 			// Load database XML script
 			$xml = simplexml_load_file('./database/database.xml');
 
 			// Get tables & content
 			$tables = $xml->xpath('/sql/tables/query');
 			$content = $xml->xpath('/sql/content/query');
-			
+
 			// Create tables
 			// In case of migration, this script will only create the missing tables
 			foreach ($tables as $table)
 			{
 				$this->db->query($table);
 			}
-			
+
 			// Checks the write rights of the MySQL user
 			// by insertion of dummy data in the settings table
 			if ($this->db->query("INSERT INTO setting ('name', 'content') values('test', 'test')"))
 			{
-				$this->_send_error('database', lang('database_error_coud_not_write_database'), $_POST);			
+				$this->_send_error('database', lang('database_error_coud_not_write_database'), $_POST);
 			}
 			else
 			{
 				$this->db->query("DELETE FROM setting WHERE name='test'");
 			}
-			
+
 			/*
 			 * Base content insert
 			 * In case of migration (content already exists), the existing content will not be overwritten
@@ -932,16 +973,16 @@ class Installer
 			{
 				$this->db->query($sql);
 			}
-			
+
 			// Users message
 			$this->template['database_installation_message'] = lang('database_success_install');
 		}
-		
-		
+
+
 		/**
 		 * Check for migration and redirect
 		 *
-		 */		
+		 */
 		$migration_files = $this->_get_migration_files();
 
 		if ( ! empty($migration_files))
@@ -965,7 +1006,7 @@ class Installer
 
 
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -992,9 +1033,9 @@ class Installer
 			{
 
 				$conf = new ION_Config(APPPATH.'config/', 'config.php');
-		
+
 				$conf->set_config('encryption_key', $_POST['encryption_key']);
-		
+
 				if ($conf->save() == FALSE)
 				{
 					$this->_send_error('user', lang('settings_error_write_rights_config'), $_POST);
@@ -1007,64 +1048,65 @@ class Installer
 		 *
 		 */
 		$fields = array('username', 'screen_name', 'email', 'password', 'password2');
-		
+
 		// Post data
 		$data = array();
-		
+
 		// Check each mandatory POST data
 		foreach ($fields as $key)
 		{
 			if (isset($_POST[$key]))
 			{
 				$val = $_POST[$key];
-				
+
 				// Exit if $val == ''
 				if ($val == '')
 				{
 					$this->_send_error('user', lang('user_error_missing_settings'), $_POST);
 				}
-				
+
 				// Exit if username or password < 4 chars
 				if (($key == 'username' OR $key == 'password') && strlen($val) < 4)
 				{
 					$this->_send_error('user', lang('user_error_not_enough_char'), $_POST);
 				}
-				
+
 				if ( ! get_magic_quotes_gpc())
 					$val = addslashes($val);
-			
+
 				$data[$key] = trim($val);
 			}
 		}
-		
+
 		// Check email
 		if ( ! valid_email($data['email']) )
 		{
 			$this->_send_error('user', lang('user_error_email_not_valid'), $_POST);
 		}
-		
+
 		// Check password
 		if ( ! ($data['password'] == $data['password2']) )
 		{
 			$this->_send_error('user', lang('user_error_passwords_not_equal'), $_POST);
 		}
-		
+
 		// Here is everything OK, we can create the user
 		$data['join_date'] = date('Y-m-d H:i:s');
-		$data['salt'] = $this->get_salt();
-		$data['password'] = $this->_encrypt($data['password'], $data);
+
+		$data['password'] = $this->hash_password($data['password']);
+
 		$data['id_group'] = '1';
-		
+
 		// Clean data array
 		unset($data['password2']);
 
 		// DB save
 		$this->db_connect();
-		
+
 		// Check if the user exists
 		$this->db->where('username', $data['username']);
 		$query = $this->db->get('users');
-		
+
 		if ($query->num_rows() > 0)
 		{
 			// updates the user
@@ -1074,11 +1116,11 @@ class Installer
 		else
 		{
 			// insert the user
-			$this->db->insert('users', $data);	
+			$this->db->insert('users', $data);
 		}
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -1090,18 +1132,18 @@ class Installer
 	{
 		// Config library
 		require_once('./class/Config.php');
-		
-	
+
+
 		// Check if data are empty
 		if (empty($_POST['lang_code'])) { $this->_send_error('settings', lang('settings_error_missing_lang_code'), $_POST);}
 		if (empty($_POST['lang_name'])) { $this->_send_error('settings', lang('settings_error_missing_lang_name'), $_POST);}
-		
+
 		// Lang code must be on 2 chars
 		if (strlen($_POST['lang_code']) > 3) { $this->_send_error('settings', lang('settings_error_lang_code_2_chars'), $_POST);}
-		
+
 		// Check if admin URL is correct
 		if ( ! preg_match("/^([a-z0-9])+$/i", $_POST['admin_url']) OR (empty($_POST['admin_url'])) ) { $this->_send_error('settings', lang('settings_error_admin_url'), $_POST);}
-		
+
 		// Save the Admin URL
 		$conf = new ION_Config(APPPATH.'config/', 'config.php');
 
@@ -1114,7 +1156,7 @@ class Installer
 
 		// DB save
 		$this->db_connect();
-		
+
 		$data = array(
 			'lang' => $_POST['lang_code'],
 			'name' => $_POST['lang_name'],
@@ -1122,11 +1164,11 @@ class Installer
 			'def' => '1',
 			'ordering' => '1'
 		);
-		
+
 		// Check if the lang exists
 		$this->db->where('lang', $_POST['lang_code']);
 		$query = $this->db->get('lang');
-	
+
 		if ($query->num_rows() > 0)
 		{
 			// updates the lang
@@ -1136,11 +1178,11 @@ class Installer
 		else
 		{
 			// insert the lang
-			$this->db->insert('lang', $data);	
+			$this->db->insert('lang', $data);
 		}
-		
+
 		$data = array(0 => $data);
-		
+
 		return $this->_save_language_config_file($data);
 	}
 
@@ -1156,16 +1198,29 @@ class Installer
 	{
 		GLOBAL $config;
 		if (!isset($this->template['next'])) {$this->template['next'] = true; }
-		
+
 		$this->template['version'] = $config['version'];
-		
+
 		extract($this->template);
-		
+
 		include('./views/header.php');
 		include('./views/' . $_view . '.php');
 		include('./views/footer.php');
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Generates a hash for a given password using the PHPass-Library
+	 *
+	 **/
+	function hash_password($password) {
+		//hardened hash generation, no salt needed (library takes care)
+		require_once(APPPATH.'libraries/Phpass.php');
+		include_once(APPPATH.'config/phpass.php');
+		$phpass = new phpass($config);
+		return $phpass->hash($password);
+	}
 
 	// --------------------------------------------------------------------
 
@@ -1175,19 +1230,19 @@ class Installer
 	 *
 	 * @return String	Hash value
 	 *
-	 **/	
+	 **/
 	function get_salt()
 	{
 		require('../application/config/connect.php');
 		return substr(md5(uniqid(rand(), true)), 0, $config['salt_length']);
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
 	/**
-	 * Get one translation 
+	 * Get one translation
 	 *
 	 */
 	public function get_translation($line)
@@ -1197,11 +1252,11 @@ class Installer
 
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Connects to the DB with the database.php config file
 	 *
-	 */	
+	 */
 	function db_connect()
 	{
 		include(APPPATH.'config/database'.EXT);
@@ -1211,8 +1266,8 @@ class Installer
 		$this->db->db_connect();
 		$this->db->db_select();
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------
 
 
@@ -1227,7 +1282,18 @@ class Installer
 
 		$this->db_connect();
 
-		// Try to get one table fields data : If not possible, the table doesn't exist : 
+		//try to get a version
+		//so we can avoid that certain fields are re-added on the next
+		//migration
+		//Before 0.9.7 no version strings were stored, so they will
+		//work flawless now, as we included this code just in 0.9.9.x
+		if(($version = $this->db->query("select content from setting where name='ionize_version'")) !== FALSE) {
+			$version = $version->row_array();
+			$version = isset($version['content']) ? $version['content'] : '';
+		}else
+			$version = "0";
+
+		// Try to get one table fields data : If not possible, the table doesn't exist :
 		// The database doesn't contains correct tables -> error !
 		if (($test = $this->db->query('select count(1) from setting')) != false)
 		{
@@ -1236,30 +1302,23 @@ class Installer
 			 * page_lang does not contains the 'online' field
 			 *
 			 */
-			$migrate_from = true;
-	
-			$fields = $this->db->field_data('page_lang');
-	
-			foreach ($fields as $field)
-			{
-			   if ($field->name == 'online')
-			   {
-					$migrate_from = false;
-			   }
-			} 
-			
-			if ($migrate_from == true)
-			{
-				$migration_xml[] = 'migration_0.90_0.92.xml';
-				$migration_xml[] = 'migration_0.92_0.93.xml';
-				$migration_xml[] = 'migration_0.93_0.9.4.xml';
-				$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-				$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-				$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-				$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+			if( version_compare($version, "0.9.1") <= 0 ) {
+				$migrate_from = true;
+
+				$fields = $this->db->field_data('page_lang');
+
+				foreach ($fields as $field)
+				{
+				   if ($field->name == 'online')
+				   {
+						$migrate_from = false;
+				   }
+				}
+
+				if ($migrate_from == true)
+					$migration_xml[] = 'migration_0.90_0.92.xml';
 			}
-	
-			
+
 			/*
 			 * From Ionize 0.92
 			 * The 'extend_field' table does not contains the 'value' field
@@ -1267,12 +1326,11 @@ class Installer
 			 * If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
 			 *
 			 */
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.2") <= 0 ) {
 				$migrate_from = true;
-				
+
 				$fields = $this->db->field_data('extend_field');
-	
+
 				foreach ($fields as $field)
 				{
 				   if ($field->name == 'value')
@@ -1280,45 +1338,31 @@ class Installer
 						$migrate_from = false;
 				   }
 				}
-				
+
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.92_0.93.xml';
-					$migration_xml[] = 'migration_0.93_0.9.4.xml';
-					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-				}
 			}
-	
-	
+
+
 			/*
 			 * From Ionize 0.93
 			 * if the 'users' table field 'join_date' has the TIMESTAMP type, we will migrate the accounts.
 			 * If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
 			 *
 			 */
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.3") <= 0 ) {
 				$migrate_from = true;
-				
+
 				$fields = $this->db->field_data('users');
-	
+
 				foreach ($fields as $field)
 				{
 					if ($field->name == 'salt')
 						$migrate_from = false;
 				}
-				
+
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.93_0.9.4.xml';
-					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-				}
 			}
 
 
@@ -1326,10 +1370,9 @@ class Installer
 			 * From Ionize 0.9.4 : the users.id_user field does not exists
 			 *
 			 */
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.4") <= 0 ) {
 				$migrate_from = false;
-				
+
 				$fields = $this->db->field_data('users');
 
 				foreach ($fields as $field)
@@ -1339,22 +1382,16 @@ class Installer
 				}
 
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-				}
 			}
 
 			/*
 			 * From Ionize 0.9.5 : the table article hasn't the 'flag' field
 			 *
 			 */
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.5") <= 0 ) {
 				$migrate_from = true;
-				
+
 				$fields = $this->db->field_data('article');
 
 				foreach ($fields as $field)
@@ -1364,56 +1401,64 @@ class Installer
 				}
 
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-				}
 			}
-			
+
 			/*
 			 * From Ionize 0.9.6 : the table extend_field does not contains the field id_element_definition
 			 *
 			 */
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.6") <= 0 ) {
 				$migrate_from = true;
-				
+
 				$fields = $this->db->field_data('extend_field');
-	
+
 				foreach ($fields as $field)
 				{
 					if ($field->name == 'id_element_definition')
 						$migrate_from = false;
 				}
-				
+
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-				}
 			}
-			
+
 			/*
 			 * From 0.9.7
 			 *
 			 *
 			 */
-			if (empty($migration_xml))
-			{
-				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
-				$version = isset($version['content']) ? $version['content'] : '';
-				$version = str_replace('.', '', $version);
-				
-				if (intval($version) <= 97)
-				{
+			if( version_compare($version, "0.9.7") <= 0 ) {
+				$migrate_from = true;
+
+				if ($migrate_from == true)
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-				}
+			}
+
+			/*
+			 * Migrate User table - only on version 99!
+			 *
+			 * Does only migrate if there is a "salt"-field (which we get rid now)
+			 */
+			if( version_compare($version, "0.9.9") <= 0 ) {
+				$migrate_from = false;
+
+				$fields = $this->db->field_data('users');
+				//as soon as there is a "salt"-field
+				//we will have to migrate the users table
+				foreach ($fields as $field)
+					if ($field->name == 'salt') {
+						$migrate_from = true;
+						break;
+					}
+
+				if ($migrate_from == true)
+					$migration_xml[] = 'migration_0.9.9_userstable.xml';
 			}
 
 		}
 
-		
+
 		return $migration_xml;
 	}
 
@@ -1440,12 +1485,12 @@ class Installer
 					if (!$this->_test_dir($dir.$file, true))
 						return false;
 		}
-		
+
 		closedir($dh);
 		return true;
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -1460,7 +1505,7 @@ class Installer
 	function _test_file($files)
 	{
 		$return = array();
-	
+
 		foreach ($files as $file)
 		{
 			if ( ! is_really_writable($file)) return false;
@@ -1468,7 +1513,7 @@ class Installer
 		return true;
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -1480,13 +1525,13 @@ class Installer
 	{
 		// $dsn = 'dbdriver://username:password@hostname/database';
 		$dsn = $data['db_driver'].'://'.$data['db_username'].':'.$_POST['db_password'].'@'.$data['db_hostname'].'/'.$data['db_name'];
-			
+
 		$this->db = DB($dsn, true, true);
 
 		return $this->db->db_connect();
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -1502,7 +1547,7 @@ class Installer
 		}
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -1518,7 +1563,7 @@ class Installer
 		}
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -1527,13 +1572,13 @@ class Installer
 	  * @param	string	View name
 	  * @param	string	Error message content
 	  * @param	array	Data to feed to form. Optional.
-	 
+
 	 */
 	function _send_error($view, $msg, $data = array())
 	{
 		$this->template['message_type'] = 'error';
 		$this->template['message'] = $msg;
-		
+
 		if ( !empty($data))
 		{
 			$this->_feed_template($data);
@@ -1543,8 +1588,8 @@ class Installer
 
 		exit();
 	}
-	
-	
+
+
 	// --------------------------------------------------------------------
 
 
@@ -1556,10 +1601,10 @@ class Installer
 	{
 		// Files begin
 		$conf  = "<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');\n\n";
-		
+
 		$conf .= "\$active_group = 'default';\n";
 		$conf .= "\$active_record = TRUE;\n\n";
-		
+
 		$conf .= "\$db['default']['hostname'] = '".$data['db_hostname']."';\n";
 		$conf .= "\$db['default']['username'] = '".$data['db_username']."';\n";
 		$conf .= "\$db['default']['password'] = '".$_POST['db_password']."';\n";
@@ -1573,7 +1618,7 @@ class Installer
 		$conf .= "\$db['default']['cachedir'] = '';\n";
 		$conf .= "\$db['default']['char_set'] = 'utf8';\n";
 		$conf .= "\$db['default']['dbcollat'] = 'utf8_unicode_ci';\n";
-		
+
 		// files end
 		$conf .= "\n";
 		$conf .= '/* End of file database.php */'."\n";
@@ -1583,7 +1628,7 @@ class Installer
 		return @file_put_contents(APPPATH . '/config/database' . EXT, $conf);
 	}
 
-	
+
 	function _save_language_config_file($data)
 	{
 		// Default language
@@ -1607,7 +1652,7 @@ class Installer
 
 		// Language file save
 		$conf  = "<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');\n\n";
-		
+
 		$conf .='/*'."\n";
 		$conf .='| -------------------------------------------------------------------'."\n";
 		$conf .='| IONIZE LANGUAGES'."\n";
@@ -1647,9 +1692,9 @@ class Installer
 		$conf .= '/* Location: ./application/config/language.php */'."\n";
 
 		return @file_put_contents(APPPATH . 'config/language' . EXT, $conf);
-		
+
 	}
-	
+
 	// --------------------------------------------------------------------
 
 
@@ -1665,42 +1710,42 @@ class Installer
 	{
 		// Get the Access lib config file
 		include(APPPATH.'config/access.php');
-	
+
 		$hash = sha1($data['username'] . $data['salt']);
 		$key = sha1($config['encrypt_key'] . $hash);
 
 		return base64_encode(mcrypt_encrypt(MCRYPT_BLOWFISH, substr($key, 0, 56), $str, MCRYPT_MODE_CFB, substr($config['encrypt_key'], 0, 8)));
 	}
 
-	
+
 	// --------------------------------------------------------------------
 
 
 	function _decrypt($str, $data)
 	{
 		require_once('./class/Encrypt.php');
-		
+
 		include(APPPATH.'config/config.php');
-		
+
 		$encrypt = new ION_Encrypt($config);
 
 		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
 		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
-		
+
 		return $encrypt->decode($str, substr($key, 0, 56));
 	}
 
 	function _decrypt096($str, $data)
 	{
 		require_once('./class/Encrypt.php');
-		
+
 		include(APPPATH.'config/config.php');
-		
+
 		$encrypt = new ION_Encrypt($config);
 
 		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
 		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
-		
+
 		return $encrypt->old_decode($str, substr($key, 0, 56));
 	}
 
@@ -1716,14 +1761,14 @@ class Installer
 	function _encrypt($str, $data)
 	{
 		require_once('./class/Encrypt.php');
-		
+
 		include(APPPATH.'config/config.php');
 
 		$encrypt = new ION_Encrypt($config);
 
 		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
 		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
-		
+
 		return $encrypt->encode($str, substr($key, 0, 56));
 	}
 
@@ -1735,7 +1780,7 @@ class Installer
 	{
 		// Get the Access lib config file
 		include(APPPATH.'config/config.php');
-	
+
 		$hash = sha1($data['username'] . $data['salt']);
 		$key = sha1($config['encryption_key'] . $hash);
 
@@ -1749,7 +1794,7 @@ class Installer
 	{
 		// Get the Access lib config file
 		include(APPPATH.'config/access.php');
-	
+
 		$hash = sha1($data['username'] . $data['join_date']);
 		$key = sha1($config['encrypt_key'] . $hash);
 
@@ -1764,9 +1809,9 @@ class Installer
 	{
 		$vowels = 'aeiouyAEIOUY';
 		$consonants = 'bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ1234567890@#$!()';
-	 
+
 		$key = '';
-		
+
 		$alt = time() % 2;
 		for ($i = 0; $i < $size; $i++) {
 			if ($alt == 1) {
@@ -1779,9 +1824,9 @@ class Installer
 		}
 		return $key;
 	}
-	
-	
-	
+
+
+
 }
 
 

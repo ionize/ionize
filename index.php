@@ -36,7 +36,7 @@ if (defined('ENVIRONMENT'))
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
 		break;
-	
+
 		case 'testing':
 		case 'production':
 			error_reporting(0);
@@ -101,13 +101,13 @@ if (defined('ENVIRONMENT'))
  * from the document root folder, in case of using Ionize with one
  * other framework or CMS.
  *
- * Example : 
+ * Example :
  * Main app folder : 	/public_html/
  * Ionize folder : 		/public_html/ionize/
- * 
+ *
  * If you want to store files (medias) outside from the ionize folder
  * the public doc folder needs to be set and will be different from the
- * FCPATH 
+ * FCPATH
  *
  */
 	$doc_folder = "";
