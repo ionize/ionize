@@ -248,7 +248,7 @@ class Connect {
 					$this->model->update_last_visit($this->current_user);
 
 					// refresh the remember me cookie
-					$this->remember_me();
+					$this->remember_me( $user[$user_pk] );
 				} else {
 					// alert the server admin that we've received a tampered cookie
 					// -> we got a cookie with information about a not existing user
@@ -384,7 +384,7 @@ class Connect {
 
 			// Set the remember_me cookie
 			if($remember)
-				$this->remember_me();
+				$this->remember_me( $user[$this->model->users_pk] );
 
 			// redirect to a previously blocked page, if it exists
 			if($this->login_redirect_to_blocked && $this->session->userdata('connect_blocked_url'))
@@ -457,19 +457,25 @@ class Connect {
 	 *
 	 * @return bool
 	 */
-	public function remember_me()
+	public function remember_me( $id = NULL )
 	{
-		if( ! $this->logged_in() OR ! $this->remember_me['on'])
+		if( !$this->remember_me['on'] )
 			return FALSE;
 
-		$user = $this->get_current_user();
+		$user_pk = $this->model->users_pk;
+		$user = $this->model->find_user(array($user_pk => $id));
+
+		//generate a remembercode - stored in the database for later
+		//comparison
+		$remember_code = sha1($user["password"]);
+		$this->model->update_user(array($user_pk=>$id,"remember_code"=>$remember_code));
 
 		$CI =& get_instance();
 		$CI->load->helper('cookie');
 		//set new cookies for the current user
 		set_cookie(array(
 		    'name'   => $this->remember_me['identity'],
-		    'value'  => $user->username,
+		    'value'  => $user["username"],
 		    'expire' => $this->remember_me['duration']
 		));
 
