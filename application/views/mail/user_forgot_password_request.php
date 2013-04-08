@@ -2,10 +2,10 @@
 /**
  * Ionize
  *
- * Default Email template for : User password
- * This email send a new password to the user
+ * Default Email template for : User forgot password request
+ * This email sends a confirmation link to the user
  *
- * Copy this file to /themes/<your_theme>/mail/user_password.php
+ * Copy this file to /themes/<your_theme>/mail/user_forgot_password_request.php
  * to replace it by yours.
  *
  * IMPORTANT :
@@ -61,38 +61,19 @@
                 <table border="0" width="880">
                     <tr>
                         <td>
-							<?php
-								//Do not write such comments as html-comment (users will be able to read them)
+							<?php /* Dear .... */ ?>
+                            <h1><ion:data:lang key="mail_user_forgot_password_request_intro" swap="data::firstname" /></h1>
 
-								//Dear ....
-							?>
-                            <h1><ion:data:lang key="mail_user_password_intro" swap="data::firstname" /></h1>
-
-							<?php
-								//New account login information
-							?>
-                            <p><ion:lang key="mail_user_password_message" swap="global::site_title" /></p>
+							<?php /* Hint what the link is for */ ?>
+                            <p><ion:lang key="mail_user_forgot_password_request_message" swap="global::site_title" /></p>
+							<?php /* the link to confirm the request */ ?>
                             <p>
-                                <ion:lang key="form_label_login"/> : <b><ion:data:username /></b>, <br/>
-                                <ion:lang key="form_label_password"/> : <b><ion:data:password /></b> <br/>
+								<a href="<ion:home_url />user/forgot_password_confirm/<ion:data:email />/<ion:data:forgotten_password_code />">
+									<ion:home_url />user/forgot_password_confirm/<ion:data:email />/<ion:data:forgotten_password_code />
+								</a>
                             </p>
-
-							<?php
-								//Do not write such comments as html-comment (users will be able to read them)
-
-								//This account isn't activated ?
-								//Send the activation data again (as they have changed with the new password)
-							?>
-							<ion:data:level expression="level<100">
-
-                                <p><ion:lang key="mail_user_registration_activate" /></p>
-                                <p>
-                                    <a href="<ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />">
-                                        <ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />
-                                    </a>
-                                </p>
-                            </ion:data:level>
-
+							<?php /* Say them they may ignore that mail */ ?>
+                            <p><ion:lang key="mail_user_forgot_password_request_hint" /></p>
                         </td>
                     </tr>
                 </table>

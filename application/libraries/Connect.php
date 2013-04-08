@@ -64,6 +64,15 @@ class Connect {
 	 */
 	protected $on_restrict = 'message';
 
+
+	/**
+	 * Sets how many seconds a confirmation code is valid
+	 *
+	 * @var string
+	 */
+	public $confirmation_code_lifetime = 86400; // 1 day
+
+
 	/**
 	 * The settings for the remember me feature.
 	 *
@@ -877,19 +886,22 @@ class Connect {
 			 * Instead of using MD5/Sha... we use PHPass to make bruteforce
 			 * attacking a bit harder.
 			 *
-			 * We also load the library HERE to avoid a useless library load if not needed.
-			 *
 			 * Attention: there is no need to use a "salt" as the library takes care of
 			 * that itself.
 			 */
-			$CI =& get_instance();
-			$CI->load->library('phpass');
-			$user_data['password'] = $CI->phpass->hash($user_data['password']);
+			$cleanPassword = $user_data['password'];
+			$user_data['password'] = $this->generate_hash( $user_data['password'] );
+
+			//if activation is needed, store a activation code
+			if($this->verify_user)
+				$user_data['activation_code'] = $this->calc_user_confirmation_key( $user_data );
+			else
+				$user_data['activation_code'] = "";
 
 			// User saved sucessfully?
 			if($return = $this->model->save_user($user_data))
 			{
-			    $this->error = $user_data['password'];
+			    $this->error = $cleanPassword;
 
 				return $return;
 			}
@@ -921,15 +933,10 @@ class Connect {
 	 */
 	public function update($user_data = array())
 	{
-		$clear_password = NULL;
-
 		// Update the password : Send in "clear" version
 		if ( !empty($user_data['password']) )
-		{
-			$clear_password = $user_data['password'];
 			$user_data['password'] = $this->generate_hash($user_data['password']);
-		}
-		elseif (isset($user_data['password']))
+		elseif ( isset($user_data['password']) )
 			unset($user_data['password']);
 
 		if ( isset($user_data['id_user']))
@@ -986,7 +993,7 @@ class Connect {
 	{
 		$user = $this->model->find_user($username);
 
-		if($user && $code == $this->calc_activation_key($user))
+		if($user && $code == $user["activation_code"])
 		{
 			$g = $this->model->find_group(array('slug' => $this->default_user_group));
 
@@ -1000,24 +1007,100 @@ class Connect {
 		return FALSE;
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Resets one user's password
+	 *
+	 * A new password has to be provided in the case of further
+	 * processing needs a clear password. If you do not provide
+	 * one, the function generates one
+	 *
+	 * @param  string  The email of the user whose password to reset
+	 * @param  string  The confirmation code
+	 * @param  string  The new password
+	 * @return array   array containing "password" and "result" ("OK", "ERROR", "ERROR_NOT_FOUND", "ERROR_CODE_TO_OLD")
+	 */
+	public function reset_password($email, $code, $new_password = "") {
+		if( empty($email) OR empty($code) )
+			return array("password"=>"", "result"=>"ERROR");
+
+		//only give back users with the corresponding email AND code
+		$user = $this->find_user(array('email' => $email, 'forgotten_password_code' => $code));
+
+		if( $user ) {
+			//check if the code is still valid (or to old)
+			if( $this->confirmation_time_expired( $user["forgotten_password_time"] ) )
+				return array("password"=>"", "result"=>"ERROR_CODE_TO_OLD");
+
+			//if no password is given, we generate one
+			if( empty($new_password) )
+				$new_password = $this->get_random_password(8);
+
+			//set the user password to a clear one instead of the hash
+			$user['password'] = $new_password;
+
+			//reset forgotten-data: invalidates further requests with same data
+			$user['forgotten_password_code'] = sha1($this->get_random_password(16));
+			$user['forgotten_password_time'] = "0";
+
+			//finally set the new password in the users db entry
+			if( $this->update($user) )
+				return array("password"=>$new_password, "result"=>"OK");
+		}
+
+		//to get a better fitting error message we will check if the user even exists
+		$user = $this->find_user(array('email' => $email));
+		if( $user )
+			return array("password"=>"", "result"=>"ERROR");
+		else
+			return array("password"=>"", "result"=>"ERROR_NOT_FOUND");
+	}
+
 
 	// --------------------------------------------------------------------
 
 
 	/**
-	 * Calculates the activation key for a certain user.
+	 * Calculates a confirmation key for a certain user.
+	 *
+	 * Can be used for activation of accounts, confirmation of requests...
+	 * But: take care that @param contains all needed fields!
 	 *
 	 * @param  array	User data
 	 * @return string
 	 */
-	public function calc_activation_key($user)
+	public function calc_user_confirmation_key($user)
 	{
+		//generate a random part of the key (repeated some times)
+		$key = "";
+		for($i=0;$i<25;$i++) { $key = sha1( $key.microtime() ); }
+
 		//hardened hash generation, no salt needed (library takes care)
-		$CI =& get_instance();
-		$CI->load->library('phpass');
-		return $CI->hash( $user['username'] . $user['email'] . $user['password'] );
+		//this time we use a short sha1-hash to avoid characters not allowed
+		//in urls (we want to provide clickable urls instead of letting a user
+		//put code into boxes)
+		return sha1( $this->generate_hash( $key . $user['username'] . $user['email'] . $user['password'] ) );
 	}
 
+	// --------------------------------------------------------------------
+
+
+	/**
+	 * Checks whether the given datetime is "to old"
+	 *
+	 * If the confirmation lifetime is set to 0, codes wont expire
+	 *
+	 * @param  int	a time()-equivalent time
+	 * @return bool
+	 */
+	public function confirmation_time_expired($time)
+	{
+		if( $this->confirmation_code_lifetime == 0 )
+			return FALSE;
+
+		return (time() + $this->confirmation_code_lifetime) < intval($time);
+	}
 
     // --------------------------------------------------------------------
 

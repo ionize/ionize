@@ -192,7 +192,6 @@ class Users extends MY_admin
 			// for that entry
 			if( $this->input->post('password') != '' && ($this->input->post('password') == $this->input->post('password2'))	)
 				$data['password'] = $this->connect->generate_hash( $this->input->post('password') );
-			$data['password'] = $this->connect->generate_hash( "12345" );
 
 			// Update the user
 			$this->users_model->update($id_user, $data);

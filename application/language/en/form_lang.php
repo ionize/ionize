@@ -34,7 +34,7 @@ $lang['form_label_login'] = 'Login';
 $lang['form_label_password'] = 'Password';
 $lang['form_label_password_confirmation'] = 'Password confirm';
 $lang['form_label_delete_account'] = 'Delete account';
-
+$lang['form_label_confirmation_code'] = 'Confirmation code'
 /*
 |--------------------------------------------------------------------------
 | Buttons
@@ -63,10 +63,16 @@ $lang['mail_user_registration_intro'] = "Dear %s,";
 $lang['mail_user_registration_message'] = "You just registered on <b>%s</b>.<br/>Here are your login information.";
 $lang['mail_user_registration_activate'] = "Before login, you need to activate your account through this link :";
 
-// New Password : Email to user
-$lang['mail_user_password_subject'] = "New password for your account on %s";
-$lang['mail_user_password_intro'] = "Dear %s,";
-$lang['mail_user_password_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Here are your new login information:";
+// Forgot password request : Email to user
+$lang['mail_user_forgot_password_request_subject'] = "You forgot your password for your account on %s ?";
+$lang['mail_user_forgot_password_request_intro'] = "Dear %s,";
+$lang['mail_user_forgot_password_request_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Ifyou really wanted to get a new password generated, just visit:";
+$lang['mail_user_forgot_password_request_hint'] = 'If you did not request the reset of your password, ignore this Email. Please contact us if you receive this Email multiple times.';
+// Forgot password confirm : Email to user
+$lang['mail_user_forgot_password_confirm_subject'] = "Your new login data for your account on %s";
+$lang['mail_user_forgot_password_confirm_intro'] = "Dear %s,";
+$lang['mail_user_forgot_password_confirm_message'] = "Here is your new login data to access the website <b>%s</b>.<br/>";
+
 
 /*
 |--------------------------------------------------------------------------
@@ -89,9 +95,15 @@ $lang['form_profile_success_message'] = "Profile data saved";
 $lang['form_profile_error_message'] = "This user already exists. Please change your username or email";
 $lang['form_profile_account_deleted'] = "Account deleted";
 
-$lang['form_password_error_message'] = "One error happens.";
-$lang['form_password_not_found_message'] = "This email seems not to be in our system";
-$lang['form_password_success_message'] = "One email with you new password has just been sent to you.";
+$lang['form_forgot_password_request_error_message'] = "One error happens.";
+$lang['form_forgot_password_request_not_found_message'] = "This email seems not to be in our system";
+$lang['form_forgot_password_request_success_message'] = "One email has just been sent to you. It contains a link to confirm your request.";
+
+$lang['form_forgot_password_confirm_error_message'] = "One error happens.";
+$lang['form_forgot_password_confirm_not_found_message'] = "This email seems not to be in our system";
+$lang['form_forgot_password_confirm_to_old_message'] = 'The used confirmation code is expired. Please use the forgot-password-function again to receive a new code.';
+$lang['form_forgot_password_confirm_success_message'] = "One email has just been sent to you. It contains your new login data.";
+
 
 /*
 |--------------------------------------------------------------------------

@@ -49,6 +49,19 @@ $config['groups_table_pk'] 	= 'id_group';
 */
 $config['verify_user'] = true;
 
+/*
+|--------------------------------------------------------------------------
+| Confirmation code lifetime
+|--------------------------------------------------------------------------
+|
+| Default: 86400 - 1 day
+| Option: 0 - no expiration time
+|
+| Time in seconds until a code is getting invalid
+|
+*/
+$config['confirmation_code_lifetime'] = 86400;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +97,7 @@ $config['activate_user_by_admin'] = false;
 | but only for the Connect lib.
 | If you wish to use the key defined in config/config.php, just comment
 | this line.
-|  
+|
 |
 */
 // For Ionize, the Encrytion key is located in config/config.php
@@ -282,7 +295,7 @@ $config['restrict_type_block'] = array('string' => 'Access Denied');
 |--------------------------------------------------------------------------
 |
 | Default: array(
-|			  'on' => true, 
+|			  'on' => true,
 |			  'duration' => 604800, // 7 days
 |			  'cookie_name' => 'somecookiename');
 |
@@ -291,7 +304,7 @@ $config['restrict_type_block'] = array('string' => 'Access Denied');
 | configured here.
 |
 | Because this feature uses a cookie to remember the user, it can be
-| tampered with (but highly unlikely, as it is encrypted and hashed - 
+| tampered with (but highly unlikely, as it is encrypted and hashed -
 | but it can happen that the user can produce a replica), so it isn't
 | recommended to be used on sites which need to be more secure.
 |
@@ -299,12 +312,15 @@ $config['restrict_type_block'] = array('string' => 'Access Denied');
 |
 | on          - If this feature should be used, bool
 | duration    - How long Connect should remember the user, int - seconds
-| cookie_name - The name of the cookie to save te data in, string
+| code        - The name of the cookie to save the remember code in, string
+| identity    - The name of the cookie to save the identity in, string
 */
-$config['remember_me'] = array(
-	'on' => false, 
-	'duration' => 604800, // 7 days
-	'cookie_name' => 'rememberconnect');
+$config["remember_me"] = array(
+		'on' 			=> TRUE,
+		'duration' 		=> 604800, // 7 days
+		'code' 			=> 'rememberconnect',
+		'identity' 		=> 'rememberidentity'
+	);
 
 
 /*
