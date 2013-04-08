@@ -543,7 +543,7 @@ class TagManager_Form extends TagManager
 				{
 					if ( ! empty($values[$key]))
 					{
-						return self::wrap($tag, $fd[$key]);
+						return self::wrap($tag, $values[$key]);
 					}
 				}
 			}
