@@ -196,6 +196,10 @@ class TagManager
 		'session' =>			'tag_session',
 		'session:set' =>		'tag_session_set',
 		'session:get' =>		'tag_session_get',
+		'request' =>			'tag_request',			//make it a "process" tag
+		'request:post' =>		'tag_request_post',
+		'request:getpost' =>	'tag_request_getpost',
+		'request:get' =>		'tag_request_get',
 
 		// Development tags
 		'trace' =>				'tag_trace',
@@ -2384,6 +2388,84 @@ class TagManager
 		$tag->set('browser', $result);
 		$tag->expand();
 		return self::output_value($tag, $result);
+	}
+
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Sets the <ion:request>-tag as process tag
+	 *
+	 * Expands the tag so that sub requests like <ion:request:get ...> can
+	 * get contain is/expression-fields
+	 *
+	 */
+	public static function tag_request(FTL_Binding $tag) {
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+		return $tag->expand();
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * returns get/post values
+	 *
+	 * is a helper function for internal use, return values are XSS-cleaned
+	 */
+	private static function _tag_request_getpost(FTL_Binding $tag, $mode="post") {
+		$key = $tag->getAttribute('key');
+
+		if( is_null($key) )
+			return '';
+
+		if( $mode=="post" )
+			return self::output_value($tag, self::$ci->input->post($key, true));
+		elseif( $mode=="getpost" )
+			return self::output_value($tag, self::$ci->input->get_post($key, true));
+		else
+			//return self::wrap($tag, self::$ci->input->get($key, true));
+			return self::output_value($tag, self::$ci->input->get($key, true));
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * returns the value of a given $_GET value
+	 * Expands or not the tag if the "if" or "expression" attributes are set
+	 *
+	 * @usage	<ion:request:get key="get_var_name" [is="foo" expression="get_var_name == 'bar'" ] />
+	 *
+	 */
+	public static function tag_request_get(FTL_Binding $tag) {
+		return self::_tag_request_getpost($tag, "get");
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * returns the value of a given $_POST value
+	 * Expands or not the tag if the "if" or "expression" attributes are set
+	 *
+	 * @usage	<ion:request:post key="post_var_name" [is="foo" expression="post_var_name == 'bar'" ] />
+	 *
+	 */
+	public static function tag_request_post(FTL_Binding $tag) {
+		return self::_tag_request_getpost($tag, "post");
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * returns the value of a given $_GET or $_POST value
+	 * Expands or not the tag if the "if" or "expression" attributes are set
+	 *
+	 * @usage	<ion:request:getpost key="getpost_var_name" [is="foo" expression="getpost_var_name == 'bar'" ] />
+	 *
+	 */
+	public static function tag_request_getpost(FTL_Binding $tag) {
+		return self::_tag_request_getpost($tag, "getpost");
 	}
 
 
