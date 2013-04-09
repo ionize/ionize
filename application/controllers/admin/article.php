@@ -1888,7 +1888,7 @@ class Article extends MY_admin
 		);
 
 		//only update the page tree if we really modified some page
-		if( $page ) {
+		if( isset($page) ) {
 			$this->callback[] = array(
 				'fn' => $page['menu']['name'].'Tree.updateElement',
 				'args' => array($article_lang, 'article')
