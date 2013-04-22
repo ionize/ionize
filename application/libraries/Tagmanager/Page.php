@@ -866,7 +866,7 @@ class TagManager_Page extends TagManager
 			// Adds the suffix if defined
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
-			$return .= $child_tag_open . ($breadcrumb[$i]['has_url'] == 0) ? $breadcrumb[$i]['title'] : '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' ;
+			$return .= $child_tag_open . (($breadcrumb[$i]['has_url'] == 0) ? $breadcrumb[$i]['title'] : '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>') ;
 			if ($i<($nb_pages-1))
 				$return .= $separator;
 
