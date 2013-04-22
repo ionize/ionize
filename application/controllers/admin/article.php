@@ -1867,6 +1867,10 @@ class Article extends MY_admin
 			$page = $this->page_model->get_by_id($id_page);
 			if($page)
 				$page['menu'] = $this->menu_model->get($page['id_menu']);
+		}else{
+			//set the variable to something usable so it can be
+			//used in the callback some lines below.
+			$id_page = 0;
 		}
 
 		// Main data
