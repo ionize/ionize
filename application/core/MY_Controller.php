@@ -75,11 +75,6 @@ class MY_Controller extends CI_Controller
 		$this->load->model('base_model', '', TRUE);
 		$this->load->model('settings_model', '', TRUE);
 
-		// Libraries
-		// $this->load->library('authority', NULL, 'core');
-		// $au =& load_class('authority', 'core');
-
-
 		// Helpers
 		$this->load->helper('file');
 		$this->load->helper('trace');

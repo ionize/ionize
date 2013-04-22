@@ -61,6 +61,15 @@
                     <li class="toggle-topbar"><a href="#"></a></li>
                 </ul>
                 <section>
+					<ion:languages tag="ul" class="right">
+
+						<li <ion:language:is_active> class="active"</ion:language:is_active>>
+							<a href="<ion:language:url />">
+								<ion:language:code />
+							</a>
+						</li>
+
+					</ion:languages>
                     <ul class="right">
                         <ion:navigation level="0"  active_class="active"  >
                             <li>
@@ -68,6 +77,7 @@
                             </li>
                         </ion:navigation>
                     </ul>
+
                 </section>
             </nav>
 		</div>

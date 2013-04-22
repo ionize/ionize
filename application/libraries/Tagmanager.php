@@ -186,6 +186,7 @@ class TagManager
 		'meta_title' => 		'tag_meta_title',
 		'meta_keywords' => 		'tag_meta_keywords',
 		'meta_description' => 	'tag_meta_description',
+		'google_analytics' => 	'tag_google_analytics',
 		'setting' => 			'tag_setting',
 		'uniq' =>				'tag_uniq',
 		'if' =>					'tag_if',
@@ -507,8 +508,7 @@ class TagManager
 	{
 		// Global settings
 		self::$context->set_global('site_title', Settings::get('site_title'));
-		self::$context->set_global('google_analytics', Settings::get('google_analytics'));
-		
+
 		// Theme
 		self::$context->set_global('theme', Theme::get_theme());
 		self::$context->set_global('theme_url', base_url() . Theme::get_theme_path());
@@ -610,8 +610,6 @@ class TagManager
 	 */
 	public static function render($view = NULL, $return = FALSE)
 	{
-		$ci =& get_instance();
-
 		// Loads the view to parse
 		$view = ($view != NULL) ? $view : self::$view;
 
@@ -622,7 +620,7 @@ class TagManager
 		// We can now check if the file is a PHP one or a FTL one
 		if (substr($parsed, 0, 5) == '<?php')
 		{
-			$parsed = $ci->load->view($view, array(), TRUE);
+			$parsed = self::$ci->load->view($view, array(), TRUE);
 		}
 		else
 		{
@@ -630,7 +628,7 @@ class TagManager
 
 			if (User()->logged_in() && Authority::can('access', 'admin') && Settings::get('display_connected_label') == '1')
 			{
-				$injected_html = $ci->load->view('core/logged_as_editor', array(), TRUE);
+				$injected_html = self::$ci->load->view('core/logged_as_editor', array(), TRUE);
 				
 				$parsed = str_replace('</body>', $injected_html, $parsed);
 			}
@@ -651,7 +649,7 @@ class TagManager
 		if ($return)
 			return $parsed;
 		else
-			$ci->output->set_output($parsed);
+			self::$ci->output->set_output($parsed);
 
 	}
 
@@ -2319,7 +2317,41 @@ class TagManager
 
 		return Settings::get('meta_description');
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns the Google Analytics Tracking code
+	 * View : /application/views/google/tracking
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return mixed
+	 *
+	 */
+	public static function tag_google_analytics(FTL_Binding $tag)
+	{
+		$tracking_id = Settings::get('google_analytics_id');
+
+		// Load the tracking view
+		if ($tracking_id != FALSE && $tracking_id != '')
+		{
+			$html = self::$ci->load->view(
+				'google/tracking',
+				array('tracking_id' => $tracking_id),
+				TRUE
+			);
+			return $html;
+		}
+		// Returns the complete tracking code
+		else
+		{
+			return Settings::get('google_analytics');
+		}
+	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -2579,7 +2611,7 @@ class TagManager
 			// if the current lang is the default one : don't return the lang code
 			if (Settings::get_lang() != Settings::get_lang('default'))
 			{
-				return base_url() . Settings::get_lang() .'/';
+				return base_url() . Settings::get_lang();
 			}
 		}
 

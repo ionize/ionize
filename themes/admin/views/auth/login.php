@@ -74,7 +74,7 @@
 
 
 <body>
-	<?php if (ENVIRONMENT == 'development' OR ENVIRONMENT == 'testing'): ?>
+	<?php if (ENVIRONMENT != 'production'): ?>
 		<div id="preprod-flag">
 			<?php echo strtoupper(ENVIRONMENT); ?>
 		</div>

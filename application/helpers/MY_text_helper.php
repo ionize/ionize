@@ -85,6 +85,17 @@ if ( ! function_exists('tag_limiter'))
 // ------------------------------------------------------------------------
 
 
+if ( ! function_exists('to_entities'))
+{
+	function to_entities($str)
+	{
+		$str = htmlspecialchars($str, ENT_COMPAT, 'UTF-8', false);
 
-/* End of file MY_text_helper.php */
-/* Location: ./application/helpers/MY_text_helper.php */
+		log_message('error', $str);
+
+		return $str;
+	}
+}
+
+
+

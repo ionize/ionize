@@ -578,8 +578,12 @@ class TagManager_Navigation extends TagManager
 
 		foreach($languages as $idx => &$lang)
 		{
-			// Lang send to helper
-			$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
+			// Correct the Home page URL
+			if ($page['home'] != 1 )
+				$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
+			else
+				$lang['absolute_url'] = base_url() . $lang['lang'];
+
 			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
 			$lang['is_active'] = $lang['lang'] == Settings::get_lang('current');
 			$lang['id'] = $lang['lang'];

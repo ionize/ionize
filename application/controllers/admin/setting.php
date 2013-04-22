@@ -422,8 +422,19 @@ class Setting extends MY_admin
 	{
 		// Settings to save
 		// Settings to save
-		$settings = array('google_analytics');
-		$lang_settings = array('meta_keywords', 'meta_description', 'site_title');
+		$settings = array(
+			'google_analytics',
+			'google_analytics_id',
+			'google_analytics_profile_id',
+			'google_analytics_url',
+			'google_analytics_email',
+			'google_analytics_password'
+		);
+		$lang_settings = array(
+			'meta_keywords',
+			'meta_description',
+			'site_title'
+		);
 
 		// Save settings to DB
 		$this->_save_settings($settings, $lang_settings);

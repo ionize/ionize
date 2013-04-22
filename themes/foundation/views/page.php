@@ -52,16 +52,17 @@
 							403 : display only 403 articles
 							404 : display only 404 articles
 			usage :
-			authorization="all" : All articles, with or without authorizations
-			authorization="all,401,403" : Only free access articles + 401 + 403
-			authorization="401,403" : Only 401 + 403
-			authorization="401" : Only 401
+			authorization="all" : 			All articles, with or without authorizations
+			authorization="all,401,403" : 	Only free access articles + 401 + 403
+			authorization="401,403" : 		Only 401 + 403
+			authorization="401" : 			Only 401
 
 		-->
-		<ion:articles type="bloc">
+		<ion:articles type="bloc" authorization="all">
 			<ion:article >
 				<div class="four columns">
 					<div class="panel">
+
 						<ion:title tag="h5" />
 
 						<ion:deny is=''>

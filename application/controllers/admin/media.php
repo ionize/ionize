@@ -775,7 +775,7 @@ class Media extends MY_admin
 		{
 			if ( $this->input->post($field) !== FALSE)
 			{
-				$data[$field] = htmlentities($this->input->post($field));
+				$data[$field] = htmlentities($this->input->post($field), ENT_QUOTES, 'utf-8');
 			}
 		}
 

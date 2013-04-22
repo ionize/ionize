@@ -26,9 +26,9 @@ class Translation extends MY_admin
 {
 	// Reg Expression used to find translation items in views files.
 	private $reg_keys = array(
-		"%ion:lang[\s]*term=\"([- \w:]+?)\" *\/>%",
-		"%ion:lang[\s]*key=\"([- \w:]+?)\" *\/>%",
-		'% Lang.get\(([- \w:\']+?)\)%'
+		"%ion:lang[\s]*term=\"([-_ \w:]+?)\" *\/>%",
+		"%ion:lang[\s]*key=\"([-_ \w:]+?)\" *\/>%",
+		'% Lang.get\(([-_ \w:\']+?)\)%'
 	);
 
 	private $modules_terms = NULL;
