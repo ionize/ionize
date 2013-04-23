@@ -1850,22 +1850,46 @@ class Article extends MY_admin
 
 
 	/**
-	 * When called, relaods the Page Edition panel
+	 * When called, reloads the Page Edition panel
 	 *
 	 * @param	Page ID
 	 *
 	 */
 	protected function _reload_panel($id_page, $id_article)
 	{
-        if($id_page != 0) {
+		//Without an article id we are not able to get
+		//a localized article.
+		//An existing article is needed for both callbacks !
+		//-> no id = nothing to do
+		if( empty($id_article) ) { return FALSE; }
+
+		//only fetch page data if there is an correct ID
+		if( !empty($id_page) ) {
             $page = $this->page_model->get_by_id($id_page);
+			//only access the page array if it is a valid one
+			if( is_array($page) )
             $page['menu'] = $this->menu_model->get($page['id_menu']);
+			//something is wrong with the page array, remove it...
+			//(that way we do not need to check for isset+is_array later on)
+			else
+				unset($page);
+		} else {
+			//set the variable to something usable so it can be
+			//used in the callback some lines below.
+			$id_page = 0;
         }
 
-		// Main data
+		//Fetch and check main data
 		$article = $this->article_model->get_by_id($id_article);
+		//If there is no article when even no language restrictions are set,
+		//there is no need to even continue...)
+		if( !is_array($article) ) { return FALSE; }
 
 		$article_lang = $this->article_model->get_by_id($id_article, Settings::get_lang('default'));
+		//Without an existing "default language"-article we cannot update
+		//visual content..
+		if( !is_array($article_lang) ) { return FALSE; }
+
 		$title = empty($article_lang['title']) ? $article_lang['name'] : $article_lang['title'];
 
 		// Correcting some lang data
@@ -1879,7 +1903,9 @@ class Article extends MY_admin
 				'title'=> lang('ionize_title_edit_article') . ' : ' . $title
 			)
 		);
-        if($id_page != 0) {
+
+		//only run the callback if we got a valid page
+		if( isset($page) ) {
             $this->callback[] = array(
                 'fn' => $page['menu']['name'].'Tree.updateElement',
                 'args' => array($article_lang, 'article')
