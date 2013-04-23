@@ -520,6 +520,7 @@ class Article extends MY_admin
 				$this->template['has_translated_extend_fields'] = $this->_has_translated_extend_fields($extend_fields);
 				$this->template['extend_fields'] = $extend_fields;
 
+
 				// Link : Depending on the context
 				$context = $this->article_model->get_context($id_article, $id_page);
 				
@@ -1856,8 +1857,10 @@ class Article extends MY_admin
 	 */
 	protected function _reload_panel($id_page, $id_article)
 	{
-		$page = $this->page_model->get_by_id($id_page);
-		$page['menu'] = $this->menu_model->get($page['id_menu']);
+        if($id_page != 0) {
+            $page = $this->page_model->get_by_id($id_page);
+            $page['menu'] = $this->menu_model->get($page['id_menu']);
+        }
 
 		// Main data
 		$article = $this->article_model->get_by_id($id_article);
@@ -1876,10 +1879,12 @@ class Article extends MY_admin
 				'title'=> lang('ionize_title_edit_article') . ' : ' . $title
 			)
 		);
-		$this->callback[] = array(
-			'fn' => $page['menu']['name'].'Tree.updateElement',
-			'args' => array($article_lang, 'article')
-		);
+        if($id_page != 0) {
+            $this->callback[] = array(
+                'fn' => $page['menu']['name'].'Tree.updateElement',
+                'args' => array($article_lang, 'article')
+            );
+        }
 
 	}
 

@@ -133,7 +133,7 @@
 							<td>
 								<a class="icon right delete" rel="<?php echo $article['id_article']; ?>"></a>
 								<a class="icon right duplicate mr5" rel="<?php echo $article['id_article']; ?>|<?php echo $article['name']; ?>"></a>
-								<a class="icon right edit mr5" rel="<?php echo $article['id_article']; ?>" title="<?php echo $title; ?>"></a>
+								<a class="icon right edit mr5" data-id_article="<?php echo $article['id_article']; ?>" title="<?php echo $title; ?>"></a>
 							</td>
 							
 		
@@ -210,18 +210,17 @@
 
 	$$('#articlesTable .edit').each(function(item)
 	{
-		var id_article = item.getProperty('rel');
-		var title = item.getProperty('title');
+		var id_article = item.getProperty('data-id_article'),
+            title = item.getProperty('title');
 		
 		item.addEvent('click', function(e)
 		{
-			e.stop();
-            ION.contentUpdate({
-				'element': $('mainPanel'),
-				'loadMethod': 'xhr',
-				'url':	admin_url + 'article/edit/0.' + id_article,
-				'title': Lang.get('ionize_title_edit_article') + ' : ' + title
-			});
+            e.stop();
+            ION.splitPanel({
+                'urlMain': admin_url + 'article/edit/0.' + id_article,
+                'urlOptions': admin_url + 'article/get_options/0.' + id_article,
+                'title': Lang.get('ionize_title_edit_article') + ' : ' + title
+            });
 		});
 	});
 
