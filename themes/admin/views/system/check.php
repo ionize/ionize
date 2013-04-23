@@ -127,7 +127,7 @@
 						<!-- Thumbs delete -->
 						<tr>
 							<td class="middle right pr10">
-								<a class="button light check-btn" data-href="media/delete_thumbs">
+								<a class="button light check-btn" data-href="media/delete_all_thumbs">
 									<i class="icon-pictures"></i><?php echo lang('ionize_title_delete_thumbs'); ?>
 								</a>
 							</td>

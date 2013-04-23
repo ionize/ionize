@@ -3,6 +3,7 @@
 $config['module']['demo'] = array
 (
 	'module' => "Demo",
+    'name' => "Demo Module",
 	'description' => "Demo module. Manage articles's authors.",
 	'author' => "Partikule",
 	'version' => "1.0",
