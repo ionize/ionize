@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset='utf-8' />
 <title><?php echo lang('ionize_administration') . ' | ' . (Settings::get('site_title') ? Settings::get('site_title') : ''); ?></title>
 <meta http-equiv="imagetoolbar" content="no" />
 <link rel="shortcut icon" href="<?php echo theme_url(); ?>images/favicon.ico" type="image/x-icon" />
@@ -29,6 +29,12 @@
 <!-- Mootools 1.4.5  -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+	google.load("visualization", "1", {packages:["corechart"]});
+</script>
+
 
 <!-- Upload -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Request.File.js"></script>
@@ -189,6 +195,7 @@
 <?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/javascript/tinyMCE.js' )) :?>
 	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/javascript/tinyMCE.js"></script>
 <?php endif ;?>
+
 
 
 <script type="text/javascript">

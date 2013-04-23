@@ -485,6 +485,7 @@ class Setting extends MY_admin
 			'date_format',
 			'default_admin_lang',
 			'enable_backend_tracker',
+			'dashboard_google',
 		);
 
 		// Save settings to DB

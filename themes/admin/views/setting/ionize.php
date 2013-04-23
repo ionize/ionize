@@ -13,6 +13,7 @@
 	<!-- Tabs -->
 	<div id="ionizeSettingsTab" class="mainTabs">
 		<ul class="tab-menu">
+			<li id="ui_dashboard"><a><?php echo lang('ionize_title_dashboard'); ?></a></li>
 			<li id="ui_visual_settings"><a><?php echo lang('ionize_title_visual_help'); ?></a></li>
 			<li id="ui_language_settings"><a><?php echo lang('ionize_title_admin_panel_languages'); ?></a></li>
 			<li id="ui_datetime_settings"><a><?php echo lang('ionize_title_admin_panel_datetime'); ?></a></li>
@@ -25,94 +26,106 @@
 
 		<form name="ionizeSettingsForm" id="ionizeSettingsForm" method="post">
 
+			<div class="tabcontent">
 
-		<!-- Visual help : help tips and "Connected" label -->
-		<div class="tabcontent">
+				<dl>
+					<dt>
+						<label for="dashboard_google" title="<?php echo lang('ionize_help_display_google'); ?>"><?php echo lang('ionize_label_display_google'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="dashboard_google" id="dashboard_google" <?php if (Settings::get('dashboard_google') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
 
-			<!--
-			<dl>
-				<dt>
-					<label for="show_help_tips" title="<?php echo lang('ionize_help_help'); ?>"><?php echo lang('ionize_label_show_help_tips'); ?></label>
-				</dt>
-				<dd>
-					<input class="inputcheckbox" type="checkbox" name="show_help_tips" id="show_help_tips" <?php if (Settings::get('show_help_tips') == '1'):?> checked="checked" <?php endif;?> value="1" />
-				</dd>
-			</dl>
-			-->
-	
-			<dl>
-				<dt>
-					<label for="display_connected_label" title="<?php echo lang('ionize_help_display_connected_label'); ?>"><?php echo lang('ionize_label_display_connected_label'); ?></label>
-				</dt>
-				<dd>
-					<input class="inputcheckbox" type="checkbox" name="display_connected_label" id="display_connected_label" <?php if (Settings::get('display_connected_label') == '1'):?> checked="checked" <?php endif;?> value="1" />
-				</dd>
-			</dl>
-	
-			<dl>
-				<dt>
-					<label for="enable_backend_tracker" title="<?php echo lang('ionize_help_enable_backend_tracker'); ?>"><?php echo lang('ionize_label_enable_backend_tracker'); ?></label>
-				</dt>
-				<dd>
-					<input class="inputcheckbox" type="checkbox" name="enable_backend_tracker" id="enable_backend_tracker" <?php if (Settings::get('enable_backend_tracker') == '1'):?> checked="checked" <?php endif;?> value="1" />
-				</dd>
-			</dl>
+			</div>
 
-		</div>
+			<!-- Visual help : help tips and "Connected" label -->
+			<div class="tabcontent">
 
-		<!-- Admin panel displayed languages -->
-		<div class="tabcontent">
-	
-			<table class="list w280">
-				<thead>
-					<tr>
-						<th></th>
-						<th class="center">Lang</th>
-						<th class="center">Displayed</th>
-						<th class="center">Default</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach(Settings::get('admin_languages') as $lang) :?>
-					<tr>
-						<td class="center">
-                            <?php if (file_exists(Theme::get_theme_path().'images/world_flags/flag_'.$lang.'.gif')) :?>
-        						<img src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" alt="<?php echo $lang; ?>" class="mt2" /></td>
-							<?php else: ?>
-								?
-							<?php endif; ?>
-						<td class="center">
-							<label for="display_lang_<?php echo $lang; ?>"><?php echo $lang; ?></label>
-						</td>
-						<td class="center">
-							<input <?php if(in_array($lang, $displayed_admin_languages)) :?>checked="checked" <?php endif ;?>id="display_lang_<?php echo $lang; ?>" class="inputcheckbox" name="displayed_admin_languages[]" type="checkbox" value="<?php echo $lang; ?>" />
-						</td>
-						<td class="center">
-							<input <?php if(Settings::get('default_admin_lang') == $lang) :?>checked="checked" <?php endif ;?>id="default_admin_lang_<?php echo $lang; ?>" class="inputcheckbox " name="default_admin_lang" type="radio" value="<?php echo $lang; ?>" />
-						</td>
-					</tr>
-					<?php endforeach ;?>
-				</tbody>
-			</table>
-		</div>
+				<!--
+				<dl>
+					<dt>
+						<label for="show_help_tips" title="<?php echo lang('ionize_help_help'); ?>"><?php echo lang('ionize_label_show_help_tips'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="show_help_tips" id="show_help_tips" <?php if (Settings::get('show_help_tips') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+				-->
 
-		<!-- Admin panel date and time -->
-		<div class="tabcontent">
-	
-			<dl>
-				<dt><label for="date_format_eu">dd.mm.yyyy</label></dt>
-				<dd>
-					<input <?php if(Settings::get('date_format') == '%d.%m.%Y') :?>checked="checked" <?php endif ;?>id="date_format_eu" class="inputcheckbox" name="date_format" type="radio" value="%d.%m.%Y" />
-				</dd>
-			</dl>
-			<dl>
-				<dt><label for="date_format_us">yyyy.mm.dd</label></dt>
-				<dd>
-					<input <?php if(Settings::get('date_format') == '%Y.%m.%d') :?>checked="checked" <?php endif ;?>id="date_format_us" class="inputcheckbox" name="date_format" type="radio" value="%Y.%m.%d" />
-				</dd>
-			</dl>
-		
-		</div>
+				<dl>
+					<dt>
+						<label for="display_connected_label" title="<?php echo lang('ionize_help_display_connected_label'); ?>"><?php echo lang('ionize_label_display_connected_label'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_connected_label" id="display_connected_label" <?php if (Settings::get('display_connected_label') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>
+						<label for="enable_backend_tracker" title="<?php echo lang('ionize_help_enable_backend_tracker'); ?>"><?php echo lang('ionize_label_enable_backend_tracker'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="enable_backend_tracker" id="enable_backend_tracker" <?php if (Settings::get('enable_backend_tracker') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
+			</div>
+
+			<!-- Admin panel displayed languages -->
+			<div class="tabcontent">
+
+				<table class="list w280">
+					<thead>
+						<tr>
+							<th></th>
+							<th class="center">Lang</th>
+							<th class="center">Displayed</th>
+							<th class="center">Default</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach(Settings::get('admin_languages') as $lang) :?>
+						<tr>
+							<td class="center">
+								<?php if (file_exists(Theme::get_theme_path().'images/world_flags/flag_'.$lang.'.gif')) :?>
+									<img src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" alt="<?php echo $lang; ?>" class="mt2" /></td>
+								<?php else: ?>
+									?
+								<?php endif; ?>
+							<td class="center">
+								<label for="display_lang_<?php echo $lang; ?>"><?php echo $lang; ?></label>
+							</td>
+							<td class="center">
+								<input <?php if(in_array($lang, $displayed_admin_languages)) :?>checked="checked" <?php endif ;?>id="display_lang_<?php echo $lang; ?>" class="inputcheckbox" name="displayed_admin_languages[]" type="checkbox" value="<?php echo $lang; ?>" />
+							</td>
+							<td class="center">
+								<input <?php if(Settings::get('default_admin_lang') == $lang) :?>checked="checked" <?php endif ;?>id="default_admin_lang_<?php echo $lang; ?>" class="inputcheckbox " name="default_admin_lang" type="radio" value="<?php echo $lang; ?>" />
+							</td>
+						</tr>
+						<?php endforeach ;?>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Admin panel date and time -->
+			<div class="tabcontent">
+
+				<dl>
+					<dt><label for="date_format_eu">dd.mm.yyyy</label></dt>
+					<dd>
+						<input <?php if(Settings::get('date_format') == '%d.%m.%Y') :?>checked="checked" <?php endif ;?>id="date_format_eu" class="inputcheckbox" name="date_format" type="radio" value="%d.%m.%Y" />
+					</dd>
+				</dl>
+				<dl>
+					<dt><label for="date_format_us">yyyy.mm.dd</label></dt>
+					<dd>
+						<input <?php if(Settings::get('date_format') == '%Y.%m.%d') :?>checked="checked" <?php endif ;?>id="date_format_us" class="inputcheckbox" name="date_format" type="radio" value="%Y.%m.%d" />
+					</dd>
+				</dl>
+
+			</div>
 		</form>
 
 		<!-- Flags -->

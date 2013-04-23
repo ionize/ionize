@@ -47,6 +47,7 @@ $lang['ionize_dashboard_title_orphan_pages'] = 'Orphan pages';
 $lang['ionize_dashboard_title_orphan_articles'] = 'Orphan articles';
 $lang['ionize_dashboard_title_users'] = 'Users';
 $lang['ionize_dashboard_title_content'] = 'Content';
+$lang['ionize_dashboard_title_visits'] = 'Visits';
 
 
 /*
@@ -457,7 +458,8 @@ $lang['ionize_label_site_title'] = 'Website title';
 $lang['ionize_message_settings_saved'] = 'Settings saved';
 $lang['ionize_title_visual_help'] = 'Visual help';
 $lang['ionize_label_show_help_tips'] = 'Display help on fields';
-$lang['ionize_title_admin_panel_languages'] =  'Administration interface languages';
+$lang['ionize_title_dashboard'] =  'Dashboard';
+$lang['ionize_title_admin_panel_languages'] =  'Backend languages';
 $lang['ionize_title_admin_panel_datetime'] =  'Date and Time';
 $lang['ionize_label_display_connected_label'] = 'Connected label';
 $lang['ionize_help_display_connected_label'] = 'Displays a label on the top left of the website when you\'re connected to the Admin panel';
@@ -466,6 +468,10 @@ $lang['ionize_help_enable_backend_tracker'] = 'Displays users logged to the back
 $lang['ionize_onchange_ionize_settings'] = 'The Administration panel will reload after saving these settings.';
 $lang['ionize_label_sitemaps_gzip'] = 'Compress Sitemap';
 $lang['ionize_help_setting_sitemaps_gzip'] = 'Compress the Sitemap file with gzip.';
+$lang['ionize_label_display_google'] = 'Google Analytics';
+$lang['ionize_help_display_google'] = 'Displays Google Analytics basic charts on the dashboard';
+
+
 
 
 /*
@@ -1134,4 +1140,9 @@ $lang['ionize_help_orphan_pages'] = "These pages are not linked to any parent.<b
 $lang['ionize_help_orphan_articles'] = "These articles are not linked to any page.<br/>To link again one article to one page, drag'n'drop it to one page in the tree.";
 
 
+$lang['ionize_ga_pageviews'] = 'Page views';
+$lang['ionize_ga_unique_pageviews'] = 'Unique Page Views';
+$lang['ionize_ga_avg_time_on_page'] = 'Avg time on Page';
+$lang['ionize_ga_bounce_rate'] = 'Bounce Rate';
+$lang['ionize_ga_exit_rate'] = 'Exit rate';
 

@@ -3,7 +3,7 @@
 <?php
 	$lang_url = base_url().Settings::get_lang('current').'/'.Settings::get('admin_url');
 ?>
-<?php if (ENVIRONMENT == 'development' OR ENVIRONMENT == 'testing'): ?>
+<?php if (ENVIRONMENT != 'production'): ?>
 	<div id="preprod-flag">
 			<span class="help" title="<?php echo lang('ionize_help_environment_flag', ENVIRONMENT); ?>">
 				<?php echo strtoupper(ENVIRONMENT); ?>

@@ -15,6 +15,27 @@
 
 <div id="maincolumn">
 
+
+<?php if (
+	Settings::get('dashboard_google') == '1'
+	&& Settings::get('google_analytics_profile_id') !=''
+	&& Settings::get('google_analytics_email') !=''
+	&& Settings::get('google_analytics_password') !=''
+) :?>
+<div class="row m0">
+
+<div class="col">
+	<!-- Google Analytics -->
+	<div id="gaBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_visits') ?>">
+
+		<div id="gaReport"></div>
+
+	</div>
+</div>
+</div>
+<?php endif ;?>
+
+
 	<!-- Row 1 -->
 	<div class="row">
 
@@ -166,6 +187,8 @@
 		</div>
 
 		<div class="col col2">
+
+
 
 			<!-- Modules -->
 			<?php if ( ! empty($modules)) :?>
@@ -367,6 +390,21 @@
 			'container':bloc
 		});
 	});
+
+	<?php if (
+		Settings::get('dashboard_google') == '1'
+		&& Settings::get('google_analytics_profile_id') !=''
+		&& Settings::get('google_analytics_email') !=''
+		&& Settings::get('google_analytics_password') !=''
+	) :?>
+		// Diagnostic : Data table
+		ION.HTML(
+			admin_url + 'google/get_dashboard_report',
+			{},
+			{'update': 'gaReport'}
+		);
+	<?php endif ;?>
+
 
 	// Articles edit
 	var articles = ($$('#articleList .article')).append($$('#orphanArticlesList .article'));
