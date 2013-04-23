@@ -162,7 +162,7 @@ class Finder{
 				{
 					$found[] = $dir . self::$subclass_prefix . $file.EXT;
 					$found_subclasses++;
-					
+
 					// do not try to load the next file, it will only create problems with PHP trying to redeclare methods
 					break;
 				}
@@ -176,7 +176,7 @@ class Finder{
 						// no
 						break 2;
 					}
-					
+
 					// do not try to load the next file, it will only create problems with PHP trying to redeclare methods
 					break;
 				}

@@ -2,15 +2,19 @@
 /**
  * Ionize
  *
- * Default Email template for : User registration
- * This email is send to the user who just created one account.
+ * Default Email template for : User forgot password request
+ * This email sends a confirmation link to the user
  *
- * Copy this file to /themes/<your_theme>/mail/user_registration.php
+ * Copy this file to /themes/<your_theme>/mail/user_forgot_password_request.php
  * to replace it by yours.
  *
  * IMPORTANT :
  * Do not modify this file.
  * It will be overwritten when migrating to a new Ionize release.
+ *
+ */
+/**
+ * Available tags in this template : <ion:data />
  *
  */
 ?>
@@ -57,30 +61,16 @@
                 <table border="0" width="880">
                     <tr>
                         <td>
-                            <!--
-								Dear ....
-							-->
-                            <h1><ion:data:lang key="mail_user_registration_intro" swap="data::firstname" /></h1>
+							<?php /* Dear .... */ ?>
+                            <h1><ion:data:lang key="mail_user_forgot_password_confirm_intro" swap="data::firstname" /></h1>
 
-                            <!--
-								You registered, thanks + login info
-							-->
-                            <p><ion:lang key="mail_user_registration_message" swap="global::site_title" /></p>
+							<?php /* Hint what the link is for */ ?>
+                            <p><ion:lang key="mail_user_forgot_password_confirm_message" swap="global::site_title" /></p>
+							<?php /* the new login data */ ?>
                             <p>
                                 <ion:lang key="form_label_login"/> : <b><ion:data:username /></b>, <br/>
                                 <ion:lang key="form_label_password"/> : <b><ion:data:password /></b> <br/>
                             </p>
-
-							<!--
-								User's account activation link
-							-->
-							<p><ion:lang key="mail_user_registration_activate" /> :</p>
-							<p>
-								<a href="<ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />">
-                                    <ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />
-								</a>
-							</p>
-
                         </td>
                     </tr>
                 </table>

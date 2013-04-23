@@ -27,7 +27,7 @@ function View($file, $vars = array(), $return = false)
 
 	// Set the path to the requested file
 	$files = Finder::find_file($file, 'views', false);
-	
+
 	// remove the path we added earlier, so it won't cause any disturbances later:
 	array_shift(Finder::$paths);
 
@@ -170,12 +170,12 @@ function &Model($model, $db_conn = '')
 	{
 		show_error('Unable to locate the model you have specified: '.$model);
 	}
-	
+
 	if(($p = strrpos($model, '/')) !== false)
 	{
 		$model = substr($model, $p + 1);
 	}
-	
+
 //	$model .= '_Model';
 
 	$models[$model] = new $model();

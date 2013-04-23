@@ -22,7 +22,7 @@
  *
  */
 
-class Users extends MY_admin 
+class Users extends MY_admin
 {
 
 	var $current_user_level = -100;
@@ -56,9 +56,9 @@ class Users extends MY_admin
 	 */
 	function index($page=1, $nb=30)
 	{
-		// 
+		//
 		$this->template['users_count_all'] = $this->users_model->count_all();
-		
+
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = $this->connect->model->get_groups(array('order_by'=>'level DESC', 'level <=' => $this->current_user_level));
 
@@ -75,12 +75,12 @@ class Users extends MY_admin
 	function users_list($page=1)
 	{
 		$nb = ($this->input->post('nb')) ? $this->input->post('nb') : '50';
-		
+
 		// Minimum
 		if ($nb < 25) $nb = 25;
-	
+
 		$page = $page - 1;
-		
+
 		$offset = $page * $nb;
 
 		// Send the filter elements to the view
@@ -96,7 +96,7 @@ class Users extends MY_admin
 				$this->template['filter'][$key] = $like[$key];
 			}
 		}
-		
+
 		// Where
 		$where = array();
 		foreach(array('slug') as $key)
@@ -107,13 +107,13 @@ class Users extends MY_admin
 				$this->template['filter'][$key] = $where[$key];
 			}
 		}
-		
+
 		// Order by last registered
 		if( $this->input->post('registered'))
 		{
 			$where['order_by'] = 'join_date DESC';
 		}
-		
+
 
 		// Get user list filtered on levels <= current_user level
 		$this->template['users'] = $this->connect->model->get_users(array_merge($where, array('limit' => $nb, 'offset' => $offset, 'level <=' => $this->current_user_level, 'like' => $like)));
@@ -123,12 +123,12 @@ class Users extends MY_admin
 		$this->template['nb'] = $nb;
 		$this->template['users_count'] = $this->connect->model->count_users(array_merge($where, array('level <=' => $this->current_user_level, 'like' => $like)));
 		$this->template['users_pages'] = ceil($this->template['users_count'] / $nb);
-		
+
 		// XHR answer
     	$this->output('user/list');
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -139,10 +139,10 @@ class Users extends MY_admin
 	function edit($id)
 	{
 		$this->template['user'] = $this->connect->model->find_user(array('id_user' => $id));
-		
+
 		// Get groups list filtered on level <= current_user level
 		$this->template['groups'] = array_filter($this->connect->model->get_groups(array('order_by'=>'level')), array($this, '_filter_groups'));
-		
+
 		$this->output('user/user');
 	}
 
@@ -171,42 +171,40 @@ class Users extends MY_admin
 	function update()
 	{
 		$id_user = $this->input->post('user_PK');
-		
+
 		if ($id_user !== FALSE)
 		{
-			// Update array
+			// Update array - only use needed data
+			// (eg. join data - is not intended to get changed, do not use it!)
 			$data = array(
-						'id_group' =>	$this->input->post('id_group'),
-						'username' =>		$this->input->post('username'),
-						'screen_name' =>	$this->input->post('screen_name'),
-						'email' =>			$this->input->post('email'),
-						'join_date' =>			$this->input->post('join_date'),
-						'salt' =>			$this->input->post('salt')
+						'id_group'		=> $this->input->post('id_group'),
+						'username'		=> $this->input->post('username'),
+						'screen_name'	=> $this->input->post('screen_name'),
+						'email'			=> $this->input->post('email')
 					);
-			
+
 			if ($this->_user_with_same_email_exists($this->input->post('email'), $id_user))
 			{
 				$this->error(lang('ionize_message_user_exists'));
 			}
-			
-			if (($this->input->post('password') != '' && $this->input->post('password2') != '') &&
-				($this->input->post('password') == $this->input->post('password2'))	)
-			{
-				$data['password'] = $this->connect->encrypt($this->input->post('password'), $data);
-			}
+
+			// password 1 and 2 should be equal and not empty -> generate a new hash
+			// for that entry
+			if( $this->input->post('password') != '' && ($this->input->post('password') == $this->input->post('password2'))	)
+				$data['password'] = $this->connect->generate_hash( $this->input->post('password') );
 
 			// Update the user
 			$this->users_model->update($id_user, $data);
-			
+
 			// UI update panels
 			$this->update[] = array(
 				'element' => 'mainPanel',
 				'url' => admin_url() . 'users'
 			);
-			
+
 			// Success message
 			$this->success(lang('ionize_message_user_updated'));
-		}		
+		}
 	}
 
 
@@ -219,46 +217,41 @@ class Users extends MY_admin
 	 */
 	function save()
 	{
-		if (($this->input->post('username') && $this->input->post('password') && $this->input->post('email') ) && 
-			($this->input->post('password') == $this->input->post('password2'))	
+		if (($this->input->post('username') && $this->input->post('password') && $this->input->post('email') ) &&
+			($this->input->post('password') != '' && $this->input->post('password') == $this->input->post('password2'))
 		)
 		{
 			if ($this->_user_with_same_email_exists($this->input->post('email')))
 			{
 				$this->error(lang('ionize_message_user_exists'));
 			}
-			
+
 			// Insert array
+			// New users created through the backend gui do not need to get
+			// activated. This should only be the case if the user registered
+			// manually.
+
 			$data = array(
 						'id_group' =>		$this->input->post('id_group'),
 						'username' =>		$this->input->post('username'),
 						'screen_name' =>	$this->input->post('screen_name'),
 						'password' =>		$this->input->post('password'),
 						'email' =>			$this->input->post('email'),
-						'join_date' =>		date('Y-m-d H:i:s'),
-						'salt' =>			$this->connect->get_salt()
+						'join_date' =>		date('Y-m-d H:i:s')
 					);
-			
-			$data['password'] = $this->connect->encrypt($data['password'], $data);
-			
-			
-			// Save new user only if it not exists
-			if ( ! $this->users_model->exists(array('username' => $data['username'])))
-			{
-				// DB insertion
-				$id = $this->users_model->insert($data);
 
+			//use the connect library to save the user (this takes also care
+			//of the correct password handling)
+			if( ($id = $this->connect->register( $data )) !== FALSE ) {
 				// UI update panels
 				$this->update[] = array(
 					'element' => 'mainPanel',
 					'url' => admin_url() . 'users'
 				);
-				
+
 				// JSON answer
 				$this->success(lang('ionize_message_user_saved'));
-			}
-			else
-			{
+			}else{
 				$this->error(lang('ionize_message_user_exists'));
 			}
 		}
@@ -267,11 +260,11 @@ class Users extends MY_admin
 			$this->error(lang('ionize_message_user_not_saved'));
 		}
 	}
-	
+
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Deletes one user
 	 *
@@ -283,7 +276,7 @@ class Users extends MY_admin
 		if ($current_user['id_user'] != $id)
 		{
 			$affected_rows = $this->users_model->delete($id);
-	
+
 			if ($affected_rows > 0)
 			{
 				$this->id = $id;
@@ -306,11 +299,11 @@ class Users extends MY_admin
 			$this->error(lang('ionize_message_user_cannot_delete_yourself'));
 		}
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Export the users list
 	 *
@@ -318,13 +311,13 @@ class Users extends MY_admin
 	function export($format = NULL)
 	{
 		$format = ( ! is_null($format)) ? $format : $this->input->post('format');
-	
+
 		// Load download helper
 		$this->load->helper('download');
-		
+
 		// Get users
 		$users = $this->users_model->get_list();
-		
+
 		// If users, get the format
 		if (!empty($users))
 		{
@@ -333,20 +326,20 @@ class Users extends MY_admin
 			{
 				case 'csv': $this->_export_csv($users);
 			}
-			
+
 			$this->success(lang('ionize_message_users_exported'));
 
 		}
 		else
 		{
-			$this->error(lang('ionize_message_users_not_exported'));		
+			$this->error(lang('ionize_message_users_not_exported'));
 		}
 
 	}
 
 
 	// ------------------------------------------------------------------------
-	
+
 	/**
 	 * Checks if another user has the same email
 	 *
@@ -358,7 +351,7 @@ class Users extends MY_admin
 	private function _user_with_same_email_exists($email, $id_user = NULL)
 	{
 		$user = $this->connect->model->find_user(array('email' => $email));
-		
+
 		if ( ! is_null($id_user))
 		{
 			if ( ! empty($user) && $user['id_user'] != $id_user)
@@ -371,11 +364,11 @@ class Users extends MY_admin
 		}
 		return FALSE;
 	}
-	
+
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Export the email list to CSV
 	 *
@@ -392,8 +385,8 @@ class Users extends MY_admin
 		{
 			$data[] = implode(';', $user);
 		}
-		
-		// Add new line 
+
+		// Add new line
 		$data = implode("\r\n", $data);
 
 		// File name
@@ -413,7 +406,7 @@ class Users extends MY_admin
 	 */
 	function _filter_users($row)
 	{
-		return ($row['group']['level'] <= $this->current_user_level) ? true : false; 
+		return ($row['group']['level'] <= $this->current_user_level) ? true : false;
 	}
 
 
@@ -426,7 +419,7 @@ class Users extends MY_admin
 	 */
 	function _filter_groups($row)
 	{
-		return ($row['level'] <= $this->current_user_level) ? true : false; 
+		return ($row['level'] <= $this->current_user_level) ? true : false;
 	}
 }
 

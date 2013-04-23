@@ -21,7 +21,7 @@
  *
  */
 
-class Users_model extends Base_model 
+class Users_model extends Base_model
 {
 
 	public $group_table = 'user_groups';
@@ -68,24 +68,24 @@ class Users_model extends Base_model
 	 */
 	function get_list($where = NULL)
 	{
-		$data = array(); 
-	
+		$data = array();
+
 		// Standard users data
 		$this->{$this->db_group}->select();
 
 		$this->{$this->db_group}->order_by('screen_name', 'ASC');
 
 		$query = $this->{$this->db_group}->get($this->table);
-		
+
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();
-				
+
 		return $data;
 	}
 
 
 	// ------------------------------------------------------------------------
-	
+
 
 	/**
 	 * Deletes one user
@@ -95,14 +95,14 @@ class Users_model extends Base_model
 	function delete($id)
 	{
 		$affected_rows = 0;
-		
+
 		// Check if element exists
 		if( $this->exists(array($this->pk_name => $id)) )
 		{
 			// User delete
 			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
 		}
-		return $affected_rows;	
+		return $affected_rows;
 	}
 
 

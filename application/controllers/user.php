@@ -23,7 +23,7 @@ class User extends Base_Controller {
 		Connect()->folder_protection = array();
 
 		$this->load->library('form_validation');
-		
+
 		// Set individual errors delimiters to nothing
 		$this->form_validation->set_error_delimiters('','');
 	}
@@ -63,7 +63,7 @@ class User extends Base_Controller {
 			$user = Connect()->find_user($email);
 			trace($user);
 			trace('Received : ' . $activation_key);
-			trace('Calculated : ' . Connect()->calc_activation_key($user));
+			trace('Calculated : ' . Connect()->calc_user_confirmation_key($user));
 			 */
 
 			echo ('Activation code not valid.');
@@ -74,6 +74,29 @@ class User extends Base_Controller {
 		}
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Confirms the request of a user to get a new password
+	 *
+	 * this is a simple "sample" output, if you want it prettified,
+	 * use a special users-page in your theme which uses the form-tags
+	 * and their handlers.
+	 *
+	 */
+	public function forgot_password_confirm($email="", $confirmation_code="")
+	{
+		$result = Connect()->reset_password($email, $confirmation_code);
+		if($result["result"] == "OK") {
+			print "Passwort successfully reset to: ".$result["password"];
+			return TRUE;
+		}
+
+		print "Passwort reset failed.";
+		return FALSE;
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -114,7 +137,7 @@ class User extends Base_Controller {
 			{
 				// Put the validation_errors string message to the flash session
 				$this->session->set_flashdata('validation_errors', $this->form_validation->error_string());
-			
+
 				// Put the CodeIgniter form field data array to the flash session
 				$this->session->set_flashdata('field_data', $this->form_validation->_field_data);
 			}
@@ -133,7 +156,7 @@ class User extends Base_Controller {
 	 */
 	function logout()
 	{
-		Connect()->logout(base_url().Settings::get_lang());   	
+		Connect()->logout(base_url().Settings::get_lang());
  	}
 
 
@@ -165,9 +188,9 @@ class User extends Base_Controller {
 				'rules'   => 'trim|required|xss_clean'
 			)
 		);
-		
+
 		$this->form_validation->set_rules($rules);
-		
+
 		return ($this->form_validation->run() === TRUE);
 	}
 }

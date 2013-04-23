@@ -336,6 +336,7 @@ class TagManager_User extends TagManager
 						// Compliant with Connect, based on username
 						$user['username'] = $user['email'];
 						$user['join_date'] = date('Y-m-d H:i:s');
+						$cleanPassword = $user["password"];
 
 						if ( ! Connect()->register($user))
 						{
@@ -349,13 +350,9 @@ class TagManager_User extends TagManager
 
 							if (is_array($user))
 							{
-								// Must be set before set the clear password
-								$user['activation_key'] = Connect()->calc_activation_key($user);
-
-								$user['password'] = Connect()->decrypt($user['password'], $user);
-
 								// Create data array and Send Emails
 								$data = array_merge($user, $user['group']);
+								$data["password"] = $cleanPassword;
 								TagManager_Email::send_form_emails($tag, 'password', $data);
 
 								$message = TagManager_Form::get_form_message('success');
@@ -374,42 +371,43 @@ class TagManager_User extends TagManager
 					}
 					break;
 
-				// Get new password
-				case 'password':
+				// Someone requests the reset of the user's password
+				case 'forgot_password_request':
 
-					if (TagManager_Form::validate('password'))
+					if (TagManager_Form::validate('forgot_password_request'))
 					{
 						$user = Connect()->find_user(array(
 							'email' => self::$ci->input->post('email')
 						));
 
-						if ($user)
-						{
-							// Save the user with this new password
-							$new_password = Connect()->get_random_password(8);
-							$user['password'] = $new_password;
+						if ($user) {
+							// generate a confirmation code which will be
+							// emailed to the user.
+							// function needs: username, email, password and id
+							$confirmation_code = Connect()->calc_user_confirmation_key($user);
+
+							//we do not want to update the password... remove it
+							unset($user["password"]);
+
+							//store the data within $user.
+							//time can be used to give that code a lifetime...
+							$user["forgotten_password_code"] = $confirmation_code;
+							$user["forgotten_password_time"] = time();
 
 							if ( ! Connect()->update($user))
 							{
 								$message = TagManager_Form::get_form_message('error');
-								TagManager_Form::set_additional_error('password', $message);
+								TagManager_Form::set_additional_error('forgot_password_request', $message);
 							}
 							else
 							{
-								// Get the user again, to calculate his activation key
-								$user = Connect()->find_user($user['username']);
-								$activation_key = Connect()->calc_activation_key($user);
-
-								// Put the clear password to the user's data, for the email
-								$user['password'] = $new_password;
-								$user['activation_key'] = $activation_key;
-
-								// Send Emails
+								//merge back group information for easier access
 								$data = array_merge($user, $user['group']);
-								TagManager_Email::send_form_emails($tag, 'password', $data);
+								// Send Emails
+								TagManager_Email::send_form_emails($tag, 'forgot_password_request', $data);
 
 								$message = TagManager_Form::get_form_message('success');
-								TagManager_Form::set_additional_success('password', $message);
+								TagManager_Form::set_additional_success('forgot_password_request', $message);
 
 								// Potentially redirect to the page setup in /application/config/forms.php
 								$redirect = TagManager_Form::get_form_redirect();
@@ -419,7 +417,54 @@ class TagManager_User extends TagManager
 						else
 						{
 							$message = TagManager_Form::get_form_message('not_found');
-							TagManager_Form::set_additional_error('password', $message);
+							TagManager_Form::set_additional_error('forgot_password_request', $message);
+						}
+					}
+
+					break;
+
+				//someone is confirming a forgotten password request
+				case 'forgot_password_confirm':
+					if (TagManager_Form::validate('forgot_password_confirm'))
+					{
+						//function returns an array with "result"-code and "password"
+						$result = Connect()->reset_password(
+										self::$ci->input->post('email'),
+										self::$ci->input->post('forgotten_password_code')
+									);
+						switch(strtoupper($result["result"])) {
+							case "OK":
+										// Get the user again so emails can contain that data
+										$user = Connect()->find_user( array("email"=>self::$ci->input->post('email')) );
+										// Put the clear password to the user's data, for the email
+										$user['password'] = $result["password"];
+
+										// Send Emails
+										$data = array_merge($user, $user['group']);
+										TagManager_Email::send_form_emails($tag, 'forgot_password_confirm', $data);
+
+										$message = TagManager_Form::get_form_message('success');
+										TagManager_Form::set_additional_success('forgot_password_confirm', $message);
+										TagManager_Form::set_additional_success('password', $result["password"]);
+
+										// Potentially redirect to the page setup in /application/config/forms.php
+										$redirect = TagManager_Form::get_form_redirect();
+										if ($redirect !== FALSE) redirect($redirect);
+										break;
+							case "ERROR":
+										$message = TagManager_Form::get_form_message('error');
+										TagManager_Form::set_additional_error('forgot_password_confirm', $message);
+										break;
+							//the code is no longer valid (to old)
+							case "ERROR_CODE_TO_OLD":
+										$message = TagManager_Form::get_form_message('to_old');
+										TagManager_Form::set_additional_error('forgot_password_confirm', $message);
+										break;
+							//no user was found for that is no longer valid (to old)
+							case "ERROR_NOT_FOUND":
+										$message = TagManager_Form::get_form_message('not_found');
+										TagManager_Form::set_additional_error('forgot_password_confirm', $message);
+										break;
 						}
 					}
 

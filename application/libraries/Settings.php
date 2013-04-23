@@ -28,7 +28,7 @@ class Settings
 {
 
 	public static $settings = array();
-	
+
 	public static $online_languages = array();
 
 	public static $mimes = FALSE;
@@ -38,12 +38,12 @@ class Settings
 	 * Sets one setting
 	 *
 	 * @param	string	the setting key
-	 * @param	string	the setting value	 
+	 * @param	string	the setting value
 	 *
 	 */
 	public static function set($key, $value)
 	{
-		self::$settings[$key] = $value;		
+		self::$settings[$key] = $value;
 	}
 
 	// ------------------------------------------------------------------------
@@ -53,7 +53,7 @@ class Settings
 	 * Get one setting
 	 *
 	 * @param	string	the wished setting key
-	 * @param	string	lang code. 
+	 * @param	string	lang code.
 	 *					The settings for the current language are set as normal settings, so this param is not necessary to get them.
 	 *					This param is usefull if the "lang" array is feeded with the languages settings for each language
 	 *					Ex : Setting::lang = array(
@@ -100,8 +100,8 @@ class Settings
 	 * @param	array	List of arrays
 	 * @param	string	the field name to use as setting key in each array of the list
 	 * @param	string	the field name to use as setting value in each array of the list
-	 *	 
-	 */ 
+	 *
+	 */
 	public static function set_settings_from_list($list, $key_field, $value_field)
 	{
 		foreach($list as $index=>$table)
@@ -125,14 +125,14 @@ class Settings
 		{
 			self::$settings[$table['lang']][$table[$key_field]] = $table[$value_field];
 		}
-		
+
 	}
 
 
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Sets the languages property
 	 * $this->languages stores all the languages from the DB (website languages)
 	 * as an associative array with all languages settings (online, default, etc.)
@@ -150,7 +150,7 @@ class Settings
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Returns the config file array called "languages"
 	 *
 	 * @return array	The languages array
@@ -165,7 +165,7 @@ class Settings
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Returns the array of online languages
 	 *
 	 * @return array	The languages array
@@ -176,7 +176,7 @@ class Settings
 		if (empty(self::$online_languages))
 		{
 			$languages = self::get('languages');
-			
+
 			foreach($languages as $lang)
 			{
 				if ($lang['online'] == '1')
@@ -185,9 +185,9 @@ class Settings
 				}
 			}
 		}
-		
+
 		return self::$online_languages;
-		
+
 	}
 
 
@@ -201,9 +201,9 @@ class Settings
 	public static function set_all_languages_online()
 	{
 		$languages = self::get('languages');
-		
+
 		self::$online_languages = array();
-		
+
 		foreach($languages as $lang)
 		{
 			$lang['online'] = 1;
@@ -219,11 +219,11 @@ class Settings
 	{
 		$default_admin_lang = self::get('default_admin_lang');
 		$displayed_admin_lang = self::get('displayed_admin_languages');
-		
+
 		// Correct the default Admin panel language
 		if ( ! in_array($default_admin_lang, $displayed_admin_lang))
 			$default_admin_lang = config_item('language');
-		
+
 		return $default_admin_lang;
 	}
 
@@ -236,18 +236,18 @@ class Settings
 		$str = preg_replace("|/*(.+?)/*$|", "\\1", str_replace(base_url(), '', current_url()));
 		$uri_segments = explode('/', $str);
 		$uri_lang = current($uri_segments);
-		
-		return $uri_lang;	
+
+		return $uri_lang;
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 
 
 	public static function get_thumbs()
 	{
 		$thumbs = array();
-		
+
 		foreach(self::$settings as $key => $setting)
 		{
 			if(substr($key, 0, 5) == 'thumb')
@@ -266,19 +266,19 @@ class Settings
 	 * Returns the website (visitor side) language code regarding to the type
 	 *
 	 * @param	string	Wished lang code. Optional.
-	 *					'first' :	returns the first language code (depending on the language ordering in DB) 
+	 *					'first' :	returns the first language code (depending on the language ordering in DB)
 	 *					'default' : returns the default website language code
 	 *					'current' : returns the current website language code
 	 *
 	 *					If no type is given, returns the current lang code
-	 *		
+	 *
 	 * @return string|null	The lang code, NULL if no one is found
 	 *
 	 */
 	public static function get_lang($type = 'current')
 	{
 		$lang = NULL;
-	
+
 		$languages = self::$settings['languages'];
 
 		switch ($type)
@@ -289,13 +289,13 @@ class Settings
 				break;
 
 			case 'default':
-				
+
 				foreach($languages as $l)
 				{
 					if ($l['def'] == '1')
 						$lang = $l['lang'];
 				}
-				
+
 				// If no default lang set, returns the Config file default one
 				if (is_null($lang))
 					$lang = config_item('default_lang_code');
@@ -363,7 +363,7 @@ class Settings
 				}
 			}
 		}
-		
+
 		return $allowed_extensions;
 	}
 
@@ -378,7 +378,7 @@ class Settings
 		$mimes = self::get_mimes_types();
 
 		$filemanager_file_types = explode(',', self::get('filemanager_file_types'));
-		
+
 		foreach($mimes as $type)
 		{
 			foreach($type as $ext => $mime)

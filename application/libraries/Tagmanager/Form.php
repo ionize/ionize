@@ -497,7 +497,9 @@ class TagManager_Form extends TagManager
 			if (self::$posting_form_name == $form_name)
 			{
 				// We're not in 'redirect mode' : Remove the flash session data
-				self::$ci->session->unset_flashdata($form_name);
+				//deprecated/not existing: self::$ci->session->unset_flashdata($form_name);
+				//ron:
+				self::$ci->session->unset_userdata(self::$ci->session->flashdata_key.':new:'.$form_name);
 
 				// Validate the form if it wasn't done
 				self::validate(self::$posting_form_name);
@@ -541,7 +543,7 @@ class TagManager_Form extends TagManager
 				{
 					if ( ! empty($values[$key]))
 					{
-						return self::wrap($tag, $fd[$key]);
+						return self::wrap($tag, $values[$key]);
 					}
 				}
 			}
@@ -591,7 +593,9 @@ class TagManager_Form extends TagManager
 			if (self::$posting_form_name == $form_name)
 			{
 				// We're not in 'redirect mode' : Remove the flash session data
-				self::$ci->session->unset_flashdata($form_name);
+				//deprecated/not existing: self::$ci->session->unset_flashdata($form_name);
+				//ron:
+				self::$ci->session->unset_userdata(self::$ci->session->flashdata_key.':new:'.$form_name);
 
 				// Validate the form if it wasn't done
 				self::validate(self::$posting_form_name);
