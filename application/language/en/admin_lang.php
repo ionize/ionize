@@ -217,6 +217,9 @@ $lang['ionize_label_max_upload_size'] = 'Max Upload';
 $lang['ionize_label_file_uploads'] = 'Upload ?';
 $lang['ionize_label_environment'] = 'Environment';
 $lang['ionize_label_site_email'] = 'Website Email';
+$lang['ionize_label_email_technical'] = 'Technical Email';
+$lang['ionize_label_email_contact'] = 'Contact Email';
+$lang['ionize_label_email_info'] = 'Info Email';
 $lang['ionize_label_linkto'] = 'Link to...';
 $lang['ionize_label_drop_link_here'] = 'drop a link here...';
 $lang['ionize_label_drop_page_here'] = 'drop a page here...';
@@ -293,7 +296,10 @@ $lang['ionize_help_duplicate_article'] = 'You need at least to change the <b cla
 $lang['ionize_help_environment'] = 'ENVIRONMENT constant, as set in index.php';
 $lang['ionize_help_environment_flag'] = 'The ENVIRONMENT constant of your website is set to <b>%s</b> in the index.php.<br/>Before going live, change it to : <b>production</b>';
 $lang['ionize_description_flags'] = 'Flags are used by articles types and add a colored flag to give a visual help about the type of each article.<br/>';
-
+$lang['ionize_help_site_email'] = 'All email which are send from the website are supposed to be sent from this email. Usually something like no-reply@mysite.tld';
+$lang['ionize_help_email_technical'] = 'The website administrator email';
+$lang['ionize_help_email_contact'] = 'Global contact email. Forms like the contact form should be sent to this address.';
+$lang['ionize_help_email_info'] = 'Information email';
 
 /*
 |--------------------------------------------------------------------------
@@ -484,6 +490,8 @@ $lang['ionize_title_theme'] = 'Theme';
 $lang['ionize_title_translation'] = 'Static translations';
 $lang['ionize_title_database'] = 'Database';
 $lang['ionize_title_mail_send'] = 'Email';
+$lang['ionize_title_emails'] = 'Emails';
+$lang['ionize_title_email_server'] = 'Email Server';
 $lang['ionize_title_media_management'] = 'Medias';
 $lang['ionize_title_google_analytics'] = 'Google';
 $lang['ionize_title_thumb_new'] = 'New picture thumbnail';

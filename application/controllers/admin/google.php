@@ -57,51 +57,57 @@ class Google extends MY_admin
 	{
 		if (self::$should_access)
 		{
-			$ga = new gapi(self::$ga_email, self::$ga_password);
-
-			$ga->requestReportData(
-				self::$ga_profile_id,
-				'pagePath',
-				array('pageviews', 'uniquePageviews', 'exitRate', 'avgTimeOnPage', 'entranceBounceRate', 'newVisits'),
-				null,
-				'pagePath == /'
-			);
-			$mainData = $ga->getResults();
-
-			if ( ! empty($mainData[0]))
+			try
 			{
+				$ga = new gapi(self::$ga_email, self::$ga_password);
 
-				$result = $mainData[0];
-
-				$data = array(
-					'pageViews' => number_format($result->getPageviews()),
-					'uniquePageViews' => number_format($result->getUniquePageviews()),
-					'avgTimeOnPage' => $this->secondMinute($result->getAvgtimeOnpage()),
-					'bounceRate' => round($result->getEntranceBounceRate(), 2) . '%',
-					'exitRate' => round($result->getExitRate(), 2) . '%',
+				$ga->requestReportData(
+					self::$ga_profile_id,
+					'pagePath',
+					array('pageviews', 'uniquePageviews', 'exitRate', 'avgTimeOnPage', 'entranceBounceRate', 'newVisits'),
+					null,
+					'pagePath == /'
 				);
+				$mainData = $ga->getResults();
 
-				$this->template['data'] = $data;
+				if ( ! empty($mainData[0]))
+				{
+					$result = $mainData[0];
+
+					$data = array(
+						'pageViews' => number_format($result->getPageviews()),
+						'uniquePageViews' => number_format($result->getUniquePageviews()),
+						'avgTimeOnPage' => $this->secondMinute($result->getAvgtimeOnpage()),
+						'bounceRate' => round($result->getEntranceBounceRate(), 2) . '%',
+						'exitRate' => round($result->getExitRate(), 2) . '%',
+					);
+
+					$this->template['data'] = $data;
+				}
+
+				// Get the Last 30 days data
+				$ga->requestReportData(
+					self::$ga_profile_id,
+					array('date'),
+					array('pageviews'),
+					'date',
+					'pagePath == /'
+				);
+				$chartResults = $ga->getResults();
+				$chartRows = array();
+				foreach($chartResults as $result)
+				{
+					$chartRows[] = array(date('M j',strtotime($result->getDate())), $result->getPageviews());
+				}
+
+				$this->template['chartRows'] = json_encode($chartRows, true);
+
+				$this->output('google/dashboard_report');
 			}
-
-			// Get the Last 30 days data
-			$ga->requestReportData(
-				self::$ga_profile_id,
-				array('date'),
-				array('pageviews'),
-				'date',
-				'pagePath == /'
-			);
-			$chartResults = $ga->getResults();
-			$chartRows = array();
-			foreach($chartResults as $result)
+			catch(Exception $e)
 			{
-				$chartRows[] = array(date('M j',strtotime($result->getDate())), $result->getPageviews());
+				echo $e->getMessage();
 			}
-
-			$this->template['chartRows'] = json_encode($chartRows, true);
-
-			$this->output('google/dashboard_report');
 		}
 	}
 

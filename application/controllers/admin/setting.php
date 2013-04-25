@@ -1203,13 +1203,14 @@ class Setting extends MY_admin
 	 * Saves SMTP settings
 	 *
 	 */
-	function save_smtp()
+	function save_emails_settings()
 	{
 		/*
-		 * Save the website email
+		 *
 		 *
 		 */
-		$settings = array('site_email');
+		// Save the website emails
+		$settings = array('site_email', 'email_technical', 'email_contact', 'email_info');
 
 		// Save settings to DB
 		$this->_save_settings($settings);

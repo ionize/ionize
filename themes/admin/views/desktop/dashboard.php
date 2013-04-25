@@ -28,7 +28,7 @@
 	<!-- Google Analytics -->
 	<div id="gaBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_visits') ?>">
 
-		<div id="gaReport"></div>
+		<div id="gaReport" style="min-height: 200px;" class="loading"></div>
 
 	</div>
 </div>
@@ -401,7 +401,12 @@
 		ION.HTML(
 			admin_url + 'google/get_dashboard_report',
 			{},
-			{'update': 'gaReport'}
+			{
+				'update': 'gaReport',
+				'onSuccess' : function(){
+					$('gaReport').removeClass('loading');
+				}
+			}
 		);
 	<?php endif ;?>
 

@@ -2,15 +2,19 @@
 /**
  * Ionize
  *
- * Default Email template for : User registration
- * This email is send to the user who just created one account.
+ * Default Email template for : User password
+ * This email send a new password to the user
  *
- * Copy this file to /themes/<your_theme>/mail/user_registration.php
+ * Copy this file to /themes/<your_theme>/mail/password/to_user.php
  * to replace it by yours.
  *
  * IMPORTANT :
  * Do not modify this file.
  * It will be overwritten when migrating to a new Ionize release.
+ *
+ */
+/**
+ * Available tags in this template : <ion:data />
  *
  */
 ?>
@@ -60,26 +64,30 @@
                             <!--
 								Dear ....
 							-->
-                            <h1><ion:data:lang key="mail_user_registration_intro" swap="data::firstname" /></h1>
+                            <h1><ion:data:lang key="mail_user_password_intro" swap="data::firstname" /></h1>
 
                             <!--
-								You registered, thanks + login info
+								New account login information
 							-->
-                            <p><ion:lang key="mail_user_registration_message" swap="global::site_title" /></p>
+                            <p><ion:lang key="mail_user_password_message" swap="global::site_title" /></p>
                             <p>
                                 <ion:lang key="form_label_login"/> : <b><ion:data:username /></b>, <br/>
                                 <ion:lang key="form_label_password"/> : <b><ion:data:password /></b> <br/>
                             </p>
 
 							<!--
-								User's account activation link
+								This account isn't activated ?
+								Send the activation data again (as they have changed with the new password
 							-->
-							<p><ion:lang key="mail_user_registration_activate" /> :</p>
-							<p>
-								<a href="<ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />">
-                                    <ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />
-								</a>
-							</p>
+							<ion:data:level expression="level<100">
+
+                                <p><ion:lang key="mail_user_registration_activate" /></p>
+                                <p>
+                                    <a href="<ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />">
+                                        <ion:home_url />user/activate/<ion:data:email />/<ion:data:activation_key />
+                                    </a>
+                                </p>
+                            </ion:data:level>
 
                         </td>
                     </tr>

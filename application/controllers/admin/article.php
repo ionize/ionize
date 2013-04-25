@@ -29,7 +29,7 @@ class Article extends MY_admin
 	 * 
 	 * @var array
 	 */
-	protected $no_htmlspecialchars = array('content', 'subtitle');
+	protected $no_htmlspecialchars = array('content', 'title', 'subtitle');
 
 	/**
 	 * Fields on wich no XSS filtering is done

@@ -31,34 +31,37 @@ $config['forms'] = array
 		),
 		'emails' => array
 		(
-            // To Site Administrator
+			// To Site Administrator
 			array
 			(
 				// Send the mail to the address filled in in the 'email' input of the form
 				// Values can be :
 				// - One plain Email address : my.name@mydomain.com
 				// - 'form' to send it to the email of the form data
-				// - 'website' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
-				'email' => 'website',
+				// - 'site' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
+				// - 'contact' to send it to the Email set in Ionize under Settings > Advanced > Email > Contact
+				// - 'info' to send it to the Email set in Ionize under Settings > Advanced > Email > Info
+				// - 'technical' to send it to the Email set in Ionize under Settings > Advanced > Email > Info
+				'email' => 'contact',
 
 				// Translation item index
-				'subject' => 'form_contact_mail_view_administrator_mail_subject',
+				'subject' => 'mail_website_contact_subject',
 
 				// Used view : Located in /themes/your_theme/mail/contact.php
-				'view' => 'mail/form_contact/to_administrator',
+				'view' => 'mail/contact/to_admin',
 			),
-            // Send to user
-            array
-            (
-                'email' => 'form',
-                'subject' => 'form_contact_mail_user_subject',
-                'view' => 'mail/form_contact/to_user',
-            ),
+			// Send to user
+			array
+			(
+				'email' => 'form',
+				'subject' => 'mail_user_contact_subject',
+				'view' => 'mail/contact/to_user',
+			),
 		),
 		// Form definition: fields and rules
 		'fields' => array
 		(
-			'firstname' => array
+			'name' => array
 			(
 				// CI validation rules
 				'rules' => 'trim|required|min_length[3]|xss_clean',
@@ -66,22 +69,18 @@ $config['forms'] = array
 				// Will be used to display the label name in error messages
 				'label' => 'form_label_form_firstname',
 			),
-            'lastname' => array(
-                'rules' => 'trim|required|xss_clean',
-                'label' => 'form_label_form_lastname',
-            ),
 			'email' => array(
 				'rules' => 'trim|required|valid_email|xss_clean',
 				'label' => 'form_label_email',
 			),
-            'subject' => array(
-                'rules' => 'trim|required|xss_clean',
-                'label' => 'form_label_form_subject',
-            ),
-            'message' => array(
-                'rules' => 'trim|required|xss_clean',
-                'label' => 'form_label_form_message',
-            )
+			'subject' => array(
+				'rules' => 'trim|required|xss_clean',
+				'label' => 'form_label_form_subject',
+			),
+			'message' => array(
+				'rules' => 'trim|required|xss_clean',
+				'label' => 'form_label_form_message',
+			)
 		)
 	),
 );

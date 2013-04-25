@@ -5,7 +5,7 @@
  * Default Email template for User registration
  * This email is supposed to be send to the website's email
  *
- * Copy this file to /themes/<your_theme>/mail/website_registration.php
+ * Copy this file to /themes/<your_theme>/mail/register/to_admin.php
  * to replace it by yours.
  *
  * IMPORTANT :
@@ -59,11 +59,12 @@
                         <td>
                             <h1><ion:data:subject /></h1>
 
-							<p><ion:lang key="mail_website_registration_message" /></p>
+							<p><ion:lang key="mail_website_contact_message" /></p>
 
 							<p>
                                 <ion:lang key="form_label_firstname"/> : <ion:data:firstname />, <br/>
                                 <ion:lang key="form_label_lastname"/> : <ion:data:lastname />, <br/>
+                                <ion:lang key="form_label_email"/> : <ion:data:email />, <br/>
                                 <ion:lang key="form_label_email"/> : <ion:data:email />, <br/>
 							</p>
                         </td>

@@ -84,6 +84,7 @@ class TagManager_Navigation extends TagManager
 		// Menu : Main menu by default
 		$menu_name = $tag->getAttribute('menu', 'main');
 		$id_menu = 1;
+
 		foreach(self::registry('menus') as $menu)
 		{
 			if ($menu_name == $menu['name'])
@@ -124,7 +125,14 @@ class TagManager_Navigation extends TagManager
 		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $asked_level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
 		$pages = array();
 		$parent_page = array();
-		
+
+		// Only conserve the menu asked pages
+		foreach($global_pages as $key => $p)
+		{
+			if ($p['id_menu'] != $id_menu)
+				unset($global_pages[$key]);
+		}
+
 		// Asked Level exists
 		if ($asked_level !== FALSE)
 		{

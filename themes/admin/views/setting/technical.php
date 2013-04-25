@@ -376,20 +376,37 @@
 		
 		<!-- Email -->
 		<div class="tabcontent pt10">
-			<form name="smtpForm" id="smtpForm" method="post" action="<?php echo admin_url(); ?>setting/save_smtp">
+			<form name="emailForm" id="emailForm" method="post" action="<?php echo admin_url(); ?>setting/save_emails_settings">
 			
-				<p class="h30"><input id="submit_smtp" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
+				<p class="h30"><input id="submit_email" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
 
 
-				<!-- Website email -->
+				<!-- Emails -->
 				<dl>
 					<dt>
-						<label for="site_email"><?php echo lang('ionize_label_site_email'); ?></label>
+						<label for="site_email" title="<?php echo lang('ionize_help_site_email'); ?>"><?php echo lang('ionize_label_site_email'); ?></label>
 					</dt>
 					<dd>
-						<input id="site_email" name="site_email" class="inputtext w140" type="text" value="<?php echo Settings::get('site_email'); ?>" />
+						<input id="site_email" name="site_email" class="inputtext w240" type="text" value="<?php echo Settings::get('site_email'); ?>" />
 					</dd>
 				</dl>
+
+				<?php
+					$emails = array('contact', 'info', 'technical');
+				?>
+				<?php foreach($emails as $email) :?>
+				<dl>
+					<dt>
+						<label for="email_<?php echo $email ?>"  title="<?php echo lang('ionize_help_email_'.$email); ?>"><?php echo lang('ionize_label_email_'.$email); ?></label>
+					</dt>
+					<dd>
+						<input id="email_<?php echo $email ?>" name="email_<?php echo $email ?>" class="inputtext w240" type="text" value="<?php echo Settings::get('email_'.$email); ?>" />
+					</dd>
+				</dl>
+				<?php endforeach ;?>
+
+
+				<h3><?php echo lang('ionize_title_email_server'); ?></h3>
 
 				<!-- Mail path -->
 				<dl>
@@ -710,7 +727,7 @@
 
 	// Forms actions
 	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true', 'mainPanel', 'setting/technical');
-	ION.setFormSubmit('smtpForm', 'submit_smtp', 'setting/save_smtp/true', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('emailForm', 'submit_email', 'setting/save_emails_settings/true', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');

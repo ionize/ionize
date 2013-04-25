@@ -26,6 +26,9 @@ $lang['form_label_email'] = 'Email';
 $lang['form_label_name'] = 'Name';
 $lang['form_label_firstname'] = 'First Name';
 $lang['form_label_lastname'] = 'Last Name';
+$lang['form_label_name'] = 'Name';
+$lang['form_label_subject'] = 'Subject';
+$lang['form_label_message'] = 'Message';
 $lang['form_label_screen_name'] = 'Screen Name';
 $lang['form_label_username'] = 'User name';
 $lang['form_label_birthdate'] = 'Birthdate';
@@ -53,7 +56,7 @@ $lang['form_button_answer'] = "Answer";
 | Emails
 |--------------------------------------------------------------------------
 */
-// Registration : Email to the website email
+// Registration : Email to Admin
 $lang['mail_website_registration_subject'] = "Someone registered on the website";
 $lang['mail_website_registration_message'] = "Here are the details of this new member.";
 
@@ -68,10 +71,21 @@ $lang['mail_user_password_subject'] = "New password for your account on %s";
 $lang['mail_user_password_intro'] = "Dear %s,";
 $lang['mail_user_password_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Here are your new login information:";
 
+// Contact : Email to Admin
+$lang['mail_website_contact_subject'] = "Message from Contact Form";
+$lang['mail_website_contact_message'] = "One visitor let you a message through the website contact form.";
+
+// Contact : Email to user
+$lang['mail_user_contact_subject'] = "Thank you for your message to %s";
+$lang['mail_user_contact_intro'] = "Dear %s";
+$lang['mail_user_contact_message'] = "Thank you for your message.<br/>We will answer you very quickly.";
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Messages
-| Success messages for login / registration forms
+| Success messages for contact / login / registration forms
 | Declared as 'success' for each form in form setup : /config/ionize.php
 |--------------------------------------------------------------------------
 */
@@ -92,6 +106,12 @@ $lang['form_profile_account_deleted'] = "Account deleted";
 $lang['form_password_error_message'] = "One error happens.";
 $lang['form_password_not_found_message'] = "This email seems not to be in our system";
 $lang['form_password_success_message'] = "One email with you new password has just been sent to you.";
+
+$lang['form_contact_error_title'] = 'One error happens.';
+$lang['form_contact_error_message'] = 'All fields are required, please fill all fields.';
+$lang['form_contact_success_title'] = 'Your message was sent successfully !';
+$lang['form_contact_success_message'] = 'Thank you for your message, we will answer you very quickly !';
+
 
 /*
 |--------------------------------------------------------------------------

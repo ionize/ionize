@@ -148,6 +148,8 @@ class TagManager_Article extends TagManager
 			$filter
 		);
 
+		$articles = self::filter_articles($tag, $articles);
+
 		// Filter on authorizations
 		if (User()->get('role_level') < 1000)
 		{
@@ -791,6 +793,59 @@ class TagManager_Article extends TagManager
 			// Article's ID
 			$articles[$key]['id'] = $articles[$key]['id_article'];
 
+		}
+
+		return $articles;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Filters the articles regarding range.
+	 *
+	 */
+	public static function filter_articles(FTL_Binding $tag, $articles)
+	{
+		// Range : Start and stop index, coma separated
+		$range = $tag->getAttribute('range');
+		if (!is_null($range))
+			$range = explode(',', $range);
+
+		// Number of wished displayed medias
+		$limit = $tag->getAttribute('limit');
+
+		$from = $to = FALSE;
+
+		if (is_array($range))
+		{
+			$from = $range[0];
+			$to = (isset($range[1]) && $range[1] >= $range[0]) ? $range[1] : FALSE;
+		}
+
+		// Return list ?
+		// If set to "list", will return the list, coma separated.
+		// Usefull for javascript
+		// Not yet implemented
+		$return = $tag->getAttribute('return', FALSE);
+
+		if ( ! empty($articles))
+		{
+			// Range / Limit ?
+			if ( ! is_null($range))
+			{
+				$length = ($to !== FALSE) ? $to + 1 - $from  : count($articles) + 1 - $from;
+
+				if ($limit > 0 && $limit < $length) $length = $limit;
+
+				$from = $from -1;
+
+				$articles = array_slice($articles, $from, $length);
+			}
+			else if ($limit > 0)
+			{
+				$articles = array_slice($articles, 0, $limit);
+			}
 		}
 
 		return $articles;

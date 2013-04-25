@@ -145,6 +145,18 @@ class TagManager
 	private static $extends_def = array();
 
 
+	protected static $html_tag_attributes = array(
+		'id',
+		'class',
+		'dir',
+		'for',
+		'title',
+		'lang',
+		'spellcheck',
+		'style',
+		'tabindex',
+	);
+
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
 	 * 
@@ -2705,9 +2717,11 @@ class TagManager
 			if ( ! empty($class)) $class = ' class="'.$class.'"';
 			if ( ! empty($id)) $id = ' id="'.$id.'"';
 
+			$html_attributes = self::get_html_tag_attributes($tag);
+
 			if ($html_tag)
 			{
-				$open_tag = '<' . $html_tag . $id . $class . '>';
+				$open_tag = '<' . $html_tag . $html_attributes . '>';
 				$close_tag = '</' . $html_tag .'>';
 			}
 
@@ -3093,6 +3107,26 @@ class TagManager
 		return $value;
 	}
 
+	// ------------------------------------------------------------------------
+
+
+	public static function get_html_tag_attributes(FTL_Binding $tag)
+	{
+		$attributes = $tag->getAttributes();
+		$html_attributes = '';
+
+		foreach ($attributes as $key =>$value)
+		{
+			if (
+				in_array($key, self::$html_tag_attributes)
+				OR substr($key,0,5) == 'data-'
+			)
+			{
+				$html_attributes .= ' '.$key.'="'.$value.'" ';
+			}
+		}
+		return $html_attributes;
+	}
 
 	// ------------------------------------------------------------------------
 
