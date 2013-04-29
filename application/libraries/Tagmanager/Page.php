@@ -117,6 +117,9 @@ class TagManager_Page extends TagManager
 		if ( $entity['type'] == 'article')
 		{
 			$article = self::$ci->article_model->get_by_id($entity['id_entity'], Settings::get_lang());
+			$articles = array($article);
+			TagManager_Article::init_articles_urls($articles);
+			$article = $articles[0];
 		}
 
 		if ( ! empty($article))

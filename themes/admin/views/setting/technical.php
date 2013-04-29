@@ -382,15 +382,6 @@
 
 
 				<!-- Emails -->
-				<dl>
-					<dt>
-						<label for="site_email" title="<?php echo lang('ionize_help_site_email'); ?>"><?php echo lang('ionize_label_site_email'); ?></label>
-					</dt>
-					<dd>
-						<input id="site_email" name="site_email" class="inputtext w240" type="text" value="<?php echo Settings::get('site_email'); ?>" />
-					</dd>
-				</dl>
-
 				<?php
 					$emails = array('contact', 'info', 'technical');
 				?>
@@ -407,6 +398,15 @@
 
 
 				<h3><?php echo lang('ionize_title_email_server'); ?></h3>
+
+				<dl class="mb10 mt20">
+					<dt>
+						<label for="site_email" title="<?php echo lang('ionize_help_site_email'); ?>"><?php echo lang('ionize_label_site_email'); ?></label>
+					</dt>
+					<dd>
+						<input id="site_email" name="site_email" class="inputtext w240" type="text" value="<?php echo Settings::get('site_email'); ?>" />
+					</dd>
+				</dl>
 
 				<!-- Mail path -->
 				<dl>

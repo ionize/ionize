@@ -31,6 +31,8 @@ class Article extends MY_admin
 	 */
 	protected $no_htmlspecialchars = array('content', 'title', 'subtitle');
 
+	protected $htmlspecialchars = array('meta_title');
+
 	/**
 	 * Fields on wich no XSS filtering is done
 	 * 
@@ -1586,7 +1588,6 @@ class Article extends MY_admin
 
 		foreach(Settings::get_languages() as $language)
 		{
-
 			foreach ($fields as $field)
 			{
 				// Do not filter
@@ -1594,12 +1595,13 @@ class Article extends MY_admin
 				{
 					$content = $_REQUEST[$field.'_'.$language['lang']];
 					$content = stripslashes($content);
-
 				}
 				// Filter
 				else
 					$content = $this->input->post($field.'_'.$language['lang']);
 
+				if (in_array($field, $this->htmlspecialchars))
+					$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
 
 				if ( $field != 'url' && $content !== FALSE)
 				{

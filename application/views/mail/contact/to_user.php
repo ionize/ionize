@@ -67,6 +67,18 @@
 						-->
 						<p><ion:lang key="mail_user_contact_message" swap="global::site_title" /></p>
 
+
+						<p>
+							<br/>
+							<b><ion:setting key="site_title" /></b>
+						</p>
+
+						<p style="font-size: 8px;color: #444;">
+							<br/>
+							<br/>
+							<ion:lang key="mail_automatic_message_warning" />
+						</p>
+
 					</td>
 				</tr>
 			</table>

@@ -385,7 +385,7 @@ class Base_Controller extends MY_Controller
     {
         parent::__construct();
 
-// $this->output->enable_profiler(TRUE);
+		// $this->output->enable_profiler(TRUE);
 		
 		// Libraries
 		$this->load->library('structure');	
@@ -469,7 +469,17 @@ class Base_Controller extends MY_Controller
 
 		// Theme static translations
 		$lf = glob(FCPATH.Theme::get_theme_path().'language/'.Settings::get_lang().'/*_lang.php');
-		if ( !empty($lf))
+		foreach($lf as $key => $tlf)
+		{
+			if (basename($tlf) === 'theme_lang.php')
+			{
+				unset($lf[$key]);
+				array_unshift($lf, $tlf);
+				break;
+			}
+		}
+
+		if ( ! empty($lf))
 			$lang_files = array_merge($lf, (Array)$lang_files);
 
 		// Modules static translations
