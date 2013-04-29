@@ -1548,11 +1548,12 @@ class TagManager
 	public static function tag_url(FTL_Binding $tag)
 	{
 		// Optional : data array from where to get the data
-
+		$value = NULL;
 		$from = $tag->getAttribute('from');
 
 		// 1. Try to get from tag's data array
-		$value = $tag->getValue('absolute_url', $from);
+		if ( ! is_null($from))
+			$value = $tag->getValue('absolute_url', $from);
 
 		if (is_null($value))
 			$value = $tag->getValue();
@@ -1564,6 +1565,21 @@ class TagManager
 		{
 			// Add to local storage, so other tags can use it
 			$tag->set($tag->name, $value);
+		}
+
+		// No data array has any URL : Return the page or article URL.
+		if (is_null($value))
+		{
+			$page = self::registry('page');
+			$article = self::registry('article');
+			if ( ! empty($article))
+			{
+				$value = $article['url'];
+			}
+			else if ( ! empty($page))
+			{
+				$value = $page['absolute_url'];
+			}
 		}
 
 		// Creates one A HTML element if the tag attribute "href" is set to true
@@ -2318,20 +2334,32 @@ class TagManager
 	{
 		$article = self::registry('article');
 
+		$description = NULL;
+
 		if ( ! empty($article['meta_description']))
-			return $article['meta_description'];
+			$description = $article['meta_description'];
 		else
 		{
 			$page = self::registry('page');
 			if ( ! empty($page['meta_description']))
-				return $page['meta_description'];
+				$description = $page['meta_description'];
 		}
 
-		return Settings::get('meta_description');
+		if ( is_null($description))
+			$description = Settings::get('meta_description');
+
+		return $description;
 	}
 
 
 	// ------------------------------------------------------------------------
+
+
+	public static function index(FTL_Binding $tag)
+	{
+		$str = $tag->expand();
+		return $str;
+	}
 
 
 	/**
