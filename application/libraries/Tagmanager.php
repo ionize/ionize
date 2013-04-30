@@ -2871,6 +2871,7 @@ class TagManager
 	public static function output_value(FTL_Binding $tag, $value)
 	{
 		$is = $tag->getAttribute('is');
+		$is_not = $tag->getAttribute('is_not');
 		$expression = $tag->getAttribute('expression');
 
 		// "is" and "expression" cannot be used together.
@@ -2883,6 +2884,24 @@ class TagManager
 			if (strtolower($is) == 'false') $is = FALSE;
 
 			if ($value == $is)
+			{
+				if (self::$trigger_else > 0)
+					self::$trigger_else = 0;
+
+				return self::wrap($tag, $tag->expand());
+			}
+			else
+			{
+				self::$trigger_else++;
+				return '';
+			}
+		}
+		else if ( ! is_null($is_not) )
+		{
+			$tag->removeAttribute('is_not');
+			if (strtolower($is_not) == 'true') $is_not = TRUE;
+			if (strtolower($is_not) == 'false') $is_not = FALSE;
+			if ($value != $is_not)
 			{
 				if (self::$trigger_else > 0)
 					self::$trigger_else = 0;

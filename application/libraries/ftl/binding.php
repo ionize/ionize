@@ -303,7 +303,7 @@ class FTL_Binding
 
 				if ($binding->name == $parent_name)
 				{
-					if ($all == FALSE && $binding->isProcessTag() == TRUE)
+					if ($all == FALSE && $binding->isProcessTag() == TRUE && count($stack) > 2)
 					{
 						$parent = $binding->getParent(NULL, FALSE);
 					}

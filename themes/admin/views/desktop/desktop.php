@@ -156,7 +156,7 @@
 <!-- Authority -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_authority.js"></script>
 <script type="text/javascript">
-	ION.Authority.initialize();
+	ION.Authority.initialize({refresh:false});
 </script>
 
 <!-- DropZone -->

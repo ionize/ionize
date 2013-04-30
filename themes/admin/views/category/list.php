@@ -12,10 +12,10 @@
 
 <?php foreach($categories as $category) :?>
 
-	<li class="sortme category<?php echo $category['id_category']; ?>" id="category_<?php echo $category['id_category']; ?>" rel="<?php echo $category['id_category']; ?>">
-		<a class="icon delete right" rel="<?php echo $category['id_category']; ?>"></a>
+	<li class="sortme category<?php echo $category['id_category']; ?>" id="category_<?php echo $category['id_category']; ?>" data-id="<?php echo $category['id_category']; ?>">
+		<a class="icon delete right" data-id="<?php echo $category['id_category']; ?>"></a>
 		<span class="icon left drag mr5"></span>
-		<a class="left pl5 title" rel="<?php echo $category['id_category']; ?>"><?php echo $category['name']; ?></a>
+		<a class="left pl5 title" data-id="<?php echo $category['id_category']; ?>"><?php echo $category['name']; ?></a>
 	</li>
 <?php endforeach ;?>
 
@@ -34,11 +34,11 @@
 	// Make all categories editable
 	$$('#categoryList .title').each(function(item, idx)
 	{
-		var rel = item.getProperty('rel');
+		var id = item.getProperty('data-id');
 		
 		item.addEvent('click', function(e)
 		{
-			ION.formWindow('category' + rel, 'categoryForm' + rel, Lang.get('ionize_title_category_edit'), 'category/edit/' + rel);	
+			ION.formWindow('category' + id, 'categoryForm' + id, Lang.get('ionize_title_category_edit'), 'category/edit/' + id);
 		});
 	});
 
