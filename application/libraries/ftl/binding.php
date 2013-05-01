@@ -423,6 +423,15 @@ class FTL_Binding
 		return NULL;
 	}
 
+
+	public function getData()
+	{
+		$tag_name = $this->getName();
+
+		return $data = $this->get($tag_name);
+	}
+
+
 	/**
 	 * Return the expected value from the data array of the tag.
 	 * The data array has the same name than the tag's parent tag

@@ -546,7 +546,7 @@ ION.append({
 		if (lang == true)
 		{
 			// Add event to sources elements
-			(Lang.get('languages')).each(function(l, idx)
+			(Lang.languages).each(function(l, idx)
 			{
 				if ($(source + l))
 				{
@@ -1307,9 +1307,9 @@ ION.append({
 		{
 			item.addEvent('click', function()
 			{
-				var lang = item.getProperty('data-id');
-				var langs = Lang.get('languages');
-				
+				var lang = item.getProperty('rel');
+				var langs = Lang.languages;
+
 				if (typeOf(tinyMCE) != 'null')
 					tinyMCE.triggerSave();
 

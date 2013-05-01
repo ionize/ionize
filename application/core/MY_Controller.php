@@ -493,7 +493,7 @@ class Base_Controller extends MY_Controller
 			}
 		}
 
-		// Load all modules lang files
+		// Load all lang files
 		if ( ! empty($lang_files))
 		{
 			foreach($lang_files as $l)
@@ -506,7 +506,7 @@ class Base_Controller extends MY_Controller
 						foreach($lang as $key => $translation)
 						{
 							// If the term doesn't exists
-							if ( ! isset($this->lang->language[$key]))
+							if ( ! isset($this->lang->language[$key]) OR $this->lang->language[$key] == '')
 							{
 								$this->lang->language[$key] = $translation;
 							}

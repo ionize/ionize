@@ -1550,13 +1550,45 @@ class TagManager
 		// Optional : data array from where to get the data
 		$value = NULL;
 		$from = $tag->getAttribute('from');
+		$type = $tag->getAttribute('type');
+		$lang = $tag->getAttribute('lang');
 
 		// 1. Try to get from tag's data array
-		if ( ! is_null($from))
-			$value = $tag->getValue('absolute_url', $from);
+		//	if ( ! is_null($from))
+		$value = $tag->getValue('absolute_url', $from);
 
+		// 2. Try to get from parent tag
 		if (is_null($value))
-			$value = $tag->getValue();
+		{
+			$parent = $tag->getParent();
+			$value = $parent->getValue('absolute_url');
+		}
+
+		if ( ! is_null($type) && ! is_null($value))
+		{
+			switch($type)
+			{
+				case 'relative':
+					$value = str_replace(self::get_base_url(), '', $value);
+					if ( ! is_null($lang)
+						 && (count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1')
+					)
+						$value = Settings::get_lang('current') . '/' . $value;
+					break;
+
+				case 'element':
+					$value = explode('/', $value);
+					$value = array_pop($value);
+					if ( ! is_null($lang)
+						&& (count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1')
+					)
+						$value = Settings::get_lang('current') . '/' . $value;
+					break;
+			}
+		}
+
+//		if (is_null($value))
+//			$value = $tag->getValue();
 
 		// 2. Fall down to tag locals storage
 		if (is_null($value))

@@ -57,7 +57,9 @@ class TagManager_Article extends TagManager
 		// Only get all articles (no limit to one page) if asked.
 		// Filter by current page by default
 		if (empty($page) && $tag->getAttribute('all') == NULL)
+		{
 			$page = self::registry('page');
+		}
 
 		// Set by Page::get_current_page()
 		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
@@ -370,13 +372,13 @@ class TagManager_Article extends TagManager
 				// External
 				if ($article['link_type'] == 'external')
 				{
-					$article['url'] = $article['link'];
+					$article['absolute_url'] = $article['link'];
 				}
 
 				// Email
 				else if ($article['link_type'] == 'email')
 				{
-					$article['url'] = auto_link($article['link'], 'both', TRUE);
+					$article['absolute_url'] = auto_link($article['link'], 'both', TRUE);
 				}
 
 				// Internal
@@ -396,7 +398,7 @@ class TagManager_Article extends TagManager
 							$parent_page = self::$ci->page_model->get_by_id($rel[0], Settings::get_lang('current'));
 
 							if ( ! empty($parent_page))
-								$article['url'] = $parent_page[$page_url_key] . '/' . $target_article['url'];
+								$article['absolute_url'] = $parent_page[$page_url_key] . '/' . $target_article['url'];
 						}
 					}
 					// Page
@@ -406,15 +408,15 @@ class TagManager_Article extends TagManager
 
 						// If target page is offline, 'path' is not set
 						if ( isset($target_page[$page_url_key]))
-							$article['url'] = $target_page[$page_url_key];
+							$article['absolute_url'] = $target_page[$page_url_key];
 					}
 
 					// Correct the URL : Lang + Base URL
 					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 					{
-						$article['url'] =  Settings::get_lang('current'). '/' . $article['url'];
+						$article['absolute_url'] =  Settings::get_lang('current'). '/' . $article['absolute_url'];
 					}
-					$article['url'] = base_url() . $article['url'];
+					$article['absolute_url'] = base_url() . $article['absolute_url'];
 
 				}
 			}
@@ -424,11 +426,11 @@ class TagManager_Article extends TagManager
 				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 				{
 
-					$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page[$page_url_key] . '/' . $url;
+					$article['absolute_url'] = base_url() . Settings::get_lang('current') . '/' . $page[$page_url_key] . '/' . $url;
 				}
 				else
 				{
-					$article['url'] = base_url() . $page[$page_url_key] . '/' . $url;
+					$article['absolute_url'] = base_url() . $page[$page_url_key] . '/' . $url;
 				}
 			}
 		}

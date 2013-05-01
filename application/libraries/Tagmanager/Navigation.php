@@ -227,6 +227,7 @@ class TagManager_Navigation extends TagManager
 			foreach($pages as $index => $p)
 			{
 				$tag->set('navigation', $p);
+				$tag->set('page', $p);
 				$tag->set('is_active', $p['is_active']);
 
 				$tag->set('index', $index);
