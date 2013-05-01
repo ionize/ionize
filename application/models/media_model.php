@@ -343,8 +343,8 @@ class Media_model extends Base_model
 		$data = array();
 		
 		$link_table = $parent.'_media';
-		$parent_pk = 'id_'.$parent;
-		
+		$parent_pk = $this->get_pk_name($parent);
+
 		$this->{$this->db_group}->where($link_table.'.'.$parent_pk, $id_parent);
 		$this->{$this->db_group}->where('id_media', $id);
 
