@@ -104,12 +104,12 @@ $lang['form_profile_success_message'] = "Profile data saved";
 $lang['form_profile_error_message'] = "This user already exists. Please change your username or email";
 $lang['form_profile_account_deleted'] = "Account deleted";
 
-$lang['form_password_error_message'] = "One error happens.";
+$lang['form_password_error_message'] = "Oups, one error occured.";
 $lang['form_password_not_found_message'] = "This email seems not to be in our system";
 $lang['form_password_success_message'] = "One email with you new password has just been sent to you.";
 
-$lang['form_contact_error_title'] = 'One error happens.';
-$lang['form_contact_error_message'] = 'All fields are required, please fill all fields.';
+$lang['form_contact_error_title'] = 'Oups, we got an error.';
+$lang['form_contact_error_message'] = 'perhaps just some missing fields. Please check the form...';
 $lang['form_contact_success_title'] = 'Your message was sent successfully !';
 $lang['form_contact_success_message'] = 'Thank you for your message, we will answer you very quickly !';
 

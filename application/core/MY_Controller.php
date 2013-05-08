@@ -440,7 +440,7 @@ class Base_Controller extends MY_Controller
 			Settings::set('current_lang', config_item('detected_lang_code'));
 		}
 
-		// Set lang preferrence cookie
+		// Set lang preference cookie
 		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
 		
 		if( ! empty($_COOKIE['ion_selected_language']))
@@ -454,6 +454,7 @@ class Base_Controller extends MY_Controller
 		// Static translations
 		$lang_files = array();
 		$lang_folder = APPPATH . 'language/' . Settings::get_lang();
+
 		// Core languages files : Including except "admin_lang.php"
 		if (is_dir($lang_folder))
 		{

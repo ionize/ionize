@@ -37,6 +37,25 @@ class TagManager_Article extends TagManager
 	// ------------------------------------------------------------------------
 
 
+	public static function get_article_by($field, $value, FTL_Binding $tag)
+	{
+		$where = array(
+			$field => $value
+		);
+
+		// Get from DB
+		$article = self::$ci->article_model->get(
+			$where,
+			$lang = Settings::get_lang()
+		);
+
+		return $article;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Get Articles
 	 * @TODO : 	Write local cache
@@ -483,6 +502,7 @@ class TagManager_Article extends TagManager
 	public static function tag_article(FTL_Binding $tag)
 	{
 		$cache = $tag->getAttribute('cache', TRUE);
+		$key = $tag->getAttribute('key');
 
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
@@ -494,9 +514,18 @@ class TagManager_Article extends TagManager
 		// Extend Fields tags
 		self::create_extend_tags($tag, 'article');
 
-		// Registry article : First : Registry (URL ask), Second : Stored one
+		// 1. Registry (URL ask), Second : Stored one
 		$_article = self::registry('article');
-		if (empty($_article)) $_article = $tag->get('article');
+
+		// 2. Asked through one key ? (but no <ion:articles /> parent tag )
+		if (empty($_article))
+		{
+			if ( ! is_null($key) && $tag->getDataParentName() != 'articles')
+				$_article = self::get_article_by('name', $key, $tag);
+
+			if (empty($_article))
+				$_article = $tag->get('article');
+		}
 
 		$_articles = array();
 		if ( ! empty($_article)) $_articles = array($_article);
@@ -597,7 +626,7 @@ class TagManager_Article extends TagManager
 
 		// Make articles in random order
 		if ( $tag->getAttribute('random') == TRUE)
-			shuffle ($articles);
+			shuffle($_articles);
 
 		$tag->set('articles', $_articles);
 

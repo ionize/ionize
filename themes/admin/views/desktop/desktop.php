@@ -152,12 +152,8 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_user.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js"></script>
 
-
 <!-- Authority -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_authority.js"></script>
-<script type="text/javascript">
-	ION.Authority.initialize({refresh:false});
-</script>
 
 <!-- DropZone -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/Request.Blob.js"></script>
