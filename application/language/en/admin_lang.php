@@ -1141,6 +1141,7 @@ $lang['ionize_menu_tags'] = "Tags";
 $lang['ionize_title_tags'] = "Tags";
 $lang['ionize_label_new_tag'] = "Add one Tag";
 $lang['ionize_button_save_tags'] = "Save Tags";
+$lang['ionize_button_add_tag'] = "Add Tag";
 $lang['ionize_help_tag_textbox'] = "type a new tag here";
 
 

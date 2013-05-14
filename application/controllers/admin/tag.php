@@ -50,18 +50,73 @@ class Tag extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	/*
-	public function create()
+
+	/**
+	 * Updates one tag
+	 *
+	 */
+	public function update()
 	{
-		$this->tag_model->feed_blank_template($this->template);
-		// $this->tag_model->feed_blank_lang_template($this->template);
+		$id = $this->input->post('id_tag');
+		$value = $this->input->post('tag_name');
+		$selector = $this->input->post('selector');
 
-		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
+		if ($value != '')
+		{
+			$this->tag_model->update(array('id_tag' => $id), $this->input->post());
 
-		$this->output('tag/tag');
+			$this->callback = array
+			(
+				array(
+					'fn' => 'ION.notification',
+					'args' => array (
+						'success',
+						lang('ionize_message_operation_ok')
+					)
+				),
+				array(
+					'fn' => 'ION.setHTML',
+					'args' => array (
+						$selector,
+						$value
+					)
+				)
+			);
 
+		}
+
+		$this->response();
 	}
-	*/
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function add()
+	{
+		$tag = $this->input->post('tag_name');
+
+		$this->tag_model->save($tag);
+
+		$this->_reload_tag_panel();
+
+		$this->success(lang('ionize_message_operation_ok'));
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function delete()
+	{
+		$id = $this->input->post('id');
+
+		$this->tag_model->delete_all($id);
+
+		$this->_reload_tag_panel();
+
+		$this->success(lang('ionize_message_operation_ok'));
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -85,8 +140,7 @@ class Tag extends MY_admin
 
 	public function get_list()
 	{
-		// Categories list
-		$this->template['tags'] = $this->tag_model->get_list(array('order_by'=>'tag ASC'));
+		$this->template['tags'] = $this->tag_model->get_list(array('order_by'=>'tag_name ASC'));
 
 		$this->output('tag/list');
 	}

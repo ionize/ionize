@@ -1,44 +1,65 @@
 <?php
-
 /**
- * Displays the article's categories list
- * Called through XHR by : /views/articles.php
- *
+ * Displays the tags list
  */
 
 ?>
 
-<ul id="tagList" class="mb20 sortable-container">
-
-<?php foreach($tags as $tag) :?>
-
-	<li class="sortme tag<?php echo $tag['id_tag']; ?>" id="tag_<?php echo $tag['id_tag']; ?>" data-id="<?php echo $tag['id_tag']; ?>">
-		<a class="icon delete right" data-id="<?php echo $tag['id_tag']; ?>"></a>
-		<a class="left pl5 title" data-id="<?php echo $tag['id_tag']; ?>"><?php echo $tag['tag']; ?></a>
-	</li>
-<?php endforeach ;?>
-
-</ul>
+<ul id="tagsList" class="tagsList list"></ul>
 
 <script type="text/javascript">
 
-	// Tags list manager
-	tagManager = new ION.ItemManager({ element: 'tag', container: 'tagList' });
-
-	// Make all categories editable
-	$$('#tagList .title').each(function(item, idx)
-	{
-		var id = item.getProperty('data-id');
-		
-		item.addEvent('click', function(e)
+	ION.JSON(
+		ION.adminUrl + 'tag/get_json_list',{},
 		{
-			ION.formWindow(
-				'tag' + id,
-				'tagForm' + id,
-				Lang.get('ionize_title_tag_edit'),
-				'tag/edit/' + id
-			);
-		});
-	});
+			onSuccess: function(r)
+			{
+				r.each(function(tag)
+				{
+					var li = new Element('li', {'data-id':tag[0],'class':'left mr5'});
+					var a = new Element('a', {'class':'title left', 'data-id':tag[0], text:tag[2]}).inject(li);
+					var ad = new Element('a', {'class':'icon delete right ml5', 'data-id':tag[0]}).inject(li);
+
+					var input = new Element('input', {'type': 'text', 'class':'inputtext left no-border', 'name':'name', 'value': a.get('text')});
+
+					input.addEvent('blur', function(e)
+					{
+						if (input.value != '')
+						{
+							ION.sendData('tag/update', {
+								'id_tag':tag[0],
+								'tag_name':input.value,
+								selector:'.tagsList a.title[data-id='+tag[0]+']' });
+						}
+						input.hide();
+						a.show();
+					});
+					input.inject(a, 'before').hide();
+
+					a.addEvent('click', function(e)
+					{
+						input.show().focus();
+						a.hide();
+					});
+
+					ION.initRequestEvent(
+						ad,
+						'tag/delete',
+						{'id':tag[0]},
+						{
+							'confirm': true,
+							'message': Lang.get('ionize_confirm_element_delete')
+						}
+					);
+
+					ad.addEvent('click', function(){
+
+					})
+
+					li.inject($('tagsList'));
+				})
+			}
+		}
+	);
 
 </script>

@@ -2073,20 +2073,29 @@ class TagManager
 	public static function tag_lang(FTL_Binding $tag)
 	{
 		// Kind of article : Get only the article linked to the given view
-		$term = $tag->getAttribute('key');
+		$key = $tag->getAttribute('key');
 
-		if (is_null($term))	$term = $tag->getAttribute('term');
-		if (is_null($term))	$term = $tag->getAttribute('item');
+		if (is_null($key)) $key = $tag->getAttribute('term');
+		if (is_null($key)) $key = $tag->getAttribute('item');
 
 		$swap = $tag->getAttribute('swap');
 		if ( ! is_null($swap))
 			$swap = self::get_lang_swap($tag, $swap);
 
-		if ( ! is_null($term))
+		if ( ! is_null($key))
 		{
+			$random = $tag->getAttribute('random');
+
+			if ( ! is_null($random))
+			{
+				$keys = explode(',', $key);
+				$index = rand(0, sizeof($keys)-1);
+				$key = trim($keys[$index]);
+			}
+
 			$autolink = $tag->getAttribute('autolink', TRUE);
 
-			$line = lang($term, $swap);
+			$line = lang($key, $swap);
 
 			if ( ! $autolink)
 				return self::wrap($tag, $line);

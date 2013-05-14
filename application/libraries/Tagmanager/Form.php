@@ -73,7 +73,9 @@ class TagManager_Form extends TagManager
 		// Init once errors message
 		if( ! self::$_inited)
 		{
-			self::_init_error_messages();
+			// Previously : Replace of CI standard error message by internal one.
+			// Now : No chnages, no needs to.
+			// self::_init_error_messages();
 			self::$_inited = TRUE;
 
 			// Posting form name

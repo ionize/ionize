@@ -308,7 +308,7 @@ var TextboxListBit = new Class({
 
 	editBit: function(e) {
 		if(!e || (e.key == 'enter' && this.focused)) {
-			// this.blur();
+			this.blur();
 			var editable = this.textboxlist.create('editable');
 			var editableInput = editable.bit.getElement('.textboxlist-bit-editable-input');
 			editableInput.setProperty('value',this.value[1]);

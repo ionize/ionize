@@ -574,6 +574,7 @@ class TagManager_Navigation extends TagManager
 	{
 		$languages = Settings::get_online_languages();
 		$page = self::registry('page');
+		$article = self::registry('article');
 
 		// Current active language class
 		$active_class = $tag->getAttribute('active_class', 'active');
@@ -597,6 +598,9 @@ class TagManager_Navigation extends TagManager
 			$lang['is_active'] = $lang['lang'] == Settings::get_lang('current');
 			$lang['id'] = $lang['lang'];
 
+			if ( ! is_null($article))
+				$lang['absolute_url'] .= '/'.$article['urls'][$lang['lang']];
+
 			// Tag locals
 			$tag->set('language', $lang);
 			$tag->set('id', $lang['lang']);
@@ -606,9 +610,7 @@ class TagManager_Navigation extends TagManager
 			$tag->set('index', $idx);
 
 			if (Authority::can('access', 'admin') OR $lang['online'] == 1)
-			{
 				$str .= $tag->expand();
-			}
 		}
 
 		// Try to return the helper function result

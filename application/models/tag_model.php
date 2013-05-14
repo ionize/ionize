@@ -64,7 +64,7 @@ class Tag_model extends Base_model
 
 		}
 
-		return parent::get_list();
+		return parent::get_list(array('order_by' => 'tag_name ASC'));
 	}
 
 
@@ -132,8 +132,33 @@ class Tag_model extends Base_model
 	 */
 	public function save($tag)
 	{
-		if ($tag != '')
-			return $this->add($tag);
+		$id_tag = $this->tag_exists($tag);
+
+		if ( ! $id_tag)
+		{
+			$tag = trim($tag);
+			return $this->insert(array('tag_name' => $tag));
+		}
+		return $id_tag;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $id_tag
+	 *
+	 * @return bool|int|the
+	 */
+	public function delete_all($id_tag)
+	{
+		$affected_rows = parent::delete(array('id_tag' => $id_tag));
+
+		$this->{$this->db_group}->where('id_tag', $id_tag);
+		$this->{$this->db_group}->delete('article_tag');
+
+		return $affected_rows;
 	}
 
 
@@ -161,7 +186,10 @@ class Tag_model extends Base_model
 				if (strlen($tag) > self::$_MAX_TAG_LENGTH)
 					continue;
 
-				$this->add($tag);
+				$id_tag = $this->save($tag);
+
+				if ( in_array($id_tag, $tag_ids))
+					$tag_ids = array_diff($tag_ids, array($id_tag));
 			}
 			else
 			{
@@ -208,7 +236,7 @@ class Tag_model extends Base_model
 					if (strlen($id_tag) > self::$_MAX_TAG_LENGTH)
 						continue;
 
-					$id_tag = $this->add($id_tag);
+					$id_tag = $this->save($id_tag);
 				}
 
 				$data[] = array(
@@ -224,28 +252,6 @@ class Tag_model extends Base_model
 				$this->{$this->db_group}->insert_batch($join_table, $data);
 			}
 		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * @param $tag
-	 *
-	 * @return bool|the
-	 *
-	 */
-	public function add($tag)
-	{
-		$id_tag = $this->_tag_exists($tag);
-
-		if ( ! $id_tag)
-		{
-			$tag = trim($tag);
-			return $this->insert(array('tag_name' => $tag));
-		}
-		return $id_tag;
 	}
 
 
@@ -323,7 +329,7 @@ class Tag_model extends Base_model
 	 *
 	 * @return bool
 	 */
-	private function _tag_exists($tag)
+	public function tag_exists($tag)
 	{
 		$sql = "select id_tag from ". $this->get_table() . " where LOWER(tag_name) = " . $this->{$this->db_group}->escape($tag);
 
