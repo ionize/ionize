@@ -2773,8 +2773,8 @@ class TagManager
 		$html_tag = $tag->getAttribute('tag');
 
 		// Inform the parent that the value has already been wrapped
-//		if ($html_tag && $parent = $tag->getParent())
-//			$parent->setAttribute('__wrap_called__', TRUE);
+		if ($html_tag && $parent = $tag->getParent())
+			$parent->setAttribute('__wrap_called__', TRUE);
 
 		if ($tag->getAttribute('__wrap_called__') !== TRUE)
 		{
@@ -2793,6 +2793,8 @@ class TagManager
 				$open_tag = '<' . $html_tag . $html_attributes . '>';
 				$close_tag = '</' . $html_tag .'>';
 			}
+
+			$tag->removeAttributes(array('tag','class','id'));
 
 			if ( ! empty ($value) )
 			{

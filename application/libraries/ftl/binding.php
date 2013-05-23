@@ -260,6 +260,19 @@ class FTL_Binding
 	}
 
 
+	public function removeAttributes($attrs)
+	{
+		foreach ($attrs as $attr)
+		{
+			$this->removeAttribute($attr);
+		}
+
+		return $this;
+	}
+
+
+
+
 
 	/**
 	 * Return the current FTL_Binding parent

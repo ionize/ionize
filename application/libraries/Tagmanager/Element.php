@@ -162,7 +162,6 @@ class TagManager_Element extends TagManager
 		// Create dynamical tags
 		foreach($elements_definitions as $definition)
 		{
-			log_message('error', 'element:'.$definition['name']);
 			self::$context->define_tag('element:'.$definition['name'], array(__CLASS__, 'tag_element_detail'));
 		}
 
