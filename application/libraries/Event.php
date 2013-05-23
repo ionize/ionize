@@ -150,7 +150,7 @@ class Event {
 				if (is_callable($listener))
 				{
 					$class = is_object($listener[0]) ? get_class($listener[0]) : $listener[0];
-					log_message('error', 'Event:: Call ' . $class . '->' . $listener[1] . '()' );
+					// log_message('error', 'Event:: Call ' . $class . '->' . $listener[1] . '()' );
 
 					$calls[] = call_user_func($listener, $data);
 				}

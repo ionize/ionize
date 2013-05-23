@@ -515,6 +515,82 @@ class Media_model extends Base_model
 
 
 	/**
+	 * Update media path and basename
+	 * Updates articles content : replace media path
+	 *
+	 * @param      $old_path
+	 * @param      $new_path
+	 * @param bool $is_dir
+	 */
+	public function update_path($old_path, $new_path, $is_dir=FALSE)
+	{
+		$old_path = str_replace(FCPATH, '', $old_path);
+		$new_path = str_replace(FCPATH, '', $new_path);
+
+		if ( ! $is_dir)
+		{
+			// Basic update
+			$this->update(
+				array('path' => $old_path),
+				array(
+					'path' => $new_path,
+					'file_name' => basename($new_path)
+				)
+			);
+
+		}
+		else
+		{
+			$sql = "
+				update media
+				set path = REPLACE(path, '".$old_path."', '".$new_path."')
+			";
+			$this->{$this->db_group}->query($sql);
+		}
+
+		// Articles
+		$sql = "
+				update article_lang
+				set content = REPLACE(content, '".$old_path."', '".$new_path."')
+			";
+		$this->{$this->db_group}->query($sql);
+	}
+
+
+	/**
+	 * Unlink pages and article from media which have the given path
+	 * @param      $path
+	 * @param bool $is_dir
+	 */
+	public function unlink_path($path, $is_dir=FALSE)
+	{
+		$path = str_replace(FCPATH, '', $path);
+
+		if ($is_dir)
+			$filter = "like '".$path."/%'";
+		else
+			$filter = "= '".$path."'";
+
+
+		$sql = "
+			delete from page_media where id_media in
+			(
+				select id_media from media where path ".$filter."
+			)
+		";
+		$this->{$this->db_group}->query($sql);
+
+		$sql = "
+			delete from article_media where id_media in
+			(
+				select id_media from media where path ".$filter."
+			)
+		";
+		$this->{$this->db_group}->query($sql);
+	}
+
+
+	/**
 	 * Init all "path"_hash" from media table
 	 *
 	 * @return int

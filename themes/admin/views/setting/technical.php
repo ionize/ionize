@@ -18,7 +18,9 @@
 			<li id="article_settings"><a><?php echo lang('ionize_title_article_management'); ?></a></li>
 			<li id="database_settings"><a><?php echo lang('ionize_title_database'); ?></a></li>
 			<li id="email_settings"><a><?php echo lang('ionize_title_mail_send'); ?></a></li>
-           	<li id="api_settings"><a><?php echo lang('ionize_title_api'); ?></a></li>
+<!--
+			<li id="api_settings"><a><?php /*echo lang('ionize_title_api'); */?></a></li>
+-->
 			<li id="system_settings"><a><?php echo lang('ionize_title_system'); ?></a></li>
 
 		</ul>
@@ -504,17 +506,18 @@
 		</div>
 
 		<!-- API -->
-        <div class="tabcontent">
+<!--
+		<div class="tabcontent">
 
             <p class="clear h20">
-                <a id="buttonNewApiKey" class="left light button" title="<?php echo lang('ionize_label_create_new_api_key'); ?>">
+                <a id="buttonNewApiKey" class="left light button" title="<?php /*echo lang('ionize_label_create_new_api_key'); */?>">
 					<i class="icon-plus"></i>
-					<?php echo lang('ionize_label_create_new_api_key'); ?>
+					<?php /*echo lang('ionize_label_create_new_api_key'); */?>
                 </a>
             </p>
 
         </div>
-
+-->
 
 
 		<!-- System -->

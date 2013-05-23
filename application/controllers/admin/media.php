@@ -105,6 +105,7 @@ class Media extends MY_admin
 			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
 			'filter' => $allowed_mimes,
 			'allowed_extensions' => Settings::get_allowed_extensions(),
+			// 'DestroyIsAuthorized_cb' => array($this, 'can_filemanager_destroy')
 			// 'hashMethod' => config_item('files_path_hash_method'),
 		);
 
@@ -115,7 +116,7 @@ class Media extends MY_admin
 		// If no event is givven, it will call the "display" event
 		if ($event != 'upload')
 		{
-			$this->Filemanager->fireEvent( ! is_null($event) ? $event : null);
+			$this->Filemanager->fireEvent( ! is_null($event) ? $event : NULL);
 		}
 		else
 		{
@@ -151,7 +152,26 @@ class Media extends MY_admin
 		
 		die();
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Filemanager Destroy callback
+	 *
+	 * @param      $fm
+	 * @param      $action
+	 * @param null $path
+	 *
+	 * @return bool
+	 */
+	public static function can_filemanager_destroy($fm, $action, $path=NULL)
+	{
+		return TRUE;
+		// return FALSE;
+	}
+
 
 	// ------------------------------------------------------------------------
 

@@ -561,6 +561,7 @@ INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, d
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (20,NULL,'admin/translations','','Translations','Translations');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (35,NULL,'admin/medialist','','MediaList','MediaList');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (41,40,'admin/page/article','add','Article','Page > Article');
 INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (42,40,'admin/page/element','add','Content Element','Page > Content Element');

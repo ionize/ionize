@@ -4,8 +4,6 @@
  *
  */
 $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
-
-// trace($medias);
 ?>
 
 <div id="mediaList" class="p10 bg-gray">

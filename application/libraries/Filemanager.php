@@ -517,6 +517,8 @@ class FileManager
 			'DownloadIsAuthorized_cb' => NULL,
 			'CreateIsAuthorized_cb' => NULL,
 			'MoveIsAuthorized_cb' => NULL,
+			'DestroyIsAuthorized_cb' => NULL,
+
 			'showHiddenFoldersAndFiles' => FALSE      // Hide dot dirs/files ?
 		), (is_array($options) ? $options : array()));
 
@@ -1038,6 +1040,8 @@ class FileManager
 			$file_arg = $this->getPOST('file');
 			$dir_arg = $this->getPOST('directory');
 			$legal_url = $this->get_legal_url($dir_arg . '/');
+			$is_dir = is_dir($legal_url);
+
 
 			if ( ! empty($file_arg))
 			{
@@ -1062,10 +1066,25 @@ class FileManager
 				}
 			}
 
+			// Destroy Authorization callback
+			if (
+				! empty($this->options['DestroyIsAuthorized_cb'])
+				&& is_callable($this->options['DestroyIsAuthorized_cb'])
+				&& FALSE == call_user_func_array($this->options['DestroyIsAuthorized_cb'],array($this, 'destroy', $file))
+			)
+			{
+				throw new Exception('validation_failure');
+			}
+
+
 			if ( ! $this->unlink($legal_url))
 			{
 				throw new Exception('unlink_failed:' . $legal_url);
 			}
+
+			// Event
+			Event::fire('Filemanager.destroy.success',	array('path' => $this->get_full_path($legal_url), 'is_dir'=>$is_dir));
+
 
 			$this->sendHttpHeaders('Content-Type: application/json');
 
@@ -1711,7 +1730,7 @@ class FileManager
 
 		try
 		{
-			if (!$this->options['move'])
+			if ( ! $this->options['move'])
 				throw new Exception('disabled:rn_mv_cp');
 
 			$file_arg = $this->getPOST('file');
@@ -1844,6 +1863,9 @@ class FileManager
 				throw new Exception((empty($fn) ? 'rename' : $fn) . '_failed');
 			if (!@$fn($path, $newpath))
 				throw new Exception($fn . '_failed');
+
+			// Event
+			Event::fire('Filemanager.move.success',	array('old_path' => $path, 'new_path' =>$newpath, 'is_dir' => $is_dir));
 
 			// Json response
 			$this->sendHttpHeaders('Content-Type: application/json');
@@ -2414,7 +2436,7 @@ class FileManager
 
 
 	/**
-	 * Delete a file or directory, inclusing subdirectories and files.
+	 * Delete a file or directory, including subdirectories and files.
 	 *
 	 * Return TRUE on success, FALSE when an error occurred.
 	 *
@@ -2476,7 +2498,7 @@ class FileManager
 	 * glob() wrapper: accepts the same options as Tooling.php::safe_glob()
 	 *
 	 * However, this method will also ensure the '..' directory entry is only returned,
-	 * even while asked for, when the parent directory can be legally traversed by the FileManager.
+	 * even while asked for, when the parent directory can be legally traversed by the FileManager
 	 *
 	 * Return a dual array (possibly empty) of directories and files, or FALSE on error.
 	 *

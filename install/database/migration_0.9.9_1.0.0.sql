@@ -103,6 +103,7 @@ VALUES
 	(11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions'),
 	(20,NULL,'admin/translations','','Translations','Translations'),
 	(30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager'),
+	(35,NULL,'admin/medialist','','MediaList','MediaList'),
 	(40,NULL,'admin/page','create,edit,delete','Page','Page'),
 	(41,40,'admin/page/article','add','Article','Page > Article'),
 	(42,40,'admin/page/element','add','Content Element','Page > Content Element'),
