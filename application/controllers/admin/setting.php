@@ -428,7 +428,8 @@ class Setting extends MY_admin
 			'google_analytics_profile_id',
 			'google_analytics_url',
 			'google_analytics_email',
-			'google_analytics_password'
+			'google_analytics_password',
+			'dashboard_google',
 		);
 		$lang_settings = array(
 			'meta_keywords',
@@ -484,8 +485,7 @@ class Setting extends MY_admin
 			'display_connected_label',
 			'date_format',
 			'default_admin_lang',
-			'enable_backend_tracker',
-			'dashboard_google',
+			'enable_backend_tracker'
 		);
 
 		// Save settings to DB

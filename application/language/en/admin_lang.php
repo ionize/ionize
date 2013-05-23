@@ -79,6 +79,7 @@ $lang['ionize_menu_menu'] = 'Manage menus...';
 $lang['ionize_menu_page'] = 'Create page...';
 $lang['ionize_menu_article'] = 'Create article...';
 $lang['ionize_menu_media_manager'] = 'Media manager';
+$lang['ionize_menu_medialist'] = 'MediaList';
 $lang['ionize_menu_modules_admin'] = 'Administration...';
 $lang['ionize_menu_site_settings'] = 'Website settings...';
 $lang['ionize_menu_global'] = 'Global...';
@@ -307,6 +308,7 @@ $lang['ionize_help_email_info'] = 'Information email';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_save'] = 'Save';
+$lang['ionize_button_save_all'] = 'Save All';
 $lang['ionize_button_save_close'] = 'Save & close';
 $lang['ionize_button_update'] = 'Update';
 $lang['ionize_button_send'] = 'Send';
@@ -474,7 +476,7 @@ $lang['ionize_help_enable_backend_tracker'] = 'Displays users logged to the back
 $lang['ionize_onchange_ionize_settings'] = 'The Administration panel will reload after saving these settings.';
 $lang['ionize_label_sitemaps_gzip'] = 'Compress Sitemap';
 $lang['ionize_help_setting_sitemaps_gzip'] = 'Compress the Sitemap file with gzip.';
-$lang['ionize_label_display_google'] = 'Google Analytics';
+$lang['ionize_label_display_google'] = 'Display on Dashboard';
 $lang['ionize_help_display_google'] = 'Displays Google Analytics basic charts on the dashboard';
 
 
@@ -753,6 +755,7 @@ $lang['ionize_help_sitemap_priority'] = 'Page priority, between 0 and 10';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_title_medias'] = 'Medias';
+$lang['ionize_title_medialist'] = 'MediaList';
 $lang['ionize_title_thumbs_status'] = 'Thumbnails status';
 $lang['ionize_title_informations'] = 'Information';
 $lang['ionize_title_details'] = 'Details';
@@ -767,6 +770,8 @@ $lang['ionize_message_no_file'] = 'No file';
 $lang['ionize_label_init_thumb'] = 'Init thumbnails';
 $lang['ionize_label_attach_media'] = 'Add Media';
 $lang['ionize_label_detach_media'] = 'Unlink media';
+$lang['ionize_label_delete_media'] = 'Delete media';
+$lang['ionize_label_remove_media'] = 'Remove media';
 $lang['ionize_label_detach_all_pictures'] = 'Unlink all pictures';
 $lang['ionize_label_detach_all_videos'] = 'Unlink all videos';
 $lang['ionize_label_detach_all_musics'] = 'Unlink all music';
@@ -814,6 +819,16 @@ $lang['ionize_exception_copy'] = 'PHP : Picture copy not possible';
 $lang['ionize_exception_no_source_file'] = 'Source file not found';
 $lang['ionize_exception_memory_limit'] = 'PHP Memory limit reached';
 $lang['ionize_exception_image_lib'] = 'Image Lib Error';
+
+
+$lang['ionize_button_list_view'] = 'List view';
+$lang['ionize_button_card_view'] = 'Card view';
+$lang['ionize_medialist_filter_by'] = '-- Filter by --';
+$lang['ionize_medialist_filter_by_alt_missing'] = 'ALT missing';
+$lang['ionize_medialist_filter_by_broken_src'] = 'Broken source';
+$lang['ionize_medialist_filter_by_used_in_content'] = 'Used in Page / Article';
+$lang['ionize_medialist_filter_by_used_in_content_AL_missing'] = 'Used in Page / Article and ALT missing';
+$lang['ionize_medialist_filter_by_not_used'] = 'Not used';
 
 
 /*

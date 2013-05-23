@@ -77,6 +77,24 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/js/codemirror.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/codemirror.views.js"></script>
 
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/flashblock.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player-visualization.css" />
+
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/berniecode-animator.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/soundmanager2-jsmin.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/360player.js"></script>
+<script type="text/javascript">
+	soundManager.setup({
+		url: '<?php echo theme_url() ?>javascript/soundmanager/swf/'
+//		preferFlash: false
+	});
+	if (window.location.href.match(/html5/i)) {
+		// for testing IE 9, etc.
+		soundManager.useHTML5Audio = true;
+	}
+</script>
+
 <!-- Base URL & languages translations available for javascript -->
 <script type="text/javascript">
 	

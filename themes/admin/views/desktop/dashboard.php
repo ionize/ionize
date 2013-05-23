@@ -12,34 +12,28 @@
  *
  */
 ?>
+<div class="bg-gray p10" >
 
-<div id="maincolumn">
+<!-- Row 1 -->
+<div class="row">
 
+	<?php if (
+		Settings::get('dashboard_google') == '1'
+		&& Settings::get('google_analytics_profile_id') !=''
+		&& Settings::get('google_analytics_email') !=''
+		&& Settings::get('google_analytics_password') !=''
+	) :?>
 
-<?php if (
-	Settings::get('dashboard_google') == '1'
-	&& Settings::get('google_analytics_profile_id') !=''
-	&& Settings::get('google_analytics_email') !=''
-	&& Settings::get('google_analytics_password') !=''
-) :?>
-<div class="row m0">
+		<!-- Google Analytics -->
+		<div id="gaBloc" class="desktopBloc fullwidth" data-title="<?php echo lang('ionize_dashboard_title_visits') ?>">
 
-<div class="col">
-	<!-- Google Analytics -->
-	<div id="gaBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_visits') ?>">
+			<div id="gaReport" style="min-height: 200px;" class="loading"></div>
 
-		<div id="gaReport" style="min-height: 200px;" class="loading"></div>
-
-	</div>
-</div>
-</div>
-<?php endif ;?>
+		</div>
+	<?php endif ;?>
 
 
-	<!-- Row 1 -->
-	<div class="row">
 
-		<div class="col col2">
 
 			<!-- Shortcuts -->
 			<div id="shortcutBloc" class="desktopBloc" data-title="Shortcuts">
@@ -184,11 +178,6 @@
 
 			</div>
 
-		</div>
-
-		<div class="col col2">
-
-
 
 			<!-- Modules -->
 			<?php if ( ! empty($modules)) :?>
@@ -209,7 +198,7 @@
 
 
 			<!-- Content : Pages, Articles -->
-			<div  id="contentBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_content'); ?>">
+			<div id="contentBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_content'); ?>">
 
 				<!-- Tabs -->
 				<div id="dashBoardContentTab" class="mainTabs mt5 mb0">
@@ -363,10 +352,6 @@
 					<?php endif ;?>
 				</div>
 			</div>
-
-
-		</div>
-
 
 	</div>
 

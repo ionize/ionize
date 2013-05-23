@@ -10,47 +10,10 @@
 
 ?>
 
-<style type="text/css">
-	#page-analtyics {
-		clear: left;
-	}
-	#page-analtyics .metric {
-		float: left;
-		font-size: 12px;
-		margin: 8px 0 5px 0;
-		width: 20%;
-	}
-	#page-analtyics .metric div{
-		background: #fff;
-		margin-right: 1px;
-		padding: 10px;
-		border-radius: 4px;
-	}
-	#page-analtyics .metric:first-child div{
-		/*
-		border-left: 1px solid #ccc;
-		*/
-	}
-	#page-analtyics .metric span {
-		font-size:0.9em;
-		line-height: 1.2em;
-		color:#999;
-		display: block;
-		padding-bottom: 3px;
-		text-align: center;
-	}
-	#page-analtyics .metric strong {
-		font-size: 16px;
-		font-weight: bold;
-		display: block;
-		text-align: center;
-	}
-</style>
-
 <div id="analyticsChart"></div>
 
 <?php if ( ! empty($data)) :?>
-<div id="page-analtyics">
+<div id="page-analytics">
 	<div class="metric"><div><span><?php echo lang('ionize_ga_pageviews') ?></span><strong><?php echo $data['pageViews'] ?></strong></div></div>
 	<div class="metric"><div><span><?php echo lang('ionize_ga_unique_pageviews') ?></span><strong><?php echo $data['uniquePageViews'] ?></strong></div></div>
 	<div class="metric"><div><span><?php echo lang('ionize_ga_avg_time_on_page') ?></span><strong><?php echo $data['avgTimeOnPage'] ?></strong></div></div>

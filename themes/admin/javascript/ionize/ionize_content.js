@@ -6,6 +6,7 @@ ION.append({
 
 		if (typeOf(user) != 'null')
 		{
+			$('mainPanel').getElements('iframe').each(function(el){el.destroy()});
 			options.method = 'post';
 			options.url = admin_url + ION.cleanUrl(options.url);
 			MUI.Content.update(options);

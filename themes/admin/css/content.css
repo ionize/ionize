@@ -16,11 +16,22 @@ License:
 /* Correct the standard .pad class from Mocha 
    so the #sidecolumn doesn't superimpose on #maincolumn
 */
+/*
+*,
+*:before,
+*:after {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+*/
 #mainPanel {
 	background: #fff; 	
 	overflow-x: hidden;
 	min-width:480px;	
 }
+.bg-gray{background: url(../images/bg-gray-light.png)}
+
 #mainPanel_pad{
 	min-width:640px;
 }
@@ -172,6 +183,7 @@ li.offline { opacity:0.7; }
 .icon.drag, 		.button i.icon-drag			{background-position: 0 -64px;}
 .icon.duplicate, 	.button i.icon-duplicate	{background-position: -16px -80px;}
 .icon.clearfield,	.button i.icon-clearfield	{background-position: -192px -32px;}
+.icon.remove,	    .button i.icon-remove	{background-position: -192px -32px;}
 .icon.edit,			.button i.icon-edit			{background-position: 0 -80px;}
 .icon.edit_article,	.button i.icon-edit_article {background-position: -80px -80px;}
 .icon.refresh,		.button i.icon-refresh		{background-position: -176px -32px;}
@@ -218,8 +230,23 @@ li.offline { opacity:0.7; }
 .icon.folder.hidden,		.button i.icon-folder.hidden			{background-position: -32px -16px;}
 .icon.folder.hidden.open,		.button i.icon-folder.hidden.open			{background-position: -48px -16px;}
 
+.icon.enlarge,	.button i.enlarge	{background-position: -144px -112px;}
+.icon.reduce,	.button i.reduce	{background-position: -160px -112px;}
+
+.toolbardock div.panel-enlarge,
+.toolbardock div.panel-reduce{padding:0 }
+.panel-enlarge,
+.panel-reduce {background: url(../images/icons_16.png) no-repeat -144px -112px;}
+.panel-reduce {background-position: -160px -112px;}
+
+
 .icon.clearfield {position:absolute;left:90%;top:3px;}
 .icon.clearfield.date {left:135px;top:3px;}
+
+.icons-bar {
+	height: 16px;
+	display: block;
+}
 
 
 /*.icon a.link, a.icon.link {background: url(../images/toggler-collapse-expand.png) no-repeat 0 0;}*/
@@ -887,6 +914,128 @@ textarea.tab {
 .textboxlist-autocomplete-result-focus { background: url(../images/bg-blue-light.png); }
 .textboxlist-autocomplete-highlight { background: #098ED1; color:#fff;font-weight: bold; padding:2px 1px; border-radius: 3px; }
 
+/* Cards & Lists */
+#mediaList{
+	transition: all 500ms ease-in-out 0s;
+	-webkit-transition:all 500ms ease-in-out;
+	-moz-transition:all 500ms ease-in-out;
+	-o-transition:all 500ms ease-in-out;
+	-ms-transition:all 500ms ease-in-out;
+	overflow: hidden;
+}
+div.card,
+div.list {
+	border: 1px solid #E5E5E5;
+	padding: 10px;
+	position: relative;
+	overflow: hidden;
+	background: #fff;
+}
+div.card, div.card *,
+div.list, div.list * {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+div.card {
+	width: 30%;
+	width: 236px;
+	margin-right: 10px;
+	float:left;
+}
+div.list .data{
+	display:block;
+}
+div.list .thumb {
+	float: left;
+}
+div.list .data {
+	margin-left: 10px;
+	overflow: hidden;
+	margin-left: 150px;
+}
+div.list .mainTabs,
+div.card .mainTabs {
+	margin: 0;
+}
+div.list .picture,
+div.card .picture{
+	background: none;
+}
+div.card .picture{
+	margin: 0 auto;
+	float: none;
+	width: 128px;
+}
+div.card dl dt,
+div.card dl.small dt {
+	width: auto;
+	float: none;
+	text-align: left;
+}
+div.card dl dd,
+div.card dl.small dd {
+	margin-left: 0;
+	width: auto;
+}
+div.card dl dt label {
+	float:none;
+	display: block;
+	margin:0;
+}
+div.card dl input,
+div.card dl textarea {
+	width: 100%;
+}
+div.list dl input,
+div.list dl textarea {
+	width: 100%;
+}
+div.card .icons-bar{
+	position: absolute;
+	right:10px;
+}
+
+div.card .displayer,
+div.list .displayer{
+	height: 150px;
+	display: block;
+	width: 150px;
+}
+div.card .displayer{
+	margin: 0 auto;
+}
+div.list .displayer{
+	float:left;
+}
+div.card .ui360-vis {
+	margin:0 auto;
+}
+
+.media.flag-complete:before,
+.media.flag-not-used:before,
+.media.flag-incomplete:before,
+.media.flag-broken:before{
+	content: "";
+	text-align: center;
+	color:#fff;
+	display: block;
+	width: 60px;
+	height: 20px;
+	position:absolute;
+	top: 0;
+	left:-20px;
+	z-index: 40;
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(SizingMethod='auto expand', M11=0.7071067811865476, M12=-0.7071067811865475, M21=0.7071067811865475, M22=0.7071067811865476)";
+}
+.media.flag-complete:before{background-color: #7ab803}
+.media.flag-not-used:before{background-color: #999}
+.media.flag-incomplete:before{background-color: #d65905;content:" !! "}
+.media.flag-broken:before{background-color: #a00202;content:" !!! "}
 
 
 /* Pagination links
@@ -992,12 +1141,21 @@ div.translation {
 
 .desktopBloc{
 	background: url(../images/bg-gray-light.png);
+	background: #fff;
 	border: solid 1px #e5e5e5;
-	border-radius: 4px;
 	overflow: hidden;
 	padding:0;
 	margin-bottom: 12px;
-
+	width: 49%;
+	margin-right: 1%;
+	float:left;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.desktopBloc.fullwidth{
+	width: 99%;
+	margin-right: 0;
 }
 .desktopBloc .tab-menu li {
 	float: none;
@@ -1081,6 +1239,38 @@ div.translation {
 	top:0;
 	right:0;
 }
+
+/* Analytics */
+#page-analytics {
+	clear: left;
+}
+#page-analytics .metric {
+	float: left;
+	font-size: 12px;
+	margin: 8px 0 5px 0;
+	width: 20%;
+}
+#page-analytics .metric div{
+	background: #fff;
+	margin-right: 1px;
+	padding: 10px;
+	border-radius: 4px;
+}
+#page-analytics .metric span {
+	font-size:0.9em;
+	line-height: 1.2em;
+	color:#999;
+	display: block;
+	padding-bottom: 3px;
+	text-align: center;
+}
+#page-analytics .metric strong {
+	font-size: 16px;
+	font-weight: bold;
+	display: block;
+	text-align: center;
+}
+
 
 /* Flags Elements
 ---------------------------------------------------------------- */

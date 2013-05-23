@@ -59,6 +59,7 @@ Ionize.initializeDesktop = function(){
 							panels:[
 							{
 								id: 'mainPanel',
+								padding: {top: 0, right: 0, bottom: 0, left: 0},
 								title: Lang.get('ionize_title_welcome'),
 								content: [
 									{url: admin_url + 'dashboard'},

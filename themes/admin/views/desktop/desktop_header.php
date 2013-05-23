@@ -61,12 +61,16 @@
 	                    <li><a class="navlink" href="tag" title="<?php echo lang('ionize_title_tags'); ?>"><?php echo lang('ionize_menu_tags'); ?></a></li>
 					<?php endif ;?>
 
+
 					<?php if(Authority::can('access', 'admin/translations')) :?>
 						<li class="divider"><a class="navlink" href="translation" title="<?php echo lang('ionize_title_translation'); ?>"><?php echo lang('ionize_menu_translation'); ?></a></li>
 					<?php endif ;?>
 
+					<?php if(Authority::can('access', 'admin/medialist')) :?>
+						<li class="divider"><a class="navlink" href="medialist" title="<?php echo lang('ionize_title_medialist'); ?>"><?php echo lang('ionize_menu_medialist'); ?></a></li>
+					<?php endif ;?>
 					<?php if(Authority::can('access', 'admin/filemanager')) :?>
-						<li class="divider"><a id="mediamanagerlink" href="media/get_media_manager" title="<?php echo lang('ionize_menu_media_manager'); ?>"><?php echo lang('ionize_menu_media_manager'); ?></a></li>
+						<li><a id="mediamanagerlink" href="media/get_media_manager" title="<?php echo lang('ionize_menu_media_manager'); ?>"><?php echo lang('ionize_menu_media_manager'); ?></a></li>
 					<?php endif ;?>
 
 					<?php if(Authority::can('access', 'admin/article/type')) :?>

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Modal window for Media metadata edition
  *

@@ -545,7 +545,3 @@ class Media_model extends Base_model
 	}
 
 }
-
-
-/* End of file media_model.php */
-/* Location: ./application/models/media_model.php */

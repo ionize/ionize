@@ -8,9 +8,7 @@
 
 // Basic vars
 $file_path = Settings::get('files_path').'/';
-
 $thumb_base_url = base_url().$file_path.'.thumbs/';
-
 $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
 
 ?>

@@ -13,7 +13,6 @@
 	<!-- Tabs -->
 	<div id="ionizeSettingsTab" class="mainTabs">
 		<ul class="tab-menu">
-			<li id="ui_dashboard"><a><?php echo lang('ionize_title_dashboard'); ?></a></li>
 			<li id="ui_visual_settings"><a><?php echo lang('ionize_title_visual_help'); ?></a></li>
 			<li id="ui_language_settings"><a><?php echo lang('ionize_title_admin_panel_languages'); ?></a></li>
 			<li id="ui_datetime_settings"><a><?php echo lang('ionize_title_admin_panel_datetime'); ?></a></li>
@@ -25,19 +24,6 @@
 	<div id="ionizeSettingsTabContent">
 
 		<form name="ionizeSettingsForm" id="ionizeSettingsForm" method="post">
-
-			<div class="tabcontent">
-
-				<dl>
-					<dt>
-						<label for="dashboard_google" title="<?php echo lang('ionize_help_display_google'); ?>"><?php echo lang('ionize_label_display_google'); ?></label>
-					</dt>
-					<dd>
-						<input class="inputcheckbox" type="checkbox" name="dashboard_google" id="dashboard_google" <?php if (Settings::get('dashboard_google') == '1'):?> checked="checked" <?php endif;?> value="1" />
-					</dd>
-				</dl>
-
-			</div>
 
 			<!-- Visual help : help tips and "Connected" label -->
 			<div class="tabcontent">

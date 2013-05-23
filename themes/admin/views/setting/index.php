@@ -122,6 +122,14 @@
 							<input type="password" name="google_analytics_password" id="google_analytics_password" class="inputtext w180" value="<?php echo Settings::get('google_analytics_password'); ?>" />
 						</dd>
 					</dl>
+					<dl class="mt10">
+						<dt>
+							<label for="dashboard_google" title="<?php echo lang('ionize_help_display_google'); ?>"><?php echo lang('ionize_label_display_google'); ?></label>
+						</dt>
+						<dd>
+							<input class="inputcheckbox" type="checkbox" name="dashboard_google" id="dashboard_google" <?php if (Settings::get('dashboard_google') == '1'):?> checked="checked" <?php endif;?> value="1" />
+						</dd>
+					</dl>
 				</div>
 			
 			</form>

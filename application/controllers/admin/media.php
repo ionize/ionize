@@ -23,7 +23,6 @@
 
 class Media extends MY_admin 
 {
-
 	protected static $DEFAULT_EXPIRE = 604800;
 	protected static $DEFAULT_TYPE = 'text/html';
 	

@@ -466,8 +466,8 @@ CREATE TABLE IF NOT EXISTS role (
 
 CREATE TABLE if not exists rule (
   id_role int(11) NOT NULL,
-  resource varchar(255) NOT NULL DEFAULT '',
-  actions varchar(255) NOT NULL DEFAULT '',
+  resource varchar(150) NOT NULL DEFAULT '',
+  actions varchar(150) NOT NULL DEFAULT '',
   permission smallint(1) DEFAULT NULL,
   id_element int(11) unsigned,
   PRIMARY KEY (id_role,resource,actions)
