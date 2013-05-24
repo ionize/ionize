@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.8
  */
@@ -37,7 +37,10 @@ class Url_model extends Base_model
 		$this->set_pk_name('id_url');
 	}
 
-	
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Saves one URL
 	 * 
@@ -124,18 +127,20 @@ class Url_model extends Base_model
 
 		return $return;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return one entity based of its URL
-	 * 
-	 * Important : If one page and one article have the same URL, the page is returned 
 	 *
-	 * @return	Mixed	Array of the entity or NULL if no entity found
+	 * Important : If one page and one article have the same URL, the page is returned
 	 *
-	 * @TODO : 	Check what happens when one article has the same URL
-	 *			than one page !
+	 * @param      $url
+	 * @param null $lang
 	 *
+	 * @return mixed|null		Array of the entity or NULL if no entity found
 	 */
 	public function get_by_url($url, $lang = NULL)
 	{
@@ -176,16 +181,20 @@ class Url_model extends Base_model
 		
 		return NULL;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns list of URLs
 	 *
-	 * @param	String		Entity type. 'article, 'page'
-	 * @param	Int			Entity ID
-	 * @param	String		Lang code. 'all' for all languages
-	 * @param	Boolean		Only active URLs. 1 default
+	 * @param        $type			Entity type. 'article, 'page'
+	 * @param        $id_entity		Entity ID
+	 * @param string $lang			Lang code. 'all' for all languages
+	 * @param bool   $active		Only active URLs. 1 default
 	 *
+	 * @return array
 	 */
 	public function get_collection($type, $id_entity, $lang = 'all', $active = TRUE)
 	{
@@ -208,6 +217,15 @@ class Url_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param string $type
+	 * @param null   $id_entity
+	 *
+	 * @return array
+	 */
 	public function get_entity_urls($type='page', $id_entity = NULL)
 	{
 		$urls = array();
@@ -225,6 +243,9 @@ class Url_model extends Base_model
 
 		return $urls;
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -262,6 +283,9 @@ class Url_model extends Base_model
 		}
 		return $url;
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -367,6 +391,9 @@ class Url_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Update the entity lang table with one new URL
 	 *
@@ -398,15 +425,30 @@ class Url_model extends Base_model
 			$this->{$this->db_group}->update($table, array('url' => $url));
 		}
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @return mixed
+	 */
 	public function delete_empty_urls()
 	{
 		$this->{$this->db_group}->where(array('path' => ''));
 		return $this->{$this->db_group}->delete('url');
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param null $type
+	 * @param bool $id_entity
+	 *
+	 * @return int
+	 */
 	public function delete($type, $id_entity)
 	{
 		$where = array(
@@ -417,6 +459,9 @@ class Url_model extends Base_model
 		$this->{$this->db_group}->where($where);
 		return $this->{$this->db_group}->delete('url');
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -445,6 +490,9 @@ class Url_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return TRUE if one URL already exists (for another entity_id with the same type)
 	 *
@@ -464,6 +512,17 @@ class Url_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param        $type
+	 * @param        $id_entity
+	 * @param        $url
+	 * @param string $lang
+	 *
+	 * @return array
+	 */
 	public function get_existing_urls($type, $id_entity, $url, $lang='all')
 	{
 		$urls = array();
@@ -489,16 +548,21 @@ class Url_model extends Base_model
 		}
 		return $urls;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return one unique URL
 	 *
-	 * @param	String		Entity type. 'article, 'page'
-	 * @param	Int			Entity ID
-	 * @param	String		Lang code. 'all' for all languages
-	 * @param	String		URL
+	 * @param     $type			Entity type. 'article, 'page'
+	 * @param     $id_entity	Entity ID
+	 * @param     $lang			Lang code. 'all' for all languages
+	 * @param     $url			URL
+	 * @param int $id
 	 *
+	 * @return mixed
 	 */
 	public function get_unique_url($type, $id_entity, $lang, $url, $id = 1)
 	{
@@ -519,6 +583,8 @@ class Url_model extends Base_model
 		return $url;
 	}
 
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -541,6 +607,9 @@ class Url_model extends Base_model
 
 		return base_url();
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -568,6 +637,4 @@ class Url_model extends Base_model
 
 		return base_url();
 	}
-
 }
-

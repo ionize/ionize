@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
@@ -32,7 +32,6 @@ class Tree_model extends Base_Model
 	 */
 	public function __construct()
 	{
-		// Call the Model constructor
 		parent::__construct();
 	}
 
@@ -162,5 +161,3 @@ class Tree_model extends Base_Model
 		return $data;
 	}	
 }
-/* End of file tree_model.php */
-/* Location: ./application/models/tree_model.php */

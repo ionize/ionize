@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
@@ -20,12 +20,21 @@
  * @author		Ionize Dev Team
  *
  */
-
-class Page_model extends Base_model 
+class Page_model extends Base_model
 {
-
+	/**
+	 * Page Article Context table
+	 * @var string
+	 */
 	public $context_table =		'page_article';
+
+	/**
+	 * @var string
+	 */
 	public $url_table =			'url';
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -724,7 +733,4 @@ class Page_model extends Base_model
 
 		return $data;
 	}
-
 }
-/* End of file page_model.php */
-/* Location: ./application/models/page_model.php */

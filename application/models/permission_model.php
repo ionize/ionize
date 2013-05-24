@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
  */
@@ -16,11 +16,10 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	ACL
+ * @category	Authorizations
  * @author		Ionize Dev Team
  *
  */
-
 class permission_model extends Base_model
 {
 	/**
@@ -40,6 +39,13 @@ class permission_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Get roles permissions
+	 *
+	 * @param $roles
+	 *
+	 * @return array
+	 */
 	public function get_from_roles($roles)
 	{
 		$role_ids = array();
@@ -57,6 +63,11 @@ class permission_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $permissions
+	 *
+	 * @return array
+	 */
 	public function format_permissions($permissions)
 	{
 		$data = array();
@@ -81,6 +92,11 @@ class permission_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Save 'all' permission
+	 *
+	 * @param $id_role
+	 */
 	public function set_all_permissions($id_role)
 	{
 		$this->delete(array('id_role'=>$id_role));
@@ -98,6 +114,13 @@ class permission_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Saves permissions
+	 *
+	 * @param      $id_role
+	 * @param      $permissions
+	 * @param null $type
+	 */
 	public function save_permissions($id_role, $permissions, $type=NULL)
 	{
 		$this->_delete_role_permissions($id_role, $type);
@@ -138,6 +161,12 @@ class permission_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $id_role
+	 * @param $type
+	 *
+	 * @return mixed
+	 */
 	protected function _delete_role_permissions($id_role, $type)
 	{
 		$this->{$this->db_group}->where('id_role', $id_role);

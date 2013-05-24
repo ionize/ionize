@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.5
  */
@@ -20,10 +20,8 @@
  * @author		Ionize Dev Team
  *
  */
-
-class Lang_model extends Base_model 
+class Lang_model extends Base_model
 {
-
 	/**
 	 * Model Constructor
 	 *
@@ -235,13 +233,16 @@ class Lang_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Copy URLs from one lang to another
 	 * Used when one new lang is created
 	 *
-	 * @param	String				Lang code from which copy the data
-	 * @param	String				Lang code to copy to.
-	 *
+	 * @param      $from		Lang code from which copy the data
+	 * @param      $to			Lang code to copy to.
+	 * @param bool $erase
 	 */
 	function copy_lang_urls($from, $to, $erase=FALSE)
 	{
@@ -270,8 +271,4 @@ class Lang_model extends Base_model
 		
 		$this->{$this->db_group}->query($sql);
 	}
-	
-	
 }
-/* End of file lang_model.php */
-/* Location: ./application/models/lang_model.php */

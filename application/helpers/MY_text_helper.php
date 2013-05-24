@@ -1,26 +1,13 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Text Helper
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
- *
- */
-
-
-// ------------------------------------------------------------------------
-
-
-/**
- * Ionize Text Helpers
- *
- * @package		Ionize
- * @subpackage	Helpers
- * @category	Helpers
- * @author		Ionize Dev Team
  *
  */
 

@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.5
  */
@@ -20,10 +20,8 @@
  * @author		Ionize Dev Team
  *
  */
-
-class Menu_model extends Base_model 
+class Menu_model extends Base_model
 {
-
 	/**
 	 * Model Constructor
 	 *
@@ -100,6 +98,13 @@ class Menu_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * Saves one menu
+	 *
+	 * @param $data
+	 *
+	 * @return int|void
+	 */
 	public function save($data)
 	{
 		if ($this->exists(array('name' => $data['name'])))

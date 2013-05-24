@@ -1,27 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize
+ * Media Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Media Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Media management
- * @author		Ionize Dev Team
- *
- */
-
-class Media extends MY_admin 
+class Media extends MY_admin
 {
 	protected static $DEFAULT_EXPIRE = 604800;
 	protected static $DEFAULT_TYPE = 'text/html';
@@ -422,7 +411,6 @@ class Media extends MY_admin
 			// Delete thumbs
 			if($type == 'picture')
 			{
-				$media = $this->media_model->get($id);
 				$this->medias->delete_thumbs($media);
 			}
 

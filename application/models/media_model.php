@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
@@ -23,7 +23,10 @@
 
 class Media_model extends Base_model 
 {
-	// Fields of the context table which can be NULL
+	/**
+	 * Fields of the context table which can be NULL
+	 * @var array
+	 */
 	private $_context_null_allowed = array(
 		'lang_display'
 	);
@@ -100,9 +103,9 @@ class Media_model extends Base_model
 	/**
 	 * @param array $where
 	 * @param null  $lang
+	 * @param null  $filter
 	 *
 	 * @return array
-	 *
 	 */
 	public function get_lang_list($where = array(), $lang = NULL, $filter = NULL)
 	{
@@ -133,14 +136,15 @@ class Media_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Inserts / Update a media into the media table.
 	 * Updates the media if the media complete path already exists
-	 * 
-	 * @param	string	Medium type. Can be 'picture', 'music', 'video', 'file'
-	 * @param	string	Complete relative path to the medium, including file name, including the "files" folder
-	 * @return	boolean	TRUE if succeed, FALSE if errors
 	 *
+	 * @param      $type		Medium type. Can be 'picture', 'music', 'video', 'file'
+	 * @param      $path		Complete relative path to the medium, including file name, including the "files" folder
+	 * @param null $provider
+	 *
+	 * @return bool				TRUE if succeed, FALSE if errors
 	 */
 	public function insert_media($type, $path, $provider=NULL)
 	{
@@ -268,9 +272,8 @@ class Media_model extends Base_model
 		$parent_pk = $this->get_pk_name($parent);
 		$media_table = $parent.'_'.$this->table;
 
-		/* INNER JOIN on delete is not possible with CI Active Record.
-		 * So this request needs to be handly written
-		 */
+		// INNER JOIN on delete is not possible with CI Active Record.
+		// So this request needs to be handly written
 		$sql = 	' DELETE first from ' . $media_table . ' AS first';
 		
 		if ( ! is_null($type))
@@ -336,7 +339,11 @@ class Media_model extends Base_model
 		// Media saving
 		return parent::save($data, $lang_data);
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Saves the media context data
 	 * depending on the link between one parent and the media
@@ -371,6 +378,16 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $id
+	 * @param $parent
+	 * @param $id_parent
+	 *
+	 * @return array
+	 */
 	public function get_context_data($id, $parent, $id_parent)
 	{
 		$data = array();
@@ -388,6 +405,9 @@ class Media_model extends Base_model
 
 		return $data;
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -459,6 +479,9 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return the file type ('picture', 'music', 'video', 'file') regarding to its extension
 	 *
@@ -484,6 +507,14 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $filename
+	 *
+	 * @return bool
+	 */
 	public function has_allowed_extension($filename)
 	{
 		$file_extension = pathinfo($filename, PATHINFO_EXTENSION);
@@ -496,6 +527,13 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns array of broken medias
+	 * @return array
+	 */
 	public function get_brokens()
 	{
 		$brokens = array();
@@ -504,7 +542,7 @@ class Media_model extends Base_model
 
 		foreach($medias as $media)
 		{
-			if ( ! file_exists(DOCPATH . $media['path']))
+			if ( empty($media['provider']) && ! file_exists(DOCPATH . $media['path']))
 			{
 				$brokens[] = $media;
 			}
@@ -512,6 +550,9 @@ class Media_model extends Base_model
 
 		return $brokens;
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -557,6 +598,9 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Unlink pages and article from media which have the given path
 	 * @param      $path
@@ -590,6 +634,9 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Init all "path"_hash" from media table
 	 *
@@ -614,10 +661,12 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	private function _set_filter($filter = NULL)
 	{
 		if ( ! is_null($filter))
 			$this->{$this->db_group}->where('('.$filter.')');
 	}
-
 }

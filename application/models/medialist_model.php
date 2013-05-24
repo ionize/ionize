@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
  */
@@ -16,11 +16,10 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	Media management
+ * @category	Media
  * @author		Ionize Dev Team
  *
  */
-
 class Medialist_model extends Base_model
 {
 	/**
@@ -40,6 +39,17 @@ class Medialist_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns enhanced media list
+	 *
+	 * @param null $where
+	 * @param null $table
+	 *
+	 * @return array
+	 */
 	public function get_list($where = NULL, $table = NULL)
 	{
 		// Pages
@@ -75,6 +85,16 @@ class Medialist_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves media meta data
+	 *
+	 * @param $post
+	 *
+	 * @return int|void
+	 */
 	public function save($post)
 	{
 		foreach($post as $key => $media)
@@ -88,6 +108,16 @@ class Medialist_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Remove one media
+	 * Unlink it from all content
+	 * Does not remove the source file
+	 *
+	 * @param $id_media
+	 */
 	public function remove($id_media)
 	{
 		$where = array(

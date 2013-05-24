@@ -1,24 +1,13 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize
+ * Role Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
- */
-
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Role Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	ACL management
- * @author		Ionize Dev Team
- *
  */
 
 class Role extends MY_Admin

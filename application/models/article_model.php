@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
@@ -1651,5 +1651,3 @@ class Article_model extends Base_model
 	}
 
 }
-/* End of file article_model.php */
-/* Location: ./application/models/article_model.php */

@@ -1,25 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize
+ * Auth Controller
+ * User authentication
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
- */
-
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Auth Controller
- * Used to login / logout an user
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	User
- * @author		Ionize Dev Team
- *
  */
 
 class Auth extends My_Admin

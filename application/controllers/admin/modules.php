@@ -1,28 +1,17 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Modules Controller
+ * Displays Modules list
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Modules Controller
- * Displays Modules list
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Modules management
- * @author		Ionize Dev Team
- *
- */
-
-class Modules extends MY_admin 
+class Modules extends MY_admin
 {
 
 	/**

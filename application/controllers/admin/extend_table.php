@@ -1,30 +1,17 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Extend Table Controller
+ * Draft, not implemented
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.6
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize, creative CMS Category Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Extend table
- * @author		Ionize Dev Team
- *
- * Extends tables by adding fields to a side table.
- * Example : If the master table is "users", will create a side table called "users_extend".
- *
- */
-
-class Extend_table extends MY_admin 
+class Extend_table extends MY_admin
 {
 	/**
 	 * Constructor

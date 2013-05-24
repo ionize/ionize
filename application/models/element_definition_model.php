@@ -1,8 +1,25 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Ionize
+ *
+ * @package		Ionize
+ * @author		Ionize Dev Team
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.5
+ */
 
-class Element_definition_model extends Base_model 
+/**
+ * Ionize Element Definition Model
+ *
+ * @package		Ionize
+ * @subpackage	Models
+ * @category	Element
+ * @author		Ionize Dev Team
+ *
+ */
+class Element_definition_model extends Base_model
 {
-
 	/**
 	 * Constructor
 	 *
@@ -27,7 +44,10 @@ class Element_definition_model extends Base_model
 	/**
 	 * Returns the array of all definitions which have element defined for the given parent
 	 *
+	 * @param      $parent
+	 * @param bool $id_parent
 	 *
+	 * @return array
 	 */
 	function get_definitions_from_parent($parent, $id_parent = FALSE)
 	{
@@ -69,12 +89,14 @@ class Element_definition_model extends Base_model
 	
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * Deletes one Element Definition
-	 * 
 	 *
+	 * @param null $id
+	 *
+	 * @return int
 	 */
-	
 	function delete($id)
 	{
 		$affected_rows = 0;
@@ -87,9 +109,4 @@ class Element_definition_model extends Base_model
 		
 		return $affected_rows;
 	}
-
-
 }
-
-/* End of file element_definition_model.php */
-/* Location: ./application/models/element_definition_model.php */

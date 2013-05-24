@@ -2,7 +2,6 @@
 
 class Type_model extends Base_model 
 {
-
 	/**
 	 * Constructor
 	 *
@@ -57,6 +56,3 @@ class Type_model extends Base_model
 
 
 }
-
-/* End of file type_model.php */
-/* Location: ./application/models/type_model.php */

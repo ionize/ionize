@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
  */
@@ -16,7 +16,7 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	ACL
+ * @category	Authorizations
  * @author		Ionize Dev Team
  *
  */

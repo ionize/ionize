@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Partikule Studio
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.92
  */

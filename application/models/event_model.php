@@ -11,14 +11,16 @@
 // ------------------------------------------------------------------------
 
 /**
- * Event Model
+ * Ionize Event Model
  *
+ * @package		Ionize
+ * @subpackage	Models
+ * @category	Event
+ * @author		Ionize Dev Team
  *
  */
-
 class Event_model extends Base_model
 {
-
 	/**
 	 * Constructor
 	 *
@@ -29,8 +31,4 @@ class Event_model extends Base_model
 		parent::__construct();
 		$this->table =	'event_log';
 	}
-
 }
-
-/* End of file category_model.php */
-/* Location: ./application/models/category_model.php */

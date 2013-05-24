@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
  */
@@ -25,14 +25,12 @@ class User_model extends Base_model
 {
 	/**
 	 * Role table
-	 *
 	 * @var string
 	 */
 	static $ROLE_TABLE = 'role';
 
 	/**
 	 * The table storing the access attempt data.
-	 *
 	 * @var string
 	 */
 	public $tracker_table = 'login_tracker';
@@ -138,6 +136,11 @@ class User_model extends Base_model
 	// --------------------------------------------------------------------
 
 
+	/**
+	 * @param array $where
+	 *
+	 * @return array
+	 */
 	public function get_list_with_role($where = array())
 	{
 		$this->_join_role();
@@ -149,6 +152,11 @@ class User_model extends Base_model
 	// --------------------------------------------------------------------
 
 
+	/**
+	 * @param array $where
+	 *
+	 * @return int
+	 */
 	public function count($where=array())
 	{
 		unset($where['limit']);
@@ -163,6 +171,12 @@ class User_model extends Base_model
 	// --------------------------------------------------------------------
 
 
+	/**
+	 * @param      $user
+	 * @param null $role_code
+	 *
+	 * @return int|null|the
+	 */
 	public function save($user, $role_code = NULL)
 	{
 		$user = $this->_clean_user_data($user);
@@ -198,6 +212,10 @@ class User_model extends Base_model
 	// --------------------------------------------------------------------
 
 
+	/**
+	 * @param $id_user
+	 * @param $role_code
+	 */
 	public function set_role($id_user, $role_code)
 	{
 		self::$ci->load->model('role_model', '', TRUE);
@@ -215,35 +233,17 @@ class User_model extends Base_model
 	// --------------------------------------------------------------------
 
 
+	/**
+	 * @param null $id_user
+	 *
+	 * @return int
+	 */
 	public function delete($id_user)
 	{
 		$this->{$this->db_group}->where($this->pk_name, $id_user);
 
 		return $this->{$this->db_group}->delete($this->table);
 	}
-
-
-	// --------------------------------------------------------------------
-
-
-	/**
-	 * Bans a user.
-	 *
-	 * @param  int   The user id
-	 * @return bool
-	public function ban_user($id_user)
-	{
-		// Don't allow the current user to ban himself
-		if(User()->getId() == $id_user)
-			return FALSE;
-
-		$query->select($this->groups_pk)
-			->from($this->groups_table)
-			->where('slug', $this->connect->banned_user_group);
-
-		return $this->{$this->db_group}->update($this->table, array($this->groups_pk => $query), array($this->pk_name => $user_id), 1);
-	}
-	 */
 
 
 	// --------------------------------------------------------------------
@@ -293,6 +293,11 @@ class User_model extends Base_model
 	// --------------------------------------------------------------------
 
 
+	/**
+	 * @param $tracker
+	 *
+	 * @return mixed
+	 */
 	public function save_tracker($tracker)
 	{
 		// update : No client IP : Set it !
@@ -312,6 +317,9 @@ class User_model extends Base_model
 	// --------------------------------------------------------------------
 
 
+	/**
+	 * @return null
+	 */
 	public function getPkName()
 	{
 		return $this->pk_name;
@@ -349,6 +357,11 @@ class User_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $data
+	 *
+	 * @return mixed
+	 */
 	private function _clean_user_data($data)
 	{
 		$fields = $this->{$this->db_group}->list_fields($this->table);
@@ -363,6 +376,10 @@ class User_model extends Base_model
 
 	// ------------------------------------------------------------------------
 
+
+	/**
+	 * Joins user's an roles tables
+	 */
 	private function _join_role()
 	{
 		$this->{$this->db_group}->select('role_code, role_name, role_description, role_level');
@@ -373,6 +390,4 @@ class User_model extends Base_model
 			'left'
 		);
 	}
-
-
 }

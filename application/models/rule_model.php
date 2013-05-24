@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
  */
@@ -39,6 +39,11 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $role
+	 *
+	 * @return array
+	 */
 	public function get_from_role($role)
 	{
 		$this->{$this->db_group}->where_in('id_role', $role['id_role']);
@@ -50,6 +55,11 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param null $type
+	 *
+	 * @return array
+	 */
 	public function get_from_type($type=NULL)
 	{
 		$where = NULL;
@@ -100,6 +110,11 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $rules
+	 *
+	 * @return array
+	 */
 	public function format_rules($rules)
 	{
 		$data = array();
@@ -124,6 +139,9 @@ class rule_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $id_role
+	 */
 	public function set_all_permissions($id_role)
 	{
 		$this->delete(array('id_role'=>$id_role));
@@ -341,7 +359,10 @@ class rule_model extends Base_model
 
 
 	/**
+	 * @param $id_role
+	 * @param $type
 	 *
+	 * @return mixed
 	 */
 	protected function _delete_role_rules($id_role, $type)
 	{

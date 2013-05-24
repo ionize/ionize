@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0.0
  */
@@ -16,19 +16,22 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	ACL
+ * @category	Authorization
  * @author		Ionize Dev Team
  *
  */
-
 class resource_model extends Base_model
 {
 	/**
 	 * Rule table
-	 *
 	 * @var string
 	 */
 	static $RULE_TABLE = 'rule';
+
+	/**
+	 * Role table
+	 * @var string
+	 */
 	static $ROLE_TABLE = 'role';
 
 
@@ -68,6 +71,17 @@ class resource_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param        $element
+	 * @param        $id_element
+	 * @param array  $actions
+	 * @param string $type
+	 *
+	 * @return array
+	 */
 	public function get_element_roles_resources($element, $id_element, $actions=array(), $type='frontend')
 	{
 		$data = array();
@@ -127,6 +141,14 @@ class resource_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param        $element
+	 * @param        $id_element
+	 * @param array  $actions
+	 * @param string $type
+	 *
+	 * @return array
+	 */
 	public function get_element_resource($element, $id_element, $actions=array(), $type='frontend')
 	{
 		if ($actions == NULL) $actions = array();

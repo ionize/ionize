@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
@@ -17,7 +17,7 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	Base model
+ * @category	Model
  * @author		Ionize Dev Team
  *
  */
@@ -2548,9 +2548,4 @@ class Base_model extends CI_Model
 	{
 		return $this->{$this->db_group}->table_exists($table);
 	}
-
 }
-
-
-/* End of file base.php */
-/* Location: ./application/models/base.php */

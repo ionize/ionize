@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
@@ -23,7 +23,6 @@
 
 class System_check_model extends Base_model 
 {
-
 	/**
 	 * Constructor
 	 *
@@ -34,8 +33,11 @@ class System_check_model extends Base_model
 		// Call the Model constructor
 		parent::__construct();
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Checks the pages levels.
 	 * @access	public
@@ -55,16 +57,21 @@ class System_check_model extends Base_model
 		
 		return 0;
 	}
-	
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Recursively processes all wrong pages levels
-	 * @access	private
-	 * @param	array		Pages to process, by ref.
-	 * @param	boolean		Correct wrong level ? Default to FALSE
-	 * @return	int			Number of corrected pages
 	 *
+	 * @param      $pages			Pages to process, by ref.
+	 * @param bool $correct			Correct wrong level ? Default to FALSE
+	 * @param int  $id_parent
+	 * @param int  $level
+	 * @param int  $nb_wrong
+	 *
+	 * @return int					Number of corrected pages
 	 */
 	private function process_wrong_page_level(&$pages, $correct=FALSE, $id_parent=0, $level=0, $nb_wrong=0 )
 	{
@@ -87,8 +94,14 @@ class System_check_model extends Base_model
 		}
 		return $nb_wrong;
 	}
-	
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @return int
+	 */
 	public function check_article_context()
 	{
 		$nb = 0;
@@ -160,12 +173,6 @@ class System_check_model extends Base_model
 				}
 			}				
 		}
-		
 		return $nb;
 	}
-	
-	
-	
 }
-/* End of file system_check_model.php */
-/* Location: ./application/models/system_check_model.php */
