@@ -1,115 +1,59 @@
 
-<ul id="nav">
+<div class="block">
+	<ul id="nav">
 
-	<li><a class="active" 	href="?step=checkconfig&lang=<?php echo $lang ?>"><?php echo lang('nav_check') ?></a></li>
-	<li><a class="inactive" href="?step=database&lang=<?php echo $lang ?>"><?php echo lang('nav_db') ?></a></li>
-	<li><a class="inactive" href="?step=settings&lang=<?php echo $lang ?>"><?php echo lang('nav_settings') ?></a></a></li>
-	<li><a class="inactive" href="?step=data&lang=<?php echo $lang ?>"><?php echo lang('nav_data') ?></a></a></li>
-	<li><a class="inactive"><?php echo lang('nav_end') ?></a></a></li>
-	
-</ul>
+		<li><a class="active" 	href="?step=checkconfig&lang=<?php echo $lang ?>"><?php echo lang('nav_check') ?></a></li>
+		<li><a class="inactive" href="?step=database&lang=<?php echo $lang ?>"><?php echo lang('nav_db') ?></a></li>
+		<li><a class="inactive" href="?step=settings&lang=<?php echo $lang ?>"><?php echo lang('nav_settings') ?></a></a></li>
+		<li><a class="inactive" href="?step=data&lang=<?php echo $lang ?>"><?php echo lang('nav_data') ?></a></a></li>
+		<li><a class="inactive"><?php echo lang('nav_end') ?></a></a></li>
 
+	</ul>
+</div>
 
-<!-- Intro text -->
-<?php echo lang('welcome_text') ?>
+<div class="block content">
 
-<h2 class="first"><?php echo lang('title_system_check') ?></h2>
+	<h1><?php echo lang('title_welcome') ?></h1>
 
+	<?php echo lang('welcome_text') ?>
 
-<!-- User message -->
-<?php if(isset($message)) :?>
-
-	<p class="<?php echo $message_type ?>"><?php echo $message ?></p>
-
-<?php endif ;?>
+	<h2><?php echo lang('title_system_check') ?></h2>
 
 
-<!-- PHP Version -->
-<dl class="first list">
-	<dt class="xlarge left">
-		<label for="title"><?php echo lang('php_version')?> (<b><?php echo phpversion() ?></b>)</label>
-	</dt>
-	<dd>
-		<img src="../themes/admin/images/icon_16_<?php if($php_version) :	?>ok<?php else :?>delete<?php endif ;?>.png" />
-	</dd>
-</dl>
-
-<dl class="list">
-	<dt class="xlarge left">
-		<label for="title"><?php echo lang('mysql_support')?></label>
-	</dt>
-	<dd>
-		<img src="../themes/admin/images/icon_16_<?php if($mysql_support) :?>ok<?php else :?>delete<?php endif ;?>.png" />
-	</dd>
-</dl>
-
-<dl class="list">
-	<dt class="xlarge left">
-		<label for="title">Safe Mode Off</label>
-	</dt>
-	<dd>
-		<img src="../themes/admin/images/icon_16_<?php if($safe_mode) :?>ok<?php else :?>delete<?php endif ;?>.png" />
-	</dd>
-</dl>
-
-<dl class="list">
-	<dt class="xlarge left">
-		<label for="title"><?php echo lang('file_uploads')?></label>
-	</dt>
-	<dd>
-		<img src="../themes/admin/images/icon_16_<?php if($file_uploads) :?>ok<?php else :?>delete<?php endif ;?>.png" />
-	</dd>
-</dl>
-
-<dl class="list">
-	<dt class="xlarge left">
-		<label for="title"><?php echo lang('gd_lib')?></label>
-	</dt>
-	<dd>
-		<img src="../themes/admin/images/icon_16_<?php if($gd_lib) :?>ok<?php else :?>delete<?php endif ;?>.png" />
-	</dd>
-</dl>
+	<?php if(isset($message)) :?>
+		<p class="<?php echo $message_type ?>"><?php echo $message ?></p>
+	<?php endif ;?>
 
 
+	<!-- PHP Version -->
+	<ul class="check">
+		<li class="<?php if($php_version) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('php_version')?> (<b><?php echo phpversion() ?></b>)</li>
+		<li class="<?php if($mysql_support) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('mysql_support')?> </li>
+		<li class="<?php if($safe_mode) :?>ok<?php else :?>fail<?php endif ;?>">Safe Mode Off </li>
+		<li class="<?php if($file_uploads) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('file_uploads')?></li>
+		<li class="<?php if($gd_lib) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('gd_lib')?></li>
+	</ul>
 
-<h2><?php echo lang('title_folder_check') ?></h2>
+	<h2><?php echo lang('title_folder_check') ?></h2>
 
-<?php foreach($check_folders as $folder => $result) :?>
-
-	<dl class="list">
-		<dt class="xlarge left">
-			<label for="title"><?php echo $folder ?></label>
-		</dt>
-		<dd>
-			<img src="../themes/admin/images/icon_16_<?php if($result) :?>ok<?php else :?>delete<?php endif ;?>.png" />
-		</dd>
-	</dl>
-
-<?php endforeach ;?>
-
-
-<h2><?php echo lang('title_files_check') ?></h2>
-
-<?php foreach($check_files as $file => $result) :?>
-
-	<dl class="list">
-		<dt class="xlarge left">
-			<label for="title"><?php echo $file ?></label>
-		</dt>
-		<dd>
-			<img src="../themes/admin/images/icon_16_<?php if($result) :?>ok<?php else :?>delete<?php endif ;?>.png" />
-		</dd>
-	</dl>
-
-<?php endforeach ;?>
+	<ul class="check">
+		<?php foreach($check_folders as $folder => $result) :?>
+			<li class="<?php if($result) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo $folder ?></li>
+		<?php endforeach ;?>
+	</ul>
 
 
+	<h2><?php echo lang('title_files_check') ?></h2>
 
+	<ul class="check">
+		<?php foreach($check_files as $file => $result) :?>
+			<li class="<?php if($result) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo $file ?></li>
+		<?php endforeach ;?>
+	</ul>
 
-<?php if ($next) :?>
-	<button type="button" class="button yes right" onclick="javascript:location.href='?step=database&lang=<?php echo $lang ?>';"><?php echo lang('button_next_step') ?></button>
-<?php endif ;?>
-
-<br/>
-
-
+	<div class="buttons">
+		<?php if ($next) :?>
+			<button type="button" class="button yes right" onclick="javascript:location.href='?step=database&lang=<?php echo $lang ?>';"><?php echo lang('button_next_step') ?></button>
+		<?php endif ;?>
+	</div>
+</div>

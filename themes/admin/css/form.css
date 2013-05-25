@@ -46,7 +46,6 @@ fieldset {
 	margin:1px 0 0;
 	overflow:hidden;
 	margin-bottom:5px;
-/*	min-width: 680px;	*/
 }
 .panel dl.last,
 .mocha dl.last {
@@ -367,7 +366,6 @@ a.button {
 	vertical-align: middle;
 	height:auto;
 	display: inline-block;
-	vertical-align: middle;
 }
 .button:hover
 a.button:hover {
@@ -438,7 +436,6 @@ a.button.submit:hover{
 	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(39,99,7)),color-stop(0.61, rgb(112,180,57)));
 	/* ie8 */
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#70b439, endColorstr=#338a05)";
-
 }
 .button.no, a.button.no,
 .button.cancel, a.button.cancel,

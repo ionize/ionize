@@ -70,11 +70,15 @@ Ionize.initializeDesktop = function(){
 									}
 								],
 								collapsible: false,
-								onLoaded: function()
+								onLoaded: function(el)
 								{
 									//	mediaManager.toggleFileManager({standalone:true});
+								},
+								onDrawEnd: function()
+								{
+									$('mainPanel').addClass('bg-gray');
 								}
-								//					,onResize: Ionize.updateResizeElements
+								// ,onResize: Ionize.updateResizeElements
 							}]
 						}
 					]}

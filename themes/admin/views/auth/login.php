@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title><?php echo lang('ionize_login') . ' | ' . Settings::get('site_title'); ?></title>
@@ -37,10 +37,8 @@
 			}
 		}
 
-		/*
-		 * Reload top window if #desktop object exists
-		 * Prevents from having a login window in a panel
-		 */
+		// Reload top window if #desktop object exists
+		// Prevents from having a login window in a panel
 		if ($('desktop'))
 		{
 			$('desktop').setStyle('display', 'none');
@@ -68,8 +66,6 @@
         });
 
 	</script>
-	
-
 </head>
 
 
@@ -80,11 +76,12 @@
 		</div>
 	<?php endif; ?>
 
-	<!-- Content -->
 	<div id="content" class="content" onKeyPress="doSubmit(event);">
 	
 		<div id="loginWindow" class=" clearfix">
-			
+
+			<div id="logo"></div>
+
 			<div id="version"><?php echo $this->config->item('version'); ?> - Ionize CMS - MIT licence</div>
 
 			<?php if(validation_errors() OR isset($this->login_errors)):?>
@@ -97,25 +94,27 @@
 
 			<?php echo form_open(current_url(), array('id' => 'login', 'class' => 'login')); ?>
 		
-		
 				<div>
-					<label for="username"><?php echo lang('ionize_login_name'); ?></label>
-					<?php echo form_input(array('name' 		=> 'username',
-										'id' 		=> 'username',
-										'value' 	=> set_value('username'),
-										'class' => 'inputtext')); ?>
+					<?php echo form_input(array(
+						'name' 		=> 'username',
+						'id' 		=> 'username',
+						'value' 	=> set_value('username'),
+						'class' => 'inputtext',
+						'placeholder' => lang('ionize_login_name')
+					)); ?>
 				</div>
 		
 				<div>
-					<label for="password"><?php echo lang('ionize_login_password'); ?></label>
-					<?php echo form_password(array(	'name' 		=> 'password',
-											'id' 		=> 'password',
-											'value' 	=> set_value('password'),
-											'class' => 'inputtext')); ?>
+					<?php echo form_password(array(
+						'name' 		=> 'password',
+						'id' 		=> 'password',
+						'value' 	=> set_value('password'),
+						'class' => 'inputtext',
+						'placeholder' => lang('ionize_login_password')
+					)); ?>
 				</div>
 		
 				<div class="action">
-					<!-- <?php echo form_checkbox('remember_me', 1); ?> <?php echo lang('ionize_login_remember'); ?> -->
 					<input type="submit" class="submit" value="<?php echo lang('ionize_login'); ?>" />
 				</div>
 		

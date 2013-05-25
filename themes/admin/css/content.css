@@ -30,7 +30,7 @@ License:
 	overflow-x: hidden;
 	min-width:480px;	
 }
-.bg-gray{background: url(../images/bg-gray-light.png)}
+#mainPanel.bg-gray{background: url(../images/bg-gray-light.png)}
 
 #mainPanel_pad{
 	min-width:640px;
@@ -1108,7 +1108,6 @@ div.translation {
 ---------------------------------------------------------------- */
 .row {
 	clear:both;
-	overflow: hidden;
 	margin-bottom: 12px;
 }
 .col {}
@@ -1141,9 +1140,8 @@ div.translation {
 
 .desktopBloc{
 	background: url(../images/bg-gray-light.png);
-	background: #fff;
+	background: #fdfdfd;
 	border: solid 1px #e5e5e5;
-	overflow: hidden;
 	padding:0;
 	margin-bottom: 12px;
 	width: 49%;
@@ -1153,6 +1151,7 @@ div.translation {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
 .desktopBloc.fullwidth{
 	width: 99%;
 	margin-right: 0;

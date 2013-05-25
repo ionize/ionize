@@ -132,4 +132,3 @@ if (file_exists('./class/Installer.php'))
 			break;
 	}
 }
-?>

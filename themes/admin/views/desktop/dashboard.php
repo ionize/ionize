@@ -12,7 +12,7 @@
  *
  */
 ?>
-<div class="bg-gray p10" >
+<div class="p10" >
 
 <!-- Row 1 -->
 <div class="row">

@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.90
  */
@@ -49,26 +49,26 @@ class Installer
 		// Check GET language
 		if (is_array($_GET) && isset($_GET['lang']) )
 		{
-			if (is_file(ROOTPATH.'application/language/'.$_GET['lang'].'/install_lang.php'))
+			if (is_file(ROOTPATH.'install/language/'.$_GET['lang'].'/install_lang.php'))
 				$lang = $_GET['lang'];
 		}
 		
 		$this->template['lang'] = $lang;
 		
 		// Include language file and merge it to language var
-		include(ROOTPATH.'application/language/'. $lang .'/install_lang.php');
+		include(ROOTPATH.'install/language/'. $lang .'/install_lang.php');
 		
 		$this->lang = array_merge($this->lang, $lang);
 
 		// Get all available translations
-		$dirs = scandir(ROOTPATH.'application/language');
+		$dirs = scandir(ROOTPATH.'install/language');
 		
 		$languages = array();
 		foreach($dirs as $dir)
 		{
-			if (is_dir(ROOTPATH.'application/language/'.$dir))
+			if (is_dir(ROOTPATH.'install/language/'.$dir))
 			{
-				if (is_file(ROOTPATH.'application/language/'.$dir.'/install_lang.php') and strpos($dir, '.') === false)
+				if (is_file(ROOTPATH.'install/language/'.$dir.'/install_lang.php') and strpos($dir, '.') === false)
 				{
 					$languages[] = $dir;
 				}
@@ -212,7 +212,7 @@ class Installer
 			// Skip TRUE and no POST = Admin user already exists
 			if ($this->template['skip'] == TRUE)
 			{
-				$this->template['message_type'] = 'error';
+				$this->template['message_type'] = 'alert';
 				$this->template['message'] = lang('user_info_admin_exists');
 			}
 			
@@ -635,14 +635,10 @@ class Installer
 			$this->_create_article($data, $id_page);
 		}
 
-
 		// Default minimal welcome page
-		$this->db->where('id_menu', '1');
-		$query = $this->db->get('page');
-	
-		if ($query->num_rows() == 0)
+		if ( ! $this->_exists(array('id_menu'=>'1'), 'page'))
 		{
-			$data = array('id_menu'=>'1', 'name'=>'welcome', 'url'=>'welcome', 'online'=>'1', 'appears'=>'1', 'home'=>'1', 'url'=>$page_code, 'title'=>'Welcome to ionize' );
+			$data = array('id_menu'=>'1', 'name'=>'home', 'url'=>'home', 'online'=>'1', 'appears'=>'1', 'home'=>'1', 'title'=>'Welcome to ionize' );
 			$id_page = $this->_create_page($data);
 
 			// Article
@@ -660,7 +656,7 @@ class Installer
 
 		foreach ($langs as $lang)
 		{
-			if ( $this->_exists(array('lang' => $lang, 'name' => 'site_title'), 'setting'))
+			if ( ! $this->_exists(array('lang' => $lang, 'name' => 'site_title'), 'setting'))
 			{
 				$this->db->insert(
 					'setting',

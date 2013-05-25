@@ -7,7 +7,8 @@ $lang = array();
 | General
 |--------------------------------------------------------------------------
 */
-$lang['title_ionize_installation'] = 		'Installation';
+$lang['title_ionize_installation'] = 'Ionize Installation';
+$lang['title_welcome'] = 'Welcome to Ionize !';
 
 $lang['title_system_check'] = 		'System check result';
 $lang['title_database_settings'] = 	'Database settings';
@@ -44,7 +45,7 @@ $lang['write_config_dir'] = 	'<b>/application/config/</b>';
 $lang['write_files'] = 			'<b>/files/*</b>';
 $lang['write_themes'] = 		'<b>/themes/*</b>';
 $lang['config_check_errors'] = 	'Some base requirement are not OK.<br/>Please correct them to continue the installation.';
-$lang['welcome_text'] = 		"<p>Welcome ! These steps will help you to install Ionize.</p>";
+$lang['welcome_text'] = 		"<p>The following steps will help you to install Ionize.</p><p>Here are the results of the basic requirements check.<br/>If one requirement isn't OK, please correct it and refresh this page once it is corrected.</p>";
 $lang['write_check_text'] = 	"<p>The following folders and files need to be writable...</p>";
 $lang['title_folder_check'] = 	"These folders needs to be writable";
 $lang['title_files_check'] = 	"These files needs to be writable";
@@ -61,7 +62,7 @@ $lang['database_username'] = 		'User';
 $lang['database_password'] = 		'Password';
 $lang['database_create'] = 			'Create the database';
 $lang['title_database_create'] = 	'Database creation';
-$lang['db_create_text'] = 			"<p>Ionize will install or migrate your database:</p><p><b class=\"highlight\">New installation</b> : The database and the tables will be created<br/><b class=\"highlight2\">Upgrade</b> : The next step will check if an upgrade is needed</p>";
+$lang['db_create_text'] = 			"<p>Please fill your database settings.<br/>In case of upgrade, Ionize will detect the version you're running and upgrade the DB.</p><p><strong>Important:</strong> If you're upgrading, please first make a backup of your DB.</p>";
 $lang['db_create_prerequisite'] = 			"The user needs to have the right to create database.<br/>If your database already exists, don't check it.";
 $lang['database_error_missing_settings'] = 	'Some information is missing.<br/>Please fill all fields !';
 $lang['database_success_install'] = 		'<b class="ex">The database was successfully installed.</b>';

@@ -1,12 +1,20 @@
 ION.append({
 
+	grayPanels:Array('dashboard'),
+
+
 	contentUpdate:function(options)
 	{
 		var user = Ionize.User.getLoggedUser();
 
 		if (typeOf(user) != 'null')
 		{
+			$('mainPanel').removeClass('bg-gray');
+			if (ION.grayPanels.contains(options.url) == true)
+				$('mainPanel').addClass('bg-gray');
+
 			$('mainPanel').getElements('iframe').each(function(el){el.destroy()});
+
 			options.method = 'post';
 			options.url = admin_url + ION.cleanUrl(options.url);
 			MUI.Content.update(options);

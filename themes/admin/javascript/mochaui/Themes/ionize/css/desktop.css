@@ -37,8 +37,7 @@
 }
 #structurePanel_pad {
 	padding: 15px 0 8px 15px !important;
-	background: url(../images/bg-gray-light.png);
-/*	position: relative;*/
+	background: transparent;
 }
 #about_contentWrapper {
 	background: #e5e5e5 url(../images/application_about_window_bg.jpg) top left no-repeat;
