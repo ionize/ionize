@@ -54,6 +54,7 @@ p { margin: 0; padding: 0 0 5px 0; }
 
 /* Lists */
 ul { list-style: outside; margin: 0 0 9px 0; list-style-type: disc; }
+ol { margin: 0 0 9px 0; }
 dt { font-weight: bold; }
 dd { padding: 0 0 9px 0; }
 

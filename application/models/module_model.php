@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.6
  */
@@ -19,11 +19,15 @@
  * @category	Modules
  * @author		Ionize Dev Team
  */
-
-class Module_Model extends Base_model 
+class Module_Model extends Base_model
 {
-
+	/**
+	 * @var string
+	 */
 	public $module_setting_table =	'module_settings';
+
+
+	// ------------------------------------------------------------------------
 
 
 	public function __construct()
@@ -48,5 +52,3 @@ class Module_Model extends Base_model
 		return $this->{$this->db_group}->from('lang')->order_by('ordering', 'ASC')->get()->result_array();
 	}
 }
-/* End of file module_model.php */
-/* Location: ./application/models/module_model.php */

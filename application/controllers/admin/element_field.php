@@ -1,32 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
- *
+ * Element Field Controller
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Element Field Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Controllers
- * @author		Ionize Dev Team
- */
-class Element_field extends MY_Admin 
+class Element_field extends MY_Admin
 {
 	
 	public function __construct()
 	{
 		parent::__construct();
 
-//		$this->load->model('element_model', '', TRUE);
 		$this->load->model('element_definition_model', '', TRUE);
 		$this->load->model('extend_field_model', '', TRUE);
 	}
@@ -35,10 +24,7 @@ class Element_field extends MY_Admin
 	// ------------------------------------------------------------------------
 	
 	
-	function index()
-	{
-		//
-	}
+	function index(){}
 	
 	
 	// ------------------------------------------------------------------------
@@ -242,8 +228,4 @@ class Element_field extends MY_Admin
 			}
 		}
 	}
-
 }
-
-/* End of file element_field.php */
-/* Location: ./application/admin/controllers/element_field.php */

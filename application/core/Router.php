@@ -223,6 +223,9 @@ class CI_Router
 			// Language key : check if we have a valid language key there
 			if($key = $this->validate_lang_key($raw_key))
 			{
+				if (count($this->uri->segments) == 1 && $key == $this->config->item('default_lang_code'))
+					$this->redirect_home_to_base_url();
+
 				$this->lang_key = $key;
 
 				$this->apply_language();
@@ -251,7 +254,7 @@ class CI_Router
 				// Lang detection : Cookie, Browser
 				$this->detect_language();
 
-				// if ($raw_key == $this->get_default_controller())
+				// Home Page : Redirect to detected lang ?
 				if ($raw_key == '')
 				{
 					$this->redirect_home_to_lang_url();
@@ -531,10 +534,10 @@ class CI_Router
 			$raw_key = current($this->uri->segments);
 
 			// Case of Home page with Cookie : The asked lang code is the default one
+/*
 			if (
-//				$raw_key == $this->get_default_controller() &&
 				$raw_key == '' &&
-				!empty($_COOKIE['ion_selected_language'])
+				! empty($_COOKIE['ion_selected_language'])
 			)
 			{
 				$selected_language = $this->config->item('default_lang_code');
@@ -542,8 +545,9 @@ class CI_Router
 			// Try to get the cookie
 			else
 			{
+*/
 				$selected_language = ( ! empty($_COOKIE['ion_selected_language'])) ? $_COOKIE['ion_selected_language'] : NULL ;
-			}
+//			}
 
 			if( ! is_null($selected_language))
 			{
@@ -600,6 +604,16 @@ class CI_Router
 	}
 
 
+	public function redirect_home_to_base_url()
+	{
+		$url = config_item('base_url');
+
+		// 302 Found
+		header('HTTP/1.1 302 Found');
+		header('Location: '.$url, TRUE, 302);
+	}
+
+
 	/**
 	 * Validates a language key and returns the filtered variant.
 	 * 
@@ -636,8 +650,8 @@ class CI_Router
 		// User defined languages
 		else if
 		(
-			!empty($this->lang_dict[$key])
-			&& !empty($this->lang_online[$key])
+			! empty($this->lang_dict[$key])
+			&& ! empty($this->lang_online[$key])
 		)
 		{
 			return $key;
@@ -730,7 +744,6 @@ class CI_Router
 			return ($this->directory ? $this->directory.'/' : '');
 		}
 	}
-
 }
 
 

@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
@@ -20,12 +20,21 @@
  * @author		Ionize Dev Team
  *
  */
-
-class Page_model extends Base_model 
+class Page_model extends Base_model
 {
-
+	/**
+	 * Page Article Context table
+	 * @var string
+	 */
 	public $context_table =		'page_article';
+
+	/**
+	 * @var string
+	 */
 	public $url_table =			'url';
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -350,9 +359,15 @@ class Page_model extends Base_model
 	 * used to feed selectbox of groups
 	 *
 	 */
-	public function get_groups_select()
+	public function get_roles_select()
 	{
-		return $this->get_items_select('user_groups', 'group_name', lang('ionize_select_everyone'), 'level DESC');
+		return $this->get_items_select(
+			'role',
+			'role_name',
+			NULL,
+			lang('ionize_select_everyone'),
+			'role_level DESC'
+		);
 	}
 
 
@@ -587,7 +602,6 @@ class Page_model extends Base_model
 	 * @param	array	By ref. The pages array
 	 * @param	int		The current parent page ID
 	 *
-	 */
 	public function spread_authorizations(&$pages, $id_parent=0)
 	{
 		if ( ! empty($pages))
@@ -609,6 +623,33 @@ class Page_model extends Base_model
 				$this->spread_authorizations($pages, $child['id_page']);
 			}
 		}	
+	}
+	 */
+
+
+	public function spread_authorizations(&$pages, $id_parent=0)
+	{
+		if ( ! empty($pages))
+		{
+			$children = array_filter($pages, create_function('$row','return $row["id_parent"] == "'. $id_parent .'";'));
+
+			foreach ($children as $key=>$child)
+			{
+				$resource = 'frontend/page/' . $child['id_page'];
+
+				if ($id_parent != 0)
+				{
+					// Get the parent page
+					$parent = array_values(array_filter($pages, create_function('$row','return $row["id_page"] == "'. $id_parent .'";')));
+					$parent = $parent[0];
+
+					// Set authorization group from parent to child in the ref pages array
+					$pages[$key]['id_group'] = $parent['id_group'];
+				}
+
+				$this->spread_authorizations($pages, $child['id_page']);
+			}
+		}
 	}
 
 
@@ -692,7 +733,4 @@ class Page_model extends Base_model
 
 		return $data;
 	}
-
 }
-/* End of file page_model.php */
-/* Location: ./application/models/page_model.php */

@@ -316,7 +316,7 @@
 </div>
 
 <div class="buttons">
-	<button id="saveElementFormSubmit<?php echo $id_element; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_element'); ?></button>
+	<button id="saveElementFormSubmit<?php echo $id_element; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_element'); ?></button>
 </div>
 
 

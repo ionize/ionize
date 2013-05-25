@@ -1,10 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+require APPPATH.'/libraries/REST_Controller.php';
+
+
 /**
  * Ionize
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
@@ -19,7 +23,7 @@
  * Basic Model loads and settings set.
  *
  */
-class MY_Controller extends CI_Controller 
+class MY_Controller extends CI_Controller
 {
 	/**
 	 * Views data array
@@ -36,6 +40,8 @@ class MY_Controller extends CI_Controller
 	protected $context_tag = 'ion';
 
 
+	public $xhr_protected = FALSE;
+
 	// ------------------------------------------------------------------------
 
 
@@ -46,6 +52,8 @@ class MY_Controller extends CI_Controller
     public function __construct()
 	{
 		parent::__construct();
+
+//		log_message('error', $this->get_uri());
 
 		// Check the database settings
 		if ($this->test_database_config() === FALSE)
@@ -74,7 +82,7 @@ class MY_Controller extends CI_Controller
 		// Get all the website languages from DB and store them into config file "languages" key
 		$languages = $this->settings_model->get_languages();
 		Settings::set_languages($languages);
-		if( Connect()->is('editors', TRUE))
+		if( User()->is('editors', TRUE))
 			Settings::set_all_languages_online();
 
 		// 	Settings : google analytics string, filemanager, etc.
@@ -121,6 +129,8 @@ class MY_Controller extends CI_Controller
      */
     public function output($view)
     {
+		$this->xhr_protect();
+
     	// Unique ID, useful for DOM Element displayed in windows.
     	$this->template['UNIQ'] = (uniqid());
 
@@ -182,11 +192,13 @@ class MY_Controller extends CI_Controller
 			foreach($config_files as $file)
 			{
 				include($file);
-				
+
 				if ( isset($config))
 				{
 					foreach($config as $k=>$v)
+					{
 						$this->config->set_item($k, $v);
+					}
 	
 					unset($config);
 				}
@@ -215,9 +227,149 @@ class MY_Controller extends CI_Controller
 		
 		die();
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	public  function xhr_protect(){}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function disable_xhr_protection()
+	{
+		$this->xhr_protected = FALSE;
+	}
 } 
 // End MY_Controller
+
+
+// ------------------------------------------------------------------------
+
+
+/**
+ * API_Controller Class
+ *
+ * Extends REST_Controller Controller
+ * REST_Controller extends MY_Controller
+ *
+ */
+class API_Controller extends REST_Controller
+{
+	private $error = NULL;
+	private $success = NULL;
+
+
+	/**
+	 * @param string $message
+	 * @param int    $code
+	 */
+	protected function set_error($message='', $code = 404)
+	{
+		$this->error = array(
+			'status' => 0,
+			'code' => $code,
+			'content' => $message
+		);
+	}
+
+
+	/**
+	 * @param string $message
+	 * @param int    $code
+	 */
+	protected function set_success($message='', $code = 200)
+	{
+		$this->success = array(
+			'status' => 1,
+			'code' => $code,
+			'content' => $message
+		);
+	}
+
+
+	/**
+	 * @param string $content
+	 * @param int    $code
+	 */
+	protected function send_response($content = '', $code = 200)
+	{
+		if ( ! is_null($this->error))
+		{
+			log_message('error', 'API ERROR : ' . $this->uri->uri_string());
+			$code = $this->error['code'];
+			$data = $this->error;
+		}
+		else
+		{
+			log_message('error', 'API SUCCESS : ' . $this->uri->uri_string());
+
+			if (is_null($this->success))
+				$this->set_success($content, $code);
+
+			$data = $this->success;
+		}
+
+		$this->response($data, $code);
+	}
+
+
+
+	/**
+	 * Returns the key name of the asked GET or POST var position.
+	 *
+	 * @param int    $seg
+	 * @param string $type
+	 *
+	 * @return null
+	 */
+	protected function get_segment($seg = 1, $type='get')
+	{
+		if ($type == 'get')
+			$vars = $this->get();
+		else
+			$vars = $this->post();
+
+		$vars_keys = array_keys($vars);
+		if (isset($vars_keys[$seg-1]))
+			return $vars_keys[$seg-1];
+
+		return NULL;
+	}
+
+
+	/**
+	 * Extract given segments as string from url
+	 *
+	 * @usage	get_composed_segments('exists', 'user')
+	 * 			If the URL is '/api/media/exists/folder/subfolder/file.jpg/user/3'
+	 * 			will return : 'folder/subfolder/file.jpg'
+	 *
+	 * @param $from
+	 * @param $to
+	 * @return string
+	 */
+	protected function get_composed_segments($from, $to)
+	{
+		$extract = array();
+
+		$segments = explode('/', $this->uri->uri_string());
+
+		$start = FALSE;
+
+		while ( ! empty($segments))
+		{
+			$seg = array_shift($segments);
+			if ($seg == $to) $start = FALSE;
+			if ($start) $extract[] = $seg;
+			if ($seg == $from) $start = TRUE;
+		}
+
+		return implode('/', $extract);
+	}
+}
 
 
 // ------------------------------------------------------------------------
@@ -233,10 +385,8 @@ class Base_Controller extends MY_Controller
     {
         parent::__construct();
 
-// $this->output->enable_profiler(TRUE);
+		// $this->output->enable_profiler(TRUE);
 		
-		$this->connect = Connect::get_instance();
-
 		// Libraries
 		$this->load->library('structure');	
 		$this->load->library('widget');
@@ -248,10 +398,10 @@ class Base_Controller extends MY_Controller
 		$this->get_modules_config();
 
 		// Add path to installed modules
-		require(APPPATH.'config/modules.php');
-		$installed_modules = $modules;
+		$installed_modules = Modules()->get_installed_modules();
+
 		foreach($installed_modules as $module)
-			Finder::add_path(MODPATH.$module.'/');
+			if (isset($module['folder'])) Finder::add_path(MODPATH.$module['folder'].'/');
 
 		// Set the current theme
 		Theme::set_theme(Settings::get('theme'));
@@ -273,22 +423,6 @@ class Base_Controller extends MY_Controller
 		Settings::set('menus', $this->menu_model->get_list());
 
 
-/*
- * Already done by My_Controller
- * Test and remove
- *
-		$languages = $this->settings_model->get_languages();
-
-		// Put all DB languages array to Settings
-
-		Settings::set_languages($languages);
-
-		// Set all languages online if conected as editor or more
-		if( Connect()->is('editors', TRUE))
-		{
-			Settings::set_all_languages_online();
-		}
-*/
 		// Simple languages code array, used to detect if Routers found language is in DB languages
 		$online_lang_codes = array();
 		foreach(Settings::get_online_languages() as $language)
@@ -306,7 +440,7 @@ class Base_Controller extends MY_Controller
 			Settings::set('current_lang', config_item('detected_lang_code'));
 		}
 
-		// Set lang preferrence cookie
+		// Set lang preference cookie
 		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
 		
 		if( ! empty($_COOKIE['ion_selected_language']))
@@ -320,6 +454,7 @@ class Base_Controller extends MY_Controller
 		// Static translations
 		$lang_files = array();
 		$lang_folder = APPPATH . 'language/' . Settings::get_lang();
+
 		// Core languages files : Including except "admin_lang.php"
 		if (is_dir($lang_folder))
 		{
@@ -335,18 +470,31 @@ class Base_Controller extends MY_Controller
 
 		// Theme static translations
 		$lf = glob(FCPATH.Theme::get_theme_path().'language/'.Settings::get_lang().'/*_lang.php');
-		if ( !empty($lf))
+		foreach($lf as $key => $tlf)
+		{
+			if (basename($tlf) === 'theme_lang.php')
+			{
+				unset($lf[$key]);
+				array_unshift($lf, $tlf);
+				break;
+			}
+		}
+
+		if ( ! empty($lf))
 			$lang_files = array_merge($lf, (Array)$lang_files);
 
 		// Modules static translations
 		foreach($installed_modules as $module)
 		{
-			// Languages files : Including. Can be empty
-			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
-			array_push($lang_files, $lang_file);
+			if (isset($module['folder']))
+			{
+				// Languages files : Including. Can be empty
+				$lang_file = MODPATH.$module['folder'].'/language/'.Settings::get_lang().'/'.strtolower($module['folder']).'_lang.php';
+				array_push($lang_files, $lang_file);
+			}
 		}
 
-		// Load all modules lang files
+		// Load all lang files
 		if ( ! empty($lang_files))
 		{
 			foreach($lang_files as $l)
@@ -359,7 +507,7 @@ class Base_Controller extends MY_Controller
 						foreach($lang as $key => $translation)
 						{
 							// If the term doesn't exists
-							if ( ! isset($this->lang->language[$key]))
+							if ( ! isset($this->lang->language[$key]) OR $this->lang->language[$key] == '')
 							{
 								$this->lang->language[$key] = $translation;
 							}
@@ -375,6 +523,10 @@ class Base_Controller extends MY_Controller
 				}
 			}
 		}
+
+		// Event
+		Event::fire('Ionize.public.load');
+
 		require_once APPPATH.'libraries/Tagmanager.php';
 	}
 }
@@ -391,6 +543,16 @@ class Base_Controller extends MY_Controller
  */
 class MY_Admin extends MY_Controller
 {
+	/**
+	 * Default Authority Backend Deny views
+	 *
+	 * @var string
+	 */
+	public static $_DENY_DEFAULT_VIEW = 'authority/deny/default';
+	public static $_DENY_MAIN_VIEW = 'authority/deny/main';
+	public static $_DENY_OPTIONS_VIEW = 'authority/deny/options';
+
+
 	/**
 	 * Response message type
 	 * Used by controller to send answer to request
@@ -440,6 +602,8 @@ class MY_Admin extends MY_Controller
 	public $modules_addons = array();
 
 
+	public $xhr_protected = TRUE;
+
 	// ------------------------------------------------------------------------
 
 
@@ -451,22 +615,17 @@ class MY_Admin extends MY_Controller
     {
         parent::__construct();
 
-		$this->load->helper('module_helper');	
+		$this->load->helper('module_helper');
 		
-		// Redirect the not authorized user to the login panel. See /application/config/connect.php
-		Connect()->restrict_type_redirect = array(
-					'uri' => config_item('admin_url').'/user/login',
-					'flash_msg' => 'You have been denied access to %s',
-					'flash_use_lang' => FALSE,
-					'flash_var' => 'error');
+		// Redirect the not authorized user to the login panel. See /application/config/user.php
+		User()->restrict_type_redirect = array(
+			'uri' => config_item('admin_url').'/auth/login',
+			'flash_msg' => 'You have been denied access to %s',
+			'flash_use_lang' => FALSE,
+			'flash_var' => 'error'
+		);
 
 		$this->output->enable_profiler(FALSE);
-
-		// Connect library
-		$this->connect = Connect::get_instance();
-		
-		// Current user		
-		$this->template['current_user'] = $this->connect->get_current_user();
 
 		// Set the admin theme as current theme
 		Theme::set_theme('admin');
@@ -482,11 +641,13 @@ class MY_Admin extends MY_Controller
 
 		// Load the current language translations file
 		$this->lang->load('admin', Settings::get_lang());
+		// $this->lang->load('filemanager', Settings::get_lang());
 
-		// Modules config
-		$this->get_modules_config();
+		// Modules Application config
+		// $this->get_modules_config();
 
 		// Modules translation files
+		$modules = array();
 		require(APPPATH.'config/modules.php');
 		$this->modules = $modules;
 
@@ -515,6 +676,63 @@ class MY_Admin extends MY_Controller
 		$this->output->set_header("Pragma: no-cache");
     }
     
+
+	// ------------------------------------------------------------------------
+
+
+	public function reload($element, $url, $title = NULL)
+	{
+		$args = array(
+			'element' => $element,
+			'url' => $url,
+		);
+
+		if ( ! is_null($title))
+			$args['title'] = $title;
+
+		$this->callback[] = array(
+			'fn' => 'ION.contentUpdate',
+			'args' => $args
+		);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * If the resource has one rule, checks if the User has access to the resource.
+	 * If not and $return is FALSE, displays the defined view.
+	 * If no view is defined, displays the default deny view.
+	 *
+	 * Only returns TRUE/FALSE is $return is set to TRUE.
+	 *
+	 * @param      $resource
+	 * @param null $view
+	 * @param bool $return
+	 *
+	 * @return bool
+	 */
+	public function authority_protect($resource, $view = NULL, $return=FALSE)
+	{
+		if (Authority::resource_has_rule($resource))
+		{
+			if (Authority::cannot('access', $resource))
+			{
+				if ( ! $return)
+				{
+					if ( is_null($view))
+						$view = self::$_DENY_DEFAULT_VIEW;
+
+					$this->output($view);
+				}
+
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -581,6 +799,22 @@ class MY_Admin extends MY_Controller
 	// ------------------------------------------------------------------------
 
 
+	public function notify($status, $message, $addon_data=NULL)
+	{
+		$this->callback[] = array(
+			'fn' => 'ION.notification',
+			'args' => array(
+				$status,
+				$message
+			)
+		);
+		$this->response($addon_data);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
     /**
      * Send an answer to the browser depending on the incoming request
      * If the request cames from XHR, sends a JSON object as response
@@ -604,7 +838,7 @@ class MY_Admin extends MY_Controller
 				'update' => $this->update,
 				'callback' => $this->callback
 			);
-			
+
 			// Puts additional data to answer
 			if ( ! empty($addon_data))
 			{
@@ -733,10 +967,45 @@ class MY_Admin extends MY_Controller
 			'_ci_return' => TRUE
 		));
 	}
+
+
+	/**
+	 * Protects against direct access to backend controllers
+	 * which must be loaded through XHR
+	 *
+	 */
+	public  function xhr_protect()
+	{
+		if ($this->is_xhr() != $this->xhr_protected)
+		{
+			log_message('error', 'Error : No XHR access : ' . $this->uri->uri_string());
+			redirect(config_item('admin_url'));
+		}
+	}
+
 }
 
 
 // ------------------------------------------------------------------------
+
+class MY_Module extends MY_Controller
+{
+	/**
+	 * Constructor
+	 *
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+
+		$config_items = Modules()->get_module_config($this->uri->segment(1));
+
+		foreach($config_items as $item => $value)
+		{
+			$this->config->set_item($item, $value);
+		}
+	}
+}
 
 
 /**
@@ -843,6 +1112,3 @@ abstract class Module_Admin extends MY_Admin
 		$this->output($args);
 	}
 }
-
-/* End of file MY_Controller.php */
-/* Location: ./application/libraries/MY_Controller.php */

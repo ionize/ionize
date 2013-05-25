@@ -1168,11 +1168,14 @@ div.filemanager-overlay {
 
 /* Dialog */
 div.filemanager-overlay-dialog {
+	z-index:599999;
+
 	background: #fff;
 }
 
 div.filemanager-dialog {
 	position: absolute;
+	z-index:600000;
 	display: none;
 	width: 230px;
 	padding-bottom: 40px;

@@ -1,4 +1,9 @@
-
+<?php
+/**
+ * Website Settings
+ *
+ */
+?>
 <!-- Main Column -->
 <div id="maincolumn">
 
@@ -69,12 +74,60 @@
 	
 				<!-- Google Analytics -->
 				<div class="tabcontent">
-					<dl class="last">
+					<dl>
 						<dt>
-							<label for="google_analytics" title="<?php echo lang('ionize_help_setting_google_analytics'); ?>"><?php echo lang('ionize_label_google_analytics'); ?></label>
+							<label for="google_analytics_id" title="<?php echo lang('ionize_help_setting_google_analytics_id'); ?>"><?php echo lang('ionize_label_google_analytics_id'); ?></label>
 						</dt>
 						<dd>
-							<textarea name="google_analytics" id="google_analytics" class="w360 h160"><?php echo htmlentities(stripslashes(Settings::get('google_analytics')), ENT_QUOTES, 'utf-8'); ?></textarea>
+							<input type="text" name="google_analytics_id" id="google_analytics_id" class="inputtext w100" value="<?php echo Settings::get('google_analytics_id'); ?>" />
+						</dd>
+					</dl>
+					<dl class="mt10">
+						<dt>
+							<label for="google_analytics" title="<?php echo lang('ionize_help_setting_google_analytics'); ?>"><?php echo lang('ionize_label_google_analytics_tracking_code'); ?></label>
+						</dt>
+						<dd>
+							<textarea name="google_analytics" id="google_analytics" class="autogrow w360"><?php echo htmlentities(stripslashes(Settings::get('google_analytics')), ENT_QUOTES, 'utf-8'); ?></textarea>
+						</dd>
+					</dl>
+					<dl class="mt10">
+						<dt>
+							<label for="google_analytics_profile_id" title="<?php echo lang('ionize_help_setting_google_analytics_profile_id'); ?>"><?php echo lang('ionize_label_google_analytics_profile_id'); ?></label>
+						</dt>
+						<dd>
+							<input type="text" name="google_analytics_profile_id" id="google_analytics_profile_id" class="inputtext w100" value="<?php echo Settings::get('google_analytics_profile_id'); ?>" />
+						</dd>
+					</dl>
+					<dl class="mt10">
+						<dt>
+							<label for="google_analytics_url" title="<?php echo lang('ionize_help_setting_google_analytics_url'); ?>"><?php echo lang('ionize_label_google_analytics_url'); ?></label>
+						</dt>
+						<dd>
+							<input type="text" name="google_analytics_url" id="google_analytics_url" class="inputtext w180" value="<?php echo Settings::get('google_analytics_url'); ?>" />
+						</dd>
+					</dl>
+					<dl class="mt10">
+						<dt>
+							<label for="google_analytics_email" title="<?php echo lang('ionize_help_setting_google_analytics_email'); ?>"><?php echo lang('ionize_label_google_analytics_email'); ?></label>
+						</dt>
+						<dd>
+							<input type="text" name="google_analytics_email" id="google_analytics_email" class="inputtext w180" value="<?php echo Settings::get('google_analytics_email'); ?>" />
+						</dd>
+					</dl>
+					<dl class="mt10">
+						<dt>
+							<label for="google_analytics_password" title="<?php echo lang('ionize_help_setting_google_analytics_password'); ?>"><?php echo lang('ionize_label_google_analytics_password'); ?></label>
+						</dt>
+						<dd>
+							<input type="password" name="google_analytics_password" id="google_analytics_password" class="inputtext w180" value="<?php echo Settings::get('google_analytics_password'); ?>" />
+						</dd>
+					</dl>
+					<dl class="mt10">
+						<dt>
+							<label for="dashboard_google" title="<?php echo lang('ionize_help_display_google'); ?>"><?php echo lang('ionize_label_display_google'); ?></label>
+						</dt>
+						<dd>
+							<input class="inputcheckbox" type="checkbox" name="dashboard_google" id="dashboard_google" <?php if (Settings::get('dashboard_google') == '1'):?> checked="checked" <?php endif;?> value="1" />
 						</dd>
 					</dl>
 				</div>
@@ -149,41 +202,24 @@
 
 
 <script type="text/javascript">
-	
-	/**
-	 * Panel toolbox
-	 *
-	 */
+
+	ION.initFormAutoGrow();
+
+	// Panel toolbox
 	ION.initToolbox('setting_toolbox');
 
-	/**
-	 * Options Accordion
-	 *
-	 */
+	// Options Accordion
 	ION.initAccordion('.toggler', 'div.element');
 
-	/**
-	 * Init help tips on label
-	 * see init-content.js
-	 *
-	 */
-	ION.initLabelHelpLinks('#settingsForm');
-
-	/** 
-	 * Tabs init
-	 *
-	 */
+	//Tabs init
 	new TabSwapper({tabsContainer: 'webSettingsTab', sectionsContainer: 'webSettingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'webSettingsTab' });
 
 
-	/**
-	 * SEO URLs forms action
-	 */
+	// SEO URLs forms action
 	ION.setFormSubmit('pingUrlForm', 'submit_ping_url', 'setting/save_seo_urls', 'mainPanel', 'setting/technical');
 	
 	ION.setFormSubmit('sitemapUrlForm', 'submit_sitemap_url', 'setting/save_setting', 'mainPanel', 'setting/technical');
 
-	
 	ION.setChangeSubmit('sitemapGzipForm', 'sitemaps_gzip', 'setting/save_setting', 'mainPanel', 'setting/technical');
 
 

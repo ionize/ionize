@@ -79,4 +79,11 @@ table.mceItemTable {
 script {
 	border:solid dashed #000;
 }
-p:after{content:" ¶";color:#ccc}
+p:before{content:"¶ ";color:#ccc}
+
+/* See what to do with that element.
+br[data-mce-bogus]{
+	background-color: #df2;
+	display: block;
+}
+*/

@@ -1,34 +1,22 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize
+ * Translation Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Translation Controller
- * Manage Static Translations
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Translation files management
- * @author		Ionize Dev Team
- *
- */
-
-class Translation extends MY_admin 
+class Translation extends MY_admin
 {
 	// Reg Expression used to find translation items in views files.
 	private $reg_keys = array(
-		"%ion:lang[\s]*term=\"([- \w:]+?)\" *\/>%",
-		"%ion:lang[\s]*key=\"([- \w:]+?)\" *\/>%",
-		'% Lang.get\(([- \w:\']+?)\)%'
+		"%ion:lang[\s]*term=\"([-_ \w:]+?)\" *\/>%",
+		"%ion:lang[\s]*key=[\"']([-_ \w:]+?)[\"'] *\/>%",
+		'% Lang.get\(([-_ \w:\']+?)\)%'
 	);
 
 	private $modules_terms = NULL;
@@ -134,6 +122,8 @@ class Translation extends MY_admin
 
 		$file_name = strtolower($this->input->post('file_name'));
 
+		$error = FALSE;
+
 		foreach(Settings::get_languages() as $language)
 		{
 			$lang = $language['lang'];
@@ -150,6 +140,8 @@ class Translation extends MY_admin
 					$this->error(lang('ionize_message_language_dir_creation_fail'));
 				}
 			}
+
+
 
 			// Build the file data
 			$data  = "<?php\n\n";
@@ -183,24 +175,28 @@ class Translation extends MY_admin
 			$data .= "\n".'?'.'>';
 
 			// Try writing the language file
-			try
+			$file = $path.'/'.$file_name.'_lang.php';
+			if ( ! is_really_writable($file))
 			{
-				write_file($path.'/'.$file_name.'_lang.php', $data);
+				$this->error(lang('ionize_message_message_no_write_rights'). ' : ' . Settings::get('theme').'/language/'. $lang . '/' .$file_name.'_lang.php');
+				$error = TRUE;
 			}
-			catch (Exception $e) {
-				$this->error(lang('ionize_message_language_file_creation_fail'));
-			}			
+			else
+			{
+				write_file($file, $data);
+			}
 		}
 
-		$this->update[] = array(
-			'element' => 'mainPanel',
-			'url' => admin_url() . 'translation',
-			'title' => lang('ionize_title_translation')
-		);
+		if ( ! $error)
+		{
+			$this->update[] = array(
+				'element' => 'mainPanel',
+				'url' => admin_url() . 'translation',
+				'title' => lang('ionize_title_translation')
+			);
 
-		
-		// If method arrives here, everything was OK
-		$this->success(lang('ionize_message_language_files_saved'));
+			$this->success(lang('ionize_message_language_files_saved'));
+		}
 	}
 	
 	
@@ -567,8 +563,4 @@ class Translation extends MY_admin
 
 		return $data;
 	}
-	
 }
-
-/* End of file translation.php */
-/* Location: ./application/controllers/admin/translation.php */

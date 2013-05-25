@@ -64,8 +64,8 @@
 							<ul class="term">
 							
 								<li>
-									<span class="toggler left" style="display:block;height:16px;" rel="<?php echo $el_id; ?>"></span><input type="text" class="left inputtext w300 transinput" id="key_<?php echo $el_id; ?>" name="key_<?php echo $el_id; ?>" value="<?php echo $term; ?>"></input>
-									<a class="left icon delete ml5" rel="<?php echo $el_id; ?>"></a>
+									<span class="toggler left" style="display:block;height:16px;" data-id="<?php echo $el_id; ?>"></span><input type="text" class="left inputtext w300 transinput" id="key_<?php echo $el_id; ?>" name="key_<?php echo $el_id; ?>" value="<?php echo $term; ?>"></input>
+									<a class="left icon delete ml5" data-id="<?php echo $el_id; ?>"></a>
 								</li>
 								
 								<div class="translation pl5" id="el_<?php echo $el_id; ?>">
@@ -160,7 +160,7 @@
 								
 								<ul class="term clear">
 								
-									<li class="toggler" rel="<?php echo $el_id; ?>">
+									<li class="toggler" data-id="<?php echo $el_id; ?>">
 										<span class="left" style="display:block;height:16px;"></span>
 										<span class="left"><i class="lite transtext"><?php echo $term; ?></i></span>
 										<input type="hidden" id="key_<?php echo $el_id; ?>" name="key_<?php echo $el_id; ?>" value="<?php echo $term; ?>"></input>
@@ -240,7 +240,7 @@
 	{
 		$$('.togglers .toggler').each(function(el)
 		{
-			el.child = $('el_' + el.getProperty('rel')).hide();
+			el.child = $('el_' + el.getProperty('data-id')).hide();
 			
 			el.removeEvent('click');
 			el.removeClass('expand');
@@ -310,7 +310,7 @@
 	 */
 	$$('#themeTogglers .delete').each(function(item)
 	{
-		var rel = item.getProperty('rel');
+		var rel = item.getProperty('data-id');
 		
 		item.addEvent('click', function(e)
 		{

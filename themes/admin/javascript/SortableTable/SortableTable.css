@@ -19,7 +19,9 @@ tr {
 	background-color: #fff;
 	padding: 4px;
 }
-
+thead tr {
+	background-color: transparent;
+}
 tr.altRow {
 	background-color: #f5f5f5;
 }

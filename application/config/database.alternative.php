@@ -5,6 +5,7 @@
  * Useful if you want to switch easily between development / production
  * environments without modify this file
  *
+ * Set the environment in : /index.php
  *
  */
 
@@ -19,10 +20,10 @@ switch (ENVIRONMENT)
 		$db['default']['username'] = '';
 		$db['default']['password'] = '';
 		$db['default']['database'] = '';
-		$db['default']['dbdriver'] = 'mysql';
+		$db['default']['dbdriver'] = 'mysqli';
 		$db['default']['dbprefix'] = '';
 		$db['default']['swap_pre'] = '';
-		$db['default']['pconnect'] = TRUE;
+		$db['default']['pconnect'] = FALSE;
 		$db['default']['db_debug'] = TRUE;
 		$db['default']['cache_on'] = FALSE;
 		$db['default']['cachedir'] = '';
@@ -30,16 +31,16 @@ switch (ENVIRONMENT)
 		$db['default']['dbcollat'] = 'utf8_unicode_ci';
 		break;
 
-	// Test server
+	// Testing server
 	case 'testing':
 		$db['default']['hostname'] = '';
 		$db['default']['username'] = '';
 		$db['default']['password'] = '';
 		$db['default']['database'] = '';
-		$db['default']['dbdriver'] = 'mysql';
+		$db['default']['dbdriver'] = 'mysqli';
 		$db['default']['dbprefix'] = '';
 		$db['default']['swap_pre'] = '';
-		$db['default']['pconnect'] = TRUE;
+		$db['default']['pconnect'] = FALSE;
 		$db['default']['db_debug'] = TRUE;
 		$db['default']['cache_on'] = FALSE;
 		$db['default']['cachedir'] = '';
@@ -53,10 +54,10 @@ switch (ENVIRONMENT)
 		$db['default']['username'] = '';
 		$db['default']['password'] = '';
 		$db['default']['database'] = '';
-		$db['default']['dbdriver'] = 'mysql';
+		$db['default']['dbdriver'] = 'mysqli';
 		$db['default']['dbprefix'] = '';
 		$db['default']['swap_pre'] = '';
-		$db['default']['pconnect'] = TRUE;
+		$db['default']['pconnect'] = FALSE;
 		$db['default']['db_debug'] = FALSE;
 		$db['default']['cache_on'] = FALSE;
 		$db['default']['cachedir'] = '';
@@ -65,8 +66,5 @@ switch (ENVIRONMENT)
 		break;
 
 	default:
-		exit('The application environment is not set correctly.');
+		exit('database.php : The application environment is not set correctly.');
 }
-
-/* End of file database.php */
-/* Location: ./application/config/database.php */

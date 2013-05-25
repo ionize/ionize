@@ -32,6 +32,9 @@ ION.Notify = new Class({
 		this.windowEl = (typeOf(target) == 'string') ? $(target) : target;
 		this.contentEl = target.getElement('div.mochaContent');
 
+		if ( ! this.contentEl)
+			this.contentEl = target;
+
 		this.setOptions(options);
 
 		this.displayed = false;
@@ -69,17 +72,20 @@ ION.Notify = new Class({
 			var bs = this.contentEl.getElement('.mochaContentNotify').getSize();
 
 			this.contentEl.getChildren('.validation-advice').each(function(item){
-				console.log(item);
 				bs.y += item.getSize().y;
 			});
 
-			this.windowEl.retrieve('instance').resize(
+			// Resize the window... if window.
+			if (this.windowEl.retrieve('instance'))
 			{
-				height: cs.y + bs.y + 10,
-				width: null,
-				centered:false,
-				top:null
-			});
+				this.windowEl.retrieve('instance').resize(
+				{
+					height: cs.y + bs.y + 10,
+					width: null,
+					centered:false,
+					top:null
+				});
+			}
 		}
 
 		this.displayed = true;
@@ -95,13 +101,16 @@ ION.Notify = new Class({
 			var cs = this.contentEl.getSize();
 			var bs = this.contentEl.getElement('.mochaContentNotify').getSize();
 
-			this.windowEl.retrieve('instance').resize(
+			if (this.windowEl.retrieve('instance'))
 			{
-				height: cs.y - bs.y + 10,
-				width: null,
-				centered:false,
-				top:null
-			});
+				this.windowEl.retrieve('instance').resize(
+				{
+					height: cs.y - bs.y + 10,
+					width: null,
+					centered:false,
+					top:null
+				});
+			}
 
 		}
 		this.displayed = false;

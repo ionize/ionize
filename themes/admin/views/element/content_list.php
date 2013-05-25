@@ -33,18 +33,18 @@ $width = (100 / $nbLang);
 	
 	?>
 
-	<li class="sortme element element<?php echo $id_element; ?>" id="element<?php echo $id_element; ?>" rel="<?php echo $id_element; ?>">
+	<li class="sortme element element<?php echo $id_element; ?>" id="element<?php echo $id_element; ?>" data-id="<?php echo $id_element; ?>">
 
-		<a class="icon delete right absolute mr10" rel="<?php echo $id_element; ?>"></a>
-        <a class="icon edit right absolute mr30" rel="<?php echo $id_element; ?>"></a>
+		<a class="icon delete right absolute mr10" data-id="<?php echo $id_element; ?>"></a>
+        <a class="icon edit right absolute mr30" data-id="<?php echo $id_element; ?>"></a>
 		<span class="icon left drag absolute"></span>
 		<div style="position:absolute;top:3px;left:40px;font-size:20px;color:#ddd;"><?php echo $element['ordering']; ?></div>
 
 		<div style="overflow:hidden;clear:both;" class="ml20 mr20">
 
 			<?php if(count($element['fields']) > 1) :?>
-			<span class="toggler right mr40" style="display:block;height:16px;" rel="<?php echo $id_element; ?>">
-				<a class="left" rel="<?php echo $id_element; ?>"><?php echo lang('ionize_label_see_element_detail'); ?></a>
+			<span class="toggler right mr40" style="display:block;height:16px;" data-id="<?php echo $id_element; ?>">
+				<a class="left" data-id="<?php echo $id_element; ?>"><?php echo lang('ionize_label_see_element_detail'); ?></a>
 			</span>
 			<?php endif ;?>
 
@@ -81,7 +81,7 @@ $width = (100 / $nbLang);
 							 */
 							?>
 							<?php if ($i == 0) :?>
-								<a class="title" rel="<?php echo $id_element; ?>">
+								<a class="title" data-id="<?php echo $id_element; ?>">
 							<?php endif ;?>
 
 							
@@ -204,7 +204,7 @@ $width = (100 / $nbLang);
 								 */
 								?>
 								<?php if ($i == 0) :?>
-									<a class="edit title " rel="<?php echo $id_element; ?>">
+									<a class="edit title " data-id="<?php echo $id_element; ?>">
 								<?php endif ;?>
 							
 								<?php echo $field['label']; ?>
@@ -381,7 +381,7 @@ $width = (100 / $nbLang);
 	<?php if(count($element['fields']) > 1) :?>
 	$$('#elements<?php echo $id_def; ?> li.element .toggler').each(function(el)
 	{
-		ION.initListToggler(el, $('def_' + el.getProperty('rel')));
+		ION.initListToggler(el, $('def_' + el.getProperty('data-id')));
 	});
 	<?php endif ;?>
 
@@ -390,13 +390,11 @@ $width = (100 / $nbLang);
 	{
 		item.addEvent('click', function(e)
 		{
-			var rel = this.getProperty('rel');
+			var rel = this.getProperty('data-id');
 			ION.dataWindow('contentElement' + rel, 'ionize_title_edit_content_element', 'element/edit', {width:500, height:300}, {'id_element': rel});
 		});
 		
 		ION.addDragDrop(item, '.folder,.file', 'ION.dropContentElementInPage,ION.dropContentElementInArticle');
 	});
 	
-
-
 </script>

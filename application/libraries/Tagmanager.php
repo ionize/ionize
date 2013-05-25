@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.92
  *
@@ -145,6 +145,18 @@ class TagManager
 	private static $extends_def = array();
 
 
+	protected static $html_tag_attributes = array(
+		'id',
+		'class',
+		'dir',
+		'for',
+		'title',
+		'lang',
+		'spellcheck',
+		'style',
+		'tabindex',
+	);
+
 	/**
 	 * The tags with their corresponding methods that this class provides (selector => methodname).
 	 * 
@@ -186,6 +198,7 @@ class TagManager
 		'meta_title' => 		'tag_meta_title',
 		'meta_keywords' => 		'tag_meta_keywords',
 		'meta_description' => 	'tag_meta_description',
+		'google_analytics' => 	'tag_google_analytics',
 		'setting' => 			'tag_setting',
 		'uniq' =>				'tag_uniq',
 		'if' =>					'tag_if',
@@ -267,7 +280,7 @@ class TagManager
 	 *
 	 * Done before any tag rendering, so the processing methods can set classes data before
 	 * all other tags use them.
-	 * Example : When the user logs in, the Connect() class need to set the current user
+	 * Example : When the user logs in, the User() class need to set the current user
 	 * so the <ion:user /> tag can get this information independently from <ion:form tag />
 	 *
 	 */
@@ -507,8 +520,7 @@ class TagManager
 	{
 		// Global settings
 		self::$context->set_global('site_title', Settings::get('site_title'));
-		self::$context->set_global('google_analytics', Settings::get('google_analytics'));
-		
+
 		// Theme
 		self::$context->set_global('theme', Theme::get_theme());
 		self::$context->set_global('theme_url', base_url() . Theme::get_theme_path());
@@ -610,8 +622,6 @@ class TagManager
 	 */
 	public static function render($view = NULL, $return = FALSE)
 	{
-		$ci =& get_instance();
-
 		// Loads the view to parse
 		$view = ($view != NULL) ? $view : self::$view;
 
@@ -622,15 +632,15 @@ class TagManager
 		// We can now check if the file is a PHP one or a FTL one
 		if (substr($parsed, 0, 5) == '<?php')
 		{
-			$parsed = $ci->load->view($view, array(), TRUE);
+			$parsed = self::$ci->load->view($view, array(), TRUE);
 		}
 		else
 		{
 			$parsed = self::parse($parsed, self::$context);
 
-			if (Connect()->is('editors') && Settings::get('display_connected_label') == '1' )
+			if (User()->logged_in() && Authority::can('access', 'admin') && Settings::get('display_connected_label') == '1')
 			{
-				$injected_html = $ci->load->view('core/logged_as_editor', array(), TRUE);
+				$injected_html = self::$ci->load->view('core/logged_as_editor', array(), TRUE);
 				
 				$parsed = str_replace('</body>', $injected_html, $parsed);
 			}
@@ -651,7 +661,7 @@ class TagManager
 		if ($return)
 			return $parsed;
 		else
-			$ci->output->set_output($parsed);
+			self::$ci->output->set_output($parsed);
 
 	}
 
@@ -1538,14 +1548,47 @@ class TagManager
 	public static function tag_url(FTL_Binding $tag)
 	{
 		// Optional : data array from where to get the data
-
+		$value = NULL;
 		$from = $tag->getAttribute('from');
+		$type = $tag->getAttribute('type');
+		$lang = $tag->getAttribute('lang');
 
 		// 1. Try to get from tag's data array
+		//	if ( ! is_null($from))
 		$value = $tag->getValue('absolute_url', $from);
 
+		// 2. Try to get from parent tag
 		if (is_null($value))
-			$value = $tag->getValue();
+		{
+			$parent = $tag->getParent();
+			$value = $parent->getValue('absolute_url');
+		}
+
+		if ( ! is_null($type) && ! is_null($value))
+		{
+			switch($type)
+			{
+				case 'relative':
+					$value = str_replace(self::get_base_url(), '', $value);
+					if ( ! is_null($lang)
+						 && (count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1')
+					)
+						$value = Settings::get_lang('current') . '/' . $value;
+					break;
+
+				case 'element':
+					$value = explode('/', $value);
+					$value = array_pop($value);
+					if ( ! is_null($lang)
+						&& (count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1')
+					)
+						$value = Settings::get_lang('current') . '/' . $value;
+					break;
+			}
+		}
+
+//		if (is_null($value))
+//			$value = $tag->getValue();
 
 		// 2. Fall down to tag locals storage
 		if (is_null($value))
@@ -1554,6 +1597,21 @@ class TagManager
 		{
 			// Add to local storage, so other tags can use it
 			$tag->set($tag->name, $value);
+		}
+
+		// No data array has any URL : Return the page or article URL.
+		if (is_null($value))
+		{
+			$page = self::registry('page');
+			$article = self::registry('article');
+			if ( ! empty($article))
+			{
+				$value = $article['url'];
+			}
+			else if ( ! empty($page))
+			{
+				$value = $page['absolute_url'];
+			}
 		}
 
 		// Creates one A HTML element if the tag attribute "href" is set to true
@@ -1843,7 +1901,7 @@ class TagManager
 	public static function tag_lang_url(FTL_Binding $tag)
 	{
 		// Set all languages online if connected as editor or more
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}
@@ -2015,20 +2073,29 @@ class TagManager
 	public static function tag_lang(FTL_Binding $tag)
 	{
 		// Kind of article : Get only the article linked to the given view
-		$term = $tag->getAttribute('key');
+		$key = $tag->getAttribute('key');
 
-		if (is_null($term))	$term = $tag->getAttribute('term');
-		if (is_null($term))	$term = $tag->getAttribute('item');
+		if (is_null($key)) $key = $tag->getAttribute('term');
+		if (is_null($key)) $key = $tag->getAttribute('item');
 
 		$swap = $tag->getAttribute('swap');
 		if ( ! is_null($swap))
 			$swap = self::get_lang_swap($tag, $swap);
 
-		if ( ! is_null($term))
+		if ( ! is_null($key))
 		{
+			$random = $tag->getAttribute('random');
+
+			if ( ! is_null($random))
+			{
+				$keys = explode(',', $key);
+				$index = rand(0, sizeof($keys)-1);
+				$key = trim($keys[$index]);
+			}
+
 			$autolink = $tag->getAttribute('autolink', TRUE);
 
-			$line = lang($term, $swap);
+			$line = lang($key, $swap);
 
 			if ( ! $autolink)
 				return self::wrap($tag, $line);
@@ -2308,18 +2375,64 @@ class TagManager
 	{
 		$article = self::registry('article');
 
+		$description = NULL;
+
 		if ( ! empty($article['meta_description']))
-			return $article['meta_description'];
+			$description = $article['meta_description'];
 		else
 		{
 			$page = self::registry('page');
 			if ( ! empty($page['meta_description']))
-				return $page['meta_description'];
+				$description = $page['meta_description'];
 		}
 
-		return Settings::get('meta_description');
+		if ( is_null($description))
+			$description = Settings::get('meta_description');
+
+		return $description;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function index(FTL_Binding $tag)
+	{
+		$str = $tag->expand();
+		return $str;
+	}
+
+
+	/**
+	 * Returns the Google Analytics Tracking code
+	 * View : /application/views/google/tracking
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return mixed
+	 *
+	 */
+	public static function tag_google_analytics(FTL_Binding $tag)
+	{
+		$tracking_id = Settings::get('google_analytics_id');
+
+		// Load the tracking view
+		if ($tracking_id != FALSE && $tracking_id != '')
+		{
+			$html = self::$ci->load->view(
+				'google/tracking',
+				array('tracking_id' => $tracking_id),
+				TRUE
+			);
+			return $html;
+		}
+		// Returns the complete tracking code
+		else
+		{
+			return Settings::get('google_analytics');
+		}
+	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -2377,6 +2490,10 @@ class TagManager
 				$result = self::$ci->agent->{$method}($value);
 			else
 				$result = self::$ci->agent->{$method}();
+		}
+		else
+		{
+			$result = self::$ci->agent->browser();
 		}
 
 		// set the value
@@ -2565,7 +2682,7 @@ class TagManager
 	public static function get_home_url()
 	{
 		// Set all languages online if connected as editor or more
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}
@@ -2575,7 +2692,7 @@ class TagManager
 			// if the current lang is the default one : don't return the lang code
 			if (Settings::get_lang() != Settings::get_lang('default'))
 			{
-				return base_url() . Settings::get_lang() .'/';
+				return base_url() . Settings::get_lang();
 			}
 		}
 
@@ -2588,7 +2705,7 @@ class TagManager
 
 	public static function get_base_url()
 	{
-		if( Connect()->is('editors', TRUE))
+		if( Authority::can('access', 'admin'))
 		{
 			Settings::set_all_languages_online();
 		}
@@ -2656,8 +2773,8 @@ class TagManager
 		$html_tag = $tag->getAttribute('tag');
 
 		// Inform the parent that the value has already been wrapped
-//		if ($html_tag && $parent = $tag->getParent())
-//			$parent->setAttribute('__wrap_called__', TRUE);
+		if ($html_tag && $parent = $tag->getParent())
+			$parent->setAttribute('__wrap_called__', TRUE);
 
 		if ($tag->getAttribute('__wrap_called__') !== TRUE)
 		{
@@ -2669,11 +2786,15 @@ class TagManager
 			if ( ! empty($class)) $class = ' class="'.$class.'"';
 			if ( ! empty($id)) $id = ' id="'.$id.'"';
 
+			$html_attributes = self::get_html_tag_attributes($tag);
+
 			if ($html_tag)
 			{
-				$open_tag = '<' . $html_tag . $id . $class . '>';
+				$open_tag = '<' . $html_tag . $html_attributes . '>';
 				$close_tag = '</' . $html_tag .'>';
 			}
+
+			$tag->removeAttributes(array('tag','class','id'));
 
 			if ( ! empty ($value) )
 			{
@@ -2793,6 +2914,7 @@ class TagManager
 	public static function output_value(FTL_Binding $tag, $value)
 	{
 		$is = $tag->getAttribute('is');
+		$is_not = $tag->getAttribute('is_not');
 		$expression = $tag->getAttribute('expression');
 
 		// "is" and "expression" cannot be used together.
@@ -2808,6 +2930,27 @@ class TagManager
 			{
 				if (self::$trigger_else > 0)
 					self::$trigger_else = 0;
+<<<<<<< HEAD
+=======
+
+				return self::wrap($tag, $tag->expand());
+			}
+			else
+			{
+				self::$trigger_else++;
+				return '';
+			}
+		}
+		else if ( ! is_null($is_not) )
+		{
+			$tag->removeAttribute('is_not');
+			if (strtolower($is_not) == 'true') $is_not = TRUE;
+			if (strtolower($is_not) == 'false') $is_not = FALSE;
+			if ($value != $is_not)
+			{
+				if (self::$trigger_else > 0)
+					self::$trigger_else = 0;
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 
 				return self::wrap($tag, $tag->expand());
 			}
@@ -3017,6 +3160,12 @@ class TagManager
 	 * Add one prefix / suffix to the given value
 	 * If the prefix or suffix looks like a translation call, try to translate
 	 *
+	 * @usage		prefix="Read more about : "
+	 * 				prefix="lang('read_more_about')"
+	 *
+	 * 				In this case, '.' separates segments :
+	 * 				prefix="'&bull; '. lang('post_in_categories') . ' : '"
+	 *
 	 * @param string
 	 * @param string		Prefix / Suffix
 	 * @param int 			1 : prefix mode, 2 : suffix mode
@@ -3034,14 +3183,16 @@ class TagManager
 			foreach($segments as $segment)
 			{
 				$segment = trim($segment);
-				if (substr(trim($segment), 0, 5) == 'lang(')
-					$translated_string = FALSE;
-				$return = @eval("\$translated_string = ".trim($segment).";");
+				$translated_string = NULL;
 
-				if ($return === NULL)
-					$prefix_suffix .= $translated_string;
-				else
-					$prefix_suffix .= $segment;
+				if (substr(trim($segment), 0, 5) == 'lang(')
+				{
+					$return = @eval("\$translated_string = ".trim($segment).";");
+					if ($return === NULL)
+						$segment = $translated_string;
+				}
+
+				$prefix_suffix .= $segment;
 			}
 
 			$value = $mode == 1 ? $prefix_suffix . $value : $value . $prefix_suffix;
@@ -3049,6 +3200,26 @@ class TagManager
 		return $value;
 	}
 
+	// ------------------------------------------------------------------------
+
+
+	public static function get_html_tag_attributes(FTL_Binding $tag)
+	{
+		$attributes = $tag->getAttributes();
+		$html_attributes = '';
+
+		foreach ($attributes as $key =>$value)
+		{
+			if (
+				in_array($key, self::$html_tag_attributes)
+				OR substr($key,0,5) == 'data-'
+			)
+			{
+				$html_attributes .= ' '.$key.'="'.$value.'" ';
+			}
+		}
+		return $html_attributes;
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -3116,6 +3287,7 @@ class TagManager
 		if ( ! is_null($test_value))
 		{
 			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
+
 		}
 
 		if ($return === NULL OR is_null($test_value))
@@ -3242,9 +3414,11 @@ class TagManager
 		$error = error_get_last();
 		if($error !== NULL)
 		{
+			trace($tag->getAttributes());
 			$msg = self::show_tag_error($tag,
 				'PHP error : ' . $error['message'] . '<br/>' .
-				'in expression : ' . $tag->getAttribute('expression')
+				'in expression : ' . $tag->getAttribute('expression') . '<br/>' .
+				'file : ' . $error['file']
 				//	. '<br/>PHP original error : <br/>'.
 				//	$error['message'] . ' in ' . $error['file']
 			);

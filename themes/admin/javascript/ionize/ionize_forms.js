@@ -69,7 +69,6 @@ ION.append({
 		{
 			// Form Validation
 			var fv = new Form.Validator.Inline(form, {
-				stopOnFailure: true,
 				errorPrefix: '',
 				showError: function(element) {
 					element.show();
@@ -85,10 +84,10 @@ ION.append({
 			// Add the form submit event with a confirmation window
 			if ($(button) && (typeOf(confirm) == 'object'))
 			{
+				$(button).enabled = true;
 				var func = function()
 				{
 					var options = ION.getJSONRequestOptions(url, $(form));
-
 					var r = new Request.JSON(options);
 					r.send();
 				};
@@ -98,46 +97,69 @@ ION.append({
 				$(button).addEvent('click', function(e)
 				{
 					if (typeOf(e) != 'null') e.stop();
-					ION.confirmation('conf' + button.id, func, confirm.message);
+					if (this.enabled)
+					{
+						this.enabled=false;
+						$(button).addClass('disabled');
+						(function(){
+							this.enabled = true;
+							this.removeClass('disabled');
+						}).delay(4000, this);
+
+						ION.confirmation('conf' + button.id, func, confirm.message);
+					}
 				});
 			}
 			// Add the form submit button event without confirmation
 			else if ($(button))
 			{
 				// Form submit or button event
+				$(button).enabled = true;
 				$(button).removeEvents('click');
 				$(button).addEvent('click', function(e)
 				{
 					if (typeOf(e) != 'null') e.stop();
 
-					var parent = $(form).getParent('.mocha');
-					var result = fv.validate();
-
-					if ( ! result)
+					// Disable the button for x seconds.
+					if (this.enabled)
 					{
-						new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
-					}
-					else
-					{
-						// tinyMCE and CKEditor trigerSave
-						ION.updateRichTextEditors();
+						this.enabled=false;
+						$(button).addClass('disabled');
+						(function(){
+							this.enabled = true;
+							this.removeClass('disabled');
+						}).delay(4000, this);
 
-						// Get the form
-						var options = ION.getJSONRequestOptions(url, $(form));
 
-						var r = new Request.JSON(options);
-						r.send();
+						var parent = $(form).getParent('.mocha');
+						var result = fv.validate();
 
-						// Close the window
-						if (typeOf(parent) != 'null')
-							parent.close();
+						if ( ! result)
+						{
+							new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
+						}
+						else
+						{
+							// tinyMCE and CKEditor trigerSave
+							ION.updateRichTextEditors();
+
+							// Get the form
+							var options = ION.getJSONRequestOptions(url, $(form));
+
+							var r = new Request.JSON(options);
+							r.send();
+
+							// Close the window
+							if (typeOf(parent) != 'null')
+								parent.close();
+						}
 					}
 				});
 			}
 		}
 		else
 		{
-			console.log('ION.setFormSubmit() error : The form "' + form + '" or the button "' + button + '" do not exist.');
+			// console.log('ION.setFormSubmit() error : The form "' + form + '" or the button "' + button + '" do not exist.');
 		}
 	},
 

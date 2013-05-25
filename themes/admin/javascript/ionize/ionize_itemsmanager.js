@@ -96,7 +96,8 @@ ION.ItemManager = new Class({
 
 		items.each(function(item)
 		{
-			ION.initRequestEvent(item, url + item.getProperty('rel'), {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
+			var id = item.getProperty('data-id');
+			ION.initRequestEvent(item, url + id, {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
 		});
 	},
 
@@ -109,9 +110,10 @@ ION.ItemManager = new Class({
 		var url = this.adminUrl + this.options.controller;
 		var items = this.container.getElements('.status');
 
-		items.each(function(item, idx)
+		items.each(function(item)
 		{
-			ION.initRequestEvent(item, url + '/switch_online/' + item.getProperty('rel'));
+			var id = item.getProperty('data-id');
+			ION.initRequestEvent(item, url + '/switch_online/' + id);
 		});
 	},
 
@@ -170,8 +172,10 @@ ION.ItemManager = new Class({
 					}
 				},
 				*/
-				onStart:function(el)
+				onStart:function(el, clone)
 				{
+					clone.addClass('clone');
+
 					if (typeOf(self.scroller) != 'null')
 					{
 						/*
@@ -189,23 +193,27 @@ ION.ItemManager = new Class({
 				},
 				onComplete: function(item, clone)
 				{
+					/*
 					if (typeOf(self.scroller) != 'null')
 					{
 						// self.scroller.stop();
 					}
+					*/
 
 					// Hides the current sorted element (correct a Mocha bug on hidding modal window)
 					item.removeProperty('style');
 
 					// Get the new order
-					var serialized = this.serialize(0, function (element, index)
+					var serialized = this.serialize(0, function(element, index)
 					{
 						// Check for the not removed clone
 						if (element.id != '')
 						{
-							var rel = (element.getProperty('rel')).split(".");
+							var rel = element.getProperty('data-id');
+							rel = (rel).split(".");
 							var id = rel[0];
 							if (rel.length > 1) { id = rel[1]; }
+
 							return id;
 						}
 						return;
@@ -224,7 +232,7 @@ ION.ItemManager = new Class({
 			{
 				if (element.id != '')
 				{
-					var rel = (element.getProperty('rel')).split(".");
+					var rel = (element.getProperty('data-id')).split(".");
 					var id = rel[0];
 					if (rel.length > 1) { id = rel[1]; }
 					return id;
@@ -356,7 +364,7 @@ ION.ArticleManager = new Class({
 
 		items.each(function(item, idx)
 		{
-			var rel = (item.getProperty('rel')).split(".");
+			var rel = (item.getProperty('data-id')).split(".");
 			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1]);
 		});
 	},
@@ -368,7 +376,7 @@ ION.ArticleManager = new Class({
 
 		items.each(function(item,idx)
 		{
-			var rel = (item.getProperty('rel')).split(".");
+			var rel = (item.getProperty('data-id')).split(".");
 			ION.initRequestEvent(item, url + rel[0] + '/' + rel[1], {}, {message: Lang.get('ionize_confirm_article_page_unlink')});
 		});
 	}

@@ -1,28 +1,17 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Modules Controller
+ * Displays Modules list
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Modules Controller
- * Displays Modules list
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Modules management
- * @author		Ionize Dev Team
- *
- */
-
-class Modules extends MY_admin 
+class Modules extends MY_admin
 {
 
 	/**
@@ -138,97 +127,99 @@ class Modules extends MY_admin
 		 * Add the module in $module config array : /application/config/modules.php
 		 *
 		 */
-		
-		// Get the modules config file : $modules, $aliases
-		$modules = array();
-		$disable_controller = array();				// Array of disabled modules controllers. Got from config/modules
-		$aliases = array();
-		include APPPATH . 'config/modules.php';
-
-		// Load the module XML config file
-		$config_path = MODPATH . $module_folder . '/config.xml';
-
-		if ( ! file_exists($config_path) )
+		if ( ! is_really_writable(APPPATH.'/config/modules.php'))
 		{
-			$this->error(lang('ionize_message_module_install_error_no_config'));
+			$this->error(lang('ionize_message_module_install_error_config_write'). ' : ' .APPPATH.'/config/modules.php');
 		}
 		else
 		{
-			$xml = simplexml_load_file($config_path);
+			// Get the modules config file : $modules, $aliases
+			$modules = array();
+			$disable_controller = array();				// Array of disabled modules controllers. Got from config/modules
+			$aliases = array();
+			include APPPATH . 'config/modules.php';
 
-			// Get the pages
-			$this->load->model('page_model', '', TRUE);
-			$pages = $this->page_model->get_list();
+			// Load the module XML config file
+			$config_path = MODPATH . $module_folder . '/config.xml';
 
-			$disable_module_controller =  ( strtolower((String)$xml->disable_controller) == 'true') ? TRUE : FALSE;
-			
-			// Check if conflict with existing pages
-			$conflict = array();
-			if ($disable_module_controller == FALSE)
-				$conflict = array_filter($pages, create_function('$page','return $page[\'name\'] == "'. $module_uri .'";') );
-
-			if ( ! empty($conflict))
+			if ( ! file_exists($config_path) )
 			{
-				$this->error(lang('ionize_message_module_page_conflict'));
+				$this->error(lang('ionize_message_module_install_error_no_config'));
 			}
 			else
 			{
-				// uri => Module Folder 
-				$modules[$module_uri] = $module_folder;
-				
-				// The module controller is disabled : Not possible to call this module from controller.
-				if ( ! isset($disable_controller)) $disable_controller = array();
-				if ($disable_module_controller == TRUE)
-					if ( ! in_array($module_uri, $disable_controller)) $disable_controller[] = $module_uri;
+				$xml = simplexml_load_file($config_path);
 
-				// Install module database tables
-				if ( (bool)$xml->database == 1)
+				// Get the pages
+				$this->load->model('page_model', '', TRUE);
+				$pages = $this->page_model->get_list();
+
+				$disable_module_controller =  ( strtolower((String)$xml->disable_controller) == 'true') ? TRUE : FALSE;
+
+				// Check if conflict with existing pages
+				$conflict = array();
+				if ($disable_module_controller == FALSE)
+					$conflict = array_filter($pages, create_function('$page','return $page[\'name\'] == "'. $module_uri .'";') );
+
+				if ( ! empty($conflict))
 				{
-					$errors = array();
-					
-					$db = $xml->database;
-					
-					$database_attr = $db->attributes();
-
-					// Install through a dedicated XML script
-					try {
-
-						if ( ! empty($database_attr['script']))
-						{
-							$script = $database_attr['script'];
-
-							if ( ! empty($script))
-								$errors = $this->install_database_script(strval($script), $module_folder);
-							else
-								$errors = $this->install_database($db);				
-						}
-						else
-						{
-							$errors = $this->install_database($db);				
-						}
-					}
-					catch(Exception $e)
-					{
-						if ( !empty($errors))
-						{
-							$this->error(lang('ionize_message_module_install_database_error') . ' : ' . implode(', ', $errors));
-						}
-					}
-				}
-				
-				// Write config file : /application/config/modules.php
-				if ( ! $this->save_config($modules, $aliases, $disable_controller))
-				{
-					$this->error(lang('ionize_message_module_install_error_config_write'). ' : ' .APPPATH.'/config/modules.php');
+					$this->error(lang('ionize_message_module_page_conflict'));
 				}
 				else
 				{
+					// uri => Module Folder
+					$modules[$module_uri] = $module_folder;
+
+					// The module controller is disabled : Not possible to call this module from controller.
+					if ( ! isset($disable_controller)) $disable_controller = array();
+					if ($disable_module_controller == TRUE)
+						if ( ! in_array($module_uri, $disable_controller)) $disable_controller[] = $module_uri;
+
+					// Install module database tables
+					if ( (bool)$xml->database == 1)
+					{
+						$errors = array();
+
+						$db = $xml->database;
+
+						$database_attr = $db->attributes();
+
+						// Install through a dedicated XML script
+						try {
+
+							if ( ! empty($database_attr['script']))
+							{
+								$script = $database_attr['script'];
+
+								if ( ! empty($script))
+									$errors = $this->install_database_script(strval($script), $module_folder);
+								else
+									$errors = $this->install_database($db);
+							}
+							else
+							{
+								$errors = $this->install_database($db);
+							}
+						}
+						catch(Exception $e)
+						{
+							if ( !empty($errors))
+							{
+								$this->error(lang('ionize_message_module_install_database_error') . ' : ' . implode(', ', $errors));
+							}
+						}
+					}
+
+					// Write config file : /application/config/modules.php
+					$this->save_config($modules, $aliases, $disable_controller);
+
+
 					// Reload the panel
 					$this->update[] = array(
 						'element' => 'mainPanel',
 						'url' => 'modules'
 					);
-					
+
 					// OK Answer
 					$this->success(lang('ionize_message_module_saved'));
 				}
@@ -297,9 +288,7 @@ class Modules extends MY_admin
 
 		// add end
 		$str .= "\n\n";
-		$str .= '/* End of file modules.php */'."\n";
 		$str .= '/* Auto generated by Themes Administration on : '.date('Y.m.d H:i:s').' */'."\n";
-		$str .= '/* Location: ' .APPPATH.'/config/modules.php */'."\n";
 
 		// write
 		$ret = @file_put_contents(APPPATH . '/config/modules' . EXT, $str);
@@ -518,9 +507,7 @@ class Modules extends MY_admin
 
 		// add end
 		$str .= "\n\n";
-		$str .= '/* End of file routes.php */'."\n";
 		$str .= '/* Auto generated by Themes Administration on : '.date('Y.m.d H:i:s').' */'."\n";
-		$str .= '/* Location: ' . MODPATH . '/' . $module_folder .'/config/routes'. EXT." */ \n";
 
 		// write
 		$ret = @file_put_contents( MODPATH . '/' . $module_folder . '/config/routes' . EXT, $str);
@@ -532,6 +519,3 @@ class Modules extends MY_admin
 		return false;
 	}
 }
-
-/* End of file modules.php */
-/* Location: ./application/controllers/admin/modules.php */

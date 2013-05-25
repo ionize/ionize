@@ -32,7 +32,7 @@
                 </div>
 
 				<!-- content -->
-				<ion:content />
+				<ion:content link_key="title" link_title="subtitle" />
 
             </ion:page:article>
         </div>

@@ -64,17 +64,17 @@ $config['forms'] = array
 				// - One plain Email address : my.name@mydomain.com
 				// - 'form' to send it to the email of the form data
 				// - 'website' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
-				'email' => 'website',
+				'email' => 'contact',
 				// Language term index, as set in language/xx/form_lang.php
 				'subject' => 'mail_website_registration_subject',
 				// View file to use for the email
-				'view' => 'mail/website_registration',
+				'view' => 'mail/register/to_admin',
 			),
 			array
 			(
 				'email' => 'form',
 				'subject' => 'mail_user_registration_subject',
-				'view' => 'mail/user_registration',
+				'view' => 'mail/register/to_user',
 			),
 		),
 		// Each field of the form
@@ -186,7 +186,7 @@ $config['forms'] = array
 			(
 				'email' => 'form',
 				'subject' => 'mail_user_password_subject',
-				'view' => 'mail/user_password',
+				'view' => 'mail/password/to_user',
 			),
 		),
 	),

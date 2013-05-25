@@ -1,6 +1,30 @@
 --
--- Ionize 0.9.9 SQL creation tables
+-- Ionize 1.0.0 SQL creation tables
 --
+
+CREATE TABLE api_key (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    `key` varchar(40) NOT NULL,
+    `level` int(2) NOT NULL,
+    ignore_limits tinyint(1) NOT NULL DEFAULT '0',
+    is_private tinyint(1) NOT NULL DEFAULT '0',
+    ip_addresses text,
+    date_created datetime,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE api_log (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    uri varchar(255) NOT NULL,
+    method varchar(6) NOT NULL,
+    params text,
+    api_key varchar(40) NOT NULL,
+    date_log datetime DEFAULT NULL,
+    ip_address varchar(45) NOT NULL,
+    authorized tinyint(1) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS article (
@@ -87,7 +111,7 @@ CREATE TABLE IF NOT EXISTS article_tag (
 
 CREATE TABLE IF NOT EXISTS article_type (
   id_type int(11) unsigned NOT NULL auto_increment,
-  type varchar(50) collate utf8_unicode_ci NOT NULL,
+  type varchar(50) NOT NULL,
   ordering int(11) default 0,
   description text NOT NULL default '',
   type_flag TINYINT( 1 ) NOT NULL default 0,
@@ -160,6 +184,20 @@ CREATE TABLE IF NOT EXISTS element_definition_lang (
 
 
 
+CREATE TABLE event_log (
+    id int(11) unsigned NOT NULL AUTO_INCREMENT,
+    status varchar(50) DEFAULT NULL,
+    message text,
+    id_user int(11) DEFAULT NULL,
+    email varchar(255) DEFAULT NULL,
+    date datetime DEFAULT NULL,
+    ip_address varchar(45) DEFAULT NULL,
+    seen tinyint(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+
 CREATE TABLE IF NOT EXISTS extend_field (
 	id_extend_field INT(11) UNSIGNED NOT NULL auto_increment,
 	name varchar(255) NOT NULL,
@@ -205,11 +243,11 @@ CREATE TABLE IF NOT EXISTS extend_fields (
 
 
 CREATE TABLE IF NOT EXISTS ion_sessions (
-  session_id varchar(40) collate utf8_unicode_ci NOT NULL default '0',
-  ip_address varchar(16) collate utf8_unicode_ci NOT NULL default '0',
-  user_agent varchar(50) collate utf8_unicode_ci NULL,
+  session_id varchar(40) NOT NULL default '0',
+  ip_address varchar(16) NOT NULL default '0',
+  user_agent varchar(50) NULL,
   last_activity int(10) unsigned NOT NULL default '0',
-  user_data text collate utf8_unicode_ci NULL,
+  user_data text NULL,
   PRIMARY KEY  (session_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
@@ -227,7 +265,7 @@ CREATE TABLE IF NOT EXISTS lang (
 
 
 CREATE TABLE IF NOT EXISTS login_tracker (
-  ip_address varchar(32) collate utf8_unicode_ci NOT NULL,
+  ip_address varchar(32) NOT NULL,
   first_time int(11) unsigned NOT NULL,
   failures tinyint(2) unsigned default NULL,
   PRIMARY KEY  (ip_address)
@@ -246,6 +284,7 @@ CREATE TABLE IF NOT EXISTS media (
 	date datetime NOT NULL							COMMENT 'Medium date',
 	link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
 	square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',
+--	path_hash varchar(100) NOT NULL DEFAULT  '',
 	PRIMARY KEY  (id_media)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
@@ -264,8 +303,8 @@ CREATE TABLE IF NOT EXISTS media_lang (
 
 CREATE TABLE IF NOT EXISTS menu (
   id_menu int(11) NOT NULL auto_increment,
-  name varchar(50) collate utf8_unicode_ci NOT NULL,
-  title varchar(50) collate utf8_unicode_ci NOT NULL,
+  name varchar(50) NOT NULL,
+  title varchar(50) NOT NULL,
   ordering int(11),
   PRIMARY KEY  (id_menu),
   UNIQUE KEY name (name)
@@ -337,13 +376,13 @@ CREATE TABLE IF NOT EXISTS page (
   article_order VARCHAR(50) NOT NULL DEFAULT 'ordering'				COMMENT 'Article order in this page. Can be "ordering", "date"',
   article_order_direction VARCHAR(50) NOT NULL DEFAULT 'ASC',	
   link varchar(255) default ''										COMMENT 'Link to internal / external resource',
-  link_type varchar(25) collate utf8_unicode_ci default NULL COMMENT '''page'', ''article'' or NULL',
+  link_type varchar(25) default NULL COMMENT '''page'', ''article'' or NULL',
   link_id varchar(20) NOT NULL default '',
   pagination tinyint(1) UNSIGNED NOT NULL DEFAULT 0						COMMENT 'Pagination use ?',
   pagination_nb tinyint(1) UNSIGNED NOT NULL DEFAULT 5						COMMENT 'Article number per page',
-  id_group SMALLINT( 4 ) UNSIGNED NOT NULL,
   priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
   used_by_module tinyint(1) unsigned NULL,
+  deny_code varchar(3) NULL,
   PRIMARY KEY  (id_page),
   KEY idx_page_id_parent (id_parent),
   KEY idx_page_level (level),
@@ -369,7 +408,7 @@ CREATE TABLE IF NOT EXISTS page_article (
 
 
 
-CREATE TABLE IF NOT EXISTS page_user_groups (
+CREATE TABLE IF NOT EXISTS page_role (
   id_page int(11) UNSIGNED NOT NULL default 0,
   ig_group smallint(4) UNSIGNED NOT NULL default 0,
   PRIMARY KEY  (id_page,ig_group)
@@ -404,7 +443,35 @@ CREATE TABLE IF NOT EXISTS page_media (
   PRIMARY KEY  (id_page,id_media)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
+CREATE TABLE if not exists resource (
+  id_resource int(11) NOT NULL AUTO_INCREMENT,
+  id_parent int(11) unsigned DEFAULT '0',
+  resource varchar(255) NOT NULL DEFAULT '',
+  actions varchar(500) DEFAULT '',
+  title varchar(255) DEFAULT '',
+  description varchar(1000) DEFAULT '',
+  PRIMARY KEY (id_resource),
+  UNIQUE KEY resource_key (resource)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS role (
+  id_role smallint(4) UNSIGNED NOT NULL auto_increment,
+  role_level int(11) default NULL,
+  role_code varchar(25) NOT NULL,
+  role_name varchar(100) NOT NULL,
+  role_description tinytext,
+  PRIMARY KEY (id_role),
+  UNIQUE KEY role_code (role_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
+
+CREATE TABLE if not exists rule (
+  id_role int(11) NOT NULL,
+  resource varchar(150) NOT NULL DEFAULT '',
+  actions varchar(150) NOT NULL DEFAULT '',
+  permission smallint(1) DEFAULT NULL,
+  id_element int(11) unsigned,
+  PRIMARY KEY (id_role,resource,actions)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS setting (
   id_setting int(11) UNSIGNED NOT NULL auto_increment,
@@ -414,11 +481,9 @@ CREATE TABLE IF NOT EXISTS setting (
   PRIMARY KEY (id_setting)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS tag (
 	id_tag int(11) UNSIGNED NOT NULL auto_increment,
-	tag varchar(50) default NULL,
+	tag_name varchar(50) default NULL,
 	PRIMARY KEY  (id_tag)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
@@ -460,47 +525,184 @@ CREATE TABLE IF NOT EXISTS url (
   KEY idx_url_lang (lang)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
   id_user int(11) unsigned NOT NULL auto_increment,
-  id_group smallint(4) unsigned NOT NULL,
+  id_role smallint(4) unsigned NOT NULL,
   join_date timestamp NULL default NULL,
   last_visit timestamp NULL default NULL,
-  username varchar(50) collate utf8_unicode_ci NOT NULL,
-  screen_name varchar(50) collate utf8_unicode_ci default NULL,
+  username varchar(50) NOT NULL,
+  screen_name varchar(50) default NULL,
   firstname varchar(100) NOT NULL,
   lastname varchar(100) DEFAULT NULL,
   birthdate datetime NOT NULL,
   gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
-  password varchar(255) collate utf8_unicode_ci NOT NULL,
-  email varchar(120) collate utf8_unicode_ci NOT NULL,
-  salt varchar(50) collate utf8_unicode_ci NULL,
+  password varchar(255) NOT NULL,
+  email varchar(120) NOT NULL,
+  salt varchar(50) NULL,
   PRIMARY KEY  (id_user),
   UNIQUE KEY username (username),
-  KEY id_group (id_group)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1; 
-
-
-CREATE TABLE IF NOT EXISTS user_groups (
-  id_group smallint(4) UNSIGNED NOT NULL auto_increment,
-  level int(11) default NULL,
-  slug varchar(25) collate utf8_unicode_ci NOT NULL,
-  group_name varchar(100) collate utf8_unicode_ci NOT NULL,
-  description tinytext collate utf8_unicode_ci,
-  PRIMARY KEY (id_group),
-  UNIQUE KEY slug (slug)
+  KEY id_role (id_role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
 
 TRUNCATE TABLE login_tracker;
 
-INSERT IGNORE INTO user_groups VALUES (1, 10000, 'super-admins', 'Super Admins', NULL);
-INSERT IGNORE INTO user_groups VALUES (2, 5000, 'admins', 'Admins', NULL);
-INSERT IGNORE INTO user_groups VALUES (3, 1000, 'editors', 'Editors', NULL);
-INSERT IGNORE INTO user_groups VALUES (4, 100, 'users', 'Users', NULL);
-INSERT IGNORE INTO user_groups VALUES (5, 50, 'pending', 'Pending', NULL);
-INSERT IGNORE INTO user_groups VALUES (6, 10, 'guests', 'Guests', NULL);
-INSERT IGNORE INTO user_groups VALUES (7, -10, 'banned', 'Banned', NULL);
-INSERT IGNORE INTO user_groups VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
+INSERT IGNORE INTO role VALUES (1, 10000, 'super-admin', 'Super Admin', NULL);
+INSERT IGNORE INTO role VALUES (2, 5000, 'admin', 'Admin', NULL);
+INSERT IGNORE INTO role VALUES (3, 1000, 'editor', 'Editor', NULL);
+INSERT IGNORE INTO role VALUES (4, 100, 'user', 'User', NULL);
+INSERT IGNORE INTO role VALUES (5, 50, 'pending', 'Pending', NULL);
+INSERT IGNORE INTO role VALUES (6, 10, 'guest', 'Guest', NULL);
+INSERT IGNORE INTO role VALUES (7, -10, 'banned', 'Banned', NULL);
+INSERT IGNORE INTO role VALUES (8, -100, 'deactivated', 'Deactivated', NULL);
+
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (1,NULL,'admin','','Backend login','Connect to ionize backend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (10,NULL,'admin/menu','create,edit,delete','Menu','Menus');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (20,NULL,'admin/translations','','Translations','Translations');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (35,NULL,'admin/medialist','','MediaList','MediaList');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (41,40,'admin/page/article','add','Article','Page > Article');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (42,40,'admin/page/element','add','Content Element','Page > Content Element');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (50,40,'admin/page/media','','Media','Page > Media');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (51,50,'admin/page/media/picture','link,unlink, edit','Pictures','Page > Media > Pictures');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (52,50,'admin/page/media/video','link,unlink, edit','Videos','Page > Media > Videos');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (53,50,'admin/page/media/music','link,unlink, edit','Music','Page > Media > Music');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (54,50,'admin/page/media/file','link,unlink, edit','Files','Page > Media > Files');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (60,40,'admin/page/permissions','','Permission','Page > Permission');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (61,60,'admin/page/permissions/backend','','Backend','Page > Permission > Backend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (62,60,'admin/page/permissions/frontend','','Frontend','Page > Permission > Frontend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (70,NULL,'admin/article','create,edit,delete,move,copy,duplicate','Article','Article');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (80,70,'admin/article/media','','Media','Article > Media');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (81,80,'admin/article/media/picture','link,unlink, edit','Pictures','Article > Media > Pictures');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (82,80,'admin/article/media/video','link,unlink,edit','Videos','Article > Media > Videos');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (83,80,'admin/article/media/music','link,unlink,edit','Music','Article > Media > Music');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (84,80,'admin/article/media/file','link,unlink,edit','Files','Article > Media > Files');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (85,70,'admin/article/element','add','Content Element','Article > Content Element');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (86,70,'admin/article/category','','Manage categories','Article > Categories');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (90,70,'admin/article/permissions','','Permission','Article > Permission');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (91,90,'admin/article/permissions/backend','','Backend','Article > Permission > Backend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (92,90,'admin/article/permissions/frontend','','Frontend','Article > Permission > Frontend');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (100,NULL,'admin/tree','','Tree','');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (101,100,'admin/tree/menu','add_page,edit','Menus','');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (102,100,'admin/tree/page','status,add_page,add_article,order','Pages','');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (103,100,'admin/tree/article','unlink,status,move,copy,order','Articles','');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (120,NULL,'admin/article/type','create,edit,delete','Article Type','Article types');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (150,NULL,'admin/modules','install','Modules','Modules');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (151,150,'admin/modules/permissions','','Set Permissions','Modules > Permissions');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (180,NULL,'admin/element','create,edit,delete','Content Element','Content Elements');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (210,NULL,'admin/extend','create,edit,delete','Extend Fields','Extend Fields');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (240,NULL,'admin/tools','','Tools','Tools');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (241,240,'admin/tools/google_analytics','','Google Analytics','Tools > Google Analytics');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (250,240,'admin/tools/system','','System Diagnosis','Tools > System');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (251,250,'admin/tools/system/information','','Information','Tools > System > Information');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (252,250,'admin/tools/system/repair','','Repair tools','Tools > System > Repair');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (253,250,'admin/tools/system/report','','Reports','Tools > System > Reports');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (270,NULL,'admin/settings','','Settings','Settings');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (271,270,'admin/settings/ionize','','Ionize UI','Settings > UI Settings');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (272,270,'admin/settings/languages','','Languages Management','Settings > Languages');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (273,270,'admin/settings/themes','edit','Themes','Settings > Themes');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (274,270,'admin/settings/website','','Website settings','Settings > Website');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (275,270,'admin/settings/technical','','Technical settings','Settings > Technical');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (300,NULL,'admin/users_roles','','Users / Roles','Users / Roles');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (301,300,'admin/user','create,edit,delete','Users','Users');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');
+
+INSERT IGNORE INTO rule (id_role, resource, actions, permission, id_element)
+  VALUES
+  (1,'all','',1,NULL),
+  (2,'admin','',1,NULL),
+  (2,'admin/article','create,edit,delete,move,copy,duplicate',1,NULL),
+  (2,'admin/article/category','',1,NULL),
+  (2,'admin/article/element','add',1,NULL),
+  (2,'admin/article/media','',1,NULL),
+  (2,'admin/article/media/file','link,unlink,edit',1,NULL),
+  (2,'admin/article/media/music','link,unlink,edit',1,NULL),
+  (2,'admin/article/media/picture','link,unlink,edit',1,NULL),
+  (2,'admin/article/media/video','link,unlink,edit',1,NULL),
+  (2,'admin/article/permissions','',1,NULL),
+  (2,'admin/article/permissions/backend','',1,NULL),
+  (2,'admin/article/permissions/frontend','',1,NULL),
+  (2,'admin/article/type','create,edit,delete',1,NULL),
+  (2,'admin/element','create,edit,delete',1,NULL),
+  (2,'admin/extend','create,edit,delete',1,NULL),
+  (2,'admin/filemanager','upload,rename,delete,move',1,NULL),
+  (2,'admin/menu','create,edit,delete',1,NULL),
+  (2,'admin/modules','install',1,NULL),
+  (2,'admin/modules/permissions','',1,NULL),
+  (2,'admin/page','create,edit,delete',1,NULL),
+  (2,'admin/page/article','add',1,NULL),
+  (2,'admin/page/element','add',1,NULL),
+  (2,'admin/page/media','',1,NULL),
+  (2,'admin/page/media/file','link,unlink,edit',1,NULL),
+  (2,'admin/page/media/music','link,unlink,edit',1,NULL),
+  (2,'admin/page/media/picture','link,unlink,edit',1,NULL),
+  (2,'admin/page/media/video','link,unlink,edit',1,NULL),
+  (2,'admin/page/permissions','',1,NULL),
+  (2,'admin/page/permissions/backend','',1,NULL),
+  (2,'admin/page/permissions/frontend','',1,NULL),
+  (2,'admin/role','create,edit,delete',1,NULL),
+  (2,'admin/role/permissions','',1,NULL),
+  (2,'admin/settings','',1,NULL),
+  (2,'admin/settings/ionize','',1,NULL),
+  (2,'admin/settings/languages','',1,NULL),
+  (2,'admin/settings/website','',1,NULL),
+  (2,'admin/tools','',1,NULL),
+  (2,'admin/tools/google_analytics','',1,NULL),
+  (2,'admin/tools/system','',1,NULL),
+  (2,'admin/tools/system/information','',1,NULL),
+  (2,'admin/tools/system/repair','',1,NULL),
+  (2,'admin/tools/system/report','',1,NULL),
+  (2,'admin/translations','',1,NULL),
+  (2,'admin/tree','',1,NULL),
+  (2,'admin/tree/article','unlink,status,move,copy,order',1,NULL),
+  (2,'admin/tree/menu','add_page,edit',1,NULL),
+  (2,'admin/tree/page','status,add_page,add_article,order',1,NULL),
+  (2,'admin/user','create,edit,delete',1,NULL),
+  (2,'admin/users_roles','',1,NULL),
+  (3,'admin','',1,NULL),
+  (3,'admin/article','create,edit,delete,move,copy,duplicate',1,NULL),
+  (3,'admin/article/category','',1,NULL),
+  (3,'admin/article/element','add',1,NULL),
+  (3,'admin/article/media','',1,NULL),
+  (3,'admin/article/media/picture','unlink',1,NULL),
+  (3,'admin/article/media/video','unlink,edit',1,NULL),
+  (3,'admin/article/permissions','',1,NULL),
+  (3,'admin/article/permissions/backend','',1,NULL),
+  (3,'admin/article/permissions/frontend','',1,NULL),
+  (3,'admin/filemanager','upload,rename,delete,move',1,NULL),
+  (3,'admin/menu','create,edit,delete',1,NULL),
+  (3,'admin/modules','',1,NULL),
+  (3,'admin/page','create,edit,delete',1,NULL),
+  (3,'admin/page/article','add',1,NULL),
+  (3,'admin/page/element','add',1,NULL),
+  (3,'admin/page/media','',1,NULL),
+  (3,'admin/page/media/file','link,unlink,edit',1,NULL),
+  (3,'admin/page/media/music','link,unlink,edit',1,NULL),
+  (3,'admin/page/media/picture','link,unlink,edit',1,NULL),
+  (3,'admin/page/media/video','link,unlink,edit',1,NULL),
+  (3,'admin/page/permissions','',1,NULL),
+  (3,'admin/page/permissions/backend','',1,NULL),
+  (3,'admin/page/permissions/frontend','',1,NULL),
+  (3,'admin/settings','',1,NULL),
+  (3,'admin/settings/ionize','',1,NULL),
+  (3,'admin/settings/languages','',1,NULL),
+  (3,'admin/settings/website','',1,NULL),
+  (3,'admin/tools','',1,NULL),
+  (3,'admin/tools/google_analytics','',1,NULL),
+  (3,'admin/tools/system','',1,NULL),
+  (3,'admin/tools/system/information','',1,NULL),
+  (3,'admin/tools/system/report','',1,NULL),
+  (3,'admin/translations','',1,NULL),
+  (3,'admin/tree','',1,NULL),
+  (3,'admin/tree/article','unlink,status,move,copy,order',1,NULL),
+  (3,'admin/tree/menu','add_page,edit',1,NULL),
+  (3,'admin/tree/page','status,add_page,add_article,order',1,NULL),
+  (3,'admin/user','create,edit,delete',1,NULL),
+  (3,'admin/users_roles','',1,NULL);
+
 
 DELETE FROM setting WHERE name='cache';
 DELETE FROM setting WHERE name='cache_time';
@@ -547,9 +749,12 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 
 DELETE FROM setting WHERE name='ionize_version';
+<<<<<<< HEAD
 INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9.5', NULL);
+=======
+INSERT INTO setting VALUES ('', 'ionize_version', '1.0.0', NULL);
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 
-DELETE FROM setting WHERE name='media_upload_mode';
 INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');

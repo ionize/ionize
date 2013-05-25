@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.8
  *
@@ -48,7 +48,7 @@ class TagManager_Writer extends TagManager
 	 */
 	public static function tag_writer(FTL_Binding $tag)
 	{
-		self::load_model('users_model');
+		self::load_model('user_model');
 
 		$parent_tag_name = $tag->getParentName();
 
@@ -58,7 +58,7 @@ class TagManager_Writer extends TagManager
 
 		if ( ! is_null($element) && isset($element[$user_key]))
 		{
-			$user = self::$ci->users_model->get(array('username' => $element[$user_key]));
+			$user = self::$ci->user_model->get(array('username' => $element[$user_key]));
 			$tag->set('writer', $user);
 		}
 

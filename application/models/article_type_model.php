@@ -1,6 +1,24 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Ionize
+ *
+ * @package		Ionize
+ * @author		Ionize Dev Team
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.0
+ */
 
-class Article_type_model extends Base_model 
+/**
+ * Ionize Article Type Model
+ *
+ * @package		Ionize
+ * @subpackage	Models
+ * @category	Article
+ * @author		Ionize Dev Team
+ *
+ */
+class Article_type_model extends Base_model
 {
 
 	/**
@@ -26,7 +44,7 @@ class Article_type_model extends Base_model
 	 */
 	public function get_types_select()
 	{
-		return $this->get_items_select($this->table, 'type', NULL, 'ordering ASC');
+		return $this->get_items_select($this->table, 'type', NULL, NULL, 'ordering ASC');
 	}
 
 
@@ -50,6 +68,3 @@ class Article_type_model extends Base_model
 		return $this->{$this->db_group}->update('page_article');
 	}
 }
-
-/* End of file article_type_model.php */
-/* Location: ./application/models/article_type_model.php */

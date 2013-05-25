@@ -120,17 +120,11 @@
 	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
-	<button id="bSaveextendtable" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bSaveextendtable" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
 	<button id="bCancelextendtable"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
 <script type="text/javascript">
-
-	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#extendtableForm');
 
 	function display_value_block()
 	{

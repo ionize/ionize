@@ -1,26 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Tree Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Tree Controller
- * Provides Ionizes Structure Tree
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Controllers
- * @author		Ionize Dev Team
- *
- */
 class Tree extends MY_Admin {
 
 	/**
@@ -30,8 +19,6 @@ class Tree extends MY_Admin {
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->connect->restrict('editors');
 
 		// Helpers
 		$this->load->helper('text_helper');
@@ -53,13 +40,16 @@ class Tree extends MY_Admin {
 	{
 		// TODO : Limit the number of displayed articles in the tree
 		// $nb_elements = $this->page_model->count_all() + $this->article_model->count_all();
-		
-		// Menus : All menus
-		$menus = $this->menu_model->get_list(array('order_by'=>'ordering ASC'));
 
-		$this->template['menus'] = $menus;
-		
-		$this->output('tree/tree');
+		if ( Authority::can('access', 'admin/tree'))
+		{
+			// Menus : All menus
+			$menus = $this->menu_model->get_list(array('order_by'=>'ordering ASC'));
+	
+			$this->template['menus'] = $menus;
+			
+			$this->output('tree/tree');
+		}
 	}
 
 
@@ -91,7 +81,10 @@ class Tree extends MY_Admin {
 		$id_menu = $this->input->post('id_menu');
 		
 		// Pages
-		$pages = $this->tree_model->get_pages(array('id_menu' => $id_menu, 'id_parent' => $id_parent));
+		$pages = $this->tree_model->get_pages(array(
+			'id_menu' => $id_menu,
+			'id_parent' => $id_parent)
+		);
 		
 		// Articles
 		$articles = $this->tree_model->get_articles(array(
@@ -164,6 +157,3 @@ class Tree extends MY_Admin {
 
 	}
 }
-
-/* End of file tree.php */
-/* Location: ./application/admin/controllers/tree.php */

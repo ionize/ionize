@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 1.0
  */
@@ -20,7 +20,6 @@
  * @author		Ionize Dev Team
  *
  */
-
 class Group_model extends Base_model
 {
 	/**
@@ -35,9 +34,4 @@ class Group_model extends Base_model
 		$this->table =		'user_groups';
 		$this->pk_name = 	'id_group';
 	}
-
-
-
 }
-/* End of file group_model.php */
-/* Location: ./application/models/group_model.php */

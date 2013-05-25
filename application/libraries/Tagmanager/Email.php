@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.9
  *
@@ -59,7 +59,7 @@ class TagManager_Email extends TagManager
 			// Get potential website / form email
 			switch($email)
 			{
-				case 'website':
+				case 'site':
 					$email = (Settings::get('site_email') != '') ? Settings::get('site_email') : NULL;
 					break;
 
@@ -68,7 +68,7 @@ class TagManager_Email extends TagManager
 					break;
 
 				default:
-					$email = NULL;
+					$email = (Settings::get('email_'.$email) != '') ? Settings::get('email_'.$email) : NULL;
 					break;
 			}
 
@@ -96,7 +96,16 @@ class TagManager_Email extends TagManager
 				self::$ci->email->message($view_content);
 
 				// Send silently
-				@self::$ci->email->send();
+				$result = @self::$ci->email->send();
+
+				if ( ! $result)
+				{
+					log_message('error', 'Error : Tagmanager/Email->send_form_emails() : Email was not sent.');
+				}
+			}
+			else
+			{
+				log_message('error', 'Error : Tagmanager/Email->send_form_emails() : Email not found');
 			}
 		}
 	}

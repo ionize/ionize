@@ -2,7 +2,7 @@
  * Ionize 0.9.9.X
  * "Demo" theme example data
  * These data are provided as demo content for the theme "Demo"
- * --#-- is used as SQL request separator bu the installer.
+ * --#-- is used as SQL request separator by the installer.
  *
  */
 
@@ -10,25 +10,25 @@
 --
 -- Base data
 --
-TRUNCATE TABLE `lang`;
+TRUNCATE TABLE lang;
 --#--
-INSERT INTO `lang` (`lang`, `name`, `online`, `def`, `ordering`) VALUES	('en','english','1','1',1);
+INSERT INTO lang (lang, name, online, def, ordering) VALUES	('en','english','1','1',1);
 --#--
-UPDATE setting SET `content`='foundation' WHERE `name`='theme';
+UPDATE setting SET content='foundation' WHERE name='theme';
 --#--
-DELETE FROM `setting` WHERE `name`='site_title';
+DELETE FROM setting WHERE name='site_title';
 --#--
-INSERT INTO `setting` VALUES('', 'site_title', 'Ionize CMS', 'en');
+INSERT INTO setting VALUES('', 'site_title', 'Ionize CMS', 'en');
 --#--
 
 
 -- 
 -- Article
 -- 
-TRUNCATE `article`;
+TRUNCATE article;
 --#--
 
-INSERT INTO `article` (`id_article`, `name`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `indexed`, `id_category`, `comment_allow`, `comment_autovalid`, `comment_expire`, `flag`, `has_url`)
+INSERT INTO article (id_article, name, author, updater, created, publish_on, publish_off, updated, logical_date, indexed, id_category, comment_allow, comment_autovalid, comment_expire, flag, has_url)
 VALUES
 	(1,'404','demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-10 09:18:48','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
 	(4,'welcome-to-ionize','demo','demo','2012-11-17 12:48:59','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-20 17:05:20','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
@@ -61,10 +61,10 @@ VALUES
 -- 
 -- Article_category
 -- 
-TRUNCATE `article_category`;
+TRUNCATE article_category;
 --#--
 
-INSERT INTO `article_category` (`id_article`, `id_category`)
+INSERT INTO article_category (id_article, id_category)
 VALUES
 	(4,1),
 	(5,1),
@@ -76,10 +76,10 @@ VALUES
 -- 
 -- Article_lang
 -- 
-TRUNCATE `article_lang`;
+TRUNCATE article_lang;
 --#--
 
-INSERT INTO `article_lang` (`id_article`, `lang`, `url`, `title`, `subtitle`, `meta_title`, `content`, `meta_keywords`, `meta_description`, `online`)
+INSERT INTO article_lang (id_article, lang, url, title, subtitle, meta_title, content, meta_keywords, meta_description, online)
 VALUES
 	(1,'en','404','Can\'t find requested page','','','<p>Maecenas massa. varius non accumsan nec, commodo vitae felis! Quisque luctus, lorem vel elementum aliquam, lorem nulla dignissim velit, id placerat libero ipsum eget sapien. Cras erat risus, pellentesque ut auctor quis, fringilla vel elit. Cras nisl dolor, vulputate eget molestie ut, sollicitudin non dui.</p><h4>Reasons</h4><ul><li>Lorem ipsum dolor sit amet</li><li>Consectetur adipiscing elit</li><li>Nulla volutpat aliquam velit<ul><li>Phasellus iaculis neque</li><li>Purus sodales ultricies</li><li>Vestibulum laoreet porttitor sem</li><li>Ac tristique libero volutpat at</li></ul></li><li>Faucibus porta lacus fringilla vel</li></ul>','','',1),
 	(4,'en','the-power-of-php','The power of PHP','','','<p>The Ionize CMS uses CodeIgniter, a powerful and lightweight PHP framework. For CodeIgniter developpers, starting developping on Ionize will be really easy as building a CI application !</p>','','',1),
@@ -112,10 +112,10 @@ VALUES
 -- 
 -- Article_media
 -- 
-TRUNCATE `article_media`;
+TRUNCATE article_media;
 --#--
 
-INSERT INTO `article_media` (`id_article`, `id_media`, `online`, `ordering`, `url`, `lang_display`)
+INSERT INTO article_media (id_article, id_media, online, ordering, url, lang_display)
 VALUES
 	(4,3,1,1,NULL,NULL),
 	(5,6,1,2,NULL,NULL),
@@ -134,10 +134,10 @@ VALUES
 -- 
 -- Article_type
 -- 
-TRUNCATE `article_type`;
+TRUNCATE article_type;
 --#--
 
-INSERT INTO `article_type` (`id_type`, `type`, `ordering`, `description`, `type_flag`)
+INSERT INTO article_type (id_type, type, ordering, description, type_flag)
 VALUES
 	(4,'bloc',0,'',5),
 	(5,'not-logged-in',0,'',1),
@@ -148,10 +148,10 @@ VALUES
 -- 
 -- Category
 -- 
-TRUNCATE `category`;
+TRUNCATE category;
 --#--
 
-INSERT INTO `category` (`id_category`, `name`, `ordering`)
+INSERT INTO category (id_category, name, ordering)
 VALUES
 	(1,'ionize',0),
 	(2,'website',0);
@@ -162,10 +162,10 @@ VALUES
 -- 
 -- Category_lang
 -- 
-TRUNCATE `category_lang`;
+TRUNCATE category_lang;
 --#--
 
-INSERT INTO `category_lang` (`id_category`, `lang`, `title`, `subtitle`, `description`)
+INSERT INTO category_lang (id_category, lang, title, subtitle, description)
 VALUES
 	(1,'en','Ionize CMS','',''),
 	(2,'en','Website','',''),
@@ -177,10 +177,10 @@ VALUES
 -- 
 -- Media
 -- 
-TRUNCATE `media`;
+TRUNCATE media;
 --#--
 
-INSERT INTO `media` (`id_media`, `type`, `file_name`, `path`, `base_path`, `copyright`, `date`, `link`, `square_crop`)
+INSERT INTO media (id_media, type, file_name, path, base_path, copyright, date, link, square_crop)
 VALUES
 	(3,'picture','screenshot_ionize_dashboard.jpg','files/screenshot_ionize_dashboard.jpg','files/',NULL,'0000-00-00 00:00:00',NULL,'m'),
 	(4,'picture','IMG_8359.jpg','files/pictures/IMG_8359.jpg','files/pictures/','','0000-00-00 00:00:00','','m'),
@@ -203,10 +203,10 @@ VALUES
 -- 
 -- Media_lang
 -- 
-TRUNCATE `media_lang`;
+TRUNCATE media_lang;
 --#--
 
-INSERT INTO `media_lang` (`lang`, `id_media`, `title`, `alt`, `description`)
+INSERT INTO media_lang (lang, id_media, title, alt, description)
 VALUES
 	('en',4,'Mingun','Alot of young munks live in a monastery next to the Hsinbyume pagoda','Alot of young munks live in a monastery next to the Hsinbyume pagoda'),
 	('en',5,'Mandalay','One working day in the historical capital of Burma.','One working day in the historical capital of Burma.'),
@@ -226,10 +226,10 @@ VALUES
 -- 
 -- Menu
 -- 
-TRUNCATE `menu`;
+TRUNCATE menu;
 --#--
 
-INSERT INTO `menu` (`id_menu`, `name`, `title`, `ordering`)
+INSERT INTO menu (id_menu, name, title, ordering)
 VALUES
 	(1,'main','Main menu',NULL),
 	(2,'system','System menu',NULL);
@@ -240,10 +240,10 @@ VALUES
 -- 
 -- Page
 -- 
-TRUNCATE `page`;
+TRUNCATE page;
 --#--
 
-INSERT INTO `page` (`id_page`, `id_parent`, `id_menu`, `id_type`, `id_subnav`, `name`, `ordering`, `level`, `online`, `home`, `author`, `updater`, `created`, `publish_on`, `publish_off`, `updated`, `logical_date`, `appears`, `has_url`, `view`, `view_single`, `article_list_view`, `article_view`, `article_order`, `article_order_direction`, `link`, `link_type`, `link_id`, `pagination`, `id_group`, `priority`, `used_by_module`)
+INSERT INTO page (id_page, id_parent, id_menu, id_type, id_subnav, name, ordering, level, online, home, author, updater, created, publish_on, publish_off, updated, logical_date, appears, has_url, view, view_single, article_list_view, article_view, article_order, article_order_direction, link, link_type, link_id, pagination, id_group, priority, used_by_module)
 VALUES
 	(1,0,2,0,0,'404',0,0,1,0,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:42:05','0000-00-00 00:00:00',0,1,'','','','','ordering','ASC','',NULL,'',0,0,5,0),
 	(2,0,1,0,0,'welcome',1,0,1,1,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-23 01:05:34','0000-00-00 00:00:00',1,1,'page_home','','','','ordering','ASC','',NULL,'',0,0,5,0),
@@ -259,10 +259,10 @@ VALUES
 --
 -- Page_article
 --
-TRUNCATE `page_article`;
+TRUNCATE page_article;
 --#--
 
-INSERT INTO `page_article` (`id_page`, `id_article`, `online`, `view`, `ordering`, `id_type`, `link_type`, `link_id`, `link`, `main_parent`)
+INSERT INTO page_article (id_page, id_article, online, view, ordering, id_type, link_type, link_id, link, main_parent)
 VALUES
 	(1,1,1,NULL,0,NULL,'','','',1),
 	(2,11,1,NULL,4,0,'','','',1),
@@ -295,10 +295,10 @@ VALUES
 -- Page_lang
 -- 
 		
-TRUNCATE `page_lang`;
+TRUNCATE page_lang;
 --#--
 
-INSERT INTO `page_lang` (`lang`, `id_page`, `url`, `link`, `title`, `subtitle`, `nav_title`, `subnav_title`, `meta_title`, `meta_description`, `meta_keywords`, `online`)
+INSERT INTO page_lang (lang, id_page, url, link, title, subtitle, nav_title, subnav_title, meta_title, meta_description, meta_keywords, online)
 VALUES
 	('en',1,'404','','404','Can\'t find requested page !','','','','','',1),
 	('en',2,'home','','Ionize CMS','the most professional friendly CMS ever made.','Home','','Welcome To Ionize CMS','','',1),
@@ -314,10 +314,10 @@ VALUES
 -- 
 -- Page_media
 -- 
-TRUNCATE `page_media`;
+TRUNCATE page_media;
 --#--
 
-INSERT INTO `page_media` (`id_page`, `id_media`, `online`, `ordering`, `lang_display`)
+INSERT INTO page_media (id_page, id_media, online, ordering, lang_display)
 VALUES
 	(2,4,1,13,NULL),
 	(2,5,1,10,NULL),
@@ -329,10 +329,10 @@ VALUES
 --
 -- URL
 --
-TRUNCATE `url`;
+TRUNCATE url;
 --#--
 
-INSERT INTO `url` (`id_url`, `id_entity`, `type`, `canonical`, `active`, `lang`, `path`, `path_ids`, `full_path_ids`, `creation_date`)
+INSERT INTO url (id_url, id_entity, type, canonical, active, lang, path, path_ids, full_path_ids, creation_date)
 VALUES
 	(596,4,'article',1,1,'en','home/the-power-of-php','2/4','2/4','2012-12-23 01:05:34'),
 	(601,1,'page',1,1,'en','404','1','1','2012-12-28 19:56:07'),

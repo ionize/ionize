@@ -17,10 +17,9 @@ $lang['ionize_logout'] = 'Logout';
 $lang['ionize_goback'] = 'Back to website';
 $lang['ionize_website'] = 'See the website';
 $lang['ionize_logged_as'] = 'Logged as';
-$lang['ionize_login_name'] = 'User name';
+$lang['ionize_login_name'] = 'Login';
 $lang['ionize_login_password'] = 'Password';
 $lang['ionize_login_remember'] = 'Remember me';
-$lang['ionize_login'] = 'Login';
 $lang['ionize_forgot_password'] = 'Forgotten password ?';
 $lang['ionize_session_expired'] = 'Your session has expired. Please log in again.';
 $lang['ionize_login_error'] = 'Something wrong happens...';
@@ -36,15 +35,19 @@ $lang['ionize_dashboard_icon_mediamanager'] = 'Medias';
 $lang['ionize_dashboard_icon_translation'] = 'Translations';
 $lang['ionize_dashboard_icon_google_analytics'] = 'Analytics';
 $lang['ionize_dashboard_icon_articles'] = 'Articles';
+$lang['ionize_dashboard_icon_users'] = 'Users & Roles';
 $lang['ionize_dashboard_title_content'] = 'Content';
 $lang['ionize_dashboard_title_tools'] = 'Tools';
 $lang['ionize_dashboard_title_settings'] = 'Settings';
 $lang['ionize_dashboard_title_last_modified_articles'] = 'Last updated articles';
-$lang['ionize_dashboard_title_last_connected_users'] = 'Last connected users';
+$lang['ionize_dashboard_title_last_connected_users'] = 'Last connected';
 $lang['ionize_dashboard_title_current_connected_users'] = 'Current connected users';
-$lang['ionize_dashboard_title_last_registered_users'] = 'Last registered users';
+$lang['ionize_dashboard_title_last_registered_users'] = 'Last registered';
 $lang['ionize_dashboard_title_orphan_pages'] = 'Orphan pages';
 $lang['ionize_dashboard_title_orphan_articles'] = 'Orphan articles';
+$lang['ionize_dashboard_title_users'] = 'Users';
+$lang['ionize_dashboard_title_content'] = 'Content';
+$lang['ionize_dashboard_title_visits'] = 'Visits';
 
 
 /*
@@ -76,6 +79,7 @@ $lang['ionize_menu_menu'] = 'Manage menus...';
 $lang['ionize_menu_page'] = 'Create page...';
 $lang['ionize_menu_article'] = 'Create article...';
 $lang['ionize_menu_media_manager'] = 'Media manager';
+$lang['ionize_menu_medialist'] = 'MediaList';
 $lang['ionize_menu_modules_admin'] = 'Administration...';
 $lang['ionize_menu_site_settings'] = 'Website settings...';
 $lang['ionize_menu_global'] = 'Global...';
@@ -86,7 +90,7 @@ $lang['ionize_menu_site_settings_global'] = 'Website settings';
 $lang['ionize_menu_site_settings_translations'] = 'Static translation';
 $lang['ionize_menu_site_settings_technical'] = 'Advanced settings';
 $lang['ionize_menu_ionize_settings'] = 'Ionize interface';
-$lang['ionize_menu_users'] = 'Users...';
+$lang['ionize_menu_users'] = 'Users & Roles...';
 $lang['ionize_menu_languages'] = 'Languages...';
 $lang['ionize_menu_about'] = 'About';
 $lang['ionize_menu_documentation'] = 'Documentation';
@@ -195,6 +199,8 @@ $lang['ionize_message_element_field_name_exists'] = 'This field already exists !
 | Labels are also commonly used for table head column titles
 |--------------------------------------------------------------------------
 */
+$lang['ionize_label_yes'] = 'Yes';
+$lang['ionize_label_no'] = 'No';
 $lang['ionize_label_change'] = 'Change';
 $lang['ionize_label_multilingual'] = 'Mutilingual';
 $lang['ionize_label_internal_id'] = 'Internal ID';
@@ -212,6 +218,9 @@ $lang['ionize_label_max_upload_size'] = 'Max Upload';
 $lang['ionize_label_file_uploads'] = 'Upload ?';
 $lang['ionize_label_environment'] = 'Environment';
 $lang['ionize_label_site_email'] = 'Website Email';
+$lang['ionize_label_email_technical'] = 'Technical Email';
+$lang['ionize_label_email_contact'] = 'Contact Email';
+$lang['ionize_label_email_info'] = 'Info Email';
 $lang['ionize_label_linkto'] = 'Link to...';
 $lang['ionize_label_drop_link_here'] = 'drop a link here...';
 $lang['ionize_label_drop_page_here'] = 'drop a page here...';
@@ -257,8 +266,8 @@ $lang['ionize_label_has_url'] = 'Has URL';
 $lang['ionize_label_parent'] = 'Parent';
 $lang['ionize_label_meta_keywords'] = 'Keywords';
 $lang['ionize_label_meta_description']= 'Description';
-$lang['ionize_label_created'] = 'Creation date';
-$lang['ionize_label_updated'] = 'Update date';
+$lang['ionize_label_created'] = 'Created';
+$lang['ionize_label_updated'] = 'Updated';
 $lang['ionize_label_publish_on'] = 'Publish';
 $lang['ionize_label_publish_off'] = 'Unpublish';
 $lang['ionize_label_permanent_url'] = 'Permanent URL';
@@ -288,7 +297,10 @@ $lang['ionize_help_duplicate_article'] = 'You need at least to change the <b cla
 $lang['ionize_help_environment'] = 'ENVIRONMENT constant, as set in index.php';
 $lang['ionize_help_environment_flag'] = 'The ENVIRONMENT constant of your website is set to <b>%s</b> in the index.php.<br/>Before going live, change it to : <b>production</b>';
 $lang['ionize_description_flags'] = 'Flags are used by articles types and add a colored flag to give a visual help about the type of each article.<br/>';
-
+$lang['ionize_help_site_email'] = 'All email which are send from the website are supposed to be sent from this email. Usually something like no-reply@mysite.tld';
+$lang['ionize_help_email_technical'] = 'The website administrator email';
+$lang['ionize_help_email_contact'] = 'Global contact email. Forms like the contact form should be sent to this address.';
+$lang['ionize_help_email_info'] = 'Information email';
 
 /*
 |--------------------------------------------------------------------------
@@ -296,6 +308,7 @@ $lang['ionize_description_flags'] = 'Flags are used by articles types and add a 
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_save'] = 'Save';
+$lang['ionize_button_save_all'] = 'Save All';
 $lang['ionize_button_save_close'] = 'Save & close';
 $lang['ionize_button_update'] = 'Update';
 $lang['ionize_button_send'] = 'Send';
@@ -395,7 +408,7 @@ $lang['ionize_message_lang_content_copied'] = 'Lang content copy successful';
 | Admin : Users & groups
 |--------------------------------------------------------------------------
 */
-$lang['ionize_title_users'] = 'Users management';
+$lang['ionize_title_users'] = 'Users & Roles';
 $lang['ionize_title_user_edit'] = 'User edit';
 $lang['ionize_title_existing_users'] = 'Users';
 $lang['ionize_title_existing_powerusers'] = 'Power Users';
@@ -433,6 +446,7 @@ $lang['ionize_message_user_not_saved'] = 'User not updated';
 $lang['ionize_message_user_saved'] = 'User saved';
 $lang['ionize_message_user_exists'] = 'User already exists in database.<br/> Change Login or Email.';
 $lang['ionize_message_user_deleted'] = 'User deleted';
+$lang['ionize_message_user_not_deleted'] = 'User not deleted';
 $lang['ionize_message_user_cannot_delete_yourself'] = 'You can\'t delete yourself!';
 $lang['ionize_message_group_updated'] = 'Group updated';
 $lang['ionize_message_group_not_saved'] = 'Group not updated';
@@ -452,7 +466,8 @@ $lang['ionize_label_site_title'] = 'Website title';
 $lang['ionize_message_settings_saved'] = 'Settings saved';
 $lang['ionize_title_visual_help'] = 'Visual help';
 $lang['ionize_label_show_help_tips'] = 'Display help on fields';
-$lang['ionize_title_admin_panel_languages'] =  'Administration interface languages';
+$lang['ionize_title_dashboard'] =  'Dashboard';
+$lang['ionize_title_admin_panel_languages'] =  'Backend languages';
 $lang['ionize_title_admin_panel_datetime'] =  'Date and Time';
 $lang['ionize_label_display_connected_label'] = 'Connected label';
 $lang['ionize_help_display_connected_label'] = 'Displays a label on the top left of the website when you\'re connected to the Admin panel';
@@ -461,6 +476,10 @@ $lang['ionize_help_enable_backend_tracker'] = 'Displays users logged to the back
 $lang['ionize_onchange_ionize_settings'] = 'The Administration panel will reload after saving these settings.';
 $lang['ionize_label_sitemaps_gzip'] = 'Compress Sitemap';
 $lang['ionize_help_setting_sitemaps_gzip'] = 'Compress the Sitemap file with gzip.';
+$lang['ionize_label_display_google'] = 'Display on Dashboard';
+$lang['ionize_help_display_google'] = 'Displays Google Analytics basic charts on the dashboard';
+
+
 
 
 /*
@@ -473,8 +492,10 @@ $lang['ionize_title_theme'] = 'Theme';
 $lang['ionize_title_translation'] = 'Static translations';
 $lang['ionize_title_database'] = 'Database';
 $lang['ionize_title_mail_send'] = 'Email';
+$lang['ionize_title_emails'] = 'Emails';
+$lang['ionize_title_email_server'] = 'Email Server';
 $lang['ionize_title_media_management'] = 'Medias';
-$lang['ionize_title_google_analytics'] = 'Statistics';
+$lang['ionize_title_google_analytics'] = 'Google';
 $lang['ionize_title_thumb_new'] = 'New picture thumbnail';
 $lang['ionize_title_thumbs'] = 'Thumbnails';
 $lang['ionize_title_thumbs_system'] = 'Ionize system thumbnail';
@@ -493,6 +514,7 @@ $lang['ionize_title_system'] = 'System';
 $lang['ionize_title_api'] = 'API';
 $lang['ionize_title_create_new_api_key'] = 'Create API key';
 $lang['ionize_label_create_new_api_key'] = 'Create new API key';
+$lang['ionize_button_new_api_key'] = 'New API key';
 $lang['ionize_title_db_backup'] = 'Database backup';
 $lang['ionize_title_maintenance'] = 'Maintenance';
 $lang['ionize_title_maintenance_page'] = 'Maintenance Page';
@@ -522,6 +544,12 @@ $lang['ionize_label_db_name'] = 'Database name';
 $lang['ionize_label_db_user'] = 'User';
 $lang['ionize_label_db_pass'] = 'Password';
 $lang['ionize_label_google_analytics'] = 'Google Analytics';
+$lang['ionize_label_google_analytics_id'] = 'Google Tracking ID';
+$lang['ionize_label_google_analytics_tracking_code'] = 'Google Tracking Code';
+$lang['ionize_label_google_analytics_profile_id'] = 'Google Analytics Profile ID';
+$lang['ionize_label_google_analytics_url'] = 'Google Analytics URL';
+$lang['ionize_label_google_analytics_email'] = 'Google Analytics Email';
+$lang['ionize_label_google_analytics_password'] = 'Google Analytics Password';
 $lang['ionize_label_tinybuttons'] = 'Toolbar TinyMCE';
 $lang['ionize_label_small_tinybuttons'] = 'Toolbar Small TinyMCE';
 $lang['ionize_label_restore_tinybuttons'] = 'Restore TinyMCE default toolbar';
@@ -599,7 +627,12 @@ $lang['ionize_message_cache_saved'] = 'Cache Settings saved.';
 $lang['ionize_message_cache_cleared'] = 'Cache cleared.';
 $lang['ionize_message_urls_saved'] = 'URLs saved';
 $lang['ionize_message_setting_saved'] = 'Setting saved';
-$lang['ionize_help_setting_google_analytics'] = 'The complete Google script, as copied from the Google Analytics website';
+$lang['ionize_help_setting_google_analytics'] = 'The complete Google script, as copied from the Google Analytics website. If you set the tracking ID, you can leave it empty.';
+$lang['ionize_help_setting_google_analytics_id'] = 'Google Analytics Tracking ID. Eg UA-1234567-00';
+$lang['ionize_help_setting_google_analytics_profile_id'] = 'Profile ID. Eg 12345678. Can be found in Profile Settings in Google Analytics';
+$lang['ionize_help_setting_google_analytics_url'] = 'URL of the website, as set in Google Analytics';
+$lang['ionize_help_setting_google_analytics_email'] = 'Google Analytics account email';
+$lang['ionize_help_setting_google_analytics_password'] = 'Google Analytics password';
 $lang['ionize_help_setting_files_path'] = 'Indicates the base media folder. Doesn\'t change the physical folder name';
 $lang['ionize_help_setting_media_type_picture'] = 'File Extensions, comma separated';
 $lang['ionize_help_setting_media_type_music'] = 'File Extensions, comma separated';
@@ -623,6 +656,13 @@ $lang['ionize_help_upload_mode_auto'] = 'Auto-detection based on browser capabil
 $lang['ionize_help_upload_mode_html4'] = "File by file selection, no Drag'n'Drop";
 $lang['ionize_help_upload_mode_html5'] = "Multiple files selection, with Drag'n'Drop";
 $lang['ionize_help_upload_autostart'] = "Upload autostart after file selection";
+
+$lang['ionize_label_api_key_hash'] = "Key";
+$lang['ionize_label_api_key_level'] = "Level";
+$lang['ionize_label_api_key_is_private'] = "Is private";
+$lang['ionize_label_api_key_ignore_limits'] = "Ignore limits";
+$lang['ionize_label_api_key_ip_addresses'] = "IP addresses";
+
 
 
 /*
@@ -664,7 +704,7 @@ $lang['ionize_label_appears'] = 'Display in nav';
 $lang['ionize_label_link'] = 'Link';
 $lang['ionize_label_pagination_nb'] = 'Articles / page';
 $lang['ionize_label_article_list_template'] = 'List view';
-$lang['ionize_label_page_delete_date'] = 'Page delete date';
+$lang['ionize_label_page_delete_date'] = 'Deleted';
 $lang['ionize_label_menu'] = 'Menu';
 $lang['ionize_label_home_page'] = 'Home page';
 $lang['ionize_help_home_page'] = 'Home page';
@@ -715,6 +755,7 @@ $lang['ionize_help_sitemap_priority'] = 'Page priority, between 0 and 10';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_title_medias'] = 'Medias';
+$lang['ionize_title_medialist'] = 'MediaList';
 $lang['ionize_title_thumbs_status'] = 'Thumbnails status';
 $lang['ionize_title_informations'] = 'Information';
 $lang['ionize_title_details'] = 'Details';
@@ -729,6 +770,8 @@ $lang['ionize_message_no_file'] = 'No file';
 $lang['ionize_label_init_thumb'] = 'Init thumbnails';
 $lang['ionize_label_attach_media'] = 'Add Media';
 $lang['ionize_label_detach_media'] = 'Unlink media';
+$lang['ionize_label_delete_media'] = 'Delete media';
+$lang['ionize_label_remove_media'] = 'Remove media';
 $lang['ionize_label_detach_all_pictures'] = 'Unlink all pictures';
 $lang['ionize_label_detach_all_videos'] = 'Unlink all videos';
 $lang['ionize_label_detach_all_musics'] = 'Unlink all music';
@@ -776,6 +819,16 @@ $lang['ionize_exception_copy'] = 'PHP : Picture copy not possible';
 $lang['ionize_exception_no_source_file'] = 'Source file not found';
 $lang['ionize_exception_memory_limit'] = 'PHP Memory limit reached';
 $lang['ionize_exception_image_lib'] = 'Image Lib Error';
+
+
+$lang['ionize_button_list_view'] = 'List view';
+$lang['ionize_button_card_view'] = 'Card view';
+$lang['ionize_medialist_filter_by'] = '-- Filter by --';
+$lang['ionize_medialist_filter_by_alt_missing'] = 'ALT missing';
+$lang['ionize_medialist_filter_by_broken_src'] = 'Broken source';
+$lang['ionize_medialist_filter_by_used_in_content'] = 'Used in Page / Article';
+$lang['ionize_medialist_filter_by_used_in_content_AL_missing'] = 'Used in Page / Article and ALT missing';
+$lang['ionize_medialist_filter_by_not_used'] = 'Not used';
 
 
 /*
@@ -1021,6 +1074,7 @@ $lang['ionize_title_label_write_rights'] = 'Write rights';
 $lang['ionize_message_check_corrected'] = ' corrected.';
 $lang['ionize_message_check_ok'] = 'OK';
 $lang['ionize_message_check_folder_nok'] = 'No Write rights';
+$lang['ionize_message_message_no_write_rights'] = 'No Write rights';
 $lang['ionize_message_nb_media_cleaned'] = ' media cleaned';
 $lang['ionize_message_no_broken_media_links'] = 'No broken media found';
 $lang['ionize_message_thumbs_deleted'] = 'Thumbnails deleted';
@@ -1028,6 +1082,8 @@ $lang['ionize_label_thumb_crop_area'] = 'Thumb Resize';
 $lang['ionize_label_top_left'] = 'top-left';
 $lang['ionize_label_middle'] = 'middle';
 $lang['ionize_label_bottom_right'] = 'bottom-right';
+$lang['ionize_label_start_crop'] = 'Start Crop';
+$lang['ionize_help_start_crop'] = 'For Square or Adaptive picture, define the start of the displayed area';
 
 /*
 |--------------------------------------------------------------------------
@@ -1039,4 +1095,78 @@ $lang['ionize_label_about_us_contributors'] = 'Contributors';
 $lang['ionize_label_about_us_thaks_to'] = 'Thanks to';
 $lang['ionize_label_about_us_license'] = 'License';
 
+
+/*
+|--------------------------------------------------------------------------
+| Ionize 1.0.0
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_title_roles'] = 'Roles';
+$lang['ionize_title_permissions'] = 'Permissions';
+$lang['ionize_title_backend_permissions'] = 'Backend Permissions';
+$lang['ionize_title_modules_permissions'] = 'Modules Permissions';
+$lang['ionize_label_role'] = 'Role';
+$lang['ionize_label_role_code'] = 'Role Code';
+$lang['ionize_label_role_name'] = 'Role Name';
+$lang['ionize_label_role_level'] = 'Level';
+$lang['ionize_title_role_edit'] = 'Role Edit';
+$lang['ionize_title_add_role'] = 'Add New Role';
+$lang['ionize_title_add_user'] = 'Add New User';
+$lang['ionize_title_resource_protected'] = 'Resource protected';
+$lang['ionize_subtitle_resource_protected'] = "You don't have access to this resource.<br/>If you need to have access, please ask one upper level Administrator.";
+$lang['ionize_label_access_denied'] = 'Access denied';
+$lang['ionize_help_role_choice'] = 'Existing levels:';
+$lang['ionize_message_role_saved'] = 'Role saved';
+$lang['ionize_message_role_deleted'] = 'Role deleted';
+$lang['ionize_message_role_not_deleted'] = 'Role not deleted';
+$lang['ionize_label_back_to_role_list'] = 'Back to Roles list';
+$lang['ionize_label_permissions_all'] = 'All';
+$lang['ionize_label_permissions_custom'] = 'Custom';
+$lang['ionize_label_allowed_resources'] = 'Allowed';
+$lang['ionize_label_allow'] = 'Allow';
+$lang['ionize_label_deny'] = 'Deny';
+$lang['ionize_label_partial_permission'] = 'partial';
+$lang['ionize_label_permission_access'] = 'Access';
+$lang['ionize_label_permission_edit'] = 'Edit';
+$lang['ionize_label_permission_save'] = 'Save';
+$lang['ionize_label_permission_copy'] = 'Copy';
+$lang['ionize_label_permission_move'] = 'Move';
+$lang['ionize_label_permission_delete'] = 'Delete';
+$lang['ionize_label_frontend'] = 'Website';
+$lang['ionize_label_backend'] = 'Backend';
+$lang['ionize_label_behavior'] = 'Behavior';
+$lang['ionize_label_can_see_backend'] = 'Can see (backend)';
+
+$lang['ionize_label_denied_action_401'] = 'Must login (401)';
+$lang['ionize_label_denied_action_403'] = 'Forbidden (403)';
+$lang['ionize_label_denied_action_404'] = 'Not found (404)';
+$lang['ionize_help_denied_action_401'] = 'Page in menu. Output : 401, login needed';
+$lang['ionize_help_denied_action_403'] = 'Page in menu. Output : 403, Forbidden content';
+$lang['ionize_help_denied_action_404'] = 'Page not in menu. Output : 404, Page not found';
+
+
+$lang['ionize_message_role_no_save_level_too_high'] = 'Role not saved : Level must be <= to yours';
+$lang['ionize_message_role_no_delete_users_linked'] = 'Role not deleted : Users are linked !';
+$lang['ionize_help_email_can_be_used_as_login'] = 'Email can also be used as login';
+$lang['ionize_help_password_change'] = "Leave blank if you don't want to change the password";
+$lang['ionize_message_email_already_registered'] = "This Email already exists in Database.";
+
+
+$lang['ionize_menu_tags'] = "Tags";
+$lang['ionize_title_tags'] = "Tags";
+$lang['ionize_label_new_tag'] = "Add one Tag";
+$lang['ionize_button_save_tags'] = "Save Tags";
+$lang['ionize_button_add_tag'] = "Add Tag";
+$lang['ionize_help_tag_textbox'] = "type a new tag here";
+
+
+$lang['ionize_help_orphan_pages'] = "These pages are not linked to any parent.<br/>This happens when the parent page of one page is deleted.";
+$lang['ionize_help_orphan_articles'] = "These articles are not linked to any page.<br/>To link again one article to one page, drag'n'drop it to one page in the tree.";
+
+
+$lang['ionize_ga_pageviews'] = 'Page views';
+$lang['ionize_ga_unique_pageviews'] = 'Unique Page Views';
+$lang['ionize_ga_avg_time_on_page'] = 'Avg time on Page';
+$lang['ionize_ga_bounce_rate'] = 'Bounce Rate';
+$lang['ionize_ga_exit_rate'] = 'Exit rate';
 

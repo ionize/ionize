@@ -6,8 +6,13 @@
 |--------------------------------------------------------------------------
 |
 */
+<<<<<<< HEAD
 $config['version'] = '0.9.9.5';
 $config['version_date'] = '2013.03.05';
+=======
+$config['version'] = '1.0.0';
+$config['version_date'] = '?';
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 
 
 /*
@@ -78,6 +83,7 @@ $config['texteditors'] = array('tinymce');
 $config['special_uri'] = array(	'category' => 'category',
 								'page' => 'pagination',
 								'archive' => 'archives',
+								'tag' => 'tag',
 							  );
 
 

@@ -17,7 +17,7 @@
 /*
 |--------------------------------------------------------------------------
 | Labels
-| To be used for form lables.
+| To be used for form labels.
 | Also used by Form Validation to display "human" name for each field in the errors messages.
 | Declared as "label" for each fields of forms set in /config/ionize.php
 |--------------------------------------------------------------------------
@@ -26,6 +26,8 @@ $lang['form_label_email'] = 'Email';
 $lang['form_label_name'] = 'Name';
 $lang['form_label_firstname'] = 'First Name';
 $lang['form_label_lastname'] = 'Last Name';
+$lang['form_label_subject'] = 'Subject';
+$lang['form_label_message'] = 'Message';
 $lang['form_label_screen_name'] = 'Screen Name';
 $lang['form_label_username'] = 'User name';
 $lang['form_label_birthdate'] = 'Birthdate';
@@ -53,7 +55,7 @@ $lang['form_button_answer'] = "Answer";
 | Emails
 |--------------------------------------------------------------------------
 */
-// Registration : Email to the website email
+// Registration : Email to Admin
 $lang['mail_website_registration_subject'] = "Someone registered on the website";
 $lang['mail_website_registration_message'] = "Here are the details of this new member.";
 
@@ -68,10 +70,23 @@ $lang['mail_user_password_subject'] = "New password for your account on %s";
 $lang['mail_user_password_intro'] = "Dear %s,";
 $lang['mail_user_password_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Here are your new login information:";
 
+// Contact : Email to Admin
+$lang['mail_website_contact_subject'] = "Message from Contact Form";
+$lang['mail_website_contact_message'] = "One visitor let you a message through the website contact form.";
+
+// Contact : Email to user
+$lang['mail_user_contact_subject'] = "Thank you for your message to %s";
+$lang['mail_user_contact_intro'] = "Dear %s,";
+$lang['mail_user_contact_message'] = "Thank you for your message.<br/>We will answer you very quickly.";
+
+// Message about automatic message
+$lang['mail_automatic_message_warning'] = "This message was automatically generated. Please do not answer.";
+
+
 /*
 |--------------------------------------------------------------------------
 | Messages
-| Success messages for login / registration forms
+| Success messages for contact / login / registration forms
 | Declared as 'success' for each form in form setup : /config/ionize.php
 |--------------------------------------------------------------------------
 */
@@ -89,38 +104,28 @@ $lang['form_profile_success_message'] = "Profile data saved";
 $lang['form_profile_error_message'] = "This user already exists. Please change your username or email";
 $lang['form_profile_account_deleted'] = "Account deleted";
 
-$lang['form_password_error_message'] = "One error happens.";
+$lang['form_password_error_message'] = "Oups, one error occured.";
 $lang['form_password_not_found_message'] = "This email seems not to be in our system";
 $lang['form_password_success_message'] = "One email with you new password has just been sent to you.";
+
+$lang['form_contact_error_title'] = 'Oups, we got an error.';
+$lang['form_contact_error_message'] = 'perhaps just some missing fields. Please check the form...';
+$lang['form_contact_success_title'] = 'Your message was sent successfully !';
+$lang['form_contact_success_message'] = 'Thank you for your message, we will answer you very quickly !';
+
 
 /*
 |--------------------------------------------------------------------------
 | Validation Errors
+| of custom callbacks
+| Must look like : $lang['form_error_<field_key>'] = 'Error message'
+|
+| For custom form validation translation, copy the wished file from
+| /system/language/xx/form_validation_lang.php to your theme language folder
+| /themes/my_theme/language/xx/form_validation_lang.php and adapt it.
+|
 |--------------------------------------------------------------------------
+| $lang['form_error_upload'] = "Something went wrong while uploading the files.";
+|
 */
-$lang['form_error_javascript_required'] = "You need to have javascript activated to send this form.";
-$lang['form_error_spam'] = "Thank you for your good Spam !";
-$lang['form_error_required'] = "The <strong>%s</strong> field is required.";
-$lang['form_error_isset'] = "The <strong>%s</strong> field must have a value.";
-$lang['form_error_valid_email'] = "The <strong>%s</strong> field must contain a valid email address.";
-$lang['form_error_valid_emails'] = "The <strong>%s</strong> field must contain all valid email addresses.";
-$lang['form_error_valid_url'] = "The <strong>%s</strong> field must contain a valid URL.";
-$lang['form_error_valid_ip'] = "The <strong>%s</strong> field must contain a valid IP.";
-$lang['form_error_min_length'] = "The <strong>%s</strong> field must be at least %s characters in length.";
-$lang['form_error_max_length'] = "The <strong>%s</strong> field can not exceed %s characters in length.";
-$lang['form_error_exact_length'] = "The <strong>%s</strong> field must be exactly %s characters in length.";
-$lang['form_error_alpha'] = "The <strong>%s</strong> field may only contain alphabetical characters.";
-$lang['form_error_alpha_numeric'] = "The <strong>%s</strong> field may only contain alpha-numeric characters.";
-$lang['form_error_alpha_dash'] = "The <strong>%s</strong> field may only contain alpha-numeric characters, underscores, and dashes.";
-$lang['form_error_numeric'] = "The <strong>%s</strong> field must contain only numbers.";
-$lang['form_error_is_numeric'] = "The <strong>%s</strong> field must contain only numeric characters.";
-$lang['form_error_integer'] = "The <strong>%s</strong> field must contain an integer.";
-$lang['form_error_matches'] = "The <strong>%s</strong> fields do not match.";
-$lang['form_error_is_natural'] = "The <strong>%s</strong> field must contain only positive numbers.";
-$lang['form_error_is_natural_no_zero']	= "The <strong>%s</strong> field must contain a number greater than zero.";
-$lang['form_error_restricted_field'] = "Data were transmitted, which are not allowed.";
-$lang['form_error_terms'] = "You have to accept the terms of usage.";
-$lang['form_error_upload_something'] = "Something went wrong while uploading the files.";
-$lang['form_error_upload_file_size'] = "The uploaded file needn't be larger than 1 MB.";
-$lang['form_error_upload_file_type'] = "Only JPEGs, PNGs and GIFs are allowed.";
 

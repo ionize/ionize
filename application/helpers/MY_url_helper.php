@@ -1,26 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * URL Helper
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
- *
- */
-
-
-// ------------------------------------------------------------------------
-
-
-/**
- * Ionize URL Helpers
- *
- * @package		Ionize
- * @subpackage	Helpers
- * @category	Helpers
- * @author		Ionize Dev Team
  *
  */
 
@@ -377,11 +364,22 @@ if( ! function_exists('alt_site_url'))
 
 function auto_link($str, $type = 'both', $popup = FALSE)
 {
+
+	$m = array();
+	if(preg_match_all('(<a\ .+?>.+?</a>)', $str, $m))
+	{
+		foreach($m[0] as $k => $val)
+		{
+			$str = str_replace($val, '[[[a'.$k.']]]', $str);
+		}
+	}
+	
+	
 	if ($type != 'email')
 	{
 		// (|\b) : Includes href="..." in auto_link, which isn't good
 		// if (preg_match_all("#(^|\s|\(|\b)((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches))
-		if (preg_match_all("#(^|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches))
+		if (preg_match_all("#(^|\>|\s|\()((http(s?)://)|(www\.))(\w+[^\s\)\<]+)#i", $str, $matches))
 		{
 			$pop = ($popup == TRUE) ? " target=\"_blank\" " : "";
 
@@ -426,6 +424,14 @@ function auto_link($str, $type = 'both', $popup = FALSE)
 	
 				$str = str_replace($matches['0'][$i], safe_mailto($comp_email, $email).$period, $str);
 			}
+		}
+	}
+	
+	if(!empty($m))
+	{
+		foreach($m[0] as $k => $val)
+		{
+			$str = str_replace('[[[a'.$k.']]]', $val, $str);
 		}
 	}
 

@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
@@ -16,15 +16,21 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	Admin settings
+ * @category	Settings
  * @author		Ionize Dev Team
  *
  */
 
 class Sitemap_model extends Base_model 
 {
-
+	/**
+	 * Page Articles Context table
+	 * @var string
+	 */
 	public $context_table =	'page_article';
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -41,7 +47,16 @@ class Sitemap_model extends Base_model
 		$this->set_lang_table('page_lang');
 		
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param bool $lang
+	 *
+	 * @return array
+	 */
 	public function get_pages($lang = FALSE)
 	{
 		$data = array();
@@ -75,8 +90,4 @@ class Sitemap_model extends Base_model
 		
 		return $data;
 	}
-	
-	
 }
-/* End of file sitemap_model.php */
-/* Location: ./application/models/sitemap_model.php */

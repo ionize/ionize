@@ -12,10 +12,13 @@
 
 <?php foreach($types as $type) :?>
 
-	<li class="sortme article_type<?php echo $type['id_type']; ?>" id="article_type_<?php echo $type['id_type']; ?>" rel="<?php echo $type['id_type']; ?>">
-		<a class="icon delete right" rel="<?php echo $type['id_type']; ?>"></a>
-		<span class="icon left drag mr5"></span>
-		<a class="left pl5 title" rel="<?php echo $type['id_type']; ?>">
+	<li class="sortme article_type<?php echo $type['id_type']; ?>" id="article_type_<?php echo $type['id_type']; ?>" data-id="<?php echo $type['id_type']; ?>">
+		<?php if ( Authority::can('delete', 'admin/article/type')) :?>
+        	<a class="icon delete right" data-id="<?php echo $type['id_type']; ?>"></a>
+		<?php endif;?>
+
+        <span class="icon left drag mr5"></span>
+		<a class="left pl5 title" data-id="<?php echo $type['id_type']; ?>">
 			<span class="flag flag<?php echo $type['type_flag']; ?>"></span>
 			<?php echo $type['type']; ?>
 		</a>
@@ -36,14 +39,16 @@
 	
 	typesManager.makeSortable();
 
-	// Make all types editable
-	$$('#article_typeList .title').each(function(item, idx)
-	{
-		var rel = item.getProperty('rel');
-		
-		item.addEvent('click', function(e){
-			ION.formWindow('article_type' + rel, 'article_typeForm' + rel, Lang.get('ionize_title_type_edit'), 'article_type/edit/' + rel);	
+	<?php if ( Authority::can('edit', 'admin/article/type')) :?>
+		// Type editable
+		$$('#article_typeList .title').each(function(item, idx)
+		{
+			var id = item.getProperty('data-id');
+
+			item.addEvent('click', function(e){
+				ION.formWindow('article_type' + id, 'article_typeForm' + id, Lang.get('ionize_title_type_edit'), 'article_type/edit/' + id);
+			});
 		});
-	});
+	<?php endif;?>
 
 </script>

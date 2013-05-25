@@ -1,26 +1,13 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Text Helper
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
- *
- */
-
-
-// ------------------------------------------------------------------------
-
-
-/**
- * Ionize Text Helpers
- *
- * @package		Ionize
- * @subpackage	Helpers
- * @category	Helpers
- * @author		Ionize Dev Team
  *
  */
 
@@ -85,6 +72,17 @@ if ( ! function_exists('tag_limiter'))
 // ------------------------------------------------------------------------
 
 
+if ( ! function_exists('to_entities'))
+{
+	function to_entities($str)
+	{
+		$str = htmlspecialchars($str, ENT_COMPAT, 'UTF-8', false);
 
-/* End of file MY_text_helper.php */
-/* Location: ./application/helpers/MY_text_helper.php */
+		log_message('error', $str);
+
+		return $str;
+	}
+}
+
+
+

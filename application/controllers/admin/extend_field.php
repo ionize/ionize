@@ -1,30 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Extend Fields Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Extend Fields Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Extend fields management
- * @author		Ionize Dev Team
- *
- * Extends the data model by adding personal fields.
- * These fields definition are stored in the table "extend_field"
- *
- */
-
-class Extend_field extends MY_admin 
+class Extend_field extends MY_admin
 {
 	/**
 	 * Constructor
@@ -134,7 +120,7 @@ class Extend_field extends MY_admin
 		$this->template['parents'] = $parents;
 		$this->template['extend_fields'] = $extend_fields;
 		
-    	$this->output('extend/fields_table');
+    	$this->output('extend/list');
 	}
 
 	
@@ -283,7 +269,3 @@ class Extend_field extends MY_admin
 		}
 	}
 }
-
-
-/* End of file extend_field.php */
-/* Location: ./application/controllers/admin/extend_field.php */

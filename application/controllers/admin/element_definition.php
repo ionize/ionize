@@ -1,24 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Element Definition Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Element Definition Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Controllers
- * @author		Ionize Dev Team
- */
 class Element_definition extends MY_Admin {
 
 	/*
@@ -489,6 +480,3 @@ class Element_definition extends MY_Admin {
 		$this->output('element/detail');
 	}
 }
-
-/* End of file element_definition.php */
-/* Location: ./application/admin/controllers/element_definition.php */

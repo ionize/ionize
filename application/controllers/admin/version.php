@@ -1,30 +1,16 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize
+ * Version Controller
+ * Draft.
+ * Checks the Ionize current version regarding the installed one
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.6
  */
-
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Version Controller
- * Check the Ionize current version regarding the installed one
- *
- * NOT IMPLEMENTED
- *
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Ionize Core
- * @author		Ionize Dev Team
- *
- */
-
 
 class Version extends MY_Admin
 {
@@ -88,6 +74,3 @@ class Version extends MY_Admin
 	
 	*/
 }
-
-/* End of file admin.php */
-/* Location: ./application/controllers/admin/version.php */

@@ -2,32 +2,22 @@
 /**
  * Ionize, creative CMS
  *
+ * Core controller
+ * Basic Ionize functions
+ *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Core Controller
- * Provides Ionizes basics functionalities
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Controllers
- * @author		Ionize Dev Team
- */
 class Core extends MY_Admin {
 
 
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->connect->restrict('editors');
 	}
 
 
@@ -88,10 +78,4 @@ class Core extends MY_Admin {
 	{
 		// $this->output('info');
 	}
-
-
-	
 }
-
-/* End of file core.php */
-/* Location: ./application/admin/controllers/core.php */

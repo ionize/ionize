@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.92
  *
@@ -36,7 +36,7 @@ class TagManager_Media extends TagManager
 	(
 		'medias' => 			'tag_medias',
 
-		'media' =>				'tag_expand',
+		'media' =>				'tag_media',
 		'media:src' => 			'tag_media_src',
 		'media:thumb_folder' => 'tag_media_thumb_folder',
 		'media:size' => 		'tag_media_size',
@@ -220,8 +220,63 @@ class TagManager_Media extends TagManager
 
 
 	// ------------------------------------------------------------------------
-	
 
+
+	/**
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public function tag_media(FTL_Binding $tag)
+	{
+		$parentName = $tag->getDataParentName();
+
+		// Standalone tag : Only one media is wished
+		if ($parentName != 'medias')
+		{
+			$index = $tag->getAttribute('index', 0);
+			$medias = $media = NULL;
+
+			// Try to find medias
+			if ( ! is_null($parentName))
+			{
+				$medias = $tag->getParent()->getValue('medias', $parentName);
+			}
+			// First try to get media from article, then from page
+			else
+			{
+				$article = self::registry('article');
+				$page = self::registry('page');
+
+				if ( ! empty($article['medias']))
+					$medias = $article['medias'];
+				else if ( ! empty($page['medias']))
+					$medias = $article['medias'];
+			}
+
+			// Filter them, as usual
+			if ( ! empty($medias))
+				$medias = self::filter_medias($tag, $medias);
+
+			// Set the asked media
+			if ( ! empty($medias) && isset($medias[$index]))
+				$tag->set('media', $medias[$index]);
+		}
+
+		return $tag->expand();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
 	public static function tag_medias(FTL_Binding $tag)
 	{
 		$str = '';
@@ -354,7 +409,7 @@ class TagManager_Media extends TagManager
 			if ( ! empty($media))
 			{
 				// Media source complete URL
-				if ($folder !== FALSE) 
+				if ($folder !== FALSE)
 					$folder = base_url() . $media['base_path'] . $folder . '/' . $media['file_name'];
 				else
 					$folder = base_url() . $media['path'];

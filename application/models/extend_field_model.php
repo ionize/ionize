@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.5
  */
@@ -16,13 +16,11 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	Lang
+ * @category	Extend Field
  * @author		Ionize Dev Team
  *
  */
-
-
-class Extend_field_model extends Base_model 
+class Extend_field_model extends Base_model
 {
 	/**
 	 * Constructor
@@ -48,6 +46,7 @@ class Extend_field_model extends Base_model
 
 	/**
 	 * @param array $where
+	 * @param null  $lang
 	 *
 	 * @return array
 	 */
@@ -181,11 +180,9 @@ class Extend_field_model extends Base_model
 	/**
 	 * Saves extend fields data
 	 *
-	 * @param	string	Parent type
-	 * @param	int		Current parent element ID. Can be the page ID, the article ID...
-	 * @param	array	$_POST data array
-	 * @return  void
-	 *
+	 * @param $parent	Parent type
+	 * @param $id		Current parent element ID. Can be the page ID, the article ID...
+	 * @param $data		$_POST data array
 	 */
 	function save_data($parent, $id, $data)
 	{
@@ -280,9 +277,4 @@ class Extend_field_model extends Base_model
 		
 		return $this->{$this->db_group}->delete($this->elements_table);
 	}
-	
-	
 }
-
-/* End of file extend_field_model.php */
-/* Location: ./application/models/extend_field_model.php */

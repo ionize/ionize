@@ -1,27 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Category Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize, creative CMS Category Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Category management
- * @author		Ionize Dev Team
- *
- */
-
-class Category extends MY_admin 
+class Category extends MY_admin
 {
 	/**
 	 * Constructor
@@ -82,11 +71,6 @@ class Category extends MY_admin
 	 */
 	public function get_list()
 	{
-
-		// New category form feed
-		$this->category_model->feed_blank_template($this->template);
-		$this->category_model->feed_blank_lang_template($this->template);
-		
 		// Categories list
 		$this->template['categories'] = $this->category_model->get_list(array('order_by'=>'ordering ASC'));
 
@@ -101,25 +85,26 @@ class Category extends MY_admin
 	/**
 	 * Get the select box of categories
 	 *
-	 * @param	string	parent type. Can be 'article', 'page', etc.
-	 * @param	string	parent ID. 	 
-	 *
-	 * @return string	HTML categories select box
+	 * @param	bool|string		parent type. Can be 'article', 'page', etc.
+	 * @param	bool|string		parent ID.
 	 *
 	 */
 	public function get_select($parent = FALSE, $id_parent = FALSE)
 	{
 		// Get data formed to feed the category select box
 		$categories = $this->category_model->get_categories_select();
-		
+
 		// Get the current categories for the element
 		$current_categories = FALSE;
 		
 		if ($parent && $id_parent)
 			$current_categories = $this->category_model->get_joined_items_keys('category', $parent, $id_parent);
-		
+
 		// Outputs the categories form dropdown
-		$this->xhr_output(form_dropdown('categories[]', $categories, $current_categories, 'class="select" multiple="multiple"'));
+		$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w100p" multiple="multiple"');
+		$this->output('category/select');
+
+		// $this->xhr_output(form_dropdown('categories[]', $categories, $current_categories, 'class="select w100p" multiple="multiple"'));
 	}
 
 	
@@ -169,10 +154,30 @@ class Category extends MY_admin
 			else
 			{
 				$this->_prepare_data();
-	
+
+				// Event
+				$event_data = array(
+					'base' => $this->data,
+					'lang' => $this->lang_data,
+				);
+				$event_received = Event::fire('Category.save.before', $event_data);
+				$event_received = array_pop($event_received);
+				if ( ! empty($event_received['base']) && !empty($event_received['lang']))
+				{
+					$this->data = $event_received['base'];
+					$this->lang_data = $event_received['lang'];
+				}
+
 				// Save data
 				$this->id = $this->category_model->save($this->data, $this->lang_data);
-				
+
+				// Event
+				$event_data = array(
+					'base' => $this->data,
+					'lang' => $this->lang_data,
+				);
+				Event::fire('Category.save.success', $event_data);
+
 				// JSON Update array : If parent is defined in form, the categories selectbox of the parent will be updated
 				if ($this->input->post('parent') != '')
 				{
@@ -228,14 +233,16 @@ class Category extends MY_admin
 				
 				// Delete lang data
 				$this->category_model->delete(array('id_category' => $id), 'category_lang');
+
+				if ($parent != FALSE)
+				{
+					$parent_url = ($parent && $id_parent) ? '/' . $parent . '/' . $id_parent : '';
 				
-				$parent_url = ($parent && $id_parent) ? '/' . $parent . '/' . $id_parent : '';
-				
-				// Update array
-				$this->update[] = array(
-					'element' => 'categories',
-					'url' =>  admin_url() . 'category/get_select' . $parent_url
-				);
+					$this->update[] = array(
+						'element' => 'categories',
+						'url' =>  admin_url() . 'category/get_select' . $parent_url
+					);
+				}
 
 				// Remove deleted items from DOM
 				$this->callback[] = array(
@@ -272,12 +279,15 @@ class Category extends MY_admin
 		{
 			// Saves the new ordering
 			$this->category_model->save_ordering($order);
-			
-			// Update Array for JSON
-			$this->update[] = array(
-				'element' => 'categories',
-				'url' =>  admin_url() . 'category/get_select/' . $parent . '/' . $id_parent
-			);
+
+			if ($parent != FALSE)
+			{
+				// Update Array for JSON
+				$this->update[] = array(
+					'element' => 'categories',
+					'url' =>  admin_url() . 'category/get_select/' . $parent . '/' . $id_parent
+				);
+			}
 
 			// Answer
 			$this->success(lang('ionize_message_operation_ok'));
@@ -325,7 +335,3 @@ class Category extends MY_admin
 		}
 	}
 }
-
-
-/* End of file category.php */
-/* Location: ./application/controllers/admin/category.php */

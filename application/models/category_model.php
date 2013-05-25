@@ -1,8 +1,25 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Ionize
+ *
+ * @package		Ionize
+ * @author		Ionize Dev Team
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.0
+ */
 
-class Category_model extends Base_model 
+/**
+ * Ionize Category Model
+ *
+ * @package		Ionize
+ * @subpackage	Models
+ * @category	Category
+ * @author		Ionize Dev Team
+ *
+ */
+class Category_model extends Base_model
 {
-
 	/**
 	 * Constructor
 	 *
@@ -29,7 +46,7 @@ class Category_model extends Base_model
 	 */
 	public function get_categories_select()
 	{
-		return $this->get_items_select($this->table, 'name', lang('ionize_select_no_category'), 'ordering ASC');
+		return $this->get_items_select($this->table, 'name', NULL, lang('ionize_select_no_category'), 'ordering ASC');
 	}
 
 
@@ -92,7 +109,7 @@ class Category_model extends Base_model
 		);
 
 		// Filter on published
-		$this->filter_on_published(self::$publish_filter, $lang);
+		$this->_filter_on_published(self::$publish_filter, $lang);
 
 		if ( ! is_null($id_page))
 			$this->{$this->db_group}->where('page_article.id_page', $id_page);
@@ -123,7 +140,7 @@ class Category_model extends Base_model
 	 * @param null $lang
 	 *
 	 */
-	protected function filter_on_published($on = TRUE, $lang = NULL)
+	protected function _filter_on_published($on = TRUE, $lang = NULL)
 	{
 		if ($on === TRUE)
 		{
@@ -149,6 +166,3 @@ class Category_model extends Base_model
 		}
 	}
 }
-
-/* End of file category_model.php */
-/* Location: ./application/models/category_model.php */

@@ -260,6 +260,19 @@ class FTL_Binding
 	}
 
 
+	public function removeAttributes($attrs)
+	{
+		foreach ($attrs as $attr)
+		{
+			$this->removeAttribute($attr);
+		}
+
+		return $this;
+	}
+
+
+
+
 
 	/**
 	 * Return the current FTL_Binding parent
@@ -303,7 +316,7 @@ class FTL_Binding
 
 				if ($binding->name == $parent_name)
 				{
-					if ($all == FALSE && $binding->isProcessTag() == TRUE)
+					if ($all == FALSE && $binding->isProcessTag() == TRUE && count($stack) > 2)
 					{
 						$parent = $binding->getParent(NULL, FALSE);
 					}
@@ -422,6 +435,15 @@ class FTL_Binding
 
 		return NULL;
 	}
+
+
+	public function getData()
+	{
+		$tag_name = $this->getName();
+
+		return $data = $this->get($tag_name);
+	}
+
 
 	/**
 	 * Return the expected value from the data array of the tag.

@@ -34,7 +34,7 @@ $id = $id_extend_field;
 			<dd>
 	
 				<!-- Tabs -->
-				<div id="elementFieldTab<?php echo $id; ?>" class="mainTabs transparent mt0 mb5">
+				<div id="elementFieldTab<?php echo $id; ?>" class="mainTabs mt0 mb5">
 					
 					<ul class="tab-menu">
 						
@@ -150,17 +150,11 @@ $id = $id_extend_field;
 	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
-	<button id="bSaveelementfield<?php echo $id; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bSaveelementfield<?php echo $id; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
 	<button id="bCancelelementfield<?php echo $id; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
 <script type="text/javascript">
-
-	/**
-	 * Init help tips on label
-	 *
-	 */
-	ION.initLabelHelpLinks('#elementfieldForm<?php echo $id; ?>');
 
 	var windowEl = $('welementfield<?php echo $id; ?>');
 	var contentEl = $('welementfield<?php echo $id; ?>_content');

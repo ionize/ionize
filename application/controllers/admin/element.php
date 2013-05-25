@@ -1,29 +1,20 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Element Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Element Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Controllers
- * @author		Ionize Dev Team
- */
 class Element extends MY_Admin {
 
-	/*
+	/**
 	 * Type Names
-	 *
+	 * @var array
 	 */
 	public static $type_names = array
 	(
@@ -35,7 +26,6 @@ class Element extends MY_Admin {
 		'6' => 'Select',
 		'7' => 'Date & Time'
 	);
-
 
 
 	// ------------------------------------------------------------------------
@@ -55,10 +45,7 @@ class Element extends MY_Admin {
 	// ------------------------------------------------------------------------
 
 
-	function index()
-	{
-		// Do nothing.
-	}
+	function index(){}
 	
 
 	// ------------------------------------------------------------------------
@@ -349,14 +336,5 @@ class Element extends MY_Admin {
 		}
 
 		$this->response();
-	
 	}
-
-
-	// ------------------------------------------------------------------------
-
-	
 }
-
-/* End of file element.php */
-/* Location: ./application/admin/controllers/element.php */

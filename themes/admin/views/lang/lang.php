@@ -48,12 +48,15 @@
 								$name = $lang['name'];
 							?>
 
-							<li id="lang_<?php echo $code; ?>" class="sortme h100" rel="<?php echo $code; ?>">
+							<li id="lang_<?php echo $code; ?>" class="sortme" data-id="<?php echo $code; ?>">
 
 								<!-- Drag icon -->
-								<div class="drag left h100">
+								<div class="drag left">
 									<img src="<?php echo theme_url(); ?>images/icon_16_ordering.png" />
 								</div>
+
+                                <!-- Delete button -->
+                                <a class="icon right delete" data-id="<?php echo $code; ?>"></a>
 
 								<!-- Lang Code -->
 								<dl class="small">
@@ -63,8 +66,6 @@
 									<dd>
 										<input name="lang_<?php echo $code; ?>" id="lang_<?php echo$code?>" class="inputtext" type="text" value="<?php echo $code; ?>"/>
 
-										<!-- Delete button -->
-										<a class="icon right delete" rel="<?php echo $code; ?>"></a>
 
 									</dd>
 								</dl>
@@ -250,13 +251,6 @@
 			Lang.get('ionize_message_confirm_copy_whole_content')
 		);
 	});
-
-	/**
-	 * Clean Lang tables form action
-	 *
-	 */
-	// ION.setFormSubmit('cleanLangForm', 'submit_clean', 'lang/clean_tables', {message:Lang.get('ionize_confirmation_clean_lang')});
-
 
 </script>
 

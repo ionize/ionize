@@ -12,7 +12,7 @@ ION.append({
 
 	HTML: function(url, data, options)
 	{
-		if (typeOf(options) == 'null' || typeOf(options.update) == 'null')
+		if (typeOf(options) == 'null' && typeOf(options.update) == 'null')
 		{
 			ION.notification('error', 'No "update" HTML Element in your request');
 		}
@@ -26,12 +26,13 @@ ION.append({
 	/**
 	 * Create one Request event
 	 *
-	 * @param	HTMLDomElement		Dom Element on which add the 'click' event
-	 * @param	String				URL of the request. Relative to http://domain.tld/admin/
-	 * @param	Object				Data to send as POST
-	 * @param	Object				Options object.
+	 * @param item          Dom Element on which add the 'click' event
+	 * @param url           URL of the request. Relative to http://domain.tld/admin/
+	 * @param data          Data to send as POST
+	 * @param options       Options object.
 	 *								'confirm' : Boolean. true to open a confirmation window
 	 *								'message' : String. The confirmation message
+	 * @param mode          'HTML' or 'JSON'. Default 'JSON'
 	 *
 	 */
 	initRequestEvent: function(item, url, data, options, mode)
@@ -41,33 +42,36 @@ ION.append({
 		var mode = (typeOf(mode) == 'null') ? 'JSON' : mode;
 
 		// Some safety before adding the event.
-		item.removeEvents('click');
-
-		item.addEvent('click', function(e)
+		if (typeOf(item) == 'element')
 		{
-			e.stop();
-			
-			// Confirmation screen
-			if (typeOf(options) != 'null' && options.confirm == true)
-			{
-				var message = (typeOf(options.message) != 'null') ? options.message : Lang.get('ionize_confirm_element_delete'); 
-				
-				// Callback request
-				var callback = ION.JSON.pass([url,data]);
+			item.removeEvents('click');
 
-				if (mode == 'HTML')
-					callback = ION.HTML.pass([url,data,options]);
-
-				ION.confirmation('requestConfirm' + item.getProperty('rel'), callback, message);
-			}
-			else
+			item.addEvent('click', function(e)
 			{
-				if (mode == 'HTML')
-					ION.HTML(url, data, options);
+				e.stop();
+
+				// Confirmation screen
+				if (typeOf(options) != 'null' && options.confirm == true)
+				{
+					var message = (typeOf(options.message) != 'null') ? options.message : Lang.get('ionize_confirm_element_delete');
+
+					// Callback request
+					var callback = ION.JSON.pass([url,data]);
+
+					if (mode == 'HTML')
+						callback = ION.HTML.pass([url,data,options]);
+
+					ION.confirmation('requestConfirm' + item.getProperty('data-id'), callback, message);
+				}
 				else
-					ION.JSON(url, data, options);
-			}
-		});
+				{
+					if (mode == 'HTML')
+						ION.HTML(url, data, options);
+					else
+						ION.JSON(url, data, options);
+				}
+			});
+		}
 	},
 
 
@@ -193,7 +197,7 @@ ION.append({
 				}
 	
 				// User notification
-				if (responseJSON && typeOf(responseJSON.message_type != 'null'))
+				if (responseJSON && responseJSON.message_type != undefined)
 				{
 					if (responseJSON.message_type != '')
 						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));

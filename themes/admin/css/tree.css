@@ -14,13 +14,14 @@ License:
 	position: relative;
 }
 
-.treetitle {
+h3.treetitle {
 	margin-right:15px;
 	position: relative;
 	border-radius: 10px;
-	padding-left:5px;
+	padding:3px 5px;
 	margin-left:-4px;
 	margin-bottom: 5px;
+	border:none;
 }
 .treetitle .action {
 	display:none;
@@ -32,14 +33,13 @@ License:
 .treetitle:hover .action {
 	display:block;
 }
-
 .treetitle:hover {
 	background-color: #e1e3e4;
 }
 .tree {
 	font-size: 11px;
 	line-height: 16px;
-	margin: 6px 12px 10px 0;
+	margin: 0 12px 10px 0;
 	overflow: hidden;
 	position: relative;
 }
@@ -50,6 +50,7 @@ License:
 .tree li {
 	width:100%;
 	min-height:18px;
+	line-height: 18px;
 	min-width:200px;
 	clear:both;
 	list-style-type: none;
@@ -72,6 +73,27 @@ License:
 	display:block;
 	height: 18px;
 }
+h3.treetitle .locked:after,
+.tree li .tree-img.no-edit:after,
+.tree li .tree-img.locked:after {
+	content: "\00a0";
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	background: url(../images/icons_16.png) no-repeat;
+	right:-4px;
+	top:-4px;
+}
+h3.treetitle .locked:after{
+	right: auto;
+	top:-1px;
+}
+
+.tree li .tree-img.no-edit:after {background-position: 0 -128px;}
+.tree li .tree-img.locked:after,
+h3.treetitle .locked:after{
+	background-position: -16px -128px;
+}
 
 .tree li img {
 	vertical-align: middle;
@@ -85,8 +107,8 @@ License:
 	right: 0;
 	top:2px;
 	height:18px;
-	/*background: url(../images/bg-gray-medium.png);*/
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
+	z-index: 3;
 }
 .tree li .icon{
 	float:right;
@@ -100,7 +122,9 @@ License:
 	height:16px;
 	display:block;
 }
-
+.tree li label {
+	margin:0;
+}
 /* Tree nodes */
 .tree-img {
 	float:left;
@@ -108,6 +132,7 @@ License:
 	width:16px;
 	margin-top:1px;
     background:transparent url(../images/icons_16.png) repeat scroll;
+	position: relative;
 }
 .tree-img.line { background-position: 0 0; } 				/* Standard tree line */
 .tree-img.line.node { background-position: 0 0; } 		/* Line with one node after */
@@ -153,3 +178,7 @@ License:
 	display:none;
 }
 
+#splitPanel_sideColumn .tree,
+#maincolumn .tree {
+	margin:0;
+}

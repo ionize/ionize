@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.8
  *
@@ -40,8 +40,6 @@ class TagManager_Category extends TagManager
 		'category:is_active' => 		'tag_is_active',
 		'category:active_class' => 		'tag_simple_value',
 		'category:current' =>			'tag_category_current',
-
-//		'article:categories' => 		'tag_article_categories',
 	);
 
 
@@ -76,8 +74,6 @@ class TagManager_Category extends TagManager
 		// Set the local cache data
 		if ( ! isset(self::$categories[$lsk]))
 		{
-			$categories = array();
-
 			// CSS class to use for the current category
 			$active_class = $tag->getAttribute('active_class', 'active');
 
@@ -251,7 +247,6 @@ class TagManager_Category extends TagManager
 	 * @usage	<ion:article:categories [tag="ul" child-tag="li" link="true" separator=" &bull; "] />
 	 *
 	 *
-	 */
 	public static function tag_article_categories(FTL_Binding $tag)
 	{
 		$data = array();
@@ -306,6 +301,7 @@ class TagManager_Category extends TagManager
 
 		return self::wrap($tag, implode($separator, $data));
 	}
+	 */
 
 
 }

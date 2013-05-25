@@ -25,7 +25,7 @@
 <?php endforeach ;?>
 
 <div class="buttons">
-	<button id="bClose<?php echo $UNIQ; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_ok'); ?></button>
+	<button id="bClose<?php echo $UNIQ; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_ok'); ?></button>
 </div>
 
 <script type="text/javascript">

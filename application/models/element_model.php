@@ -1,8 +1,25 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Ionize
+ *
+ * @package		Ionize
+ * @author		Ionize Dev Team
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.5
+ */
 
-class Element_model extends Base_model 
+/**
+ * Ionize Element Model
+ *
+ * @package		Ionize
+ * @subpackage	Models
+ * @category	Element
+ * @author		Ionize Dev Team
+ *
+ */
+class Element_model extends Base_model
 {
-
 	/**
 	 * Constructor
 	 *
@@ -588,8 +605,4 @@ class Element_model extends Base_model
 			);
 		}
 	}
-
 }
-
-/* End of file element_model.php */
-/* Location: ./application/models/element_model.php */

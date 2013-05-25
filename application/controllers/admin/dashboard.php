@@ -1,25 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Dashboard Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.4
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Dashboard Controller
- * Displays the dashboard
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Controllers
- * @author		Ionize Dev Team
- */
 class Dashboard extends MY_Admin {
 
 
@@ -29,15 +19,13 @@ class Dashboard extends MY_Admin {
 		
 		$this->load->model('page_model', '', true);
 		$this->load->model('article_model', '', true);
-		$this->load->model('users_model', '', true);
+		$this->load->model('user_model', '', true);
 	}
 
 
 	function index()
 	{
 		// Articles
-		// $articles = $this->article_model->get_list(array('order_by'=>'updated DESC'));
-
 		$articles = $this->article_model->get_lang_list(
 			array('order_by'=>'updated DESC'),
 			Settings::get_lang('default')
@@ -46,10 +34,23 @@ class Dashboard extends MY_Admin {
 		// Last 10 articles
 		$last_articles = array();
 		$max = (count($articles) > 9) ? 10 : count($articles);
+		$count = 0;
 		if ( ! empty($articles))
 		{
-			for ($i=0; $i<$max; $i++)
-				$last_articles[] = $articles[$i];
+			foreach($articles as $article)
+			{
+				if (
+					Authority::can('access', 'backend/menu/' . $article['id_menu'], NULL, TRUE)
+					&& Authority::can('access', 'backend/page/' . $article['id_page'], NULL, TRUE)
+					&& Authority::can('access', 'backend/article/' . $article['id_article'], NULL, TRUE)
+				)
+				{
+					$last_articles[] = $article;
+					$count++;
+					if ($count == $max)
+						break;
+				}
+			}
 		}
 
 		// Orphan articles
@@ -63,10 +64,9 @@ class Dashboard extends MY_Admin {
 		// Orphan pages
 		$orphan_pages = $this->page_model->get_lang_list(array('id_menu' => '0', 'order_by'=>'name ASC'), Settings::get_lang('default'));
 		
-		// Last connected users
-		$users = $this->connect->model->get_users(array('limit'=>'10', 'order_by' => 'last_visit DESC', 'last_visit <>' => ''));
-
-		$last_registered_users = $this->connect->model->get_users(array('limit'=>'10', 'order_by' => 'join_date DESC'));
+		// Last connected /registered users
+		$users = $this->user_model->get_list(array('limit'=>'10', 'order_by' => 'last_visit DESC', 'last_visit <>' => ''));
+		$last_registered_users = $this->user_model->get_list(array('limit'=>'10', 'order_by' => 'join_date DESC'));
 		
 		
 		// Updates on last articles
@@ -123,55 +123,16 @@ class Dashboard extends MY_Admin {
 			}
 		}
 
-		// Modules
-		$modules = array();
-		include APPPATH . 'config/modules.php';
-		$config_files = glob(MODPATH . '*/config.xml');
-
-		// Module data to put to template
-		$moddata = array();
-		
-		// Get all modules from folders
-		if (!empty($config_files))
-		{
-			foreach($config_files as $file)
-			{
-				$xml = simplexml_load_file($file);
-				
-				// Module folder
-				preg_match('/\/([^\/]*)\/config.xml$/i', $file, $matches);
-				$folder = $matches[1];
-	
-				$uri = (String) $xml->uri_segment;
-	
-				// Only add 
-				// - installed modules (in $module var of config/modules.php)
-				// - module with admin part
-				if (in_array($folder, $modules) && $xml->has_admin == 'true')
-				{
-					// Store data
-					$moddata[$uri] = array(
-							'name'			=> (String) $xml->name,
-							'uri_segment'	=> (String) $xml->uri_segment,
-							'description'	=> (String) $xml->description,
-							'folder'		=> $folder,
-							'file'			=> $file,
-							'access_group'	=> (String) $xml->access_group
-					);
-	
-					// Get the user segment
-					foreach($modules as $segment => $f)
-					{
-						if ($f == $folder)
-							$moddata[$uri]['uri_segment'] = $segment; 
-					}
-				}
-			}
-		}
-				
 		// Put installed module list to template
-		$this->template['modules'] = $moddata;
-		
+		$installed_modules = Modules()->get_installed_modules();
+		$modules = array();
+		foreach ($installed_modules as $module)
+		{
+			if ($module['has_admin'] && Authority::can('access', 'module/'.$module['key']))
+				$modules[] = $module;
+		}
+		$this->template['modules'] = $modules;
+
 		$this->template['flags'] = $flags;
 		
 		$this->template['last_articles'] = $last_articles;
@@ -183,7 +144,4 @@ class Dashboard extends MY_Admin {
 
 		$this->output('desktop/dashboard');
 	}
-
 }
-/* End of file dashboard.php */
-/* Location: ./application/admin/controllers/dashboard.php */

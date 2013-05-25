@@ -489,7 +489,7 @@ class FileManager
 			'maxUploadSize' => 2600 * 2600 * 3,
 
 			// Extract additional data by using ID3 ?
-			'useGetID3' => false,
+			'useGetID3' => FALSE,
 
 			// Allow to specify the "Resize Large Images" tolerance level.
 			'maxImageDimension' => array('width' => 1024, 'height' => 768),
@@ -509,12 +509,16 @@ class FileManager
 			'allowed_extensions' => NULL,		// Array of allowed extensions. Bypass the 'safe' mode.
 			'chmod' => 0777,
 			'cleanFileName' => TRUE,
+			'cleanFileNameDelimiter' => '_',
+			'hashMethod' => 'sha256',
 
 			'DetailIsAuthorized_cb' => NULL,
 			'UploadIsAuthorized_cb' => NULL,
 			'DownloadIsAuthorized_cb' => NULL,
 			'CreateIsAuthorized_cb' => NULL,
 			'MoveIsAuthorized_cb' => NULL,
+			'DestroyIsAuthorized_cb' => NULL,
+
 			'showHiddenFoldersAndFiles' => FALSE      // Hide dot dirs/files ?
 		), (is_array($options) ? $options : array()));
 
@@ -1036,6 +1040,8 @@ class FileManager
 			$file_arg = $this->getPOST('file');
 			$dir_arg = $this->getPOST('directory');
 			$legal_url = $this->get_legal_url($dir_arg . '/');
+			$is_dir = is_dir($legal_url);
+
 
 			if ( ! empty($file_arg))
 			{
@@ -1060,10 +1066,25 @@ class FileManager
 				}
 			}
 
+			// Destroy Authorization callback
+			if (
+				! empty($this->options['DestroyIsAuthorized_cb'])
+				&& is_callable($this->options['DestroyIsAuthorized_cb'])
+				&& FALSE == call_user_func_array($this->options['DestroyIsAuthorized_cb'],array($this, 'destroy', $file))
+			)
+			{
+				throw new Exception('validation_failure');
+			}
+
+
 			if ( ! $this->unlink($legal_url))
 			{
 				throw new Exception('unlink_failed:' . $legal_url);
 			}
+
+			// Event
+			Event::fire('Filemanager.destroy.success',	array('path' => $this->get_full_path($legal_url), 'is_dir'=>$is_dir));
+
 
 			$this->sendHttpHeaders('Content-Type: application/json');
 
@@ -1398,10 +1419,12 @@ class FileManager
 
 		// Prepare the response
 		$response = array(
+			'method'	=> 'html5',
 			'id'    	=> ! empty($headers['X-File-Id']) ? $headers['X-File-Id'] : NULL,
-			'directory' => $directory,
 			'name'  	=> basename($headers['X-File-Name']),
-			'size'  	=> $headers['Content-Length'],
+			'directory' => $directory,
+			'files_dir' => $this->options['filesDir'],
+			'size'  	=> ! empty($headers['Content-Length']) ? $headers['Content-Length'] : '0',
 			'error' 	=> UPLOAD_ERR_OK,
 			'finish' 	=> FALSE,
 		);
@@ -1478,7 +1501,17 @@ class FileManager
 				// Upload finished ?
 				if (filesize($file_path) >= $headers['X-File-Size'])
 				{
+					// Relative complete path, including "files" directory
+					$path = $this->get_legal_path($legal_dir_url) . $filename;
+
 					$response['finish'] = TRUE;
+					$response['original_name'] = $response['name'];
+					$response['name'] = $filename;
+					$response['path'] = $path;
+					// $response['path_hash'] = $this->getHash($path);
+
+					// Event
+					Event::fire('Filemanager.upload.success', $response);
 
 					// Prevent execution
 					@chmod($file_path, $this->options['chmod'] & 0666);
@@ -1496,6 +1529,9 @@ class FileManager
 		{
 			$response['error'] = $e->getMessage();
 			$response['finish'] = TRUE;
+
+			// Event
+			Event::fire('Filemanager.upload.error', $response);
 		}
 
 		return $response;
@@ -1518,9 +1554,11 @@ class FileManager
 			foreach ($_FILES as $k => $file)
 			{
 				$response = array(
+					'method' => 		'html4',
 					'key' => 			(int)substr($k, strpos($k, $file_input_prefix) + strlen($file_input_prefix)),
 					'name' => 			basename($file['name']),
-					'upload_name' => 	$file['name'],
+					'directory' => 		$directory,
+					'files_dir' => 		$this->options['filesDir'],
 					'size' => 			$file['size'],
 					'error' => 			$file['error'],
 					'finish' => 		FALSE,
@@ -1563,7 +1601,17 @@ class FileManager
 					}
 					else
 					{
+						// Relative complete path, including "files" directory
+						$path = $this->get_legal_path($legal_dir_url) . $filename;
+
 						$response['finish'] = TRUE;
+						$response['original_name'] = $response['name'];
+						$response['name'] = $filename;
+						$response['path'] = $path;
+						// $response['path_hash'] = $this->getHash($path);
+
+						// Event
+						Event::fire('Filemanager.upload.success', $response);
 
 						// Prevent execution
 						@chmod($file_path, $this->options['chmod'] & 0666);
@@ -1578,7 +1626,11 @@ class FileManager
 				}
 				else
 				{
-					// error ...
+					$response['error'] = '1';
+					$response['finish'] = TRUE;
+
+					// Event
+					Event::fire('Filemanager.upload.error', $response);
 				}
 			}
 		}
@@ -1586,6 +1638,9 @@ class FileManager
 		{
 			$response['error'] = $e->getMessage();
 			$response['finish'] = TRUE;
+
+			// Event
+			Event::fire('Filemanager.upload.error', $response);
 		}
 
 		return $response;
@@ -1675,7 +1730,7 @@ class FileManager
 
 		try
 		{
-			if (!$this->options['move'])
+			if ( ! $this->options['move'])
 				throw new Exception('disabled:rn_mv_cp');
 
 			$file_arg = $this->getPOST('file');
@@ -1808,6 +1863,9 @@ class FileManager
 				throw new Exception((empty($fn) ? 'rename' : $fn) . '_failed');
 			if (!@$fn($path, $newpath))
 				throw new Exception($fn . '_failed');
+
+			// Event
+			Event::fire('Filemanager.move.success',	array('old_path' => $path, 'new_path' =>$newpath, 'is_dir' => $is_dir));
 
 			// Json response
 			$this->sendHttpHeaders('Content-Type: application/json');
@@ -2378,7 +2436,7 @@ class FileManager
 
 
 	/**
-	 * Delete a file or directory, inclusing subdirectories and files.
+	 * Delete a file or directory, including subdirectories and files.
 	 *
 	 * Return TRUE on success, FALSE when an error occurred.
 	 *
@@ -2440,7 +2498,7 @@ class FileManager
 	 * glob() wrapper: accepts the same options as Tooling.php::safe_glob()
 	 *
 	 * However, this method will also ensure the '..' directory entry is only returned,
-	 * even while asked for, when the parent directory can be legally traversed by the FileManager.
+	 * even while asked for, when the parent directory can be legally traversed by the FileManager
 	 *
 	 * Return a dual array (possibly empty) of directories and files, or FALSE on error.
 	 *
@@ -3448,5 +3506,16 @@ class FileManager
 				return $this->checkTitle($data, $options, ++$i);
 
 		return $data.($i ? '_' . $i : '');
+	}
+
+
+	/**
+	 * @param $str
+	 *
+	 * @return string
+	 */
+	protected function getHash($str)
+	{
+		return hash($this->options['hashMethod'], $str);
 	}
 }

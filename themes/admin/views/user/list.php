@@ -8,132 +8,143 @@
 ?>
 
 <!-- Result -->
+<p class="mt10">
+	<strong>
+		<?php if( ! empty($filter)) :?>
+			<?php echo lang('ionize_label_filter_result') ?> :
+		<?php else: ?>
+			<?php echo lang('ionize_label_users_count') ?> :
+		<?php endif; ?>
+	</strong>
+	<?php echo $users_count ?>
+</p>
 
-<?php if( ! empty($filter)) :?>
 
-	<p><strong><?php echo lang('ionize_label_filter_result') ?> : </strong><?php echo $users_count ?></p>
-
-<?php endif; ?>
-
+<?php if ($users_pages > 1) :?>
 <!-- Pages -->
-<ul class="pagination" id="users_pagination">
-	<?php
-		if ($users_pages > 1)
-		{
+	<ul class="pagination mt5" id="users_pagination">
+		<?php
 			for($i=1; $i<=$users_pages; $i++)
 			{
 			?>
-				<li><a <?php if($i == $current_page) :?>class="current"<?php endif; ?> rel="<?php echo $i ?>"><?php echo $i ?></a></li>
+				<li><a <?php if($i == $current_page) :?>class="current"<?php endif; ?> data-page-number="<?php echo $i ?>"><?php echo $i ?></a></li>
 			<?php
 			}
-		}
-	?>
-</ul>
+		?>
+	</ul>
+<?php endif; ?>
 
 
-<table class="list" id="usersTable">
+<?php if (!empty($users)) :?>
 
-	<thead>
-		<tr>
-			<th axis="string"><?php echo lang('ionize_label_id') ?></th>
-			<th axis="string"><?php echo lang('ionize_label_username') ?></th>
-			<th axis="string"><?php echo lang('ionize_label_screen_name') ?></th>
-			<th axis="string"><?php echo lang('ionize_label_group') ?></th>
-			<th axis="string"><?php echo lang('ionize_label_email') ?></th>
-			<th axis="string"><?php echo lang('ionize_label_join_date') ?></th>
-			<th></th>
-		</tr>
-	</thead>
+	<table class="list" id="usersTable">
 
-	<tbody>
-	
-	<?php
-	
-	$i = 0;
-	
-	?>
-	
-	<?php foreach($users as $user) :?>
-		
-		<tr class="users<?php echo $user['id_user'] ?> users">
-			<td><?php echo $user['id_user'] ?></td>
-			<td><a class="user" id="user<?php echo $user['id_user'] ?>" rel="<?php echo $user['id_user'] ?>" href="<?php echo admin_url() ?>users/edit/<?php echo $user['id_user'] ?>"><?php echo $user['username'] ?></a></td>
-			<td><?php echo $user['screen_name'] ?></td>
-			<td><?php echo $user['group']['group_name'] ?></td>
-			<td><?php echo $user['email'] ?></td>
-			<td>
-				<?php echo humanize_mdate($user['join_date'], Settings::get('date_format')) ?>
-			</td>
-			<td>
-				<a class="icon delete" rel="<?php echo $user['id_user'] ?>"></a>
-			</td>
-		</tr>
+		<thead>
+			<tr>
+				<th axis="number"><?php echo lang('ionize_label_id') ?></th>
+                <th axis="string"><?php echo lang('ionize_label_email') ?></th>
+				<th axis="string"><?php echo lang('ionize_label_username') ?></th>
+				<th axis="string"><?php echo lang('ionize_label_screen_name') ?></th>
+				<th axis="string"><?php echo lang('ionize_label_role') ?></th>
+				<th axis="string"><?php echo lang('ionize_label_join_date') ?></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
 
-	<?php endforeach ;?>
-	
-	</tbody>
-</table>
+		<tbody>
 
+			<?php
 
-<script type="text/javascript">
+			$i = 0;
 
-	/**
-	 * Users itemManager
-	 * Manager delete
-	 *
-	 */
-	usersManager = new ION.ItemManager(
-	{
-		container: 'usersTable',
-		element: 	'users'
-	});
-	
-	
-	/**
-	 * Sortable on the current users list table
-	 *
-	 */
- 	new SortableTable('usersTable',{sortOn: 0, sortBy: 'ASC'});
+			?>
 
-	/**
-	 * User Edit window
-	 *
-	 */
-	$$('.user').each(function(item)
-	{
-		item.addEvent('click', function(e)
+			<?php foreach($users as $user) :?>
+
+				<tr data-id="<?php echo $user['id_user'] ?>">
+					<td><?php echo $user['id_user'] ?></td>
+                    <td><?php echo $user['email'] ?></td>
+					<td><a><?php echo $user['username'] ?></a></td>
+					<td><?php echo $user['screen_name'] ?></td>
+					<td><?php echo $user['role_name'] ?></td>
+					<td>
+						<?php echo humanize_mdate($user['join_date'], Settings::get('date_format')) ?>
+					</td>
+                    <td>
+                        <a class="icon mail" data-email="<?php echo $user['email'] ?>"></a>
+                    </td>
+					<td>
+						<?php if(User()->getId() != $user['id_user'] && Authority::can('delete', 'admin/user')) :?>
+							<a class="icon delete" data-id="<?php echo $user['id_user'] ?>"></a>
+						<?php endif; ?>
+					</td>
+				</tr>
+
+			<?php endforeach ;?>
+
+		</tbody>
+	</table>
+
+	<script type="text/javascript">
+
+		// Sortbale
+		new SortableTable('usersTable',{sortOn: 0, sortBy: 'ASC'});
+
+		// Edit window
+		$$('#usersTable tbody tr').each(function(item)
 		{
-			e.stop();
-			var id = item.getProperty('rel');
-			ION.formWindow(
-				'user'+ id, 				// Window ID
-				'userForm'+ id,				// Form ID
-				'ionize_title_user_edit', 	// Window title
-				'users/edit/' + id,			// Window content URL
-				{width: 400, resize:true}	// Window options
-			);
+			item.addEvent('click', function(e)
+			{
+				e.stop();
+				var id = item.getProperty('data-id');
+				ION.formWindow(
+					'user'+ id, 				// Window ID
+					'userForm'+ id,				// Form ID
+					'ionize_title_user_edit', 	// Window title
+					'user/edit',			// Window content URL
+					{width: 400, resize:true},	// Window options
+					{'id_user': id}
+				);
+			});
 		});
-	});
-	
-	
-	/**
-	 * Pagination element link
-	 *
-	 */
-	$$('#users_pagination li a').each(function(item, idx)
-	{
-		item.addEvent('click', function(e)
+
+        $$('#usersTable tbody tr .delete').each(function(item)
+        {
+            var id = item.getProperty('data-id');
+            ION.initRequestEvent(
+				item,
+				'user/delete',
+				{'id_user': id},
+				{'confirm':true}
+            );
+        });
+
+        $$('#usersTable tbody tr .mail').each(function(item)
+        {
+            item.addEvent('click', function(e)
+            {
+                location.href="mailto:" + item.getProperty('data-email');
+			});
+        });
+
+        // Pagination
+		$$('#users_pagination li a').each(function(item, idx)
 		{
-			e.stop();
+			item.addEvent('click', function(e)
+			{
+				e.stop();
 
-			new Request.HTML({
-				url: admin_url + 'users/users_list/' + this.getProperty('rel') + '/<?php echo $nb ?>',
-				method: 'post',
-				loadMethod: 'xhr',
-				data: $('usersFilter'),
-				update: $('usersList')
-			}).send();
+				new Request.HTML({
+					url: admin_url + 'user/get_list/' + this.getProperty('data-page-number'),
+					method: 'post',
+					loadMethod: 'xhr',
+					data: $('userFilter'),
+					update: $('userList')
+				}).send();
+			});
 		});
-	});
 
-</script>
+	</script>
+
+<?php endif; ?>

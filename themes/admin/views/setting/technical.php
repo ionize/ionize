@@ -18,7 +18,9 @@
 			<li id="article_settings"><a><?php echo lang('ionize_title_article_management'); ?></a></li>
 			<li id="database_settings"><a><?php echo lang('ionize_title_database'); ?></a></li>
 			<li id="email_settings"><a><?php echo lang('ionize_title_mail_send'); ?></a></li>
-            <!--<li id="api_settings"><a><?php echo lang('ionize_title_api'); ?></a></li>-->
+<!--
+			<li id="api_settings"><a><?php /*echo lang('ionize_title_api'); */?></a></li>
+-->
 			<li id="system_settings"><a><?php echo lang('ionize_title_system'); ?></a></li>
 
 		</ul>
@@ -376,18 +378,35 @@
 		
 		<!-- Email -->
 		<div class="tabcontent pt10">
-			<form name="smtpForm" id="smtpForm" method="post" action="<?php echo admin_url(); ?>setting/save_smtp">
+			<form name="emailForm" id="emailForm" method="post" action="<?php echo admin_url(); ?>setting/save_emails_settings">
 			
-				<p class="h30"><input id="submit_smtp" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
+				<p class="h30"><input id="submit_email" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
 
 
-				<!-- Website email -->
+				<!-- Emails -->
+				<?php
+					$emails = array('contact', 'info', 'technical');
+				?>
+				<?php foreach($emails as $email) :?>
 				<dl>
 					<dt>
-						<label for="site_email"><?php echo lang('ionize_label_site_email'); ?></label>
+						<label for="email_<?php echo $email ?>"  title="<?php echo lang('ionize_help_email_'.$email); ?>"><?php echo lang('ionize_label_email_'.$email); ?></label>
 					</dt>
 					<dd>
-						<input id="site_email" name="site_email" class="inputtext w140" type="text" value="<?php echo Settings::get('site_email'); ?>" />
+						<input id="email_<?php echo $email ?>" name="email_<?php echo $email ?>" class="inputtext w240" type="text" value="<?php echo Settings::get('email_'.$email); ?>" />
+					</dd>
+				</dl>
+				<?php endforeach ;?>
+
+
+				<h3><?php echo lang('ionize_title_email_server'); ?></h3>
+
+				<dl class="mb10 mt20">
+					<dt>
+						<label for="site_email" title="<?php echo lang('ionize_help_site_email'); ?>"><?php echo lang('ionize_label_site_email'); ?></label>
+					</dt>
+					<dd>
+						<input id="site_email" name="site_email" class="inputtext w240" type="text" value="<?php echo Settings::get('site_email'); ?>" />
 					</dd>
 				</dl>
 
@@ -486,18 +505,19 @@
 			</form>
 		</div>
 
-		<!-- API
-        <div class="tabcontent">
+		<!-- API -->
+<!--
+		<div class="tabcontent">
 
             <p class="clear h20">
-                <a class="left light button" title="<?php echo lang('ionize_label_create_new_api_key'); ?>">
+                <a id="buttonNewApiKey" class="left light button" title="<?php /*echo lang('ionize_label_create_new_api_key'); */?>">
 					<i class="icon-plus"></i>
-					<?php echo lang('ionize_label_create_new_api_key'); ?>
+					<?php /*echo lang('ionize_label_create_new_api_key'); */?>
                 </a>
             </p>
 
         </div>
-        -->
+-->
 
 
 		<!-- System -->
@@ -695,36 +715,22 @@
 
 <script type="text/javascript">
 	
-	/**
-	 * Panel toolbox
-	 *
-	 */
+
+	// Panel toolbox
 	ION.initToolbox('empty_toolbox');
 
 
-	/**
-	 * Options Accordion
-	 *
-	 */
+	// Options Accordion
 	ION.initAccordion('.toggler', 'div.element', true, 'settingsAccordion1');
 	ION.initAccordion('.toggler1', 'div.element1', false, 'settingsAccordion2');
 
-	/**
-	 * Init help tips on label
-	 *
-     */
-	ION.initLabelHelpLinks('#settingsTabContent');
 
 	var settingsTab = new TabSwapper({tabsContainer: 'settingsTab', sectionsContainer: 'settingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'settingsTab' });
 
 
-
-	/**
-	 * Forms actions
-	 * see ionize-form.js for more information about this method
-	 */
+	// Forms actions
 	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true', 'mainPanel', 'setting/technical');
-	ION.setFormSubmit('smtpForm', 'submit_smtp', 'setting/save_smtp/true', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('emailForm', 'submit_email', 'setting/save_emails_settings/true', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
@@ -734,10 +740,7 @@
 	ION.initRequestEvent($('clear_cache'), 'setting/clear_cache');
 
 
-	/**
-	 * Admin URL form action
-	 * see ionize-form.js for more information about this method
-	 */
+	// Admin URL form action
 	ION.addConfirmation(
 		'changeAdminUrl', 
 		'submit_admin_url',
@@ -757,10 +760,7 @@
 	});
 
 
-	/**
-	 * Restore tinyButtons toolbar to default config
-	 *
-	 */
+	// Restore tinyButtons toolbar to default config
 	$('texteditor_default').addEvent('click', function()
 	{
 		$('tinybuttons1').value = 'pdw_toggle,fullscreen,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image';
@@ -782,10 +782,7 @@
 	});
 
 
-	/**
-	 * Show / hides Email details depending on the selected protocol
-	 *
-	 */
+	// Show / hides Email details depending on the selected protocol
 	changeEmailDetails = function()
 	{
 		if ($('protocol').value == 'mail')
@@ -802,12 +799,7 @@
 	changeEmailDetails();
 
 	
-	
-	
-	/**
-	 * Make each tree page draggable to the maintenance page container
-	 *
-	 */
+	// Make each tree page draggable to the maintenance page container
 	if ($('maintenancePageContainer'))
 	{
 		// Get the maintenance page
@@ -839,12 +831,20 @@
 		});	
 	}
 
-
-	/**
-	 * Views form
-	 * see ionize-form.js for more information about this method
-	 */
-	// ION.setFormSubmit('settingsForm', 'settingsFormSubmit', 'setting/save_technical');
+	// New API key button
+    $('buttonNewApiKey').addEvent('click', function()
+    {
+        ION.formWindow(
+			'apiKey',
+			'apiKeyForm',
+			Lang.get('ionize_button_new_api_key'),
+			'api/key_edit/',
+			{
+				width:450,
+				height:250
+			}
+        );
+    });
 
 	/**
 	 * Save with CTRL+s

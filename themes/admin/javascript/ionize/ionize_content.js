@@ -1,11 +1,20 @@
 ION.append({
 
+	grayPanels:Array('dashboard'),
+
+
 	contentUpdate:function(options)
 	{
 		var user = Ionize.User.getLoggedUser();
 
 		if (typeOf(user) != 'null')
 		{
+			$('mainPanel').removeClass('bg-gray');
+			if (ION.grayPanels.contains(options.url) == true)
+				$('mainPanel').addClass('bg-gray');
+
+			$('mainPanel').getElements('iframe').each(function(el){el.destroy()});
+
 			options.method = 'post';
 			options.url = admin_url + ION.cleanUrl(options.url);
 			MUI.Content.update(options);
@@ -16,15 +25,17 @@ ION.append({
 		}
 	},
 
-	/** 
+
+	/**
 	 * Updates the mainPanel toolbox
 	 *
-	 * @param	string		Name of the toolbox view to load.
-	 *						Must be located in the themes/admin/views folder
-	 * @param	function	Function to execute when the toolbox is loaded.
-	 *	
+	 * @param toolbox_url       Name of the toolbox view to load.
+	 *                          Must be located in the themes/admin/views/toolboxes folder
+	 * @param onContentLoaded   Function to execute when the toolbox is loaded.
+	 * @param data              Additional data
+	 *
 	 */
-	initToolbox: function(toolbox_url, onContentLoaded)
+	initToolbox: function(toolbox_url, onContentLoaded, data)
 	{
 		// Creates the header toolbox if it doesn't exists
 		if ( ! $('mainPanel_headerToolbox')) {
@@ -43,6 +54,8 @@ ION.append({
 			MUI.Content.update({
 				element: 'mainPanel_headerToolbox',
 				url: admin_url + 'desktop/get/toolboxes/' + toolbox_url,
+				method: 'post',
+				data: data,
 				onLoaded: cb
 			});
 		}
@@ -53,11 +66,11 @@ ION.append({
 	},
 	
 	
-	/** 
+	/**
 	 * Init a module toolbox
-	 * @param	string 	module name
-	 * @param	toolbox_url for this module
-	 *	
+	 *
+	 * @param module        module name
+	 * @param toolbox_url   toolbox_url for this module
 	 */
 	initModuleToolbox: function(module, toolbox_url)
 	{
@@ -542,7 +555,7 @@ ION.append({
 		if (lang == true)
 		{
 			// Add event to sources elements
-			(Lang.get('languages')).each(function(l, idx)
+			(Lang.languages).each(function(l, idx)
 			{
 				if ($(source + l))
 				{
@@ -810,7 +823,7 @@ ION.append({
 			},
 			onSelection: function(selection, item, value, input)
 			{
-				var id = item.getProperty('rel');
+				var id = item.getProperty('data-id');
 				
 				if ($(update))
 				{
@@ -1088,7 +1101,7 @@ ION.append({
 			var rel = art.id_page + '.' + art.id_article;
 			
 			// Update the title
-			$$('.file .title[rel=' + rel + ']').each(function(el)
+			$$('.file .title[data-id=' + rel + ']').each(function(el)
 			{
 				el.empty();
 				el.set('html', title).setProperty('title', rel + ' : ' + title);
@@ -1100,7 +1113,7 @@ ION.append({
 			});
 			
 			// Article icons
-			$$('li.file[rel=' + rel + '] div.tree-img.drag').each(function(el)
+			$$('li.file[data-id=' + rel + '] div.tree-img.drag').each(function(el)
 			{
 				// Indexed icon
 				if (art.indexed == '1')
@@ -1127,50 +1140,56 @@ ION.append({
 	{
 		var edit = el.getElement('.edit');
 		var add_page = el.getElement('.add_page');
-		var id_menu = add_page.getProperty('rel');
+		var id_menu = el.getProperty('data-id');
 
 		// Edit button
-		edit.addEvent('click', function(e)
+		if (edit)
 		{
-			e.stop();
+			edit.addEvent('click', function(e)
+			{
+				e.stop();
 
-			ION.contentUpdate({
-				element: $('mainPanel'),
-				title: Lang.get('ionize_title_menu'),
-				url : admin_url + 'menu'		
+				ION.contentUpdate({
+					element: $('mainPanel'),
+					title: Lang.get('ionize_title_menu'),
+					url : admin_url + 'menu'
+				});
 			});
-		});
+		}
 		
 		// Add page button
-		add_page.addEvent('click', function(e)
+		if (add_page)
 		{
-			e.stop();
-			
-			MUI.Content.update(
+			add_page.addEvent('click', function(e)
 			{
-				element: $('mainPanel'),
-				title: Lang.get('ionize_title_new_page'),
-				loadMethod: 'xhr',
-				url: admin_url + 'page/create/' + id_menu
+				e.stop();
+
+				MUI.Content.update(
+				{
+					element: $('mainPanel'),
+					title: Lang.get('ionize_title_new_page'),
+					loadMethod: 'xhr',
+					url: admin_url + 'page/create/' + id_menu
+				});
 			});
-		});
+		}
 	},
 
 
 	updateArticleOrder: function(args)
 	{
-		var articleContainer = $('articleContainer' + args.id_page);
-		var articleList = $('articleList' + args.id_page);
-		
+		var articleContainer = $$('.articleContainer[data-id=' + args.id_page + ']');
+		articleContainer = (articleContainer.length > 0) ? articleContainer[0] : false;
+
+			var articleList = $('articleList' + args.id_page);
 		var order = (args.order).split(',');
 		order = order.reverse();
 		
-		
 		for (var i=0; i< order.length; i++)
 		{
-			if (typeOf(articleContainer) != 'null')
+			if (articleContainer)
 			{
-				var el = articleContainer.getElement('#article_' + args.id_page + 'x' + order[i]);
+				var el = articleContainer.getElement('li.article' + args.id_page + 'x' + order[i]);
 				el.inject(articleContainer, 'top');
 			}
 			
@@ -1225,20 +1244,20 @@ ION.append({
 	 * Adds the DOM page element to the page parents list
 	 * called by ION.linkArticleToPage()
 	 *
-	 * <li rel="id_page.id_article" class="parent_page"><span class="link-img page"></span><a class="icon right unlink"></a><a class="page">Page Title in Default Language</a></li>
+	 * <li data-id="id_page.id_article" class="parent_page"><span class="link-img page"></span><a class="icon right unlink"></a><a class="page">Page Title in Default Language</a></li>
 	 *
 	 */
 	addPageToArticleParentListDOM: function(args)
 	{
 		if ($('parent_list'))
 		{
-			var li = new Element('li', {'rel':args.id_page + '.' + args.id_article, 'class':'parent_page'});
+			var li = new Element('li', {'data-id':args.id_page + '.' + args.id_article, 'class':'parent_page'});
 			
 			li.adopt(new Element('a', {'class':'icon right unlink'}));
 			
 			var title = (args.title !='' ) ? args.title : args.name;
 			var aPage = new Element('a', {'class': 'page'}).set('text', title).inject(li, 'bottom');
-			var span = new Element('span', {'class':'link-img page left'}).inject(aPage, 'top');
+			var span = new Element('span', {'class':'link-img page left mr5'}).inject(aPage, 'top');
 			
 			ION.addParentPageEvents(li);
 			$('parent_list').adopt(li);
@@ -1266,7 +1285,7 @@ ION.append({
 	 */
 	addParentPageEvents: function(item)
 	{
-		var rel = (item.getProperty('rel')).split(".");
+		var rel = (item.getProperty('data-id')).split(".");
 		var id_page = rel[0];
 		var id_article = rel[1];
 
@@ -1298,8 +1317,8 @@ ION.append({
 			item.addEvent('click', function()
 			{
 				var lang = item.getProperty('rel');
-				var langs = Lang.get('languages');
-				
+				var langs = Lang.languages;
+
 				if (typeOf(tinyMCE) != 'null')
 					tinyMCE.triggerSave();
 
@@ -1349,11 +1368,11 @@ ION.append({
 	dropContentElement: function(parent, element, droppable, event)
 	{
 		// Element
-		var rel = (element.getProperty('rel')).split(".");
+		var rel = (element.getProperty('data-id')).split(".");
 		var id_element = (rel.length > 1) ? rel[1] : rel[0];
 		
 		// Target
-		rel = (droppable.getProperty('rel')).split(".");
+		rel = (droppable.getProperty('data-id')).split(".");
 		var id_parent = (rel.length > 1) ? rel[1] : rel[0];
 		
 		// Old Parent
@@ -1406,10 +1425,10 @@ ION.append({
 	 */
 	dropArticleInPage: function(element, droppable, event)
 	{
-		var rel = (element.rel).split('.');
+		var rel = (element.getProperty('data-id')).split('.');
 		var id_page_origin = rel[0];
 		var id_article = rel[1];
-		var id_page = droppable.getProperty('rel');
+		var id_page = droppable.getProperty('data-id');
 		
 		if (id_page_origin != id_page)
 			ION.linkArticleToPage(id_article, id_page, id_page_origin, event);
@@ -1421,9 +1440,8 @@ ION.append({
 	 */
 	dropPageInArticle: function(element, droppable, event)
 	{
-		var id_article = $('id_article').value;
-		var id_page = droppable.getProperty('rel');
-
+		var id_article = droppable.getProperty('data-id');
+		var id_page = element.getProperty('data-id');
 		ION.linkArticleToPage(id_article, id_page, '0', event);
 	},
 
@@ -1431,7 +1449,7 @@ ION.append({
 	dropElementAsLink: function(link_type, element, droppable)
 	{
 		// Target link rel
-		var link_rel = element.getProperty('rel');
+		var link_rel = element.getProperty('data-id');
 		
 		// Receiver's element type
 		var receiver_type = $('element').value;
@@ -1506,7 +1524,7 @@ ION.append({
 	 */
 	unlinkArticleFromPageDOM: function(args)
 	{
-		$$('li[rel=' + args.id_page + '.' + args.id_article + ']').each(function(item, idx) { item.dispose(); });
+		$$('li[data-id=' + args.id_page + '.' + args.id_article + ']').each(function(item, idx) { item.dispose(); });
 	},
 	
 	

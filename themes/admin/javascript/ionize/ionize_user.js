@@ -105,10 +105,10 @@ Ionize.User.append(
 		return false;
 	},
 
-	getGroup: function()
+	getRole: function()
 	{
-		if (typeOf(this.user.group) != 'null')
-			return this.user.group;
+		if (typeOf(this.user.role) != 'null')
+			return this.user.role;
 	},
 
 	getGroupField: function(field)
@@ -130,21 +130,6 @@ Ionize.User.append(
 	getGroupLevel:function()
 	{
 		return this.getGroupField('level');
-	},
-
-	getGroupCode:function()
-	{
-		return this.getGroupField('slug');
-	},
-
-	getGroupName:function()
-	{
-		return this.getGroupField('group_name');
-	},
-
-	getEmail: function()
-	{
-		return this.get('email');
 	},
 
 	getName: function()

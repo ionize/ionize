@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  *
@@ -162,7 +162,6 @@ class TagManager_Element extends TagManager
 		// Create dynamical tags
 		foreach($elements_definitions as $definition)
 		{
-			log_message('error', 'element:'.$definition['name']);
 			self::$context->define_tag('element:'.$definition['name'], array(__CLASS__, 'tag_element_detail'));
 		}
 

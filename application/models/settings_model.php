@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
@@ -16,13 +16,14 @@
  *
  * @package		Ionize
  * @subpackage	Models
- * @category	Admin settings
+ * @category	Settings
  * @author		Ionize Dev Team
  */
-
-class Settings_Model extends Base_model 
+class Settings_Model extends Base_model
 {
-
+	/**
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -113,9 +114,6 @@ class Settings_Model extends Base_model
 						$lang_dirs[] = $dir;
 				}
 			}
-		
-//			$callback = create_function('$el', 'return is_file(realpath("'.$path.'$el'.'/admin_lang'.EXT.'"));');
-//			return $lang_dirs = array_values(array_filter($dirs, $callback));
 		}
 
 		return $lang_dirs;
@@ -125,6 +123,10 @@ class Settings_Model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param $data
+	 *
+	 */
 	function save_setting($data)
 	{
 		// Check the setting
@@ -156,15 +158,13 @@ class Settings_Model extends Base_model
 	/**
 	 * Updates the media table
 	 * Replaces the old path by the new one in columns "path" and "base_path"
-	 *
+	 * @param $old_path
+	 * @param $new_path
 	 */
 	function update_media_path($old_path, $new_path)
 	{
-		/*
-		 * Example of query : 
-		 * update media set path = replace(path, 'files/', 'files_new_folder/');
-		 *
-		 */	
+		// Example of query :
+		// update media set path = replace(path, 'files/', 'files_new_folder/');
 		if ($new_path)
 		{
 			
@@ -177,8 +177,4 @@ class Settings_Model extends Base_model
 			$this->{$this->db_group}->query($sql);
 		}
 	}
-	
-	
 }
-/* End of file settings_model.php */
-/* Location: ./application/models/settings_model.php */

@@ -1,0 +1,290 @@
+<?xml version="1.0" ?>
+<sql>
+
+	<query>
+		update setting set content='1.0.0' where name = 'ionize_version';
+	</query>
+
+    <query>
+        ALTER TABLE media ADD provider varchar(50) NOT NULL DEFAULT  '';
+    </query>
+
+    <query>
+        CREATE TABLE api_key (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            `key` varchar(40) NOT NULL,
+            `level` int(2) NOT NULL,
+            ignore_limits tinyint(1) NOT NULL DEFAULT '0',
+            is_private tinyint(1) NOT NULL DEFAULT '0',
+            ip_addresses text,
+            date_created datetime,
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>
+        CREATE TABLE api_log (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            uri varchar(255) NOT NULL,
+            method varchar(6) NOT NULL,
+            params text,
+            api_key varchar(40) NOT NULL,
+            date_log datetime DEFAULT NULL,
+            ip_address varchar(45) NOT NULL,
+            authorized tinyint(1) NOT NULL,
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>
+        CREATE TABLE event_log (
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            status varchar(50) DEFAULT NULL,
+            message text,
+            id_user int(11) DEFAULT NULL,
+            email varchar(255) DEFAULT NULL,
+            date_log datetime DEFAULT NULL,
+            ip_address varchar(45) DEFAULT NULL,
+            seen tinyint(1) NOT NULL DEFAULT '0',
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>alter table page add deny_code varchar(3) NULL;</query>
+    <query>alter table page drop id_group;</query>
+
+
+    <query>DELETE FROM setting WHERE name='media_upload_mode';</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
+
+
+    <query>create table if not exists user as select * from users;</query>
+    <query>alter table user change id_group id_role int(11) unsigned not null;</query>
+    <query>alter table user add primary key(id_user);</query>
+    <query>alter table user modify id_user int(11) unsigned auto_increment;</query>
+    <query>drop table users;</query>
+
+    <query>create table if not exists role as select * from user_groups;</query>
+    <query>alter table role change id_group id_role int(11) not null AUTO_INCREMENT PRIMARY KEY;</query>
+    <query>alter table role change level role_level int(11);</query>
+    <query>alter table role change slug role_code varchar(50);</query>
+    <query>alter table role change group_name role_name varchar(100);</query>
+    <query>alter table role change description role_description tinytext;</query>
+    <query>drop table user_groups;</query>
+
+    <query>update role set role_name='super-admin' where role_name='super-admins';</query>
+    <query>update role set role_name='admin' where role_name='admins';</query>
+    <query>update role set role_name='editor' where role_name='editors';</query>
+    <query>update role set role_name='user' where role_name='users';</query>
+    <query>update role set role_name='guest' where role_name='guests';</query>
+
+    <query>
+        CREATE TABLE if not exists resource (
+            id_resource int(11) NOT NULL AUTO_INCREMENT,
+            id_parent int(11) unsigned DEFAULT '0',
+            resource varchar(255) NOT NULL DEFAULT '',
+            actions varchar(500) DEFAULT '',
+            title varchar(255) DEFAULT '',
+            description varchar(1000) DEFAULT '',
+            PRIMARY KEY (id_resource),
+            UNIQUE KEY resource_key (resource)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (1,NULL,'admin','','Backend login','Connect to ionize backend');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (10,NULL,'admin/menu','create,edit,delete','Menu','Menus');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (11,10,'admin/menu/permissions/backend','','Permissions','Menu > Backend Permissions');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (20,NULL,'admin/translations','','Translations','Translations');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (30,NULL,'admin/filemanager','upload,rename,delete,move','Filemanager','FileManager');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (35,NULL,'admin/medialist','','MediaList','MediaList');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (41,40,'admin/page/article','add','Article','Page > Article');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (42,40,'admin/page/element','add','Content Element','Page > Content Element');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (50,40,'admin/page/media','','Media','Page > Media');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (51,50,'admin/page/media/picture','link,unlink, edit','Pictures','Page > Media > Pictures');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (52,50,'admin/page/media/video','link,unlink, edit','Videos','Page > Media > Videos');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (53,50,'admin/page/media/music','link,unlink, edit','Music','Page > Media > Music');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (54,50,'admin/page/media/file','link,unlink, edit','Files','Page > Media > Files');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (60,40,'admin/page/permissions','','Permission','Page > Permission');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (61,60,'admin/page/permissions/backend','','Backend','Page > Permission > Backend');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (62,60,'admin/page/permissions/frontend','','Frontend','Page > Permission > Frontend');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (70,NULL,'admin/article','create,edit,delete,move,copy,duplicate','Article','Article');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (80,70,'admin/article/media','','Media','Article > Media');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (81,80,'admin/article/media/picture','link,unlink, edit','Pictures','Article > Media > Pictures');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (82,80,'admin/article/media/video','link,unlink,edit','Videos','Article > Media > Videos');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (83,80,'admin/article/media/music','link,unlink,edit','Music','Article > Media > Music');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (84,80,'admin/article/media/file','link,unlink,edit','Files','Article > Media > Files');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (85,70,'admin/article/element','add','Content Element','Article > Content Element');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (86,70,'admin/article/category','','Manage categories','Article > Categories');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (90,70,'admin/article/permissions','','Permission','Article > Permission');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (91,90,'admin/article/permissions/backend','','Backend','Article > Permission > Backend');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (92,90,'admin/article/permissions/frontend','','Frontend','Article > Permission > Frontend');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (100,NULL,'admin/tree','','Tree','');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (101,100,'admin/tree/menu','add_page,edit','Menus','');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (102,100,'admin/tree/page','status,add_page,add_article,order','Pages','');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (103,100,'admin/tree/article','unlink,status,move,copy,order','Articles','');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (120,NULL,'admin/article/type','create,edit,delete','Article Type','Article types');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (150,NULL,'admin/modules','install','Modules','Modules');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (151,150,'admin/modules/permissions','','Set Permissions','Modules > Permissions');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (180,NULL,'admin/element','create,edit,delete','Content Element','Content Elements');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (210,NULL,'admin/extend','create,edit,delete','Extend Fields','Extend Fields');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (240,NULL,'admin/tools','','Tools','Tools');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (241,240,'admin/tools/google_analytics','','Google Analytics','Tools > Google Analytics');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (250,240,'admin/tools/system','','System Diagnosis','Tools > System');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (251,250,'admin/tools/system/information','','Information','Tools > System > Information');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (252,250,'admin/tools/system/repair','','Repair tools','Tools > System > Repair');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (253,250,'admin/tools/system/report','','Reports','Tools > System > Reports');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (270,NULL,'admin/settings','','Settings','Settings');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (271,270,'admin/settings/ionize','','Ionize UI','Settings > UI Settings');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (272,270,'admin/settings/languages','','Languages Management','Settings > Languages');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (273,270,'admin/settings/themes','edit','Themes','Settings > Themes');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (274,270,'admin/settings/website','','Website settings','Settings > Website');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (275,270,'admin/settings/technical','','Technical settings','Settings > Technical');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (300,NULL,'admin/users_roles','','Users & Roles','Users & Roles');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (301,300,'admin/user','create,edit,delete','Users','Users');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');</query>
+
+    <query>
+        CREATE TABLE if not exists rule (
+        id_role int(11) NOT NULL,
+        resource varchar(150) NOT NULL DEFAULT '',
+        actions varchar(150) NOT NULL DEFAULT '',
+        permission smallint(1) DEFAULT NULL,
+        id_element int(11) unsigned,
+        PRIMARY KEY (id_role,resource,actions)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (1,'all','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article','create,edit,delete,move,copy,duplicate',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/category','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/element','add',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/file','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/music','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/picture','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/video','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions/backend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions/frontend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/type','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/element','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/extend','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/filemanager','upload,rename,delete,move',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/menu','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/modules','install',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/modules/permissions','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/article','add',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/element','add',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/file','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/music','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/picture','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/video','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/permissions','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/permissions/backend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/permissions/frontend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/role','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/role/permissions','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/settings','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/settings/ionize','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/settings/languages','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/settings/website','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tools','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tools/google_analytics','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tools/system','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tools/system/information','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tools/system/repair','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tools/system/report','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/translations','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tree','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tree/article','unlink,status,move,copy,order',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tree/menu','add_page,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/tree/page','status,add_page,add_article,order',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/user','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/users_roles','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article','create,edit,delete,move,copy,duplicate',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/category','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/element','add',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/media','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/media/picture','unlink',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/media/video','unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions/backend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions/frontend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/filemanager','upload,rename,delete,move',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/menu','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/modules','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/article','add',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/element','add',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/file','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/music','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/picture','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/video','link,unlink,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/permissions','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/permissions/backend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/permissions/frontend','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/settings','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/settings/ionize','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/settings/languages','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/settings/website','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tools','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tools/google_analytics','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tools/system','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tools/system/information','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tools/system/report','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/translations','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tree','',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tree/article','unlink,status,move,copy,order',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tree/menu','add_page,edit',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tree/page','status,add_page,add_article,order',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/user','create,edit,delete',1)</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/users_roles','',1)</query>
+
+
+    <query>ALTER TABLE article CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE article_comment CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE article_lang CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE article_media CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE article_type CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE captcha CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE category CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE category_lang CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE element CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE element CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE element_definition CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE element_definition_lang CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE extend_field CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE extend_field_lang CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE extend_fields CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE ion_sessions CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE lang CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE login_tracker CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE media CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE media_lang CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE menu CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE module CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE module_setting CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE note CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE page CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE page_article CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE page_lang CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE page_media CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE setting CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE tag CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE tracker CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE type CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE url CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE user_groups CONVERT TO CHARACTER SET utf8;</query>
+    <query>ALTER TABLE users CONVERT TO CHARACTER SET utf8;</query>
+</sql>

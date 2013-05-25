@@ -1,27 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Desktop Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */
 
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Desktop Controller
- *
- * This class creates the mocha based desktop
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Controllers
- * @author		Ionize Dev Team
- */
-class Desktop extends MY_Admin 
+class Desktop extends MY_Admin
 {
 	public function __construct()
 	{
@@ -29,17 +18,26 @@ class Desktop extends MY_Admin
 	}
 
 
-	function index()
+	// ------------------------------------------------------------------------
+
+
+	public function index()
 	{
+		// Disable xhr protection on index : let the desktop load
+		$this->disable_xhr_protection();
+
 		$modules = array();
 		include APPPATH . 'config/modules.php';
 		$this->template['modules'] = $modules;
 
 		$this->get('desktop/desktop');
 	}
-	
-	
-	function get_header()
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_header()
 	{
 		// Get the modules config file
 		$modules = array();
@@ -94,15 +92,25 @@ class Desktop extends MY_Admin
 
 		$this->get('desktop/desktop_header');
 		
-	}	
-	
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/** 
 	 * Gets a simple view
-	 * @param	string		the view name, without extension
+	 *
+	 * @param	bool|string		View name, without extension
 	 *
 	 */
-	function get($view = false)
+	public function get($view = false)
 	{
+		$post = $this->input->post();
+
+		if (is_array($post))
+			$this->template = array_merge($this->template, $post);
+
 		$this->template['view'] = $view;
 		
 		$args = func_get_args();
@@ -110,12 +118,16 @@ class Desktop extends MY_Admin
 
 		$this->output($args);
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Opens a help window
 	 *
 	 */
-	function help()
+	public function help()
 	{
 		$table = $this->input->post('table');
 		$title = $this->input->post('title');
@@ -130,6 +142,3 @@ class Desktop extends MY_Admin
 		$this->output('desktop/help');
 	}
 }
-
-/* End of file desktop.php */
-/* Location: ./application/admin/controllers/desktop.php */

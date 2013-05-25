@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.8
  *
@@ -29,11 +29,35 @@ class TagManager_Article extends TagManager
 		'article:next' => 			'tag_next_article',
 		'article:prev' => 			'tag_prev_article',
 		'article:type' => 			'tag_simple_value',
+<<<<<<< HEAD
+=======
+		'article:deny_code' => 		'tag_simple_value',
+		'article:deny' => 			'tag_article_deny',
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 	);
 
 
 	// ------------------------------------------------------------------------
-	
+
+
+	public static function get_article_by($field, $value, FTL_Binding $tag)
+	{
+		$where = array(
+			$field => $value
+		);
+
+		// Get from DB
+		$article = self::$ci->article_model->get(
+			$where,
+			$lang = Settings::get_lang()
+		);
+
+		return $article;
+	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Get Articles
@@ -55,7 +79,9 @@ class TagManager_Article extends TagManager
 		// Only get all articles (no limit to one page) if asked.
 		// Filter by current page by default
 		if (empty($page) && $tag->getAttribute('all') == NULL)
+		{
 			$page = self::registry('page');
+		}
 
 		// Set by Page::get_current_page()
 		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
@@ -63,6 +89,9 @@ class TagManager_Article extends TagManager
 		// Pagination
 		$tag_pagination = $tag->getAttribute('pagination');
 		$ionize_pagination = $page['pagination'];
+
+		// Authorizations
+		$tag_authorization = $tag->getAttribute('authorization');
 
 		// Type filter, limit, SQL filter
 		$type = $tag->getAttribute('type');
@@ -75,7 +104,7 @@ class TagManager_Article extends TagManager
 		if ($is_current_page)
 		{
 			// Special URI process
-			if (! is_null($special_uri_array))
+			if ( ! is_null($special_uri_array))
 			{
 				foreach($special_uri_array as $_callback => $args)
 				{
@@ -143,7 +172,16 @@ class TagManager_Article extends TagManager
 			$filter
 		);
 
+		$articles = self::filter_articles($tag, $articles);
+
+		// Filter on authorizations
+		if (User()->get('role_level') < 1000)
+		{
+			$articles = self::_filter_articles_authorization($articles, $tag_authorization);
+		}
+
 		// Pagination needs the total number of articles, without the pagination filter
+		// TODO : Integrates authorizations in articles count
 		if ($tag_pagination OR $ionize_pagination)
 		{
 			$nb_total_articles = self::count_nb_total_articles($tag, $where, $filter);
@@ -225,6 +263,27 @@ class TagManager_Article extends TagManager
 				$category_name,
 				Settings::get_lang()
 			);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Adds one tag filter
+	 *
+	 * @param FTL_Binding $tag
+	 * @param array       $args
+	 *
+	 */
+	function add_articles_filter_tag(FTL_Binding $tag, $args = array())
+	{
+		$tag_name = ( ! empty($args[0])) ? $args[0] : NULL;
+
+		if ( ! is_null($tag_name))
+		{
+			self::$ci->article_model->add_tag_filter($tag_name);
 		}
 	}
 
@@ -335,13 +394,13 @@ class TagManager_Article extends TagManager
 				// External
 				if ($article['link_type'] == 'external')
 				{
-					$article['url'] = $article['link'];
+					$article['absolute_url'] = $article['link'];
 				}
 
 				// Email
 				else if ($article['link_type'] == 'email')
 				{
-					$article['url'] = auto_link($article['link'], 'both', TRUE);
+					$article['absolute_url'] = auto_link($article['link'], 'both', TRUE);
 				}
 
 				// Internal
@@ -361,7 +420,7 @@ class TagManager_Article extends TagManager
 							$parent_page = self::$ci->page_model->get_by_id($rel[0], Settings::get_lang('current'));
 
 							if ( ! empty($parent_page))
-								$article['url'] = $parent_page[$page_url_key] . '/' . $target_article['url'];
+								$article['absolute_url'] = $parent_page[$page_url_key] . '/' . $target_article['url'];
 						}
 					}
 					// Page
@@ -371,15 +430,19 @@ class TagManager_Article extends TagManager
 
 						// If target page is offline, 'path' is not set
 						if ( isset($target_page[$page_url_key]))
+<<<<<<< HEAD
 							$article['url'] = $target_page[$page_url_key];
+=======
+							$article['absolute_url'] = $target_page[$page_url_key];
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 					}
 
 					// Correct the URL : Lang + Base URL
 					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 					{
-						$article['url'] =  Settings::get_lang('current'). '/' . $article['url'];
+						$article['absolute_url'] =  Settings::get_lang('current'). '/' . $article['absolute_url'];
 					}
-					$article['url'] = base_url() . $article['url'];
+					$article['absolute_url'] = base_url() . $article['absolute_url'];
 
 				}
 			}
@@ -389,11 +452,11 @@ class TagManager_Article extends TagManager
 				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 				{
 
-					$article['url'] = base_url() . Settings::get_lang('current') . '/' . $page[$page_url_key] . '/' . $url;
+					$article['absolute_url'] = base_url() . Settings::get_lang('current') . '/' . $page[$page_url_key] . '/' . $url;
 				}
 				else
 				{
-					$article['url'] = base_url() . $page[$page_url_key] . '/' . $url;
+					$article['absolute_url'] = base_url() . $page[$page_url_key] . '/' . $url;
 				}
 			}
 		}
@@ -446,6 +509,7 @@ class TagManager_Article extends TagManager
 	public static function tag_article(FTL_Binding $tag)
 	{
 		$cache = $tag->getAttribute('cache', TRUE);
+		$key = $tag->getAttribute('key');
 
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
@@ -457,9 +521,18 @@ class TagManager_Article extends TagManager
 		// Extend Fields tags
 		self::create_extend_tags($tag, 'article');
 
-		// Registry article : First : Registry (URL ask), Second : Stored one
+		// 1. Registry (URL ask), Second : Stored one
 		$_article = self::registry('article');
-		if (empty($_article)) $_article = $tag->get('article');
+
+		// 2. Asked through one key ? (but no <ion:articles /> parent tag )
+		if (empty($_article))
+		{
+			if ( ! is_null($key) && $tag->getDataParentName() != 'articles')
+				$_article = self::get_article_by('name', $key, $tag);
+
+			if (empty($_article))
+				$_article = $tag->get('article');
+		}
 
 		$_articles = array();
 		if ( ! empty($_article)) $_articles = array($_article);
@@ -487,6 +560,41 @@ class TagManager_Article extends TagManager
 		self::set_cache($tag, $str);
 
 		return $str;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 *
+	 * @param FTL_Binding $tag
+	 * @return string
+	 *
+	 */
+	public static function tag_article_deny(FTL_Binding $tag)
+	{
+		// Set this tag as "process tag"
+		$tag->setAsProcessTag();
+
+		// 1. Try to get from tag's data array
+		$value = $tag->getValue('deny_code', 'article');
+
+		$resource = 'frontend/article/' . $tag->getValue('id_article', 'article');
+
+		if (Authority::cannot('access', $resource, NULL, TRUE))
+		{
+			return self::output_value($tag, $value);
+		}
+		else
+		{
+			if ($tag->getAttribute('is') == '')
+			{
+				self::$trigger_else = 0;
+				return self::wrap($tag, $tag->expand());
+			}
+		}
+		return '';
 	}
 
 
@@ -525,7 +633,7 @@ class TagManager_Article extends TagManager
 
 		// Make articles in random order
 		if ( $tag->getAttribute('random') == TRUE)
-			shuffle ($articles);
+			shuffle($_articles);
 
 		$tag->set('articles', $_articles);
 
@@ -731,6 +839,59 @@ class TagManager_Article extends TagManager
 
 	// ------------------------------------------------------------------------
 
+	/**
+	 * Filters the articles regarding range.
+	 *
+	 */
+	public static function filter_articles(FTL_Binding $tag, $articles)
+	{
+		// Range : Start and stop index, coma separated
+		$range = $tag->getAttribute('range');
+		if (!is_null($range))
+			$range = explode(',', $range);
+
+		// Number of wished displayed medias
+		$limit = $tag->getAttribute('limit');
+
+		$from = $to = FALSE;
+
+		if (is_array($range))
+		{
+			$from = $range[0];
+			$to = (isset($range[1]) && $range[1] >= $range[0]) ? $range[1] : FALSE;
+		}
+
+		// Return list ?
+		// If set to "list", will return the list, coma separated.
+		// Usefull for javascript
+		// Not yet implemented
+		$return = $tag->getAttribute('return', FALSE);
+
+		if ( ! empty($articles))
+		{
+			// Range / Limit ?
+			if ( ! is_null($range))
+			{
+				$length = ($to !== FALSE) ? $to + 1 - $from  : count($articles) + 1 - $from;
+
+				if ($limit > 0 && $limit < $length) $length = $limit;
+
+				$from = $from -1;
+
+				$articles = array_slice($articles, $from, $length);
+			}
+			else if ($limit > 0)
+			{
+				$articles = array_slice($articles, 0, $limit);
+			}
+		}
+
+		return $articles;
+	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Find and parses the article view
@@ -775,6 +936,55 @@ class TagManager_Article extends TagManager
 
 		return $tag->parse_as_nested(file_get_contents($view_path));
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	private static function _filter_articles_authorization($articles, $filter_codes=NULL)
+	{
+		if ( is_string($filter_codes) ) $filter_codes = explode(',', $filter_codes);
+		$codes = array();
+
+		if ( is_array($filter_codes))
+		{
+			foreach($filter_codes as $code)
+				$codes[] = trim($code);
+		}
+
+		if (in_array('all', $codes) && count($codes) == 1)
+			return $articles;
+
+		$return = array();
+
+		foreach ($articles as $article)
+		{
+			$resource = 'frontend/article/' . $article['id_article'];
+
+			if ( Authority::cannot('access', $resource, NULL, TRUE))
+			{
+				if (empty($codes))
+					continue;
+
+				if (in_array($article['deny_code'], $codes))
+					$return[] = $article;
+			}
+			else
+			{
+				if (in_array('all', $codes))
+					$return[] = $article;
+
+				else if ( ! empty($codes))
+					continue;
+
+				else
+					$return[] = $article;
+			}
+		}
+
+		return $return;
+	}
+
 }
 
 TagManager_Article::init();

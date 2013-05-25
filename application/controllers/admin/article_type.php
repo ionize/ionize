@@ -1,24 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize, creative CMS
+ * Article Type Controller
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
- */
-
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Article Type Controller
- *
- * @package		Ionize
- * @subpackage	Controllers
- * @category	Article type management
- * @author		Ionize Dev Team
- *
  */
 
 class Article_type extends MY_admin 
@@ -214,9 +203,9 @@ class Article_type extends MY_admin
 	/**
 	 * Deletes one type
 	 *
-	 * @param	int 	Type ID
-	 * @param	string 	Parent table name. optional
-	 * @param	int 	Parent ID. Optional
+	 * @param      $id				Type ID
+	 * @param bool|string $parent	Parent table name. optional
+	 * @param bool|int $id_parent	Parent ID. Optional
 	 */
 	function delete($id, $parent = FALSE, $id_parent = FALSE)
 	{
@@ -292,7 +281,7 @@ class Article_type extends MY_admin
 	 * Prepare data before saving
 	 *
 	 */
-	function _prepare_data($xhr = FALSE) 
+	function _prepare_data($xhr = FALSE)
 	{
 		// Standard fields
 		$fields = $this->db->list_fields('article_type');
@@ -305,7 +294,3 @@ class Article_type extends MY_admin
 		$this->data['type'] = url_title($this->data['type']);
 	}
 }
-
-
-/* End of file article_type.php */
-/* Location: ./application/controllers/admin/article_type.php */

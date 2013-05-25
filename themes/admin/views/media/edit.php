@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Modal window for Media metadata edition
  *
@@ -94,6 +93,7 @@ if($type == 'picture')
 
 			<?php if (file_exists(DOCPATH . $path)) :?>
 				<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )); ?> ko
+<<<<<<< HEAD
 			<?php else :?>
 				<?php echo(lang('ionize_exception_no_source_file')) ;?>
 			<?php endif ;?>
@@ -110,6 +110,26 @@ if($type == 'picture')
 					<?php endif ;?>
 				<?php endif ;?>
 
+=======
+
+				<?php if($type == 'picture') :?>
+					-
+					<?php if ( ! is_null($pictureSize)) :?>
+						<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
+						<br />
+						<a id="imageCropLink<?php echo $id_media; ?>" class="light button mt10">
+							<i class="icon-crop"></i>
+							<?php echo lang('ionize_label_media_crop_picture'); ?>
+						</a>
+					<?php endif ;?>
+				<?php endif ;?>
+
+			<?php else :?>
+				<?php echo(lang('ionize_exception_no_source_file')) ;?>
+			<?php endif ;?>
+
+
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 		<?php endif ;?>
     </div>
 
@@ -246,7 +266,11 @@ if($type == 'picture')
 					
 					<!-- Thumbnail square crop area -->
 					<dl class="small">
+<<<<<<< HEAD
 						<dt><?php echo lang('ionize_label_thumb_crop_area'); ?>&nbsp;&nbsp;</dt>
+=======
+						<dt><label title="<?php echo lang('ionize_help_start_crop'); ?>"><?php echo lang('ionize_label_start_crop'); ?></label></dt>
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 						<dd>
 							<input id="square_crop_<?php echo $id_media; ?>_1" name="square_crop" type="radio" value="tl"<?php if ($square_crop == 'tl'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?php echo $id_media; ?>_1"><?php echo lang('ionize_label_top_left'); ?></label></input><br />
 							<input id="square_crop_<?php echo $id_media; ?>_2" name="square_crop" type="radio" value="m"<?php if ($square_crop == 'm'): ?> checked="checked"<?php endif; ?>><label for="square_crop_<?php echo $id_media; ?>_2"><?php echo lang('ionize_label_middle'); ?></label></input><br />
@@ -426,7 +450,7 @@ if($type == 'picture')
 </form>
 
 <div class="buttons">
-	<button id="bSave<?php echo $type.$id_media; ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bSave<?php echo $type.$id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
 	<button id="bCancel<?php echo $type.$id_media; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 

@@ -104,8 +104,8 @@ var Filemanager = new Class({
 		fill: {}                          // invoked after the fill operation has completed
 	},
 
-	initialize: function(options) {
-
+	initialize: function(options)
+	{
 		this.options.mkServerRequestURL = this.mkServerRequestURL;
 
 		this.setOptions(options);
@@ -1180,12 +1180,15 @@ var Filemanager = new Class({
 			'resize': this.bound.scroll
 		});
 		// add keyboard navigation
+		/*
 		document.addEvent('keydown', this.bound.keydown);
 		document.addEvent('keyup', this.bound.keyup);
 		if ((Browser.Engine && (Browser.Engine.trident || Browser.Engine.webkit)) || (Browser.ie || Browser.chrome || Browser.safari))
 			document.addEvent('keydown', this.bound.keyboardInput);
 		else
 			document.addEvent('keypress', this.bound.keyboardInput);
+		*/
+
 		this.container.show();
 
 		this.fitSizes();
@@ -1343,11 +1346,12 @@ var Filemanager = new Class({
 		this.menu.adopt(this.downloadForm);
 
 		var tx_cfg = this.options.mkServerRequestURL(this, 'download', Object.merge({},
-						this.options.propagateData,
-						{
-							file: file.path,
-							filter: this.options.filter
-						}));
+			this.options.propagateData,
+			{
+				file: file.path,
+				filter: this.options.filter
+			})
+		);
 
 		this.downloadForm.action = tx_cfg.url;
 
@@ -2040,7 +2044,8 @@ var Filemanager = new Class({
 		this.browser.empty();
 
 		// Change the FilemanagerUpload directory data : For upload
-		this.filemanagerUpload.setVar('directory', (this.CurrentDir) ? this.CurrentDir.path : '/');
+		if (this.filemanagerUpload)
+			this.filemanagerUpload.setVar('directory', (this.CurrentDir) ? this.CurrentDir.path : '/');
 
 		// Adding the thumbnail list in the preview panel: blow away any pre-existing list now, as we'll generate a new one now:
 		this.dir_filelist.empty();
@@ -3308,7 +3313,7 @@ Filemanager.Request = new Class({
 	initialize: function(options, filebrowser) {
 		this.parent(options);
 
-		this.options.data = Object.merge({}, filebrowser.options.propagateData, this.options.data);
+		// this.options.data = Object.merge({}, filebrowser.options.propagateData, this.options.data);
 
 		if (this.options.fmDisplayErrors)
 		{
@@ -3412,7 +3417,7 @@ Filemanager.Dialog = new Class({
 			tween: {duration: 'short'},
 			styles:
 			{
-				'z-index': this.options.zIndex
+				// 'z-index': this.options.zIndex
 			}
 		}).adopt(this.content_el);
 
@@ -3447,10 +3452,10 @@ Filemanager.Dialog = new Class({
 			events: {
 				click: this.fireEvent.pass('close', this)
 			},
-			//tween: {duration: 'short'},
+			tween: {duration: 'short'},
 			styles:
 			{
-				'z-index': this.options.zIndex - 1
+				// 'z-index': this.el.getStyle('z-index') - 1
 			}
 		});
 

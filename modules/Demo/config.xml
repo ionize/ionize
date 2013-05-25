@@ -10,11 +10,11 @@
     <!--
         Group who can access to the admin panel of the module
         Groups can be :
-        - super-admins
-        - admins
-        - editors
+        - super-admin
+        - admin
+        - editor
     -->
-    <access_group>editors</access_group>
+    <access_group>editor</access_group>
 
     <!-- Module's Database installation script. -->
     <database script="database.xml"></database>

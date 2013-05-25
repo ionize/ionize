@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.8
  *
@@ -64,7 +64,10 @@ class Medias
 	// ------------------------------------------------------------------------
 
 
-	function __construct(){}
+	function __construct()
+	{
+		self::$ci =& get_instance();
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -219,8 +222,7 @@ class Medias
 
 	public function create_thumb($source_path, $dest_path, $settings = array())
 	{
-		$CI =& get_instance();
-		$CI->load->library('image_lib');
+		self::$ci->load->library('image_lib');
 
 		self::create_thumb_folder($dest_path);
 		
@@ -247,22 +249,22 @@ class Medias
 			if ($dim[$settings['master_dim']] >= $settings['size'])
 			{
 				$settings['width'] = $settings['height'] = $settings['size']; 		// Resize on master_dim. Used to keep ratio.
-	
-				$CI->image_lib->clear();
-				$CI->image_lib->initialize($settings);
+
+				self::$ci->image_lib->clear();
+				self::$ci->image_lib->initialize($settings);
 	
 				// Thumbnail creation
-				if ( $CI->image_lib->resize() )
+				if ( self::$ci->image_lib->resize() )
 				{
 					if( isset($settings['square']) && $settings['square'] == TRUE )
 					{
-						$settings_square['source_image'] =	$CI->image_lib->full_dst_path;
+						$settings_square['source_image'] =	self::$ci->image_lib->full_dst_path;
 						
 						// Calculate x and y axis
 						$settings_square['x_axis'] = $settings_square['y_axis'] = '0';
 						
 						// Get image dimension before crop
-						$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
+						$dim = self::get_image_dimensions(self::$ci->image_lib->full_dst_path);
 		
 						// Center the scare
 						if ($dim['width'] > $dim['height'])
@@ -279,10 +281,10 @@ class Medias
 						$settings_square['maintain_ratio'] = FALSE;
 						$settings_square['height'] =		$settings['size'];
 						$settings_square['width'] =			$settings['size'];
-						$CI->image_lib->clear();
-						$CI->image_lib->initialize($settings_square);
-						
-						$CI->image_lib->crop();
+						self::$ci->image_lib->clear();
+						self::$ci->image_lib->initialize($settings_square);
+
+						self::$ci->image_lib->crop();
 					}		
 				}
 			}
@@ -303,10 +305,7 @@ class Medias
 		if (!file_exists(FCPATH.$source_path))
 			return $result;
 
-		// $dest_path = $this->_get_clean_picture_filename($dest_path);
-
-		$CI =& get_instance();
-		$CI->load->library('image_lib');
+		self::$ci->load->library('image_lib');
 
 		$dim = self::get_image_dimensions($source_path);
 
@@ -364,18 +363,18 @@ class Medias
 				$ci_settings['height'] = $settings['height'];
 				
 				$ci_settings['master_dim'] = ($dim['width'] < $dim['height']) ? 'width' : 'height';
+
+				self::$ci->image_lib->clear();
+				self::$ci->image_lib->initialize($ci_settings);
 				
-				$CI->image_lib->clear();
-				$CI->image_lib->initialize($ci_settings);
-				
-				if ( $CI->image_lib->resize() )
+				if ( self::$ci->image_lib->resize() )
 				{
-					$ci_settings['source_image'] =	$CI->image_lib->full_dst_path;
+					$ci_settings['source_image'] =	self::$ci->image_lib->full_dst_path;
 					
 					$ci_settings['x_axis'] = $ci_settings['y_axis'] = '0';
 					
 					// Get image dimension before crop
-					$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
+					$dim = self::get_image_dimensions(self::$ci->image_lib->full_dst_path);
 					
 					// Center the square
 					if ($dim['width'] > $dim['height'])
@@ -405,7 +404,7 @@ class Medias
 					$CI->image_lib->clear();
 					$CI->image_lib->initialize($ci_settings);
 
-					$result = $CI->image_lib->crop();
+					$result = self::$ci->image_lib->crop();
 				}
 				
 				break;
@@ -420,7 +419,7 @@ class Medias
 				$CI->image_lib->clear();
 				$CI->image_lib->initialize($ci_settings);
 
-				$result = $CI->image_lib->resize();
+				$result = self::$ci->image_lib->resize();
 				
 				break;
 			
@@ -434,7 +433,7 @@ class Medias
 				$CI->image_lib->clear();
 				$CI->image_lib->initialize($ci_settings);
 
-				$result = $CI->image_lib->resize();
+				$result = self::$ci->image_lib->resize();
 				
 				break;
 			
@@ -447,11 +446,11 @@ class Medias
 				
 				$ci_settings['width'] = $settings['size'];
 				$ci_settings['height'] = $settings['size'];
-				
-				$CI->image_lib->clear();
-				$CI->image_lib->initialize($ci_settings);
 
-				$result = $CI->image_lib->resize();
+				self::$ci->image_lib->clear();
+				self::$ci->image_lib->initialize($ci_settings);
+
+				$result = self::$ci->image_lib->resize();
 
 				break;
 				
@@ -463,13 +462,13 @@ class Medias
 				$ci_settings['height'] = $params['resize_height'];
 				
 				$ci_settings['maintain_ratio'] = FALSE;
+
+				self::$ci->image_lib->clear();
+				self::$ci->image_lib->initialize($ci_settings);
 				
-				$CI->image_lib->clear();
-				$CI->image_lib->initialize($ci_settings);
-				
-				if ( $CI->image_lib->resize() )
+				if ( self::$ci->image_lib->resize() )
 				{
-					$ci_settings['source_image'] =	$CI->image_lib->full_dst_path;
+					$ci_settings['source_image'] =	self::$ci->image_lib->full_dst_path;
 					
 					$ci_settings['width'] = $settings['width'];
 					$ci_settings['height'] = $settings['height'];
@@ -486,16 +485,27 @@ class Medias
 
 						// crop bottom-right area
 						case 'br':
+<<<<<<< HEAD
 							$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
+=======
+							$dim = self::get_image_dimensions(self::$ci->image_lib->full_dst_path);
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 							$ci_settings['x_axis'] = $dim['width'] - $settings['width'];
 							$ci_settings['y_axis'] = $dim['height'] - $settings['height'];
 							break;
 					}
 
+<<<<<<< HEAD
 					$CI->image_lib->clear();
 					$CI->image_lib->initialize($ci_settings);
 					
 					$result = $CI->image_lib->crop();
+=======
+					self::$ci->image_lib->clear();
+					self::$ci->image_lib->initialize($ci_settings);
+					
+					$result = self::$ci->image_lib->crop();
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 				}
 				
 				break;
@@ -511,12 +521,12 @@ class Medias
 
 					$ci_settings['maintain_ratio'] = FALSE;
 
-					$CI->image_lib->clear();
-					$CI->image_lib->initialize($ci_settings);
+					self::$ci->image_lib->clear();
+					self::$ci->image_lib->initialize($ci_settings);
 
-					if ( $CI->image_lib->resize() )
+					if ( self::$ci->image_lib->resize() )
 					{
-						$imagefile = $CI->image_lib->full_dst_path;
+						$imagefile = self::$ci->image_lib->full_dst_path;
 
 						$color = self::get_color_from_html_color($settings['color']);
 
@@ -723,8 +733,7 @@ class Medias
 	 */
 	public function embed_watermark($filepath, $watermark_positions)
 	{
-		$CI =& get_instance();
-		$CI->load->library('image_lib');
+		self::$ci->load->library('image_lib');
 		
 		$watermark_path = DOCPATH . Settings::get('files_path') . '/watermark.png';
 		
@@ -767,12 +776,11 @@ class Medias
 					'wm_hor_alignment' => $hor,
 					'wm_overlay_path' => $watermark_path
 				);
-				
-				$CI->image_lib->clear();
-				$CI->image_lib->initialize($wconf);
-				
-				$CI->image_lib->watermark();
-				
+
+				self::$ci->image_lib->clear();
+				self::$ci->image_lib->initialize($wconf);
+
+				self::$ci->image_lib->watermark();
 			}
 		}	
 	}
@@ -788,6 +796,7 @@ class Medias
 	 */
 	public function delete_thumbs($media)
 	{
+<<<<<<< HEAD
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
@@ -804,6 +813,19 @@ class Medias
 		foreach($thumbs as $thumb_file_path)
 			if(file_exists($thumb_file_path))
 				unlink($thumb_file_path);
+=======
+		self::$ci->load->helper('file');
+
+		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
+		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
+		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
+		$thumb_file_path = $thumb_base_path . $thumb_path_segment . $media['file_name'];
+
+		$thumbs = glob_recursive($thumb_file_path);
+
+		foreach($thumbs as $thumb)
+			@unlink($thumb);
+>>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 	}
 
 
@@ -836,10 +858,9 @@ class Medias
 
 				if (copy($system_source, $dest_file))
 				{
-					$CI =& get_instance();
-					$CI->load->model('settings_model');
+					self::$ci->load->model('settings_model');
 
-					$CI->settings_model->save_setting(array(
+					self::$ci->settings_model->save_setting(array(
 						'name' => 'no_source_picture',
 						'content' => $no_source_picture_file
 					));

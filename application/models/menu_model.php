@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.5
  */
@@ -20,10 +20,8 @@
  * @author		Ionize Dev Team
  *
  */
-
-class Menu_model extends Base_model 
+class Menu_model extends Base_model
 {
-
 	/**
 	 * Model Constructor
 	 *
@@ -34,15 +32,19 @@ class Menu_model extends Base_model
 		// Call the Model constructor
 		parent::__construct();
 		
-		$this->table =		'menu';
-		$this->pk_name = 	'id_menu';
+		$this->table = 'menu';
+		$this->pk_name = 'id_menu';
 	}
 
 
 	// ------------------------------------------------------------------------
 
 
-	function get_select()
+	/**
+	 * @return array
+	 *
+	 */
+	public function get_select()
 	{
  		$data = array();
  		
@@ -66,31 +68,52 @@ class Menu_model extends Base_model
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Get one menu array from a givven page
-	 * @param	int		Page ID
-	 * @returns	array	The menu or an empty array
 	 *
+	 * @param $id_page
+	 *
+	 * @return array
 	 */
-	function get_from_page($id_page)
+	public function get_from_page($id_page)
 	{
 		$data = array();
-		
+
 		$this->{$this->db_group}->join('page', $this->table.'.id_menu = page.id_menu', 'left');
 		$this->{$this->db_group}->select('menu.*');
 		$this->{$this->db_group}->where('page.id_page', $id_page);
-		
+
 		$query = $this->{$this->db_group}->get($this->table);
-		
+
 		if($query->num_rows() > 0)
 		{
 			$data = $query->row_array();
 		}
-		
+
 		return $data;
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves one menu
+	 *
+	 * @param $data
+	 *
+	 * @return int|void
+	 */
+	public function save($data)
+	{
+		if ($this->exists(array('name' => $data['name'])))
+		{
+			$this->update($data['name'], $data);
+		}
+		else
+		{
+			$this->insert($data);
+		}
+	}
 }
-/* End of file menu_model.php */
-/* Location: ./application/models/menu_model.php */

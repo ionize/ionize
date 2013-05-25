@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Martin Wernståhl on 2009-07-06.
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.0
  */

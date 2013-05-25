@@ -13,127 +13,139 @@
 
 	<div id="checkTab" class="mainTabs">
 		<ul class="tab-menu">
-			<li id="infoTab"><a><?php echo lang('ionize_title_informations'); ?></a></li>
-			<li id="toolTab"><a><?php echo lang('ionize_dashboard_title_tools'); ?></a></li>
-			<li id="reportTab"><a><?php echo lang('ionize_title_check_reports'); ?></a></li>
+			<?php if(Authority::can('access', 'admin/tools/system/information')) :?>
+    			<li id="infoTab"><a><?php echo lang('ionize_title_informations'); ?></a></li>
+			<?php endif;?>
+
+			<?php if(Authority::can('access', 'admin/tools/system/repair')) :?>
+	            <li id="toolTab"><a><?php echo lang('ionize_dashboard_title_tools'); ?></a></li>
+			<?php endif;?>
+
+			<?php if(Authority::can('access', 'admin/tools/system/report')) :?>
+    	        <li id="reportTab"><a><?php echo lang('ionize_title_check_reports'); ?></a></li>
+			<?php endif;?>
 		</ul>
 		<div class="clear"></div>
 	</div>
 
 	<div id="checkTabContent">
 
-		<!--
-			Informations
-		-->
-		<div class="tabcontent">
-			<table class="list m0">
-				<thead>
-				<tr>
-					<th><?php echo lang('ionize_title_check_folder'); ?></th>
-					<th class="center"><?php echo lang('ionize_title_label_write_rights'); ?></th>
-				</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($folders as $folder):?>
+		<?php if(Authority::can('access', 'admin/tools/system/information')) :?>
+
+    		<!-- Informations -->
+			<div class="tabcontent">
+				<table class="list m0">
+					<thead>
+					<tr>
+						<th><?php echo lang('ionize_title_check_folder'); ?></th>
+						<th class="center"><?php echo lang('ionize_title_label_write_rights'); ?></th>
+					</tr>
+					</thead>
+					<tbody>
+						<?php foreach ($folders as $folder):?>
+							<tr>
+								<td><?php echo $folder['path']; ?></td>
+								<?php if ($folder['write'] == TRUE):?>
+									<td class="center"><span class="success"><?php echo lang('ionize_message_check_ok'); ?></span></td>
+								<?php else: ?>
+									<td class="center"><span class="error"><?php echo lang('ionize_message_check_folder_nok'); ?></span></td>
+								<?php endif; ?>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+
+		<?php endif;?>
+
+		<?php if(Authority::can('access', 'admin/tools/system/repair')) :?>
+
+			<!-- Tools -->
+			<div class="tabcontent">
+				<table class="list m0">
+					<thead>
 						<tr>
-							<td><?php echo $folder['path']; ?></td>
-							<?php if ($folder['write'] == TRUE):?>
-								<td class="center"><span class="success"><?php echo lang('ionize_message_check_ok'); ?></span></td>
-							<?php else: ?>
-								<td class="center"><span class="error"><?php echo lang('ionize_message_check_folder_nok'); ?></span></td>
-							<?php endif; ?>
+							<th class="w160"></th>
+							<th><?php echo lang('ionize_label_description'); ?></th>
 						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</div>
-
-		<!--
-			Tools
-		-->
-		<div class="tabcontent">
-			<table class="list m0">
-				<thead>
-					<tr>
-						<th class="w160"></th>
-						<th><?php echo lang('ionize_label_description'); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- Langs -->
-					<tr>
-						<td class="middle right pr10">
-							<a class="button light check-btn" data-href="system_check/check_lang">
-								<i class="icon-lang"></i><?php echo lang('ionize_title_check_lang'); ?>
-							</a>
-						</td>
-						<td class="middle"><?php echo lang('ionize_text_check_lang'); ?></td>
-					</tr>
-					<!-- URLs -->
-					<tr>
-						<td class="middle right pr10">
-							<a class="button light check-btn" data-href="system_check/rebuild_urls">
-								<i class="icon-urls"></i><?php echo lang('ionize_title_rebuild_urls'); ?>
-							</a>
-						</td>
-						<td class="middle"><?php echo lang('ionize_text_rebuild_urls'); ?></td>
-					</tr>
-					<!-- Article's context -->
-					<tr>
-						<td class="middle right pr10">
-							<a class="button light check-btn" data-href="system_check/check_article_context">
-								<i class="icon-article"></i><?php echo lang('ionize_title_check_article_context'); ?>
-							</a>
-						</td>
-						<td class="middle"><?php echo lang('ionize_text_check_article_context'); ?></td>
-					</tr>
-					<!-- Page's levels -->
-					<tr>
-						<td class="middle right pr10">
-							<a class="button light check-btn" data-href="system_check/check_page_level">
-								<i class="icon-folder"></i><?php echo lang('ionize_title_check_page_level'); ?>
-							</a>
-						</td>
-						<td class="middle"><?php echo lang('ionize_text_check_page_level'); ?></td>
-					</tr>
-					<!-- Media table -->
-					<tr>
-						<td class="middle right pr10">
-							<a class="button light check-btn" data-href="system_check/clean_media">
-								<i class="icon-pictures"></i><?php echo lang('ionize_title_clean_media'); ?>
-							</a>
-						</td>
-						<td class="middle"><?php echo lang('ionize_text_clean_media'); ?></td>
-					</tr>
-					<!-- Lang tables -->
-					<tr>
-						<td class="middle right pr10">
-							<a class="button light check-btn" data-href="lang/clean_tables">
-								<i class="icon-lang"></i><?php echo lang('ionize_button_clean_lang_tables'); ?>
-							</a>
-						</td>
-						<td class="middle"><?php echo lang('ionize_text_clean_lang_tables'); ?></td>
-					</tr>
-					<!-- Thumbs delete -->
-					<tr>
-						<td class="middle right pr10">
-							<a class="button light check-btn" data-href="media/delete_thumbs">
-								<i class="icon-pictures"></i><?php echo lang('ionize_title_delete_thumbs'); ?>
-							</a>
-						</td>
-						<td class="middle"><?php echo lang('ionize_text_delete_thumbs'); ?></td>
-					</tr>
+					</thead>
+					<tbody>
+						<!-- Langs -->
+						<tr>
+							<td class="middle right pr10">
+								<a class="button light check-btn" data-href="system_check/check_lang">
+									<i class="icon-lang"></i><?php echo lang('ionize_title_check_lang'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_check_lang'); ?></td>
+						</tr>
+						<!-- URLs -->
+						<tr>
+							<td class="middle right pr10">
+								<a class="button light check-btn" data-href="system_check/rebuild_urls">
+									<i class="icon-urls"></i><?php echo lang('ionize_title_rebuild_urls'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_rebuild_urls'); ?></td>
+						</tr>
+						<!-- Article's context -->
+						<tr>
+							<td class="middle right pr10">
+								<a class="button light check-btn" data-href="system_check/check_article_context">
+									<i class="icon-article"></i><?php echo lang('ionize_title_check_article_context'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_check_article_context'); ?></td>
+						</tr>
+						<!-- Page's levels -->
+						<tr>
+							<td class="middle right pr10">
+								<a class="button light check-btn" data-href="system_check/check_page_level">
+									<i class="icon-folder"></i><?php echo lang('ionize_title_check_page_level'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_check_page_level'); ?></td>
+						</tr>
+						<!-- Media table -->
+						<tr>
+							<td class="middle right pr10">
+								<a class="button light check-btn" data-href="system_check/clean_media">
+									<i class="icon-pictures"></i><?php echo lang('ionize_title_clean_media'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_clean_media'); ?></td>
+						</tr>
+						<!-- Lang tables -->
+						<tr>
+							<td class="middle right pr10">
+								<a class="button light check-btn" data-href="lang/clean_tables">
+									<i class="icon-lang"></i><?php echo lang('ionize_button_clean_lang_tables'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_clean_lang_tables'); ?></td>
+						</tr>
+						<!-- Thumbs delete -->
+						<tr>
+							<td class="middle right pr10">
+								<a class="button light check-btn" data-href="media/delete_all_thumbs">
+									<i class="icon-pictures"></i><?php echo lang('ionize_title_delete_thumbs'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_delete_thumbs'); ?></td>
+						</tr>
 
 
-				</tbody>
-			</table>
+					</tbody>
+				</table>
 
-		</div>
+			</div>
 
-		<!--
-			Reports
-		-->
-		<div class="tabcontent">
+		<?php endif;?>
+
+		<?php if(Authority::can('access', 'admin/tools/system/reort')) :?>
+
+			<!-- Reports -->
+			<div class="tabcontent">
 			<table class="list m0">
 				<thead>
 					<tr>
@@ -155,17 +167,16 @@
 			</table>
 		</div>
 
-		</div>
+		<?php endif;?>
+
+	</div>
 </div> <!-- /maincolumn -->
 
 
 
 <script type="text/javascript">
 	
-	/**
-	 * Panel toolbox
-	 *
-	 */
+	// Toolbox
 	ION.initToolbox('empty_toolbox');
 
 	$$('.check-btn').each(function(a)
@@ -213,7 +224,6 @@
 			}
 		);
 	});
-
 
 
 	var checkTab = new TabSwapper({

@@ -1,26 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Ionize
- *
- * @package		Ionize
- * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
- * @link		http://ionizecms.com
- * @since		Version 0.9.9
- */
-
-// ------------------------------------------------------------------------
-
-/**
- * Ionize Tracker Controller
- * Used to track backend panel user's activity
+ * Tracker Controller
  * This is only used to give information about the current edited elements
  *
  * @package		Ionize
- * @subpackage	Controllers
- * @category	Tracker
  * @author		Ionize Dev Team
- *
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.9
  */
 
 class Tracker extends My_Admin
@@ -72,10 +60,4 @@ class Tracker extends My_Admin
 
 		$this->xhr_output($output);
 	}
-
-
-
 }
-
-/* End of file user.php */
-/* Location: ./application/controllers/admin/tracker.php */

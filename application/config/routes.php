@@ -47,6 +47,10 @@ $route['404_override'] = 'page';
 $route[config_item('admin_url')] = 'admin/desktop';
 $route[config_item('admin_url').'(/.*)?'] = 'admin$1';
 
+// API Route
+$route['api/([a-z]+)(.*)'] = "api/$1/index$2";
+$route['api(/.*)?'] = "api/$1";
+
 /*
  * Route to the User controller
  */

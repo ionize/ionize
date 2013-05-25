@@ -6,8 +6,8 @@ ION.append({
 	 * Ionize notification window
 	 * Launch a notification window creation
 	 *
-	 * @param	string 	type of notification. Can be : error, notice, success
-	 * @param	string	Notification message
+	 * @param	type    string 	    type of notification. Can be : error, notice, success
+	 * @param	message string	    Notification message
 	 */
 	notification: function(type, message)
 	{
@@ -20,7 +20,7 @@ ION.append({
 			width: 350,
 			height: 50,
 			y: 1,
-			padding:  { top: 15, right: 12, bottom: 10, left: 12 },
+			padding:  { top: 15, right: 12, bottom: 5, left: 12 },
 			shadowBlur: 5,
 			bodyBgColor: [250, 250, 250]
 		});
@@ -30,10 +30,11 @@ ION.append({
 	/**
 	 * Ionize Add Confirmation modal window
 	 *
-	 * @param	string		Window ID
-	 * @param	string		Button or any element ID on wich add the link
-	 * @param	string		URL or JS function called in case of user confirmation
-	 * @param	string		Element name to update after the request success
+	 * @param	id          string		Window ID
+	 * @param	button      string		Button or any element ID on wich add the link
+	 * @param	callback    string		URL or JS function called in case of user confirmation
+	 * @param	msg         string		Element name to update after the request success
+	 * @param	options     object		options
 	 *
 	 */
 	addConfirmation: function(id, button, callback, msg, options)
@@ -49,10 +50,10 @@ ION.append({
 	 * Ionize Confirmation modal window
 	 * Opens a windows with yes / no buttons
 	 *
-	 * @param	string		Window ID
-	 * @param	string		URL or Callback JS function to call if yes answer
-	 * @param	string		Message
-	 * @param	object		Window extended options
+	 * @param	id          string		Window ID
+	 * @param	callback    string		URL or Callback JS function to call if yes answer
+	 * @param	msg         string		Message
+	 * @param	wOptions    object		Window extended options
 	 *
 	 */
 	confirmation: function(id, callback, msg, wOptions)

@@ -4,9 +4,11 @@
  
 body {
 	margin:0;
-	font-family:"Arial", sans-serif !important;
+	font-family:  "lucida grande",tahoma,verdana,arial,sans-serif;
 	font-size:1em;
 	background: url(../images/bg-gray-light.png);
+	background: url(../images/background/squairy_light.png);
+
 }
 .content {
 	position:relative;
@@ -16,11 +18,20 @@ body {
 }
 #loginWindow {
 	margin:100px auto 0 auto;
-	padding:85px 0 0 0;
 	width:466px;
-	height:166px;
+	height:250px;
 	position: relative;
 	background:url(../images/application_login_window_bg.jpg) no-repeat top left;
+	box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
+	-moz-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
+	-webkit-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
+}
+#loginWindow #logo{
+	width: 160px;
+	height: 85px;
+	background: url(../images/application_login_logo.png) no-repeat top left;
+	position: absolute;
+	top:20px;left:30px;
 }
 #preprod-flag {
 	width:130px;background-color: #c00;color: #fff;position: absolute;top:0;left:10px;
@@ -32,46 +43,41 @@ body {
 	font-size: 10px;
 	position: absolute;
 	bottom:20px;
-	left: 46px;
+	left: 30px;
 }
 
 label {
-	display:block;
-	font-size: 1em;
-	margin:5px 0 0 0 !important;
+	display:none;
+	font-size: 12px !important;
+	margin:5px 0 2px 0 !important;
 	color:#fff;
 }
 form {
-	padding: 0 0 0 30px;
+	padding: 95px 0 0 30px;
 	margin: 0 0 0 220px;
 	width: auto !important;
 }
 form .inputtext {
 	text-align: left;
 	border:1px solid #fff;
-	font-family:  "lucida grande",tahoma,verdana,arial,sans-serif;
-	font-size:0.83em;
-	padding:4px;
-	width:150px;
+	padding:6px;
+	width:160px;
+	font-size: 12px;
 }
 form .inputtext:focus {
 	background:#f5f5f5;
 	border:1px solid #fff;
-	padding:4px;
 }
-input[type="text"], input[type="password"], textarea, select {
+input[type="text"], input[type="password"] {
 	outline: none;
 	-webkit-appearance: none;
+	margin-bottom: 7px;
 }
 :focus { background-color: #fff; }
 
-form div {
-	margin-bottom:5px;
-}
-
-.submit {
-	margin-top:8px !important;
-}
+form div {margin-bottom:5px;width: 168px;}
+form div.action {margin-bottom:15px}
+form div.action input{padding:3px 10px;height: 27px;margin:0}
 
 form input.checkbox {
 	width:auto;
@@ -80,8 +86,8 @@ form input.checkbox {
 .error {
 	position:absolute;
 	width:180px;
-	margin-top:20px;
-	left:50px;
+	margin-top:16px;
+	left:32px;
 	color:#fad864;
 	font-size: 0.83em;
 }

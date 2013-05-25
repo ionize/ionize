@@ -1,23 +1,40 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * Ionize
+ *
+ * @package		Ionize
+ * @author		Ionize Dev Team
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
+ * @link		http://ionizecms.com
+ * @since		Version 0.9.0
+ */
 
-class Config_model extends Base_model 
+/**
+ * Ionize Config Model
+ *
+ * @package		Ionize
+ * @subpackage	Models
+ * @category	Config
+ * @author		Ionize Dev Team
+ *
+ */
+class Config_model extends Base_model
 {
-
-	/*
+	/**
 	 * Content of the config file to alter
-	 *
+	 * @var null
 	 */
 	static protected $content = NULL;
 	
-	/*
+	/**
 	 * Complete path to the config folder
-	 *
+	 * @var null|string
 	 */
 	static protected $path = NULL;
 
-	/*
+	/**
 	 * Name of the config file
-	 *
+	 * @var null
 	 */
 	static protected $config_file = NULL;
 
@@ -171,6 +188,3 @@ class Config_model extends Base_model
 		return FALSE;
 	}
 }
-
-/* End of file config_model.php */
-/* Location: ./application/models/config_model.php */

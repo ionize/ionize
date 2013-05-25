@@ -30,14 +30,14 @@
 	background-position: left 0;
 }
 #structurePanel{
-/*	position:relative;*/
+/*
 	overflow-x: hidden !important;
 	overflow-y: auto !important;
+*/
 }
 #structurePanel_pad {
 	padding: 15px 0 8px 15px !important;
-	background: url(../images/bg-gray-light.png);
-/*	position: relative;*/
+	background: transparent;
 }
 #about_contentWrapper {
 	background: #e5e5e5 url(../images/application_about_window_bg.jpg) top left no-repeat;
@@ -79,13 +79,13 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .column { float: left; position: relative; overflow: hidden; /* Required by IE6 */ }
 
 /* Panels */
-.panel { position: relative; overflow: auto; background: #fff; border-bottom: 1px solid #b9b9b9; clear:both; }
-.panelWrapper.collapsed .panel-header { border-bottom: 0; }
+.panel { position: relative; overflow: auto; background: #fff; border-bottom: 0px solid #b9b9b9; clear:both; }
+.panelWrapper.collapsed .panel-header { border-bottom: 0; border-top:1px solid #D3D3D3;}
 .panelAlt { background: url(../images/bg-gray-light.png);}
 .bottomPanel .panel { border-bottom: 0; }
 .pad { padding: 8px; }
 #mainPanel2 { background: #fff; }
-.panel-header { position: relative; background: #f1f1f1 url(../images/bg-panel-header.gif) repeat-x; height: 30px; border-bottom: 1px solid #d3d3d3; overflow:hidden; overflow-x: hidden; overflow-y: hidden; }
+.panel-header { position: relative; background: #f1f1f1 url(../images/bg-panel-header.gif) repeat-x; height: 30px; border-bottom: 1px solid #d3d3d3; /*overflow:hidden;*/ }
 .panel-headerContent { padding-top: 2px; display: table-cell }
 .panel-header h2 { display: inline-block; font-size: 12px; margin: 0; padding: 3px 8px 0 8px; height: 22px; overflow: hidden; color: #333; }
 .panel-collapse { background: url(../images/collapse-expand.gif) left top no-repeat; padding-right:5px }
@@ -96,9 +96,31 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .collapsed .panel-footer { display: none; }
 .panel-footerContent { margin-top: 6px; }
 
+/* Ptk : horizontalHandle visually merged with .panel-header */
+.panel .panelWrapper.collapsed:first-child .panel-header{height:30px;border-top: none;}
+.panel .panelWrapper.expanded:first-child .panel-header{height:30px;}
+.panel .panelWrapper.expanded:first-child .panel-header .toolbar{margin-top: 4px;}
+.panel .panelWrapper.expanded .panel-header {height: 24px;}
+.panel .panelWrapper.expanded .panel-header .toolbar{margin-top: -2px;}
+
+.panel,
+.panel-header {
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 /* Column and Panel Handles */
+/*
 .horizontalHandle { height: 4px; line-height: 1px; font-size: 1px; overflow: hidden; background: #eee url(../images/bg-handle-horizontal.gif) repeat-x; }
+*/
+.horizontalHandle { height: 7px; line-height: 1px; font-size: 1px; overflow: hidden; background: #fafafa; border-top: 1px solid #C5C7C9;}
 .horizontalHandle.detached .handleIcon { background: transparent; }
+/*
 .horizontalHandle .handleIcon { margin: 0 auto; height: 4px; line-height: 1px; font-size: 1px; overflow: hidden; background: url(../images/handle-icon-horizontal.gif) center center no-repeat; }
+*/
+.horizontalHandle .handleIcon { margin: 0 auto; height: 7px; line-height: 1px; font-size: 1px; overflow: hidden; background: url(../images/handle-icon-horizontal.gif) center 3px no-repeat; }
 .columnHandle { min-height: 10px; float: left; width: 6px; overflow: hidden; background: #D5D9DC url(../images/handle-icon.gif) center center no-repeat; border: 1px solid #C5C7C9; border-top: 0; border-bottom: 0; }
 

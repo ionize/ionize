@@ -1,42 +1,33 @@
 
-<div class="toolbox divider nobr">
-	<input id="existingMenuFormSubmit" type="button" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
-</div>
+<?php if ( Authority::can('create', 'admin/menu')) :?>
 
-<div class="divider">
-	<a class="button light" id="newMenuToolbarButton">
-		<i class="icon-plus"></i><?php echo lang('ionize_button_create_menu'); ?>
-	</a>
-</div>
+	<div class="divider">
+		<a class="button light" id="newMenuToolbarButton">
+			<i class="icon-plus"></i><?php echo lang('ionize_button_create_menu'); ?>
+		</a>
+	</div>
+
+<?php endif;?>
 
 <script type="text/javascript">
 
-	/**
-	 * Adds action to the existing menus form
-	 * See mocha-init.js for more information about this method
-	 *
-	 */
-	ION.setFormSubmit('existingMenuForm', 'existingMenuFormSubmit', 'menu/update');
+	<?php if ( Authority::can('create', 'admin/menu')) :?>
 
-	$('newMenuToolbarButton').addEvent('click', function(e)
-	{
-		ION.formWindow(
-			'menu',
-			'menuForm',
-			Lang.get('ionize_title_create_menu'),
-			admin_url + 'menu/get_form',
-			{
-				'width':350,
-				'height':130
-			}
-		);
-	});
+		$('newMenuToolbarButton').addEvent('click', function(e)
+		{
+			ION.formWindow(
+				'menu',
+				'menuForm',
+				Lang.get('ionize_title_create_menu'),
+				admin_url + 'menu/create',
+				{
+					'width':350,
+					'height':180
+				}
+			);
+		});
 
-	/**
-	 * Save with CTRL+s
-	 *
-	 */
-	ION.addFormSaveEvent('existingMenuFormSubmit');
+	<?php endif;?>
 
 </script>
 

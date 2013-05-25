@@ -45,8 +45,8 @@
 							?>
 
 							<tr>
-								<td><a class="icon edit viewEdit" rel="<?php echo $rel; ?>"></a></td>
-								<td><a class="viewEdit" rel="<?php echo $rel; ?>"><?php echo $file->name; ?></a></td>
+								<td><a class="icon edit viewEdit" data-id="<?php echo $rel; ?>"></a></td>
+								<td><a class="viewEdit" data-id="<?php echo $rel; ?>"><?php echo $file->name; ?></a></td>
 								<td><?php echo $file->path; ?> </td>
 								<td>
 									<input type="text" class="inputtext w160" name="viewdefinition_<?php echo $rel; ?>" value="<?php echo $file->definition; ?>" />
@@ -147,7 +147,7 @@
 	 */
 	$$('.viewEdit').each(function(item)
 	{
-		var rel = item.getProperty('rel');
+		var rel = item.getProperty('data-id');
 		var id = rel.replace(/\//gi, '');
 		var form = 'formView' + id;
 

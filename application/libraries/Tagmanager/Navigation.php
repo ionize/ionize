@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  *
@@ -31,6 +31,7 @@ class TagManager_Navigation extends TagManager
 		'navigation' => 					'tag_navigation',
 		'navigation:url' =>					'tag_navigation_url',
 		'navigation:href' =>				'tag_navigation_href',
+		'navigation:nav_title' =>			'tag_navigation_nav_title',
 		'navigation:active_class' =>		'tag_simple_value',
 		'navigation:is_active' =>			'tag_is_active',
 
@@ -83,6 +84,7 @@ class TagManager_Navigation extends TagManager
 		// Menu : Main menu by default
 		$menu_name = $tag->getAttribute('menu', 'main');
 		$id_menu = 1;
+
 		foreach(self::registry('menus') as $menu)
 		{
 			if ($menu_name == $menu['name'])
@@ -123,7 +125,14 @@ class TagManager_Navigation extends TagManager
 		// $pages = array_filter($global_pages, create_function('$row','return ($row["level"] == "'. $asked_level .'" && $row["id_menu"] == "'. $id_menu .'") ;'));
 		$pages = array();
 		$parent_page = array();
-		
+
+		// Only conserve the menu asked pages
+		foreach($global_pages as $key => $p)
+		{
+			if ($p['id_menu'] != $id_menu)
+				unset($global_pages[$key]);
+		}
+
 		// Asked Level exists
 		if ($asked_level !== FALSE)
 		{
@@ -218,6 +227,7 @@ class TagManager_Navigation extends TagManager
 			foreach($pages as $index => $p)
 			{
 				$tag->set('navigation', $p);
+				$tag->set('page', $p);
 				$tag->set('is_active', $p['is_active']);
 
 				$tag->set('index', $index);
@@ -233,6 +243,30 @@ class TagManager_Navigation extends TagManager
 		}
 		
 		return self::show_tag_error($tag, $error_message);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns first the navigation title
+	 * If no one is defined, returns the page title
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_navigation_nav_title(FTL_Binding $tag)
+	{
+		$value = $tag->getValue('nav_title');
+
+		if ($value == '')
+			$value = $tag->getValue('title');
+
+		$tag->set($tag->name, $value);
+
+		return self::output_value($tag, $value);
 	}
 
 
@@ -540,6 +574,7 @@ class TagManager_Navigation extends TagManager
 	{
 		$languages = Settings::get_online_languages();
 		$page = self::registry('page');
+		$article = self::registry('article');
 
 		// Current active language class
 		$active_class = $tag->getAttribute('active_class', 'active');
@@ -553,11 +588,18 @@ class TagManager_Navigation extends TagManager
 
 		foreach($languages as $idx => &$lang)
 		{
-			// Lang send to helper
-			$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
+			// Correct the Home page URL
+			if ($page['home'] != 1 )
+				$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
+			else
+				$lang['absolute_url'] = base_url() . $lang['lang'];
+
 			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
 			$lang['is_active'] = $lang['lang'] == Settings::get_lang('current');
 			$lang['id'] = $lang['lang'];
+
+			if ( ! is_null($article))
+				$lang['absolute_url'] .= '/'.$article['urls'][$lang['lang']];
 
 			// Tag locals
 			$tag->set('language', $lang);
@@ -567,10 +609,8 @@ class TagManager_Navigation extends TagManager
 			$tag->set('is_active', $lang['is_active']);
 			$tag->set('index', $idx);
 
-			if (Connect()->is('editors', TRUE) OR $lang['online'] == 1)
-			{
+			if (Authority::can('access', 'admin') OR $lang['online'] == 1)
 				$str .= $tag->expand();
-			}
 		}
 
 		// Try to return the helper function result

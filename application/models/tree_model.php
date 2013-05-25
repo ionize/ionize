@@ -4,7 +4,7 @@
  *
  * @package		Ionize
  * @author		Ionize Dev Team
- * @license		http://ionizecms.com/doc-license
+ * @license		http://doc.ionizecms.com/en/basic-infos/license-agreement
  * @link		http://ionizecms.com
  * @since		Version 0.9.7
  */
@@ -32,7 +32,6 @@ class Tree_model extends Base_Model
 	 */
 	public function __construct()
 	{
-		// Call the Model constructor
 		parent::__construct();
 	}
 
@@ -51,6 +50,15 @@ class Tree_model extends Base_Model
 	{
 		$data = array();
 
+		// Pages rules
+		/*
+		$rules = $this->get_group_concat_array(
+			'id_element',
+			array("resource like 'frontend/page%'"),
+			'rule'
+		);
+		*/
+
 		if (is_array($where) )
 			$this->{$this->db_group}->where($where);
 		
@@ -59,6 +67,7 @@ class Tree_model extends Base_Model
 		$this->{$this->db_group}->select('page.*', false);
 		$this->{$this->db_group}->select('page_lang.title,page_lang.nav_title,page_lang.url');
 		$this->{$this->db_group}->join('page_lang', 'page_lang.id_page = page.id_page', 'inner');			
+
 		$this->{$this->db_group}->where('page_lang.lang', Settings::get_lang('default'));
 		
 		$query = $this->{$this->db_group}->get('page');
@@ -152,5 +161,3 @@ class Tree_model extends Base_Model
 		return $data;
 	}	
 }
-/* End of file tree_model.php */
-/* Location: ./application/models/tree_model.php */

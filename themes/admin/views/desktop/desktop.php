@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset='utf-8' />
 <title><?php echo lang('ionize_administration') . ' | ' . (Settings::get('site_title') ? Settings::get('site_title') : ''); ?></title>
 <meta http-equiv="imagetoolbar" content="no" />
 <link rel="shortcut icon" href="<?php echo theme_url(); ?>images/favicon.ico" type="image/x-icon" />
@@ -30,10 +30,21 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+	google.load("visualization", "1", {packages:["corechart"]});
+</script>
+
+
 <!-- Upload -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Request.File.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.MultipleFileInput.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.Upload.js"></script>
+
+<!-- TextboxList -->
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.Binary.js"></script>
 
 <!-- Drag Clone -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/drag.clone.js"></script>
@@ -65,6 +76,24 @@
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/codemirror/css/codemirror.css" />
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/js/codemirror.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/codemirror.views.js"></script>
+
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/flashblock.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player-visualization.css" />
+
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/berniecode-animator.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/soundmanager2-jsmin.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/360player.js"></script>
+<script type="text/javascript">
+	soundManager.setup({
+		url: '<?php echo theme_url() ?>javascript/soundmanager/swf/'
+//		preferFlash: false
+	});
+	if (window.location.href.match(/html5/i)) {
+		// for testing IE 9, etc.
+		soundManager.useHTML5Audio = true;
+	}
+</script>
 
 <!-- Base URL & languages translations available for javascript -->
 <script type="text/javascript">
@@ -134,11 +163,15 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_mediamanager.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_itemsmanager.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tinymce.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree_xhr.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_list_filter.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_notify.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_user.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js"></script>
+
+<!-- Authority -->
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_authority.js"></script>
 
 <!-- DropZone -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/Request.Blob.js"></script>
@@ -176,6 +209,7 @@
 <?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/javascript/tinyMCE.js' )) :?>
 	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/javascript/tinyMCE.js"></script>
 <?php endif ;?>
+
 
 
 <script type="text/javascript">
@@ -250,7 +284,8 @@
 <?php if (Settings::get('enable_backend_tracker') == '1') :?>
 	<script type="text/javascript">
 		Ionize.Tracker.initialize({
-			'parent':'desktop'
+			'parent':'desktop',
+			'updateDelay':10000
 		});
 		Ionize.Tracker.startTracking();
 	</script>

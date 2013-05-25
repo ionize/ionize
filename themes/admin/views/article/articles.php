@@ -167,9 +167,6 @@
 	 */
 	new SortableTable('articlesTable',{sortOn: 0, sortBy: 'ASC'});
 
-	ION.initLabelHelpLinks('#articlesTable');
-	ION.initLabelHelpLinks('#filterArticles');
-
 	/**
 	 * Table action icons
 	 *
