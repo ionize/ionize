@@ -411,10 +411,6 @@ class Media extends MY_admin
 			// Delete thumbs
 			if($type == 'picture')
 			{
-<<<<<<< HEAD
-				$media = $this->media_model->get($id);
-=======
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 				$this->medias->delete_thumbs($media);
 			}
 
@@ -772,6 +768,10 @@ class Media extends MY_admin
 		// Clear the cache
 		Cache()->clear_cache();
 		
+		// Get old values
+		$id_media = $this->input->post('id_media'); 
+		$old_media_data = $this->media_model->get($id_media);
+
 		// Standard data;
 		$data = array();
 		

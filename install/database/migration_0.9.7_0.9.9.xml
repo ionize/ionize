@@ -55,7 +55,7 @@
 	</query>
 
 	<query>
-        ALTER TABLE `media` ADD provider varchar(255) NOT NULL DEFAULT  '';
+        ALTER TABLE `media` ADD provider varchar(50) NOT NULL DEFAULT  '';
 	</query>
 
 
@@ -152,7 +152,7 @@
     </query>
 
     <query>
-        ALTER TABLE `media` ADD provider varchar(255) NOT NULL DEFAULT  '';
+        ALTER TABLE `media` ADD provider varchar(50) NOT NULL DEFAULT  '';
     </query>
 
     <query>ALTER TABLE article ENGINE = InnoDB;</query>

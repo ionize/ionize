@@ -19,15 +19,6 @@
 		if (strlen($title) > 25)
 			$title = substr($media['file_name'], 0, 25) . '...';
 
-<<<<<<< HEAD
-		$edit_href = "javascript:ION.formWindow(
-						'". $media['type'].$media['id_media'] ."',
-						'mediaForm". $media['id_media'] ."', 
-						'". $title ."',
-						'media/edit/".$media['type'] ."/". $media['id_media'] ."/". $parent ."/". $id_parent ."',
-						{width:500,height:460}
-					 );";
-=======
 		if(Authority::can('edit', 'admin/'.$parent.'/media/'.$type))
 		{
 			$edit_href = "href=\"javascript:ION.formWindow(
@@ -42,7 +33,6 @@
 		{
 			$edit_href = "";
 		}
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 		
 		if (file_exists($media['path']))
 		{

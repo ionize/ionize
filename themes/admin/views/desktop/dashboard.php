@@ -487,13 +487,8 @@
 		item.addEvent('click', function(e){
             ION.contentUpdate({
 				element: $('mainPanel'),
-<<<<<<< HEAD
-				title: title,
-				url : ION.cleanUrl(href)
-=======
 				title: item.getProperty('data-title'),
 				url : ION.cleanUrl(item.getProperty('data-url'))
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 			});
 		});
 	});

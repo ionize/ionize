@@ -749,11 +749,7 @@ DELETE FROM setting WHERE name='default_admin_lang';
 INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
 
 DELETE FROM setting WHERE name='ionize_version';
-<<<<<<< HEAD
-INSERT INTO setting VALUES ('', 'ionize_version', '0.9.9.5', NULL);
-=======
 INSERT INTO setting VALUES ('', 'ionize_version', '1.0.0', NULL);
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 
 INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');

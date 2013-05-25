@@ -2930,8 +2930,6 @@ class TagManager
 			{
 				if (self::$trigger_else > 0)
 					self::$trigger_else = 0;
-<<<<<<< HEAD
-=======
 
 				return self::wrap($tag, $tag->expand());
 			}
@@ -2950,7 +2948,6 @@ class TagManager
 			{
 				if (self::$trigger_else > 0)
 					self::$trigger_else = 0;
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 
 				return self::wrap($tag, $tag->expand());
 			}

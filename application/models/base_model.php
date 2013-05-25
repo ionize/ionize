@@ -2514,12 +2514,7 @@ class Base_model extends CI_Model
 				if ( $protect)
 					$protect = ! (substr($field, -5) == ' like');
 
-<<<<<<< HEAD
-				// NULL value : Create an "where value is NULL" constraint
-				if ($value == 'NULL' && is_string($value))
-=======
 				if (is_string($field))
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 				{
 					if ($value == 'NULL' && is_string($value))
 					{

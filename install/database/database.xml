@@ -764,11 +764,7 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', '');</query>
 
 		<query>INSERT IGNORE INTO setting VALUES ('', 'default_admin_lang', 'en', '');</query>
-<<<<<<< HEAD
-		<query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '0.9.9.5', '');</query>
-=======
 		<query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.0', '');</query>
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 		<query>INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');</query>

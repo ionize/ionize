@@ -29,11 +29,8 @@ class TagManager_Article extends TagManager
 		'article:next' => 			'tag_next_article',
 		'article:prev' => 			'tag_prev_article',
 		'article:type' => 			'tag_simple_value',
-<<<<<<< HEAD
-=======
 		'article:deny_code' => 		'tag_simple_value',
 		'article:deny' => 			'tag_article_deny',
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 	);
 
 
@@ -430,11 +427,7 @@ class TagManager_Article extends TagManager
 
 						// If target page is offline, 'path' is not set
 						if ( isset($target_page[$page_url_key]))
-<<<<<<< HEAD
-							$article['url'] = $target_page[$page_url_key];
-=======
 							$article['absolute_url'] = $target_page[$page_url_key];
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 					}
 
 					// Correct the URL : Lang + Base URL

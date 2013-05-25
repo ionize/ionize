@@ -485,27 +485,16 @@ class Medias
 
 						// crop bottom-right area
 						case 'br':
-<<<<<<< HEAD
-							$dim = self::get_image_dimensions($CI->image_lib->full_dst_path);
-=======
 							$dim = self::get_image_dimensions(self::$ci->image_lib->full_dst_path);
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 							$ci_settings['x_axis'] = $dim['width'] - $settings['width'];
 							$ci_settings['y_axis'] = $dim['height'] - $settings['height'];
 							break;
 					}
 
-<<<<<<< HEAD
-					$CI->image_lib->clear();
-					$CI->image_lib->initialize($ci_settings);
-					
-					$result = $CI->image_lib->crop();
-=======
 					self::$ci->image_lib->clear();
 					self::$ci->image_lib->initialize($ci_settings);
 					
 					$result = self::$ci->image_lib->crop();
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 				}
 				
 				break;
@@ -796,24 +785,6 @@ class Medias
 	 */
 	public function delete_thumbs($media)
 	{
-<<<<<<< HEAD
-		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
-		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
-		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
-		$thumb_path = $thumb_base_path . $thumb_path_segment;
-		$file_name = $media['file_name'];
-
-		$thumb_file_path = $thumb_path . $file_name;
-
-		if(file_exists($thumb_file_path))
-			unlink($thumb_file_path);
-
-		$thumbs = glob($thumb_path.'/*/'.$file_name);
-
-		foreach($thumbs as $thumb_file_path)
-			if(file_exists($thumb_file_path))
-				unlink($thumb_file_path);
-=======
 		self::$ci->load->helper('file');
 
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
@@ -825,7 +796,6 @@ class Medias
 
 		foreach($thumbs as $thumb)
 			@unlink($thumb);
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 	}
 
 
