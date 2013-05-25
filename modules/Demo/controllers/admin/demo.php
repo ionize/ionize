@@ -13,7 +13,7 @@ class Demo extends Module_Admin
 	* @access	public
 	* @return	void
 	*/
-	public function construct()
+	public function __construct()
 	{
 	}
 
