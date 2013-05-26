@@ -31,6 +31,7 @@ $lang['title_logout'] = 'Logout';
 $lang['title_password_back'] = 'Password back';
 $lang['title_tags'] = 'Tags';
 $lang['you_are_browsing_category'] = 'Your are browsing category';
+$lang['you_are_browsing_archive'] = "You are browsing archive";
 $lang['you_are_browsing_tag'] = 'Your are browsing tag';
 
 ?>

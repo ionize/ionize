@@ -49,6 +49,7 @@ $lang['form_button_login'] = "Login";
 $lang['form_button_logout'] = "Logout";
 $lang['form_button_post'] = "Post";
 $lang['form_button_answer'] = "Answer";
+$lang['form_button_save_profile'] = "Save Profile";
 
 /*
 |--------------------------------------------------------------------------

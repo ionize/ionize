@@ -52,15 +52,21 @@
 	<!-- container -->
 	<div class="container">
 
-
         <div class="contain-to-grid">
 
             <nav class="top-bar">
                 <ul>
+					<!--
+						Website Logo
+					-->
                     <li class="name"><h1><a href="<ion:home_url />"><ion:site_title /></a></h1></li>
                     <li class="toggle-topbar"><a href="#"></a></li>
                 </ul>
                 <section>
+
+					<!--
+						Language Selector
+					-->
 					<ion:languages tag="ul" class="right">
 
 						<li <ion:language:is_active> class="active"</ion:language:is_active>>
@@ -70,6 +76,10 @@
 						</li>
 
 					</ion:languages>
+
+					<!--
+						Navigation Menu
+					-->
                     <ul class="right">
                         <ion:navigation level="0"  active_class="active"  >
                             <li>

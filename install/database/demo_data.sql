@@ -103,7 +103,7 @@ VALUES
 	(20,'en','service-3','Service 3','','','<p>Lorem ipsum dolor sit amet consectetur adipiscing elit Nulla volutpat aliquam velit</p><p>Phasellus iaculis neque purus sodales ultricies vestibulum laoreet porttitor sem ac tristique libero volutpat at</p><p>Faucibus porta lacus fringilla vel.</p>','','',1),
 	(24,'en','contact-informations','Contact Informations','','','<p><strong>Ionize CMS</strong><br /> 123 Flower street,<br /> 75005 Paris, France</p><p><strong>Tel</strong> : +33 012345678<strong><br />Email : </strong>team@ionizecms.com</p>','','',1),
 	(26,'en','our-location','Our location','','','<p><iframe width=\"100%\" height=\"250\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"https://maps.google.fr/maps?f=q&amp;source=s_q&amp;hl=fr&amp;geocode=&amp;aq=&amp;sll=48.876161,2.377124&amp;sspn=0.007296,0.018175&amp;gl=fr&amp;g=villa+Marcel+Lods&amp;ie=UTF8&amp;hq=&amp;ll=48.876161,2.377124&amp;spn=0.001824,0.004544&amp;t=m&amp;z=16&amp;output=embed\"></iframe></p>','','',1),
-	(27,'en','whats-ionize','What\'s Ionize ?','','','<p>Ionize is an Open Source content management system created by webdesigners for webdesigners.</p><p>Originally <a title=\"Ionize\'s creators\" href=\"http://www.ionizecms.com/en/about\">created by Partikule Studio and Toopixel</a> for their clients, Ionize is today an OpenSource project, so everybody can build easy to maintain websites.</p>',NULL,NULL,1),
+	(27,'en','whats-ionize','What\'s Ionize ?','','','<p>Ionize is an Open Source content management system created by webdesigners for webdesigners.</p><p>Originally <a title=\"Ionize\'s development agence internet\" href=\"http://www.ionizecms.com/en/about\">created by Partikule and Toopixel</a> for their clients, Ionize is today an OpenSource project, so everybody can build easy to maintain websites.</p>',NULL,NULL,1),
 	(28,'en','can-i-help','Can I help ?','','','<p>Because talent is nothing without involvement, we are looking for motivated coders and webdesigners to join the project team.</p><p>You have a module idea ?<br />You want to make some improvement ?<br />You wants to get involved in a promising CMS ?</p>','','',1),
 	(29,'en','send-us-a-message','Send us a message !','','','',NULL,NULL,1),
 	(30,'en','not-logged-in','Not logged in','','','',NULL,NULL,1),
@@ -325,6 +325,43 @@ VALUES
 	(2,7,1,11,NULL),
 	(2,8,1,12,NULL);
 --#--
+
+
+--
+-- Tag
+--
+TRUNCATE tag;
+--#--
+
+INSERT INTO tag (id_tag, tag_name)
+VALUES
+	(1,'Content Management'),
+	(2,'development'),
+	(3,'company'),
+	(4,'services');
+--#--
+
+
+--
+-- Article Tag
+--
+TRUNCATE article_tag;
+--#--
+
+INSERT INTO article_tag (id_article, id_tag)
+VALUES
+	(5,1),
+	(5,3),
+	(6,2),
+	(6,4),
+	(7,1),
+	(8,4),
+	(9,4),
+	(10,1),
+	(14,0);
+--#--
+
+
 
 --
 -- URL

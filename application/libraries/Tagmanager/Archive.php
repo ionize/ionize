@@ -21,8 +21,11 @@ class TagManager_Archive extends TagManager
 	(
 		'archives' =>				'tag_archives',
 		'archive' =>				'tag_expand',
+		'archive:is_active' => 		'tag_is_active',
 		'archive:period' => 		'tag_simple_value',
-		'archives:active_class' => 	'tag_simple_value',
+		'archive:active_class' => 	'tag_simple_value',
+		// TODO :
+		// 'archive:current' => 		'tag_archive_current',
 	);
 
 
@@ -112,6 +115,8 @@ class TagManager_Archive extends TagManager
 				$row['url'] =		$page_url . $archives_uri_segment . '/' . $year;
 				$row['active_class'] = ($year == $_archive_string) ? $active_class : '';
 			}
+
+			$row['is_active'] = ! empty($row['active_class']) ? TRUE : FALSE;
 		}
 
 		return $archives;

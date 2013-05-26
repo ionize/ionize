@@ -46,10 +46,15 @@
                             </a>
                             <a href="<ion:home_url />" class="brand"><ion:site_title /></a>
                             <div class="nav-collapse collapse">
-                                <ion:tree_navigation tag="ul" class="nav" active_class="active" />
 
-                                <!-- Language Navigation -->
-                                <!--
+								<!--
+									Navigation Menu
+								-->
+								<ion:tree_navigation tag="ul" class="nav" active_class="active" />
+
+								<!--
+									Language Selector
+								-->
 								<ion:languages tag="ul" active="active" class="nav languages">
 									<li<ion:language:is_active> class="active"</ion:language:is_active>>
 									<a href="<ion:language:url />" title="<ion:language:name />">
@@ -57,7 +62,7 @@
 									</a>
 									</li>
 								</ion:languages>
-								-->
+
 							</div>
                         </div>
                     </div>

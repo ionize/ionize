@@ -400,9 +400,9 @@ class Medias
 					$ci_settings['master_dim'] = 'auto';
 					
 					$ci_settings['maintain_ratio'] = FALSE;
-					
-					$CI->image_lib->clear();
-					$CI->image_lib->initialize($ci_settings);
+
+					self::$ci->image_lib->clear();
+					self::$ci->image_lib->initialize($ci_settings);
 
 					$result = self::$ci->image_lib->crop();
 				}
@@ -415,9 +415,9 @@ class Medias
 				$ci_settings['height'] = intval($settings['width']  * $dim['height'] / $dim['width']);
 				
 				$ci_settings['maintain_ratio'] = FALSE;
-				
-				$CI->image_lib->clear();
-				$CI->image_lib->initialize($ci_settings);
+
+				self::$ci->image_lib->clear();
+				self::$ci->image_lib->initialize($ci_settings);
 
 				$result = self::$ci->image_lib->resize();
 				
@@ -429,9 +429,9 @@ class Medias
 				$ci_settings['width'] = intval($settings['height']  * $dim['width'] / $dim['height']);
 				
 				$ci_settings['maintain_ratio'] = FALSE;
-				
-				$CI->image_lib->clear();
-				$CI->image_lib->initialize($ci_settings);
+
+				self::$ci->image_lib->clear();
+				self::$ci->image_lib->initialize($ci_settings);
 
 				$result = self::$ci->image_lib->resize();
 				

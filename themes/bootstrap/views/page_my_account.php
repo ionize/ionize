@@ -11,7 +11,7 @@
         </div>
         <div class="clearfix"></div>
 
-        <section class="span12 bg-white mb20">
+        <section>
             <div class="span8">
                 <div class="p10">
                     <!-- User not logged in -->
@@ -131,7 +131,7 @@
                                 <label class="control-label" for="birthdate-profile"><ion:lang key="form_label_birthdate" /></label>
                                 <div class="controls">
                                     <input class="span4" name="birthdate" type="text" id="birthdate-profile" value="<ion:user:form:profile:field:birthdate />" />
-                                    <ion:lang key="form_note_birthdate_format" tag="span" class="help-inline" />
+
                                     <ion:form:profile:error:birthdate tag="span" class="help-inline" />
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
                                 <label class="control-label" for="password-profile"><ion:lang key="form_label_password" /></label>
                                 <div class="controls">
                                     <input class="span4" name="password" type="password" id="password-profile" />
-                                    <ion:lang key="form_note_password_change" tag="span" class="help-inline" />
+
                                     <ion:form:profile:error:password tag="span" class="help-inline" />
                                 </div>
                             </div>
@@ -175,7 +175,7 @@
 
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn btn-success"><ion:lang key="button_save_profile" /></button>
+                                    <button type="submit" class="btn btn-success"><ion:lang key="form_button_save_profile" /></button>
                                 </div>
                             </div>
 
@@ -185,7 +185,7 @@
 
                 </div>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <div class="p10">
                     <ion:user:logged is="true">
 
@@ -196,7 +196,7 @@
                             <input type="hidden" name="form" value="logout" />
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn btn-danger btn-large"><ion:lang key='button_logout' /></button>
+                                    <button type="submit" class="btn btn-danger btn-large"><ion:lang key='form_button_logout' /></button>
                                 </div>
                             </div>
                         </form>

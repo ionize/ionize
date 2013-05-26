@@ -1,69 +1,51 @@
 <!-- 
 	404 page view.
-	This view is linked to the 404 page in Ionize.
-	It uses the pictures linked to the page.
+	This view has to be linked to the 404 page in Ionize.
 -->
 
 <ion:partial view="header" />
 
+<ion:partial view="page_header" />
 
-<div  class="span-22 prepend-1">
+<!--
+	Articles : No type
+-->
+<ion:page:articles type="">
 
-	<!-- The Wall script placeholder -->
-	<div id="viewport404">
-		<div id="overlay404"></div>
-		<div id="wall"></div>
-	</div>
-	
-	<!-- Display a map of the website, so the user can jump to another place in the website -->
-	
-	
-	
-</div>
+	<ion:article>
+		<div class="row article">
+			<div class="seven columns">
+
+				<div class="article">
+
+					<!-- Article title -->
+					<ion:title tag="h3" />
+
+					<!-- Article content -->
+					<ion:content />
+
+					<div class="article-pictures">
+
+						<!-- Articles linked files -->
+						<ion:medias type="file">
+							<a href="<ion:media:src />"><ion:media:title /></a>
+						</ion:medias>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="five columns">
+
+				<ion:medias type="picture" limit="1">
+					<img src="<ion:media:src />" />
+				</ion:medias>
+
+			</div>
+		</div>
+	</ion:article>
+
+</ion:page:articles>
 
 
-<script type="text/javascript">
-	
-	/**
-	 * The Wall is a Mootools class created by Plasm : http://wall.plasm.it/
-	 *
-	 */
-	var images = new Array();
-	var nb_medias = 0;
-	
-	/**
-	 * Pictures linked to the page are used to feed a javascript array
-	 * See the produced source in your browser
-	 *
-	 */
-	<ion:medias type="picture">
-		images.push('<ion:src folder="150" />');
-		nb_medias = <ion:count />;
-	</ion:medias>
-
-	var wall = new Wall("wall", {
-		"draggable":true,
-		"preload":true,
-		"autoposition":true,
-		"handle":"overlay404",
-		"inertia":true,
-        "startx":0,
-        "starty":0,
-		"width":150,
-		"height":150,
-		"rangex":[-nb_medias*2,nb_medias*2],
-		"rangey":[-nb_medias*2,nb_medias*2],
-		callOnUpdate: function(items){
-			items.each(function(e, i){
-				var counter = Math.ceil(Math.random()*(nb_medias))
-				var img = new Element("img[src="+images[counter-1]+"]");
-				img.inject(e.node);
-			})
-		}
-	});
-	wall.initWall();
-
-</script>
-
-<!-- Partial : Footer -->
 <ion:partial view="footer" />

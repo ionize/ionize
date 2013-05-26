@@ -11,8 +11,8 @@
         </div>
         <div class="clearfix"></div>
 
-        <section class="span12 bg-white mb20 pull-left">
-            <div class="span8 pull-left">
+        <section class="span12 bg-white mb20">
+            <div class="span8">
                 <div id="contactForm" class="pos-rel p10">
                     <ion:lang key="title_contact_form" tag="h2" class="dotted-title" />
 
@@ -23,8 +23,8 @@
                     <ion:form:contact:validation:success is="true">
                         <div class="alert alert-block alert-success fade in">
                             <button type="button" class="close" data-dismiss="alert">×</button>
-                            <ion:lang key="form_alert_success_title" tag="h4" />
-                            <ion:lang key="form_alert_success_message" tag="p" />
+							<ion:lang key="form_contact_success_title" tag="h4" />
+							<ion:lang key="form_contact_success_message" tag="p" />
                         </div>
                     </ion:form:contact:validation:success>
 
@@ -37,8 +37,8 @@
                     <ion:form:contact:validation:error is="true" >
                         <div class="alert alert-block alert-error fade in">
                             <button type="button" class="close" data-dismiss="alert">×</button>
-                            <ion:lang key="form_alert_error_title" tag="h4" />
-                            <ion:lang key="form_alert_error_message" tag="p" />
+							<ion:lang key="form_contact_error_title" tag="h4" />
+							<ion:lang key="form_contact_error_message" tag="p" />
                         </div>
                     </ion:form:contact:validation:error>
 
@@ -54,20 +54,11 @@
                         <input type="hidden" name="form" value="contact" />
 
                         <!-- Input : Name -->
-                        <div class="control-group<ion:form:contact:error:form_firstname is="true"> error</ion:form:contact:error:form_firstname>">
-                            <label class="control-label" for="form_firstname"><ion:lang key="form_label_form_firstname" /></label>
+                        <div class="control-group<ion:form:contact:error:name is="true"> error</ion:form:contact:error:name>">
+                            <label class="control-label" for="form_name"><ion:lang key="form_label_name" /></label>
                             <div class="controls">
-                                <input class="span4" name="form_firstname" type="text" id="form_firstname" placeholder="<ion:lang key='form_label_form_firstname' />" value="<ion:form:contact:field:form_firstname />" />
-                                <ion:form:contact:error:form_firstname tag="span" class="help-inline" />
-                            </div>
-                        </div>
-
-                        <!-- Input : Surname -->
-                        <div class="control-group<ion:form:contact:error:form_lastname is="true"> error</ion:form:contact:error:form_lastname>">
-                            <label class="control-label" for="form_lastname"><ion:lang key="form_label_form_lastname" /></label>
-                            <div class="controls">
-                                <input class="span4" name="form_lastname" type="text" id="form_lastname" placeholder="<ion:lang key='form_label_form_lastname' />" value="<ion:form:contact:field:form_lastname />" />
-                                <ion:form:contact:error:form_lastname tag="span" class="help-inline" />
+                                <input class="span4" name="name" type="text" id="form_name" placeholder="<ion:lang key='form_label_name' />" value="<ion:form:contact:field:name />" />
+                                <ion:form:contact:error:name tag="span" class="help-inline" />
                             </div>
                         </div>
 
@@ -82,27 +73,27 @@
 
 
                         <!-- Input : Subject -->
-                        <div class="control-group<ion:form:contact:error:form_subject is="true"> error</ion:form:contact:error:form_subject>">
-                            <label class="control-label" for="form_subject"><ion:lang key="form_label_form_subject" /></label>
+                        <div class="control-group<ion:form:contact:error:subject is="true"> error</ion:form:contact:error:subject>">
+                            <label class="control-label" for="subject"><ion:lang key="form_label_subject" /></label>
                             <div class="controls">
-                                <input class="span4" name="form_subject" type="text" id="form_subject" placeholder="<ion:lang key='form_label_form_subject' />" value="<ion:form:contact:field:form_subject />" />
-                                <ion:form:contact:error:form_subject tag="span" class="help-inline" />
+                                <input class="span4" name="subject" type="text" id="subject" placeholder="<ion:lang key='form_label_subject' />" value="<ion:form:contact:field:subject />" />
+                                <ion:form:contact:error:subject tag="span" class="help-inline" />
                             </div>
                         </div>
 
                         <!-- Input : Message -->
-                        <div class="control-group<ion:form:contact:error:form_message is="true"> error</ion:form:contact:error:form_message>">
-                            <label class="control-label" for="form_message"><ion:lang key="form_label_form_message" /></label>
+                        <div class="control-group<ion:form:contact:error:message is="true"> error</ion:form:contact:error:message>">
+                            <label class="control-label" for="form_message"><ion:lang key="form_label_message" /></label>
                             <div class="controls">
-                                <textarea name="form_message" class="span4" rows="7" placeholder="<ion:lang key="form_label_form_message" />"><ion:form:contact:field:form_message /></textarea>
-                                <ion:form:contact:error:form_message tag="span" class="help-inline text-error" />
+                                <textarea name="form_message" class="span4" rows="7" placeholder="<ion:lang key="form_label_message" />"><ion:form:contact:field:message /></textarea>
+                                <ion:form:contact:error:message tag="span" class="help-inline text-error" />
                             </div>
                         </div>
 
 
                         <div class="control-group">
                             <div class="controls">
-                                <button type="submit" class="btn btn-success"><ion:lang key="button_send" /></button>
+                                <button type="submit" class="btn btn-success"><ion:lang key="form_button_send" /></button>
                             </div>
                         </div>
                     </form>
@@ -110,7 +101,7 @@
                 </div>
             </div>
 
-            <div class="span4 pull-right">
+            <div class="span3">
                 <div class="pos-rel p10">
                     <ion:page>
                         <ion:articles type="bloc">

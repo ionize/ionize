@@ -11,8 +11,8 @@ when the user is connected to the Admin panel as Editor.
 #ionizeLoggedAsEditorFlag{
 	width:80px;
 	height:80px;
-	position: fixed;
-	z-index: 1001;
+	position: absolute;
+	z-index: 10001;
 	top:0;
 	left:0;
 	background: url(../images/flag_edit_mode.png) no-repeat top left;

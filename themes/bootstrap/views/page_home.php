@@ -41,13 +41,13 @@
         <!-- Page : Current -->
 		<ion:page>
 
-			<div class="row">
-				<div calss="span12">
-					<ion:articles type="">
+			<div class="row-fluid">
+				<div class="span12">
+					<ion:articles type="" limit=4>
 						<ion:article>
                             <div class="span3">
-							<ion:title tag="h3" />
-							<ion:content helper="text:word_limiter:20" />
+								<ion:title tag="h3" />
+								<ion:content helper="text:word_limiter:20" />
 							</div>
 						</ion:article>
 					</ion:articles>
@@ -59,30 +59,30 @@
 
 		<!-- Page : Blog | Articles Limit : 3 -->
 		<ion:page id="blog">
-			<div class="row">
+			<div class="row-fluid">
 				<div class="span12">
                     <ion:lang key="home_last_post" tag="h2" class="dotted-title" />
-				</div>
-				<ul class="thumbnails">
-					<ion:articles limit="3">
-						<li class="span4">
-							<ion:article>
-								<div class="thumbnail">
-									<ion:medias type="picture" limit="1">
-										<ion:media size="280,193" method="adaptive">
-											<img src="<ion:src />" alt="<ion:alt />" />
-										</ion:media>
-									</ion:medias>
-									<div class="caption">
-										<ion:title tag="h3" />
-										<ion:content helper="text:word_limiter:10" />
-										<p class="right"><a href="<ion:url />" title="<ion:title />" class="btn"><ion:lang key="button_read_more" /></a></p>
+					<ul class="thumbnails">
+						<ion:articles limit="3">
+							<li class="span4">
+								<ion:article>
+									<div class="thumbnail">
+										<ion:medias type="picture" limit="1">
+											<ion:media size="280,193" method="adaptive">
+												<img src="<ion:src />" alt="<ion:alt />" />
+											</ion:media>
+										</ion:medias>
+										<div class="caption">
+											<ion:title tag="h3" />
+											<ion:content helper="text:word_limiter:10" />
+											<p class="right"><a href="<ion:url />" title="<ion:title />" class="btn"><ion:lang key="button_read_more" /></a></p>
+										</div>
 									</div>
-								</div>
-							</ion:article>
-						</li>
-					</ion:articles>
-				</ul>
+								</ion:article>
+							</li>
+						</ion:articles>
+					</ul>
+				</div>
 			</div>
 		</ion:page>
 

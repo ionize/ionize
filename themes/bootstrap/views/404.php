@@ -1,73 +1,59 @@
-<ion:partial view="pages/header" />
+<!--
+	404 page view.
+	This view has to be linked to the 404 page in Ionize.
+-->
 
-<section class="container">
+<ion:partial view="header" />
 
-    <section class="page-blog">
-        <div class="span12 page-header m0">
-            <h1>
-                <ion:page:title />
-                <ion:page:subtitle tag="small" />
-            </h1>
-        </div>
-        <div class="clearfix"></div>
+<div class="container">
 
-        <div class="page404"><!-- 404 Page --></div>
+	<div class="row-fluid">
+		<div class="span12 page-header">
+			<h1>
+				<ion:page:title />
+				<ion:page:subtitle tag="small" />
+			</h1>
+		</div>
+	</div>
 
-        <section class="span12 bg-white mb20 pull-left">
-            <ion:page>
-                <ion:articles>
-                    <div class="pos-rel p10">
-                        <ion:article>
+	<ion:page>
 
-                            <ion:title tag="h2" class="dotted-title" />
-                            <ion:content />
+		<ion:articles type="">
 
-                            <ion:medias type="picture" tag="ul" class="thumbnails">
-                                <ion:media>
-                                    <li class="span4 <ion:index /> <ion:if key="index" expression="index != 1 && (index-1) %3!=0">ml10</ion:if>">
-                                    <a href="<ion:src />" class="thumbnail fancybox" data-fancybox-group="thumb<ion:article:get key="id_article" />">
-                                    <img src="<ion:src method="adaptive" size="300,200" unsharp="true" />" title="<ion:title />" alt="<ion:alt />" />
-                                    </a>
-                                    </li>
-                                </ion:media>
-                            </ion:medias>
-                            <script type="text/javascript" src="<ion:theme_url />assets/js/jquery.fancybox.pack.js"></script>
-                            <script type="text/javascript" src="<ion:theme_url />assets/js/jquery.mousewheel.min.js"></script>
-                            <script type="text/javascript">
-                                $('.fancybox').fancybox({
-                                    helpers : {
-                                        buttons : {}
-                                    }
-                                });
-                            </script>
+			<ion:article>
+				<div class="row-fluid">
+					<ion:title tag="h2" />
 
-                        </ion:article>
-                        <div class="clearfix"></div>
-                    </div>
-                </ion:articles>
-            </ion:page>
-        </section>
+					<ion:content />
 
-    </section>
+					<ion:medias type="picture" tag="ul" class="thumbnails">
+						<ion:media>
+							<li class="span4">
+								<a href="<ion:src />" class="thumbnail fancybox" data-fancybox-group="thumb<ion:article:get key="id_article" />">
+								<img src="<ion:src method="adaptive" size="300,200" unsharp="true" />" title="<ion:title />" alt="<ion:alt />" />
+								</a>
+							</li>
+						</ion:media>
+					</ion:medias>
+					<ion:medias type="picture" limit="1">
+						<script type="text/javascript" src="<ion:theme_url />assets/js/jquery.fancybox.pack.js"></script>
+						<script type="text/javascript" src="<ion:theme_url />assets/js/jquery.mousewheel.min.js"></script>
+						<script type="text/javascript">
+							$('.fancybox').fancybox({
+								helpers : {
+									buttons : {}
+								}
+							});
+						</script>
+					</ion:medias>
+				</div>
+			</ion:article>
 
-</section> <!-- Container Section End -->
+		</ion:articles>
 
-<!-- Page : Home Page | Articles By Type : testimonial-article -->
-<ion:page id="2">
-    <section class="testimonials clearfix mb20">
-        <div class="container">
-            <ul>
-                <ion:articles type="testimonial-article">
-                    <ion:article>
-                        <li>
-                            <ion:title tag="h2" />
-                            <ion:content />
-                        </li>
-                    </ion:article>
-                </ion:articles>
-            </ul>
-        </div>
-    </section>
-</ion:page>
+	</ion:page>
 
-<ion:partial view="pages/footer" />
+
+</div> <!-- Container End -->
+
+<ion:partial view="footer" />

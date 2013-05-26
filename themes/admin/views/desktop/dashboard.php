@@ -47,13 +47,13 @@
 				</div>
 			<?php endif ;?>
 
-			<?php if(Authority::can('access', 'admin/article')) :?>
+<!--			<?php /*if(Authority::can('access', 'admin/article')) :*/?>
 				<div class="desktopIcon" data-url="article/list_articles" data-title="ionize_title_articles">
 					<i class="articles"></i>
-					<img src="<?php echo theme_url(); ?>images/icon_48_articles.png"/>
-					<p><a><?php echo lang('ionize_dashboard_icon_articles'); ?></a></p>
+					<img src="<?php /*echo theme_url(); */?>images/icon_48_articles.png"/>
+					<p><a><?php /*echo lang('ionize_dashboard_icon_articles'); */?></a></p>
 				</div>
-			<?php endif ;?>
+			--><?php // endif ;?>
 
 			<?php if(Authority::can('access', 'admin/filemanager')) :?>
 				<div class="desktopIcon" data-url="media/get_media_manager" data-title="ionize_menu_media_manager">
@@ -63,19 +63,19 @@
 				</div>
 			<?php endif ;?>
 
-			<?php if(Authority::can('access', 'admin/users_roles')) :?>
-				<div class="desktopIcon" data-url="user" data-title="ionize_title_users">
-					<i class="users"></i>
-					<img src="<?php echo theme_url(); ?>images/icon_48_groups.png" />
-					<p><a><?php echo lang('ionize_dashboard_icon_users'); ?></a></p>
-				</div>
-			<?php endif ;?>
-
 			<?php if(Authority::can('access', 'admin/translations')) :?>
 				<div class="desktopIcon" id="iconTranslation" data-url="translation" data-title="ionize_title_translation">
 					<i class="translation"></i>
 					<img src="<?php echo theme_url(); ?>images/icon_48_languages.png" />
 					<p><a><?php echo lang('ionize_dashboard_icon_translation'); ?></a></p>
+				</div>
+			<?php endif ;?>
+
+			<?php if(Authority::can('access', 'admin/users_roles')) :?>
+				<div class="desktopIcon" data-url="user" data-title="ionize_title_users">
+					<i class="users"></i>
+					<img src="<?php echo theme_url(); ?>images/icon_48_groups.png" />
+					<p><a><?php echo lang('ionize_dashboard_icon_users'); ?></a></p>
 				</div>
 			<?php endif ;?>
 

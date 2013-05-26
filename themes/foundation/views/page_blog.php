@@ -16,6 +16,10 @@
             <ion:lang key="you_are_browsing_tag" /> : <ion:page:tag:current:title/>
         </ion:page:tag:current:title>
 
+		<!-- Current Archive : show the active category name -->
+		<ion:archives:archive:is_active>
+			<p><ion:translation term="you_are_browsing_archive" /> : <span><ion:archive:period /></span></p>
+		</ion:archives:archive:is_active>
 
 		<!--
 			We get the articles which don't have any type set.
@@ -44,7 +48,7 @@
                     <ion:content paragraph="1" />
 
 					<!-- Tags -->
-					<ion:article:tags:list link="true" separator=", " tag="p" class="categories" prefix="Tags :&nbsp;" />
+					<ion:article:tags:list link="true" separator=", " tag="p" class="categories" prefix="lang('title_tags') : " />
 
 				</div>
 

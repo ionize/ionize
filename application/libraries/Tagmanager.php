@@ -1570,7 +1570,8 @@ class TagManager
 			{
 				case 'relative':
 					$value = str_replace(self::get_base_url(), '', $value);
-					if ( ! is_null($lang)
+					if (
+						! is_null($lang)
 						 && (count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1')
 					)
 						$value = Settings::get_lang('current') . '/' . $value;
@@ -1579,7 +1580,8 @@ class TagManager
 				case 'element':
 					$value = explode('/', $value);
 					$value = array_pop($value);
-					if ( ! is_null($lang)
+					if (
+						! is_null($lang)
 						&& (count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1')
 					)
 						$value = Settings::get_lang('current') . '/' . $value;
@@ -1587,12 +1589,11 @@ class TagManager
 			}
 		}
 
-//		if (is_null($value))
-//			$value = $tag->getValue();
-
 		// 2. Fall down to tag locals storage
 		if (is_null($value))
-			$value = $tag->get($tag->name);
+		{
+			$value = $tag->getValue();
+		}
 		else
 		{
 			// Add to local storage, so other tags can use it
@@ -3177,17 +3178,17 @@ class TagManager
 			$segments = explode('.', $string);
 			$prefix_suffix = '';
 
+			$lang_reg = "%lang\('([-_ \w:]+?)'\)%";
+
 			foreach($segments as $segment)
 			{
-				$segment = trim($segment);
 				$translated_string = NULL;
 
-				if (substr(trim($segment), 0, 5) == 'lang(')
-				{
-					$return = @eval("\$translated_string = ".trim($segment).";");
-					if ($return === NULL)
-						$segment = $translated_string;
-				}
+				$segment = preg_replace_callback(
+					$lang_reg,
+					'self::lang_preg_replace_callback',
+					$segment
+				);
 
 				$prefix_suffix .= $segment;
 			}
@@ -3196,6 +3197,7 @@ class TagManager
 		}
 		return $value;
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -3526,6 +3528,18 @@ class TagManager
 			self::$ci->load->model($model_name, $new_name, TRUE);
 			// if (!isset(self::$ci->{$new_name})) self::$ci->load->model($model_name, $new_name, TRUE);
 	}
+
+	// ------------------------------------------------------------------------
+
+
+	private static function lang_preg_replace_callback($matches)
+	{
+		if ( ! empty($matches[1]))
+			return lang($matches[1]);
+		else
+			return '';
+	}
+
 }
 
 
