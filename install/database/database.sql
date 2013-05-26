@@ -713,43 +713,48 @@ DELETE FROM setting WHERE name='ftp_password';
 DELETE FROM setting WHERE name='picture_copyright';
 
 
-INSERT IGNORE INTO setting VALUES ('', 'website_email', '', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'cache', '0', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'cache_time', '150', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'theme', 'default', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'theme_admin', 'admin', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'google_analytics', '', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'filemanager', 'mootools-filemanager', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'show_help_tips', '1', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'website_email', '', '');
+INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');
+INSERT IGNORE INTO setting VALUES ('', 'cache', '0', '');
+INSERT IGNORE INTO setting VALUES ('', 'cache_time', '150', '');
+INSERT IGNORE INTO setting VALUES ('', 'theme', 'default', '');
+INSERT IGNORE INTO setting VALUES ('', 'theme_admin', 'admin', '');
+INSERT IGNORE INTO setting VALUES ('', 'google_analytics', '', '');
+INSERT IGNORE INTO setting VALUES ('', 'filemanager', 'mootools-filemanager', '');
+INSERT IGNORE INTO setting VALUES ('', 'show_help_tips', '1', '');
 
-INSERT IGNORE INTO setting VALUES ('', 'display_connected_label', '1', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'texteditor', 'tinymce', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'media_thumb_size', '120', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'display_connected_label', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_shortcuts', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_modules', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_users', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_content', '1', '');
 
-INSERT IGNORE INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'texteditor', 'tinymce', '');
+INSERT IGNORE INTO setting VALUES ('', 'media_thumb_size', '120', '');
+
+INSERT IGNORE INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', '');
+INSERT IGNORE INTO setting VALUES ('', 'tinybuttons2', 'fullscreen, undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,|,template,|,codemirror', '');
+INSERT IGNORE INTO setting VALUES ('', 'tinybuttons3', 'tablecontrols', '');
 INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons1', 'bold,italic,|,bullist,numlist,|,link,unlink,image,|,nonbreaking', '');
 INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons2', '', '');
 INSERT IGNORE INTO setting VALUES ('', 'smalltinybuttons3', '', '');
 
-INSERT IGNORE INTO setting VALUES ('', 'displayed_admin_languages', 'en', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'date_format', '%Y.%m.%d', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'force_lang_urls', '0', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', NULL);
-INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf',NULL);
-INSERT IGNORE INTO setting VALUES ('', 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong',NULL);
-INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);
-INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', NULL);
+INSERT IGNORE INTO setting VALUES ('', 'displayed_admin_languages', 'en', '');
+INSERT IGNORE INTO setting VALUES ('', 'date_format', '%Y.%m.%d', '');
+INSERT IGNORE INTO setting VALUES ('', 'force_lang_urls', '0', '');
+INSERT IGNORE INTO setting VALUES ('', 'tinyblockformats', 'p,h2,h3,h4,h5,pre,div', '');
+INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types','gif,jpe,jpeg,jpg,png,flv,mpg,mp3,doc,pdf,rtf','');
+INSERT IGNORE INTO setting VALUES ('', 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong','');
+INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png','');
+INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', '');
 
 
 
 DELETE FROM setting WHERE name='default_admin_lang';
-INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', NULL);
+INSERT INTO setting VALUES ('', 'default_admin_lang', 'en', '');
 
 DELETE FROM setting WHERE name='ionize_version';
-INSERT INTO setting VALUES ('', 'ionize_version', '1.0.0', NULL);
+INSERT INTO setting VALUES ('', 'ionize_version', '1.0.0', '');
 
 INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');

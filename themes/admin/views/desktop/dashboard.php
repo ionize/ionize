@@ -35,103 +35,150 @@
 
 
 
-			<!-- Shortcuts -->
-			<div id="shortcutBloc" class="desktopBloc" data-title="Shortcuts">
+	<!-- Shortcuts -->
+	<?php if (Settings::get('display_dashboard_shortcuts') == '1'): ?>
+		<div id="shortcutBloc" class="desktopBloc" data-title="Shortcuts">
 
-				<?php if(Authority::can('create', 'admin/page')) :?>
-					<div class="desktopIcon" id="iconAddPage" data-url="page/create/0" data-title="ionize_title_new_page">
-						<i class="page-new"></i>
-						<img src="<?php echo theme_url(); ?>images/icon_48_page_new.png" />
-						<p><a><?php echo lang('ionize_dashboard_icon_add_page'); ?></a></p>
-					</div>
-				<?php endif ;?>
+			<?php if(Authority::can('create', 'admin/page')) :?>
+				<div class="desktopIcon" id="iconAddPage" data-url="page/create/0" data-title="ionize_title_new_page">
+					<i class="page-new"></i>
+					<img src="<?php echo theme_url(); ?>images/icon_48_page_new.png" />
+					<p><a><?php echo lang('ionize_dashboard_icon_add_page'); ?></a></p>
+				</div>
+			<?php endif ;?>
 
-				<?php if(Authority::can('access', 'admin/article')) :?>
-					<div class="desktopIcon" data-url="article/list_articles" data-title="ionize_title_articles">
-                        <i class="articles"></i>
-						<img src="<?php echo theme_url(); ?>images/icon_48_articles.png"/>
-						<p><a><?php echo lang('ionize_dashboard_icon_articles'); ?></a></p>
-					</div>
-				<?php endif ;?>
+			<?php if(Authority::can('access', 'admin/article')) :?>
+				<div class="desktopIcon" data-url="article/list_articles" data-title="ionize_title_articles">
+					<i class="articles"></i>
+					<img src="<?php echo theme_url(); ?>images/icon_48_articles.png"/>
+					<p><a><?php echo lang('ionize_dashboard_icon_articles'); ?></a></p>
+				</div>
+			<?php endif ;?>
 
-				<?php if(Authority::can('access', 'admin/filemanager')) :?>
-					<div class="desktopIcon" data-url="media/get_media_manager" data-title="ionize_menu_media_manager">
-                        <i class="media"></i>
-						<img src="<?php echo theme_url(); ?>images/icon_48_media.png" />
-						<p><a><?php echo lang('ionize_dashboard_icon_mediamanager'); ?></a></p>
-					</div>
-				<?php endif ;?>
+			<?php if(Authority::can('access', 'admin/filemanager')) :?>
+				<div class="desktopIcon" data-url="media/get_media_manager" data-title="ionize_menu_media_manager">
+					<i class="media"></i>
+					<img src="<?php echo theme_url(); ?>images/icon_48_media.png" />
+					<p><a><?php echo lang('ionize_dashboard_icon_mediamanager'); ?></a></p>
+				</div>
+			<?php endif ;?>
 
-				<?php if(Authority::can('access', 'admin/users_roles')) :?>
-					<div class="desktopIcon" data-url="user" data-title="ionize_title_users">
-                        <i class="users"></i>
-						<img src="<?php echo theme_url(); ?>images/icon_48_groups.png" />
-						<p><a><?php echo lang('ionize_dashboard_icon_users'); ?></a></p>
-					</div>
-				<?php endif ;?>
+			<?php if(Authority::can('access', 'admin/users_roles')) :?>
+				<div class="desktopIcon" data-url="user" data-title="ionize_title_users">
+					<i class="users"></i>
+					<img src="<?php echo theme_url(); ?>images/icon_48_groups.png" />
+					<p><a><?php echo lang('ionize_dashboard_icon_users'); ?></a></p>
+				</div>
+			<?php endif ;?>
 
-				<?php if(Authority::can('access', 'admin/translations')) :?>
-					<div class="desktopIcon" id="iconTranslation" data-url="translation" data-title="ionize_title_translation">
-                        <i class="translation"></i>
-						<img src="<?php echo theme_url(); ?>images/icon_48_languages.png" />
-						<p><a><?php echo lang('ionize_dashboard_icon_translation'); ?></a></p>
-					</div>
-				<?php endif ;?>
+			<?php if(Authority::can('access', 'admin/translations')) :?>
+				<div class="desktopIcon" id="iconTranslation" data-url="translation" data-title="ionize_title_translation">
+					<i class="translation"></i>
+					<img src="<?php echo theme_url(); ?>images/icon_48_languages.png" />
+					<p><a><?php echo lang('ionize_dashboard_icon_translation'); ?></a></p>
+				</div>
+			<?php endif ;?>
 
-				<?php if(Authority::can('access', 'admin/tools/google_analytics')) :?>
-					<div class="desktopIcon" id="iconGA" data-url="http://www.google.com/analytics/" data-external="true">
-                        <i class="stats"></i>
-						<img src="<?php echo theme_url(); ?>images/icon_48_stats.png" />
-						<p><a><?php echo lang('ionize_dashboard_icon_google_analytics'); ?></a></p>
-					</div>
-				<?php endif ;?>
+			<?php if(Authority::can('access', 'admin/tools/google_analytics')) :?>
+				<div class="desktopIcon" id="iconGA" data-url="http://www.google.com/analytics/" data-external="true">
+					<i class="stats"></i>
+					<img src="<?php echo theme_url(); ?>images/icon_48_stats.png" />
+					<p><a><?php echo lang('ionize_dashboard_icon_google_analytics'); ?></a></p>
+				</div>
+			<?php endif ;?>
+		</div>
+	<?php endif ;?>
+
+
+	<!-- Tracker -->
+	<?php if (Settings::get('enable_backend_tracker') == '1') :?>
+		<div id="trackerBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_current_connected_users'); ?>">
+			<div class="pb15" id="trackerCurrentConnectedUsers"></div>
+		</div>
+	<?php endif; ?>
+
+
+	<!-- Modules -->
+	<?php if ( ! empty($modules) && Settings::get('display_dashboard_modules') == '1') :?>
+		<div id="modulesBloc" class="desktopBloc" data-title="<?php echo lang('ionize_menu_modules'); ?>">
+			<?php foreach($modules as $module) :?>
+				<div class="desktopIcon desktopModuleIcon" data-url="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" data-title="<?php echo $module['name']; ?>">
+					<img src="<?php echo base_url(); ?>modules/<?php echo $module['folder']; ?>/assets/images/icon_48_module.png" alt="<?php echo $module['description']; ?>" />
+					<p><a><?php echo $module['name']; ?></a></p>
+				</div>
+			<?php endforeach ;?>
+		</div>
+	<?php endif ;?>
+
+
+	<!-- Users -->
+	<?php if (Settings::get('display_dashboard_users') == '1'): ?>
+		<div  id="usersBloc"class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_users'); ?>">
+
+			<!-- Tabs -->
+			<div id="dashBoardUsersTab" class="mainTabs mt5 mb0">
+				<ul class="tab-menu ">
+					<li><a><?php echo lang('ionize_dashboard_title_last_connected_users') ?></a></li>
+					<?php if ( ! empty($last_registered_users)) :?>
+						<li><a><?php echo lang('ionize_dashboard_title_last_registered_users') ?></a></li>
+					<?php endif ;?>
+				</ul>
+				<div class="clear"></div>
 			</div>
 
-			<!-- Tracker -->
-			<?php if (Settings::get('enable_backend_tracker') == '1') :?>
-				<div  id="trackerBloc" class="desktopBloc">
-					<h2><?php echo lang('ionize_dashboard_title_current_connected_users'); ?></h2>
-					<div class="pb15"  id="trackerCurrentConnectedUsers"></div>
+			<div id="dashBoardUsersTabContent">
+
+				<!-- Last logged in -->
+				<div class="tabcontent">
+
+					<table class="list mb20 mt10" id="usersList">
+
+						<thead>
+						<tr>
+							<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
+							<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
+							<th axis="date" class="w110"><?php echo lang('ionize_label_last_visit'); ?></th>
+						</tr>
+						</thead>
+						<tbody>
+
+						<?php foreach($users as $user) :?>
+
+							<tr data-id="<?php echo $user['id_user'] ?>">
+								<td><?php echo $user['screen_name']; ?></td>
+								<td><?php echo mailto($user['email']); ?></td>
+								<td><?php echo humanize_mdate($user['last_visit'], Settings::get('date_format'). ' %H:%i'); ?></td>
+							</tr>
+
+						<?php endforeach ;?>
+
+						</tbody>
+
+					</table>
+
 				</div>
-			<?php endif; ?>
 
+				<!-- Last Registered -->
+				<?php if ( ! empty($last_registered_users)) :?>
 
-			<!-- Users -->
-			<div  id="usersBloc"class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_users'); ?>">
-
-				<!-- Tabs -->
-				<div id="dashBoardUsersTab" class="mainTabs mt5 mb0">
-					<ul class="tab-menu ">
-						<li><a><?php echo lang('ionize_dashboard_title_last_connected_users') ?></a></li>
-						<?php if ( ! empty($last_registered_users)) :?>
-							<li><a><?php echo lang('ionize_dashboard_title_last_registered_users') ?></a></li>
-						<?php endif ;?>
-					</ul>
-					<div class="clear"></div>
-				</div>
-
-				<div id="dashBoardUsersTabContent">
-
-					<!-- Last logged in -->
 					<div class="tabcontent">
-
-						<table class="list mb20 mt10" id="usersList">
+						<table class="list mb20 mt10" id="lastusersList">
 
 							<thead>
-								<tr>
-									<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
-									<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
-									<th axis="date" class="w110"><?php echo lang('ionize_label_last_visit'); ?></th>
-								</tr>
+							<tr>
+								<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
+								<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
+								<th axis="date" class="w110"><?php echo lang('ionize_label_join_date'); ?></th>
+							</tr>
 							</thead>
 							<tbody>
 
-							<?php foreach($users as $user) :?>
+							<?php foreach($last_registered_users as $user) :?>
 
 								<tr data-id="<?php echo $user['id_user'] ?>">
 									<td><?php echo $user['screen_name']; ?></td>
 									<td><?php echo mailto($user['email']); ?></td>
-									<td><?php echo humanize_mdate($user['last_visit'], Settings::get('date_format'). ' %H:%i'); ?></td>
+									<td><?php echo humanize_mdate($user['join_date'], Settings::get('date_format'). ' %H:%i'); ?></td>
 								</tr>
 
 							<?php endforeach ;?>
@@ -142,110 +189,106 @@
 
 					</div>
 
-					<!-- Last Registered -->
-					<?php if ( ! empty($last_registered_users)) :?>
-
-						<div class="tabcontent">
-							<table class="list mb20 mt10" id="lastusersList">
-
-								<thead>
-									<tr>
-										<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
-										<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
-										<th axis="date" class="w110"><?php echo lang('ionize_label_join_date'); ?></th>
-									</tr>
-								</thead>
-								<tbody>
-
-								<?php foreach($last_registered_users as $user) :?>
-
-									<tr data-id="<?php echo $user['id_user'] ?>">
-										<td><?php echo $user['screen_name']; ?></td>
-										<td><?php echo mailto($user['email']); ?></td>
-										<td><?php echo humanize_mdate($user['join_date'], Settings::get('date_format'). ' %H:%i'); ?></td>
-									</tr>
-
-								<?php endforeach ;?>
-
-								</tbody>
-
-							</table>
-
-						</div>
-
-					<?php endif ;?>
-				</div>
-
+				<?php endif ;?>
 			</div>
 
+		</div>
+	<?php endif ;?>
 
-			<!-- Modules -->
-			<?php if ( ! empty($modules)) :?>
+	<!-- Content : Pages, Articles -->
+	<?php if (Settings::get('display_dashboard_content') == '1'): ?>
+		<div id="contentBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_content'); ?>">
 
-				<div id="modulesBloc" class="desktopBloc" data-title="<?php echo lang('ionize_menu_modules'); ?>">
+			<!-- Tabs -->
+			<div id="dashBoardContentTab" class="mainTabs mt5 mb0">
+				<ul class="tab-menu ">
+					<li><a><?php echo lang('ionize_dashboard_title_last_modified_articles') ?></a></li>
+					<?php if ( ! empty($orphan_articles)) :?>
+						<li><a><?php echo lang('ionize_dashboard_title_orphan_articles') ?></a></li>
+					<?php endif ;?>
+					<?php if ( ! empty($orphan_pages)) :?>
+						<li><a><?php echo lang('ionize_dashboard_title_orphan_pages') ?></a></li>
+					<?php endif ;?>
+				</ul>
+				<div class="clear"></div>
+			</div>
 
-					<?php foreach($modules as $module) :?>
+			<div id="dashBoardContentTabContent">
 
-						<div class="desktopIcon desktopModuleIcon" data-url="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" data-title="<?php echo $module['name']; ?>">
-							<img src="<?php echo base_url(); ?>modules/<?php echo $module['folder']; ?>/assets/images/icon_48_module.png" alt="<?php echo $module['description']; ?>" />
-							<p><a><?php echo $module['name']; ?></a></p>
-						</div>
+				<!-- Last edited articles-->
+				<div class="tabcontent">
 
-					<?php endforeach ;?>
+					<table class="list mb20" id="articleList">
+
+						<thead>
+						<tr>
+							<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
+							<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
+							<th axis="date" class="w80"><?php echo lang('ionize_label_updated'); ?></th>
+						</tr>
+						</thead>
+
+						<tbody>
+
+						<?php foreach ($last_articles as $article) :?>
+
+							<?php
+							$title = ($article['title'] != '') ? $article['title'] : $article['name'];
+							?>
+
+							<tr>
+								<td>
+									<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>">
+										<span class="icon edit mr5 left"></span>
+										<?php echo $title; ?><br/>
+									</a>
+								</td>
+								<td>
+									<span class="lite"><?php echo $article['breadcrumb']; ?></span>
+								</td>
+								<td><?php echo humanize_mdate($article['updated'], Settings::get('date_format')); ?></td>
+							</tr>
+
+						<?php endforeach ;?>
+
+						</tbody>
+
+					</table>
+
 				</div>
 
-			<?php endif ;?>
+				<!-- Orphan article -->
+				<?php if ( ! empty($orphan_articles)) :?>
 
-
-			<!-- Content : Pages, Articles -->
-			<div id="contentBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_content'); ?>">
-
-				<!-- Tabs -->
-				<div id="dashBoardContentTab" class="mainTabs mt5 mb0">
-					<ul class="tab-menu ">
-						<li><a><?php echo lang('ionize_dashboard_title_last_modified_articles') ?></a></li>
-						<?php if ( ! empty($orphan_articles)) :?>
-							<li><a><?php echo lang('ionize_dashboard_title_orphan_articles') ?></a></li>
-						<?php endif ;?>
-						<?php if ( ! empty($orphan_pages)) :?>
-							<li><a><?php echo lang('ionize_dashboard_title_orphan_pages') ?></a></li>
-						<?php endif ;?>
-					</ul>
-					<div class="clear"></div>
-				</div>
-
-				<div id="dashBoardContentTabContent">
-
-					<!-- Last edited articles-->
 					<div class="tabcontent">
 
-						<table class="list mb20" id="articleList">
+						<p class="lite mt10">
+							<?php echo lang('ionize_help_orphan_articles') ?>
+						</p>
+
+						<table class="list mb20 mt0" id="orphanArticlesList">
 
 							<thead>
 							<tr>
 								<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
-								<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
-								<th axis="date" class="w80"><?php echo lang('ionize_label_updated'); ?></th>
+								<th axis="date" class="w80"><?php echo lang('ionize_label_page_delete_date'); ?></th>
 							</tr>
 							</thead>
 
 							<tbody>
 
-							<?php foreach ($last_articles as $article) :?>
+							<?php foreach ($orphan_articles as $article) :?>
 
 								<?php
 								$title = ($article['title'] != '') ? $article['title'] : $article['name'];
 								?>
 
-								<tr>
+								<tr class="0x<?php echo $article['id_article']; ?>">
 									<td>
-										<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>">
+										<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="0.<?php echo $article['id_article']; ?>">
 											<span class="icon edit mr5 left"></span>
-											<?php echo $title; ?><br/>
+											<?php echo $title; ?>
 										</a>
-									</td>
-									<td>
-										<span class="lite"><?php echo $article['breadcrumb']; ?></span>
 									</td>
 									<td><?php echo humanize_mdate($article['updated'], Settings::get('date_format')); ?></td>
 								</tr>
@@ -258,103 +301,53 @@
 
 					</div>
 
-					<!-- Orphan article -->
-					<?php if ( ! empty($orphan_articles)) :?>
+				<?php endif ;?>
 
-						<div class="tabcontent">
+				<!-- Orphan pages : Page linked to menu 0 -->
+				<?php if ( ! empty($orphan_pages)) :?>
 
-							<p class="lite mt10">
-								<?php echo lang('ionize_help_orphan_articles') ?>
-							</p>
+					<div class="tabcontent">
 
-							<table class="list mb20 mt0" id="orphanArticlesList">
+						<p class="lite mt10">
+							<?php echo lang('ionize_help_orphan_pages') ?>
+						</p>
 
-								<thead>
+						<table class="list mb20 mt0" id="orphanPagesList">
+
+							<thead>
+							<tr>
+								<th axis="string"><?php echo lang('ionize_label_page'); ?></th>
+								<th axis="date" class="w80"><?php echo lang('ionize_label_page_delete_date'); ?></th>
+							</tr>
+							</thead>
+
+							<tbody>
+
+							<?php foreach ($orphan_pages as $page) :?>
+
+								<?php
+								$title = ($page['title'] != '') ? $page['title'] : $page['name'];
+								?>
+
 								<tr>
-									<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
-									<th axis="date" class="w80"><?php echo lang('ionize_label_page_delete_date'); ?></th>
+									<td>
+										<a title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $page['id_page']; ?>" class="page">
+											<span class="icon edit mr5 left"></span>
+											<?php echo $title; ?>
+										</a>
+									</td>
+									<td><?php echo humanize_mdate($page['updated'], Settings::get('date_format'). ' %H:%i'); ?></td>
 								</tr>
-								</thead>
 
-								<tbody>
+							<?php endforeach ;?>
 
-								<?php foreach ($orphan_articles as $article) :?>
-
-									<?php
-									$title = ($article['title'] != '') ? $article['title'] : $article['name'];
-									?>
-
-									<tr class="0x<?php echo $article['id_article']; ?>">
-										<td>
-											<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="0.<?php echo $article['id_article']; ?>">
-												<span class="icon edit mr5 left"></span>
-												<?php echo $title; ?>
-											</a>
-										</td>
-										<td><?php echo humanize_mdate($article['updated'], Settings::get('date_format')); ?></td>
-									</tr>
-
-								<?php endforeach ;?>
-
-								</tbody>
-
-							</table>
-
-						</div>
-
-					<?php endif ;?>
-
-					<!-- Orphan pages : Page linked to menu 0 -->
-					<?php if ( ! empty($orphan_pages)) :?>
-
-						<div class="tabcontent">
-
-							<p class="lite mt10">
-								<?php echo lang('ionize_help_orphan_pages') ?>
-							</p>
-
-							<table class="list mb20 mt0" id="orphanPagesList">
-
-								<thead>
-								<tr>
-									<th axis="string"><?php echo lang('ionize_label_page'); ?></th>
-									<th axis="date" class="w80"><?php echo lang('ionize_label_page_delete_date'); ?></th>
-								</tr>
-								</thead>
-
-								<tbody>
-
-								<?php foreach ($orphan_pages as $page) :?>
-
-									<?php
-									$title = ($page['title'] != '') ? $page['title'] : $page['name'];
-									?>
-
-									<tr>
-										<td>
-											<a title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $page['id_page']; ?>" class="page">
-												<span class="icon edit mr5 left"></span>
-												<?php echo $title; ?>
-											</a>
-										</td>
-										<td><?php echo humanize_mdate($page['updated'], Settings::get('date_format'). ' %H:%i'); ?></td>
-									</tr>
-
-								<?php endforeach ;?>
-
-								</tbody>
-
-							</table>
-
-
-						</div>
-
-					<?php endif ;?>
-				</div>
+							</tbody>
+						</table>
+					</div>
+				<?php endif ;?>
 			</div>
-
-	</div>
-
+		</div>
+	<?php endif ;?>
 
 </div>
 
@@ -400,25 +393,30 @@
 	var articles = ($$('#articleList .article')).append($$('#orphanArticlesList .article'));
 
 	// Tabs
-	var dashBoardUsersTabSwapper = new TabSwapper(
+	if ($('dashBoardUsersTab'))
 	{
-		tabsContainer: 'dashBoardUsersTab',
-		sectionsContainer: 'dashBoardUsersTabContent',
-		selectedClass: 'selected',
-		deselectedClass: '',
-		tabs: 'li', clickers: 'li a', sections: 'div.tabcontent',
-		cookieName: 'dashBoardUsersTab'
-	});
-	var dashBoardContentTabSwapper = new TabSwapper(
+		var dashBoardUsersTabSwapper = new TabSwapper(
+		{
+			tabsContainer: 'dashBoardUsersTab',
+			sectionsContainer: 'dashBoardUsersTabContent',
+			selectedClass: 'selected',
+			deselectedClass: '',
+			tabs: 'li', clickers: 'li a', sections: 'div.tabcontent',
+			cookieName: 'dashBoardUsersTab'
+		});
+	}
+	if ($('dashBoardContentTab'))
 	{
-		tabsContainer: 'dashBoardContentTab',
-		sectionsContainer: 'dashBoardContentTabContent',
-		selectedClass: 'selected',
-		deselectedClass: '',
-		tabs: 'li', clickers: 'li a', sections: 'div.tabcontent',
-		cookieName: 'dashBoardContentTab'
-	});
-
+		var dashBoardContentTabSwapper = new TabSwapper(
+		{
+			tabsContainer: 'dashBoardContentTab',
+			sectionsContainer: 'dashBoardContentTabContent',
+			selectedClass: 'selected',
+			deselectedClass: '',
+			tabs: 'li', clickers: 'li a', sections: 'div.tabcontent',
+			cookieName: 'dashBoardContentTab'
+		});
+	}
 
 	articles.each(function(item, idx)
 	{
@@ -455,31 +453,33 @@
 		});
 	});
 
-
-	var desktopIcons = $('shortcutBloc').getElements('.desktopIcon');
-
-    desktopIcons.each(function(icon)
+	if ($('shortcutBloc'))
 	{
-        icon.addEvent('click', function(e)
-		{
-			if (icon.getProperty('data-external'))
-			{
-                window.location.href = icon.getProperty('data-url');
-            }
-			else
-			{
-				var options = {
-                    element: $('mainPanel'),
-                    title: Lang.get(icon.getProperty('data-title')),
-                    url : icon.getProperty('data-url')
-				};
-				if (icon.getProperty('data-url') == 'media/get_media_manager')
-                    options.padding = {top: 0, right: 0, bottom: 0, left: 0};
+		var desktopIcons = $('shortcutBloc').getElements('.desktopIcon');
 
-                ION.contentUpdate(options);
-            }
-        });
-	});
+		desktopIcons.each(function(icon)
+		{
+			icon.addEvent('click', function(e)
+			{
+				if (icon.getProperty('data-external'))
+				{
+					window.location.href = icon.getProperty('data-url');
+				}
+				else
+				{
+					var options = {
+						element: $('mainPanel'),
+						title: Lang.get(icon.getProperty('data-title')),
+						url : icon.getProperty('data-url')
+					};
+					if (icon.getProperty('data-url') == 'media/get_media_manager')
+						options.padding = {top: 0, right: 0, bottom: 0, left: 0};
+
+					ION.contentUpdate(options);
+				}
+			});
+		});
+	}
 
 	// Modules Icons actions
 	$$('.desktopModuleIcon').each(function(item)

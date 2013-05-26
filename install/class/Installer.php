@@ -777,10 +777,7 @@ class Installer
 		}
 		
 
-		/* 
-		 * If database don't exists, create it !
-		 *
-		 */
+		// If database doesn't exists, create it !
 		if ( ! $this->db->db_select())
 		{
 			// Loads CI DB Forge class
@@ -804,10 +801,7 @@ class Installer
 		}
 
 		
-		/*
-		 * Select database, save database config file and launch SQL table creation script
-		 *
-		 */
+		// Select database, save database config file and launch SQL table creation script
 		// The database should exists, so try to connect
 		if ( ! $this->db->db_select())
 		{
@@ -852,11 +846,8 @@ class Installer
 				$this->db->query("DELETE FROM setting WHERE name='test'");
 			}
 			
-			/*
-			 * Base content insert
-			 * In case of migration (content already exists), the existing content will not be overwritten
-			 *
-			 */
+			// Basis content insert
+			// In case of migration (content already exists), the existing content will not be overwritten
 			foreach ($content as $sql)
 			{
 				$this->db->query($sql);
@@ -866,13 +857,8 @@ class Installer
 			$this->template['database_installation_message'] = lang('database_success_install');
 		}
 		
-		
-		/**
-		 * Check for migration and redirect
-		 *
-		 */		
+		// Check for migration and redirect
 		$migration_files = $this->_get_migration_files();
-
 
 		if ( ! empty($migration_files))
 		{
@@ -894,8 +880,6 @@ class Installer
 	}
 
 
-
-	
 	// --------------------------------------------------------------------
 
 
@@ -908,10 +892,7 @@ class Installer
 		// Config library
 		require_once('./class/Config.php');
 
-		/*
-		 * Saves the new encryption key
-		 *
-		 */
+		// Saves the new encryption key
 		if ( !empty($_POST['encryption_key']) && strlen($_POST['encryption_key']) > 31)
 		{
 			include(APPPATH.'config/config.php');
@@ -930,10 +911,7 @@ class Installer
 			}
 		}
 
-		/*
-		 * Saves the users data
-		 *
-		 */
+		// Saves the users data
 		$fields = array('username', 'screen_name', 'email', 'password', 'password2');
 		
 		// Post data
@@ -1185,10 +1163,10 @@ class Installer
 				$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 			}
 	
-			 // From Ionize 0.92
-			 // The 'extend_field' table does not contains the 'value' field
-			 // If it contains this field, we are already in a 0.93 verion, so no migration
-			 // If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
+			// From Ionize 0.92
+			// The 'extend_field' table does not contains the 'value' field
+			// If it contains this field, we are already in a 0.93 verion, so no migration
+			// If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
 			if (empty($migration_xml))
 			{
 				$migrate_from = true;
@@ -1216,9 +1194,9 @@ class Installer
 			}
 	
 	
-			 // From Ionize 0.93
-			 // if the 'users' table field 'join_date' has the TIMESTAMP type, we will migrate the accounts.
-			 // If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
+			// From Ionize 0.93
+			// if the 'users' table field 'join_date' has the TIMESTAMP type, we will migrate the accounts.
+			// If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
 			if (empty($migration_xml))
 			{
 				$migrate_from = true;
@@ -1245,7 +1223,7 @@ class Installer
 				}
 			}
 
-			 // From Ionize 0.9.4 : the users.id_user field does not exists
+			// From Ionize 0.9.4 : the users.id_user field does not exists
 			if (empty($migration_xml))
 			{
 				$migrate_from = false;
@@ -1388,8 +1366,6 @@ class Installer
 	 */
 	function _test_file($files)
 	{
-		$return = array();
-	
 		foreach ($files as $file)
 		{
 			if ( ! is_really_writable($file)) return false;
@@ -1731,9 +1707,6 @@ class Installer
 		}
 		return $key;
 	}
-	
-	
-	
 }
 
 

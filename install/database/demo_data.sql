@@ -1,8 +1,10 @@
 /**
- * Ionize 0.9.9.X
+ * Ionize 1.0.0.x
  * "Demo" theme example data
+ *
  * These data are provided as demo content for the theme "Demo"
- * --#-- is used as SQL request separator by the installer.
+ * --#-- :  is used as SQL request separator by the installer
+ *          must be placed after each request
  *
  */
 
@@ -18,7 +20,7 @@ UPDATE setting SET content='foundation' WHERE name='theme';
 --#--
 DELETE FROM setting WHERE name='site_title';
 --#--
-INSERT INTO setting VALUES('', 'site_title', 'Ionize CMS', 'en');
+INSERT INTO setting VALUES('', 'site_title', 'Ionize CMS Demo', 'en');
 --#--
 
 
@@ -168,9 +170,7 @@ TRUNCATE category_lang;
 INSERT INTO category_lang (id_category, lang, title, subtitle, description)
 VALUES
 	(1,'en','Ionize CMS','',''),
-	(2,'en','Website','',''),
-	(2,'fr','','',''),
-	(2,'tr','','','');
+	(2,'en','Website','','');
 --#--
 
 
@@ -211,7 +211,7 @@ VALUES
 	('en',4,'Mingun','Alot of young munks live in a monastery next to the Hsinbyume pagoda','Alot of young munks live in a monastery next to the Hsinbyume pagoda'),
 	('en',5,'Mandalay','One working day in the historical capital of Burma.','One working day in the historical capital of Burma.'),
 	('en',6,'Monywa, Burma','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.'),
-	('en',7,'Monywa wall paints','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.'),
+	('en',7,'Monywa wall paints','These 17th century wall painting are very well preserved because the caves were forgivven for centuries.','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.'),
 	('en',10,'Edit Article','','With Ionize CMS, edit instantly your content in all languages'),
 	('en',11,'Dashboard','','Ionize CMS dashboard gives an overview of the last actions on your website'),
 	('en',12,'Nativelly Multilingual','','Every language can be setup by the user !'),
@@ -243,16 +243,16 @@ VALUES
 TRUNCATE page;
 --#--
 
-INSERT INTO page (id_page, id_parent, id_menu, id_type, id_subnav, name, ordering, level, online, home, author, updater, created, publish_on, publish_off, updated, logical_date, appears, has_url, view, view_single, article_list_view, article_view, article_order, article_order_direction, link, link_type, link_id, pagination, id_group, priority, used_by_module)
+INSERT INTO page (id_page, id_parent, id_menu, id_type, id_subnav, name, ordering, level, online, home, author, updater, created, publish_on, publish_off, updated, logical_date, appears, has_url, view, view_single, article_list_view, article_view, article_order, article_order_direction, link, link_type, link_id, pagination, priority, used_by_module)
 VALUES
-	(1,0,2,0,0,'404',0,0,1,0,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:42:05','0000-00-00 00:00:00',0,1,'','','','','ordering','ASC','',NULL,'',0,0,5,0),
-	(2,0,1,0,0,'welcome',1,0,1,1,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-23 01:05:34','0000-00-00 00:00:00',1,1,'page_home','','','','ordering','ASC','',NULL,'',0,0,5,0),
-	(3,0,1,0,0,'about-ionize-cms',5,0,1,0,'demo','demo','2012-11-17 09:42:18','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-06 16:27:42','0000-00-00 00:00:00',1,1,'pages/page_standard','pages/page_standard',NULL,'','ordering','ASC','',NULL,'',0,0,5,0),
-	(4,0,1,0,0,'contact',6,0,1,0,'demo','demo','2012-11-17 09:42:35','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:34:59','0000-00-00 00:00:00',1,1,'page_contact','','','','ordering','ASC','',NULL,'',0,0,5,0),
-	(6,0,1,0,0,'blog',2,0,1,0,'demo','demo','2012-11-17 13:57:58','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:07:43','0000-00-00 00:00:00',1,1,'page_blog','page_blog_post','','','ordering','ASC','',NULL,'',3,0,5,0),
-	(8,0,1,0,0,'services',4,0,1,0,'demo','demo','2012-11-20 22:12:25','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 16:53:44','0000-00-00 00:00:00',1,1,'','','','','ordering','ASC','',NULL,'',0,0,5,0),
-	(9,0,2,0,0,'footer',1,0,1,0,'demo','demo','2012-11-21 11:52:24','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-21 11:52:30','0000-00-00 00:00:00',0,1,'','',NULL,'','ordering','ASC','',NULL,'',0,0,5,0),
-	(10,0,1,0,0,'my-account',7,0,1,0,'demo','demo','2012-12-21 20:11:47','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 10:53:57','0000-00-00 00:00:00',1,1,'page_my_account','',NULL,'','ordering','ASC','',NULL,'',0,0,5,0);
+	(1,0,2,0,0,'404',0,0,1,0,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:42:05','0000-00-00 00:00:00',0,1,'','','','','ordering','ASC','',NULL,'',0,5,0),
+	(2,0,1,0,0,'welcome',1,0,1,1,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-23 01:05:34','0000-00-00 00:00:00',1,1,'page_home','','','','ordering','ASC','',NULL,'',0,5,0),
+	(3,0,1,0,0,'about-ionize-cms',5,0,1,0,'demo','demo','2012-11-17 09:42:18','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-06 16:27:42','0000-00-00 00:00:00',1,1,'pages/page_standard','pages/page_standard',NULL,'','ordering','ASC','',NULL,'',0,5,0),
+	(4,0,1,0,0,'contact',6,0,1,0,'demo','demo','2012-11-17 09:42:35','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:34:59','0000-00-00 00:00:00',1,1,'page_contact','','','','ordering','ASC','',NULL,'',0,5,0),
+	(6,0,1,0,0,'blog',2,0,1,0,'demo','demo','2012-11-17 13:57:58','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:07:43','0000-00-00 00:00:00',1,1,'page_blog','page_blog_post','','','ordering','ASC','',NULL,'',3,5,0),
+	(8,0,1,0,0,'services',4,0,1,0,'demo','demo','2012-11-20 22:12:25','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 16:53:44','0000-00-00 00:00:00',1,1,'','','','','ordering','ASC','',NULL,'',0,5,0),
+	(9,0,2,0,0,'footer',1,0,1,0,'demo','demo','2012-11-21 11:52:24','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-11-21 11:52:30','0000-00-00 00:00:00',0,1,'','',NULL,'','ordering','ASC','',NULL,'',0,5,0),
+	(10,0,1,0,0,'my-account',7,0,1,0,'demo','demo','2012-12-21 20:11:47','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 10:53:57','0000-00-00 00:00:00',1,1,'page_my_account','',NULL,'','ordering','ASC','',NULL,'',0,5,0);
 --#--
 
 
@@ -278,7 +278,7 @@ VALUES
 	(6,7,1,NULL,3,NULL,'','','',1),
 	(6,8,1,NULL,4,NULL,'','','',1),
 	(6,9,1,NULL,5,NULL,'','','',1),
-	(6,10,1,'0',6,0,'','','',1),
+	(6,10,1,NULL,6,0,'','','',1),
 	(8,17,1,NULL,1,NULL,'','','',1),
 	(8,18,1,NULL,2,4,'','','',1),
 	(8,19,1,NULL,3,4,'','','',1),

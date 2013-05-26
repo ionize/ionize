@@ -747,7 +747,12 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'show_help_tips', '1', '');</query>
 
 		<query>INSERT IGNORE INTO setting VALUES ('', 'display_connected_label', '1', '');</query>
-		<query>INSERT IGNORE INTO setting VALUES ('', 'texteditor', 'tinymce', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_shortcuts', '1', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_modules', '1', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_users', '1', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_content', '1', '');</query>
+
+        <query>INSERT IGNORE INTO setting VALUES ('', 'texteditor', 'tinymce', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'media_thumb_size', '120', '');</query>
 
 		<query>INSERT IGNORE INTO setting VALUES ('', 'tinybuttons1', 'pdw_toggle,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker', '');</query>
@@ -771,8 +776,8 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
 
-        <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png',NULL);</query>
-        <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', NULL);</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png','');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', '');</query>
 
         <query>
 			INSERT IGNORE INTO menu (id_menu, name, title) VALUES

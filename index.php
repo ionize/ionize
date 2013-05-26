@@ -18,7 +18,29 @@
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'development');
+/*
+switch ($_SERVER['HTTP_HOST'])
+{
+	case 'localhost':
+	case '127.0.0.1':
+		define('ENVIRONMENT','development');
+		break;
+
+	case "x.x.x.x":
+	case "your.dev.server.tld":
+		define('ENVIRONMENT','testing');
+		break;
+
+	case "y.y.y.y":
+		define('ENVIRONMENT','pre-production');
+		break;
+
+	default:
+		define('ENVIRONMENT','production');
+}
+*/
+define('ENVIRONMENT','development');
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -33,17 +55,18 @@ if (defined('ENVIRONMENT'))
 	switch (ENVIRONMENT)
 	{
 		case 'development':
+		case 'testing':
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
 		break;
 	
-		case 'testing':
+		case 'pre-production':
 		case 'production':
 			error_reporting(0);
 		break;
 
 		default:
-			exit('The application environment is not set correctly.');
+			exit('index.php : The application environment is not set correctly.');
 	}
 }
 

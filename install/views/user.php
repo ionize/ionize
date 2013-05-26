@@ -76,16 +76,17 @@
 
 		<?php if ( ! empty($encryption_key)) :?>
 
+			<h2><?php echo lang('encryption_key') ?></h2>
 
-		<p class="highlight"><?php echo lang('encryption_key_text'); ?></p>
-		<dl>
-			<dt>
-				<label class="highlight"><?php echo lang('encryption_key')?></label>
-			</dt>
-			<dd class="highlight2">
-				<input name="encryption_key" type="text" class="inputtext w300" value="<?php echo $encryption_key ?>"></input>
-			</dd>
-		</dl>
+			<p><?php echo lang('encryption_key_text'); ?></p>
+			<dl>
+				<dt>
+					<label><?php echo lang('encryption_key')?></label>
+				</dt>
+				<dd>
+					<input name="encryption_key" type="text" class="inputtext w300" value="<?php echo $encryption_key ?>"></input>
+				</dd>
+			</dl>
 
 		<?php endif ;?>
 

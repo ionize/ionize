@@ -13,6 +13,7 @@
 	<!-- Tabs -->
 	<div id="ionizeSettingsTab" class="mainTabs">
 		<ul class="tab-menu">
+			<li id="ui_dashboard_settings"><a><?php echo lang('ionize_title_dashboard'); ?></a></li>
 			<li id="ui_visual_settings"><a><?php echo lang('ionize_title_visual_help'); ?></a></li>
 			<li id="ui_language_settings"><a><?php echo lang('ionize_title_admin_panel_languages'); ?></a></li>
 			<li id="ui_datetime_settings"><a><?php echo lang('ionize_title_admin_panel_datetime'); ?></a></li>
@@ -25,19 +26,54 @@
 
 		<form name="ionizeSettingsForm" id="ionizeSettingsForm" method="post">
 
-			<!-- Visual help : help tips and "Connected" label -->
+			<!-- Dashboard -->
 			<div class="tabcontent">
 
-				<!--
+				<!-- Shortcuts Block -->
 				<dl>
 					<dt>
-						<label for="show_help_tips" title="<?php echo lang('ionize_help_help'); ?>"><?php echo lang('ionize_label_show_help_tips'); ?></label>
+						<label for="display_dashboard_shortcuts" title="<?php echo lang('ionize_help_display_dashboard_shortcuts'); ?>"><?php echo lang('ionize_label_display_dashboard_shortcuts'); ?></label>
 					</dt>
 					<dd>
-						<input class="inputcheckbox" type="checkbox" name="show_help_tips" id="show_help_tips" <?php if (Settings::get('show_help_tips') == '1'):?> checked="checked" <?php endif;?> value="1" />
+						<input class="inputcheckbox" type="checkbox" name="display_dashboard_shortcuts" id="display_dashboard_shortcuts" <?php if (Settings::get('display_dashboard_shortcuts') == '1'):?> checked="checked" <?php endif;?> value="1" />
 					</dd>
 				</dl>
-				-->
+
+				<!-- Modules Block -->
+				<dl>
+					<dt>
+						<label for="display_dashboard_modules" title="<?php echo lang('ionize_help_display_dashboard_modules'); ?>"><?php echo lang('ionize_label_display_dashboard_modules'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_dashboard_modules" id="display_dashboard_modules" <?php if (Settings::get('display_dashboard_modules') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
+				<!-- Users Block -->
+				<dl>
+					<dt>
+						<label for="display_dashboard_users" title="<?php echo lang('ionize_help_display_dashboard_users'); ?>"><?php echo lang('ionize_label_display_dashboard_users'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_dashboard_users" id="display_dashboard_users" <?php if (Settings::get('display_dashboard_users') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
+				<!-- Content Block -->
+				<dl>
+					<dt>
+						<label for="display_dashboard_content" title="<?php echo lang('ionize_help_display_dashboard_content'); ?>"><?php echo lang('ionize_label_display_dashboard_content'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_dashboard_content" id="display_dashboard_content" <?php if (Settings::get('display_dashboard_content') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
+			</div>
+
+
+			<!-- Visual help : help tips and "Connected" label -->
+			<div class="tabcontent">
 
 				<dl>
 					<dt>

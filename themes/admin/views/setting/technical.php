@@ -18,9 +18,9 @@
 			<li id="article_settings"><a><?php echo lang('ionize_title_article_management'); ?></a></li>
 			<li id="database_settings"><a><?php echo lang('ionize_title_database'); ?></a></li>
 			<li id="email_settings"><a><?php echo lang('ionize_title_mail_send'); ?></a></li>
-<!--
+			<!--
 			<li id="api_settings"><a><?php /*echo lang('ionize_title_api'); */?></a></li>
--->
+			-->
 			<li id="system_settings"><a><?php echo lang('ionize_title_system'); ?></a></li>
 
 		</ul>
@@ -506,7 +506,7 @@
 		</div>
 
 		<!-- API -->
-<!--
+		<!--
 		<div class="tabcontent">
 
             <p class="clear h20">
@@ -517,7 +517,7 @@
             </p>
 
         </div>
--->
+		-->
 
 
 		<!-- System -->
@@ -739,7 +739,6 @@
 
 	ION.initRequestEvent($('clear_cache'), 'setting/clear_cache');
 
-
 	// Admin URL form action
 	ION.addConfirmation(
 		'changeAdminUrl', 
@@ -798,7 +797,7 @@
 	}
 	changeEmailDetails();
 
-	
+
 	// Make each tree page draggable to the maintenance page container
 	if ($('maintenancePageContainer'))
 	{
@@ -832,26 +831,24 @@
 	}
 
 	// New API key button
-    $('buttonNewApiKey').addEvent('click', function()
-    {
-        ION.formWindow(
-			'apiKey',
-			'apiKeyForm',
-			Lang.get('ionize_button_new_api_key'),
-			'api/key_edit/',
-			{
-				width:450,
-				height:250
-			}
-        );
-    });
+	if ($('buttonNewApiKey'))
+	{
+		$('buttonNewApiKey').addEvent('click', function()
+		{
+			ION.formWindow(
+				'apiKey',
+				'apiKeyForm',
+				Lang.get('ionize_button_new_api_key'),
+				'api/key_edit/',
+				{
+					width:450,
+					height:250
+				}
+			);
+		});
+	}
 
-	/**
-	 * Save with CTRL+s
-	 *
-	 */
+	// Save with CTRL+s
 	ION.addFormSaveEvent('settingsFormSubmit');
-
-
 
 </script>
