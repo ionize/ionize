@@ -329,8 +329,9 @@ class Installer
 		
 			if ( ! empty($migration_files))
 			{
+				if (in_array('migration_0.9.9_1.0.0.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';
 				if (in_array('migration_0.9.7_0.9.9.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';
-				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';			
+				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';
 				if (in_array('migration_0.9.5_0.9.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.5</b>';			
 				if (in_array('migration_0.9.4_0.9.5.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.4</b>';			
 				if (in_array('migration_0.93_0.9.4.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.3</b>';			
@@ -350,12 +351,14 @@ class Installer
 		else
 		{
 			$this->db_connect();
-	
+
+			ini_set('allow_url_fopen', 'on');
+
 			// Migration
 			foreach ($migration_files as $file)
 			{
 				$xml = simplexml_load_file('./database/'.$file);
-					
+
 				$queries = $xml->xpath('/sql/query');
 	
 				foreach ($queries as $query)
@@ -519,7 +522,6 @@ class Installer
 			 */
 			if (in_array('migration_0.9.9_1.0.xml', $migration_files))
 			{
-				log_message('debug', 'Migration from 0.9.9');
 			}
 
 			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);

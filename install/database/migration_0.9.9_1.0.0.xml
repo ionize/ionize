@@ -14,7 +14,7 @@
     </query>
 
     <query>
-        CREATE TABLE api_key (
+        CREATE TABLE if not exists api_key (
             id int(11) NOT NULL AUTO_INCREMENT,
             `key` varchar(40) NOT NULL,
             `level` int(2) NOT NULL,
@@ -27,7 +27,7 @@
     </query>
 
     <query>
-        CREATE TABLE api_log (
+        CREATE TABLE if not exists api_log (
             id int(11) NOT NULL AUTO_INCREMENT,
             uri varchar(255) NOT NULL,
             method varchar(6) NOT NULL,
@@ -41,7 +41,7 @@
     </query>
 
     <query>
-        CREATE TABLE event_log (
+        CREATE TABLE if not exists event_log (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             status varchar(50) DEFAULT NULL,
             message text,
@@ -65,13 +65,24 @@
     <query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
     <query>INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
 
+    <query>drop table if exists tag;</query>
+    <query>
+        CREATE TABLE if not exists tag (
+        id_tag int(11) unsigned NOT NULL AUTO_INCREMENT,
+        tag_name varchar(50) DEFAULT NULL,
+        PRIMARY KEY (id_tag)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    </query>
 
+
+    <query>drop table if exists user;</query>
     <query>create table if not exists user as select * from users;</query>
     <query>alter table user change id_group id_role int(11) unsigned not null;</query>
     <query>alter table user add primary key(id_user);</query>
     <query>alter table user modify id_user int(11) unsigned auto_increment;</query>
     <query>drop table users;</query>
 
+    <query>drop table if exists role;</query>
     <query>create table if not exists role as select * from user_groups;</query>
     <query>alter table role change id_group id_role int(11) not null AUTO_INCREMENT PRIMARY KEY;</query>
     <query>alter table role change level role_level int(11);</query>
@@ -148,7 +159,7 @@
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (273,270,'admin/settings/themes','edit','Themes','Settings > Themes');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (274,270,'admin/settings/website','','Website settings','Settings > Website');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (275,270,'admin/settings/technical','','Technical settings','Settings > Technical');</query>
-    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (300,NULL,'admin/users_roles','','Users & Roles','Users & Roles');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (300,NULL,'admin/users_roles','','Users and Roles','Users and Roles');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (301,300,'admin/user','create,edit,delete','Users','Users');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');</query>
@@ -289,6 +300,4 @@
     <query>ALTER TABLE tracker CONVERT TO CHARACTER SET utf8;</query>
     <query>ALTER TABLE type CONVERT TO CHARACTER SET utf8;</query>
     <query>ALTER TABLE url CONVERT TO CHARACTER SET utf8;</query>
-    <query>ALTER TABLE user_groups CONVERT TO CHARACTER SET utf8;</query>
-    <query>ALTER TABLE users CONVERT TO CHARACTER SET utf8;</query>
 </sql>

@@ -62,9 +62,18 @@ INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');
 alter table page add deny_code varchar(3) NULL;
 alter table page drop id_group;
 
+drop table if exists tag;
+    
+CREATE TABLE if not exists tag (
+  id_tag int(11) unsigned NOT NULL AUTO_INCREMENT,
+  tag_name varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id_tag)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    
 
 
 -- User table
+drop table if exists user;
 create table if not exists user as select * from users;
 alter table user change id_group id_role int(11) unsigned not null;
 alter table user add primary key(id_user);
@@ -99,7 +108,7 @@ CREATE TABLE if not exists resource (
   UNIQUE KEY resource_key (resource)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO resource (id_resource, id_parent, resource, actions, title, description)
+INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description)
 VALUES
 	(1,NULL,'admin','','Backend login','Connect to ionize backend'),
 	(10,NULL,'admin/menu','create,edit,delete','Menu','Menus'),
@@ -302,6 +311,4 @@ ALTER TABLE tag CONVERT TO CHARACTER SET utf8;
 ALTER TABLE tracker CONVERT TO CHARACTER SET utf8;
 ALTER TABLE type CONVERT TO CHARACTER SET utf8;
 ALTER TABLE url CONVERT TO CHARACTER SET utf8;
-ALTER TABLE user_groups CONVERT TO CHARACTER SET utf8;
-ALTER TABLE users CONVERT TO CHARACTER SET utf8;
 
