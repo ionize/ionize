@@ -150,7 +150,7 @@
 
 					<form method="post" action="">
 						<input type="hidden" name="form" value="logout" />
-						<input type="submit" class="button success" value="<ion:lang key='button_logout' />" />
+						<input type="submit" class="button success" value="<ion:lang key='form_button_logout' />" />
 					</form>
 
 				</ion:user:logged>

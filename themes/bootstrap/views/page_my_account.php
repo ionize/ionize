@@ -230,7 +230,7 @@
 
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn btn-primary"><ion:lang key='button_login' /></button>
+                                    <button type="submit" class="btn btn-primary"><ion:lang key='form_button_login' /></button>
                                 </div>
                             </div>
                         </form>
@@ -252,7 +252,7 @@
 
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn btn-info"><ion:lang key='button_password_back' /></button>
+                                    <button type="submit" class="btn btn-info"><ion:lang key='form_button_password_back' /></button>
                                 </div>
                             </div>
                         </form>

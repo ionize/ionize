@@ -32,6 +32,9 @@ $lang['form_label_screen_name'] = 'Screen Name';
 $lang['form_label_username'] = 'User name';
 $lang['form_label_birthdate'] = 'Birthdate';
 $lang['form_label_gender'] = 'Gender';
+$lang['form_label_gender_female'] = 'Female';
+$lang['form_label_gender_male'] = 'Male';
+$lang['form_label_gender_unisex'] = 'I prefer not to say';
 $lang['form_label_login'] = 'Login';
 $lang['form_label_password'] = 'Password';
 $lang['form_label_password_confirmation'] = 'Password confirm';
@@ -50,6 +53,7 @@ $lang['form_button_logout'] = "Logout";
 $lang['form_button_post'] = "Post";
 $lang['form_button_answer'] = "Answer";
 $lang['form_button_save_profile'] = "Save Profile";
+$lang['form_button_password_back'] = "Get password back";
 
 /*
 |--------------------------------------------------------------------------

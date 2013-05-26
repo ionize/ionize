@@ -40,11 +40,13 @@ $config['forms'] = array
 			),
 		)
 	),
+
 	'logout' =>array
 	(
 		'process' => 'TagManager_User::process_data',
 		'redirect' => 'home',
 	),
+
 	// Register Form
 	'register' => array
 	(
@@ -121,6 +123,7 @@ $config['forms'] = array
 			*/
 		),
 	),
+
 	'profile' => array
 	(
 		'process' => 'TagManager_User::process_data',
@@ -164,6 +167,7 @@ $config['forms'] = array
 			),
 		),
 	),
+
 	'password' => array
 	(
 		'process' => 'TagManager_User::process_data',
