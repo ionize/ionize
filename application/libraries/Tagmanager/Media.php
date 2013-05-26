@@ -505,6 +505,3 @@ class TagManager_Media extends TagManager
 		return self::$ci->medias->get_thumb_folder($settings);
 	}
 }
-
-/* End of file Media.php */
-/* Location: /application/libraries/Tagmanager/Media.php */

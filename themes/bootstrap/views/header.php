@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-    <html lang="<ion:current_lang />">
+    <html lang="<ion:language:code />" dir="<ion:language:dir />">
     <head>
         <meta charset="utf-8">
         <title><ion:meta_title /> | <ion:site_title /></title>

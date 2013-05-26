@@ -379,7 +379,8 @@ ION.TreeXhr = new Class({
 		if (title == '') title = element.name;
 
 		// Items to update
-		var items = this.ionizeTrees.getElements(selector);
+		var ionizeTrees = this.ionizeTrees;
+		var items = ionizeTrees.getElements(selector);
 
 		ION.Authority.initialize({
 			'refresh':true,
@@ -416,10 +417,11 @@ ION.TreeXhr = new Class({
 					if (type == 'page')
 					{
 						// Home page icon
+						item.getFirst('.folder').removeClass('home');
 						var home_page = (element.home && element.home == '1') ? true : false;
 						if (home_page)
 						{
-							this.ionizeTrees.getElements('.folder.home').removeClass('home');
+							ionizeTrees.getElements('.folder.home').removeClass('home');
 							item.getFirst('.folder').addClass('home');
 						}
 

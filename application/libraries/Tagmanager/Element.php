@@ -421,6 +421,3 @@ class TagManager_Element extends TagManager
 		}
 	}
 }
-
-/* End of file Element.php */
-/* Location: /application/libraries/Tagmanager/Element.php */

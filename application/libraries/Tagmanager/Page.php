@@ -954,8 +954,4 @@ class TagManager_Page extends TagManager
 
 		return $view;
 	}
-
 }
-
-/* End of file Page.php */
-/* Location: /application/libraries/Tagmanager/Page.php */

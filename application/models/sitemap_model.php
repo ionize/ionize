@@ -63,6 +63,7 @@ class Sitemap_model extends Base_model
 
 		$sql = "
 			select
+				home,
 				IF(url !='', url, name ) AS url,
 				url.path,
 				created, updated, publish_on, logical_date,

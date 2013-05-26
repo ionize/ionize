@@ -233,9 +233,9 @@ $protected_role_codes = array(
 
 		<?php if ( Authority::can('access', 'admin/modules/permissions')) :?>
 
-		<?php
-log_message('error', print_r(json_decode($json_modules_resources), true));
- ?>
+			<?php
+			// log_message('error', print_r(json_decode($json_modules_resources), true));
+ 			?>
 
 			var modRules = new ION.PermissionTree(
 				'modulesRulesContainer',

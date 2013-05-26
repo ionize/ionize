@@ -51,6 +51,7 @@ class TagManager_Navigation extends TagManager
 		'language:active_class' =>	'tag_simple_value',
 		'language:default' =>		'tag_language_default',
 		'language:online' =>		'tag_simple_value',
+		'language:dir' =>			'tag_language_dir',
 
 		'language:is_active' =>		'tag_is_active',
 	);
@@ -718,14 +719,34 @@ class TagManager_Navigation extends TagManager
 		return self::output_value($tag, $tag->getValue('lang'));
 	}
 
+
+	/**
+	 * Returns language's direction : 'ltr' or 'rtl'
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 *
+	 */
+	public static function tag_language_dir(FTL_Binding $tag)
+	{
+		$dir = $tag->getValue('direction');
+
+		$dir = ($dir == 1 OR empty($dir)) ? 'ltr' : 'rtl';
+
+		return self::output_value($tag, $dir);
+	}
+
+
+	/**
+	 * Returns the default language
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
 	public static function tag_language_default(FTL_Binding $tag)
 	{
 		return self::output_value($tag, $tag->getValue('def'));
 	}
-
-
-
 }
-
-/* End of file Navigation.php */
-/* Location: /application/libraries/Tagmanager/Navigation.php */

@@ -34,7 +34,10 @@ class Structure{
 
 	var $setting = array();
 	
-	// Filter used by filtering function
+	/**
+	 * Filter used by filtering function
+	 * @var
+	 */
 	var $filter;
 
 
@@ -145,11 +148,10 @@ class Structure{
 	 *
 	 * Admin front-end
 	 *
-	 * @param	array	Array of pages
-	 * @param	int		ID of current edited page. This ID will not be included in the returned array
+	 * @param      $items		Array of pages
+	 * @param bool $id_page		ID of current edited page. This ID will not be included in the returned array
 	 *
-	 * @return	array	Simple array of pages
-	 *
+	 * @return array			Simple array of pages
 	 */
 	function _get_parent_select_items($items, $id_page=FALSE)
 	{
@@ -181,7 +183,16 @@ class Structure{
 
 	// ------------------------------------------------------------------------
 
-	
+
+	/**
+	 * @param      $data
+	 * @param      $id_parent
+	 * @param int  $startDepth
+	 * @param      $maxDepth
+	 * @param bool $articles
+	 *
+	 * @return array
+	 */
 	function get_tree_navigation($data, $id_parent, $startDepth=0, $maxDepth=-1, $articles=FALSE)
 	{
 		// Pages array
@@ -208,9 +219,10 @@ class Structure{
 
 	/**
 	 * Gets the array of active pages
-	 * @param	mixed	ID of the page
+	 * @param $pages
+	 * @param $id_page
 	 *
-	 *
+	 * @return array
 	 */
 	function get_active_pages($pages, $id_page)
 	{
@@ -256,6 +268,7 @@ class Structure{
 		
 		$langs = Settings::get_online_languages();
 		$full = (config_item('url_mode') == 'full') ? TRUE : FALSE;
+		$default_lang = config_item('default_lang_code');
 
 		if (count($langs) > 1 OR Settings::get('force_lang_urls') == '1')
 		{
@@ -286,8 +299,7 @@ class Structure{
 				foreach($pages[$code] as $page)
 				{
 					$item = array(
-						'loc' => ($full == TRUE) ? base_url() . $code . '/' .  $page['path'] : base_url() . $code . '/' . $page['url'],
-						// ISO 8601 format - date("c") requires PHP5
+						'loc' => ($full == TRUE) ? base_url() . ($page['home'] == '1' && $code == $default_lang ? '' : $code . '/') .  ($page['home'] != '1' ? $page['path'] : '') : base_url() . $code . '/' . ($page['home'] != '1' ? $page['url'] : ''),
 						'lastmod' => date("c", strtotime($page['date'])),
 						'changefreq' => 'weekly',
 						'priority' => number_format(($page['priority'] / 10), 1,'.','')
@@ -304,7 +316,6 @@ class Structure{
 			$pages = $ci->sitemap_model->get_pages();
 	
 			// Prepare pages :
-			// 
 			foreach($pages as &$p)
 			{
 				$p['date'] = $p['created'];
@@ -316,7 +327,7 @@ class Structure{
 			foreach($pages as $page)
 			{
 				$item = array(
-					'loc' => ($full == TRUE) ? base_url() . $page['path'] : base_url().$page['url'],
+					'loc' => ($full == TRUE) ? base_url() . ($page['home'] != '1' ? $page['path'] : '') : base_url() . ($page['home'] != '1' ? $page['url'] : ''),
 					// ISO 8601 format - date("c") requires PHP5
 					'lastmod' => date("c", strtotime($page['date'])),
 					'changefreq' => 'weekly',
@@ -330,7 +341,3 @@ class Structure{
 		$file_name = $ci->sitemaps->build('sitemap.xml');
 	}
 }
-
-
-/* End of file Structure.php */
-/* Location: ./application/libraries/Structure.php */

@@ -675,7 +675,7 @@ if ($tracker_title == '')
 	}
 
 	// Copy Lang data to other languages dynamically
-	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content'));
+	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content', 'meta_title'));
 	
 	// Tabs
 	var articleTab = new TabSwapper({tabsContainer: 'articleTab', sectionsContainer: 'articleTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleTab' });

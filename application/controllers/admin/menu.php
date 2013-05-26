@@ -117,7 +117,6 @@ class Menu extends MY_admin
 	 */
 	public function update()
 	{
-		log_message('error', print_r($this->input->post(), true));
 		$id = $this->input->post('id_menu');
 
 		if ($id)

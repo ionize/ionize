@@ -75,8 +75,8 @@ class Tracker_model extends Base_Model
 	public function get_users()
 	{
 		$this->{$this->db_group}->where('last_time > ', 'now()-5', FALSE);
-		$this->{$this->db_group}->join('users', 'users.id_user = ' .$this->table.'.id_user', 'inner');
-		$this->{$this->db_group}->select('users.screen_name, users.username, users.email');
+		$this->{$this->db_group}->join('user', 'user.id_user = ' .$this->table.'.id_user', 'inner');
+		$this->{$this->db_group}->select('user.screen_name, user.username, user.email');
 
 		$users = $this->get_list();
 

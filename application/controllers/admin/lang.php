@@ -197,20 +197,27 @@ class Lang extends MY_admin
 
 				// Article : Copy only this article content
 				case 'article' :
-					
+					$this->load->model('article_model', '', true);
+
 					$rel = explode(".",  $rel);
 					$id_page = $rel[0];
 					$id_article = $rel[1];
 					
 					// Copy
 					$this->lang_model->copy_lang_content($from, $to, 'article', $id_article);
-					
-					$this->update[] = array(
-						'element' => 'mainPanel',
-						'url' => admin_url() . 'article/edit/'.$id_page.'.'.$id_article,
-						'title' => lang('ionize_title_edit_article')
+
+					$article_lang = $this->article_model->get_by_id($id_article, Settings::get_lang('default'));
+					$title = empty($article_lang['title']) ? $article_lang['name'] : $article_lang['title'];
+
+					$this->callback[] =	array(
+						'fn' => 'ION.splitPanel',
+						'args' => array(
+							'urlMain'=> admin_url() . 'article/edit/'.$id_page.'.'.$id_article,
+							'urlOptions'=> admin_url() . 'article/get_options/'.$id_page.'.'.$id_article,
+							'title'=> lang('ionize_title_edit_article') . ' : ' . $title
+						)
 					);
-					
+
 					$this->success(lang('ionize_message_article_content_copied'));
 
 					break;
@@ -218,6 +225,9 @@ class Lang extends MY_admin
 
 				// Page : Copy this page content. Articles content optional
 				case 'page' :
+					$this->load->model('page_model', '', true);
+
+					$message = lang('ionize_message_page_content_copied');
 
 					// Copy
 					$this->lang_model->copy_lang_content($from, $to, 'page', $id_page);
@@ -230,16 +240,24 @@ class Lang extends MY_admin
 						$articles = $this->article_model->get_lang_list(array('id_page' => $id_page));
 						
 						foreach($articles as $article)
-						{
 							$this->lang_model->copy_lang_content($from, $to, 'article', $article['id_article']);
-						}
 
-						$this->success(lang('ionize_message_page_article_content_copied'));
+						$message = lang('ionize_message_page_article_content_copied');
 					}
-					else
-					{
-						$this->success(lang('ionize_message_page_content_copied'));
-					}
+
+					$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
+					$title = empty($page['title']) ? $page['name'] : $page['title'];
+
+					$this->callback[] =	array(
+						'fn' => 'ION.splitPanel',
+						'args' => array(
+							'urlMain'=> admin_url() . 'page/edit/'.$id_page,
+							'urlOptions'=> admin_url() . 'page/get_options/'.$id_page,
+							'title'=> lang('ionize_title_edit_page') . ' : ' . $title
+						)
+					);
+
+					$this->success($message);
 
 					break;
 				
@@ -253,19 +271,14 @@ class Lang extends MY_admin
 					$pages = $this->page_model->get_lang_list();
 					
 					foreach($pages as $page)
-					{
 						$this->lang_model->copy_lang_content($from, $to, 'page', $page['id_page']);
-					}
-					
+
 					// Articles content copy
-					
 					$articles = $this->article_model->get_lang_list();
 					
 					foreach($articles as $article)
-					{
 						$this->lang_model->copy_lang_content($from, $to, 'article', $article['id_article']);
-					}
-					
+
 					$this->success(lang('ionize_message_lang_content_copied'));
 					
 					break;
@@ -291,10 +304,11 @@ class Lang extends MY_admin
 		{
 			// Update existing languages
 			$data = array(
-						'lang' =>		$this->input->post('lang_'.$lang['lang']),
-						'name' =>		$this->input->post('name_'.$lang['lang']),
-						'online' =>		$this->input->post('online_'.$lang['lang'])
-					);
+				'lang' =>		$this->input->post('lang_'.$lang['lang']),
+				'name' =>		$this->input->post('name_'.$lang['lang']),
+				'online' =>		$this->input->post('online_'.$lang['lang']),
+				'direction' =>		$this->input->post('direction_'.$lang['lang']),
+			);
 
 			($this->input->post('default_lang') == $lang['lang']) ? $data['def'] = '1' : $data['def'] = '0';
 
@@ -400,6 +414,9 @@ class Lang extends MY_admin
 			$this->error(lang('ionize_message_lang_not_deleted'));			
 		}
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	function _reload_panel()

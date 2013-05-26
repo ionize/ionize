@@ -65,8 +65,6 @@
 									</dt>
 									<dd>
 										<input name="lang_<?php echo $code; ?>" id="lang_<?php echo$code?>" class="inputtext" type="text" value="<?php echo $code; ?>"/>
-
-
 									</dd>
 								</dl>
 
@@ -77,6 +75,19 @@
 									</dt>
 									<dd>
 										<input name="name_<?php echo $code; ?>" id="name_<?php echo$code?>" class="inputtext" type="text" value="<?php echo $name; ?>"/>
+									</dd>
+								</dl>
+
+								<!-- Direction -->
+								<dl class="small mt10">
+									<dt>
+										<label><?php echo lang('ionize_label_lang_direction'); ?></label>
+									</dt>
+									<dd>
+										<input id="direction_<?php echo $code; ?>_1" <?php if ($lang['direction'] == '1' OR empty($lang['direction'])):?>checked="checked"<?php endif;?> type="radio" name="direction_<?php echo $code; ?>" class="inputradio" value="1" />
+										<label for="direction_<?php echo $code; ?>_1"><?php echo lang('ionize_label_lang_direction_ltr'); ?></label>
+										<input id="direction_<?php echo $code; ?>_2" <?php if ($lang['direction'] == '2'):?>checked="checked"<?php endif;?> type="radio" name="direction_<?php echo $code; ?>" class="inputradio" value="2" />
+										<label for="direction_<?php echo $code; ?>_2"><?php echo lang('ionize_label_lang_direction_rtl'); ?></label>
 									</dd>
 								</dl>
 

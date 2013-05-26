@@ -424,7 +424,7 @@ class Article extends MY_admin
 					);
 				}
 
-				// Reloads the page edition panel
+				// Reloads the edition panel
 				$this->_reload_panel($this->data['id_page'], $this->id);
 
 				// Answer
@@ -495,7 +495,7 @@ class Article extends MY_admin
 		// Context update
 		$this->update_contexts($id_article);
 
-		// Reloads the page edition panel
+		// Reloads the edition panel
 		$this->_reload_panel($id_page, $id_article);
 
 		// Answer
@@ -1795,7 +1795,7 @@ class Article extends MY_admin
 
 
 	/**
-	 * Reloads the Page Edition panel
+	 * Reloads the Edition panel
 	 *
 	 * @param $id_page
 	 * @param $id_article

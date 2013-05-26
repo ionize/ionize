@@ -259,6 +259,7 @@ CREATE TABLE IF NOT EXISTS lang (
   online char(1) default '0',
   def char(1) default '0',
   ordering int(11),
+  direction smallint(1) NOT NULL default 1,
   PRIMARY KEY  (lang)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 

@@ -5,6 +5,10 @@
 		update setting set content='1.0.0' where name = 'ionize_version';
 	</query>
 
+	<query>
+        ALTER TABLE lang ADD direction smallint(1) NOT NULL DEFAULT 1;
+	</query>
+
     <query>
         ALTER TABLE media ADD provider varchar(50) NOT NULL DEFAULT  '';
     </query>

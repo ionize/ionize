@@ -5,6 +5,9 @@
 
 update setting set content='1.0.0' where name = 'ionize_version';
 
+ALTER TABLE lang ADD direction smallint(1) NOT NULL DEFAULT 1;
+
+
 ALTER TABLE media ADD provider varchar(50) NOT NULL DEFAULT  '';
 
 
