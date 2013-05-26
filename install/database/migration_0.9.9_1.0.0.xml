@@ -64,6 +64,10 @@
     <query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');</query>
     <query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
     <query>INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_shortcuts', '1', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_modules', '1', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_users', '1', '');</query>
+    <query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_content', '1', '');</query>
 
     <query>drop table if exists tag;</query>
     <query>

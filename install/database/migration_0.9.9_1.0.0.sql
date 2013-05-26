@@ -57,6 +57,12 @@ INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');
 INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');
 INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_shortcuts', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_modules', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_users', '1', '');
+INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_content', '1', '');
+
+
 
 -- Page table
 alter table page add deny_code varchar(3) NULL;
