@@ -697,12 +697,6 @@ class Installer
 		return $id_page;
 	}
 
-<<<<<<< HEAD
-		// VERSION
-		/*
-		require_once('./class/Config.php');
-=======
->>>>>>> 04f6c0825f3a528a0bbc1bc715d965182da80956
 
 	public function _create_article($data, $id_page='0')
 	{
@@ -732,7 +726,6 @@ class Installer
 
 			$this->db->insert('article_lang', $lang_data);
 		}
-		*/
 
 		return $id_article;
 	}
