@@ -55,14 +55,9 @@
 
 			<!-- Input : Name -->
 
-			<label for="firstname"><ion:lang key="form_label_form_firstname" /></label>
-			<input name="firstname" type="text" id="firstname" value="<ion:form:contact:field:firstname />"<ion:form:contact:error:firstname is="true"> class="error" </ion:form:contact:error:firstname>/>
-			<ion:form:contact:error:firstname tag="small" class="error" />
-
-			<!-- Input : Surname -->
-			<label for="lastname"><ion:lang key="form_label_form_lastname" /></label>
-			<input name="lastname" type="text" id="lastname" value="<ion:form:contact:field:lastname />"<ion:form:contact:error:lastname is="true"> class="error" </ion:form:contact:error:lastname> />
-			<ion:form:contact:error:lastname tag="small" class="error" />
+			<label for="name"><ion:lang key="form_label_name" /></label>
+			<input name="name" type="text" id="name" value="<ion:form:contact:field:name />"<ion:form:contact:error:name is="true"> class="error" </ion:form:contact:error:name>/>
+			<ion:form:contact:error:name tag="small" class="error" />
 
 			<!-- Input : Email -->
 			<label for="email"><ion:lang key="form_label_email" /></label>
@@ -71,17 +66,17 @@
 
 
 			<!-- Input : Subject -->
-			<label for="subject"><ion:lang key="form_label_form_subject" /></label>
+			<label for="subject"><ion:lang key="form_label_subject" /></label>
 			<input name="subject" type="text" id="subject" value="<ion:form:contact:field:subject />"<ion:form:contact:error:subject is="true"> class="error" </ion:form:contact:error:subject> />
 			<ion:form:contact:error:subject tag="small" class="error" />
 
 			<!-- Input : Message -->
-			<label for="message"><ion:lang key="form_label_form_message" /></label>
-			<textarea name="message" id="message" rows="7" placeholder="<ion:lang key="form_label_form_message" />"<ion:form:contact:error:message is="true"> class="error" </ion:form:contact:error:message>><ion:form:contact:field:message /></textarea>
+			<label for="message"><ion:lang key="form_label_message" /></label>
+			<textarea name="message" id="message" rows="7" placeholder="<ion:lang key="form_label_message" />"<ion:form:contact:error:message is="true"> class="error" </ion:form:contact:error:message>><ion:form:contact:field:message /></textarea>
 			<ion:form:contact:error:message tag="small" class="error" />
 
 
-			<button type="submit" class="button success right"><ion:lang key="button_send" /></button>
+			<button type="submit" class="button success right"><ion:lang key="form_button_send" /></button>
 		</form>
 
 		<!--

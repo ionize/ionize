@@ -85,11 +85,12 @@ form input.checkbox {
 }
 .error {
 	position:absolute;
-	width:180px;
+	width:200px;
 	margin-top:16px;
 	left:32px;
 	color:#fad864;
 	font-size: 0.83em;
+	top:90px;
 }
 small {
 	font-size:10px;

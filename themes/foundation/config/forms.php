@@ -67,7 +67,7 @@ $config['forms'] = array
 				'rules' => 'trim|required|min_length[3]|xss_clean',
 				// Label translated index, as set in language/xx/form_lang.php
 				// Will be used to display the label name in error messages
-				'label' => 'form_label_form_firstname',
+				'label' => 'form_label_firstname',
 			),
 			'email' => array(
 				'rules' => 'trim|required|valid_email|xss_clean',
@@ -75,11 +75,11 @@ $config['forms'] = array
 			),
 			'subject' => array(
 				'rules' => 'trim|required|xss_clean',
-				'label' => 'form_label_form_subject',
+				'label' => 'form_label_subject',
 			),
 			'message' => array(
 				'rules' => 'trim|required|xss_clean',
-				'label' => 'form_label_form_message',
+				'label' => 'form_label_message',
 			)
 		)
 	),
