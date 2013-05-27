@@ -610,6 +610,7 @@
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (84,80,'admin/article/media/file','link,unlink,edit','Files','Article > Media > Files');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (85,70,'admin/article/element','add','Content Element','Article > Content Element');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (86,70,'admin/article/category','','Manage categories','Article > Categories');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (93,70,'admin/article/tag','','Manage tags','Article > Tags');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (90,70,'admin/article/permissions','','Permission','Article > Permission');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (91,90,'admin/article/permissions/backend','','Backend','Article > Permission > Backend');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (92,90,'admin/article/permissions/frontend','','Frontend','Article > Permission > Frontend');</query>
@@ -653,6 +654,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions/backend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions/frontend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/type','create,edit,delete',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/tag','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/element','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/extend','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/filemanager','upload,rename,delete,move',1)</query>
@@ -699,6 +701,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions/backend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions/frontend','',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/tag','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/filemanager','upload,rename,delete,move',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/menu','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/modules','',1)</query>
