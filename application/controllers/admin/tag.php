@@ -129,7 +129,7 @@ class Tag extends MY_admin
 
 	public function get_list()
 	{
-		$this->template['tags'] = $this->tag_model->get_list(array('order_by'=>'tag_name ASC'));
+		$this->template['tags'] = $this->tag_model->get_list();
 
 		$this->output('tag/list');
 	}

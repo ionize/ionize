@@ -82,7 +82,6 @@ class Article extends MY_admin
 		$this->load->model('tag_model', '', TRUE);
 		$this->load->model('extend_field_model', '', TRUE);
 		$this->load->model('url_model', '', TRUE);
-		$this->load->model('tag_model', '', TRUE);
 		$this->load->model('resource_model', '', TRUE);
 		$this->load->model('rule_model', '', TRUE);
 
