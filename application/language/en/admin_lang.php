@@ -579,6 +579,7 @@ $lang['ionize_label_smtp_host'] = 'Host';
 $lang['ionize_label_smtp_user'] = 'User';
 $lang['ionize_label_smtp_pass'] = 'Password';
 $lang['ionize_label_smtp_port'] = 'Port';
+$lang['ionize_label_smtp_timeout'] = 'SMTP Timeout';
 $lang['ionize_label_email_charset'] = 'Charset';
 $lang['ionize_label_email_mailtype'] = 'Format';
 $lang['ionize_label_mailpath'] = 'Mail path';
@@ -836,6 +837,7 @@ $lang['ionize_exception_image_lib'] = 'Image Lib Error';
 
 $lang['ionize_button_list_view'] = 'List view';
 $lang['ionize_button_card_view'] = 'Card view';
+$lang['ionize_button_save_media_data'] = 'Save media Infos';
 $lang['ionize_medialist_filter_by'] = '-- Filter by --';
 $lang['ionize_medialist_filter_by_alt_missing'] = 'ALT missing';
 $lang['ionize_medialist_filter_by_broken_src'] = 'Broken source';

@@ -938,8 +938,7 @@ div.list, div.list * {
 	box-sizing: border-box;
 }
 div.card {
-	width: 30%;
-	width: 236px;
+	width: 228px;
 	margin-right: 10px;
 	float:left;
 }

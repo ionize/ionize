@@ -185,7 +185,10 @@ class Article extends MY_admin
 			else
 			{
 				$page_ids = explode('/', $article['data']['path_ids']);
-				$article['data']['id_page'] = $page_ids[count($page_ids)-2];
+				if (isset($page_ids[count($page_ids)-2]))
+					$article['data']['id_page'] = $page_ids[count($page_ids)-2];
+				else
+					$article['data']['id_page'] = '0';
 			}
 
 			// Pages Breadcrumbs
