@@ -201,10 +201,14 @@ namespace Ionize {
 			self::$ci->lang->load('user');
 			$this->lang =& self::$ci->lang;
 
-			self::$ci->load->model('user_model', '', TRUE);
-			$this->model =& self::$ci->user_model;
+            // Models
+            self::$ci->load->model(
+                array(
+                    'user_model',
+                    'role_model'
+                ), '', TRUE);
 
-			self::$ci->load->model('role_model', '', TRUE);
+			$this->model =& self::$ci->user_model;
 			$this->role_model =& self::$ci->role_model;
 
 			// load settings

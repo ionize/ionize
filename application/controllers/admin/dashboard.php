@@ -16,10 +16,14 @@ class Dashboard extends MY_Admin {
 	public function __construct()
 	{
 		parent::__construct();
-		
-		$this->load->model('page_model', '', true);
-		$this->load->model('article_model', '', true);
-		$this->load->model('user_model', '', true);
+
+        // Models
+        $this->load->model(
+            array(
+                'page_model',
+                'article_model',
+                'user_model'
+            ), '', TRUE);
 	}
 
 

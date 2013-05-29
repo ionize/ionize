@@ -72,8 +72,11 @@ class MY_Controller extends CI_Controller
 		}
 
 		// Models
-		$this->load->model('base_model', '', TRUE);
-		$this->load->model('settings_model', '', TRUE);
+        $this->load->model(
+            array(
+                'base_model',
+                'settings_model'
+            ), '', TRUE);
 
 		// Helpers
 		$this->load->helper('file');

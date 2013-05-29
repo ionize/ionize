@@ -28,9 +28,13 @@ class Menu extends MY_admin
 	{
 		parent::__construct();
 
-		$this->load->model('menu_model', '', TRUE);
-		$this->load->model('rule_model', '', TRUE);
-		$this->load->model('resource_model', '', TRUE);
+        // Models
+        $this->load->model(
+            array(
+                'menu_model',
+                'rule_model',
+                'resource_model'
+            ), '', TRUE);
 	}
 
 

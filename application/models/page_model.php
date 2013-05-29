@@ -493,9 +493,13 @@ class Page_model extends Base_model
 	 */
 	public function save_linked_articles_urls($id_page)
 	{
+        // Models
 		$CI =& get_instance();
-		$CI->load->model('article_model', '', TRUE);
-		$CI->load->model('url_model', '', TRUE);
+        $CI->load->model(
+            array(
+                'article_model',
+                'url_model'
+            ), '', TRUE);
 
 		$articles = $this->get_list(array('id_page' => $id_page, 'main_parent' => '1'), 'page_article');
 		

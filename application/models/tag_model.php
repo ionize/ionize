@@ -60,6 +60,7 @@ class Tag_model extends Base_model
 	public function get_list($parent=NULL, $id_parent=NULL)
 	{
 		// Get tags from one parent
+        log_message('error', $parent);
 		if ( ! is_null($parent) && $this->table_exists($parent.'_tag'))
 		{
 			$this->{$this->db_group}->join(

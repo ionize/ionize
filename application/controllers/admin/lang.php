@@ -21,8 +21,12 @@ class Lang extends MY_admin
 	{
 		parent::__construct();
 
-		$this->load->model('lang_model', '', true);
-		$this->load->model('settings_model', '', true);
+        // Models
+        $this->load->model(
+            array(
+                'lang_model',
+                'settings_model'
+            ), '', TRUE);
 	}
 
 

@@ -165,7 +165,7 @@ class MY_Loader extends CI_Loader{
         if(! empty($installed_modules))
             foreach($installed_modules as $module)
                 $this->_ci_model_paths = array_unique(array_merge($this->_ci_model_paths, array(MODPATH.$module['folder'].'/')));
-        
+
         foreach ($this->_ci_model_paths as $mod_path)
         {
             if ( ! file_exists($mod_path.'models/'.$path.$model.'.php'))

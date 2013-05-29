@@ -23,8 +23,8 @@ class Medialist extends MY_admin
 		// Models
 		$this->load->model('medialist_model');
 		/*
-		$this->load->model('media_model');
-		$this->load->model('extend_field_model', '', TRUE);
+            $this->load->model('media_model');
+            $this->load->model('extend_field_model', '', TRUE);
 		*/
 
 	}

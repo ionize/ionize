@@ -122,6 +122,7 @@ class Setting extends MY_admin
 		$this->template['smtp_user'] = 		isset($config['smtp_host']) ? $config['smtp_user'] : '';
 		$this->template['smtp_pass'] = 		isset($config['smtp_pass']) ? $config['smtp_pass'] : '';
 		$this->template['smtp_port'] = 		isset($config['smtp_port']) ? $config['smtp_port'] : '25';
+        $this->template['smtp_timeout'] =   isset($config['smtp_timeout']) ? $config['smtp_timeout'] : '30';
 		$this->template['charset'] = 		isset($config['charset']) ? $config['charset'] : 'utf-8';
 		$this->template['mailtype'] = 		isset($config['mailtype']) ? $config['mailtype'] : 'text';
 
@@ -1217,6 +1218,7 @@ class Setting extends MY_admin
 			'smtp_user'		=> '',
 			'smtp_pass'		=> '',
 			'smtp_port'		=> '',
+            'smtp_timeout'  => '',
 			'protocol'		=> '',
 			'mailpath'		=> '',
 			'charset'		=> '',
@@ -1242,14 +1244,16 @@ class Setting extends MY_admin
 			$this->load->helper('file');
 			
 			$db_config = array(
-				'protocol'    =>  '"'.$data['protocol'].'"',
-				'mailpath'    =>  '"'.$data['mailpath'].'"',
-				'smtp_host'    =>  '"'.$data['smtp_host'].'"',
-				'smtp_user'    =>  '"'.$data['smtp_user'].'"',
-				'smtp_pass'    =>  '"'.$data['smtp_pass'].'"',
-				'smtp_port'    =>  '"'.$data['smtp_port'].'"',
-				'mailtype'    =>  '"'.$data['mailtype'].'"',
-				'charset'    =>  '"'.$data['charset'].'"'
+				'protocol'      =>  '"'.$data['protocol'].'"',
+				'mailpath'      =>  '"'.$data['mailpath'].'"',
+				'smtp_host'     =>  '"'.$data['smtp_host'].'"',
+				'smtp_user'     =>  '"'.$data['smtp_user'].'"',
+				'smtp_pass'     =>  '"'.$data['smtp_pass'].'"',
+				'smtp_port'     =>  '"'.$data['smtp_port'].'"',
+                'smtp_timeout'  =>  '"'.$data['smtp_timeout'].'"',
+				'mailtype'      =>  '"'.$data['mailtype'].'"',
+				'charset'       =>  '"'.$data['charset'].'"',
+                'newline'       =>  '"\r\n"'
 			);	
 			
 			$conf  = "<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');\n\n";

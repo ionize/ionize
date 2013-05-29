@@ -645,9 +645,13 @@ class Article_model extends Base_model
 	 */
 	public function save_urls($id_article)
 	{
+        // Models
 		$CI =& get_instance();
-		$CI->load->model('url_model', '', TRUE);
-		$CI->load->model('page_model', '', TRUE);
+        $CI->load->model(
+            array(
+                'url_model',
+                'page_model'
+            ), '', TRUE);
 		
 		$nb = 0;
 		
