@@ -419,6 +419,74 @@ class Page_model extends Base_model
 
 
 	/**
+	 * Returns one page children array
+	 *
+	 * @param	int		Page ID
+	 * @param	array	Empty data array.
+	 * @param	string	Lang code
+	 *
+	 * @return	array	Children pages array
+	 */
+	public function get_children_array($id_page, $data = array(), $lang = NULL)
+	{
+		$children = $this->get_lang_list(array('id_parent' => $id_page), $lang);
+
+		if ( ! empty($children))
+		{
+			foreach($children as $page)
+			{
+				$data = array_merge($this->get_children_array($page['id_page'], $data, $lang), $data);
+			}
+		}
+
+		if ( ! empty($children))
+			$data = array_merge($children, $data);
+
+		return $data;
+	}
+
+
+	public function get_children_ids($id_page, $including_id_page=FALSE)
+	{
+		$ids = $including_id_page == TRUE ? array($id_page) : array();
+
+		$children = $this->get_children_array($id_page);
+
+		foreach($children as $page)
+			$ids[] = $page['id_page'];
+
+		return $ids;
+	}
+
+
+	/**
+	 * @param        $id_page
+	 * @param string $separator
+	 * @param null   $lang
+	 *
+	 * @return string
+	 */
+	public function get_breadcrumb_string($id_page, $separator=' > ', $lang=NULL)
+	{
+		if ( is_null($lang))
+			$lang = Settings::get_lang('default');
+
+		$pages = $this->get_parent_array($id_page, array(), $lang);
+
+		$breadcrump = array();
+		foreach($pages as $page)
+		{
+			$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+		}
+
+		return implode($separator, $breadcrump);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Saves one page URLs paths
 	 *
 	 * @param	int		Page id

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Users list
  * Loaded through XHR
@@ -88,7 +87,7 @@
 
 	<script type="text/javascript">
 
-		// Sortbale
+		// Sortable
 		new SortableTable('usersTable',{sortOn: 0, sortBy: 'ASC'});
 
 		// Edit window
