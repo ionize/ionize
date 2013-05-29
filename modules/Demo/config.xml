@@ -2,7 +2,7 @@
 <module>
 	<name>Demo Module</name>
 	<description>Authors Demo module</description>
-	<uri_segment>demo</uri_segment>
+	<uri_segment>author</uri_segment>
 
     <!-- Has this module an admin panel ? -->
     <has_admin>true</has_admin>
