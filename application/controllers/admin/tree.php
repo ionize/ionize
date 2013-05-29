@@ -23,11 +23,14 @@ class Tree extends MY_Admin {
 		// Helpers
 		$this->load->helper('text_helper');
 		
-		// Models		
-		$this->load->model('tree_model', '', TRUE);
-		$this->load->model('menu_model', '', TRUE);
-		$this->load->model('page_model', '', TRUE);
-		$this->load->model('article_model', '', TRUE);
+		// Models
+        $this->load->model(
+            array(
+                'tree_model',
+                'menu_model',
+                'page_model',
+                'article_model'
+            ), '', TRUE);
 	}
 
 	

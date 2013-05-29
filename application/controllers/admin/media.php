@@ -26,8 +26,11 @@ class Media extends MY_admin
 		parent::__construct();
 
 		// Models
-		$this->load->model('media_model');
-		$this->load->model('extend_field_model', '', TRUE);
+        $this->load->model(
+            array(
+                'media_model',
+                'extend_field_model'
+            ), '', TRUE);
 
 		// Librairies
 		$this->load->library('medias');

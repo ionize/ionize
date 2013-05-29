@@ -81,16 +81,20 @@ class Article extends MY_admin
 	{
 		parent::__construct();
 
-		$this->load->model('menu_model', '', TRUE);
-		$this->load->model('page_model', '', TRUE);
-		$this->load->model('article_model', '', TRUE);
-		$this->load->model('category_model', '', TRUE);
-		$this->load->model('article_type_model', '', TRUE);
-		$this->load->model('tag_model', '', TRUE);
-		$this->load->model('extend_field_model', '', TRUE);
-		$this->load->model('url_model', '', TRUE);
-		$this->load->model('resource_model', '', TRUE);
-		$this->load->model('rule_model', '', TRUE);
+        // Models
+        $this->load->model(
+            array(
+                'menu_model',
+                'page_model',
+                'article_model',
+                'category_model',
+                'article_type_model',
+                'tag_model',
+                'extend_field_model',
+                'url_model',
+                'resource_model',
+                'rule_model'
+            ), '', TRUE);
 
 		$this->load->library('structure');
 		

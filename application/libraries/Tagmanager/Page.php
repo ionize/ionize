@@ -57,10 +57,13 @@ class TagManager_Page extends TagManager
 	{
 		self::$ci =& get_instance();
 
-		// Article model
-		self::$ci->load->model('article_model');
-		self::$ci->load->model('page_model');
-		self::$ci->load->model('url_model');
+		// Models
+        self::$ci->load->model(
+            array(
+                'article_model',
+                'page_model',
+                'url_model'
+            ), '', TRUE);
 
 		// Helpers
 		self::$ci->load->helper('text');

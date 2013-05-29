@@ -16,8 +16,12 @@ class Element_field extends MY_Admin
 	{
 		parent::__construct();
 
-		$this->load->model('element_definition_model', '', TRUE);
-		$this->load->model('extend_field_model', '', TRUE);
+        // Models
+        $this->load->model(
+            array(
+                'element_definition_model',
+                'extend_field_model'
+            ), '', TRUE);
 	}
 	
 	

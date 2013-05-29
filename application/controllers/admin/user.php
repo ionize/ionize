@@ -22,9 +22,13 @@ class User extends My_Admin
 	function __construct()
 	{
 		parent::__construct();
-		
-		$this->load->model('user_model');
-		$this->load->model('role_model');
+
+        // Models
+        $this->load->model(
+            array(
+                'user_model',
+                'role_model'
+            ), '', TRUE);
 
 		// Current connected user level
 		$this->current_role = User()->get_role();

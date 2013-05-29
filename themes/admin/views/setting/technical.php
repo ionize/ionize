@@ -477,6 +477,16 @@
 							<input id="smtp_port" name="smtp_port" type="text" class="inputtext w40" value="<?php echo $smtp_port; ?>" />
 						</dd>
 					</dl>
+
+                    <!-- SMTP Timeout -->
+                    <dl>
+                        <dt>
+                            <label for="smtp_timeout"><?php echo lang('ionize_label_smtp_timeout'); ?></label>
+                        </dt>
+                        <dd>
+                            <input id="smtp_timeout" name="smtp_timeout" type="text" class="inputtext w40" value="<?php echo $smtp_timeout; ?>" />
+                        </dd>
+                    </dl>
 				</div>
 					
 				<!-- Charset -->

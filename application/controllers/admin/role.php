@@ -22,10 +22,14 @@ class Role extends MY_Admin
 	{
 		parent::__construct();
 
-		$this->load->model('role_model', '', TRUE);
-		$this->load->model('resource_model', '', TRUE);
-		$this->load->model('rule_model', '', TRUE);
-		$this->load->model('user_model', '', TRUE);
+        // Models
+        $this->load->model(
+            array(
+                'role_model',
+                'resource_model',
+                'rule_model',
+                'user_model'
+            ), '', TRUE);
 
 		// Current connected user level
 		$this->current_role = User()->get_role();

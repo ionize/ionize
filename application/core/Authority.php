@@ -101,8 +101,12 @@ class Authority extends Authority\Ability {
 		// Rules : User's rules from DB
 		else
 		{
-			self::$ci->load->model('role_model', '', TRUE);
-			self::$ci->load->model('rule_model', '', TRUE);
+            // Models
+            self::$ci->load->model(
+                array(
+                    'role_model',
+                    'rule_model'
+                ), '', TRUE);
 
 			// Roles rules
 			$rules = self::$ci->rule_model->get_from_role($user->get_role());

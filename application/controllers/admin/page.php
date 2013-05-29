@@ -58,16 +58,19 @@ class Page extends MY_admin
 		parent::__construct();
 		
 		// Models
-		$this->load->model('menu_model', '', TRUE);
-		$this->load->model('page_model', '', TRUE);
-		$this->load->model('article_model', '', TRUE);
-		$this->load->model('structure_model', '', TRUE);
-		$this->load->model('extend_field_model', '', TRUE);
-		$this->load->model('system_check_model', '', TRUE);
-		$this->load->model('url_model', '', TRUE);
-		$this->load->model('type_model', '', TRUE);
-		$this->load->model('resource_model', '', TRUE);
-		$this->load->model('rule_model', '', TRUE);
+        $this->load->model(
+            array(
+                'menu_model',
+                'page_model',
+                'article_model',
+//                'structure_model', // Not using by controller
+                'extend_field_model',
+                'system_check_model',
+                'url_model',
+                'type_model',
+                'resource_model',
+                'rule_model'
+            ), '', TRUE);
 
 		// Libraries
 		$this->load->library('structure');

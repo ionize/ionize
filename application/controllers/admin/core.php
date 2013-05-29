@@ -37,16 +37,18 @@ class Core extends MY_Admin {
 		// Text Helper
 		$this->load->helper('text_helper');
 		
-	
-		// Structure model
-		$this->load->model('menu_model', '', true);
-		$this->load->model('structure_model', '', true);
+
+        // Models
+        $this->load->model(
+            array(
+                'menu_model',
+                'structure_model',
+                'article_model'
+            ), '', TRUE);
+
 		
 		// Structure librairy
 		$this->load->library('structure');
-
-		// Article model
-		$this->load->model('article_model', '', true);
 
 		// Get all articles from DB
 		$articles = $this->structure_model->get_articles();

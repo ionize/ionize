@@ -21,13 +21,16 @@ class System_check extends MY_admin
 		parent::__construct();
 
 		// Models
-		$this->load->model('system_check_model', '', TRUE);
-		$this->load->model('menu_model', '', TRUE);
-		$this->load->model('page_model', '', TRUE);
-		$this->load->model('article_model', '', TRUE);
-		$this->load->model('media_model', '', TRUE);
-		$this->load->model('config_model', '', TRUE);
-		$this->load->model('url_model', '', TRUE);
+        $this->load->model(
+            array(
+                'system_check_model',
+                'menu_model',
+                'page_model',
+                'article_model',
+                'media_model',
+                'config_model',
+                'url_model',
+            ), '', TRUE);
 		
 		// Libraries
 		$this->load->library('structure');
