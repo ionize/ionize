@@ -63,19 +63,13 @@ INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_users', '1', '');
 INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_content', '1', '');
 
 
-
 -- Page table
 alter table page add deny_code varchar(3) NULL;
 alter table page drop id_group;
 
-drop table if exists tag;
-    
-CREATE TABLE if not exists tag (
-  id_tag int(11) unsigned NOT NULL AUTO_INCREMENT,
-  tag_name varchar(50) DEFAULT NULL,
-  PRIMARY KEY (id_tag)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-    
+-- Tag table
+alter table tag add tag_name varchar(50) DEFAULT NULL;
+alter table tag drop tag;
 
 
 -- User table

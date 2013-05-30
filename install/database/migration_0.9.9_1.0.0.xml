@@ -69,15 +69,8 @@
     <query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_users', '1', '');</query>
     <query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_content', '1', '');</query>
 
-    <query>drop table if exists tag;</query>
-    <query>
-        CREATE TABLE if not exists tag (
-        id_tag int(11) unsigned NOT NULL AUTO_INCREMENT,
-        tag_name varchar(50) DEFAULT NULL,
-        PRIMARY KEY (id_tag)
-        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-    </query>
-
+    <query>alter table tag add tag_name varchar(50) DEFAULT NULL;</query>
+    <query>alter table tag drop tag;</query>
 
     <query>drop table if exists user;</query>
     <query>create table if not exists user as select * from users;</query>
