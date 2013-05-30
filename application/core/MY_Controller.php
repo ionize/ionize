@@ -646,9 +646,6 @@ class MY_Admin extends MY_Controller
 		$this->lang->load('admin', Settings::get_lang());
 		// $this->lang->load('filemanager', Settings::get_lang());
 
-		// Modules Application config
-		// $this->get_modules_config();
-
 		// Modules translation files
 		$modules = array();
 		require(APPPATH.'config/modules.php');
