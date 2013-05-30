@@ -114,9 +114,14 @@ class MY_Loader extends CI_Loader{
     {
         if (is_array($model))
         {
-            foreach ($model as $babe)
+            foreach ($model as $babe => $nickname)
             {
-                $this->model($babe);
+                if ( ! is_string($babe))
+                {
+                    $babe = $nickname;
+                    $nickname = NULL;
+                }
+                $this->model($babe, $nickname, $db_conn);
             }
             return;
         }
@@ -151,7 +156,8 @@ class MY_Loader extends CI_Loader{
         $CI =& get_instance();
         if (isset($CI->$name))
         {
-            show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
+            log_message('ERROR', 'The model name you are loading is the name of a resource that is already being used : ' . $name);
+            // show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
         }
 
         $model = strtolower($model);
@@ -194,8 +200,9 @@ class MY_Loader extends CI_Loader{
             return;
         }
 
-        // couldn't find the model
-        show_error('Unable to locate the model you have specified: '.$model);
+        // Could not find the model
+        // show_error('Unable to locate the model you have specified: '.$model);
+        log_message('ERROR', 'Unable to locate the model you have specified : ' . $model);
     }
 
 
