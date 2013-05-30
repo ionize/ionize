@@ -161,6 +161,15 @@ label[title]
 	padding-right: 14px;
 	border-bottom: dotted 1px #94aec9;
 }
+label.over{
+	white-space: nowrap;
+	margin-bottom: 5px;
+}
+label.over input,
+label.over select,
+label.over textarea{
+	margin-bottom: 5px;
+}
 
 input, textarea, select {
 	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;

@@ -1,7 +1,7 @@
 
 <div class="divider">
 	<a class="button submit" id="medialistFormSubmit">
-		<?php echo lang('ionize_button_save'); ?>
+		<?php echo lang('ionize_button_save_media_data'); ?>
 	</a>
 </div>
 

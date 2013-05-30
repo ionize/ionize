@@ -9,10 +9,6 @@
  * @since		Version 0.9.0
  */
 
-//require_once strtr(dirname(__FILE__), '\\', '/') .'/../libraries/finder/finder.php';
-//require_once strtr(dirname(__FILE__), '\\', '/') .'/../libraries/finder/accessors.php';
-//require_once strtr(dirname(__FILE__), '\\', '/') .'/../libraries/Theme.php';
-
 require_once 'finder/finder.php';
 require_once 'finder/accessors.php';
 require_once 'Theme.php';

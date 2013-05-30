@@ -10,7 +10,7 @@
 	<tables>
 
         <query>
-            CREATE TABLE api_key (
+            CREATE TABLE IF NOT EXISTS api_key (
             id int(11) NOT NULL AUTO_INCREMENT,
             `key` varchar(40) NOT NULL,
             `level` int(2) NOT NULL,
@@ -23,7 +23,7 @@
         </query>
 
         <query>
-            CREATE TABLE api_log (
+            CREATE TABLE IF NOT EXISTS api_log (
             id int(11) NOT NULL AUTO_INCREMENT,
             uri varchar(255) NOT NULL,
             method varchar(6) NOT NULL,
@@ -194,7 +194,7 @@
 		</query>
 
         <query>
-            CREATE TABLE event_log (
+            CREATE TABLE IF NOT EXISTS event_log (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             status varchar(50) DEFAULT NULL,
             message text,
@@ -493,7 +493,7 @@
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
-		<query>
+        <query>
 			CREATE TABLE IF NOT EXISTS tag (
 				id_tag int(11) UNSIGNED NOT NULL auto_increment,
 				tag_name varchar(50) default NULL,
@@ -502,7 +502,7 @@
 		</query>
 
         <query>
-            CREATE TABLE tracker (
+            CREATE TABLE IF NOT EXISTS tracker (
                 id_user int(11) unsigned NOT NULL,
                 ip_address varchar(32) DEFAULT NULL,
                 element varchar(50) DEFAULT NULL,

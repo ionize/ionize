@@ -56,7 +56,7 @@ ION.append({
 					var message = (typeOf(options.message) != 'null') ? options.message : Lang.get('ionize_confirm_element_delete');
 
 					// Callback request
-					var callback = ION.JSON.pass([url,data]);
+					var callback = ION.JSON.pass([url,data,options]);
 
 					if (mode == 'HTML')
 						callback = ION.HTML.pass([url,data,options]);

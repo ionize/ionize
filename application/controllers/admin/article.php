@@ -67,6 +67,13 @@ class Article extends MY_admin
 
 
 	/**
+	 * Nb of articles by pagination page
+	 * @var int
+	 */
+	protected static $_NB_ARTICLES_PAGINATION = 20;
+
+
+	/**
 	 * Constructor
 	 *
 	 */
@@ -100,56 +107,124 @@ class Article extends MY_admin
 
 
 	/**
-	* Displays the articles panel
-	* All articles with parent list
-	* 
-	* @returns	View of the articles list
-	*
-	*/
-	public function list_articles()
+	 * Articles List
+	 * index
+	 *
+	 */
+	public function articles()
 	{
-		// Get articles
-		$articles = $this->article_model->get_list(array('order_by' => 'title ASC'));
+		// Nb articles by pagination page
+		$this->template['nb'] = self::$_NB_ARTICLES_PAGINATION;
 
-		// Get all lang info for all articles
-		$articles_lang = $this->article_model->get_lang();
-		
-		// Get all contexts : links between pages and articles
-		$page_article = $this->article_model->get_all_context();
-		
-		// Get pages
-		$pages = $this->page_model->get_lang_list(NULL, Settings::get_lang('default'));
+		// Dropdown menus
+		$data = $this->menu_model->get_select();
+		$data = array('0' => lang('ionize_select_no_one')) + $data;
 
-		// Add page data to each context
-		foreach($page_article as &$pa)
+		$this->template['menus'] =	form_dropdown('id_menu', $data, 1, 'id="id_menu" class="select"');
+
+
+		$this->output('articles/index');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	* Articles List
+	* Called through XHR from articles panel
+	* 
+	*/
+	public function get_articles_list($page=1)
+	{
+		// Nb and Minimum
+		$nb = $this->input->post('nb') ? $this->input->post('nb') : self::$_NB_ARTICLES_PAGINATION;
+
+		// Pagination
+		$nb_lang = count(Settings::get_languages());
+		//	if ($nb < self::$_NB_ARTICLES_PAGINATION) $nb = self::$_NB_ARTICLES_PAGINATION;
+		$page = $page - 1;
+		$offset = $page * $nb;
+
+		$where = array(
+			'limit' => $nb * $nb_lang,
+			'offset' => $offset * $nb_lang
+		);
+
+		// Filter
+		$filter_title = $this->input->post('title');
+		if ($filter_title)
+			$where['like'] = array('article_lang.title' => $filter_title);
+
+		$filter_content = $this->input->post('content');
+		if ($filter_content)
+			$where['like'] = array('article_lang.content' => $filter_content);
+
+		// ID Page
+		$filter_id_page = $this->input->post('id_parent');
+		if ($filter_id_page)
 		{
-			$pa['page'] = array();
-			foreach($pages as $page)
-			{
-				if($page['id_page'] == $pa['id_page'])
-					$pa['page'] = $page;
-			}
+			$children_ids = $this->page_model->get_children_ids($filter_id_page, TRUE);
+			$where['where_in'] = array('page_article.id_page' => $children_ids);
 		}
-		
-		// Link articles to pages
+
+		$articles = $this->article_model->get_all_lang_list($where);
+
+		// Get Pages and Breadcrumb to pages for each linked page
+		$_pages_breadcrumbs = array();
+
 		foreach($articles as &$article)
 		{
-			$article['langs'] = array();
-		
-			$langs = array_values(array_filter($articles_lang, create_function('$row','return $row["id_article"] == "'. $article['id_article'] .'";')));
-			
-			foreach(Settings::get_languages() as $lang)
+			$article['data']['pages'] = array();
+
+			// Main Parent page ID
+			if ( empty($article['data']['page_ids']))
 			{
-				$article['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
+				$article['data']['id_page'] = '0';
 			}
-			
-			$article['pages'] = array_values(array_filter($page_article, create_function('$row','return $row["id_article"] == "'. $article['id_article'] .'";')));
-			
+			else
+			{
+				$page_ids = explode('/', $article['data']['path_ids']);
+				if (isset($page_ids[count($page_ids)-2]))
+					$article['data']['id_page'] = $page_ids[count($page_ids)-2];
+				else
+					$article['data']['id_page'] = '0';
+			}
+
+			// Pages Breadcrumbs
+			$page_ids = explode(';', $article['data']['page_ids']);
+
+			if ( ! empty($page_ids))
+			{
+				foreach($page_ids as $id_page)
+				{
+					$breadcrumb = in_array($id_page, array_keys($_pages_breadcrumbs)) ? $_pages_breadcrumbs[$id_page] : $this->page_model->get_breadcrumb_string($id_page);
+					$_pages_breadcrumbs[$id_page] = $breadcrumb;
+
+					//$breadcrumb = '';
+					if ( ! empty($id_page))
+					{
+						$article['data']['pages'][] = array(
+							'id_page' => $id_page,
+							'breadcrumb' => $breadcrumb
+						);
+					}
+				}
+			}
 		}
+
+		// Pagination
+		$this->template['current_page'] = $page + 1;
+		$this->template['nb'] = $nb;
+
+		unset($where['limit']);
+		unset($where['offset']);
+		$this->template['articles_count'] = $this->article_model->count_all_lang_list($where) / $nb_lang;
+		$this->template['articles_pages'] = ceil($this->template['articles_count'] / $nb);
 
 		$this->template['articles'] = $articles;
 
-		$this->output('article/articles');
+		$this->output('articles/list');
 	}
 
 

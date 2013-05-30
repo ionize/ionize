@@ -131,6 +131,111 @@ class Article_model extends Base_model
 	}
 
 
+	/**
+	 * Returns all articles with all lang data
+	 *
+	 */
+	public function get_all_lang_list($where = array())
+	{
+		$data = array();
+
+		$this->{$this->db_group}->select($this->lang_table.'.*');
+		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');
+
+		// URLs
+		$this->{$this->db_group}->select('url.canonical, url.path, url.path_ids, url.full_path_ids');
+		$this->{$this->db_group}->join(
+			$this->url_table. ' as url',
+			$this->table.".id_article = url.id_entity AND ".
+			"(".
+				"url.active = 1 AND ".
+				"url.type = 'article' AND ".
+				"url.lang = ". $this->lang_table .".lang".
+			")",
+			'left'
+		);
+
+		$this->{$this->db_group}->select("
+			group_concat(page.id_page separator ';') as page_ids,
+			page_lang.title as page_title
+		");
+		$this->{$this->db_group}->join(
+			'page_article',
+			$this->table.".id_article = page_article.id_article",
+			'left'
+		);
+		$this->{$this->db_group}->join(
+			'page',
+			'page.id_page = page_article.id_page',
+			'left'
+		);
+		$this->{$this->db_group}->join(
+			'page_lang',
+			"page_lang.id_page = page.id_page AND article_lang.lang = page_lang.lang",
+			'left'
+		);
+
+		$this->{$this->db_group}->group_by($this->table.'.id_article');
+		$this->{$this->db_group}->group_by($this->lang_table.'.lang');
+
+		$articles = parent::get_list($where);
+
+		foreach($articles as $article)
+		{
+			if ( empty($data[$article['id_article']][$article['lang']]))
+			{
+				if ( ! isset($data[$article['id_article']])) $data[$article['id_article']] = array();
+
+				if ($article['lang'] == Settings::get_lang('default'))
+					$data[$article['id_article']]['data'] = $article;
+
+				$data[$article['id_article']][$article['lang']] = $article;
+			}
+		}
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function count_all_lang_list($where = array())
+	{
+		$this->{$this->db_group}->distinct();
+		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');
+		$this->{$this->db_group}->join(
+			$this->url_table. ' as url',
+			$this->table.".id_article = url.id_entity AND ".
+			"(".
+			"url.active = 1 AND ".
+			"url.type = 'article' AND ".
+			"url.lang = ". $this->lang_table .".lang".
+			")",
+			'left'
+		);
+		$this->{$this->db_group}->join(
+			'page_article',
+			$this->table.".id_article = page_article.id_article",
+			'left'
+		);
+		$this->{$this->db_group}->join(
+			'page',
+			'page.id_page = page_article.id_page',
+			'left'
+		);
+		$this->{$this->db_group}->join(
+			'page_lang',
+			"page_lang.id_page = page.id_page AND article_lang.lang = page_lang.lang",
+			'left'
+		);
+
+		$nb = parent::count($where);
+
+		return $nb;
+	}
+
+
 	// ------------------------------------------------------------------------
 
 

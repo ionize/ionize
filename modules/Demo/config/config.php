@@ -14,8 +14,9 @@ $config['module']['demo'] = array
 	'uninstall' => 'uninstall.php',
 	*/
 
-	'uri' => 'author',
+	'uri' => 'demo',
 	'has_admin'=> TRUE,
+	'has_frontend'=> TRUE,
 
 	// Array of resources
 	// These resources will be added to the role's management panel
