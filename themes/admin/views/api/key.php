@@ -95,10 +95,3 @@
     <button id="bCancelApiKey<?php echo $id ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel') ?></button>
 </div>
 
-<script type="text/javascript">
-
-    ION.initLabelHelpLinks('#apiKeyForm<?php echo $id ?>');
-
-
-</script>
-

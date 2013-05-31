@@ -97,7 +97,7 @@ class MY_Controller extends CI_Controller
 		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
 
 		// If installer class is already here, avoid site access
-		if (!empty($installer))
+		if ( ! empty($installer))
 		{
 			// Get languages codes from available languages folder/translation file
 			$languages = $this->settings_model->get_admin_langs();

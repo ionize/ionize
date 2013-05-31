@@ -329,7 +329,7 @@ class Installer
 		
 			if ( ! empty($migration_files))
 			{
-				if (in_array('migration_0.9.9_1.0.0.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';
+				if (in_array('migration_0.9.9_1.0.0.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.9</b>';
 				if (in_array('migration_0.9.7_0.9.9.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';
 				if (in_array('migration_0.9.6_0.9.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.6</b>';
 				if (in_array('migration_0.9.5_0.9.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.5</b>';			
@@ -1313,9 +1313,12 @@ class Installer
 			{
 				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
 				$version = isset($version['content']) ? $version['content'] : '';
-				$version = str_replace('.', '', $version);
+				$version = explode('.', $version);
+				$test_version = '';
+				for($i=0;$i<3;$i++)
+					$test_version .= $version[$i];
 
-				if (intval($version) < 100)
+				if (intval($test_version) < 100)
 				{
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}

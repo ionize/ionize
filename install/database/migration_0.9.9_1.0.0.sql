@@ -8,9 +8,6 @@ update setting set content='1.0.0' where name = 'ionize_version';
 ALTER TABLE lang ADD direction smallint(1) NOT NULL DEFAULT 1;
 
 
-ALTER TABLE media ADD provider varchar(50) NOT NULL DEFAULT  '';
-
-
 CREATE TABLE api_key (
     id int(11) NOT NULL AUTO_INCREMENT,
     key varchar(40) NOT NULL,
@@ -68,8 +65,13 @@ alter table page add deny_code varchar(3) NULL;
 alter table page drop id_group;
 
 -- Tag table
-alter table tag add tag_name varchar(50) DEFAULT NULL;
-alter table tag drop tag;
+drop table if exists tag;
+
+CREATE TABLE IF NOT EXISTS tag (
+id_tag int(11) UNSIGNED NOT NULL auto_increment,
+tag_name varchar(50) default NULL,
+PRIMARY KEY  (id_tag)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
 
 -- User table
