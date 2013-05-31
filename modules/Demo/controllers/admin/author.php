@@ -15,8 +15,12 @@ class Author extends Module_Admin
 	*/
 	public function construct()
 	{
-		$this->load->model('demo_author_model', 'author_model', TRUE);
-		$this->load->model('page_model', '', TRUE);
+        // Models
+        $this->load->model(
+            array(
+                'demo_author_model' => 'author_model',
+                'page_model'
+            ), '', TRUE);
 	}
 
 

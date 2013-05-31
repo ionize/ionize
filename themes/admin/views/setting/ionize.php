@@ -162,7 +162,7 @@
 				<label class="flag flag3" for="flag3"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag3" name="flag3" value="<?php echo Settings::get('flag3'); ?>" /><br/>
 				<label class="flag flag4" for="flag4"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag4" name="flag4" value="<?php echo Settings::get('flag4'); ?>" /><br/>
 				<label class="flag flag5" for="flag5"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag5" name="flag5" value="<?php echo Settings::get('flag5'); ?>" /><br/>
-				<label class="flag flag6" for="flag5"></label><input type="text" class="inputtext w180 ml10" id="flag6" name="flag6" value="<?php echo Settings::get('flag6'); ?>" /><br/>
+				<label class="flag flag6" for="flag6"></label><input type="text" class="inputtext w180 ml10" id="flag6" name="flag6" value="<?php echo Settings::get('flag6'); ?>" /><br/>
 
 
 				<label></label><button  id="bSaveFlags" type="button" class="button yes ml20 mt10"><?php echo lang('ionize_button_save'); ?></button>
