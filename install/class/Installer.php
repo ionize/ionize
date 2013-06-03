@@ -524,6 +524,49 @@ class Installer
 			{
 			}
 
+
+
+
+			/*
+			 * Migration to new 1.0.2 userstable
+			 * Remove salt, add forgotten password fields ...
+			 */
+			if (in_array('migration_1.0.2_userstable.xml', $migration_files))
+			{
+				log_message('debug', 'Migrate usertables of 1.0.2');
+
+				// Updates the users account with new password hashes
+				// do that BEFORE database gets modified (we need the salt
+				// for decryption)
+				//
+				// we can that in "one run" as there are not thousands of users
+				// BUT IF: database is "innodb" which is slow on updates/inserts
+				//         and you may run out of memory/execution time if you
+				//         update a table with some 1000s of users
+				$query = $this->db->get('users');
+				if ($query->num_rows() > 0) {
+					foreach ($query->result_array() as $user) {
+						$decoded_pass = $this->_decrypt($user['password'], $user);
+
+						$user['password'] = $this->hash_password($decoded_pass);
+						$this->db->update('users', $user, array('username'=>$user['username']));
+					}
+				}
+
+
+
+				$xml = simplexml_load_file('./database/'.$file);
+				$queries = $xml->xpath('/sql/query');
+
+				foreach ($queries as $query) {
+					$this->db->query($query);
+				}
+
+
+
+			}
+
+
 			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 		}
 	}
@@ -959,8 +1002,7 @@ class Installer
 		
 		// Here is everything OK, we can create the user
 		$data['join_date'] = date('Y-m-d H:i:s');
-		$data['salt'] = $this->get_salt();
-		$data['password'] = $this->_encrypt($data['password'], $data);
+		$data['password'] = $this->hash_password($data['password']);
 		$data['id_role'] = '1';
 		
 		// Clean data array
@@ -1074,6 +1116,19 @@ class Installer
 		include('./views/footer.php');
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Generates a hash for a given password using the PHPass-Library
+	 *
+	 **/
+	function hash_password($password) {
+		//hardened hash generation, no salt needed (library takes care)
+		require_once(APPPATH.'libraries/Phpass.php');
+		include_once(APPPATH.'config/phpass.php');
+		$phpass = new phpass($config);
+		return $phpass->hash($password);
+	}
 
 	// --------------------------------------------------------------------
 
@@ -1135,12 +1190,24 @@ class Installer
 
 		$this->db_connect();
 
+		//try to get a version
+		//so we can avoid that certain fields are re-added on the next
+		//migration
+		//Before 0.9.7 no version strings were stored, so they will
+		//work flawless now, as we included this code just in 0.9.9.x
+		if(($version = $this->db->query("select content from setting where name='ionize_version'")) !== FALSE) {
+			$version = $version->row_array();
+			$version = isset($version['content']) ? $version['content'] : '';
+		}else
+			$version = "0";
+
 		// Try to get one table fields data : If not possible, the table doesn't exist : 
 		// The database doesn't contains correct tables -> error !
 		if (($test = $this->db->query('select count(1) from setting')) != false)
 		{
 			// From Ionize 0.90 or 0.91
 			// page_lang does not contains the 'online' field
+			if( version_compare($version, "0.9.1") <= 0 ) {
 			$migrate_from = true;
 	
 			$fields = $this->db->field_data('page_lang');
@@ -1154,23 +1221,14 @@ class Installer
 			} 
 			
 			if ($migrate_from == true)
-			{
 				$migration_xml[] = 'migration_0.90_0.92.xml';
-				$migration_xml[] = 'migration_0.92_0.93.xml';
-				$migration_xml[] = 'migration_0.93_0.9.4.xml';
-				$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-				$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-				$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-				$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-				$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 			}
 	
 			// From Ionize 0.92
 			// The 'extend_field' table does not contains the 'value' field
 			// If it contains this field, we are already in a 0.93 verion, so no migration
 			// If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.2") <= 0 ) {
 				$migrate_from = true;
 				
 				$fields = $this->db->field_data('extend_field');
@@ -1184,23 +1242,14 @@ class Installer
 				}
 				
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.92_0.93.xml';
-					$migration_xml[] = 'migration_0.93_0.9.4.xml';
-					$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
-				}
 			}
 	
 	
 			// From Ionize 0.93
 			// if the 'users' table field 'join_date' has the TIMESTAMP type, we will migrate the accounts.
 			// If the 'migration_xml' array isn't empty, we migrate from an earlier version, so no need to make this test
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.3") <= 0 ) {
 				$migrate_from = true;
 
 				if ($this->db->table_exists('users') == true)
@@ -1214,20 +1263,12 @@ class Installer
 					}
 
 					if ($migrate_from == true)
-					{
 						$migration_xml[] = 'migration_0.93_0.9.4.xml';
-						$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-						$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-						$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-						$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
-					}
 				}
 			}
 
 			// From Ionize 0.9.4 : the users.id_user field does not exists
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.4") <= 0 ) {
 				$migrate_from = false;
 
 				if ($this->db->table_exists('users') == true)
@@ -1241,19 +1282,12 @@ class Installer
 					}
 
 					if ($migrate_from == true)
-					{
 						$migration_xml[] = 'migration_0.9.4_0.9.5.xml';
-						$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-						$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-						$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
-					}
 				}
 			}
 
 			// From Ionize 0.9.5 : the table article hasn't the 'flag' field
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.5") <= 0 ) {
 				$migrate_from = true;
 				
 				$fields = $this->db->field_data('article');
@@ -1265,17 +1299,11 @@ class Installer
 				}
 
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
-				}
 			}
 			
 			// From Ionize 0.9.6 : the table extend_field does not contains the field id_element_definition
-			if (empty($migration_xml))
-			{
+			if( version_compare($version, "0.9.6") <= 0 ) {
 				$migrate_from = true;
 				
 				$fields = $this->db->field_data('extend_field');
@@ -1287,42 +1315,46 @@ class Installer
 				}
 				
 				if ($migrate_from == true)
-				{
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}
-			}
-			
 			// From 0.9.7
-			if (empty($migration_xml))
-			{
-				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
-				$version = isset($version['content']) ? $version['content'] : '';
-				$version = str_replace('.', '', $version);
+			if( version_compare($version, "0.9.7") <= 0 ) {
+				$migrate_from = true;
 				
-				if (intval($version) <= 97)
-				{
+				if ($migrate_from == true)
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
-				}
 			}
 
 			// From 0.9.9
-			if (empty($migration_xml))
-			{
-				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
-				$version = isset($version['content']) ? $version['content'] : '';
-				$version = explode('.', $version);
-				$test_version = '';
-				for($i=0;$i<3;$i++)
-					$test_version .= $version[$i];
+			if( version_compare($version, "0.9.9") <= 0 ) {
+				$migrate_from = true;
 
-				if (intval($test_version) < 100)
-				{
+				if ($migrate_from == true)
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				}
+
+			/*
+			 * Migrate User table - only on version 1.0.2!
+			 *
+			 * Does only migrate if there is a "salt"-field (which we get rid now)
+			 */
+			if( version_compare($version, "1.0.2") <= 0 ) {
+				$migrate_from = false;
+
+				$fields = $this->db->field_data('user');
+
+				//as soon as there is a "salt"-field
+				//we will have to migrate the users table
+				foreach ($fields as $field)
+					if ($field->name == 'salt') {
+						$migrate_from = true;
+						break;
 			}
+
+				if ($migrate_from == true)
+					$migration_xml[] = 'migration_1.0.2_userstable.xml';
+			}
+
 		}
 
 		return $migration_xml;

@@ -20,7 +20,7 @@ class User extends Base_Controller {
 		 * Access()->somevar = array();
 		 * somevar is the same as the configuration option
 		 */
-		Connect()->folder_protection = array();
+		User()->folder_protection = array();
 
 		$this->load->library('form_validation');
 		
@@ -53,7 +53,7 @@ class User extends Base_Controller {
 	 */
 	public function activate($email, $activation_key)
 	{
-		$result = Connect()->activate($email, $activation_key);
+		$result = User()->activate($email, $activation_key);
 
 		if ( ! $result)
 		{
@@ -63,7 +63,7 @@ class User extends Base_Controller {
 			$user = Connect()->find_user($email);
 			trace($user);
 			trace('Received : ' . $activation_key);
-			trace('Calculated : ' . Connect()->calc_activation_key($user));
+			trace('Calculated : ' . User()->calc_user_confirmation_key($user));
 			 */
 
 			echo ('Activation code not valid.');
@@ -74,6 +74,29 @@ class User extends Base_Controller {
 		}
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Confirms the request of a user to get a new password
+	 *
+	 * this is a simple "sample" output, if you want it prettified,
+	 * use a special users-page in your theme which uses the form-tags
+	 * and their handlers.
+	 *
+	 */
+	public function forgot_password_confirm($email="", $confirmation_code="")
+	{
+		$result = User()->reset_password($email, $confirmation_code);
+		if($result["result"] == "OK") {
+			print "Passwort successfully reset to: ".$result["password"];
+			return TRUE;
+		}
+
+		print "Passwort reset failed.";
+		return FALSE;
+	}
 
 	// ------------------------------------------------------------------------
 

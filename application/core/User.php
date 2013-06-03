@@ -40,6 +40,15 @@ namespace Ionize {
 		public $verify_user = TRUE;
 
 
+
+		/**
+		 * Sets how many seconds a confirmation code is valid
+		 *
+		 * @var string
+		 */
+		public $confirmation_code_lifetime = 86400; // 1 day
+
+
 		/**
 		 * The settings for the remember me feature.
 		 *
@@ -48,9 +57,9 @@ namespace Ionize {
 		public $remember = array(
 			'on' 			=> TRUE,
 			'duration' 		=> 604800, // 7 days
-			'cookie_name' 	=> 'rememberconnect');
-
-
+			'code' 			=> 'rememberconnect',
+			'identity' 		=> 'rememberidentity'
+			);
 		/**
 		 * The settings for the folder protection.
 		 *
@@ -229,44 +238,34 @@ namespace Ionize {
 			{
 				$this->user = $this->model->find_user(array($user_pk => $this->session->userdata($user_pk)));
 			}
-			// if we have a remember me cookie - try to load it
-			elseif($this->remember['on'] && get_cookie($this->remember['cookie_name']))
-			{
-				$data = get_cookie($this->remember['cookie_name']);
+			// usage of remember-cookie is enabled
+			elseif($this->remember['on']) {
+				self::$ci->load->helper('cookie');
+				$identity = get_cookie($this->remember['identity']);
+				$code = get_cookie($this->remember['code']);
 
-				// extract the hash and the encrypted string
-				$hash = substr($data, 0, 14) . substr($data, -14);
-				$str = substr($data, 14, -14);
+				// if we have a remember me cookie - load and process it
+				if( $identity && $code) {
+					//find the user with that identity AND remember code
+					//in our case identity is "username"
+					$user = $this->model->find_user(array("username" => $identity, "remember_code" => $code));
 
-				// match the hash
-				if($hash == base64_encode(sha1($str . strrev($this->encryption_key), TRUE)))
-				{
-					// decrypt
-					$array = unserialize(self::$ci->encrypt->decode($str));
+					//we found a user
+					if( $user ) {
+						//this is our user - log the user in
+						$this->user = $user;
 
-					// finally, does the person "look" the same, and is his stamp still on his hand?
-					if($array['ip'] == self::$ci->input->ip_address() && $array['expiry_date'] > mktime() && isset($array[$user_pk]))
-					{
-						// log the user in
-						$this->user = $this->model->find_user(array($user_pk => $array[$user_pk]));
-						$this->get_role();
-
-						// did we get him?
-						if( $this->user )
-						{
 							// set session and last visit
 							$this->session->set_userdata($user_pk, $this->user[$user_pk]);
 
 							$this->model->update_last_visit($this->user);
 
 							// refresh the remember me cookie
-							$this->remember();
-						}
-						else
-						{
-							// user does not exist, remove cookie
-							delete_cookie($this->remember['cookie_name']);
-						}
+						$this->remember( $user[$user_pk] );
+					} else {
+						// user not found
+						delete_cookie($this->remember['identity']);
+						delete_cookie($this->remember['code']);
 					}
 				}
 				else
@@ -275,7 +274,8 @@ namespace Ionize {
 					log_message('error', "User Class: Tampered remember me cookie received from ip ".self::$ci->input->ip_address());
 
 					// just delete his cookie, we're evil to all the hackers ;)
-					delete_cookie($this->remember['cookie_name']);
+					delete_cookie($this->remember['identity']);
+					delete_cookie($this->remember['code']);
 				}
 			}
 			$this->get_role();
@@ -340,9 +340,18 @@ namespace Ionize {
 			}
 
 			$user = $this->model->find_user($identification);
+			//compute the password hash
+			self::$ci =& get_instance();
+			self::$ci->load->library('phpass');
+			//we will not hash the password as we do not know the
+			//salt used for the hash in the database
+			//therefor "phpass->check" exists, it calculates the password hash
+			//based on the salt in the password from the database
+
+
 
 			// did we get a user, and does the passwords match?
-			if($user != FALSE && $password == $this->decrypt($user['password'], $user))
+			if($user != FALSE && self::$ci->phpass->check($password, $user['password']))
 			{
 				$this->user = $user;
 				$this->get_role();
@@ -354,7 +363,7 @@ namespace Ionize {
 				$this->model->update_last_visit($user);
 
 				// Set the remember cookie
-				if($remember) $this->remember();
+				if($remember) $this->remember( $user[$this->model->getPkName()] );
 
 				// Event
 				\Event::fire('User.login');
@@ -415,8 +424,11 @@ namespace Ionize {
 			$this->session->unset_userdata('connect_blocked_url');
 
 			// also, wash away his stamp - so he cannot enter again without id
-			if($this->remember['on'])
-				delete_cookie($this->remember['cookie_name']);
+			self::$ci->load->helper('cookie');
+			if(get_cookie($this->remember['code']))
+				delete_cookie($this->remember['code']);
+			if(get_cookie($this->remember['identity']))
+				delete_cookie($this->remember['identity']);
 
 			// Event
 			\Event::fire('User.logout');
@@ -445,16 +457,24 @@ namespace Ionize {
 
 			$user = $this->get_current_user();
 
-			$str = array($user_pk => $user[$user_pk],
-				'ip' => self::$ci->input->ip_address(),
-				'expiry_date' => mktime() + $this->remember['duration']);
+			//generate a remembercode - stored in the database for later
+			//comparison
+			$remember_code = sha1($user["password"]);
+			$this->model->update_user(array($user_pk=>$id,"remember_code"=>$remember_code));
 
-			$str = self::$ci->encrypt->encode(serialize($str));
-			$hash = base64_encode(sha1($str . strrev($this->encryption_key), TRUE));
+			self::$ci->load->helper('cookie');
+			//set new cookies for the current user
+			set_cookie(array(
+				'name'   => $this->remember_me['identity'],
+				'value'  => $user["username"],
+				'expire' => $this->remember_me['duration']
+			));
 
-			$cookie = substr($hash, 0, 14) .$str. substr($hash, -14);
-
-			set_cookie($this->remember['cookie_name'], $cookie, $this->remember['duration']);
+			set_cookie(array(
+				'name'   => $this->remember_me['code'],
+				'value'  => $remember_code,
+				'expire' => $this->remember_me['duration']
+			));
 
 			return TRUE;
 		}
@@ -639,7 +659,8 @@ namespace Ionize {
 			$user_pk = $this->model->pk_name();
 
 			// need username and password to process further
-			if( isset($user_data['email']) OR ! isset($user_data['password']))
+			if( ! isset($user_data['username']) OR ! isset($user_data['email']) OR ! isset($user_data['password']))
+//			if( isset($user_data['email']) OR ! isset($user_data['password']))
 			{
 				$this->error = $this->set_error_message('connect_missing_parameters', implode(', ', array_diff(array('username', 'email', 'password'), array_keys($user_data))));
 				return FALSE;
@@ -648,14 +669,27 @@ namespace Ionize {
 			// User doesn't exist : Create it
 			if ( ! $this->model->find_user($user_data['email']))
 			{
-				// Set the salt
-				if( ! isset($user_data['salt'])) $user_data['salt'] = $this->get_salt();
-
 				// Set the user's group
 				$role_code = $this->verify_user ? $this->user_pending_role : $this->user_default_role;
 
-				// Encrypt the password and prepare data for inserting
-				$user_data['password'] = $this->encrypt($user_data['password'], $user_data);
+				/*
+				 * Instead of using an encryption, we know hash the password and when
+				 * logging in we compare the users password hash versus the database one
+				 *
+				 * Instead of using MD5/Sha... we use PHPass to make bruteforce
+				 * attacking a bit harder.
+				 *
+				 * Attention: there is no need to use a "salt" as the library takes care of
+				 * that itself.
+				 */
+				$cleanPassword = $user_data['password'];
+				$user_data['password'] = $this->generate_hash( $user_data['password'] );
+
+				//if activation is needed, store a activation code
+				if($this->verify_user)
+					$user_data['activation_code'] = $this->calc_user_confirmation_key( $user_data );
+				else
+					$user_data['activation_code'] = "";
 
 				// User saved sucessfully?
 				if($return = $this->model->save($user_data, $role_code))
@@ -689,18 +723,14 @@ namespace Ionize {
 			$clear_password = NULL;
 
 			// Update the password : Send in "clear" version
-			if ( ! empty($user_data['password']) OR $user_data['password'] != '')
-			{
-				$clear_password = $user_data['password'];
-				$user_data['salt'] = $this->get_salt();
-				$user_data['password'] = $this->encrypt($user_data['password'], $user_data);
-			}
+			if ( !empty($user_data['password']) )
+				$user_data['password'] = $this->generate_hash($user_data['password']);
 			elseif (isset($user_data['password']))
 				unset($user_data['password']);
 
 			if ( isset($user_data['id_user']))
 			{
-				// Try to find one user with the same username but different ID
+				// Try to find one user with the same email but different ID
 				$db_user = $this->model->find_user($user_data['email']);
 
 				if ( ! empty($db_user) && $db_user['id_user'] != $user_data['id_user'])
@@ -711,17 +741,10 @@ namespace Ionize {
 				{
 					$db_user = $this->model->find_user(array('id_user' =>$user_data['id_user']));
 
-					// Email has changed : the password needs to be refreshed
-					if ($user_data['username'] != $db_user['username'])
-					{
-						$user_data['salt'] = $this->get_salt();
-						$password = ! is_null($clear_password) ? $clear_password : $this->decrypt($db_user['password'], $db_user);
-						$user_data['password'] = $this->encrypt($password, $user_data);
-					}
-
 					$nb = $this->model->save($user_data);
 
 					// Reset the current user
+					if ($nb && $this->current_user)
 					$this->user = $this->model->find_user($user_data['email']);
 
 					return $nb;
@@ -763,7 +786,7 @@ namespace Ionize {
 		{
 			$user = $this->model->find_user($email);
 
-			if($user && $code == $this->calc_activation_key($user, $role_code))
+			if($user && $code == $user["activation_code"])
 			{
 				$user_role = $this->role_model->get($user['id_role']);
 
@@ -780,9 +803,117 @@ namespace Ionize {
 			return FALSE;
 		}
 
+		// --------------------------------------------------------------------
+
+		/**
+		 * Resets one user's password
+		 *
+		 * A new password has to be provided in the case of further
+		 * processing needs a clear password. If you do not provide
+		 * one, the function generates one
+		 *
+		 * @param  string  The email of the user whose password to reset
+		 * @param  string  The confirmation code
+		 * @param  string  The new password
+		 * @return array   array containing "password" and "result" ("OK", "ERROR", "ERROR_NOT_FOUND", "ERROR_CODE_TO_OLD")
+		 */
+		public function reset_password($email, $code, $new_password = "") {
+			if( empty($email) OR empty($code) )
+				return array("password"=>"", "result"=>"ERROR");
+
+			//only give back users with the corresponding email AND code
+			$user = $this->find_user(array('email' => $email, 'forgotten_password_code' => $code));
+
+			if( $user ) {
+				//check if the code is still valid (or to old)
+				if( $this->confirmation_time_expired( $user["forgotten_password_time"] ) )
+					return array("password"=>"", "result"=>"ERROR_CODE_TO_OLD");
+
+				//if no password is given, we generate one
+				if( empty($new_password) )
+					$new_password = $this->get_random_password(8);
+
+				//set the user password to a clear one instead of the hash
+				$user['password'] = $new_password;
+
+				//reset forgotten-data: invalidates further requests with same data
+				$user['forgotten_password_code'] = sha1($this->get_random_password(16));
+				$user['forgotten_password_time'] = "0";
+
+				//finally set the new password in the users db entry
+				if( $this->update($user) )
+					return array("password"=>$new_password, "result"=>"OK");
+			}
+
+			//to get a better fitting error message we will check if the user even exists
+			$user = $this->find_user(array('email' => $email));
+			if( $user )
+				return array("password"=>"", "result"=>"ERROR");
+			else
+				return array("password"=>"", "result"=>"ERROR_NOT_FOUND");
+		}
+
 
 		// --------------------------------------------------------------------
 
+
+		/**
+		 * Calculates a confirmation key for a certain user.
+		 *
+		 * Can be used for activation of accounts, confirmation of requests...
+		 * But: take care that @param contains all needed fields!
+		 *
+		 * @param  array	User data
+		 * @return string
+		 */
+		public function calc_user_confirmation_key($user)
+		{
+			//generate a random part of the key (repeated some times)
+			$key = "";
+			for($i=0;$i<25;$i++) { $key = sha1( $key.microtime() ); }
+
+			//hardened hash generation, no salt needed (library takes care)
+			//this time we use a short sha1-hash to avoid characters not allowed
+			//in urls (we want to provide clickable urls instead of letting a user
+			//put code into boxes)
+			return sha1( $this->generate_hash( $key . $user['username'] . $user['email'] . $user['password'] ) );
+		}
+
+		// --------------------------------------------------------------------
+
+
+		/**
+		 * Checks whether the given datetime is "to old"
+		 *
+		 * If the confirmation lifetime is set to 0, codes wont expire
+		 *
+		 * @param  int	a time()-equivalent time
+		 * @return bool
+		 */
+		public function confirmation_time_expired($time)
+		{
+			if( $this->confirmation_code_lifetime == 0 )
+				return FALSE;
+
+			return (time() + $this->confirmation_code_lifetime) < intval($time);
+		}
+
+		// --------------------------------------------------------------------
+
+		/**
+		 * Generates a hash of the given password.
+		 *
+		 * @param  string		The password to encrypt
+		 * @return string		hash of the password
+		 */
+		public function generate_hash($password)
+		{
+			//hardened hash generation, no salt needed (library takes care)
+			self::$ci->load->library('phpass');
+			return self::$ci->phpass->hash($password);
+		}
+
+		// --------------------------------------------------------------------
 
 		/**
 		 * Check if one key of the user already exists.
@@ -1044,59 +1175,6 @@ namespace Ionize {
 		public function calc_activation_key($user, $role_code='')
 		{
 			return sha1(sha1($role_code .$user['email'] . $user['password']).sha1($user['salt']));
-		}
-
-
-		// --------------------------------------------------------------------
-
-
-		/**
-		 * Encrypts the password.
-		 *
-		 * @param  string		The password to encrypt
-		 * @param  array		User data array
-		 * @return string		Encrypted password
-		 */
-		public function encrypt($password, $user)
-		{
-			$hash 	= self::$ci->encrypt->sha1($user['username'] . $user['salt']);
-			$key 	= self::$ci->encrypt->sha1($this->encryption_key . $hash);
-
-			return self::$ci->encrypt->encode($password, substr($key, 0, 56));
-		}
-
-
-		// --------------------------------------------------------------------
-
-
-		/**
-		 * Decrypts the password.
-		 *
-		 * @param  string		The encrypted password
-		 * @param  array		User data array
-		 * @return string		Decrypted password
-		 */
-		public function decrypt($password, $user)
-		{
-			$hash 	= self::$ci->encrypt->sha1($user['username'] . $user['salt']);
-			$key 	= self::$ci->encrypt->sha1($this->encryption_key . $hash);
-
-			return self::$ci->encrypt->decode($password, substr($key, 0, 56));
-		}
-
-
-		// --------------------------------------------------------------------
-
-
-		/**
-		 * Generates a random salt value.
-		 *
-		 * @return String	Hash value
-		 *
-		 **/
-		public function get_salt()
-		{
-			return substr(md5(uniqid(rand(), TRUE)), 0, $this->salt_length);
 		}
 
 

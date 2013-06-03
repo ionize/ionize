@@ -178,28 +178,22 @@ class User extends My_Admin
 				$post,
 				array(
 					'join_date' => $id_user ? $this->input->post('join_date') : date('Y-m-d H:i:s'),
-					'salt' => $id_user ? $this->input->post('salt') : User()->get_salt(),
 				)
 			);
 
-			// Existing
+			// if Existing
 			if ($id_user != FALSE)
 			{
-				if (($this->input->post('password') != '' && $this->input->post('password2') != '') &&
-					($this->input->post('password') == $this->input->post('password2'))	)
-				{
-					$post['password'] = User()->encrypt($this->input->post('password'), $post);
-				}
-				else
+				if(    $this->input->post('password')==''
+				    OR $this->input->post('password2')==''
+				    OR $this->input->post('password') <> $this->input->post('password2') ) 
 				{
 					unset($post['password'], $post['password2']);
 				}
 			}
-			// New
-			else
-			{
-				$post['password'] = User()->encrypt($this->input->post('password'), $post);
-			}
+
+			if( !empty($post['password']) )
+				$post['password'] = User()->generate_hash($this->input->post('password'));
 
 			// Save
 			$this->user_model->save($post);
@@ -271,9 +265,9 @@ class User extends My_Admin
 		{
 			$user['role'] = User()->get_role();
 
-			// Removes the password, even it is encoded
-			if (isset($user['password'])) unset($user['password']);
-			if (isset($user['salt'])) unset($user['salt']);
+			// Removes the password, no need for hashes to get displayed
+			if (isset($user['password']))
+				unset($user['password']);
 
 			// Returns the current user as JSON object
 			if ($this->is_xhr())
