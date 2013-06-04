@@ -744,7 +744,7 @@ namespace Ionize {
 					$nb = $this->model->save($user_data);
 
 					// Reset the current user
-					if ($nb && $this->current_user)
+					if ($nb && $this->get_user())
 					$this->user = $this->model->find_user($user_data['email']);
 
 					return $nb;
