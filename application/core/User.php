@@ -455,7 +455,7 @@ namespace Ionize {
 			if( ! $this->logged_in() OR ! $this->remember['on'])
 				return FALSE;
 
-			$user = $this->get_current_user();
+			$user = $this->get_user();
 
 			//generate a remembercode - stored in the database for later
 			//comparison
