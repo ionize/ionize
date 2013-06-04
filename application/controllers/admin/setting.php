@@ -473,6 +473,8 @@ class Setting extends MY_admin
 			'show_help_tips',
 			'display_connected_label',
 			'display_dashboard_shortcuts',
+			'display_dashboard_messages',
+			'display_dashboard_wide_messages_box',
 			'display_dashboard_modules',
 			'display_dashboard_users',
 			'display_dashboard_content',

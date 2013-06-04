@@ -16,6 +16,19 @@
 
 <!-- Row 1 -->
 <div class="row">
+	<!-- Modules -->
+	<?php if ( ! empty($messages) && Settings::get('display_dashboard_messages') == '1') :?>
+		<div id="messagesBlock" class="desktopBloc <?= Settings::get('display_dashboard_wide_messages_box') == '1' ? "fullwidth" :"";?>" data-title="<?php echo lang('ionize_menu_messages'); ?>">
+			<?php foreach($messages as $message) :?>
+				<div class="message" data-title="<?php echo $message['origin']; ?>">
+					<? if( isset($message["icon"]) ) : ?>
+					<img src="<?=$message["icon"];?>" class="icon" alt="<?php echo $message['origin']; ?>" title="<?php echo $message['origin']; ?>" />
+					<? endif; ?>
+					<p><?=$message['content']; ?></p>
+				</div>
+			<?php endforeach ;?>
+		</div>
+	<?php endif ;?>
 
 	<?php if (
 		Settings::get('dashboard_google') == '1'
