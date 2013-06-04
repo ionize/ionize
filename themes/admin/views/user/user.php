@@ -17,7 +17,6 @@ $from = ! empty($from) ? $from : '';
 	<!-- Hidden fields -->
 	<input id="id_user" name="id_user" type="hidden" value="<?php echo $user['id_user'] ?>" />
 	<input id="join_date" name="join_date" type="hidden" value="<?php echo $user['join_date'] ?>" />
-	<input id="salt" name="salt" type="hidden" value="<?php echo $user['salt'] ?>" />
 	<input name="from" type="hidden" value="<?php echo $from ?>" />
 
 	<!-- Username -->

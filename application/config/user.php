@@ -33,6 +33,18 @@ $config['user_table_pk'] = 'id_user';
 */
 $config['verify_user'] = true;
 
+/*
+|--------------------------------------------------------------------------
+| Confirmation code lifetime
+|--------------------------------------------------------------------------
+|
+| Default: 86400 - 1 day
+| Option: 0 - no expiration time
+|
+| Time in seconds until a code is getting invalid
+|
+*/
+$config['confirmation_code_lifetime'] = 86400;
 
 /*
 |--------------------------------------------------------------------------

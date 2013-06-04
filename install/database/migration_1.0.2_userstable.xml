@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<sql>
+
+	<query>
+		ALTER TABLE `user` ADD `activation_code` varchar(40) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `user` ADD `remember_code` varchar(40) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `user` ADD `forgotten_password_code` varchar(40) DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `user` ADD `forgotten_password_time` int(11) unsigned DEFAULT NULL;
+	</query>
+
+	<query>
+		ALTER TABLE `user` drop `salt`;
+	</query>
+</sql>

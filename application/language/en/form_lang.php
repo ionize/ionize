@@ -70,10 +70,15 @@ $lang['mail_user_registration_intro'] = "Dear %s,";
 $lang['mail_user_registration_message'] = "You just registered on <b>%s</b>.<br/>Here are your login information.";
 $lang['mail_user_registration_activate'] = "Before login, you need to activate your account through this link :";
 
-// New Password : Email to user
-$lang['mail_user_password_subject'] = "New password for your account on %s";
-$lang['mail_user_password_intro'] = "Dear %s,";
-$lang['mail_user_password_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Here are your new login information:";
+// Forgot password request : Email to user
+$lang['mail_user_forgot_password_request_subject'] = "You forgot your password for your account on %s ?";
+$lang['mail_user_forgot_password_request_intro'] = "Dear %s,";
+$lang['mail_user_forgot_password_request_message'] = "You just asked for one new password to access to the website <b>%s</b>.<br/>Ifyou really wanted to get a new password generated, just visit:";
+$lang['mail_user_forgot_password_request_hint'] = 'If you did not request the reset of your password, ignore this Email. Please contact us if you receive this Email multiple times.';
+// Forgot password confirm : Email to user
+$lang['mail_user_forgot_password_confirm_subject'] = "Your new login data for your account on %s";
+$lang['mail_user_forgot_password_confirm_intro'] = "Dear %s,";
+$lang['mail_user_forgot_password_confirm_message'] = "Here is your new login data to access the website <b>%s</b>.<br/>";
 
 // Contact : Email to Admin
 $lang['mail_website_contact_subject'] = "Message from Contact Form";

@@ -167,15 +167,15 @@ $config['forms'] = array
 			),
 		),
 	),
-
-	'password' => array
+	//someone wants to get a new password send (needs confirmation first)
+	'forgot_password_request' => array
 	(
 		'process' => 'TagManager_User::process_data',
 		'messages' => array
 		(
-			'success' => 	'form_password_success_message',
-			'error' => 		'form_password_error_message',
-			'not_found' => 	'form_password_not_found_message',
+			'success' => 	'form_forgot_password_request_success_message',
+			'error' => 		'form_forgot_password_request_error_message',
+			'not_found' => 	'form_forgot_password_request_not_found_message',
 		),
 		'fields' => array
 		(
@@ -189,8 +189,39 @@ $config['forms'] = array
 			array
 			(
 				'email' => 'form',
-				'subject' => 'mail_user_password_subject',
-				'view' => 'mail/password/to_user',
+				'subject' => 'mail_user_forgot_password_request_subject',
+				'view' => 'mail/user_forgot_password_request',
+			),
+		),
+	),
+	//someone clicked on a forgot-password-link
+	'forgot_password_confirm' => array
+	(
+		'process' => 'TagManager_User::process_data',
+		'messages' => array
+		(
+			'success' => 	'form_forgot_password_confirm_success_message',
+			'error' => 		'form_forgot_password_confirm_error_message',
+			'not_found' => 	'form_forgot_password_confirm_not_found_message',
+		),
+		'fields' => array
+		(
+			'email' => array(
+				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
+				'label' => 'form_label_email',
+			),
+			'confirmation_code' => array(
+				'rules' => 'trim|required|min_length[5]|xss_clean',
+				'label' => 'form_label_confirmation_code',
+			),
+		),
+		'emails' => array
+		(
+			array
+			(
+				'email' => 'form',
+				'subject' => 'mail_user_forgot_password_confirm_subject',
+				'view' => 'mail/user_forgot_password_confirm',
 			),
 		),
 	),
