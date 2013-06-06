@@ -53,8 +53,6 @@ class MY_Controller extends CI_Controller
 	{
 		parent::__construct();
 
-//		log_message('error', $this->get_uri());
-
 		// Check the database settings
 		if ($this->test_database_config() === FALSE)
 		{
@@ -132,7 +130,8 @@ class MY_Controller extends CI_Controller
      */
     public function output($view)
     {
-		$this->xhr_protect();
+		if ($this->uri->uri_string() != '/admin')
+			$this->xhr_protect();
 
     	// Unique ID, useful for DOM Element displayed in windows.
     	$this->template['UNIQ'] = (uniqid());
@@ -998,11 +997,23 @@ class MY_Module extends MY_Controller
 	{
 		parent::__construct();
 
-		$config_items = Modules()->get_module_config($this->uri->segment(1));
+		$module_key = $this->uri->segment(1);
+
+		// Set Module's config
+		$config_items = Modules()->get_module_config($module_key);
 
 		foreach($config_items as $item => $value)
-		{
 			$this->config->set_item($item, $value);
+
+		// Module translation files
+		$lang_file = MODPATH.ucfirst($module_key).'/language/'.config_item('detected_lang_code').'/'.$module_key.'_lang.php';
+
+		if (is_file($lang_file))
+		{
+			$lang = array();
+			include $lang_file;
+			$this->lang->language = array_merge($this->lang->language, $lang);
+			unset($lang);
 		}
 	}
 }
@@ -1033,6 +1044,16 @@ abstract class Module_Admin extends MY_Admin
 	final public function __construct(CI_Controller $c)
 	{
 		$this->parent = $c;
+
+		// Set Module's config
+		$ci =& get_instance();
+		$config_items = Modules()->get_module_config($ci->uri->segment(3));
+		if ( ! empty($config_items))
+		{
+			foreach($config_items as $item => $value)
+				$this->config->set_item($item, $value);
+		}
+
 		$this->construct();
 	}
 

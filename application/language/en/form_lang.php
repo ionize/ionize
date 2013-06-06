@@ -121,16 +121,13 @@ $lang['form_contact_success_message'] = 'Thank you for your message, we will ans
 
 /*
 |--------------------------------------------------------------------------
-| Validation Errors
-| of custom callbacks
-| Must look like : $lang['form_error_<field_key>'] = 'Error message'
+| Validation Errors of custom callbacks
 |
 | For custom form validation translation, copy the wished file from
 | /system/language/xx/form_validation_lang.php to your theme language folder
 | /themes/my_theme/language/xx/form_validation_lang.php and adapt it.
 |
 |--------------------------------------------------------------------------
-| $lang['form_error_upload'] = "Something went wrong while uploading the files.";
 |
 */
 

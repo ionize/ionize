@@ -374,10 +374,13 @@ class TagManager
 		// Merge tags definition
 		$tag_definitions = $vars['tag_definitions'];
 
-		foreach ($tag_definitions as $tag => $method)
+		if ( ! empty($tag_definitions))
 		{
-			// Regular tag declaration
-			self::$tags[$tag] = $class.'::'.$method;
+			foreach ($tag_definitions as $tag => $method)
+			{
+				// Regular tag declaration
+				self::$tags[$tag] = $class.'::'.$method;
+			}
 		}
 	}
 

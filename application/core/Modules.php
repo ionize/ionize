@@ -103,18 +103,28 @@ namespace Ionize {
 					{
 						foreach($module['resources'] as $resource => $data)
 						{
-							$resources[] = array(
-								'id_resource' => $base_module_resource .'/' . $resource,
-								'id_parent' => ! empty($data['parent']) ? $base_module_resource .'/'.$data['parent'] : $base_module_resource,
-								'resource' => $base_module_resource .'/' . $resource,
-								'actions' => ! empty($data['actions']) ? $data['actions'] : '',
-								'title' => ! empty($data['title']) ? $data['title'] : '',
-								'description' => ! empty($data['description']) ? $data['description'] : $resource,
-							);
+							// Root module actions
+							if ( empty($resource))
+							{
+								$resources[0]['id_resource'] = $base_module_resource;
+								$resources[0]['actions'] = ! empty($data['actions']) ? $data['actions'] : '';
+								$resources[0]['title'] = ! empty($data['title']) ? $data['title'] : '';
+								$resources[0]['description'] = ! empty($data['description']) ? $data['description'] : '';
+							}
+							else
+							{
+								$resources[] = array(
+									'id_resource' => $base_module_resource .'/' . $resource,
+									'id_parent' => ! empty($data['parent']) ? $base_module_resource .'/'.$data['parent'] : $base_module_resource,
+									'resource' => $base_module_resource .'/' . $resource,
+									'actions' => ! empty($data['actions']) ? $data['actions'] : '',
+									'title' => ! empty($data['title']) ? $data['title'] : '',
+									'description' => ! empty($data['description']) ? $data['description'] : $resource,
+								);
+							}
 						}
 					}
 				}
-
 				static::$resources = $resources;
 			}
 

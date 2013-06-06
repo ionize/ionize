@@ -40,13 +40,19 @@ $config['module']['demo'] = array
 		'admin' => array(
 			'title' => 'Demo Module Administration'
 		),
-		'do_something' => array(
-			'title' => 'Do something',						// Title of the resource
-			'actions' => 'action_key_1,action_key_2',		// Can be 'edit', 'eat_cheese', what you want
+		'do_something' => array
+		(
+			// Title of the resource
+			'title' => 'Do something',
+			// Can be 'edit', 'eat_cheese', what you want
+			'actions' => 'action_key_1,action_key_2',
 		),
-		'language/translate' => array(
+		'language/translate' => array
+		(
+			// Parent of the module's ressource in the resources tree
 			'parent' => 'language',
 			'title' => 'Translate',
+			// No action means "access" : Authority::can('access', 'module/demo/language/translate'
 			'actions' => '',
 		),
 	),

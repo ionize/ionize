@@ -1629,6 +1629,8 @@ ION.append({
 		text = text.replace(/à/g, 'a');
 		text = text.replace(/ä/g, 'a');
 		text = text.replace(/â/g, 'a');
+		text = text.replace(/ā/g, 'a');
+		text = text.replace(/č/g, 'c');
 		text = text.replace(/é/g, 'e');
 		text = text.replace(/è/g, 'e');
 		text = text.replace(/ë/g, 'e');
@@ -1645,6 +1647,7 @@ ION.append({
 		text = text.replace(/µ/g, 'u');
 		text = text.replace(/ç/g, 'c');
 		text = text.replace(/ş/g, 's');
+		text = text.replace(/š/g, 's');
 		text = text.replace(/ı/g, 'i');
 		text = text.replace(/ğ/g, 'g');
 
