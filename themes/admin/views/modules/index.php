@@ -36,7 +36,7 @@
 					<td><?php echo $module['description']; ?></td>
 					<td>
 						<?php if($module['installed']): ?>
-							<?php if (! empty($modules['has_frontend']) && $modules['has_frontend'] == TRUE) :?>
+							<?php if (! empty($module['has_frontend']) && $module['has_frontend'] == TRUE) :?>
 								<a href="<?php echo base_url().$module['uri_user_segment']; ?>" target="_blank"><?php echo $module['uri_user_segment']; ?></a>
 							<?php endif; ?>
 						<?php else :?>
