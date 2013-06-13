@@ -421,6 +421,7 @@ $lang['ionize_title_group_edit'] = 'Group edit';
 $lang['ionize_title_add_user'] = 'Add one user';
 $lang['ionize_title_add_group'] = 'Add one group';
 $lang['ionize_title_change_password'] = 'Change the password';
+$lang['ionize_title_notify_user_account_updated'] = 'Notify the user';
 $lang['ionize_title_users_export'] = 'Users export';
 $lang['ionize_title_user_meta'] = 'Users meta data';
 $lang['ionize_title_filter_userslist'] = 'Userlist filter';
@@ -458,7 +459,16 @@ $lang['ionize_message_group_saved'] = 'Group saved';
 $lang['ionize_message_group_deleted'] = 'Group deleted';
 $lang['ionize_message_users_exported'] = 'Users exported';
 $lang['ionize_message_users_not_exported'] = 'Users not exported';
+$lang['ionize_subject_your_account_has_been_updated'] = 'Your account has been updated';
+$lang['ionize_message_your_account_has_been_updated'] = 'Your account has been updated by one Administrator.';
 $lang['ionize_button_export'] = 'Export';
+$lang['ionize_mail_user_intro'] = "Dear %s,";
+$lang['ionize_mail_account_details'] = "Your account details";
+$lang['ionize_mail_automatic_message_warning'] = "This message was automatically generated. Please do not answer.";
+$lang['ionize_mail_thank_you_for_using_our_website'] = "We thank you a lot for using %s !";
+$lang['ionize_mail_signature'] = "%s's team";
+$lang['ionize_title_account_activated'] = "Account activated";
+
 
 
 /*
@@ -1166,6 +1176,7 @@ $lang['ionize_message_role_no_save_level_too_high'] = 'Role not saved : Level mu
 $lang['ionize_message_role_no_delete_users_linked'] = 'Role not deleted : Users are linked !';
 $lang['ionize_help_email_can_be_used_as_login'] = 'Email can also be used as login';
 $lang['ionize_help_password_change'] = "Leave blank if you don't want to change the password";
+$lang['ionize_help_notify_user_account_updated'] = "If you add one message, the user will be notified by email about his account update.";
 $lang['ionize_message_email_already_registered'] = "This Email already exists in Database.";
 
 

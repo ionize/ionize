@@ -2,7 +2,7 @@
 <sql>
 
 	<query>
-		update setting set content='1.0.0' where name = 'ionize_version';
+		update setting set content='1.0.3' where name = 'ionize_version';
 	</query>
 
 	<query>
@@ -90,11 +90,11 @@
     <query>alter table role change description role_description tinytext;</query>
     <query>drop table user_groups;</query>
 
-    <query>update role set role_name='super-admin' where role_name='super-admins';</query>
-    <query>update role set role_name='admin' where role_name='admins';</query>
-    <query>update role set role_name='editor' where role_name='editors';</query>
-    <query>update role set role_name='user' where role_name='users';</query>
-    <query>update role set role_name='guest' where role_name='guests';</query>
+    <query>update role set role_code='super-admin' where role_name='super-admins';</query>
+    <query>update role set role_code='admin' where role_name='admins';</query>
+    <query>update role set role_code='editor' where role_name='editors';</query>
+    <query>update role set role_code='user' where role_name='users';</query>
+    <query>update role set role_code='guest' where role_name='guests';</query>
 
     <query>
         CREATE TABLE if not exists resource (

@@ -215,6 +215,8 @@ class User_model extends Base_model
 	/**
 	 * @param $id_user
 	 * @param $role_code
+	 *
+	 * @return bool
 	 */
 	public function set_role($id_user, $role_code)
 	{
@@ -226,7 +228,10 @@ class User_model extends Base_model
 		{
 			$this->{$this->db_group}->where($this->pk_name, $id_user);
 			$this->{$this->db_group}->update($this->table, array('id_role'=> $role['id_role']));
+
+			return TRUE;
 		}
+		return FALSE;
 	}
 
 

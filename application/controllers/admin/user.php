@@ -202,7 +202,32 @@ class User extends My_Admin
 			}
 
 			// Save
-			$this->user_model->save($post);
+			$new_id_user = $this->user_model->save($post);
+
+			// Send message to user if needed
+			$message = $this->input->post('message');
+			if ($id_user &&  ! is_null($new_id_user) && $message != '')
+			{
+				// Group
+				$user = $this->user_model->get_user(array('id_user' => $new_id_user));
+
+				$email_data = array(
+					'message' =>  $message,
+					'role' => $user['role_name'],
+					'firstname' => $user['firstname'],
+					'lastname' => $user['lastname'],
+					'email' => $user['email'],
+					'username' => $post['firstname'] . ' ' . $post['lastname'],
+				);
+
+				$this->send_email(
+					Settings::get('site_email'),
+					$post['email'],
+					Settings::get('site_title') . ' : ' .lang('ionize_subject_your_account_has_been_updated'),
+					$email_data,
+					'mail/system/to_user'
+				);
+			}
 
 			// Reload user list
 			if ( ! empty($post['from']) && $post['from'] == 'dashboard')
@@ -303,6 +328,37 @@ class User extends My_Admin
 				'rules' => $rules
 			);
 			$this->xhr_output($data);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function send_email($from, $to, $subject, $data, $view)
+	{
+		if ( !empty($from) && !empty($to))
+		{
+			$this->load->library('email');
+
+			$this->email->subject($subject);
+			$this->email->from($from, Settings::get("site_title"));
+			$this->email->to($to);
+
+			// Loads the view
+			$view_content = $this->load->view($view, $data, true);
+
+			$this->email->message($view_content);
+
+			// Send silently
+			$result = @$this->email->send();
+
+			return $result;
+		}
+		else
+		{
+			log_message('error', 'Error : Backend send_mail : Ether the website email or the receiver email isn\'t set');
+			return FALSE;
 		}
 	}
 

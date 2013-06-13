@@ -3,15 +3,15 @@
 -- From 0.9.9 to 1.0.0
 --
 
-update setting set content='1.0.0' where name = 'ionize_version';
+update setting set content='1.0.3' where name = 'ionize_version';
 
 ALTER TABLE lang ADD direction smallint(1) NOT NULL DEFAULT 1;
 
 
 CREATE TABLE api_key (
     id int(11) NOT NULL AUTO_INCREMENT,
-    key varchar(40) NOT NULL,
-    level int(2) NOT NULL,
+    `key` varchar(40) NOT NULL,
+    `level` int(2) NOT NULL,
     ignore_limits tinyint(1) NOT NULL DEFAULT '0',
     is_private tinyint(1) NOT NULL DEFAULT '0',
     ip_addresses text,
@@ -91,11 +91,11 @@ alter table role change group_name role_name varchar(100);
 alter table role change description role_description tinytext;
 drop table user_groups;
 
-update role set role_name='super-admin' where role_name='super-admins';
-update role set role_name='admin' where role_name='admins';
-update role set role_name='editor' where role_name='editors';
-update role set role_name='user' where role_name='users';
-update role set role_name='guest' where role_name='guests';
+update role set role_code='super-admin' where role_name='super-admins';
+update role set role_code='admin' where role_name='admins';
+update role set role_code='editor' where role_name='editors';
+update role set role_code='user' where role_name='users';
+update role set role_code='guest' where role_name='guests';
 
 
 -- Resource table
@@ -276,9 +276,6 @@ INSERT IGNORE INTO rule (id_role, resource, actions, permission, id_element)
 INSERT INTO rule (id_role, resource, actions, permission)
 VALUES
      (1,'all','',1);
-
--- Tag table
-alter table tag change tag tag_name varchar(50) not null;
 
 
 -- ALTER database ionize_099 default CHARACTER SET utf8 COLLATE utf8_general_ci;

@@ -36,6 +36,7 @@
 			text-align: left;
 			line-height: 1.2em;
 			font-weight: normal;
+			margin-top: 0;
 		}
 		p{margin-bottom: 10px;}
 		a:link, a:visited, a:active, a:hover{
@@ -51,10 +52,10 @@
 </head>
 <body>
 
-<table border="0" width="100%" cellpadding="0" cellspacing="0" style="border:0; width: 100%;">
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
 	<tr>
 		<td class="bg_fade">
-			<table border="0" width="880" style="border:0; width: 880px; margin: 0 auto;">
+			<table border="0" width="880">
 				<tr>
 					<td>
 						<h1><ion:data:subject /></h1>

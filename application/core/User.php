@@ -636,10 +636,8 @@ namespace Ionize {
 		 */
 		public function register($user_data = array())
 		{
-			$user_pk = $this->model->pk_name();
-
 			// need username and password to process further
-			if( isset($user_data['email']) OR ! isset($user_data['password']))
+			if( ! isset($user_data['email']) OR ! isset($user_data['password']))
 			{
 				$this->error = $this->set_error_message('connect_missing_parameters', implode(', ', array_diff(array('username', 'email', 'password'), array_keys($user_data))));
 				return FALSE;
@@ -669,6 +667,7 @@ namespace Ionize {
 			}
 			else
 			{
+				log_message('error', print_r('here', true));
 				$this->error = $this->set_error_message('connect_user_already_exists');
 			}
 
@@ -770,7 +769,6 @@ namespace Ionize {
 				if ( ! in_array($user_role['role_code'], array($this->user_deactivated_role, $this->user_banned_role)))
 				{
 					$id_user = $user[$this->model->pk_name];
-
 					$role_code = $role_code != '' ? $role_code : $this->user_default_role;
 
 					return $this->model->set_role($id_user, $role_code);

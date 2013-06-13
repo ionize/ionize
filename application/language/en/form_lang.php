@@ -97,12 +97,17 @@ $lang['mail_automatic_message_warning'] = "This message was automatically genera
 */
 $lang['form_not_logged'] = "You're not logged in.";
 
+$lang['form_alert_success_title'] = 'Success !';
+$lang['form_alert_success_message'] = 'Everything was OK !';
+$lang['form_alert_error_title'] = 'Oups ! We got one error !';
+$lang['form_alert_error_message'] = 'Check the form, something is perhaps missing....';
+
 $lang['form_login_success_message'] = "You successfully logged in.";
 $lang['form_login_error_message'] = "Error : Check your login / password.";
 $lang['form_login_not_found_message'] = "User not found.";
 $lang['form_login_not_activated_message'] = "This account is not activated. Check your emails and click on the activation link.";
 
-$lang['form_register_success_message'] = "You successfully registered.";
+$lang['form_register_success_message'] = "You successfully registered.<br/>We just sent you an email with your account activation instructions.";
 $lang['form_register_error_message'] = "Error : Registration not successful.";
 
 $lang['form_profile_success_message'] = "Profile data saved";
@@ -117,6 +122,8 @@ $lang['form_contact_error_title'] = 'Oups, we got an error.';
 $lang['form_contact_error_message'] = 'perhaps just some missing fields. Please check the form...';
 $lang['form_contact_success_title'] = 'Your message was sent successfully !';
 $lang['form_contact_success_message'] = 'Thank you for your message, we will answer you very quickly !';
+
+
 
 
 /*

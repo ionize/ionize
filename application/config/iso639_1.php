@@ -128,6 +128,7 @@ $iso639_1 = array(
 	'or' =>	'Oriya',
 	'os' =>	'Ossetian',
 	'pa' =>	'Panjabi',
+	'pb' =>	'Portuguese Brazilian',
 	'pi' =>	'Pāli',
 	'pl' =>	'Polish',
 	'ps' =>	'Pashto',

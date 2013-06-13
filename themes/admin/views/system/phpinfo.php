@@ -1,6 +1,6 @@
 <?php
 
-    if ($this->connect->is('super-admin'))
+    if (User()->is('super-admin'))
     {
         phpinfo();
     }
