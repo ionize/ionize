@@ -36,7 +36,8 @@
             text-align: left;
             line-height: 1.2em;
             font-weight: normal;
-        }
+			margin-top: 0;
+		}
         p{margin-bottom: 10px;}
         a:link, a:visited, a:active, a:hover{
             color: #098ED1;
@@ -50,22 +51,25 @@
     </style>
 </head>
 <body>
-
-    <table border="0" width="100%" cellpadding="0" cellspacing="0" style="border:0; width: 100%;">
+    <table border="0" width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td class="bg_fade">
-                <table border="0" width="880" style="border:0; width: 880px; margin: 0 auto;">
+                <table border="0" width="880">
                     <tr>
                         <td>
-                            <h1><ion:data:subject /></h1>
+							<h1><ion:lang key="mail_website_registration_subject" /></h1>
 
-							<p><ion:lang key="mail_website_contact_message" /></p>
+							<p><ion:lang key="mail_website_registration_message" /></p>
 
 							<p>
                                 <ion:lang key="form_label_firstname"/> : <ion:data:firstname />, <br/>
                                 <ion:lang key="form_label_lastname"/> : <ion:data:lastname />, <br/>
-                                <ion:lang key="form_label_email"/> : <ion:data:email />, <br/>
-                                <ion:lang key="form_label_email"/> : <ion:data:email />, <br/>
+                                <ion:lang key="form_label_email"/> : <ion:data:email /> <br/>
+							</p>
+
+							<h2><ion:lang key="form_label_message"/></h2>
+							<p>
+								<ion:data:message />
 							</p>
                         </td>
                     </tr>
@@ -73,6 +77,5 @@
             </td>
         </tr>
     </table>
-
 </body>
 </html>

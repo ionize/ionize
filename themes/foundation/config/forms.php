@@ -6,7 +6,7 @@
 |--------------------------------------------------------------------------
 |
 | This forms config array will be merged with /application/config/forms.php
-| You can overwrite standard forms definition by creating your own deifnition
+| You can overwrite standard forms definition by creating your own definition
 | for the form you wish to overwrite.
 |
 */

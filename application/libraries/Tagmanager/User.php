@@ -339,7 +339,10 @@ class TagManager_User extends TagManager
 
 						if ( ! User()->register($user))
 						{
-							$message = TagManager_Form::get_form_message('error');
+							$message = User()->error();
+							if ( empty($message))
+								$message = TagManager_Form::get_form_message('error');
+
 							TagManager_Form::set_additional_error('register', $message);
 						}
 						else
@@ -354,9 +357,11 @@ class TagManager_User extends TagManager
 
 								$user['password'] = User()->decrypt($user['password'], $user);
 
+								// Merge POST data for email template
+								$user = array_merge($user, self::$ci->input->post());
+
 								// Create data array and Send Emails
-								$data = array_merge($user, $user['group']);
-								TagManager_Email::send_form_emails($tag, 'password', $data);
+								TagManager_Email::send_form_emails($tag, 'password', $user);
 
 								$message = TagManager_Form::get_form_message('success');
 								TagManager_Form::set_additional_success('register', $message);
@@ -495,6 +500,9 @@ class TagManager_User extends TagManager
 								$redirect = TagManager_Form::get_form_redirect();
 								if ($redirect !== FALSE) redirect($redirect);
 							}
+						}
+						else
+						{
 						}
 					}
 					break;

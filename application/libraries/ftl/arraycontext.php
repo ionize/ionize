@@ -92,9 +92,19 @@ class FTL_ArrayContext extends FTL_Context
 	 * @return FTL_ArrayContext
 	 *
 	 */
-	function register($key, $value)
+	function register($key, $value, $array = NULL)
 	{
-		$this->_registry->{$key} = $value;
+		if ( ! is_null($array))
+		{
+			if ( ! isset($this->{$array}))
+				$this->{'_registry_'.$array} = new FTL_VarStack();
+
+			$this->{'_registry_'.$array}->{$key} = $value;
+		}
+		else
+		{
+			$this->_registry->{$key} = $value;
+		}
 		return $this;
 	}
 
@@ -107,9 +117,19 @@ class FTL_ArrayContext extends FTL_Context
 	 *
 	 * @return mixed
 	 */
-	function registry($key)
+	function registry($key, $array = NULL)
 	{
-		return $this->_registry->{$key};
+		if ( ! is_null($array))
+		{
+			if ( isset($this->{'_registry_'.$array}))
+				return $this->{'_registry_'.$array}->{$key};
+
+			return NULL;
+		}
+		else
+		{
+			return $this->_registry->{$key};
+		}
 	}
 
 	// --------------------------------------------------------------------

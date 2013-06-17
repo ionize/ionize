@@ -213,6 +213,8 @@ class TagManager
 		'request:post' =>		'tag_request_post',
 		'request:getpost' =>	'tag_request_getpost',
 		'request:get' =>		'tag_request_get',
+		'attr' =>				'tag_attr',
+		'partial:attr' =>		'tag_partial_attr',
 
 		// Development tags
 		'trace' =>				'tag_trace',
@@ -872,15 +874,15 @@ class TagManager
 	*/
 
 
-	protected function registry($key)
+	protected function registry($key, $array = NULL)
 	{
-		return self::$context->registry($key);
+		return self::$context->registry($key, $array);
 	}
 
 
-	protected function register($key, $value)
+	protected function register($key, $value, $array = NULL)
 	{
-		self::$context->register($key, $value);
+		self::$context->register($key, $value, $array);
 	}
 
 
@@ -2029,6 +2031,12 @@ class TagManager
 
 		if ( ! is_null($view))
 		{
+			$attributes = $tag->getAttributes();
+			foreach($attributes as $key => $value)
+			{
+				self::register($key, $value, 'attr');
+			}
+
 			if( $tag->getAttribute('php') == TRUE)
 			{
 				$data = $tag->getAttribute('data', array());
@@ -2044,6 +2052,34 @@ class TagManager
 		{
 			show_error('TagManager : Please use the attribute <b>"view"</b> when using the tag <b>partial</b>');
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function tag_attr(FTL_Binding $tag)
+	{
+		$attr_key = $tag->getAttribute('key');
+
+		$attributes = $tag->getParent()->getAttributes();
+
+		$value = isset($attributes[$attr_key]) ? $attributes[$attr_key]  : '';
+
+		return self::output_value($tag, $value);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function tag_partial_attr(FTL_Binding $tag)
+	{
+		$attr_key = $tag->getAttribute('key');
+
+		$value = self::registry($attr_key, 'attr');
+
+		return self::output_value($tag, $value);
 	}
 
 

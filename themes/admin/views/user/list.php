@@ -102,7 +102,7 @@
 					'userForm'+ id,				// Form ID
 					'ionize_title_user_edit', 	// Window title
 					'user/edit',			// Window content URL
-					{width: 400, resize:true},	// Window options
+					{width: 520, height:440},	// Window options
 					{'id_user': id}
 				);
 			});

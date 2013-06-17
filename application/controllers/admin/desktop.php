@@ -68,6 +68,7 @@ class Desktop extends MY_Admin
 		$args = func_get_args();
 		$args = implode('/', $args);
 
+		$this->disable_xhr_protection();
 		$this->output($args);
 	}
 

@@ -20,6 +20,36 @@ $from = ! empty($from) ? $from : '';
 	<input id="salt" name="salt" type="hidden" value="<?php echo $user['salt'] ?>" />
 	<input name="from" type="hidden" value="<?php echo $from ?>" />
 
+	<!-- Firstname -->
+	<dl class="small">
+		<dt>
+			<label for="firstname<?php echo $user['id_user'] ?>"><?php echo lang('ionize_label_firstname'); ?></label>
+		</dt>
+		<dd>
+			<input id="firstname<?php echo $user['id_user'] ?>" name="firstname" class="inputtext" type="text" value="<?php echo $user['firstname'] ?>" />
+		</dd>
+	</dl>
+
+	<!-- Lastname -->
+	<dl class="small">
+		<dt>
+			<label for="lastname<?php echo $user['id_user'] ?>"><?php echo lang('ionize_label_lastname'); ?></label>
+		</dt>
+		<dd>
+			<input id="lastname<?php echo $user['id_user'] ?>" name="lastname" class="inputtext" type="text" value="<?php echo $user['lastname'] ?>" />
+		</dd>
+	</dl>
+
+	<!-- Screen Name -->
+	<dl class="small">
+		<dt>
+			<label for="screen_name<?php echo $user['id_user'] ?>"><?php echo lang('ionize_label_screen_name'); ?></label>
+		</dt>
+		<dd>
+			<input id="screen_name<?php echo $user['id_user'] ?>" name="screen_name" class="inputtext" type="text" value="<?php echo $user['screen_name'] ?>" />
+		</dd>
+	</dl>
+
 	<!-- Username -->
 	<dl class="small">
 		<dt>
@@ -30,16 +60,6 @@ $from = ! empty($from) ? $from : '';
 		</dd>
 	</dl>
 
-	<!-- Screen Name -->
-	<dl class="small">
-		<dt>
-			<label for="screen_name<?php echo $user['id_user'] ?>"><?php echo lang('ionize_label_screen_name'); ?></label>
-		</dt>
-		<dd>
-			<input id="screen_name<?php echo $user['id_user'] ?>" name="screen_name" class="inputtext required" type="text" value="<?php echo $user['screen_name'] ?>" />
-		</dd>
-	</dl>
-
 	<!-- Email -->
 	<dl class="small">
 		<dt>
@@ -47,7 +67,7 @@ $from = ! empty($from) ? $from : '';
 		</dt>
 		<dd>
 			<input id="email<?php echo $user['id_user'] ?>" data-id-user="<?php echo $user['id_user'] ?>" name="email" class="inputtext required emailUnique" type="text" value="<?php echo $user['email'] ?>" />
-			<span class="lite"><?php echo lang('ionize_help_email_can_be_used_as_login') ?></span>
+			<br/><span class="lite"><?php echo lang('ionize_help_email_can_be_used_as_login') ?></span>
 		</dd>
 	</dl>
 
@@ -71,8 +91,11 @@ $from = ! empty($from) ? $from : '';
 	<!-- New password -->
 	<?php if ($user['id_user'] != '') :?>
 
-		<h3 class="mt15"><?php echo lang('ionize_title_change_password'); ?></h3>
-		<p class="lite"><?php echo lang('ionize_help_password_change') ?></p>
+		<h3 class="toggler toggler-user<?php echo $user['id_user'] ?> mt15"><?php echo lang('ionize_title_change_password'); ?></h3>
+
+		<div class="element element-user<?php echo $user['id_user'] ?>">
+
+			<p class="lite"><?php echo lang('ionize_help_password_change') ?></p>
 
 	<?php endif ;?>
 
@@ -97,6 +120,19 @@ $from = ! empty($from) ? $from : '';
 		</dd>
 	</dl>
 
+	<?php if ($user['id_user'] != '') :?>
+		</div>
+	<?php endif ;?>
+
+	<h3 class="toggler toggler-user<?php echo $user['id_user'] ?>"><?php echo lang('ionize_title_notify_user_account_updated'); ?></h3>
+	<div class="element element-user<?php echo $user['id_user'] ?>">
+
+		<p class="lite"><?php echo lang('ionize_help_notify_user_account_updated') ?></p>
+
+		<textarea name="message" class="autogrow"></textarea>
+
+	</div>
+
 </form>
 
 <div class="buttons">
@@ -108,6 +144,7 @@ $from = ! empty($from) ? $from : '';
 
 <script type="text/javascript">
 
+	ION.initFormAutoGrow();
 
     Form.Validator.add('emailUnique', {
         errorMsg: '<?php echo lang('ionize_message_email_already_registered') ?>',
@@ -127,5 +164,8 @@ $from = ! empty($from) ? $from : '';
         }
     });
 
+	<?php if ($user['id_user'] != '') :?>
+		ION.initAccordion('.toggler-user<?php echo $user['id_user'] ?>', 'div.element-user<?php echo $user['id_user'] ?>');
+	<?php endif ;?>
 
 </script>

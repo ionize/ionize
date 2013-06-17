@@ -64,7 +64,6 @@
 		if ($('analyticsChart'))
 		{
 			drawChart();
-			console.log('resizing....');
 		}
 		// google.load("visualization", "1", {packages:["corechart"], "callback" : drawChart});
 	//	google.load("visualization", "1", {packages:["corechart"]});

@@ -36,7 +36,8 @@
             text-align: left;
             line-height: 1.2em;
             font-weight: normal;
-        }
+			margin-top: 0;
+		}
         p{margin-bottom: 10px;}
         a:link, a:visited, a:active, a:hover{
             color: #098ED1;

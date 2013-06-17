@@ -975,10 +975,13 @@ class MY_Admin extends MY_Controller
 	 */
 	public  function xhr_protect()
 	{
-		if ($this->is_xhr() != $this->xhr_protected)
+		if ($this->xhr_protected)
 		{
-			log_message('error', 'Error : No XHR access : ' . $this->uri->uri_string());
-			redirect(config_item('admin_url'));
+			if ( ! $this->is_xhr() )
+			{
+				log_message('error', 'Error : No XHR access : ' . $this->uri->uri_string());
+				redirect(config_item('admin_url'));
+			}
 		}
 	}
 

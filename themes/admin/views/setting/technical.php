@@ -410,23 +410,22 @@
 					</dd>
 				</dl>
 
-				<!-- Mail path -->
+				<!-- Protocol -->
 				<dl>
 					<dt>
-						<label for="protocol"><?php echo lang('ionize_label_smtp_protocol'); ?></label>
+						<label for="emailProtocol"><?php echo lang('ionize_label_smtp_protocol'); ?></label>
 					</dt>
 					<dd>
-						<select name="protocol" id="protocol" onchange="javascript:changeEmailDetails();" class="select">
+						<select name="protocol" id="emailProtocol" class="select">
 							<option <?php if ($protocol == 'smtp'):?>selected="selected"<?php endif;?> value="smtp">SMTP</option>
 							<option <?php if ($protocol == 'mail'):?>selected="selected"<?php endif;?> value="mail">Mail</option>
 							<option <?php if ($protocol == 'sendmail'):?>selected="selected"<?php endif;?>  value="sendmail">SendMail</option>
 						</select>
 					</dd>
 				</dl>
-				
 
 				<!-- Mail Path -->
-				<div id="emailMailDetails" style="display:none;">
+				<div id="emailSendmailDetails">
 					<dl>
 						<dt>
 							<label for="mailpath"><?php echo lang('ionize_label_mailpath'); ?></label>
@@ -436,7 +435,8 @@
 						</dd>
 					</dl>
 				</div>
-				
+
+				<!-- SMTP Details -->
 				<div id="emailSMTPDetails">
 					<!-- SMTP Host -->
 					<dl>
@@ -794,18 +794,30 @@
 	// Show / hides Email details depending on the selected protocol
 	changeEmailDetails = function()
 	{
-		if ($('protocol').value == 'mail')
+		var protocol = $('emailProtocol').value;
+
+		if (protocol == 'mail')
 		{
-			$('emailSMTPDetails').setStyle('display', 'none');
-			$('emailMailDetails').setStyle('display', 'block');
+			$('emailSMTPDetails').hide();
+			$('emailSendmailDetails').hide();
+		}
+		else if (protocol == 'sendmail')
+		{
+			$('emailSMTPDetails').hide();
+			$('emailSendmailDetails').show();
 		}
 		else
 		{
-			$('emailSMTPDetails').setStyle('display', 'block');
-			$('emailMailDetails').setStyle('display', 'none');		
+			$('emailSMTPDetails').show();
+			$('emailSendmailDetails').hide();
 		}
 	}
 	changeEmailDetails();
+
+	$('emailProtocol').addEvent('change', function()
+	{
+		changeEmailDetails();
+	});
 
 
 	// Make each tree page draggable to the maintenance page container
