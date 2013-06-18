@@ -1579,7 +1579,6 @@ class Article extends MY_admin
 					)
 				);
 			}
-			
 			$this->success(lang('ionize_message_operation_ok'));
 		}
 		else

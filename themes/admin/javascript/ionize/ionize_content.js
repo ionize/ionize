@@ -336,7 +336,7 @@ ION.append({
 				{
 					elements.each(function(element){
 						$(element).set('html', responseHTML);
-						Browser.exec(responseJavaScript);
+						// Browser.exec(responseJavaScript);
 					});
 				}
 			}).send()

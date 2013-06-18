@@ -11,6 +11,7 @@
  * $last_registered_users : Last 10 registered	Users list
  *
  */
+$user_role = User()->get_role();
 ?>
 <div class="p10" >
 
@@ -138,6 +139,7 @@
 							<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
 							<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
 							<th axis="date" class="w110"><?php echo lang('ionize_label_last_visit'); ?></th>
+							<th></th>
 						</tr>
 						</thead>
 						<tbody>
@@ -146,8 +148,9 @@
 
 							<tr data-id="<?php echo $user['id_user'] ?>">
 								<td><?php echo $user['screen_name']; ?></td>
-								<td><?php echo mailto($user['email']); ?></td>
+								<td><a class="edit" data-id="<?php echo $user['id_user'] ?>"><?php echo $user['email']; ?></a></td>
 								<td><?php echo humanize_mdate($user['last_visit'], Settings::get('date_format'). ' %H:%i'); ?></td>
+								<td><a class="icon mail" href="mailto:<?php echo $user['email'] ?>"></a></td>
 							</tr>
 
 						<?php endforeach ;?>
@@ -169,6 +172,7 @@
 								<th axis="string"><?php echo lang('ionize_label_name'); ?></th>
 								<th axis="string"><?php echo lang('ionize_label_email'); ?></th>
 								<th axis="date" class="w110"><?php echo lang('ionize_label_join_date'); ?></th>
+								<th></th>
 							</tr>
 							</thead>
 							<tbody>
@@ -177,8 +181,9 @@
 
 								<tr data-id="<?php echo $user['id_user'] ?>">
 									<td><?php echo $user['screen_name']; ?></td>
-									<td><?php echo mailto($user['email']); ?></td>
+									<td><a class="edit" data-id="<?php echo $user['id_user'] ?>"><?php echo $user['email']; ?></a></td>
 									<td><?php echo humanize_mdate($user['join_date'], Settings::get('date_format'). ' %H:%i'); ?></td>
+									<td><a class="icon mail" href="mailto:<?php echo $user['email'] ?>"></a></td>
 								</tr>
 
 							<?php endforeach ;?>
@@ -498,7 +503,7 @@
 	 *
 	 */
 	// Users : Last logged
-	$$('#usersList tbody tr').each(function(item)
+	$$('#usersList tbody tr td .edit').each(function(item)
 	{
 		item.addEvent('click', function(e)
 		{
@@ -519,7 +524,7 @@
 	});
 
 	// Users : Last registered
-	$$('#lastusersList tbody tr').each(function(item)
+	$$('#lastusersList tbody tr td .edit').each(function(item)
 	{
 		item.addEvent('click', function(e)
 		{

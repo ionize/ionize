@@ -69,8 +69,24 @@ class Dashboard extends MY_Admin {
 		$orphan_pages = $this->page_model->get_lang_list(array('id_menu' => '0', 'order_by'=>'name ASC'), Settings::get_lang('default'));
 		
 		// Last connected /registered users
-		$users = $this->user_model->get_list(array('limit'=>'10', 'order_by' => 'last_visit DESC', 'last_visit <>' => ''));
-		$last_registered_users = $this->user_model->get_list(array('limit'=>'10', 'order_by' => 'join_date DESC'));
+		$logged_user_role = User()->get_role();
+
+		$users = $this->user_model->get_list_with_role(
+			array(
+				'limit'=>'10',
+				'order_by' =>
+				'last_visit DESC',
+				'last_visit <>' => ''
+			)
+		);
+
+		$last_registered_users = $this->user_model->get_list_with_role(
+			array(
+				'limit'=>'10',
+				'order_by' => 'join_date DESC',
+	//			'role_level <= ' => $logged_user_role['role_level']
+			)
+		);
 		
 		
 		// Updates on last articles

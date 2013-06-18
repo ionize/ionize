@@ -147,16 +147,25 @@ class User extends My_Admin
 	{
 		$id_user = $this->input->post('id_user');
 
-		$this->template['user'] = $this->user_model->get($id_user);
+		$db_user = $this->user_model->get_user(array('id_user' => $id_user));
+		$this->template['user'] = $db_user;
 
 		// Panel from which the user is edited
 		$this->template['from'] = $this->input->post('from');
 
-		// Get roles, filtered on level <= $current_role level
-		$roles = $this->role_model->get_list();
-		$this->template['roles'] = array_filter($roles, array($this, '_filter_roles'));
+		if ($this->current_role['role_level'] >= $db_user['role_level'])
+		{
+			// Get roles, filtered on level <= $current_role level
+			$roles = $this->role_model->get_list();
+			$this->template['roles'] = array_filter($roles, array($this, '_filter_roles'));
 
-		$this->output('user/user');
+			$this->output('user/user');
+		}
+		else
+		{
+			$this->output('user/user_no_edit');
+		}
+
 	}
 
 

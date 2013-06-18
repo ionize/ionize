@@ -468,6 +468,7 @@ $lang['ionize_mail_automatic_message_warning'] = "This message was automatically
 $lang['ionize_mail_thank_you_for_using_our_website'] = "We thank you a lot for using %s !";
 $lang['ionize_mail_signature'] = "%s's team";
 $lang['ionize_title_account_activated'] = "Account activated";
+$lang['ionize_message_write_an_email_to_this_user'] = "Write an Email to this user";
 
 
 
