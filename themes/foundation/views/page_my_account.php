@@ -29,7 +29,7 @@
                     <input type="text" id="lastname-reg" name="lastname" value="<ion:form:register:field:lastname />" />
                     <ion:form:register:error:lastname tag="p" class="input-error" />
 
-                    <label for="screen_name-reg"><ion:lang key="form_label_screenname" /></label>
+                    <label for="screen_name-reg"><ion:lang key="form_label_screen_name" /></label>
                     <input type="text" id="screen_name-reg" name="screen_name" value="<ion:form:register:field:screen_name />" />
                     <ion:form:register:error:screen_name tag="p" class="input-error" />
 
@@ -40,7 +40,7 @@
                     <label for="password-reg"><ion:lang key="form_label_password" /></label>
                     <input type="password" id="password-reg" name="password" value=""/>
 
-                    <input type="submit" class="submit success" value="<ion:lang key='button_register' />" />
+                    <input type="submit" class="submit success" value="<ion:lang key='form_button_register' />" />
                 </form>
 
 
@@ -129,7 +129,7 @@
                     </label>
 
 					<br/>
-                    <input type="submit" class="button success" value="<ion:lang key='button_save_profile' />" />
+                    <input type="submit" class="button success" value="<ion:lang key='form_button_save_profile' />" />
 
                 </form>
 
@@ -172,7 +172,7 @@
                         <input type="password" id="password" name="password" />
                         <ion:form:login:error:password tag="p" class="input-error" />
 
-                        <input type="submit" class="button success" value="<ion:lang key='button_login' />" />
+                        <input type="submit" class="button success" value="<ion:lang key='form_button_login' />" />
                     </form>
 
 
@@ -183,7 +183,7 @@
                         <input type="hidden" name="form" value="password" />
                         <label for="email-back"><ion:lang key="form_label_email" /></label>
                         <input type="text" name="email" id="email-back" />
-                        <input type="submit"  class="button success" value="<ion:lang key='button_password_back' />" />
+                        <input type="submit"  class="button success" value="<ion:lang key='form_button_password_back' />" />
                     </form>
 
 				</ion:user:logged>
