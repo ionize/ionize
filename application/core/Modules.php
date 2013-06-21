@@ -68,7 +68,31 @@ namespace Ionize {
 			{
 				return $modules[ucfirst($module_folder)];
 			}
-			return NULL;
+			return array();
+		}
+
+
+		// --------------------------------------------------------------------
+
+
+		public static function get_module_config_from_uri($module_uri)
+		{
+			$module_folder = NULL;
+
+			// Modules from config file
+			$modules = $aliases = $disable_controller = array();
+			include APPPATH . 'config/modules.php';
+
+			if(in_array($module_uri, array_keys($modules)) && ( ! in_array($module_uri, $disable_controller)))
+				$module_folder = $modules[$module_uri];
+
+			$all_modules = static::get_modules();
+
+			if (isset($all_modules[ucfirst($module_folder)]))
+			{
+				return $all_modules[ucfirst($module_folder)];
+			}
+			return array();
 		}
 
 
@@ -174,6 +198,7 @@ namespace Ionize {
 									$config['folder'] = $folder_name;
 									$config['key'] = strtolower($folder_name);
 									$config['installed'] = FALSE;
+									if ( ! isset($config['uri'])) $config['uri'] = $config['key'];
 
 									if (in_array($folder_name, $modules))
 									{

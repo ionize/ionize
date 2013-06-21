@@ -137,11 +137,14 @@ ION.append({
 				data: data,
 				onLoaded: function(element, content)
 				{
-					// Get the form action URL and adds 'true' so the transport is set to XHR
-					var formUrl = $(form).getProperty('action');
+					if ($(form))
+					{
+						// Get the form action URL and adds 'true' so the transport is set to XHR
+						var formUrl = $(form).getProperty('action');
 
-					// Set the form submit button action and send the DOM Element to update with the according URL
-					ION.setFormSubmit(form, ('bSave' + id), formUrl);
+						// Set the form submit button action and send the DOM Element to update with the according URL
+						ION.setFormSubmit(form, ('bSave' + id), formUrl);
+					}
 
 					// Add the cancel event if cancel button exists
 					// All buttons name starts with 'b'

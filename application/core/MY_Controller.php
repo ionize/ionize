@@ -1000,23 +1000,26 @@ class MY_Module extends MY_Controller
 	{
 		parent::__construct();
 
-		$module_key = $this->uri->segment(1);
+		$module_uri = $this->uri->segment(1);
 
 		// Set Module's config
-		$config_items = Modules()->get_module_config($module_key);
+		$module_config = Modules()->get_module_config_from_uri($module_uri);
 
-		foreach($config_items as $item => $value)
+		foreach($module_config as $item => $value)
 			$this->config->set_item($item, $value);
 
-		// Module translation files
-		$lang_file = MODPATH.ucfirst($module_key).'/language/'.config_item('detected_lang_code').'/'.$module_key.'_lang.php';
-
-		if (is_file($lang_file))
+		if ( ! empty($module_config))
 		{
-			$lang = array();
-			include $lang_file;
-			$this->lang->language = array_merge($this->lang->language, $lang);
-			unset($lang);
+			// Module translation files
+			$lang_file = MODPATH.$module_config['folder'].'/language/'.config_item('detected_lang_code').'/'.$module_config['key'].'_lang.php';
+
+			if (is_file($lang_file))
+			{
+				$lang = array();
+				include $lang_file;
+				$this->lang->language = array_merge($this->lang->language, $lang);
+				unset($lang);
+			}
 		}
 	}
 }
@@ -1051,11 +1054,9 @@ abstract class Module_Admin extends MY_Admin
 		// Set Module's config
 		$ci =& get_instance();
 		$config_items = Modules()->get_module_config($ci->uri->segment(3));
-		if ( ! empty($config_items))
-		{
-			foreach($config_items as $item => $value)
-				$this->config->set_item($item, $value);
-		}
+
+		foreach($config_items as $item => $value)
+			$this->config->set_item($item, $value);
 
 		$this->construct();
 	}
