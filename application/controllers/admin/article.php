@@ -168,6 +168,11 @@ class Article extends MY_admin
 			$where['where_in'] = array('page_article.id_page' => $children_ids);
 		}
 
+		// Menu
+		$filter_id_menu = $this->input->post('id_menu');
+		if ($filter_id_menu)
+			$where['page.id_menu'] = $filter_id_menu;
+
 		$articles = $this->article_model->get_all_lang_list($where);
 
 		// Get Pages and Breadcrumb to pages for each linked page
