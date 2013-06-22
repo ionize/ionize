@@ -97,12 +97,10 @@ class Modules extends MY_admin
 			// Load the module config
 			$config = Modules()->get_module_config($module_folder);
 
-			$config['has_frontend'] = (empty($config['has_frontend']) OR $config['has_frontend'] == FALSE) ? FALSE : TRUE;
+			//set to true/false
+			$config['has_frontend'] = !empty($config['has_frontend']);
 
-			if (
-				! empty($config['has_frontend']) && $config['has_frontend'] == TRUE
-				&& $this->_has_conflict_with_uri($module_uri)
-			)
+			if ($config['has_frontend'] && $this->_has_conflict_with_uri($module_uri) )
 			{
 				$this->error(lang('ionize_message_module_page_conflict'));
 			}
@@ -112,7 +110,7 @@ class Modules extends MY_admin
 				$modules[$module_uri] = $module_folder;
 
 				// The module controller is disabled : Not possible to call this module from controller.
-				if ($config['has_frontend'] == FALSE && ! in_array($module_uri, $disable_controller))
+				if (! $config['has_frontend'] && ! in_array($module_uri, $disable_controller))
 					$disable_controller[] = $module_uri;
 
 				// Database installer
