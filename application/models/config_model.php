@@ -71,9 +71,9 @@ class Config_model extends Base_model
 	public function open_file($config_file, $module = NULL)
 	{
 		// Module config file ?
-		if ( !is_null($module) && is_dir(realpath(MODPATH.$module.'/config')))
+		if ( !is_null($module) && is_dir(realpath(MODPATH.ucfirst($module).'/config')))
 		{
-			self::$path = realpath(MODPATH.$module.'/config').'/';		
+			self::$path = realpath(MODPATH.ucfirst($module).'/config').'/';
 		}
 
 		// Gets the content of the asked file
@@ -92,26 +92,34 @@ class Config_model extends Base_model
 	/**
 	 * Sets a config value
 	 *
-	 * @param $key
-	 * @param $val
+	 * @param      $key
+	 * @param      $val
+	 * @param null $module_key
 	 *
 	 * @return bool
 	 */
-	public function set_config($key, $val)
+	public function set_config($key, $val, $module_key=NULL)
 	{
 		if ( ! is_null(self::$content))
 		{
-			$pattern = '%(?sx)
-				(
-					\$'."config
-					\[(['\"])
-					(".$key.")
-					\\2\]
-					\s*=\s*
-				)
-				(.+?);
-			%";
-			
+			if ( is_null($module_key))
+			{
+				$pattern = '%(?sx)
+					(
+						\$'."config
+						\[(['\"])
+						(".$key.")
+						\\2\]
+						\s*=\s*
+					)
+					(.+?);
+				%";
+			}
+			else
+			{
+				$pattern = "%([\"'](".$key.")[\"'][\s]*?=>[\s]*?)[\"'](.*?)[\"']%";
+			}
+
 			$type = gettype($val);
 			
 			if ($type == 'string')
@@ -132,7 +140,15 @@ class Config_model extends Base_model
 				$val = str_replace("\n", "\r\n", $val);
 			}
 
-			self::$content = preg_replace($pattern, "\\1$val;", self::$content);
+			/* Debug
+				preg_match($pattern, self::$content, $matches);
+				log_message('error', print_r($matches, true));
+			*/
+
+			if ( is_null($module_key))
+				self::$content = preg_replace($pattern, "\\1$val;", self::$content);
+			else
+				self::$content = preg_replace($pattern, "\\1$val", self::$content);
 
 			return TRUE;
 		}
@@ -158,7 +174,7 @@ class Config_model extends Base_model
 	{
 		self::open_file($config_file, $module);
 		
-		self::set_config($key, $val);
+		self::set_config($key, $val, $module);
 		
 		return self::save();
 	}
