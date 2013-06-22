@@ -38,7 +38,7 @@ $user_role = User()->get_role();
 
 	<!-- Shortcuts -->
 	<?php if (Settings::get('display_dashboard_shortcuts') == '1'): ?>
-		<div id="shortcutBloc" class="desktopBloc" data-title="Shortcuts">
+		<div id="shortcutBloc" class="desktopBloc" data-title="<?php echo lang('ionize_label_display_dashboard_shortcuts') ?>">
 
 			<?php if(Authority::can('create', 'admin/page')) :?>
 				<div class="desktopIcon" id="iconAddPage" data-url="page/create/0" data-title="ionize_title_new_page">
