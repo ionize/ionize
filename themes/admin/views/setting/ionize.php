@@ -39,6 +39,23 @@
 					</dd>
 				</dl>
 
+				<!-- Messages Block -->
+				<dl>
+					<dt>
+						<label for="display_dashboard_messages" title="<?php echo lang('ionize_help_display_dashboard_messages'); ?>"><?php echo lang('ionize_label_display_dashboard_messages'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_dashboard_messages" id="display_dashboard_messages" <?php if (Settings::get('display_dashboard_messages') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+
+					<dt>
+						<label for="display_dashboard_wide_messages_box" title="<?php echo lang('ionize_help_display_dashboard_wide_messages_box'); ?>"><?php echo lang('ionize_label_display_dashboard_wide_messages_box'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_dashboard_wide_messages_box" id="display_dashboard_wide_messages_box" <?php if (Settings::get('display_dashboard_wide_messages_box') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
 				<!-- Modules Block -->
 				<dl>
 					<dt>

@@ -151,6 +151,57 @@ class Dashboard extends MY_Admin {
 			if ($module['has_admin'] && Authority::can('access', 'module/'.$module['key']))
 				$modules[] = $module;
 		}
+
+
+		//get messages from Backend and modules
+		//each message is an array containing minimum:
+		//"origin"	- string, eg. modulename, "backend", ...
+		//"content"	- string, content to display in the messagebox
+		//"icon"	- string, (optional) absolute web url for icon to display
+		$messages = array();
+		//- from backend
+		//  TODO: add backend message announcer (eg. update check)
+
+		//- from modules
+		foreach( $installed_modules as $module )
+		{
+			//skip if even config says: no admin mode
+			if( empty($module["has_admin"]) )
+				continue;
+
+			//load module admin-class
+			//-----------------------
+			$folder = ucfirst($module["folder"]);
+			//skip if no admin controller exists
+			if( !file_exists(MODPATH.$folder.'/controllers/admin/'.$module["uri"].EXT) )
+				continue;
+			//skip loading the file again if the class is already defined
+			if( !class_exists($folder) )
+				require_once(MODPATH.$folder.'/controllers/admin/'.$module["uri"].EXT);
+
+			// add module path to finder
+//			array_push(Finder::$paths, MODPATH.$folder.'/');
+
+			//if possible, call the message getter
+			$messageResult = array();
+			if( is_callable(array($module["module"], 'getBackendMessages')) )
+				$messageResult = call_user_func(array($module["module"], 'getBackendMessages'));
+			//if we got back a single message - convert to multiple-message-array
+			//as we allow multiple messages to get returned in one call
+			if( is_array($messageResult) AND !is_array(current($messageResult)) )
+				$messageResult = array($messageResult);
+			//loop through all returned messages
+			foreach($messageResult as $message)
+				//only add the message if it contains the needed data
+				if( is_array($message) and !empty($message["origin"]) and !empty($message["content"]) )
+					$messages[] = $message;
+		}
+
+
+
+
+		$this->template['messages'] = $messages;
+		
 		$this->template['modules'] = $modules;
 
 		$this->template['flags'] = $flags;

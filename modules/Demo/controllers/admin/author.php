@@ -23,6 +23,13 @@ class Author extends Module_Admin
             ), '', TRUE);
 	}
 
+	public function getBackendMessages() {
+		return array(
+					"origin"=>"Demomodule",
+					"content"=>"Demo message - could be a localized one if needed",
+					"icon"=> base_url()."modules/Demo/assets/images/icon_48_module.png"
+					);
+	}
 
 	/**
 	 * Outputs the authors list
