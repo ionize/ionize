@@ -56,7 +56,24 @@ class Setting extends MY_admin
 		$this->template['displayed_admin_languages'] = Settings::get('displayed_admin_languages');
 
 		$this->_get_settings();
-	
+
+		if ( ! Settings::get('backend_ui_style'))
+			Settings::set('backend_ui_style', 'original');
+
+		$styles = array();
+		$handle = opendir(FCPATH.'themes/admin/styles');
+		if ($handle)
+		{
+			while ( FALSE !== ($style = readdir($handle)) )
+			{
+				// make sure we don't map silly dirs like .svn, or . or ..
+				if (substr($style, 0, 1) != "." && $style != 'index.html' && $style != '@eaDir')
+					$styles[] = $style;
+			}
+		}
+
+		$this->template['styles'] = $styles;
+
 		$this->output('setting/ionize');
 	}
 	
@@ -478,7 +495,8 @@ class Setting extends MY_admin
 			'display_dashboard_content',
 			'date_format',
 			'default_admin_lang',
-			'enable_backend_tracker'
+			'enable_backend_tracker',
+			'backend_ui_style',
 		);
 
 		// Save settings to DB

@@ -4,7 +4,9 @@
 </div>
 
 <div class="toolbox ml5" id="toggleHeaderButton">
-	<span class="iconWrapper"><img src="<?php echo theme_url(); ?>images/icon_16_screen.png" width="16" height="16" alt="<?php echo lang('ionize_button_toggle_header'); ?>" title="<?php echo lang('ionize_button_toggle_header'); ?>" /></span>
+	<span class="iconWrapper">
+		<a class="icon screen" title="<?php echo lang('ionize_button_toggle_header'); ?>"></a>
+	</span>
 </div>
 
 

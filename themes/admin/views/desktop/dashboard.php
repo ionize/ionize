@@ -34,32 +34,27 @@ $user_role = User()->get_role();
 	<?php endif ;?>
 
 
-
-
 	<!-- Shortcuts -->
 	<?php if (Settings::get('display_dashboard_shortcuts') == '1'): ?>
-		<div id="shortcutBloc" class="desktopBloc" data-title="<?php echo lang('ionize_label_display_dashboard_shortcuts') ?>">
+		<div id="shortcutBloc" class="desktopBloc" data-title="Shortcuts">
 
 			<?php if(Authority::can('create', 'admin/page')) :?>
 				<div class="desktopIcon" id="iconAddPage" data-url="page/create/0" data-title="ionize_title_new_page">
 					<i class="page-new"></i>
-					<img src="<?php echo theme_url(); ?>images/icon_48_page_new.png" />
 					<p><a><?php echo lang('ionize_dashboard_icon_add_page'); ?></a></p>
 				</div>
 			<?php endif ;?>
 
-<!--			<?php /*if(Authority::can('access', 'admin/article')) :*/?>
-				<div class="desktopIcon" data-url="article/list_articles" data-title="ionize_title_articles">
+			<?php if(Authority::can('access', 'admin/article')) :?>
+				<div class="desktopIcon" data-url="article/articles" data-title="ionize_title_articles">
 					<i class="articles"></i>
-					<img src="<?php /*echo theme_url(); */?>images/icon_48_articles.png"/>
-					<p><a><?php /*echo lang('ionize_dashboard_icon_articles'); */?></a></p>
+					<p><a><?php echo lang('ionize_dashboard_icon_articles') ?></a></p>
 				</div>
-			--><?php // endif ;?>
+			<?php endif ;?>
 
 			<?php if(Authority::can('access', 'admin/filemanager')) :?>
 				<div class="desktopIcon" data-url="media/get_media_manager" data-title="ionize_menu_media_manager">
 					<i class="media"></i>
-					<img src="<?php echo theme_url(); ?>images/icon_48_media.png" />
 					<p><a><?php echo lang('ionize_dashboard_icon_mediamanager'); ?></a></p>
 				</div>
 			<?php endif ;?>
@@ -67,7 +62,6 @@ $user_role = User()->get_role();
 			<?php if(Authority::can('access', 'admin/translations')) :?>
 				<div class="desktopIcon" id="iconTranslation" data-url="translation" data-title="ionize_title_translation">
 					<i class="translation"></i>
-					<img src="<?php echo theme_url(); ?>images/icon_48_languages.png" />
 					<p><a><?php echo lang('ionize_dashboard_icon_translation'); ?></a></p>
 				</div>
 			<?php endif ;?>
@@ -75,7 +69,6 @@ $user_role = User()->get_role();
 			<?php if(Authority::can('access', 'admin/users_roles')) :?>
 				<div class="desktopIcon" data-url="user" data-title="ionize_title_users">
 					<i class="users"></i>
-					<img src="<?php echo theme_url(); ?>images/icon_48_groups.png" />
 					<p><a><?php echo lang('ionize_dashboard_icon_users'); ?></a></p>
 				</div>
 			<?php endif ;?>
@@ -83,7 +76,6 @@ $user_role = User()->get_role();
 			<?php if(Authority::can('access', 'admin/tools/google_analytics')) :?>
 				<div class="desktopIcon" id="iconGA" data-url="http://www.google.com/analytics/" data-external="true">
 					<i class="stats"></i>
-					<img src="<?php echo theme_url(); ?>images/icon_48_stats.png" />
 					<p><a><?php echo lang('ionize_dashboard_icon_google_analytics'); ?></a></p>
 				</div>
 			<?php endif ;?>

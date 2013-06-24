@@ -551,7 +551,13 @@
 				</dl>
 				<dl class="small compact">
 					<dt><label><?php echo lang('ionize_label_file_uploads'); ?></label></dt>
-					<dd><img src="<?php echo theme_url(); ?>images/icon_16_<?php if(ini_get('file_uploads') == true) :?>ok<?php else :?>nok<?php endif ;?>.png" /></dd>
+					<dd>
+						<?php if(ini_get('file_uploads') == true) :?>
+							<a class="icon ok"></a>
+						<?php else :?>
+							<a class="icon nok"></a>
+						<?php endif ;?>
+					</dd>
 				</dl>
 				<dl class="small compact">
 					<dt><label><?php echo lang('ionize_label_max_upload_size'); ?></label></dt>

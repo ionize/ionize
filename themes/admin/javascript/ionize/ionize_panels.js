@@ -43,6 +43,8 @@ ION.append({
 								id: 'splitPanel_mainPanel',
 								container: 'splitPanel_mainColumn',
 								header: false,
+								padding:0,
+
 								content: {
 									url: options.urlMain
 									/*
@@ -50,6 +52,7 @@ ION.append({
 										//$('splitPanel_mainColumn').setStyle('width', 'inherit');
 									}
 									*/
+
 								}
 							}
 						]

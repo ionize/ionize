@@ -582,8 +582,6 @@ if ($tracker_title == '')
 					<div class="tabcontent">
 
 						<p class="h30">
-		<!--					<a class="fmButton right"><img src="<?php echo theme_url(); ?>images/icon_16_plus.png" /> <?php echo lang('ionize_label_attach_media'); ?></a>-->
-
 							<a class="button light right" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
 								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 							</a>

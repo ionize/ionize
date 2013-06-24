@@ -44,7 +44,11 @@
 						<?php endif; ?>
 					</td>
 					<td>
-						<img src="<?php echo theme_url(); ?>images/icon_16_<?php if($module['installed']): ?>ok<?php else: ?>nok<?php endif; ?>.png" />
+						<?php if($module['installed']): ?>
+							<a class="icon ok"></a>
+						<?php else: ?>
+							<a class="icon nok"></a>
+						<?php endif; ?>
 					</td>
 					<td>
 						<?php if($module['installed']): ?>

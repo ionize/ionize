@@ -99,6 +99,9 @@ div.toolbox.divider { /* Have to specify div here for IE6's sake */
 	overflow: hidden;
 	border: 1px solid transparent;
 }
+.iconWrapper a.icon{
+	margin-left:3px;
+}
 * html .iconWrapper {
 	padding: 1px;
 	border: 0;

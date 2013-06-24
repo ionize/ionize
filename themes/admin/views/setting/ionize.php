@@ -13,10 +13,11 @@
 	<!-- Tabs -->
 	<div id="ionizeSettingsTab" class="mainTabs">
 		<ul class="tab-menu">
-			<li id="ui_dashboard_settings"><a><?php echo lang('ionize_title_dashboard'); ?></a></li>
-			<li id="ui_visual_settings"><a><?php echo lang('ionize_title_visual_help'); ?></a></li>
-			<li id="ui_language_settings"><a><?php echo lang('ionize_title_admin_panel_languages'); ?></a></li>
-			<li id="ui_datetime_settings"><a><?php echo lang('ionize_title_admin_panel_datetime'); ?></a></li>
+			<li><a><?php echo lang('ionize_title_dashboard'); ?></a></li>
+			<li><a><?php echo lang('ionize_title_backend_ui'); ?></a></li>
+			<li><a><?php echo lang('ionize_title_visual_help'); ?></a></li>
+			<li><a><?php echo lang('ionize_title_admin_panel_languages'); ?></a></li>
+			<li><a><?php echo lang('ionize_title_admin_panel_datetime'); ?></a></li>
 			<li><a title="<?php echo lang('ionize_help_flags'); ?>"><span><?php echo lang('ionize_label_flags'); ?></span></a></li>
 		</ul>
 		<div class="clear"></div>
@@ -71,6 +72,23 @@
 
 			</div>
 
+			<!-- Style -->
+			<div class="tabcontent">
+
+				<dl>
+					<dt>
+						<label for="backend_ui_style"><?php echo lang('ionize_label_backend_ui_style'); ?></label>
+					</dt>
+					<dd>
+						<select class="select" name="backend_ui_style">
+							<?php foreach($styles as $style): ?>
+								<option value="<?php echo $style; ?>" <?php if($style == Settings::get('backend_ui_style') ): ?>selected="selected"<?php endif; ?>><?php echo ucfirst($style); ?></option>
+							<?php endforeach ;?>
+						</select>
+					</dd>
+				</dl>
+
+			</div>
 
 			<!-- Visual help : help tips and "Connected" label -->
 			<div class="tabcontent">
