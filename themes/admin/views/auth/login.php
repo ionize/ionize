@@ -9,8 +9,8 @@
     <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
     <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
 
-	<link rel="stylesheet" href="<?php echo theme_url(); ?>css/login.css" type="text/css" />
-	<link rel="stylesheet" href="<?php echo theme_url(); ?>css/form.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo theme_url(); ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/login.css" type="text/css" />
+	<link rel="stylesheet" href="<?php echo theme_url(); ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/form.css" type="text/css" />
 
 	<script type="text/javascript">
 	
