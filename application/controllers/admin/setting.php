@@ -1050,7 +1050,7 @@ class Setting extends MY_admin
 			else
 			{
 				// Set the reload CB
-				$this->_callback_reload_backend();
+				$this->_callback_reload_backend($admin_url);
 
 				$this->success(lang('ionize_message_settings_saved'));
 			}
@@ -1298,9 +1298,9 @@ class Setting extends MY_admin
 	}
 
 
-	private function _callback_reload_backend()
+	private function _callback_reload_backend($admin_url = NULL)
 	{
-		$admin_url = config_item('admin_url');
+		$admin_url = (is_null($admin_url)) ? config_item('admin_url') : $admin_url;
 
 		$this->callback = array(
 			'fn' => 'ION.reload',
