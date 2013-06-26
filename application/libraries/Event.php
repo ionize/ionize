@@ -64,10 +64,11 @@ class Event {
 			foreach ($module_paths as $module_path)
 			{
 				$folder = basename($module_path);
+
 				if (in_array($folder, $modules))
 				{
-				if ( ! $details_class = self::_start_events_class($module_path))
-					continue;
+					if ( ! $details_class = self::_start_events_class($module_path))
+						continue;
 				}
 			}
 		}
@@ -86,18 +87,21 @@ class Event {
 	 */
 	private static function _start_events_class($path)
 	{
-		$class_file = $path . '/libraries/events'.EXT;
+		$module_prefix = strtolower(basename($path));
+
+		$class_file = $path . '/libraries/'.$module_prefix.'_events'.EXT;
 
 		if ( ! is_file($class_file))
 			return FALSE;
-
-		include_once $class_file;
-
-		// Now call the details class
 		$class = ucfirst(strtolower(basename($path))).'_Events';
 
-		// Now we need to talk to it
-		return class_exists($class) ? new $class : FALSE;
+		if ( ! class_exists($class))
+		{
+			require_once $class_file;
+			return new $class;
+		}
+
+		return FALSE;
 	}
 
 

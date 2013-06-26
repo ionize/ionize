@@ -152,10 +152,6 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 	background-position: 20px 28px;
 	min-height: 60px;
 }
-.mocha.confirmation .mochaContent {background-image:url(../../../../../images/icon_48_confirm.png);}
-.mocha.information .mochaContent {background-image:url(../../../../../images/icon_48_information.png);}
-.mocha.alert .mochaContent {background-image:url(../../../../../images/icon_48_alert.png);}
-.mocha.error .mochaContent {background-image:url(../../../../../images/icon_48_error.png);}
 
 .mocha.confirmation .message,
 .mocha.information .message,

@@ -4,9 +4,9 @@ $config['module']['demo'] = array
 (
 	'module' => "Demo",
     'name' => "Demo Module",
-	'description' => "Demo module. Manage articles's authors.",
+	'description' => "Author Demo module. Manage articles's authors.<br/>This module is one Demo module, based on the tutorial available on: http://doc.ionizecms.com/en/tutorials",
 	'author' => "Partikule",
-	'version' => "1.0",
+	'version' => "1.1",
 
 	/*
 	'install' => 'install.php',
@@ -25,7 +25,13 @@ $config['module']['demo'] = array
 		/*
 		 * Default added resource : 'module/<module_key>'
 		 *
-		 * Default resource corresponding rule : 'access'
+		 * Important :
+		 * 		The module has one default resource : 'access'
+		 * 		If the main checkbox is checked for one role in the module's permissions,
+		 * 		the role will:
+		 * 		- See the module icon on the dashboard if the module has one admin panel
+		 * 		- Have the module link in the menu "Modules" if the module has one admin panel
+		 *
 		 * Usage : Authority::can('access', 'module/<module_key>')
 		 *
 		 * Actions based rules (Added with this config file) :
@@ -40,23 +46,30 @@ $config['module']['demo'] = array
 		'admin' => array(
 			'title' => 'Demo Module Administration'
 		),
-		'do_something' => array
+		'one_resource' => array
 		(
 			// Title of the resource
-			'title' => 'Do something',
+			'title' => 'Resource name',
 			// Can be 'edit', 'eat_cheese', what you want
 			'actions' => 'action_key_1,action_key_2',
 		),
-		'language/translate' => array
+		// Authority::can('access', 'module/demo/one_resource/one_child_resource'
+		'one_resource/one_child_resource' => array
 		(
 			// Parent of the module's ressource in the resources tree
-			'parent' => 'language',
-			'title' => 'Translate',
-			// No action means "access" : Authority::can('access', 'module/demo/language/translate'
-			'actions' => '',
+			'parent' => 'one_resource',
+			'title' => 'One Child Resource',
+			'actions' => 'action_1',
+		),
+		// Authority::can('access', 'module/demo/one_resource_in_parent'
+		'one_resource_in_parent' => array
+		(
+			// Parent of the module's ressource in the resources tree
+			'parent' => 'one_resource',
+			'title' => 'One Resource in the Parent Tree',
+			'actions' => 'action_1',
 		),
 	),
-
 );
 
 return $config['module']['demo'];

@@ -125,6 +125,13 @@ License:
 	background: url(../images/toggler-collapse-expand.png) no-repeat 0 -16px;
 }
 
+/* Mocha Modals
+---------------------------------------------------------------- */
+.mocha.confirmation .mochaContent {background-image:url(../images/icon_48_confirm.png);}
+.mocha.information .mochaContent {background-image:url(../images/icon_48_information.png);}
+.mocha.alert .mochaContent {background-image:url(../images/icon_48_alert.png);}
+.mocha.error .mochaContent {background-image:url(../images/icon_48_error.png);}
+
 
 /* Global Elements
 ---------------------------------------------------------------- */
@@ -1187,6 +1194,7 @@ div.translation {
 	height:40px;
 	margin: 0 auto 3px auto;
 	background: url(../images/icons_40.png) no-repeat 50% 50%;
+	background-position: -1200px -1200px;
 	display: block;
 }
 .desktopIcon i.page-new:before{background-position: -40px 0}

@@ -8,7 +8,7 @@
 	?>
 
 	<li class="author<?php echo $id ?> pointer" id="author_<?php echo $id ?>" data-id="<?php echo $id ?>">
-		<a class="icon drag left"></a>
+		<span class="icon drag left"></span>
 		<a class="icon delete right"></a>
 		<a class="left pl5 edit title" data-id="<?php echo $id ?>">
 			<?php echo $author['name'] ?>
@@ -29,6 +29,7 @@
 		var del = item.getElement('a.delete');
 
 		a.removeEvents('click');
+
 		a.addEvent('click', function(e)
 		{
 			// see : /themes/admin/javascript/ionize/ionize_window.js

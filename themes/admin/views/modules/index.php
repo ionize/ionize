@@ -33,7 +33,7 @@
 							<?php echo $module['name']; ?>
 						<?php endif; ?>
 					</td>
-					<td><?php echo $module['description']; ?></td>
+					<td><?php echo auto_link($module['description']) ?></td>
 					<td>
 						<?php if($module['installed']): ?>
 							<?php if (! empty($module['has_frontend']) && $module['has_frontend'] == TRUE) :?>

@@ -400,32 +400,28 @@ class TagManager
 	 */
 	public static function autoload_module_tags($class)
 	{
-		$class = strtolower($class);
-
-		//changed strpos to strrpos - allow underscore in modulenames
+		// changed strpos to strrpos - allow underscore in modules names
 		if(FALSE !== $p = strrpos($class, '_'))
 		{
 			// Module name
 			$module = substr($class, 0, $p);
 
 			// Class file name (usually 'tags')
-			$file_name = substr($class, $p + 1);
+			// $file_name = substr($class, $p + 1);
+			$file_name = strtolower($class);
 		}
 		else
-		{
 			return FALSE;
-		}
 
-		/* If modules are installed : Get the modules tags definition
-		 * Modules tags definition must be stored in : /modules/your_module/libraires/tags.php
-		 *
-		 */
-		if(isset(self::$module_folders[$module]))
+		// If modules are installed : Get the modules tags definition
+		// Modules tags definition must be stored in : /modules/your_module/libraires/<your_module>_tags.php
+		$module_key = strtolower($module);
+		if(isset(self::$module_folders[$module_key]))
 		{
 			// Only load the tags definition class if the file exists.
-			if(file_exists(MODPATH.self::$module_folders[$module].'/libraries/'.$file_name.EXT))
+			if(file_exists(MODPATH.self::$module_folders[$module_key].'/libraries/'.$file_name.EXT))
 			{
-				require_once MODPATH.self::$module_folders[$module].'/libraries/'.$file_name.EXT;
+				require_once MODPATH.self::$module_folders[$module_key].'/libraries/'.$file_name.EXT;
 
 				// Get tag definition class name
 				$methods = get_class_methods($class);
@@ -435,26 +431,7 @@ class TagManager
 
 				// Store tags definitions into self::$tags
 				// add module enclosing tag
-				self::$tags[$module] = $class.'::index';
-
-				/*
-				 * Decision for 0.9.9 :
-				 * - All modules tags must be registered in self::tag_definitions
-				 *
-				foreach ($methods as $method)
-				{
-					$tag_name = explode('_', $method);
-
-					if ($tag_name[0] == 'tag')
-					{
-						// Regular tag declaration
-						$tag_name = $tag_name[1];
-
-						// Use of module name as namespace for the module to avoid modules tags collision
-						self::$tags[$module.':'.$tag_name] = $class.'::'.$method;
-					}
-				}
-				*/
+				self::$tags[$module_key] = $class.'::index';
 
 				// Load tags from the tag_definitions array : Overwrites auto-load
 				$tag_definitions = ! empty($vars["tag_definitions"]) ? $vars["tag_definitions"] : array();
@@ -470,7 +447,7 @@ class TagManager
 			}
 			else
 			{
-				log_message('warning', 'Cannot find tag definitions for module "'.self::$module_folders[$module].'".');
+				log_message('warning', 'Cannot find tag definitions for module "'.self::$module_folders[$module_key].'".');
 			}
 		}
 		return FALSE;

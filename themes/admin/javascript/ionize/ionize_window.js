@@ -58,7 +58,6 @@ ION.append({
 	 */
 	confirmation: function(id, callback, msg, wOptions)
 	{
-
 		// Get the buttons container
 		wButtons = ION._getConfirmationButtons(id, callback);
 
@@ -156,25 +155,7 @@ ION.append({
 							MUI.get('w' + id).close();
 						});
 					}
-					
-					// Event on save button
-					/*
-					if (bSave = $('bSave' + id))
-					{
-						bSave.addEvent('click', function(e)
-						{
-							e.stop();
-							
-							// closeFunc is needed for IE8
-							var closeFunc = function()
-							{
-								MUI.get('w' + id).close();
-							}
-							closeFunc.delay(50);
-						});
-					}
-					*/
-					
+
 					// Window resize
 					if (typeOf(wOptions) != 'null' && wOptions.resize == true)
 					{

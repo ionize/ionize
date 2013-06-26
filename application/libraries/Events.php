@@ -4,7 +4,6 @@ class Events
 {
 	protected static $ci;
 
-
 	public function __construct()
 	{
 		// If the CI object is needed :

@@ -397,7 +397,7 @@ class Base_Controller extends MY_Controller
 		$this->load->model('menu_model', '', TRUE);
 
 		// Modules config
-		$this->get_modules_config();
+//		$this->get_modules_config();
 
 		// Add path to installed modules
 		$installed_modules = Modules()->get_installed_modules();
@@ -831,7 +831,7 @@ class MY_Admin extends MY_Controller
     	if ($this->is_xhr() === TRUE)
     	{
 			// Basic JSON answser
-    		$data = array (    	
+    		$data = array(
 				'message_type' => $this->message_type,
 				'message' => $this->message,
 				'update' => $this->update,
@@ -1016,7 +1016,7 @@ class MY_Module extends MY_Controller
 			if (is_file($lang_file))
 			{
 				$lang = array();
-				include $lang_file;
+				require_once $lang_file;
 				$this->lang->language = array_merge($this->lang->language, $lang);
 				unset($lang);
 			}

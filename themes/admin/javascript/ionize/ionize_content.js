@@ -330,6 +330,9 @@ ION.append({
 			elements = elements.join(',');
 			elements = $$(elements);
 
+			ION.HTML(options.url, {}, options);
+
+			/*
 			new Request.HTML({
 				'url': options.url,
 				onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
@@ -340,6 +343,7 @@ ION.append({
 					});
 				}
 			}).send()
+			*/
 		}
 		else
 		{

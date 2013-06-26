@@ -20,6 +20,8 @@ class Demo_Tags extends TagManager
 		"demo:authors:author" =>		"tag_author",
 		"article:authors" => 			"core_article_authors",
 		"article:authors:author" => 	"tag_author",
+
+		"demo:main" =>					"tag_demo_main",
 	);
 
 
@@ -39,6 +41,22 @@ class Demo_Tags extends TagManager
 	{
 		$str = $tag->expand();
 		return $str;
+	}
+
+
+	/**
+	 * Loads the main Front module's view
+	 * Because the parent tag (index) is expanded, the result of this method will be displayed
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return mixed
+	 */
+	public static function tag_demo_main(FTL_Binding $tag)
+	{
+		$view = self::$ci->load->view('index', '', TRUE);
+
+		return $view;
 	}
 
 

@@ -128,8 +128,8 @@ function Lib($library, $config = null)
 	// Is the class name valid?
 	if ( ! class_exists($name))
 	{
-		log_message('error', "Non-existent class: ".$name);
-		show_error("Non-existent class: ".$name);
+		log_message('error', "Accessors : Non-existent class: ".$name);
+		show_error("Accessors : Non-existent class: ".$name);
 	}
 
 	if($config !== null)

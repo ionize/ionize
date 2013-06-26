@@ -2,7 +2,7 @@
 
 	<h2 class="main demo"><?php echo lang('module_demo_title'); ?></h2>
 
-	<div class="subtitle">
+	<div class="main subtitle">
 
 		<!-- About this module -->
 		<p class="lite">

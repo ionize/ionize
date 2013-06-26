@@ -21,24 +21,6 @@ require_once 'Theme.php';
 class MY_Loader extends CI_Loader{
 
 	/**
-	 * Constructor
-	 *
-	 * Sets the path to the view files and gets the initial output buffering level
-	 *
-	 * @access	public
-	 */
-	/*function CI_Loader()
-	{
-		$this->_ci_is_php5 = (floor(phpversion()) >= 5) ? TRUE : FALSE;
-		$this->_ci_view_path = APPPATH.'views/';
-		$this->_ci_ob_level  = ob_get_level();
-
-		log_message('debug', "Loader Class Initialized");
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Class Loader
 	 *
 	 * This function lets users load and instantiate classes.
@@ -50,8 +32,6 @@ class MY_Loader extends CI_Loader{
 	 * @param	string	an optional object name
 	 * @return	void
 	 */
-
-
 	function library($library = '', $params = null, $name = null)
 	{
 		if(is_array($library))
@@ -67,19 +47,19 @@ class MY_Loader extends CI_Loader{
 			}
 		}
 
-
 		if(empty($name))
-		{
 			$name = isset($this->_ci_varmap[$library]) ? $this->_ci_varmap[$library] : $library;
-		}
 
 		$CI =& get_instance();
 		if( ! isset($CI->$name))
 		{
-//			show_error('The library name you are loading is the name of a resource that is already being used: '.$name);
 			$CI->$name = Lib($library, $params);
 			$CI->_ci_classes[strtolower($name)] = $CI->$name;
 		}
+		/*
+		else
+			log_message('error', 'The library name you are loading is the name of a resource that is already being used: '.$name);
+		*/
 	}
 
 	// --------------------------------------------------------------------
@@ -203,8 +183,6 @@ class MY_Loader extends CI_Loader{
         log_message('ERROR', 'Unable to locate the model you have specified : ' . $model);
     }
 
-
-
 	// --------------------------------------------------------------------
 
 	/**
@@ -227,40 +205,6 @@ class MY_Loader extends CI_Loader{
 	function view($view, $vars = array(), $return = FALSE)
 	{
 		return View($view, $vars, $return);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Load File
-	 *
-	 * This is a generic file loader
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	bool
-	 * @return	string
-	 */
-	/*function file($path, $return = FALSE)
-	{
-
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set Variables
-	 *
-	 * Once variables are set they become available within
-	 * the controller class and its "view" files.
-	 *
-	 * @access	public
-	 * @param	array
-	 * @return	void
-	 */
-	/*function vars($vars = array(), $val = '')
-	{
-
 	}
 
 	// --------------------------------------------------------------------
@@ -304,128 +248,6 @@ class MY_Loader extends CI_Loader{
 	// --------------------------------------------------------------------
 
 	/**
-	 * Loads a language file
-	 *
-	 * @access	public
-	 * @param	array
-	 * @param	string
-	 * @return	void
-	 */
-	/*
-	function language($file = array(), $lang = '')
-	{
-		$l = Lib('lang');
-
-		foreach((Array)$file as $f)
-		{
-			$l->line($f, $lang);
-		}
-	}
-	*/
-
-	/**
-	 * Loads language files for scaffolding
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	arra
-	 */
-	/*function scaffold_language($file = '', $lang = '', $return = FALSE)
-	{
-
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Loads a config file
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	void
-	 */
-	/*function config($file = '', $use_sections = FALSE, $fail_gracefully = FALSE)
-	{
-
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Scaffolding Loader
-	 *
-	 * This initializing function works a bit different than the
-	 * others. It doesn't load the class.  Instead, it simply
-	 * sets a flag indicating that scaffolding is allowed to be
-	 * used.  The actual scaffolding function below is
-	 * called by the front controller based on whether the
-	 * second segment of the URL matches the "secret" scaffolding
-	 * word stored in the application/config/routes.php
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	void
-	 */
-	/*function scaffolding($table = '')
-	{
-
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Loader
-	 *
-	 * This function is used to load views and files.
-	 * Variables are prefixed with _ci_ to avoid symbol collision with
-	 * variables made available to view files
-	 *
-	 * @access	private
-	 * @param	array
-	 * @return	void
-	 */
-	/*function _ci_load($_ci_data)
-	{
-
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Load class
-	 *
-	 * This function loads the requested class.
-	 *
-	 * @access	private
-	 * @param 	string	the item that is being loaded
-	 * @param	mixed	any additional parameters
-	 * @param	string	an optional object name
-	 * @return 	void
-	 */
-	/*function _ci_load_class($class, $params = NULL, $object_name = NULL)
-	{
-
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Instantiates a class
-	 *
-	 * @access	private
-	 * @param	string
-	 * @param	string
-	 * @param	string	an optional object name
-	 * @return	null
-	 */
-	/*function _ci_init_class($class, $prefix = '', $config = FALSE, $object_name = NULL)
-	{
-
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Autoloader
 	 *
 	 * The config/autoload.php file contains an array that permits sub-systems,
@@ -441,24 +263,4 @@ class MY_Loader extends CI_Loader{
 		parent::_ci_autoloader();
 	}
 
-	// --------------------------------------------------------------------
-
-	/**
-	 * Assign to Models
-	 *
-	 * Makes sure that anything loaded by the loader class (libraries, plugins, etc.)
-	 * will be available to models, if any exist.
-	 *
-	 * @access	private
-	 * @param	object
-	 * @return	array
-	 */
-	/*function _ci_assign_to_models()
-	{
-
-	}*/
 }
-
-
-/* End of file MY_Loader.php */
-/* Location: /cygdrive/x/LOL/0web_dev/wwwroot/CIUA/trunk/public_html/application/libraries/MY_Loader.php */

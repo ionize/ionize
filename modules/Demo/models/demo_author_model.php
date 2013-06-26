@@ -169,8 +169,4 @@ class Demo_author_model extends Base_model
 
 		return $this->{$this->db_group}->delete($this->_link_table, $where);
 	}
-
-
-
-
 }

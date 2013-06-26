@@ -96,7 +96,18 @@ $user_role = User()->get_role();
 		<div id="modulesBloc" class="desktopBloc" data-title="<?php echo lang('ionize_menu_modules'); ?>">
 			<?php foreach($modules as $module) :?>
 				<div class="desktopIcon desktopModuleIcon" data-url="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" data-title="<?php echo $module['name']; ?>">
-					<img src="<?php echo base_url(); ?>modules/<?php echo $module['folder']; ?>/assets/images/icon_48_module.png" alt="<?php echo $module['description']; ?>" />
+					<?php
+						$src = NULL;
+						if (is_file(MODPATH.$module['folder'].'/assets/images/icon_40_module.png'))
+							$src = base_url().'modules/'.$module['folder'].'/assets/images/icon_40_module.png';
+						if (is_file(MODPATH.$module['folder'].'/assets/images/icon_48_module.png'))
+							$src = base_url().'modules/'.$module['folder'].'/assets/images/icon_48_module.png';
+					?>
+					<?php if ( ! is_null($src)) :?>
+						<img src="<?php echo $src ?>" alt="<?php echo $module['description']; ?>" />
+					<?php else: ?>
+						<i></i>
+					<?php endif; ?>
 					<p><a><?php echo $module['name']; ?></a></p>
 				</div>
 			<?php endforeach ;?>

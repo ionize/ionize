@@ -97,8 +97,6 @@ ION.append({
 				}
 			});
 
-
-
 			var post = {};
 
 			Array.each(item.attributes, function(item, idx)

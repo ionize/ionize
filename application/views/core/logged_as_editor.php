@@ -14,6 +14,6 @@
  */
 
 ?>
-<link rel="stylesheet" href="<?= base_url() ?>themes/admin/css/logged-as-editor.css" />
+<link rel="stylesheet" href="<?= base_url() ?>themes/admin/styles/<?php echo Settings::get('backend_ui_style') ?>/css/logged-as-editor.css" />
 <div id="ionizeLoggedAsEditorFlag"><a href="<?= base_url() ?><?= config_item('admin_url') ?>/"></a></div>
 </body>

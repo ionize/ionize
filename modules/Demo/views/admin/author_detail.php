@@ -79,7 +79,7 @@
 	 or the window opening through ION.formWindow()
 -->
 <div class="buttons">
-	<button id="bSaveauthor<?php echo $id ?>" type="button" class="button yes right mr40"><?php echo lang('ionize_button_save_close') ?></button>
+	<button id="bSaveauthor<?php echo $id ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close') ?></button>
 	<button id="bCancelauthor<?php echo $id ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel') ?></button>
 </div>
 

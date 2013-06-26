@@ -304,12 +304,12 @@ abstract class REST_Controller
 		// Sure it exists, but can they do anything with it?
 		if ( ! method_exists($this, $controller_method))
 		{
-log_message('error', '=> NOT FOUND : ' . strtoupper($this->request->method) . ' : ' . $this->uri->uri_string());
+			// log_message('error', '=> NOT FOUND : ' . strtoupper($this->request->method) . ' : ' . $this->uri->uri_string());
 			$this->response(array('status' => false, 'error' => 'Unknown method.'), 404);
 		}
 		else
 		{
-log_message('error', '=> ' . strtoupper($this->request->method) . ' : ' . $this->uri->uri_string());
+			// log_message('error', '=> ' . strtoupper($this->request->method) . ' : ' . $this->uri->uri_string());
 		}
 
 		// Doing key related stuff? Can only do it if they have a key right?
