@@ -90,8 +90,14 @@
 					<ul>
 						<!-- Module Admin controllers links -->
 						<?php foreach(Modules()->get_installed_modules() as $key => $module) :?>
-
-							<?php if(Authority::can('access', 'module/'.$module['key'])) :?>
+							<?php
+							log_message('error', print_r($module, true));
+							?>
+							<?php if(
+								Authority::can('access', 'module/'.$module['key'])
+								&& $module['has_admin']
+							)
+							:?>
 								<li><a class="navlink" id="<?php echo $module['uri']; ?>ModuleLink" href="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" title="<?php echo $module['name']; ?>"><?php echo $module['name']; ?></a></li>
 							<?php endif ;?>
 
