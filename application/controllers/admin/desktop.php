@@ -30,10 +30,6 @@ class Desktop extends MY_Admin
 		include APPPATH . 'config/modules.php';
 		$this->template['modules'] = $modules;
 
-		// Backend style
-		if ( ! Settings::get('backend_ui_style'))
-			Settings::set('backend_ui_style', 'original');
-
 		$this->get('desktop/desktop');
 	}
 
