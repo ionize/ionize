@@ -111,7 +111,7 @@ div.filemanager div.filemanager-menu {
 	height: 24px;
 	border-bottom: 1px solid #BEBEBE;
 	border-left: 1px solid #BEBEBE;
-	background: #f3f3f3 url("../../../../images/bg-gray-medium.png");
+	background: #f3f3f3 url("../images/bg-gray-medium.png");
 	overflow: hidden;
 	padding:3px 5px;
 	max-height: 260px;
@@ -194,7 +194,7 @@ div.filemanager div.filemanager-browsercontainer {
 	min-width: 189px;
 	border: 0;
 	border-right: 1px solid #bebebe;
-	background: #f3f3f3 url("../../../../images/bg-gray-medium.png") repeat scroll 0 0;
+	background: #f3f3f3 url("../images/bg-gray-medium.png") repeat scroll 0 0;
 	overflow: hidden;
 }
 
@@ -313,7 +313,7 @@ div.filemanager-browsercontainer div.filemanager-browsercommand {
 div.filemanager-browsercontainer div.filemanager-browsercommand #fm_upload_dnd{
 	width: 200px;
 	height: 40px;
-	background: url("../../../../images/bg-gray-light.png");
+	background: url("../images/bg-gray-light.png");
 	margin:5px;
 }
 
@@ -338,7 +338,7 @@ div.filemanager-container span.thumb {
 }
 
 div.filemanager-container span.fi.hover {
-	background: url("../../../../images/bg-gray-medium-plus.png") repeat scroll 0 0 transparent;
+	background: url("../images/bg-gray-medium-plus.png") repeat scroll 0 0 transparent;
 }
 
 div.filemanager-container span.fi span,
@@ -915,7 +915,7 @@ div.filemanager-filelist .fi, div.gallery-image {
 	white-space: nowrap;
 	cursor: pointer;
 	overflow: hidden;
-	background: url("../../../../images/bg-gray-light.png");
+	background: url("../images/bg-gray-light.png");
 }
 div.gallery-image {
 	float: none;

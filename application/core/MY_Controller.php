@@ -641,10 +641,6 @@ class MY_Admin extends MY_Controller
 		// Set Router's found language code as current language
 		Settings::set('current_lang', config_item('detected_lang_code'));
 
-		// Backend style
-		if ( ! Settings::get('backend_ui_style'))
-			Settings::set('backend_ui_style', 'original');
-
 		// Load the current language translations file
 		$this->lang->load('admin', Settings::get_lang());
 		// $this->lang->load('filemanager', Settings::get_lang());

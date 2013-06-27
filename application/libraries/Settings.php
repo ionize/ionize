@@ -33,6 +33,16 @@ class Settings
 
 	public static $mimes = FALSE;
 
+	public static $default_values = array(
+		'backend_ui_style' => 'original'
+	);
+
+/*
+		// Backend style
+		if ( ! Settings::get('backend_ui_style'))
+			Settings::set('backend_ui_style', 'original');
+
+ */
 
 	/**
 	 * Sets one setting
@@ -71,6 +81,10 @@ class Settings
 		{
 			return isset(self::$settings[$lang][$key]) ? self::$settings[$lang][$key] : FALSE;
 		}
+
+		if ( ! isset(self::$settings[$key]) && isset(self::$default_values[$key]))
+			return self::$default_values[$key];
+
 		return (isset(self::$settings[$key]) ? self::$settings[$key] : FALSE);
 	}
 

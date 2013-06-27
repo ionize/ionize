@@ -8,11 +8,11 @@ class Demo_Events
 	public function __construct()
 	{
 		// If the CI object is needed :
-		// self::$ci =& get_instance();
+		self::$ci =& get_instance();
 
 		// Register the Event :
 		// Event::register(<event_name>, array($this, 'on_public_load'));
-		Event::register('Ionize.public.load', array($this, 'on_public_load'));
+		Event::register('Ionize.front.load', array($this, 'on_front_load'));
 		Event::register('Article.save.before', array($this, 'on_article_save_before'));
 	}
 
@@ -22,10 +22,10 @@ class Demo_Events
 
 	/**
 	 * This method will be called when one controller (or other lib)
-	 * will fire the event called "ionize.public.load"
+	 * will fire the event called "ionize.front.load"
 	 *
 	 */
-	public function on_public_load()
+	public function on_front_load()
 	{
 		$message = 'Demo module catched Ionize public load event !';
 

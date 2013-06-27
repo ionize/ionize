@@ -11,6 +11,15 @@
 
 	</div>
 
+	<?php if (Authority::can('access', 'module/demo/my_resource')) :?>
+
+		<a class="button light">
+			<i class="icon plus"></i>
+			Can access to this button
+		</a>
+
+	<?php endif ;?>
+
 	<!-- Will contains the authors list -->
 	<div id="moduleDemoAuthorsList"></div>
 </div>
