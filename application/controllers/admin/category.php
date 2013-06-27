@@ -206,6 +206,8 @@ class Category extends MY_admin
 		}
 		else
 		{
+			Event::fire('Category.save.error');
+
 			$this->error(lang('ionize_message_category_not_saved'));			
 		}
 	}

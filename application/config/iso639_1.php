@@ -170,6 +170,7 @@ $iso639_1 = array(
 	'ts' =>	'Tsonga',
 	'tt' =>	'Tatar',
 	'tw' =>	'Twi',
+	'twn' => 'Traditional Chinese',
 	'ty' =>	'Tahitian',
 	'ug' =>	'Uighur',
 	'uk' =>	'Ukrainian',

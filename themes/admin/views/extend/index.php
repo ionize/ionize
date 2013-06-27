@@ -19,8 +19,14 @@
 
 	<script type="text/javascript">
 
-		// Get Extends fields table
-		ION.updateElement({element:'extend_fields', url:'extend_field/get_extend_fields'});
+		// Get Extends fields list
+		ION.HTML(
+			'extend_field/get_extend_fields',
+			{},
+			{
+				'update': 'extend_fields'
+			}
+		);
 
 	</script>
 

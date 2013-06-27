@@ -90,9 +90,6 @@
 					<ul>
 						<!-- Module Admin controllers links -->
 						<?php foreach(Modules()->get_installed_modules() as $key => $module) :?>
-							<?php
-							log_message('error', print_r($module, true));
-							?>
 							<?php if(
 								Authority::can('access', 'module/'.$module['key'])
 								&& $module['has_admin']

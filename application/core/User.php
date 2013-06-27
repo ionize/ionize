@@ -357,7 +357,7 @@ namespace Ionize {
 				if($remember) $this->remember();
 
 				// Event
-				\Event::fire('User.login');
+				\Event::fire('User.login', $user);
 
 				// redirect to a previously blocked page, if it exists
 				/*
@@ -384,7 +384,7 @@ namespace Ionize {
 				}
 
 				// Event
-				\Event::fire('User.login.error');
+				\Event::fire('User.login.error', $identification);
 
 				$this->error = $this->set_error_message('connect_login_failed');
 
@@ -409,6 +409,7 @@ namespace Ionize {
 
 			$this->session->unset_userdata($user_pk);
 
+			$user = $this->user;
 			$this->user = $this->role = NULL;
 
 			// Be sure this URL will be deleted
@@ -419,7 +420,7 @@ namespace Ionize {
 				delete_cookie($this->remember['cookie_name']);
 
 			// Event
-			\Event::fire('User.logout');
+			\Event::fire('User.logout', $user);
 
 			if($redirect)
 			{

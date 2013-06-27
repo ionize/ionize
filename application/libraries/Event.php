@@ -120,6 +120,7 @@ class Event {
 		$class = is_object($callback[0]) ? get_class($callback[0]) : $callback[0];
 		$key = $class.'::'.$callback[1];
 		self::$_listeners[$event][$key] = $callback;
+
 		// log_message('error', 'Event::register() - Registered "'.$key.' with event "'.$event.'"');
 	}
 
@@ -153,7 +154,8 @@ class Event {
 			{
 				if (is_callable($listener))
 				{
-					$class = is_object($listener[0]) ? get_class($listener[0]) : $listener[0];
+					// debug
+					// $class = is_object($listener[0]) ? get_class($listener[0]) : $listener[0];
 					// log_message('error', 'Event:: Call ' . $class . '->' . $listener[1] . '()' );
 
 					$calls[] = call_user_func($listener, $data);

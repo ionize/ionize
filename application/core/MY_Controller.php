@@ -527,7 +527,7 @@ class Base_Controller extends MY_Controller
 		}
 
 		// Event
-		Event::fire('Ionize.public.load');
+		Event::fire('Ionize.front.load');
 
 		require_once APPPATH.'libraries/Tagmanager.php';
 	}

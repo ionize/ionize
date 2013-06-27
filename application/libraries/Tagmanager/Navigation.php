@@ -312,8 +312,12 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_tree_navigation(FTL_Binding $tag)
 	{
+		// Page : Asked one through the page tag
+		$page = $tag->get('page');
+
 		// Current page
-		$page = self::registry('page');
+		if (is_null($page))
+			$page = self::registry('page');
 
 		// If 404 : Put empty vars, so the menu will prints out without errors
 		/*

@@ -1083,7 +1083,13 @@ class FileManager
 			}
 
 			// Event
-			Event::fire('Filemanager.destroy.success',	array('path' => $this->get_full_path($legal_url), 'is_dir'=>$is_dir));
+			Event::fire(
+				'Filemanager.destroy.success',
+				array(
+					'path' => $this->get_full_path($legal_url),
+					'is_dir'=>$is_dir
+				)
+			);
 
 
 			$this->sendHttpHeaders('Content-Type: application/json');
@@ -1865,7 +1871,14 @@ class FileManager
 				throw new Exception($fn . '_failed');
 
 			// Event
-			Event::fire('Filemanager.move.success',	array('old_path' => $path, 'new_path' =>$newpath, 'is_dir' => $is_dir));
+			Event::fire(
+				'Filemanager.move.success',
+				array(
+					'old_path' => $path,
+					'new_path' =>$newpath,
+					'is_dir' => $is_dir
+				)
+			);
 
 			// Json response
 			$this->sendHttpHeaders('Content-Type: application/json');

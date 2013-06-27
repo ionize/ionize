@@ -330,6 +330,9 @@ ION.append({
 			elements = elements.join(',');
 			elements = $$(elements);
 
+			if (options.element)
+				options.update = options.element;
+
 			ION.HTML(options.url, {}, options);
 
 			/*

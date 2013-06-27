@@ -44,8 +44,8 @@ class Extend_field extends MY_admin
 	 * Prints out the empty extend field form
 	 * called by edition form window
 	 *
-	 * @param	string	parent. Element from which we edit the categories list
-	 * @param	string	parent ID
+	 * @param	mixed	parent. Element from which we edit the categories list
+	 * @param	mixed	parent ID
 	 *
 	 */
 	function get_form($parent = FALSE, $id_parent = FALSE)
@@ -68,7 +68,8 @@ class Extend_field extends MY_admin
 	 * Edit one extend field
 	 *
 	 * @param	int		extend field ID
-	 * @param	string	parent. Element from which we edit the categories list
+	 * @param	mixed	parent. Element from which we edit the categories list
+	 * @param	mixed	id_parent. Element ID
 	 *
 	 */
 	function edit($id, $parent = FALSE, $id_parent = FALSE)

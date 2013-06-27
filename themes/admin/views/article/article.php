@@ -37,7 +37,6 @@ if ($tracker_title == '')
 
 	            <div id="article-tracker-<?php echo $id_article; ?>"></div>
 
-
     	        <h2 class="main article" id="main-title"><?php echo $title; ?></h2>
 
 				<div class="main subtitle">
@@ -275,8 +274,13 @@ if ($tracker_title == '')
 
 					<!-- Copy data -->
 					<p class="clear h15">
-						<a class="right icon copy copyLang" rel="<?php echo $lang; ?>" title="<?php echo lang('ionize_label_copy_to_other_languages'); ?>"></a>
+						<a class="button light right copyLang"rel="<?php echo $lang; ?>" title="<?php echo lang('ionize_label_copy_to_other_languages'); ?>">
+							<i class="icon copy"></i>
+							<?php echo lang('ionize_label_copy_to_other_languages') ?>
+						</a>
 					</p>
+
+
 
 					<div class="article-header">
 
