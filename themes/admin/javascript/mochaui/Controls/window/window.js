@@ -1688,10 +1688,6 @@ Element.implement({
 });
 
 document.addEvents({
-	'keydown': function(event){  // Toggle window visibility with Ctrl-Alt-Q
-		if (event.key == 'q' && event.control && event.alt) MUI.Windows.toggleAll();
-	},
-
 	'mousedown': function(){  // Blur all windows if user clicks anywhere else on the page
 		MUI.Windows.blurAll.delay(50);
 	}

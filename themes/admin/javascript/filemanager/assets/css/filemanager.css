@@ -1240,8 +1240,6 @@ div.filemanager-dialog button.filemanager-dialog-confirm:hover {
 	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
 }
-}
-
 
 div.filemanager-dialog-engine-trident4 button, div.filemanager-dialog-engine-trident5 button {
 	padding: 0 .25em;

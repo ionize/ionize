@@ -16,7 +16,7 @@ $user_role = User()->get_role();
 <div class="p10" >
 
 <!-- Row 1 -->
-<div class="row">
+<div class="row" id="dashboardContainer">
 
 	<?php if (
 		Settings::get('dashboard_google') == '1'
@@ -369,13 +369,22 @@ $user_role = User()->get_role();
 	// Togglers
 	ION.initAccordion('.toggler', 'div.element', false, 'dashboardAccordion');
 
-	$$('.desktopBloc').each(function(bloc){
+	// Add columns
+	var col1 = new Element('div', {'class':'col'});
+	var col2 = col1.clone();
+	$('dashboardContainer').adopt(col1,col2);
+
+	$$('.desktopBloc').each(function(bloc, idx)
+	{
 		new ION.ContentPanel({
 			'id': bloc.id,
 			'title': bloc.getAttribute('data-title'),
 			'container':bloc
 		});
+		if (idx%2 !=0) col2.adopt(bloc);
+		else col1.adopt(bloc);
 	});
+
 
 	<?php if (
 		Settings::get('dashboard_google') == '1'

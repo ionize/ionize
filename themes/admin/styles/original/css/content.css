@@ -1105,7 +1105,7 @@ div.translation {
 	clear:both;
 	margin-bottom: 12px;
 }
-.col {}
+.col {width: 50%;float: left;}
 .col.col2{
 	width: 49%;
 	margin-right: 2%;
@@ -1139,8 +1139,8 @@ div.translation {
 	border: solid 1px #e5e5e5;
 	padding:0;
 	margin-bottom: 12px;
-	width: 49%;
-	margin-right: 1%;
+	width: 98%;
+	margin-right: 2%;
 	float:left;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;

@@ -1640,6 +1640,7 @@ ION.append({
 	{
 		var text = text.toLowerCase();
 
+		/*
 		text = text.replace(/ /g, '-');
 		text = text.replace(/&/g, '-');
 		text = text.replace(/:/g, '-');
@@ -1667,7 +1668,7 @@ ION.append({
 		text = text.replace(/š/g, 's');
 		text = text.replace(/ı/g, 'i');
 		text = text.replace(/ğ/g, 'g');
-
+		*/
 		var str = '';
 		
 		/*
@@ -1712,7 +1713,32 @@ ION.append({
          * 121 : y
          * 122 : z
          *
-         */
+		for (i=0;i<text.length;i++)
+		{
+			var c = text.charCodeAt(i);
+			if (c==45 || c==95 || (c>47 && c<58) || (c>96 && c<123) )
+			{
+				str = str + text.charAt(i);
+			}
+		}
+		 */
+
+		var a = {
+			// Non char
+			" ":"-","&":"-",":":"-",
+
+			// Latin
+			"à":"a","ä":"a","â":"a","ā":"a","č":"c","é":"e","è":"e","ë":"e","ê":"e","ï":"i","î":"i","ì":"i","ô":"o","ö":"o","ò":"o","ü":"u","û":"u","ù":"u","µ":"u","ç":"c","ş":"s","š":"s","ı":"i","ğ":"g",
+
+			// Cyrillic
+			"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu",
+		};
+
+			text = text.split('').map(function (char) {
+				return a[char] || char;
+			}).join("");
+
+
 		for (i=0;i<text.length;i++)
 		{
 			var c = text.charCodeAt(i);
