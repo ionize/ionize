@@ -374,13 +374,17 @@ $user_role = User()->get_role();
 	var col2 = col1.clone();
 	$('dashboardContainer').adopt(col1,col2);
 
-	$$('.desktopBloc').each(function(bloc, idx)
+	$$('.desktopBloc').each(function(bloc)
 	{
 		new ION.ContentPanel({
 			'id': bloc.id,
 			'title': bloc.getAttribute('data-title'),
 			'container':bloc
 		});
+	});
+
+	$$('.desktopBloc:not(div.fullwidth)').each(function(bloc, idx)
+	{
 		if (idx%2 !=0) col2.adopt(bloc);
 		else col1.adopt(bloc);
 	});
