@@ -361,7 +361,7 @@ class TagManager_User extends TagManager
 								$user = array_merge($user, self::$ci->input->post());
 
 								// Create data array and Send Emails
-								TagManager_Email::send_form_emails($tag, 'password', $user);
+								TagManager_Email::send_form_emails($tag, 'register', $user);
 
 								$message = TagManager_Form::get_form_message('success');
 								TagManager_Form::set_additional_success('register', $message);

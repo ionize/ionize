@@ -55,6 +55,7 @@ class TagManager_Email extends TagManager
 		foreach($emails as $email_setting)
 		{
 			$email = $email_setting['email'];
+			$reply_to = isset($email_setting['reply_to']) ? $email_setting['reply_to'] : NULL;
 
 			// Get potential website / form email
 			switch($email)
@@ -70,6 +71,24 @@ class TagManager_Email extends TagManager
 				default:
 					$email = (Settings::get('email_'.$email) != '') ? Settings::get('email_'.$email) : NULL;
 					break;
+			}
+
+			if ( ! is_null($reply_to))
+			{
+				switch($reply_to)
+				{
+					case 'site':
+						$reply_to = (Settings::get('site_email') != '') ? Settings::get('site_email') : NULL;
+						break;
+
+					case 'form':
+						$reply_to = isset($data['email']) ? $data['email'] : self::$ci->input->post('email');
+						break;
+
+					default:
+						$reply_to = (Settings::get('email_'.$email) != '') ? Settings::get('email_'.$email) : NULL;
+						break;
+				}
 			}
 
 			// Send the email
@@ -89,6 +108,9 @@ class TagManager_Email extends TagManager
 				self::$ci->email->subject($subject);
 				self::$ci->email->from($website_email, Settings::get("site_title"));
 				self::$ci->email->to($email);
+
+				if ( ! is_null($reply_to))
+					self::$ci->email->reply_to($reply_to);
 
 				// View & Message content
 				$view_content = $tag->parse_as_standalone(self::$tag_prefix, Theme::load($email_setting['view']));

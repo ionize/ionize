@@ -954,9 +954,11 @@ class TagManager_Form extends TagManager
 	 * @return array
 	 *
 	 */
-	public static function get_form_emails($form_name)
+	public static function get_form_emails($form_name='')
 	{
-		$form = self::get_form_settings(self::$posting_form_name);
+		$form_name = ($form_name != '') ? $form_name : self::$posting_form_name;
+
+		$form = self::get_form_settings($form_name);
 
 		$emails = ! empty($form['emails']) ? $form['emails'] : array();
 
