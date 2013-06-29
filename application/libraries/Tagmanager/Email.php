@@ -103,6 +103,7 @@ class TagManager_Email extends TagManager
 
 				// Email Lib
 				if ( ! isset(self::$ci->email)) self::$ci->load->library('email');
+				self::$ci->email->clear();
 
 				// Subject / From / To
 				self::$ci->email->subject($subject);
