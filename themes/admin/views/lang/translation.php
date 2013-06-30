@@ -225,6 +225,9 @@
 
 	ION.setFormSubmit('themeTranslationForm', 'themeTranslationFormSubmit', 'translation/save');
 
+    // Save with CTRL+s
+    ION.addFormSaveEvent('themeTranslationFormSubmit');
+
 
 	/**
 	 * Add translation button (for theme translations)
