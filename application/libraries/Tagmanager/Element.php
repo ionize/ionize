@@ -249,6 +249,8 @@ class TagManager_Element extends TagManager
 				case '2':
 				case '3':
 					$value = self::$ci->url_model->parse_internal_links($value);
+					self::load_model('media_model');
+					$value = self::$ci->media_model->parse_content_media_url($value);
 					break;
 
 				case '7':

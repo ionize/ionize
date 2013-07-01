@@ -12,10 +12,6 @@
 --
 -- Base data
 --
-TRUNCATE TABLE lang;
---#--
-INSERT INTO lang (lang, name, online, def, ordering, direction) VALUES	('en','english','1','1',1,1);
---#--
 UPDATE setting SET content='foundation' WHERE name='theme';
 --#--
 DELETE FROM setting WHERE name='site_title';

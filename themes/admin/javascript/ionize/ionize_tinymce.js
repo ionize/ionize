@@ -25,8 +25,9 @@ ION.append({
 					dialog_type : 'modal',
 					inlinepopups_skin: 'ionizeMce',
 					verify_html : false,
-					relative_urls : false,
-					convert_urls : false,
+					convert_urls : true,    // was false
+					relative_urls: true,    // was false
+					document_base_url: ION.baseUrl,
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
 					plugins : 'save,inlinepopups,advimage,advlink,spellchecker,nonbreaking,,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
@@ -37,6 +38,8 @@ ION.append({
 					theme_advanced_path_location : 'bottom',
 					theme_advanced_blockformats : tinyBlockFormats,
 					theme_advanced_buttons1 : smallTinyButtons1,
+					theme_advanced_buttons2 : '',
+					theme_advanced_buttons3 : '',
 					content_css : tinyCSS,
 					file_browser_callback: 'ION.openTinyFilemanager',
 					save_onsavecallback:function(ed)
@@ -81,8 +84,9 @@ ION.append({
 					dialog_type : 'modal',
 					inlinepopups_skin: 'ionizeMce',
 					verify_html : false,
-					relative_urls : false,
-					convert_urls : false,
+					convert_urls : true,    // was false
+					relative_urls: true,    // was false
+					document_base_url: ION.baseUrl,
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
 					plugins : 'pdw,save,inlinepopups,codemirror,safari,nonbreaking,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
@@ -120,6 +124,30 @@ ION.append({
 						ed.onKeyUp.add(function(ed, e) {
 							ION.setUnsavedData();
 						});
+
+						/*
+						// Replace Media Shortcode by URLs before displaying
+						ed.onBeforeSetContent.add(function(ed, o)
+						{
+							o.content = ION.tinyFromShortcodeToMediaUrl(o.content);
+						});
+
+						// Replace Shortcode as its inserted into editor (which uses the exec command)
+						ed.onExecCommand.add(function(a, cmd) {
+							if (cmd ==='mceInsertContent'){
+								tinyMCE.activeEditor.setContent(
+									ION.tinyFromShortcodeToMediaUrl(tinyMCE.activeEditor.getContent())
+								);
+							}
+						});
+
+						// Replace the media URL back to Shortcode on save
+						ed.onPostProcess.add(function(a, o) {
+							if (o.get)
+								o.content = ION.tinyFromMediaUrlToShortcode(o.content);
+						});
+						*/
+
 						ION.tinyOnSetup(ed);
 					},
 					formats : {
@@ -127,7 +155,7 @@ ION.append({
 						aligncenter : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'center'},
 						alignright : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'right'},
 						alignfull : {selector : 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes : 'justify'}
-					}				
+					}
 				};
 
 				settings.theme_advanced_buttons2 = tinyButtons2;
@@ -276,8 +304,10 @@ ION.append({
 			onComplete: function(path)
 			{
 				if (!win.document) return;
-				win.document.getElementById(field).value = path;
-				if (win.ImageDialog) win.ImageDialog.showPreviewImage(path, 1);
+				t_path = path.replace(/^\//g, '');
+				win.document.getElementById(field).value = t_path;
+				var preview_path = ION.baseUrl + t_path;
+				if (win.ImageDialog) win.ImageDialog.showPreviewImage(preview_path, 1);
 				MUI.get('filemanagerWindow').close();
 			}
 		};
@@ -402,7 +432,42 @@ ION.append({
 	 * @param ed
 	 *
 	 */
-	tinySmallOnSetup:function(ed){}
+	tinySmallOnSetup:function(ed){},
+
+
+
+	tinyFromMediaUrlToShortcode : function(co) {
+
+		function getAttr(s, n) {
+			n = new RegExp(n + '=\"([^\"]+)\"', 'g').exec(s);
+			return n ? tinymce.DOM.decode(n[1]) : '';
+		};
+
+		return co.replace(/(?:<p[^>]*>)*(<img[^>]+>)(?:<\/p>)*/g, function(a,im) {
+			var cls = getAttr(im, 'class');
+
+			if ( cls.indexOf('modxGallery') != -1 )
+				return '<p>[['+tinymce.trim(getAttr(im, 'title'))+']]</p>';
+
+			return a;
+		});
+	},
+
+	tinyFromShortcodeToMediaUrl: function(co)
+	{
+		return co.replace(/\{\{media:(\d*)\}\}/g, function(a,b)
+		{
+			console.log('a : ' + a);
+			console.log('b : ' + b);
+
+			// Here : Get the media src by Ajax request
+
+			var image = 'files/pictures/IMG_8438.jpg';
+
+			return image;
+		});
+	}
+
 
 });
 

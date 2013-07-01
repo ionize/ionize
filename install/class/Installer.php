@@ -301,6 +301,26 @@ class Installer
 				$query = $this->db->get('lang');
 				$data = $query->result_array();
 				$this->_save_language_config_file($data);
+
+				// Update the Demo content regarding the user's choosen language
+				$default_lang = $this->_get_default_lang();
+				$data = array('lang' => $default_lang['lang']);
+				$where = array('lang' => 'en');
+
+				$this->db->where($where);
+				$this->db->update('page_lang', $data);
+
+				$this->db->where($where);
+				$this->db->update('article_lang', $data);
+
+				$this->db->where($where);
+				$this->db->update('category_lang', $data);
+
+				$this->db->where($where);
+				$this->db->update('media_lang', $data);
+
+				$this->db->where($where);
+				$this->db->update('url', $data);
 			}
 
 			header("Location: ".BASEURL.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
@@ -1004,7 +1024,7 @@ class Installer
 		if (empty($_POST['lang_code'])) { $this->_send_error('settings', lang('settings_error_missing_lang_code'), $_POST);}
 		if (empty($_POST['lang_name'])) { $this->_send_error('settings', lang('settings_error_missing_lang_name'), $_POST);}
 		
-		// Lang code must be on 2 chars
+		// Lang code must be on 2 or 3 chars
 		if (strlen($_POST['lang_code']) > 3) { $this->_send_error('settings', lang('settings_error_lang_code_2_chars'), $_POST);}
 		
 		// Check if admin URL is correct
@@ -1451,6 +1471,17 @@ class Installer
 			return FALSE;
 	}
 
+	public function _get_default_lang()
+	{
+		$query = $this->db->get_where('lang', array('def' => '1'), FALSE);
+
+		if ($query->num_rows() > 0)
+			return $query->row_array();
+		else
+			return FALSE;
+
+	}
+
 
 	// --------------------------------------------------------------------
 
@@ -1528,7 +1559,7 @@ class Installer
 
 		foreach($data as $l)
 		{
-			// Set defualt lang code
+			// Set default lang code
 			if ($l['def'] == '1')
 				$def_lang = $l['lang'];
 

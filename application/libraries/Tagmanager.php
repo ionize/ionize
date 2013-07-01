@@ -1229,6 +1229,9 @@ class TagManager
 			);
 		}
 
+		self::load_model('media_model');
+		$value = self::$ci->media_model->parse_content_media_url($value);
+
 		$autolink = $tag->getAttribute('autolink', TRUE);
 		if ( $autolink)
 			$value = auto_link($value);
@@ -1385,6 +1388,8 @@ class TagManager
 					$tag->getAttribute('link_key'),
 					$tag->getAttribute('link_title')
 				);
+				self::load_model('media_model');
+				$value = self::$ci->media_model->parse_content_media_url($value);
 				break;
 
 			case '7':

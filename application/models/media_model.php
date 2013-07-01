@@ -664,6 +664,30 @@ class Media_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 *
+	 * @param $string
+	 *
+	 * @return mixed
+	 */
+	public function parse_content_media_url($string)
+	{
+		$fp = Settings::get('files_path').'/';
+		$src = 'src="' . $fp;
+		$href = 'href="' . $fp;
+
+		$string = str_replace($src, 'src="'.base_url().$fp, $string);
+		$string = str_replace($href, 'href="'.base_url().$fp, $string);
+
+		return $string;
+	}
+
+
+
+
+	// ------------------------------------------------------------------------
+
+
 	private function _set_filter($filter = NULL)
 	{
 		if ( ! is_null($filter))
