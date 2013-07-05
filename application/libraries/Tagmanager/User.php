@@ -337,44 +337,63 @@ class TagManager_User extends TagManager
 						$user['username'] = $user['email'];
 						$user['join_date'] = date('Y-m-d H:i:s');
 
-						if ( ! User()->register($user))
-						{
-							$message = User()->error();
-							if ( empty($message))
-								$message = TagManager_Form::get_form_message('error');
+						// Fire returns an array
+						$results = Event::fire('User.register.check.before', $user);
 
-							TagManager_Form::set_additional_error('register', $message);
-						}
-						else
+						// Empty $result : No method registered to 'User.register.check.before' => No test
+						// Result == TRUE : The user can register
+						if (self::isResultTrue($results))
 						{
-							// Get the user saved in DB
-							$user = self::$ci->user_model->find_user($user['username']);
-
-							if (is_array($user))
+							if ( ! User()->register($user))
 							{
-								// Must be set before set the clear password
-								$user['activation_key'] = User()->calc_activation_key($user);
+								$message = User()->error();
+								if ( empty($message))
+									$message = TagManager_Form::get_form_message('error');
 
-								$user['password'] = User()->decrypt($user['password'], $user);
-
-								// Merge POST data for email template
-								$user = array_merge($user, self::$ci->input->post());
-
-								// Create data array and Send Emails
-								TagManager_Email::send_form_emails($tag, 'register', $user);
-
-								$message = TagManager_Form::get_form_message('success');
-								TagManager_Form::set_additional_success('register', $message);
-
-								// Potentially redirect to the page setup in /application/config/forms.php
-								$redirect = TagManager_Form::get_form_redirect();
-								if ($redirect !== FALSE) redirect($redirect);
+								TagManager_Form::set_additional_error('register', $message);
 							}
 							else
 							{
-								$message = TagManager_Form::get_form_message('error');
-								TagManager_Form::set_additional_error('register', $message);
+								// Get the user saved in DB
+								$user = self::$ci->user_model->find_user($user['username']);
+
+								if (is_array($user))
+								{
+									// Must be set before set the clear password
+									$user['activation_key'] = User()->calc_activation_key($user);
+
+									$user['password'] = User()->decrypt($user['password'], $user);
+
+									// Merge POST data for email template
+									$user = array_merge($user, self::$ci->input->post());
+
+									// Create data array and Send Emails
+									$user['ip'] = self::$ci->input->ip_address();
+									TagManager_Email::send_form_emails($tag, 'register', $user);
+
+									$message = TagManager_Form::get_form_message('success');
+									TagManager_Form::set_additional_success('register', $message);
+
+									// Potentially redirect to the page setup in /application/config/forms.php
+									$redirect = TagManager_Form::get_form_redirect();
+									if ($redirect !== FALSE) redirect($redirect);
+								}
+								else
+								{
+									$message = TagManager_Form::get_form_message('error');
+									TagManager_Form::set_additional_error('register', $message);
+								}
 							}
+						}
+						else
+						{
+							Event::fire('User.register.check.fail', $user);
+
+							$message = TagManager_Form::get_form_message('success');
+							TagManager_Form::set_additional_success('register', $message);
+
+							$redirect = TagManager_Form::get_form_redirect();
+							if ($redirect !== FALSE) redirect($redirect);
 						}
 					}
 					break;
@@ -411,6 +430,7 @@ class TagManager_User extends TagManager
 
 								// Send Emails
 								$data = array_merge($user, $user['group']);
+								$data['ip'] = self::$ci->input->ip_address();
 								TagManager_Email::send_form_emails($tag, 'password', $data);
 
 								$message = TagManager_Form::get_form_message('success');
@@ -508,5 +528,19 @@ class TagManager_User extends TagManager
 					break;
 			}
 		}
+	}
+
+	public static function isResultTrue($results)
+	{
+		$return = TRUE;
+
+		if (is_array($results))
+		{
+			foreach($results as $result)
+				if ( ! $result)
+					$return = FALSE;
+		}
+
+		return $return;
 	}
 }

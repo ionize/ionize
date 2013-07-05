@@ -43,6 +43,27 @@ $config['module']['demo'] = array
 		 * Usage : Authority::can('<action_key_1>', 'module/<module_key>/<resource_key>')
 		 */
 		// Authority::can('access', 'module/demo/admin')
+			// Authority::can('access', 'module/demo/my_resource')
+		'my_resource' => array(
+			'title' => 'My Demo Module Resource',
+			'actions' => 'edit,save,delete'
+		),
+		'my_resource/one_child_resource' => array
+		(
+			// Parent of the module's ressource in the resources tree
+			'parent' => 'my_resource',
+			'title' => 'One Child Resource',
+			'actions' => 'action_1',
+		),
+	),
+);
+
+return $config['module']['demo'];
+
+
+
+/*
+ *
 		'admin' => array(
 			'title' => 'Demo Module Administration'
 		),
@@ -69,7 +90,7 @@ $config['module']['demo'] = array
 			'title' => 'One Resource in the Parent Tree',
 			'actions' => 'action_1',
 		),
-	),
-);
 
-return $config['module']['demo'];
+ *
+ *
+ */

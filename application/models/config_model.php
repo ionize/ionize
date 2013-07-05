@@ -117,11 +117,12 @@ class Config_model extends Base_model
 			}
 			else
 			{
-				$pattern = "%([\"'](".$key.")[\"'][\s]*?=>[\s]*?)[\"'](.*?)[\"']%";
+				$pattern = "%([\"'](".$key.")[\"'][\s]*?=>[\s]*?)((?:(true|false),)|([\"'](.*?)[\"']))%";
+				// $pattern = "%([\"'](".$key.")[\"'][\s]*?=>[\s]*?)(.*?,)%";
 			}
 
 			$type = gettype($val);
-			
+
 			if ($type == 'string')
 			{
 				if (strtolower($val) == 'true')
@@ -131,8 +132,17 @@ class Config_model extends Base_model
 					$val = var_export(FALSE, TRUE);
 
 				else $val = "'".$val."'";
+
+				if ((strtolower($val) == 'true' OR strtolower($val) == 'false') && ! is_null($module_key))
+					$val .= ',';
 			}
-			if ($type == 'boolean') $val = ($val ? var_export(TRUE, TRUE) : var_export(FALSE, TRUE) );
+			if ($type == 'boolean')
+			{
+				$val = ($val ? var_export(TRUE, TRUE) : var_export(FALSE, TRUE) );
+
+				if ( ! is_null($module_key))
+					$val .= ',';
+			}
 
 			if ($type == 'array')
 			{
@@ -141,6 +151,7 @@ class Config_model extends Base_model
 			}
 
 			/* Debug
+				log_message('error', print_r($pattern, true));
 				preg_match($pattern, self::$content, $matches);
 				log_message('error', print_r($matches, true));
 			*/

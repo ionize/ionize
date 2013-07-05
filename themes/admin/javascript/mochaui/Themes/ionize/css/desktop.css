@@ -103,7 +103,8 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .panel .panelWrapper.expanded .panel-header {height: 24px;}
 .panel .panelWrapper.expanded .panel-header .toolbar{margin-top: -2px;}
 
-.panel,
+#desktopHeader,
+.panelAlt,
 .panel-header {
 	-moz-user-select: -moz-none;
 	-khtml-user-select: none;

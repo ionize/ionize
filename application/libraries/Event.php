@@ -50,27 +50,20 @@ class Event {
 	 */
 	private static function _load_modules_events()
 	{
-		$modules = array();
-		require(APPPATH.'config/modules.php');
+		// Add path to installed modules
+		$installed_modules = Modules()->get_installed_modules();
 
-		if ( empty($modules))
+		if (is_null($installed_modules))
 			return FALSE;
 
-		// Add the module path to the Finder
-		$module_paths = glob(MODPATH.'*');
+		// Be sure Events classes will be found but also will be able to load module libraries
+		foreach($installed_modules as $module)
+			if (isset($module['folder'])) Finder::add_path(MODPATH.$module['folder'].'/');
 
-		if ( ! empty($module_paths))
+		foreach($installed_modules as $module)
 		{
-			foreach ($module_paths as $module_path)
-			{
-				$folder = basename($module_path);
-
-				if (in_array($folder, $modules))
-				{
-					if ( ! $details_class = self::_start_events_class($module_path))
-						continue;
-				}
-			}
+			if ( ! $details_class = self::_start_events_class($module['path']))
+				continue;
 		}
 
 		return TRUE;

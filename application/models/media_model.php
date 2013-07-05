@@ -676,6 +676,12 @@ class Media_model extends Base_model
 		$src = 'src="' . $fp;
 		$href = 'href="' . $fp;
 
+		$src_base = 'src="/' . $fp;
+		$href_base = 'href="/' . $fp;
+
+		$string = str_replace($src_base, $src, $string);
+		$string = str_replace($href_base, $href, $string);
+
 		$string = str_replace($src, 'src="'.base_url().$fp, $string);
 		$string = str_replace($href, 'href="'.base_url().$fp, $string);
 
