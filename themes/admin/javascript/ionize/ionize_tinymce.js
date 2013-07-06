@@ -7,7 +7,20 @@ ION.append({
 
 		var width = (typeOf(options.width) != 'null') ? options.width : '100%';
 		var height = (typeOf(options.height) != 'null') ? options.height : 180;
-	
+
+		var spell_langs = new Array();
+		var idx = ([Cookie.read('articleTab'), false].pick());
+		if (typeOf(idx) == 'null')
+			idx = 0;
+			Settings.setting.languages.each(function(target)
+			{
+				var pref = '';
+				if (idx == target.ordering - 1)
+					pref = '+';
+				spell_langs.push(pref + target.name + '=' + target.lang);
+			});
+		var spellchecker_languages = spell_langs.join();
+
 		switch (mode)
 		{
 			case 'small':
@@ -30,7 +43,8 @@ ION.append({
 					document_base_url: ION.baseUrl,
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
-					plugins : 'save,inlinepopups,advimage,advlink,spellchecker,nonbreaking,,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
+					plugins : 'save,inlinepopups,advimage,advlink,nonbreaking,,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
+					spellchecker_languages: spellchecker_languages,
 					theme_advanced_toolbar_location : 'top',
 					theme_advanced_toolbar_align : 'left',
 					theme_advanced_resizing : true,
@@ -90,6 +104,7 @@ ION.append({
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
 					plugins : 'pdw,save,inlinepopups,codemirror,safari,nonbreaking,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
+					spellchecker_languages: spellchecker_languages,
 					flash_menu : 'false',
 					theme_advanced_toolbar_location : 'top',
 					theme_advanced_toolbar_align : 'left',

@@ -778,7 +778,7 @@
 	// Restore tinyButtons toolbar to default config
 	$('texteditor_default').addEvent('click', function()
 	{
-		$('tinybuttons1').value = 'pdw_toggle,fullscreen,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image';
+		$('tinybuttons1').value = 'pdw_toggle,fullscreen,|,bold,italic,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,|,bullist,numlist,|,link,unlink,image,|,spellchecker';
 		$('tinybuttons2').value = 'undo,redo,|,pastetext,selectall,removeformat,|,media,charmap,hr,blockquote,nonbreaking,|,template,|,codemirror';
 		$('tinybuttons3').value = 'tablecontrols';
 	
@@ -793,7 +793,7 @@
 
 	$('texteditor_default_tinyblockformats').addEvent('click', function()
 	{
-		$('tinyblockformats').value = 'p,h2,h3,h4,h5,pre';
+		$('tinyblockformats').value = 'p,h2,h3,h4,h5,pre,div';
 	});
 
 
