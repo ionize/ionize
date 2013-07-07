@@ -710,6 +710,7 @@ class TagManager_Page extends TagManager
 		$parent = $tag->getAttribute('parent');
 		$mode = $tag->getAttribute('mode', 'flat');
 		$levels = $tag->getAttribute('levels');
+		$menu_name = $tag->getAttribute('menu');
 		$parent_page = NULL;
 
 		if ( ! is_null($parent))
@@ -735,6 +736,38 @@ class TagManager_Page extends TagManager
 		else
 		{
 			$pages = self::registry('pages');
+		}
+
+		// Limit pages to a certain level
+		if ( ! is_null($levels))
+		{
+			$levels = (int)$levels;
+
+			for($i = count($pages) - 1; $i >= 0; $i--) {
+				if($pages[$i]['level'] > $levels)
+					unset($pages[$i]);
+			}
+
+			$pages = array_values($pages);
+		}
+
+		// Limit pages to a certain menu
+		if ( ! is_null($menu_name))
+		{
+			// By default main menu
+			$id_menu = 1;
+			foreach(self::registry('menus') as $menu)
+			{
+				if ($menu_name == $menu['name'])
+					$id_menu = $menu['id_menu'];
+			}
+
+			for($i = count($pages) - 1; $i >= 0; $i--) {
+				if($pages[$i]['id_menu'] != $id_menu)
+					unset($pages[$i]);
+			}
+
+			$pages = array_values($pages);
 		}
 
 		$count = count($pages);
