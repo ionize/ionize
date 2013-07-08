@@ -75,6 +75,11 @@ ION.append({
 							ION.setUnsavedData();
 						});
 						ION.tinySmallOnSetup(ed);
+						// Prevent CMD+Left Browser go back in history
+						ed.onKeyDown.add(function(ed, e) {
+							if (e.metaKey && e.keyCode =='37')
+								e.preventDefault();
+						});
 					}
 				};
 
@@ -138,6 +143,11 @@ ION.append({
 						});
 						ed.onKeyUp.add(function(ed, e) {
 							ION.setUnsavedData();
+						});
+						// Prevent CMD+Left Browser go back in history
+						ed.onKeyDown.add(function(ed, e) {
+							if (e.metaKey && e.keyCode =='37')
+								e.preventDefault();
 						});
 
 						/*

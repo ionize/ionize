@@ -44,7 +44,7 @@ class Installer
 		self::$instance =& $this;
 
 		// Default language
-		$lang = 'en';
+		$lang_code = 'en';
 		
 		// Check GET language
 		if (is_array($_GET) && isset($_GET['lang']) )
@@ -53,10 +53,11 @@ class Installer
 				$lang = $_GET['lang'];
 		}
 		
-		$this->template['lang'] = $lang;
+		$this->template['lang'] = $lang_code;
 		
 		// Include language file and merge it to language var
-		include(ROOTPATH.'install/language/'. $lang .'/install_lang.php');
+		$lang = array();
+		include(ROOTPATH.'install/language/'. $lang_code .'/install_lang.php');
 		
 		$this->lang = array_merge($this->lang, $lang);
 
