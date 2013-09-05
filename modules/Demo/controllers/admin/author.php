@@ -88,7 +88,7 @@ class Author extends Module_Admin
 
 			// Update the authors list
 			$this->update[] = array(
-				'element' => 'moduleDemoAuthorsList, #wdemoAuthors .mochaContent',
+				'element' => 'moduleDemoAuthorsList',
 				'url' => admin_url() . 'module/demo/author/get_list'
 			);
 
@@ -112,7 +112,7 @@ class Author extends Module_Admin
 		{
 			// Update the authors list
 			$this->update[] = array(
-				'element' => 'moduleDemoAuthorsList, #wdemoAuthors .mochaContent',
+				'element' => 'moduleDemoAuthorsList',
 				'url' => admin_url() . 'module/demo/author/get_list'
 			);
 
