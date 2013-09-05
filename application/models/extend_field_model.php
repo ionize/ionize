@@ -198,10 +198,30 @@ class Extend_field_model extends Base_model
 			);
 			
 			// Checkboxes : first clear values from DB as the var isn't in $_POST if no value is checked
+			// furthermore, make sure that if all checkbox values are unchecked, we do not fallback to the
+			// default values, we do that by storing the special `-` value in the database. 
+			$langs = Settings::get_languages();
 			if ($extend_field['type'] == '4')
 			{
-				$this->{$this->db_group}->where($where);
-				$this->{$this->db_group}->delete($this->elements_table);			
+				if ($this->exists($where, $this->elements_table))
+				{
+					$this->{$this->db_group}->where($where);
+					$this->{$this->db_group}->update($this->elements_table, array('content' => '-'));
+				} else {
+					$data = array();
+					$data['content']      = '-';
+					$data['lang']         = '';
+					$data['id_parent']    = $id;
+					$data[$this->pk_name] = $extend_field[$this->pk_name];
+					if ($extend_field['translated'] != '1') {
+						$this->{$this->db_group}->insert($this->elements_table, $data);
+					} else {
+						foreach ($langs as $language) {
+							$data['lang'] = $language['lang'];
+							$this->{$this->db_group}->insert($this->elements_table, $data);
+						}
+					}
+				}
 			}
 			
 			// Get the value from _POST values and feed the data array
