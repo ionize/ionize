@@ -407,6 +407,10 @@ class Article extends MY_admin
 	 */
 	public function save()
 	{
+		if (!Authority::can('edit', 'admin/article')) {
+			$this->error(lang('permission_denied'));
+		}
+
 		/* Check if the default lang URL or the default lang title are set
 		 * One of these need to be set to save the article
 		 *
@@ -941,6 +945,10 @@ class Article extends MY_admin
 	*/
 	public function link_to_page()
 	{
+		if (!Authority::can('move', 'admin/article')) {
+			$this->error(lang('permission_denied'));
+		}
+
 		$id_page = $this->input->post('id_page');
 		$id_article = $this->input->post('id_article');
 		$id_page_origin = $this->input->post('id_page_origin');
@@ -1496,6 +1504,10 @@ class Article extends MY_admin
 	 */
 	public function save_ordering($parent, $id_parent)
 	{
+		if (!Authority::can('move', 'admin/article')) {
+			$this->error(lang('permission_denied'));
+		}
+
 		$order = $this->input->post('order');
 		
 		if( $order !== FALSE )
@@ -1556,6 +1568,10 @@ class Article extends MY_admin
 	 */
 	public function delete($id)
 	{
+		if (!Authority::can('delete', 'admin/article')) {
+			$this->error(lang('permission_denied'));
+		}
+
 		$affected_rows = $this->article_model->delete($id);
 		
 		// Delete was successful
