@@ -1,3 +1,11 @@
+<?php if(!Authority::can('create', 'admin/article')) :?>
+
+<h2 class="main protected"><?php echo lang('ionize_title_resource_protected')?></h2>
+    <p><?php echo lang("ionize_subtitle_resource_protected");?></p>
+
+<?php endif;?>
+
+<?php if(Authority::can('create', 'admin/article')) :?>
 <div id="maincolumn">
 
 	<h2 class="main articles" id="main-title"><?php echo lang('ionize_title_articles'); ?></h2>
@@ -42,6 +50,7 @@
 
 
 
+
 <script type="text/javascript">
 
 	// Panel toolbox
@@ -73,3 +82,7 @@
 	$('btnSubmitFilter').fireEvent('click');
 
 </script>
+<?php endif;?>
+
+
+

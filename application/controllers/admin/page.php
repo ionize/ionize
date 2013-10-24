@@ -579,6 +579,10 @@ class Page extends MY_admin
 	 */
 	public function save_ordering()
 	{
+        if (!Authority::can('edit', 'admin/page')) {
+            $this->error(lang('permission_denied'));
+        }
+	  
 		$order = $this->input->post('order');
 		
 		if( $order !== FALSE )
