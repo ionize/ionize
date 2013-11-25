@@ -60,18 +60,25 @@ $config['forms'] = array
 		// Emails which will be send when the form is properly processed
 		'emails' => array
 		(
+			// To Admin Email
 			array
 			(
 				// Values can be :
 				// - One plain Email address : my.name@mydomain.com
 				// - 'form' to send it to the email of the form data
-				// - 'website' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
+				// - 'site' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
+				// - 'contact' to send it to the Email set in Ionize under Settings > Advanced > Email > Contact
+				// - 'info' to send it to the Email set in Ionize under Settings > Advanced > Email > Info
+				// - 'technical' to send it to the Email set in Ionize under Settings > Advanced > Email > Technical
 				'email' => 'contact',
+				// Email used for the reply_to Email
+				'reply_to' => 'form',
 				// Language term index, as set in language/xx/form_lang.php
 				'subject' => 'mail_website_registration_subject',
 				// View file to use for the email
 				'view' => 'mail/register/to_admin',
 			),
+			// To User Email
 			array
 			(
 				'email' => 'form',

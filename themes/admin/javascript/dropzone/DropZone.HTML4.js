@@ -160,7 +160,9 @@ DropZone.HTML4 = new Class({
 							formElement.adopt(new Element('input', {'type': 'hidden', 'name':index, 'value':value}));
 						});
 
-						formElement.submit();
+						(function() {
+							formElement.submit();
+						}).delay(100);
 					}
 				}
 			}.bind(this));
@@ -201,9 +203,13 @@ DropZone.HTML4 = new Class({
 	reset: function()
 	{
 		this.url = this.options.url;
+		this.fileList = new Array();
 
 		this.nErrors = 0;
+		this.nUploaded = 0;
+		this.nCurrentUploads = 0;
 		this.nCancelled = 0;
+
 		this.queuePercent = 0;
 		this.isUploading = false;
 

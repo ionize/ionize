@@ -891,9 +891,6 @@ class Media extends MY_admin
 
 	public function get_thumb($id)
 	{
-		// Header data
-		$mime = self::$DEFAULT_TYPE;
-
 		// Pictures data from database
 		$picture = $id ? $this->media_model->get($id) : FALSE;
 
@@ -918,10 +915,9 @@ class Media extends MY_admin
 				}
 				catch(Exception $e)
 				{
-					$return_thumb_path = FCPATH.'themes/'.Settings::get('theme_admin').'/images/icon_48_no_folder_rights.png';
+					$return_thumb_path = FCPATH.'themes/'.Settings::get('theme_admin').'/styles/'.Settings::get('backend_ui_style').'/images/icon_48_no_folder_rights.png';
 				}
 			}
-			
 			$mime = get_mime_by_extension($return_thumb_path);
 			$content = read_file($return_thumb_path);
 			
@@ -931,7 +927,7 @@ class Media extends MY_admin
 		else
 		{
 			$mime = 'image/png';
-			$content = read_file(FCPATH.'themes/'.Settings::get('theme_admin').'/images/icon_48_no_source_picture.png');
+			$content = read_file(FCPATH.'themes/'.Settings::get('theme_admin').'/styles/'.Settings::get('backend_ui_style').'/images/icon_48_no_source_picture.png');
 			self::push_thumb($content, $mime, 0);
 		}
 	}

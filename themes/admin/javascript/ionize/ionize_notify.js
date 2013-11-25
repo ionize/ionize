@@ -37,55 +37,68 @@ ION.Notify = new Class({
 
 		this.setOptions(options);
 
-		this.displayed = false;
-		
-		// new Element('p').set('text', options.message)
-		if ( this.box = this.contentEl.getElement('.mochaContentNotify'))
-			this.box.getParent('div').destroy();
+		var existing = this.exists();
 
-		this.box = new Element('div', {'class':options.className + ' mochaContentNotify ' + options.type});
-/*
-		this.box.set('slide',
+		if ( ! existing)
 		{
-			duration: 'short',
-			transition: 'sine:out'
-		});
-*/
-		if (this.contentEl)
-		{
-			(this.box).inject(this.contentEl, 'top');
-			this.box.slide('hide');
+			var self = this;
+			this.displayed = false;
+
+			// Check options
+			if (typeOf(this.options.type) == 'null') this.options.type = 'info';
+			if (typeOf(this.options.className) == 'null') this.options.className = '';
+
+//			if ( this.box = this.contentEl.getElement('.mochaContentNotify'))
+//				this.box.getParent('div').destroy();
+
+			this.box = new Element('div', {
+				'class': this.options.className + ' contentNotify mochaContentNotify ' + this.options.type,
+				'data-type': this.options.type
+			});
+
+			this.box.store('instance', this);
+
+			// Close button
+			this.closeButton = new Element('div', {
+				'class':'icon close white'}
+			).setStyles({'position':'absolute', 'right':'7px', 'top':'7px'})
+			.inject(this.box, 'top')
+		//	.set('text', 'X')
+			.addEvent('click', function(e){
+				e.stop();
+				self.destroy();
+			});
+
+
+			if (this.contentEl)
+			{
+				(this.box).inject(this.contentEl, 'top');
+				this.box.slide('hide');
+			}
+			return this;
 		}
-		return this;
+		else
+		{
+			this.box = existing;
+			return this.box.retrieve('instance');
+		}
+
 	},
 	
 	show: function(msg)
 	{
 		this.setMessage(msg);
 	
-		this.box.slide('in');
-
 		// Resize content
 		if (this.displayed == false)
 		{
-			var cs = this.contentEl.getSize();
-			var bs = this.contentEl.getElement('.mochaContentNotify').getSize();
+			this.box.slide('in');
 
-			this.contentEl.getChildren('.validation-advice').each(function(item){
-				bs.y += item.getSize().y;
-			});
-
-			// Resize the window... if window.
-			if (this.windowEl.retrieve('instance'))
-			{
-				this.windowEl.retrieve('instance').resize(
-				{
-					height: cs.y + bs.y + 10,
-					width: null,
-					centered:false,
-					top:null
-				});
-			}
+			this.adjustWindowHeight('plus');
+		}
+		else
+		{
+			this.resize();
 		}
 
 		this.displayed = true;
@@ -93,33 +106,53 @@ ION.Notify = new Class({
 	
 	hide: function()
 	{
-		this.box.slide('out');
-
 		// Resize content
 		if (this.displayed == true)
 		{
-			var cs = this.contentEl.getSize();
-			var bs = this.contentEl.getElement('.mochaContentNotify').getSize();
+			this.box.slide('out');
 
-			if (this.windowEl.retrieve('instance'))
-			{
-				this.windowEl.retrieve('instance').resize(
-				{
-					height: cs.y - bs.y + 10,
-					width: null,
-					centered:false,
-					top:null
-				});
-			}
-
+			this.adjustWindowHeight('minus');
 		}
 		this.displayed = false;
 	},
-	
+
+	resize: function()
+	{
+		var cs = this.box.getSize();
+		this.box.getParent('div').setStyle('height', cs.y + 'px');
+		this.box.slide('in');
+
+	},
+
+	adjustWindowHeight: function(mode)
+	{
+		var cs = this.contentEl.getSize();
+		var bs = this.contentEl.getElement('.mochaContentNotify').getSize();
+
+		this.contentEl.getChildren('.validation-advice').each(function(item){
+			bs.y += item.getSize().y;
+		});
+
+		// Resize the window... if window.
+		if (this.windowEl.retrieve('instance'))
+		{
+			if (mode == 'plus')
+				var newHeight = 	cs.y + bs.y + 10;
+			else
+				var newHeight = 	cs.y - bs.y + 10;
+
+			this.windowEl.retrieve('instance').resize(
+			{
+				height: newHeight,
+				width: null,
+				centered:false,
+				top:null
+			});
+		}
+	},
+
 	setMessage: function(msg)
 	{
-		this.box.empty();
-		
 		if (typeof(msg) == 'object')
 		{
 			this.box.adopt(msg);
@@ -127,7 +160,41 @@ ION.Notify = new Class({
 		else
 		{
 			if (Lang.get(msg) != null ) msg = Lang.get(msg);
-			this.box.set('html', msg);
+			var div = new Element('div').set('html', msg);
+			this.box.adopt(div);
 		}
+	},
+
+	exists: function()
+	{
+		if (typeOf(this.options.type) != 'null')
+			var selector = 'div.contentNotify[data-type=' + this.options.type + ']';
+		else
+			var selector = 'div.contentNotify';
+
+		var boxes = $$(selector);
+
+		var box = boxes.pick();
+
+		if (typeOf(box) != 'null')
+			return box;
+
+		return false;
+	},
+
+	destroy: function()
+	{
+		this.box.getParent('div').destroy();
+	},
+
+	removeAll:function()
+	{
+		var boxes = $$('div.contentNotify');
+
+		boxes.each(function(box)
+		{
+			box.getParent('div').destroy();
+		});
 	}
+
 });

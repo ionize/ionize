@@ -148,6 +148,8 @@ DropZone.HTML5 = new Class({
 			chunk,
 			is_blob = true;
 
+		var header_file_name = file.name;
+
 		var total = start + end;
 		if (total > file.size) end = total - file.size;
 
@@ -155,11 +157,13 @@ DropZone.HTML5 = new Class({
 		if (file.file.slice)
 		{
 			chunk = file.file.slice(start, total);
+			header_file_name = unescape(encodeURIComponent(file.name));
 		}
 		// Mozilla based
 		else if (file.file.mozSlice)
 		{
 			chunk = file.file.mozSlice(start, total);
+			header_file_name = unescape(encodeURIComponent(file.name));
 		}
 		// Chrome 20- and webkit based // Safari slices the file badly
 		else if (file.file.webkitSlice && !Browser.safari)
@@ -173,21 +177,25 @@ DropZone.HTML5 = new Class({
 			chunk = new FormData();
 			chunk.append('file', file.file);
 			is_blob = false;
+			header_file_name = unescape(encodeURIComponent(file.name));
 		}
 		
 		// Set headers
 		var headers = {
 			'Cache-Control': 'no-cache',
 			'X-Requested-With': 'XMLHttpRequest',
-			'X-File-Name': file.name,
+			'X-File-Name': header_file_name,
 			'X-File-Size': file.size,
-			'X-File-Id': file.id,
-			'X-File-Resume': resume
+			'X-File-Id': file.id
 		};
+
+		if(resume) headers['X-File-Resume'] = resume;
 
 		// Add file additional vars to the headers ( -> avoid using query string)
 		Object.each(file.vars, function(value, index)
 		{
+			// Some servers don't support underscores in X-Headers
+			index = index.replace(/_/g, '-');
 			headers['X-' + String.capitalize(index)] = value;
 		});
 
@@ -230,11 +238,14 @@ DropZone.HTML5 = new Class({
 							if(file.checked)
 							{
 								var perc = (total / file.size) * 100;
-								
+
 								// it's used to calculate global progress
 								this.fileList[file.id].progress = perc;
 								
 								this._itemProgress(item, perc);
+
+								// Set the filename as set by the backend
+								file.name = response.name;
 
 								// Recursive upload
 								this._html5Send(file, start + response.size.toInt(), true);
@@ -256,6 +267,11 @@ DropZone.HTML5 = new Class({
 			onFailure: function()
 			{
 				this._itemError(item, file);
+			}.bind(this),
+			onException: function(e, key, value)
+			{
+				console.log('DropZone.HTML5 ERROR : ' + e.message);
+				console.log('DropZone.HTML5 ERROR : ' + key + ' : ' + value);
 			}.bind(this)
 		});
 
@@ -330,9 +346,15 @@ DropZone.HTML5 = new Class({
 	{
 		this.parent(item, file, response);
 				
+/*
+// Previuoulsy
 		if(this.nCurrentUploads == 0)
 			this._queueComplete();
 		else if (this.nCurrentUploads != 0 && this.nCurrentUploads < this.options.max_queue)
+			this.upload();
+*/
+
+		if (this.nCurrentUploads != 0 && this.nCurrentUploads < this.options.max_queue)
 			this.upload();
 	}
 	

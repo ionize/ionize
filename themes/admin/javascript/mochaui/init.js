@@ -22,7 +22,7 @@ Ionize.initializeDesktop = function(){
 					{name:'content',
 					columns:[
 						{
-							id: 'sideColumn', placement: 'left', width: 280, resizeLimit: [222, 600],
+							id: 'sideColumn', placement: 'left', width: 280, resizeLimit: [222, 600],sortable: false,
 							panels:[
 							{
 								id: 'structurePanel',
@@ -55,7 +55,7 @@ Ionize.initializeDesktop = function(){
 							*/
 							]
 						},
-						{id: 'mainColumn',	placement: 'main', resizeLimit: [100, 300],
+						{id: 'mainColumn',	placement: 'main', resizeLimit: [100, 300],sortable: false,
 							panels:[
 							{
 								id: 'mainPanel',

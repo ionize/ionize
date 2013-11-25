@@ -1384,14 +1384,14 @@ class FileManager
 			if ( ! $this->options['upload'])
 				throw new Exception('disabled:upload');
 
-			if ($this->is_HTML5_upload())
+			if ($this->is_blob_upload())
 			{
-				$response = $this->HTML5_upload();
+				$response = $this->blob_mode_upload();
 				$this->sendHttpHeaders(array('Content-type: application/json'));
 			}
 			else
 			{
-				$response = $this->HTML4_upload();
+				$response = $this->file_mode_upload();
 			}
 		}
 		catch(Exception $e)
@@ -1406,8 +1406,12 @@ class FileManager
 	}
 
 
-
-	public function HTML5_upload()
+	/**
+	 * Upload one file in blob mode
+	 *
+	 * @return array
+	 */
+	public function blob_mode_upload()
 	{
 		$max_upload = self::convert_size(ini_get('upload_max_filesize'));
 		$max_post = self::convert_size(ini_get('post_max_size'));
@@ -1417,11 +1421,9 @@ class FileManager
 		$headers = $this->getHttpHeaders();
 		$directory = ! empty($headers['X-Directory']) ? $headers['X-Directory'] : '';
 
-		$filter = ! empty($headers['X-Filter']) ? $headers['X-Filter'] : NULL;
 		$resize = (bool) ! empty($headers['X-Resize']) ? $headers['X-Resize'] : FALSE;
 		$resume_flag = ! empty($headers['X-File-Resume']) ? FILE_APPEND : 0;
 		$replace = (! empty($headers['X-Replace']) && $headers['X-Replace'] == 1 ) ? TRUE : FALSE;
-		// $base64_encoded = (! empty($headers['X-Base64-encoded']) && $headers['X-Base64-encoded'] == 1 ) ? TRUE : FALSE;
 
 		// Prepare the response
 		$response = array(
@@ -1445,7 +1447,9 @@ class FileManager
 
 			// Allowed extension ?
 			if ( ! $this->isAllowedExtension($filename))
+			{
 				throw new Exception('${backend.extension}');
+			}
 
 			// Full dir path
 			$legal_dir_url = $this->get_legal_url($directory . '/');
@@ -1455,8 +1459,6 @@ class FileManager
 			if ( ! $resume_flag && ! $replace)
 			{
 				$filename = $this->getUniqueName($response['name'], $dir);
-				// TODO : Check, test
-				// $response['name'] = $filename;
 			}
 
 			// Authorization callback
@@ -1485,6 +1487,9 @@ class FileManager
 			{
 				$filename = $this->cleanFilename($filename);
 			}
+
+			// clean is finished, set the filename for DropZone
+			$response['name'] = $filename;
 
 			// Creates directory if it doesn't exists
 			if ( ! is_dir($dir))
@@ -1544,13 +1549,19 @@ class FileManager
 
 	}
 
-	public function HTML4_upload()
+	/**
+	 * File Mode upload
+	 *
+	 * @return array
+	 */
+	public function file_mode_upload()
 	{
-		$file_input_prefix = $_POST['file_input_prefix'];
-		$directory = ! empty($_POST['directory']) ? $_POST['directory'] : '';
-		$filter = ! empty($_POST['filter']) ? $_POST['filter'] : NULL;
-		$resize = (bool) ! empty($_POST['resize']) ? $_POST['resize'] : FALSE;
-		$replace = (bool) ! empty($_POST['replace'])  ? TRUE : FALSE;
+		$headers = $this->getHttpHeaders();
+
+		$file_input_prefix = isset($_POST['file_input_prefix']) ? $_POST['file_input_prefix'] : $headers['X-File-Input-Prefix'];
+		$directory = isset($_POST['directory']) ? ( ! empty($_POST['directory']) ? $_POST['directory'] : '') : ( ! empty($headers['X-Directory']) ? $headers['X-Directory'] : '');
+		$resize = (bool) isset($_POST['resize']) ? ! empty($_POST['resize']) : ! empty($headers['X-Resize']);
+		$replace = (bool) isset($_POST['replace']) ? ! empty($_POST['replace']) : ! empty($headers['X-Replace']);
 
 		// Upload file using traditional method
 		$response = array();
@@ -1668,12 +1679,13 @@ class FileManager
 
 	/**
 	 *
-	 * Detect if upload method is HTML5
+	 * Detect if the upload request
+	 * should be one blob or not
 	 *
 	 * @return	boolean
 	 *
 	 */
-	public function is_HTML5_upload()
+	public function is_blob_upload()
 	{
 		return (empty($_FILES) && empty($_POST));
 	}

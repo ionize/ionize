@@ -336,9 +336,6 @@ class Page extends MY_admin
 		{
 			$id = $this->input->post('id_page');
 			
-			// try to get the page with one of the form provided URL
-			$urls = array_values($this->_get_urls());
-			
 			// Clear the cache
 			Cache()->clear_cache();
 			
@@ -1208,8 +1205,7 @@ class Page extends MY_admin
 		
 		foreach($urls as $lang => $url)
 		{
-			if ($url == '')
-				$urls[$lang] = $default_lang_url;
+			if ($url == '')	$urls[$lang] = $default_lang_url;
 		}
 
 		return $urls;

@@ -910,6 +910,7 @@ MUI.Window.implement({
 			}.bind(this));
 		}
 
+/*
 		if (this.el.minimizeButton) this.el.minimizeButton.addEvent('click', function(e){
 			e.stop();
 			this.minimize();
@@ -920,6 +921,7 @@ MUI.Window.implement({
 			if (this.isMaximized) this._restoreMaximized();
 			else this.maximize();
 		}.bind(this));
+*/
 
 		if (this.options.collapsible){
 			// Keep titlebar text from being selected on double click in Safari.
@@ -1198,8 +1200,15 @@ MUI.Window.implement({
 		}
 
 		if (options.maximizable){
-			buttons.push({cssClass:'windowMaximize',title:'Maximize',onClick:function(){
-				this.maximize();
+			buttons.push({cssClass:'windowMaximize',title:'Maximize',onClick:function(button){
+				if (this.isMaximized) {
+					$(button.id).setProperty('title', 'Maximize');
+					this._restoreMaximized();
+				}
+				else {
+					$(button.id).setProperty('title', 'Restore');
+					this.maximize();
+				}
 			}.bind(this)});
 		}
 
@@ -1688,6 +1697,10 @@ Element.implement({
 });
 
 document.addEvents({
+	'keydown': function(event){  // Toggle window visibility with Ctrl-Alt-Q
+		if (event.key == 'q' && event.control && event.alt) MUI.Windows.toggleAll();
+	},
+
 	'mousedown': function(){  // Blur all windows if user clicks anywhere else on the page
 		MUI.Windows.blurAll.delay(50);
 	}

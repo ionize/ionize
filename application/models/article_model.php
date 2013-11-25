@@ -248,6 +248,7 @@ class Article_model extends Base_model
 	{
 		// Page_Article table
 		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
+		$this->{$this->db_group}->select($this->parent_table.'.online as online_in_page', FALSE);
 		$this->{$this->db_group}->join(
 			$this->parent_table,
 			$this->parent_table.'.id_article = ' .$this->table.'.id_article',

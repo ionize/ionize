@@ -654,6 +654,9 @@ class MY_Admin extends MY_Controller
 		{
 			$lang_file = MODPATH.$module.'/language/'.Settings::get_lang().'/'.strtolower($module).'_lang.php';
 			
+			// Add the module path to the Finder
+			Finder::add_path(MODPATH.$module.'/');
+
 			if (is_file($lang_file))
 			{
 				$lang = array();
@@ -886,15 +889,14 @@ class MY_Admin extends MY_Controller
 			foreach($this->modules as $uri => $folder)
 			{
 				// Get the module Class modules/Module_Name/controllers/admin/module_name.php
-				if (file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) ) {
+				if (file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) )
+				{
 					if ( ! class_exists($folder) )
 						require_once(MODPATH.$folder.'/controllers/admin/'.$uri.EXT);
-	
 					if (method_exists($folder, '_addons'))
 					{
 						// Module path
 						$module_path = MODPATH.ucfirst($folder).'/';
-			
 						// Add the module path to the finder
 						array_push(Finder::$paths, $module_path);
 	

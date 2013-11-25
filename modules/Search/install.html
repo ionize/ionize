@@ -1,0 +1,138 @@
+<html>
+<head>
+	<title>Ionize Search Module</title>
+	<style>
+		body {
+			color: #333333;
+			font-family: Lucida Grande,Verdana,Geneva,Sans-serif;
+			font-size: 14px;
+			padding:1em;
+		}
+		h1{
+			color: #2563A1;
+			font-size: 28px;
+			font-weight: normal;
+			margin: 0;
+			padding: 0 0 6px;
+		}
+		h2 {
+			border-bottom: 1px solid #999999;
+			color: #000000;
+			font-size: 18px;
+			font-weight: bold;
+			margin: 28px 0 16px;
+			padding: 5px 0 6px;
+		}
+        h3 {
+            font-size: 14px;
+        }
+		pre{
+			background: #000;
+			color: #fff;
+			font-size: 0.9em;
+			padding:1em;
+		}
+	</style>
+</head>
+<body>
+
+<h1>Ionize Search module</h1>
+
+
+<p>This module process one search field and returns list of found "indexed" articles.</p>
+
+<p>
+	This modules can be used in 2 modes :
+<p>
+<ol>
+	<li>
+		<strong>"Tags mode"</strong><br/>
+		The module is called through dedicated tags, in standard Ionize page or article views.
+		The module contains tags definitions and these tags are called by your page or article views.
+		The module's tags returns data as defined by the module.
+	</li>
+	<li>
+		<strong>"URL mode"</strong><br/>
+		The module is used like a single CodeIgniter application, using the standard CodeIgniter MVC approach :
+		The module's controller is called through the URL, gets the data and prints out the view.
+		In this case, the page and article data available through tags are not available
+		This way of using modules is great when refreshing a page element through XHR (Ajax)
+	</li>
+</ol>
+
+
+<h2>Installation</h2>
+
+<ol>
+    <li>Copy the module's folder into your <b>/modules/</b> folder,</li>
+	<li>Register the module through the Ionize Modules panel (click on "install"),</li>
+	<li>Create an article view (called for example "search_form_article"), put it in your theme view folder and register it in the Ionize Theme panel.</li>
+	<li>
+		Depending on the mode you choose, edit your view as described below.
+	</li>
+</ol>
+
+<h3>Notes</h3>
+<p>
+    This module has no admin panel, so you will not fnd any link in the <b>Modules</b> menu of Ionize.
+</p>
+
+
+<h2>Tags mode</h2>
+
+<p>
+	Your view will typically contain :
+</p>
+
+<pre>
+&lt;!-- Display the search form -->
+&lt;ion:search:form />
+
+&lt;!-- Display results -->
+&lt;ion:search:results>
+    &lt;ion:result>
+        &lt;ion:url href="true" tag="h3 "/>
+        &lt;ion:nb_words tag="p" prefix="Nb occurrences found : "/>
+        &lt;ion:content words="25" />
+    &lt;/ion:result>
+&lt;/ion:search:results>
+</pre>
+
+
+<h2>URL mode</h2>
+
+<p>Your view will typically contain</p>
+
+<pre>
+&ltdiv class="article">
+
+	&ltion:title tag="h2" />
+
+	&ltion:subtitle tag="h3" class="subtitle" />
+
+	&ltion:content />
+
+	<!--
+			  The form will be processed by the function find_pure_php() of the /modules/Search/controllers/search.php controller
+			  In this example, the "find_pure_php" function will display the view /modules/Search/views/results_pure_php.php
+		  -->
+	&ltform method="post" action="&ltion:base_url />search/find_pure_php">
+
+	&ltinput id="search-input" type="text" name="realm" value="" />
+
+	&ltinput type="submit" class="searchbutton" value="&ltion:translation term='module_search_button_start' />" />
+
+	&lt/form>
+
+&lt/div>
+</pre>
+
+<p>
+The example does not include the XHR javascript code to update just a part of your page.
+You will need to develop this part of code.
+</p>
+
+
+</body>
+
+</html>

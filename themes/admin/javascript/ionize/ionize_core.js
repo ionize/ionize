@@ -18,8 +18,20 @@ ION.append({
 	 */
 	baseUrl: base_url,
 	adminUrl: admin_url,
-	
+	modulesUrl: modules_url,
+	themeUrl: theme_url,
+	siteThemeUrl: site_theme_url,
 	mainpanel: 'mainPanel',
+	instances: new Hash(),
+
+	registry: function(key){
+		return this.instances[key];
+	},
+
+	register: function(key, instance){
+		this.instances.set(key, instance);
+		return instance;
+	},
 	
 	/**
 	 * Reloads Ionize's interface
@@ -80,6 +92,23 @@ ION.append({
 		return RegexUrl.test(url);
 	},
 
+	setSelected: function(selector, selectors, cl)
+	{
+		$$(selectors).each(function(el){
+			el.removeClass(cl);
+		});
+
+		if ($(selector))
+		{
+			$(selector).addClass(cl);
+		}
+		else
+		{
+			$$(selector).each(function(el){
+				el.addClass(cl);
+			});
+		}
+	},
 
 	/**
 	 * Add one list of values to cookie

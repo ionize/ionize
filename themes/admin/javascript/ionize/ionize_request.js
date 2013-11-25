@@ -195,7 +195,7 @@ ION.append({
 				}
 	
 				// User notification
-				if (responseJSON && responseJSON.message_type != undefined)
+				if (responseJSON && typeOf(responseJSON.message_type) != 'null')
 				{
 					if (responseJSON.message_type != '')
 						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
@@ -263,7 +263,9 @@ ION.append({
 	
 	/**
 	 * Execute the callbacks
-	 * @param args      Function name or array of functions.
+	 *
+	 * @param	Mixed.	Function name or array of functions.
+	 *
 	 */
 	execCallbacks: function(args)
 	{

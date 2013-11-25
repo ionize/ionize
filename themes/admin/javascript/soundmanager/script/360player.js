@@ -422,7 +422,6 @@ function ThreeSixtyPlayer() {
     thisSound = self.getSoundByURL(soundURL);
 
     if (thisSound) {
-
       // already exists
       if (thisSound === self.lastSound) {
         // and was playing (or paused)
@@ -437,7 +436,6 @@ function ThreeSixtyPlayer() {
       }
 
     } else {
-
       // append some dom shiz, make noise
 
       oContainer = o.parentNode;
@@ -1013,7 +1011,9 @@ function ThreeSixtyPlayer() {
 
   };
 
-  this.init = function() {
+  this.init = function(options) {
+
+	var ui360Class = (options && options.class) ? options.class : 'ui360-vis';
 
     sm._writeDebug('threeSixtyPlayer.init()');
 
@@ -1039,7 +1039,7 @@ function ThreeSixtyPlayer() {
     self.config.circleRadius = uiData.circleRadius;
     // self.config.fontSizeMax = uiData.fontSizeMax;
 
-    uiDataVis = self.uiTest('ui360-vis');
+    uiDataVis = self.uiTest(ui360Class);
 
     self.config.fontSizeMax = uiDataVis.fontSizeMax;
 
@@ -1056,7 +1056,6 @@ function ThreeSixtyPlayer() {
         foundItems++;
 
         is_vis = self.hasClass(oLinks[i].parentNode, 'ui360-vis');
-
         diameter = (is_vis ? uiDataVis : uiData).circleDiameter;
         radius = (is_vis ? uiDataVis : uiData).circleRadius;
 
@@ -1104,6 +1103,17 @@ function ThreeSixtyPlayer() {
     }
 
   };
+
+
+  this.reset = function()
+  {
+	if (this.lastSound)
+	{
+		this.lastSound.stop();
+		this.lastSound.destruct();
+	}
+	this.soundsByURL = [];
+  }
 
 }
 
@@ -1328,6 +1338,7 @@ ThreeSixtyPlayer.prototype.Metadata = function(oSound, oParent) {
     return seconds;
   };
 
+
   this.data = [];
   this.data.givenDuration = null;
   this.data.currentItem = null;
@@ -1355,6 +1366,7 @@ ThreeSixtyPlayer.prototype.Metadata = function(oSound, oParent) {
     this.data[i].endTimeMS = this.data[i].startTimeMS+this.data[i].durationMS;
     this.totalTime += this.data[i].duration;
   }
+
 
 };
 

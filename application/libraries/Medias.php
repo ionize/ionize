@@ -288,6 +288,10 @@ class Medias
 					}		
 				}
 			}
+			else
+			{
+				return $source_path;
+			}
 			return $dest_path;
 		}
 		return FALSE;

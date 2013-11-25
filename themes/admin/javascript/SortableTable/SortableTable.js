@@ -88,11 +88,11 @@ var SortableTable = new Class({
 					}
 					//
 					// YYYY-MM-DD
-					if (ret=str.match(/(\d{2,4})-(\d{1,2})-(\d{1,2})/)) {
+					if (ret=str.match(/(\d{2,4})[-\\.](\d{1,2})[-\\.](\d{1,2})/)) {
 						return (fixYear(ret[1])*10000) + (ret[2]*100) + (+ret[3]) + strtime;
 					}
 					// DD/MM/YY[YY] or DD-MM-YY[YY]
-					if (ret=str.match(/(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})/)) {
+					if (ret=str.match(/(\d{1,2})[\/-\\.](\d{1,2})[\/-\\.](\d{2,4})/)) {
 						return (fixYear(ret[3])*10000) + (ret[2]*100) + (+ret[1]) + strtime;
 					}
 					return 999999990000; // So non-parsed dates will be last, not first

@@ -125,6 +125,7 @@ div.filemanager button.filemanager-open {
 	cursor: pointer;
 	float:right;
 	margin-right:15px;
+	padding:4px 8px;
 }
 div.loader {
 	width: 16px;
@@ -1050,17 +1051,22 @@ div.filemanager .center {
 	height: auto;
 	overflow: hidden;
 	width: 100%;
+	padding: 0 10px;
+	background: transparent;
+	border: none;
 }
 .filemanager-upload .list .item{
 	width: 100px;
 	height: 100px;
 	float: left;
-	margin: 10px 5px 0 5px;
+	margin: 10px 10px 0 0;
 	overflow: hidden;
 	position: relative;
 	background-color: #fff;
 	background-position: 50% 25%;
+/*
 	border-radius: 10px;
+*/
 	background-repeat: no-repeat;
 	border:solid 1px #BEBEBE;
 }
@@ -1140,6 +1146,7 @@ div.filemanager .center {
 /* Upload */
 div.filemanager label.button {
 	line-height: 20px;
+	padding:2px 6px;
 }
 div.filemanager-upload-overlay {
 	position: absolute;
@@ -1222,23 +1229,11 @@ div.filemanager-dialog button {
 }
 div.filemanager-dialog button.filemanager-dialog-confirm {
 	color:#fff;
-	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -webkit-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -ms-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
+	background:#8AC05E;
 }
 div.filemanager-dialog button.filemanager-dialog-confirm:hover {
 	color:#fff;
-	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -webkit-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -ms-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
+	background: #70b54b;
 }
 
 div.filemanager-dialog-engine-trident4 button, div.filemanager-dialog-engine-trident5 button {
@@ -1250,24 +1245,10 @@ div.filemanager-dialog button.filemanager-dialog-decline {
 	right: auto;
 	left: 15px;
 	color:#fff;
-	background-image: linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
-	background-image: -o-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
-	background-image: -moz-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
-	background-image: -webkit-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
-	background-image: -ms-linear-gradient(bottom, rgb(182,60,26) 0%, rgb(216,86,72) 61%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(182,60,26)),color-stop(0.61, rgb(216,86,72)));
-	/* ie8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d85648, endColorstr=#b63b1a)";
+	background: #B63C1A;
 }
 div.filemanager-dialog button.filemanager-dialog-decline:hover {
-	background-image: linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
-	background-image: -o-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
-	background-image: -moz-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
-	background-image: -webkit-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
-	background-image: -ms-linear-gradient(bottom, rgb(144,26,0) 0%, rgb(208,43,28) 61%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(144,26,0)),color-stop(0.61, rgb(208,43,28)));
-	/* ie8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#d02a1c, endColorstr=#901a00)";
+	background: #901A00;
 }
 
 div.filemanager-dialog-content h2{

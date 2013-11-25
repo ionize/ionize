@@ -17,7 +17,7 @@
 	
 	$flat_rel = $article['id_page'] . 'x' .  $article['id_article'];
 	
-	$status = (!$article['online']) ? 'offline' : 'online' ;
+	$status = (!$article['online_in_page']) ? 'offline' : 'online' ;
 
 	// Content for each existing language
 	$content_html = '';

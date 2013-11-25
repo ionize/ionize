@@ -14,8 +14,8 @@
 
 /* Toolbar Dock */
 .toolbardock { padding:0;}
-.toolbardock div { padding-left: 3px; padding-right:3px; }
-.toolbardock div.divider { /* Have to specify div here for IE6's sake */ background: url(../images/toolbar-divider.gif) repeat-y; padding-left: 6px; float:right; }
+.toolbardock div { /*padding-left: 3px; padding-right:3px;*/ margin-right:4px;}
+.toolbardock div.divider { /*  background: url(../images/toolbar-divider.gif) repeat-y;*/ padding-left: 6px; float:right; }
 .toolbardock div.left { float: left }
 .toolbardock div.right { float: right }
 .toolbardock div.tabs ul { padding-top:0; }
@@ -40,7 +40,10 @@ div.panel-header div.tabs ul { height:28px; overflow:hidden }
 */
 .toolbar { margin-top: 4px; float: right; overflow: hidden; text-align: right; height: 22px; padding-bottom:2px; vertical-align:middle; }
 .toolbar img.disabled { cursor: default; }
-.toolbar .button { vertical-align: middle; margin-top:0; /*height:24px;*/ height:18px; }
+.toolbar .button,
+.buttonbar .button {
+	vertical-align: middle; margin-top:0; height:18px; padding:2px 6px;
+}
 .toolbar span.imgButton .imgButton span img { padding: 0 0 2px; position: relative; top: 6px; }
 .toolbar span.icon { line-height:24px; font-size:14px;padding: 0; background-repeat: no-repeat; background-position: center; border: 1px solid transparent; }
 .toolbar span.icon:hover { border: 1px solid #a0a0a0; -moz-border-radius: 3px; border-radius: 3px; }
@@ -52,7 +55,10 @@ div.panel-header div.tabs ul { height:28px; overflow:hidden }
 .panel-footer div div.toolbar { }
 
 /* Buttonbar : Ionize specific */
+/*
 .buttonbar { position:absolute; top:3px;right:8px;overflow: hidden; width: auto; background: url("../images/bg-panel-header.gif") repeat-x scroll 0 0 #F1F1F1; text-align: right; height: 22px; padding-bottom:2px; vertical-align:middle; }
+*/
+.buttonbar { position:absolute; top:3px;right:8px;overflow: hidden; width: auto; background: transparent; text-align: right; height: 22px; padding-bottom:2px; vertical-align:middle; }
 
 
 /* spinner */
@@ -98,9 +104,6 @@ div.toolbox.divider { /* Have to specify div here for IE6's sake */
 	min-width: 22px;
 	overflow: hidden;
 	border: 1px solid transparent;
-}
-.iconWrapper a.icon{
-	margin-left:3px;
 }
 * html .iconWrapper {
 	padding: 1px;

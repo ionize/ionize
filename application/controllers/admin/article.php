@@ -422,7 +422,7 @@ class Article extends MY_admin
 			$rel = explode(".", $rel);
 			$this->data['id_page'] = ( !empty($rel[1] )) ? $rel[0] : '0';
 
-			$id_article = $this->input->post('id_article');
+			$post_id_article = $this->input->post('id_article');
 			
 			// Prepare data before saving
 			$this->_prepare_data();
@@ -440,30 +440,30 @@ class Article extends MY_admin
 				$this->lang_data = $event_received['lang'];
 
 			// Saves article to DB and get the saved ID
-			$this->id = $this->article_model->save($this->data, $this->lang_data);
+			$id_article = $this->article_model->save($this->data, $this->lang_data);
 
 			// Link to page
 			if ( ! empty($this->data['id_page']))
 			{
 				$this->data['online'] = $this->input->post('online');
 				$this->data['main_parent'] = $this->input->post('main_parent');
-				$this->article_model->link_to_page($this->data['id_page'], $this->id, $this->data);
+				$this->article_model->link_to_page($this->data['id_page'], $id_article, $this->data);
 			}
 			else
 				$this->data['id_page'] = '0';				
 
 			// Correct DB integrity : Links IDs
-			if ( ! empty($id_article) )
+			if ( ! empty($post_id_article) )
 				$this->article_model->correct_integrity($this->data, $this->lang_data);
 				
 			// Saves linked categories
-			$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $this->id);
+			$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $id_article);
 
 			// Save extend fields data
-			$this->extend_field_model->save_data('article', $this->id, $_POST);
+			$this->extend_field_model->save_data('article', $id_article, $_POST);
 
 			// Save URLs
-			$this->article_model->save_urls($this->id);
+			$this->article_model->save_urls($id_article);
 			
 			// Event
 			$event_data = array(
@@ -480,14 +480,14 @@ class Article extends MY_admin
 			 * in order to send the lang values to the browser without making another SQL request
 			 */
 			// Get the context info
-			$context = $this->article_model->get_context($this->id, $this->data['id_page'], Settings::get_lang('default'));
+			$context = $this->article_model->get_context($id_article, $this->data['id_page'], Settings::get_lang('default'));
 			$this->data = array_merge($this->data, $context);
 			
 			// Remove HTML tags from returned array
 			strip_html($this->data);
 
 			// Insert Case
-			if ( empty($id_article) )
+			if ( empty($post_id_article) )
 			{
 				$menu = $this->menu_model->get_from_page($this->data['id_page']);
 				$this->data['menu'] = $menu;
@@ -508,7 +508,7 @@ class Article extends MY_admin
 				}
 
 				// Reloads the edition panel
-				$this->_reload_panel($this->data['id_page'], $this->id);
+				$this->_reload_panel($this->data['id_page'], $id_article);
 
 				// Answer
 				$this->success(lang('ionize_message_article_saved'));
@@ -547,33 +547,31 @@ class Article extends MY_admin
 		$rel = explode(".", $rel);
 		$id_page = $this->data['id_page'] = ( !empty($rel[1] )) ? $rel[0] : '0';
 
-		$id_article = $this->input->post('id_article');
+		// $id_article = $this->input->post('id_article');
 
 		$this->_prepare_options_data();
 
 		// Saves article to DB and get the saved ID
-		$this->id = $this->article_model->save($this->data, $this->lang_data);
+		$id_article = $this->article_model->save($this->data, $this->lang_data);
 
 		// Saves linked categories
-		$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $this->id);
+		$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'article', $id_article);
 
 		// Saves Tags
-		$this->tag_model->save_element_tags($this->input->post('tags'), 'article', $this->id);
+		$this->tag_model->save_element_tags($this->input->post('tags'), 'article', $id_article);
 
 		// Rules
 		if (Authority::can('access', 'admin/article/permissions/backend'))
 		{
-			$resource = $this->_get_resource_name('backend', 'article', $this->id);
+			$resource = $this->_get_resource_name('backend', 'article', $id_article);
 			$this->rule_model->save_element_roles_rules($resource, $this->input->post('backend_rule'));
 		}
 
 		if (Authority::can('access', 'admin/article/permissions/frontend'))
 		{
-			$resource = $this->_get_resource_name('frontend', 'article', $this->id);
+			$resource = $this->_get_resource_name('frontend', 'article', $id_article);
 			$this->rule_model->save_element_roles_rules($resource, $this->input->post('frontend_rule'));
 		}
-
-
 
 		// Context update
 		$this->update_contexts($id_article);

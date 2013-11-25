@@ -827,17 +827,19 @@ class Base_model extends CI_Model
 
 	/**
 	 * @param        $field
+	 * @param array  $where
+	 * @param null   $nothing_index
 	 * @param null   $nothing_value
 	 * @param null   $order_by
 	 * @param string $glue
 	 *
 	 * @return array
 	 */
-	public function get_form_select($field, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_form_select($field, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		$table = $this->get_table();
 		if ( ! is_null($table))
-			return $this->get_items_select($table,$field, $nothing_index, $nothing_value, $order_by, $glue );
+			return $this->get_items_select($table, $field, $where, $nothing_index, $nothing_value, $order_by, $glue );
 
 		return array();
 	}
@@ -851,14 +853,15 @@ class Base_model extends CI_Model
 	 *
 	 * @param        $items_table
 	 * @param        $field				index of the field to get
-	 * @param null   $nothing_index
-	 * @param null   $nothing_value		Value to display fo "no value"
-	 * @param null   $order_by			order by string
+	 * @param array  $where
+	 * @param null   $nothing_index		Value to display fo "no value"
+	 * @param null   $nothing_value
+	 * @param null   $order_by
 	 * @param string $glue
 	 *
 	 * @return array
 	 */
-	public function get_items_select($items_table, $field, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_items_select($items_table, $field, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		$data = array();
 		
@@ -876,6 +879,10 @@ class Base_model extends CI_Model
 		// ORDER BY
 		if ( ! is_null($order_by))
 			$this->{$this->db_group}->order_by($order_by);
+
+		// WHERE
+		if (is_array($where) && ! empty($where))
+			$this->{$this->db_group}->where($where);
 
 		// Query
 		$query = $this->{$this->db_group}->get($items_table);
@@ -906,22 +913,23 @@ class Base_model extends CI_Model
 
 	/**
 	 * @param        $field
-	 * @param        $lang
+	 * @param null   $lang
+	 * @param array  $where
+	 * @param null   $nothing_index
 	 * @param null   $nothing_value
 	 * @param null   $order_by
 	 * @param string $glue
 	 *
 	 * @return array
-	 *
 	 */
-	public function get_lang_form_select($field, $lang = NULL, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_lang_form_select($field, $lang = NULL, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		if (is_null($lang))
 			$lang = Settings::get_lang();
 
 		$table = $this->get_table();
 		if ( ! is_null($table))
-			return $this->get_lang_items_select($table,$field, $lang, $nothing_index, $nothing_value, $order_by, $glue );
+			return $this->get_lang_items_select($table,$field, $lang, $where, $nothing_index, $nothing_value, $order_by, $glue );
 
 		return array();
 	}
@@ -934,7 +942,7 @@ class Base_model extends CI_Model
 	 * Same as get_items_select() but taking a lang table field as label
 	 *
 	 */
-	public function get_lang_items_select($items_table, $field, $lang, $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_lang_items_select($items_table, $field, $lang, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		$data = array();
 
@@ -957,9 +965,12 @@ class Base_model extends CI_Model
 		$this->{$this->db_group}->join($items_table.'_lang', $items_table.'_lang.'.$items_table_pk.'='.$items_table.'.'.$items_table_pk);
 		$this->{$this->db_group}->where($items_table.'_lang.lang', $lang);
 
+		// WHERE
+		if (is_array($where) && ! empty($where))
+			$this->{$this->db_group}->where($where);
+
 		// Query
 		$query = $this->{$this->db_group}->get($items_table);
-
 
 		if($query->num_rows() > 0)
 		{
@@ -982,6 +993,7 @@ class Base_model extends CI_Model
 		}
 		return $data;
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -1050,6 +1062,32 @@ class Base_model extends CI_Model
 	// ------------------------------------------------------------------------
 
 
+	public function get_keys_array($field, $where = array(), $table = NULL)
+	{
+		$result = array();
+
+		$table = (!is_null($table)) ? $table : $this->table;
+
+		$this->_process_where($where, $table);
+
+		$this->{$this->db_group}->select("group_concat(".$field." separator ',') as ids", FALSE);
+
+		$query = $this->{$this->db_group}->get($table);
+
+		$data = $query->row_array();
+
+		if ( ! empty($data['ids']))
+		{
+			$result = explode(',', $data['ids']);
+		}
+
+		return $result;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Return the max value of one given field
 	 *
@@ -1093,7 +1131,7 @@ class Base_model extends CI_Model
 
 		$this->{$this->db_group}->limit($limit);
 
-		$this->{$this->db_group}->select($this->pk_name.','.$field);
+	//	$this->{$this->db_group}->select($this->pk_name.','.$field);
 
 		$query = $this->{$this->db_group}->get($this->table);
 
@@ -1900,7 +1938,7 @@ class Base_model extends CI_Model
 	 * @param	array	By ref, the template array
 	 *
 	 */
-	function feed_lang_template($id, &$template)
+	public function feed_lang_template($id, &$template)
 	{
 		// lang_table fields
 		$fields = NULL;
@@ -1951,7 +1989,7 @@ class Base_model extends CI_Model
 	 * @param	array	By ref, the template array
 	 *
 	 */
-	function feed_blank_template(&$data = array())
+	public function feed_blank_template(&$data = array())
 	{
 		$fields = $this->{$this->db_group}->list_fields($this->table);
 
@@ -1977,7 +2015,7 @@ class Base_model extends CI_Model
 	 * @param	array	By ref, the template array
 	 *
 	 */
-	function feed_blank_lang_template(&$template = FALSE)
+	public function feed_blank_lang_template(&$template = FALSE)
 	{
 		if ($template == FALSE) $template = array();
 
@@ -2010,7 +2048,17 @@ class Base_model extends CI_Model
 	 */
 	public function unlock_publish_filter()
 	{
-		self::$publish_filter = FALSE;
+		if (self::$ci->uri->segment(1) != config_item('admin_url'))
+		{
+			$this->{$this->db_group}->where('name', 'display_front_offline_content');
+			$query = $this->{$this->db_group}->get('setting');
+			$result = $query->row_array();
+
+			if ( ! empty($result['content']) && $result['content'] == '1')
+				self::$publish_filter = FALSE;
+		}
+		else
+			self::$publish_filter = FALSE;
 	}
 
 
@@ -2034,6 +2082,20 @@ class Base_model extends CI_Model
 		$this->{$this->db_group}->insert($table, $data);
 		
 		return $this->{$this->db_group}->insert_id();
+	}
+
+
+	public function insert_ignore($data = NULL, $table = FALSE)
+	{
+		$table = (FALSE !== $table) ? $table : $this->table;
+
+		$data = $this->clean_data($data, $table);
+
+		$insert_query = $this->{$this->db_group}->insert_string($table, $data);
+		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
+		$inserted = $this->{$this->db_group}->query($insert_query);
+
+		return $inserted;
 	}
 
 
@@ -2244,7 +2306,7 @@ class Base_model extends CI_Model
 	 * @return	Array		Array of fields data
 	 *
 	 */
-	function field_data($table=NULL, $with_pk = FALSE)
+	public function field_data($table=NULL, $with_pk = FALSE)
 	{
 		$data = array();
 
@@ -2303,7 +2365,7 @@ class Base_model extends CI_Model
  	 * @return	Boolean		True if the field is found
 	 *
 	 */
-	function has_field($field, $table = NULL)
+	public function has_field($field, $table = NULL)
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 
@@ -2325,13 +2387,7 @@ class Base_model extends CI_Model
 	 * @param	String	Reference table. $this->table if not set.
 	 *
 	 */
-	/**
-	 * @param      $data
-	 * @param bool $table
-	 *
-	 * @return array
-	 */
-	function clean_data($data, $table = FALSE)
+	public function clean_data($data, $table = FALSE)
 	{
 		$cleaned_data = array();
 
@@ -2402,7 +2458,7 @@ class Base_model extends CI_Model
 	 * @return	Array	Corrected condition array
 	 *
 	 */
-	function correct_ambiguous_conditions($array, $table)
+	public function correct_ambiguous_conditions($array, $table)
 	{
 		if (is_array($array))
 		{
@@ -2424,7 +2480,7 @@ class Base_model extends CI_Model
 	/**
 	 * 	Required method to get the database group for THIS model
 	 */
-	function get_database_group()
+	public function get_database_group()
 	{
 		return $this->db_group;
 	}
@@ -2438,7 +2494,7 @@ class Base_model extends CI_Model
 	 *
 	 * @return	The lang array
 	 */
-	function get_languages()
+	public function get_languages()
 	{
 		// Local store of languages
 		if ( is_null($this->_languages))
@@ -2459,7 +2515,7 @@ class Base_model extends CI_Model
 	 * @return	Array	List of table fields
 	 *
 	 */
-	function list_fields($table = NULL)
+	public function list_fields($table = NULL)
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 
@@ -2477,9 +2533,8 @@ class Base_model extends CI_Model
 
 	/**
 	 * Processes the query condition array
-	 *
-	 * @param   array()     Array of conditions
-	 *
+	 * @param      $where
+	 * @param null $table
 	 */
 	protected function _process_where($where, $table=NULL)
 	{
@@ -2499,9 +2554,21 @@ class Base_model extends CI_Model
 
 			if (isset($where['where_in']))
 			{
-				foreach($where['where_in'] as $key => $value)
+				foreach($where['where_in'] as $key => $values)
 				{
-					$this->{$this->db_group}->where_in($key, $value);
+					$processed = FALSE;
+					foreach($values as $k => $value)
+					{
+						if (strtolower($value) == 'null')
+						{
+							unset($values[$k]);
+							$this->{$this->db_group}->where("(" . $key . " in ('".implode("','", $values)."') OR ".$key." IS NULL)", NULL, FALSE);
+							$processed = TRUE;
+							break;
+						}
+					}
+					if ( ! $processed)
+						$this->{$this->db_group}->where_in($key, $values);
 				}
 				unset($where['where_in']);
 			}
@@ -2542,6 +2609,11 @@ class Base_model extends CI_Model
 				}
 			}
 		}
+	}
+
+	public function last_query()
+	{
+		return $this->{$this->db_group}->last_query();
 	}
 
 	public function table_exists($table)

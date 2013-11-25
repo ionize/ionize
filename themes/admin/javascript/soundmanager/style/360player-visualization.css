@@ -5,11 +5,18 @@
  width:160px;
  height:160px;
 }
+.ui360-vis.small,
+.ui360-vis.small .sm2-360ui,
+.sm2-inline-list .ui360-vis.small {
+ width:100px;
+ height:100px;
+}
 .ui360-vis {
  position:relative;
  padding-top:1px;
  padding-bottom:1px;
- margin-bottom:-18px; /* approximate "line height" we want */
+/*
+ margin-bottom:-18px; */ /* approximate "line height" we want */
  margin-left:0px;
  background-position:22.6% 50%;
 }
@@ -26,6 +33,9 @@
  line-height:160px;
  top:auto;
 }
+.sm2-inline-list .ui360-vis.small a {
+ line-height:100px;
+}
 .ui360-vis .sm2-360ui {
 	margin-left: -5px;
 }
@@ -35,6 +45,13 @@
  text-align:center;
  line-height:160px;
  text-indent:0px;
+}
+.ui360-vis.small .sm2-timing {
+ font:bold 14px "helvetica neue",helvetica,monaco,lucida,terminal,monospace;
+ line-height:100px;
+}
+.ui360-vis.small .sm2-timing {
+ line-height:100px;
 }
 .sm2-inline-list .ui360-vis,
 .sm2-inline-list .ui360-vis .sm2-360ui {
@@ -70,6 +87,9 @@
  *line-height:480px; /* IE again */
  text-align:center;
  border-radius:0px;
+}
+.sm2-inline-list .ui360-vis.small a {
+	*height:100px;
 }
 .sm2-inline-list .ui360 a:hover {
  background-color:transparent; /* reset */

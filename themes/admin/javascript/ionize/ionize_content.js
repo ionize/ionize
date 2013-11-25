@@ -562,7 +562,7 @@ ION.append({
 		if (lang == true)
 		{
 			// Add event to sources elements
-			(Lang.languages).each(function(l, idx)
+			(Lang.get('languages')).each(function(l, idx)
 			{
 				if ($(source + l))
 				{
@@ -653,6 +653,12 @@ ION.append({
 			{
 				if (droppable)
 				{
+					if (typeOf(droppable.onDrop) == 'function')
+					{
+						droppable.onDrop(element, droppable, event);
+					}
+					else
+					{
 					/* For each droppable class, a function need to be executed
 					 * ION.addDragDrop(
 					 *		el, 
@@ -661,15 +667,27 @@ ION.append({
 					 * );
 					 *
 					 */
-					// Maintain compatibility of ION.addDragDrop()
 					var dropCB = this.options.dropCallbacks;
 					
-					// New method : attch the callback to the element
+						if (typeOf(dropCB) == 'array')
+						{
+							var obj = dropCB[1];
+							var func = obj[dropCB[0]];
+							(func).delay(100, obj, [element, droppable, event]);
+						}
+						else if (typeOf(dropCB) == 'function')
+						{
+							dropCB.delay(100, null, [element, droppable, event]);
+						}
+						else
+						{
+							// New method : attach the callback to the element
 					var callbacks = element.retrieve('dropCallbacks');
+
 					if (typeOf(callbacks) != 'null')
 					{
-						funcNames = Object.keys(callbacks);
-						Array.each(funcNames, function(funcName, idx)
+								var funcNames = Object.keys(callbacks);
+								Array.each(funcNames, function(funcName)
 						{
 							if (droppable.hasClass(funcName))
 							{
@@ -704,6 +722,8 @@ ION.append({
 						else
 						{
 							ION.execCallbacks(dropCB);
+						}
+					}
 						}
 					}
 					
@@ -1732,14 +1752,16 @@ ION.append({
 
 			// Cyrillic
 			"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu",
+
+			// Hungarian
+			"á":"a","í":"i","ó":"o","ő":"o","ú":"u","ű":"u"
 		};
 
-			text = text.split('').map(function (char) {
-				return a[char] || char;
-			}).join("");
+		text = text.split('').map(function (char) {
+			return a[char] || char;
+		}).join("");
 
-
-		for (i=0;i<text.length;i++)
+		for (var i=0; i<text.length; i++)
 		{
 			var c = text.charCodeAt(i);
 			if (c==45 || c==95 || (c>47 && c<58) || (c>96 && c<123) )

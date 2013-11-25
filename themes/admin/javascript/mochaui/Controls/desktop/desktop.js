@@ -294,7 +294,7 @@ MUI.Window.implement({
 		else resizeDimensions = document.getCoordinates();
 		var shadowBlur = options.shadowBlur;
 		var shadowOffset = options.shadowOffset;
-		var newHeight = resizeDimensions.height;// - options.headerHeight - options.footerHeight;
+		var newHeight = resizeDimensions.height - options.headerHeight - options.footerHeight;
 		newHeight -= this.el.contentBorder.getStyle('border-top').toInt();
 		newHeight -= this.el.contentBorder.getStyle('border-bottom').toInt();
 		newHeight -= this._getAllSectionsHeight();
@@ -305,6 +305,7 @@ MUI.Window.implement({
 			top: shadowOffset.y - shadowBlur,
 			left: resizeDimensions.left + shadowOffset.x - shadowBlur
 		});
+
 		this.fireEvent('maximize', [this]);
 
 		if (this.el.maximizeButton) this.el.maximizeButton.setProperty('title', 'Restore');

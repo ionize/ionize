@@ -49,6 +49,7 @@ class TagManager_Media extends TagManager
 		'medias:description' => 'tag_simple_value',
 		'medias:copyright' => 	'tag_simple_value',
 		'medias:extension' => 	'tag_simple_value',
+		'medias:provider' => 	'tag_simple_value',
 		'medias:mime' => 		'tag_simple_value',
 	);
 
@@ -163,10 +164,38 @@ class TagManager_Media extends TagManager
 					}
 				}
 
+				// Other filters
+				if ( ! empty($filtered_medias))
+				{
+					// $keys = array_keys($filtered_medias[0]);
+					$attributes = $tag->getAttributes();
+					$attributes = array_diff(array_keys($attributes), array('provider', 'type', 'size', 'method', 'limit', 'filter'));
+
+					if ( ! empty($attributes))
+					{
+						foreach($attributes as $attribute)
+						{
+							$attribute_value = $tag->getAttribute($attribute);
+							$tmp_medias = $filtered_medias;
+							$filtered_medias = array();
+
+							foreach($tmp_medias as $media)
+							{
+								if (isset($media[$attribute]))
+								{
+									if ($media[$attribute] == $attribute_value)
+										$filtered_medias[] = $media;
+								}
+								else
+									$filtered_medias[] = $media;
+							}
+						}
+					}
+				}
+
 				// Range / Limit ?
 				if ( ! is_null($range))
 				{
-
 					$length = ($to !== FALSE) ? $to + 1 - $from  : count($filtered_medias) + 1 - $from;
 
 					if ($limit > 0 && $limit < $length) $length = $limit;
@@ -309,6 +338,9 @@ class TagManager_Media extends TagManager
 			// Process additional data : src, extension
 			foreach($medias as $key => $media)
 			{
+				if ($media['provider'] !='')
+					$src = $media['path'];
+				else
 				$src = base_url() . $media['path'];
 
 				if ($media['type'] == 'picture')
@@ -369,6 +401,9 @@ class TagManager_Media extends TagManager
 				
 				return self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
 			}
+
+			if ($media['provider'] !='')
+				return $media['path'];
 
 			return base_url() . $media['path'];
 		}

@@ -15,7 +15,7 @@ authors:
   - Michel-Ange Kuntz
 
 
- requires: [Core/Class, Core/Object, Core/Element.Event, Core/Fx.Elements, Core/Fx.Tween]
+requires: [Core/Class, Core/Object, Core/Element.Event, Core/Fx.Elements, Core/Fx.Tween]
 
 provides: [DropZone]
 
@@ -43,8 +43,8 @@ var DropZone = new Class({
 
 		// Translated terms
 		lang:{
-			'start_upload': Lang.get('ionize_button_start_upload'),
-			'select_files': Lang.get('ionize_label_select_files_to_upload')
+			start_upload: Lang.get('ionize_button_start_upload'),
+			select_files: Lang.get('ionize_label_select_files_to_upload')
 		},
 
 		// Form & File input prefix
@@ -90,7 +90,8 @@ var DropZone = new Class({
 	uiList: null,
 	uiDropArea: null,
 	hiddenContainer: null,
-		
+	ui_upload_button: null,
+
 	// Init
 	initialize: function (options)
 	{
@@ -116,7 +117,7 @@ var DropZone = new Class({
 		
 		// If not Flash or HTML5, go for HTML4 if module is available
 		if ( ! this.method && typeof DropZone['HTML4'] != 'undefined') this.method = 'HTML4';
-				
+
 		// Activate proper method (self-extend)
 		if(typeof DropZone[this.method] != 'undefined')
 		{
@@ -130,6 +131,8 @@ var DropZone = new Class({
 		this.uiButton = $(this.options.ui_button);
 		this.uiList = $(this.options.ui_list);
 		this.uiDropArea = $(this.options.ui_drop_area);
+
+		this.uiListUploadButton = $(this.options.ui_upload_button);
 		
 		// just any of elements, to keep injected invisible elements next to
 		this.gravityCenter = this.options.gravity_center;
@@ -154,6 +157,16 @@ var DropZone = new Class({
 	setVar:function(key, value)
 	{
 		this.options.vars[key] = value;
+	},
+
+
+	/**
+	 * Unsets one optional var
+	 * @param key
+	 */
+	unsetVar:function(key)
+	{
+		delete this.options.vars[key];
 	},
 
 
@@ -282,10 +295,12 @@ var DropZone = new Class({
 		this.url = this.options.url;
 		this.fileList = new Array();
 		this.lastInput = undefined; // stores new, currently unused hidden input field
+
 		this.nCurrentUploads = 0;
 		this.nUploaded = 0;
 		this.nErrors = 0;
 		this.nCancelled = 0;
+
 		this.queuePercent = 0;
 		this.isUploading = false;
 		this.setVar('file_input_prefix', this.options.ui_file_input_prefix);
@@ -305,7 +320,7 @@ var DropZone = new Class({
 	 */
 	_activateHTMLButton: function()
 	{
-		if(!this.uiButton) return;
+		if( ! this.uiButton) return;
 
 		this.uiButton.removeClass('disabled');
 
@@ -436,8 +451,10 @@ var DropZone = new Class({
 		this.isUploading = false;
 
 		this.fireEvent('uploadComplete', [this.nUploaded, this.nErrors]);
-		
-		if(this.nErrors==0) this.reset();
+
+		this.reset();
+		// previously :
+		// if(this.nErrors==0) this.reset();
 	},
 
 
@@ -556,7 +573,7 @@ var DropZone = new Class({
 		}
 
 		// Adds a button to start the upload
-		if (this.options.autostart == false && ! this.uiListUploadButton )
+		if (this.options.autostart == false && ! this.uiListUploadButton)
 		{
 			this.uiListUploadButton = new Element('a',{
 				'class':'button filemanager-start-upload',
@@ -565,6 +582,13 @@ var DropZone = new Class({
 			{
 				this.upload();
 			}.bind(this)).inject(this.uiList);
+		}
+		else if(this.options.autostart == false && this.uiListUploadButton)
+		{
+			this.uiListUploadButton.addEvent('click', function()
+			{
+				this.upload();
+			}.bind(this))
 		}
 
 		return item;

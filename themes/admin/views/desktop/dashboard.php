@@ -115,9 +115,36 @@ $user_role = User()->get_role();
 	<?php endif ;?>
 
 
+	<!-- Quick Settings -->
+	<?php if (Settings::get('display_dashboard_quick_settings') == '1'): ?>
+		<div  id="quickSettingsBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_quick_settings'); ?>">
+			<div class="p5">
+
+				<form name="quickSettingsForm" id="quickSettingsForm">
+
+					<!-- Form keys : Needed to be able to process checkboxes -->
+					<input type="hidden" name="keys" value="display_front_offline_content">
+
+					<dl class="card" data-id="hide_front_offline_content">
+						<dt>
+							<input class="inputcheckbox" type="checkbox" name="display_front_offline_content" id="display_front_offline_content" <?php if (Settings::get('display_front_offline_content') == '1'):?> checked="checked" <?php endif;?> value="1" />
+						</dt>
+						<dd>
+							<label for="display_front_offline_content" ><?php echo lang('ionize_label_display_front_offline_content'); ?>
+								<span class="help"><?php echo lang('ionize_help_display_front_offline_content'); ?></span>
+							</label>
+						</dd>
+					</dl>
+				</form>
+			</div>
+		</div>
+	<?php endif ;?>
+
+
+
 	<!-- Users -->
 	<?php if (Settings::get('display_dashboard_users') == '1'): ?>
-		<div  id="usersBloc"class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_users'); ?>">
+		<div  id="usersBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_users'); ?>">
 
 			<!-- Tabs -->
 			<div id="dashBoardUsersTab" class="mainTabs mt5 mb0">
@@ -360,7 +387,6 @@ $user_role = User()->get_role();
 </div>
 
 
-
 <script type="text/javascript">
 
 	// Panel toolbox
@@ -369,11 +395,7 @@ $user_role = User()->get_role();
 	// Togglers
 	ION.initAccordion('.toggler', 'div.element', false, 'dashboardAccordion');
 
-	// Add columns
-	var col1 = new Element('div', {'class':'col'});
-	var col2 = col1.clone();
-	$('dashboardContainer').adopt(col1,col2);
-
+	// Titles
 	$$('.desktopBloc').each(function(bloc)
 	{
 		new ION.ContentPanel({
@@ -383,12 +405,16 @@ $user_role = User()->get_role();
 		});
 	});
 
+	// Add columns
+	var col1 = new Element('div', {'class':'col'});
+	var col2 = col1.clone();
+	$('dashboardContainer').adopt(col1,col2);
+
 	$$('.desktopBloc:not(div.fullwidth)').each(function(bloc, idx)
 	{
 		if (idx%2 !=0) col2.adopt(bloc);
 		else col1.adopt(bloc);
 	});
-
 
 	<?php if (
 		Settings::get('dashboard_google') == '1'
@@ -559,5 +585,17 @@ $user_role = User()->get_role();
 			);
 		});
 	});
+
+	// Quick Settings
+	$$('#quickSettingsForm dl.card label').each(function(card)
+	{
+		card.addEvent('mouseup', function()
+		{
+			ION.JSON.delay(150, ION, [ION.adminUrl + 'setting/save_quicksettings',$('quickSettingsForm')]);
+		});
+	});
+
+
+
 
 </script>

@@ -204,7 +204,6 @@ MUI.Tabs = new NamedClass('MUI.Tabs', {
 			listitem.addEvent('click', function(e)
 			{
 				self.select(this, el);
-				console.log('coucou');
 				var uOptions = {
 					instance: el,
 					element: el,

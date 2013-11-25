@@ -604,7 +604,12 @@ class TagManager_Navigation extends TagManager
 			$lang['id'] = $lang['lang'];
 
 			if ( ! is_null($article))
-				$lang['absolute_url'] .= '/'.$article['urls'][$lang['lang']];
+			{
+				if ($page['home'] != 1 )
+					$lang['absolute_url'] .= '/'.$article['urls'][$lang['lang']];
+				else
+					$lang['absolute_url'] .= '/'.$page['urls'][$lang['lang']].'/'.$article['urls'][$lang['lang']];
+			}
 
 			// Tag locals
 			$tag->set('language', $lang);

@@ -70,6 +70,16 @@
 					</dd>
 				</dl>
 
+				<!-- Quick Settings Block -->
+				<dl>
+					<dt>
+						<label for="display_dashboard_quick_settings" title="<?php echo lang('ionize_help_display_quick_settings'); ?>"><?php echo lang('ionize_label_display_quick_settings'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_dashboard_quick_settings" id="display_dashboard_quick_settings" <?php if (Settings::get('display_dashboard_quick_settings') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
 			</div>
 
 			<!-- Style -->
@@ -108,6 +118,15 @@
 					</dt>
 					<dd>
 						<input class="inputcheckbox" type="checkbox" name="enable_backend_tracker" id="enable_backend_tracker" <?php if (Settings::get('enable_backend_tracker') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>
+						<label for="display_front_offline_content" title="<?php echo lang('ionize_help_display_front_offline_content'); ?>"><?php echo lang('ionize_label_display_front_offline_content'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="display_front_offline_content" id="display_front_offline_content" <?php if (Settings::get('display_front_offline_content') == '1'):?> checked="checked" <?php endif;?> value="1" />
 					</dd>
 				</dl>
 

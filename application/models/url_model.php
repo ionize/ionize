@@ -63,7 +63,7 @@ class Url_model extends Base_model
 
 		// Check / correct the URL
 		$data['url'] = $this->get_unique_url($type, $id_entity, $lang, $data['url']);
-		
+
 		// Update the entity URL (page, article)
 		$this->update_entity_url($type, $id_entity, $lang, $data['url']);
 		
@@ -528,7 +528,10 @@ class Url_model extends Base_model
 		$urls = array();
 
 		// Get all the corresponding URL
-		$where = array('path' => $url);
+		$where = array(
+			'path' => $url,
+			'active' => 1
+		);
 		if ($lang != 'all')	$where['lang'] = $lang;
 
 		$this->{$this->db_group}->where($where);

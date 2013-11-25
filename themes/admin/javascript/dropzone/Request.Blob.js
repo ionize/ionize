@@ -72,7 +72,7 @@ Request.Blob = new Class({
 			try {
 				xhr.setRequestHeader(key, value);
 			} catch (e) {
-				this.fireEvent('exception', [key, value]);
+				this.fireEvent('exception', [e, key, value]);
 			}
 		}, this);
 

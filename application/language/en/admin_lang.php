@@ -48,6 +48,7 @@ $lang['ionize_dashboard_title_orphan_articles'] = 'Orphan articles';
 $lang['ionize_dashboard_title_users'] = 'Users';
 $lang['ionize_dashboard_title_content'] = 'Content';
 $lang['ionize_dashboard_title_visits'] = 'Visits';
+$lang['ionize_dashboard_title_quick_settings'] = 'Quick Settings';
 
 
 /*
@@ -496,6 +497,11 @@ $lang['ionize_label_display_dashboard_users'] = 'Users';
 $lang['ionize_help_display_dashboard_users'] = 'Displays last logged in and last registered users on the Dashboard';
 $lang['ionize_label_display_dashboard_content'] = 'Content';
 $lang['ionize_help_display_dashboard_content'] = 'Displays last edited articles, orphan pages and articles';
+$lang['ionize_label_display_quick_settings'] = 'Quick Settings';
+$lang['ionize_help_display_quick_settings'] = 'Displays the Quick Settings panel';
+$lang['ionize_label_display_front_offline_content'] = 'Display Offline Content';
+$lang['ionize_help_display_front_offline_content'] = 'Show the offline content on the website when logged in on Backend (only for the logged in user)';
+
 $lang['ionize_label_enable_backend_tracker'] = 'Backend tracker';
 $lang['ionize_help_enable_backend_tracker'] = 'Displays users logged to the backend on the dashboard / displays one alert flag on content when it is edited by another user.';
 $lang['ionize_onchange_ionize_settings'] = 'The Administration panel will reload after saving these settings.';

@@ -420,6 +420,23 @@ class Setting extends MY_admin
 	// ------------------------------------------------------------------------
 
 
+	public function save_quicksettings()
+	{
+		$keys = $this->input->post('keys');
+		$post = $this->input->post();
+
+		if (isset($post['keys'])) unset($post['keys']);
+
+		$keys = explode(',', $keys);
+		$this->_save_settings($keys);
+
+		$this->success(lang('ionize_message_settings_saved'));
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Saves Website basics settings
 	 *
@@ -493,6 +510,8 @@ class Setting extends MY_admin
 			'display_dashboard_modules',
 			'display_dashboard_users',
 			'display_dashboard_content',
+			'display_dashboard_quick_settings',
+			'display_front_offline_content',
 			'date_format',
 			'default_admin_lang',
 			'enable_backend_tracker',

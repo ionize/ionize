@@ -86,13 +86,15 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/360player.js"></script>
 <script type="text/javascript">
 	soundManager.setup({
-		url: '<?php echo theme_url() ?>javascript/soundmanager/swf/'
-//		preferFlash: false
+		url: '<?php echo theme_url() ?>javascript/soundmanager/swf/',
+		preferFlash: false,
+		allowScriptAccess: 'always'
 	});
 	if (window.location.href.match(/html5/i)) {
 		// for testing IE 9, etc.
 		soundManager.useHTML5Audio = true;
 	}
+
 </script>
 
 <!-- Base URL & languages translations available for javascript -->
@@ -105,6 +107,7 @@
 	var base_url = '<?php echo base_url(); ?>';
 	var theme_url = '<?php echo theme_url(); ?>';
 	var site_theme_url = '<?php echo base_url() . 'themes/' . Settings::get('theme') .'/'; ?>';
+	var modules_url = '<?php echo base_url(); ?>modules/';
 	var admin_url = '<?php echo base_url().Settings::get_lang('current'); ?>/<?php echo config_item('admin_url'); ?>/';
 	var date_format = '<?php echo Settings::get('date_format'); ?>';
 

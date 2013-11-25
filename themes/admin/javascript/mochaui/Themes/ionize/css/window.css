@@ -33,7 +33,7 @@
   
 */
 .mochaTitlebar { width: 100%; overflow: hidden; background: url(../images/spacer.gif?from=fafafa&to=e5e5e5);}
-.mochaTitlebar .toolbar { padding-top:2px; padding-bottom:1px; padding-right:6px; margin-top:0; margin-bottom:0; height:23px; line-height:23px; float:right; vertical-align:middle; }
+.mochaTitlebar .toolbar { padding-top:2px; padding-bottom:1px; padding-right:6px; margin-top:0; margin-bottom:0; height:23px; line-height:23px; float:right; vertical-align:middle; margin-right:0}
 .mochaTitle { float:left; font-size: 12px; font-family: Arial,Helvetica,sans-serif; line-height: 23px; vertical-align:middle; font-weight: bold; margin: 0; padding: 0 10px 0 12px; color: #888; }
 .mochaTitle { color: #181818; }
 .mochaTitlebar span.icon.windowMinimize { background: url('../images/window-minimize.gif') left top no-repeat; height:16px; width:16px;}
@@ -110,13 +110,21 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .mocha.css3.no-canvas { border: none; }
 .mochaCss3Shadow { background-color: #333; }
 .mocha.no-canvas .mochaTitlebar { background: #e5e5e5; }
-.mocha.css3 .mochaTitlebar { background-image: -moz-linear-gradient(top, #fafafa, #e5e5e5); /* FF3.6+ */ background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fafafa), color-stop(1, #e5e5e5)); /* Saf4+ */ -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fafafa', EndColorStr='#e5e5e5')"; /* IE8, IE9? */ }
+.mocha.css3 .mochaTitlebar {
+/*
+	background-image: -moz-linear-gradient(top, #fafafa, #e5e5e5);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fafafa), color-stop(1, #e5e5e5));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fafafa', EndColorStr='#e5e5e5')";
+*/
+	background: #f1f1f1;
+}
 .mocha.transparent .mochaTitlebar h3 { color: #fff; display: none; }
 .mocha.transparent .mochaContentWrapper { background: transparent; }
 .mocha.notification { background: #fff; }
 .mocha.notification .mochaTitlebar { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; /* IE8 */ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 0); /* IE6 and 7*/ opacity: .0; -moz-opacity: 0; }
 .mocha.notification .mochaContentBorder { border-width: 0; }
 .mocha.notification .mochaContentWrapper { text-align: center; font-size: 12px; font-weight: bold; background: transparent; }
+
 .IE .mochaTitlebar .toolbar { margin-top:0 }
 
 /* Example Window Themes */
@@ -135,8 +143,8 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 /* Ionize addon 
 ---------------------------------------*/
 .mocha .buttons {
+	width: 100%;
 	position:absolute;
-	right:35px;
 	bottom:10px;
 }
 
@@ -152,6 +160,10 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 	background-position: 20px 28px;
 	min-height: 60px;
 }
+.mocha.confirmation .mochaContent {background-image:url(../../../../../images/icon_48_confirm.png);}
+.mocha.information .mochaContent {background-image:url(../../../../../images/icon_48_information.png);}
+.mocha.alert .mochaContent {background-image:url(../../../../../images/icon_48_alert.png);}
+.mocha.error .mochaContent {background-image:url(../../../../../images/icon_48_error.png);}
 
 .mocha.confirmation .message,
 .mocha.information .message,

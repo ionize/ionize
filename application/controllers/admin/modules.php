@@ -299,8 +299,6 @@ class Modules extends MY_admin
 	 */
 	private function _has_conflict_with_uri($module_uri)
 	{
-
-log_message('error', print_r($module_uri, true));
 		// Get the pages
 		$this->load->model('url_model', '', TRUE);
 

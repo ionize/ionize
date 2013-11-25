@@ -11,6 +11,8 @@ if($type == 'picture')
 	$pictureSize = @getimagesize(DOCPATH.$path);
 }
 
+$margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px');
+
 ?>
 
 
@@ -25,29 +27,31 @@ if($type == 'picture')
 		<?php
 			$thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
 		?>
-		<div class="picture" style="float:right;margin:0;">
-		<div class="thumb" style="width:<?php echo $thumb_size; ?>px;height:<?php echo $thumb_size; ?>px;background-image:url(<?php echo admin_url(TRUE) . 'media/get_thumb/'.$id_media.'/'.time(); ?>);"></div>
+		<div class="picture left m0">
+			<div class="thumb" style="width:<?php echo $thumb_size; ?>px;height:<?php echo $thumb_size; ?>px;background-image:url(<?php echo admin_url(TRUE) . 'media/get_thumb/'.$id_media.'/'.time(); ?>);"></div>
 		</div>
 	<?php endif ;?>
 
 	<!-- Music file -->
 	<?php if($type == 'music') :?>
-		<div style="float:right;">
-			<embed
-                src="<?php echo theme_url(); ?>flash/mp3Player/mp3player_simple.swf?mp3=<?php echo base_url().$path; ?>"
-                loop="false"
-                menu="false"
-                quality="high"
-                wmode="transparent"
-                width="224"
-                height="20"
-                name="track_<?php echo $id_media; ?>"
-                align="middle"
-                allowScriptAccess="sameDomain"
-                type="application/x-shockwave-flash"
-                pluginspage="http://www.macromedia.com/go/getflashplayer"
-            />
+		<div class="left">
+			<div class="ui360 ui360-vis small"">
+				<a id="sound<?php echo $id_media ?>" href="<?php echo base_url().$path; ?>" target="_blank"><ion:title /></a>
+			</div>
+			<script type="text/javascript">
+				threeSixtyPlayer.init({'class':'ui360-vis small'});
+
+				var winId = $('media-tracker-<?php echo $id_media; ?>').getParent('.mocha').id;
+				var win = MUI.get(winId);
+
+				win.addEvent('close', function()
+				{
+					threeSixtyPlayer.reset();
+				})
+			</script>
 		</div>
+
+
 	<?php endif ;?>
 	
 	<!-- Video file -->
@@ -55,7 +59,7 @@ if($type == 'picture')
 		
 		<?php if($provider != '') :?>
 
-			<iframe  style="float:right;" width="170" height="145" src="<?php echo $path?>" frameborder="0" allowfullscreen></iframe>
+			<iframe class="left" width="170" height="145" src="<?php echo $path?>" frameborder="0" allowfullscreen></iframe>
 		
 		<?php else :?>
 
@@ -76,9 +80,9 @@ if($type == 'picture')
 	<?php endif ;?>
 
 
-	<h3><?php echo lang('ionize_title_informations'); ?></h3>
-
-	<div style="margin-right:140px">
+<!--	<h3><?php /*echo lang('ionize_title_informations'); */?></h3>
+-->
+	<div style="margin-left:<?php echo $margin; ?>;">
 		<?php if($provider != '') :?>
 
 			<p class="a-break">
@@ -113,7 +117,7 @@ if($type == 'picture')
 
 		<?php endif ;?>
     </div>
-
+	<div class="clearfix"></div>
 </div>
 
 

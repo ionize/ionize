@@ -34,7 +34,6 @@
  *
  * @access	public
  * @return	integer
- */
 if ( ! function_exists('now'))
 {
 	function now()
@@ -60,6 +59,7 @@ if ( ! function_exists('now'))
 		}
 	}
 }
+*/
 
 // ------------------------------------------------------------------------
 

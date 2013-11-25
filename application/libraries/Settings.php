@@ -37,12 +37,12 @@ class Settings
 		'backend_ui_style' => 'original'
 	);
 
-/*
+	/*
 		// Backend style
 		if ( ! Settings::get('backend_ui_style'))
 			Settings::set('backend_ui_style', 'original');
 
- */
+ 	*/
 
 	/**
 	 * Sets one setting
@@ -62,11 +62,11 @@ class Settings
 	/**
 	 * Get one setting
 	 *
-	 * @param	string	the wished setting key
-	 * @param	string	lang code. 
-	 *					The settings for the current language are set as normal settings, so this param is not necessary to get them.
-	 *					This param is usefull if the "lang" array is feeded with the languages settings for each language
-	 *					Ex : Setting::lang = array(
+	 * @param string $key	the wished setting key
+	 * @param bool $lang	lang code.
+	 *						The settings for the current language are set as normal settings, so this param is not necessary to get them.
+	 *						This param is usefull if the "lang" array is feeded with the languages settings for each language
+	 *						Ex : Setting::lang = array(
 	 *											'en' => array(
 	 *														'meta-description' => 'Some text',
 	 *														'meta-keywords' => 'word 1'
@@ -415,7 +415,3 @@ class Settings
 		return $allowed_mimes;
 	}
 }
-
-
-/* End of file Settings.php */
-/* Location: ./application/libraries/Settings.php */

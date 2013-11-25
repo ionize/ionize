@@ -150,7 +150,22 @@ class TagManager_Article extends TagManager
 				$type = NULL;
 			}
 			else
-				$where['article_type.type'] = $type;
+			{
+				if (strpos($type, ',') !== FALSE)
+				{
+					$type = preg_replace('/\s+/', '', $type);
+					$type = explode(',', $type);
+					foreach($type as $k=>$t)
+						if (empty($t))
+							unset($type[$k]);
+
+					$where['where_in'] = array('article_type.type' => $type);
+				}
+				else
+				{
+					$where['article_type.type'] = $type;
+				}
+			}
 		}
 
 		// Get only articles from the detected page
@@ -428,6 +443,8 @@ class TagManager_Article extends TagManager
 						// If target page is offline, 'path' is not set
 						if ( isset($target_page[$page_url_key]))
 							$article['absolute_url'] = $target_page[$page_url_key];
+						else
+							$article['absolute_url'] = '#';
 					}
 
 					// Correct the URL : Lang + Base URL
@@ -670,12 +687,16 @@ class TagManager_Article extends TagManager
 	 */
 	public static function tag_articles_article(FTL_Binding $tag)
 	{
+		$article = ! is_null($tag->get('article')) ? $tag->get('article') : NULL;
+
+		// self::create_sub_tags($tag);
+
 		if (
 			!is_null($tag->getAttribute('render'))
-			&& !is_null($tag->get('article'))
+			&& ! is_null($article)
 		)
 		{
-			return self::find_and_parse_article_view($tag, $tag->get('article'));
+			return self::find_and_parse_article_view($tag, $article);
 		}
 
 		return $tag->expand();

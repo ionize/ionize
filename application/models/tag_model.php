@@ -92,7 +92,10 @@ class Tag_model extends Base_model
 	 */
 	public function get_page_articles_list($id_page=NULL, $lang=NULL)
 	{
-		$this->{$this->db_group}->select('tag.tag_name, tag.tag_name as title, count(1) as nb', FALSE);
+		$this->{$this->db_group}->select(
+			'tag.id_tag, tag.tag_name, tag.tag_name as title, count(1) as nb'
+			, FALSE
+		);
 
 		$this->{$this->db_group}->join(
 			'page_article',

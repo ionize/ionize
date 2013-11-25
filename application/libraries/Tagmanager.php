@@ -1666,6 +1666,37 @@ class TagManager
 			$value = $tag->getValue($key);
 		}
 
+		// If value is array then need an item or tag expand
+		if(is_array($value))
+		{
+			$item = $tag->getAttribute('item');
+
+			// If has the item in array
+			if(array_key_exists($item, $value))
+			{
+				$value = $value[$item];
+
+			}
+			elseif($item != "")
+			{
+				// If no has but have set one item key
+				$value = "bad array key";
+			}
+			else
+			{
+				// If no have set item key then expand with data
+				$array = $value; $value = "";
+
+				foreach($array as $key => $val)
+				{
+					$tag->set('key', $key);
+					$tag->set('value', $val);
+
+					$value .= $tag->expand();
+				}
+			}
+		}
+
 		return self::output_value($tag, $value);
 	}
 
@@ -2356,6 +2387,8 @@ class TagManager
 				$title = Settings::get('site_title');
 			}
 		}
+
+		$title = strip_tags($title);
 
 		return $title;
 	}
@@ -3441,6 +3474,36 @@ class TagManager
 			}
 
 			self::$has_extend_tags[$parent] = TRUE;
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function create_sub_tags(FTL_Binding $tag, $key=NULL, $prefix=NULL)
+	{
+		$key = ! is_null($key) ? $key : $tag->getName();
+
+		$data = ! is_null($tag->get($key)) ? $tag->get($key) : NULL;
+
+		$prefix = ! is_null($prefix) ? $prefix.':' : '';
+
+		if ( ! empty($data))
+		{
+			$names = array_keys($data);
+
+			foreach($names as $name)
+			{
+				if (
+					! is_array($data[$name])
+					&& ! isset(self::$tags[$name])
+					&& ! isset(self::$tags[$key.':'.$name])
+				)
+				{
+					self::$context->define_tag($prefix.$key.':'.$name, array(__CLASS__, 'tag_simple_value'));
+				}
+			}
 		}
 	}
 
