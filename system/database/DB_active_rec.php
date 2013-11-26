@@ -1441,7 +1441,11 @@ class CI_DB_active_record extends CI_DB_driver {
 				}
 				else
 				{
-					$not[] = $k.'-'.$v;
+                    /**
+                     * Codeigniter has a bug, preventing batch inserts from functioning correctly.
+                     * http://stackoverflow.com/questions/11279262/update-database-field-error-codeigniter#12910038
+                     */
+                    $not[] = $k2.'-'.$v2;
 				}
 
 				if ($escape === FALSE)
