@@ -533,7 +533,7 @@ CREATE TABLE IF NOT EXISTS user (
   last_visit timestamp NULL default NULL,
   username varchar(50) NOT NULL,
   screen_name varchar(50) default NULL,
-  firstname varchar(100) NOT NULL,
+  firstname varchar(100) DEFAULT NULL,
   lastname varchar(100) DEFAULT NULL,
   birthdate datetime NOT NULL,
   gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
