@@ -123,7 +123,7 @@
 			  id_type int(11) unsigned NOT NULL auto_increment,
 			  type varchar(50) NOT NULL,
 			  ordering int(11) default 0,
-			  description text NOT NULL default '',
+			  description text DEFAULT NULL,
 			  type_flag TINYINT( 1 ) NOT NULL default 0,
 			  PRIMARY KEY  (id_type)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
