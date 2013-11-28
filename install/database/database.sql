@@ -535,7 +535,7 @@ CREATE TABLE IF NOT EXISTS user (
   screen_name varchar(50) default NULL,
   firstname varchar(100) DEFAULT NULL,
   lastname varchar(100) DEFAULT NULL,
-  birthdate datetime NOT NULL,
+  birthdate datetime DEFAULT NULL,
   gender smallint(1) DEFAULT NULL COMMENT '1: Male, 2 : Female',
   password varchar(255) NOT NULL,
   email varchar(120) NOT NULL,
