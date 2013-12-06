@@ -144,6 +144,7 @@ class TagManager
 	 */
 	private static $extends_def = array();
 
+	private static $cache_tag_occ = array();
 
 	protected static $html_tag_attributes = array(
 		'id',
@@ -759,16 +760,28 @@ class TagManager
 	 */
 	public static function get_tag_cache_id(FTL_Binding $tag)
 	{
+		$attr = $tag->getAttributes();
+		asort($attr);
+		$attr = json_encode($attr, true);
+
 		$uri =	config_item('base_url').				// replaced $ci->config->item(....
 				Settings::get_lang('current').
 				config_item('index_page').
-				self::$ci->uri->uri_string();
+				self::$ci->uri->uri_string().
+				':'.$tag->nesting().
+				$attr
+		;
 
-		$attr = $tag->getAttributes();
-		asort($attr);
-		$uri .= serialize($attr);
+		$uri_idx = base64_encode($uri);
 
-		return $tag->name . $uri;
+		if (empty(self::$cache_tag_occ[$uri_idx]))
+			self::$cache_tag_occ[$uri_idx] = 1;
+		else
+			self::$cache_tag_occ[$uri_idx] += 1;
+
+		$uri = $uri_idx . self::$cache_tag_occ[$uri_idx];
+
+		return $uri;
 	}
 
 

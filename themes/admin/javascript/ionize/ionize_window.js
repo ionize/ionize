@@ -20,7 +20,7 @@ ION.append({
 			width: 350,
 			height: 50,
 			y: 1,
-			padding:  { top: 15, right: 12, bottom: 5, left: 12 },
+			padding:  { top: 15, right: 12, bottom: 10, left: 12 },
 			shadowBlur: 5,
 			bodyBgColor: [250, 250, 250]
 		});
@@ -65,7 +65,7 @@ ION.append({
 		var wMsg = (Lang.get(msg)) ? Lang.get(msg) : msg ;
 
 		// Message HTML Element & window content container		
-		var wMessage = new Element('div', {'class':'message'}).set('text', wMsg);		// Message
+		var wMessage = new Element('div', {'class':'message'}).set('html', wMsg);		// Message
 		var wContent = new Element('div').adopt(wMessage, wButtons);					// Windows content final container
 
 		// Window options
@@ -155,6 +155,8 @@ ION.append({
 							MUI.get('w' + id).close();
 						});
 					}
+					var instance = $('w' + id).retrieve('instance');
+					this.fireEvent('loaded', instance);
 
 					// Window resize
 					if (typeOf(wOptions) != 'null' && wOptions.resize == true)
@@ -202,6 +204,9 @@ ION.append({
 					{
 						ION.windowResize(id);
 					}
+					var instance = $('w' + id).retrieve('instance');
+
+					this.fireEvent('loaded', instance);
 				}
 			},
 			width: 310,
