@@ -572,6 +572,10 @@ class Medias
 		// Create directory is not exists
 		if( ! is_dir($thumb_path) )
 		{
+            $doc_path = rtrim(DOCPATH, '/');
+
+            $thumb_path = str_replace(DOCPATH, '', $thumb_path);
+
 			$path_segments = explode('/', ltrim($thumb_path, '/'));
 			array_pop($path_segments);
 			
@@ -586,9 +590,9 @@ class Medias
 				$next_folder .= $separator . $folder;
 				$separator = '/';
 
-				if ( ! @is_dir($next_folder))
+				if ( ! @is_dir($doc_path . $next_folder))
 				{
-					@mkdir($next_folder, 0777);
+					@mkdir($doc_path . $next_folder, 0777);
 				}
 			}
 		}
@@ -795,11 +799,14 @@ class Medias
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
 		$thumb_file_path = $thumb_base_path . $thumb_path_segment . $media['file_name'];
-
+/**
 		$thumbs = glob_recursive($thumb_file_path);
 
 		foreach($thumbs as $thumb)
 			@unlink($thumb);
+ **/
+        if( file_exists($thumb_file_path) )
+            @unlink($thumb_file_path);
 	}
 
 

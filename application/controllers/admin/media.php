@@ -394,6 +394,22 @@ class Media extends MY_admin
 			'media' => $media,
 		);
 
+        if($media['type'] == 'picture')
+        {
+            $thumb_path = DOCPATH . Settings::get('files_path'). str_replace(Settings::get('files_path'), '/.thumbs', $media['base_path']);
+
+            // If no thumb, try to create it
+            if ( ! file_exists($thumb_path.$media['file_name']))
+            {
+                $settings = array(
+                    'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120,
+                    'unsharp' => '0'
+                );
+
+                $this->medias->create_thumb(DOCPATH . $media['path'], $thumb_path.$media['file_name'], $settings);
+
+            }
+        }
 
 		// Parent linking
 		if (!$this->media_model->attach_media($type, $parent, $id_parent, $id))
