@@ -105,13 +105,14 @@ class System_check_model extends Base_model
 	public function check_article_context()
 	{
 		$nb = 0;
-		
-		$sql = '
-			select id_article 
+
+        $sql = '
+			select id_article, main_parent
 			from page_article
 			where main_parent = 0
 			group by id_article
-			having COUNT(id_page) = 1
+			having COUNT(id_page) = 1 AND
+			main_parent = 0
 		';
 		
 		$query = $this->{$this->db_group}->query($sql);
