@@ -163,7 +163,12 @@ class TagManager_Pagination extends TagManager
 	public static function tag_pagination(FTL_Binding $tag)
 	{
 		if ($tag->getParent()->get('__loop__') === FALSE)
+		{
 			return '';
+		}
+
+		// Avoid loop in this tag
+		$tag->getParent()->set('__loop__', FALSE);
 
 		// Tag cache
 		if (($str = self::get_cache($tag)) !== FALSE)
@@ -210,9 +215,6 @@ class TagManager_Pagination extends TagManager
 
 		// Tag cache
 		self::set_cache($tag, $page['pagination_links']);
-
-		// No loop
-		$tag->getParent()->set('__loop__', FALSE);
 
 		return $page['pagination_links'];
 	}

@@ -595,7 +595,7 @@ class TagManager_Navigation extends TagManager
 		{
 			// Correct the Home page URL
 			if ($page['home'] != 1 )
-				$lang['absolute_url'] = $page['absolute_urls'][$lang['lang']];
+				$lang['absolute_url'] =	! empty($page['absolute_urls'][$lang['lang']]) ? $page['absolute_urls'][$lang['lang']] : base_url() . $lang['lang'];
 			else
 				$lang['absolute_url'] = base_url() . $lang['lang'];
 
