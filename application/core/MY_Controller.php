@@ -1013,7 +1013,7 @@ class MY_Module extends MY_Controller
 		if ( ! empty($module_config))
 		{
 			// Module translation files
-			$lang_file = MODPATH.$module_config['folder'].'/language/'.config_item('detected_lang_code').'/'.$module_config['key'].'_lang.php';
+			$lang_file = MODPATH . $module_config['folder'] . '/language/' . Settings::get_lang('current') . '/' . $module_config['key'] . '_lang.php';
 
 			if (is_file($lang_file))
 			{
