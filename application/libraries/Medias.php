@@ -730,7 +730,10 @@ class Medias
 	 */
 	public function embed_watermark($filepath, $watermark_positions)
 	{
+        if( ! class_exists('image_lib') )
+        {
 		self::$ci->load->library('image_lib');
+        }
 		
 		$watermark_path = DOCPATH . Settings::get('files_path') . '/watermark.png';
 		
@@ -738,9 +741,8 @@ class Medias
 			return;
 		
 		$w = explode(',', $watermark_positions);
+        $p = $watermark_positions;
 		
-		foreach($w as $p)
-		{
 			$p = trim($p);
 			if(strlen($p) == 2)
 			{
@@ -750,17 +752,19 @@ class Medias
 				// horizontal position
 				$h = substr($p, 1, 1);
 				
-				$vert = 'middle';
-				$hor = 'center';
+            $vert = '';
+            $hor = '';
 				
 				switch($v)
 				{
+                case 'm': $vert = 'middle'; break;
 					case 't': $vert = 'top'; break;
 					case 'b': $vert = 'bottom'; break;	
 				}
 				
 				switch($h)
 				{
+                case 'c': $hor = 'center'; break;
 					case 'l': $hor = 'left'; break;
 					case 'r': $hor = 'right'; break;	
 				}
@@ -774,11 +778,18 @@ class Medias
 					'wm_overlay_path' => $watermark_path
 				);
 
+            if($vert != '' || $hor != '')
+            {
 				self::$ci->image_lib->clear();
 				self::$ci->image_lib->initialize($wconf);
 
 				self::$ci->image_lib->watermark();
 			}
+            else
+            {
+                return;
+                log_message('ERROR', 'Watermark vertical and horizontal options not have any value!');
+            }
 		}	
 	}
 
@@ -793,12 +804,13 @@ class Medias
 	 */
 	public function delete_thumbs($media)
 	{
-		self::$ci->load->helper('file');
+		// self::$ci->load->helper('file');
 
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 		$thumb_path_segment = str_replace(Settings::get('files_path') . '/', '', $media['base_path'] );
 		$thumb_base_path = DOCPATH . Settings::get('files_path') . '/' . $thumb_folder . '/';
 		$thumb_file_path = $thumb_base_path . $thumb_path_segment . $media['file_name'];
+
 /**
 		$thumbs = glob_recursive($thumb_file_path);
 
