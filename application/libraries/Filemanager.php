@@ -1706,6 +1706,9 @@ class FileManager
                 $headers["Content-Length"] = $value;
             }
         }
+
+        $headers['X-File-Size'] = (( ! empty($headers['X-File-Size']) ) ? $headers['X-File-Size'] : $headers['Content-Length']);
+
         return $headers;
 	}
 
