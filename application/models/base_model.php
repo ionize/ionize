@@ -1696,6 +1696,10 @@ class Base_model extends CI_Model
 	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{
+		// fix for translated fields
+		if($lang == NULL)
+			$lang = Settings::get_lang('current');
+
 		// get the extend fields definition array
 		$efd = $this->get_extend_fields_definition($parent);
 
