@@ -570,6 +570,8 @@ class Medias
 	public function create_thumb_folder($thumb_path)
 	{
 		$thumb_path = (preg_match("#/([\d\w\s]+\..*)$#", $thumb_path)) ? preg_replace("#(.*)/([a-z|0-9]+\..*)#", "$1", $path) : $path;
+		if ((strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') !== FALSE)
+			$thumb_path = str_replace('/', '\\', $thumb_path);
 		@mkdir($thumb_path, 0777, true);
 	}
 	
