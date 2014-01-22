@@ -657,6 +657,23 @@ class TagManager_Page extends TagManager
 			$tag->set('index', 0);
 			$tag->set('count', 1);
 
+			if ( ! is_null($tag->getAttribute('render')))
+			{
+				$current_page = self::$context->registry('page');
+
+				if (
+					$page['id_page'] != $current_page['id_page']
+					&& self::_get_page_view($page) != self::_get_page_view($current_page)
+				)
+				{
+					return self::find_and_parse_page_view($tag, $page);
+				}
+				else
+				{
+					return '';
+				}
+			}
+
 			$str .= $tag->expand();
 
 			// Tag cache
@@ -943,8 +960,39 @@ class TagManager_Page extends TagManager
 	}
 
 
-
 	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Find and parses the page view
+	 *
+	 * @param 	FTL_Binding
+	 * @param   array
+	 *
+	 * @return string
+	 *
+	 */
+	private static function find_and_parse_page_view(FTL_Binding $tag, $page)
+	{
+		// Default page view
+		if (empty($page['view']))
+			$page['view'] = Theme::get_default_view('page');
+
+		// View path
+		$view_path = Theme::get_theme_path().'views/'.$page['view'].EXT;
+
+		// Return the Ionize default's theme view
+		if ( ! file_exists($view_path))
+		{
+			$view_path = Theme::get_theme_path().'views/'.Theme::get_default_view('page').EXT;
+			if ( ! file_exists($view_path))
+				$view_path = APPPATH.'views/'.Theme::get_default_view('page').EXT;
+		}
+
+		return $tag->parse_as_nested(file_get_contents($view_path));
+	}
+
+
 
 
 	/**
@@ -973,7 +1021,7 @@ class TagManager_Page extends TagManager
 	 * @return bool|String
 	 *
 	 */
-	private static function _get_page_view(&$page)
+	private static function _get_page_view($page)
 	{
 		$article = self::registry('article');
 

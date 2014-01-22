@@ -1102,14 +1102,14 @@ class Base_model extends CI_Model
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 
-		$this->db->select_max($field, 'maximum');
+		$this->{$this->db_group}->select_max($field, 'maximum');
 
 		if (! is_null($where))
 		{
-			$this->db->where($where);
+			$this->{$this->db_group}->where($where);
 		}
 
-		$query = $this->db->get($table);
+		$query = $this->{$this->db_group}->get($table);
 
 		if ($query->num_rows() > 0)
 		{
@@ -1352,6 +1352,60 @@ class Base_model extends CI_Model
 			}
 		}
 		return $id;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function save_lang_data($id_item, $data, $lang_table = NULL)
+	{
+		$lang_table = (!is_null($lang_table)) ? $lang_table : $this->lang_table;
+
+		$fields = $this->list_fields($lang_table);
+
+		$rows = array();
+
+		foreach($fields as $field)
+		{
+			if (isset($data[$field]) && is_array($data[$field]) )
+			{
+				foreach($data[$field] as $lang=>$value)
+				{
+					$rows[$lang][$field] = $value;
+				}
+			}
+		}
+
+		foreach($rows as $lang => $row)
+		{
+			$row[$this->pk_name] = $id_item;
+
+			$row['lang'] = $lang;
+
+			$where = array(
+				$this->pk_name => $id_item,
+				'lang' => $lang
+			);
+
+			// Update
+			if( $this->exists($where, $lang_table))
+			{
+				$this->{$this->db_group}->where($where);
+				$this->{$this->db_group}->update($lang_table, $row);
+			}
+			// Insert
+			else
+			{
+				// Correct lang & pk field on lang data array
+				$data['lang'] = $lang;
+				$data[$this->pk_name] = $id_item;
+
+				$this->{$this->db_group}->insert($lang_table, $row);
+			}
+		}
+
+		return $id_item;
 	}
 
 
@@ -2122,7 +2176,7 @@ class Base_model extends CI_Model
 	{
 		$table = (FALSE !== $table) ? $table : $this->table;
 
-		$data = $this->clean_data($data);
+		$data = $this->clean_data($data, $table);
 
 		if ( is_array($where) )
 		{
@@ -2404,6 +2458,11 @@ class Base_model extends CI_Model
 			$fields = array_fill_keys($fields,'');
 
 			$cleaned_data = array_intersect_key($data, $fields);
+		}
+		foreach($cleaned_data as $key=>$row)
+		{
+			if (is_array($row))
+				unset($cleaned_data[$key]);
 		}
 		return $cleaned_data;
 	}

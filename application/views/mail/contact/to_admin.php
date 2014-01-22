@@ -58,14 +58,11 @@
 			<table border="0" width="880">
 				<tr>
 					<td>
-						<h1><ion:data:subject /></h1>
-
 						<p><ion:lang key="mail_website_contact_message" swap="global::site_title" /></p>
 
 						<p>
 							<b><ion:lang key="form_label_name"/></b> : <ion:data:name /><br/>
 							<b><ion:lang key="form_label_email"/></b> : <ion:data:email /><br/>
-							<b>IP</b> : <ion:data:ip /><br/>
 						</p>
 						<p>
 							<b><ion:lang key="form_label_message"/></b> : <br/>

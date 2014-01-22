@@ -84,6 +84,26 @@ if ( ! function_exists('theme_url'))
 
 
 /**
+ * Admin Theme Assets URL
+ *
+ * Returns the Ionize current theme URL
+ *
+ * @access	public
+ * @return	string
+ */
+if ( ! function_exists('admin_style_url'))
+{
+	function admin_style_url()
+	{
+		return theme_url() .'styles/' . Settings::get('backend_ui_style') . '/';
+	}
+}
+
+
+// ------------------------------------------------------------------------
+
+
+/**
  * Variant of site_url(), but adds the module name - if any.
  *
  * @param  string|array

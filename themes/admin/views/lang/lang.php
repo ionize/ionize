@@ -52,7 +52,7 @@
 
 								<!-- Drag icon -->
 								<div class="drag left">
-									<img src="<?php echo theme_url(); ?>styles/<?php echo Settings::get('backend_ui_style') ?>/images/icon_16_ordering.png" />
+									<img src="<?php echo admin_style_url(); ?>images/icon_16_ordering.png" />
 								</div>
 
                                 <!-- Delete button -->

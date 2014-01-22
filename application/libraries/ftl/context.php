@@ -94,7 +94,7 @@ class FTL_Context
 		
 		$c = count($l);
 		
-		// # key is a tag name
+		// key is a tag name
 		
 		// Fast and nice (currently only up to 5 segment tags):
 		if($c == 2)

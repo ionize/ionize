@@ -415,7 +415,7 @@
 						</select>
 
 					</div>
-					<div class="w30 h50 left ml5" style="background:url(<?php echo theme_url(); ?>styles/<?php echo Settings::get('backend_ui_style') ?>/images/icon_24_from_to.png) no-repeat 50% 50%;"></div>
+					<div class="w30 h50 left ml5" style="background:url(<?php echo admin_style_url(); ?>images/icon_24_from_to.png) no-repeat 50% 50%;"></div>
 				</dd>
 			</dl>
 

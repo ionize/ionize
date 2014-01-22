@@ -23,7 +23,7 @@
 				<li><a href="<?php echo base_url().Settings::get_lang('current').'/'.config_item('admin_url'); ?>/auth/logout"><?php echo lang('ionize_logout'); ?></a></li>
 				<li>
 					<?php foreach(Settings::get('displayed_admin_languages') as $lang) :?>
-						<a href="<?php echo base_url().$lang; ?>/<?php echo config_item('admin_url'); ?>"><img src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" alt="<?php echo $lang; ?>" /></a>
+						<a href="<?php echo base_url().$lang; ?>/<?php echo config_item('admin_url'); ?>"><img src="<?php echo admin_style_url(); ?>images/world_flags/flag_<?php echo $lang; ?>.gif" alt="<?php echo $lang; ?>" /></a>
 					<?php endforeach ;?>
 				</li>
 			</ul>

@@ -17,13 +17,13 @@
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/accordion.css" />
 -->
 
-<link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/form.css" type="text/css" />
-<link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/content.css" type="text/css" />
-<link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/tree.css" type="text/css" />
+<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/form.css" type="text/css" />
+<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/content.css" type="text/css" />
+<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/tree.css" type="text/css" />
 
-<!--[if IE 7]><link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/ie7.css" /><![endif]-->
-<!--[if IE 8]><link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/ie8.css" /><![endif]-->
-<!--[if IE 9]><link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/ie9.css" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie7.css" /><![endif]-->
+<!--[if IE 8]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie8.css" /><![endif]-->
+<!--[if IE 9]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie9.css" /><![endif]-->
 <!--[if lt IE 9]><script type="text/javascript" src="<?php echo theme_url(); ?>javascript/excanvas_r43_compressed.js"></script><![endif]-->
 
 <!-- Mootools 1.4.5  -->
@@ -255,7 +255,7 @@
 	<?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/css/tinyMCE.css' )) :?>
 		var tinyCSS = '<?php echo base_url().'themes/'.Settings::get('theme').'/assets/css/tinyMCE.css'; ?>';
 	<?php else :?>
-		var tinyCSS = '<?php echo theme_url().'styles/' . Settings::get('backend_ui_style') .'/css/tinyMCE.css'; ?>';
+		var tinyCSS = '<?php echo admin_style_url() .'css/tinyMCE.css'; ?>';
 	<?php endif ;?>
 
 	var tinyButtons1 = '<?php echo Settings::get('tinybuttons1'); ?>';
