@@ -18,6 +18,10 @@ ION.append({
 		});
 	},
 
+	cancelSaveWarning:function()
+	{
+		ION.hasUnsavedData = false;
+	},
 
 	/**
 	 * Get the associated form object and send it directly
@@ -119,6 +123,9 @@ ION.append({
 				$(button).addEvent('click', function(e)
 				{
 					if (typeOf(e) != 'null') e.stop();
+
+					// Cancel the save warning (content changed)
+					ION.cancelSaveWarning();
 
 					// Disable the button for x seconds.
 					if (this.enabled)
