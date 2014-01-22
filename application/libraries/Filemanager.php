@@ -1040,7 +1040,7 @@ class FileManager
 			$file_arg = $this->getPOST('file');
 			$dir_arg = $this->getPOST('directory');
 			$legal_url = $this->get_legal_url($dir_arg . '/');
-			$is_dir = is_dir($legal_url);
+			$is_dir = is_dir(DOCPATH . $file_arg . $legal_url);
 
 
 			if ( ! empty($file_arg))
@@ -1706,6 +1706,9 @@ class FileManager
                 $headers["Content-Length"] = $value;
             }
         }
+
+        $headers['X-File-Size'] = (( ! empty($headers['X-File-Size']) ) ? $headers['X-File-Size'] : $headers['Content-Length']);
+
         return $headers;
 	}
 

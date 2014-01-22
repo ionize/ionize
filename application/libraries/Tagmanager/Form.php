@@ -574,6 +574,7 @@ class TagManager_Form extends TagManager
 	{
 		$is = $tag->getAttribute('is');
 		$key = $tag->getAttribute('key');
+        $delimiter = $tag->getAttribute('delimiter', 'span');
 		$form_name = $tag->getParent('validation')->getParentName();
 
 		// 'additional_error' values
@@ -601,7 +602,7 @@ class TagManager_Form extends TagManager
 				// No key : Get the string
 				if (is_null($key))
 				{
-					self::$ci->form_validation->set_error_delimiters('<span>', '</span>');
+					self::$ci->form_validation->set_error_delimiters('<' . $delimiter . '>', '</' . $delimiter . '>');
 					$values = self::$ci->form_validation->error_string();
 				}
 				else

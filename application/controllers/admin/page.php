@@ -378,7 +378,7 @@ class Page extends MY_admin
 
 			// Prepare the Json answer
 			$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get_by_id($saved_id));
-			$page['menu'] = $this->menu_model->get($page['id_menu']);
+			$page['menu'] = $this->menu_model->get(array('id_menu' => $page['id_menu']));
 
 			// Remove HTML tags from returned array
 			strip_html($page);

@@ -1757,6 +1757,10 @@ class Base_model extends CI_Model
 	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{
+        // fix for translated fields
+        if($lang == NULL)
+            $lang = Settings::get_lang('current');
+
 		// get the extend fields definition array
 		$efd = $this->get_extend_fields_definition($parent);
 
@@ -2109,7 +2113,10 @@ class Base_model extends CI_Model
 	 */
 	public function unlock_publish_filter()
 	{
-		if (self::$ci->uri->segment(1) != config_item('admin_url'))
+        $uri_string_to_array = explode('/', preg_replace("|^\/?|", '/', self::$ci->uri->uri_string));
+
+        // if (self::$ci->uri->segment(1) != config_item('admin_url'))
+        if(! in_array(config_item('admin_url'), $uri_string_to_array))
 		{
 			$this->{$this->db_group}->where('name', 'display_front_offline_content');
 			$query = $this->{$this->db_group}->get('setting');
