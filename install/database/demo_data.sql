@@ -3,8 +3,8 @@
  * "Demo" theme example data
  *
  * These data are provided as demo content for the theme "Demo"
- * --#-- :  is used as SQL request separator by the installer
- *          must be placed after each request
+ * Do not remove the separator after each query :
+ * it is used as SQL request separator by the installer
  *
  */
 
