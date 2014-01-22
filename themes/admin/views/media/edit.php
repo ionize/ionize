@@ -213,13 +213,14 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 					<!-- extend fields goes here... -->
 					<?php foreach($extend_fields as $extend_field) :?>
 						<?php if ($extend_field['translated'] == '1') :?>
+							<?php
+							$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
+							$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
+							?>
 
 							<dl class="small">
 								<dt>
-									<?php
-										$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-									?>
-									<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
+									<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
 								</dt>
 								<dd>
 									<?php if ($extend_field['type'] == '1') :?>
@@ -270,7 +271,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 					<dd>
 						<input type="radio" name="lang_display" id="display_all" value="" <?php if($context_data['lang_display'] == ''):?>checked="checked"<?php endif ;?>/><label for="display_all"><?php echo lang('ionize_label_media_no_limit_display'); ?></label>
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<input id="display_<?php echo $language['lang']; ?>" type="radio" name="lang_display" value="<?php echo $language['lang']; ?>"  <?php if($context_data['lang_display'] == $language['lang']):?>checked="checked"<?php endif ;?>/><label for="display_<?php echo $language['lang']; ?>"><img alt="<?php echo $language['lang']; ?>" src="<?php echo theme_url(); ?>/images/world_flags/flag_<?php echo $language['lang']; ?>.gif" /></label>
+						<input id="display_<?php echo $language['lang']; ?>" type="radio" name="lang_display" value="<?php echo $language['lang']; ?>"  <?php if($context_data['lang_display'] == $language['lang']):?>checked="checked"<?php endif ;?>/><label for="display_<?php echo $language['lang']; ?>"><img alt="<?php echo $language['lang']; ?>" src="<?php echo admin_style_url(); ?>/images/world_flags/flag_<?php echo $language['lang']; ?>.gif" /></label>
 						<?php endforeach; ?>
 					</dd>
 				</dl>
@@ -307,14 +308,15 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 				<!-- Extend Fields (Main) -->
 				<?php foreach($extend_fields as $extend_field) :?>
 				
-						<?php if ($extend_field['translated'] != '1') :?>
-					
+					<?php if ($extend_field['translated'] != '1') :?>
+						<?php
+						$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
+						$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
+						?>
+
 						<dl class="small">
 							<dt>
-								<?php
-									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-								?>
-								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
+								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
 							</dt>
 							<dd>
 								<?php

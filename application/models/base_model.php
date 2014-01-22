@@ -1151,17 +1151,24 @@ class Base_model extends CI_Model
 	 * Returns the first PK field nam found for the given table
 	 *
 	 */
-	public function get_pk_name($table)
+	public function get_pk_name($table = NULL)
 	{
-		$fields = $this->{$this->db_group}->field_data($table);
-
-		foreach ($fields as $field)
+		if (! is_null($table))
 		{
-			if ($field->primary_key)
+			$fields = $this->{$this->db_group}->field_data($table);
+
+			foreach ($fields as $field)
 			{
-				return $field->name;
-				break;
+				if ($field->primary_key)
+				{
+					return $field->name;
+					break;
+				}
 			}
+		}
+		else
+		{
+			return $this->pk_name;
 		}
 		return FALSE;
 	}
@@ -1750,10 +1757,6 @@ class Base_model extends CI_Model
 	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{
-		// fix for translated fields
-		if($lang == NULL)
-			$lang = Settings::get_lang('current');
-
 		// get the extend fields definition array
 		$efd = $this->get_extend_fields_definition($parent);
 

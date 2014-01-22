@@ -33,7 +33,7 @@
 			
 		</dl>
 		<dl class="small">
-			<dt class="lite"><label><?php echo lang('ionize_label_label'); ?></label></dt>
+			<dt class="mt10"><label><?php echo lang('ionize_label_label'); ?></label></dt>
 			<dd>
 
 				<!-- Tabs -->

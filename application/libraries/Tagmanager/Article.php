@@ -898,6 +898,39 @@ class TagManager_Article extends TagManager
 			{
 				$articles = array_slice($articles, 0, $limit);
 			}
+
+
+			// Other filters
+			if ( ! empty($articles))
+			{
+				// $keys = array_keys($filtered_medias[0]);
+				$attributes = $tag->getAttributes();
+				$attributes = array_diff(array_keys($attributes), array('tag', 'class', 'type', 'order_by', 'range', 'limit', 'filter', 'return'));
+
+				if ( ! empty($attributes))
+				{
+					$tmp_articles = $articles;
+					$filtered_articles = array();
+
+					foreach($attributes as $attribute)
+					{
+						$attribute_value = $tag->getAttribute($attribute);
+						log_message('app', print_r($attribute . ' : ' . $attribute_value, TRUE));
+						foreach($tmp_articles as $article)
+						{
+							if (isset($article[$attribute]))
+							{
+								if ($article[$attribute] == $attribute_value)
+									$filtered_articles[] = $article;
+							}
+							else
+								$filtered_articles[] = $article;
+						}
+					}
+
+					$articles = $filtered_articles;
+				}
+			}
 		}
 
 		return $articles;

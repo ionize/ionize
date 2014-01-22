@@ -224,7 +224,7 @@ $width = (100 / $nbLang);
 							<?php $lang = $language['lang']; ?>
 								
 								<div class="left w20">
-									<img class="mt3 mb3" src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $lang?>.gif" />
+									<img class="mt3 mb3" src="<?php echo admin_style_url(); ?>images/world_flags/flag_<?php echo $lang?>.gif" />
 								</div>
 								
 								<div class="ml30">

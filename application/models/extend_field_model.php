@@ -53,6 +53,19 @@ class Extend_field_model extends Base_model
 	public function get_list($where = array(), $lang = NULL)
 	{
 		$where['order_by'] = 'ordering ASC';
+
+		$this->{$this->db_group}->select(
+			$this->get_table() . '.*,'
+			. $this->get_lang_table() . '.label'
+		);
+
+		$this->{$this->db_group}->join(
+			$this->get_lang_table(),
+			$this->get_lang_table() . '.' . $this->get_pk_name() . ' = ' . $this->get_table() . '.' . $this->get_pk_name() . ' AND '
+			. $this->get_lang_table() . '.lang = \'' . Settings::get_lang('default') . '\'',
+			'left'
+		);
+
 		return parent::get_list($where, $lang);
 	}
 
@@ -84,13 +97,13 @@ class Extend_field_model extends Base_model
 	public function get_label($id_extend_field)
 	{
 		if($id_extend_field != '') {
-			$this->db->select($this->lang_table . '.label');
-			$this->db->from($this->table);
-			$this->db->join($this->lang_table, $this->table . '.' . $this->pk_name . ' = ' . $this->lang_table . '.' . $this->pk_name, 'inner');
-			$this->db->where($this->lang_table . '.lang', Settings::get_lang('default'));
-			$this->db->where($this->table . '.' . $this->pk_name, $id_extend_field);
+			$this->{$this->db_group}->select($this->get_lang_table() . '.label');
+			$this->{$this->db_group}->from($this->get_table());
+			$this->{$this->db_group}->join($this->get_lang_table(), $this->get_table() . '.' . $this->get_pk_name() . ' = ' . $this->get_lang_table() . '.' . $this->get_pk_name(), 'inner');
+			$this->{$this->db_group}->where($this->get_lang_table() . '.lang', Settings::get_lang('default'));
+			$this->{$this->db_group}->where($this->get_table() . '.' . $this->pk_name, $id_extend_field);
 			
-			$label = $this->db->get();
+			$label = $this->{$this->db_group}->get();
 			$label = $label->row_array();
 			
 			return (!empty($label['label'])) ? $label['label'] : '';
@@ -117,7 +130,7 @@ class Extend_field_model extends Base_model
 		// Element extend fields
 		$where = array('parent'=>$parent);
 		$extend_fields = $this->get_list($where);
-		
+
 		// Current element extend field
 		$this->{$this->db_group}->where(array('extend_field.parent'=>$parent, $this->elements_table.'.id_parent' => $id_parent));
 		$this->{$this->db_group}->join($this->elements_table, $this->elements_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			

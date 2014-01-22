@@ -27,7 +27,7 @@
 	
 	foreach($article['langs'] as $lang)
 	{
-		if ($lang['content'] != '') $content[] = '<img class="left pl5 pt3" src="'. theme_url() . 'images/world_flags/flag_' . $lang['lang'] . '.gif" />';
+		if ($lang['content'] != '') $content[] = '<img class="left pl5 pt3" src="'. admin_style_url() . 'images/world_flags/flag_' . $lang['lang'] . '.gif" />';
 	}
 	
 	// HTML

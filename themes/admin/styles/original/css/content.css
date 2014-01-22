@@ -781,7 +781,7 @@ table.list.transparent tr {
 /* Tabs
 ---------------------------------------------------------------- */
 .mainTabs {
-	padding: 0 5px 2px 2px;
+	padding: 0 0 2px 0;
 	margin: 10px 0 10px 0;
 	overflow: hidden;
 }
@@ -802,6 +802,10 @@ table.list.transparent tr {
 	cursor: pointer;
 	line-height: 16px;
 	display: block;
+}
+.mainTabs .tab-menu li:first-child,
+.mainTabs .tab-menu li:first-child a {
+	margin-left:0;
 }
 .mainTabs .tab-menu li.right {
 	float: right;

@@ -748,7 +748,7 @@ INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types','gif,jpe,jpeg,jp
 INSERT IGNORE INTO setting VALUES ('', 'article_allowed_tags','h1,h2,h3,h4,h5,h6,em,img,table,div,span,dl,pre,code,thead,tbody,tfoot,tr,th,td,caption,dt,dd,map,area,p,a,ul,ol,li,br,b,strong','');
 INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png','');
 INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', '');
-
+INSERT IGNORE INTO setting VALUES ('', 'backend_ui_style','original', '');
 
 
 DELETE FROM setting WHERE name='default_admin_lang';

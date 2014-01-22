@@ -121,13 +121,14 @@ if ($tracker_title == '')
 				<?php foreach($extend_fields as $extend_field) :?>
 				
 					<?php if ($extend_field['translated'] != '1') :?>
-					
+						<?php
+						$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
+						$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
+						?>
+
 						<dl>
 							<dt>
-								<?php
-									$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-								?>
-								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
+								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
 							</dt>
 							<dd>
 								<?php
@@ -361,13 +362,13 @@ if ($tracker_title == '')
 							<?php foreach($extend_fields as $extend_field) :?>
 
 								<?php if ($extend_field['translated'] == '1') :?>
-
+									<?php
+									$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
+									$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
+									?>
 									<dl>
 										<dt>
-											<?php
-												$label = ( ! empty($extend_field['langs'][Settings::get_lang('default')]['label'])) ? $extend_field['langs'][Settings::get_lang('default')]['label'] : $extend_field['name'];
-											?>
-											<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" title="<?php echo $extend_field['description']; ?>"><?php echo $label; ?></label>
+											<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
 										</dt>
 										<dd>
 											<?php

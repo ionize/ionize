@@ -11,12 +11,6 @@
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/desktop.css" />
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/window.css" />
 
-<!-- To be loaded if controls aren't defined through the pluginGroups 
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/taskbar.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/toolbar.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/accordion.css" />
--->
-
 <link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/form.css" type="text/css" />
 <link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/content.css" type="text/css" />
 <link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/tree.css" type="text/css" />
@@ -30,11 +24,17 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
 
+<?php if (
+	Settings::get('dashboard_google') == '1'
+	&& Settings::get('google_analytics_profile_id') !=''
+	&& Settings::get('google_analytics_email') !=''
+	&& Settings::get('google_analytics_password') !=''
+) :?>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 	google.load("visualization", "1", {packages:["corechart"]});
 </script>
-
+<?php endif ;?>
 
 <!-- Upload -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Request.File.js"></script>
@@ -94,7 +94,6 @@
 		// for testing IE 9, etc.
 		soundManager.useHTML5Audio = true;
 	}
-
 </script>
 
 <!-- Base URL & languages translations available for javascript -->
@@ -123,7 +122,6 @@
 	 */
 	<?php $this->load->view('desktop/javascript_lang');	?>
 	<?php $this->load->view('desktop/javascript_settings');	?>
-
 </script>
 
 <!-- Mocha UI-->
@@ -133,16 +131,6 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/canvas.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/content.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/persist.js"></script>
-
-<!-- To be loaded if controls aren't defined through the pluginGroups 
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/accordion/accordion.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/desktop/desktop.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/column/column.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/panel/panel.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/dock/dock.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/dockhtml/dockhtml.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/menu/menu.js"></script>
--->
 
 <!-- Normal load -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/taskbar/taskbar.js"></script>
@@ -155,7 +143,6 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/init.js"></script>
 
 <!-- Ionize -->
-<!-- In a production environment, these files should be grouped and compressed -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_core.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_panels.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_window.js"></script>
@@ -182,7 +169,6 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML5.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML4.js"></script>
 
-
 <!-- Ionize Filemanager -->
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/filemanager/assets/css/filemanager.css" />
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/filemanager.js"></script>
@@ -194,10 +180,8 @@
 ?>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/language/Language.<?php echo $filemanager_lang ?>.js"></script>
 
-
 <!-- TinyMCE -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce_src.js"></script>
-
 
 <!-- If users templates, add them to the init object -->
 <?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/templates/tinymce_templates.js' )) :?>
@@ -213,19 +197,12 @@
 	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/javascript/tinyMCE.js"></script>
 <?php endif ;?>
 
-
-
 <script type="text/javascript">
-	/**
-	 * Global filemanager
-	 *
-	 */
+
+	// Global filemanager
 	var filemanager = '';
 
-	/** 
-	 * Global MediaManager
-	 *
-	 */
+	// Global MediaManager
 	var mediaManager = new IonizeMediaManager(
 	{
 		baseUrl: base_url,
@@ -247,11 +224,8 @@
 		fileArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('file')); ?>')
 	});
 
-	/* If user's theme has a tinyMCE.css content CSS file, load it.
-	 * else, load the standard tinyMCE content CSS file
-	 *
-	 */
-
+	// If user's theme has a tinyMCE.css content CSS file, load it.
+	// else, load the standard tinyMCE content CSS file
 	<?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/css/tinyMCE.css' )) :?>
 		var tinyCSS = '<?php echo base_url().'themes/'.Settings::get('theme').'/assets/css/tinyMCE.css'; ?>';
 	<?php else :?>
@@ -277,7 +251,6 @@
 		<script type="text/javascript" src="<?php echo base_url(); ?>modules/<?php echo $module ;?>/assets/javascript/admin.js"></script>
 	<?php endif;?>
 <?php endforeach; ?>
-
 
 </head>
 <body>

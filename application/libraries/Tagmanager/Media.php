@@ -169,15 +169,16 @@ class TagManager_Media extends TagManager
 				{
 					// $keys = array_keys($filtered_medias[0]);
 					$attributes = $tag->getAttributes();
-					$attributes = array_diff(array_keys($attributes), array('provider', 'type', 'size', 'method', 'limit', 'filter'));
+					$attributes = array_diff(array_keys($attributes), array('tag', 'class', 'provider', 'type', 'size', 'method', 'limit', 'filter'));
 
 					if ( ! empty($attributes))
 					{
+						$tmp_medias = $filtered_medias;
+						$filtered_medias = array();
+
 						foreach($attributes as $attribute)
 						{
 							$attribute_value = $tag->getAttribute($attribute);
-							$tmp_medias = $filtered_medias;
-							$filtered_medias = array();
 
 							foreach($tmp_medias as $media)
 							{

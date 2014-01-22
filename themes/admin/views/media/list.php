@@ -52,7 +52,7 @@
             	<a class="icon right unlink" onclick="javascript:mediaManager.detachMedia('<?php echo $media['type']; ?>', '<?php echo $media['id_media']; ?>');" title="<?php echo lang('ionize_label_detach_media'); ?>"></a>
 			<?php endif ;?>
 			<?php if( ! empty($media['lang_display'])) :?>
-				<a class="right mr10 " <?php echo $edit_href; ?>><?php echo lang('ionize_label_media_display_limited_to_lang'); ?> : <img src="<?php echo theme_url(); ?>/images/world_flags/flag_<?php echo $media['lang_display']; ?>.gif" /></a>
+				<a class="right mr10 " <?php echo $edit_href; ?>><?php echo lang('ionize_label_media_display_limited_to_lang'); ?> : <img src="<?php echo admin_style_url(); ?>/images/world_flags/flag_<?php echo $media['lang_display']; ?>.gif" /></a>
 			<?php endif ;?>
 			<span class="icon left drag"></span>
 			<?php if(Authority::can('edit', 'admin/'.$parent.'/media/'.$type)) :?>

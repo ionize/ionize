@@ -68,7 +68,7 @@
 				<?php foreach(Settings::get_languages() as $language) :?>
 
 					<?php if ( isset($article[$language['lang']]) && $article[$language['lang']]['content'] != '') : ?>
-						<img class="pr5" src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $language['lang'] ?>.gif" />
+						<img class="pr5" src="<?php echo admin_style_url(); ?>images/world_flags/flag_<?php echo $language['lang'] ?>.gif" />
 					<?php endif; ?>
 				<?php endforeach ;?>
 			</td>
@@ -77,7 +77,7 @@
 				<?php foreach(Settings::get_languages() as $language) :?>
 
 					<?php if ( ! isset($article[$language['lang']]) OR $article[$language['lang']]['content'] == '') : ?>
-						<img class="pr5" src="<?php echo theme_url(); ?>images/world_flags/flag_<?php echo $language['lang'] ?>.gif" />
+						<img class="pr5" src="<?php echo admin_style_url(); ?>images/world_flags/flag_<?php echo $language['lang'] ?>.gif" />
 					<?php endif; ?>
 
 				<?php endforeach ;?>

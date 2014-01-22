@@ -137,7 +137,12 @@ class Extend_field extends MY_admin
 		if( $this->input->post('name') != '' ) {
 
 			// If no ID (means new one) and this item name already exists in DB : No save
-			if ($this->input->post('id_extend_field') == '' && $this->extend_field_model->exists(array('name'=>url_title($this->input->post('name')), 'parent'=> $this->input->post('parent'))))
+			if (
+				$this->input->post('id_extend_field') == ''
+				&& $this->extend_field_model->exists(
+					array('name'=>url_title($this->input->post('name')), 'parent'=> $this->input->post('parent'))
+				)
+			)
 			{
 				$this->error(lang('ionize_message_extend_field_name_exists'));			
 			}
