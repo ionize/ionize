@@ -234,7 +234,7 @@ class Tag_model extends Base_model
 		if ($element && $id_element)
 		{
 			$data = array();
-			$tag_ids = explode(',', $tags);
+			$tag_ids = array_filter(explode(',', $tags), 'strlen');
 			$join_table = $element.'_tag';
 			$element_pk = 'id_'.$element;
 
