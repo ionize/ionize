@@ -165,8 +165,8 @@ if ($tracker_title == '')
 								<?php if ($extend_field['type'] == '4') :?>
 									
 									<?php
-										$pos = 		explode("\n", $extend_field['value']);
-										$saved = 	explode(',', $extend_field['content']);
+										$pos   = explode("\n", $extend_field['value']);
+										$saved = $extend_field['content'] != '-' ? explode(',', $extend_field['content']) : array();
 									?>
 									<?php
 										$i = 0; 
