@@ -79,7 +79,7 @@
 			<h3 class="dotted-title"><ion:lang key="title_archives" /></h3>
 
 			<ion:archives with_month="true" tag="ul" class="nav nav-pills nav-stacked">
-				<li><a class="<ion:active_class />" href="<ion:archive:url />"><ion:archive:period /></a></li>
+				<li><a class="<ion:archive:active_class />" href="<ion:archive:url />"><ion:archive:period /></a></li>
 			</ion:archives>
 
 		</div>
