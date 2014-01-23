@@ -128,6 +128,13 @@ class TagManager_Page extends TagManager
 		if ( ! empty($article))
 			self::register('article', $article);
 
+		// Event : On before render
+		$event_data = array(
+			'entity' => $entity,
+			'article' => $article
+		);
+		Event::fire('Page.render.before', $event_data);
+
 		self::$view = self::_get_page_view($page);
 
 		self::render();
