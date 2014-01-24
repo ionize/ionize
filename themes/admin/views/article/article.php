@@ -154,7 +154,7 @@ if ($tracker_title == '')
 									
 									<?php
 										$pos = 		explode("\n", $extend_field['value']);
-										$saved = 	explode(',', $extend_field['content']);
+										$saved = 	$extend_field['content'] != '-' ? explode(',', $extend_field['content']) : array();
 									?>
 									<?php
 										$i = 0; 
@@ -394,7 +394,7 @@ if ($tracker_title == '')
 
 												<?php
 													$pos = 		explode("\n", $extend_field['value']);
-													$saved = 	explode(',', $extend_field[$lang]['content']);
+													$saved = 	$extend_field[$lang]['content'] != '-' ? explode(',', $extend_field[$lang]['content']) : array();
 												?>
 
 												<?php

@@ -1145,8 +1145,8 @@ MUI.Window.implement({
 
 		cache.footer = new Element('div', {
 			'id': id + '_footer',
-			'class': 'mochaWindowFooter',
-			'styles': {'width': width - 30}
+			'class': 'mochaWindowFooter'
+		//	'styles': {'width': width - 30}
 		}).inject(cache.overlay, 'bottom');
 		this.footerDock = new MUI.Dock({id:id + '_footer',container:cache.overlay,element:cache.footer});
 

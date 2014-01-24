@@ -131,7 +131,7 @@ class TagManager_Page extends TagManager
 		// Event : On before render
 		$event_data = array(
 			'entity' => $entity,
-			'article' => $article
+			'article' => self::registry('article')
 		);
 		Event::fire('Page.render.before', $event_data);
 

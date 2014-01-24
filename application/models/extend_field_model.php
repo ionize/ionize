@@ -214,22 +214,31 @@ class Extend_field_model extends Base_model
 			// furthermore, make sure that if all checkbox values are unchecked, we do not fallback to the
 			// default values, we do that by storing the special `-` value in the database. 
 			$langs = Settings::get_languages();
+
 			if ($extend_field['type'] == '4')
 			{
 				if ($this->exists($where, $this->elements_table))
 				{
 					$this->{$this->db_group}->where($where);
 					$this->{$this->db_group}->update($this->elements_table, array('content' => '-'));
-				} else {
-					$data = array();
-					$data['content']      = '-';
-					$data['lang']         = '';
-					$data['id_parent']    = $id;
-					$data[$this->pk_name] = $extend_field[$this->pk_name];
-					if ($extend_field['translated'] != '1') {
+				}
+				else
+				{
+					$data = array(
+						'content' => '-',
+						'lang' => '',
+						'id_parent' => $id,
+						$this->pk_name => $extend_field[$this->pk_name],
+					);
+
+					if ($extend_field['translated'] != '1')
+					{
 						$this->{$this->db_group}->insert($this->elements_table, $data);
-					} else {
-						foreach ($langs as $language) {
+					}
+					else
+					{
+						foreach ($langs as $language)
+						{
 							$data['lang'] = $language['lang'];
 							$this->{$this->db_group}->insert($this->elements_table, $data);
 						}
@@ -243,10 +252,11 @@ class Extend_field_model extends Base_model
 				if (substr($k, 0, 2) == 'cf')
 				{
 					// Fill the extend field value with nothing : safe for checkboxes
-					$data = array();
-					$data['content'] = '';
-					$data['lang'] = '';
-					$data['id_parent'] = $id;
+					$data = array(
+						'content' => '',
+						'lang' => '',
+						'id_parent' => $id,
+					);
 
 					// id of the extend field
 					$key = explode('_', $k);

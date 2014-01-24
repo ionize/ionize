@@ -569,10 +569,29 @@ class Medias
 
 	public function create_thumb_folder($thumb_path)
 	{
-		$thumb_path = (preg_match("#/([\d\w\s]+\..*)$#", $thumb_path)) ? preg_replace("#(.*)/([a-z|0-9]+\..*)#", "$1", $path) : $path;
-		if ((strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') !== FALSE)
-			$thumb_path = str_replace('/', '\\', $thumb_path);
-		@mkdir($thumb_path, 0777, true);
+		// Create directory is not exists
+		if( ! is_dir($thumb_path) )
+		{
+			$path_segments = explode('/', ltrim($thumb_path, '/'));
+			array_pop($path_segments);
+			
+			$next_folder = '';
+			
+			// Check if server os is windows,
+			// If server os is windows, first separator has to be empty string
+			$separator = ((strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') !== FALSE) ? '' : '/';
+
+			foreach($path_segments as $folder)
+			{
+				$next_folder .= $separator . $folder;
+				$separator = '/';
+
+				if ( ! @is_dir($next_folder))
+				{
+					@mkdir($next_folder, 0777);
+				}
+			}
+		}
 	}
 	
 	

@@ -97,7 +97,7 @@
 }
 .CodeMirror-menu .cmIcon.wide {
 	width:auto;
-	line-height: 19px;
+	line-height: 20px;
 	padding: 0 2px;
 }
 .CodeMirror-menu .cmSeparator {
@@ -142,7 +142,6 @@
 .CodeMirror-menu span.cm_copy { background-position: -700px 0 !important;}
 .CodeMirror-menu span.cm_cut { background-position: -680px 0 !important;}
 .CodeMirror-menu span.cm_blockquote { background-position: -220px 0 !important;}
-
 .CodeMirror-menu span.cm_table { background-position: -580px -20px !important;}
 
 

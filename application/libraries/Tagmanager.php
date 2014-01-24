@@ -1405,6 +1405,9 @@ class TagManager
 				$value = self::$ci->media_model->parse_content_media_url($value);
 				break;
 
+			case '4':
+				break;
+
 			case '7':
 				$value = self::format_date($tag, $value);
 				break;
