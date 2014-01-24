@@ -300,7 +300,12 @@ ION.append({
 
 	emptyElement: function (element)
 	{
-		$(element).empty();
+		var tag = $(element).get('tag');
+
+		if (tag == 'textarea' || tag == 'input')
+			$(element).set('value', null);
+		else
+			$(element).empty();
 	},
 
 	/**
@@ -1760,9 +1765,9 @@ ION.append({
 			"á":"a","í":"i","ó":"o","ő":"o","ú":"u","ű":"u"
 		};
 
-		text = text.split('').map(function (char) {
-			return a[char] || char;
-		}).join("");
+			text = text.split('').map(function (char) {
+				return a[char] || char;
+			}).join("");
 
 		for (var i=0; i<text.length; i++)
 		{
