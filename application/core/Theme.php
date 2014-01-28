@@ -159,7 +159,7 @@ class Theme {
 		$output = $ci->load->view($view, $data, true);
 		
 		// Set character encoding
-		$this->output->set_header("Content-Type: text/html; charset=UTF-8");
+		$ci->output->set_header("Content-Type: text/html; charset=UTF-8");
 		
 		$ci->output->set_output($output);
 	}
