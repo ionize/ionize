@@ -128,8 +128,42 @@ class FTL_Parser{
 		
 		$result = $this->parse_php($result);
 		
+		if(config_item('compress_html_output') == 1)
+		    return $this->compress($result);
+
 		return $result;
 	}
+	
+	// --------------------------------------------------------------------
+		
+	/**
+     * Compress HTML output
+     *
+     * To remove useless whitespace from generated HTML.
+     *
+     * @param $output
+     * @return mixed
+     */
+    public function compress($output)
+    {
+        $buffer = $output;
+
+        $search = array(
+            '/\>[^\S ]+/s', //strip whitespaces after tags, except space
+            '/[^\S ]+\</s', //strip whitespaces before tags, except space
+            '/(\s)+/s'      // shorten multiple whitespace sequences
+        );
+
+        $replace = array(
+            '>',
+            '<',
+            '\\1'
+        );
+
+        $buffer = preg_replace($search, $replace, $buffer);
+
+        return $buffer;
+    }
 	
 	// --------------------------------------------------------------------
 		

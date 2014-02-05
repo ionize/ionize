@@ -905,6 +905,28 @@ class Setting extends MY_admin
 	
 	}
 	
+    // ------------------------------------------------------------------------
+
+    /**
+     * Saves Compress HTML Output Setting
+     *
+     */
+    function save_compress_html_output()
+    {
+        if ($this->config_model->change('ionize.php', 'compress_html_output', $this->input->post('compress_html_output')) == FALSE)
+            $this->error(lang('ionize_message_error_writing_ionize_file'));
+
+        // UI panel to update after saving
+        $this->update[] = array(
+            'element' => 'mainPanel',
+            'url' => 'setting/technical'
+        );
+
+        // Answer
+        $this->success(lang('ionize_message_operation_ok'));
+
+    }
+	
 	
 	// ------------------------------------------------------------------------
 	
