@@ -443,12 +443,13 @@ class Base_Controller extends MY_Controller
 		}
 
 		// Set lang preference cookie
-		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
+        $host = parse_url($_SERVER['HTTP_HOST']);
+		// $host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
 		
 		if( ! empty($_COOKIE['ion_selected_language']))
-			setcookie('ion_selected_language', '', time() - 3600, '/', $host);
+			setcookie('ion_selected_language', '', time() - 3600, '/', $host['host']);
 
-		setcookie('ion_selected_language', Settings::get_lang(), time() + 3600, '/', $host);
+		setcookie('ion_selected_language', Settings::get_lang(), time() + 3600, '/', $host['host']);
 
 		// Lang dependant settings for the current language : Meta, etc.
 		Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
