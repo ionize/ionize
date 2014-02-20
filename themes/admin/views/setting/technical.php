@@ -252,7 +252,7 @@
 								'tag1' => array('h1','h2','h3','h4','h5','h6','em','img','audio','video'),
 								'tag2' => array('iframe','div','span','table','object','form','dl','pre','code','legend'),
 								'tag3' => array('dfn','samp','kbd','var','cite','mark','q','hr','big','small'),
-								'tag4' => array('link','address','abbr','sub','sup','ins','blockquote','bdi','bdo'),
+								'tag4' => array('link','address','abbr','sub','sup','ins','blockquote','bdi','bdo','i'),
 							);
 						?>
 	
@@ -723,6 +723,36 @@
 					</form>
 
 				</div>
+
+                <!-- Compress HTML Output -->
+                <h3 class="toggler"><?php echo lang('ionize_title_compress_html_output'); ?></h3>
+
+                <div class="element">
+
+                    <form name="compressHtmlOutputForm" id="compressHtmlOutputForm" method="post" action="<?php echo admin_url(); ?>setting/save_compress_html_output" class="mb20">
+
+                        <!-- Maintenance ? -->
+                        <dl>
+                            <dt>
+                                <label for="compress_html_output" title="<?php echo lang('ionize_label_compress_html_output_help'); ?>"><?php echo lang('ionize_label_compress_html_output'); ?></label>
+                            </dt>
+                            <dd>
+                                <input class="inputcheckbox" <?php if (config_item('compress_html_output') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="compress_html_output" id="compress_html_output" value="1" />
+                            </dd>
+                        </dl>
+
+                        <!-- Submit button  -->
+                        <dl class="mt10">
+                            <dt>&#160;</dt>
+                            <dd>
+                                <input id="submit_compress_html_output" type="submit" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
+                            </dd>
+                        </dl>
+
+
+                    </form>
+
+                </div>
 			</div>		
 		</div>		
 	</div>
@@ -749,6 +779,7 @@
 	ION.setFormSubmit('emailForm', 'submit_email', 'setting/save_emails_settings/true', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance', 'mainPanel', 'setting/technical');
+    ION.setFormSubmit('compressHtmlOutputForm', 'submit_compress_html_output', 'setting/save_compress_html_output', 'mainPanel', 'setting/technical');
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
 	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
 	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');
