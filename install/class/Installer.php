@@ -1312,7 +1312,15 @@ class Installer
 					if ($field->name == 'id_element_definition')
 						$migrate_from = false;
 				}
-				
+
+				// 1.0.6 removes the field 'id_element_definition' but adds the field 'main'
+				// One check will ensure we do not migrate from 0.9.6 on one fresh install
+				foreach ($fields as $field)
+				{
+					if ($field->name == 'main')
+						$migrate_from = false;
+				}
+
 				if ($migrate_from == true)
 				{
 					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
