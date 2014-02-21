@@ -1,6 +1,10 @@
 <?xml version="1.0" ?>
 <sql>
 
+    <query>
+        update setting set content='1.0.6' where name = 'ionize_version';
+    </query>
+
     <!-- Items -->
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (220,NULL,'admin/item','create,edit,delete,add','Static Items','Static Items');</query>
     <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (221,220,'admin/item/definition','edit','Definition','Static Items > Definition');</query>

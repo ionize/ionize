@@ -6,8 +6,8 @@
 |--------------------------------------------------------------------------
 |
 */
-$config['version'] = '1.0.5';
-$config['version_date'] = '2014.01.22';
+$config['version'] = '1.0.6';
+$config['version_date'] = '2014.02.21';
 
 
 /*
@@ -136,15 +136,6 @@ $config['maintenance'] = false;
 $config['maintenance_ips'] = array (
 );
 
-/*
-|--------------------------------------------------------------------------
-| Compress HTML output
-|--------------------------------------------------------------------------
-|
-| To remove useless whitespace from generated HTML
-|
-*/
-$config['compress_html_output'] = '1';
 
 /* End of file ionize.php */
 /* Location: ./application/config/ionize.php */
