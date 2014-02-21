@@ -333,8 +333,7 @@ class TagManager_Media extends TagManager
 			$tag->set('count', $count);
 
 			// Make medias in random order
-			if ( $tag->getAttribute('random') == TRUE)
-				shuffle ($medias);
+			if ( $tag->getAttribute('random') == TRUE) shuffle ($medias);
 
 			// Process additional data : src, extension
 			foreach($medias as $key => $media)
@@ -346,7 +345,7 @@ class TagManager_Media extends TagManager
 
 				if ($media['type'] == 'picture')
 				{
-					$settings = self::_get_src_settings($tag);
+					$settings = self::get_src_settings($tag);
 
 					if ( ! empty($settings['size']))
 						$src = self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
@@ -393,10 +392,12 @@ class TagManager_Media extends TagManager
 		{
 			if ($media['type'] == 'picture')
 			{
-				$settings = self::_get_src_settings($tag);
+				$settings = self::get_src_settings($tag);
 
 				if (empty($settings['size']))
 					return base_url() . $media['path'];
+
+
 
 				self::$ci->load->library('medias');
 				
@@ -495,7 +496,7 @@ class TagManager_Media extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	protected static function _get_src_settings(FTL_Binding $tag)
+	public static function get_src_settings(FTL_Binding $tag)
 	{
 		$setting_keys = array
 		(
@@ -510,15 +511,27 @@ class TagManager_Media extends TagManager
 
 		$settings = array_fill_keys($setting_keys, '');
 
+		$global_unsharp = Settings::get('media_thumb_unsharp');
+
 		// <ion:medias /> parent
 		$parent = $tag->getParent('medias');
 		if ( !is_null($parent))
+		{
+			$unsharp = $parent->getAttribute('unsharp');
+			if ($unsharp == NULL) $settings['unsharp'] = $global_unsharp;
+
 			$settings = array_merge($settings, $parent->getAttributes());
+		}
 
 		// <ion:media /> parent
 		$parent = $tag->getParent('media');
 		if ( !is_null($parent))
+		{
+			$unsharp = $parent->getAttribute('unsharp');
+			if ($unsharp == NULL) $settings['unsharp'] = $global_unsharp;
+
 			$settings = array_merge($settings, $parent->getAttributes());
+		}
 
 		$settings = array_merge($settings, $tag->getAttributes());
 
@@ -536,7 +549,7 @@ class TagManager_Media extends TagManager
 	{
 		self::$ci->load->library('medias');
 
-		$settings = self::_get_src_settings($tag);
+		$settings = self::get_src_settings($tag);
 
 		return self::$ci->medias->get_thumb_folder($settings);
 	}

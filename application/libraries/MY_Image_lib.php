@@ -25,7 +25,7 @@ class MY_Image_lib extends CI_Image_lib {
 
     function MY_Image_lib($props = array())
     {
-        parent::CI_Image_lib($props);
+        parent::__construct($props);
     }
 
 	/**
@@ -38,49 +38,43 @@ class MY_Image_lib extends CI_Image_lib {
 	 * @return	bool
 	 */		
 	function image_process_gd($action = 'resize')
-	{	
+	{
 		$v2_override = FALSE;
-			
-		if ($action == 'crop')
-		{
-			// If the target width/height match the source then it's pointless to crop, right?
-			// So if dynamic output isn't on, then we'll return true so the user thinks
-			// the process succeeded. It'll be our little secret...
 
-			if ($this->width >= $this->orig_width AND $this->height >= $this->orig_height AND $this->dynamic_output !== TRUE)
+		// If the target width/height match the source, AND if the new file name is not equal to the old file name
+		// we'll simply make a copy of the original with the new name... assuming dynamic rendering is off.
+		if ($this->dynamic_output === FALSE)
+		{
+			if ($this->orig_width == $this->width AND $this->orig_height == $this->height)
 			{
+				if ($this->source_image != $this->new_image)
+				{
+					if (@copy($this->full_src_path, $this->full_dst_path))
+					{
+						@chmod($this->full_dst_path, FILE_WRITE_MODE);
+					}
+				}
+
 				return TRUE;
 			}
+		}
 
+		// Let's set up our values based on the action
+		if ($action == 'crop')
+		{
 			//  Reassign the source width/height if cropping
 			$this->orig_width  = $this->width;
-			$this->orig_height = $this->height;	
-				
+			$this->orig_height = $this->height;
+
 			// GD 2.0 has a cropping bug so we'll test for it
 			if ($this->gd_version() !== FALSE)
 			{
-				$gd_version = str_replace('0', '', $this->gd_version());			
+				$gd_version = str_replace('0', '', $this->gd_version());
 				$v2_override = ($gd_version == 2) ? TRUE : FALSE;
 			}
 		}
 		else
 		{
-			// If the target width/height match the source, AND if
-			// the new file name is not equal to the old file name
-			// we'll simply make a copy of the original with the new name		
-			if (($this->orig_width == $this->width AND $this->orig_height == $this->height) AND ($this->source_image != $this->new_image))			
-			{
-				if ( ! @copy($this->full_src_path, $this->full_dst_path))
-				{
-					$this->set_error('imglib_copy_failed');
-					
-					return FALSE;
-				}
-			
-				@chmod($this->full_dst_path, 0777);
-				return TRUE;
-			}
-			
 			// If resizing the x/y axis must be zero
 			$this->x_axis = 0;
 			$this->y_axis = 0;
@@ -97,12 +91,18 @@ class MY_Image_lib extends CI_Image_lib {
 		//  Create the image handle
 		if ( ! ($src_img = $this->image_create_gd()))
 		{
-			$this->set_error('imglib_image_process_failed');
-
+			// $this->set_error('imglib_image_process_failed');
 			return FALSE;
 		}
 
+
 		//  Create The Image
+		//
+		//  old conditional which users report cause problems with shared GD libs who report themselves as "2.0 or greater"
+		//  it appears that this is no longer the issue that it was in 2004, so we've removed it, retaining it in the comment
+		//  below should that ever prove inaccurate.
+		//
+		//  if ($this->image_library == 'gd2' AND function_exists('imagecreatetruecolor') AND $v2_override == FALSE)
 		if ($this->image_library == 'gd2' AND function_exists('imagecreatetruecolor'))
 		{
 			$create	= 'imagecreatetruecolor';
@@ -110,87 +110,87 @@ class MY_Image_lib extends CI_Image_lib {
 		}
 		else
 		{
-			$create	= 'imagecreate';	
+			$create	= 'imagecreate';
 			$copy	= 'imagecopyresized';
 		}
-		
-		if ($dst_img = @$create($this->width, $this->height))
+
+		$dst_img = $create($this->width, $this->height);
+
+		if ($this->image_type == 3) // png we can actually preserve transparency
 		{
-			$copy($dst_img, $src_img, 0, 0, $this->x_axis, $this->y_axis, $this->width, $this->height, $this->orig_width, $this->orig_height);
-
-			// Hack : Ajout de  unsharpMask
-			if ($this->unsharpmask !== '' && $this->unsharpmask !== false)
-			{
-				$dst_img = $this->unsharpMask($dst_img, 50, 0.5, 3);
-			}
-			//  Show the image
-			if ($this->dynamic_output == TRUE)
-			{
-				$this->image_display_gd($dst_img);
-			}
-			else
-			{
-				// Or save it
-				if ( ! $this->image_save_gd($dst_img))
-				{
-					return FALSE;
-				}
-			}
-
-			//  Kill the file handles
-			imagedestroy($dst_img);
-			imagedestroy($src_img);
-
-			// Set the file to 777
-			@chmod($this->full_dst_path, 0777);
-
-			return TRUE;
+			imagealphablending($dst_img, FALSE);
+			imagesavealpha($dst_img, TRUE);
 		}
-		return false;
+
+		$copy($dst_img, $src_img, 0, 0, $this->x_axis, $this->y_axis, $this->width, $this->height, $this->orig_width, $this->orig_height);
+
+		// Hack : Ajout de  unsharpMask
+		if ($this->image_type != 3 && $this->unsharpmask !== '' && $this->unsharpmask != false)
+		{
+			$dst_img = $this->unsharpMask($dst_img, 50, 0.5, 3);
+		}
+
+		//  Show the image
+		if ($this->dynamic_output == TRUE)
+		{
+			$this->image_display_gd($dst_img);
+		}
+		else
+		{
+			// Or save it
+			if ( ! $this->image_save_gd($dst_img))
+			{
+				return FALSE;
+			}
+		}
+
+		//  Kill the file handles
+		imagedestroy($dst_img);
+		imagedestroy($src_img);
+
+		// Set the file to 777
+		@chmod($this->full_dst_path, FILE_WRITE_MODE);
+
+		return TRUE;
 	}
 
 
-	/*
-	WARNING! Due to a known bug in PHP 4.3.2 this script is not working well in this version. The sharpened images get too dark. The bug is fixed in version 4.3.3.
-
-	From version 2 (July 17 2006) the script uses the imageconvolution function in PHP version >= 5.1, which improves the performance considerably.
-
-	Unsharp masking is a traditional darkroom technique that has proven very suitable for
-	digital imaging. The principle of unsharp masking is to create a blurred copy of the image
-	and compare it to the underlying original. The difference in colour values
-	between the two images is greatest for the pixels near sharp edges. When this
-	difference is subtracted from the original image, the edges will be
-	accentuated.
-
-	The Amount parameter simply says how much of the effect you want. 100 is 'normal'.
-	Radius is the radius of the blurring circle of the mask. 'Threshold' is the least
-	difference in colour values that is allowed between the original and the mask. In practice
-	this means that low-contrast areas of the picture are left unrendered whereas edges
-	are treated normally. This is good for pictures of e.g. skin or blue skies.
-
-	Any suggenstions for improvement of the algorithm, expecially regarding the speed
-	and the roundoff errors in the Gaussian blur process, are welcome.
-
-	http://vikjavev.no/computing/ump.php?id=350
-
-	*/
-
-	function unsharpMask($img, $amount, $radius, $threshold)    {
-
-
-	////////////////////////////////////////////////////////////////////////////////////////////////  
-	////  
-	////                  Unsharp Mask for PHP - version 2.1.1  
-	////  
-	////    Unsharp mask algorithm by Torstein Hønsi 2003-07.  
-	////             thoensi_at_netcom_dot_no.  
-	////               Please leave this notice.  
-	////  
-	///////////////////////////////////////////////////////////////////////////////////////////////  
-	
-	
-	
-	    // $img is an image that is already created within php using 
+	/**
+	 * Unsharp Mask for PHP - version 2.1.1
+	 * Unsharp mask algorithm by Torstein Hønsi 2003-07.
+	 * thoensi_at_netcom_dot_no.
+	 * Please leave this notice.
+	 *
+	 * WARNING! Due to a known bug in PHP 4.3.2 this script is not working well in this version. The sharpened images get too dark. The bug is fixed in version 4.3.3.
+	 *
+	 * From version 2 (July 17 2006) the script uses the imageconvolution function in PHP version >= 5.1, which improves the performance considerably.
+	 *
+	 * Unsharp masking is a traditional darkroom technique that has proven very suitable for
+	 * digital imaging. The principle of unsharp masking is to create a blurred copy of the image
+	 * and compare it to the underlying original. The difference in colour values
+	 * between the two images is greatest for the pixels near sharp edges. When this
+	 * difference is subtracted from the original image, the edges will be
+	 * accentuated.
+	 *
+	 * The Amount parameter simply says how much of the effect you want. 100 is 'normal'.
+	 * Radius is the radius of the blurring circle of the mask. 'Threshold' is the least
+	 * difference in colour values that is allowed between the original and the mask. In practice
+	 * this means that low-contrast areas of the picture are left unrendered whereas edges
+	 * are treated normally. This is good for pictures of e.g. skin or blue skies.
+	 *
+	 * Any suggenstions for improvement of the algorithm, expecially regarding the speed
+	 * and the roundoff errors in the Gaussian blur process, are welcome.
+	 *
+	 * http://vikjavev.no/computing/ump.php?id=350
+	 *
+	 *
+	 *
+	 *
+	 *
+	 */
+	function unsharpMask($img, $amount, $radius, $threshold)
+	{
+	    // $img is an image that is already created within php using
 	    // imgcreatetruecolor. No url! $img must be a truecolor image. 
 	
 	    // Attempt to calibrate the parameters to Photoshop: 
@@ -309,17 +309,18 @@ class MY_Image_lib extends CI_Image_lib {
 	    imagedestroy($imgBlur); 
 	     
 	    return $img; 
-	} 
+	}
 
 
 	/**
 	 * Check if enough memory will be available to process an Image create
 	 * If imagecreatetruecolor function exists, it will be takken in account for the memory size
 	 *
-	 * @param	int		Image width
-	 * @param	int		Image height
-	 * @param	boolean	true if enough memory is available, false if not.
+	 * @param $source_path
+	 * @param $dest_width
+	 * @param $dest_height
 	 *
+	 * @return bool
 	 */
 	function _checkMemoryBeforeImageCreate($source_path, $dest_width, $dest_height)
 	{
@@ -355,7 +356,4 @@ class MY_Image_lib extends CI_Image_lib {
 
 		return true;
 	}
-
 }
-
-?>

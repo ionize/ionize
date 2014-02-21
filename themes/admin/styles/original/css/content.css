@@ -159,6 +159,7 @@ li.offline { opacity:0.7; }
 .left {	float:left; }
 .right { float: right; }
 .icon.center { margin-left: auto;margin-right: auto }
+.icon.inactive {opacity:.3 !important}
 
 .icon,
 .icon a {
@@ -244,6 +245,7 @@ li.offline { opacity:0.7; }
 .icon.tool,         .button i.icon-tool         {background-position: -224px -32px;}
 .icon.tools,        .button i.icon-tools        {background-position: -224px -48px;}
 .icon.paperclip,    .button i.icon-paperclip    {background-position: -176px -80px;}
+.icon.items,        .button i.icon-items        {background-position: -160px -96px;}
 
 .icon.folder,			.button i.icon-folder			{background-position: 0 -16px;}
 .icon.folder.open,		.button i.icon-folder.open			{background-position: -16px -16px;}
@@ -351,6 +353,10 @@ h2.main:before{
 	float: left;
 	margin-right: 8px;
 }
+h2.main.no-icon:before{
+	width: 0;
+	height: 0;
+}
 
 h2.main.page:before{background-position: 0 0}
 h2.main.article:before{background-position: -120px 0}
@@ -373,6 +379,8 @@ h2.main.settings:before{background-position: -320px -80px}
 h2.main.help:before{background-position: -360px -40px}
 h2.main.protected:before{background-position: -400px -40px}
 h2.main.key:before{background-position: -200px -80px}
+h2.main.items:before{background-position: -160px -120px}
+h2.main.video:before{background-position: -240px -120px}
 
 
 .panel h2,
@@ -392,7 +400,11 @@ h2.main.key:before{background-position: -200px -80px}
 
 div.main.subtitle {
 	font-weight: normal;
-	margin: -18px 0 10px 52px;
+	margin: -18px 0 10px 48px;
+}
+div.main.subtitle.no-icon {
+	font-weight: normal;
+	margin: -18px 0 10px 2px;
 }
 
 
@@ -487,6 +499,14 @@ div.form-bloc {
 	background-repeat: no-repeat;
 	background-position: center center;
 	margin-bottom: 4px;
+	position: relative;
+}
+.thumb .title{
+	bottom:5px;
+	position: absolute;
+	text-align: center;
+	display: block;
+	width: 100%;
 }
 .picture p.icons {
 	font-size:9px;
@@ -523,6 +543,7 @@ ul.list li {
 	overflow: hidden;
 	position: relative;
 	border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;
+	min-height: 18px;
 }
 ul.list li strong,
 ul.list li span {
@@ -828,8 +849,8 @@ table.list.transparent tr {
 .mainTabs .tab-menu li span.tab-detail{
 	font-size: 9px;
 	position: absolute;
-	top:2px;
-	right:4px;
+	top:0px;
+	right:3px;
 	color:#0973B6;
 	font-weight: bold;
 }	

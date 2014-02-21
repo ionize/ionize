@@ -52,19 +52,24 @@ class Element_definition_model extends Base_model
 	function get_definitions_from_parent($parent, $id_parent = FALSE)
 	{
 		// Loads the element model if it isn't loaded
-		$CI =& get_instance();
-		if (!isset($CI->element_model)) $CI->load->model('element_model');
+		if ( ! isset(self::$ci->element_model)) self::$ci->load->model('element_model');
 
 		// Get definitions
-		$definitions = $this->get_lang_list(array('order_by' => 'ordering ASC'), Settings::get_lang('default'));
+		$definitions = $this->get_lang_list(
+			array('order_by' => 'ordering ASC'),
+			Settings::get_lang('default')
+		);
 	
 		// Get Elements
-		$where = array('parent' => $parent, 'order_by' => 'element.ordering ASC');
+		$where = array(
+			'parent' => $parent,
+			'order_by' => 'element.ordering ASC'
+		);
+
 		if ($id_parent !== FALSE)
-		{
 			$where['id_parent'] = $id_parent;
-		}
-		$elements = $CI->element_model->get_elements($where);
+
+		$elements = self::$ci->element_model->get_elements($where);
 
 		// Add elements to definition
 		foreach($definitions as $key => $definition)

@@ -480,6 +480,13 @@ div.filemanager-method-info {
 	left:0;
 }
 
+div.filemanager-target-info {
+	position: absolute;
+	z-index: 3;
+	bottom: -20px;
+	right:30px;
+}
+
 div.filemanager-head {
 	height: 30px;
 	overflow: hidden;

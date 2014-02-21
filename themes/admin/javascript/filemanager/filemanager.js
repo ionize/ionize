@@ -629,6 +629,8 @@ var Filemanager = new Class({
 
 		// Method Info : HTML5, HTML4, other...
 		this.uploadInfo = new Element('div', {'class':'filemanager-method-info ml10 pt5 lite'}).inject(this.filemanager);
+		this.targetInfo = new Element('div', {'class':'filemanager-target-info ml10 pt5 lite'}).inject(this.filemanager);
+
 		/*
 		var windowFooter = $('filemanagerWindow_footer');
 		if (windowFooter)
@@ -883,18 +885,18 @@ var Filemanager = new Class({
 	},
 
 
-
-
-
-
-
-
-	initialShow: function() {
-
+	initialShow: function()
+	{
 		this.show();
-
 	},
 
+	/**
+	 * Displays info about the target of the media which will be linked
+	 */
+	setTargetInfo:function(text)
+	{
+		this.targetInfo.set('text', text);
+	},
 
 	allow_DnD: function(j, pagesize)
 	{

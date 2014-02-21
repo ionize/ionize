@@ -97,6 +97,7 @@ $lang['ionize_menu_about'] = 'About';
 $lang['ionize_menu_documentation'] = 'Documentation';
 $lang['ionize_menu_extend_fields'] = 'Extend Fields';
 $lang['ionize_menu_content_elements'] = 'Content Elements';
+$lang['ionize_menu_static_items'] = 'Static Items';
 
 
 /*
@@ -193,6 +194,41 @@ $lang['ionize_message_element_definition_name_already_exists'] = 'Another Elemen
 $lang['ionize_title_element_field_new'] = 'New Element field';
 $lang['ionize_message_element_field_name_exists'] = 'This field already exists !';
 
+/*
+|--------------------------------------------------------------------------
+| Static Items
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_title_static_items'] = 'Static Items';
+$lang['ionize_title_static_items_definitions'] = 'Definitions';
+$lang['ionize_title_new_definition'] = 'New Definition';
+$lang['ionize_title_edit_definition'] = 'Edit Definition';
+$lang['ionize_title_item_fields'] = 'Item fields';
+$lang['ionize_title_item_instances'] = 'Instances';
+$lang['ionize_title_item_field_new'] = 'New Item field';
+$lang['ionize_title_item_field_edit'] = 'Edit field';
+$lang['ionize_title_item_new'] = 'New item';
+$lang['ionize_title_edit_item'] = 'Edit Static Item';
+
+$lang['ionize_subtitle_static_item_list'] = 'Double clic on one item or drag it to the content panel to link it.';
+
+$lang['ionize_label_item_title_definition'] = 'Definition Title';
+$lang['ionize_label_item_title_definition_item'] = 'Instance Title';
+$lang['ionize_label_item_definition'] = 'Definition';
+$lang['ionize_label_item_add_item'] = 'Add Item';
+$lang['ionize_label_add_item'] = 'Add Item';
+
+$lang['ionize_help_definition_name'] = 'Code of this definition. Will be used to retrieve it with ionize tags. Must be unique';
+$lang['ionize_help_item_title_definition'] = 'How is called the definition of items ?';
+$lang['ionize_help_item_title_definition_item'] = 'How is called one item of this definition ?';
+$lang['ionize_help_item_field_display'] = 'This field value will be displayed as items title in content list of items (in page, articles, ...)';
+
+$lang['ionize_message_item_definition_already_exists'] = 'One definition with this name already exists';
+$lang['ionize_message_item_field_saved'] = 'Item field saved';
+$lang['ionize_message_item_field_not_saved'] = 'Item field not saved';
+$lang['ionize_message_static_item_intro'] = '<p>Static items give you ability to define kind of items and then, to create items based on these definitions.</p><p>These items will be available everywhere in your webapp and editors can link them to every content.</p>';
+$lang['ionize_title_static_item_intro'] = 'Define once, use everywhere !';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -212,6 +248,8 @@ $lang['ionize_label_set_online'] = 'Set Online';
 $lang['ionize_label_edit'] = 'Edit';
 $lang['ionize_label_delete'] = 'Delete';
 $lang['ionize_label_unlink'] = 'Unlink';
+$lang['ionize_label_create'] = 'Create';
+$lang['ionize_label_new'] = 'New';
 $lang['ionize_label_status'] = 'Status';
 $lang['ionize_label_select_files_to_upload'] = 'Select files to Upload';
 $lang['ionize_label_select_file'] = 'Select File';
@@ -236,6 +274,7 @@ $lang['ionize_label_edit_flags'] = 'Edit flags';
 $lang['ionize_label_page'] = 'Page';
 $lang['ionize_label_article'] = 'Article';
 $lang['ionize_label_media'] = 'Media';
+$lang['ionize_label_medias'] = 'Medias';
 $lang['ionize_label_users'] = 'Users';
 $lang['ionize_label_user'] = 'User';
 $lang['ionize_label_table'] = 'Table';
@@ -812,6 +851,7 @@ $lang['ionize_label_detach_all_pictures'] = 'Unlink all pictures';
 $lang['ionize_label_detach_all_videos'] = 'Unlink all videos';
 $lang['ionize_label_detach_all_musics'] = 'Unlink all music';
 $lang['ionize_label_detach_all_files'] = 'Unlink all files';
+$lang['ionize_label_detach_all'] = 'Unlink all';
 $lang['ionize_label_init_all_thumbs'] = 'Init all thumbs';
 $lang['ionize_label_copyright'] = 'Copyright';
 $lang['ionize_label_date'] = 'Date';
@@ -835,6 +875,7 @@ $lang['ionize_message_no_picture'] = 'No linked image';
 $lang['ionize_message_no_video'] = 'No linked video';
 $lang['ionize_message_no_music'] = 'No linked musice';
 $lang['ionize_message_no_file'] = 'No linked file';
+$lang['ionize_message_no_medias'] = 'No medias';
 $lang['ionize_message_media_not_detached'] = 'Media not unlinked';
 $lang['ionize_message_media_already_attached'] = 'Media already linked';
 $lang['ionize_message_media_data_saved'] = 'Media data saved';
@@ -842,6 +883,7 @@ $lang['ionize_message_media_data_not_saved'] = 'Media data not saved';
 $lang['ionize_message_thumb_initialized'] = 'Thumbnail regenerated';
 $lang['ionize_message_media_reordered'] = 'Medias ordered';
 $lang['ionize_message_alt_desc_for_mp3'] = 'Because this media is an MP3, the following <strong>Description</strong> and the <strong>Alternative text</strong> are generated from MP3 file\'s ID3 tags.';
+$lang['ionize_message_paste_video_url'] = 'Copy and paste your Youtube, Vimeo or Dailymotion URL';
 // Exceptions
 $lang['ionize_exception_folder_creation'] = 'Error during folder creation';
 $lang['ionize_exception_no_thumbs_settings'] = 'Settings : No thumbnails defined!';
@@ -996,6 +1038,8 @@ $lang['ionize_label_type_checkbox'] = 'Checkbox';
 $lang['ionize_label_type_radio'] = 'Radio';
 $lang['ionize_label_type_select'] = 'Select';
 $lang['ionize_label_type_datetime'] = 'Date & Time';
+$lang['ionize_label_type_media'] = 'Medias';
+$lang['ionize_label_filemanager_target'] = 'Destination';
 $lang['ionize_label_add_field'] = 'Add field';
 $lang['ionize_label_extend_field_for_all'] = 'Universal';
 $lang['ionize_label_extend_field_for_pages'] = 'Pages';
@@ -1015,6 +1059,7 @@ $lang['ionize_message_extend_field_saved'] = 'Extend Field saved';
 $lang['ionize_message_extend_field_not_saved'] = 'Error : Please enter a field name!';
 $lang['ionize_message_extend_field_deleted'] = 'Extend Field deleted';
 $lang['ionize_message_extend_field_not_deleted'] = 'Extend Field not deleted';
+$lang['ionize_message_extend_field_not_found'] = 'Extend Field not found';
 $lang['ionize_message_field_must_have_a_name'] = 'The field must have a name';
 $lang['ionize_message_varchar_int_must_have_length'] = 'VARCHAR or INT field must have a length';
 $lang['ionize_message_field_name_sql_reserved'] = 'The field name you choose is a SQL reserved word. Please change.';

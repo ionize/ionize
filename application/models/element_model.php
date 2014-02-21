@@ -75,7 +75,7 @@ class Element_model extends Base_model
 			$data = $query->result_array();
 
 		$query->free_result();
-		
+
 		return $data;
 	}
 	
@@ -92,38 +92,33 @@ class Element_model extends Base_model
 	 */
 	public function get_element_fields($id_element)
 	{
-		// Loads the element model if it isn't loaded
-		$CI =& get_instance();
-		if (!isset($CI->extend_field_model)) $CI->load->model('extend_field_model');
+		self::$ci->load->model('extend_field_model');
 		
 		// Get the element
 		$element = $this->get(array('id_element' => $id_element) );
 
-		// Get Element fields definition
+		// Get fields definition for the asked element
 		$cond = array(
-			'id_element_definition' => $element['id_element_definition'],
+			'parent' => 'element',
+			'id_parent' => $element['id_element_definition'],
 			'order_by' => 'ordering ASC'
 		);
-		$definitions_fields = $CI->extend_field_model->get_list($cond, 'extend_field');
-
-		$definitions_fields_lang = $CI->extend_field_model->get_lang();
-
-		foreach($definitions_fields as &$field)
-		{
-			foreach(Settings::get_languages() as $lang)
-			{
-				$langs = array_values(array_filter($definitions_fields_lang, create_function('$row','return $row["id_extend_field"] == "'. $field['id_extend_field'] .'";')));
-				$field['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
-			}
-
-		}
+		$definitions_fields = self::$ci->extend_field_model->get_list($cond, 'extend_field');
 
 		// Get fields instances
-		$sql = 'select extend_field.*, extend_fields.*
-				from extend_fields
-				join extend_field on extend_field.id_extend_field = extend_fields.id_extend_field
-				where extend_fields.id_element = \''.$id_element.'\'
-				order by extend_field.ordering ASC';
+		$sql = "
+			select
+				extend_field.id_extend_field,
+				extend_field.name,
+				extend_field.type,
+				extend_field.description,
+				extend_fields.*
+			from extend_fields
+			join extend_field on extend_field.id_extend_field = extend_fields.id_extend_field
+			where extend_fields.id_parent = ".$id_element."
+			and extend_fields.parent = 'element'
+			order by extend_field.ordering ASC
+		";
 
 		$query = $this->{$this->db_group}->query($sql);
 
@@ -186,9 +181,8 @@ class Element_model extends Base_model
 	public function get_fields_from_parent($parent, $id_parent, $lang, $id_definition = FALSE, $id_element = FALSE)
 	{
 		// Loads the element model if it isn't loaded
-		$CI =& get_instance();
-		if (!isset($CI->element_definition_model)) $CI->load->model('element_definition_model');
-		if (!isset($CI->extend_field_model)) $CI->load->model('extend_field_model');
+		if ( ! isset(self::$ci->element_definition_model)) self::$ci->load->model('element_definition_model');
+		if ( ! isset(self::$ci->extend_field_model)) self::$ci->load->model('extend_field_model');
 
 		// Get definitions
 		$cond = array();
@@ -196,17 +190,18 @@ class Element_model extends Base_model
 		if ($id_definition != FALSE)
 			$cond['element_definition.id_element_definition'] = $id_definition;
 		
-		$definitions = $CI->element_definition_model->get_lang_list($cond, $lang);
+		$definitions = self::$ci->element_definition_model->get_lang_list($cond, $lang);
 		
 		// Get definitions fields
 		$cond = array(
-			'id_element_definition <>' => '0',
+			'parent' => 'element',
+			'id_parent <>' => '0',
 			'order_by' => 'ordering ASC'
 		);
 		if ($id_definition != FALSE)
-			$cond['id_element_definition'] = $id_definition;
+			$cond['id_parent'] = $id_definition;
 
-		$definitions_fields = $CI->extend_field_model->get_lang_list($cond, $lang);
+		$definitions_fields = self::$ci->extend_field_model->get_lang_list($cond, $lang);
 
 		// Get Elements
 		$cond = array('order_by' => 'element.ordering ASC' );
@@ -223,20 +218,25 @@ class Element_model extends Base_model
 		$elements = $this->get_elements($cond);
 
 		// Get fields instances
-		$where = ' where extend_fields.id_element in (
-					select id_element from element
-					where parent= \''.$parent.'\'
-					and id_parent= \''.$id_parent.'\'
-				)';
+		$where = "
+			where extend_fields.id_parent in (
+				select id_element from element
+				where parent= '".$parent."'
+				and id_parent= ".$id_parent."
+			)
+			and extend_fields.parent = 'element'
+		";
 
 		if ($id_element)
-			$where = ' where extend_fields.id_element = \''.$id_element.'\'';
+			$where = "
+				where extend_fields.id_parent = ".$id_element."
+				and extend_fields.parent = 'element'
+			";
 		
 		$sql = 'select extend_field.*, extend_fields.*
 				from extend_fields
 				join extend_field on extend_field.id_extend_field = extend_fields.id_extend_field'
 				.$where;
-		
 		$query = $this->{$this->db_group}->query($sql);
 
 		$result = array();
@@ -257,30 +257,36 @@ class Element_model extends Base_model
 				if ($element['id_element_definition'] == $definition['id_element_definition'])
 				{
 					$element['fields'] = array();
-					
+
+					// Extend fields
 					foreach($definitions_fields as $df)
 					{
-						if ($df['id_element_definition'] == $definition['id_element_definition'])
+						if ($df['id_parent'] == $definition['id_element_definition'])
 						{
 							$el = array_merge(array_fill_keys($extend_fields_fields, ''), $df);
 
 							foreach($result as $row)
 							{
-								if ($row['id_element'] == $element['id_element'] && $row['id_extend_field'] == $df['id_extend_field'])
+								if ($row['id_parent'] == $element['id_element'] && $row['id_extend_field'] == $df['id_extend_field'])
 								{
-									$el = array_merge($el, $row);
-									
 									if ($df['translated'] == '1')
 									{
 										foreach($langs as $language)
 										{
-											$lang = $language['lang'];
-											
-											if($row['lang'] == $lang)
+											$lang_code = $language['lang'];
+
+											if($row['lang'] == $lang_code)
 											{
-												$el[$lang] = $row;
+												if ($lang_code == $lang)
+													$el = array_merge($el, $row);
+
+												$el[$lang_code] = $row;
 											}
 										}
+									}
+									else
+									{
+										$el = array_merge($el, $row);
 									}
 								}
 							}
@@ -312,14 +318,14 @@ class Element_model extends Base_model
 	 */
 	public function get_fields_from_definition_id($id_definition)
 	{
-		$CI =& get_instance();
-		if (!isset($CI->extend_field_model)) $CI->load->model('extend_field_model');
+		if ( ! isset(self::$ci->extend_field_model)) self::$ci->load->model('extend_field_model');
 
 		$where = array(
-			'id_element_definition' => $id_definition
+			'parent' => 'element',
+			'id_parent' => $id_definition
 		);
 
-		$fields = $CI->extend_field_model->get_lang_list($where, Settings::get_lang('current'));
+		$fields = self::$ci->extend_field_model->get_lang_list($where, Settings::get_lang('current'));
 
 		return $fields;
 	}
@@ -359,15 +365,21 @@ class Element_model extends Base_model
 		}
 		
 		// Save fields
-		$extend_fields = $this->get_list(array('id_element_definition' => $id_element_definition), 'extend_field');
+		$extend_fields = $this->get_list(
+			array(
+				'id_parent' => $id_element_definition,
+				'parent' => 'element'
+			),
+			'extend_field'
+		);
 
 		foreach ($extend_fields as $extend_field)
 		{
 			// Link between extend_field, current parent and element
 			$where = array(
 				'id_extend_field' => $extend_field['id_extend_field'],
-				'id_parent' => $id_parent,
-				'id_element' => $id_element
+				'parent' => 'element',
+				'id_parent' => $id_element,
 			);
 			
 			// Checkboxes : first clear values from DB as the var isn't in $_POST if no value is checked
@@ -386,8 +398,8 @@ class Element_model extends Base_model
 					$data = array();
 					$data['content'] = '';
 					$data['lang'] = '';
-					$data['id_parent'] = $id_parent;
-					$data['id_element'] = $id_element;
+					$data['parent'] = 'element';
+					$data['id_parent'] = $id_element;
 
 					// id of the extend field
 					$key = explode('_', $k);
@@ -426,8 +438,8 @@ class Element_model extends Base_model
 						}
 					}
 				}
-			} // foreach ($post as $k => $value)
-		} // foreach ($extend_fields as $extend_field)
+			}
+		}
 		
 		return $id_element;	
 	}
@@ -454,7 +466,12 @@ class Element_model extends Base_model
 			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
 			
 			// Extend fields content delete
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->fields_table);
+			$affected_rows += $this->{$this->db_group}->where(
+				array(
+					'id_parent'=> $id,
+					'parent'=>'element'
+				)
+			)->delete($this->fields_table);
 
 			$this->_reorder(
 				$element['parent'],
@@ -499,24 +516,27 @@ class Element_model extends Base_model
 		if ($id_element)
 		{
 			// Copy all fields
-			$sql = 	'insert into extend_fields 
-					 (
-					 	id_extend_field,
-					 	id_parent,
-					 	lang,
-					 	content,
-					 	ordering,
-					 	id_element
-					)
-					select
-						id_extend_field, 
-						'.$data['id_parent'].',
-						lang,
-						content,
-						ordering,
-						'.$id_element.'
-					from extend_fields 
-					where id_element = '.$data['id_element'];
+			$sql = 	"
+				insert into extend_fields
+				 (
+					id_extend_field,
+					parent,
+					id_parent,
+					lang,
+					content,
+					ordering,
+					id_element
+				)
+				select
+					id_extend_field,
+					'element',
+					".$id_element.",
+					lang,
+					content,
+					ordering
+				from extend_fields
+				where id_element = ".$data['id_element']
+			;
 
 			$return = $this->{$this->db_group}->query($sql);
 		}

@@ -69,11 +69,6 @@ class Pages
 		// self::$ci->page_model->spread_authorizations($pages);
 
 
-// $logged_in = User()->logged_in() == TRUE ? 'YES' : 'NO';
-// log_message('error', 'User logged in : ' . $logged_in);
-// log_message('error', 'User Role : ' . User()->get('role_name'));
-
-
 		// Filter pages regarding the authorizations
 		if (User()->get('role_level') < 1000)
 			$pages = array_values(array_filter($pages, array(__CLASS__, '_filter_pages_authorization')));

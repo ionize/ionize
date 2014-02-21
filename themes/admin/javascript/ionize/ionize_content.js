@@ -64,8 +64,41 @@ ION.append({
 			$('mainPanel_headerToolbox').empty();
 		}
 	},
-	
-	
+
+
+	getToolbox: function(toolbox_url, onContentLoaded, data)
+	{
+		// Creates the header toolbox if it doesn't exists
+		if ( ! $('mainPanel_headerToolbox')) {
+			this.panelHeaderToolboxEl = new Element('div', {
+				'id': 'mainPanel_headerToolbox',
+				'class': 'buttonbar'
+			}).inject($('mainPanel_header'));
+		}
+
+		if (toolbox_url)
+		{
+			cb = '';
+			if (onContentLoaded)
+				cb = onContentLoaded;
+
+			MUI.Content.update({
+				element: 'mainPanel_headerToolbox',
+				url: admin_url + 'desktop/get/' + toolbox_url,
+				method: 'post',
+				data: data,
+				onLoaded: cb
+			});
+		}
+		else
+		{
+			$('mainPanel_headerToolbox').empty();
+		}
+	},
+
+
+
+
 	/**
 	 * Init a module toolbox
 	 *
@@ -805,18 +838,6 @@ ION.append({
 		});
 	},
 	
-	/*
-	 * Not working yet
-	addClearField:function(input)
-	{
-		if (typeOf($(input)) != 'null')
-		{
-			var clear = new Element('a', {'class':'icon clearfield left'}).addEvent('click', function(e){ION.clearField(input);}).inject($(input), 'after');
-			$(input).addClass('left');
-		}
-	},
-	*/
-
 
 	initAutocompleter: function(input, options)
 	{
@@ -890,7 +911,7 @@ ION.append({
 				'parent': parent,
 				'id_parent': id_parent
 			},
-			onSuccess: function(responseJSON, responseText)
+			onSuccess: function(responseJSON)
 			{
 				var index = 0;
 
@@ -971,39 +992,31 @@ ION.append({
 	
 	/**
 	 * Deletes one tab and its section based on its ID.
-	 * Called after a dleete by the controller if the element definition
+	 * Called after a delete by the controller if the element definition
 	 * has no more element for this parent.
-	 *
-	 * TODO : Implement
 	 *
 	 */
 	deleteTab: function(id)
 	{
-			var tabSwapper = $('desktop').retrieve('tabSwapper');
-			var tabs = tabSwapper.tabs;
-/*
-			tabs.each(function(tab, idx)
+		var tabSwapper = $('desktop').retrieve('tabSwapper');
+		var tabs = tabSwapper.tabs;
+
+		tabs.each(function(tab, idx)
+		{
+			if (tab.hasClass('tab' + id))
 			{
-				if (tab.hasClass('tab' + id))
-				{
 				//	tabSwapper.removeTab(idx);
-
-					tab.retrieve('section').destroy();
-					tab.destroy();
+				tab.retrieve('section').destroy();
+				tab.destroy();
 				//	arrayName.splice(i,1);
-					
-					tabSwapper.tabs.splice(idx, 1);
-					if (tab.hasClass(tabSwapper.options.selectedClass) && tabs.length > 1)	{ tabSwapper.show(0); }
-					
-				//	$('memory').store('tabSwapper', tabSwapper);
- 
-				//	return;
-				}
-			});
 
-		console.log(tabs.length);
-*/
-		
+				tabSwapper.tabs.splice(idx, 1);
+				if (tab.hasClass(tabSwapper.options.selectedClass) && tabs.length > 1)	{ tabSwapper.show(0); }
+
+				//	$('memory').store('tabSwapper', tabSwapper);
+				//	return;
+			}
+		});
 	},
 	
 	

@@ -336,7 +336,7 @@ MUI.Window.implement({
 		if (MUI.desktop && MUI.desktop.taskbar) this.taskbar = MUI.desktop.taskbar;
 
 		// Check if window already exists and is not in progress of closing
-		if (this.el.windowEl && !this.isClosing){
+		if (this.el.windowEl && ! this.isClosing){
 
             // Restore if minimized
             // Partikule correction
@@ -773,6 +773,12 @@ MUI.Window.implement({
 	showSpinner: function(){
 		if (this.el.spinner) this.el.spinner.show();
 		return this;
+	},
+
+	setInfo:function(text)
+	{
+		if (this.el.footer && this.el.footer.info)
+			this.el.footer.info.set('text', text);
 	},
 
 	close: function(){
@@ -1229,6 +1235,9 @@ MUI.Window.implement({
 				}
 			}).inject(cache.footer, 'bottom');
 		}
+
+		// InfoBox
+		cache.footer.info = new Element('div', {'class': 'info'}).inject(cache.footer, 'bottom');
 
 		if (this.options.shape == 'gauge'){
 			cache.canvasHeader = new Element('canvas', {

@@ -250,7 +250,6 @@ if ($tracker_title == '')
 
 		<fieldset class="mt10">
 	
-
 			<!-- Tabs -->
 			<div id="pageTab" class="mainTabs">
 				
@@ -262,30 +261,36 @@ if ($tracker_title == '')
 
 					<?php if ( ! empty($id_page)) :?>
 
-						<?php if(Authority::can('access', 'admin/page/media/file')) :?>
-							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
-						<?php endif ;?>
-						<?php if(Authority::can('access', 'admin/page/media/music')) :?>
-							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="musicTab"><a><?php echo lang('ionize_label_music'); ?></a></li>
-						<?php endif ;?>
-						<?php if(Authority::can('access', 'admin/page/media/video')) :?>
-							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="videoTab"><a><?php echo lang('ionize_label_videos'); ?></a></li>
-						<?php endif ;?>
-						<?php if(Authority::can('access', 'admin/page/media/picture')) :?>
-							<li class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?php echo lang('ionize_label_pictures'); ?></a></li>
+						<?php if(Authority::can('access', 'admin/page/media')) :?>
+							<li id="mediaTab" class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>"><a><?php echo lang('ionize_label_medias'); ?></a></li>
 						<?php endif ;?>
 
+						<!-- Media Extend Fields -->
+						<?php foreach($extend_fields as $extend) :?>
+							<?php if ($extend['type'] == 8) :?>
+								<?php
+								$id_extend = $extend['id_extend_field'];
+								$label =  ! empty($extend['label'])  ? $extend['label'] : $extend['name'];
+								$label_title = $extend['name'] . ( !empty($extend['description']) ? ' : ' .$extend['description'] : '');
+								?>
+								<?php if ($extend['translated'] != '1') :?>
+									<li class="extendMediaTab right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" data-id="<?php echo $id_extend ?>"><a><?php echo $label ?></a></li>
+								<?php else:?>
+									<?php foreach(Settings::get_languages() as $language) :?>
+										<li class="extendMediaTab right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang']; ?>"><a><?php echo $label . ' ' . ucfirst($language['lang']); ?></a></li>
+									<?php endforeach ;?>
+
+								<?php endif;?>
+							<?php endif;?>
+						<?php endforeach;?>
 					<?php endif ;?>
-
 				</ul>
 				<div class="clear"></div>
-			
 			</div>
 
 
 			<div id="pageTabContent">
 			
-
 				<!-- Text block -->
 				<?php foreach(Settings::get_languages() as $language) :?>
 
@@ -525,119 +530,76 @@ if ($tracker_title == '')
 
 				<?php if ( ! empty($id_page)) :?>
 
-					<?php if(Authority::can('access', 'admin/page/media/file')) :?>
-						<!-- Files -->
+					<?php if(Authority::can('access', 'admin/page/media')) :?>
+
+						<!-- Medias -->
 						<div class="tabcontent">
 
 							<p class="h30">
-								<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
+									<a id="addMedia" class="fmButton button light right">
+										<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+									</a>
+									<a id="btnAddVideoUrl" class="right light button">
+										<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
+									</a>
+
+								<a class="left light button" onclick="javascript:mediaManager.loadMediaList();return false;">
 									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 								</a>
-								<?php if(Authority::can('unlink', 'admin/page/media/file')) :?>
 
-									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
+									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType();return false;">
 										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
 									</a>
-
-								<?php endif ;?>
 							</p>
 
-							<ul id="fileContainer" class="sortable-container">
-								<span><?php echo lang('ionize_message_no_file'); ?></span>
-							</ul>
+							<div id="mediaContainer" class="sortable-container"></div>
 
 						</div>
+
+
+						<!-- Extends : Medias -->
+						<?php foreach($extend_fields as $extend) :?>
+
+							<?php if ($extend['type'] == 8) :?>
+								<?php
+									$id_extend = $extend['id_extend_field'];
+									$label =  ! empty($extend['label'])  ? $extend['label'] : $extend['name'];
+									$label_title = $extend['name'] . ( !empty($extend['description']) ? ' : ' .$extend['description'] : '');
+								?>
+								<?php if ($extend['translated'] != '1') :?>
+									<div class="tabcontent">
+										<p class="h30">
+											<?php if (User()->is('super-admin')) :?>
+												<span class="lite">Extend code : <strong><?php echo  $extend['name']?></strong></span>
+											<?php endif ;?>
+
+											<a data-id="<?php echo $id_extend ?>" data-label="<?php echo $label ?>" class="extendMediaButton button light right">
+												<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+											</a>
+											<a id="btnAddVideoUrl" class="right light button">
+												<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
+											</a>
+										</p>
+										<div class="sortable-container extendMediaContainer" data-id="<?php echo $id_extend ?>" data-label="<?php echo $label ?>"></div>
+									</div>
+								<?php else:?>
+									<?php foreach(Settings::get_languages() as $language) :?>
+										<div class="tabcontent">
+											<p class="h30">
+												<?php if (User()->is('super-admin')) :?>
+													<span class="lite">Extend code : <strong><?php echo  $extend['name']?></strong></span>
+												<?php endif ;?>
+												<a data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang'] ?>" data-label="<?php echo $label ?>" class="extendMediaButton button light right">
+													<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+												</a>
+											</p>
+											<div class="sortable-container extendMediaContainer" data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang'] ?>" data-label="<?php echo $label ?>"></div>
+										</div>
+									<?php endforeach ;?>
+								<?php endif;?>
+							<?php endif;?>
+						<?php endforeach;?>
 					<?php endif ;?>
-
-					<?php if(Authority::can('access', 'admin/page/media/music')) :?>
-						<!-- Music -->
-						<div class="tabcontent">
-
-							<p class="h30">
-								<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
-									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-								</a>
-								<?php if(Authority::can('unlink', 'admin/page/media/music')) :?>
-
-									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
-										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_musics'); ?>
-									</a>
-
-								<?php endif ;?>
-
-							</p>
-
-							<ul id="musicContainer" class="sortable-container">
-								<span><?php echo lang('ionize_message_no_music'); ?></span>
-							</ul>
-
-						</div>
-					<?php endif ;?>
-
-					<?php if(Authority::can('access', 'admin/page/media/video')) :?>
-						<!-- Videos -->
-						<div class="tabcontent">
-
-							<p class="h30">
-								<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
-									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-								</a>
-
-								<?php if(Authority::can('unlink', 'admin/page/media/video')) :?>
-
-									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
-										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_videos'); ?>
-									</a>
-								<?php endif ;?>
-
-							</p>
-
-							<?php if(Authority::can('link', 'admin/page/media/video')) :?>
-
-								<dl class="first">
-									<dt>
-										<label for="addVideo"><?php echo lang('ionize_label_add_video'); ?></label>
-									</dt>
-									<dd>
-										<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
-										<a id="btnAddVideo" class="left light button">
-											<i class="icon-plus"></i><?php echo lang('ionize_button_add_video'); ?>
-										</a>
-									</dd>
-								</dl>
-
-							<?php endif ;?>
-
-							<ul id="videoContainer" class="sortable-container">
-								<span><?php echo lang('ionize_message_no_video'); ?></span>
-							</ul>
-
-						</div>
-					<?php endif ;?>
-
-					<?php if(Authority::can('access', 'admin/page/media/picture')) :?>
-						<!-- Pictures -->
-						<div class="tabcontent">
-
-							<p class="h30">
-								<a class="right light button pictures" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
-									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-								</a>
-								<?php if(Authority::can('unlink', 'admin/page/media/picture')) :?>
-									<a class="left light button delete" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
-										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_pictures'); ?>
-									</a>
-								<?php endif ;?>
-
-							</p>
-
-							<div id="pictureContainer" class="sortable-container">
-								<span><?php echo lang('ionize_message_no_picture'); ?></span>
-							</div>
-
-						</div>
-					<?php endif ;?>
-
 				<?php endif ;?>
 			</div>
 		</fieldset>
@@ -681,9 +643,7 @@ if ($tracker_title == '')
 </form>
 
 
-<!-- File Manager Form
-	 Mandatory for the filemanager
--->
+<!-- File Manager Form : Mandatory for the filemanager -->
 <form name="fileManagerForm" id="fileManagerForm">
 	<input type="hidden" name="hiddenFile" />
 </form>
@@ -721,7 +681,16 @@ if ($tracker_title == '')
 	});
 
 	// Tabs
-	var pageTab = new TabSwapper({tabsContainer: 'pageTab', sectionsContainer: 'pageTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'mainTab' });
+	var pageTab = new TabSwapper({
+		tabsContainer: 'pageTab',
+		sectionsContainer: 'pageTabContent',
+		selectedClass: 'selected',
+		deselectedClass: '',
+		tabs: 'li',
+		clickers: 'li a',
+		sections: 'div.tabcontent',
+		cookieName: 'mainTab'
+	});
 
     // TinyEditors. Must be called after tabs init.
     ION.initTinyEditors(null, '#pageExtendFields .tinyTextarea');
@@ -732,8 +701,10 @@ if ($tracker_title == '')
 
 	<?php if ( ! empty($id_page)) :?>
 
+		var id_page = '<?php echo $id_page; ?>';
+
 		// Articles List
-		ION.HTML('article/get_list', {'id_page':'<?php echo $id_page; ?>'}, {'update': 'articleListContainer'});
+		ION.HTML('article/get_list', {'id_page':id_page}, {'update': 'articleListContainer'});
 
 		/**
 		 * Get Content Tabs & Elements
@@ -741,42 +712,85 @@ if ($tracker_title == '')
 		 * 2. ION.getContentElements calls element/get_elements_from_definition : returns the elements for each definition
 		 */
 		$('desktop').store('tabSwapper', pageTab);
-		ION.getContentElements('page', '<?php echo $id_page; ?>');
+		ION.getContentElements('page', id_page);
 
-
-		<?php if(Authority::can('link', 'admin/page/media/video')) :?>
-
-			// Add Video button
-			$('btnAddVideo').addEvent('click', function()
-			{
-				if ($('addVideo').value !='')
-				{
-					ION.JSON('media/add_external_media', {
-						'type': 'video',
-						'parent': 'page',
-						'id_parent': '<?php echo $id_page; ?>',
-						'path': $('addVideo').value
-					});
-				}
-				return false;
-			});
-		<?php endif ;?>
 
 		// Media Manager & tabs events
-		mediaManager.initParent('page', '<?php echo $id_page; ?>');
+		mediaManager.initParent('page', id_page);
 
-		<?php if(Authority::can('access', 'admin/page/media/file')) :?>
-			mediaManager.loadMediaList('file');
+		<?php if(Authority::can('access', 'admin/article/media')) :?>
+			mediaManager.loadMediaList();
 		<?php endif ;?>
-		<?php if(Authority::can('access', 'admin/page/media/music')) :?>
-			mediaManager.loadMediaList('music');
+
+		// Add Media button
+		$('addMedia').addEvent('click', function(e)
+		{
+			e.stop();
+			mediaManager.initParent('page', id_page);
+			mediaManager.toggleFileManager();
+		});
+
+		// Init the staticItemManager
+		staticItemManager.init({
+			'parent': 'page',
+			'id_parent': id_page,
+			'destination': 'pageTab'
+		});
+
+		// Get Static Items
+		staticItemManager.getParentItemList();
+
+		// Add Video button
+		<?php if(Authority::can('link', 'admin/page/media')) :?>
+
+			$('btnAddVideoUrl').addEvent('click', function()
+			{
+				ION.dataWindow(
+					'addExternalMedia',
+					'ionize_label_add_video',
+					'media/add_external_media_window',
+					{width:600, height:150},
+					{
+						'parent': 'page',
+						'id_parent': id_page
+					}
+				)
+			});
+
 		<?php endif ;?>
-		<?php if(Authority::can('access', 'admin/page/media/video')) :?>
-			mediaManager.loadMediaList('video');
-		<?php endif ;?>
-		<?php if(Authority::can('access', 'admin/page/media/picture')) :?>
-			mediaManager.loadMediaList('picture');
-		<?php endif ;?>
+
+
+		// Extend Media Tab : Load Media List
+		$$('.extendMediaTab').each(function(el)
+		{
+			extendMediaManager.loadMediaList({
+				container:		'extendMediaContainer',
+				tab:			'extendMediaTab',
+				parent: 		'page',
+				id_parent: 		id_page,
+				id_extend: 		el.getProperty('data-id'),
+				lang: 			el.getProperty('data-lang'),
+				extend_label: 	el.getProperty('data-label')
+			});
+		});
+
+		// Add Extend Media button
+		$$('.extendMediaButton').each(function(el)
+		{
+			el.addEvent('click', function()
+			{
+				extendMediaManager.open({
+					container:		'extendMediaContainer',
+					tab:			'extendMediaTab',
+					parent: 		'page',
+					id_parent: 		id_page,
+					id_extend: 		this.getProperty('data-id'),
+					lang: 			this.getProperty('data-lang'),
+					extend_label: 	this.getProperty('data-label')
+				});
+			});
+		});
+
 
 	<?php else: ?>
 

@@ -57,7 +57,13 @@
 
 				item.addEvent('click', function()
 				{
-					ION.formWindow('extendfield' + id, 'extendfieldForm'+id, '<?php echo lang('ionize_title_extend_field'); ?>', 'extend_field/edit/' + id, {width: 400, height: 400});
+					ION.formWindow(
+						'extendfield' + id,
+						'extendfieldForm'+id,
+						'<?php echo lang('ionize_title_extend_field'); ?>',
+						'extend_field/edit/' + id,
+						{width: 500, height: 350}
+					);
 				});
 			});
 		<?php endif;?>

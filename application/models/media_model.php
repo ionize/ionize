@@ -31,6 +31,7 @@ class Media_model extends Base_model
 		'lang_display'
 	);
 
+	protected static $MP3_ID3 = array('album', 'artist', 'title', 'year');
 
 	/**
 	 * Constructor
@@ -68,31 +69,87 @@ class Media_model extends Base_model
 		
 		// Parent PK , Media table
 		$parent_pk = $this->get_pk_name($parent);
-		$media_table = $parent.'_'.$this->table;
+		$media_table = $parent.'_'.$this->get_table();
 		
 		if ($parent_pk !== FALSE)
 		{
 			// Select from media table
 			$this->{$this->db_group}->order_by('ordering', 'ASC');
-			$this->{$this->db_group}->select($this->table.'.*', FALSE);
+			$this->{$this->db_group}->select($this->get_table().'.*', FALSE);
 			$this->{$this->db_group}->select($media_table.'.ordering, '.$media_table.'.lang_display', FALSE);
 			
 			// Limit to current parent ID
 			$this->{$this->db_group}->where($media_table.'.'.$parent_pk, $id_parent);
 			
 			if ( ! is_null($type))
-				$this->{$this->db_group}->where($this->table.'.type', $type);
+				$this->{$this->db_group}->where($this->get_table().'.type', $type);
 			
 			// Join to link table
-			$this->{$this->db_group}->join($media_table, $this->table.'.'.$this->pk_name.'='.$media_table.'.'.$this->pk_name);
+			$this->{$this->db_group}->join($media_table, $this->get_table().'.'.$this->get_pk_name().'='.$media_table.'.'.$this->get_pk_name());
 
 			$this->{$this->db_group}->select($media_table.'.ordering');
 
-			$query = $this->{$this->db_group}->get($this->table);
+			$query = $this->{$this->db_group}->get($this->get_table());
 
 			if($query->num_rows() > 0)
 				$data = $query->result_array();
 		}
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns all medias linked to one extend field
+	 *
+	 * @param      $id_extend
+	 * @param      $parent
+	 * @param      $id_parent
+	 * @param null $lang
+	 *
+	 * @return array
+	 */
+	public function get_extend_media_list($id_extend, $parent, $id_parent, $lang=NULL)
+	{
+		$data = array();
+
+		self::$ci->load->model('extend_field_model', '', true);
+
+		if ( ! $lang) $lang=NULL;
+
+		$extend = self::$ci->extend_field_model->get_element_extend_field($id_extend, $parent, $id_parent, $lang);
+
+		if ( ! empty($extend))
+		{
+			$ids = strlen($extend['content']) > 0 ? explode(',', $extend['content']) : NULL;
+
+			if ( ! empty($ids))
+			{
+				$this->{$this->db_group}->select($this->get_table().'.*', FALSE);
+
+				$where = array(
+					'where_in' => array($this->get_table().'.id_media' => $ids),
+					'order_by' => "field(" . $this->get_table() . ".id_media, ".$extend['content'] . ")"
+				);
+
+				if ( ! is_null($lang))
+				{
+					$this->{$this->db_group}->select($this->get_lang_table().'.*', FALSE);
+
+					$this->{$this->db_group}->join(
+						$this->get_lang_table(),
+						$this->get_lang_table().'.'.$this->get_pk_name().'='.$this->get_table().'.'.$this->get_pk_name().
+						' AND ' . $this->get_lang_table().'.lang = \'' . $lang . '\'',
+						'left'
+					);
+				}
+
+				$data = parent::get_list($where, $this->get_table());
+			}
+		}
+
 		return $data;
 	}
 
@@ -119,7 +176,7 @@ class Media_model extends Base_model
 		// Correction on all non declared parent tables
 		foreach ($where as $key => $val)
 		{
-			if (strpos($val, 'id_media') === 0)
+			if (! is_array($val) && strpos($val, 'id_media') === 0)
 			{
 				$val = $this->table . '.' . $val;
 				$where[$key] = $val;
@@ -140,16 +197,15 @@ class Media_model extends Base_model
 	 * Inserts / Update a media into the media table.
 	 * Updates the media if the media complete path already exists
 	 *
-	 * @param      $type		Medium type. Can be 'picture', 'music', 'video', 'file'
 	 * @param      $path		Complete relative path to the medium, including file name, including the "files" folder
 	 * @param null $provider
 	 *
 	 * @return bool				TRUE if succeed, FALSE if errors
 	 */
-	public function insert_media($type, $path, $provider=NULL)
+	public function insert_media($path, $provider=NULL)
 	{
-		if ($path) {
-
+		if ($path)
+		{
 			// If no '/' in the path...
 			if(strpos($path, '/') === FALSE)
 			{
@@ -162,15 +218,20 @@ class Media_model extends Base_model
 				$base_path = str_replace($file_name, '', $path);
 			}
 
-			$data['type'] = 	 	$type;
-			$data['path'] = 	 	$path;
-			$data['file_name'] = 	$file_name;
-			$data['base_path'] = 	$base_path;
-			$data['provider'] = 	! is_null($provider) ? $provider : '';
-			// $data['path_hash'] = 	hash(config_item('files_path_hash_method'), $path);
+			$type = $this->get_type($file_name);
+
+			$data = array(
+				'type' => $type,
+				'path' => $path,
+				'file_name' => $file_name,
+				'base_path' => $base_path,
+				'provider' => ! is_null($provider) ? $provider : ''
+			);
 
 			// Update if exists
+			$is_new = FALSE;
 			$query = $this->get_where(array('path'=>$path));
+
 			if( $query->num_rows() > 0)
 			{
 				$medium = $query->row_array();
@@ -181,9 +242,31 @@ class Media_model extends Base_model
 			// Insert
 			else
 			{
+				$is_new = TRUE;
 				$this->{$this->db_group}->insert($this->table, $data);
 				$id = $this->{$this->db_group}->insert_id();
 			}
+
+			// Tag ID3 if MP3
+			if ($type == 'music' && $this->is($path, 'mp3') && $is_new)
+			{
+				$data['id_media'] = $id;
+
+				// Displayed datas
+				$tags = $this->get_ID3($path);
+				$data['copyright'] = $tags['artist'];
+				$data['date'] = date('Y.m.d H:m:s', strtotime($tags['year']));
+
+				// Title
+				foreach(Settings::get_languages() as $lang)
+				{
+					$data[$lang['lang']]['title'] = $tags['title'];
+					$data[$lang['lang']]['alt'] = $data[$lang['lang']]['description'] = $tags['artist'] . ' - ' . $tags['album'] . ' : ' . $tags['title'];
+				}
+
+				$this->save($data, $data);
+			}
+
 			return $id;
 		}
 		return FALSE;
@@ -196,14 +279,13 @@ class Media_model extends Base_model
 	/**
 	 * Attach one medium to a parent
 	 *
-	 * @param	string	Media type. Can be 'picture', 'video', etc.
 	 * @param	string	parent. Example : 'article', 'page'
 	 * @param	string	Parent ID
 	 * @param	string	Medium ID
 	 * @return	boolean	TRUE if success, FALSE if error
 	 *
 	 */
-	public function attach_media($type, $parent, $id_parent, $id_media)
+	public function attach_media($parent, $id_parent, $id_media)
 	{
 		// Parent PK , Media table
 		$parent_pk = $this->get_pk_name($parent);
@@ -211,27 +293,23 @@ class Media_model extends Base_model
 
 		if ($this->table_exists($media_table))
 		{
-
 			// Get the media ordering value, regarding to the type
 			if ($this->{$this->db_group}->field_exists('ordering', $media_table))
 			{
 				$this->{$this->db_group}->select_max('ordering');
 				$this->{$this->db_group}->join('media', 'media.id_media = '.$media_table.'.id_media');
 				$this->{$this->db_group}->where($parent_pk, $id_parent);
-				$this->{$this->db_group}->where('media.type', $type);
 
 				$query = $this->{$this->db_group}->get($media_table);
 
+				$ordering = 0;
 				if ($query->num_rows() > 0)
 				{
 					$row =		$query->row();
 					$ordering =	$row->ordering;
 				}
-				else
-				{
-					$ordering = 0;
-				}
-				$this->{$this->db_group}->set('ordering', $ordering += 1);
+				$ordering += 1;
+				$this->{$this->db_group}->set('ordering', $ordering);
 			}
 
 			$this->{$this->db_group}->where('id_media', $id_media);
@@ -252,47 +330,6 @@ class Media_model extends Base_model
 	}
 
 	
-	// ------------------------------------------------------------------------	
-
-
-	/**
-	 * Detach all media from a parent depending on the type
-	 * If no type, all media attached to this parent will be deleted
-	 *
-	 * @param 	string	parent type. Ex 'page', 'article'
-	 * @param	int		parent ID
-	 * @param	string	media type. Optional.
-	 *
-	 * @return 	int		Affected rows
-	 *
-	 */
-	public function detach_media_by_type($parent, $id_parent, $type = NULL)
-	{
-		// Parent PK , Media table
-		$parent_pk = $this->get_pk_name($parent);
-		$media_table = $parent.'_'.$this->table;
-
-		// INNER JOIN on delete is not possible with CI Active Record.
-		// So this request needs to be handly written
-		$sql = 	' DELETE first from ' . $media_table . ' AS first';
-		
-		if ( ! is_null($type))
-		{
-			$sql .= ' INNER JOIN ' . $this->table . ' AS second WHERE first.id_media = second.id_media ';
-			$sql .= ' AND second.type = \'' . $type . '\'';
-			$sql .= ' AND first.'.$parent_pk.' = '.$id_parent;
-		}
-		else
-		{
-			$sql .= ' WHERE first.' . $parent_pk . ' = ' . $id_parent;
-		}
-
-		$this->{$this->db_group}->query($sql);
-		
-		return (int) $this->{$this->db_group}->affected_rows();		
-	}
-
-
 	// ------------------------------------------------------------------------
 
 
@@ -689,6 +726,90 @@ class Media_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+	/**
+	 * @param $path
+	 *
+	 * @return array
+	 */
+	public function get_ID3($path)
+	{
+		$tags = array_fill_keys(self::$MP3_ID3, '');
+
+		if ( is_file(DOCPATH.$path) )
+		{
+			require_once(APPPATH.'libraries/getid3/getid3.php');
+
+			// Initialize getID3 engine
+			$getID3 = new getID3;
+
+			// Analyze file and store returned data in $ThisFileInfo
+			$id3 = $getID3->analyze(DOCPATH.$path);
+
+			foreach(self::$MP3_ID3 as $index)
+			{
+				$tags[$index] = ( ! empty($id3['tags_html']['id3v2'][$index][0])) ? $id3['tags_html']['id3v2'][$index][0] : '';
+			}
+		}
+
+		return $tags;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $path
+	 * @param $tags
+	 *
+	 * @return bool
+	 */
+	public function write_ID3($path, $tags)
+	{
+		if ( is_file(DOCPATH.$path) )
+		{
+			require_once(APPPATH.'libraries/getid3/getid3.php');
+
+			$getID3 = new getID3;
+			$getID3->setOption(array('encoding'=>'UTF-8'));
+			getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.php', __FILE__, TRUE);
+
+			$tagwriter = new getid3_writetags;
+			$tagwriter->filename = $path;
+			$tagwriter->tag_encoding = 'UTF-8';
+			$tagwriter->tagformats = array('id3v1', 'id3v2.3');
+			$tagwriter->overwrite_tags = TRUE;
+			$tagwriter->tag_data = $tags;
+
+			$tagwriter->WriteTags();
+
+			if (!empty($tagwriter->warnings))
+			{
+				return FALSE;
+			}
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $path
+	 * @param $ext
+	 *
+	 * @return bool
+	 */
+	public function is($path, $ext)
+	{
+		if (pathinfo(DOCPATH.$path, PATHINFO_EXTENSION) == $ext)
+			return TRUE;
+
+		return FALSE;
+	}
 
 
 	// ------------------------------------------------------------------------

@@ -482,8 +482,8 @@ ION.append({
 	{
 		return co.replace(/\{\{media:(\d*)\}\}/g, function(a,b)
 		{
-			console.log('a : ' + a);
-			console.log('b : ' + b);
+			// console.log('a : ' + a);
+			// console.log('b : ' + b);
 
 			// Here : Get the media src by Ajax request
 

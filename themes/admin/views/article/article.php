@@ -119,8 +119,12 @@ if ($tracker_title == '')
 
 				<!-- Extend Fields (Main) -->
 				<?php foreach($extend_fields as $extend_field) :?>
-				
-					<?php if ($extend_field['translated'] != '1') :?>
+
+					<?php
+					$id_extend = $extend_field['id_extend_field'];
+					?>
+
+					<?php if ($extend_field['translated'] != '1' && $extend_field['type'] < 8) :?>
 						<?php
 						$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
 						$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
@@ -128,7 +132,7 @@ if ($tracker_title == '')
 
 						<dl>
 							<dt>
-								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
+								<label for="cf_<?php echo $id_extend ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
 							</dt>
 							<dd>
 								<?php
@@ -136,17 +140,17 @@ if ($tracker_title == '')
 								?>
 							
 								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
+									<input id="cf_<?php echo $id_extend ?>" class="inputtext" type="text" name="cf_<?php echo $id_extend ?>" value="<?php echo $extend_field['content'] ; ?>" />
 								<?php endif ;?>
 
 								<!-- Textarea -->
 								<?php if ($extend_field['type'] == '2') :?>
-                               		<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
+                               		<textarea id="cf_<?php echo $id_extend ?>" class="autogrow inputtext" name="cf_<?php echo $id_extend ?>"><?php echo $extend_field['content']; ?></textarea>
 								<?php endif ;?>
 
 								<!-- Textarea with editor -->
 								<?php if ($extend_field['type'] == '3') :?>
-									<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="smallTinyTextarea inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
+									<textarea id="cf_<?php echo $id_extend ?>" class="smallTinyTextarea inputtext" name="cf_<?php echo $id_extend ?>"><?php echo $extend_field['content']; ?></textarea>
 								<?php endif ;?>
 
 								<!-- Checkbox -->
@@ -165,7 +169,7 @@ if ($tracker_title == '')
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 
 											?>
-											<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
+											<input type="checkbox" id= "cf_<?php echo $id_extend.$i; ?>" name="cf_<?php echo $id_extend ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $id_extend . $i; ?>"><?php echo $value; ?></label></input><br/>
 											<?php
 											$i++;
 										}
@@ -187,7 +191,7 @@ if ($tracker_title == '')
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 
 											?>
-											<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $key; ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
+											<input type="radio" id= "cf_<?php echo $id_extend.$i; ?>" name="cf_<?php echo $id_extend ?>" value="<?php echo $key; ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $id_extend . $i; ?>"><?php echo $value; ?></label></input><br/>
 											<?php
 											$i++;
 										}
@@ -201,7 +205,7 @@ if ($tracker_title == '')
 										$pos = explode("\n", $extend_field['value']);
 										$saved = 	explode(',', $extend_field['content']);
 									?>
-									<select name="cf_<?php echo $extend_field['id_extend_field']; ?>">
+									<select name="cf_<?php echo $id_extend ?>">
 									<?php
 										$i = 0; 
 										foreach($pos as $values)
@@ -221,14 +225,13 @@ if ($tracker_title == '')
 								<!-- Date & Time -->
 								<?php if ($extend_field['type'] == '7') :?>
 								
-									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
-									<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>"></a>
+									<input id="cf_<?php echo $id_extend ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $id_extend ?>" value="<?php echo $extend_field['content'] ; ?>" />
+									<a class="icon clearfield date" data-id="cf_<?php echo $id_extend ?>"></a>
 
 								<?php endif ;?>
-								
 							</dd>
-						</dl>	
-							
+						</dl>
+
 					<?php endif ;?>
 				<?php endforeach ;?>
 
@@ -247,18 +250,30 @@ if ($tracker_title == '')
 						<li class="tab_article<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
 					<?php endforeach ;?>
 
-					<?php if(Authority::can('access', 'admin/article/media/file')) :?>
-    					<li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="fileTab"><a><?php echo lang('ionize_label_files'); ?></a></li>
+					<!-- Media Tab : id is important for media items number on tab -->
+					<?php if(Authority::can('access', 'admin/article/media')) :?>
+    					<li id="mediaTab" class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>"><a><?php echo lang('ionize_label_medias'); ?></a></li>
 					<?php endif;?>
-					<?php if(Authority::can('access', 'admin/article/media/music')) :?>
-	                    <li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="musicTab"><a><?php echo lang('ionize_label_music'); ?></a></li>
-					<?php endif;?>
-					<?php if(Authority::can('access', 'admin/article/media/video')) :?>
-	                    <li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="videoTab"><a><?php echo lang('ionize_label_videos'); ?></a></li>
-					<?php endif;?>
-					<?php if(Authority::can('access', 'admin/article/media/picture')) :?>
-	                    <li class="right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" id="pictureTab"><a><?php echo lang('ionize_label_pictures'); ?></a></li>
-					<?php endif;?>
+
+					<!-- Media Extend Fields -->
+					<?php foreach($extend_fields as $extend) :?>
+						<?php if ($extend['type'] == 8) :?>
+							<?php
+								$id_extend = $extend['id_extend_field'];
+								$label =  ! empty($extend['label'])  ? $extend['label'] : $extend['name'];
+								$label_title = $extend['name'] . ( !empty($extend['description']) ? ' : ' .$extend['description'] : '');
+							?>
+							<?php if ($extend['translated'] != '1') :?>
+								<li class="extendMediaTab right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" data-id="<?php echo $id_extend ?>"><a><?php echo $label ?></a></li>
+							<?php else:?>
+								<?php foreach(Settings::get_languages() as $language) :?>
+									<li class="extendMediaTab right<?php if( empty($id_article)) :?> inactive<?php endif ;?>" data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang']; ?>"><a><?php echo $label . ' ' . ucfirst($language['lang']); ?></a></li>
+								<?php endforeach ;?>
+
+							<?php endif;?>
+						<?php endif;?>
+					<?php endforeach;?>
+
 				</ul>
 				<div class="clear"></div>
 			
@@ -280,8 +295,6 @@ if ($tracker_title == '')
 							<?php echo lang('ionize_label_copy_to_other_languages') ?>
 						</a>
 					</p>
-
-
 
 					<div class="article-header">
 
@@ -313,10 +326,6 @@ if ($tracker_title == '')
 							</dd>
 						</dl>
 
-						<!-- Toggler : More : SEO, Online.. -->
-	<!--
-						<h3 class="toggler toggler-<?php echo $lang; ?>"><?php echo lang('ionize_title_seo'); ?></h3>
-	-->
 						<!-- sub title -->
 						<dl>
 							<dt>
@@ -338,7 +347,6 @@ if ($tracker_title == '')
 							</dd>
 						</dl>
 
-
 						<!-- Meta Title : Browser window title -->
 						<dl>
 							<dt>
@@ -349,17 +357,16 @@ if ($tracker_title == '')
 							</dd>
 						</dl>
 
-
 						<!-- extend fields goes here... -->
 						<?php if ( $has_translated_extend_fields && ! empty($extend_fields)) :?>
-
-							<!--
-								<h3 class="toggler toggler-<?php echo $lang; ?>"><?php echo lang('ionize_title_extend_fields'); ?></h3>
-							-->
 
 							<div class="element element-<?php echo $lang; ?>">
 
 							<?php foreach($extend_fields as $extend_field) :?>
+
+								<?php
+									$id_extend = $extend_field['id_extend_field'];
+								?>
 
 								<?php if ($extend_field['translated'] == '1') :?>
 									<?php
@@ -368,7 +375,7 @@ if ($tracker_title == '')
 									?>
 									<dl>
 										<dt>
-											<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
+											<label for="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
 										</dt>
 										<dd>
 											<?php
@@ -376,17 +383,17 @@ if ($tracker_title == '')
 											?>
 
 											<?php if ($extend_field['type'] == '1') :?>
-												<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field[$lang]['content']; ?>" />
+												<input id="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" class="inputtext" type="text" name="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" value="<?php echo $extend_field[$lang]['content']; ?>" />
 											<?php endif ;?>
 
 											<!-- Textarea -->
 											<?php if ($extend_field['type'] == '2') :?>
-												<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="text autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
+												<textarea id="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" class="text autogrow inputtext" name="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
 											<?php endif ;?>
 
 											<!-- Textarea with editor -->
 											<?php if ($extend_field['type'] == '3') :?>
-												<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="smallTinyTextarea h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" rel="<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
+												<textarea id="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" class="smallTinyTextarea h80" name="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" rel="<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
 											<?php endif ;?>
 
 											<!-- Checkbox -->
@@ -406,7 +413,7 @@ if ($tracker_title == '')
 														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 
 														?>
-														<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
+														<input type="checkbox" id= "cf_<?php echo $id_extend.$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $id_extend . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
 														<?php
 														$i++;
 													}
@@ -428,7 +435,7 @@ if ($tracker_title == '')
 														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 
 														?>
-														<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $key; ?>" <?php if ($extend_field[$lang]['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
+														<input type="radio" id= "cf_<?php echo $id_extend.$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" value="<?php echo $key; ?>" <?php if ($extend_field[$lang]['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $id_extend . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
 														<?php
 														$i++;
 													}
@@ -442,7 +449,7 @@ if ($tracker_title == '')
 													$pos = explode("\n", $extend_field['value']);
 													$saved = 	explode(',', $extend_field[$lang]['content']);
 												?>
-												<select name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>">
+												<select name="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>">
 													<?php
 														$i = 0;
 														foreach($pos as $values)
@@ -462,8 +469,8 @@ if ($tracker_title == '')
 											<!-- Date & Time -->
 											<?php if ($extend_field['type'] == '7') :?>
 
-												<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field['content'] ; ?>" />
-												<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"></a>
+												<input id="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>" value="<?php echo $extend_field['content'] ; ?>" />
+												<a class="icon clearfield date" data-id="cf_<?php echo $id_extend ?>_<?php echo $lang; ?>"></a>
 
 											<?php endif ;?>
 
@@ -501,124 +508,81 @@ if ($tracker_title == '')
 				</div>
 				<?php endforeach ;?>
 
-				<?php if(Authority::can('access', 'admin/article/media/file')) :?>
+				<?php if(Authority::can('access', 'admin/article/media')) :?>
 
-					<!-- Files -->
+					<!-- Medias -->
 					<div class="tabcontent">
 
 						<p class="h30">
-							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('file');return false;">
+								<a id="addMedia" class="fmButton button light right">
+									<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+								</a>
+								<a id="btnAddVideoUrl" class="right light button">
+									<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
+								</a>
+
+							<a class="left light button" onclick="javascript:mediaManager.loadMediaList();return false;">
 								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 							</a>
-							<?php if(Authority::can('unlink', 'admin/article/media/file')) :?>
-								<a class="left light button unlink" onclick="javascript:mediaManager.detachMediaByType('file');return false;">
-									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
+
+								<a class="left light button unlink" onclick="javascript:mediaManager.detachAllMedia();return false;">
+									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all'); ?>
 								</a>
-							<?php endif;?>
                         </p>
 
-						<ul id="fileContainer" class="sortable-container"></ul>
+						<div id="mediaContainer" class="sortable-container"></div>
 					</div>
 
-				<?php endif;?>
+					<!-- Extends : Medias -->
+					<?php foreach($extend_fields as $extend) :?>
 
-				<?php if(Authority::can('access', 'admin/article/media/music')) :?>
-
-					<!-- Music -->
-					<div class="tabcontent">
-
-						<p class="h30">
-							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('music');return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-							<?php if(Authority::can('unlink', 'admin/article/media/music')) :?>
-								<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('music');return false;">
-									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_musics'); ?>
-								</a>
-							<?php endif;?>
-						</p>
-
-						<ul id="musicContainer" class="sortable-container"></ul>
-					</div>
-
-				<?php endif;?>
-
-				<?php if(Authority::can('access', 'admin/article/media/video')) :?>
-
-					<!-- Videos -->
-					<div class="tabcontent">
-
-						<p class="h30">
-							<a class="right light button" onclick="javascript:mediaManager.loadMediaList('video');return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-							<?php if(Authority::can('unlink', 'admin/article/media/video')) :?>
-								<a class="left light button" onclick="javascript:mediaManager.detachMediaByType('video');return false;">
-									<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_videos'); ?>
-								</a>
-							<?php endif;?>
-						</p>
-
-						<?php if(Authority::can('link', 'admin/article/media/video')) :?>
-
-							<dl class="first">
-								<dt>
-									<label for="addVideo"><?php echo lang('ionize_label_add_video'); ?></label>
-								</dt>
-								<dd>
-									<textarea id="addVideo" name="addVideo" class="inputtext w300 autogrow left mr5" type="text"></textarea>
-									<a id="btnAddVideo" class="left light button">
-										<i class="icon-plus"></i><?php echo lang('ionize_button_add_video'); ?>
-									</a>
-								</dd>
-							</dl>
-
-						<?php endif;?>
-
-						<ul id="videoContainer" class="sortable-container"></ul>
-
-					</div>
-
-				<?php endif;?>
-
-				<?php if(Authority::can('access', 'admin/article/media/picture')) :?>
-
-					<!-- Pictures -->
-					<div class="tabcontent">
-
-						<p class="h30">
-							<a class="button light right" onclick="javascript:mediaManager.loadMediaList('picture');return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-							<a class="button light left" onclick="javascript:mediaManager.detachMediaByType('picture');return false;">
-								<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_pictures'); ?>
-							</a>
+						<?php if ($extend['type'] == 8) :?>
 							<?php
-							/*
-							<a class="button light left" onclick="javascript:mediaManager.initThumbsForParent();return false;">
-								<i class="icon-process"></i><?php echo lang('ionize_label_init_all_thumbs'); ?>
-							</a>
-							*/
+								$id_extend = $extend['id_extend_field'];
+								$label =  ! empty($extend['label'])  ? $extend['label'] : $extend['name'];
+								$label_title = $extend['name'] . ( !empty($extend['description']) ? ' : ' .$extend['description'] : '');
 							?>
-						</p>
+							<?php if ($extend['translated'] != '1') :?>
+								<div class="tabcontent">
+									<p class="h30">
+										<?php if (User()->is('super-admin')) :?>
+											<span class="lite">Extend code : <strong><?php echo  $extend['name']?></strong></span>
+										<?php endif ;?>
 
-						<div id="pictureContainer" class="sortable-container"></div>
-
-					</div>
-
+										<a data-id="<?php echo $id_extend ?>" data-label="<?php echo $label ?>" class="extendMediaButton button light right">
+											<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+										</a>
+										<a id="btnAddVideoUrl" class="right light button">
+											<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
+										</a>
+									</p>
+									<div class="sortable-container extendMediaContainer" data-id="<?php echo $id_extend ?>" data-label="<?php echo $label ?>"></div>
+								</div>
+							<?php else:?>
+								<?php foreach(Settings::get_languages() as $language) :?>
+									<div class="tabcontent">
+										<p class="h30">
+											<?php if (User()->is('super-admin')) :?>
+												<span class="lite">Extend code : <strong><?php echo  $extend['name']?></strong></span>
+											<?php endif ;?>
+											<a data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang'] ?>" data-label="<?php echo $label ?>" class="extendMediaButton button light right">
+												<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+											</a>
+										</p>
+										<div class="sortable-container extendMediaContainer" data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang'] ?>" data-label="<?php echo $label ?>"></div>
+									</div>
+								<?php endforeach ;?>
+							<?php endif;?>
+						<?php endif;?>
+					<?php endforeach;?>
 				<?php endif;?>
 			</div>
-
 		</fieldset>
-
 	</div>
-
 </form>
 
 
-<!-- File Manager Form
-	 Mandatory for the filemanager
--->
+<!-- File Manager Form : Mandatory for the filemanager -->
 <form name="fileManagerForm" id="fileManagerForm" action="">
 	<input type="hidden" name="hiddenFile" />
 </form>
@@ -652,16 +616,12 @@ if ($tracker_title == '')
 		});
 	});
 	
-	 
 	// Auto-generates URL
 	<?php if ($id_article == '') :?>
 		<?php foreach (Settings::get_languages() as $lang) :?>
-
 			ION.initCorrectUrl('title_<?php echo $lang['lang']; ?>', 'url_<?php echo $lang['lang']; ?>');
-
 		<?php endforeach ;?>
 	<?php endif; ?>
-
 
 	// Article ordering :
 	// - Show / hide article list depending on Ordering select
@@ -681,7 +641,16 @@ if ($tracker_title == '')
 	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content', 'meta_title'));
 	
 	// Tabs
-	var articleTab = new TabSwapper({tabsContainer: 'articleTab', sectionsContainer: 'articleTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'articleTab' });
+	var articleTab = new TabSwapper({
+		tabsContainer: 'articleTab',
+		sectionsContainer: 'articleTabContent',
+		selectedClass: 'selected',
+		deselectedClass: '',
+		tabs: 'li',
+		clickers: 'li a',
+		sections: 'div.tabcontent',
+		cookieName: 'articleTab'
+	});
 
 	// TinyEditors. Must be called after tabs init.
     ION.initTinyEditors(null, '#articleExtendFields .tinyTextarea');
@@ -689,46 +658,89 @@ if ($tracker_title == '')
     ION.initTinyEditors('.tab_article', '#articleTabContent .tinyTextarea');
     ION.initTinyEditors('.tab_article', '#articleTabContent .smallTinyTextarea', 'small', {'height':80});
 
-	<?php if (!empty($id_article)) :?>
-	
+	<?php if ( ! empty($id_article)) :?>
+
+		var id_article = '<?php echo $id_article; ?>';
+
 		// Get Content Elements Tabs & Elements
 		$('desktop').store('tabSwapper', articleTab);
-		ION.getContentElements('article', '<?php echo $id_article; ?>');
+		ION.getContentElements('article', id_article);
 
-		<?php if(Authority::can('link', 'admin/article/media/video')) :?>
+    	// Media Manager & tabs events
+		mediaManager.initParent('article', id_article);
 
-			// Add Video button
-			$('btnAddVideo').addEvent('click', function()
+		<?php if(Authority::can('access', 'admin/article/media')) :?>
+        	mediaManager.loadMediaList();
+		<?php endif ;?>
+
+		// Add Media button
+		$('addMedia').addEvent('click', function(e)
+		{
+			e.stop();
+			mediaManager.initParent('article', id_article);
+			mediaManager.toggleFileManager();
+		});
+
+		// Init the staticItemManager
+		staticItemManager.init({
+			'parent': 'article',
+			'id_parent': id_article,
+			'destination': 'articleTab'
+		});
+
+		// Get Static Items
+		staticItemManager.getParentItemList();
+
+		// Add video button
+		<?php if(Authority::can('link', 'admin/page/media')) :?>
+
+			$('btnAddVideoUrl').addEvent('click', function()
 			{
-				if ($('addVideo').value !='')
-				{
-					ION.JSON('media/add_external_media', {
-						'type': 'video',
+				ION.dataWindow(
+					'addExternalMedia',
+					'ionize_label_add_video',
+					'media/add_external_media_window',
+					{width:600, height:150},
+					{
 						'parent': 'article',
-						'id_parent': '<?php echo $id_article; ?>',
-						'path': $('addVideo').value
-					});
-				}
-				return false;
+						'id_parent': id_article
+					}
+				)
 			});
 
 		<?php endif ;?>
 
-    	// Media Manager & tabs events
-		mediaManager.initParent('article', '<?php echo $id_article; ?>');
 
-		<?php if(Authority::can('access', 'admin/article/media/file')) :?>
-        	mediaManager.loadMediaList('file');
-		<?php endif ;?>
-		<?php if(Authority::can('access', 'admin/article/media/music')) :?>
-        	mediaManager.loadMediaList('music');
-		<?php endif ;?>
-		<?php if(Authority::can('access', 'admin/article/media/video')) :?>
-        	mediaManager.loadMediaList('video');
-		<?php endif ;?>
-		<?php if(Authority::can('access', 'admin/article/media/picture')) :?>
-        	mediaManager.loadMediaList('picture');
-		<?php endif ;?>
+		// Extend Media Tab : Load Media List
+		$$('.extendMediaTab').each(function(el)
+		{
+			extendMediaManager.loadMediaList({
+				container:		'extendMediaContainer',
+				tab:			'extendMediaTab',
+				parent: 		'article',
+				id_parent: 		id_article,
+				id_extend: 		el.getProperty('data-id'),
+				lang: 			el.getProperty('data-lang'),
+				extend_label: 	el.getProperty('data-label')
+			});
+		});
+
+		// Add Extend Media button
+		$$('.extendMediaButton').each(function(el)
+		{
+			el.addEvent('click', function()
+			{
+				extendMediaManager.open({
+					container:		'extendMediaContainer',
+					tab:			'extendMediaTab',
+					parent: 		'article',
+					id_parent: 		id_article,
+					id_extend: 		this.getProperty('data-id'),
+					lang: 			this.getProperty('data-lang'),
+					extend_label: 	this.getProperty('data-label')
+				});
+			});
+		});
 
 	<?php endif ;?>
 

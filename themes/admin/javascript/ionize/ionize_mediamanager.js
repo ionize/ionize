@@ -10,8 +10,6 @@
  *		musicContainer:		The MP3 list container DOM element
  *		videoContainer:		The video list container DOM element
  *		button:				DOM opener button name
- *		mode:				'tinyBrowser' : Using the tinyBrowser plugin to browse files
- *							'mcFileManager' : Using MoxeCode MceImageManager / MceFileManager to browse files
  */
 
 var IonizeMediaManager = new Class(
@@ -21,11 +19,12 @@ var IonizeMediaManager = new Class(
     options: {
 		parent:			false,
 		idParent:		false,
-		mode:			'',								// TODO : Remove
+	    /*
 		musicArray:		Array('mp3'),					// Array of authorized files extensions
 		pictureArray:	Array('jpg', 'gif', 'png', 'jpeg'),
 		videoArray:		Array('flv', 'fv4'),
 		fileArray:		Array(),
+		*/
 		thumbSize:		120,
 	    resizeOnUpload: false,
 	    uploadAutostart: false,
@@ -50,16 +49,9 @@ var IonizeMediaManager = new Class(
 		this.standalone =   options.standalone;
 		this.idParent =		options.idParent;
 		this.parent =		options.parent;
+		this.filemanager =  null;
 
-		// Containers storing
-		this.containers = 	new Hash({
-			'picture' : options.pictureContainer,
-			'music' : options.musicContainer,
-			'video': options.videoContainer,
-			'file': options.fileContainer
-		});
-		// Filemanager mode
-		this.mode = 'mootools-filemanager';
+		this.container = $(options.container);
 
 		// Filemanager opening buttons
 		var self = this;
@@ -74,17 +66,27 @@ var IonizeMediaManager = new Class(
 		
 		// Check if a fileManager is already open. If yes, change the callback ref.
 		// Needed in case of page / article change with the filemanager open
+/*
 		if ($('filemanagerWindow'))
 		{
-			var self = this;
-			
-			filemanager.removeEvents('complete');
-			
-			filemanager.setOptions(
-			{
-				'onComplete': self.addMedia.bind(self)
-			});
+			this.filemanager = $('filemanagerWindow').retrieve('filemanager');
+			this.initParentTarget();
 		}
+*/
+	},
+
+	/**
+	 * Change the FM callback to act for standard parents : Pages, articles, etc.
+	 *
+	 */
+	initParentTarget: function()
+	{
+		var self = this;
+		this.filemanager.removeEvents('complete');
+		this.filemanager.setOptions(
+		{
+			'onComplete': self.addMedia.bind(self)
+		});
 	},
 
 
@@ -97,56 +99,78 @@ var IonizeMediaManager = new Class(
 	{
 		this.parent = parent;
 		this.idParent = id_parent;
+
+		if (this.filemanager) this.setFilemanagerTargetInfo();
 	},
-	
+
+
+	/**
+	 * Adds Target info to the Filemanager window
+	 */
+	setFilemanagerTargetInfo: function()
+	{
+		var text = Lang.get('ionize_label_filemanager_target') + ' : ' + this.parent + ' ' + this.idParent;
+
+		this.filemanager.setTargetInfo(text);
+	},
+
 
 	/**
 	 * Adds one medium to the current parent
 	 * Called by callback by the file / image manager
 	 *
-	 * @param url       Complete URL to the media. Slashes ('/') were replaced by ~ to permit CI management
+	 * @param file_url       Complete URL to the media. Slashes ('/') were replaced by ~ to permit CI management
 	 * @param file
 	 */
-	addMedia:function(url, file) 
+	addMedia:function(file_url, file)
 	{
+/*
 		// File extension
-		var extension = (url.substr(url.lastIndexOf('.') + 1 )).toLowerCase();
+		var extension = (file_url.substr(file_url.lastIndexOf('.') + 1 )).toLowerCase();
 
 		// Check media type regarding the extension
+
 		var type = false;
 		if (this.options.pictureArray.contains(extension)) { type='picture';}
 		if (this.options.musicArray.contains(extension)) { type='music';}
 		if (this.options.videoArray.contains(extension)) { type='video';}
 		if (this.options.fileArray.contains(extension)) { type='file';}
-
+*/
 		// Media type not authorized : error message
-		if (type == false)
-		{
-			ION.notification('error', Lang.get('ionize_message_media_not_authorized') + ' : ' + extension);
-		}
-		else
-		{
-			// Send the media to link
-			var xhr = new Request.JSON(
+//		if (type == false)
+//		{
+//			ION.notification('error', Lang.get('ionize_message_media_not_authorized') + ' : ' + extension);
+//		}
+//		else
+//		{
+			var data = {
+				path: file_url,
+				parent: this.parent,
+				id_parent: this.idParent,
+				type: type,
+				id_extend: this.id_extend       // can be null
+			};
+
+			var url = this.adminUrl + 'media/add_media';
+
+			new Request.JSON(
 			{
-				'url': this.adminUrl + 'media/add_media/' + type + '/' + this.parent + '/' + this.idParent, 
+				'url': url,
 				'method': 'post',
-				'data': 'path=' + url,
-				'onSuccess': this.successAddMedia.bind(this), 
+				'data': data,
+				'onSuccess': this.successAddMedia.bind(this),
 				'onFailure': this.failure.bind(this)
 			}).send();
-		}
+//		}
 	},
-
 
 	/**
 	 * called after 'addMedia()' success
 	 * calls 'loadMediaList' with the correct media type returned by the XHR call
 	 *
 	 * @param responseJSON
-	 * @param responseText
 	 */
-	successAddMedia: function(responseJSON, responseText)
+	successAddMedia: function(responseJSON)
 	{
 		ION.notification(responseJSON.message_type, responseJSON.message);
 
@@ -160,19 +184,23 @@ var IonizeMediaManager = new Class(
 
 	/**
 	 * Loads a media list through XHR regarding its type
-	 * called after a medi list loading through 'loadMediaList'
+	 * called after a media list loading through 'loadMediaList'
 	 *
 	 * @param type  Media type. Can be 'picture', 'music', 'video', 'file'
 	 */
-	loadMediaList: function(type)
+	loadMediaList: function()
 	{
 		// Only loaded if a parent exists
 		if (this.idParent)
 		{
-			var myAjax = new Request.JSON(
+			new Request.JSON(
 			{
-				'url' : this.adminUrl + 'media/get_media_list/' + type + '/' + this.parent + '/' + this.idParent,
-				'method': 'get',
+				url : this.adminUrl + 'media/get_media_list',
+				method: 'post',
+				data: {
+					parent: this.parent,
+					id_parent: this.idParent
+				},
 				'onFailure': this.failure.bind(this),
 				'onComplete': this.completeLoadMediaList.bind(this)
 			}).send();
@@ -188,65 +216,78 @@ var IonizeMediaManager = new Class(
 	 *                      responseJSON.type : media type. Can be 'picture', 'video', 'music', 'file'
 	 * @param responseText
 	 */
-	completeLoadMediaList: function(responseJSON, responseText)
+	completeLoadMediaList: function(responseJSON)
 	{
 		// Hides the spinner
 		MUI.hideSpinner();
 
-		// Receiver container
-		var cname = this.containers.get(responseJSON.type);
-		if (cname)
-			var container = $(cname);
-		
-		if (typeOf(container) != 'null')
+		this.container = $(this.options.container);
+		this.container.empty();
+
+		if (responseJSON && responseJSON.content)
 		{
-			container.empty();
+			// Feed the container with responseJSON content
+			this.container.set('html', responseJSON.content);
 
-			if (responseJSON && responseJSON.content)
-			{
-				// Feed the container with responseJSON content		
-				container.set('html', responseJSON.content);
+			var self = this;
 
-				var self = this;
-				// Init the sortable 
-				sortableMedia = new Sortables(container, {
-					revert: true,
-					handle: '.drag',
-					clone: true,
-					// constrain: true,
-					// container: container,
-					opacity: 0.5,
-					onComplete: function()
-					{
-						var serialized = this.serialize(0, function(element, index) 
-						{
-							// Get the ID list by replacing 'type_' by '' for each item
-							// Example : Each picture item is named 'picture_ID' where 'ID' is the media ID
-							if (element.id != '')
-							{
-								return (element.id).replace(responseJSON.type + '_','');
-							}
-						});
-						// Items sorting
-						self.sortItemList(responseJSON.type, serialized);
-					}
-				});
-
-				// Store the first ordering after picture list load
-				container.store('sortableOrder', sortableMedia.serialize(0, function (element, index) 
+			// Init the sortable
+			var sortableMedia = new Sortables(this.container, {
+				revert: true,
+				handle: '.drag',
+				clone: true,
+				// constrain: true,
+				// container: container,
+				opacity: 0.5,
+				onComplete: function()
 				{
-					return element.getProperty('id').replace(responseJSON.type + '_','');
-				}));
-			}
-			// If no media, feed the content HMTLDomElement with transmitted message
-			else
+					var serialized = this.serialize(0, function(element)
+					{
+						// Get the ID list by replacing 'type_' by '' for each item
+						// Example : Each picture item is named 'picture_ID' where 'ID' is the media ID
+						if (element.id != '')
+						{
+							return element.getProperty('data-id');
+						}
+					});
+					// Items sorting
+					self.sortItemList(responseJSON.type, serialized);
+				}
+			});
+
+			// Store the first ordering after picture list load
+			this.container.store('sortableOrder', sortableMedia.serialize(0, function (element)
 			{
-			//	container.set('html', responseJSON.message);
-			}
-	
-			// Add the media number to the tab
-			ION.updateTabNumber(responseJSON.type + 'Tab', container.getProperty('id'));
+				return element.getProperty('data-id');
+			}));
+
+			// Edit icon
+			var items = this.container.getElements('div.media');
+
+			items.each(function(item)
+			{
+				var edit_icon = item.getElement('.edit');
+				var id = item.getProperty('data-id');
+				var filename = item.getProperty('data-filename');
+
+				if (edit_icon)
+				{
+					edit_icon.addEvent('click', function()
+					{
+						ION.formWindow(
+							'media' + id,
+							'mediaForm' + id,
+							filename,           // Window title
+							'media/edit/' + id,
+							{width:520,height:430,resize:false}
+						);
+					});
+				}
+			});
 		}
+
+		// Add the media number to the tab
+		ION.updateTabNumber('mediaTab', this.container.getProperty('id'));
 	},
 
 
@@ -260,8 +301,7 @@ var IonizeMediaManager = new Class(
 	 */
 	sortItemList: function(type, serialized) 
 	{
-		var container = $(this.containers.get(type))
-		var sortableOrder = container.retrieve('sortableOrder');
+		var sortableOrder = this.container.retrieve('sortableOrder');
 
 		// Remove "undefined" from serialized. Undefined comes from the clone, which isn't removed before serialize.
 		var serie = new Array();
@@ -275,7 +315,7 @@ var IonizeMediaManager = new Class(
 		if (sortableOrder.toString() != serie.toString() ) 
 		{
 			// Store the new ordering
-			container.store('sortableOrder', serie);
+			this.container.store('sortableOrder', serie);
 
 			// Save the new ordering
 			var myAjax = new Request.JSON(
@@ -283,7 +323,7 @@ var IonizeMediaManager = new Class(
 				url: this.adminUrl + 'media/save_ordering/' + this.parent + '/' + this.idParent,
 				method: 'post',
 				data: 'order=' + serie,
-				onSuccess: function(responseJSON, responseText)
+				onSuccess: function(responseJSON)
 				{
 					MUI.hideSpinner();
 					
@@ -314,76 +354,35 @@ var IonizeMediaManager = new Class(
 	 * @param type  Media type
 	 * @param id    Media ID
 	 */
-	detachMedia: function(type, id) 
+	detachMedia: function(id)
 	{
 		// Show the spinner
 		MUI.showSpinner();
 
-		var xhr = new Request.JSON(
+		new Request.JSON(
 		{
-			url: this.adminUrl + 'media/detach_media/' + type + '/' + this.parent + '/' + this.idParent + '/' + id,
+			url: this.adminUrl + 'media/detach_media/' + this.parent + '/' + this.idParent + '/' + id,
 			method: 'post',
 			onSuccess: function()
 			{
-				this.loadMediaList(type);
+				this.loadMediaList();
 			}.bind(this),
 			onFailure: this.failure.bind(this)
 		}).send();
 	},
 
-
-	/**
-	 * Unlink all media from a parent depending on the type
-	 *
-	 * @param type  Media type. Can be 'picture', 'music', 'video', 'file'
-	 */
-	detachMediaByType: function(type)
+	detachAllMedia: function()
 	{
-		// Show the spinner
-		MUI.showSpinner();
-		
-		var xhr = new Request.JSON(
+		new Request.JSON(
 		{
-			url: this.adminUrl + 'media/detach_media_by_type/' + this.parent + '/' + this.idParent + '/' + type,
+			url: this.adminUrl + 'media/detach_all_media/' + this.parent + '/' + this.idParent,
 			method: 'post',
-			onSuccess: function(responseJSON, responseText)
+			onSuccess: function()
 			{
-				$(this.containers.get(type)).empty();
-				
-				// Message
-				ION.notification(responseJSON.message_type, responseJSON.message);
-				
-				// Hides the spinner
-				MUI.hideSpinner();
-				
+				this.loadMediaList();
 			}.bind(this),
 			onFailure: this.failure.bind(this)
 		}).send();
-	},
-
-	
-	/**
-	 * Dispose one HTMLDomElement
-	 *
-	 * @param responseJSON
-	 * @param responseText
-	 */
-	disposeMedia: function(responseJSON, responseText)
-	{
-		// HTMLDomElement to dispose
-		var el = responseJSON.type + '_' + responseJSON.id;
-		
-		if ( responseJSON.id && $(el))
-		{
-			$(el).dispose();
-			ION.notification('success', responseJSON.message);		
-		}
-		else
-		{
-			ION.notification('error', responseJSON.message);
-		}
-		
-		MUI.hideSpinner();
 	},
 
 
@@ -415,46 +414,16 @@ var IonizeMediaManager = new Class(
 	},
 
 
-	/** 
-	 * Init all thumbs for one parent
-	 *
-	 */
-	initThumbsForParent: function()
-	{
-		// Show the spinner
-		MUI.showSpinner();
-		
-		var myAjax = new Request.JSON(
-		{
-			url: this.adminUrl + 'media/init_thumbs_for_parent/' + this.parent + '/' + this.idParent,
-			method: 'get',
-			onSuccess: function(responseJSON, responseText)
-			{
-				ION.notification(responseJSON.message_type, responseJSON.message );
-				
-				if (responseJSON.message_type == 'success')
-				{
-					this.loadMediaList('picture');
-				}
-			}.bind(this)	
-		}).send();
-	},
-	
-	
+
 	/**
 	 * Opens fileManager
 	 *
 	 * @param options
 	 */
-	toggleFileManager:function(options)
+	toggleFileManager:function()
 	{
-		var standalone = this.options.standalone;
-
-		if (typeOf(options) != 'null')
-			standalone = options.standalone;
-
-		// If no parent exists : don't show the filemanager but an error message	
-		if ( (standalone == false ) && (! this.idParent || this.idParent == ''))
+		// If no parent exists : don't show the filemanager but an error message
+		if (! this.idParent || this.idParent == '')
 		{
 			ION.notification('error', Lang.get('ionize_message_please_save_first'));
 		}
@@ -472,6 +441,7 @@ var IonizeMediaManager = new Class(
 				}
 				else
 				{
+					inst.focus();
 					$('filemanagerWindow').shake();
 				}
 
@@ -487,7 +457,7 @@ var IonizeMediaManager = new Class(
 
 			MUI.Windows.indexLevel = zidx + 100;						// Mocha window z-index
 
-			var filemanager = new Filemanager({
+			this.filemanager = new Filemanager({
 				url: admin_url + 'media/filemanager',
 				assetsUrl: theme_url + 'javascript/filemanager/assets',
 				standalone: false,
@@ -515,64 +485,16 @@ var IonizeMediaManager = new Class(
 
 			// MUI Window creation
 			var winOptions = ION.getFilemanagerWindowOptions();
-			winOptions.content = filemanager.show();
+			winOptions.content = this.filemanager.show();
 			winOptions.onResizeOnDrag = function(){
-				filemanager.fitSizes();
+				self.filemanager.fitSizes();
 			};
 
 			self.window = new MUI.Window(winOptions);
-			self.window.filemanager = filemanager;
+			self.window.filemanager = this.filemanager;
+
+			this.setFilemanagerTargetInfo();
 		}
 	}
 });
 
-ION.append({
-
-	/**
-	 * Returns the Filemanager Mocha Window options
-	 *
-	 */
-	getFilemanagerWindowOptions: function()
-	{
-		// Window size
-		var wSize = {
-			'width': 800,
-			'height': 360,
-			'x': 70,
-			'y': null
-		};
-		
-		// Get the size stored in the cookie, if any.
-		if (Cookie.read('fm'))
-		{
-			var fm = new Hash.Cookie('fm', {duration: 365});
-			
-			wSize = {
-				'width': fm.get('width'),
-				'height': fm.get('height'),
-				'y': fm.get('top'),
-				'x': fm.get('left')
-			}
-		}
-
-		var options  = 
-		{
-			id: 'filemanagerWindow',
-			title: 'Media Manager',
-			container: document.body,
-			width: wSize.width,
-			height: wSize.height,
-			y: 35,
-			padding: { top: 0, right: 0, bottom: 0, left: 0 },
-			maximizable: false,
-			contentBgColor: '#fff',
-			onClose: function()
-			{
-				// Hides the filemanager
-				this.filemanager.hide();
-			}
-		};
-		
-		return options;
-	}
-});

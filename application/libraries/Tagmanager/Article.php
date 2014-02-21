@@ -915,7 +915,7 @@ class TagManager_Article extends TagManager
 					foreach($attributes as $attribute)
 					{
 						$attribute_value = $tag->getAttribute($attribute);
-						log_message('app', print_r($attribute . ' : ' . $attribute_value, TRUE));
+
 						foreach($tmp_articles as $article)
 						{
 							if (isset($article[$attribute]))

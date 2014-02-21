@@ -72,10 +72,6 @@
                         </dd>
                     </dl>
 
-
-
-
-
                     <dl class="small">
 						<dt>
 							<label for="resize_on_upload"><?php echo lang('ionize_label_setting_resize_on_upload'); ?></label>
@@ -112,6 +108,15 @@
 						</dd>
 					</dl>
 					
+					<dl class="small">
+						<dt>
+							<label for="media_thumb_unsharp"><?php echo lang('ionize_label_thumb_unsharp'); ?></label>
+						</dt>
+						<dd>
+							<input <?php if($media_thumb_unsharp == 1) :?>checked="checked" <?php endif ;?> name="media_thumb_unsharp" id="media_thumb_unsharp"  class="inputcheckbox" type="checkbox" value="1" />
+						</dd>
+					</dl>
+
 				</div>
 				
 				<!-- Allowed Mimes -->
@@ -381,23 +386,6 @@
 			<form name="emailForm" id="emailForm" method="post" action="<?php echo admin_url(); ?>setting/save_emails_settings">
 			
 				<p class="h30"><input id="submit_email" type="button" class="submit right" value="<?php echo lang('ionize_button_save_settings'); ?>" /></p>
-
-
-				<!-- Emails -->
-				<?php
-					$emails = array('contact', 'info', 'technical');
-				?>
-				<?php foreach($emails as $email) :?>
-				<dl>
-					<dt>
-						<label for="email_<?php echo $email ?>"  title="<?php echo lang('ionize_help_email_'.$email); ?>"><?php echo lang('ionize_label_email_'.$email); ?></label>
-					</dt>
-					<dd>
-						<input id="email_<?php echo $email ?>" name="email_<?php echo $email ?>" class="inputtext w240" type="text" value="<?php echo Settings::get('email_'.$email); ?>" />
-					</dd>
-				</dl>
-				<?php endforeach ;?>
-
 
 				<h3><?php echo lang('ionize_title_email_server'); ?></h3>
 

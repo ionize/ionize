@@ -3,7 +3,7 @@
 
 	<name>Ionize Database Creation script</name>
 	
-	<version>1.0.0</version>
+	<version>1.0.6</version>
 
 	<license>Open Source MIT license</license>
 
@@ -38,22 +38,22 @@
 
         <query>
 			CREATE TABLE IF NOT EXISTS article (
-			  id_article int(11) UNSIGNED NOT NULL auto_increment,
-			  name varchar(255) default NULL,
-			  author varchar(55) default NULL,
-			  updater varchar(55) default NULL,
+			  id_article int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+			  name varchar(255) DEFAULT NULL,
+			  author varchar(55) DEFAULT NULL,
+			  updater varchar(55) DEFAULT NULL,
 			  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  publish_on datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  publish_off datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  updated datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  logical_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			  indexed tinyint(1) UNSIGNED NOT NULL default 0,
-			  id_category int(11) UNSIGNED default NULL,
-			  comment_allow char(1) default '0',
-			  comment_autovalid char(1) default '0',
+			  indexed tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+			  id_category int(11) UNSIGNED DEFAULT NULL,
+			  comment_allow char(1) DEFAULT '0',
+			  comment_autovalid char(1) DEFAULT '0',
 			  comment_expire datetime,
-			  flag smallint(1) default 0,
-			  has_url tinyint(1) UNSIGNED NOT NULL default 1,
+			  flag smallint(1) DEFAULT 0,
+			  has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 			  PRIMARY KEY  (id_article)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
@@ -67,27 +67,27 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS article_lang (
-			  id_article int(11) UNSIGNED NOT NULL default 0,
-			  lang varchar(3) NOT NULL default '',
-			  url VARCHAR( 100 ) NOT NULL default '',
-			  title varchar(255) default NULL,
-			  subtitle varchar(255) default NULL,
-			  meta_title varchar(255) default NULL,
+			  id_article int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  lang varchar(3) NOT NULL DEFAULT '',
+			  url VARCHAR( 100 ) NOT NULL DEFAULT '',
+			  title varchar(255) DEFAULT NULL,
+			  subtitle varchar(255) DEFAULT NULL,
+			  meta_title varchar(255) DEFAULT NULL,
 			  content longtext,
-			  meta_keywords varchar(255) default NULL,
-			  meta_description varchar(255) default NULL,
-			  online tinyint(1) UNSIGNED NOT NULL default 1,
+			  meta_keywords varchar(255) DEFAULT NULL,
+			  meta_description varchar(255) DEFAULT NULL,
+			  online tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 			  PRIMARY KEY  (id_article,lang)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS article_media (
-			  id_article int(11) UNSIGNED NOT NULL default 0,
-			  id_media int(11) UNSIGNED NOT NULL default 0,
-              online tinyint(1) UNSIGNED NOT NULL default 1,
-			  ordering int(11) UNSIGNED default 9999,
-			  url varchar(255) default NULL,
+			  id_article int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  id_media int(11) UNSIGNED NOT NULL DEFAULT 0,
+              online tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+			  ordering int(11) UNSIGNED DEFAULT 9999,
+			  url varchar(255) DEFAULT NULL,
 			  lang_display varchar(3) DEFAULT NULL,
 			  PRIMARY KEY  (id_article,id_media)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -95,17 +95,17 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS article_comment (
-				id_article_comment int(11) UNSIGNED NOT NULL auto_increment,
-				id_article int(11) UNSIGNED NOT NULL default 0,
-				author varchar(255) default NULL,
-				email varchar(255) default NULL,
-				site varchar(255) default NULL,
+				id_article_comment int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+				id_article int(11) UNSIGNED NOT NULL DEFAULT 0,
+				author varchar(255) DEFAULT NULL,
+				email varchar(255) DEFAULT NULL,
+				site varchar(255) DEFAULT NULL,
 				content text,
-				ip varchar(40) default NULL,
-				status tinyint UNSIGNED default NULL,
+				ip varchar(40) DEFAULT NULL,
+				status tinyint UNSIGNED DEFAULT NULL,
 				created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 				updated datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-				admin tinyint UNSIGNED NOT NULL	default 0										COMMENT 'If comment comes from admin, set to 1',
+				admin tinyint UNSIGNED NOT NULL	DEFAULT 0 COMMENT 'If comment comes from admin, set to 1',
 				PRIMARY KEY (id_article_comment)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
@@ -120,41 +120,41 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS article_type (
-			  id_type int(11) unsigned NOT NULL auto_increment,
+			  id_type int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  type varchar(50) NOT NULL,
-			  ordering int(11) default 0,
+			  ordering int(11) DEFAULT 0,
 			  description text DEFAULT NULL,
-			  type_flag TINYINT( 1 ) NOT NULL default 0,
+			  type_flag TINYINT( 1 ) NOT NULL DEFAULT 0,
 			  PRIMARY KEY  (id_type)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS captcha (
-			  id_captcha int(11) UNSIGNED NOT NULL auto_increment,
-			  question varchar(255) NOT NULL default '',
-			  answer varchar(255) NOT NULL default '',
-			  lang varchar(3) NOT NULL default '',
-			  hash varchar(32) NOT NULL default '',
+			  id_captcha int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+			  question varchar(255) NOT NULL DEFAULT '',
+			  answer varchar(255) NOT NULL DEFAULT '',
+			  lang varchar(3) NOT NULL DEFAULT '',
+			  hash varchar(32) NOT NULL DEFAULT '',
 			  PRIMARY KEY  (id_captcha)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS category (
-			  id_category int(11) UNSIGNED NOT NULL auto_increment,
+			  id_category int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  name varchar(50) NOT NULL,
-			  ordering int(11) default 0,
+			  ordering int(11) DEFAULT 0,
 			  PRIMARY KEY  (id_category)
 			)  ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS category_lang (
-			  id_category int(11) UNSIGNED NOT NULL default '0',
+			  id_category int(11) UNSIGNED NOT NULL DEFAULT '0',
 			  lang char(3) NOT NULL,
-			  title varchar(255) NOT NULL default '',
-			  subtitle VARCHAR( 255 ) NOT NULL default '',
+			  title varchar(255) NOT NULL DEFAULT '',
+			  subtitle VARCHAR( 255 ) NOT NULL DEFAULT '',
 			  description text NOT NULL,
   			  PRIMARY KEY  (id_category, lang)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -162,11 +162,11 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS element (
-			  id_element int(11) unsigned NOT NULL auto_increment,
-			  id_element_definition int(11) unsigned NOT NULL,
+			  id_element int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+			  id_element_definition int(11) UNSIGNED NOT NULL,
 			  parent varchar(50) NOT NULL,
 			  id_parent int(11) NOT NULL,
-			  ordering int(11) NOT NULL default '0',
+			  ordering int(11) NOT NULL DEFAULT '0',
 			  PRIMARY KEY  (id_element),
 			  KEY idx_element_id_element_definition (id_element_definition),
 			  KEY idx_element_id_parent (id_parent),
@@ -176,26 +176,26 @@
 	
 		<query>
 			CREATE TABLE IF NOT EXISTS element_definition (
-			  id_element_definition int(11) unsigned NOT NULL auto_increment,
+			  id_element_definition int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  name varchar(50) NOT NULL,
 			  description text,
-			  ordering int(11) not null default 0,
+			  ordering int(11) NOT NULL DEFAULT 0,
 			  PRIMARY KEY  (id_element_definition)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS element_definition_lang (
-			  id_element_definition int(11) unsigned NOT NULL,
+			  id_element_definition int(11) UNSIGNED NOT NULL,
 			  lang varchar(3) NOT NULL,
-			  title varchar(255) NOT NULL default '',
+			  title varchar(255) NOT NULL DEFAULT '',
 			  PRIMARY KEY  (id_element_definition, lang)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 		</query>
 
         <query>
             CREATE TABLE IF NOT EXISTS event_log (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
             status varchar(50) DEFAULT NULL,
             message text,
             id_user int(11) DEFAULT NULL,
@@ -209,19 +209,18 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS extend_field (
-				id_extend_field INT(11) UNSIGNED NOT NULL auto_increment,
+				id_extend_field INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 				name varchar(255) NOT NULL,
 				type varchar(1) NOT NULL,
 				description varchar(255) DEFAULT '',
 				parent varchar(50) NOT NULL,
-			  	ordering int(11) default 0,
-				translated char(1) default '0',
+                id_parent int(11) UNSIGNED NULL,
+			  	ordering int(11) DEFAULT 0,
+				translated char(1) DEFAULT '0',
 				`value` text NULL,
 				default_value varchar(255) NULL,
-				global tinyint(1) UNSIGNED NOT NULL default '0',
-				parents varchar(300) NOT NULL default '',
-				id_element_definition INT( 11 ) UNSIGNED NOT NULL DEFAULT '0',
-				block VARCHAR( 50 ) NOT NULL DEFAULT '',
+				global tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+                main smallint(1) UNSIGNED NOT NULL DEFAULT 0,
 				PRIMARY KEY  (id_extend_field),
 				KEY idx_extend_field_parent (parent),
 			    KEY idx_extend_field_id_element_definition (id_element_definition) 
@@ -229,7 +228,7 @@
 		</query>
 		<query>
 			CREATE TABLE IF NOT EXISTS extend_field_lang (
-			  id_extend_field int(11) unsigned NOT NULL,
+			  id_extend_field int(11) UNSIGNED NOT NULL,
 			  lang char(3) NOT NULL,
 			  label varchar(255),
 			  PRIMARY KEY  (id_extend_field, lang)
@@ -237,14 +236,13 @@
 		</query>
 		<query>
 			CREATE TABLE IF NOT EXISTS extend_fields (
-				id_extend_fields INT(11) UNSIGNED NOT NULL auto_increment,
+				id_extend_fields INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 				id_extend_field INT(11) UNSIGNED NOT NULL,
-				parent varchar(50) NOT NULL default '',
+				parent varchar(50) NOT NULL DEFAULT '',
 				id_parent int(11) UNSIGNED NOT NULL,
-				lang char(3) NOT NULL default '',
+				lang char(3) NOT NULL DEFAULT '',
 				content text,
 				ordering INT( 11 ) UNSIGNED NOT NULL DEFAULT '0',
-				id_element INT( 11 ) UNSIGNED NOT NULL,
 				PRIMARY KEY  (id_extend_fields),
 				KEY idx_extend_fields_id_parent (id_parent),
 				KEY idx_extend_fields_lang (lang),
@@ -254,10 +252,10 @@
 		
 		<query>
 			CREATE TABLE IF NOT EXISTS ion_sessions (
-			  session_id varchar(40) NOT NULL default '0',
-			  ip_address varchar(16) NOT NULL default '0',
+			  session_id varchar(40) NOT NULL DEFAULT '0',
+			  ip_address varchar(16) NOT NULL DEFAULT '0',
 			  user_agent varchar(50) NULL,
-			  last_activity int(10) unsigned NOT NULL default '0',
+			  last_activity int(10) UNSIGNED NOT NULL DEFAULT '0',
 			  user_data text NULL,
 			  PRIMARY KEY  (session_id)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -265,12 +263,12 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS lang (
-			  lang varchar(3) NOT NULL default '',
-			  name varchar(40) default NULL,
-			  online char(1) default '0',
-			  def char(1) default '0',
+			  lang varchar(3) NOT NULL DEFAULT '',
+			  name varchar(40) DEFAULT NULL,
+			  online char(1) DEFAULT '0',
+			  def char(1) DEFAULT '0',
 			  ordering int(11),
-              direction smallint(1) NOT NULL default 1,
+              direction smallint(1) NOT NULL DEFAULT 1,
 			  PRIMARY KEY  (lang)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 		</query>
@@ -278,23 +276,23 @@
 		<query>
 			CREATE TABLE IF NOT EXISTS login_tracker (
 			  ip_address varchar(32) NOT NULL,
-			  first_time int(11) unsigned NOT NULL,
-			  failures tinyint(2) unsigned default NULL,
+			  first_time int(11) UNSIGNED NOT NULL,
+			  failures tinyint(2) UNSIGNED DEFAULT NULL,
 			  PRIMARY KEY  (ip_address)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS media (
-				id_media int(11) UNSIGNED NOT NULL auto_increment,
+				id_media int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 				type varchar(10) NOT NULL DEFAULT '',
-				file_name varchar(255) NOT NULL default ''		COMMENT 'file_name',
+				file_name varchar(255) NOT NULL DEFAULT ''		COMMENT 'file_name',
 				path varchar(500) NOT NULL						COMMENT 'Complete path to the medium, including media file name, excluding host name',
 				base_path varchar(500) NOT NULL					COMMENT 'medium folder base path, excluding host name',
-				copyright varchar(128) default NULL,
-				provider varchar(255) default NULL,
+				copyright varchar(128) DEFAULT NULL,
+				provider varchar(255) DEFAULT NULL,
 				date datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Medium date',
-				link varchar(255) default NULL					COMMENT 'Link to a resource, attached to this medium',
+				link varchar(255) DEFAULT NULL					COMMENT 'Link to a resource, attached to this medium',
 				square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',
 --                path_hash varchar(100) NOT NULL DEFAULT  '',
 				PRIMARY KEY  (id_media)
@@ -303,10 +301,10 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS media_lang (
-			  lang varchar(3) NOT NULL default '',
-			  id_media int(11) UNSIGNED NOT NULL default 0,
-			  title varchar(255) default NULL,
-			  alt varchar(500) default NULL,
+			  lang varchar(3) NOT NULL DEFAULT '',
+			  id_media int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  title varchar(255) DEFAULT NULL,
+			  alt varchar(500) DEFAULT NULL,
 			  description longtext,
 			  PRIMARY KEY  (id_media, lang)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -314,7 +312,7 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS menu (
-			  id_menu int(11) NOT NULL auto_increment,
+			  id_menu int(11) NOT NULL AUTO_INCREMENT,
 			  name varchar(50) NOT NULL,
 			  title varchar(50) NOT NULL,
 			  ordering int(11),
@@ -325,12 +323,12 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS module (
-				id_module int(11) UNSIGNED NOT NULL auto_increment,
-				name varchar(100) NOT NULL default '',
-				with_admin tinyint UNSIGNED  NOT NULL default 0,
-				version varchar(10) NOT NULL default '',
-				status tinyint UNSIGNED NOT NULL default 0,
-				ordering tinyint UNSIGNED NOT NULL default 0,
+				id_module int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+				name varchar(100) NOT NULL DEFAULT '',
+				with_admin tinyint UNSIGNED  NOT NULL DEFAULT 0,
+				version varchar(10) NOT NULL DEFAULT '',
+				status tinyint UNSIGNED NOT NULL DEFAULT 0,
+				ordering tinyint UNSIGNED NOT NULL DEFAULT 0,
 				info text NOT NULL,
 				description text NOT NULL,
 				PRIMARY KEY  (id_module),
@@ -340,11 +338,11 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS module_setting (
-			  id_module_setting int(11) NOT NULL auto_increment,
+			  id_module_setting int(11) NOT NULL AUTO_INCREMENT,
 			  id_module int(11) NOT NULL,
 			  name varchar(50) NOT NULL					COMMENT 'Setting name',
 			  content varchar(255) NOT NULL				COMMENT 'Setting content',	
-			  lang varchar(2) default NULL,
+			  lang varchar(2) DEFAULT NULL,
 			  PRIMARY KEY  (id_module_setting) 
 			)   ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
@@ -363,17 +361,17 @@
 		<query>
 			CREATE TABLE IF NOT EXISTS page (
 			  id_page int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-			  id_parent int(11) UNSIGNED NOT NULL default 0,
-			  id_menu int(11) UNSIGNED NOT NULL default 0,
-              id_type smallint(2) NOT NULL default 0,
-              id_subnav int(11) UNSIGNED NOT NULL default 0,
-			  name varchar(255) default NULL,
-			  ordering int(11) UNSIGNED default 0,
-			  level int(11) UNSIGNED NOT NULL default 0,
-			  online tinyint(1) UNSIGNED NOT NULL default 0,
+			  id_parent int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  id_menu int(11) UNSIGNED NOT NULL DEFAULT 0,
+              id_type smallint(2) NOT NULL DEFAULT 0,
+              id_subnav int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  name varchar(255) DEFAULT NULL,
+			  ordering int(11) UNSIGNED DEFAULT 0,
+			  level int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  online tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
 			  home tinyint( 1 ) NOT NULL DEFAULT '0',
-			  author varchar(55) default NULL,
-			  updater varchar(55) default NULL,
+			  author varchar(55) DEFAULT NULL,
+			  updater varchar(55) DEFAULT NULL,
 			  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  publish_on datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  publish_off datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -381,18 +379,18 @@
 			  logical_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			  appears tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 			  has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
-			  view varchar(50) default NULL										COMMENT 'Page view',
-			  view_single varchar(50) default NULL								COMMENT 'Single Article Page view',
-			  article_list_view VARCHAR(50) default NULL						COMMENT 'Article list view for each article linked to this page',
- 			  article_view varchar(50) default NULL								COMMENT 'Article detail view for each article linked to this page',
+			  view varchar(50) DEFAULT NULL										COMMENT 'Page view',
+			  view_single varchar(50) DEFAULT NULL								COMMENT 'Single Article Page view',
+			  article_list_view VARCHAR(50) DEFAULT NULL						COMMENT 'Article list view for each article linked to this page',
+ 			  article_view varchar(50) DEFAULT NULL								COMMENT 'Article detail view for each article linked to this page',
 			  article_order VARCHAR(50) NOT NULL DEFAULT 'ordering'				COMMENT 'Article order in this page. Can be "ordering", "date"',
 			  article_order_direction VARCHAR(50) NOT NULL DEFAULT 'ASC',	
-			  link varchar(255) default ''										COMMENT 'Link to internal / external resource',
-			  link_type varchar(25) default NULL COMMENT '''page'', ''article'' or NULL',
-			  link_id varchar(20) NOT NULL default '',
+			  link varchar(255) DEFAULT ''										COMMENT 'Link to internal / external resource',
+			  link_type varchar(25) DEFAULT NULL COMMENT '''page'', ''article'' or NULL',
+			  link_id varchar(20) NOT NULL DEFAULT '',
 			  pagination tinyint(1) UNSIGNED NOT NULL DEFAULT 0						COMMENT 'Pagination use ?',
-  			  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority',
-              used_by_module tinyint(1) unsigned NULL,
+  			  priority int(1) UNSIGNED NOT NULL DEFAULT '5' COMMENT 'Page priority',
+              used_by_module tinyint(1) UNSIGNED NULL,
               deny_code varchar(3) NULL,
               PRIMARY KEY  (id_page),
 			  KEY idx_page_id_parent (id_parent),
@@ -405,9 +403,9 @@
 			CREATE TABLE IF NOT EXISTS page_article (
 				id_page INT(11) UNSIGNED NOT NULL,
 				id_article INT(11) UNSIGNED NOT NULL,
-				online tinyint(1) UNSIGNED NOT NULL default 0,
-				view varchar(50) default NULL,
-			  	ordering int(11) default 0,
+				online tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+				view varchar(50) DEFAULT NULL,
+			  	ordering int(11) DEFAULT 0,
 				id_type int(11) UNSIGNED NULL,
 				link_type VARCHAR( 25 ) NOT NULL DEFAULT '',
 				link_id varchar(20) NOT NULL DEFAULT '',
@@ -420,37 +418,37 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS page_lang (
-			  lang varchar(3) NOT NULL default '',
-			  id_page int(11) UNSIGNED NOT NULL default 0,
-			  url VARCHAR( 100 ) NOT NULL default '',
-			  link VARCHAR( 255 ) NOT NULL default '',
-			  title varchar(255) default NULL,
-			  subtitle varchar(255) default NULL,
+			  lang varchar(3) NOT NULL DEFAULT '',
+			  id_page int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  url VARCHAR( 100 ) NOT NULL DEFAULT '',
+			  link VARCHAR( 255 ) NOT NULL DEFAULT '',
+			  title varchar(255) DEFAULT NULL,
+			  subtitle varchar(255) DEFAULT NULL,
 			  nav_title VARCHAR( 255 ) NOT NULL DEFAULT  '',
 			  subnav_title VARCHAR( 255 ) NOT NULL DEFAULT '',
-			  meta_title varchar(255) default NULL,
-			  meta_description varchar(255) default NULL,
-			  meta_keywords varchar(255) default NULL,
-			  online tinyint(1) UNSIGNED NOT NULL default 1,
+			  meta_title varchar(255) DEFAULT NULL,
+			  meta_description varchar(255) DEFAULT NULL,
+			  meta_keywords varchar(255) DEFAULT NULL,
+			  online tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 			  PRIMARY KEY  (id_page,lang)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 		</query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS page_media (
-			  id_page int(11) UNSIGNED NOT NULL default 0,
-			  id_media int(11) UNSIGNED NOT NULL default 0,
-              online tinyint(1) UNSIGNED NOT NULL default 1,
-              ordering int(11) UNSIGNED default 9999,
+			  id_page int(11) UNSIGNED NOT NULL DEFAULT 0,
+			  id_media int(11) UNSIGNED NOT NULL DEFAULT 0,
+              online tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+              ordering int(11) UNSIGNED DEFAULT 9999,
   			  lang_display varchar(3) DEFAULT NULL,
 			  PRIMARY KEY  (id_page,id_media)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
 
 		<query>
-            CREATE TABLE if not exists resource (
+            CREATE TABLE if NOT exists resource (
             id_resource int(11) NOT NULL AUTO_INCREMENT,
-            id_parent int(11) unsigned DEFAULT '0',
+            id_parent int(11) UNSIGNED DEFAULT '0',
             resource varchar(255) NOT NULL DEFAULT '',
             actions varchar(500) DEFAULT '',
             title varchar(255) DEFAULT '',
@@ -462,8 +460,8 @@
 
         <query>
             CREATE TABLE IF NOT EXISTS role (
-            id_role smallint(4) UNSIGNED NOT NULL auto_increment,
-            role_level int(11) default NULL,
+            id_role smallint(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+            role_level int(11) DEFAULT NULL,
             role_code varchar(25) NOT NULL,
             role_name varchar(100) NOT NULL,
             role_description tinytext,
@@ -473,37 +471,37 @@
         </query>
 
 		<query>
-            CREATE TABLE if not exists rule (
+            CREATE TABLE if NOT exists rule (
                 id_role int(11) NOT NULL,
                 resource varchar(100) NOT NULL DEFAULT '',
                 actions varchar(100) NOT NULL DEFAULT '',
                 permission smallint(1) DEFAULT NULL,
-                id_element int(11) unsigned,
+                id_element int(11) UNSIGNED,
                 PRIMARY KEY (id_role,resource,actions)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </query>
 
 		<query>
 			CREATE TABLE IF NOT EXISTS setting (
-			  id_setting int(11) UNSIGNED NOT NULL auto_increment,
+			  id_setting int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  name varchar(255) NOT NULL,
-			  content text not null,
-			  lang varchar(3) not null default '',
+			  content text NOT NULL,
+			  lang varchar(3) NOT NULL DEFAULT '',
 			  PRIMARY KEY (id_setting)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
         <query>
 			CREATE TABLE IF NOT EXISTS tag (
-				id_tag int(11) UNSIGNED NOT NULL auto_increment,
-				tag_name varchar(50) default NULL,
+				id_tag int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+				tag_name varchar(50) DEFAULT NULL,
 				PRIMARY KEY  (id_tag)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
         <query>
             CREATE TABLE IF NOT EXISTS tracker (
-                id_user int(11) unsigned NOT NULL,
+                id_user int(11) UNSIGNED NOT NULL,
                 ip_address varchar(32) DEFAULT NULL,
                 element varchar(50) DEFAULT NULL,
                 id_element int(11) DEFAULT NULL,
@@ -514,7 +512,7 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS `type` (
-			  `id_type` int(11) unsigned NOT NULL AUTO_INCREMENT,
+			  `id_type` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  `code` varchar(50) NOT NULL,
 			  `parent` char(20) NOT NULL,
 			  `title` varchar(255) NOT NULL,
@@ -528,8 +526,8 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS url (
-			  id_url int(11) unsigned NOT NULL AUTO_INCREMENT,
-			  id_entity int(11) unsigned NOT NULL,
+			  id_url int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+			  id_entity int(11) UNSIGNED NOT NULL,
 			  type varchar(10) NOT NULL,
 			  canonical smallint(1) NOT NULL DEFAULT '0',
 			  active smallint(1) NOT NULL DEFAULT '0',
@@ -547,10 +545,10 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS user (
-			  id_user int(11) unsigned NOT NULL auto_increment,
-			  id_role smallint(4) unsigned NOT NULL,
-			  join_date timestamp NULL default NULL,
-			  last_visit timestamp NULL default NULL,
+			  id_user int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+			  id_role smallint(4) UNSIGNED NOT NULL,
+			  join_date timestamp NULL DEFAULT NULL,
+			  last_visit timestamp NULL DEFAULT NULL,
 			  username varchar(50) NOT NULL,
 			  screen_name varchar(50) DEFAULT NULL,
               firstname varchar(100) DEFAULT NULL,
@@ -594,20 +592,12 @@
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (40,NULL,'admin/page','create,edit,delete','Page','Page');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (41,40,'admin/page/article','add','Article','Page > Article');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (42,40,'admin/page/element','add','Content Element','Page > Content Element');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (50,40,'admin/page/media','','Media','Page > Media');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (51,50,'admin/page/media/picture','link,unlink, edit','Pictures','Page > Media > Pictures');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (52,50,'admin/page/media/video','link,unlink, edit','Videos','Page > Media > Videos');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (53,50,'admin/page/media/music','link,unlink, edit','Music','Page > Media > Music');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (54,50,'admin/page/media/file','link,unlink, edit','Files','Page > Media > Files');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (50,40,'admin/page/media','link,unlink,edit','Media','Page > Media');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (60,40,'admin/page/permissions','','Permission','Page > Permission');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (61,60,'admin/page/permissions/backend','','Backend','Page > Permission > Backend');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (62,60,'admin/page/permissions/frontend','','Frontend','Page > Permission > Frontend');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (70,NULL,'admin/article','create,edit,delete,move,copy,duplicate','Article','Article');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (80,70,'admin/article/media','','Media','Article > Media');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (81,80,'admin/article/media/picture','link,unlink, edit','Pictures','Article > Media > Pictures');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (82,80,'admin/article/media/video','link,unlink,edit','Videos','Article > Media > Videos');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (83,80,'admin/article/media/music','link,unlink,edit','Music','Article > Media > Music');</query>
-        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (84,80,'admin/article/media/file','link,unlink,edit','Files','Article > Media > Files');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (80,70,'admin/article/media','link,unlink,edit','Media','Article > Media');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (85,70,'admin/article/element','add','Content Element','Article > Content Element');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (86,70,'admin/article/category','','Manage categories','Article > Categories');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (93,70,'admin/article/tag','','Manage tags','Article > Tags');</query>
@@ -622,7 +612,11 @@
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (150,NULL,'admin/modules','install','Modules','Modules');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (151,150,'admin/modules/permissions','','Set Permissions','Modules > Permissions');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (180,NULL,'admin/element','create,edit,delete','Content Element','Content Elements');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (181,180,'admin/element/media','link,unlink,edit','Media','Content Elements > Media');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (210,NULL,'admin/extend','create,edit,delete','Extend Fields','Extend Fields');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (220,NULL,'admin/item','create,edit,delete,add','Static Items','Static Items');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (221,220,'admin/item/definition','edit','Definition','Static Items > Definition');</query>
+        <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (222,220,'admin/item/media','link,unlink,edit','Media','Static Items > Media');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (240,NULL,'admin/tools','','Tools','Tools');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (241,240,'admin/tools/google_analytics','','Google Analytics','Tools > Google Analytics');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (250,240,'admin/tools/system','','System Diagnosis','Tools > System');</query>
@@ -640,16 +634,14 @@
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');</query>
 
+
+
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (1,'all','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article','create,edit,delete,move,copy,duplicate',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/category','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/element','add',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media','',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/file','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/music','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/picture','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media/video','link,unlink,edit',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/media','link,unlink,edit',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions/backend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article/permissions/frontend','',1)</query>
@@ -664,11 +656,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/article','add',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/element','add',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media','',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/file','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/music','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/picture','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media/video','link,unlink,edit',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/media','link,unlink,edit',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/permissions','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/permissions/backend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/page/permissions/frontend','',1)</query>
@@ -708,11 +696,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/article','add',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/element','add',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media','',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/file','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/music','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/picture','link,unlink,edit',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media/video','link,unlink,edit',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/media','link,unlink,edit',1);</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/permissions','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/permissions/backend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page/permissions/frontend','',1)</query>
@@ -732,8 +716,14 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/tree/page','status,add_page,add_article,order',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/user','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/users_roles','',1)</query>
-        
-  		<query>DELETE FROM setting WHERE name='cache';</query>
+
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/item','create,edit,delete,add',1);</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item','create,edit,delete,add',1);</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/item/media','link,unlink,edit',1);</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item/media','link,unlink,edit',1);</query>
+
+
+        <query>DELETE FROM setting WHERE name='cache';</query>
 		<query>DELETE FROM setting WHERE name='cache_time';</query>
 		<query>DELETE FROM setting WHERE name='create_dir_use_ftp';</query>
 		<query>DELETE FROM setting WHERE name='ftp_host';</query>
@@ -744,7 +734,7 @@
 
         <query>INSERT IGNORE INTO setting VALUES ('', 'website_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
-		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'default', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'DEFAULT', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme_admin', 'admin', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'google_analytics', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'filemanager', 'mootools-filemanager', '');</query>
@@ -780,7 +770,7 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
 
-        <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png','');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','DEFAULT.png','');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'backend_ui_style','original', '');</query>
 

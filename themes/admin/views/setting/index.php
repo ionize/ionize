@@ -21,6 +21,7 @@
 				<?php foreach(Settings::get_languages() as $l) :?>
 					<li<?php if($l['def'] == '1') :?> class="dl"<?php endif ;?>><a><span><?php echo ucfirst($l['name']); ?></span></a></li>
 				<?php endforeach ;?>
+				<li id="email_settings"><a><?php echo lang('ionize_title_mail_send'); ?></a></li>
 				<li id="ga_settings"><a><?php echo lang('ionize_title_google_analytics'); ?></a></li>
 				<li id="seo_settings"><a><?php echo lang('ionize_title_seo'); ?></a></li>
 			</ul>
@@ -69,9 +70,29 @@
 					</div>
 		
 				<?php endforeach ;?>
-	
-	
-	
+
+				<!-- Emails -->
+				<div class="tabcontent">
+
+					<div class="pt20">
+						<?php
+						$emails = array('contact', 'info', 'technical');
+						?>
+						<?php foreach($emails as $email) :?>
+							<dl>
+								<dt>
+									<label for="email_<?php echo $email ?>"  title="<?php echo lang('ionize_help_email_'.$email); ?>"><?php echo lang('ionize_label_email_'.$email); ?></label>
+								</dt>
+								<dd>
+									<input id="email_<?php echo $email ?>" name="email_<?php echo $email ?>" class="inputtext w240" type="text" value="<?php echo Settings::get('email_'.$email); ?>" />
+								</dd>
+							</dl>
+						<?php endforeach ;?>
+					</div>
+
+				</div>
+
+
 				<!-- Google Analytics -->
 				<div class="tabcontent">
 					<dl>
@@ -131,15 +152,13 @@
 						</dd>
 					</dl>
 				</div>
-			
+
 			</form>
 			
-			
-			
+
 			<!-- SEO -->
 			<div class="tabcontent">
-				
-				
+
 				<!-- Compress Sitemap XML -->
 				<form name="sitemapGzipForm" id="sitemapGzipForm" method="post" action="<?php echo admin_url(); ?>setting/save_setting">
 

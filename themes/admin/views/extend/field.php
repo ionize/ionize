@@ -107,10 +107,9 @@
 				<option value="5" <?php if ($type=='5') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_radio'); ?></option>
 				<option value="6" <?php if ($type=='6') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_select'); ?></option>
 				<option value="7" <?php if ($type=='7') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_datetime'); ?></option>
+				<option value="8" <?php if ($type=='8') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_media'); ?></option>
 			</select>
-			
 		</dd>
-		
 	</dl>
 
 	<!-- Can be translated ? -->
@@ -167,11 +166,17 @@
 
 <script type="text/javascript">
 
+	var id = '<?php echo $id_extend_field; ?>';
+
 	function display_value_block()
 	{
-		var id = '<?php echo $id_extend_field; ?>';
-	
-		if ($('type' + id).value == '7')
+		if ($('type' + id).value == '8')
+		{
+			$('value_block' + id).setStyle('display', 'none');
+			$('default_value_block' + id).setStyle('display', 'none');
+			$('translate_block' + id).setStyle('display', 'block').highlight();
+		}
+		else if ($('type' + id).value == '7')
 		{
 			$('value_block' + id).setStyle('display', 'none');
 			$('default_value_block' + id).setStyle('display', 'none');
@@ -198,10 +203,10 @@
 		}
 		
 		// Window Resize
-		ION.windowResize('extendfield' + id, {'width':410});
+		// ION.windowResize('extendfield' + id, {'width':410});
 	}
 	
-	$('type<?php echo $id_extend_field; ?>').addEvent('change', function()
+	$('type' + id).addEvent('change', function()
 	{
 		display_value_block();
 	});
@@ -209,12 +214,18 @@
 	
 	
 	// Auto generates the name of the field
-	ION.initCorrectUrl('label', 'name');
+	ION.initCorrectUrl('label' + id, 'name' + id);
 
-	/** 
-	 * Lang tabs
-	 */
-	var extendFieldTab<?php echo $id_extend_field; ?> = new TabSwapper({tabsContainer: 'extendFieldTab<?php echo $id_extend_field; ?>', sectionsContainer: 'extendFieldTabContent<?php echo $id_extend_field; ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent'});
+	// Tabs
+	var extendFieldTab<?php echo $id_extend_field; ?> = new TabSwapper({
+		tabsContainer: 'extendFieldTab<?php echo $id_extend_field; ?>',
+		sectionsContainer: 'extendFieldTabContent<?php echo $id_extend_field; ?>',
+		selectedClass: 'selected',
+		deselectedClass: '',
+		tabs: 'li',
+		clickers: 'li a',
+		sections: 'div.tabcontent'
+	});
 
 </script>
 

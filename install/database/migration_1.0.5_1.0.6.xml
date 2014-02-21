@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<sql>
+
+    <!-- Items -->
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (220,NULL,'admin/item','create,edit,delete,add','Static Items','Static Items');</query>
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (221,220,'admin/item/definition','edit','Definition','Static Items > Definition');</query>
+
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/item','create,edit,delete,add',1);</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item','create,edit,delete,add',1);</query>
+
+    <!-- Media -->
+    <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (222,220,'admin/item/media','link,unlink,edit','Media','Static Items > Media');</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/item/media','link,unlink,edit',1);</query>
+    <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item/media','link,unlink,edit',1);</query>
+
+    <!-- Extend Fields -->
+    <query>ALTER TABLE extend_field add id_parent int(11) unsigned NULL;</query>
+    <query>UPDATE extend_field set parent='element', id_parent=id_element_definition where id_element_definition != 0;</query>
+    <query>ALTER TABLE extend_field add main smallint(1) unsigned NOT NULL DEFAULT 0;</query>
+
+    <query>update resource set actions='link,unlink,edit' where resource='admin/page/media';</query>
+    <query>update resource set actions='link,unlink,edit' where resource='admin/article/media';</query>
+    <query>update rule set actions='link,unlink,edit' where resource='admin/page/media';</query>
+    <query>update rule set actions='link,unlink,edit' where resource='admin/article/media';</query>
+
+    <query>delete from resource where resource ='admin/page/media/file';</query>
+    <query>delete from resource where resource ='admin/page/media/music';</query>
+    <query>delete from resource where resource ='admin/page/media/video';</query>
+    <query>delete from resource where resource ='admin/page/media/picture';</query>
+    <query>delete from resource where resource ='admin/article/media/file';</query>
+    <query>delete from resource where resource ='admin/article/media/music';</query>
+    <query>delete from resource where resource ='admin/article/media/video';</query>
+    <query>delete from resource where resource ='admin/article/media/picture';</query>
+
+    <!-- Content Element update -->
+    <query>update extend_field set id_parent = id_element_definition where parent='element';</query>
+    <query>update extend_fields set id_parent = id_element where id_element != 0;</query>
+    <query>update extend_fields set parent = 'element' where id_element != 0;</query>
+    <query>alter table extend_fields drop id_element;</query>
+    <query>alter table extend_field drop id_element_definition;</query>
+    <query>alter table extend_field drop parents;</query>
+    <query>alter table extend_field drop block;</query>
+
+</sql>

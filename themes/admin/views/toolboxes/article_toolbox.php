@@ -54,23 +54,17 @@
 
 <?php endif;?>
 
+<?php if(Authority::can('add', 'admin/item')) :?>
 
-<?php if
-	(
-	Authority::can('link', 'admin/article/media/picture')
-	OR Authority::can('link', 'admin/article/media/video')
-	OR Authority::can('link', 'admin/article/media/music')
-	OR Authority::can('link', 'admin/article/media/file')
-	)
-:?>
-
-	<div class="divider" id="tArticleMediaButton">
-		<a id="addMedia" class="fmButton button light">
-			<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+	<div class="divider" id="tArticleAddItem">
+		<a id="btnAddItem" class="button light" >
+			<i class="icon-items"></i><?php echo lang('ionize_label_add_item'); ?>
 		</a>
 	</div>
 
 <?php endif;?>
+
+
 
 <script type="text/javascript">
 
@@ -90,7 +84,7 @@
 		if ($('tArticleDeleteButton')) $('tArticleDeleteButton').hide();
         if ($('tArticleDuplicateButton')) $('tArticleDuplicateButton').hide();
         if ($('tArticleAddContentElement')) $('tArticleAddContentElement').hide();
-        if ($('tArticleMediaButton')) $('tArticleMediaButton').hide();
+        if ($('tArticleAddItem')) $('tArticleAddItem').hide();
         if ($('sideColumnSwitcher')) $('sideColumnSwitcher').hide();
 	}
 	else
@@ -102,6 +96,18 @@
 			ION.initRequestEvent($('articleDeleteButton'), url + id, {'redirect':true}, {'confirm':true,'message': Lang.get('ionize_confirm_element_delete')})
 
 		<?php endif;?>
+
+		<?php if(Authority::can('add', 'admin/item')) :?>
+
+			$('btnAddItem').addEvent('click', function()
+			{
+				staticItemManager.openListWindow();
+			});
+
+		<?php endif;?>
+
+
+
 
 		<?php if(Authority::can('duplicate', 'admin/article')) :?>
 
@@ -125,24 +131,6 @@
 
 		<?php endif;?>
 
-		<?php if
-			(
-			Authority::can('link', 'admin/article/media/picture')
-			OR Authority::can('link', 'admin/article/media/video')
-			OR Authority::can('link', 'admin/article/media/music')
-			OR Authority::can('link', 'admin/article/media/file')
-			)
-		:?>
-
-			// Add Media button
-			$('addMedia').addEvent('click', function(e)
-			{
-				e.stop();
-				mediaManager.initParent('article', $('id_article').value);
-				mediaManager.toggleFileManager();
-			});
-
-		<?php endif;?>
 
 		<?php if(Authority::can('add', 'admin/article/element')) :?>
 

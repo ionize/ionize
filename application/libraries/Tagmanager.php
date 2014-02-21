@@ -1495,9 +1495,105 @@ class TagManager
 				}
 			}
 		}
+
 		return $str;
 	}
 
+
+	public static function tag_extend_field_medias(FTL_Binding $tag)
+	{
+		$str = '';
+
+		$extend = $tag->get('extend');
+
+		// Medias
+		if ($extend['type'] == '8')
+		{
+			self::load_model('media_model');
+
+			$ids = $extend['content'];
+
+			if (strlen($ids) > 0)
+			{
+				// Tag attributes
+				$type = $tag->getAttribute('type');
+				$limit = $tag->getAttribute('limit', 0);
+				$filter = $tag->getAttribute('filter');
+
+				$ids_array = explode(',', $ids);
+
+				$where = array(
+					'where_in' => array(self::$ci->media_model->get_table().'.id_media' => $ids_array),
+					'order_by' => "field(" . self::$ci->media_model->get_table() . ".id_media, ". $ids . ")"
+				);
+
+				if ( ! is_null($type)) $where['type'] = $type;
+				if ( $limit ) $where['limit'] = $limit;
+
+				$medias = self::$ci->media_model->get_lang_list(
+					$where,
+					Settings::get_lang('current'),
+					$filter
+				);
+
+				//
+				// From here :
+				// Same than TagManager_Media::tag_medias()
+				//
+
+				// Extend Fields tags
+				self::create_extend_tags($tag, 'media');
+
+				// Medias lib, to process the "src" value
+				self::$ci->load->library('medias');
+
+				// Filter the parent's medias
+				$medias = TagManager_Media::filter_medias($tag, $medias);
+
+				$count = count($medias);
+				$tag->set('count', $count);
+
+				// Make medias in random order
+				if ( $tag->getAttribute('random') == TRUE) shuffle ($medias);
+
+				// Process additional data : src, extension
+				foreach($medias as $key => $media)
+				{
+					if ($media['provider'] !='')
+						$src = $media['path'];
+					else
+						$src = base_url() . $media['path'];
+
+					if ($media['type'] == 'picture')
+					{
+						$settings = TagManager_Media::get_src_settings($tag);
+
+						if ( ! empty($settings['size']))
+							$src = self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
+					}
+					$medias[$key]['src'] = $src;
+				}
+
+				$tag->set('medias', $medias);
+
+				foreach($medias as $key => $media)
+				{
+					// Each media has its index and the number of displayed media
+					$media['index'] = $key + 1;
+					$media['count'] = $count;
+
+					$tag->set('media', $media);
+					$tag->set('count', $count);
+					$tag->set('index', $key);
+
+					$str .= $tag->expand();
+				}
+			}
+			return self::wrap($tag, $str);
+		}
+
+		return $str;
+	}
 
 
 	/**
@@ -3068,6 +3164,7 @@ class TagManager
 	public static function output_value(FTL_Binding $tag, $value)
 	{
 		$is = $tag->getAttribute('is');
+		$in = $tag->getAttribute('in');
 		$is_not = $tag->getAttribute('is_not');
 		$expression = $tag->getAttribute('expression');
 
@@ -3092,6 +3189,31 @@ class TagManager
 				self::$trigger_else++;
 				return '';
 			}
+		}
+		else if ( ! is_null($in) )
+		{
+			// Do not pass the attribute to child
+			$tag->removeAttribute('in');
+
+			$in = explode(',', $in);
+
+			foreach($in as $i)
+			{
+				$i = trim($i);
+
+				if (strtolower($i) == 'true') $is = TRUE;
+				if (strtolower($i) == 'false') $is = FALSE;
+
+				if ($value == $i)
+				{
+					if (self::$trigger_else > 0)
+						self::$trigger_else = 0;
+
+					return self::wrap($tag, $tag->expand());
+				}
+			}
+			self::$trigger_else++;
+			return '';
 		}
 		else if ( ! is_null($is_not) )
 		{
@@ -3486,6 +3608,7 @@ class TagManager
 				self::$context->define_tag($parent.':extend:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
 				self::$context->define_tag($parent.':extend:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
 
+				self::$context->define_tag($parent.':extend:'.$field['name'].':medias', array(__CLASS__, 'tag_extend_field_medias'));
 
 			}
 

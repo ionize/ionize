@@ -149,6 +149,7 @@ class Setting extends MY_admin
 
 		// Media : Resize on Upload
 		$this->template['resize_on_upload'] = Settings::get('resize_on_upload');
+		$this->template['media_thumb_unsharp'] = Settings::get('media_thumb_unsharp');
 		$this->template['upload_autostart'] = Settings::get('upload_autostart');
 		$this->template['upload_mode'] = Settings::get('upload_mode');
 
@@ -453,6 +454,7 @@ class Setting extends MY_admin
 			'google_analytics_email',
 			'google_analytics_password',
 			'dashboard_google',
+			'email_technical', 'email_contact', 'email_info'
 		);
 		$lang_settings = array(
 			'meta_keywords',
@@ -670,7 +672,7 @@ class Setting extends MY_admin
 		// Settings to save
 		$settings = array(	'files_path', 
 							'media_thumb_size', 'resize_on_upload', 'upload_mode', 'picture_max_width', 'picture_max_height', 'upload_autostart',
-							'filemanager_file_types', 'no_source_picture');
+							'filemanager_file_types', 'no_source_picture', 'media_thumb_unsharp');
 		
 		// Allowed filemanager file extensions
 		$filemanager_file_types = $this->input->post('allowed_type');
@@ -1257,21 +1259,13 @@ class Setting extends MY_admin
 	 */
 	function save_emails_settings()
 	{
-		/*
-		 *
-		 *
-		 */
 		// Save the website emails
-		$settings = array('site_email', 'email_technical', 'email_contact', 'email_info');
+		$settings = array('site_email');
 
 		// Save settings to DB
 		$this->_save_settings($settings);
 	
-	
-		/*
-		 * Save email sending settings
-		 *
-		 */
+		// Save email sending settings
 		$data = array(
 			'smtp_host'		=> '',
 			'smtp_user'		=> '',

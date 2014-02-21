@@ -141,7 +141,57 @@ ION.append({
 			list.erase(value);
 			Cookie.write(name, list.join(','));
 		}
+	},
+
+	/**
+	 * Returns the FileManager window options
+	 *
+	 */
+	getFilemanagerWindowOptions: function()
+	{
+		// Window size
+		var wSize = {
+			'width': 800,
+			'height': 360,
+			'x': 70,
+			'y': null
+		};
+
+		// Get the size stored in the cookie, if any.
+		if (Cookie.read('fm'))
+		{
+			var fm = new Hash.Cookie('fm', {duration: 365});
+
+			wSize = {
+				'width': fm.get('width'),
+				'height': fm.get('height'),
+				'y': fm.get('top'),
+				'x': fm.get('left')
+			}
+		}
+
+		var options  =
+		{
+			id: 'filemanagerWindow',
+			title: 'Media Manager',
+			container: document.body,
+			width: wSize.width,
+			height: wSize.height,
+			y: 35,
+			padding: { top: 0, right: 0, bottom: 0, left: 0 },
+			maximizable: false,
+			contentBgColor: '#fff',
+			onClose: function()
+			{
+				// Hides the filemanager
+				this.filemanager.hide();
+				this.filemanager = null;
+			}
+		};
+
+		return options;
 	}
+
 });
 
 
@@ -222,7 +272,14 @@ String.extend({
 
 		var clean_string = html;
 		return clean_string;
+	},
+
+	capitalize: function(text)
+	{
+
+		return text.charAt(0).toUpperCase() + text.slice(1);
 	}
+
 
 });
 

@@ -174,7 +174,7 @@ ION.append({
 		if (typeOf(wOptions) != 'null') { options =  Object.append(options, wOptions);}
 
 		// Window creation
-		new MUI.Window(options);
+		return new MUI.Window(options);
 	},
 
 	/**
@@ -192,7 +192,7 @@ ION.append({
 			id: 'w' + id,
 			title: (typeOf(Lang.get(title)) == 'null') ? title : Lang.get(title),
 			container: document.body,
-//			evalResponse: true,
+			// evalResponse: true,
 			content: {
 				url: admin_url + wUrl,
 				data: data,

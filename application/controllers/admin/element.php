@@ -24,7 +24,8 @@ class Element extends MY_Admin {
 		'4' => 'Checkbox',
 		'5' => 'Radio',
 		'6' => 'Select',
-		'7' => 'Date & Time'
+		'7' => 'Date & Time',
+		'8' => 'Medias',
 	);
 
 
@@ -67,7 +68,13 @@ class Element extends MY_Admin {
 		$id_parent = $this->input->post('id_parent');
 		$id_element_definition = $this->input->post('id_element_definition');
 		
-		$this->template['definition'] = $this->element_model->get_fields_from_parent($parent, $id_parent, Settings::get_lang('default'), $id_element_definition);
+		$this->template['definition'] = $this->element_model->get_fields_from_parent(
+			$parent,
+			$id_parent,
+			Settings::get_lang('default'),
+			$id_element_definition
+		);
+
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
 		
@@ -93,8 +100,6 @@ class Element extends MY_Admin {
 			
 			if ($affected_rows > 0)
 			{
-				$this->id = $id_element;
-			
 				// Reload Elements definitions list
 				$this->callback = array
 				(
@@ -108,12 +113,15 @@ class Element extends MY_Admin {
 					),
 				);
 
-
 				// Deletes the tab if the element defintion has no elements
-				// Not implemented yet...
-				/*
 				// Check if the element definition has some elements...
-				$elements = $this->element_model->get_elements(array('id_element_definition' => $element['id_element_definition'], 'parent' => $element['parent'], 'id_parent' => $element['id_parent']) );
+				$elements = $this->element_model->get_elements(
+					array(
+						'id_element_definition' => $element['id_element_definition'],
+						'parent' => $element['parent'],
+						'id_parent' => $element['id_parent']
+					)
+				);
 
 				if ( empty($elements))
 				{
@@ -125,8 +133,7 @@ class Element extends MY_Admin {
 						)
 					);
 				}
-				*/
-				
+
 				$this->success(lang('ionize_message_operation_ok'));					
 			}
 		}
@@ -193,8 +200,6 @@ class Element extends MY_Admin {
 
 			$id_element_definition = $this->input->post('id_element_definition');
 
-			// $element_definition = $this->element_definition_model->get(array('id_element_definition' => $id_element_definition) );
-			
 			// Save Element and extend fields
 			$this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
 			
@@ -246,15 +251,32 @@ class Element extends MY_Admin {
 		$element = $this->element_model->get(array('id_element' => $id_element) );
 
 		// Element definition
-		$element_definition = $this->element_definition_model->get(array('id_element_definition' => $element['id_element_definition']), Settings::get_lang('default') );
+		$element_definition = $this->element_definition_model->get(
+			array('id_element_definition' => $element['id_element_definition']),
+			Settings::get_lang('default')
+		);
 
 		// Element's fields
 		$element_fields = $this->element_model->get_element_fields($id_element);
 
 		$this->template['element'] = $element;
 		$this->template['element_definition'] = $element_definition;
-		$this->template['fields'] = array_values(array_filter($element_fields, create_function('$row', 'return $row["translated"] == 0;')));
-		$this->template['lang_fields'] = array_values(array_filter($element_fields, create_function('$row', 'return $row["translated"] == 1;')));
+		$this->template['fields'] = $element_fields;
+
+		$lang_fields = array_values(array_filter($element_fields, create_function('$row', 'return $row["translated"] == 1;')));
+		$this->template['lang_fields'] = $lang_fields;
+
+		// Check for langs fields different from
+		$has_lang_fields = FALSE;
+		foreach($lang_fields as $lf)
+			if ($lf['type'] != 8) $has_lang_fields = TRUE;
+		$this->template['has_lang_fields'] = $has_lang_fields;
+
+		// Check for Media type
+		$has_media_fields = FALSE;
+		foreach ($element_fields as $f)
+			if ($f['type'] == 8) $has_media_fields = TRUE;
+		$this->template['has_media_fields'] = $has_media_fields;
 
 		$this->template['parent'] = $element['parent'];
 		$this->template['id_parent'] = $element['id_parent'];
@@ -262,7 +284,6 @@ class Element extends MY_Admin {
 		$this->template['id_element'] = $id_element;
 		
 		$this->output('element/detail');
-
 	}
 	
 	

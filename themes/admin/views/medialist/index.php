@@ -198,7 +198,6 @@ $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_t
 		btn.addEvent('click', function(e){
 			e.stop();
 			var id = e.target.getProperty('data-id');
-			console.log(id);
 		})
 	});
 

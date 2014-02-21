@@ -849,9 +849,10 @@ class CI_DB_active_record extends CI_DB_driver {
 	 * @access	public
 	 * @param	string
 	 * @param	string	direction: asc or desc
+	 * @param	bool	https://github.com/EllisLab/CodeIgniter/issues/1846
 	 * @return	object
 	 */
-	function order_by($orderby, $direction = '')
+	function order_by($orderby, $direction = '', $escape = TRUE)
 	{
 		if (strtolower($direction) == 'random')
 		{
@@ -870,7 +871,7 @@ class CI_DB_active_record extends CI_DB_driver {
 			foreach (explode(',', $orderby) as $part)
 			{
 				$part = trim($part);
-				if ( ! in_array($part, $this->ar_aliased_tables))
+				if ($escape === TRUE && ! in_array($part, $this->ar_aliased_tables))
 				{
 					$part = $this->_protect_identifiers(trim($part));
 				}
@@ -880,7 +881,7 @@ class CI_DB_active_record extends CI_DB_driver {
 
 			$orderby = implode(', ', $temp);
 		}
-		else if ($direction != $this->_random_keyword)
+		else if ($escape === TRUE && $direction != $this->_random_keyword)
 		{
 			$orderby = $this->_protect_identifiers($orderby);
 		}

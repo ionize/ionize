@@ -97,7 +97,15 @@ ION.ItemManager = new Class({
 		items.each(function(item)
 		{
 			var id = item.getProperty('data-id');
-			ION.initRequestEvent(item, url + id, {}, {'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage})
+			ION.initRequestEvent(
+				item,
+				url + id,
+				{
+					id: id
+				},
+				{'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage},
+				'JSON'
+			)
 		});
 	},
 
@@ -113,7 +121,13 @@ ION.ItemManager = new Class({
 		items.each(function(item)
 		{
 			var id = item.getProperty('data-id');
-			ION.initRequestEvent(item, url + '/switch_online/' + id);
+			ION.initRequestEvent(
+				item,
+				url + '/switch_online/' + id,
+				{id: id},
+				{},
+				'JSON'
+			);
 		});
 	},
 

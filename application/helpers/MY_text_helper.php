@@ -78,8 +78,6 @@ if ( ! function_exists('to_entities'))
 	{
 		$str = htmlspecialchars($str, ENT_COMPAT, 'UTF-8', false);
 
-		log_message('error', $str);
-
 		return $str;
 	}
 }

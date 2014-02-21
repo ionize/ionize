@@ -7,10 +7,7 @@
 
 <script type="text/javascript">
 
-	/**
-	 * New lang button
-	 *
-	 */
+	// Button New lang
 	$('newLangToolbarButton').addEvent('click', function(e)
 	{
 		ION.formWindow(
@@ -24,12 +21,5 @@
 			}
 		);
 	});
-
-
-	/**
-	 * Save with CTRL+s
-	 *
-	 */
-	// ION.addFormSaveEvent('existingLangFormSubmit');
 
 </script>

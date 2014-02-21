@@ -152,6 +152,8 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_droppable.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_forms.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_mediamanager.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmediamanager.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_staticitemmanager.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_itemsmanager.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tinymce.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree.js"></script>
@@ -200,21 +202,20 @@
 
 <script type="text/javascript">
 
-	// Global filemanager
-	var filemanager = '';
-
 	// Global MediaManager
 	var mediaManager = new IonizeMediaManager(
 	{
 		baseUrl: base_url,
 		adminUrl: admin_url,
-		pictureContainer:'pictureContainer', 
+		container:'mediaContainer',
+/*
+		pictureContainer:'pictureContainer',
 		musicContainer:'musicContainer', 
 		videoContainer:'videoContainer',
 		fileContainer:'fileContainer',
+*/
 		fileButton:'.fmButton',
 		wait:'waitPicture',
-		mode:'<?php echo Settings::get('filemanager'); ?>',
         resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
         uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
         uploadMode: '<?php echo Settings::get('upload_mode'); ?>',
@@ -224,6 +225,21 @@
 		videoArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('video')); ?>'),
 		fileArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('file')); ?>')
 	});
+
+	var extendMediaManager = new ION.ExtendMediaManager(
+	{
+		wait:'waitPicture',
+		resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
+		uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
+		uploadMode: '<?php echo Settings::get('upload_mode'); ?>',
+		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,
+		pictureArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('picture')); ?>'),
+		musicArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('music')); ?>'),
+		videoArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('video')); ?>'),
+		fileArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('file')); ?>')
+	});
+
+	var staticItemManager =  new ION.StaticItemManager();
 
 	// If user's theme has a tinyMCE.css content CSS file, load it.
 	// else, load the standard tinyMCE content CSS file

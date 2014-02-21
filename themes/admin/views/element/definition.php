@@ -66,10 +66,8 @@ $id = $id_element_definition;
 				<?php foreach(Settings::get_languages() as $language) :?>
 
 					<?php
-
 					$lang = $language['lang'];
 					$aTitle = lang('ionize_label_change').' '.lang('ionize_label_title');
-
 					?>
 
 					<div class="tabcontent">

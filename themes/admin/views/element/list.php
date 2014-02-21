@@ -54,6 +54,10 @@
 
 <script type="text/javascript">
 
+// Window Title
+if ($('titleAddContentElement'))
+	$('titleAddContentElement').set('text', '<?php echo lang('ionize_title_add_content_element') ?>');
+
 // Add toggler to each definition
 $$('li.element_definition span.toggler').each(function(el)
 {
@@ -67,12 +71,20 @@ $$('li.element_definition .plus').each(function(item)
 	{
 		var id = item.getProperty('data-id');
 
-		ION.HTML('element_definition/get_element_detail', {'id_element_definition': id, 'parent': '<?php echo $parent; ?>', 'id_parent': '<?php echo $id_parent; ?>'}, {'update': 'elementAddContainer' });
+		ION.HTML(
+			'element_definition/get_element_detail',
+			{
+				'id_element_definition': id,
+				'parent': '<?php echo $parent; ?>',
+				'id_parent': '<?php echo $id_parent; ?>'
+			},
+			{'update': 'elementAddContainer' }
+		);
 	});
 });
 
 
-ION.windowResize('contentElement', {height: 300, width: 400});
+// ION.windowResize('contentElement', {height: 300, width: 400});
 
 
 </script>

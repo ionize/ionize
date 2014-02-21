@@ -18,7 +18,20 @@ ION.append({
 		}
 		else
 		{
-			new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
+			var doRequest = true;
+
+			// Do not do the request if the element does not exists
+			var update = (typeOf(options) != 'null' && options.update) ? options.update : null;
+			if ( update != null && ! $(update))
+				doRequest = false;
+
+			// Do not do the request if the element does not exists
+			var append = (typeOf(options) != 'null' && options.append) ? options.append : null;
+			if ( append != null && ! $(append))
+				doRequest = false;
+
+			if (doRequest)
+				new Request.HTML(ION.getHTMLRequestOptions(url, data, options)).send();
 		}
 	},
 
@@ -143,7 +156,6 @@ ION.append({
 	 */
 	getJSONRequestOptions: function(url, data, options)
 	{
-
 		if (!data) {
 			data = '';
 		}

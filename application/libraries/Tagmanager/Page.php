@@ -736,11 +736,16 @@ class TagManager_Page extends TagManager
 		$levels = $tag->getAttribute('levels');
 		$menu_name = $tag->getAttribute('menu');
 		$parent_page = NULL;
+		// Display hidden navigation elements ?
+		$display_hidden = $tag->getAttribute('display_hidden', FALSE);
+		$limit = $tag->getAttribute('limit');
 
 		if ( ! is_null($parent))
 		{
 			if (strval((int)$parent) == (string) $parent)
 				$parent_page = self::get_page_by_id($parent);
+			else if($parent == 'this')
+				$parent_page = self::registry('page');
 			else
 				$parent_page = self::get_page_by_code($parent);
 		}
@@ -793,6 +798,12 @@ class TagManager_Page extends TagManager
 
 			$pages = array_values($pages);
 		}
+
+		if ($display_hidden == FALSE)
+			$pages = array_values(array_filter($pages, array('TagManager_Page', '_filter_appearing_pages')));
+
+		if ( ! is_null($limit))
+			$pages = array_slice($pages, 0, $limit);
 
 		$count = count($pages);
 

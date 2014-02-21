@@ -83,6 +83,10 @@
 	                    <li><a class="navlink" href="extend_field/index" title="<?php echo lang('ionize_menu_extend_fields'); ?>"><?php echo lang('ionize_menu_extend_fields'); ?></a></li>
 					<?php endif ;?>
 
+					<?php if(Authority::can('access', 'admin/item')) :?>
+	                    <li><a class="navlink" href="item/index" title="<?php echo lang('ionize_menu_static_items'); ?>"><?php echo lang('ionize_menu_static_items'); ?></a></li>
+					<?php endif ;?>
+
 				</ul>
 			</li>
 			<?php if(Authority::can('access', 'admin/modules')) :?>

@@ -141,8 +141,6 @@ class Translation extends MY_admin
 				}
 			}
 
-
-
 			// Build the file data
 			$data  = "<?php\n\n";
 
@@ -176,6 +174,10 @@ class Translation extends MY_admin
 
 			// Try writing the language file
 			$file = $path.'/'.$file_name.'_lang.php';
+
+			if ( ! file_exists($file))
+				write_file($file, $data);
+
 			if ( ! is_really_writable($file))
 			{
 				$this->error(lang('ionize_message_message_no_write_rights'). ' : ' . Settings::get('theme').'/language/'. $lang . '/' .$file_name.'_lang.php');

@@ -34,18 +34,11 @@
 
 <?php endif;?>
 
-<?php if
-(
-	Authority::can('link', 'admin/page/media/picture')
-	OR Authority::can('link', 'admin/page/media/video')
-	OR Authority::can('link', 'admin/page/media/music')
-	OR Authority::can('link', 'admin/page/media/file')
-)
-:?>
+<?php if(Authority::can('add', 'admin/item')) :?>
 
-	<div class="divider" id="tPageMediaButton">
-		<a id="addMedia" class="fmButton button light">
-			<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
+	<div class="divider" id="tPageAddItem">
+		<a id="btnAddItem" class="button light" >
+			<i class="icon-items"></i><?php echo lang('ionize_label_add_item'); ?>
 		</a>
 	</div>
 
@@ -82,7 +75,7 @@
 	{
 		if ($('tPageDeleteButton')) $('tPageDeleteButton').hide();
         if ($('tPageAddContentElement')) $('tPageAddContentElement').hide();
-        if ($('tPageMediaButton')) $('tPageMediaButton').hide();
+        if ($('tPageAddItem')) $('tPageAddItem').hide();
         if ($('tPageAddArticle')) $('tPageAddArticle').hide();
         if ($('tSideColumnSwitcher')) $('tSideColumnSwitcher').hide();
 	}
@@ -107,24 +100,14 @@
 
 		<?php endif;?>
 
+		<?php if(Authority::can('add', 'admin/item')) :?>
 
-		<?php if(
-			Authority::can('link', 'admin/page/media/picture')
-			OR Authority::can('link', 'admin/page/media/video')
-			OR Authority::can('link', 'admin/page/media/music')
-			OR Authority::can('link', 'admin/page/media/file')
-		)
-		:?>
-
-			$('addMedia').addEvent('click', function(e)
+			$('btnAddItem').addEvent('click', function()
 			{
-				e.stop();
-				mediaManager.initParent('page', $('id_page').value);
-				mediaManager.toggleFileManager();
+				staticItemManager.openListWindow();
 			});
 
 		<?php endif;?>
-
 
 		<?php if(
 			(Authority::can('add', 'admin/page/article') OR Authority::can('create', 'admin/article'))

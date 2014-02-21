@@ -15,8 +15,6 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 
 ?>
 
-
-
 <!-- Media summary -->
 <div class="summary">
 
@@ -135,8 +133,10 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
     <input type="hidden" class="data-tracker" name="data_tracker" data-element="media" data-id="<?php echo $id_media; ?>" data-title="<?php echo $file_name; ?>" data-url="" />
 
 	<!-- Context data -->
-	<input type="hidden" name="parent" value="<?php echo $parent; ?>" />
-	<input type="hidden" name="id_parent" value="<?php echo $id_parent; ?>" />
+	<?php if ( ! empty($parent)) :?>
+		<input type="hidden" name="parent" value="<?php echo $parent; ?>" />
+		<input type="hidden" name="id_parent" value="<?php echo $id_parent; ?>" />
+	<?php endif;?>
 
 	<!-- Lang data -->
 	<fieldset id="picture-lang">
@@ -265,16 +265,24 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 			
 			<div class="tabcontent<?php echo $UNIQ; ?>">
 
+				<?php
+				/*
+				 * Context data : Only available for common parents
+				 *
+				 */
+				?>
 				<!-- Lang display -->
-				<dl class="small">
-					<dt><label for="lang_<?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_media_limit_display_to_lang'); ?></label></dt>
-					<dd>
-						<input type="radio" name="lang_display" id="display_all" value="" <?php if($context_data['lang_display'] == ''):?>checked="checked"<?php endif ;?>/><label for="display_all"><?php echo lang('ionize_label_media_no_limit_display'); ?></label>
-						<?php foreach(Settings::get_languages() as $language) :?>
-						<input id="display_<?php echo $language['lang']; ?>" type="radio" name="lang_display" value="<?php echo $language['lang']; ?>"  <?php if($context_data['lang_display'] == $language['lang']):?>checked="checked"<?php endif ;?>/><label for="display_<?php echo $language['lang']; ?>"><img alt="<?php echo $language['lang']; ?>" src="<?php echo admin_style_url(); ?>/images/world_flags/flag_<?php echo $language['lang']; ?>.gif" /></label>
-						<?php endforeach; ?>
-					</dd>
-				</dl>
+				<?php if ( ! empty($parent)) :?>
+					<dl class="small">
+						<dt><label for="lang_<?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_media_limit_display_to_lang'); ?></label></dt>
+						<dd>
+							<input type="radio" name="lang_display" id="display_all" value="" <?php if($context_data['lang_display'] == ''):?>checked="checked"<?php endif ;?>/><label for="display_all"><?php echo lang('ionize_label_media_no_limit_display'); ?></label>
+							<?php foreach(Settings::get_languages() as $language) :?>
+							<input id="display_<?php echo $language['lang']; ?>" type="radio" name="lang_display" value="<?php echo $language['lang']; ?>"  <?php if($context_data['lang_display'] == $language['lang']):?>checked="checked"<?php endif ;?>/><label for="display_<?php echo $language['lang']; ?>"><img alt="<?php echo $language['lang']; ?>" src="<?php echo admin_style_url(); ?>/images/world_flags/flag_<?php echo $language['lang']; ?>.gif" /></label>
+							<?php endforeach; ?>
+						</dd>
+					</dl>
+				<?php endif ;?>
 
 
 				<!-- Copyright -->
@@ -433,8 +441,8 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 </form>
 
 <div class="buttons">
-	<button id="bSave<?php echo $type.$id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
-	<button id="bCancel<?php echo $type.$id_media; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
+	<button id="bSavemedia<?php echo $id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bCancelmedia<?php echo $id_media; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
 

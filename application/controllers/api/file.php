@@ -189,21 +189,6 @@ class File extends API_Controller
 
 				break;
 
-			// Unlinks all media from one given type from element
-			case 'unlink-type' :
-
-				$result = $this->unlink_type(
-					$this->post('element'),
-					$this->post('id_element'),
-					$this->post('type')
-				);
-
-				if ( ! $result)
-					$this->set_error();
-
-				break;
-
-
 			// Unlinks all media from element
 			case 'unlink-all' :
 
@@ -255,14 +240,11 @@ class File extends API_Controller
 			// 2. Allowed to link ?
 			if ($this->media_model->has_allowed_extension($file_path))
 			{
-				// Media type
-				$type = $this->media_model->get_type($file_path);
-
 				// Media ID : Get it or insert it in the DB
-				$id_media = $this->media_model->insert_media($type, $relative_file_path);
+				$id_media = $this->media_model->insert_media($relative_file_path);
 
 				// Link
-				return $this->media_model->attach_media($type, $element, $element_id, $id_media);
+				return $this->media_model->attach_media($element, $element_id, $id_media);
 			}
 		}
 
@@ -307,25 +289,6 @@ class File extends API_Controller
 		}
 
 		return FALSE;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * @param $element
-	 * @param $element_id
-	 * @param $type
-	 *
-	 * @return bool
-	 */
-	private function unlink_type($element, $element_id, $type)
-	{
-		// Models
-		$this->load->model('media_model');
-
-		return $this->media_model->detach_media_by_type($element, $element_id, $type);
 	}
 
 

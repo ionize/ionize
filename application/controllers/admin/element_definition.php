@@ -16,7 +16,7 @@ class Element_definition extends MY_Admin {
 	 * Type Names
 	 *
 	 */
-	public static $type_names = array
+/*	public static $type_names = array
 	(
 		'1' => 'Input',
 		'2' => 'Textarea',
@@ -24,8 +24,9 @@ class Element_definition extends MY_Admin {
 		'4' => 'Checkbox',
 		'5' => 'Radio',
 		'6' => 'Select',
-		'7' => 'Date & Time'
-	);
+		'7' => 'Date & Time',
+		'8' => 'Medias',
+	);*/
 
 
 
@@ -110,28 +111,35 @@ class Element_definition extends MY_Admin {
 	 */
 	function get_element_definition_list()
 	{
-		$elements = $this->element_definition_model->get_lang_list(array('order_by'=>'ordering ASC'), Settings::get_lang('default'));
-		$elements_lang = $this->element_definition_model->get_lang();
+		$elements = $this->element_definition_model->get_lang_list(
+			array('order_by'=>'ordering ASC'),
+			Settings::get_lang('default')
+		);
+
+		$elements_lang = $this->element_definition_model->get_all('element_definition_lang');
 
 		// Elements
 		foreach($elements as &$element)
 		{
 			// Translated elements.
-			$langs = array_values(array_filter($elements_lang, create_function('$row','return $row["id_element_definition"] == "'. $element['id_element_definition'] .'";')));
-			
 			foreach(Settings::get_languages() as $lang)
 			{
-				$element[$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
+				$element[$lang['lang']] = array('title' => '');
+				foreach($elements_lang as $ld)
+				{
+					if ($ld['id_element_definition'] == $element['id_element_definition'] && $ld['lang'] == $lang['lang'])
+						$element[$lang['lang']] = $ld;
+				}
 			}
 
 			// Element's fields
-			$element['fields'] = $this->extend_field_model->get_lang_list(array('id_element_definition' => $element['id_element_definition']), Settings::get_lang('default'));
-			
-			// Name of the field type ("checkbox", "input", ...)
-			foreach($element['fields'] as &$field)
-			{
-				$field['type_name'] = self::$type_names[$field['type']];
-			}
+			$element['fields'] = $this->extend_field_model->get_list(
+				array(
+					'parent' => 'element',
+					'id_parent' => $element['id_element_definition']
+				),
+				Settings::get_lang('default')
+			);
 		}
 
 		$this->template['elements'] = $elements;
@@ -158,7 +166,6 @@ class Element_definition extends MY_Admin {
 		$definitions = $this->element_definition_model->get_definitions_from_parent($parent, $id_parent);
 
 		$this->xhr_output(array_values($definitions));
-		
 	}
 
 
@@ -413,19 +420,21 @@ class Element_definition extends MY_Admin {
 	function get_element_list()
 	{
 		// Elements
-		$elements = $this->element_definition_model->get_lang_list(array('name <>' => '', 'order_by' => 'ordering ASC'), Settings::get_lang() );
+		$elements = $this->element_definition_model->get_lang_list(
+			array('name <>' => '', 'order_by' => 'ordering ASC'),
+			Settings::get_lang('default')
+		);
 		
 		$this->template['elements'] = '';
 		foreach($elements as $key => &$element)
 		{
 			// Element's fields
-			$element['fields'] = $this->extend_field_model->get_list(array('id_element_definition' => $element['id_element_definition']));
-			
-			foreach($element['fields'] as &$field)
-			{
-				$field['type_name'] = self::$type_names[$field['type']];
-		                $field['label'] = $this->extend_field_model->get_label($field['id_extend_field']);
-			}
+			$element['fields'] = $this->extend_field_model->get_list(
+				array(
+					'parent' => 'element',
+					'id_parent' => $element['id_element_definition']
+				)
+			);
 
 			if (count($element['fields']) == 0)
 				unset($elements[$key]);
@@ -453,31 +462,40 @@ class Element_definition extends MY_Admin {
 	{
 		$id_element = $this->input->post('id_element_definition');
 
-		$element_definition = $this->element_definition_model->get(array('id_element_definition' => $id_element), Settings::get_lang('default') );
+		$element_definition = $this->element_definition_model->get(
+			array('id_element_definition' => $id_element),
+			Settings::get_lang('default')
+		);
 		
-		// Element's fields
-		$fields = $this->extend_field_model->get_lang_list(array('id_element_definition' => $id_element, 'order_by' =>'ordering ASC'), Settings::get_lang('default'));
-
-		$fields_lang = $this->extend_field_model->get_lang();
-
-			
-		foreach($fields as &$field)
-		{
-			// Add the type name ("checkbox", etc.)
-			$field['type_name'] = self::$type_names[$field['type']];
-
-			foreach(Settings::get_languages() as $lang)
-			{
-				$langs = array_values(array_filter($fields_lang, create_function('$row','return $row["id_extend_field"] == "'. $field['id_extend_field'] .'";')));
-				$field['langs'][$lang['lang']] = array_pop(array_filter($langs, create_function('$row','return $row["lang"] == "'. $lang['lang'] .'";')));
-			}
-
-		}
+		// Element's fields definition
+		$fields = $this->extend_field_model->get_list(
+			array(
+				'parent' => 'element',
+				'id_parent' => $id_element,
+				'order_by' =>'ordering ASC'
+			)
+		);
 
 		$this->template['element_definition'] = $element_definition;
-		$this->template['fields'] = array_values(array_filter($fields, create_function('$row', 'return $row["translated"] == 0;')));
-		$this->template['lang_fields'] = array_values(array_filter($fields, create_function('$row', 'return $row["translated"] == 1;')));
-		
+
+		$this->template['fields'] = $fields;
+		$lang_fields = array_values(array_filter($fields, create_function('$row', 'return $row["translated"] == 1;')));
+		$this->template['lang_fields'] = $lang_fields;
+
+		// Check for langs fields different from
+		$has_lang_fields = FALSE;
+		foreach($lang_fields as $lf)
+		{
+			if ($lf['type'] != 8) $has_lang_fields = TRUE;
+		}
+
+		// Check for Media type
+		$has_media_fields = FALSE;
+		foreach ($fields as $f)
+			if ($f['type'] == 8) $has_media_fields = TRUE;
+		$this->template['has_media_fields'] = $has_media_fields;
+
+		$this->template['has_lang_fields'] = $has_lang_fields;
 		$this->template['parent'] = $this->input->post('parent');
 		$this->template['id_parent'] = $this->input->post('id_parent');
 		

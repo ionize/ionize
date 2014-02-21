@@ -301,9 +301,9 @@ class Base_model extends CI_Model
 	/**
 	 * Get all the records
 	 *
-	 * @access	public
-	 * @return	array	Result set
+	 * @param null $table
 	 *
+	 * @return mixed
 	 */
 	public function get_all($table = NULL)
 	{
@@ -341,15 +341,14 @@ class Base_model extends CI_Model
 	/**
 	 * Get one row_array
 	 *
-	 * @access	public
-	 * @param 	int		The result id
-	 * @return	object	A row object
+	 * @param null $where
+	 * @param null $table
 	 *
+	 * @return mixed
 	 */
-	public function get_row_array($where = FALSE, $table = FALSE)
+	public function get_row_array($where = NULL, $table = NULL)
 	{
-		$table = ($table == FALSE) ? $this->table : $table;
-
+		$table = ($table == NULL) ? $this->table : $table;
 
 		if ( is_array($where) )
 		{
@@ -367,15 +366,15 @@ class Base_model extends CI_Model
 				foreach($where['where_in'] as $key => $value)
 				{
 					if ( ! empty($value))
-						$this->db->where_in($key, $value);
+						$this->{$this->db_group}->where_in($key, $value);
 				}
 				unset($where['where_in']);
 			}
 
-			$this->db->where($where);
+			$this->{$this->db_group}->where($where);
 		}
 
-		$query = $this->db->get($table);
+		$query = $this->{$this->db_group}->get($table);
 
 		return $query->row_array();
 	}
@@ -1325,6 +1324,8 @@ class Base_model extends CI_Model
 		 */
 		if ( ! empty($dataLang) )
 		{
+			$dataLang = $this->clean_data_lang($dataLang);
+
 			foreach(Settings::get_languages() as $language)
 			{
 				foreach($dataLang as $lang => $data)
@@ -1340,19 +1341,22 @@ class Base_model extends CI_Model
 						);
 	
 						// Update
-						if( $this->exists($where, $this->lang_table))
+						if ( ! empty($data))
 						{
-							$this->{$this->db_group}->where($where);
-							$this->{$this->db_group}->update($this->lang_table, $data);
-						}
-						// Insert
-						else
-						{
-							// Correct lang & pk field on lang data array
-							$data['lang'] = $lang;
-							$data[$this->pk_name] = $id;
+							if( $this->exists($where, $this->lang_table))
+							{
+								$this->{$this->db_group}->where($where);
+								$this->{$this->db_group}->update($this->lang_table, $data);
+							}
+							// Insert
+							else
+							{
+								// Correct lang & pk field on lang data array
+								$data['lang'] = $lang;
+								$data[$this->pk_name] = $id;
 
-							$this->{$this->db_group}->insert($this->lang_table, $data);
+								$this->{$this->db_group}->insert($this->lang_table, $data);
+							}
 						}
 					}
 				}
@@ -1782,7 +1786,7 @@ class Base_model extends CI_Model
 			{
 				// Get the extend fields details, filtered on parents ID
 				$this->{$this->db_group}->where(array('extend_field.parent'=>$parent));
-				$this->{$this->db_group}->where_in('id_parent', $ids);
+				$this->{$this->db_group}->where_in('extend_fields.id_parent', $ids);
 				$this->{$this->db_group}->join(
 					$this->extend_fields_table,
 					$this->extend_field_table.'.id_'.$this->extend_field_table.' = ' .$this->extend_fields_table.'.id_'.$this->extend_field_table,
@@ -2204,23 +2208,21 @@ class Base_model extends CI_Model
 
 
 	/**
-	 * Delete a row
+	 * Delete row(s)
 	 *
-	 * @access	public
+	 * @param null $where		Where condition. If single value, PK of the table
+	 * @param null $table
 	 *
-	 * @param 	int		Where condition. If single value, PK of the table
-	 * @param 	String		Table name. If not set, current models table
-	 *
-	 * @return	int		Number of deleted rows
-	 *
+	 * @return int				Affected rows
 	 */
-	public function delete($where = NULL, $table = FALSE)
+	public function delete($where = NULL, $table = NULL)
 	{
-		$table = (FALSE !== $table) ? $table : $this->table;
+		$table = ! empty($table) ? $table : $this->table;
 
 		if ( is_array($where) )
 		{
-			$this->{$this->db_group}->where($where);
+			$this->_process_where($where, $table);
+			// $this->{$this->db_group}->where($where);
 		}
 		else
 		{
@@ -2347,6 +2349,41 @@ class Base_model extends CI_Model
 	}
 
 
+	// --------------------------------------------------------------------
+
+
+	/**
+	 * Checks if one element with a given field name already exists
+	 * in the DB.
+	 *
+	 * @param      $field			Field to test on
+	 * @param      $value			Value of the field to test on
+	 * @param null $element_id		Optional element ID (in case of change of the field value)
+	 * @param null $table
+	 *
+	 * @return bool
+	 *
+	 */
+	public function check_exists($field, $value, $element_id = NULL, $table = NULL)
+	{
+		$item = $this->get_row_array(array($field => $value), $table);
+
+		if ( ! is_null($element_id) && $element_id != FALSE)
+		{
+			$pk_name = $this->get_pk_name($table);
+
+			if ( ! empty($item) && $item[$pk_name] != $element_id)
+				return TRUE;
+		}
+		else
+		{
+			if ( ! empty($user))
+				return TRUE;
+		}
+		return FALSE;
+	}
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -2425,6 +2462,7 @@ class Base_model extends CI_Model
 	 * Check for a table field
 	 *
 	 * @param	String		Table name
+	 * @param null $table
 	 *
  	 * @return	Boolean		True if the field is found
 	 *
@@ -2447,9 +2485,10 @@ class Base_model extends CI_Model
 	/**
 	 * Removes from the data array the index which are not in the table
 	 *
-	 * @param	Array	The data array to clean
-	 * @param	String	Reference table. $this->table if not set.
+	 * @param      $data		The data array to clean
+	 * @param bool $table		Reference table. $this->table if not set.
 	 *
+	 * @return array
 	 */
 	public function clean_data($data, $table = FALSE)
 	{
@@ -2473,6 +2512,51 @@ class Base_model extends CI_Model
 		return $cleaned_data;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Cleans one data
+	 *
+	 * @param      $data		The data array to clean
+	 * @param bool $table		Reference table. $this->table if not set.
+	 *
+	 * @return array
+	 */
+	public function clean_data_lang($data, $table = FALSE)
+	{
+		$table = ($table !== FALSE) ? $table : $this->lang_table;
+
+		$fields = $this->{$this->db_group}->list_fields($table);
+
+		$cleaned_data = array();
+
+		foreach(Settings::get_languages() as $language)
+		{
+			$lang = $language['lang'];
+
+			// Was done before : Prepare in controller or model => do not alter
+			if (isset($data[$lang]))
+			{
+				$cleaned_data[$lang] = $data[$lang];
+			}
+			else
+			{
+				$cleaned_data[$lang] = array();
+
+				foreach($fields as $field)
+				{
+					if (isset($data[$field.'_'.$lang]))
+					{
+						$cleaned_data[$lang][$field] = $data[$field.'_'.$lang];
+					}
+				}
+			}
+		}
+
+		return $cleaned_data;
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -2607,18 +2691,24 @@ class Base_model extends CI_Model
 	 */
 	protected function _process_where($where, $table=NULL)
 	{
-		$table = (!is_null($table)) ? $table : $this->table;
+		$table = ! empty($table) ? $table : $this->table;
 
 		// Perform conditions from the $where array
 		if ( ! empty($where) && is_array($where) )
 		{
-			foreach(array('limit', 'offset', 'order_by', 'like') as $key)
+			foreach(array('limit', 'offset', 'like') as $key)
 			{
 				if(isset($where[$key]))
 				{
 					call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
 					unset($where[$key]);
 				}
+			}
+
+			if (isset($where['order_by']))
+			{
+				$this->{$this->db_group}->order_by($where['order_by'], NULL, FALSE);
+				unset($where['order_by']);
 			}
 
 			if (isset($where['where_in']))
@@ -2637,7 +2727,7 @@ class Base_model extends CI_Model
 						}
 					}
 					if ( ! $processed)
-						$this->{$this->db_group}->where_in($key, $values);
+						$this->{$this->db_group}->where_in($key, $values, FALSE);
 				}
 				unset($where['where_in']);
 			}

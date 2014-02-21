@@ -23,7 +23,7 @@ class TagManager_Element extends TagManager
 	private static $elements_def = NULL;
 
 	/**
-	 * Array of elements ID for which tags are already be defined by create_element_tags()
+	 * Array of elements ID for which tags are already be defined by _create_element_tags()
 	 *
 	 * @var array
 	 */
@@ -116,7 +116,12 @@ class TagManager_Element extends TagManager
 		// Get the items
 		$id_element_definition = $definition['id_element_definition'];
 		self::$ci->load->model('element_model', '', TRUE);
-		$items = self::$ci->element_model->get_fields_from_parent($parent_type, $id_parent, Settings::get_lang(), $id_element_definition);
+		$items = self::$ci->element_model->get_fields_from_parent(
+			$parent_type,
+			$id_parent,
+			Settings::get_lang('current'),
+			$id_element_definition
+		);
 
 		$tag->set('items', $items);
 
@@ -132,7 +137,7 @@ class TagManager_Element extends TagManager
 			$tag->set('id_element_definition', $id_element_definition);
 
 			// Create dynamic child tags for <ion:element />
-			self::create_element_tags($definition);
+			self::_create_element_tags($definition);
 
 			$str = self::wrap($tag, $tag->expand());
 		}
@@ -371,6 +376,9 @@ class TagManager_Element extends TagManager
 		if (isset($item['fields'][$field_key]))
 		{
 			$tag->set($field_key, $item['fields'][$field_key]);
+
+			// Availability of field for TagManager->tag_extend_field_medias()
+			$tag->set('extend', $item['fields'][$field_key]);
 		}
 
 		return self::wrap($tag, $tag->expand());
@@ -391,16 +399,16 @@ class TagManager_Element extends TagManager
 	 * @param $definition
 	 *
 	 */
-	private static function create_element_tags($definition)
+	private static function _create_element_tags($definition)
 	{
 		// Get the fields from this element definition
 		$id_element_definition = $definition['id_element_definition'];
 		$definition_name = $definition['name'];
 
-		$element_fields = self::$ci->element_model->get_fields_from_definition_id($definition['id_element_definition']);
-
 		if ( ! isset(self::$has_element_tags[$id_element_definition]))
 		{
+			$element_fields = self::$ci->element_model->get_fields_from_definition_id($definition['id_element_definition']);
+
 			foreach ($element_fields as $field)
 			{
 				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'], array(__CLASS__, 'tag_element_item_field'));
@@ -417,6 +425,8 @@ class TagManager_Element extends TagManager
 				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
 
 				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':value', array(__CLASS__, 'tag_element_item_field_value'));
+
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':medias', array(__CLASS__, 'tag_extend_field_medias'));
 			}
 
 			self::$has_element_tags[$id_element_definition] = TRUE;

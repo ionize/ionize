@@ -475,23 +475,23 @@ class Base_Controller extends MY_Controller
 
 		// Check if theme lang folder exist
         $theme_lang_folder = FCPATH.Theme::get_theme_path().'language/'.Settings::get_lang() . '/';
-        if( file_exists($theme_lang_folder) ) {
-
+        if( file_exists($theme_lang_folder) ) 
+		{
 		// Theme static translations
             $lf = glob($theme_lang_folder . '*_lang.php');
 
-		foreach($lf as $key => $tlf)
-		{
-			if (basename($tlf) === 'theme_lang.php')
+			foreach($lf as $key => $tlf)
 			{
-				unset($lf[$key]);
-				array_unshift($lf, $tlf);
-				break;
+				if (basename($tlf) === 'theme_lang.php')
+				{
+					unset($lf[$key]);
+					array_unshift($lf, $tlf);
+					break;
+				}
 			}
-		}
 
-		if ( ! empty($lf))
-			$lang_files = array_merge($lf, (Array)$lang_files);
+			if ( ! empty($lf))
+				$lang_files = array_merge($lf, (Array)$lang_files);
         }
 
 		// Modules static translations

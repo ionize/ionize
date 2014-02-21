@@ -36,6 +36,9 @@ class Media extends MY_admin
 		$this->load->library('medias');
 		$this->load->library('image_lib');
 
+		// Models
+		$this->load->model('extend_field_model', '', true);
+
 		// Remove protection if the filemanager is called on upload
 		// Purpose : Allow upload.
 		// Security check is done in the method.
@@ -97,8 +100,6 @@ class Media extends MY_admin
 			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
 			'filter' => $allowed_mimes,
 			'allowed_extensions' => Settings::get_allowed_extensions(),
-			// 'DestroyIsAuthorized_cb' => array($this, 'can_filemanager_destroy')
-			// 'hashMethod' => config_item('files_path_hash_method'),
 		);
 
 		$this->load->library('Filemanager', $params);
@@ -113,33 +114,6 @@ class Media extends MY_admin
 		else
 		{
 			$this->Filemanager->fireEvent($event);
-
-
-
-			// Flash mode (Multiple files) : PHPSESSID is send
-			/*
-			if ( ! empty($_POST['PHPSESSID']))
-				$session_data = $this->session->switchSession($_POST['PHPSESSID']);
-
-			// Get the original session tokken
-			$tokken = $this->session->userdata('uploadTokken');
-
-			// Get the sent tokken & compare
-			$sent_tokken = ( ! empty($_POST['uploadTokken'])) ? $_POST['uploadTokken'] : '';
-
-			// Only upload if tokkens match
-			if ($tokken == $sent_tokken)
-			{
-				$this->Filemanager->fireEvent($event);
-			}
-			else
-			{
-				$this->xhr_output(array(
-					'status' => 0,
-					'error' => lang('ionize_session_expired')
-				));
-			}
-			*/
 		}
 		
 		die();
@@ -209,35 +183,71 @@ class Media extends MY_admin
 	 * @param	string	Parent ID
 	 *
 	 */
-	function get_media_list($type, $parent, $id_parent)
+	function get_media_list()
 	{
-		$data['items'] = $this->media_model->get_list($parent, $id_parent, $type);
-		
-		// To set data relative to the parent
-		$data['parent'] = $parent;
-		$data['id_parent'] = $id_parent;
-		$data['type'] = $type;
-		
-		if (empty($data['items']))
-		{
-			// Addon data to the answer
-			$output_data = array('type' => $type);
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
 
-			// Answer send
-			$this->notice(lang('ionize_message_no_'.$type), $output_data);
+		$items = $this->media_model->get_list($parent, $id_parent);
+
+		if (empty($items))
+		{
+			$this->notice(lang('ionize_message_no_medias'));
 		}
 		else
 		{
-			// Media List view
-			if ($type == 'picture')
-				$view = $this->load->view('media/picture/list', $data, TRUE);
-			else
-				$view = $this->load->view('media/list', $data, TRUE);
-			
-			// Addon data to the answer			
-			$output_data = array('type' => $type, 'content' => $view);
-			
+			// Basic template vars
+			$this->template['parent'] = $parent;
+			$this->template['id_parent'] = $id_parent;
+
+			$this->template['file_path'] = Settings::get('files_path').'/';
+			$this->template['thumb_base_url'] = base_url().$this->template['file_path'].'.thumbs/';
+			$this->template['thumb_size'] = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
+
+			$this->template['items'] = $items;
+
+			$view = $this->load->view('media/list', $this->template, TRUE);
+			$output_data = array('content' => $view);
+
+			$this->success(NULL, $output_data);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_extend_media_list()
+	{
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$id_extend = $this->input->post('id_extend');
+		$lang = $this->input->post('lang');
+
+		$items = $this->media_model->get_extend_media_list($id_extend, $parent, $id_parent, $lang);
+
+		if (empty($items))
+		{
 			// Answer send
+			$this->notice(lang('ionize_message_no_medias'));
+		}
+		else
+		{
+			// Basic template vars
+			$this->template['parent'] = $parent;
+			$this->template['id_parent'] = $id_parent;
+			$this->template['id_extend'] = $id_extend;
+			$this->template['lang'] = $lang;
+
+			$this->template['file_path'] = Settings::get('files_path').'/';
+			$this->template['thumb_base_url'] = base_url().$this->template['file_path'].'.thumbs/';
+			$this->template['thumb_size'] = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
+
+			$this->template['items'] = $items;
+
+			$view = $this->load->view('extend/media/list', $this->template, TRUE);
+			$output_data = array('content' => $view);
+
 			$this->success(NULL, $output_data);
 		}
 	}
@@ -332,6 +342,7 @@ class Media extends MY_admin
 		
 	}
 
+
 	// ------------------------------------------------------------------------
 
 
@@ -339,64 +350,34 @@ class Media extends MY_admin
 	 * Add one media to a parent
 	 * Creates also thumbnails for picture if type = 'picture'
 	 *
-	 * @param $type			Media type. Can be 'picture', 'music', 'video', 'file'
-	 * @param $parent		parent. Example : 'article', 'page'
-	 * @param $id_parent	Parent ID
 	 */
-	public function add_media($type, $parent, $id_parent)
+	public function add_media()
 	{
+		$path = $this->input->post('path');
+		$parent = $this->input->post('parent');			// parent. Example : 'article', 'page'
+		$id_parent = $this->input->post('id_parent');
+
 		// Clear the cache
 		Cache()->clear_cache();
 
-		/*
-		 * Some path cleaning
-		 * The media path should start at the root media dir.
-		 * Adding base_url() to the media path gives the complete media path
-		 * Example : files/pictures/my_picture.jpg
-		 */
-		$path = ltrim($this->input->post('path'), '/');
-		 
-		// If not protocol prefix, the base URL has to be cut
-		$host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
-		$host .= "://".$_SERVER['HTTP_HOST'];
-
-		// Get the base URL as /ionize_install_path
-		$base_url = str_replace($host, '', base_url());
-
-		// Clean the first '/'
-		$base_url = preg_replace('/^[\/]/', '', $base_url);
-
-		$path = str_replace($base_url, '', $path);
-		
-		// Clean the first '/'
-		$path = preg_replace('/^[\/]/', '', $path);
+		// Get the the cleaned path
+		$path = $this->get_path_from_posted($path);
 
 		// DB Insert
-		$id = $this->media_model->insert_media($type, $path);
+		$id_media = $this->media_model->insert_media($path);
 
-		// Tag ID3 if MP3
-		if ($type == 'music' && $this->is($path, 'mp3'))
-		{
-			$data = array();
-			$this->media_model->feed_template($id, $data);
-			$this->media_model->feed_lang_template($id, $data);
+		// Get the media
+		$media = $this->media_model->get($id_media);
 
-			$this->set_ID3($data, $this->get_ID3($path));
-
-			$this->media_model->save($data, $data);
-		}
-
-		// Parent linking
-		$media = $this->media_model->get($id);
+		// Preparing Event data
 		$event_data = array(
 			'element' => $parent,
 			'id_element' => $id_parent,
 			'media' => $media,
 		);
 
-
 		// Parent linking
-		if (!$this->media_model->attach_media($type, $parent, $id_parent, $id))
+		if ( ! $this->media_model->attach_media($parent, $id_parent, $id_media))
 		{
 			// Event
 			Event::fire('Media.link.error', $event_data);
@@ -408,19 +389,84 @@ class Media extends MY_admin
 			// Event
 			Event::fire('Media.link.success', $event_data);
 
-			// Addon answer data
-			$output_data = array('type' => $type);
-
 			// Delete thumbs
-			if($type == 'picture')
-			{
-				$this->medias->delete_thumbs($media);
-			}
+			$type = $this->media_model->get_type($path);
+			if($type == 'picture') $this->medias->delete_thumbs($media);
 
-			$this->success(lang('ionize_message_media_attached'), $output_data);
+			$this->success(lang('ionize_message_media_attached'));
 		}
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Adds one media to one extend field
+	 *
+	 */
+	public function add_media_to_extend()
+	{
+		$path = $this->input->post('path');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+
+		$id_extend = $this->input->post('id_extend');
+		$lang = $this->input->post('lang');
+
+		if ( ! $lang) $lang = NULL;
+
+		// Clear the cache
+		Cache()->clear_cache();
+
+		// Get the the cleaned path
+		$path = $this->get_path_from_posted($path);
+
+		// DB Insert
+		$id_media = $this->media_model->insert_media($path);
+
+		// Get the media
+		$media = $this->media_model->get($id_media);
+
+		// Preparing Event data
+		$event_data = array(
+			'element' => $parent,
+			'id_element' => $id_parent,
+			'id_extend_field' => $id_extend,
+			'media' => $media,
+		);
+
+		// Add Media to extend field values
+		if ( ! $this->extend_field_model->add_value_to_extend_field($id_extend, $parent, $id_parent, $id_media, $lang))
+		{
+			// Event
+			Event::fire('Media.link.extend.error', $event_data);
+
+			$this->error(lang('ionize_message_media_already_attached'));
+		}
+		else
+		{
+			// Event
+			Event::fire('Media.link.extend.success', $event_data);
+
+			// Delete thumbs
+			$type = $this->media_model->get_type($path);
+			if($type == 'picture') $this->medias->delete_thumbs($media);
+
+			$this->success(lang('ionize_message_media_attached'));
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	public function add_external_media_window()
+	{
+		$this->template['parent'] = $this->input->post('parent');
+		$this->template['id_parent'] = $this->input->post('id_parent');
+
+		$this->output('media/add_external');
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -434,7 +480,6 @@ class Media extends MY_admin
 		Cache()->clear_cache();
 
 		$path = $this->input->post('path');
-		$type = $this->input->post('type');
 		$parent = $this->input->post('parent');
 		$id_parent = $this->input->post('id_parent');
 
@@ -455,7 +500,7 @@ class Media extends MY_admin
 			}
 
 			// DB Insert
-			$id = $this->media_model->insert_media($type, $path, $provider);
+			$id = $this->media_model->insert_media($path, $provider);
 			$media = $this->media_model->get($id);
 
 			// Event data
@@ -466,7 +511,7 @@ class Media extends MY_admin
 			);
 
 			// Parent linking
-			if (!$this->media_model->attach_media($type, $parent, $id_parent, $id)) 
+			if (!$this->media_model->attach_media($parent, $id_parent, $id))
 			{
 				// Event
 				Event::fire('Media.link.external.error', $event_data);
@@ -483,11 +528,7 @@ class Media extends MY_admin
 					array(
 						'fn' => 'mediaManager.loadMediaList',
 						'args' => 'video'
-					),
-					array(
-						'fn' => 'ION.emptyElement',
-						'args' => 'addVideo'
-					)					
+					)
 				);
 	
 				$this->response();
@@ -593,13 +634,12 @@ class Media extends MY_admin
 	/** 
 	 * Detach media from a parent element
 	 *
-	 * @param	string		Media type. Transmitted to send it back to the javascript onSuccess (disposeMedia)
 	 * @param	string		parent type. Ex : 'page', 'article'
 	 * @param	string		parent ID
 	 * @param	string		medium ID
 	 *
 	 */
-	public function detach_media($type, $parent, $id_parent, $id_media)
+	public function detach_media($parent, $id_parent, $id_media)
 	{
 		if ($parent !== FALSE && $id_parent !== FALSE && $id_media !== FALSE)
 		{			
@@ -622,12 +662,9 @@ class Media extends MY_admin
 
 				// Used by answer callback to delete HtmlDomElement item
 				$this->id = $id_media;
-				
-				// Addon data
-				$output_data = array('type' => $type);
-				
+
 				// Answer
-				$this->success(lang('ionize_message_media_detached'), $output_data);
+				$this->success(lang('ionize_message_media_detached'));
 			}
 			// Error Message
 			else
@@ -643,24 +680,22 @@ class Media extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
-	 * Detach all media depending on the type for a given parent
+	 * Detach all media depending for a given parent
 	 *
-	 * @param 	string	parent type
-	 * @param	string	Parent ID
-	 * @param	string 	parent ID
-	 *
+	 * @param      $parent
+	 * @param      $id_parent
 	 */
-	public function detach_media_by_type($parent, $id_parent, $type = FALSE)
+	public function detach_all_media($parent, $id_parent)
 	{
-		if ($parent !== FALSE && $id_parent !== FALSE && $type !== FALSE)
+		if ($parent !== FALSE && $id_parent !== FALSE)
 		{
 			// Clear the cache
 			Cache()->clear_cache();
 
 			// Delete succeed : Message to user
-			if ($this->media_model->detach_media_by_type($parent, $id_parent, $type) > 0)
+			if ($this->media_model->detach_all_media($parent, $id_parent) > 0)
 			{
 				$this->success(lang('ionize_message_operation_ok'));
 			}
@@ -671,7 +706,24 @@ class Media extends MY_admin
 			}
 		}	
 	}
-	
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function detach_extend_media()
+	{
+		$value = $this->input->post('id_media');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$id_extend = $this->input->post('id_extend');
+		$lang = $this->input->post('lang');
+
+		$this->extend_field_model->delete_value_from_extend_field($id_extend, $parent, $id_parent, $value, $lang);
+
+		$this->success(lang('ionize_message_operation_ok'));
+	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -679,21 +731,20 @@ class Media extends MY_admin
 	/** 
 	 * Saves media order for one parent
 	 * 
-	 * @param	string	parent type. Can be 'page', 'article'
-	 * @param	string	parent ID
-	 *
 	 */
-	public function save_ordering($parent, $id_parent)
+	public function save_extend_ordering()
 	{
-		$order = $this->input->post('order');
-		
-		if( $order !== FALSE )
-		{
-			// Clear the cache
-			Cache()->clear_cache();
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$id_extend = $this->input->post('id_extend');
+		$lang = $this->input->post('lang');
 
-			$this->media_model->save_ordering($order, $parent, $id_parent);
-			
+		$value = $this->input->post('order');
+
+		if( $value !== FALSE )
+		{
+			$this->extend_field_model->save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang);
+
 			// Answer
 			$this->success(lang('ionize_message_operation_ok'));
 		}
@@ -706,17 +757,47 @@ class Media extends MY_admin
 	
 	// ------------------------------------------------------------------------
 
+
+	/**
+	 * Saves media order for one parent
+	 *
+	 * @param	string	parent type. Can be 'page', 'article'
+	 * @param	string	parent ID
+	 *
+	 */
+	public function save_ordering($parent, $id_parent)
+	{
+		$order = $this->input->post('order');
+
+		if( $order !== FALSE )
+		{
+			// Clear the cache
+			Cache()->clear_cache();
+
+			$this->media_model->save_ordering($order, $parent, $id_parent);
+
+			// Answer
+			$this->success(lang('ionize_message_operation_ok'));
+		}
+		else
+		{
+			$this->error(lang('ionize_message_operation_nok'));
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
 	
 	/** 
 	 * Shows one media meta data
 	 *
-	 * @param string	Media type
 	 * @param int		Media ID
 	 * @param string	parent type ('page', 'article')
 	 * @param int		Parent ID (context in which the media is linked)
 	 *
 	 */
-	public function edit($type, $id, $parent, $id_parent)
+	public function edit($id, $parent=NULL, $id_parent=NULL)
 	{
 		$this->media_model->feed_template($id, $this->template);
 		$this->media_model->feed_lang_template($id, $this->template);
@@ -725,32 +806,22 @@ class Media extends MY_admin
 		$this->template['id_parent'] = $id_parent;
 		
 		// Get the mp3 tags
-		if ( $this->is($this->template['path'], 'mp3') )
+		/*
+		if ( $this->media_model->is($this->template['path'], 'mp3') )
 		{
-			$this->set_ID3($this->template, $this->get_ID3($this->template['path']));
+			$this->template = $this->add_ID3_to_data($this->template, $this->media_model->get_ID3($this->template['path']));
 		}
+		*/
 
 		// Get the thumbs to check each thumb status
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
 
-		/*
-		 * extend fields
-		 *
-		 */
+		// Extend fields
 		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('media', $id);
 		
-		// Location : 'http:' / 'files'
-		/*
-		$location = array_shift(explode('/', $this->template['path']));
-		if ($location == 'http:')
-			$this->template['is_external'] = TRUE;
-		else
-			$this->template['is_external'] = FALSE;
-		*/
-		// $this->template['location'] = $location;
-		
 		// context data
-		$this->template['context_data'] = $this->media_model->get_context_data($id, $parent, $id_parent);
+		if ($parent)
+			$this->template['context_data'] = $this->media_model->get_context_data($id, $parent, $id_parent);
 
 		// Modules addons
 		$this->load_modules_addons($this->template);
@@ -771,10 +842,6 @@ class Media extends MY_admin
 		// Clear the cache
 		Cache()->clear_cache();
 		
-		// Get old values
-		$id_media = $this->input->post('id_media'); 
-		$old_media_data = $this->media_model->get($id_media);
-
 		// Standard data;
 		$data = array();
 		
@@ -817,7 +884,7 @@ class Media extends MY_admin
 		}
 
 		// Database save
-		$this->id = $this->media_model->save($data, $lang_data);
+		$id_media = $this->media_model->save($data, $lang_data);
 
 		// Event
 		$event_data = array(
@@ -827,37 +894,18 @@ class Media extends MY_admin
 		Event::fire('Media.save.success', $event_data);
 
 		// Save extend fields data
-		$this->extend_field_model->save_data('media', $this->id, $_POST);
+		$this->extend_field_model->save_data('media', $id_media, $_POST);
 
 		// Save parent context data
 		$this->media_model->save_context_data($_POST);
 
-		$media = $this->media_model->get($this->id, Settings::get_lang('default'));
+		$media = $this->media_model->get($id_media, Settings::get_lang('default'));
 
-		// Save ID3 to file if MP3
-		if ( $this->is($media['path'], 'mp3') )
-		{
-			$tags = array(
-				'artist' => array($media['copyright']),
-				'title' => array($media['title']),
-				'album' => array($media['container'])
-			);
-			
-			$date = strtotime($media['date']);
-			
-			if ($date !== FALSE)
-			{
-				$tags['year'][] = (String) date('Y', $date);
-			}
-
-			$this->write_ID3($media['path'], $tags);
-		}	
-		
 		// Delete picture thumbnails
 		if($media['type'] == 'picture')
 			$this->medias->delete_thumbs($media);
 
-		if ( $this->id !== FALSE )
+		if ( $id_media !== FALSE )
 		{
 			// Success Message
 			$this->callback = array(
@@ -906,7 +954,7 @@ class Media extends MY_admin
 			{
 				$settings = array(
 					'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120,
-					'unsharp' => '0'
+					'unsharpmask' => false
 				);
 				
 				try
@@ -950,6 +998,37 @@ class Media extends MY_admin
         echo $content;
         
         die();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Some path cleaning
+	 * The media path should start at the root media dir.
+	 * Adding base_url() to the media path gives the complete media path
+	 * Example : files/pictures/my_picture.jpg
+	 */
+	private function get_path_from_posted($path)
+	{
+		$path = ltrim($path, '/');
+
+		// If not protocol prefix, the base URL has to be cut
+		$host = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
+		$host .= "://".$_SERVER['HTTP_HOST'];
+
+		// Get the base URL as /ionize_install_path
+		$base_url = str_replace($host, '', base_url());
+
+		// Clean the first '/'
+		$base_url = preg_replace('/^[\/]/', '', $base_url);
+
+		$path = str_replace($base_url, '', $path);
+
+		// Clean the first '/'
+		$path = preg_replace('/^[\/]/', '', $path);
+
+		return $path;
 	}
 
 
@@ -1066,110 +1145,22 @@ class Media extends MY_admin
 
 
 	/**
-	 * @param $path
-	 *
-	 * @return array
-	 */
-	private function get_ID3($path)
-	{
-		$tags = array_fill_keys(self::$MP3_ID3, '');
-	
-		if ( is_file(DOCPATH.$path) )
-		{
-			require_once(APPPATH.'libraries/getid3/getid3.php');
-
-			// Initialize getID3 engine
-			$getID3 = new getID3;
-
-			// Analyze file and store returned data in $ThisFileInfo
-			$id3 = $getID3->analyze(DOCPATH.$path);
-
-			foreach(self::$MP3_ID3 as $index)
-			{
-				$tags[$index] = ( ! empty($id3['tags_html']['id3v2'][$index][0])) ? $id3['tags_html']['id3v2'][$index][0] : '';
-			}
-		}
-		
-		return $tags;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
 	 * @param $data
 	 * @param $tags
 	 *
 	 */
-	private function set_ID3(&$data, $tags)
+	private function add_ID3_to_data($data, $tags)
 	{
 		// Displayed datas
 		$data['copyright'] = $tags['artist'];
 		$data['date'] = date('Y.m.d H:m:s', strtotime($tags['year']));
 
-		$data['container'] = $tags['album'];
-		
 		// Title
 		foreach(Settings::get_languages() as $lang)
 		{
 			$data[$lang['lang']]['title'] = $tags['title'];
 			$data[$lang['lang']]['alt'] = $data[$lang['lang']]['description'] = $tags['artist'] . ' - ' . $tags['album'] . ' : ' . $tags['title'];
 		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * @param $path
-	 * @param $tags
-	 *
-	 * @return bool
-	 */
-	private function write_ID3($path, $tags)
-	{
-		if ( is_file(DOCPATH.$path) )
-		{
-			require_once(APPPATH.'libraries/getid3/getid3.php');
-
-			$getID3 = new getID3;
-			$getID3->setOption(array('encoding'=>'UTF-8'));
-			getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.php', __FILE__, TRUE);
-
-
-			$tagwriter = new getid3_writetags;
-			$tagwriter->filename = $path;
-			$tagwriter->tag_encoding = 'UTF-8';
-			$tagwriter->tagformats = array('id3v1', 'id3v2.3');
-			$tagwriter->overwrite_tags = TRUE;
-			$tagwriter->tag_data = $tags;
-			
-			$tagwriter->WriteTags();
-
-			if (!empty($tagwriter->warnings))
-			{
-				return FALSE;
-			}
-			return TRUE;
-		}
-		return FALSE;
-	}
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * @param $path
-	 * @param $ext
-	 *
-	 * @return bool
-	 */
-	private function is($path, $ext)
-	{
-		if (pathinfo(DOCPATH.$path, PATHINFO_EXTENSION) == $ext)
-			return TRUE;
-			
-		return FALSE;
+		return $data;
 	}
 }

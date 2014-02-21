@@ -90,6 +90,12 @@ ION.append({
 });
 
 
+/**
+ * Dashboard Content Panels
+ *
+ * @type {NamedClass}
+ *
+ */
 ION.ContentPanel = new NamedClass('ION.ContentPanel', {
 
 	Implements: [Events, Options],

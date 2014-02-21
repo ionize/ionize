@@ -37,14 +37,18 @@ var TabSwapper = new Class({
 	sections: [],
 	clickers: [],
 	sectionFx: [],
-	initialize: function(options){
+
+	initialize: function(options)
+	{
 		this.setOptions(options);
 		var prev = this.setup();
 		if (prev) return prev;
 		if (this.options.cookieName && this.recall()) this.show(this.recall().toInt());
 		else this.show(this.options.initPanel);
 	},
-	setup: function(){
+
+	setup: function()
+	{
 		var opt = this.options;
 		sections = $$('#' + opt.sectionsContainer + ' '  + opt.sections);
 		tabs = $$('#' + opt.tabsContainer + ' ' + opt.tabs);
@@ -54,8 +58,12 @@ var TabSwapper = new Class({
 			if (sections[index])
 				this.addTab(tab, sections[index], clickers[index], index);
 		}, this);
+		// Store the instance
+		if ($(opt.tabsContainer)) $(opt.tabsContainer).store('tabSwapper', this);
 	},
-	addTab: function(tab, section, clicker, index){
+
+	addTab: function(tab, section, clicker, index)
+	{
 		tab = document.id(tab); clicker = document.id(clicker); section = document.id(section);
 		//if the tab is already in the interface, just move it
 		if (this.tabs.indexOf(tab) >= 0 && tab.retrieve('tabbered') 
@@ -98,7 +106,54 @@ var TabSwapper = new Class({
 		this.hideSection(index);
 		return this;
 	},
-	removeTab: function(index){
+
+	addNewTab: function(title, id)
+	{
+		var index = this.tabs.length;
+
+		var a = new Element('a').set('html', title);
+		var li = new Element('li', {'id': 'tab' + id, 'class': id}).adopt(a);
+		li.inject($(this.options.tabsContainer), 'bottom');
+
+		 // Section
+		var div = new Element('div', { 'class': 'tabcontent ' + id}).inject(this.options.sectionsContainer, 'bottom');
+
+		this.addTab(li, div, a, index);
+
+		return div;
+	},
+
+	getSection: function(selector)
+	{
+		var section = $(this.options.sectionsContainer).getElement(selector);
+		return section;
+	},
+
+	removeTabById: function(id)
+	{
+		var self = this;
+		id = 'tab' + id;
+
+		this.tabs.each(function(tab, index)
+		{
+			if (tab.id == id)
+			{
+				var section = tab.retrieve('section');
+				self.tabs.erase(tab);
+				tab.destroy();
+				section.destroy();
+
+				if (self.now == index)
+				{
+					if (index > 0) self.show(index - 1);
+					else if (index < self.tabs.length) self.show(index + 1);
+				}
+			}
+		});
+	},
+
+	removeTab: function(index)
+	{
 		var now = this.tabs[this.now];
 		if (this.now == index){
 			if (index > 0) this.show(index - 1);
@@ -107,7 +162,9 @@ var TabSwapper = new Class({
 		this.now = this.tabs.indexOf(now);
 		return this;
 	},
-	moveTab: function(from, to){
+
+	moveTab: function(from, to)
+	{
 		var tab = this.tabs[from];
 		var clicker = tab.retrieve('clicker');
 		var section = tab.retrieve('section');
@@ -123,7 +180,35 @@ var TabSwapper = new Class({
 		section.inject(toSection, 'before');
 		return this;
 	},
-	show: function(i){
+
+	hasTabId: function(id)
+	{
+		var has = false;
+		id = 'tab' + id;
+
+		this.tabs.each(function(tab, idx){
+			if (tab.id == id)
+				has = true;
+		});
+
+		return has;
+	},
+
+	setTabInfo:function(selector, text)
+	{
+		var tab = $(this.options.tabsContainer).getElement(selector);
+		if (tab)
+		{
+			var a = tab.getElement('a');
+			var span = a.getElement('span.tab-detail');
+			if ( ! span)
+				span = new Element('span', {'class':'tab-detail'}).inject(a, 'bottom');
+			span.set('text', text);
+		}
+	},
+
+	show: function(i)
+	{
 		if (this.now == null) {
 			this.tabs.each(function(tab, idx){
 				if (i != idx) 
@@ -133,6 +218,7 @@ var TabSwapper = new Class({
 		this.showSection(i).save(i);
 		return this;
 	},
+
 	getCurrentTab:function()
 	{
 		var tab = null;
@@ -152,12 +238,16 @@ var TabSwapper = new Class({
 
 		return tab;
 	},
-	save: function(index){
+
+	save: function(index)
+	{
 		if (this.options.cookieName) 
 			Cookie.write(this.options.cookieName, index, {duration:this.options.cookieDays});
 		return this;
 	},
-	recall: function(){
+
+	recall: function()
+	{
 
 		if (this.options.cookieName)
 		{
@@ -169,6 +259,7 @@ var TabSwapper = new Class({
 		}
 		return false;
 	},
+
 	clickRecall: function()
 	{
 		idx = this.recall();
@@ -180,7 +271,9 @@ var TabSwapper = new Class({
 		}
 		return false;
 	},
-	hideSection: function(idx) {
+
+	hideSection: function(idx)
+	{
 		var tab = this.tabs[idx];
 		if (!tab) return this;
 		var sect = tab.retrieve('section');
@@ -209,7 +302,9 @@ var TabSwapper = new Class({
 */		
 		return this;
 	},
-	showSection: function(idx) {
+
+	showSection: function(idx)
+	{
 		var tab = this.tabs[idx];
 		if (!tab) return this;
 		var sect = tab.retrieve('section');

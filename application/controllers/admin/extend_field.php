@@ -25,6 +25,8 @@ class Extend_field extends MY_admin
 
 
 	// ------------------------------------------------------------------------
+	// Extend definition methods
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -105,6 +107,7 @@ class Extend_field extends MY_admin
 		{
 			$where['parent'] = $parent;
 		}
+		$where['where_in'] = array('parent'=> array('article','page','media'));
 
 		// Returns the extends list ordered by 'ordering' 
 		$extend_fields = $this->extend_field_model->get_lang_list($where, Settings::get_lang('default'));
@@ -124,7 +127,43 @@ class Extend_field extends MY_admin
     	$this->output('extend/list');
 	}
 
-	
+
+	// ------------------------------------------------------------------------
+
+
+	public function set_main()
+	{
+		$id_extend = $this->input->post('id_extend_field');
+		$extend = $this->extend_field_model->get(array('id_extend_field' => $id_extend));
+
+		if ( ! empty($extend) && ! empty($extend['parent']) && ! empty($extend['id_parent']))
+		{
+			$where = array(
+				'parent' => $extend['parent'],
+				'id_parent' => $extend['id_parent']
+			);
+
+			// Set all 'main' values to 0
+			$this->extend_field_model->update($where, array('main' => 0));
+
+			$data = array(
+				'id_extend_field' => $id_extend,
+				'main' => 1,
+			);
+
+			$id = $this->extend_field_model->save($data);
+
+			if ($id)
+				$this->success(lang('ionize_message_extend_field_saved'));
+			else
+				$this->error(lang('ionize_message_extend_field_not_saved'));
+		}
+		else
+		{
+			$this->error(lang('ionize_message_extend_field_not_found'));
+		}
+	}
+
 	// ------------------------------------------------------------------------
 
 
@@ -172,7 +211,8 @@ class Extend_field extends MY_admin
 
 
 	/**
-	 * Deletes one extend field
+	 * Deletes one extend field definition
+	 * @table : extend_field
 	 *
 	 * @param	int 	Category ID
 	 * @param	string 	Parent table name. optional
@@ -274,4 +314,11 @@ class Extend_field extends MY_admin
 			}
 		}
 	}
+
+
+	// ------------------------------------------------------------------------
+	// Extend instances methods
+	// ------------------------------------------------------------------------
+
+
 }

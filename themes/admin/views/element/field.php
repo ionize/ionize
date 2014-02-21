@@ -5,18 +5,14 @@
  *
  */
 
-
-$id = $id_extend_field;
-
 ?>
 
-<form name="elementfieldForm<?php echo $id; ?>" id="elementfieldForm<?php echo $id; ?>" action="<?php echo admin_url(); ?>element_field/save">
+<form name="elementfieldForm<?php echo $id_extend_field; ?>" id="elementfieldForm<?php echo $id_extend_field; ?>" action="<?php echo admin_url(); ?>element_field/save">
 
 	<!-- Hidden fields -->
-	<input id="id_element_definition" name="id_element_definition" type="hidden" value="<?php echo $id_element_definition; ?>" />
-	<input id="id_extend_field" name="id_extend_field" type="hidden" value="<?php echo $id; ?>" />
+	<input id="id_parent" name="id_parent" type="hidden" value="<?php echo $id_parent; ?>" />
+	<input id="id_extend_field" name="id_extend_field" type="hidden" value="<?php echo $id_extend_field; ?>" />
 	<input id="parent" name="parent" type="hidden" value="" />
-	<input id="global" name="global" type="hidden" value="0" />
 	<input id="ordering" name="ordering" type="hidden" value="<?php echo $ordering; ?>" />
 
 
@@ -34,13 +30,13 @@ $id = $id_extend_field;
 			<dd>
 	
 				<!-- Tabs -->
-				<div id="elementFieldTab<?php echo $id; ?>" class="mainTabs mt0 mb5">
+				<div id="extendFieldTab<?php echo $id_extend_field; ?>" class="mainTabs mb5 mt0 ">
 					
 					<ul class="tab-menu">
 						
 						<?php foreach(Settings::get_languages() as $language) :?>
 						
-							<li class="tab_element<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
+							<li class="tab_extend<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
 						
 						<?php endforeach ;?>
 			
@@ -49,7 +45,7 @@ $id = $id_extend_field;
 				
 				</div>
 				
-				<div id="elementFieldTabContent<?php echo $id; ?>">
+				<div id="extendFieldTabContent<?php echo $id_extend_field; ?>">
 					
 					<?php foreach(Settings::get_languages() as $language) :?>
 						
@@ -58,7 +54,7 @@ $id = $id_extend_field;
 						<div class="tabcontent <?php echo $lang; ?>">
 					
 							<!-- Label -->
-							<input id="label_<?php echo $lang; ?><?php echo $id; ?>" name="label_<?php echo $lang; ?>" class="inputtext title" type="text" value="<?php echo ${$lang}['label']; ?>"/>
+							<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title" type="text" value="<?php echo ${$lang}['label']; ?>"/>
 			
 						</div>
 					<?php endforeach ;?>
@@ -69,14 +65,13 @@ $id = $id_extend_field;
 	
 	</div>
 
-
 	<!-- Name -->
 	<dl class="small">
 		<dt>
-			<label for="name<?php echo $id; ?>" title="<?php echo lang('ionize_help_ef_name'); ?>"><?php echo lang('ionize_label_name'); ?></label>
+			<label for="name<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_name'); ?>"><?php echo lang('ionize_label_name'); ?></label>
 		</dt>
 		<dd>
-			<input id="name<?php echo $id; ?>" name="name" class="inputtext required" type="text" value="<?php echo $name; ?>" />
+			<input id="name<?php echo $id_extend_field; ?>" name="name" class="inputtext required" type="text" value="<?php echo $name; ?>" />
 		</dd>
 		
 	</dl>
@@ -85,10 +80,10 @@ $id = $id_extend_field;
 	<!-- Type -->
 	<dl class="small">
 		<dt>
-			<label for="type<?php echo $id; ?>"><?php echo lang('ionize_label_extend_field_type'); ?></label>
+			<label for="type<?php echo $id_extend_field; ?>"><?php echo lang('ionize_label_extend_field_type'); ?></label>
 		</dt>
 		<dd>
-			<select name="type" id="type<?php echo $id; ?>" class="select">
+			<select name="type" id="type<?php echo $id_extend_field; ?>" class="select">
 				<option value="1" <?php if ($type=='1' OR $type=='') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_text'); ?></option>
 				<option value="2" <?php if ($type=='2') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_textarea'); ?></option>
 				<option value="3" <?php if ($type=='3') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_editor'); ?></option>
@@ -96,49 +91,48 @@ $id = $id_extend_field;
 				<option value="5" <?php if ($type=='5') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_radio'); ?></option>
 				<option value="6" <?php if ($type=='6') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_select'); ?></option>
 				<option value="7" <?php if ($type=='7') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_datetime'); ?></option>
+				<option value="8" <?php if ($type=='8') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_media'); ?></option>
 			</select>
-			
 		</dd>
-		
 	</dl>
 	
-	<!-- Traduisible -->
-	<dl id="translate_block<?php echo $id; ?>" class="small">
+	<!-- Can be translated ? -->
+	<dl id="translate_block<?php echo $id_extend_field; ?>" class="small">
 		<dt>
-			<label for="translated<?php echo $id; ?>"><?php echo lang('ionize_label_extend_field_translated'); ?></label>
+			<label for="translated<?php echo $id_extend_field; ?>"><?php echo lang('ionize_label_extend_field_translated'); ?></label>
 		</dt>
 		<dd>
-			<input id="translated<?php echo $id; ?>" name="translated" class="inputcheckbox" type="checkbox" value="1" <?php if ($translated=='1') :?> checked="checked" <?php endif ;?> />
+			<input id="translated<?php echo $id_extend_field; ?>" name="translated" class="inputcheckbox" type="checkbox" value="1" <?php if ($translated=='1') :?> checked="checked" <?php endif ;?> />
 		</dd>
 	</dl>
 
 	<!-- Values : For select, radio, checkboxes -->
-	<dl id="value_block<?php echo $id; ?>" class="small">
+	<dl id="value_block<?php echo $id_extend_field; ?>" class="small">
 		<dt>
-			<label for="value<?php echo $id; ?>" title="<?php echo lang('ionize_help_ef_values'); ?>"><?php echo lang('ionize_label_values'); ?></label>
+			<label for="value<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_values'); ?>"><?php echo lang('ionize_label_values'); ?></label>
 		</dt>
 		<dd>
-			<textarea id="value<?php echo $id; ?>" name="value" class="inputtext w200 h40" type="text"><?php echo $value; ?></textarea>
+			<textarea id="value<?php echo $id_extend_field; ?>" name="value" class="inputtext w200 h40" type="text"><?php echo $value; ?></textarea>
 		</dd>
 	</dl>
 	
 	<!-- default_value -->
-	<dl id="default_value_block<?php echo $id; ?>" class="small">
+	<dl id="default_value_block<?php echo $id_extend_field; ?>" class="small">
 		<dt>
-			<label for="default_value<?php echo $id; ?>" title="<?php echo lang('ionize_help_ef_default_value'); ?>"><?php echo lang('ionize_label_default_value'); ?></label>
+			<label for="default_value<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_default_value'); ?>"><?php echo lang('ionize_label_default_value'); ?></label>
 		</dt>
 		<dd>
-			<textarea id="default_value<?php echo $id; ?>" name="default_value" class="inputtext w200 h40" type="text"><?php echo $default_value; ?></textarea>
+			<textarea id="default_value<?php echo $id_extend_field; ?>" name="default_value" class="inputtext w200 h40" type="text"><?php echo $default_value; ?></textarea>
 		</dd>
 	</dl>
 
 	<!-- description -->
 	<dl class="small">
 		<dt>
-			<label for="description<?php echo $id; ?>" title="<?php echo lang('ionize_help_ef_description'); ?>"><?php echo lang('ionize_label_description'); ?></label>
+			<label for="description<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_description'); ?>"><?php echo lang('ionize_label_description'); ?></label>
 		</dt>
 		<dd>
-			<textarea id="description<?php echo $id; ?>" name="description" class="inputtext w200 h40" type="text"><?php echo $description; ?></textarea>
+			<textarea id="description<?php echo $id_extend_field; ?>" name="description" class="inputtext w200 h40" type="text"><?php echo $description; ?></textarea>
 		</dd>
 	</dl>
 
@@ -150,46 +144,53 @@ $id = $id_extend_field;
 	 Must be named bSave[windows_id] where 'window_id' is the used ID for the window opening through ION.formWindow()
 --> 
 <div class="buttons">
-	<button id="bSaveelementfield<?php echo $id; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
-	<button id="bCancelelementfield<?php echo $id; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
+	<button id="bSaveelementfield<?php echo $id_extend_field; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bCancelelementfield<?php echo $id_extend_field; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
 <script type="text/javascript">
 
-	var windowEl = $('welementfield<?php echo $id; ?>');
-	var contentEl = $('welementfield<?php echo $id; ?>_content');
+	var id = '<?php echo $id_extend_field; ?>';
 
 	function display_value_block()
 	{
-		if ($('type<?php echo $id; ?>').value == '7')
+		if ($('type' + id).value == '8')
 		{
-			$('value_block<?php echo $id; ?>').setStyle('display', 'none');
-			$('default_value_block<?php echo $id; ?>').setStyle('display', 'none');
-			$('translate_block<?php echo $id; ?>').setStyle('display', 'none');
+			$('value_block' + id).setStyle('display', 'none');
+			$('default_value_block' + id).setStyle('display', 'none');
+			$('translate_block' + id).setStyle('display', 'block').highlight();
 		}
-		else if ($('type<?php echo $id; ?>').value < 4)
+		else if ($('type' + id).value == '7')
 		{
-			$('value_block<?php echo $id; ?>').setStyle('display', 'none');
+			$('value_block' + id).setStyle('display', 'none');
+			$('default_value_block' + id).setStyle('display', 'none');
+			$('translate_block' + id).setStyle('display', 'none');
+		}
+		else if ($('type' + id).value < 4)
+		{
+			$('value_block' + id).setStyle('display', 'none');
 			
-			if ($('default_value_block<?php echo $id; ?>').getStyle('display') == 'none')
+			if ($('default_value_block' + id).getStyle('display') == 'none')
 			{
-				$('default_value_block<?php echo $id; ?>').setStyle('display', 'block').highlight();
-				$('translate_block<?php echo $id; ?>').setStyle('display', 'block').highlight();
+				$('default_value_block' + id).setStyle('display', 'block').highlight();
+				$('translate_block' + id).setStyle('display', 'block').highlight();
 			}
 		}
 		else
 		{
-			if ($('value_block<?php echo $id; ?>').getStyle('display') == 'none')
+			if ($('value_block' + id).getStyle('display') == 'none')
 			{
-				$('value_block<?php echo $id; ?>').setStyle('display', 'block').highlight();
-				$('default_value_block<?php echo $id; ?>').setStyle('display', 'block').highlight();
-				$('translate_block<?php echo $id; ?>').setStyle('display', 'block').highlight();
+				$('value_block' + id).setStyle('display', 'block').highlight();
+				$('default_value_block' + id).setStyle('display', 'block').highlight();
+				$('translate_block' + id).setStyle('display', 'block').highlight();
 			}
 		}
-		ION.windowResize('elementfield<?php echo $id; ?>', {'width':410});
+		
+		// Window Resize
+		// ION.windowResize('elementfield' + id, {'width':410});
 	}
 	
-	$('type<?php echo $id; ?>').addEvent('change', function()
+	$('type' + id).addEvent('change', function()
 	{
 		display_value_block();
 	});
@@ -197,12 +198,18 @@ $id = $id_extend_field;
 	
 	
 	// Auto generates the name of the field
-	ION.initCorrectUrl('label<?php echo $id; ?>', 'name<?php echo $id; ?>');
+	ION.initCorrectUrl('label' + id, 'name' + id);
 
-	/** 
-	 * Lang tabs
-	 */
-	var elementFieldTab<?php echo $id; ?> = new TabSwapper({tabsContainer: 'elementFieldTab<?php echo $id; ?>', sectionsContainer: 'elementFieldTabContent<?php echo $id; ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent'});
+	// Tabs
+	var extendFieldTab<?php echo $id_extend_field; ?> = new TabSwapper({
+		tabsContainer: 'extendFieldTab<?php echo $id_extend_field; ?>',
+		sectionsContainer: 'extendFieldTabContent<?php echo $id_extend_field; ?>',
+		selectedClass: 'selected',
+		deselectedClass: '',
+		tabs: 'li',
+		clickers: 'li a',
+		sections: 'div.tabcontent'
+	});
 
 </script>
 

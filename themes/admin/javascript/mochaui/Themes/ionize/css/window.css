@@ -34,7 +34,7 @@
 */
 .mochaTitlebar { width: 100%; overflow: hidden; background: url(../images/spacer.gif?from=fafafa&to=e5e5e5);}
 .mochaTitlebar .toolbar { padding-top:2px; padding-bottom:1px; padding-right:6px; margin-top:0; margin-bottom:0; height:23px; line-height:23px; float:right; vertical-align:middle; margin-right:0}
-.mochaTitle { float:left; font-size: 12px; font-family: Arial,Helvetica,sans-serif; line-height: 23px; vertical-align:middle; font-weight: bold; margin: 0; padding: 0 10px 0 12px; color: #888; }
+.mochaTitle { float:left; font-size: 12px; font-family: Arial,Helvetica,sans-serif; line-height: 23px; vertical-align:middle; font-weight: bold; margin: 0; padding: 2px 10px 0 12px; color: #888; }
 .mochaTitle { color: #181818; }
 .mochaTitlebar span.icon.windowMinimize { background: url('../images/window-minimize.gif') left top no-repeat; height:16px; width:16px;}
 .mochaTitlebar span.icon.windowMinimize:hover { border-color:transparent; }
@@ -56,6 +56,7 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .mochaWindowFooter .toolbar { vertical-align:middle; height:20px; line-height:20px; margin:0; padding-top:2px; float:left; padding-left:20px; }
 .IE .mochaWindowFooter .toolbar { padding-top:4px }
 .mochaWindowFooter .toolbar span.icon { line-height:20px; padding-top:2px; padding-bottom:2px; cursor:pointer }
+.mochaWindowFooter .info { line-height:24px; float:left; color:#999999; margin-left:10px; height:24px;overflow: hidden; }
 
 .mocha .handle { position: absolute; z-index: 2; }
 .mocha .handle, .mocha .handleN,.mocha .handleS,.mocha .handleW,.mocha .handleE {  background: #0f0; width: 3px; height: 3px; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; /* IE8 */ filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 0); /* IE6 and 7*/ opacity:.0; -moz-opacity: .0; overflow: hidden; font-size: 1px; /* For IE6 */ }
@@ -82,7 +83,7 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .mochaMinimizeButton { margin-left: 0; }
 .mochaMaximizeButton { }
 .mochaCloseButton { }
-.mochaWindowFooter .spinner { display: none; position: absolute; bottom: 5px; left: 6px; width: 16px; height: 16px }
+.mochaWindowFooter .spinner { display: none; float:left; margin:4px 0 0 5px; width: 16px; height: 16px }
 .mochaIframe { width: 100%; }
 /* Fix for IE6 select z-index issue */
 .zIndexFix { display: block; position: absolute; top: 0; left: 0; z-index: -1; filter: mask(); width: 100px; height: 100px; border: 1px solid transparent; }
