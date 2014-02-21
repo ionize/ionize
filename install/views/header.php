@@ -31,7 +31,7 @@
 		<div class="block">
 			<div id="lang">
 				<?php foreach($languages as $l) :?>
-					<img src="../themes/admin/images/world_flags/flag_<?php echo $l ?>.gif" onclick="javascript:location.href='<?php echo $current_url ?>&lang=<?php echo $l ?>';" />
+					<img src="../themes/admin/styles/original/images/world_flags/flag_<?php echo $l ?>.gif" onclick="javascript:location.href='<?php echo $current_url ?>&lang=<?php echo $l ?>';" />
 				<?php endforeach ;?>
 			</div>
 				<img src="assets/images/ionize_logo_install.png" />

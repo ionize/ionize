@@ -22,6 +22,12 @@
     <query>UPDATE extend_field set parent='element', id_parent=id_element_definition where id_element_definition != 0;</query>
     <query>ALTER TABLE extend_field add main smallint(1) unsigned NOT NULL DEFAULT 0;</query>
 
+    <!-- Rules -->
+    <query>delete from rule where resource='admin/page/media' and actions='';</query>
+    <query>delete from rule where resource='admin/article/media' and actions='';</query>
+    <query>ALTER TABLE rule DROP PRIMARY KEY;</query>
+    <query>ALTER TABLE rule ADD PRIMARY KEY(id_role,resource);</query>
+
     <query>update resource set actions='link,unlink,edit' where resource='admin/page/media';</query>
     <query>update resource set actions='link,unlink,edit' where resource='admin/article/media';</query>
     <query>update rule set actions='link,unlink,edit' where resource='admin/page/media';</query>
