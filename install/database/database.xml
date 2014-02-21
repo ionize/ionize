@@ -261,6 +261,55 @@
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
 
+        <query>
+            CREATE TABLE IF NOT EXISTS item (
+                id_item int(11) unsigned NOT NULL AUTO_INCREMENT,
+                id_item_definition int(10) unsigned NOT NULL,
+                name varchar(50) DEFAULT NULL,
+                description text,
+                ordering int(10) unsigned NOT NULL DEFAULT '0',
+                PRIMARY KEY (id_item)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Item instances';
+        </query>
+        
+        <query>
+            CREATE TABLE item_definition (
+                id_item_definition int(11) unsigned NOT NULL AUTO_INCREMENT,
+                name varchar(50) DEFAULT NULL,
+                description text,
+                PRIMARY KEY (id_item_definition)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Items definition table';
+        </query>
+        
+        <query>
+            CREATE TABLE item_definition_lang (
+                id_item_definition int(11) unsigned NOT NULL,
+                lang varchar(3) NOT NULL DEFAULT '',
+                title_definition varchar(50) DEFAULT NULL,
+                title_item varchar(50) DEFAULT NULL,
+                PRIMARY KEY (id_item_definition,lang)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
+        
+        <query>
+            CREATE TABLE item_lang (
+                id_item int(11) unsigned NOT NULL,
+                lang varchar(3) NOT NULL DEFAULT '',
+                title int(11) DEFAULT NULL,
+                PRIMARY KEY (id_item,lang)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
+
+        <query>
+            CREATE TABLE items (
+                id_item int(11) unsigned NOT NULL,
+                parent varchar(50) NOT NULL DEFAULT '',
+                id_parent int(11) unsigned NOT NULL DEFAULT '0',
+                ordering int(11) unsigned NOT NULL DEFAULT '1',
+                PRIMARY KEY (id_item,parent,id_parent)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
+
 		<query>
 			CREATE TABLE IF NOT EXISTS lang (
 			  lang varchar(3) NOT NULL DEFAULT '',
