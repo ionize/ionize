@@ -42,6 +42,15 @@
     <query>delete from resource where resource ='admin/article/media/video';</query>
     <query>delete from resource where resource ='admin/article/media/picture';</query>
 
+    <query>delete from rule where resource ='admin/page/media/file';</query>
+    <query>delete from rule where resource ='admin/page/media/music';</query>
+    <query>delete from rule where resource ='admin/page/media/video';</query>
+    <query>delete from rule where resource ='admin/page/media/picture';</query>
+    <query>delete from rule where resource ='admin/article/media/file';</query>
+    <query>delete from rule where resource ='admin/article/media/music';</query>
+    <query>delete from rule where resource ='admin/article/media/video';</query>
+    <query>delete from rule where resource ='admin/article/media/picture';</query>
+
     <!-- Content Element update -->
     <query>update extend_field set id_parent = id_element_definition where parent='element';</query>
     <query>update extend_fields set id_parent = id_element where id_element != 0;</query>

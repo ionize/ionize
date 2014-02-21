@@ -223,7 +223,7 @@
                 main smallint(1) UNSIGNED NOT NULL DEFAULT 0,
 				PRIMARY KEY  (id_extend_field),
 				KEY idx_extend_field_parent (parent),
-			    KEY idx_extend_field_id_element_definition (id_element_definition) 
+                KEY idx_extend_field_id_parent (id_parent)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8   AUTO_INCREMENT=1;
 		</query>
 		<query>
@@ -683,9 +683,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article','create,edit,delete,move,copy,duplicate',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/category','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/element','add',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/media','',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/media/picture','unlink',1)</query>
-        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/media/video','unlink,edit',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/media','link,unlink,edit',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions/backend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions/frontend','',1)</query>
@@ -721,7 +719,8 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item','create,edit,delete,add',1);</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/item/media','link,unlink,edit',1);</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item/media','link,unlink,edit',1);</query>
-
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/element/media','link,unlink,edit',1);</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/element/media','link,unlink,edit',1);</query>
 
         <query>DELETE FROM setting WHERE name='cache';</query>
 		<query>DELETE FROM setting WHERE name='cache_time';</query>
