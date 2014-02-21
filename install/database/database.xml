@@ -273,7 +273,7 @@
         </query>
         
         <query>
-            CREATE TABLE item_definition (
+            CREATE TABLE IF NOT EXISTS item_definition (
                 id_item_definition int(11) unsigned NOT NULL AUTO_INCREMENT,
                 name varchar(50) DEFAULT NULL,
                 description text,
@@ -282,7 +282,7 @@
         </query>
         
         <query>
-            CREATE TABLE item_definition_lang (
+            CREATE TABLE IF NOT EXISTS item_definition_lang (
                 id_item_definition int(11) unsigned NOT NULL,
                 lang varchar(3) NOT NULL DEFAULT '',
                 title_definition varchar(50) DEFAULT NULL,
@@ -292,7 +292,7 @@
         </query>
         
         <query>
-            CREATE TABLE item_lang (
+            CREATE TABLE IF NOT EXISTS item_lang (
                 id_item int(11) unsigned NOT NULL,
                 lang varchar(3) NOT NULL DEFAULT '',
                 title int(11) DEFAULT NULL,
@@ -301,7 +301,7 @@
         </query>
 
         <query>
-            CREATE TABLE items (
+            CREATE TABLE IF NOT EXISTS items (
                 id_item int(11) unsigned NOT NULL,
                 parent varchar(50) NOT NULL DEFAULT '',
                 id_parent int(11) unsigned NOT NULL DEFAULT '0',
