@@ -594,8 +594,8 @@ class CI_Router
 		{
 			$url = config_item('base_url').$this->lang_key;
 
-			log_message('error', 'Router : Detected lang code : ' . $this->lang_key);
-			log_message('error', 'Router : Redirect to : '. $url);
+			log_message('debug', 'Router : Detected lang code : ' . $this->lang_key);
+			log_message('debug', 'Router : Redirect to : '. $url);
 
 			// 302 Found
 			header('HTTP/1.1 302 Found');
