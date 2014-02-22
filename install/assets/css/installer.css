@@ -20,15 +20,6 @@ body {
 	font-weight: 300;
 	line-height: 18px;
 	color: #000;
-	background: url(../images/noisy_net.png);
-	background: url(../images/blackboard-backgrounds-wallpap.jpg);
-	background: url(../images/227571773_orig.jpg);
-/*
-	background-size: cover;
-*/
-
-
-	background: url(../images/dark_Tire.png);
 	background: url(../images/squairy_light.png);
 }
 .error,
@@ -273,7 +264,6 @@ dl dt.left {
 label {
 	margin: 0;
 	font-size: 1.15em;
-
 }
 label.alone{padding-left:15px;}
 
@@ -331,14 +321,7 @@ a.button.green,
 .submit,
 a.button.submit{
 	color:#fff;
-	background-image: linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -o-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -moz-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -webkit-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -ms-linear-gradient(bottom, rgb(67,138,32) 0%, rgb(138,192,94) 61%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(67,138,32)),color-stop(0.61, rgb(138,192,94)));
-	/* ie8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#8ac05e, endColorstr=#4f9a2d)";
+	background: #8AC05E;
 }
 .button.yes:hover,
 a.button.yes:hover,
@@ -346,38 +329,16 @@ a.button.yes:hover,
 a.button.green:hover,
 .submit:hover,
 a.button.submit:hover{
-	background-image: linear-gradient(bottom, rgb(39, 99, 7) 0%, rgb(112,180,57) 61%);
-	background-image: -o-linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
-	background-image: -moz-linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
-	background-image: -webkit-linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
-	background-image: -ms-linear-gradient(bottom, rgb(39,99,7) 0%, rgb(112,180,57) 61%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(39,99,7)),color-stop(0.61, rgb(112,180,57)));
-	/* ie8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#70b439, endColorstr=#338a05)";
-
+	background: #70b54b;
 }
 .button.info, a.button.info,
 .button.blue, a.button.blue {
 	color:#fff !important;
-	background-image: linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
-	background-image: -o-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
-	background-image: -moz-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
-	background-image: -webkit-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
-	background-image: -ms-linear-gradient(bottom, #33619D 0%, #5F95C1 60%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #33619D),color-stop(0.6, #5F95C1));
-	/* ie8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#5F95C1, endColorstr=#33619D)";
+	background: #5F95C1;
 }
 .button.info:hover, a.button.info:hover,
 .button.blue:hover, a.button.blue:hover {
-	background-image: linear-gradient(bottom, #05438B 0%, #397EB3 60%);
-	background-image: -o-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
-	background-image: -moz-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
-	background-image: -webkit-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
-	background-image: -ms-linear-gradient(bottom, #05438B 0%, #397EB3 60%);
-	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #05438B),color-stop(0.6, #397EB3));
-	/* ie8 */
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#397EB3, endColorstr=#05438B)";
+	background: #2E68A2;
 }
 
 
