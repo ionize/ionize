@@ -434,7 +434,8 @@ class Article extends MY_admin
 			// Event : On before save
 			$event_data = array(
 				'base' => $this->data,
-				'lang' => $this->lang_data
+                'lang' => $this->lang_data,
+                'post' => $this->input->post()
 			);
 			$event_received = Event::fire('Article.save.before', $event_data);
 			$event_received = array_pop($event_received);
@@ -469,11 +470,13 @@ class Article extends MY_admin
 			// Save URLs
 			$this->article_model->save_urls($id_article);
 			
-			// Event
+            // Event : On after save
 			$event_data = array(
 				'base' => $this->data,
 				'lang' => $this->lang_data,
+                'post' => $this->input->post()
 			);
+
 			Event::fire('Article.save.success', $event_data);
 
 			/*
@@ -555,6 +558,15 @@ class Article extends MY_admin
 
 		$this->_prepare_options_data();
 
+        // Event : On before save
+        $event_data = array(
+            'base' => $this->data,
+            'lang' => $this->lang_data,
+            'post' => $this->input->post()
+        );
+
+        Event::fire('Article.options.save.before', $event_data);
+
 		// Saves article to DB and get the saved ID
 		$id_article = $this->article_model->save($this->data, $this->lang_data);
 
@@ -576,6 +588,9 @@ class Article extends MY_admin
 			$resource = $this->_get_resource_name('frontend', 'article', $id_article);
 			$this->rule_model->save_element_roles_rules($resource, $this->input->post('frontend_rule'));
 		}
+
+        // Event : On after save
+        Event::fire('Article.options.save.success', $event_data);
 
 		// Context update
 		$this->update_contexts($id_article);
