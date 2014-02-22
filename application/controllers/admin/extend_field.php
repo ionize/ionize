@@ -89,7 +89,7 @@ class Extend_field extends MY_admin
 	/**
 	 * Returns all the extend fields for one kind of parent
 	 * Used by Admin panel to display the extend fields list
-	 * Called by XHR by views/extend_fields.php
+	 * Called by XHR by admin/views/extend/index.php
 	 *
 	 * @param	String		Parent type. Can be 'article', 'page', etc.
 	 * @return 	Array		Array of extend fields
@@ -100,7 +100,7 @@ class Extend_field extends MY_admin
 		// Get data formed to feed the category select box
 		$where = array(
 			'order_by' => 'ordering ASC',
-			'id_element_definition' => '0'
+			'parent !=' => 'element'
 		);
 		
 		if ( ! is_null($parent))

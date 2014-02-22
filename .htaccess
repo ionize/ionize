@@ -46,6 +46,44 @@ RewriteEngine On
 # RewriteRule ^(modules)/([a-zA-Z0-9-]+)/(assets)/(.*)$ ../$1/$2/$3/$4
 
 
+# <IfModule mod_expires.c>
+#   ExpiresActive On
+#   ExpiresDefault "access plus 1 seconds"
+#   ExpiresByType image/x-icon "access plus 1 year"
+#   ExpiresByType image/jpeg "access plus 1 year"
+#   ExpiresByType image/png "access plus 1 year"
+#   ExpiresByType image/gif "access plus 1 year"
+#   ExpiresByType text/css "access plus 1 month"
+#   ExpiresByType text/javascript "access plus 1 month"
+#   ExpiresByType application/octet-stream "access plus 1 month"
+#   ExpiresByType application/x-javascript "access plus 1 month"
+# </IfModule>
+
+# <IfModule mod_headers.c>
+#  <FilesMatch "\\.(ico|jpe?g|png|gif|swf|woff)$">
+#     Header set Cache-Control "max-age=31536000, public"
+#  </FilesMatch>
+#   <FilesMatch "\\.(css)$">
+#     Header set Cache-Control "max-age=2692000, public"
+#   </FilesMatch>
+#   <FilesMatch "\\.(js)$">
+#     Header set Cache-Control "max-age=2692000, private"
+#   </FilesMatch>
+#   <FilesMatch "\.(js|css|xml|gz)$">
+#     Header append Vary: Accept-Encoding
+#  </FilesMatch>
+#   Header unset ETag
+#   Header append Cache-Control "public"
+# </IfModule>
+
+# <IfModule mod_deflate.c>
+#   AddOutputFilter DEFLATE js css
+#   AddOutputFilterByType DEFLATE text/html text/plain text/xml application/xml
+#   BrowserMatch ^Mozilla/4 gzip-only-text/html
+#   BrowserMatch ^Mozilla/4\.0[678] no-gzip
+#   BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+# </IfModule>
+
 # Keep these lines even in maintenance mode, to have an access to the website
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
