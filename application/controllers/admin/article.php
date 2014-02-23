@@ -1380,7 +1380,7 @@ class Article extends MY_admin
 
 	public function save_duplicate()
 	{
-		if( $this->input->post('dup_url') != '' )
+		if( $this->input->post('dup_url') != '' && $this->input->post('dup_id_page') > 0)
 		{
 			// No name change : exit
 			if (url_title($this->input->post('dup_url')) == $this->input->post('name'))
