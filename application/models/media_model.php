@@ -456,8 +456,9 @@ class Media_model extends Base_model
 	 */
 	public function clean_table()
 	{
-		$tables = $this->db->list_tables();
+		$tables = $this->{$this->db_group}->list_tables();
 		$process_tables = array();
+		$nb_affected_rows = 0;
 
 		$left_joins = $wheres = '';
 
@@ -465,8 +466,7 @@ class Media_model extends Base_model
 		{
 			if (substr($table, -6) == '_media')
 			{
-				// $fields = $this->db->list_fields($table);
-				$fields = $this->db->field_data($table);
+				$fields = $this->{$this->db_group}->field_data($table);
 
 				// First pass
 				foreach ($fields as $field)
@@ -501,16 +501,61 @@ class Media_model extends Base_model
 			$i++;
 		}
 
-		// Media
-		$sql = ' delete m from media m ' . $left_joins . ' where ' . $wheres;
-		$this->{$this->db_group}->query($sql);
+		// IDs of media linked to regular media tables
+		// $sql = ' delete m from media m ' . $left_joins . ' where ' . $wheres;
+		$medias = array();
+		$sql = 'select m.id_media from media m ' . $left_joins . ' where ' . $wheres;
+		$query = $this->{$this->db_group}->query($sql);
+		if($query->num_rows() > 0)
+			$medias = $query->result_array();
 
-		// Returned : Number of deleted media rows
-		$nb_affected_rows = (int) $this->{$this->db_group}->affected_rows();
+		if ( ! empty($medias))
+		{
+			// Remove medias used by Extend Fields from medias to delete
+			$sql = "SET SESSION group_concat_max_len = 1000000;";
+			$this->{$this->db_group}->query($sql);
 
-		// Media_Lang
-		$sql = ' delete m from media_lang m ' . $left_joins . ' where ' . $wheres;
-		$this->{$this->db_group}->query($sql);
+			$sql = "
+				select group_concat(content separator ',') as ids from extend_fields
+				where id_extend_field in (
+					select id_extend_field from extend_field where type=8
+				)
+			";
+
+			$query = $this->{$this->db_group}->query($sql);
+			$used_ids = '';
+			if($query->num_rows() > 0) $used_ids = $query->row_array();
+
+			if( ! empty($used_ids['ids']))
+			{
+				$used_ids = explode(',', $used_ids['ids']);
+
+				foreach($medias as $key => $media)
+				{
+					if (in_array($media['id_media'], $used_ids))
+						unset($medias[$key]);
+				}
+			}
+
+			// Build the id of media to remove
+			$media_ids = array();
+			foreach($medias as $media)
+			{
+				$media_ids[] = $media['id_media'];
+			}
+
+			// Finally delete the concerned medias from media table
+			if ( ! empty($media_ids))
+			{
+				$this->{$this->db_group}->where_in('id_media', $media_ids);
+				$this->{$this->db_group}->delete('media');
+
+				$nb_affected_rows = (int) $this->{$this->db_group}->affected_rows();
+
+				$this->{$this->db_group}->where_in('id_media', $media_ids);
+				$this->{$this->db_group}->delete('media_lang');
+			}
+		}
 
 		return $nb_affected_rows;
 	}
@@ -586,6 +631,109 @@ class Media_model extends Base_model
 		}
 
 		return $brokens;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns array of unused media files
+	 * (on the disk)
+	 *
+	 * @return array
+	 */
+	public function get_unused_files()
+	{
+		self::$ci->load->helper('number');
+
+		$directory = new RecursiveDirectoryIterator(FCPATH.Settings::get('files_path'));
+		$fc_length = strlen(FCPATH);
+		$bytestotal = 0;
+
+		$tb_str = Settings::get('files_path').'/.thumbs';
+		$tb_length = strlen($tb_str);
+
+		$files = $paths = array();
+
+		foreach (new RecursiveIteratorIterator($directory) as $filename => $current)
+		{
+			$path = substr($filename, $fc_length);
+
+			if (substr($path, 0, $tb_length) != $tb_str)
+			{
+				$size = $current->getSize();
+				$paths[] = $path;
+				$files[] = array(
+					'path' => $path,
+					'size' => byte_format($size, 1)
+				);
+				$bytestotal += $size;
+			}
+		}
+
+		$medias = $this->get_all();
+
+		foreach($medias as $media)
+		{
+			if (in_array($media['path'], $paths))
+			{
+				foreach (array_keys($paths, $media['path'], true) as $key)
+				{
+					unset($paths[$key]);
+					unset($files[$key]);
+				}
+			}
+		}
+
+		$return = array(
+			'files' => $files,
+			'size' => byte_format($bytestotal, 2)
+		);
+
+		return $return;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function delete_files($files=array())
+	{
+		$nb = 0;
+
+		foreach ($files as $path)
+		{
+			if (file_exists(FCPATH.$path))
+			{
+				@unlink(FCPATH.$path);
+			}
+		}
+
+		return $nb;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_media_space()
+	{
+		$directory= new RecursiveDirectoryIterator(FCPATH.Settings::get('files_path'));
+
+		$result = array(
+			'total' => 0,
+			'nb_files' => 0
+		);
+
+		foreach (new RecursiveIteratorIterator($directory) as $filename=>$cur)
+		{
+			$size = $cur->getSize();
+			$result['total'] += $size;
+			$result['nb_files'] += 1;
+		}
+
+		return $result;
 	}
 
 

@@ -1073,7 +1073,7 @@ div.list .displayer{
 	width: 150px;
 }
 div.card .displayer{
-	margin: 0 auto;
+	margin: 20px auto 0 auto;
 }
 div.list .displayer{
 	float:left;
@@ -1090,11 +1090,11 @@ div.card .ui360-vis {
 	text-align: center;
 	color:#fff;
 	display: block;
-	width: 60px;
+	width: 140px;
 	height: 20px;
 	position:absolute;
-	top: 0;
-	left:-20px;
+	top: 25px;
+	left:-35px;
 	z-index: 40;
 	-webkit-transform: rotate(-45deg);
 	-moz-transform: rotate(-45deg);
@@ -1104,8 +1104,8 @@ div.card .ui360-vis {
 }
 .media.flag-complete:before{background-color: #7ab803}
 .media.flag-not-used:before{background-color: #999}
-.media.flag-incomplete:before{background-color: #d65905;content:" !! "}
-.media.flag-broken:before{background-color: #a00202;content:" !!! "}
+.media.flag-incomplete:before{background-color: #d65905;content:" alt missing "}
+.media.flag-broken:before{background-color: #a00202;content:" broken ! "}
 
 
 /* Pagination links

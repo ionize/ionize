@@ -147,7 +147,6 @@ var IonizeMediaManager = new Class(
 				path: file_url,
 				parent: this.parent,
 				id_parent: this.idParent,
-				type: type,
 				id_extend: this.id_extend       // can be null
 			};
 
@@ -175,10 +174,7 @@ var IonizeMediaManager = new Class(
 		ION.notification(responseJSON.message_type, responseJSON.message);
 
 		// Media list reload
-		if (responseJSON.type)
-		{
-			this.loadMediaList(responseJSON.type);
-		}
+		this.loadMediaList();
 	},
 
 
@@ -186,7 +182,6 @@ var IonizeMediaManager = new Class(
 	 * Loads a media list through XHR regarding its type
 	 * called after a media list loading through 'loadMediaList'
 	 *
-	 * @param type  Media type. Can be 'picture', 'music', 'video', 'file'
 	 */
 	loadMediaList: function()
 	{
@@ -213,8 +208,7 @@ var IonizeMediaManager = new Class(
 	 * called after a media list loading through 'loadMediaList'
 	 *
 	 * @param responseJSON  JSON response object.
-	 *                      responseJSON.type : media type. Can be 'picture', 'video', 'music', 'file'
-	 * @param responseText
+	 *
 	 */
 	completeLoadMediaList: function(responseJSON)
 	{
@@ -251,7 +245,7 @@ var IonizeMediaManager = new Class(
 						}
 					});
 					// Items sorting
-					self.sortItemList(responseJSON.type, serialized);
+					self.sortItemList(serialized);
 				}
 			});
 
@@ -296,10 +290,10 @@ var IonizeMediaManager = new Class(
 	 * called on items sorting complete
 	 * calls the XHR server ordering method
 	 *
-	 * @param type          Media type. Can be 'picture', 'video', 'music', 'file'
 	 * @param serialized    new order as a string. coma separated
+	 *
 	 */
-	sortItemList: function(type, serialized) 
+	sortItemList: function(serialized)
 	{
 		var sortableOrder = this.container.retrieve('sortableOrder');
 
@@ -351,8 +345,8 @@ var IonizeMediaManager = new Class(
 	/**
 	 * Unlink one media from his parent
 	 *
-	 * @param type  Media type
 	 * @param id    Media ID
+	 *
 	 */
 	detachMedia: function(id)
 	{
@@ -407,7 +401,7 @@ var IonizeMediaManager = new Class(
 				
 				if (responseJSON.message_type == 'success')
 				{
-					this.loadMediaList('picture');
+					this.loadMediaList();
 				}
 			}.bind(this)
 		}).send();

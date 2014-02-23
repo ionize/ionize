@@ -306,7 +306,7 @@ class API_Controller extends REST_Controller
 		}
 		else
 		{
-			log_message('error', 'API SUCCESS : ' . $this->uri->uri_string());
+			// log_message('app', 'API SUCCESS : ' . $this->uri->uri_string());
 
 			if (is_null($this->success))
 				$this->set_success($content, $code);
@@ -443,11 +443,11 @@ class Base_Controller extends MY_Controller
 		}
 
 		// Set lang preference cookie
-        $host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
+		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);
 
-        if (strpos($host, ':') !== FALSE)
+		if (strpos($host, ':') !== FALSE)
             $host = substr($host, 0, strpos($host, ':'));
-		
+
 		if( ! empty($_COOKIE['ion_selected_language']))
 			setcookie('ion_selected_language', '', time() - 3600, '/', $host);
 
@@ -477,7 +477,7 @@ class Base_Controller extends MY_Controller
         $theme_lang_folder = FCPATH.Theme::get_theme_path().'language/'.Settings::get_lang() . '/';
         if( file_exists($theme_lang_folder) ) 
 		{
-		// Theme static translations
+			// Theme static translations
             $lf = glob($theme_lang_folder . '*_lang.php');
 
 			foreach($lf as $key => $tlf)
@@ -996,6 +996,49 @@ class MY_Admin extends MY_Controller
 		}
 	}
 
+	/**
+	 * Gets List data regarding the pagination
+	 * Prepares data for the template
+	 *
+	 * @param       	$model
+	 * @param       	$page
+	 * @param       	$filters				Array of fields to filter on
+	 * @param array 	$where					Conditions, optional
+	 * @param string 	$items_template_name	Name of the var send to the template
+	 *
+	 */
+	public function get_pagination_list($model, $page=1, $filters, $where = array(), $items_template_name='items')
+	{
+		$nb = ($this->input->post('nb')) ? $this->input->post('nb') : '50';
+
+		// Filter settings
+		if ($nb < 25) $nb = 25;
+		$page = $page - 1;
+		$offset = $page * $nb;
+		$like = array();
+
+		foreach($filters as $key)
+		{
+			// '.' is replaced by '_' in $_POST
+			$post_key = $key;
+			if (strpos($key, '.') !== FALSE)
+				$post_key = str_replace('.', '_', $key);
+
+			if( $this->input->post($post_key))
+			{
+				$like[$key] = $this->input->post($post_key);
+				$this->template['filter'][$key] = $like[$key];
+			}
+		}
+
+		$items = $model->get_list(array_merge($where, array('limit' => $nb, 'offset' => $offset, 'like' => $like)));
+		$items_nb = $model->count_where(array_merge($where, array('like' => $like)));
+
+		$this->template['current_page'] = $page + 1;
+		$this->template[$items_template_name] = $items;
+		$this->template[$items_template_name . '_nb'] = $items_nb;
+		$this->template[$items_template_name . '_by_page'] = ceil($items_nb / $nb);
+	}
 }
 
 

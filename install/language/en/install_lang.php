@@ -34,7 +34,7 @@ $lang['nav_data'] = 'Demo data';
 | System check
 |--------------------------------------------------------------------------
 */
-$lang['php_version'] = 			'PHP >= 5';
+$lang['php_version'] = 			'PHP >= 5.3';
 $lang['php_version_found'] = 	'PHP version';
 $lang['mysql_support'] = 		'MySQL support';
 $lang['mysql_version_found'] = 	'MySQL version';

@@ -2311,6 +2311,51 @@ class Base_model extends CI_Model
 
 
 	/**
+	 * Count items based on filter
+	 *
+	 * @param array $where
+	 * @param null  $table
+	 *
+	 * @return mixed
+	 */
+	public function count_where($where = array(), $table =NULL)
+	{
+		$table = ( ! is_null($table)) ? $table : $this->get_table();
+
+		if (isset($where['order_by']))
+			unset($where['order_by']);
+
+		if(isset($where['like']))
+		{
+			$this->{$this->db_group}->like($where['like']);
+			unset($where['like']);
+		}
+
+		if ( ! empty ($where) )
+		{
+			foreach($where as $cond => $value)
+			{
+				if (is_string($cond))
+				{
+					$this->{$this->db_group}->where($cond, $value);
+				}
+				else
+				{
+					$this->{$this->db_group}->where($value);
+				}
+			}
+		}
+
+		$this->{$this->db_group}->from($table);
+
+		return $this->{$this->db_group}->count_all_results();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Empty table
 	 *
 	 * @access	public

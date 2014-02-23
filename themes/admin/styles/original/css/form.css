@@ -658,6 +658,7 @@ button.disabled,
 .toolbox label,
 .toolbox .icon {
 	margin-top:4px;
+	margin-left:3px;
 }
 
 /* IE Mocha form hacks */

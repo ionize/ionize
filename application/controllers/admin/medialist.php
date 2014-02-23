@@ -12,6 +12,8 @@
 
 class Medialist extends MY_admin
 {
+	private static $_NB_PER_PAGE = 20;
+
 	/**
 	 * Constructor
 	 *
@@ -25,50 +27,59 @@ class Medialist extends MY_admin
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	public function index()
 	{
-		$medias = $this->medialist_model->get_list();
-		$medias_lang = $this->medialist_model->get_all('media_lang');
-		$media_lang_fields = $this->medialist_model->list_fields('media_lang');
-
-		foreach($medias as &$media)
-		{
-			$media['alt_missing'] = FALSE;
-			$media['is_used'] = TRUE;
-			$media['has_source'] = (empty($media['provider'])) ? file_exists(DOCPATH.$media['path']) : TRUE;
-			$media['lang'] = array();
-
-			// Is linked to page or article
-			if (empty($media['page_paths']) && empty($media['article_paths']))
-				$media['is_used'] = FALSE;
-
-			foreach(Settings::get_languages() as $lang)
-			{
-				$media['lang'][$lang['lang']] = array_fill_keys($media_lang_fields, '');
-				$media['lang'][$lang['lang']]['id_media'] = $media['id_media'];
-			}
-
-			foreach($medias_lang as $media_lang)
-			{
-				if ($media_lang['id_media'] == $media['id_media'])
-				{
-					$media['lang'][$media_lang['lang']] = $media_lang;
-				}
-			}
-
-			// Alt missing
-			foreach(Settings::get_languages() as $lang)
-			{
-				// ALT missing
-				if (empty($media['lang'][$lang['lang']]['alt']))
-					$media['alt_missing'] = TRUE;
-			}
-		}
-
-		$this->template['medias'] = $medias;
-
 		$this->output('medialist/index');
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Displays list of media in DB
+	 *
+	 * @param int $page
+	 *
+	 */
+	public function get_list($page=1)
+	{
+		$nb = ($this->input->post('nb')) ? $this->input->post('nb') : self::$_NB_PER_PAGE;
+
+		// Filter settings
+		if ($nb < self::$_NB_PER_PAGE) $nb = self::$_NB_PER_PAGE;
+		$page = $page - 1;
+		$offset = $page * $nb;
+
+		// Filter
+		$filter = $this->input->post('filter');
+		$filter = ! empty($filter) ? explode(',', $filter) : array();
+
+		$medias = $this->medialist_model->get_list(
+			array(
+				'limit' => $nb,
+				'offset' => $offset
+			),
+			$filter
+		);
+		$items_nb = $this->medialist_model->get_list(array(), $filter, FALSE);
+		$items_nb = count($items_nb);
+
+		$this->template['items'] = $medias;
+		$this->template['current_page'] = $page + 1;
+		$this->template['items_nb'] = $items_nb;
+		$this->template['items_by_page'] = $nb;
+		$this->template['nb_pages'] = ceil($items_nb / $nb);
+		$this->template['filter'] = $filter;
+
+		$this->output('medialist/list');
+	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	public function save()
@@ -77,12 +88,17 @@ class Medialist extends MY_admin
 
 		$this->medialist_model->save($post);
 
-		// UI panel to update after saving
-		$this->_reload_panel();
+		$this->callback[] = array(
+			'fn' => 'ION.notification',
+			'args' => array('success', lang('ionize_message_operation_ok'))
+		);
 
-		// Answer send
-		$this->success(lang('ionize_message_operation_ok'));
+		// UI panel to update after saving
+		$this->_reload_medialist();
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
@@ -111,16 +127,15 @@ class Medialist extends MY_admin
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Removes not used media from the media tables.
 	 *
-	 */
 	public function remove_broken_medias()
 	{
 		$medias = $this->medialist_model->get_list();
-
-
-
 
 		// Check and correct page's views
 		$nb_cleaned = $this->media_model->clean_table();
@@ -129,6 +144,10 @@ class Medialist extends MY_admin
 
 		$this->xhr_output($result);
 	}
+	 */
+
+
+	// ------------------------------------------------------------------------
 
 
 	function _reload_panel()
@@ -138,6 +157,27 @@ class Medialist extends MY_admin
 			admin_url() . 'medialist',
 			lang('ionize_menu_medialist')
 		);
+	}
+
+	function _reload_medialist()
+	{
+		$filter = $this->input->post('filter');
+
+		$this->callback[] =
+			array(
+				'fn' => 'ION.HTML',
+				'args' => array(
+					'medialist/get_list',
+					array(
+						'filter' => $filter
+					),
+					array(
+						'update' => 'medialistContainer'
+					)
+				)
+			);
+
+		$this->response();
 	}
 
 }

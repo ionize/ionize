@@ -142,7 +142,7 @@
 
 		<?php endif;?>
 
-		<?php if(Authority::can('access', 'admin/tools/system/reort')) :?>
+		<?php if(Authority::can('access', 'admin/tools/system/report')) :?>
 
 			<!-- Reports -->
 			<div class="tabcontent">
@@ -154,7 +154,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<!-- Langs -->
+					<!-- Broken Pictures sources -->
 					<tr>
 						<td class="right pr10">
 							<a class="button light report-btn" data-href="system_check/broken_media_report">
@@ -162,6 +162,15 @@
 							</a>
 						</td>
 						<td class="middle report-content" rel="system_check/broken_media_report"><?php echo lang('ionize_text_broken_media_links'); ?></td>
+					</tr>
+					<!-- Unused medias -->
+					<tr>
+						<td class="right pr10">
+							<a class="button light report-btn" data-href="system_check/unused_media_report">
+								<i class="icon-picture"></i><?php echo lang('ionize_title_unused_media_files'); ?>
+							</a>
+						</td>
+						<td id="unusedMediaContainer" class="middle report-content" rel="system_check/unused_media_report"><?php echo lang('ionize_text_unused_media_files'); ?></td>
 					</tr>
 				</tbody>
 			</table>
@@ -184,7 +193,9 @@
 		var td = a.getParent('td');
 
 		ION.initRequestEvent(
-			a, a.getAttribute('data-href'), {},
+			a,
+			a.getAttribute('data-href'),
+			{},
 			{
 				onRequest: function()
 				{
@@ -207,22 +218,16 @@
 		var reportCell = $$('td[rel='+ a.getAttribute('data-href') +']');
 		reportCell = reportCell[0];
 
-		ION.initRequestEvent(
-			a, a.getAttribute('data-href'), {},
-			{
-				onRequest: function()
+		a.addEvent('click', function()
+		{
+			ION.HTML(
+				a.getAttribute('data-href'),
+				{},
 				{
-					td.addClass('loading');
-					// a.dispose();
-				},
-				onSuccess: function(responseJSON, responseText)
-				{
-					td.removeClass('loading');
-					if (reportCell)
-						reportCell.set('html', responseJSON.message);
+					update:reportCell
 				}
-			}
-		);
+			);
+		});
 	});
 
 

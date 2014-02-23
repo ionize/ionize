@@ -22,6 +22,7 @@
  */
 class Medialist_model extends Base_model
 {
+
 	/**
 	 * Constructor
 	 *
@@ -45,12 +46,13 @@ class Medialist_model extends Base_model
 	/**
 	 * Returns enhanced media list
 	 *
-	 * @param null $where
-	 * @param null $table
+	 * @param null  $where
+	 * @param array $filters
+	 * @param bool  $addon_data
 	 *
 	 * @return array
 	 */
-	public function get_list($where = NULL, $table = NULL)
+	public function get_list($where = NULL, $filters = array(), $addon_data = TRUE)
 	{
 		// Pages
 		$this->{$this->db_group}->select("group_concat(url.path separator ';') as page_paths");
@@ -78,10 +80,106 @@ class Medialist_model extends Base_model
 			'left'
 		);
 
+		// Filters
+		if (in_array('alt_missing', $filters))
+		{
+			$this->{$this->db_group}->join(
+				'media_lang',
+				'media_lang.id_media = ' . $this->table.'.id_media',
+				'left'
+			);
+			$this->{$this->db_group}->where("(media_lang.alt is null or media_lang.alt='')");
+		}
+
+		if (in_array('used', $filters))
+		{
+			$this->{$this->db_group}->where("(url.path is not null or url2.path is not null)");
+		}
+
+		if (in_array('not_used', $filters))
+		{
+			$this->{$this->db_group}->where("(url.path is null and url2.path is null)");
+		}
+
 		$this->{$this->db_group}->group_by($this->table.'.id_media');
 		$this->{$this->db_group}->order_by($this->table.'.id_media', 'DESC');
 
-		return parent::get_list($where, $this->table);
+		$result = parent::get_list($where, $this->table);
+
+		if ($addon_data)
+			$result = $this->_add_lang_data_to_media_list($result);
+
+		return $result;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Adds info about each media
+	 *
+	 * @param $medias
+	 *
+	 * @return mixed
+	 */
+	private function _add_lang_data_to_media_list($medias)
+	{
+		if ( ! empty($medias))
+		{
+			$media_ids = array();
+			foreach($medias as $media)
+			{
+				$media_ids[] = $media['id_media'];
+			}
+
+			// Fields of media_lang
+			$media_lang_fields = $this->list_fields('media_lang');
+
+			// Get media lang data
+			$this->{$this->db_group}->where_in('id_media', $media_ids);
+			$query = $this->{$this->db_group}->get('media_lang');
+
+			$medias_lang = array();
+			if ( $query->num_rows() > 0 )
+				$medias_lang = $query->result_array();
+
+			// Enrich each media
+			foreach($medias as &$media)
+			{
+				$media['alt_missing'] = FALSE;
+				$media['is_used'] = TRUE;
+				$media['has_source'] = (empty($media['provider'])) ? file_exists(DOCPATH.$media['path']) : TRUE;
+				$media['lang'] = array();
+
+				// Is linked to page or article
+				if (empty($media['page_paths']) && empty($media['article_paths']))
+					$media['is_used'] = FALSE;
+
+				foreach(Settings::get_languages() as $lang)
+				{
+					$media['lang'][$lang['lang']] = array_fill_keys($media_lang_fields, '');
+					$media['lang'][$lang['lang']]['id_media'] = $media['id_media'];
+				}
+
+				foreach($medias_lang as $media_lang)
+				{
+					if ($media_lang['id_media'] == $media['id_media'])
+					{
+						$media['lang'][$media_lang['lang']] = $media_lang;
+					}
+				}
+
+				// Alt missing
+				foreach(Settings::get_languages() as $lang)
+				{
+					if (empty($media['lang'][$lang['lang']]['alt']))
+						$media['alt_missing'] = TRUE;
+				}
+			}
+		}
+
+		return $medias;
 	}
 
 

@@ -45,7 +45,7 @@ class System_check extends MY_admin
 	 * @param	string		Menu ID
 	 *
 	 */
-	function index() 
+	public function index()
 	{
 		// Write rights
 		$folders = array(
@@ -80,7 +80,7 @@ class System_check extends MY_admin
 	 * Launches the checks
 	 *
 	 */
-	function start_check()
+	public function start_check()
 	{
 		// Start the first check : pages levels
 		$this->callback = array
@@ -101,8 +101,8 @@ class System_check extends MY_admin
 
 		$this->response();
 	}
-	
-	function check_lang()
+
+	public function check_lang()
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_lang'),
@@ -162,7 +162,7 @@ class System_check extends MY_admin
 	 * Checks the page level inegrity, correct and chains the next check : article's contexts
 	 *
 	 */
-	function check_page_level()
+	public function check_page_level()
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_page_level'),
@@ -192,7 +192,7 @@ class System_check extends MY_admin
 	 * End of check. 
 	 *
 	 */
-	function check_article_context()
+	public function check_article_context()
 	{
 		$result = array(
 			'title' => lang('ionize_title_check_article_context'),
@@ -214,7 +214,7 @@ class System_check extends MY_admin
 	 * Removes not used media from the media tables.
 	 *
 	 */
-	function clean_media()
+	public function clean_media()
 	{
 		$result = array(
 			'title' => lang('ionize_title_clean_media'),
@@ -230,7 +230,7 @@ class System_check extends MY_admin
 	}
 
 
-	function broken_media_report()
+	public function broken_media_report()
 	{
 		$report_message = lang('ionize_message_no_broken_media_links');
 
@@ -244,20 +244,40 @@ class System_check extends MY_admin
 			}
 		}
 
-		$result = array(
-			'title' => lang('ionize_title_clean_media'),
-			'status' => 'success',
-			'message' => $report_message,
-		);
-
-		$this->xhr_output($result);
+		$this->xhr_output($report_message);
 	}
-	
+
+	public function unused_media_report()
+	{
+		$report_message = lang('ionize_message_no_unused_media');
+
+		$result = $this->media_model->get_unused_files();
+
+		if ( ! empty($result['files']))
+		{
+			$report_message = $this->load->view('system/report/unused_media', $result, TRUE);
+		}
+
+		$this->xhr_output($report_message);
+	}
+
+
+	public function unused_media_delete()
+	{
+		// 'unusedMediaContainer'
+		$files = $this->input->post('files');
+
+		$nb = $this->media_model->delete_files($files);
+
+		$this->unused_media_report();
+	}
+
+
 	/**
 	 * Checks views of both pages and articles
 	 *
 	 */
-	function check_views()
+	public function check_views()
 	{
 		$nb = 0;
 		
@@ -332,7 +352,7 @@ class System_check extends MY_admin
 	 * Rebuilds the pages URLs
 	 *
 	 */
-	function rebuild_urls()
+	public function rebuild_urls()
 	{
 		$this->url_model->clean_table();
 
@@ -352,7 +372,7 @@ class System_check extends MY_admin
 	 * Check, for each database registered picture, if all the defined thumbs exist
 	 *
 	 */
-	function check_thumbs()
+	public function check_thumbs()
 	{
 	
 	}
@@ -361,7 +381,7 @@ class System_check extends MY_admin
 	 * Check write rights on Sitemap files
 	 *
 	 */
-	function check_sitemap_file()
+	public function check_sitemap_file()
 	{
 	}
 	
