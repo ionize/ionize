@@ -345,7 +345,8 @@ class Page extends MY_admin
 			// Event : On before save
 			$event_data = array(
 				'base' => $this->data,
-				'lang' => $this->lang_data
+				'lang' => $this->lang_data,
+                'post' => $this->input->post()
 			);
 			$event_received = Event::fire('Page.save.before', $event_data);
 			$event_received = array_pop($event_received);
@@ -384,10 +385,11 @@ class Page extends MY_admin
 			strip_html($page);
 			$this->callback = array();
 
-			// Event
+            // Event : On after save
 			$event_data = array(
 				'base' => $this->data,
 				'lang' => $this->lang_data,
+                'post' => $this->input->post()
 			);
 			Event::fire('Page.save.success', $event_data);
 
@@ -453,6 +455,15 @@ class Page extends MY_admin
 			// Prepare data before save
 			$this->_prepare_options_data();
 
+            // Event Data
+            $event_data = array(
+                'base' => $this->data,
+                'lang' => $this->lang_data,
+                'post' => $this->input->post()
+            );
+
+            Event::fire('Page.options.save.before', $event_data);
+
 			// Save Page
 			$this->page_model->save($this->data, $this->lang_data);
 
@@ -478,6 +489,8 @@ class Page extends MY_admin
 				$resource = $this->_get_resource_name('frontend', 'page', $id);
 				$this->rule_model->save_element_roles_rules($resource, $this->input->post('frontend_rule'));
 			}
+
+            Event::fire('Page.options.save.success', $event_data);
 
 			// Remove HTML tags from returned array
 			strip_html($page);
