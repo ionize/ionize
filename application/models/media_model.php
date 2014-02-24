@@ -647,7 +647,7 @@ class Media_model extends Base_model
 	{
 		self::$ci->load->helper('number');
 
-		$directory = new RecursiveDirectoryIterator(FCPATH.Settings::get('files_path'));
+		$directory = new RecursiveDirectoryIterator(FCPATH.Settings::get('files_path'), FilesystemIterator::SKIP_DOTS);
 		$fc_length = strlen(FCPATH);
 		$bytestotal = 0;
 
