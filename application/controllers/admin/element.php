@@ -216,6 +216,9 @@ class Element extends MY_Admin {
 				),
 			);
 			
+            // Answer
+            $this->success(lang('ionize_message_content_element_saved'));
+			
 			$this->response();
 		}
 		else

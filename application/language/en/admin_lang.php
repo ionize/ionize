@@ -210,7 +210,7 @@ $lang['ionize_title_item_field_edit'] = 'Edit field';
 $lang['ionize_title_item_new'] = 'New item';
 $lang['ionize_title_edit_item'] = 'Edit Static Item';
 
-$lang['ionize_subtitle_static_item_list'] = 'Double clic on one item or drag it to the content panel to link it.';
+$lang['ionize_subtitle_static_item_list'] = 'Double click on one item or drag it to the content panel to link it.';
 
 $lang['ionize_label_item_title_definition'] = 'Definition Title';
 $lang['ionize_label_item_title_definition_item'] = 'Instance Title';
