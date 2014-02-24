@@ -2372,6 +2372,37 @@ class Base_model extends CI_Model
 
 
 	/**
+	 * Checks if one table is empty, based on given conditions
+	 *
+	 * @param null $where
+	 * @param null $table
+	 *
+	 * @return bool
+	 */
+	public function is_empty($where = NULL, $table = NULL)
+	{
+		$table = ! is_null($table) ? $table : $this->table;
+		log_message('app', print_r($table, TRUE));
+		if ( is_array($where) )
+		{
+			$this->_process_where($where, $table);
+		}
+
+		$query = $this->{$this->db_group}->get($table);
+
+		if($query->num_rows() > 0)
+		{
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Check if a record exists in a table
 	 *
 	 * @param	array	conditions

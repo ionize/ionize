@@ -1,3 +1,14 @@
+<?php
+/**
+ *
+ */
+
+// Check if at least on Item instance exists (same for Content Element Definition)
+$is_item_empty = $this->base_model->is_empty(NULL, 'item');
+$is_element_empty = $this->base_model->is_empty(NULL, 'element_definition');
+
+?>
+
 <?php if(Authority::can('edit', 'admin/article')) :?>
 
 	<div class="divider nobr" id="tArticleFormSubmit">
@@ -44,7 +55,7 @@
 
 <?php endif;?>
 
-<?php if(Authority::can('add', 'admin/article/element')) :?>
+<?php if( ! $is_element_empty && Authority::can('add', 'admin/article/element')) :?>
 
 	<div class="divider" id="tArticleAddContentElement">
 		<a id="addContentElement" class="button light" >
@@ -54,7 +65,7 @@
 
 <?php endif;?>
 
-<?php if(Authority::can('add', 'admin/item')) :?>
+<?php if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 
 	<div class="divider" id="tArticleAddItem">
 		<a id="btnAddItem" class="button light" >
@@ -97,18 +108,6 @@
 
 		<?php endif;?>
 
-		<?php if(Authority::can('add', 'admin/item')) :?>
-
-			$('btnAddItem').addEvent('click', function()
-			{
-				staticItemManager.openListWindow();
-			});
-
-		<?php endif;?>
-
-
-
-
 		<?php if(Authority::can('duplicate', 'admin/article')) :?>
 
 			// Duplicate button
@@ -132,12 +131,21 @@
 		<?php endif;?>
 
 
-		<?php if(Authority::can('add', 'admin/article/element')) :?>
+		<?php if( ! $is_element_empty && Authority::can('add', 'admin/article/element')) :?>
 
 			// Add Content Element button
 			$('addContentElement').addEvent('click', function(e)
 			{
 				ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'article', 'id_parent': id});
+			});
+
+		<?php endif;?>
+
+		<?php if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
+
+			$('btnAddItem').addEvent('click', function()
+			{
+				staticItemManager.openListWindow();
 			});
 
 		<?php endif;?>

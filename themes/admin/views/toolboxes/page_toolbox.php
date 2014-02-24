@@ -1,3 +1,14 @@
+<?php
+/**
+ *
+ */
+
+// Check if at least on Item instance exists (same for Content Element Definition)
+$is_item_empty = $this->base_model->is_empty(NULL, 'item');
+$is_element_empty = $this->base_model->is_empty(NULL, 'element_definition');
+
+?>
+
 <?php if(Authority::can('edit', 'admin/page') && Authority::can('edit', 'backend/page/' . $id_page, null, true)) :?>
 
 	<div class="divider nobr" id="tPageFormSubmit">
@@ -24,7 +35,7 @@
 	</a>
 </div>
 
-<?php if(Authority::can('add', 'admin/page/element')) :?>
+<?php if( ! $is_element_empty && Authority::can('add', 'admin/page/element')) :?>
 
 	<div class="divider" id="tPageAddContentElement">
 		<a id="addContentElement" class="button light" >
@@ -34,7 +45,7 @@
 
 <?php endif;?>
 
-<?php if(Authority::can('add', 'admin/item')) :?>
+<?php if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 
 	<div class="divider" id="tPageAddItem">
 		<a id="btnAddItem" class="button light" >
@@ -90,7 +101,7 @@
 		<?php endif;?>
 
 
-		<?php if(Authority::can('add', 'admin/page/element')) :?>
+		<?php if(! $is_element_empty && Authority::can('add', 'admin/page/element')) :?>
 
 			// Add Content Element button
 			$('addContentElement').addEvent('click', function()
@@ -100,7 +111,7 @@
 
 		<?php endif;?>
 
-		<?php if(Authority::can('add', 'admin/item')) :?>
+		<?php if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 
 			$('btnAddItem').addEvent('click', function()
 			{
