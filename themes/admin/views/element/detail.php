@@ -70,7 +70,10 @@
 		<dl class="small">
 			<dt>
 				<?php
-					$label = ( ! empty($field['langs'][Settings::get_lang('default')]['label'])) ? $field['langs'][Settings::get_lang('default')]['label'] : $field['name'];
+            			if (empty($field['label']))
+				    	$label = ( ! empty($field['langs'][Settings::get_lang('default')]['label'])) ? $field['langs'][Settings::get_lang('default')]['label'] : $field['name'];
+			    	else
+					$label = $field['label'];
 				?>
 				<label for="cf_<?php echo $id; ?>" title="<?php echo $field['description']; ?>"><?php echo $label; ?></label>
 			</dt>
