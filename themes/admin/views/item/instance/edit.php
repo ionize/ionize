@@ -374,7 +374,7 @@ $id_item_definition = $item_definition['id_item_definition'];
 
 <div class="buttons">
 	<button class="button yes right" id="bSaveitem<?php echo $id_item; ?>" type="button" ><?php echo lang('ionize_button_save_close'); ?></button>
-	<button class="button green right ml10" id="bSaveAndStay<?php echo $id_item; ?>" type="button" ><?php echo lang('ionize_button_save'); ?></button>
+	<button class="button blue right ml10" id="bSaveAndStay<?php echo $id_item; ?>" type="button" ><?php echo lang('ionize_button_save'); ?></button>
 	<button class="button no right" type="button" id="bCancelitem<?php echo $id_item ?>"><?php echo lang('ionize_button_cancel') ?></button>
 </div>
 
