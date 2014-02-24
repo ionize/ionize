@@ -2382,7 +2382,7 @@ class Base_model extends CI_Model
 	public function is_empty($where = NULL, $table = NULL)
 	{
 		$table = ! is_null($table) ? $table : $this->table;
-		log_message('app', print_r($table, TRUE));
+
 		if ( is_array($where) )
 		{
 			$this->_process_where($where, $table);

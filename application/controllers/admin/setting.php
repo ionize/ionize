@@ -467,7 +467,7 @@ class Setting extends MY_admin
 
 		$this->reload(
 			'mainPanel',
-			'setting',
+			admin_url(TRUE) . 'setting',
 			lang('ionize_menu_site_settings')
 		);
 
@@ -802,7 +802,7 @@ class Setting extends MY_admin
 		{
 			$this->reload(
 				'mainPanel',
-				'setting/themes',
+				admin_url(TRUE) . 'setting/themes',
 				lang('ionize_title_theme')
 			);
 

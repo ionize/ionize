@@ -1244,8 +1244,8 @@ class Page extends MY_admin
 		$this->callback[] =	array(
 			'fn' => 'ION.splitPanel',
 			'args' => array(
-				'urlMain'=> admin_url() . 'page/edit/'.$id_page,
-				'urlOptions'=> admin_url() . 'page/get_options/'.$id_page,
+				'urlMain'=> admin_url(TRUE) . 'page/edit/'.$id_page,
+				'urlOptions'=> admin_url(TRUE) . 'page/get_options/'.$id_page,
 				'title'=> lang('ionize_title_edit_page') . ' : ' . $title
 			)
 		);

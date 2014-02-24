@@ -154,7 +154,7 @@ class Medialist extends MY_admin
 	{
 		$this->reload(
 			'mainPanel',
-			admin_url() . 'medialist',
+			admin_url(TRUE) . 'medialist',
 			lang('ionize_menu_medialist')
 		);
 	}

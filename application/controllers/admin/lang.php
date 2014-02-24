@@ -427,7 +427,7 @@ class Lang extends MY_admin
 	{
 		$this->reload(
 			'mainPanel',
-			admin_url() . 'lang',
+			admin_url(TRUE) . 'lang',
 			lang('ionize_menu_languages')
 		);
 	}

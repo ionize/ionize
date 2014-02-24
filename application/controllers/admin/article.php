@@ -407,7 +407,7 @@ class Article extends MY_admin
 	 */
 	public function save()
 	{
-		if (!Authority::can('edit', 'admin/article')) {
+		if ( ! Authority::can('edit', 'admin/article')) {
 			$this->error(lang('permission_denied'));
 		}
 
@@ -1928,8 +1928,8 @@ class Article extends MY_admin
 		$this->callback[] =	array(
 			'fn' => 'ION.splitPanel',
 			'args' => array(
-				'urlMain'=> admin_url() . 'article/edit/'.$id_page.'.'.$id_article,
-				'urlOptions'=> admin_url() . 'article/get_options/'.$id_page.'.'.$id_article,
+				'urlMain'=> admin_url(TRUE) . 'article/edit/'.$id_page.'.'.$id_article,
+				'urlOptions'=> admin_url(TRUE) . 'article/get_options/'.$id_page.'.'.$id_article,
 				'title'=> lang('ionize_title_edit_article') . ' : ' . $title
 			)
 		);

@@ -164,7 +164,7 @@ class Tag extends MY_admin
 	{
 		$this->reload(
 			'mainPanel',
-			'tag/index',
+			admin_url(TRUE) . 'tag/index',
 			lang('ionize_title_tags')
 		);
 	}
