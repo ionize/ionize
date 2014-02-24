@@ -50,14 +50,36 @@ class Google extends MY_admin
 			{
 				$ga = new gapi(self::$ga_email, self::$ga_password);
 
+				// Main data
 				$ga->requestReportData(
 					self::$ga_profile_id,
 					'pagePath',
-					array('pageviews', 'uniquePageviews', 'exitRate', 'avgTimeOnPage', 'entranceBounceRate', 'newVisits'),
+					array(
+						'pageviews',
+						'uniquePageviews',
+						'exitRate',
+						'avgTimeOnPage',
+						'entranceBounceRate',
+					),
 					null,
 					'pagePath == /'
 				);
 				$mainData = $ga->getResults();
+
+				// Visits data
+				$ga->requestReportData(
+					self::$ga_profile_id,
+					array('date'),
+					array(
+						'visitors',
+						'visits',
+						'newVisits',
+//						'percentNewVisits',
+					),
+					null,
+					'pagePath == /'
+				);
+				$visitorData = $ga->getResults();
 
 				if ( ! empty($mainData[0]))
 				{
@@ -71,6 +93,20 @@ class Google extends MY_admin
 						'exitRate' => round($result->getExitRate(), 2) . '%',
 					);
 
+					$data['visitors'] = 0;
+					$data['visits'] = 0;
+					$data['newVisits'] = 0;
+
+					if ( ! empty($visitorData))
+					{
+						foreach ($visitorData as $vd)
+						{
+							$data['visitors'] += $vd->getVisitors();
+							$data['visits'] += $vd->getVisits();
+							$data['newVisits'] += $vd->getNewVisits();
+						}
+					}
+
 					$this->template['data'] = $data;
 				}
 
@@ -78,18 +114,23 @@ class Google extends MY_admin
 				$ga->requestReportData(
 					self::$ga_profile_id,
 					array('date'),
-					array('pageviews'),
+					array('pageviews','uniquePageviews'),
 					'date',
 					'pagePath == /'
 				);
 				$chartResults = $ga->getResults();
-				$chartRows = array();
+
+				$dataRows = array();
 				foreach($chartResults as $result)
 				{
-					$chartRows[] = array(date('M j',strtotime($result->getDate())), $result->getPageviews());
+					$dataRows[] = array(
+						date('M j', strtotime($result->getDate())),
+						$result->getPageviews(),
+						$result->getUniquePageviews()
+					);
 				}
 
-				$this->template['chartRows'] = json_encode($chartRows, true);
+				$this->template['dataRows'] = json_encode($dataRows, true);
 
 				$this->output('google/dashboard_report');
 			}

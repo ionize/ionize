@@ -65,14 +65,14 @@
 				<table class="list m0">
 					<thead>
 						<tr>
-							<th class="w160"></th>
+							<th></th>
 							<th><?php echo lang('ionize_label_description'); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<!-- Langs -->
 						<tr>
-							<td class="middle right pr10">
+							<td class="middle pr10">
 								<a class="button light check-btn" data-href="system_check/check_lang">
 									<i class="icon-lang"></i><?php echo lang('ionize_title_check_lang'); ?>
 								</a>
@@ -81,7 +81,7 @@
 						</tr>
 						<!-- URLs -->
 						<tr>
-							<td class="middle right pr10">
+							<td class="middle pr10">
 								<a class="button light check-btn" data-href="system_check/rebuild_urls">
 									<i class="icon-urls"></i><?php echo lang('ionize_title_rebuild_urls'); ?>
 								</a>
@@ -90,7 +90,7 @@
 						</tr>
 						<!-- Article's context -->
 						<tr>
-							<td class="middle right pr10">
+							<td class="middle pr10">
 								<a class="button light check-btn" data-href="system_check/check_article_context">
 									<i class="icon-article"></i><?php echo lang('ionize_title_check_article_context'); ?>
 								</a>
@@ -99,7 +99,7 @@
 						</tr>
 						<!-- Page's levels -->
 						<tr>
-							<td class="middle right pr10">
+							<td class="middle pr10">
 								<a class="button light check-btn" data-href="system_check/check_page_level">
 									<i class="icon-folder"></i><?php echo lang('ionize_title_check_page_level'); ?>
 								</a>
@@ -108,7 +108,7 @@
 						</tr>
 						<!-- Media table -->
 						<tr>
-							<td class="middle right pr10">
+							<td class="middle pr10">
 								<a class="button light check-btn" data-href="system_check/clean_media">
 									<i class="icon-pictures"></i><?php echo lang('ionize_title_clean_media'); ?>
 								</a>
@@ -117,7 +117,7 @@
 						</tr>
 						<!-- Lang tables -->
 						<tr>
-							<td class="middle right pr10">
+							<td class="middle pr10">
 								<a class="button light check-btn" data-href="lang/clean_tables">
 									<i class="icon-lang"></i><?php echo lang('ionize_button_clean_lang_tables'); ?>
 								</a>
@@ -126,7 +126,7 @@
 						</tr>
 						<!-- Thumbs delete -->
 						<tr>
-							<td class="middle right pr10">
+							<td class="middle pr10">
 								<a class="button light check-btn" data-href="media/delete_all_thumbs">
 									<i class="icon-pictures"></i><?php echo lang('ionize_title_delete_thumbs'); ?>
 								</a>
@@ -149,14 +149,14 @@
 			<table class="list m0">
 				<thead>
 					<tr>
-						<th class="w160"></th>
+						<th></th>
 						<th><?php echo lang('ionize_label_description'); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<!-- Broken Pictures sources -->
 					<tr>
-						<td class="right pr10">
+						<td class="pr10">
 							<a class="button light report-btn" data-href="system_check/broken_media_report">
 								<i class="icon-picture broken"></i><?php echo lang('ionize_title_broken_media_links'); ?>
 							</a>
@@ -165,7 +165,7 @@
 					</tr>
 					<!-- Unused medias -->
 					<tr>
-						<td class="right pr10">
+						<td class="pr10">
 							<a class="button light report-btn" data-href="system_check/unused_media_report">
 								<i class="icon-picture"></i><?php echo lang('ionize_title_unused_media_files'); ?>
 							</a>

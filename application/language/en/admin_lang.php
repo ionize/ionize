@@ -1257,6 +1257,9 @@ $lang['ionize_help_orphan_articles'] = "These articles are not linked to any pag
 
 
 $lang['ionize_ga_pageviews'] = 'Page views';
+$lang['ionize_ga_visitors'] = 'Visitors';
+$lang['ionize_ga_visits'] = 'Visits';
+$lang['ionize_ga_newvisits'] = 'New Visits';
 $lang['ionize_ga_unique_pageviews'] = 'Unique Page Views';
 $lang['ionize_ga_avg_time_on_page'] = 'Avg time on Page';
 $lang['ionize_ga_bounce_rate'] = 'Bounce Rate';

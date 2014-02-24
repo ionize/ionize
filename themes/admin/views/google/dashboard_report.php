@@ -14,37 +14,57 @@
 
 <?php if ( ! empty($data)) :?>
 <div id="page-analytics">
-	<div class="metric"><div><span><?php echo lang('ionize_ga_pageviews') ?></span><strong><?php echo $data['pageViews'] ?></strong></div></div>
-	<div class="metric"><div><span><?php echo lang('ionize_ga_unique_pageviews') ?></span><strong><?php echo $data['uniquePageViews'] ?></strong></div></div>
-	<div class="metric"><div><span><?php echo lang('ionize_ga_avg_time_on_page') ?></span><strong><?php echo $data['avgTimeOnPage'] ?></strong></div></div>
-	<div class="metric"><div><span><?php echo lang('ionize_ga_bounce_rate') ?></span><strong><?php echo $data['bounceRate'] ?></strong></div></div>
-	<div class="metric"><div><span><?php echo lang('ionize_ga_exit_rate') ?></span><strong><?php echo $data['exitRate'] ?></strong></div></div>
+	<div class="metric"><div><strong><?php echo $data['visitors'] ?></strong><span><?php echo lang('ionize_ga_visitors') ?></span></div></div>
+<!--
+	<div class="metric"><div><strong><?php /*echo $data['pageViews'] */?></strong><span><?php /*echo lang('ionize_ga_pageviews') */?></span></div></div>
+	<div class="metric"><div><strong><?php /*echo $data['avgTimeOnPage'] */?></strong><span><?php /*echo lang('ionize_ga_avg_time_on_page') */?></span></div></div>
+	<div class="metric"><div><strong><?php /*echo $data['exitRate'] */?></strong><span><?php /*echo lang('ionize_ga_exit_rate') */?></span></div></div>
+-->
+	<div class="metric"><div><strong><?php echo $data['visits'] ?></strong><span><?php echo lang('ionize_ga_visits') ?></span></div></div>
+	<div class="metric"><div><strong><?php echo $data['newVisits'] ?></strong><span><?php echo lang('ionize_ga_newvisits') ?></span></div></div>
+	<div class="metric"><div><strong><?php echo $data['uniquePageViews'] ?></strong><span><?php echo lang('ionize_ga_unique_pageviews') ?></span></div></div>
+	<div class="metric"><div><strong><?php echo $data['bounceRate'] ?></strong><span><?php echo lang('ionize_ga_bounce_rate') ?></span></div></div>
 </div>
 <?php endif ;?>
 
 
 <script type="text/javascript">
 
+
+
 	function drawChart()
 	{
 		var data = new google.visualization.DataTable();
 		data.addColumn('string', 'Day');
-		data.addColumn('number', 'Pageviews');
-		data.addRows(<?php echo $chartRows ?>);
+		data.addColumn('number', Lang.get('ionize_ga_pageviews'));
+		data.addColumn('number', Lang.get('ionize_ga_unique_pageviews'));
+		data.addRows(<?php echo $dataRows ?>);
 
-		var chart = new google.visualization.AreaChart(document.getElementById('analyticsChart'));
+		// var chart = new google.visualization.AreaChart(document.getElementById('analyticsChart'));
+		var chart = new google.visualization.LineChart(document.getElementById('analyticsChart'));
 
 		chart.draw(data, {
-			backgroundColor:'transparent',
-			vAxis: {gridlines:{color: '#ddd'}},
-			height: 180,
+			curveType: 'function',
+		//	backgroundColor:'#df8',
+			vAxis: {
+				gridlines:{color: '#ddd'},
+				textPosition: 'out',
+				textStyle: { color: '#999', fontSize: 10 },
+				baselineColor:'#ddd'
+			},
+			height: 260,
 			title: '<?php echo date('M j, Y',strtotime('-30 day')).' - '.date('M j, Y'); ?>',
-			colors:['#058dc7','#e6f4fa'],
+			colors:['#058dc7','#bf2626','#e2d9d9'],
 			areaOpacity: 0.1,
-			hAxis: {textPosition: 'in', showTextEvery: 5, slantedText: false, textStyle: { color: '#058dc7', fontSize: 10 } },
+			hAxis: {
+				textPosition: 'out',
+				showTextEvery: 5,
+				direction:1, slantedText:true, slantedTextAngle:45,
+				textStyle: { color: '#999', fontSize: 10 }
+			},
 			pointSize: 5,
 			legend: 'none',
-			chartArea:{left:0,top:30,width:"100%",height:"100%"}
+			chartArea:{left:40,top:30,bottom:50,width:"100%",height:180}
 		});
 	}
 

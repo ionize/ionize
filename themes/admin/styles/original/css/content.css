@@ -1363,10 +1363,11 @@ div.translation {
 	text-align: center;
 }
 #page-analytics .metric strong {
-	font-size: 16px;
-	font-weight: bold;
+	font-size: 24px;
+	font-weight: normal;
 	display: block;
 	text-align: center;
+	line-height: 1.1em;
 }
 
 
