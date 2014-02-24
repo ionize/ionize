@@ -547,7 +547,7 @@ if ($tracker_title == '')
 									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 								</a>
 
-									<a class="left light button" onclick="javascript:mediaManager.detachMediaByType();return false;">
+									<a class="left light button" onclick="javascript:mediaManager.detachAllMedia();return false;">
 										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
 									</a>
 							</p>
