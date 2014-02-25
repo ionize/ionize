@@ -31,7 +31,9 @@ class Media_model extends Base_model
 		'lang_display'
 	);
 
-	protected static $MP3_ID3 = array('album', 'artist', 'title', 'year');
+	protected static $_MP3_ID3 = array('album', 'artist', 'title', 'year');
+
+	protected static $_VIDEO_PROVIDERS = array('youtube', 'vimeo', 'dailymotion');
 
 	/**
 	 * Constructor
@@ -218,7 +220,7 @@ class Media_model extends Base_model
 				$base_path = str_replace($file_name, '', $path);
 			}
 
-			$type = $this->get_type($file_name);
+			$type = $this->get_type($file_name, $provider);
 
 			$data = array(
 				'type' => $type,
@@ -568,11 +570,12 @@ class Media_model extends Base_model
 	 * Return the file type ('picture', 'music', 'video', 'file') regarding to its extension
 	 *
 	 * @param $filename
+	 * @param $provider
 	 *
 	 * @return	string	media type
 	 *
 	 */
-	public function get_type($filename)
+	public function get_type($filename, $provider = NULL)
 	{
 		$mimes_types = Settings::get_mimes_types();
 
@@ -584,6 +587,9 @@ class Media_model extends Base_model
 			if (in_array($file_extension, $keys))
 				return $type;
 		}
+
+		if ( ! is_null($provider) && in_array($provider, self::$_VIDEO_PROVIDERS))
+			return 'video';
 
 		return 'file';
 	}
@@ -883,7 +889,7 @@ class Media_model extends Base_model
 	 */
 	public function get_ID3($path)
 	{
-		$tags = array_fill_keys(self::$MP3_ID3, '');
+		$tags = array_fill_keys(self::$_MP3_ID3, '');
 
 		if ( is_file(DOCPATH.$path) )
 		{
@@ -895,7 +901,7 @@ class Media_model extends Base_model
 			// Analyze file and store returned data in $ThisFileInfo
 			$id3 = $getID3->analyze(DOCPATH.$path);
 
-			foreach(self::$MP3_ID3 as $index)
+			foreach(self::$_MP3_ID3 as $index)
 			{
 				$tags[$index] = ( ! empty($id3['tags_html']['id3v2'][$index][0])) ? $id3['tags_html']['id3v2'][$index][0] : '';
 			}

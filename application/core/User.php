@@ -668,7 +668,6 @@ namespace Ionize {
 			}
 			else
 			{
-				log_message('error', print_r('here', true));
 				$this->error = $this->set_error_message('connect_user_already_exists');
 			}
 

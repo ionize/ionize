@@ -1504,92 +1504,102 @@ class TagManager
 	{
 		$str = '';
 
-		$extend = $tag->get('extend');
+		$grandParentName = $tag->getParent()->getParentName();
 
-		// Medias
-		if ($extend['type'] == '8')
+		// Medias asked aren't supposed to be the one linked to the extend
+		if ( ! in_array($grandParentName, array('items', 'extend')))
 		{
-			self::load_model('media_model');
+			return TagManager_Media::tag_medias($tag);
+		}
+		else
+		{
+			$extend = $tag->get('extend');
 
-			$ids = $extend['content'];
-
-			if (strlen($ids) > 0)
+			// Medias
+			if ($extend['type'] == '8')
 			{
-				// Tag attributes
-				$type = $tag->getAttribute('type');
-				$limit = $tag->getAttribute('limit', 0);
-				$filter = $tag->getAttribute('filter');
+				self::load_model('media_model');
 
-				$ids_array = explode(',', $ids);
+				$ids = $extend['content'];
 
-				$where = array(
-					'where_in' => array(self::$ci->media_model->get_table().'.id_media' => $ids_array),
-					'order_by' => "field(" . self::$ci->media_model->get_table() . ".id_media, ". $ids . ")"
-				);
-
-				if ( ! is_null($type)) $where['type'] = $type;
-				if ( $limit ) $where['limit'] = $limit;
-
-				$medias = self::$ci->media_model->get_lang_list(
-					$where,
-					Settings::get_lang('current'),
-					$filter
-				);
-
-				//
-				// From here :
-				// Same than TagManager_Media::tag_medias()
-				//
-
-				// Extend Fields tags
-				self::create_extend_tags($tag, 'media');
-
-				// Medias lib, to process the "src" value
-				self::$ci->load->library('medias');
-
-				// Filter the parent's medias
-				$medias = TagManager_Media::filter_medias($tag, $medias);
-
-				$count = count($medias);
-				$tag->set('count', $count);
-
-				// Make medias in random order
-				if ( $tag->getAttribute('random') == TRUE) shuffle ($medias);
-
-				// Process additional data : src, extension
-				foreach($medias as $key => $media)
+				if (strlen($ids) > 0)
 				{
-					if ($media['provider'] !='')
-						$src = $media['path'];
-					else
-						$src = base_url() . $media['path'];
+					// Tag attributes
+					$type = $tag->getAttribute('type');
+					$limit = $tag->getAttribute('limit', 0);
+					$filter = $tag->getAttribute('filter');
 
-					if ($media['type'] == 'picture')
-					{
-						$settings = TagManager_Media::get_src_settings($tag);
+					$ids_array = explode(',', $ids);
 
-						if ( ! empty($settings['size']))
-							$src = self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
-					}
-					$medias[$key]['src'] = $src;
-				}
+					$where = array(
+						'where_in' => array(self::$ci->media_model->get_table().'.id_media' => $ids_array),
+						'order_by' => "field(" . self::$ci->media_model->get_table() . ".id_media, ". $ids . ")"
+					);
 
-				$tag->set('medias', $medias);
+					if ( ! is_null($type)) $where['type'] = $type;
+					if ( $limit ) $where['limit'] = $limit;
 
-				foreach($medias as $key => $media)
-				{
-					// Each media has its index and the number of displayed media
-					$media['index'] = $key + 1;
-					$media['count'] = $count;
+					$medias = self::$ci->media_model->get_lang_list(
+						$where,
+						Settings::get_lang('current'),
+						$filter
+					);
 
-					$tag->set('media', $media);
+					//
+					// From here :
+					// Same than TagManager_Media::tag_medias()
+					//
+
+					// Extend Fields tags
+					self::create_extend_tags($tag, 'media');
+
+					// Medias lib, to process the "src" value
+					self::$ci->load->library('medias');
+
+					// Filter the parent's medias
+					$medias = TagManager_Media::filter_medias($tag, $medias);
+
+					$count = count($medias);
 					$tag->set('count', $count);
-					$tag->set('index', $key);
 
-					$str .= $tag->expand();
+					// Make medias in random order
+					if ( $tag->getAttribute('random') == TRUE) shuffle ($medias);
+
+					// Process additional data : src, extension
+					foreach($medias as $key => $media)
+					{
+						if ($media['provider'] !='')
+							$src = $media['path'];
+						else
+							$src = base_url() . $media['path'];
+
+						if ($media['type'] == 'picture')
+						{
+							$settings = TagManager_Media::get_src_settings($tag);
+
+							if ( ! empty($settings['size']))
+								$src = self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
+						}
+						$medias[$key]['src'] = $src;
+					}
+
+					$tag->set('medias', $medias);
+
+					foreach($medias as $key => $media)
+					{
+						// Each media has its index and the number of displayed media
+						$media['index'] = $key + 1;
+						$media['count'] = $count;
+
+						$tag->set('media', $media);
+						$tag->set('count', $count);
+						$tag->set('index', $key);
+
+						$str .= $tag->expand();
+					}
 				}
+				return self::wrap($tag, $str);
 			}
-			return self::wrap($tag, $str);
 		}
 
 		return $str;
