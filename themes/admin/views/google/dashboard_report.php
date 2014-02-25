@@ -36,35 +36,34 @@
 	{
 		var data = new google.visualization.DataTable();
 		data.addColumn('string', 'Day');
-		data.addColumn('number', Lang.get('ionize_ga_pageviews'));
-		data.addColumn('number', Lang.get('ionize_ga_unique_pageviews'));
+		data.addColumn('number', Lang.get('ionize_ga_visits'));
+		data.addColumn('number', Lang.get('ionize_ga_newvisits'));
 		data.addRows(<?php echo $dataRows ?>);
 
 		// var chart = new google.visualization.AreaChart(document.getElementById('analyticsChart'));
 		var chart = new google.visualization.LineChart(document.getElementById('analyticsChart'));
 
 		chart.draw(data, {
-			curveType: 'function',
-		//	backgroundColor:'#df8',
+//			curveType: 'function',
 			vAxis: {
 				gridlines:{color: '#ddd'},
 				textPosition: 'out',
 				textStyle: { color: '#999', fontSize: 10 },
 				baselineColor:'#ddd'
 			},
-			height: 260,
+			height: 230,
 			title: '<?php echo date('M j, Y',strtotime('-30 day')).' - '.date('M j, Y'); ?>',
 			colors:['#058dc7','#bf2626','#e2d9d9'],
 			areaOpacity: 0.1,
 			hAxis: {
 				textPosition: 'out',
 				showTextEvery: 5,
-				direction:1, slantedText:true, slantedTextAngle:45,
+				// direction:1, slantedText:true, slantedTextAngle:45,
 				textStyle: { color: '#999', fontSize: 10 }
 			},
 			pointSize: 5,
 			legend: 'none',
-			chartArea:{left:40,top:30,bottom:50,width:"100%",height:180}
+			chartArea:{left:40,top:30,bottom:20,width:"100%",height:180}
 		});
 	}
 

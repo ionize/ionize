@@ -42,12 +42,17 @@ class Google extends MY_admin
 	{
 	}
 
+	/**
+	 *
+	 */
 	public function get_dashboard_report()
 	{
 		if (self::$should_access)
 		{
 			try
 			{
+				$dataRows = array();
+
 				$ga = new gapi(self::$ga_email, self::$ga_password);
 
 				// Main data
@@ -69,16 +74,11 @@ class Google extends MY_admin
 				// Visits data
 				$ga->requestReportData(
 					self::$ga_profile_id,
-					array('date'),
-					array(
-						'visitors',
-						'visits',
-						'newVisits',
-//						'percentNewVisits',
-					),
-					null,
-					'pagePath == /'
+					'date',
+					array('visitors', 'newVisits','visits'),
+					'date'
 				);
+
 				$visitorData = $ga->getResults();
 
 				if ( ! empty($mainData[0]))
@@ -86,11 +86,10 @@ class Google extends MY_admin
 					$result = $mainData[0];
 
 					$data = array(
-						'pageViews' => number_format($result->getPageviews()),
-						'uniquePageViews' => number_format($result->getUniquePageviews()),
+						'pageViews' => number_format($result->getPageviews(),0,null,' '),
+						'uniquePageViews' => number_format($result->getUniquePageviews(),0,null,' '),
 						'avgTimeOnPage' => $this->secondMinute($result->getAvgtimeOnpage()),
-						'bounceRate' => round($result->getEntranceBounceRate(), 2) . '%',
-						'exitRate' => round($result->getExitRate(), 2) . '%',
+						'bounceRate' => round($result->getEntranceBounceRate(), 2) . '%'
 					);
 
 					$data['visitors'] = 0;
@@ -104,13 +103,23 @@ class Google extends MY_admin
 							$data['visitors'] += $vd->getVisitors();
 							$data['visits'] += $vd->getVisits();
 							$data['newVisits'] += $vd->getNewVisits();
+
+							$dataRows[] = array(
+								date('M j', strtotime($vd->getDate())),
+								$vd->getVisits(),
+								$vd->getNewVisits(),
+							);
 						}
+						$data['visitors'] = number_format($data['visitors'],0,null,' ');
+						$data['visits'] = number_format($data['visits'],0,null,' ');
+						$data['newVisits'] = number_format($data['newVisits'],0,null,' ');
 					}
 
 					$this->template['data'] = $data;
 				}
 
 				// Get the Last 30 days data
+				/*
 				$ga->requestReportData(
 					self::$ga_profile_id,
 					array('date'),
@@ -119,8 +128,6 @@ class Google extends MY_admin
 					'pagePath == /'
 				);
 				$chartResults = $ga->getResults();
-
-				$dataRows = array();
 				foreach($chartResults as $result)
 				{
 					$dataRows[] = array(
@@ -129,6 +136,7 @@ class Google extends MY_admin
 						$result->getUniquePageviews()
 					);
 				}
+				*/
 
 				$this->template['dataRows'] = json_encode($dataRows, true);
 
@@ -151,5 +159,4 @@ class Google extends MY_admin
 		else { $secResult = round($secResult); }
 		return $minResult.":".$secResult;
 	}
-
 }
