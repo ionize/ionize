@@ -1507,7 +1507,7 @@ class TagManager
 		$grandParentName = $tag->getParent()->getParentName();
 
 		// Medias asked aren't supposed to be the one linked to the extend
-		if ( ! in_array($grandParentName, array('items', 'extend')))
+		if ( ! in_array($grandParentName, array('items', 'item', 'extend')))
 		{
 			return TagManager_Media::tag_medias($tag);
 		}
