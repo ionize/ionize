@@ -55,15 +55,117 @@ class resource_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function create($type, $element, $actions = array(),$id_element = NULL, $parent = NULL, $title = NULL, $description = NULL)
+	{
+		return $this->save($type, $element, $actions ,$id_element, $parent, $title, $description);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param       $type
+	 * @param array $element
+	 * @param array $actions
+	 * @param null  $id_element
+	 * @param null  $parent
+	 * @param null  $title
+	 * @param null  $description
+	 *
+	 * @return int
+	 */
+	public function save($type, $element, $actions = array(), $id_element = NULL, $parent = NULL, $title = NULL, $description = NULL)
+	{
+		$id_parent = NULL;
+
+		if ( is_null($actions)) $actions = array();
+
+		// Find out $id_parent
+		if ( ! is_null($parent) )
+		{
+			if (is_string($parent) && intval($parent) !== $parent)
+				$id_parent = $this->_save_resource($type, $parent, NULL, array('title' => ucfirst($parent)));
+			else
+				$id_parent = $parent;
+		}
+
+		$data = array(
+			'id_parent' => $id_parent,
+			'title' => $title,
+			'description' => $description
+		);
+
+		$element = ! is_null($id_element) ? $element . '/' . $id_element : $element;
+
+		$id_resource = $this->_save_resource($type, $element, $actions, $data);
+
+		return $id_resource;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Creates one resource if it doesn't exist, else updates it.
+	 *
+	 *
+	 * @param       $type
+	 * @param       $element		String. Can contain the element ID (eg. 'element/3')
+	 * @param array $actions
+	 * @param array $data
+	 *
+	 * @return int|null
+	 */
+	private function _save_resource($type, $element, $actions = array(), $data=array())
+	{
+		$id_resource = NULL;
+
+		// Correct NULL actions
+		if (is_null($actions)) $actions = array();
+
+		$resource = $type . '/' . $element;
+
+		if ( is_null($actions)) $actions = array();
+
+		// Find out $id_parent
+		$db_resource = $this->get_row_array(array('resource' => $resource));
+
+		$data = array_merge(
+			array(
+				'resource' => $resource,
+				'actions' => implode(',', $actions)
+			),
+			$data
+		);
+
+		// Get ID resource
+		if ( ! empty($db_resource))
+		{
+			$data['id_resource'] = $db_resource['id_resource'];
+		}
+
+		$id_resource = parent::save($data);
+
+		return $id_resource;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns the resource tree
 	 * From DB resources (Admin)
 	 *
+	 * @param array $where
+	 *
 	 * @return array
 	 */
-	public function get_tree()
+	public function get_tree($where = array())
 	{
-		$resources = $this->get_list();
+		$resources = $this->get_list($where);
 
 		$tree = $this->build_resources_tree($resources);
 

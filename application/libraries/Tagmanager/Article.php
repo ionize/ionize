@@ -708,10 +708,28 @@ class TagManager_Article extends TagManager
 
 	public static function tag_prev_article(FTL_Binding $tag)
 	{
-		$article = self::get_adjacent_article($tag, 'prev');
-		$tag->set('data', $article);
+		$all = $tag->getAttribute('all');
 
-		return self::process_prev_next_article($tag, $article);
+		if ( ! is_null($all))
+		{
+			$str = '';
+			$articles = self::get_adjacent_articles($tag, 'prev');
+
+			foreach($articles as $_article)
+			{
+				$tag->set('data', $_article);
+				$str .= $tag->expand();
+			}
+
+			return self::wrap($tag, $str);
+		}
+		else
+		{
+			$article = self::get_adjacent_article($tag, 'prev');
+			$tag->set('data', $article);
+
+			return self::process_prev_next_article($tag, $article);
+		}
 	}
 
 
@@ -720,10 +738,68 @@ class TagManager_Article extends TagManager
 
 	public static function tag_next_article(FTL_Binding $tag)
 	{
-		$article = self::get_adjacent_article($tag, 'next');
-		$tag->set('data', $article);
+		$all = $tag->getAttribute('all');
 
-		return self::process_prev_next_article($tag, $article);
+		if ( ! is_null($all))
+		{
+			$str = '';
+			$articles = self::get_adjacent_articles($tag, 'next');
+
+			foreach($articles as $_article)
+			{
+				$tag->set('data', $_article);
+				$str .= $tag->expand();
+			}
+
+			return self::wrap($tag, $str);
+		}
+		else
+		{
+			$article = self::get_adjacent_article($tag, 'next');
+			$tag->set('data', $article);
+
+			return self::process_prev_next_article($tag, $article);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns all previous or next articles regarding to the current one
+	 *
+	 * @param FTL_Binding $tag
+	 * @param string      $mode
+	 *
+	 * @return array|null
+	 */
+	private static function get_adjacent_articles(FTL_Binding $tag, $mode='prev')
+	{
+		$found_articles = NULL;
+
+		$articles = self::prepare_articles($tag, self::get_articles($tag));
+
+		// Get the article : Fall down to registry if no one found in tag
+		$article = $tag->get('article');
+
+		// Get the current article pos
+		$pos = NULL;
+		foreach($articles as $key => $_article)
+		{
+			if ($_article['id_article'] == $article['id_article'])
+			{
+				$pos = $key;
+				break;
+			}
+		}
+
+		if ($mode == 'prev')
+			$found_articles = array_slice($articles, 0, $pos);
+		else
+			$found_articles = array_slice($articles, $pos+1);
+
+		return $found_articles;
 	}
 
 

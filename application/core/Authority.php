@@ -91,7 +91,7 @@ class Authority extends Authority\Ability {
 		// Always get again the rules
 		// To comment if rules should be placed in session
 		// (will need logout / login) to set new rules.
-		self::on_logout();
+		// self::on_logout();
 
 		// Rules : From Session
 		if( self::$session->userdata('authority_rules') )
