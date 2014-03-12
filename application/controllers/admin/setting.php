@@ -360,7 +360,7 @@ class Setting extends MY_admin
 		$this->template['view'] = $view;
 
 		// file path
-		$filepath = APPPATH.'../themes/'.Settings::get('theme').'/views/';
+		$filepath = FCPATH.'themes/'.Settings::get('theme').'/views/';
 
 		// View sub-folder ?
 		if ($path != '')
