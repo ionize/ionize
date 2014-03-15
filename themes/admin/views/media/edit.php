@@ -173,7 +173,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 							<label for="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_title'); ?></label>
 						</dt>
 						<dd>
-							<input id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="title_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['title']; ?>"/>
+							<input id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="title_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang_code]['title']; ?>"/>
 							<a class="icon clearfield" data-id="title_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
 						</dd>
 					</dl>
@@ -194,7 +194,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 							<label for="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_alt'); ?></label>
 						</dt>
 						<dd>
-							<input id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="alt_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['alt']; ?>"/>
+							<input id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="alt_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang_code]['alt']; ?>"/>
 							<a class="icon clearfield" data-id="alt_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
 						</dd>
 					</dl>
@@ -205,7 +205,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 							<label for="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"><?php echo lang('ionize_label_description'); ?></label>
 						</dt>
 						<dd>
-							<input id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="description_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo ${$lang_code}['description']; ?>"/>
+							<input id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>" name="description_<?php echo $lang_code; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang_code]['description']; ?>"/>
 							<a class="icon clearfield" data-id="description_<?php echo $lang_code; ?><?php echo $type.$id_media; ?>"></a>
 						</dd>
 					</dl>

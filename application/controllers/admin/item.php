@@ -26,6 +26,7 @@ class Item extends MY_admin
 		'6' => 'Select',
 		'7' => 'Date & Time',
 		'8' => 'Medias',
+		'9' => 'Internal Link',
 	);
 
 	/**
@@ -134,7 +135,7 @@ class Item extends MY_admin
 			Settings::get_lang('default')
 		);
 
-		$fields_lang = $this->extend_field_model->get_lang();
+		$fields_lang = $this->extend_field_model->get_all('extend_field_lang');
 
 		foreach($fields as &$field)
 		{

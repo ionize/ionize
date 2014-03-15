@@ -89,7 +89,7 @@ class Medias
 			$media = $this->_get_no_source_picture($fail_picture_path);
 		}
 
-		$thumb_file_path = self::_get_thumb_file_path($media, $settings);
+		$thumb_file_path = self::get_thumb_file_path($media, $settings);
 
 		$settings['refresh'] = isset($settings['refresh']) ? $settings['refresh'] : FALSE;
 
@@ -869,7 +869,7 @@ class Medias
 	// ------------------------------------------------------------------------
 
 
-	private function _get_thumb_file_path($media, $settings)
+	public function get_thumb_file_path($media, $settings)
 	{
 		$thumb_folder = (Settings::get('thumb_folder')) ? Settings::get('thumb_folder') : '.thumbs';
 

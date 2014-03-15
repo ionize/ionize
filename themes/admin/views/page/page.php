@@ -10,7 +10,7 @@
  *
  */
 
-$tracker_title = ${Settings::get_lang('default')}['title'];
+$tracker_title = $languages[Settings::get_lang('default')]['title'];
 if ($tracker_title == '')
 	$tracker_title = $name;
 
@@ -42,9 +42,9 @@ if ($tracker_title == '')
 			
 			<?php
 				
-				$title = ${Settings::get_lang('default')}['title'];
+				$title = $languages[Settings::get_lang('default')]['title'];
 
-				if ($title == '') $title = ${Settings::get_lang('default')}['url'];
+				if ($title == '') $title = $languages[Settings::get_lang('default')]['url'];
 			
 			?>
 
@@ -336,7 +336,7 @@ if ($tracker_title == '')
 									<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_content_online'); ?>"><?php echo lang('ionize_label_online_in'); ?> <?php echo ucfirst($language['name']); ?></label>
 								</dt>
 								<dd>
-									<input id="online_<?php echo $lang; ?>" <?php if (${$lang}['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?php echo $lang; ?>" class="inputcheckbox" type="checkbox" value="1"/>
+									<input id="online_<?php echo $lang; ?>" <?php if ($languages[$lang]['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?php echo $lang; ?>" class="inputcheckbox" type="checkbox" value="1"/>
 								</dd>
 							</dl>
 
@@ -352,7 +352,7 @@ if ($tracker_title == '')
 								<label for="title_<?php echo $lang; ?>"><?php echo lang('ionize_label_title'); ?></label>
 							</dt>
 							<dd>
-								<textarea id="title_<?php echo $lang; ?>" name="title_<?php echo $lang; ?>" class="textarea title autogrow" type="text" title="<?php echo lang('ionize_label_title'); ?>"><?php echo ${$lang}['title']; ?></textarea>
+								<textarea id="title_<?php echo $lang; ?>" name="title_<?php echo $lang; ?>" class="textarea title autogrow" type="text" title="<?php echo lang('ionize_label_title'); ?>"><?php echo $languages[$lang]['title']; ?></textarea>
 							</dd>
 						</dl>
 
@@ -362,7 +362,7 @@ if ($tracker_title == '')
 								<label for="subtitle_<?php echo $lang; ?>"><?php echo lang('ionize_label_subtitle'); ?></label>
 							</dt>
 							<dd>
-								<textarea id="subtitle_<?php echo $lang; ?>" name="subtitle_<?php echo $lang; ?>" class="textarea autogrow" type="text"><?php echo ${$lang}['subtitle']; ?></textarea>
+								<textarea id="subtitle_<?php echo $lang; ?>" name="subtitle_<?php echo $lang; ?>" class="textarea autogrow" type="text"><?php echo $languages[$lang]['subtitle']; ?></textarea>
 							</dd>
 						</dl>
 
@@ -373,7 +373,7 @@ if ($tracker_title == '')
 								<label for="url_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_url'); ?>"><?php echo lang('ionize_label_url'); ?></label>
 							</dt>
 							<dd>
-								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo ${$lang}['url']; ?>" title="<?php echo lang('ionize_help_page_url'); ?>" />
+								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>" title="<?php echo lang('ionize_help_page_url'); ?>" />
 
 								<?php if( ! is_null($lang_url)) :?>
 									<br/>
@@ -389,7 +389,7 @@ if ($tracker_title == '')
 								<label for="nav_title_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_nav_title'); ?>"><?php echo lang('ionize_label_nav_title'); ?></label>
 							</dt>
 							<dd>
-								<input id="nav_title_<?php echo $lang; ?>" name="nav_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo ${$lang}['nav_title']; ?>"/>
+								<input id="nav_title_<?php echo $lang; ?>" name="nav_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['nav_title']; ?>"/>
 							</dd>
 						</dl>
 
@@ -399,7 +399,7 @@ if ($tracker_title == '')
 								<label for="meta_title_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_window_title'); ?>"><?php echo lang('ionize_label_meta_title'); ?></label>
 							</dt>
 							<dd>
-								<input id="meta_title_<?php echo $lang; ?>" name="meta_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo ${$lang}['meta_title']; ?>"/>
+								<input id="meta_title_<?php echo $lang; ?>" name="meta_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['meta_title']; ?>"/>
 							</dd>
 						</dl>
 

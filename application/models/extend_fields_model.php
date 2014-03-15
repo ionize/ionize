@@ -84,6 +84,11 @@ class Extend_fields_model extends Base_model
 			);
 		}
 
-		return parent::get_lang_list($where);
+		if (empty($where['order_by']))
+			$where['order_by'] = $this->get_table().'.ordering ASC';
+
+		$result = parent::get_lang_list($where);
+
+		return $result;
 	}
 }

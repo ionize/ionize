@@ -178,16 +178,19 @@ class Element_definition extends MY_Admin {
 	 */
 	function delete($id)
 	{
-		$cond = array('id_element_definition' => $id);
-	
 		// Fields from this element
+		$cond = array(
+			'parent' => 'element',
+			'id_parent' => $id
+		);
 		$fields = $this->extend_field_model->get_list($cond);
 
 		// Instances of Elements using this definition
+		$cond = array('id_element_definition' => $id);
 		$elements = $this->element_model->get_elements($cond);
 
 		// No delete if used
-		if ( ! empty($fields) OR  !empty($elements))
+		if ( ! empty($fields) OR ! empty($elements))
 		{
 			$this->error(lang('ionize_message_element_in_use'));			
 		}

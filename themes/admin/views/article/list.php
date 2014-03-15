@@ -5,6 +5,10 @@
 <?php
 	$nbLang = count(Settings::get_languages());
 	$flag_width = (25 * $nbLang);
+
+	$select_views_class = is_null($all_article_types) ? 'w180' : 'w110';
+	$select_types_class = is_null($all_article_views) ? 'w180' : 'w80';
+
 ?>
 
 <?php foreach ($articles as $article) :?>
@@ -50,27 +54,31 @@
 		<span style="width:<?php echo$flag_width?>px;display:block;height:16px;" class="right mr10 ml10"><?php echo $content_html; ?></span>
 
 		<!-- Type -->
-		<span class="right ml10 type-block" data-id="<?php echo $rel; ?>">
-			
-			<select id="type<?php echo $flat_rel; ?>" class="select w80 type left" style="padding:0;" data-id="<?php echo $rel; ?>">
-				<?php foreach($all_article_types as $idx => $type) :?>
-					<option <?php if ($article['id_type'] == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
-				<?php endforeach ;?>
-			</select>
+		<?php if ( ! is_null($all_article_types)) :?>
+			<span class="right ml10 type-block" data-id="<?php echo $rel; ?>">
 
-		</span>
+				<select id="type<?php echo $flat_rel; ?>" class="select <?php echo $select_types_class ?> type left" style="padding:0;" data-id="<?php echo $rel; ?>">
+					<?php foreach($all_article_types as $idx => $type) :?>
+						<option <?php if ($article['id_type'] == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
+					<?php endforeach ;?>
+				</select>
 
-		<!-- Used view -->
-		<span class="right ml10">
-		
-			<select id="view<?php echo $flat_rel; ?>" class="select w110 view" style="padding:0;" data-id="<?php echo $rel; ?>">
-				<?php foreach($all_article_views as $idx => $view) :?>
-					<option <?php if ($article['view'] == $idx) :?>selected="selected"<?php endif; ?> value="<?php echo $idx; ?>"><?php echo $view; ?></option>
-				<?php endforeach ;?>
-			</select>
-		
-		</span>
-		
+			</span>
+		<?php endif ;?>
+
+		<!-- Views -->
+		<?php if ( ! is_null($all_article_views)) :?>
+			<span class="right ml10">
+
+				<select id="view<?php echo $flat_rel; ?>" class="select <?php echo $select_views_class ?> view" style="padding:0;" data-id="<?php echo $rel; ?>">
+					<?php foreach($all_article_views as $idx => $view) :?>
+						<option <?php if ($article['view'] == $idx) :?>selected="selected"<?php endif; ?> value="<?php echo $idx; ?>"><?php echo $view; ?></option>
+					<?php endforeach ;?>
+				</select>
+
+			</span>
+		<?php endif ;?>
+
 		<!-- Main parent page -->
 		<?php if (count($article['pages']) > 1) :?>
 			<span class="right type-block" data-id="<?php echo $rel; ?>">

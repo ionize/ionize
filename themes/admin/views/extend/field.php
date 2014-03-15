@@ -61,7 +61,7 @@
 						<div class="tabcontent <?php echo $lang; ?>">
 					
 							<!-- Label -->
-							<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title" type="text" value="<?php echo ${$lang}['label']; ?>"/>
+							<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
 			
 						</div>
 					<?php endforeach ;?>
@@ -108,7 +108,8 @@
 				<option value="6" <?php if ($type=='6') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_select'); ?></option>
 				<option value="7" <?php if ($type=='7') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_datetime'); ?></option>
 				<option value="8" <?php if ($type=='8') :?> selected="selected" <?php endif ;?>><?php echo lang('ionize_label_type_media'); ?></option>
-			</select>
+<!--				<option value="9" <?php /*if ($type=='9') :*/?> selected="selected" <?php /*endif ;*/?>><?php /*echo lang('ionize_label_type_internal_link'); */?></option>
+-->			</select>
 		</dd>
 	</dl>
 
@@ -176,7 +177,7 @@
 			$('default_value_block' + id).setStyle('display', 'none');
 			$('translate_block' + id).setStyle('display', 'block').highlight();
 		}
-		else if ($('type' + id).value == '7')
+		else if ($('type' + id).value == '7' || $('type' + id).value == '9')
 		{
 			$('value_block' + id).setStyle('display', 'none');
 			$('default_value_block' + id).setStyle('display', 'none');

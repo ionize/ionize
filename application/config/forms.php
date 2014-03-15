@@ -67,9 +67,9 @@ $config['forms'] = array
 				// - One plain Email address : my.name@mydomain.com
 				// - 'form' to send it to the email of the form data
 				// - 'site' to send it to the Email set in Ionize under Settings > Advanced > Email > Website
-				// - 'contact' to send it to the Email set in Ionize under Settings > Advanced > Email > Contact
-				// - 'info' to send it to the Email set in Ionize under Settings > Advanced > Email > Info
-				// - 'technical' to send it to the Email set in Ionize under Settings > Advanced > Email > Technical
+				// - 'contact' to send it to the Email set in Ionize under Settings > Website > Email > Contact
+				// - 'info' to send it to the Email set in Ionize under Settings > Website > Email > Info
+				// - 'technical' to send it to the Email set in Ionize under Settings > Website > Email > Technical
 				'email' => 'contact',
 				// Email used for the reply_to Email
 				'reply_to' => 'form',

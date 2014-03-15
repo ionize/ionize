@@ -47,7 +47,7 @@
 							<label for="title"><?php echo lang('ionize_label_title'); ?></label>
 						</dt>
 						<dd>
-							<input id="title_<?php echo $lang; ?>" name="title_<?php echo $lang; ?>" class="inputtext w180" type="text" value="<?php echo ${$lang}['title']; ?>"/>
+							<input id="title_<?php echo $lang; ?>" name="title_<?php echo $lang; ?>" class="inputtext w180" type="text" value="<?php echo $languages[$lang]['title']; ?>"/>
 						</dd>
 					</dl>
 	
@@ -57,7 +57,7 @@
 							<label for="subtitle<?php echo $lang; ?><?php echo $id_category; ?>"><?php echo lang('ionize_label_subtitle'); ?></label>
 						</dt>
 						<dd>
-							<input id="subtitle_<?php echo $lang; ?><?php echo $id_category; ?>" name="subtitle_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo ${$lang}['subtitle']; ?>"/>
+							<input id="subtitle_<?php echo $lang; ?><?php echo $id_category; ?>" name="subtitle_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['subtitle']; ?>"/>
 						</dd>
 					</dl>
 						
@@ -67,7 +67,7 @@
 							<label for="description_<?php echo $lang; ?><?php echo $id_category; ?>"><?php echo lang('ionize_label_description'); ?></label>
 						</dt>
 						<dd>
-							<textarea id="description_<?php echo $lang; ?><?php echo $id_category; ?>" name="description_<?php echo $lang; ?>" class="tinyCategory w220 h120" rel="<?php echo $lang; ?>"><?php echo ${$lang}['description']; ?></textarea>
+							<textarea id="description_<?php echo $lang; ?><?php echo $id_category; ?>" name="description_<?php echo $lang; ?>" class="tinyCategory w220 h120" rel="<?php echo $lang; ?>"><?php echo $languages[$lang]['description']; ?></textarea>
 						</dd>
 					</dl>
 				

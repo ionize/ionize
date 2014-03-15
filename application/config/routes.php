@@ -57,6 +57,9 @@ $route['api(/.*)?'] = "api/$1";
 $route['user'] = "user/index/$1";
 $route['user(/.*)?'] = 'user/$1';
 
+$route['picture'] = "picture/get/$1";
+$route['picture(/.*)?'] = 'picture/$1';
+
 /*
  * Route to default controller
  */

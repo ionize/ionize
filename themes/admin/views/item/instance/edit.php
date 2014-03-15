@@ -73,6 +73,14 @@ $id_item_definition = $item_definition['id_item_definition'];
 							<input id="cf_<?php echo $id_extend; ?>" class="inputtext w300 clear" type="text" name="cf_<?php echo $id_extend; ?>" value="<?php echo $field['content'] ; ?>" />
 						<?php endif ;?>
 
+						<!--
+						<?php if ($field['type'] == '9') :?>
+							<div class="droppable h20 w260 dropPage dropArticle" data-id-extend="<?php echo $id_extend; ?>" data-value="<?php echo $field['content'] ; ?>">
+
+							</div>
+						<?php endif ;?>
+						-->
+
 						<?php if ($field['type'] == '2' OR $field['type'] == '3') :?>
 							<textarea id="cf_<?php echo $id_extend; ?>" class="<?php if($field['type'] == '3'):?> tinyTextarea <?php endif ;?> inputtext h80" name="cf_<?php echo $id_extend; ?>"><?php echo $field['content']; ?></textarea>
 						<?php endif ;?>
@@ -446,10 +454,6 @@ $id_item_definition = $item_definition['id_item_definition'];
 				opt['id_extend'] = this.getProperty('data-id');
 				opt['lang'] = this.getProperty('data-lang');
 				opt['extend_label'] = this.getProperty('data-label');
-
-				console.log(opt);
-
-
 
 				extendMediaManager.open(opt);
 			});

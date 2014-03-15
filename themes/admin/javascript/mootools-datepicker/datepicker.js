@@ -446,7 +446,7 @@ var DatePicker = new Class({
 							this.mode = 'time';
 							this.render('fade');
 						} else {
-							this.select(d);
+							this.select(day_date);
 						}
 					}.bind(this));
 				}.bind(this))();

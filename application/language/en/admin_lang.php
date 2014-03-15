@@ -1045,6 +1045,7 @@ $lang['ionize_label_type_radio'] = 'Radio';
 $lang['ionize_label_type_select'] = 'Select';
 $lang['ionize_label_type_datetime'] = 'Date & Time';
 $lang['ionize_label_type_media'] = 'Medias';
+$lang['ionize_label_type_internal_link'] = 'Internal Link';
 $lang['ionize_label_filemanager_target'] = 'Destination';
 $lang['ionize_label_add_field'] = 'Add field';
 $lang['ionize_label_extend_field_for_all'] = 'Universal';

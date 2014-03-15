@@ -65,7 +65,7 @@ $id = $definition['id_item_definition'];
 							<label for="tc<?php echo $UNIQ ?>" title="<?php echo lang('ionize_help_item_title_definition') ?>"><?php echo lang('ionize_label_item_title_definition') ?></label>
 						</dt>
 						<dd>
-							<input id="tc<?php echo $UNIQ ?>" name="title_definition_<?php echo $lang ?>" class="inputtext" type="text" value="<?php echo $definition[$lang]['title_definition'] ?>"/>
+							<input id="tc<?php echo $UNIQ ?>" name="title_definition_<?php echo $lang ?>" class="inputtext" type="text" value="<?php echo $definition['languages'][$lang]['title_definition'] ?>"/>
 						</dd>
 					</dl>
 
@@ -75,7 +75,7 @@ $id = $definition['id_item_definition'];
 							<label for="ti<?php echo $UNIQ ?>" title="<?php echo lang('ionize_help_item_title_definition_item') ?>"><?php echo lang('ionize_label_item_title_definition_item') ?></label>
 						</dt>
 						<dd>
-							<input id="ti<?php echo $UNIQ ?>" name="title_item_<?php echo $lang ?>" class="inputtext" type="text" value="<?php echo $definition[$lang]['title_item'] ?>"/>
+							<input id="ti<?php echo $UNIQ ?>" name="title_item_<?php echo $lang ?>" class="inputtext" type="text" value="<?php echo $definition['languages'][$lang]['title_item'] ?>"/>
 						</dd>
 					</dl>
 				</div>

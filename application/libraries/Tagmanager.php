@@ -183,6 +183,7 @@ class TagManager
 		'updated' => 		'tag_simple_date',
 		'extend' =>			'tag_extend',
 		'list' =>			'tag_list',
+		'link_type' =>		'tag_simple_value',
 
 		// System / Core tags
 		'config' => 			'tag_config',

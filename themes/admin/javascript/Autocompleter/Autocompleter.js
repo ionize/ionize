@@ -184,7 +184,7 @@ var Autocompleter = new Class({
 			this.choices.setStyles({
 				'left': pos.left,
 				'top': pos.bottom,
-				'width': (width === true || width == 'inherit') ? pos.width : width
+				'width': (width === true || width == 'inherit') ? pos.width-2 : width
 			});
 		}
 		if (!first) return;

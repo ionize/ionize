@@ -5,9 +5,7 @@ ul.autocompleter-choices
 	padding:				0;
 	list-style:				none;
 	border:					1px solid #7c7c7c;
-	border-left-color:		#c3c3c3;
-	border-right-color:		#c3c3c3;
-	border-bottom-color:	#ddd;
+	border-top:none;
 	background-color:		#fff;
 	text-align:				left;
 	font-family:			Verdana, Geneva, Arial, Helvetica, sans-serif;

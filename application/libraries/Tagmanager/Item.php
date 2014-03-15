@@ -71,6 +71,8 @@ class TagManager_Item extends TagManager
 
 	private function _get_items_type_from_parent($definition, $parent, $id_parent, $lang=NULL)
 	{
+		$result = array();
+
 		if (! isset(self::$_ITEMS[$parent]))
 		{
 			self::$ci->load->model('items_model', '', TRUE);
@@ -83,18 +85,24 @@ class TagManager_Item extends TagManager
 			);
 		}
 
-		$result = array();
-
 		foreach ($definition['items'] as $item)
 		{
 			foreach(self::$_ITEMS[$parent] as $lk_item)
 			{
 				if ($lk_item['id_item'] ==  $item['id_item'] && $lk_item['id_parent'] == $id_parent)
 				{
+					// Fix ordering : From parent
+					$item['ordering'] = $lk_item['ordering'];
 					$result[] = $item;
 				}
 			}
 		}
+
+		// Sorting items regarding parent
+		$index = array();
+		foreach ($result as $key => $row)
+			$index[$key]  = $row['ordering'];
+		array_multisort($index, SORT_ASC, $result);
 
 		return $result;
 	}
@@ -280,6 +288,8 @@ class TagManager_Item extends TagManager
 	 */
 	public static function tag_static_items(FTL_Binding $tag)
 	{
+		$return = $tag->getAttribute('return');
+
 		$str = '';
 
 		// Limit ?
@@ -290,24 +300,35 @@ class TagManager_Item extends TagManager
 		// Process the elements
 		if ( ! empty($items))
 		{
-			$count = count($items);
-			$limit = ($limit == FALSE OR $limit > $count) ? $count : $limit;
-
-			$tag->set('count', $limit);
-
-			for($i = 0; $i < $limit; $i++)
+			if (is_null($return))
 			{
-				$item = $items[$i];
+				$count = count($items);
+				$limit = ($limit == FALSE OR $limit > $count) ? $count : $limit;
 
-				// item : One element instance
-				$tag->set('item', $item);
-				$tag->set('index', $i+1);
 				$tag->set('count', $limit);
 
-				$str .= $tag->expand();
-			}
+				for($i = 0; $i < $limit; $i++)
+				{
+					$item = $items[$i];
 
-			$str = self::wrap($tag, $str);
+					// item : One element instance
+					$tag->set('item', $item);
+					$tag->set('index', $i+1);
+					$tag->set('count', $limit);
+
+					$str .= $tag->expand();
+				}
+
+				$str = self::wrap($tag, $str);
+			}
+			else if ($return == 'json')
+			{
+				$str = json_encode($items, TRUE);
+
+				// $str = mb_convert_encoding($str, 'UTF-8', 'UTF-8');
+				// $str = str_replace("'", "&#39;", $str);
+				$str = str_replace("'", "\\'", $str);
+			}
 		}
 
 		return $str;

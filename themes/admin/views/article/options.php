@@ -274,7 +274,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo ${$language['lang']}['meta_description']; ?></textarea>
+						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo $languages[$language['lang']]['meta_description']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 
@@ -298,7 +298,7 @@
 
 					<?php foreach(Settings::get_languages() as $language) :?>
 					<div class="tabcontent">
-						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo ${$language['lang']}['meta_keywords']; ?></textarea>
+						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo $languages[$language['lang']]['meta_keywords']; ?></textarea>
 					</div>
 					<?php endforeach ;?>
 

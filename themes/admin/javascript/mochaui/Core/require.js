@@ -156,10 +156,10 @@ Object.append(Asset, {
 					'type': 'text/css',
 					'href': source
 				}).inject(document.head);
-// Partikule
+				// Partikule
 				if (typeOf(properties.onload) == 'function')
 					properties.onload();
-// /Partikule
+				// /Partikule
 			}.bind(this),
 			onFailure: function(){
 			},
@@ -168,19 +168,29 @@ Object.append(Asset, {
 		}).send();
 	},
 
-	getCSSRule: function(selector){
-		for (var ii = 0; ii < document.styleSheets.length; ii++){
+	getCSSRule: function(selector)
+	{
+		var domain = window.location.host;
+
+		for (var ii = 0; ii < document.styleSheets.length; ii++)
+		{
 			var mySheet = document.styleSheets[ii];
-			var myRules = mySheet.cssRules ? mySheet.cssRules : mySheet.rules;
-			selector=selector.toLowerCase();
-			for (var i = 0; i < myRules.length; i++){
-                // Partikule : check typeOf
-                if (typeOf(myRules[i].selectorText) != 'null')
-                {
-				    if (myRules[i].selectorText.toLowerCase() == selector){
-					    return myRules[i];
-				    }
-                }
+
+			// Avoid check of CSS from other domains
+			if (mySheet.href && (mySheet.href).indexOf(domain) !== -1)
+			{
+				var myRules = typeOf(mySheet.cssRules) != 'null' ? mySheet.cssRules : mySheet.rules;
+
+				selector=selector.toLowerCase();
+				for (var i = 0; i < myRules.length; i++){
+					// Partikule : check typeOf
+					if (typeOf(myRules[i].selectorText) != 'null')
+					{
+						if (myRules[i].selectorText.toLowerCase() == selector){
+							return myRules[i];
+						}
+					}
+				}
 			}
 		}
 		return false;

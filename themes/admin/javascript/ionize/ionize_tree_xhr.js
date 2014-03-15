@@ -268,7 +268,7 @@ ION.TreeXhr = new Class({
 					pm.addEvent('click', this.openclose.bind(this));
 
 				// Make the title draggable : Move page
-				ION.addDragDrop(a, '.dropPageAsLink,.dropPageInArticle', 'ION.dropPageAsLink,ION.dropPageInArticle');
+				ION.addDragDrop(a, '.dropPageAsLink,.dropPageInArticle,.dropPage', 'ION.dropPageAsLink,ION.dropPageInArticle');
 
 				li.inject(container, 'bottom');
 			}
@@ -305,7 +305,7 @@ ION.TreeXhr = new Class({
 				this.treeLine_Model.clone().inject(li, 'top').addClass('line').addClass('node');
 
 				// Make the article name draggable
-				ION.addDragDrop(a, '.folder,.dropArticleAsLink,.dropArticleInPage', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
+				ION.addDragDrop(a, '.folder,.dropArticleAsLink,.dropArticleInPage,.dropArticle', 'ION.dropArticleInPage,ION.dropArticleAsLink,ION.dropArticleInPage');
 
 				// Inject LI at the correct position
 				var lis = container.getChildren('li');

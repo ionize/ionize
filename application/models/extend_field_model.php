@@ -37,6 +37,7 @@ class Extend_field_model extends Base_model
 		'6' => 'Select',
 		'7' => 'Date & Time',
 		'8' => 'Medias',
+		'9' => 'Internal Link',
 	);
 
 	/**

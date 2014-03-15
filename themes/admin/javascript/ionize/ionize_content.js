@@ -45,7 +45,7 @@ ION.append({
 			}).inject($('mainPanel_header'));
 		}
 	
-		if (toolbox_url)
+		if (typeOf(toolbox_url) != 'null')
 		{
 			cb = '';
 			if (onContentLoaded)
@@ -62,6 +62,9 @@ ION.append({
 		else
 		{
 			$('mainPanel_headerToolbox').empty();
+
+			if (typeOf(onContentLoaded) == 'function')
+				onContentLoaded($('mainPanel_headerToolbox'));
 		}
 	},
 
@@ -84,7 +87,7 @@ ION.append({
 
 			MUI.Content.update({
 				element: 'mainPanel_headerToolbox',
-				url: admin_url + 'desktop/get/' + toolbox_url,
+				url: ION.adminUrl + 'desktop/get/' + toolbox_url,
 				method: 'post',
 				data: data,
 				onLoaded: cb

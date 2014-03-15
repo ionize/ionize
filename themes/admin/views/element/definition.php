@@ -71,7 +71,7 @@ $id = $id_element_definition;
 					?>
 
 					<div class="tabcontent">
-						<a class="edit title left" data-id="<?php echo $id ;?>.<?php echo $lang ;?>" title="<?php echo $aTitle ;?>"><?php echo ${$lang}['title'] ;?></a>
+						<a class="edit title left" data-id="<?php echo $id ;?>.<?php echo $lang ;?>" title="<?php echo $aTitle ;?>"><?php echo $languages[$lang]['title'] ;?></a>
 					</div>
 
 				<?php endforeach ;?>

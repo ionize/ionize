@@ -54,7 +54,7 @@
 						<div class="tabcontent <?php echo $lang; ?>">
 					
 							<!-- Label -->
-							<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title" type="text" value="<?php echo ${$lang}['label']; ?>"/>
+							<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
 			
 						</div>
 					<?php endforeach ;?>

@@ -251,14 +251,28 @@ class Article extends MY_admin
 			if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 				require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 
-			$datas = isset($views['article']) ? $views['article'] : array() ;
-			$datas = array('' => lang('ionize_select_default_view')) + $datas; 
-			$this->template['all_article_views'] = $datas;
+			$data = isset($views['article']) ? $views['article'] : NULL ;
+			if ( ! is_null($data))
+			{
+				$data = array('' => lang('ionize_select_default_view')) + $data;
+				$this->template['all_article_views'] = $data;
+			}
+			else
+			{
+				$this->template['all_article_views'] = NULL;
+			}
 
 			// All articles type to template
-			$datas = $this->article_type_model->get_types_select();
-			$datas = array('' => lang('ionize_select_no_type')) + $datas; 
-			$this->template['all_article_types'] = $datas;
+			$data = $this->article_type_model->get_types_select();
+			if ( ! empty($data))
+			{
+				$data = array('' => lang('ionize_select_no_type')) + $data;
+				$this->template['all_article_types'] = $data;
+			}
+			else
+			{
+				$this->template['all_article_types'] = NULL;
+			}
 			
 			// Article's all pages contexts
 			$articles_id = array();

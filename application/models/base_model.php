@@ -2000,8 +2000,8 @@ class Base_model extends CI_Model
 	/**
 	 * Feed the template array with data for each field in language table
 	 *
-	 * @param	array	By ref, the template array
-	 *
+	 * @param $id
+	 * @param $template
 	 */
 	public function feed_lang_template($id, &$template)
 	{
@@ -2009,21 +2009,27 @@ class Base_model extends CI_Model
 		$fields = NULL;
 		$rows = $this->get_lang($id);
 
+		$template['languages'] = array();
+
 		foreach($this->get_languages() as $language)
 		{
 			$lang = $language['lang'];
 
+			$template['languages'][$lang] = array();
+
 			// Feeding of template languages elements
 			foreach($rows as $row)
 			{
+
 				if(isset($row['lang']) && $row['lang'] == $lang)
 				{
-					$template[$lang] = $row;
+					$template['languages'][$lang] = $row;
+					// $template[$lang] = $row;
 				}
 			}
 
-			// Language not defined : Feed with blank data
-			if( ! isset($template[$lang]))
+			// Language empty : Feed with blank data
+			if( empty($template['languages'][$lang]))
 			{
 				// Get lang_table fields if we don't already have them
 				if (is_null($fields))
@@ -2035,9 +2041,9 @@ class Base_model extends CI_Model
 					foreach ($fields as $field)
 					{
 						if ($field != $this->pk_name)
-							$template[$lang][$field] = '';
+							$template['languages'][$lang][$field] = '';
 						else
-							$template[$lang][$this->pk_name] = $id;
+							$template['languages'][$lang][$this->pk_name] = $id;
 					}
 				}
 			}
@@ -2088,6 +2094,8 @@ class Base_model extends CI_Model
 
 		$fields_data = $this->field_data($this->lang_table);
 
+		$template['languages'] = array();
+
 		foreach(Settings::get_languages() as $language)
 		{
 			$lang = $language['lang'];
@@ -2097,7 +2105,7 @@ class Base_model extends CI_Model
 				$field_data = array_values(array_filter($fields_data, create_function('$row', 'return $row["field"] == "'. $field .'";')));
 				$field_data = (isset($field_data[0])) ? $field_data[0] : FALSE;
 
-				$template[$lang][$field] = (isset($field_data['default'])) ? $field_data['default'] : '';
+				$template['languages'][$lang][$field] = (isset($field_data['default'])) ? $field_data['default'] : '';
 			}
 		}
 		return $template;
