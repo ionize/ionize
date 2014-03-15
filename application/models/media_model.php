@@ -655,12 +655,20 @@ class Media_model extends Base_model
 
 		$directory = new RecursiveDirectoryIterator(FCPATH.Settings::get('files_path'), FilesystemIterator::SKIP_DOTS);
 		$fc_length = strlen(FCPATH);
-		$bytestotal = 0;
+		$unused_size = $total_size = $nb_total = 0;
 
 		$tb_str = Settings::get('files_path').'/.thumbs';
 		$tb_length = strlen($tb_str);
 
 		$files = $paths = array();
+
+		$media_paths = array();
+		$medias = $this->get_all();
+
+		foreach($medias as $media)
+		{
+			$media_paths[] = $media['path'];
+		}
 
 		foreach (new RecursiveIteratorIterator($directory) as $filename => $current)
 		{
@@ -668,33 +676,26 @@ class Media_model extends Base_model
 
 			if (substr($path, 0, $tb_length) != $tb_str)
 			{
+				$nb_total += 1;
 				$size = $current->getSize();
-				$paths[] = $path;
-				$files[] = array(
-					'path' => $path,
-					'size' => byte_format($size, 1)
-				);
-				$bytestotal += $size;
-			}
-		}
+				$total_size += $size;
 
-		$medias = $this->get_all();
-
-		foreach($medias as $media)
-		{
-			if (in_array($media['path'], $paths))
-			{
-				foreach (array_keys($paths, $media['path'], true) as $key)
+				if ( ! in_array($path, $media_paths))
 				{
-					unset($paths[$key]);
-					unset($files[$key]);
+					$files[] = array(
+						'path' => $path,
+						'size' => byte_format($size, 1)
+					);
+					$unused_size += $size;
 				}
 			}
 		}
 
 		$return = array(
+			'nb_total' => $nb_total,
+			'size_total' => byte_format($total_size, 2),
 			'files' => $files,
-			'size' => byte_format($bytestotal, 2)
+			'size' => byte_format($unused_size, 2)
 		);
 
 		return $return;

@@ -68,7 +68,7 @@
 		<query>
 			CREATE TABLE IF NOT EXISTS article_lang (
 			  id_article int(11) UNSIGNED NOT NULL DEFAULT 0,
-			  lang varchar(3) NOT NULL DEFAULT '',
+			  lang varchar(8) NOT NULL DEFAULT '',
 			  url VARCHAR( 100 ) NOT NULL DEFAULT '',
 			  title varchar(255) DEFAULT NULL,
 			  subtitle varchar(255) DEFAULT NULL,
@@ -88,7 +88,7 @@
               online tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
 			  ordering int(11) UNSIGNED DEFAULT 9999,
 			  url varchar(255) DEFAULT NULL,
-			  lang_display varchar(3) DEFAULT NULL,
+			  lang_display varchar(8) DEFAULT NULL,
 			  PRIMARY KEY  (id_article,id_media)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
@@ -134,7 +134,7 @@
 			  id_captcha int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  question varchar(255) NOT NULL DEFAULT '',
 			  answer varchar(255) NOT NULL DEFAULT '',
-			  lang varchar(3) NOT NULL DEFAULT '',
+			  lang varchar(8) NOT NULL DEFAULT '',
 			  hash varchar(32) NOT NULL DEFAULT '',
 			  PRIMARY KEY  (id_captcha)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
@@ -152,7 +152,7 @@
 		<query>
 			CREATE TABLE IF NOT EXISTS category_lang (
 			  id_category int(11) UNSIGNED NOT NULL DEFAULT '0',
-			  lang char(3) NOT NULL,
+			  lang varchar(8) NOT NULL,
 			  title varchar(255) NOT NULL DEFAULT '',
 			  subtitle VARCHAR( 255 ) NOT NULL DEFAULT '',
 			  description text NOT NULL,
@@ -187,7 +187,7 @@
 		<query>
 			CREATE TABLE IF NOT EXISTS element_definition_lang (
 			  id_element_definition int(11) UNSIGNED NOT NULL,
-			  lang varchar(3) NOT NULL,
+			  lang varchar(8) NOT NULL,
 			  title varchar(255) NOT NULL DEFAULT '',
 			  PRIMARY KEY  (id_element_definition, lang)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
@@ -211,7 +211,7 @@
 			CREATE TABLE IF NOT EXISTS extend_field (
 				id_extend_field INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 				name varchar(255) NOT NULL,
-				type varchar(1) NOT NULL,
+				type int(3) UNSIGNED NOT NULL,
 				description varchar(255) DEFAULT '',
 				parent varchar(50) NOT NULL,
                 id_parent int(11) UNSIGNED NULL,
@@ -229,7 +229,7 @@
 		<query>
 			CREATE TABLE IF NOT EXISTS extend_field_lang (
 			  id_extend_field int(11) UNSIGNED NOT NULL,
-			  lang char(3) NOT NULL,
+			  lang varchar(8) NOT NULL,
 			  label varchar(255),
 			  PRIMARY KEY  (id_extend_field, lang)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
@@ -240,7 +240,7 @@
 				id_extend_field INT(11) UNSIGNED NOT NULL,
 				parent varchar(50) NOT NULL DEFAULT '',
 				id_parent int(11) UNSIGNED NOT NULL,
-				lang char(3) NOT NULL DEFAULT '',
+				lang varchar(8) NOT NULL DEFAULT '',
 				content text,
 				ordering INT( 11 ) UNSIGNED NOT NULL DEFAULT '0',
 				PRIMARY KEY  (id_extend_fields),
@@ -284,7 +284,7 @@
         <query>
             CREATE TABLE IF NOT EXISTS item_definition_lang (
                 id_item_definition int(11) unsigned NOT NULL,
-                lang varchar(3) NOT NULL DEFAULT '',
+                lang varchar(8) NOT NULL DEFAULT '',
                 title_definition varchar(50) DEFAULT NULL,
                 title_item varchar(50) DEFAULT NULL,
                 PRIMARY KEY (id_item_definition,lang)
@@ -294,7 +294,7 @@
         <query>
             CREATE TABLE IF NOT EXISTS item_lang (
                 id_item int(11) unsigned NOT NULL,
-                lang varchar(3) NOT NULL DEFAULT '',
+                lang varchar(8) NOT NULL DEFAULT '',
                 title int(11) DEFAULT NULL,
                 PRIMARY KEY (id_item,lang)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -312,7 +312,7 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS lang (
-			  lang varchar(3) NOT NULL DEFAULT '',
+			  lang varchar(8) NOT NULL DEFAULT '',
 			  name varchar(40) DEFAULT NULL,
 			  online char(1) DEFAULT '0',
 			  def char(1) DEFAULT '0',
@@ -350,7 +350,7 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS media_lang (
-			  lang varchar(3) NOT NULL DEFAULT '',
+			  lang varchar(8) NOT NULL DEFAULT '',
 			  id_media int(11) UNSIGNED NOT NULL DEFAULT 0,
 			  title varchar(255) DEFAULT NULL,
 			  alt varchar(500) DEFAULT NULL,
@@ -391,7 +391,7 @@
 			  id_module int(11) NOT NULL,
 			  name varchar(50) NOT NULL					COMMENT 'Setting name',
 			  content varchar(255) NOT NULL				COMMENT 'Setting content',	
-			  lang varchar(2) DEFAULT NULL,
+			  lang varchar(8) DEFAULT NULL,
 			  PRIMARY KEY  (id_module_setting) 
 			)   ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
@@ -467,7 +467,7 @@
 
 		<query>
 			CREATE TABLE IF NOT EXISTS page_lang (
-			  lang varchar(3) NOT NULL DEFAULT '',
+			  lang varchar(8) NOT NULL DEFAULT '',
 			  id_page int(11) UNSIGNED NOT NULL DEFAULT 0,
 			  url VARCHAR( 100 ) NOT NULL DEFAULT '',
 			  link VARCHAR( 255 ) NOT NULL DEFAULT '',
@@ -489,7 +489,7 @@
 			  id_media int(11) UNSIGNED NOT NULL DEFAULT 0,
               online tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
               ordering int(11) UNSIGNED DEFAULT 9999,
-  			  lang_display varchar(3) DEFAULT NULL,
+  			  lang_display varchar(8) DEFAULT NULL,
 			  PRIMARY KEY  (id_page,id_media)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
@@ -497,7 +497,7 @@
 		<query>
             CREATE TABLE if NOT exists resource (
             id_resource int(11) NOT NULL AUTO_INCREMENT,
-            id_parent int(11) UNSIGNED DEFAULT '0',
+            id_parent int(11) UNSIGNED DEFAULT NULL,
             resource varchar(255) NOT NULL DEFAULT '',
             actions varchar(500) DEFAULT '',
             title varchar(255) DEFAULT '',
@@ -535,7 +535,7 @@
 			  id_setting int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  name varchar(255) NOT NULL,
 			  content text NOT NULL,
-			  lang varchar(3) NOT NULL DEFAULT '',
+			  lang varchar(8) NOT NULL DEFAULT '',
 			  PRIMARY KEY (id_setting)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
@@ -580,7 +580,7 @@
 			  type varchar(10) NOT NULL,
 			  canonical smallint(1) NOT NULL DEFAULT '0',
 			  active smallint(1) NOT NULL DEFAULT '0',
-			  lang varchar(3) NOT NULL,
+			  lang varchar(8) NOT NULL,
 			  path varchar(255) NOT NULL DEFAULT '',
 			  path_ids varchar(50),
 			  full_path_ids varchar(50),
@@ -699,6 +699,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/element','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/extend','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/filemanager','upload,rename,delete,move',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/medialist','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/menu','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/modules','install',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/modules/permissions','',1)</query>
@@ -738,6 +739,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/permissions/frontend','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/article/tag','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/filemanager','upload,rename,delete,move',1)</query>
+        <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/medialist','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/menu','create,edit,delete',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/modules','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/page','create,edit,delete',1)</query>

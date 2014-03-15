@@ -107,7 +107,7 @@ class Extend_field extends MY_admin
 		{
 			$where['parent'] = $parent;
 		}
-		$where['where_in'] = array('parent'=> array('article','page','media'));
+//		$where['where_in'] = array('parent'=> array('article','page','media'));
 
 		// Returns the extends list ordered by 'ordering' 
 		$extend_fields = $this->extend_field_model->get_lang_list($where, Settings::get_lang('default'));

@@ -880,7 +880,9 @@ class TagManager_Article extends TagManager
 		$paragraph = $tag->getAttribute('paragraph');
 
 		// auto_link
-		$auto_link = $tag->getAttribute('auto_link', TRUE);
+// Removed because of double execution
+// (also done by the Tagmanager)
+//		$auto_link = $tag->getAttribute('auto_link', TRUE);
 
 		// Last part of the URI
 		$uri_last_part = array_pop(explode('/', uri_string()));
@@ -909,8 +911,8 @@ class TagManager_Article extends TagManager
 				$articles[$key]['content'] = tag_limiter($article['content'], 'p', intval($paragraph));
 
 			// Autolink the content
-			if ($auto_link)
-				$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
+//			if ($auto_link)
+//				$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
 
 			// Article's index
 			$articles[$key]['index'] = $index++;

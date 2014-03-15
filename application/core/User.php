@@ -559,6 +559,28 @@ namespace Ionize {
 		// --------------------------------------------------------------------
 
 
+		public function is_at_least($role)
+		{
+			$user_role = $this->get_role();
+			$role_level = NULL;
+
+			if (is_array($role))
+			{
+				if ( ! empty($role['role_level']))
+					$role_level = $role['role_level'];
+				else
+					return FALSE;
+			}
+			else
+			{
+				log_message('app', print_r($user_role, TRUE));
+			}
+		}
+
+
+		// --------------------------------------------------------------------
+
+
 		/**
 		 * Alias for has_role()
 		 *
@@ -570,6 +592,7 @@ namespace Ionize {
 		{
 			if (is_array($role))
 			{
+				// @todo : Rewrite
 
 			}
 			else

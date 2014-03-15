@@ -59,5 +59,24 @@
     <query>alter table extend_field drop id_element_definition;</query>
     <query>alter table extend_field drop parents;</query>
     <query>alter table extend_field drop block;</query>
+    <query>alter table extend_field change type type int(3);</query>
+
+    <!-- Lang alter -->
+    <query>alter table article_lang change lang lang varchar(8);</query>
+    <query>alter table article_media change lang_display lang_display varchar(8);</query>
+    <query>alter table captcha change lang lang varchar(8);</query>
+    <query>alter table element_definition_lang change lang lang varchar(8);</query>
+    <query>alter table extend_field_lang change lang lang varchar(8);</query>
+    <query>alter table extend_fields change lang lang varchar(8);</query>
+    <query>alter table item_definition_lang change lang lang varchar(8);</query>
+    <query>alter table item_lang change lang lang varchar(8);</query>
+    <query>alter table lang change lang lang varchar(8);</query>
+    <query>alter table media_lang change lang lang varchar(8);</query>
+    <query>alter table module_setting change lang lang varchar(8);</query>
+    <query>alter table page_lang change lang lang varchar(8);</query>
+    <query>alter table page_media change lang_display lang_display varchar(8);</query>
+    <query>alter table setting change lang lang varchar(8);</query>
+    <query>alter table url change lang lang varchar(8);</query>
+
 
 </sql>
