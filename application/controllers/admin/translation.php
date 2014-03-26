@@ -19,7 +19,32 @@ class Translation extends MY_admin
 		'% Lang.get\(([-_ \w:\']+?)\)%'
 	);
 
-	private $modules_terms = NULL;
+    /**
+     * Translation Terms
+     *
+     * @var null
+     */
+    private $terms = NULL;
+
+    /**
+     * Maximum length of form text input element.
+     * Text longer than this is entered in a textarea.
+     *
+     */
+    static private $textarea_line_break = 60;
+    static private $textarea_rows = 3;
+
+    /**
+     * Language Files array
+     *
+     * @var array
+     */
+    protected $lang_files = array();
+
+    /**
+     * Default Translation Lang Code
+     */
+    protected $default_lang_code;
 	
 
 	/**
@@ -29,85 +54,215 @@ class Translation extends MY_admin
 	public function __construct()
 	{
 		parent::__construct();
-	}
 
+        $this->load->model('config_model', '', TRUE);
+
+        self::_check_default_lang_code();
+	}
 
 	// ------------------------------------------------------------------------
 
+    /**
+     * Controller Index
+     */
+    function index()
+	{
+        $this->output('translation/index');
+	}
+
+	// ------------------------------------------------------------------------
+
+    /**
+     * Welcome Message
+     */
+    function welcome()
+    {
+        $this->template['default_lang_code'] = $this->default_lang_code;
+
+        $this->output('translation/welcome');
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Get Language File List
+     */
+    function get_list()
+    {
+        self::get_lang_files();
+
+        $this->template['lang_files'] = $this->lang_files;
+
+        $this->output('translation/list');
+    }
+
+    // ------------------------------------------------------------------------
 
 	/**
-	 * Shows standard settings
+     * Edit Language File
 	 *
 	 */
-	function index()
+    function edit()
+    {
+        $default_lang = Settings::get_lang('default');
+        $type = $this->input->post('type');
+        $path = $this->input->post('path');
+        $lang_path = $this->input->post('lang_path');
+        $filename = $this->input->post('filename');
+
+        if(  ! is_null($type) &&  ! is_null($path) && ! is_null($lang_path) && ! is_null($filename) )
 	{
-		// All terms
-		$this->template['terms'] = $terms = array();
+            $items = array();
 
-		// Get terms from views files
-		$theme_terms = $this->_get_terms_from_theme();
+            $this->load->helper('file');
 
-		// Get translated items from theme languages files
-		$theme_translations = $this->_get_theme_translations();
+            /**
+             * If default language file not exist try to create
+             */
 
-		// Get terms form installed modules
-		$modules_terms = $this->_get_terms_from_modules();
+            // $terms = self::_get_terms($path);
+
+            // Read the template language directory
+            foreach(Settings::get_languages() as $language)
+            {
+                $lang_code = $language['lang'];
+                $items[$lang_code] = array();
 		
-		// Get translations for installed languages
-		$module_translations = $this->_get_modules_translations();
+                // Translation file name. Named [theme_name]_lang.php
+                $file = $lang_path . $lang_code . DIRECTORY_SEPARATOR . $filename;
 		
-		// Get, for each module, the lang codes for which a default translation file exists
-		$module_translation_files = $this->_get_modules_translation_files();
+                // Include the file if it exists
+                if ( file_exists($file) )
+                {
+                    $lang = array();
+                    include($file);
 		
-		if ( ! empty($theme_terms['term']))
+                    if ( ! empty($lang))
 		{
-			$terms = array_fill_keys($theme_terms['term'],'');
+                        $items[$lang_code] = $lang;
 		}
+                }
 
-		// Add terms from lang file to the terms in views
-		if ( ! empty($theme_translations[Settings::get_lang('default')]))
+                if(! file_exists($file))
+                {
+                    $source_file = $lang_path . $default_lang . DIRECTORY_SEPARATOR . $filename;
+                    $destination_path = $lang_path . $lang_code . DIRECTORY_SEPARATOR;
+                    $lfile = $lang_path . $lang_code . DIRECTORY_SEPARATOR . $filename;
+
+                    if(@mkdir($destination_path, 0777, TRUE))
 		{
-			// Simple array of all terms
-			$terms = array_keys(array_merge($terms, $theme_translations[Settings::get_lang('default')]));
+                        if(@copy($source_file, $lfile))
+                        {
+                            $lang = array();
+
+                            include($lfile);
+
+                            if ( ! empty($lang))
+                            {
+                                $items[$lang_code] = $lang;
+                            }
+                        }
+                        else
+                        {
+                            // @TODO Add translation term...
+                            $this->error("File copy failed to '$source_file' => '$lfile' please check folder permissions !");
+                        }
+                    }
+                    else
+                    {
+                        // @TODO Add translation term...
+                        $this->error("Could not create '$file' please check file permissions !");
+                    }
+                }
+
+            }
+
+            $this->load->helper('text');
+
+            // Default Translation Language
+            $this->template['default_lang_code'] = $this->default_lang_code;
+
+            $this->template['filename'] = $filename;
+            $this->template['path'] = $path;
+            $this->template['lang_path'] = $lang_path;
+            $this->template['type'] = $type;
+
+            $file = array(
+                'filename' => $filename,
+                'path' => $path,
+                'lang_path' => $lang_path,
+                'type' => $type
+            );
+
+            $this->template['textarea_line_break'] = self::$textarea_line_break;
+            $this->template['textarea_rows'] = self::$textarea_rows;
+
+            $this->template['items'] = self::_compare_items($items, $file);
+            $this->template['languages'] = self::_order_languages_by_default();
+
+            $this->output('translation/edit');
 		}
 		else
 		{
-			$terms = array_keys($terms);
+            // @TODO Return Error Message
+            $this->error("type, path, lang_path, filename missing...");
+            return;
 		}
 		
-		// Natural case sorted
-		natcasesort($terms);
+    }
 
-		if ( ! empty($terms))
+    // ------------------------------------------------------------------------
+
+    /**
+     * Compare Translation Files for missing terms
+     *
+     * @param array $items
+     * @param array $file
+     * @return array
+     */
+    function _compare_items($items = array(), $file=array())
+    {
+        /**
+         * Check if wanted file is "theme_lang.php", add missing view terms data to "$items"
+         */
+        if( $file['type'] == 'theme' && $file['filename'] == 'theme_lang.php' )
 		{
-			foreach(Settings::get_languages() as $language)
+            $view_terms = self::_get_terms_from_theme();
+
+            $items[$this->default_lang_code] += $view_terms['terms'];
+            $items['views'] = $view_terms['views'];
+        }
+        else
 			{
-				$lang = $language['lang'];
+            $items['views'] = array();
+        }
 				
-				// Merge
-				if ( ! empty($theme_translations[$lang]))
-					$theme_translations[$lang] = array_merge($terms, $theme_translations[$lang]);
 				
-				foreach($terms as $term)
+        if( ! empty($items) )
 				{
-					if ( ! empty($theme_translations[$lang][$term]))
-						$theme_translations[$lang][$term] = stripslashes($theme_translations[$lang][$term]);
-					else
-						$theme_translations[$lang][$term] = '';						
+            foreach(Settings::get_languages() as $key => $lang)
+            {
+                if($lang['lang'] != $this->default_lang_code)
+                {
+                    // Compare "default lang" data with "current lang" data
+                    $compare = array_diff_key($items[$this->default_lang_code], $items[$lang['lang']]);
+                    $items[$lang['lang']] = array_merge($compare, $items[$lang['lang']]);
+                    ksort($items[$lang['lang']]);
+
+                    // Compare "current lang" data with "default lang" data
+                    $compare = array_diff_key($items[$lang['lang']], $items[$this->default_lang_code]);
+                    $items[$this->default_lang_code] = array_merge($compare, $items[$this->default_lang_code]);
+                    ksort($items[$this->default_lang_code]);
 				}
 			}
 		}
+        else
+        {
+            log_message('ERROR', 'Items is empty !');
+        }
 
-		$this->template['terms'] = $terms;
-		$this->template['theme_terms'] = $theme_terms;
-		$this->template['theme_translations'] = $theme_translations;
-		$this->template['modules_terms'] = $modules_terms;
-		$this->template['module_translations'] = $module_translations;
-		$this->template['module_translation_files'] = $module_translation_files;
-
-		$this->output('lang/translation');
+        return $items;
 	}
-
 
 	// ------------------------------------------------------------------------
 
@@ -120,7 +275,13 @@ class Translation extends MY_admin
 		// Clear the cache
 		Cache()->clear_cache();
 
-		$file_name = strtolower($this->input->post('file_name'));
+        // URL helper
+        $this->load->helper('url');
+
+        $filename       = $this->input->post('filename');
+        $path           = $this->input->post('path');
+        $lang_path      = $this->input->post('lang_path');
+        $type           = $this->input->post('type');
 
 		$error = FALSE;
 
@@ -129,7 +290,7 @@ class Translation extends MY_admin
 			$lang = $language['lang'];
 
 			// Creates the lang folder if it doesn't exists
-			$path = FCPATH.'themes/'.Settings::get('theme').'/language/'.$lang;
+            $path = $lang_path . $lang;
 
 			if ( ! is_dir($path) )
 			{
@@ -150,7 +311,7 @@ class Translation extends MY_admin
 				{
 					$idx = substr($key,4);
 					
-					$term = $_REQUEST[$key];
+                    $term = url_title($_REQUEST[$key], 'underscore');;
 
 					if ($term != '')
 					{
@@ -173,14 +334,14 @@ class Translation extends MY_admin
 			$data .= "\n".'?'.'>';
 
 			// Try writing the language file
-			$file = $path.'/'.$file_name.'_lang.php';
+            $file = $path . DIRECTORY_SEPARATOR . $filename;
 
 			if ( ! file_exists($file))
 				write_file($file, $data);
 
 			if ( ! is_really_writable($file))
 			{
-				$this->error(lang('ionize_message_message_no_write_rights'). ' : ' . Settings::get('theme').'/language/'. $lang . '/' .$file_name.'_lang.php');
+                $this->error(lang('ionize_message_message_no_write_rights'). ' : ' . $file);
 				$error = TRUE;
 			}
 			else
@@ -191,93 +352,145 @@ class Translation extends MY_admin
 
 		if ( ! $error)
 		{
-			$this->update[] = array(
-				'element' => 'mainPanel',
-				'url' => admin_url() . 'translation',
-				'title' => lang('ionize_title_translation')
+            $this->callback = array(
+                array(
+                    'fn' => 'ION.HTML',
+                    'args' => array(
+                        'translation/edit',
+                        array(
+                            'type' => $type,
+                            'filename' => $filename,
+                            'path' => $path,
+                            'lang_path' => $lang_path
+                        ),
+                        array(
+                            'update' => 'splitPanel_mainPanel_pad'
+                        )
+                    )
+                )
 			);
 
 			$this->success(lang('ionize_message_language_files_saved'));
 		}
 	}
 	
-	
 	// ------------------------------------------------------------------------
 
-	
-	function save_module_translations()
+    /**
+     * Get Modules Language File List
+     */
+    function get_lang_files()
 	{
-		// Clear the cache
-		Cache()->clear_cache();
+        $this->lang_files +=  self::_get_lang_files('theme');
+        $this->lang_files += self::_get_module_lang_files();
 
-		$module = $this->input->post('module');
+        /**
+            $this->lang_files +=  self::_get_lang_files('application');
 		
-		foreach(Settings::get_languages() as $language)
-		{
-			$lang = $language['lang'];
+            $this->lang_files += self::_get_lang_files('system');
+         */
 
-			// Creates the lang folder if it doesn't exists
-			$path = FCPATH.'themes/'.Settings::get('theme').'/language/'.$lang;
+        return;
+    }
+    // ------------------------------------------------------------------------
 
-			if ( ! is_dir($path) )
+    /**
+     * Get Modules Language File List
+     *
+     * @param null $type | "theme", "application", "system"
+     */
+    function _get_lang_files($type=NULL)
 			{
-				try {	
-					@mkdir($path, 0777, TRUE);
-				}
-				catch (Exception $e) {
-					$this->error(lang('ionize_message_language_dir_creation_fail'));
-				}
-			}
+        $path = NULL;
+        $lang = $this->default_lang_code;
 
-			// Build the file data
-			$data  = "<?php\n\n";
-
-			foreach($_REQUEST as $key => $value)
+        if( ! is_null($type) )
 			{
-				if (substr($key, 0, 3) == 'key')
+            switch($type)
 				{
-					$idx = substr($key,4);
+                case 'theme':
+                    $path = FCPATH . 'themes' . DIRECTORY_SEPARATOR . Settings::get('theme') . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    break;
+                case 'application':
+                    $path = FCPATH . 'application' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    break;
+                case 'system':
+                    $path = FCPATH . 'system' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    break;
+            }
 					
-					$term = $_REQUEST[$key];
+            if( ! is_null($path) && file_exists($path) )
+            {
+                // Theme static translations
+                $language_files = glob($path . '*_lang.php');
 					
-					if ($term != '')
-					{
-						$value = $_REQUEST[str_replace(' ', '_', 'value_'.$lang.'_'.$idx)];
+                $lfiles[$type] = array(
+                    'title' => lang('ionize_title_translation_' . $type),
+                    'type'  => $type,
+                    'files' => array()
+                );
 						
-						if ( ! get_magic_quotes_gpc())
+                foreach($language_files as $key => $lf)
 						{
-							$value = addslashes($value);
+                    $lfiles[$type]['files'][] = array(
+                        'path' => $lf,
+                        'lang_path' => str_replace($lang . DIRECTORY_SEPARATOR, '', $path),
+                        'filename' => str_replace($path, '', $lf)
+                    );
 						}
-						$value = str_replace("\\'", "'", $value);
 						
-						$data .= "\$lang['".$term."'] = \"".$value."\";\n"; 
+                return $lfiles;
 					}
+            else
+            {
+                // @TODO Add translation term...
+                log_message('ERROR', 'Missing language file or path !');
+                $this->error("We don't have a path !");
+                // $this->response();
+                return;
 				}
 			}
-			
-			// Finish the file data
-			$data .= "\n".'?'.'>';
-
-			// Try writing the language file
-			try  {
-				write_file($path.'/theme_lang.php', $data);
-			}
-			catch (Exception $e) {
-				$this->error(lang('ionize_message_language_file_creation_fail'));
+        else
+        {
+            // @TODO Add translation term...
+            $this->error("We don't have a type !");
+            // $this->response();
+            return;
 			}			
 		}
 
-		$this->update[] = array(
-			'element' => 'mainPanel',
-			'url' => admin_url() . 'translation',
-			'title' => lang('ionize_title_translation')
+    // ------------------------------------------------------------------------
+
+    /**
+     * Get Modules Language Files
+     */
+    function _get_module_lang_files()
+    {
+        $paths['module'] = array(
+            'title' => lang('ionize_title_translation_module'),
+            'type'  => 'module',
+            'files' => array()
 		);
 		
-		// If method arrives here, everything was OK
-		$this->success(lang('ionize_message_language_files_saved'));
+        $lang = $this->default_lang_code;
+
+        $installed_modules = Modules()->get_installed_modules();
+
+        foreach($installed_modules as $key => $imodule)
+        {
+            // Module Language Folder Path
+            $mlpath = $imodule['path'] . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . strtolower($key) . '_lang.php';
 	
+            if( file_exists($mlpath) )
+                $paths['module']['files'][] = array(
+                    'path' => $mlpath,
+                    'lang_path' => str_replace($lang . DIRECTORY_SEPARATOR . strtolower($key) . '_lang.php', '', $mlpath),
+                    'filename' => strtolower($key) . '_lang.php'
+                );
 	}
 	
+        return $paths;
+    }
 
 	// ------------------------------------------------------------------------
 
@@ -305,12 +518,12 @@ class Translation extends MY_admin
 		
 		// Returned items array
 		$items = array (
-			'term' => array(),		// array of terms and their translations
+			'terms' => array(),		// array of terms and their translations
 			'views' => array()		// array of view in which each term appears, key : term
 		);
 		
 		// Get the modules term as a flat array of terms
-		$modules_data = $this->_get_terms_from_modules();
+		$modules_data = $this->_get_all_terms();
 		$modules_terms = array();
 		foreach($modules_data as $module => $terms)
 		{
@@ -346,8 +559,8 @@ class Translation extends MY_admin
 										$items['views'][$term][] = $file->getFilename();
 		
 									// Add the term to the term array
-									if ( ! in_array($term, $items['term']))
-										$items['term'][] = $term;
+									if ( ! in_array($term, $items['terms']))
+										$items['terms'][$term] = '';
 								}
 							}
 						}
@@ -366,9 +579,10 @@ class Translation extends MY_admin
 		return $items;
 	}
 	
+    // ------------------------------------------------------------------------
 	
 	/**
-	 * Get the array of items to translate, per module
+     * Get the array of items to translate, per module, theme translation files
 	 *
 	 * @notice	The english translation file is the reference 
 	 *			and MUST exist for each module
@@ -379,35 +593,34 @@ class Translation extends MY_admin
 	 *					)
 	 *
 	 */
-	function _get_terms_from_modules()
+    function _get_all_terms()
 	{
-		if ( ! is_null($this->modules_terms))
+        if ( ! is_null($this->terms))
 		{
-			return $this->modules_terms;
+            return $this->terms;
 		}
 		
 		$items = array();
 		
-		// Installed Modules : includes the $modules var
-		require(APPPATH.'config/modules.php');
+        $module_lang_files  = self::_get_module_lang_files();
+        $theme_lang_files   = self::_get_lang_files('theme');
 		
-		// Sort modules by name
-		natcasesort($modules);
+        $lang_files = array_merge($module_lang_files, $theme_lang_files);
 
-		// Modules languages files : Including. Can be empty
-		foreach($modules as $module)
+        foreach($lang_files as $lang_file)
+        {
+            foreach($lang_file['files'] as $file)
 		{
-			$file = MODPATH.$module.'/language/en/'.strtolower($module).'_lang.php';
-			
 			// Include the $lang var of the translation file
-			if (is_file($file))
+                if (is_file($file['path']))
 			{
 				$lang = array();
-				include($file);
+                    include($file['path']);
 	
 				if ( ! empty($lang))
 				{
-					$items[$module] = array_keys($lang);
+                        $items[str_replace('_lang.php', '', $file['filename'])] = array_keys($lang);
+                    }
 				}
 			}
 		}
@@ -416,153 +629,64 @@ class Translation extends MY_admin
 
 	}
 	
+    // ------------------------------------------------------------------------
 		
 	/**
-	 * Returns Modules translations
-	 *
-	 * @return	array	Modules translation, by module
-	 * 					Array(
-	 *						<module_name> => Array (
-	 *							<term> => Array (
-	 *								<lang_code> => Array (
-	 *									'default' => <translation>
-	 *									'theme' => <translation>
-	 *								)
-	 *							)
-	 *						)
-	 *					)
+     * Set Default Translation Language Code
 	 */
-	function _get_modules_translations()
+    function set_default_lang_code()
 	{
-		// Theme views folder
-		$theme_path = FCPATH.'themes/'.Settings::get('theme').'/language/';
+        if ($this->config_model->change('language.php', 'default_translation_lang_code', $this->input->post('default_translation_lang_code')) == FALSE)
+            $this->error(lang('ionize_message_error_writing_ionize_file'));
 
-		$modules_data = $this->_get_terms_from_modules();
+        // Answer
+        $this->success(lang('ionize_message_operation_ok'));
+    }
 
-		$items = array();
+    // ------------------------------------------------------------------------
 
-		foreach($modules_data as $module => $terms)
+    /**
+     * Check Default Language Code
+     */
+    function _check_default_lang_code()
 		{
-			$items[$module] = array();
+        $default_lang_code = config_item('default_translation_lang_code');
 			
-			// Try to get the module translation file
-			foreach(Settings::get_languages() as $language)
-			{
-				// Init the translations arrays for this lang
-				$theme_lang = $module_lang = array();
-
-				// Default translation file for this language (if exists)
-				$module_file = MODPATH.$module.'/language/'.$language['lang'].'/'.strtolower($module).'_lang.php';
-				
-				// Theme translation file for this module
-				$theme_file = $theme_path.$language['lang'].'/module_'.strtolower($module).'_lang.php';
-				
-				// Feed $module_lang and theme_lang
-				if (is_file($module_file))
+        if( ! empty($default_lang_code) )
 				{
-					// Get the module $lang var
-					$lang = array();
-					include($module_file);
-					$module_lang = $lang;
+            $this->default_lang_code = $default_lang_code;
 				}
-				
-				if (is_file($theme_file))
+        else
 				{
-					// Get the theme $lang var
-					$lang = array();
-					include($theme_file);
-					$theme_lang = $lang;
-				}
+            $this->default_lang_code = Settings::get_lang('default');
 			
-				// Build the $items array
-				foreach($terms as $term)
-				{
-					$items[$module][$term][$language['lang']] = array
-					(
-						'default' => (!empty($module_lang[$term])) ? $module_lang[$term] : '',
-						'theme' => (!empty($theme_lang[$term])) ? $theme_lang[$term] : ''
-					);
+            $this->config_model->change('language.php', 'default_translation_lang_code', $this->default_lang);
 				}
 			}
-		}
-		
-		return $items;
-	}
-	
-	
 	
 	// ------------------------------------------------------------------------
 
-
 	/**
-	 * Gets already translated items from language files
+     * Re-Order "Settings::get_languages()" by default translation language code
 	 *
-	 * @return	array	Array of already translated terms
-	 *
+     * @return array
 	 */
-	function _get_theme_translations()
+    function _order_languages_by_default()
 	{
-		$items = array();
+        $languages = array();
 	
-		$this->load->helper('file');
+        $i = 1;
 
-		// Theme folder
-		$path = FCPATH.'themes/'.Settings::get('theme');
-
-		// Read the template language directory
-		foreach(Settings::get_languages() as $language)
+        foreach(Settings::get_languages() as $key => $lang)
 		{
-			$lang_code = $language['lang'];
-			$items[$lang_code] = array();
-			
-			// Translation file name. Named [theme_name]_lang.php
-			$file = $path.'/language/'.$lang_code.'/theme_lang.php';
-
-			// Include the file if it exists
-			if (file_exists($file))
-			{
-				$lang = array();
-				include($file);
-
-				if ( ! empty($lang))
-				{
-					$items[$lang_code] = $lang;
+            if($lang['lang'] == $this->default_lang_code)
+                $languages[0] = $lang;
+            else
+                $languages[$i++] = $lang;
 				}
-			}
-		}
-		return $items;
-	}	
 	
-	
-	function _get_modules_translation_files()
-	{
-		$data = array();
-		
-		// Installed Modules : includes the $modules var
-		require(APPPATH.'config/modules.php');
-		
-		// Sort modules by name
-		natcasesort($modules);
+        ksort($languages);
 
-		// Modules languages files : Including. Can be empty
-		foreach($modules as $module)
-		{
-			$paths = glob(MODPATH.$module.'/language/*/');
-
-			if (is_array($paths))
-			{
-				foreach($paths as $path)
-				{
-					if (is_file($path.strtolower($module).'_lang'.EXT))
-					{
-						$path = substr($path, 0, -1);
-						$data[$module][] = array_pop(explode('/', $path));
-					}
-					
-				}
-			}
-		}
-
-		return $data;
+        return $languages;
 	}
 }
