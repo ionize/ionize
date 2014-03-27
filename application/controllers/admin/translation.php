@@ -381,7 +381,14 @@ class Translation extends MY_admin
      */
     function get_lang_files()
 	{
+        $theme_translations = self::_get_lang_files('theme');
+
+        if( ! empty($theme_translations) )
         $this->lang_files +=  self::_get_lang_files('theme');
+
+        $module_translations = self::_get_module_lang_files();
+
+        if( ! empty($module_translations) )
         $this->lang_files += self::_get_module_lang_files();
 
         /**
@@ -445,9 +452,9 @@ class Translation extends MY_admin
             {
                 // @TODO Add translation term...
                 log_message('ERROR', 'Missing language file or path !');
-                $this->error("We don't have a path !");
+                // $this->error("We don't have a path !");
                 // $this->response();
-                return;
+                // return;
 				}
 			}
         else
@@ -660,7 +667,7 @@ class Translation extends MY_admin
 				{
             $this->default_lang_code = Settings::get_lang('default');
 			
-            $this->config_model->change('language.php', 'default_translation_lang_code', $this->default_lang);
+            $this->config_model->change('language.php', 'default_translation_lang_code', $this->default_lang_code);
 				}
 			}
 	
