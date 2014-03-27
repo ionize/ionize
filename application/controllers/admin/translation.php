@@ -383,19 +383,29 @@ class Translation extends MY_admin
 	{
         $theme_translations = self::_get_lang_files('theme');
 
-        if( ! empty($theme_translations) )
-        $this->lang_files +=  self::_get_lang_files('theme');
+        if( ! empty($theme_translations) ) {
+            $this->lang_files += $theme_translations;
+        }
 
         $module_translations = self::_get_module_lang_files();
 
-        if( ! empty($module_translations) )
-        $this->lang_files += self::_get_module_lang_files();
+        if( ! empty($module_translations) ) {
+            $this->lang_files += $module_translations;
+        }
 
         /**
-            $this->lang_files +=  self::_get_lang_files('application');
+            $application_translations = self::_get_lang_files('application');
+
+            if( ! empty($application_translations) ) {
+                $this->lang_files += $application_translations;
+            }
 		
-            $this->lang_files += self::_get_lang_files('system');
-         */
+            $system_translations = self::_get_lang_files('system');
+
+            if( ! empty($system_translations) ) {
+                $this->lang_files += $system_translations;
+            }
+         **/
 
         return;
     }
@@ -460,9 +470,9 @@ class Translation extends MY_admin
         else
         {
             // @TODO Add translation term...
-            $this->error("We don't have a type !");
+            log_message('ERROR', "We don't have a type !");
+            // $this->error("We don't have a type !");
             // $this->response();
-            return;
 			}			
 		}
 
