@@ -69,8 +69,6 @@ class Picture extends Base_Controller
 						$thumb_file_path,
 						$options
 					);
-					log_message('app', print_r($thumb_file_path, TRUE));
-
 				}
 				catch(Exception $e)
 				{

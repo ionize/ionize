@@ -177,7 +177,6 @@ class TagManager_Page extends TagManager
 				{
 					$paths = explode('/', $entity['path_ids']);
 					$id_page = $paths[count($paths)-2];
-					
 					$page = self::get_page_by_id($id_page);
 				}
 

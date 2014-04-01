@@ -9,8 +9,9 @@
 
 <?php foreach($parents as $parent) :?>
 
-	<h3><?php echo ucfirst($parent); ?></h3>
+	<h3 class="toggler extend-list"><?php echo ucfirst($parent); ?></h3>
 
+	<div class="element extend-list">
 	<ul id="efContainer<?php echo $parent?>" class="efContainer" style="clear:both;overflow:hidden;" data-parent="<?php echo $parent?>">
 	
 		<?php foreach($extend_fields as $extend) :?>
@@ -21,7 +22,6 @@
 				<?php if(Authority::can('delete', 'admin/extend')) :?>
 					<a class="icon delete right" data-id="<?php echo $extend['id_extend_field']; ?>"></a>
 				<?php endif;?>
-				<?php if($extend['global'] == '1') :?><span class="right lite mr10"><?php echo lang('ionize_label_extend_field_global'); ?></span><?php endif ;?>
 				<span class="icon left drag"></span>
 				<a class="left ml5 edit" data-id="<?php echo $extend['id_extend_field']; ?>" title="<?php echo lang('ionize_title_element_field_edit') ?> : <?php echo $extend['label']; ?>"><?php echo $extend['name']; ?> | <?php echo $extend['label']; ?></a>
 			</li>
@@ -31,6 +31,7 @@
 		<?php endforeach ;?>
 	
 	</ul>
+		</div>
 
 <?php endforeach ;?>
 
@@ -61,12 +62,23 @@
 						'extendfield' + id,
 						'extendfieldForm'+id,
 						'<?php echo lang('ionize_title_extend_field'); ?>',
-						'extend_field/edit/' + id,
-						{width: 500, height: 350}
+						'extend_field/edit',
+						{width: 500, height: 350},
+						{
+							id_extend_field: id
+						}
 					);
 				});
 			});
 		<?php endif;?>
 	});
+
+	ION.initAccordion(
+		'.toggler.extend-list',
+		'.element.extend-list',
+		true,
+		'extendListAccordion'
+	);
+
 
 </script>

@@ -577,7 +577,8 @@ class TagManager_Navigation extends TagManager
 	 */
 	public static function tag_languages(FTL_Binding $tag)
 	{
-		$languages = Settings::get_online_languages();
+		$languages = (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1) ? Settings::get_languages() : Settings::get_online_languages();
+
 		$page = self::registry('page');
 		$article = self::registry('article');
 
@@ -593,38 +594,61 @@ class TagManager_Navigation extends TagManager
 
 		foreach($languages as $idx => &$lang)
 		{
-			// Correct the Home page URL
-			if ($page['home'] != 1 )
-				$lang['absolute_url'] =	! empty($page['absolute_urls'][$lang['lang']]) ? $page['absolute_urls'][$lang['lang']] : base_url() . $lang['lang'];
-			else
-				$lang['absolute_url'] = base_url() . $lang['lang'];
+			$lang_code = $lang['lang'];
+			$p_data = $page['languages'][$lang_code];
 
-			$lang['active_class'] = ($lang['lang'] == Settings::get_lang('current')) ? $active_class : '';
-			$lang['is_active'] = $lang['lang'] == Settings::get_lang('current');
-			$lang['id'] = $lang['lang'];
+			// Correct the Home page URL
+			if ($p_data['online'] == 1 OR ($p_data['online'] == 0 && Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1))
+			{
+				if ($page['home'] != 1 )
+					$lang['absolute_url'] =	! empty($page['absolute_urls'][$lang_code]) ? $page['absolute_urls'][$lang_code] : base_url() . $lang_code;
+				else
+					$lang['absolute_url'] = base_url() . $lang_code;
+			}
+			else
+			{
+				$lang['absolute_url'] = NULL;
+			}
+
+			$lang['active_class'] = ($lang_code == Settings::get_lang('current')) ? $active_class : '';
+			$lang['is_active'] = $lang_code == Settings::get_lang('current');
+			$lang['id'] = $lang_code;
 
 			if ( ! is_null($article))
 			{
-				if ($page['home'] != 1 )
-					$lang['absolute_url'] .= '/'.$article['urls'][$lang['lang']];
+				$a_data = $article['languages'][$lang_code];
+				if (
+					! is_null($a_data['url']) && $a_data['online'] == 1
+					OR ($a_data['online'] == 0 && Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1)
+				)
+				{
+					if ($page['home'] != 1 )
+					{
+						$lang['absolute_url'] .= '/'. $a_data['url'];
+					}
+					else
+						$lang['absolute_url'] .= '/'.$page['urls'][$lang_code].'/'.$a_data['url'];
+				}
 				else
-					$lang['absolute_url'] .= '/'.$page['urls'][$lang['lang']].'/'.$article['urls'][$lang['lang']];
+				{
+					$lang['absolute_url'] = NULL;
+				}
 			}
 
 			// Tag locals
 			$tag->set('language', $lang);
-			$tag->set('id', $lang['lang']);
+			$tag->set('id', $lang_code);
 			$tag->set('absolute_url', $lang['absolute_url']);
 			$tag->set('active_class', $lang['active_class']);
 			$tag->set('is_active', $lang['is_active']);
 			$tag->set('index', $idx);
 
-			if (Authority::can('access', 'admin') OR $lang['online'] == 1)
+			if ( ! is_null($lang['absolute_url']))
 				$str .= $tag->expand();
 		}
 
 		// Try to return the helper function result
-		if ( ! is_null($helper))
+		if ( $str != '' && ! is_null($helper))
 		{
 			$helper_function = (substr(strrchr($helper, ':'), 1 )) ? substr(strrchr($helper, ':'), 1 ) : 'get_language_navigation';
 			$helper = (strpos($helper, ':') !== FALSE) ? substr($helper, 0, strpos($helper, ':')) : $helper;

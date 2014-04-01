@@ -48,9 +48,6 @@ ION.Notify = new Class({
 			if (typeOf(this.options.type) == 'null') this.options.type = 'info';
 			if (typeOf(this.options.className) == 'null') this.options.className = '';
 
-//			if ( this.box = this.contentEl.getElement('.mochaContentNotify'))
-//				this.box.getParent('div').destroy();
-
 			this.box = new Element('div', {
 				'class': this.options.className + ' contentNotify mochaContentNotify ' + this.options.type,
 				'data-type': this.options.type
@@ -63,7 +60,6 @@ ION.Notify = new Class({
 				'class':'icon close white'}
 			).setStyles({'position':'absolute', 'right':'7px', 'top':'7px'})
 			.inject(this.box, 'top')
-		//	.set('text', 'X')
 			.addEvent('click', function(e){
 				e.stop();
 				self.destroy();

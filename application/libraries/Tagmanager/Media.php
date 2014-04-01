@@ -104,22 +104,41 @@ class TagManager_Media extends TagManager
 		{
 			$filtered_medias = array();
 
+			$types = array();
+
+			if (strpos($type, ',') !== FALSE)
+			{
+				$types = preg_replace('/\s+/', '', $type);
+				$types = explode(',', $types);
+				foreach($types as $k=>$t)
+					if (empty($t))
+						unset($types[$k]);
+			}
+			else
+			{
+				$types = array($type);
+			}
+
+
 			if ( ! empty($medias))
 			{
 				// First get the correct media type
 				// filter by type
 				foreach($medias as $media)
 				{
-					if ($media['type'] == $type && ($i < $limit OR is_null($limit)) )
+					foreach($types as $type)
 					{
-						// Only filter on lang if lang_display is set for the media
-						if ( ! empty($media['lang_display']))
+						if ($media['type'] == $type && ($i < $limit OR is_null($limit)) )
 						{
-							if ($media['lang_display'] == Settings::get_lang('current'))
-								$filtered_medias[] = $media;						
+							// Only filter on lang if lang_display is set for the media
+							if ( ! empty($media['lang_display']))
+							{
+								if ($media['lang_display'] == Settings::get_lang('current'))
+									$filtered_medias[] = $media;
+							}
+							else
+								$filtered_medias[] = $media;
 						}
-						else
-							$filtered_medias[] = $media;
 					}
 				}
 				
@@ -235,7 +254,25 @@ class TagManager_Media extends TagManager
 		$where = array('order_by' => $order_by);
 
 		// Add type / limit to the where array
-		if ( ! is_null($type)) $where['type'] = 'picture';
+		if ( ! is_null($type))
+		{
+			if (strpos($type, ',') !== FALSE)
+			{
+				$type = preg_replace('/\s+/', '', $type);
+				$type = explode(',', $type);
+				foreach($type as $k=>$t)
+					if (empty($t))
+						unset($type[$k]);
+
+				$where['where_in'] = array('type' => $type);
+			}
+			else
+			{
+				$where['type'] = $type;
+			}
+		}
+		// if ( ! is_null($type)) $where['type'] = 'picture';
+
 		if ( $limit ) $where['limit'] = $limit;
 
 		// Get from DB
@@ -396,8 +433,6 @@ class TagManager_Media extends TagManager
 
 				if (empty($settings['size']))
 					return base_url() . $media['path'];
-
-
 
 				self::$ci->load->library('medias');
 				

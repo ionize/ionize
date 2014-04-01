@@ -100,6 +100,10 @@ window.addEvent('load', function()
 
 	Ionize.initializeDesktop();
 
-	Ionize.User.initialize();
+	// User singleton
+	ION.User = new ION.UserClass();
+
+//	document.addEvent('click', function(){$$('.btn-group').removeClass('open')});
+
 });
 

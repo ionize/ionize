@@ -357,7 +357,7 @@ class Base_model extends CI_Model
 			{
 				if(isset($where[$key]))
 				{
-					call_user_func(array($this->db, $key), $where[$key]);
+					call_user_func(array($this->{$this->db_group}, $key), $where[$key]);
 					unset($where[$key]);
 				}
 			}
@@ -490,9 +490,9 @@ class Base_model extends CI_Model
 			}
 		}
 
-		// $this->_process_where($where);
+		$this->{$this->db_group}->select($table.'.*', FALSE);
 
-		$this->{$this->db_group}->select($table.'.*');
+		//	log_message('app', print_r($this->{$this->db_group}->get_compile_select() , TRUE));
 
 		$query = $this->{$this->db_group}->get($table);
 
@@ -1130,8 +1130,6 @@ class Base_model extends CI_Model
 
 		$this->{$this->db_group}->limit($limit);
 
-	//	$this->{$this->db_group}->select($this->pk_name.','.$field);
-
 		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
@@ -1707,7 +1705,7 @@ class Base_model extends CI_Model
 
 		if ( ! empty($ids))
 		{
-			$this->{$this->db_group}->select($id .',' .$parent . '_lang.lang,' . $parent . '_lang.url');
+			$this->{$this->db_group}->select($id .', lang, online, url, title, subtitle');
 			$this->{$this->db_group}->where($id . ' in (' . implode(',' , $ids ) . ')' );
 			$this->{$this->db_group}->from($parent . '_lang');
 
@@ -1721,17 +1719,31 @@ class Base_model extends CI_Model
 
 			$languages = Settings::get_languages();
 
+
 			// data must be a list of arrays
 			if (isset($data[0]) && is_array($data[0]))
 			{
 				foreach($data as $k => $el)
 				{
+					// New approach
+					$data[$k]['languages'] = array();
+
 					foreach($languages as $language)
 					{
+						$data[$k]['languages'][$language['lang']] = array(
+							'lang' => $language['lang'],
+							'online' => 0,
+							'url' => NULL
+						);
+
 						foreach($result as $row)
 						{
 							if ($row[$id] == $el[$id] && $row['lang'] == $language['lang'])
 							{
+								// New approach
+								$data[$k]['languages'][$language['lang']] = $row;
+
+								// Old approach
 								$data[$k]['urls'][$row['lang']] = $row['url'];
 							}
 						}
@@ -1785,7 +1797,7 @@ class Base_model extends CI_Model
 			if ( ! empty($ids))
 			{
 				// Get the extend fields details, filtered on parents ID
-				$this->{$this->db_group}->where(array('extend_field.parent'=>$parent));
+				$this->{$this->db_group}->where(array('extend_fields.parent'=>$parent));
 				$this->{$this->db_group}->where_in('extend_fields.id_parent', $ids);
 				$this->{$this->db_group}->join(
 					$this->extend_fields_table,
@@ -1819,7 +1831,8 @@ class Base_model extends CI_Model
 					// First set the extend fields of the data row to the default value. So it exists...
 					foreach ($efd as $e)
 					{
-						$d[$this->extend_field_prefix.$e['name']] = $e['default_value'];
+						if ($e['id_parent'] == 0 OR $d['id_'.$parent] == $e['id_parent'])
+							$d[$this->extend_field_prefix.$e['name']] = $e['default_value'];
 					}
 
 					// Feeds the extend fields
@@ -2123,15 +2136,17 @@ class Base_model extends CI_Model
 	{
         $uri_string_to_array = explode('/', preg_replace("|^\/?|", '/', self::$ci->uri->uri_string));
 
-        // if (self::$ci->uri->segment(1) != config_item('admin_url'))
-        if(! in_array(config_item('admin_url'), $uri_string_to_array))
+        if( ! in_array(config_item('admin_url'), $uri_string_to_array))
 		{
+			// Settings::get('display_front_offline_content') not available here
 			$this->{$this->db_group}->where('name', 'display_front_offline_content');
 			$query = $this->{$this->db_group}->get('setting');
 			$result = $query->row_array();
 
-			if ( ! empty($result['content']) && $result['content'] == '1')
+			if ( Authority::can('access', 'admin') && ( ! empty($result['content']) && $result['content'] == '1'))
+			{
 				self::$publish_filter = FALSE;
+			}
 		}
 		else
 			self::$publish_filter = FALSE;

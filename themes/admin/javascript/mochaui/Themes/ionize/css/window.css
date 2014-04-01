@@ -34,7 +34,7 @@
 */
 .mochaTitlebar { width: 100%; overflow: hidden; background: url(../images/spacer.gif?from=fafafa&to=e5e5e5);}
 .mochaTitlebar .toolbar { padding-top:2px; padding-bottom:1px; padding-right:6px; margin-top:0; margin-bottom:0; height:23px; line-height:23px; float:right; vertical-align:middle; margin-right:0}
-.mochaTitle { float:left; font-size: 12px; font-family: Arial,Helvetica,sans-serif; line-height: 23px; vertical-align:middle; font-weight: bold; margin: 0; padding: 2px 10px 0 12px; color: #888; }
+.mochaTitle { float:left; font-size: 12px; font-family: Arial,Helvetica,sans-serif; line-height: 23px; vertical-align:middle; font-weight: bold; margin: 0; padding: 0 10px 0 12px; color: #888; }
 .mochaTitle { color: #181818; }
 .mochaTitlebar span.icon.windowMinimize { background: url('../images/window-minimize.gif') left top no-repeat; height:16px; width:16px;}
 .mochaTitlebar span.icon.windowMinimize:hover { border-color:transparent; }

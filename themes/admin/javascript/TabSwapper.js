@@ -109,18 +109,37 @@ var TabSwapper = new Class({
 
 	addNewTab: function(title, id)
 	{
+		var options = arguments[2];
+
 		var index = this.tabs.length;
 
+		// Tab
 		var a = new Element('a').set('html', title);
 		var li = new Element('li', {'id': 'tab' + id, 'class': id}).adopt(a);
 		li.inject($(this.options.tabsContainer), 'bottom');
 
-		 // Section
+		if (options)
+		{
+			Object.each(options, function(value, key)
+			{
+				if (key == 'class')
+					li.addClass(value);
+				else
+					li.setProperty(key, value);
+			});
+		}
+
+		// Section
 		var div = new Element('div', { 'class': 'tabcontent ' + id}).inject(this.options.sectionsContainer, 'bottom');
 
 		this.addTab(li, div, a, index);
 
 		return div;
+	},
+
+	getTabs: function()
+	{
+		return this.tabs;
 	},
 
 	getSection: function(selector)

@@ -257,6 +257,7 @@ $user_role = User()->get_role();
 
 						<thead>
 						<tr>
+							<th></th>
 							<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
 							<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
 							<th axis="date" class="w80"><?php echo lang('ionize_label_updated'); ?></th>
@@ -273,8 +274,10 @@ $user_role = User()->get_role();
 
 							<tr>
 								<td>
+									<a class="article icon edit mr5 left" data-id="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>"></a>
+								</td>
+								<td>
 									<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $article['id_page']; ?>.<?php echo $article['id_article']; ?>">
-										<span class="icon edit mr5 left"></span>
 										<?php echo $title; ?><br/>
 									</a>
 								</td>
@@ -305,6 +308,7 @@ $user_role = User()->get_role();
 
 							<thead>
 							<tr>
+								<th class="w20"></th>
 								<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
 								<th axis="date" class="w80"><?php echo lang('ionize_label_page_delete_date'); ?></th>
 							</tr>
@@ -320,8 +324,10 @@ $user_role = User()->get_role();
 
 								<tr class="0x<?php echo $article['id_article']; ?>">
 									<td>
+										<a class="article icon edit mr5 left" data-id="0.<?php echo $article['id_article']; ?>"></a>
+									</td>
+									<td>
 										<a class="article" title="<?php echo lang('ionize_label_edit'); ?>" data-id="0.<?php echo $article['id_article']; ?>">
-											<span class="icon edit mr5 left"></span>
 											<?php echo $title; ?>
 										</a>
 									</td>
@@ -587,7 +593,7 @@ $user_role = User()->get_role();
 	});
 
 	// Quick Settings
-	$$('#quickSettingsForm dl.card label').each(function(card)
+	$$('#quickSettingsForm dl.card').each(function(card)
 	{
 		card.addEvent('mouseup', function()
 		{

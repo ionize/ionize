@@ -46,9 +46,83 @@ class rule_model extends Base_model
 	 */
 	public function get_from_role($role)
 	{
-		$this->{$this->db_group}->where_in('id_role', $role['id_role']);
+		$where = array(
+			'id_role' => $role['id_role'],
+			'id_user' => 0
+		);
 
-		return $this->get_list();
+		$rules = $this->get_list($where);
+
+		return $rules;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $user
+	 *
+	 * @return array
+	 */
+	public function get_from_user($user)
+	{
+		$rules = array();
+
+		$role = $user->get_role();
+
+		$this->{$this->db_group}->where(
+			array(
+				'id_role' => $role['id_role'],
+				'id_user' => 0
+			)
+		);
+
+		$role_rules = array();
+		$this->{$this->db_group}->select('resource,actions,permission,id_element', FALSE);
+		$query = $this->{$this->db_group}->get($this->get_table());
+		if ( $query->num_rows() > 0 ) $role_rules = $query->result_array();
+
+		$this->{$this->db_group}->where(
+			array(
+				'id_role' => 0,
+				'id_user' => $user->getId()
+			)
+		);
+
+		$user_rules = array();
+		$this->{$this->db_group}->select('resource,actions,permission,id_element', FALSE);
+		$query = $this->{$this->db_group}->get($this->get_table());
+		if ( $query->num_rows() > 0 ) $user_rules = $query->result_array();
+
+		// Process Role's rules
+		foreach($role_rules as $rr)
+		{
+			$found = FALSE;
+			foreach ($user_rules as $ur)
+			{
+				if ($rr['resource'] == $ur['resource'] && $rr['id_element'] == $ur['id_element'])
+				{
+					$found = TRUE;
+					if ($ur['permission'] == 1)	$rules[] = $ur;
+				}
+			}
+			if ( ! $found) $rules[] = $rr;
+		}
+
+		// Process User's Rules : Add missing to rules list
+		foreach ($user_rules as $ur)
+		{
+			$found = FALSE;
+			foreach($rules as $r)
+			{
+				if ($r['resource'] == $ur['resource'] && $r['id_element'] == $ur['id_element'])
+					$found = TRUE;
+			}
+			if ( ! $found) $rules[] = $ur;
+		}
+
+		return $rules;
 	}
 
 

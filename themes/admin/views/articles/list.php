@@ -25,6 +25,7 @@
 
 	<thead>
 	<tr>
+		<th></th>
 		<th axis="string"><?php echo lang('ionize_label_pages'); ?></th>
 		<th axis="string"><?php echo lang('ionize_label_article'); ?></th>
 		<th axis="string" class="center"><?php echo lang('ionize_label_content_ok'); ?></th>
@@ -38,29 +39,46 @@
 	<?php foreach ($articles as $id_article => $article) :?>
 
 		<?php
-		$data = $article['data'];
-		$title = ($data['title'] != '') ? $data['title'] : $data['name'];
+			$data = $article['data'];
+			$title = ( ! empty($data['title'])) ? $data['title'] : ( !empty($data['name']) ? $data['name'] : '<i class="error">-- undefined -- </i>');
+			$has_content_for_lang = array();
 
-		$has_content_for_lang = array();
+			$id_page = ! empty($data['id_page']) ? $data['id_page'] : 0;
+			$id_article = ! empty($data['id_article']) ? $data['id_article'] : 0;
 		?>
 
 		<tr class="article">
 
+			<td class="lite">
+				<?php if ($id_article == 0) :?>
+					<img class="help" src="<?php echo admin_style_url(); ?>images/icon_16_alert.png" />
+				<?php else :?>
+					<?php echo $id_article ?>
+				<?php endif ;?>
+			</td>
+
 			<!-- Pages -->
 			<td class="pl10">
 				<?php if(empty($data['pages'])) :?>
-					<img class="help" src="<?php echo theme_url(); ?>images/icon_16_alert.png" title="<?php echo lang('ionize_help_orphan_article'); ?>" />
+					<img class="help" src="<?php echo admin_style_url(); ?>images/icon_16_alert.png" title="<?php echo lang('ionize_help_orphan_article'); ?>" />
 				<?php endif; ?>
 
 				<?php foreach( $data['pages'] as $idx => $page) :?>
 					<?php if ($idx > 0) :?> <span class="lite">&bull;</span><?php endif ?>
 					<a class="page-breadcrumb" data-id="<?php echo $page['id_page'] ?>"><?php echo $page['breadcrumb'] ?></a>
 				<?php endforeach ;?>
+
+				<?php if ($id_article == 0) :?>
+					<span class="error">
+						<?php echo lang('ionize_menu_system_check') ?> > <?php echo lang('ionize_button_clean_lang_tables') ?>
+					</span>
+				<?php endif ;?>
+
 			</td>
 
-			<!-- Title -->
+			<!-- Article Title -->
 			<td>
-				<a class="title" data-id="<?php echo $data['id_page'].'.'.$data['id_article'] ?>"><?php echo $title; ?></a>
+				<a class="title" data-id="<?php echo $id_page.'.'.$id_article ?>"><?php echo $title; ?></a>
 			</td>
 
 			<!-- Content missing alert -->

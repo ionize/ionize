@@ -8,12 +8,6 @@ ION.ExtendMediaManager = new Class({
 	Implements: [Events, Options],
 
 	options: {
-/*
-		musicArray:		    Array('mp3'),	// Array of authorized files extensions
-		pictureArray:	    Array('jpg', 'gif', 'png', 'jpeg'),
-		videoArray:		    Array('flv', 'fv4'),
-		fileArray:		    Array(),
-*/
 		thumbSize:		    120,
 		resizeOnUpload:     false,
 		uploadAutostart:    false,
@@ -33,7 +27,6 @@ ION.ExtendMediaManager = new Class({
 		this.adminUrl =		ION.adminUrl;
 		this.themeUrl =		ION.themeUrl;
 
-		this.container =    'extendMediaContainer';         // CSS class selector (not Id)
 		this.addMediaUrl =  this.adminUrl + 'media/add_media_to_extend';
 
 		this.id_parent =	null;
@@ -41,6 +34,11 @@ ION.ExtendMediaManager = new Class({
 		this.id_extend =	null;
 		this.lang =	        null;
 		this.filemanager =  null;
+
+		if (options)
+			this.init(options);
+
+		return this;
 	},
 
 	/**
@@ -54,11 +52,71 @@ ION.ExtendMediaManager = new Class({
 		this.id_extend = options.id_extend;
 		this.lang = options.lang;
 
-		if (options.container) this.container = options.container;
+		this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
+
 		if (options.tab) this.tab = options.tab;
 		if (options.extend_label) this.extend_label = options.extend_label;
 
+		this.buildContainer();
+
 		if (this.filemanager) this.setFilemanagerTargetInfo();
+	},
+
+	buildContainer: function()
+	{
+		var self = this;
+
+		// Button bar
+		var p = new Element('p', {'class':'h30'}).inject(this.container);
+
+		// Create Button
+		this.btnAddMedia = new Element('a', {
+			'class':'button light',
+			text: Lang.get('ionize_label_add_media')
+		}).adopt(new Element('i', {'class':'icon-pictures'})).inject(p);
+
+		this.btnAddMedia.addEvent('click', function()
+		{
+			self.open();
+		});
+
+		// Media List Container
+		this.mediaContainer = new Element('div', {
+			'class':''
+		}).inject(this.container);
+
+
+		// Add video URL Button
+		/*
+		 * @todo :
+		 * 1. Build the window
+		 * 2. Call extendMediaManager.addMedia()
+		 *      with add of the type, which is "external"
+		 * 3. Modify the controller Media->add_media_to_extend()
+		 *      to check for type='external' and do the insert
+		 */
+		/*
+		 var addVideo = new Element('a', {
+		 'class':'button light',
+		 'data-id': field.id_extend_field,
+		 text: Lang.get('ionize_label_add_video')
+		 }).adopt(new Element('i', {'class':'icon-video'})).inject(p);
+
+		 addVideo.addEvent('click', function()
+		 {
+		 ION.dataWindow(
+		 'addExternalMedia',
+		 'ionize_label_add_video',
+		 'media/add_external_media_window',
+		 {width:600, height:150},
+		 {
+		 parent: self.parent,
+		 id_parent: self.id_parent
+		 }
+		 )
+		 });
+		 */
+
 	},
 
 	getOptions: function()
@@ -89,6 +147,8 @@ ION.ExtendMediaManager = new Class({
 			// Set the onComplete target : This class !
 			this.filemanager.removeEvents('complete');
 			this.filemanager.setOptions({'onComplete': self.addMedia.bind(self)});
+
+			this.setFilemanagerTargetInfo();
 
 			// Re-open window if minimized or shake if triing to open another FM
 			if (inst.isMinimized)
@@ -137,38 +197,28 @@ ION.ExtendMediaManager = new Class({
 	 */
 	addMedia:function(file_url, file)
 	{
-//		var type = this.getMediaType(file_url);
+		var data = {
+			path: file_url,
+			parent: this.parent,
+			id_parent: this.id_parent,
+			id_extend: this.id_extend,
+			lang: this.lang
+		};
 
-		// Media type not authorized : error message
-//		if (type == null)
-//		{
-//			ION.notification('error', Lang.get('ionize_message_media_not_authorized') + ' : ' + this.getMediaExension(file_url));
-//		}
-//		else
-//		{
-			var data = {
-				path: file_url,
-				parent: this.parent,
-				id_parent: this.id_parent,
-				id_extend: this.id_extend,
-				lang: this.lang
-			};
-
-			// Extend Field
-			new Request.JSON(
-			{
-				'url': this.addMediaUrl,
-				'method': 'post',
-				'data': data,
-				'onSuccess': this.successAddMedia.bind(this),
-				'onFailure': this.failure.bind(this)
-			}).send();
-//		}
+		// Extend Field
+		new Request.JSON(
+		{
+			'url': this.addMediaUrl,
+			'method': 'post',
+			'data': data,
+			'onSuccess': this.successAddMedia.bind(this),
+			'onFailure': this.failure.bind(this)
+		}).send();
 	},
 
 	/**
 	 * called after 'addMedia()' success
-	 * calls 'loadMediaList' with the correct media type returned by the XHR call
+	 * calls 'loadList'
 	 *
 	 * @param responseJSON
 	 */
@@ -176,12 +226,12 @@ ION.ExtendMediaManager = new Class({
 	{
 		ION.notification(responseJSON.message_type, responseJSON.message);
 
-		this.loadMediaList(this.getOptions());
+		this.loadList();
 	},
 
 	/**
 	 * Loads a media list through XHR regarding its type
-	 * called after a media list loading through 'loadMediaList'
+	 * called after a media list loading through 'loadList'
 	 *
 	 * @param options  Object {
 	 *                     parent:
@@ -190,135 +240,123 @@ ION.ExtendMediaManager = new Class({
 	 *                     lang:
 	 *                 }
 	 */
-	loadMediaList: function(options)
+	loadList: function()
 	{
 		var self = this;
 
-		if (this.canLoadList(options))
+		new Request.JSON(
 		{
-			this.init(options);
-
-			new Request.JSON(
+			url : this.adminUrl + 'media/get_extend_media_list',
+			data: this.getOptions(),
+			'method': 'post',
+			'onFailure': this.failure.bind(this),
+			'onComplete': function(responseJSON)
 			{
-				url : this.adminUrl + 'media/get_extend_media_list',
-				data: this.getOptions(),
-				'method': 'post',
-				'onFailure': this.failure.bind(this),
-				'onComplete': function(responseJSON)
-				{
-					self.init(options);
-					self.completeLoadMediaList(responseJSON);
-				}
-			}).send();
-		}
+				self.completeLoadList(responseJSON);
+			}
+		}).send();
 	},
 
 	/**
 	 * Initiliazes the media list regarding to its type
-	 * called after a media list loading through 'loadMediaList'
+	 * called after a media list loading through 'loadList'
 	 *
 	 * @param responseJSON  JSON response object.
 	 *                      responseJSON.type : media type. Can be 'picture', 'video', 'music', 'file'
 	 */
-	completeLoadMediaList: function(responseJSON)
+	completeLoadList: function(responseJSON)
 	{
 		var self = this;
 
 		// Hides the spinner
 		MUI.hideSpinner();
 
-		var container = this.getContainer();
-		var tab = this.getTab();
+		this.mediaContainer.empty();
 
-		if (null != container)
+		if (responseJSON && responseJSON.content)
 		{
-			container.empty();
+			// Feed the mediaContainer with responseJSON content
+			this.mediaContainer.set('html', responseJSON.content);
 
-			if (responseJSON && responseJSON.content)
+			// Init the sortable
+			var sortableMedia = new Sortables(
+				this.mediaContainer,
+				{
+					revert: true,
+					handle: '.drag',
+					clone: true,
+					opacity: 0.5,
+					onComplete: function()
+					{
+						var serialized = this.serialize(0, function(element)
+						{
+							if (element.getProperty('id'))
+								return element.getProperty('data-id');
+						});
+
+						self.sortItemList(responseJSON.type, serialized);
+					}
+				}
+			);
+
+			// Store the first ordering after picture list load
+			this.mediaContainer.store('sortableOrder', sortableMedia.serialize(0, function(element)
 			{
-				// Feed the container with responseJSON content
-				container.set('html', responseJSON.content);
+				return element.getProperty('data-id');
+			}));
 
-				// Init the sortable
-				var sortableMedia = new Sortables(
-					container,
-					{
-						revert: true,
-						handle: '.drag',
-						clone: true,
-						opacity: 0.5,
-						onComplete: function()
-						{
-							var serialized = this.serialize(0, function(element)
-							{
-								if (element.getProperty('id'))
-									return element.getProperty('data-id');
-							});
+			// Events on items
+			var medias = this.mediaContainer.getElements('div.drag');
 
-							self.sortItemList(responseJSON.type, serialized);
-						}
-					}
-				);
+			medias.each(function(media)
+			{
+				// Set it to init the values
+				var parent = self.parent,
+					id_parent = self.id_parent,
+					id_extend = self.id_extend,
+					lang = self.lang
+				;
 
-				// Store the first ordering after picture list load
-				container.store('sortableOrder', sortableMedia.serialize(0, function(element)
+				// Unlink
+				var unlink = media.getElement('a.unlink');
+				if (unlink)
 				{
-					return element.getProperty('data-id');
-				}));
+					unlink.addEvent('click', function()
+					{
+						self.detachMedia(this.getProperty('data-id'), parent, id_parent, id_extend, lang);
+					});
+				}
 
-				// Events on items
-				var medias = container.getElements('div.drag');
-
-				medias.each(function(media)
+				// Edit
+				var edit = media.getElement('a.edit');
+				if (edit)
 				{
-					// Set it to init the values
-					var parent = self.parent,
-						id_parent = self.id_parent,
-						id_extend = self.id_extend,
-						lang = self.lang
-					;
-
-					// Unlink
-					var unlink = media.getElement('a.unlink');
-					if (unlink)
+					edit.addEvent('click', function()
 					{
-						unlink.addEvent('click', function()
-						{
-							self.detachMedia(this.getProperty('data-id'), parent, id_parent, id_extend, lang);
-						});
-					}
+						var id = this.getProperty('data-id');
+						ION.formWindow(
+							'media' + id,
+							'mediaForm' + id,
+							this.getProperty('data-title'),
+							ION.adminUrl + 'media/edit/' + id,
+							{width:520,height:430,resize:false}
+						);
+					});
+				}
 
-					// Edit
-					var edit = media.getElement('a.edit');
-					if (edit)
+				// Refresh thumb
+				var refresh = media.getElement('a.refresh');
+				if (refresh)
+				{
+					refresh.addEvent('click', function()
 					{
-						edit.addEvent('click', function()
-						{
-							var id = this.getProperty('data-id');
-							ION.formWindow(
-								'media' + id,
-								'mediaForm' + id,
-								this.getProperty('data-title'),
-								ION.adminUrl + 'media/edit/' + id,
-								{width:520,height:430,resize:false}
-							);
-						});
-					}
-
-					// Refresh thumb
-					var refresh = media.getElement('a.refresh');
-					if (refresh)
-					{
-						refresh.addEvent('click', function()
-						{
-							self.initThumbs(this.getProperty('data-id'));
-						});
-					}
-				});
-			}
-			if (tab)
-				ION.updateTabNumber(tab, container);
+						self.initThumbs(this.getProperty('data-id'));
+					});
+				}
+			});
 		}
+		// Update the tab'info (number of media)
+		// if (tab) ION.updateTabNumber(tab, this.container);
 	},
 
 	/**
@@ -331,8 +369,7 @@ ION.ExtendMediaManager = new Class({
 	 */
 	sortItemList: function(type, serialized)
 	{
-		var container = this.getContainer();
-		var sortableOrder = container.retrieve('sortableOrder');
+		var sortableOrder = this.mediaContainer.retrieve('sortableOrder');
 
 		// Remove "undefined" from serialized, which can comes from the clone.
 		var serie = new Array();
@@ -345,7 +382,7 @@ ION.ExtendMediaManager = new Class({
 		if (sortableOrder.toString() != serie.toString() )
 		{
 			// Store the new ordering
-			container.store('sortableOrder', serie);
+			this.mediaContainer.store('sortableOrder', serie);
 			serie = serie.join(',');
 
 			var data = {
@@ -372,21 +409,9 @@ ION.ExtendMediaManager = new Class({
 		}
 	},
 
-	getContainer: function()
-	{
-		var selector = '.' + this.container + '[data-id=' + this.id_extend + ']';
-
-		if(this.lang != null)
-			selector = selector + '[data-lang=' + this.lang + ']';
-
-		var container = $$(selector);
-
-		if (container.length > 0)
-			return container[0];
-
-		return null;
-	},
-
+	/*
+	 * Keep for future release
+	 *
 	getTab: function()
 	{
 		var selector = '.' + this.tab + '[data-id=' + this.id_extend + ']';
@@ -401,6 +426,7 @@ ION.ExtendMediaManager = new Class({
 
 		return null;
 	},
+	*/
 
 	/**
 	 * On request fail
@@ -440,7 +466,7 @@ ION.ExtendMediaManager = new Class({
 			data: data,
 			onSuccess: function()
 			{
-				this.loadMediaList(data);
+				this.loadList();
 			}.bind(this),
 			onFailure: this.failure.bind(this)
 		}).send();
@@ -466,7 +492,7 @@ ION.ExtendMediaManager = new Class({
 
 				if (responseJSON.message_type == 'success')
 				{
-					this.loadMediaList(this.getOptions());
+					this.loadList();
 				}
 			}.bind(this)
 		}).send();
@@ -475,53 +501,24 @@ ION.ExtendMediaManager = new Class({
 	/**
 	 * Opens fileManager
 	 *
-	 * @param options
 	 */
-	open:function(options)
+	open:function()
 	{
-		if ( ! this.canOpen(options))
+		// No parent
+		if ( ! this.id_parent || this.id_parent == '')
 		{
-			return;
+			ION.notification('error', Lang.get('ionize_message_please_save_first'));
 		}
 		else
 		{
-			this.init(options);
+			// Exit here : no instance needed
+			if (this.getExistingInstance()) return;
 
-			// No parent
-			if ( ! this.id_parent || this.id_parent == '')
-			{
-				ION.notification('error', Lang.get('ionize_message_please_save_first'));
-			}
-			else
-			{
-				// Exit here : no instance needed
-				if (this.getExistingInstance()) return;
+			// Create one instance (FM + Window)
+			this.createInstance();
 
-				// Create one instance (FM + Window)
-				this.createInstance();
-
-				this.setFilemanagerTargetInfo();
-			}
+			this.setFilemanagerTargetInfo();
 		}
-	},
-
-	canLoadList: function(options)
-	{
-		return this.canOpen(options);
-	},
-
-	canOpen: function(options)
-	{
-		if (
-			typeOf(options.parent) == 'null'
-			|| typeOf(options.id_parent) == 'null'
-			|| typeOf(options.id_extend) == 'null'
-		)
-		{
-			console.log('ExtendMediaManager : Can\'t do this, options missing');
-			return false;
-		}
-		return true;
 	},
 
 
@@ -530,10 +527,9 @@ ION.ExtendMediaManager = new Class({
 		var self = this;
 
 		// Correct windows levels : Get the current highest level.
-		MUI.Windows._getWithHighestZIndex();							// stores the highest level in MUI.highestZindex
+		MUI.Windows._getWithHighestZIndex();
 		var zidx = (MUI.Windows.highestZindex).toInt();
-
-		MUI.Windows.indexLevel = zidx + 100;						// Mocha window z-index
+		MUI.Windows.indexLevel = zidx + 100;
 
 		this.filemanager = new Filemanager(
 		{
@@ -569,31 +565,8 @@ ION.ExtendMediaManager = new Class({
 			this.filemanager.fitSizes();
 		};
 
-		self.window = new MUI.Window(winOptions);
-		self.window.filemanager = this.filemanager;
-	},
-
-/*
-	getMediaType: function(file_url)
-	{
-		var extension = (file_url.substr(file_url.lastIndexOf('.') + 1 )).toLowerCase();
-
-		var type = null;
-
-		if (this.options.pictureArray.contains(extension)) { type='picture';}
-		if (this.options.musicArray.contains(extension)) { type='music';}
-		if (this.options.videoArray.contains(extension)) { type='video';}
-		if (this.options.fileArray.contains(extension)) { type='file';}
-
-		return type;
-	},
-*/
-
-	getMediaExension: function(file_url)
-	{
-		var extension = (file_url.substr(file_url.lastIndexOf('.') + 1 )).toLowerCase();
-		return extension;
+		self.fileManagerWindow = new MUI.Window(winOptions);
+		self.fileManagerWindow.filemanager = this.filemanager;
 	}
-
 });
 

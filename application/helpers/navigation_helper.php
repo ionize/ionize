@@ -37,7 +37,7 @@ if( ! function_exists('get_navigation'))
 			$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
 			
 			// Adds the suffix if defined in /application/config.php
-			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
+			// if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
 			$nav .= '<li' . $active . '><a ' . $active . 'href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a></li>';
 		}

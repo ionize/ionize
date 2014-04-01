@@ -30,6 +30,9 @@ class Item_model extends Base_model
 
 	private static $_EXTEND_FIELDS = 'extend_fields';
 
+	private static $_DEFINITION = 'item_definition';
+	private static $_DEFINITION_LANG = 'item_definition_lang';
+
 	/**
 	 * Constructor
 	 *
@@ -42,6 +45,30 @@ class Item_model extends Base_model
 		$this->set_table('item');
 		$this->set_pk_name('id_item');
 		$this->set_lang_table('item_lang');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_item($id_item)
+	{
+		$this->{$this->db_group}->join(
+			self::$_DEFINITION,
+			self::$_DEFINITION.'.id_item_definition = ' .$this->get_table().'.id_item_definition',
+			'inner'
+		);
+
+		$this->{$this->db_group}->join(
+			self::$_DEFINITION_LANG,
+			self::$_DEFINITION_LANG.'.id_item_definition = ' .self::$_DEFINITION.'.id_item_definition'
+			. " and lang='" .Settings::get_lang('default') . "'",
+			'inner'
+		);
+
+		$data = $this->get_row_array(array('id_item' => $id_item));
+
+		return $data;
 	}
 
 
@@ -258,11 +285,11 @@ class Item_model extends Base_model
 					{
 						foreach($langs as $language)
 						{
-							$lang = $language['lang'];
+							$lang_code = $language['lang'];
 
-							if($row['lang'] == $lang)
+							if($row['lang'] == $lang_code)
 							{
-								$df[$lang]['content'] = $row['content'];
+								$df[$lang_code]['content'] = $row['content'];
 							}
 						}
 					}
@@ -290,7 +317,7 @@ class Item_model extends Base_model
 		self::$ci->load->model('item_definition_model');
 		self::$ci->load->model('extend_field_model');
 
-		// Definitions Fields : Extend Field
+		// Definitions Fields : Extend Field Types
 		$definitions_fields = self::$ci->extend_field_model->get_lang_list(
 			array(
 				'parent' => 'item',
@@ -341,25 +368,32 @@ class Item_model extends Base_model
 			foreach($definitions_fields as $df)
 			{
 				// Create one empty field for each definition extend field, to have data, even empty
-				$el = array_merge(array_fill_keys($extend_fields_fields, ''), $df);
+				$el = array_merge(array_fill_keys($extend_fields_fields, NULL), $df);
+				$el['lang_data'] = array();
 
 				foreach($fields as $row)
 				{
 					if ($row['id_parent'] == $item['id_item'] && $row['id_extend_field'] == $df['id_extend_field'])
 					{
-						$el = array_merge($el, $row);
-
 						if ($df['translated'] == '1')
 						{
 							foreach($langs as $language)
 							{
-								$lang = $language['lang'];
+								$lang_code = $language['lang'];
 
-								if($row['lang'] == $lang)
+								if($row['lang'] == $lang_code)
 								{
-									$el[$lang] = $row;
+									if ($lang_code == $lang)
+										$el = array_merge($el, $row);
+
+									$el['lang_data'][$lang_code] = $row;
 								}
 							}
+						}
+						else
+						{
+							$el = array_merge($el, $row);
+							$el['data'] = $row;
 						}
 					}
 				}

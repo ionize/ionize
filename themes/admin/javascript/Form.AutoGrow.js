@@ -39,7 +39,7 @@ var AutoGrow = this.Form.AutoGrow = new Class({
 
 	options: {
 		minHeightFactor: 2,
-		margin: 0
+		margin: 3
 	},
 
 	initialize: function(element, options){

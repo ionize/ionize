@@ -1,3 +1,357 @@
+/**
+ * Ionize Window
+ *
+ */
+ION.Window = new Class({
+
+	Implements: [Events, Options],
+
+	options: {
+		type:'window',
+		y: 40,
+		width: 500,
+		height:300,
+		maximizable: true,
+		contentBgColor: '#fff',
+		barTitle: '',
+		title: null,
+		onDraw: function(){}
+
+		/*
+		 * User's options :
+		 *
+		 barTitle: '',              // Window top bar title
+		 title: {
+		    text: '',               // Main Window Title
+		    class: ''               // Title class (left icon)
+		 }
+		 subtitle: [                // Array of subtitle's key / value (displayed under the main title
+		    {
+				key: '',            // Optional
+				value: ''           // Works with key
+				html: ''            // Replaces key/value by plain HTML
+			 }
+			 ...
+		 ]
+		 form: {
+		    id: '',                 // Form ID
+		    clas: '',               // Form CSS class
+		    action: '',             // URL to the save controller
+		    reload: function()      // Function executed after Form save
+		 }
+
+		 */
+	},
+
+	/*
+	 * Events
+	 *
+
+	 onDraw: function(ION.Window){}
+
+	 */
+
+	/**
+	 *
+	 * @param options
+	 */
+	initialize: function()
+	{
+		var options = arguments[0] ? arguments[0] : {};
+		this.setOptions(options);
+
+		if (options.id && $(options.id))
+		{
+			var self = $(options.id).retrieve('ion_window');
+
+			var w = self.getWindow();
+			w.focus.delay(10, w);
+			if (MUI.options.standardEffects) w.el.windowEl.shake();
+
+			return self;
+		}
+		else
+		{
+			var t = this.options.type;
+			delete this.options.type;
+
+			if (t == 'form')
+				this.w = this._createFormWindow(this.options);
+			else
+				this.w = this._createWindow(this.options);
+
+			this.fireEvent('onDraw', this);
+
+			return this;
+		}
+	},
+
+	getContainer: function()
+	{
+		return this.w.el.content;
+	},
+
+	getWindow: function()
+	{
+		return this.w;
+	},
+
+	getForm: function()
+	{
+		if (typeOf(this.form) != 'null')
+			return this.form;
+
+		return null;
+	},
+
+	close: function()
+	{
+		this.w.close();
+	},
+
+	_createWindow: function(opt)
+	{
+		var options = {
+			container: document.body,
+			content:{}
+		};
+
+		opt.contentTitle = (opt.title && opt.title.text) ? opt.title.text : null;
+		opt.contentTitleClass = (opt.title && opt.title.class) ? ' ' + opt.title.class : '';
+		opt.title = opt.barTitle != '' ? opt.barTitle : '';
+
+		Object.append(options, opt);
+
+		if (options.contentTitle)
+		{
+			var ode = null;
+
+			if (options.onDrawEnd)
+			{
+				ode = options.onDrawEnd;
+			}
+
+			options['onDrawEnd'] = function(w)
+			{
+				var title = new ION.WindowTitle({
+					title: options.contentTitle,
+					subtitle: opt.subtitle,
+					'class': options.contentTitleClass,
+					container: w.el.content
+				});
+
+				if ( ode != null)
+					ode(w);
+			}
+		}
+
+		var w = new MUI.Window(options);
+
+		w.el.windowEl.store('ion_window', this);
+
+		return w;
+	},
+
+
+	/**
+	 *
+	 * @param opt
+	 * @returns {MUI.Window}
+	 * @private
+	 */
+	_createFormWindow: function(opt)
+	{
+		var self = this;
+
+		this.form = null;
+
+		if (opt.form)
+		{
+			if (typeOf(opt.form.id) == 'null')
+				opt.form.id = ION.generateHash(16);
+
+			var options =
+			{
+				onDrawEnd: function(w)
+				{
+					self.form = new Element('form', {
+						id: opt.form.id,
+						'class': opt.form.class,
+						action: opt.form.action,
+						method: 'post'
+					}).inject(w.el.content);
+
+					var divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
+
+					var saveButton = new Element('button', {
+						'class':'button right yes',
+						id: 'save' + opt.form.id,
+						text: Lang.get('ionize_button_save_close')
+					}).inject(divButtons);
+
+					if (opt.form.reload)
+					{
+						var saveReloadButton = new Element('button', {
+							'class':'button blue right ml10',
+							text: Lang.get('ionize_button_save')
+						}).inject(divButtons);
+
+						saveReloadButton.addEvent('click', function()
+						{
+							ION.JSON(
+								opt.form.action,
+								self.form,
+								{
+									onSuccess:function(json)
+									{
+										w.close();
+										opt.form.reload(json);
+									}
+								}
+							);
+						});
+					}
+
+					var cancelButton = new Element('button', {
+						'class':'button right red',
+						id: 'cancel' + opt.form.id,
+						text: Lang.get('ionize_button_cancel')
+					}).inject(divButtons);
+
+					cancelButton.addEvent('click', function(){ w.close(); });
+
+					ION.setFormSubmit(
+						self.form,         // Form Object
+						saveButton.id,     // Save button ID
+						self.form.action,  // Save URL
+						null,              // Confirmation Object (null in this case, no conf. to open one window)
+						opt.form           // Options, to pass onSuccess() method
+					);
+				}
+			}
+		}
+		else
+		{
+			options = {
+				onDrawEnd: function(w)
+				{
+					new Element('span', {
+						'class':'lite',
+						text: 'ERROR : Please set the "form" options action, at least.'
+					}).inject(w.el.content);
+				}
+			};
+		}
+
+		Object.append(opt, options);
+
+		var w = this._createWindow(opt);
+
+		return w;
+	}
+});
+
+ION.WindowTitle = new Class({
+
+	Implements: [Events, Options],
+
+	options: {
+		'class' : '',
+		title : '',
+		subtitle: [
+		/*
+			{
+				key: '',            // Optional
+				value: ''           // Works with key
+				html: ''            // Replaces key/value by plain HTML. In this case, key/values are not used if set.
+			}
+			...
+		*/
+		],
+		build: true                 // Build or not the title. If false, the title will need to be returned
+									// with getDomElement()
+	},
+
+	initialize: function(options)
+	{
+		this.setOptions(options);
+
+		this.container = typeOf(this.options.container) == 'string' ? $(this.options.container) : this.options.container;
+
+		this.subTitleElement = null;
+
+		this.buildTitle();
+
+		return this;
+	},
+
+	buildTitle: function()
+	{
+		this.domElement = new Element('div');
+
+		var h2 = new Element('h2', {
+			'class': 'main ' + this.options.class,
+			'text' : this.options.title
+		}).inject(this.domElement);
+
+		// Subtitle is one array of objects
+		if (this.options.subtitle)
+		{
+			this.buildSubtitleElement();
+
+			var p = new Element('p').inject(this.subTitleElement);
+
+			Object.each(this.options.subtitle, function(sub, idx)
+			{
+				if (sub.html)
+				{
+					sub.value = sub.html;
+				}
+				else
+				{
+					if (idx > 0)
+						new Element('span', {'html': ' | '}).inject(p);
+
+					if (sub.key)
+					{
+						var span = new Element('span', {'class': 'lite', 'html': sub.key  }).inject(p);
+
+						if (sub.value)
+							span.set('html', span.get('html') + ' : ' );
+					}
+
+				}
+				new Element('span', {'html': sub.value}).inject(p);
+			});
+		}
+
+		if (this.options.build == true)
+			this.domElement.inject(this.container)
+	},
+
+	getDomElement: function()
+	{
+		return this.domElement;
+	},
+
+	getSubtitleDomElement: function()
+	{
+		if (this.subTitleElement == null)
+		{
+			this.buildSubtitleElement();
+		}
+
+		return this.subTitleElement;
+	},
+
+	buildSubtitleElement: function()
+	{
+		this.subTitleElement = new Element('div', {
+			'class': 'main subtitle'
+		}).inject(this.domElement, 'bottom');
+	}
+});
+
 
 ION.append({
 
@@ -56,10 +410,11 @@ ION.append({
 	 * @param	wOptions    object		Window extended options
 	 *
 	 */
-	confirmation: function(id, callback, msg, wOptions)
+	confirmation: function(id, callback, msg)
 	{
 		// Get the buttons container
-		wButtons = ION._getConfirmationButtons(id, callback);
+		var wButtons = ION._getConfirmationButtons(id, callback);
+		var wOptions = arguments[3];
 
 		// Window question message
 		var wMsg = (Lang.get(msg)) ? Lang.get(msg) : msg ;
@@ -142,7 +497,13 @@ ION.append({
 						var formUrl = $(form).getProperty('action');
 
 						// Set the form submit button action and send the DOM Element to update with the according URL
-						ION.setFormSubmit(form, ('bSave' + id), formUrl);
+						ION.setFormSubmit(
+							form,               // Form Object
+							('bSave' + id),     // Save button ID
+							formUrl,            // Save URL
+							null,               // Confirmation Object (null in this case, no conf. to open one window)
+							wOptions            // Options, to pass onSuccess() method
+						);
 					}
 
 					// Add the cancel event if cancel button exists

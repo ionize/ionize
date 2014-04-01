@@ -125,9 +125,6 @@ class Setting extends MY_admin
 		$this->template['db_user'] = 	$db[$active_group]['username'];
 		$this->template['db_pass'] = 	'';
 
-		$this->template['databases'] =		$this->dbutil->list_databases();
-
-
 		// Website Email settings
 		$config = array();
 		if (file_exists(APPPATH.'config/email'.EXT))
@@ -360,6 +357,7 @@ class Setting extends MY_admin
 		$this->template['view'] = $view;
 
 		// file path
+		// $filepath = APPPATH.'../themes/'.Settings::get('theme').'/views/';
 		$filepath = FCPATH.'themes/'.Settings::get('theme').'/views/';
 
 		// View sub-folder ?

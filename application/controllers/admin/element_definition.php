@@ -121,14 +121,16 @@ class Element_definition extends MY_Admin {
 		// Elements
 		foreach($elements as &$element)
 		{
+			$element['languages'] = array();
+
 			// Translated elements.
 			foreach(Settings::get_languages() as $lang)
 			{
-				$element[$lang['lang']] = array('title' => '');
+				$element['languages'][$lang['lang']] = array('title' => '');
 				foreach($elements_lang as $ld)
 				{
 					if ($ld['id_element_definition'] == $element['id_element_definition'] && $ld['lang'] == $lang['lang'])
-						$element[$lang['lang']] = $ld;
+						$element['languages'][$lang['lang']] = $ld;
 				}
 			}
 

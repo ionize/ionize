@@ -139,7 +139,7 @@ Drag.Clone = new Class({
 				event.stop();
 				this.element.setStyle('opacity', this.options.opacity || 0);
 				this.clone.setStyle('visibility', 'visible');
-				this.snapped(this.clone);
+				this.snapped(this.clone, event);
 			}.bind(this),
 			onDrag: this.dragged.bind(this),
 			onDrop: this.dropped.bind(this),
@@ -173,7 +173,7 @@ Drag.Clone = new Class({
 	
 	dragged: function(element, event) { this.fireEvent('drag', [element, event]); },
 	dropped: function(element, droppable, event) { this.fireEvent('drop', [element, droppable, event]); },
-	snapped: function(element) {this.fireEvent('snap', element); },
+	snapped: function(element, event) {this.fireEvent('snap', [element, event]); },
 	entered: function(element, droppable) { this.fireEvent('enter', [element, droppable]); },
 	leaved: function(element, droppable) { this.fireEvent('leave', [element, droppable]); },
 

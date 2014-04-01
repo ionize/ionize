@@ -174,6 +174,7 @@ class TagManager
 		'get' => 			'tag_get',
 		'index' => 			'tag_simple_value',
 		'count' => 			'tag_count',
+		'get_length' =>		'tag_get_length',
 		'name' => 			'tag_simple_value',
 		'title' => 			'tag_simple_value',
 		'subtitle' => 		'tag_simple_value',
@@ -1607,6 +1608,85 @@ class TagManager
 	}
 
 
+	public static function tag_extend_field_links(FTL_Binding $tag)
+	{
+		$str = '';
+
+		$extend = $tag->get('extend');
+
+		// Link
+		if ($extend['html_element_type'] == 'link')
+		{
+			$ids = $extend['content'];
+
+			if (strlen($ids) > 0)
+			{
+				self::load_model('extend_field_model');
+
+				$limit = $tag->getAttribute('limit', 0);
+				$where = array();
+				if ( $limit ) $where['limit'] = $limit;
+
+				$links = self::$ci->extend_field_model->get_extend_link_list(
+					$extend['id_extend_field'],
+					'item',
+					$extend['id_parent'],
+					Settings::get('current'),
+					$where
+				);
+
+				$count = count($links);
+				$tag->set('count', $count);
+
+				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+					$base_url = base_url() . Settings::get_lang('current'). '/';
+				else
+					$base_url = base_url();
+
+				foreach($links as $key => $link)
+				{
+					$target_uri = ! empty($link['target_url']) ? $link['target_url'] : $link['entity_url'];
+					$links[$key]['absolute_url'] = $base_url . $target_uri;
+				}
+
+				foreach($links as $key => $link)
+				{
+					$links[$key]['medias'] = $link['data']['medias'];
+				}
+				$tag->set('links', $links);
+
+				foreach($links as $idx => $link)
+				{
+					// Each media has its index and the number of displayed media
+					$link['index'] = $idx + 1;
+					$link['count'] = $count;
+					$tag->set('count', $count);
+					$tag->set('index', $link['index']);
+
+					// Medias
+					$link['medias'] = $link['data']['medias'];
+//					self::$ci->base_model->add_linked_media()
+
+//					$tag->set('medias', $link['data']['medias']);
+					$tag->set('links', $link);
+
+					foreach($link as $key => $value)
+					{
+						$tag->set($key, $value);
+					}
+
+					$tag->set('url', $link['absolute_url']);
+
+					$str .= $tag->expand();
+				}
+			}
+			return self::wrap($tag, $str);
+		}
+
+		return $str;
+	}
+
+
 	/**
 	 * Simply expand the tag.
 	 * If declared as tag_expand, the tag will simply expand its children
@@ -1842,11 +1922,12 @@ class TagManager
 	 */
 	public static function tag_count(FTL_Binding $tag)
 	{
-		if ($tag->getParent()->get('__loop__') !== FALSE)
+		if ($tag->getParent()->get('__loop__'.$tag->nesting()) !== FALSE)
 		{
-			$tag->getParent()->set('__loop__', FALSE);
+			$tag->getParent()->set('__loop__'.$tag->nesting(), FALSE);
 			return self::tag_simple_value($tag);
 		}
+
 		return '';
 	}
 
@@ -2048,7 +2129,7 @@ class TagManager
 	public static function tag_lang_url(FTL_Binding $tag)
 	{
 		// Set all languages online if connected as editor or more
-		if( Authority::can('access', 'admin'))
+		if (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1)
 		{
 			Settings::set_all_languages_online();
 		}
@@ -2943,7 +3024,7 @@ class TagManager
 	public static function get_home_url()
 	{
 		// Set all languages online if connected as editor or more
-		if( Authority::can('access', 'admin'))
+		if (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1)
 		{
 			Settings::set_all_languages_online();
 		}
@@ -2966,7 +3047,7 @@ class TagManager
 
 	public static function get_base_url()
 	{
-		if( Authority::can('access', 'admin'))
+		if (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1)
 		{
 			Settings::set_all_languages_online();
 		}
@@ -3305,14 +3386,14 @@ class TagManager
 	{
 		if ( ! is_null($value))
 		{
+			// Text process
+			$value = self::process_string($tag, $value);
+
 			// PHP : Process the value through the passed in function name.
 			$value = self::php_process($value, $tag->getAttribute('function') );
 
 			// Helper
 			$value = self::helper_process($tag, $value, $tag->getAttribute('helper'));
-
-			// Text process
-			$value = self::process_string($tag, $value);
 
 			// Prefix / Suffix
 			$value = self::prefix_suffix_process($value, $tag->getAttribute('prefix'));
@@ -3620,6 +3701,7 @@ class TagManager
 				self::$context->define_tag($parent.':extend:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
 
 				self::$context->define_tag($parent.':extend:'.$field['name'].':medias', array(__CLASS__, 'tag_extend_field_medias'));
+				self::$context->define_tag($parent.':extend:'.$field['name'].':links', array(__CLASS__, 'tag_extend_field_links'));
 
 			}
 

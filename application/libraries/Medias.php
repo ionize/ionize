@@ -572,10 +572,11 @@ class Medias
 		// Create directory is not exists
 		if( ! is_dir($thumb_path) )
 		{
-            $doc_path = rtrim(DOCPATH, '/');
+			// Ukyo proposal : 
+			// $doc_path = rtrim(DOCPATH, '/');
+			// $thumb_path = str_replace(DOCPATH, '', $thumb_path);
 
             $thumb_path = str_replace(DOCPATH, '', $thumb_path);
-
 			$path_segments = explode('/', ltrim($thumb_path, '/'));
 			array_pop($path_segments);
 			
@@ -590,9 +591,15 @@ class Medias
 				$next_folder .= $separator . $folder;
 				$separator = '/';
 
-                if ( ! @is_dir($doc_path . $next_folder))
+				// Ukyo proposal : 
+                // if ( ! @is_dir($doc_path . $next_folder))
+				// {
+                //    @mkdir($doc_path . $next_folder, 0777);
+
+
+				if ( ! @is_dir($next_folder))
 				{
-                    @mkdir($doc_path . $next_folder, 0777);
+					@mkdir($next_folder, 0777);
 				}
 			}
 		}

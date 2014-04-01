@@ -338,7 +338,6 @@ if ( ! function_exists('safe_mailto'))
 		ob_start();
 
 	?><script type="text/javascript">
-	//<![CDATA[
 	var l=new Array();
 	<?php
 	$i = 0;
@@ -347,7 +346,6 @@ if ( ! function_exists('safe_mailto'))
 	for (var i = l.length-1; i >= 0; i=i-1){
 	if (l[i].substring(0, 1) == '|') document.write("&#"+unescape(l[i].substring(1))+";");
 	else document.write(unescape(l[i]));}
-	//]]>
 	</script><?php
 
 		$buffer = ob_get_contents();

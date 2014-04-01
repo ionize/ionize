@@ -93,7 +93,7 @@ class FTL_Context
 		$l = explode(':', $name);
 		
 		$c = count($l);
-		
+
 		// key is a tag name
 		
 		// Fast and nice (currently only up to 5 segment tags):
@@ -114,6 +114,11 @@ class FTL_Context
 			$this->tree[$l[4]][$l[3]][$l[2]][$l[1]][$l[0]]['#'] = $name;
 		}
 		
+		elseif($c == 6)
+		{
+			$this->tree[$l[5]][$l[4]][$l[3]][$l[2]][$l[1]][$l[0]]['#'] = $name;
+		}
+
 		// TODO: To support more segments, add more rows like this
 	}
 	

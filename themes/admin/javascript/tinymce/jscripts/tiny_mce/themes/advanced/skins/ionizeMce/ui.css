@@ -212,6 +212,8 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 	width: 20px;
 	background-color: #E9E8E8;
 	border-color: #B2B2B2;
+	height: 24px;
+	width: 25px;
 }
 
 .ionizeMceSkin a.mceButtonEnabled:hover { 
@@ -281,7 +283,7 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 	background-repeat: repeat-x;
 	font-family: Tahoma, Verdana, Arial, Helvetica;
 	font-size: 11px;
-	height: 20px;
+	height: 24px;
 	line-height: 20px;
 	overflow: hidden;
 }
@@ -364,8 +366,8 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 }
 
 .ionizeMceSkin .mceSplitButton a.mceAction {
-	height: 20px;
-	width: 20px;
+	height: 24px;
+	width: 25px;
 	padding: 1px 2px;
 	display: block;
 }
@@ -417,6 +419,8 @@ http://www.cirkuit.net/projects/tinymce/cirkuitSkin/
 }
 
 .ionizeMceSkin .mceSplitButton a.mceOpen, .ionizeMceSkin .mceListBox a.mceOpen {
+	height: 24px;
+	width: 16px;
 	-moz-border-radius-bottomright: 3px;
 	-webkit-border-bottom-right-radius: 3px;
 	-khtml-border-bottom-right-radius: 3px;

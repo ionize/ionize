@@ -31,11 +31,11 @@
 			<label for="flag0<?php echo $UNIQ; ?>" title="<?php echo lang('ionize_help_flag'); ?>"><?php echo lang('ionize_label_flag'); ?></label>
 		</dt>
 			<dd>
-				<p class="h20">
+				<p class="h25">
 					<label class="flag flag0"><input id="flag0<?php echo $UNIQ; ?>" name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 0):?> checked="checked" <?php endif;?> value="0" /></label>
 				</p>
 
-				<p class="h20">
+				<p class="h25">
 					<label class="flag flag19"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 19):?> checked="checked" <?php endif;?> value="19" /></label>
 					<label class="flag flag20"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 20):?> checked="checked" <?php endif;?> value="20" /></label>
 					<label class="flag flag21"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 21):?> checked="checked" <?php endif;?> value="21" /></label>
@@ -44,7 +44,7 @@
 					<label class="flag flag24"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 24):?> checked="checked" <?php endif;?> value="24" /></label>
 					<label class="flag flag25"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 25):?> checked="checked" <?php endif;?> value="25" /></label>
 				</p>
-				<p class="h20">
+				<p class="h25">
 					<label class="flag flag1"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 1):?> checked="checked" <?php endif;?> value="1" /></label>
 					<label class="flag flag2"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 2):?> checked="checked" <?php endif;?> value="2" /></label>
 					<label class="flag flag3"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 3):?> checked="checked" <?php endif;?> value="3" /></label>
@@ -54,7 +54,7 @@
 					<label class="flag flag26"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 26):?> checked="checked" <?php endif;?> value="26" /></label>
 				</p>
 
-				<p class="h20">
+				<p class="h25">
 					<label class="flag flag7"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 7):?> checked="checked" <?php endif;?> value="7" /></label>
 					<label class="flag flag8"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 8):?> checked="checked" <?php endif;?> value="8" /></label>
 					<label class="flag flag9"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 9):?> checked="checked" <?php endif;?> value="9" /></label>
@@ -63,7 +63,7 @@
 					<label class="flag flag12"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 12):?> checked="checked" <?php endif;?> value="12" /></label>
 					<label class="flag flag27"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 27):?> checked="checked" <?php endif;?> value="27" /></label>
 				</p>
-				<p class="h20">
+				<p class="h25">
 					<label class="flag flag13"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 13):?> checked="checked" <?php endif;?> value="13" /></label>
 					<label class="flag flag14"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 14):?> checked="checked" <?php endif;?> value="14" /></label>
 					<label class="flag flag15"><input name="type_flag" class="inputradio" type="radio" <?php if ($type_flag == 15):?> checked="checked" <?php endif;?> value="15" /></label>

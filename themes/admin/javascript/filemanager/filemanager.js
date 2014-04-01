@@ -573,7 +573,7 @@ var Filemanager = new Class({
 
 	resizeMenu: function()
 	{
-		var orig_height = 24;
+		var orig_height = 32;
 		var listSize = this.uploadZoneList.getSize();
 		if (listSize.y > 0) listSize.y += 20;
 		var y = (listSize.y > this.options.menuMaxHeight) ? this.options.menuMaxHeight : listSize.y;

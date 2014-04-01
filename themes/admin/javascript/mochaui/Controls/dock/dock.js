@@ -93,7 +93,7 @@ MUI.Dock = new NamedClass('MUI.Dock', {
 		this.options.docked[idx] = toolbar;
 		var content = {};
 		Object.each(toolbar, function(val, key){
-			if (['loadmethod', 'method', 'url', 'content', 'onloaded'].indexOf(key) > -1)
+			if (['loadmethod', 'method', 'url', 'data', 'content', 'onloaded'].indexOf(key) > -1)
 				content[key] = val;
 		});
 		toolbar.content = content;

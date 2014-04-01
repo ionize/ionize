@@ -522,26 +522,35 @@ class Article_model extends Base_model
 	{
 		if ( ! empty($articles))
 		{
-			// Add lang content to each article
-			$articles_lang = $this->get_lang();
-			
-			foreach($articles as &$article)
+			$ids = array();
+			foreach($articles as $article)
 			{
-				$article['langs'] = array();
-				
-				$langs = array();
-				foreach($articles_lang as $al)
+				$ids[] = $article['id_article'];
+			}
+
+			if ( ! empty($ids))
+			{
+				$this->{$this->db_group}->where('id_article in (' . implode(',' , $ids ) . ')' );
+				$query = $this->{$this->db_group}->get('article_lang');
+
+				$result = array();
+				if($query->num_rows() > 0)
+					$result = $query->result_array();
+
+				foreach($articles as &$article)
 				{
-					if ($al['id_article'] == $article['id_article'])
-						$langs[] = $al;
-				}
-			
-				foreach(Settings::get_languages() as $lang)
-				{
-					foreach($langs as $l)
+					$article['languages'] = array();
+
+					foreach(Settings::get_languages() as $lang)
 					{
-						if ($l['lang'] == $lang['lang'])
-							$article['langs'][$lang['lang']] = $l;
+						$lang_code = $lang['lang'];
+						$article['languages'][$lang_code] = array();
+
+						foreach($result as $row)
+						{
+							if ($row['id_article'] == $article['id_article'] && $row['lang'] == $lang_code)
+								$article['languages'][$lang_code] = $row;
+						}
 					}
 				}
 			}
@@ -1687,7 +1696,7 @@ class Article_model extends Base_model
 	{
 		if ($on === TRUE)
 		{
-			$this->{$this->db_group}->where($this->parent_table.'.online', '1');		
+			$this->{$this->db_group}->where($this->parent_table.'.online', '1');
 	
 			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
 				$this->{$this->db_group}->where($this->lang_table.'.online', '1');		

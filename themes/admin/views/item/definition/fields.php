@@ -35,6 +35,7 @@ $id_definition = $id_item_definition;
 	<script type="text/javascript">
 
 		var uniq = '<?php echo $UNIQ ?>';
+		var id_definition = '<?php echo $id_definition ?>';
 
 		// Content Elements fields manager
 		var fieldsManager<?php echo $UNIQ ?> = new ION.ItemManager({
@@ -44,7 +45,41 @@ $id_definition = $id_item_definition;
 
 		fieldsManager<?php echo $UNIQ ?>.makeSortable();
 
+		// Loads the Extend Manager
+/*
+		var extendManager = new ION.ExtendManager({
+			parent: 'item'
+		});
+*/
+
+		extendManager.init({
+			parent: 'item'
+		});
+
 		// Edit
+		$$('#fields'+uniq +' .title').each(function(item)
+		{
+			var id_extend = item.getProperty('data-id');
+
+			item.addEvent('click', function(e)
+			{
+				extendManager.editExtend(
+					id_extend,
+					{
+						onSuccess: function()
+						{
+							ION.HTML(
+								ION.adminUrl + 'item_definition/get_field_list',
+								{id_item_definition: id_definition},
+								{update: 'itemFieldsContainer'}
+							);
+						}
+					}
+				);
+			});
+		});
+
+		/*
 		$$('#fields'+uniq +' .title').each(function(item)
 		{
 			var id_extend = item.getProperty('data-id');
@@ -65,6 +100,7 @@ $id_definition = $id_item_definition;
 				);
 			});
 		});
+		*/
 
 		// Set "Display in List"
 		$$('#fields'+uniq +' .display').each(function(item)

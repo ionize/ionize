@@ -16,7 +16,7 @@
 			<a class="icon unlink right" data-id="<?php echo $id; ?>"></a>
 	
 			<!-- Title (draggable) -->
-			<a style="overflow:hidden;height:16px;display:block;" class="pl5 pr10 page page<?php echo $id; ?> <?php echo $status ;?>" title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $id; ?>"><?php echo $title; ?></a>
+			<a class="pl5 pr10 page page<?php echo $id; ?> <?php echo $status ;?>" title="<?php echo lang('ionize_label_edit'); ?>" data-id="<?php echo $id; ?>"><?php echo $title; ?></a>
 
 		</li>
 

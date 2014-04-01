@@ -476,62 +476,69 @@ class Media extends MY_admin
 	 */
 	public function add_external_media()
 	{
-		// Clear the cache
-		Cache()->clear_cache();
-
 		$path = $this->input->post('path');
 		$parent = $this->input->post('parent');
 		$id_parent = $this->input->post('id_parent');
 
-		$pattern = "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i";
-		preg_match($pattern, $path, $link);
-		if (empty($link[0])) $path = FALSE;
-		else $path = $link[0];			
-
-		if ($path != FALSE)
+		if ($path && $parent && $id_parent)
 		{
-			// Get the array of information concerning this service
-			$provider = '';
-			$info = $this->get_service_info($path);
-			if (!is_null($info))
+			// Clear the cache
+			Cache()->clear_cache();
+
+			$pattern = "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i";
+			preg_match($pattern, $path, $link);
+			if (empty($link[0])) $path = FALSE;
+			else $path = $link[0];
+
+			if ($path != FALSE)
 			{
-				$path = $info['path'];
-				$provider = $info['provider'];
-			}
+				// Get the array of information concerning this service
+				$provider = '';
+				$info = $this->get_service_info($path);
+				if (!is_null($info))
+				{
+					$path = $info['path'];
+					$provider = $info['provider'];
+				}
 
-			// DB Insert
-			$id = $this->media_model->insert_media($path, $provider);
-			$media = $this->media_model->get($id);
+				// DB Insert
+				$id = $this->media_model->insert_media($path, $provider);
+				$media = $this->media_model->get($id);
 
-			// Event data
-			$event_data = array(
-				'element' => $parent,
-				'id_element' => $id_parent,
-				'media' => $media
-			);
-
-			// Parent linking
-			if (!$this->media_model->attach_media($parent, $id_parent, $id))
-			{
-				// Event
-				Event::fire('Media.link.external.error', $event_data);
-
-				$this->error(lang('ionize_message_media_already_attached'));
-			}
-			else 
-			{
-				// Event
-				Event::fire('Media.link.external.success', $event_data);
-
-				// Error Message
-				$this->callback = array(
-					array(
-						'fn' => 'mediaManager.loadMediaList',
-						'args' => 'video'
-					)
+				// Event data
+				$event_data = array(
+					'element' => $parent,
+					'id_element' => $id_parent,
+					'media' => $media
 				);
-	
-				$this->response();
+
+				// Parent linking
+				if (!$this->media_model->attach_media($parent, $id_parent, $id))
+				{
+					// Event
+					Event::fire('Media.link.external.error', $event_data);
+
+					$this->error(lang('ionize_message_media_already_attached'));
+				}
+				else
+				{
+					// Event
+					Event::fire('Media.link.external.success', $event_data);
+
+					// Error Message
+					$this->callback = array(
+						array(
+							'fn' => 'mediaManager.loadMediaList',
+							'args' => 'video'
+						)
+					);
+
+					$this->response();
+				}
+			}
+			else
+			{
+				$this->error(lang('ionize_message_operation_nok'));
 			}
 		}
 		else

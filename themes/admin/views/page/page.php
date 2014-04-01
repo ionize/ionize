@@ -128,123 +128,7 @@ if ($tracker_title == '')
 
             <?php endif ;?>
 
-        	<!-- Extend Fields (Main) -->
-			<div id="pageExtendFields">
 
-				<?php foreach($extend_fields as $extend_field) :?>
-				
-					<?php if ($extend_field['translated'] != '1') :?>
-						<?php
-						$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
-						$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
-						?>
-						<dl>
-							<dt>
-								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $label_title ?>"><?php echo $label ?></label>
-							</dt>
-							<dd>
-								<?php
-									$extend_field['content'] = (!empty($extend_field['content'])) ? $extend_field['content'] : $extend_field['default_value'];
-								?>
-							
-								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
-								<?php endif ;?>
-
-                                <!-- Textarea -->
-								<?php if ($extend_field['type'] == '2') :?>
-                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
-								<?php endif ;?>
-
-                                <!-- Textarea with editor -->
-								<?php if ($extend_field['type'] == '3') :?>
-                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="smallTinyTextarea inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
-								<?php endif ;?>
-
-								<!-- Checkbox -->
-								<?php if ($extend_field['type'] == '4') :?>
-									
-									<?php
-										$pos   = explode("\n", $extend_field['value']);
-										$saved = $extend_field['content'] != '-' ? explode(',', $extend_field['content']) : array();
-									?>
-									<?php
-										$i = 0; 
-										foreach($pos as $values)
-										{
-											$vl = explode(':', $values);
-											$key = $vl[0];
-											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-
-											?>
-											<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
-											<?php
-											$i++;
-										}
-									?>
-								<?php endif ;?>
-								
-								<!-- Radio -->
-								<?php if ($extend_field['type'] == '5') :?>
-									
-									<?php
-										$pos = explode("\n", $extend_field['value']);
-									?>
-									<?php
-										$i = 0; 
-										foreach($pos as $values)
-										{
-											$vl = explode(':', $values);
-											$key = $vl[0];
-											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-
-											?>
-											<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $key; ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
-											<?php
-											$i++;
-										}
-									?>
-								<?php endif ;?>
-								
-								<!-- Selectbox -->
-								<?php if ($extend_field['type'] == '6' && !empty($extend_field['value'])) :?>
-									
-									<?php									
-										$pos = explode("\n", $extend_field['value']);
-										$saved = 	explode(',', $extend_field['content']);
-									?>
-									<select name="cf_<?php echo $extend_field['id_extend_field']; ?>">
-									<?php
-										$i = 0; 
-										foreach($pos as $values)
-										{
-											$vl = explode(':', $values);
-											$key = $vl[0];
-											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-											?>
-											<option value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?php echo $value; ?></option>
-											<?php
-											$i++;
-										}
-									?>
-									</select>
-								<?php endif ;?>
-
-								<!-- Date & Time -->
-								<?php if ($extend_field['type'] == '7') :?>
-								
-									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content'] ; ?>" />
-                                	<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>"></a>
-
-								<?php endif ;?>
-								
-							</dd>
-						</dl>	
-							
-					<?php endif ;?>
-				<?php endforeach ;?>
-
-			</div>
 		</fieldset>
 
 
@@ -265,24 +149,8 @@ if ($tracker_title == '')
 							<li id="mediaTab" class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>"><a><?php echo lang('ionize_label_medias'); ?></a></li>
 						<?php endif ;?>
 
-						<!-- Media Extend Fields -->
-						<?php foreach($extend_fields as $extend) :?>
-							<?php if ($extend['type'] == 8) :?>
-								<?php
-								$id_extend = $extend['id_extend_field'];
-								$label =  ! empty($extend['label'])  ? $extend['label'] : $extend['name'];
-								$label_title = $extend['name'] . ( !empty($extend['description']) ? ' : ' .$extend['description'] : '');
-								?>
-								<?php if ($extend['translated'] != '1') :?>
-									<li class="extendMediaTab right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" data-id="<?php echo $id_extend ?>"><a><?php echo $label ?></a></li>
-								<?php else:?>
-									<?php foreach(Settings::get_languages() as $language) :?>
-										<li class="extendMediaTab right<?php if( empty($id_page)) :?> inactive<?php endif ;?>" data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang']; ?>"><a><?php echo $label . ' ' . ucfirst($language['lang']); ?></a></li>
-									<?php endforeach ;?>
+						<li id="articlesTab" class="right<?php if( empty($id_page)) :?> inactive<?php endif ;?>"><a><?php echo lang('ionize_label_articles'); ?></a></li>
 
-								<?php endif;?>
-							<?php endif;?>
-						<?php endforeach;?>
 					<?php endif ;?>
 				</ul>
 				<div class="clear"></div>
@@ -402,132 +270,15 @@ if ($tracker_title == '')
 								<input id="meta_title_<?php echo $lang; ?>" name="meta_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['meta_title']; ?>"/>
 							</dd>
 						</dl>
-
-						<!-- extend fields goes here... -->
-							<?php foreach($extend_fields as $extend_field) :?>
-								<?php if ($extend_field['translated'] == '1') :?>
-
-		<?php
-//		log_message('app', print_r($extend_field, TRUE));
-		?>
-
-
-									<dl>
-										<dt>
-											<?php
-												$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
-												$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
-											?>
-											<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" title="<?php echo $label_title; ?>"><?php echo $label ?></label>
-										</dt>
-										<dd>
-											<?php
-												$extend_field[$lang]['content'] = (!empty($extend_field[$lang]['content'])) ? $extend_field[$lang]['content'] : $extend_field['default_value'];
-											?>
-
-											<?php if ($extend_field['type'] == '1') :?>
-												<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field[$lang]['content']; ?>" />
-											<?php endif ;?>
-
-											<!-- Textarea -->
-											<?php if ($extend_field['type'] == '2') :?>
-												<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="text autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
-											<?php endif ;?>
-
-											<!-- Textarea with editor -->
-											<?php if ($extend_field['type'] == '3') :?>
-												<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="smallTinyTextarea h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" rel="<?php echo $lang; ?>"><?php echo $extend_field[$lang]['content']; ?></textarea>
-											<?php endif ;?>
-
-											<!-- Checkbox -->
-											<?php if ($extend_field['type'] == '4') :?>
-
-												<?php
-													$pos = 		explode("\n", $extend_field['value']);
-													$saved = 	explode(',', $extend_field[$lang]['content']);
-												?>
-
-												<?php
-													$i = 0;
-													foreach($pos as $values)
-													{
-														$vl = explode(':', $values);
-														$key = $vl[0];
-														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-
-														?>
-														<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
-														<?php
-														$i++;
-													}
-												?>
-											<?php endif ;?>
-
-											<!-- Radio -->
-											<?php if ($extend_field['type'] == '5') :?>
-
-												<?php
-													$pos = explode("\n", $extend_field['value']);
-												?>
-												<?php
-													$i = 0;
-													foreach($pos as $values)
-													{
-														$vl = explode(':', $values);
-														$key = $vl[0];
-														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-
-														?>
-														<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>_<?php echo $lang; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $key; ?>" <?php if ($extend_field[$lang]['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>_<?php echo $lang; ?>"><?php echo $value; ?></label></input><br/>
-														<?php
-														$i++;
-													}
-												?>
-											<?php endif ;?>
-
-											<!-- Selectbox -->
-											<?php if ($extend_field['type'] == '6' && !empty($extend_field['value'])) :?>
-
-												<?php
-													$pos = explode("\n", $extend_field['value']);
-													$saved = 	explode(',', $extend_field[$lang]['content']);
-												?>
-												<select name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>">
-												<?php
-													$i = 0;
-													foreach($pos as $values)
-													{
-														$vl = explode(':', $values);
-														$key = $vl[0];
-														$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-														?>
-														<option value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?php echo $value; ?></option>
-														<?php
-														$i++;
-													}
-												?>
-												</select>
-											<?php endif ;?>
-
-											<!-- Date & Time -->
-											<?php if ($extend_field['type'] == '7') :?>
-
-												<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>" value="<?php echo $extend_field['content'] ; ?>" />
-												<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang; ?>"></a>
-
-											<?php endif ;?>
-
-
-										</dd>
-									</dl>
-
-								<?php endif ;?>
-							<?php endforeach ;?>
-
 					</div>
 
 				<?php endforeach ;?>
 
+				<?php
+				/*
+				 * Medias
+				 */
+				?>
 				<?php if ( ! empty($id_page)) :?>
 
 					<?php if(Authority::can('access', 'admin/page/media')) :?>
@@ -553,92 +304,38 @@ if ($tracker_title == '')
 							</p>
 
 							<div id="mediaContainer" class="sortable-container"></div>
-
 						</div>
 
-
-						<!-- Extends : Medias -->
-						<?php foreach($extend_fields as $extend) :?>
-
-							<?php if ($extend['type'] == 8) :?>
-								<?php
-									$id_extend = $extend['id_extend_field'];
-									$label =  ! empty($extend['label'])  ? $extend['label'] : $extend['name'];
-									$label_title = $extend['name'] . ( !empty($extend['description']) ? ' : ' .$extend['description'] : '');
-								?>
-								<?php if ($extend['translated'] != '1') :?>
-									<div class="tabcontent">
-										<p class="h30">
-											<?php if (User()->is('super-admin')) :?>
-												<span class="lite">Extend code : <strong><?php echo  $extend['name']?></strong></span>
-											<?php endif ;?>
-
-											<a data-id="<?php echo $id_extend ?>" data-label="<?php echo $label ?>" class="extendMediaButton button light right">
-												<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
-											</a>
-											<a id="btnAddVideoUrl" class="right light button">
-												<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
-											</a>
-										</p>
-										<div class="sortable-container extendMediaContainer" data-id="<?php echo $id_extend ?>" data-label="<?php echo $label ?>"></div>
-									</div>
-								<?php else:?>
-									<?php foreach(Settings::get_languages() as $language) :?>
-										<div class="tabcontent">
-											<p class="h30">
-												<?php if (User()->is('super-admin')) :?>
-													<span class="lite">Extend code : <strong><?php echo  $extend['name']?></strong></span>
-												<?php endif ;?>
-												<a data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang'] ?>" data-label="<?php echo $label ?>" class="extendMediaButton button light right">
-													<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
-												</a>
-											</p>
-											<div class="sortable-container extendMediaContainer" data-id="<?php echo $id_extend ?>" data-lang="<?php echo $language['lang'] ?>" data-label="<?php echo $label ?>"></div>
-										</div>
-									<?php endforeach ;?>
-								<?php endif;?>
-							<?php endif;?>
-						<?php endforeach;?>
 					<?php endif ;?>
 				<?php endif ;?>
+
+				<?php
+				/*
+				 * Articles
+				 */
+				?>
+				<div class="tabcontent">
+
+					<div class="h50">
+						<a id="btnArticleTypeHelp" class="right light button helpme type">
+							<i class="icon-helpme"></i>
+							<?php echo lang('ionize_label_help_articles_types'); ?>
+						</a>
+
+						<!-- Droppable to link one article to this page -->
+						<div id="new_article" class="droppable w260 lite h30 left dropArticleInPage" data-id="<?php echo $id_page; ?>">
+							<?php echo lang('ionize_label_drop_article_here'); ?>
+						</div>
+					</div>
+
+					<div id="articleListContainer"></div>
+
+				</div>
+
 			</div>
 		</fieldset>
 		
-		<!-- Articles -->
-		<?php if($id_page) :?>
 
-			<fieldset id="articles" class="mt20">
-			
-				<div id="childsTab" class="mainTabs">
-					<ul class="tab-menu">
-						
-						<li class="selected"><a><?php echo lang('ionize_label_articles'); ?></a></li>
-
-					</ul>
-					<div class="clear"></div>
-				</div>
-
-				<div id="childsTabContent" class="dropArticleInPage" data-id="<?php echo $id_page; ?>">
-				
-					<!-- Articles List -->
-					<div class="tabcontent">
-
-						<p>
-							<a class="right light button helpme type">
-								<i class="icon-helpme"></i><?php echo lang('ionize_label_help_articles_types'); ?>
-							</a>
-							
-							<!-- Droppable to link one article to this page -->
-							<input type="text" id="new_article" class="inputtext w120 italic droppable empty nofocus" alt="<?php echo lang('ionize_label_drop_article_here'); ?>" />
-							<label title="<?php echo lang('ionize_help_page_drop_article_here'); ?>"></label>
-						</p>
-						<br />
-						<div id="articleListContainer"></div>
-						
-					</div> <!-- / tabcontent -->
-				</div>
-			</fieldset>
-		<?php endif ;?>
 	</div>
 </form>
 
@@ -654,7 +351,7 @@ if ($tracker_title == '')
 	// Makes all elements with the class '.selectable' selectable
 	ION.initSelectableText();
 
-	ION.initHelp('#articles .type.helpme', 'article_type', Lang.get('ionize_title_help_articles_types'));
+	ION.initHelp('#btnArticleTypeHelp', 'article_type', Lang.get('ionize_title_help_articles_types'));
 
 	ION.initFormAutoGrow();
 
@@ -692,12 +389,6 @@ if ($tracker_title == '')
 		cookieName: 'mainTab'
 	});
 
-    // TinyEditors. Must be called after tabs init.
-    ION.initTinyEditors(null, '#pageExtendFields .tinyTextarea');
-    ION.initTinyEditors(null, '#pageExtendFields .smallTinyTextarea', 'small', {'height':80});
-
-    ION.initTinyEditors('.tab_page', '#pageTabContent .tinyTextarea');
-    ION.initTinyEditors('.tab_page', '#pageTabContent .smallTinyTextarea', 'small', {'height':80});
 
 	<?php if ( ! empty($id_page)) :?>
 
@@ -740,7 +431,18 @@ if ($tracker_title == '')
 		// Get Static Items
 		staticItemManager.getParentItemList();
 
+		// Extend Fields
+		extendManager.init({
+			parent: 'page',
+			id_parent: id_page,
+			destination: 'pageTab',
+			destinationTitle: Lang.get('ionize_title_extend_fields')
+		});
+		extendManager.getParentInstances();
+
+
 		// Add Video button
+		// @todo: rewrite
 		<?php if(Authority::can('link', 'admin/page/media')) :?>
 
 			$('btnAddVideoUrl').addEvent('click', function()
@@ -758,39 +460,6 @@ if ($tracker_title == '')
 			});
 
 		<?php endif ;?>
-
-
-		// Extend Media Tab : Load Media List
-		$$('.extendMediaTab').each(function(el)
-		{
-			extendMediaManager.loadMediaList({
-				container:		'extendMediaContainer',
-				tab:			'extendMediaTab',
-				parent: 		'page',
-				id_parent: 		id_page,
-				id_extend: 		el.getProperty('data-id'),
-				lang: 			el.getProperty('data-lang'),
-				extend_label: 	el.getProperty('data-label')
-			});
-		});
-
-		// Add Extend Media button
-		$$('.extendMediaButton').each(function(el)
-		{
-			el.addEvent('click', function()
-			{
-				extendMediaManager.open({
-					container:		'extendMediaContainer',
-					tab:			'extendMediaTab',
-					parent: 		'page',
-					id_parent: 		id_page,
-					id_extend: 		this.getProperty('data-id'),
-					lang: 			this.getProperty('data-lang'),
-					extend_label: 	this.getProperty('data-label')
-				});
-			});
-		});
-
 
 	<?php else: ?>
 

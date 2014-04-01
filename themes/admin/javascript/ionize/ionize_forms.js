@@ -67,7 +67,7 @@ ION.append({
 	 * @param	object	Confirmation object	{message: 'The confirmation question'}
 	 *
 	 */
-	setFormSubmit: function(form, button, url, confirm)
+	setFormSubmit: function(form, button, url, confirm, options)
 	{
 		if (typeOf($(form))!='null' && typeOf($(button)) != 'null')
 		{
@@ -91,8 +91,8 @@ ION.append({
 				$(button).enabled = true;
 				var func = function()
 				{
-					var options = ION.getJSONRequestOptions(url, $(form));
-					var r = new Request.JSON(options);
+					var requestOptions = ION.getJSONRequestOptions(url, $(form), options);
+					var r = new Request.JSON(requestOptions);
 					r.send();
 				};
 
@@ -137,12 +137,12 @@ ION.append({
 							this.removeClass('disabled');
 						}).delay(4000, this);
 
-
 						var parent = $(form).getParent('.mocha');
 						var result = fv.validate();
 
 						if ( ! result)
 						{
+							if (parent)
 							new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
 						}
 						else
@@ -151,9 +151,8 @@ ION.append({
 							ION.updateRichTextEditors();
 
 							// Get the form
-							var options = ION.getJSONRequestOptions(url, $(form));
-
-							var r = new Request.JSON(options);
+							var requestOptions = ION.getJSONRequestOptions(url, $(form), options);
+							var r = new Request.JSON(requestOptions);
 							r.send();
 
 							// Close the window
@@ -275,6 +274,246 @@ ION.append({
 		{
 			item.removeProperty('checked');
 		});
+	},
+
+	getFormFieldContainer: function(options)
+	{
+		var cl = options.class ? ' ' + options.class : '';
+		var label = options.label ? options.label : '';
+
+		var dl = new Element('dl', {
+			'class':'small' + cl
+		});
+		var dt = new Element('dt', {
+			'class':''
+		}).inject(dl);
+
+		new Element('label', {text: label}).inject(dt);
+
+		var dd = new Element('dd', {
+			'class':''
+		}).inject(dl);
+
+		return dl;
+		/*
+		 <!-- Ordering : First or last (or Element one if exists ) -->
+		 <?php if( empty($id_item)) :?>
+		 <dl class="small mb10">
+		 <dt>
+		 <label for="ordering"><?php echo lang('ionize_label_ordering'); ?></label>
+		 </dt>
+		 <dd>
+		 <select name="ordering" id="ordering<?php echo $id_item; ?>" class="select">
+		 <?php if( ! empty($id_item)) :?>
+		 <option value="<?php echo $ordering; ?>"><?php echo $ordering; ?></option>
+		 <?php endif ;?>
+		 <option value="first"><?php echo lang('ionize_label_ordering_first'); ?></option>
+		 <option value="last"><?php echo lang('ionize_label_ordering_last'); ?></option>
+		 </select>
+		 </dd>
+		 </dl>
+		 <?php endif ;?>
+
+		 */
+
 	}
 
+});
+
+ION.FormField = new Class({
+
+	Implements: [Events, Options],
+
+	options: {
+		/*
+		 * User's options :
+		 *
+		 container: '',         // Container ID or container DOM Element
+		 class: '',             // DL class
+		 label: {
+		    text: '',           // label text
+		    class: ''           // label class
+		 },
+		 help: '',              // Help String
+		 */
+	},
+
+	initialize: function(options)
+	{
+		this.dl = new Element('dl');
+		if (options.class) this.dl.setProperty('class', options.class);
+
+		var dt = new Element('dt').inject(this.dl);
+
+		// Label
+		if (options.label)
+		{
+			this.label = new Element('label', {text: options.label.text}).inject(dt);
+			if (options.label.class) this.label.setProperty('class', options.label.class);
+			if (options.help) this.label.setProperty('title', options.help);
+		}
+		this.fieldContainer = new Element('dd').inject(this.dl);
+
+		if (options.container)
+		{
+			this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
+			this.dl.inject(this.container);
+		}
+
+		return this;
+	},
+
+	adopt: function(field)
+	{
+		this.fieldContainer.adopt(field);
+	},
+
+	getContainer: function()
+	{
+		return this.fieldContainer;
+	},
+
+	getDOMElement: function()
+	{
+		return this.dl;
+	},
+
+	getLabel: function()
+	{
+		return this.label;
+	}
+});
+
+ION.Form = {};
+ION.Form.Select = new Class({
+
+	Implements: [Events, Options],
+
+	options:
+	{
+		container:  null,           // Container ID or container DOM Element
+		class:      'inputtext',    // CSS class,
+
+		name:       '',             // Name of the Select
+		id:         '',             // ID of the select
+
+		post:       {},             // Data to post to the URL
+		data:       null,           // JSON array to use as data
+		url :       null,           // URL to use as data source
+
+		key:        null,			// Key of the data array to use as value
+		label:      null,           // Key of the data array to use as label
+		selected:	[],				// Selected Value or array of Selected Values
+
+		fireOnInit: false,			// Fires the onChange event after init.
+
+		rule:       null            // @todo. Rule to apply to the select
+
+		// onDraw: 			function(this, DOMElement select)
+		// onChange: 		function(value, data, selected, this)
+		// onOptionDraw: 	function(option, row)					// Fired when one option element was drawn
+	},
+
+	initialize: function(options)
+	{
+		this.setOptions(options);
+
+		var self = this,
+			o = this.options
+		;
+
+		// Select
+		this.select = new Element('select', {name: o.name, 'class':o.class});
+		if (o.id != '')
+			this.select.setProperty('id', o.id);
+
+		// this.setOptions() remove the functions from the options
+		// We need to get access to them through the original options object
+		if (options.onChange)
+		{
+			this.select.addEvent('change', function()
+			{
+				var data = this.getSelected().retrieve('data');
+				if (typeOf(data) == 'array') data = data[0];
+				options.onChange(this.value, data, this.getSelected(), self.select, self);
+			});
+		}
+
+		// Container : If set, the select will be injected in this container
+		if (o.container)
+			this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
+
+		// Get data from one URL
+		// One JSON array is expected as result
+		if (o.url)
+		{
+			ION.JSON(
+				o.url,
+				o.post,
+				{
+					onSuccess: function(json)
+					{
+						self.buildOptions(json);
+					}
+				}
+			);
+		}
+		else if (Object.getLength(o.data) > 0)
+		{
+			this.buildOptions(o.data);
+		}
+	},
+
+	onDraw: function()
+	{
+		var o = this.options;
+
+		// Inject the select into the container
+		if (o.container)
+			this.select.inject(o.container);
+
+		// onDraw Event gts fired
+		this.fireEvent('onDraw', [this.select, this]);
+
+	},
+
+	buildOptions: function(data)
+	{
+		var self = this,
+			o = this.options,
+			key = o.key,
+			lab = o.label,
+			selected = o.selected && typeOf(o.selected) != 'array' ? [o.selected] : [],
+			selectedIndex = Object.getLength(selected) == 0 ? o.selectedIndex : null
+		;
+
+		Array.each(data, function(row, idx)
+		{
+			var value = typeOf(row[key]) != 'null' ? row[key] : row;
+			var label = typeOf(row[lab]) != 'null' ? row[lab] : (value != null ? value : '');
+
+			if (value != null)
+			{
+				var opt = new Element('option', {
+					value: value,
+					text: label
+				}).inject(self.select);
+
+				if (selected.contains(value) || (selectedIndex && selectedIndex == idx))
+					opt.setProperty('selected', 'selected');
+
+				// Stores the data used to build the option
+				// Can be retrieved with : opt.retrieve('data');
+				opt.store('data', row);
+
+				self.fireEvent('onOptionDraw', [opt, row]);
+			}
+		});
+
+		// Fires "change" on init
+		if (o.fireOnInit)
+			this.select.fireEvent('change');
+
+		this.onDraw();
+	}
 });

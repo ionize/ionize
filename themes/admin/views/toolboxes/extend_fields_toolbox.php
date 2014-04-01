@@ -1,20 +1,27 @@
 <?php if(Authority::can('create', 'admin/extend')) :?>
 
-	<div class="toolbox divider">
-		<input type="button" class="toolbar-button plus extends" id="addextendfield" value="<?php echo lang('ionize_title_extend_field_new'); ?>" />
+	<div class="divider">
+		<a id="btnAddExtendField" class="button light">
+			<i class="icon-plus"></i>
+			<?php echo lang('ionize_title_extend_field_new'); ?>
+		</a>
 	</div>
 
 
 	<script type="text/javascript">
 
-		$('addextendfield').addEvent('click', function(e)
+		$('btnAddExtendField').addEvent('click', function(e)
 		{
+			// Does not limit to one parent
 			ION.formWindow(
 				'extendfield',
 				'extendfieldForm',
-				'ionize_title_extend_fields',
-				'extend_field/get_form/',
-				{width:500, height:350}
+				'ionize_title_extend_field_new',
+				'extend_field/edit',
+				{
+					width:450,
+					height:380
+				}
 			);
 		});
 

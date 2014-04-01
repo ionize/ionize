@@ -83,13 +83,14 @@ class MY_Controller extends CI_Controller
 		// Get all the website languages from DB and store them into config file "languages" key
 		$languages = $this->settings_model->get_languages();
 		Settings::set_languages($languages);
-		if( User()->is('editors', TRUE))
-			Settings::set_all_languages_online();
 
 		// 	Settings : google analytics string, filemanager, etc.
 		//	Each setting is accessible through Settings::get('setting_name');
 		Settings::set_settings_from_list($this->settings_model->get_settings(), 'name','content');
-        Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
+		Settings::set_settings_from_list($this->settings_model->get_lang_settings(config_item('detected_lang_code')), 'name','content');
+
+		if( Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1)
+			Settings::set_all_languages_online();
 
 		// Try to find the installer class : No access if install folder is already there
 		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
@@ -306,8 +307,6 @@ class API_Controller extends REST_Controller
 		}
 		else
 		{
-			// log_message('app', 'API SUCCESS : ' . $this->uri->uri_string());
-
 			if (is_null($this->success))
 				$this->set_success($content, $code);
 
@@ -423,7 +422,6 @@ class Base_Controller extends MY_Controller
 
 		// Menus
 		Settings::set('menus', $this->menu_model->get_list());
-
 
 		// Simple languages code array, used to detect if Routers found language is in DB languages
 		$online_lang_codes = array();

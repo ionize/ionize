@@ -23,7 +23,7 @@
 
 <!-- Mootools 1.4.5  -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1-yc.js"></script>
 
 <?php if (
 	Settings::get('dashboard_google') == '1'
@@ -151,7 +151,10 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_content.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_droppable.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_forms.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_list.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_mediamanager.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmanager.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendlinkmanager.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmediamanager.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_staticitemmanager.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_itemsmanager.js"></script>
@@ -184,7 +187,7 @@
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/language/Language.<?php echo $filemanager_lang ?>.js"></script>
 
 <!-- TinyMCE -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce_src.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 
 <!-- If users templates, add them to the init object -->
 <?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/templates/tinymce_templates.js' )) :?>
@@ -208,37 +211,16 @@
 		baseUrl: base_url,
 		adminUrl: admin_url,
 		container:'mediaContainer',
-/*
-		pictureContainer:'pictureContainer',
-		musicContainer:'musicContainer', 
-		videoContainer:'videoContainer',
-		fileContainer:'fileContainer',
-*/
 		fileButton:'.fmButton',
 		wait:'waitPicture',
         resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
         uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
         uploadMode: '<?php echo Settings::get('upload_mode'); ?>',
-		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,
-		pictureArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('picture')); ?>'),
-		musicArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('music')); ?>'),
-		videoArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('video')); ?>'),
-		fileArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('file')); ?>')
+		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>
 	});
 
-	var extendMediaManager = new ION.ExtendMediaManager(
-	{
-		wait:'waitPicture',
-		resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
-		uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
-		uploadMode: '<?php echo Settings::get('upload_mode'); ?>',
-		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>,
-		pictureArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('picture')); ?>'),
-		musicArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('music')); ?>'),
-		videoArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('video')); ?>'),
-		fileArray:Array('<?php echo implode("','", Settings::get_allowed_extensions('file')); ?>')
-	});
-
+	var extendManager =  new ION.ExtendManager();
+//	var extendLinkManager =  new ION.ExtendLinkManager();
 	var staticItemManager =  new ION.StaticItemManager();
 
 	// If user's theme has a tinyMCE.css content CSS file, load it.

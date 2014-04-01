@@ -18,7 +18,6 @@
 			<li><a><?php echo lang('ionize_title_visual_help'); ?></a></li>
 			<li><a><?php echo lang('ionize_title_admin_panel_languages'); ?></a></li>
 			<li><a><?php echo lang('ionize_title_admin_panel_datetime'); ?></a></li>
-			<li><a title="<?php echo lang('ionize_help_flags'); ?>"><span><?php echo lang('ionize_label_flags'); ?></span></a></li>
 		</ul>
 		<div class="clear"></div>
 	</div>
@@ -183,26 +182,6 @@
 
 			</div>
 		</form>
-
-		<!-- Flags -->
-		<div class="tabcontent">
-
-			<p class="info"><?php echo lang('ionize_description_flags'); ?></p>
-
-			<form name="flagsForm" id="flagsForm">
-
-				<label class="flag flag1" for="flag1"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag1" name="flag1" value="<?php echo Settings::get('flag1'); ?>" /><br/>
-				<label class="flag flag2" for="flag2"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag2" name="flag2" value="<?php echo Settings::get('flag2'); ?>" /><br/>
-				<label class="flag flag3" for="flag3"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag3" name="flag3" value="<?php echo Settings::get('flag3'); ?>" /><br/>
-				<label class="flag flag4" for="flag4"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag4" name="flag4" value="<?php echo Settings::get('flag4'); ?>" /><br/>
-				<label class="flag flag5" for="flag5"></label><input type="text" class="inputtext w180 mb2 ml10" id="flag5" name="flag5" value="<?php echo Settings::get('flag5'); ?>" /><br/>
-				<label class="flag flag6" for="flag6"></label><input type="text" class="inputtext w180 ml10" id="flag6" name="flag6" value="<?php echo Settings::get('flag6'); ?>" /><br/>
-
-
-				<label></label><button  id="bSaveFlags" type="button" class="button yes ml20 mt10"><?php echo lang('ionize_button_save'); ?></button>
-			</form>
-		</div>
-
 
 	</div>
 

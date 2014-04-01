@@ -12,23 +12,6 @@
 
 class Item_definition extends MY_admin
 {
-	/*
-	 * Type Names
-	 *
-	 */
-	private static $_TYPE_NAMES = array
-	(
-		'1' => 'Input',
-		'2' => 'Textarea',
-		'3' => 'Textarea + Editor',
-		'4' => 'Checkbox',
-		'5' => 'Radio',
-		'6' => 'Select',
-		'7' => 'Date & Time',
-		'8' => 'Medias',
-		'9' => 'Internal Link',
-	);
-
 	/**
 	 * Constructor
 	 *
@@ -64,14 +47,46 @@ class Item_definition extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	public function get_list()
+	public function get()
 	{
-		$this->template['items'] = $this->item_definition_model->get_lang_list(
-			NULL,
+		$id_definition = $this->input->post('id_definition');
+
+		$definition = array();
+
+		if ($id_definition)
+		{
+			$definition = $this->item_definition_model->get(
+				array($this->item_definition_model->get_pk_name() => $id_definition),
+				Settings::get_lang('default')
+			);
+		}
+
+		$this->xhr_output($definition);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_list($mode=NULL)
+	{
+		$items = $this->item_definition_model->get_lang_list(
+			array(
+				'order_by' => 'title_definition ASC'
+			),
 			Settings::get_lang('default')
 		);
 
-		$this->output('item/definition/list');
+		if ($mode == 'json')
+		{
+			$this->xhr_output($items);
+		}
+		else
+		{
+			$this->template['items'] = $items;
+
+			$this->output('item/definition/list');
+		}
 	}
 
 
@@ -117,8 +132,6 @@ class Item_definition extends MY_admin
 	public function save()
 	{
 		$post = $this->input->post();
-
-		$id_definition = $this->input->post('id_item_definition');
 
 		// Save data
 		$this->item_definition_model->save($post, $post);
@@ -196,12 +209,6 @@ class Item_definition extends MY_admin
 				),
 				Settings::get_lang('default')
 			);
-
-			// Set type names
-			foreach($fields as &$field)
-			{
-				$field['type_name'] = self::$_TYPE_NAMES[$field['type']];
-			}
 		}
 
 		//

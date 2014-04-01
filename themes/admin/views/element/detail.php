@@ -61,7 +61,7 @@ $id_parent = ( !empty($id_parent)) ? $id_parent : '';
 			<?php if ($field['translated'] != '1' && $field['type'] != 8) :?>
 
 				<?php
-					$label = ( ! empty($field['langs'][Settings::get_lang('default')]['label'])) ? $field['langs'][Settings::get_lang('default')]['label'] : $field['name'];
+					$label = ( ! empty($field['lang_definition'][Settings::get_lang('default')]['label'])) ? $field['langs'][Settings::get_lang('default')]['label'] : $field['name'];
 					$label_title = User()->is('super-admin') ? 'Key : ' . $field['name'] : ($field['description'] != '' ? $field['description'] : '');
 					$field['content'] = (!empty($field['content'])) ? $field['content'] : $field['default_value'];
 				?>
@@ -222,7 +222,7 @@ $id_parent = ( !empty($id_parent)) ? $id_parent : '';
 									<dl class="small">
 										<dt>
 											<?php
-												$label = ( ! empty($field['langs'][$lang]['label'])) ? $field['langs'][$lang]['label'] : $field['name'];
+												$label = ( ! empty($field['lang_definition'][$lang]['label'])) ? $field['langs'][$lang]['label'] : $field['name'];
 											?>
 											<label for="cf_<?php echo $id_extend; ?>_<?php echo $lang; ?>" title="<?php echo $field['description']; ?>"><?php echo $label; ?></label>
 										</dt>

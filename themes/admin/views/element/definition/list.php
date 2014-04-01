@@ -1,10 +1,6 @@
 
 <?php foreach($elements as $element) :?>
 
-<?php
-//	log_message('app', print_r($element, TRUE));
-?>
-
 <?php $this->load->view('element/definition', $element) ?>
 
 <?php endforeach ;?>
@@ -57,8 +53,6 @@
 			var lang = rel[1];
 			var title = item.getProperty('title');
 
-	//		console.log(item.get('text'));
-
 			if (item.get('text') == false) { item.set('text', title).addClass('lite').addClass('italic'); }
 
 			var input = new Element('input', {'type': 'text', 'class':'inputtext left w180', 'name':'title' });
@@ -87,20 +81,31 @@
 			});
 		});
 
+
+		// Loads the Extend Manager
+//		var extendManager = new ION.ExtendManager();
+
 		// Extend Field edit
 		$$('#elementContainer .edit_field').each(function(item, idx)
 		{
-			item.addEvent('click', function(e)
+			item.addEvent('click', function()
 			{
-				e.stop();
-				var id = item.getProperty('data-id');
-				ION.formWindow(
-					'elementfield'+id,
-					'elementfieldForm'+id,
-					'ionize_title_element_field_edit',
-					'element_field/edit',
-					{width:500, height:350},
-					{'id_extend_field': id}
+				extendManager.init({
+					parent: 'element',
+					id_parent: item.getProperty('data-id')
+				});
+				extendManager.editExtend(
+					item.getProperty('data-id'),
+					{
+						onSuccess: function()
+						{
+							ION.HTML(
+								ION.adminUrl + 'element_definition/get_element_definition_list',
+								{},
+								{update: 'elementContainer'}
+							);
+						}
+					}
 				);
 			});
 		});
@@ -108,18 +113,23 @@
 		// Add field button event
 		$$('#elementContainer li .add_field').each(function(item)
 		{
-			item.addEvent('click', function(e)
+			item.addEvent('click', function()
 			{
-				e.stop();
-				var id = this.getProperty('data-id');
-				ION.formWindow(
-					'elementfield',
-					'elementfieldForm',
-					'ionize_title_element_field_new',
-					'element_field/create',
-					{width:500, height:350},
-					{'id_element_definition': id}
-				);
+				extendManager.init({
+					parent: 'element',
+					id_parent: item.getProperty('data-id')
+				});
+
+				extendManager.createExtend({
+					onSuccess: function()
+					{
+						ION.HTML(
+							ION.adminUrl + 'element_definition/get_element_definition_list',
+							{},
+							{update: 'elementContainer'}
+						);
+					}
+				});
 			});
 		});
 

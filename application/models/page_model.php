@@ -53,8 +53,8 @@ class Page_model extends Base_model
 		$this->type_table = 'type';
 		$this->extend_field_table = 'extend_field';
 		$this->extend_fields_table = 'extend_fields';
-		
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -739,7 +739,7 @@ class Page_model extends Base_model
 	{
 		if ($on === TRUE)
 		{
-			$this->{$this->db_group}->where($this->table.'.online', '1');		
+			$this->{$this->db_group}->where($this->table.'.online', '1');
 	
 			if ($lang !== NULL && count(Settings::get_online_languages()) > 1)
 				$this->{$this->db_group}->where($this->lang_table.'.online', '1');		

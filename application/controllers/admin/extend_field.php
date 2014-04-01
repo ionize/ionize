@@ -20,12 +20,18 @@ class Extend_field extends MY_admin
 	{
 		parent::__construct();
 
-		$this->load->model('extend_field_model', '', TRUE);
+		// Models
+		$this->load->model(
+			array(
+				'extend_field_model',
+				'extend_field_type_model',
+			),
+			'',
+			TRUE
+		);
 	}
 
 
-	// ------------------------------------------------------------------------
-	// Extend definition methods
 	// ------------------------------------------------------------------------
 
 
@@ -42,22 +48,61 @@ class Extend_field extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	/**
-	 * Prints out the empty extend field form
-	 * called by edition form window
-	 *
-	 * @param	mixed	parent. Element from which we edit the categories list
-	 * @param	mixed	parent ID
-	 *
-	 */
-	function get_form($parent = FALSE, $id_parent = FALSE)
+	public function get_extend_types($format=NULL)
 	{
+		$extend_types = $this->extend_field_type_model->get_list(
+			array('active' => 1)
+		);
+
+		if ($format == 'json')
+		{
+			$this->xhr_output($extend_types);
+		}
+		else
+		{
+			// ... nothing
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	function create()
+	{
+		// Pre-defined parent : No parent select in this case
+		$parent = $this->input->post('parent');
+
 		$this->extend_field_model->feed_blank_template($this->template);
 		$this->extend_field_model->feed_blank_lang_template($this->template);
 		
-		// Pass the parent informations to the template
-		$this->template['parent'] = $parent;
-		$this->template['id_parent'] = $id_parent;
+		// Limit to one parent type ?
+		$this->template['limit_to_parent'] = FALSE;
+		if ($parent)
+		{
+			$this->template['limit_to_parent'] = $parent;
+			$this->template['id_parent'] = $this->input->post('id_parent');
+		}
+
+		// Available parents
+		$parents = $this->extend_field_model->get_parents();
+		$this->template['parents'] = $parents;
+
+		// Types Select
+		$extend_types_select = $this->extend_field_type_model->get_form_select(
+			'type_name',
+			array('active' => 1)
+		);
+
+		$this->template['type_select'] = form_dropdown(
+			'type',
+			$extend_types_select,
+			$this->template['type'],
+			'id=type'.$this->template['id_extend_field'].' class="select"'
+		);
+
+		// Extend Types details
+		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
 		
 		$this->output('extend/field');
 	}
@@ -69,15 +114,48 @@ class Extend_field extends MY_admin
 	/** 
 	 * Edit one extend field
 	 *
-	 * @param	int		extend field ID
-	 * @param	mixed	parent. Element from which we edit the categories list
-	 * @param	mixed	id_parent. Element ID
-	 *
 	 */
-	function edit($id, $parent = FALSE, $id_parent = FALSE)
+	function edit()
 	{
-		$this->extend_field_model->feed_template($id, $this->template);
-		$this->extend_field_model->feed_lang_template($id, $this->template);
+		$id = $this->input->post('id_extend_field');
+
+		// Pre-defined parent : No parent select in this case
+		$parent = $this->input->post('parent');
+
+		if ($id)
+		{
+			$this->extend_field_model->feed_template($id, $this->template);
+			$this->extend_field_model->feed_lang_template($id, $this->template);
+		}
+		else
+		{
+			$this->extend_field_model->feed_blank_template($this->template);
+			$this->extend_field_model->feed_blank_lang_template($this->template);
+		}
+
+		// Limit to one parent type ?
+		$this->template['limit_to_parent'] = FALSE;
+		if ($parent)
+		{
+			$this->template['limit_to_parent'] = $parent;
+		}
+
+		// Available parents
+		$parents = $this->extend_field_model->get_parents();
+		$this->template['parents'] = $parents;
+
+		// Types
+		$extend_types_select = $this->extend_field_type_model->get_form_select('type_name');
+
+		$this->template['type_select'] = form_dropdown(
+			'type',
+			$extend_types_select,
+			$this->template['type'],
+			'id=type'.$this->template['id_extend_field'].' class="select"'
+		);
+
+		// Extend Types details
+		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
 
 		$this->output('extend/field');
 	}
@@ -87,44 +165,61 @@ class Extend_field extends MY_admin
 
 
 	/**
-	 * Returns all the extend fields for one kind of parent
+	 * Returns all the extend fields (definitions) for one kind of parent
 	 * Used by Admin panel to display the extend fields list
 	 * Called by XHR by admin/views/extend/index.php
 	 *
 	 * @param	String		Parent type. Can be 'article', 'page', etc.
-	 * @return 	Array		Array of extend fields
 	 *
 	 */
-	function get_extend_fields($parent = NULL)
+	function get_extend_fields()
 	{
+		$mode = $this->input->post('mode');
+
 		// Get data formed to feed the category select box
 		$where = array(
-			'order_by' => 'ordering ASC',
 			'parent !=' => 'element'
 		);
 		
-		if ( ! is_null($parent))
+		$order_by = $this->input->post('order_by');
+		if ($order_by)
+			$where['order_by'] = $order_by;
+
+		// Limit to one parent type : Useful for limited lists
+		$parent = $this->input->post('parent');
+		if ( $parent) $where['parent'] = $parent;
+
+		// Limit to several parents
+		$parents = $this->input->post('parents');
+		if ($parents)
 		{
-			$where['parent'] = $parent;
+			$parents = explode(',', $parents);
+			$where['where_in'] = array('parent' => $parents);
 		}
-//		$where['where_in'] = array('parent'=> array('article','page','media'));
 
 		// Returns the extends list ordered by 'ordering' 
 		$extend_fields = $this->extend_field_model->get_lang_list($where, Settings::get_lang('default'));
 
-		// Get the parents
-		$parents = array();
-		foreach($extend_fields as $extend)
+		if ($mode == 'json')
 		{
-			if ( ! in_array($extend['parent'], $parents))
-				$parents[] = $extend['parent'];
+			$this->xhr_output($extend_fields);
 		}
-
-		$this->template['parent'] = ( ! is_null($parent)) ? $parent : FALSE;
-		$this->template['parents'] = $parents;
-		$this->template['extend_fields'] = $extend_fields;
-		
-    	$this->output('extend/list');
+		else
+		{
+			// Get the parents
+			$parents = array();
+			foreach($extend_fields as $extend)
+			{
+				if ( ! in_array($extend['parent'], $parents))
+					$parents[] = $extend['parent'];
+			}
+	
+			$this->template['parent'] = $parent ? $parent : FALSE;
+			$this->template['parents'] = $parents;
+			$this->template['extend_fields'] = $extend_fields;
+			
+	    	$this->output('extend/list');
+		}
 	}
 
 
@@ -176,29 +271,30 @@ class Extend_field extends MY_admin
 		if( $this->input->post('name') != '' ) {
 
 			// If no ID (means new one) and this item name already exists in DB : No save
-			if (
-				$this->input->post('id_extend_field') == ''
-				&& $this->extend_field_model->exists(
-					array('name'=>url_title($this->input->post('name')), 'parent'=> $this->input->post('parent'))
-				)
-			)
+			if ($this->input->post('id_extend_field') == '')
 			{
-				$this->error(lang('ionize_message_extend_field_name_exists'));			
-			}
-			else
-			{
-				$this->_prepare_data();
-	
-				// Save data
-				$this->id = $this->extend_field_model->save($this->data, $this->lang_data);
-	
-				$this->update[] = array(
-					'element' => 'extend_fields',
-					'url' =>  'extend_field/get_extend_fields'
+				$where = array(
+					'name'=>url_title($this->input->post('name')),
+					'parent'=> $this->input->post('parent')
 				);
+				if ($this->input->post('id_parent'))
+					$where['id_parent'] = $this->input->post('id_parent');
 
-				$this->success(lang('ionize_message_extend_field_saved'));
+				if ($this->extend_field_model->exists($where))
+					$this->error(lang('ionize_message_extend_field_name_exists'));
 			}
+
+			$this->_prepare_data();
+
+			// Save data
+			$this->id = $this->extend_field_model->save($this->data, $this->lang_data);
+
+			$this->update[] = array(
+				'element' => 'extend_fields',
+				'url' =>  'extend_field/get_extend_fields'
+			);
+
+			$this->success(lang('ionize_message_extend_field_saved'));
 		}
 		else
 		{
@@ -281,21 +377,264 @@ class Extend_field extends MY_admin
 
 
 	/** 
+	 * Get Extend Definitions in the context of one parent
+	 *
+	 * @example		Get the Extend available for the parent 'contact' and
+	 * 				linked to the context 'page with ID 3'
+	 *
+	 * @param 		null 		$mode. Return format.
+	 *
+	 * @receives	context		Parent Context. Ex : Page, Article, Company
+	 * 				id_context	Parent Context ID
+	 * 				parent		Extend Parent type. Ex : Page, Article, Contact
+	 *
+	 */
+	public function get_context_list($mode=NULL)
+	{
+		$context = $this->input->post('context');
+		$id_context = $this->input->post('id_context');
+		$parent = $this->input->post('parent');
+
+		$items = $this->extend_field_model->get_context_list($context, $id_context, $parent);
+
+		if ($mode == 'json')
+		{
+			$this->xhr_output($items);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_extend_instance($mode=NULL)
+	{
+		$id_extend = $this->input->post('id_extend');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$lang = $this->input->post('lang');
+
+		$extend = $this->extend_field_model->get_element_extend_field($id_extend, $parent, $id_parent, $lang);
+
+		if ($mode == 'json')
+		{
+			$this->xhr_output($extend);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get Parent's extends instances
+	 *
+	 * @param null $mode
+	 */
+	public function get_instances_list($mode=NULL)
+	{
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$id_field_parent = $this->input->post('id_field_parent');
+
+		$items = $this->extend_field_model->get_element_extend_fields($parent, $id_parent, $id_field_parent);
+
+		if ($mode == 'json')
+		{
+			$this->xhr_output($items);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get Context's extends instances
+	 *
+	 * @param null $mode
+	 */
+	public function get_context_instances_list($mode=NULL)
+	{
+		$context = $this->input->post('context');
+		$id_context = $this->input->post('id_context');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+
+		$items = $this->extend_field_model->get_context_instances_list($context, $id_context, $parent, $id_parent);
+
+		if ($mode == 'json')
+		{
+			$this->xhr_output($items);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Links one extend field to one logical parent element
+	 * (ex : page, article, company)
+	 * This extend field will then only be available in the context of its parent element
+	 *
+	 */
+	public function link_to_context()
+	{
+		$id_extend_field = $this->input->post('id_extend_field');
+		$context = $this->input->post('context');
+		$id_context = $this->input->post('id_context');
+
+		$this->extend_field_model->link_to_context($id_extend_field, $context, $id_context);
+
+		// Send answer
+		$this->success(lang('ionize_message_operation_ok'));
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * UnLinks one extend field from his logical parent element context
+	 */
+	public function unlink_from_context()
+	{
+		$id_extend_field = $this->input->post('id_extend_field');
+		$context = $this->input->post('context');
+		$id_context = $this->input->post('id_context');
+
+		$this->extend_field_model->unlink_from_context($id_extend_field, $context, $id_context);
+
+		// Send answer
+		$this->success(lang('ionize_message_operation_ok'));
+	}
+
+
+	// ------------------------------------------------------------------------
+	// Extend List management
+	// ------------------------------------------------------------------------
+
+
+	public function remove_value_from_extend_field()
+	{
+		$value = $this->input->post('value');
+		$id_extend = $this->input->post('id_extend');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$lang = $this->input->post('lang') ? $this->input->post('lang') : NULL;
+
+		$this->extend_field_model->delete_value_from_extend_field(
+			$id_extend,
+			$parent,
+			$id_parent,
+			$value,
+			$lang
+		);
+
+		$this->response();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_extend_link_list($mode=NULL)
+	{
+		$id_extend = $this->input->post('id_extend');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$lang = $this->input->post('lang') ? $this->input->post('lang') : NULL;
+
+		$items = $this->extend_field_model->get_extend_link_list($id_extend, $parent, $id_parent, $lang);
+
+		if ($mode == 'json')
+		{
+			$this->xhr_output($items);
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Add one value to one "List type" Extend.
+	 * Used by Link
+	 *
+	 */
+	public function add_value_to_extend_field()
+	{
+		$value = $this->input->post('value');
+		$id_extend = $this->input->post('id_extend');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$lang = $this->input->post('lang') ? $this->input->post('lang') : NULL;
+
+		if ($id_extend && $parent && $id_parent)
+		{
+			$this->extend_field_model->add_value_to_extend_field(
+				$id_extend,
+				$parent,
+				$id_parent,
+				$value,
+				$lang
+			);
+		}
+		else
+		{
+			log_message('error', print_r(get_class($this) . '->add_value_to_extend_field() : Some value missing ($id_extend, $parent, $id_parent)', TRUE));
+		}
+
+		$this->response();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves media order for one parent
+	 *
+	 */
+	public function save_extend_ordering()
+	{
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+		$id_extend = $this->input->post('id_extend');
+		$lang = $this->input->post('lang');
+
+		$value = $this->input->post('order');
+
+		if( $value !== FALSE )
+		{
+			$this->extend_field_model->save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang);
+
+			// Answer
+			$this->success(lang('ionize_message_operation_ok'));
+		}
+		else
+		{
+			$this->error(lang('ionize_message_operation_nok'));
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Prepare data before saving
 	 * 
 	 */
 	function _prepare_data() 
 	{
-		// Standard fields
-		$fields = $this->db->list_fields('extend_field');
-		
-		// Set the data to the posted value.
-		foreach ($fields as $field)
-			$this->data[$field] = $this->input->post($field);
+		$this->data = $this->input->post();
 
 		// Some safe !
 		$this->data['name'] = url_title($this->data['name']);
-		
+		$this->data['translated'] = $this->input->post('translated');
+
 		// Lang data
 		$this->lang_data = array();
 
@@ -314,11 +653,4 @@ class Extend_field extends MY_admin
 			}
 		}
 	}
-
-
-	// ------------------------------------------------------------------------
-	// Extend instances methods
-	// ------------------------------------------------------------------------
-
-
 }

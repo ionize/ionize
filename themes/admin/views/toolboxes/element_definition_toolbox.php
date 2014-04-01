@@ -1,8 +1,11 @@
 
 <?php if ( Authority::can('create', 'admin/element')) :?>
 
-	<div class="toolbox divider">
-		<input type="button" class="toolbar-button plus" id="addElementButton" value="<?php echo lang('ionize_label_create_element'); ?>" />
+	<div class="divider">
+		<a class="button light" id="addElementButton">
+			<i class="icon-plus"></i>
+			<?php echo lang('ionize_label_create_element'); ?>
+		</a>
 	</div>
 
 	<script type="text/javascript">

@@ -161,7 +161,6 @@ class TagManager_Item extends TagManager
 	public static function tag_static(FTL_Binding $tag)
 	{
 		// Store the parent
-		$parent = $tag->getParent();
 		$parent = $tag->getDataParent();
 		$tag->set('__static_parent__', $parent);
 
@@ -297,6 +296,9 @@ class TagManager_Item extends TagManager
 
 		$items = $tag->get('items');
 
+		$tag->set('count', 0);
+
+
 		// Process the elements
 		if ( ! empty($items))
 		{
@@ -323,10 +325,35 @@ class TagManager_Item extends TagManager
 			}
 			else if ($return == 'json')
 			{
-				$str = json_encode($items, TRUE);
+// Ugly process of links in case
+// of link type extend fields
+// @todo: rewrite
 
-				// $str = mb_convert_encoding($str, 'UTF-8', 'UTF-8');
-				// $str = str_replace("'", "&#39;", $str);
+				self::$ci->load->model('extend_fields_model', '', TRUE);
+
+				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+					$base_url = base_url() . Settings::get_lang('current'). '/';
+				else
+					$base_url = base_url();
+
+				foreach($items as $k1 => $item)
+				{
+					foreach($item['fields'] as $k2 => $field)
+					{
+						if ($field['html_element_type'] == 'link')
+						{
+							$items[$k1]['ion_urls'] = array();
+							$links = self::$ci->extend_fields_model->get_extend_link_list_from_content($field['content']);
+
+							foreach($links as $link)
+							{
+								$items[$k1]['ion_urls'][] = $base_url . $link['path'];
+							}
+						}
+					}
+				}
+// End @todo
+				$str = json_encode($items, TRUE);
 				$str = str_replace("'", "\\'", $str);
 			}
 		}
@@ -348,6 +375,7 @@ class TagManager_Item extends TagManager
 	public static function tag_static_item_field(FTL_Binding $tag)
 	{
 		$item = $tag->get('item');
+
 		$field_key = $tag->getName();
 
 		$field = self::_get_item_field($item, $field_key);
@@ -549,6 +577,13 @@ class TagManager_Item extends TagManager
 				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':value', array(__CLASS__, 'tag_static_item_field_value'));
 
 				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':medias', array(__CLASS__, 'tag_extend_field_medias'));
+
+				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':links', array(__CLASS__, 'tag_extend_field_links'));
+				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':links:url', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':links:title', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':links:subtitle', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':links:content', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('static:'.$definition_name.':items:'.$field['name'].':links:medias', array('TagManager_Media', 'tag_medias'));
 			}
 
 			self::$has_item_tags[$id_definition] = TRUE;

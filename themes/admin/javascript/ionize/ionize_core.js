@@ -46,6 +46,30 @@ ION.append({
 		top.location.href = url;
 	},
 
+	/**
+	 * Generates a random hash
+	 *
+	 * @param	size		Size of the returned key
+	 */
+	generateHash: function(size)
+	{
+		var vowels = 'aeiouyAEIOUY';
+		var consonants = 'bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ1234567890';
+
+		var key = '';
+
+		var alt = Date.time() % 2;
+		for (var i = 0; i < size; i++) {
+			if (alt == 1) {
+				key += consonants[(Number.rand() % (consonants.length))];
+				alt = 0;
+			} else {
+				key += vowels[(Number.rand() % (vowels.length))];
+				alt = 1;
+			}
+		}
+		return key;
+	},
 
 	/**
 	 * Generates a random key
@@ -98,15 +122,18 @@ ION.append({
 			el.removeClass(cl);
 		});
 
-		if ($(selector))
+		if (selector != null)
 		{
-			$(selector).addClass(cl);
-		}
-		else
-		{
-			$$(selector).each(function(el){
-				el.addClass(cl);
-			});
+			if ($(selector))
+			{
+				$(selector).addClass(cl);
+			}
+			else
+			{
+				$$(selector).each(function(el){
+					el.addClass(cl);
+				});
+			}
 		}
 	},
 
@@ -275,7 +302,6 @@ String.extend({
 
 	capitalize: function(text)
 	{
-
 		return text.charAt(0).toUpperCase() + text.slice(1);
 	}
 
@@ -303,4 +329,8 @@ FocusTracker = {
 };
 
 Element.implement(FocusTracker);
+
+Object.append(Element.NativeEvents, {
+	dragenter: 2, dragleave: 2, dragover: 2, dragend: 2, drop: 2
+});
 

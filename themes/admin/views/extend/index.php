@@ -7,15 +7,11 @@
 
 ?>
 
-
 <div id="maincolumn">
 
+	<h2 class="main extends"><?php echo lang('ionize_title_extend_fields') ?></h2>
 
-	<!-- Tables of existing extended fields.
-		 Must be named like this : extend_fields_<table_type>
-	-->
-	<div id="extend_fields" class="sortable-container"></div>
-
+	<div id="extend_fields" class="sortable-container mt20"></div>
 
 	<script type="text/javascript">
 
@@ -23,9 +19,7 @@
 		ION.HTML(
 			'extend_field/get_extend_fields',
 			{},
-			{
-				'update': 'extend_fields'
-			}
+			{'update': 'extend_fields'}
 		);
 
 	</script>

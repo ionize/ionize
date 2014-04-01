@@ -21,7 +21,7 @@ License:
 /* Correct the standard .pad class from Mocha 
    so the #sidecolumn doesn't superimpose on #maincolumn
 */
-/*
+
 *,
 *:before,
 *:after {
@@ -29,7 +29,7 @@ License:
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 }
-*/
+
 #mainPanel {
 	background: #fff; 	
 	overflow-x: hidden;
@@ -295,7 +295,6 @@ a.ondrag.enter {
 	color:#fff;
 }
 .onenter {
-	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 	background-color: #df8 !important;
 }
 /* Cursors */
@@ -404,7 +403,7 @@ div.main.subtitle {
 }
 div.main.subtitle.no-icon {
 	font-weight: normal;
-	margin: -18px 0 10px 2px;
+	margin: -15px 0 10px 2px;
 }
 
 
@@ -487,9 +486,11 @@ div.form-bloc {
 	margin:0 10px 10px 0;
 	padding:4px;
 	background: url(../images/bg-gray-light.png);
+/*
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+*/
 }
 .picture:hover {
 	background: url(../images/bg-gray-medium.png);
@@ -543,7 +544,7 @@ ul.list li {
 	overflow: hidden;
 	position: relative;
 	border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;
-	min-height: 18px;
+	min-height: 22px;
 }
 ul.list li strong,
 ul.list li span {
@@ -1263,8 +1264,8 @@ ul.pagination li a.current {
 
 .desktopIcon {
 	float:left;
-	width:60px;
-	height: 80px;
+	width:70px;
+	height: 90px;
 	padding:5px;
 	text-align:center;
 	cursor: pointer;
@@ -1393,11 +1394,10 @@ ul.pagination li a.current {
 	text-align: center;
 }
 #page-analytics .metric strong {
-	font-size: 24px;
-	font-weight: normal;
+	font-size: 16px;
+	font-weight: bold;
 	display: block;
 	text-align: center;
-	line-height: 1.1em;
 }
 
 
@@ -1408,8 +1408,8 @@ label.flag {
 	float:left;
 	margin:0 2px 0 0;
 	padding: 2px;
-	height: 16px;
-	width: 16px;
+	height: 22px;
+	width: 23px;
 	text-align: center;
 	border: solid 1px #f5f5f5;
 	-webkit-border-radius: 14px; -moz-border-radius: 14px; border-radius: 14px;
@@ -1765,7 +1765,7 @@ ol.steps li a:before {
 .pointer{cursor: pointer;}
 .red {color:#b00 !important;}
 .absolute{position: absolute;}
-
+.no-wrap {white-space: nowrap;}
 .unselectable {
 	-moz-user-select: -moz-none;
 	-khtml-user-select: none;
@@ -1792,6 +1792,12 @@ ol.steps li a:before {
 .pl2 { padding-left: 2px !important; }
 .pb2 { padding-bottom: 2px !important; }
 .pr2 { padding-right: 2px !important; }
+
+.p1 { padding: 1px !important; }
+.pt1 { padding-top: 1px !important; }
+.pl1 { padding-left: 1px !important; }
+.pb1 { padding-bottom: 1px !important; }
+.pr1 { padding-right: 1px !important; }
 
 .p3 { padding: 3px !important; }
 .pt3 { padding-top: 3px !important; }
@@ -1978,6 +1984,7 @@ ol.steps li a:before {
 /** Standard sizes */
 .w100p { width: 100% !important;}
 .w95p { width: 95% !important;}
+
 .w10 {	width:10px !important; }
 .w20 {	width:20px !important; }
 .w30 {	width:30px !important; }
@@ -2047,5 +2054,34 @@ ol.steps li a:before {
 .h380 {	height:380px !important; }
 .h400 {	height:400px !important; }
 
-
+.mh10 {	min-height:10px !important; }
+.mh15 {	min-height:15px !important; }
+.mh18 {	min-height:18px !important; }
+.mh20 {	min-height:20px !important; }
+.mh25 {	min-height:25px !important; }
+.mh30 {	min-height:30px !important; }
+.mh40 {	min-height:40px !important; }
+.mh50 {	min-height:50px !important; }
+.mh60 {	min-height:60px !important; }
+.mh70 {	min-height:70px !important; }
+.mh80 {	min-height:80px !important; }
+.mh90 {	min-height:90px !important; }
+.mh100 {min-height:100px !important; }
+.mh120 {min-height:120px !important; }
+.mh140 {min-height:140px !important; }
+.mh150 {min-height:150px !important; }
+.mh160 {min-height:160px !important; }
+.mh170 {min-height:170px !important; }
+.mh180 {min-height:180px !important; }
+.mh200 {min-height:200px !important; }
+.mh220 {min-height:220px !important; }
+.mh240 {min-height:240px !important; }
+.mh260 {min-height:260px !important; }
+.mh280 {min-height:280px !important; }
+.mh300 {min-height:300px !important; }
+.mh320 {min-height:320px !important; }
+.mh340 {min-height:340px !important; }
+.mh360 {min-height:360px !important; }
+.mh380 {min-height:380px !important; }
+.mh400 {min-height:400px !important; }
 

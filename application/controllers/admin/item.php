@@ -13,23 +13,6 @@
 class Item extends MY_admin
 {
 	/**
-	 * Type names
-	 * @var array
-	 */
-	private static $_TYPE_NAMES = array
-	(
-		'1' => 'Input',
-		'2' => 'Textarea',
-		'3' => 'Textarea + Editor',
-		'4' => 'Checkbox',
-		'5' => 'Radio',
-		'6' => 'Select',
-		'7' => 'Date & Time',
-		'8' => 'Medias',
-		'9' => 'Internal Link',
-	);
-
-	/**
 	 * Constructor
 	 *
 	 */
@@ -72,6 +55,24 @@ class Item extends MY_admin
 	public function welcome()
 	{
 		$this->output('item/welcome');
+	}
+
+
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_item($mode=NULL)
+	{
+		$id_item = $this->input->post('id_item');
+
+		$item = $this->item_model->get_item($id_item);
+
+		if ($mode == 'json')
+		{
+			$this->xhr_output($item);
+		}
 	}
 
 
@@ -139,9 +140,6 @@ class Item extends MY_admin
 
 		foreach($fields as &$field)
 		{
-			// Add the type name ("checkbox", etc.)
-			$field['type_name'] = self::$_TYPE_NAMES[$field['type']];
-
 			foreach(Settings::get_languages() as $lang)
 			{
 				$langs = array_values(array_filter($fields_lang, create_function('$row','return $row["id_extend_field"] == "'. $field['id_extend_field'] .'";')));
@@ -232,47 +230,11 @@ class Item extends MY_admin
 	{
 		$id_item_definition = $this->input->post('id_item_definition');
 
-		$posted_id_item = $this->input->post('id_item');
-
-		// Save Element and extend fields
 		$id_item = $this->item_model->save($id_item_definition, $_POST);
 
-		$this->callback = array
-		(
-			// Refresh Instances Container (Static Items main panel)
-			array(
-				'fn' => 'ION.HTML',
-				'args' => array (
-					'item/get_list_from_definition',
-					array( 'id_item_definition' => $id_item_definition),
-					array ( 'update'=> 'itemInstancesContainer' )
-				)
-			),
-			// Refresh List (Link Window, in content)
-			// @todo : manage these events directly from JS
-			array(
-				'fn' => 'staticItemManager.getItemListContent'
-			),
-			array(
-				'fn' => 'staticItemManager.getParentItemList'
-			),
-		);
+		$item = $this->item_model->get(array('id_item' => $id_item) );
 
-		// Re-open the window
-		if ($this->input->post('reload') && ! $posted_id_item)
-		{
-			$this->callback[] = array(
-				'fn' => 'ION.formWindow',
-				'args' => array (
-					'item' . $id_item,
-					'itemForm' . $id_item,
-					'ionize_title_edit_item',
-					'item/edit',
-					array( 'width' => 600, 'height'=>350),
-					array ( 'id_item'=> $id_item )
-				)
-			);
-		}
+		$this->xhr_output($item);
 
 		$this->success(lang('ionize_message_operation_ok'));
 	}
@@ -281,8 +243,10 @@ class Item extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	public function delete($id_item)
+	public function delete()
 	{
+		$id_item = $this->input->post('id_item');
+
 		$item = $this->item_model->get($id_item);
 
 		if ( ! empty($item))
@@ -292,24 +256,11 @@ class Item extends MY_admin
 
 			if ($affected_rows > 0)
 			{
-				// Reload Elements definitions list
-				$this->callback = array
-				(
-					array(
-						'fn' => 'ION.HTML',
-						'args' => array (
-							'item/get_list_from_definition',
-							array( 'id_item_definition' => $item['id_item_definition']),
-							array ( 'update'=> 'itemInstancesContainer' )
-						)
-					)
-				);
 				$this->success(lang('ionize_message_operation_ok'));
 			}
 		}
 
 		$this->error(lang('ionize_message_operation_nok'));
-
 	}
 
 
@@ -320,7 +271,7 @@ class Item extends MY_admin
 	 * Get items which belongs to one item definition
 	 *
 	 */
-	public function get_list_from_definition()
+	public function get_list_from_definition($mode=NULL)
 	{
 		$id_item_definition = $this->input->post('id_item_definition');
 
@@ -330,10 +281,10 @@ class Item extends MY_admin
 			Settings::get_lang('default')
 		);
 
-		$this->template['items'] = $items;
-		$this->template['id_item_definition'] = $id_item_definition;
-
-		$this->output('item/definition/item/list');
+		if ( $mode == 'json')
+		{
+			$this->xhr_output($items);
+		}
 	}
 
 
@@ -388,9 +339,7 @@ class Item extends MY_admin
 
 
 	/**
-	 * Saves extending fields ordering
-	 *
-	 * @param	String		Parent type
+	 * Saves Items ordering
 	 *
 	 * @return	String		Success or error message
 	 *

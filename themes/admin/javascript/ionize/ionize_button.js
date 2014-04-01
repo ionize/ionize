@@ -1,4 +1,245 @@
 
+/**
+ * Button Toolbar Class
+ *
+ * @type {Class}
+ */
+ION.ButtonToolbar = new Class({
+
+	Implements: [Events, Options],
+
+	buttons: [],
+	group: [],
+
+	options:
+	{
+		btnToolbarClass: 'btn-toolbar m0',
+		btnGroupClass: 'btn-group',
+		btnClass: 'button'
+	},
+
+	initialize: function(element, options)
+	{
+		var self = this;
+		this.setOptions(options);
+
+		this.container = $(element);
+
+		this.group = new Element(
+			'div',
+			{'class': this.options.btnToolbarClass}
+		).inject(this.container);
+
+		Array.each(options.buttons, function(btn)
+		{
+			self.addButtonGroup(btn);
+		});
+
+		return this;
+	},
+
+	/**
+	 * Each button is a button group
+	 *
+	 * @param options
+	 */
+	addButtonGroup: function(options)
+	{
+		var self = this;
+
+		var btnGroup = new Element('div', {'class': this.options.btnGroupClass}).inject(this.group, 'bottom');
+
+		var button = new Element('button', {
+			'class': this.options.btnClass,
+			text: options.title
+		}).inject(btnGroup);
+
+		if (options.id) button.setProperty('id', options.id);
+		if (options.class) button.addClass(options.class);
+
+		if (options.icon) new Element('i', {'class':options.icon}).inject(button, 'top');
+
+		// Dropdown Button
+		if (typeOf(options.elements) != 'null' && (options.elements).length > 0)
+		{
+			this._addButtonCaret(button);
+
+			this.addButtonGroupElements(options.elements, btnGroup);
+
+			btnGroup.addEvent('click', function(e)
+			{
+				e.stop();
+				if (this.hasClass('open'))
+				{
+					this.removeClass('open');
+				}
+				else
+				{
+					$$('.' + self.options.btnGroupClass).removeClass('open');
+					this.addClass('open');
+				}
+			});
+		}
+		else
+		{
+			if (typeOf(options.onClick) == 'function')
+			{
+				button.addEvent('click', options.onClick);
+			}
+		}
+
+		if (typeOf(options.onLoaded) == 'function')
+			options.onLoaded(button);
+
+		this.buttons.push(button);
+
+		return btnGroup;
+	},
+
+	_addButtonCaret: function(button)
+	{
+		var caret = new Element('span', {'class':'caret'}).inject(button);
+	},
+
+	addButtonGroupElements: function(elements, btnGroup)
+	{
+		var ul = btnGroup.getElement('ul.dropdown-menu');
+
+		if ( ! ul)
+			ul = new Element('ul', {'class':'dropdown-menu'}).inject(btnGroup);
+
+		Array.each(elements, function(el)
+		{
+			var li = new Element('li').inject(ul);
+			var a = new Element('a', {text: el.title}).inject(li);
+
+			if (typeOf(el.onClick) == 'function')
+			{
+				a.addEvent('click', el.onClick);
+			}
+		});
+	},
+
+	adopt:function(element)
+	{
+		var pos = arguments[1];
+		if ( ! pos) pos = 'bottom';
+
+		if (element.button)
+		{
+			element.button.inject(this.group, pos);
+		}
+	},
+
+	getButtonById: function(id)
+	{
+		var found = null;
+		Array.each(this.buttons, function(btn)
+		{
+			if (btn.id && btn.id == id)
+				found = btn;
+		});
+		return found;
+	},
+
+	addListElementsToButton: function(id_button, elements)
+	{
+		var button = this.getButtonById(id_button);
+
+		if (button != null)
+		{
+			var group = button.getParent('.btn-group');
+
+			if (group)
+			{
+				this.addButtonGroupElements(elements, group);
+			}
+		}
+	}
+});
+
+
+ION.Button = new Class({
+
+	Implements: [Events, Options],
+
+	isEnabled: true,
+
+	options:
+	{
+		baseClass: 'button'
+	},
+
+	initialize: function(options)
+	{
+		var self = this;
+		this.setOptions(options);
+
+		this.button = new Element('a', {
+			'class': this.options.baseClass + ' ' + this.options.class
+		});
+
+		this.buttonTitle = new Element('span', {
+			'text':this.options.title
+		}).inject(this.button);
+
+		if (options.icon)
+			var i = new Element('i', {'class': options.icon}).inject(this.button, 'top');
+
+		if (typeOf(options.onClick) == 'function')
+		{
+			this.options.onClick = options.onClick;
+			this.button.addEvent('click', this.options.onClick);
+		}
+
+		if (options.parent)
+			$(options.parent).adopt(this.button);
+
+		return this;
+	},
+
+	setTitle: function(title)
+	{
+		this.buttonTitle.set('text', title);
+	},
+
+	enable: function()
+	{
+		if ( ! this.isEnabled)
+		{
+			this.button.removeProperty('disabled');
+			this.button.removeClass('disabled');
+			this.button.addEvent('click', this.options.onClick);
+		}
+	},
+
+	disable: function()
+	{
+		this.button.setProperty('disabled', 'disabled');
+		this.button.addClass('disabled');
+		this.button.removeEvents();
+		this.isEnabled = false;
+	},
+
+	hide: function()
+	{
+		this.button.hide();
+	},
+
+	show: function()
+	{
+		this.button.show();
+	}
+});
+
+
+
+/**
+ * Button Class
+ *
+ * @type {*}
+ */
+/*
 ION.Button = new Class({
 })
 // Static methods
@@ -181,3 +422,4 @@ ION.Button = new Class({
 		return ION.Button.options.text_bg_colors;
 	}
 });
+*/

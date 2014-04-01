@@ -35,7 +35,7 @@ class Item_field extends MY_Admin
 	// ------------------------------------------------------------------------
 
 
-	function create()
+/*	function create()
 	{
 		$id_item_definition = $this->input->post('id_item_definition');
 		
@@ -52,7 +52,7 @@ class Item_field extends MY_Admin
 		$this->template['id_item_definition'] = $id_item_definition;
 		
 		$this->output('item/definition/field');
-	}
+	}*/
 
 
 	// ------------------------------------------------------------------------
@@ -125,7 +125,7 @@ class Item_field extends MY_Admin
 				// Save data
 				$this->extend_field_model->save($post, $post);
 
-				$this->callback = array
+/*				$this->callback = array
 				(
 					array(
 						'fn' => 'ION.HTML',
@@ -135,7 +135,7 @@ class Item_field extends MY_Admin
 							array ( 'update'=> 'itemFieldsContainer' )
 						)
 					)
-				);
+				);*/
 				$this->success(lang('ionize_message_item_field_saved'));
 			}
 		}

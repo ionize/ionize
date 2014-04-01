@@ -598,7 +598,7 @@ class Url_model extends Base_model
 	 */
 	public function get_base_url()
 	{
-		if( Authority::can('access', 'admin'))
+		if (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1)
 		{
 			Settings::set_all_languages_online();
 		}
@@ -624,7 +624,7 @@ class Url_model extends Base_model
 	public static function get_home_url()
 	{
 		// Set all languages online if connected as editor or more
-		if( Authority::can('access', 'admin'))
+		if (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1)
 		{
 			Settings::set_all_languages_online();
 		}

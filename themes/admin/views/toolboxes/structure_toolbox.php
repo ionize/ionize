@@ -1,12 +1,14 @@
 
 <div class="toolbox divider">
-	<input type="button" class="toolbar-button" id="btnStructureExpand" value="<?php echo lang('ionize_label_collapse_all'); ?>" />
+	<a class="button light" id="btnStructureExpand">
+		<?php echo lang('ionize_label_collapse_all'); ?>
+	</a>
 </div>
 
 <div class="toolbox ml5" id="toggleHeaderButton">
-	<span class="iconWrapper">
-		<a class="icon screen" title="<?php echo lang('ionize_button_toggle_header'); ?>"></a>
-	</span>
+	<a class="button light" title="<?php echo lang('ionize_button_toggle_header'); ?>">
+		<i class="icon-drag mr0"></i>
+	</a>
 </div>
 
 

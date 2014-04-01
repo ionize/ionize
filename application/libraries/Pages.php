@@ -93,7 +93,9 @@ class Pages
 	public static function init_absolute_urls(&$pages, $lang)
 	{
 		$short_mode = (config_item('url_mode') == 'short') ? TRUE : FALSE;
-	
+
+		$languages = (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1) ? Settings::get_languages() : Settings::get_online_languages();
+
 		foreach ($pages as &$page)
 		{
 			// Set the page complete URL
@@ -150,7 +152,7 @@ class Pages
 								$page['absolute_url'] = ($short_mode) ? $p['url'] : $p['path'];
 						}
 					}
-					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+					if ( count($languages) > 1 OR Settings::get('force_lang_urls') == '1' )
 					{
 						$page['absolute_url'] =  $lang. '/' . $page['absolute_url'];
 					}
@@ -160,7 +162,7 @@ class Pages
 			}
 			else
 			{
-				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+				if ( count($languages) > 1 OR Settings::get('force_lang_urls') == '1' )
 				{
 					// Home page : doesn't contains the page URL
 					if ($page['home'] == 1 )
@@ -205,7 +207,7 @@ class Pages
 			$page_url_langs = explode(';', $page['url_langs']);
 			$page_url_path = explode(';', $page['url_paths']);
 
-			foreach (Settings::get_online_languages() as $language)
+			foreach ($languages as $language)
 			{
 				if ($page['home'] == 1 )
 				{
@@ -236,7 +238,6 @@ class Pages
 					}
 				}
 			}
-			
 		}
 	}
 

@@ -6,9 +6,6 @@
  *		baseUrl:			URL to the website
  *		parent:				type of the parent. 'article', 'page', etc. Used to update the database table.                 
  *		idParent:			ID of the parent element      
- *		pictureContainer:	The picture container DOM element 
- *		musicContainer:		The MP3 list container DOM element
- *		videoContainer:		The video list container DOM element
  *		button:				DOM opener button name
  */
 
@@ -19,12 +16,6 @@ var IonizeMediaManager = new Class(
     options: {
 		parent:			false,
 		idParent:		false,
-	    /*
-		musicArray:		Array('mp3'),					// Array of authorized files extensions
-		pictureArray:	Array('jpg', 'gif', 'png', 'jpeg'),
-		videoArray:		Array('flv', 'fv4'),
-		fileArray:		Array(),
-		*/
 		thumbSize:		120,
 	    resizeOnUpload: false,
 	    uploadAutostart: false,
@@ -124,43 +115,23 @@ var IonizeMediaManager = new Class(
 	 */
 	addMedia:function(file_url, file)
 	{
-/*
-		// File extension
-		var extension = (file_url.substr(file_url.lastIndexOf('.') + 1 )).toLowerCase();
+		var data = {
+			path: file_url,
+			parent: this.parent,
+			id_parent: this.idParent,
+			id_extend: this.id_extend       // can be null
+		};
 
-		// Check media type regarding the extension
+		var url = this.adminUrl + 'media/add_media';
 
-		var type = false;
-		if (this.options.pictureArray.contains(extension)) { type='picture';}
-		if (this.options.musicArray.contains(extension)) { type='music';}
-		if (this.options.videoArray.contains(extension)) { type='video';}
-		if (this.options.fileArray.contains(extension)) { type='file';}
-*/
-		// Media type not authorized : error message
-//		if (type == false)
-//		{
-//			ION.notification('error', Lang.get('ionize_message_media_not_authorized') + ' : ' + extension);
-//		}
-//		else
-//		{
-			var data = {
-				path: file_url,
-				parent: this.parent,
-				id_parent: this.idParent,
-				id_extend: this.id_extend       // can be null
-			};
-
-			var url = this.adminUrl + 'media/add_media';
-
-			new Request.JSON(
-			{
-				'url': url,
-				'method': 'post',
-				'data': data,
-				'onSuccess': this.successAddMedia.bind(this),
-				'onFailure': this.failure.bind(this)
-			}).send();
-//		}
+		new Request.JSON(
+		{
+			'url': url,
+			'method': 'post',
+			'data': data,
+			'onSuccess': this.successAddMedia.bind(this),
+			'onFailure': this.failure.bind(this)
+		}).send();
 	},
 
 	/**
@@ -273,7 +244,7 @@ var IonizeMediaManager = new Class(
 							'mediaForm' + id,
 							filename,           // Window title
 							'media/edit/' + id,
-							{width:520,height:430,resize:false}
+							{width:600,height:430,resize:false}
 						);
 					});
 				}

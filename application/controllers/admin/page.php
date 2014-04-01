@@ -115,6 +115,7 @@ class Page extends MY_admin
 		$datas = isset($views['page']) ? $views['page'] : array() ;
 		if(count($datas) > 0)
 		{
+			$datas = $this->_get_views_dropdown_data($datas, 'Page');
 			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
 			$this->template['views'] = $this->template['single_views'] = form_dropdown('view', $datas, FALSE, 'class="select w160"');
 		}
@@ -123,7 +124,8 @@ class Page extends MY_admin
 		$datas = isset($views['article']) ? $views['article'] : array() ;
 		if(count($datas) > 0)
 		{
-			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
+			$datas = $this->_get_views_dropdown_data($datas, 'Article');
+			$datas = array('0' => lang('ionize_select_default_view')) + $datas;
 			$this->template['article_views'] = form_dropdown('article_view', $datas, FALSE, 'class="select w160"');
 			$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, FALSE, 'class="select w160"');
 		}
@@ -250,6 +252,7 @@ class Page extends MY_admin
 				$datas = isset($views['page']) ? $views['page'] : array() ;
 				if(count($datas) > 0)
 				{
+					$datas = $this->_get_views_dropdown_data($datas, 'Page');
 					$datas = array('' => lang('ionize_select_default_view')) + $datas;
 					$this->template['views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select"');
 					$this->template['single_views'] = form_dropdown('view_single', $datas, $this->template['view_single'], 'class="select"');
@@ -259,15 +262,9 @@ class Page extends MY_admin
 				$datas = isset($views['article']) ? $views['article'] : array() ;
 				if(count($datas) > 0)
 				{
+					$datas = $this->_get_views_dropdown_data($datas, 'Article');
 					$datas = array('' => lang('ionize_select_default_view')) + $datas;
 					$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, $this->template['article_list_view'], 'class="select"');
-				}
-
-				// Dropdown article views (templates)
-				$datas = isset($views['article']) ? $views['article'] : array() ;
-				$datas = array('' => lang('ionize_select_default_view')) + $datas;
-				if(count($datas) > 0)
-				{
 					$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select"');
 				}
 
@@ -1007,6 +1004,48 @@ class Page extends MY_admin
 	protected function _get_resource_name($type, $element, $id)
 	{
 		return $type . '/' . $element . '/' . $id;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected function _get_views_dropdown_data($data, $nogroup_title='Page')
+	{
+		$optgroup = array();
+		$nogroup = array();
+
+		foreach($data as $file => $label)
+		{
+			$arr = explode('/', $file);
+			if (isset($arr[1]))
+			{
+				$group_name = ucwords(str_replace('_', ' ', $arr[0]));
+				if ( ! isset($optgroup[$group_name])) $optgroup[$group_name] = array();
+
+				$optgroup[$group_name][$file] = $label;
+			}
+			else
+			{
+				$nogroup[$file] = $label;
+			}
+		}
+		if ( ! empty($optgroup))
+		{
+			if (empty($nogroup) && count(array_keys($optgroup)) == 1)
+			{
+				$result = array_pop($optgroup);
+			}
+			else
+			{
+				$result = array($nogroup_title => $nogroup);
+				$result = array_merge($result, $optgroup);
+			}
+
+			return $result;
+		}
+		else
+			return $nogroup;
 	}
 
 

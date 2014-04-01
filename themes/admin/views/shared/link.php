@@ -17,7 +17,7 @@
 					<a class="icon unlink right"></a>
 			
 					<!-- Title -->
-					<a id="link_title" style="overflow:hidden;height:16px;display:block;" class="pl5 pr10" title="<?php echo $link; ?>"><?php echo $link; ?></a>
+					<a id="link_title" class="pl5 pr10" title="<?php echo $link; ?>"><?php echo $link; ?></a>
 		
 				</li>
 		

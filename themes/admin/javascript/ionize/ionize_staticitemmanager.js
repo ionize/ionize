@@ -7,7 +7,7 @@ ION.StaticItemManager = new Class({
 	Implements: [Events, Options],
 
 	options: {
-		wId:   'wItem'          // Window ID
+		wId:   'wItems'          // Window ID
 	},
 
 
@@ -25,12 +25,21 @@ ION.StaticItemManager = new Class({
 
 		this.parent =		null;
 		this.id_parent =	null;
-		this.w =            null;       // window
+		this.w =            null;      // window
 		this.wContainer =   null;      // Items container (in window)
-		this.destination =  null;       // Destination container (ID)
+		this.destination =  null;      // Destination container (ID) : In parent panel
+
+		this.definition =   null;
 
 		this.click_timer = null;
 
+		// Extend Manager
+		// this.extendManager = new ION.ExtendManager();
+		this.extendManager = extendManager;
+
+		// console.log('ION.StaticItemManager : initialize()');
+
+		return this;
 	},
 
 	/**
@@ -43,28 +52,332 @@ ION.StaticItemManager = new Class({
 		this.parent = options.parent;
 		this.id_parent = options.id_parent;
 
-		if (typeOf(options.destination) != 'null')
-			this.destination = options.destination;
+		if (typeOf(options.id_definition) != 'null')
+		{
+			this.id_definition = options.id_definition;
+			this.getDefinition();
+		}
+		if (typeOf(options.destination) != 'null') this.destination = options.destination;
 
 		this.setWindowInfo();
 	},
 
 
 	/**
-	 * Edit one item
+	 * Get Definition and stores it
+	 * in this.definition
+	 *
+	 */
+	getDefinition: function()
+	{
+		var self = this;
+		var options = arguments[0];
+
+		if (options && options['id_definition']) this.id_definition = options['id_definition'];
+
+		if (this.id_definition)
+		{
+			ION.JSON(
+				ION.adminUrl + 'item_definition/get',
+				{
+					id_definition: this.id_definition
+				},
+				{
+					onSuccess: function(definition)
+					{
+						self.definition = definition;
+
+						if (options && options.onSuccess)
+							options.onSuccess(definition);
+					}
+				}
+			)
+		}
+	},
+
+
+	/**
+	 * Gets items which belongs to one item definition
+	 * Builds the Items instances list
+	 *
+	 * (backend main definition panel)
+	 *
+	 */
+	getItemsFromDefinition: function()
+	{
+		var self = this;
+
+		if (this.id_definition)
+		{
+			ION.JSON(
+				ION.adminUrl + 'item/get_list_from_definition/json',
+				{
+					id_item_definition: this.id_definition
+				},
+				{
+					onSuccess: function(json)
+					{
+						self.buildDefinitionItemList(json);
+					}
+				}
+			);
+		}
+	},
+
+
+	buildDefinitionItemList: function(json)
+	{
+		var self = this;
+
+		if ($(this.destination))
+		{
+			$(this.destination).empty();
+
+			new ION.List(
+				{
+					container: $(this.destination),
+					items: json,
+					sort: {
+						handler: '.drag',
+						id_key: 'id_item',
+						url: ION.adminUrl + 'item/save_ordering'
+					},
+					elements:[
+						{element: 'span', 'class': 'icon drag left absolute'},                          // Sort
+						{element: 'span', 'class': 'lite drag left absolute ml30', text: 'id_item'},    // Item ID
+						// Delete
+						{
+							element: 'a',
+							'class': 'icon delete right absolute mr10',
+							onClick: function(item)
+							{
+								self.deleteItem(item);
+							}
+						},
+						// Edit
+						{
+							element: 'a',
+							'class': 'icon edit right absolute mr35',
+							onClick: function(item)
+							{
+								self.editItem(item.id_item);
+							}
+						},
+						// Title
+						{
+							// Receives the item and the container's LI
+							element: function(item, container)
+							{
+								Object.each(item.fields, function(f)
+								{
+									if (f.html_element == 'input' && ['text', 'date', 'email', 'tel'].contains(f.html_element_type))
+									{
+										var field = new ION.FormField({
+											container : container,
+											'class':'small mr50 ml30 mb0 mt0',
+											label: {'class': 'lite', text: f.label}
+										});
+
+										if (f.translated == 1)
+										{
+											var w = 100 / Object.getLength(f.lang_data);
+
+											// Each lang div
+											Object.each(f.lang_data, function(data, lang_code)
+											{
+												var div = new Element('div', {'class':'left'}).inject(field.getContainer());
+												div.setStyle('width', w + '%');
+
+												var divImg = new Element('div', {'class':'left w20'}).inject(div);
+												var img = new Element('img', {'class':'mt3'}).inject(divImg);
+												img.setProperty('src', ION.themeUrl + 'styles/original/images/world_flags/flag_'+lang_code+'.gif');
+
+												var content = data.content.length > 20 ? data.content.substring(0,25) + '...' : data.content;
+
+												new Element('div', {
+													'class':'ml30',
+													text: content
+												}).inject(div);
+											})
+										}
+										else
+										{
+											var content = f.content.length > 20 ? f.content.substring(0,20) + '...' : f.content;
+											var span = new Element('span', {text: content});
+											field.adopt(span);
+										}
+										return field;
+									}
+									return null;
+								});
+							}
+						}
+					]
+				}
+			);
+		}
+		else
+		{
+			console.log('ION.StaticItemManager : Container not found : ' + this.destination);
+		}
+	},
+
+
+	createItem: function(id_definition)
+	{
+		//
+		//
+		//
+
+		// Only create one instance if the definition is known
+		if (this.id_definition)
+		{
+			this.getItemForm();
+		}
+	},
+
+
+	/**
+	 * Edit one item instance
 	 *
 	 * @param id
 	 */
 	editItem: function(id)
 	{
-		ION.formWindow(
-			'item' + id,
-			'itemForm' + id,
-			'ionize_title_edit_content_element',
-			'item/edit',
-			{width:600, height:350},
-			{'id_item': id}
+		var self = this;
+
+		ION.JSON(
+			ION.adminUrl + 'item/get_item/json',
+			{
+				id_item: id
+			},
+			{
+				onSuccess: function(item)
+				{
+					self.getDefinition({
+						id_definition: item.id_item_definition,
+						onSuccess: function()
+						{
+							self.getItemForm(id);
+						}
+					});
+				}
+			}
 		);
+	},
+
+
+	getItemForm: function()
+	{
+		var self = this;
+
+		var id_item = arguments[0];
+		if ( ! id_item) id_item = '';
+
+		// Window Title
+		var wTitle = (id_item == '') ? Lang.get('ionize_title_item_new') : Lang.get('ionize_title_edit_item');
+
+		// Window subtitle
+		var subTitle = [];
+		if (id_item != '') subTitle.push({key: Lang.get('ionize_label_id'), value: id_item});
+		subTitle.push({key: Lang.get('ionize_label_key'), value: this.definition.name});
+
+		this._createFormWindow(
+		{
+			id: 'wItem' + id_item,
+			title: wTitle,
+			width: 620,
+			height: 380,
+			contentTitle: this.definition.title_item,
+			contentTitleClass: 'definition items',
+			contentSubTitle: subTitle,
+			form:
+			{
+				id: 'itemForm' + id_item,
+				action: ION.adminUrl + 'item/save',
+				// Tells the form we want to relaod (means one reload button will be created)
+				reload: function(json)
+				{
+					self.editItem(json.id_item);
+					self.getItemsFromDefinition();
+				},
+				onSuccess: function(json)
+				{
+					self.getItemsFromDefinition();
+				}
+			},
+			onDrawEnd: function(w, form)
+			{
+				var options = {
+					parent: 'item',
+					id_field_parent: self.id_definition,
+					destination: form.id
+				};
+
+				if (id_item != '') options['id_parent'] = id_item;
+
+				// Init the ExtendManager
+				self.extendManager.init(options);
+
+				// Get Item Definition Extend Fields
+				self.extendManager.getParentInstances();
+
+				// Added after extendManager
+				new Element('input', {type:'hidden', name:'id_item', value: id_item}).inject(form);
+				new Element('input', {type:'hidden', name:'id_item_definition', value: self.id_definition}).inject(form);
+
+				// Ordering Select
+				var field = new ION.FormField({
+					container: form,
+					label: {
+						text: Lang.get('ionize_label_ordering'),
+						'class': 'small'
+					}
+				});
+
+				var select = new Element('select', {id:'ordering',name:'ordering', 'class':'select'});
+				select.adopt(new Element('option', {value:'first', text:Lang.get('ionize_label_ordering_first')}));
+				select.adopt(new Element('option', {value:'last', text:Lang.get('ionize_label_ordering_last')}));
+
+				field.adopt(select);
+			}
+		});
+	},
+
+	/**
+	 * Delete one item instance
+	 *
+	 * @param id
+	 */
+	deleteItem: function(item)
+	{
+		var self = this;
+		var confirm = arguments[1];
+
+		if ( ! confirm)
+		{
+			var message = Lang.get('ionize_confirm_element_delete');
+			var callback = self.deleteItem.pass([item, true], self);
+			ION.confirmation('requestConfirm' + item.id_item, callback, message);
+		}
+		else
+		{
+			ION.JSON(
+				ION.adminUrl + 'item/delete',
+				{
+					id_item: item.id_item
+				},
+				{
+					onSuccess: function(msg)
+					{
+						if (msg.message_type == 'success')
+						{
+							self.getItemsFromDefinition(item.id_item_definition);
+						}
+					}
+				}
+			);
+		}
 	},
 
 
@@ -76,7 +389,11 @@ ION.StaticItemManager = new Class({
 	{
 		if (this.w != null)
 		{
-			this.w.setInfo(String.capitalize(this.parent) + ' : ' + this.id_parent);
+			if (this.parent && this.id_parent)
+				this.w.setInfo(String.capitalize(this.parent) + ' : ' + this.id_parent);
+			else
+				this.w.setInfo('WARNING : No parent !!!');
+
 		}
 	},
 
@@ -155,6 +472,7 @@ ION.StaticItemManager = new Class({
 
 	/**
 	 * Gets the Items List
+	 * All items for Item "link to parent" window
 	 *
 	 */
 	getItemListContent:function()
@@ -180,6 +498,7 @@ ION.StaticItemManager = new Class({
 
 	/**
 	 * Build the Items list HTML
+	 * for the Items instances Drag'n'drop window to parent
 	 *
 	 * @param json
 	 */
@@ -216,58 +535,9 @@ ION.StaticItemManager = new Class({
 					// Items List
 					Object.each(definition.items, function(item)
 					{
-						var id = item.id_item;
-
-						// Only display if the item has at least one field set
-						if (item.fields.length > 0)
-						{
-							var li = new Element('li', {
-								'class': 'list pointer',
-								'data-id': item.id_item,
-								'data-id-definition': item.id_item_definition
-							}).inject(ul, 'bottom');
-
-							var field = null;
-
-							// Get the field declared as main
-							Object.each(item.fields, function(f) { if (f.main == 1) field = f; });
-
-							// Not found : Get the 1st one.
-							if (field == null) field = item.fields[0];
-
-							// Title
-							var title = new Element('a', {
-								'class': 'left title unselectable',
-								'text': field.content
-							}).inject(li);
-
-							// Add edit icon
-							var edit = new Element('a', {'class':'icon edit right'}).inject(li);
-							edit.addEvent('click', function(){ self.editItem(id); })
-
-							// Double click on item
-							li.addEvents({
-								'click': function(e)
-								{
-									clearTimeout(self.click_timer);
-									self.click_timer = self.relayItemListClick.delay(700, self, [e, this, 1]);
-								},
-								'dblclick': function(e)
-								{
-									clearTimeout(self.click_timer);
-									self.click_timer = self.relayItemListClick.delay(0, self, [e, this, 2]);
-								}
-							});
-
-							ION.addDragDrop(
-								li,
-								'#splitPanel_mainPanel_pad.pad', 	    // Droppables class
-								function(element, droppable, event)
-								{
-									self.linkItemtoParent(element.getProperty('data-id'));
-								}
-							);
-						}
+						var li = self._getInstanceDomElement(item);
+						if (li != null)
+							li.inject(ul, 'bottom');
 					});
 				}
 			});
@@ -280,6 +550,71 @@ ION.StaticItemManager = new Class({
 				'itemsAccordion'
 			);
 		}
+	},
+
+
+	_getInstanceDomElement: function(item)
+	{
+		var self = this;
+		var id = item.id_item;
+
+		var li = null;
+
+		// Only display if the item has at least one field set
+		if (item.fields.length > 0)
+		{
+			li = new Element('li', {
+				'class': 'list pointer',
+				'data-id': item.id_item,
+				'data-id-definition': item.id_item_definition
+			});
+
+			var field = null;
+
+			// Get the field declared as main
+			Object.each(item.fields, function(f) { if (f.main == 1) field = f; });
+
+			// Not found : Get the 1st one.
+			if (field == null) field = item.fields[0];
+
+			// Title
+			var title = new Element('a', {
+				'class': 'left title unselectable',
+				'text': field.content
+			}).inject(li);
+
+			// Add edit icon
+			var edit = new Element('a', {'class':'icon edit right'}).inject(li);
+			edit.addEvent('click', function()
+			{
+				self.editItem(id);
+			});
+
+			// Double click on item
+			li.addEvents({
+				'click': function(e)
+				{
+					clearTimeout(self.click_timer);
+					self.click_timer = self.relayItemListClick.delay(700, self, [e, this, 1]);
+				},
+				'dblclick': function(e)
+				{
+					clearTimeout(self.click_timer);
+					self.click_timer = self.relayItemListClick.delay(0, self, [e, this, 2]);
+				}
+			});
+
+			ION.addDragDrop(
+				li,
+				'#splitPanel_mainPanel_pad.pad', 	    // Droppables class
+				function(element)
+				{
+					self.linkItemtoParent(element.getProperty('data-id'));
+				}
+			);
+		}
+
+		return li;
 	},
 
 
@@ -409,7 +744,7 @@ ION.StaticItemManager = new Class({
 
 					// UL
 					var ul = new Element('ul', {
-						'class':'list pb15 pl10'
+						'class':'list pb15 pl10 relative'
 					}).inject(tw, 'bottom');
 
 					// Items List
@@ -457,7 +792,10 @@ ION.StaticItemManager = new Class({
 
 							// Add edit icon
 							var edit = new Element('a', {'class':'icon edit right mr10'}).inject(li);
-							edit.addEvent('click', function(){ self.editItem(id); });
+							edit.addEvent('click', function()
+							{
+								self.editItem(id);
+							});
 						}
 					});
 
@@ -468,7 +806,7 @@ ION.StaticItemManager = new Class({
 						revert: true,
 						handle: '.drag',
 						clone: true,
-						constrain: true,
+						constrain: false,
 						opacity: 0.5,
 						onStart:function(el, clone)
 						{
@@ -601,5 +939,153 @@ ION.StaticItemManager = new Class({
 			this.linkItemtoParent(id_item);
 		}
 		else{}
+	},
+
+	_createWindow: function(opt)
+	{
+		var options = {
+			container: document.body,
+			content:{},
+			y: 40,
+			maximizable: true,
+			contentBgColor: '#fff'
+		};
+
+		Object.append(options, opt);
+
+		if (options.contentTitle)
+		{
+			var contentTitleClass = (options.contentTitleClass) ? ' ' + options.contentTitleClass : '';
+
+			var ode = (options.onDrawEnd) ? options.onDrawEnd : null;
+
+			options['onDrawEnd'] = function(w)
+			{
+				var h2 = new Element('h2', {
+					'class': 'main' + contentTitleClass,
+					'text' : options.contentTitle
+				}).inject(w.el.content);
+
+				// Subtitle is one array of objects
+				if (options.contentSubTitle)
+				{
+					var subtitle = new Element('div', {
+						'class': 'main subtitle'
+					}).inject(w.el.content, 'bottom');
+
+					var p = new Element('p').inject(subtitle);
+
+					Array.each(options.contentSubTitle, function(sub, idx)
+					{
+						if (idx > 0)
+							new Element('span', {'text': ' | '}).inject(p);
+
+						new Element('span', {'class': 'lite', 'text': sub.key + ' : ' }).inject(p);
+						new Element('span', {'text': sub.value}).inject(p);
+					});
+
+					// Options onDrawEnd
+					if (ode != null) ode(w);
+				}
+			}
+		}
+
+		var w = new MUI.Window(options);
+
+		return w;
+	},
+
+	/**
+	 *
+	 * @param opt
+	 * @returns {MUI.Window}
+	 * @private
+	 */
+	_createFormWindow: function(opt)
+	{
+		var ode = (opt.onDrawEnd) ? opt.onDrawEnd : null;
+
+		var form = null;
+
+		if (opt.form)
+		{
+			var options =
+			{
+				onDrawEnd: function(w)
+				{
+					form = new Element('form', {
+						id: opt.form.id,
+						'class': opt.form.class,
+						action: opt.form.action,
+						method: 'post'
+					}).inject(w.el.content);
+
+					var divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
+
+					var saveButton = new Element('button', {
+						'class':'button right yes',
+						id: 'save' + opt.form.id,
+						text: Lang.get('ionize_button_save_close')
+					}).inject(divButtons);
+
+					if (opt.form.reload)
+					{
+						var saveReloadButton = new Element('button', {
+							'class':'button blue right ml10',
+							text: Lang.get('ionize_button_save')
+						}).inject(divButtons);
+
+						saveReloadButton.addEvent('click', function()
+						{
+							ION.JSON(
+								opt.form.action,
+								form,
+								{
+									onSuccess:function(json)
+									{
+										w.close();
+										opt.form.reload(json);
+									}
+								}
+							);
+						});
+					}
+
+					var cancelButton = new Element('button', {
+						'class':'button right red',
+						id: 'cancel' + opt.form.id,
+						text: Lang.get('ionize_button_cancel')
+					}).inject(divButtons);
+
+					cancelButton.addEvent('click', function(){ w.close(); });
+
+					ION.setFormSubmit(
+						form,              // Form Object
+						saveButton.id,     // Save button ID
+						form.action,       // Save URL
+						null,              // Confirmation Object (null in this case, no conf. to open one window)
+						opt.form           // Options, to pass onSuccess() method
+					);
+
+					// Options onDrawEnd : Add of the form
+					if (ode != null) ode(w, form);
+				}
+			}
+		}
+		else
+		{
+			options = {};
+		}
+
+		Object.append(opt, options);
+
+		var w = this._createWindow(opt);
+
+		var response = {
+			w : w,
+			form: form
+		};
+
+		return w;
 	}
 });

@@ -1,114 +1,81 @@
-/**
- * Ionize User Object
- *
- * Current connected user
- *
- */
 
-Ionize.User = (Ionize.User || {});
+ION.UserClass = new Class({
 
-Ionize.User.append = function(hash){
-	Object.append(Ionize.User, hash);
-}.bind(Ionize.User);
+	Implements: [Options, Class.Singleton, Events, Class.Binds],
 
-Ionize.User.append(
-{
-	user: null,                     // User's object
-	authorizations: new Array(),    // User's Authorizations
+	user: null,
 
-	initialize: function(options)
+	/**
+	 * Singleton
+	 *
+	 * @returns {*}
+	 */
+	initialize: function()
 	{
-		this.getUser();
+		return this.check() || this.init();
+	},
+
+	init:function()
+	{
+		this.user = null;
+		this.getLoggedUser();
 		return this;
 	},
 
 	getLoggedUser: function()
 	{
-		var user = null;
-
+		var self = this;
 		new Request.JSON(
 		{
-			url: admin_url + 'user/get_current_user',
+			url: ION.adminUrl + 'user/get_current_user',
 			method: 'post',
 			loadMethod: 'xhr',
 			async: false,
-			onFailure: function(xhr)
+			onFailure: function()
 			{
 				return null;
 			},
-			onSuccess: function(responseJSON)
+			onSuccess: function(json)
 			{
-				user = responseJSON;
+				self.user = json;
+				self.fireEvent('onUserLoaded');
 			}
 		}).send();
+	},
 
-		return user;
+	// @todo : write
+	isLoggedIn: function()
+	{
+
 	},
 
 	getUser: function()
 	{
-		if (typeOf(this.user) == 'null')
-		{
-			this.user = this.getLoggedUser();
-		}
 		return this.user;
-	},
-
-	getAuthorizations: function()
-	{
-		/*
-		 * Needs to be written.
-		 * Will be written with the Ionize's RBAC implementation
-		 *
-		 */
-		/*
-		if (typeOf(this.user) != 'null')
-		{
-			var self = this;
-			new Request.JSON(
-			{
-				url: admin_url + 'user/get_user_authorizations',
-				method: 'post',
-				loadMethod: 'xhr',
-				async: false,
-				onFailure: function(xhr)
-				{
-					console.log('Ionize.User->getAuthorizations() : Authorizations not found OR not connected');
-				},
-				onSuccess: function(responseJSON)
-				{
-					self.authorizations = responseJSON;
-					return self.user;
-				}
-			}).send();
-		}
-		*/
-		return false;
-	},
-
-	/**
-	 * Returns one field from the user object
-	 * @param   field
-	 * @return  {*}
-	 *
-	 */
-	get: function(field)
-	{
-		if (typeOf(this.user) != 'null')
-		{
-			if (typeOf(this.user[field]) != 'null')
-			{
-				return this.user[field];
-			}
-		}
-		console.log('Ionize.User->get(' + field + ') : ' + 'not found');
-		return false;
 	},
 
 	getRole: function()
 	{
 		if (typeOf(this.user.role) != 'null')
 			return this.user.role;
+		return null;
+	},
+
+
+	is: function(role_codes)
+	{
+		if (typeOf(role_codes) == 'string')
+			role_codes = [role_codes];
+
+		var role = this.getRole();
+
+		if (role != null)
+		{
+			if (role_codes.contains(role.role_code))
+				return true;
+		}
+
+		return false;
 	},
 
 	getGroupField: function(field)
@@ -117,16 +84,16 @@ Ionize.User.append(
 		{
 			if (typeOf(this.user.group[field]) != 'null')
 				return this.user.group[field];
-			return false;
 		}
+
+		return null;
 	},
 
-	/**
-	 * Return the current user's level
-	 *
-	 * @return {*}
-	 *
-	 */
+	get: function(key)
+	{
+		return (typeOf(this.user[key]) != 'null') ? this.user[key] : null;
+	},
+
 	getGroupLevel:function()
 	{
 		return this.getGroupField('level');
@@ -142,4 +109,10 @@ Ionize.User.append(
 		return this.get('username');
 	}
 });
+
+
+
+
+
+
 

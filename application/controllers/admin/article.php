@@ -185,7 +185,7 @@ class Article extends MY_admin
 			// Main Parent page ID
 			if ( empty($article['data']['page_ids']))
 			{
-				$article['data']['id_page'] = '0';
+				$article['data']['page_ids'] = '0';
 			}
 			else
 			{

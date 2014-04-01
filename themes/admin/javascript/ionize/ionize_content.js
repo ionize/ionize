@@ -100,8 +100,6 @@ ION.append({
 	},
 
 
-
-
 	/**
 	 * Init a module toolbox
 	 *
@@ -302,18 +300,27 @@ ION.append({
 		}
 	},
 
-	initFormAutoGrow: function(formId)
+	initFormAutoGrow: function(parent)
 	{
-		var selector = '.autogrow';
-		if (typeOf(formId) != 'null')
-			selector = '#' + formId + ' .autogrow';
+		var elements = null;
 
-		$$(selector).each(function(item){
+		if (typeOf(parent) == 'string')
+			elements = $$('#' + parent + ' .autogrow');
+		else if (typeOf(parent) == 'object')
+			elements = parent.getElements('.autogrow');
+		else
+			elements = $$('.autogrow');
+
+		if (elements != null)
+		{
+			Array.each(elements, function(item){
 			new Form.AutoGrow(item, {
 				minHeightFactor: 1
 			});
 		});
+		}
 	},
+
 
 	setButtonLabel: function(button, label, icon)
 	{
@@ -431,62 +438,37 @@ ION.append({
 	 * @param	String		PHP Date format
 	 *
 	 */
-	initDatepicker: function(dateFormat)
+	initDatepicker: function(dateFormat, options)
 	{
-		/**
-		 * Implementation of https://github.com/arian/mootools-datepicker
-		 * Not useful because no inputOutputFormat capabilities
-		 *
 		if (ION.datePicker)
 		{
 			ION.datePicker.close();
-			ION.datePicker.detach($$('input.date'));
 		}
 		else
 		{
-			ION.datePicker = new Picker.Date($$('.date'), {
-				timePicker: true,
-				positionOffset: {x: -30, y: 0},
-				pickerClass: 'datepicker_dashboard',
-				format: '%d.%m.%Y %H:%M:%S',
-				useFadeInOut: !Browser.ie,
-				draggable: false,
-				onSelect: function(date,all)
-				{
-					var inputs = ((this.input && !all) ? [this.input] : this.inputs);
-					
-					inputs.each(function(input){
-						input.set('value', 'toto');
-					}, this);
-
-				}
-			});
-		}
-		ION.datePicker.attach($$('input.date'));
-		*/
-		
 		if (typeOf(dateFormat) == 'null') dateFormat = '%d.%m.%Y';
-		
-		if (ION.datePicker)
-		{
-			ION.datePicker.close();
-		}
-		else
-		{
 			var date_format = (dateFormat).replace(/%/g, '');
 
-			ION.datePicker = new DatePicker('.date', {
+			if (typeOf(options) == 'null') options = {};
+
+			var oTimePicker = (options.timePicker) ? options.timePicker : false;
+			var oInputFormat = (oTimePicker == true) ? date_format + ' H:i:s' : date_format;
+			var oOutputFormat = (oTimePicker == true) ? 'Y-m-d H:i:s' : 'Y-m-d';
+
+			ION.datePicker = new DatePicker('input.date', {
 				pickerClass: 'datepicker_dashboard', 
-				timePicker:true, 
-				format: date_format + ' H:i:s', 
-				inputOutputFormat: date_format + ' H:i:s', 
+				timePicker: oTimePicker,
+				format: oInputFormat,
+				inputOutputFormat: oOutputFormat,
 				allowEmpty:true, 
-				useFadeInOut:false, 
-				positionOffset: {x:-60,y:0},
+				useFadeInOut:false
+			//	positionOffset: {x:-60,y:0},
+				/*
 				onSelect: function(d, input)
 				{
-					// console.log(input.getProperty('data-item'));
+					console.log(input.getProperty('data-item'));
 				}
+				*/
 			});
 		}
 
@@ -682,7 +664,11 @@ ION.append({
 			container: $('desktop'),
 			dropCallbacks: dropCallbacks,
 			
-			onSnap: function(el) { el.addClass('move'); },
+			onSnap: function(el) {
+				el.addClass('move');
+				if (typeOf(MUI.Windows.highestZindex) != 'null')
+					el.setStyle('z-index', (MUI.Windows.highestZindex).toInt() + 1);
+			},
 			
 			onDrag: function(element, event)
 			{
@@ -700,16 +686,16 @@ ION.append({
 					}
 					else
 					{
-					/* For each droppable class, a function need to be executed
-					 * ION.addDragDrop(
-					 *		el, 
-					 *		'.drop-class-1, .drop-class-2',		// this.options.droppables, string of comma separated classes names
-					 *		'drop-func-1, drop-func-2'			// this.options.dropCallbacks, string of functions names
-					 * );
-					 *
-					 */
-					var dropCB = this.options.dropCallbacks;
-					
+						/* For each droppable class, a function need to be executed
+						 * ION.addDragDrop(
+						 *		el,
+						 *		'.drop-class-1, .drop-class-2',		// this.options.droppables, string of comma separated classes names
+						 *		'drop-func-1, drop-func-2'			// this.options.dropCallbacks, string of functions names
+						 * );
+						 *
+						 */
+						var dropCB = this.options.dropCallbacks;
+
 						if (typeOf(dropCB) == 'array')
 						{
 							var obj = dropCB[1];
@@ -723,48 +709,48 @@ ION.append({
 						else
 						{
 							// New method : attach the callback to the element
-					var callbacks = element.retrieve('dropCallbacks');
+							var callbacks = element.retrieve('dropCallbacks');
 
-					if (typeOf(callbacks) != 'null')
-					{
+							if (typeOf(callbacks) != 'null')
+							{
 								var funcNames = Object.keys(callbacks);
 								Array.each(funcNames, function(funcName)
-						{
-							if (droppable.hasClass(funcName))
-							{
-								dropCB = callbacks[funcName];
-								dropCB.delay(100, null, [element, droppable, event]);
-						//		ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
+								{
+									if (droppable.hasClass(funcName))
+									{
+										dropCB = callbacks[funcName];
+										dropCB.delay(100, null, [element, droppable, event]);
+								//		ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
+									}
+								});
 							}
-						});
-					}
-					else
-					{					
-						if (dropCB.contains(',') && this.dropClasses.length > 1)
-						{
-							var onDrops = (dropCB).replace(' ','').split(',');
-							var index = false;
-							
-							// Search the method to execute.
-							(this.dropClasses).each(function(cl, idx)
+							else
 							{
-								cl = cl.replace('.', '');
-								if (droppable.hasClass(cl)) { index = idx;}
-							});
-							if (typeOf(onDrops[index]) != 'null')
-							{
-								ION.execCallbacks({'fn':onDrops[index], 'args':[element, droppable, event] });
+								if (dropCB.contains(',') && this.dropClasses.length > 1)
+								{
+									var onDrops = (dropCB).replace(' ','').split(',');
+									var index = false;
+
+									// Search the method to execute.
+									(this.dropClasses).each(function(cl, idx)
+									{
+										cl = cl.replace('.', '');
+										if (droppable.hasClass(cl)) { index = idx;}
+									});
+									if (typeOf(onDrops[index]) != 'null')
+									{
+										ION.execCallbacks({'fn':onDrops[index], 'args':[element, droppable, event] });
+									}
+								}
+								else if (typeOf(dropCB) == 'string')
+								{
+									ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
+								}
+								else
+								{
+									ION.execCallbacks(dropCB);
+								}
 							}
-						}
-						else if (typeOf(dropCB) == 'string')
-						{
-							ION.execCallbacks({'fn':dropCB, 'args':[element, droppable, event] });
-						}
-						else
-						{
-							ION.execCallbacks(dropCB);
-						}
-					}
 						}
 					}
 					
@@ -1659,6 +1645,9 @@ ION.append({
 	 */
 	initCorrectUrl: function(src, target)
 	{
+		var sep = arguments[2];
+		if ( ! sep) sep = '-';
+
 		var src = $(src);
 		var target = $(target);
 		
@@ -1666,7 +1655,7 @@ ION.append({
 		{
 			src.addEvent('keyup', function(e)
 			{
-				var text = ION.correctUrl(this.value);
+				var text = ION.correctUrl(this.value, sep);
 				target.setProperty('value', text);
 			});
 		}
@@ -1679,6 +1668,9 @@ ION.append({
 	 */
 	correctUrl: function(text)
 	{
+		var sep = arguments[1];
+		if ( ! sep) sep = '-';
+
 		var text = text.toLowerCase();
 
 		/*
@@ -1766,7 +1758,7 @@ ION.append({
 
 		var a = {
 			// Non char
-			" ":"-","&":"-",":":"-",
+			" ":sep,"&":sep,":":sep,
 
 			// Latin
 			"à":"a","ä":"a","â":"a","ā":"a","č":"c","é":"e","è":"e","ë":"e","ê":"e","ï":"i","î":"i","ì":"i","ô":"o","ö":"o","ò":"o","ü":"u","û":"u","ù":"u","µ":"u","ç":"c","ş":"s","š":"s","ı":"i","ğ":"g",

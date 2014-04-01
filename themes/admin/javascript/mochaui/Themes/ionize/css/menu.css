@@ -36,8 +36,8 @@
 .toolMenu ul li a {
 	color: #D4DCE4;
 	font-weight: normal;
-	height: 24px;
-	padding: 5px 10px 0;
+	height: 30px;
+	padding: 6px 10px 5px;
 }
 .toolMenu ul li a:hover { color: #fff }
 .toolMenu ul li a.arrow-right,
@@ -54,6 +54,7 @@
 	width: 15em;
 	left: -999em;
 	z-index: 8000;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
 }
 .toolMenu li.hover ul ul,
 .toolMenu li.hover ul ul ul { left: -999em }
@@ -61,7 +62,7 @@
 .toolMenu li ul li a {
 	position: relative;
 	padding: 1px 1em 1px 2em;
-	width: 12em;
+	width: 14.5em;
 	height: auto;
 	color: #3f3f3f;
 	font-weight: normal;

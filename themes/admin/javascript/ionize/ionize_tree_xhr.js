@@ -296,7 +296,7 @@ ION.TreeXhr = new Class({
 				if (element.link != '') icon.addClass('link');
 
 				// Flag span : User's flag first, then Type flag
-				var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
+				var flag = (element.type_flag) ? element.type_flag : '0';
 				if (typeOf(flag) == 'null') flag = 0;
 				var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
 				if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
@@ -821,7 +821,7 @@ ION.BrowserTreeXhr = new Class({
 			if (element.link != '') icon.addClass('link');
 
 			// Flag span : User's flag first, then Type flag
-			var flag = (element.flag == '0' && element.type_flag != '') ? element.type_flag : element.flag;
+			var flag = (element.type_flag) ? element.type_flag : '0';
 			var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
 			if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
 

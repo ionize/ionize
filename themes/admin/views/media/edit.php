@@ -34,7 +34,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 	<?php if($type == 'music') :?>
 		<div class="left">
 			<div class="ui360 ui360-vis small"">
-				<a id="sound<?php echo $id_media ?>" href="<?php echo base_url().$path; ?>" target="_blank"><ion:title /></a>
+				<a id="sound<?php echo $id_media ?>" href="<?php echo base_url().$path; ?>" target="_blank"><?php echo $path ?></a>
 			</div>
 			<script type="text/javascript">
 				threeSixtyPlayer.init({'class':'ui360-vis small'});
@@ -78,9 +78,10 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 	<?php endif ;?>
 
 
-<!--	<h3><?php /*echo lang('ionize_title_informations'); */?></h3>
--->
 	<div style="margin-left:<?php echo $margin; ?>;">
+
+		<p>ID : <span class="lite"><?php echo $id_media ?></span></p>
+
 		<?php if($provider != '') :?>
 
 			<p class="a-break">
@@ -142,7 +143,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 	<fieldset id="picture-lang">
 		
 		<!-- Tabs -->
-		<div id="mediaTab<?php echo $UNIQ; ?>" class="mainTabs">
+		<div id="mediaTab<?php echo $id_media; ?>" class="mainTabs">
 			<ul class="tab-menu">
 				<?php foreach(Settings::get_languages() as $l) :?>
 					<li class="tab_media<?php if($l['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $l['lang']; ?>"><a><span><?php echo ucfirst($l['name']); ?></span></a></li>
@@ -158,14 +159,14 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 		</div>
 
 
-		<div id="mediaTabContent<?php echo $UNIQ; ?>">	
+		<div id="mediaTabContent<?php echo $id_media; ?>">
 
 			<!-- Translated Meta data -->
 			<?php foreach(Settings::get_languages() as $language) :?>
 
 				<?php $lang_code = $language['lang']; ?>
 
-				<div class="tabcontent<?php echo $UNIQ; ?>">
+				<div class="tabcontent<?php echo $id_media; ?>">
 
 					<!-- title -->
 					<dl class="small">
@@ -210,45 +211,12 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 						</dd>
 					</dl>
 
-					<!-- extend fields goes here... -->
-					<?php foreach($extend_fields as $extend_field) :?>
-						<?php if ($extend_field['translated'] == '1') :?>
-							<?php
-							$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
-							$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
-							?>
-
-							<dl class="small">
-								<dt>
-									<label for="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
-								</dt>
-								<dd>
-									<?php if ($extend_field['type'] == '1') :?>
-										<input id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="inputtext w340" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" value="<?php echo $extend_field[$lang_code]['content']; ?>" />
-									<?php endif ;?>
-
-                                    <!-- Textarea -->
-									<?php if ($extend_field['type'] == '2') :?>
-                                    <textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="text autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>"><?php echo $extend_field[$lang_code]['content']; ?></textarea>
-									<?php endif ;?>
-
-                                    <!-- Textarea with editor -->
-									<?php if ($extend_field['type'] == '3') :?>
-                                    <textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" class="smallTinyTextarea h80" name="cf_<?php echo $extend_field['id_extend_field']; ?>_<?php echo $lang_code; ?>" rel="<?php echo $lang_code; ?>"><?php echo $extend_field[$lang_code]['content']; ?></textarea>
-									<?php endif ;?>
-
-								</dd>
-							</dl>
-
-						<?php endif ;?>
-					<?php endforeach ;?>
-
 				</div>
 			<?php endforeach ;?>
 
 			<!-- Thumbnails preferences -->
 			<?php if($type == 'picture') :?>
-				<div class="tabcontent<?php echo $UNIQ; ?>">
+				<div class="tabcontent<?php echo $id_media; ?>">
 					
 					<!-- Thumbnail square crop area -->
 					<dl class="small">
@@ -263,7 +231,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 				</div>
 			<?php endif ;?>
 			
-			<div class="tabcontent<?php echo $UNIQ; ?>">
+			<div class="tabcontent<?php echo $id_media; ?>">
 
 				<?php
 				/*
@@ -283,7 +251,6 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 						</dd>
 					</dl>
 				<?php endif ;?>
-
 
 				<!-- Copyright -->
 				<dl class="small">
@@ -312,132 +279,9 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 					</dd>
 				</dl>
 
-
-				<!-- Extend Fields (Main) -->
-				<?php foreach($extend_fields as $extend_field) :?>
-				
-					<?php if ($extend_field['translated'] != '1') :?>
-						<?php
-						$label =  ! empty($extend_field['label'])  ? $extend_field['label'] : $extend_field['name'];
-						$label_title = $extend_field['name'] . ( !empty($extend_field['description']) ? ' : ' .$extend_field['description'] : '');
-						?>
-
-						<dl class="small">
-							<dt>
-								<label for="cf_<?php echo $extend_field['id_extend_field']; ?>" title="<?php echo $label_title; ?>"><?php echo $label; ?></label>
-							</dt>
-							<dd>
-								<?php
-									$extend_field['content'] = ($extend_field['content'] != '') ? $extend_field['content'] : $extend_field['default_value'];
-								?>
-							
-								<?php if ($extend_field['type'] == '1') :?>
-									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w200" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content']; ?>" />
-								<?php endif ;?>
-								
-                                <!-- Textarea -->
-								<?php if ($extend_field['type'] == '2') :?>
-                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="autogrow inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>"><?php echo $extend_field['content']; ?></textarea>
-								<?php endif ;?>
-
-                                <!-- Textarea with editor -->
-								<?php if ($extend_field['type'] == '3') :?>
-                                	<textarea id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="smallTinyTextarea inputtext" name="cf_<?php echo $extend_field['id_extend_field']; ?>" rel="details"><?php echo $extend_field['content']; ?></textarea>
-								<?php endif ;?>
-
-
-								<!-- Checkbox -->
-								<?php if ($extend_field['type'] == '4') :?>
-									
-									<?php
-										$pos = 		explode("\n", $extend_field['value']);
-										$saved = 	explode(',', $extend_field['content']);
-									?>
-									<?php
-										$i = 0; 
-										foreach($pos as $values)
-										{
-											$vl = explode(':', $values);
-											$key = $vl[0];
-											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-			
-											?>
-											<input type="checkbox" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>[]" value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?>checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
-											<?php
-											$i++;
-										}
-									?>
-								<?php endif ;?>
-								
-								<!-- Radio -->
-								<?php if ($extend_field['type'] == '5') :?>
-									
-									<?php
-										$pos = explode("\n", $extend_field['value']);
-									?>
-									<?php
-										$i = 0; 
-										foreach($pos as $values)
-										{
-											$vl = explode(':', $values);
-											$key = $vl[0];
-											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-			
-											?>
-											<input type="radio" id= "cf_<?php echo $extend_field['id_extend_field'].$i; ?>" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $key; ?>" <?php if ($extend_field['content'] == $key) :?> checked="checked" <?php endif ;?>><label for="cf_<?php echo $extend_field['id_extend_field'] . $i; ?>"><?php echo $value; ?></label></input><br/>
-											<?php
-											$i++;
-										}
-									?>
-								<?php endif ;?>
-								
-								<!-- Selectbox -->
-								<?php if ($extend_field['type'] == '6' && !empty($extend_field['value'])) :?>
-									
-									<?php									
-										$pos = explode("\n", $extend_field['value']);
-										$saved = 	explode(',', $extend_field['content']);
-									?>
-									<select name="cf_<?php echo $extend_field['id_extend_field']; ?>">
-									<?php
-										$i = 0; 
-										foreach($pos as $values)
-										{
-											$vl = explode(':', $values);
-											$key = $vl[0];
-											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
-											?>
-											<option value="<?php echo $key; ?>" <?php if (in_array($key, $saved)) :?> selected="selected" <?php endif ;?>><?php echo $value; ?></option>
-											<?php
-											$i++;
-										}
-									?>
-									</select>
-								<?php endif ;?>
-								
-								
-								<!-- Date & Time -->
-								<?php if ($extend_field['type'] == '7') :?>
-								
-									<input id="cf_<?php echo $extend_field['id_extend_field']; ?>" class="inputtext w120 date" type="text" name="cf_<?php echo $extend_field['id_extend_field']; ?>" value="<?php echo $extend_field['content']; ?>" />
-									<a class="icon clearfield date" data-id="cf_<?php echo $extend_field['id_extend_field']; ?>"></a>
-
-								<?php endif ;?>
-								
-							</dd>
-						</dl>	
-							
-					<?php endif ;?>
-
-					<?php endforeach ;?>
-
 			</div>
-		
 		</div>
-		
 	</fieldset>
-
-
 </form>
 
 <div class="buttons">
@@ -448,6 +292,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 
 <script type="text/javascript">
 
+	var id_media = '<?php echo $id_media; ?>';
 	/**
 	 * Calendars init
 	 *
@@ -457,21 +302,21 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 	/**
 	 * Clear Field Init
 	 */
-	ION.initClearField('#mediaForm<?php echo $id_media; ?>');
+	ION.initClearField('#mediaForm' + id_media);
 
 	/** 
 	 * Tabs init
 	 *
 	 */
-	new TabSwapper({tabsContainer: 'mediaTab<?php echo $UNIQ; ?>', sectionsContainer: 'mediaTabContent<?php echo $UNIQ; ?>', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent<?php echo $UNIQ; ?>' });
-
-    /**
-     * TinyEditors
-     * Must be called after tabs init.
-     *
-     */
-    ION.initTinyEditors('.tab_media', '#mediaTabContent<?php echo $UNIQ; ?> .tinyTextarea');
-    ION.initTinyEditors('.tab_media', '#mediaTabContent<?php echo $UNIQ; ?> .smallTinyTextarea', 'small', {'height':80});
+	new TabSwapper({
+		tabsContainer: 'mediaTab' + id_media,
+		sectionsContainer: 'mediaTabContent' + id_media,
+		selectedClass: 'selected',
+		deselectedClass: '',
+		tabs: 'li',
+		clickers: 'li a',
+		sections: 'div.tabcontent' + id_media
+	});
 
 
     /**
@@ -480,14 +325,33 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 	 */
 	
 	<?php if ( ! is_null($pictureSize)) :?>
-	if (typeOf($('imageCropLink<?php echo $id_media; ?>')) != 'null')
-	{
-		$('imageCropLink<?php echo $id_media; ?>').addEvent('click', function()
+		if (typeOf($('imageCropLink' + id_media)) != 'null')
 		{
-			// Should be : 'maximizable': true, 
-			ION.dataWindow('ImageCrop<?php echo $id_media; ?>', Lang.get('ionize_label_media_crop_picture'), 'media/get_crop/<?php echo $id_media; ?>', {width:660, height:480, padding:0});
-		});
-	}
+			$('imageCropLink' + id_media).addEvent('click', function()
+			{
+				// Should be : 'maximizable': true,
+				ION.dataWindow(
+					'ImageCrop' + id_media,
+					Lang.get('ionize_label_media_crop_picture'),
+					'media/get_crop/' + id_media,
+					{width:660, height:480, padding:0}
+				);
+			});
+		}
 	<?php endif ;?>
+
+
+	// Extend Fields
+	var mediaExtendManager<?php echo $id_media; ?> = new ION.ExtendManager({
+		parent: 'media',
+		id_parent: id_media,
+		destination: 'mediaTab' + id_media,
+		destinationTitle: Lang.get('ionize_title_extend_fields'),
+		onLoaded: function(extendManager)
+		{
+			extendManager.getParentInstances();
+		}
+	});
+
 
 </script>

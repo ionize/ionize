@@ -26,7 +26,9 @@
     <query>delete from rule where resource='admin/page/media' and actions='';</query>
     <query>delete from rule where resource='admin/article/media' and actions='';</query>
     <query>ALTER TABLE rule DROP PRIMARY KEY;</query>
-    <query>ALTER TABLE rule ADD PRIMARY KEY(id_role,resource);</query>
+    <query>ALTER TABLE rule add id_user int(1) unsigned NOT NULL DEFAULT 0;</query>
+
+    <query>ALTER TABLE rule ADD PRIMARY KEY(id_role,id_user,resource);</query>
 
     <query>update resource set actions='link,unlink,edit' where resource='admin/page/media';</query>
     <query>update resource set actions='link,unlink,edit' where resource='admin/article/media';</query>
@@ -60,6 +62,8 @@
     <query>alter table extend_field drop parents;</query>
     <query>alter table extend_field drop block;</query>
     <query>alter table extend_field change type type int(3);</query>
+    <query>alter table extend_field add copy_in varchar(50) NULL;</query>
+    <query>alter table extend_field add copy_in_pk varchar(50) NULL;</query>
 
     <!-- Lang alter -->
     <query>alter table article_lang change lang lang varchar(8);</query>
