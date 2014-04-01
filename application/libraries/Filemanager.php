@@ -1040,8 +1040,11 @@ class FileManager
 			$file_arg = $this->getPOST('file');
 			$dir_arg = $this->getPOST('directory');
 			$legal_url = $this->get_legal_url($dir_arg . '/');
-            $is_dir = is_dir(DOCPATH . $file_arg . $legal_url);
-
+			
+			// Removed by Ukyo. 01.04.2014
+			// $is_dir = is_dir($legal_url);
+			// Replaced by :
+			$is_dir = is_dir(DOCPATH . $file_arg . $legal_url);
 
 			if ( ! empty($file_arg))
 			{
@@ -3429,9 +3432,9 @@ class FileManager
             $filename = $str;
         }
         else {
-        $ext = end(explode('.', $str));
+        	$ext = end(explode('.', $str));
 
-        $filename = str_replace('.' . $ext, '', $str);
+        	$filename = str_replace('.' . $ext, '', $str);
         }
 
         if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT))
