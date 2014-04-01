@@ -37,7 +37,10 @@ ION.Window = new Class({
 		    id: '',                 // Form ID
 		    clas: '',               // Form CSS class
 		    action: '',             // URL to the save controller
-		    reload: function()      // Function executed after Form save
+		    reload: function(),     // Function executed after Form save,
+		    post: {					// Data to merge with the form data
+		    	key:val
+		 }
 		 }
 
 		 */
@@ -188,6 +191,28 @@ ION.Window = new Class({
 						id: 'save' + opt.form.id,
 						text: Lang.get('ionize_button_save_close')
 					}).inject(divButtons);
+
+					// Form data to send with the form, whatever is sent btw.
+					if (opt.form.post)
+					{
+						Object.each(opt.form.post, function(value, idx)
+						{
+							if (typeOf(value) == 'object')
+							{
+								Object.each(value, function(val, key)
+								{
+									new Element('input', {
+										'type':'hidden',
+										name: idx + '[' + key + ']', value:val
+									}).inject(self.form);
+								});
+							}
+							else
+							{
+								new Element('input', {'type':'hidden', name:idx, value:value}).inject(self.form);
+							}
+						});
+					}
 
 					if (opt.form.reload)
 					{

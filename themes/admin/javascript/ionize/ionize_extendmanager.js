@@ -867,7 +867,7 @@ ION.ExtendManager = new Class({
 
 				if (typeOf(val[0]) != 'null' && typeOf(val[1]) != 'null')
 				{
-					new Element(dom_tag, {
+					var input = new Element(dom_tag, {
 						type: dom_type,
 						id: input_name + idx,
 						name: input_name,

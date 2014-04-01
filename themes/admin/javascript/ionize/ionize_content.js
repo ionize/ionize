@@ -5,7 +5,11 @@ ION.append({
 
 	contentUpdate:function(options)
 	{
-		var user = Ionize.User.getLoggedUser();
+		// @todo :
+		// Replace by (ION.User.isLogged()
+		//
+		//
+		var user = ION.User.getUser();
 
 		if (typeOf(user) != 'null')
 		{
@@ -664,7 +668,8 @@ ION.append({
 			container: $('desktop'),
 			dropCallbacks: dropCallbacks,
 			
-			onSnap: function(el) {
+			onSnap: function(el, event)
+			{
 				el.addClass('move');
 				if (typeOf(MUI.Windows.highestZindex) != 'null')
 					el.setStyle('z-index', (MUI.Windows.highestZindex).toInt() + 1);
@@ -1140,8 +1145,7 @@ ION.append({
 				el.empty();
 				el.set('html', title).setProperty('title', rel + ' : ' + title);
 				
-				var flag = art.flag;
-				if (flag == '0' && art.type_flag != '') { flag = art.type_flag; }
+				var flag = (art.type_flag) ? art.type_flag : '0';
 			
 				new Element('span', {'class':'flag flag' + flag}).inject(el, 'top');
 			});
