@@ -114,6 +114,9 @@ class Item_field extends MY_Admin
 			{
 				$post = $this->input->post();
 
+                $translated = $this->input->post('translated');
+                $post['translated'] = (empty($translated)) ? FALSE : TRUE;
+
 				// Data correction
 				$post['parent'] = 'item';
 				$post['id_parent'] = $id_item_definition;

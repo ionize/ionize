@@ -1136,18 +1136,48 @@ ul.pagination li a.current {
 	color:#fff;
 }
 
-/* Term UL
+/* Translation Section Style
 ---------------------------------------------------------------- */
-ul.term {
-	padding-top:4px;
-	margin-bottom:1px;
-	list-style: none;
+.translations {
+    padding: 35px 0;
 }
-ul.term li{
+.translations .translation {
+    margin-left: 0;
+}
+.translation_toolbox {
+    position: relative;
+}
+.translation_toolbox .divider {
+    float: right;
+    margin-left: 5px;;
+}
+.translation_toolbox .divider.title-filter {
+    color: #444;
+    padding: 3px 6px;
+}
+.translationList tbody tr.empty td .inputtext {
+    border: 1px solid #7f281e;
+}
+.translationList tbody tr.same td .inputtext {
+    border: 1px solid #DBC228;
+}
+.translationList tbody tr th {
+    font-weight: bold;
+    width: 30%;
+}
+.translationList tbody tr th label {
+    display: block;
+    position: relative;
+    margin: 0;
+}
+.translationList tbody tr td {
+    position: relative;
 	overflow: hidden;
+    width: 70%;
 }
-div.translation {
-	margin-left:10px;
+.translationList tbody tr:nth-child(odd) th,
+.translationList tbody tr:nth-child(odd) td {
+    background-color: #f9f9f9;
 }
 
 /* Mootools tooltips

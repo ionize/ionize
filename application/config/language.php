@@ -19,6 +19,9 @@ $config['default_admin_lang'] = 'en';
 // and will never change during the request process 
 $config['default_lang_code'] = 'en';
 
+// Default Translation Language Code
+$config['default_translation_lang_code'] = '';
+
 // Used language code
 // Dynamically changed by the Router depending on the browser, cookie or asked URL
 // By default, Ionize set it to the default lang code.

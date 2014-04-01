@@ -1040,7 +1040,7 @@ class FileManager
 			$file_arg = $this->getPOST('file');
 			$dir_arg = $this->getPOST('directory');
 			$legal_url = $this->get_legal_url($dir_arg . '/');
-			$is_dir = is_dir($legal_url);
+            $is_dir = is_dir(DOCPATH . $file_arg . $legal_url);
 
 
 			if ( ! empty($file_arg))
@@ -1173,7 +1173,7 @@ class FileManager
 			if ( ! empty($file_arg))
 			{
 				$filename = basename($file_arg);
-				$filename = $this->cleanFilename($filename);
+				$filename = $this->cleanFilename($filename, '_', TRUE);
 
 				if (!$this->IsHiddenNameAllowed($file_arg))
 				{
@@ -3423,9 +3423,16 @@ class FileManager
 		return strpos($string, $look) === 0;
 	}
 
-    protected function cleanFilename($str, $delimiter='_') {
+    protected function cleanFilename($str, $delimiter='_', $is_dir=FALSE) {
+
+        if($is_dir) {
+            $filename = $str;
+        }
+        else {
         $ext = end(explode('.', $str));
+
         $filename = str_replace('.' . $ext, '', $str);
+        }
 
         if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT))
             include(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT);
@@ -3442,8 +3449,8 @@ class FileManager
         $clean  = strtolower(trim($clean, '-. '));
         $clean  = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
         $clean  = rtrim($clean, '_-. ');
-        if ( ! empty($ext) && $ext != $str)
-            $clean  .= '.'.$ext;
+        if ( ! empty($ext) && $ext != $str && ! $is_dir)
+            $clean  .= '.'.strtolower($ext);
 
         return $clean;
     }

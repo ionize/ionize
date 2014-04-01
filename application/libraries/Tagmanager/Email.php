@@ -68,8 +68,15 @@ class TagManager_Email extends TagManager
 					$email = isset($data['email']) ? $data['email'] : self::$ci->input->post('email');
 					break;
 
+                case ($email == 'contact' || $email == 'technical' || $email == 'info'):
+                    $email = (Settings::get('email_'.$email) != '') ? Settings::get('email_'.$email) : NULL;
+                    break;
+
 				default:
-					$email = (Settings::get('email_'.$email) != '') ? Settings::get('email_'.$email) : NULL;
+                    $email = $email;
+                    $_email = explode('::', $email);
+                    if( ! empty($_email[1]) )
+                        $email = self::$ci->input->post($_email[1]);
 					break;
 			}
 
