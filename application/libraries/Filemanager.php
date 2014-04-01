@@ -1039,12 +1039,10 @@ class FileManager
 
 			$file_arg = $this->getPOST('file');
 			$dir_arg = $this->getPOST('directory');
+
 			$legal_url = $this->get_legal_url($dir_arg . '/');
-			
-			// Removed by Ukyo. 01.04.2014
-			// $is_dir = is_dir($legal_url);
-			// Replaced by :
-			$is_dir = is_dir(DOCPATH . $file_arg . $legal_url);
+
+			$is_dir = is_dir($legal_url);
 
 			if ( ! empty($file_arg))
 			{

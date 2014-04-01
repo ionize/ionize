@@ -246,7 +246,8 @@ class CI_Router
 				else
 				{
 					// remove the language key from the uri_string
-					$this->uri->uri_string = '/' . preg_replace('/\/?'.preg_quote($raw_key).'\//', '', $this->uri->uri_string);
+					//$this->uri->uri_string = '/' . preg_replace('/\/?'.preg_quote($raw_key).'\//', '', $this->uri->uri_string);
+					$this->uri->uri_string = strstr($this->uri->uri_string, '/');
 				}
 			}
 			else

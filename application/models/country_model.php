@@ -20,7 +20,7 @@ class Country_model extends Base_model
 	{
 		$data = array();
 
-		if (is_null($lang))	$lang = Settings::get_lang('default');
+		if (is_null($lang))	$lang = Settings::get_lang('current');
 
 		$sql = "
 			select
@@ -123,7 +123,7 @@ class Country_model extends Base_model
 		$this->db->from('country_lang cl');
 		$this->db->where('cl.lang', Settings::get_lang() );
 		$this->db->where('c.num <>', '0');
-		$this->db->join('country c', 'c.iso2 = cl.country_iso2', 'left');
+		$this->db->join('country c', 'c.id_country = cl.id_country', 'left');
 
 		$this->db->order_by( 'c.default', 'desc' );
 		$this->db->order_by( 'cl.country_name', 'asc' );

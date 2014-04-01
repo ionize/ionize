@@ -241,7 +241,7 @@
                 id_extend_field_type int(11) unsigned NOT NULL AUTO_INCREMENT,
                 type_name varchar(50) NOT NULL DEFAULT '',
                 default_values smallint(1) NOT NULL DEFAULT '0',
-                values smallint(1) NOT NULL DEFAULT '0',
+                `values` smallint(1) NOT NULL DEFAULT '0',
                 translated smallint(1) NOT NULL DEFAULT '0',
                 active smallint(6) DEFAULT '1',
                 validate varchar(50) DEFAULT NULL,
@@ -643,7 +643,7 @@
 		<query>TRUNCATE TABLE login_tracker;</query>
 		
         <query>
-            INSERT INTO extend_field_type (id_extend_field_type, type_name, default_values, values, translated, active, validate, html_element, html_element_type, html_element_class, html_element_pattern)
+            INSERT INTO extend_field_type (id_extend_field_type, type_name, default_values, `values`, translated, active, validate, html_element, html_element_type, html_element_class, html_element_pattern)
             VALUES
             (1,'Input',1,0,1,1,NULL,'input','text','w95p inputtext',NULL),
             (2,'Textarea',1,0,1,1,NULL,'textarea','textarea','w95p autogrow inputtext',NULL),
