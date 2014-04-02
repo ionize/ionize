@@ -2363,7 +2363,7 @@ class FileManager
 
 				if (empty($preview_HTML))
 				{
-					$preview_HTML = '<a href="' . $this->getElementURL($url) . '" title="' . htmlentities($filename, ENT_QUOTES, 'UTF-8') . '">
+					$preview_HTML = '<a target="_blank" href="' . $this->getElementURL($url) . '" title="' . htmlentities($filename, ENT_QUOTES, 'UTF-8') . '">
 										<img src="' . $thumb250_uri . '" class="preview" alt="' . (!empty($emsgX) ? $this->mkSafe4HTMLattr($emsgX) : 'preview') . '" style="width: ' . $tnsize[0] . 'px; height: ' . $tnsize[1] . 'px;"	/>
 						 			</a>'
 					;
