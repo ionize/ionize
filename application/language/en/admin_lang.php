@@ -587,6 +587,8 @@ $lang['ionize_title_translation_system'] = 'System Translations';
 $lang['ionize_title_translation_empty_translations'] = 'Empty Translations';
 $lang['ionize_title_translation_same_translations'] = 'Same Translations';
 $lang['ionize_title_translation_all_translations'] = 'All Translations';
+$lang['ionize_msg_translation_select_source_language'] = 'Please select default translation language for translation source.';
+
 $lang['ionize_title_database'] = 'Database';
 $lang['ionize_title_mail_send'] = 'Email';
 $lang['ionize_title_emails'] = 'Emails';

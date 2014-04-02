@@ -197,6 +197,13 @@ label[title]
 	padding-right: 14px;
 	border-bottom: dotted 1px #94aec9;
 }
+table thead tr td label[title],
+table thead tr th label[title],
+table tbody tr td label[title],
+table tbody tr th label[title]
+{
+	border-bottom: none;
+}
 label.over{
 	white-space: nowrap;
 	margin-bottom: 5px;
@@ -567,6 +574,7 @@ a.button.submit:hover{
 .mocha.modal .button.yes{ margin-right: 35px;}
 
 /* Light buttons */
+button.light{color:#098ED1}
 .button.light {
     border: 1px solid transparent;
     background: none;
