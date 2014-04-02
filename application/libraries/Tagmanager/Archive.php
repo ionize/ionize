@@ -51,6 +51,9 @@ class TagManager_Archive extends TagManager
 		// filter
 		$filter = $tag->getAttribute('filter', FALSE);
 
+        if( $filter != FALSE )
+            $filter = self::process_filter($filter);
+
 		// month
 		$with_month = $tag->getAttribute('month');
 

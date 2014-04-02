@@ -1531,6 +1531,9 @@ class TagManager
 					$limit = $tag->getAttribute('limit', 0);
 					$filter = $tag->getAttribute('filter');
 
+                    if( ! is_null($filter) )
+                        $filter = self::process_filter($filter);
+
 					$ids_array = explode(',', $ids);
 
 					$where = array(
@@ -3363,6 +3366,27 @@ class TagManager
 
 		return $tag->expand();
 	}
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Processes the filter value
+     *
+     * @param null $filter
+     * @return mixed|null
+     */
+    public static function process_filter($filter=NULL)
+    {
+        if ( ! is_null($filter))
+        {
+            $filter = str_replace('.gt', '>', $filter);
+            $filter = str_replace('.lt', '<', $filter);
+            $filter = str_replace('.eq', '==', $filter);
+            $filter = str_replace('.neq', '!=', $filter);
+        }
+
+        return $filter;
+    }
 
 
 	// ------------------------------------------------------------------------
