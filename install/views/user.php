@@ -39,10 +39,19 @@
 
 		<dl>
 			<dt>
-				<label for="screen_name"><?php echo lang('screen_name')?></label>
+				<label for="firstname"><?php echo lang('firstname')?></label>
 			</dt>
 			<dd>
-				<input name="screen_name" id="screen_name" type="text" class="inputtext" value="<?php echo $screen_name ?>"></input>
+				<input name="firstname" id="firstname" type="text" class="inputtext" value="<?php echo $firstname ?>"></input>
+			</dd>
+		</dl>
+
+		<dl>
+			<dt>
+				<label for="lastname"><?php echo lang('lastname')?></label>
+			</dt>
+			<dd>
+				<input name="lastname" id="lastname" type="text" class="inputtext" value="<?php echo $lastname ?>"></input>
 			</dd>
 		</dl>
 

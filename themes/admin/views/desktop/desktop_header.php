@@ -93,7 +93,8 @@
 				<li><a class="returnFalse"><?php echo lang('ionize_menu_modules'); ?></a>
 					<ul>
 						<!-- Module Admin controllers links -->
-						<?php foreach(Modules()->get_installed_modules() as $key => $module) :?>
+						<?php $modules = Modules()->get_installed_modules(); ?>
+						<?php foreach($modules as $key => $module) :?>
 							<?php if(
 								Authority::can('access', 'module/'.$module['key'])
 								&& $module['has_admin']
@@ -105,7 +106,7 @@
 						<?php endforeach ;?>
 
 						<?php if(Authority::can('install', 'admin/modules')) :?>
-							<li class="divider"><a class="navlink" href="modules" title="<?php echo lang('ionize_title_modules'); ?>"><?php echo lang('ionize_menu_modules_admin'); ?></a></li>
+							<li<?php if (count($modules) > 0):?> class="divider"<?php endif ;?>><a class="navlink" href="modules" title="<?php echo lang('ionize_title_modules'); ?>"><?php echo lang('ionize_menu_modules_admin'); ?></a></li>
 						<?php endif ;?>
 					</ul>
 				</li>
@@ -209,8 +210,8 @@
 			title: 'MUI',
 			content: {url: admin_url + 'desktop/get/system/about'},
 			type: 'modal2',
-			width: 360,
-			height: 210,
+			width: 380,
+			height: 220,
 			padding: {top: 70, right: 12, bottom: 10, left: 22},
 			scrollbars: false
 		});

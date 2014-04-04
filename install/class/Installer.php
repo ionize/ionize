@@ -218,7 +218,7 @@ class Installer
 			}
 			
 			// Prepare data
-			$data = array('username', 'screen_name', 'email', 'encryption_key');
+			$data = array('username', 'firstname', 'lastname', 'email', 'encryption_key');
 
 			$this->_feed_blank_template($data);
 			
@@ -936,7 +936,7 @@ class Installer
 		}
 
 		// Saves the users data
-		$fields = array('username', 'screen_name', 'email', 'password', 'password2');
+		$fields = array('username', 'firstname', 'lastname', 'email', 'password', 'password2');
 		
 		// Post data
 		$data = array();
@@ -980,6 +980,7 @@ class Installer
 		}
 		
 		// Here is everything OK, we can create the user
+		$data['screen_name'] = $data['firstname'] . ' ' . $data['lastname'];
 		$data['join_date'] = date('Y-m-d H:i:s');
 		$data['salt'] = $this->get_salt();
 		$data['password'] = $this->_encrypt($data['password'], $data);

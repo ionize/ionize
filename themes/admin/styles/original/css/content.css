@@ -72,6 +72,9 @@ License:
 	cursor: help;
 }
 
+#about_content{
+	border: solid 8px #fff;
+}
 
 /* Sidecolumn Elements
 ---------------------------------------------------------------- */

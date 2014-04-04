@@ -103,7 +103,7 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .windowClosed .mochaContentBorder, .windowClosed .mochaToolbarWrapper, .windowClosed .mochaTitlebar, .windowClosed .mochaControls, .windowClosed .mochaCanvasControls { position: absolute; top: 0; left: 0; visibility: hidden; display: none; z-index: -1; }
 
 /* Modals */
-.modal2 { border: 8px solid #fff; }
+.modal2 {}
 .modal2 .mochaContentBorder { border-width: 0; }
 
 /* Window Themes */

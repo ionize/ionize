@@ -105,6 +105,8 @@ $lang['admin_url'] = 'Admin URL';
 */
 $lang['user_introduction'] = 	'You will connect to the Administration panel with this login.';
 $lang['username'] = 			'Login (min. 4 chars)';
+$lang['firstname'] = 			'First name';
+$lang['lastname'] = 			'Last name';
 $lang['screen_name'] = 			'Full name';
 $lang['email'] = 				'Email';
 $lang['password'] = 			'Password (min. 4 chars)';
