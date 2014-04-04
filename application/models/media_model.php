@@ -691,6 +691,19 @@ class Media_model extends Base_model
 			}
 		}
 
+		// Check for articles content
+		foreach($files as $key => $file)
+		{
+			$sql = "select id_article from article_lang where content like '%" . $file['path'] . "%'";
+			$query = $this->{$this->db_group}->query($sql);
+			if($query->num_rows() > 0)
+			{
+				unset($files[$key]);
+				$nb_total -= 1;
+				$unused_size -= filesize(DOCPATH . $file['path']);
+			}
+		}
+
 		$return = array(
 			'nb_total' => $nb_total,
 			'size_total' => byte_format($total_size, 2),
