@@ -203,13 +203,4 @@
 	 */
 	new TabSwapper({tabsContainer: 'ionizeSettingsTab', sectionsContainer: 'ionizeSettingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'ionizeSettingsTab' });
 
-	/**
-	 * Flags save button
-	 *
-	 */
-	$('bSaveFlags').addEvent('click', function(e) {
-		e.stop();
-		ION.sendData(admin_url + 'setting/save_flags', $('flagsForm'));
-	});
-
 </script>

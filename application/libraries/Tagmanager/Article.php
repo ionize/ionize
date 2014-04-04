@@ -95,6 +95,9 @@ class TagManager_Article extends TagManager
 		$nb_to_display = $tag->getAttribute('limit', 0);
 		$filter = $tag->getAttribute('filter');
 
+        if( ! is_null($filter) )
+            $filter = self::process_filter($filter);
+
 		// URL based process of special URI only allowed on current page
 		$special_uri_array = self::get_special_uri_array();
 

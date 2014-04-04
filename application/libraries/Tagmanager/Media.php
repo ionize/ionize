@@ -249,6 +249,9 @@ class TagManager_Media extends TagManager
 		$limit = $tag->getAttribute('limit', 0);
 		$filter = $tag->getAttribute('filter');
 
+        if( ! is_null($filter) )
+            $filter = self::process_filter($filter);
+
 		// Order. Default order : ordering ASC
 		$order_by = $tag->getAttribute('order_by', 'date DESC');
 		$where = array('order_by' => $order_by);
