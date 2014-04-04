@@ -35,6 +35,8 @@ class Media_model extends Base_model
 
 	protected static $_VIDEO_PROVIDERS = array('youtube', 'vimeo', 'dailymotion');
 
+	protected static $_UNUSED_IGNORED_FILES = array('default.png');
+
 	/**
 	 * Constructor
 	 *
@@ -696,7 +698,8 @@ class Media_model extends Base_model
 		{
 			$sql = "select id_article from article_lang where content like '%" . $file['path'] . "%'";
 			$query = $this->{$this->db_group}->query($sql);
-			if($query->num_rows() > 0)
+
+			if($query->num_rows() > 0 || in_array(basename($file['path']), self::$_UNUSED_IGNORED_FILES))
 			{
 				unset($files[$key]);
 				$nb_total -= 1;
