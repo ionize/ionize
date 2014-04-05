@@ -471,7 +471,9 @@ namespace Ionize {
 		 */
 		public function logged_in()
 		{
-			return ($this->user != NULL && isset($this->user[$this->model->getPkName()]));
+			$pk = $this->model->getPkName();
+
+			return ($this->user != NULL && isset($this->user[$pk]) && $this->user[$pk] == $this->session->userdata($pk));
 		}
 
 

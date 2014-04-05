@@ -123,6 +123,8 @@ $lang['form_contact_error_message'] = 'perhaps just some missing fields. Please 
 $lang['form_contact_success_title'] = 'Your message was sent successfully !';
 $lang['form_contact_success_message'] = 'Thank you for your message, we will answer you very quickly !';
 
+$lang['form_note_password_change'] = 'Leave it empty if you don\'t want to change your password.';
+
 
 
 

@@ -719,8 +719,6 @@
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (302,300,'admin/role','create,edit,delete','Roles','Roles');</query>
         <query>INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, description) VALUES (303,302,'admin/role/permissions','','Set Permissions','See Role\'s permissions');</query>
 
-
-
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (1,'all','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin','',1)</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/article','create,edit,delete,move,copy,duplicate',1)</query>
@@ -818,7 +816,7 @@
         <query>DELETE FROM setting WHERE name='picture_copyright';</query>
         <query>DELETE FROM setting WHERE name='filemanager';</query>
 
-        <query>INSERT IGNORE INTO setting VALUES ('', 'website_email', '', '');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'site_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'DEFAULT', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme_admin', 'admin', '');</query>
@@ -831,6 +829,8 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_modules', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_users', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_content', '1', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'display_front_offline_content', '1', '');</query>
+		<query>INSERT IGNORE INTO setting VALUES ('', 'display_dashboard_quick_settings', '1', '');</query>
 
         <query>INSERT IGNORE INTO setting VALUES ('', 'texteditor', 'tinymce', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'media_thumb_size', '120', '');</query>

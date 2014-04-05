@@ -1262,7 +1262,9 @@ class Setting extends MY_admin
 
 		// Save settings to DB
 		$this->_save_settings($settings);
-	
+
+		$protocol = $this->input->post('protocol');
+
 		// Save email sending settings
 		$data = array(
 			'smtp_host'		=> '',
@@ -1270,19 +1272,31 @@ class Setting extends MY_admin
 			'smtp_pass'		=> '',
 			'smtp_port'		=> '',
             'smtp_timeout'  => '',
-			'protocol'		=> '',
+			'protocol'		=> $this->input->post('protocol'),
 			'mailpath'		=> '',
-			'charset'		=> '',
-			'mailtype'		=> ''
+			'charset'		=> $this->input->post('charset'),
+			'mailtype'		=> $this->input->post('mailtype'),
+            'newline'       => '\r\n'
 		);
-		
-		// Post data
-		foreach ($_POST as $key => $val)
+
+		switch ($protocol)
 		{
-			if (isset($data[$key]))
-				$data[$key] = $val;
+			case 'mail':
+				break;
+
+			case 'sendmail':
+				$data['mailpath'] = $this->input->post('mailpath');
+				break;
+
+			case 'smtp':
+				$data['smtp_host'] = $this->input->post('smtp_host');
+				$data['smtp_user'] = $this->input->post('smtp_user');
+				$data['smtp_pass'] = $this->input->post('smtp_pass');
+				$data['smtp_port'] = $this->input->post('smtp_port');
+				$data['smtp_timeout'] = $this->input->post('smtp_timeout') ? $this->input->post('smtp_timeout') : '30';
+				break;
 		}
-		
+
 		// If data are missing : Redirect || error
 		if ($data['protocol'] == '' )
 		{
@@ -1293,25 +1307,12 @@ class Setting extends MY_admin
 		{
 			// Write the config/database.php file
 			$this->load->helper('file');
-			
-			$db_config = array(
-				'protocol'      =>  '"'.$data['protocol'].'"',
-				'mailpath'      =>  '"'.$data['mailpath'].'"',
-				'smtp_host'     =>  '"'.$data['smtp_host'].'"',
-				'smtp_user'     =>  '"'.$data['smtp_user'].'"',
-				'smtp_pass'     =>  '"'.$data['smtp_pass'].'"',
-				'smtp_port'     =>  '"'.$data['smtp_port'].'"',
-                'smtp_timeout'  =>  '"'.$data['smtp_timeout'].'"',
-				'mailtype'      =>  '"'.$data['mailtype'].'"',
-				'charset'       =>  '"'.$data['charset'].'"',
-                'newline'       =>  '"\r\n"'
-			);	
-			
+
 			$conf  = "<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');\n\n";
 		 
-			foreach ($db_config as $key => $val)
+			foreach ($data as $key => $val)
 			{
-				$conf .= "\$config['".$key."'] = ".$val.";\n";        
+				$conf .= "\$config['".$key."'] = \"".$val."\";\n";
 			} 
 			
 			// files end

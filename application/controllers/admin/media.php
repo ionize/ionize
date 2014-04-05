@@ -1085,7 +1085,7 @@ class Media extends MY_admin
 		}
 
 		// Vimeo
-		if ($base_path == 'http://vimeo.com/')
+		if ( in_array($base_path, array('http://vimeo.com/', 'http://player.vimeo.com/video/')))
 		{
 			$service = array(
 				'path' => 'http://player.vimeo.com/video/' . $file_name,

@@ -421,7 +421,10 @@ class TagManager_User extends TagManager
 							else
 							{
 								// Get the user again, to calculate his activation key
-								$user =self::$ci->user_model->find_user($user['username']);
+								$user = self::$ci->user_model->find_user(array(
+									'email' => self::$ci->input->post('email')
+								));
+
 								$activation_key = User()->calc_activation_key($user);
 
 								// Put the clear password to the user's data, for the email
@@ -429,7 +432,6 @@ class TagManager_User extends TagManager
 								$user['activation_key'] = $activation_key;
 
 								// Send Emails
-								$data = array_merge($user, $user['group']);
 								$data['ip'] = self::$ci->input->ip_address();
 								TagManager_Email::send_form_emails($tag, 'password', $data);
 
