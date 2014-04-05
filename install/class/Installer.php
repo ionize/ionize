@@ -1639,6 +1639,10 @@ class Installer
 		$conf .= "// Languages set online through Ionize.\n";
 		$conf .= "\$config['online_languages'] = ".dump_variable($online_languages)."\n\n";
 
+		$conf .= "// Default Translations Language Code\n";
+		$conf .= "// Used as reference by the translation tool\n";
+		$conf .= "\$config['default_translation_lang_code'] = '".$def_lang."';\n\n";
+
 		// files end
 		$conf .= "\n\n";
 		$conf .= '/* End of file language.php */'."\n";

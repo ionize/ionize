@@ -35,7 +35,7 @@ class Media_model extends Base_model
 
 	protected static $_VIDEO_PROVIDERS = array('youtube', 'vimeo', 'dailymotion');
 
-	protected static $_UNUSED_IGNORED_FILES = array('default.png');
+	protected static $_UNUSED_IGNORED_FILES = array('default.png', 'index.html');
 
 	/**
 	 * Constructor
