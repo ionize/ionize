@@ -3,7 +3,7 @@
 <ion:partial view="page_header" />
 
 <div class="row">
-	<div class="nine columns">
+	<div class="large-9 columns">
 	
 		<?php if ('<ion:article:category field="title" />' != '') :?>
 
@@ -26,28 +26,26 @@
 
 				<!-- Pictures slider -->
 					<div id="slider-container">
-					<div id="slider">
-						<ion:medias type="picture,video">
+						<div id="slider">
+							<ion:medias type="picture,video">
 
-							<div class="slider-panel">
+								<div class="slider-panel">
 
-								<ion:media:type is="picture">
-									<img src="<ion:media:src size='720,400' method='adaptive' />" />
-								</ion:media:type>
+									<ion:media:type is="picture">
+										<img src="<ion:media:src size='720,400' method='adaptive' />" />
+									</ion:media:type>
 
-								<ion:media:type is="video">
-									<ion:media:provider  is='youtube'><iframe class="video" width="100%" height="400" src="<ion:media:src />" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></ion:media:provider>
-									<ion:media:provider  is='vimeo'><iframe class="video" width="100%" height="400" src="<ion:media:src />" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></ion:media:provider>
-									<ion:media:provider  is='dailymotion'><iframe class="video" width="100%" height="400" src="<ion:media:src />" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></ion:media:provider>
-									<ion:media:extension is="mp4"><video class="video" width="100%" height="400"controls><source src="<ion:media:src />" type="video/mp4" ></video></ion:media:extension>
-									<ion:media:extension is="ogv"><video class="video" width="100%" height="400" controls><source src="<ion:media:src />" type="video/ogg" ></video></ion:media:extension>
-								</ion:media:type>
-							</div>
-						</ion:medias>
+									<ion:media:type is="video">
+										<ion:media:provider  is='youtube'><iframe class="video" width="100%" height="400" src="<ion:media:src />" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></ion:media:provider>
+										<ion:media:provider  is='vimeo'><iframe class="video" width="100%" height="400" src="<ion:media:src />" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></ion:media:provider>
+										<ion:media:provider  is='dailymotion'><iframe class="video" width="100%" height="400" src="<ion:media:src />" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></ion:media:provider>
+										<ion:media:extension is="mp4"><video class="video" width="100%" height="400"controls><source src="<ion:media:src />" type="video/mp4" ></video></ion:media:extension>
+										<ion:media:extension is="ogv"><video class="video" width="100%" height="400" controls><source src="<ion:media:src />" type="video/ogg" ></video></ion:media:extension>
+									</ion:media:type>
+								</div>
+							</ion:medias>
+						</div>
 					</div>
-
-					</div>
-
 
 				<!-- content -->
 				<ion:content link_key="title" link_title="subtitle" />
@@ -57,7 +55,7 @@
 		
 	</div>
 
-	<div class="three columns">
+	<div class="large-3 columns">
 
 		<div class="side-block">
 		
@@ -79,21 +77,13 @@
 
             <ul class="side-nav">
                 <ion:archives with_month="true">
-                    <li><a class="<ion:active_class />" href="<ion:archive:url />"><ion:archive:period /></a></li>
+                    <li><a <ion:archive:is_active>class="active"</ion:archive:is_active> href="<ion:archive:url />"><ion:archive:period /></a></li>
                 </ion:archives>
             </ul>
 			
 		</div>
 	</div>
 </div>
-
-
-<script type="text/javascript">
-    $(window).load(function() {
-        $("#slider").orbit();
-    });
-</script>
-
 
 
 <!-- Partial : Footer -->

@@ -49,8 +49,6 @@
             <!-- User logged in -->
             <ion:user:logged is="true">
 
-				<h3>HERE !!!</h3>
-
                 <!-- Articles of this page with the type "logged-in" -->
                 <ion:page:articles type="logged-in">
                     <ion:article>
@@ -134,8 +132,6 @@
                     <input type="submit" class="button success" value="<ion:lang key='form_button_save_profile' />" />
 
                 </form>
-
-
 
 			</ion:user:logged>
 		</div>
