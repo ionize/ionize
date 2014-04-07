@@ -601,8 +601,7 @@ class Translation extends MY_admin
 	/**
      * Get the array of items to translate, per module, theme translation files
 	 *
-	 * @notice	The english translation file is the reference 
-	 *			and MUST exist for each module
+	 * @notice	Default Translation Language file is the reference
 	 *
 	 * @return	array	Items to translate, by view
 	 * 					Array(
@@ -621,8 +620,10 @@ class Translation extends MY_admin
 		
         $module_lang_files  = self::_get_module_lang_files();
         $theme_lang_files   = self::_get_lang_files('theme');
+        $application_lang_files = self::_get_lang_files('application');
+        $system_lang_files      = self::_get_lang_files('system');
 		
-        $lang_files = array_merge($module_lang_files, $theme_lang_files);
+        $lang_files = array_merge(array_merge($module_lang_files, $theme_lang_files), array_merge($application_lang_files, $system_lang_files));
 
         foreach($lang_files as $lang_file)
         {
