@@ -236,19 +236,9 @@ VALUES
 	(3,'picture','screenshot_ionize_dashboard.jpg','files/screenshot_ionize_dashboard.jpg','files/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m'),
 	(4,'picture','IMG_8359.jpg','files/pictures/IMG_8359.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
 	(5,'picture','IMG_8447.jpg','files/pictures/IMG_8447.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
-	(6,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/','','','0000-00-00 00:00:00','','m'),
-	(7,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/','','','0000-00-00 00:00:00','','m'),
-	(8,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,'','0000-00-00 00:00:00',NULL,'m'),
-	(9,'picture','wall_e_headphones_vignette.jpg','files/wall_e_headphones_vignette.jpg','files/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m'),
-	(10,'picture','ionize_article_095.jpg','files/ionize/ionize_article_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(11,'picture','ionize_dashboard_095.jpg','files/ionize/ionize_dashboard_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(12,'picture','ionize_languages_095.jpg','files/ionize/ionize_languages_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(13,'picture','ionize_login_window_095.jpg','files/ionize/ionize_login_window_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(14,'picture','ionize_multiple_windows_095.jpg','files/ionize/ionize_multiple_windows_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(15,'picture','ionize_option_panel_095.jpg','files/ionize/ionize_option_panel_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(16,'picture','ionize_page_edit_095.jpg','files/ionize/ionize_page_edit_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(17,'picture','ionize_picture_data_095.jpg','files/ionize/ionize_picture_data_095.jpg','files/ionize/','',NULL,'0000-00-00 00:00:00','','m'),
-	(18,'video','68203296','http://player.vimeo.com/video/68203296','http://player.vimeo.com/video/',NULL,'vimeo','0000-00-00 00:00:00',NULL,'m');
+	(6,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
+	(7,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
+	(8,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m');
 --#--
 
 
@@ -263,15 +253,7 @@ VALUES
 	('en',4,'Mingun','Alot of young munks live in a monastery next to the Hsinbyume pagoda','Alot of young munks live in a monastery next to the Hsinbyume pagoda'),
 	('en',5,'Mandalay','One working day in the historical capital of Burma.','One working day in the historical capital of Burma.'),
 	('en',6,'Monywa, Burma','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.'),
-	('en',7,'Monywa wall paints','These 17th century wall painting are very well preserved because the caves were forgivven for centuries.','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.'),
-	('en',10,'Edit Article','','With Ionize CMS, edit instantly your content in all languages'),
-	('en',11,'Dashboard','','Ionize CMS dashboard gives an overview of the last actions on your website'),
-	('en',12,'Nativelly Multilingual','','Every language can be setup by the user !'),
-	('en',13,'Login Screen Ionize CMS','','Ionize login of the Admin Panel'),
-	('en',14,'Windowed Workspace','','Make work easier !'),
-	('en',15,'So Friendly !','','Every component in Ionize CMS is userfriendly'),
-	('en',16,'','',''),
-	('en',17,'','','');
+	('en',7,'Monywa wall paints','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.');
 --#--
 
 
