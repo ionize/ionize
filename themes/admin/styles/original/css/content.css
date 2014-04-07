@@ -1767,7 +1767,7 @@ ol.steps li a:before {
 .absolute {position: absolute;}
 .pointer{cursor: pointer;}
 .red {color:#b00 !important;}
-.green {color: #57971e !important;}
+.green {color: #57971e;}
 .absolute{position: absolute;}
 .no-wrap {white-space: nowrap;}
 .unselectable {
