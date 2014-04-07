@@ -62,7 +62,7 @@
 				<div class="tabcontent<?php echo $id ?>">
 		
 					<!-- description -->
-					<textarea id="description_<?php echo $lang ?><?php echo $id ?>" name="description_<?php echo $lang ?>" class="textarea autogrow" rel="<?php echo $lang ?>"><?php echo ${$lang}['description'] ?></textarea>
+					<textarea id="description_<?php echo $lang ?><?php echo $id ?>" name="description_<?php echo $lang ?>" class="textarea autogrow" rel="<?php echo $lang ?>"><?php echo $languages[$lang]['description'] ?></textarea>
 		
 				</div>
 				
