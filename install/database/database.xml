@@ -426,7 +426,19 @@
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
 
-		<query>
+        <query>
+            CREATE TABLE IF NOT EXISTS notification (
+              id_notification int(11) unsigned NOT NULL,
+              date_creation date DEFAULT NULL,
+              category varchar(25) DEFAULT NULL,
+              title varchar(50) DEFAULT NULL,
+              content text,
+              `read` smallint(1) DEFAULT '0',
+              PRIMARY KEY (id_notification)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
+
+        <query>
 			CREATE TABLE IF NOT EXISTS page (
 			  id_page int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  id_parent int(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -859,6 +871,8 @@
         <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','DEFAULT.png','');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'backend_ui_style','original', '');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'notification','1', '');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'notification_date','', '');</query>
 
         <query>
 			INSERT IGNORE INTO menu (id_menu, name, title) VALUES

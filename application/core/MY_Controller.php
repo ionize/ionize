@@ -1062,6 +1062,23 @@ class MY_Module extends MY_Controller
 
 		if ( ! empty($module_config))
 		{
+			$online_lang_codes = array();
+			foreach(Settings::get_online_languages() as $language)
+				$online_lang_codes[] = $language['lang'];
+
+			// If the lang code detected by the Router is not in the DB languages, set it to the DB default one
+			if ( ! in_array(config_item('detected_lang_code'), $online_lang_codes))
+			{
+				Settings::set('current_lang', Settings::get_lang('default'));
+				$this->config->set_item('detected_lang_code', Settings::get_lang('default'));
+			}
+			else
+			{
+				// Store the current lang code (found by Router) to Settings
+				Settings::set('current_lang', config_item('detected_lang_code'));
+			}
+
+
 			// Module translation files
 			$lang_file = MODPATH . $module_config['folder'] . '/language/' . Settings::get_lang('current') . '/' . $module_config['key'] . '_lang.php';
 

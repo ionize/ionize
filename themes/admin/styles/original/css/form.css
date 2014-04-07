@@ -60,7 +60,9 @@ fieldset {
 	text-align:right;
 	font-weight: normal;
 /*	width:150px;*/
+/*
 	min-width:130px;
+*/
 	width:18%;
 }
 .panel dt label,
@@ -83,6 +85,9 @@ fieldset {
 	margin-left: 0;
 	width: auto;
 }
+
+.content-panel-content dt{width:25%;}
+.content-panel-content dd{margin-left:26%;width: 74%;}
 
 /* Small DL, used in side column and in some windows */
 .panel dl.small,

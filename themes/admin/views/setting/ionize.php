@@ -129,6 +129,15 @@
 					</dd>
 				</dl>
 
+				<dl>
+					<dt>
+						<label for="notification" title="<?php echo lang('ionize_help_display_notification'); ?>"><?php echo lang('ionize_label_display_notification'); ?></label>
+					</dt>
+					<dd>
+						<input class="inputcheckbox" type="checkbox" name="notification" id="notification" <?php if (Settings::get('notification') == '1'):?> checked="checked" <?php endif;?> value="1" />
+					</dd>
+				</dl>
+
 			</div>
 
 			<!-- Admin panel displayed languages -->

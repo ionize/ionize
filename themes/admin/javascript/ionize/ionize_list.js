@@ -18,6 +18,7 @@ ION.TableList = new Class({
 
 		'class':    'list',             // CSS Class fo the table
 		header:     true,               // Build one header ?
+		headerClass:null,           	// CSS class or each th of the header ?
 		alternateRows: true,            // Alternate row background colors ?
 
 		post:       {},                 // Additional main data to post to each URL called by this class
@@ -32,7 +33,8 @@ ION.TableList = new Class({
 
 							'class':        '',                 // optional. CSS Class of the TD
 							element:        'span',             // optional. If set, creates one HTML element of this type
-							elementClass:   '',                 // optional. CSS class of the element
+							elementClass:   '',                 // optional. CSS class of the element,
+							title:			'',					// optional. If set, used as title attribute for the item
 							onClick:        function(item){}    // optional
 						}
 					],
@@ -125,7 +127,9 @@ ION.TableList = new Class({
 		if (c.elementClass) el.addClass(c.elementClass);
 
 		if ( c.type != 'icon' && typeOf(item[c.key]) != 'null')
-			el.set('text', item[c.key]);
+			el.set('html', item[c.key]);
+
+		if (c.title) el.setProperty('title', c.title);
 
 		if(c.onClick)
 		{
@@ -150,10 +154,14 @@ ION.TableList = new Class({
 		// Header
 		Array.each(o.columns, function(column)
 		{
-			new Element('th', {
+			var th = new Element('th', {
 				axis: column.type,
 				text: column.label
 			}).inject(thead_tr);
+
+			if (o.headerClass != null)
+				th.addClass(o.headerClass);
+
 		});
 	},
 

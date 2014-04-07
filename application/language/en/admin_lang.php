@@ -331,6 +331,7 @@ $lang['ionize_label_date_update'] = 'Update';
 $lang['ionize_label_date_access'] = 'Access';
 $lang['ionize_label_date_start'] = 'Start';
 $lang['ionize_label_date_end'] = 'End';
+$lang['ionize_label_set_as_read'] = 'Set as read';
 $lang['ionize_help_has_url'] = 'If checked, the element has one URL and is reachable through its URL.';
 $lang['ionize_help_status'] = 'If connected as admin, you will see this element on the website even it is not online';
 $lang['ionize_help_online'] = 'Is this element globally online?';
@@ -560,6 +561,12 @@ $lang['ionize_label_display_quick_settings'] = 'Quick Settings';
 $lang['ionize_help_display_quick_settings'] = 'Displays the Quick Settings panel';
 $lang['ionize_label_display_front_offline_content'] = 'Display Offline Content';
 $lang['ionize_help_display_front_offline_content'] = 'Show the offline content on the website when logged in on Backend (only for the logged in user)';
+
+$lang['ionize_title_notification'] = ' Notifications';
+$lang['ionize_label_display_notification'] = 'Display Notifications';
+$lang['ionize_help_display_notification'] = 'Displays informations about your ionize release';
+
+
 
 $lang['ionize_label_enable_backend_tracker'] = 'Backend tracker';
 $lang['ionize_help_enable_backend_tracker'] = 'Displays users logged to the backend on the dashboard / displays one alert flag on content when it is edited by another user.';

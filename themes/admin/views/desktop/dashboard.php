@@ -390,6 +390,13 @@ $user_role = User()->get_role();
 		</div>
 	<?php endif ;?>
 
+	<?php if (Settings::get('notification') == '1'): ?>
+		<div id="notificationBloc" class="desktopBloc" data-title="<?php echo lang('ionize_title_notification'); ?>">
+			<div id="notificationContainer" class="p5"></div>
+		</div>
+	<?php endif ;?>
+
+
 </div>
 
 
@@ -600,6 +607,27 @@ $user_role = User()->get_role();
 			ION.JSON.delay(150, ION, [ION.adminUrl + 'setting/save_quicksettings',$('quickSettingsForm')]);
 		});
 	});
+
+	// Notifications
+	if ($('notificationContainer'))
+	{
+		if ( ! document.retrieve('ionize_notifications.js'))
+		{
+			Asset.javascript(ION.themeUrl + 'javascript/ionize/ionize_notifications.js',
+			{
+				onLoad: function()
+				{
+					var n = new ION.Notifications({container:'notificationContainer'});
+					n.get();
+				}
+			});
+		}
+		else
+		{
+			var n = new ION.Notifications({container:'notificationContainer'});
+			n.get();
+		}
+	}
 
 
 

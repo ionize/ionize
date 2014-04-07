@@ -79,17 +79,6 @@
 			<button type="submit" class="button success right"><ion:lang key="form_button_send" /></button>
 		</form>
 
-		<!--
-			Honny pot javascript feeding of the fake "city" field
-		-->
-		<script type="text/javascript">
-			window.addEvent('load', function() //using load instead of domready for IE8
-			{
-				$('city').value = '<ion:config key="form_antispam_key" />';
-			});
-		</script>
-			
-
 	</div>
 
 	<!-- 
