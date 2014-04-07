@@ -96,34 +96,10 @@
         ALTER TABLE `page` ADD  `id_type` smallint( 2 ) NOT NULL;
     </query>
 
-
-    <query>
-		ALTER TABLE `page` ADD  `id_subnav` INT( 11 ) NOT NULL;
-	</query>
-
-    <query>
-        ALTER TABLE `page` ADD  priority int(1) unsigned NOT NULL DEFAULT '5' COMMENT 'Page priority';
-    </query>
-
     <query>
         ALTER TABLE `page` ADD  used_by_module tinyint(1) unsigned NULL COMMENT 'This page is used by one module';
     </query>
 
-    <query>
-		UPDATE page SET id_subnav = id_page;
-	</query>
-
-	<query>
-		ALTER TABLE  `page_lang` ADD  `subnav_title` VARCHAR( 255 ) NOT NULL DEFAULT  '';
-	</query>
-
- 	<query>
-		ALTER TABLE `article` ADD logical_date datetime NOT NULL default '0000-00-00 00:00:00';
-	</query>
-
- 	<query>
-		ALTER TABLE `media` ADD square_crop enum('tl','m','br') NOT NULL DEFAULT 'm';
-	</query>
 
  	<query>
 		CREATE TABLE IF NOT EXISTS `type` (
@@ -149,10 +125,6 @@
 
     <query>
         delete from setting where name like 'thumb_%';
-    </query>
-
-    <query>
-        ALTER TABLE `media` ADD provider varchar(50) NOT NULL DEFAULT  '';
     </query>
 
     <query>ALTER TABLE article ENGINE = InnoDB;</query>
