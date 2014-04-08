@@ -105,7 +105,7 @@ class Installer
 	function check_config()
 	{
 		// PHP version >= 5
-		$this->template['php_version'] = version_compare(substr(phpversion(), 0, 3), '5.0', '>=');
+		$this->template['php_version'] = version_compare(substr(phpversion(), 0, 3), '5.3', '>=');
 
 		// MySQL support
 		$this->template['mysql_support']  = function_exists('mysql_connect');
