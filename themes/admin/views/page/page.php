@@ -307,30 +307,31 @@ if ($tracker_title == '')
 						</div>
 
 					<?php endif ;?>
+
+					<?php
+					/*
+					 * Articles
+					 */
+					?>
+					<div class="tabcontent">
+
+						<div class="h50">
+							<a id="btnArticleTypeHelp" class="right light button helpme type">
+								<i class="icon-helpme"></i>
+								<?php echo lang('ionize_label_help_articles_types'); ?>
+							</a>
+
+							<!-- Droppable to link one article to this page -->
+							<div id="new_article" class="droppable w260 lite h30 left dropArticleInPage" data-id="<?php echo $id_page; ?>">
+								<?php echo lang('ionize_label_drop_article_here'); ?>
+							</div>
+						</div>
+
+						<div id="articleListContainer"></div>
+
+					</div>
 				<?php endif ;?>
 
-				<?php
-				/*
-				 * Articles
-				 */
-				?>
-				<div class="tabcontent">
-
-					<div class="h50">
-						<a id="btnArticleTypeHelp" class="right light button helpme type">
-							<i class="icon-helpme"></i>
-							<?php echo lang('ionize_label_help_articles_types'); ?>
-						</a>
-
-						<!-- Droppable to link one article to this page -->
-						<div id="new_article" class="droppable w260 lite h30 left dropArticleInPage" data-id="<?php echo $id_page; ?>">
-							<?php echo lang('ionize_label_drop_article_here'); ?>
-						</div>
-					</div>
-
-					<div id="articleListContainer"></div>
-
-				</div>
 
 			</div>
 		</fieldset>
