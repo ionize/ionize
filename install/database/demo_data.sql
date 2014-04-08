@@ -119,16 +119,17 @@ TRUNCATE article_media;
 
 INSERT INTO article_media (id_article, id_media, online, ordering, url, lang_display)
 VALUES
-	(4,3,1,1,NULL,NULL),
-	(5,18,1,1,NULL,NULL),
-	(6,6,1,3,NULL,NULL),
-	(6,7,1,4,NULL,NULL),
-	(6,8,1,2,NULL,NULL),
-	(8,3,1,1,NULL,NULL),
-	(9,8,1,1,NULL,NULL),
-	(10,4,1,1,NULL,NULL),
-	(15,5,1,2,NULL,NULL),
-	(17,3,1,1,NULL,NULL);
+  (4,3,1,1,NULL,NULL),
+  (5,9,1,1,NULL,NULL),
+  (5,18,1,1,NULL,NULL),
+  (6,6,1,3,NULL,NULL),
+  (6,7,1,4,NULL,NULL),
+  (6,8,1,2,NULL,NULL),
+  (8,3,1,1,NULL,NULL),
+  (9,8,1,1,NULL,NULL),
+  (10,4,1,1,NULL,NULL),
+  (15,5,1,2,NULL,NULL),
+  (17,3,1,1,NULL,NULL);
 --#--
 
 --
@@ -190,7 +191,46 @@ VALUES
 --#--
 
 
--- 
+--
+-- Extend_field
+--
+TRUNCATE extend_field;
+--#--
+
+INSERT INTO extend_field (id_extend_field, name, type, description, parent, id_parent, ordering, translated, value, default_value, global, main)
+VALUES
+  (1,'title',1,'','item',1,0,'0','','',0,1),
+  (2,'text',1,'','item',1,0,'0','','',0,0);
+--#--
+
+
+--
+-- Extend_field lang
+--
+TRUNCATE extend_field_lang;
+--#--
+
+INSERT INTO extend_field_lang (id_extend_field, lang, label)
+VALUES
+  (1,'en','Title'),
+  (2,'en','Text');
+--#--
+
+
+--
+-- Extend_field instances
+--
+TRUNCATE extend_fields;
+--#--
+
+INSERT INTO extend_fields (id_extend_fields, id_extend_field, parent, id_parent, lang, content, ordering)
+VALUES
+  (1,1,'item',2,'','My first Flag',0),
+  (2,2,'item',2,'','New !!!',0);
+--#--
+
+
+--
 -- Static Items
 -- 
 TRUNCATE item;
@@ -225,6 +265,19 @@ VALUES
 	(1,'en','Flags','Flag');
 --#--
 
+
+--
+-- Static Items
+--
+TRUNCATE item_definition_lang;
+--#--
+
+INSERT INTO items (id_item, parent, id_parent, ordering)
+VALUES
+  (2,'article',5,1);
+--#--
+
+
 --
 -- Media
 --
@@ -238,7 +291,8 @@ VALUES
 	(5,'picture','IMG_8447.jpg','files/pictures/IMG_8447.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
 	(6,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
 	(7,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
-	(8,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m');
+	(8,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m'),
+  (9,'video','68203296','http://player.vimeo.com/video/68203296','http://player.vimeo.com/video/',NULL,'vimeo','0000-00-00 00:00:00',NULL,'m');
 --#--
 
 
@@ -270,8 +324,7 @@ VALUES
 --#--
 
 
-
--- 
+--
 -- Page
 -- 
 TRUNCATE page;
