@@ -223,7 +223,7 @@ TRUNCATE item_definition_lang;
 INSERT INTO item_definition_lang (id_item_definition, lang, title_definition, title_item)
 VALUES
 	(1,'en','Flags','Flag');
-
+--#--
 
 --
 -- Media
