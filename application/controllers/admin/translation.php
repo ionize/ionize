@@ -46,7 +46,6 @@ class Translation extends MY_admin
      */
     protected $default_lang_code;
 	
-
 	/**
 	 * Constructor
 	 *
@@ -539,14 +538,14 @@ class Translation extends MY_admin
 			'views' => array()		// array of view in which each term appears, key : term
 		);
 		
-		// Get the modules term as a flat array of terms
-		$modules_data = $this->_get_all_terms();
-		$modules_terms = array();
-		foreach($modules_data as $module => $terms)
+		// Get all language term as a flat array of terms
+        $language_data  = $this->_get_all_terms();
+        $language_terms = array();
+
+        foreach($language_data as $language => $terms)
 		{
-			$modules_terms = array_merge($modules_terms, array_values($terms));
+            $language_terms = array_merge($language_terms, array_values($terms));
 		}
-		
 		
 		// Only do something if dir exists !
 		if (is_dir($path))
@@ -569,7 +568,7 @@ class Translation extends MY_admin
 							foreach($matches[1] as $term)
 							{
 								// Only add the term if it is not a module one
-								if ( ! in_array($term, $modules_terms))
+								if ( ! in_array($term, $language_terms))
 								{
 									// Add the view to the term view list
 									if ( ! isset($items['views'][$term]) || ! in_array($file->getFilename(), $items['views'][$term]))
@@ -633,11 +632,12 @@ class Translation extends MY_admin
                 if (is_file($file['path']))
 			{
 				$lang = array();
+
                     include($file['path']);
 	
 				if ( ! empty($lang))
 				{
-                        $items[str_replace('_lang.php', '', $file['filename'])] = array_keys($lang);
+                        $items[str_replace('_lang.php', '', $lang_file['type'] . '_' . $file['filename'])] = array_keys($lang);
                     }
 				}
 			}
