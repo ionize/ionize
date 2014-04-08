@@ -269,7 +269,7 @@ VALUES
 --
 -- Static Items
 --
-TRUNCATE item_definition_lang;
+TRUNCATE items;
 --#--
 
 INSERT INTO items (id_item, parent, id_parent, ordering)
