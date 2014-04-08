@@ -452,7 +452,7 @@ class Extend_field_model extends Base_model
 
 	public function get_extend_link_list($id_extend, $parent, $id_parent, $lang=NULL, $where=array(), $link_lang=NULL)
 	{
-		$data = $prepared_data = array();
+		$data = $prepared_data = $values = array();
 
 		if ( ! $lang) $lang = NULL;
 
@@ -462,7 +462,7 @@ class Extend_field_model extends Base_model
 
 		if ( ! empty($extend))
 		{
-			$values = strlen($extend['content']) > 0 ? explode(',', $extend['content']) : NULL;
+			$values = strlen($extend['content']) > 0 ? explode(',', $extend['content']) : array();
 
 			$types = array();
 
