@@ -611,6 +611,8 @@ class Extend_field_model extends Base_model
 
 
 			// Reorder data
+			if( ! empty($values))
+			{
 			foreach($values as $val)
 			{
 				$arr = explode(':', $val);
@@ -649,6 +651,8 @@ class Extend_field_model extends Base_model
 					}
 				}
 			}
+		}
+
 		}
 
 		return $prepared_data;
