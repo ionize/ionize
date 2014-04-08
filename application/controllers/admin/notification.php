@@ -42,17 +42,18 @@ class Notification extends MY_admin
 		$this->curl->option(CURLOPT_RETURNTRANSFER, TRUE);
 
 		$h = $this->input->request_headers();
+		$h = array_change_key_case($h);
+
 		$headers = array(
 			'X-source: ionize',
 			'X-version: ' . Settings::get('ionize_version'),
-			'X-host: ' . (isset($h['Host']) ? $h['Host'] : ''),
+			'X-host: ' . (isset($h['host']) ? $h['host'] : ''),
 		);
 
-		if ( ! empty($h['Accept-language']))
-		{
-			$headers[] = 'Accept-language:' . $h['Accept-language'];
-			$this->curl->option(CURLOPT_HTTPHEADER, $headers);
-		}
+		if ( ! empty($h['accept-language']))
+			$headers[] = 'accept-language:' . $h['accept-language'];
+
+		$this->curl->option(CURLOPT_HTTPHEADER, $headers);
 
 		$result = $this->curl->simple_get('http://ionizecms.com/ionize_notification');
 		$result = json_decode($result, TRUE);
