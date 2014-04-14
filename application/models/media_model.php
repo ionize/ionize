@@ -35,7 +35,7 @@ class Media_model extends Base_model
 
 	protected static $_VIDEO_PROVIDERS = array('youtube', 'vimeo', 'dailymotion');
 
-	protected static $_UNUSED_IGNORED_FILES = array('default.png', 'index.html');
+	protected static $_UNUSED_IGNORED_FILES;
 
 	/**
 	 * Constructor
@@ -49,6 +49,12 @@ class Media_model extends Base_model
 		$this->table =		'media';
 		$this->pk_name = 	'id_media';
 		$this->lang_table = 'media_lang';
+
+        self::$_UNUSED_IGNORED_FILES = array(
+            Settings::get('no_source_picture'),
+            'index.html',
+            'watermark.png'
+        );
 
 		log_message('debug', __CLASS__ . " Class Initialized");
 	}
