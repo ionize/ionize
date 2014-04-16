@@ -353,7 +353,6 @@ class Page extends MY_admin
 				$this->lang_data = $event_received['lang'];
 			}
 
-
 			// Save Page
 			$saved_id = $this->page_model->save($this->data, $this->lang_data);
 
@@ -685,7 +684,7 @@ class Page extends MY_admin
 
 			if ($result)
 			{
-				$this->_reload_panel($id_page);
+				$this->success(lang('ionize_message_operation_ok'));
 			}
 		}
 		$this->response();
@@ -1139,6 +1138,9 @@ class Page extends MY_admin
 			$this->data['appears'] =  $this->input->post('appears');
 		}
 
+		// URLs : Feed the other languages URL with the default one if the URL is missing
+		$urls = $this->_get_urls(TRUE);
+
 		// Unset Ordering if no new page : Saved by page ordering in tree view
 		if (!$this->input->post('id_page') || $this->input->post('id_page') == '')
 		{
@@ -1151,18 +1153,15 @@ class Page extends MY_admin
 				$row = $query->row(); 
 				$this->data['ordering'] = $row->ordering + 1;
 			}
+
+			// Create the page name : Only done for new page
+			$this->data['name'] = $urls[Settings::get_lang('default')];
+			$this->data['name'] = $this->page_model->get_unique_name($this->data['name'], $this->input->post('id_page'));
 		}
 		else
 		{
 			unset($this->data['ordering']);
 		}
-
-		// URLs : Feed the other languages URL with the default one if the URL is missing
-		$urls = $this->_get_urls(TRUE);
-
-		// Update the page name (not used anymore in the frontend)
-		$this->data['name'] = $urls[Settings::get_lang('default')];
-		$this->data['name'] = $this->page_model->get_unique_name($this->data['name'], $this->input->post('id_page'));
 
 
 		// Lang data

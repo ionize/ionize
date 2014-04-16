@@ -25,7 +25,6 @@ if ($tracker_title == '')
 	<input type="hidden" name="created" value="<?php echo $created; ?>" />
 	<input type="hidden" name="id_page" id="id_page" value="<?php echo $id_page; ?>" />
 	<input type="hidden" name="rel" id="rel" value="<?php echo $id_page; ?>" />
-	<input type="hidden" name="name" id="name" value="<?php echo $name; ?>" />
 	<input type="hidden" id="origin_id_parent" value="<?php echo $id_parent; ?>" />
 	<input type="hidden" id="origin_id_subnav" value="<?php echo $id_subnav; ?>" />
 
