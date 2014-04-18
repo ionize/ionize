@@ -222,7 +222,7 @@ $id_parent = ( !empty($id_parent)) ? $id_parent : '';
 									<dl class="small">
 										<dt>
 											<?php
-												$label = ( ! empty($field['lang_definition'][$lang]['label'])) ? $field['langs'][$lang]['label'] : $field['name'];
+												$label = ( ! empty($field['lang_definition'][$lang]['label'])) ? $field['lang_definition'][$lang]['label'] : $field['name'];
 											?>
 											<label for="cf_<?php echo $id_extend; ?>_<?php echo $lang; ?>" title="<?php echo $field['description']; ?>"><?php echo $label; ?></label>
 										</dt>
