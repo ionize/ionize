@@ -103,7 +103,7 @@ class Translation extends MY_admin
 	 */
     function edit()
     {
-        $default_lang = Settings::get_lang('default');
+        $default_lang = $this->default_lang_code;
         $type = $this->input->post('type');
         $path = $this->input->post('path');
         $lang_path = $this->input->post('lang_path');
