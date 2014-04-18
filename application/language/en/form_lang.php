@@ -35,10 +35,44 @@ $lang['form_label_gender'] = 'Gender';
 $lang['form_label_gender_female'] = 'Female';
 $lang['form_label_gender_male'] = 'Male';
 $lang['form_label_gender_unisex'] = 'I prefer not to say';
+$lang['form_label_address'] = 'Address';
+$lang['form_label_phone'] = 'Phone';
+$lang['form_label_company'] = 'Company';
+$lang['form_label_country'] = 'Country';
+$lang['form_label_city'] = 'City';
+$lang['form_label_state'] = 'State';
+$lang['form_label_zip'] = 'Zip';
 $lang['form_label_login'] = 'Login';
 $lang['form_label_password'] = 'Password';
 $lang['form_label_password_confirmation'] = 'Password confirm';
 $lang['form_label_delete_account'] = 'Delete account';
+
+
+/*
+|--------------------------------------------------------------------------
+| Placeholders
+|--------------------------------------------------------------------------
+*/
+$lang['form_placeholder_email'] = 'Enter Email';
+$lang['form_placeholder_name'] = 'Enter Name';
+$lang['form_placeholder_firstname'] = 'Enter First Name';
+$lang['form_placeholder_lastname'] = 'Enter Last Name';
+$lang['form_placeholder_subject'] = 'Enter Subject';
+$lang['form_placeholder_message'] = 'Enter Message';
+$lang['form_placeholder_screen_name'] = 'Enter Screen Name';
+$lang['form_placeholder_username'] = 'Enter User name';
+$lang['form_placeholder_birthdate'] = 'Enter Birthdate';
+$lang['form_placeholder_gender'] = 'Enter Gender';
+$lang['form_placeholder_address'] = 'Enter Address';
+$lang['form_placeholder_phone'] = 'Enter Phone';
+$lang['form_placeholder_company'] = 'Enter Company';
+$lang['form_placeholder_country'] = 'Enter Country';
+$lang['form_placeholder_city'] = 'Enter City';
+$lang['form_placeholder_state'] = 'Enter State';
+$lang['form_placeholder_zip'] = 'Enter Zip';
+$lang['form_placeholder_login'] = 'Enter Login';
+$lang['form_placeholder_password'] = 'Enter Password';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +80,7 @@ $lang['form_label_delete_account'] = 'Delete account';
 |--------------------------------------------------------------------------
 */
 $lang['form_button_send'] = "Send";
+$lang['form_button_send_message'] = "Send Message";
 $lang['form_button_save'] = "Save";
 $lang['form_button_register'] = "Register";
 $lang['form_button_login'] = "Login";

@@ -250,6 +250,9 @@ class TagManager
 
 		self::get_uri_segments();
 
+		/*
+		 * Previously : Loaded before core Tagmenagers
+		 *
 		// Put modules arrays keys to lowercase
 		if (!empty($modules))
 			self::$module_folders = array_combine(array_map('strtolower', array_values($modules)), array_values($modules));
@@ -259,6 +262,7 @@ class TagManager
 		{
 			self::autoload_module_tags($module.'_Tags');
 		}
+		*/
 
 		// Load automatically all TagManagers defined in /libraries/Tagmanager
 		$tagmanagers = glob(APPPATH.'libraries/Tagmanager/*'.EXT);
@@ -268,6 +272,16 @@ class TagManager
 
 		foreach ($tagmanagers as $tagmanager)
 			self::autoload($tagmanager);
+
+		// Put modules arrays keys to lowercase
+		if (!empty($modules))
+			self::$module_folders = array_combine(array_map('strtolower', array_values($modules)), array_values($modules));
+
+		// Loads automatically all installed modules tags
+		foreach (self::$module_folders as $module)
+		{
+			self::autoload_module_tags($module.'_Tags');
+		}
 
 		self::add_globals();
 		self::add_tags();

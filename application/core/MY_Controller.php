@@ -1062,6 +1062,7 @@ class MY_Module extends MY_Controller
 
 		if ( ! empty($module_config))
 		{
+			// Languages
 			$online_lang_codes = array();
 			foreach(Settings::get_online_languages() as $language)
 				$online_lang_codes[] = $language['lang'];
@@ -1078,16 +1079,82 @@ class MY_Module extends MY_Controller
 				Settings::set('current_lang', config_item('detected_lang_code'));
 			}
 
+			// Set the current theme
+			Theme::set_theme(Settings::get('theme'));
+
+
+			// Static translations
+			$lang_files = array();
+			$lang_folder = APPPATH . 'language/' . Settings::get_lang();
+
+			// Core languages files : Including except "admin_lang.php"
+			if (is_dir($lang_folder))
+			{
+				$lang_files = glob($lang_folder.'/*_lang.php', GLOB_BRACE);
+				foreach($lang_files as $key => $lang_file)
+				{
+					if ($lang_file == $lang_folder.'/admin_lang.php')
+					{
+						unset($lang_files[$key]);
+					}
+				}
+			}
+
+			// Check if theme lang folder exist
+			$theme_lang_folder = FCPATH.Theme::get_theme_path().'language/'.Settings::get_lang() . '/';
+			if( file_exists($theme_lang_folder) )
+			{
+				// Theme static translations
+				$lf = glob($theme_lang_folder . '*_lang.php');
+
+				foreach($lf as $key => $tlf)
+				{
+					if (basename($tlf) === 'theme_lang.php')
+					{
+						unset($lf[$key]);
+						array_unshift($lf, $tlf);
+						break;
+					}
+				}
+
+				if ( ! empty($lf))
+					$lang_files = array_merge($lf, (Array)$lang_files);
+			}
 
 			// Module translation files
 			$lang_file = MODPATH . $module_config['folder'] . '/language/' . Settings::get_lang('current') . '/' . $module_config['key'] . '_lang.php';
-
 			if (is_file($lang_file))
+				array_push($lang_files, $lang_file);
+
+
+			// Load all lang files
+			if ( ! empty($lang_files))
 			{
-				$lang = array();
-				require_once $lang_file;
-				$this->lang->language = array_merge($this->lang->language, $lang);
-				unset($lang);
+				foreach($lang_files as $l)
+				{
+					if (is_file($l) && '.'.end(explode('.', $l)) == EXT )
+					{
+						include $l;
+						if ( ! empty($lang))
+						{
+							foreach($lang as $key => $translation)
+							{
+								// If the term doesn't exists
+								if ( ! isset($this->lang->language[$key]) OR $this->lang->language[$key] == '')
+								{
+									$this->lang->language[$key] = $translation;
+								}
+								else
+								{
+									// Only replace by default (theme vs. module) if the translation is empty
+									if (empty($this->lang->language[$key]))
+										$this->lang->language[$key] = $translation;
+								}
+							}
+							unset($lang);
+						}
+					}
+				}
 			}
 		}
 	}
