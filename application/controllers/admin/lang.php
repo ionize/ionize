@@ -514,6 +514,9 @@ class Lang extends MY_admin
 		$conf .= "// and will never change during the request process \n";
 		$conf .= "\$config['default_lang_code'] = '".$def_lang."';\n\n";
 
+        $conf .= "// Default Translation Language Code\n";
+        $conf .= "\$config['default_translation_lang_code'] = '".config_item('default_translation_lang_code')."';\n\n";
+
 		$conf .= "// Used language code\n";
 		$conf .= "// Dynamically changed by the Router depending on the browser, cookie or asked URL\n";
 		$conf .= "// By default, Ionize set it to the default lang code.\n";
