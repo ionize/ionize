@@ -1,6 +1,6 @@
 <?php
 /**
- * Added after each form by the tag :<ion:form ajax="true" >
+ * Added after each form by the tag : <ion:form ajax="true" >
  *
  * Handles the form submit event
  *
@@ -21,6 +21,13 @@
 	{
 		// This part of script can be put in your own JS script if
 		// you set "nojs" to TRUE in the ionize form open tag.
+		// If you use your own version, replace the following values (set by PHP)
+		// by your own values.
+		// Example :
+		// var submitButton = 	$('#mySubmitButton');
+		// var form_name = 		'contact';
+		// var form = 			$('#myContactForm');
+
 		var submitButton = 	$('#<?php echo $form_submit_id ?>');
 		var form_name = 	'<?php echo $form_name ?>';
 		var form = 			$('form[name="'+form_name+'"]');
@@ -39,6 +46,7 @@
 				data += '&form_name=' + form_name;
 
 				// Remove all previous error messages if any
+				// They are set with SPAN, but it can be what you want
 				$('#' + form_name + ' span.error').remove();
 				$('#' + form_name + ' div').removeClass('error');
 
@@ -70,13 +78,14 @@
 					 */
 					function(data)
 					{
-						// Add one global error message
+						// Add one global success or error message
 						var id = 'form_' + form_name + '_message';
 
 						// Remove previous one if any
 						$('#' + id).remove();
 						var type = data.validation == false ? 'alert-error' : 'alert-success';
 
+						// Global Success / Error message DOM element
 						var div = $(
 							'<div id="' + id + '" class="alert ' + type + '">' +
 								'<button class="close" data-dismiss="alert" type="button">&times;</button>' +
@@ -112,6 +121,12 @@
 								}
 							});
 						}
+						// Yiiiii, the form was successfully posted
+						// Let's do some things... or not, as you want
+						else
+						{
+							$(form).fadeOut('slow');
+						}
 					},
 					'json'
 				);
@@ -123,7 +138,8 @@
 		});
 	};
 
-	// Pure JS Event listener, so jQuery can be loaded at the bottom fo the page
+	// Pure JS Event listener, so jQuery can be loaded at the bottom of the page
+	// (avoid "$ is not a function" message)
 	if (window.addEventListener)
 		window.addEventListener('load', initForm, false);
 	else
