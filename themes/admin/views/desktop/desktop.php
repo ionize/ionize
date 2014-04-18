@@ -1,3 +1,7 @@
+<?php
+$v = Settings::get('ionize_version');
+$c = '?v='.$v;
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,23 +12,23 @@
 
 <link rel="shortcut icon" href="<?php echo theme_url(); ?>images/favicon.ico" type="image/x-icon" />
 
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/core.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/menu.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/desktop.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/window.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/core.css<?php echo $c ?>" />
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/menu.css<?php echo $c ?>" />
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/desktop.css<?php echo $c ?>" />
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/window.css<?php echo $c ?>" />
 
-<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/form.css" type="text/css" />
-<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/content.css" type="text/css" />
-<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/tree.css" type="text/css" />
+<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/form.css<?php echo $c ?>" type="text/css" />
+<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/content.css<?php echo $c ?>" type="text/css" />
+<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/tree.css<?php echo $c ?>" type="text/css" />
 
-<!--[if IE 7]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie7.css" /><![endif]-->
-<!--[if IE 8]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie8.css" /><![endif]-->
-<!--[if IE 9]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie9.css" /><![endif]-->
-<!--[if lt IE 9]><script type="text/javascript" src="<?php echo theme_url(); ?>javascript/excanvas_r43_compressed.js"></script><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie7.css<?php echo $c ?>" /><![endif]-->
+<!--[if IE 8]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie8.css<?php echo $c ?>" /><![endif]-->
+<!--[if IE 9]><link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/ie9.css<?php echo $c ?>" /><![endif]-->
+<!--[if lt IE 9]><script type="text/javascript" src="<?php echo theme_url(); ?>javascript/excanvas_r43_compressed.js<?php echo $c ?>"></script><![endif]-->
 
 <!-- Mootools 1.4.5  -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1-yc.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1-yc.js<?php echo $c ?>"></script>
 
 <?php if (
 	Settings::get('dashboard_google') == '1'
@@ -39,53 +43,53 @@
 <?php endif ;?>
 
 <!-- Upload -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Request.File.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.MultipleFileInput.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.Upload.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Request.File.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.MultipleFileInput.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.Upload.js<?php echo $c ?>"></script>
 
 <!-- TextboxList -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.Binary.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TextboxList/TextboxList.Autocomplete.Binary.js<?php echo $c ?>"></script>
 
 <!-- Drag Clone -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/drag.clone.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/drag.clone.js<?php echo $c ?>"></script>
 
 <!-- Date Picker -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-datepicker/datepicker.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mootools-datepicker/datepicker_dashboard/datepicker_dashboard.css" />
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-datepicker/datepicker.js<?php echo $c ?>"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mootools-datepicker/datepicker_dashboard/datepicker_dashboard.css<?php echo $c ?>" />
 
 <!-- Tab Swapper -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TabSwapper.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TabSwapper.js<?php echo $c ?>"></script>
 
 <!-- Sortable Table -->
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/SortableTable/SortableTable.css" />
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/SortableTable/SortableTable.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/SortableTable/SortableTable.css<?php echo $c ?>" />
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/SortableTable/SortableTable.js<?php echo $c ?>"></script>
 
 <!-- CwCrop -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/cwcrop/ysr-crop.js"></script>
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/cwcrop/ysr-crop.css" />
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/cwcrop/ysr-crop.js<?php echo $c ?>"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/cwcrop/ysr-crop.css<?php echo $c ?>" />
 
 <!-- Mootools Extra -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-class-extras.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.AutoGrow.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Fx.ProgressBar.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-class-extras.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Form.AutoGrow.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Fx.ProgressBar.js<?php echo $c ?>"></script>
 
 <!-- swfObject -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/swfobject.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/swfobject.js<?php echo $c ?>"></script>
 
 <!-- CodeMirror -->
-<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/codemirror/css/codemirror.css" />
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/js/codemirror.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/codemirror.views.js"></script>
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/codemirror/css/codemirror.css<?php echo $c ?>" />
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/js/codemirror.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/codemirror/codemirror.views.js<?php echo $c ?>"></script>
 
-<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/flashblock.css" />
-<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player.css" />
-<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player-visualization.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/flashblock.css<?php echo $c ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player.css<?php echo $c ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo theme_url(); ?>javascript/soundmanager/style/360player-visualization.css<?php echo $c ?>" />
 
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/berniecode-animator.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/soundmanager2-jsmin.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/360player.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/berniecode-animator.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/soundmanager2-jsmin.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/360player.js<?php echo $c ?>"></script>
 <script type="text/javascript">
 	soundManager.setup({
 		url: '<?php echo theme_url() ?>javascript/soundmanager/swf/',
@@ -127,74 +131,74 @@
 </script>
 
 <!-- Mocha UI-->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/core.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/create.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/require.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/canvas.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/content.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/persist.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/core.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/create.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/require.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/canvas.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/content.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Core/persist.js<?php echo $c ?>"></script>
 
 <!-- Normal load -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/taskbar/taskbar.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/toolbar/toolbar.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/window/window.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/window/modal.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/spinner/spinner.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/taskbar/taskbar.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/toolbar/toolbar.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/window/window.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/window/modal.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/Controls/spinner/spinner.js<?php echo $c ?>"></script>
 
 <!-- UI initialization -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/init.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mochaui/init.js<?php echo $c ?>"></script>
 
 <!-- Ionize -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_core.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_panels.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_window.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_request.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_content.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_droppable.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_forms.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_list.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_mediamanager.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmanager.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendlinkmanager.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmediamanager.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_staticitemmanager.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_itemsmanager.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tinymce.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree_xhr.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_list_filter.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_notify.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_user.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_select.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_button.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_core.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_panels.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_window.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_request.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_content.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_droppable.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_forms.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_list.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_mediamanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendlinkmanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmediamanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_staticitemmanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_itemsmanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tinymce.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree_xhr.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_list_filter.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_notify.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_user.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_select.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_button.js<?php echo $c ?>"></script>
 
 <!-- Authority -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_authority.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_authority.js<?php echo $c ?>"></script>
 
 <!-- DropZone -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/Request.Blob.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML5.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML4.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/Request.Blob.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML5.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/dropzone/DropZone.HTML4.js<?php echo $c ?>"></script>
 
 <!-- Ionize Filemanager -->
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/filemanager/assets/css/filemanager.css" />
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/filemanager.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/filemanager.js<?php echo $c ?>"></script>
 <?php
 	if (is_file(BASEPATH.'../'.Theme::get_theme_path().'javascript/filemanager/language/Language.'.Settings::get_lang().'.js'))
 		$filemanager_lang = Settings::get_lang();
 	else
 		$filemanager_lang = 'en';
 ?>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/language/Language.<?php echo $filemanager_lang ?>.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/filemanager/language/Language.<?php echo $filemanager_lang ?>.js<?php echo $c ?>"></script>
 
 <!-- TinyMCE -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/tinymce/jscripts/tiny_mce/tiny_mce.js<?php echo $c ?>"></script>
 
 <!-- If users templates, add them to the init object -->
 <?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/templates/tinymce_templates.js' )) :?>
-	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/templates/tinymce_templates.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/templates/tinymce_templates.js<?php echo $c ?>"></script>
 <?php else :?>
 	<script type="text/javascript">
 		var getTinyTemplates = false;
@@ -203,7 +207,7 @@
 
 <!-- TinyMCE user's Setup addon -->
 <?php if (is_file(FCPATH.'themes/'.Settings::get('theme').'/assets/javascript/tinyMCE.js' )) :?>
-	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/javascript/tinyMCE.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>themes/<?php echo Settings::get('theme'); ?>/assets/javascript/tinyMCE.js<?php echo $c ?>"></script>
 <?php endif ;?>
 
 <script type="text/javascript">
@@ -247,10 +251,10 @@
 <!-- Module's CSS / JS files -->
 <?php foreach($modules as $module):?>
 	<?php if (file_exists(MODPATH.$module.'/assets/css/admin.css')): ?>
-		<link rel="stylesheet" href="<?php echo base_url(); ?>modules/<?php echo $module ;?>/assets/css/admin.css" type="text/css" />
+		<link rel="stylesheet" href="<?php echo base_url(); ?>modules/<?php echo $module ;?>/assets/css/admin.css<?php echo $c ?>" type="text/css" />
 	<?php endif;?>
 	<?php if (file_exists(MODPATH.$module.'/assets/javascript/admin.js')): ?>
-		<script type="text/javascript" src="<?php echo base_url(); ?>modules/<?php echo $module ;?>/assets/javascript/admin.js"></script>
+		<script type="text/javascript" src="<?php echo base_url(); ?>modules/<?php echo $module ;?>/assets/javascript/admin.js<?php echo $c ?>"></script>
 	<?php endif;?>
 <?php endforeach; ?>
 

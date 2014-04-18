@@ -1,6 +1,7 @@
 <?php
 /**
- * Added after each form
+ * Added after each form by the tag :<ion:form ajax="true" >
+ *
  * Handles the form submit event
  *
  * jQuery version.
@@ -42,16 +43,24 @@
 				$('#' + form_name + ' div').removeClass('error');
 
 				/*
-				 *
+				 * Post the form
 				 */
 				$.post(
 					'<?php echo $url ?>',
 					data,
 					/**
+					 * Post Callback.
+					 * Gets one JSON object, containing the success message or errors
+					 * Success means the form was posted.
+					 * Errors gives the errors detail (key
+					 *
 					 *
 					 * @param data			Object {
 					 * 							validation: 	boolean, false if the validation doesn't passed
-					 * 							errors: 		array, contains all fields keys and error messages
+					 * 							errors:[		array, contains all fields keys and error messages
+					 * 								{field: error_message}
+					 * 								...
+					 * 							],
 					 * 							title: 			String, title of the message
 					 * 							message: 		String, message
 					 * 						}
@@ -59,7 +68,7 @@
 					 * @param jqxhr			jQuery return code. 200.
 					 *
 					 */
-					function( data, textStatus, jqxhr )
+					function(data)
 					{
 						// Add one global error message
 						var id = 'form_' + form_name + '_message';
