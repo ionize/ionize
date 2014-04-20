@@ -84,7 +84,6 @@ class MY_Email extends CI_Email
 				$data['subject'] = $subject;
 
 				$this->clear();
-				$this->initialize();
 
 				// Subject / From / To
 				$this->subject($subject);

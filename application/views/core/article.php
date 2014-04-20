@@ -4,7 +4,7 @@
 	
 	<!-- Formatted date -->
  	<div class="date">
- 		<p class="day"><ion:date format="d.M.Y" manip="ucfirst" />
+ 		<p class="day"><ion:date format="d.M.Y" function="ucfirst" />
  	</div>
 
 	<!-- Article content -->
@@ -15,7 +15,7 @@
 		<!-- Articles linked pictures -->	
 		<ion:medias type="picture">
 		
-			<img src="<ion:src />" />
+			<img src="<ion:media:src />" />
 		
 		</ion:medias>
 	

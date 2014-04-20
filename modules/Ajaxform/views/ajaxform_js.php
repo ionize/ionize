@@ -93,7 +93,8 @@
 								+ data.message +
 							'</div>'
 						);
-						$(form).prepend(div);
+
+						$(form).before(div);
 
 						// Errors : For each of them, get the input field and add one error message
 						if (data.validation == false)
