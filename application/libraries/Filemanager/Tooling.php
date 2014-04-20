@@ -16,6 +16,14 @@
  *   Copyright (c) 2011 [Christoph Pojer](http://cpojer.net)
  */
 
+if( ! function_exists('fnmatch')) {
+
+	function fnmatch($pattern, $string) {
+		return preg_match("#^".strtr(preg_quote($pattern, '#'), array('\*' => '.*', '\?' => '.'))."$#i", $string);
+	}
+
+}
+
 
 if (!function_exists('safe_glob'))
 {
