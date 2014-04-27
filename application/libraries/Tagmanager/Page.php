@@ -314,6 +314,26 @@ class TagManager_Page extends TagManager
 	// ------------------------------------------------------------------------
 
 
+	public static function get_relative_parent_page($page, $rel = -1, $include_hiddens = FALSE)
+	{
+		$parent = array();
+
+		$p_arr = $include_hiddens ? explode('/', $page['full_path_ids']) : explode('/', $page['path_ids']);
+
+		$idx = count($p_arr) -1 + $rel;
+
+		if (isset($p_arr[$idx]))
+		{
+			$parent = self::get_page_by_id($p_arr[$idx]);
+		}
+
+		return $parent;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Get one page from its URL
 	 *
@@ -741,8 +761,10 @@ class TagManager_Page extends TagManager
 
 		if ( ! is_null($parent))
 		{
-			if (strval((int)$parent) == (string) $parent)
+			if (strval(abs((int)$parent)) == (string)$parent)
 				$parent_page = self::get_page_by_id($parent);
+			else if(substr($parent, 0, 1) == '-')
+				$parent_page = self::get_relative_parent_page(self::registry('page'), $parent, $display_hidden);
 			else if($parent == 'this')
 				$parent_page = self::registry('page');
 			else

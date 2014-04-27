@@ -103,7 +103,7 @@ class MY_Email extends CI_Email
 
 				if ( ! $result)
 				{
-					log_message('error', 'Error : MY_Email::send_form_emails() : Email was not sent.');
+					log_message('error', 'Error : MY_Email::send_form_emails() : Email was not sent. Possible reason : Email settings not complete, check your website sending email.');
 				}
 			}
 			else

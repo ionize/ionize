@@ -82,9 +82,8 @@ if( ! function_exists('get_tree_navigation'))
 				$tree .= '<li'.$class.'><a'.$class.' href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a>';
 		
 				if (!empty($page['children']))
-					 $tree .= get_tree_navigation($page['children']);
-				
-	
+					$tree .= get_tree_navigation($page['children']);
+
 				if (!empty($page['articles']))
 				{
 					$tree .= '<ul' . $id . $class . '>';

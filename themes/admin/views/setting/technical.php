@@ -107,7 +107,7 @@
 							<input name="media_thumb_size" id="media_thumb_size" class="inputtext w40" type="text" value="<?php echo Settings::get('media_thumb_size'); ?>"/>
 						</dd>
 					</dl>
-					
+
 					<dl class="small">
 						<dt>
 							<label for="media_thumb_unsharp"><?php echo lang('ionize_label_thumb_unsharp'); ?></label>
@@ -748,7 +748,9 @@
 
 
 <script type="text/javascript">
-	
+
+
+	var mailpath = '<?php echo $mailpath ?>';
 
 	// Panel toolbox
 	ION.initToolbox('empty_toolbox');
@@ -828,6 +830,9 @@
 		}
 		else if (protocol == 'sendmail')
 		{
+			if (mailpath == '')
+				$('mailpath').value = '/usr/sbin/sendmail';
+
 			$('emailSMTPDetails').hide();
 			$('emailSendmailDetails').show();
 		}

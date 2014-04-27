@@ -118,6 +118,7 @@ $lang['mail_website_contact_message'] = "One visitor let you a message through t
 $lang['mail_user_contact_subject'] = "Thank you for your message to %s";
 $lang['mail_user_contact_intro'] = "Dear %s,";
 $lang['mail_user_contact_message'] = "Thank you for your message.<br/>We will answer you very quickly.";
+$lang['mail_user_contact_posted_data'] = "Here are the data you submit with the form.";
 
 // Message about automatic message
 $lang['mail_automatic_message_warning'] = "This message was automatically generated. Please do not answer.";
