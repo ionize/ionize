@@ -47,6 +47,11 @@ class Translation extends MY_admin
     protected $default_lang_code;
 	
 	/**
+     * Directory Seperator
+     */
+    protected $DP = '/';
+
+    /**
 	 * Constructor
 	 *
 	 */
@@ -128,7 +133,7 @@ class Translation extends MY_admin
                 $items[$lang_code] = array();
 		
                 // Translation file name. Named [theme_name]_lang.php
-                $file = $lang_path . $lang_code . DIRECTORY_SEPARATOR . $filename;
+                $file = $lang_path . $lang_code . $this->DP . $filename;
 		
                 // Include the file if it exists
                 if ( file_exists($file) )
@@ -144,13 +149,17 @@ class Translation extends MY_admin
 
                 if(! file_exists($file))
                 {
-                    $source_file = $lang_path . $default_lang . DIRECTORY_SEPARATOR . $filename;
-                    $destination_path = $lang_path . $lang_code . DIRECTORY_SEPARATOR;
-                    $lfile = $lang_path . $lang_code . DIRECTORY_SEPARATOR . $filename;
+                    $source_file = $lang_path . $default_lang . $this->DP . $filename;
+                    $destination_path = $lang_path . $lang_code . $this->DP;
+                    $lfile = $lang_path . $lang_code . $this->DP . $filename;
 
-                    if(@mkdir($destination_path, 0777, TRUE))
+                    @mkdir($destination_path, 0777, TRUE);
+
+                    if( ! file_exists($file) )
 		{
-                        if(@copy($source_file, $lfile))
+                        @copy($source_file, $lfile);
+
+                        if( file_exists($lfile) )
                         {
                             $lang = array();
 
@@ -333,7 +342,7 @@ class Translation extends MY_admin
 			$data .= "\n".'?'.'>';
 
 			// Try writing the language file
-            $file = $path . DIRECTORY_SEPARATOR . $filename;
+            $file = $path . $this->DP . $filename;
 
 			if ( ! file_exists($file))
 				write_file($file, $data);
@@ -425,20 +434,22 @@ class Translation extends MY_admin
             switch($type)
 				{
                 case 'theme':
-                    $path = FCPATH . 'themes' . DIRECTORY_SEPARATOR . Settings::get('theme') . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    $path = FCPATH . 'themes' . $this->DP . Settings::get('theme') . $this->DP . 'language' . $this->DP;
                     break;
                 case 'application':
-                    $path = FCPATH . 'application' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    $path = FCPATH . 'application' . $this->DP . 'language' . $this->DP;
                     break;
                 case 'system':
-                    $path = FCPATH . 'system' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    $path = FCPATH . 'system' . $this->DP . 'language' . $this->DP;
                     break;
             }
 					
-            if( ! is_null($path) && file_exists($path) )
+            $lang_path = $path . $lang . $this->DP;
+					
+            if( ! is_null($lang_path) && file_exists($lang_path) )
             {
                 // Theme static translations
-                $language_files = glob($path . '*_lang.php');
+                $language_files = glob($lang_path . '*_lang.php');
 					
                 $lfiles[$type] = array(
                     'title' => lang('ionize_title_translation_' . $type),
@@ -450,8 +461,8 @@ class Translation extends MY_admin
 						{
                     $lfiles[$type]['files'][] = array(
                         'path' => $lf,
-                        'lang_path' => str_replace($lang . DIRECTORY_SEPARATOR, '', $path),
-                        'filename' => str_replace($path, '', $lf)
+                        'lang_path' => $path,
+                        'filename' => str_replace($lang_path, '', $lf)
                     );
 						}
 						
@@ -495,12 +506,13 @@ class Translation extends MY_admin
         foreach($installed_modules as $key => $imodule)
         {
             // Module Language Folder Path
-            $mlpath = $imodule['path'] . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . strtolower($key) . '_lang.php';
+            $mpath  = $imodule['path'] . $this->DP . 'language' . $this->DP;
+            $mlpath = $mpath . $lang . $this->DP . strtolower($key) . '_lang.php';
 	
             if( file_exists($mlpath) )
                 $paths['module']['files'][] = array(
                     'path' => $mlpath,
-                    'lang_path' => str_replace($lang . DIRECTORY_SEPARATOR . strtolower($key) . '_lang.php', '', $mlpath),
+                    'lang_path' => $mpath,
                     'filename' => strtolower($key) . '_lang.php'
                 );
 	}

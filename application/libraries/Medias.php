@@ -572,9 +572,8 @@ class Medias
 		// Create directory is not exists
 		if( ! is_dir($thumb_path) )
 		{
-            $doc_path = rtrim(DOCPATH, '/');
-
-            $thumb_path = str_replace(DOCPATH, '', $thumb_path);
+            $doc_path = rtrim(FCPATH, '/');
+            $thumb_path = str_replace(FCPATH, '', $thumb_path);
 
 			$path_segments = explode('/', ltrim($thumb_path, '/'));
 			array_pop($path_segments);
