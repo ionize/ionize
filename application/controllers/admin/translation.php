@@ -110,7 +110,7 @@ class Translation extends MY_admin
         $filename = $this->input->post('filename');
 
         if(  ! is_null($type) &&  ! is_null($path) && ! is_null($lang_path) && ! is_null($filename) )
-	{
+	    {
             $items = array();
 
             $this->load->helper('file');
@@ -137,9 +137,9 @@ class Translation extends MY_admin
                     include($file);
 		
                     if ( ! empty($lang))
-		{
+                    {
                         $items[$lang_code] = $lang;
-		}
+                    }
                 }
 
                 if(! file_exists($file))
@@ -148,9 +148,13 @@ class Translation extends MY_admin
                     $destination_path = $lang_path . $lang_code . DIRECTORY_SEPARATOR;
                     $lfile = $lang_path . $lang_code . DIRECTORY_SEPARATOR . $filename;
 
-                    if(@mkdir($destination_path, 0777, TRUE))
-		{
-                        if(@copy($source_file, $lfile))
+                    @mkdir($destination_path, 0777, TRUE);
+
+                    if( ! file_exists($file) )
+                    {
+                        @copy($source_file, $lfile);
+
+                        if( file_exists($lfile) )
                         {
                             $lang = array();
 
@@ -425,20 +429,22 @@ class Translation extends MY_admin
             switch($type)
 				{
                 case 'theme':
-                    $path = FCPATH . 'themes' . DIRECTORY_SEPARATOR . Settings::get('theme') . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    $path = FCPATH . 'themes' . DIRECTORY_SEPARATOR . Settings::get('theme') . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR;
                     break;
                 case 'application':
-                    $path = FCPATH . 'application' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    $path = FCPATH . 'application' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR;
                     break;
                 case 'system':
-                    $path = FCPATH . 'system' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR;
+                    $path = FCPATH . 'system' . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR;
                     break;
             }
+
+            $lang_path = $path . $lang . DIRECTORY_SEPARATOR;
 					
-            if( ! is_null($path) && file_exists($path) )
+            if( ! is_null($lang_path) && file_exists($lang_path) )
             {
                 // Theme static translations
-                $language_files = glob($path . '*_lang.php');
+                $language_files = glob($lang_path . '*_lang.php');
 					
                 $lfiles[$type] = array(
                     'title' => lang('ionize_title_translation_' . $type),
@@ -447,16 +453,16 @@ class Translation extends MY_admin
                 );
 						
                 foreach($language_files as $key => $lf)
-						{
+                {
                     $lfiles[$type]['files'][] = array(
                         'path' => $lf,
-                        'lang_path' => str_replace($lang . DIRECTORY_SEPARATOR, '', $path),
-                        'filename' => str_replace($path, '', $lf)
+                        'lang_path' => $path,
+                        'filename' => str_replace($lang_path, '', $lf)
                     );
-						}
+                }
 						
                 return $lfiles;
-					}
+            }
             else
             {
                 // @TODO Add translation term...
@@ -495,15 +501,16 @@ class Translation extends MY_admin
         foreach($installed_modules as $key => $imodule)
         {
             // Module Language Folder Path
-            $mlpath = $imodule['path'] . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR . $lang . DIRECTORY_SEPARATOR . strtolower($key) . '_lang.php';
+            $mpath  = $imodule['path'] . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR;
+            $mlpath = $mpath . $lang . DIRECTORY_SEPARATOR . strtolower($key) . '_lang.php';
 	
             if( file_exists($mlpath) )
                 $paths['module']['files'][] = array(
                     'path' => $mlpath,
-                    'lang_path' => str_replace($lang . DIRECTORY_SEPARATOR . strtolower($key) . '_lang.php', '', $mlpath),
+                    'lang_path' => $mpath,
                     'filename' => strtolower($key) . '_lang.php'
                 );
-	}
+	    }
 	
         return $paths;
     }
@@ -655,7 +662,7 @@ class Translation extends MY_admin
     function set_default_lang_code()
 	{
         if ($this->config_model->change('language.php', 'default_translation_lang_code', $this->input->post('default_translation_lang_code')) == FALSE)
-            $this->error(lang('ionize_message_error_writing_ionize_file'));
+			$this->error(lang('ionize_message_message_no_write_rights'). ' : config/language.php');
 
         // Answer
         $this->success(lang('ionize_message_operation_ok'));
@@ -667,20 +674,20 @@ class Translation extends MY_admin
      * Check Default Language Code
      */
     function _check_default_lang_code()
-		{
+    {
         $default_lang_code = config_item('default_translation_lang_code');
 			
         if( ! empty($default_lang_code) )
-				{
+        {
             $this->default_lang_code = $default_lang_code;
-				}
+        }
         else
-				{
+        {
             $this->default_lang_code = Settings::get_lang('default');
 			
             $this->config_model->change('language.php', 'default_translation_lang_code', $this->default_lang_code);
-				}
-			}
+        }
+    }
 	
 	// ------------------------------------------------------------------------
 
