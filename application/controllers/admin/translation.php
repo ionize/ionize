@@ -450,7 +450,7 @@ class Translation extends MY_admin
 						{
                     $lfiles[$type]['files'][] = array(
                         'path' => $lf,
-                        'lang_path' => str_replace($lang . DIRECTORY_SEPARATOR, '', $path),
+                        'lang_path' => preg_replace('/' . $lang . '\\' . DIRECTORY_SEPARATOR .'$/', '', $path),
                         'filename' => str_replace($path, '', $lf)
                     );
 						}
