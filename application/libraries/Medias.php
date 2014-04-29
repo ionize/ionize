@@ -567,13 +567,17 @@ class Medias
 	// ------------------------------------------------------------------------
 
 
+    /**
+     * Create Thumb Folders for Attached Pictures
+     *
+     * @param $thumb_path
+     */
 	public function create_thumb_folder($thumb_path)
 	{
 		// Create directory is not exists
 		if( ! is_dir($thumb_path) )
 		{
             $doc_path = rtrim(DOCPATH, '/');
-
             $thumb_path = str_replace(DOCPATH, '', $thumb_path);
 
 			$path_segments = explode('/', ltrim($thumb_path, '/'));
@@ -583,7 +587,8 @@ class Medias
 			
 			// Check if server os is windows,
 			// If server os is windows, first separator has to be empty string
-			$separator = ((strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') !== FALSE) ? '' : '/';
+			// $separator = ((strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') !== FALSE) ? '' : '/';
+            $separator = '/';
 
 			foreach($path_segments as $folder)
 			{
