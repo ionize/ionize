@@ -557,6 +557,7 @@
                 actions varchar(100) NOT NULL DEFAULT '',
                 permission smallint(1) DEFAULT NULL,
                 id_element int(11) UNSIGNED,
+                id_user int(1) unsigned NOT NULL DEFAULT 0,
                 PRIMARY KEY (id_role,resource,actions)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </query>
@@ -819,6 +820,7 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/element/media','link,unlink,edit',1);</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/element/media','link,unlink,edit',1);</query>
 
+        <query>DELETE FROM setting WHERE name='ionize_version';</query>
         <query>DELETE FROM setting WHERE name='cache';</query>
 		<query>DELETE FROM setting WHERE name='cache_time';</query>
 		<query>DELETE FROM setting WHERE name='create_dir_use_ftp';</query>
@@ -828,6 +830,8 @@
         <query>DELETE FROM setting WHERE name='picture_copyright';</query>
         <query>DELETE FROM setting WHERE name='filemanager';</query>
 
+
+        <query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.6.1', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'site_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'DEFAULT', '');</query>
@@ -861,14 +865,13 @@
 		<query>INSERT IGNORE INTO setting VALUES ('', 'filemanager_file_types', 'gif,jpe,jpeg,jpg,png,flv,mpeg,mpg,mp3,pdf', '');</query>
 
 		<query>INSERT IGNORE INTO setting VALUES ('', 'default_admin_lang', 'en', '');</query>
-		<query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.6', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'upload_autostart', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'resize_on_upload', '1', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_width', '1200', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'picture_max_height', '1200', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');</query>
 
-        <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','DEFAULT.png','');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'no_source_picture','default.png','');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'enable_backend_tracker','0', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'backend_ui_style','original', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'notification','1', '');</query>
