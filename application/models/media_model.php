@@ -333,9 +333,13 @@ class Media_model extends Base_model
 				$this->{$this->db_group}->set($parent_pk, $id_parent);
 
 				$this->{$this->db_group}->insert($media_table);
+
+                return TRUE;
+
 			}
-			return TRUE;
+
 		}
+
 		return FALSE;
 	}
 
