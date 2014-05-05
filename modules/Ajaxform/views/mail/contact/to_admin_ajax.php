@@ -20,6 +20,15 @@
  * ...	:		All other form fields
 
  */
+
+// Load the SFS Helper, to get the URL used to declare the message as spam to the SFS Server
+// (needs one API key)
+get_instance()->load->helper('sfs_helper');
+
+$spam_url = NULL;
+
+if (function_exists('get_sfs_declare_spam_url'))
+	$spam_url = get_sfs_declare_spam_url();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -75,6 +84,23 @@
 							<b><?php echo lang('form_label_message') ?></b> : <br/>
 							<?php echo $message ?>
 						</p>
+
+						<?php
+						/*
+						 * Declare as Spam
+						 * The module SFS must be installed and properly configured.
+						 *
+						 */
+						?>
+						<?php if ( ! is_null($spam_url)): ?>
+							<p>
+								<br />
+								<br />
+								<br />
+								Declare as SPAM : <?php echo $spam_url ?>
+							</p>
+						<?php endif; ?>
+
 					</td>
 				</tr>
 			</table>

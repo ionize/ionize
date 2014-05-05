@@ -17,15 +17,12 @@
 $config['forms'] = array
 (
 	// Contact form
-	'contact' => array
+	'contact_ajax' => array
 	(
 		// The method which will process the form
 		// Originally in libraries/ajaxform_process.php, this class can be copied in your theme libraries folder
 		// 'process' => 'TagManager_Contact::process_data',
 		'process' => 'Ajaxform_Process::process_contact',
-
-		// Redirection is not active for ajax posted forms
-		// 'redirect' => 'referer',
 
 		// Messages Language index, as set in language/xx/form_lang.php
 		'messages' => array(
@@ -75,23 +72,6 @@ $config['forms'] = array
 			'email' => array(
 				'rules' => 'trim|required|valid_email|xss_clean',
 				'label' => 'form_label_email',
-			),
-			'company' => array(
-				'rules' => 'trim|xss_clean',
-				'label' => 'form_label_company',
-			),
-
-			'zip' => array(
-				'rules' => 'trim|xss_clean',
-				'label' => 'form_label_zip',
-			),
-			'city' => array(
-				'rules' => 'trim|xss_clean',
-				'label' => 'form_label_city',
-			),
-			'country' => array(
-				'rules' => 'trim|xss_clean',
-				'label' => 'form_label_country',
 			),
 			'message' => array(
 				'rules' => 'trim|required|xss_clean',

@@ -352,6 +352,7 @@ class Installer
 		
 			if ( ! empty($migration_files))
 			{
+				if (in_array('migration_1.0.6_1.0.6.1.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.6</b>';
 				if (in_array('migration_1.0.5_1.0.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.5</b>';
 				if (in_array('migration_0.9.9_1.0.0.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.9</b>';
 				if (in_array('migration_0.9.7_0.9.9.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.7</b>';
@@ -540,12 +541,16 @@ class Installer
 			}
 
 			/*
-			 * Migration to 1.0
-			 * Coming soon...
+			 * Migration to 1.0.6.1
 			 *
 			 */
-			if (in_array('migration_0.9.9_1.0.xml', $migration_files))
+			if (in_array('migration_1.0.6_1.0.6.1.xml', $migration_files))
 			{
+				if ( ! $this->db->field_exists('id_user', 'rule'))
+				{
+					$sql = "ALTER TABLE rule add id_user int(11) unsigned NOT NULL DEFAULT 0";
+					$this->db->query($sql);
+				}
 			}
 
 			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
@@ -1189,6 +1194,7 @@ class Installer
 				$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 				$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+				$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 			}
 	
 			// From Ionize 0.92
@@ -1219,6 +1225,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 				}
 			}
 	
@@ -1249,6 +1256,7 @@ class Installer
 						$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 						$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+						$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					}
 				}
 			}
@@ -1276,6 +1284,7 @@ class Installer
 						$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 						$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+						$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					}
 				}
 			}
@@ -1300,6 +1309,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 				}
 			}
 			
@@ -1330,6 +1340,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 				}
 			}
 			
@@ -1345,6 +1356,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 				}
 			}
 
@@ -1362,6 +1374,7 @@ class Installer
 				{
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 				}
 			}
 
@@ -1378,6 +1391,23 @@ class Installer
 				if (intval($test_version) < 106)
 				{
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+				}
+			}
+
+			// From 1.0.6
+			if (empty($migration_xml))
+			{
+				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
+				$version = isset($version['content']) ? $version['content'] : '';
+				$version = explode('.', $version);
+				$test_version = '';
+				for($i=0;$i<4;$i++)
+					$test_version .= $version[$i];
+
+				if (intval($test_version) < 1061)
+				{
+					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 				}
 			}
 		}

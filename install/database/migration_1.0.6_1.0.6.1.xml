@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<sql>
+
+    <query>
+        update setting set content='1.0.6.1' where name = 'ionize_version';
+    </query>
+
+</sql>

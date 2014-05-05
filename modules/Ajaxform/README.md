@@ -23,6 +23,18 @@ Post forms through Ajax with this module.
 * In the ionize backend, go to : Modules > Administration
 * Click on "install"
 
+### How does it work ?
+
+1.  The form must be declared in /themes/your_theme/config/forms.php.
+	See the file /modules/Ajaxform/config/forms.php for more details.
+	This file should be copied and adapted in /themes/your_theme/config/forms.php.
+
+2.  The form is displayed in one page or article view,through ionize tags.
+	One JS script, added to the form by the <ion:form /> tag handles the Ajax post
+
+
+
+
 
 ### Usage
 

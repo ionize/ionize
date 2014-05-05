@@ -31,7 +31,8 @@
 		// var form = 			$('#myContactForm');
 		//
 		// The URL to use for posting data must be :
-		//
+		// http://yoursite.tld/xx/ajaxform/post
+		// (xx : the current lang code)
 
 		var submitButton = 	$('#<?php echo $form_submit_id ?>');
 		var form_name = 	'<?php echo $form_name ?>';
@@ -52,8 +53,14 @@
 
 				// Remove all previous error messages if any
 				// They are set with SPAN, but it can be what you want
+
+	$(form.children('span.error')).remove();
+				form.children('div').removeClass('error');
+
+/*
 				$('#' + form_name + ' span.error').remove();
 				$('#' + form_name + ' div').removeClass('error');
+*/
 
 				/*
 				 * Post the form
@@ -88,14 +95,14 @@
 
 						// Remove previous one if any
 						$('#' + id).remove();
-						var type = data.validation == false ? 'alert-error' : 'alert-success';
+						var type = data.validation == false ? 'alert' : 'success';
 
 						// Global Success / Error message DOM element
 						var div = $(
-							'<div id="' + id + '" class="alert ' + type + '">' +
-								'<button class="close" data-dismiss="alert" type="button">&times;</button>' +
-								'<strong>' + data.title + '</strong> '
-								+ data.message +
+							'<div id="' + id + '" class="alert-box ' + type + '">' +
+								'<a class="close">&times;</a>' +
+								'<h4>' + data.title + '</h4>' +
+								'<p>' + data.message + '</p>' +
 							'</div>'
 						);
 

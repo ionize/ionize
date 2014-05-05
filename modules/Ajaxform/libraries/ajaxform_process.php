@@ -43,16 +43,37 @@ class Ajaxform_Process
 	{
 		$post = self::$ci->input->post();
 
-		// ionize dedicated method, added to the orginal CI Email library
-		self::$ci->email->send_form_emails($form, $post);
+		// Do we go further in the form processing ? Yes by default.
+		$go_further = TRUE;
 
-		$result = array(
-			'title' => lang('form_alert_success_title'),
-			'message' => lang('form_alert_success_message')
-		);
+		// SFS : Fires the event declared in Stop Form Spam module config
+		$results = Event::fire('Form.contact.check', $post);
 
-		return $result;
+		if (is_array($results))
+		{
+			foreach($results as $result)
+				if ( ! $result)
+					$go_further = FALSE;
+		}
+
+		if ($go_further)
+		{
+			// ionize dedicated method, added to the orginal CI Email library
+			self::$ci->email->send_form_emails($form, $post);
+
+			$result = array(
+				'title' => lang('form_alert_success_title'),
+				'message' => lang('form_alert_success_message')
+			);
+
+			return $result;
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
+
 
 
 	/*

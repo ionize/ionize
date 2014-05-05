@@ -26,7 +26,7 @@
     <query>delete from rule where resource='admin/page/media' and actions='';</query>
     <query>delete from rule where resource='admin/article/media' and actions='';</query>
     <query>ALTER TABLE rule DROP PRIMARY KEY;</query>
-    <query>ALTER TABLE rule add id_user int(1) unsigned NOT NULL DEFAULT 0;</query>
+    <query>ALTER TABLE rule add id_user int(11) unsigned NOT NULL DEFAULT 0;</query>
 
     <query>ALTER TABLE rule ADD PRIMARY KEY(id_role,id_user,resource);</query>
 
