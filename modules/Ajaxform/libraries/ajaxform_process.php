@@ -34,13 +34,24 @@ class Ajaxform_Process
 	 *
 	 * @param $form		Form settings array
 	 *
+	 * @return array	array(
+	 *               		'title' => 'Form sended successfully'
+	 *               		'message' => ' we will get in touch with you very quickly'
+	 *               	);
 	 */
 	public static function process_contact($form)
 	{
 		$post = self::$ci->input->post();
 
 		// ionize dedicated method, added to the orginal CI Email library
-		return self::$ci->email->send_form_emails($form, $post);
+		self::$ci->email->send_form_emails($form, $post);
+
+		$result = array(
+			'title' => lang('form_alert_success_title'),
+			'message' => lang('form_alert_success_message')
+		);
+
+		return $result;
 	}
 
 

@@ -90,11 +90,16 @@ class Ajaxform extends My_Module
 			// Validation passed : Process the data
 			else
 			{
-				$this->_process_data($form);
+				// Supposed to send back one array with 'title' and 'message' indexes
+				$result = $this->_process_data($form);
 
 				$result['validation'] = TRUE;
-				$result['title'] = lang('form_alert_success_title');
-				$result['message'] = lang('form_alert_success_message');
+
+				if ( ! isset($result['title']) && ! isset($result['message']))
+				{
+					$result['title'] = lang('form_alert_success_title');
+					$result['message'] = lang('form_alert_success_message');
+				}
 			}
 		}
 
@@ -123,7 +128,7 @@ class Ajaxform extends My_Module
 			// Execute the method
 			if (method_exists($this->$class_name, $method_name))
 			{
-				call_user_func($process, $form);
+				return call_user_func($process, $form);
 			}
 		}
 		// Default behavior : Send content by email

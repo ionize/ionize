@@ -1158,6 +1158,32 @@ class MY_Module extends MY_Controller
 			}
 		}
 	}
+
+	/**
+	 * Renders one view containing ionize tags
+	 *
+	 * Must be called from one module controller
+	 *
+	 * @param null  $view
+	 * @param array $data		Array of vars to pass to the view
+	 *                     		To get them from one view, use :
+	 *                     		<ion:get key="foo" />
+	 * @param bool  $return
+	 */
+	public function render($view = NULL, $data=array(), $return = FALSE)
+	{
+		require_once APPPATH.'libraries/Tagmanager.php';
+
+		foreach($data as $key => $value)
+		{
+			if (!is_string($value))
+				$value = json_encode($value);
+
+			TagManager::$context->set_global($key, $value);
+		}
+
+		TagManager::render($view, $return);
+	}
 }
 
 
