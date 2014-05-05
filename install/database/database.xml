@@ -820,7 +820,6 @@
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/element/media','link,unlink,edit',1);</query>
         <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/element/media','link,unlink,edit',1);</query>
 
-        <query>DELETE FROM setting WHERE name='ionize_version';</query>
         <query>DELETE FROM setting WHERE name='cache';</query>
 		<query>DELETE FROM setting WHERE name='cache_time';</query>
 		<query>DELETE FROM setting WHERE name='create_dir_use_ftp';</query>
