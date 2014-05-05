@@ -130,6 +130,8 @@
 					?>
 		
 					<?php foreach($mimes as $type => $mime_list) :?>
+
+                        <?php ksort($mime_list); ?>
 					
 						<h3 class="toggler1"><?php echo $type; ?></h3>
 					
