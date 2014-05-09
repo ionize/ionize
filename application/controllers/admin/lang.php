@@ -160,10 +160,10 @@ class Lang extends MY_admin
 		{
 			// Remove the postfix _lang.
 			$tables = preg_replace('/_lang$/', '', $tables);
-		}
-		log_message('debug', 'Content language tables w/o _lang: '.print_r($tables, TRUE));
+			log_message('debug', 'Content language tables w/o _lang: '.print_r($tables, TRUE));
 
-		$deleted_rows = $this->lang_model->clean_lang_tables($tables);
+			$deleted_rows = $this->lang_model->clean_lang_tables($tables);
+		}
 
 		// Also delete rows belong to unused languages in the setting table. -- Kochin
 		$deleted_rows = $this->settings_model->clean_lang_settings();
