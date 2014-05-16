@@ -30,6 +30,9 @@ License:
 	box-sizing: border-box;
 }
 
+/* HTML basis */
+dfn{font-style: normal;color:#999;}
+
 #mainPanel {
 	background: #fff; 	
 	overflow-x: hidden;
@@ -324,11 +327,8 @@ ul.highlight{ background-color:#f3f3f3;}
 .stripped {
 	background: none;
 	background: url(../images/bg_stripped.png);
-
 }
-.italic {
-	font-style: italic;
-}
+.italic {font-style: italic;}
 
 
 /* Main panel titles
@@ -950,7 +950,7 @@ textarea.tab {
 }
 
 /* TextboxList */
-.textboxlist-bits { zoom: 1; overflow: hidden; margin: 0; padding: 3px; background:none; }
+.textboxlist-bits { zoom: 1; overflow: hidden; margin: 0; padding: 3px 0; background:none; }
 .textboxlist-bit { list-style-type: none; float: left; display: block; padding: 0; margin: 0 5px 3px 0; cursor: default; }
 .textboxlist-bit-editable {}
 .textboxlist-bit-editable:after{
@@ -961,14 +961,12 @@ textarea.tab {
 	color:#888;
 	padding: 2px 0 0 5px;
 }
-.textboxlist-bit-editable.textboxlist-bit-editable-focus:after{
-	content: "";
-}
-.textboxlist-bit-editable-input { padding: 2px; height: 14px; border:solid 1px #bbb; border-radius: 8px;}
+.textboxlist-bit-editable-input { padding: 4px 8px;  border:solid 1px #bbb; /*border-radius: 8px;*/}
 .textboxlist-bit-editable-input:focus { outline: 0; }
-.textboxlist-bit-box { position: relative; line-height: 18px; padding: 0 5px; -moz-border-radius: 9px; -webkit-border-radius: 9px; border-radius: 9px; border: 1px solid #B0CAE7; background: #C9E0F9; cursor: default; }
+.textboxlist-bit-box { position: relative; line-height: 18px; padding: 2px 8px;
+	border: 1px solid #B0CAE7; background: #C9E0F9; cursor: default; }
 .textboxlist-bit-box-deletable { padding-right: 15px; }
-.textboxlist-bit-box-deletebutton { position: absolute; right: 4px; top: 6px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../images/tag_close.gif'); }
+.textboxlist-bit-box-deletebutton { position: absolute; right: 4px; top: 4px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../images/tag_close.gif'); }
 .textboxlist-bit-box-deletebutton:hover { border: none; background-position: 7px; text-decoration: none; }
 .textboxlist-bit-box-hover { background: #a4caed; border: 1px solid #83b2dd; }
 .textboxlist-bit-box-focus { border-color: #598BEC; background: #598BEC; color: #fff; }
@@ -982,12 +980,14 @@ textarea.tab {
 	color:#555;
 }
 .textboxlist-autocomplete-placeholder,
-.textboxlist-autocomplete-results {overflow:hidden; -webkit-box-shadow: 0 0 4px #bbb; -moz-box-shadow: 0 0 4px #bbb; box-shadow: 0 0 4px #bbb; border-radius: 9px; display: none;}
+.textboxlist-autocomplete-results {overflow:hidden; -webkit-box-shadow: 0 0 10px #777; -moz-box-shadow: 0 0 10px #777; box-shadow: 0 0 10px #777; display: none;}
 .textboxlist-autocomplete-placeholder { padding: 5px 7px; }
 .textboxlist-autocomplete-results { margin: 0; padding: 0; background: #fff;color:#098ED1}
 .textboxlist-autocomplete-result { margin: 0; padding: 5px; list-style-type: none; }
-.textboxlist-autocomplete-result-focus { background: url(../images/bg-blue-light.png); }
-.textboxlist-autocomplete-highlight { background: #098ED1; color:#fff;font-weight: bold; padding:2px 1px; border-radius: 3px; }
+
+.textboxlist-autocomplete-result-focus { background: #edeceb }
+
+.textboxlist-autocomplete-highlight { background: #098ED1;background: #333; color:#fff;font-weight: bold; padding:2px 1px; }
 
 /* Cards & Lists */
 #mediaList{

@@ -1064,13 +1064,12 @@ class Installer
 		// Config library
 		require_once('./class/Config.php');
 		
-	
 		// Check if data are empty
 		if (empty($_POST['lang_code'])) { $this->_send_error('settings', lang('settings_error_missing_lang_code'), $_POST);}
 		if (empty($_POST['lang_name'])) { $this->_send_error('settings', lang('settings_error_missing_lang_name'), $_POST);}
 		
 		// Lang code must be on 2 or 3 chars
-		if (strlen($_POST['lang_code']) > 3) { $this->_send_error('settings', lang('settings_error_lang_code_2_chars'), $_POST);}
+		if (strlen($_POST['lang_code']) > 8) { $this->_send_error('settings', lang('settings_error_lang_code_8_chars'), $_POST);}
 		
 		// Check if admin URL is correct
 		if ( ! preg_match("/^([a-z0-9])+$/i", $_POST['admin_url']) OR (empty($_POST['admin_url'])) ) { $this->_send_error('settings', lang('settings_error_admin_url'), $_POST);}
@@ -1085,11 +1084,13 @@ class Installer
 			$this->_send_error('settings', lang('settings_error_write_rights_config'), $_POST);
 		}
 
+		$lang_code = strtolower($_POST['lang_code']);
+
 		// DB save
 		$this->db_connect();
 		
 		$data = array(
-			'lang' => $_POST['lang_code'],
+			'lang' => $lang_code,
 			'name' => $_POST['lang_name'],
 			'online' => '1',
 			'def' => '1',
@@ -1097,13 +1098,13 @@ class Installer
 		);
 		
 		// Check if the lang exists
-		$this->db->where('lang', $_POST['lang_code']);
+		$this->db->where('lang', $lang_code);
 		$query = $this->db->get('lang');
 	
 		if ($query->num_rows() > 0)
 		{
 			// updates the lang
-			$this->db->where('lang', $_POST['lang_code']);
+			$this->db->where('lang', $lang_code);
 			$this->db->update('lang', $data);
 		}
 		else

@@ -84,13 +84,14 @@ $lang['database_migration_text'] = 		"<p class=\"error\"><b>NOTICE :</b><br/> Th
 | Settings
 |--------------------------------------------------------------------------
 */
-$lang['lang_code'] = 		'Code (2 chars)';
+$lang['lang_code'] = 		'Code (en, fr-ca)';
 $lang['lang_name'] = 		'Label';
 $lang['settings_default_lang_title'] = 		'Default language';
 $lang['settings_default_lang_text'] = 		'Your website needs a default language.<br/>You can visit <a target="_blank" href="http://en.wikipedia.org/wiki/ISO_639-1">the Wikipedia ISO 639-1 page</a> for more information about language codes.';
 $lang['settings_error_missing_lang_code'] = "The lang code is mandatory";
 $lang['settings_error_missing_lang_name'] = "The lang name is mandatory";
 $lang['settings_error_lang_code_2_chars'] = "The lang code must be on 2 chars. Example : \"en\"";
+$lang['settings_error_lang_code_8_chars'] = "The lang code must be on 8 chars max. Example : \"en-us\"";
 $lang['settings_error_write_rights'] = "No write rights on <b>/application/config/language.php</b>. Please check the PHP rights on this file.";
 $lang['settings_error_write_rights_config'] = "No write rights on <b>/application/config/config.php</b>. Please check the PHP rights on this file.";
 $lang['settings_error_admin_url'] = "The admin URL must be an alphanumerical string, without spaces or special chars";

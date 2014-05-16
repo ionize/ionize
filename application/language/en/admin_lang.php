@@ -1297,6 +1297,7 @@ $lang['ionize_label_new_tag'] = "Add one Tag";
 $lang['ionize_button_save_tags'] = "Save Tags";
 $lang['ionize_button_add_tag'] = "Add Tag";
 $lang['ionize_help_tag_textbox'] = "type a new tag here";
+$lang['ionize_help_tag_new'] = "Type a new tag in the last input.<br/>Validate by return.";
 
 
 $lang['ionize_help_orphan_pages'] = "These pages are not linked to any parent.<br/>This happens when the parent page of one page is deleted.";

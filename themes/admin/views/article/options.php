@@ -11,9 +11,11 @@
 
 ?>
 <style type="text/css">
+/*
 	.textboxlist-bit-editable:after{
 		content: "<?php echo lang('ionize_help_tag_textbox') ?>";
 	}
+*/
 </style>
 
 <form name="articleOptionsForm" id="articleOptionsForm" method="post" action="<?php echo admin_url() . 'article/save_options'?>">
@@ -140,6 +142,7 @@
 
 				<!-- Tags -->
 				<h4><?php echo lang('ionize_label_tags'); ?></h4>
+				<dfn><?php echo lang('ionize_help_tag_new') ?></dfn>
 				<input type="text" name="tags" value="" id="tags" />
 
 				<!-- Categories -->

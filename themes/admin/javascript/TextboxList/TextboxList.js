@@ -311,7 +311,8 @@ var TextboxListBit = new Class({
 			this.blur();
 			var editable = this.textboxlist.create('editable');
 			var editableInput = editable.bit.getElement('.textboxlist-bit-editable-input');
-			editableInput.setProperty('value',this.value[1]);
+			if (this.value && typeOf(this.value[1]) != 'null')
+				editableInput.setProperty('value',this.value[1]);
 			editable.focus();
 			editableInput.addEvent('toBox',function(){
 					editable.bit.destroy();
@@ -445,6 +446,8 @@ TextboxListBit.Editable = new Class({
 		if ( ! noReal) {
 			this.element.focus();
 		}
+		this.element.retrieve('growing').resize();
+
 		return this;
 	},
 
@@ -483,6 +486,7 @@ TextboxListBit.Editable = new Class({
 	},
 
 	setValue: function(val) {
+
 		this.element.value = $chk(val[0]) ? val[0] : val[1];
 		if (this.options.growing) {
 			this.element.retrieve('growing').resize();

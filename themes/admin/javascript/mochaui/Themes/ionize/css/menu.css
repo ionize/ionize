@@ -49,7 +49,8 @@
 .toolMenu li ul {
 	padding: 4px 2px;
 	border: 1px solid #5B6577;
-	background: #fff url(../images/bg-dropdown.gif) repeat-y;
+	border-top:none;
+	background: #fff /*url(../images/bg-dropdown.gif) repeat-y*/;
 	position: absolute;
 	width: 15em;
 	left: -999em;
@@ -61,7 +62,7 @@
 .toolMenu li ul ul { /* third-and-above-level lists */ margin: -27px 0 0 160px; border-top:solid 1px #3f3f3f  }
 .toolMenu li ul li a {
 	position: relative;
-	padding: 1px 1em 1px 2em;
+	padding: 2px 1em 2px 1.5em;
 	width: 14.5em;
 	height: auto;
 	color: #3f3f3f;

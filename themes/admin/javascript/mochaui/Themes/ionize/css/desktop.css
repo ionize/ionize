@@ -123,5 +123,5 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .horizontalHandle .handleIcon { margin: 0 auto; height: 4px; line-height: 1px; font-size: 1px; overflow: hidden; background: url(../images/handle-icon-horizontal.gif) center center no-repeat; }
 */
 .horizontalHandle .handleIcon { margin: 0 auto; height: 7px; line-height: 1px; font-size: 1px; overflow: hidden; background: url(../images/handle-icon-horizontal.gif) center 3px no-repeat; }
-.columnHandle { min-height: 10px; float: left; width: 6px; overflow: hidden; background: #D5D9DC url(../images/handle-icon.gif) center center no-repeat; border: 1px solid #C5C7C9; border-top: 0; border-bottom: 0; }
+.columnHandle { min-height: 10px; float: left; width: 8px; overflow: hidden; background: #D5D9DC url(../images/handle-icon.gif) center center no-repeat; border: 1px solid #C5C7C9; border-top: 0; border-bottom: 0; }
 
