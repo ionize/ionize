@@ -380,7 +380,7 @@ class Installer
 			ini_set('allow_url_fopen', 'on');
 
 			// Migration
-			foreach ($migration_files as $file)
+/*			foreach ($migration_files as $file)
 			{
 				$xml = simplexml_load_file('./database/'.$file);
 
@@ -391,6 +391,7 @@ class Installer
 					$this->db->query($query);
 				}
 			}
+*/
 
 			// Rebuild the config/language.php file for consistency
 			$query = $this->db->get('lang');
@@ -399,7 +400,14 @@ class Installer
 				$langs = $query->result_array();
 				$this->_save_language_config_file($langs);
 			}
-	
+
+			/*
+			 * Migration from 0.90 to 0.93
+			 */
+			if (in_array('migration_0.90_0.92.xml', $migration_files)) $this->_execute_migration_file('migration_0.90_0.92.xml');
+			if (in_array('migration_0.92_0.93.xml', $migration_files)) $this->_execute_migration_file('migration_0.92_0.93.xml');
+
+
 			/*
 			 * Migration to 0.9.4
 			 * Users account migration
@@ -408,6 +416,8 @@ class Installer
 			if (in_array('migration_0.93_0.9.4.xml', $migration_files))
 			{
 				log_message('debug', 'Migration from 0.9.3');
+
+				$this->_execute_migration_file('migration_0.93_0.9.4.xml');
 
 				$query = $this->db->get('users');
 				
@@ -427,7 +437,8 @@ class Installer
 					}						
 				}
 			}
-			
+
+
 			/*
 			 * Migration to 0.9.5
 			 * Migration to Connect Lib
@@ -436,6 +447,8 @@ class Installer
 			if (in_array('migration_0.9.4_0.9.5.xml', $migration_files))
 			{
 				log_message('debug', 'Migration from 0.9.5');
+
+				$this->_execute_migration_file('migration_0.9.4_0.9.5.xml');
 
 				// Get the encryption key and move it to config/config.php
 				$enc = false;
@@ -507,6 +520,8 @@ class Installer
 			{
 				log_message('debug', 'Migration from 0.9.6');
 
+				$this->_execute_migration_file('migration_0.9.6_0.9.7.xml');
+
 				// Updates the users account
 				$query = $this->db->get('users');
 				
@@ -532,6 +547,8 @@ class Installer
 			{
 				log_message('debug', 'Migration from 0.9.7');
 
+				$this->_execute_migration_file('migration_0.9.7_0.9.9.xml');
+
 				require_once('./class/Config.php');
 
 				// Save version
@@ -541,17 +558,35 @@ class Installer
 			}
 
 			/*
+			 * Migration to 1.0.0
+			 *
+			 */
+			if (in_array('migration_0.9.9_1.0.0.xml', $migration_files)) $this->_execute_migration_file('migration_0.9.9_1.0.0.xml');
+
+
+			/*
+			 * Migration to 1.0.6
+			 *
+			 */
+			if (in_array('migration_1.0.5_1.0.6.xml', $migration_files)) $this->_execute_migration_file('migration_1.0.5_1.0.6.xml');
+
+
+			/*
 			 * Migration to 1.0.6.1
 			 *
 			 */
 			if (in_array('migration_1.0.6_1.0.6.1.xml', $migration_files))
 			{
+
+				$this->_execute_migration_file('migration_1.0.6_1.0.6.1.xml');
+
 				if ( ! $this->db->field_exists('id_user', 'rule'))
 				{
 					$sql = "ALTER TABLE rule add id_user int(11) unsigned NOT NULL DEFAULT 0";
 					$this->db->query($sql);
 				}
 			}
+
 
 			header("Location: ".BASEURL.'install/?step=user&lang='.$this->template['lang'], TRUE, 302);
 		}
@@ -1415,6 +1450,29 @@ class Installer
 	// --------------------------------------------------------------------
 
 
+	function _execute_migration_file($file)
+	{
+		log_message('app', '------------------------------------------------');
+		log_message('app', 'Migration file : ' . $file);
+		log_message('app', '------------------------------------------------');
+
+		$xml = simplexml_load_file('./database/'.$file);
+
+		$queries = $xml->xpath('/sql/query');
+
+		foreach ($queries as $query)
+		{
+			$result = $this->db->query($query);
+
+			if ( ! $result)
+				log_message('error',$query);
+		}
+	}
+
+
+	// --------------------------------------------------------------------
+
+
 	/**
 	 * Tests if a dir is writable
 	 *
@@ -1595,7 +1653,7 @@ class Installer
 		$conf .= "\$db['default']['dbprefix'] = '';\n";
 		$conf .= "\$db['default']['swap_pre'] = '';\n";
 		$conf .= "\$db['default']['pconnect'] = FALSE;\n";
-		$conf .= "\$db['default']['db_debug'] = TRUE;\n";
+		$conf .= "\$db['default']['db_debug'] = FALSE;\n";
 		$conf .= "\$db['default']['cache_on'] = FALSE;\n";
 		$conf .= "\$db['default']['cachedir'] = '';\n";
 		$conf .= "\$db['default']['char_set'] = 'utf8';\n";

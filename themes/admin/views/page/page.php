@@ -182,7 +182,7 @@ if ($tracker_title == '')
 
 					<div class="tabcontent">
 
-						<p class="clear h20">
+						<p class="clear h25">
 							<?php if( ! is_null($lang_url)) :?>
 								<a class="button light right" href="<?php echo base_url(); ?><?php echo $lang_url; ?>" target="_blank" title="<?php echo lang('ionize_label_see_online'); ?>">
 									<i class="icon arrow-right"></i>

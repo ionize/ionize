@@ -18,9 +18,11 @@
     <query>INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item/media','link,unlink,edit',1);</query>
 
     <!-- Extend Fields -->
+    <query>ALTER TABLE extend_fields add parent varchar(50) NOT NULL default '';</query>
     <query>ALTER TABLE extend_field add id_parent int(11) unsigned NULL;</query>
     <query>UPDATE extend_field set parent='element', id_parent=id_element_definition where id_element_definition != 0;</query>
     <query>ALTER TABLE extend_field add main smallint(1) unsigned NOT NULL DEFAULT 0;</query>
+    <query>update extend_fields set parent = (select parent from extend_field where extend_field.id_extend_field = extend_fields.id_extend_field);</query>
 
     <!-- Rules -->
     <query>delete from rule where resource='admin/page/media' and actions='';</query>

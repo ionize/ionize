@@ -17,6 +17,7 @@ INSERT IGNORE INTO resource (id_resource, id_parent, resource, actions, title, d
 INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (2,'admin/item/media','link,unlink,edit',1);
 INSERT IGNORE INTO rule (id_role, resource, actions, permission) VALUES (3,'admin/item/media','link,unlink,edit',1);
 
+ALTER TABLE extend_fields add parent varchar(50) NOT NULL default '';
 ALTER TABLE extend_field add id_parent int(11) unsigned NULL;
 UPDATE extend_field set parent='element', id_parent=id_element_definition where id_element_definition != 0;
 ALTER TABLE extend_field add main smallint(1) unsigned NOT NULL DEFAULT 0;
