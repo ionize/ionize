@@ -1536,7 +1536,11 @@ class TagManager
 			{
 				self::load_model('media_model');
 
-				$ids = $extend['content'];
+				// Static items already have the 'content' index set.
+				// Classical extends have not
+				$ids = ! empty($extend['content']) ?
+					$extend['content'] :
+					$tag->getValue(self::$extend_field_prefix . $extend['name'], $extend['parent']);
 
 				if (strlen($ids) > 0)
 				{
@@ -1634,7 +1638,27 @@ class TagManager
 		// Link
 		if ($extend['html_element_type'] == 'link')
 		{
-			$ids = $extend['content'];
+			// Static items already have the 'content' index set.
+			// Classical extends have not
+			$ids = ! empty($extend['content']) ?
+				$extend['content'] :
+				$tag->getValue(self::$extend_field_prefix . $extend['name'], $extend['parent']);
+
+			// Static items && Elements : The extend field instance is known.
+			if ( ! empty($extend['content']))
+			{
+				$ids = $extend['content'];
+				$id_parent = $extend['id_parent'];
+			}
+			// Classical extends : The extend instance is unknown
+			else
+			{
+				$dataParent = $tag->getParent()->getParent()->getParent()->getData();
+				$id_parent = ! empty($dataParent['id']) ?
+					$dataParent['id'] :
+					( ! empty($dataParent['id'.$extend['parent']]) ? $dataParent['id'.$extend['parent']] : NULL);
+			}
+
 
 			if (strlen($ids) > 0)
 			{
@@ -1646,8 +1670,8 @@ class TagManager
 
 				$links = self::$ci->extend_field_model->get_extend_link_list(
 					$extend['id_extend_field'],
-					'item',
-					$extend['id_parent'],
+					$extend['parent'],
+					$id_parent,
 					Settings::get('current'),
 					$where
 				);
@@ -1682,9 +1706,6 @@ class TagManager
 
 					// Medias
 					$link['medias'] = $link['data']['medias'];
-//					self::$ci->base_model->add_linked_media()
-
-//					$tag->set('medias', $link['data']['medias']);
 					$tag->set('links', $link);
 
 					foreach($link as $key => $value)

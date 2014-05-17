@@ -241,8 +241,16 @@ class TagManager_Media extends TagManager
 	public static function get_medias(FTL_Binding $tag)
 	{
 		self::load_model('media_model');
+
 		// Pagination ?
 		// $tag_pagination = $tag->getAttribute('pagination');
+
+		/*
+		$parent = $tag->getDataParent();
+		$parent_data = $parent->getData();
+		$parent_name = $tag->getDataParentName();
+
+		*/
 
 		// Type filter, limit, SQL filter
 		$type = $tag->getAttribute('type');
@@ -355,6 +363,8 @@ class TagManager_Media extends TagManager
 		$medias = $tag->getValue();
 
 		// Get all medias id no parent data
+		// @todo : Get only medias if asked for.
+		// if (empty($medias))
 		if (empty($medias) && $tag->getDataParent() == NULL)
 			$medias = self::get_medias($tag);
 

@@ -261,6 +261,10 @@ class Base_model extends CI_Model
 			$this->{$this->db_group}->where($this->table.'.'.$this->pk_name, $where);
 		}
 
+		// ID
+		if ($this->pk_name != NULL)
+			$this->{$this->db_group}->select($this->table.'.'.$this->pk_name. ' as id', FALSE);
+
 		$query = $this->{$this->db_group}->get($this->table);
 
 		if ( $query->num_rows() > 0)
@@ -490,6 +494,10 @@ class Base_model extends CI_Model
 			}
 		}
 
+		// Add ID
+		if ($table == $this->table && $this->pk_name != NULL)
+			$this->{$this->db_group}->select($table.'.'.$this->pk_name. ' as id', FALSE);
+
 		$this->{$this->db_group}->select($table.'.*', FALSE);
 
 		//	log_message('app', print_r($this->{$this->db_group}->get_compile_select() , TRUE));
@@ -577,6 +585,10 @@ class Base_model extends CI_Model
 
 		// Make sure we have only one time each element
 		$this->{$this->db_group}->distinct();
+
+		// Add ID
+		if ($this->pk_name != NULL)
+			$this->{$this->db_group}->select($this->table.'.'.$this->pk_name. ' as id', FALSE);
 
 		// Lang data
 		if ( ! is_null($lang))
@@ -1615,7 +1627,7 @@ class Base_model extends CI_Model
 	protected function add_linked_media(&$data, $parent, $lang = NULL)
 	{
 		// Select medias
-		$this->{$this->db_group}->select('*, media.id_media');
+		$this->{$this->db_group}->select('*, media.id_media, media.id_media as id');
 		$this->{$this->db_group}->from('media,'. $parent .'_media');
 		$this->{$this->db_group}->where('media.id_media', $parent.'_media.id_media', FALSE);
 		$this->{$this->db_group}->order_by($parent.'_media.ordering');
@@ -1819,7 +1831,6 @@ class Base_model extends CI_Model
 					if ($res['lang'] == $lang || $res['lang'] == '' )
 						$filtered_result[] = $res;
 				}
-
 				// Attach each extend field to the corresponding data array
 				foreach ($data as &$d)
 				{
