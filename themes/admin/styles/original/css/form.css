@@ -264,7 +264,6 @@ dl.small .select {
 }
 .inputtext:focus,
 textarea:focus {
-	/*background: url(../images/input_16_edit.png) no-repeat top right;*/
 	background-color: #F5F5F5;
 	border:1px solid #098ED1;
 }

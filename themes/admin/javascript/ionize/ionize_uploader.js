@@ -17,6 +17,11 @@
  * 		dropare:	Drop area into which drag and drop files
  *		assetsUrl:	URL of the type assets
  * 		onReset: 	function. Executed when the dropZone object resets (at init)
+ * 		post:		Array of keys:values to post with the uploaded item
+ * 					[
+ * 						{key: value},
+ * 						{key2: value2},
+ * 					]
  * }
  *
  * Usage :
@@ -35,12 +40,14 @@
  *	});
  *
  *  // Optional vars
- *  Object.each(this.options.optionalVars, function(val, key)
+ *  Object.each(this.options.uploadPost, function(val, key)
  *  {
  *	    self.uploader.dropZone.setVar(key, val);
  *  })
  *
  */
+var ION = (ION || {});
+
 ION.Uploader = new Class({
 
 	Implements: [Options, Events],
@@ -51,8 +58,8 @@ ION.Uploader = new Class({
 		autostart: false,
 		previewListMode: 'auto',    // 'auto', list', 'card'
 		droparea: null,
-		assetsUrl : base_url + 'themes/admin/javascript/filemanager/assets/'	// Sould be dynamical
 
+		uploadPost: null			// Object of {key:value}, added as POST data
 		// Events
 		/*
 		 onItemComplete: function (item, file, response) {},
@@ -64,6 +71,8 @@ ION.Uploader = new Class({
 
 	initialize: function(options)
 	{
+		var self = this;
+
 		if ( ! DropZone)
 		{
 			console.log('Uploader : DropZone class missing. Cannot initialize');
@@ -81,7 +90,22 @@ ION.Uploader = new Class({
 		if (this.options.method == 'auto') this.options.method = '';
 
 		// Assets URL
-		this.assetsUrl = this.options.assetsUrl.replace(/(\/|\\)*$/, '/');
+		var scripts = $$('script');
+		scripts.each(function(script)
+		{
+			var url = script.src.split('/'),
+				name = url.pop();
+
+			if (name == 'ionize_uploader.js')
+			{
+				url.pop();
+				url = url.join('/');
+				self.assetsUrl = url + '/filemanager/assets'
+			}
+		});
+
+		// Assets URL (bis)
+		this.assetsUrl = this.assetsUrl.replace(/(\/|\\)*$/, '/');
 
 		// Container
 		if (typeOf(this.options.container) != 'null')
@@ -305,12 +329,13 @@ ION.Uploader = new Class({
 
 			onItemError: function(item, file, response)
 			{
-				var notify = new ION.Notify(
-					self.notifyContainer,
-					{type:'error'}
-				).show(
-						response.orig_name + ' : ' + response.error
-					);
+				if (typeOf(ION.Notify) != 'null')
+				{
+					new ION.Notify(
+						self.notifyContainer,
+						{type:'error'}
+					).show(response.orig_name + ' : ' + response.error);
+				}
 
 				// Remove item from DOM
 				item.fade(0).get('tween').chain(function() {
@@ -321,7 +346,8 @@ ION.Uploader = new Class({
 			onUploadStart: function()
 			{
 				// Remove all Notify
-				new ION.Notify(self.notifyContainer,{}).removeAll();
+				if (typeOf(ION.Notify) != 'null')
+					new ION.Notify(self.notifyContainer,{}).removeAll();
 			},
 
 			onUploadProgress: function(perc, nb_uploaded_so_far){},
@@ -339,5 +365,14 @@ ION.Uploader = new Class({
 				 */
 			}
 		});
+
+		// Add optional POST vars to DropZone
+		if (typeOf(this.options.uploadPost) != 'null')
+		{
+			Object.each(this.options.uploadPost, function(val, key)
+			{
+				self.dropZone.setVar(key, val);
+			});
+		}
 	}
 });

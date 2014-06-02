@@ -267,7 +267,6 @@ var TabSwapper = new Class({
 
 	recall: function()
 	{
-
 		if (this.options.cookieName)
 		{
 			var idx = ([Cookie.read(this.options.cookieName), false].pick());

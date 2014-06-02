@@ -40,7 +40,7 @@ ION.Window = new Class({
 		    reload: function(),     // Function executed after Form save,
 		    post: {					// Data to merge with the form data
 		    	key:val
-		 }
+		    }
 		 }
 
 		 */
@@ -105,6 +105,16 @@ ION.Window = new Class({
 			return this.form;
 
 		return null;
+	},
+
+	getSaveButton: function()
+	{
+		return this.saveButton;
+	},
+
+	getSaveReloadButton: function()
+	{
+		return this.saveReloadButton;
 	},
 
 	close: function()
@@ -186,7 +196,7 @@ ION.Window = new Class({
 
 					var divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
 
-					var saveButton = new Element('button', {
+					self.saveButton = new Element('button', {
 						'class':'button right yes',
 						id: 'save' + opt.form.id,
 						text: Lang.get('ionize_button_save_close')
@@ -216,12 +226,12 @@ ION.Window = new Class({
 
 					if (opt.form.reload)
 					{
-						var saveReloadButton = new Element('button', {
+						self.saveReloadButton = new Element('button', {
 							'class':'button blue right ml10',
 							text: Lang.get('ionize_button_save')
 						}).inject(divButtons);
 
-						saveReloadButton.addEvent('click', function()
+						self.saveReloadButton.addEvent('click', function()
 						{
 							ION.JSON(
 								opt.form.action,
@@ -247,7 +257,7 @@ ION.Window = new Class({
 
 					ION.setFormSubmit(
 						self.form,         // Form Object
-						saveButton.id,     // Save button ID
+						self.saveButton.id,     // Save button ID
 						self.form.action,  // Save URL
 						null,              // Confirmation Object (null in this case, no conf. to open one window)
 						opt.form           // Options, to pass onSuccess() method
@@ -328,9 +338,9 @@ ION.WindowTitle = new Class({
 
 			Object.each(this.options.subtitle, function(sub, idx)
 			{
-				if (sub.html)
+				if (idx == 'html')
 				{
-					sub.value = sub.html;
+					sub = {value:sub}
 				}
 				else
 				{

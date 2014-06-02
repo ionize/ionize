@@ -163,57 +163,62 @@ ION.append({
 		// Cleans URLs
 		url = ION.cleanUrl(url);
 
-        var onRequest = function() {};
-        var onSuccess = function(responseJSON, responseText) {};
+		var onRequest = function() {};
+		var onSuccess = function(responseJSON, responseText) {};
 
-        if (typeOf(options) != 'null' && typeOf(options.onRequest) != 'null') { onRequest = options.onRequest; }
-        if (typeOf(options) != 'null' && typeOf(options.onSuccess) != 'null') { onSuccess = options.onSuccess; }
+		if (typeOf(options) != 'null' && typeOf(options.onRequest) != 'null') { onRequest = options.onRequest; }
+		if (typeOf(options) != 'null' && typeOf(options.onSuccess) != 'null') { onSuccess = options.onSuccess; }
 
-        return {
-			url: admin_url + url, 
-			method: 'post',
-			loadMethod: 'xhr',
-			data: data,
-			onRequest: function()
+		var opt = Object.merge(
+			options,
 			{
-				MUI.showSpinner();
-                onRequest();
-			},
-			onFailure: function(xhr) 
-			{
-				MUI.hideSpinner();
-
-				// Error notification
-				ION.notification('error', xhr.responseJSON);
-			},
-			onSuccess: function(responseJSON, responseText)
-			{
-				MUI.hideSpinner();
-
-				onSuccess(responseJSON, responseText);
-				
-				// Update the elements transmitted through JSON
-				if (responseJSON && responseJSON.update)
+				url: admin_url + url,
+				method: 'post',
+				loadMethod: 'xhr',
+				data: data,
+				onRequest: function()
 				{
-					// Updates all the elements in the update array
-					// look at init-content.js for more details
-					ION.updateElements(responseJSON.update);
-				}
+					MUI.showSpinner();
+					onRequest();
+				},
+				onFailure: function(xhr)
+				{
+					MUI.hideSpinner();
 
-				// JS Callback
-				if (responseJSON && responseJSON.callback)
+					// Error notification
+					ION.notification('error', xhr.responseJSON);
+				},
+				onSuccess: function(responseJSON, responseText)
 				{
-					ION.execCallbacks(responseJSON.callback);
-				}
-	
-				// User notification
-				if (responseJSON && typeOf(responseJSON.message_type) != 'null')
-				{
-					if (responseJSON.message_type != '')
-						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
+					MUI.hideSpinner();
+
+					onSuccess(responseJSON, responseText);
+
+					// Update the elements transmitted through JSON
+					if (responseJSON && responseJSON.update)
+					{
+						// Updates all the elements in the update array
+						// look at init-content.js for more details
+						ION.updateElements(responseJSON.update);
+					}
+
+					// JS Callback
+					if (responseJSON && responseJSON.callback)
+					{
+						ION.execCallbacks(responseJSON.callback);
+					}
+
+					// User notification
+					if (responseJSON && typeOf(responseJSON.message_type) != 'null')
+					{
+						if (responseJSON.message_type != '')
+							ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
+					}
 				}
 			}
-		};
+		);
+
+        return opt;
 	},
 
 

@@ -148,7 +148,8 @@ var Autocompleter = new Class({
 		return true;
 	},
 
-	setSelection: function(finish) {
+	setSelection: function(finish)
+	{
 		var input = this.selected.inputValue, value = input;
 		var start = this.queryValue.length, end = input.length;
 		if (input.substr(0, start).toLowerCase() != this.queryValue.toLowerCase()) start = 0;
@@ -278,7 +279,7 @@ var Autocompleter = new Class({
 	update: function(tokens) {
 		this.choices.empty();
 		this.cached = tokens;
-		var type = tokens && $type(tokens);
+		var type = tokens && typeOf(tokens);
 		if (!type || (type == 'array' && !tokens.length) || (type == 'hash' && !tokens.getLength())) {
 			(this.options.emptyChoices || this.hideChoices).call(this);
 		} else {

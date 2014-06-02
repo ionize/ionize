@@ -759,7 +759,7 @@ ION.ExtendManager = new Class({
 						var el = self.getExtendField(field, {container:ffc, lang:lang.lang});
 
 						// Add the
-						if (el != null)	self.addInstanceToLangTab(formField.getDOMElement(), tabId, lang.lang);
+						if (el != null)	self.addInstanceToLangTab(formField.getDomElement(), tabId, lang.lang);
 					});
 				});
 			}

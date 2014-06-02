@@ -336,7 +336,7 @@ MUI.Window.implement({
 		if (MUI.desktop && MUI.desktop.taskbar) this.taskbar = MUI.desktop.taskbar;
 
 		// Check if window already exists and is not in progress of closing
-		if (this.el.windowEl && ! this.isClosing){
+		if (this.el.windowEl && !this.isClosing){
 
             // Restore if minimized
             // Partikule correction
@@ -670,16 +670,18 @@ MUI.Window.implement({
 			centered: true
 		}, options);
 
-		var oldWidth = windowEl.getStyle('width').toInt();
-		var oldHeight = windowEl.getStyle('height').toInt();
-		var oldTop = windowEl.getStyle('top').toInt();
-		var oldLeft = windowEl.getStyle('left').toInt();
+		var oldWidth = windowEl.getStyle('width').toInt(),
+			oldHeight = windowEl.getStyle('height').toInt(),
+			oldTop = windowEl.getStyle('top').toInt(),
+			oldLeft = windowEl.getStyle('left').toInt(),
+			width = options.width != null ? options.width : oldWidth,
+			height = options.height != null ? options.height : oldHeight;
 
 		var top, left;
 		
 		if (options.centered){
-			top = typeOf(options.top) != 'null' ? options.top : oldTop - ((options.height - oldHeight) * .5);
-			left = typeOf(options.left) != 'null' ? options.left : oldLeft - ((options.width - oldWidth) * .5);
+			top = typeOf(options.top) != 'null' ? options.top : oldTop - ((height - oldHeight) * .5);
+			left = typeOf(options.left) != 'null' ? options.left : oldLeft - ((width - oldWidth) * .5);
 		} else {
 			top = typeOf(options.top) != 'null' ? options.top : oldTop;
 			left = typeOf(options.left) != 'null' ? options.left : oldLeft;
@@ -688,8 +690,8 @@ MUI.Window.implement({
 		if (MUI.options.advancedEffects){
 			windowEl.retrieve('resizeMorph').start({
 				'0': {
-					'height': options.height,
-					'width':  options.width
+					'height': height,
+					'width':  width
 				},
 				'1': {
 					'top': top,
@@ -702,8 +704,8 @@ MUI.Window.implement({
 				'left': left
 			});
 			this.el.contentWrapper.setStyles({
-				'height': options.height,
-				'width':  options.width
+				'height': height,
+				'width':  width
 			});
 			this.redraw();
 			// Show iframe

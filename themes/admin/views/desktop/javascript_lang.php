@@ -22,9 +22,20 @@
 ?>
 var Lang = JSON.decode('<?php echo $items; ?>', true);
 Object.append(Lang, {
-	get: function(key)
+	get: function()
 	{
-		return this.language[key];
+		var args = Array.prototype.slice.call(arguments);
+
+		var str = this.language[args[0]];
+
+		if (args.length > 1)
+		{
+			if (typeOf(args[1]) == 'array')
+				str = vsprintf(str, args[1]);
+			else
+				str = sprintf(str, args[1]);
+		}
+		return str;
 	},
 	'current': '<?php echo $this->config->item('detected_lang_code'); ?>',
 	'first': '<?php echo Settings::get_lang('first'); ?>',

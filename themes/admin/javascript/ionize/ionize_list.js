@@ -9,6 +9,8 @@ ION.TableList = new Class({
 
 	Implements: [Events, Options],
 
+	filter_inputs: null,
+
 	options: {
 		id:         'tableList',
 		container:  '',                 // DOM HTML Container. String or DOM Element
@@ -18,12 +20,16 @@ ION.TableList = new Class({
 
 		'class':    'list',             // CSS Class fo the table
 		header:     true,               // Build one header ?
-		headerClass:null,           	// CSS class or each th of the header ?
 		alternateRows: true,            // Alternate row background colors ?
+		buildIfEmpty: false,			// Build the header, even the table contains no data
+
+		sortable: 	false,
+		sortOn: 	0,
+		sortBy: 	'ASC',
 
 		post:       {},                 // Additional main data to post to each URL called by this class
 
-		columns:    null                // Columns description
+		columns:    null,				// Columns definition
 					/*
 					[
 						{
@@ -33,14 +39,29 @@ ION.TableList = new Class({
 
 							'class':        '',                 // optional. CSS Class of the TD
 							element:        'span',             // optional. If set, creates one HTML element of this type
-							elementClass:   '',                 // optional. CSS class of the element,
-							title:			'',					// optional. If set, used as title attribute for the item
+							elementClass:   '',                 // optional. CSS class of the element
 							onClick:        function(item){}    // optional
 						}
 					],
 					*/
+		filter: {									// Filters definition
+			keys: [],								// Colums keys to filter on. Must be keys defined in columns
+			position: 'last',						// Position of the send button. 'first', 'last'
+			filters: null							// Previous filters
+			// Event on Filter button click
+			// onFilter: function(post, self, self.getDomElement(), self.container){}
+		},
+		pagination: {
+			nb_by_page: -1,			// Number by page
+			nb: 0,					// Total number of items
+			nb_page: 0,				// Number of pages
+			current_page: 0			// Current page
+			// onClick: function(post, self, self.getDomElement(), self.container){}
+		}
+
 		// onDraw:      function(ION.List){}        // Fired when the whole table is built.
-		// onItemDraw:  function(item){}            // Fired after one row was drawn. Receives the row object.
+		// onItemDraw:  function(tr, item){}        // Fired after one row was drawn. Receives the row object.
+		// onCellDraw:  function(td, item){}        // Fired after one cell was drawn. Receives the row object.
 	},
 
 	initialize: function(options)
@@ -75,43 +96,58 @@ ION.TableList = new Class({
 			});
 		}
 
-		// Table
-		this.table = new Element('table', {
-			'class': o.class,
-			id: o.id
-		});
-
-		// Header
-		if (o.header)
-			this.buildHeader();
-
-		// Body
-		var tbody = new Element('tbody').inject(this.table);
-
-		// Rows
-		Object.each(o.items, function(item, idx)
+		if (o.items.length > 0 || o.buildIfEmpty)
 		{
-			var tr = new Element('tr').inject(tbody);
-			if (idx % 2 && o.alternateRows) tr.addClass('odd');
-
-			// Stores data, for further use
-			tr.store('data', item);
-
-			Array.each(o.columns, function(column)
-			{
-				var td = new Element('td').inject(tr);
-
-				if (column.class) td.addClass(column.class);
-
-				td.adopt(self._getItem(item, column));
+			// Table
+			this.table = new Element('table', {
+				'class': o.class,
+				id: o.id
 			});
 
-			self.fireEvent('onItemDraw', [tr, item]);
-		});
+			// Header
+			if (o.header) this.buildHeader();
 
-		// Inject in container
-		if (this.container && o.build == true)
-			this.table.inject(this.container);
+			// Filters
+			if (o.filter.keys.length > 0) this.buildFilter();
+
+			// Body
+			var tbody = new Element('tbody').inject(this.table);
+
+			// Rows
+			Object.each(o.items, function(item, idx)
+			{
+				var tr = new Element('tr').inject(tbody);
+				if (idx % 2 && o.alternateRows) tr.addClass('odd');
+
+				// Stores data, for further use
+				tr.store('data', item);
+
+				Array.each(o.columns, function(column)
+				{
+					var td = new Element('td').inject(tr);
+
+					if (column.class) td.addClass(column.class);
+
+					td.adopt(self._getItem(item, column));
+
+					if (typeOf(column.onCellDraw) == 'function')
+						column.onCellDraw(td, item);
+
+					self.fireEvent('onCellDraw', [td, item]);
+				});
+
+				self.fireEvent('onItemDraw', [tr, item]);
+			});
+
+			// Sortable
+			if (o.sortable)	new SortableTable(this.table, {sortOn: o.sortOn, sortBy: o.sortBy});
+
+			// Inject in container
+			if (this.container && o.build == true) this.table.inject(this.container);
+
+			// Pagination (injected after the table)
+			if (o.pagination.nb_by_page > 0) this.buildPagination();
+		}
 	},
 
 	/**
@@ -123,13 +159,16 @@ ION.TableList = new Class({
 	_getItem: function(item, c)
 	{
 		var el = c.element ? new Element(c.element) : new Element('span');
-
 		if (c.elementClass) el.addClass(c.elementClass);
 
-		if ( c.type != 'icon' && typeOf(item[c.key]) != 'null')
-			el.set('html', item[c.key]);
+		// Content
+		// Date format
+		var value = item[c.key];
+		if (c.type == 'date')
+			value = Date.formatFromMySql(value, Settings.get('date_format'));
 
-		if (c.title) el.setProperty('title', c.title);
+		if ( c.type != 'icon' && typeOf(item[c.key]) != 'null')
+			el.set('text', value);
 
 		if(c.onClick)
 		{
@@ -146,10 +185,10 @@ ION.TableList = new Class({
 
 	buildHeader: function()
 	{
-		var o = this.options;
-
-		var thead = new Element('thead').inject(this.table);
-		var thead_tr = new Element('tr').inject(thead);
+		var o = this.options,
+			thead = new Element('thead').inject(this.table),
+			thead_tr = new Element('tr').inject(thead)
+		;
 
 		// Header
 		Array.each(o.columns, function(column)
@@ -159,17 +198,121 @@ ION.TableList = new Class({
 				text: column.label
 			}).inject(thead_tr);
 
-			if (o.headerClass != null)
-				th.addClass(o.headerClass);
-
+			if (column.class) th.setProperty('class', column.class);
 		});
+	},
+
+	buildFilter: function()
+	{
+		var self = this,
+			o = this.options,
+			filter_keys = o.filter.keys,
+			filters = o.filter.filters,
+			thead = this.table.getElement('thead') || new Element('thead').inject(this.table),
+			thead_tr = new Element('tr', {'class':'filters'}).inject(thead),
+			hash = ION.generateHash()
+		;
+
+		// Filters inputs
+		self.filter_inputs = [];
+
+		// Header
+		Array.each(o.columns, function(column)
+		{
+			var th = new Element('th').inject(thead_tr);
+
+			if (filter_keys.contains(column.key))
+			{
+				var i = new Element('input', {type:'text', id:column.key + '_' + hash, name:column.key, 'class':'inputtext'}).inject(th);
+				self.filter_inputs.push(i);
+
+				// Restore previous filter value
+				Object.each(filters, function(val, key)
+				{
+					if (key == column.key)
+					{
+						i.setProperty('value', val);
+					}
+				});
+
+			}
+		});
+
+		// Submit button
+		var btnSubmit = new Element('input', {
+			type: 'button',
+			'class': 'submit',
+			value: Lang.get('ionize_button_filter')
+		});
+
+		btnSubmit.addEvent('click',function()
+		{
+			var post = self.getPostData();
+
+			if (typeOf(o.filter.onFilter) == 'function')
+				o.filter.onFilter(post, self, self.getDomElement(), self.container);
+			else
+			{
+				console.log('No onFilter() event defined for this table. Here are the data :');
+				console.log(post);
+			}
+		});
+
+		if (o.filter.position == 'first')
+			thead_tr.getFirst('th').adopt(btnSubmit);
+		else
+			thead_tr.getLast('th').adopt(btnSubmit);
+	},
+
+	getPostData: function()
+	{
+		var post = {};
+
+		Object.each(self.filter_inputs, function(i)
+		{
+			post[i.name] = i.value;
+		});
+
+		post = Object.merge(this.options.post, post);
+
+		return post;
+	},
+
+
+	buildPagination: function()
+	{
+		var self = this,
+			p = this.options.pagination;
+
+		if (p.nb_page > 0)
+		{
+			var ul = new Element('ul', {'class':'pagination'}).inject(this.table, 'after');
+
+			for(var i=0; i<p.nb_page; i++)
+			{
+				var j = i+1;
+				var li = new Element('li').inject(ul);
+				var a = new Element('a', {html:j, 'data-id':j}).inject(li);
+				if (j == p.current_page) a.addClass('current');
+
+				if (typeOf(p.onClick) == 'function')
+				{
+					a.addEvent('click', function()
+					{
+						var post = self.getPostData(),
+							id = this.getProperty('data-id');
+
+						p.onClick(id, post, self, self.getDomElement(), self.container);
+					})
+				}
+			}
+		}
 	},
 
 	getDomElement: function()
 	{
 		return this.table;
 	}
-
 });
 
 
@@ -201,6 +344,7 @@ ION.List = new Class({
 			url:        null            // URL of the sorting controller. Must be set to activate the sorting
 		},
 
+		// Elements composing each list item
 		elements:[
 			{
 				element: 'span',        // Sort Drag icon must be span
@@ -269,7 +413,6 @@ ION.List = new Class({
 
 			this.ul.setStyle('position', 'relative');
 		}
-
 
 		this.items = options.items;
 

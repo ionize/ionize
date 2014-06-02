@@ -350,6 +350,7 @@ ION.FormField = new Class({
 		{
 			this.label = new Element('label', {text: options.label.text}).inject(dt);
 			if (options.label.class) this.label.setProperty('class', options.label.class);
+			if (options.label.for) this.label.setProperty('for', options.label.for);
 			if (options.help) this.label.setProperty('title', options.help);
 		}
 		this.fieldContainer = new Element('dd').inject(this.dl);
@@ -373,7 +374,7 @@ ION.FormField = new Class({
 		return this.fieldContainer;
 	},
 
-	getDOMElement: function()
+	getDomElement: function()
 	{
 		return this.dl;
 	},
@@ -392,7 +393,7 @@ ION.Form.Select = new Class({
 	options:
 	{
 		container:  null,           // Container ID or container DOM Element
-		class:      'inputtext',    // CSS class,
+		'class':    'inputtext',    // CSS class,
 
 		name:       '',             // Name of the Select
 		id:         '',             // ID of the select
@@ -404,6 +405,9 @@ ION.Form.Select = new Class({
 		key:        null,			// Key of the data array to use as value
 		label:      null,           // Key of the data array to use as label
 		selected:	[],				// Selected Value or array of Selected Values
+
+		firstValue: null,			// First manually added value
+		firstLabel: null,			// First manually added label
 
 		fireOnInit: false,			// Fires the onChange event after init.
 
@@ -424,8 +428,7 @@ ION.Form.Select = new Class({
 
 		// Select
 		this.select = new Element('select', {name: o.name, 'class':o.class});
-		if (o.id != '')
-			this.select.setProperty('id', o.id);
+		if (o.id != '')	this.select.setProperty('id', o.id);
 
 		// this.setOptions() remove the functions from the options
 		// We need to get access to them through the original options object
@@ -438,6 +441,16 @@ ION.Form.Select = new Class({
 				options.onChange(this.value, data, this.getSelected(), self.select, self);
 			});
 		}
+
+		// Has the select one first value (usually '-- Select something --')
+		if (options.firstLabel != null && options.firstValue != null)
+		{
+			new Element('option', {'value': options.firstValue}).set(
+				'html',
+				options.firstLabel
+			).inject(this.select);
+		}
+
 
 		// Container : If set, the select will be injected in this container
 		if (o.container)
@@ -462,6 +475,8 @@ ION.Form.Select = new Class({
 		{
 			this.buildOptions(o.data);
 		}
+
+		return this;
 	},
 
 	onDraw: function()
@@ -474,7 +489,6 @@ ION.Form.Select = new Class({
 
 		// onDraw Event gts fired
 		this.fireEvent('onDraw', [this.select, this]);
-
 	},
 
 	buildOptions: function(data)
@@ -515,5 +529,47 @@ ION.Form.Select = new Class({
 			this.select.fireEvent('change');
 
 		this.onDraw();
+	},
+
+	getDomElement: function()
+	{
+		return this.select;
+	},
+
+	getSelected: function()
+	{
+		return this.select.getSelected();
+	},
+
+
+	selectValue: function(val)
+	{
+		var options = this.select.getElements('option');
+
+		options.each(function(opt)
+		{
+			opt.removeProperty('selected');
+
+			if (opt.value == val)
+				opt.setProperty('selected', 'selected');
+		});
+
+		this.select.fireEvent('change');
+	},
+
+	selectLabel: function(text)
+	{
+		var options = this.select.getElements('option');
+
+		options.each(function(opt)
+		{
+			opt.removeProperty('selected');
+
+			if (opt.get('text') == text)
+				opt.setProperty('selected', 'selected');
+		});
+
+		this.select.fireEvent('change');
 	}
+
 });

@@ -78,6 +78,22 @@ ION.UserClass = new Class({
 		return false;
 	},
 
+	is_not: function(role_codes)
+	{
+		if (typeOf(role_codes) == 'string')
+			role_codes = [role_codes];
+
+		var role = this.getRole();
+
+		if (role != null)
+		{
+			if (role_codes.contains(role.role_code))
+				return false;
+		}
+
+		return true;
+	},
+
 	getGroupField: function(field)
 	{
 		if (typeOf(this.user) != 'null')
