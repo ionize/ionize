@@ -851,7 +851,7 @@
         <query>DELETE FROM setting WHERE name='filemanager';</query>
 
 
-        <query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.6.1', '');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.7', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'site_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'DEFAULT', '');</query>

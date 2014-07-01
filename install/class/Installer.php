@@ -352,6 +352,7 @@ class Installer
 		
 			if ( ! empty($migration_files))
 			{
+				if (in_array('migration_1.0.6.1_1.0.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.6.1</b>';
 				if (in_array('migration_1.0.6_1.0.6.1.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.6</b>';
 				if (in_array('migration_1.0.5_1.0.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.5</b>';
 				if (in_array('migration_0.9.9_1.0.0.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">0.9.9</b>';
@@ -585,6 +586,15 @@ class Installer
 					$sql = "ALTER TABLE rule add id_user int(11) unsigned NOT NULL DEFAULT 0";
 					$this->db->query($sql);
 				}
+			}
+
+			/*
+			 * Migration to 1.0.7
+			 *
+			 */
+			if (in_array('migration_1.0.6.1_1.0.7.xml', $migration_files))
+			{
+				$this->_execute_migration_file('migration_1.0.6.1_1.0.7.xml');
 			}
 
 
@@ -1231,6 +1241,7 @@ class Installer
 				$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 				$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 				$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+				$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 			}
 	
 			// From Ionize 0.92
@@ -1262,6 +1273,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 				}
 			}
 	
@@ -1293,6 +1305,7 @@ class Installer
 						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 						$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 						$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+						$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 					}
 				}
 			}
@@ -1321,6 +1334,7 @@ class Installer
 						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 						$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 						$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+						$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 					}
 				}
 			}
@@ -1346,6 +1360,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 				}
 			}
 			
@@ -1377,6 +1392,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 				}
 			}
 			
@@ -1393,6 +1409,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 				}
 			}
 
@@ -1411,6 +1428,7 @@ class Installer
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 				}
 			}
 
@@ -1428,6 +1446,7 @@ class Installer
 				{
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 				}
 			}
 
@@ -1440,6 +1459,11 @@ class Installer
 				if (version_compare($version, '1.0.6.1', '<'))
 				{
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+				}
+				else if (version_compare($version, '1.0.7', '<'))
+				{
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
 				}
 			}
 		}
