@@ -45,6 +45,34 @@ class Event {
 
 
 	/**
+	 * Load one event class
+	 * Must receive the full path to the class
+	 *
+	 * @param $path
+	 *
+	 * @return bool
+	 */
+	public static function load_event_library($path)
+	{
+		if ( ! is_file($path))
+			return FALSE;
+
+		$class = implode('_', array_map(function($item){return ucfirst($item);}, explode('_', basename(substr($path, 0, -4)))));
+
+		if ( ! class_exists($class))
+		{
+			require_once $path;
+			return new $class;
+		}
+
+		return FALSE;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Load Modules Events
 	 *
 	 */

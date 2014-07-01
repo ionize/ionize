@@ -177,11 +177,19 @@ Drag.Clone = new Class({
 	entered: function(element, droppable) { this.fireEvent('enter', [element, droppable]); },
 	leaved: function(element, droppable) { this.fireEvent('leave', [element, droppable]); },
 
+	/**
+	 * Gets the clone
+	 * If the original element has data stored, these data will be added to the clone
+	 * Notice : The field must be called 'data'
+	 *
+	 * @param event
+	 * @param element
+	 * @returns {*}
+	 */
 	getClone: function(event, element)
 	{
 		if (typeOf(this.options.clone) == 'function') return this.options.clone.call(this, event, element);
 
-		var dim = element.getDimensions();
 		var dim = element.getComputedSize();
 
 		var clone = element.clone().setStyles({
@@ -194,6 +202,10 @@ Drag.Clone = new Class({
 			'z-index': 10000
 		});
 		
+		// Add stored data to clone
+		var data = element.retrieve('data');
+		if (data) clone.store('data', data);
+
 		var cb = element.retrieve('dropCallbacks');
 		if (cb != '')
 		{

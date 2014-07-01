@@ -13,7 +13,8 @@ ION.ButtonToolbar = new Class({
 
 	options:
 	{
-		btnToolbarClass: 'btn-toolbar m0'
+		btnToolbarClass: 'btn-toolbar m0',
+		'class': null
 	},
 
 	initialize: function(element, options)
@@ -24,6 +25,9 @@ ION.ButtonToolbar = new Class({
 		this.container = $(element);
 
 		this.toolbar = new Element('div',{'class': this.options.btnToolbarClass}).inject(this.container);
+
+		// Additional CSS classes
+		if (typeOf(options['class']) != 'null') this.toolbar.addClass(options['class']);
 
 		Array.each(options.buttons, function(btn)
 		{
@@ -105,6 +109,8 @@ ION.Button = new Class({
 		btnGroupClass: 	'btn-group'
 
 		// onClick: function(ION.Button, DomElement)
+		// onActivate: function(ION.Button, DomElement)
+		// onDeactivate: function(ION.Button, DomElement)
 	},
 
 	initialize: function(o)
@@ -121,6 +127,7 @@ ION.Button = new Class({
 		var cl = typeOf(o['class'] != 'null') ? this.options.baseClass + ' ' + o['class'] : this.options.baseClass;
 
 		this.button = new Element('a', {'class': cl});
+		this.button.store('instance', this);
 
 		if (o.id) this.button.setProperty('id', o.id);
 
@@ -223,11 +230,26 @@ ION.Button = new Class({
 		}
 
 		this.button.addClass('active');
+		this.fireEvent('onActivate', [this, this.button]);
 	},
 
-	unactivate: function()
+	deactivate: function()
 	{
 		this.button.removeClass('active');
+		this.fireEvent('onDeactivate', [this, this.button]);
+	},
+
+	isActivated: function()
+	{
+		return this.button.hasClass('active');
+	},
+
+	toggleActivate: function()
+	{
+		if( ! this.isActivated())
+			this.activate();
+		else
+			this.deactivate();
 	},
 
 	enable: function()
@@ -236,7 +258,7 @@ ION.Button = new Class({
 		{
 			this.button.removeProperty('disabled');
 			this.button.removeClass('disabled');
-			if (typeOf(options.onClick) == 'function')
+			if (typeOf(this.options.onClick) == 'function')
 				this.button.addEvent('click', this.options.onClick);
 		}
 	},

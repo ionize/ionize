@@ -17,7 +17,15 @@ ION.Notifications = new Class({
 		ION.JSON(
 			ION.adminUrl + 'notification/get_ionize_notifications',
 			{},
-			{onSuccess: function(json){self.display(json);}}
+			{
+				onSuccess: function(json)
+				{
+					if (Object.getLength(json) > 0)
+						self.display(json);
+					else
+						new Element('p', {'class':'lite', html:Lang.get('ionize_message_no_network')}).inject(self.container);
+				}
+			}
 		);
 	},
 

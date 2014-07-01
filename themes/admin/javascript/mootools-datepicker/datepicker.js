@@ -62,7 +62,7 @@ var DatePicker = new Class({
 		allowEmpty: false,
 		inputOutputFormat: 'U', // default to unix timestamp
 		animationDuration: 400,
-		useFadeInOut: !Browser.ie, // dont animate fade-in/fade-out for IE
+		useFadeInOut: (Browser.name!='ie'), // dont animate fade-in/fade-out for IE
 		startView: 'month', // allowed values: {time, month, year, decades}
 		positionOffset: { x: 0, y: 0 },
 		minDate: null, // { date: '[date-string]', format: '[date-string-interpretation-format]' }
@@ -130,7 +130,7 @@ var DatePicker = new Class({
 			var display = item.getStyle('display');
 			var clone = {};
 			
-			if ( ! Browser.ie7 )
+			if ( ! Browser.name=='ie7' )
 			{
 				clone = item
 				.setStyle('display', this.options.debug ? display : 'none')
@@ -183,9 +183,12 @@ var DatePicker = new Class({
 		}.bind(this));
 	},
 	
-	onFocus: function(original_input, visual_input) {
+	onFocus: function(original_input, visual_input)
+	{
 		var init_visual_date, d = visual_input.getCoordinates();
-		
+
+		this.originalInput = visual_input;
+
 		if (original_input.get('value') != null) {
 			init_visual_date = this.unformat(original_input.get('value'), this.options.inputOutputFormat).valueOf();
 		} else {
@@ -197,11 +200,27 @@ var DatePicker = new Class({
 				init_visual_date = new Date(this.options.minDate.valueOf());
 			}
 		}
-		
-		this.show({ left: d.left + this.options.positionOffset.x, top: d.top + d.height + this.options.positionOffset.y }, init_visual_date);
+
+		this.show(init_visual_date);
 		this.input = original_input;
 		this.visual = visual_input;
 		this.options.onShow();
+	},
+
+	calcPosition: function(field)
+	{
+		var d = field.getCoordinates(),
+			wc = window.getCoordinates();
+
+		var pos = {
+			left: d.left + this.options.positionOffset.x,
+			top: d.top + d.height + this.options.positionOffset.y
+		};
+
+		if ((d.top + 175) > wc.bottom) {
+			pos['top'] = d.top - 170;
+		}
+		return pos;
 	},
 	
 	dateToObject: function(d) {
@@ -233,7 +252,7 @@ var DatePicker = new Class({
 		return d;
 	},
 	
-	show: function(position, timestamp) {
+	show: function(timestamp) {
 		this.formatMinMaxDates();
 		if (timestamp) {
 			this.d = new Date(timestamp);
@@ -244,9 +263,25 @@ var DatePicker = new Class({
 		this.choice = this.dateToObject(this.d);
 		this.mode = (this.options.startView == 'time' && !this.options.timePicker) ? 'month' : this.options.startView;
 		this.render();
-		this.picker.setStyles(position);
 	},
-	
+
+	setPosition: function()
+	{
+		var d = this.originalInput.getCoordinates(),
+			p = this.picker.getCoordinates(),
+			h = p.height,
+			wc = window.getCoordinates();
+		var pos = {
+			left: d.left + this.options.positionOffset.x,
+			top: d.top + d.height + this.options.positionOffset.y
+		};
+
+		if ((d.top + (h+30)) > wc.bottom) {
+			pos['top'] = d.top - h;
+		}
+		this.picker.setStyles(pos);
+	},
+
 	render: function(fx) {
 		if (typeof this.picker == undefined || this.picker == null) {
 			this.constructPicker();
@@ -257,7 +292,9 @@ var DatePicker = new Class({
 			this.newContents = o;
 			this.newContents.empty();
 		}
-		
+
+		this.setPosition();
+
 		// remember current working date
 		var startDate = new Date(this.d.getTime());
 		
@@ -310,8 +347,11 @@ var DatePicker = new Class({
 		}
 	},
 	
-	constructPicker: function() {
+	constructPicker: function()
+	{
 		this.picker = new Element('div', { 'class': this.options.pickerClass }).inject(document.body);
+		// this.picker = new Element('div', { 'class': this.options.pickerClass }).inject(this.originalInput.getParent());
+
 		if (this.options.useFadeInOut) {
 			// add 2 to max z-index, if the layer which contains the calendar set its z-index property after the execution of this line
 			this.picker.setStyles({opacity:0,"z-index":this.getMaxZindex()+2}).set('tween', { duration: this.options.animationDuration });

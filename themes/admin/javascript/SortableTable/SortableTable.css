@@ -22,7 +22,7 @@ thead tr {
 	background-color: transparent;
 }
 tr.altRow {
-	background-color: #f5f5f5;
+	background-color: rgba(128, 128, 128, 0.1)
 }
 tr.alt {
 	background  :#f2f2f2;

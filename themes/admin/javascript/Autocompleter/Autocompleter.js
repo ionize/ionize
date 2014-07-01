@@ -104,7 +104,7 @@ var Autocompleter = new Class({
 			'duration': 200
 		}, this.options.fxOptions)).addEvent('onStart', Chain.prototype.clearChain).set(0);
 		this.element.setProperty('autocomplete', 'off')
-			.addEvent((Browser.ie || Browser.safari || Browser.chrome) ? 'keydown' : 'keypress', this.onCommand.bind(this))
+			.addEvent((Browser.name=='ie' || Browser.name=='safari' || Browser.name=='chrome') ? 'keydown' : 'keypress', this.onCommand.bind(this))
 			.addEvent('click', this.onCommand.bind(this, false))
 			.addEvent('focus', this.toggleFocus.bind(this, true))
 			.addEvent('blur', this.toggleFocus.bind(this, false));
@@ -356,7 +356,7 @@ var Autocompleter = new Class({
 var OverlayFix = new Class({
 
 	initialize: function(el) {
-		if (Browser.ie) {
+		if (Browser.name=='ie') {
 			this.element = $(el);
 			this.relative = this.element.getOffsetParent();
 			this.fix = new Element('iframe', {
@@ -400,7 +400,7 @@ var OverlayFix = new Class({
 Element.implement({
 
 	getSelectedRange: function() {
-		if (!Browser.ie) return {start: this.selectionStart, end: this.selectionEnd};
+		if (!Browser.name=='ie') return {start: this.selectionStart, end: this.selectionEnd};
 		var pos = {start: 0, end: 0};
 		var range = this.getDocument().selection.createRange();
 		if (!range || range.parentElement() != this) return pos;
@@ -421,7 +421,7 @@ Element.implement({
 	},
 
 	selectRange: function(start, end) {
-		if (Browser.ie) {
+		if (Browser.name=='ie') {
 			var diff = this.value.substr(start, end - start).replace(/\r/g, '').length;
 			start = this.value.substr(0, start).replace(/\r/g, '').length;
 			var range = this.createTextRange();

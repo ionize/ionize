@@ -164,7 +164,7 @@ MUI.Content = Object.append((MUI.Content || {}), {
 					new MUI.Require({
 						js: this.require.js,
 						onload: function(){
-							if (Browser.opera) this.require.onload.delay(100);
+							if (Browser.name=='opera') this.require.onload.delay(100);
 							else this.require.onload();
 							if (this.onLoaded && this.onLoaded != null){
 								this.onLoaded(element, this);
@@ -174,7 +174,8 @@ MUI.Content = Object.append((MUI.Content || {}), {
 						}.bind(this)
 					});
 				} else {
-					if (this.onLoaded && this.onLoaded != null){
+					if (this.onLoaded && this.onLoaded != null)
+					{
 						// call onLoaded directly
 						this.onLoaded(element, this);
 					} else {
@@ -194,7 +195,8 @@ MUI.Content = Object.append((MUI.Content || {}), {
 					MUI.Content.Providers[this.loadMethod].doRequest(this);
 				}.bind(content)
 			});
-		} else {
+		} else
+		{
 			MUI.Content.Providers[content.loadMethod].doRequest(content);
 		}
 
@@ -363,7 +365,7 @@ MUI.Content.Providers.xhr = {
 	doRequest: function(content){
 		// if js is required, but no url, fire loaded to proceed with js-only
 		if (content.url == null && content.require.js && content.require.js.length != 0){
-			Browser.ie6 ? content.fireLoaded.delay(50, content) : content.fireLoaded();
+			content.fireLoaded();
 			return null;
 		}
 
@@ -373,7 +375,7 @@ MUI.Content.Providers.xhr = {
 		// process content passed to options.content or persisted data
 		if (content.content){
 			content.content = MUI.Content.processFilters(content);
-			Browser.ie6 ? content.fireLoaded.delay(50, content) : content.fireLoaded();
+			content.fireLoaded();
 			return;
 		}
 
@@ -425,8 +427,7 @@ MUI.Content.Providers.xhr = {
 					if (instance && instance.options && instance.options.evalScripts) evalJS = instance.options.evalScripts;
 					if (evalJS && js) Browser.exec(js);
 				}
-
-				Browser.ie6 ? content.fireLoaded.delay(50, content) : content.fireLoaded();
+				content.fireLoaded();
 			},
 			onComplete: function(){
 			}
@@ -445,7 +446,7 @@ MUI.Content.Providers.json = {
 	_checkRecords: function(content){  // check to see if records already downloaded and fir onLoaded if it does
 		var paging = content.paging;
 		if (content.records && paging.pageSize == 0){
-			Browser.ie6 ? content.fireLoaded.delay(50, content) : content.fireLoaded();
+			content.fireLoaded();
 			return true;	// return them all if they exists and paging is turned off
 		}
 		if (content.records && content.records.length && paging.pageSize > 0){	// if paging is on make sure we have that page
@@ -458,7 +459,7 @@ MUI.Content.Providers.json = {
 					if (!content.records[i]) return false;
 				}
 				// if in scope then fire loaded to make control know we have the records
-				Browser.ie6 ? content.fireLoaded.delay(50, content) : content.fireLoaded();
+				content.fireLoaded();
 				return true
 			}
 		}
@@ -474,12 +475,12 @@ MUI.Content.Providers.json = {
 			json = MUI.Content.processFilters(this);
 		}
 		MUI.hideSpinner(this.instance);
-		Browser.ie6 ? this.fireLoaded.delay(50, this) : this.fireLoaded();
+		this.fireLoaded();
 	},
 
 	doRequest: function(content){
 		if (content.content && !content.url){
-			Browser.ie6 ? content.fireLoaded.delay(50, this) : content.fireLoaded();
+			content.fireLoaded();
 			return;
 		}
 
@@ -571,7 +572,7 @@ MUI.Content.Providers.iframe = {
 			// Add onload event to iframe so we can hide the spinner and run fireLoaded()
 			iframeEl.addEvent('load', function(){
 				MUI.hideSpinner(instance);
-				Browser.ie6 ? this.fireLoaded.delay(50, this) : this.fireLoaded();
+				this.fireLoaded();
 			}.bind(content));
 		}
 	}

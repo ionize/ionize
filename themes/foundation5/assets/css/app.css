@@ -1,7 +1,6 @@
 h2, h3, h4 {
 	font-family: "Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
 	font-weight: 300;
-
 }
 #main-content {
 	margin: 44px 0 22px;
@@ -51,6 +50,9 @@ ul.languages li { font-size: 0.9em;}
 .alert-box h4{color:#fff;}
 
 form p.note {margin: 0;color: #555;font-style: italic;font-size: 0.9em;}
+
+figure{margin:0;}
+figcaption{font-size: .8rem;color: #555}
 
 /* Flag */
 .flag {

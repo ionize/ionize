@@ -47,7 +47,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 		height:					125,			// the desired height of the panel
 		cssClass:				'',				// css class to add to the main panel div
 		scrollbars:				true,			// true to allow scrollbars to be shown
-		padding:				12,				// default padding for the panel
+		padding:				20,				// default padding for the panel
 
 		// Other:
 		collapsible:			true,			// can the panel be collapsed
@@ -399,7 +399,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 			return element.getStyle('height').toInt() + partner.getStyle('height').toInt();
 		}.bind(this);
 
-		if (Browser.ie){
+		if (Browser.name=='ie'){
 			handle.addEvents({
 				'mousedown': function(){
 					handle.setCapture();
@@ -423,7 +423,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 
 			onStart: function(){
 				if (instance.el.iframe){
-					if (Browser.ie){
+					if (Browser.name=='ie'){
 						instance.el.iframe.hide();
 						partner.getElements('iframe').hide();
 					} else {
@@ -460,7 +460,7 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 					MUI.panelHeight(column);
 				});
 				if (instance.el.iframe){
-					if (Browser.ie){
+					if (Browser.name=='ie'){
 						instance.el.iframe.show();
 						partner.getElements('iframe').show();
 						// The following hack is to get IE8 Standards Mode to properly resize an iframe
@@ -474,7 +474,6 @@ MUI.Panel = new NamedClass('MUI.Panel', {
 						partner.getElements('iframe').setStyle('visibility', 'visible');
 					}
 				}
-
 				instance.fireEvent('resize', [this]);
 				MUI.get(partner).fireEvent('resize', [this]);
 			}.bind(this)

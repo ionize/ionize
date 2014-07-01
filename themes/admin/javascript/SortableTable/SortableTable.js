@@ -99,6 +99,8 @@ var SortableTable = new Class({
 				};
 				//
 				el.findData = function(elem){
+					if (typeOf(elem.getProperty('data-sortval')) != 'null')
+						return elem.getProperty('data-sortval');
 					var child = elem.getFirst();
 					if(child){
 						return el.findData(child);

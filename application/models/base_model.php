@@ -517,17 +517,20 @@ class Base_model extends CI_Model
 
 
 	/**
-	 * Get element lang data (from lang table only)
+	 * Get one element lang data (from lang table only)
 	 *
-	 * @param 	string	Element ID. Optional. If not set, returns all the lang table records
-	 * @param	array	Arraylist of all translations rows
+	 * @param null $where
+	 * @param null $table
 	 *
+	 * @return array
 	 */
-	public function get_lang($where = NULL)
+	public function get_lang($where = NULL, $table=NULL)
 	{
+		$table = ( ! is_null($table)) ? $table : $this->lang_table;
+
 		$data = $returned_data = array();
 		
-		if ($this->lang_table != '')
+		if ($table != '')
 		{
 			if ( is_array($where))
 			{
@@ -547,7 +550,7 @@ class Base_model extends CI_Model
 				$this->{$this->db_group}->where($this->pk_name, $where);
 			}
 
-			$query = $this->{$this->db_group}->get($this->lang_table);
+			$query = $this->{$this->db_group}->get($table);
 
 			if ( $query->num_rows() > 0 )
 				$data = $query->result_array();
@@ -558,6 +561,27 @@ class Base_model extends CI_Model
 		// Set lang code as record index
 		foreach($data as $lang_item)
 			$returned_data[$lang_item['lang']] = $lang_item;
+
+
+		// Safety against DB : Check if each existing language key has data
+		$fields = $this->{$this->db_group}->list_fields($table);
+		$fields_data = $this->field_data($table);
+
+		foreach(Settings::get_languages() as $language)
+		{
+			$lang = $language['lang'];
+
+			if (empty($returned_data[$lang]))
+			{
+				foreach ($fields as $field)
+				{
+					$field_data = array_values(array_filter($fields_data, create_function('$row', 'return $row["field"] == "'. $field .'";')));
+					$field_data = (isset($field_data[0])) ? $field_data[0] : FALSE;
+
+					$returned_data[$lang][$field] = (isset($field_data['default'])) ? $field_data['default'] : '';
+				}
+			}
+		}
 
 		return $returned_data;
 	}
@@ -1297,8 +1321,6 @@ class Base_model extends CI_Model
 		 * Base data save
 		 */
 	 	$data = $this->clean_data($data);
-
-		$id = FALSE;
 
 		// Insert
 		if( ! isset($data[$this->pk_name]) || $data[$this->pk_name] == '' )
@@ -2044,11 +2066,9 @@ class Base_model extends CI_Model
 			// Feeding of template languages elements
 			foreach($rows as $row)
 			{
-
 				if(isset($row['lang']) && $row['lang'] == $lang)
 				{
 					$template['languages'][$lang] = $row;
-					// $template[$lang] = $row;
 				}
 			}
 
@@ -2133,6 +2153,25 @@ class Base_model extends CI_Model
 			}
 		}
 		return $template;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_lang_data($id=NULL, $table=NULL)
+	{
+		$data = array();
+
+		$table = ( ! is_null($table)) ? $table : $this->lang_table;
+
+		if ( ! is_null($id))
+			$this->feed_lang_template($id, $data);
+		else
+			$this->feed_blank_lang_template($data);
+
+		return $data;
+
 	}
 
 

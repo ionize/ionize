@@ -765,11 +765,14 @@ class Extend_field_model extends Base_model
 	 * Saves one parent's extend fields data
 	 * All extend fields values are saved by this method
 	 *
-	 * @param $parent		Parent type
-	 * @param $id_parent	Current parent element ID. Can be the page ID, the article ID...
-	 * @param $post			$_POST data array
+	 * @param string		$parent		Parent type
+	 * @param int			$id_parent	Current parent element ID. Can be the page ID, the article ID...
+	 * @param array			$post		$_POST data array
+	 * @param bool			$by_id 		If set to TRUE, each form input has the ID of the extend set. (old good way)
+	 *									If false, the passed array contains extends names as keys
+	 *
 	 */
-	public function save_data($parent, $id_parent, $post)
+	public function save_data($parent, $id_parent, $post, $by_id = true)
 	{
 		// Get all extends fields with this element OR kind of parent
 		$extend_fields = (!empty($post['id_element_definition'])) ? $this->get_list(array('id_element_definition' => $post['id_element_definition'])) : $this->get_list(array('parent' => $parent));
@@ -806,28 +809,55 @@ class Extend_field_model extends Base_model
 			}
 
 			// Get the value from _POST values and feed the data array
-			foreach ($post as $k => $value)
+			if ($by_id)
 			{
-				if (substr($k, 0, 2) == 'cf')
+				foreach ($post as $k => $value)
 				{
-					// id of the extend field
-					$key = explode('_', $k);
-
-					if (isset($key[1]) && $key[1] == $id_extend)
+					if (substr($k, 0, 2) == 'cf')
 					{
-						// if language code is set, use it in the query
-						$lang=NULL;
+						// id of the extend field
+						$key = explode('_', $k);
 
-						if (isset($key[2]))
-							$lang = $key[2];
-
-						// Save Extend field data
-						$this->save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang);
-
-						// Save in other field
-						if ( ! empty($extend_field['copy_in']))
+						if (isset($key[1]) && $key[1] == $id_extend)
 						{
-							$this->copy_extend_value_to_field($extend_field, $parent, $id_parent, $value, $lang);
+							// if language code is set, use it in the query
+							$lang=NULL;
+
+							if (isset($key[2]))
+								$lang = $key[2];
+
+							// Save Extend field data
+							$this->save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang);
+
+							// Save in other field
+							/*
+							if ( ! empty($extend_field['copy_in']))
+							{
+								$this->copy_extend_value_to_field($extend_field, $parent, $id_parent, $value, $lang);
+							}
+							*/
+						}
+					}
+				}
+			}
+			else
+			{
+				// Check the post
+				foreach ($post as $name => $value)
+				{
+					if ($extend_field['name'] == $name)
+					{
+						// Lang array ?
+						if (is_array($value))
+						{
+							foreach($value as $lang => $lang_val)
+							{
+								$this->save_extend_field_value($id_extend, $parent, $id_parent, $lang_val, $lang);
+							}
+						}
+						else
+						{
+							$this->save_extend_field_value($id_extend, $parent, $id_parent, $value);
 						}
 					}
 				}

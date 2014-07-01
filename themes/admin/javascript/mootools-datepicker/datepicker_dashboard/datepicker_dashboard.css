@@ -9,8 +9,17 @@
 	padding: 14px;
 	background: url(frame.png) no-repeat;
 	z-index: 10000;
+	-moz-box-sizing: initial;
+	-webkit-box-sizing: initial;
+	box-sizing: initial;
 }
-
+.datepicker_dashboard *,
+.datepicker_dashboard *:before,
+.datepicker_dashboard *:after{
+	-moz-box-sizing: initial;
+	-webkit-box-sizing: initial;
+	box-sizing: initial;
+}
 /* header
 ********************************************************/
 .datepicker_dashboard .header {

@@ -277,7 +277,7 @@ MUI.Column = new NamedClass('MUI.Column', {
 			panel.close();
 		}.bind(this));
 
-		if (Browser.ie){
+		if (Browser.name=='ie'){
 			self.el.column.dispose();
 			if (self.el.handle != null) self.el.handle.dispose();
 		} else {
@@ -309,7 +309,7 @@ MUI.Column = new NamedClass('MUI.Column', {
 
 		if (!min) min = 50;
 		if (!max) max = 250;
-		if (Browser.ie){
+		if (Browser.name=='ie'){
 			handle.addEvents({
 				'mousedown': function(){
 					handle.setCapture();
@@ -339,31 +339,7 @@ MUI.Column = new NamedClass('MUI.Column', {
 				}
 			}.bind(this),
 			onDrag: function(){
-				/*
-				if (Browser.firefox){
-					$$('.panel').each(function(panel){
-						if (panel.getElements('.mochaIframe').length == 0){
-							panel.hide(); // Fix for a rendering bug in FF
-						}
-					});
-				}
-				*/
 				MUI.rWidth(element.getParent());
-				/*
-				if (Browser.firefox){
-					$$('.panel').show(); // Fix for a rendering bug in FF
-				}
-				*/
-				if (Browser.ie6){
-					element.getChildren().each(function(el){
-						var width = $(element).getStyle('width').toInt();
-						width -= el.getStyle('border-right').toInt();
-						width -= el.getStyle('border-left').toInt();
-						width -= el.getStyle('padding-right').toInt();
-						width -= el.getStyle('padding-left').toInt();
-						el.setStyle('width', width);
-					}.bind(this));
-				}
 			}.bind(this),
 			onComplete: function(){
 				var partner = (where == 'left') ? element.getPrevious('.column') : element.getNext('.column'),
@@ -404,9 +380,6 @@ MUI.append({
 	panelHeight2: function(column, changing, action){
 		var parent = column.getParent();
 		var columnHeight = parent.getStyle('height').toInt();
-		if (Browser.ie6 && parent == MUI.Desktop.pageWrapper){
-			columnHeight -= 1;
-		}
 		column.setStyle('height', columnHeight);
 
 		// Get column panels
@@ -600,9 +573,6 @@ MUI.append({
 			var parent = handle.getParent();
 			if (parent.getStyle('height').toInt() < 1) return; // Keeps IE7 and 8 from throwing an error when collapsing a panel within a panel
 			var handleHeight = parent.getStyle('height').toInt() - handle.getStyle('border-top').toInt() - handle.getStyle('border-bottom').toInt();
-			if (Browser.ie6 && parent == MUI.Desktop.pageWrapper){
-				handleHeight -= 1;
-			}
 			handle.setStyle('height', handleHeight);
 		});
 
@@ -617,7 +587,7 @@ MUI.append({
 		var contentWrapper = instance.el.contentWrapper;
 
 		if (instance.el.iframe){
-			if (!Browser.ie){
+			if (Browser.name != 'ie'){
 				instance.el.iframe.setStyles({
 					'height': contentWrapper.getStyle('height'),
 					'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()
@@ -668,7 +638,9 @@ MUI.append({
 			}, this);
 
 			column.getElements('.panel').each(function(panel){
-				panel.setStyle('width', newWidth - panel.getStyle('border-left').toInt() - panel.getStyle('border-right').toInt());
+				// Partikule plaster : Remove this, as it resizes the children's panel width in side columns !
+				// Patikule : No side effects after remove for the moment
+				// panel.setStyle('width', newWidth - panel.getStyle('border-left').toInt() - panel.getStyle('border-right').toInt());
 				MUI.resizeChildren(panel);
 			}.bind(this));
 

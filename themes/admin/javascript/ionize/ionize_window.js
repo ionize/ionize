@@ -6,6 +6,9 @@ ION.Window = new Class({
 
 	Implements: [Events, Options],
 
+	w: null,			// Mocha UI Window
+ 	buttons:[],			// Array of bottom buttons
+
 	options: {
 		type:'window',
 		y: 40,
@@ -15,6 +18,7 @@ ION.Window = new Class({
 		contentBgColor: '#fff',
 		barTitle: '',
 		title: null,
+		buttons:[],
 		onDraw: function(){}
 
 		/*
@@ -76,12 +80,18 @@ ION.Window = new Class({
 		else
 		{
 			var t = this.options.type;
-			delete this.options.type;
+			delete options.type;
 
 			if (t == 'form')
-				this.w = this._createFormWindow(this.options);
+				this.w = this._createFormWindow(options);
 			else
-				this.w = this._createWindow(this.options);
+				this.w = this._createWindow(options);
+
+			// Once we have this.w, we can affect 'this' to all buttons
+			var self = this;
+			this.buttons.each(function(button){
+				button.w = self;
+			});
 
 			this.fireEvent('onDraw', this);
 
@@ -99,12 +109,22 @@ ION.Window = new Class({
 		return this.w;
 	},
 
+	getWrapper: function()
+	{
+		return this.w.el.contentWrapper;
+	},
+
 	getForm: function()
 	{
 		if (typeOf(this.form) != 'null')
 			return this.form;
 
 		return null;
+	},
+
+	getTitle: function()
+	{
+		return this.title;
 	},
 
 	getSaveButton: function()
@@ -122,35 +142,64 @@ ION.Window = new Class({
 		this.w.close();
 	},
 
+	resize: function(x,y)
+	{
+		this.w.resize({width:x, height:y, top:70, centered:true});
+	},
+
 	_createWindow: function(opt)
 	{
-		var options = {
-			container: document.body,
-			content:{}
-		};
+		var self = this,
+			options = {
+				container: document.body,
+				content:{}
+			}
+		;
 
 		opt.contentTitle = (opt.title && opt.title.text) ? opt.title.text : null;
 		opt.contentTitleClass = (opt.title && opt.title.class) ? ' ' + opt.title.class : '';
-		opt.title = opt.barTitle != '' ? opt.barTitle : '';
+		opt.title = typeOf(opt.barTitle) != 'null' && opt.barTitle != '' ? opt.barTitle : (opt.contentTitle != null ? opt.contentTitle : '');
+		opt.cssClass = opt.cssClass != '' ? opt.cssClass : '';
 
 		Object.append(options, opt);
+
+		// Prepare the buttons
+		Object.each(opt.buttons, function(bOptions)
+		{
+			if ( ! bOptions['class']) bOptions['class'] = 'green';
+
+			var button = new ION.Button(bOptions);
+
+			if ( ! button.getElement().hasClass('right') && ! button.getElement().hasClass('left'))
+				button.getElement().addClass('right');
+
+			self.buttons.push(button);
+		});
 
 		if (options.contentTitle)
 		{
 			var ode = null;
 
-			if (options.onDrawEnd)
+			if (opt.onDrawEnd)
 			{
-				ode = options.onDrawEnd;
+				ode = opt.onDrawEnd;
 			}
 
 			options['onDrawEnd'] = function(w)
 			{
-				var title = new ION.WindowTitle({
+				self.title = new ION.WindowTitle({
 					title: options.contentTitle,
 					subtitle: opt.subtitle,
 					'class': options.contentTitleClass,
 					container: w.el.content
+				});
+
+				self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
+
+				// Buttons set as options
+				self.buttons.each(function(button)
+				{
+					button.getElement().inject(self.divButtons);
 				});
 
 				if ( ode != null)
@@ -159,7 +208,6 @@ ION.Window = new Class({
 		}
 
 		var w = new MUI.Window(options);
-
 		w.el.windowEl.store('ion_window', this);
 
 		return w;
@@ -194,13 +242,11 @@ ION.Window = new Class({
 						method: 'post'
 					}).inject(w.el.content);
 
-					var divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
-
 					self.saveButton = new Element('button', {
 						'class':'button right yes',
 						id: 'save' + opt.form.id,
 						text: Lang.get('ionize_button_save_close')
-					}).inject(divButtons);
+					}).inject(self.divButtons);
 
 					// Form data to send with the form, whatever is sent btw.
 					if (opt.form.post)
@@ -229,7 +275,7 @@ ION.Window = new Class({
 						self.saveReloadButton = new Element('button', {
 							'class':'button blue right ml10',
 							text: Lang.get('ionize_button_save')
-						}).inject(divButtons);
+						}).inject(self.divButtons);
 
 						self.saveReloadButton.addEvent('click', function()
 						{
@@ -251,7 +297,7 @@ ION.Window = new Class({
 						'class':'button right red',
 						id: 'cancel' + opt.form.id,
 						text: Lang.get('ionize_button_cancel')
-					}).inject(divButtons);
+					}).inject(self.divButtons);
 
 					cancelButton.addEvent('click', function(){ w.close(); });
 
@@ -324,19 +370,52 @@ ION.WindowTitle = new Class({
 	{
 		this.domElement = new Element('div');
 
-		var h2 = new Element('h2', {
+		this.h2 = new Element('h2', {
 			'class': 'main ' + this.options.class,
-			'text' : this.options.title
+			'html' : this.options.title
 		}).inject(this.domElement);
 
 		// Subtitle is one array of objects
 		if (this.options.subtitle)
+			this.setSubtitle(this.options.subtitle);
+
+		if (this.options.build == true)
+			this.domElement.inject(this.container);
+	},
+
+	addClass: function(cl)
+	{
+		this.h2.addClass(cl);
+		return this;
+	},
+
+	removeClass: function(cl)
+	{
+		this.h2.removeClass(cl);
+		return this;
+	},
+
+	setTitle: function(title)
+	{
+		if (this.h2) this.h2.set('html', title);
+	},
+
+	getDomElement: function()
+	{
+		return this.domElement;
+	},
+
+	setSubtitle: function(subtitle)
+	{
+		this.getSubtitleDomElement().empty();
+
+		var p = new Element('p').inject(this.subTitleElement);
+
+		if (typeOf(subtitle) == 'string')
+			var span = new Element('span', {'class': 'lite', 'html': subtitle  }).inject(p);
+		else
 		{
-			this.buildSubtitleElement();
-
-			var p = new Element('p').inject(this.subTitleElement);
-
-			Object.each(this.options.subtitle, function(sub, idx)
+			Object.each(subtitle, function(sub, idx)
 			{
 				if (idx == 'html')
 				{
@@ -347,26 +426,30 @@ ION.WindowTitle = new Class({
 					if (idx > 0)
 						new Element('span', {'html': ' | '}).inject(p);
 
-					if (sub.key)
+					if (typeOf(sub.html) != 'null')
+					{
+						sub = {value:sub.html}
+					}
+					else if (sub.key && typeOf(sub.key) == 'string')
 					{
 						var span = new Element('span', {'class': 'lite', 'html': sub.key  }).inject(p);
 
 						if (sub.value)
 							span.set('html', span.get('html') + ' : ' );
 					}
-
 				}
 				new Element('span', {'html': sub.value}).inject(p);
 			});
 		}
-
-		if (this.options.build == true)
-			this.domElement.inject(this.container)
 	},
 
-	getDomElement: function()
+	removeSubtitle: function()
 	{
-		return this.domElement;
+		if (this.subTitleElement != null)
+		{
+			this.subTitleElement.destroy();
+			this.subTitleElement = null;
+		}
 	},
 
 	getSubtitleDomElement: function()
@@ -572,6 +655,7 @@ ION.append({
 		// Window creation
 		return new MUI.Window(options);
 	},
+
 
 	/**
 	 * Opens a data window, without buttons

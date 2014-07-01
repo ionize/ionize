@@ -49,11 +49,11 @@ var Parametrics = {
 			minimizable: true,
 			maximizable: false,
 			onDragStart: function(instance){
-				if (!Browser.ie) instance.el.windowEl.setStyle('opacity', 0.5);
+				if (Browser.name!='ie') instance.el.windowEl.setStyle('opacity', 0.5);
 				// VML doesn't render opacity nicely on the shadow
 			},
 			onDragComplete: function(instance){
-				if (!Browser.ie) instance.el.windowEl.setStyle('opacity', 1);
+				if (Browser.name!='ie') instance.el.windowEl.setStyle('opacity', 1);
 			},
 			onLoaded: function(){
 				Parametrics.addRadiusSlider();

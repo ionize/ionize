@@ -235,11 +235,8 @@
 
 
 	// SEO URLs forms action
-	ION.setFormSubmit('pingUrlForm', 'submit_ping_url', 'setting/save_seo_urls', 'mainPanel', 'setting/technical');
-	
-	ION.setFormSubmit('sitemapUrlForm', 'submit_sitemap_url', 'setting/save_setting', 'mainPanel', 'setting/technical');
-
-	ION.setChangeSubmit('sitemapGzipForm', 'sitemaps_gzip', 'setting/save_setting', 'mainPanel', 'setting/technical');
-
+	ION.setFormSubmit('pingUrlForm', 'submit_ping_url', 'setting/save_seo_urls');
+	ION.setFormSubmit('sitemapUrlForm', 'submit_sitemap_url', 'setting/save_setting');
+	ION.setChangeSubmit('sitemapGzipForm', 'sitemaps_gzip', 'setting/save_setting');
 
 </script>

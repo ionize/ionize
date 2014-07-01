@@ -53,7 +53,7 @@ Swiff.Uploader = new Class({
     fileSizeMin: 1,
     fileSizeMax: null, // Official limit is 100 MB for FileReference, but I tested up to 2Gb!
     allowDuplicates: false,
-    timeLimit: (Browser.Platform.linux) ? 0 : 30,
+    timeLimit: (Browser.platform == 'linux') ? 0 : 30,
 
     policyFile: null,
     buttonImage: null,

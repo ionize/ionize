@@ -931,7 +931,7 @@ ION.StaticItemManager = new Class({
 	relayItemListClick: function(e, element, clicks)
 	{
 		// IE7 / IE8 event problem
-		if( ! Browser.ie) if (e) e.stop();
+		if( Browser.name!='ie') if (e) e.stop();
 
 		if (clicks === 2)
 		{

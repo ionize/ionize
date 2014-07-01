@@ -127,7 +127,7 @@ TextboxList.Autocomplete = new Class({
 			this.list.setStyle('display', 'none');
 			this.container.setStyle('display', 'none');
 			this.currentSearch = null;
-		}).delay(Browser.ie ? 150 : 0, this);
+		}).delay(Browser.name=='ie' ? 150 : 0, this);
 	},
 
 	hidePlaceholder: function() {
@@ -154,7 +154,7 @@ TextboxList.Autocomplete = new Class({
 		this.textboxlist.addEvent('bitEditableAdd', this.setupBit.bind(this), true)
 			.addEvent('bitEditableFocus', this.search.bind(this), true)
 			.addEvent('bitEditableBlur', this.hide.bind(this), true);
-		if (Browser.ie) {
+		if (Browser.name=='ie') {
 			this.textboxlist.setOptions({bitsOptions: {editable: {addOnBlur: false}}});
 		}
 		if (this.textboxlist.options.unique || this.options.reAddValues) {

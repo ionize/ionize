@@ -299,7 +299,7 @@ ION.TreeXhr = new Class({
 				var flag = (element.type_flag) ? element.type_flag : '0';
 				if (typeOf(flag) == 'null') flag = 0;
 				var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
-				if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
+				if ((flag != '' || flag!='0') && Browser.name=='ie7') a.setStyle('padding-left','6px');
 
 				// Item node line
 				this.treeLine_Model.clone().inject(li, 'top').addClass('line').addClass('node');
@@ -408,7 +408,7 @@ ION.TreeXhr = new Class({
 
 					var span = new Element('span', {'class':'flag flag' + flag}).inject(aTitle, 'top');
 
-					if ((flag != '' || flag != '0') && Browser.ie7) aTitle.setStyle('padding-left','6px');
+					if ((flag != '' || flag != '0') && Browser.name=='ie7') aTitle.setStyle('padding-left','6px');
 
 					// Status
 					item.removeClass('offline').removeClass('online').addClass(status);
@@ -563,7 +563,7 @@ ION.TreeXhr = new Class({
 	relaySingleOrDoubleClick: function(e, self, el, type, clicks)
 	{
 		// IE7 / IE8 event problem
-		if( ! Browser.ie)
+		if( Browser.name!='ie')
 			if (e) e.stop();
 		
 		// Open page
@@ -823,7 +823,7 @@ ION.BrowserTreeXhr = new Class({
 			// Flag span : User's flag first, then Type flag
 			var flag = (element.type_flag) ? element.type_flag : '0';
 			var span = new Element('span', {'class':'flag flag' + flag}).inject(a, 'top');
-			if ((flag != '' || flag!='0') && Browser.ie7) a.setStyle('padding-left','6px');
+			if ((flag != '' || flag!='0') && Browser.name=='ie7') a.setStyle('padding-left','6px');
 
 			// Item node line
 			this.treeLine_Model.clone().inject(li, 'top').addClass('line').addClass('node');
@@ -862,7 +862,7 @@ ION.BrowserTreeXhr = new Class({
 	relaySingleOrDoubleClick: function(e, self, el, type, clicks)
 	{
 		// IE7 / IE8 event problem
-		if( ! Browser.ie)
+		if( Browser.name!='ie')
 			if (e) e.stop();
 
 		// Open page

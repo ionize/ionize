@@ -605,7 +605,28 @@
 			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 		</query>
 
-		<query>
+        <query>
+            CREATE TABLE IF NOT EXISTS ui_element (
+                id_ui_element int(11) unsigned NOT NULL AUTO_INCREMENT,
+                id_company int(11) unsigned DEFAULT NULL,
+                type enum('tab','table','list') DEFAULT NULL,
+                panel varchar(25) DEFAULT NULL COMMENT 'UI context',
+                title varchar(50) DEFAULT NULL,
+                ordering int(10) unsigned NOT NULL DEFAULT '0',
+                PRIMARY KEY (id_ui_element)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+        </query>
+
+        <query>
+            CREATE TABLE IF NOT EXISTS ui_element_lk_extend (
+                id_ui_element int(11) unsigned NOT NULL,
+                id_extend int(11) NOT NULL DEFAULT '0',
+                ordering int(10) unsigned NOT NULL DEFAULT '0',
+                PRIMARY KEY (id_ui_element,id_extend)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </query>
+
+        <query>
 			CREATE TABLE IF NOT EXISTS url (
 			  id_url int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  id_entity int(11) UNSIGNED NOT NULL,
@@ -663,12 +684,12 @@
             (3,'Textarea + Editor',1,0,1,1,NULL,'textarea','editor','w95p smallTinyTextarea inputtext',NULL),
             (4,'Checkbox',1,1,0,1,NULL,'input','checkbox','checkbox',NULL),
             (5,'Radio',1,1,0,1,NULL,'input','radio','radio',NULL),
-            (6,'Select',1,1,0,1,NULL,'input','select','select',NULL),
+            (6,'Select',1,1,0,1,NULL,'input','select','select inputtext',NULL),
             (7,'Date Time',0,0,0,1,NULL,'input','date','date w120 inputtext',NULL),
             (8,'Medias',0,0,1,1,NULL,'div','media',NULL,NULL),
             (100,'Number',1,0,0,1,'numeric','input','number','w120 inputtext',NULL),
             (110,'Email',0,0,0,1,'email','input','email','w95p inputtext',NULL),
-            (120,'Phone',0,0,0,1,NULL,'input','tel','w140 inputtext','^((\\+\\d{1,3}(-| )?\\(?\\d\\)?(-| )?\\d{1,5})|(\\(?\\d{2,6}\\)?))(-| )?(\\d{3,4})(-| )?(\\d{4})(( x| ext)\\d{1,5}){0,1}$'),
+            (120,'Phone',0,0,0,1,'digits','input','tel','w140 inputtext','^((\\+\\d{1,3}(-| )?\\(?\\d\\)?(-| )?\\d{1,5})|(\\(?\\d{2,6}\\)?))(-| )?(\\d{3,4})(-| )?(\\d{4})(( x| ext)\\d{1,5}){0,1}$'),
             (130,'Internal Link',0,0,1,1,NULL,'div','link','droppable',NULL);
         </query>
         

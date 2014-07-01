@@ -118,7 +118,7 @@ MUI.Themes = {
 		});
 
 		// Delay gives the stylesheets time to take effect. IE6 needs more delay.
-		if (Browser.ie){
+		if (Browser.name=='ie'){
 			this.redraw.delay(1250, this);
 		} else {
 			this.redraw.delay(250, this);

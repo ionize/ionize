@@ -6,8 +6,8 @@
 	<meta http-equiv="imagetoolbar" content="no" />
 	<link rel="shortcut icon" href="<?php echo theme_url(); ?>images/favicon.ico" type="image/x-icon" />
 
-    <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-    <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1.js"></script>
+    <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.5.0-full-nocompat-yc.js"></script>
+    <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.5.0-yc.js"></script>
 
 	<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/login.css" type="text/css" />
 	<link rel="stylesheet" href="<?php echo admin_style_url(); ?>css/form.css" type="text/css" />

@@ -206,7 +206,7 @@ ION.append({
 	initAccordion: function(togglers, elements, openAtStart, cookieName) 
 	{
 		// Hack IE 7 : No Accordion
-		if (Browser.ie == true && Browser.version < 8)
+		if (Browser.name=='ie' == true && Browser.version < 8)
 		{
 			return false;
 		}
@@ -673,10 +673,40 @@ ION.append({
 				el.addClass('move');
 				if (typeOf(MUI.Windows.highestZindex) != 'null')
 					el.setStyle('z-index', (MUI.Windows.highestZindex).toInt() + 1);
+
+				// ION.register('dragElement', el);
+				el.setProperty('dropClass', droppables.replace('.', ''));
+
+				// Register the dragged Element : No other way to get the dragged element
+				// when pseudo collision between a DOM element and a SVG parent node
+				// ION.register('dragElement', el);
+
+				/*
+				console.log(event.event);
+
+				el.addEventListener('dragstart', function (event)
+				{
+					console.log('drag start');
+
+					// Makes HTML draggable active on Firefox
+					event.dataTransfer.setData('draggable', true);
+
+				});
+				*/
 			},
 			
 			onDrag: function(element, event)
 			{
+//				var evt = new CustomEvent('dragstart', event.event);
+//				element.dispatchEvent(evt);
+
+				//element.fireEvent('dragstart');
+
+				// element.fireEvent('drag');
+				// var event = new CustomEvent('drag', event.event);
+				// element.dispatchEvent(evt);
+				// element.fireEvent('drag', event.event);
+
 				if (event.shift) { element.addClass('plus'); }
 				else { element.removeClass('plus'); }
 			},
@@ -729,7 +759,7 @@ ION.append({
 									}
 								});
 							}
-							else
+							else if(dropCB)
 							{
 								if (dropCB.contains(',') && this.dropClasses.length > 1)
 								{
@@ -758,6 +788,8 @@ ION.append({
 							}
 						}
 					}
+
+					droppable.fireEvent('onDrop', [element, droppable, event]);
 					
 					droppable.removeClass('onenter');
 				}
@@ -835,14 +867,16 @@ ION.append({
 
 	initAutocompleter: function(input, options)
 	{
-		var searchUrl = ION.cleanUrl(options.searchUrl);
-		var detailUrl = ION.cleanUrl(options.detailUrl);
-		var item_id = options.item_id;
-		
-		var update = options.update;
-		var zIndex = (typeOf(options.zIndex != 'null')) ? options.zIndex : 100;
-		
-		new Autocompleter.Request.HTML($(input), admin_url + searchUrl, 
+		var searchUrl = ION.cleanUrl(options.searchUrl),
+			detailUrl = typeOf(options.detailUrl) != 'null' ? ION.cleanUrl(options.detailUrl) : null,
+			item_id = options.item_id,
+			update = options.update,
+			zIndex = (typeOf(options.zIndex != 'null')) ? options.zIndex : 100,
+			listKeys = typeOf(options.listKeys) == 'array' ? options.listKeys : null,
+			inputKeys = typeOf(options.inputKeys) == 'array' ? options.inputKeys : null
+		;
+
+		new Autocompleter.Request.HTML($(input), admin_url + searchUrl,
 		{
 			'postVar': 'search',
 			'indicatorClass': 'autocompleter-loading',
@@ -850,7 +884,8 @@ ION.append({
 		    maxChoices: 20,
 		    zIndex: zIndex,
 		    relative: true,
-//			'selectMode': 'type-ahead',
+			selectMode : options.selectMode ? options.selectMode : false,
+			width: typeOf(options.width) != 'null' ? options.width : 'inherit',
 		    'injectChoice': function(choice)
 		    {
 				// choice is one <li> element
@@ -860,7 +895,7 @@ ION.append({
 				var value = text.innerHTML;
 				
 				// inputValue saves value of the element for later selection
-				choice.inputValue = value;
+				choice.inputValue = choice.getProperty('data-display');
 				
 				// overrides the html with the marked query value (wrapped in a <span>)
 				text.set('html', this.markQueryValue(value));
@@ -871,13 +906,21 @@ ION.append({
 			onSelection: function(selection, item, value, input)
 			{
 				var id = item.getProperty('data-id');
-				
-				if ($(update))
+
+				if (options.onSelection)
 				{
-					ION.HTML(admin_url + detailUrl, {item_id:id}, {'update':$(update)});
+					options.onSelection(selection, item, value, input);
+				}
+				else
+				{
+					if ($(update))
+					{
+						ION.HTML(admin_url + detailUrl, {item_id:id}, {'update':$(update)});
+					}
 				}
 			}
 		});
+
 	},
 	
 	/**
@@ -1784,7 +1827,7 @@ ION.append({
 		for (var i=0; i<text.length; i++)
 		{
 			var c = text.charCodeAt(i);
-			if (c==45 || c==95 || (c>47 && c<58) || (c>96 && c<123) )
+			if (c==45 || c==95 || (c>44 && c<58) || (c>96 && c<123) )
 			{
 				str = str + text.charAt(i);
 			}

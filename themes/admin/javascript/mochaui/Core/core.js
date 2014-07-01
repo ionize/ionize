@@ -30,7 +30,7 @@ MUI.append = function(hash){
 	Object.append(MUI, hash);
 }.bind(MUI);
 
-Browser.webkit = (Browser.safari || Browser.chrome);
+Browser.webkit = (Browser.name=='chrome' || Browser.name=='safari');
 
 MUI.append({
 	'options': {
@@ -78,7 +78,7 @@ MUI.append({
 		Object.each(MUI.options.pluginGroups, MUI.addPluginGroup);
 		MUI.initialized = true;
 // Partikule		
-		if(Browser.ie9)
+		if(Browser.name=='ie9')
 		{
 			this.ieSupport = '';
 		}
@@ -330,21 +330,6 @@ var NamedClass = function(name, members){
 	return new Class(members);
 };
 
-function fixPNG(myImage){
-	if (Browser.ie6 && document.body.filters){
-		var imgID = (myImage.id) ? "id='" + myImage.id + "' " : "";
-		var imgClass = (myImage.className) ? "class='" + myImage.className + "' " : "";
-		var imgTitle = (myImage.title) ? "title='" + myImage.title + "' " : "title='" + myImage.alt + "' ";
-		var imgStyle = "display:inline-block;" + myImage.style.cssText;
-		myImage.outerHTML = "<span " + imgID + imgClass + imgTitle
-				+ " style=\"" + "width:" + myImage.width
-				+ "px; height:" + myImage.height
-				+ "px;" + imgStyle + ";"
-				+ "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-				+ "(src=\'" + myImage.src + "\', sizingMethod='scale');\"></span>";
-	}
-}
-
 Element.implement({
 
 	shake: function(radius,duration){
@@ -360,11 +345,11 @@ Element.implement({
 			this.setStyle('position','relative');
 			position = 'relative';
 		}
-		if(Browser.ie){
+		if(Browser.name=='ie'){
 			parent.setStyle('height',parent.getStyle('height'));
 		}
 		var coords = this.getPosition(parent);
-		if(position == 'relative' && !Browser.opera){
+		if(position == 'relative' && Browser.name!='opera'){
 			coords.x -= parent.getStyle('paddingLeft').toInt();
 		}
 		var morph = this.retrieve('morph');

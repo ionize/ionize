@@ -10,6 +10,10 @@
 
 ?>
 
+<?php if (Authority::can('delete', 'admin/extend') && $id_extend_field != '') :?>
+	<a id="bDeleteextendfield<?php echo $id_extend_field; ?>" class="button red right" ><?php echo lang('ionize_button_delete'); ?></a>
+<?php endif ;?>
+
 <h2 id="mainTitleExtend<?php echo $id_extend_field ?>" class="main extends">
 	<?php echo lang('ionize_title_extend_field') ?>
 </h2>
@@ -32,6 +36,13 @@
 				<?php echo $id_parent ?>
 			<?php endif ;?>
 		<?php endif ;?>
+		<?php if ( ! empty($context)) :?>
+			<span class="lite"> | <?php echo ucfirst($context) ?></span>
+			<?php if ( ! empty($id_context)) :?>
+				<span class="lite"> : </span>
+				<?php echo $id_context ?>
+			<?php endif ;?>
+		<?php endif ;?>
 	</p>
 </div>
 
@@ -42,6 +53,12 @@
 	<input id="id_extend_field" name="id_extend_field" type="hidden" value="<?php echo $id_extend_field; ?>" />
 	<input id="ordering" name="ordering" type="hidden" value="<?php echo $ordering; ?>" />
 	<input type="hidden" name="id_parent" value="<?php echo $id_parent ?>" />
+	<?php if ( ! empty($context)) :?>
+		<input type="hidden" name="context" value="<?php echo $context ?>" />
+	<?php endif ;?>
+	<?php if ( ! empty($id_context)) :?>
+		<input type="hidden" name="id_context" value="<?php echo $id_context ?>" />
+	<?php endif ;?>
 
 
 	<!-- Parent -->
@@ -68,7 +85,7 @@
 		<dd>
 
 			<!-- Tabs -->
-			<div id="extendFieldTab<?php echo $id_extend_field; ?>" class="mainTabs small mt0">
+			<div id="extendFieldTab<?php echo $id_extend_field; ?>" class="mainTabs small">
 
 				<ul class="tab-menu">
 
@@ -92,7 +109,7 @@
 					<div class="tabcontent <?php echo $lang; ?>">
 
 						<!-- Label -->
-						<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title w100p" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
+						<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title w96p" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
 
 					</div>
 				<?php endforeach ;?>
@@ -106,7 +123,7 @@
 			<label for="nameExtend<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_name'); ?>"><?php echo lang('ionize_label_key'); ?></label>
 		</dt>
 		<dd>
-			<input id="nameExtend<?php echo $id_extend_field; ?>" name="name" class="inputtext required w100p" type="text" value="<?php echo $name; ?>" />
+			<input id="nameExtend<?php echo $id_extend_field; ?>" name="name" class="inputtext required w240" type="text" value="<?php echo $name; ?>" />
 		</dd>
 	</dl>
 
@@ -116,11 +133,11 @@
 			<label for="description<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_description'); ?>"><?php echo lang('ionize_label_description'); ?></label>
 		</dt>
 		<dd>
-			<textarea id="description<?php echo $id_extend_field; ?>" name="description" class="inputtext autogrow w100p" type="text"><?php echo $description; ?></textarea>
+			<textarea id="description<?php echo $id_extend_field; ?>" name="description" class="inputtext autogrow" type="text"><?php echo $description; ?></textarea>
 		</dd>
 	</dl>
 
-	<h3 class="toggler extend<?php echo $id_extend_field; ?>"><?php echo lang('ionize_label_extend_field_definition') ?></h3>
+	<h3 class="mt20 extend<?php echo $id_extend_field; ?>"><?php echo lang('ionize_label_extend_field_definition') ?></h3>
 
 	<div class="element extend<?php echo $id_extend_field; ?>">
 
@@ -147,20 +164,22 @@
 		<!-- Values : For select, radio, checkboxes -->
 		<dl id="value_block<?php echo $id_extend_field; ?>" class="small">
 			<dt>
-				<label for="value<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_values'); ?>"><?php echo lang('ionize_label_values'); ?></label>
+				<label for="value<?php echo $id_extend_field; ?>"><?php echo lang('ionize_label_values'); ?></label>
 			</dt>
 			<dd>
-				<textarea id="value<?php echo $id_extend_field; ?>" name="value" class="inputtext autogrow w100p" type="text"><?php echo $value; ?></textarea>
+				<textarea id="value<?php echo $id_extend_field; ?>" name="value" class="inputtext autogrow warn-checkListFormat" type="text"><?php echo $value; ?></textarea>
+				<p class="lite"><?php echo lang('ionize_help_ef_values'); ?></p>
 			</dd>
 		</dl>
 
 		<!-- default_value -->
 		<dl id="default_value_block<?php echo $id_extend_field; ?>" class="small">
 			<dt>
-				<label for="default_value<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_default_value'); ?>"><?php echo lang('ionize_label_default_value'); ?></label>
+				<label for="default_value<?php echo $id_extend_field; ?>"><?php echo lang('ionize_label_default_value'); ?></label>
 			</dt>
 			<dd>
-				<textarea id="default_value<?php echo $id_extend_field; ?>" name="default_value" class="inputtext autogrow w100p" type="text"><?php echo $default_value; ?></textarea>
+				<textarea id="default_value<?php echo $id_extend_field; ?>" name="default_value" class="inputtext autogrow" type="text"><?php echo $default_value; ?></textarea>
+				<p id="efListHelp" class="lite"><?php echo lang('ionize_help_ef_default_value') ?></p>
 			</dd>
 		</dl>
 	</div>
@@ -177,7 +196,7 @@
 					<label for="copy_in<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_copy_in'); ?>"><?php echo lang('ionize_label_extend_field_copy_in'); ?></label>
 				</dt>
 				<dd>
-					<input id="copy_in<?php echo $id_extend_field; ?>" name="copy_in" class="inputtext w100p" type="text" value="<?php echo $copy_in; ?>" />
+					<input id="copy_in<?php echo $id_extend_field; ?>" name="copy_in" class="inputtext w96p" type="text" value="<?php echo $copy_in; ?>" />
 				</dd>
 			</dl>
 
@@ -186,7 +205,7 @@
 					<label for="copy_in<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_copy_in_pk'); ?>"><?php echo lang('ionize_label_extend_field_copy_in_pk'); ?></label>
 				</dt>
 				<dd>
-					<input id="copy_in_pk<?php echo $id_extend_field; ?>" name="copy_in_pk" class="inputtext w100p" type="text" value="<?php echo $copy_in_pk; ?>" />
+					<input id="copy_in_pk<?php echo $id_extend_field; ?>" name="copy_in_pk" class="inputtext w96p" type="text" value="<?php echo $copy_in_pk; ?>" />
 				</dd>
 			</dl>
 		</div>
@@ -205,7 +224,7 @@
 
 	var id = '<?php echo $id_extend_field; ?>';
 	var id_type =  '<?php echo $type; ?>'
-	var extend_types =  JSON.decode('<?php echo $extend_types; ?>');
+	var extend_types =  JSON.decode('<?php echo $extend_types; ?>', false);
 	var default_lang_code  = '<?php echo Settings::get_lang("default") ?>';
 
 
@@ -234,6 +253,7 @@
 
 		if (type.values == 1) value_block.show(); else value_block.hide();
 		if (type.default_values == 1) default_value_block.show(); else default_value_block.hide();
+		if (['radio','checkbox','select','select-multiple'].contains(type.html_element_type)) $('efListHelp').show(); else $('efListHelp').hide();
 		if (type.translated == 1) translate_block.show(); else translate_block.hide();
 	}
 	
@@ -245,6 +265,37 @@
 	});
 	display_value_block($('type' + id).value);
 
+
+	// Form Validation
+	Form.Validator.add('checkListFormat', {
+		errorMsg: Lang.get('ionize_form_validator_warning_format_corrected'),
+		test: function(element)
+		{
+			var v = element.value,
+				newVal = '',
+				passed = true
+			;
+
+			// v = v.replace(/ /g, '');
+			v = v.trim();
+			v = v.split(/\r\n|\r|\n/g);
+
+			Object.each(v, function(row)
+			{
+				var kv = row.split(':');
+				if (Object.getLength(kv) == 2)
+				{
+					row = kv[0].charTrim(' ,;') + ':' + kv[1].trim(' ,;');
+					newVal += newVal == '' ? row : '\n' + row;
+				}
+				else passed = false;
+			});
+
+			element.setProperty('value', newVal);
+
+			return passed;
+		}
+	});
 
 	// Auto-generate Main title
 	$('nameExtend' + id).addEvent('keyup', function()
@@ -270,13 +321,30 @@
 		sections: 'div.tabcontent'
 	});
 
-	ION.initAccordion(
-		'.toggler.extend' + id,
-		'.element.extend' + id,
-		true,
-		'wExtendAccordion' + id
-	);
-
+	// Delete Action
+	if (typeOf($('bDeleteextendfield' + id)) != 'null')
+	{
+		$('bDeleteextendfield' + id).addEvent('click', function()
+		{
+			ION.confirmation(
+				'wConfirmDelete' + id,
+				function()
+				{
+					ION.JSON(
+						ION.adminUrl + 'extend_field/delete/' + id,
+						{},
+						{
+							onSuccess: function()
+							{
+								$('bCancelextendfield' + id).click();
+							}
+						}
+					);
+				},
+				Lang.get('ionize_confirm_extend_delete')
+			);
+		});
+	}
 
 </script>
 

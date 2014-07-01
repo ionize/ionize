@@ -54,7 +54,6 @@ ION.TableList = new Class({
 		pagination: {
 			nb_by_page: -1,			// Number by page
 			nb: 0,					// Total number of items
-			nb_page: 0,				// Number of pages
 			current_page: 0			// Current page
 			// onClick: function(post, self, self.getDomElement(), self.container){}
 		}
@@ -117,7 +116,7 @@ ION.TableList = new Class({
 			Object.each(o.items, function(item, idx)
 			{
 				var tr = new Element('tr').inject(tbody);
-				if (idx % 2 && o.alternateRows) tr.addClass('odd');
+				if (idx % 2 && o.alternateRows) tr.addClass('altRow');
 
 				// Stores data, for further use
 				tr.store('data', item);
@@ -127,6 +126,17 @@ ION.TableList = new Class({
 					var td = new Element('td').inject(tr);
 
 					if (column.class) td.addClass(column.class);
+
+					if (typeOf(o['vertical-align']) != 'null')
+						td.addClass(o['vertical-align']);
+
+					if (typeOf(column['vertical-align']) != 'null')
+					{
+						if (typeOf(o['vertical-align']) != 'null')
+							td.removeClass(o['vertical-align']);
+
+						td.addClass(column['vertical-align']);
+					}
 
 					td.adopt(self._getItem(item, column));
 
@@ -163,11 +173,12 @@ ION.TableList = new Class({
 
 		// Content
 		// Date format
-		var value = item[c.key];
+		var value = item[c.key] ? item[c.key] : (c.content ? c.content : '');
+
 		if (c.type == 'date')
 			value = Date.formatFromMySql(value, Settings.get('date_format'));
 
-		if ( c.type != 'icon' && typeOf(item[c.key]) != 'null')
+		if ( c.type != 'icon' && (typeOf(item[c.key]) != 'null' || typeOf(c.content) != 'null'))
 			el.set('text', value);
 
 		if(c.onClick)
@@ -195,7 +206,7 @@ ION.TableList = new Class({
 		{
 			var th = new Element('th', {
 				axis: column.type,
-				text: column.label
+				text: typeOf(column.label) != 'null' ? column.label : ''
 			}).inject(thead_tr);
 
 			if (column.class) th.setProperty('class', column.class);
@@ -226,6 +237,13 @@ ION.TableList = new Class({
 				var i = new Element('input', {type:'text', id:column.key + '_' + hash, name:column.key, 'class':'inputtext'}).inject(th);
 				self.filter_inputs.push(i);
 
+				// Event
+				i.addEvent('keydown', function(event)
+				{
+					if(event.key == 'enter')
+						self.submitFilter();
+				});
+
 				// Restore previous filter value
 				Object.each(filters, function(val, key)
 				{
@@ -234,46 +252,34 @@ ION.TableList = new Class({
 						i.setProperty('value', val);
 					}
 				});
-
 			}
 		});
+	},
 
-		// Submit button
-		var btnSubmit = new Element('input', {
-			type: 'button',
-			'class': 'submit',
-			value: Lang.get('ionize_button_filter')
-		});
-
-		btnSubmit.addEvent('click',function()
+	submitFilter: function()
 		{
-			var post = self.getPostData();
+		var post = this.getPostData();
 
-			if (typeOf(o.filter.onFilter) == 'function')
-				o.filter.onFilter(post, self, self.getDomElement(), self.container);
+		if (typeOf(this.options.filter.onFilter) == 'function')
+			this.options.filter.onFilter(post, this, this.getDomElement(), this.container);
 			else
 			{
 				console.log('No onFilter() event defined for this table. Here are the data :');
 				console.log(post);
 			}
-		});
-
-		if (o.filter.position == 'first')
-			thead_tr.getFirst('th').adopt(btnSubmit);
-		else
-			thead_tr.getLast('th').adopt(btnSubmit);
 	},
 
 	getPostData: function()
 	{
 		var post = {};
 
-		Object.each(self.filter_inputs, function(i)
+		Object.each(this.filter_inputs, function(i)
 		{
+			if (i.value != '')
 			post[i.name] = i.value;
 		});
 
-		post = Object.merge(this.options.post, post);
+		post = Object.append(post, this.options.post);
 
 		return post;
 	},
@@ -282,27 +288,29 @@ ION.TableList = new Class({
 	buildPagination: function()
 	{
 		var self = this,
-			p = this.options.pagination;
+			o = this.options.pagination,
+			nb_pages = parseInt(o.nb) / parseInt(o.nb_by_page)
+		;
 
-		if (p.nb_page > 0)
+		if (nb_pages > 0)
 		{
 			var ul = new Element('ul', {'class':'pagination'}).inject(this.table, 'after');
 
-			for(var i=0; i<p.nb_page; i++)
+			for(var i=0; i<nb_pages; i++)
 			{
 				var j = i+1;
 				var li = new Element('li').inject(ul);
 				var a = new Element('a', {html:j, 'data-id':j}).inject(li);
-				if (j == p.current_page) a.addClass('current');
+				if (j == o.current_page) a.addClass('current');
 
-				if (typeOf(p.onClick) == 'function')
+				if (typeOf(o.onClick) == 'function')
 				{
 					a.addEvent('click', function()
 					{
 						var post = self.getPostData(),
 							id = this.getProperty('data-id');
 
-						p.onClick(id, post, self, self.getDomElement(), self.container);
+						o.onClick(id, post, self, self.getDomElement(), self.container);
 					})
 				}
 			}
@@ -327,13 +335,16 @@ ION.List = new Class({
 	Implements: [Events, Options],
 
 	options: {
+		'class':    	null,             // CSS Class fo the UL
 		id:             'list',
 		container:      '',             // DOM HTML Container. String or DOM Element
 		styles: {
 			ul: 'list',                 // UL CSS classes
 			li: ''                      // LI CSS classes
 		},
-		buildUl:        true,
+		buildUl:        true,			// If set to false, does not build the UL inject the list in the parent
+		sortable:		false,			// Is the list sortable. False by default
+		dragOn:			null,
 
 		items:          [],             // JSON object : Array of items objects (lis) to build
 		post: {},                       // Additional main data to post to each URL called by this class
@@ -381,7 +392,7 @@ ION.List = new Class({
 		]
 
 		// onDraw:      function(ION.List){}        // Fired when the whole list is built.
-		// onItemDraw:  function(item){}            // Fired after one item was drawn. Receives the item object.
+		// onItemDraw:  function([li, item]){}            // Fired after one item was drawn. Receives the item object.
 	},
 
 
@@ -411,6 +422,9 @@ ION.List = new Class({
 				'class': this.options.styles.ul
 			}).inject(this.container);
 
+			if (this.options['class'] != null)
+				this.ul.addClass(this.options['class']);
+
 			this.ul.setStyle('position', 'relative');
 		}
 
@@ -438,7 +452,8 @@ ION.List = new Class({
 		Array.each(items, function(item, key)
 		{
 			var li = new Element('li', {
-				id: self.options.id + '_' + key
+				id: self.options.id + '_' + key,
+				'class': 'list'
 			}).inject(self.ul);
 
 			if (self.options.styles.li)
@@ -511,12 +526,19 @@ ION.List = new Class({
 					}
 				}
 			});
+
+			// Add Drag'n'Drop capabilities
+			if (self.options.dragOn != null)
+				ION.addDragDrop(li, self.options.dragOn);
+
+			self.fireEvent('onItemDraw', [li, item]);
 		});
 
 		if (Object.getLength(items) > 0)
 			this.ul.addClass('filled');
 
-		this._setSortable();
+		if (this.options.sortable)
+			this._setSortable();
 	},
 
 

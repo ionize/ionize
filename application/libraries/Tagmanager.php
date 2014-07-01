@@ -2716,23 +2716,27 @@ class TagManager
 	 */
 	public static function tag_google_analytics(FTL_Binding $tag)
 	{
-		$tracking_id = Settings::get('google_analytics_id');
+		if (ENVIRONMENT == 'production')
+		{
+			$tracking_id = Settings::get('google_analytics_id');
 
-		// Load the tracking view
-		if ($tracking_id != FALSE && $tracking_id != '')
-		{
-			$html = self::$ci->load->view(
-				'google/tracking',
-				array('tracking_id' => $tracking_id),
-				TRUE
-			);
-			return $html;
+			// Load the tracking view
+			if ($tracking_id != FALSE && $tracking_id != '')
+			{
+				$html = self::$ci->load->view(
+					'google/tracking',
+					array('tracking_id' => $tracking_id),
+					TRUE
+				);
+				return $html;
+			}
+			// Returns the complete tracking code
+			else
+			{
+				return Settings::get('google_analytics');
+			}
 		}
-		// Returns the complete tracking code
-		else
-		{
-			return Settings::get('google_analytics');
-		}
+		return '';
 	}
 
 

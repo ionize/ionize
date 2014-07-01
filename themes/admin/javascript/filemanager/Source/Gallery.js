@@ -152,7 +152,7 @@ FileManager.Gallery = new Class({
 			}
 		}).bind(this);
 
-		if ((Browser.Engine && (Browser.Engine.trident || Browser.Engine.webkit)) || (Browser.ie || Browser.chrome || Browser.safari))
+		if (Browser.name=='ie' || Browser.name=='chrome' || Browser.name=='safari')
 		{
 			this.input.addEvent('keydown', this.gallery_keyboard_handler);
 			// also make sure keyboard navigation actually works in the caption editor pane: catch ENTER on button, etc. from bubbling up to the filemanager handler:

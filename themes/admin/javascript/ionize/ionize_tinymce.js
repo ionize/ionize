@@ -43,6 +43,8 @@ ION.append({
 					document_base_url: ION.baseUrl,
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
+					valid_elements : "*[*]",
+					extended_valid_elements : "*[*]",
 					plugins : 'save,inlinepopups,advimage,advlink,nonbreaking,,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
 					spellchecker_languages: spellchecker_languages,
 					theme_advanced_toolbar_location : 'top',
@@ -90,7 +92,6 @@ ION.append({
 				break;
 			
 			default:
-
 				var settings = {
 					mode : 'exact',
 					elements : id,
@@ -108,6 +109,8 @@ ION.append({
 					document_base_url: ION.baseUrl,
 					auto_cleanup_word : false,
 					gecko_spellcheck: true,
+					valid_elements : "*[*]",
+					extended_valid_elements : "*[*]",
 					plugins : 'pdw,save,inlinepopups,codemirror,safari,nonbreaking,media,preview,directionality,paste,fullscreen,template,table,advimage,advlink,spellchecker',
 					spellchecker_languages: spellchecker_languages,
 					flash_menu : 'false',

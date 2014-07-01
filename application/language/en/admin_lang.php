@@ -409,6 +409,7 @@ $lang['ionize_message_url_got_404'] = 'This URL returns a 404 page';
 $lang['ionize_message_form_validation_error'] = 'Some data are missing or incorrect';
 $lang['ionize_message_form_validation_please_correct'] = 'Please correct the form data';
 $lang['ionize_message_unsaved_element_quit'] = 'This element has changed but isn\'t saved. Do you want to leave ?';
+$lang['ionize_message_no_network'] = 'Not connected to network';
 
 
 /*
@@ -454,6 +455,17 @@ $lang['ionize_message_page_content_copied'] = 'Page content copied';
 $lang['ionize_message_page_article_content_copied'] = 'Page & articles content copied';
 $lang['ionize_message_confirm_copy_whole_content'] = 'Do you really want to copy the whole content to this language?';
 $lang['ionize_message_lang_content_copied'] = 'Lang content copy successful';
+
+
+/*
+|--------------------------------------------------------------------------
+| Editor Panel
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_label_editor_panel'] = 'Editor Panel';
+$lang['ionize_label_display_in_table_list'] = 'Display in table list ?';
+$lang['ionize_message_confirm_tab_delete'] = 'Are you sure you want to delete this tab ?';
+$lang['ionize_help_drop_fields_here'] = 'Drop fields here to link them to this element';
 
 
 /*
@@ -679,6 +691,7 @@ $lang['ionize_label_smtp_port'] = 'Port';
 $lang['ionize_label_smtp_timeout'] = 'SMTP Timeout';
 $lang['ionize_label_email_charset'] = 'Charset';
 $lang['ionize_label_email_mailtype'] = 'Format';
+$lang['ionize_label_email_newline'] = 'New line';
 $lang['ionize_label_mailpath'] = 'Mail path';
 $lang['ionize_label_cache_enabled'] = 'Enabled';
 $lang['ionize_label_cache_expiration'] = 'Time (mins.)';
@@ -1010,6 +1023,9 @@ $lang['ionize_message_article_moved'] = 'Article moved';
 $lang['ionize_message_article_context_saved'] = 'Article settings saved';
 $lang['ionize_message_article_lang_copied'] = 'Lang data copied. Save please !';
 $lang['ionize_message_article_main_parent_saved'] = 'Main Parent Page saved !';
+$lang['ionize_confirm_articles_delete'] = 'These articles will be definitely deleted. Are you sure ?';
+$lang['ionize_select_on_checked'] = '-- On checked --';
+
 // Inline help
 $lang['ionize_help_article_online'] = 'Is this article online?';
 $lang['ionize_help_article_content_online'] = 'Is this content online?';
@@ -1117,6 +1133,8 @@ $lang['ionize_help_ef_copy_in'] = 'DB field to copy the value in after save. Syn
 $lang['ionize_help_ef_copy_in_pk'] = 'Table PK name';
 $lang['ionize_help_label_label'] = 'Displayed label of this field, in Ionize';
 $lang['ionize_help_field_length'] = 'Field length';
+
+$lang['ionize_confirm_extend_delete'] = 'Are you really sure ?<br/>This extend and ALL the linked data will be removed !';
 
 
 /*

@@ -60,10 +60,12 @@ ION.Uploader = new Class({
 		droparea: null,
 
 		uploadPost: null			// Object of {key:value}, added as POST data
+
 		// Events
 		/*
 		 onItemComplete: function (item, file, response) {},
-		 */
+		 onComplete: function(){}
+		*/
 	},
 
 	// Vars
@@ -127,7 +129,7 @@ ION.Uploader = new Class({
 	{
 		// Select Button
 		this.uploadSelectButton = new Element('label', {
-			'class': 'button left',
+			'class': 'button left light',
 			'text': Lang.get('ionize_label_select_files_to_upload')
 		}).inject(this.container);
 
@@ -224,7 +226,7 @@ ION.Uploader = new Class({
 							{
 								var display_image = true;
 
-								if (Browser.ie && this.fileSize > 10000000)
+								if (Browser.name=='ie' && this.fileSize > 10000000)
 								{
 									display_image = false;
 									this.destroy();
@@ -296,11 +298,13 @@ ION.Uploader = new Class({
 
 			onItemComplete: function(item, file, response)
 			{
+				// Fires ION.Uploader event !
+				self.fireEvent('itemComplete', [item, file, response]);
+
 				// Get out if no progress bar
 				if( ! item.getElement('.progress')) return;
 
 				item.getElement('.progress').fade('show');
-
 				// Dim cannot be calculated on large file : upload starts before the DOM element is rendered.
 				// var dim = 80;
 				var parentSize = item.getElement('.progress').getDimensions();
@@ -314,9 +318,6 @@ ION.Uploader = new Class({
 				item.fade(0).get('tween').chain(function() {
 					this.element.destroy();
 				});
-
-				// Fires ION.Uploader event !
-				self.fireEvent('itemComplete', [item, file, response]);
 			},
 
 			onItemCancel: function(item)
@@ -354,15 +355,20 @@ ION.Uploader = new Class({
 
 			onUploadComplete: function(num_uploaded, num_error)
 			{
-				/*
-				 if (num_uploaded > 0)
-				 {
-				 new ION.Notify(
-				 self.notifyContainer,
-				 {type:'success'}
-				 ).show('Upload successful : <b>' + num_uploaded + ' file(s)</b> uploaded' );
-				 }
-				 */
+				// Fires ION.Uploader event !
+				self.fireEvent('onComplete');
+
+				var elements = self.uploadZoneList.getChildren('.dropzone_item');
+
+				Array.each(elements, function(item){
+					var parentSize = item.getDimensions();
+					self.uploadZoneList.getChildren('.progress-bar').tween('width', parentSize.x);
+					self.uploadZoneList.getChildren('.progress-bar').innerHTML = '100 %';
+
+					item.fade(0).get('tween').chain(function() {
+						this.element.destroy();
+					});
+				});
 			}
 		});
 

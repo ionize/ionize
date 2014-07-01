@@ -143,7 +143,7 @@ ION.append({
 						if ( ! result)
 						{
 							if (parent)
-							new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
+								new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
 						}
 						else
 						{
@@ -152,6 +152,7 @@ ION.append({
 
 							// Get the form
 							var requestOptions = ION.getJSONRequestOptions(url, $(form), options);
+
 							var r = new Request.JSON(requestOptions);
 							r.send();
 
@@ -382,6 +383,16 @@ ION.FormField = new Class({
 	getLabel: function()
 	{
 		return this.label;
+	},
+
+	hide: function()
+	{
+		this.dl.hide();
+	},
+
+	show: function()
+	{
+		this.dl.show();
 	}
 });
 
@@ -401,6 +412,7 @@ ION.Form.Select = new Class({
 		post:       {},             // Data to post to the URL
 		data:       null,           // JSON array to use as data
 		url :       null,           // URL to use as data source
+		ignore_keys: [],			// Keys to ignore when building the select options
 
 		key:        null,			// Key of the data array to use as value
 		label:      null,           // Key of the data array to use as label
@@ -427,6 +439,7 @@ ION.Form.Select = new Class({
 		;
 
 		// Select
+		// if (typeOf(options['class'] != 'null') && options['class'].contains('inputtext') == false) o['class'] += ' inputtext';
 		this.select = new Element('select', {name: o.name, 'class':o.class});
 		if (o.id != '')	this.select.setProperty('id', o.id);
 
@@ -450,7 +463,6 @@ ION.Form.Select = new Class({
 				options.firstLabel
 			).inject(this.select);
 		}
-
 
 		// Container : If set, the select will be injected in this container
 		if (o.container)
@@ -481,11 +493,9 @@ ION.Form.Select = new Class({
 
 	onDraw: function()
 	{
-		var o = this.options;
-
 		// Inject the select into the container
-		if (o.container)
-			this.select.inject(o.container);
+		if (this.container)
+			this.select.inject(this.container);
 
 		// onDraw Event gts fired
 		this.fireEvent('onDraw', [this.select, this]);
@@ -506,7 +516,7 @@ ION.Form.Select = new Class({
 			var value = typeOf(row[key]) != 'null' ? row[key] : row;
 			var label = typeOf(row[lab]) != 'null' ? row[lab] : (value != null ? value : '');
 
-			if (value != null)
+			if (value != null && !o.ignore_keys.contains(value))
 			{
 				var opt = new Element('option', {
 					value: value,
@@ -570,6 +580,14 @@ ION.Form.Select = new Class({
 		});
 
 		this.select.fireEvent('change');
+	},
+
+	destroy: function()
+	{
+		this.getDomElement().destroy();
+		delete(this);
+		return null;
 	}
 
 });
+

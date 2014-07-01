@@ -107,25 +107,47 @@ if ( ! function_exists('humanize_mdate'))
 	}
 }
 
+if ( ! function_exists('dateDiff'))
+{
+	function dateDiff($first, $second=NULL, $unit = 'day')
+	{
+		if (is_null($second)) $second = date('Y-m-d H:i:s');
 
-/**
- * Days count between 2 dates
- * @note	Not used for the moment.
-function getDaysBetween($debut, $fin) {
+		$first = strtotime($first);
+		$second = strtotime($second);
 
-  $tDeb = explode(".", $debut);
-  $tFin = explode(".", $fin);
+		$subTime = $second - $first;
 
-  $diff = mktime(0, 0, 0, $tFin[1], $tFin[0], $tFin[2]) -
-		  mktime(0, 0, 0, $tDeb[1], $tDeb[0], $tDeb[2]);
-
-  return(($diff / 86400)+1);
-
+		if ($unit == 'year') return $subTime/(60*60*24*365);
+		if ($unit == 'day') return intval(($subTime/(60*60*24)));
+		if ($unit == 'hour') return intval(($subTime/(60*60)));
+		if ($unit == 'min') return intval($subTime/60);
+	}
 }
+if ( ! function_exists('lang_date'))
+{
+	function lang_date($date, $format='Y-m-d')
+	{
+		$date = strtotime($date);
 
+		if ($date)
+		{
+			$segments = explode(' ', $format);
 
- */
+			foreach($segments as $key => $segment)
+			{
+				$tmp = (String) date($segment, $date);
 
-/* End of file MY_date_helper.php */
-/* Location: ./application/helpers/MY_date_helper.php */
+				if (preg_match('/D|l|F|M/', $segment))
+					$tmp = lang(strtolower($tmp));
+
+				$segments[$key] = $tmp;
+			}
+
+			return implode(' ', $segments);
+		}
+
+		return '';
+	}
+}
 

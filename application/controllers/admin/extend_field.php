@@ -155,7 +155,7 @@ class Extend_field extends MY_admin
 		);
 
 		// Extend Types details
-		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
+		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list());
 
 		$this->output('extend/field');
 	}
@@ -401,6 +401,23 @@ class Extend_field extends MY_admin
 		{
 			$this->xhr_output($items);
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get Extend Definitions linked to one parent type
+	 *
+	 */
+	public function get_parent_list()
+	{
+		$parent = $this->input->post('parent');
+
+		$items = $this->extend_field_model->get_list(array('parent' => $parent));
+
+		$this->xhr_output($items);
 	}
 
 

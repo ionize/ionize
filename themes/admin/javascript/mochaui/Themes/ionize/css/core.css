@@ -37,7 +37,9 @@
 ul, ol, dl, li, dt, dd, h1, h2, h3, h4, h5, h6, form, body, html, p, blockquote, fieldset, input, object, iframe { margin: 0; padding: 0; }
 a img, :link img, :visited img { border: none; }
 table { border-collapse: collapse; border-spacing: 0; }
+/*
 :focus { outline: none; }
+*/
 
 /* Structure */
 body { text-align: left; font-family: "lucida grande",tahoma,verdana,arial,sans-serif; font-size: 11px; line-height: 18px; color: #3f3f3f; overflow: hidden;}
@@ -45,8 +47,8 @@ body { text-align: left; font-family: "lucida grande",tahoma,verdana,arial,sans-
 /* Typography */
 h2, h3, h4 { margin: 0 0 10px 0; padding: 0 0 3px 0; font-weight: bold; }
 h2 { font-size: 14px; }
-h3 { font-size: 13px; }
-h4 { font-size: 12px; }
+h3 { font-size: 14px; color:#7c98a8}
+h4 { font-size: 11px; }
 a { color: #098ED1; text-decoration: none; cursor: pointer; }
 a:hover { text-decoration: none; }
 p { margin: 0; padding: 0 0 5px 0; }

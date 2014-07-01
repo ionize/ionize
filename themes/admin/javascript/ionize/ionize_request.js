@@ -156,9 +156,7 @@ ION.append({
 	 */
 	getJSONRequestOptions: function(url, data, options)
 	{
-		if (!data) {
-			data = '';
-		}
+		if (typeOf(data) == 'null') data = {};
 
 		// Cleans URLs
 		url = ION.cleanUrl(url);
@@ -166,10 +164,11 @@ ION.append({
 		var onRequest = function() {};
 		var onSuccess = function(responseJSON, responseText) {};
 
-		if (typeOf(options) != 'null' && typeOf(options.onRequest) != 'null') { onRequest = options.onRequest; }
-		if (typeOf(options) != 'null' && typeOf(options.onSuccess) != 'null') { onSuccess = options.onSuccess; }
+		if (typeOf(options) != 'object') options = {};
+		if (typeOf(options.onRequest) != 'null') { onRequest = options.onRequest; }
+		if (typeOf(options.onSuccess) != 'null') { onSuccess = options.onSuccess; }
 
-		var opt = Object.merge(
+		Object.append(
 			options,
 			{
 				url: admin_url + url,
@@ -218,7 +217,7 @@ ION.append({
 			}
 		);
 
-        return opt;
+        return options;
 	},
 
 

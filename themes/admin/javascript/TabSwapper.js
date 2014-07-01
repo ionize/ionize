@@ -223,6 +223,7 @@ var TabSwapper = new Class({
 			if ( ! span)
 				span = new Element('span', {'class':'tab-detail'}).inject(a, 'bottom');
 			span.set('text', text);
+			a.addClass('detail');
 		}
 	},
 

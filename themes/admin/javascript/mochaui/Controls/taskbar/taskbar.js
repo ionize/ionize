@@ -275,7 +275,7 @@ MUI.Taskbar.implement({
 			}).inject(this.el.taskbar);
 
 			// Dynamically initialize canvas using excanvas. This is only required by IE
-			if (Browser.ie && MUI.ieSupport == 'excanvas'){
+			if (Browser.name=='ie' && MUI.ieSupport == 'excanvas'){
 				G_vmlCanvasManager.initElement(this.el.canvas);
 			}
 		}
@@ -399,16 +399,18 @@ MUI.Window.implement({
 		// Iframe should be hidden when minimizing, maximizing, and moving for performance and Flash issues
 		if (this.el.iframe){
 			// Some elements are still visible in IE8 in the iframe when the iframe's visibility is set to hidden.
-			if (!Browser.ie) this.el.iframe.setStyle('visibility', 'hidden');
+			if (Browser.name!='ie') this.el.iframe.setStyle('visibility', 'hidden');
 			else this.el.iframe.hide();
 		}
 
 		this.hide(); // Hide window and add to taskbar
 
 		// Fixes a scrollbar issue in Mac FF2
-		if (Browser.Platform.mac && Browser.firefox && Browser.version < 3){
+/*
+		if (Browser.platform == 'mac'  && Browser.firefox && Browser.version < 3){
 			this.el.contentWrapper.setStyle('overflow', 'hidden');
 		}
+*/
 
 		if (this.desktop) this.desktop.setDesktopSize();
 
@@ -433,7 +435,7 @@ MUI.Window.implement({
 		if (this.isCollapsed) this.collapseToggle();
 
 		if (this.el.iframe){  // Show iframe
-			if (!Browser.ie) this.el.iframe.setStyle('visibility', 'visible');
+			if (Browser.name!='ie') this.el.iframe.setStyle('visibility', 'visible');
 			else this.el.iframe.show();
 		}
 

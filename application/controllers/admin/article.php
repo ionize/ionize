@@ -1639,6 +1639,65 @@ class Article extends MY_admin
 	// ------------------------------------------------------------------------
 
 
+	public function multiple_action()
+	{
+		$ids = $this->input->post('ids');
+		$action = $this->input->post('action');
+		$id_page = $this->input->post('id_page');
+		$returned_ids = array();
+
+		if ( ! empty($ids))
+		{
+			switch($action)
+			{
+				case 'delete':
+					foreach($ids as $id)
+					{
+						$nb = $this->article_model->delete($id);
+						if ($nb > 0) $returned_ids[] = $id;
+					}
+
+					break;
+
+				case 'unlink':
+					foreach($ids as $id)
+					{
+						$nb = $this->article_model->unlink($id, $id_page);
+						if ($nb > 0) $returned_ids[] = $id;
+					}
+					break;
+
+				case 'offline':
+					foreach($ids as $id)
+						$this->article_model->switch_online($id_page, $id, 0);
+					$returned_ids = $ids;
+					break;
+
+				case 'online':
+					foreach($ids as $id)
+						$this->article_model->switch_online($id_page, $id, 1);
+					$returned_ids = $ids;
+					break;
+			}
+
+			$this->url_model->clean_table();
+
+			$this->xhr_output(array(
+				'action' => $action,
+				'id_page' => $id_page,
+				'ids' => $returned_ids
+			));
+		}
+		else
+		{
+			$this->error(lang('ionize_message_operation_nok'));
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	protected function _get_resource_name($type, $element, $id)
 	{
 		return $type . '/' . $element . '/' . $id;

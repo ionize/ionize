@@ -51,12 +51,12 @@
 							<li id="lang_<?php echo $code; ?>" class="sortme" data-id="<?php echo $code; ?>">
 
 								<!-- Drag icon -->
-								<div class="drag left">
-									<img src="<?php echo admin_style_url(); ?>images/icon_16_ordering.png" />
+								<div class="drag left mt5">
+									<span class="icon ordering"></span>
 								</div>
 
                                 <!-- Delete button -->
-                                <a class="icon right delete" data-id="<?php echo $code; ?>"></a>
+                                <a class="icon right delete mt5" data-id="<?php echo $code; ?>"></a>
 
 								<!-- Lang Code -->
 								<dl class="small">

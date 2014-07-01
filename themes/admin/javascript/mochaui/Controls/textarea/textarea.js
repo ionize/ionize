@@ -123,7 +123,7 @@ MUI.TextArea = new NamedClass('MUI.TextArea', {
 			if (!o.hasDynamicSize) return;
 
 			// Firefox handles scroll heights differently than all other browsers -- from Amadeus Demarzi
-			if (Browser.firefox){
+			if (Browser.name=='firefox'){
 				this._offset = parseInt(inp.getStyle('padding-top'), 10) + parseInt(inp.getStyle('padding-bottom'), 10) + parseInt(inp.getStyle('border-bottom-width'), 10) + parseInt(inp.getStyle('border-top-width'), 10);
 				this._padding = 0;
 			} else {

@@ -257,7 +257,7 @@ MUI.Window.implement({
 		// If the window has a container that is not the desktop
 		// temporarily move the window to the desktop while it is minimized.
 		if (options.container != MUI.desktop.el.content){
-			MUI.desktop.grab(windowEl);
+			MUI.desktop.el.element.grab(windowEl);
 //			$(options.container).grab(windowEl);
 			if (options.restrict) windowDrag.container = this.el.desktop;
 		}
@@ -285,7 +285,7 @@ MUI.Window.implement({
 		// Hide iframe
 		// Iframe should be hidden when minimizing, maximizing, and moving for performance and Flash issues
 		if (this.el.iframe){
-			if (!Browser.ie) this.el.iframe.setStyle('visibility', 'hidden');
+			if (Browser.name!='ie') this.el.iframe.setStyle('visibility', 'hidden');
 			else this.el.iframe.hide();
 		}
 
@@ -337,7 +337,7 @@ MUI.Window.implement({
 		// Hide iframe
 		// Iframe should be hidden when minimizing, maximizing, and moving for performance and Flash issues
 		if (this.el.iframe){
-			if (!Browser.ie) this.el.iframe.setStyle('visibility', 'hidden');
+			if (Browser.name!='ie') this.el.iframe.setStyle('visibility', 'hidden');
 			else this.el.iframe.hide();
 		}
 
@@ -372,9 +372,6 @@ MUI.append({
 	panelHeight2: function(column, changing, action){
 		var parent = column.getParent();
 		var columnHeight = parent.getStyle('height').toInt();
-		if (Browser.ie6 && parent == MUI.Desktop.pageWrapper){
-			columnHeight -= 1;
-		}
 		column.setStyle('height', columnHeight);
 
 		// Get column panels
@@ -593,9 +590,6 @@ MUI.append({
 			var parent = handle.getParent();
 			if (parent.getStyle('height').toInt() < 1) return; // Keeps IE7 and 8 from throwing an error when collapsing a panel within a panel
 			var handleHeight = parent.getStyle('height').toInt() - handle.getStyle('border-top').toInt() - handle.getStyle('border-bottom').toInt();
-			if (Browser.ie6 && parent == MUI.Desktop.pageWrapper){
-				handleHeight -= 1;
-			}
 			handle.setStyle('height', handleHeight);
 		});
 
@@ -618,7 +612,7 @@ MUI.append({
 			if (instance.el.iframe){
 				// The following hack is to get IE8 RC1 IE8 Standards Mode to properly resize an iframe
 				// when only the vertical dimension is changed.
-				if (!Browser.ie){
+				if (Browser.name!='ie'){
 					instance.el.iframe.setStyles({
 						'height': contentWrapper.getStyle('height'),
 						'width': contentWrapper.offsetWidth - contentWrapper.getStyle('border-left').toInt() - contentWrapper.getStyle('border-right').toInt()

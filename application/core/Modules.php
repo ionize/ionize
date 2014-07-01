@@ -203,6 +203,7 @@ namespace Ionize {
 									if (in_array($folder_name, $modules))
 									{
 										$config['installed'] = TRUE;
+										$config['front_uri'] = array_search($folder_name, $modules);
 										static::$installed_modules[$folder_name] = $config;
 									}
 

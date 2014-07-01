@@ -502,6 +502,19 @@
 					</dd>
 				</dl>
 			
+				<!-- Newline -->
+				<dl>
+					<dt>
+						<label for="newline"><?php echo lang('ionize_label_email_newline'); ?></label>
+					</dt>
+					<dd>
+						<select name="newline" id="newline" class="select">
+							<option <?php if ($newline == "\n"):?>selected="selected"<?php endif;?> value="\n">\n</option>
+							<option <?php if ($newline == "\r\n"):?>selected="selected"<?php endif;?> value="\r\n">\r\n</option>
+						</select>
+					</dd>
+				</dl>
+
 			</form>
 		</div>
 
@@ -767,11 +780,11 @@
 
 
 	// Forms actions
-	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true', 'mainPanel', 'setting/technical');
-	ION.setFormSubmit('emailForm', 'submit_email', 'setting/save_emails_settings/true', 'mainPanel', 'setting/technical');
-	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache', 'mainPanel', 'setting/technical');
-	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance', 'mainPanel', 'setting/technical');
-    ION.setFormSubmit('compressHtmlOutputForm', 'submit_compress_html_output', 'setting/save_compress_html_output', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true');
+	ION.setFormSubmit('emailForm', 'submit_email', 'setting/save_emails_settings/true');
+	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache');
+	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance');
+    ION.setFormSubmit('compressHtmlOutputForm', 'submit_compress_html_output', 'setting/save_compress_html_output');
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
 	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
 	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');

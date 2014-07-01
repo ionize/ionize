@@ -60,7 +60,7 @@ form {
 form .inputtext {
 	text-align: left;
 	border:1px solid #fff;
-	padding:6px;
+	padding: 2px 6px;
 	width:160px;
 	font-size: 12px;
 }

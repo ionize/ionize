@@ -27,8 +27,9 @@ $c = '?v='.$v;
 <!--[if lt IE 9]><script type="text/javascript" src="<?php echo theme_url(); ?>javascript/excanvas_r43_compressed.js<?php echo $c ?>"></script><![endif]-->
 
 <!-- Mootools 1.4.5  -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.4.5-full-nocompat-yc.js<?php echo $c ?>"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.4.0.1-yc.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.5.0-full-nocompat-yc.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.5.0-yc.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools_locale/eu.js"></script>
 
 <?php if (
 	Settings::get('dashboard_google') == '1'
@@ -172,6 +173,7 @@ $c = '?v='.$v;
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tracker.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_select.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_button.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tabs.js<?php echo $c ?>"></script>
 
 <!-- Authority -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_authority.js<?php echo $c ?>"></script>

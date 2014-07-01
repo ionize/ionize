@@ -139,7 +139,7 @@ class Setting extends MY_admin
         $this->template['smtp_timeout'] =   isset($config['smtp_timeout']) ? $config['smtp_timeout'] : '30';
 		$this->template['charset'] = 		isset($config['charset']) ? $config['charset'] : 'utf-8';
 		$this->template['mailtype'] = 		isset($config['mailtype']) ? $config['mailtype'] : 'text';
-
+		$this->template['newline'] = 		isset($config['newline']) ? $config['newline'] : '\n';
 
 		// Thumbs settings
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
@@ -1277,7 +1277,7 @@ class Setting extends MY_admin
 			'mailpath'		=> '',
 			'charset'		=> $this->input->post('charset'),
 			'mailtype'		=> $this->input->post('mailtype'),
-            'newline'       => '\r\n'
+            'newline'       => $this->input->post('newline')
 		);
 
 		switch ($protocol)

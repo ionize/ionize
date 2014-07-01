@@ -420,6 +420,10 @@ class Base_Controller extends MY_Controller
 			}
 		}
 
+		// Load Theme Events library
+		if (is_file($file = FCPATH . Theme::get_theme_path().'libraries/theme_events.php'))
+			Event::load_event_library($file);
+
 		// Menus
 		Settings::set('menus', $this->menu_model->get_list());
 
@@ -635,6 +639,11 @@ class MY_Admin extends MY_Controller
 		);
 
 		$this->output->enable_profiler(FALSE);
+
+		// Load Theme Events library
+		$user_theme = Settings::get('theme');
+		if (is_file($file = FCPATH . 'themes/'.$user_theme.'/libraries/theme_events.php'))
+			Event::load_event_library($file);
 
 		// Set the admin theme as current theme
 		Theme::set_theme('admin');
@@ -1042,6 +1051,7 @@ class MY_Admin extends MY_Controller
 
 // ------------------------------------------------------------------------
 
+
 class MY_Module extends MY_Controller
 {
 	/**
@@ -1082,6 +1092,9 @@ class MY_Module extends MY_Controller
 			// Set the current theme
 			Theme::set_theme(Settings::get('theme'));
 
+			// Load Theme Events library
+			if (is_file($file = FCPATH . Theme::get_theme_path().'libraries/theme_events.php'))
+				Event::load_event_library($file);
 
 			// Static translations
 			$lang_files = array();

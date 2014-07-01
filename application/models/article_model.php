@@ -1368,11 +1368,12 @@ class Article_model extends Base_model
 	 *
 	 * @param	int			Page ID
 	 * @param	int			Article ID
+	 * @param	boolean		New status
 	 *
 	 * @return 	boolean		New status
 	 *
 	 */
-	public function switch_online($id_page, $id_article)
+	public function switch_online($id_page, $id_article, $new_status=NULL)
 	{
 		// Current status
 		$article = $this->get_context($id_article, $id_page);
@@ -1380,7 +1381,7 @@ class Article_model extends Base_model
 		$status = $article['online'];
 	
 		// New status
-		($status == 1) ? $status = 0 : $status = 1;
+		$status = $new_status != NULL ? $new_status : ($status == 1 ? $status = 0 : $status = 1);
 
 		// Save		
 		$this->{$this->db_group}->where($this->pk_name, $id_article);

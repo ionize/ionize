@@ -641,7 +641,7 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 
 			if (c == colindex){
 				// adjust column position based on new width
-				var pos = dragSt.getStyle('left').toInt() + scrollX - this.sumWidth - (Browser.ie ? -1 : 1 );
+				var pos = dragSt.getStyle('left').toInt() + scrollX - this.sumWidth - (Browser.name=='ie' ? -1 : 1 );
 			} else if (!columns.hidden)
 				this.sumWidth += columns.width;
 		}
@@ -853,7 +853,7 @@ MUI.Grid = new NamedClass('MUI.Grid', {
 				'class':'tDiv',
 				'styles':{
 					'width':width,
-					'height': 25 + (Browser.ie ? 2 : 0 )
+					'height': 25 + (Browser.name=='ie' ? 2 : 0 )
 				}
 			}).inject(div);
 

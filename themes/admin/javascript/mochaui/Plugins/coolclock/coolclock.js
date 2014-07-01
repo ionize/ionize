@@ -359,7 +359,7 @@ CoolClock.findAndCreateClocks = function(el) {
 			var cv = $(elemID);
 
 			// Dynamically initialize canvas using excanvas. This is only required by IE
-			if (Browser && Browser.ie && MUI && MUI.ieSupport == 'excanvas')
+			if (Browser && Browser.name=='ie' && MUI && MUI.ieSupport == 'excanvas')
 			{
 				G_vmlCanvasManager.initElement(cv);
 			}

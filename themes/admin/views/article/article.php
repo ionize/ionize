@@ -223,7 +223,8 @@ if ($tracker_title == '')
 		
 					<div class="element-<?php echo $lang; ?> mb40">
 						<div>
-							<textarea id="content_<?php echo $lang; ?>" name="content_<?php echo $lang; ?>" class="tinyTextarea h260" rel="<?php echo $lang; ?>"><?php echo htmlentities($languages[$lang]['content'], ENT_QUOTES, 'utf-8'); ?></textarea>
+							<textarea id="content_<?php echo $lang; ?>" name="content_<?php echo $lang; ?>" class="tinyTextarea h260 w100p" rel="<?php echo $lang; ?>"><?php echo htmlentities($languages[$lang]['content'], ENT_QUOTES, 'utf-8'); ?></textarea>
+							<p class="mt5"><a class="btnToggleEditor block" data-editor="content_<?php echo $lang; ?>">Toggle Editor</a></p>
 						</div>
 					</div>
 
@@ -292,7 +293,17 @@ if ($tracker_title == '')
 			$('main-title').set('text', this.value);
 		});
 	});
-	
+
+	$$('.btnToggleEditor').each(function(btn){
+		btn.addEvent('click', function()
+		{
+			if ($(this.getProperty('data-editor') + '_ifr'))
+				tinyMCE.execCommand("mceRemoveControl",false, this.getProperty('data-editor'));
+			else
+				tinyMCE.execCommand("mceAddControl",false, this.getProperty('data-editor'));
+		});
+	});
+
 	// Auto-generates URL
 	<?php if ($id_article == '') :?>
 		<?php foreach (Settings::get_languages() as $lang) :?>

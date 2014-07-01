@@ -23,6 +23,7 @@ ION.append({
 	siteThemeUrl: 	site_theme_url,
 	mainpanel: 		'mainPanel',
 	instances: 		new Hash(),
+	assets:			new Hash(),
 
 	registry: function(key){
 		return this.instances[key];
@@ -55,6 +56,135 @@ ION.append({
 	},
 
 
+	isAssetLoaded: function(assetUrl)
+	{
+		return typeOf(this.assets[assetUrl]) != 'null';
+	},
+
+
+	/**
+	 * Load one or multiple assets.
+	 *
+	 * In single mode, if the asset is already loaded, calls the onLoad function.
+	 *
+	 * @param assetUrl
+	 */
+	loadAsset: function(assetUrl)
+	{
+		var self = this,
+			prop = typeOf(arguments[1]) != 'null' ? arguments[1] : null;
+
+		if (typeOf(assetUrl) == 'array')
+		{
+			var sources = [];
+
+			assetUrl.each(function(source){
+				if ( ! self.isAssetLoaded(source))
+					sources.push(source)
+			});
+
+			this.loadAssets(sources, prop);
+		}
+		else
+		{
+			var ext = assetUrl.split('.').pop();
+
+			if (this.isAssetLoaded(assetUrl))
+			{
+				if (typeOf(prop.onLoad) == 'function')
+					prop.onLoad();
+
+				return;
+			}
+			else
+			{
+				if(ext == 'js')
+				{
+					Asset.javascript(
+						assetUrl,
+						{
+							onLoad: function()
+							{
+								self.assets.set(assetUrl, true);
+								if (prop!=null && typeOf(prop.onLoad) == 'function')
+									prop.onLoad();
+							}
+						}
+					);
+				}
+				else if(ext == 'css')
+				{
+					Asset.css(assetUrl, prop);
+				}
+			}
+		}
+	},
+
+	/**
+	 * Loads multiple assets sequencially
+	 *
+	 * See:  http://fragged.org/lazyloading-multiple-sequential-javascript-dependencies-in-mootools_1389.html
+	 *
+	 * @param sources
+	 * @param options
+	 */
+	loadAssets: function(sources, options)
+	{
+		// load an array of js dependencies and fire events as it walks through
+		options = Object.merge({
+			onComplete: Function.from,
+			onProgress: Function.from
+		}, options);
+
+		var counter = 0,
+			todo = sources.length,
+			self = this;
+
+		if (todo == 0)
+			options.onComplete.call(this, counter);
+
+		var loadNext = function()
+		{
+			if (sources[0])	source = sources[0];
+
+			var ext = source.split('.').pop();
+
+			if(ext == 'js')
+			{
+				Asset.javascript(source, {
+					onload: function()
+					{
+						counter++;
+						self.assets.set(source, true);
+						options.onProgress.call(this, counter, source);
+						sources.erase(source);
+
+						if (counter == todo)
+							options.onComplete.call(this, counter);
+						else
+							loadNext();
+					}
+				});
+			}
+			else if(ext == 'css')
+			{
+				Asset.css(source);
+				counter++;
+				self.assets.set(source, true);
+
+				options.onProgress.call(this, counter, source);
+				sources.erase(source);
+				if (counter == todo)
+					options.onComplete.call(this, counter);
+				else
+					loadNext();
+			}
+		};
+
+		loadNext();
+	},
+
+
 	/**
 	 * Reloads Ionize's interface
 	 *
@@ -66,6 +196,12 @@ ION.append({
 			url = this.baseUrl + args.url;
 
 		top.location.href = url;
+	},
+
+	getHash: function()
+	{
+		var size = arguments[0] || 16;
+		return this.generateHash(size);
 	},
 
 	/**
@@ -660,3 +796,114 @@ Object.append(Element.NativeEvents, {
 	}
 })(typeof window === "undefined" ? this : window)
 
+
+String.prototype.trimLeft = function(charlist) {
+	if (charlist === undefined)
+		charlist = "\s";
+
+	return this.replace(new RegExp("^[" + charlist + "]+"), "");
+};
+String.prototype.trimRight = function(charlist) {
+	if (charlist === undefined)
+		charlist = "\s";
+
+	return this.replace(new RegExp("[" + charlist + "]+$"), "");
+};
+String.prototype.charTrim = function(charlist) {
+	return this.trimLeft(charlist).trimRight(charlist);
+};
+
+/*
+ ---
+
+ script: Array.sortOn.js
+
+ description: Adds Array.sortOn function and related constants that works like in ActionScript for sorting arrays of objects (applying all same strict rules)
+
+ license: MIT-style license.
+
+ authors:
+ - gonchuki
+
+ docs: http://www.adobe.com/livedocs/flash/9.0/ActionScriptLangRefV3/Array.html#sortOn()
+
+ requires:
+ - core/1.2.4: [Array]
+
+ provides:
+ - [Array.sortOn, Array.CASEINSENSITIVE, Array.DESCENDING, Array.UNIQUESORT, Array.RETURNINDEXEDARRAY, Array.NUMERIC]
+
+ ...
+ */
+
+Array.CASEINSENSITIVE = 1;
+Array.DESCENDING = 2;
+Array.UNIQUESORT = 4;
+Array.RETURNINDEXEDARRAY = 8;
+Array.NUMERIC = 16;
+
+(function() {
+	var dup_fn = function(field, field_options) {
+		var filtered = (field_options & Array.NUMERIC)
+			? this.map(function(item) {return item[field].toFloat(); })
+			: (field_options & Array.CASEINSENSITIVE)
+			? this.map(function(item) {return item[field].toLowerCase(); })
+			: this.map(function(item) {return item[field]; });
+		return filtered.length !== [].combine(filtered).length;
+	};
+
+	var sort_fn = function(item_a, item_b, fields, options) {
+		return (function sort_by(fields, options) {
+			var ret, a, b,
+				opts = options[0],
+				sub_fields = fields[0].match(/[^.]+/g);
+
+			(function get_values(s_fields, s_a, s_b) {
+				var field = s_fields[0];
+				if (s_fields.length > 1) {
+					get_values(s_fields.slice(1), s_a[field], s_b[field]);
+				} else {
+					a = s_a[field].toString();
+					b = s_b[field].toString();
+				}
+			})(sub_fields, item_a, item_b);
+
+			if (opts & Array.NUMERIC) {
+				ret = (a.toFloat() - b.toFloat());
+			} else {
+				if (opts & Array.CASEINSENSITIVE) { a = a.toLowerCase(); b = b.toLowerCase(); }
+
+				ret = (a > b) ? 1 : (a < b) ? -1 : 0;
+			}
+
+			if ((ret === 0) && (fields.length > 1)) {
+				ret = sort_by(fields.slice(1), options.slice(1));
+			} else if (opts & Array.DESCENDING) {
+				ret *= -1;
+			}
+
+			return ret;
+		})(fields, options);
+	};
+
+	Array.implement({
+		sortOn: function(fields, options) {
+			fields = Array.from(fields);
+			options = Array.from(options);
+
+			if (options.length !== fields.length) options = [];
+
+			if ((options[0] & Array.UNIQUESORT) && (fields.some(function(field, i){return dup_fn(field, options[i]);}))) return 0;
+
+			var curry_sort = function(item_a, item_b) {
+				return sort_fn(item_a, item_b, fields, options);
+			};
+
+			if (options[0] & Array.RETURNINDEXEDARRAY)
+				return this.slice().sort(curry_sort);
+			else
+				this.sort(curry_sort);
+		}
+	});
+
+})();

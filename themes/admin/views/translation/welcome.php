@@ -28,9 +28,5 @@
 	ION.getToolbox();
 
 
-	ION.setFormSubmit(
-		'defaultTranslationLangCodeForm',
-		'defaultTranslationLangCodeSubmit',
-		'translation/set_default_lang_code'
-	);
+	ION.setFormSubmit('defaultTranslationLangCodeForm','defaultTranslationLangCodeSubmit','translation/set_default_lang_code');
 </script>

@@ -42,10 +42,12 @@ var DropZone = new Class({
 		ui_drop_area: null,
 
 		// Translated terms
+		/*
 		lang:{
 			start_upload: Lang.get('ionize_button_start_upload'),
 			select_files: Lang.get('ionize_label_select_files_to_upload')
 		},
+		*/
 
 		// Form & File input prefix
 		ui_form_prefix: 'dropzone_form_',
@@ -102,6 +104,13 @@ var DropZone = new Class({
 		*/
 		if (options.method != '' && typeof options.method != 'undefined')
 			this.method = (options.method).toUpperCase();
+
+		// Lang keys set here
+		this.options.lang = {
+			start_upload: Lang.get('ionize_button_start_upload'),
+			select_files: Lang.get('ionize_label_select_files_to_upload')
+		};
+
 
 		// Check HTML5 support & if module is available
 		if ( ! this.method && window.File && window.FileList && window.Blob && typeof DropZone['HTML5'] != 'undefined')
@@ -219,7 +228,7 @@ var DropZone = new Class({
 			
 			if (this.uiList) this._addNewItem(this.fileList[this.fileList.length - 1]);
 		}
-		
+
 		// fire!
 		this.fireEvent('onAddFiles', [this.fileList.length]);
 
@@ -363,7 +372,7 @@ var DropZone = new Class({
 
 		// Old version of firefox and opera don't support click trigger for input files fields
 		// Internet "Exploiter" do not allow trigger a form submit if the input file field was not clicked directly by the user
-		if (this.method != 'Flash' && (Browser.firefox2 || Browser.firefox3 || Browser.opera || Browser.ie)) {
+		if (this.method != 'Flash' && (Browser.name=='firefox2' || Browser.name=='firefox3' || Browser.name=='opera' || Browser.name=='ie')) {
 			this._positionInput();
 		} else {
 			this.lastInput.setStyle('visibility', 'hidden');
