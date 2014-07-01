@@ -419,15 +419,20 @@ class Translation extends MY_admin
     }
     // ------------------------------------------------------------------------
 
+
     /**
      * Get Modules Language File List
      *
-     * @param null $type | "theme", "application", "system"
-     */
-    function _get_lang_files($type=NULL)
-			{
+	 * @param null $type | "theme", "application", "system"
+	 *
+	 * @return array
+	 */
+	function _get_lang_files($type=NULL)
+	{
         $path = NULL;
         $lang = $this->default_lang_code;
+		$lfiles = array();
+
 
         if( ! is_null($type) )
 			{
@@ -466,7 +471,6 @@ class Translation extends MY_admin
                     );
                 }
 						
-                return $lfiles;
             }
             else
             {
@@ -483,8 +487,11 @@ class Translation extends MY_admin
             log_message('ERROR', "We don't have a type !");
             // $this->error("We don't have a type !");
             // $this->response();
-			}			
 		}
+
+		return $lfiles;
+	}
+
 
     // ------------------------------------------------------------------------
 
@@ -519,6 +526,7 @@ class Translation extends MY_admin
 	
         return $paths;
     }
+
 
 	// ------------------------------------------------------------------------
 
@@ -633,7 +641,7 @@ class Translation extends MY_admin
         $theme_lang_files   = self::_get_lang_files('theme');
         $application_lang_files = self::_get_lang_files('application');
         $system_lang_files      = self::_get_lang_files('system');
-		
+
         $lang_files = array_merge(array_merge($module_lang_files, $theme_lang_files), array_merge($application_lang_files, $system_lang_files));
 
         foreach($lang_files as $lang_file)

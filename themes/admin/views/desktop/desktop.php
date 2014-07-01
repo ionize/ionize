@@ -10,7 +10,7 @@ $c = '?v='.$v;
 <meta http-equiv="imagetoolbar" content="no" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<link rel="shortcut icon" href="<?php echo theme_url(); ?>images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="<?php echo admin_style_url(); ?>images/favicon.ico" type="image/x-icon" />
 
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/core.css<?php echo $c ?>" />
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/menu.css<?php echo $c ?>" />
