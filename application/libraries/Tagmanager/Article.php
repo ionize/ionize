@@ -31,6 +31,8 @@ class TagManager_Article extends TagManager
 		'article:type' => 			'tag_simple_value',
 		'article:deny_code' => 		'tag_simple_value',
 		'article:deny' => 			'tag_article_deny',
+
+		'article:is_active' => 		'tag_is_active',
 	);
 
 
@@ -450,11 +452,16 @@ class TagManager_Article extends TagManager
 							$article['absolute_url'] = '#';
 					}
 
+					$article['relative_url'] = $article['absolute_url'];
+					$article['relative_lang_url'] = $article['absolute_url'];
+
 					// Correct the URL : Lang + Base URL
 					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 					{
 						$article['absolute_url'] =  Settings::get_lang('current'). '/' . $article['absolute_url'];
+						$article['relative_lang_url'] = $article['absolute_url'];
 					}
+
 					$article['absolute_url'] = base_url() . $article['absolute_url'];
 
 				}
@@ -462,14 +469,17 @@ class TagManager_Article extends TagManager
 			// Standard URL
 			else
 			{
+				$article['relative_url'] = $article['relative_lang_url'] = $page[$page_url_key] . '/' . $url;;
+
 				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
 				{
 
-					$article['absolute_url'] = base_url() . Settings::get_lang('current') . '/' . $page[$page_url_key] . '/' . $url;
+					$article['relative_lang_url'] = Settings::get_lang('current') . '/' . $article['relative_url'];
+					$article['absolute_url'] = base_url() . $article['relative_lang_url'];
 				}
 				else
 				{
-					$article['absolute_url'] = base_url() . $page[$page_url_key] . '/' . $url;
+					$article['absolute_url'] = base_url() . $article['relative_url'];
 				}
 			}
 		}
@@ -527,6 +537,7 @@ class TagManager_Article extends TagManager
 		// Tag cache
 		if ($cache == TRUE && ($str = self::get_cache($tag)) !== FALSE)
 			return $str;
+
 
 		// Returned string
 		$str = '';
@@ -883,9 +894,9 @@ class TagManager_Article extends TagManager
 		$paragraph = $tag->getAttribute('paragraph');
 
 		// auto_link
-// Removed because of double execution
-// (also done by the Tagmanager)
-//		$auto_link = $tag->getAttribute('auto_link', TRUE);
+		// Removed because of double execution
+		// (also done by the Tagmanager)
+		// $auto_link = $tag->getAttribute('auto_link', TRUE);
 
 		// Last part of the URI
 		$uri_last_part = array_pop(explode('/', uri_string()));
@@ -900,13 +911,13 @@ class TagManager_Article extends TagManager
 
 			$articles[$key]['active_class'] = '';
 
+			$article_url = array_pop(explode('/', $article['url']));
+			$articles[$key]['is_active'] = ($uri_last_part == $article_url);
+
 			if (!is_null($tag->getAttribute('active_class')))
 			{
-				$article_url = array_pop(explode('/', $article['url']));
 				if ($uri_last_part == $article_url)
-				{
 					$articles[$key]['active_class'] = $tag->attr['active_class'];
-				}
 			}
 
 			// Limit to x paragraph if the attribute is set
@@ -1039,12 +1050,21 @@ class TagManager_Article extends TagManager
 		$articles = $tag->get('articles');
 
 		// Try to get the view defined for article
-		if ( $article['view'] == FALSE OR $article['view'] == '')
+		$tag_view = $tag->getAttribute('view');
+		$article_view = ! is_null($tag_view) ? $tag_view : ( ! empty($article['view']) ? $article['view'] : NULL);
+
+		if ( ! is_null($article_view))
 		{
-			if (count($articles) == 1)
-				$article['view'] = $page['article_view'];
+			// Force first the view defined by the tag
+			if ( ! is_null($tag_view))
+				$article['view'] = $tag_view;
 			else
-				$article['view'] = $page['article_list_view'];
+			{
+				if (count($articles) == 1)
+					$article['view'] = $page['article_view'];
+				else
+					$article['view'] = $page['article_list_view'];
+			}
 		}
 
 		// Default article view

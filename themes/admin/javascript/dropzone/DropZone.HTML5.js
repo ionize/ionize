@@ -244,9 +244,8 @@ DropZone.HTML5 = new Class({
 								
 								this._itemProgress(item, perc);
 
-								// Set the filename as set by the backend
-								// file.name = response.name;
-								file.name = response.file_name;
+								// Set the filename as set by the backend : 'name' comes from Filemanager, 'file_name' comes from MY_Upload()
+								file.name = typeOf(response.name) != 'null' ? response.name : response.file_name;
 
 								// Recursive upload
 								this._html5Send(file, start + response.size.toInt(), true);
