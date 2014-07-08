@@ -816,7 +816,7 @@ var Filemanager = new Class({
 			},
 			onItemError: function(item, file, response)
 			{
-				self.showError('' + response.error);
+				if (typeOf(response) != 'null' ) self.showError('' + response.error);
 
 				// Remove item from DOM
 				item.fade(0).get('tween').chain(function() {
