@@ -71,13 +71,21 @@ ION.append({
 	{
 		if (typeOf($(form))!='null' && typeOf($(button)) != 'null')
 		{
-			// Form Validation
-			var fv = new Form.Validator.Inline(form, {
-				errorPrefix: '',
-				showError: function(element) {
-					element.show();
-				}
-			});
+			// Create the Validator if it doesn't exists
+			// Create it first in views or JS classes if needed, to have only one instance
+			if (! $(form).retrieve('validator'))
+			{
+				// Name of the validator : Standard ionize !
+				$(form).store(
+					'validator',
+					new Form.Validator.Inline(form, {
+						errorPrefix: '',
+						showError: function(element) {
+							element.show();
+						}
+					})
+				);
+			}
 
 			// Warning if changed but not saved
 			ION.initSaveWarning(form);
@@ -85,7 +93,7 @@ ION.append({
 			// Stores the button in the form
 			$(form).store('submit', $(button));
 
-			// Add the form submit event with a confirmation window
+			// Confirmation
 			if ($(button) && (typeOf(confirm) == 'object'))
 			{
 				$(button).enabled = true;
@@ -101,20 +109,30 @@ ION.append({
 				$(button).addEvent('click', function(e)
 				{
 					if (typeOf(e) != 'null') e.stop();
-					if (this.enabled)
-					{
-						this.enabled=false;
-						$(button).addClass('disabled');
-						(function(){
-							this.enabled = true;
-							this.removeClass('disabled');
-						}).delay(4000, this);
 
-						ION.confirmation('conf' + button.id, func, confirm.message);
+					var validator = $(form).retrieve('validator');
+
+					if (validator && ! validator.validate())
+					{
+						new ION.Notify(form, {type:'error'}).show('ionize_message_form_validation_please_correct');
+					}
+					else
+					{
+						if (this.enabled)
+						{
+							this.enabled=false;
+							$(button).addClass('disabled');
+							(function(){
+								this.enabled = true;
+								this.removeClass('disabled');
+							}).delay(4000, this);
+
+							ION.confirmation('conf' + button.id, func, confirm.message);
+						}
 					}
 				});
 			}
-			// Add the form submit button event without confirmation
+			// No confirmation
 			else if ($(button))
 			{
 				// Form submit or button event
@@ -124,29 +142,29 @@ ION.append({
 				{
 					if (typeOf(e) != 'null') e.stop();
 
-					// Cancel the save warning (content changed)
-					ION.cancelSaveWarning();
+					var validator = $(form).retrieve('validator');
 
-					// Disable the button for x seconds.
-					if (this.enabled)
+					if (validator && ! validator.validate())
 					{
-						this.enabled=false;
-						$(button).addClass('disabled');
-						(function(){
-							this.enabled = true;
-							this.removeClass('disabled');
-						}).delay(4000, this);
+						new ION.Notify(form, {type:'error'}).show('ionize_message_form_validation_please_correct');
+					}
+					else
+					{
+						// Cancel the save warning (content changed)
+						ION.cancelSaveWarning();
 
-						var parent = $(form).getParent('.mocha');
-						var result = fv.validate();
+						// Disable the button for x seconds.
+						if (this.enabled)
+						{
+							this.enabled=false;
+							$(button).addClass('disabled');
+							(function(){
+								this.enabled = true;
+								this.removeClass('disabled');
+							}).delay(4000, this);
 
-						if ( ! result)
-						{
-							if (parent)
-								new ION.Notify(parent, {type:'error'}).show('ionize_message_form_validation_please_correct');
-						}
-						else
-						{
+							var parent = $(form).getParent('.mocha');
+
 							// tinyMCE and CKEditor trigerSave
 							ION.updateRichTextEditors();
 

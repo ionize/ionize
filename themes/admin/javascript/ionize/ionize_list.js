@@ -138,7 +138,7 @@ ION.TableList = new Class({
 						td.addClass(column['vertical-align']);
 					}
 
-					td.adopt(self._getItem(item, column));
+					td.adopt(self._getItem(item, column, idx));
 
 					if (typeOf(column.onCellDraw) == 'function')
 						column.onCellDraw(td, item);
@@ -166,20 +166,22 @@ ION.TableList = new Class({
 	 * @param c     Column option item
 	 * @private
 	 */
-	_getItem: function(item, c)
+	_getItem: function(item, c, idx)
 	{
 		var el = c.element ? new Element(c.element) : new Element('span');
 		if (c.elementClass) el.addClass(c.elementClass);
 
 		// Content
 		// Date format
-		var value = item[c.key] ? item[c.key] : (c.content ? c.content : '');
+		var value = (c.key == '-rownum-') ? parseInt(idx) + 1 : (
+						item[c.key] ? item[c.key] : (c.content ? c.content : '')
+					);
 
 		if (c.type == 'date')
 			value = Date.formatFromMySql(value, Settings.get('date_format'));
 
-		if ( c.type != 'icon' && (typeOf(item[c.key]) != 'null' || typeOf(c.content) != 'null'))
-			el.set('text', value);
+		if ( c.type != 'icon' && (typeOf(item[c.key]) != 'null' || (typeOf(c.content) != 'null' || value !='')))
+			el.set('html', value);
 
 		if(c.onClick)
 		{

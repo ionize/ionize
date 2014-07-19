@@ -10,13 +10,6 @@
  */
 
 ?>
-<style type="text/css">
-/*
-	.textboxlist-bit-editable:after{
-		content: "<?php echo lang('ionize_help_tag_textbox') ?>";
-	}
-*/
-</style>
 
 <form name="articleOptionsForm" id="articleOptionsForm" method="post" action="<?php echo admin_url() . 'article/save_options'?>">
 
@@ -384,7 +377,7 @@
 	 * Calendars init
 	 *
 	 */
-	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
+	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>', {timePicker:true});
 	ION.initClearField('#articleOptionsForm');
 
 	/**

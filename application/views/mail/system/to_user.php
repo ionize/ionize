@@ -73,7 +73,7 @@
 					<td>
 						<h1><?php echo lang('ionize_mail_user_intro', $username) ?></h1>
 
-						<p><?php echo lang('ionize_message_your_account_has_been_updated') ?></p>
+						<p><?php echo $message_intro ?></p>
 
 						<p><?php echo $message ?></p>
 

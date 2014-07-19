@@ -431,9 +431,7 @@ h2.main.send:before{background-position: -320px -120px}
 
 .panel h2,
 .panel h3 {
-/*
 	border-bottom: solid 1px #d5d9dc;
-*/
 }
 .panel h3,
 .panel h4 {
@@ -2060,6 +2058,7 @@ ol.steps li a:before {
 /** Standard sizes */
 .w100p { width: 100% !important;}
 .w95p { width: 95% !important;}
+.w96p { width: 96% !important;}
 
 .w10 {	width:10px !important; }
 .w20 {	width:20px !important; }

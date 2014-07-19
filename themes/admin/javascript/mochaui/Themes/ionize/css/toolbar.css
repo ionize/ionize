@@ -21,9 +21,7 @@
 .toolbardock div.tabs ul { padding-top:0; }
 .toolbardock div.tabs { margin-top:2px !important; }
 
-.toolbardock .buttonbar .icon {
-    margin:4px;
-}
+.toolbardock .buttonbar .icon { margin:4px;}
 
 div.panel-header div.tabs { margin:0; border-bottom: 1px solid #D3D3D3; }
 div.panel-header div.tabs ul { height:28px; overflow:hidden }
@@ -40,12 +38,13 @@ div.panel-header div.tabs ul { height:28px; overflow:hidden }
 .toolbar { margin-top: 4px; float: right; overflow: hidden; text-align: right; height: 24px; padding-bottom:2px; vertical-align:middle; }
 .toolbar img.disabled { cursor: default; }
 .toolbar .button,
-.buttonbar a.button {vertical-align: middle; margin-top:0; margin-right:5px; height:24px; padding:2px 6px;float:left;}
+.buttonbar a.button {vertical-align: middle; margin-top:0; height:24px; padding:2px 8px;float:left;}
 .toolbar span.imgButton .imgButton span img { padding: 0 0 2px; position: relative; top: 6px; }
 .toolbar span.icon { line-height:24px; font-size:14px;padding: 0; background-repeat: no-repeat; background-position: center; border: 1px solid transparent; }
 .toolbar span.icon:hover { border: 1px solid #a0a0a0; -moz-border-radius: 3px; border-radius: 3px; }
 .toolbar button.button,
-.buttonbar button.button {height: 25px;padding:2px 6px}
+.buttonbar button.button{height: 25px;padding:2px 8px}
+.buttonbar input.button, .buttonbar input.submit{padding:1px 8px;}
 .buttonbar .inputtext{height:24px}
 .buttonbar .separator{float:left;margin-right:0}
 .buttonbar .separator > *{float:left}

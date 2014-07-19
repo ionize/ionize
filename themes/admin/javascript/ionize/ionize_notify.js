@@ -27,13 +27,18 @@ ION.Notify = new Class({
 
 	Implements: [Events, Options],
 
+	options:
+	{
+		type: 'info',			// 'info', 'success', 'alert', 'error'
+		className: '',			// Additional CSS class
+		autoHide: true			// Automatic close after few seconds
+	},
+
 	initialize: function(target, options)
 	{
 		this.windowEl = (typeOf(target) == 'string') ? $(target) : target;
-		this.contentEl = target.getElement('div.mochaContent');
-
-		if ( ! this.contentEl)
-			this.contentEl = target;
+		this.contentEl = this.windowEl.getElement('div.mochaContent');
+		if ( ! this.contentEl) this.contentEl = this.windowEl;
 
 		this.setOptions(options);
 
@@ -48,28 +53,24 @@ ION.Notify = new Class({
 			if (typeOf(this.options.type) == 'null') this.options.type = 'info';
 			if (typeOf(this.options.className) == 'null') this.options.className = '';
 
-			this.box = new Element('div', {
-				'class': this.options.className + ' contentNotify mochaContentNotify ' + this.options.type,
-				'data-type': this.options.type
-			});
-
+			this.box = new Element('div');
 			this.box.store('instance', this);
+			this.setType(this.options.type);
 
 			// Close button
-			this.closeButton = new Element('div', {
-				'class':'icon close white'}
-			).setStyles({'position':'absolute', 'right':'7px', 'top':'7px'})
-			.inject(this.box, 'top')
-			.addEvent('click', function(e){
-				e.stop();
-				self.destroy();
-			});
-
+			this.closeButton = new Element('div', {'class':'icon close white'})
+				.setStyles({'position':'absolute', 'right':'7px', 'top':'7px'})
+				.inject(this.box, 'top')
+				.addEvent('click', function(e){
+					e.stop();
+					self.destroy();
+				});
 
 			if (this.contentEl)
 			{
 				(this.box).inject(this.contentEl, 'top');
 				this.box.slide('hide');
+				this.box.getParent('div').setStyle('margin', 0);
 			}
 			return this;
 		}
@@ -78,19 +79,41 @@ ION.Notify = new Class({
 			this.box = existing;
 			return this.box.retrieve('instance');
 		}
-
 	},
-	
+
+
+	/**
+	 * Sets the Notify type (style)
+	 * @param type	'info', 'alert', 'success', 'error'
+	 *
+	 */
+	setType: function(type)
+	{
+		this.options.type = type;
+		this.box.removeProperty('class');
+		this.box.addClass(this.options.className + ' contentNotify mochaContentNotify ' + this.options.type);
+		this.box.setProperty('data-type', type);
+	},
+
 	show: function(msg)
 	{
+		var self = this,
+			type = typeOf(arguments[1]) != 'null' ? arguments[1] : null;
+
 		this.setMessage(msg);
-	
+
+		// Change type ?
+		if (type != null) this.setType(type);
+
 		// Resize content
 		if (this.displayed == false)
 		{
 			this.box.slide('in');
 
-			this.adjustWindowHeight('plus');
+		//	this.adjustWindowHeight('plus');
+
+			if (this.options.autoHide)
+				self.hide.delay(3000, self);
 		}
 		else
 		{
@@ -107,7 +130,7 @@ ION.Notify = new Class({
 		{
 			this.box.slide('out');
 
-			this.adjustWindowHeight('minus');
+		//	this.adjustWindowHeight('minus');
 		}
 		this.displayed = false;
 	},
@@ -151,13 +174,13 @@ ION.Notify = new Class({
 	{
 		if (typeof(msg) == 'object')
 		{
-			this.box.adopt(msg);
+			this.box.empty().adopt(msg);
 		}
 		else
 		{
 			if (Lang.get(msg) != null ) msg = Lang.get(msg);
 			var div = new Element('div').set('html', msg);
-			this.box.adopt(div);
+			this.box.empty().adopt(div);
 		}
 	},
 
@@ -168,11 +191,13 @@ ION.Notify = new Class({
 		else
 			var selector = 'div.contentNotify';
 
-		var boxes = $$(selector);
+		var boxes = $$(selector),
+			box = null;
 
-		var box = boxes.pick();
+		if (Object.getLength(boxes) > 0)
+			box = boxes[0];
 
-		if (typeOf(box) != 'null')
+		if (box != null)
 			return box;
 
 		return false;

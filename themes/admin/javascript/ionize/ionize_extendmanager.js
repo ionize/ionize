@@ -62,6 +62,9 @@ ION.ExtendManager = new Class({
 			}
 		);
 
+		// Delete Event, fired by extend/field.php
+		Events.subscribe('/extend/delete', self.onExtendDelete.bind(this));
+
 		return this;
 	},
 
@@ -82,6 +85,7 @@ ION.ExtendManager = new Class({
 
 		this.parent = typeOf(opt.parent) != 'null' ? opt.parent : null;
 		this.id_parent = typeOf(opt.id_parent) != 'null' ? opt.id_parent : null;
+		if (opt.id_field_parent) this.id_field_parent = (typeOf(opt.id_field_parent) != 'null')? opt.id_field_parent : 0;
 
 		// Destination DOM HTML element (Extend contexts container)
 		if (opt.destination) this.destination = (typeOf(opt.destination) != 'null')? opt.destination : null;
@@ -140,10 +144,10 @@ ION.ExtendManager = new Class({
 		var onSuccess = typeOf(opt.onSuccess) == 'function' ?
 						opt.onSuccess :
 						function(json)
-			{
-				if (json.message_type == 'success')
-					self.getWindowExtendListContent();
-			};
+						{
+							if (json.message_type == 'success')
+								self.getWindowExtendListContent();
+						};
 
 		var options = {
 			width:500,
@@ -178,12 +182,17 @@ ION.ExtendManager = new Class({
 
 		if (this.parent) data['parent'] = this.parent;
 
+		// Add context if set
+		if (this.context) data['context'] = this.context;
+		if (this.id_context) data['id_context'] = this.id_context;
+
 		// options
 		var opt = arguments[1];
 
 		var options = {
 			width:500,
 			height:400,
+			// Alternative to use of Events.publish('/extend/edit/after')
 			onSuccess: function(json)
 			{
 				if (json.message_type == 'success')
@@ -205,6 +214,19 @@ ION.ExtendManager = new Class({
 
 
 	/**
+	 * Refreshes the extends list after delete
+	 *
+	 * @param id_extend
+	 */
+	onExtendDelete: function(id_extend)
+	{
+		if (this.w != null)
+		{
+			this.getWindowExtendListContent();
+		}
+	},
+
+	/**
 	 * Adds info to the window
 	 *
 	 */
@@ -218,7 +240,7 @@ ION.ExtendManager = new Class({
 
 
 	/**
-	 * Opens wondow of all items,
+	 * Opens window of all items,
 	 * grouped by item definitions
 	 *
 	 * @param options
@@ -227,10 +249,10 @@ ION.ExtendManager = new Class({
 	{
 		if (typeOf(arguments[0]) != 'null') this.init(arguments[0]);
 
+		// Init Window container
 		if (this.w == null)
 		{
 			this.initListWindow();
-
 			// this.setWindowInfo();
 		}
 
@@ -304,6 +326,8 @@ ION.ExtendManager = new Class({
 	 * Gets the Window Items List
 	 * (Window of extends selection)
 	 *
+	 * By context and id_context if exists
+	 *
 	 */
 	getWindowExtendListContent:function()
 	{
@@ -320,6 +344,7 @@ ION.ExtendManager = new Class({
 			// Filter on Parent, Context and Context ID
 			if (this.parent) data['parent'] = this.parent;
 
+			// Add context and id_context
 			if (this.context && this.id_context)
 			{
 				url = ION.adminUrl + 'extend_field/get_context_list/json';
@@ -440,7 +465,8 @@ ION.ExtendManager = new Class({
 				text:extend.type_name
 			}).inject(li);
 
-			// Double click on item
+			// Double click on item : Link To Context
+			/*
 			li.addEvents({
 				'click': function(e)
 				{
@@ -453,7 +479,18 @@ ION.ExtendManager = new Class({
 					self.click_timer = self.relayItemListClick.delay(0, self, [e, this, 2]);
 				}
 			});
+			*/
 
+			/*
+			ION.addDragDrop(
+				li,
+				'#mainPanel_pad.pad', 	                // Droppables class
+				function(element, droppable, event)
+				{
+					self.linkToContext(element.getProperty('data-id'));
+				}
+			);
+			*/
 			// Drag'n'drop on '.dropExtend' classes.
 			// Drp method must be linked to the droppable area, which will know what to do.
 			ION.addDragDrop(li,	'.dropExtend');
@@ -635,13 +672,14 @@ ION.ExtendManager = new Class({
 							element: 'span',
 							'class': 'icon drag left'
 						},
-					// Title
+						// Title
 						{
 							element: 'span',
 							'class': 'unselectable',
 							text: 'label'
 						},
 						// Unlink
+						 /*
 						{
 							element: 'a',
 							'class': 'icon unlink right',
@@ -650,10 +688,20 @@ ION.ExtendManager = new Class({
 								console.log(item);
 							}
 						},
+						*/
+						// Delete
+						{
+							element: 'a',
+							'class': 'icon delete right',
+							onClick: function(item)
+							{
+								console.log(item);
+							}
+						},
 						// Type name
 						{
 							element: 'span',
-						'class':'right lite',
+							'class': 'right lite',
 							text: 'type_name'
 						}
 					],
@@ -819,7 +867,7 @@ ION.ExtendManager = new Class({
 		var self = this;
 
 		var languages = Settings.get('languages');
-
+		
 		// 1. First pass : Non translated extends
 		var fields = this._getInstances(json, 0);
 
@@ -828,7 +876,7 @@ ION.ExtendManager = new Class({
 			// DOM Form field (Label + Field container)
 			var formField = new ION.FormField({container: container, label: {text: field.label}}),
 				ffc = formField.getContainer()
-			;
+				;
 
 			// Add Help : Description as Title
 			if (field.description) formField.getLabel().set('title', field.description);
@@ -850,7 +898,7 @@ ION.ExtendManager = new Class({
 				{
 					var formField = new ION.FormField({	label: {text: field.label} }),
 						ffc = formField.getContainer()
-					;
+						;
 
 					// Add Help : Description as Title
 					if (field.description) formField.getLabel().set('title', field.description);
@@ -883,7 +931,7 @@ ION.ExtendManager = new Class({
 		Array.each(instances, function(extend)
 		{
 			// Only returns type which should be displayed
-			if (extend.translated == translated)
+			if (extend.translated == translated && extend.display == '1')
 				result.push(extend);
 		});
 
@@ -909,8 +957,8 @@ ION.ExtendManager = new Class({
 	 * @param extend
 	 * @param options	Object
 	 * 					{
-	 *						lang: '', 	// Lang code. Eg. 'fr'. If set, the extend is translated.
-	 *						id: ''		// If set, will replace the auto-defined field ID
+	 *						lang: '', 		// Lang code. Eg. 'fr'. If set, the extend is translated.
+	 *						id: ''			// If set, will replace the auto-defined field ID
 	 *						name: ''		// If set, will replace the auto-defined field name,
 	 *						renderAs: ''	// If set, gives the ability to render one date as multiple
 	 *					}
@@ -955,9 +1003,9 @@ ION.ExtendManager = new Class({
 				var i = new Element(dom_tag, {
 					type: field_dom_type,
 					'class': extend.html_element_class + cssClass,
-				name: input_name,
-				id: input_name,
-				value: content
+					name: input_name,
+					id: input_name,
+					value: content
 				}).inject(field);
 
 				// Validator
@@ -1086,7 +1134,7 @@ ION.ExtendManager = new Class({
 			else
 			{
 				get_date_field(input_name, input_name, content);
-		}
+			}
 		}
 
 		//

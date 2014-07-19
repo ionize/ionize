@@ -45,14 +45,14 @@
 							?>
 
 							<tr>
-								<td><a class="icon edit viewEdit" data-id="<?php echo $rel; ?>"></a></td>
-								<td><a class="viewEdit" data-id="<?php echo $rel; ?>"><?php echo $file->name; ?></a></td>
-								<td><?php echo $file->path; ?> </td>
+								<td><a class="icon edit viewEdit m5" data-id="<?php echo $rel; ?>"></a></td>
+								<td class="middle"><a class="viewEdit" data-id="<?php echo $rel; ?>"><?php echo $file->name; ?></a></td>
+								<td class="middle"><?php echo $file->path; ?> </td>
 								<td>
-									<input type="text" class="inputtext w160" name="viewdefinition_<?php echo $rel; ?>" value="<?php echo $file->definition; ?>" />
+									<input type="text" class="inputtext w95p" name="viewdefinition_<?php echo $rel; ?>" value="<?php echo $file->definition; ?>" />
 								</td>
 								<td>
-									<select class="select" name="viewtype_<?php echo $rel; ?>">
+									<select class="select w95p" name="viewtype_<?php echo $rel; ?>">
 										<option value=""><?php echo lang('ionize_select_no_type'); ?></option>
 										<option <?php if($file->type == 'page') :?> selected="selected" <?php endif ;?> value="page">Page</option>
 										<option <?php if($file->type == 'article') :?> selected="selected" <?php endif ;?> value="article">Article</option>

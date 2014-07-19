@@ -47,7 +47,7 @@ body { text-align: left; font-family: "lucida grande",tahoma,verdana,arial,sans-
 /* Typography */
 h2, h3, h4 { margin: 0 0 10px 0; padding: 0 0 3px 0; font-weight: bold; }
 h2 { font-size: 14px; }
-h3 { font-size: 14px; color:#7c98a8}
+h3 { font-size: 12px; color:#7c98a8}
 h4 { font-size: 11px; }
 a { color: #098ED1; text-decoration: none; cursor: pointer; }
 a:hover { text-decoration: none; }

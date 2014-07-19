@@ -43,9 +43,7 @@ fieldset {
 .panel dl,
 .mocha dl {
 	position:relative;
-	margin:1px 0 0;
-	overflow:hidden;
-	margin-bottom:5px;
+	margin:1px 0 5px 0;
 }
 .panel dl.last,
 .mocha dl.last {
@@ -59,14 +57,7 @@ fieldset {
 	padding: 0;
 	text-align:right;
 	font-weight: normal;
-/*	width:150px;*/
-/*
-	min-width:130px;
-*/
 	width:18%;
-}
-.panel dt label,
-.mocha dt label {
 }
 .panel dt.left,
 .mocha dt.left {
@@ -85,9 +76,6 @@ fieldset {
 	margin-left: 0;
 	width: auto;
 }
-
-.content-panel-content dt{width:25%;}
-.content-panel-content dd{margin-left:26%;width: 74%;}
 
 /* Small DL, used in side column and in some windows */
 .panel dl.small,
@@ -124,9 +112,11 @@ fieldset {
 }
 
 dl.required dt label { color:#b00;}
-dl.required dd input, dl.required dd textarea, dl.required dd select { border-color: #666;}
+dl.required dd input,
+dl.required dd input[required],
+dl.required dd textarea,
+dl.required dd select { border-color: #666;}
 
-dd .inputcheckbox:first-child{margin-top:2px;}
 
 /* Mocha Windows correction */
 .mochaContent dd { 
@@ -296,15 +286,14 @@ div.droppable{
 	padding: 8px 10px 8px 45px;
 	font-style: italic;
 	position: relative;
-	min-height: 40px;
 }
 ul.droppable:before,
 li.droppable:before,
 div.droppable:before {
 	content: url("../images/icon_24_drop_static.png");
 	position: absolute;
-	left: 10px;
-	top: 5px;
+	left: 8px;
+	top: 1px;
 	opacity: 0.25;
 	filter:alpha(opacity=0.25);
 	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0.25);
@@ -400,17 +389,23 @@ input.button,
 button.submit,
 input.submit{
 	border:1px solid #fff;
-	color:#FFFFFF;
+	color:#333;
 	cursor:pointer;
 	font-size:11px;
-	line-height: 18px;
+	line-height: 20px;
 	vertical-align: middle;
 }
-button.button,
 button.submit,
+input.submit{
+	color:#fff;
+}
+button.button,
+button.submit {
+	padding:2px 8px;
+}
 input.button,
 input.submit{
-	padding:2px 8px;
+	padding:3px 8px;
 }
 
 a.button.disabled,
@@ -428,9 +423,7 @@ input.submit.disabled:hover{
 	cursor: default;
 }
 
-/* Special form elements */
-#maincolumn .inputtext,
-#maincolumn .textarea {
+#maincolumn .inputtext, #maincolumn .textarea {
 	width: 82%;
 }
 
@@ -490,7 +483,7 @@ a.button i{
     background:transparent url(../images/icons_16.png) no-repeat 0 0;
 }
 a.button span{
-	line-height: 19px;
+	line-height: 18px;
 }
 
 /* Special buttons */
@@ -594,16 +587,15 @@ a.button.submit:hover{
 	background: #E29602;
 }
 
-
-
-.mocha .button.yes { margin-right: 40px;margin-left:10px;}
-.mocha.modal .button.yes{ margin-right: 35px;}
+.mocha .button{border: solid 1px #fff;padding-left:8px;padding-right:8px;}
+.mocha .button.right{margin-left:10px;}
+.mocha.modal .button.right{}
 
 /* Light buttons */
-button.light{color:#098ED1}
 .button.light {
     border: 1px solid transparent;
     background: none;
+	color:#444;
 }
 .button.light:hover {
     border:1px solid #bbb;

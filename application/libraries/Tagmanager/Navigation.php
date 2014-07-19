@@ -585,6 +585,9 @@ class TagManager_Navigation extends TagManager
 		// Current active language class
 		$active_class = $tag->getAttribute('active_class', 'active');
 
+		// Ignore current language in output
+		$ignore_current = $tag->getAttribute('ignore_current');
+
 		// helper
 		$helper = $tag->getAttribute('helper');
 
@@ -596,6 +599,10 @@ class TagManager_Navigation extends TagManager
 		{
 			$lang_code = $lang['lang'];
 			$p_data = $page['languages'][$lang_code];
+
+			if ( $ignore_current == TRUE && $lang_code == Settings::get_lang('current'))
+				continue;
+
 
 			// Correct the Home page URL
 			if ($p_data['online'] == 1 OR ($p_data['online'] == 0 && Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1))

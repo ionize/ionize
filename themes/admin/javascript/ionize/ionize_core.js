@@ -24,6 +24,13 @@ ION.append({
 	mainpanel: 		'mainPanel',
 	instances: 		new Hash(),
 	assets:			new Hash(),
+	loadedAssets:			{},		// Assets loaded
+	plannedAssets:			{},		// Assets planned to be load.
+	plannedAssetSeries:		{},		// Series of Assets planned to be load.
+
+	// Uncomment if Mediator is used.
+	// See : http://thejacklawson.com/Mediator.js/
+	// Mediator: new Mediator(),
 
 	registry: function(key){
 		return this.instances[key];
@@ -32,6 +39,11 @@ ION.append({
 	register: function(key, instance){
 		this.instances.set(key, instance);
 		return instance;
+	},
+
+	getRegistry: function()
+	{
+		return this.instances;
 	},
 
 	/**
@@ -43,7 +55,7 @@ ION.append({
 	 * This is useful to load some other JS from the /modules/XXXX/assets/javascript/ folder.
 	 *
 	 * Important :
-	 * The JS main methods are not supposed to be directly in teh admin.js file.
+	 * The JS main methods are not supposed to be directly in the admin.js file.
 	 * This file is supposed to load other classes through its init() method
 	 *
 	 * @param k
@@ -55,10 +67,74 @@ ION.append({
 			k.init();
 	},
 
+	isAssetPlanned: function(assetUrl)
+	{
+		return typeOf(this.plannedAssets[assetUrl]) != 'null';
+	},
 
 	isAssetLoaded: function(assetUrl)
 	{
-		return typeOf(this.assets[assetUrl]) != 'null';
+		return typeOf(this.loadedAssets[assetUrl]) != 'null';
+	},
+
+	setAssetLoaded: function(assetUrl)
+	{
+		this.loadedAssets[assetUrl] = true;
+	},
+
+	/**
+	 * Adds one assets serie to the planned series
+	 *
+	 * @param assetUrl
+	 * @param funcs
+	 */
+	planAssetSerie: function(assetUrl, funcs)
+	{
+		var self = this,
+			sid = this.getHash(32),
+			pFuncs = {};
+
+		Object.each(funcs, function(func, name){
+			if (name == 'onComplete')
+				pFuncs[name] = func;
+		});
+
+		this.plannedAssetSeries[sid] = {sources:[], funcs:pFuncs};
+
+		assetUrl.each(function(source){
+			self.plannedAssetSeries[sid]['sources'].push(source);
+		});
+	},
+
+	/**
+	 * Tries to complete all assets series.
+	 *
+	 */
+	completeAssetSeries: function()
+	{
+		var self = this;
+
+		Object.each(this.plannedAssetSeries, function(serie, sid)
+		{
+			var exec = true;
+
+			serie.sources.each(function(source)
+			{
+				if (exec) exec = self.isAssetLoaded(source);
+			});
+
+			// Execute the serie's functions
+			if (exec)
+			{
+				// Remove this serie from planned
+				delete(self.plannedAssetSeries[sid]);
+
+				Object.each(serie.funcs, function(func){
+					func.call();
+				});
+
+			}
+		});
 	},
 
 
@@ -72,52 +148,27 @@ ION.append({
 	loadAsset: function(assetUrl)
 	{
 		var self = this,
-			prop = typeOf(arguments[1]) != 'null' ? arguments[1] : null;
+			funcs = Object.merge({
+				onComplete: Function.from
+			//	onLoad: Function.from
+			}, arguments[1]);
 
-		if (typeOf(assetUrl) == 'array')
+		if (typeOf(assetUrl) == 'string')
+			assetUrl = [assetUrl];
+
+		var sources = [];
+
+		this.planAssetSerie(assetUrl, funcs);
+
+		assetUrl.each(function(source)
 		{
-			var sources = [];
-
-			assetUrl.each(function(source){
-				if ( ! self.isAssetLoaded(source))
-					sources.push(source)
-			});
-
-			this.loadAssets(sources, prop);
-		}
-		else
-		{
-			var ext = assetUrl.split('.').pop();
-
-			if (this.isAssetLoaded(assetUrl))
+			if ( ! self.isAssetPlanned(source))
 			{
-				if (typeOf(prop.onLoad) == 'function')
-					prop.onLoad();
+				sources.push(source)
+			}
+		});
 
-				return;
-			}
-			else
-			{
-				if(ext == 'js')
-				{
-					Asset.javascript(
-						assetUrl,
-						{
-							onLoad: function()
-							{
-								self.assets.set(assetUrl, true);
-								if (prop!=null && typeOf(prop.onLoad) == 'function')
-									prop.onLoad();
-							}
-						}
-					);
-				}
-				else if(ext == 'css')
-				{
-					Asset.css(assetUrl, prop);
-				}
-			}
-		}
+		this.loadAssets(sources, funcs);
 	},
 
 	/**
@@ -136,48 +187,60 @@ ION.append({
 			onProgress: Function.from
 		}, options);
 
-		var counter = 0,
-			todo = sources.length,
-			self = this;
+		var self = this,
+			counter = 0,
+			todo = sources.length;
 
 		if (todo == 0)
-			options.onComplete.call(this, counter);
+			self.completeAssetSeries();
+		// options.onComplete.call(this, counter);
 
 		var loadNext = function()
 		{
-			if (sources[0])	source = sources[0];
-
-			var ext = source.split('.').pop();
-
-			if(ext == 'js')
+			if (sources[0])
 			{
-				Asset.javascript(source, {
-					onload: function()
-					{
-						counter++;
-						self.assets.set(source, true);
-						options.onProgress.call(this, counter, source);
-						sources.erase(source);
+				var source = sources[0];
 
-						if (counter == todo)
-							options.onComplete.call(this, counter);
-						else
-							loadNext();
-					}
-				});
-			}
-			else if(ext == 'css')
-			{
-				Asset.css(source);
-				counter++;
-				self.assets.set(source, true);
+				var ext = source.split('.').pop();
 
-				options.onProgress.call(this, counter, source);
-				sources.erase(source);
-				if (counter == todo)
-					options.onComplete.call(this, counter);
-				else
-					loadNext();
+				if(ext == 'js')
+				{
+					Asset.javascript(source, {
+						onLoad: function()
+						{
+							counter++;
+
+							self.setAssetLoaded(source);
+
+							options.onProgress.call(this, counter, source);
+
+							sources.erase(source);
+
+							// Fired when all assets are loaded
+							if (counter == todo)
+								self.completeAssetSeries();
+							else
+								loadNext();
+						}
+					});
+				}
+				else if(ext == 'css')
+				{
+					Asset.css(source);
+
+					counter++;
+
+					self.setAssetLoaded(source);
+
+					options.onProgress.call(this, counter, source);
+
+					sources.erase(source);
+
+					if (counter == todo)
+						self.completeAssetSeries();
+					else
+						loadNext();
+				}
 			}
 		};
 
@@ -378,6 +441,10 @@ ION.append({
 		return options;
 	}
 });
+
+
+
+
 
 
 
@@ -907,3 +974,41 @@ Array.NUMERIC = 16;
 	});
 
 })();
+
+
+/**
+ * Simple Pub/Sub pattern
+ * Implementation of http://davidwalsh.name/pubsub-javascript
+ *
+ */
+Events.topics = {};
+Events.hOP = Events.topics.hasOwnProperty;
+
+Events.subscribe= function(topic, listener)
+{
+	// Create the topic's object if not yet created
+	if( ! Events.hOP.call(Events.topics, topic)) Events.topics[topic] = [];
+
+	// Add listener to queue
+	var index = Events.topics[topic].push(listener) -1;
+
+	// Provide handle back for removal of a listener for a topic
+	return {
+		remove: function() {
+			delete Events.topics[topic][index];
+		}
+	};
+};
+
+Events.publish= function(topic, info)
+{
+	// If the topic doesn't exist, or there's no listeners in queue, just leave
+	if( ! Events.hOP.call(Events.topics, topic)) return;
+
+	// Cycle through topics queue, fire!
+	Events.topics[topic].forEach(function(item) {
+		item(info||{});
+	});
+};
+
+

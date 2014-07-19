@@ -65,7 +65,7 @@ ION.Uploader = new Class({
 		/*
 		 onItemComplete: function (item, file, response) {},
 		 onComplete: function(){}
-		*/
+		 */
 	},
 
 	// Vars
@@ -347,8 +347,10 @@ ION.Uploader = new Class({
 			onUploadStart: function()
 			{
 				// Remove all Notify
+/*
 				if (typeOf(ION.Notify) != 'null')
 					new ION.Notify(self.notifyContainer,{}).removeAll();
+*/
 			},
 
 			onUploadProgress: function(perc, nb_uploaded_so_far){},

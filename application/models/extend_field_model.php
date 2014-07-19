@@ -655,109 +655,6 @@ class Extend_field_model extends Base_model
 	}
 
 
-	public function get_extend_link_list_bck($id_extend, $parent, $id_parent, $lang=NULL, $where=array())
-	{
-		$data = array();
-
-		if ( ! $lang) $lang=NULL;
-
-		$extend = $this->get_element_extend_field($id_extend, $parent, $id_parent, $lang);
-
-		if ( ! empty($extend))
-		{
-			$values = strlen($extend['content']) > 0 ? explode(',', $extend['content']) : NULL;
-
-			$types = array();
-
-			if ( ! empty($values))
-			{
-				// Try to find entities (pages, articles)
-				foreach($values as $val)
-				{
-					$arr = explode(':', $val);
-
-					if ( ! empty($arr[1]))
-					{
-						if ( ! isset($types[$arr[0]])) $types[$arr[0]] = array();
-
-						$types[$arr[0]][] = array_pop(explode('.', $arr[1]));
-					}
-				}
-
-				if ( ! empty($types))
-				{
-					if (is_null($lang)) $lang = Settings::get_lang('default');
-
-					$types_names = array_keys($types);
-					$sql = "
-						select
-							COALESCE(" . implode('_lang.title,', $types_names) . '_lang.title' . ") as title,
-							url.id_entity,
-							url.type,
-							url.full_path_ids,
-							url.path,
-							REPLACE(url.full_path_ids, '/', '.' ) as rel
-						from url
-					";
-
-					$join = "";
-					$where_arr = array();
-
-					foreach($types as $type => $entities)
-					{
-						$join .= "
-							left join ".$type." on (".$type.".id_".$type." = url.id_entity and url.type = '".$type."')
-							left join ".$type."_lang on ".$type."_lang.id_".$type." = ".$type.".id_".$type." and ".$type."_lang.lang = '".$lang."'
-						";
-
-						$where_arr[] = "(type='".$type."' and id_entity in (" . implode(',', $entities). "))";
-					}
-
-					$sql .= $join;
-					$sql .= "where (" . implode(' or ', $where_arr) . ")";
-					$sql .= "
-						and url.lang = '".$lang."'
-						and active = 1
-					";
-
-					if ( ! empty($where))
-					{
-						if ( ! empty($where['limit']))
-							$sql .= " limit " . intval($where['limit']);
-					}
-
-					$query = $this->{$this->db_group}->query($sql);
-
-					if ( $query->num_rows() > 0) $data = $query->result_array();
-					$query->free_result();
-
-
-					// Rebuild Original data
-					foreach($data as $key => $row)
-					{
-						$rel = explode('.', $row['rel']);
-						if ($row['type'] == 'article')
-							$rel = array_slice($rel, -2);
-						else
-							$rel = array_slice($rel, -1);
-
-						$data[$key]['id'] = implode('.', $rel);
-						$data[$key]['extend_value'] = $row['type'] . ':' . $data[$key]['id'];
-					}
-				}
-
-				// So, we got the title of the entity, and the URL of the entity which has an URL in the URL table
-				// But, the original entity can have a link to something else
-
-
-
-			}
-		}
-
-		return $data;
-	}
-
-
 	// ------------------------------------------------------------------------
 
 
@@ -830,7 +727,10 @@ class Extend_field_model extends Base_model
 							$this->save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang);
 
 							// Save in other field
+						// @deprecated
 							/*
+						 * @deprecated
+						 *
 							if ( ! empty($extend_field['copy_in']))
 							{
 								$this->copy_extend_value_to_field($extend_field, $parent, $id_parent, $value, $lang);
@@ -914,6 +814,33 @@ class Extend_field_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function delete_extend_field($id_extend_field)
+	{
+		// Begin transaction
+		$this->{$this->db_group}->trans_start();
+
+		// Definition
+		parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field');
+
+		// Lang
+		parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field_lang');
+
+		// Instances
+		$this->delete_extend_fields($id_extend_field);
+
+		// Context
+		parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field_context');
+
+		// Transaction complete
+		$this->{$this->db_group}->trans_complete();
+
+		return $this->{$this->db_group}->trans_status();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Removes one value from one multiple values extend field
 	 * Values are coma separated in DB
@@ -969,6 +896,12 @@ class Extend_field_model extends Base_model
 
 		// Date or Datetime
 		if (in_array($extend_field['html_element_type'], array('date', 'datetime'))) $value = str_replace('.', '-', $value);
+
+		// Select, Checkbox, Multi Select values : Clean white spaces
+		if (in_array($extend_field['html_element_type'], array('select', 'checkbox', 'radio', 'select-multiple')))
+		{
+			$value = preg_replace('/\s*,\s*/', ',', $value);
+		}
 
 		$data = array(
 			$this->get_pk_name() => $id_extend,
@@ -1061,10 +994,12 @@ class Extend_field_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	public function get_context_list($context, $id_context = NULL, $parent = NULL, $id_parent = NULL)
+	public function get_context_list($context, $id_context = NULL, $parent = NULL, $id_parent = NULL, $id_extend_field_type=NULL)
 	{
-		$where = array('context' => $context);
-		if ( ! empty($id_context)) $where['id_context'] = $id_context;
+		$where = array(
+			'order_by' => 'ordering ASC'
+		);
+
 		if ( ! empty($parent)) $where['parent'] = $parent;
 		if ( ! empty($id_parent)) $where['id_parent'] = $id_parent;
 
@@ -1079,7 +1014,7 @@ class Extend_field_model extends Base_model
 		);
 
 		// Add Extend Type info
-		$this->_join_to_extend_types();
+		$this->_join_to_extend_types($id_extend_field_type);
 
 		// Context
 		$this->{$this->db_group}->select(
@@ -1087,14 +1022,7 @@ class Extend_field_model extends Base_model
 			.self::$_CONTEXT_TABLE . '.id_context'
 		);
 
-		$this->{$this->db_group}->join(
-			self::$_CONTEXT_TABLE,
-			self::$_CONTEXT_TABLE . '.' . $this->get_pk_name() . ' = ' . $this->get_table() . '.' . $this->get_pk_name(),
-			'inner'
-		);
-		$this->{$this->db_group}->where(self::$_CONTEXT_TABLE . '.context', $context);
-		if ( ! is_null($id_context))
-			$this->{$this->db_group}->where(self::$_CONTEXT_TABLE . '.id_context', $id_context);
+		$this->_join_to_context($context, $id_context);
 
 		// Extend Definition List
 		$list = parent::get_list($where);
@@ -1138,7 +1066,7 @@ class Extend_field_model extends Base_model
 
 		if ( $this->exists($where, self::$_CONTEXT_TABLE))
 		{
-			$this->delete($where, self::$_CONTEXT_TABLE);
+			parrent::delete($where, self::$_CONTEXT_TABLE);
 		}
 	}
 
@@ -1146,12 +1074,41 @@ class Extend_field_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	public function _join_to_extend_types()
+	public function check_context_existence($name, $context, $id_context, $id_extend = NULL)
+	{
+		$sql = "
+			select e.id_extend_field
+			from extend_field e
+				join extend_field_context c on c.id_extend_field = e.id_extend_field
+			where
+				e.name = '".$name."'
+				and c.context='".$context."'
+				and c.id_context = ".$id_context."
+		";
+
+		if ( ! is_null($id_extend))
+		{
+			$sql .= "
+				and e.id_extend_field <> ".$id_extend."
+			";
+		}
+
+		$query = $this->{$this->db_group}->query($sql);
+
+		return ($query->num_rows() > 0);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function _join_to_extend_types($id_extend_type = NULL)
 	{
 		// Join to types
 		$this->{$this->db_group}->select(
 			self::$_TYPE_TABLE . '.type_name,'
 			.self::$_TYPE_TABLE . '.active,'
+			.self::$_TYPE_TABLE . '.display,'
 			.self::$_TYPE_TABLE . '.validate,'
 			.self::$_TYPE_TABLE . '.html_element,'
 			.self::$_TYPE_TABLE . '.html_element_type,'
@@ -1164,5 +1121,26 @@ class Extend_field_model extends Base_model
 			self::$_TYPE_TABLE . '.id_extend_field_type = ' . $this->get_table() . '.type',
 			'inner'
 		);
+
+		if ( ! is_null($id_extend_type))
+			$this->{$this->db_group}->where('id_extend_field_type', $id_extend_type);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function _join_to_context($context, $id_context=NULL)
+	{
+		$this->{$this->db_group}->join(
+			self::$_CONTEXT_TABLE,
+			self::$_CONTEXT_TABLE . '.' . $this->get_pk_name() . ' = ' . $this->get_table() . '.' . $this->get_pk_name(),
+			'inner'
+		);
+
+		$this->{$this->db_group}->where(self::$_CONTEXT_TABLE . '.context', $context);
+
+		if ( ! is_null($id_context))
+			$this->{$this->db_group}->where(self::$_CONTEXT_TABLE . '.id_context', $id_context);
 	}
 }

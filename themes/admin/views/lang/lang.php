@@ -124,7 +124,7 @@
 
 
 		<!-- Copy content -->
-		<div class="tabcontent">
+		<div class="tabcontent p20">
 
 			<dl class="small">
 				<dt>
@@ -163,7 +163,7 @@
 
 
 		<!-- URLs -->
-		<div class="tabcontent">
+		<div class="tabcontent p20">
 
 			<form name="optionsLangForm" id="optionsLangForm" method="post" action="<?php echo admin_url(); ?>lang/update">
 

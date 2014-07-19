@@ -37,7 +37,7 @@
 				<!-- Tabs content blocks -->
 				<?php foreach(Settings::get_languages() as $language) :?>
 					
-					<div class="tabcontent">
+					<div class="tabcontent p20">
 					
 						<!-- Title -->
 						<dl>
@@ -72,9 +72,9 @@
 				<?php endforeach ;?>
 
 				<!-- Emails -->
-				<div class="tabcontent">
+				<div class="tabcontent p20">
 
-					<div class="pt20">
+					<div>
 						<?php
 						$emails = array('contact', 'info', 'technical');
 						?>
@@ -94,7 +94,7 @@
 
 
 				<!-- Google Analytics -->
-				<div class="tabcontent">
+				<div class="tabcontent p20">
 					<dl>
 						<dt>
 							<label for="google_analytics_id" title="<?php echo lang('ionize_help_setting_google_analytics_id'); ?>"><?php echo lang('ionize_label_google_analytics_id'); ?></label>
@@ -157,7 +157,7 @@
 			
 
 			<!-- SEO -->
-			<div class="tabcontent">
+			<div class="tabcontent pt20">
 
 				<!-- Compress Sitemap XML -->
 				<form name="sitemapGzipForm" id="sitemapGzipForm" method="post" action="<?php echo admin_url(); ?>setting/save_setting">

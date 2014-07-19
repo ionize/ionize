@@ -60,6 +60,20 @@ ION.ButtonToolbar = new Class({
 		return this;
 	},
 
+	/**
+	 * Return true if the Toolbar has already the asked button id.
+	 * The button must have an ID
+	 * @param id
+	 * @returns {boolean}
+	 */
+	hasButton: function(id)
+	{
+		if (this.getButtonById(id) != null)
+			return true;
+
+		return false;
+	},
+
 	adopt:function(element)
 	{
 		var pos = arguments[1];
@@ -71,10 +85,36 @@ ION.ButtonToolbar = new Class({
 		}
 	},
 
+	remove: function(id)
+	{
+		var btn = this.getButtonById(id);
+
+		if (btn != null)
+			btn.destroy();
+	},
+
 	activateButton: function(id)
 	{
 		var btn = this.getButtonById(id);
 		if (btn) btn.activate();
+	},
+
+	deactivateButton: function(id)
+	{
+		var btn = this.getButtonById(id);
+		if (btn) btn.deactivate();
+	},
+
+	enableButton: function(id)
+	{
+		var btn = this.getButtonById(id);
+		if (btn) btn.enable();
+	},
+
+	disableButton: function(id)
+	{
+		var btn = this.getButtonById(id);
+		if (btn) btn.disable();
 	},
 
 	getButtonById: function(id)
@@ -94,10 +134,12 @@ ION.Button = new Class({
 
 	Implements: [Events, Options],
 
+
 	isEnabled: 	true,
 	isActive: 	false,
 	button: 	null,
 	btnGroup: 	null,
+	w: 			null,
 
 	options:
 	{
@@ -105,8 +147,10 @@ ION.Button = new Class({
 		'class': 		'',				// Additional CSS class
 		title: 			'',				// Button title
 		icon:			null,			// Icon class
+		iconClass:		'',				// Additional icon CSS class
 		parent:			null,			// Parent DOM Element
-		btnGroupClass: 	'btn-group'
+		btnGroupClass: 	'btn-group',
+		enabled: 		true,
 
 		// onClick: function(ION.Button, DomElement)
 		// onActivate: function(ION.Button, DomElement)
@@ -131,9 +175,12 @@ ION.Button = new Class({
 
 		if (o.id) this.button.setProperty('id', o.id);
 
+		if (o.w) this.w = o.w;
+
 		this.buttonTitle = new Element('span', {'html': o.title}).inject(this.button);
 
-		if (o.icon) new Element('i', {'class': o.icon}).inject(this.button, 'top');
+		if (this.options.iconClass) this.options.iconClass = ' ' + this.options.iconClass;
+		if (o.icon) new Element('i', {'class': o.icon + this.options.iconClass}).inject(this.button, 'top');
 
 		// List button
 		if (typeOf(o.elements) != 'null' && (o.elements).length > 0)
@@ -145,19 +192,22 @@ ION.Button = new Class({
 
 			this.addListElements(o.elements);
 
-			this.btnGroup.addEvent('click', function(e)
+			// Store the event
+			this.options.onClick = function()
 			{
-				e.stop();
-				if (this.hasClass('open'))
+				if (self.btnGroup.hasClass('open'))
 				{
-					this.removeClass('open');
+					self.btnGroup.removeClass('open');
 				}
 				else
 				{
 					$$('.' + self.options.btnGroupClass).removeClass('open');
-					this.addClass('open');
+					self.btnGroup.addClass('open');
+					self.correctBtnGroupPosition();
 				}
-			});
+			}
+
+			this.btnGroup.addEvent('click', this.options.onClick);
 
 			if (this.container)	this.btnGroup.inject(this.container);
 		}
@@ -177,11 +227,24 @@ ION.Button = new Class({
 			if (this.container) this.button.inject(this.container);
 		}
 
+		if (o.enabled == false)
+			this.disable();
+
 		this.fireEvent('onLoaded', this.button);
 
 		return this;
 	},
 
+	correctBtnGroupPosition: function()
+	{
+		var ul = this.btnGroup.getElement('ul.dropdown-menu');
+
+		var dim = ul.getCoordinates(),
+			docDim = document.getCoordinates();
+
+		if ((dim.left + dim.width) > docDim.width)
+			ul.setStyles({'right': 0, left:'auto'});
+	},
 
 	addListElements: function(elements)
 	{
@@ -199,6 +262,8 @@ ION.Button = new Class({
 				a.addEvent('click', el.onClick);
 			}
 		});
+
+		// Calculate list position in case the button is on the right
 	},
 
 	setTitle: function(title)
@@ -258,8 +323,14 @@ ION.Button = new Class({
 		{
 			this.button.removeProperty('disabled');
 			this.button.removeClass('disabled');
+
 			if (typeOf(this.options.onClick) == 'function')
-				this.button.addEvent('click', this.options.onClick);
+			{
+				if (this.btnGroup != null)
+					this.btnGroup.addEvent('click', this.options.onClick);
+				else
+					this.button.addEvent('click', this.options.onClick);
+			}
 		}
 	},
 
@@ -267,7 +338,13 @@ ION.Button = new Class({
 	{
 		this.button.setProperty('disabled', 'disabled');
 		this.button.addClass('disabled');
-		this.button.removeEvents();
+		if (this.btnGroup != null)
+		{
+			this.btnGroup.removeEvents();
+			this.btnGroup.removeClass('open');
+		}
+		else
+			this.button.removeEvents();
 		this.isEnabled = false;
 	},
 
@@ -281,9 +358,22 @@ ION.Button = new Class({
 		this.button.show();
 	},
 
+	destroy: function()
+	{
+		if (this.btnGroup != null)
+			this.btnGroup.destroy();
+		else
+			this.button.destroy();
+	},
+
 	getElement: function()
 	{
 		return this.button;
+	},
+
+	getWindow: function()
+	{
+		return this.w;
 	},
 
 	addCaret: function()

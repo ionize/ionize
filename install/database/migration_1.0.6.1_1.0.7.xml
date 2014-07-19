@@ -5,4 +5,7 @@
         update setting set content='1.0.7' where name = 'ionize_version';
     </query>
 
+    <!-- Extend Field -->
+    <query>ALTER TABLE extend_field_type add display smallint(1) NOT NULL default 1;</query>
+
 </sql>

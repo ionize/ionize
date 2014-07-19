@@ -180,11 +180,6 @@ class Base_model extends CI_Model
 
 		self::$ci =& get_instance();
 
-// Doesn't work with multiple DB
-//		$CI =& get_instance();
-//		$CI->{$this->db_group} = $CI->load->database($this->db_group, TRUE);
-//		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE);
-
 		// Unlock the publish filter (filter on publish status of each item)
 		if (Authority::can('access', 'admin'))
 		{
@@ -500,9 +495,11 @@ class Base_model extends CI_Model
 
 		$this->{$this->db_group}->select($table.'.*', FALSE);
 
-		//	log_message('app', print_r($this->{$this->db_group}->get_compile_select() , TRUE));
+	// log_message('app', print_r($this->{$this->db_group}->get_compile_select() , TRUE));
 
 		$query = $this->{$this->db_group}->get($table);
+
+		// log_message('app', print_r($this->{$this->db_group}->last_query(), TRUE));
 
 		if ( $query->num_rows() > 0 )
 			$data = $query->result_array();
@@ -1102,6 +1099,12 @@ class Base_model extends CI_Model
 		$result = array();
 
 		$table = (!is_null($table)) ? $table : $this->table;
+
+		if (isset($where['order_by']))
+		{
+			$field .= ' order by ' . $where['order_by'];
+			unset($where['order_by']);
+		}
 
 		$this->_process_where($where, $table);
 

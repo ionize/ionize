@@ -11,6 +11,13 @@ class Demo extends My_Module
 	{
 		$this->template['title'] = 'Demo module title';
 		$this->output('demo');
+
+		// Tags
+		// Uncomment the previous lines
+		// PHP $this->template['title'] = 'Demo module title' will not be supported
+
+		// $this->render('demo_tags');
+
 	}
 
 	public function test1()
@@ -18,8 +25,4 @@ class Demo extends My_Module
 		echo 'coucou';
 	}
 
-	public function test2()
-	{
-		echo 'caca';
-	}
 }

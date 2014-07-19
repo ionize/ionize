@@ -27,7 +27,7 @@
 		<form name="ionizeSettingsForm" id="ionizeSettingsForm" method="post">
 
 			<!-- Dashboard -->
-			<div class="tabcontent">
+			<div class="tabcontent p20">
 
 				<!-- Shortcuts Block -->
 				<dl>
@@ -82,7 +82,7 @@
 			</div>
 
 			<!-- Style -->
-			<div class="tabcontent">
+			<div class="tabcontent p20">
 
 				<dl>
 					<dt>
@@ -100,7 +100,7 @@
 			</div>
 
 			<!-- Visual help : help tips and "Connected" label -->
-			<div class="tabcontent">
+			<div class="tabcontent p20">
 
 				<dl>
 					<dt>
@@ -141,7 +141,7 @@
 			</div>
 
 			<!-- Admin panel displayed languages -->
-			<div class="tabcontent">
+			<div class="tabcontent p10">
 
 				<table class="list w280">
 					<thead>
@@ -174,7 +174,7 @@
 			</div>
 
 			<!-- Admin panel date and time -->
-			<div class="tabcontent">
+			<div class="tabcontent p20">
 
 				<dl>
 					<dt><label for="date_format_eu">dd.mm.yyyy</label></dt>

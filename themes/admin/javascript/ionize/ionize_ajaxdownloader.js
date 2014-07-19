@@ -16,6 +16,8 @@ ION.AjaxDownloader = new Class({
 
 	initialize: function(options)
 	{
+		this.setOptions(options);
+
 		this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
 
 		var iframe = new IFrame({
@@ -45,7 +47,6 @@ ION.AjaxDownloader = new Class({
 		// Post data
 		Object.each(this.options.post, function(val, key)
 		{
-			console.log(key + ' : ' + val);
 			new Element('input', {
 				'name': key,
 				'type': 'hidden',
