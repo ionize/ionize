@@ -11,10 +11,8 @@
 <?php foreach($elements as $element) :?>
 
 	<?php
-	
 	$id = $element['id_element_definition'];
-	$title = ($element['title'] != '' ) ? $element['title'] : $element['name'];
-	
+	$title = ! empty($element['title']) ? $element['title'] : $element['name'];
 	?>
 
 	<li class="sortme element_definition" id="element_definition_<?php echo $id; ?>" data-id="<?php echo $id; ?>">

@@ -395,9 +395,6 @@ class Base_Controller extends MY_Controller
 		// Models
 		$this->load->model('menu_model', '', TRUE);
 
-		// Modules config
-//		$this->get_modules_config();
-
 		// Add path to installed modules
 		$installed_modules = Modules()->get_installed_modules();
 
@@ -443,6 +440,16 @@ class Base_Controller extends MY_Controller
 			// Store the current lang code (found by Router) to Settings
 			Settings::set('current_lang', config_item('detected_lang_code'));
 		}
+
+		// Check for empty lang URL
+		if ( ! $this->router->is_home())
+		{
+			if ($this->router->get_raw_key() != Settings::get_lang() && (Settings::get('force_lang_urls') OR count($online_lang_codes) > 1))
+			{
+				redirect(current_url(), 'location', 301);
+			}
+		}
+
 
 		// Set lang preference cookie
 		$host = @str_replace('www', '', $_SERVER['HTTP_HOST']);

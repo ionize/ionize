@@ -483,8 +483,11 @@ class Article extends MY_admin
 
 			// Save URLs
 			$this->article_model->save_urls($id_article);
-			
-            // Event : On after save
+
+			// Save the Sitemap
+			$this->structure->build_sitemap();
+
+			// Event : On after save
 			$event_data = array(
 				'base' => $this->data,
 				'lang' => $this->lang_data,

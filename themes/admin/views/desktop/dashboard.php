@@ -611,25 +611,16 @@ $user_role = User()->get_role();
 	// Notifications
 	if ($('notificationContainer'))
 	{
-		if ( ! document.retrieve('ionize_notifications.js'))
-		{
-			Asset.javascript(ION.themeUrl + 'javascript/ionize/ionize_notifications.js',
+		ION.loadAsset(
+			ION.themeUrl + 'javascript/ionize/ionize_notifications.js',
 			{
-				onLoad: function()
+				onComplete: function()
 				{
 					var n = new ION.Notifications({container:'notificationContainer'});
 					n.get();
 				}
-			});
-		}
-		else
-		{
-			var n = new ION.Notifications({container:'notificationContainer'});
-			n.get();
-		}
+			}
+		);
 	}
-
-
-
 
 </script>

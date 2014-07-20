@@ -87,7 +87,10 @@ $id = $id_element_definition;
 
 					<!-- Add Field button -->
 					<?php if ($id != 0 && Authority::can('edit', 'admin/element')) :?>
-						<input type="button" class="light-button plus mb5 ml5 add_field" value="Add field" data-id="<?php echo $id ;?>" />
+						<a class="light button plus mb5 ml5 add_field" data-id="<?php echo $id ;?>">
+							<i class="icon-plus"></i>
+							Add field
+						</a>
 					<?php endif ;?>
 
 					<ul class="fields" id="fields<?php echo $id ;?>" data-id="<?php echo $id ;?>">

@@ -295,7 +295,7 @@ ION.StaticItemManager = new Class({
 			{
 				id: 'itemForm' + id_item,
 				action: ION.adminUrl + 'item/save',
-				// Tells the form we want to relaod (means one reload button will be created)
+				// Tells the form we want to reload (means one reload button will be created)
 				reload: function(json)
 				{
 					self.editItem(json.id_item);

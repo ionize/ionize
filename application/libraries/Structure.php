@@ -259,85 +259,146 @@ class Structure{
 	 * Uses the lib : http://signalkraft.com/sitemaps-for-codeigniter
 	 *
 	 */
-	function build_sitemap()
+	function build_sitemap($force = FALSE)
 	{
 		$ci =& get_instance();
-		
-		$ci->load->library('sitemaps');
-		$ci->load->model('sitemap_model', '', TRUE);
-		
-		$langs = Settings::get_online_languages();
-		$full = (config_item('url_mode') == 'full') ? TRUE : FALSE;
-		$default_lang = config_item('default_lang_code');
 
-		if (count($langs) > 1 OR Settings::get('force_lang_urls') == '1')
+		$ci->config->load('sitemaps');
+		$ci->load->model('notification_model', '', TRUE);
+
+		$auto_create = config_item('sitemaps_auto_create');
+
+		if ($auto_create OR $force)
 		{
-			// Get pages
-			$pages = array();
-			
-			foreach($langs as $lang)
+			$ci->load->library('sitemaps');
+			$ci->load->model('sitemap_model', '', TRUE);
+
+			$get_all_lang = FALSE;
+
+			$langs = Settings::get_online_languages();
+
+			if (Settings::get('force_lang_urls') OR count($langs) > 1)
+				$get_all_lang = TRUE;
+
+			$urls = $ci->sitemap_model->get_urls();
+
+			foreach($urls as $url)
 			{
-				$pages[$lang['lang']] = $ci->sitemap_model->get_pages($lang['lang']);
+				$url['date'] = $url['created'];
+				if (strtotime($url['updated']) > strtotime($url['date'])) $url['date'] = $url['updated'];
+				if (strtotime($url['publish_on']) > strtotime($url['date'])) $url['date'] = $url['publish_on'];
+				if (strtotime($url['logical_date']) > strtotime($url['date'])) $url['date'] = $url['logical_date'];
+
+				$loc = $get_all_lang == TRUE ? base_url() . $url['lang'] . '/' .$url['path'] : base_url() .$url['path'];
+
+				$item = array(
+					'loc' => $loc,
+					'lastmod' => date("c", strtotime($url['date'])),
+					'changefreq' => 'weekly',
+					'priority' => number_format(($url['priority'] / 10), 1,'.','')
+				);
+
+				$ci->sitemaps->add_item($item);
+
+
 			}
-			
-			foreach($langs as $lang)
+
+
+
+
+
+
+			/*
+
+
+			$langs = Settings::get_online_languages();
+			$full = (config_item('url_mode') == 'full') ? TRUE : FALSE;
+			$default_lang = config_item('default_lang_code');
+
+			if (count($langs) > 1 OR Settings::get('force_lang_urls') == '1')
 			{
+				// Get pages
+				$pages = array();
+
+				foreach($langs as $lang)
+				{
+					$pages[$lang['lang']] = $ci->sitemap_model->get_pages($lang['lang']);
+				}
+
+				foreach($langs as $lang)
+				{
+					// Prepare pages :
+					foreach($pages[$lang['lang']] as &$p)
+					{
+						$p['date'] = $p['created'];
+						if (strtotime($p['updated']) > strtotime($p['date'])) $p['date'] = $p['updated'];
+						if (strtotime($p['publish_on']) > strtotime($p['date'])) $p['date'] = $p['publish_on'];
+						if (strtotime($p['logical_date']) > strtotime($p['date'])) $p['date'] = $p['logical_date'];
+					}
+				}
+
+				foreach($langs as $lang)
+				{
+					$code = $lang['lang'];
+
+					foreach($pages[$code] as $page)
+					{
+						$item = array(
+							'loc' => ($full == TRUE) ? base_url() . ($page['home'] == '1' && $code == $default_lang ? '' : $code . '/') .  ($page['home'] != '1' ? $page['path'] : '') : base_url() . $code . '/' . ($page['home'] != '1' ? $page['url'] : ''),
+							'lastmod' => date("c", strtotime($page['date'])),
+							'changefreq' => 'weekly',
+							'priority' => number_format(($page['priority'] / 10), 1,'.','')
+						);
+
+						$ci->sitemaps->add_item($item);
+					}
+				}
+			}
+			// No lang in URLs
+			else
+			{
+				// Get pages
+				$pages = $ci->sitemap_model->get_pages();
+
 				// Prepare pages :
-				foreach($pages[$lang['lang']] as &$p)
+				foreach($pages as &$p)
 				{
 					$p['date'] = $p['created'];
 					if (strtotime($p['updated']) > strtotime($p['date'])) $p['date'] = $p['updated'];
 					if (strtotime($p['publish_on']) > strtotime($p['date'])) $p['date'] = $p['publish_on'];
 					if (strtotime($p['logical_date']) > strtotime($p['date'])) $p['date'] = $p['logical_date'];
 				}
-			}
 
-			foreach($langs as $lang)
-			{
-				$code = $lang['lang'];
-				
-				foreach($pages[$code] as $page)
+				foreach($pages as $page)
 				{
 					$item = array(
-						'loc' => ($full == TRUE) ? base_url() . ($page['home'] == '1' && $code == $default_lang ? '' : $code . '/') .  ($page['home'] != '1' ? $page['path'] : '') : base_url() . $code . '/' . ($page['home'] != '1' ? $page['url'] : ''),
+						'loc' => ($full == TRUE) ? base_url() . ($page['home'] != '1' ? $page['path'] : '') : base_url() . ($page['home'] != '1' ? $page['url'] : ''),
+						// ISO 8601 format - date("c") requires PHP5
 						'lastmod' => date("c", strtotime($page['date'])),
 						'changefreq' => 'weekly',
 						'priority' => number_format(($page['priority'] / 10), 1,'.','')
 					);
-						
+
 					$ci->sitemaps->add_item($item);
 				}
 			}
+*/
+			$ci->sitemaps->build('sitemap.xml');
+
+			// Set notifications as read
+			$ci->notification_model->set_code_as_read('sitemap_refresh');
 		}
-		// No lang in URLs
 		else
 		{
-			// Get pages
-			$pages = $ci->sitemap_model->get_pages();
-	
-			// Prepare pages :
-			foreach($pages as &$p)
-			{
-				$p['date'] = $p['created'];
-				if (strtotime($p['updated']) > strtotime($p['date'])) $p['date'] = $p['updated'];
-				if (strtotime($p['publish_on']) > strtotime($p['date'])) $p['date'] = $p['publish_on'];
-				if (strtotime($p['logical_date']) > strtotime($p['date'])) $p['date'] = $p['logical_date'];
-			}
 
-			foreach($pages as $page)
-			{
-				$item = array(
-					'loc' => ($full == TRUE) ? base_url() . ($page['home'] != '1' ? $page['path'] : '') : base_url() . ($page['home'] != '1' ? $page['url'] : ''),
-					// ISO 8601 format - date("c") requires PHP5
-					'lastmod' => date("c", strtotime($page['date'])),
-					'changefreq' => 'weekly',
-					'priority' => number_format(($page['priority'] / 10), 1,'.','')
-				);
-					
-				$ci->sitemaps->add_item($item);
-			}
+			// Create one notification : The sitemap should be rebuild !
+			$ci->notification_model->create_notification(
+				lang('ionize_notification_title_sitemap_refresh'),
+				lang('ionize_notification_message_sitemap_refresh'),
+				'sitemap_refresh',
+				'System',
+				TRUE
+			);
 		}
-		
-		$file_name = $ci->sitemaps->build('sitemap.xml');
 	}
 }

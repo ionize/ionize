@@ -475,10 +475,10 @@ class Url_model extends Base_model
 		$sql = "
 			delete u from url u
 			left join page p on p.id_page = u.id_entity and u.type='page'
-			left join article a on a.id_article = u.id_entity and u.type = 'article'
+			left join page_article pa on pa.id_article = u.id_entity and u.type = 'article'
 			where
 				p.id_page is null
-				and a.id_article is null;
+				and pa.id_article is null;
 		";
 
 		$this->{$this->db_group}->query($sql);

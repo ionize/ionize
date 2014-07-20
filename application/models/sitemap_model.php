@@ -82,6 +82,8 @@ class Sitemap_model extends Base_model
 		if ($lang)
 			$sql .= " and page_lang.lang = '".$lang."'";
 
+// log_message('app', print_r($sql, TRUE));
+
 		$query = $this->{$this->db_group}->query($sql);
 
 		if ( $query->num_rows() > 0 )
@@ -89,6 +91,77 @@ class Sitemap_model extends Base_model
 
 		$query->free_result();
 		
+		return $data;
+	}
+
+
+	public function get_urls()
+	{
+		$get_all_lang = FALSE;
+
+		$langs = Settings::get_online_languages();
+
+		if (Settings::get('force_lang_urls') OR count($langs) > 1)
+			$get_all_lang = TRUE;
+
+		$sql ="
+			select
+				u.lang,
+				u.path,
+				p.priority,
+				p.created,
+				p.updated,
+				p.publish_on,
+				p.publish_off,
+				p.logical_date
+			from url u
+			inner join page p on p.id_page = u.id_entity and p.has_url = 1
+			where
+				u.type = 'page'
+				and u.active = 1
+				and u.canonical = 1
+				and p.priority > 0
+				and (p.publish_off = '0000-00-00 00:00:00' OR p.publish_off > now())
+		";
+
+		if ( ! $get_all_lang)
+			$sql .= "
+				and u.lang='".Settings::get_lang('default')."'
+			";
+
+		$sql .="
+			union
+
+			select
+				u.lang,
+				u.path,
+				a.priority,
+				a.created,
+				a.updated,
+				a.publish_on,
+				a.publish_off,
+				a.logical_date
+			from url u
+			inner join article_lang al on al.id_article= u.id_entity and al.lang=u.lang and al.online=1
+			inner join article a on a.id_article = al.id_article
+			where
+				u.type = 'article'
+				and u.active = 1
+				and u.canonical = 1
+				and a.indexed = 1
+				and a.priority > 0
+				and (a.publish_off = '0000-00-00 00:00:00' OR a.publish_off > now())
+		";
+
+		if ( ! $get_all_lang)
+			$sql .= "
+				and u.lang='".Settings::get_lang('default')."'
+			";
+
+		$query = $this->{$this->db_group}->query($sql);
+
+		$data = $query->result_array();
+
 		return $data;
 	}
 }

@@ -26,9 +26,6 @@ class MY_Config extends CI_Config
 	 */
 	public function site_url($uri = '')
 	{
-//		static $router;
-		
-//		if( ! $router)
 		if( ! self::$router)
 		{
 			self::$router = load_class('Router');
@@ -38,14 +35,13 @@ class MY_Config extends CI_Config
 		{
 			$uri = implode('/', $uri);
 		}
-		
 		$index = $this->item('index_page') == '' ? '' : $this->slash_item('index_page');
-		
+
 		if($uri == '')
 		{
 			return $this->slash_item('base_url') .
 				   $index .
-				   '/' . self::$router->fetch_lang_key();
+				   self::$router->get_lang_key();
 		}
 		else
 		{
@@ -53,7 +49,7 @@ class MY_Config extends CI_Config
 
 			return $this->slash_item('base_url') .
 				   $index .
-				   self::$router->fetch_lang_key() . '/' .
+				   self::$router->get_lang_key() . '/' .
 				   preg_replace("|^/*(.+?)/*$|", "\\1", $uri) .
 				   $suffix;
 		}

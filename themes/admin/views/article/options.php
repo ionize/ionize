@@ -253,6 +253,26 @@
 		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_seo'); ?></h3>
 		<div class="element element-options">
 
+
+			<!-- Priority -->
+			<dl class="small">
+				<dt>
+					<label for="priority" title="<?php echo lang('ionize_help_sitemap_priority'); ?>"><?php echo lang('ionize_label_sitemap_priority'); ?></label>
+				</dt>
+				<dd>
+					<select name="priority" id="priority" class="inputtext w40">
+						<?php for($i=0; $i<=10; $i++) :?>
+
+							<option value="<?php echo $i; ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?php echo $i; ?></option>
+
+						<?php endfor; ?>
+					</select>
+				</dd>
+			</dl>
+
+
+
+
 			<!-- Meta_Description -->
 			<div class="element-options-content">
 

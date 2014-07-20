@@ -679,7 +679,7 @@ class Installer
 		if ( ! $this->_exists(array('name'=>'404'), 'page'))
 		{
 			$page_code = '404';
-			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Can't find requested page." );
+			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Can't find requested page.", 'priority'=>0 );
 			$id_page = $this->_create_page($data);
 
 			// Article
@@ -691,7 +691,7 @@ class Installer
 		if ( ! $this->_exists(array('name'=>'401'), 'page'))
 		{
 			$page_code = '401';
-			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Login needed" );
+			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Login needed", 'priority'=>0 );
 			$id_page = $this->_create_page($data);
 
 			// Article
@@ -703,7 +703,7 @@ class Installer
 		if ( ! $this->_exists(array('name'=>'403'), 'page'))
 		{
 			$page_code = '403';
-			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Forbidden" );
+			$data = array('id_menu'=>'2', 'name'=>$page_code, 'online'=>'1', 'appears'=>'0', 'url'=>$page_code, 'title'=>$page_code, 'subtitle'=>"Forbidden", 'priority'=>0 );
 			$id_page = $this->_create_page($data);
 
 			// Article

@@ -41,6 +41,34 @@ class Element_definition_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function get($where, $lang = NULL)
+	{
+		$lang = is_null($lang) ? Settings::get_lang('default') : $lang;
+
+		$this->{$this->db_group}->select($this->table.'.*,'.$this->lang_table.'.title,'.$this->lang_table.'.lang', FALSE);
+
+		$this->{$this->db_group}->join(
+			$this->lang_table,
+			$this->lang_table.'.'.$this->pk_name.' = '.$this->table.'.'.$this->pk_name . ' and ' . $this->lang_table.".lang ='".$lang."'",
+			'left'
+		);
+
+		foreach ($where as $key => $value)
+		{
+			$this->{$this->db_group}->where($this->table.'.'.$key, $value);
+		}
+
+		$query = $this->{$this->db_group}->get($this->table);
+
+		$data = $query->row_array();
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns the array of all definitions which have element defined for the given parent
 	 *

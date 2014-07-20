@@ -174,8 +174,27 @@
 						</dd>
 					</dl>
 				</form>
-				
-				
+
+				<!-- Generate Sitemap after each page or article change -->
+				<form name="sitemapAutoForm" id="sitemapAutoForm" method="post" action="<?php echo admin_url(); ?>setting/save_setting">
+
+					<input type="hidden" name="config_file" value="sitemaps" />
+					<input type="hidden" name="setting" value="sitemaps_auto_create" />
+
+					<dl class="last">
+						<dt>
+							<label for="sitemaps_auto_create" title="<?php echo lang('ionize_help_setting_sitemaps_auto_create'); ?>"><?php echo lang('ionize_label_sitemaps_auto_create'); ?></label>
+						</dt>
+						<dd>
+							<input class="inputcheckbox" <?php if (config_item('sitemaps_auto_create') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="setting_value" id="sitemaps_auto_create" value="true" />
+						</dd>
+					</dl>
+				</form>
+
+
+
+
+
 				<h3><?php echo lang('ionize_title_sitemap_search_engine'); ?></h3>
 				
 				<!-- Sitemaps Search Engines -->
@@ -238,5 +257,6 @@
 	ION.setFormSubmit('pingUrlForm', 'submit_ping_url', 'setting/save_seo_urls');
 	ION.setFormSubmit('sitemapUrlForm', 'submit_sitemap_url', 'setting/save_setting');
 	ION.setChangeSubmit('sitemapGzipForm', 'sitemaps_gzip', 'setting/save_setting');
+	ION.setChangeSubmit('sitemapAutoForm', 'sitemaps_auto_create', 'setting/save_setting');
 
 </script>

@@ -70,14 +70,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<!-- Langs -->
+						<!-- Sitemap -->
 						<tr>
 							<td class="middle pr10">
-								<a class="button light check-btn" data-href="system_check/check_lang">
-									<i class="icon-lang"></i><?php echo lang('ionize_title_check_lang'); ?>
+								<a class="button light check-btn" data-href="system_check/rebuild_sitemap">
+									<i class="icon-urls"></i><?php echo lang('ionize_title_rebuild_sitemap'); ?>
 								</a>
 							</td>
-							<td class="middle"><?php echo lang('ionize_text_check_lang'); ?></td>
+							<td class="middle"><?php echo lang('ionize_text_rebuild_sitemap'); ?></td>
 						</tr>
 						<!-- URLs -->
 						<tr>
@@ -115,15 +115,6 @@
 							</td>
 							<td class="middle"><?php echo lang('ionize_text_clean_media'); ?></td>
 						</tr>
-						<!-- Lang tables -->
-						<tr>
-							<td class="middle pr10">
-								<a class="button light check-btn" data-href="lang/clean_tables">
-									<i class="icon-lang"></i><?php echo lang('ionize_button_clean_lang_tables'); ?>
-								</a>
-							</td>
-							<td class="middle"><?php echo lang('ionize_text_clean_lang_tables'); ?></td>
-						</tr>
 						<!-- Thumbs delete -->
 						<tr>
 							<td class="middle pr10">
@@ -132,6 +123,24 @@
 								</a>
 							</td>
 							<td class="middle"><?php echo lang('ionize_text_delete_thumbs'); ?></td>
+						</tr>
+						<!-- Langs -->
+						<tr>
+							<td class="middle pr10">
+								<a class="button light check-btn" data-href="system_check/check_lang">
+									<i class="icon-lang"></i><?php echo lang('ionize_title_check_lang'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_check_lang'); ?></td>
+						</tr>
+						<!-- Lang tables -->
+						<tr>
+							<td class="middle pr10">
+								<a class="button light check-btn" data-href="lang/clean_tables">
+									<i class="icon-lang"></i><?php echo lang('ionize_button_clean_lang_tables'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_clean_lang_tables'); ?></td>
 						</tr>
 
 

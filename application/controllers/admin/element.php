@@ -201,7 +201,7 @@ class Element extends MY_Admin {
 			$id_element_definition = $this->input->post('id_element_definition');
 
 			// Save Element and extend fields
-			$this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
+			$id_element = $this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
 			
 			// Get Elements
 			$this->callback = array
@@ -217,9 +217,7 @@ class Element extends MY_Admin {
 			);
 			
             // Answer
-            $this->success(lang('ionize_message_content_element_saved'));
-			
-			$this->response();
+            $this->success(lang('ionize_message_content_element_saved'), array('id_element'=> $id_element));
 		}
 		else
 		{

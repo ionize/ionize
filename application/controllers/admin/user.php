@@ -215,12 +215,26 @@ class User extends My_Admin
 
 			// Send message to user if needed
 			$message = $this->input->post('message');
-			if ($id_user &&  ! is_null($new_id_user) && $message != '')
+
+			if ( ! is_null($new_id_user) && $message != '')
 			{
+				// Update
+				if ($id_user)
+				{
+					$subject = Settings::get('site_title') . ' : ' .lang('ionize_subject_your_account_has_been_updated');
+					$message_intro = lang('ionize_message_your_account_has_been_created');
+				}
+				else
+				{
+					$subject = Settings::get('site_title') . ' : ' .lang('ionize_subject_your_account_has_been_created');
+					$message_intro = lang('ionize_message_your_account_has_been_updated');
+				}
+
 				// Group
 				$user = $this->user_model->get_user(array('id_user' => $new_id_user));
 
 				$email_data = array(
+					'message_intro' =>  $message_intro,
 					'message' =>  $message,
 					'role' => $user['role_name'],
 					'firstname' => $user['firstname'],
@@ -232,7 +246,7 @@ class User extends My_Admin
 				$this->send_email(
 					Settings::get('site_email'),
 					$post['email'],
-					Settings::get('site_title') . ' : ' .lang('ionize_subject_your_account_has_been_updated'),
+					$subject,
 					$email_data,
 					'mail/system/to_user'
 				);

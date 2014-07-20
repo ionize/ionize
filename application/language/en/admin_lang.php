@@ -532,6 +532,8 @@ $lang['ionize_message_group_saved'] = 'Group saved';
 $lang['ionize_message_group_deleted'] = 'Group deleted';
 $lang['ionize_message_users_exported'] = 'Users exported';
 $lang['ionize_message_users_not_exported'] = 'Users not exported';
+$lang['ionize_subject_your_account_has_been_created'] = 'Your account has been created';
+$lang['ionize_message_your_account_has_been_created'] = 'Your account has been created.';
 $lang['ionize_subject_your_account_has_been_updated'] = 'Your account has been updated';
 $lang['ionize_message_your_account_has_been_updated'] = 'Your account has been updated by one Administrator.';
 $lang['ionize_button_export'] = 'Export';
@@ -585,9 +587,13 @@ $lang['ionize_help_enable_backend_tracker'] = 'Displays users logged to the back
 $lang['ionize_onchange_ionize_settings'] = 'The Administration panel will reload after saving these settings.';
 $lang['ionize_label_sitemaps_gzip'] = 'Compress Sitemap';
 $lang['ionize_help_setting_sitemaps_gzip'] = 'Compress the Sitemap file with gzip.';
+$lang['ionize_label_sitemaps_auto_create'] = 'Auto create Sitemap';
+$lang['ionize_help_setting_sitemaps_auto_create'] = 'Update the sitemap after each page or article save. Can be long on big websites.';
 $lang['ionize_label_display_google'] = 'Display on Dashboard';
 $lang['ionize_help_display_google'] = 'Displays Google Analytics basic charts on the dashboard';
 
+$lang['ionize_notification_title_sitemap_refresh'] = 'Sitemap refresh';
+$lang['ionize_notification_message_sitemap_refresh'] = 'Sitemap needs to be refreshed.<br/> Go to <b>Tools > System Diagnosis > Tools</b> and click on <b>"Refresh Sitemap"</b>.';
 
 
 
@@ -1208,6 +1214,9 @@ $lang['ionize_title_check_page_level'] = 'Pages Levels';
 $lang['ionize_title_check_article_context'] = 'Articles Contexts';
 $lang['ionize_title_check_views'] = 'Check Views';
 $lang['ionize_title_rebuild_urls'] = 'Rebuild URLs';
+$lang['ionize_title_rebuild_sitemap'] = 'Rebuild Sitemap';
+$lang['ionize_text_rebuild_sitemap'] = 'Rebuilds the complate Sitemap file.<br/>Can be long on big websites.';
+$lang['ionize_title_rebuild_sitemap_done'] = 'Rebuild of Sitemap done';
 $lang['ionize_title_rebuild_pages_urls'] = 'Rebuild of Pages URLs';
 $lang['ionize_title_rebuild_articles_urls'] = 'Rebuild of Articles URLs';
 $lang['ionize_title_clean_media'] = 'Clean Media';

@@ -46,12 +46,6 @@ $id_definition = $id_item_definition;
 		fieldsManager<?php echo $UNIQ ?>.makeSortable();
 
 		// Loads the Extend Manager
-/*
-		var extendManager = new ION.ExtendManager({
-			parent: 'item'
-		});
-*/
-
 		extendManager.init({
 			parent: 'item'
 		});
@@ -78,29 +72,6 @@ $id_definition = $id_item_definition;
 				);
 			});
 		});
-
-		/*
-		$$('#fields'+uniq +' .title').each(function(item)
-		{
-			var id_extend = item.getProperty('data-id');
-
-			item.addEvent('click', function(e)
-			{
-				e.stop();
-				ION.formWindow(
-					'itemfield' + id_extend,
-					'itemfieldForm' + id_extend,
-					'ionize_title_item_field_edit',
-					'item_field/edit',
-					{width:500, height:350},
-					{
-						id_item_definition: '<?php echo $id_definition ?>',
-						'id_extend_field': id_extend
-					}
-				);
-			});
-		});
-		*/
 
 		// Set "Display in List"
 		$$('#fields'+uniq +' .display').each(function(item)

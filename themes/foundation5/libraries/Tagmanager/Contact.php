@@ -53,22 +53,37 @@ class TagManager_Contact extends TagManager
 			// The log files are located in : /application/logs/log-YYYY-MM-DD.php
 			// We prefer to log our 'dev' data as 'error' to not see the all CodeIgniter 'debug' messages.
 
-			$posted = self::$ci->input->post();
+			$post = self::$ci->input->post();
 			// trace($posted);
 			// log_message('error', print_r($posted, TRUE));
 
-			// Send the posted data to the Email library and send the Email
-			// as defined in /themes/your_theme/config/forms.php
-// 			TagManager_Email::send_form_emails($tag, $form_name, $posted);
+			// SFS : Fires the event declared in Stop Form Spam module config
+			// Do we go further in the form processing ? Yes by default.
+			$go_further = TRUE;
+			$results = Event::fire('Form.contact.check', $post);
 
-			// Add one custom Success message
-			// Get the messages key defined in : /themes/your_theme/config/forms.php
-			// You can also set directly one lang translated key
-			$message = TagManager_Form::get_form_message('success');
-			TagManager_Form::set_additional_success($form_name, $message);
+			if (is_array($results))
+			{
+				foreach($results as $result)
+					if ( ! $result)
+						$go_further = FALSE;
+			}
 
-			// Alternative : Set the message by using directly one lang translated key :
-			// TagManager_Form::set_additional_success($form_name, lang('form_message_success'));
+			if ($go_further)
+			{
+				// Send the posted data to the Email library and send the Email
+				// as defined in /themes/your_theme/config/forms.php
+				TagManager_Email::send_form_emails($tag, $form_name, $post);
+
+				// Add one custom Success message
+				// Get the messages key defined in : /themes/your_theme/config/forms.php
+				// You can also set directly one lang translated key
+				$message = TagManager_Form::get_form_message('success');
+				TagManager_Form::set_additional_success($form_name, $message);
+
+				// Alternative : Set the message by using directly one lang translated key :
+				// TagManager_Form::set_additional_success($form_name, lang('form_message_success'));
+			}
 
 			// Use of the 'redirect' option of the form config.
 			// If no redirect after processing, the form data can be send again if the user refreshes the page

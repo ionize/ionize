@@ -292,7 +292,6 @@ class Setting extends MY_admin
 			$options = array(
 				CURLOPT_RETURNTRANSFER => TRUE, // return web page
 				CURLOPT_HEADER => FALSE, // don't return headers
-				CURLOPT_FOLLOWLOCATION => TRUE, // follow redirects
 				CURLOPT_ENCODING => "", // handle all encodings
 				CURLOPT_USERAGENT => "ionize", // who am i
 				CURLOPT_AUTOREFERER => TRUE, // set referer on redirect
@@ -303,6 +302,12 @@ class Setting extends MY_admin
 				CURLOPT_SSL_VERIFYPEER => FALSE, //
 				CURLOPT_VERBOSE => 1 //
 			);
+
+			$open_basedir_restriction = ini_get('open_basedir');
+			$safe_mode = ini_get('safe_mode');
+
+			if ( empty($open_basedir_restriction) && ! $safe_mode)
+				$options[CURLOPT_FOLLOWLOCATION] = TRUE;		// follow redirects
  
 			$ch = curl_init(base_url().$page['name']);
 			curl_setopt_array($ch,$options);

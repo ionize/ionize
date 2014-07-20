@@ -248,6 +248,7 @@ class Element_definition extends MY_Admin {
 			if ($field == 'name')
 			{
 				$element = $this->element_definition_model->get($data);
+
 				if ( ! empty($element) && $element['id_element_definition'] != $id)
 				{
 					$this->callback = array
@@ -471,7 +472,7 @@ class Element_definition extends MY_Admin {
 			array('id_element_definition' => $id_element),
 			Settings::get_lang('default')
 		);
-		
+
 		// Element's fields definition
 		$fields = $this->extend_field_model->get_list(
 			array(

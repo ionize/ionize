@@ -53,6 +53,44 @@ class Settings_Model extends Base_model
 
 
 	/**
+	 * Get one setting, from DB
+	 *
+	 * @param      $name
+	 * @param null $lang
+	 *
+	 * @return mixed
+	 */
+	function get_setting($name, $lang=NULL)
+	{
+		$this->{$this->db_group}->where('name', $name);
+
+		if ( ! is_null($lang))
+			$this->{$this->db_group}->where('lang', $lang);
+
+		$query = $this->{$this->db_group}->get($this->table);
+
+		return $query->row_array();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_setting_value($name, $lang=NULL)
+	{
+		$setting = $this->get_setting($name, $lang);
+
+		if ( $setting && isset($setting['content']))
+			return $setting['content'];
+
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Get the settings
 	 * Don't retrieves the language depending settings
 	 *
@@ -62,7 +100,7 @@ class Settings_Model extends Base_model
 	{
 		$this->{$this->db_group}->where("(lang is null or lang='')");
 		$query = $this->{$this->db_group}->get($this->table);
-		
+
 		return $query->result_array();
 	}
 
@@ -117,6 +155,39 @@ class Settings_Model extends Base_model
 		}
 
 		return $lang_dirs;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	function set_setting($name, $content, $lang=NULL)
+	{
+		// Check the setting
+		$this->{$this->db_group}->from($this->table);
+		$this->{$this->db_group}->where('name',$name);
+
+		$where = array('name' => $name);
+		$data = array(
+			'name' => $name,
+			'content' => $content
+		);
+
+		if ( ! is_null($lang))
+		{
+			$this->{$this->db_group}->where('lang', $lang);
+			$where['lang'] = $lang;
+			$data['lang'] = $lang;
+		}
+
+		if ($this->{$this->db_group}->count_all_results() > 0)
+		{
+			$this->{$this->db_group}->update($this->table, $data, $where);
+		}
+		else
+		{
+			$this->{$this->db_group}->insert($this->table, $data);
+		}
 	}
 
 

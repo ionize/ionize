@@ -37,37 +37,48 @@ class Notification extends MY_admin
 
 	public function get_ionize_notifications()
 	{
-		$this->load->library('curl');
-		$this->curl->option(CURLOPT_USERAGENT, $this->input->user_agent());
-		$this->curl->option(CURLOPT_RETURNTRANSFER, TRUE);
-
-		$h = $this->input->request_headers();
-		$h = array_change_key_case($h);
-
-		$headers = array(
-			'X-source: ionize',
-			'X-version: ' . Settings::get('ionize_version'),
-			'X-host: ' . (isset($h['host']) ? $h['host'] : ''),
-		);
-
-		if ( ! empty($h['accept-language']))
-			$headers[] = 'accept-language:' . $h['accept-language'];
-
-		$this->curl->option(CURLOPT_HTTPHEADER, $headers);
-
-		$result = $this->curl->simple_get('http://ionizecms.com/ionize_notification');
-		$result = json_decode($result, TRUE);
-
-		if ( ! empty($result))
+		if ($this->notification_model->should_refresh())
 		{
-			if ( ! empty($result['notifications']))
-				$this->notification_model->update_ionize_notifications($result['notifications']);
+			$this->load->library('curl');
+			$this->curl->option(CURLOPT_USERAGENT, $this->input->user_agent());
+			$this->curl->option(CURLOPT_RETURNTRANSFER, TRUE);
 
-			$this->xhr_output($result);
+			$h = $this->input->request_headers();
+			$h = array_change_key_case($h);
+
+			$headers = array(
+				'X-source: ionize',
+				'X-version: ' . Settings::get('ionize_version'),
+				'X-host: ' . (isset($h['host']) ? $h['host'] : ''),
+			);
+
+			if ( ! empty($h['accept-language']))
+				$headers[] = 'accept-language:' . $h['accept-language'];
+
+			$this->curl->option(CURLOPT_HTTPHEADER, $headers);
+
+			$result = $this->curl->simple_get('http://ionizecms.com/ionize_notification');
+			$result = json_decode($result, TRUE);
+
+			$this->notification_model->set_refreshed();
+
+			if ( ! empty($result))
+			{
+				if ( ! empty($result['version']))
+					$this->notification_model->set_last_version($result['version']);
+
+				if ( ! empty($result['notifications']))
+					$this->notification_model->update_ionize_notifications($result['notifications']);
+
+				$this->xhr_output($result);
+			}
+			else
+				$this->xhr_output(array());
 		}
 		else
 		{
-			$this->xhr_output(array());
+			$result = $this->notification_model->get_networked_ionize_notifications();
+			$this->xhr_output($result);
 		}
 	}
 
@@ -77,6 +88,10 @@ class Notification extends MY_admin
 
 	public function get_local_notifications()
 	{
+		// $category = $this->input->post('category');
+
+		// log_message('app', print_r($category, TRUE));
+
 		$notifications = $this->notification_model->get_ionize_notifications();
 
 		$this->xhr_output($notifications);

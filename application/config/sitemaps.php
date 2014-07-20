@@ -30,12 +30,21 @@ $config['sitemaps_gzip_path'] = '{file_name}.gz';
 
 /*
 |--------------------------------------------------------------------------
+| Auto update sitemaps after each page or article change
+| Can make page and article save process longer
+|--------------------------------------------------------------------------
+|
+*/
+$config['sitemaps_auto_create'] = false;
+
+
+/*
+|--------------------------------------------------------------------------
 | Same as the above two, but for sitemap indexes
 |--------------------------------------------------------------------------
 |
 */
 $config['sitemaps_index_gzip'] = true;
-
 $config['sitemaps_index_gzip_path'] = '{file_name}.gz';
 
 /*

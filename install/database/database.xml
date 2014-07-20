@@ -54,6 +54,7 @@
 			  comment_expire datetime,
 			  flag smallint(1) DEFAULT 0,
 			  has_url tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+			  priority smallint(1) UNSIGNED NOT NULL DEFAULT 5,
 			  PRIMARY KEY  (id_article)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
@@ -427,15 +428,19 @@
 		</query>
 
         <query>
+            drop table if exists notification;
+        </query>
+        <query>
             CREATE TABLE IF NOT EXISTS notification (
-              id_notification int(11) unsigned NOT NULL,
+              id_notification int(11) unsigned NOT NULL AUTO_INCREMENT,
               date_creation date DEFAULT NULL,
+              code varchar(50) NULL,
               category varchar(25) DEFAULT NULL,
               title varchar(50) DEFAULT NULL,
               content text,
               `read` smallint(1) DEFAULT '0',
               PRIMARY KEY (id_notification)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
         </query>
 
         <query>

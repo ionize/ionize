@@ -352,19 +352,37 @@ class System_check extends MY_admin
 	 * Rebuilds the pages URLs
 	 *
 	 */
+	public function rebuild_sitemap()
+	{
+		$this->structure->build_sitemap(TRUE);
+
+		$result = array(
+			'title' => lang('ionize_title_rebuild_sitemap_done'),
+			'status' => 'success',
+			'message' => lang('ionize_message_check_ok'),
+		);
+		
+		$this->xhr_output($result);
+	}
+
+
+	/**
+	 * Rebuilds the pages URLs
+	 *
+	 */
 	public function rebuild_urls()
 	{
 		$this->url_model->clean_table();
 
 		$nb = $this->page_model->rebuild_urls();
 		$this->url_model->delete_empty_urls();
-		
+
 		$result = array(
 			'title' => lang('ionize_title_rebuild_pages_urls'),
 			'status' => 'success',
 			'message' => lang('ionize_message_check_ok'),
 		);
-		
+
 		$this->xhr_output($result);
 	}
 
