@@ -152,9 +152,21 @@ class Lang extends MY_admin
 	 */
 	function clean_tables()
 	{
-		$tables = array('page', 'article', 'media');
-	
-		$deleted_rows = $this->lang_model->clean_lang_tables($tables);
+		//$tables = array('page', 'article', 'media');
+		// Some other content language tables need to be cleaned up too. -- Kochin
+		// Retrieve a list of all content language table names.
+		$tables = $this->lang_model->list_lang_tables();
+		if ($tables != FALSE)
+		{
+			// Remove the postfix _lang.
+			$tables = preg_replace('/_lang$/', '', $tables);
+			log_message('debug', 'Content language tables w/o _lang: '.print_r($tables, TRUE));
+
+			$deleted_rows = $this->lang_model->clean_lang_tables($tables);
+		}
+
+		// Also delete rows belong to unused languages in the setting table. -- Kochin
+		$deleted_rows = $this->settings_model->clean_lang_settings();
 
 		$result = array(
 			'title' => lang('ionize_button_clean_lang_tables'),
