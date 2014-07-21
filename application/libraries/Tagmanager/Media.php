@@ -51,6 +51,7 @@ class TagManager_Media extends TagManager
 		'medias:extension' => 	'tag_simple_value',
 		'medias:provider' => 	'tag_simple_value',
 		'medias:mime' => 		'tag_simple_value',
+		'medias:type' => 		'tag_simple_value',
 	);
 
 
