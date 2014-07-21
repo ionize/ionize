@@ -162,7 +162,7 @@ if ($tracker_title == '')
 
 							<dl>
 								<dt>
-									<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_content_online'); ?>"><?php echo lang('ionize_label_online_in'); ?> <?php echo ucfirst($language['name']); ?></label>
+									<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_content_online'); ?>"><?php echo lang('ionize_label_online'); ?></label>
 								</dt>
 								<dd>
 									<input id="online_<?php echo $lang; ?>" <?php if ($languages[$lang]['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?php echo $lang; ?>" class="inputcheckbox" type="checkbox" value="1"/>
@@ -316,13 +316,31 @@ if ($tracker_title == '')
 	// - Update the article select list after parent change
 	if ($('id_page'))
 	{
-		$('ordering_select').addEvent('change', function(e)
+		$('ordering_select').addEvent('change', function()
 		{
-			e.stop();
-			var el = e.target;
-			if (el.value == 'after'){ $('ordering_after').setStyle('display', 'block');}
+			if (this.value == 'after'){ $('ordering_after').setStyle('display', 'block');}
 			else { $('ordering_after').setStyle('display', 'none');	}
 		});
+
+	}
+
+	if ($('ordering_select'))
+	{
+		var cookieName = 'new-article-order';
+		var order_options = 'first';
+
+		$('ordering_select').addEvent('change', function()
+		{
+			Cookie.write(cookieName, this.value);
+		});
+
+		if (Cookie.read(cookieName))
+		{
+			order_options = Cookie.read(cookieName);
+			$('ordering_select').getElement('[value="'+order_options+'"]').setProperty('selected', 'selected');
+			if (order_options == 'after')
+				$('ordering_select').fireEvent('change');
+		}
 	}
 
 	// Copy Lang data to other languages dynamically

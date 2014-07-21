@@ -1142,7 +1142,7 @@ ION.ExtendManager = new Class({
 		//
 		if (dom_type == 'media')
 		{
-			field = new Element('div');
+			field = new Element('div', {'class':'clearfix'});
 
 			// Can be linked : The parent exists
 			if (this.id_parent)

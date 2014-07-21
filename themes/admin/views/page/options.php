@@ -30,7 +30,7 @@
 				<dl class="compact small">
 					<dt><label><?php echo lang('ionize_label_status'); ?></label></dt>
 					<dd>
-						<a id="iconPageStatus" class="icon left page<?php echo $id_page; ?> <?php echo($online == '1') ? 'online' : 'offline' ;?>"></a>
+						<a id="iconPageStatus" title="<?php echo lang('ionize_button_switch_online') ?>" class="icon left page<?php echo $id_page; ?> <?php echo($online == '1') ? 'online' : 'offline' ;?>"></a>
 					</dd>
 				</dl>
 
@@ -387,6 +387,20 @@
 					<input id="pagination" name="pagination" type="text" class="inputtext w40" value="<?php echo $pagination; ?>" />
 				</dd>
 			</dl>
+
+			<!-- Default Article Order
+			<dl class="small last">
+				<dt>
+					<label for="drop_article_order" title="<?php echo lang('ionize_help_drop_article_order'); ?>"><?php echo lang('ionize_label_drop_article_order'); ?></label>
+				</dt>
+				<dd>
+					<input id="drop_article_order" name="drop_article_order" type="text" class="inputtext w40" value="<?php echo ''; ?>" />
+				</dd>
+			</dl>
+			-->
+
+
+
 		</div>
 
 		<!-- Operations on Page -->

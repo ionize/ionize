@@ -205,7 +205,7 @@ ION.TreeXhr = new Class({
 
 			// Action element
 			var action = this.action_Model.clone();
-	        var iconOnline = new Element('a', {'class':'icon status ' + online}).addClass(type + flat_id).setProperty('data-id', rel);
+	        var iconOnline = new Element('a', {'class':'icon status ' + online, title:Lang.get('ionize_button_switch_online')}).addClass(type + flat_id).setProperty('data-id', rel);
 
 			// Title element
 			var link = this.span_Model.clone().addClass('title');
@@ -242,10 +242,10 @@ ION.TreeXhr = new Class({
 
 				// Icons : Add Article, Add page
 				if (ION.Authority.can('add_article', 'admin/tree/page') && ION.Authority.can('add_article', resource, true))
-					action.adopt(new Element('a').addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('data-id', rel));
+					action.adopt(new Element('a', {title:Lang.get('ionize_label_add_article')}).addClass('addArticle').addClass('icon').addClass('article').addClass('add').setProperty('data-id', rel));
 
 				if (ION.Authority.can('add_page', 'admin/tree/page') && ION.Authority.can('add_page', resource, true))
-					action.adopt(new Element('a').addClass('addPage').addClass('icon').addClass('page').addClass('add').setProperty('data-page', id).setProperty('data-menu', element.id_menu));
+					action.adopt(new Element('a', {title:Lang.get('ionize_button_add_page')}).addClass('addPage').addClass('icon').addClass('page').addClass('add').setProperty('data-page', id).setProperty('data-menu', element.id_menu));
 
 	            // Actions
 				this.addPageActionLinks(action);
@@ -284,7 +284,7 @@ ION.TreeXhr = new Class({
 				// Icon : unlink
 				if (ION.Authority.can('unlink', 'admin/tree/article') && ION.Authority.can('unlink', resource, true))
 				{
-	                var iconUnlink = new Element('a', {'class': 'icon unlink', 'data-id': rel});
+	                var iconUnlink = new Element('a', {'class': 'icon unlink', 'data-id': rel, title:Lang.get('ionize_label_unlink')});
 	                action.adopt(iconUnlink);
 				}
 
