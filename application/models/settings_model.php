@@ -248,4 +248,39 @@ class Settings_Model extends Base_model
 			$this->{$this->db_group}->query($sql);
 		}
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Clean unused language depending settings -- Kochin
+	 *
+	 * When a language is deleted, language depending settings are left untouched.
+	 * This function cleans up any unused language depending settings.
+	 *
+	 * @return	Int	number of rows deleted
+	 */
+	function clean_lang_settings()
+	{
+		// Get the existing languages
+		$languages = Settings::get_languages();
+		$lang_codes = array();
+
+		foreach ($languages as $lang)
+		{
+			$lang_codes[] = $lang['lang'];
+		}
+
+		// Execute the cleaning request
+		$nb_affected_rows = 0;
+		if ( ! empty($lang_codes))
+		{
+			$this->{$this->db_group}->where("NOT(lang IS NULL OR lang='')")
+						->where_not_in('lang', $lang_codes);
+			$nb_affected_rows = $this->{$this->db_group}->delete($this->table);
+		}
+
+		return $nb_affected_rows;
+	}
 }

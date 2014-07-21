@@ -271,4 +271,32 @@ class Lang_model extends Base_model
 		
 		$this->{$this->db_group}->query($sql);
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Return all content language table names -- Kochin
+	 *
+	 * By convention, all content language tables, except setting, have _lang as postfix
+	 * in their names. This function returns all those table names.
+	 * 
+	 * @return	array		all content language table names
+	 *								
+	 */
+	public function list_lang_tables()
+	{
+		// Retrieve a list of all table names.
+		$all_tables = $this->{$this->db_group}->list_tables();
+		$lang_tables = array();
+
+		// Extract content language table names.
+		if ($all_tables != FALSE)
+		{
+			$lang_tables = preg_grep('/_lang$/', $all_tables);
+		}
+
+		return $lang_tables;
+	}
 }
