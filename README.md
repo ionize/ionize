@@ -1,9 +1,9 @@
 Ionize CMS
 =======================
 
-Version : 1.0.2
+Version : 1.0.7
 
-Released on may 2013
+Released on july 2014
 
 ### About Ionize
 
