@@ -1153,14 +1153,16 @@ class Article extends MY_admin
 		if ( ! empty($context['link']) )		
 		{
 			$title = NULL;
-			
+			$breadcrumb = '';
+
 			// Prep the Link
 			switch($context['link_type'])
 			{
 				case 'page' :
 					
 					$link = $this->page_model->get_by_id($context['link_id'], Settings::get_lang('default'));
-					
+					$breadcrumb = $this->page_model->get_breadcrumb_string($context['link_id']);
+
 					// Correct missing link
 					if ( empty($link) )
 					{
@@ -1175,7 +1177,9 @@ class Article extends MY_admin
 					
 					$link_rel = explode('.', $context['link_id']);
 					$link = $this->article_model->get_by_id($link_rel[1], Settings::get_lang('default'));
-					
+
+					$breadcrumb = $this->page_model->get_breadcrumb_string($link_rel[0]);
+
 					// Correct missing link
 					if ( empty($link) )
 					{
@@ -1184,6 +1188,9 @@ class Article extends MY_admin
 					}
 					
 					$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+
+					$breadcrumb .= ' > ' . $title;
+
 					break;
 				
 				case 'external' :
@@ -1200,7 +1207,8 @@ class Article extends MY_admin
 					'rel' => $id_page.'.'.$id_article,
 					'link_id' => $context['link_id'],
 					'link_type' => $context['link_type'],
-					'link' => $title
+					'link' => $title,
+					'breadcrumb' => $breadcrumb
 				);
 			}
 		}

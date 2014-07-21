@@ -759,7 +759,9 @@ class Page extends MY_admin
 		
 		$page = $this->page_model->get_by_id($id_page);
 		$link_type = $page['link_type'];
+
 		$title = NULL;
+		$breadcrumb = '';
 
 		if (in_array($link_type, array('page', 'article')))
 		{
@@ -767,16 +769,22 @@ class Page extends MY_admin
 			{
 				$link_rel = explode('.', $page['link_id']);
 				$link_id = isset($link_rel[1]) ? $link_rel[1] : NULL;
+				$breadcrumb = $this->page_model->get_breadcrumb_string($link_rel[0]);
 			}
 			else
 			{
 				$link_id = $page['link_id'];
+				$breadcrumb = $this->page_model->get_breadcrumb_string($page['link_id']);
 			}
+
 			$link = $this->{$link_type.'_model'}->get_by_id($link_id, Settings::get_lang('default'));
 
 			if ( ! empty($link))
 			{
 				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
+
+				if ($link_type == 'article')
+					$breadcrumb .= ' > ' . $title;
 			}
 			// The destination doesn't exists anymore : remove the link
 			else
@@ -799,7 +807,8 @@ class Page extends MY_admin
 				'rel' => $id_page,
 				'link_id' => $page['link_id'],
 				'link_type' => $page['link_type'],
-				'link' => $title
+				'link' => $title,
+				'breadcrumb' => $breadcrumb
 			);
 		}
 

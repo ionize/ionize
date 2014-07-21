@@ -11,13 +11,13 @@
 			
 				<li class="sortme">
 		
-					<a class="left link-img <?php echo $link_type; ?>" ></a>
+					<a class="left link-img <?php echo $link_type; ?>" title="<?php echo $breadcrumb ?>"></a>
 			
 					<!-- Unlink icon -->
 					<a class="icon unlink right"></a>
 			
 					<!-- Title -->
-					<a id="link_title" class="pl5 pr10" title="<?php echo $link; ?>"><?php echo $link; ?></a>
+					<a id="link_title" class="pl5 pr10" title="<?php echo $breadcrumb; ?>"><?php echo $link; ?></a>
 		
 				</li>
 		
@@ -38,15 +38,21 @@
 		}
 		else
 		{
-			$('link_title').addEvent('click', function(e){
-                ION.contentUpdate({
-					'element': $(ION.mainpanel),
-					'url': '<?php echo $link_type; ?>/edit/<?php echo $link_id; ?>'
+			var id = '<?php echo $link_id; ?>',
+				type = '<?php echo $link_type; ?>',
+				title = '<?php echo $link; ?>'
+			;
+
+			$('link_title').addEvent('click', function()
+			{
+				ION.splitPanel({
+					'urlMain': ION.adminUrl + type + '/edit/' + id,
+					'urlOptions': ION.adminUrl + type +'/get_options/' + id,
+					'title': Lang.get('ionize_title_edit_' + type) + ' : ' + title
 				});
 			});
 		}
 		
-	
 	</script>
 	
 <?php else :?>

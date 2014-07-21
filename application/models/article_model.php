@@ -956,7 +956,7 @@ class Article_model extends Base_model
 
 	public function correct_internal_links($id_article, $id_old_page, $id_page)
 	{
-		$articles = array();
+		// Update content links
 		$old_link_code = '{{article:'.$id_old_page.'.'.$id_article.'}}';
 		$new_link_code = '{{article:'.$id_page.'.'.$id_article.'}}';
 
@@ -981,6 +981,13 @@ class Article_model extends Base_model
 				$this->{$this->db_group}->update($this->lang_table, array('content'=>$content));
 			}
 		}
+
+		// Update internal links
+		parent::update(
+			array('link_id' => $id_old_page.'.'.$id_article),
+			array('link_id' => $id_page.'.'.$id_article),
+			$this->parent_table
+		);
 	}
 
 
