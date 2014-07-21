@@ -164,7 +164,9 @@ class User_model extends Base_model
 
 		$this->_join_role();
 
-		return parent::count($where);
+		$nb = parent::count($where);
+
+		return $nb;
 	}
 
 

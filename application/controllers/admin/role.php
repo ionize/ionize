@@ -171,7 +171,7 @@ class Role extends MY_Admin
 		$id_role = $this->input->post('id_role');
 
 		// Safe : Do not delete Role linked to users
-		$nb_users = $this->user_model->count(array('id_role' => $id_role));
+		$nb_users = $this->user_model->count(array('user.id_role' => $id_role));
 
 		if ($nb_users > 0)
 		{
