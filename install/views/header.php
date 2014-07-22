@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title><?php echo lang('title_ionize_installation')?></title>
 <link rel="stylesheet" href="assets/css/installer.css" type="text/css" />
-<script type="text/javascript" src="../themes/admin/javascript/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+<script type="text/javascript" src="../themes/admin/javascript/mootools-core-1.5.0-full-nocompat-yc.js"></script>
 <script type="text/javascript">
 
 	window.addEvent('load', function()
