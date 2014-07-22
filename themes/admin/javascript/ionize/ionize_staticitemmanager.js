@@ -137,6 +137,7 @@ ION.StaticItemManager = new Class({
 				{
 					container: $(this.destination),
 					items: json,
+					sortable:true,
 					sort: {
 						handler: '.drag',
 						id_key: 'id_item',
