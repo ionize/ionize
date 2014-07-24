@@ -444,7 +444,7 @@ namespace Ionize {
 			if( ! $this->logged_in() OR ! $this->remember['on'])
 				return FALSE;
 
-			$user = $this->get_current_user();
+			$user = $this->get_user();
 
 			$str = array($user_pk => $user[$user_pk],
 				'ip' => self::$ci->input->ip_address(),

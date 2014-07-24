@@ -8,6 +8,7 @@ ION.Window = new Class({
 
 	w: null,			// Mocha UI Window
  	buttons:[],			// Array of bottom buttons
+	divButtons: null,
 
 	options: {
 		type:'window',
@@ -39,7 +40,7 @@ ION.Window = new Class({
 		 ]
 		 form: {
 		    id: '',                 // Form ID
-		    clas: '',               // Form CSS class
+		    class: '',               // Form CSS class
 		    action: '',             // URL to the save controller
 		    reload: function(),     // Function executed after Form save,
 		    post: {					// Data to merge with the form data
@@ -194,7 +195,9 @@ ION.Window = new Class({
 					container: w.el.content
 				});
 
-				self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
+				// Set before call of the potential Form Window onDrawEnd
+				if (typeOf(self.divButtons) == 'null')
+					self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
 
 				// Buttons set as options
 				self.buttons.each(function(button)
@@ -228,16 +231,19 @@ ION.Window = new Class({
 
 		if (opt.form)
 		{
-			if (typeOf(opt.form.id) == 'null')
-				opt.form.id = ION.generateHash(16);
+			if (typeOf(opt.form.id) == 'null') opt.form.id = ION.generateHash(16);
+			if (typeOf(opt.form['class']) == 'null') opt.form['class'] = '';
 
 			var options =
 			{
 				onDrawEnd: function(w)
 				{
+					if (typeOf(self.divButtons) == 'null')
+						self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
+
 					self.form = new Element('form', {
 						id: opt.form.id,
-						'class': opt.form.class,
+						'class': opt.form['class'],
 						action: opt.form.action,
 						method: 'post'
 					}).inject(w.el.content);

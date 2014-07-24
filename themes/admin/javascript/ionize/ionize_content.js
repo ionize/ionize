@@ -850,7 +850,7 @@ ION.append({
 
 				item.addEvent('click', function(e) {
 					e.stop();
-					visibleInput.value = '';
+					if (typeOf(visibleInput) != 'null') visibleInput.value = '';
 					dataInput.value = '';
 				});
 			}

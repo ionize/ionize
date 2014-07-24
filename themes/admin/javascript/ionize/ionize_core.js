@@ -32,8 +32,12 @@ ION.append({
 	// See : http://thejacklawson.com/Mediator.js/
 	// Mediator: new Mediator(),
 
-	registry: function(key){
-		return this.instances[key];
+	registry: function(key)
+	{
+		if (typeOf(this.instances[key]) != 'null')
+			return this.instances[key];
+
+		return null;
 	},
 
 	register: function(key, instance){

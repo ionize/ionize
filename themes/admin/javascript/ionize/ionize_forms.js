@@ -469,17 +469,10 @@ ION.Form.Select = new Class({
 			{
 				var data = this.getSelected().retrieve('data');
 				if (typeOf(data) == 'array') data = data[0];
+				// Store the selected value (in case of options refresh)
+				self.options.selected = this.value;
 				options.onChange(this.value, data, this.getSelected(), self.select, self);
 			});
-		}
-
-		// Has the select one first value (usually '-- Select something --')
-		if (options.firstLabel != null && options.firstValue != null)
-		{
-			new Element('option', {'value': options.firstValue}).set(
-				'html',
-				options.firstLabel
-			).inject(this.select);
 		}
 
 		// Container : If set, the select will be injected in this container
@@ -490,16 +483,7 @@ ION.Form.Select = new Class({
 		// One JSON array is expected as result
 		if (o.url)
 		{
-			ION.JSON(
-				o.url,
-				o.post,
-				{
-					onSuccess: function(json)
-					{
-						self.buildOptions(json);
-					}
-				}
-			);
+			this.getOptionsFromUrl();
 		}
 		else if (Object.getLength(o.data) > 0)
 		{
@@ -519,6 +503,42 @@ ION.Form.Select = new Class({
 		this.fireEvent('onDraw', [this.select, this]);
 	},
 
+	getOptionsFromUrl: function()
+	{
+		var self = this;
+
+		ION.JSON(
+			this.options.url,
+			this.options.post,
+			{
+				onSuccess: function(json)
+				{
+					self.buildOptions(json);
+				}
+			}
+		);
+	},
+
+	/**
+	 *
+	 * @param options {
+	 * 			data:	If set, will be used to feed the select
+	 * 			url:	If set, will be used to feed the select
+	 * 		  }
+	 */
+	refresh: function(options)
+	{
+		if (typeOf(options.data) != 'null')
+		{
+			this.buildOptions(options.data)
+		}
+		else if (typeOf(options.url) != 'null')
+		{
+			this.getOptionsFromUrl();
+		}
+	},
+
+
 	buildOptions: function(data)
 	{
 		var self = this,
@@ -528,6 +548,18 @@ ION.Form.Select = new Class({
 			selected = o.selected && typeOf(o.selected) != 'array' ? [o.selected] : [],
 			selectedIndex = Object.getLength(selected) == 0 ? o.selectedIndex : null
 		;
+
+		self.select.empty();
+
+		// Has the select one first value (usually '-- Select something --')
+		if (o.firstLabel != null && o.firstValue != null)
+		{
+			new Element('option', {'value': o.firstValue}).set(
+				'html',
+				o.firstLabel
+			).inject(this.select);
+		}
+
 
 		Array.each(data, function(row, idx)
 		{
