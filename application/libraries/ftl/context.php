@@ -291,12 +291,9 @@ class FTL_Context
 	 */
 	public function tag_missing($name, $args = array(), $block = NULL)
 	{
-		// trigger_error('Name: "'.$name.'", scope: "'.$this->current_nesting().'".');
-		// show_error('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
-		// throw new Exception('Tag missing: "'.$name.'", scope: "'.$this->current_nesting().'".');
-
 		// Config item from CI
 		$log_threshold = config_item('log_threshold');
+
 		if ($log_threshold)
 		{
 			$title = 'Tag missing';

@@ -920,6 +920,7 @@ class MY_Admin extends MY_Controller
 					{
 						// Module path
 						$module_path = MODPATH.ucfirst($folder).'/';
+			
 						// Add the module path to the finder
 						array_push(Finder::$paths, $module_path);
 	

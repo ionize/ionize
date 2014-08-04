@@ -37,7 +37,7 @@ $id_element_definition = $element_definition['id_element_definition'];
 
 		<!-- Ordering : First or last (or Element one if exists ) -->
 		<?php if( empty($id_element)) :?>
-		<dl class="small mb10">
+		<dl class=" mb10">
 			<dt >
 				<label for="ordering"><?php echo lang('ionize_label_ordering'); ?></label>
 			</dt>

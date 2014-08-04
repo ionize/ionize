@@ -427,6 +427,13 @@ class TagManager_Element extends TagManager
 				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':value', array(__CLASS__, 'tag_element_item_field_value'));
 
 				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':medias', array(__CLASS__, 'tag_extend_field_medias'));
+
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':links', array(__CLASS__, 'tag_extend_field_links'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':links:url', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':links:title', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':links:subtitle', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':links:content', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag('element:'.$definition_name.':items:'.$field['name'].':links:medias', array('TagManager_Media', 'tag_medias'));
 			}
 
 			self::$has_element_tags[$id_element_definition] = TRUE;
