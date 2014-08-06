@@ -11,7 +11,8 @@
     <!-- Article -->
     <query>ALTER TABLE article add priority smallint(1) NOT NULL default 5;</query>
 
-    <!-- Page -->
+    <!-- Notification -->
+    <query>ALTER TABLE notification add code varchar(50);</query>
 
 
 </sql>
