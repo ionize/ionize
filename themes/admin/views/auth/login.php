@@ -39,7 +39,7 @@
 
 		// Reload top window if #desktop object exists
 		// Prevents from having a login window in a panel
-		if ($('desktop'))
+		if (document.getElementById('desktop'))
 		{
 			$('desktop').setStyle('display', 'none');
 			window.top.location.reload(true);

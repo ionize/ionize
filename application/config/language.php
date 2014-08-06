@@ -20,7 +20,7 @@ $config['default_admin_lang'] = 'en';
 $config['default_lang_code'] = 'en';
 
 // Default Translation Language Code
-$config['default_translation_lang_code'] = '';
+$config['default_translation_lang_code'] = 'en';
 
 // Used language code
 // Dynamically changed by the Router depending on the browser, cookie or asked URL
