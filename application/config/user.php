@@ -91,12 +91,12 @@ $config['user_guest_role'] = 'guest';
 | same as if you would call restrict() with the array value.
 |
 | The avaible groups are by default:
-|  - super_admins
+|  - super_admin
 |  - admins
-|  - editors
-|  - users
+|  - editor
+|  - user
 |  - pending
-|  - guests
+|  - guest
 |  - banned
 |  - deactivated
 |

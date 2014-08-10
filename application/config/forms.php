@@ -97,12 +97,10 @@ $config['forms'] = array
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_lastname',
 			),
-			/*
 			'screen_name' => array(
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_screen_name',
 			),
-			*/
 			'email' => array(
 				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
 				'label' => 'form_label_email',
@@ -112,28 +110,15 @@ $config['forms'] = array
 				// 'rules' => 'trim|required|min_length[4]|matches[password2]|xss_clean',
 				'label' => 'form_label_password',
 			),
-
+			/*
+			 * To add password confirmation, uncomment these lines and change the "password" field rules
+			 *
 			'password2' => array(
 				'rules' => 'trim|required|min_length[4]|xss_clean',
 				'label' => 'form_label_password_confirmation',
 				// If set to FALSE, ths field will not be saved to DB
 				'save' => FALSE,
-			),
-
-			'message' => array(
-				'label' => 'form_label_message',
-				'save' => FALSE,
-			),
-
-			/*
-			'birthdate' => array(
-				'rules' => 'trim|xss_clean',
-				'label' => 'form_label_birthdate',
-			),
-			'website' => array(
-				'rules' => 'trim|xss_clean',
-				'label' => 'form_label_website',
-			),
+			)
 			*/
 		),
 	),
@@ -159,17 +144,19 @@ $config['forms'] = array
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_lastname',
 			),
+			'screen_name' => array(
+				'rules' => 'trim|xss_clean',
+				'label' => 'form_label_screen_name',
+			),
 			'email' => array(
 				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
 				'label' => 'form_label_email',
 			),
-/*
 			'gender' => array(
 				'type' => 'radio',
 				'rules' => 'required',
 				'label' => 'form_label_gender',
 			),
-*/
 			'birthdate' => array(
 				'label' => 'form_label_birthdate',
 			),

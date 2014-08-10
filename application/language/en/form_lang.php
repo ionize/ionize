@@ -27,6 +27,7 @@ $lang['form_label_name'] = 'Name';
 $lang['form_label_firstname'] = 'First Name';
 $lang['form_label_lastname'] = 'Last Name';
 $lang['form_label_subject'] = 'Subject';
+$lang['form_label_topic'] = 'Topic';
 $lang['form_label_message'] = 'Message';
 $lang['form_label_screen_name'] = 'Screen Name';
 $lang['form_label_username'] = 'User name';

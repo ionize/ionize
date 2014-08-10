@@ -101,7 +101,7 @@ class TagManager_Email extends TagManager
 			// Send the email
 			if ( $email )
 			{
-				// Subject, adds the website title as swap text : diplayed in title if the %s key is used.
+				// Subject, adds the website title as swap text : displayed in title if the %s key is used.
 				$subject = lang($email_setting['subject'], Settings::get('site_title'));
 				$data['subject'] = $subject;
 

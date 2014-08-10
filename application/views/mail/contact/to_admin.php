@@ -65,6 +65,10 @@
 							<b><ion:lang key="form_label_email"/></b> : <ion:data:email /><br/>
 						</p>
 						<p>
+							<b><ion:lang key="form_label_topic"/></b> : <br/>
+							<ion:data:topic />
+						</p>
+						<p>
 							<b><ion:lang key="form_label_message"/></b> : <br/>
 							<ion:data:message />
 						</p>

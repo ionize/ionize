@@ -68,10 +68,6 @@
                                 IP : <ion:data:ip /><br/>
 							</p>
 
-							<h2><ion:lang key="form_label_message"/></h2>
-							<p>
-								<ion:data:message />
-							</p>
                         </td>
                     </tr>
                 </table>

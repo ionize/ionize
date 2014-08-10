@@ -44,7 +44,7 @@
 
 		<!--
 			Form has no action because the same page will process the data.
-			POST data are catched by the global Tagmanager and processed by the Tagmanager's library method 'prcoess_data'
+			POST data are catched by the global Tagmanager and processed by the Tagmanager's library method 'process_data'
 			defined in : /themes/your_theme/libraries/Tagmanager/Contact.php
 			as declared in the form config file : /themes/your_theme/config/forms.php
 		-->
@@ -65,10 +65,10 @@
 			<ion:form:contact:error:email tag="small" class="error" />
 
 
-			<!-- Input : Subject -->
-			<label for="subject"><ion:lang key="form_label_subject" /></label>
-			<input name="subject" type="text" id="subject" value="<ion:form:contact:field:subject />"<ion:form:contact:error:subject is="true"> class="error" </ion:form:contact:error:subject> />
-			<ion:form:contact:error:subject tag="small" class="error" />
+			<!-- Input : Topic -->
+			<label for="topic"><ion:lang key="form_label_topic" /></label>
+			<input name="topic" type="text" id="topic" value="<ion:form:contact:field:topic />"<ion:form:contact:error:topic is="true"> class="error" </ion:form:contact:error:topic> />
+			<ion:form:contact:error:topic tag="small" class="error" />
 
 			<!-- Input : Message -->
 			<label for="message"><ion:lang key="form_label_message" /></label>

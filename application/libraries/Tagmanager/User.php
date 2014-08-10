@@ -428,11 +428,18 @@ class TagManager_User extends TagManager
 								$activation_key = User()->calc_activation_key($user);
 
 								// Put the clear password to the user's data, for the email
-								$user['password'] = $new_password;
-								$user['activation_key'] = $activation_key;
+								//$user['password'] = $new_password;
+								$data['activation_key'] = $activation_key;
 
 								// Send Emails
 								$data['ip'] = self::$ci->input->ip_address();
+								$data['username'] = $user['username'];
+								$data['firstname'] = $user['firstname'];
+								$data['email'] = $user['email'];
+								$data['password'] = $new_password;
+								$data['activation_key'] = $activation_key;
+								$data['level'] = $user['role_level'];
+
 								TagManager_Email::send_form_emails($tag, 'password', $data);
 
 								$message = TagManager_Form::get_form_message('success');

@@ -761,8 +761,7 @@ namespace Ionize {
 
 		public function delete($user_data = array())
 		{
-			$user = $this->model->find_user($user_data);
-
+			$user = $this->model->find_user(array('id_user' =>$user_data['id_user']));
 			if ($user)
 			{
 				return $this->model->delete($user['id_user']);
