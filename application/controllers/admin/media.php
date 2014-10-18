@@ -1059,6 +1059,18 @@ class Media extends MY_admin
 		$file_name = substr( strrchr($path, '/') ,1 );
 		$base_path = str_replace($file_name, '', $path);
 
+		// Youtube (reduced URL)
+		if (
+			substr($base_path, 0, 15) == 'http://youtu.be'
+		)
+		{
+			$service = array(
+				'path' => 'http://www.youtube.com/embed/' . $file_name,
+				'provider' => 'youtube'
+			);
+			return $service;
+		}
+		
 		// Youtube
 		if (
 			substr($file_name, 0, 6) == 'watch?'
