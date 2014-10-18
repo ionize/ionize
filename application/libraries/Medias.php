@@ -733,58 +733,103 @@ class Medias
 	 * watermark is file inside 'files' folder, filename: 'watermark.png'
 	 *
 	 */
-	public function embed_watermark($filepath, $watermark_positions)
+	public function embed_watermark( $filepath, $watermark )
 	{
-		self::$ci->load->library('image_lib');
+		self::$ci->load->library( 'image_lib' );
 		
-		$watermark_path = DOCPATH . Settings::get('files_path') . '/watermark.png';
+		// directory and default watermark
+		$files_directory   = DOCPATH . Settings::get('files_path') . '/';
+		$default_watermark = $files_directory . 'watermark.png';
 		
-		if( !file_exists($watermark_path))
-			return;
+		// just get the watermark info from square braces
+		$info = array( );
+		$data = array( );
 		
-		$w = explode(',', $watermark_positions);
+		preg_match_all( '/\[([^\]]+)\]/', $watermark, $info );
 		
-		foreach($w as $p)
+		// are there any matches?
+		$count = isset($info[0])
+			? count($info[0])
+			: 0;
+		
+		// without square braces
+		if( !$count )
 		{
-			$p = trim($p);
-			if(strlen($p) == 2)
+			// ex. "bl,watermark.png" in attribute
+			if( strpos($watermark, ',') )
 			{
-				// vertical position
-				$v = substr($p, 0, 1);
-				
-				// horizontal position
-				$h = substr($p, 1, 1);
-				
-				$vert = 'middle';
-				$hor = 'center';
-				
-				switch($v)
-				{
-					case 't': $vert = 'top'; break;
-					case 'b': $vert = 'bottom'; break;	
-				}
-				
-				switch($h)
-				{
-					case 'l': $hor = 'left'; break;
-					case 'r': $hor = 'right'; break;	
-				}
-				
-				$wconf = array(
-					'wm_type' => 'overlay',
-					'source_image' => $filepath,
-					'quality' => 90,
-					'wm_vrt_alignment' => $vert,
-					'wm_hor_alignment' => $hor,
-					'wm_overlay_path' => $watermark_path
-				);
-
-				self::$ci->image_lib->clear();
-				self::$ci->image_lib->initialize($wconf);
-
-				self::$ci->image_lib->watermark();
+				$line = explode( ',', $watermark );
+				$data = array( array($line[0], $files_directory . $line[1]) );
 			}
-		}	
+			// ex. "bl" in attribute
+			else
+				$data = array( array($watermark, $default_watermark) );
+		}
+		else
+		{
+			// ex. [tl,bl] or only [tl] in attribute
+			if( $count == 1 )
+			{
+				$line = explode( ',', $info[1][0] );
+				
+				foreach( $line as $position )
+					$data[] = array( trim($position), trim($default_watermark) );
+			}
+			// ex. [tl,bl][watermark.png,watermark.png] in attribute
+			// you must declare in this case for each position default watermark!
+			// so, construction [tl,bl][watermark.png] is not allowed
+			else
+			{
+				$position  = explode( ',', $info[1][0] );
+				$watermark = explode( ',', $info[1][1] );
+				
+				if( count($position) != count($watermark) )
+					return;
+				
+				for( $x = 0, $y = count($position); $x < $y; ++$x )
+					$data[] = array( trim($position[$x]), $files_directory . trim($watermark[$x]) );
+			}
+		}
+		
+		// create watermark/watermarks
+		foreach( $data as $watermark )
+		{
+			$vertical = 'middle';
+			$horizontal = 'center';
+			
+			// vertical / horizontal
+			$v = substr( $watermark[0], 0, 1 );
+			$h = substr( $watermark[0], 1, 1 );
+			
+			if( $v == 't' )
+				$vertical = 'top';
+			else if( $v == 'b' )
+				$vertical = 'bottom';
+			
+			if( $h == 'l' )
+				$horizontal = 'left';
+			else if( $h == 'r' )
+				$horizontal = 'right';
+				
+			if( !is_file($watermark[1]) )
+				return;
+				
+			// config... nothing special
+			$config = array
+			(
+				'wm_type' => 'overlay',
+				'source_image' => $filepath,
+				'quality' => 90,
+				'wm_vrt_alignment' => $vertical,
+				'wm_hor_alignment' => $horizontal,
+				'wm_overlay_path' => $watermark[1]
+			);
+			
+			// crate watermark
+			self::$ci->image_lib->clear( );
+			self::$ci->image_lib->initialize( $config );
+			self::$ci->image_lib->watermark( );
+		}
 	}
 
 
