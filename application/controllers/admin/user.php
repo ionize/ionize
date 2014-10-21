@@ -191,23 +191,21 @@ class User extends My_Admin
 				)
 			);
 
-			// Existing
-			if ($id_user != FALSE)
-			{
-				if (($this->input->post('password') != '' && $this->input->post('password2') != '') &&
-					($this->input->post('password') == $this->input->post('password2'))	)
-				{
-					$post['password'] = User()->encrypt($this->input->post('password'), $post);
-				}
-				else
-				{
-					unset($post['password'], $post['password2']);
-				}
-			}
-			// New
-			else
+			// Passwords must match
+			if (($this->input->post('password') != '') &&
+				($this->input->post('password') == $this->input->post('password2')))
 			{
 				$post['password'] = User()->encrypt($this->input->post('password'), $post);
+			}
+			else
+			{
+				unset($post['password'], $post['password2']);
+			}
+
+			// New user?
+			if ($id_user == false)
+			{
+				$post['id_user'] = null;
 			}
 
 			// Save
