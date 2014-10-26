@@ -1591,13 +1591,13 @@ class FileManager
 
 					$filename = $response['name'];
 
+					// Creates safe file names
+					if ($this->options['cleanFileName'])
+						$filename = $this->cleanFilename($filename, '_');
+
 					// Replace the file ?
 					if ( ! $replace)
-						$filename = $this->getUniqueName($response['name'], $dir);
-
-                    // Creates safe file names
-                    if ($this->options['cleanFileName'])
-                        $filename = $this->cleanFilename($file['name'], '_');
+						$filename = $this->getUniqueName($filename, $dir);
 
 					// Allowed extension ?
 					if ( ! $this->isAllowedExtension($filename))
