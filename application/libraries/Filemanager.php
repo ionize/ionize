@@ -439,7 +439,7 @@ class MTFMCache
 class FileManager
 {
 	protected $options;
-	
+
 	protected $getid3;
 	protected $getid3_cache;
 	protected $icon_cache;              // cache the icon paths per size (large/small) and file extension
@@ -1042,8 +1042,6 @@ class FileManager
 
 			$legal_url = $this->get_legal_url($dir_arg . '/');
 
-			$is_dir = is_dir($legal_url);
-
 			if ( ! empty($file_arg))
 			{
 				$filename = basename($file_arg);
@@ -1077,6 +1075,8 @@ class FileManager
 				throw new Exception('validation_failure');
 			}
 
+			$full_path = $this->get_full_path($legal_url);
+			$is_dir = is_dir($full_path);
 
 			if ( ! $this->unlink($legal_url))
 			{
@@ -1087,7 +1087,7 @@ class FileManager
 			Event::fire(
 				'Filemanager.destroy.success',
 				array(
-					'path' => $this->get_full_path($legal_url),
+					'path' => $full_path,
 					'is_dir'=>$is_dir
 				)
 			);
