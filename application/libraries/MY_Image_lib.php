@@ -184,135 +184,122 @@ class MY_Image_lib extends CI_Image_lib {
 	 * http://vikjavev.no/computing/ump.php?id=350
 	 *
 	 *
+	 * Reformatted by James Heinrich <info@silisoftware.com>
+	 * updated on 24 April 2011
 	 *
-	 *
+	 * Modified by ionize team to handle the PHP bug on imageconvolution()
 	 *
 	 */
 	function unsharpMask($img, $amount, $radius, $threshold)
 	{
-	    // $img is an image that is already created within php using
-	    // imgcreatetruecolor. No url! $img must be a truecolor image. 
-	
-	    // Attempt to calibrate the parameters to Photoshop: 
-	    if ($amount > 500)    $amount = 500; 
-	    $amount = $amount * 0.016; 
-	    if ($radius > 50)    $radius = 50; 
-	    $radius = $radius * 2; 
-	    if ($threshold > 255)    $threshold = 255; 
-	     
-	    $radius = abs(round($radius));     // Only integers make sense. 
-	    if ($radius == 0) {
-	        return $img;
-			// imagedestroy($img);
-			// break;
+		// $img is an image that is already created within php using
+		// imgcreatetruecolor. No url! $img must be a truecolor image.
+
+		// Attempt to calibrate the parameters to Photoshop:
+		$amount = min($amount, 500) * 0.016;
+		$radius = abs(round(min(50, $radius) * 2)); // Only integers make sense.
+		$threshold = min(255, $threshold);
+		if ($radius == 0) {
+			return true;
 		}
-	    $w = imagesx($img); $h = imagesy($img); 
-	    $imgCanvas = imagecreatetruecolor($w, $h); 
-	    $imgBlur = imagecreatetruecolor($w, $h); 
-	     
-	    // Gaussian blur matrix: 
-	    //                         
-	    //    1    2    1         
-	    //    2    4    2         
-	    //    1    2    1         
-	    //                         
-	    ////////////////////////////////////////////////// 
-	    if (function_exists('imageconvolution')) { // PHP >= 5.1  
-	            $matrix = array(  
-	            array( 1, 2, 1 ),  
-	            array( 2, 4, 2 ),  
-	            array( 1, 2, 1 )  
-	        );  
-	        imagecopy ($imgBlur, $img, 0, 0, 0, 0, $w, $h); 
-	        imageconvolution($imgBlur, $matrix, 16, 0);  
-	    }  
-	    else {  
-	
-	    // Move copies of the image around one pixel at the time and merge them with weight 
-	    // according to the matrix. The same matrix is simply repeated for higher radii. 
-	        for ($i = 0; $i < $radius; $i++)    { 
-	            imagecopy ($imgBlur, $img, 0, 0, 1, 0, $w - 1, $h); // left 
-	            imagecopymerge ($imgBlur, $img, 1, 0, 0, 0, $w, $h, 50); // right 
-	            imagecopymerge ($imgBlur, $img, 0, 0, 0, 0, $w, $h, 50); // center 
-	            imagecopy ($imgCanvas, $imgBlur, 0, 0, 0, 0, $w, $h); 
-	
-	            imagecopymerge ($imgBlur, $imgCanvas, 0, 0, 0, 1, $w, $h - 1, 33.33333 ); // up 
-	            imagecopymerge ($imgBlur, $imgCanvas, 0, 1, 0, 0, $w, $h, 25); // down 
-	        } 
-	    } 
-	
-	    if($threshold>0){ 
-	        // Calculate the difference between the blurred pixels and the original 
-	        // and set the pixels 
-	        for ($x = 0; $x < $w-1; $x++)    { // each row
-	            for ($y = 0; $y < $h; $y++)    { // each pixel 
-	                     
-	                $rgbOrig = ImageColorAt($img, $x, $y); 
-	                $rOrig = (($rgbOrig >> 16) & 0xFF); 
-	                $gOrig = (($rgbOrig >> 8) & 0xFF); 
-	                $bOrig = ($rgbOrig & 0xFF); 
-	                 
-	                $rgbBlur = ImageColorAt($imgBlur, $x, $y); 
-	                 
-	                $rBlur = (($rgbBlur >> 16) & 0xFF); 
-	                $gBlur = (($rgbBlur >> 8) & 0xFF); 
-	                $bBlur = ($rgbBlur & 0xFF); 
-	                 
-	                // When the masked pixels differ less from the original 
-	                // than the threshold specifies, they are set to their original value. 
-	                $rNew = (abs($rOrig - $rBlur) >= $threshold)  
-	                    ? max(0, min(255, ($amount * ($rOrig - $rBlur)) + $rOrig))  
-	                    : $rOrig; 
-	                $gNew = (abs($gOrig - $gBlur) >= $threshold)  
-	                    ? max(0, min(255, ($amount * ($gOrig - $gBlur)) + $gOrig))  
-	                    : $gOrig; 
-	                $bNew = (abs($bOrig - $bBlur) >= $threshold)  
-	                    ? max(0, min(255, ($amount * ($bOrig - $bBlur)) + $bOrig))  
-	                    : $bOrig; 
-	                 
-	                if (($rOrig != $rNew) || ($gOrig != $gNew) || ($bOrig != $bNew)) { 
-	                        $pixCol = ImageColorAllocate($img, $rNew, $gNew, $bNew); 
-	                        ImageSetPixel($img, $x, $y, $pixCol); 
-	                    } 
-	            } 
-	        } 
-	    } 
-	    else{ 
-	        for ($x = 0; $x < $w; $x++)    { // each row 
-	            for ($y = 0; $y < $h; $y++)    { // each pixel 
-	                $rgbOrig = ImageColorAt($img, $x, $y); 
-	                $rOrig = (($rgbOrig >> 16) & 0xFF); 
-	                $gOrig = (($rgbOrig >> 8) & 0xFF); 
-	                $bOrig = ($rgbOrig & 0xFF); 
-	                 
-	                $rgbBlur = ImageColorAt($imgBlur, $x, $y); 
-	                 
-	                $rBlur = (($rgbBlur >> 16) & 0xFF); 
-	                $gBlur = (($rgbBlur >> 8) & 0xFF); 
-	                $bBlur = ($rgbBlur & 0xFF); 
-	                 
-	                $rNew = ($amount * ($rOrig - $rBlur)) + $rOrig; 
-	                    if($rNew>255){$rNew=255;} 
-	                    elseif($rNew<0){$rNew=0;} 
-	                $gNew = ($amount * ($gOrig - $gBlur)) + $gOrig; 
-	                    if($gNew>255){$gNew=255;} 
-	                    elseif($gNew<0){$gNew=0;} 
-	                $bNew = ($amount * ($bOrig - $bBlur)) + $bOrig; 
-	                    if($bNew>255){$bNew=255;} 
-	                    elseif($bNew<0){$bNew=0;} 
-	                $rgbNew = ($rNew << 16) + ($gNew <<8) + $bNew; 
-	                    ImageSetPixel($img, $x, $y, $rgbNew); 
-	            } 
-	        } 
-	    } 
-	    imagedestroy($imgCanvas); 
-	    imagedestroy($imgBlur); 
-	     
-	    return $img; 
+		$w = ImageSX($img);
+		$h = ImageSY($img);
+		$imgCanvas = imagecreatetruecolor($w, $h);
+		$imgBlur   = imagecreatetruecolor($w, $h);
+
+		// Gaussian blur matrix:
+		//
+		//    1    2    1
+		//    2    4    2
+		//    1    2    1
+		//
+		//////////////////////////////////////////////////
+
+		// Check for PHP version : From 5.5.9 to 5.5.10 : bug in imageconvolution()
+		// see : https://bugs.php.net/bug.php?id=66714
+		if (function_exists('imageconvolution') && (version_compare(PHP_VERSION, '5.5.9', '<') || version_compare(PHP_VERSION, '5.5.10', '>')))
+		{
+			// PHP >= 5.1
+			$matrix = array(
+				array(1, 2, 1),
+				array(2, 4, 2),
+				array(1, 2, 1)
+			);
+			imagecopy($imgBlur, $img, 0, 0, 0, 0, $w, $h);
+			imageconvolution($imgBlur, $matrix, 16, 0);
+
+		} else {
+
+			// Move copies of the image around one pixel at the time and merge them with weight
+			// according to the matrix. The same matrix is simply repeated for higher radii.
+			for ($i = 0; $i < $radius; $i++)    {
+				imagecopy(     $imgBlur,   $img,       0, 0, 1, 0, $w - 1, $h);               // left
+				imagecopymerge($imgBlur,   $img,       1, 0, 0, 0, $w    , $h,     50);       // right
+				imagecopymerge($imgBlur,   $img,       0, 0, 0, 0, $w    , $h,     50);       // center
+				imagecopy(     $imgCanvas, $imgBlur,   0, 0, 0, 0, $w    , $h);
+				imagecopymerge($imgBlur,   $imgCanvas, 0, 0, 0, 1, $w    , $h - 1, 33.33333); // up
+				imagecopymerge($imgBlur,   $imgCanvas, 0, 1, 0, 0, $w    , $h,     25);       // down
+			}
+		}
+
+		if ($threshold > 0){
+			// Calculate the difference between the blurred pixels and the original
+			// and set the pixels
+			for ($x = 0; $x < $w-1; $x++)    { // each row
+				for ($y = 0; $y < $h; $y++)    { // each pixel
+
+					$rgbOrig = ImageColorAt($img, $x, $y);
+					$rOrig = (($rgbOrig >> 16) & 0xFF);
+					$gOrig = (($rgbOrig >>  8) & 0xFF);
+					$bOrig =  ($rgbOrig        & 0xFF);
+
+					$rgbBlur = ImageColorAt($imgBlur, $x, $y);
+
+					$rBlur = (($rgbBlur >> 16) & 0xFF);
+					$gBlur = (($rgbBlur >>  8) & 0xFF);
+					$bBlur =  ($rgbBlur        & 0xFF);
+
+					// When the masked pixels differ less from the original
+					// than the threshold specifies, they are set to their original value.
+					$rNew = ((abs($rOrig - $rBlur) >= $threshold) ? max(0, min(255, ($amount * ($rOrig - $rBlur)) + $rOrig)) : $rOrig);
+					$gNew = ((abs($gOrig - $gBlur) >= $threshold) ? max(0, min(255, ($amount * ($gOrig - $gBlur)) + $gOrig)) : $gOrig);
+					$bNew = ((abs($bOrig - $bBlur) >= $threshold) ? max(0, min(255, ($amount * ($bOrig - $bBlur)) + $bOrig)) : $bOrig);
+
+					if (($rOrig != $rNew) || ($gOrig != $gNew) || ($bOrig != $bNew)) {
+						$pixCol = ImageColorAllocate($img, $rNew, $gNew, $bNew);
+						ImageSetPixel($img, $x, $y, $pixCol);
+					}
+				}
+			}
+		} else {
+			for ($x = 0; $x < $w; $x++)    { // each row
+				for ($y = 0; $y < $h; $y++)    { // each pixel
+					$rgbOrig = ImageColorAt($img, $x, $y);
+					$rOrig = (($rgbOrig >> 16) & 0xFF);
+					$gOrig = (($rgbOrig >>  8) & 0xFF);
+					$bOrig =  ($rgbOrig        & 0xFF);
+
+					$rgbBlur = ImageColorAt($imgBlur, $x, $y);
+
+					$rBlur = (($rgbBlur >> 16) & 0xFF);
+					$gBlur = (($rgbBlur >>  8) & 0xFF);
+					$bBlur =  ($rgbBlur        & 0xFF);
+
+					$rNew = min(255, max(0, ($amount * ($rOrig - $rBlur)) + $rOrig));
+					$gNew = min(255, max(0, ($amount * ($gOrig - $gBlur)) + $gOrig));
+					$bNew = min(255, max(0, ($amount * ($bOrig - $bBlur)) + $bOrig));
+					$rgbNew = ($rNew << 16) + ($gNew <<8) + $bNew;
+					ImageSetPixel($img, $x, $y, $rgbNew);
+				}
+			}
+		}
+		imagedestroy($imgCanvas);
+		imagedestroy($imgBlur);
+		return $img;
 	}
 
 
-	/**
+/**
 	 * Check if enough memory will be available to process an Image create
 	 * If imagecreatetruecolor function exists, it will be takken in account for the memory size
 	 *

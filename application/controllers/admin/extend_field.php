@@ -68,10 +68,11 @@ class Extend_field extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	function create()
+	public function create()
 	{
 		// Pre-defined parent : No parent select in this case
 		$parent = $this->input->post('parent');
+		$context = $this->input->post('context');
 
 		$this->extend_field_model->feed_blank_template($this->template);
 		$this->extend_field_model->feed_blank_lang_template($this->template);
@@ -82,6 +83,16 @@ class Extend_field extends MY_admin
 		{
 			$this->template['limit_to_parent'] = $parent;
 			$this->template['id_parent'] = $this->input->post('id_parent');
+		}
+
+		// Context : NULL by default
+		$this->template['context'] = NULL;
+		$this->template['id_context'] = NULL;
+
+		if ($context)
+		{
+			$this->template['context'] = $context;
+			$this->template['id_context'] = $this->input->post('id_context');
 		}
 
 		// Available parents
@@ -115,9 +126,11 @@ class Extend_field extends MY_admin
 	 * Edit one extend field
 	 *
 	 */
-	function edit()
+	public function edit()
 	{
 		$id = $this->input->post('id_extend_field');
+		$context = $this->input->post('context');
+		$id_context = $this->input->post('id_context');
 
 		// Pre-defined parent : No parent select in this case
 		$parent = $this->input->post('parent');
@@ -131,6 +144,16 @@ class Extend_field extends MY_admin
 		{
 			$this->extend_field_model->feed_blank_template($this->template);
 			$this->extend_field_model->feed_blank_lang_template($this->template);
+		}
+
+		// Context : NULL by default
+		$this->template['context'] = NULL;
+		$this->template['id_context'] = NULL;
+
+		if ($context)
+		{
+			$this->template['context'] = $context;
+			$this->template['id_context'] = $id_context;
 		}
 
 		// Limit to one parent type ?
@@ -155,10 +178,24 @@ class Extend_field extends MY_admin
 		);
 
 		// Extend Types details
-		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list());
+		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
 
 		$this->output('extend/field');
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get()
+	{
+		$id_extend_field = $this->input->post('id_extend_field');
+
+		$extend = $this->extend_field_model->get($id_extend_field);
+
+		$this->xhr_output($extend);
+	}
+
 
 
 	// ------------------------------------------------------------------------
@@ -181,9 +218,9 @@ class Extend_field extends MY_admin
 			'parent !=' => 'element'
 		);
 		
+		// Order By
 		$order_by = $this->input->post('order_by');
-		if ($order_by)
-			$where['order_by'] = $order_by;
+		if ($order_by) $where['order_by'] = $order_by;
 
 		// Limit to one parent type : Useful for limited lists
 		$parent = $this->input->post('parent');
@@ -314,32 +351,29 @@ class Extend_field extends MY_admin
 	 * @param	string 	Parent table name. optional
 	 * @param	int 	Parent ID. Optional
 	 */
-	function delete($id)
+	function delete($id_extend_field = NULL)
 	{
-		if ($id && $id != '')
-		{
-			if ($this->extend_field_model->delete($id) > 0)
-			{
-				// Extend Field lang table
-				$this->extend_field_model->delete(array('id_extend_field'=>$id), 'extend_field_lang');
+		if ( is_null($id_extend_field))
+			$id_extend_field = $this->input->post('id_extend_field');
 
-				// Delete all the extend fields objects from extend_fields table
-				$this->extend_field_model->delete_extend_fields($id);
-				
-				// Update array
-				$this->update[] = array(
-					'element' => 'extend_fields',
-					'url' =>  'extend_field/get_extend_fields'
-				);
-			
-				// Send answer				
-				$this->success(lang('ionize_message_extend_field_deleted'));
-			}
-			else
+		if ($id_extend_field && $id_extend_field != '')
+		{
+			try
 			{
-				$this->error(lang('ionize_message_extend_field_not_deleted'));
+				$result = $this->extend_field_model->delete_extend_field($id_extend_field);
+
+				if ( ! $result)
+					$this->error(lang('ionize_message_extend_field_not_deleted'));
+				else
+					$this->success(lang('ionize_message_extend_field_deleted'));
+			}
+			catch(Exception $e)
+			{
+				$this->error($e->getMessage());
 			}
 		}
+		else
+			$this->error(lang('ionize_message_extend_field_not_deleted'));
 	}
 	
 	

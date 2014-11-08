@@ -171,7 +171,7 @@ ION.append({
 		Object.append(
 			options,
 			{
-				url: admin_url + url,
+				url: ION.adminUrl + url,
 				method: 'post',
 				loadMethod: 'xhr',
 				data: data,
@@ -213,6 +213,24 @@ ION.append({
 						if (responseJSON.message_type != '')
 							ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
 					}
+				},
+				onCancel: function()
+				{
+					MUI.hideSpinner();
+				},
+				onException: function(headerName, value)
+				{
+					MUI.hideSpinner();
+					ION.error(headerName + ' ' + value);
+				},
+				onTimeout: function()
+				{
+					MUI.hideSpinner();
+				},
+				onError: function(text, error)
+				{
+					MUI.hideSpinner();
+					ION.error(text);
 				}
 			}
 		);
@@ -250,7 +268,7 @@ ION.append({
 		url = ION.cleanUrl(url);
 
 		return {
-			url: admin_url + url, 
+			url: ION.adminUrl + url,
 			method: 'post',
 			loadMethod: 'xhr',
 			update: update,

@@ -388,7 +388,7 @@ if ($tracker_title == '')
 		staticItemManager.init({
 			'parent': 'article',
 			'id_parent': id_article,
-			'destination': 'articleTab'
+			'parentListContainer': 'articleTab'
 		});
 
 		// Get Static Items

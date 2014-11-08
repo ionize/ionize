@@ -193,7 +193,9 @@ ION.append({
 
 		var self = this,
 			counter = 0,
-			todo = sources.length;
+			todo = sources.length,
+			uniq = '?u=' + new Date().valueOf()
+		;
 
 		if (todo == 0)
 			self.completeAssetSeries();
@@ -209,7 +211,7 @@ ION.append({
 
 				if(ext == 'js')
 				{
-					Asset.javascript(source, {
+					Asset.javascript(source + uniq, {
 						onLoad: function()
 						{
 							counter++;
@@ -230,7 +232,7 @@ ION.append({
 				}
 				else if(ext == 'css')
 				{
-					Asset.css(source);
+					Asset.css(source + uniq);
 
 					counter++;
 
@@ -443,6 +445,24 @@ ION.append({
 		};
 
 		return options;
+	},
+
+	getWeekDayName: function(date)
+	{
+		if (typeOf(date) == 'date')
+			return Lang.get('day_' + date.getDay());
+		else
+			return '';
+	},
+
+	getMonthName: function(date)
+	{
+		if (typeOf(date) == 'date')
+			return Lang.get('month_' + (date.getMonth() + 1));
+		else
+			return '';
+
+		return true;
 	}
 });
 
@@ -572,8 +592,15 @@ Date.extend({
 			}
 		}
 		return f;
-	}
+	},
 
+	mysqlToUnix: function(date)
+	{
+		if (typeOf(date) != 'null')
+			return Math.floor(new Date(date.replace(' ', 'T')).getTime() / 1000);
+		else
+			return Math.floor(new Date('1970-01-01T01:00:00').getTime() / 1000);
+	}
 });
 
 String.extend({
@@ -663,7 +690,22 @@ Element.implement(
 				});
 			}
 			else
-				json[el.name] = value;
+			{
+				// "." notation for input names
+				var names = el.name.split('.'),
+					obj = json;
+
+				for (var i=0;i<names.length;i++)
+				{
+					if (names[i+1])
+					{
+						if ( ! obj[names[i]]) obj[names[i]] = {};
+						obj = obj[names[i]];
+					}
+					else
+						obj[names[i]] = value;
+				}
+			}
 		});
 		return json;
 	}
@@ -1015,4 +1057,29 @@ Events.publish= function(topic, info)
 	});
 };
 
-
+// Prevent enter to submit the form
+$(window).addEvent('keypress',function(e)
+{
+	if(e.key == 'enter')
+	{
+		if(e.target.get('tag') == 'input')
+		{
+			e.stop();
+			var form = e.target.getParent('form');
+			if (form)
+			{
+				var inputs = form.getElements('input[type!="hidden"]');
+				if (typeOf(inputs) != 'null')
+				{
+					var i = inputs.indexOf(e.target);
+					if (inputs[i+1])
+						inputs[i+1].focus();
+					else
+					{
+						inputs[0].focus();
+					}
+				}
+			}
+		}
+	}
+});

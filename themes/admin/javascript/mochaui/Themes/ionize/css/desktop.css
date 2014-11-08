@@ -20,22 +20,8 @@
 .desktopHeader { background: #f2f2f2;}
 .desktopNav { clear:both; height:30px; overflow: hidden; background: transparent;}
 
-
-/* Ionize specific */
 #desktopHeader {
 	background: #000;
-}
-#desktopBar {
-/*
-	background: url(../images/application_header_logo.jpg) no-repeat;
-	background-position: left 0;
-*/
-}
-#structurePanel{
-/*
-	overflow-x: hidden !important;
-	overflow-y: auto !important;
-*/
 }
 #structurePanel_pad {
 	padding: 15px 0 8px 15px !important;
@@ -84,6 +70,7 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .panel { position: relative; overflow: auto; background: #fff; border-bottom: 0px solid #b9b9b9; clear:both; }
 .panelWrapper.collapsed .panel-header { border-bottom: 0; border-top:1px solid #D3D3D3;}
 .panelAlt { background: url(../images/bg-gray-light.png);}
+.panelDark { background: #000}
 .bottomPanel .panel { border-bottom: 0; }
 .pad { padding: 8px; }
 #mainPanel2 { background: #fff; }
@@ -98,23 +85,9 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 .collapsed .panel-footer { display: none; }
 .panel-footerContent { margin-top: 6px; }
 
-/* Ptk : horizontalHandle visually merged with .panel-header 
-.panel .panelWrapper.collapsed:first-child .panel-header{height:30px;border-top: none;}
-.panel .panelWrapper.expanded:first-child .panel-header{height:30px;}
-.panel .panelWrapper.expanded:first-child .panel-header .toolbar{margin-top: 2px;}
-.panel .panelWrapper.expanded .panel-header {height: 24px;}
-.panel .panelWrapper.expanded .panel-header .toolbar{margin-top: -2px;}
-*/
 .panelWrapper .panel-header{height:30px;border-top:1px solid #D3D3D3;border-bottom:1px solid #D3D3D3;}
 .panel .panelWrapper:first-child .panel-header {border-top:none;}
-
-/*
-.panelWrapper.expanded:first-child .panel-header{border-top:none;}
-*/
-
 .panelWrapper.expanded .panel-header .toolbar{margin-top: 2px;}
-
-
 
 #desktopHeader,
 .panelAlt,
@@ -127,14 +100,23 @@ li.divider { margin-top: 2px; padding-top: 3px; border-top: 1px solid #ebebeb; }
 }
 
 /* Column and Panel Handles */
-/*
-.horizontalHandle { height: 4px; line-height: 1px; font-size: 1px; overflow: hidden; background: #eee url(../images/bg-handle-horizontal.gif) repeat-x; }
-*/
 .horizontalHandle { height: 7px; line-height: 1px; font-size: 1px; overflow: hidden; background: #fafafa; border-top: 1px solid #C5C7C9;}
 .horizontalHandle.detached .handleIcon { background: transparent; }
-/*
-.horizontalHandle .handleIcon { margin: 0 auto; height: 4px; line-height: 1px; font-size: 1px; overflow: hidden; background: url(../images/handle-icon-horizontal.gif) center center no-repeat; }
-*/
 .horizontalHandle .handleIcon { margin: 0 auto; height: 7px; line-height: 1px; font-size: 1px; overflow: hidden; background: url(../images/handle-icon-horizontal.gif) center 3px no-repeat; }
 .columnHandle { min-height: 10px; float: left; width: 8px; overflow: hidden; background: #D5D9DC url(../images/handle-icon.gif) center center no-repeat; border: 1px solid #C5C7C9; border-top: 0; border-bottom: 0; }
+
+/*
+ * Application specific
+ *
+ */
+#sidePanel_header.panel-header {
+	background: none repeat scroll 0 0 #000;
+	border-bottom: 1px solid #444;
+	border-top: 1px solid #444;
+}
+#sidePanel_header .panel-collapse {
+	background: url("../images/collapse-expand_white.png") no-repeat scroll left top rgba(0, 0, 0, 0);
+	opacity: 0.5;
+}
+
 

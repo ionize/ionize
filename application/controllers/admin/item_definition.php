@@ -56,7 +56,7 @@ class Item_definition extends MY_admin
 		if ($id_definition)
 		{
 			$definition = $this->item_definition_model->get(
-				array($this->item_definition_model->get_pk_name() => $id_definition),
+				$id_definition,
 				Settings::get_lang('default')
 			);
 		}
@@ -68,7 +68,7 @@ class Item_definition extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	public function get_list($mode=NULL)
+	public function get_list()
 	{
 		$items = $this->item_definition_model->get_lang_list(
 			array(
@@ -77,16 +77,7 @@ class Item_definition extends MY_admin
 			Settings::get_lang('default')
 		);
 
-		if ($mode == 'json')
-		{
-			$this->xhr_output($items);
-		}
-		else
-		{
-			$this->template['items'] = $items;
-
-			$this->output('item/definition/list');
-		}
+		$this->xhr_output($items);
 	}
 
 
@@ -137,7 +128,7 @@ class Item_definition extends MY_admin
 		$this->item_definition_model->save($post, $post);
 
 		// Reload List
-		$this->_reload_definition_list();
+		// $this->_reload_definition_list();
 
 		$this->success(lang('ionize_message_operation_ok'));
 	}
@@ -151,12 +142,6 @@ class Item_definition extends MY_admin
 		$id_item_definition = $this->input->post('id_item_definition');
 
 		$this->item_definition_model->delete($id_item_definition);
-
-		// Reload List
-		$this->_reload_definition_list();
-
-		// Back to Welcome
-		$this->_reload_welcome();
 
 		$this->success(lang('ionize_message_operation_ok'));
 	}
@@ -176,7 +161,7 @@ class Item_definition extends MY_admin
 
 		// Default lang data : No Edit here
 		$definition = $this->item_definition_model->get(
-			array($this->item_definition_model->get_pk_name() => $id_definition),
+			$id_definition,
 			Settings::get_lang('default')
 		);
 
@@ -211,11 +196,17 @@ class Item_definition extends MY_admin
 			);
 		}
 
+		$this->xhr_output($fields);
+
+
+
 		//
+		/*
 		$this->template['id_item_definition'] = $id_definition;
 		$this->template['fields'] = $fields;
 
 		$this->output('item/definition/fields');
+		*/
 	}
 
 

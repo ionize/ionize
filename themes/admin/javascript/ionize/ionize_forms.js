@@ -545,7 +545,7 @@ ION.Form.Select = new Class({
 			o = this.options,
 			key = o.key,
 			lab = o.label,
-			selected = o.selected && typeOf(o.selected) != 'array' ? [o.selected] : [],
+			selected = o.selected && typeOf(o.selected) != 'array' ? [o.selected.toString()] : [],
 			selectedIndex = Object.getLength(selected) == 0 ? o.selectedIndex : null
 		;
 
@@ -573,8 +573,10 @@ ION.Form.Select = new Class({
 					text: label
 				}).inject(self.select);
 
-				if (selected.contains(value) || (selectedIndex && selectedIndex == idx))
+				if (selected.indexOf(value.toString()) > -1 || (selectedIndex && selectedIndex == idx))
+				{
 					opt.setProperty('selected', 'selected');
+				}
 
 				// Stores the data used to build the option
 				// Can be retrieved with : opt.retrieve('data');
@@ -601,6 +603,17 @@ ION.Form.Select = new Class({
 		return this.select.getSelected();
 	},
 
+	getSelectedData: function()
+	{
+		var data = this.getSelected().retrieve('data');
+		if (typeOf(data) == 'array') data = data[0];
+		return data;
+	},
+
+	getSelectedValue: function()
+	{
+		return this.options.selected;
+	},
 
 	selectValue: function(val)
 	{
@@ -630,6 +643,16 @@ ION.Form.Select = new Class({
 		});
 
 		this.select.fireEvent('change');
+	},
+
+	hide: function()
+	{
+		this.select.hide();
+	},
+
+	show: function()
+	{
+		this.select.show();
 	},
 
 	destroy: function()

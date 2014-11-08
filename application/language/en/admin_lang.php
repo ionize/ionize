@@ -879,7 +879,7 @@ $lang['ionize_help_page_drop_article_here'] = 'Drag an article from the left tre
 $lang['ionize_label_help_articles_types_and_views'] = 'About Types & Views';
 $lang['ionize_label_help_articles_types'] = 'About Types';
 $lang['ionize_label_help_articles_reorder'] = 'Reorder articles by date. Date calculation : Logical or Publish On or Creation.';
-$lang['ionize_help_sitemap_priority'] = 'Page priority, between 0 and 10';
+$lang['ionize_help_sitemap_priority'] = 'Page priority, between 0 and 10. Set to 0 to not put page in sitemap.';
 
 /*
 |--------------------------------------------------------------------------

@@ -515,6 +515,19 @@
 					</dd>
 				</dl>
 
+				<!-- CRLF -->
+				<dl>
+					<dt>
+						<label for="crlf">CRLF</label>
+					</dt>
+					<dd>
+						<select name="crlf" id="crlf" class="select">
+							<option <?php if ($crlf == "\n"):?>selected="selected"<?php endif;?> value="\n">\n</option>
+							<option <?php if ($crlf == "\r\n"):?>selected="selected"<?php endif;?> value="\r\n">\r\n</option>
+						</select>
+					</dd>
+				</dl>
+
 			</form>
 		</div>
 
@@ -869,13 +882,13 @@
 	if ($('maintenancePageContainer'))
 	{
 		// Get the maintenance page
-		ION.HTML(admin_url + 'setting/get_maintenance_page', {}, {'update': 'maintenancePageContainer'});
+		ION.HTML(ION.adminUrl + 'setting/get_maintenance_page', {}, {'update': 'maintenancePageContainer'});
 		
 		
 		// Callbak when page is dropped
 		setMaintenancePage = function(element, droppable, event)
 		{
-			ION.HTML(admin_url + 'setting/set_maintenance_page', {'id_page': element.getProperty('rel')}, {'update': 'maintenancePageContainer'});
+			ION.HTML(ION.adminUrl + 'setting/set_maintenance_page', {'id_page': element.getProperty('rel')}, {'update': 'maintenancePageContainer'});
 		}
 		
 		// Make tree pages draggable

@@ -271,6 +271,32 @@ class Base_model extends CI_Model
 			if (in_array($this->table, $this->with_media_table))
 				$this->add_linked_media($data, $this->table, $lang);
 
+			// Add data for other languages
+			if ($this->lang_table != null && ! is_array($where))
+			{
+				$data['languages'] = array();
+
+				$fields = $this->list_fields($this->lang_table);
+
+				$this->{$this->db_group}->where($this->lang_table.'.'.$this->pk_name, $where);
+				$query = $this->{$this->db_group}->get($this->lang_table);
+
+				$lang_data = array();
+
+				if ( $query->num_rows() > 0)
+					$lang_data = $query->result_array();
+
+				foreach(Settings::get_languages() as $language)
+				{
+					$data['languages'][$language['lang']] = $fields;
+
+					foreach($lang_data as $row)
+					{
+						if ($row['lang'] == $language['lang'])
+							$data['languages'][$language['lang']] = $row;
+					}
+				}
+			}
 		}
 
 		return $data;

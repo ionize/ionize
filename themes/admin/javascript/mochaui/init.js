@@ -55,7 +55,8 @@ Ionize.initializeDesktop = function(){
 							*/
 							]
 						},
-						{id: 'mainColumn',	placement: 'main', resizeLimit: [100, 300],sortable: false,
+						{
+							id: 'mainColumn',	placement: 'main', resizeLimit: [100, 300],sortable: false,
 							panels:[
 							{
 								id: 'mainPanel',

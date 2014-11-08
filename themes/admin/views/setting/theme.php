@@ -169,7 +169,7 @@
 				id: 'w' + id,
 				title: Lang.get('ionize_title_view_edit') + ' : ' + rel,
 				content: {
-					url: admin_url + 'setting/edit_view/' + rel,
+					url: ION.adminUrl + 'setting/edit_view/' + rel,
 					method:'post',
 					onLoaded: function(element, content)
 					{

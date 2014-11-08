@@ -84,7 +84,7 @@
 					<?php endif ;?>
 
 					<?php if(Authority::can('access', 'admin/item')) :?>
-	                    <li><a class="navlink" href="item/index" title="<?php echo lang('ionize_menu_static_items'); ?>"><?php echo lang('ionize_menu_static_items'); ?></a></li>
+						<li><a class="jnavlink" data-object="staticItemManager" data-class="StaticItemManager" title="<?php echo lang('ionize_menu_static_items'); ?>"><?php echo lang('ionize_menu_static_items'); ?></a></li>
 					<?php endif ;?>
 
 				</ul>
@@ -184,6 +184,29 @@
 			});
 		});
 	});
+
+	// Init of new pure JS menu links
+	$$('.jnavlink').each(function(item)
+	{
+		item.addEvent('click', function(event)
+		{
+			event.preventDefault();
+
+			var o = ION.registry(this.getProperty('data-object'));
+
+			if (o == null)
+			{
+				o = new ION[this.getProperty('data-class')];
+				ION.register(this.getProperty('data-object'), o);
+			}
+
+			if (typeOf(o['getMainPanel']) == 'function')
+				o.getMainPanel();
+			else
+				console.log(this.getProperty('data-class') + ' has no getMainPanel() method');
+		});
+	});
+
 
 	if ($('mediamanagerlink'))
 	{

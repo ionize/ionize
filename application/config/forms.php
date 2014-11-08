@@ -97,10 +97,12 @@ $config['forms'] = array
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_lastname',
 			),
+			/*
 			'screen_name' => array(
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_screen_name',
 			),
+			*/
 			'email' => array(
 				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
 				'label' => 'form_label_email',
@@ -144,19 +146,17 @@ $config['forms'] = array
 				'rules' => 'trim|xss_clean',
 				'label' => 'form_label_lastname',
 			),
-			'screen_name' => array(
-				'rules' => 'trim|xss_clean',
-				'label' => 'form_label_screen_name',
-			),
 			'email' => array(
 				'rules' => 'trim|required|min_length[5]|valid_email|xss_clean',
 				'label' => 'form_label_email',
 			),
+/*
 			'gender' => array(
 				'type' => 'radio',
 				'rules' => 'required',
 				'label' => 'form_label_gender',
 			),
+*/
 			'birthdate' => array(
 				'label' => 'form_label_birthdate',
 			),

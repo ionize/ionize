@@ -60,6 +60,11 @@ $c = '?v='.$v;
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-datepicker/datepicker.js<?php echo $c ?>"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mootools-datepicker/datepicker_dashboard/datepicker_dashboard.css<?php echo $c ?>" />
 
+<!-- Color Picker -->
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/jscolor/jscolor.js<?php echo $c ?>"></script>
+
+
+
 <!-- Tab Swapper -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TabSwapper.js<?php echo $c ?>"></script>
 

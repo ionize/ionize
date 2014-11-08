@@ -49,9 +49,9 @@ class TagManager_Media extends TagManager
 		'medias:description' => 'tag_simple_value',
 		'medias:copyright' => 	'tag_simple_value',
 		'medias:extension' => 	'tag_simple_value',
+		'medias:type' => 		'tag_simple_value',
 		'medias:provider' => 	'tag_simple_value',
 		'medias:mime' => 		'tag_simple_value',
-		'medias:type' => 		'tag_simple_value',
 	);
 
 
@@ -242,16 +242,8 @@ class TagManager_Media extends TagManager
 	public static function get_medias(FTL_Binding $tag)
 	{
 		self::load_model('media_model');
-
 		// Pagination ?
 		// $tag_pagination = $tag->getAttribute('pagination');
-
-		/*
-		$parent = $tag->getDataParent();
-		$parent_data = $parent->getData();
-		$parent_name = $tag->getDataParentName();
-
-		*/
 
 		// Type filter, limit, SQL filter
 		$type = $tag->getAttribute('type');

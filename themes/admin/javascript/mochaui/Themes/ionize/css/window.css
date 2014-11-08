@@ -66,7 +66,10 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 .mocha .cornerNW { cursor:nw-resize; top:0; left:0; }
 .mocha .cornerSW { cursor:sw-resize; bottom:0; left:0; }
 .mocha .cornerSE { cursor:se-resize; width: 20px; height: 20px;opacity:1.0;filter:none; -ms-filter:none; background: url('../images/window-resize.gif') no-repeat; /* background: #fefefe; This is the color of the visible resize handle */ }
-.mocha.css3 .cornerSE { background: transparent; border-color: transparent white white transparent; border-style: solid; border-width: 5px; height: 0; margin: 2px; opacity: 1; width: 0; }
+.mocha.css3 .cornerNE, .mocha.css3 .cornerNW, .mocha.css3 .cornerSW, .mocha.css3 .corner { background: transparent;}
+.mocha.css3 .cornerSE{border-color: transparent white white transparent; border-style: solid; border-width: 5px; height: 0; margin: 2px; opacity: 1; width: 0; }
+.mocha.css3 .handle, .mocha.css3 .handleN,.mocha.css3 .handleS,.mocha.css3 .handleW,.mocha.css3 .handleE {  background: transparent; }
+
 
 .mochaCanvasHeader { position: absolute; top: 0; left: 0; background: transparent; z-index: -1; visibility: hidden; overflow: hidden; }
 .mochaControls { position: absolute; width: 58px; top: 6px; right: 10px; height: 14px; z-index: 4; background: transparent; }
@@ -162,10 +165,6 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 	background-position: 20px 28px;
 	min-height: 60px;
 }
-.mocha.confirmation .mochaContent {background-image:url(../../../../../images/icon_48_confirm.png);}
-.mocha.information .mochaContent {background-image:url(../../../../../images/icon_48_information.png);}
-.mocha.alert .mochaContent {background-image:url(../../../../../images/icon_48_alert.png);}
-.mocha.error .mochaContent {background-image:url(../../../../../images/icon_48_error.png);}
 
 .mocha.confirmation .message,
 .mocha.information .message,
@@ -174,5 +173,6 @@ div.mochaToolbarWrapper.bottom { border: 0; border-bottom: 1px solid #d9d9d9; }
 	padding:20px 10px 0 70px;
 	font-size: 12px;
 	color:#000;
+	min-height: 80px;
 }
 

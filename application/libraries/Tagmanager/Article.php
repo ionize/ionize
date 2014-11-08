@@ -1051,9 +1051,10 @@ class TagManager_Article extends TagManager
 
 		// Try to get the view defined for article
 		$tag_view = $tag->getAttribute('view');
+		$default_view = $tag->getAttribute('default_view');
 		$article_view = ! is_null($tag_view) ? $tag_view : ( ! empty($article['view']) ? $article['view'] : NULL);
 
-		if ( ! is_null($article_view))
+		if ( is_null($article_view))
 		{
 			// Force first the view defined by the tag
 			if ( ! is_null($tag_view))
@@ -1069,7 +1070,12 @@ class TagManager_Article extends TagManager
 
 		// Default article view
 		if (empty($article['view']))
-			$article['view'] = Theme::get_default_view('article');
+		{
+			if ($default_view)
+				$article['view'] = $default_view;
+			else
+				$article['view'] = Theme::get_default_view('article');
+		}
 
 		// View path
 		$view_path = Theme::get_theme_path().'views/'.$article['view'].EXT;

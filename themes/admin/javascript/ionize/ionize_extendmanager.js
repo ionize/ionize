@@ -212,6 +212,31 @@ ION.ExtendManager = new Class({
 		);
 	},
 
+	delete: function(extend)
+	{
+		var options = typeOf(arguments[1]) != 'null' ? arguments[1] : {};
+
+		ION.confirmation(
+			'wExtendDelete' + extend.id_extend_field,
+			function()
+			{
+				ION.JSON(
+					ION.adminUrl + 'extend_field/delete',
+					{
+						id_extend_field: extend.id_extend_field
+					},
+					{
+						onSuccess: function(json)
+						{
+							if (options.onSuccess)
+								options.onSuccess(json);
+						}
+					}
+				)
+			},
+			Lang.get('ionize_confirm_extend_delete')
+		)
+	},
 
 	/**
 	 * Refreshes the extends list after delete
@@ -678,17 +703,6 @@ ION.ExtendManager = new Class({
 							'class': 'unselectable',
 							text: 'label'
 						},
-						// Unlink
-						 /*
-						{
-							element: 'a',
-							'class': 'icon unlink right',
-							onClick: function(item)
-							{
-								console.log(item);
-							}
-						},
-						*/
 						// Delete
 						{
 							element: 'a',
@@ -1200,6 +1214,17 @@ ION.ExtendManager = new Class({
 			}
 		}
 
+		if (dom_type == 'colorpicker')
+		{
+			field = new Element('div');
+			var i = new Element(dom_tag, {
+				type: 'text',
+				'class': 'inputtext w100 color {hash:true, pickerBorder:0, pickerFace:20} ' + extend.html_element_class + cssClass,
+				name: input_name,
+				id: input_name,
+				value: content
+			}).inject(field);
+		}
 
 		//
 		// Pattern
@@ -1268,6 +1293,8 @@ ION.ExtendManager = new Class({
 		// Date & Time
 		ION.initDatepicker(Lang.get('dateformat_backend'));
 		ION.initClearField('#' + containerId);
+
+		jscolor.bind();
 	},
 
 

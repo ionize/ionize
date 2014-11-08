@@ -116,6 +116,7 @@ class Sitemap_model extends Base_model
 				p.logical_date
 			from url u
 			inner join page p on p.id_page = u.id_entity and p.has_url = 1
+				inner join lang l on u.lang = l.lang and l.online = 1
 			where
 				u.type = 'page'
 				and u.active = 1

@@ -47,7 +47,8 @@ ION.TableList = new Class({
 		filter: {									// Filters definition
 			keys: [],								// Colums keys to filter on. Must be keys defined in columns
 			position: 'last',						// Position of the send button. 'first', 'last'
-			filters: null							// Previous filters
+			filters: null,							// Previous filters
+			styles: {}
 			// Event on Filter button click
 			// onFilter: function(post, self, self.getDomElement(), self.container){}
 		},
@@ -72,6 +73,8 @@ ION.TableList = new Class({
 		this.container = typeOf(o.container) == 'string' ? $(o.container) : o.container;
 
 		this.build();
+
+		this.extendManager = null;
 
 		return this;
 	},
@@ -146,6 +149,13 @@ ION.TableList = new Class({
 					self.fireEvent('onCellDraw', [td, item]);
 				});
 
+				if (o.filter.keys.length > 0)
+				{
+					var last_th = tr.getLast('td');
+					if (last_th)
+						last_th.setProperty('colspan', '2');
+				}
+
 				self.fireEvent('onItemDraw', [tr, item]);
 			});
 
@@ -213,6 +223,13 @@ ION.TableList = new Class({
 
 			if (column.class) th.setProperty('class', column.class);
 		});
+
+		if (o.filter.keys.length > 0)
+		{
+			var last_th = thead_tr.getLast('th');
+			if (last_th)
+				last_th.setProperty('colspan', '2');
+		}
 	},
 
 	buildFilter: function()
@@ -220,6 +237,7 @@ ION.TableList = new Class({
 		var self = this,
 			o = this.options,
 			filter_keys = o.filter.keys,
+			filter_styles = o.filter.styles,
 			filters = o.filter.filters,
 			thead = this.table.getElement('thead') || new Element('thead').inject(this.table),
 			thead_tr = new Element('tr', {'class':'filters'}).inject(thead),
@@ -236,31 +254,101 @@ ION.TableList = new Class({
 
 			if (filter_keys.contains(column.key))
 			{
-				var i = new Element('input', {type:'text', id:column.key + '_' + hash, name:column.key, 'class':'inputtext'}).inject(th);
-				self.filter_inputs.push(i);
+				// Extend
+				if (typeOf(column.extend) != 'null')
+				{
+					if (self.extendManager == null) self.extendManager = new ION.ExtendManager();
+
+					var options = {
+						validateClass:'',
+						container: th,
+						dom_type: ['radio', 'checkbox'].contains(column.extend.html_element_type) ? 'select' : column.extend.html_element_type,
+						name: column.extend.id_extend_field,
+						setDefaultValue: false,
+						noValueLabel: Lang.get('ionize_select_all'),
+						onChange: function(el, value, extend)
+						{
+							self.submitFilter();
+						}
+					};
+
+					// Build the Extend
+					var i = self.extendManager.getExtendField(column.extend, options);
+					i.setProperty('id', column.key + '_' + hash);
+
+					self.filter_inputs.push(i.getFormElement());
+
+					// Restore previous filter value
+					Object.each(filters, function(val, key)
+					{
+						if (key == column.key)
+							i.getFormElement().setProperty('value', val);
+					});
+				}
+				else
+				{
+					var i = new Element('input', {
+						type:    'text',
+						id: column.key + '_' + hash,
+						name:    column.key,
+						'class': 'inputtext'
+					}).inject(th);
 
 				// Event
 				i.addEvent('keydown', function(event)
 				{
-					if(event.key == 'enter')
-						self.submitFilter();
+						if(event.key == 'enter') self.submitFilter();
 				});
+
+				self.filter_inputs.push(i);
 
 				// Restore previous filter value
 				Object.each(filters, function(val, key)
 				{
 					if (key == column.key)
-					{
 						i.setProperty('value', val);
+					});
 					}
-				});
+
+				// Style
+				var s = self._getFilterStyle(column.key);
+				if (s != null)
+					if (s['class']) i.addClass(s['class']);
+				else
+					if (column.type == 'number') i.addClass('w60');
 			}
+				});
+
+		// SAve received filters
+		this.saveFilter(filters);
+
+		// Reset Filter button
+		var th = new Element('th').inject(thead_tr),
+			icon_reset = new Element('a', {'class':'icon clear center', title:Lang.get('ionize_button_reset_filter')}).inject(th);
+
+		icon_reset.addEvent('click', function(){
+			self.resetFilter();
+		})
+	},
+
+	_getFilterStyle: function(key)
+	{
+		var r = null,
+			o = this.options.filter.styles;
+
+		Object.each(o, function(s, k)
+		{
+			if (k == key) r = s;
 		});
+
+		return r;
 	},
 
 	submitFilter: function()
 		{
 		var post = this.getPostData();
+
+		this.saveFilter(post);
 
 		if (typeOf(this.options.filter.onFilter) == 'function')
 			this.options.filter.onFilter(post, this, this.getDomElement(), this.container);
@@ -284,6 +372,43 @@ ION.TableList = new Class({
 		post = Object.append(post, this.options.post);
 
 		return post;
+	},
+
+	resetFilter: function()
+	{
+		var filters =[];
+		filters[this.options.id] = null;
+
+		ION.register('filters', Object.merge(ION.registry('filters'), filters));
+
+		if (typeOf(this.options.filter.onFilter) == 'function')
+			this.options.filter.onFilter({}, this, this.getDomElement(), this.container);
+		else
+		{
+			console.log('No onFilter() event defined for this table. Here are the data :');
+		}
+	},
+
+	saveFilter: function(post)
+	{
+		if (typeOf(post) == 'object')
+		{
+			var filters = [];
+
+			if (!ION.registry('filters')) ION.register('filters', []);
+
+			filters[this.options.id] = post;
+
+			ION.register('filters', Object.merge(ION.registry('filters'), filters));
+		}
+	},
+
+	getSavedFilter: function()
+	{
+		var filters = ION.registry('filters'),
+			f = typeOf(filters[this.options.id]) == 'object' ? filters[this.options.id] : null;
+
+		return f;
 	},
 
 
@@ -339,6 +464,7 @@ ION.List = new Class({
 	options: {
 		'class':    	null,             // CSS Class fo the UL
 		id:             'list',
+		empty:      true,               // Should the container be empty
 		container:      '',             // DOM HTML Container. String or DOM Element
 		styles: {
 			ul: 'list',                 // UL CSS classes
@@ -410,18 +536,27 @@ ION.List = new Class({
 
 		this.setOptions(options);
 
+		if (typeOf(options.container) == 'null')
+		{
+			console.log('ION.List error : Please set the "container" option');
+			return;
+		}
+
 		this.container = (typeOf(options.container) == 'object') ? options.container : $(options.container);
+
+		if (this.options.empty) this.container.empty();
 
 		if (this.options.buildUl == false)
 		{
 			this.ul = this.container;
+			this.ul.addClass('list');
 			this.ul.addClass(this.options.styles.ul);
 		}
 		else
 		{
 			this.ul = new Element('ul', {
 				id: this.options.id,
-				'class': this.options.styles.ul
+				'class': 'list ' + this.options.styles.ul
 			}).inject(this.container);
 
 			if (this.options['class'] != null)
@@ -493,10 +628,20 @@ ION.List = new Class({
 						else part.addClass('left');
 
 						// Set the text of the part
-						if (el.text && item[el.text])
-							part.set('html', item[el.text]);
-						else if (el.text )
-							part.set('html', li.id);
+						if (el.content)
+						{
+							part.set('html', el.content);
+						}
+						else
+						{
+							if (el.text && item[el.text])
+								part.set('html', item[el.text]);
+							else if (el.text )
+							{
+								if (typeOf(el.empty) != 'null') part.set('html', el.empty);
+								else part.set('html', li.id);
+							}
+						}
 
 						// onClick : Send the item
 						if(el.onClick)
@@ -608,9 +753,9 @@ ION.List = new Class({
 				{}
 			);
 		}
-		else
+		else if (this.options.sort.callback)
 		{
-			alert('New order : ' + serie);
+			this.options.sort.callback(serie);
 		}
 	}
 });

@@ -173,13 +173,15 @@ class TagManager_Form extends TagManager
 			{
 				return self::$ci->input->post($tag->name);
 			}
-
 			// No post data : try to get the field from from tag parent
+			/*
+			 * Removed, as it returns the page name if "name" is used as field for example
+			 *
 			if (is_object($data_parent))
 			{
 				return $tag->getValue($tag->name, $data_parent->name);
 			}
-
+			*/
 		}
 		if (!is_null($default))
 			return $default;

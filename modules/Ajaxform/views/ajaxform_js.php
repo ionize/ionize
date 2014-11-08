@@ -88,7 +88,7 @@
 
 						// Remove previous one if any
 						$('#' + id).remove();
-						var type = data.validation == false ? 'alert-error' : 'alert-success';
+						var type = data.validation == false ? 'alert-danger' : 'alert-success';
 
 						// Global Success / Error message DOM element
 						var div = $(

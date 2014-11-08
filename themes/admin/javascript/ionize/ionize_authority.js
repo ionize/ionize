@@ -53,7 +53,7 @@ ION.Authority = new Class({
 	loadRules: function()
 	{
 		new Request.JSON({
-			url: admin_url + 'user/get_rules',
+			url: ION.adminUrl + 'user/get_rules',
 			method: 'post',
 			loadMethod: 'xhr',
 			onFailure: function(xhr){},
@@ -69,7 +69,7 @@ ION.Authority = new Class({
 	loadAllRules: function()
 	{
 		new Request.JSON({
-			url: admin_url + 'rule/get_all',
+			url: ION.adminUrl + 'rule/get_all',
 			method: 'post',
 			data: {
 			//	'type':'backend'
@@ -109,9 +109,11 @@ ION.Authority = new Class({
 	 * @returns {boolean}
 	 *
 	 */
-	can:function(action, resource, check_has_rule)
+	can:function(action, resource)
 	{
-		var can = false;
+		var can = false,
+			check_has_rule = arguments[2] == true ? true : null
+		;
 
 		if (ION.Authority.has_all == true)
 			return true;

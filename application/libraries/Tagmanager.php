@@ -1688,12 +1688,14 @@ class TagManager
 				{
 					$target_uri = ! empty($link['target_url']) ? $link['target_url'] : $link['entity_url'];
 					$links[$key]['absolute_url'] = $base_url . $target_uri;
+
+					// Set medias
+					$links[$key]['medias'] = $link['data']['medias'];
+
+					// Set type
+					$links[$key][$link['type']] = $link['data'];
 				}
 
-				foreach($links as $key => $link)
-				{
-					$links[$key]['medias'] = $link['data']['medias'];
-				}
 				$tag->set('links', $links);
 
 				foreach($links as $idx => $link)

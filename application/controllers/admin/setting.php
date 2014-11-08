@@ -140,6 +140,7 @@ class Setting extends MY_admin
 		$this->template['charset'] = 		isset($config['charset']) ? $config['charset'] : 'utf-8';
 		$this->template['mailtype'] = 		isset($config['mailtype']) ? $config['mailtype'] : 'text';
 		$this->template['newline'] = 		isset($config['newline']) ? $config['newline'] : '\n';
+		$this->template['crlf'] = 			isset($config['crlf']) ? $config['crlf'] : '\n';
 
 		// Thumbs settings
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
@@ -1282,7 +1283,8 @@ class Setting extends MY_admin
 			'mailpath'		=> '',
 			'charset'		=> $this->input->post('charset'),
 			'mailtype'		=> $this->input->post('mailtype'),
-            'newline'       => $this->input->post('newline')
+            'newline'       => $this->input->post('newline'),
+            'crlf'       	=> $this->input->post('crlf')
 		);
 
 		switch ($protocol)

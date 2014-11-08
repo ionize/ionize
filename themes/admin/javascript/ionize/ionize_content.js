@@ -20,7 +20,7 @@ ION.append({
 			$('mainPanel').getElements('iframe').each(function(el){el.destroy()});
 
 			options.method = 'post';
-			options.url = admin_url + ION.cleanUrl(options.url);
+			options.url = ION.adminUrl + ION.cleanUrl(options.url);
 			MUI.Content.update(options);
 		}
 		else
@@ -57,7 +57,7 @@ ION.append({
 		
 			MUI.Content.update({
 				element: 'mainPanel_headerToolbox',
-				url: admin_url + 'desktop/get/toolboxes/' + toolbox_url,
+				url: ION.adminUrl + 'desktop/get/toolboxes/' + toolbox_url,
 				method: 'post',
 				data: data,
 				onLoaded: cb
@@ -125,7 +125,7 @@ ION.append({
 		{
 			MUI.Content.update({
 				'element': $('mainPanel_headerToolbox'),
-				'url': admin_url + 'module/' + module + '/' +  module + '/get/admin/toolboxes/' + toolbox_url
+				'url': ION.adminUrl + 'module/' + module + '/' +  module + '/get/admin/toolboxes/' + toolbox_url
 			});
 		}
 		else
@@ -367,7 +367,7 @@ ION.append({
 	updateElement: function (options)
 	{
 		// Cleans URLs
-		options.url = admin_url + ION.cleanUrl(options.url);
+		options.url = ION.adminUrl + ION.cleanUrl(options.url);
 			
 		// If the panel doesn't exists, try to update directly one DomHTMLElement
 		if ( ! MUI.get(options.element) )
@@ -455,15 +455,15 @@ ION.append({
 
 			if (typeOf(options) == 'null') options = {};
 
-			var oTimePicker = (options.timePicker) ? options.timePicker : false;
-			var oInputFormat = (oTimePicker == true) ? date_format + ' H:i:s' : date_format;
-			var oOutputFormat = (oTimePicker == true) ? 'Y-m-d H:i:s' : 'Y-m-d';
+			var timePicker = (options.timePicker) ? options.timePicker : false;
+			var format = (timePicker == true) ? date_format + ' H:i:s' : date_format;
+			var inputOutputFormat = (timePicker == true) ? 'Y-m-d H:i:s' : 'Y-m-d';
 
 			ION.datePicker = new DatePicker('input.date', {
 				pickerClass: 'datepicker_dashboard', 
-				timePicker: oTimePicker,
-				format: oInputFormat,
-				inputOutputFormat: oOutputFormat,
+				timePicker: timePicker,
+				format: format,
+				inputOutputFormat: inputOutputFormat,
 				allowEmpty:true, 
 				useFadeInOut:false
 			//	positionOffset: {x:-60,y:0},
@@ -841,27 +841,44 @@ ION.append({
 	
 	initClearField: function(selector)
 	{
-		$$(selector + ' .clearfield').each(function(item, idx)
-		{
-			if(item.hasClass('date'))
-			{
-				var dataInput = $(item.getAttribute('data-id'));
-				var visibleInput = dataInput.getPrevious('input');
+		var selector = typeOf(selector) == 'string' ? $(selector) : selector;
 
-				item.addEvent('click', function(e) {
-					e.stop();
-					if (typeOf(visibleInput) != 'null') visibleInput.value = '';
-					dataInput.value = '';
-				});
-			}
-			else
+		if (selector)
+		{
+			var elements = selector.getElements('.clearfield');
+
+			elements.each(function(item)
 			{
-				item.addEvent('click', function(e) {
-					e.stop();
-					ION.clearField(item.getAttribute('data-id'));
-				});
-			}
-		});
+				if(item.hasClass('date'))
+				{
+					var dataInput = $(item.getAttribute('data-id'));
+
+					if (dataInput)
+					{
+						var visibleInput = dataInput.getPrevious('input');
+
+						item.addEvent('click', function(e) {
+							e.stop();
+							if (visibleInput) visibleInput.value = '';
+							dataInput.value = '';
+						});
+					}
+					else
+					{
+						console.log('ION.initClearField() ERROR : Please set the "data-id" property of the date field : ');
+						console.log(item);
+					}
+				}
+				else
+				{
+					item.addEvent('click', function(e) {
+						e.stop();
+						ION.clearField(item.getAttribute('data-id'));
+					});
+				}
+			});
+
+		}
 	},
 	
 
@@ -876,7 +893,7 @@ ION.append({
 			inputKeys = typeOf(options.inputKeys) == 'array' ? options.inputKeys : null
 		;
 
-		new Autocompleter.Request.HTML($(input), admin_url + searchUrl,
+		new Autocompleter.Request.HTML($(input), ION.adminUrl + searchUrl,
 		{
 			'postVar': 'search',
 			'indicatorClass': 'autocompleter-loading',
@@ -915,7 +932,7 @@ ION.append({
 				{
 					if ($(update))
 					{
-						ION.HTML(admin_url + detailUrl, {item_id:id}, {'update':$(update)});
+						ION.HTML(ION.adminUrl + detailUrl, {item_id:id}, {'update':$(update)});
 					}
 				}
 			}
@@ -940,7 +957,7 @@ ION.append({
 
 		var r = new Request.JSON(
 		{
-			url: admin_url + 'element_definition/get_definitions_from_parent', 
+			url: ION.adminUrl + 'element_definition/get_definitions_from_parent',
 			method: 'post',
 			loadMethod: 'xhr',
 			data:
@@ -1057,24 +1074,6 @@ ION.append({
 	},
 	
 	
-	updateTabs: function()
-	{
-		var tabSwapper = $('desktop').retrieve('tabSwapper');
-			
-		if (tabSwapper)
-		{
-			var tabs = tabSwapper.tabs;
-			
-			tabs.each(function(tab, idx)
-			{
-				var section = tab.retrieve('section');
-//				console.log(idx);
-//				console.log(section.getChildren());
-			});
-		}
-	},
-	
-	
 	/**
 	 * Updates all the content elements from a given parent
 	 *
@@ -1091,9 +1090,7 @@ ION.append({
 		}
 	},
 	
-	
-	
-	
+
 	/**
 	 * Updates the info about the link
 	 *
@@ -1111,7 +1108,7 @@ ION.append({
 		// Link build
 		if (type != '')
 		{
-			var url = admin_url + type + '/edit/' + id;
+			var url = ION.adminUrl + type + '/edit/' + id;
 			
 			var a = new Element('a').set('html', text);
 		
@@ -1233,7 +1230,7 @@ ION.append({
 				ION.contentUpdate({
 					element: $('mainPanel'),
 					title: Lang.get('ionize_title_menu'),
-					url : admin_url + 'menu'
+					url : ION.adminUrl + 'menu'
 				});
 			});
 		}
@@ -1247,7 +1244,7 @@ ION.append({
 
 				ION.contentUpdate({
 					'element': $('mainPanel'),
-					'url': admin_url + 'page/create/' + id_menu,
+					'url': ION.adminUrl + 'page/create/' + id_menu,
 					title: Lang.get('ionize_title_new_page')
 				});
 
@@ -1259,7 +1256,7 @@ ION.append({
 					element: $('mainPanel'),
 					title: Lang.get('ionize_title_new_page'),
 					loadMethod: 'xhr',
-					url: admin_url + 'page/create/' + id_menu
+					url: ION.adminUrl + 'page/create/' + id_menu
 				});
 */
 			});
@@ -1365,7 +1362,7 @@ ION.append({
 	{
 		if (typeOf($('id_page')) != 'null' && $('id_page').value == id_page)
 		{
-			ION.HTML(admin_url + 'article/get_list', {'id_page':id_page}, {'update': 'articleListContainer'});
+			ION.HTML(ION.adminUrl + 'article/get_list', {'id_page':id_page}, {'update': 'articleListContainer'});
 		}
 	},
 
@@ -1380,15 +1377,15 @@ ION.append({
 		var id_page = rel[0];
 		var id_article = rel[1];
 
-		var unlink_url = admin_url + 'article/unlink/' + id_page + '/' + id_article;
+		var unlink_url = ION.adminUrl + 'article/unlink/' + id_page + '/' + id_article;
 
 		// Event on page name anchor
 		var a = item.getElement('a.page');
 		a.addEvent('click', function(e) {
 			e.stop();
 			ION.splitPanel({
-				'urlMain': admin_url + 'page/edit/' + id_page,
-				'urlOptions' : admin_url + 'page/get_options/' + id_page,
+				'urlMain': ION.adminUrl + 'page/edit/' + id_page,
+				'urlOptions' : ION.adminUrl + 'page/get_options/' + id_page,
 				'title': Lang.get('ionize_title_edit_page')
 			});
 		});
@@ -1408,31 +1405,30 @@ ION.append({
 			item.addEvent('click', function()
 			{
 				var lang = item.getProperty('rel');
-				var langs = Lang.languages;
 
 				if (typeOf(tinyMCE) != 'null')
 					tinyMCE.triggerSave();
 
-				elements.each(function(item, idx)
+				elements.each(function(item)
 				{
-					langs.each(function(l)
+					Object.each(Lang.languages, function(label, key)
 					{
-						if (l != lang)
+						if (key != lang)
 						{
-							if (typeOf($(item + '_' + l)) != 'null')
+							if (typeOf($(item + '_' + key)) != 'null')
 							{
 								if (
-									($(item + '_' + l).hasClass('tinyTextarea') ||  $(item + '_' + l).hasClass('smallTinyTextarea'))
+									($(item + '_' + lang).hasClass('tinyTextarea') ||  $(item + '_' + lang).hasClass('smallTinyTextarea'))
 									&& (typeOf(tinyMCE) != 'null')
 								)
 								{
-									var tiny = tinyMCE.EditorManager.get(item + '_' + l);
+									var tiny = tinyMCE.EditorManager.get(item + '_' + lang);
 									if (tiny)
 										tiny.setContent($(item + '_' + lang).value);
 								}
 								else
 								{
-									$(item + '_' + l).value = $(item + '_' + lang).value;
+									$(item + '_' + lang).value = $(item + '_' + lang).value;
 								}
 							}
 						}
@@ -1440,7 +1436,6 @@ ION.append({
 				});
 				
 				ION.notification('success', Lang.get('ionize_message_article_lang_copied'));
-				// item.getParent().highlight();
 			});
 		})
 	},
@@ -1553,7 +1548,7 @@ ION.append({
 		else
 		{
 			ION.JSON(
-				admin_url + receiver_type + '/add_link',
+				ION.adminUrl + receiver_type + '/add_link',
 				{
 					'link_rel': link_rel,
 					'receiver_rel': $('rel').value,
@@ -1669,18 +1664,18 @@ ION.append({
 	cleanUrl: function(url)
 	{
 		// Cleans URLs
-		url = url.replace(admin_url, '');
+		url = url.replace(ION.adminUrl, '');
 
 		// Be sure the admin url without lang is also removed
-		var admin_uri = Settings.get('admin_url');
-		if (admin_uri)
-			url = url.replace(base_url + admin_uri + '/', '');
+//		var admin_uri = Settings.get('admin_url');
+//		if (admin_uri)
+//			url = url.replace(ION.baseUrl + admin_uri + '/', '');
 
 		// Base URL contains the lang code. Try to clean without the lang code
-		url = url.replace(admin_url.replace(Lang.current + '/', ''), '');
+		url = url.replace(ION.adminUrl.replace(Lang.current + '/', ''), '');
 
-		url = url.replace(base_url + Lang.current + '/', '');
-		url = url.replace(base_url, '');
+		url = url.replace(ION.baseUrl + Lang.current + '/', '');
+		url = url.replace(ION.baseUrl, '');
 
 		return url;
 	},
@@ -1823,9 +1818,12 @@ ION.append({
 			"ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ż":"z","ź":"z","Ą":"A","Ć":"C","Ę":"E","Ł":"L","Ń":"N","Ó":"O","Ś":"S","Ż":"Z","Ź":"Z"
 		};
 
-			text = text.split('').map(function (char) {
-				return a[char] || char;
-			}).join("");
+		if (sep == '-')	a['_'] = sep;
+		if (sep == '_')	a['-'] = sep;
+
+		text = text.split('').map(function (char) {
+			return a[char] || char;
+		}).join("");
 
 		for (var i=0; i<text.length; i++)
 		{

@@ -20,7 +20,9 @@ ION.Window = new Class({
 		barTitle: '',
 		title: null,
 		buttons:[],
-		onDraw: function(){}
+		onDraw: function(){},
+		onBeforeSave: null			// Function called in case of "form" type before any save
+									// Must return true
 
 		/*
 		 * User's options :
@@ -138,6 +140,11 @@ ION.Window = new Class({
 		return this.saveReloadButton;
 	},
 
+	getButtonsContainer: function()
+	{
+		return this.divButtons;
+	},
+
 	close: function()
 	{
 		this.w.close();
@@ -195,9 +202,7 @@ ION.Window = new Class({
 					container: w.el.content
 				});
 
-				// Set before call of the potential Form Window onDrawEnd
-				if (typeOf(self.divButtons) == 'null')
-					self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
+				self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
 
 				// Buttons set as options
 				self.buttons.each(function(button)
@@ -231,22 +236,22 @@ ION.Window = new Class({
 
 		if (opt.form)
 		{
-			if (typeOf(opt.form.id) == 'null') opt.form.id = ION.generateHash(16);
-			if (typeOf(opt.form['class']) == 'null') opt.form['class'] = '';
+			if (typeOf(opt.form.id) == 'null')
+				opt.form.id = ION.generateHash(16);
 
 			var options =
 			{
 				onDrawEnd: function(w)
 				{
-					if (typeOf(self.divButtons) == 'null')
-						self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
-
 					self.form = new Element('form', {
 						id: opt.form.id,
 						'class': opt.form['class'],
 						action: opt.form.action,
 						method: 'post'
 					}).inject(w.el.content);
+
+					self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
+
 
 					self.saveButton = new Element('button', {
 						'class':'button right yes',
@@ -285,17 +290,29 @@ ION.Window = new Class({
 
 						self.saveReloadButton.addEvent('click', function()
 						{
-							ION.JSON(
-								opt.form.action,
-								self.form,
-								{
-									onSuccess:function(json)
+							var save = true;
+
+							if (typeOf(opt.form.action) == 'null') {
+								console.log('Error : form.action not set !');
+								return;
+							}
+
+							if (typeOf(opt.form.onBeforeSave) == 'function')
+								save = opt.form.onBeforeSave(self.form);
+
+							if (save == true) {
+
+								ION.JSON(
+									opt.form.action,
+									self.form,
 									{
-										w.close();
-										opt.form.reload(json);
+										onSuccess: function (json) {
+											w.close();
+											opt.form.reload(json);
+										}
 									}
-								}
-							);
+								);
+							}
 						});
 					}
 
@@ -444,7 +461,10 @@ ION.WindowTitle = new Class({
 							span.set('html', span.get('html') + ' : ' );
 					}
 				}
-				new Element('span', {'html': sub.value}).inject(p);
+				if(typeOf(sub.value) == 'element')
+					sub.value.inject(p);
+				else
+					new Element('span', {'html': sub.value}).inject(p);
 			});
 		}
 	},
@@ -610,7 +630,7 @@ ION.append({
 			title: (typeOf(Lang.get(title)) == 'null') ? title : Lang.get(title),
 			container: document.body,
 			content: {
-				url: admin_url + wUrl,
+				url: ION.adminUrl + wUrl,
 				method:'post',
 				data: data,
 				onLoaded: function(element, content)
@@ -680,7 +700,7 @@ ION.append({
 			container: document.body,
 			// evalResponse: true,
 			content: {
-				url: admin_url + wUrl,
+				url: ION.adminUrl + wUrl,
 				data: data,
 				method: 'post',
 				onLoaded: function(element, content)
@@ -740,7 +760,7 @@ ION.append({
 		// Window message
 		var wMsg = (Lang.get(msg)) ? Lang.get(msg) : msg ;
 	
-		var btnOk = new Element('button', {'class':'button yes right mr35'}).set('text', Lang.get('ionize_button_ok'));
+		var btnOk = new Element('button', {'class':'button yes right'}).set('text', Lang.get('ionize_button_ok'));
 
 		var button = new Element('div', {'class':'buttons'}).adopt(btnOk);
 
@@ -757,6 +777,7 @@ ION.append({
 			title: Lang.get('ionize_modal_' + type + '_title'),
 			cssClass: type,
 			draggable: true,
+			resizable: true,
 			y: 150,
 			padding: { top: 15, right: 15, bottom: 8, left: 15 }			
 		}

@@ -130,10 +130,13 @@ ION.ButtonToolbar = new Class({
 });
 
 
+/**
+ *
+ * @type {Class}
+ */
 ION.Button = new Class({
 
 	Implements: [Events, Options],
-
 
 	isEnabled: 	true,
 	isActive: 	false,
@@ -150,7 +153,7 @@ ION.Button = new Class({
 		iconClass:		'',				// Additional icon CSS class
 		parent:			null,			// Parent DOM Element
 		btnGroupClass: 	'btn-group',
-		enabled: 		true,
+		enabled: 		true
 
 		// onClick: function(ION.Button, DomElement)
 		// onActivate: function(ION.Button, DomElement)
@@ -177,6 +180,13 @@ ION.Button = new Class({
 
 		if (o.w) this.w = o.w;
 
+		if (typeOf(o.attributes) == 'object')
+		{
+			Object.each(o.attributes, function(val, key){
+				self.button.setProperty(key, val);
+			})
+		}
+
 		this.buttonTitle = new Element('span', {'html': o.title}).inject(this.button);
 
 		if (this.options.iconClass) this.options.iconClass = ' ' + this.options.iconClass;
@@ -187,7 +197,7 @@ ION.Button = new Class({
 		{
 			this.addCaret();
 
-			this.btnGroup = new Element('div', {'class': o.btnGroupClass});
+			this.btnGroup = new Element('div', {'class': 'btnDropDown ' + o.btnGroupClass});
 			this.button.inject(this.btnGroup);
 
 			this.addListElements(o.elements);
@@ -203,13 +213,25 @@ ION.Button = new Class({
 				{
 					$$('.' + self.options.btnGroupClass).removeClass('open');
 					self.btnGroup.addClass('open');
-					self.correctBtnGroupPosition();
+					self._correctBtnGroupPosition();
 				}
 			}
 
 			this.btnGroup.addEvent('click', this.options.onClick);
 
 			if (this.container)	this.btnGroup.inject(this.container);
+
+			// Window click event
+			if ( ! document.hasBtnDropDownEvent)
+			{
+				document.addEvent('click', function(e){
+					var el = e.target.getParent('.btnDropDown');
+					if ( ! el)
+						$$('.btnDropDown').removeClass('open');
+				});
+				document.hasBtnDropDownEvent = true;
+			}
+
 		}
 		// Simple Button
 		else
@@ -229,21 +251,32 @@ ION.Button = new Class({
 
 		if (o.enabled == false)
 			this.disable();
+		else
+		{
+			if (o.isActive == true)
+				this.activate();
+		}
 
-		this.fireEvent('onLoaded', this.button);
+		this.fireEvent('onLoaded', [this.button, this]);
 
 		return this;
 	},
 
-	correctBtnGroupPosition: function()
+	_correctBtnGroupPosition: function()
 	{
-		var ul = this.btnGroup.getElement('ul.dropdown-menu');
-
-		var dim = ul.getCoordinates(),
+		var ul = this.btnGroup.getElement('ul.dropdown-menu'),
+			lis = ul.getElements('li'),
+			dim = ul.getCoordinates(),
 			docDim = document.getCoordinates();
 
 		if ((dim.left + dim.width) > docDim.width)
 			ul.setStyles({'right': 0, left:'auto'});
+
+		if(lis.length <= 7)
+			this.btnGroup.getElement('ul.dropdown-menu').setStyles({
+				'overflow-y': 'hidden',
+				'max-height': 'auto'
+			});
 	},
 
 	addListElements: function(elements)
@@ -269,6 +302,17 @@ ION.Button = new Class({
 	setTitle: function(title)
 	{
 		this.buttonTitle.set('text', title);
+	},
+
+	setIcon: function(c)
+	{
+		var i = this.button.getElement('i');
+
+		if (i)
+		{
+			i.removeProperty('class');
+			i.setProperty('class', c);
+		}
 	},
 
 

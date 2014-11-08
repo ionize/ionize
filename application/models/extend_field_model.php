@@ -816,25 +816,38 @@ class Extend_field_model extends Base_model
 
 	public function delete_extend_field($id_extend_field)
 	{
-		// Begin transaction
-		$this->{$this->db_group}->trans_start();
+		try
+		{
+			if (Event::has_listeners('Extend.field.delete.before'))
+			{
+				// Listeners must throw one Exception if the item cannot be deleted
+				Event::fire('Extend.field.delete.before', $id_extend_field);
+			}
 
-		// Definition
-		parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field');
+			// Begin transaction
+			$this->{$this->db_group}->trans_start();
 
-		// Lang
-		parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field_lang');
+			// Definition
+			parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field');
 
-		// Instances
-		$this->delete_extend_fields($id_extend_field);
+			// Lang
+			parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field_lang');
 
-		// Context
-		parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field_context');
+			// Instances
+			$this->delete_extend_fields($id_extend_field);
 
-		// Transaction complete
-		$this->{$this->db_group}->trans_complete();
+			// Context
+			// parent::delete(array('id_extend_field'=>$id_extend_field), 'extend_field_context');
 
-		return $this->{$this->db_group}->trans_status();
+			// Transaction complete
+			$this->{$this->db_group}->trans_complete();
+
+			return $this->{$this->db_group}->trans_status();
+		}
+		catch(Exception $e)
+		{
+			throw new Exception($e->getMessage());
+		}
 	}
 
 
