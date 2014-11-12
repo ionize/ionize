@@ -1417,7 +1417,8 @@ class FileManager
 		$max_upload = self::convert_size(ini_get('upload_max_filesize'));
 		$max_post = self::convert_size(ini_get('post_max_size'));
 		$memory_limit = self::convert_size(ini_get('memory_limit'));
-		if( $memory_limit < 0 ) {
+		if( $memory_limit < 0 )
+		{
 			$memory_limit = max($max_upload, $max_post);
 		}
 		$limit = min($max_upload, $max_post, $memory_limit);

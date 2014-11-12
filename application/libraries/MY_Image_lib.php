@@ -335,6 +335,9 @@ class MY_Image_lib extends CI_Image_lib {
 		// Memory limit from php.ini config file in bytes
 		$ini_memory_limit = intval(substr(ini_get('memory_limit'), 0, -1)) * 1024 * 1024;
 
+		if ( $ini_memory_limit < 0 )
+			return true;
+
 		// First, check the source
 		$size = getimagesize($this->full_src_path);
 		$picture_need = $size[0]*$size[1]*(2.2+($truecolor*3)) + memory_get_usage();

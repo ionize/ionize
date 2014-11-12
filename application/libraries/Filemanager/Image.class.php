@@ -56,7 +56,7 @@ class Image {
 		$this->meta = self::checkFileForProcessing($file);
 
 		// only set the new memory limit of IMAGE_PROCESSING_MEMORY_MAX_USAGE MB when the configured one is smaller:
-		if ($this->meta['fileinfo']['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
+		if ($this->meta['fileinfo']['memory_limit'] > 0  &&  $this->meta['fileinfo']['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
 		{
 			ini_set('memory_limit', IMAGE_PROCESSING_MEMORY_MAX_USAGE . 'M'); //  handle large images
 		}
@@ -243,7 +243,7 @@ class Image {
 			throw new Exception('no_imageinfo');
 
 		// only set the new memory limit of IMAGE_PROCESSING_MEMORY_MAX_USAGE MB when the configured one is smaller:
-		if ($finfo['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
+		if ($finfo['memory_limit'] > 0  &&  $finfo['memory_limit'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024)
 		{
 			// recalc the 'will_fit' indicator now:
 			$finfo['will_fit'] = ($finfo['usage_min_advised'] < IMAGE_PROCESSING_MEMORY_MAX_USAGE * 1024 * 1024);
