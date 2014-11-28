@@ -997,10 +997,10 @@ class Media extends MY_admin
         $expires = gmdate("D, d M Y H:i:s", time() + $expire) . " GMT";
         $size = strlen($content);
 
-        header("Content-Type: $mime");
-        header("Expires: $expires");
-        header("Cache-Control: max-age=$expire");
-        header("Content-Length: $size");
+        header("Content-Type: " . $mime);
+        header("Expires: " . $expires);
+        header("Cache-Control: max-age=" . $expire);
+        header("Content-Length: " . $size);
 
         echo $content;
         
