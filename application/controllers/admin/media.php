@@ -1061,11 +1061,11 @@ class Media extends MY_admin
 
 		// Youtube (reduced URL)
 		if (
-			substr($base_path, 0, 15) == 'http://youtu.be'
+			substr($base_path, 0, 15) == 'https://youtu.be'
 		)
 		{
 			$service = array(
-				'path' => 'http://www.youtube.com/embed/' . $file_name,
+				'path' => 'https://www.youtube.com/embed/' . $file_name,
 				'provider' => 'youtube'
 			);
 			return $service;
@@ -1074,7 +1074,7 @@ class Media extends MY_admin
 		// Youtube
 		if (
 			substr($file_name, 0, 6) == 'watch?'
-			OR substr($base_path,0, 22) == 'http://www.youtube.com'
+			OR substr($base_path,0, 22) == 'https://www.youtube.com'
 		)
 		{
 			$file_name = str_replace('watch?', '', $file_name);
@@ -1090,7 +1090,7 @@ class Media extends MY_admin
 			}
 
 			$service = array(
-				'path' => 'http://www.youtube.com/embed/' . $file_name,
+				'path' => 'https://www.youtube.com/embed/' . $file_name,
 				'provider' => 'youtube'
 			);
 			return $service;
