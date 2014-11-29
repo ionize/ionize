@@ -64,15 +64,16 @@ class CI_DB_mysqli_driver extends CI_DB {
 	 */
 	function db_connect()
 	{
-		if ($this->port != '')
-		{
-			return @mysqli_connect($this->hostname, $this->username, $this->password, $this->database, $this->port);
-		}
-		else
-		{
-			return @mysqli_connect($this->hostname, $this->username, $this->password, $this->database);
-		}
+//		if ($this->port != '')
+//		{
+//			return @mysqli_connect($this->hostname, $this->username, $this->password, $this->database, $this->port);
+//		}
+//		else
+//		{
+//			return @mysqli_connect($this->hostname, $this->username, $this->password, $this->database);
+//		}
 
+        return ConnectionFactory::Instance()->get_conn($this->hostname, $this->username, $this->password, $this->database);
 	}
 
 	// --------------------------------------------------------------------
@@ -732,8 +733,45 @@ class CI_DB_mysqli_driver extends CI_DB {
 		@mysqli_close($conn_id);
 	}
 
+}
+
+final class ConnectionFactory
+{
+    /**
+     * Call this method to get singleton
+     *
+     * @return UserFactory
+     */
+    
+    private static $conn = NULL;
+    
+    public static function Instance()
+    {
+        static $inst = null;
+        if ($inst === null) {
+            $inst = new ConnectionFactory();
+        }
+        return $inst;
+    }
+    
+    public function get_conn($host, $user, $pass, $db)
+    {
+        if(self::$conn != null) return self::$conn;
+        self::$conn = @mysqli_connect($host, $user, $pass, $db);
+
+        return self::$conn;
+    }
+
+    /**
+     * Private ctor so nobody else can instance it
+     *
+     */
+    private function __construct()
+    {
 
 }
+}
+
 
 
 /* End of file mysqli_driver.php */
