@@ -63,7 +63,7 @@ class Ajaxform_Process
 
 			$result = array(
 				'title' => lang('form_alert_success_title'),
-				'message' => lang('form_alert_success_message')
+				'message' => lang($form['messages']['success'])
 			);
 
 			return $result;

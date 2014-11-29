@@ -84,7 +84,7 @@ class Ajaxform extends My_Module
 			if ( ! $validation_passed)
 			{
 				$result['title'] = lang('form_alert_error_title');
-				$result['message'] = lang('form_alert_error_message');
+				$result['message'] = lang($form['messages']['error']);
 				$result['errors'] = $this->form_validation->_error_array;
 			}
 			// Validation passed : Process the data
@@ -98,7 +98,7 @@ class Ajaxform extends My_Module
 				if ( ! isset($result['title']) && ! isset($result['message']))
 				{
 					$result['title'] = lang('form_alert_success_title');
-					$result['message'] = lang('form_alert_success_message');
+					$result['message'] = lang($form['messages']['success']);
 				}
 			}
 		}
