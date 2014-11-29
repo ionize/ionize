@@ -439,7 +439,7 @@ class MTFMCache
 class FileManager
 {
 	protected $options;
-	
+
 	protected $getid3;
 	protected $getid3_cache;
 	protected $icon_cache;              // cache the icon paths per size (large/small) and file extension
@@ -1460,10 +1460,17 @@ class FileManager
 			$legal_dir_url = $this->get_legal_url($directory . '/');
 			$dir = $this->get_full_path($legal_dir_url);
 
+			// Creates safe file names
+			if ($this->options['cleanFileName'])
+			{
+				$filename = $this->cleanFilename($filename);
+			}
+
 			// No resume, no replace : Get one unique filename
+			// We must do it _after_ cleanFilename because it changes the filename
 			if ( ! $resume_flag && ! $replace)
 			{
-				$filename = $this->getUniqueName($response['name'], $dir);
+				$filename = $this->getUniqueName($filename, $dir);
 			}
 
 			// Authorization callback
@@ -1485,12 +1492,6 @@ class FileManager
 			)
 			{
 				throw new Exception('authorized');
-			}
-
-			// Creates safe file names
-			if ($this->options['cleanFileName'])
-			{
-				$filename = $this->cleanFilename($filename);
 			}
 
 			// clean is finished, set the filename for DropZone
@@ -1594,13 +1595,13 @@ class FileManager
 
 					$filename = $response['name'];
 
+					// Creates safe file names
+					if ($this->options['cleanFileName'])
+						$filename = $this->cleanFilename($filename, '_');
+
 					// Replace the file ?
 					if ( ! $replace)
-						$filename = $this->getUniqueName($response['name'], $dir);
-
-                    // Creates safe file names
-                    if ($this->options['cleanFileName'])
-                        $filename = $this->cleanFilename($file['name'], '_');
+						$filename = $this->getUniqueName($filename, $dir);
 
 					// Allowed extension ?
 					if ( ! $this->isAllowedExtension($filename))
@@ -3491,8 +3492,9 @@ class FileManager
 		static $regex;
 		if (!$regex){
 			$regex = array(
-				explode(' ', 'Æ æ Œ œ ß Ü ü Ö ö Ä ä À Á Â Ã Ä Å &#260; &#258; Ç &#262; &#268; &#270; &#272; Ð È É Ê Ë &#280; &#282; &#286; Ì Í Î Ï &#304; &#321; &#317; &#313; Ñ &#323; &#327; Ò Ó Ô Õ Ö Ø &#336; &#340; &#344; Š &#346; &#350; &#356; &#354; Ù Ú Û Ü &#366; &#368; Ý Ž &#377; &#379; à á â ã ä å &#261; &#259; ç &#263; &#269; &#271; &#273; è é ê ë &#281; &#283; &#287; ì í î ï &#305; &#322; &#318; &#314; ñ &#324; &#328; ð ò ó ô õ ö ø &#337; &#341; &#345; &#347; š &#351; &#357; &#355; ù ú û ü &#367; &#369; ý ÿ ž &#378; &#380;'),
-				explode(' ', 'Ae ae Oe oe ss Ue ue Oe oe Ae ae A A A A A A A A C C C D D D E E E E E E G I I I I I L L L N N N O O O O O O O R R S S S T T U U U U U U Y Z Z Z a a a a a a a a c c c d d e e e e e e g i i i i i l l l n n n o o o o o o o o r r s s s t t u u u u u u y y z z z'),
+				// Last 4 characters Ъ ъ Ь ь don't have replaces. They should be removed.
+				explode(' ', 'Æ æ Œ œ ß Ü ü Ö ö Ä ä À Á Â Ã Ä Å &#260; &#258; Ç &#262; &#268; &#270; &#272; Ð È É Ê Ë &#280; &#282; &#286; Ì Í Î Ï &#304; &#321; &#317; &#313; Ñ &#323; &#327; Ò Ó Ô Õ Ö Ø &#336; &#340; &#344; Š &#346; &#350; &#356; &#354; Ù Ú Û Ü &#366; &#368; Ý Ž &#377; &#379; à á â ã ä å &#261; &#259; ç &#263; &#269; &#271; &#273; è é ê ë &#281; &#283; &#287; ì í î ï &#305; &#322; &#318; &#314; ñ &#324; &#328; ð ò ó ô õ ö ø &#337; &#341; &#345; &#347; š &#351; &#357; &#355; ù ú û ü &#367; &#369; ý ÿ ž &#378; &#380; А а Б б В в Г г Д д Е е Ё ё Ж ж З з И и Й й К к Л л М м Н н О о П п Р р С с Т т У у Ф ф Х х Ц ц Ч ч Ш ш Щ щ Ы ы Э э Ю ю Я я Ъ ъ Ь ь'),
+				explode(' ', 'Ae ae Oe oe ss Ue ue Oe oe Ae ae A A A A A A A A C C C D D D E E E E E E G I I I I I L L L N N N O O O O O O O R R S S S T T U U U U U U Y Z Z Z a a a a a a a a c c c d d e e e e e e g i i i i i l l l n n n o o o o o o o o r r s s s t t u u u u u u y y z z z A a B b V v G g D d E e E e ZH zh Z z I i J j K k L l M m N n O o P p R r S s T t U u F f H h TS ts CH ch SH sh SCH sch Y y E e YU yu YA ya'),
 			);
 		}
 
