@@ -231,9 +231,13 @@ var IonizeMediaManager = new Class(
 
 			items.each(function(item)
 			{
-				var edit_icon = item.getElement('.edit');
-				var id = item.getProperty('data-id');
-				var filename = item.getProperty('data-filename');
+				var edit_icon = item.getElement('.edit'),
+					id = item.getProperty('data-id'),
+					filename = item.getProperty('data-filename'),
+					url = 'media/edit/' + id;
+
+				if (self.parent && self.idParent)
+					url += '/' + self.parent + '/' + self.idParent;
 
 				if (edit_icon)
 				{
@@ -243,7 +247,7 @@ var IonizeMediaManager = new Class(
 							'media' + id,
 							'mediaForm' + id,
 							filename,           // Window title
-							'media/edit/' + id,
+							url,
 							{width:600,height:430,resize:false}
 						);
 					});
