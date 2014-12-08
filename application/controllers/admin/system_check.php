@@ -354,7 +354,7 @@ class System_check extends MY_admin
 	 */
 	public function rebuild_sitemap()
 	{
-		$this->structure->build_sitemap(TRUE);
+		$this->structure->build_multilingual_sitemap(TRUE);
 
 		$result = array(
 			'title' => lang('ionize_title_rebuild_sitemap_done'),

@@ -25,7 +25,7 @@ Official website : http://www.ionizecms.com
 ### Contributors
 * [İskender Totoğlu](http://www.altivebir.com.tr)
 * Martin Wernstahl
-
+* Bhagya Nirmaan Silva - [http://about.me/bhagyas](http://about.me/bhagyas)
 
 ### Installation
 
@@ -58,3 +58,9 @@ These instruction takes in account that this version is in developement.
   * Articles Tag : Change your <ion:article filter="title:!=''" > attributes from "title:!=''" to "title !=''" (remove ":")
   * Articles Tag : Change <ion:article filter="type:='your_type'"> to  <ion:article type="your_type" >
   * Navigation Tag : Add the "level" attribute : <ion:navigation level="0" />
+
+###Updates
+* 08 December 2014
+ * Added support for multilingual sitemap generation.
+ * Sitemaps no longer add offline pages.
+ 

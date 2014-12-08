@@ -69,6 +69,13 @@ $config['sitemaps_header'] = "<\x3Fxml version=\"1.0\" encoding=\"UTF-8\"\x3F>\n
 	"xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9\n\t\t\t    " .
 	"http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">";
 
+$config['sitemaps_multilingual_header'] = "<\x3Fxml version=\"1.0\" encoding=\"UTF-8\"\x3F>\n" .
+	"<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"\n\t" .
+	"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\t" .
+	"xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9\n\t\t\t    " .
+	"http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">";
+
+
 $config['sitemaps_footer'] = "</urlset>\n";
 
 /*
