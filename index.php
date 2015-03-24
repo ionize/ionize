@@ -43,7 +43,7 @@ define('ENVIRONMENT','development');
 
 if( ! ini_get('date.timezone') )
 {
-	date_default_timezone_set('GMT');
+    date_default_timezone_set('GMT');
 }
 
 /*
@@ -57,22 +57,22 @@ if( ! ini_get('date.timezone') )
 
 if (defined('ENVIRONMENT'))
 {
-	switch (ENVIRONMENT)
-	{
-		case 'development':
-		case 'testing':
-			error_reporting(E_ALL);
-			ini_set('display_errors', 1);
-		break;
-	
-		case 'pre-production':
-		case 'production':
-			error_reporting(0);
-		break;
+    switch (ENVIRONMENT)
+    {
+        case 'development':
+        case 'testing':
+            error_reporting(E_ALL);
+            ini_set('display_errors', 1);
+            break;
 
-		default:
-			exit('index.php : The application environment is not set correctly.');
-	}
+        case 'pre-production':
+        case 'production':
+            error_reporting(0);
+            break;
+
+        default:
+            exit('index.php : The application environment is not set correctly.');
+    }
 }
 
 /*
@@ -114,7 +114,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$modules_folder = 'modules';
+$modules_folder = 'modules';
 
 
 /*
@@ -129,16 +129,16 @@ if (defined('ENVIRONMENT'))
  * from the document root folder, in case of using Ionize with one
  * other framework or CMS.
  *
- * Example : 
+ * Example :
  * Main app folder : 	/public_html/
  * Ionize folder : 		/public_html/ionize/
- * 
+ *
  * If you want to store files (medias) outside from the ionize folder
  * the public doc folder needs to be set and will be different from the
- * FCPATH 
+ * FCPATH
  *
  */
-	$doc_folder = "";
+$doc_folder = "";
 
 
 /*
@@ -230,6 +230,7 @@ if (defined('ENVIRONMENT'))
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
 	// The PHP file extension
+	// this global constant is deprecated.
 	define('EXT', '.php');
 
 	// Path to the system folder
@@ -241,8 +242,8 @@ if (defined('ENVIRONMENT'))
 	// Name of the "system folder"
 	define('SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/'));
 
-	// Path to the Ionize's modules folder
-	define('MODPATH', realpath(FCPATH.$modules_folder).'/');
+    // Path to the Ionize's modules folder
+    define('MODPATH', realpath(FCPATH.$modules_folder).'/');
 
 	// The path to the "application" folder
 	if (is_dir($application_folder))
@@ -259,22 +260,22 @@ if (defined('ENVIRONMENT'))
 		define('APPPATH', realpath(BASEPATH.$application_folder).'/');
 	}
 
-	// Path to the public web folder
-	if (realpath(FCPATH.$doc_folder) !== FALSE)
-	{
-		$doc_path = realpath(FCPATH.$doc_folder);
-	}
-	else
-	{
-		$doc_path = FCPATH;
-	}
+    // Path to the public web folder
+    if (realpath(FCPATH.$doc_folder) !== FALSE)
+    {
+        $doc_path = realpath(FCPATH.$doc_folder);
+    }
+    else
+    {
+        $doc_path = FCPATH;
+    }
 
-	$doc_path = rtrim($doc_path, '/').'/';
+    $doc_path = rtrim($doc_path, '/').'/';
 
-	if ( ! is_dir($doc_path))
-		exit("Your document root folder path does not appear to be set correctly. Please open the following file and correct this: ".SELF);
+    if ( ! is_dir($doc_path))
+        exit("Your document root folder path does not appear to be set correctly. Please open the following file and correct this: ".SELF);
 
-	define('DOCPATH', $doc_path);
+    define('DOCPATH', $doc_path);
 
 
 /*
@@ -285,7 +286,7 @@ if (defined('ENVIRONMENT'))
  * And away we go...
  *
  */
-require_once BASEPATH.'core/CodeIgniter'.EXT;
+require_once BASEPATH.'core/CodeIgniter.php';
 
 /* End of file index.php */
 /* Location: ./index.php */

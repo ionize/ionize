@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -23,20 +24,55 @@
  * @package		CodeIgniter
  * @subpackage	Libraries
  * @category	Input
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/input.html
  */
 class CI_Input {
 
+	/**
+	 * IP address of the current user
+	 *
+	 * @var string
+	 */
 	var $ip_address				= FALSE;
+	/**
+	 * user agent (web browser) being used by the current user
+	 *
+	 * @var string
+	 */
 	var $user_agent				= FALSE;
+	/**
+	 * If FALSE, then $_GET will be set to an empty array
+	 *
+	 * @var bool
+	 */
 	var $_allow_get_array		= TRUE;
+	/**
+	 * If TRUE, then newlines are standardized
+	 *
+	 * @var bool
+	 */
 	var $_standardize_newlines	= TRUE;
-	var $_enable_xss			= FALSE; // Set automatically based on config setting
-	var $_enable_csrf			= FALSE; // Set automatically based on config setting
-
+	/**
+	 * Determines whether the XSS filter is always active when GET, POST or COOKIE data is encountered
+	 * Set automatically based on config setting
+	 *
+	 * @var bool
+	 */
+	var $_enable_xss			= FALSE;
+	/**
+	 * Enables a CSRF cookie token to be set.
+	 * Set automatically based on config setting
+	 *
+	 * @var bool
+	 */
+	var $_enable_csrf			= FALSE;
+	/**
+	 * List of all HTTP request headers
+	 *
+	 * @var array
+	 */
 	protected $headers			= array();
-	
 
 	/**
 	 * Constructor
@@ -44,6 +80,7 @@ class CI_Input {
 	 * Sets whether to globally enable the XSS processing
 	 * and whether to allow the $_GET array
 	 *
+	 * @return	void
 	 */
 	public function __construct()
 	{
@@ -147,7 +184,7 @@ class CI_Input {
 			}
 			return $post;
 		}
-		
+
 		return $this->_fetch_from_array($_POST, $index, $xss_clean);
 	}
 
@@ -270,50 +307,49 @@ class CI_Input {
 	/**
 	* Fetch the IP Address
 	*
-	* @access	public
 	* @return	string
 	*/
-	function ip_address()
+	public function ip_address()
 	{
 		if ($this->ip_address !== FALSE)
 		{
 			return $this->ip_address;
 		}
 
-		if (config_item('proxy_ips') != '' && $this->server('HTTP_X_FORWARDED_FOR') && $this->server('REMOTE_ADDR'))
+		$proxy_ips = config_item('proxy_ips');
+		if ( ! empty($proxy_ips))
 		{
-			$proxies = preg_split('/[\s,]/', config_item('proxy_ips'), -1, PREG_SPLIT_NO_EMPTY);
-			$proxies = is_array($proxies) ? $proxies : array($proxies);
+			$proxy_ips = explode(',', str_replace(' ', '', $proxy_ips));
+			foreach (array('HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP') as $header)
+			{
+				if (($spoof = $this->server($header)) !== FALSE)
+				{
+					// Some proxies typically list the whole chain of IP
+					// addresses through which the client has reached us.
+					// e.g. client_ip, proxy_ip1, proxy_ip2, etc.
+					if (strpos($spoof, ',') !== FALSE)
+					{
+						$spoof = explode(',', $spoof, 2);
+						$spoof = $spoof[0];
+					}
 
-			$this->ip_address = in_array($_SERVER['REMOTE_ADDR'], $proxies) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+					if ( ! $this->valid_ip($spoof))
+					{
+						$spoof = FALSE;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+
+			$this->ip_address = ($spoof !== FALSE && in_array($_SERVER['REMOTE_ADDR'], $proxy_ips, TRUE))
+				? $spoof : $_SERVER['REMOTE_ADDR'];
 		}
-		elseif ($this->server('REMOTE_ADDR') AND $this->server('HTTP_CLIENT_IP'))
-		{
-			$this->ip_address = $_SERVER['HTTP_CLIENT_IP'];
-		}
-		elseif ($this->server('REMOTE_ADDR'))
+		else
 		{
 			$this->ip_address = $_SERVER['REMOTE_ADDR'];
-		}
-		elseif ($this->server('HTTP_CLIENT_IP'))
-		{
-			$this->ip_address = $_SERVER['HTTP_CLIENT_IP'];
-		}
-		elseif ($this->server('HTTP_X_FORWARDED_FOR'))
-		{
-			$this->ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		}
-
-		if ($this->ip_address === FALSE)
-		{
-			$this->ip_address = '0.0.0.0';
-			return $this->ip_address;
-		}
-
-		if (strpos($this->ip_address, ',') !== FALSE)
-		{
-			$x = explode(',', $this->ip_address);
-			$this->ip_address = trim(end($x));
 		}
 
 		if ( ! $this->valid_ip($this->ip_address))
@@ -329,18 +365,70 @@ class CI_Input {
 	/**
 	* Validate IP Address
 	*
-	* Updated version suggested by Geert De Deckere
-	*
 	* @access	public
 	* @param	string
-	* @return	string
+	* @param	string	ipv4 or ipv6
+	* @return	bool
 	*/
-	function valid_ip($ip)
+	public function valid_ip($ip, $which = '')
+	{
+		$which = strtolower($which);
+
+		// First check if filter_var is available
+		if (is_callable('filter_var'))
+		{
+			switch ($which) {
+				case 'ipv4':
+					$flag = FILTER_FLAG_IPV4;
+					break;
+				case 'ipv6':
+					$flag = FILTER_FLAG_IPV6;
+					break;
+				default:
+					$flag = '';
+					break;
+			}
+
+			return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flag);
+		}
+
+		if ($which !== 'ipv6' && $which !== 'ipv4')
+		{
+			if (strpos($ip, ':') !== FALSE)
+			{
+				$which = 'ipv6';
+			}
+			elseif (strpos($ip, '.') !== FALSE)
+			{
+				$which = 'ipv4';
+			}
+			else
+			{
+				return FALSE;
+			}
+		}
+
+		$func = '_valid_'.$which;
+		return $this->$func($ip);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	* Validate IPv4 Address
+	*
+	* Updated version suggested by Geert De Deckere
+	*
+	* @access	protected
+	* @param	string
+	* @return	bool
+	*/
+	protected function _valid_ipv4($ip)
 	{
 		$ip_segments = explode('.', $ip);
 
 		// Always 4 segments needed
-		if (count($ip_segments) != 4)
+		if (count($ip_segments) !== 4)
 		{
 			return FALSE;
 		}
@@ -349,6 +437,7 @@ class CI_Input {
 		{
 			return FALSE;
 		}
+
 		// Check each segment
 		foreach ($ip_segments as $segment)
 		{
@@ -361,6 +450,80 @@ class CI_Input {
 		}
 
 		return TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	* Validate IPv6 Address
+	*
+	* @access	protected
+	* @param	string
+	* @return	bool
+	*/
+	protected function _valid_ipv6($str)
+	{
+		// 8 groups, separated by :
+		// 0-ffff per group
+		// one set of consecutive 0 groups can be collapsed to ::
+
+		$groups = 8;
+		$collapsed = FALSE;
+
+		$chunks = array_filter(
+			preg_split('/(:{1,2})/', $str, NULL, PREG_SPLIT_DELIM_CAPTURE)
+		);
+
+		// Rule out easy nonsense
+		if (current($chunks) == ':' OR end($chunks) == ':')
+		{
+			return FALSE;
+		}
+
+		// PHP supports IPv4-mapped IPv6 addresses, so we'll expect those as well
+		if (strpos(end($chunks), '.') !== FALSE)
+		{
+			$ipv4 = array_pop($chunks);
+
+			if ( ! $this->_valid_ipv4($ipv4))
+			{
+				return FALSE;
+			}
+
+			$groups--;
+		}
+
+		while ($seg = array_pop($chunks))
+		{
+			if ($seg[0] == ':')
+			{
+				if (--$groups == 0)
+				{
+					return FALSE;	// too many groups
+				}
+
+				if (strlen($seg) > 2)
+				{
+					return FALSE;	// long separator
+				}
+
+				if ($seg == '::')
+				{
+					if ($collapsed)
+					{
+						return FALSE;	// multiple collapsed
+					}
+
+					$collapsed = TRUE;
+				}
+			}
+			elseif (preg_match("/[^0-9a-f]/i", $seg) OR strlen($seg) > 4)
+			{
+				return FALSE; // invalid segment
+			}
+		}
+
+		return $collapsed OR $groups == 1;
 	}
 
 	// --------------------------------------------------------------------
@@ -402,9 +565,9 @@ class CI_Input {
 	function _sanitize_globals()
 	{
 		// It would be "wrong" to unset any of these GLOBALS.
-		$protected = array('_SERVER', '_GET', '_POST', '_FILES', '_REQUEST', 
+		$protected = array('_SERVER', '_GET', '_POST', '_FILES', '_REQUEST',
 							'_SESSION', '_ENV', 'GLOBALS', 'HTTP_RAW_POST_DATA',
-							'system_folder', 'application_folder', 'BM', 'EXT', 
+							'system_folder', 'application_folder', 'BM', 'EXT',
 							'CFG', 'URI', 'RTR', 'OUT', 'IN');
 
 		// Unset globals for securiy.
@@ -469,8 +632,24 @@ class CI_Input {
 			unset($_COOKIE['$Path']);
 			unset($_COOKIE['$Domain']);
 
+			// Work-around for PHP bug #66827 (https://bugs.php.net/bug.php?id=66827)
+			//
+			// The session ID sanitizer doesn't check for the value type and blindly does
+			// an implicit cast to string, which triggers an 'Array to string' E_NOTICE.
+			$sess_cookie_name = config_item('cookie_prefix').config_item('sess_cookie_name');
+			if (isset($_COOKIE[$sess_cookie_name]) && ! is_string($_COOKIE[$sess_cookie_name]))
+			{
+				unset($_COOKIE[$sess_cookie_name]);
+			}
+
 			foreach ($_COOKIE as $key => $val)
 			{
+				// _clean_input_data() has been reported to break encrypted cookies
+				if ($key === $sess_cookie_name && config_item('sess_encrypt_cookie'))
+				{
+					continue;
+				}
+
 				$_COOKIE[$this->_clean_input_keys($key)] = $this->_clean_input_data($val);
 			}
 		}
@@ -479,8 +658,8 @@ class CI_Input {
 		$_SERVER['PHP_SELF'] = strip_tags($_SERVER['PHP_SELF']);
 
 
-		// CSRF Protection check
-		if ($this->_enable_csrf == TRUE)
+		// CSRF Protection check on HTTP requests
+		if ($this->_enable_csrf == TRUE && ! $this->is_cli_request())
 		{
 			$this->security->csrf_verify();
 		}
@@ -512,8 +691,12 @@ class CI_Input {
 			return $new_array;
 		}
 
-		// We strip slashes if magic quotes is on to keep things consistent
-		if (function_exists('get_magic_quotes_gpc') AND get_magic_quotes_gpc())
+		/* We strip slashes if magic quotes is on to keep things consistent
+
+		   NOTE: In PHP 5.4 get_magic_quotes_gpc() will always return 0 and
+			 it will probably not exist in future versions at all.
+		*/
+		if ( ! is_php('5.4') && get_magic_quotes_gpc())
 		{
 			$str = stripslashes($str);
 		}
@@ -523,7 +706,7 @@ class CI_Input {
 		{
 			$str = $this->uni->clean_string($str);
 		}
-		
+
 		// Remove control characters
 		$str = remove_invisible_characters($str);
 
@@ -579,8 +762,10 @@ class CI_Input {
 	/**
 	 * Request Headers
 	 *
-	 * In Apache, you can simply call apache_request_headers(), however for 
+	 * In Apache, you can simply call apache_request_headers(), however for
 	 * people running other webservers the function is undefined.
+	 *
+	 * @param	bool XSS cleaning
 	 *
 	 * @return array
 	 */
@@ -609,10 +794,10 @@ class CI_Input {
 		{
 			$key = str_replace('_', ' ', strtolower($key));
 			$key = str_replace(' ', '-', ucwords($key));
-			
+
 			$this->headers[$key] = $val;
 		}
-		
+
 		return $this->headers;
 	}
 
@@ -633,7 +818,7 @@ class CI_Input {
 		{
 			$this->request_headers();
 		}
-		
+
 		if ( ! isset($this->headers[$index]))
 		{
 			return FALSE;
@@ -644,7 +829,7 @@ class CI_Input {
 			return $this->security->xss_clean($this->headers[$index]);
 		}
 
-		return $this->headers[$index];		
+		return $this->headers[$index];
 	}
 
 	// --------------------------------------------------------------------
@@ -668,15 +853,14 @@ class CI_Input {
 	 *
 	 * Test to see if a request was made from the command line
 	 *
-	 * @return 	boolean
+	 * @return 	bool
 	 */
 	public function is_cli_request()
 	{
-		return (bool) defined('STDIN');
+		return (php_sapi_name() === 'cli' OR defined('STDIN'));
 	}
 
 }
-// END Input class
 
 /* End of file Input.php */
 /* Location: ./system/core/Input.php */

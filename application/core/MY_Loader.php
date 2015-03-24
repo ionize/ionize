@@ -20,6 +20,20 @@ require_once 'Theme.php';
  */
 class MY_Loader extends CI_Loader{
 
+    public $_ci_ob_level;
+    public $_ci_view_paths		= array();
+    public $_ci_library_paths	= array();
+    public $_ci_model_paths		= array();
+    public $_ci_helper_paths		= array();
+    public $_base_classes		= array(); // Set by the controller class
+    public $_ci_cached_vars		= array();
+    public $_ci_classes			= array();
+    public $_ci_loaded_files		= array();
+    public $_ci_models			= array();
+    public $_ci_helpers			= array();
+    public $_ci_varmap			= array('unit_test' => 'unit',
+                                            'user_agent' => 'agent');
+
 	/**
 	 * Class Loader
 	 *

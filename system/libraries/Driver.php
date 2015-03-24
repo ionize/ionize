@@ -6,7 +6,8 @@
  *
  * @package		CodeIgniter
  * @author		EllisLab Dev Team
- * @copyright	Copyright (c) 2006 - 2011, EllisLab, Inc.
+ * @copyright		Copyright (c) 2006 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -30,7 +31,7 @@
 class CI_Driver_Library {
 
 	protected $valid_drivers	= array();
-	protected static $lib_name;
+	protected $lib_name;
 
 	// The first time a child is used it won't exist, so we instantiate it
 	// subsequents calls will go straight to the proper child.
@@ -45,8 +46,8 @@ class CI_Driver_Library {
 		$child_class = $this->lib_name.'_'.$child;
 
 		// Remove the CI_ prefix and lowercase
-		$lib_name = strtolower(preg_replace('/^CI_/', '', $this->lib_name));
-		$driver_name = strtolower(preg_replace('/^CI_/', '', $child_class));
+		$lib_name = ucfirst(strtolower(str_replace('CI_', '', $this->lib_name)));
+		$driver_name = strtolower(str_replace('CI_', '', $child_class));
 
 		if (in_array($driver_name, array_map('strtolower', $this->valid_drivers)))
 		{
@@ -54,12 +55,12 @@ class CI_Driver_Library {
 			if ( ! class_exists($child_class))
 			{
 				// check application path first
-				foreach (array(APPPATH, BASEPATH) as $path)
+				foreach (get_instance()->load->get_package_paths(TRUE) as $path)
 				{
 					// loves me some nesting!
 					foreach (array(ucfirst($driver_name), $driver_name) as $class)
 					{
-						$filepath = $path.'libraries/'.$lib_name.'/drivers/'.$class.EXT;
+						$filepath = $path.'libraries/'.$lib_name.'/drivers/'.$class.'.php';
 
 						if (file_exists($filepath))
 						{
@@ -219,8 +220,6 @@ class CI_Driver {
 			$this->parent->$var = $val;
 		}
 	}
-
-	// --------------------------------------------------------------------
 
 }
 // END CI_Driver CLASS

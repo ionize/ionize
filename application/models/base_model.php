@@ -2518,7 +2518,7 @@ class Base_model extends CI_Model
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 
-		$query = $this->{$this->db_group}->get_where($table, $where, FALSE);
+		$query = $this->{$this->db_group}->get_where($table, $where);
 
 		if ($query->num_rows() > 0)
 			return TRUE;
