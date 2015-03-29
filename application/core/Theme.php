@@ -151,7 +151,7 @@ class Theme {
 	 * @param	array	View's data array
 	 *
 	 */
-	public function output($view, $data)
+	public static function output($view, $data)
 	{
 		$ci =  &get_instance();
 		
