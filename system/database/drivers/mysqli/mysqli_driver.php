@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -25,7 +26,7 @@
  * @package		CodeIgniter
  * @subpackage	Drivers
  * @category	Database
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
 class CI_DB_mysqli_driver extends CI_DB {
@@ -53,6 +54,9 @@ class CI_DB_mysqli_driver extends CI_DB {
 	 * adding a bit more processing to all queries.
 	 */
 	var $delete_hack = TRUE;
+
+	// whether SET NAMES must be used to set the character set
+	var $use_set_names;
 
 	// --------------------------------------------------------------------
 
@@ -133,7 +137,20 @@ class CI_DB_mysqli_driver extends CI_DB {
 	 */
 	function _db_set_charset($charset, $collation)
 	{
-		return @mysqli_query($this->conn_id, "SET NAMES '".$this->escape_str($charset)."' COLLATE '".$this->escape_str($collation)."'");
+		if ( ! isset($this->use_set_names))
+		{
+			// mysqli_set_charset() requires MySQL >= 5.0.7, use SET NAMES as fallback
+			$this->use_set_names = (version_compare(mysqli_get_server_info($this->conn_id), '5.0.7', '>=')) ? FALSE : TRUE;
+		}
+
+		if ($this->use_set_names === TRUE)
+		{
+			return @mysqli_query($this->conn_id, "SET NAMES '".$this->escape_str($charset)."' COLLATE '".$this->escape_str($collation)."'");
+		}
+		else
+		{
+			return @mysqli_set_charset($this->conn_id, $charset);
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -296,18 +313,8 @@ class CI_DB_mysqli_driver extends CI_DB {
 			return $str;
 		}
 
-		if (function_exists('mysqli_real_escape_string') AND is_object($this->conn_id))
-		{
-			$str = mysqli_real_escape_string($this->conn_id, $str);
-		}
-		elseif (function_exists('mysql_escape_string'))
-		{
-			$str = mysql_escape_string($str);
-		}
-		else
-		{
-			$str = addslashes($str);
-		}
+
+		$str = mysqli_real_escape_string($this->conn_id, $str);
 
 		// escape LIKE condition wildcards
 		if ($like === TRUE)
@@ -371,6 +378,7 @@ class CI_DB_mysqli_driver extends CI_DB {
 		}
 
 		$row = $query->row();
+		$this->_reset_select();
 		return (int) $row->numrows;
 	}
 
@@ -426,7 +434,7 @@ class CI_DB_mysqli_driver extends CI_DB {
 	 */
 	function _field_data($table)
 	{
-		return "SELECT * FROM ".$table." LIMIT 1";
+		return "DESCRIBE ".$table;
 	}
 
 	// --------------------------------------------------------------------
@@ -553,6 +561,25 @@ class CI_DB_mysqli_driver extends CI_DB {
 	function _insert_batch($table, $keys, $values)
 	{
 		return "INSERT INTO ".$table." (".implode(', ', $keys).") VALUES ".implode(', ', $values);
+	}
+
+	// --------------------------------------------------------------------
+
+
+	/**
+	 * Replace statement
+	 *
+	 * Generates a platform-specific replace string from the supplied data
+	 *
+	 * @access	public
+	 * @param	string	the table name
+	 * @param	array	the insert keys
+	 * @param	array	the insert values
+	 * @return	string
+	 */
+	function _replace($table, $keys, $values)
+	{
+		return "REPLACE INTO ".$table." (".implode(', ', $keys).") VALUES (".implode(', ', $values).")";
 	}
 	
 	// --------------------------------------------------------------------
@@ -742,9 +769,9 @@ final class ConnectionFactory
      *
      * @return UserFactory
      */
-    
+
     private static $conn = NULL;
-    
+
     public static function Instance()
     {
         static $inst = null;
@@ -753,7 +780,7 @@ final class ConnectionFactory
         }
         return $inst;
     }
-    
+
     public function get_conn($host, $user, $pass, $db)
     {
         if(self::$conn != null) return self::$conn;
@@ -769,9 +796,8 @@ final class ConnectionFactory
     private function __construct()
     {
 
+    }
 }
-}
-
 
 
 /* End of file mysqli_driver.php */

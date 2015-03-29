@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -21,7 +22,7 @@
  * @package		CodeIgniter
  * @subpackage	Helpers
  * @category	Helpers
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/helpers/text_helper.html
  */
 
@@ -299,15 +300,6 @@ if ( ! function_exists('highlight_code'))
 		// All the magic happens here, baby!
 		$str = highlight_string($str, TRUE);
 
-		// Prior to PHP 5, the highligh function used icky <font> tags
-		// so we'll replace them with <span> tags.
-
-		if (abs(PHP_VERSION) < 5)
-		{
-			$str = str_replace(array('<font ', '</font>'), array('<span ', '</span>'), $str);
-			$str = preg_replace('#color="(.*?)"#', 'style="color: \\1"', $str);
-		}
-
 		// Remove our artificially added PHP, and the syntax highlighting that came with it
 		$str = preg_replace('/<span style="color: #([A-Z0-9]+)">&lt;\?php(&nbsp;| )/i', '<span style="color: #$1">', $str);
 		$str = preg_replace('/(<span style="color: #[A-Z0-9]+">.*?)\?&gt;<\/span>\n<\/span>\n<\/code>/is', "$1</span>\n</span>\n</code>", $str);
@@ -366,28 +358,21 @@ if ( ! function_exists('convert_accented_characters'))
 {
 	function convert_accented_characters($str)
 	{
-		static $array_from, $array_to;
-
-		if ( ! is_array($array_from))
+		if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars.php'))
 		{
-			if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT))
-			{
-				include(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars'.EXT);
-			}
-			elseif (is_file(APPPATH.'config/foreign_chars'.EXT))
-			{
-				include(APPPATH.'config/foreign_chars'.EXT);
-			}
-
-			if ( ! isset($foreign_characters))
-			{
-				return $str;
-			}
-			$array_from = array_keys($foreign_characters);
-			$array_to = array_values($foreign_characters);
+			include(APPPATH.'config/'.ENVIRONMENT.'/foreign_chars.php');
+		}
+		elseif (is_file(APPPATH.'config/foreign_chars.php'))
+		{
+			include(APPPATH.'config/foreign_chars.php');
 		}
 
-		return preg_replace($array_from, $array_to, $str);
+		if ( ! isset($foreign_characters))
+		{
+			return $str;
+		}
+
+		return preg_replace(array_keys($foreign_characters), array_values($foreign_characters), $str);
 	}
 }
 

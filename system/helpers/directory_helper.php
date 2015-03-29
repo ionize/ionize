@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -21,7 +22,7 @@
  * @package		CodeIgniter
  * @subpackage	Helpers
  * @category	Helpers
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/helpers/directory_helper.html
  */
 
@@ -87,26 +88,26 @@ if ( ! function_exists('directory_map'))
  */
 if(!function_exists('directory_copy'))
 {
-	function directory_copy($srcdir, $dstdir)
-	{
-		//preparing the paths
-		$srcdir=rtrim($srcdir,'/');
-		$dstdir=rtrim($dstdir,'/');
+    function directory_copy($srcdir, $dstdir)
+    {
+        //preparing the paths
+        $srcdir=rtrim($srcdir,'/');
+        $dstdir=rtrim($dstdir,'/');
 
-		//creating the destination directory
-		if(!is_dir($dstdir))mkdir($dstdir, 0777, true);
+        //creating the destination directory
+        if(!is_dir($dstdir))mkdir($dstdir, 0777, true);
 
-		//Mapping the directory
-		$dir_map=directory_map($srcdir);
+        //Mapping the directory
+        $dir_map=directory_map($srcdir);
 
-		foreach($dir_map as $object_key=>$object_value)
-		{
-			if(is_numeric($object_key))
-				copy($srcdir.'/'.$object_value,$dstdir.'/'.$object_value);//This is a File not a directory
-			else
-				directory_copy($srcdir.'/'.$object_key,$dstdir.'/'.$object_key);//this is a directory
-		}
-	}
+        foreach($dir_map as $object_key=>$object_value)
+        {
+            if(is_numeric($object_key))
+                copy($srcdir.'/'.$object_value,$dstdir.'/'.$object_value);//This is a File not a directory
+            else
+                directory_copy($srcdir.'/'.$object_key,$dstdir.'/'.$object_key);//this is a directory
+        }
+    }
 }
 
 /* End of file directory_helper.php */

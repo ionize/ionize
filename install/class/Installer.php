@@ -307,6 +307,7 @@ class Installer
 
 				// Update the Demo content regarding the user's choosen language
 				$default_lang = $this->_get_default_lang();
+
 				$data = array('lang' => $default_lang['lang']);
 				$where = array('lang' => 'en');
 
@@ -1609,7 +1610,7 @@ class Installer
 
 	public function _exists($where, $table)
 	{
-		$query = $this->db->get_where($table, $where, FALSE);
+		$query = $this->db->get_where($table, $where);
 
 		if ($query->num_rows() > 0)
 			return TRUE;
@@ -1619,7 +1620,7 @@ class Installer
 
 	public function _get_default_lang()
 	{
-		$query = $this->db->get_where('lang', array('def' => '1'), FALSE);
+		$query = $this->db->get_where('lang', array('def' => '1'));
 
 		if ($query->num_rows() > 0)
 			return $query->row_array();

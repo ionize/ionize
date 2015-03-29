@@ -768,5 +768,8 @@ INSERT IGNORE INTO setting VALUES ('', 'upload_mode', '', '');
 INSERT IGNORE INTO menu (id_menu, name, title) VALUES
 	(1 , 'main', 'Main menu'),
 	(2 , 'system', 'System menu');
-		
+
+CREATE INDEX last_activity_idx ON ion_sessions(last_activity);
+ALTER TABLE ion_sessions MODIFY user_agent VARCHAR(120);
+ALTER TABLE ion_sessions CHANGE ip_address ip_address varchar(45) default '0' NOT NULL
 

@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -21,7 +22,7 @@
  * @package		CodeIgniter
  * @subpackage	Helpers
  * @category	Helpers
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/helpers/smiley_helper.html
  */
 
@@ -229,13 +230,13 @@ if ( ! function_exists('_get_smiley_array'))
 {
 	function _get_smiley_array()
 	{
-		if (defined('ENVIRONMENT') AND file_exists(APPPATH.'config/'.ENVIRONMENT.'/smileys'.EXT))
+		if (defined('ENVIRONMENT') AND file_exists(APPPATH.'config/'.ENVIRONMENT.'/smileys.php'))
 		{
-		    include(APPPATH.'config/'.ENVIRONMENT.'/smileys'.EXT);
+		    include(APPPATH.'config/'.ENVIRONMENT.'/smileys.php');
 		}
-		elseif (file_exists(APPPATH.'config/smileys'.EXT))
+		elseif (file_exists(APPPATH.'config/smileys.php'))
 		{
-			include(APPPATH.'config/smileys'.EXT);
+			include(APPPATH.'config/smileys.php');
 		}
 		
 		if (isset($smileys) AND is_array($smileys))

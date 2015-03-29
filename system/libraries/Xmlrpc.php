@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -27,7 +28,7 @@ if ( ! function_exists('xml_parser_create'))
  * @package		CodeIgniter
  * @subpackage	Libraries
  * @category	XML-RPC
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/xmlrpc.html
  */
 class CI_Xmlrpc {
@@ -1404,14 +1405,14 @@ class XML_RPC_Values extends CI_Xmlrpc
 	{
 		if ($utc == 1)
 		{
-			$t = strftime("%Y%m%dT%H:%M:%S", $time);
+			$t = strftime("%Y%m%dT%H:%i:%s", $time);
 		}
 		else
 		{
 			if (function_exists('gmstrftime'))
-				$t = gmstrftime("%Y%m%dT%H:%M:%S", $time);
+				$t = gmstrftime("%Y%m%dT%H:%i:%s", $time);
 			else
-				$t = strftime("%Y%m%dT%H:%M:%S", $time - date('Z'));
+				$t = strftime("%Y%m%dT%H:%i:%s", $time - date('Z'));
 		}
 		return $t;
 	}

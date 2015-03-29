@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -23,7 +24,7 @@
  * @package		CodeIgniter
  * @subpackage	codeigniter
  * @category	Common Functions
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/
  */
 
@@ -32,13 +33,12 @@
 /**
 * Determines if the current version of PHP is greater then the supplied value
 *
-* Since there are a few places where we conditionally test for PHP > 5
-* we'll set a static variable.
-*
 * @access	public
 * @param	string
 * @return	bool	TRUE if the current version is $version or higher
 */
+if ( ! function_exists('is_php'))
+{
 	function is_php($version = '5.0.0')
 	{
 		static $_is_php;
@@ -51,6 +51,7 @@
 
 		return $_is_php[$version];
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -64,6 +65,8 @@
  * @access	private
  * @return	void
  */
+if ( ! function_exists('is_really_writable'))
+{
 	function is_really_writable($file)
 	{
 		// If we're on a Unix server with safe_mode off we call is_writable
@@ -96,6 +99,7 @@
 		fclose($fp);
 		return TRUE;
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -112,6 +116,8 @@
 * @param	string	the class name prefix
 * @return	object
 */
+if ( ! function_exists('load_class'))
+{
 	function &load_class($class, $directory = 'libraries', $prefix = 'CI_')
 	{
 		static $_classes = array();
@@ -124,18 +130,17 @@
 
 		$name = FALSE;
 
-		// Look for the class first in the native system/libraries folder
-		// thenin the local application/libraries folder
+		// Look for the class first in the local application/libraries folder
+		// then in the native system/libraries folder
 		foreach (array(APPPATH, BASEPATH) as $path)
 		{
-// echo($path.$directory.'/'.$class.EXT.'<br/>');
-			if (file_exists($path.$directory.'/'.$class.EXT))
+			if (file_exists($path.$directory.'/'.$class.'.php'))
 			{
 				$name = $prefix.$class;
 
 				if (class_exists($name) === FALSE)
 				{
-					require($path.$directory.'/'.$class.EXT);
+					require($path.$directory.'/'.$class.'.php');
 				}
 
 				break;
@@ -143,13 +148,13 @@
 		}
 
 		// Is the request a class extension?  If so we load it too
-		if (file_exists(APPPATH.$directory.'/'.config_item('subclass_prefix').$class.EXT))
+		if (file_exists(APPPATH.$directory.'/'.config_item('subclass_prefix').$class.'.php'))
 		{
 			$name = config_item('subclass_prefix').$class;
 
 			if (class_exists($name) === FALSE)
 			{
-				require(APPPATH.$directory.'/'.config_item('subclass_prefix').$class.EXT);
+				require(APPPATH.$directory.'/'.config_item('subclass_prefix').$class.'.php');
 			}
 		}
 
@@ -158,7 +163,7 @@
 		{
 			// Note: We use exit() rather then show_error() in order to avoid a
 			// self-referencing loop with the Excptions class
-			exit('Unable to locate the specified class: '.$class.EXT);
+			exit('Unable to locate the specified class: '.$class.'.php');
 		}
 
 		// Keep track of what we just loaded
@@ -167,6 +172,7 @@
 		$_classes[$class] = new $name();
 		return $_classes[$class];
 	}
+}
 
 // --------------------------------------------------------------------
 
@@ -177,7 +183,9 @@
 * @access	public
 * @return	array
 */
-	function is_loaded($class = '')
+if ( ! function_exists('is_loaded'))
+{
+	function &is_loaded($class = '')
 	{
 		static $_is_loaded = array();
 
@@ -188,6 +196,7 @@
 
 		return $_is_loaded;
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -200,19 +209,21 @@
 * @access	private
 * @return	array
 */
+if ( ! function_exists('get_config'))
+{
 	function &get_config($replace = array())
 	{
 		static $_config;
 
-		if (isset($_config) )
+		if (isset($_config))
 		{
 			return $_config[0];
 		}
 
 		// Is the config file in the environment folder?
-		if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/config'.EXT))
+		if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/config.php'))
 		{
-			$file_path = APPPATH.'config/config'.EXT;
+			$file_path = APPPATH.'config/config.php';
 		}
 
 		// Fetch the config file
@@ -241,8 +252,10 @@
 			}
 		}
 
-		return $_config[0] =& $config;
+		$_config[0] =& $config;
+		return $_config[0];
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -252,6 +265,8 @@
 * @access	public
 * @return	mixed
 */
+if ( ! function_exists('config_item'))
+{
 	function config_item($item)
 	{
 		static $_config_item = array();
@@ -269,6 +284,7 @@
 
 		return $_config_item[$item];
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -284,12 +300,15 @@
 * @access	public
 * @return	void
 */
+if ( ! function_exists('show_error'))
+{
 	function show_error($message, $status_code = 500, $heading = 'An Error Was Encountered')
 	{
 		$_error =& load_class('Exceptions', 'core');
 		echo $_error->show_error($heading, $message, 'error_general', $status_code);
 		exit;
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -303,12 +322,15 @@
 * @access	public
 * @return	void
 */
+if ( ! function_exists('show_404'))
+{
 	function show_404($page = '', $log_error = TRUE)
 	{
 		$_error =& load_class('Exceptions', 'core');
 		$_error->show_404($page, $log_error);
 		exit;
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -321,6 +343,8 @@
 * @access	public
 * @return	void
 */
+if ( ! function_exists('log_message'))
+{
 	function log_message($level = 'error', $message, $php_error = FALSE)
 	{
 		static $_log;
@@ -333,6 +357,7 @@
 		$_log =& load_class('Log');
 		$_log->write_log($level, $message, $php_error);
 	}
+}
 
 // ------------------------------------------------------------------------
 
@@ -344,6 +369,8 @@
  * @param	string
  * @return	void
  */
+if ( ! function_exists('set_status_header'))
+{
 	function set_status_header($code = 200, $text = '')
 	{
 		$stati = array(
@@ -418,6 +445,7 @@
 			header("HTTP/1.1 {$code} {$text}", TRUE, $code);
 		}
 	}
+}
 
 // --------------------------------------------------------------------
 
@@ -435,13 +463,12 @@
 * @access	private
 * @return	void
 */
+if ( ! function_exists('_exception_handler'))
+{
 	function _exception_handler($severity, $message, $filepath, $line)
 	{
 		 // We don't bother with "strict" notices since they tend to fill up
 		 // the log file with excess information that isn't normally very helpful.
-		 // For example, if you are running PHP 5 and you use version 4 style
-		 // class functions (without prefixes like "public", "private", etc.)
-		 // you'll get notices telling you that these have been deprecated.
 		if ($severity == E_STRICT)
 		{
 			return;
@@ -464,19 +491,22 @@
 
 		$_error->log_exception($severity, $message, $filepath, $line);
 	}
+}
 
-	// --------------------------------------------------------------------
+// --------------------------------------------------------------------
 
-	/**
-	 * Remove Invisible Characters
-	 *
-	 * This prevents sandwiching null characters
-	 * between ascii characters, like Java\0script.
-	 *
-	 * @access	public
-	 * @param	string
-	 * @return	string
-	 */
+/**
+ * Remove Invisible Characters
+ *
+ * This prevents sandwiching null characters
+ * between ascii characters, like Java\0script.
+ *
+ * @access	public
+ * @param	string
+ * @return	string
+ */
+if ( ! function_exists('remove_invisible_characters'))
+{
 	function remove_invisible_characters($str, $url_encoded = TRUE)
 	{
 		$non_displayables = array();
@@ -500,7 +530,31 @@
 
 		return $str;
 	}
+}
 
+// ------------------------------------------------------------------------
+
+/**
+* Returns HTML escaped variable
+*
+* @access	public
+* @param	mixed
+* @return	mixed
+*/
+if ( ! function_exists('html_escape'))
+{
+	function html_escape($var)
+	{
+		if (is_array($var))
+		{
+			return array_map('html_escape', $var);
+		}
+		else
+		{
+			return htmlspecialchars($var, ENT_QUOTES, config_item('charset'));
+		}
+	}
+}
 
 /* End of file Common.php */
 /* Location: ./system/core/Common.php */

@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -21,7 +22,7 @@
  * This class extends the parent result class: CI_DB_result
  *
  * @category	Database
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
 class CI_DB_mysqli_result extends CI_DB_result {
@@ -84,21 +85,26 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	function field_data()
 	{
 		$retval = array();
-		while ($field = mysqli_fetch_field($this->result_id))
+		while ($field = mysqli_fetch_object($this->result_id))
 		{
+			preg_match('/([a-zA-Z]+)(\(\d+\))?/', $field->Type, $matches);
+
+			$type = (array_key_exists(1, $matches)) ? $matches[1] : NULL;
+			$length = (array_key_exists(2, $matches)) ? preg_replace('/[^\d]/', '', $matches[2]) : NULL;
+
 			$F				= new stdClass();
-			$F->name		= $field->name;
-			$F->type		= $field->type;
-			$F->default		= $field->def;
-			$F->max_length	= $field->max_length;
-			$F->primary_key = ($field->flags & MYSQLI_PRI_KEY_FLAG) ? 1 : 0;
+			$F->name		= $field->Field;
+			$F->type		= $type;
+			$F->default		= $field->Default;
+			$F->max_length	= $length;
+			$F->primary_key = ( $field->Key == 'PRI' ? 1 : 0 );
 
 			$retval[] = $F;
 		}
 
 		return $retval;
 	}
-
+	
 	// --------------------------------------------------------------------
 
 	/**

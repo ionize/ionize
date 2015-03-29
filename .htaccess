@@ -1,7 +1,7 @@
 RewriteEngine On
 
 # RewriteBase
-RewriteBase /
+# RewriteBase /
 
 # Only needed for some hosts, if the front returns 403.
 # Options +FollowSymlinks
@@ -115,10 +115,6 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond $1 !^(index\.php|robots\.txt)
-
-# OVH small plan :
-# Replace the following line by :
-# RewriteRule ^(.+)$ index.php?/$1
 RewriteRule ^(.*)$ index.php/$1
 
 RewriteCond %{REQUEST_FILENAME} !-f

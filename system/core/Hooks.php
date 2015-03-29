@@ -5,8 +5,9 @@
  * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @author		EllisLab Dev Team
+ * @copyright		Copyright (c) 2008 - 2014, EllisLab, Inc.
+ * @copyright		Copyright (c) 2014 - 2015, British Columbia Institute of Technology (http://bcit.ca/)
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -23,13 +24,28 @@
  * @package		CodeIgniter
  * @subpackage	Libraries
  * @category	Libraries
- * @author		ExpressionEngine Dev Team
+ * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/encryption.html
  */
 class CI_Hooks {
 
+	/**
+	 * Determines wether hooks are enabled
+	 *
+	 * @var bool
+	 */
 	var $enabled		= FALSE;
+	/**
+	 * List of all hooks set in config/hooks.php
+	 *
+	 * @var array
+	 */
 	var $hooks			= array();
+	/**
+	 * Determines wether hook is in progress, used to prevent infinte loops
+	 *
+	 * @var bool
+	 */
 	var $in_progress	= FALSE;
 
 	/**
@@ -65,13 +81,13 @@ class CI_Hooks {
 		// Grab the "hooks" definition file.
 		// If there are no hooks, we're done.
 
-		if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/hooks'.EXT))
+		if (defined('ENVIRONMENT') AND is_file(APPPATH.'config/'.ENVIRONMENT.'/hooks.php'))
 		{
-		    include(APPPATH.'config/'.ENVIRONMENT.'/hooks'.EXT);
+		    include(APPPATH.'config/'.ENVIRONMENT.'/hooks.php');
 		}
-		elseif (is_file(APPPATH.'config/hooks'.EXT))
+		elseif (is_file(APPPATH.'config/hooks.php'))
 		{
-			include(APPPATH.'config/hooks'.EXT);
+			include(APPPATH.'config/hooks.php');
 		}
 
 
