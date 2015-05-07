@@ -240,9 +240,11 @@ class Element_model extends Base_model
 		$query = $this->{$this->db_group}->query($sql);
 
 		$result = array();
+		if ( $query ) {
 		if ( $query->num_rows() > 0)
-			$result = $query->result_array();
-		$query->free_result();
+				$result = $query->result_array();
+			$query->free_result();
+		}
 
 		$langs = Settings::get_languages();
 		$extend_fields_fields = $this->{$this->db_group}->list_fields('extend_fields');
