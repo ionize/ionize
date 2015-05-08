@@ -382,6 +382,16 @@ class Page_model extends Base_model
 	 */
 	public function remove_deleted_pages()
 	{
+		// Remove relations of deleted pages
+		foreach(array('page_article', 'page_lang', 'page_media') as $relation)
+		{
+			$this->{$this->db_group}->query("
+				DELETE FROM $relation
+				WHERE $relation.id_page IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
+			);
+		}
+
+		// Remove deleted pages
 		$sql = 'DELETE FROM page
 				WHERE id_menu	= 0
 				AND   id_parent = 0';
