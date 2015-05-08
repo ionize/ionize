@@ -3,7 +3,7 @@
  *
  */
 
-// Check if at least on Item instance exists (same for Content Element Definition)
+// Check if at least one Item instance exists (same for Content Element Definition)
 $is_item_empty = $this->base_model->is_empty(NULL, 'item');
 $is_element_empty = $this->base_model->is_empty(NULL, 'element_definition');
 

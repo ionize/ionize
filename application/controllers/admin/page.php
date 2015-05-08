@@ -961,7 +961,7 @@ class Page extends MY_admin
 
 	/**
 	 * Deletes one page
-	 * @note	For the moment, this method doesn't delete the linked articles, wich will stay in database as phantom
+	 * @note	For the moment, this method doesn't delete the linked articles, which will stay in database as phantom
 	 *
 	 * @param	int		Page ID
 	 *
@@ -970,7 +970,7 @@ class Page extends MY_admin
 	{
 		$affected_rows = $this->page_model->delete($id);
 		
-		// Delete was successfull
+		// Delete was successful
 		if ($affected_rows > 0)
 		{
 			// Clean URL table
@@ -1003,6 +1003,29 @@ class Page extends MY_admin
 		{
 			$this->error(lang('ionize_message_operation_nok'));
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Find and remove all records of deleted pages
+	 */
+	public function remove_deleted_pages()
+	{
+		$result = array(
+			'title'	=> lang('ionize_title_remove_deleted_pages'),
+			'status'=> 'success'
+		);
+
+		$nb_amount_deleted = $this->page_model->remove_deleted_pages();
+
+		$result['message'] = $nb_amount_deleted > 0
+			? $nb_amount_deleted . lang('ionize_message_removed_deleted_pages')
+			: lang('ionize_message_no_deleted_pages');
+
+		$this->xhr_output($result);
 	}
 
 

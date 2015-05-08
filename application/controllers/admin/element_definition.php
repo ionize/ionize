@@ -51,7 +51,7 @@ class Element_definition extends MY_Admin {
 	
 	
 	/**
-	 * Outputs the Definiton list
+	 * Outputs the Definition list
 	 *
 	 */
 	function index()
@@ -154,7 +154,7 @@ class Element_definition extends MY_Admin {
 	
 	
 	/**
-	 * Returns the list of definition for a given parent
+	 * Returns the list definition for a given parent
 	 * Used to build the tabs of elements definitions in parents panels (page, article)
 	 *
 	 * @returns String	JSON object of all definitions containing elements
