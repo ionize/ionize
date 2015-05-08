@@ -1010,22 +1010,35 @@ class Page extends MY_admin
 
 
 	/**
-	 * Find and remove all records of deleted pages
+	 * Remove deleted page records and relations to it from DB.
+	 *
+	 * @return int
 	 */
 	public function remove_deleted_pages()
 	{
-		$result = array(
-			'title'	=> lang('ionize_title_remove_deleted_pages'),
-			'status'=> 'success'
+		// Remove relations of deleted pages
+		foreach(array('page_article', 'page_lang', 'page_media') as $relation)
+		{
+			$this->{$this->db_group}->query("
+				DELETE FROM $relation
+				WHERE $relation.id_page IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
+			);
+		}
+		// Remove relation where page is parent
+		foreach(array('element') as $relation)
+			$this->{$this->db_group}->query("
+				DELETE FROM $relation
+				WHERE $relation.parent = 'page' AND $relation.id_parent IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
+			);
+
+		// Remove deleted pages
+		$this->{$this->db_group}->query('
+				DELETE FROM page
+				WHERE id_menu=0
+				AND id_parent = 0'
 		);
 
-		$nb_amount_deleted = $this->page_model->remove_deleted_pages();
-
-		$result['message'] = $nb_amount_deleted > 0
-			? $nb_amount_deleted . lang('ionize_message_removed_deleted_pages')
-			: lang('ionize_message_no_deleted_pages');
-
-		$this->xhr_output($result);
+		return $this->{$this->db_group}->affected_rows();
 	}
 
 
