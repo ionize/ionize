@@ -11,7 +11,17 @@
 
 class Element_field extends MY_Admin
 {
-	
+
+	/** @var  Element_definition_model */
+	public $element_definition_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
+
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();

@@ -12,6 +12,27 @@
 
 class System_check extends MY_admin
 {
+	/** @var  System_check_model */
+	public $system_check_model;
+
+	/** @var  Menu_model */
+	public $menu_model;
+
+	/** @var  Page_model */
+	public $page_model;
+
+	/** @var  Article_model */
+	public $article_model;
+
+	/** @var  Media_model */
+	public $media_model;
+
+	/** @var  Config_model */
+	public $config_model;
+
+	/** @var  Url_model */
+	public $url_model;
+	
 	/**
 	 * Constructor
 	 *

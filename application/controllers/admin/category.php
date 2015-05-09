@@ -12,6 +12,10 @@
 
 class Category extends MY_admin
 {
+
+	/** @var  Category_model */
+	public $category_model;
+
 	/**
 	 * Constructor
 	 *

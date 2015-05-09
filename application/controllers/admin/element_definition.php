@@ -28,7 +28,14 @@ class Element_definition extends MY_Admin {
 		'8' => 'Medias',
 	);*/
 
+	/** @var  Element_model */
+	public $element_model;
 
+	/** @var  Element_definition_model */
+	public $element_definition_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
 
 	// ------------------------------------------------------------------------
 	

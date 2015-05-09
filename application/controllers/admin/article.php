@@ -72,6 +72,35 @@ class Article extends MY_admin
 	 */
 	protected static $_NB_ARTICLES_PAGINATION = 20;
 
+	/** @var  Menu_model */
+	public $menu_model;
+
+	/** @var  Page_model */
+	public $page_model;
+
+	/** @var  Article_model */
+	public $article_model;
+
+	/** @var  Category_model */
+	public $category_model;
+
+	/** @var  Article_type_model */
+	public $article_type_model;
+
+	/** @var  Tag_model */
+	public $tag_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
+
+	/** @var  Url_model */
+	public $url_model;
+
+	/** @var  Resource_model */
+	public $resource_model;
+
+	/** @var  Rule_model */
+	public $rule_model;
 
 	/**
 	 * Constructor

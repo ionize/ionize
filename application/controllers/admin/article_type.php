@@ -12,6 +12,10 @@
 
 class Article_type extends MY_admin 
 {
+
+	/** @var  Article_type_model */
+	public $article_type_model;
+
 	/**
 	 * Constructor
 	 *
@@ -82,8 +86,8 @@ class Article_type extends MY_admin
 	/**
 	 * Get the select box of types
 	 *
-	 * @param	string	parent type. Can be 'article', 'page', etc.
-	 * @param	string	parent ID. 	 
+	 * @param	string|bool		parent type. Can be 'article', 'page', etc.
+	 * @param	string|bool		parent ID.
 	 *
 	 * @return string	HTML types select box
 	 *

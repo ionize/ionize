@@ -12,6 +12,10 @@
 
 class Tag extends MY_admin
 {
+
+	/** @var  Tag_model */
+	public $tag_model;
+
 	/**
 	 * Constructor
 	 *

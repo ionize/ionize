@@ -13,6 +13,10 @@
 
 class Notification extends MY_admin
 {
+
+	/** @var  Notification_model */
+	public $notification_model;
+
 	/**
 	 * Constructor
 	 *

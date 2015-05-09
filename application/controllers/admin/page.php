@@ -48,6 +48,32 @@ class Page extends MY_admin
 	protected static $_AUTHORITY_BACKEND_ACTIONS = array('edit','delete','status','add_page','add_article');
 	protected static $_AUTHORITY_FRONTEND_ACTIONS = array();
 
+	/** @var  Menu_model */
+	public $menu_model;
+
+	/** @var  Page_model */
+	public $page_model;
+
+	/** @var  Article_model */
+	public $article_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
+
+	/** @var  System_check_model */
+	public $system_check_model;
+
+	/** @var  Url_model */
+	public $url_model;
+
+	/** @var  Type_model */
+	public $type_model;
+
+	/** @var  Resource_model */
+	public $resource_model;
+
+	/** @var  Rule_model */
+	public $rule_model;
 
 	/**
 	 * Constructor

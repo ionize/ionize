@@ -12,7 +12,18 @@
 
 class Role extends MY_Admin
 {
+	/** @var Role_model  */
 	public $current_role = NULL;
+
+	/** @var  Role_model */
+	public $role_model;
+
+	/** @var  Resource_model */
+	public $resource_model;
+
+	/** @var  User_model */
+	public $user_model;
+
 
 	/**
 	 * Constructor

@@ -13,6 +13,10 @@
 
 class Extend_table extends MY_admin
 {
+
+	/** @var  Extend_table_model */
+	public $extend_table_model;
+
 	/**
 	 * Constructor
 	 *

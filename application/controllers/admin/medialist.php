@@ -14,6 +14,9 @@ class Medialist extends MY_admin
 {
 	private static $_NB_PER_PAGE = 20;
 
+	/** @var  Medialist_model */
+	public $medialist_model;
+
 	/**
 	 * Constructor
 	 *

@@ -12,6 +12,15 @@
 
 class Dashboard extends MY_Admin {
 
+	/** @var  Page_model */
+	public $page_model;
+
+	/** @var  Article_model */
+	public $article_model;
+
+	/** @var  User_model */
+	public $user_model;
+
 	/**
 	 * Constructor
 	 *
