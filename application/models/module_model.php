@@ -29,7 +29,10 @@ class Module_Model extends Base_model
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();

@@ -12,7 +12,10 @@
 
 class Dashboard extends MY_Admin {
 
-
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();

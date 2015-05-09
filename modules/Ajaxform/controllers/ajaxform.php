@@ -3,6 +3,10 @@
 class Ajaxform extends My_Module
 {
 
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();
