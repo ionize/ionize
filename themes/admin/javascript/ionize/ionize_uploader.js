@@ -106,6 +106,9 @@ ION.Uploader = new Class({
 			}
 		});
 
+		if (typeOf(this.assetsUrl) == 'null')
+			this.assetsUrl = ION.themeUrl + 'javascript/mootools/filemanager/assets';
+
 		// Assets URL (bis)
 		this.assetsUrl = this.assetsUrl.replace(/(\/|\\)*$/, '/');
 
@@ -320,16 +323,25 @@ ION.Uploader = new Class({
 				});
 			},
 
-			onItemCancel: function(item)
+			onItemCancel: function(item, file)
 			{
+				self.fireEvent('itemCancel', [self, self.dropZone, item, file]);
+
 				// Remove item from DOM
 				item.fade(0).get('tween').chain(function() {
 					this.element.destroy();
 				});
 			},
 
+			onRequestCancel: function(item, file, response)
+			{
+				self.fireEvent('requestCancel', [self, self.dropZone, item, file, response]);
+			},
+
 			onItemError: function(item, file, response)
 			{
+				self.fireEvent('itemError', [self, self.dropZone, item, file, response]);
+
 				if (typeOf(ION.Notify) != 'null')
 				{
 					new ION.Notify(
@@ -351,6 +363,7 @@ ION.Uploader = new Class({
 				if (typeOf(ION.Notify) != 'null')
 					new ION.Notify(self.notifyContainer,{}).removeAll();
 */
+				self.fireEvent('uploadStart', [self, self.dropZone]);
 			},
 
 			onUploadProgress: function(perc, nb_uploaded_so_far){},
@@ -358,7 +371,7 @@ ION.Uploader = new Class({
 			onUploadComplete: function(num_uploaded, num_error)
 			{
 				// Fires ION.Uploader event !
-				self.fireEvent('onComplete');
+				self.fireEvent('complete', [self, self.dropZone]);
 
 				var elements = self.uploadZoneList.getChildren('.dropzone_item');
 

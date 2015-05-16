@@ -3,7 +3,7 @@
 
 	<name>Ionize Database Creation script</name>
 	
-	<version>1.0.6</version>
+	<version>1.0.8</version>
 
 	<license>Open Source MIT license</license>
 
@@ -857,7 +857,7 @@
         <query>DELETE FROM setting WHERE name='filemanager';</query>
 
 
-        <query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.7', '');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.8', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'site_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'DEFAULT', '');</query>

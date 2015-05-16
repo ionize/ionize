@@ -472,6 +472,14 @@ ION.List = new Class({
 		},
 		buildUl:        true,			// If set to false, does not build the UL inject the list in the parent
 		sortable:		false,			// Is the list sortable. False by default
+
+		properties: 	null,				// UL properties. Optional. will be added to the UL object.
+										// Example : [{data-id: 123}]
+
+		droppable: 		false,
+		dropOn:			'',				// Class of the droppable list
+		onDrop: 		null,
+
 		dragOn:			null,
 
 		items:          [],             // JSON object : Array of items objects (lis) to build
@@ -493,6 +501,7 @@ ION.List = new Class({
 			{
 				element: 'a',
 				'class': 'icon edit left',
+				title: 'name',						// Key to use as title
 				onClick: function(item)
 				{
 					alert('You clicked on : ' + JSON.encode(item));
@@ -507,7 +516,7 @@ ION.List = new Class({
 				'class': 'icon unlink right',       // CSS Class of the DOM HTML element
 				url:     null,                      // If set, one click posts options.post & each elements
 													// keys / values to this URL
-				onClick: function(item)             // Event on click on the icon. If set, the url isn't used to post the data.
+				onClick: function(item, li)         // Event on click on the icon. If set, the url isn't used to post the data.
 				{
 					alert('You clicked on : ' + JSON.encode(item));
 				},
@@ -530,7 +539,8 @@ ION.List = new Class({
 	 */
 	initialize: function()
 	{
-		var options = arguments[0] ? arguments[0] : {};
+		var self = this,
+			options = arguments[0] ? arguments[0] : {};
 
 		if (options.elements) this.options.elements = [];
 
@@ -564,6 +574,23 @@ ION.List = new Class({
 
 			this.ul.setStyle('position', 'relative');
 		}
+
+		if (this.options.droppable == true)
+		{
+			this.ul.addClass('droppable');
+			if (this.options.dropOn != null)
+			{
+				var c = this.options.dropOn.replace(/\.+/ig, '');
+				this.ul.addClass(c);
+			}
+			if (typeOf(options.onDrop) == 'function')
+			{
+				this.ul.onDrop = options.onDrop;
+			}
+		}
+
+		if (this.options.properties)
+			self.ul.setProperties(this.options.properties);
 
 		this.items = options.items;
 
@@ -625,7 +652,9 @@ ION.List = new Class({
 
 						// Left by default
 						if (el.class) part.addClass(el.class);
-						else part.addClass('left');
+
+						if ( ! part.hasClass('right') && ! part.hasClass('left'))
+							part.addClass('left');
 
 						// Set the text of the part
 						if (el.content)
@@ -635,7 +664,11 @@ ION.List = new Class({
 						else
 						{
 							if (el.text && item[el.text])
+							{
 								part.set('html', item[el.text]);
+							}
+							else if((item[el.text] == '' || item[el.text] == null) && el['text-failover'])
+								part.set('html', item[el['text-failover']]);
 							else if (el.text )
 							{
 								if (typeOf(el.empty) != 'null') part.set('html', el.empty);
@@ -643,13 +676,32 @@ ION.List = new Class({
 							}
 						}
 
+						// Add one safe span inside the text element : ellipsize, overflow:hidden etc.
+						if ( ! part.hasClass('icon') && part.get('html') != '')
+						{
+							var html = part.get('html');
+							part.empty();
+							new Element('span', {'class': 'ellipsis', html:html}).inject(part);
+						}
+
+						// Title, Alt
+						['title', 'alt', 'data-tooltip'].each(function(attr){
+							if (el[attr])
+							{
+								if (item[el[attr]])	part.setProperty(attr, item[el[attr]]);
+								else part.setProperty(attr, el[attr]);
+							}
+						});
+
+						if (el['tooltip-class']) part.addClass(el['tooltip-class']);
+
 						// onClick : Send the item
 						if(el.onClick)
 						{
 							part.addEvent('click', function()
 							{
 								var data = this.getParent('li').retrieve('data');
-								el.onClick(data);
+								el.onClick(data, li);
 							})
 						}
 						// else, send data to controller
@@ -674,6 +726,9 @@ ION.List = new Class({
 				}
 			});
 
+			// Not so clean, but :after peudo class aren't enough in this case;
+			new Element('div', {'class':'clearfix'}).inject(li, 'bottom');
+
 			// Add Drag'n'Drop capabilities
 			if (self.options.dragOn != null)
 				ION.addDragDrop(li, self.options.dragOn);
@@ -694,7 +749,7 @@ ION.List = new Class({
 		var self = this;
 
 		// Sortable
-		new Sortables(this.ul,
+		this.sortables = new Sortables(this.ul,
 		{
 			revert: true,
 			handle: this.options.sort.handler,
@@ -729,6 +784,9 @@ ION.List = new Class({
 				self._sortItems(serialized);
 			}
 		});
+
+		// @todo : Add optional droppable
+
 	},
 
 

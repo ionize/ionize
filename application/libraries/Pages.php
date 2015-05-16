@@ -106,7 +106,7 @@ class Pages
 			if ($page['link_type'] != '' )
 			{
 				// External
-				if ($page['link_type'] == 'external')
+				if (in_array($page['link_type'], array('external', 'anchor')))
 				{
 					$page['absolute_url'] = $page['link'];
 				}

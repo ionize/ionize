@@ -153,7 +153,7 @@ dfn{font-style: normal;color:#999;}
 .a { /*color:#098ED1;*/color:#0973B6; }
 
 /* Elements list */
-li a.offline { color: #666; }	
+li a.offline { color: #888; }
 li.offline { opacity:0.7; }
 
 .loading {
@@ -723,6 +723,9 @@ ul.and li {
 ---------------------------------------------------------------- */
 table tr td {
 	vertical-align: top;
+}
+table tr td table tr{
+	background: transparent;
 }
 table.list {
 	border-collapse:collapse;
@@ -2062,6 +2065,8 @@ ol.steps li a:before {
 
 /** Standard sizes */
 .w100p { width: 100% !important;}
+.w48p { width: 48% !important;}
+.w50p { width: 50% !important;}
 .w95p { width: 95% !important;}
 .w96p { width: 96% !important;}
 

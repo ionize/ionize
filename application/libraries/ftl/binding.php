@@ -228,10 +228,13 @@ class FTL_Binding
 		if ( ! isset($this->attr[$attr]))
 			return $return_if_null;
 		
-		if (isset($this->attr[$attr]) && strtolower($this->attr[$attr]) == 'true')
+		if (isset($this->attr[$attr]) && is_string($this->attr[$attr]) && strtolower($this->attr[$attr]) == 'true')
 			return TRUE;
 		
-		return (isset($this->attr[$attr]) && strtolower($this->attr[$attr]) != 'false') ? $this->attr[$attr] : FALSE;
+		if (isset($this->attr[$attr]) && is_string($this->attr[$attr]) && strtolower($this->attr[$attr]) == 'false')
+			return FALSE;
+
+		return (isset($this->attr[$attr])) ? $this->attr[$attr] : NULL;
 	}
 
 	/**

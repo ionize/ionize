@@ -211,7 +211,8 @@ ION.TreeXhr = new Class({
 			var link = this.span_Model.clone().addClass('title');
 			var a = this.title_Model.clone()
 						.addClass(online).addClass(type + flat_id).addClass('title')
-						.setProperty('data-id', rel).setProperty('title', rel + ' : ' + title + type_description).setProperty('data-type', type)
+						.setProperty('data-id', rel).setProperty('title', rel + ' : ' + title + type_description)
+						.setProperty('data-type', type)
 						.set('text', String.htmlspecialchars_decode(title));
 			link.adopt(a);
 			li.adopt(action, link);

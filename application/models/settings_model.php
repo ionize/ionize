@@ -146,7 +146,7 @@ class Settings_Model extends Base_model
 			{
 				if (is_dir($path.$dir))
 				{
-					$file_path = set_realpath($path.$dir).'admin_lang'.EXT;
+					$file_path = set_realpath($path.$dir).'admin_lang.php';
 
 					if (is_file($file_path))
 						$lang_dirs[] = $dir;

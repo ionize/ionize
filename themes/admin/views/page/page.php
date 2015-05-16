@@ -120,12 +120,12 @@ if ($tracker_title == '')
 
 		<?php endif ;?>
 
-            <?php if ($id_page != '') :?>
+		<?php if ($id_page != '') :?>
 
-                <!-- Modules PlaceHolder -->
-                <?php echo get_modules_addons('page', 'main_top'); ?>
+			<!-- Modules PlaceHolder -->
+			<?php echo get_modules_addons('page', 'main_top'); ?>
 
-            <?php endif ;?>
+		<?php endif ;?>
 
 
 		</fieldset>
@@ -334,7 +334,13 @@ if ($tracker_title == '')
 
 			</div>
 		</fieldset>
-		
+
+		<?php if ($id_page != '') :?>
+
+			<!-- Modules PlaceHolder -->
+			<?php echo get_modules_addons('page', 'main_bottom'); ?>
+
+		<?php endif ;?>
 
 	</div>
 </form>

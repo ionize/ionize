@@ -33,7 +33,8 @@ class Settings
 
 	public static $mimes = FALSE;
 
-	public static $default_values = array(
+	public static $default_values = array
+	(
 		'backend_ui_style' => 'original'
 	);
 
@@ -63,17 +64,19 @@ class Settings
 	 * Get one setting
 	 *
 	 * @param string $key	the wished setting key
-	 * @param bool $lang	lang code.
+	 * @param	string|bool	$lang	lang code.
 	 *						The settings for the current language are set as normal settings, so this param is not necessary to get them.
 	 *						This param is usefull if the "lang" array is feeded with the languages settings for each language
-	 *						Ex : Setting::lang = array(
+	 *						Ex :
+	 * 						Setting::lang = array(
 	 *											'en' => array(
 	 *														'meta-description' => 'Some text',
 	 *														'meta-keywords' => 'word 1'
 	 *													)
 	 *										 )
 	 *
-	 * @return mixed	The setting value
+	 * @return mixed|false	The setting value
+	 *
 	 */
 	public static function get($key, $lang = FALSE)
 	{
@@ -333,7 +336,7 @@ class Settings
 		if (self::$mimes == FALSE)
 		{
 			$mimes = array();
-			if (@require_once(APPPATH.'config/mimes_ionize'.EXT))
+			if (@require_once(APPPATH.'config/mimes_ionize.php'))
 			{
 				self::$mimes = $mimes;
 				unset($mimes);

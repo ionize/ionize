@@ -61,13 +61,16 @@
 
 						<!--
 							Navigation Menu
-						-->
-						<ion:navigation level="0"  active_class="active"  >
+
+						<ion:navigation level="0"  active_class="active">
 							<li class="divider"></li>
 							<li>
 								<a href="<ion:url />"><ion:title /></a>
 							</li>
 						</ion:navigation>
+						-->
+
+						<ion:navigation helper="navigation:get_tree_navigation" />
 
 
 						<!--
@@ -87,4 +90,11 @@
 			</nav>
 		</div>
 
+		<ion:languages tag="ul" class="right" ignore_current="true">
+			<li <ion:language:is_active> class="active"</ion:language:is_active>>
+			<a class="small button" href="<ion:language:url />">
+				<ion:language:code />
+			</a>
+			</li>
+		</ion:languages>
 

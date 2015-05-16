@@ -87,9 +87,9 @@ class TagManager_Pagination extends TagManager
 		if ( ! is_null($html_id))
 			$html_id = ' class="' . $html_id .'" ';
 
-		$cf = Theme::get_theme_path().'config/pagination'.EXT;
+		$cf = Theme::get_theme_path().'config/pagination'.'.php';
 		if ( ! is_file($cf))
-			$cf = APPPATH.'config/pagination'.EXT;
+			$cf = APPPATH.'config/pagination'.'.php';
 
 		if (is_file($cf))
 		{

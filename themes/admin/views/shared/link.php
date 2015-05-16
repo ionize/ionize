@@ -36,6 +36,9 @@
 		{
 			$('link_title').addEvent('click', function(e){window.open(this.get('text'))});
 		}
+		else if ('<?php echo $link_type; ?>' == 'anchor')
+		{
+		}
 		else
 		{
 			var id = '<?php echo $link_id; ?>',
@@ -76,7 +79,11 @@
 
 		$('add_link').addEvent('click', function()
 		{
-			ION.JSON('<?php echo $parent; ?>/add_link', {'receiver_rel': $('rel').value, 'link_type': 'external', 'url': $('link').value});
+			var value = $('link').value,
+				type = 'external';
+
+			if (value.substr(0,1) == '#') type='anchor';
+			ION.JSON('<?php echo $parent; ?>/add_link', {'receiver_rel': $('rel').value, 'link_type': type, 'url': value });
 		})
 		
 

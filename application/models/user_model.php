@@ -153,6 +153,48 @@ class User_model extends Base_model
 
 
 	/**
+	 * @param int   $page
+	 * @param array $filter
+	 * @param int   $nb_by_page
+	 * @param array $where
+	 *
+	 * @return array
+	 */
+	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $where = array())
+	{
+		$page = $page - 1;
+		$offset = $page * $nb_by_page;
+		$like = array();
+
+		if ( ! empty($filter))
+		{
+			foreach($filter as $key => $val)
+			{
+				// $where[$key] = "like '%".$val."%'";
+				$like[$key] = $val;
+			}
+		}
+
+		$this->_join_role();
+		$items = self::get_list(array_merge($where, array('limit' => $nb_by_page, 'offset' => $offset, 'like' => $like)));
+
+		$this->_join_role();
+		$items_nb = self::count_where(array_merge($where, array('like' => $like)));
+
+		// Returned results
+		$result = array(
+			'items' => $items,
+			'nb' => $items_nb
+		);
+
+		return $result;
+	}
+
+
+	// --------------------------------------------------------------------
+
+
+	/**
 	 * @param array $where
 	 *
 	 * @return int

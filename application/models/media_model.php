@@ -102,7 +102,11 @@ class Media_model extends Base_model
 			$query = $this->{$this->db_group}->get($this->get_table());
 
 			if($query->num_rows() > 0)
+			{
 				$data = $query->result_array();
+
+				$data = $this->_add_medias_infos($data);
+			}
 		}
 		return $data;
 	}
@@ -140,8 +144,14 @@ class Media_model extends Base_model
 				$this->{$this->db_group}->select($this->get_table().'.*', FALSE);
 
 				$where = array(
-					'where_in' => array($this->get_table().'.id_media' => $ids),
-					'order_by' => "field(" . $this->get_table() . ".id_media, ".$extend['content'] . ")"
+					'where_in' => array($this->get_table().'.id_media' => $ids)
+				);
+
+				// Separated from $where due to $escape set to FALSE
+				$this->{$this->db_group}->order_by(
+					"field(" . $this->get_table() . ".id_media, ".$extend['content'] . ")",
+					'',
+					FALSE
 				);
 
 				if ( ! is_null($lang))
@@ -157,6 +167,8 @@ class Media_model extends Base_model
 				}
 
 				$data = parent::get_list($where, $this->get_table());
+
+				$data = $this->_add_medias_infos($data);
 			}
 		}
 
@@ -444,8 +456,8 @@ class Media_model extends Base_model
 		$data = array();
 		
 		$link_table = $parent.'_media';
-		$parent_pk = 'id_'.$parent;
-		
+		$parent_pk = $this->get_pk_name($parent);
+
 		$this->{$this->db_group}->where($link_table.'.'.$parent_pk, $id_parent);
 		$this->{$this->db_group}->where('id_media', $id);
 
@@ -1000,5 +1012,40 @@ class Media_model extends Base_model
 	{
 		if ( ! is_null($filter))
 			$this->{$this->db_group}->where('('.$filter.')');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	private function _add_medias_infos($media_list)
+	{
+		foreach($media_list as &$_media)
+		{
+			$ext = pathinfo($_media['file_name'], PATHINFO_EXTENSION);
+
+			$_media['extension'] = $ext;
+
+			if (file_exists($_media['path']))
+			{
+				$_media['file_exists'] = TRUE;
+
+				if ($_media['type'] == 'picture')
+				{
+					list($width, $height, $img_type, $attr) = @getimagesize($_media['path']);
+
+					$_media['width'] = $width;
+					$_media['height'] = $height;
+					$_media['img_type'] = $img_type;
+				}
+				$_media['size'] = sprintf('%01.2f', filesize($_media['path']) / (1024 )) . 'ko';
+			}
+			else
+			{
+				$_media['file_exists'] = FALSE;
+			}
+		}
+
+		return $media_list;
 	}
 }

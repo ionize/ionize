@@ -257,6 +257,14 @@ if ($tracker_title == '')
 				<?php endif;?>
 			</div>
 		</fieldset>
+
+		<?php if ($id_article != '') :?>
+
+			<!-- Modules PlaceHolder -->
+			<?php echo get_modules_addons('article', 'main_bottom'); ?>
+
+		<?php endif ;?>
+
 	</div>
 </form>
 

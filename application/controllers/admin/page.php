@@ -866,6 +866,10 @@ class Page extends MY_admin
 					$title = $link_type = '';
 				}
 				break;
+
+			case 'anchor':
+				$title = $this->input->post('url');
+
 		}
 
 		$data = array(
@@ -873,7 +877,6 @@ class Page extends MY_admin
 			'link_type' => $link_type,
 			'link' => $title
 		);
-
 
 		// Save the link
 		$this->page_model->update(array('id_page' => $id_page), $data);

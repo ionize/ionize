@@ -261,6 +261,7 @@ DropZone.HTML5 = new Class({
 				else
 				{
 					// item doesn't exist anymore, probably cancelled
+					this._requestCanceled(item, file, response);
 				}
 
 			}.bind(this),

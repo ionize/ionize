@@ -433,6 +433,7 @@ class TagManager
 		// If modules are installed : Get the modules tags definition
 		// Modules tags definition must be stored in : /modules/your_module/libraires/<your_module>_tags.php
 		$module_key = strtolower($module);
+
 		if(isset(self::$module_folders[$module_key]))
 		{
 			// Only load the tags definition class if the file exists.
@@ -880,13 +881,13 @@ class TagManager
 	*/
 
 
-	protected function registry($key, $array = NULL)
+	public static function registry($key, $array = NULL)
 	{
 		return self::$context->registry($key, $array);
 	}
 
 
-	protected function register($key, $value, $array = NULL)
+	public static function register($key, $value, $array = NULL)
 	{
 		self::$context->register($key, $value, $array);
 	}
@@ -3303,6 +3304,7 @@ class TagManager
 		$in = $tag->getAttribute('in');
 		$is_not = $tag->getAttribute('is_not');
 		$expression = $tag->getAttribute('expression');
+		$autolink = $tag->getAttribute('autolink');
 
 		// "is" and "expression" cannot be used together.
 		if ( ! is_null($is) )
@@ -3398,6 +3400,10 @@ class TagManager
 		{
 			// Process PHP, helper, prefix/suffix
 			$value = self::process_value($tag, $value);
+
+			// Autolink
+			if ($autolink)
+				$value = auto_link($value, 'both', TRUE);
 
 			// Make sub tags like "nesting" or "trace" working
 			$tag->expand();

@@ -10,7 +10,7 @@ ION.append({
 	 *      'urlMain': 'URL to the main panel content',
 	 *      'urlOptions': 'Url to the option panel content',
 	 *      'title': 'Title of the main panel',
-	 *
+	 *		'opened': boolean. Opened at start
 	 * });
 	 *
 	 */
@@ -19,8 +19,12 @@ ION.append({
 		if ($('mainPanel'))
 		{
 			// Collapse / Expanded status from cookie
-			var isCollapsed = false;
-			var opened = Cookie.read('sidecolumn');
+			var isCollapsed = false,
+				cookieName = options.cookieName ? options.cookieName : 'sidecolumn',
+				opened = Cookie.read(cookieName)
+			;
+
+			if (typeOf(opened) == 'null' && typeOf(options.opened) != 'null') isCollapsed = ! options.opened;
 
 			if (typeOf(opened) != 'null' && opened == 'false')
 				isCollapsed = true;

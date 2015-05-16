@@ -73,9 +73,9 @@ $config['forms'] = array
 				'rules' => 'trim|required|valid_email|xss_clean',
 				'label' => 'form_label_email',
 			),
-			'topic' => array(
+			'subject' => array(
 				'rules' => 'trim|required|xss_clean',
-				'label' => 'form_label_topic',
+				'label' => 'form_label_subject',
 			),
 			'message' => array(
 				'rules' => 'trim|required|xss_clean',

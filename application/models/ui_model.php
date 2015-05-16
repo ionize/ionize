@@ -56,6 +56,13 @@ class Ui_model extends Base_model
 	}
 
 
+	/**
+	 * Get Extend Fields linked to one UI Element (one tab for example)
+	 *
+	 * @param $id_ui_element
+	 *
+	 * @return array
+	 */
 	public function get_element_fields($id_ui_element)
 	{
 		$extends = array();

@@ -681,6 +681,48 @@ class Base_model extends CI_Model
 
 
 	/**
+	 * @param int   $page
+	 * @param array $filter
+	 * @param int   $nb_by_page
+	 * @param array $where
+	 *
+	 * @return array
+	 *
+	 */
+	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $where = array())
+	{
+		$page = $page - 1;
+		$offset = $page * $nb_by_page;
+		$like = array();
+
+		if ( ! empty($filter))
+		{
+			foreach($filter as $key => $val)
+			{
+				// $where[$key] = "like '%".$val."%'";
+				$like[$key] = $val;
+			}
+		}
+
+		$items = self::get_list(array_merge($where, array('limit' => $nb_by_page, 'offset' => $offset, 'like' => $like)));
+
+		$items_nb = self::count_where(array_merge($where, array('like' => $like)));
+
+		// Returned results
+		$result = array(
+			'items' => $items,
+			'nb' => $items_nb
+		);
+
+		return $result;
+	}
+
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Get pages or articles from their lang URL
 	 *
 	 * @param 	Mixed	ID or array of IDs to exclude for the search
@@ -971,6 +1013,7 @@ class Base_model extends CI_Model
 
 	/**
 	 * @param        $field
+	 * @param        $failover			Failover field (from original table)
 	 * @param null   $lang
 	 * @param array  $where
 	 * @param null   $nothing_index
@@ -980,14 +1023,14 @@ class Base_model extends CI_Model
 	 *
 	 * @return array
 	 */
-	public function get_lang_form_select($field, $lang = NULL, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_lang_form_select($field, $failover= NULL, $lang = NULL, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		if (is_null($lang))
 			$lang = Settings::get_lang();
 
 		$table = $this->get_table();
 		if ( ! is_null($table))
-			return $this->get_lang_items_select($table,$field, $lang, $where, $nothing_index, $nothing_value, $order_by, $glue );
+			return $this->get_lang_items_select($table, $field, $failover, $lang, $where, $nothing_index, $nothing_value, $order_by, $glue );
 
 		return array();
 	}
@@ -999,10 +1042,22 @@ class Base_model extends CI_Model
 	/**
 	 * Same as get_items_select() but taking a lang table field as label
 	 *
+	 * @param        $items_table
+	 * @param        $field
+	 * @param        $failover			Failover field (from original table)
+	 * @param        $lang
+	 * @param array  $where
+	 * @param null   $nothing_index
+	 * @param null   $nothing_value
+	 * @param null   $order_by
+	 * @param string $glue
+	 *
+	 * @return array
 	 */
-	public function get_lang_items_select($items_table, $field, $lang, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
+	public function get_lang_items_select($items_table, $field, $failover=NULL, $lang=NULL, $where=array(), $nothing_index = NULL, $nothing_value = NULL, $order_by = NULL, $glue="")
 	{
 		$data = array();
+		$lang_table = $items_table.'_lang';
 
 		// Add the Zero value item
 		if ( ! is_null($nothing_value))
@@ -1015,19 +1070,30 @@ class Base_model extends CI_Model
 		$fields = $this->{$this->db_group}->list_fields($items_table);
 		$items_table_pk = $fields[0];
 
+		// Lang fields : Remove primary key in select
+		$lang_fields = $this->{$this->db_group}->list_fields($lang_table);
+		foreach($lang_fields as $lf)
+		{
+			if ($lf != $items_table_pk)
+				$this->{$this->db_group}->select($lang_table.'.'.$lf);
+		}
+
 		// ORDER BY
 		if ( ! is_null($order_by))
 			$this->{$this->db_group}->order_by($order_by);
 
 		// Join Lang table
-		$this->{$this->db_group}->join($items_table.'_lang', $items_table.'_lang.'.$items_table_pk.'='.$items_table.'.'.$items_table_pk);
-		$this->{$this->db_group}->where($items_table.'_lang.lang', $lang);
+		$this->{$this->db_group}->join(
+			$items_table.'_lang', $items_table.'_lang.'.$items_table_pk.'='.$items_table.'.'.$items_table_pk. ' AND ' . $items_table."_lang.lang='". $lang . "'",
+			'left'
+		);
 
 		// WHERE
 		if (is_array($where) && ! empty($where))
 			$this->{$this->db_group}->where($where);
 
 		// Query
+		$this->{$this->db_group}->select($items_table.'.*');
 		$query = $this->{$this->db_group}->get($items_table);
 
 		if($query->num_rows() > 0)
@@ -1045,7 +1111,11 @@ class Base_model extends CI_Model
 				}
 				else
 				{
-					$data[$row->$items_table_pk] = $row->$field;
+					$value = $row->$field;
+					if (empty($value) && ! is_null($failover))
+						$value = $row->{$failover};
+
+					$data[$row->$items_table_pk] = $value;
 				}
 			}
 		}

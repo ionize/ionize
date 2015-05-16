@@ -377,10 +377,7 @@ class CI_Router
 			// $segments = explode('/', $default);
 		}
 
-		///////////////////////////////////////////
-		// FROM CodeIgniter, slightly modified by Martin Wernstahl
-		///////////////////////////////////////////
-
+		// FROM CodeIgniter, slightly modified
 		// Turn the segment array into a URI string
 		$uri = implode('/', $this->uri->segments);
 

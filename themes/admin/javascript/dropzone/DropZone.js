@@ -93,6 +93,7 @@ var DropZone = new Class({
 	uiDropArea: null,
 	hiddenContainer: null,
 	ui_upload_button: null,
+	lang: {},
 
 	// Init
 	initialize: function (options)
@@ -106,11 +107,10 @@ var DropZone = new Class({
 			this.method = (options.method).toUpperCase();
 
 		// Lang keys set here
-		this.options.lang = {
+		this.lang = {
 			start_upload: Lang.get('ionize_button_start_upload'),
 			select_files: Lang.get('ionize_label_select_files_to_upload')
 		};
-
 
 		// Check HTML5 support & if module is available
 		if ( ! this.method && window.File && window.FileList && window.Blob && typeof DropZone['HTML5'] != 'undefined')
@@ -258,8 +258,10 @@ var DropZone = new Class({
 	 */
 	cancel: function(id, item)
 	{
-		if(this.fileList[id]){
+		var file = null;
 			
+		if(this.fileList[id])
+		{
 			this.fileList[id].checked = false;
 			this.fileList[id].cancelled = true;
 			
@@ -268,15 +270,27 @@ var DropZone = new Class({
 			} else if(this.fileList[id].uploading) {
 				this.nCurrentUploads--;
 			}
+
+			file = Object.clone(this.fileList[id]);
 		}
 		
 		this.nCancelled++;
 		
-		// if(this.nCurrentUploads <= 0 ) this._queueComplete();
+		if(this.nCurrentUploads <= 0 ) this._queueComplete();
 		
-		this.fireEvent('onItemCancel', [item]);
+		this.fireEvent('onItemCancel', [item, file]);
 	},
 	
+	/**
+	 * Called by HTML5.js
+	 * To be able to do something after the last chunk upload.
+	 * @param id
+	 * @param item
+	 */
+	_requestCanceled: function(item, file, response)
+	{
+		this.fireEvent('onRequestCancel', [item, file, response]);
+	},
 
 	/**
 	 * kill at will
@@ -410,7 +424,7 @@ var DropZone = new Class({
 		// http://stackoverflow.com/questions/10667856/form-submit-ie-access-denied-same-domain
 		var label = new Element('label',
 		{
-			'text': this.options.lang.select_files,
+			'text': this.lang.select_files,
 			'for': this.lastInput.id,
 			'class':'left button'
 		}).inject(this.lastInput, 'before');
@@ -539,6 +553,8 @@ var DropZone = new Class({
 	 */
 	_addNewItem: function(file)
 	{
+		var self = this;
+
 		// create a basic wrapper for the thumb
 		var item = new Element('div', {
 			'class': 'dropzone_item',
@@ -586,7 +602,7 @@ var DropZone = new Class({
 		{
 			this.uiListUploadButton = new Element('a',{
 				'class':'button filemanager-start-upload',
-				'text': this.options.lang.start_upload}
+				'text': self.lang.start_upload}
 			).addEvent('click', function()
 			{
 				this.upload();
