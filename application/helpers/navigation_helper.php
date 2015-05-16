@@ -76,13 +76,14 @@ if( ! function_exists('get_tree_navigation'))
 				if ($key == (count($items) - 1) && ! is_null($last_class)) $class[] = $last_class;
 				
 				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
+				$li_class = ( ! empty($page['children'])) ? ' class="has-dropdown not-click'.implode(' ', $class).'"' : $class;
 
 				$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
 				
-				$tree .= '<li'.$class.'><a'.$class.' href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a>';
+				$tree .= '<li'.$li_class.'><a'.$class.' href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a>';
 		
 				if (!empty($page['children']))
-					$tree .= get_tree_navigation($page['children']);
+					$tree .= get_tree_navigation($page['children'], NULL, 'dropdown');
 
 				if (!empty($page['articles']))
 				{
