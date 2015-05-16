@@ -1814,6 +1814,11 @@ ol.steps li a:before {
 	margin-top: -22px;
 	z-index: 2;
 }
+
+/* Modules Manager
+---------------------------------------------------------------- */
+#modulesTable tr:hover {background-color: #f5f7f8;}
+
 /* Standard sizes, margin, padding, border radius
 ---------------------------------------------------------------- */
 
