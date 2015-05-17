@@ -18,21 +18,32 @@ $id = $id_element_definition;
         <span class="icon left drag mr10"></span>
 
         <?php if ($name == '') :?>
-
 			<input id="elementName<?php echo $id ;?>" type="text" class="inputtext w120 left" />
-
 			<button id="elementDefinitionSave<?php echo $id ;?>" type="button" class="light-button left ml10" value="Save"><?php echo lang('ionize_label_element_set_name') ;?></button>
 
 			<script type="text/javascript">
-
-				$('elementDefinitionSave<?php echo $id ;?>').addEvent('click', function()
+				var func_save = function()
 				{
-					ION.sendData('element_definition/save_field', {'id':'<?php echo $id ;?>', 'field': 'name', 'value': $('elementName<?php echo $id ;?>').value, selector:'.element_definition a.name[data-id=<?php echo $id ;?>]'});
+					ION.sendData('element_definition/save_field', {
+						'id':'<?php echo $id ;?>',
+						'field': 'name',
+						'value': $('elementName<?php echo $id ;?>').value,
+						selector:'.element_definition a.name[data-id=<?php echo $id ;?>]'
+					});
+				};
+
+				var el_name = $('elementName<?php echo $id ;?>');
+				$('elementDefinitionSave<?php echo $id ;?>').addEvent('click', func_save);
+
+				el_name.addEvent('keyup', function(e)
+				{
+					if(e && e.code == 13 && $('elementName<?php echo $id ;?>').value.trim() != '' ) {
+						func_save();
+					}
 				});
 
-				$('elementName<?php echo $id ;?>').focus();
+				el_name.focus();
 				$('element_definition_<?php echo $id ;?>').addClass('stripped');
-
 			</script>
 
         <?php else :?>
