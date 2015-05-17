@@ -64,9 +64,7 @@ $filter = implode(',', $filter);
 						<div class="picture">
 							<div class="thumb" style="width:<?php echo $thumb_size; ?>px;height:<?php echo $thumb_size; ?>px; background-image:url(<?php echo admin_url(TRUE) . 'media/get_thumb/'.$media['id_media'].'/'.time() ; ?>);"></div>
 						</div>
-					<?php endif ;?>
-
-					<?php if ($media['type'] == 'video') :?>
+					<?php elseif ($media['type'] == 'video') :?>
 						<?php if($media['provider'] != '') :?>
 
 							<iframe width="150" height="130" class="mt20" src="<?php echo $media['path'] ?>" frameborder="0"></iframe>
@@ -92,9 +90,7 @@ $filter = implode(',', $filter);
 
 					<?php if ($media['type'] == 'music') :?>
 						<div class="ui360 ui360-vis"><a class="sound" id="sound<?php echo $id ?>" href="<?php echo base_url().$media['path'] ?>" target="_blank"><?php echo $media['file_name'] ?></a></div>
-					<?php endif ;?>
-
-					<?php if ($media['type'] == 'file') :?>
+					<?php elseif ($media['type'] == 'file') :?>
 						<div class="pt50"><?php echo $media['path'] ?></div>
 					<?php endif ;?>
 				</div>
