@@ -55,7 +55,6 @@
 	});
 
 
-
 	/**
 	 * Init desktopHeader status from cookie
 	 *
@@ -71,18 +70,16 @@
 	 * Expand / Collapse button
 	 *
 	 */
-	$('btnStructureExpand').store('status', 'expand');
-	
-	$('btnStructureExpand').addEvent('click', function(e) 
+	var btn = $('btnStructureExpand');
+
+	btn.store('status', 'expand');
+	btn.addEvent('click', function(e)
 	{
 		e.stop();
-		
-		$$('#structurePanel div.minus').each(function(el){
-			el.fireEvent('click', {'target': el});
-		});
-/*
+
 		if (this.retrieve('status') == 'collapse')
 		{
+			// Collapse all nodes
 			$$('#structurePanel div.plus').each(function(el){
 				el.fireEvent('click', {'target': el});
 			});
@@ -91,15 +88,13 @@
 		}
 		else
 		{
+			// Expand all nodes
 			$$('#structurePanel div.minus').each(function(el){
 				el.fireEvent('click', {'target': el});
 			});
 			this.value = Lang.get('ionize_label_expand_all');
 			this.store('status', 'collapse');
 		}
-*/
+		btn.innerHTML = this.value;
 	});
-
-
-
 </script>
