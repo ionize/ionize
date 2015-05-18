@@ -731,6 +731,20 @@ class Article extends MY_admin
 					$this->template = array_merge($this->template, $article);
 					$this->article_model->feed_lang_template($id_article, $this->template);
 
+					// Add article types to template
+					$data = $this->article_type_model->get_types_select();
+					if ( ! empty($data))
+					{
+						$data = array('' => lang('ionize_select_no_type')) + $data;
+						$this->template['all_article_types'] = $data;
+					}
+					else
+					{
+						$this->template['all_article_types'] = NULL;
+					}
+
+					$this->template['article_type_current'] = $article['id_type'];
+
 					// Linked pages list
 					$this->template['pages_list'] = $this->article_model->get_pages_list($id_article);
 
