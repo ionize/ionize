@@ -37,12 +37,13 @@ class TagManager_Page extends TagManager
 
 	public static $tag_definitions = array
 	(
-		'pages' => 				'tag_pages',
-		'page' => 				'tag_page',
-		'page:view' => 			'tag_page_view',
-		'page:next' =>			'tag_next_page',
-		'page:prev' =>			'tag_prev_page',
-		'breadcrumb' =>			'tag_breadcrumb',
+		'pages'		=> 	'tag_pages',
+		'page'		=> 	'tag_page',
+		'page:view' => 	'tag_page_view',
+		'page:next' =>	'tag_next_page',
+		'page:prev' =>	'tag_prev_page',
+		'breadcrumb'=>	'tag_breadcrumb',
+		'id_parent' => 	'tag_simple_value'
 	);
 
 
