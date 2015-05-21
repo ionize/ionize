@@ -135,7 +135,7 @@ if ( ! function_exists('delete_files'))
 				if (is_dir($path.DIRECTORY_SEPARATOR.$filename))
 				{
 					// Ignore empty folders
-					if (substr($filename, 0, 1) != '.')
+//					if (substr($filename, 0, 1) != '.')
 					{
 						delete_files($path.DIRECTORY_SEPARATOR.$filename, $del_dir, $level + 1);
 					}
