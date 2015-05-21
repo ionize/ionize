@@ -116,6 +116,17 @@
 							<input <?php if($media_thumb_unsharp == 1) :?>checked="checked" <?php endif ;?> name="media_thumb_unsharp" id="media_thumb_unsharp"  class="inputcheckbox" type="checkbox" value="1" />
 						</dd>
 					</dl>
+					
+					<dl class="small">
+						<dt>
+							<a class="button light check-btn" id="media_thumbs_delete" href="javascript:void(0)" onclick="ION.sendData('media/delete_all_thumbs', true)">
+								<i class="icon-pictures"></i><?php echo lang('ionize_title_delete_thumbs'); ?>
+							</a>
+						</dt>
+						<dd>
+							<?php echo lang('ionize_text_delete_thumbs'); ?>
+						</dd>
+					</dl>					
 
 				</div>
 				
