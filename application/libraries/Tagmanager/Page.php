@@ -973,11 +973,15 @@ class TagManager_Page extends TagManager
 			// Adds the suffix if defined
 			if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
-			$return .= $child_tag_open . '<a href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' ;
-			if ($i<($nb_pages-1))
-				$return .= $separator;
+			if ($i<($nb_pages-1)) {
+				$linkClass = '';
+				$separatorCurrent = $separator;
+			} else {
+				$linkClass = ' class="active"';
+				$separatorCurrent = '';
+			}
 
-			$return .= $child_tag_close;
+			$return .= $child_tag_open . '<a' . $linkClass . ' href="'.$url.'">'.$breadcrumb[$i]['title'].'</a>' . $separatorCurrent . $child_tag_close;
 		}
 
 		// Current Article ?
