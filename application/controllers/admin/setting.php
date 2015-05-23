@@ -12,6 +12,9 @@
 
 class Setting extends MY_admin
 {
+	/** @var  Config_model */
+	public $config_model;
+
 	/**
 	 * Fields on wich no XSS filtering is done
 	 * 
@@ -915,13 +918,18 @@ class Setting extends MY_admin
     // ------------------------------------------------------------------------
 
     /**
-     * Saves Compress HTML Output Setting
+     * Saves HTML Output Setting: Default (unaltered) / Compressed / Beautified
      *
      */
-    function save_compress_html_output()
+    function save_html_output()
     {
-        if ($this->config_model->change('ionize.php', 'compress_html_output', $this->input->post('compress_html_output')) == FALSE)
+		$html_output_mode = (int) $_REQUEST['html_output'];	// 0= default, 1= compressed, 2= beautified
+
+        if (	$this->config_model->change('ionize.php', 'compress_html_output', $html_output_mode === 1) == FALSE
+		    ||  $this->config_model->change('ionize.php', 'beautify_html_output', $html_output_mode === 2) == FALSE
+		)
             $this->error(lang('ionize_message_error_writing_ionize_file'));
+
 
         // UI panel to update after saving
         $this->update[] = array(
