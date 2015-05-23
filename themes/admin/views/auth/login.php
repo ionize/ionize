@@ -46,28 +46,25 @@
 		}
 
         window.addEvent('domready', function()
-		{
-            function fixchromeyellow()
-            {
-                if (
-					navigator.userAgent.toLowerCase().indexOf("chrome") >= 0
-                    ||(navigator.userAgent.toLowerCase().indexOf("safari") >= 0)
-				)
-                {
-                    $$('input["input:-webkit-autofill"]').each(function(el)
-                    {
-                        el.clone(true,true).inject(el,"after");
-                        el.dispose();
-                    });
-                }
-            }
-            window.setTimeout(fixchromeyellow, 50);
+	{
+		document.getElementById('username').focus();
 
+		// fix chrome forcing yellow background of input
+		window.setTimeout(function() {
+			if (
+				navigator.userAgent.toLowerCase().indexOf("chrome") >= 0
+				||(navigator.userAgent.toLowerCase().indexOf("safari") >= 0)
+			) {
+				$$('input["input:-webkit-autofill"]').each(function(el)
+			    	{
+				   el.clone(true,true).inject(el,"after");
+				   el.dispose();
+				});
+			}
+		}, 50);
         });
-
 	</script>
 </head>
-
 
 <body>
 	<?php if (ENVIRONMENT != 'production'): ?>
