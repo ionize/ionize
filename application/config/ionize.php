@@ -145,8 +145,19 @@ $config['maintenance_ips'] = array (
 | To remove useless whitespace from generated HTML
 |
 */
-$config['compress_html_output'] = '0';
+$config['compress_html_output'] = false;
 
+
+
+/*
+|--------------------------------------------------------------------------
+| Beautify HTML output
+|--------------------------------------------------------------------------
+|
+| To remove double whitespace lines and indent generated HTML correctly
+|
+*/
+$config['beautify_html_output'] = true;
 
 /* End of file ionize.php */
 /* Location: ./application/config/ionize.php */

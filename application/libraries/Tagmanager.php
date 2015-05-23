@@ -660,13 +660,18 @@ class TagManager
 			 */
 		}
 
+		if(config_item('beautify_html_output') == 1) {
+			require_once(APPPATH . 'third_party/indenter.php');
+			$indenter = new \Gajus\Dindent\Indenter();
+			$parsed = $indenter->indent($parsed);
+		}
 
 		// Returns the result or output it directly
-		if ($return)
+		if ($return) {
 			return $parsed;
-		else
+		} else {
 			self::$ci->output->set_output($parsed);
-
+		}
 	}
 
 
