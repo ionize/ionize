@@ -376,6 +376,36 @@ class Page_model extends Base_model
 
 
 	/**
+	 * Remove deleted page records from DB.
+	 *
+	 * @return int
+	 */
+	public function remove_deleted_pages()
+	{
+		// Remove relations of deleted pages
+		foreach(array('page_article', 'page_lang', 'page_media') as $relation)
+		{
+			$this->{$this->db_group}->query("
+				DELETE FROM $relation
+				WHERE $relation.id_page IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
+			);
+		}
+
+		// Remove deleted pages
+		$sql = 'DELETE FROM page
+				WHERE id_menu	= 0
+				AND   id_parent = 0';
+
+		$this->{$this->db_group}->query($sql);
+
+		return $this->{$this->db_group}->affected_rows();
+ 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Get the current groups from parent element
 	 *
 	 * @param $parent_id

@@ -106,6 +106,15 @@
 							</td>
 							<td class="middle"><?php echo lang('ionize_text_check_page_level'); ?></td>
 						</tr>
+						<!-- Clean pages tree: remove deleted page records -->
+						<tr>
+							<td class="middle pr10">
+								<a class="button light check-btn" data-href="page/remove_deleted_pages">
+									<i class="icon-folder"></i><?php echo lang('ionize_title_remove_deleted_pages'); ?>
+								</a>
+							</td>
+							<td class="middle"><?php echo lang('ionize_text_remove_deleted_pages'); ?></td>
+						</tr>
 						<!-- Media table -->
 						<tr>
 							<td class="middle pr10">
