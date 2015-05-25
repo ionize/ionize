@@ -41,8 +41,11 @@ if ($tracker_title == '')
 
 				<div class="main subtitle">
 					<p>
-						<span class="lite">ID : </span>
-						<?php echo $id_article; ?>
+						<a class="button light" href="javascript:void(0)" onclick="$$('a.title.page<?php echo $id_page; ?>')[0].fireEvent('click');">
+							<span class="tree-img folder open"></span>
+							<span class="lite">ID : </span>
+							<?php echo $id_article; ?>
+						</a>
 
 						<?php if( ! empty($breadcrump)) :?>
 							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?> : </span><?php echo$breadcrump?>
