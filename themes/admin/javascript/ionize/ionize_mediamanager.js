@@ -42,7 +42,7 @@ var IonizeMediaManager = new Class(
 		this.parent =		options.parent;
 		this.filemanager =  null;
 
-		this.container = $(options.container);
+		this.container = $(options.container) ? $(options.container) : $('mediaContainer');
 
 		// Filemanager opening buttons
 		var self = this;
