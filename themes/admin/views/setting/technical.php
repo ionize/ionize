@@ -1,4 +1,3 @@
-
 <!-- Main Column -->
 <div id="maincolumn">
 
@@ -187,8 +186,8 @@
 
 
 				</div>
-			
-			</form>			
+
+			</form>
 
 		</div>		
 		
@@ -741,19 +740,35 @@
 				</div>
 
                 <!-- Compress HTML Output -->
-                <h3 class="toggler"><?php echo lang('ionize_title_compress_html_output'); ?></h3>
+                <h3 class="toggler"><?php echo lang('ionize_title_html_output'); ?></h3>
 
                 <div class="element">
 
-                    <form name="compressHtmlOutputForm" id="compressHtmlOutputForm" method="post" action="<?php echo admin_url(); ?>setting/save_compress_html_output" class="mb20">
+                    <form name="compressHtmlOutputForm" id="compressHtmlOutputForm" method="post" action="<?php echo admin_url(); ?>setting/save_html_output" class="mb20">
 
                         <!-- Maintenance ? -->
                         <dl>
                             <dt>
+                                <label for="default_html_output" title="<?php echo lang('ionize_label_default_html_output_help'); ?>"><?php echo lang('ionize_label_default_html_output'); ?></label>
+                            </dt>
+                            <dd>
+                                <input <?php if (config_item('compress_html_output') == '0' && config_item('beautify_html_output') == '0'):?>checked="checked"<?php endif;?> type="radio" name="html_output" id="default_html_output" value="0" />
+                            </dd>
+                        </dl>
+						<dl>
+                            <dt>
                                 <label for="compress_html_output" title="<?php echo lang('ionize_label_compress_html_output_help'); ?>"><?php echo lang('ionize_label_compress_html_output'); ?></label>
                             </dt>
                             <dd>
-                                <input class="inputcheckbox" <?php if (config_item('compress_html_output') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="compress_html_output" id="compress_html_output" value="1" />
+                                <input <?php if (config_item('compress_html_output') == '1'):?>checked="checked"<?php endif;?> type="radio" name="html_output" id="compress_html_output" value="1" />
+                            </dd>
+                        </dl>
+						<dl>
+                            <dt>
+                                <label for="beautify_html_output" title="<?php echo lang('ionize_label_beautify_html_output_help'); ?>"><?php echo lang('ionize_label_beautify_html_output'); ?></label>
+                            </dt>
+                            <dd>
+                                <input <?php if (config_item('beautify_html_output') == '1'):?>checked="checked"<?php endif;?> type="radio" name="html_output" id="beautify_html_output" value="2" />
                             </dd>
                         </dl>
 
@@ -797,7 +812,7 @@
 	ION.setFormSubmit('emailForm', 'submit_email', 'setting/save_emails_settings/true');
 	ION.setFormSubmit('cacheForm', 'submit_cache', 'setting/save_cache');
 	ION.setFormSubmit('maintenanceForm', 'submit_maintenance', 'setting/save_maintenance');
-    ION.setFormSubmit('compressHtmlOutputForm', 'submit_compress_html_output', 'setting/save_compress_html_output');
+    ION.setFormSubmit('compressHtmlOutputForm', 'submit_compress_html_output', 'setting/save_html_output');
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
 	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
 	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');
@@ -814,7 +829,7 @@
 		},
 		Lang.get('ionize_confirm_change_admin_url')
 	);
-	
+
 	$('antispamRefresh').addEvent('click', function(e)
 	{
 		e.stop();
