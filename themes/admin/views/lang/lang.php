@@ -107,7 +107,7 @@
 										<label for="def_<?php echo $code; ?>"><?php echo lang('ionize_label_default'); ?></label>
 									</dt>
 									<dd>
-										<input id="def_<?php echo $code; ?>" <?php if (Settings::get_lang('default') == $code ):?>checked="checked"<?php endif;?> type="radio" name="default_lang" class="inputradio" value="<?php echo $code; ?>" />
+										<input onclick="$('online_' + this.value).checked = true" id="def_<?php echo $code; ?>" <?php if (Settings::get_lang('default') == $code ):?>checked="checked"<?php endif;?> type="radio" name="default_lang" class="inputradio" value="<?php echo $code; ?>" />
 									</dd>
 								</dl>
 
