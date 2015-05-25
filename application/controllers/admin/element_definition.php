@@ -28,7 +28,14 @@ class Element_definition extends MY_Admin {
 		'8' => 'Medias',
 	);*/
 
+	/** @var  Element_model */
+	public $element_model;
 
+	/** @var  Element_definition_model */
+	public $element_definition_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
 
 	// ------------------------------------------------------------------------
 	
@@ -51,7 +58,7 @@ class Element_definition extends MY_Admin {
 	
 	
 	/**
-	 * Outputs the Definiton list
+	 * Outputs the Definition list
 	 *
 	 */
 	function index()
@@ -154,7 +161,7 @@ class Element_definition extends MY_Admin {
 	
 	
 	/**
-	 * Returns the list of definition for a given parent
+	 * Returns the list definition for a given parent
 	 * Used to build the tabs of elements definitions in parents panels (page, article)
 	 *
 	 * @returns String	JSON object of all definitions containing elements

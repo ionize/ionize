@@ -12,6 +12,13 @@
 
 class Extend_field extends MY_admin
 {
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
+
+	/** @var  Extend_field_type_model */
+	public $extend_field_type_model;
+
 	/**
 	 * Constructor
 	 *

@@ -13,6 +13,9 @@
 class Ui extends MY_Admin
 {
 
+	/** @var  Ui_model */
+	public $ui_model;
+
 	/**
 	 * Constructor
 	 *

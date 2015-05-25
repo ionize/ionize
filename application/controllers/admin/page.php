@@ -48,6 +48,32 @@ class Page extends MY_admin
 	protected static $_AUTHORITY_BACKEND_ACTIONS = array('edit','delete','status','add_page','add_article');
 	protected static $_AUTHORITY_FRONTEND_ACTIONS = array();
 
+	/** @var  Menu_model */
+	public $menu_model;
+
+	/** @var  Page_model */
+	public $page_model;
+
+	/** @var  Article_model */
+	public $article_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
+
+	/** @var  System_check_model */
+	public $system_check_model;
+
+	/** @var  Url_model */
+	public $url_model;
+
+	/** @var  Type_model */
+	public $type_model;
+
+	/** @var  Resource_model */
+	public $resource_model;
+
+	/** @var  Rule_model */
+	public $rule_model;
 
 	/**
 	 * Constructor
@@ -964,7 +990,7 @@ class Page extends MY_admin
 
 	/**
 	 * Deletes one page
-	 * @note	For the moment, this method doesn't delete the linked articles, wich will stay in database as phantom
+	 * @note	For the moment, this method doesn't delete the linked articles, which will stay in database as phantom
 	 *
 	 * @param	int		Page ID
 	 *
@@ -973,7 +999,7 @@ class Page extends MY_admin
 	{
 		$affected_rows = $this->page_model->delete($id);
 		
-		// Delete was successfull
+		// Delete was successful
 		if ($affected_rows > 0)
 		{
 			// Clean URL table
@@ -1006,6 +1032,42 @@ class Page extends MY_admin
 		{
 			$this->error(lang('ionize_message_operation_nok'));
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Remove deleted page records and relations to it from DB.
+	 *
+	 * @return int
+	 */
+	public function remove_deleted_pages()
+	{
+		// Remove relations of deleted pages
+		foreach(array('page_article', 'page_lang', 'page_media') as $relation)
+		{
+			$this->{$this->db_group}->query("
+				DELETE FROM $relation
+				WHERE $relation.id_page IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
+			);
+		}
+		// Remove relation where page is parent
+		foreach(array('element') as $relation)
+			$this->{$this->db_group}->query("
+				DELETE FROM $relation
+				WHERE $relation.parent = 'page' AND $relation.id_parent IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
+			);
+
+		// Remove deleted pages
+		$this->{$this->db_group}->query('
+				DELETE FROM page
+				WHERE id_menu=0
+				AND id_parent = 0'
+		);
+
+		return $this->{$this->db_group}->affected_rows();
 	}
 
 

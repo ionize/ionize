@@ -39,8 +39,13 @@ class MY_Controller extends CI_Controller
 	 */
 	protected $context_tag = 'ion';
 
-
 	public $xhr_protected = FALSE;
+
+	/** @var  Base_model */
+	public $base_model;
+
+	/** @var  Settings_model */
+	public $settings_model;
 
 	// ------------------------------------------------------------------------
 

@@ -19,6 +19,14 @@ class Menu extends MY_admin
 	 */
 	protected static $_AUTHORITY_BACKEND_ACTIONS = array();
 
+	/** @var  Menu_model */
+	public $menu_model;
+
+	/** @var  Rule_model */
+	public $rule_model;
+
+	/** @var  Resource_model */
+	public $resource_model;
 
 	/**
 	 * Constructor

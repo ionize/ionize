@@ -12,6 +12,13 @@
 
 class Item_definition extends MY_admin
 {
+
+	/** @var  Item_definition_model */
+	public $item_definition_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
+
 	/**
 	 * Constructor
 	 *

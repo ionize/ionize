@@ -12,8 +12,14 @@
 
 class User extends My_Admin
 {
+	/** @var Role_model */
 	public $current_role = NULL;
 
+	/** @var  User_model */
+	public $user_model;
+
+	/** @var  Role_model */
+	public $role_model;
 
 	/**
 	 * Constructor

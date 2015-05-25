@@ -13,6 +13,12 @@
 class Lang extends MY_admin
 {
 
+	/** @var Lang_model */
+	public $lang_model;
+
+	/** @var  Settings_Model */
+	public $settings_model;
+
 	/**
 	 * Constructor
 	 *

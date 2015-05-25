@@ -17,6 +17,12 @@ class Media extends MY_admin
 	
 	protected static $MP3_ID3 = array('album', 'artist', 'title', 'year');
 
+	/** @var  Media_model */
+	public $media_model;
+
+	/** @var  Extend_field_model */
+	public $extend_field_model;
+
 	/**
 	 * Constructor
 	 *

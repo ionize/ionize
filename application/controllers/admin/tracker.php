@@ -13,7 +13,9 @@
 
 class Tracker extends My_Admin
 {
-	
+	/** @var  Tracker_model */
+	public $tracker_model;
+
 	/**
 	 * Constructor
 	 *

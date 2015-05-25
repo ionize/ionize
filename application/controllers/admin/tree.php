@@ -12,6 +12,18 @@
 
 class Tree extends MY_Admin {
 
+	/** @var  Tree_model */
+	public $tree_model;
+
+	/** @var  Menu_model */
+	public $menu_model;
+
+	/** @var  Page_model */
+	public $page_model;
+
+	/** @var  Article_model */
+	public $article_model;
+
 	/**
 	 * Constructor
 	 *

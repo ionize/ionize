@@ -47,9 +47,12 @@ class Translation extends MY_admin
     protected $default_lang_code;
 
     /**
-     * Directory Seperator
+     * Directory Separator
      */
     protected $DP = '/';
+
+    /** @var  Config_model */
+    public $config_model;
 
     /**
 	 * Constructor

@@ -30,6 +30,10 @@ class Rule {
     protected $_action      = null;
     protected $_callback    = null;
 
+    /**
+     * Constructor
+     *
+     */
     public function __construct($allowed, $action, $resource, \Closure $callback = null)
     {
 		$this->_allowed     = $allowed;

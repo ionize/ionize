@@ -17,6 +17,13 @@
  */
 class Picture extends Base_Controller
 {
+	/** @var  Media_model */
+	public $media_model;
+
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();

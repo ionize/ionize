@@ -2,6 +2,11 @@
 
 class User extends Base_Controller {
 
+	/** @var  User_model */
+	public $user_model;
+
+	/** @var  Role_model */
+	public $role_model;
 
 	/**
 	 * Constructor

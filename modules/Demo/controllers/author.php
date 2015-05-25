@@ -3,12 +3,26 @@
 
 class Author extends Base_Controller
 {
+	/** @var  Demo_author_model */
+	public $demo_author_model;
+
+	/** @var  Demo_author_model */
+	public $author_model;
+
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();
 
 		// Models
-		$this->load->model('demo_author_model', 'author_model', TRUE);
+		$this->load->model(
+			'demo_author_model',
+			'author_model',
+			TRUE
+		);
 	}
 
 	public function index()

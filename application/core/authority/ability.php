@@ -25,7 +25,10 @@ abstract class Ability {
     protected static $_rules = array();
     protected static $_action_aliases = array();
 
-
+    /**
+     * Constructor
+     *
+     */
 	public function __construct()
 	{
 		static::initialize(static::current_user());

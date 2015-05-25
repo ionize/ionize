@@ -5,7 +5,10 @@ class Article extends MY_Controller {
 
 	private $data = array();	// Included view data array;
 
-
+	/**
+	 * Constructor
+	 *
+	 */
 	public function __construct()
 	{
 		parent::__construct();

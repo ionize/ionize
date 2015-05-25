@@ -46,7 +46,10 @@ namespace Ionize {
 
 		// --------------------------------------------------------------------
 
-
+		/**
+		 * Constructor
+		 *
+		 */
 		public function __construct()
 		{
 			self::$instance =& $this;

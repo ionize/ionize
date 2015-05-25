@@ -12,6 +12,9 @@
 
 class Rule extends MY_Admin
 {
+	/** @var  Rule_model */
+	public $rule_model;
+
 	/**
 	 * Constructor
 	 *
