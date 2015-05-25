@@ -87,6 +87,22 @@
 		<!-- Attributes -->
 		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_attributes'); ?></h3>
 		<div class="element element-options">
+			
+			<!-- Type -->
+			<dl class="small">
+				<dt>
+					<label for="article_type<?php echo $id_article; ?>" title="<?php echo ucfirst(lang('ionize_label_type')); ?>">
+						<?php echo ucfirst(lang('ionize_label_type')); ?>
+					</label>
+				</dt>
+				<dd>
+					<select id="article_type<?php echo $id_article; ?>" class="p1 select type left w100p" data-id="<?php echo $id_article; ?>">
+						<?php foreach($all_article_types as $idx => $type) :?>
+							<option <?php if ($article_type_current == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
+						<?php endforeach ;?>
+					</select>
+				</dd>
+			</dl>			
 
 			<!-- Indexed content -->
 			<dl class="small">
@@ -476,6 +492,16 @@
 		{
 			var value = (this.checked) ? '1' : '0';
 			ION.JSON('article/update_field', {'field': 'indexed', 'value': value, 'id_article': $('id_article').value});
+		});
+
+		// Types
+		$('article_type<?php echo $id_article; ?>').addEvent('change', function(e)
+		{
+			ION.JSON('article/save_context', {
+				'id_article': <?php echo $id_article; ?>,
+				'id_page': $('rel').value.split('.')[0],
+				'id_type': $('article_type<?php echo $id_article; ?>').value
+			});
 		});
 
 		// Categories
