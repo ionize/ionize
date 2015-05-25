@@ -142,7 +142,8 @@ class MY_Controller extends CI_Controller
     	// Unique ID, useful for DOM Element displayed in windows.
     	$this->template['UNIQ'] = (uniqid());
 
-    	Theme::output($view, $this->template);
+	$theme = new Theme();
+	$theme->output($view, $this->template);
     }
 
 
