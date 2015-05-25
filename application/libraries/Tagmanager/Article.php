@@ -33,6 +33,7 @@ class TagManager_Article extends TagManager
 		'article:deny' => 			'tag_article_deny',
 
 		'article:is_active' => 		'tag_is_active',
+		'article:is_online' => 		'tag_is_online'
 	);
 
 
@@ -1138,8 +1139,37 @@ class TagManager_Article extends TagManager
 
 		return $return;
 	}
+	
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Condition on article being online or not. 
+	 * -Helpful eg. w/ custom article types that are online only in select languages
+	 *
+	 * Example usage:
+	 *
+	 * <ion:page:articles type="my-type">
+	 * 	<ion:article:is_online>
+	 *  		<ion:article>
+	 *  			article content rendering goes here...
+	 *  		</ion:article>
+	 *  	</ion:article:is_online>
+	 * </ion:page:articles>
+	 *
+	 * @param FTL_Binding $tag
+	 * @return string
+	 */
+	public static function tag_is_online(FTL_Binding $tag)
+	{
+		$article = $tag->get('article');
+
+		if ( $article['online'] )
+			return $tag->expand();
+
+		return '';
+	}
 
 }
 
 TagManager_Article::init();
-
