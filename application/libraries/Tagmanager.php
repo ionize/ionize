@@ -25,12 +25,16 @@ require_once APPPATH.'libraries/ftl/arraycontext.php';
 
 class TagManager
 {
+	/** @var bool  */
 	protected static $_inited = FALSE;
 
+	/** @var array  */
 	protected static $tags = array();
 
+	/** @var array  */
 	protected static $module_folders = array();
 
+	/** @var int */
 	protected static $trigger_else = 0;
 
 	static $ci;
@@ -664,7 +668,7 @@ class TagManager
 		if(config_item('beautify_html_output') == 1) {
 			require_once(APPPATH . 'third_party/indenter.php');
 			$indenter = new \Gajus\Dindent\Indenter();
-			$parsed = $indenter->indent($parsed);
+			$parsed = $indenter->indent( self::moveScriptsDown($parsed) );
 		}
 
 		// Returns the result or output it directly
@@ -673,6 +677,58 @@ class TagManager
 		} else {
 			self::$ci->output->set_output($parsed);
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Move all inline <script> tags to the end of the <body> of given HTML
+	 *
+	 * @param	string	$html
+	 * @return	string
+	 */
+	private static function moveScriptsDown($html)
+	{
+		if( strpos($html, '</body>') !== false ) {
+			preg_match_all("~( <script[^>]*>  (.*?)  </script> )~smix", $html, $matches);
+
+			$html = self::removeAllScriptTags($html);
+
+			// Collect inline script tags
+			$merged = implode("\n", $matches[0]);
+
+			// Move collected scripts to end of body
+			$html = str_replace('</body>', $merged . '</body>', $html);
+		}
+
+		return $html;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param   array|string  $html
+	 * @return  string
+	 */
+	private static function removeAllScriptTags($html)
+	{
+		$output = '';
+		if (is_array($html)) {
+			foreach ($html as $var => $val) {
+				$output[$var] = self::removeAllScriptTags($val);
+			}
+		} else {
+			if (get_magic_quotes_gpc()) {
+				$html = stripslashes($html);
+			}
+			$output  = preg_replace('@<script[^>]*?>.*?</script>@si', '', $html);
+		}
+
+		return $output;
 	}
 
 
@@ -2752,7 +2808,7 @@ class TagManager
 
 
 	/**
-	 * Returns one uniq number or string
+	 * Returns one unique number or string
 	 *
 	 * @param  FTL_Binding
 	 * @return string
