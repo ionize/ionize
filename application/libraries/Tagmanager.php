@@ -665,7 +665,14 @@ class TagManager
 			 */
 		}
 
-		if(config_item('beautify_html_output') == 1) {
+		$isActiveCompress = config_item('compress_html_output');
+		$isActiveBeautify = config_item('beautify_html_output');
+
+		if( $isActiveCompress || $isActiveBeautify ) {
+			$parsed = self::moveScriptsDown($parsed);
+		}
+
+		if( $isActiveBeautify ) {
 			require_once(APPPATH . 'third_party/indenter.php');
 			$indenter = new \Gajus\Dindent\Indenter();
 			$parsed = $indenter->indent( self::moveScriptsDown($parsed) );
@@ -684,7 +691,7 @@ class TagManager
 
 
 	/**
-	 * Move all inline <script> tags to the end of the <body> of given HTML
+	 * Move all inline <script> tags to the end of the <body> of given HTML, minify inline JavaScripts
 	 *
 	 * @param	string	$html
 	 * @return	string
@@ -696,8 +703,15 @@ class TagManager
 
 			$html = self::removeAllScriptTags($html);
 
-			// Collect inline script tags
-			$merged = implode("\n", $matches[0]);
+			// Collect and compress inline script tags
+			if( ! class_exists('JSMin') ) {
+				require_once(APPPATH . 'third_party/jsmin.php');
+			}
+			$merged = '';
+			foreach($matches[0] as $match) {
+				$openingTag = substr($match, 0, strpos($match, '>'));
+				$merged .= (strpos($openingTag, 'src=') === false ? JSMin::minify($match) : $match) . "\n";
+			}
 
 			// Move collected scripts to end of body
 			$html = str_replace('</body>', $merged . '</body>', $html);
