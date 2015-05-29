@@ -22,9 +22,6 @@ class Setting extends MY_admin
 	 */
 	protected $no_xss_filter = array('google_analytics');
 
-	/** @var  Config_model */
-	public $config_model;
-
 	/**
 	 * Constructor
 	 *

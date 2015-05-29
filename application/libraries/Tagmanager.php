@@ -25,12 +25,16 @@ require_once APPPATH.'libraries/ftl/arraycontext.php';
 
 class TagManager
 {
+	/** @var bool  */
 	protected static $_inited = FALSE;
 
+	/** @var array  */
 	protected static $tags = array();
 
+	/** @var array  */
 	protected static $module_folders = array();
 
+	/** @var int */
 	protected static $trigger_else = 0;
 
 	static $ci;
@@ -661,7 +665,14 @@ class TagManager
 			 */
 		}
 
-		if(config_item('beautify_html_output') == 1) {
+		$isActiveCompress = config_item('compress_html_output');
+		$isActiveBeautify = config_item('beautify_html_output');
+
+		if( $isActiveCompress || $isActiveBeautify ) {
+			$parsed = self::moveScriptsDown($parsed);
+		}
+
+		if( $isActiveBeautify ) {
 			require_once(APPPATH . 'third_party/indenter.php');
 			$indenter = new \Gajus\Dindent\Indenter();
 			$parsed = $indenter->indent($parsed);
@@ -673,6 +684,72 @@ class TagManager
 		} else {
 			self::$ci->output->set_output($parsed);
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Move all inline <script> tags to end of <body> of given HTML
+	 * Exception: scripts that contain "document.write" need to stay at their original place, as they need to write exactly there
+	 *
+	 * @param	string	$html
+	 * @return	string
+	 */
+	private static function moveScriptsDown($html)
+	{
+		if( strpos($html, '</body>') !== false ) {
+			preg_match_all("~( <script[^>]*>  (.*?)  </script> )~smix", $html, $matches);
+
+			$html = self::removeAllScriptTags($html);
+
+			// Collect and compress inline script tags
+			if( ! class_exists('JSMin') ) {
+				require_once(APPPATH . 'third_party/jsmin.php');
+			}
+			$merged = '';
+			foreach($matches[0] as $match) {
+				if( strpos($match, 'document.write') === false  ) {
+					$openingTag = substr($match, 0, strpos($match, '>'));
+					$merged .= (strpos($openingTag, 'src=') === false ? JSMin::minify($match) : $match) . "\n";
+				}
+			}
+
+			// Move collected scripts to end of body
+			$html = str_replace('</body>', $merged . '</body>', $html);
+		}
+
+		return $html;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Removes all <script> tags from the given HTML,
+	 * Exception: scripts containing "document.write" as those manipulate the DOM at the place where they're embedded
+	 *
+	 * @param   array|string  $html
+	 * @return  string
+	 */
+	private static function removeAllScriptTags($html)
+	{
+		$output = '';
+		if (is_array($html)) {
+			foreach ($html as $var => $val) {
+				$output[$var] = self::removeAllScriptTgs($val);
+			}
+		} else {
+			if (get_magic_quotes_gpc()) {
+				$html = stripslashes($html);
+			}
+
+			$output  = preg_replace('@<script[^>]*?>(.(?!document\.write))*?</script>@si', '', $html);
+		}
+
+		return $output;
 	}
 
 
@@ -2752,7 +2829,7 @@ class TagManager
 
 
 	/**
-	 * Returns one uniq number or string
+	 * Returns one unique number or string
 	 *
 	 * @param  FTL_Binding
 	 * @return string
