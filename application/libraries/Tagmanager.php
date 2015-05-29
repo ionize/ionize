@@ -675,7 +675,7 @@ class TagManager
 		if( $isActiveBeautify ) {
 			require_once(APPPATH . 'third_party/indenter.php');
 			$indenter = new \Gajus\Dindent\Indenter();
-			$parsed = $indenter->indent( self::moveScriptsDown($parsed) );
+			$parsed = $indenter->indent($parsed);
 		}
 
 		// Returns the result or output it directly
