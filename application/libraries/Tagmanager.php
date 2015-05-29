@@ -691,7 +691,8 @@ class TagManager
 
 
 	/**
-	 * Move all inline <script> tags to the end of the <body> of given HTML, minify inline JavaScripts
+	 * Move all inline <script> tags to end of <body> of given HTML
+	 * Exception: scripts that contain "document.write" need to stay at their original place, as they need to write exactly there
 	 *
 	 * @param	string	$html
 	 * @return	string
@@ -709,8 +710,10 @@ class TagManager
 			}
 			$merged = '';
 			foreach($matches[0] as $match) {
-				$openingTag = substr($match, 0, strpos($match, '>'));
-				$merged .= (strpos($openingTag, 'src=') === false ? JSMin::minify($match) : $match) . "\n";
+				if( strpos($match, 'document.write') === false  ) {
+					$openingTag = substr($match, 0, strpos($match, '>'));
+					$merged .= (strpos($openingTag, 'src=') === false ? JSMin::minify($match) : $match) . "\n";
+				}
 			}
 
 			// Move collected scripts to end of body
@@ -725,6 +728,9 @@ class TagManager
 
 
 	/**
+	 * Removes all <script> tags from the given HTML,
+	 * Exception: scripts containing "document.write" as those manipulate the DOM at the place where they're embedded
+	 *
 	 * @param   array|string  $html
 	 * @return  string
 	 */
@@ -733,13 +739,14 @@ class TagManager
 		$output = '';
 		if (is_array($html)) {
 			foreach ($html as $var => $val) {
-				$output[$var] = self::removeAllScriptTags($val);
+				$output[$var] = self::removeAllScriptTgs($val);
 			}
 		} else {
 			if (get_magic_quotes_gpc()) {
 				$html = stripslashes($html);
 			}
-			$output  = preg_replace('@<script[^>]*?>.*?</script>@si', '', $html);
+
+			$output  = preg_replace('@<script[^>]*?>(.(?!document\.write))*?</script>@si', '', $html);
 		}
 
 		return $output;
