@@ -3,6 +3,12 @@
 class Ajaxform extends My_Module
 {
 
+	/** @var MY_Email */
+	public $email;
+
+	/** @var  CI_Form_validation */
+	public $form_validation;
+	
 	/**
 	 * Constructor
 	 *
