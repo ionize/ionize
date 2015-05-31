@@ -74,6 +74,9 @@ h3.treetitle {
 	display:block;
 	height: 18px;
 }
+.tree li a.title.selected {
+	font-weight: bold;
+}
 h3.treetitle .locked:after,
 .tree li .tree-img.no-edit:after,
 .tree li .tree-img.locked:after {
