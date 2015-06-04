@@ -661,7 +661,14 @@ class TagManager
 			 */
 		}
 
-		if(config_item('beautify_html_output') == 1) {
+		$isActiveCompress = config_item('compress_html_output');
+		$isActiveBeautify = config_item('beautify_html_output');
+			
+		if( $isActiveCompress || $isActiveBeautify ) {
+			$parsed = self::moveScriptsDown($parsed);
+		}
+
+		if( $isActiveBeautify ) {
 			require_once(APPPATH . 'third_party/indenter.php');
 			$indenter = new \Gajus\Dindent\Indenter();
 			$parsed = $indenter->indent($parsed);
