@@ -575,6 +575,9 @@ ION.TreeXhr = new Class({
 		// Edit Element
 		else
 		{
+			$$('#structurePanel .tree a.selected').removeClass('selected');
+			el.className = el.className + ' selected';
+			
 			var func = function()
 			{
 				ION.splitPanel({
