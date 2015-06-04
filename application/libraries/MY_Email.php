@@ -51,7 +51,6 @@ class MY_Email extends CI_Email
 					break;
 
 				default:
-					$email = $email;
 					$_email = explode('::', $email);
 					if( ! empty($_email[1]) )
 						$email = self::$ci->input->post($_email[1]);
