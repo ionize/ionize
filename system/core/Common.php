@@ -200,35 +200,31 @@
 * @access	private
 * @return	array
 */
+if ( ! function_exists('get_config'))
+{
 	function &get_config($replace = array())
 	{
 		static $_config;
-
-		if (isset($_config) )
+		if (isset($_config))
 		{
 			return $_config[0];
 		}
-
 		// Is the config file in the environment folder?
-		if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/config'.EXT))
+		if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/config.php'))
 		{
-			$file_path = APPPATH.'config/config'.EXT;
+			$file_path = APPPATH.'config/config.php';
 		}
-
 		// Fetch the config file
 		if ( ! file_exists($file_path))
 		{
 			exit('The configuration file does not exist.');
 		}
-
 		require($file_path);
-
 		// Does the $config array exist in the file?
 		if ( ! isset($config) OR ! is_array($config))
 		{
 			exit('Your config file does not appear to be formatted correctly.');
 		}
-
 		// Are any values being dynamically replaced?
 		if (count($replace) > 0)
 		{
@@ -240,8 +236,10 @@
 				}
 			}
 		}
-
+		$_config[0] =& $config;
+		return $_config[0];
 	}
+}
 
 // ------------------------------------------------------------------------
 
