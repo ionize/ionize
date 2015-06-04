@@ -145,6 +145,7 @@ h3.treetitle .locked:after{
 .tree-img.minus { background-position: -192px 0; } 			/* Minus icon */
 .tree-img.minus.first { background-position: -192px 0; }
 .tree-img.minus.last { background-position: -192px 0; }
+.tree-img.plus, .tree-img.minus { cursor:pointer; }
 
 .tree-img.folder { background-position: 0 -16px; margin-right:5px;} 			/* Closed folder */
 .tree-img.folder.open { background-position: -16px -16px; } 		/* Opened folder */
