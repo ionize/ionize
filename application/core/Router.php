@@ -316,13 +316,11 @@ class CI_Router
 	{
 		$str = preg_replace("|/*(.+?)/*$|", "\\1", $str);
 		
-		if($str != '' && $this->config->item('permitted_uri_chars') != '')
+		if(    ($str != '' && $this->config->item('permitted_uri_chars') != '')
+			&& (! preg_match("|^[{$this->config->item('permitted_uri_chars')}/]+$|i", $str)))
 		{
-			if ( ! preg_match("|^[".$this->config->item('permitted_uri_chars')."/]+$|i", $str))
-			{
 				header('HTTP/1.1 400 Bad Request');
 				show_error('The URI you submitted has disallowed characters.');
-			}
 		}
 		
 		// Convert programatic characters to entities

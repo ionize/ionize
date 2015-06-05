@@ -36,7 +36,7 @@ class ION_Config
 		else
 		{
 		
-			return FALSE;
+			return FALSE;   //@note constructors cannot return anything
 		}
 	}
 	
@@ -59,11 +59,11 @@ class ION_Config
 
 			$type = gettype($val);
 			
-			if ($type == 'string')
+			if ($type === 'string')
 			{
-				$val = "'".$val."'";
+				$val = "'$val'";
 			}
-			if ($type == 'boolean') $val = ($val ? TRUE : (int) FALSE);
+			elseif ($type === 'boolean') $val = ($val ? TRUE : (int) FALSE);
 			
 			self::$content = preg_replace($pattern, '${1}'.$val. '${3}', self::$content );
 

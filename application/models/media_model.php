@@ -149,7 +149,7 @@ class Media_model extends Base_model
 
 				// Separated from $where due to $escape set to FALSE
 				$this->{$this->db_group}->order_by(
-					"field(" . $this->get_table() . ".id_media, ".$extend['content'] . ")",
+					"field({$this->get_table()}.id_media, {$extend['content']})",
 					'',
 					FALSE
 				);
@@ -813,16 +813,16 @@ class Media_model extends Base_model
 		else
 		{
 			$sql = "
-				update media
-				set path = REPLACE(path, '".$old_path."', '".$new_path."')
+				UPDATE media
+				SET path = REPLACE(path, '$old_path', '$new_path')
 			";
 			$this->{$this->db_group}->query($sql);
 		}
 
 		// Articles
 		$sql = "
-				update article_lang
-				set content = REPLACE(content, '".$old_path."', '".$new_path."')
+				UPDATE article_lang
+				SET content = REPLACE(content, '$old_path', '$new_path')
 			";
 		$this->{$this->db_group}->query($sql);
 	}
@@ -841,23 +841,23 @@ class Media_model extends Base_model
 		$path = str_replace(FCPATH, '', $path);
 
 		if ($is_dir)
-			$filter = "like '".$path."/%'";
+			$filter = "like '$path/%'";
 		else
-			$filter = "= '".$path."'";
+			$filter = "= '$path'";
 
 
 		$sql = "
-			delete from page_media where id_media in
+			DELETE FROM page_media WHERE id_media IN
 			(
-				select id_media from media where path ".$filter."
+				SELECT id_media FROM media WHERE path $filter
 			)
 		";
 		$this->{$this->db_group}->query($sql);
 
 		$sql = "
-			delete from article_media where id_media in
+			DELETE FROM article_media WHERE id_media in
 			(
-				select id_media from media where path ".$filter."
+				SELECT id_media FROM media WHERE path $filter
 			)
 		";
 		$this->{$this->db_group}->query($sql);

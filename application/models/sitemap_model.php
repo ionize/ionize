@@ -62,25 +62,25 @@ class Sitemap_model extends Base_model
 		$data = array();
 
 		$sql = "
-			select
+			SELECT
 				home,
 				IF(url !='', url, name ) AS url,
 				url.path,
 				created, updated, publish_on, logical_date,
 				page_lang.lang, priority
-			from
+			FROM
 				page
-				left join page_lang on page_lang.id_page = page.id_page
-				left join url on (url.id_entity = page_lang.id_page and url.lang = page_lang.lang)
-			where
+				LEFT JOIN page_lang on page_lang.id_page = page.id_page
+				LEFT JOIN url on (url.id_entity = page_lang.id_page and url.lang = page_lang.lang)
+			WHERE
 			 	appears = '1'
-			 	and page.online = '1'
-			 	and page_lang.online = '1'
-			 	and url.type = 'page'
+			 	AND page.online = '1'
+			 	AND page_lang.online = '1'
+			 	AND url.type = 'page'
 		";
 
 		if ($lang)
-			$sql .= " and page_lang.lang = '".$lang."'";
+			$sql .= " and page_lang.lang = '$lang'";
 
 // log_message('app', print_r($sql, TRUE));
 
@@ -105,7 +105,7 @@ class Sitemap_model extends Base_model
 			$get_all_lang = TRUE;
 
 		$sql ="
-			select
+			SELECT
 				u.lang,
 				u.path,
 				p.priority,
@@ -114,26 +114,26 @@ class Sitemap_model extends Base_model
 				p.publish_on,
 				p.publish_off,
 				p.logical_date
-			from url u
-			inner join page p on p.id_page = u.id_entity and p.has_url = 1
-				inner join lang l on u.lang = l.lang and l.online = 1
-			where
+			FROM url u
+			INNER JOIN page p ON p.id_page = u.id_entity AND p.has_url = 1
+				INNER JOIN lang l on u.lang = l.lang AND l.online = 1
+			WHERE
 				u.type = 'page'
-				and u.active = 1
-				and u.canonical = 1
-				and p.priority > 0
-				and (p.publish_off = '0000-00-00 00:00:00' OR p.publish_off > now())
+				AND u.active = 1
+				AND u.canonical = 1
+				AND p.priority > 0
+				AND (p.publish_off = '0000-00-00 00:00:00' OR p.publish_off > now())
 		";
 
 		if ( ! $get_all_lang)
 			$sql .= "
-				and u.lang='".Settings::get_lang('default')."'
+				AND u.lang='".Settings::get_lang('default')."'
 			";
 
 		$sql .="
 			union
 
-			select
+			SELECT
 				u.lang,
 				u.path,
 				a.priority,
@@ -142,21 +142,21 @@ class Sitemap_model extends Base_model
 				a.publish_on,
 				a.publish_off,
 				a.logical_date
-			from url u
-			inner join article_lang al on al.id_article= u.id_entity and al.lang=u.lang and al.online=1
-			inner join article a on a.id_article = al.id_article
-			where
+			FROM url u
+			INNER JOIN article_lang al ON al.id_article= u.id_entity AND al.lang=u.lang AND al.online=1
+			INNER JOIN article a ON a.id_article = al.id_article
+			WHERE
 				u.type = 'article'
-				and u.active = 1
-				and u.canonical = 1
-				and a.indexed = 1
-				and a.priority > 0
-				and (a.publish_off = '0000-00-00 00:00:00' OR a.publish_off > now())
+				AND u.active = 1
+				AND u.canonical = 1
+				AND a.indexed = 1
+				AND a.priority > 0
+				AND (a.publish_off = '0000-00-00 00:00:00' OR a.publish_off > now())
 		";
 
 		if ( ! $get_all_lang)
 			$sql .= "
-				and u.lang='".Settings::get_lang('default')."'
+				AND u.lang='".Settings::get_lang('default')."'
 			";
 
 		$query = $this->{$this->db_group}->query($sql);

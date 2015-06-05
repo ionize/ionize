@@ -23,16 +23,16 @@ class Country_model extends Base_model
 		if (is_null($lang))	$lang = Settings::get_lang('current');
 
 		$sql = "
-			select
+			SELECT
 			country.id_country,
 			country.iso2 as country_iso2,
 			ifnull(country_lang.country_name, country.name) as country_name
-			from country
-				left join country_lang on country_lang.id_country = country.id_country
-					and country_lang.lang='".$lang."'
-			where continent is not null
-			and continent != ''
-			order by country_name ASC
+			FROM country
+				LEFT JOIN country_lang on country_lang.id_country = country.id_country
+					AND country_lang.lang='$lang'
+			WHERE continent IS NOT NULL
+			AND continent != ''
+			ORDER BY country_name ASC
 		";
 
 		$query = $this->db->query($sql);
@@ -55,16 +55,16 @@ class Country_model extends Base_model
 		if (is_null($lang))	$lang = Settings::get_lang('default');
 
 		$sql = "
-			select
+			SELECT
 			country.id_country,
 			ifnull(country_lang.country_name, country.name) as country_name
-			from country
-				left join country_lang on country_lang.id_country = country.id_country
-					and country_lang.lang='".$lang."'
-			where continent is not null
-			and continent != ''
-			and country.id_country in (".implode(',', $ids).")
-			order by country_name ASC
+			FROM country
+				LEFT JOIN country_lang ON country_lang.id_country = country.id_country
+					AND country_lang.lang='$lang'
+			WHERE continent IS NOT NULL
+			AND continent != ''
+			AND country.id_country IN (".implode(',', $ids).")
+			ORDER BY country_name ASC
 		";
 
 		$query = $this->db->query($sql);

@@ -255,17 +255,17 @@ class Lang_model extends Base_model
 		$now = date('Y-m-d H:i:s');
 
 		// Copy...
-		$sql = "insert into url (id_entity, type, canonical, active, lang, path, creation_date, path_ids, full_path_ids )
+		$sql = "INSERT INTO url (id_entity, type, canonical, active, lang, path, creation_date, path_ids, full_path_ids )
 				(
-					select id_entity, type, canonical, 1, '".$to."',path,'".$now."',path_ids, full_path_ids from url 
-					where lang = '". $from ."'
-					and active = 1
-					and id_entity not in
+					SELECT id_entity, type, canonical, 1, '$to',path,'$now',path_ids, full_path_ids from url
+					WHERE lang = '$from'
+					AND active = 1
+					AND id_entity NOT IN
 					(
 						SELECT DISTINCT id_entity
 						FROM url
-						WHERE lang = '". $to ."'
-						and active = 1
+						WHERE lang = '$to'
+						AND active = 1
 					)
 				)";
 		
