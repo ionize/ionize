@@ -147,7 +147,6 @@ $lang['ionize_modal_error_title'] = 'Error';
 $lang['ionize_title_add_menu'] = 'Add Menu';
 $lang['ionize_title_create_menu'] = 'Create Menu';
 $lang['ionize_button_save_new_menu'] = 'Save Menu';
-$lang['ionize_button_create_menu'] = 'Create Menu';
 $lang['ionize_title_existing_menu'] = 'Existing menu';
 $lang['ionize_message_menu_saved'] = 'Menu saved';
 $lang['ionize_message_menu_not_saved'] = 'Menu not saved';
