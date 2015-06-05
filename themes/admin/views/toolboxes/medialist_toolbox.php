@@ -49,8 +49,13 @@
 	var cookieName = 'medialistView';
 
 	// Cards view
-	$('btnMedialistViewCard').addEvent('click', function(btn)
+	var el_btnMedialistViewCard = $('btnMedialistViewCard');
+	var el_btnMedialistViewList = $('btnMedialistViewList');
+	el_btnMedialistViewCard.addEvent('click', function(btn)
 	{
+		el_btnMedialistViewCard.addClass('active');
+		el_btnMedialistViewList.removeClass('active');
+
 		$$('#mediaList .media').removeClass('list').addClass('card');
 		$$('#mediaList .media .data').slide('hide');
 		$$('#mediaList .toggle-card').show();
@@ -58,8 +63,11 @@
 	});
 
 	// List view
-	$('btnMedialistViewList').addEvent('click', function(btn)
+	el_btnMedialistViewList.addEvent('click', function(btn)
 	{
+		el_btnMedialistViewCard.removeClass('active');
+		el_btnMedialistViewList.addClass('active');
+
 		$$('#mediaList .toggle-card').addClass('panel-expand').addClass('panel-expanded');
 		$$('#mediaList .toggle-card').removeClass('panel-collapse').removeClass('panel-collapsed');
 		$$('#mediaList .toggle-card').hide();
