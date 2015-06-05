@@ -204,18 +204,18 @@ class Page_model extends Base_model
 	 */
 	public function update_pages_menu($id_page, $id_menu)
 	{
-		$sql = "update page
-				set id_menu='".$id_menu."'
-				where id_parent = '".$id_page."'
+		$sql = "UPDATE page
+				SET id_menu='$id_menu'
+				WHERE id_parent = '$id_page'
 				";
 		$this->{$this->db_group}->query($sql);
 
-		// Get childs and start again
-		$childs = $this->get_list(array('id_parent' => $id_page));
+		// Get children and start again
+		$children = $this->get_list(array('id_parent' => $id_page));
 		
-		if ( ! empty($childs))
+		if ( ! empty($children))
 		{
-			foreach($childs as $child)
+			foreach($children as $child)
 			{
 				$this->update_pages_menu($child['id_page'], $id_menu);
 			}

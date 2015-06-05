@@ -70,17 +70,17 @@ class Ui_model extends Base_model
 		self::$ci->load->model('extend_field_model');
 
 		$sql = "
-			select
+			SELECT
 				uie.*,
 				ef.*,
 				efl.label,
 				eft.*
-			from ".self::$_TBL_LK_EXTEND." uie
-			inner join extend_field ef on ef.id_extend_field = uie.id_extend
-			inner join extend_field_lang efl on efl.id_extend_field = ef.id_extend_field and efl.lang='".Settings::get_lang('default')."'
-			inner join extend_field_type eft on eft.id_extend_field_type = ef.type
-			where uie.id_ui_element = ".$id_ui_element."
-			order by uie.ordering ASC
+			FROM ".self::$_TBL_LK_EXTEND." uie
+			INNER JOIN extend_field ef ON ef.id_extend_field = uie.id_extend
+			INNER JOIN extend_field_lang efl ON efl.id_extend_field = ef.id_extend_field AND efl.lang='".Settings::get_lang('default')."'
+			INNER JOIN extend_field_type eft ON eft.id_extend_field_type = ef.type
+			WHERE uie.id_ui_element = $id_ui_element
+			ORDER BY uie.ordering ASC
 		";
 
 		$query = $this->{$this->db_group}->query($sql);

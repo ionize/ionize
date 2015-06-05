@@ -538,7 +538,7 @@ class TagManager_Form extends TagManager
 						$str = '';
 						if (is_string($values)) $values = array($values);
 						foreach ($values as $val)
-							$str .= "<span>".$val."</span>";
+							$str .= "<span>$val</span>";
 
 						return self::wrap($tag, $str);
 					}
@@ -643,7 +643,7 @@ class TagManager_Form extends TagManager
 						$str = '';
 						if (is_string($values)) $values = array($values);
 						foreach ($values as $val)
-							$str .= "<span>".$val."</span>";
+							$str .= "<span>$val</span>";
 
 						return self::wrap($tag, $str);
 					}

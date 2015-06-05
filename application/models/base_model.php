@@ -1204,7 +1204,7 @@ class Base_model extends CI_Model
 
 		$this->_process_where($where, $table);
 
-		$this->{$this->db_group}->select("group_concat(".$field." separator ',') as ids", FALSE);
+		$this->{$this->db_group}->select("group_concat($field separator ',') as ids", FALSE);
 
 		$query = $this->{$this->db_group}->get($table);
 
@@ -2966,10 +2966,10 @@ class Base_model extends CI_Model
 					$processed = FALSE;
 					foreach($values as $k => $value)
 					{
-						if (strtolower($value) == 'null')
+						if (strtolower($value) === 'null')
 						{
 							unset($values[$k]);
-							$this->{$this->db_group}->where("(" . $key . " in ('".implode("','", $values)."') OR ".$key." IS NULL)", NULL, FALSE);
+							$this->{$this->db_group}->where("($key IN ('".implode("','", $values) . "') OR $key IS NULL)", NULL, FALSE);
 							$processed = TRUE;
 							break;
 						}

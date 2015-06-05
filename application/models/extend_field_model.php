@@ -508,37 +508,37 @@ class Extend_field_model extends Base_model
 						article_lang_target.content as target_content
 
 					from article
-						join article_lang on article_lang.id_article = article.id_article and lang='".$lang."'
+						join article_lang on article_lang.id_article = article.id_article and lang='$lang'
 						join page_article on
 						(
 							page_article.id_article = article.id_article
-							and concat(page_article.id_page, '.', page_article.id_article) in (".$in_types.")
+							and concat(page_article.id_page, '.', page_article.id_article) in ($in_types)
 						)
 						left join page_lang
-							on page_lang.id_page = page_article.id_page and page_lang.lang = '".$lang."'
+							on page_lang.id_page = page_article.id_page and page_lang.lang = '$lang'
 						left join url
-							on url.type='article' and url.id_entity = page_article.id_article and url.active=1 and url.lang ='".$lang."'
+							on url.type='article' and url.id_entity = page_article.id_article and url.active=1 and url.lang ='$lang'
 						left join url as url_target on
 						(
 							url_target.type = page_article.link_type
 							and url_target.id_entity = (if(LOCATE('.', page_article.link_id)>0, SUBSTRING(page_article.link_id, LOCATE('.', page_article.link_id)+1), page_article.link_id))
 							and url_target.active=1
-							and url_target.lang ='".$lang."'
+							and url_target.lang ='$lang'
 						)
 						left join page_lang as page_lang_target
-							on page_lang_target.id_page = url_target.id_entity and url_target.type='page' and page_lang_target.lang ='".$lang."'
+							on page_lang_target.id_page = url_target.id_entity and url_target.type='page' and page_lang_target.lang ='$lang'
 						left join article_lang as article_lang_target
-							on article_lang_target.id_article = url_target.id_entity and url_target.type='article' and article_lang_target.lang='".$lang."'
+							on article_lang_target.id_article = url_target.id_entity and url_target.type='article' and article_lang_target.lang='$lang'
 				";
 			}
 
 			if ( ! empty($types['page']))
 			{
-				$in_types = implode(",", $types['page']);
+				$in_types = implode(',', $types['page']);
 
 				if ( ! empty($sql))
 				{
-					$sql .= " union ";
+					$sql .= ' UNION ';
 				}
 
 				$sql .= "
@@ -561,21 +561,21 @@ class Extend_field_model extends Base_model
 						COALESCE(article_lang_target.subtitle, page_lang_target.subtitle) as target_subtitle,
 						article_lang_target.content as target_content
 					from page
-						left join page_lang on page_lang.id_page = page.id_page and lang='".$lang."'
-						left join url on url.type = 'page' and url.id_entity = page.id_page and url.active=1 and url.lang ='".$lang."'
+						left join page_lang on page_lang.id_page = page.id_page and lang='$lang'
+						left join url on url.type = 'page' and url.id_entity = page.id_page and url.active=1 and url.lang ='$lang'
 						left join url as url_target on
 						(
 							url_target.type = page.link_type
 							and url_target.id_entity = (if(LOCATE('.', page.link_id)>0, SUBSTRING(page.link_id, LOCATE('.', page.link_id)+1), page.link_id))
-							and url_target.active=1 and url_target.lang ='".$lang."'
+							and url_target.active=1 and url_target.lang ='$lang'
 						)
 						left join page_lang as page_lang_target
-							on page_lang_target.id_page = url_target.id_entity and url_target.type='page' and page_lang_target.lang ='".$lang."'
+							on page_lang_target.id_page = url_target.id_entity and url_target.type='page' and page_lang_target.lang ='$lang'
 						left join article_lang as article_lang_target
-							on article_lang_target.id_article = url_target.id_entity and url_target.type='article' and article_lang_target.lang='".$lang."'
+							on article_lang_target.id_article = url_target.id_entity and url_target.type='article' and article_lang_target.lang='$lang'
 
 					where
-						page.id_page in (".$in_types.")
+						page.id_page in ($in_types)
 				";
 			}
 
@@ -1090,19 +1090,19 @@ class Extend_field_model extends Base_model
 	public function check_context_existence($name, $context, $id_context, $id_extend = NULL)
 	{
 		$sql = "
-			select e.id_extend_field
-			from extend_field e
+			SELECT e.id_extend_field
+			FROM extend_field e
 				join extend_field_context c on c.id_extend_field = e.id_extend_field
-			where
-				e.name = '".$name."'
-				and c.context='".$context."'
-				and c.id_context = ".$id_context."
+			WHERE
+				e.name = '$name'
+				AND c.context='$context'
+				AND c.id_context = $id_context
 		";
 
 		if ( ! is_null($id_extend))
 		{
 			$sql .= "
-				and e.id_extend_field <> ".$id_extend."
+				AND e.id_extend_field <> $id_extend
 			";
 		}
 

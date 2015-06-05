@@ -175,7 +175,7 @@ class Item_model extends Base_model
 
 		// 3. Get all fields of all concerned item instance
 		$sql = "
-			select
+			SELECT
 				extend_fields.*,
 				extend_field.name,
 				extend_field.type,
@@ -183,17 +183,17 @@ class Item_model extends Base_model
 				extend_field.ordering,
 				extend_field.value as default_value,
 				extend_field.main
-			from
+			FROM
 				extend_fields
-				inner join extend_field on extend_field.id_extend_field = extend_fields.id_extend_field
-			where
-				extend_fields.parent = 'item' and
- 				extend_fields.id_parent in (
-					select id_item from " . self::$_ITEMS . "
-					where parent = '" . $parent . "'
-					and id_parent = " . $id_parent . "
+				INNER JOIN extend_field on extend_field.id_extend_field = extend_fields.id_extend_field
+			WHERE
+				extend_fields.parent = 'item' AND
+ 				extend_fields.id_parent IN (
+					SELECT id_item FROM " . self::$_ITEMS . "
+					WHERE parent = '" . $parent . "'
+					AND id_parent = " . $id_parent . "
 				)
-				and (lang='' OR lang is null OR lang='".$lang."')
+				AND (lang='' OR lang IS NULL OR lang='$lang')
 			";
 
 		$query = $this->{$this->db_group}->query($sql);
@@ -337,15 +337,15 @@ class Item_model extends Base_model
 
 		// Fields
 		$sql = "
-			select
+			SELECT
 				extend_fields.*
-			from
+			FROM
 				extend_fields
-			where
-				extend_fields.parent = 'item' and
+			WHERE
+				extend_fields.parent = 'item' AND
  				extend_fields.id_parent in (
-					select id_item from item
-					where id_item_definition= ".$id_item_definition."
+					SELECT id_item from item
+					WHERE id_item_definition= $id_item_definition
 				)
 			";
 		$query = $this->{$this->db_group}->query($sql);

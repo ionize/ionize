@@ -336,7 +336,7 @@ class Translation extends MY_admin
 						$value = str_replace("\\'", "'", $value);
 						$value = str_replace("'", "\'", $value);
 
-						$data .= "\$lang['".$term."'] = '".$value."';\n";
+						$data .= "\$lang['$term'] = '$value';\n";
 					}
 				}
 			}

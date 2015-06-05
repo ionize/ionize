@@ -437,7 +437,7 @@ class TagManager_Page extends TagManager
 	 */
 	public function set_400_output($code = 404)
 	{
-		self::$ci->output->set_header($_SERVER["SERVER_PROTOCOL"]." ".$code." ".self::$http_status_code[$code]);
+		self::$ci->output->set_header($_SERVER['SERVER_PROTOCOL']." $code ".self::$http_status_code[$code]);
 
 		$ext = array_pop(explode('.', array_pop(self::$ci->uri->segment_array())));
 

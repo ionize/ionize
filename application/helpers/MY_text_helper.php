@@ -39,7 +39,7 @@ if ( ! function_exists('tag_limiter'))
 			$startPos = 0;
 			$endPos = strlen($string);
 			
-			$tag = "</".$tag.">";
+			$tag = "</$tag>";
 			$wString = $string;
 			$nbTag = substr_count($string, $tag);
 			$cPos = 0;
