@@ -76,7 +76,7 @@ class Translation extends MY_admin
 	{
         $this->output('translation/index');
 	}
-
+$
 	// ------------------------------------------------------------------------
 
     /**
@@ -147,8 +147,8 @@ class Translation extends MY_admin
                         'lang' => 'en',
                         'name' => 'english',
                         'online' => 0,
-                        'def' => $amountLanguages + 1,
-                        'ordering' => $amountLanguages + 1,
+                        'def' => 2,
+                        'ordering' => 2,
                         'direction' => 1
                     );
                 }
