@@ -211,11 +211,11 @@ abstract class REST_Controller
 		// When there is no specific override for the current class/method, use the default auth value set in the config
 		if ($this->auth_override !== TRUE)
 		{
-			if ($this->config->item('rest_auth') == 'basic')
+			if ($this->config->item('rest_auth') === 'basic')
 			{
 				$this->_prepare_basic_auth();
 			}
-			elseif ($this->config->item('rest_auth') == 'digest')
+			elseif ($this->config->item('rest_auth') === 'digest')
 			{
 				$this->_prepare_digest_auth();
 			}
@@ -445,7 +445,7 @@ abstract class REST_Controller
 	 */
 	protected function _detect_ssl()
 	{
-    	return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on");
+    	return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
 	}
 	
 	
@@ -532,13 +532,13 @@ abstract class REST_Controller
 					else
 					{
 						// If it is truly HTML, it wont want any XML
-						if ($format == 'html' AND strpos($this->input->server('HTTP_ACCEPT'), 'xml') === FALSE)
+						if ($format === 'html' AND strpos($this->input->server('HTTP_ACCEPT'), 'xml') === FALSE)
 						{
 							return $format;
 						}
 
 						// If it is truly XML, it wont want any HTML
-						elseif ($format == 'xml' AND strpos($this->input->server('HTTP_ACCEPT'), 'html') === FALSE)
+						elseif ($format === 'xml' AND strpos($this->input->server('HTTP_ACCEPT'), 'html') === FALSE)
 						{
 							return $format;
 						}
@@ -809,27 +809,27 @@ abstract class REST_Controller
 		}
 
 		// None auth override found, prepare nothing but send back a true override flag
-		if ($this->overrides_array[$this->router->class][$this->router->method] == 'none')
+		if ($this->overrides_array[$this->router->class][$this->router->method] === 'none')
 		{
 			return true;
 		}
 
 		// Basic auth override found, prepare basic
-		if ($this->overrides_array[$this->router->class][$this->router->method] == 'basic')
+		if ($this->overrides_array[$this->router->class][$this->router->method] === 'basic')
 		{
 			$this->_prepare_basic_auth();
 			return true;
 		}
 
 		// Digest auth override found, prepare digest
-		if ($this->overrides_array[$this->router->class][$this->router->method] == 'digest')
+		if ($this->overrides_array[$this->router->class][$this->router->method] === 'digest')
 		{
 			$this->_prepare_digest_auth();
 			return true;
 		}
 
 		// Whitelist auth override found, check client's ip against config whitelist
-		if ($this->overrides_array[$this->router->class][$this->router->method] == 'whitelist')
+		if ($this->overrides_array[$this->router->class][$this->router->method] === 'whitelist')
 		{
 			$this->_check_whitelist_auth();
 			return true;
@@ -1094,7 +1094,7 @@ abstract class REST_Controller
 
 		$auth_source = strtolower($this->config->item('auth_source'));
 
-		if ($auth_source == 'ldap')
+		if ($auth_source === 'ldap')
 		{
 			log_message('debug', 'performing LDAP authentication for $username');
 			return $this->_perform_ldap_auth($username, $password);
@@ -1238,11 +1238,11 @@ abstract class REST_Controller
 	 */
 	protected function _force_login($nonce = '')
 	{
-		if ($this->config->item('rest_auth') == 'basic')
+		if ($this->config->item('rest_auth') === 'basic')
 		{
 			header('WWW-Authenticate: Basic realm="'.$this->config->item('rest_realm').'"');
 		}
-		elseif ($this->config->item('rest_auth') == 'digest')
+		elseif ($this->config->item('rest_auth') === 'digest')
 		{
 			header('WWW-Authenticate: Digest realm="'.$this->config->item('rest_realm').'", qop="auth", nonce="'.$nonce.'", opaque="'.md5($this->config->item('rest_realm')).'"');
 		}

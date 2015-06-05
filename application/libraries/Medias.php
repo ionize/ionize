@@ -416,7 +416,7 @@ class Medias
 			case 'width':
 				
 				$ci_settings['width'] = $settings['width'];
-				$ci_settings['height'] = intval($settings['width']  * $dim['height'] / $dim['width']);
+				$ci_settings['height'] = (int) ($settings['width']  * $dim['height'] / $dim['width']);
 				
 				$ci_settings['maintain_ratio'] = FALSE;
 
@@ -430,7 +430,7 @@ class Medias
 			case 'height':
 				
 				$ci_settings['height'] = $settings['height'];
-				$ci_settings['width'] = intval($settings['height']  * $dim['width'] / $dim['height']);
+				$ci_settings['width'] = (int) ($settings['height']  * $dim['width'] / $dim['height']);
 				
 				$ci_settings['maintain_ratio'] = FALSE;
 

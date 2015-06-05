@@ -78,7 +78,7 @@ class Item extends MY_admin
 
 		$item = $this->item_model->get_item($id_item);
 
-		if ($mode == 'json')
+		if ($mode === 'json')
 		{
 			$this->xhr_output($item);
 		}
@@ -290,7 +290,7 @@ class Item extends MY_admin
 			Settings::get_lang('default')
 		);
 
-		if ( $mode == 'json')
+		if ( $mode === 'json')
 		{
 			$this->xhr_output($items);
 		}

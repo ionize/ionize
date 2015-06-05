@@ -337,13 +337,14 @@
                         </dt>
                         <dd>
                             <select name="db_driver" id="db_driver" class="select">
-                                <option <?php if ($this->db->platform() == 'mysql'):?>selected="selected"<?php endif;?>  value="mysql">MySQL</option>
-                                <option <?php if ($this->db->platform() == 'mysqli'):?>selected="selected"<?php endif;?>  value="mysqli">MySQLi</option>
-                                <option <?php if ($this->db->platform() == 'mssql'):?>selected="selected"<?php endif;?>  value="mssql">MS SQL</option>
-                                <option <?php if ($this->db->platform() == 'postgre'):?>selected="selected"<?php endif;?>  value="postgre">Postgre SQL</option>
-                                <option <?php if ($this->db->platform() == 'oci8'):?>selected="selected"<?php endif;?>  value="oci8">Oracle</option>
-                                <option <?php if ($this->db->platform() == 'sqlite'):?>selected="selected"<?php endif;?>  value="sqlite">SQLite</option>
-                                <option <?php if ($this->db->platform() == 'odbc'):?>selected="selected"<?php endif;?>  value="odbc">ODBC</option>
+								<?php $dbPlatform = $this->db->platform(); ?>
+                                <option <?php if ($dbPlatform === 'mysql'):?>selected="selected"<?php endif;?>  value="mysql">MySQL</option>
+                                <option <?php if ($dbPlatform === 'mysqli'):?>selected="selected"<?php endif;?>  value="mysqli">MySQLi</option>
+                                <option <?php if ($dbPlatform === 'mssql'):?>selected="selected"<?php endif;?>  value="mssql">MS SQL</option>
+                                <option <?php if ($dbPlatform === 'postgre'):?>selected="selected"<?php endif;?>  value="postgre">Postgre SQL</option>
+                                <option <?php if ($dbPlatform === 'oci8'):?>selected="selected"<?php endif;?>  value="oci8">Oracle</option>
+                                <option <?php if ($dbPlatform === 'sqlite'):?>selected="selected"<?php endif;?>  value="sqlite">SQLite</option>
+                                <option <?php if ($dbPlatform === 'odbc'):?>selected="selected"<?php endif;?>  value="odbc">ODBC</option>
                             </select>
                         </dd>
                     </dl>
@@ -417,9 +418,9 @@
 					</dt>
 					<dd>
 						<select name="protocol" id="emailProtocol" class="select">
-							<option <?php if ($protocol == 'smtp'):?>selected="selected"<?php endif;?> value="smtp">SMTP</option>
-							<option <?php if ($protocol == 'mail'):?>selected="selected"<?php endif;?> value="mail">Mail</option>
-							<option <?php if ($protocol == 'sendmail'):?>selected="selected"<?php endif;?>  value="sendmail">SendMail</option>
+							<option <?php if ($protocol === 'smtp'):?>selected="selected"<?php endif;?> value="smtp">SMTP</option>
+							<option <?php if ($protocol === 'mail'):?>selected="selected"<?php endif;?> value="mail">Mail</option>
+							<option <?php if ($protocol === 'sendmail'):?>selected="selected"<?php endif;?>  value="sendmail">SendMail</option>
 						</select>
 					</dd>
 				</dl>
@@ -506,8 +507,8 @@
 					</dt>
 					<dd>
 						<select name="mailtype" id="mailtype" class="select">
-							<option <?php if ($mailtype == 'text'):?>selected="selected"<?php endif;?> value="text">Text</option>
-							<option <?php if ($mailtype == 'html'):?>selected="selected"<?php endif;?> value="html">HTML</option>
+							<option <?php if ($mailtype === 'text'):?>selected="selected"<?php endif;?> value="text">Text</option>
+							<option <?php if ($mailtype === 'html'):?>selected="selected"<?php endif;?> value="html">HTML</option>
 						</select>
 					</dd>
 				</dl>
@@ -877,14 +878,14 @@
 	{
 		var protocol = $('emailProtocol').value;
 
-		if (protocol == 'mail')
+		if (protocol === 'mail')
 		{
 			$('emailSMTPDetails').hide();
 			$('emailSendmailDetails').hide();
 		}
-		else if (protocol == 'sendmail')
+		else if (protocol === 'sendmail')
 		{
-			if (mailpath == '')
+			if (mailpath === '')
 				$('mailpath').value = '/usr/sbin/sendmail';
 
 			$('emailSMTPDetails').hide();

@@ -119,9 +119,9 @@ if ( ! function_exists('dateDiff'))
 		$subTime = $second - $first;
 
 		if ($unit == 'year') return $subTime/(60*60*24*365);
-		if ($unit == 'day') return intval(($subTime/(60*60*24)));
-		if ($unit == 'hour') return intval(($subTime/(60*60)));
-		if ($unit == 'min') return intval($subTime/60);
+		if ($unit == 'day') return (int) ($subTime/(60*60*24));
+		if ($unit == 'hour') return (int) ($subTime/(60*60));
+		if ($unit == 'min') return (int) ($subTime/60);
 	}
 }
 if ( ! function_exists('lang_date'))

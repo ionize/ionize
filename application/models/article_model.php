@@ -1444,7 +1444,7 @@ class Article_model extends Base_model
 		else if ( ! is_null($month))
 		{
 			// Compatibility with 'MONTH' SQL function : month < 10 without firts '0'
-			$period = $year.intval($month);
+			$period = $year. (int) $month;
 			$this->{$this->db_group}->where(
 				'(
 					IF (

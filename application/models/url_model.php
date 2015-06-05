@@ -575,7 +575,7 @@ class Url_model extends Base_model
 
 		if ( ! empty($existing_urls))
 		{
-			if ($id > 1 OR (substr($url, -2, count($url) -2) && intval(substr($url, -1)) != 0 ))
+			if ($id > 1 OR (substr($url, -2, count($url) -2) && ((int) substr($url, -1)) != 0 ))
 				$url = substr($url, 0, -2);
 
 			$url = $url . '-' . $id;

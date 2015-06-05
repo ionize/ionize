@@ -355,7 +355,7 @@ class Page extends MY_admin
 		 * One of these need to be set to save the page
 		 *
 		 */
-		if ($this->_check_before_save() == TRUE)
+		if ($this->_check_before_save() === TRUE)
 		{
 			$id = $this->input->post('id_page');
 			
@@ -741,7 +741,7 @@ class Page extends MY_admin
 			$value = $this->input->post('value');
 			
 			// Check the type of data, for special process
-			if ($type == 'date')
+			if ($type === 'date')
 			{
 				$value = ($value) ? getMysqlDatetime($value) : '0000-00-00 00:00:00';
 			}
@@ -791,7 +791,7 @@ class Page extends MY_admin
 
 		if (in_array($link_type, array('page', 'article')))
 		{
-			if ($link_type == 'article')
+			if ($link_type === 'article')
 			{
 				$link_rel = explode('.', $page['link_id']);
 				$link_id = isset($link_rel[1]) ? $link_rel[1] : NULL;
@@ -809,7 +809,7 @@ class Page extends MY_admin
 			{
 				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 
-				if ($link_type == 'article')
+				if ($link_type === 'article')
 					$breadcrumb .= ' > ' . $title;
 			}
 			// The destination doesn't exists anymore : remove the link
@@ -1256,7 +1256,7 @@ class Page extends MY_admin
 					$this->lang_data[$language['lang']][$field] = $content;
 				}
 				// URL : Fill with the correct URLs array data
-				else if ($field == 'url')
+				else if ($field === 'url')
 				{
 					$this->lang_data[$language['lang']]['url'] = $urls[$language['lang']];
 				}
@@ -1323,7 +1323,7 @@ class Page extends MY_admin
 					$urls[$l['lang']] = url_title(convert_accented_characters($this->input->post('title_'.$l['lang'])));
 				}
 				// Fill with empty value if needed 
-				else if ($fill_empty_lang == TRUE)
+				else if ($fill_empty_lang === TRUE)
 				{
 					$urls[$l['lang']] = '';
 				}

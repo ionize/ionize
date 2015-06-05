@@ -1143,7 +1143,7 @@ class Base_model extends CI_Model
 
 		if ($exists)
 		{
-			if ($postfix > 1 OR (substr($name, -2, count($name) -2) == '-' && intval(substr($name, -1)) != 0 ))
+			if ($postfix > 1 OR (substr($name, -2, count($name) -2) == '-' && ((int) substr($name, -1)) != 0 ))
 				$name = substr($name, 0, -2);
 
 			$name = $name . '-' . $postfix;
@@ -1175,7 +1175,7 @@ class Base_model extends CI_Model
 
 		if ($exists)
 		{
-			if ($postfix > 1 OR (substr($value, -2, count($value) -2) == '-' && intval(substr($value, -1)) != 0 ))
+			if ($postfix > 1 OR (substr($value, -2, count($value) -2) == '-' && ((int) substr($value, -1)) != 0 ))
 				$value = substr($value, 0, -2);
 
 			$value = $value . '-' . $postfix;

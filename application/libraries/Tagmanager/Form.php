@@ -321,7 +321,7 @@ class TagManager_Form extends TagManager
 
 					// Correct multiple data in the same field
 					// This has no impact if IDs are stored in one relation table.
-					if ($type == 'checkbox' OR $type == 'select')
+					if ($type === 'checkbox' OR $type === 'select')
 					{
 						$found_value = explode(',', $found_value);
 						foreach ($found_value as $val)
@@ -713,7 +713,7 @@ class TagManager_Form extends TagManager
 
 					foreach($rules_array as $rule)
 					{
-						if (substr($rule, 0, 9) == 'callback_')
+						if (substr($rule, 0, 9) === 'callback_')
 						{
 							$row = array(
 								'field' => $field,
@@ -1012,8 +1012,8 @@ class TagManager_Form extends TagManager
 		if ( isset($form['redirect']))
 		{
 			$wish = $form['redirect'];
-			if ($wish == 'home') $redirect = self::get_home_url();
-			if ($wish == 'referer') $redirect = $_SERVER['HTTP_REFERER'];
+			if ($wish === 'home') $redirect = self::get_home_url();
+			elseif ($wish === 'referer') $redirect = $_SERVER['HTTP_REFERER'];
 		}
 
 		return $redirect;

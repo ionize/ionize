@@ -534,7 +534,7 @@ class TagManager_Navigation extends TagManager
 	{
 		$has_url = $tag->getValue('has_url');
 
-		if (intval($has_url) == 1)
+		if ( (int) $has_url === 1)
 			return self::wrap($tag, $tag->getValue('absolute_url'));
 
 		return '#';
@@ -552,7 +552,7 @@ class TagManager_Navigation extends TagManager
 	{
 		$has_url = $tag->getValue('has_url');
 
-		if (intval($has_url) == 1)
+		if ((int) $has_url === 1)
 		{
 			$str = 'href="' . $tag->getValue('absolute_url') . '"';
 

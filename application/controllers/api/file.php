@@ -415,7 +415,7 @@ class File extends API_Controller
 				'width' => (Settings::get('picture_max_width') !='') ? Settings::get('picture_max_width') : 2000,
 				'height' => (Settings::get('picture_max_height') !='') ? Settings::get('picture_max_height') : 2000
 			),
-			'maxUploadSize' => intval(substr(ini_get('upload_max_filesize'), 0, -1)) * 1024 * 1024,
+			'maxUploadSize' => ((int)(substr(ini_get('upload_max_filesize'), 0, -1))) * 1024 * 1024,
 			'filter' => $allowed_mimes,
  			'allowed_extensions' => Settings::get_allowed_extensions(),
 		);

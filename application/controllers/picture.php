@@ -67,7 +67,7 @@ class Picture extends Base_Controller
 			$refresh = ! empty($options['refresh']) ? TRUE : FALSE;
 
 			// If no thumb, try to create it
-			if ( ! file_exists($thumb_file_path) OR $refresh == TRUE)
+			if ( ! file_exists($thumb_file_path) OR $refresh === TRUE)
 			{
 				try
 				{

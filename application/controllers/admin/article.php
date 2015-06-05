@@ -458,7 +458,7 @@ class Article extends MY_admin
 		 * One of these need to be set to save the article
 		 *
 		 */
-		if ($this->_check_before_save() == TRUE)
+		if ($this->_check_before_save() === TRUE)
 		{
 			// Clear the cache
 			Cache()->clear_cache();
@@ -871,7 +871,7 @@ class Article extends MY_admin
 			$value = $this->input->post('value');
 			
 			// Check the type of data, for special process
-			if ($type == 'date')
+			if ($type === 'date')
 			{
 				$value = ($value) ? getMysqlDatetime($value) : '0000-00-00 00:00:00';
 			}
@@ -1472,7 +1472,7 @@ class Article extends MY_admin
 		if( $this->input->post('dup_url') != '' && $this->input->post('dup_id_page') > 0)
 		{
 			// No name change : exit
-			if (url_title($this->input->post('dup_url')) == $this->input->post('name'))
+			if (url_title($this->input->post('dup_url')) === $this->input->post('name'))
 			{
 				$this->error(lang('ionize_message_article_duplicate_no_name_change'));
 			}
@@ -1840,7 +1840,7 @@ class Article extends MY_admin
 					$this->lang_data[$language['lang']][$field] = $content;
 				}
 				// URL : Fill with the correct URLs array data
-				else if ($field == 'url')
+				else if ($field === 'url')
 				{
 					$this->lang_data[$language['lang']]['url'] = $urls[$language['lang']];
 				}
@@ -2014,7 +2014,7 @@ class Article extends MY_admin
 					$urls[$l['lang']] = url_title(convert_accented_characters($this->input->post('title_'.$l['lang'])));
 				}
 				// Fill with empty value if needed 
-				else if ($fill_empty_lang == TRUE)
+				else if ($fill_empty_lang === TRUE)
 				{
 					$urls[$l['lang']] = '';
 				}

@@ -199,7 +199,7 @@ class User extends My_Admin
 
 			// Passwords must match
 			if (($this->input->post('password') != '') &&
-				($this->input->post('password') == $this->input->post('password2')))
+				($this->input->post('password') === $this->input->post('password2')))
 			{
 				$post['password'] = User()->encrypt($this->input->post('password'), $post);
 			}
@@ -257,7 +257,7 @@ class User extends My_Admin
 			}
 
 			// Reload user list
-			if ( ! empty($post['from']) && $post['from'] == 'dashboard')
+			if ( ! empty($post['from']) && $post['from'] === 'dashboard')
 			{
 				$this->_reload_dashboard();
 			}

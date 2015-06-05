@@ -27,7 +27,7 @@ $_uniq = 'i'.uniqid();
 
 	if (file_exists($media['path']))
 	{
-		if ($type == 'picture')
+		if ($type === 'picture')
 		{
 			$background_url = admin_url(TRUE) . 'media/get_thumb/'.$media['id_media'].'/'.time() ;
 
@@ -57,7 +57,7 @@ $_uniq = 'i'.uniqid();
 			<?php if(Authority::can('edit', 'admin/'.$parent.'/media')) :?>
 				<a class="icon edit left mr5" data-id="<?php echo $media['id_media']; ?>" data-title="<?php echo $title ?>" title="<?php echo lang('ionize_label_edit'); ?>"></a>
 			<?php endif ;?>
-			<?php if ($type == 'picture') :?>
+			<?php if ($type === 'picture') :?>
 				<a class="icon refresh left mr5 help" data-id="<?php echo $media['id_media']; ?>" title="<?php echo lang('ionize_label_init_thumb'); ?>"></a>
 			<?php endif ;?>
 			<a class="icon info left help" title="<?php echo $media['id_media']; ?> : <?php echo $path; ?>"></a>

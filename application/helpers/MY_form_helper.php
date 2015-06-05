@@ -76,9 +76,9 @@ if ( ! function_exists('form_build_field'))
 				case 'varchar':
 				case 'text':
 				case 'longtext':
-					if ($field_type == 'varchar' && $field['length'] < 255)
-						$html_type = "input";
-					elseif ($field_type == 'varchar' && $field['length'] < 3000)
+					if ($field_type === 'varchar' && $field['length'] < 255)
+						$html_type = 'input';
+					elseif ($field_type === 'varchar' && $field['length'] < 3000)
 						$html_type = "textarea";
 					else
 						$html_type = "html";
@@ -105,7 +105,7 @@ if ( ! function_exists('form_build_field'))
 			$data = array();
 
 			// Try to get the ENUM possible values
-			if ($field_type == 'enum')
+			if ($field_type === 'enum')
 			{
 				foreach($field['length'] as $enum)
 					$data[$enum] = $enum;
@@ -196,7 +196,7 @@ if ( ! function_exists('form_build_field'))
 			case 'date':
 				$extra .= ' class="inputtext date"';
 
-				if ($field['type'] == 'datetime')
+				if ($field['type'] === 'datetime')
 					$field_value = humanize_mdate($field_value, Settings::get('date_format'). ' %H:%i:%s');
 				else
 					$field_value = humanize_mdate($field_value, Settings::get('date_format'));

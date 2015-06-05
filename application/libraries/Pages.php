@@ -92,7 +92,7 @@ class Pages
 	 */
 	public static function init_absolute_urls(&$pages, $lang)
 	{
-		$short_mode = (config_item('url_mode') == 'short') ? TRUE : FALSE;
+		$short_mode = (config_item('url_mode') === 'short');
 
 		$languages = (Authority::can('access', 'admin') && Settings::get('display_front_offline_content') == 1) ? Settings::get_languages() : Settings::get_online_languages();
 
@@ -110,7 +110,7 @@ class Pages
 				{
 					$page['absolute_url'] = $page['link'];
 				}
-				else if ($page['link_type'] == 'email')
+				else if ($page['link_type'] === 'email')
 				{
 					$page['absolute_url'] = auto_link($page['link'], 'both', TRUE);
 				}
@@ -118,7 +118,7 @@ class Pages
 				else
 				{
 					// Article
-					if($page['link_type'] == 'article')
+					if($page['link_type'] === 'article')
 					{
 						// Get the article to which this page links
 						$rel = explode('.', $page['link_id']);
@@ -273,7 +273,7 @@ class Pages
 
 		if ( Authority::cannot('access', $resource, NULL, TRUE))
 		{
-			if (empty($page['deny_code']) OR $page['deny_code'] == '404' )
+			if (empty($page['deny_code']) OR $page['deny_code'] === '404' )
 				return FALSE;
 		}
 

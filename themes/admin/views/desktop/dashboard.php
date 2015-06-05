@@ -532,7 +532,7 @@ $user_role = User()->get_role();
 						title: Lang.get(icon.getProperty('data-title')),
 						url : icon.getProperty('data-url')
 					};
-					if (icon.getProperty('data-url') == 'media/get_media_manager')
+					if (icon.getProperty('data-url') === 'media/get_media_manager')
 						options.padding = {top: 0, right: 0, bottom: 0, left: 0};
 
 					ION.contentUpdate(options);
