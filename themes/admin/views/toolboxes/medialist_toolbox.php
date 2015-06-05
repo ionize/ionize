@@ -5,15 +5,18 @@
 	</a>
 </div>
 
+<?php
+	$isActiveMedialistViewCard = !array_key_exists('medialistView', $_COOKIE) || $_COOKIE['medialistView'] === 'card';
+?>
 <div class="divider">
-	<a class="button light right" id="btnMedialistViewList">
+	<a class="button light right<?php if(! $isActiveMedialistViewCard) { ?> active<?php } ?>" id="btnMedialistViewList">
 		<i class="icon-list"></i>
 		<?php echo lang('ionize_button_list_view') ?>
 	</a>
 </div>
 
 <div class="divider">
-	<a class="button light right" id="btnMedialistViewCard">
+	<a class="button light right<?php if($isActiveMedialistViewCard) { ?> active<?php } ?>" id="btnMedialistViewCard">
 		<i class="icon-card"></i>
 		<?php echo lang('ionize_button_card_view') ?>
 	</a>
