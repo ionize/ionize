@@ -19,9 +19,11 @@
 	 * ToggleHeader Button
 	 *
 	 */
-    $('toggleHeaderButton').store('header', 'desktopHeader');
+	var toggleHeaderButton = $('toggleHeaderButton');
 
-    $('toggleHeaderButton').addEvents(
+    toggleHeaderButton.store('header', 'desktopHeader');
+
+    toggleHeaderButton.addEvents(
 	{
         'click': function(e)
 		{

@@ -284,7 +284,8 @@
 
 
 	// Select : Multi-actions
-	$('selectAction').addEvent('change', function()
+	var el_selectAction = $('selectAction');
+	el_selectAction.addEvent('change', function()
 	{
 		var action = this.value;
 
@@ -310,7 +311,7 @@
 	});
 
 	<?php if (count($articles) == 0):?>
-		$('selectAction').hide();
+		el_selectAction.hide();
 	<?php endif; ?>
 
 

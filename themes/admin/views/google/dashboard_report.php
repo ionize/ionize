@@ -30,8 +30,6 @@
 
 <script type="text/javascript">
 
-
-
 	function drawChart()
 	{
 		var data = new google.visualization.DataTable();
@@ -89,7 +87,5 @@
 	//	google.setOnLoadCallback(drawChart);
 
 	});
-
-
 
 </script>

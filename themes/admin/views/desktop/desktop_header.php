@@ -207,10 +207,10 @@
 		});
 	});
 
-
-	if ($('mediamanagerlink'))
+	var el_mediamanagerlink = $('mediamanagerlink');
+	if (el_mediamanagerlink)
 	{
-		$('mediamanagerlink').addEvent('click', function(event)
+		el_mediamanagerlink.addEvent('click', function(event)
 		{
 			event.preventDefault();
 

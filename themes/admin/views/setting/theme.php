@@ -174,9 +174,10 @@
 					onLoaded: function(element, content)
 					{
 						// CodeMirror settings
-						var c = $('editview_' + id).value;
+						var editViewItem = $('editview_' + id);
+						var c = editViewItem.value;
 
-						var mirrorFrame = new ViewCodeMirror(CodeMirror.replace($('editview_' + id)), 
+						var mirrorFrame = new ViewCodeMirror(CodeMirror.replace(editViewItem),
 						{
 							height: "360px",
 							width: "95%",

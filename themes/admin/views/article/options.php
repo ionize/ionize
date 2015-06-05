@@ -161,7 +161,7 @@
 				</div>
 
 				<!-- Category create button -->
-				<a class="button light mb10" onclick="javascript:ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})">
+				<a class="button light mb10" onclick="ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_article; ?>', {width:360, height:230})">
 					<i class="icon-plus"></i>
 					<?php echo lang('ionize_label_new_category'); ?>
 				</a>
@@ -465,9 +465,10 @@
 	);
 
 	// Copy content from one lang to another
-	if ($('copy_lang'))
+	var el_copy_lang = $('copy_lang');
+	if (el_copy_lang)
 	{
-		$('copy_lang').addEvent('click', function(e)
+		el_copy_lang.addEvent('click', function(e)
 		{
 			e.stop();
 

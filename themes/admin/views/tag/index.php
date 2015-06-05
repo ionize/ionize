@@ -45,10 +45,11 @@
 	$('btnAddTag').addEvent('click', function(e)
 	{
 		e.stop();
-		if ($('inputAddTag').value != '')
+		var inputAddTag = $('inputAddTag');
+		if (inputAddTag.value != '')
 		{
 			ION.sendData('tag/add', {
-				'tag_name':$('inputAddTag').value
+				'tag_name': inputAddTag.value
 			});
 		}
 	});

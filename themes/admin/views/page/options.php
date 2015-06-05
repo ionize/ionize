@@ -598,10 +598,13 @@
     ION.initClearField('#pageOptionsForm');
 
 	// Current & parent page ID
-	var id_current = ($('id_page').value) ? $('id_page').value : '0';
-	var id_parent = ($('origin_id_parent').value) ? $('origin_id_parent').value : '0';
+	var el_id_page = $('id_page');
+	var id_current = (el_id_page.value) ? el_id_page.value : '0';
+	var el_origin_id_parent = $('origin_id_parent');
+	var id_parent = (el_origin_id_parent.value) ? el_origin_id_parent.value : '0';
 
-	$('id_menu').addEvent('change', function()
+	var el_id_menu = $('id_menu');
+	el_id_menu.addEvent('change', function()
 	{
 		ION.HTML(
 			admin_url + 'page/get_parents_select',
@@ -615,8 +618,7 @@
 			}
 		);
 	});
-	$('id_menu').fireEvent('change');
-
+	el_id_menu.fireEvent('change');
 
 	// Tabs
 	new TabSwapper({tabsContainer: 'subnavTitleTab', sectionsContainer: 'subnavTitleTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'subnavTitleTab'	});

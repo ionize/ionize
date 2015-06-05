@@ -54,7 +54,7 @@
 
 					ad.addEvent('click', function(){
 
-					})
+					});
 
 					li.inject($('tagsList'));
 				})

@@ -163,8 +163,6 @@
 	});
 
 
-
-
 	$$('#articlesTable .page-breadcrumb').each(function(item)
 	{
 		item.addEvent('click', function(e)
