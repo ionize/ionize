@@ -370,7 +370,7 @@ class TagManager_Article extends TagManager
 	public function init_articles_urls(&$articles)
 	{
 		// Page URL key to use
-		$page_url_key = (config_item('url_mode') == 'short') ? 'url' : 'path';
+		$page_url_key = (config_item('url_mode') === 'short') ? 'url' : 'path';
 
 		// Array of all articles IDs
 		$articles_id = array();
@@ -409,13 +409,13 @@ class TagManager_Article extends TagManager
 			if ($article['link_type'] != '' )
 			{
 				// External
-				if ($article['link_type'] == 'external')
+				if ($article['link_type'] === 'external')
 				{
 					$article['absolute_url'] = $article['link'];
 				}
 
 				// Email
-				else if ($article['link_type'] == 'email')
+				else if ($article['link_type'] === 'email')
 				{
 					$article['absolute_url'] = auto_link($article['link'], 'both', TRUE);
 				}
@@ -424,7 +424,7 @@ class TagManager_Article extends TagManager
 				else
 				{
 					// Article
-					if($article['link_type'] == 'article')
+					if($article['link_type'] === 'article')
 					{
 						// Get the article to which this page links
 						$rel = explode('.', $article['link_id']);
@@ -808,7 +808,7 @@ class TagManager_Article extends TagManager
 			}
 		}
 
-		if ($mode == 'prev')
+		if ($mode === 'prev')
 			$found_articles = array_slice($articles, 0, $pos);
 		else
 			$found_articles = array_slice($articles, $pos+1);
@@ -922,7 +922,7 @@ class TagManager_Article extends TagManager
 
 			// Limit to x paragraph if the attribute is set
 			if ( ! is_null($paragraph))
-				$articles[$key]['content'] = tag_limiter($article['content'], 'p', intval($paragraph));
+				$articles[$key]['content'] = tag_limiter($article['content'], 'p', (int) $paragraph);
 
 			// Autolink the content
 //			if ($auto_link)

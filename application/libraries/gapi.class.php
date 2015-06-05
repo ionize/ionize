@@ -83,7 +83,7 @@ class gapi
   {
     $response = $this->httpRequest(gapi::account_data_url, array('start-index'=>$start_index,'max-results'=>$max_results), null, $this->generateAuthHeader());
     
-    if(substr($response['code'],0,1) == '2')
+    if(substr($response['code'],0,1) === '2')
     {
       return $this->accountObjectMapper($response['body']);
     }
@@ -153,7 +153,7 @@ class gapi
       foreach($sort_metric as $sort_metric_value)
       {
         //Reverse sort - Thanks Nick Sullivan
-        if (substr($sort_metric_value, 0, 1) == "-")
+        if (substr($sort_metric_value, 0, 1) === '-')
         {
           $sort_metric_string .= ',-ga:' . substr($sort_metric_value, 1); // Descending
         }
@@ -167,7 +167,7 @@ class gapi
     }
     else 
     {
-      if (substr($sort_metric, 0, 1) == "-")
+      if (substr($sort_metric, 0, 1) === '-')
       {
         $parameters['sort'] = '-ga:' . substr($sort_metric, 1);
       }
@@ -209,7 +209,7 @@ class gapi
     $response = $this->httpRequest(gapi::report_data_url, $parameters, null, $this->generateAuthHeader());
     
     //HTTP 2xx
-    if(substr($response['code'],0,1) == '2')
+    if(substr($response['code'],0,1) === '2')
     {
       return $this->reportObjectMapper($response['body']);
     }
@@ -271,7 +271,7 @@ class gapi
     
     foreach($open_search_results as $key => $open_search_result)
     {
-      $report_root_parameters[$key] = intval($open_search_result);
+      $report_root_parameters[$key] = (int) $open_search_result;
     }
     
     $account_root_parameters['startDate'] = strval($google_results->startDate);
@@ -326,7 +326,7 @@ class gapi
     
     foreach($open_search_results as $key => $open_search_result)
     {
-      $report_root_parameters[$key] = intval($open_search_result);
+      $report_root_parameters[$key] = (int) $open_search_result;
     }
     
     $google_results = $xml->children('http://schemas.google.com/analytics/2009');
@@ -352,7 +352,7 @@ class gapi
       }
       else
       {
-        $report_aggregate_metrics[str_replace('ga:','',$aggregate_metric->attributes()->name)] = intval($metric_value);
+        $report_aggregate_metrics[str_replace('ga:','',$aggregate_metric->attributes()->name)] = (int) $metric_value;
       }
     }
     
@@ -372,7 +372,7 @@ class gapi
         }
         else
         {
-          $metrics[str_replace('ga:','',$metric->attributes()->name)] = intval($metric_value);
+          $metrics[str_replace('ga:','',$metric->attributes()->name)] = (int) $metric_value;
         }
       }
       
@@ -455,11 +455,11 @@ class gapi
       }
     }
     
-    if($interface == 'curl')
+    if($interface === 'curl')
     {
       return $this->curlRequest($url, $get_variables, $post_variables, $headers);
     }
-    elseif($interface == 'fopen') 
+    elseif($interface === 'fopen')
     {
       return $this->fopenRequest($url, $get_variables, $post_variables, $headers);
     }

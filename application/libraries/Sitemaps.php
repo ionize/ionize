@@ -213,7 +213,7 @@ class Sitemaps
                 {
                     if(@preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m))
                     {
-                        $status = intval($m[1]);
+                        $status = (int) $m[1];
                         break;
                     }
                 }
@@ -227,7 +227,7 @@ class Sitemaps
         {
             foreach($statuses AS $reponse)
             {
-                $message = "Sitemaps: " . $reponse['host'] . " responded with HTTP status " . $reponse['status'];
+                $message = 'Sitemaps: ' . $reponse['host'] . " responded with HTTP status " . $reponse['status'];
 
                 if($CI->config->item('sitemaps_log_http_responses'))
                 {

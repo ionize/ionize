@@ -61,7 +61,7 @@ class Extend_field extends MY_admin
 			array('active' => 1)
 		);
 
-		if ($format == 'json')
+		if ($format === 'json')
 		{
 			$this->xhr_output($extend_types);
 		}
@@ -244,7 +244,7 @@ class Extend_field extends MY_admin
 		// Returns the extends list ordered by 'ordering' 
 		$extend_fields = $this->extend_field_model->get_lang_list($where, Settings::get_lang('default'));
 
-		if ($mode == 'json')
+		if ($mode === 'json')
 		{
 			$this->xhr_output($extend_fields);
 		}
@@ -438,7 +438,7 @@ class Extend_field extends MY_admin
 
 		$items = $this->extend_field_model->get_context_list($context, $id_context, $parent);
 
-		if ($mode == 'json')
+		if ($mode === 'json')
 		{
 			$this->xhr_output($items);
 		}
@@ -474,7 +474,7 @@ class Extend_field extends MY_admin
 
 		$extend = $this->extend_field_model->get_element_extend_field($id_extend, $parent, $id_parent, $lang);
 
-		if ($mode == 'json')
+		if ($mode === 'json')
 		{
 			$this->xhr_output($extend);
 		}
@@ -497,7 +497,7 @@ class Extend_field extends MY_admin
 
 		$items = $this->extend_field_model->get_element_extend_fields($parent, $id_parent, $id_field_parent);
 
-		if ($mode == 'json')
+		if ($mode === 'json')
 		{
 			$this->xhr_output($items);
 		}
@@ -521,7 +521,7 @@ class Extend_field extends MY_admin
 
 		$items = $this->extend_field_model->get_context_instances_list($context, $id_context, $parent, $id_parent);
 
-		if ($mode == 'json')
+		if ($mode === 'json')
 		{
 			$this->xhr_output($items);
 		}
@@ -606,7 +606,7 @@ class Extend_field extends MY_admin
 
 		$items = $this->extend_field_model->get_extend_link_list($id_extend, $parent, $id_parent, $lang);
 
-		if ($mode == 'json')
+		if ($mode === 'json')
 		{
 			$this->xhr_output($items);
 		}

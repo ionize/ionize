@@ -1535,7 +1535,7 @@ class FileManager
 
 					// Resize after upload if asked
 					$mime = $this->getMimeFromExtension($filename);
-					if ($this->startsWith($mime, 'image/') && $resize == TRUE)
+					if ($this->startsWith($mime, 'image/') && $resize === TRUE)
 					{
 						$this->resizePicture($file_path);
 					}
@@ -1641,7 +1641,7 @@ class FileManager
 
 						// Resize after upload if asked
 						$mime = $this->getMimeFromExtension($filename);
-						if ($this->startsWith($mime, 'image/') && $resize == TRUE)
+						if ($this->startsWith($mime, 'image/') && $resize === TRUE)
 						{
 							$this->resizePicture($file_path);
 						}
@@ -1702,14 +1702,14 @@ class FileManager
 
         foreach ($_SERVER as $name => $value)
         {
-            if (substr($name, 0, 5) == 'HTTP_')
+            if (substr($name, 0, 5) === 'HTTP_')
             {
                 $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
                 $headers[$name] = $value;
-            } else if ($name == "CONTENT_TYPE") {
-                $headers["Content-Type"] = $value;
-            } else if ($name == "CONTENT_LENGTH") {
-                $headers["Content-Length"] = $value;
+            } else if ($name === 'CONTENT_TYPE') {
+                $headers['Content-Type'] = $value;
+            } else if ($name === 'CONTENT_LENGTH') {
+                $headers['Content-Length'] = $value;
             }
         }
         return $headers;
@@ -2689,7 +2689,7 @@ class FileManager
 			$i = 1;
 			if (preg_match('/^(.*)_([1-9][0-9]*)$/', $filename, $matches))
 			{
-				$i = intval($matches[2]);
+				$i = (int) $matches[2];
 				if ('P'.$i !== 'P'.$matches[2] || $i > 100000)
 				{
 					// very large number: not a sequence number!
@@ -2786,7 +2786,7 @@ class FileManager
 			// generally save as lossy / lower-Q jpeg to reduce filesize, unless orig is PNG/GIF, higher quality for smaller thumbnails:
 			$img->resize($width, $height)->save($thumbPath, min(98, max(self::$thumb_jpeg_quality, self::$thumb_jpeg_quality + 0.15 * (250 - min($width, $height)))), TRUE);
 
-			if (ENVIRONMENT == 'development')
+			if (ENVIRONMENT === 'development')
 			{
 				$imginfo = $img->getMetaInfo();
 				$meta->store('img_info', $imginfo);

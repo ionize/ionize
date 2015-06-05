@@ -166,7 +166,7 @@ class TagManager_Media extends TagManager
 					$tmp_medias = $filtered_medias;
 					$filtered_medias = array();
 
-					if ($provider == 'all')
+					if ($provider === 'all')
 					{
 						foreach($tmp_medias as $media)
 						{
@@ -386,7 +386,7 @@ class TagManager_Media extends TagManager
 				else
 				$src = base_url() . $media['path'];
 
-				if ($media['type'] == 'picture')
+				if ($media['type'] === 'picture')
 				{
 					$settings = self::get_src_settings($tag);
 
@@ -433,7 +433,7 @@ class TagManager_Media extends TagManager
 
 		if ( ! empty($media))
 		{
-			if ($media['type'] == 'picture')
+			if ($media['type'] === 'picture')
 			{
 				$settings = self::get_src_settings($tag);
 

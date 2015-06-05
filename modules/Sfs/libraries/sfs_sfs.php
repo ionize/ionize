@@ -58,10 +58,10 @@ class Sfs_Sfs
 		{
 			$response = unserialize($response);
 
-			if ( ! empty($response['ip']['appears']) && intval($response['ip']['appears']) > 0)
+			if ( ! empty($response['ip']['appears']) && ((int) $response['ip']['appears']) > 0)
 				$trusted = FALSE;
 
-			if ( ! empty($response['email']['appears']) && intval($response['email']['appears']) > 0)
+			if ( ! empty($response['email']['appears']) && ((int) $response['email']['appears']) > 0)
 				$trusted = FALSE;
 
 			if ( ! $trusted && self::$config['track'] == TRUE && ! empty(self::$config['api_key']))

@@ -84,7 +84,7 @@ class resource_model extends Base_model
 		// Find out $id_parent
 		if ( ! is_null($parent) )
 		{
-			if (is_string($parent) && intval($parent) !== $parent)
+			if (is_string($parent) && (int) $parent !== $parent)
 				$id_parent = $this->_save_resource($type, $parent, NULL, array('title' => ucfirst($parent)));
 			else
 				$id_parent = $parent;

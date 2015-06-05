@@ -1403,7 +1403,7 @@ class Installer
 				$version = isset($version['content']) ? $version['content'] : '';
 				$version = str_replace('.', '', $version);
 				
-				if (intval($version) <= 97)
+				if ((int) $version <= 97)
 				{
 					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
@@ -1423,7 +1423,7 @@ class Installer
 				for($i=0;$i<3;$i++)
 					$test_version .= $version[$i];
 
-				if (intval($test_version) < 100)
+				if ((int) $test_version < 100)
 				{
 					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
@@ -1442,7 +1442,7 @@ class Installer
 				for($i=0;$i<3;$i++)
 					$test_version .= $version[$i];
 
-				if (intval($test_version) < 106)
+				if ((int) $test_version < 106)
 				{
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';

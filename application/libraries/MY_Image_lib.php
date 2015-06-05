@@ -320,7 +320,7 @@ class MY_Image_lib extends CI_Image_lib {
 			$truecolor = 1;
 
 		// Memory limit from php.ini config file in bytes
-		$ini_memory_limit = intval(substr(ini_get('memory_limit'), 0, -1)) * 1024 * 1024;
+		$ini_memory_limit = (int) (substr(ini_get('memory_limit'), 0, -1)) * 1024 * 1024;
 
 		if ( $ini_memory_limit < 0 )
 			return true;

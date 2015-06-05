@@ -635,7 +635,7 @@ class TagManager
 		$parsed = Theme::load($view);
 
 		// We can now check if the file is a PHP one or a FTL one
-		if (substr($parsed, 0, 5) == '<?php')
+		if (substr($parsed, 0, 5) === '<?php')
 		{
 			$parsed = self::$ci->load->view($view, array(), TRUE);
 		}
@@ -1609,7 +1609,7 @@ class TagManager
 						else
 							$src = base_url() . $media['path'];
 
-						if ($media['type'] == 'picture')
+						if ($media['type'] === 'picture')
 						{
 							$settings = TagManager_Media::get_src_settings($tag);
 
@@ -1649,7 +1649,7 @@ class TagManager
 		$extend = $tag->get('extend');
 
 		// Link
-		if ($extend['html_element_type'] == 'link')
+		if ($extend['html_element_type'] === 'link')
 		{
 			// Static items already have the 'content' index set.
 			// Classical extends have not
@@ -2630,7 +2630,7 @@ class TagManager
 
 			if ( ! is_null($title))
 			{
-				if ($position == 'before')
+				if ($position === 'before')
 				{
 					$title = Settings::get('site_title') . $separator . $title;
 				}
@@ -2731,7 +2731,7 @@ class TagManager
 	 */
 	public static function tag_google_analytics(FTL_Binding $tag)
 	{
-		if (ENVIRONMENT == 'production')
+		if (ENVIRONMENT === 'production')
 		{
 			$tracking_id = Settings::get('google_analytics_id');
 
@@ -2768,7 +2768,7 @@ class TagManager
 	{
 		$type = $tag->getAttribute('type');
 
-		if ( ! is_null($type) && $type == 'number')
+		if ( ! is_null($type) && $type === 'number')
 			return time();
 		else
 			return md5(time());
@@ -3509,7 +3509,7 @@ class TagManager
 
 		// Limit to x paragraph if the attribute is set
 		if ( ! is_null($paragraph))
-			$value = tag_limiter($value, 'p', intval($paragraph));
+			$value = tag_limiter($value, 'p', (int) $paragraph);
 
 		// Limit to x words
 		if ( ! is_null($words))
@@ -3527,7 +3527,7 @@ class TagManager
 			if ( ! isset($ellipsize[0])) $ellipsize[0] = 32;
 			if ( ! isset($ellipsize[1])) $ellipsize[1] = .5;
 			if (floatval($ellipsize[1]) > 0.99)	$ellipsize[1] = 0.99;
-			$value = ellipsize($value, intval($ellipsize[0]), floatval($ellipsize[1]));
+			$value = ellipsize($value, (int) $ellipsize[0], floatval($ellipsize[1]));
 		}
 
 		return $value;
@@ -3965,7 +3965,7 @@ class TagManager
 					if ( ! empty($seg[1]))
 					{
 						// Get from global value
-						if ($seg[0] == 'global')
+						if ($seg[0] === 'global')
 						{
 							$str = self::$context->get_global($seg[1]);
 						}

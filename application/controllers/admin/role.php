@@ -223,7 +223,7 @@ class Role extends MY_Admin
 			if ($permission_level)
 			{
 				// Delete all permissions and add 'all' one
-				if ($permission_level == 'all')
+				if ($permission_level === 'all')
 				{
 					$this->rule_model->set_all_permissions($id_role);
 				}
@@ -273,7 +273,7 @@ class Role extends MY_Admin
 		{
 			foreach($permissions as $permission)
 			{
-				if ($permission['resource'] == 'all')
+				if ($permission['resource'] === 'all')
 					return TRUE;
 			}
 		}

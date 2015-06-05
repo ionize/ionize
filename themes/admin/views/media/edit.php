@@ -6,12 +6,12 @@
 
 $pictureSize = NULL;
 
-if($type == 'picture')
+if($type === 'picture')
 {
 	$pictureSize = @getimagesize(DOCPATH.$path);
 }
 
-$margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px');
+$margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140px');
 
 ?>
 
@@ -21,7 +21,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
     <div id="media-tracker-<?php echo $id_media; ?>"></div>
 
 	<!-- Picture file -->
-	<?php if($type == 'picture') :?>
+	<?php if($type === 'picture') :?>
 		<?php
 			$thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
 		?>
@@ -31,7 +31,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 	<?php endif ;?>
 
 	<!-- Music file -->
-	<?php if($type == 'music') :?>
+	<?php if($type === 'music') :?>
 		<div class="left">
 			<div class="ui360 ui360-vis small"">
 				<a id="sound<?php echo $id_media ?>" href="<?php echo base_url().$path; ?>" target="_blank"><?php echo $path ?></a>
@@ -53,7 +53,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 	<?php endif ;?>
 	
 	<!-- Video file -->
-	<?php if($type == 'video') :?>
+	<?php if($type === 'video') :?>
 		
 		<?php if($provider != '') :?>
 
@@ -97,7 +97,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 			<?php if (file_exists(DOCPATH . $path)) :?>
 				<?php echo sprintf('%01.2f', filesize(DOCPATH . $path) / (1024 )); ?> ko
 
-				<?php if($type == 'picture') :?>
+				<?php if($type === 'picture') :?>
 					-
 					<?php if ( ! is_null($pictureSize)) :?>
 						<?php echo($pictureSize['0']); ?> x <?php echo($pictureSize['1']); ?> px
@@ -149,7 +149,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 					<li class="tab_media<?php if($l['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $l['lang']; ?>"><a><span><?php echo ucfirst($l['name']); ?></span></a></li>
 				<?php endforeach ;?>
 
-				<?php if($type == 'picture') :?>
+				<?php if($type === 'picture') :?>
 					<li class="right"><a><span><?php echo lang('ionize_title_options'); ?></span></a></li>
 				<?php endif ;?>
 
@@ -179,7 +179,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 						</dd>
 					</dl>
 
-					<?php if(pathinfo(FCPATH.$path, PATHINFO_EXTENSION) == 'mp3') :?>
+					<?php if(pathinfo(FCPATH.$path, PATHINFO_EXTENSION) === 'mp3') :?>
 
 					<dl class="small mt10">
 						<dt>
@@ -215,7 +215,7 @@ $margin = ($type == 'video') ? '180px' : (($type == 'music') ? '130px' : '140px'
 			<?php endforeach ;?>
 
 			<!-- Thumbnails preferences -->
-			<?php if($type == 'picture') :?>
+			<?php if($type === 'picture') :?>
 				<div class="tabcontent<?php echo $id_media; ?>">
 					
 					<!-- Thumbnail square crop area -->
