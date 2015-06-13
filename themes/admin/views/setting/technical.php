@@ -804,20 +804,16 @@
 
 <script type="text/javascript">
 
-
 	var mailpath = '<?php echo $mailpath ?>';
 
 	// Panel toolbox
 	ION.initToolbox('empty_toolbox');
 
-
 	// Options Accordion
 	ION.initAccordion('.toggler', 'div.element', true, 'settingsAccordion1');
 	ION.initAccordion('.toggler1', 'div.element1', false, 'settingsAccordion2');
 
-
 	var settingsTab = new TabSwapper({tabsContainer: 'settingsTab', sectionsContainer: 'settingsTabContent', selectedClass: 'selected', deselectedClass: '', tabs: 'li', clickers: 'li a', sections: 'div.tabcontent', cookieName: 'settingsTab' });
-
 
 	// Forms actions
 	ION.setFormSubmit('databaseForm', 'submit_database', 'setting/save_database/true');
@@ -846,10 +842,10 @@
 	{
 		e.stop();
 		var key = ION.generateKey(32);
-		$('form_antispam_key').value = key;
-		$('form_antispam_key').highlight();
+		var keyField = $('form_antispam_key');
+		keyField.value = key;
+		keyField.highlight();
 	});
-
 
 	// Restore tinyButtons toolbar to default config
 	$('texteditor_default').addEvent('click', function()
@@ -896,7 +892,7 @@
 			$('emailSMTPDetails').show();
 			$('emailSendmailDetails').hide();
 		}
-	}
+	};
 	changeEmailDetails();
 
 	$('emailProtocol').addEvent('change', function()
@@ -916,7 +912,7 @@
 		setMaintenancePage = function(element, droppable, event)
 		{
 			ION.HTML(ION.adminUrl + 'setting/set_maintenance_page', {'id_page': element.getProperty('rel')}, {'update': 'maintenancePageContainer'});
-		}
+		};
 		
 		// Make tree pages draggable
 		$$('.treeContainer .page a.title').each(function(item, idx)
@@ -938,9 +934,10 @@
 	}
 
 	// New API key button
-	if ($('buttonNewApiKey'))
+	var buttonNewApiKey = $('buttonNewApiKey');
+	if (buttonNewApiKey)
 	{
-		$('buttonNewApiKey').addEvent('click', function()
+		buttonNewApiKey.addEvent('click', function()
 		{
 			ION.formWindow(
 				'apiKey',

@@ -293,11 +293,11 @@ if ($tracker_title == '')
 										<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
 									</a>
 
-								<a class="left light button" onclick="javascript:mediaManager.loadMediaList();return false;">
+								<a class="left light button" onclick="mediaManager.loadMediaList();return false;">
 									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 								</a>
 
-									<a class="left light button" onclick="javascript:mediaManager.detachAllMedia();return false;">
+									<a class="left light button" onclick="mediaManager.detachAllMedia();return false;">
 										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
 									</a>
 							</p>
@@ -477,10 +477,13 @@ if ($tracker_title == '')
 		<?php endforeach ;?>
 
 		// Current & parent page ID
-		var id_current = ($('id_page').value) ? $('id_page').value : '0';
-		var id_parent = ($('origin_id_parent').value) ? $('origin_id_parent').value : '0';
+		var el_id_page = $('id_page');
+		var id_current = (el_id_page.value) ? el_id_page.value : '0';
+		var el_origin_id_parent = $('origin_id_parent');
+		var id_parent = (el_origin_id_parent.value) ? el_origin_id_parent.value : '0';
 
-		$('id_menu').addEvent('change', function()
+		var el_id_menu = $('id_menu');
+		el_id_menu.addEvent('change', function()
 		{
 			ION.HTML(
 				admin_url + 'page/get_parents_select',
@@ -495,9 +498,6 @@ if ($tracker_title == '')
 				}
 			);
 		});
-		$('id_menu').fireEvent('change');
-
-
+		el_id_menu.fireEvent('change');
 	<?php endif ;?>
-
 </script>

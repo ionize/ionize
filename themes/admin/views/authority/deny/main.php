@@ -19,7 +19,8 @@
 
 	ION.initToolbox('empty_toolbox');
 
-	if ($('splitPanel_sideColumn'))
-		$('splitPanel_sideColumn').close();
+	var el_splitPanel_sideColumn = $('splitPanel_sideColumn');
+	if (el_splitPanel_sideColumn)
+		el_splitPanel_sideColumn.close();
 
 </script>

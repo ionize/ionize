@@ -11,17 +11,13 @@
 
 <script type="text/javascript">
 
-
 	ION.HTML('element_definition/get_element_definition_list', {}, {'update': 'elementContainer' });
-	
-	
+
 	/**
 	 * Panel toolbox
 	 *
 	 */
 	
 	ION.initToolbox('element_definition_toolbox');
-	
-	
 
 </script>

@@ -114,7 +114,8 @@
 
 <script type="text/javascript">
 
-	$('dup_id_menu').addEvent('change', function()
+	var el_dup_id_menu = $('dup_id_menu');
+	el_dup_id_menu.addEvent('change', function()
 	{
 		ION.HTML(
 			admin_url + 'page/get_parents_select',
@@ -127,7 +128,7 @@
 			{'update': 'dupArticleParentSelectContainer'}
 		);
 	});
-	$('dup_id_menu').fireEvent('change');
+	el_dup_id_menu.fireEvent('change');
 
 
 </script>

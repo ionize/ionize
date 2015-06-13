@@ -196,17 +196,20 @@ $protected_role_codes = array(
 		<?php if ( Authority::can('access', 'admin/role/permissions')) :?>
 
 			// Permission Level checkboxes
-			$('permissionLevelAll').addEvent('click', function(evt){
+			var permissionLevelAll = $('permissionLevelAll');
+			permissionLevelAll.addEvent('click', function(evt){
 				$('customPermissionContainer').hide();
 			});
-			$('permissionLevelCustom').addEvent('click', function(evt){
+
+			var permissionLevelCustom = $('permissionLevelCustom');
+			permissionLevelCustom.addEvent('click', function(evt){
 				$('customPermissionContainer').show();
 			});
 
-			if ( ! $('permissionLevelAll').getProperty('checked'))
+			if ( ! permissionLevelAll.getProperty('checked'))
 			{
-				$('permissionLevelCustom').fireEvent('click');
-				$('permissionLevelCustom').setProperty('checked', 'checked');
+				permissionLevelCustom.fireEvent('click');
+				permissionLevelCustom.setProperty('checked', 'checked');
 			}
 			else
 			{

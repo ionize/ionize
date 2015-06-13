@@ -81,9 +81,11 @@
 	// Toolbox
 	ION.initToolbox('users_toolbox');
 
+	var elTabUserList = $('userListTab');
+	var elTabRoleList = $('roleListTab');
 
 	// Users list tab
-	$('userListTab').addEvent('click', function()
+	elTabUserList.addEvent('click', function()
 	{
 		if ( ! this.retrieve('loaded'))
 		{
@@ -104,12 +106,12 @@
 			);
 		}
 	});
-	$('userListTab').fireEvent('click');
+	elTabUserList.fireEvent('click');
 
 
 	<?php if ( Authority::can('access', 'admin/role')) :?>
 		// Roles list tab
-		$('roleListTab').addEvent('click', function()
+		elTabRoleList.addEvent('click', function()
 		{
 			if ( ! this.retrieve('loaded'))
 			{
@@ -120,7 +122,7 @@
 				);
 			}
 		});
-		$('roleListTab').fireEvent('click');
+		elTabRoleList.fireEvent('click');
 	<?php endif ;?>
 
 	// Tabs

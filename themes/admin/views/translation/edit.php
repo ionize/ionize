@@ -269,13 +269,14 @@
 				'deleteTranslationTerm' + rel,
 				function()
 				{
-					var translationInputs = $('translationForm').getElements('input[name=key_' + rel + ']');
+					var translationForm   = $('translationForm');
+					var translationInputs = translationForm.getElements('input[name=key_' + rel + ']');
 
 					translationInputs.each(function(el){
 						el.setProperty('value', '');
 					});
 
-					ION.sendData(admin_url + 'translation/save', $('translationForm'))
+					ION.sendData(admin_url + 'translation/save', translationForm)
 				},
 				Lang.get('ionize_message_delete_translation')
 			);

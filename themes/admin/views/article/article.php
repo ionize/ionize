@@ -246,10 +246,10 @@ if ($tracker_title == '')
 							<a id="btnAddVideoUrl" class="right light button">
 								<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
 							</a>
-							<a class="left light button" onclick="javascript:mediaManager.loadMediaList();return false;">
+							<a class="left light button" onclick="mediaManager.loadMediaList();return false;">
 								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
 							</a>
-							<a class="left light button unlink" onclick="javascript:mediaManager.detachAllMedia();return false;">
+							<a class="left light button unlink" onclick="mediaManager.detachAllMedia();return false;">
 								<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all'); ?>
 							</a>
                         </p>
@@ -335,12 +335,13 @@ if ($tracker_title == '')
 
 	}
 
-	if ($('ordering_select'))
+	var el_ordering_select = $('ordering_select');
+	if (el_ordering_select)
 	{
 		var cookieName = 'new-article-order';
 		var order_options = 'first';
 
-		$('ordering_select').addEvent('change', function()
+		el_ordering_select.addEvent('change', function()
 		{
 			Cookie.write(cookieName, this.value);
 		});
@@ -348,14 +349,14 @@ if ($tracker_title == '')
 		if (Cookie.read(cookieName))
 		{
 			order_options = Cookie.read(cookieName);
-			$('ordering_select').getElement('[value="'+order_options+'"]').setProperty('selected', 'selected');
+			el_ordering_select.getElement('[value="'+order_options+'"]').setProperty('selected', 'selected');
 			if (order_options == 'after')
 				$('ordering_select').fireEvent('change');
 		}
 	}
 
 	// Copy Lang data to other languages dynamically
-	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'content', 'meta_title'));
+	ION.initCopyLang('.copyLang', ['title', 'subtitle', 'url', 'content', 'meta_title']);
 	
 	// Tabs
 	var articleTab = new TabSwapper({

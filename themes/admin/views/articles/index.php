@@ -57,12 +57,14 @@
 	ION.initToolbox('articles_toolbox');
 
 	// Filter
-	$('btnSubmitFilter').addEvent('click', function(e)
+	var el_btnSubmitFilter = $('btnSubmitFilter');
+	el_btnSubmitFilter.addEvent('click', function(e)
 	{
 		ION.HTML('article/get_articles_list', $('articleFilter'), {'update':$('articleList')});
 	});
 
-	$('id_menu').addEvent('change', function()
+	var el_id_menu = $('id_menu');
+	el_id_menu.addEvent('change', function()
 	{
 		ION.HTML(
 			ION.adminUrl + 'page/get_parents_select',
@@ -77,9 +79,9 @@
 			}
 		);
 	});
-	$('id_menu').fireEvent('change');
+	el_id_menu.fireEvent('change');
 
-	$('btnSubmitFilter').fireEvent('click');
+	el_btnSubmitFilter.fireEvent('click');
 
 </script>
 <?php endif;?>

@@ -71,8 +71,9 @@ $id_element_definition = $element_definition['id_element_definition'];
 	var id_definition = '<?php echo $element_definition['id_element_definition']; ?>';
 
 	// Window Title : Add Element
-	if ($('titleAddContentElement'))
-		$('titleAddContentElement').set('text', '<?php echo $title ?>');
+	var el_titleAddContentElement = $('titleAddContentElement');
+	if (el_titleAddContentElement)
+		el_titleAddContentElement.set('text', '<?php echo $title ?>');
 	// Edit mode
 	else
 	{
@@ -100,9 +101,10 @@ $id_element_definition = $element_definition['id_element_definition'];
 
 
 	// Back button
-	if ($('elementAddBackButton'))
+	var el_elementAddBackButton = $('elementAddBackButton');
+	if (el_elementAddBackButton)
 	{
-		$('elementAddBackButton').addEvent('click', function(el)
+		el_elementAddBackButton.addEvent('click', function(el)
 		{
 			ION.HTML('element_definition/get_element_list', {'parent': '<?php echo $parent?>', 'id_parent': '<?php echo $id_parent?>'}, {'update': 'elementAddContainer' });
 		});
@@ -111,19 +113,23 @@ $id_element_definition = $element_definition['id_element_definition'];
 	var saveElement<?php echo $id_element; ?> = function(options)
 	{
 		// New Element : Add current opened parent / parent_id to the form
-		if ($('element') && $('id_element' + id).value == '')
+		var el_element 				= $('element');
+		var el_elementParent_id   	= $('elementParent' + id);
+		var el_elementIdParent_id	= $('elementIdParent' + id);
+
+		if (el_element && $('id_element' + id).value == '')
 		{
-			var parent = $('element').value;
+			var parent = el_element.value;
 			var id_parent = $('id_' + parent).value;
 
 			if (parent && id_parent)
 			{
-				$('elementParent' + id).value = parent;
-				$('elementIdParent' + id).value = id_parent;
+				el_elementParent_id.value = parent;
+				el_elementIdParent_id.value = id_parent;
 			}
 		}
 
-		if ($('elementParent'+ id).value !='' && $('elementIdParent'+ id).value != '')
+		if (el_elementParent_id.value !='' && el_elementIdParent_id.value != '')
 		{
 			// tinyMCE and CKEditor trigerSave
 			// mandatory for text save. See how to externalize without make it too complex.
@@ -147,7 +153,7 @@ $id_element_definition = $element_definition['id_element_definition'];
 								{width:500, height:350},
 								{'id_element': json.id_element}
 							);
-						};
+						}
 						ION.closeWindow($('wcontentElement'+ id))
 					}
 				}

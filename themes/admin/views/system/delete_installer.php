@@ -22,8 +22,8 @@
 			<p><?php echo lang('ionize_message_delete_installer'); ?></p>
 
 			<div class="buttons">
-				<button type="button" class="button yes left" onclick="javascript:location.href='<?php echo admin_url(); ?>';"><?php echo lang('button_delete_installer_done_admin'); ?></button>
-				<button type="button" class="button yes right" onclick="javascript:location.href='<?php echo base_url(); ?>';"><?php echo lang('button_delete_installer_done_site'); ?></button>
+				<button type="button" class="button yes left" onclick="location.href='<?php echo admin_url(); ?>';"><?php echo lang('button_delete_installer_done_admin'); ?></button>
+				<button type="button" class="button yes right" onclick="location.href='<?php echo base_url(); ?>';"><?php echo lang('button_delete_installer_done_site'); ?></button>
 			</div>
 
 		</div>

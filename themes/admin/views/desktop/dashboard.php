@@ -513,9 +513,10 @@ $user_role = User()->get_role();
 		});
 	});
 
-	if ($('shortcutBloc'))
+	var el_shortcutBloc = $('shortcutBloc');
+	if (el_shortcutBloc)
 	{
-		var desktopIcons = $('shortcutBloc').getElements('.desktopIcon');
+		var desktopIcons = el_shortcutBloc.getElements('.desktopIcon');
 
 		desktopIcons.each(function(icon)
 		{

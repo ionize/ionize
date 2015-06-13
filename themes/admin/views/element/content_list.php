@@ -346,7 +346,6 @@ $width = (100 / $nbLang);
 
 <script type="text/javascript">
 
-
 	/**
 	 * itemManager
 	 *
@@ -358,7 +357,6 @@ $width = (100 / $nbLang);
 		'id_parent':'<?php echo $id_parent; ?>',
 		'sortable': true
 	});
-
 
 	// Add toggler to each definition
 	<?php if(count($element['fields']) > 1) :?>
