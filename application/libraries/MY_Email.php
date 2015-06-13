@@ -46,7 +46,9 @@ class MY_Email extends CI_Email
 					$email = isset($data['email']) ? $data['email'] : self::$ci->input->post('email');
 					break;
 
-				case ($email == 'contact' || $email == 'technical' || $email == 'info'):
+				case 'contact':
+				case 'technical':
+				case 'info':
 					$email = (Settings::get('email_'.$email) != '') ? Settings::get('email_'.$email) : NULL;
 					break;
 

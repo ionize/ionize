@@ -7,7 +7,7 @@
 |
 */
 $config['version'] = '1.0.8';
-$config['version_date'] = '2014.11.08';
+$config['version_date'] = '2015.06.13';
 
 
 /*
