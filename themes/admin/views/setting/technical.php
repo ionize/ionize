@@ -309,8 +309,9 @@
                 <h3><?php echo lang('ionize_title_db_backup'); ?></h3>
 
                 <p>
-
-                    <a class="button light" id="bdBackup" href="<?php echo admin_url(); ?>setting/backup_database"><i class="icon-database"></i><?php echo lang('ionize_label_db_backup'); ?></a>
+                    <a class="button light" id="bdBackup" href="<?php echo admin_url(); ?>setting/backup_database">
+						<i class="icon-database"></i><?php echo lang('ionize_label_db_backup'); ?>
+					</a>
                 </p>
 
 			</div>
@@ -668,7 +669,7 @@
 				
 				
 				<!-- Admin URL -->
-				<h3 class="toggler"><?php echo lang('ionize_title_admin_url'); ?></h3>
+				<h3 class="toggler"><?php echo lang('ionize_title_admin_panel'); ?></h3>
 				
 				<div class="element">
 				
@@ -681,6 +682,19 @@
 							<dd>
 								<input id="admin_url" name="admin_url" class="inputtext w120" value="<?php echo config_item('admin_url'); ?>" /><br/>
 								<p class="lite pl10"><?php echo lang('ionize_onchange_ionize_settings'); ?></p>
+							</dd>
+						</dl>
+
+						<dl>
+							<dt>
+								<label><?php echo lang('ionize_title_admin_overlay_position') ?></label>
+							</dt>
+							<dd>
+								<?php $overlayPosition = (int) config_item('admin_overlay_position'); ?>
+								<label for="panel_left"><?php echo ucfirst(lang('ionize_label_left')) ?></label>
+								<input <?php if ($overlayPosition !== 1):?>checked="checked"<?php endif;?> type="radio" name="overlay_position" id="panel_left" value="0" />
+								<label for="panel_right"><?php echo ucfirst(lang('ionize_label_right')) ?></label>
+								<input <?php if ($overlayPosition === 1):?>checked="checked"<?php endif;?> type="radio" name="overlay_position" id="panel_right" value="1" />
 							</dd>
 						</dl>
 			
