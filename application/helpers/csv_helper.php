@@ -23,7 +23,7 @@
  */
 if ( ! function_exists('csv_from_array'))
 {
-	function csv_from_array($array, $delim = ",", $newline = "\n", $enclosure = '"')
+	function csv_from_array($array, $delim = ',', $newline = "\n", $enclosure = '"')
 	{
 		$out = '';
 		

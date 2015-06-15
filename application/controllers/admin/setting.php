@@ -1209,7 +1209,7 @@ class Setting extends MY_admin
 					$val = ($val === TRUE ) ? 'true' : 'false';
 				}
 				
-				$conf .= "\$db['default']['$key'] = $val;\n";
+				$conf .= "\$db['default']['".$key."'] = ".$val.";\n";        
 			} 
 			
 			// files end
@@ -1327,7 +1327,7 @@ class Setting extends MY_admin
 		 
 			foreach ($data as $key => $val)
 			{
-				$conf .= "\$config['$key'] = \"$val\";\n";
+				$conf .= "\$config['".$key."'] = \"".$val."\";\n";
 			} 
 			
 			// files end

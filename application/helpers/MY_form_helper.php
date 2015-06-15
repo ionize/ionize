@@ -57,12 +57,12 @@ if ( ! function_exists('form_build_field'))
 					// Checkbox (on / off)
 					if ($field['length'] == 1)
 					{
-						$html_type = "checkbox";
+						$html_type = 'checkbox';
 					}
 					// Input
 					else
 					{
-						$html_type = "input";
+						$html_type = 'input';
 					}
 					break;
 
@@ -70,7 +70,7 @@ if ( ! function_exists('form_build_field'))
 				case 'int':
 				case 'char':
 				case 'tinytext':
-					$html_type = "input";
+					$html_type = 'input';
 					break;
 
 				case 'varchar':
@@ -79,23 +79,23 @@ if ( ! function_exists('form_build_field'))
 					if ($field_type === 'varchar' && $field['length'] < 255)
 						$html_type = 'input';
 					elseif ($field_type === 'varchar' && $field['length'] < 3000)
-						$html_type = "textarea";
+						$html_type = 'textarea';
 					else
-						$html_type = "html";
+						$html_type = 'html';
 
 					break;
 
 				case 'enum':
-					$html_type = "radio";
+					$html_type = 'radio';
 					break;
 
 				case 'date':
 				case 'datetime':
-					$html_type = "date";
+					$html_type = 'date';
 					break;
 
 				default:
-					$html_type = "input";
+					$html_type = 'input';
 			}
 		}
 

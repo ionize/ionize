@@ -108,7 +108,7 @@ class Config_model extends Base_model
 					(
 						\$'."config
 						\[(['\"])
-						($key)
+						(".$key.")
 						\\2\]
 						\s*=\s*
 					)
@@ -117,7 +117,7 @@ class Config_model extends Base_model
 			}
 			else
 			{
-				$pattern = "%([\"']($key)[\"'][\s]*?=>[\s]*?)((?:(true|false),)|([\"'](.*?)[\"']))%";
+				$pattern = "%([\"'](".$key.")[\"'][\s]*?=>[\s]*?)((?:(true|false),)|([\"'](.*?)[\"']))%";
 				// $pattern = "%([\"'](".$key.")[\"'][\s]*?=>[\s]*?)(.*?,)%";
 			}
 
@@ -131,7 +131,7 @@ class Config_model extends Base_model
 				else if (strtolower($val) == 'false')
 					$val = var_export(FALSE, TRUE);
 
-				else $val = "'$val'";
+				else $val = "'".$val."'";
 
 				if ((strtolower($val) == 'true' OR strtolower($val) == 'false') && ! is_null($module_key))
 					$val .= ',';

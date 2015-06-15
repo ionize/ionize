@@ -106,7 +106,7 @@ class Element_model extends Base_model
 		$definitions_fields = self::$ci->extend_field_model->get_list($cond, 'extend_field');
 
 		// Get fields instances
-		$sql = "
+		$sql = '
 			SELECT
 				extend_field.id_extend_field,
 				extend_field.name,
@@ -115,7 +115,7 @@ class Element_model extends Base_model
 				extend_fields.*
 			FROM extend_fields
 			JOIN extend_field ON extend_field.id_extend_field = extend_fields.id_extend_field
-			WHERE extend_fields.id_parent = $id_element
+			WHERE extend_fields.id_parent = '.$id_element."
 			AND extend_fields.parent = 'element'
 			ORDER BY extend_field.ordering ASC
 		";
@@ -221,15 +221,15 @@ class Element_model extends Base_model
 		$where = "
 			WHERE extend_fields.id_parent IN (
 				SELECT id_element FROM element
-				WHERE parent= '$parent'
-				AND id_parent= $id_parent
+				WHERE parent= '".$parent."'
+				AND id_parent= ".$id_parent."
 			)
 			AND extend_fields.parent = 'element'
 		";
 
 		if ($id_element)
-			$where = "
-				WHERE extend_fields.id_parent = $id_element
+			$where = '
+				WHERE extend_fields.id_parent = '.$id_element."
 				AND extend_fields.parent = 'element'
 			";
 		
@@ -532,7 +532,7 @@ class Element_model extends Base_model
 				SELECT
 					id_extend_field,
 					'element',
-					$id_element,
+					".$id_element.",
 					lang,
 					content,
 					ordering

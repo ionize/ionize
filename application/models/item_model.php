@@ -193,7 +193,7 @@ class Item_model extends Base_model
 					WHERE parent = '" . $parent . "'
 					AND id_parent = " . $id_parent . "
 				)
-				AND (lang='' OR lang IS NULL OR lang='$lang')
+				AND (lang='' OR lang IS NULL OR lang='".$lang."')
 			";
 
 		$query = $this->{$this->db_group}->query($sql);
@@ -345,9 +345,9 @@ class Item_model extends Base_model
 				extend_fields.parent = 'item' AND
  				extend_fields.id_parent in (
 					SELECT id_item from item
-					WHERE id_item_definition= $id_item_definition
+					WHERE id_item_definition= ".$id_item_definition.'
 				)
-			";
+			';
 		$query = $this->{$this->db_group}->query($sql);
 
 		$fields = array();

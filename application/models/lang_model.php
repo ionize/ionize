@@ -257,14 +257,14 @@ class Lang_model extends Base_model
 		// Copy...
 		$sql = "INSERT INTO url (id_entity, type, canonical, active, lang, path, creation_date, path_ids, full_path_ids )
 				(
-					SELECT id_entity, type, canonical, 1, '$to',path,'$now',path_ids, full_path_ids from url
-					WHERE lang = '$from'
+					SELECT id_entity, type, canonical, 1, '".$to."',path,'".$now."',path_ids, full_path_ids from url
+					WHERE lang = '".$from."'
 					AND active = 1
 					AND id_entity NOT IN
 					(
 						SELECT DISTINCT id_entity
 						FROM url
-						WHERE lang = '$to'
+						WHERE lang = '". $to ."'
 						AND active = 1
 					)
 				)";

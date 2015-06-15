@@ -94,7 +94,7 @@ class CI_Router
 		{
 			if ( ! in_array($_SERVER['REMOTE_ADDR'], config_item('maintenance_ips')))
 			{
-				$content = "Website in maintenance";
+				$content = 'Website in maintenance';
 				
 				if (file_exists(FCPATH.'maintenance.html'))
 				{
@@ -323,7 +323,7 @@ class CI_Router
 				show_error('The URI you submitted has disallowed characters.');
 		}
 		
-		// Convert programatic characters to entities
+		// Convert programmatic characters to entities
 		$bad	= array('$', 		'(', 		')',	 	'%28', 		'%29');
 		$good	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;');
 

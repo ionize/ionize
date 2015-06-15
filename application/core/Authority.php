@@ -54,7 +54,7 @@ class Authority extends Authority\Ability {
 	 */
 	public static function initialize($user)
     {
-		log_message('debug', "Authority Class Initialized");
+		log_message('debug', 'Authority Class Initialized');
 
 		static::$initialized = TRUE;
 
