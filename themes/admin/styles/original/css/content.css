@@ -966,7 +966,7 @@ table.list.transparent tr {
 .tab-content {
 	height:2em;
 	list-style:none;
-	padding:0 0 0px 0;
+	padding:0 0 0 0;
 }
 .tab-content li.right {
 	float:right;
@@ -984,7 +984,7 @@ table.list.transparent tr {
 	opacity:0.3;
 }
 .tab-content li.icon a {
-	padding:0.3em 1.1em 0em 1.1em;
+	padding:0.3em 1.1em 0 1.1em;
 }
 .tab-content li.dl a {
 	padding-right: 1.6em;
@@ -1056,7 +1056,7 @@ textarea.tab {
 
 .textboxlist-autocomplete-result-focus { background: #edeceb }
 
-.textboxlist-autocomplete-highlight { background: #098ED1;background: #333; color:#fff;font-weight: bold; padding:2px 1px; }
+.textboxlist-autocomplete-highlight { background: #333; color:#fff;font-weight: bold; padding:2px 1px; }
 
 /* Cards & Lists */
 #mediaList{
@@ -1093,7 +1093,6 @@ div.list .thumb {
 	float: left;
 }
 div.list .data {
-	margin-left: 10px;
 	overflow: hidden;
 	margin-left: 150px;
 }
@@ -1762,7 +1761,7 @@ ol.steps {
 }
 ol.steps li {
 	float: left;
-	margin-right:0px;
+	margin-right:0;
 	position: relative;
 	display: block;
 /*
@@ -2169,4 +2168,3 @@ ol.steps li a:before {
 .mh360 {min-height:360px !important; }
 .mh380 {min-height:380px !important; }
 .mh400 {min-height:400px !important; }
-
