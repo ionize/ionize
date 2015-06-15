@@ -184,7 +184,7 @@ class permission_model extends Base_model
 				break;
 
 			default:
-				$this->{$this->db_group}->where("resource like = '$type/%'");
+				$this->{$this->db_group}->where("resource LIKE = '".$type."/%'");
 				break;
 		}
 

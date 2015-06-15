@@ -146,12 +146,12 @@ class Article_model extends Base_model
 		$this->{$this->db_group}->select('url.canonical, url.path, url.path_ids, url.full_path_ids');
 		$this->{$this->db_group}->join(
 			$this->url_table. ' as url',
-			$this->table.".id_article = url.id_entity AND ".
-			"(".
-				"url.active = 1 AND ".
+			$this->table.'.id_article = url.id_entity AND '.
+			'('.
+				'url.active = 1 AND '.
 				"url.type = 'article' AND ".
-				"url.lang = ". $this->lang_table .".lang".
-			")",
+				'url.lang = '. $this->lang_table .'.lang'.
+			')',
 			'left'
 		);
 
@@ -161,7 +161,7 @@ class Article_model extends Base_model
 		");
 		$this->{$this->db_group}->join(
 			'page_article',
-			$this->table.".id_article = page_article.id_article",
+			$this->table.'.id_article = page_article.id_article',
 			'left'
 		);
 		$this->{$this->db_group}->join(
@@ -171,7 +171,7 @@ class Article_model extends Base_model
 		);
 		$this->{$this->db_group}->join(
 			'page_lang',
-			"page_lang.id_page = page.id_page AND article_lang.lang = page_lang.lang",
+			'page_lang.id_page = page.id_page AND article_lang.lang = page_lang.lang',
 			'left'
 		);
 
@@ -206,17 +206,17 @@ class Article_model extends Base_model
 		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');
 		$this->{$this->db_group}->join(
 			$this->url_table. ' as url',
-			$this->table.".id_article = url.id_entity AND ".
-			"(".
-			"url.active = 1 AND ".
+			$this->table.'.id_article = url.id_entity AND '.
+			'('.
+			'url.active = 1 AND '.
 			"url.type = 'article' AND ".
-			"url.lang = ". $this->lang_table .".lang".
-			")",
+			'url.lang = '. $this->lang_table .'.lang'.
+			')',
 			'left'
 		);
 		$this->{$this->db_group}->join(
 			'page_article',
-			$this->table.".id_article = page_article.id_article",
+			$this->table.'.id_article = page_article.id_article',
 			'left'
 		);
 		$this->{$this->db_group}->join(
@@ -226,7 +226,7 @@ class Article_model extends Base_model
 		);
 		$this->{$this->db_group}->join(
 			'page_lang',
-			"page_lang.id_page = page.id_page AND article_lang.lang = page_lang.lang",
+			'page_lang.id_page = page.id_page AND article_lang.lang = page_lang.lang',
 			'left'
 		);
 

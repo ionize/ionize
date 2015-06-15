@@ -140,7 +140,7 @@ class rule_model extends Base_model
 
 		if ( ! is_null($type))
 		{
-			$where = array("resource like '$type/%'");
+			$where = array("resource LIKE '".$type."/%'");
 		}
 
 		return $this->get_list($where);
@@ -452,7 +452,7 @@ class rule_model extends Base_model
 					break;
 
 				default:
-					$this->{$this->db_group}->where("resource like '$type/%'");
+					$this->{$this->db_group}->where("resource LIKE '".$type."/%'");
 					break;
 			}
 		}

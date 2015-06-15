@@ -11,9 +11,9 @@ class GoogleSpell extends SpellChecker {
 	/**
 	 * Spellchecks an array of words.
 	 *
-	 * @param {String} $lang Language code like sv or en.
-	 * @param {Array} $words Array of words to spellcheck.
-	 * @return {Array} Array of misspelled words.
+	 * @param String   $lang Language code like sv or en.
+	 * @param  Array   $words Array of words to spellcheck.
+	 * @return Array   Array of misspelled words.
 	 */
 	function &checkWords($lang, $words) {
 		$wordstr = implode(' ', $words);
@@ -29,9 +29,9 @@ class GoogleSpell extends SpellChecker {
 	/**
 	 * Returns suggestions of for a specific word.
 	 *
-	 * @param {String} $lang Language code like sv or en.
-	 * @param {String} $word Specific word to get suggestions for.
-	 * @return {Array} Array of suggestions for the specified word.
+	 * @param   String  $lang Language code like sv or en.
+	 * @param   String  $word Specific word to get suggestions for.
+	 * @return  Array   Array of suggestions for the specified word.
 	 */
 	function &getSuggestions($lang, $word) {
 		$sug = array();
@@ -53,23 +53,23 @@ class GoogleSpell extends SpellChecker {
 	function &_getMatches($lang, $str) {
 		$server = 'www.google.com';
 		$port = 443;
-		$path = "/tbproxy/spell?lang=$lang&hl=en";
+		$path = '/tbproxy/spell?lang=' . $lang . '&hl=en';
 		$host = 'www.google.com';
 		$url = 'https://' . $server;
 
 		// Setup XML request
 		$xml = '<?xml version="1.0" encoding="utf-8" ?><spellrequest textalreadyclipped="0" ignoredups="0" ignoredigits="1" ignoreallcaps="1"><text>' . $str . '</text></spellrequest>';
 
-		$header  = "POST $path HTTP/1.0 \r\n"
-			. "MIME-Version: 1.0 \r\n"
-			. "Content-type: application/PTI26 \r\n"
-			. 'Content-length: '.strlen($xml)." \r\n"
-			. "Content-transfer-encoding: text \r\n"
-			. "Request-number: 1 \r\n"
-			. "Document-type: Request \r\n"
-			. "Interface-Version: Test 1.4 \r\n"
-			. "Connection: close \r\n\r\n"
-			. $xml;
+		$header  = 'POST '.$path." HTTP/1.0 \r\n";
+		$header .= "MIME-Version: 1.0 \r\n";
+		$header .= "Content-type: application/PTI26 \r\n";
+		$header .= 'Content-length: '.strlen($xml)." \r\n";
+		$header .= "Content-transfer-encoding: text \r\n";
+		$header .= "Request-number: 1 \r\n";
+		$header .= "Document-type: Request \r\n";
+		$header .= "Interface-Version: Test 1.4 \r\n";
+		$header .= "Connection: close \r\n\r\n";
+		$header .= $xml;
 
 		// Use curl if it exists
 		if (function_exists('curl_init')) {
@@ -83,7 +83,7 @@ class GoogleSpell extends SpellChecker {
 			curl_close($ch);
 		} else {
 			// Use raw sockets
-			$fp = fsockopen("ssl://$server", $port, $errno, $errstr, 30);
+			$fp = fsockopen('ssl://' . $server, $port, $errno, $errstr, 30);
 			if ($fp) {
 				// Send request
 				fwrite($fp, $header);

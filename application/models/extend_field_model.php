@@ -488,47 +488,47 @@ class Extend_field_model extends Base_model
 				$in_types = "'" . implode("','", $types['article']) . "'";
 
 				$sql = "
-					select
-						'article' as type,
-						page_article.id_page as id_parent,
-						article.id_article as id_entity,
-						page_lang.title as parent_title,
+					SELECT
+						'article' AS type,
+						page_article.id_page AS id_parent,
+						article.id_article AS id_entity,
+						page_lang.title AS parent_title,
 						article_lang.title,
 						article_lang.subtitle,
 						article_lang.content,
 						page_article.online,
 						page_article.link_type,
 						page_article.link_id,
-						url.path as entity_url,
-						page_article.link_type as target_type,
-						IF (page_article.link_type = 'page', page_lang_target.online, article_lang_target.online) as target_online,
-						url_target.path as target_url,
-						COALESCE(article_lang_target.title, page_lang_target.title) as target_title,
-						COALESCE(article_lang_target.subtitle, page_lang_target.subtitle) as target_subtitle,
-						article_lang_target.content as target_content
+						url.path AS entity_url,
+						page_article.link_type AS target_type,
+						IF (page_article.link_type = 'page', page_lang_target.online, article_lang_target.online) AS target_online,
+						url_target.path AS target_url,
+						COALESCE(article_lang_target.title, page_lang_target.title) AS target_title,
+						COALESCE(article_lang_target.subtitle, page_lang_target.subtitle) AS target_subtitle,
+						article_lang_target.content AS target_content
 
-					from article
-						join article_lang on article_lang.id_article = article.id_article and lang='$lang'
-						join page_article on
+					FROM article
+						JOIN article_lang ON article_lang.id_article = article.id_article AND lang='".$lang."'
+						JOIN page_article ON
 						(
 							page_article.id_article = article.id_article
-							and concat(page_article.id_page, '.', page_article.id_article) in ($in_types)
+							AND concat(page_article.id_page, '.', page_article.id_article) IN (".$in_types.")
 						)
-						left join page_lang
-							on page_lang.id_page = page_article.id_page and page_lang.lang = '$lang'
-						left join url
-							on url.type='article' and url.id_entity = page_article.id_article and url.active=1 and url.lang ='$lang'
-						left join url as url_target on
+						LEFT JOIN page_lang
+							ON page_lang.id_page = page_article.id_page AND page_lang.lang = '".$lang."'
+						LEFT JOIN url
+							ON url.type='article' AND url.id_entity = page_article.id_article AND url.active=1 AND url.lang ='".$lang."'
+						LEFT JOIN url AS url_target ON
 						(
 							url_target.type = page_article.link_type
-							and url_target.id_entity = (if(LOCATE('.', page_article.link_id)>0, SUBSTRING(page_article.link_id, LOCATE('.', page_article.link_id)+1), page_article.link_id))
-							and url_target.active=1
-							and url_target.lang ='$lang'
+							AND url_target.id_entity = (if(LOCATE('.', page_article.link_id)>0, SUBSTRING(page_article.link_id, LOCATE('.', page_article.link_id)+1), page_article.link_id))
+							AND url_target.active=1
+							AND url_target.lang ='".$lang."'
 						)
-						left join page_lang as page_lang_target
-							on page_lang_target.id_page = url_target.id_entity and url_target.type='page' and page_lang_target.lang ='$lang'
-						left join article_lang as article_lang_target
-							on article_lang_target.id_article = url_target.id_entity and url_target.type='article' and article_lang_target.lang='$lang'
+						LEFT JOIN page_lang AS page_lang_target
+							ON page_lang_target.id_page = url_target.id_entity AND url_target.type='page' AND page_lang_target.lang ='".$lang."'
+						LEFT JOIN article_lang AS article_lang_target
+							ON article_lang_target.id_article = url_target.id_entity AND url_target.type='article' AND article_lang_target.lang='".$lang."'
 				";
 			}
 
@@ -542,41 +542,41 @@ class Extend_field_model extends Base_model
 				}
 
 				$sql .= "
-					select
+					SELECT
 						'page' as type,
-						NULL as id_parent,
-						page.id_page as id_entity,
-						NULL as parent_title,
+						NULL AS id_parent,
+						page.id_page AS id_entity,
+						NULL AS parent_title,
 						page_lang.title,
 						page_lang.subtitle,
-						NULL as content,
+						NULL AS content,
 						page_lang.online,
 						page.link_type,
 						page.link_id,
-						url.path as entity_url,
-						page.link_type as target_type,
-						IF (page.link_type = 'page', page_lang_target.online, article_lang_target.online) as target_online,
-						url_target.path as target_url,
-						COALESCE(article_lang_target.title, page_lang_target.title) as target_title,
-						COALESCE(article_lang_target.subtitle, page_lang_target.subtitle) as target_subtitle,
-						article_lang_target.content as target_content
-					from page
-						left join page_lang on page_lang.id_page = page.id_page and lang='$lang'
-						left join url on url.type = 'page' and url.id_entity = page.id_page and url.active=1 and url.lang ='$lang'
-						left join url as url_target on
+						url.path AS entity_url,
+						page.link_type AS target_type,
+						IF (page.link_type = 'page', page_lang_target.online, article_lang_target.online) AS target_online,
+						url_target.path AS target_url,
+						COALESCE(article_lang_target.title, page_lang_target.title) AS target_title,
+						COALESCE(article_lang_target.subtitle, page_lang_target.subtitle) AS target_subtitle,
+						article_lang_target.content AS target_content
+					FROM page
+						LEFT JOIN page_lang ON page_lang.id_page = page.id_page AND lang='".$lang."'
+						LEFT JOIN url ON url.type = 'page' AND url.id_entity = page.id_page AND url.active=1 AND url.lang ='".$lang."'
+						LEFT JOIN url AS url_target ON
 						(
 							url_target.type = page.link_type
-							and url_target.id_entity = (if(LOCATE('.', page.link_id)>0, SUBSTRING(page.link_id, LOCATE('.', page.link_id)+1), page.link_id))
-							and url_target.active=1 and url_target.lang ='$lang'
+							AND url_target.id_entity = (if(LOCATE('.', page.link_id)>0, SUBSTRING(page.link_id, LOCATE('.', page.link_id)+1), page.link_id))
+							AND url_target.active=1 AND url_target.lang ='".$lang."'
 						)
-						left join page_lang as page_lang_target
-							on page_lang_target.id_page = url_target.id_entity and url_target.type='page' and page_lang_target.lang ='$lang'
-						left join article_lang as article_lang_target
-							on article_lang_target.id_article = url_target.id_entity and url_target.type='article' and article_lang_target.lang='$lang'
+						LEFT JOIN page_lang AS page_lang_target
+							ON page_lang_target.id_page = url_target.id_entity AND url_target.type='page' AND page_lang_target.lang ='".$lang."'
+						LEFT JOIN article_lang as article_lang_target
+							ON article_lang_target.id_article = url_target.id_entity AND url_target.type='article' AND article_lang_target.lang='".$lang."'
 
-					where
-						page.id_page in ($in_types)
-				";
+					WHERE
+						page.id_page in (".$in_types.')
+				';
 			}
 
 			if ( ! empty($sql))
@@ -1092,18 +1092,16 @@ class Extend_field_model extends Base_model
 		$sql = "
 			SELECT e.id_extend_field
 			FROM extend_field e
-				join extend_field_context c on c.id_extend_field = e.id_extend_field
+				JOIN extend_field_context c on c.id_extend_field = e.id_extend_field
 			WHERE
-				e.name = '$name'
-				AND c.context='$context'
-				AND c.id_context = $id_context
-		";
+				e.name = '".$name."'
+				AND c.context='".$context."'
+				AND c.id_context = ".$id_context;
 
 		if ( ! is_null($id_extend))
 		{
-			$sql .= "
-				AND e.id_extend_field <> $id_extend
-			";
+			$sql .= '
+				AND e.id_extend_field <> '.$id_extend;
 		}
 
 		$query = $this->{$this->db_group}->query($sql);

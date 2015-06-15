@@ -18,6 +18,11 @@ when the user is connected to the Admin panel as Editor.
 	background: url(../images/flag_edit_mode.png) no-repeat top left;
 	cursor: pointer;
 }
+#ionizeLoggedAsEditorFlag.right{
+	left: auto;
+	right: 0;
+	background: url(../images/flag_edit_mode_right.png) no-repeat top left;
+}
 #ionizeLoggedAsEditorFlag a{
 	display:block;
 	width:80px;

@@ -1204,7 +1204,7 @@ class Base_model extends CI_Model
 
 		$this->_process_where($where, $table);
 
-		$this->{$this->db_group}->select("group_concat($field separator ',') as ids", FALSE);
+		$this->{$this->db_group}->select('group_concat('.$field." separator ',') as ids", FALSE);
 
 		$query = $this->{$this->db_group}->get($table);
 
@@ -2661,7 +2661,7 @@ class Base_model extends CI_Model
 
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 
-		$query = $this->{$this->db_group}->query("SHOW FULL COLUMNS FROM " . $table);
+		$query = $this->{$this->db_group}->query('SHOW FULL COLUMNS FROM ' . $table);
 
 		$fields = $query->result_array();
 
@@ -2684,7 +2684,7 @@ class Base_model extends CI_Model
 
 			if ($type[0] == 'enum')
 			{
-				$enum_values = preg_replace("/[enum'()]+/", "", $field['type']);
+				$enum_values = preg_replace("/[enum'()]+/", '', $field['type']);
 				$type[1] = explode(',', $enum_values);
 			}
 
@@ -2826,7 +2826,7 @@ class Base_model extends CI_Model
 
 		if ($this->has_field('ordering', $table))
 		{
-			$query = $this->{$this->db_group}->query("SET @rank=0");
+			$query = $this->{$this->db_group}->query('SET @rank=0');
 
 			// Perform conditions from the $where array
 			foreach(array('limit', 'offset', 'order_by', 'like') as $key)
@@ -2969,7 +2969,7 @@ class Base_model extends CI_Model
 						if (strtolower($value) === 'null')
 						{
 							unset($values[$k]);
-							$this->{$this->db_group}->where("($key IN ('".implode("','", $values) . "') OR $key IS NULL)", NULL, FALSE);
+							$this->{$this->db_group}->where('(' . $key . " in ('".implode("','", $values)."') OR ".$key.' IS NULL)', NULL, FALSE);
 							$processed = TRUE;
 							break;
 						}
@@ -2994,7 +2994,7 @@ class Base_model extends CI_Model
 					{
 						$this->{$this->db_group}->where($field. ' IS NULL', NULL, FALSE);
 					}
-					elseif($field == "RAW")
+					elseif($field == 'RAW')
 					{
 						$this->{$this->db_group}->where($value, NULL, FALSE);
 					}

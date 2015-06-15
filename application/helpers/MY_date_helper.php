@@ -38,18 +38,18 @@ if ( ! function_exists('getFrenchDatetime'))
 {
 	function getFrenchDatetime($mysqlDatetime)
 	{
-		if($mysqlDatetime != "0000-00-00 00:00:00" && $mysqlDatetime !="")
+		if($mysqlDatetime !='' && $mysqlDatetime != '0000-00-00 00:00:00')
 		{
 			if (($timestamp = strtotime($mysqlDatetime)) == '-1')
 			{
 				return $mysqlDatetime;
 			}
 			else {
-				return date("d.m.Y H:i:s", $timestamp);
+				return date('d.m.Y H:i:s', $timestamp);
 			}
 		}
 		else {
-			return "";
+			return '';
 		}
 	}
 }
@@ -85,7 +85,7 @@ if ( ! function_exists('getMysqlDatetime'))
 				list($year, $month, $day) = preg_split("/[\/.-]/", $date);
 			}
 			else
-				return date("Y-m-d H:i:s", strtotime($inputDate));
+				return date('Y-m-d H:i:s', strtotime($inputDate));
 
 			return "$year-$month-$day $time";
 		}
@@ -97,7 +97,7 @@ if ( ! function_exists('humanize_mdate'))
 {
 	function humanize_mdate($mdate, $datestr = '%d.%m.%Y at %H:%i:%s')
 	{
-		if ($mdate != '' && $mdate != "0000-00-00 00:00:00")
+		if ($mdate != '' && $mdate != '0000-00-00 00:00:00')
 		{
 			$timestamp 	= strtotime($mdate);
 			$datestr 	= str_replace('%\\', '', preg_replace("/([a-z]+?){1}/i", "\\\\\\1", $datestr));

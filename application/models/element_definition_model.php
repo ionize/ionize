@@ -49,7 +49,7 @@ class Element_definition_model extends Base_model
 
 		$this->{$this->db_group}->join(
 			$this->lang_table,
-			$this->lang_table.'.'.$this->pk_name.' = '.$this->table.'.'.$this->pk_name . ' and ' . $this->lang_table.".lang ='$lang'",
+			$this->lang_table.'.'.$this->pk_name.' = '.$this->table.'.'.$this->pk_name . ' AND ' . $this->lang_table.".lang ='".$lang."'",
 			'left'
 		);
 

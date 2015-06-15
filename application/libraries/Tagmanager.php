@@ -2093,7 +2093,7 @@ class TagManager
 			if (is_string($value))
 				$value = addslashes($value);
 
-			$test_value = (is_string($value) OR is_null($value)) ? "'$value'" : $value;
+			$test_value = (is_string($value) OR is_null($value)) ? "'".$value."'" : $value;
 
 			$expression = str_replace($key, $test_value, $expression);
 
@@ -2102,7 +2102,7 @@ class TagManager
 		// If at least one tested value was not NULL
 		if ( ! is_null($test_value))
 		{
-			$return = @eval("\$result = ($expression) ? TRUE : FALSE;");
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
 		}
 		if ($return === NULL OR is_null($test_value))
 		{
@@ -3354,7 +3354,7 @@ class TagManager
 				$expression = str_replace($key, $value, $expression);
 			}
 
-			$return = @eval("\$result = ($expression) ? TRUE : FALSE;");
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
 		}
 	}
 	 */
@@ -3791,9 +3791,9 @@ class TagManager
 
 			if ($idx == 0 && strpos($expression, $key) === FALSE)
 				$expression = $key . $expression;
-			$test_value = ( (! $value == (string)(float)$value) OR is_null($value) OR $value=='') ? "'$value'" : $value;
+			$test_value = ( (! $value == (string)(float)$value) OR is_null($value) OR $value=='') ? "'".$value."'" : $value;
 
-			// if (gettype($test_value) == 'string' && $test_value == '') $test_value = "'$test_value'";
+			// if (gettype($test_value) == 'string' && $test_value == '') $test_value = "'".$test_value."'";
 
 			$expression = str_replace($key, $test_value, $expression);
 		}
@@ -3801,7 +3801,7 @@ class TagManager
 		// If at least one tested value was not NULL
 		if ( ! is_null($test_value))
 		{
-			$return = @eval("\$result = ($expression) ? TRUE : FALSE;");
+			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
 
 		}
 

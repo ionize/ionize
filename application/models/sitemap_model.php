@@ -70,8 +70,8 @@ class Sitemap_model extends Base_model
 				page_lang.lang, priority
 			FROM
 				page
-				LEFT JOIN page_lang on page_lang.id_page = page.id_page
-				LEFT JOIN url on (url.id_entity = page_lang.id_page and url.lang = page_lang.lang)
+				LEFT JOIN page_lang ON page_lang.id_page = page.id_page
+				LEFT JOIN url ON (url.id_entity = page_lang.id_page AND url.lang = page_lang.lang)
 			WHERE
 			 	appears = '1'
 			 	AND page.online = '1'
@@ -80,7 +80,7 @@ class Sitemap_model extends Base_model
 		";
 
 		if ($lang)
-			$sql .= " and page_lang.lang = '$lang'";
+			$sql .= " and page_lang.lang = '".$lang."'";
 
 // log_message('app', print_r($sql, TRUE));
 
@@ -116,7 +116,7 @@ class Sitemap_model extends Base_model
 				p.logical_date
 			FROM url u
 			INNER JOIN page p ON p.id_page = u.id_entity AND p.has_url = 1
-				INNER JOIN lang l on u.lang = l.lang AND l.online = 1
+				INNER JOIN lang l ON u.lang = l.lang AND l.online = 1
 			WHERE
 				u.type = 'page'
 				AND u.active = 1
@@ -131,7 +131,7 @@ class Sitemap_model extends Base_model
 			";
 
 		$sql .="
-			union
+			UNION
 
 			SELECT
 				u.lang,
