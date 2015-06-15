@@ -254,6 +254,7 @@ $lang['ionize_label_new'] = 'New';
 $lang['ionize_label_status'] = 'Status';
 $lang['ionize_label_select_files_to_upload'] = 'Select files to Upload';
 $lang['ionize_label_select_file'] = 'Select File';
+$lang['ionize_label_select_all_files'] = 'Select all files';
 $lang['ionize_label_max_upload_size'] = 'Max Upload';
 $lang['ionize_label_file_uploads'] = 'Upload ?';
 $lang['ionize_label_environment'] = 'Environment';
