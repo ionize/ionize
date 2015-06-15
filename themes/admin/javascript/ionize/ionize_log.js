@@ -36,6 +36,9 @@ var LogWindowManager = new Class({
 
 		this.logContainer = new Element('div', {class:'terminal'}).inject(this.container);
 
+		// var mSize = menu.getComputedSize();
+		// this.logContainer.setStyle('margin-top', mSize.height);
+
 		this.startRetrieve();
 	},
 
