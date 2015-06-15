@@ -209,12 +209,12 @@ class Settings_Model extends Base_model
 		if ( isset($data['lang']) )
 		{
 			$this->{$this->db_group}->where('lang', $data['lang']);
-			$where =" and lang='{$data['lang']}'";
+			$where =" AND lang='".$data['lang']."'";
 		}	
 		
 		if ($this->{$this->db_group}->count_all_results() > 0)
 		{
-			$this->{$this->db_group}->update($this->table, $data, "name = '{$data['name']}' ".$where);
+			$this->{$this->db_group}->update($this->table, $data, "name = '".$data['name']."' ".$where);
 		}
 		else
 		{
@@ -240,11 +240,11 @@ class Settings_Model extends Base_model
 		{
 			
 			// Update media table
-			$sql = 	"UPDATE media set path = REPLACE(path, '" . $old_path . "/', '" . $new_path . "/'), base_path = REPLACE(base_path, '" . $old_path . "/', '" . $new_path . "/') ";
+			$sql = 	"UPDATE media SET path = REPLACE(path, '" . $old_path . "/', '" . $new_path . "/'), base_path = REPLACE(base_path, '" . $old_path . "/', '" . $new_path . "/') ";
 			$this->{$this->db_group}->query($sql);
 			
 			// Update articles table
-			$sql = "UPDATE article_lang set content = REPLACE(content, '/$old_path/', '/$new_path/')";
+			$sql = "UPDATE article_lang SET content = REPLACE(content, '/".$old_path."/', '/" . $new_path . "/')";
 			$this->{$this->db_group}->query($sql);
 		}
 	}

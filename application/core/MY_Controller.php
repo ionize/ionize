@@ -701,9 +701,9 @@ class MY_Admin extends MY_Controller
 		Settings::set('menus', config_item('menus'));
 
 		// No cache for backend
-		$this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
-		$this->output->set_header("Cache-Control: post-check=0, pre-check=0", FALSE);
-		$this->output->set_header("Pragma: no-cache");
+		$this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate');
+		$this->output->set_header('Cache-Control: post-check=0, pre-check=0', FALSE);
+		$this->output->set_header('Pragma: no-cache');
     }
     
 

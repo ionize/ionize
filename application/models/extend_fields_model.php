@@ -81,9 +81,9 @@ class Extend_fields_model extends Base_model
 
 			// Limit extend_fields to the asked lang
 			$this->{$this->db_group}->where(
-				"({$this->get_table()}.lang = '$lang' OR
-				  {$this->get_table()}.lang is NULL  OR
-				  {$this->get_table()}.lang =''
+				'(' .$this->get_table().".lang = '".$lang."' OR "
+					.$this->get_table().'.lang is NULL  OR '
+					.$this->get_table().".lang =''
 				)"
 			);
 		}
@@ -161,17 +161,17 @@ class Extend_fields_model extends Base_model
 
 			foreach($types as $type => $entities)
 			{
-				$join .= "
-					LEFT JOIN $type ON ($type.id_$type = url.id_entity AND url.type = '$type')
-					LEFT JOIN $type"."_lang on $type"."_lang.id_$type = $type.id_$type AND $type"."_lang.lang = '$lang'
+				$join .= '
+					LEFT JOIN '.$type.' ON ('.$type.'.id_'.$type." = url.id_entity AND url.type = '".$type."')
+					LEFT JOIN ".$type.'_lang ON '.$type.'_lang.id_'.$type.' = '.$type.'.id_'.$type.' AND '.$type."_lang.lang = '".$lang."'
 				";
 
-				$where_arr[] = "(type='$type' and id_entity in (" . implode(',', $entities). '))';
+				$where_arr[] = "(type='".$type."' AND id_entity IN (" . implode(',', $entities). '))';
 			}
 
 			$sql .= $join
-				. 'WHERE (' . implode(' or ', $where_arr) . ")
-				   AND url.lang = '$lang'
+				. 'WHERE (' . implode(' OR ', $where_arr) . ")
+				   AND url.lang = '".$lang."'
 			 	   AND active = 1
 			";
 

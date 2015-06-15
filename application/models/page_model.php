@@ -122,12 +122,12 @@ class Page_model extends Base_model
 		$this->{$this->db_group}->select('url.path, url.path_ids, url.full_path_ids');
 		$this->{$this->db_group}->join(
 			$this->url_table. ' as url',
-			$this->table.".id_page = url.id_entity AND ".
-			   "(".
+			$this->table.'.id_page = url.id_entity AND '.
+			   '('.
 					"url.type = 'page' AND ".
-					"url.active = 1 AND ".
+					'url.active = 1 AND '.
 					"url.lang = '". $lang ."'".
-			   ")",
+			   ')',
 		   'left'
 		);
 
@@ -137,10 +137,10 @@ class Page_model extends Base_model
 		$this->{$this->db_group}->join(
 			$this->url_table . ' as url2',
 			$this->table.".id_page = url2.id_entity AND ".
-				"(".
+				'('.
 					"url2.type = 'page' AND ".
-					"url2.active = 1 ".
-				")",
+					'url2.active = 1 '.
+				')',
 			'left'
 		);
 		$this->{$this->db_group}->group_by($this->table.'.id_page');
@@ -205,8 +205,8 @@ class Page_model extends Base_model
 	public function update_pages_menu($id_page, $id_menu)
 	{
 		$sql = "UPDATE page
-				SET id_menu='$id_menu'
-				WHERE id_parent = '$id_page'
+				SET id_menu='".$id_menu."'
+				WHERE id_parent = '".$id_page."'
 				";
 		$this->{$this->db_group}->query($sql);
 

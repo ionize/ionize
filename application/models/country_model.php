@@ -29,7 +29,7 @@ class Country_model extends Base_model
 			ifnull(country_lang.country_name, country.name) as country_name
 			FROM country
 				LEFT JOIN country_lang on country_lang.id_country = country.id_country
-					AND country_lang.lang='$lang'
+					AND country_lang.lang='".$lang."'
 			WHERE continent IS NOT NULL
 			AND continent != ''
 			ORDER BY country_name ASC
@@ -60,12 +60,12 @@ class Country_model extends Base_model
 			ifnull(country_lang.country_name, country.name) as country_name
 			FROM country
 				LEFT JOIN country_lang ON country_lang.id_country = country.id_country
-					AND country_lang.lang='$lang'
+					AND country_lang.lang='".$lang."'
 			WHERE continent IS NOT NULL
 			AND continent != ''
-			AND country.id_country IN (".implode(',', $ids).")
+			AND country.id_country IN (".implode(',', $ids).')
 			ORDER BY country_name ASC
-		";
+		';
 
 		$query = $this->db->query($sql);
 

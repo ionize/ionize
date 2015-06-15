@@ -93,12 +93,12 @@ class Medialist_model extends Base_model
 
 		if (in_array('used', $filters))
 		{
-			$this->{$this->db_group}->where("(url.path is not null or url2.path is not null)");
+			$this->{$this->db_group}->where('(url.path is not null or url2.path is not null)');
 		}
 
 		if (in_array('not_used', $filters))
 		{
-			$this->{$this->db_group}->where("(url.path is null and url2.path is null)");
+			$this->{$this->db_group}->where('(url.path is null and url2.path is null)');
 		}
 
 		$this->{$this->db_group}->group_by($this->table.'.id_media');

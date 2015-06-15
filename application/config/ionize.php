@@ -90,7 +90,7 @@ $config['special_uri'] = array(	'category' => 'category',
 |--------------------------------------------------------------------------
 |
 */
-$config['form_antispam_key'] = "yourAntiSpamKey_ShouldContainsNumbersAndChars";
+$config['form_antispam_key'] = 'yourAntiSpamKey_ShouldContainsNumbersAndChars';
 
 
 /**

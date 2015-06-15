@@ -79,9 +79,9 @@ class Ui_model extends Base_model
 			INNER JOIN extend_field ef ON ef.id_extend_field = uie.id_extend
 			INNER JOIN extend_field_lang efl ON efl.id_extend_field = ef.id_extend_field AND efl.lang='".Settings::get_lang('default')."'
 			INNER JOIN extend_field_type eft ON eft.id_extend_field_type = ef.type
-			WHERE uie.id_ui_element = $id_ui_element
+			WHERE uie.id_ui_element = ".$id_ui_element.'
 			ORDER BY uie.ordering ASC
-		";
+		';
 
 		$query = $this->{$this->db_group}->query($sql);
 		if ($query->num_rows() > 0)	$extends = $query->result_array();
@@ -128,10 +128,6 @@ class Ui_model extends Base_model
 		}
 		return TRUE;
 	}
-
-
-
-
 
 
 }

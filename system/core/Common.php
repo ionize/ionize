@@ -62,7 +62,7 @@
  * on Unix servers if safe_mode is on.
  *
  * @access	private
- * @return	void
+ * @return	bool
  */
 	function is_really_writable($file)
 	{

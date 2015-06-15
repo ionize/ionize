@@ -59,9 +59,9 @@ class ION_Config
 
 			$type = gettype($val);
 			
-			if ($type === 'string')
+			if ($type == 'string')
 			{
-				$val = "'$val'";
+				$val = "'".$val."'";
 			}
 			elseif ($type === 'boolean') $val = ($val ? TRUE : (int) FALSE);
 			
