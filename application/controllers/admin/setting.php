@@ -1094,6 +1094,9 @@ class Setting extends MY_admin
 
 	function save_admin_url()
 	{
+		$overlay_position = $this->input->post('overlay_position');
+		$this->config_model->change('config.php', 'admin_overlay_position', $overlay_position);
+		
 		$admin_url = $this->input->post('admin_url');
 		
 		if(	$admin_url != "" && preg_match("/^([a-z0-9])+$/i", $admin_url))
