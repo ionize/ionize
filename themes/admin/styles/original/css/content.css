@@ -16,6 +16,7 @@ License:
 .clearfix:before, .clearfix:after { content:""; display:table; }
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
+.nowrap { white-space: nowrap; }
 
 
 /* Correct the standard .pad class from Mocha 
