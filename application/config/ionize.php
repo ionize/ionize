@@ -159,5 +159,16 @@ $config['compress_html_output'] = false;
 */
 $config['beautify_html_output'] = true;
 
+
+/*
+|--------------------------------------------------------------------------
+| Log system number of lines
+|--------------------------------------------------------------------------
+|
+*/
+
+$config['log_nb_lines'] = '50';
+
+
 /* End of file ionize.php */
 /* Location: ./application/config/ionize.php */

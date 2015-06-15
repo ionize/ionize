@@ -21,6 +21,7 @@
 			<li id="api_settings"><a><?php /*echo lang('ionize_title_api'); */?></a></li>
 			-->
 			<li id="system_settings"><a><?php echo lang('ionize_title_system'); ?></a></li>
+			<li id="log_settings"><a>Log</a></li>
 
 		</ul>
 
@@ -812,6 +813,61 @@
                 </div>
 			</div>		
 		</div>		
+
+		<div class="tabcontent pt20">
+			<form name="logForm" id="logForm" method="post" action="<?php echo admin_url(); ?>setting/save_log_settings">
+
+				<dl>
+					<dt>
+						<label for="smtp_port">Log Mode</label>
+					</dt>
+					<dd>
+						<?php
+						$current_log_mode = config_item('log_threshold');
+
+						$log_modes = array(
+							'0' => 'Disables logging, Error logging TURNED OFF',
+							'1' => 'Error Messages (including PHP errors)',
+							'2' => 'Debug Messages',
+							'3' => 'Informational Messages',
+							'4' => 'All Messages',
+						)
+						?>
+						<select name="log_threshold" class="inputtext">
+							<?php foreach($log_modes as $id => $log_mode): ?>
+								<option value="<?php echo $id ?>" <?php if ($current_log_mode == $id) : ?>selected="selected"<?php endif;?>><?php echo $log_mode ?></option>
+							<?php endforeach; ?>
+						</select>
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>
+						<label for="smtp_port">Nb Lines</label>
+					</dt>
+					<dd>
+						<input name="log_nb_lines" type="text" class="inputtext" value="<?php echo config_item('log_nb_lines') ?>" />
+					</dd>
+				</dl>
+				<dl>
+					<dt></dt>
+					<dd>
+						<a id="submit_log" class="button green"><?php echo lang('ionize_button_save'); ?></a>
+					</dd>
+				</dl>
+
+				<dl class="mt20">
+					<dt>
+						<label>See Log</label>
+					</dt>
+					<dd>
+						<a id="see_log" class="button blue">Open Log Window</a>
+					</dd>
+				</dl>
+
+			</form>
+
+		</div>
 	</div>
 </div> <!-- /maincolumn -->
 
@@ -838,8 +894,15 @@
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
 	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
 	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');
+	ION.setFormSubmit('logForm', 'submit_log', 'setting/save_log_settings/true', 'mainPanel', 'setting/technical');
 
 	ION.initRequestEvent($('clear_cache'), 'setting/clear_cache');
+
+	// See log
+	$('see_log').addEvent('click', function()
+	{
+		window.open(ION.adminUrl + 'log');
+	});
 
 	// Admin URL form action
 	ION.addConfirmation(
