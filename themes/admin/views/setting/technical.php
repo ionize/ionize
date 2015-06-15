@@ -769,7 +769,7 @@
                         </dl>
 						<dl>
                             <dt>
-                                <label for="compress_html_output" title="<?php echo lang('ionize_label_compress_html_output_help'); ?>"><?php echo lang('ionize_label_compress_html_output'); ?></label>
+                                <label class="nowrap" for="compress_html_output" title="<?php echo lang('ionize_label_compress_html_output_help'); ?>"><?php echo lang('ionize_label_compress_html_output'); ?></label>
                             </dt>
                             <dd>
                                 <input <?php if (config_item('compress_html_output') == '1'):?>checked="checked"<?php endif;?> type="radio" name="html_output" id="compress_html_output" value="1" />
