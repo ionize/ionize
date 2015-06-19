@@ -57,4 +57,5 @@
 		});
 
 	</script>
+
 <?php endif ;?>

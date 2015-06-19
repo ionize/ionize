@@ -2,7 +2,6 @@ ION.append({
 
 	grayPanels:Array('dashboard'),
 
-
 	contentUpdate:function(options)
 	{
 		// @todo :
