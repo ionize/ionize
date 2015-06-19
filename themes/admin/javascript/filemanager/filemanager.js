@@ -338,6 +338,7 @@ var Filemanager = new Class({
 		}
 		if (this.options.download) this.addMenuButton('download', 'download');
 		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
+		if (this.options.selectable) this.addMenuButton('open_all', 'ionize_label_select_all_files');
 
 		this.info = new Element('div', {'class': 'filemanager-infos'});
 
@@ -1267,6 +1268,26 @@ var Filemanager = new Class({
 		}
 	},
 
+	open_all_on_click: function(e) {
+		var items = $$('.filemanager-browser li.list span');
+		var that = this;
+		items.each(function(fileItem, index){
+			var file = fileItem.retrieve('file');
+			if(file != null && file.name !== '..' && file.mime !== 'text/directory') {
+				that.Current = fileItem.addClass('selected');
+				that.fillInfo(file);
+
+				that.fireEvent('complete', [
+					(that.options.deliverPathAsLegalURL ? file.path : that.escapeRFC3986(that.normalize('/' + that.root + file.path))), // the absolute URL for the selected file, rawURLencoded
+					file,
+					this
+				]);
+
+				fileItem.removeClass('selected');
+			}
+		});
+	},
+	
 	download_on_click: function(e) {
 		e.stop();
 		if (!this.Current) {

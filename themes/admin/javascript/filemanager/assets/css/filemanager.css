@@ -121,7 +121,8 @@ div.filemanager div.filemanager-menu {
 div.filemanager-menu button {
 	float: left;
 }
-div.filemanager button.filemanager-open {
+div.filemanager button.filemanager-open,
+div.filemanager button.filemanager-open_all {
 	cursor: pointer;
 	float:right;
 	margin-right:15px;
