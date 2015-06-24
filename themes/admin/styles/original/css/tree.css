@@ -57,7 +57,7 @@ h3.treetitle {
 	list-style-type: none;
 	white-space: nowrap;
 	position: relative;
-	padding:1px 0px;
+	padding:1px 0;
 	margin:-1px 0;
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }

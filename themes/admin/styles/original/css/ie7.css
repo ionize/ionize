@@ -9,7 +9,7 @@ ul {
 
 #maincolumn {
 	width: auto;
-	padding-right:0px;
+	padding-right:0;
 	overflow: hidden;
 }
 #maincolumn.sidecolumn {
