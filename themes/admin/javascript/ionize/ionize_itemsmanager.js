@@ -103,7 +103,14 @@ ION.ItemManager = new Class({
 				{
 					id: id
 				},
-				{'confirm': self.options.confirmDelete, 'message': self.options.confirmDeleteMessage},
+				{
+					'confirm'	: self.options.confirmDelete, 
+					'message'	: self.options.confirmDeleteMessage
+					'onSuccess'	: function(){
+						// reload extend field list
+						$$('a[href=extend_field/index]')[0].click();
+					}
+				},
 				'JSON'
 			)
 		});
