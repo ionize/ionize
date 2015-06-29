@@ -55,7 +55,7 @@ if ($tracker_title == '')
 			<div class="main subtitle">
 				<p>
 					<span class="lite">ID : </span><?php echo $id_page; ?> |
-					<span class="lite"></span><?php echo$breadcrump?>
+					<span class="lite"></span><?php echo $breadcrump; ?>
 				</p>
 			</div>
 			
@@ -372,7 +372,7 @@ if ($tracker_title == '')
     ION.initClearField('#pageForm');
 
 	// Copy Lang data to other languages dynamically
-	ION.initCopyLang('.copyLang', Array('title', 'subtitle', 'url', 'meta_title', 'nav_title'));
+	ION.initCopyLang('.copyLang', ['title', 'subtitle', 'url', 'meta_title', 'nav_title']);
 
 	// Auto-generate Main title
 	$$('.tabcontent .title').each(function(input, idx)

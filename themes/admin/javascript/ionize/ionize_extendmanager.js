@@ -965,6 +965,7 @@ ION.ExtendManager = new Class({
 	 * 6 => Select,
 	 * 7 => Date & Time,
 	 * 8 => Medias
+	 * 9 => Color
 	 * 100 => Numeric
 	 * ...
 	 *
@@ -981,16 +982,24 @@ ION.ExtendManager = new Class({
 	getExtendField: function(extend, options)
 	{
 		var lang = 			options && options.lang ? options.lang : null,
-			content =		options.lang ?
-							extend['lang_data'][lang]['content'] :
-							(extend.content == null ? extend.default_value : extend.content),
-			input_name = 	options.name ?	options.name : 'cf_' + extend.id_extend_field,
+			content =		options.lang
+								? extend['lang_data'][lang]['content']
+								: (extend.content == null ? extend.default_value : extend.content),
+			input_name = 	options.name
+								?	options.name
+								: 'cf_' + extend.id_extend_field,
 			dom_type =		extend.html_element_type,
 			dom_tag = 		extend.html_element,
 			container =		options.container,
-			cssClass =		typeOf(options['class']) != 'null' ? ' ' + options['class'] : '',
-			renderAs = 		typeOf(options['renderAs']) != 'null' ? options['renderAs'] : null,
-			validateClass = typeOf(options['validateClass']) != 'null' ? options['validateClass'] : null,
+			cssClass =		typeOf(options['class']) != 'null'
+								? ' ' + options['class']
+								: '',
+			renderAs = 		typeOf(options['renderAs']) != 'null'
+								? options['renderAs']
+								: null,
+			validateClass = typeOf(options['validateClass']) != 'null'
+								? options['validateClass']
+								: null,
 			// Produced field & label
 			field = 		null
 		;
@@ -1183,6 +1192,44 @@ ION.ExtendManager = new Class({
 					'class': 'lite',
 					text: Lang.get('ionize_message_please_save_first')
 				}).inject(field)
+			}
+		}
+
+		//
+		// Color
+		//
+		if (['color','color-multiple'].contains(dom_type))
+		{
+			field = new Element('div', {'class': 'relative'});
+
+			var get_color_field = function(input_name, id, content)
+			{
+				var color_container = new Element('div', {'class':'relative mr30 mb5'}).inject(field);
+
+				new Element(dom_tag, {
+					type	: dom_type,
+					'class'	: extend.html_element_class + cssClass,
+					name	: input_name,
+					id		: id,
+					value	: content
+				}).inject(color_container);
+
+				new Element('a', {'class': 'icon clearfield date', 'data-id': id}).inject(color_container);
+			};
+
+			// Multiple Dates
+			if ((dom_type == 'color-multiple') || (renderAs == 'multiple'))
+			{
+				var id = input_name;
+				input_name += '[]';
+				content = content.split(',');
+				get_color_field(input_name, id+1, content[0]);
+				get_color_field(input_name, id+2, content[1]);
+			}
+			// Simple Color
+			else
+			{
+				get_color_field(input_name, input_name, content);
 			}
 		}
 
