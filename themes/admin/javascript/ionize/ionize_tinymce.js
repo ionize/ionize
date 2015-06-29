@@ -3,12 +3,12 @@ ION.append({
 	
 	tinyMceSettings: function(id, mode, options)
 	{
-		var options = (typeOf(options) != 'null') ? options : {};
+		options = (typeOf(options) != 'null') ? options : {};
 
 		var width = (typeOf(options.width) != 'null') ? options.width : '100%';
 		var height = (typeOf(options.height) != 'null') ? options.height : 180;
 
-		var spell_langs = new Array();
+		var spell_langs = [];
 		var idx = ([Cookie.read('articleTab'), false].pick());
 		if (typeOf(idx) == 'null')
 			idx = 0;
@@ -21,11 +21,12 @@ ION.append({
 			});
 		var spellchecker_languages = spell_langs.join();
 
+		var settings;
 		switch (mode)
 		{
 			case 'small':
 
-				var settings =  
+				settings =
 				{
 					mode : 'exact',
 					elements : id,
@@ -92,7 +93,7 @@ ION.append({
 				break;
 			
 			default:
-				var settings = {
+				settings = {
 					mode : 'exact',
 					elements : id,
 					theme : 'advanced',
@@ -204,16 +205,14 @@ ION.append({
 	
 	/**
 	 *
-	 * @param tab_selector          Each tab much have the "rel" attribute set. Example : rel="fr"
-	 * @param container_selector    textareas selector. Must have the same "rel" attr. as the atb.
-	 *                              Example : #categoryTabContent .tinyCategory
-	 * @param mode                  Editor mode. Can be 'small' or empty (normal editor)
-	 * @param options
+	 * @param	{String}	tab_selector          Each tab much have the "rel" attribute set. Example : rel="fr"
+	 * @param	{String}	container_selector    textareas selector. Must have the same "rel" attr. as the atb.	Example : #categoryTabContent .tinyCategory
+	 * @param	{String}	mode                  Editor mode. Can be 'small' or empty (normal editor)
+	 * @param	{Object}	options
 	 */
 	initTinyEditors: function(tab_selector, container_selector, mode, options)
 	{
 		var textareas = $$(container_selector);
-		var mode = mode;
 
 		if (typeOf(tab_selector) == 'null')
 		{
@@ -469,7 +468,7 @@ ION.append({
 		function getAttr(s, n) {
 			n = new RegExp(n + '=\"([^\"]+)\"', 'g').exec(s);
 			return n ? tinymce.DOM.decode(n[1]) : '';
-		};
+		}
 
 		return co.replace(/(?:<p[^>]*>)*(<img[^>]+>)(?:<\/p>)*/g, function(a,im) {
 			var cls = getAttr(im, 'class');
@@ -490,9 +489,7 @@ ION.append({
 
 			// Here : Get the media src by Ajax request
 
-			var image = 'files/pictures/IMG_8438.jpg';
-
-			return image;
+			return 'files/pictures/IMG_8438.jpg';
 		});
 	}
 

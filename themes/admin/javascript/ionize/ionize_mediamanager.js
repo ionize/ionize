@@ -175,7 +175,7 @@ var IonizeMediaManager = new Class(
 
 	
 	/**
-	 * Initiliazes the media list regarding to its type
+	 * Initializes the media list regarding to its type
 	 * called after a media list loading through 'loadMediaList'
 	 *
 	 * @param responseJSON  JSON response object.
@@ -273,7 +273,7 @@ var IonizeMediaManager = new Class(
 		var sortableOrder = this.container.retrieve('sortableOrder');
 
 		// Remove "undefined" from serialized. Undefined comes from the clone, which isn't removed before serialize.
-		var serie = new Array();
+		var serie = [];
 		serialized.each(function(item)
 		{
 			if (typeOf(item) != 'null')
@@ -387,7 +387,7 @@ var IonizeMediaManager = new Class(
 	/**
 	 * Opens fileManager
 	 *
-	 * @param options
+	 * @param	{Object}	options
 	 */
 	toggleFileManager:function()
 	{
@@ -399,9 +399,10 @@ var IonizeMediaManager = new Class(
 		else
 		{
 			// Exit if another fileManager is already running
-			if ($('filemanagerWindow'))
+			var elFilemanagerWindow = $('filemanagerWindow');
+			if (elFilemanagerWindow)
 			{
-				var inst = $('filemanagerWindow').retrieve('instance');
+				var inst = elFilemanagerWindow.retrieve('instance');
 
 				// Re-open window if minimized or shake if triing to open another FM
 				if (inst.isMinimized)
@@ -411,7 +412,7 @@ var IonizeMediaManager = new Class(
 				else
 				{
 					inst.focus();
-					$('filemanagerWindow').shake();
+					elFilemanagerWindow.shake();
 				}
 
 				return;

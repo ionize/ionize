@@ -775,13 +775,14 @@ ION.MainPanel = new NamedClass('ION.MainPanel', {
 	_initToolbox: function()
 	{
 		// Creates the header toolbox if it doesn't exists
-		if ( ! $('mainPanel_headerToolbox')) {
+		var elMainPanelHeaderToolbox = $('mainPanel_headerToolbox');
+		if ( ! elMainPanelHeaderToolbox) {
 			new Element('div', {
 				'id': 'mainPanel_headerToolbox',
 				'class': 'buttonbar'
 			}).inject($('mainPanel_header'));
 		}
 
-		$('mainPanel_headerToolbox').empty();
+		elMainPanelHeaderToolbox.empty();
 	}
 });

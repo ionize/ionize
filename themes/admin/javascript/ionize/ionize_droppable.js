@@ -12,7 +12,7 @@ ION.Droppable = new Class({
 	{
 		this.setOptions(options);
 		
-		var options = this.options;
+		options = this.options;
 		
 		/* Add focus in/out and blur events only if input has not the ".nofocus" class
 		 *

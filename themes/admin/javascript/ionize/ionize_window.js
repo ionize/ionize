@@ -63,16 +63,17 @@ ION.Window = new Class({
 
 	/**
 	 *
-	 * @param options
+	 * @param	{Object}	options
 	 */
 	initialize: function()
 	{
 		var options = arguments[0] ? arguments[0] : {};
 		this.setOptions(options);
 
+		var self;
 		if (options.id && $(options.id))
 		{
-			var self = $(options.id).retrieve('ion_window');
+			self = $(options.id).retrieve('ion_window');
 
 			var w = self.getWindow();
 			w.focus.delay(10, w);
@@ -91,7 +92,7 @@ ION.Window = new Class({
 				this.w = this._createWindow(options);
 
 			// Once we have this.w, we can affect 'this' to all buttons
-			var self = this;
+			self = this;
 			this.buttons.each(function(button){
 				button.w = self;
 			});
@@ -349,9 +350,7 @@ ION.Window = new Class({
 
 		Object.append(opt, options);
 
-		var w = this._createWindow(opt);
-
-		return w;
+		return this._createWindow(opt);
 	}
 });
 
@@ -576,7 +575,7 @@ ION.append({
 			draggable: true,
 			y: 150,
 			padding: { top: 15, right: 15, bottom: 8, left: 15 }			
-		}
+		};
 
 		// Extends the window options
 		if (typeOf(wOptions) != 'null') {options =  Object.append(options, wOptions);}
@@ -611,11 +610,12 @@ ION.append({
 	 * Ionize generic form window
 	 * Use to load a window which contains a form 
 	 *
-	 * @param	string		Window ID.
-	 * @param	string		Window Form ID
-	 * @param	string		Lang translation key or string as title of the window
-	 * @param	string		URL called in case of form validation
-	 * @param	object		Window extended options
+	 * @param	{String}	id			Window ID.
+	 * @param	{String}	form		Window Form ID
+	 * @param	{String}	title		Lang translation key or string as title of the window
+	 * @param	{String}	wUrl		URL called in case of form validation
+	 * @param	{Object}	wOptions	Window extended options
+	 * @param	{Object}	data
 	 *
 	 */
 	formWindow: function(id, form, title, wUrl, wOptions, data)
@@ -685,7 +685,7 @@ ION.append({
 
 	/**
 	 * Opens a data window, without buttons
-	 * Usefull for editing a list
+	 * Useful for editing a list
 	 *
 	 */
 	dataWindow: function(id, title, wUrl, wOptions, data)
@@ -753,8 +753,15 @@ ION.append({
 		// Window creation
 		return new MUI.Window(options);
 	},
-	
 
+
+	/**
+	 *
+	 * @param	{String}	type
+	 * @param	{String}	msg
+	 * @returns {Object}
+	 * @private
+	 */
 	_getModalOptions: function(type, msg)
 	{
 		// Window message
@@ -780,7 +787,7 @@ ION.append({
 			resizable: true,
 			y: 150,
 			padding: { top: 15, right: 15, bottom: 8, left: 15 }			
-		}
+		};
 
 		// Event on btn No : Simply close the window
 		btnOk.addEvent('click', function() 
@@ -794,10 +801,10 @@ ION.append({
 	/**
 	 * Returns the buttons yes/no HTMLDOMElement
 	 *
-	 * @param	string		Window ID (to link with the close button)
-	 * @param	string		URL or Callback JS function to call if yes answer
-	 * @param	string		Element to update after url completion
-	 * @param	string		URL of the update element
+	 * @param	{String}	id			Window ID (to link with the close button)
+	 * @param	{String}	callback	URL or Callback JS function to call if yes answer
+	 * @param	{String}				Element to update after url completion
+	 * @param	{String}				URL of the update element
 	 *
 	 */
 	_getConfirmationButtons:  function(id, callback)
@@ -855,7 +862,7 @@ ION.append({
 	/**
 	 * Resizes one window based on its content
 	 *
-	 * @param	String		Windows ID, without the Mocha prefix (w)
+	 * @param	{String}	id		Windows ID, without the Mocha prefix (w)
 	 *
 	 */
 	windowResize: function(id, size, resize, centered )

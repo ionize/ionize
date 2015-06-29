@@ -50,9 +50,8 @@ ION.append({
 	 */
 	initRequestEvent: function(item, url, data, options, mode)
 	{
-		var data = (typeOf(data) == 'null') ? {} : data;
-		
-		var mode = (typeOf(mode) == 'null') ? 'JSON' : mode;
+		data = (typeOf(data) == 'null') ? {} : data;
+		mode = (typeOf(mode) == 'null') ? 'JSON' : mode;
 
 		// Some safety before adding the event.
 		if (typeOf(item) == 'element')
@@ -148,11 +147,9 @@ ION.append({
 	 * 
 	 * @usage : No direct use. Use ION.JSON() instead.
 	 * 
-	 * @param	String		URL to send the form data. With or without the base URL prefix. Will be cleaned.
-	 * @param	Object		Form data to send as POST
-	 * @param	Object		Options
-	 *						'onSuccess' : Function to use as callback on success
-	 *
+	 * @param	{String}	url			URL to send the form data. With or without the base URL prefix. Will be cleaned.
+	 * @param	{Object}	data		Form data to send as POST
+	 * @param	{Object}	options		Options optionally containing 'onSuccess' : Function to use as callback on success
 	 */
 	getJSONRequestOptions: function(url, data, options)
 	{
@@ -211,7 +208,7 @@ ION.append({
 					if (responseJSON && typeOf(responseJSON.message_type) != 'null')
 					{
 						if (responseJSON.message_type != '')
-							ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
+							ION.notification.delay(50, MUI, [responseJSON.message_type, responseJSON.message]);
 					}
 				},
 				onCancel: function()
@@ -244,12 +241,12 @@ ION.append({
 	 * 
 	 * @usage : No direct use. Use ION.HTML() instead.
 	 * 
-	 * @param	string		URL to send the form data. With or without the base URL prefix. Will be cleaned.
-	 * @param	mixed		Form data
-	 * @param	object		Options
-	 *						'update' : DOM Element ID to update with the result
-	 *						'append' : DOM Element ID to append the result to.
-	 *						'onSuccess' : Function to use as callback after success
+	 * @param	{String}	url		URL to send the form data. With or without the base URL prefix. Will be cleaned.
+	 * @param	{Mixed}		data 	Form data
+	 * @param	{Object}	options Options object, containing:
+	 *								'update' : DOM Element ID to update with the result
+	 *								'append' : DOM Element ID to append the result to.
+	 *								'onSuccess' : Function to use as callback after success
 	 *
 	 */
 	getHTMLRequestOptions: function(url, data, options)
@@ -303,7 +300,7 @@ ION.append({
 	 */
 	execCallbacks: function(args)
 	{
-		var callbacks = new Array();
+		var callbacks = [];
 
 		// More than one callback
 		if (typeOf(args) == 'array') {

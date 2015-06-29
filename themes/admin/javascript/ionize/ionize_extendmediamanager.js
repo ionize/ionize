@@ -136,10 +136,11 @@ ION.ExtendMediaManager = new Class({
 	{
 		var self = this;
 
-		if ($('filemanagerWindow'))
+		var elFilemanagerWindow = $('filemanagerWindow');
+		if (elFilemanagerWindow)
 		{
 			// Window
-			var inst = $('filemanagerWindow').retrieve('instance');
+			var inst = elFilemanagerWindow.retrieve('instance');
 
 			// FM instance
 			this.filemanager = inst.filemanager;
@@ -233,12 +234,7 @@ ION.ExtendMediaManager = new Class({
 	 * Loads a media list through XHR regarding its type
 	 * called after a media list loading through 'loadList'
 	 *
-	 * @param options  Object {
-	 *                     parent:
-	 *                     id_parent:
-	 *                     id_extend:
-	 *                     lang:
-	 *                 }
+	 * @param	{Object}	options  Object		{ parent: ..., id_parent: ..., id_extend: ..., lang: ... }
 	 */
 	loadList: function()
 	{
@@ -261,7 +257,7 @@ ION.ExtendMediaManager = new Class({
 	 * Initiliazes the media list regarding to its type
 	 * called after a media list loading through 'loadList'
 	 *
-	 * @param responseJSON  JSON response object.
+	 * @param	responseJSON  JSON response object.
 	 *                      responseJSON.type : media type. Can be 'picture', 'video', 'music', 'file'
 	 */
 	completeLoadList: function(responseJSON)
@@ -372,7 +368,7 @@ ION.ExtendMediaManager = new Class({
 		var sortableOrder = this.mediaContainer.retrieve('sortableOrder');
 
 		// Remove "undefined" from serialized, which can comes from the clone.
-		var serie = new Array();
+		var serie = [];
 		serialized.each(function(item)
 		{
 			if (typeOf(item) != 'null')	serie.push(item);
@@ -444,8 +440,11 @@ ION.ExtendMediaManager = new Class({
 	/**
 	 * Unlink one media from his parent
 	 *
-	 * @param type  Media type
-	 * @param id    Media ID
+	 * @param	{String}	id_media    Media ID
+	 * @param	{Element}	parent
+	 * @param	{String}	id_parent
+	 * @param	{String}	id_extend
+	 * @param	{String}	lang
 	 */
 	detachMedia: function(id_media, parent, id_parent, id_extend, lang)
 	{

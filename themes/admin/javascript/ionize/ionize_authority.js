@@ -18,7 +18,7 @@ ION.Authority = new Class({
 	/**
 	 * All rules, by type
 	 */
-	all_rules: Array(),
+	all_rules: [],
 
 	has_all: false,
 
@@ -105,8 +105,7 @@ ION.Authority = new Class({
 	 *
 	 * @param action
 	 * @param resource
-	 * @param check_has_rule
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 *
 	 */
 	can:function(action, resource)
@@ -139,16 +138,14 @@ ION.Authority = new Class({
 
 	resourceHasRule: function(resource)
 	{
-		var has = false;
-
 		Object.each(ION.Authority.all_rules, function(rule)
 		{
 			if (resource == rule.resource)
 			{
-				has = true;
+				return true;
 			}
 		});
 
-		return has;
+		return false;
 	}
 });

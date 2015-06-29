@@ -26,18 +26,13 @@ ION.append({
 	/**
 	 * Get the associated form object and send it directly
 	 *
-	 * @param	string		URL to send the form data
-	 * @param	string		Element to update
-	 * @param	string		Element update URL
+	 * @param	{String}	url		URL to send the form data
+	 * @param	{String}	form	Element to update
 	 */
 	sendForm: function(url, form)
 	{
-		if (!form) {
-			form = '';
-		}
-		else {
-			form = $(form);
-		}
+		form = !form ? '' : $(form);
+
 		ION.updateRichTextEditors();
 
 		new Request.JSON(ION.getJSONRequestOptions(url, form)).send();
@@ -46,9 +41,8 @@ ION.append({
 	/**
 	 * Get the associated form object and send attached data directly
 	 *
-	 * @param	string		URL to send the form data
-	 * @param	string		Element to update
-	 * @param	string		Element update URL
+	 * @param	{String}	url		URL to send the form data
+	 * @param	{String}	data	Element to update
 	 */
 	sendData: function(url, data)
 	{
@@ -61,12 +55,13 @@ ION.append({
 	/**
 	 * Set an XHR action to a form and add click event to the given element
 	 *
-	 * @param	string	form ID
-	 * @param	string	element on wich attach the action (ID)
-	 * @param	string	action URL (with or without the base URL prefix)
-	 * @param	object	Confirmation object	{message: 'The confirmation question'}
-	 *
-	 */
+	 * @param	{String}	form ID
+	 * @param	{String}	button		element on which attach the action (ID)
+	 * @param	{String}	url			action URL (with or without the base URL prefix)
+	 * @param	{Object}	confirm		Confirmation object	{message: 'The confirmation question'}
+	 * @param	{Object}	options
+	 *{
+	} */
 	setFormSubmit: function(form, button, url, confirm, options)
 	{
 		if (typeOf($(form))!='null' && typeOf($(button)) != 'null')

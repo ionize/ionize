@@ -12,7 +12,7 @@ ION.ExtendManager = new Class({
 
 	/**
 	 *
-	 * @param options
+	 * @param	{Object}	options
 	 */
 	initialize: function()
 	{
@@ -42,7 +42,7 @@ ION.ExtendManager = new Class({
 		this.w =            null;       // window
 		this.wContainer =   null;       // Items container (in window)
 		this.destination =  null;       // Destination container (ID) : TabSwapper only for the moment
-		this.destinationTitle = null    // Destination container title : Tab title only for the moment
+		this.destinationTitle = null;   // Destination container title : Tab title only for the moment
 
 		// Data posted by getWindowExtendListContent()
 		this.post = null;
@@ -71,12 +71,12 @@ ION.ExtendManager = new Class({
 	/**
 	 * Initialize basis properties
 	 *
-	 * @param options
+	 * @param	{Object}	options
 	 */
-	init: function(opt)
+	init: function(options)
 	{
 		var self = this,
-			opt = typeOf(opt) != 'null' ? opt : {};
+			opt = typeOf(options) != 'null' ? options : {};
 
 		this.post = null;
 		if (opt.context) this.context = opt.context;
@@ -108,7 +108,7 @@ ION.ExtendManager = new Class({
 	/**
 	 * Opens New Extend Window
 	 *
-	 * @param Object 	{
+	 * @param {Object} 	{
 	 * 						parent: 'contact',
 	 * 						id_parent: null,
 	 * 						onSuccess: function(json, this){}
@@ -172,7 +172,7 @@ ION.ExtendManager = new Class({
 	 * Extend Definition Edition
 	 * Opens Extend field definition Editor window
 	 *
-	 * @param id
+	 * @param	{String}	id
 	 */
 	editExtend: function(id)
 	{
@@ -212,6 +212,9 @@ ION.ExtendManager = new Class({
 		);
 	},
 
+	/**
+	 * @param	{Object}	extend
+	 */
 	delete: function(extend)
 	{
 		var options = typeOf(arguments[1]) != 'null' ? arguments[1] : {};
@@ -753,10 +756,7 @@ ION.ExtendManager = new Class({
 	 * linked to one context
 	 * and to one parent
 	 *
-	 * @param options	if 'onSucess' is set in options, this method will be called.
-	 * 					{
-	 * 						onSuccess: function(extends)
-	 * 					}
+	 * @param	{Object}	[options]	{ onSuccess: function(extends) }	if 'onSuccess' is set in options, this method will be called.
 	 */
 	getContextInstances: function()
 	{
@@ -793,12 +793,9 @@ ION.ExtendManager = new Class({
 
 
 	/**
-	 * Get Extend fileds definitions for one parent type.
+	 * Get Extend field definitions for one parent type.
 	 *
-	 * @param options	if 'onSucess' is set in options, this method will be called.
-	 * 					{
-	 * 						onSuccess: function(extends)
-	 * 					}
+	 * @param	{Object}	[options]		{ onSuccess: function(extends) }	if 'onSuccess' is set in options, this method will be called.
 	 */
 	getParentDefinitions: function()
 	{

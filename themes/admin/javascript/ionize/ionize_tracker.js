@@ -77,7 +77,7 @@ Ionize.Tracker.append(
 
 	getDomEditedElements: function()
 	{
-		var domElements = new Array();
+		var domElements = [];
 		var elements = $$('.data-tracker');
 
 		elements.each(function(el)

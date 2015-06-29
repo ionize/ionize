@@ -34,7 +34,7 @@ ION.TreeXhr = new Class({
 		this.mainpanel = ION.mainpanel;
 		
 		// Array of itemManagers
-		this.itemManagers = {'page': new Array(), 'article': new Array()};
+		this.itemManagers = {'page': [], 'article': []};
 		
 		this.elementIcon_Model = new Element('div', {'class': 'tree-img drag'});
 		this.plusMinus_Model = new Element('div', {'class': 'tree-img plus'});
@@ -45,7 +45,7 @@ ION.TreeXhr = new Class({
 		this.span_Model = new Element('span');
 		this.title_Model = new Element('a', {'class': 'title'});
 		
-		this.opened = new Array();
+		this.opened = [];
 		this.getOpenedFromCookie();
 
 		/*
@@ -510,8 +510,9 @@ ION.TreeXhr = new Class({
 			ION.listAddToCookie(this.id_container, folder.retrieve('id_page'));
 			this.getOpenedFromCookie();
 
-			$('btnStructureExpand').store('status', 'expand');
-			$('btnStructureExpand').value = Lang.get('ionize_label_collapse_all');
+			var elBtnStructureExpand = $('btnStructureExpand');
+			elBtnStructureExpand.store('status', 'expand');
+			elBtnStructureExpand.value = Lang.get('ionize_label_collapse_all');
 		}
 	},
 
@@ -603,12 +604,9 @@ ION.TreeXhr = new Class({
 		// Parent DOM Element (usually a folder LI)
 		var parentEl = this.id_container + '_page_' + id_parent;
 
-		if (typeOf($(parentEl)) == 'null')
-			parentEl = this.container;
-		else
-			parentEl = $(parentEl);
-
-		return parentEl;
+		return (typeOf($(parentEl)) == 'null')
+			? this.container
+			: $(parentEl);
 	},
 
 	/**
@@ -705,10 +703,9 @@ ION.TreeXhr = new Class({
 	 */
 	getOpenedFromCookie:function()
 	{
-		if (Cookie.read(this.id_container))
-			this.opened = (Cookie.read(this.id_container)).split(',');
-		else
-			this.opened = new Array();
+		this.opened = (Cookie.read(this.id_container))
+			? (Cookie.read(this.id_container)).split(',')
+			: [];
 	},
 
 	getResourceName: function(element, id, type)

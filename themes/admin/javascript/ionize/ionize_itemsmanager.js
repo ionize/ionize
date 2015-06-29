@@ -270,18 +270,18 @@ ION.ItemManager = new Class({
 		var sortableOrder = this.container.retrieve('sortableOrder');
 
 		// Remove "undefined" from serialized. Undefined comes from the clone, which isn't removed before serialize.
-		var serie = new Array();
+		var series = [];
 		serialized.each(function(item)
 		{
 			if (typeOf(item) != 'null')
-				serie.push(item);
+				series.push(item);
 		});
 
 		// If current <> new ordering : Save it ! 
-		if (sortableOrder.toString() != serie.toString() ) 
+		if (sortableOrder.toString() != series.toString() )
 		{
 			// Store the new ordering
-			this.container.store('sortableOrder', serie);
+			this.container.store('sortableOrder', series);
 
 			// Set the request URL
 			var url = this.adminUrl + this.options.controller + '/' + this.options.method;
@@ -297,7 +297,7 @@ ION.ItemManager = new Class({
 			{
 				url: url,
 				method: 'post',
-				data: 'order=' + serie,
+				data: 'order=' + series,
 				onSuccess: function(responseJSON, responseText)
 				{
 					MUI.hideSpinner();
@@ -315,7 +315,7 @@ ION.ItemManager = new Class({
 					// Success notification
 					if (responseJSON && responseJSON.message_type)
 					{
-						ION.notification.delay(50, MUI, new Array(responseJSON.message_type, responseJSON.message));
+						ION.notification.delay(50, MUI, [responseJSON.message_type, responseJSON.message]);
 					}
 				},
 				onFailure: this.failure.bind(this)
