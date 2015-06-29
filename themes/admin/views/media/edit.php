@@ -302,7 +302,7 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 	/**
 	 * Clear Field Init
 	 */
-	ION.initClearField('#mediaForm' + id_media);
+	ION.initClearField('mediaForm' + id_media);
 
 	/** 
 	 * Tabs init
@@ -319,11 +319,10 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 	});
 
 
-    /**
+	/**
 	 * Opens the crop window if picture
 	 *
 	 */
-	
 	<?php if ( ! is_null($pictureSize)) :?>
 		if (typeOf($('imageCropLink' + id_media)) != 'null')
 		{
