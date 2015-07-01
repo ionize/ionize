@@ -6,7 +6,6 @@ body {
 	margin:0;
 	font-family:  "lucida grande",tahoma,verdana,arial,sans-serif;
 	font-size:1em;
-	background: url(../images/bg-gray-light.png);
 	background: url(../images/background/squairy_light.png);
 
 }
@@ -22,9 +21,9 @@ body {
 	height:250px;
 	position: relative;
 	background:url(../images/application_login_window_bg.jpg) no-repeat top left;
-	box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
-	-moz-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
-	-webkit-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
+	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
+	-moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
+	-webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
 }
 #loginWindow #logo{
 	width: 160px;
@@ -81,7 +80,7 @@ form div.action input{padding:3px 10px;height: 27px;margin:0}
 
 form input.checkbox {
 	width:auto;
-	margin:10px 8px 2px 0px;
+	margin:10px 8px 2px 0;
 }
 .error {
 	position:absolute;

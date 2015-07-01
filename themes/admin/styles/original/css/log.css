@@ -40,7 +40,7 @@ body {
     float: left;
     width: 3000px;
     min-height: 130px;
-    background: none repeat scroll 0% 0% #000;
+    background: none repeat scroll 0 0 #000;
     line-height: 1.5em;
     color: #63DE00;
     padding:20px;
