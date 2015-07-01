@@ -158,7 +158,7 @@ MUI.Toolbar = new NamedClass('MUI.Toolbar', {
 		var css = button.cssClass;
 		var where = Browser.name=='ie' ? 'top' : 'bottom';
 		var onclick = function(e){
-			if (e.stop) e.stop();
+			if (e && e.stop) e.stop();
 			var fireClick = true;
 			if (this.onClick) fireClick = this.onClick(this, self);
 			if (fireClick) self.fireEvent('click', [this,self]);
