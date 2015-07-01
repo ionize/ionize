@@ -1072,7 +1072,7 @@ MUI.Window.implement({
 
 		cache.title = new Element('span', {
 			'id': id + '_title',
-			'class': 'mochaTitle'
+			'class': 'mochaTitle ' + navigator.platform.toLowerCase()
 		}).inject(cache.titleBar);
 
 		if (options.icon){
@@ -1134,7 +1134,8 @@ MUI.Window.implement({
 		}
 
 		cache.controls = new Element('div', {
-			'id': id + '_controls'
+			'id': id + '_controls',
+			'class': navigator.platform.toLowerCase()
 		}).inject(cache.titleBar);
 
 		cache.footer = new Element('div', {
