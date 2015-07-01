@@ -295,12 +295,28 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 
 <div class="buttons">
 	<button id="bSavemedia<?php echo $id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
+	<button id="bSavemediaDontClose<?php echo $id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save'); ?></button>
 	<button id="bCancelmedia<?php echo $id_media; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
 
 <script type="text/javascript">
 
+	var elButtonSaveDontClose = $('bSavemediaDontClose<?php echo $id_media; ?>');
+	elButtonSaveDontClose.addEvent('click', function() {
+		// @todo	extend ionize_forms.js::setFormSubmit() with option to not close the parent, this option must allow to vary upon the same form so that there can be two save buttons with different behaviour at the same time
+		ION.cancelSaveWarning();
+		elButtonSaveDontClose.addClass('disabled');
+		var elForm = $('mediaForm<?php echo $id_media; ?>');
+		var parent = elForm.getParent('.mocha');
+		ION.updateRichTextEditors();	// tinyMCE and CKEditor triggerSave
+
+		var options = $('mediaForm<?php echo $id_media; ?>').toQueryString().parseQueryString();
+		options.onSuccess = function() { elButtonSaveDontClose.removeClass('disabled'); };
+		var request = new Request.JSON( ION.getJSONRequestOptions(elForm.action, elForm, options ) );
+		request.send();
+	});
+	
 	var id_media = '<?php echo $id_media; ?>';
 	/**
 	 * Calendars init
