@@ -365,6 +365,7 @@ $lang['ionize_button_update'] = 'Update';
 $lang['ionize_button_send'] = 'Send';
 $lang['ionize_button_add'] = 'Add';
 $lang['ionize_button_next'] = 'Next';
+$lang['ionize_button_previous'] = 'Previous';
 $lang['ionize_button_delete'] = 'Delete';
 $lang['ionize_button_new'] = 'New';
 $lang['ionize_button_close'] = 'Close';

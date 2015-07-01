@@ -107,6 +107,15 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 							<?php echo lang('ionize_label_media_crop_picture'); ?>
 						</a>
 					<?php endif ;?>
+					
+					<a id="imagePreviousLink" data-id="<?php echo $id_media; ?>" class="light button mt10">
+						<i class="icon arrow-left"></i>
+						<?php echo lang('ionize_button_previous'); ?>
+					</a>
+					<a id="imageNextLink" data-id="<?php echo $id_media; ?>" class="light button mt10">
+						<i class="icon arrow-right"></i>
+						<?php echo lang('ionize_button_next'); ?>
+					</a>
 				<?php endif ;?>
 
 			<?php else :?>
@@ -340,6 +349,41 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 		}
 	<?php endif ;?>
 
+	// Navigate to next / previous image
+	function getTabContextIdentifier() {
+		return $('articleTabContent') === null ? 'page' : 'article';
+	}
+	function closeEditPopup(mediaID) {
+		$('wmedia' + mediaID + '_controls_button2').fireEvent('click');
+	}
+	function findPreviousMediaID(mediaID) {
+		var elCurrent = $$('#' + getTabContextIdentifier() + 'TabContent .picture[data-id="' + mediaID + '"]')[0];
+		var elPrevious = $(elCurrent).getPrevious();
+		return elPrevious ? elPrevious.get('data-id') : null;
+	}
+	function findNextMediaID(mediaID) {
+		var elCurrent = $$('#' + getTabContextIdentifier() + 'TabContent .picture[data-id="' + mediaID + '"]')[0];
+		var elNext = $(elCurrent).getNext();
+		return elNext ? elNext.get('data-id') : null;
+	}
+	function editMediaByID(mediaID) {
+		if( mediaID != null ) {
+			var anchors = $$('#' + getTabContextIdentifier() + 'TabContent .picture[data-id="' + mediaID + '"] a.edit');
+			if (anchors && anchors.length > 0) {
+				anchors[0].fireEvent('click');
+			}
+		}
+	}
+	$('imagePreviousLink').addEvent('click', function () {
+		var clickedID = parseInt( $('imagePreviousLink').get('data-id'), 10);
+		closeEditPopup(clickedID);
+		editMediaByID( findPreviousMediaID(clickedID) );
+	});
+	$('imageNextLink').addEvent('click', function () {
+		var clickedID = parseInt( $('imagePreviousLink').get('data-id'), 10);
+		closeEditPopup(clickedID);
+		editMediaByID( findNextMediaID(clickedID) );
+	});
 
 	// Extend Fields
 	var mediaExtendManager<?php echo $id_media; ?> = new ION.ExtendManager({
@@ -352,6 +396,5 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 			extendManager.getParentInstances();
 		}
 	});
-
-
+	
 </script>
