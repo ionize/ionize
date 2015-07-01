@@ -43,6 +43,7 @@
 .mochaTitlebar .macintel span.icon.windowMinimize { float: right; }
 .mochaTitlebar span.icon.windowMinimize:hover { border-color:transparent; }
 .mochaTitlebar span.icon.windowMaximize { background: url('../images/window-maximize.gif') left top no-repeat; height:16px; width:16px; }
+.mochaTitlebar .macintel span.icon.windowMaximize { float:right; }
 .mochaTitlebar span.icon.windowMaximize:hover { border-color:transparent; } 
 .mochaTitlebar span.icon.windowClose { background: url('../images/window-close.gif') left top no-repeat; height:16px;  width:16px; }
 .mochaTitlebar.gauge .mochaTitle { color:white; margin-top:1px; }
