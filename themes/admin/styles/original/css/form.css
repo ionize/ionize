@@ -176,6 +176,7 @@ div.label:hover {
 }
 
 label {
+	float: left;
 	font-size: 11px;
 	margin: 0 10px;
 }

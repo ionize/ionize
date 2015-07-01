@@ -688,7 +688,7 @@
 
 						<dl>
 							<dt>
-								<label><?php echo lang('ionize_title_admin_overlay_position') ?></label>
+								<label class="nowrap"><?php echo lang('ionize_title_admin_overlay_position') ?></label>
 							</dt>
 							<dd>
 								<?php $overlayPosition = (int) config_item('admin_overlay_position'); ?>
@@ -721,17 +721,17 @@
 						<!-- Maintenance ? -->
 						<dl>
 							<dt>
-								<label for="maintenance" title="<?php echo lang('ionize_label_maintenance_help'); ?>"><?php echo lang('ionize_label_maintenance'); ?></label>
+								<label class="nowrap" for="maintenance" title="<?php echo lang('ionize_label_maintenance_help'); ?>"><?php echo lang('ionize_label_maintenance'); ?></label>
 							</dt>
 							<dd>
-								<input class="inputcheckbox" <?php if (config_item('maintenance') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="maintenance" id="maintenance" value="1" />
+								<input class="nowrap inputcheckbox" <?php if (config_item('maintenance') == '1'):?>checked="checked"<?php endif;?> type="checkbox" name="maintenance" id="maintenance" value="1" />
 							</dd>
 						</dl>
 						
 						<!-- Maintenance IP restrict -->
 						<dl>
 							<dt>
-								<label for="maintenance_ips" title="<?php echo lang('ionize_label_maintenance_ips_help'); ?>"><?php echo lang('ionize_label_maintenance_ips'); ?></label>
+								<label class="nowrap" for="maintenance_ips" title="<?php echo lang('ionize_label_maintenance_ips_help'); ?>"><?php echo lang('ionize_label_maintenance_ips'); ?></label>
 							</dt>
 							<dd>
 								<span><?php echo lang('ionize_label_your_ip'); ?> : <?php echo $_SERVER['REMOTE_ADDR']; ?></span><br/>
@@ -744,7 +744,7 @@
 							
 							<dl>
 								<dt>
-									<label title="<?php echo lang('ionize_label_maintenance_page_help'); ?>"><?php echo lang('ionize_title_maintenance_page'); ?></label>
+									<label class="nowrap" title="<?php echo lang('ionize_label_maintenance_page_help'); ?>"><?php echo lang('ionize_title_maintenance_page'); ?></label>
 								</dt>
 								<dd>
 									<div id="maintenancePageContainer"></div>
@@ -776,7 +776,7 @@
                         <!-- Maintenance ? -->
                         <dl>
                             <dt>
-                                <label for="default_html_output" title="<?php echo lang('ionize_label_default_html_output_help'); ?>"><?php echo lang('ionize_label_default_html_output'); ?></label>
+                                <label class="nowrap" for="default_html_output" title="<?php echo lang('ionize_label_default_html_output_help'); ?>"><?php echo lang('ionize_label_default_html_output'); ?></label>
                             </dt>
                             <dd>
                                 <input <?php if (config_item('compress_html_output') == '0' && config_item('beautify_html_output') == '0'):?>checked="checked"<?php endif;?> type="radio" name="html_output" id="default_html_output" value="0" />
@@ -792,7 +792,7 @@
                         </dl>
 						<dl>
                             <dt>
-                                <label for="beautify_html_output" title="<?php echo lang('ionize_label_beautify_html_output_help'); ?>"><?php echo lang('ionize_label_beautify_html_output'); ?></label>
+                                <label class="nowrap" for="beautify_html_output" title="<?php echo lang('ionize_label_beautify_html_output_help'); ?>"><?php echo lang('ionize_label_beautify_html_output'); ?></label>
                             </dt>
                             <dd>
                                 <input <?php if (config_item('beautify_html_output') == '1'):?>checked="checked"<?php endif;?> type="radio" name="html_output" id="beautify_html_output" value="2" />
