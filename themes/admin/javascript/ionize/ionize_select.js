@@ -35,7 +35,7 @@ ION.Select = new Class({
 	{
 		this.setOptions(options);
 
-		this.storage = new Array();
+		this.storage = [];
 
 		return this.getHtml();
 	},

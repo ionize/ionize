@@ -155,10 +155,7 @@ ION.Notify = new Class({
 		// Resize the window... if window.
 		if (this.windowEl.retrieve('instance'))
 		{
-			if (mode == 'plus')
-				var newHeight = 	cs.y + bs.y + 10;
-			else
-				var newHeight = 	cs.y - bs.y + 10;
+			var newHeight = 	(mode == 'plus') ? (cs.y + bs.y + 10) : (cs.y - bs.y + 10);
 
 			this.windowEl.retrieve('instance').resize(
 			{
@@ -186,10 +183,9 @@ ION.Notify = new Class({
 
 	exists: function()
 	{
-		if (typeOf(this.options.type) != 'null')
-			var selector = 'div.contentNotify[data-type=' + this.options.type + ']';
-		else
-			var selector = 'div.contentNotify';
+		var selector = (typeOf(this.options.type) != 'null')
+			? 'div.contentNotify[data-type=' + this.options.type + ']'
+			: 'div.contentNotify';
 
 		var boxes = $$(selector),
 			box = null;
@@ -197,10 +193,9 @@ ION.Notify = new Class({
 		if (Object.getLength(boxes) > 0)
 			box = boxes[0];
 
-		if (box != null)
-			return box;
-
-		return false;
+		return (box != null)
+			? box
+			: false;
 	},
 
 	destroy: function()

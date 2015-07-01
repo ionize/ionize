@@ -172,8 +172,9 @@ ION.TableList = new Class({
 
 	/**
 	 *
-	 * @param item
-	 * @param c     Column option item
+	 * @param	{Object}	item
+	 * @param	{Object}	c     Column option item
+	 * @param	{String}	idx
 	 * @private
 	 */
 	_getItem: function(item, c, idx)
@@ -183,7 +184,7 @@ ION.TableList = new Class({
 
 		// Content
 		// Date format
-		var value = (c.key == '-rownum-') ? parseInt(idx) + 1 : (
+		var value = (c.key == '-rownum-') ? parseInt(idx, 10) + 1 : (
 						item[c.key] ? item[c.key] : (c.content ? c.content : '')
 					);
 
@@ -243,6 +244,7 @@ ION.TableList = new Class({
 			thead_tr = new Element('tr', {'class':'filters'}).inject(thead),
 			hash = ION.generateHash()
 		;
+		var i;
 
 		// Filters inputs
 		self.filter_inputs = [];
@@ -273,7 +275,7 @@ ION.TableList = new Class({
 					};
 
 					// Build the Extend
-					var i = self.extendManager.getExtendField(column.extend, options);
+					i = self.extendManager.getExtendField(column.extend, options);
 					i.setProperty('id', column.key + '_' + hash);
 
 					self.filter_inputs.push(i.getFormElement());
@@ -287,7 +289,7 @@ ION.TableList = new Class({
 				}
 				else
 				{
-					var i = new Element('input', {
+					i = new Element('input', {
 						type:    'text',
 						id: column.key + '_' + hash,
 						name:    column.key,
@@ -405,10 +407,11 @@ ION.TableList = new Class({
 
 	getSavedFilter: function()
 	{
-		var filters = ION.registry('filters'),
-			f = typeOf(filters[this.options.id]) == 'object' ? filters[this.options.id] : null;
+		var filters = ION.registry('filters');
 
-		return f;
+		return typeOf(filters[this.options.id]) == 'object'
+			? filters[this.options.id]
+			: null;
 	},
 
 
@@ -534,8 +537,7 @@ ION.List = new Class({
 
 
 	/**
-	 *
-	 * @param options
+	 * @param	{Object}	options
 	 */
 	initialize: function()
 	{
@@ -635,9 +637,10 @@ ION.List = new Class({
 			{
 				if (el.element)
 				{
+					var part;
 					if (typeOf(el.element) == 'function')
 					{
-						var part = el.element(item, li);
+						part = el.element(item, li);
 
 						if (typeOf(part) != 'null')
 						{
@@ -648,7 +651,7 @@ ION.List = new Class({
 					}
 					else
 					{
-						var part = new Element(el.element).inject(li);
+						part = new Element(el.element).inject(li);
 
 						// Left by default
 						if (el.class) part.addClass(el.class);

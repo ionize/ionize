@@ -68,10 +68,7 @@ ION.ButtonToolbar = new Class({
 	 */
 	hasButton: function(id)
 	{
-		if (this.getButtonById(id) != null)
-			return true;
-
-		return false;
+		return (this.getButtonById(id) != null);
 	},
 
 	adopt:function(element)
@@ -215,7 +212,7 @@ ION.Button = new Class({
 					self.btnGroup.addClass('open');
 					self._correctBtnGroupPosition();
 				}
-			}
+			};
 
 			this.btnGroup.addEvent('click', this.options.onClick);
 
@@ -320,7 +317,7 @@ ION.Button = new Class({
 	 * Activates one button
 	 * (make it selected)
 	 *
-	 * @param args		String or Array of IDs. Partners to unactivate
+	 * @param args		String or Array of IDs. Partners to deactivate
 	 */
 	activate: function()
 	{

@@ -99,7 +99,7 @@ ION.ListFilter = new Class({
 			var results = filtered;
 			
 			// Array of unique IDs of filtered notes (notes + class)
-			var notes_ids = new Array();
+			var notes_ids = [];
 			
 			results.each(function(item)
 			{

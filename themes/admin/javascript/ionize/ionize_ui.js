@@ -137,7 +137,7 @@ ION.UiElement = new Class({
 
 	getManageFieldList: function()
 	{
-		var self = this
+		var self = this;
 
 		ION.JSON(
 			ION.adminUrl + 'ui/get_element_fields',

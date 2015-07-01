@@ -283,7 +283,7 @@ ION.PermissionTree = new Class({
 
 	get_rules_array:function()
 	{
-		var data = new Array();
+		var data = [];
 
 		if (this.options.rules)
 		{

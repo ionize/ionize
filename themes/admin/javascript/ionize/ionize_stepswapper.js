@@ -73,7 +73,7 @@ ION.StepSwapper = new Class({
 
 			if (idx <= (index-1))
 			{
-				var toset = parseInt(idx + 1)
+				var toset = parseInt(idx + 1, 10);
 				item.addEvent('click', function(){
 					self.click(toset);
 				});

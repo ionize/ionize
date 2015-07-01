@@ -388,26 +388,25 @@ ION.StaticItemManager = new Class({
 			new Element('h3', {'class':'toggler itemDefinition', html:Lang.get('ionize_title_item_fields')}).inject(container);
 
 			var divFields = new Element('div', {'class':'element itemDefinition'}).inject(container),
-				pFields = new Element('p', {'class':'h30'}).inject(divFields),
-				divFieldsContainer = new Element('div', {'class':'mb30'}).inject(divFields),
-				btnNewField = new ION.Button({
-					container: pFields,
-					title: Lang.get('ionize_label_add_field'),
-					'class': 'light right',
-					icon: 'icon-plus',
-					onClick: function()
-					{
-						self.extendManager.createExtend({
-							parent: 'item',
-							id_parent: item.id_item_definition,
-							onSuccess: function()
-							{
-								self._getDefinitionFieldList(item, divFieldsContainer);
-							}
-						});
-					}
-				});
-			;
+			pFields = new Element('p', {'class':'h30'}).inject(divFields),
+			divFieldsContainer = new Element('div', {'class':'mb30'}).inject(divFields),
+			btnNewField = new ION.Button({
+				container: pFields,
+				title: Lang.get('ionize_label_add_field'),
+				'class': 'light right',
+				icon: 'icon-plus',
+				onClick: function()
+				{
+					self.extendManager.createExtend({
+						parent: 'item',
+						id_parent: item.id_item_definition,
+						onSuccess: function()
+						{
+							self._getDefinitionFieldList(item, divFieldsContainer);
+						}
+					});
+				}
+			});
 
 			this._getDefinitionFieldList(item, divFieldsContainer);
 		}
@@ -831,7 +830,7 @@ ION.StaticItemManager = new Class({
 	/**
 	 * Delete one item instance
 	 *
-	 * @param id
+	 * @param	{Object}	item
 	 */
 	deleteItem: function(item)
 	{
