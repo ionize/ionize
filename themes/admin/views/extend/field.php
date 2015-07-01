@@ -223,7 +223,7 @@
 <script type="text/javascript">
 
 	var id = '<?php echo $id_extend_field; ?>';
-	var id_type =  '<?php echo $type; ?>'
+	var id_type =  '<?php echo $type; ?>';
 	var extend_types =  JSON.decode('<?php echo $extend_types; ?>', false);
 	var default_lang_code  = '<?php echo Settings::get_lang("default") ?>';
 
@@ -258,12 +258,13 @@
 	}
 	
 
-	$('type' + id).addEvent('change', function()
+	var elTypeById = $('type' + id);
+	elTypeById.addEvent('change', function()
 	{
 		var id_type = this.get('value');
 		display_value_block(id_type);
 	});
-	display_value_block($('type' + id).value);
+	display_value_block(elTypeById.value);
 
 
 	// Form Validation
@@ -298,11 +299,12 @@
 	});
 
 	// Auto-generate Main title
-	$('nameExtend' + id).addEvent('keyup', function()
+	var elNameExtend = $('nameExtend' + id);
+	elNameExtend.addEvent('keyup', function()
 	{
 		$('mainTitleExtend' + id).set('text', this.value);
 	});
-	if (id) $('nameExtend' + id).fireEvent('keyup');
+	if (id) elNameExtend.fireEvent('keyup');
 
 	ION.initFormAutoGrow('extendfieldForm' + id);
 
