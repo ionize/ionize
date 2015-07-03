@@ -37,8 +37,8 @@ class Article_model extends Base_model
 	public $tag_table = 				'tag';
 	public $tag_join_table = 			'article_tag';
 
-	/* Contains table name wich should be used for each filter get.
-	 * Purpose : Avoid Ambiguous SQL quey when 2 fields have the same name.
+	/* Contains table name which should be used for each filter get.
+	 * Purpose : Avoid Ambiguous SQL query when 2 fields have the same name.
 	 * ex : 'title' in category and 
 	 *
 	 */
@@ -1018,7 +1018,7 @@ class Article_model extends Base_model
 		);
 		$this->{$this->db_group}->update('page');
 
-		// Update of pages (lang table) wich links to this article
+		// Update of pages (lang table) which links to this article
 		$sql = "update page_lang as pl
 					inner join page as p on p.id_page = pl.id_page
 					inner join article_lang as al on al.id_article = p.link_id
@@ -1321,7 +1321,7 @@ class Article_model extends Base_model
 	 * Updates articles ordering for the given page ID
 	 * 
 	 * @param	Integer		ID of the parent page
-	 * @param	Integer		Ordering value from wich start the reordering
+	 * @param	Integer		Ordering value from which start the reordering
 	 * @return 	void
 	 *
 	 */

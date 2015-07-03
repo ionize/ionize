@@ -236,7 +236,7 @@ class Page_model extends Base_model
 		$page_lang = 	$page_lang[Settings::get_lang('default')];
 		$link_name = 	($page_lang['title'] != '') ? $page_lang['title'] : $page['name'];
 
-		// Update of pages wich links to this page
+		// Update of pages which links to this page
 		$this->{$this->db_group}->set('link', $link_name);
 		$this->{$this->db_group}->where(
 			array(
@@ -246,7 +246,7 @@ class Page_model extends Base_model
 		);
 		$this->{$this->db_group}->update('page');
 	
-		// Update of pages (lang table) wich links to this page
+		// Update of pages (lang table) which links to this page
 		$sql = "update page_lang as pl
 					inner join page as p on p.id_page = pl.id_page
 					inner join page_lang as p2 on p2.id_page = p.link_id

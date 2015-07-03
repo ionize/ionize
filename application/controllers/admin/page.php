@@ -16,7 +16,7 @@ class Page extends MY_admin
 	public $input;
 
 	/**
-	 * Fields on wich the htmlspecialchars function will not be used before saving
+	 * Fields on which the htmlspecialchars function will not be used before saving
 	 *
 	 * @var array
 	 */

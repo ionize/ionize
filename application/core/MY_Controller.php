@@ -696,7 +696,7 @@ class MY_Admin extends MY_Controller
 		
 		// @TODO : Remove this thing from the global CMS. Not more mandatory, but necessary for compatibility with historical version
 		// Available menus
-		// Each menu was a root node in which you can put several pages, wich are composing a menu.
+		// Each menu was a root node in which you can put several pages, which are composing a menu.
 		// Was never really implemented in ionize historical version, but already used as : menus[0]...
 		Settings::set('menus', config_item('menus'));
 

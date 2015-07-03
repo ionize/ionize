@@ -405,7 +405,7 @@ if ($tracker_title == '')
 
 		/**
 		 * Get Content Tabs & Elements
-		 * 1. ION.getContentElements calls element_definition/get_definitions_from_parent : returns the elements definitions wich have elements for the current parent.
+		 * 1. ION.getContentElements calls element_definition/get_definitions_from_parent : returns the elements definitions which have elements for the current parent.
 		 * 2. ION.getContentElements calls element/get_elements_from_definition : returns the elements for each definition
 		 */
 		$('desktop').store('tabSwapper', pageTab);
