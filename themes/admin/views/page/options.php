@@ -612,7 +612,7 @@
 				ION.JSON(
 					ION.adminUrl + 'tag/get_json_list',
 					{
-						'parent': 'article',
+						'parent': 'page',
 						'id_parent':'<?php echo $id_page; ?>'
 					},
 					{

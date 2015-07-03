@@ -224,10 +224,9 @@ class Tag_model extends Base_model
 	/**
 	 * Save tags linked to a parent element
 	 * 
-	 * @param	string		Tags as string (coma separated or ; separated, depending on what the user inputs...)
-	 * @param	string		Parent type. Can be 'article, 'page', etc.
-	 * @param	int			Parent ID
-	 *
+	 * @param	string		$tags 			Tags as string (coma separated or ; separated, depending on what the user inputs...)
+	 * @param	string		$element 		Parent type. Can be 'article, 'page', etc.
+	 * @param	int			$id_element		Parent ID
 	 */
 	public function save_element_tags($tags, $element, $id_element)
 	{
