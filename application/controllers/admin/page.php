@@ -344,7 +344,7 @@ class Page extends MY_admin
 
 				// Categories
 				$categories = $this->category_model->get_categories_select();
-				$current_categories = $this->category_model->get_current_categories('article', $id_page);
+				$current_categories = $this->category_model->get_current_categories('page', $id_page);
 				$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w100p" multiple="multiple"');
 
 				// Output
@@ -1105,8 +1105,8 @@ class Page extends MY_admin
 
 	protected function _get_views_dropdown_data($data, $nogroup_title='Page')
 	{
-		$optgroup = array();
-		$nogroup = array();
+		$optGroup = array();
+		$noGroup = array();
 
 		foreach($data as $file => $label)
 		{
@@ -1114,31 +1114,31 @@ class Page extends MY_admin
 			if (isset($arr[1]))
 			{
 				$group_name = ucwords(str_replace('_', ' ', $arr[0]));
-				if ( ! isset($optgroup[$group_name])) $optgroup[$group_name] = array();
+				if ( ! isset($optGroup[$group_name])) $optGroup[$group_name] = array();
 
-				$optgroup[$group_name][$file] = $label;
+				$optGroup[$group_name][$file] = $label;
 			}
 			else
 			{
-				$nogroup[$file] = $label;
+				$noGroup[$file] = $label;
 			}
 		}
-		if ( ! empty($optgroup))
+		if ( ! empty($optGroup))
 		{
-			if (empty($nogroup) && count(array_keys($optgroup)) == 1)
+			if (empty($noGroup) && count(array_keys($optGroup)) == 1)
 			{
-				$result = array_pop($optgroup);
+				$result = array_pop($optGroup);
 			}
 			else
 			{
-				$result = array($nogroup_title => $nogroup);
-				$result = array_merge($result, $optgroup);
+				$result = array($nogroup_title => $noGroup);
+				$result = array_merge($result, $optGroup);
 			}
 
 			return $result;
 		}
 		else
-			return $nogroup;
+			return $noGroup;
 	}
 
 

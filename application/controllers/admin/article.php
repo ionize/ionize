@@ -1016,7 +1016,7 @@ class Article extends MY_admin
 	/**
 	* Link an article to a page
 	* Called by XHR : ION.linkArticleToPage()
-	* Slighsly the same as add_parent() but callbacks are different.
+	* Slightly the same as add_parent() but callbacks are different.
 	*
 	*
 	*/
@@ -1360,7 +1360,6 @@ class Article extends MY_admin
 		
 		if (count($receiver_rel) > 1 )
 		{
-			// Clear the cache
 			Cache()->clear_cache();
 			
 			$this->_remove_link($receiver_rel[0], $receiver_rel[1]);
@@ -1502,7 +1501,6 @@ class Article extends MY_admin
 		
 			if ($id_new_article !== FALSE)
 			{
-				// Clear the cache
 				Cache()->clear_cache();
 
 				// Update URLs
@@ -1931,30 +1929,23 @@ class Article extends MY_admin
 		switch($place)
 		{
 			case 'first' :
-			
-				$this->article_model->shift_article_ordering($id_page);				
-
+				$this->article_model->shift_article_ordering($id_page);
 				$ordering = '1';
-				
 				break;
 			
 			case 'last' :
-			
 				$ordering = count($existing_ordering) + 1 ;
-				
 				break;
 
 			case 'after' :
-			
 				$new_pos = array_search($id_ref, $existing_ordering) + 2;
 
-				// Shift every article with a greather pos than ordering_after
+				// Shift every article with a greater pos than ordering_after
 				$this->article_model->shift_article_ordering($id_page, $new_pos);				
-				
 				$ordering = $new_pos;
-			
 				break;
 		}
+
 		return $ordering;
 	}
 
