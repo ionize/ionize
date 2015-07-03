@@ -22,15 +22,10 @@
  */
 class Page_model extends Base_model
 {
-	/**
-	 * Page Article Context table
-	 * @var string
-	 */
+	/** @var string	Page Article Context table */
 	public $context_table =		'page_article';
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	public $url_table =			'url';
 
 
@@ -153,11 +148,9 @@ class Page_model extends Base_model
 	/** 
 	 * Saves one Page
 	 *
-	 * @param	array		Page data table
-	 * @param	array		Page Lang depending data table
-	 *
+	 * @param	array		$data		Page data table
+	 * @param	array		$lang_data	Page Lang depending data table
 	 * @return	int			The inserted / updated page ID
-	 *
 	 */
 	public function save($data, $lang_data)
 	{
@@ -181,7 +174,7 @@ class Page_model extends Base_model
 			}
 		}
 
-		// Clean metas data
+		// Clean meta data
 		$lang_data = $this->_clean_meta_data($lang_data);
 
 		// Base model save method call
@@ -195,9 +188,8 @@ class Page_model extends Base_model
 	/**
 	 * Updates one page children page menu ID value
 	 *
-	 * @param $id_page
-	 * @param $id_menu
-	 *
+	 * @param	int		$id_page
+	 * @param	int		$id_menu
 	 */
 	public function update_pages_menu($id_page, $id_menu)
 	{
@@ -226,9 +218,8 @@ class Page_model extends Base_model
 	/**
 	 * Updates all other articles / pages links when saving one page
 	 *
-	 * @param	array		Article array
-	 * @param	array		Article lang data array
-	 *
+	 * @param	array		$page
+	 * @param	array		$page_lang
 	 */
 	public function update_links($page, $page_lang)
 	{
@@ -276,9 +267,8 @@ class Page_model extends Base_model
 	 * Updates the home page
 	 * Set all pages home value to 0 except the passed page ID
 	 *
-	 * @param bool/int $id_page
-	 *
-	 * @return int
+	 * @param	bool|int	$id_page
+	 * @return	int
 	 */
 	public function update_home_page($id_page=FALSE)
 	{
@@ -306,40 +296,39 @@ class Page_model extends Base_model
 	 *
 	 * also delete all joined element from join tables
 	 *
-	 * @param	int 	Page ID
-	 *
+	 * @param	int 	$id_page
 	 * @return 	int		Affected rows number
 	 */
-	public function delete($id)
+	public function delete($id_page)
 	{
 		$affected_rows = 0;
 		
 		// Check if page exists
-		if( $this->exists(array($this->pk_name => $id)) )
+		if( $this->exists(array($this->pk_name => $id_page)) )
 		{
 			// Page delete
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_page)->delete($this->table);
 			
 			// Lang
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->lang_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_page)->delete($this->lang_table);
 	
 			// Articles : Delete link between page and articles
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete('page_article');
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_page)->delete('page_article');
 
 			// Linked medias
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table.'_media');
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_page)->delete($this->table.'_media');
 			
 			// Sub-pages to parent 0 (root) and menu 0 (orphan)
 			$data = array(
 				'id_parent' => 0,
 				'id_menu' => 0
 			);
-			$affected_rows += $this->{$this->db_group}->where('id_parent', $id)->update($this->table, $data);
+			$affected_rows += $this->{$this->db_group}->where('id_parent', $id_page)->update($this->table, $data);
 			
 			// URLs
 			$where = array(
 				'type' => 'page',
-				'id_entity' => $id
+				'id_entity' => $id_page
 			);
 			$affected_rows += $this->{$this->db_group}->where($where)->delete('url');
 		}
@@ -405,9 +394,8 @@ class Page_model extends Base_model
 	/**
 	 * Get the current groups from parent element
 	 *
-	 * @param $parent_id
-	 *
-	 * @return array
+	 * @param	int		$parent_id
+	 * @return	array
 	 */
 	public function get_current_groups($parent_id)
 	{
@@ -421,9 +409,9 @@ class Page_model extends Base_model
 	/** 
 	 * Returns one page parents array
 	 *
-	 * @param	int		Page ID
-	 * @param	array	Empty data array.
-	 * @param	string	Lang code
+	 * @param	int		$id_page
+	 * @param	array	$data		Empty data array.
+	 * @param	string	$lang		Lang code
 	 *
 	 * @return	array	Parent array
 	 */
@@ -449,10 +437,9 @@ class Page_model extends Base_model
 	/**
 	 * Returns one page children array
 	 *
-	 * @param	int		Page ID
-	 * @param	array	Empty data array.
-	 * @param	string	Lang code
-	 *
+	 * @param	int		$id_page
+	 * @param	array	$data		Empty data array.
+	 * @param	string	$lang		Lang code
 	 * @return	array	Children pages array
 	 */
 	public function get_children_array($id_page, $data = array(), $lang = NULL)
@@ -517,9 +504,8 @@ class Page_model extends Base_model
 	/**
 	 * Saves one page URLs paths
 	 *
-	 * @param	int		Page id
-	 * @return	int		Number of inserted / updated Urls
-	 *
+	 * @param	int		$id_page
+	 * @return	int		Number of inserted / updated URLs
 	 */
 	public function save_urls($id_page)
 	{
@@ -585,7 +571,7 @@ class Page_model extends Base_model
 
 
 	/**
-	 * @param $id_page
+	 * @param	int		$id_page
 	 */
 	public function save_linked_articles_urls($id_page)
 	{
@@ -616,7 +602,7 @@ class Page_model extends Base_model
 	 * Rebuild all the Url of all / one page
 	 * If no page id is given, rebuilds all the URLs
 	 *
-	 * @param	int		Optional. Page id
+	 * @param	int		[$id_page]
 	 * @return	int		Number of inserted / updated Urls
 	 *
 	 */
@@ -648,11 +634,9 @@ class Page_model extends Base_model
 	/**
 	 * Returns all contexts page's lang data as an array of pages.
 	 *
-	 * @param	Mixed		ID of one article / Array of articles IDs
-	 * @param	string		Lang code
-	 *
+	 * @param	int|array	$id_article		ID of one article / Array of articles IDs
+	 * @param	string		$lang			Lang code
 	 * @return	array		Array of articles
-	 *
 	 */
 	public function get_lang_contexts($id_article, $lang)
 	{
@@ -786,10 +770,8 @@ class Page_model extends Base_model
 	/**
 	 * Cleans the meta_keywords and meta_description and returns the cleaned data array
 	 *
-	 * @param $data
-	 *
-	 * @return mixed
-	 *
+	 * @param	array	$data
+	 * @return	mixed
 	 */
 	protected function _clean_meta_data($data)
 	{
@@ -814,9 +796,8 @@ class Page_model extends Base_model
 	/**
 	 * Sets the correct dates to the page array
 	 *
-	 * @param $data
-	 *
-	 * @return array
+	 * @param	array	$data
+	 * @return	array
 	 */
 	protected function _set_dates($data)
 	{

@@ -67,10 +67,9 @@ class Article_model extends Base_model
 	/**
 	 * Get one article
 	 *
-	 * @param	string		where array
-	 * @param	string		Optional. Lang code
+	 * @param	string		$where
+	 * @param	string		$lang	Optional. Lang code
 	 * @return	array		array
-	 *
 	 */
 	public function get($where, $lang = NULL)
 	{
@@ -108,8 +107,8 @@ class Article_model extends Base_model
 	 * The article date can be the creation date or the publish_on date if exists
 	 *
 	 * @access	public
-	 * @param 	array	An associative array
-	 * @return	array	Array of records
+	 * @param 	array	$where 	An associative array
+	 * @return	array			Array of records
 	 *
 	 */
 	public function get_list($where = array())
@@ -133,6 +132,8 @@ class Article_model extends Base_model
 	/**
 	 * Returns all articles with all lang data
 	 *
+	 * @param	array	$where
+	 * @return	array
 	 */
 	public function get_all_lang_list($where = array())
 	{
@@ -242,6 +243,10 @@ class Article_model extends Base_model
 	 * Get article list with lang data
 	 * Used by front-end to get the posts with lang data
 	 *
+	 * @param	array		$where
+	 * @param	string		$lang
+	 * @param	bool|string	$filter		SQL filter
+	 * @return	array					Array of articles
 	 */
 	public function get_lang_list($where = array(), $lang = NULL, $filter = FALSE)
 	{
@@ -328,9 +333,8 @@ class Article_model extends Base_model
 	/** 
 	 * Get one article parent pages list
 	 *
-	 * @param 	int		Article ID
+	 * @param 	int		$id_article
 	 * @return	array
-	 *
 	 */
 	public function get_pages_list($id_article)
 	{
@@ -368,6 +372,10 @@ class Article_model extends Base_model
 	/**
 	 * Returns article's context data for a given page
 	 *
+	 * @param	int      $id_article
+	 * @param   int 	 $id_page
+	 * @param 	string 	 $lang
+	 * @return  array
 	 */
 	public function get_context($id_article, $id_page, $lang = NULL)
 	{
@@ -405,16 +413,12 @@ class Article_model extends Base_model
 	/**
 	 * Returns all contexts for one article
 	 *
-	 * @param	Mixed	ID of one article
-	 * @param	String	Lang code.
-	 *
-	 * @return	array		Array of contexts
-	 *
+	 * @param	string|int		$id_article	ID of one article
+	 * @param	String			Lang code.
+	 * @return	array			Array of contexts
 	 */
-	public function get_all_context($id_article = NULL, $id_lang = NULL)
+	public function get_all_context($id_article = NULL, $lang = NULL)
 	{
-		$data = array();
-
 		if ( ! is_null($id_article))
 		{
 			$this->{$this->db_group}->where('id_article', $id_article);
@@ -422,12 +426,7 @@ class Article_model extends Base_model
 
 		$query = $this->{$this->db_group}->get($this->parent_table);
 
-		if($query->num_rows() > 0)
-		{
-			$data = $query->result_array();
-		}
-		
-		return $data;
+		return ($query->num_rows() > 0) ? $query->result_array() : array();
 	}
 	
 	
@@ -437,15 +436,11 @@ class Article_model extends Base_model
 	/**
 	 * Returns the main context for one article
 	 *
-	 * @param	int			Article ID
-	 *
+	 * @param	int			$id_article
 	 * @return	array		Article array, or one empty array if no article is found
-	 *
 	 */
 	public function get_main_context($id_article)
 	{
-		$data = array();
-
 		$where = array(
 			'id_article' => $id_article,
 			'main_parent' => '1'
@@ -455,12 +450,7 @@ class Article_model extends Base_model
 
 		$query = $this->{$this->db_group}->get($this->parent_table);
 
-		if($query->num_rows() > 0)
-		{
-			$data = $query->row_array();
-		}
-
-		return $data;
+		return ($query->num_rows() > 0) ? $query->row_array() : array();
 	}
 	
 	
@@ -470,16 +460,12 @@ class Article_model extends Base_model
 	/**
 	 * Returns all contexts article's lang data as an array of articles.
 	 *
-	 * @param	Mixed		ID of one article / Array of articles IDs
-	 * @param	string		Lang code
-	 *
+	 * @param	Mixed		$id_article		ID of one article / Array of articles IDs
+	 * @param	string		$lang			Lang code
 	 * @return	array		Array of articles
-	 *
 	 */
 	public function get_lang_contexts($id_article, $lang)
 	{
-		$data = array();
-
 		$this->{$this->db_group}->select($this->table.'.*');
 		$this->{$this->db_group}->select($this->lang_table.'.*');
 		$this->{$this->db_group}->select($this->parent_table.'.*');
@@ -498,12 +484,7 @@ class Article_model extends Base_model
 
 		$query = $this->{$this->db_group}->get($this->table);
 
-		if($query->num_rows() > 0)
-		{
-			$data = $query->result_array();
-		}
-		
-		return $data;
+		return ($query->num_rows() > 0) ? $query->result_array() : array();
 	}
 	
 
@@ -514,8 +495,7 @@ class Article_model extends Base_model
 	 * Add lang content to each article in the article list.
 	 * This function is used for backend
 	 *
-	 * @param	Array	by ref. Array of articles
-	 *
+	 * @param	Array	&$articles 		by ref. Array of articles
 	 */
 	public function add_lang_data(&$articles = array())
 	{
@@ -564,9 +544,8 @@ class Article_model extends Base_model
 	 * Add view logical name to the article list.
 	 * This function is used for backend
 	 *
-	 * @param	Array	by ref. Array of articles
-	 * @param	Array	Array of views, as set in /themes/<the_theme>/config/views.php
-	 *
+	 * @param	Array	&$articles 		by ref. Array of articles
+	 * @param	Array	$views			Array of views, as set in /themes/<the_theme>/config/views.php
 	 */
 	public function add_view_name(&$articles = array(), $views)
 	{
@@ -589,9 +568,8 @@ class Article_model extends Base_model
 	/**
 	 * Adds the 'categories' array to each passed article in the $artices array
 	 *
-	 * @param array
-	 * @param null|string
-	 *
+	 * @param array			$articles
+	 * @param null|string	$lang
 	 */
 	public function add_categories(&$articles = array(), $lang = NULL)
 	{
@@ -643,9 +621,7 @@ class Article_model extends Base_model
 
 
 	/**
-	 *
 	 * @param array $articles
-	 *
 	 */
 	public function add_tags(&$articles = array())
 	{
@@ -703,6 +679,8 @@ class Article_model extends Base_model
 	/**
 	 * Saves the article context
 	 *
+	 * @param	array	$context_data
+	 * @return	int
 	 */
 	public function save_context($context_data)
 	{
@@ -726,9 +704,8 @@ class Article_model extends Base_model
 	/**
 	 * Saves the given page as main parent for this article contexts
 	 *
-	 * @param	int		Article ID
-	 * @param	int		Page ID
-	 *
+	 * @param	int		$id_article
+	 * @param	int		$id_page
 	 * @return 	int		Number of inserted / updated elements
 	 *
 	 */
@@ -753,9 +730,8 @@ class Article_model extends Base_model
 	/**
 	 * Saves one article URLs paths
 	 *
-	 * @param	int		Article id
+	 * @param	int		$id_article
 	 * @return	int		Number of inserted / updated Urls
-	 *
 	 */
 	public function save_urls($id_article)
 	{
@@ -828,9 +804,8 @@ class Article_model extends Base_model
 	 * Rebuild all the Url of all / one article
 	 * If no article id is given, rebuilds all the URLs
 	 *
-	 * @param	int		Optional. Article id
+	 * @param	int		[$id_article]		Optional
 	 * @return	int		Number of inserted / updated Urls
-	 *
 	 */
 	public function rebuild_urls($id_article = NULL)
 	{
@@ -860,6 +835,8 @@ class Article_model extends Base_model
 	/**
 	 * Unlink one article from one page
 	 *
+	 * @param	int		$id_article
+	 * @param	int		$id_page
 	 */
 	public function unlink($id_article, $id_page)
 	{
@@ -882,11 +859,9 @@ class Article_model extends Base_model
 	/**
 	 * Saves the article
 	 *
-	 * @param 	array	Standard data table
-	 * @param 	array	Lang depending data table
-	 *
+	 * @param 	array	$data		data table
+	 * @param 	array	$lang_data	Lang depending data table
 	 * @return	int		Articles saved ID
-	 *
 	 */
 	public function save($data, $lang_data)
 	{
@@ -911,9 +886,8 @@ class Article_model extends Base_model
 	/**
 	 * Calls all integrity corrections functions
 	 *
-	 * @param	array		Article array
-	 * @param	array		Article lang data array
-	 *
+	 * @param	array		$article
+	 * @param	array		$article_lang
 	 */
 	public function correct_integrity($article, $article_lang)
 	{
@@ -927,8 +901,7 @@ class Article_model extends Base_model
 	/**
 	 * Corrects the article's main parent
 	 *
-	 * @param	int
-	 *
+	 * @param	int		$id_article
 	 * @return	int
 	 */
 	public function correct_main_parent($id_article)
@@ -996,9 +969,8 @@ class Article_model extends Base_model
 	/**
 	 * Updates all other articles / pages links when saving one article
 	 *
-	 * @param	array		Article array
-	 * @param	array		Article lang data array
-	 *
+	 * @param	array	$article
+	 * @param	array	$article_lang
 	 */
 	public function update_links($article, $article_lang)
 	{
@@ -1065,12 +1037,10 @@ class Article_model extends Base_model
 	 *  - when drag / drop an article to a page
 	 * 	- when saving an article for the first time
 	 *
-	 * @param	int		ID of the page
-	 * @param	int		ID of the article
-	 * @param	Array	Optional. Array of context data to insert to the join table.
-	 *
+	 * @param	int		$id_page
+	 * @param	int		$id_article
+	 * @param	Array	$context_data	Optional. Array of context data to insert to the join table.
 	 * @return	boolean	TRUE is the link was set.
-	 *
 	 */
 	public function link_to_page($id_page, $id_article, $context_data = array())
 	{
@@ -1116,35 +1086,35 @@ class Article_model extends Base_model
 	 * Delete one article
 	 * also delete all joined element from join tables
 	 *
-	 * @param	int 	Article ID
+	 * @param	int 	$id_article
 	 * @return 	int		Affected rows number
 	 */
-	public function delete($id)
+	public function delete($id_article)
 	{
 		$affected_rows = 0;
 		
 		// Check if article exists
-		if( $this->exists(array($this->pk_name => $id)) )
+		if( $this->exists(array($this->pk_name => $id_article)) )
 		{
 			// Article delete
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_article)->delete($this->table);
 			
 			// Lang
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->lang_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_article)->delete($this->lang_table);
 	
 			// Linked medias
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table.'_media');
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_article)->delete($this->table.'_media');
 					
 			// Categories
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->table.'_'.$this->category_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_article)->delete($this->table.'_'.$this->category_table);
 			
 			// Contexts
-			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id)->delete($this->parent_table);
+			$affected_rows += $this->{$this->db_group}->where($this->pk_name, $id_article)->delete($this->parent_table);
 			
 			// URLs
 			$where = array(
 				'type' => 'article',
-				'id_entity' => $id
+				'id_entity' => $id_article
 			);
 			$affected_rows += $this->{$this->db_group}->where($where)->delete('url');
 		}
@@ -1164,12 +1134,10 @@ class Article_model extends Base_model
 	 * - the linked media
 	 * - the extended fields values, if any
 	 *
-	 * @param		Integer		ID of the article to duplicate
-	 * @param		Array		Array of new fields (id_page, name, order, etc...)
-	 * @param		String		Article Order in the defined page. Can be "first" or "last"
-	 *
-	 * @return		Integer		ID of the new article
-	 *
+	 * @param	Integer		$id_source	ID of the article to duplicate
+	 * @param	Array		$data		Array of new fields (id_page, name, order, etc...)
+	 * @param	String		$order 		Article Order in the defined page. Can be "first" or "last"
+	 * @return	Integer		ID of the new article
 	 */
 	public function duplicate($id_source, $data, $order)
 	{
@@ -1320,10 +1288,9 @@ class Article_model extends Base_model
 	/**
 	 * Updates articles ordering for the given page ID
 	 * 
-	 * @param	Integer		ID of the parent page
-	 * @param	Integer		Ordering value from which start the reordering
+	 * @param	Integer		$id_page	ID of the parent page
+	 * @param	Integer		$from 		Ordering value from which start the reordering
 	 * @return 	void
-	 *
 	 */
 	public function shift_article_ordering($id_page, $from = NULL)
 	{
@@ -1344,9 +1311,8 @@ class Article_model extends Base_model
 	/**
 	 * Returns the article ordering array from a givven page
 	 *
-	 * @param	Integer		ID of the page
+	 * @param	Integer		$id_page
 	 * @return	Array		Array of articles ID
-	 *
 	 */
 	public function get_articles_ordering($id_page)
 	{
@@ -1372,12 +1338,10 @@ class Article_model extends Base_model
 	/**
 	 * Set an article online / offline in a given context (page)
 	 *
-	 * @param	int			Page ID
-	 * @param	int			Article ID
-	 * @param	boolean		New status
-	 *
+	 * @param	int			$id_page
+	 * @param	int			$id_article
+	 * @param	boolean		$new_status
 	 * @return 	boolean		New status
-	 *
 	 */
 	public function switch_online($id_page, $id_article, $new_status=NULL)
 	{
@@ -1405,8 +1369,8 @@ class Article_model extends Base_model
 	/**
 	 * Adds the pagination filter to the articles get_lang_list() call
 	 *
-	 * @param int
-	 * @param int
+	 * @param	int	$pagination
+	 * @param	int	$start_index
 	 */
 	public function add_pagination_filter($pagination, $start_index)
 	{
@@ -1421,8 +1385,8 @@ class Article_model extends Base_model
 	/**
 	 * Adds the archives filter to the articles get_lang_list() call
 	 *
-	 * @param int
-	 * @param int
+	 * @param   int     $year
+	 * @param   int     $month
 	 */
 	public function add_archives_filter($year, $month = NULL)
 	{
@@ -1479,8 +1443,8 @@ class Article_model extends Base_model
 	/**
 	 * Adds the category filter to the articles get_lang_list() call
 	 *
-	 * @param int
-	 * @param int
+	 * @param   int     $category
+	 * @param   int     $lang
 	 */
 	public function add_category_filter($category, $lang)
 	{
@@ -1499,8 +1463,7 @@ class Article_model extends Base_model
 	/**
 	 * Adds the tag filter to the articles get_lang_list() call
 	 *
-	 * @param int
-	 * @param int
+	 * @param   string  $tag_name
 	 */
 	public function add_tag_filter($tag_name)
 	{
@@ -1517,14 +1480,12 @@ class Article_model extends Base_model
 	/**
 	 * Gets the list of archives with number of articles linked to.
 	 *
-	 * @param array  $where
-	 * @param null   $lang
-	 * @param bool   $filter
-	 * @param bool   $month
-	 * @param string $order_by
-	 *
-	 * @return array
-	 *
+	 * @param	array  		$where
+	 * @param	string		$lang
+	 * @param	bool   		$filter
+	 * @param	bool   		$month
+	 * @param	string 		$order_by
+	 * @return	array
 	 */
 	public function get_archives_list($where=array(), $lang=NULL, $filter=FALSE, $month=FALSE, $order_by='period DESC')
 	{
@@ -1612,10 +1573,9 @@ class Article_model extends Base_model
 	/**
 	 * Returns the adjacent article.
 	 *
-	 * @param array
-	 * @param string	'previous' or 'next'
-	 *
-	 * @return null|array
+	 * @param   array       $current
+	 * @param   string	    $adjacent   'previous' or 'next'
+	 * @return  null|array
 	 */
 	public function get_adjacent_article($current, $adjacent)
 	{
@@ -1651,10 +1611,9 @@ class Article_model extends Base_model
 	/**
 	 * Count the number of articles, based on given conditions
 	 *
-	 * @param array
-	 * @param null $lang
-	 * @param null|string	SQL filter
-	 *
+	 * @param array			$where
+	 * @param null 			$lang
+	 * @param null|string	$filter		SQL filter
 	 * @return mixed
 	 */
 	public function count_articles($where=array(), $lang=NULL, $filter=NULL)
@@ -1695,9 +1654,8 @@ class Article_model extends Base_model
 	/**
 	 * Adds Published filtering on articles get_lang_list() call
 	 *
-	 * @param bool
-	 * @param null
-	 *
+	 * @param   bool    $on
+	 * @param   string  $lang
 	 */
 	protected function filter_on_published($on = TRUE, $lang = NULL)
 	{
@@ -1723,8 +1681,7 @@ class Article_model extends Base_model
 	/**
 	 * Processes the condition array
 	 *
-	 * @param array
-	 *
+	 * @param array     $where
 	 */
 	protected function _process_where($where=array())
 	{
@@ -1744,9 +1701,8 @@ class Article_model extends Base_model
 	/**
 	 * Adds all SQL conditions requested by the filter to the current request
 	 *
-	 * @param	String		Filter
+	 * @param	String		$filter
 	 * @return 	void
-	 *
 	 */
 	private function _set_filter($filter = NULL)
 	{
@@ -1761,10 +1717,8 @@ class Article_model extends Base_model
 	/**
 	 * Set the correct dates to one article and return it
 	 *
-	 * @param array		Article array
-	 *
-	 * @return array
-	 *
+	 * @param   array	$data   Article array
+	 * @return  array
 	 */
 	protected function _set_dates($data)
 	{

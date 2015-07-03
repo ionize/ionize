@@ -372,9 +372,9 @@ class Article extends MY_admin
 		
 		// Menu Info
 		$menu = '';
-		foreach($data as $id=>$value)
+		foreach($data as $id_page_in_menu=>$value)
 		{
-			if ($page['id_menu'] == $id) $menu = $value;
+			if ($page['id_menu'] == $id_page_in_menu) $menu = $value;
 		}
 		$this->template['menu'] = $menu;
 

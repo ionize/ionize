@@ -187,14 +187,14 @@ class Page extends MY_admin
 	 * @param	string	Page ID
 	 *
 	 */
-	public function edit($id)
+	public function edit($id_page)
 	{
-		$resource = $this->_get_resource_name('backend', 'page', $id);
+		$resource = $this->_get_resource_name('backend', 'page', $id_page);
 
 		if (Authority::can('edit', 'admin/page') && Authority::can('edit', $resource, null, true))
 		{
-			// Datas
-			$page = $this->page_model->get_by_id($id);
+			// Data
+			$page = $this->page_model->get_by_id($id_page);
 
 			if( ! empty($page) )
 			{
@@ -205,13 +205,13 @@ class Page extends MY_admin
 
 				// Data & Lang Data
 				$this->template = array_merge($this->template, $page);
-				$this->page_model->feed_lang_template($id, $this->template);
+				$this->page_model->feed_lang_template($id_page, $this->template);
 
 				// Array of path to the element. Gives the complete URL to the element.
-				$this->template['parent_array'] = $this->page_model->get_parent_array($id);
+				$this->template['parent_array'] = $this->page_model->get_parent_array($id_page);
 
 				// Breadcrumbs
-				$pages = $this->page_model->get_parent_array($id, array(), Settings::get_lang('default'));
+				$pages = $this->page_model->get_parent_array($id_page, array(), Settings::get_lang('default'));
 
 				$breadcrumps = array();
 				foreach($pages as $page)
@@ -221,10 +221,10 @@ class Page extends MY_admin
 				$this->template['breadcrump'] = implode(' > ', $breadcrumps);
 
 				// Extend fields
-				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
+				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id_page);
 
 				// URLs
-				$this->template['urls'] = $this->url_model->get_entity_urls('page', $id);
+				$this->template['urls'] = $this->url_model->get_entity_urls('page', $id_page);
 
 				// Output
 				$this->output('page/page');
@@ -373,7 +373,7 @@ class Page extends MY_admin
 		 */
 		if ($this->_check_before_save() === TRUE)
 		{
-			$id = $this->input->post('id_page');
+			$id_page = $this->input->post('id_page');
 
 			// Clear the cache
 			Cache()->clear_cache();
@@ -400,7 +400,7 @@ class Page extends MY_admin
 
 			// Correct Pages levels
 			// TODO : Move this into the model.
-			if ( ! empty($id) )
+			if ( ! empty($id_page) )
 			{
 				// Correct pages levels regarding parents.
 				$this->system_check_model->check_page_level(TRUE);
@@ -432,7 +432,7 @@ class Page extends MY_admin
 			Event::fire('Page.save.success', $event_data);
 
 			// New page : Simply reloads the panel
-			if ( empty($id))
+			if ( empty($id_page))
 			{
 				// Save the Urls
 				$this->page_model->save_urls($saved_id);
@@ -598,22 +598,22 @@ class Page extends MY_admin
 	/**
 	 * Set an item online / offline depending on its current status
 	 *
-	 * @param	int		item ID
+	 * @param	int		$id_page
 	 *
 	 */
-	public function switch_online($id)
+	public function switch_online($id_page)
 	{
 		// Clear the cache
 		Cache()->clear_cache();
 
-		$status = $this->page_model->switch_online($id);
+		$status = $this->page_model->switch_online($id_page);
 
 		$this->callback = array(
 			array(
 				'fn' => 'ION.switchOnlineStatus',
 				'args' => array(
 					'status' => $status,
-					'selector' => '.page'.$id
+					'selector' => '.page'.$id_page
 				)
 			)
 		);
@@ -1012,13 +1012,12 @@ class Page extends MY_admin
 	/**
 	 * Deletes one page
 	 * @note	For the moment, this method doesn't delete the linked articles, which will stay in database as phantom
-	 *
-	 * @param	int		Page ID
+	 * @param	int		$id_page
 	 *
 	 */
-	public function delete($id)
+	public function delete($id_page)
 	{
-		$affected_rows = $this->page_model->delete($id);
+		$affected_rows = $this->page_model->delete($id_page);
 
 		// Delete was successful
 		if ($affected_rows > 0)
@@ -1032,7 +1031,7 @@ class Page extends MY_admin
 			// Remove deleted article from DOM
 			$this->callback[] = array(
 				'fn' => 'ION.deleteDomElements',
-				'args' => array('.page' . $id)
+				'args' => array('.page' . $id_page)
 			);
 
 			// If the current edited article is deleted
