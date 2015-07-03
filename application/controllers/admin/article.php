@@ -1281,7 +1281,7 @@ class Article extends MY_admin
 		$link_rel = $this->input->post('link_rel');
 	
 		// If the receiver is an article in a given page context : ok
-		if (count($receiver_rel > 1))
+		if (count($receiver_rel)  > 1)
 		{
 			// Get the receiver's context
 			$context = $this->article_model->get_context($receiver_rel[1], $receiver_rel[0]);
