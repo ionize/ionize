@@ -13,7 +13,6 @@ CREATE TABLE api_key (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE api_log (
     id int(11) NOT NULL AUTO_INCREMENT,
     uri varchar(255) NOT NULL,
@@ -25,7 +24,6 @@ CREATE TABLE api_log (
     authorized tinyint(1) NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE IF NOT EXISTS article (
   id_article int(11) UNSIGNED NOT NULL auto_increment,
@@ -47,14 +45,10 @@ CREATE TABLE IF NOT EXISTS article (
   PRIMARY KEY  (id_article)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS article_category (
 	id_article INT(11) UNSIGNED NOT NULL ,
 	id_category INT(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE IF NOT EXISTS article_lang (
   id_article int(11) UNSIGNED NOT NULL default 0,
@@ -70,8 +64,6 @@ CREATE TABLE IF NOT EXISTS article_lang (
   PRIMARY KEY  (id_article,lang)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-
-
 CREATE TABLE IF NOT EXISTS article_media (
   id_article int(11) UNSIGNED NOT NULL default 0,
   id_media int(11) UNSIGNED NOT NULL default 0,
@@ -81,8 +73,6 @@ CREATE TABLE IF NOT EXISTS article_media (
   lang_display varchar(3) DEFAULT NULL,
   PRIMARY KEY  (id_article,id_media)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE IF NOT EXISTS article_comment (
 	id_article_comment int(11) UNSIGNED NOT NULL auto_increment,
@@ -99,15 +89,11 @@ CREATE TABLE IF NOT EXISTS article_comment (
 	PRIMARY KEY (id_article_comment)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-
-
 CREATE TABLE IF NOT EXISTS article_tag (
 	id_article int(11) UNSIGNED NOT NULL,
 	id_tag int(11) UNSIGNED NOT NULL,
 	PRIMARY KEY  (id_article, id_tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE IF NOT EXISTS article_type (
   id_type int(11) unsigned NOT NULL auto_increment,
@@ -118,8 +104,6 @@ CREATE TABLE IF NOT EXISTS article_type (
   PRIMARY KEY  (id_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS captcha (
   id_captcha int(11) UNSIGNED NOT NULL auto_increment,
   question varchar(255) NOT NULL default '',
@@ -129,16 +113,12 @@ CREATE TABLE IF NOT EXISTS captcha (
   PRIMARY KEY  (id_captcha)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS category (
   id_category int(11) UNSIGNED NOT NULL auto_increment,
   name varchar(50) NOT NULL,
   ordering int(11) default 0,
   PRIMARY KEY  (id_category)
 )  ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
-
-
 
 CREATE TABLE IF NOT EXISTS category_lang (
   id_category int(11) UNSIGNED NOT NULL default '0',
@@ -148,8 +128,6 @@ CREATE TABLE IF NOT EXISTS category_lang (
   description text NOT NULL,
 	  PRIMARY KEY  (id_category, lang)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE IF NOT EXISTS element (
   id_element int(11) unsigned NOT NULL auto_increment,
@@ -163,8 +141,6 @@ CREATE TABLE IF NOT EXISTS element (
   KEY idx_element_parent (parent)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS element_definition (
   id_element_definition int(11) unsigned NOT NULL auto_increment,
   name varchar(50) NOT NULL,
@@ -173,16 +149,12 @@ CREATE TABLE IF NOT EXISTS element_definition (
   PRIMARY KEY  (id_element_definition)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS element_definition_lang (
   id_element_definition int(11) unsigned NOT NULL,
   lang varchar(3) NOT NULL,
   title varchar(255) NOT NULL default '',
   PRIMARY KEY  (id_element_definition, lang)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE event_log (
     id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -195,8 +167,6 @@ CREATE TABLE event_log (
     seen tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-
 
 CREATE TABLE IF NOT EXISTS extend_field (
 	id_extend_field INT(11) UNSIGNED NOT NULL auto_increment,
@@ -224,7 +194,6 @@ CREATE TABLE IF NOT EXISTS extend_field_lang (
     PRIMARY KEY  (id_extend_field, lang)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-
 CREATE TABLE IF NOT EXISTS extend_fields (
 	id_extend_fields INT(11) UNSIGNED NOT NULL auto_increment,
 	id_extend_field INT(11) UNSIGNED NOT NULL,
@@ -240,8 +209,6 @@ CREATE TABLE IF NOT EXISTS extend_fields (
     KEY idx_extend_fields_id_extend_field (id_extend_field) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8   AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS ion_sessions (
   session_id varchar(40) NOT NULL default '0',
   ip_address varchar(16) NOT NULL default '0',
@@ -250,8 +217,6 @@ CREATE TABLE IF NOT EXISTS ion_sessions (
   user_data text NULL,
   PRIMARY KEY  (session_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE IF NOT EXISTS lang (
   lang varchar(3) NOT NULL default '',
@@ -263,16 +228,12 @@ CREATE TABLE IF NOT EXISTS lang (
   PRIMARY KEY  (lang)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-
-
 CREATE TABLE IF NOT EXISTS login_tracker (
   ip_address varchar(32) NOT NULL,
   first_time int(11) unsigned NOT NULL,
   failures tinyint(2) unsigned default NULL,
   PRIMARY KEY  (ip_address)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE IF NOT EXISTS media (
 	id_media int(11) UNSIGNED NOT NULL auto_increment,
@@ -289,8 +250,6 @@ CREATE TABLE IF NOT EXISTS media (
 	PRIMARY KEY  (id_media)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS media_lang (
   lang varchar(3) NOT NULL default '',
   id_media int(11) UNSIGNED NOT NULL default 0,
@@ -300,8 +259,6 @@ CREATE TABLE IF NOT EXISTS media_lang (
   PRIMARY KEY  (id_media, lang)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-
-
 CREATE TABLE IF NOT EXISTS menu (
   id_menu int(11) NOT NULL auto_increment,
   name varchar(50) NOT NULL,
@@ -310,8 +267,6 @@ CREATE TABLE IF NOT EXISTS menu (
   PRIMARY KEY  (id_menu),
   UNIQUE KEY name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
-
-
 
 CREATE TABLE IF NOT EXISTS module (
 	id_module int(11) UNSIGNED NOT NULL auto_increment,
@@ -326,8 +281,6 @@ CREATE TABLE IF NOT EXISTS module (
 	KEY i_module_name (name)
 )  ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS module_setting (
   id_module_setting int(11) NOT NULL auto_increment,
   id_module int(11) NOT NULL,
@@ -337,8 +290,6 @@ CREATE TABLE IF NOT EXISTS module_setting (
   PRIMARY KEY  (id_module_setting) 
 )   ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS note (
   id_note INT( 11 ) NOT NULL AUTO_INCREMENT,
   id_user INT( 11 ) NOT NULL ,
@@ -347,8 +298,6 @@ CREATE TABLE IF NOT EXISTS note (
   content TEXT NOT NULL ,
   PRIMARY KEY  (id_note)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
-
-
 
 CREATE TABLE IF NOT EXISTS page (
   id_page int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -390,8 +339,6 @@ CREATE TABLE IF NOT EXISTS page (
   KEY idx_page_menu (id_menu) 
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 
-
-
 CREATE TABLE IF NOT EXISTS page_article (
 	id_page INT(11) UNSIGNED NOT NULL,
 	id_article INT(11) UNSIGNED NOT NULL,
@@ -407,15 +354,16 @@ CREATE TABLE IF NOT EXISTS page_article (
     KEY idx_page_article_id_type (id_type) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
-
+CREATE TABLE IF NOT EXISTS page_category (
+	id_page INT(11) UNSIGNED NOT NULL ,
+	id_category INT(11) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE IF NOT EXISTS page_role (
   id_page int(11) UNSIGNED NOT NULL default 0,
   ig_group smallint(4) UNSIGNED NOT NULL default 0,
   PRIMARY KEY  (id_page,ig_group)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-
-
 
 CREATE TABLE IF NOT EXISTS page_lang (
   lang varchar(3) NOT NULL default '',
@@ -433,8 +381,6 @@ CREATE TABLE IF NOT EXISTS page_lang (
   PRIMARY KEY  (id_page,lang)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
-
-
 CREATE TABLE IF NOT EXISTS page_media (
   id_page int(11) UNSIGNED NOT NULL default 0,
   id_media int(11) UNSIGNED NOT NULL default 0,
@@ -442,6 +388,12 @@ CREATE TABLE IF NOT EXISTS page_media (
   ordering int(11) UNSIGNED default 9999,
   lang_display varchar(3) DEFAULT NULL,
   PRIMARY KEY  (id_page,id_media)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+CREATE TABLE IF NOT EXISTS page_tag (
+	id_page int(11) UNSIGNED NOT NULL,
+	id_tag int(11) UNSIGNED NOT NULL,
+	PRIMARY KEY  (id_article, id_tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE if not exists resource (
