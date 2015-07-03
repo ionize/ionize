@@ -363,24 +363,24 @@ class Article extends MY_admin
 		$this->template['articles'] = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
 		
 		// Dropdown menus
-		$datas = $this->menu_model->get_select();
-		$this->template['menus'] =	form_dropdown('id_menu', $datas, $page['id_menu'], 'id="id_menu" class="select"');
+		$data = $this->menu_model->get_select();
+		$this->template['menus'] =	form_dropdown('id_menu', $data, $page['id_menu'], 'id="id_menu" class="select"');
 		
 		// Menu Info
 		$menu = '';
-		foreach($datas as $id=>$value)
+		foreach($data as $id=>$value)
 		{
 			if ($page['id_menu'] == $id) $menu = $value;
 		}
 		$this->template['menu'] = $menu;
 
 		// Dropdown parents
-		$datas = $this->page_model->get_lang_list(array('id_menu' => $page['id_menu']), Settings::get_lang('default'));
+		$data = $this->page_model->get_lang_list(array('id_menu' => $page['id_menu']), Settings::get_lang('default'));
 		
 		$parents = array(
 			'0' => lang('ionize_select_no_parent')
 		);
-		($parents_array = $this->structure->get_parent_select($datas) ) ? $parents += $parents_array : '';
+		($parents_array = $this->structure->get_parent_select($data) ) ? $parents += $parents_array : '';
 		$this->template['parent_select'] = form_dropdown('id_page', $parents, $id_page, 'id="id_page" class="select"');
 	
 		// Parent info
@@ -390,7 +390,7 @@ class Article extends MY_admin
 
 		while ($level > -1)
 		{
-			foreach($datas as $page)
+			foreach($data as $page)
 			{
 				if ($b_id_page == $page['id_page'])
 				{
@@ -410,12 +410,12 @@ class Article extends MY_admin
 		if (is_file(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php'))
 			require_once(APPPATH.'../themes/'.Settings::get('theme').'/config/views.php');
 
-		$datas = isset($views['article']) ? $views['article'] : array() ;
+		$data = isset($views['article']) ? $views['article'] : array() ;
 
-		if(count($datas) > 0)
+		if(count($data) > 0)
 		{
-			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
-			$this->template['article_views'] = form_dropdown('view', $datas, FALSE, 'class="select w160"');
+			$data = array('0' => lang('ionize_select_default_view')) + $data;
+			$this->template['article_views'] = form_dropdown('view', $data, FALSE, 'class="select w160"');
 		}
 
 		// Categories
@@ -1401,19 +1401,19 @@ class Article extends MY_admin
 	 * Duplicates one article
 	 * Called by /views/toolboxes/article_toolbox
 	 *
-	 * @param	int		Source article ID
+	 * @param	int		$id_article		Source article ID
 	 * 
 	 * TODO :	Check if the article exists and display an error window if not.
 	 *			JS Callbacks of MUI.formWindow() needs to be implemented
 	 *
 	 */
-	public function duplicate($id)
+	public function duplicate($id_article)
 	{
 		// Source article
 		$cond = array
 		(
 			'id_page' => $this->input->post('id_page'),
-			'id_article' => $id
+			'id_article' => $id_article
 		);
 		
 		if ($this->input->post('id_page'))
@@ -1457,8 +1457,8 @@ class Article extends MY_admin
 		$this->template['title'] = ($source_article['title'] != '') ? $source_article['title'] : $source_article['name'];
 
 		// Dropdown menus
-		$datas = $this->menu_model->get_select();
-		$this->template['menus'] =	form_dropdown('dup_id_menu', $datas, '1', 'id="dup_id_menu" class="select"');
+		$data = $this->menu_model->get_select();
+		$this->template['menus'] =	form_dropdown('dup_id_menu', $data, '1', 'id="dup_id_menu" class="select"');
 
 		$this->output('article/duplicate');
 	}
@@ -1551,13 +1551,12 @@ class Article extends MY_admin
 	/**
 	 * Set an item online / offline depending on its current context and status
 	 *
-	 * @param	int		item ID
-	 * @param	int		item ID
+	 * @param	int		$id_page
+	 * @param	int		$id_article
 	 *
 	 */
 	public function switch_online($id_page, $id_article)
 	{
-		// Clear the cache
 		Cache()->clear_cache();
 
 		$status = $this->article_model->switch_online($id_page, $id_article);
@@ -1581,7 +1580,9 @@ class Article extends MY_admin
 
 	/** 
 	 * Saves article ordering
-	 * 
+	 *
+	 * @param	string	$parent
+	 * @param	int		$id_parent
 	 */
 	public function save_ordering($parent, $id_parent)
 	{
@@ -1624,10 +1625,9 @@ class Article extends MY_admin
 
 	/**
 	 * Gets the article list for the ordering select dropdown
-	 * @param	int		Page ID
 	 *
+	 * @param	int		$id_page
 	 * @returns	string	HTML string of options items
-	 *
 	 */
 	public function get_ordering_article_select($id_page)
 	{
@@ -1644,16 +1644,15 @@ class Article extends MY_admin
 	/** 
 	 * Deletes one article
 	 *
-	 * @param	int 		Article ID
-	 *
+	 * @param	int		$id_article
 	 */
-	public function delete($id)
+	public function delete($id_article)
 	{
 		if (!Authority::can('delete', 'admin/article')) {
 			$this->error(lang('permission_denied'));
 		}
 
-		$affected_rows = $this->article_model->delete($id);
+		$affected_rows = $this->article_model->delete($id_article);
 		
 		// Delete was successful
 		if ($affected_rows > 0)
@@ -1667,7 +1666,7 @@ class Article extends MY_admin
 			// Remove deleted article from DOM
 			$this->callback[] = array(
 				'fn' => 'ION.deleteDomElements',
-				'args' => array('.article' . $id)
+				'args' => array('.article' . $id_article)
 			);
 			
 			// If the current edited article is deleted
@@ -1705,31 +1704,31 @@ class Article extends MY_admin
 			switch($action)
 			{
 				case 'delete':
-					foreach($ids as $id)
+					foreach($ids as $id_article)
 					{
-						$nb = $this->article_model->delete($id);
-						if ($nb > 0) $returned_ids[] = $id;
+						$nb = $this->article_model->delete($id_article);
+						if ($nb > 0) $returned_ids[] = $id_article;
 					}
 
 					break;
 
 				case 'unlink':
-					foreach($ids as $id)
+					foreach($ids as $id_article)
 					{
-						$nb = $this->article_model->unlink($id, $id_page);
-						if ($nb > 0) $returned_ids[] = $id;
+						$nb = $this->article_model->unlink($id_article, $id_page);
+						if ($nb > 0) $returned_ids[] = $id_article;
 					}
 					break;
 
 				case 'offline':
-					foreach($ids as $id)
-						$this->article_model->switch_online($id_page, $id, 0);
+					foreach($ids as $id_article)
+						$this->article_model->switch_online($id_page, $id_article, 0);
 					$returned_ids = $ids;
 					break;
 
 				case 'online':
-					foreach($ids as $id)
-						$this->article_model->switch_online($id_page, $id, 1);
+					foreach($ids as $id_article)
+						$this->article_model->switch_online($id_page, $id_article, 1);
 					$returned_ids = $ids;
 					break;
 			}
@@ -1889,10 +1888,8 @@ class Article extends MY_admin
 	/**
 	 * Return TRUE if the extend fields array contains at least one translated extend field
 	 *
-	 * @param $extend_fields
-	 *
-	 * @return bool
-	 *
+	 * @param	array	$extend_fields
+	 * @return	bool
 	 */
 	protected function _has_translated_extend_fields($extend_fields)
 	{
@@ -1916,10 +1913,9 @@ class Article extends MY_admin
  	 * Gets the article's ordering
  	 * Also reorder the context table
  	 *
- 	 * @param	string		place of the new inserted article. 'first, 'last' or 'after'
- 	 * @param	int			ID of the page.
- 	 * @param	int			ID of the referent article. Must be set if place is 'after'
- 	 *
+ 	 * @param	string		$place		place of the new inserted article. 'first, 'last' or 'after'
+ 	 * @param	int			$id_page
+ 	 * @param	int			$id_ref		ID of the referent article. Must be set if place is 'after'
 	 * @return	int			place of the article
  	 */
 	protected function _get_ordering($place, $id_page, $id_ref = NULL)
@@ -1965,7 +1961,7 @@ class Article extends MY_admin
 	/**
 	 * Checks if the element save process can be done.
 	 *
-	 * @returns		Boolean		True if the save can be done, false if not
+	 * @returns		bool		True if the save can be done, false if not
 	 *
 	 */
 	protected function _check_before_save()
@@ -1989,11 +1985,8 @@ class Article extends MY_admin
 	/**
 	 * Returns all the URLs sent for this element
 	 *
-	 * @param		Boolean		Should the empty lang index be filled with '' ?
-	 *
-	 * @return		Array		Multidimensional array of URLs
-	 *							ex : $url['en'] = 'my-element-url'
-	 *
+	 * @param		bool	$fill_empty_lang		Should the empty lang index be filled with '' ?
+	 * @return		Array							Multidimensional array of URLs, ex: $url['en'] = 'my-element-url'
 	 */
 	protected function _get_urls($fill_empty_lang = FALSE)
 	{
@@ -2035,8 +2028,8 @@ class Article extends MY_admin
 	/**
 	 * Reloads the Edition panel
 	 *
-	 * @param $id_page
-	 * @param $id_article
+	 * @param	int		$id_page
+	 * @param	int		$id_article
 	 */
 	protected function _reload_panel($id_page, $id_article)
 	{

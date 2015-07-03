@@ -89,14 +89,13 @@ class Article_model extends Base_model
 	/**
 	 * Get one article by its ID
 	 *
-	 * @param	int
-	 * @param 	null|string
-	 *
-	 * @return array
+	 * @param	int			$id_article
+	 * @param 	null|string	$lang
+	 * @return	array
 	 */
-	public function get_by_id($id, $lang = NULL)
+	public function get_by_id($id_article, $lang = NULL)
 	{
-		return $this->get(array('article.id_article' => $id), $lang);
+		return $this->get(array('article.id_article' => $id_article), $lang);
 	}
 
 	// ------------------------------------------------------------------------

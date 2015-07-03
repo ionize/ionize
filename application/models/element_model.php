@@ -452,7 +452,6 @@ class Element_model extends Base_model
 
 	/**
 	 * @param null $id
-	 *
 	 * @return int
 	 */
 	public function delete($id)

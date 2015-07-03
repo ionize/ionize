@@ -62,9 +62,9 @@ class Page_model extends Base_model
 	/** 
 	 * Get one page
 	 *
-	 * @param	string		where array
-	 * @param	string		Optional. Lang code
-	 * @return	array		array of media
+	 * @param	array|string		$where
+	 * @param	null|string			[$lang] 	Lang code
+	 * @return	array				array of media
 	 *
 	 */
 	function get($where, $lang = NULL)
@@ -84,15 +84,13 @@ class Page_model extends Base_model
 	/**
 	 * Get one page by its ID
 	 *
-	 * @param      $id
-	 * @param null $lang
-	 *
-	 * @return array
-	 *
+	 * @param	int			$id_page
+	 * @param	string|null	[$lang]		lang code
+	 * @return 	array
 	 */
-	public function get_by_id($id, $lang = NULL)
+	public function get_by_id($id_page, $lang = NULL)
 	{
-		return $this->get(array('page.id_page' => $id), $lang);
+		return $this->get(array('page.id_page' => $id_page), $lang);
 	}
 
 
@@ -100,10 +98,9 @@ class Page_model extends Base_model
 
 
 	/**
-	 * @param null $where
-	 * @param null $lang
-	 *
-	 * @return array
+	 * @param	null|string	$where
+	 * @param	null|string	[$lang]	lang code
+	 * @return	array
 	 */
 	public function get_lang_list($where = NULL, $lang = NULL)
 	{

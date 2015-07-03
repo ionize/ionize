@@ -206,12 +206,12 @@ class Page extends MY_admin
 				// Breadcrumbs
 				$pages = $this->page_model->get_parent_array($id, array(), Settings::get_lang('default'));
 
-				$breadcrump = array();
+				$breadcrumps = array();
 				foreach($pages as $page)
 				{
-					$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
+					$breadcrumps[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
 				}
-				$this->template['breadcrump'] = implode(' > ', $breadcrump);
+				$this->template['breadcrump'] = implode(' > ', $breadcrumps);
 
 				// Extend fields
 				$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('page', $id);
@@ -240,7 +240,7 @@ class Page extends MY_admin
 	/**
 	 * Displays the options side panel
 	 *
-	 * @param   int     Page ID
+	 * @param   int		$id_page     Page ID
 	 *
 	 */
 	public function get_options($id_page)
@@ -265,13 +265,13 @@ class Page extends MY_admin
 				$this->load_modules_addons($page);
 
 				// Dropdown menus
-				$datas = $this->menu_model->get_select();
-				$this->template['menus'] = form_dropdown('id_menu', $datas, $this->template['id_menu'], 'id="id_menu" class="select"');
+				$data = $this->menu_model->get_select();
+				$this->template['menus'] = form_dropdown('id_menu', $data, $this->template['id_menu'], 'id="id_menu" class="select"');
 
 				// Subnav menu
 				$subnav_page = $this->page_model->get_by_id($page['id_subnav']);
 				$selected_subnav = ( ! empty($subnav_page['id_menu'])) ? $subnav_page['id_menu'] : '-1';
-				$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $datas, $selected_subnav, 'id="id_subnav_menu" class="select"');
+				$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $data, $selected_subnav, 'id="id_subnav_menu" class="select"');
 
 				// Dropdown Views
 				$views = array();
@@ -279,23 +279,23 @@ class Page extends MY_admin
 					require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
 
 				// Dropdown Page views
-				$datas = isset($views['page']) ? $views['page'] : array() ;
-				if(count($datas) > 0)
+				$data = isset($views['page']) ? $views['page'] : array() ;
+				if(count($data) > 0)
 				{
-					$datas = $this->_get_views_dropdown_data($datas, 'Page');
-					$datas = array('' => lang('ionize_select_default_view')) + $datas;
-					$this->template['views'] = form_dropdown('view', $datas, $this->template['view'], 'class="select"');
-					$this->template['single_views'] = form_dropdown('view_single', $datas, $this->template['view_single'], 'class="select"');
+					$data = $this->_get_views_dropdown_data($data, 'Page');
+					$data = array('' => lang('ionize_select_default_view')) + $data;
+					$this->template['views'] = form_dropdown('view', $data, $this->template['view'], 'class="select"');
+					$this->template['single_views'] = form_dropdown('view_single', $data, $this->template['view_single'], 'class="select"');
 				}
 
 				// Dropdown article list views (templates)
-				$datas = isset($views['article']) ? $views['article'] : array() ;
-				if(count($datas) > 0)
+				$data = isset($views['article']) ? $views['article'] : array() ;
+				if(count($data) > 0)
 				{
-					$datas = $this->_get_views_dropdown_data($datas, 'Article');
-					$datas = array('' => lang('ionize_select_default_view')) + $datas;
-					$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, $this->template['article_list_view'], 'class="select"');
-					$this->template['article_views'] = form_dropdown('article_view', $datas, $this->template['article_view'], 'class="select"');
+					$data = $this->_get_views_dropdown_data($data, 'Article');
+					$data = array('' => lang('ionize_select_default_view')) + $data;
+					$this->template['article_list_views'] = form_dropdown('article_list_view', $data, $this->template['article_list_view'], 'class="select"');
+					$this->template['article_views'] = form_dropdown('article_view', $data, $this->template['article_view'], 'class="select"');
 				}
 
 				// Roles & Rules
