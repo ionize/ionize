@@ -1354,7 +1354,7 @@ class Article extends MY_admin
 	{
 		$receiver_rel = explode('.', $this->input->post('rel'));
 		
-		if (count($receiver_rel > 1))
+		if (count($receiver_rel) > 1)
 		{
 			// Clear the cache
 			Cache()->clear_cache();
