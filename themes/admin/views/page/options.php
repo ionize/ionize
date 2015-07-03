@@ -116,63 +116,83 @@
 
 			<!-- Type of page -->
 			<?php if ( ! empty($types)) :?>
-			<dl class="small">
-				<dt>
-					<label for="id_type" title="<?php echo lang('ionize_help_page_type'); ?>"><?php echo lang('ionize_label_type'); ?></label>
-				</dt>
-				<dd>
-					<?php echo $types; ?>
-				</dd>
-			</dl>
+				<dl class="small">
+					<dt>
+						<label for="id_type" title="<?php echo lang('ionize_help_page_type'); ?>"><?php echo lang('ionize_label_type'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $types; ?>
+					</dd>
+				</dl>
 			<?php endif ;?>
 
 			<!-- Page view -->
 			<?php if ($id_page !='' && isset($views)) :?>
-			<dl class="small">
-				<dt>
-					<label for="view" title="<?php echo lang('ionize_help_page_view'); ?>"><?php echo lang('ionize_label_view'); ?></label>
-				</dt>
-				<dd>
-					<?php echo $views; ?>
-				</dd>
-			</dl>
+				<dl class="small">
+					<dt>
+						<label for="view" title="<?php echo lang('ionize_help_page_view'); ?>"><?php echo lang('ionize_label_view'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $views; ?>
+					</dd>
+				</dl>
 			<?php endif ;?>
 
 			<!-- Single Article Page view -->
 			<?php if ($id_page !='' && isset($single_views)) :?>
-			<dl class="small<?php if (!isset($article_views) && ! isset($article_list_views)) :?> last<?php endif ;?>">
-				<dt>
-					<label for="view" title="<?php echo lang('ionize_help_page_single_view'); ?>"><?php echo lang('ionize_label_page_single_view'); ?></label>
-				</dt>
-				<dd>
-					<?php echo $single_views; ?>
-				</dd>
-			</dl>
+				<dl class="small<?php if (!isset($article_views) && ! isset($article_list_views)) :?> last<?php endif ;?>">
+					<dt>
+						<label for="view" title="<?php echo lang('ionize_help_page_single_view'); ?>"><?php echo lang('ionize_label_page_single_view'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $single_views; ?>
+					</dd>
+				</dl>
 			<?php endif ;?>
 
 			<!-- Article List Template -->
 			<?php if (isset($article_list_views)) :?>
-			<dl class="small<?php if (!isset($article_views)) :?> last<?php endif ;?>">
-				<dt>
-					<label for="article_list_view" title="<?php echo lang('ionize_help_article_list_template'); ?>"><?php echo lang('ionize_label_article_list_template'); ?></label>
-				</dt>
-				<dd>
-					<?php echo $article_list_views; ?>
-				</dd>
-			</dl>
+				<dl class="small<?php if (!isset($article_views)) :?> last<?php endif ;?>">
+					<dt>
+						<label for="article_list_view" title="<?php echo lang('ionize_help_article_list_template'); ?>"><?php echo lang('ionize_label_article_list_template'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $article_list_views; ?>
+					</dd>
+				</dl>
 			<?php endif ;?>
 
 			<!-- Article Template -->
 			<?php if (isset($article_views)) :?>
-			<dl class="small last">
-				<dt>
-					<label for="article_view" title="<?php echo lang('ionize_help_article_template'); ?>"><?php echo lang('ionize_label_article_template'); ?></label>
-				</dt>
-				<dd>
-					<?php echo $article_views; ?>
-				</dd>
-			</dl>
+				<dl class="small last">
+					<dt>
+						<label for="article_view" title="<?php echo lang('ionize_help_article_template'); ?>"><?php echo lang('ionize_label_article_template'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $article_views; ?>
+					</dd>
+				</dl>
 			<?php endif ;?>
+
+			<!-- Categories & Tags -->
+			<div class="element-options-content">
+				<!-- Tags -->
+				<h4><?php echo lang('ionize_label_tags'); ?></h4>
+				<dfn><?php echo lang('ionize_help_tag_new') ?></dfn>
+				<input type="text" name="tags" value="" id="tags" />
+
+				<!-- Categories -->
+				<h4><?php echo lang('ionize_label_categories'); ?></h4>
+				<div id="categories">
+					<?php echo $categories; ?>
+				</div>
+
+				<!-- Category create button -->
+				<a class="button light mb10" onclick="ION.formWindow('category', 'categoryForm', '<?php echo lang('ionize_title_category_new'); ?>', 'category/get_form/article/<?php echo $id_page; ?>', {width:360, height:230})">
+					<i class="icon-plus"></i>
+					<?php echo lang('ionize_label_new_category'); ?>
+				</a>
+			</div>
 
 		</div>
 		<!-- / Options -->
@@ -305,7 +325,7 @@
 					<select name="priority" id="priority" class="inputtext w40">
 						<?php for($i=0; $i<=10; $i++) :?>
 
-						<option value="<?php echo $i; ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?php echo $i; ?></option>
+							<option value="<?php echo $i; ?>"<?php if($priority == $i) :?> selected="selected"<?php endif ;?>><?php echo $i; ?></option>
 
 						<?php endfor; ?>
 					</select>
@@ -319,16 +339,16 @@
 				<div id="metaDescriptionTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
+							<li><a><?php echo ucfirst($language['lang']); ?></a></li>
 						<?php endforeach ;?>
 					</ul>
 					<div class="clear"></div>
 				</div>
 				<div id="metaDescriptionTabContent" >
 					<?php foreach(Settings::get_languages() as $language) :?>
-					<div class="tabcontent">
-						<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo $languages[$language['lang']]['meta_description']; ?></textarea>
-					</div>
+						<div class="tabcontent">
+							<textarea id="meta_description_<?php echo $language['lang']; ?>" name="meta_description_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo $languages[$language['lang']]['meta_description']; ?></textarea>
+						</div>
 					<?php endforeach ;?>
 				</div>
 
@@ -338,16 +358,16 @@
 				<div id="metaKeywordsTab" class="mainTabs small">
 					<ul class="tab-menu">
 						<?php foreach(Settings::get_languages() as $language) :?>
-						<li><a><?php echo ucfirst($language['lang']); ?></a></li>
+							<li><a><?php echo ucfirst($language['lang']); ?></a></li>
 						<?php endforeach ;?>
 					</ul>
 					<div class="clear"></div>
 				</div>
 				<div id="metaKeywordsTabContent" >
 					<?php foreach(Settings::get_languages() as $language) :?>
-					<div class="tabcontent">
-						<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo $languages[$language['lang']]['meta_keywords']; ?></textarea>
-					</div>
+						<div class="tabcontent">
+							<textarea id="meta_keywords_<?php echo $language['lang']; ?>" name="meta_keywords_<?php echo $language['lang']; ?>" class="autogrow w95p"><?php echo $languages[$language['lang']]['meta_keywords']; ?></textarea>
+						</div>
 					<?php endforeach ;?>
 				</div>
 			</div>
@@ -416,7 +436,7 @@
 					<div class="w100 left">
 						<select name="lang_copy_from" id="lang_copy_from" class="w100 select">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
+								<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
@@ -424,7 +444,7 @@
 
 						<select name="lang_copy_to" id="lang_copy_to" class="w100 select mt5">
 							<?php foreach(Settings::get_languages() as $language) :?>
-							<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
+								<option value="<?php echo $language['lang']; ?>"><?php echo ucfirst($language['name']); ?></option>
 							<?php endforeach ;?>
 						</select>
 
@@ -495,80 +515,80 @@
 
 	<?php if ( ! empty($id_page)) :?>
 
-		// Link to page or article or what else...
-		if ($('linkContainer'))
+	// Link to page or article or what else...
+	if ($('linkContainer'))
+	{
+		ION.HTML(admin_url + 'page/get_link', {'id_page': '<?php echo $id_page; ?>'}, {'update': 'linkContainer'});
+	}
+
+	// Page status
+	<?php if (Authority::can('status', 'backend/page/' . $id_page, null, true)) :?>
+	if ($('iconPageStatus'))
+		ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
+	<?php endif; ?>
+
+	// Reorder articles
+	$('button_reorder_articles').addEvent('click', function(e)
+	{
+		e.stop();
+
+		var url = admin_url + 'page/reorder_articles';
+
+		var data = {
+			'id_page': $('id_page').value,
+			'direction': $('reorder_direction').value
+		};
+
+		ION.sendData(url, data);
+	});
+
+	<?php if(Authority::can('access', 'admin/page/permissions/backend')) :?>
+	<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
+
+	var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+		'roleRulesContainer<?php echo $id_role ?>',
+		<?php echo json_encode($role_resources['resources'], true) ?>,
 		{
-			ION.HTML(admin_url + 'page/get_link', {'id_page': '<?php echo $id_page; ?>'}, {'update': 'linkContainer'});
+			'cb_name':'backend_rule[<?php echo $id_role ?>][]',
+			'key': 'id_resource',
+			'data': [
+				{'key':'resource', 'as':'resource'},
+				{'key':'title', 'as':'title'},
+				{'key':'description', 'as':'description'},
+				{'key':'actions', 'as':'actions'}
+			],
+			'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
 		}
+	);
 
-		// Page status
-		<?php if (Authority::can('status', 'backend/page/' . $id_page, null, true)) :?>
-			if ($('iconPageStatus'))
-				ION.initRequestEvent($('iconPageStatus'), admin_url + 'page/switch_online/<?php echo $id_page; ?>');
-		<?php endif; ?>
+	<?php endforeach;?>
+	<?php endif; ?>
 
-		// Reorder articles
-		$('button_reorder_articles').addEvent('click', function(e)
+	<?php if(Authority::can('access', 'admin/page/permissions/frontend')) :?>
+	<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
+
+	var modRules<?php echo $id_role ?> = new ION.PermissionTree(
+		'roleRulesContainer<?php echo $id_role ?>',
+		<?php echo json_encode($role_resources['resources'], true) ?>,
 		{
-			e.stop();
+			'cb_name':'frontend_rule[<?php echo $id_role ?>][]',
+			'key': 'id_resource',
+			'data': [
+				{'key':'resource', 'as':'resource'},
+				{'key':'title', 'as':'title'},
+				{'key':'description', 'as':'description'},
+				{'key':'actions', 'as':'actions'}
+			],
+			'rules' : <?php echo json_encode($role_resources['rules'], true) ?>,
+			'onCheck': function()
+			{
+				frontRoleCheck();
+			}
+		}
+	);
 
-			var url = admin_url + 'page/reorder_articles';
-
-			var data = {
-				'id_page': $('id_page').value,
-				'direction': $('reorder_direction').value
-			};
-
-			ION.sendData(url, data);
-		});
-
-		<?php if(Authority::can('access', 'admin/page/permissions/backend')) :?>
-			<?php foreach($backend_roles_resources as $id_role => $role_resources): ?>
-
-				var modRules<?php echo $id_role ?> = new ION.PermissionTree(
-					'roleRulesContainer<?php echo $id_role ?>',
-					<?php echo json_encode($role_resources['resources'], true) ?>,
-					{
-						'cb_name':'backend_rule[<?php echo $id_role ?>][]',
-						'key': 'id_resource',
-						'data': [
-							{'key':'resource', 'as':'resource'},
-							{'key':'title', 'as':'title'},
-							{'key':'description', 'as':'description'},
-							{'key':'actions', 'as':'actions'}
-						],
-						'rules' : <?php echo json_encode($role_resources['rules'], true) ?>
-					}
-				);
-
-			<?php endforeach;?>
-		<?php endif; ?>
-
-		<?php if(Authority::can('access', 'admin/page/permissions/frontend')) :?>
-			<?php foreach($frontend_roles_resources as $id_role => $role_resources): ?>
-
-				var modRules<?php echo $id_role ?> = new ION.PermissionTree(
-					'roleRulesContainer<?php echo $id_role ?>',
-					<?php echo json_encode($role_resources['resources'], true) ?>,
-					{
-						'cb_name':'frontend_rule[<?php echo $id_role ?>][]',
-						'key': 'id_resource',
-						'data': [
-							{'key':'resource', 'as':'resource'},
-							{'key':'title', 'as':'title'},
-							{'key':'description', 'as':'description'},
-							{'key':'actions', 'as':'actions'}
-						],
-						'rules' : <?php echo json_encode($role_resources['rules'], true) ?>,
-						'onCheck': function()
-						{
-							frontRoleCheck();
-						}
-					}
-				);
-
-			<?php endforeach;?>
-		<?php endif; ?>
+	<?php endforeach;?>
+	<?php endif; ?>
 	<?php endif; ?>
 
 
@@ -595,7 +615,7 @@
 
 	// Calendars
 	ION.initDatepicker('<?php echo Settings::get('date_format'); ?>');
-    ION.initClearField('#pageOptionsForm');
+	ION.initClearField('#pageOptionsForm');
 
 	// Current & parent page ID
 	var el_id_page = $('id_page');
@@ -644,8 +664,8 @@
 	});
 
 	<?php if (User()->is('super-admin')) :?>
-		// Name Edition
-		ION.initInputChange('#pageOptionsForm .dynamic-input');
+	// Name Edition
+	ION.initInputChange('#pageOptionsForm .dynamic-input');
 	<?php endif; ?>
 
 

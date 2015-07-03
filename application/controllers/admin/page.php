@@ -14,7 +14,7 @@ class Page extends MY_admin
 
 	/**
 	 * Fields on wich the htmlspecialchars function will not be used before saving
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $no_htmlspecialchars = array('subtitle');
@@ -57,6 +57,9 @@ class Page extends MY_admin
 	/** @var  Article_model */
 	public $article_model;
 
+	/** @var  Category_model */
+	public $category_model;
+
 	/** @var  Extend_field_model */
 	public $extend_field_model;
 
@@ -82,21 +85,22 @@ class Page extends MY_admin
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// Models
-        $this->load->model(
-            array(
-                'menu_model',
-                'page_model',
-                'article_model',
-//                'structure_model', // Not using by controller
-                'extend_field_model',
-                'system_check_model',
-                'url_model',
-                'type_model',
-                'resource_model',
-                'rule_model'
-            ), '', TRUE);
+		$this->load->model(
+			array(
+				'menu_model',
+				'page_model',
+				'article_model',
+				'category_model',
+				//                'structure_model', // Not using by controller
+				'extend_field_model',
+				'system_check_model',
+				'url_model',
+				'type_model',
+				'resource_model',
+				'rule_model'
+			), '', TRUE);
 
 		// Libraries
 		$this->load->library('structure');
@@ -109,7 +113,7 @@ class Page extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Create one page
 	 *
 	 * @param	int		Menu ID
@@ -117,9 +121,9 @@ class Page extends MY_admin
 	 *
 	 */
 	public function create($id_menu, $id_parent=NULL)
-	{	
+	{
 		$this->load_modules_addons();
-	
+
 		// Current menu : Needs to be improved.
 		// TODO : Create a menu table or see how to manage menus.
 		$this->template['id_menu'] = $id_menu;
@@ -129,31 +133,31 @@ class Page extends MY_admin
 		$this->page_model->feed_blank_lang_template($this->template);
 
 		// Dropdown menus
-		$datas = $this->menu_model->get_select();
-		$this->template['menus'] =	form_dropdown('id_menu', $datas, $id_menu, 'id="id_menu" class="select"');
-		
-		// Dropdowns Views : Get $view var from my_theme/config/views.php
+		$data = $this->menu_model->get_select();
+		$this->template['menus'] =	form_dropdown('id_menu', $data, $id_menu, 'id="id_menu" class="select"');
+
+		// Dropdown Views : Get $view var from my_theme/config/views.php
 		$views = array();
 		if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
 			require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
-		
+
 		// Dropdown Page views
-		$datas = isset($views['page']) ? $views['page'] : array() ;
-		if(count($datas) > 0)
+		$data = isset($views['page']) ? $views['page'] : array() ;
+		if(count($data) > 0)
 		{
-			$datas = $this->_get_views_dropdown_data($datas, 'Page');
-			$datas = array('0' => lang('ionize_select_default_view')) + $datas; 
-			$this->template['views'] = $this->template['single_views'] = form_dropdown('view', $datas, FALSE, 'class="select w160"');
+			$data = $this->_get_views_dropdown_data($data, 'Page');
+			$data = array('0' => lang('ionize_select_default_view')) + $data;
+			$this->template['views'] = $this->template['single_views'] = form_dropdown('view', $data, FALSE, 'class="select w160"');
 		}
 
 		// Dropdown Article views
-		$datas = isset($views['article']) ? $views['article'] : array() ;
-		if(count($datas) > 0)
+		$data = isset($views['article']) ? $views['article'] : array() ;
+		if(count($data) > 0)
 		{
-			$datas = $this->_get_views_dropdown_data($datas, 'Article');
-			$datas = array('0' => lang('ionize_select_default_view')) + $datas;
-			$this->template['article_views'] = form_dropdown('article_view', $datas, FALSE, 'class="select w160"');
-			$this->template['article_list_views'] = form_dropdown('article_list_view', $datas, FALSE, 'class="select w160"');
+			$data = $this->_get_views_dropdown_data($data, 'Article');
+			$data = array('0' => lang('ionize_select_default_view')) + $data;
+			$this->template['article_views'] = form_dropdown('article_view', $data, FALSE, 'class="select w160"');
+			$this->template['article_list_views'] = form_dropdown('article_list_view', $data, FALSE, 'class="select w160"');
 		}
 
 		$this->template['priority'] = '5';
@@ -170,7 +174,7 @@ class Page extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Edit one page
 	 *
 	 * @param	string	Page ID
@@ -239,14 +243,14 @@ class Page extends MY_admin
 	 * @param   int     Page ID
 	 *
 	 */
-	public function get_options($id)
+	public function get_options($id_page)
 	{
-		$resource = $this->_get_resource_name('backend', 'page', $id);
+		$resource = $this->_get_resource_name('backend', 'page', $id_page);
 
 		if (Authority::can('edit', $resource, null, true))
 		{
-			// Datas
-			$page = $this->page_model->get_by_id($id);
+			// Data
+			$page = $this->page_model->get_by_id($id_page);
 
 			if( ! empty($page) )
 			{
@@ -255,7 +259,7 @@ class Page extends MY_admin
 
 				// Page data
 				$this->template = array_merge($this->template, $page);
-				$this->page_model->feed_lang_template($id, $this->template);
+				$this->page_model->feed_lang_template($id_page, $this->template);
 
 				// Load the module's addons
 				$this->load_modules_addons($page);
@@ -269,7 +273,7 @@ class Page extends MY_admin
 				$selected_subnav = ( ! empty($subnav_page['id_menu'])) ? $subnav_page['id_menu'] : '-1';
 				$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $datas, $selected_subnav, 'id="id_subnav_menu" class="select"');
 
-				// Dropdowns Views
+				// Dropdown Views
 				$views = array();
 				if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
 					require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
@@ -297,7 +301,7 @@ class Page extends MY_admin
 				// Roles & Rules
 				$frontend_roles_resources = $this->resource_model->get_element_roles_resources(
 					'page',
-					$id,
+					$id_page,
 					self::$_AUTHORITY_FRONTEND_ACTIONS,
 					'frontend'
 				);
@@ -305,15 +309,15 @@ class Page extends MY_admin
 
 				$backend_roles_resources = $this->resource_model->get_element_roles_resources(
 					'page',
-					$id,
+					$id_page,
 					self::$_AUTHORITY_BACKEND_ACTIONS,
 					'backend'
 				);
 				$this->template['backend_roles_resources'] = $backend_roles_resources;
 
 				// Roles which have permission set for this page
-				$this->template['frontend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id);
-				$this->template['backend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id, 'backend');
+				$this->template['frontend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id_page);
+				$this->template['backend_role_ids'] = $this->rule_model->get_element_role_ids('page', $id_page, 'backend');
 
 				// Default Deny Action
 				if (empty($page['deny_code']))
@@ -331,6 +335,11 @@ class Page extends MY_admin
 					);
 				}
 
+				// Categories
+				$categories = $this->category_model->get_categories_select();
+				$current_categories = $this->category_model->get_current_categories('article', $id_page);
+				$this->template['categories'] =	form_dropdown('categories[]', $categories, $current_categories, 'class="select w100p" multiple="multiple"');
+
 				// Output
 				$this->output('page/options');
 			}
@@ -344,7 +353,7 @@ class Page extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Saves a page
 	 *
@@ -358,10 +367,10 @@ class Page extends MY_admin
 		if ($this->_check_before_save() === TRUE)
 		{
 			$id = $this->input->post('id_page');
-			
+
 			// Clear the cache
 			Cache()->clear_cache();
-			
+
 			// Prepare data before save
 			$this->_prepare_data();
 
@@ -369,7 +378,7 @@ class Page extends MY_admin
 			$event_data = array(
 				'base' => $this->data,
 				'lang' => $this->lang_data,
-                'post' => $this->input->post()
+				'post' => $this->input->post()
 			);
 			$event_received = Event::fire('Page.save.before', $event_data);
 			$event_received = array_pop($event_received);
@@ -392,7 +401,7 @@ class Page extends MY_admin
 
 			// Save extends fields data
 			$this->extend_field_model->save_data('page', $saved_id, $_POST);
-					
+
 			// Save linked access groups authorizations
 			// $this->base_model->join_items_keys_to('user_groups', $this->input->post('groups'), 'page', $this->id);
 
@@ -407,11 +416,11 @@ class Page extends MY_admin
 			strip_html($page);
 			$this->callback = array();
 
-            // Event : On after save
+			// Event : On after save
 			$event_data = array(
 				'base' => $this->data,
 				'lang' => $this->lang_data,
-                'post' => $this->input->post()
+				'post' => $this->input->post()
 			);
 			Event::fire('Page.save.success', $event_data);
 
@@ -423,7 +432,7 @@ class Page extends MY_admin
 
 				// Used by JS Tree to detect if page in inserted in tree or not
 				$page['inserted'] = TRUE;
-				
+
 				$this->callback[] = array(
 					'fn' => $page['menu']['name'].'Tree.insertElement',
 					'args' => array($page, 'page')
@@ -477,14 +486,14 @@ class Page extends MY_admin
 			// Prepare data before save
 			$this->_prepare_options_data();
 
-            // Event Data
-            $event_data = array(
-                'base' => $this->data,
-                'lang' => $this->lang_data,
-                'post' => $this->input->post()
-            );
+			// Event Data
+			$event_data = array(
+				'base' => $this->data,
+				'lang' => $this->lang_data,
+				'post' => $this->input->post()
+			);
 
-            Event::fire('Page.options.save.before', $event_data);
+			Event::fire('Page.options.save.before', $event_data);
 
 			// Save Page
 			$this->page_model->save($this->data, $this->lang_data);
@@ -512,7 +521,7 @@ class Page extends MY_admin
 				$this->rule_model->save_element_roles_rules($resource, $this->input->post('frontend_rule'));
 			}
 
-            Event::fire('Page.options.save.success', $event_data);
+			Event::fire('Page.options.save.success', $event_data);
 
 			// Remove HTML tags from returned array
 			strip_html($page);
@@ -528,7 +537,7 @@ class Page extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	
+
 	/**
 	 * Gets the parent list list for the parent select dropdown
 	 *
@@ -596,7 +605,7 @@ class Page extends MY_admin
 				)
 			)
 		);
-		
+
 		// Answer send
 		$this->success(lang('ionize_message_operation_ok'));
 	}
@@ -605,18 +614,18 @@ class Page extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	/**
 	 * Saves page ordering
-	 * 
+	 *
 	 */
 	public function save_ordering()
 	{
-        if (!Authority::can('edit', 'admin/page')) {
-            $this->error(lang('permission_denied'));
-        }
-	  
+		if (!Authority::can('edit', 'admin/page')) {
+			$this->error(lang('permission_denied'));
+		}
+
 		$order = $this->input->post('order');
-		
+
 		if( $order !== FALSE )
 		{
 			// Clear the cache
@@ -627,8 +636,8 @@ class Page extends MY_admin
 
 			// Answer send
 			$this->success(lang('ionize_message_page_ordered'));
-		}		
-		else 
+		}
+		else
 		{
 			$this->error(lang('ionize_message_operation_nok'));
 		}
@@ -642,14 +651,14 @@ class Page extends MY_admin
 	{
 		$id_page = $this->input->post('id_page');
 		$direction = $this->input->post('direction');
-		
+
 		if ($direction && $id_page)
 		{
 			// Clear the cache
 			Cache()->clear_cache();
 
 			$articles = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
-			
+
 			$kdate = array();
 			foreach($articles as $key => $article)
 			{
@@ -657,10 +666,10 @@ class Page extends MY_admin
 			}
 
 			$sort_direction = 'SORT_'.$direction;
-			
+
 			// Sort the results by realm occurences DESC first, by date DESC second.			
 			array_multisort($kdate, constant($sort_direction), $articles);
-			
+
 			$ids = array();
 			foreach($articles as $idx => $article)
 			{
@@ -683,7 +692,7 @@ class Page extends MY_admin
 						'id_page' => $id_page,
 						'order' => implode(',', $ids)
 					)
-				)				
+				)
 			);
 
 			$this->response();
@@ -735,11 +744,11 @@ class Page extends MY_admin
 		$field = $this->input->post('field');
 		$id_page = $this->input->post('id_page');
 		$type = $this->input->post('type');
-		
+
 		if ($id_page && $field)
 		{
 			$value = $this->input->post('value');
-			
+
 			// Check the type of data, for special process
 			if ($type === 'date')
 			{
@@ -754,7 +763,7 @@ class Page extends MY_admin
 				// Datas
 				$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 				$menu = $this->menu_model->get($page['id_menu']);
-				
+
 				$page['title'] = htmlspecialchars_decode($page['title'], ENT_QUOTES);
 				$page['element'] = 'page';
 				$page['menu'] = $menu;
@@ -782,7 +791,7 @@ class Page extends MY_admin
 	{
 		// Get the link
 		$id_page = $this->input->post('id_page');
-		
+
 		$page = $this->page_model->get_by_id($id_page);
 		$link_type = $page['link_type'];
 
@@ -840,7 +849,7 @@ class Page extends MY_admin
 
 		$this->output('shared/link');
 	}
-	
+
 
 	// ------------------------------------------------------------------------
 
@@ -848,7 +857,7 @@ class Page extends MY_admin
 	/**
 	 * Adds a link to a page
 	 *
-	 * Receives : 
+	 * Receives :
 	 * $_POST['link_type'] : 	type of the link
 	 * $_POST['link_rel'] : 	REL to the link (can be a page or an article)
 	 * $_POST['receiver_rel'] : REL of the receiver's article
@@ -867,14 +876,14 @@ class Page extends MY_admin
 
 		// Link name (default lang title, for display)
 		$title = NULL;
-		
+
 		switch($link_type)
 		{
 			case 'page' :
 				$link = $this->page_model->get_by_id($link_id, Settings::get_lang('default'));
 				$title = ( ! empty($link['title'])) ? $link['title'] : $link['name'];
 				break;
-			
+
 			case 'article' :
 				$link_rel = explode('.', $link_id);
 				$link = $this->article_model->get_by_id($link_rel[1], Settings::get_lang('default'));
@@ -883,7 +892,7 @@ class Page extends MY_admin
 
 			case 'external' :
 				$link_rel = '';
-				if ($this->input->post('url') != lang('ionize_label_drop_link_here')) 
+				if ($this->input->post('url') != lang('ionize_label_drop_link_here'))
 				{
 					$title = prep_url($this->input->post('url'));
 				}
@@ -940,7 +949,7 @@ class Page extends MY_admin
 			}
 		}
 		*/
-		
+
 		if ($title != '')
 		{
 			$this->callback = array(
@@ -965,7 +974,7 @@ class Page extends MY_admin
 	public function remove_link()
 	{
 		$id_page = $this->input->post('rel');
-		
+
 		if ($id_page)
 		{
 			// Clear the cache
@@ -981,7 +990,7 @@ class Page extends MY_admin
 			);
 
 			$this->response();
-		}		
+		}
 	}
 
 
@@ -998,7 +1007,7 @@ class Page extends MY_admin
 	public function delete($id)
 	{
 		$affected_rows = $this->page_model->delete($id);
-		
+
 		// Delete was successful
 		if ($affected_rows > 0)
 		{
@@ -1007,13 +1016,13 @@ class Page extends MY_admin
 
 			// Clear the cache
 			Cache()->clear_cache();
-			
+
 			// Remove deleted article from DOM
 			$this->callback[] = array(
 				'fn' => 'ION.deleteDomElements',
 				'args' => array('.page' . $id)
 			);
-			
+
 			// If the current edited article is deleted
 			if ($this->input->post('redirect'))
 			{
@@ -1176,21 +1185,21 @@ class Page extends MY_admin
 	/**
 	 * Prepare page data before saving
 	 *
-	 * 
+	 *
 	 */
 	protected function _prepare_data()
 	{
 		// Standard fields
 		$fields = $this->db->list_fields('page');
-		
+
 		// Set the data to the posted value.
 		foreach ($fields as $field)
 		{
 			if ($this->input->post($field) !== FALSE)
 			{
-//			if ( ! in_array($field, $this->no_htmlspecialchars))
-//				$this->data[$field] = htmlspecialchars($this->input->post($field), ENT_QUOTES, 'utf-8');
-//			else
+				//			if ( ! in_array($field, $this->no_htmlspecialchars))
+				//				$this->data[$field] = htmlspecialchars($this->input->post($field), ENT_QUOTES, 'utf-8');
+				//			else
 				$this->data[$field] = $this->input->post($field);
 			}
 		}
@@ -1199,8 +1208,8 @@ class Page extends MY_admin
 		$parent = $this->page_model->get_by_id($this->input->post('id_parent'));
 
 		if ( ! empty($parent) )
-			$this->data['level'] = $parent['level'] + 1;	
-		else 
+			$this->data['level'] = $parent['level'] + 1;
+		else
 			$this->data['level'] = 0;
 
 		// Author & updater
@@ -1224,7 +1233,7 @@ class Page extends MY_admin
 
 			if ($query->num_rows() > 0)
 			{
-				$row = $query->row(); 
+				$row = $query->row();
 				$this->data['ordering'] = $row->ordering + 1;
 			}
 
@@ -1248,11 +1257,11 @@ class Page extends MY_admin
 				if ( $field != 'url' && $this->input->post($field.'_'.$language['lang']) !== FALSE)
 				{
 					$content = $this->input->post($field.'_'.$language['lang']);
-					
+
 					// Convert HTML special char only on other fields than these defined in $no_htmlspecialchars
-//					if ( ! in_array($field, $this->no_htmlspecialchars))
-//						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
-						
+					//					if ( ! in_array($field, $this->no_htmlspecialchars))
+					//						$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
+
 					$this->lang_data[$language['lang']][$field] = $content;
 				}
 				// URL : Fill with the correct URLs array data
@@ -1261,13 +1270,13 @@ class Page extends MY_admin
 					$this->lang_data[$language['lang']]['url'] = $urls[$language['lang']];
 				}
 			}
-			
+
 			// Online value
 			$this->lang_data[$language['lang']]['online'] = $this->input->post('online_'.$language['lang']);
 		}
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -1282,16 +1291,16 @@ class Page extends MY_admin
 		$default_lang = Settings::get_lang('default');
 		$default_lang_url = $this->input->post('url_'.$default_lang);
 		$default_lang_title = $this->input->post('title_'.$default_lang);
-		
+
 		if ($default_lang_url == FALSE && $default_lang_title == FALSE)
 		{
 			return FALSE;
 		}
-		
+
 		return TRUE;
 	}
 
-	
+
 	// ------------------------------------------------------------------------
 
 
@@ -1307,7 +1316,7 @@ class Page extends MY_admin
 	protected function _get_urls($fill_empty_lang = FALSE)
 	{
 		$urls = array();
-		
+
 		foreach(Settings::get_languages() as $l)
 		{
 			// If lang URL exists, use it
@@ -1331,7 +1340,7 @@ class Page extends MY_admin
 		}
 
 		$default_lang_url = $urls[Settings::get_lang('default')];
-		
+
 		foreach($urls as $lang => $url)
 		{
 			if ($url == '')	$urls[$lang] = $default_lang_url;
