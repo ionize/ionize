@@ -12,6 +12,9 @@
 class Page extends MY_admin
 {
 
+	/** @var  MY_Input */
+	public $input;
+
 	/**
 	 * Fields on wich the htmlspecialchars function will not be used before saving
 	 *
@@ -57,6 +60,9 @@ class Page extends MY_admin
 	/** @var  Article_model */
 	public $article_model;
 
+	/** @var  Tag_model */
+	public $tag_model;
+
 	/** @var  Category_model */
 	public $category_model;
 
@@ -92,6 +98,7 @@ class Page extends MY_admin
 				'menu_model',
 				'page_model',
 				'article_model',
+				'tag_model',
 				'category_model',
 				//                'structure_model', // Not using by controller
 				'extend_field_model',
@@ -472,16 +479,15 @@ class Page extends MY_admin
 	/**
 	 * Saves the page's options.
 	 * If no page ID is given by $_POST
+	 *
 	 * @param int	Page ID
-	 *
-	 *
 	 */
 	public function save_options()
 	{
-		$id = $this->input->post('id_page');
+		$id_page = $this->input->post('id_page');
 
 		// Do stuff
-		if ($id)
+		if ($id_page)
 		{
 			// Prepare data before save
 			$this->_prepare_options_data();
@@ -499,25 +505,31 @@ class Page extends MY_admin
 			$this->page_model->save($this->data, $this->lang_data);
 
 			// Save the Urls
-			$this->page_model->save_urls($id);
+			$this->page_model->save_urls($id_page);
 
 			// Save Home page
 			if ($this->data['home'] == '1')
-				$this->page_model->update_home_page($id);
+				$this->page_model->update_home_page($id_page);
 
-			$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get_by_id($id));
+			$page = array_merge($this->lang_data[Settings::get_lang('default')], $this->page_model->get_by_id($id_page));
 			$page['menu'] = $this->menu_model->get($page['id_menu']);
+
+			// Saves linked categories
+			$this->base_model->join_items_keys_to('category', $this->input->post('categories'), 'page', $id_page);
+
+			// Saves Tags
+			$this->tag_model->save_element_tags($this->input->post('tags'), 'page', $id_page);
 
 			// Rules
 			if (Authority::can('access', 'admin/page/permissions/backend'))
 			{
-				$resource = $this->_get_resource_name('backend', 'page', $id);
+				$resource = $this->_get_resource_name('backend', 'page', $id_page);
 				$this->rule_model->save_element_roles_rules($resource, $this->input->post('backend_rule'));
 			}
 
 			if (Authority::can('access', 'admin/page/permissions/frontend'))
 			{
-				$resource = $this->_get_resource_name('frontend', 'page', $id);
+				$resource = $this->_get_resource_name('frontend', 'page', $id_page);
 				$this->rule_model->save_element_roles_rules($resource, $this->input->post('frontend_rule'));
 			}
 
@@ -528,7 +540,7 @@ class Page extends MY_admin
 		}
 
 		// Reloads the page edition panel
-		$this->_reload_panel($id);
+		$this->_reload_panel($id_page);
 
 		// Answer
 		$this->success(lang('ionize_message_page_saved'));
@@ -1133,7 +1145,9 @@ class Page extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * @param   int     $id_page
+	 */
 	protected function _remove_link($id_page)
 	{
 		$context = array(
@@ -1307,11 +1321,9 @@ class Page extends MY_admin
 	/**
 	 * Returns all the URLs sent for this element
 	 *
-	 * @param		Boolean		Should the empty lang index be filled with '' ?
-	 *
-	 * @return		Array		Multidimensional array of URLs
-	 *							ex : $url['en'] = 'my-element-url'
-	 *
+	 * @param		Boolean		$fill_empty_lang    Should the empty lang index be filled with '' ?
+	 * @return		Array		                    Multidimensional array of URLs
+	 *							                    ex : $url['en'] = 'my-element-url'
 	 */
 	protected function _get_urls($fill_empty_lang = FALSE)
 	{
@@ -1354,9 +1366,9 @@ class Page extends MY_admin
 
 
 	/**
-	 * When called, relaods the Page Edition panel
+	 * When called, reloads the Page Edition panel
 	 *
-	 * @param	Page ID
+	 * @param   int    $id_page
 	 *
 	 */
 	protected function _reload_panel($id_page)

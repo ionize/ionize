@@ -10,20 +10,24 @@
  * @since		Version 0.9.0
  */
 
-class Article extends MY_admin 
+class Article extends MY_admin
 {
 
+	/** @var  MY_Input */
+	public $input;
+
 	/**
-	 * Fields on wich the htmlspecialchars function will not be used before saving
+	 * Fields on which the htmlspecialchars function will not be used before saving
 	 * 
 	 * @var array
 	 */
 	protected $no_htmlspecialchars = array('content', 'title', 'subtitle');
 
+	/** @var array */
 	protected $htmlspecialchars = array('meta_title');
 
 	/**
-	 * Fields on wich no XSS filtering is done
+	 * Fields on which no XSS filtering is done
 	 * 
 	 * @var array
 	 */
@@ -655,10 +659,10 @@ class Article extends MY_admin
 	/**
 	 * Edit one article
 	 *
-	 * @param	string		article REL. Composed by the page ID and the article ID
-	 *						Example : 1.23
-	 *						1 : id_page
-	 *						23 : id_article
+	 * @param	string	$rel	article REL. Composed by the page ID and the article ID
+	 *							Example : 1.23
+	 *							1 : id_page
+	 *							23 : id_article
 	 */
 	public function edit($rel)
 	{
@@ -1141,7 +1145,7 @@ class Article extends MY_admin
 
 
 	/**
-	 * Unlinks one article from one page
+	 * Un-links one article from one page
 	 * 
 	 */
 	public function unlink($id_page, $id_article)
@@ -1281,7 +1285,7 @@ class Article extends MY_admin
 		$link_rel = $this->input->post('link_rel');
 	
 		// If the receiver is an article in a given page context : ok
-		if (count($receiver_rel > 1))
+		if (count($receiver_rel) > 1)
 		{
 			// Get the receiver's context
 			$context = $this->article_model->get_context($receiver_rel[1], $receiver_rel[0]);
