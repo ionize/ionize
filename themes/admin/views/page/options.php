@@ -591,6 +591,41 @@
 	<?php endif; ?>
 	<?php endif; ?>
 
+	// Tags
+	var tags = new TextboxList(
+		'tags',
+		{
+			unique: true,
+			plugins: {autocomplete: {placeholder:null}}
+		}
+	);
+
+	tags.container.addClass('textboxlist-loading');
+
+	ION.JSON(
+		ION.adminUrl + 'tag/get_json_list',{},
+		{
+			onSuccess: function(r)
+			{
+				tags.plugins['autocomplete'].setValues(r);
+
+				ION.JSON(
+					ION.adminUrl + 'tag/get_json_list',
+					{
+						'parent': 'article',
+						'id_parent':'<?php echo $id_page; ?>'
+					},
+					{
+						onSuccess: function(r)
+						{
+							tags.container.removeClass('textboxlist-loading');
+							tags.plugins['autocomplete'].setSelected(r);
+						}
+					}
+				);
+			}
+		}
+	);
 
 	var frontRoleCheck = function()
 	{

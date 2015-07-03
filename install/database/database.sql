@@ -393,7 +393,7 @@ CREATE TABLE IF NOT EXISTS page_media (
 CREATE TABLE IF NOT EXISTS page_tag (
 	id_page int(11) UNSIGNED NOT NULL,
 	id_tag int(11) UNSIGNED NOT NULL,
-	PRIMARY KEY  (id_article, id_tag)
+	PRIMARY KEY  (id_page, id_tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE if not exists resource (
