@@ -51,11 +51,9 @@ class Tag_model extends Base_model
 
 
 	/**
-	 * @param null $parent
-	 * @param null $id_parent
-	 *
-	 * @return array|void
-	 *
+	 * @param	string 		[$parent]		eg: 'article' / 'page'
+	 * @param	int|string	[$id_parent]
+	 * @return	array|void
 	 */
 	public function get_list($parent=NULL, $id_parent=NULL)
 	{
@@ -83,12 +81,9 @@ class Tag_model extends Base_model
 	 * If id_page is set, returns those which are used by the page articles.
 	 * If id_page is not set, return the whole used categories
 	 *
-	 * @param null $id_page
-	 *
-	 * @param null $lang
-	 *
-	 * @return array
-	 *
+	 * @param	int		[$id_page]
+	 * @param	string 	[$lang]
+	 * @return	array
 	 */
 	public function get_page_articles_list($id_page=NULL, $lang=NULL)
 	{
@@ -121,14 +116,11 @@ class Tag_model extends Base_model
 
 		$this->{$this->db_group}->group_by('tag.id_tag');
 
-		$data = array();
-
 		$query = $this->{$this->db_group}->get('article');
 
-		if ( $query->num_rows() > 0 )
-			$data = $query->result_array();
-
-		return $data;
+		return ( $query->num_rows() > 0 )
+			? $query->result_array()
+			: array();
 	}
 
 
@@ -136,20 +128,16 @@ class Tag_model extends Base_model
 
 
 	/**
-	 * @param $tag
-	 *
-	 * @return bool|int|the
+	 * @param	string		$tag
+	 * @return	bool|int
 	 */
 	public function save($tag)
 	{
 		$id_tag = $this->tag_exists($tag);
 
-		if ( ! $id_tag)
-		{
-			$tag = trim($tag);
-			return $this->insert(array('tag_name' => $tag));
-		}
-		return $id_tag;
+		return (! $id_tag)
+			? $this->insert(array('tag_name' => trim($tag)))
+			: $id_tag;
 	}
 
 
@@ -157,9 +145,8 @@ class Tag_model extends Base_model
 
 
 	/**
-	 * @param $id_tag
-	 *
-	 * @return bool|int|the
+	 * @param	int 	$id_tag
+	 * @return	bool|int
 	 */
 	public function delete_all($id_tag)
 	{
@@ -180,7 +167,6 @@ class Tag_model extends Base_model
 	 * Deletes the others.
 	 *
 	 * @param $tags
-	 *
 	 */
 	public function save_tag_list($tags)
 	{
@@ -232,14 +218,14 @@ class Tag_model extends Base_model
 	{
 		if ($element && $id_element)
 		{
-			$data = array();
-			$tag_ids = array_filter(explode(',', $tags), 'strlen');
+			$data		= array();
+			$tag_ids	= array_filter(explode(',', $tags), 'strlen');
 			$join_table = $element.'_tag';
 			$element_pk = 'id_'.$element;
 
 			foreach($tag_ids as $id_tag)
 			{
-				// New tag ? Add it !
+				// New tag? Add it !
 				if( FALSE == preg_match( '/^\d*$/'  , $id_tag))
 				{
 					if (strlen($id_tag) > self::$_MAX_TAG_LENGTH)
@@ -249,15 +235,15 @@ class Tag_model extends Base_model
 				}
 
 				$data[] = array(
-					'id_tag' => $id_tag,
+					'id_tag'	=> $id_tag,
 					$element_pk => $id_element
 				);
 			}
 
+			$this->delete(array($element_pk => $id_element), $join_table);
+
 			if ( ! empty($data) && $this->table_exists($join_table))
 			{
-				$this->delete(array($element_pk => $id_element), $join_table);
-
 				$this->{$this->db_group}->insert_batch($join_table, $data);
 			}
 		}
@@ -270,9 +256,8 @@ class Tag_model extends Base_model
 	/**
 	 * Filters the article  on published one
 	 *
-	 * @param bool $on
-	 * @param null $lang
-	 *
+	 * @param	bool	[$on]
+	 * @param	string	[$lang]
 	 */
 	protected function _filter_on_published($on = TRUE, $lang = NULL)
 	{
@@ -334,13 +319,12 @@ class Tag_model extends Base_model
 
 
 	/**
-	 * @param $tag
-	 *
-	 * @return bool
+	 * @param	string	$tag
+	 * @return	bool
 	 */
 	public function tag_exists($tag)
 	{
-		$sql = "select id_tag from ". $this->get_table() . " where LOWER(tag_name) = " . $this->{$this->db_group}->escape($tag);
+		$sql = "SELECT id_tag from ". $this->get_table() . " WHERE LOWER(tag_name) = " . $this->{$this->db_group}->escape($tag);
 
 		$query = $this->{$this->db_group}->query($sql);
 
