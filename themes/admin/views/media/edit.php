@@ -295,7 +295,7 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 
 <div class="buttons">
 	<button id="bSavemedia<?php echo $id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
-	<button id="bSavemediaDontClose<?php echo $id_media; ?>" type="button" class="button yes right"><?php echo lang('ionize_button_save'); ?></button>
+	<button id="bSavemediaDontClose<?php echo $id_media; ?>" type="button" class="button blue yes right"><?php echo lang('ionize_button_save'); ?></button>
 	<button id="bCancelmedia<?php echo $id_media; ?>"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
 
