@@ -746,13 +746,15 @@ class Media_model extends Base_model
 	public function delete_files($files=array())
 	{
 		$nb = 0;
-
-		foreach ($files as $path)
+		if(is_array($files)) 
 		{
-			if (file_exists(FCPATH.$path))
+			foreach ($files as $path)
 			{
-				@unlink(FCPATH.$path);
-			}
+				if (file_exists(FCPATH.$path))
+				{
+					@unlink(FCPATH.$path);
+				}
+			}	
 		}
 
 		return $nb;
