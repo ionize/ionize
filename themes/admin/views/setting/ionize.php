@@ -221,13 +221,11 @@
 	
 	/**
 	 * Panel toolbox
-	 *
 	 */
 	ION.initToolbox('setting_ionize_toolbox');
 
 	/**
 	 * Options Accordion
-	 *
 	 */
 	new TabSwapper({
 		tabsContainer: 'ionizeSettingsTab',
@@ -238,6 +236,20 @@
 		clickers: 'li a',
 		sections: 'div.tabcontent',
 		cookieName: 'ionizeSettingsTab'
+	});
+
+	/**
+	 * Font Scaling Options
+	 */
+	$$("#font_scale_default, #font_scale_plus1, #font_scale_plus2, #font_scale_plus3").addEvent('change', function (e) {
+		var elBody = $$('body')[0];
+		for( var size = 1; size < 4; size++) {
+			elBody.removeClass('seizePlus' + size);
+		}
+
+		if( e.target.id !== 'font_scale_default' ) {
+			elBody.addClass('seizePlus' + (e.target.id.replace('font_scale_plus', '')) );
+		}
 	});
 
 </script>
