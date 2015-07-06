@@ -58,13 +58,13 @@ body {
     color: #3f3f3f;
     overflow: hidden;
 }
-body.seizeP2 {
+body.seizePlus1 {
     font-size: 12px;
 }
-body.seizeP3 {
+body.seizePlus2 {
     font-size: 13px;
 }
-body.seizeP4 {
+body.seizePlus3 {
     font-size: 14px;
 }
 
