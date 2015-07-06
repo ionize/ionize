@@ -58,6 +58,15 @@ body {
     color: #3f3f3f;
     overflow: hidden;
 }
+body.seizeP2 {
+    font-size: 12px;
+}
+body.seizeP3 {
+    font-size: 13px;
+}
+body.seizeP4 {
+    font-size: 14px;
+}
 
 /* Typography */
 h2, h3, h4 {
