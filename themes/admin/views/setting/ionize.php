@@ -101,18 +101,27 @@
 						<label for="font_scale_default"><?php echo lang('ionize_label_backend_font_scale'); ?></label>
 					</dt>
 					<dd>
+						<?php
+							$fontScale = (int) Settings::get('backend_font_scale');
+							$fontScaleChecked	= array(
+								0 =>	$fontScale === 0 ? ' checked="checked"' : '',
+								1 =>	$fontScale === 1 ? ' checked="checked"' : '',
+								2 =>	$fontScale === 2 ? ' checked="checked"' : '',
+								3 =>	$fontScale === 3 ? ' checked="checked"' : ''
+							);
+						?>
 						<br />
 						<label for="font_scale_default" style="font-size: 0.75rem">Abc</label>
-						<input type="radio" name="font_scale" id="font_scale_default" value="font_scale_default"/>
+						<input type="radio"<?php echo $fontScaleChecked[0]; ?> name="backend_font_scale" id="font_scale_default" value="0"/>
 
 						<label for="font_scale_plus1" style="font-size: 1.0rem">Abc</label>
-						<input type="radio" name="font_scale" id="font_scale_plus1" value="font_scale_plus1"/>
+						<input type="radio"<?php echo $fontScaleChecked[1]; ?> name="backend_font_scale" id="font_scale_plus1" value="1"/>
 
 						<label for="font_scale_plus2" style="font-size: 1.15rem">Abc</label>
-						<input type="radio" name="font_scale" id="font_scale_plus2" value="font_scale_plus2"/>
+						<input type="radio"<?php echo $fontScaleChecked[2]; ?> name="backend_font_scale" id="font_scale_plus2" value="2"/>
 
 						<label for="font_scale_plus3" style="font-size: 1.2rem">Abc</label>
-						<input type="radio" name="font_scale" id="font_scale_plus3" value="font_scale_plus3"/>
+						<input type="radio"<?php echo $fontScaleChecked[3]; ?> name="backend_font_scale" id="font_scale_plus3" value="3"/>
 					</dd>
 				</dl>
 

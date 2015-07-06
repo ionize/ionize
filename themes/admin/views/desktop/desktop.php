@@ -265,8 +265,8 @@ $c = '?v='.$v;
 	<?php endif;?>
 <?php endforeach; ?>
 
-</head>
-<body>
+</head><?php $fontScale = (int) Settings::get('backend_font_scale'); ?>
+<body<?php if($fontScale > 0) { ?> class="seizePlus<?php echo $fontScale; ?>"<?php } ?>>
 
 <div id="desktop" class="desktop"></div>
 
