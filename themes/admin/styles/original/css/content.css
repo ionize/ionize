@@ -860,6 +860,10 @@ table.list.transparent tr {
 	background: none;
 }
 
+table#articlesTable tr.article:hover {
+    background-color: #eeeeee;
+}
+
 /* Tabs
 ---------------------------------------------------------------- */
 .mainTabs {
