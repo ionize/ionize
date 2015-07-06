@@ -38,7 +38,6 @@ h3.treetitle {
 	background-color: #e1e3e4;
 }
 .tree {
-	font-size: 11px;
 	line-height: 16px;
 	margin: 0 12px 10px 0;
 	overflow: hidden;
@@ -138,52 +137,170 @@ h3.treetitle .locked:after{
     background:transparent url(../images/icons_16.png) repeat scroll;
 	position: relative;
 }
-.tree-img.line { background-position: 0 0; } 				/* Standard tree line */
-.tree-img.line.node { background-position: 0 0; } 		/* Line with one node after */
-.tree-img.line.last { background-position: 0 0; } 		/* Last element line */
-.tree-img.line.empty { background-position: 0 0; } 		/* Empty line (spacer) */
-.tree-img.plus { background-position: -176px 0; } 			/* Plus icon */
-.tree-img.plus.first { background-position: -176px 0; }
-.tree-img.plus.last { background-position: -176px 0; }
-.tree-img.minus { background-position: -192px 0; } 			/* Minus icon */
-.tree-img.minus.first { background-position: -192px 0; }
-.tree-img.minus.last { background-position: -192px 0; }
-.tree-img.plus, .tree-img.minus { cursor:pointer; }
 
-.tree-img.folder { background-position: 0 -16px; margin-right:5px;} 			/* Closed folder */
-.tree-img.folder.open { background-position: -16px -16px; } 		/* Opened folder */
-.tree-img.folder.home { background-position: -64px -16px; } 		/* Closed home folder */
-.tree-img.folder.home.open { background-position: -80px -16px; } 		/* Closed home folder */
-.tree-img.folder.hidden { background-position: -32px -16px; margin-right:5px;} 			/* Closed folder hidden in nav */
+.tree-img.line {
+	background-position: 0 0;
+}
 
-.tree-img.folder.open.hidden { background-position: -48px -16px; margin-right:5px;} 			/* Closed folder hidden in nav */
-.tree-img.folder.home.hidden { background-position: -96px -16px; margin-right:5px;}
-.tree-img.folder.home.open.hidden { background-position: -112px -16px; margin-right:5px;}
+/* Standard tree line */
+.tree-img.line.node {
+	background-position: 0 0;
+}
 
-.tree-img.file { background-position: -160px -16px;  margin-right:5px;} 			/* File */
-.tree-img.sticky { background-position: -144px -16px;  margin-right:5px;} 			/* File */
-.tree-img.filelink { background-position: -176px -16px;  margin-right:5px;} 			/* Link to File */
-.tree-img.folderlink { background-position: -378px 50%;  margin-right:5px;} 			/* Link to Folder */
-.tree-img.file.link { background-position: -192px -16px;  margin-right:5px;} 			/* Link to ... */
-.tree-img.sticky.link { background-position: -176px -16px;  margin-right:5px;} 			/* Link to ... */
+/* Line with one node after */
+.tree-img.line.last {
+	background-position: 0 0;
+}
+
+/* Last element line */
+.tree-img.line.empty {
+	background-position: 0 0;
+}
+
+/* Empty line (spacer) */
+.tree-img.plus {
+	background-position: -176px 0;
+}
+
+/* Plus icon */
+.tree-img.plus.first {
+	background-position: -176px 0;
+}
+
+.tree-img.plus.last {
+	background-position: -176px 0;
+}
+
+.tree-img.minus {
+	background-position: -192px 0;
+}
+
+/* Minus icon */
+.tree-img.minus.first {
+	background-position: -192px 0;
+}
+
+.tree-img.minus.last {
+	background-position: -192px 0;
+}
+
+.tree-img.plus, .tree-img.minus {
+	cursor: pointer;
+}
+
+.tree-img.folder {
+	background-position: 0 -16px;
+	margin-right: 5px;
+}
+
+/* Closed folder */
+.tree-img.folder.open {
+	background-position: -16px -16px;
+}
+
+/* Opened folder */
+.tree-img.folder.home {
+	background-position: -64px -16px;
+}
+
+/* Closed home folder */
+.tree-img.folder.home.open {
+	background-position: -80px -16px;
+}
+
+/* Closed home folder */
+.tree-img.folder.hidden {
+	background-position: -32px -16px;
+	margin-right: 5px;
+}
+
+/* Closed folder hidden in nav */
+
+.tree-img.folder.open.hidden {
+	background-position: -48px -16px;
+	margin-right: 5px;
+}
+
+/* Closed folder hidden in nav */
+.tree-img.folder.home.hidden {
+	background-position: -96px -16px;
+	margin-right: 5px;
+}
+
+.tree-img.folder.home.open.hidden {
+	background-position: -112px -16px;
+	margin-right: 5px;
+}
+
+.tree-img.file {
+	background-position: -160px -16px;
+	margin-right: 5px;
+}
+
+/* File */
+.tree-img.sticky {
+	background-position: -144px -16px;
+	margin-right: 5px;
+}
+
+/* File */
+.tree-img.filelink {
+	background-position: -176px -16px;
+	margin-right: 5px;
+}
+
+/* Link to File */
+.tree-img.folderlink {
+	background-position: -378px 50%;
+	margin-right: 5px;
+}
+
+/* Link to Folder */
+.tree-img.file.link {
+	background-position: -192px -16px;
+	margin-right: 5px;
+}
+
+/* Link to ... */
+.tree-img.sticky.link {
+	background-position: -176px -16px;
+	margin-right: 5px;
+}
+
+/* Link to ... */
 
 /* Last file child node line  */
-.tree li.file:last-child div.node { background-position: 0 0; }
+.tree li.file:last-child div.node {
+	background-position: 0 0;
+}
 
 /* First root folder plus / minus icons */
-.tree > li.folder:first-child > div.plus:first-child{ background-position: -176px 0;}
-.tree > li.folder:first-child > div.minus:first-child{ background-position: -192px 0;}
-.tree > li.folder:last-child > div.plus:first-child{ background-position: -176px 0;}
-.tree > li.folder:last-child > div.minus:first-child{ background-position: -192px 0;}
+.tree > li.folder:first-child > div.plus:first-child {
+	background-position: -176px 0;
+}
+
+.tree > li.folder:first-child > div.minus:first-child {
+	background-position: -192px 0;
+}
+
+.tree > li.folder:last-child > div.plus:first-child {
+	background-position: -176px 0;
+}
+
+.tree > li.folder:last-child > div.minus:first-child {
+	background-position: -192px 0;
+}
 
 /* last root folder first line empty */
-.tree > li.folder:last-child li div:first-child{ background-position: -0 0;}
+.tree > li.folder:last-child li div:first-child {
+	background-position: -0 0;
+}
 
 .dragtreeli .action {
-	display:none;
+	display: none;
 }
 
 #splitPanel_sideColumn .tree,
 #maincolumn .tree {
-	margin:0;
+	margin: 0;
 }

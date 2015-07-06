@@ -176,7 +176,6 @@ div.label:hover {
 }
 
 label {
-	font-size: 11px;
 	margin: 0 10px;
 }
 label[for] { cursor: pointer; }
@@ -209,10 +208,6 @@ label.over textarea{
 	margin-bottom: 5px;
 }
 
-input, textarea, select {
-	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
-	font-size:11px;
-}
 input.required, textarea.required, select.required{
 	border-color: #e2800d;
 }
@@ -224,6 +219,7 @@ textarea{
 .select {
 	border:1px solid #bbb;
 	padding:3px;
+	font-size: 0.85rem;
 }
 optgroup:before {
 	content: attr(label);
@@ -244,8 +240,10 @@ dl.small .select {
 /*	max-width: 150px;*/
 }
 .inputtext {
-	border:1px solid #bbb;
-	padding:4px;
+	border: 1px solid #bbb;
+	padding: 4px;
+	font-size: 0.85rem;
+
 }
 input[type="text"],
 input[type="password"],
@@ -389,7 +387,7 @@ input.submit{
 	border:1px solid #fff;
 	color:#333;
 	cursor:pointer;
-	font-size:11px;
+	font-size: 0.8rem;
 	line-height: 20px;
 	vertical-align: middle;
 }
@@ -453,7 +451,6 @@ a.button {
 	border-radius: 0;
 	margin:0;
 	cursor:pointer;
-	font-size:11px;
 	padding:3px 6px;
 	height:auto;
 	display: inline-block;
@@ -694,21 +691,81 @@ a.button.submit:hover{
 	height: 24px;
 	vertical-align: middle;
 }
-.toolbar-button.plus, .light-button.plus { background:url(../images/icon_16_plus.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.minus, .light-button.minus { background:url(../images/icon_16_minus.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.files, .light-button.files { background:url(../images/icon_16_files.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.music, .light-button.music { background:url(../images/icon_16_music.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.delete, .light-button.delete { background:url(../images/icon_16_delete.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.video, .light-button.video { background:url(../images/icon_16_video.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.refresh, .light-button.refresh { background:url(../images/icon_16_refresh.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.pictures, .light-button.pictures { background:url(../images/icon_16_pictures.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.back, .light-button.back { background:url(../images/icon_16_left.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.helpme, .light-button.helpme { background:url(../images/icon_16_helpme.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.element, .light-button.element { background:url(../images/icon_16_element.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.print, .light-button.print { background:url(../images/icon_16_print.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.search, .light-button.search { background:url(../images/icon_16_search.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.calendar, .light-button.calendar { background:url(../images/icon_16_calendar.png) no-repeat 4px 50%; padding-left: 24px; }
-.toolbar-button.alert, .light-button.alert { background:url(../images/icon_16_alert.png) no-repeat 4px 50%; padding-left: 24px; }
+
+.toolbar-button.plus, .light-button.plus {
+	background: url(../images/icon_16_plus.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.minus, .light-button.minus {
+	background: url(../images/icon_16_minus.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.files, .light-button.files {
+	background: url(../images/icon_16_files.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.music, .light-button.music {
+	background: url(../images/icon_16_music.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.delete, .light-button.delete {
+	background: url(../images/icon_16_delete.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.video, .light-button.video {
+	background: url(../images/icon_16_video.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.refresh, .light-button.refresh {
+	background: url(../images/icon_16_refresh.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.pictures, .light-button.pictures {
+	background: url(../images/icon_16_pictures.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.back, .light-button.back {
+	background: url(../images/icon_16_left.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.helpme, .light-button.helpme {
+	background: url(../images/icon_16_helpme.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.element, .light-button.element {
+	background: url(../images/icon_16_element.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.print, .light-button.print {
+	background: url(../images/icon_16_print.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.search, .light-button.search {
+	background: url(../images/icon_16_search.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.calendar, .light-button.calendar {
+	background: url(../images/icon_16_calendar.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
+
+.toolbar-button.alert, .light-button.alert {
+	background: url(../images/icon_16_alert.png) no-repeat 4px 50%;
+	padding-left: 24px;
+}
 
 .toolbar-button:hover, .light-button:hover {
 	border:1px solid #bbb;
