@@ -116,6 +116,88 @@ class Sitemaps
     }
 
     /**
+     * Generates a multilingual sitemap XML data
+     *
+     * @param string $file_name (optional) if file name is supplied the XML data is saved in it otherwise returned as a string
+     * @param bool $gzip (optional) compress sitemap, overwrites config item 'sitemaps_gzip'
+     * @access public
+     * @return string
+     */
+    function build_multilingual($file_name = null, $gzip = NULL)
+    {
+        $CI =& get_instance();
+        $map = $CI->config->item('sitemaps_multilingual_header') . "\n";
+
+        foreach($this->items as $item)
+        {
+            $item['loc'] = htmlentities($item['loc'], ENT_QUOTES);
+            $map .= "\t<url>\n\t\t<loc>" . $item['loc'] . "</loc>\n";
+
+            $attributes = array("lastmod", "changefreq", "priority");
+
+            foreach($attributes AS $attr)
+            {
+                if(isset($item[$attr]))
+                {
+                    $map .= "\t\t<$attr>" . $item[$attr] . "</$attr>\n";
+                }
+            }
+
+            if(isset($item['alternative_urls'])){
+                foreach($item['alternative_urls'] as $hrefllang => $alternative_url)
+                $map .= "\t\t<xhtml:link rel=\"alternate\" hreflang=\"$hrefllang\" href=\"$alternative_url\"/>\n";
+            }
+
+            $loc = $item['loc'];
+            $lang = $item['lang'];
+            $map .= "\t\t<xhtml:link rel=\"alternate\" hreflang=\"$lang\" href=\"$loc\"/>\n";
+
+            $map .= "\t</url>\n\n";
+        }
+
+        unset($this->items);
+
+        $map .= $CI->config->item('sitemaps_footer');
+
+        if( ! is_null($file_name))
+        {
+            $fh = @fopen($file_name, 'w');
+
+            if ($fh !== FALSE )
+            {
+	            fwrite($fh, $map);
+	            fclose($fh);
+
+	            if($CI->config->item('sitemaps_filesize_error') && filesize($file_name) > 1024 * 1024 * 10)
+	            {
+	                show_error('Your sitemap is bigger than 10MB, most search engines will not accept it.');
+	            }
+
+	            if($gzip OR (is_null($gzip) && $CI->config->item('sitemaps_gzip')))
+	            {
+	                $gzdata = gzencode($map, 9);
+	                $file_gzip = str_replace("{file_name}", $file_name, $CI->config->item('sitemaps_gzip_path'));
+	                $fp = fopen($file_gzip, "w");
+	                fwrite($fp, $gzdata);
+	                fclose($fp);
+
+	                // Delete the uncompressed sitemap
+	                unlink($file_name);
+
+	                return $file_gzip;
+	            }
+
+	            return $file_name;
+			}
+			return FALSE;
+        }
+        else
+        {
+            return $map;
+        }
+    }
+
+    /**
      * Generate a sitemap index file pointing to other sitemaps you previously built
      *
      * @param array $urls array of urls, each being an array with at least a loc index

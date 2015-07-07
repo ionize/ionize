@@ -401,4 +401,86 @@ class Structure{
 			);
 		}
 	}
+
+	/**
+	 * Multilingual Sitemap build
+	 * Author: Bhagya Silva (http://www.about.me/bhagyas)
+	 * Uses the lib : http://signalkraft.com/sitemaps-for-codeigniter
+	 * @param bool $force
+	 */
+	function build_multilingual_sitemap($force = FALSE)
+	{
+		$ci =& get_instance();
+
+		$ci->config->load('sitemaps');
+		$ci->load->model('notification_model', '', TRUE);
+
+		$auto_create = config_item('sitemaps_auto_create');
+
+		if ($auto_create OR $force)
+		{
+			$ci->load->library('sitemaps');
+			$ci->load->model('sitemap_model', '', TRUE);
+
+			$get_all_lang = FALSE;
+
+			$langs = Settings::get_online_languages();
+
+			if (Settings::get('force_lang_urls') OR count($langs) > 1)
+				$get_all_lang = TRUE;
+
+			$urls = $ci->sitemap_model->get_multilingual_urls();
+
+			$multilingual_urls = array();
+
+			//iterate every url and build a map based on the key
+			foreach($urls as $url){
+					$url['date'] = $url['created'];
+					if (strtotime($url['updated']) > strtotime($url['date'])) $url['date'] = $url['updated'];
+					if (strtotime($url['publish_on']) > strtotime($url['date'])) $url['date'] = $url['publish_on'];
+					if (strtotime($url['logical_date']) > strtotime($url['date'])) $url['date'] = $url['logical_date'];
+
+					$loc = $get_all_lang == TRUE ? base_url() . $url['lang'] . '/' .$url['path'] : base_url() .$url['path'];
+
+					$alternative_urls = array();
+
+					foreach($urls as $other_url){
+						if($other_url['lang'] != $url['lang'] && $other_url['id_'] == $url['id_']){
+							$other_loc = $get_all_lang == TRUE ? base_url() . $other_url['lang'] . '/' .$other_url['path'] : base_url() .$other_url['path'];
+							$other_lang = $other_url['lang'];
+							$alternative_urls[$other_lang]  =  $other_loc;
+						}
+					}
+
+					$item = array(
+						'loc' => $loc,
+						'lang' => $url['lang'],
+						'lastmod' => date("c", strtotime($url['date'])),
+						'changefreq' => 'weekly',
+						'priority' => number_format(($url['priority'] / 10), 1,'.',''),
+						'alternative_urls' => $alternative_urls
+					);
+					array_push($multilingual_urls, $url['id_'], $item);
+					$ci->sitemaps->add_item($item);
+			}
+
+			$ci->sitemaps->build_multilingual('sitemap.xml');
+
+			// Set notifications as read
+			$ci->notification_model->set_code_as_read('sitemap_refresh');
+		}
+		else
+		{
+
+			// Create one notification : The sitemap should be rebuild !
+			$ci->notification_model->create_notification(
+				lang('ionize_notification_title_sitemap_refresh'),
+				lang('ionize_notification_message_sitemap_refresh'),
+				'sitemap_refresh',
+				'System',
+				TRUE
+			);
+		}
+	}
+
 }
