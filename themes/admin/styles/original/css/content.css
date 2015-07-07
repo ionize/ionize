@@ -416,6 +416,7 @@ h2.main.contacts:before{background-position: -280px 0}
 h2.main.reporting:before{background-position: -320px -40px}
 h2.main.mail:before{background-position: -80px -120px}
 h2.main.edit:before{background-position: -200px -120px}
+h2.main.download:before{background-position: -360px -80px}
 h2.main.gender-male:before,
 h2.main.gender-female:before,
 h2.main.gender-null:before{

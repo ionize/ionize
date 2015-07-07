@@ -208,7 +208,7 @@ ION.Button = new Class({
 				}
 				else
 				{
-					$$('.' + self.options.btnGroupClass).removeClass('open');
+					$$('.btnDropDown').removeClass('open');
 					self.btnGroup.addClass('open');
 					self._correctBtnGroupPosition();
 				}
@@ -317,7 +317,7 @@ ION.Button = new Class({
 	 * Activates one button
 	 * (make it selected)
 	 *
-	 * @param args		String or Array of IDs. Partners to deactivate
+	 * @param args		String or Array of IDs. Partners to unactivate
 	 */
 	activate: function()
 	{
