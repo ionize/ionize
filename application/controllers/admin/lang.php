@@ -189,7 +189,7 @@ class Lang extends MY_admin
 
 	/**
 	 * Copy one language content to another
-	 * Let the user choose wich content will be copied
+	 * Let the user choose which content will be copied
 	 * 
 	 * @TODO...
 	 * 

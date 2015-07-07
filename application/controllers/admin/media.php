@@ -805,15 +805,15 @@ class Media extends MY_admin
 	/** 
 	 * Shows one media meta data
 	 *
-	 * @param int		Media ID
-	 * @param string	parent type ('page', 'article')
-	 * @param int		Parent ID (context in which the media is linked)
+	 * @param	int		$id_media	Media ID
+	 * @param	string	$parent		parent type ('page', 'article')
+	 * @param	int		$id_parent	Parent ID (context in which the media is linked)
 	 *
 	 */
-	public function edit($id, $parent=NULL, $id_parent=NULL)
+	public function edit($id_media, $parent=NULL, $id_parent=NULL)
 	{
-		$this->media_model->feed_template($id, $this->template);
-		$this->media_model->feed_lang_template($id, $this->template);
+		$this->media_model->feed_template($id_media, $this->template);
+		$this->media_model->feed_lang_template($id_media, $this->template);
 
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
@@ -830,11 +830,11 @@ class Media extends MY_admin
 		$this->template['thumbs'] = $this->settings_model->get_list(array('name like' => 'thumb_%'));
 
 		// Extend fields
-		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('media', $id);
+		$this->template['extend_fields'] = $this->extend_field_model->get_element_extend_fields('media', $id_media);
 		
 		// context data
 		if ($parent)
-			$this->template['context_data'] = $this->media_model->get_context_data($id, $parent, $id_parent);
+			$this->template['context_data'] = $this->media_model->get_context_data($id_media, $parent, $id_parent);
 
 		// Modules addons
 		$this->load_modules_addons($this->template);

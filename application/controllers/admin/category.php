@@ -47,9 +47,8 @@ class Category extends MY_admin
 	/**
 	 * Prints out the category form
 	 *
-	 * @param	string	parent. Element from which we edit the categories list
-	 * @param	string	parent ID
-	 *
+	 * @param	bool|string		$parent 	Element from which we edit the categories list
+	 * @param	bool|string		$id_parent	parent ID
 	 */
 	public function get_form($parent = FALSE, $id_parent = FALSE)
 	{
@@ -118,16 +117,16 @@ class Category extends MY_admin
 	/** 
 	 * Edit one category
 	 *
-	 * @param	int		Category ID
-	 * @param	string	parent. Element from which we edit the categories list
-	 * @param	string	parent ID
+	 * @param	int			$id_category
+	 * @param	bool|string	$parent			Element from which we edit the categories list
+	 * @param	bool|string	$id_parent
 	 *
 	 */
-	public function edit($id, $parent = FALSE, $id_parent = FALSE)
+	public function edit($id_category, $parent = FALSE, $id_parent = FALSE)
 	{
 
-		$this->category_model->feed_template($id, $this->template);
-		$this->category_model->feed_lang_template($id, $this->template);
+		$this->category_model->feed_template($id_category, $this->template);
+		$this->category_model->feed_lang_template($id_category, $this->template);
 
 		// Pass the parent informations to the template
 		$this->template['parent'] = $parent;
@@ -223,22 +222,22 @@ class Category extends MY_admin
 	/**
 	 * Deletes one category
 	 *
-	 * @param	int 	Category ID
-	 * @param	string 	Parent table name. optional
-	 * @param	int 	Parent ID. Optional
+	 * @param	int 			$id_category
+	 * @param	bool|string 	$parent			Parent table name. optional
+	 * @param	bool|int 		$id_parent		Optional
 	 */
-	public function delete($id, $parent = FALSE, $id_parent = FALSE)
+	public function delete($id_category, $parent = FALSE, $id_parent = FALSE)
 	{
-		if ($id && $id != '')
+		if ($id_category && $id_category != '')
 		{
-			if ($this->category_model->delete($id) > 0)
+			if ($this->category_model->delete($id_category) > 0)
 			{
 				// Delete join between parent and the deleted category
 				if ( $parent !== FALSE && $id_parent !== FALSE )
-					$this->category_model->delete_joined_key('category', $id, $parent, $id_parent);
+					$this->category_model->delete_joined_key('category', $id_category, $parent, $id_parent);
 				
 				// Delete lang data
-				$this->category_model->delete(array('id_category' => $id), 'category_lang');
+				$this->category_model->delete(array('id_category' => $id_category), 'category_lang');
 
 				if ($parent != FALSE)
 				{
@@ -253,11 +252,11 @@ class Category extends MY_admin
 				// Remove deleted items from DOM
 				$this->callback[] = array(
 					'fn' => 'ION.deleteDomElements',
-					'args' => array('.category' . $id)
+					'args' => array('.category' . $id_category)
 				);
 
 				// Answer prepare
-				$this->id = $id;
+				$this->id = $id_category;
 				
 				// Send answer				
 				$this->success(lang('ionize_message_category_deleted'));
@@ -275,7 +274,9 @@ class Category extends MY_admin
 
 	/** 
 	 * Saves categories ordering
-	 * 
+	 *
+	 * @param	bool|string		$parent
+	 * @param	bool|int		$id_parent
 	 */
 	public function save_ordering($parent = FALSE, $id_parent = FALSE)
 	{
@@ -311,6 +312,7 @@ class Category extends MY_admin
 	/** 
 	 * Prepare data before saving
 	 *
+	 * @param	bool	$xhr
 	 */
 	private function _prepare_data($xhr = FALSE)
 	{

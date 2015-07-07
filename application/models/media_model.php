@@ -445,13 +445,12 @@ class Media_model extends Base_model
 
 
 	/**
-	 * @param $id
-	 * @param $parent
-	 * @param $id_parent
-	 *
-	 * @return array
+	 * @param	int		$id_media
+	 * @param	string	$parent
+	 * @param	int		$id_parent
+	 * @return	array
 	 */
-	public function get_context_data($id, $parent, $id_parent)
+	public function get_context_data($id_media, $parent, $id_parent)
 	{
 		$data = array();
 		
@@ -459,7 +458,7 @@ class Media_model extends Base_model
 		$parent_pk = $this->get_pk_name($parent);
 
 		$this->{$this->db_group}->where($link_table.'.'.$parent_pk, $id_parent);
-		$this->{$this->db_group}->where('id_media', $id);
+		$this->{$this->db_group}->where('id_media', $id_media);
 
 		$query = $this->{$this->db_group}->get($link_table);
 	

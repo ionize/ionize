@@ -2382,10 +2382,9 @@ class Base_model extends CI_Model
 	/**
 	 * Delete row(s)
 	 *
-	 * @param null $where		Where condition. If single value, PK of the table
-	 * @param null $table
-	 *
-	 * @return int				Affected rows
+	 * @param	array 	[$where]	Where condition. If single value, PK of the table
+	 * @param	string	[$table]
+	 * @return	int					Affected rows
 	 */
 	public function delete($where = NULL, $table = NULL)
 	{

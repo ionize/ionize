@@ -503,6 +503,13 @@
 		</query>
 
 		<query>
+			CREATE TABLE IF NOT EXISTS page_category (
+			id_page INT(11) UNSIGNED NOT NULL ,
+			id_category INT(11) UNSIGNED NOT NULL
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+		</query>
+
+		<query>
 			CREATE TABLE IF NOT EXISTS page_lang (
 			  lang varchar(8) NOT NULL DEFAULT '',
 			  id_page int(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -528,6 +535,14 @@
               ordering int(11) UNSIGNED DEFAULT 9999,
   			  lang_display varchar(8) DEFAULT NULL,
 			  PRIMARY KEY  (id_page,id_media)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+		</query>
+
+		<query>
+			CREATE TABLE IF NOT EXISTS page_tag (
+			id_page int(11) UNSIGNED NOT NULL,
+			id_tag int(11) UNSIGNED NOT NULL,
+			PRIMARY KEY  (id_page, id_tag)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 		</query>
 

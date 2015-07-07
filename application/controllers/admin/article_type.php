@@ -48,9 +48,8 @@ class Article_type extends MY_admin
 	 * Prints out the type list and form
 	 * called by edition form window
 	 *
-	 * @param	string	parent. Element from which we edit the type list
-	 * @param	string	parent ID
-	 *
+	 * @param	bool|string		$parent		Element from which we edit the type list
+	 * @param	bool|string		$id_parent
 	 */
 	function get_form($parent = FALSE, $id_parent = FALSE)
 	{
@@ -121,15 +120,14 @@ class Article_type extends MY_admin
 	/** 
 	 * Edit one type
 	 *
-	 * @param	int		Category ID
-	 * @param	string	parent. Element from which we edit the categories list
-	 * @param	string	parent ID
+	 * @param	int				$id_category
+	 * @param	bool|string		$parent			Element from which we edit the categories list
+	 * @param	bool|string		$id_parent
 	 *
 	 */
-	function edit($id, $parent = FALSE, $id_parent = FALSE)
+	function edit($id_category, $parent = FALSE, $id_parent = FALSE)
 	{
-
-		$this->article_type_model->feed_template($id, $this->template);
+		$this->article_type_model->feed_template($id_category, $this->template);
 
 		// Pass the parent informations to the template
 		$this->template['parent'] = $parent;
@@ -207,18 +205,18 @@ class Article_type extends MY_admin
 	/**
 	 * Deletes one type
 	 *
-	 * @param      $id				Type ID
-	 * @param bool|string $parent	Parent table name. optional
-	 * @param bool|int $id_parent	Parent ID. Optional
+	 * @param	int				$id_type
+	 * @param	bool|string 	$parent		Parent table name. optional
+	 * @param	bool|int 		$id_parent	Parent ID. Optional
 	 */
-	function delete($id, $parent = FALSE, $id_parent = FALSE)
+	function delete($id_type, $parent = FALSE, $id_parent = FALSE)
 	{
-		if ($id && $id != '')
+		if ($id_type && $id_type != '')
 		{
-			if ($this->article_type_model->delete($id) > 0)
+			if ($this->article_type_model->delete($id_type) > 0)
 			{
 				// Update all article and set id_type to NULL
-				$this->article_type_model->update_article_after_delete($id);
+				$this->article_type_model->update_article_after_delete($id_type);
 				
 				// Update array
 				$this->update[] = array(
@@ -229,11 +227,11 @@ class Article_type extends MY_admin
 				// Remove deleted items from DOM
 				$this->callback[] = array(
 					'fn' => 'ION.deleteDomElements',
-					'args' => array('.article_type' . $id)
+					'args' => array('.article_type' . $id_type)
 				);
 				
 				// Answer prepare
-				$this->id = $id;
+				$this->id = $id_type;
 				
 				// Send answer				
 				$this->success(lang('ionize_message_article_type_deleted'));
@@ -251,7 +249,9 @@ class Article_type extends MY_admin
 
 	/** 
 	 * Saves article types ordering
-	 * 
+	 *
+	 * @param bool|false $parent
+	 * @param bool|false $id_parent
 	 */
 	function save_ordering($parent = FALSE, $id_parent = FALSE)
 	{
@@ -284,6 +284,7 @@ class Article_type extends MY_admin
 	/** 
 	 * Prepare data before saving
 	 *
+	 * @param	bool	[$xhr]
 	 */
 	function _prepare_data($xhr = FALSE)
 	{

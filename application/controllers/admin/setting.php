@@ -16,7 +16,7 @@ class Setting extends MY_admin
 	public $config_model;
 
 	/**
-	 * Fields on wich no XSS filtering is done
+	 * Fields on which no XSS filtering is done
 	 * 
 	 * @var array
 	 */
