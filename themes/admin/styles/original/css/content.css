@@ -1348,6 +1348,9 @@ ul.pagination li a.current {
 	background: none;
 	position: relative;
 }
+body.seizePlus3 .desktopIcon {
+    width: 90px;
+}
 .desktopIcon:hover {
 	background: url(../images/bg-gray-light.png);
 }
