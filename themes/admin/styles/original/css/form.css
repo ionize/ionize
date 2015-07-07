@@ -209,11 +209,15 @@ label.over textarea{
 	margin-bottom: 5px;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
 	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
 	font-size:11px;
 }
-input.required, textarea.required, select.required{
+input.required,
+textarea.required,
+select.required{
 	border-color: #e2800d;
 }
 textarea{
@@ -421,7 +425,8 @@ input.submit.disabled:hover{
 	cursor: default;
 }
 
-#maincolumn .inputtext, #maincolumn .textarea {
+#maincolumn .inputtext,
+#maincolumn .textarea {
 	width: 82%;
 }
 
@@ -528,21 +533,31 @@ a.button.submit:hover{
 	background: #70b54b;
 
 }
-.button.no, a.button.no,
-.button.cancel, a.button.cancel,
-.button.delete, a.button.delete,
-.button.red, a.button.red {
+.button.no, 
+a.button.no,
+.button.cancel, 
+a.button.cancel,
+.button.delete, 
+a.button.delete,
+.button.red,
+a.button.red {
 	color:#fff !important;
 	background: #B63C1A;
 }
-.button.no:hover, a.button.no:hover,
-.button.cancel:hover, a.button.cancel:hover,
-.button.red:hover, a.button.red:hover {
+.button.no:hover, 
+a.button.no:hover,
+.button.cancel:hover, 
+a.button.cancel:hover,
+.button.red:hover, 
+a.button.red:hover {
 	background: #901A00;
 }
 
-.button.info, a.button.info,
-.button.blue, a.button.blue {
+.button.info,
+a.button.info,
+.button.blue, 
+a.button.blue,
+.button.yes.blue {
 	color:#fff !important;
 	background: #5F95C1;
 }
@@ -552,32 +567,38 @@ a.button.submit:hover{
 	background: #2E68A2;
 }
 
-.button.gray, a.button.gray {
+.button.gray,
+a.button.gray {
 	color:#fff;
 	background: #9EA2A3;
 }
 
-.button.gray:hover, a.button.gray:hover{
+.button.gray:hover,
+a.button.gray:hover{
 	color:#fff;
 	background: #888C8D;
 }
 
-.button.brown, a.button.brown {
+.button.brown, 
+a.button.brown {
 	color:#fff;
 	background: #B67D4C;
 }
 
-.button.brown:hover, a.button.brown:hover{
+.button.brown:hover,
+a.button.brown:hover{
 	color:#fff;
 	background: #9F5C15;
 }
 
-.button.yellow, a.button.yellow {
+.button.yellow,
+a.button.yellow {
 	color:#fff;
 	background: #E3B83A;
 }
 
-.button.yellow:hover, a.button.yellow:hover {
+.button.yellow:hover,
+a.button.yellow:hover {
 	color:#fff;
 	background: #E29602;
 }
