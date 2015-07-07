@@ -559,6 +559,7 @@ $lang['ionize_message_settings_saved'] = 'Settings saved';
 $lang['ionize_title_visual_help'] = 'Visual help';
 $lang['ionize_title_backend_ui'] = 'Backend UI';
 $lang['ionize_label_backend_ui_style'] = 'Backend UI Style';
+$lang['ionize_label_backend_font_scale'] = 'Backend UI Font Scaling';
 $lang['ionize_label_show_help_tips'] = 'Display help on fields';
 $lang['ionize_title_dashboard'] =  'Dashboard';
 $lang['ionize_title_admin_panel_languages'] =  'Backend languages';

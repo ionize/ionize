@@ -525,6 +525,7 @@ class Setting extends MY_admin
 			'default_admin_lang',
 			'enable_backend_tracker',
 			'backend_ui_style',
+			'backend_font_scale'
 		);
 
 		// Save settings to DB
