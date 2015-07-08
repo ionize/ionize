@@ -10,6 +10,19 @@ License:
 
 */
 
+@font-face{
+    font-family: 'RalewayLight';
+    src: url('../fonts/raleway-light.eot');
+    src: url('../fonts/raleway-light.eot?#iefix') format('embedded-opentype'), url('../fonts/raleway-light.woff') format('woff'), url('../fonts/raleway-light.ttf') format('truetype'), url('../fonts/raleway-light.svg#webfont') format('svg');
+}
+
+@font-face{
+    font-family: 'Raleway';
+    src: url('../fonts/raleway-regular.eot');
+    src: url('../fonts/raleway-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/raleway-regular.woff') format('woff'), url('../fonts/raleway-regular.ttf') format('truetype'), url('../fonts/raleway-regular.svg#webfont') format('svg');
+}
+
+
 /* Structure
 ---------------------------------------------------------------- */
 
@@ -456,6 +469,17 @@ div.main.subtitle.no-icon {
 	margin: -15px 0 10px 2px;
 }
 
+.absolute-ticker {
+    color: #888888;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+.absolute-ticker span {
+    color: #666666;
+    font-family: 'RalewayLight';
+    font-size: 30px;
+}
 
 /* Content special blocs
 ---------------------------------------------------------------- */
@@ -861,9 +885,6 @@ table.list.transparent tr {
 	background: none;
 }
 
-table#articlesTable tr.article:hover {
-    background-color: #eeeeee;
-}
 
 /* Tabs
 ---------------------------------------------------------------- */

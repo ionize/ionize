@@ -20,6 +20,10 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
     border: none;
 }
 
+input, textarea, select {
+    font-size: 11px;
+}
+
 /* Form layout
 ---------------------------------------------------------------- */
 form {
@@ -510,7 +514,6 @@ input.button.green,
 .button.green,
 a.button.green,
 button.submit,
-submit.submit,
 .submit,
 a.button.submit{
 	color:#fff;
@@ -690,86 +693,6 @@ a.button.submit:hover{
 	padding:2px 6px;
 	height: 24px;
 	vertical-align: middle;
-}
-
-.toolbar-button.plus, .light-button.plus {
-	background: url(../images/icon_16_plus.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.minus, .light-button.minus {
-	background: url(../images/icon_16_minus.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.files, .light-button.files {
-	background: url(../images/icon_16_files.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.music, .light-button.music {
-	background: url(../images/icon_16_music.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.delete, .light-button.delete {
-	background: url(../images/icon_16_delete.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.video, .light-button.video {
-	background: url(../images/icon_16_video.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.refresh, .light-button.refresh {
-	background: url(../images/icon_16_refresh.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.pictures, .light-button.pictures {
-	background: url(../images/icon_16_pictures.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.back, .light-button.back {
-	background: url(../images/icon_16_left.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.helpme, .light-button.helpme {
-	background: url(../images/icon_16_helpme.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.element, .light-button.element {
-	background: url(../images/icon_16_element.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.print, .light-button.print {
-	background: url(../images/icon_16_print.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.search, .light-button.search {
-	background: url(../images/icon_16_search.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.calendar, .light-button.calendar {
-	background: url(../images/icon_16_calendar.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button.alert, .light-button.alert {
-	background: url(../images/icon_16_alert.png) no-repeat 4px 50%;
-	padding-left: 24px;
-}
-
-.toolbar-button:hover, .light-button:hover {
-	border:1px solid #bbb;
-	background-color: #fff !important;
 }
 
 /* Toolbox inputs */
