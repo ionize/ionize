@@ -109,7 +109,7 @@
 						<!-- Clean pages tree: remove deleted page records -->
 						<tr>
 							<td class="middle pr10">
-								<a class="button light check-btn" data-href="page/remove_deleted_pages">
+								<a class="button light check-btn" data-href="system_check/remove_deleted_pages">
 									<i class="icon-folder"></i><?php echo lang('ionize_title_remove_deleted_pages'); ?>
 								</a>
 							</td>
@@ -133,7 +133,7 @@
 							</td>
 							<td class="middle"><?php echo lang('ionize_text_delete_thumbs'); ?></td>
 						</tr>
-						<!-- Langs -->
+						<!-- Languages -->
 						<tr>
 							<td class="middle pr10">
 								<a class="button light check-btn" data-href="system_check/check_lang">

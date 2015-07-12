@@ -898,7 +898,6 @@ class Page extends MY_admin
 				break;
 
 			case 'external' :
-				$link_rel = '';
 				if ($this->input->post('url') != lang('ionize_label_drop_link_here'))
 				{
 					$title = prep_url($this->input->post('url'));
@@ -1060,7 +1059,7 @@ class Page extends MY_admin
 	 */
 	public function remove_deleted_pages()
 	{
-
+		return $this->page_model->remove_deleted_pages();
 	}
 
 
