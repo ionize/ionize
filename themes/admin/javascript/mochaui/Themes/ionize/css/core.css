@@ -77,6 +77,13 @@ ol { margin: 0 0 9px 0; }
 dt { font-weight: bold; }
 dd { padding: 0 0 9px 0; }
 
+/* Forms */
+input,
+textarea {
+ font-family: inherit;
+ font-size: inherit;
+}
+
 /* Menus */
 .menu-right li { list-style-type: none; display: inline; margin: 0 0 0 15px; }
 
