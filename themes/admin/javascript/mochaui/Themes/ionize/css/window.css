@@ -68,7 +68,7 @@
 .mochaTitlebar .toolbar.macintel {
     float: left;
     padding-left: 3px;
-	position: absolute;
+    position: absolute;
 }
 
 .mochaTitle {
@@ -88,8 +88,8 @@
 }
 
 .mochaTitle.macintel {
-	width: 100%;
-	text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
 .mochaTitlebar span.icon.windowMinimize {
@@ -580,4 +580,3 @@ div.mochaToolbarWrapper.bottom {
     color: #000;
     min-height: 80px;
 }
-
