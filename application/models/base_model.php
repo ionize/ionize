@@ -220,7 +220,7 @@ class Base_model extends CI_Model
 	/** 
 	 * Get one element
 	 *
-	 * @param	string		where array
+	 * @param	string		WHERE array or record ID of extending entity
 	 * @param	string		Optional. Lang code
 	 * @return	array		array of media
 	 *

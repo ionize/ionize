@@ -22,7 +22,11 @@ class Medias
 {
 	protected static $_inited = FALSE;
 
+	/** @var CI_Controller */
 	public static $ci;
+
+	/** @var  MY_Image_lib */
+	public $image_lib;
 
 	/*
 	 * System default "No picture" source file.
@@ -32,7 +36,7 @@ class Medias
 	 */
 	public static $no_picture_source = "no_picture_source_smiley.png";
 
-
+	/** @var array */
 	protected static $allowed_resize_method = array
 	(
 		'square', 		// Square picture
@@ -48,7 +52,6 @@ class Medias
 	 * Allowed methods :
 	 *
 	 * @var string
-	 *
 	 */
 	public static $default_resize_method = 'wider_side';
 
@@ -57,13 +60,14 @@ class Medias
 	 * Default border color for 'border' resize method
 	 *
 	 * @var string
-	 *
 	 */
 	public static $default_border_color = '#555';
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * Constructor
+	 */
 	function __construct()
 	{
 		self::$ci =& get_instance();
@@ -74,12 +78,10 @@ class Medias
 
 
 	/**
-	 * @param array
-	 * @param array
-	 * @param string
-	 *
-	 * @return string
-	 *
+	 * @param	array	$media
+	 * @param	array	$settings
+	 * @param	string	$fail_picture_path
+	 * @return	string
 	 */
 	public function get_src($media, $settings, $fail_picture_path=NULL)
 	{
@@ -219,7 +221,12 @@ class Medias
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * @param	string	$source_path
+	 * @param	string	$dest_path
+	 * @param	array	$settings
+	 * @return	bool
+	 */
 	public function create_thumb($source_path, $dest_path, $settings = array())
 	{
 		self::$ci->load->library('image_lib');
@@ -240,7 +247,7 @@ class Medias
 	
 			if (isset($settings['square']) && $settings['square'] == TRUE )
 			{
-				if ($dim['width'] >= $dim['height']) 
+				if ($dim['width'] >= $dim['height'])
 					$settings['master_dim'] =	$settings_square['master_dim'] = 'height';
 				else 
 					$settings['master_dim'] =	$settings_square['master_dim'] = 'width';
@@ -286,6 +293,8 @@ class Medias
 
 						self::$ci->image_lib->crop();
 					}		
+				} else {
+					return $source_path;
 				}
 			}
 			else
@@ -585,8 +594,8 @@ class Medias
 			
 			$next_folder = '';
 			
-			// Check if server os is windows,
-			// If server os is windows, first separator has to be empty string
+			// Check if server OS is windows,
+			// If server OS is windows, first separator has to be empty string
 			// $separator = ((strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN') !== FALSE) ? '' : '/';
             $separator = '/';
 
