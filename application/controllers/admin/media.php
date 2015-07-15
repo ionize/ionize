@@ -23,6 +23,10 @@ class Media extends MY_admin
 	/** @var  Extend_field_model */
 	public $extend_field_model;
 
+	/** @var  Medias */
+	public $medias;
+
+
 	/**
 	 * Constructor
 	 *
@@ -950,10 +954,13 @@ class Media extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	public function get_thumb($id)
+	/**
+	 * @param	int		$id_media
+	 */
+	public function get_thumb($id_media)
 	{
 		// Pictures data from database
-		$picture = $id ? $this->media_model->get($id) : FALSE;
+		$picture = $id_media ? $this->media_model->get($id_media) : FALSE;
 
 		// Path to the picture
 		if ($picture && file_exists($picture_path = DOCPATH.$picture['path']))
@@ -981,7 +988,6 @@ class Media extends MY_admin
 			}
 			$mime = get_mime_by_extension($return_thumb_path);
 			$content = read_file($return_thumb_path);
-			
 			self::push_thumb($content, $mime, 0);
 		}
 		// No source file
