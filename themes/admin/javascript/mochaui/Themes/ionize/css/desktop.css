@@ -15,312 +15,312 @@
  */
 
 .desktop {
-    background-color: #f2f2f2;
-    position: relative;
-    min-width: 400px; /* Helps keep header content from wrapping */
-    height: 100%;
-    min-height: 100%;
-    overflow: hidden;
-    cursor: default; /* Fix for issue in IE7. IE7 wants to use the I-bar text cursor */
+	background-color: #f2f2f2;
+	position: relative;
+	min-width: 400px; /* Helps keep header content from wrapping */
+	height: 100%;
+	min-height: 100%;
+	overflow: hidden;
+	cursor: default; /* Fix for issue in IE7. IE7 wants to use the I-bar text cursor */
 }
 
 /* header */
 .desktopHeader {
-    background: #f2f2f2;
+	background: #f2f2f2;
 }
 
 .desktopNav {
-    clear: both;
-    height: 30px;
-    overflow: hidden;
-    background: transparent;
+	clear: both;
+	height: 30px;
+	overflow: hidden;
+	background: transparent;
 }
 
 #desktopHeader {
-    background: #000;
+	background: #000;
 }
 
 #structurePanel_pad {
-    padding: 15px 0 8px 15px !important;
-    background: transparent;
+	padding: 15px 0 8px 15px !important;
+	background: transparent;
 }
 
 #about_contentWrapper {
-    background: #e5e5e5 url(../images/application_about_window_bg.jpg) top left no-repeat;
+	background: #e5e5e5 url(../images/application_about_window_bg.jpg) top left no-repeat;
 }
 
 #about_contentWrapper p.version {
-    font-size: 0.9em;
-    margin-bottom: 5px;
-    color: #777;
+	font-size: 0.9em;
+	margin-bottom: 5px;
+	color: #777;
 }
 
 #about_contentWrapper p {
-    font-size: 0.9em;
-    padding-bottom: 6px;
-    line-height: 15px;
+	font-size: 0.9em;
+	padding-bottom: 6px;
+	line-height: 15px;
 }
 
 #desktopNavToolbar_spinner {
-    position: absolute;
-    right: 10px;
+	position: absolute;
+	right: 10px;
 }
 
 #logoAnchor {
-    height: 62px;
-    width: 136px;
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
+	height: 62px;
+	width: 136px;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
 }
 
 .desktopTitlebarWrapper {
-    position: relative;
-    height: 32px;
-    overflow: hidden;
+	position: relative;
+	height: 32px;
+	overflow: hidden;
 }
 
 .desktopTitlebar {
-    padding: 6px 8px 0 0;
-    height: 32px;
+	padding: 6px 8px 0 0;
+	height: 32px;
 }
 
 .desktopTitlebar h1.applicationTitle {
-    display: none;
-    margin: 0;
-    padding: 0 5px 0 0;
-    font-size: 20px;
-    line-height: 25px;
-    font-weight: bold;
-    color: #fff;
+	display: none;
+	margin: 0;
+	padding: 0 5px 0 0;
+	font-size: 20px;
+	line-height: 25px;
+	font-weight: bold;
+	color: #fff;
 }
 
 .desktopTitlebar h2.tagline {
-    padding: 7px 0 0 0;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 10px;
-    color: #d4dce4;
-    font-weight: bold;
-    text-align: center;
-    text-transform: uppercase;
+	padding: 7px 0 0 0;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #d4dce4;
+	font-weight: bold;
+	text-align: center;
+	text-transform: uppercase;
 }
 
 .desktopTitlebar h2.tagline .taglineEm {
-    color: #fff;
-    font-weight: bold;
+	color: #fff;
+	font-weight: bold;
 }
 
 .desktopTitlebar div.topNav {
-    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-    font-size: 0.70rem;
-    position: absolute;
-    right: 0;
-    top: 0;
-    color: #d4dce4;
-    text-align: right;
-    padding: 8px 10px 0 0;
+	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+	font-size: 0.70rem;
+	position: absolute;
+	right: 0;
+	top: 0;
+	color: #d4dce4;
+	text-align: right;
+	padding: 8px 10px 0 0;
 }
 
 .desktopTitlebar div.topNav a {
-    color: #fff;
-    font-weight: normal;
+	color: #fff;
+	font-weight: normal;
 }
 
 .desktopTitlebar div.topNav a:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 /* content*/
 li.divider {
-    margin-top: 2px;
-    padding-top: 3px;
-    border-top: 1px solid #ebebeb;
+	margin-top: 2px;
+	padding-top: 3px;
+	border-top: 1px solid #ebebeb;
 }
 
 .desktopContent {
-    position: relative;
-    overflow: hidden; /* This can be set to hidden or auto */
-    border-bottom: 1px solid #909090;
+	position: relative;
+	overflow: hidden; /* This can be set to hidden or auto */
+	border-bottom: 1px solid #909090;
 }
 
 /* Footer */
 .desktopFooter {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 30px;
-    overflow: hidden;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 30px;
+	overflow: hidden;
 }
 
 .desktopFooter .copyright {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 10px;
-    height: 24px;
-    padding: 6px 8px 0 8px;
-    background: #f2f2f2;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	height: 24px;
+	padding: 6px 8px 0 8px;
+	background: #f2f2f2;
 }
 
 /* Panel Layout */
 /* Columns */
 .column {
-    float: left;
-    position: relative;
-    overflow: hidden; /* Required by IE6 */
+	float: left;
+	position: relative;
+	overflow: hidden; /* Required by IE6 */
 }
 
 /* Panels */
 .panel {
-    position: relative;
-    overflow: auto;
-    background: #fff;
-    border-bottom: 0 solid #b9b9b9;
-    clear: both;
+	position: relative;
+	overflow: auto;
+	background: #fff;
+	border-bottom: 0 solid #b9b9b9;
+	clear: both;
 }
 
 .panelWrapper.collapsed .panel-header {
-    border-bottom: 0;
-    border-top: 1px solid #D3D3D3;
+	border-bottom: 0;
+	border-top: 1px solid #D3D3D3;
 }
 
 .panelAlt {
-    background: url(../images/bg-gray-light.png);
+	background: url(../images/bg-gray-light.png);
 }
 
 .panelDark {
-    background: #000
+	background: #000
 }
 
 .bottomPanel .panel {
-    border-bottom: 0;
+	border-bottom: 0;
 }
 
 .pad {
-    padding: 8px;
+	padding: 8px;
 }
 
 #mainPanel2 {
-    background: #fff;
+	background: #fff;
 }
 
 .panel-header {
-    position: relative;
-    background: #f1f1f1;
-    height: 30px;
-    border-bottom: 1px solid #d3d3d3; /*overflow:hidden;*/
+	position: relative;
+	background: #f1f1f1;
+	height: 30px;
+	border-bottom: 1px solid #d3d3d3; /*overflow:hidden;*/
 }
 
 .panel-headerContent {
-    padding-top: 2px;
-    display: table-cell
+	padding-top: 2px;
+	display: table-cell
 }
 
 .panel-header h2 {
-    border: none;
-    display: inline-block;
-    font-size: 0.75rem;
-    margin: 0;
-    padding: 3px 8px 0 8px;
-    height: 22px;
-    overflow: hidden;
-    color: #333;
+	border: none;
+	display: inline-block;
+	font-size: 0.75rem;
+	margin: 0;
+	padding: 3px 8px 0 8px;
+	height: 22px;
+	overflow: hidden;
+	color: #333;
 }
 
 .panel-collapse {
-    background: url(../images/collapse-expand.gif) left top no-repeat;
-    padding-right: 5px
+	background: url(../images/collapse-expand.gif) left top no-repeat;
+	padding-right: 5px
 }
 
 .panel-expand {
-    background: url(../images/collapse-expand.gif) left -16px no-repeat;
+	background: url(../images/collapse-expand.gif) left -16px no-repeat;
 }
 
 .icon16 {
-    margin: 4px 0 0 2px;
-    cursor: pointer;
+	margin: 4px 0 0 2px;
+	cursor: pointer;
 }
 
 .panel-footer {
-    position: relative;
-    width: 100%;
-    background: #f9f9f9;
-    height: 30px;
-    overflow: hidden;
-    border-bottom: 1px solid #b9b9b9;
-    padding: 0 0 0 8px;
+	position: relative;
+	width: 100%;
+	background: #f9f9f9;
+	height: 30px;
+	overflow: hidden;
+	border-bottom: 1px solid #b9b9b9;
+	padding: 0 0 0 8px;
 }
 
 .bottomPanel .panel-footer {
-    border-top: 1px solid #b9b9b9;
-    border-bottom: 0;
+	border-top: 1px solid #b9b9b9;
+	border-bottom: 0;
 }
 
 .collapsed .panel-footer {
-    display: none;
+	display: none;
 }
 
 .panel-footerContent {
-    margin-top: 6px;
+	margin-top: 6px;
 }
 
 .panelWrapper .panel-header {
-    height: 30px;
-    border-top: 1px solid #D3D3D3;
-    border-bottom: 1px solid #D3D3D3;
+	height: 30px;
+	border-top: 1px solid #D3D3D3;
+	border-bottom: 1px solid #D3D3D3;
 }
 
 .panel .panelWrapper:first-child .panel-header {
-    border-top: none;
+	border-top: none;
 }
 
 .panelWrapper.expanded .panel-header .toolbar {
-    margin-top: 2px;
+	margin-top: 2px;
 }
 
 #desktopHeader,
 .panelAlt,
 .panel-header {
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 /* Column and Panel Handles */
 .horizontalHandle {
-    height: 7px;
-    line-height: 1px;
-    font-size: 1px;
-    overflow: hidden;
-    background: #fafafa;
-    border-top: 1px solid #C5C7C9;
+	height: 7px;
+	line-height: 1px;
+	font-size: 1px;
+	overflow: hidden;
+	background: #fafafa;
+	border-top: 1px solid #C5C7C9;
 }
 
 .horizontalHandle.detached .handleIcon {
-    background: transparent;
+	background: transparent;
 }
 
 .horizontalHandle .handleIcon {
-    margin: 0 auto;
-    height: 7px;
-    line-height: 1px;
-    font-size: 1px;
-    overflow: hidden;
-    background: url(../images/handle-icon-horizontal.gif) center 3px no-repeat;
+	margin: 0 auto;
+	height: 7px;
+	line-height: 1px;
+	font-size: 1px;
+	overflow: hidden;
+	background: url(../images/handle-icon-horizontal.gif) center 3px no-repeat;
 }
 
 .columnHandle {
-    min-height: 10px;
-    float: left;
-    width: 8px;
-    overflow: hidden;
-    background: #D5D9DC url(../images/handle-icon.gif) center center no-repeat;
-    border: 1px solid #C5C7C9;
-    border-top: 0;
-    border-bottom: 0;
+	min-height: 10px;
+	float: left;
+	width: 8px;
+	overflow: hidden;
+	background: #D5D9DC url(../images/handle-icon.gif) center center no-repeat;
+	border: 1px solid #C5C7C9;
+	border-top: 0;
+	border-bottom: 0;
 }
 
 /*
@@ -328,12 +328,12 @@ li.divider {
  *
  */
 #sidePanel_header.panel-header {
-    background: none repeat scroll 0 0 #000;
-    border-bottom: 1px solid #444;
-    border-top: 1px solid #444;
+	background: none repeat scroll 0 0 #000;
+	border-bottom: 1px solid #444;
+	border-top: 1px solid #444;
 }
 
 #sidePanel_header .panel-collapse {
-    background: url("../images/collapse-expand_white.png") no-repeat scroll left top rgba(0, 0, 0, 0);
-    opacity: 0.5;
+	background: url("../images/collapse-expand_white.png") no-repeat scroll left top rgba(0, 0, 0, 0);
+	opacity: 0.5;
 }
