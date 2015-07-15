@@ -908,7 +908,7 @@ class Installer
 			// In case of migration, this script will only create the missing tables
 			foreach ($tables as $table)
 			{
-				$this->db->query($table);
+				$this->db->query((string) $table);
 			}
 			
 			// Checks the write rights of the MySQL user
@@ -926,7 +926,7 @@ class Installer
 			// In case of migration (content already exists), the existing content will not be overwritten
 			foreach ($content as $sql)
 			{
-				$this->db->query($sql);
+				$this->db->query((string) $sql);
 			}
 			
 			// Users message
@@ -1487,7 +1487,7 @@ class Installer
 
 		foreach ($queries as $query)
 		{
-			$result = $this->db->query($query);
+			$result = $this->db->query((string) $query);
 
 			if ( ! $result)
 				log_message('error',$query);
