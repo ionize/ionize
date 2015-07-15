@@ -180,7 +180,7 @@ class System_check extends MY_admin
 
 	/**
 	 * Check page level integrity
-	 * Checks the page level inegrity, correct and chains the next check : article's contexts
+	 * Checks the page level integrity, correct and chains the next check : article's contexts
 	 *
 	 */
 	public function check_page_level()
@@ -400,6 +400,23 @@ class System_check extends MY_admin
 
 		$result = array(
 			'title' => lang('ionize_title_rebuild_pages_urls'),
+			'status' => 'success',
+			'message' => lang('ionize_message_check_ok'),
+		);
+
+		$this->xhr_output($result);
+	}
+
+	/**
+	 * Remove deleted page records and relations to it from DB.
+	 *
+	 * @return	int		Amount of deleted pages that have been removed
+	 */
+	public function remove_deleted_pages()
+	{
+		$this->page_model->remove_deleted_pages();
+
+		$result = array(
 			'status' => 'success',
 			'message' => lang('ionize_message_check_ok'),
 		);

@@ -140,7 +140,6 @@ class Page_model extends Base_model
 		return parent::get_lang_list($where, $lang);
 	}
 	
-	
 
 	// ------------------------------------------------------------------------
 
@@ -238,13 +237,13 @@ class Page_model extends Base_model
 		$this->{$this->db_group}->update('page');
 	
 		// Update of pages (lang table) which links to this page
-		$sql = "update page_lang as pl
-					inner join page as p on p.id_page = pl.id_page
-					inner join page_lang as p2 on p2.id_page = p.link_id
-				set pl.link = p2.url
-				where p.link_type='page'
-				and pl.lang = p2.lang
-				and p.link_id = " . $id_page;
+		$sql = "UPDATE page_lang AS pl
+					INNER JOIN page AS p ON p.id_page = pl.id_page
+					INNER JOIN page_lang AS p2 ON p2.id_page = p.link_id
+				SET pl.link = p2.url
+				WHERE p.link_type='page'
+				AND pl.lang = p2.lang
+				AND p.link_id = " . $id_page;
 
 		$this->{$this->db_group}->query($sql);
 	
@@ -337,6 +336,36 @@ class Page_model extends Base_model
 	}
 
 	 
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Remove relations of deleted pages
+	 *
+	 * @return	int 	Amount of removed deleted page records
+	 */
+	public function remove_deleted()
+	{
+		foreach( array( 'page_article', 'page_lang', 'page_media' ) as $relation ) {
+			$this->{$this->db_group}->query( "
+						DELETE FROM $relation
+						WHERE $relation.id_page IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)" );
+		}
+		// Remove relation where page is parent
+		foreach( array( 'element' ) as $relation )
+			$this->{$this->db_group}->query( "
+						DELETE FROM $relation
+						WHERE $relation.parent = 'page' AND $relation.id_parent IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)" );
+
+		// Remove deleted pages
+		$this->{$this->db_group}->query( '
+						DELETE FROM page
+						WHERE id_menu=0
+						AND id_parent = 0' );
+
+		return (int) $this->{$this->db_group}->affected_rows();
+	}
+
+
 	// ------------------------------------------------------------------------
 
 

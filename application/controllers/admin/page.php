@@ -123,9 +123,8 @@ class Page extends MY_admin
 	/**
 	 * Create one page
 	 *
-	 * @param	int		Menu ID
-	 * @param	int		Parent page ID
-	 *
+	 * @param	int		$id_menu
+	 * @param	int		$id_parent	Parent page ID
 	 */
 	public function create($id_menu, $id_parent=NULL)
 	{
@@ -184,8 +183,7 @@ class Page extends MY_admin
 	/**
 	 * Edit one page
 	 *
-	 * @param	string	Page ID
-	 *
+	 * @param	string	$id_page
 	 */
 	public function edit($id_page)
 	{
@@ -559,7 +557,6 @@ class Page extends MY_admin
 	 * - id_parent : Parent page ID
 	 *
 	 * @returns	string	HTML string of options items
-	 *
 	 */
 	public function get_parents_select()
 	{
@@ -599,7 +596,6 @@ class Page extends MY_admin
 	 * Set an item online / offline depending on its current status
 	 *
 	 * @param	int		$id_page
-	 *
 	 */
 	public function switch_online($id_page)
 	{
@@ -618,7 +614,7 @@ class Page extends MY_admin
 			)
 		);
 
-		// Answer send
+		// Answer sent
 		$this->success(lang('ionize_message_operation_ok'));
 	}
 
@@ -646,7 +642,7 @@ class Page extends MY_admin
 			// Saves the new ordering
 			$this->page_model->save_ordering($order);
 
-			// Answer send
+			// Answer sent
 			$this->success(lang('ionize_message_page_ordered'));
 		}
 		else
@@ -671,16 +667,16 @@ class Page extends MY_admin
 
 			$articles = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
 
-			$kdate = array();
+			$keyDate = array();
 			foreach($articles as $key => $article)
 			{
-				$kdate[$key] = strtotime($article['date']);
+				$keyDate[$key] = strtotime($article['date']);
 			}
 
 			$sort_direction = 'SORT_'.$direction;
 
-			// Sort the results by realm occurences DESC first, by date DESC second.			
-			array_multisort($kdate, constant($sort_direction), $articles);
+			// Sort the results by realm occurrences DESC first, by date DESC second.
+			array_multisort($keyDate, constant($sort_direction), $articles);
 
 			$ids = array();
 			foreach($articles as $idx => $article)
@@ -749,7 +745,6 @@ class Page extends MY_admin
 	 * - field : DB field name
 	 * - id_page : Page ID`
 	 * - value : Value to set
-	 *
 	 */
 	public function update_field()
 	{
@@ -761,7 +756,7 @@ class Page extends MY_admin
 		{
 			$value = $this->input->post('value');
 
-			// Check the type of data, for special process
+			// Check type of data, for special process
 			if ($type === 'date')
 			{
 				$value = ($value) ? getMysqlDatetime($value) : '0000-00-00 00:00:00';
@@ -772,7 +767,7 @@ class Page extends MY_admin
 
 			if ($result)
 			{
-				// Datas
+				// Data
 				$page = $this->page_model->get_by_id($id_page, Settings::get_lang('default'));
 				$menu = $this->menu_model->get($page['id_menu']);
 
@@ -903,7 +898,6 @@ class Page extends MY_admin
 				break;
 
 			case 'external' :
-				$link_rel = '';
 				if ($this->input->post('url') != lang('ionize_label_drop_link_here'))
 				{
 					$title = prep_url($this->input->post('url'));
@@ -1061,39 +1055,23 @@ class Page extends MY_admin
 	/**
 	 * Remove deleted page records and relations to it from DB.
 	 *
-	 * @return int
+	 * @return	int		Amount of deleted pages that have been removed
 	 */
 	public function remove_deleted_pages()
 	{
-		// Remove relations of deleted pages
-		foreach(array('page_article', 'page_lang', 'page_media') as $relation)
-		{
-			$this->{$this->db_group}->query("
-				DELETE FROM $relation
-				WHERE $relation.id_page IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
-			);
-		}
-		// Remove relation where page is parent
-		foreach(array('element') as $relation)
-			$this->{$this->db_group}->query("
-				DELETE FROM $relation
-				WHERE $relation.parent = 'page' AND $relation.id_parent IN (SELECT id_page FROM page WHERE page.id_menu = 0 AND page.id_parent = 0)"
-			);
-
-		// Remove deleted pages
-		$this->{$this->db_group}->query('
-				DELETE FROM page
-				WHERE id_menu=0
-				AND id_parent = 0'
-		);
-
-		return $this->{$this->db_group}->affected_rows();
+		return $this->page_model->remove_deleted_pages();
 	}
 
 
 	// ------------------------------------------------------------------------
 
 
+	/**
+	 * @param	string	$type
+	 * @param	string	$element
+	 * @param	string	$id
+	 * @return	string
+	 */
 	protected function _get_resource_name($type, $element, $id)
 	{
 		return $type . '/' . $element . '/' . $id;
@@ -1103,7 +1081,12 @@ class Page extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	protected function _get_views_dropdown_data($data, $nogroup_title='Page')
+	/**
+	 * @param	array		$data
+	 * @param	string		$noGroup_title
+	 * @return	array|mixed
+	 */
+	protected function _get_views_dropdown_data($data, $noGroup_title='Page')
 	{
 		$optGroup = array();
 		$noGroup = array();
@@ -1131,8 +1114,7 @@ class Page extends MY_admin
 			}
 			else
 			{
-				$result = array($nogroup_title => $noGroup);
-				$result = array_merge($result, $optGroup);
+				$result = array_merge(array($noGroup_title => $noGroup), $optGroup);
 			}
 
 			return $result;
@@ -1198,7 +1180,6 @@ class Page extends MY_admin
 	/**
 	 * Prepare page data before saving
 	 *
-	 *
 	 */
 	protected function _prepare_data()
 	{
@@ -1259,7 +1240,6 @@ class Page extends MY_admin
 			unset($this->data['ordering']);
 		}
 
-
 		// Lang data
 		$fields = $this->db->list_fields('page_lang');
 
@@ -1297,7 +1277,6 @@ class Page extends MY_admin
 	 * Checks if the element save process can be done.
 	 *
 	 * @returns		Boolean		True if the save can be done, false if not
-	 *
 	 */
 	protected function _check_before_save()
 	{
@@ -1305,12 +1284,7 @@ class Page extends MY_admin
 		$default_lang_url = $this->input->post('url_'.$default_lang);
 		$default_lang_title = $this->input->post('title_'.$default_lang);
 
-		if ($default_lang_url == FALSE && $default_lang_title == FALSE)
-		{
-			return FALSE;
-		}
-
-		return TRUE;
+		return !($default_lang_url == FALSE && $default_lang_title == FALSE);
 	}
 
 
@@ -1368,7 +1342,6 @@ class Page extends MY_admin
 	 * When called, reloads the Page Edition panel
 	 *
 	 * @param   int    $id_page
-	 *
 	 */
 	protected function _reload_panel($id_page)
 	{
