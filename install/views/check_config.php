@@ -1,4 +1,3 @@
-
 <div class="block">
 	<ul id="nav">
 
@@ -19,11 +18,9 @@
 
 	<h2><?php echo lang('title_system_check') ?></h2>
 
-
 	<?php if(isset($message)) :?>
 		<p class="<?php echo $message_type ?>"><?php echo $message ?></p>
 	<?php endif ;?>
-
 
 	<!-- PHP Version -->
 	<ul class="check">
@@ -57,3 +54,10 @@
 		<?php endif ;?>
 	</div>
 </div>
+
+<script type="text/javascript">
+	// Detect re-installation (installer loaded into content-div of backend)
+	if( document.getElementById('sideColumn') ) {
+		window.location.href = '../';	// reload one level up
+	}
+</script>
