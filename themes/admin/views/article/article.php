@@ -322,20 +322,20 @@ if ($tracker_title == '')
 		<?php endforeach ;?>
 	<?php endif; ?>
 
+	var el_ordering_select = $('ordering_select');
+
 	// Article ordering :
 	// - Show / hide article list depending on Ordering select
 	// - Update the article select list after parent change
+
 	if ($('id_page'))
 	{
-		$('ordering_select').addEvent('change', function()
+		el_ordering_select.addEvent('change', function()
 		{
-			if (this.value == 'after'){ $('ordering_after').setStyle('display', 'block');}
-			else { $('ordering_after').setStyle('display', 'none');	}
+			$('ordering_after').setStyle('display', (this.value === 'after'	? 'block' : 'none'));
 		});
-
 	}
 
-	var el_ordering_select = $('ordering_select');
 	if (el_ordering_select)
 	{
 		var cookieName = 'new-article-order';
@@ -351,7 +351,7 @@ if ($tracker_title == '')
 			order_options = Cookie.read(cookieName);
 			el_ordering_select.getElement('[value="'+order_options+'"]').setProperty('selected', 'selected');
 			if (order_options == 'after')
-				$('ordering_select').fireEvent('change');
+				el_ordering_select.fireEvent('change');
 		}
 	}
 

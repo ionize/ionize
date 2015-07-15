@@ -1,13 +1,10 @@
-
 <h2 class="main video"><?php echo lang('ionize_label_add_video') ?></h2>
 <div class="main subtitle ">
 	<p><span class="lite"><?php echo lang('ionize_message_paste_video_url') ?></span></p>
 </div>
 
 <form name="addVideoForm" id="addVideoForm">
-
 	<textarea id="externalVideoUrl" name="addVideo" style="width:80%" class="inputtext autogrow left ml40" type="text"></textarea>
-
 </form>
 
 <div class="buttons">
@@ -22,7 +19,8 @@
 	// Add Video button
 	$('bAddUrl').addEvent('click', function()
 	{
-		if ($('externalVideoUrl').value !='')
+		var externalVideoUrl = $('externalVideoUrl').value;
+		if (externalVideoUrl !='')
 		{
 			ION.JSON(
 				'media/add_external_media',
@@ -30,7 +28,7 @@
 					'type': 'video',
 					'parent': '<?php echo $parent ?>',
 					'id_parent': '<?php echo $id_parent ?>',
-					'path': $('externalVideoUrl').value
+					'path': externalVideoUrl
 				},
 				{
 					onSuccess: function()

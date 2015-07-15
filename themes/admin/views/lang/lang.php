@@ -1,4 +1,3 @@
-
 <!-- Main Column -->
 <div id="maincolumn">
 
@@ -203,7 +202,6 @@
 
 	</div>
 
-
 </div>
 
 
@@ -264,8 +262,3 @@
 	});
 
 </script>
-
-
-
-
-

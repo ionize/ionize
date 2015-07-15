@@ -6,10 +6,9 @@
 		</a>
 	</div>
 
-<?php endif;?>
+<?php endif;
 
-
-<?php if ( Authority::can('create', 'admin/role')) :?>
+if ( Authority::can('create', 'admin/role')) :?>
 
 	<div class="divider">
 		<a class="button light" id="newRoleToolbarButton">

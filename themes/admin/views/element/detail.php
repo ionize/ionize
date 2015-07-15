@@ -18,9 +18,7 @@ $id_parent = ( !empty($id_parent)) ? $id_parent : '';
 $title = ! empty($element_definition['title']) ? $element_definition['title'] : $element_definition['name'];
 $id_element_definition = $element_definition['id_element_definition'];
 
-?>
-
-<?php if ($id_element == '') :?>
+if ($id_element == '') :?>
 	<a id="elementAddBackButton" class="light button back">
 		<i class="icon-back"></i><?php echo lang('ionize_label_back_to_element_list'); ?>
 	</a>
@@ -54,7 +52,6 @@ $id_element_definition = $element_definition['id_element_definition'];
 		<?php endif ;?>
 
 		<div id="elementExtendContainer<?php echo $id_element_definition; ?>-<?php echo $id_element; ?>"></div>
-
 
 	</form>
 </div>
@@ -181,9 +178,6 @@ $id_element_definition = $element_definition['id_element_definition'];
 	{
 		saveElement<?php echo $id_element; ?>({reload:true});
 	});
-
-
-
 
 	// Tabs
 	new TabSwapper({

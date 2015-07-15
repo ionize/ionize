@@ -6,14 +6,11 @@
  *
  */
 
-?>
 
-<?php foreach($elements as $element) :?>
-
-	<?php
+foreach($elements as $element) :
 	$id = $element['id_element_definition'];
 	$title = ! empty($element['title']) ? $element['title'] : $element['name'];
-	?>
+?>
 
 	<li class="sortme element_definition" id="element_definition_<?php echo $id; ?>" data-id="<?php echo $id; ?>">
 

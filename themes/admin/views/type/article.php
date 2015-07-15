@@ -85,7 +85,6 @@
 			<textarea id="description<?php echo $UNIQ; ?>" name="description" class="tinyType<?php echo $UNIQ; ?> w240 h120"><?php echo $description; ?></textarea>
 		</dd>
 	</dl>
-	
 
 </form>
 
@@ -103,7 +102,6 @@
 	ION.windowResize('article_type<?php echo $id_type; ?>', {width:450, height:230});
 
 	tinyMCE.init(ION.tinyMceSettings('tinyType<?php echo $UNIQ; ?>', 240, 120, 'small'));
-
 
 </script>
 

@@ -217,7 +217,6 @@
 </div>
 <script type="text/javascript">
 
-
 	//Panel toolbox
 	ION.initToolbox(
 		null,
@@ -335,7 +334,7 @@
 					item.hide();
 			})
 		});
-	}
+	};
 
 	// Show All Translation Items
 	var clearTranslationSearch = function()
@@ -348,7 +347,7 @@
 				item.setStyle('display', '');
 			})
 		});
-	}
+	};
 
 	// Add New Translation Item Button
 	$('addTranslationsButton').addEvent('click', function(){

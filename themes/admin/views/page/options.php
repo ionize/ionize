@@ -73,8 +73,6 @@
 		<?php endif ;?>
 	</div>
 
-
-
 	<div id="options">
 
 		<?php if ($id_page != '') :?>
@@ -83,7 +81,6 @@
 			<?php echo get_modules_addons('page', 'options_top'); ?>
 
 		<?php endif ;?>
-
 
 		<!-- Options -->
 		<h3 class="toggler"><?php echo lang('ionize_title_attributes'); ?></h3>
@@ -197,7 +194,6 @@
 		</div>
 		<!-- / Options -->
 
-
 		<!-- Parent -->
 		<?php if ($id_page != '') :?>
 
@@ -227,7 +223,6 @@
 			</div>
 
 		<?php endif ;?>
-
 
 		<!-- Dates -->
 		<h3 class="toggler"><?php echo lang('ionize_title_dates'); ?></h3>
@@ -352,7 +347,6 @@
 					<?php endforeach ;?>
 				</div>
 
-
 				<!-- Meta_Keywords -->
 				<h4 title="<?php echo lang('ionize_help_page_meta'); ?>"><?php echo lang('ionize_label_meta_keywords'); ?></h4>
 				<div id="metaKeywordsTab" class="mainTabs small">
@@ -372,7 +366,6 @@
 				</div>
 			</div>
 		</div>
-
 
 		<!-- Advanced Options -->
 		<h3 class="toggler"><?php echo lang('ionize_title_advanced'); ?></h3>
@@ -418,8 +411,6 @@
 				</dd>
 			</dl>
 			-->
-
-
 
 		</div>
 
@@ -496,7 +487,6 @@
 			<?php endif ;?>
 
 		</div>
-
 
 		<?php if ($id_page != '') :?>
 

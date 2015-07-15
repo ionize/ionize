@@ -8,11 +8,9 @@
 
 ?>
 
-
 <?php foreach($articles as $article) :?>
 	<?php
 	    $title = ($article['title'] != '') ? $article['title'] : $article['name'];
 	?>
 	<option value="<?php echo $article['id_article']; ?>"><?php echo $title; ?></option>
 <?php endforeach ;?>
-

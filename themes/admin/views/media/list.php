@@ -7,11 +7,8 @@
 
 $_uniq = 'i'.uniqid();
 
-?>
-<?php if ( !empty($items)) :?>
-	<?php foreach ($items as $media) :?>
-		<?php
-		
+if ( !empty($items)) :
+	foreach ($items as $media) :
 		$path = substr($media['path'], strpos($media['path'], '/') + 1);
 		$thumbUrl =	$thumb_base_url.$path;
 		$type = $media['type'];
@@ -68,4 +65,3 @@ $_uniq = 'i'.uniqid();
 		</div>
 	<?php endforeach ;?>
 <?php endif ;?>
-

@@ -18,7 +18,6 @@
 	<?php echo $users_count ?>
 </p>
 
-
 <?php if ($users_pages > 1) :?>
 <!-- Pages -->
 	<ul class="pagination mt5" id="users_pagination">
@@ -31,10 +30,9 @@
 			}
 		?>
 	</ul>
-<?php endif; ?>
+<?php endif;
 
-
-<?php if (!empty($users)) :?>
+if (!empty($users)) :?>
 
 	<table class="list" id="usersTable">
 

@@ -21,7 +21,6 @@
 	<input type="hidden" name="main_parent" id="main_parent" value="<?php echo $main_parent; ?>" />
 	<input type="hidden" name="has_url" id="has_url" value="<?php echo $has_url; ?>" />
 
-
 	<!-- Informations -->
 	<div class="info">
 
@@ -506,17 +505,18 @@
 		});
 
 		// Categories
-		var categoriesSelect = $('categories').getFirst('select');
+		var elCategories = $('categories');
+		var categoriesSelect = elCategories.getFirst('select');
 		categoriesSelect.addEvent('change', function(e)
 		{
-			var ids = new Array();
+			var ids = [];
 			var sel = this;
 			for (var i = 0; i < sel.options.length; i++) {
 				if (sel.options[i].selected) ids.push(sel.options[i].value);
 			}
 			ION.JSON('article/update_categories', {'categories': ids, 'id_article': $('id_article').value});
 		});
-		var nbCategories = ($('categories').getElements('option')).length;
+		var nbCategories = (elCategories.getElements('option')).length;
 		if (nbCategories > 5)
 		{
 			$$('#categories select').setStyles({

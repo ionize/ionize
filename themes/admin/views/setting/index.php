@@ -192,9 +192,6 @@
 				</form>
 
 
-
-
-
 				<h3><?php echo lang('ionize_title_sitemap_search_engine'); ?></h3>
 				
 				<!-- Sitemaps Search Engines -->
@@ -230,7 +227,6 @@
 					</div>
 				</form>
 
-			
 			</div>
 
 		</div>

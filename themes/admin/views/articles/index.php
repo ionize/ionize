@@ -42,14 +42,10 @@
 		</form>
 	</div>
 
-
 	<!-- Articles List -->
 	<div id="articleList"></div>
 
 </div>
-
-
-
 
 <script type="text/javascript">
 
@@ -85,6 +81,3 @@
 
 </script>
 <?php endif;?>
-
-
-

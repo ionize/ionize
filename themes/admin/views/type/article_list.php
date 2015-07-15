@@ -36,7 +36,6 @@
 	 *
 	 */
 	typesManager = new ION.ItemManager({ element: 'article_type', container: 'article_typeList' });
-	
 	typesManager.makeSortable();
 
 	<?php if ( Authority::can('edit', 'admin/article/type')) :?>

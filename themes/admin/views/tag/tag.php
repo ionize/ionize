@@ -110,6 +110,4 @@
 	 */
 	ION.initTinyEditors('.tab_edit_category<?php echo $id_category; ?>', '#categoryTabContent<?php echo $id_category; ?> .tinyCategory', 'small', {'height':120});
 
-
-
 </script>
