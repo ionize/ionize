@@ -28,6 +28,7 @@ Official website : http://www.ionizecms.com
 * Martin Wernstahl
 * Bhagya Nirmaan Silva - (http://about.me/bhagyas)
 
+
 ### Installation
 
 IMPORTANT : Before any update, make a backup of your database.
