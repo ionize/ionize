@@ -1155,6 +1155,7 @@ $lang['ionize_help_label_label'] = 'Displayed label of this field, in Ionize';
 $lang['ionize_help_field_length'] = 'Field length';
 
 $lang['ionize_confirm_extend_delete'] = 'Are you really sure ?<br/>This extend and ALL the linked data will be removed !';
+$lang['ionize_select_all'] = '-- All --';
 
 
 /*

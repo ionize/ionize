@@ -253,7 +253,6 @@ ION.Window = new Class({
 
 					self.divButtons = new Element('div', {'class':'buttons'}).inject(w.el.content);
 
-
 					self.saveButton = new Element('button', {
 						'class':'button right yes',
 						id: 'save' + opt.form.id,
@@ -330,7 +329,7 @@ ION.Window = new Class({
 						self.saveButton.id,     // Save button ID
 						self.form.action,  // Save URL
 						null,              // Confirmation Object (null in this case, no conf. to open one window)
-						opt.form           // Options, to pass onSuccess() method
+						opt.form           // Options, to pass onSuccess() and onBeforeSaveClose() methods
 					);
 				}
 			}
@@ -420,6 +419,11 @@ ION.WindowTitle = new Class({
 	setTitle: function(title)
 	{
 		if (this.h2) this.h2.set('html', title);
+	},
+
+	getTitle: function()
+	{
+		return this.h2;
 	},
 
 	getDomElement: function()

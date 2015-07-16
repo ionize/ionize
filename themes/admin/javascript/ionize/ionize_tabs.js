@@ -23,7 +23,8 @@ ION.Tabs = new Class({
 			{
 				label: 'My Second Tab',
 				id: 'second-tab',
-				'class': ''
+				'class': '',
+				properties: {}		// Properties to add to each tab
 			}
 			*/
 		],
@@ -109,6 +110,9 @@ ION.Tabs = new Class({
 		{
 			self.addTab(item, null);
 		});
+
+		this.fireEvent('onDraw', [this]);
+
 	},
 
 	addTab: function(item, index)
@@ -126,6 +130,13 @@ ION.Tabs = new Class({
 
 		if (item.id) tab.setProperty('id', item.id);
 		if (item.class) tab.setProperty('class', item.class);
+
+		if (item.properties)
+		{
+			Object.each(item.properties, function(value, idx){
+				tab.setProperty(idx, value);
+			});
+		}
 
 		// If the index is set and there is already one tab at this index
 		if (this.tabs[index])

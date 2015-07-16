@@ -42,10 +42,13 @@ ION.ExtendManager = new Class({
 		this.w =            null;       // window
 		this.wContainer =   null;       // Items container (in window)
 		this.destination =  null;       // Destination container (ID) : TabSwapper only for the moment
-		this.destinationTitle = null;   // Destination container title : Tab title only for the moment
+		this.destinationTitle = null;    // Destination container title : Tab title only for the moment
+
+		this.extend_instances = null;	// Local store for Extends instances
+
 
 		// Data posted by getWindowExtendListContent()
-		this.post = null;
+		this.post = {};
 
 		this.click_timer = null;
 
@@ -71,12 +74,12 @@ ION.ExtendManager = new Class({
 	/**
 	 * Initialize basis properties
 	 *
-	 * @param	{Object}	options
+	 * @param options
 	 */
-	init: function(options)
+	init: function(opt)
 	{
 		var self = this,
-			opt = typeOf(options) != 'null' ? options : {};
+			opt = typeOf(opt) != 'null' ? opt : {};
 
 		this.post = null;
 		if (opt.context) this.context = opt.context;
@@ -92,12 +95,26 @@ ION.ExtendManager = new Class({
 		if (opt.destinationTitle) this.destinationTitle = (typeOf(opt.destinationTitle) != 'null')? opt.destinationTitle : null;
 
 		// Data
-		self.post = typeOf(opt.conditions) != 'null' ? opt.conditions : null;
+		self.post = typeOf(opt.conditions) != 'null' ? opt.conditions : {};
+		self.conditions = typeOf(opt.conditions) != 'null' ? opt.conditions : {};
+		self.display_conditions = typeOf(opt.display_conditions) != 'null' ? opt.display_conditions : {};
 
 		if (opt.onLoad)
 			opt.onLoad(this);
 
 		this.setWindowInfo();
+
+		return this;
+	},
+
+	reset: function()
+	{
+		this.context = null;
+		this.id_context = null;
+		this.parent = null;
+		this.id_parent = null;
+		this.destination = null;
+		this.post = {};
 	},
 
 	getExtendTypes: function()
@@ -281,7 +298,6 @@ ION.ExtendManager = new Class({
 		if (this.w == null)
 		{
 			this.initListWindow();
-			// this.setWindowInfo();
 		}
 
 		this.getWindowExtendListContent();
@@ -703,7 +719,7 @@ ION.ExtendManager = new Class({
 						// Title
 						{
 							element: 'span',
-							'class': 'unselectable',
+							'class': 'unselectable left',
 							text: 'label'
 						},
 						// Delete
@@ -736,13 +752,13 @@ ION.ExtendManager = new Class({
 
 	_groupExtendByParents: function(json)
 	{
-		var r = [];
+		var r = {};
 
 		Object.each(json, function(extend)
 		{
 			if ( ! extend.parent) extend.parent = 'global';
 
-			if ( ! r[extend.parent]) r[extend.parent] = [];
+			if ( typeOf(r[extend.parent]) == 'null') r[extend.parent] = [];
 
 			r[extend.parent].push(extend);
 		});
@@ -863,8 +879,6 @@ ION.ExtendManager = new Class({
 	 */
 	buildInstancesListContainer: function(json)
 	{
-		var self = this;
-
 		// We're supposed to have one defined parent
 		var container = this.getContextExtendContainer(this.parent);
 
@@ -979,9 +993,13 @@ ION.ExtendManager = new Class({
 	getExtendField: function(extend, options)
 	{
 		var lang = 			options && options.lang ? options.lang : null,
-			content =		options.lang
-								? extend['lang_data'][lang]['content']
-								: (extend.content == null ? extend.default_value : extend.content),
+			content = 		options.lang
+								? extend['lang_data'][lang]['content'] :
+								(
+									extend.content == null ?
+										(options['setDefaultValue'] == true ? extend.default_value : extend.content) :
+										extend.content
+								),
 			input_name = 	options.name
 								?	options.name
 								: 'cf_' + extend.id_extend_field,
@@ -1028,6 +1046,20 @@ ION.ExtendManager = new Class({
 					value: content
 				}).inject(field);
 
+				field.getFormElement = function () {
+					return i
+				};
+
+				// Store extend in HTML Element
+				i.store('extend', extend);
+
+				// Change Event
+				if (options.onChange != null)
+					i.addEvent('keydown', function (event) {
+						if (event.key == 'enter')
+							options.onChange(this, this.value, extend);
+					});
+
 				// Validator
 				if (validateClass != null) i.addClass(validateClass);
 			};
@@ -1054,7 +1086,9 @@ ION.ExtendManager = new Class({
 			content = content.split(',');
 
 			var values = 		(extend.value).split('\n'),
-				input_name = 	dom_type == 'checkbox' ? input_name +'[]' : input_name
+				nb_values = 	Object.getLength(values),
+				input_name = 	dom_type == 'checkbox' ? input_name +'[]' : input_name,
+				input_collection = []
 			;
 
 			Array.each(values, function(value, idx)
@@ -1068,10 +1102,23 @@ ION.ExtendManager = new Class({
 						id: input_name + idx,
 						name: input_name,
 						value: val[0],
-						'class': extend.html_element_class
+						'class': extend.html_element_class + cssClass,
+						'data-nb-values': nb_values
 					}).inject(field);
 
 					if (content.contains(val[0])) input.setProperty('checked', 'checked');
+
+					input_collection.push(input);
+
+					// Store extend in HTML Element
+					input.store('extend', extend);
+
+					// Change Event
+					if (options.onChange != null)
+						input.addEvent('click', function ()
+						{
+							options.onChange(this, this.value, extend);
+						});
 
 					new Element('label', {
 						'for': input_name + idx,
@@ -1079,6 +1126,10 @@ ION.ExtendManager = new Class({
 					}).inject(field);
 				}
 			});
+
+			field.getFormElement = function () {
+				return input_collection
+			};
 		}
 
 		//
@@ -1098,10 +1149,26 @@ ION.ExtendManager = new Class({
 				name: input_name
 			});
 
-			if (dom_type == 'select-multiple') {
+			if (dom_type == 'select-multiple' || options.renderAs == 'select-multiple') {
 				field.setProperty('multiple', 'multiple');
 				field.setProperty('name', input_name + '[]');
 			}
+
+			// Store extend in HTML Element
+			field.store('extend', extend);
+
+			field.getFormElement = function () {
+				return field;
+			};
+
+			// Change Event
+			if (options.onChange != null)
+				field.addEvent('change', function () {
+					options.onChange(this, this.value, extend);
+				});
+
+			// No value (Please -- Select one -- )
+			new Element('option', {value: '', text: options.noValueLabel}).inject(field);
 
 			Array.each(values, function(value)
 			{

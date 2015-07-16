@@ -105,6 +105,9 @@ ION.append({
 				{
 					if (typeOf(e) != 'null') e.stop();
 
+					if (typeOf(options.onBeforeSaveClose) == 'function')
+						options.onBeforeSaveClose($(form));
+
 					var validator = $(form).retrieve('validator');
 
 					if (validator && ! validator.validate())
@@ -133,9 +136,13 @@ ION.append({
 				// Form submit or button event
 				$(button).enabled = true;
 				$(button).removeEvents('click');
+
 				$(button).addEvent('click', function(e)
 				{
 					if (typeOf(e) != 'null') e.stop();
+
+					if (options && typeOf(options.onBeforeSaveClose) == 'function')
+						options.onBeforeSaveClose($(form));
 
 					var validator = $(form).retrieve('validator');
 
@@ -410,6 +417,7 @@ ION.FormField = new Class({
 });
 
 ION.Form = {};
+
 ION.Form.Select = new Class({
 
 	Implements: [Events, Options],
@@ -430,6 +438,9 @@ ION.Form.Select = new Class({
 		key:        null,			// Key of the data array to use as value
 		label:      null,           // Key of the data array to use as label
 		selected:	[],				// Selected Value or array of Selected Values
+		multiple:	false,
+		multiple_max_size: 8,		// Multiple max size
+		multiple_size: null,		// Multiple size
 
 		firstValue: null,			// First manually added value
 		firstLabel: null,			// First manually added label
@@ -452,9 +463,10 @@ ION.Form.Select = new Class({
 		;
 
 		// Select
-		// if (typeOf(options['class'] != 'null') && options['class'].contains('inputtext') == false) o['class'] += ' inputtext';
-		this.select = new Element('select', {name: o.name, 'class':o.class});
+		this.select = new Element('select', {name: o.name, 'class': o['class']});
 		if (o.id != '')	this.select.setProperty('id', o.id);
+
+		if (o.multiple) this.select.setProperty('multiple', 'multiple');
 
 		// this.setOptions() remove the functions from the options
 		// We need to get access to them through the original options object
@@ -473,6 +485,9 @@ ION.Form.Select = new Class({
 		// Container : If set, the select will be injected in this container
 		if (o.container)
 			this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
+
+		if (this.container && o.empty)
+			this.container.empty();
 
 		// Get data from one URL
 		// One JSON array is expected as result
@@ -537,11 +552,7 @@ ION.Form.Select = new Class({
 	buildOptions: function(data)
 	{
 		var self = this,
-			o = this.options,
-			key = o.key,
-			lab = o.label,
-			selected = o.selected && typeOf(o.selected) != 'array' ? [o.selected.toString()] : [],
-			selectedIndex = Object.getLength(selected) == 0 ? o.selectedIndex : null
+			o = this.options
 		;
 
 		self.select.empty();
@@ -555,37 +566,97 @@ ION.Form.Select = new Class({
 			).inject(this.select);
 		}
 
-
-		Array.each(data, function(row, idx)
+		Object.each(data, function(row, idx)
 		{
-			var value = typeOf(row[key]) != 'null' ? row[key] : row;
-			var label = typeOf(row[lab]) != 'null' ? row[lab] : (value != null ? value : '');
-
-			if (value != null && !o.ignore_keys.contains(value))
+			// Group
+			if (typeOf(row) == 'array')
 			{
-				var opt = new Element('option', {
-					value: value,
-					text: label
-				}).inject(self.select);
-
-				if (selected.indexOf(value.toString()) > -1 || (selectedIndex && selectedIndex == idx))
-				{
-					opt.setProperty('selected', 'selected');
-				}
-
-				// Stores the data used to build the option
-				// Can be retrieved with : opt.retrieve('data');
-				opt.store('data', row);
-
-				self.fireEvent('onOptionDraw', [opt, row]);
+				self.createOptionGroup(idx, row);
+			}
+			else
+			{
+				self.createOption(row);
 			}
 		});
 
+		if (o.multiple && data)
+		{
+			if (o.multiple_size != null)
+				this.select.setProperty('size', o.multiple_size);
+			else
+			{
+				var nb = Object.getLength(data);
+				if (nb < o.multiple_max_size)
+					this.select.setProperty('size', nb);
+				else
+					this.select.setProperty('size', o.multiple_max_size)
+			}
+		}
+
 		// Fires "change" on init
-		if (o.fireOnInit)
-			this.select.fireEvent('change');
+		if (o.fireOnInit) this.select.fireEvent('change');
 
 		this.onDraw();
+	},
+
+	createOption: function(row)
+	{
+		var self = this,
+			o = this.options,
+			key = o.key,
+			lab = o.label,
+			selected = o.selected && typeOf(o.selected) != 'array' ? [o.selected.toString()] : o.selected,
+			selectedIndex = (selected && Object.getLength(selected) == 0) ? o.selectedIndex : null,
+			container = typeOf(arguments[1]) != 'null' ? arguments[1] : self.select
+		;
+
+		var value = typeOf(row[key]) != 'null' ? row[key] : row;
+		var label = '';
+
+		// Function Label
+		if (typeOf(lab) == 'function')
+			label = lab(row);
+		else
+			label = typeOf(row[lab]) != 'null' ? row[lab] : (value != null ? value : '');
+
+		if (value != null && ! o.ignore_keys.contains(value))
+		{
+			var opt = new Element('option', {
+				value: value,
+				text: label
+			}).inject(container);
+
+			var to_select = false;
+
+			Object.each(selected, function(val){
+				if (val == value)
+					to_select = true;
+			});
+
+			if (to_select || (selectedIndex && selectedIndex == value))
+			{
+				opt.setProperty('selected', 'selected');
+			}
+
+			// Stores the data used to build the option
+			// Can be retrieved with : opt.retrieve('data');
+			opt.store('data', row);
+
+			self.fireEvent('onOptionDraw', [opt, row]);
+		}
+	},
+
+	createOptionGroup: function(label, rows)
+	{
+		var self = this,
+			o = this.options,
+			container = arguments[2] ? arguments[2] : this.select,
+			opt = new Element('optgroup', {label: label}).inject(container);
+
+		Object.each(rows, function(row)
+		{
+			self.createOption(row, opt)
+		});
 	},
 
 	getDomElement: function()
@@ -650,12 +721,665 @@ ION.Form.Select = new Class({
 		this.select.show();
 	},
 
+	isVisible: function()
+	{
+		return this.select.isVisible();
+	},
+
 	destroy: function()
 	{
 		this.getDomElement().destroy();
 		delete(this);
 		return null;
+	},
+
+	fire: function()
+	{
+		this.select.fireEvent('change');
+	}
+});
+
+ION.Form.SelectList = new Class({
+
+	Implements: [Events, Options],
+
+	elements: [],
+
+	selected: null,
+
+	options:
+	{
+		container:  null,           // Container ID or container DOM Element
+		baseClass: 	'button',
+		mainClass: 	'selectList',	// Element's container class
+		partners: 	['.buttonList'],	// Partners selectors, reacting on click event
+		'class':    '',    			// CSS class,
+		title: 			'',			// Button title
+		icon:			null,		// Icon class
+		iconClass:		'',			// Additional icon CSS class
+		enabled: 		true,
+
+		id:         '',             // ID of the select
+
+		post:       {},             // Data to post to the URL
+
+		data:       null,           // JSON array to use as data
+		url :       null,           // URL to use as data source
+		ignore_keys: [],			// Keys to ignore when building the select options
+
+		key:        null,			// Key of the data array to use as value
+		label:      null,           // Key of the data array to use as label
+		selected:	[],				// Selected Value or array of Selected Values
+
+		fireOnInit: false,			// Fires the onChange event after init.
+
+		rule:       null            // @todo. Rule to apply to the select
+
+		// onChange(el, value, label)
+	},
+
+	initialize: function(o)
+	{
+		var self = this;
+
+		this.setOptions(o);
+
+		this.container = typeOf(o.container) == 'string' ? $(o.container) : o.container;
+
+		var cl = typeOf(o['class'] != 'null') ? this.options.baseClass + ' ' + o['class'] : this.options.baseClass;
+
+		this.element = new Element('a', {'class': cl});
+		this.element.store('instance', this);
+
+		this.title = new Element('span', {'html': o.title}).inject(this.element);
+
+		this.addCaret();
+
+		this.elContainer = new Element('div', {'class': this.options.mainClass});
+		this.element.inject(this.elContainer);
+
+		if (o.url)
+		{
+			ION.JSON(
+				o.url,
+				o.post,
+				{
+					onSuccess: function(json)
+					{
+						self.addListElements(json);
+					}
+				}
+			);
+		}
+		else if (Object.getLength(o.data) > 0)
+		{
+			this.addListElements(o.data);
+		}
+
+		// Store the event
+		this.options.onClick = function()
+		{
+			if (self.elContainer.hasClass('open'))
+			{
+				self.elContainer.removeClass('open');
+			}
+			else
+			{
+				$$('.' + self.options.mainClass).removeClass('open');
+
+				self.options.partners.each(function(p){
+					$$(p).removeClass('open');
+				});
+
+				self.elContainer.addClass('open');
+				self._correctContainerPosition();
+				self._addFilter();
+			}
+		};
+
+		// Window click event
+		if ( ! document.hasFormSelectListEvent)
+		{
+			document.addEvent('click', function(e){
+				var el = e.target.getParent('.selectList');
+				if ( ! el)
+					$$('.selectList').removeClass('open')
+			});
+			document.hasFormSelectListEvent = true;
+		}
+
+		// Disable if asked to
+		if (o.enabled == false) this.disable();
+		else this.enable();
+
+		if (this.container) this.elContainer.inject(this.container);
+
+	//	this.fireEvent('onLoaded', this.button);
+
+		// Fires "change" on init
+		if (o.fireOnInit) this.fireChange();
+
+		return this;
+	},
+
+	addListElements: function(elements)
+	{
+		var self = this,
+			o = this.options,
+			ul = this.elContainer.getElement('ul.dropdown-menu'),
+			selected = o.selected && typeOf(o.selected) != 'array' ? [o.selected] : []
+		;
+
+		if ( ! ul) ul = new Element('ul', {'class':'dropdown-menu'}).inject(this.elContainer);
+
+		// First value
+		var li = new Element('li').inject(ul);
+		var a = new Element('a', {text: this.options.title}).inject(li);
+		a.addEvent('click', function(){
+			self.onChange(null, this.title, null);
+		});
+		this.elements.push(a);
+
+		Array.each(elements, function(el)
+		{
+			if (typeOf(el[self.options.key]) != 'null')
+			{
+				var li = new Element('li').inject(ul);
+				var a = new Element('a', {text: el[self.options.label]}).inject(li);
+				a.store('item', el);
+				self.elements.push(a);
+
+				if (selected.contains(el[self.options.key]))
+					self._select(a, el[self.options.key], el[self.options.label]);
+
+				a.addEvent('click', function()
+				{
+					self.onChange(el[self.options.key], el[self.options.label], el, a);
+				});
+			}
+		});
+	},
+
+	onChange: function(key, label, item, el)
+	{
+		this.unSelectAll();
+
+		if (item == null)
+			this._select(null, null, this.options.title, item);
+		else
+			this._select(el, key, label, item);
+
+		this.fireEvent('change', [this.selected.value, this.selected.label, this.selected.item]);
+	},
+
+	setChangeCallback: function(cb)
+	{
+		this.removeEvents('change');
+		this.setOptions({onChange:cb});
+	},
+
+	fireChange: function()
+	{
+		if (this.selected != null)
+			this.fireEvent('change', [this.selected.value, this.selected.label, this.selected.item]);
+		else
+			this.fireEvent('change', [null, null, this.options.title, null]);
+	},
+
+	unSelectAll: function()
+	{
+		this.elements.each(function(el){
+			el.removeClass('selected');
+		});
+	},
+
+	_select: function(el, value, label, item)
+	{
+		this.title.set('html', label);
+		if (el != null)	el.addClass('selected');
+		this.selected = {value:value, label:label, item:item};
+	},
+
+	setSelected: function(selected)
+	{
+		var self = this;
+
+		if (typeOf(self.options.key) != 'null')
+		{
+			this.elements.each(function(el)
+			{
+				var item = el.retrieve('item');
+				if (item && item[self.options.key] == selected[self.options.key])
+				{
+					self.unSelectAll();
+					self._select(el, item[self.options.key], item[self.options.label]);
+				}
+			});
+		}
+	},
+
+	select: function(value)
+	{
+		var self = this;
+
+		if (typeOf(self.options.key) != 'null')
+		{
+			this.elements.each(function(el)
+			{
+				var item = el.retrieve('item');
+
+				if (item && item[self.options.key] == value)
+				{
+					self.unSelectAll();
+					self._select(el, item[self.options.key], item[self.options.label]);
+				}
+			});
+		}
+	},
+
+	getSelected: function()
+	{
+		return this.selected;
+	},
+
+	enable: function()
+	{
+		if ( ! this.isEnabled)
+		{
+			this.element.removeProperty('disabled');
+			this.element.removeClass('disabled');
+
+			if (typeOf(this.options.onClick) == 'function')
+				this.elContainer.addEvent('click', this.options.onClick);
+		}
+	},
+
+	disable: function()
+	{
+		this.element.setProperty('disabled', 'disabled');
+		this.element.addClass('disabled');
+
+		this.elContainer.removeEvents();
+
+		this.isEnabled = false;
+	},
+
+	hide: function()
+	{
+		this.elContainer.hide();
+	},
+
+	show: function()
+	{
+		this.elContainer.show();
+	},
+
+	destroy: function()
+	{
+		this.elContainer.destroy();
+	},
+
+	getElement: function()
+	{
+		if (this.selected != null)
+			this.setSelected(this.selected);
+
+		return this.elContainer;
+	},
+
+	addCaret: function()
+	{
+		new Element('span', {'class':'caret'}).inject(this.element);
+	},
+
+	_correctContainerPosition: function()
+	{
+		var ul = this.elContainer.getElement('ul.dropdown-menu'),
+			lis = ul.getElements('li'),
+			dim = ul.getCoordinates(),
+			docDim = document.getCoordinates();
+
+		if ((dim.left + dim.width) > docDim.width)
+			ul.setStyles({'right': 0, left:'auto'});
+
+		if(lis.length <= 7)
+			this.elContainer.getElement('ul.dropdown-menu').setStyles({
+				'overflow-y': 'hidden',
+				'max-height': 'auto'
+			});
+	},
+
+	_addFilter: function()
+	{
+		var ul = this.elContainer.getElement('ul.dropdown-menu'),
+			lis = ul.getElements('li'),
+			filterEl = ul.getElement('.filter')
+		;
+
+		if( lis.length >= 10 )
+		{
+			if (filterEl) filterEl.destroy();
+
+			filterEl = new Element('li',{'class':'filter'}).inject(ul, 'top');
+			var input = new Element('input', {'class':'inputtext'}).inject(filterEl);
+
+			filterEl.addEvent(
+				'click', function(e){
+					e.stop();
+				}
+			);
+			lis.show();
+
+			this.filter = new ION.ElementFilter(
+				input,
+				lis,
+				{
+					trigger: 'keyup',
+					cache: false,
+					onShow: function(element) {	element.show();	},
+					onHide: function(element) {	element.hide();	}
+				}
+			);
+		}
+	}
+});
+
+
+/**
+ *
+ * @type {Class}
+ */
+ION.Form.TextList = new Class({
+
+	Implements: [Events, Options],
+
+	options:
+	{
+		container:  null,           // Container ID or container DOM Element
+		'class':    '',    			// CSS class,
+		empty:		true,			// Empty container on init
+
+		name:       '',             // Form input Name (hidden field, will store the values)
+		id:         '',             // ID
+
+		// TextList options
+		unique:		true,
+		minLength:	3,
+
+		search: {
+			url:	null,			//
+			post:	null,
+			data:	null
+		},
+
+		data: {						// Existing data
+			url:	null,			// URL to get existing data from
+			post:	null,			// usually ID, coma separated : {post_var_name: '1,4,8'}
+			data:	null			// Plain existing data IDs
+		},
+
+		ignore_keys: [],			// Keys to ignore when building the select options
+
+		key:        null,			// Key of the data array to use as value
+		label:      null,           // Key of the data array to use as label
+		selected:	null			// Selected Value or array of Selected Values (String or Array)
+	},
+
+	initialize: function(options)
+	{
+		this.setOptions(options);
+
+		var o = this.options;
+
+		// Container : If set, the select will be injected in this container
+		if (o.container)
+		{
+			this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
+			if (o.empty) this.container.empty();
+		}
+
+		if (this.container == null) this.container = new Element('div');
+
+		this.buildElement();
+
+		return this;
+	},
+
+	buildElement: function()
+	{
+		var o = this.options,
+			input_data = new Element('input', {name: o.name, 'type':'hidden'}).inject(this.container),
+			input_list = new Element('input').inject(this.container);
+
+		var element = new TextboxList(
+			input_list,
+			{
+				unique: o.unique,
+				plugins: {
+					autocomplete: {
+						placeholder: null,
+						onlyFromValues: true,
+						queryRemote: true,
+						minLength: o.minLength,
+						remote: {
+							url: o.search.url,
+							extraParams: o.search.post
+						}
+					}
+				},
+				bitsOptions: {
+					editable: {
+						addKeys: false,
+						stopEnter: false
+					}
+				},
+				onUpdate: function(formatted_values)
+				{
+					input_data.setProperty('value', formatted_values);
+				}
+			}
+		);
+
+		if (o.data.post != null)
+		{
+			ION.JSON(
+				o.data.url,
+				o.data.post,
+				{
+					onSuccess: function(r)
+					{
+						element.plugins['autocomplete'].setSelected(r);
+					}
+				}
+			);
+		}
+	},
+
+
+	getDomElement: function()
+	{
+		return this.container;
+	}
+});
+
+
+ION.Form.AutoCompleter = new Class({
+
+	Implements: [Events, Options],
+
+	options:
+	{
+		container:  null,           // Container ID or container DOM Element
+		'class':    '',    			// CSS class,
+		empty:		true,			// Empty container on init
+
+		name:       '',             // Form input Name (hidden field, will store the values)
+		id:         '',             // ID
+
+		minLength:	3,
+		maxChoices:	20,
+		filterSubset: true,
+		forceSelect: false,
+		notFoundNotSaved: false,
+
+		url: null,
+		post: null,
+
+//		ignore_keys: [],			// Keys to ignore when building the select options
+
+		key:        null,			// Key of the data array to use as value
+		label:      null,           // Key of the data array to use as label
+
+		selected:	{
+			value: null,
+			label: null
+		}
+	},
+
+	initialize: function(options)
+	{
+		this.setOptions(options);
+
+		var o = this.options;
+
+		// Container : If set, the select will be injected in this container
+		if (o.container)
+		{
+			this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
+			if (o.empty) this.container.empty();
+		}
+
+		if (this.container == null) this.container = new Element('div');
+
+		this.buildElement();
+
+		return this;
+	},
+
+	buildElement: function()
+	{
+		var o = this.options,
+			input_data = new Element('input', {name: o.name, 'type':'hidden', value: o.selected.value}).inject(this.container),
+			input_list = new Element('input', {'class': 'inputtext', value: o.selected.label}).inject(this.container);
+
+		// @todo : If returned list is empty : display one message : 'Data will not be saved'
+		new Autocompleter.Request.JSON(
+			input_list,
+			o.url,
+			{
+				postVar: 'search',
+				postData: o.post,
+				indicatorClass: 'autocompleter-loading',
+				minLength: o.minLength,
+				maxChoices: o.maxChoices,
+				zIndex: 200000,
+				selectMode:false,
+				relative: true,
+				filterSubset: o.filterSubset,
+				forceSelect: o.forceSelect,
+				'injectChoice': function(choice)
+				{
+					var label = choice[o.label],
+						element = new Element('li', {'html': this.markQueryValue(label)}).store('data', choice)
+					;
+
+					element.inputValue = label;
+					this.addChoiceEvents(element).inject(this.choices);
+				},
+				emptyChoices: function()
+				{
+					this.hideChoices();
+				},
+				onSelection: function(element, selected, value, input)
+				{
+					var data = selected.retrieve('data');
+					input_data.set('value', data[o.key]);
+				},
+				onBlur: function(element)
+				{
+					if (o.notFoundNotSaved == true)
+					{
+						if (element.value == '' || element.value != this.opted)
+							input_data.set('value', '');
+					}
+					else {
+						input_data.set('value', element.value);
+					}
+				}
+			}
+		);
+	},
+
+	getDomElement: function()
+	{
+		return this.container;
+	}
+});
+
+ION.Form.InputString = new Class({
+
+	Implements: [Events, Options],
+
+	options:
+	{
+		container:  null,           // Container ID or container DOM Element
+		tag:    	'p',    		// HTML DOM Element tag to use,
+		'class':    '',    			// CSS class,
+		empty:		true,			// Empty container on init
+
+		name:       '',             // Form input Name (hidden field, will store the values)
+		id:         '',             // ID
+
+		value:		'',				// Value at init
+		url:		null,			// Save value URL
+	},
+
+	initialize: function(options)
+	{
+		this.setOptions(options);
+
+		var o = this.options;
+
+		// Container : If set, the select will be injected in this container
+		if (o.container)
+		{
+			this.container = (typeOf(options.container) == 'string') ? $(options.container) : options.container;
+			if (o.empty) this.container.empty();
+		}
+
+		if (this.container == null) this.container = new Element('div');
+
+		this.buildElement();
+
+		return this;
+	},
+
+	buildElement: function()
+	{
+		var o = this.options,
+			string_tag = new Element(o.tag, {text: o.value, contenteditable:true}).inject(this.container),
+			string_input = new Element('input', {value: o.value, 'class':'inputtext'}).inject(this.container).hide()
+		;
+
+		if (o['class']) string_tag.addClass(o['class']);
+		if (o['id']) string_tag.setProperty('id', o['id']);
+
+		string_tag.addEvent('click', function(e)
+		{
+			string_input.show().focus();
+			string_tag.hide();
+		});
+
+		string_input.addEvent('blur', function(e)
+		{
+			if (string_input.value != string_tag.get('text'))
+			{
+				string_tag.set('text', string_input.value)
+
+			}
+			string_input.hide();
+			string_tag.show();
+		});
 	}
 
 });
-

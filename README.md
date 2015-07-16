@@ -23,6 +23,7 @@ Official website : http://www.ionizecms.com
 * [Christophe Prudent](http://www.toopixel.ch)
 
 ### Contributors
+* Kay
 * [İskender Totoğlu](http://www.altivebir.com.tr)
 * Martin Wernstahl
 * Bhagya Nirmaan Silva - [http://about.me/bhagyas](http://about.me/bhagyas)

@@ -201,8 +201,8 @@ ION.append({
 				break;
 		}
 	},
-	
-	
+
+
 	/**
 	 *
 	 * @param	{String}	tab_selector          Each tab much have the "rel" attribute set. Example : rel="fr"
@@ -492,7 +492,5 @@ ION.append({
 			return 'files/pictures/IMG_8438.jpg';
 		});
 	}
-
-
 });
 

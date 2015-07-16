@@ -151,6 +151,15 @@ class Base_model extends CI_Model
 	protected $_list_fields = array();
 
 
+	/**
+	 * Table definition
+	 * Used for pagination list. see: Base_model::get_pagination_list()
+	 *
+	 * @var array
+	 */
+	protected $_table_definition = array();
+
+
 	// ------------------------------------------------------------------------
 
 
@@ -216,7 +225,25 @@ class Base_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
-	
+
+	public function set_table_definition($table_definition)
+	{
+		$this->_table_definition = $table_definition;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_table_definition($table_definition)
+	{
+		return $this->_table_definition;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/** 
 	 * Get one element
 	 *
@@ -521,7 +548,7 @@ class Base_model extends CI_Model
 
 		$this->{$this->db_group}->select($table.'.*', FALSE);
 
-	// log_message('app', print_r($this->{$this->db_group}->get_compile_select() , TRUE));
+		// log_message('app', print_r($this->{$this->db_group}->get_compile_select() , TRUE));
 
 		$query = $this->{$this->db_group}->get($table);
 
@@ -677,46 +704,345 @@ class Base_model extends CI_Model
 	}
 
 
-	// ------------------------------------------------------------------------
-
-
 	/**
-	 * @param int   $page
-	 * @param array $filter
-	 * @param int   $nb_by_page
-	 * @param array $where
+	 * @param int   			$page
+	 * @param array 			$filter
+	 * @param int   			$nb_by_page
+	 * @param array 			$sort
 	 *
-	 * @return array
-	 *
+	 * @return array			Array(
+	 *               				'items' => 	Array of filtered results, limited to the asked page
+	 *               				'nb' => 	Total Nb of filtered results
+	 *               			)
 	 */
-	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $where = array())
+	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $sort=NULL)
 	{
-		$page = $page - 1;
-		$offset = $page * $nb_by_page;
-		$like = array();
+		if ( ! $filter) $filter = array();
+		$sql_filter = $sql_having = '';
 
-		if ( ! empty($filter))
+		if (isset($this->_table_definition))
 		{
-			foreach($filter as $key => $val)
-			{
-				// $where[$key] = "like '%".$val."%'";
-				$like[$key] = $val;
-			}
+			$table = $this->_table_definition['table'];
+			$type = ! empty($this->_table_definition['type']) ? $this->_table_definition['type'] : $table;
+			$pk_table = ! empty($this->_table_definition['pk']) ? $this->_table_definition['pk'] : 'id_' . $table;
 		}
-
-		$items = self::get_list(array_merge($where, array('limit' => $nb_by_page, 'offset' => $offset, 'like' => $like)));
-
-		$items_nb = self::count_where(array_merge($where, array('like' => $like)));
+		else
+		{
+			$table = $this->get_table();
+			$type = $table;
+			$pk_table = 'id_' . $table;
+		}
 
 		// Returned results
 		$result = array(
-			'items' => $items,
-			'nb' => $items_nb
+			'items' => array(),
+			'nb' => 0,
+			'nb_by_page' => $nb_by_page,
+			'page' => $page,
+			'filter' => $filter,
+			'sort' =>  ! $sort ? array() : $sort,
+			'extend_definitions' => $this->get_extend_fields_definition($type)
 		);
+
+		$sql_test = " GROUP_CONCAT( CONCAT('☼', ef.id_extend_field, '☼', LOWER(efs.content)) SEPARATOR '♫') AS test ";
+
+		$page = $page - 1;
+		$offset = $page * $nb_by_page;
+
+		$pk_table = is_null($pk_table) ? $table : $pk_table;
+
+		$flat_filter = $flat_filter_lang = array();
+
+		// Tables fields
+		$fields = $this->list_fields($table);
+		$fields_lang = $this->list_fields($table.'_lang');
+
+
+		// Filter on flat fields
+		foreach($filter as $key => $val)
+		{
+			if (in_array($key, $fields))
+			{
+				$flat_filter[$key] = $filter[$key];
+				unset($filter[$key]);
+			}
+			else if (in_array($key, $fields_lang))
+			{
+				$flat_filter_lang[$key] = $filter[$key];
+				unset($filter[$key]);
+			}
+		}
+
+
+		// Items values
+		$sql = "
+			SELECT
+				t.*,
+				tl.*,
+				CONCAT(
+					'{',
+					 GROUP_CONCAT(
+						CONCAT(
+							'\"',
+							ef.id_extend_field,
+							'\":\"',
+							REPLACE(
+								efs.content
+								,
+								'\"',
+								'\\\\\"'
+							),
+							'\"'
+						)
+						SEPARATOR ','
+					 ),
+					'}'
+				)
+				as _extend_data
+		";
+
+		if ( ! empty($filter))
+		{
+			$sql .= "," . $sql_test;
+		}
+
+		$sql .= "
+			FROM
+				".$table." t
+				left join ".$table."_lang tl on tl.".$pk_table." = t.".$pk_table." and tl.lang='" . Settings::get_lang() . "'
+				left JOIN extend_field ef on ef.parent='".$type."'
+				left JOIN extend_fields efs
+					ON efs.id_extend_field = ef.id_extend_field AND efs.parent = '".$type."' and efs.id_parent = t.".$pk_table."
+			WHERE
+				1 = 1
+		";
+
+		// Filter
+//		if ( ! empty($filter))
+//			$sql_filter .= $this->_get_flat_table_filters($pk_table, $filter, $flat_filter, $flat_filter_lang);
+		// $sql .= $sql_filter;
+
+		foreach($flat_filter as $key => $val)
+		{
+			$sql .= " AND t.".$key." like '%".$val."%' ";
+		}
+		foreach($flat_filter_lang as $key => $val)
+		{
+			$sql .= " AND tl.".$key." like '%".$val."%'	";
+		}
+
+		$sql .= "
+				GROUP BY t.".$pk_table."
+		";
+
+		// Sort
+		if ( ! empty($sort))
+		{
+			$sql .= ' ORDER BY ';
+
+			foreach($sort as $i => $s)
+			{
+				if ($i > 0) $sql .= ', ';
+				$sql .= in_array($s['key'], $fields) ?
+						't.'.$s['key'] . ' ' . $s['value'] :
+						(
+							in_array($s['key'], $fields_lang) ?
+							'tl.'.$s['key'] . ' ' . $s['value'] :
+							'ef_' . $s['key'] . ' ' . $s['value']
+						);
+			}
+		}
+
+		if ( ! empty($filter))
+		{
+			$sql_having = " HAVING ";
+			$sql_having_and = "";
+
+			$i = 0;
+
+			foreach($filter as $key => $val)
+			{
+				if ($i > 0) $sql_having .= ' and ';
+
+				$extend = $this->get_extend_field_definition($key, $type);
+
+				if ( ! in_array($extend['html_element_type'], array('select', 'radio', 'checkbox')))
+				{
+					$sql_having .= " (SUBSTRING_INDEX(SUBSTRING_INDEX(test,'☼" . $key . "☼',-1),'♫',1) LIKE LOWER('%" . $val . "%')) ";
+				}
+				else
+				{
+					$val = explode(',', $val);
+
+					foreach($val as $idx => $v)
+					{
+						$sql_having .= $idx > 0 ? ' OR ' : '';
+						$sql_having .= " (SUBSTRING_INDEX(SUBSTRING_INDEX(test,'☼" . $key . "☼',-1),'♫',1) = '" . $v . "') ";
+					}
+				}
+				$sql_having_and .= " AND test LIKE '%☼" . $key . "☼%' ";
+				$i++;
+			}
+			$sql_having .= $sql_having_and;
+			$sql .= $sql_having;
+		}
+
+		$sql .= " LIMIT ".$nb_by_page." OFFSET ".$offset;
+
+	//	log_message('error', print_r($sql, TRUE));
+
+
+		$query = $this->{$this->db_group}->query($sql);
+
+		// Main result
+		if ($query->num_rows() > 0)
+		{
+			$result['items'] = $this->add_extend_fields_to_rows($query->result_array(), $type);
+		}
+
+		// Nb of results (without pagination)
+		$sql_nb  = "
+			SELECT count(1) as nb
+			FROM (
+				SELECT
+					t.".$pk_table.",
+					".$sql_test."
+				FROM
+					".$table." t
+					left JOIN extend_field ef on ef.parent='".$type."'
+					left JOIN extend_fields efs
+						ON efs.id_extend_field = ef.id_extend_field AND efs.parent = '".$type."' and efs.id_parent = t.".$pk_table."
+		";
+
+		if( ! empty($filter))
+		{
+			$sql_nb .= "
+				WHERE ef.id_extend_field IN (".implode(',', array_keys($filter)).")
+			";
+		}
+		else
+		{
+			$sql_nb .= " WHERE 1 = 1 ";
+		}
+
+		foreach($flat_filter as $key => $val)
+			$sql_nb .= " AND t.".$key." like '%".$val."%' ";
+
+		foreach($flat_filter_lang as $key => $val)
+			$sql_nb .= " AND tl.".$key." like '%".$val."%'	";
+
+		$sql_nb .= "GROUP BY t.".$pk_table;
+		$sql_nb .= $sql_having;
+		$sql_nb .= " ) as test;";
+
+		$query = $this->{$this->db_group}->query($sql_nb);
+
+		if ($query->num_rows() > 0)
+		{
+			$result_nb = $query->row_array();
+			$result['nb'] = $result_nb['nb'];
+		}
 
 		return $result;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	protected function _get_flat_table_filters($pk_table, $filter, $flat_filter, $flat_filter_lang)
+	{
+		$i = 0;
+		$sql_filter = '';
+
+		foreach($filter as $key => $val)
+		{
+			// Get Extend definition
+			$extend = $this->get_extend_field_definition($key);
+
+			// Can be : text, textarea, select, date, radio, checkbox, select-multiple, date-multiple, editor
+			$html_element_type = ! empty($extend) ? $extend['html_element_type'] : 'input';
+			$key_prefix = ! empty($extend) ? 'ef_' : '';
+
+			$failover_to_standard = FALSE;
+
+			$val = trim($val);
+
+			if ($i == 0) $sql_filter .= ' where ';
+			else $sql_filter .= ' and ';
+
+			switch($html_element_type)
+			{
+				case 'input':
+				case 'email':
+				case 'text':
+				case 'textarea':
+				case 'editor':
+					if (strpos($val, '%') === 0 || substr($val, -1) == '%')
+					{
+						$sql_filter .= $key_prefix . $key . " like '" . $val . "'";
+					}
+					else if (in_array(substr($val, 0, 1), array('<', '>', '=')))
+					{
+						$value = trim(substr($val, 1));
+
+						if (filter_var($value, FILTER_VALIDATE_INT) !== FALSE)
+						{
+							$sql_filter .= $key_prefix . $key . $val;
+						}
+						else
+						{
+							// Try to split on space
+							$parts = preg_split('/\s+/', $val);
+							$tmp_sql_filter = '';
+
+							foreach($parts as $idx => $part)
+							{
+								$ope = substr($part, 0, 1);
+								$value = trim(substr($part, 1));
+
+								if (
+									in_array(substr($ope, 0, 1), array('<', '>', '='))
+									&& filter_var($value, FILTER_VALIDATE_INT) !== FALSE
+								)
+								{
+									if ($idx > 0) $tmp_sql_filter .= ' and ';
+									$tmp_sql_filter .= $key . $ope . $value;
+								}
+								else
+								{
+									$failover_to_standard = TRUE;
+								}
+							}
+
+							if ( ! $failover_to_standard)
+								$sql_filter .= $tmp_sql_filter;
+						}
+					}
+					else
+						$failover_to_standard = TRUE;
+
+					break;
+
+				case 'select':
+					$val = explode(',', $val);
+					$val = "'" . implode("','", $val) . "'";
+					$sql_filter .= $key_prefix . $key . " in (" . $val . ")";
+
+					break;
+
+				default:
+					$failover_to_standard = TRUE;
+			}
+
+			if ($failover_to_standard)
+				$sql_filter .= $key_prefix . $key . " = '" . addslashes($val) . "'";
+
+			$i++;
+		}
+
+		return $sql_filter;
+	}
 
 
 	// ------------------------------------------------------------------------
@@ -751,7 +1077,6 @@ class Base_model extends CI_Model
 			$this->{$this->db_group}->where_not_in($this->lang_table.'.id_'.$this->table, $excluded_id);
 		}
 
-
 		$query = $this->{$this->db_group}->get($this->table);
 
 		if($query->num_rows() > 0)
@@ -775,12 +1100,215 @@ class Base_model extends CI_Model
 				self::$ci->load->model('extend_field_model');
 
 			if (is_null($lang))
-				$this->extend_fields_def[$parent] = self::$ci->extend_field_model->get_list(array('extend_field.parent' => $parent));
+				$extends = self::$ci->extend_field_model->get_list(array('extend_field.parent' => $parent));
 			else
-				$this->extend_fields_def[$parent] = self::$ci->extend_field_model->get_lang_list(array('extend_field.parent' => $parent), $lang);
+				$extends = self::$ci->extend_field_model->get_lang_list(array('extend_field.parent' => $parent), $lang);
 
+			// Set available options for select, radio, checkbox
+			foreach($extends as $idx => $extend)
+			{
+				$extends[$idx] = $this->_add_options_to_extend_definition($extend);
+			}
+
+			// Local Store
+			$this->extend_fields_def[$parent] = $extends;
 		}
+
 		return $this->extend_fields_def[$parent];
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_extend_field_definition($id_extend_field, $type=NULL, $lang=NULL)
+	{
+		$extend = NULL;
+
+		if ( ! is_null($type))
+		{
+			$extends = $this->get_extend_fields_definition($type, $lang);
+
+			foreach ($extends as $e) {
+				if ($e['id_extend_field'] == $id_extend_field)
+					$extend = $e;
+			}
+		}
+		else
+		{
+			$sql = "
+				select
+					e.*,
+					t.*
+				from extend_field e
+				join extend_field_type t on t.id_extend_field_type = e.type
+				where e.id_extend_field = " . $id_extend_field;
+
+			$query = $this->{$this->db_group}->query($sql);
+
+			if ($query->num_rows() > 0)
+			{
+				$extend = $query->row_array();
+				$extend = $this->_add_options_to_extend_definition($extend);
+			}
+		}
+
+		return $extend;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	private function _add_options_to_extend_definition($extend)
+	{
+		$extend['options'] = array();
+
+		if (in_array($extend['html_element_type'], array('select', 'checkbox', 'radio')))
+		{
+			$options = explode("\n", $extend['value']);
+			foreach($options as $option)
+			{
+				$arr = explode(':', $option);
+				if (isset($arr[0]) && isset($arr[1]))
+					$extend['options'][$arr[0]] = $arr[1];
+			}
+		}
+
+		return $extend;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function add_extend_fields_to_rows($data, $type)
+	{
+		foreach($data as $idx => $d)
+		{
+			// Add the key '_extends' to the row
+			$data[$idx] = $this->_add_extend_fields_array_to_row($d, $type);
+
+			if (isset($d['_extend_data']))
+			{
+				$_extend_data = json_decode($d['_extend_data'], 1);
+
+				foreach ($_extend_data as $id_extend_field => $value) {
+					$data[$idx] = $this->add_extend_fields_to_row($data[$idx], $id_extend_field, $value, $type);
+				}
+			}
+		}
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function add_extend_fields_to_row($row, $id_extend_field, $value=NULL, $type=NULL, $lang=NULL)
+	{
+		$extend_value = array();
+
+		$extend = $this->get_extend_field_definition($id_extend_field, $type, $lang);
+
+		// Select, Checkbox, Radio
+		if (in_array($extend['html_element_type'], array('select', 'checkbox', 'radio')))
+		{
+			$value = explode(',', $value);
+
+			if (isset($extend['options']))
+			{
+				$extend_value = array();
+
+				foreach($value as $val)
+				{
+					$extend_value[] = array(
+						'value_displayed' => $extend['options'][$val],
+						'value' => $val,
+						'definition' => $extend
+					);
+				}
+			}
+		}
+		else
+		{
+			$extend_value[] = array(
+				'value_displayed' => $value,
+				'value' => $value,
+				'definition' => $extend
+			);
+		}
+
+		$row['_extends'][$extend['name']] = $extend_value;
+
+		return $row;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	private function _add_extend_fields_array_to_row($row, $type)
+	{
+		if ( ! is_null($type) && ! isset($row['_extends']))
+		{
+			$row['_extends'] = array();
+
+			$extend_definitions = $this->get_extend_fields_definition($type);
+
+			foreach($extend_definitions as $e_def)
+			{
+				$row['_extends'][$e_def['name']] = array();
+			}
+		}
+
+		return $row;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param $id_extend_field
+	 * @param null $value
+	 * @param null $type
+	 * @param null $lang
+	 *
+	 * @return null|array|string
+	 */
+	public function get_extend_field_label($id_extend_field, $value=NULL, $type=NULL, $lang=NULL)
+	{
+		$label = NULL;
+
+		$extend = $this->get_extend_field_definition($id_extend_field, $type, $lang);
+
+		// Select, Checkbox, Radio
+		if (in_array($extend['html_element_type'], array('select', 'checkbox', 'radio')))
+		{
+			$value = explode(',', $value);
+
+			if (count($value) == 1)
+				$label = $extend['options'][$value[0]];
+			else
+			{
+				$label = array();
+
+				foreach($value as $val)
+				{
+
+				}
+			}
+
+			$label = '';
+		}
+		else
+		{
+			$label = $value;
+		}
+
+		return $label;
 	}
 
 
@@ -2393,7 +2921,6 @@ class Base_model extends CI_Model
 		if ( is_array($where) )
 		{
 			$this->_process_where($where, $table);
-			// $this->{$this->db_group}->where($where);
 		}
 		else
 		{
