@@ -17,11 +17,11 @@
 |--------------------------------------------------------------------------
 */
 
-$lang['dateformat_short'] = 'm d Y';
-$lang['dateformat_medium'] = 'M d Y';
-$lang['dateformat_long'] = 'F d Y';
-
 $lang['dateformat_complete'] = 'l d F Y \a\t H\hi';
+$lang['dateformat_long'] = 'F d Y';
+$lang['dateformat_medium'] = 'M d Y';
+$lang['dateformat_short'] = 'm d Y';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +38,7 @@ $lang['fri'] = 'fri';
 $lang['sat'] = 'sat';
 $lang['sun'] = 'sun';
 
+
 /*
 |--------------------------------------------------------------------------
 | PHP day date format 'l' translations
@@ -50,6 +51,7 @@ $lang['thursday'] = 'thursday';
 $lang['friday'] = 'friday';
 $lang['saturday'] = 'saturday';
 $lang['sunday'] = 'sunday';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +71,7 @@ $lang['oct'] = 'oct';
 $lang['nov'] = 'nov';
 $lang['dec'] = 'dec';
 
+
 /*
 |--------------------------------------------------------------------------
 | PHP month date format 'F' translations
@@ -86,4 +89,3 @@ $lang['september'] = 'september';
 $lang['october'] = 'october';
 $lang['november'] = 'november';
 $lang['december'] = 'december';
-
