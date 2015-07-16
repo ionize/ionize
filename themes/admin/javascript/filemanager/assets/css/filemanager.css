@@ -120,12 +120,11 @@ div.filemanager div.filemanager-menu {
 div.filemanager-menu button {
 	float: left;
 }
-div.filemanager button.filemanager-open,
-div.filemanager button.filemanager-open_all {
+div.filemanager a.filemanager-open,
+div.filemanager a.filemanager-open_all {
 	cursor: pointer;
 	float:right;
-	margin-right:15px;
-	padding:4px 8px;
+	margin-right:5px;
 }
 div.loader {
 	width: 16px;
@@ -730,7 +729,7 @@ div.filemanager-container .file .file-progress {
 div.filemanager label.filemanager-resize{
 	float: left;
 	margin-left:5px;
-	height: 24px;
+	height: 26px;
 }
 div.filemanager label.filemanager-resize input{
 	float:left;

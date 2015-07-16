@@ -3159,7 +3159,7 @@ var Filemanager = new Class({
 	 */
 	addMenuButton: function(name, translation)
 	{
-		var el = new Element('button', {'class': 'filemanager-' + name + ' button green',	text: Lang.get(translation)}).inject(this.menu, 'top');
+		var el = new Element('a', {'class': 'filemanager-' + name + ' button green',	text: Lang.get(translation)}).inject(this.menu, 'top');
 
 		if (this[name+'_on_click'])
 			el.addEvent('click', this[name+'_on_click'].bind(this));

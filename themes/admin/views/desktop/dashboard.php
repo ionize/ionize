@@ -95,7 +95,19 @@ $user_role = User()->get_role();
 	<?php if ( ! empty($modules) && Settings::get('display_dashboard_modules') == '1') :?>
 		<div id="modulesBloc" class="desktopBloc" data-title="<?php echo lang('ionize_menu_modules'); ?>">
 			<?php foreach($modules as $module) :?>
-				<div class="desktopIcon desktopModuleIcon" data-url="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" data-title="<?php echo $module['name']; ?>">
+
+				<?php
+
+				// Old way
+				$data = 'data-url="module/' . $module['uri'] .'/' . $module['uri'] . '/index"';
+
+				// New way : JS class (config.php : 'js_main_class' => 'MYCLASS')
+				if (isset($module['js_main_class']))
+					$data = 'data-class="'.$module['js_main_class'].'"';
+				?>
+
+
+				<div class="desktopIcon desktopModuleIcon" <?php echo $data ?> data-title="<?php echo $module['name']; ?>">
 					<?php
 						$src = NULL;
 						if (is_file(MODPATH.$module['folder'].'/assets/images/icon_40_module.png'))
@@ -545,14 +557,50 @@ $user_role = User()->get_role();
 	// Modules Icons actions
 	$$('.desktopModuleIcon').each(function(item)
 	{
-		item.addEvent('click', function(e){
-            ION.contentUpdate({
-				element: $('mainPanel'),
-				title: item.getProperty('data-title'),
-				url : ION.cleanUrl(item.getProperty('data-url'))
+		// Old way
+		var url = item.getProperty('data-url'),
+			className = item.getProperty('data-class')
+		;
+
+		if (url)
+		{
+			item.addEvent('click', function(e){
+				ION.contentUpdate({
+					element: $('mainPanel'),
+					title: item.getProperty('data-title'),
+					url : ION.cleanUrl(item.getProperty('data-url'))
+				});
 			});
-		});
+		}
+		// New Way
+		else
+		{
+			var obj = ION.registry(className);
+
+			if ( ! obj)
+			{
+				eval("var exist = typeOf(" + className + ")");
+				if (exist != 'null') {
+					eval("obj = " + className + ";");
+					ION.register(className, obj);
+				}
+			}
+
+			if (typeOf(obj) != 'null' && typeOf(obj.getMainPanel) == 'function')
+			{
+				item.addEvent('click', function()
+				{
+					MUI.Windows.closeAll();
+					obj.getMainPanel();
+				});
+			}
+			else
+			{
+				console.log('ERROR in dashboard.php : ' + className + ' has no getMainPanel() method.');
+			}
+		}
 	});
+
 
 	/*
 	 * @TODO: Send the controller to use to reload the user's list
