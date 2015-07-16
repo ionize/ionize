@@ -1275,7 +1275,7 @@ $lang['ionize_help_start_crop'] = 'For Square or Adaptive picture, define the st
 */
 $lang['ionize_label_about_us_author'] = 'Author';
 $lang['ionize_label_about_us_contributors'] = 'Contributors';
-$lang['ionize_label_about_us_thaks_to'] = 'Thanks to';
+$lang['ionize_label_about_us_thanks_to'] = 'Thanks to';
 $lang['ionize_label_about_us_license'] = 'License';
 
 

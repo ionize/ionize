@@ -88,10 +88,7 @@ Ionize.initializeDesktop = function(){
 		}
 	});
 
-
 };
-
-
 
 // Initialize MochaUI when the DOM is ready
 window.addEvent('load', function()
@@ -107,4 +104,3 @@ window.addEvent('load', function()
 //	document.addEvent('click', function(){$$('.btn-group').removeClass('open')});
 
 });
-

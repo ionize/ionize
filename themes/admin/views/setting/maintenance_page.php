@@ -1,13 +1,10 @@
-
-<?php if( ! empty($page)) :?>
-
-	<?php
-	
+<?php
+	if( ! empty($page))
+	{
 		$id = $page['id_page'];
 		$title = ($page['title'] != '') ? $page['title'] : $page['name'];
 		$status = (!$page['online']) ? 'offline' : 'online' ;
-	?>
-	
+?>
 	<ul class="sortable-container" id="maintenancePageList">
 	
 		<li class="sortme" data-id="<?php echo $id; ?>">
@@ -22,15 +19,14 @@
 
 	</ul>
 
-<?php else :?>
-
+<?php } else { ?>
 	<div class="droppable h40 dropPageAsMaintenancePage">
 
 		<span class="lite"><?php echo lang('ionize_drop_maintenance_page_here'); ?></span>
 	
 	</div>
 
-<?php endif ;?>
+<?php } ?>
 
 
 

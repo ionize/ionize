@@ -127,9 +127,7 @@ if ($tracker_title == '')
 
 		<?php endif ;?>
 
-
 		</fieldset>
-
 
 		<fieldset class="mt10">
 	

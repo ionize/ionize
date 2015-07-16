@@ -1,5 +1,3 @@
-
-
 <ul id="articleList<?php echo $id_page; ?>" class="sortable-container">
 
 <?php
@@ -9,18 +7,12 @@
 	$select_views_class = is_null($all_article_types) ? 'w180' : 'w110';
 	$select_types_class = is_null($all_article_views) ? 'w180' : 'w80';
 
-?>
-
-<?php foreach ($articles as $article) :?>
-
-	<?php
+	foreach ($articles as $article)
+	{
 
 	$title = ($article['title'] != '') ? $article['title'] : $article['name'];
-	
 	$rel = $article['id_page'] . '.' . $article['id_article'];
-	
 	$flat_rel = $article['id_page'] . 'x' .  $article['id_article'];
-	
 	$status = (!$article['online_in_page']) ? 'offline' : 'online' ;
 
 	// Content for each existing language
@@ -106,7 +98,7 @@
 		</div>
 	</li>
 
-<?php endforeach ;?>
+<?php } ;?>
 
 </ul>
 
@@ -130,7 +122,7 @@
 		var rel = item.getAttribute('data-id').split(".");
 
 		item.addEvents({
-		
+
 			'change': function(e)
 			{
 				this.removeClass('a');
@@ -223,8 +215,8 @@
 	/**
 	 * Processes multiple action on articles
 	 *
-	 * @param action
-	 * @param selectObj
+	 * @param	{String}	action
+	 * @param	{Object}	selectObj
 	 */
 	var processMultipleAction = function(action, selectObj)
 	{
@@ -313,6 +305,5 @@
 	<?php if (count($articles) == 0):?>
 		el_selectAction.hide();
 	<?php endif; ?>
-
 
 </script>

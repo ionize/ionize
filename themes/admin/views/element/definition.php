@@ -74,12 +74,10 @@ $id = $id_element_definition;
 			<div id="elementDefinitionTabContent<?php echo $id ;?>" class="ml20 mr20 mb10">
 
 				<!-- Text block -->
-				<?php foreach(Settings::get_languages() as $language) :?>
-
-					<?php
+				<?php foreach(Settings::get_languages() as $language) :
 					$lang = $language['lang'];
 					$aTitle = lang('ionize_label_change').' '.lang('ionize_label_title');
-					?>
+				?>
 
 					<div class="tabcontent">
 						<a class="edit title left" data-id="<?php echo $id ;?>.<?php echo $lang ;?>" title="<?php echo $aTitle ;?>"><?php echo $languages[$lang]['title'] ;?></a>

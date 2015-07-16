@@ -3,7 +3,7 @@
  * Modal window for Not Editing an user
  *
  */
-$from = ! empty($from) ? $from : '';
+$from = empty($from) ? '' : $from;
 ?>
 <h2 class="main user">
 	<?php echo $user['firstname'] ?>

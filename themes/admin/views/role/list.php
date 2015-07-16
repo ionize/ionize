@@ -46,7 +46,7 @@
 
 <script type="text/javascript">
 
-    // Sortbale
+    // Sortable
     new SortableTable('roleTable',{sortOn: 1, sortBy: 'DESC'});
 
 

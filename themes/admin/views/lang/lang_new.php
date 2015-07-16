@@ -40,4 +40,3 @@
 	<button id="bSavelang" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
 	<button id="bCancellang"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
-

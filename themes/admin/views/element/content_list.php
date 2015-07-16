@@ -7,15 +7,13 @@
  */
 
 $elements = $definition['elements'];
-
-$id_def = $definition['id_element_definition'];
-
+$id_definition = $definition['id_element_definition'];
 $nbLang = count(Settings::get_languages());
 $width = (100 / $nbLang);
 
 ?>
 
-<ul id="elements<?php echo $id_def; ?>" class="sortable-container">
+<ul id="elements<?php echo $id_definition; ?>" class="sortable-container">
 
 <?php foreach($elements as $element) :?>
 
@@ -26,9 +24,9 @@ $width = (100 / $nbLang);
 	/*
 	 * Identify the first field of each element
 	 * $i = 0 : first element, has the link to the edit window
-	 * $i = 1 : all childs will be wrapped into a toggler content div
+	 * $i = 1 : all children will be wrapped into a toggler content div
 	 *
-	 */ 
+	 */
 	$i = 0;
 	
 	?>
@@ -111,8 +109,7 @@ $width = (100 / $nbLang);
 											?>
 												<?php if (in_array($key, $saved)) :?>
 													<?php echo $value; ?>
-												<?php endif ;?>
-											<?php
+												<?php endif ;
 											$i++;
 										}
 									?>
@@ -123,8 +120,6 @@ $width = (100 / $nbLang);
 
 									<?php
 										$pos = explode("\n", $field['value']);
-									?>
-									<?php
 										$i = 0;
 										foreach($pos as $values)
 										{
@@ -132,12 +127,9 @@ $width = (100 / $nbLang);
 											$key = $vl[0];
 											$value = (!empty($vl[1])) ? $vl[1] : $vl[0];
 
-											?>
-												<?php if ($field['content'] == $key) :?>
+											if ($field['content'] == $key) :?>
 													<?php echo $value; ?>
-												<?php endif ;?>
-
-											<?php
+												<?php endif ;
 											$i++;
 										}
 									?>
@@ -149,8 +141,7 @@ $width = (100 / $nbLang);
 									<?php
 										$pos = explode("\n", $field['value']);
 										$saved = 	explode(',', $field['content']);
-									?>
-									<?php
+
 										$i = 0;
 										foreach($pos as $values)
 										{
@@ -173,18 +164,14 @@ $width = (100 / $nbLang);
 
 									<?php echo humanize_mdate($field['content'], Settings::get('date_format'). ' %H:%i:%s'); ?>
 
-								<?php endif ;?>
+								<?php endif ;
 
-
-
-
-								<?php
 								/*
 								 * Close the first field edit link wrapper
 								 *
 								 */
-								?>
-								<?php if ($i == 0) :?>
+
+								if ($i == 0) :?>
 									</a>
 								<?php endif ;?>
 
@@ -335,8 +322,7 @@ $width = (100 / $nbLang);
 			<?php if ($i > 1) :?>
 				</div>
 			<?php endif ;?>
-			
-			
+
 		</div>
 	</li>
 <?php endforeach ;?>
@@ -350,8 +336,8 @@ $width = (100 / $nbLang);
 	 * itemManager
 	 *
 	 */
-	var elementsManager<?php echo $id_def; ?> = new ION.ItemManager({
-		'container': 'elements<?php echo $id_def; ?>', 
+	var elementsManager<?php echo $id_definition; ?> = new ION.ItemManager({
+		'container': 'elements<?php echo $id_definition; ?>',
 		'element':'element', 
 		'parent_element': '<?php echo $parent; ?>', 
 		'id_parent':'<?php echo $id_parent; ?>',
@@ -360,14 +346,14 @@ $width = (100 / $nbLang);
 
 	// Add toggler to each definition
 	<?php if(count($element['fields']) > 1) :?>
-	$$('#elements<?php echo $id_def; ?> li.element .toggler').each(function(el)
+	$$('#elements<?php echo $id_definition; ?> li.element .toggler').each(function(el)
 	{
 		ION.initListToggler(el, $('def_' + el.getProperty('data-id')));
 	});
 	<?php endif ;?>
 
 	// Edit on each element
-	$$('#elements<?php echo $id_def; ?> li.element a.title, #elements<?php echo $id_def; ?> li.element .edit').each(function(item)
+	$$('#elements<?php echo $id_definition; ?> li.element a.title, #elements<?php echo $id_definition; ?> li.element .edit').each(function(item)
 	{
 		item.addEvent('click', function(e)
 		{

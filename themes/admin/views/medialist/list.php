@@ -5,7 +5,6 @@
  */
 
 $thumb_size = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
-
 $filter = implode(',', $filter);
 
 ?>

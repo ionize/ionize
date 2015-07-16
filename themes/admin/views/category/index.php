@@ -19,7 +19,6 @@
 
 </div>
 
-
 <script type="text/javascript">
 
 	// Categories list

@@ -1,4 +1,3 @@
-
 <?php if( ! empty($link)) :?>
 
 	<dl class="small dropArticleAsLink dropPageAsLink">
@@ -73,8 +72,7 @@
 	</dl>
 
 	<script type="text/javascript">
-		
-		
+
 		ION.initDroppable();
 
 		$('add_link').addEvent('click', function()
@@ -85,12 +83,7 @@
 			if (value.substr(0,1) == '#') type='anchor';
 			ION.JSON('<?php echo $parent; ?>/add_link', {'receiver_rel': $('rel').value, 'link_type': type, 'url': value });
 		})
-		
 
 	</script>
 
-
 <?php endif ;?>
-
-
-
