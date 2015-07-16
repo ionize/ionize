@@ -11,7 +11,7 @@
 |--------------------------------------------------------------------------
 */
 $lang['ionize_administration'] = 'Administration';
-$lang['ionize_forgot_password'] = 'Forgotten password ?';
+$lang['ionize_forgot_password'] = 'Forgotten password?';
 $lang['ionize_goback'] = 'Back to website';
 $lang['ionize_home'] = 'Home';
 $lang['ionize_logged_as'] = 'Logged as';
@@ -134,7 +134,7 @@ $lang['title_ionize_installation'] = 'Ionize Installation';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_modal_alert_title'] = 'Alert';
-$lang['ionize_modal_confirmation_title'] = 'Do you confirm ?';
+$lang['ionize_modal_confirmation_title'] = 'Do you confirm?';
 $lang['ionize_modal_error_title'] = 'Error';
 $lang['ionize_modal_information_title'] = 'Information';
 
@@ -174,7 +174,7 @@ $lang['ionize_label_see_element_detail'] = 'Element details...';
 $lang['ionize_message_content_element_name_saved'] = 'New name saved';
 $lang['ionize_message_content_element_not_saved'] = 'Content Element not saved';
 $lang['ionize_message_content_element_saved'] = 'Content Element saved';
-$lang['ionize_message_delete_element_definition'] = 'Delete this content definition ?';
+$lang['ionize_message_delete_element_definition'] = 'Delete this content definition?';
 $lang['ionize_message_element_cannot_be_added_to_parent'] = 'This element can\'t be added to this parent!';
 $lang['ionize_message_element_copied'] = 'Element copied!';
 $lang['ionize_message_element_definition_name_already_exists'] = 'Another Element has already this name!';
@@ -203,8 +203,8 @@ $lang['ionize_title_element_new'] = 'New Content Element';
 */
 $lang['ionize_help_definition_name'] = 'Code of this definition. Will be used to retrieve it with ionize tags. Must be unique';
 $lang['ionize_help_item_field_display'] = 'This field value will be displayed as items title in content list of items (in page, articles, ...)';
-$lang['ionize_help_item_title_definition'] = 'How is called the definition of items ?';
-$lang['ionize_help_item_title_definition_item'] = 'How is called one item of this definition ?';
+$lang['ionize_help_item_title_definition'] = 'How is called the definition of items?';
+$lang['ionize_help_item_title_definition_item'] = 'How is called one item of this definition?';
 $lang['ionize_label_add_item'] = 'Add Item';
 $lang['ionize_label_item_add_item'] = 'Add Item';
 $lang['ionize_label_item_definition'] = 'Definition';
@@ -241,11 +241,11 @@ $lang['ionize_help_email_contact'] = 'Global contact email. Forms like the conta
 $lang['ionize_help_email_info'] = 'Information email';
 $lang['ionize_help_email_technical'] = 'The website administrator email';
 $lang['ionize_help_environment'] = 'ENVIRONMENT constant, as set in index.php';
-$lang['ionize_help_environment_flag'] = 'The ENVIRONMENT constant of your website is set to <b>%s</b> in the index.php.<br/>Before going live, change it to : <b>production</b>';
+$lang['ionize_help_environment_flag'] = 'The ENVIRONMENT constant of your website is set to <b>%s</b> in the index.php.<br/>Before going live, change it to: <b>production</b>';
 $lang['ionize_help_flag'] = 'An internal marked, just to be organized.';
 $lang['ionize_help_flags'] = 'Internal markers, just to be organized.';
 $lang['ionize_help_has_url'] = 'If checked, the element has one URL and is reachable through its URL.';
-$lang['ionize_help_help'] = 'Displays the help tooltips like the one you\'re currently reading. Or not.. :-)';
+$lang['ionize_help_help'] = 'Displays the help tooltips like the one you\'re currently reading. Or not..:-)';
 $lang['ionize_help_online'] = 'Is this element globally online?';
 $lang['ionize_help_online_lang'] = 'Is this translation online for this language?';
 $lang['ionize_help_publish_off'] = 'Unpublish the item at this date';
@@ -281,7 +281,7 @@ $lang['ionize_label_email_contact'] = 'Contact Email';
 $lang['ionize_label_email_info'] = 'Info Email';
 $lang['ionize_label_email_technical'] = 'Technical Email';
 $lang['ionize_label_environment'] = 'Environment';
-$lang['ionize_label_file_uploads'] = 'Upload ?';
+$lang['ionize_label_file_uploads'] = 'Upload?';
 $lang['ionize_label_files'] = 'Files';
 $lang['ionize_label_flag'] = 'Flag';
 $lang['ionize_label_flags'] = 'Flags';
@@ -393,8 +393,8 @@ $lang['ionize_button_yes'] = 'Yes';
 */
 $lang['button_delete_installer_done_admin'] = 'Done! Go to Admin panel';
 $lang['button_delete_installer_done_site'] = 'Done! Go to website';
-$lang['ionize_confirm_element_delete'] = 'Do you want to definitely delete this element ?';
-$lang['ionize_message_delete_installer'] = 'IMPORTANT : <br/>For security reasons, please delete the <b>"/install"</b> folder. Ionize will not be available until this folder is deleted.';
+$lang['ionize_confirm_element_delete'] = 'Do you want to definitely delete this element?';
+$lang['ionize_message_delete_installer'] = 'IMPORTANT: <br/>For security reasons, please delete the <b>"/install"</b> folder. Ionize will not be available until this folder is deleted.';
 $lang['ionize_message_element_not_found'] = 'This element wasn\'t found!';
 $lang['ionize_message_form_validation_error'] = 'Some data are missing or incorrect';
 $lang['ionize_message_form_validation_please_correct'] = 'Please correct the form data';
@@ -406,14 +406,14 @@ $lang['ionize_message_no_network'] = 'Not connected to network';
 $lang['ionize_message_operation_nok'] = 'Operation failed';
 $lang['ionize_message_operation_ok'] = 'Operation OK';
 $lang['ionize_message_target_link_not_unique'] = 'The target element must be unique in the tree!';
-$lang['ionize_message_unsaved_element_quit'] = 'This element has changed but isn\'t saved. Do you want to leave ?';
+$lang['ionize_message_unsaved_element_quit'] = 'This element has changed but isn\'t saved. Do you want to leave?';
 $lang['ionize_message_url_got_404'] = 'This URL returns a 404 page';
 $lang['ionize_message_url_not_found'] = 'URL not found';
 
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Language
+| Admin: Language
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_clean_lang_tables'] = 'Clean lang tables';
@@ -435,7 +435,7 @@ $lang['ionize_message_confirm_copy_whole_content'] = 'Do you really want to copy
 $lang['ionize_message_lang_code_already_exists'] = 'This lang code already exists';
 $lang['ionize_message_lang_content_copied'] = 'Lang content copy successful';
 $lang['ionize_message_lang_deleted'] = 'Language deleted';
-$lang['ionize_message_lang_file_not_saved'] = 'Error : Could not write to application/config/language.php';
+$lang['ionize_message_lang_file_not_saved'] = 'Error: Could not write to application/config/language.php';
 $lang['ionize_message_lang_not_deleted'] = 'Language not deleted';
 $lang['ionize_message_lang_not_ordered'] = 'Languages not ordered';
 $lang['ionize_message_lang_not_saved'] = 'Language not saved';
@@ -462,14 +462,14 @@ $lang['ionize_title_language'] = 'Language management';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_help_drop_fields_here'] = 'Drop fields here to link them to this element';
-$lang['ionize_label_display_in_table_list'] = 'Display in table list ?';
+$lang['ionize_label_display_in_table_list'] = 'Display in table list?';
 $lang['ionize_label_editor_panel'] = 'Editor Panel';
-$lang['ionize_message_confirm_tab_delete'] = 'Are you sure you want to delete this tab ?';
+$lang['ionize_message_confirm_tab_delete'] = 'Are you sure you want to delete this tab?';
 
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Users & groups
+| Admin: Users & groups
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_export'] = 'Export';
@@ -547,7 +547,7 @@ $lang['ionize_title_users_export'] = 'Users export';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Settings
+| Admin: Settings
 |--------------------------------------------------------------------------
 */
 $lang['ionize_help_display_connected_label'] = 'Displays a label on the top left of the website when you\'re connected to the Admin panel';
@@ -592,7 +592,7 @@ $lang['ionize_title_visual_help'] = 'Visual help';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Technical Settings
+| Admin: Technical Settings
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_clear_cache'] = 'Clear';
@@ -794,7 +794,7 @@ $lang['ionize_title_translation_theme'] = 'Theme Translations';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Themes
+| Admin: Themes
 |--------------------------------------------------------------------------
 */
 $lang['ionize_label_current_theme'] = 'Current theme';
@@ -813,17 +813,17 @@ $lang['ionize_title_views_translations'] = 'Current theme static elements transl
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Page
+| Admin: Page
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_reorder'] = 'Reorder';
 $lang['ionize_help_add_page_to_menu'] = 'Add a page to this menu';
-$lang['ionize_help_appears'] = 'Does the page appears in the navigation menu ?';
-$lang['ionize_help_article_list_template'] = 'Article view : If more than 1 article on the page, use this view by default for each article';
-$lang['ionize_help_article_template'] = 'Article view : Use this view for each article displayed in standalone mode OR if just one article in this page';
+$lang['ionize_help_appears'] = 'Does the page appears in the navigation menu?';
+$lang['ionize_help_article_list_template'] = 'Article view: If more than 1 article on the page, use this view by default for each article';
+$lang['ionize_help_article_template'] = 'Article view: Use this view for each article displayed in standalone mode OR if just one article in this page';
 $lang['ionize_help_drop_article_order'] = 'Default order of one article dropped to this page';
 $lang['ionize_help_home_page'] = 'Home page';
-$lang['ionize_help_home_page'] = 'Is this page the home page of the website ?';
+$lang['ionize_help_home_page'] = 'Is this page the home page of the website?';
 $lang['ionize_help_page_content_online'] = 'Is this page online for this language?';
 $lang['ionize_help_page_drop_article_here'] = 'Drag an article from the left tree by selecting its name.';
 $lang['ionize_help_page_link'] = 'Internal or External HTTP link. Replace the default page link';
@@ -846,7 +846,7 @@ $lang['ionize_label_articles'] = 'Articles';
 $lang['ionize_label_date_asc'] = 'Date Ascendant';
 $lang['ionize_label_date_desc'] = 'Date Descendant';
 $lang['ionize_label_drop_article_order'] = 'Drop Article Order';
-$lang['ionize_label_help_articles_reorder'] = 'Reorder articles by date. Date calculation : Logical or Publish On or Creation.';
+$lang['ionize_label_help_articles_reorder'] = 'Reorder articles by date. Date calculation: Logical or Publish On or Creation.';
 $lang['ionize_label_help_articles_types'] = 'About Types';
 $lang['ionize_label_help_articles_types_and_views'] = 'About Types & Views';
 $lang['ionize_label_home_page'] = 'Home page';
@@ -883,7 +883,7 @@ $lang['ionize_title_sub_navigation'] = 'Sub Navigation';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Media
+| Admin: Media
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_add_video'] = 'Add';
@@ -945,18 +945,18 @@ $lang['ionize_title_thumbs_status'] = 'Thumbnails status';
 
 
 // Exceptions
-$lang['ionize_exception_chmod'] = 'PHP : CHMOD impossible';
-$lang['ionize_exception_copy'] = 'PHP : Picture copy not possible';
+$lang['ionize_exception_chmod'] = 'PHP: CHMOD impossible';
+$lang['ionize_exception_copy'] = 'PHP: Picture copy not possible';
 $lang['ionize_exception_folder_creation'] = 'Error during folder creation';
-$lang['ionize_exception_getimagesize'] = 'PHP : getimagesize function not available!';
+$lang['ionize_exception_getimagesize'] = 'PHP: getimagesize function not available!';
 $lang['ionize_exception_getimagesize_get'] = 'Impossible to get the image size';
-$lang['ionize_exception_image_crop'] = 'Image Lib : Impossible to crop the picture';
+$lang['ionize_exception_image_crop'] = 'Image Lib: Impossible to crop the picture';
 $lang['ionize_exception_image_lib'] = 'Image Lib Error';
-$lang['ionize_exception_image_resize'] = 'Image Lib : Impossible to resize the picture';
+$lang['ionize_exception_image_resize'] = 'Image Lib: Impossible to resize the picture';
 $lang['ionize_exception_memory_limit'] = 'PHP Memory limit reached';
 $lang['ionize_exception_no_source_file'] = 'Source file not found';
-$lang['ionize_exception_no_thumbs_settings'] = 'Settings : No thumbnails defined!';
-$lang['ionize_exception_unlink'] = 'PHP : Impossible to delete the file';
+$lang['ionize_exception_no_thumbs_settings'] = 'Settings: No thumbnails defined!';
+$lang['ionize_exception_unlink'] = 'PHP: Impossible to delete the file';
 
 
 $lang['ionize_button_card_view'] = 'Card view';
@@ -972,11 +972,11 @@ $lang['ionize_medialist_filter_by_used_in_content_AL_missing'] = 'Used in Page /
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Article
+| Admin: Article
 |--------------------------------------------------------------------------
 */
 $lang['ionize_confirm_article_page_unlink'] = 'Unlink this page from this article?';
-$lang['ionize_confirm_articles_delete'] = 'These articles will be definitely deleted. Are you sure ?';
+$lang['ionize_confirm_articles_delete'] = 'These articles will be definitely deleted. Are you sure?';
 $lang['ionize_label_actions'] = 'Actions';
 $lang['ionize_label_article_content_online'] = 'Content Online';
 $lang['ionize_label_article_context_edition'] = 'Editing context';
@@ -1015,7 +1015,7 @@ $lang['ionize_message_article_moved'] = 'Article moved';
 $lang['ionize_message_article_name_exists'] = 'One article with the same name already exists!';
 $lang['ionize_message_article_needs_url_or_title'] = 'Please fill title or URL for the default language!';
 $lang['ionize_message_article_not_duplicated'] = 'Article not duplicated';
-$lang['ionize_message_article_not_saved'] = 'Article not saved : Missing data';
+$lang['ionize_message_article_not_saved'] = 'Article not saved: Missing data';
 $lang['ionize_message_article_ordered'] = 'Article ordered';
 $lang['ionize_message_article_saved'] = 'Article saved';
 $lang['ionize_message_article_url_exists'] = 'One article with the same URL already exists!';
@@ -1057,16 +1057,16 @@ $lang['ionize_button_full_mode'] = 'Full Mode';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Categories, Types & extend fields
+| Admin: Categories, Types & extend fields
 |--------------------------------------------------------------------------
 */
-$lang['ionize_confirm_extend_delete'] = 'Are you really sure ?<br/>This extend and ALL the linked data will be removed!';
-$lang['ionize_help_ef_copy_in'] = 'DB field to copy the value in after save. Syntax : table.field';
+$lang['ionize_confirm_extend_delete'] = 'Are you really sure?<br/>This extend and ALL the linked data will be removed!';
+$lang['ionize_help_ef_copy_in'] = 'DB field to copy the value in after save. Syntax: table.field';
 $lang['ionize_help_ef_copy_in_pk'] = 'Table PK name';
 $lang['ionize_help_ef_default_value'] = 'If select, radio or checkbox, put the key';
 $lang['ionize_help_ef_description'] = 'Displayed user help about this field, like this tooltip';
-$lang['ionize_help_ef_global'] = 'Is the extend field always visible for each element ?';
-$lang['ionize_help_ef_name'] = 'Key to use with the field tag. Example : &#8249;ion:get key=&#34;field-name&#34; /&#8250;';
+$lang['ionize_help_ef_global'] = 'Is the extend field always visible for each element?';
+$lang['ionize_help_ef_name'] = 'Key to use with the field tag. Example: &#8249;ion:get key=&#34;field-name&#34; /&#8250;';
 $lang['ionize_help_ef_parent'] = 'Limit this extend field to a kind of parent or not';
 $lang['ionize_help_ef_values'] = 'value:label, separated by a line break';
 $lang['ionize_help_field_length'] = 'Field length';
@@ -1096,7 +1096,7 @@ $lang['ionize_label_extend_fields_activate'] = 'Activate';
 $lang['ionize_label_extends'] = 'Extends';
 $lang['ionize_label_field_auto_increment'] = 'Auto increment';
 $lang['ionize_label_field_length'] = 'Length';
-$lang['ionize_label_field_null'] = 'NULL ?';
+$lang['ionize_label_field_null'] = 'NULL?';
 $lang['ionize_label_field_unsigned'] = 'Unsigned';
 $lang['ionize_label_filemanager_target'] = 'Destination';
 $lang['ionize_label_label'] = 'Label';
@@ -1127,7 +1127,7 @@ $lang['ionize_message_extend_field_deleted'] = 'Extend Field deleted';
 $lang['ionize_message_extend_field_name_exists'] = 'An Extend Field with this name already exists';
 $lang['ionize_message_extend_field_not_deleted'] = 'Extend Field not deleted';
 $lang['ionize_message_extend_field_not_found'] = 'Extend Field not found';
-$lang['ionize_message_extend_field_not_saved'] = 'Error : Please enter a field name!';
+$lang['ionize_message_extend_field_not_saved'] = 'Error: Please enter a field name!';
 $lang['ionize_message_extend_field_saved'] = 'Extend Field saved';
 $lang['ionize_message_field_must_have_a_name'] = 'The field must have a name';
 $lang['ionize_message_field_name_sql_reserved'] = 'The field name you choose is a SQL reserved word. Please change.';
@@ -1135,7 +1135,7 @@ $lang['ionize_message_type_exists'] = 'This article type already exists';
 $lang['ionize_message_varchar_int_must_have_length'] = 'VARCHAR or INT field must have a length';
 $lang['ionize_select_all'] = '-- All --';
 $lang['ionize_title_categories'] = 'Categories';
-$lang['ionize_title_category_edit'] = 'Category : Edit';
+$lang['ionize_title_category_edit'] = 'Category: Edit';
 $lang['ionize_title_category_exist'] = 'Existing categories';
 $lang['ionize_title_category_new'] = 'New category';
 $lang['ionize_title_extend_field'] = 'Extend Field';
@@ -1150,7 +1150,7 @@ $lang['ionize_title_types_exist'] = 'Existing types';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Translations
+| Admin: Translations
 |--------------------------------------------------------------------------
 */
 $lang['ionize_help_modules_translation'] = 'Available static translations for modules.<br/>These terms can be used in your theme views through <dfn><\ion:translation term="term" /></dfn>.<br/>If you want to overwrite some of them, add your translation in each term textarea.';
@@ -1168,18 +1168,18 @@ $lang['ionize_text_module_translation_file_exist_for'] = 'This module has defaul
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Media Manager / Tree browser
+| Admin: Media Manager / Tree browser
 |--------------------------------------------------------------------------
 */
 $lang['ionize_file_manager'] = 'Files';
 $lang['ionize_image_manager'] = 'Pictures';
-$lang['ionize_message_internal_link_not_found'] = 'Error : Internal link not found';
+$lang['ionize_message_internal_link_not_found'] = 'Error: Internal link not found';
 $lang['ionize_title_tree_browser'] = 'Click on one element to select it...';
 
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Modules
+| Admin: Modules
 |--------------------------------------------------------------------------
 */
 $lang['ionize_label_database_tables'] = 'Tables';
@@ -1188,10 +1188,10 @@ $lang['ionize_label_module_name'] = 'Name';
 $lang['ionize_label_module_uninstall'] = 'Uninstall';
 $lang['ionize_label_module_uri'] = 'URI';
 $lang['ionize_message_module_install_database_error'] = 'Error when installing tables';
-$lang['ionize_message_module_install_error_config_write'] = 'Write error : application/config/modules.php';
-$lang['ionize_message_module_install_error_no_config'] = 'Error : Module without config.php';
+$lang['ionize_message_module_install_error_config_write'] = 'Write error: application/config/modules.php';
+$lang['ionize_message_module_install_error_no_config'] = 'Error: Module without config.php';
 $lang['ionize_message_module_not_installed'] = 'Module not installed!';
-$lang['ionize_message_module_page_conflict'] = 'Error : URI conflict with an existing page';
+$lang['ionize_message_module_page_conflict'] = 'Error: URI conflict with an existing page';
 $lang['ionize_message_module_saved'] = 'Module installed';
 $lang['ionize_message_module_uninstalled'] = 'Module uninstalled';
 $lang['ionize_title_modules_list'] = 'Modules list';
@@ -1199,7 +1199,7 @@ $lang['ionize_title_modules_list'] = 'Modules list';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : System Check
+| Admin: System Check
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_check_uncheck_all'] = 'Check / Uncheck All';
@@ -1235,7 +1235,7 @@ $lang['ionize_text_rebuild_sitemap'] = 'Rebuilds the complate Sitemap file.<br/>
 $lang['ionize_text_rebuild_urls'] = 'Rebuilds the whole pages and articles URLs.<br/> Removes the old URLs in the URL table.';
 $lang['ionize_text_remove_deleted_pages'] = 'Removes records of deleted pages from the DB.';
 $lang['ionize_text_system_check'] = 'These tools check the Ionize integrity and repair what should be. You cannot break anything by using them.';
-$lang['ionize_text_unused_media_files'] = 'Lists the unused media files (physical files not in media table). <br/>Take care that some media can be used by your theme style before deleting them.<br/>Before removing files : <br/>1. Clean the media table from unused media with <b>Tools > System Diagnosis > Tools > Clean Media</b><br/>2. Create a backup of your <b>"files"</b> folder</b>';
+$lang['ionize_text_unused_media_files'] = 'Lists the unused media files (physical files not in media table). <br/>Take care that some media can be used by your theme style before deleting them.<br/>Before removing files: <br/>1. Clean the media table from unused media with <b>Tools > System Diagnosis > Tools > Clean Media</b><br/>2. Create a backup of your <b>"files"</b> folder</b>';
 $lang['ionize_title_broken_media_links'] = 'Media broken links';
 $lang['ionize_title_check_article_context'] = 'Articles Contexts';
 $lang['ionize_title_check_element'] = 'Checked Element';
@@ -1261,7 +1261,7 @@ $lang['ionize_title_unused_media_files'] = 'Unused Media Files';
 
 /*
 |--------------------------------------------------------------------------
-| Admin : Help /  About Us
+| Admin: Help /  About Us
 |--------------------------------------------------------------------------
 */
 $lang['ionize_label_about_us_author'] = 'Author';
@@ -1285,9 +1285,9 @@ $lang['ionize_ga_pageviews'] = 'Page views';
 $lang['ionize_ga_unique_pageviews'] = 'Unique Page Views';
 $lang['ionize_ga_visitors'] = 'Visitors';
 $lang['ionize_ga_visits'] = 'Visits';
-$lang['ionize_help_denied_action_401'] = 'Page in menu. Output : 401, login needed';
-$lang['ionize_help_denied_action_403'] = 'Page in menu. Output : 403, Forbidden content';
-$lang['ionize_help_denied_action_404'] = 'Page not in menu. Output : 404, Page not found';
+$lang['ionize_help_denied_action_401'] = 'Page in menu. Output: 401, login needed';
+$lang['ionize_help_denied_action_403'] = 'Page in menu. Output: 403, Forbidden content';
+$lang['ionize_help_denied_action_404'] = 'Page not in menu. Output: 404, Page not found';
 $lang['ionize_help_email_can_be_used_as_login'] = 'Email can also be used as login';
 $lang['ionize_help_notify_user_account_updated'] = 'If you add one message, the user will be notified by email about his account update.';
 $lang['ionize_help_orphan_articles'] = 'These articles are not linked to any page.<br/>To link again one article to one page, drag"n"drop it to one page in the tree.';
@@ -1327,8 +1327,8 @@ $lang['ionize_label_role_name'] = 'Role Name';
 $lang['ionize_menu_tags'] = 'Tags';
 $lang['ionize_message_email_already_registered'] = 'This Email already exists in Database.';
 $lang['ionize_message_role_deleted'] = 'Role deleted';
-$lang['ionize_message_role_no_delete_users_linked'] = 'Role not deleted : Users are linked!';
-$lang['ionize_message_role_no_save_level_too_high'] = 'Role not saved : Level must be <= to yours';
+$lang['ionize_message_role_no_delete_users_linked'] = 'Role not deleted: Users are linked!';
+$lang['ionize_message_role_no_save_level_too_high'] = 'Role not saved: Level must be <= to yours';
 $lang['ionize_message_role_not_deleted'] = 'Role not deleted';
 $lang['ionize_message_role_saved'] = 'Role saved';
 $lang['ionize_subtitle_resource_protected'] = "You don't have access to this resource.<br/>If you need to have access, please ask one upper level Administrator.";

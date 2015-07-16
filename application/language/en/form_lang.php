@@ -6,7 +6,7 @@
 | Copy this file to /themes/<my_theme/language/xx/form_lang.php
 | to replace these translations with your one.
 |
-| IMPORTANT :
+| IMPORTANT:
 | Do not modify this file.
 | It will be overwritten when migrating to a new Ionize release.
 |
@@ -97,30 +97,30 @@ $lang['form_button_send_message'] = 'Send Message';
 | Emails
 |--------------------------------------------------------------------------
 */
-// Registration : Email to Admin
+// Registration: Email to Admin
 $lang['mail_website_registration_message'] = 'Here are the details of this new member.';
 $lang['mail_website_registration_subject'] = 'Someone registered on the website';
 
 
-// Registration : Email to user
+// Registration: Email to user
 $lang['mail_user_registration_activate'] = 'Before login, you need to activate your account through this link:';
 $lang['mail_user_registration_intro'] = 'Dear %s,';
 $lang['mail_user_registration_message'] = 'You just registered on <b>%s</b>.<br/>Here are your login informations.';
 $lang['mail_user_registration_subject'] = 'Registration on %s';
 
 
-// New Password : Email to user
+// New Password: Email to user
 $lang['mail_user_password_intro'] = 'Dear %s,';
 $lang['mail_user_password_message'] = 'You just asked for one new password to access to the website <b>%s</b>.<br/>Here are your new login informations:';
 $lang['mail_user_password_subject'] = 'New password for your account on %s';
 
 
-// Contact : Email to Admin
+// Contact: Email to Admin
 $lang['mail_website_contact_message'] = 'A visitor left you a message through the website contact form.';
 $lang['mail_website_contact_subject'] = 'Message from Contact Form';
 
 
-// Contact : Email to user
+// Contact: Email to user
 $lang['mail_user_contact_intro'] = 'Dear %s,';
 $lang['mail_user_contact_message'] = 'Thank you for your message.<br/>We will answer you very quickly.';
 $lang['mail_user_contact_posted_data'] = 'Here is the data you submitted with the form.';
@@ -135,7 +135,7 @@ $lang['mail_automatic_message_warning'] = 'This message was automatically genera
 |--------------------------------------------------------------------------
 | Messages
 | Success messages for contact / login / registration forms
-| Declared as 'success' for each form in form setup : /config/ionize.php
+| Declared as 'success' for each form in form setup: /config/ionize.php
 |--------------------------------------------------------------------------
 */
 $lang['form_alert_error_message'] = 'Check the form, something is perhaps missing...';
@@ -158,7 +158,7 @@ $lang['form_password_success_message'] = 'An email with your new password has ju
 $lang['form_profile_account_deleted'] = 'Account deleted';
 $lang['form_profile_error_message'] = 'This user already exists. Please change your username or email';
 $lang['form_profile_success_message'] = 'Profile data saved';
-$lang['form_register_error_message'] = 'Error : Registration not successful.';
+$lang['form_register_error_message'] = 'Error: Registration not successful.';
 $lang['form_register_success_message'] = 'You successfully registered.<br/>We just sent you an email with your account activation instructions.';
 
 
