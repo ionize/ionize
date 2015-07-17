@@ -383,6 +383,75 @@ var IonizeMediaManager = new Class(
 	},
 
 
+	/**
+	 * Builds medialist buttons
+	 *
+	 * @param container
+	 * @param id_parent
+	 */
+	buildButtons: function(container, parent, id_parent)
+	{
+		var self = this;
+
+		// Button: Add Media
+		new ION.Button({
+			'title' : Lang.get('ionize_label_add_media'),
+			'class': 'light right',
+			'icon' : 'icon-pictures',
+			container: container,
+			onClick: function()
+			{
+				self.initParent(parent, id_parent);
+				self.toggleFileManager();
+			}
+		});
+
+		// Button : Add Video URL
+		new ION.Button({
+			'title' : Lang.get('ionize_label_add_video'),
+			'class': 'light right',
+			'icon' : 'icon-video',
+			container: container,
+			onClick: function()
+			{
+				ION.dataWindow(
+					'addExternalMedia',
+					'ionize_label_add_video',
+					'media/add_external_media_window',
+					{width:600, height:150},
+					{
+						'parent': parent,
+						'id_parent': id_parent
+					}
+				);
+			}
+		});
+
+		// Button : Reload
+		new ION.Button({
+			'title' : Lang.get('ionize_label_reload_media_list'),
+			'class': 'light left',
+			'icon' : 'icon-refresh',
+			container: container,
+			onClick: function()
+			{
+				self.loadMediaList();
+			}
+		});
+
+		// Unlink All
+		new ION.Button({
+			'title' : Lang.get('ionize_label_detach_all'),
+			'class': 'light left',
+			'icon' : 'icon-unlink',
+			container: container,
+			onClick: function()
+			{
+				mediaManager.detachAllMedia();
+			}
+		});
+	},
+
 
 	/**
 	 * Opens fileManager

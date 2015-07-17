@@ -227,6 +227,7 @@ li.divider {
 	overflow: hidden;
 	color: #333;
 }
+.panel-header .button{border:1px transparent}
 
 .panel-collapse {
 	background: url(../images/collapse-expand.gif) left top no-repeat;

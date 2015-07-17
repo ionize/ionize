@@ -460,12 +460,13 @@ a.button {
 	display: inline-block;
 	vertical-align: middle;
 }
+/*
 .button:hover,
 a.button:hover {
 	background: url(../images/bg-gray-medium.png);
 	border:1px solid #bbb;
-
 }
+*/
 .button.active{
 	background: url(../images/bg-gray-medium.png);
 	border:1px solid #bbb;

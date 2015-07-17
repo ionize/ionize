@@ -74,15 +74,16 @@ MUI.append({
 			if (options.css) options.css = Object.append(MUI.options.css, options.css);
 			if (options.pluginGroups) options.pluginGroups = Object.append(MUI.options.pluginGroups, options.pluginGroups);
 			Object.append(MUI.options, options);
+			if (options.version) this.version = options.version;
+			this.environment = options.environment ? options.environment : 'development';
 		}
 		Object.each(MUI.options.pluginGroups, MUI.addPluginGroup);
 		MUI.initialized = true;
-// Partikule		
+
 		if(Browser.name=='ie9')
 		{
 			this.ieSupport = '';
 		}
-// / Partikule
 	},
 
 	replaceFields: function(str, values){

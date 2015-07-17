@@ -500,16 +500,23 @@ Number.extend({
 			throw new Error('Warning: rand() expects exactly 2 parameters, 1 given');
 	    }
 		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
-});
-
-Number.extend({
+	},
 
 	round: function(num, dec) {
 		return Math.round( Math.round( num * Math.pow( 10, dec + 1 ) ) / Math.pow( 10, 1 ) ) / Math.pow(10,dec);
+	},
+
+	formatMoney: function(num, n)
+	{
+		var num = parseFloat(num);
+		var sep = arguments[2] ? arguments[2] : ' ';
+		var re = '\\d(?=(\\d{3})+' + (n > 0 ? '\\.' : '$') + ')';
+
+		return num.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&'+sep);
 	}
 
 });
+
 
 Date.extend({
 	
