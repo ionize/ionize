@@ -167,8 +167,8 @@ ION.ExtendManager = new Class({
 						};
 
 		var options = {
-			width:500,
-			height:400,
+			width:580,
+			height:440,
 			onSuccess: onSuccess
 		};
 
