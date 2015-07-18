@@ -92,7 +92,7 @@
 				<!-- Appears as menu item in menu ? -->
 				<dl class="small">
 					<dt>
-						<label for="appears" title="<?php echo lang('ionize_help_appears'); ?>"><?php echo lang('ionize_label_appears'); ?></label>
+						<label for="appears" class="nowrap" title="<?php echo lang('ionize_help_appears'); ?>"><?php echo lang('ionize_label_appears'); ?></label>
 					</dt>
 					<dd>
 						<input id="appears" name="appears" type="checkbox" class="inputcheckbox" <?php if ($appears == 1):?> checked="checked" <?php endif;?> value="1" />

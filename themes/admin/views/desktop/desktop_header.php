@@ -18,7 +18,7 @@
 		<h1 class="applicationTitle">ionize <?php echo($this->config->item('version')) ;?></h1>
 		<div class="topNav">
 			<ul class="menu-right">
-				<li><?php echo lang('ionize_logged_as'); ?> : <?php echo User()->get('screen_name'); ?> (<?php echo User()->get('role_name'); ?>)</li>
+				<li><?php echo lang('ionize_logged_as'); ?>: <?php echo User()->get('screen_name'); ?> (<?php echo User()->get('role_name'); ?>)</li>
 				<li><a href="<?php echo base_url(); ?>" target="_blank"><?php echo lang('ionize_website'); ?></a></li>
 				<li><a href="<?php echo base_url().Settings::get_lang('current').'/'.config_item('admin_url'); ?>/auth/logout"><?php echo lang('ionize_logout'); ?></a></li>
 				<li>
@@ -241,4 +241,3 @@
 	});
 	
 </script>
-
