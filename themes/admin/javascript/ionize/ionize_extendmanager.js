@@ -38,7 +38,7 @@ ION.ExtendManager = new Class({
 		this.w =            null;       // window
 		this.wContainer =   null;       // Items container (in window)
 		this.destination =  null;       // Destination container (ID) : TabSwapper only for the moment
-		this.destinationTitle = null;    // Destination container title : Tab title only for the moment
+		this.destinationTitle = null;   // Destination container title : Tab title only for the moment
 
 		this.extend_instances = null;	// Local store for Extends instances
 
@@ -292,8 +292,7 @@ ION.ExtendManager = new Class({
 	},
 
 	/**
-	 * Opens window of all items,
-	 * grouped by item definitions
+	 * Opens window of all items, grouped by item definitions
 	 */
 	openListWindow: function()
 	{
@@ -369,8 +368,7 @@ ION.ExtendManager = new Class({
 	},
 
 	/**
-	 * Gets the Window Items List
-	 * (Window of extends selection)
+	 * Gets the Window Items List (Window of extends selection)
 	 *
 	 * By context and id_context if exists
 	 */
@@ -417,8 +415,7 @@ ION.ExtendManager = new Class({
 	},
 
 	/**
-	 * Build the Extend list HTML
-	 * (Displayed in Extends select window)
+	 * Build the Extend list HTML (Displayed in Extends select window)
 	 *
 	 * @param json
 	 */
@@ -591,8 +588,7 @@ ION.ExtendManager = new Class({
 	},
 
 	/**
-	 * List of Extend Field definitions
-	 * linked to one parent context
+	 * List of Extend Field definitions linked to one parent context
 	 */
 	getContextExtendList: function()
 	{
@@ -766,9 +762,7 @@ ION.ExtendManager = new Class({
 	},
 
 	/**
-	 * Get one context Extends Fields (instances)
-	 * linked to one context
-	 * and to one parent
+	 * Get one context Extends Fields (instances) linked to one context and to one parent
 	 *
 	 * @param	{Object}	[options]	{ onSuccess: function(extends) }	if 'onSuccess' is set in options, this method will be called.
 	 */
@@ -1384,7 +1378,7 @@ ION.ExtendManager = new Class({
 	 */
 	initExtendFieldContainer: function(container)
 	{
-		// Autogrow for potential textareas
+		// Auto-grow for potential textareas
 		ION.initFormAutoGrow(container);
 
 		// TinyMCE
@@ -1399,8 +1393,8 @@ ION.ExtendManager = new Class({
 	},
 
 	/**
-	 * @param container
-	 * @returns {string}
+	 * @param	{Element}	container
+	 * @returns {String}
 	 */
 	buildInstancesLangTab: function(container)
 	{
@@ -1458,8 +1452,7 @@ ION.ExtendManager = new Class({
 	},
 
 	/**
-	 * Analyse the destination and try to find out
-	 * one existing Extend List container
+	 * Analyse the destination and try to find out one existing Extend List container
 	 * Build it if mandatory
 	 */
 	getContextExtendContainer: function(parent)

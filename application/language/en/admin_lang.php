@@ -1065,7 +1065,8 @@ $lang['ionize_help_ef_default_value'] = 'If select, radio or checkbox, put the k
 $lang['ionize_help_ef_description'] = 'Displayed user help about this field, like this tooltip';
 $lang['ionize_help_ef_global'] = 'Is the extend field always visible for each element?';
 $lang['ionize_help_ef_name'] = 'Key to use with the field tag. Example: &#8249;ion:get key=&#34;field-name&#34; /&#8250;';
-$lang['ionize_help_ef_parent'] = 'Limit this extend field to a kind of parent or not';
+$lang['ionize_help_ef_parent'] = 'Limit this extend field to a kind of parent';
+$lang['ionize_help_ef_parent_type'] = 'Optional: Limit this extend field to a type of the selected kind of parent (page type or article type)';
 $lang['ionize_help_ef_values'] = 'value:label, separated by a line break';
 $lang['ionize_help_field_length'] = 'Field length';
 $lang['ionize_help_label_label'] = 'Displayed label of this field, in Ionize';
@@ -1087,6 +1088,7 @@ $lang['ionize_label_extend_field_for_medias'] = 'Media';
 $lang['ionize_label_extend_field_for_pages'] = 'Pages';
 $lang['ionize_label_extend_field_global'] = 'Global';
 $lang['ionize_label_extend_field_parent'] = 'Parent';
+$lang['ionize_label_extend_field_parent_type'] = 'Parent Type';
 $lang['ionize_label_extend_field_translated'] = 'Can be translated';
 $lang['ionize_label_extend_field_type'] = 'Field Type';
 $lang['ionize_label_extend_field_type'] = 'Type';

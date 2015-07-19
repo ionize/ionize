@@ -79,6 +79,20 @@
 		</dl>
 	<?php endif ;?>
 
+	<!-- Types of selected parent kind (page types / article types) -->
+	<dl class="small">
+		<dt>
+			<label for="parent_type_<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_parent_type'); ?>"><?php echo lang('ionize_label_extend_field_parent_type'); ?></label>
+		</dt>
+		<dd>
+			<select multiple="multiple" id="parent_type_<?php echo $id_extend_field; ?>" name="parent_type" class="select">
+				<?php foreach ($parent_types as $_parent_type) :?>
+					<option value="<?php echo $_parent_type ?>" <?php if ($parent_type==$_parent_type) :?> selected="selected" <?php endif ;?>><?php echo ucfirst($_parent_type); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</dd>
+	</dl>
+
 	<!-- Label -->
 	<dl class="small">
 		<dt class="mt10"><label><?php echo lang('ionize_label_label'); ?></label></dt>
