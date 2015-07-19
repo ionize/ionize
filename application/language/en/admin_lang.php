@@ -1066,11 +1066,12 @@ $lang['ionize_help_ef_description'] = 'Displayed user help about this field, lik
 $lang['ionize_help_ef_global'] = 'Is the extend field always visible for each element?';
 $lang['ionize_help_ef_name'] = 'Key to use with the field tag. Example: &#8249;ion:get key=&#34;field-name&#34; /&#8250;';
 $lang['ionize_help_ef_parent'] = 'Limit this extend field to a kind of parent';
-$lang['ionize_help_ef_parent_type'] = 'Optional: Limit this extend field to a type of the selected kind of parent (page type or article type)';
+$lang['ionize_help_ef_parent_type'] = 'Optional: Limit this extend field to a type of the selected kind of parent';
 $lang['ionize_help_ef_values'] = 'value:label, separated by a line break';
 $lang['ionize_help_field_length'] = 'Field length';
 $lang['ionize_help_label_label'] = 'Displayed label of this field, in Ionize';
 $lang['ionize_label_add_field'] = 'Add Field';
+$lang['ionize_label_all_types'] = 'All Types';
 $lang['ionize_label_categories'] = 'Categories';
 $lang['ionize_label_category'] = 'Category';
 $lang['ionize_label_default_value'] = 'Default values';

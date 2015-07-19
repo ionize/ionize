@@ -23,7 +23,7 @@
 					<a class="icon delete right" data-id="<?php echo $extend['id_extend_field']; ?>"></a>
 				<?php endif;?>
 				<span class="icon left drag"></span>
-				<a class="left ml5 edit" data-id="<?php echo $extend['id_extend_field']; ?>" title="<?php echo lang('ionize_title_element_field_edit') ?> : <?php echo $extend['label']; ?>"><?php echo $extend['name']; ?> | <?php echo $extend['label']; ?></a>
+				<a class="left ml5 edit" data-id="<?php echo $extend['id_extend_field']; ?>" title="<?php echo lang('ionize_title_element_field_edit') ?>: <?php echo $extend['label']; ?>"><?php echo $extend['name']; ?> | <?php echo $extend['label']; ?></a>
 			</li>
 
 			<?php endif ;?>

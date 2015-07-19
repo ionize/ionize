@@ -20,19 +20,18 @@
 
 <div class="main subtitle">
 	<p>
-
 		<?php if ($id_extend_field) :?>
-			<span class="lite"><?php echo lang('ionize_label_id') ?> : </span>
+			<span class="lite"><?php echo lang('ionize_label_id') ?>: </span>
 			<?php echo $id_extend_field; ?>
 		<?php endif ;?>
 		<?php if ($id_extend_field != '' && $limit_to_parent) :?>
 			<span class="lite"> | </span>
 		<?php endif ;?>
 		<?php if ($limit_to_parent) :?>
-			<span class="lite"><?php echo lang('ionize_label_extend_field_parent') ?> : </span>
+			<span class="lite"><?php echo lang('ionize_label_extend_field_parent') ?>: </span>
 			<?php echo ucfirst($limit_to_parent) ?>
 			<?php if ($id_parent) :?>
-				<span class="lite"> | <?php echo lang('ionize_label_parent_id') ?> : </span>
+				<span class="lite"> | <?php echo lang('ionize_label_parent_id') ?>: </span>
 				<?php echo $id_parent ?>
 			<?php endif ;?>
 		<?php endif ;?>
@@ -80,12 +79,13 @@
 	<?php endif ;?>
 
 	<!-- Types of selected parent kind (page types / article types) -->
-	<dl class="small">
+	<dl class="small" id="dl_parent_type_<?php echo $id_extend_field; ?>">
 		<dt>
 			<label for="parent_type_<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_parent_type'); ?>"><?php echo lang('ionize_label_extend_field_parent_type'); ?></label>
 		</dt>
 		<dd>
-			<select multiple="multiple" id="parent_type_<?php echo $id_extend_field; ?>" name="parent_type" class="select">
+			<select size="<?php echo count($parent_types) + 1; ?>" multiple="multiple" id="parent_type_<?php echo $id_extend_field; ?>" name="parent_type" class="select">
+				<option value="0"><?php echo lang('ionize_label_all_types'); ?></option>
 				<?php foreach ($parent_types as $_parent_type) :?>
 					<option value="<?php echo $_parent_type ?>" <?php if ($parent_type==$_parent_type) :?> selected="selected" <?php endif ;?>><?php echo ucfirst($_parent_type); ?></option>
 				<?php endforeach; ?>
@@ -100,34 +100,24 @@
 
 			<!-- Tabs -->
 			<div id="extendFieldTab<?php echo $id_extend_field; ?>" class="mainTabs small">
-
 				<ul class="tab-menu">
-
 					<?php foreach(Settings::get_languages() as $language) :?>
-
 						<li class="tab_extend<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
-
 					<?php endforeach ;?>
-
 				</ul>
 				<div class="clear"></div>
-
 			</div>
 
 			<div id="extendFieldTabContent<?php echo $id_extend_field; ?>">
-
 				<?php foreach(Settings::get_languages() as $language) :?>
-
 					<?php $lang = $language['lang']; ?>
-
 					<div class="tabcontent <?php echo $lang; ?>">
-
 						<!-- Label -->
 						<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title w96p" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
-
 					</div>
 				<?php endforeach ;?>
 			</div>
+
 		</dd>
 	</dl>
 
@@ -226,7 +216,6 @@
 
 	<?php endif ;?>
 
-
 </form>
 
 <div class="buttons">
@@ -240,7 +229,6 @@
 	var id_type =  '<?php echo $type; ?>';
 	var extend_types =  JSON.decode('<?php echo $extend_types; ?>', false);
 	var default_lang_code  = '<?php echo Settings::get_lang("default") ?>';
-
 
 	function get_extend_type(id_type)
 	{
@@ -270,7 +258,6 @@
 		if (['radio','checkbox','select','select-multiple'].contains(type.html_element_type)) $('efListHelp').show(); else $('efListHelp').hide();
 		if (type.translated == 1) translate_block.show(); else translate_block.hide();
 	}
-	
 
 	var elTypeById = $('type' + id);
 	elTypeById.addEvent('change', function()
@@ -280,6 +267,16 @@
 	});
 	display_value_block(elTypeById.value);
 
+	// Install parent kind select observer: show parent type select only for parents: page + article
+	$('parent<?php echo $id_extend_field; ?>').addEvent('change', function()
+	{
+		var parent_type = $('parent<?php echo $id_extend_field; ?>').value;
+		$('dl_parent_type_<?php echo $id_extend_field; ?>')[
+			parent_type === 'page' || parent_type === 'article'
+				? 'show'
+				: 'hide'
+		]();
+	});
 
 	// Form Validation
 	Form.Validator.add('checkListFormat', {
@@ -328,19 +325,20 @@
 
 	// Tabs
 	var extendFieldTab<?php echo $id_extend_field; ?> = new TabSwapper({
-		tabsContainer: 'extendFieldTab<?php echo $id_extend_field; ?>',
-		sectionsContainer: 'extendFieldTabContent<?php echo $id_extend_field; ?>',
-		selectedClass: 'selected',
-		deselectedClass: '',
-		tabs: 'li',
-		clickers: 'li a',
-		sections: 'div.tabcontent'
+		tabsContainer		: 'extendFieldTab<?php echo $id_extend_field; ?>',
+		sectionsContainer	: 'extendFieldTabContent<?php echo $id_extend_field; ?>',
+		selectedClass		: 'selected',
+		deselectedClass		: '',
+		tabs				: 'li',
+		clickers			: 'li a',
+		sections			: 'div.tabcontent'
 	});
 
 	// Delete Action
-	if (typeOf($('bDeleteextendfield' + id)) != 'null')
+	var elBDeleteExtendField = $('bDeleteextendfield' + id);
+	if (elBDeleteExtendField != null)
 	{
-		$('bDeleteextendfield' + id).addEvent('click', function()
+		elBDeleteExtendField.addEvent('click', function()
 		{
 			ION.confirmation(
 				'wConfirmDelete' + id,
@@ -361,6 +359,4 @@
 			);
 		});
 	}
-
 </script>
-

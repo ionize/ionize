@@ -242,7 +242,7 @@ if ($tracker_title == '')
 
 								<?php if( ! is_null($lang_url)) :?>
 									<br/>
-									<?php echo lang('ionize_label_full_url'); ?> : <i class="selectable">/<?php echo $lang_url; ?></i>
+									<?php echo lang('ionize_label_full_url'); ?>: <i class="selectable">/<?php echo $lang_url; ?></i>
 								<?php endif; ?>
 
 							</dd>

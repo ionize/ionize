@@ -48,7 +48,7 @@ if ($tracker_title == '')
 						</a>
 
 						<?php if( ! empty($breadcrump)) :?>
-							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?> : </span><?php echo$breadcrump?>
+							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?>: </span><?php echo$breadcrump?>
 						<?php endif ;?>
 					</p>
 				</div>

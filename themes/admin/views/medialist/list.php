@@ -48,7 +48,7 @@ $filter = implode(',', $filter);
 					<?php if(Authority::can('delete', 'admin/medialist')) :?>
 						<a class="icon remove right" title="<?php echo lang('ionize_label_remove_media'); ?>" data-id="<?php echo $id; ?>"></a>
 					<?php endif ;?>
-					<a title="<?php echo $id ?> : <?php echo $media['path'] ?>" class="icon info right mr5"></a>
+					<a title="<?php echo $id ?>: <?php echo $media['path'] ?>" class="icon info right mr5"></a>
 					<?php if ( ! empty($media['article_paths'])) :?>
 						<a title="<?php echo $media['article_paths'] ?>" class="icon right article mr5"></a>
 					<?php endif ;?>
@@ -222,7 +222,7 @@ $filter = implode(',', $filter);
 		});
 	});
 
-	// Display mode : Cards or List
+	// Display mode: Cards or List
 	var medialistView = Cookie.read('medialistView');
 	if (medialistView == 'list') $('btnMedialistViewList').click();
 

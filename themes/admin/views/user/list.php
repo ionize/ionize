@@ -10,9 +10,9 @@
 <p class="mt10">
 	<strong>
 		<?php if( ! empty($filter)) :?>
-			<?php echo lang('ionize_label_filter_result') ?> :
+			<?php echo lang('ionize_label_filter_result') ?>:
 		<?php else: ?>
-			<?php echo lang('ionize_label_users_count') ?> :
+			<?php echo lang('ionize_label_users_count') ?>:
 		<?php endif; ?>
 	</strong>
 	<?php echo $users_count ?>

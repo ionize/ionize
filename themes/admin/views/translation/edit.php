@@ -70,7 +70,7 @@
 						</a>
 					</div>
 					<div class="divider title-filter">
-						<?php echo lang('ionize_label_filter_by'); ?> :
+						<?php echo lang('ionize_label_filter_by'); ?>:
 					</div>
 
 				</div>
@@ -117,7 +117,6 @@
 									}
 
 									$class = ( ! empty($class)) ? ' ' . implode(' ', $class) : '';
-
 								?>
 								<tr class="translation_item translation_<?php echo $lang; ?><?php echo $class; ?>">
 									<th>
