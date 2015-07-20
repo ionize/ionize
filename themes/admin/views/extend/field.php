@@ -50,6 +50,7 @@
 	<input id="id_extend_field" name="id_extend_field" type="hidden" value="<?php echo $id_extend_field; ?>" />
 	<input id="ordering" name="ordering" type="hidden" value="<?php echo $ordering; ?>" />
 	<input type="hidden" name="id_parent" value="<?php echo $id_parent ?>" />
+	<input id="parent_types" type="hidden" name="parent_types" value="<?php echo implode(',', $_article_types) ?>" />
 	<?php if ( ! empty($context)) :?>
 		<input type="hidden" name="context" value="<?php echo $context ?>" />
 	<?php endif ;?>
@@ -276,6 +277,7 @@
 		$('dl_article_type_<?php echo $id_extend_field; ?>')[parent_type === 'article' ? 'show' : 'hide']();
 	});
 
+	// Install article type change observer: select all when none selected, update IDs value field
 	var elArticleTypeSelect = $('article_type_<?php echo $id_extend_field; ?>');
 	elArticleTypeSelect.addEvent('change', function(e)
 	{
@@ -286,6 +288,15 @@
 				option.set('selected', true);
 			});
 		}
+
+		$('parent_types').setProperty('value', '');
+		elArticleTypeSelect.getSelected().each(function(option){
+			var elParentTypes = $('parent_types');
+			elParentTypes.setProperty(
+				'value',
+				elParentTypes.get('value') + parseInt(option.value, 10) + ','
+			);
+		});
 	});
 
 	// Form Validation
