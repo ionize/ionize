@@ -209,9 +209,9 @@ CREATE TABLE IF NOT EXISTS extend_fields (
     KEY idx_extend_fields_id_extend_field (id_extend_field) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8   AUTO_INCREMENT=1;
 
--- Extend field context: relation among extend field and parent type,
--- optionally makes extend field types exclusively shown only when used on that page type / article type
-CREATE TABLE IF NOT EXISTS extend_field_context (
+-- Extend field context: relation among extend field and parent type (1:n)
+-- optionally makes extend field types exclusive available only when used on that parent type, eg: article type
+CREATE TABLE IF NOT EXISTS extend_field_parent_types (
 	id_extend_field INT(11) UNSIGNED NOT NULL,
 	id_parent_type int(11) UNSIGNED NOT NULL,
 	PRIMARY KEY  (id_extend_field),

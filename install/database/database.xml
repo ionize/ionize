@@ -272,7 +272,7 @@
 		</query>
 
 		<query>
-			CREATE TABLE IF NOT EXISTS extend_field_context (
+			CREATE TABLE IF NOT EXISTS extend_field_parent_types (
 				id_extend_field INT(11) UNSIGNED NOT NULL,
 				id_parent_type int(11) UNSIGNED NOT NULL,
 				PRIMARY KEY  (id_extend_field),
