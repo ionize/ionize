@@ -1859,8 +1859,7 @@ class Base_model extends CI_Model
 	/**
 	 * Sets the current lang table name
 	 *
-	 * @param string	lang table name
-	 *
+	 * @param	string	$table	lang table name
 	 */
 	public function set_lang_table($table)
 	{
@@ -1877,8 +1876,7 @@ class Base_model extends CI_Model
 	 * @usage	In models :
 	 *			$this->set_with_media_table()
 	 *
-	 * @param string	table name
-	 *
+	 * @param string	$table	lang table name
 	 */
 	public function set_with_media_table($table = NULL)
 	{
@@ -1896,7 +1894,7 @@ class Base_model extends CI_Model
 	/**
 	 * Get the elements definition and store them in the private property "elements_def"
 	 *
-	 * @param	String	Parent type
+	 * @param	String	$lang	Parent type
 	 * @return	Array	Extend fields definition array
 	 */
 	protected function set_elements_definition($lang)
@@ -1925,11 +1923,9 @@ class Base_model extends CI_Model
 	/**
 	 * Save one element, including lang depending data
 	 *
-	 * @param 	array	Standard data table
-	 * @param 	array	Lang depending data table. optional.
-	 *
+	 * @param 	array	$data		Standard data table
+	 * @param 	array	$dataLang	Lang depending data table. optional.
 	 * @return 	int		Saved element ID
-	 *
 	 */
 	public function save($data, $dataLang = array())
 	{
@@ -2076,7 +2072,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param	mixed	String of coma separated new order or array of order
 	 * @return	string	Coma separated order
-	 *
 	 */
 	public function save_ordering($ordering, $parent = FALSE, $id_parent = FALSE)
 	{
@@ -2230,11 +2225,12 @@ class Base_model extends CI_Model
 	 *
 	 * TODO : Replace function "delete_joined_keys" by this
 	 *
-	 * @param	Mixed	Parent table PK value
-	 * @param	String	Child table name
-	 * @param	Mixed	Child table PK value
-	 * @param	String	Link table prefix.
-	 *
+	 * @param   string  $parent_table
+	 * @param   string  $id_parent     Parent table PK value
+	 * @param   string  $child_table   Child table name
+	 * @param   string  $id_child      Child table PK value
+	 * @param   string  $prefix        Link table prefix
+	 * @return  int
 	 */
 	public function delete_simple_link($parent_table, $id_parent, $child_table, $id_child, $prefix='')
 	{
@@ -2260,7 +2256,6 @@ class Base_model extends CI_Model
 	 * @param	array	By ref. The array to add the media datas
 	 * @param	string	parent name. Example : 'page', 'article', etc.
 	 * @param	string	Lang code
-	 *
 	 */
 	protected function add_linked_media(&$data, $parent, $lang = NULL)
 	{
@@ -2419,7 +2414,6 @@ class Base_model extends CI_Model
 	 * @param	Array	Data array. By ref.
 	 * @param	String	Parent type. can be "page", "article", etc.
 	 * @param	String	Lang code
-	 *
 	 */
 	protected function add_extend_fields(&$data, $parent, $lang = NULL)
 	{
@@ -2524,9 +2518,7 @@ class Base_model extends CI_Model
 	 * @param	string/array		items to save. Simple array of keys.
 	 * @param	string		parent table name.
 	 * @param	int			parent ID
-	 *
 	 * @return	int		number of attached items
-	 *
 	 */
 	public function join_items_keys_to($items_table, $items, $parent_table, $parent_id)
 	{
@@ -2580,9 +2572,7 @@ class Base_model extends CI_Model
 	 * @param	int			item ID to delete
 	 * @param	string		parent table name.
 	 * @param	int			parent ID
-	 *
 	 * @return	int			number of affected rows
-	 *
 	 */
 	public function delete_joined_key($items_table, $item_key, $parent_table, $parent_id)
 	{
@@ -2613,9 +2603,7 @@ class Base_model extends CI_Model
 	 * Set an item online / offline depending on its current status
 	 *
 	 * @param	int			item ID
-	 *
 	 * @return 	boolean		New status
-	 *
 	 */
 	public function switch_online($id)
 	{
@@ -2642,7 +2630,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param	int		ID of the search element
 	 * @param	array	By ref, the template array
-	 *
 	 */
 	public function feed_template($id, &$template)
 	{
@@ -2717,8 +2704,8 @@ class Base_model extends CI_Model
 	/**
 	 * Feeds the template array with blank data for each field in the table
 	 *
-	 * @param	array	By ref, the template array
-	 *
+	 * @param	array   &$data	By ref, the template array
+	 * @return  array
 	 */
 	public function feed_blank_template(&$data = array())
 	{
@@ -2743,8 +2730,8 @@ class Base_model extends CI_Model
 	/**
 	 * Feed the template array with blank data for each field in language table
 	 *
-	 * @param	array	By ref, the template array
-	 *
+	 * @param   array|bool    $template  By ref, the template array
+	 * @return  array|bool
 	 */
 	public function feed_blank_lang_template(&$template = FALSE)
 	{
@@ -2779,7 +2766,7 @@ class Base_model extends CI_Model
 	{
 		$data = array();
 
-		$table = ( ! is_null($table)) ? $table : $this->lang_table;
+//		$table = ( ! is_null($table)) ? $table : $this->lang_table;
 
 		if ( ! is_null($id))
 			$this->feed_lang_template($id, $data);
@@ -2864,12 +2851,10 @@ class Base_model extends CI_Model
 	 *
 	 * @access	public
 	 *
-	 * @param 	Mixed		Where condition. If single value, PK of the table
-	 * @param 	array		An associative array of data
-	 * @param 	String		Table name. If not set, current models table
-	 *
+	 * @param 	Mixed		$where  Where condition. If single value, PK of the table
+	 * @param 	array		$data   An associative array of data
+	 * @param 	String		$table  Table name. If not set, current models table
 	 * @return	int			Number of updated rows
-	 *
 	 */
 	public function update($where = NULL, $data = NULL, $table = FALSE)
 	{
@@ -2931,7 +2916,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param array $where
 	 * @param null  $table
-	 *
 	 * @return int
 	 */
 	public function count($where = array(), $table = NULL)
@@ -2977,7 +2961,6 @@ class Base_model extends CI_Model
 	 * @access	public
 	 * @param	bool	true / false
 	 * @return	int 	The number of all results
-	 *
 	 */
 	public function count_all($results = FALSE)
 	{
@@ -3002,7 +2985,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param array $where
 	 * @param null  $table
-	 *
 	 * @return mixed
 	 */
 	public function count_where($where = array(), $table =NULL)
@@ -3047,7 +3029,6 @@ class Base_model extends CI_Model
 	 *
 	 * @access	public
 	 * @return	void
-	 *
 	 */
 	public function empty_table()
 	{
@@ -3063,7 +3044,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param null $where
 	 * @param null $table
-	 *
 	 * @return bool
 	 */
 	public function is_empty($where = NULL, $table = NULL)
@@ -3092,12 +3072,10 @@ class Base_model extends CI_Model
 	/**
 	 * Check if a record exists in a table
 	 *
+	 * @access	public
 	 * @param	array	conditions
 	 * @param	string	table name
-	 *
-	 * @access	public
 	 * @return	boolean
-	 *
 	 */
 	public function exists($where = NULL, $table = NULL)
 	{
@@ -3123,9 +3101,7 @@ class Base_model extends CI_Model
 	 * @param      $value			Value of the field to test on
 	 * @param null $element_id		Optional element ID (in case of change of the field value)
 	 * @param null $table
-	 *
 	 * @return bool
-	 *
 	 */
 	public function check_exists($field, $value, $element_id = NULL, $table = NULL)
 	{
@@ -3166,9 +3142,7 @@ class Base_model extends CI_Model
 	 *
 	 * @param	String		Table name
 	 * @param   Boolean     With / Without primary key. Default FALSE : without.
-	 *
 	 * @return	Array		Array of fields data
-	 *
 	 */
 	public function field_data($table=NULL, $with_pk = FALSE)
 	{
@@ -3226,9 +3200,7 @@ class Base_model extends CI_Model
 	 *
 	 * @param	String		Table name
 	 * @param null $table
-	 *
  	 * @return	Boolean		True if the field is found
-	 *
 	 */
 	public function has_field($field, $table = NULL)
 	{
@@ -3250,7 +3222,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param      $data		The data array to clean
 	 * @param bool $table		Reference table. $this->table if not set.
-	 *
 	 * @return array
 	 */
 	public function clean_data($data, $table = FALSE)
@@ -3284,7 +3255,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param      $data		The data array to clean
 	 * @param bool $table		Reference table. $this->table if not set.
-	 *
 	 * @return array
 	 */
 	public function clean_data_lang($data, $table = FALSE)
@@ -3333,7 +3303,6 @@ class Base_model extends CI_Model
 	 *	update table set ordering = @rank:=@rank+1
 	 *	where ...
 	 *	ORDER BY ordering ASC;
-	 *
 	 */
 	public function reorder($table = NULL, $where = array())
 	{
@@ -3370,9 +3339,7 @@ class Base_model extends CI_Model
 	 *
 	 * @param	Array	condition array
 	 * @param	String	Table name
-	 *
 	 * @return	Array	Corrected condition array
-	 *
 	 */
 	public function correct_ambiguous_conditions($array, $table)
 	{
@@ -3429,7 +3396,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param	string
 	 * @return	Array	List of table fields
-	 *
 	 */
 	public function list_fields($table = NULL)
 	{
@@ -3495,7 +3461,7 @@ class Base_model extends CI_Model
 				unset($where['where_in']);
 			}
 
-			$protect = TRUE;
+//			$protect = TRUE;
 
 			foreach ($where as $field => $value)
 			{

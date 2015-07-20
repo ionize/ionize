@@ -108,7 +108,7 @@ class Element_field extends MY_Admin
 				)
 			);
 
-			// If no ID (means new one) and this item name already exists in DB : No save
+			// If no ID (means new one) and this item name already exists in DB: No save
 			if ($this->input->post('id_extend_field') == '' && $exist)
 			{
 				$this->error(lang('ionize_message_element_field_name_exists'));			
@@ -126,7 +126,7 @@ class Element_field extends MY_Admin
 
 				// Save data
 				$this->id = $this->extend_field_model->save($data, $data);
-	
+
 				$this->callback = array
 				(
 					array(
