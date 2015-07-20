@@ -19,6 +19,7 @@ define('MC_LOGGER_FATAL', 40);
  * designed to be compact but still powerful and flexible.
  */
 class Moxiecode_Logger {
+
 	// Private fields
 	var $_path;
 	var $_filename;

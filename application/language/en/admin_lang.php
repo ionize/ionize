@@ -1059,7 +1059,7 @@ $lang['ionize_button_full_mode'] = 'Full Mode';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_confirm_extend_delete'] = 'Are you really sure?<br/>This extend and ALL the linked data will be removed!';
-$lang['ionize_help_ef_article_type'] = 'Limit this extend field to article type(s)';
+$lang['ionize_help_ef_article_type'] = 'Limit this extend field to article type(s), one at least.';
 $lang['ionize_help_ef_copy_in'] = 'DB field to copy the value in after save. Syntax: table.field';
 $lang['ionize_help_ef_copy_in_pk'] = 'Table PK name';
 $lang['ionize_help_ef_default_value'] = 'If select, radio or checkbox, put the key';

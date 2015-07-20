@@ -84,7 +84,7 @@
 		<dd>
 			<select size="<?php echo count($article_types); ?>" multiple="multiple" id="article_type_<?php echo $id_extend_field; ?>" name="article_type" class="select">
 				<?php foreach ($article_types as $article_type) :?>
-					<option value="<?php echo $article_type['id_type'] ?>" <?php if (in_array($article_type['id_type'], $_article_types)) :?> selected="selected" <?php endif ;?>><?php echo $article_type['type']; ?></option>
+					<option value="<?php echo $article_type['id_type'] ?>" <?php if ( count($_article_types) === 0 || in_array($article_type['id_type'], $_article_types)) :?> selected="selected" <?php endif ;?>><?php echo $article_type['type']; ?></option>
 				<?php endforeach; ?>
 			</select>
 		</dd>
@@ -274,6 +274,18 @@
 	{
 		var parent_type = $('parent<?php echo $id_extend_field; ?>').value;
 		$('dl_article_type_<?php echo $id_extend_field; ?>')[parent_type === 'article' ? 'show' : 'hide']();
+	});
+
+	var elArticleTypeSelect = $('article_type_<?php echo $id_extend_field; ?>');
+	elArticleTypeSelect.addEvent('change', function(e)
+	{
+		var selected = elArticleTypeSelect.getSelected();
+		if(selected.length === 0) {
+			var allOptions = $$('#article_type_<?php echo $id_extend_field; ?> option');
+			allOptions.each(function(option){
+				option.set('selected', true);
+			});
+		}
 	});
 
 	// Form Validation
