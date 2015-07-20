@@ -1059,6 +1059,7 @@ $lang['ionize_button_full_mode'] = 'Full Mode';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_confirm_extend_delete'] = 'Are you really sure?<br/>This extend and ALL the linked data will be removed!';
+$lang['ionize_help_ef_article_type'] = 'Limit this extend field to article type(s)';
 $lang['ionize_help_ef_copy_in'] = 'DB field to copy the value in after save. Syntax: table.field';
 $lang['ionize_help_ef_copy_in_pk'] = 'Table PK name';
 $lang['ionize_help_ef_default_value'] = 'If select, radio or checkbox, put the key';
@@ -1066,7 +1067,7 @@ $lang['ionize_help_ef_description'] = 'Displayed user help about this field, lik
 $lang['ionize_help_ef_global'] = 'Is the extend field always visible for each element?';
 $lang['ionize_help_ef_name'] = 'Key to use with the field tag. Example: &#8249;ion:get key=&#34;field-name&#34; /&#8250;';
 $lang['ionize_help_ef_parent'] = 'Limit this extend field to a kind of parent';
-$lang['ionize_help_ef_parent_type'] = 'Optional: Limit this extend field to a type of the selected kind of parent';
+$lang['ionize_help_ef_parent_type'] = 'Limit this extend field to a type of the selected kind of parent';
 $lang['ionize_help_ef_values'] = 'value:label, separated by a line break';
 $lang['ionize_help_field_length'] = 'Field length';
 $lang['ionize_help_label_label'] = 'Displayed label of this field, in Ionize';
@@ -1079,6 +1080,7 @@ $lang['ionize_label_edit_categories'] = 'Edit Categories';
 $lang['ionize_label_edit_category'] = 'Edit Category';
 $lang['ionize_label_edit_types'] = 'Edit Types';
 $lang['ionize_label_extend'] = 'Extend';
+$lang['ionize_label_extend_field_article_type'] = 'Article Type';
 $lang['ionize_label_extend_field_context'] = 'Context';
 $lang['ionize_label_extend_field_copy_in'] = 'Copy value in';
 $lang['ionize_label_extend_field_copy_in_pk'] = 'Copy in PK';

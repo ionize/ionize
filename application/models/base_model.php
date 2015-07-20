@@ -216,6 +216,7 @@ class Base_model extends CI_Model
 	/**
 	 * Get the model lang table name
 	 *
+	 * @return	string
 	 */
 	public function get_lang_table()
 	{
@@ -225,7 +226,9 @@ class Base_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * @param	array $table_definition
+	 */
 	public function set_table_definition($table_definition)
 	{
 		$this->_table_definition = $table_definition;
@@ -234,8 +237,10 @@ class Base_model extends CI_Model
 
 	// ------------------------------------------------------------------------
 
-
-	public function get_table_definition($table_definition)
+	/**
+	 * @return array
+	 */
+	public function get_table_definition()
 	{
 		return $this->_table_definition;
 	}
@@ -247,10 +252,9 @@ class Base_model extends CI_Model
 	/** 
 	 * Get one element
 	 *
-	 * @param	string		WHERE array or record ID of extending entity
-	 * @param	string		Optional. Lang code
-	 * @return	array		array of media
-	 *
+	 * @param	string	$where		array or record ID of extending entity
+	 * @param	string	$lang		Optional. Lang code
+	 * @return	array of media
 	 */
 	public function get($where, $lang = NULL)
 	{
@@ -337,9 +341,8 @@ class Base_model extends CI_Model
 	 * Get a resultset Where
 	 *
 	 * @access	public
-	 * @param 	array	An associative array
+	 * @param 	array	$where	An associative array
 	 * @return	array	Result set
-	 *
 	 */
 	public function get_where($where = NULL)
 	{
@@ -353,9 +356,8 @@ class Base_model extends CI_Model
 	/**
 	 * Get all the records
 	 *
-	 * @param null $table
-	 *
-	 * @return mixed
+	 * @param   string $table
+	 * @return  mixed
 	 */
 	public function get_all($table = NULL)
 	{
@@ -374,9 +376,8 @@ class Base_model extends CI_Model
 	 * Get one row
 	 *
 	 * @access	public
-	 * @param 	int		The result id
-	 * @return	object	A row object
-	 *
+	 * @param 	int		$id     The result id
+	 * @return	A row object
 	 */
 	public function get_row($id = NULL)
 	{
@@ -393,10 +394,9 @@ class Base_model extends CI_Model
 	/**
 	 * Get one row_array
 	 *
-	 * @param null $where
-	 * @param null $table
-	 *
-	 * @return mixed
+	 * @param   string  [$where]
+	 * @param   string  [$table]
+	 * @return  mixed
 	 */
 	public function get_row_array($where = NULL, $table = NULL)
 	{
@@ -436,12 +436,10 @@ class Base_model extends CI_Model
 
 
 	/**
-	 * @param       $field
-	 * @param array $where
-	 * @param null  $table
-	 *
-	 * @return string
-	 *
+	 * @param   string  $field
+	 * @param   string  [$where]
+	 * @param   string  [$table]
+	 * @return  string
 	 */
 	public function get_group_concat($field, $where=array(), $table=NULL)
 	{
@@ -471,12 +469,10 @@ class Base_model extends CI_Model
 
 
 	/**
-	 * @param       $field
-	 * @param array $where
-	 * @param null  $table
-	 *
+	 * @param   string  $field
+	 * @param   string  [$where]
+	 * @param   string  [$table]
 	 * @return array
-	 *
 	 */
 	public function get_group_concat_array($field, $where=array(), $table = NULL)
 	{
@@ -496,10 +492,9 @@ class Base_model extends CI_Model
 	 * Get array of records
 	 *
 	 * @access	public
-	 * @param 	array		An associative array
-	 * @param 	string		table name. Optional.
-	 * @return	array		Array of records
-	 *
+	 * @param 	array		$where  An associative array
+	 * @param 	string		$table  table name. Optional.
+	 * @return	Array of records
 	 */
 	public function get_list($where = NULL, $table = NULL)
 	{
@@ -571,7 +566,6 @@ class Base_model extends CI_Model
 	 *
 	 * @param null $where
 	 * @param null $table
-	 *
 	 * @return array
 	 */
 	public function get_lang($where = NULL, $table=NULL)
@@ -647,9 +641,7 @@ class Base_model extends CI_Model
 	 *	@param	string	Language code
 	 *	@param	number	Limit to x records
 	 *	@param	string	complete LIKE String
-	 *
 	 *	@return	array	The complete arrayList of element, including medias
-	 *
 	 */
 	public function get_lang_list($where = array(), $lang = NULL)
 	{
@@ -709,7 +701,6 @@ class Base_model extends CI_Model
 	 * @param array 			$filter
 	 * @param int   			$nb_by_page
 	 * @param array 			$sort
-	 *
 	 * @return array			Array(
 	 *               				'items' => 	Array of filtered results, limited to the asked page
 	 *               				'nb' => 	Total Nb of filtered results
@@ -1052,9 +1043,7 @@ class Base_model extends CI_Model
 	 * Get pages or articles from their lang URL
 	 *
 	 * @param 	Mixed	ID or array of IDs to exclude for the search
-	 *
-	 * @returns	Array	Array of elements
-	 *
+	 * @return 	Array	Array of elements
 	 */
 	public function get_from_urls($urls, $excluded_id)
 	{

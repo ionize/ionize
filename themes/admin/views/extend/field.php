@@ -5,9 +5,7 @@
  * @receives :
  * 		- Extend definitions fields in case of existing extend definition edition
  * 		- $parents : List of potential extend parents
- *
  */
-
 ?>
 
 <?php if (Authority::can('delete', 'admin/extend') && $id_extend_field != '') :?>
@@ -78,16 +76,15 @@
 		</dl>
 	<?php endif ;?>
 
-	<!-- Types of selected parent kind (page types / article types) -->
-	<dl class="small" id="dl_parent_type_<?php echo $id_extend_field; ?>">
+	<!-- article extend field: article type -->
+	<dl class="small" id="dl_article_type_<?php echo $id_extend_field; ?>"<?php if($parent !== 'article') : ?> style="display:none"<?php endif; ?>>
 		<dt>
-			<label for="parent_type_<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_parent_type'); ?>"><?php echo lang('ionize_label_extend_field_parent_type'); ?></label>
+			<label for="article_type_<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_article_type'); ?>"><?php echo lang('ionize_label_extend_field_article_type'); ?></label>
 		</dt>
 		<dd>
-			<select size="<?php echo count($parent_types) + 1; ?>" multiple="multiple" id="parent_type_<?php echo $id_extend_field; ?>" name="parent_type" class="select">
-				<option value="0"><?php echo lang('ionize_label_all_types'); ?></option>
-				<?php foreach ($parent_types as $_parent_type) :?>
-					<option value="<?php echo $_parent_type ?>" <?php if ($parent_type==$_parent_type) :?> selected="selected" <?php endif ;?>><?php echo ucfirst($_parent_type); ?></option>
+			<select size="<?php echo count($article_types); ?>" multiple="multiple" id="article_type_<?php echo $id_extend_field; ?>" name="article_type" class="select">
+				<?php foreach ($article_types as $article_type) :?>
+					<option value="<?php echo $article_type['id_type'] ?>" <?php if (in_array($article_type['id_type'], $_article_types)) :?> selected="selected" <?php endif ;?>><?php echo $article_type['type']; ?></option>
 				<?php endforeach; ?>
 			</select>
 		</dd>
@@ -230,6 +227,9 @@
 	var extend_types =  JSON.decode('<?php echo $extend_types; ?>', false);
 	var default_lang_code  = '<?php echo Settings::get_lang("default") ?>';
 
+	/**
+	 * @param	{String} id_type
+	 */
 	function get_extend_type(id_type)
 	{
 		var type = null;
@@ -244,7 +244,9 @@
 		return type;
 	}
 
-
+	/**
+	 * @param	{String} id_type
+	 */
 	function display_value_block(id_type)
 	{
 		var type = get_extend_type(id_type);
@@ -267,15 +269,11 @@
 	});
 	display_value_block(elTypeById.value);
 
-	// Install parent kind select observer: show parent type select only for parents: page + article
+	// Install parent kind select observer: show article type select only for article
 	$('parent<?php echo $id_extend_field; ?>').addEvent('change', function()
 	{
 		var parent_type = $('parent<?php echo $id_extend_field; ?>').value;
-		$('dl_parent_type_<?php echo $id_extend_field; ?>')[
-			parent_type === 'page' || parent_type === 'article'
-				? 'show'
-				: 'hide'
-		]();
+		$('dl_article_type_<?php echo $id_extend_field; ?>')[parent_type === 'article' ? 'show' : 'hide']();
 	});
 
 	// Form Validation
