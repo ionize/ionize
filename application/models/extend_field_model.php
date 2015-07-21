@@ -32,7 +32,7 @@ class Extend_field_model extends Base_model
 
 	private static $_TYPE_TABLE = 'extend_field_type';
 
-	private static $_ARTICLE_TYPE_TABLE = 'extend_field_article_type';
+	private static $_LINKED_ARTICLE_TYPE_TABLE = 'extend_field_article_type';
 
 	/**
 	 * Constructor
@@ -61,10 +61,10 @@ class Extend_field_model extends Base_model
 
 	public function get_types()
 	{
+		/** @var	CI_DB_result	$query */
 		$query = $this->{$this->db_group}->get(self::$_TYPE_TABLE);
-		$result = $query->result_array();
 
-		return $result;
+		return $query->result_array();
 	}
 
 
@@ -78,6 +78,8 @@ class Extend_field_model extends Base_model
 		// Add parents found in extend table
 		$this->{$this->db_group}->select('parent');
 		$this->{$this->db_group}->distinct();
+
+		/** @var	CI_DB_result	$query */
 		$query = $this->{$this->db_group}->get($this->get_table());
 
 		$result = $query->result_array();
@@ -99,16 +101,17 @@ class Extend_field_model extends Base_model
 	 * @param	int		$id_extend_field
 	 * @return	array
 	 */
-	public function getArticleTypes($id_extend_field = 0) {
+	public function get_article_types($id_extend_field = 0) {
 		$id_extend_field = (int) $id_extend_field;
 
 		$typeIDs = array();
 		if( $id_extend_field > 0 )
 		{
-			$this->{$this->db_group}->select(self::$_ARTICLE_TYPE_TABLE.'.id_type');
+			$this->{$this->db_group}->select(self::$_LINKED_ARTICLE_TYPE_TABLE.'.id_type');
 			$this->{$this->db_group}->where('id_extend_field = ' . $id_extend_field);
 
-			$query = $this->{$this->db_group}->get(self::$_ARTICLE_TYPE_TABLE);
+			/** @var	CI_DB_result	$query */
+			$query = $this->{$this->db_group}->get(self::$_LINKED_ARTICLE_TYPE_TABLE);
 
 			if ( $query && $query->num_rows() > 0 ) {
 				$data = $query->result_array();
@@ -134,6 +137,7 @@ class Extend_field_model extends Base_model
 	public function get_list($where = array(), $lang = NULL)
 	{
 		$where['order_by'] = 'ordering ASC';
+
 
 		$this->{$this->db_group}->select(
 			$this->get_table() . '.*,'
@@ -322,7 +326,7 @@ class Extend_field_model extends Base_model
 	 * Get the current extend fields and their values for one parent element
 	 * Used by backend, as all the languages data are also get
 	 *
-	 * @param	string		$parent				Field & Field Definition parent name
+	 * @param	string		$parent				Field & Field Definition parent name, eg: 'article'
 	 * @param	string		[$id_parent]		Field instance parent ID
 	 * @param	string		[$id_field_parent]	Field Definition parent ID
 	 * @return 	array
@@ -332,7 +336,28 @@ class Extend_field_model extends Base_model
 		// Definitions
 		$where = array('parent' => $parent);
 		if ($id_field_parent) $where['id_parent'] = $id_field_parent;
+
 		$definitions = $this->get_list($where);
+
+		if($parent === 'article') {
+			/**
+			 * Article:
+			 * Reduce extend fields to those linked to current article type +fields w/o article type
+			 */
+			$keepDefinitionIDs = array_merge(
+				$this->get_extend_field_ids_by_article_id($id_parent),
+				array()
+				//$this->get_extend_field_ids_without_article_id()	@todo	debug
+			);
+
+			$keepDefinitions = array();
+			foreach($definitions as $definition) {
+				if(in_array($definition['id_extend_field'], $keepDefinitionIDs)) {
+					$keepDefinitions[] = $definition;
+				}
+			}
+			$definitions = $keepDefinitions;
+		}
 
 		// Fields Instances
 		$fields = array();
@@ -371,6 +396,7 @@ class Extend_field_model extends Base_model
 				'inner'
 			);
 
+			/** @var	CI_DB_result	$query */
 			$query = $this->{$this->db_group}->get($this->get_table());
 			if ( $query->num_rows() > 0) $fields = $query->result_array();
 		}
@@ -421,21 +447,69 @@ class Extend_field_model extends Base_model
 			}
 		}
 
-		if($parent === 'article') {
-			/**
-			 * Article: filter (reduce) extend fields
-			 * Keep only fields linked to current article type, and extend fields w/o any article type
-			 *
-			 */
-
-//			echo '<pre>';print_r($definitions);
-//			die();
-
-		}
-
 		return $definitions;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Get IDs of extend fields linked to given article ID
+	 *
+	 * @param	int		$id_article_type
+	 * @return	array
+	 */
+	public function get_extend_field_ids_by_article_id($id_article_type)
+	{
+		$ids = array();
+
+		$article = self::$ci->article_model->get_all_context($id_article_type);
+		if( ! empty($article) ) {
+			$article = array_pop($article);
+			/** @var	CI_DB_result	$query */
+			$query = $this->{$this->db_group}->query(
+				'SELECT id_extend_field
+				 FROM ' . self::$_LINKED_ARTICLE_TYPE_TABLE . '
+				 WHERE id_type = ' . $article['id_type']
+			);
+
+			foreach ($query->result_array() as $row)
+			{
+				$ids[]= $row['id_extend_field'];
+			}
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Get IDs of extend fields linked to no article type at all
+	 *
+	 * @return	array
+	 */
+	public function get_extend_field_ids_without_article_id()
+	{
+		$allExtendFieldIds = array();
+		/** @var	CI_DB_result	$query */
+		$query = $this->{$this->db_group}->query(
+			'SELECT id_extend_field FROM extend_field WHERE parent = \'article\' '
+		);
+		foreach ($query->result_array() as $row)
+		{
+			$allExtendFieldIds[]= $row['id_extend_field'];
+		}
+
+		$allLinkedExtendFieldIds = array();
+		$query = $this->{$this->db_group}->query(
+			'SELECT id_extend_field FROM extend_field_article_type WHERE 1'
+		);
+		foreach ($query->result_array() as $row)
+		{
+			$allExtendFieldIds[]= $row['id_extend_field'];
+		}
+
+		return array_unique(array_diff($allExtendFieldIds, $allLinkedExtendFieldIds));
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -621,6 +695,7 @@ class Extend_field_model extends Base_model
 
 			if ( ! empty($sql))
 			{
+				/** @var	CI_DB_result	$query */
 				$query = $this->{$this->db_group}->query($sql);
 
 				if ( $query->num_rows() > 0) $data = $query->result_array();

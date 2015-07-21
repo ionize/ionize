@@ -126,7 +126,7 @@ class Extend_field extends MY_admin
 
 		// Available article types
 		$this->template['article_types'] = $this->article_type_model->get_all();
-		$this->template['_article_types']= $this->extend_field_model->getArticleTypes();
+		$this->template['_article_types']= $this->extend_field_model->get_article_types();
 
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
@@ -195,7 +195,7 @@ class Extend_field extends MY_admin
 
 		// Available article types
 		$this->template['article_types'] = $this->article_type_model->get_all();
-		$this->template['_article_types']= $this->extend_field_model->getArticleTypes($this->template['id_extend_field']);
+		$this->template['_article_types']= $this->extend_field_model->get_article_types($this->template['id_extend_field']);
 
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
