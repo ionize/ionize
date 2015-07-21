@@ -110,15 +110,13 @@ class Extend_field_model extends Base_model
 
 			$query = $this->{$this->db_group}->get(self::$_ARTICLE_TYPE_TABLE);
 
-			if ( $query->num_rows() > 0 ) {
+			if ( $query && $query->num_rows() > 0 ) {
 				$data = $query->result_array();
 				foreach($data as $row) {
 					$typeIDs[] = $row['id_type'];
 				}
+				$query->free_result();
 			}
-
-			$query->free_result();
-
 		}
 
 		return $typeIDs;
