@@ -126,7 +126,7 @@ class Extend_field extends MY_admin
 
 		// Available article types
 		$this->template['article_types'] = $this->article_type_model->get_all();
-		$this->template['_article_types']= array();
+		$this->template['_article_types']= $this->extend_field_model->getArticleTypes();
 
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
@@ -195,7 +195,7 @@ class Extend_field extends MY_admin
 
 		// Available article types
 		$this->template['article_types'] = $this->article_type_model->get_all();
-		$this->template['_article_types']= array();
+		$this->template['_article_types']= $this->extend_field_model->getArticleTypes($this->template['id_extend_field']);
 
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
@@ -344,9 +344,17 @@ class Extend_field extends MY_admin
 			// Save data
 			$this->id = $this->extend_field_model->save($this->data, $this->lang_data);
 
+			// Extend fields of parent 'article' only: save type of parent kind (article type)
+			if($this->input->post('parent') === 'article') {
+				$articleTypeIDs = explode(',', $this->input->post('article_types'));
+				$this->extend_field_model->save_multiple_links(
+					'extend_field', $this->id, 'article_type', $articleTypeIDs
+				);
+			}
+
 			$this->update[] = array(
-				'element' => 'extend_fields',
-				'url' =>  'extend_field/get_extend_fields'
+				'element'	=> 'extend_fields',
+				'url'		=> 'extend_field/get_extend_fields'
 			);
 
 			$this->success(lang('ionize_message_extend_field_saved'));

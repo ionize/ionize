@@ -50,7 +50,7 @@
 	<input id="id_extend_field" name="id_extend_field" type="hidden" value="<?php echo $id_extend_field; ?>" />
 	<input id="ordering" name="ordering" type="hidden" value="<?php echo $ordering; ?>" />
 	<input type="hidden" name="id_parent" value="<?php echo $id_parent ?>" />
-	<input id="parent_types" type="hidden" name="parent_types" value="<?php echo implode(',', $_article_types) ?>" />
+	<input id="article_types" type="hidden" name="article_types" value="<?php echo implode(',', $_article_types) ?>" />
 	<?php if ( ! empty($context)) :?>
 		<input type="hidden" name="context" value="<?php echo $context ?>" />
 	<?php endif ;?>
@@ -77,7 +77,7 @@
 		</dl>
 	<?php endif ;?>
 
-	<!-- article extend field: article type -->
+	<!-- Article extend field (only): article type -->
 	<dl class="small" id="dl_article_type_<?php echo $id_extend_field; ?>"<?php if($parent !== 'article') : ?> style="display:none"<?php endif; ?>>
 		<dt>
 			<label for="article_type_<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_article_type'); ?>"><?php echo lang('ionize_label_extend_field_article_type'); ?></label>
@@ -246,6 +246,22 @@
 	}
 
 	/**
+	 * Update value of hidden field for article type IDs
+	 */
+	function updateArticleTypes() {
+		$('article_types').setProperty('value', '');
+		if($('parent<?php echo $id_extend_field; ?>').value === 'article') {
+			$('article_type_<?php echo $id_extend_field; ?>').getSelected().each(function(option){
+				var elArticleTypes = $('article_types');
+				elArticleTypes.setProperty(
+					'value',
+					elArticleTypes.get('value') + parseInt(option.value, 10) + ','
+				);
+			});
+		}
+	}
+
+	/**
 	 * @param	{String} id_type
 	 */
 	function display_value_block(id_type)
@@ -289,16 +305,7 @@
 			});
 		}
 
-		$('parent_types').setProperty('value', '');
-		if($('parent<?php echo $id_extend_field; ?>').value === 'article') {
-			elArticleTypeSelect.getSelected().each(function(option){
-				var elParentTypes = $('parent_types');
-				elParentTypes.setProperty(
-					'value',
-					elParentTypes.get('value') + parseInt(option.value, 10) + ','
-				);
-			});
-		}
+		updateArticleTypes();
 	});
 
 	// Form Validation
@@ -382,4 +389,7 @@
 			);
 		});
 	}
+
+	updateArticleTypes();
+
 </script>

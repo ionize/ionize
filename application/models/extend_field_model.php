@@ -29,7 +29,10 @@ class Extend_field_model extends Base_model
 	);
 
 	private static $_CONTEXT_TABLE = 'extend_field_context';
+
 	private static $_TYPE_TABLE = 'extend_field_type';
+
+	private static $_ARTICLE_TYPE_TABLE = 'extend_field_article_type';
 
 	/**
 	 * Constructor
@@ -86,6 +89,39 @@ class Extend_field_model extends Base_model
 		}
 
 		return $parents;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param	int		$id_extend_field
+	 * @return	array
+	 */
+	public function getArticleTypes($id_extend_field = 0) {
+		$id_extend_field = (int) $id_extend_field;
+
+		$typeIDs = array();
+		if( $id_extend_field > 0 )
+		{
+			$this->{$this->db_group}->select(self::$_ARTICLE_TYPE_TABLE.'.id_type');
+			$this->{$this->db_group}->where('id_extend_field = ' . $id_extend_field);
+
+			$query = $this->{$this->db_group}->get(self::$_ARTICLE_TYPE_TABLE);
+
+			if ( $query->num_rows() > 0 ) {
+				$data = $query->result_array();
+				foreach($data as $row) {
+					$typeIDs[] = $row['id_type'];
+				}
+			}
+
+			$query->free_result();
+
+		}
+
+		return $typeIDs;
 	}
 
 
@@ -222,7 +258,7 @@ class Extend_field_model extends Base_model
 
 		$definitions = parent::get_list();
 
-		// Get the definitions extend ids
+		// Get the definitions extend IDs
 		$id_definitions = array();
 		foreach($definitions as $def)
 			$id_definitions[] = $def['id_extend_field'];
@@ -240,12 +276,12 @@ class Extend_field_model extends Base_model
 		}
 
 		// Prepare before filling with data
-		$langs = Settings::get_languages();
+		$languages = Settings::get_languages();
 		$instance_fields = $this->{$this->db_group}->list_fields($this->instances_table);
 
 		foreach($definitions as &$field)
 		{
-			// One not tranlated extend field...
+			// One not translated extend field...
 			if ($field['translated'] != '1')
 			{
 				// fill the base data with empty values
@@ -259,7 +295,7 @@ class Extend_field_model extends Base_model
 			}
 			else
 			{
-				foreach($langs as $language)
+				foreach($languages as $language)
 				{
 					// Lang code
 					$lang_code = $language['lang'];
@@ -666,7 +702,9 @@ class Extend_field_model extends Base_model
 	public function save_data($parent, $id_parent, $post, $by_id = true)
 	{
 		// Get all extends fields with this element OR kind of parent
-		$extend_fields = (!empty($post['id_element_definition'])) ? $this->get_list(array('id_element_definition' => $post['id_element_definition'])) : $this->get_list(array('parent' => $parent));
+		$extend_fields = (!empty($post['id_element_definition']))
+			? $this->get_list(array('id_element_definition' => $post['id_element_definition']))
+			: $this->get_list(array('parent' => $parent));
 
 		foreach ($extend_fields as $extend_field)
 		{
@@ -851,11 +889,11 @@ class Extend_field_model extends Base_model
 	 * Removes one value from one multiple values extend field
 	 * Values are coma separated in DB
 	 *
-	 * @param $id_extend
-	 * @param $parent
-	 * @param $id_parent
-	 * @param $value
-	 * @param $lang
+	 * @param   string  $id_extend
+	 * @param   string  $parent
+	 * @param   string	$id_parent
+	 * @param	string	$value
+	 * @param	string	[$lang]
 	 */
 	public function delete_value_from_extend_field($id_extend, $parent, $id_parent, $value, $lang=NULL)
 	{
@@ -883,11 +921,11 @@ class Extend_field_model extends Base_model
 	/**
 	 * Save one extend field value
 	 *
-	 * @param      $id_extend
-	 * @param      $parent
-	 * @param      $id_parent
-	 * @param      $value
-	 * @param null $lang
+	 * @param   string  $id_extend
+	 * @param   string  $parent
+	 * @param   string	$id_parent
+	 * @param	string	$value
+	 * @param	string	[$lang]
 	 */
 	public function save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang = NULL)
 	{
@@ -897,7 +935,7 @@ class Extend_field_model extends Base_model
 
 		if ( ! $lang) $lang = NULL;
 
-		// Array ?
+		// Array?
 		if (is_array($value)) $value = trim(implode(',', $value), ',');
 
 		// Date or Datetime
