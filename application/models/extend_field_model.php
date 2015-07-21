@@ -346,8 +346,7 @@ class Extend_field_model extends Base_model
 			 */
 			$keepDefinitionIDs = array_merge(
 				$this->get_extend_field_ids_by_article_id($id_parent),
-				array()
-				//$this->get_extend_field_ids_without_article_id()	@todo	debug
+				$this->get_extend_field_ids_without_article_id()
 			);
 
 			$keepDefinitions = array();
@@ -466,10 +465,10 @@ class Extend_field_model extends Base_model
 		$article = self::$ci->article_model->get_all_context($id_article_type);
 		if( ! empty($article) ) {
 			$article = array_pop($article);
+
 			/** @var	CI_DB_result	$query */
 			$query = $this->{$this->db_group}->query(
-				'SELECT id_extend_field
-				 FROM ' . self::$_LINKED_ARTICLE_TYPE_TABLE . '
+				'SELECT id_extend_field FROM ' . self::$_LINKED_ARTICLE_TYPE_TABLE . '
 				 WHERE id_type = ' . $article['id_type']
 			);
 
@@ -505,7 +504,7 @@ class Extend_field_model extends Base_model
 		);
 		foreach ($query->result_array() as $row)
 		{
-			$allExtendFieldIds[]= $row['id_extend_field'];
+			$allLinkedExtendFieldIds[]= $row['id_extend_field'];
 		}
 
 		return array_unique(array_diff($allExtendFieldIds, $allLinkedExtendFieldIds));
