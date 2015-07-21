@@ -421,6 +421,18 @@ class Extend_field_model extends Base_model
 			}
 		}
 
+		if($parent === 'article') {
+			/**
+			 * Article: filter (reduce) extend fields
+			 * Keep only fields linked to current article type, and extend fields w/o any article type
+			 *
+			 */
+
+//			echo '<pre>';print_r($definitions);
+//			die();
+
+		}
+
 		return $definitions;
 	}
 

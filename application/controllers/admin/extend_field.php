@@ -503,7 +503,7 @@ class Extend_field extends MY_admin
 
 
 	/**
-	 * Get Parent's extends instances
+	 * Get Parent's extends instances (= actual extend fields assigned to the parent)
 	 *
 	 * @param	string [$mode]	eg: 'json'
 	 */
