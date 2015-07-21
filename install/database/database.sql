@@ -211,10 +211,9 @@ CREATE TABLE IF NOT EXISTS extend_fields (
 
 -- Extend field context: relation among extend field and parent type (1:n)
 -- optionally makes extend field types exclusive available only when used on that parent type, eg: article type
-CREATE TABLE IF NOT EXISTS extend_field_parent_types (
+CREATE TABLE IF NOT EXISTS extend_field_article_type (
 	id_extend_field INT(11) UNSIGNED NOT NULL,
-	id_parent_type int(11) UNSIGNED NOT NULL,
-	PRIMARY KEY  (id_extend_field),
+	id_type int(11) UNSIGNED NOT NULL,
 	KEY idx_extend_fields_id_parent_type (id_parent_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8   AUTO_INCREMENT=1;
 
