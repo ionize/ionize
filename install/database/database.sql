@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS article (
 CREATE TABLE IF NOT EXISTS article_category (
 	id_article INT(11) UNSIGNED NOT NULL ,
 	id_category INT(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS article_lang (
   id_article int(11) UNSIGNED NOT NULL default 0,
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS article_lang (
   meta_description varchar(255) default NULL,
   online tinyint(1) UNSIGNED NOT NULL default 1,
   PRIMARY KEY  (id_article,lang)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS article_media (
   id_article int(11) UNSIGNED NOT NULL default 0,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS article_media (
   url varchar(255) default NULL,
   lang_display varchar(3) DEFAULT NULL,
   PRIMARY KEY  (id_article,id_media)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS article_comment (
 	id_article_comment int(11) UNSIGNED NOT NULL auto_increment,
@@ -87,13 +87,13 @@ CREATE TABLE IF NOT EXISTS article_comment (
 	updated datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 	admin tinyint UNSIGNED NOT NULL	default 0 COMMENT 'If comment comes from admin, set to 1',
 	PRIMARY KEY (id_article_comment)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS article_tag (
 	id_article int(11) UNSIGNED NOT NULL,
 	id_tag int(11) UNSIGNED NOT NULL,
 	PRIMARY KEY  (id_article, id_tag)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS article_type (
   id_type int(11) unsigned NOT NULL auto_increment,
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS category_lang (
   subtitle VARCHAR( 255 ) NOT NULL default '',
   description text NOT NULL,
 	  PRIMARY KEY  (id_category, lang)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS element (
   id_element int(11) unsigned NOT NULL auto_increment,
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS element_definition_lang (
   lang varchar(3) NOT NULL,
   title varchar(255) NOT NULL default '',
   PRIMARY KEY  (id_element_definition, lang)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE event_log (
     id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS extend_field_lang (
     lang char(3) NOT NULL,
     label varchar(255),
     PRIMARY KEY  (id_extend_field, lang)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS extend_fields (
 	id_extend_fields INT(11) UNSIGNED NOT NULL auto_increment,
@@ -209,12 +209,10 @@ CREATE TABLE IF NOT EXISTS extend_fields (
     KEY idx_extend_fields_id_extend_field (id_extend_field) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8   AUTO_INCREMENT=1;
 
--- Extend field context: relation among extend field and parent type (1:n)
--- optionally makes extend field types exclusive available only when used on that parent type, eg: article type
 CREATE TABLE IF NOT EXISTS extend_field_article_type (
 	id_extend_field INT(11) UNSIGNED NOT NULL,
 	id_type int(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8   AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS ion_sessions (
   session_id varchar(40) NOT NULL default '0',
@@ -223,7 +221,7 @@ CREATE TABLE IF NOT EXISTS ion_sessions (
   last_activity int(10) unsigned NOT NULL default '0',
   user_data text NULL,
   PRIMARY KEY  (session_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS lang (
   lang varchar(3) NOT NULL default '',
@@ -233,14 +231,14 @@ CREATE TABLE IF NOT EXISTS lang (
   ordering int(11),
   direction smallint(1) NOT NULL default 1,
   PRIMARY KEY  (lang)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS login_tracker (
   ip_address varchar(32) NOT NULL,
   first_time int(11) unsigned NOT NULL,
   failures tinyint(2) unsigned default NULL,
   PRIMARY KEY  (ip_address)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS media (
 	id_media int(11) UNSIGNED NOT NULL auto_increment,
@@ -264,7 +262,7 @@ CREATE TABLE IF NOT EXISTS media_lang (
   alt varchar(500) default NULL,
   description longtext,
   PRIMARY KEY  (id_media, lang)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS menu (
   id_menu int(11) NOT NULL auto_increment,
@@ -359,18 +357,18 @@ CREATE TABLE IF NOT EXISTS page_article (
 	main_parent TINYINT(1) NOT NULL DEFAULT 0,
 	PRIMARY KEY  (id_page, id_article),
     KEY idx_page_article_id_type (id_type) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS page_category (
 	id_page INT(11) UNSIGNED NOT NULL ,
 	id_category INT(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS page_role (
   id_page int(11) UNSIGNED NOT NULL default 0,
   ig_group smallint(4) UNSIGNED NOT NULL default 0,
   PRIMARY KEY  (id_page,ig_group)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS page_lang (
   lang varchar(3) NOT NULL default '',
@@ -386,7 +384,7 @@ CREATE TABLE IF NOT EXISTS page_lang (
   meta_keywords varchar(255) default NULL,
   online tinyint(1) UNSIGNED NOT NULL default 1,
   PRIMARY KEY  (id_page,lang)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS page_media (
   id_page int(11) UNSIGNED NOT NULL default 0,
@@ -395,13 +393,13 @@ CREATE TABLE IF NOT EXISTS page_media (
   ordering int(11) UNSIGNED default 9999,
   lang_display varchar(3) DEFAULT NULL,
   PRIMARY KEY  (id_page,id_media)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS page_tag (
 	id_page int(11) UNSIGNED NOT NULL,
 	id_tag int(11) UNSIGNED NOT NULL,
 	PRIMARY KEY  (id_page, id_tag)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE if not exists resource (
   id_resource int(11) NOT NULL AUTO_INCREMENT,
