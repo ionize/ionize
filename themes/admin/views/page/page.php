@@ -357,9 +357,6 @@ if ($tracker_title == '')
 	// Toolbox
 	ION.initToolbox('page_toolbox', null, {'id_page': '<?php echo $id_page; ?>'});
 
-	// Init tooltips
-	new Tips($$('.tips'), {className: 'tooltip'});
-
 	// Droppables
 	ION.initDroppable();
 

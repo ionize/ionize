@@ -281,9 +281,6 @@ if ($tracker_title == '')
 	// Toolbox
 	ION.initToolbox('article_toolbox');
 
-	// Init tooltips
-	new Tips($$('.tips'), {className: 'tooltip'});
-
 	// Init the Edit Mode
     ION.initEditMode('editionModeSwitcher', 'article', '.article-header');
 

@@ -561,7 +561,17 @@ ION.TreeXhr = new Class({
 			}
 		});		
 	},
-	
+
+	/**
+	 * Relay single/double click upon tree node
+	 *
+	 * @param	{Event}		e
+	 * @param	{Object}	self	JS object reference
+	 * @param	{Element}	el		DOM element of clicked tree node
+	 * @param	{String}	type	eg: 'page' / 'article' / ...
+	 * @param	{Number}	clicks
+	 * @returns {boolean}
+	 */
 	relaySingleOrDoubleClick: function(e, self, el, type, clicks)
 	{
 		// IE7 / IE8 event problem
