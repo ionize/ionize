@@ -64,9 +64,3 @@ $_uniq = 'i'.uniqid();
 		</p>
 	</div>
 <?php endforeach ;?>
-
-<script type="text/javascript">
-	alert('x');
-	// Init tooltips
-	new Tips($$('.tips'), {className: 'tooltip'});
-</script>
