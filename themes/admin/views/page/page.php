@@ -13,9 +13,8 @@
 $tracker_title = $languages[Settings::get_lang('default')]['title'];
 if ($tracker_title == '')
 	$tracker_title = $name;
-
-
 ?>
+
 <form name="pageForm" id="pageForm" method="post" action="<?php echo admin_url() . 'page/save'?>">
 
 	<input type="hidden" name="element" id="element" value="page" />
@@ -34,17 +33,13 @@ if ($tracker_title == '')
 
 
 	<div id="maincolumn" class="">
-		
 		<fieldset>
 				
 		<?php if( ! empty($id_page)) :?>
 			
 			<?php
-				
 				$title = $languages[Settings::get_lang('default')]['title'];
-
 				if ($title == '') $title = $languages[Settings::get_lang('default')]['url'];
-			
 			?>
 
         	<div id="page-tracker-<?php echo $id_page; ?>"></div>
@@ -54,7 +49,7 @@ if ($tracker_title == '')
 			<!-- Breadcrumb -->
 			<div class="main subtitle">
 				<p>
-					<span class="lite">ID : </span><?php echo $id_page; ?> |
+					<span class="lite">ID: </span><?php echo $id_page; ?> |
 					<span class="lite"></span><?php echo $breadcrump; ?>
 				</p>
 			</div>
@@ -362,6 +357,9 @@ if ($tracker_title == '')
 	// Toolbox
 	ION.initToolbox('page_toolbox', null, {'id_page': '<?php echo $id_page; ?>'});
 
+	// Init tooltips
+	new Tips($$('.tips'), {className: 'tooltip'});
+
 	// Droppables
 	ION.initDroppable();
 
@@ -408,7 +406,6 @@ if ($tracker_title == '')
 		 */
 		$('desktop').store('tabSwapper', pageTab);
 		ION.getContentElements('page', id_page);
-
 
 		// Media Manager & tabs events
 		mediaManager.initParent('page', id_page);
