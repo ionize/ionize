@@ -551,10 +551,11 @@ ION.TableList = new Class({
 
 	getSavedFilter: function()
 	{
-		var filters = ION.registry('filters'),
-			f = typeOf(filters[this.options.id]) == 'object' ? filters[this.options.id] : null;
+		var filters = ION.registry('filters');
 
-		return f;
+		return typeOf(filters[this.options.id]) == 'object'
+			? filters[this.options.id]
+			: null;
 	},
 
 	buildPagination: function()
@@ -596,11 +597,13 @@ ION.TableList = new Class({
 			// Previous button
 			if (o.current_page > 1)
 			{
+				var li, a, i_page;
+
 				// First page
 				if (o.current_page > 2)
 				{
-					var li = new Element('li').inject(ul),
-						a = new Element('a', {html:' << ', 'data-id':1, title:Lang.get('ionize_label_pagination_first_page')}).inject(li);
+					li = new Element('li').inject(ul);
+					a = new Element('a', {html:' << ', 'data-id':1, title:Lang.get('ionize_label_pagination_first_page')}).inject(li);
 
 					a.addEvent('click', function()
 					{
@@ -612,9 +615,9 @@ ION.TableList = new Class({
 				}
 
 
-				var li = new Element('li').inject(ul),
-					i_page = parseInt(o.current_page) - 1,
-					a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
+				li = new Element('li').inject(ul);
+				i_page = parseInt(o.current_page) - 1;
+				a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
 
 				if (typeOf(o.onClick) == 'function')
 				{
@@ -638,9 +641,9 @@ ION.TableList = new Class({
 
 
 				// Next
-				var li = new Element('li').inject(ul),
-					i_page = parseInt(o.current_page) + 1,
-					a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
+				li = new Element('li').inject(ul);
+				i_page = parseInt(o.current_page) + 1;
+				a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
 
 				if (typeOf(o.onClick) == 'function')
 				{
@@ -654,8 +657,8 @@ ION.TableList = new Class({
 				}
 
 				// Last Page
-				var li = new Element('li').inject(ul),
-					a = new Element('a', {html:' >> ', 'data-id':nb_pages, title:Lang.get('ionize_label_pagination_last_page')}).inject(li);
+				li = new Element('li').inject(ul);
+				a = new Element('a', {html:' >> ', 'data-id':nb_pages, title:Lang.get('ionize_label_pagination_last_page')}).inject(li);
 
 				a.addEvent('click', function()
 				{

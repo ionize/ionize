@@ -11,11 +11,9 @@ $element_id = (!empty($element_id)) ? $element_id : 'id_parent';
 ?>
 
 <select name="<?php echo $element_id; ?>" id="<?php echo $element_id; ?>" class="select">
-
 	<?php foreach($pages as $id => $title) :?>
 		<option value="<?php echo $id; ?>"<?php if ($id_selected==$id) :?> selected="selected"<?php endif; ?>><?php echo strip_tags($title); ?></option>
 	<?php endforeach ;?>
-
 </select>
 
 <script type="text/javascript">
