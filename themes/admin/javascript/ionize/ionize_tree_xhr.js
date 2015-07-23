@@ -582,9 +582,9 @@ ION.TreeXhr = new Class({
 			var func = function()
 			{
 				ION.splitPanel({
-					'urlMain': admin_url + type + '/edit/' + el.getProperty('data-id'),
+					'urlMain'	: admin_url + type + '/edit/' + el.getProperty('data-id'),
 					'urlOptions': admin_url + type + '/get_options/' + el.getProperty('data-id'),
-					'title': Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')
+					'title'		: Lang.get('ionize_title_edit_' + type) + ' : ' + el.get('text')
 				});
 			};
 			if (ION.hasUnsavedData == true)
@@ -622,16 +622,16 @@ ION.TreeXhr = new Class({
 		if (a)
 		{
 			var id = a.getProperty('data-id');
-			var p = $(this.mainpanel);
+			var elMainPanel = $(this.mainpanel);
 
 			// Add "Create Article" icon
 			a.addEvent('click', function(e)
 			{
 				e.stop();
 				ION.contentUpdate({
-					'element': p,
-					'url': admin_url + 'article/create/' + id,
-					'title': Lang.get('ionize_title_create_article')
+					'element'	: elMainPanel,
+					'url'		: admin_url + 'article/create/' + id,
+					'title'		: Lang.get('ionize_title_create_article')
 				});
 			});
 		}
@@ -644,9 +644,9 @@ ION.TreeXhr = new Class({
 			{
 				e.stop();
 				ION.contentUpdate({
-					'element': p,
-					'url': admin_url + 'page/create/' + a.getProperty('data-menu') + '/' + a.getProperty('data-page'),
-					'title': Lang.get('ionize_title_create_page')
+					'element'	: elMainPanel,
+					'url'		: admin_url + 'page/create/' + a.getProperty('data-menu') + '/' + a.getProperty('data-page'),
+					'title'		: Lang.get('ionize_title_create_page')
 				});
 			});
 		}

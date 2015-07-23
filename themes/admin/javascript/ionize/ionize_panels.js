@@ -705,8 +705,9 @@ ION.MainPanel = new NamedClass('ION.MainPanel', {
 		// Container
 		this.container = new Element('div').inject(this.mainColumn);
 
-		var bTitle = typeOf(o.barTitle) == 'null' ?
-					((typeOf(o.title) != 'null' && typeOf(o.title.text) != 'null') ? o.title.text : '') : o.barTitle;
+		var bTitle = typeOf(o.barTitle) == 'null'
+			? ((typeOf(o.title) != 'null' && typeOf(o.title.text) != 'null') ? o.title.text : '')
+			: o.barTitle;
 
 		// Init the main column into the main panel
 		MUI.Content.update({
@@ -774,12 +775,12 @@ ION.MainPanel = new NamedClass('ION.MainPanel', {
 
 	_initToolbox: function()
 	{
-		// Creates the header toolbox if it doesn't exists
+		// Creates the header toolbox if it doesn't exist
 		var elMainPanelHeaderToolbox = $('mainPanel_headerToolbox');
 		if ( ! elMainPanelHeaderToolbox) {
 			new Element('div', {
-				'id': 'mainPanel_headerToolbox',
-				'class': 'buttonbar'
+				'id'	: 'mainPanel_headerToolbox',
+				'class'	: 'buttonbar'
 			}).inject($('mainPanel_header'));
 		}
 
