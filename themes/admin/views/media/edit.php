@@ -80,7 +80,7 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 
 	<div style="margin-left:<?php echo $margin; ?>;">
 
-		<p>ID : <span class="lite"><?php echo $id_media ?></span></p>
+		<p>ID: <span class="lite"><?php echo $id_media ?></span></p>
 
 		<?php if($provider != '') :?>
 

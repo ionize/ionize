@@ -22,17 +22,13 @@ if ($tracker_title == '')
 	<input type="hidden" id="memory" />
 
 	<div id="maincolumn">
-
 		<fieldset class="article-header">
 
 			<!-- Existing article -->
 			<?php if( ! empty($id_article)) :?>
-
 				<?php
-
 					$title = $languages[Settings::get_lang('default')]['title'];
 					if ($title == '') $title = $name;
-
 				?>
 
 	            <div id="article-tracker-<?php echo $id_article; ?>"></div>
@@ -43,12 +39,12 @@ if ($tracker_title == '')
 					<p>
 						<a class="button light" href="javascript:void(0)" onclick="$$('a.title.page<?php echo $id_page; ?>')[0].fireEvent('click');">
 							<span class="tree-img folder open"></span>
-							<span class="lite">ID : </span>
+							<span class="lite">ID: </span>
 							<?php echo $id_article; ?>
 						</a>
 
 						<?php if( ! empty($breadcrump)) :?>
-							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?> : </span><?php echo$breadcrump?>
+							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?>: </span><?php echo$breadcrump?>
 						<?php endif ;?>
 					</p>
 				</div>

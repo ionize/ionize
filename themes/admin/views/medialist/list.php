@@ -48,12 +48,12 @@ $filter = implode(',', $filter);
 					<?php if(Authority::can('delete', 'admin/medialist')) :?>
 						<a class="icon remove right" title="<?php echo lang('ionize_label_remove_media'); ?>" data-id="<?php echo $id; ?>"></a>
 					<?php endif ;?>
-					<a title="<?php echo $id ?> : <?php echo $media['path'] ?>" class="icon info right mr5"></a>
+					<a title="<?php echo $id ?>: <?php echo $media['path'] ?>" class="icon tips info right mr5"></a>
 					<?php if ( ! empty($media['article_paths'])) :?>
-						<a title="<?php echo $media['article_paths'] ?>" class="icon right article mr5"></a>
+						<a title="<?php echo $media['article_paths'] ?>" class="icon tips right article mr5"></a>
 					<?php endif ;?>
 					<?php if ( ! empty($media['page_paths'])) :?>
-						<a title="<?php echo $media['page_paths'] ?>" class="icon right folder mr5"></a>
+						<a title="<?php echo $media['page_paths'] ?>" class="icon tips right folder mr5"></a>
 					<?php endif ;?>
 				</p>
 
@@ -166,6 +166,9 @@ $filter = implode(',', $filter);
 </div>
 
 <script type="text/javascript">
+
+	// Init tooltips
+	new Tips($$('.tips'), {className: 'tooltip'});
 
 	// Pagination element link
 	$$('#medialistPagination li a').each(function(item)

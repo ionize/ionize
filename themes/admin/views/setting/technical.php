@@ -734,7 +734,7 @@
 								<label class="nowrap" for="maintenance_ips" title="<?php echo lang('ionize_label_maintenance_ips_help'); ?>"><?php echo lang('ionize_label_maintenance_ips'); ?></label>
 							</dt>
 							<dd>
-								<span><?php echo lang('ionize_label_your_ip'); ?> : <?php echo $_SERVER['REMOTE_ADDR']; ?></span><br/>
+								<span><?php echo lang('ionize_label_your_ip'); ?>: <?php echo $_SERVER['REMOTE_ADDR']; ?></span><br/>
 								<textarea name="maintenance_ips" id="maintenance_ips" class="h50 w140"><?php echo (! empty($maintenance_ips)) ? $maintenance_ips : $_SERVER['REMOTE_ADDR']; ?></textarea>
 							</dd>
 						</dl>

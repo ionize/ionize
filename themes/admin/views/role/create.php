@@ -52,7 +52,7 @@
 				<div style="font-size: 10px;line-height: 12px;">
 				<?php foreach($roles as $role) :?>
 
-					<?php echo $role['role_level'] ?> : <?php echo $role['role_name'] ?><br/>
+					<?php echo $role['role_level'] ?>: <?php echo $role['role_name'] ?><br/>
 
 				<?php endforeach ;?>
                 </div>

@@ -13,6 +13,7 @@
 class Media extends MY_admin
 {
 	protected static $DEFAULT_EXPIRE = 604800;
+
 	protected static $DEFAULT_TYPE = 'text/html';
 	
 	protected static $MP3_ID3 = array('album', 'artist', 'title', 'year');

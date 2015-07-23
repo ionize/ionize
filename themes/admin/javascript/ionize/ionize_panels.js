@@ -24,63 +24,74 @@ ION.append({
 				opened = Cookie.read(cookieName)
 			;
 
-			if (typeOf(opened) == 'null' && typeOf(options.opened) != 'null') isCollapsed = ! options.opened;
+			if (typeOf(opened) == 'null' && typeOf(options.opened) != 'null')
+				isCollapsed = ! options.opened;
 
 			if (typeOf(opened) != 'null' && opened == 'false')
 				isCollapsed = true;
 
 			MUI.Content.update({
-				element: 'mainPanel',
-				title: options.title,
-				clear:true,
-				loadMethod:'control',
+				element		: 'mainPanel',
+				title		: options.title,
+				clear		: true,
+				loadMethod	: 'control',
 				controls:[
 					{
-						control:'MUI.Column',
-						container: 'mainPanel',
-						id: 'splitPanel_mainColumn',
-						placement: 'main',
-						sortable: false,
-						panels:[
+						control		: 'MUI.Column',
+						container	: 'mainPanel',
+						id			: 'splitPanel_mainColumn',
+						placement	: 'main',
+						sortable	: false,
+						panels		: [
 							{
-								control:'MUI.Panel',
-								id: 'splitPanel_mainPanel',
-								container: 'splitPanel_mainColumn',
-								header: false,
-								padding:0,
+								control		:'MUI.Panel',
+								id			: 'splitPanel_mainPanel',
+								container	: 'splitPanel_mainColumn',
+								header		: false,
+								padding		: 0,
 
-								content: {
-									url: options.urlMain
-									/*
-									onLoaded: function(){
+								content	: {
+									url	: options.urlMain,
+
+									onLoaded: function(){ //@todo check: can this be improved into a real defer-handler, aka firing after the DOM is updated
 										//$('splitPanel_mainColumn').setStyle('width', 'inherit');
+
+										// Init tooltips
+										setTimeout(function(){
+											new Tips($$('.tips'), {className: 'tooltip'});
+										}, 500);
 									}
-									*/
+
 
 								}
 							}
 						]
 					},
 					{
-						control:'MUI.Column',
-						container: 'mainPanel',
-						id: 'splitPanel_sideColumn',
-						placement: 'right',
-						sortable: false,
-						isCollapsed: isCollapsed,
-						width: 330,
-						resizeLimit: [330, 400],
-						panels:[
+						control		: 'MUI.Column',
+						container	: 'mainPanel',
+						id			: 'splitPanel_sideColumn',
+						placement	: 'right',
+						sortable	: false,
+						isCollapsed	: isCollapsed,
+						width		: 330,
+						resizeLimit	: [330, 400],
+						panels		: [
 							{
-								control:'MUI.Panel',
-								header: false,
-								id: 'splitPanel_sidePanel',
+								control	: 'MUI.Panel',
+								header	: false,
+								id		: 'splitPanel_sidePanel',
 								cssClass: 'panelAlt',
-								padding:typeOf(options.paddingOptions != 'null') ? options.paddingOptions : 8,
-								content: {
-									url: options.urlOptions,
+								padding	: typeOf(options.paddingOptions != 'null') ? options.paddingOptions : 8,
+								content	: {
+									url		: options.urlOptions,
 									onLoaded: function(){
 										$('splitPanel_sidePanel').setStyle('width', 'inherit');
+
+										// Init tooltips
+										setTimeout(function(){
+											new Tips($$('.tips'), {className: 'tooltip'});
+										}, 500);
 									}
 								},
 								container: 'splitPanel_sideColumn'
@@ -705,8 +716,9 @@ ION.MainPanel = new NamedClass('ION.MainPanel', {
 		// Container
 		this.container = new Element('div').inject(this.mainColumn);
 
-		var bTitle = typeOf(o.barTitle) == 'null' ?
-					((typeOf(o.title) != 'null' && typeOf(o.title.text) != 'null') ? o.title.text : '') : o.barTitle;
+		var bTitle = typeOf(o.barTitle) == 'null'
+			? ((typeOf(o.title) != 'null' && typeOf(o.title.text) != 'null') ? o.title.text : '')
+			: o.barTitle;
 
 		// Init the main column into the main panel
 		MUI.Content.update({
@@ -774,12 +786,12 @@ ION.MainPanel = new NamedClass('ION.MainPanel', {
 
 	_initToolbox: function()
 	{
-		// Creates the header toolbox if it doesn't exists
+		// Creates the header toolbox if it doesn't exist
 		var elMainPanelHeaderToolbox = $('mainPanel_headerToolbox');
 		if ( ! elMainPanelHeaderToolbox) {
 			new Element('div', {
-				'id': 'mainPanel_headerToolbox',
-				'class': 'buttonbar'
+				'id'	: 'mainPanel_headerToolbox',
+				'class'	: 'buttonbar'
 			}).inject($('mainPanel_header'));
 		}
 

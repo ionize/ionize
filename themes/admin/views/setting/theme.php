@@ -7,7 +7,7 @@
 	<!-- Tabs -->
 	<div id="themeTab" class="mainTabs mt20">
 		<ul class="tab-menu">
-			<li><a><?php echo lang('ionize_title_views_list'); ?> : <?php echo Settings::get('theme'); ?></a></li>
+			<li><a><?php echo lang('ionize_title_views_list'); ?>: <?php echo Settings::get('theme'); ?></a></li>
 			<li><a><?php echo lang('ionize_title_options'); ?></a></li>
 		</ul>
 		<div class="clear"></div>

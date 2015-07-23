@@ -60,7 +60,7 @@ $_uniq = 'i'.uniqid();
 			<?php if ($type === 'picture') :?>
 				<a class="icon refresh left mr5 help" data-id="<?php echo $media['id_media']; ?>" title="<?php echo lang('ionize_label_init_thumb'); ?>"></a>
 			<?php endif ;?>
-			<a class="icon info left help" title="<?php echo $media['id_media']; ?> : <?php echo $path; ?>"></a>
+			<a class="icon info tips left help" title="<?php echo $media['id_media']; ?>: <?php echo $path; ?>"></a>
 		</p>
 	</div>
 <?php endforeach ;?>
