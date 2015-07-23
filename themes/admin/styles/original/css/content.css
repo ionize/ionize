@@ -31,6 +31,7 @@ License:
 .clearfix { zoom: 1; }
 .nowrap { white-space: nowrap; }
 
+.floatleft { float: left; }
 
 /* Correct the standard .pad class from Mocha 
    so the #sidecolumn doesn't superimpose on #maincolumn
@@ -245,6 +246,7 @@ li.offline { opacity:0.7; }
 .icon.enlarge,		.button i.enlarge				{background-position: -144px -112px;}
 .icon.expand,		.button i.icon-expand			{background-position: -128px -80px;}
 .icon.files, 		.button i.icon-files			{background-position: -240px -16px; }
+.icon.filter, 		.button i.icon-filter			{background-position: -192px -112px; }
 .icon.flag.green, 	.button i.icon-flag.green		{background-position: -96px -64px;}
 .icon.flag.red, 	.button i.icon-flag.red			{background-position: -128px -64px;}
 .icon.flag.yellow, 	.button i.icon-flag.yellow		{background-position: -112px -64px;}
@@ -941,7 +943,7 @@ table.list.transparent tr {
 .mainTabs .tab-menu li {
 	position: relative;
 	float: left;
-	margin:	0 2px 0px 2px;
+	margin:	0 2px 0 2px;
 	cursor: pointer;
 	line-height: 16px;
 	display: block;

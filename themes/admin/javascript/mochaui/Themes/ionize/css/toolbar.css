@@ -172,15 +172,15 @@ div.panel-header div.tabs ul {
 
 .buttonbar select,
 .buttonbar select.inputtext {
+	background-image: url(../../../../../styles/original/images/spacer.gif);
+	border: none;
+	border-radius: 0;
+	color: #098ed1;
 	float: left;
-	height: 20px;
+	height: 24px;
+	padding: 3px 4px 3px 4px;
 	-webkit-appearance: none;
 	-moz-appearance: window;
-	border: none;
-	padding: 3px 4px 3px 4px;
-	color: #098ed1;
-	border-radius: 0;
-	background-image: url(../../../../../styles/original/images/spacer.gif);
 }
 
 .buttonbar select:focus {
