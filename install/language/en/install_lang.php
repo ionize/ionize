@@ -131,6 +131,6 @@ $lang['data_install_intro'] = 	"<p>If this is the first time you use Ionize, it'
 $lang['title_skip_this_step'] = "Skip this step";
 
 $lang['title_finish'] = 		'Installation completed';
-$lang['finish_text'] = 			'<b>IMPORTANT</b>: <br/>You have to delete the "<b>/install</b>" folder manually before accessing the website or the admin section.';
+$lang['finish_text'] = 			'<b>NOTE</b>: <br/>For security reasons, the "<b>/install</b>" folder will be deleted before accessing the website or the admin section.';
 $lang['button_go_to_admin'] = 	'Go to admin';
 $lang['button_go_to_site'] = 	'Go to website';

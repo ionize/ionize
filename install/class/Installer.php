@@ -666,7 +666,6 @@ class Installer
 
 	/**
 	 * Finish installation
-	 *
 	 */
 	function finish()
 	{
@@ -749,6 +748,26 @@ class Installer
 		$this->output('finish');
 	}
 
+	/**
+	 * Delete /install directory and contents, and forward to site or admin
+	 */
+	public function delete_installer()
+	{
+		remove_directory('../install');
+
+		switch($_GET['goto']) {
+			case 'site':
+				header('Location:'.BASEURL, 307);
+				break;
+
+			case 'admin':
+			default:
+				include(APPPATH.'config/config.php');
+				/** @var	array $conf */
+				header('Location:' . BASEURL . $conf['admin_url'], 307);
+				break;
+		}
+	}
 
 	public function _create_page($data)
 	{
