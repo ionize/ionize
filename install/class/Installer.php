@@ -757,14 +757,14 @@ class Installer
 
 		switch($_GET['goto']) {
 			case 'site':
-				header('Location:'.BASEURL, 307);
+				header('Location: ' . BASEURL, 307);
 				break;
 
 			case 'admin':
 			default:
 				include(APPPATH.'config/config.php');
-				/** @var	array $conf */
-				header('Location:' . BASEURL . $conf['admin_url'], 307);
+				/** @var array $config */
+				header('Location: ' . BASEURL . $config['admin_url'], 307);
 				break;
 		}
 	}
@@ -986,6 +986,7 @@ class Installer
 	{
 		// Config library
 		require_once('./class/Config.php');
+		/** @var array $config */
 
 		// Saves the new encryption key
 		if ( !empty($_POST['encryption_key']) && strlen($_POST['encryption_key']) > 31)
