@@ -666,7 +666,6 @@ class Installer
 
 	/**
 	 * Finish installation
-	 *
 	 */
 	function finish()
 	{
@@ -749,6 +748,26 @@ class Installer
 		$this->output('finish');
 	}
 
+	/**
+	 * Delete /install directory and contents, and forward to site or admin
+	 */
+	public function delete_installer()
+	{
+		delete_files('../install', TRUE, 99);
+
+		switch($_GET['goto']) {
+			case 'site':
+				header('Location: ' . BASEURL, 307);
+				break;
+
+			case 'admin':
+			default:
+				include(APPPATH.'config/config.php');
+				/** @var array $config */
+				header('Location: ' . BASEURL . $config['admin_url'], 307);
+				break;
+		}
+	}
 
 	public function _create_page($data)
 	{
@@ -967,6 +986,7 @@ class Installer
 	{
 		// Config library
 		require_once('./class/Config.php');
+		/** @var array $config */
 
 		// Saves the new encryption key
 		if ( !empty($_POST['encryption_key']) && strlen($_POST['encryption_key']) > 31)
