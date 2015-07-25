@@ -34,6 +34,8 @@ if ( ! function_exists('glob_recursive'))
 	}
 }
 
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('mb_pathinfo'))
 {
 	function mb_pathinfo($filepath)
@@ -44,46 +46,5 @@ if ( ! function_exists('mb_pathinfo'))
 		if($m[5]) $ret['extension']=$m[5];
 		if($m[3]) $ret['filename']=$m[3];
 		return $ret;
-	}
-}
-
-if ( ! function_exists('remove_directory'))
-{
-	function remove_directory($directory, $empty=FALSE)
-	{
-		if(substr($directory,-1) == '/') {
-			$directory = substr($directory,0,-1);
-		}
-
-		if(!file_exists($directory) || !is_dir($directory)) {
-			return FALSE;
-		} elseif(!is_readable($directory)) {
-
-			return FALSE;
-
-		} else {
-
-			$handle = opendir($directory);
-			while (FALSE !== ($item = readdir($handle)))
-			{
-				if($item != '.' && $item != '..') {
-					$path = $directory.'/'.$item;
-					if(is_dir($path)) {
-						remove_directory($path);
-					}else{
-						unlink($path);
-					}
-				}
-			}
-			closedir($handle);
-			if($empty == FALSE)
-			{
-				if(!rmdir($directory))
-				{
-					return FALSE;
-				}
-			}
-			return TRUE;
-		}
 	}
 }

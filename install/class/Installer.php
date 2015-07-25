@@ -753,7 +753,7 @@ class Installer
 	 */
 	public function delete_installer()
 	{
-		remove_directory('../install');
+		delete_files('../install', TRUE, 99);
 
 		switch($_GET['goto']) {
 			case 'site':
