@@ -1154,4 +1154,13 @@ class Extend_field_model extends Base_model
 		if ( ! is_null($id_context))
 			$this->{$this->db_group}->where(self::$_CONTEXT_TABLE . '.id_context', $id_context);
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_definitions()
+	{
+		return 'def';
+	}
 }
