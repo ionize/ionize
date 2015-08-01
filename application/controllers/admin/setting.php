@@ -1277,9 +1277,9 @@ class Setting extends MY_admin
 		$this->load->helper('download');
 		$this->load->helper('dump_content_definitions');
 
-		$definitions = get_content_configurations_xml();
+		$definitions = get_content_configurations();
 
-		force_download('content_configs.xml', $definitions);
+		force_download('content_configuration.sql', $definitions);
 	}
 
 

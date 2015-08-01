@@ -314,18 +314,11 @@
 					</a>
                 </p>
 
-				<h3><?php echo lang('ionize_title_content_definitions'); ?></h3>
+				<h3><?php echo lang('ionize_title_content_configs_backup'); ?></h3>
 
 				<p>
 					<a class="button light" id="dbDumpExtendFields" href="<?php echo admin_url(); ?>setting/export_contentconfigs">
-						<i class="icon-download"></i><?php echo lang('ionize_label_db_download_dump_content_configs'); ?>
-					</a>
-				</p>
-
-				<p>
-					<a class="button light">
-						<i class="icon-upload"></i>
-						<?php echo lang('ionize_label_db_import_content_configs_import'); ?>
+						<i class="icon-database"></i><?php echo lang('ionize_label_db_download_dump_content_configs'); ?>
 					</a>
 				</p>
 

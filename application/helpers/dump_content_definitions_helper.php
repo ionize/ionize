@@ -1,38 +1,49 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Dumps the complete extend field definitions as XML of MySql Queries
+ * Dumps the complete extend field definitions as MySql Queries
  *
  * @return string
  */
-function get_content_configurations_xml()
+function get_content_configurations()
 {
 	$CI =& get_instance();
 
-	$xml = '<?xml version="1.0" ?>' . "\r\n";
-	$xml .= "\r\n";
+	$sql = '';
 
 	// article types
-	$xml .= get_xml_from_table_records($CI, 'article_type', array(), '  ');
-	$xml .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'article_type');
+	$sql .= "\r\n";
 
 	// content elements
-	$xml .= get_xml_from_table_records($CI, 'element', array(), '  ');
-	$xml .= "\r\n";
-	$xml .= get_xml_from_table_records($CI, 'element_definition', array(), '  ');
-	$xml .= "\r\n";
-	$xml .= get_xml_from_table_records($CI, 'element_definition_lang', array(), '  ');
-	$xml .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'element');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'element_definition');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'element_definition_lang');
+	$sql .= "\r\n";
 
 	// extend fields
-	$xml .= get_xml_from_table_records($CI, 'extend_field', array(), '  ');
-	$xml .= "\r\n";
-	$xml .= get_xml_from_table_records($CI, 'extend_field_lang', array(), '  ');
-	$xml .= "\r\n";
-	$xml .= get_xml_from_table_records($CI, 'extend_field_type', array(), '  ');
-	$xml .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'extend_field');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'extend_field_lang');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'extend_field_type');
+	$sql .= "\r\n";
 
-	return $xml;
+	// static items
+	$sql .= get_insert_query_from_table_records($CI, 'item');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'item_definition');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'item_definition_lang');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'item_lang');
+	$sql .= "\r\n";
+	$sql .= get_insert_query_from_table_records($CI, 'items');
+	$sql .= "\r\n";
+
+	return $sql;
 }
 
 /**
@@ -42,40 +53,45 @@ function get_content_configurations_xml()
  * @param string $prefix
  * @return string
  */
-function get_xml_from_table_records($CI, $table_name, $ignore_keys = array(), $prefix = '')
+function get_insert_query_from_table_records($CI, $table_name, $addCreate = true)
 {
-	$xml = "<{$table_name}s>\r\n";
-	$xml .= "\r\n";
+	$query	= $CI->db->get($table_name);
+	$records= $query->result_array();
 
-	$query = $CI->db->get($table_name);
+	$sql  = $addCreate ? get_create_query_by_table_name($CI, $table_name) : '';
 
-	foreach( $query->result() as $row ) {
-		$xml .= $prefix . "<{$table_name}>\r\n";
-		$xml .= result_array_items_to_xml( $row, $ignore_keys, $prefix . '  ' );
-		$xml .= $prefix . "</{$table_name}>\r\n";
-		$xml .= "\r\n";
+	if( count($records) > 0 ) {
+		$sql .= "INSERT INTO `$table_name` VALUES\r\n";
+
+		$lastRowIndex = count($records) - 1;
+		foreach($records as $indexRecord => $record) {
+			$record = array_values((array) $record);
+
+			$sql .= '  (';
+
+			$lastValueIndex = count($record) - 1;
+			foreach($record as $indexValue => $value) {
+				$sql .= is_numeric($value) ? $value : ($CI->db->escape($value) );
+				$sql .= $indexValue < $lastValueIndex ? ', ' : '';
+			}
+			$sql .= ")" . (($indexRecord < $lastRowIndex) ? ", \r\n" : ';');
+		}
+		$sql .= "\r\n\r\n";
 	}
 
-	$xml .= "</{$table_name}s>\r\n";
+	echo $sql;
 
-	return $xml;
+	return $sql;
 }
 
-/**
- * @param	stdClass	$result_array
- * @param	array		$ignore_keys
- * @param	string		$prefix
- * @return	string
- */
-function result_array_items_to_xml($result_array, $ignore_keys = array(), $prefix = '')
+function get_create_query_by_table_name($CI, $table)
 {
-	$xml = '';
-	foreach($result_array as $key => $value)
-	{
-		$xml .= $prefix . "<$key>" . $value . "</$key>\r\n";
-	}
 
-	return $xml;
+	$query	= $CI->db->query('SHOW CREATE TABLE ' . $table);
+	$result	= $query->result_array();
+
+	return
+		"DROP TABLE IF EXISTS `$table`;\r\n" . $result[0]['Create Table'] . ";\r\n\r\n";
 }
 
 /* End of file dump_content_definitions_helper.php */
