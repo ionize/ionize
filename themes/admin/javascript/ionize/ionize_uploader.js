@@ -154,7 +154,7 @@ ION.Uploader = new Class({
 
 		// DropArea
 		if( typeOf(this.options.droparea ) == 'null')
-			this.uiDropArea = document.body
+			this.uiDropArea = document.body;
 		else
 			this.uiDropArea = $(this.options.droparea);
 
