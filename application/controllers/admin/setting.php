@@ -1273,11 +1273,11 @@ class Setting extends MY_admin
 	function dump_extendfields()
 	{
 		$this->load->helper('download');
-		$this->load->helper('dump_extend_field_definitions');
+		$this->load->helper('dump_content_definitions');
 
-		$definitions = get_extend_field_definitions();
+		$definitions = get_content_configurations_xml();
 
-		force_download('extendfields.xml', $definitions);
+		force_download('content_configs.xml', $definitions);
 	}
 
 
