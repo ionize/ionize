@@ -1268,9 +1268,11 @@ class Setting extends MY_admin
 
 
 	/**
-	 * Creates and force download of extend field definitions queries XML
+	 * Creates and force download of content configuration records queries XML
+	 *
+	 * This includes: article types, content elements, extend fields
 	 */
-	function dump_extendfields()
+	function export_contentconfigs()
 	{
 		$this->load->helper('download');
 		$this->load->helper('dump_content_definitions');

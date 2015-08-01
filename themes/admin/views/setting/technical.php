@@ -317,7 +317,7 @@
 				<h3><?php echo lang('ionize_title_db_backup_content_definitions'); ?></h3>
 
 				<p>
-					<a class="button light" id="dbDumpExtendFields" href="<?php echo admin_url(); ?>setting/dump_extendfields">
+					<a class="button light" id="dbDumpExtendFields" href="<?php echo admin_url(); ?>setting/export_contentconfigs">
 						<i class="icon-table"></i><?php echo lang('ionize_label_db_download_dump_extend_fields'); ?>
 					</a>
 				</p>
