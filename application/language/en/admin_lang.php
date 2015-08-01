@@ -639,6 +639,7 @@ $lang['ionize_label_compress_html_output'] = 'Compress HTML Output';
 $lang['ionize_label_compress_html_output_help'] = 'To remove useless whitespace from generated HTML.';
 $lang['ionize_label_create_new_api_key'] = 'Create new API key';
 $lang['ionize_label_db_backup'] = 'Get the database backup file';
+$lang['ionize_label_db_download_dump_extend_fields'] = 'Download extend field definitions';
 $lang['ionize_label_db_driver'] = 'Driver';
 $lang['ionize_label_db_host'] = 'Host';
 $lang['ionize_label_db_name'] = 'Database name';
