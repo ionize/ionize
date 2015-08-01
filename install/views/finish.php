@@ -9,14 +9,23 @@
 </div>
 
 <div class="block content">
-
 	<h2><?php echo lang('title_finish') ?></h2>
-
 	<p><?php echo lang('finish_text') ?></p>
 
-
 	<div class="buttons">
-		<button type="button" class="button yes right" onclick="javascript:location.href='<?php echo $base_url ?>';"><?php echo lang('button_go_to_site') ?></button>
-		<button type="button" class="button info left" onclick="javascript:location.href='<?php echo $base_url.config_item('admin_url') ?>';"><?php echo lang('button_go_to_admin') ?></button>
+		<button type="button" class="button yes right" onclick="javascript:document.location.href='?step=deleteinstaller&goto=site'"><?php echo lang('button_go_to_site') ?></button>
+		<button type="button" class="button info left" onclick="javascript:location.href='?step=deleteinstaller&goto=admin'"><?php echo lang('button_go_to_admin') ?></button>
 	</div>
 </div>
+
+<script type="text/javascript">
+	function deleteInstallFolder() {
+		document.location.href = '?step=deleteinstaller&lang=&lang=<?php echo $lang ?>';
+	}
+</script>
+
+<script type="text/javascript">
+	function deleteInstallFolder() {
+		document.location.href = '?step=deleteinstaller&lang=&lang=<?php echo $lang ?>';
+	}
+</script>
