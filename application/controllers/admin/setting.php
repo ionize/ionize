@@ -794,7 +794,6 @@ class Setting extends MY_admin
 
 		
 		$conf  = "<?php if ( ! defined('BASEPATH')){exit('Invalid file request');}\n\n";
-	 
 		$conf .= "\$views = " . (String) var_export($viewsArray, TRUE) .";\n";
 		
 		// files end
@@ -957,7 +956,7 @@ class Setting extends MY_admin
 			$url = prep_url($url);
 		}
 		
-		$urls = implode("|", $urls);
+		$urls = implode('|', $urls);
 		
 		$data = array(
 			'name' => $type.'_urls',
@@ -1126,8 +1125,7 @@ class Setting extends MY_admin
 	/**
 	 * Delete one thumb setting
 	 *
-	 * @param	boolean		if true, the transport is through XHR
-	 *
+	 * @param	int		$id
 	 */
 	function delete_thumb($id)
 	{
@@ -1268,7 +1266,26 @@ class Setting extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-	
+
+	/**
+	 * Creates and force download of content configuration records queries XML
+	 *
+	 * This includes: article types, content elements, extend fields
+	 */
+	function export_contentconfigs()
+	{
+		$this->load->helper('download');
+		$this->load->helper('dump_content_definitions');
+
+		$definitions = get_content_configurations();
+
+		force_download('content_configuration.sql', $definitions);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Saves SMTP settings
 	 *
