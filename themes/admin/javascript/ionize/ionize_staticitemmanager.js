@@ -669,7 +669,7 @@ ION.StaticItemManager = new Class({
 											var img = new Element('img', {'class': 'mt3'}).inject(divImg);
 											img.setProperty('src', ION.themeUrl + 'styles/original/images/world_flags/flag_' + lang_code + '.gif');
 
-											var content = data.content.length > 20 ? data.content.substring(0, 25) + '...' : data.content;
+											var content = data.content.length > 20 ? data.content.substring(0, 35) + '...' : data.content;
 
 											new Element('div', {
 												'class': '',
@@ -680,7 +680,7 @@ ION.StaticItemManager = new Class({
 									else {
 										var content = f.content.split("\n");
 										content = content[0];
-										content = content.length > 20 ? content.substring(0, 20) + '...' : content;
+										content = content.length > 20 ? content.substring(0, 30) + '...' : content;
 										var a = new Element('a', {text: content});
 										a.addEvent('click', function(){
 											self.editItem(item.id_item);
