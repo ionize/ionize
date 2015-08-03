@@ -2029,7 +2029,9 @@ class Article extends MY_admin
 	protected function _reload_panel($id_page, $id_article)
 	{
 		$page = $this->page_model->get_by_id($id_page);
-		$page['menu'] = $this->menu_model->get($page['id_menu']);
+		
+		$id_menu = array_key_exists('id_menu', $page) ? (int) $page['id_menu'] : 0;
+		$page['menu'] = $this->menu_model->get($id_menu);
 
 		// Main data
 		$article = $this->article_model->get_by_id($id_article);
@@ -2049,7 +2051,7 @@ class Article extends MY_admin
 			)
 		);
 		$this->callback[] = array(
-			'fn' => $page['menu']['name'].'Tree.updateElement',
+			'fn'	=> array_key_exists('name', $page['menu']) ? $page['menu']['name'].'Tree.updateElement' : '',
 			'args' => array($article_lang, 'article')
 		);
 	}
