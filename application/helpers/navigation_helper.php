@@ -75,8 +75,13 @@ if( ! function_exists('get_tree_navigation'))
 				if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
 				if ($key == (count($items) - 1) && ! is_null($last_class)) $class[] = $last_class;
 				
-				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
-				$li_class = ( ! empty($page['children'])) ? ' class="has-dropdown not-click'.implode(' ', $class).'"' : $class;
+				$additionalClass = $page['online'] === '0' ? ' offline' : '';
+				
+				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class) .$additionalClass.'"' : '';
+				
+				$li_class = ( ! empty($page['children'])) 
+					? ' class="has-dropdown not-click'.implode(' ', $class).$additionalClass.'"' 
+					: $class;
 
 				$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
 				
