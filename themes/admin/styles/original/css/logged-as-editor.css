@@ -31,3 +31,9 @@ when the user is connected to the Admin panel as Editor.
 	text-decoration: none;
 	background: none;	
 }
+
+/* Mark offline pages, eg. in tree_navigation, as being only shown during preview of logged-in administrator */
+.offline {
+	border: 2px dotted rgba(255, 0, 0, 0.2);
+	background-color: rgba(255, 255, 0, 0.2);
+}
