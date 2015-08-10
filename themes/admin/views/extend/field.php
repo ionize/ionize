@@ -109,7 +109,7 @@
 					<div class="tabcontent <?php echo $lang; ?>">
 
 						<!-- Label -->
-						<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title w96p" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
+						<input onblur="if ($('nameExtend<?php echo $id_extend_field; ?>').value=='') { $('nameExtend<?php echo $id_extend_field; ?>').value=this.value.replace(' ', '-').toLowerCase(); }" id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title w96p" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
 
 					</div>
 				<?php endforeach ;?>
