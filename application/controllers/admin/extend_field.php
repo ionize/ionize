@@ -372,7 +372,19 @@ class Extend_field extends MY_admin
 				if ( ! $result)
 					$this->error(lang('ionize_message_extend_field_not_deleted'));
 				else
-					$this->success(lang('ionize_message_extend_field_deleted'));
+					$this->success(
+						lang('ionize_message_extend_field_deleted'),
+						array(
+							'callback'=> array(
+								'fn' => 'ION.contentUpdate',
+								'args' => array(
+									'element'	=> 'mainPanel',
+									'url'		=> 'extend_field/index',
+									'title'		=> lang('ionize_title_extend_fields')
+								)
+							)
+						)
+					);
 			}
 			catch(Exception $e)
 			{
