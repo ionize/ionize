@@ -136,10 +136,12 @@
 		if (typeValue == 'VARCHAR' || typeValue == 'INT')
 		{
 			$('constraint_block').setStyle('display', 'block');
-		} else if (typeValue == 'INT')
-		{
-			$('unsigned_block').setStyle('display', 'block');
-			$('auto_increment_block').setStyle('display', 'block');
+			
+			if (typeValue == 'INT') 
+			{
+				$('unsigned_block').setStyle('display', 'block');
+				$('auto_increment_block').setStyle('display', 'block');
+			}
 		}
 	}
 	
