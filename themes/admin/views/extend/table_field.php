@@ -132,12 +132,11 @@
 		$('auto_increment_block').setStyle('display', 'none');
 		$('constraint_block').setStyle('display', 'none');
 	
-		if ($('type').value == 'VARCHAR' || $('type').value == 'INT')
+		var typeValue = $('type').value; 
+		if (typeValue == 'VARCHAR' || typeValue == 'INT')
 		{
 			$('constraint_block').setStyle('display', 'block');
-		}
-		
-		if ($('type').value == 'INT')
+		} else if (typeValue == 'INT')
 		{
 			$('unsigned_block').setStyle('display', 'block');
 			$('auto_increment_block').setStyle('display', 'block');
