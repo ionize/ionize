@@ -189,5 +189,32 @@ if ($id_element == '') :?>
 		clickers: 'li a',
 		sections: 'div.tabcontent<?php echo $UNIQ; ?>'
 	});
+	
+	// Add "toggle editor" option to each RTE
+	(function() {
+		var mces= $$('.mceEditor');
+		mces.each(function(el, j){
+			if(el.isVisible()){
+				var toggleLink = new Element('a', {
+					id				: 'toggle_'+el.id,
+					'data-editor'	: el.id.replace('_parent', ''),
+					classs			: 'btnToggleEditor block',
+					html			: '<?php echo lang('ionize_label_toggle_editor'); ?>'
+				});
+				var br = new Element('br');
+
+				toggleLink.inject(el, 'after');
+				br.inject(toggleLink, 'after');
+				new Element('br').inject(br, 'after');
+
+				toggleLink.addEvent('click', function() {
+					if ($(this.getProperty('data-editor') + '_ifr'))
+						tinyMCE.execCommand("mceRemoveControl",false, this.getProperty('data-editor'));
+					else
+						tinyMCE.execCommand("mceAddControl",false, this.getProperty('data-editor'));
+				});
+			}
+		});
+	}).delay(500);
 
 </script>
