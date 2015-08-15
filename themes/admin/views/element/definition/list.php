@@ -8,6 +8,13 @@
 
 <script type="text/javascript">
 
+    ION.initAccordion(
+	'.toggler.element-list',
+	'.element.element-list',
+	false,
+	'elementListAccordion'
+    );
+
 	//  Content Element itemManager
     var elementManager = new ION.ItemManager({container: 'elementContainer', 'element':'element_definition'});
     elementManager.makeSortable();
