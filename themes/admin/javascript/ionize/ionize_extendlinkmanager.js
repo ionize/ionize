@@ -114,6 +114,7 @@ ION.ExtendLinkManager = new Class({
 				container: this.ul,
 				buildUl: false,
 				items: json,
+				sortable: true,
 				sort: {
 					handler: '.drag',
 					id_key: 'extend_value',
@@ -130,7 +131,7 @@ ION.ExtendLinkManager = new Class({
 					// Sort
 					{
 						element: 'span',			// Sort Drag icon must be span
-						'class': 'icon drag left'
+						'class': 'icon drag sort left'
 					},
 					// Type Icon
 					{
