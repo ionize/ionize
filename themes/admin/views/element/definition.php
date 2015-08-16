@@ -65,7 +65,7 @@ $id = $id_element_definition;
 							<li <?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><?php echo ucfirst($language['name']) ;?></a></li>
 						<?php endforeach ;?>
 
-						<li class="right" id="usageTab"><a><?php echo lang('ionize_button_usage'); ?></a></li>
+						<li class="right" id="usageTab"><a><?php echo count($usages) . ' ' . lang('ionize_button_usage'); ?></a></li>
 					</ul>
 					<div class="clear"></div>
 
@@ -85,6 +85,42 @@ $id = $id_element_definition;
 
 					<?php endforeach ;?>
 
+					<div class="tabcontent">
+						<table class="list">
+							<thead>
+							<tr>
+								<th><?php echo lang('ionize_title_pages'); ?></th>
+								<th><?php echo lang('ionize_title_articles'); ?></th>
+								<th style="width:70px;" class="right"></th>
+							</tr>
+							</thead>
+
+							<tbody>
+							<?php foreach($usages as $elementUsage) { ?>
+								<tr>
+									<td class="pl10">
+										<a title="<?php echo $elementUsage['page']['id_page'] ?>: <?php echo $elementUsage['page']['name'] ?>" onclick="$$('a.page<?php echo $elementUsage['page']['id_page'] ?>').getLast().fireEvent('click')" class="page-breadcrumb">
+											<?php echo $elementUsage['page']['name'] ?>
+										</a>
+									</td>
+									<td class="pl10">
+										<?php if( $elementUsage['article'] === null ) { ?>
+											-
+										<?php } else { ?>
+											<a title="<?php echo $elementUsage['page']['id_page'] ?>.<?php echo $elementUsage['article']['id_article'] ?>: <?php echo $elementUsage['article']['name'] ?>" onclick="$$('a.article<?php echo $elementUsage['page']['id_page'] ?>x<?php echo $elementUsage['article']['id_article'] ?>').getLast().fireEvent('click')" class="page-breadcrumb">
+												<?php echo $elementUsage['article']['name'] ?>
+											</a>
+										<?php } ?>
+									</td>
+									<td class="pr10">
+										<a data-id="<?php echo $elementUsage['id_element'] ?>" class="delete-usage icon right"></a>
+									</td>
+								</tr>
+							<?php } ?>
+							</tbody>
+						</table>
+					</div>
+					
 				</div>
 
 				<hr />
@@ -151,7 +187,7 @@ $id = $id_element_definition;
 
 </li>
 <script type="text/javascript">
-    new TabSwapper({
+    	new TabSwapper({
 		tabsContainer: 'elementDefinitonTab<?php echo $id ;?>',
 		sectionsContainer: 'elementDefinitionTabContent<?php echo $id ;?>',
 		selectedClass: 'selected',
@@ -160,4 +196,22 @@ $id = $id_element_definition;
 		clickers: 'li a',
 		sections: 'div.tabcontent'
 	});
+	
+	$$('.delete-usage').each(function(el){
+		el.addEvent('click', function() {
+			ION.initRequestEvent(
+				el,
+				admin_url + 'element/delete/' + el.get('data-id'),
+				{},
+				{
+					'confirm': true,
+					'message': Lang.get('ionize_confirm_element_delete_usage'),
+					'onSuccess': function()
+					{
+						$$('a[href="element_definition/index"]')[0].click();
+					}
+				}
+			);
+		});
+	});	
 </script>
