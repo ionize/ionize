@@ -225,7 +225,8 @@ li.offline { opacity:0.7; }
 .icon.offline, 		.button i.icon-offline		{background-position: -80px -32px;}
 .icon.link,		    .button i.icon-link 		{background-position: -208px -32px;}
 .icon.unlink,		.button i.icon-unlink 		{background-position: -128px -32px;}
-.icon.delete,		.button i.icon-delete 		{background-position: -160px -64px;}
+.icon.delete,		.button i.icon-delete,
+.icon.delete-usage, .button i.icon-delete-usage		{background-position: -160px -64px;}
 .icon.article,		.button i.icon-article		{background-position: -144px -16px;}
 .icon.article.add,	.button i.icon-article.add	{background-position: -208px -16px;}
 .icon.page.add,	    .button i.icon-page.add	    {background-position: -224px -16px;}
