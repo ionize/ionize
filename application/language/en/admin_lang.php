@@ -164,6 +164,7 @@ $lang['ionize_title_existing_menu'] = 'Existing menu';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_save_element'] = 'Save this Element';
+$lang['ionize_button_usage'] = 'Usages';
 $lang['ionize_label_add_content_element'] = 'Add Element';
 $lang['ionize_label_back_to_element_list'] = 'Back to Elements';
 $lang['ionize_label_content_element'] = 'Content Element';
