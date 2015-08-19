@@ -24,7 +24,7 @@ if ( ! function_exists('isDate'))
 {
 	function isDate($mysqlDatetime)
 	{
-		return ($mysqlDatetime != '0000-00-00 00:00:00' && $mysqlDatetime != '') ? true : false;
+		return ($mysqlDatetime != '0000-00-00 00:00:00' && $mysqlDatetime != '');
 	}
 }
 
