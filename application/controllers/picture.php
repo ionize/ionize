@@ -64,7 +64,7 @@ class Picture extends Base_Controller
 
 			$thumb_file_path = $this->medias->get_thumb_file_path($picture, $options);
 
-			$refresh = ! empty($options['refresh']) ? TRUE : FALSE;
+			$refresh = ! empty($options['refresh']);
 
 			// If no thumb, try to create it
 			if ( ! file_exists($thumb_file_path) OR $refresh === TRUE)
