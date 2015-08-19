@@ -161,7 +161,7 @@ if ( ! function_exists('form_build_field'))
 				{
 					$id = 'c_'.uniqid();
 					$extra2 = $extra . ' id="'.$id.'"';
-					$checked = ($field_value == $value) ? TRUE : FALSE;
+					$checked = ($field_value == $value);
 					if ($print_label === TRUE)
 						$str .= form_label($label, $id);
 					$str .= form_checkbox($field_name, $value, $checked, $extra2);
@@ -185,7 +185,7 @@ if ( ! function_exists('form_build_field'))
 				{
 					$id = 'r_'.uniqid();
 					$extra2 = $extra . ' id="'.$id.'"';
-					$checked = ($field_value == $value) ? TRUE : FALSE;
+					$checked = ($field_value == $value);
 					if ($print_label === TRUE)
 						$str .= form_label($label, $id);
 					$str .= form_radio($field_name, $value, $checked, $extra2);
