@@ -654,7 +654,7 @@ class TagManager_Page extends TagManager
 		// Get the asked parent page : From current page or from page ID
 		if (!is_null($parent))
 		{
-			$all_parents = ( $tag->getAttribute('all-parents') == TRUE) ? TRUE : FALSE;
+			$all_parents = ( $tag->getAttribute('all-parents') == TRUE);
 
 			// Path IDs
 			if ($all_parents)
