@@ -264,7 +264,7 @@ class FTL_Parser{
 				unset($this->current);
 				$tmp =& array_pop($this->stack);
 				
-				if($tag == $tmp['name'])
+				if($tag === $tmp['name'])
 				{
 					// move up in the tree
 					$parent =& $this->stack[count($this->stack) - 1];
