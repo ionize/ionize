@@ -362,7 +362,9 @@ $width = (100 / $nbLang);
 				'contentElement' + id,
 				'ionize_title_edit_content_element',
 				'element/edit',
-				{width:500, height:350},
+				{ width:ION.getPopupDefaultWidth(),
+				  height:ION.getPopupDefaultHeight()
+				},
 				{'id_element': id}
 			);
 		});
