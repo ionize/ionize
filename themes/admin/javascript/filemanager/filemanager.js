@@ -337,8 +337,8 @@ var Filemanager = new Class({
 				createFolderButton.addEvent('click', this['create_on_click'].bind(this));
 		}
 		if (this.options.download) this.addMenuButton('download', 'download');
-		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
 		if (this.options.selectable) this.addMenuButton('open_all', 'ionize_label_select_all_files');
+		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
 
 		this.info = new Element('div', {'class': 'filemanager-infos'});
 
@@ -3159,7 +3159,7 @@ var Filemanager = new Class({
 	 */
 	addMenuButton: function(name, translation)
 	{
-		var el = new Element('a', {'class': 'filemanager-' + name + ' button green',	text: Lang.get(translation)}).inject(this.menu, 'top');
+		var el = new Element('button', {'class': 'filemanager-' + name + ' button green',	text: Lang.get(translation)}).inject(this.menu, 'top');
 
 		if (this[name+'_on_click'])
 			el.addEvent('click', this[name+'_on_click'].bind(this));
