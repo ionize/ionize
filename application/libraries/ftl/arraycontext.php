@@ -158,7 +158,7 @@ class FTL_ArrayContext extends FTL_Context
 	 */
 	public function tag_missing($name, $args = array(), $block = NULL)
 	{
-		if(isset($args['use_globals']) && strtolower($args['use_globals']) == 'yes')
+		if(isset($args['use_globals']) && strtolower($args['use_globals']) === 'yes')
 		{
 			// do we have a matching global key?
 			if(isset($this->globals->$name))
