@@ -189,7 +189,7 @@ class FTL_Parser{
 		}
 
 		$str = '';
-		foreach((Array) $stack as $key => $element)
+		foreach((Array) $stack as $element)
 		{
 			if(is_string($element))
 			{
