@@ -106,14 +106,6 @@ class TagManager
 	public static $_entity = NULL;
 
 	/**
-	 * Shutdown callback
-	 * Currently used if one expression evaluation hangs
-	 * @var null
-	 */
-	public static $shutdown_callback = NULL;
-	public static $shutdown_callback_args = NULL;
-
-	/**
 	 * Declared forms
 	 *
 	 * @var null
@@ -288,10 +280,6 @@ class TagManager
 		self::add_module_tags();
 
 		self::process_form();
-
-		register_shutdown_function(
-			array('TagManager', 'call_shutdown')
-		);
 	}
 
 
@@ -3456,21 +3444,16 @@ class TagManager
 
 			$result = self::eval_expression($tag, $expression);
 
-			switch($result)
-			{
-				case TRUE:
-					if (self::$trigger_else > 0)
+			if ($result === TRUE) {
+					if (self::$trigger_else > 0) {
 						self::$trigger_else = 0;
+					}
 
 					return self::wrap($tag, $tag->expand());
-					break;
-
-				case FALSE:
+			} else if ($result === FALSE) {
 					self::$trigger_else++;
 					return '';
-					break;
-
-				case NULL:
+			} else {
 					return self::show_tag_error($tag, 'Condition incorrect: ' . $expression);
 			}
 		}
@@ -3751,12 +3734,6 @@ class TagManager
 	 */
 	protected static function eval_expression(FTL_Binding $tag, $expression)
 	{
-		// PHP error handling method
-		self::register_shutdown(
-			'self::handle_eval_shutdown',
-			$tag
-		);
-
 		// Result and return
 		$return = NULL;
 		$result = FALSE;
@@ -3885,92 +3862,6 @@ class TagManager
 					self::$context->define_tag($prefix.$key.':'.$name, array(__CLASS__, 'tag_simple_value'));
 				}
 			}
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Registers one method as shutdown function
-	 * Needed because register_shutdown_function() stacks functions
-	 *
-	 * @param $callback
-	 * @param $tag
-	 *
-	 */
-	private static function register_shutdown($callback, $tag)
-	{
-		if(is_callable($callback))
-		{
-			self::unregister_shutdown();
-			self::$shutdown_callback = $callback;
-			self::$shutdown_callback_args = $tag;
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Unregister the shutdown function
-	 *
-	 */
-	private static function unregister_shutdown()
-	{
-		self::$shutdown_callback = NULL;
-		self::$shutdown_callback_args = NULL;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Calls the registered shutdown method
-	 * This method is registered as "shutdown function" by self::init()
-	 *
-	 */
-	public static function call_shutdown()
-	{
-		if ( ! is_null(self::$shutdown_callback))
-		{
-			$callback = self::$shutdown_callback;
-			if(is_callable($callback))
-			{
-				call_user_func($callback, self::$shutdown_callback_args);
-			}
-		}
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Handles the eval_expression() PHP fatal error.
-	 * Called when the expression evaluation generates one fatal error
-	 *
-	 * @param FTL_Binding $tag
-	 *
-	 */
-	public static function handle_eval_shutdown(FTL_Binding $tag)
-	{
-		$error = error_get_last();
-		if($error !== NULL)
-		{
-			trace($tag->getAttributes());
-			$msg = self::show_tag_error($tag,
-				'PHP error : ' . $error['message'] . '<br/>' .
-				'in expression : ' . $tag->getAttribute('expression') . '<br/>' .
-				'file : ' . $error['file']
-				//	. '<br/>PHP original error : <br/>'.
-				//	$error['message'] . ' in ' . $error['file']
-			);
-			echo $msg;
-			die();
 		}
 	}
 
