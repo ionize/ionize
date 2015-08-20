@@ -238,7 +238,7 @@ if ($tracker_title == '')
 								<label for="url_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_url'); ?>"><?php echo lang('ionize_label_url'); ?></label>
 							</dt>
 							<dd>
-								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>" title="<?php echo lang('ionize_help_page_url'); ?>" />
+								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>" title="<?php echo lang('ionize_help_page_url'); ?>" onblur="this.value=this.value.replace(new RegExp('\\s', 'g'), '').toLowerCase()" />
 
 								<?php if( ! is_null($lang_url)) :?>
 									<br/>
