@@ -74,15 +74,14 @@
 						<h1><?php echo lang('ionize_mail_user_intro', $username) ?></h1>
 
 						<p><?php echo $message_intro ?></p>
-
 						<p><?php echo $message ?></p>
 
 						<h2><?php echo lang('ionize_mail_account_details') ?></h2>
 						<p>
-							<?php echo lang('ionize_label_firstname') ?> : <strong><?php echo $firstname ?></strong><br/>
-							<?php echo lang('ionize_label_lastname') ?> : <strong><?php echo $lastname ?></strong><br/>
-							<?php echo lang('ionize_label_email') ?> : <strong><?php echo $email ?></strong><br/>
-							<?php echo lang('ionize_label_role') ?> : <strong><?php echo $role ?></strong><br/>
+							<?php echo lang('ionize_label_firstname') ?>: <strong><?php echo $firstname ?></strong><br/>
+							<?php echo lang('ionize_label_lastname') ?>: <strong><?php echo $lastname ?></strong><br/>
+							<?php echo lang('ionize_label_email') ?>: <strong><?php echo $email ?></strong><br/>
+							<?php echo lang('ionize_label_role') ?>: <strong><?php echo $role ?></strong><br/>
 						</p>
 
 						<p>

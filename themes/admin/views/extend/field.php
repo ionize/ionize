@@ -5,9 +5,7 @@
  * @receives :
  * 		- Extend definitions fields in case of existing extend definition edition
  * 		- $parents : List of potential extend parents
- *
  */
-
 ?>
 
 <?php if (Authority::can('delete', 'admin/extend') && $id_extend_field != '') :?>
@@ -20,19 +18,18 @@
 
 <div class="main subtitle">
 	<p>
-
 		<?php if ($id_extend_field) :?>
-			<span class="lite"><?php echo lang('ionize_label_id') ?> : </span>
+			<span class="lite"><?php echo lang('ionize_label_id') ?>: </span>
 			<?php echo $id_extend_field; ?>
 		<?php endif ;?>
 		<?php if ($id_extend_field != '' && $limit_to_parent) :?>
 			<span class="lite"> | </span>
 		<?php endif ;?>
 		<?php if ($limit_to_parent) :?>
-			<span class="lite"><?php echo lang('ionize_label_extend_field_parent') ?> : </span>
+			<span class="lite"><?php echo lang('ionize_label_extend_field_parent') ?>: </span>
 			<?php echo ucfirst($limit_to_parent) ?>
 			<?php if ($id_parent) :?>
-				<span class="lite"> | <?php echo lang('ionize_label_parent_id') ?> : </span>
+				<span class="lite"> | <?php echo lang('ionize_label_parent_id') ?>: </span>
 				<?php echo $id_parent ?>
 			<?php endif ;?>
 		<?php endif ;?>
@@ -53,6 +50,7 @@
 	<input id="id_extend_field" name="id_extend_field" type="hidden" value="<?php echo $id_extend_field; ?>" />
 	<input id="ordering" name="ordering" type="hidden" value="<?php echo $ordering; ?>" />
 	<input type="hidden" name="id_parent" value="<?php echo $id_parent ?>" />
+	<input id="article_types" type="hidden" name="article_types" value="<?php echo implode(',', $_article_types) ?>" />
 	<?php if ( ! empty($context)) :?>
 		<input type="hidden" name="context" value="<?php echo $context ?>" />
 	<?php endif ;?>
@@ -79,6 +77,20 @@
 		</dl>
 	<?php endif ;?>
 
+	<!-- Article extend field (only): article type -->
+	<dl class="small" id="dl_article_type_<?php echo $id_extend_field; ?>"<?php if($parent !== 'article') : ?> style="display:none"<?php endif; ?>>
+		<dt>
+			<label for="article_type_<?php echo $id_extend_field; ?>" title="<?php echo lang('ionize_help_ef_article_type'); ?>"><?php echo lang('ionize_label_extend_field_article_type'); ?></label>
+		</dt>
+		<dd>
+			<select size="<?php echo count($article_types); ?>" multiple="multiple" id="article_type_<?php echo $id_extend_field; ?>" name="article_type" class="select">
+				<?php foreach ($article_types as $article_type) :?>
+					<option value="<?php echo $article_type['id_type'] ?>" <?php if ( count($_article_types) === 0 || in_array($article_type['id_type'], $_article_types)) :?> selected="selected" <?php endif ;?>><?php echo $article_type['type']; ?></option>
+				<?php endforeach; ?>
+			</select>
+		</dd>
+	</dl>
+
 	<!-- Label -->
 	<dl class="small">
 		<dt class="mt10"><label><?php echo lang('ionize_label_label'); ?></label></dt>
@@ -86,34 +98,24 @@
 
 			<!-- Tabs -->
 			<div id="extendFieldTab<?php echo $id_extend_field; ?>" class="mainTabs small">
-
 				<ul class="tab-menu">
-
 					<?php foreach(Settings::get_languages() as $language) :?>
-
 						<li class="tab_extend<?php if($language['def'] == '1') :?> dl<?php endif ;?>" rel="<?php echo $language['lang']; ?>"><a><?php echo ucfirst($language['name']); ?></a></li>
-
 					<?php endforeach ;?>
-
 				</ul>
 				<div class="clear"></div>
-
 			</div>
 
 			<div id="extendFieldTabContent<?php echo $id_extend_field; ?>">
-
 				<?php foreach(Settings::get_languages() as $language) :?>
-
 					<?php $lang = $language['lang']; ?>
-
 					<div class="tabcontent <?php echo $lang; ?>">
-
 						<!-- Label -->
 						<input id="label_<?php echo $lang; ?><?php echo $id_extend_field; ?>" name="label_<?php echo $lang; ?>" class="inputtext title w96p" type="text" value="<?php echo $languages[$lang]['label']; ?>"/>
-
 					</div>
 				<?php endforeach ;?>
 			</div>
+
 		</dd>
 	</dl>
 
@@ -212,7 +214,6 @@
 
 	<?php endif ;?>
 
-
 </form>
 
 <div class="buttons">
@@ -227,7 +228,9 @@
 	var extend_types =  JSON.decode('<?php echo $extend_types; ?>', false);
 	var default_lang_code  = '<?php echo Settings::get_lang("default") ?>';
 
-
+	/**
+	 * @param	{String} id_type
+	 */
 	function get_extend_type(id_type)
 	{
 		var type = null;
@@ -242,7 +245,25 @@
 		return type;
 	}
 
+	/**
+	 * Update value of hidden field for article type IDs
+	 */
+	function updateArticleTypes() {
+		$('article_types').setProperty('value', '');
+		if($('parent<?php echo $id_extend_field; ?>').value === 'article') {
+			$('article_type_<?php echo $id_extend_field; ?>').getSelected().each(function(option){
+				var elArticleTypes = $('article_types');
+				elArticleTypes.setProperty(
+					'value',
+					elArticleTypes.get('value') + parseInt(option.value, 10) + ','
+				);
+			});
+		}
+	}
 
+	/**
+	 * @param	{String} id_type
+	 */
 	function display_value_block(id_type)
 	{
 		var type = get_extend_type(id_type);
@@ -256,7 +277,6 @@
 		if (['radio','checkbox','select','select-multiple'].contains(type.html_element_type)) $('efListHelp').show(); else $('efListHelp').hide();
 		if (type.translated == 1) translate_block.show(); else translate_block.hide();
 	}
-	
 
 	var elTypeById = $('type' + id);
 	elTypeById.addEvent('change', function()
@@ -266,6 +286,27 @@
 	});
 	display_value_block(elTypeById.value);
 
+	// Install parent kind select observer: show article type select only for article
+	$('parent<?php echo $id_extend_field; ?>').addEvent('change', function()
+	{
+		var parent_type = $('parent<?php echo $id_extend_field; ?>').value;
+		$('dl_article_type_<?php echo $id_extend_field; ?>')[parent_type === 'article' ? 'show' : 'hide']();
+	});
+
+	// Install article type change observer: select all when none selected, update IDs value field
+	var elArticleTypeSelect = $('article_type_<?php echo $id_extend_field; ?>');
+	elArticleTypeSelect.addEvent('change', function(e)
+	{
+		var selected = elArticleTypeSelect.getSelected();
+		if(selected.length === 0) {
+			var allOptions = $$('#article_type_<?php echo $id_extend_field; ?> option');
+			allOptions.each(function(option){
+				option.set('selected', true);
+			});
+		}
+
+		updateArticleTypes();
+	});
 
 	// Form Validation
 	Form.Validator.add('checkListFormat', {
@@ -314,19 +355,20 @@
 
 	// Tabs
 	var extendFieldTab<?php echo $id_extend_field; ?> = new TabSwapper({
-		tabsContainer: 'extendFieldTab<?php echo $id_extend_field; ?>',
-		sectionsContainer: 'extendFieldTabContent<?php echo $id_extend_field; ?>',
-		selectedClass: 'selected',
-		deselectedClass: '',
-		tabs: 'li',
-		clickers: 'li a',
-		sections: 'div.tabcontent'
+		tabsContainer		: 'extendFieldTab<?php echo $id_extend_field; ?>',
+		sectionsContainer	: 'extendFieldTabContent<?php echo $id_extend_field; ?>',
+		selectedClass		: 'selected',
+		deselectedClass		: '',
+		tabs				: 'li',
+		clickers			: 'li a',
+		sections			: 'div.tabcontent'
 	});
 
 	// Delete Action
-	if (typeOf($('bDeleteextendfield' + id)) != 'null')
+	var elBDeleteExtendField = $('bDeleteextendfield' + id);
+	if (elBDeleteExtendField != null)
 	{
-		$('bDeleteextendfield' + id).addEvent('click', function()
+		elBDeleteExtendField.addEvent('click', function()
 		{
 			ION.confirmation(
 				'wConfirmDelete' + id,
@@ -348,5 +390,6 @@
 		});
 	}
 
-</script>
+	updateArticleTypes();
 
+</script>

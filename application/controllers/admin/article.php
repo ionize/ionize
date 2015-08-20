@@ -47,33 +47,18 @@ class Article extends MY_admin
 	 */
 	protected $lang_data = array();
 
-	/**
-	 * Boolean data (checkboxes)
-	 *
-	 * @var array
-	 */
+	/** @var	array	Boolean data (checkboxes)*/
 	protected $boolean_data = array();
 
-	/**
-	 * Boolean options (checkboxes)
-	 *
-	 * @var array
-	 */
+	/** @var 	array	Boolean options (checkboxes) */
 	protected $boolean_options = array();
 
-
-	/**
-	 * Frontend / Backend Authority actions
-	 * @var array
-	 */
+	/** @var	array	Frontend / Backend Authority actions */
 	protected static $_AUTHORITY_BACKEND_ACTIONS = array('edit','delete','status','unlink');
+
 	protected static $_AUTHORITY_FRONTEND_ACTIONS = NULL;
 
-
-	/**
-	 * Nb of articles by pagination page
-	 * @var int
-	 */
+	/** @var	int	Nb of articles by pagination page */
 	protected static $_NB_ARTICLES_PAGINATION = 20;
 
 	/** @var  Menu_model */
@@ -667,7 +652,7 @@ class Article extends MY_admin
 	public function edit($rel)
 	{
 		// IDs
-		$rel = explode(".", $rel);
+		$rel = explode('.', $rel);
 		$id_page = ( !empty($rel[1] )) ? $rel[0] : '0';
 		$id_article = ( !empty($rel[1] )) ? $rel[1] : NULL;
 

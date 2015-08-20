@@ -19,6 +19,9 @@ class Extend_field extends MY_admin
 	/** @var  Extend_field_type_model */
 	public $extend_field_type_model;
 
+	/** @var  Article_type_model */
+	public $article_type_model;
+
 	/**
 	 * Constructor
 	 *
@@ -32,6 +35,7 @@ class Extend_field extends MY_admin
 			array(
 				'extend_field_model',
 				'extend_field_type_model',
+				'article_type_model'
 			),
 			'',
 			TRUE
@@ -44,7 +48,6 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Index
-	 *
 	 */
 	function index()
 	{
@@ -54,7 +57,9 @@ class Extend_field extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * @param	string	$format		eg: 'json'
+	 */
 	public function get_extend_types($format=NULL)
 	{
 		$extend_types = $this->extend_field_type_model->get_list(
@@ -119,6 +124,10 @@ class Extend_field extends MY_admin
 			'id=type'.$this->template['id_extend_field'].' class="select"'
 		);
 
+		// Available article types
+		$this->template['article_types'] = $this->article_type_model->get_all();
+		$this->template['_article_types']= $this->extend_field_model->get_article_types();
+
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
 		
@@ -139,7 +148,7 @@ class Extend_field extends MY_admin
 		$context = $this->input->post('context');
 		$id_context = $this->input->post('id_context');
 
-		// Pre-defined parent : No parent select in this case
+		// Pre-defined parent: No parent select in this case
 		$parent = $this->input->post('parent');
 
 		if ($id)
@@ -153,7 +162,7 @@ class Extend_field extends MY_admin
 			$this->extend_field_model->feed_blank_lang_template($this->template);
 		}
 
-		// Context : NULL by default
+		// Context: NULL by default
 		$this->template['context'] = NULL;
 		$this->template['id_context'] = NULL;
 
@@ -163,7 +172,7 @@ class Extend_field extends MY_admin
 			$this->template['id_context'] = $id_context;
 		}
 
-		// Limit to one parent type ?
+		// Limit to one parent type?
 		$this->template['limit_to_parent'] = FALSE;
 		if ($parent)
 		{
@@ -183,6 +192,10 @@ class Extend_field extends MY_admin
 			$this->template['type'],
 			'id=type'.$this->template['id_extend_field'].' class="select"'
 		);
+
+		// Available article types
+		$this->template['article_types'] = $this->article_type_model->get_all();
+		$this->template['_article_types']= $this->extend_field_model->get_article_types($this->template['id_extend_field']);
 
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
@@ -214,7 +227,6 @@ class Extend_field extends MY_admin
 	 * Called by XHR by admin/views/extend/index.php
 	 *
 	 * @param	String		Parent type. Can be 'article', 'page', etc.
-	 *
 	 */
 	function get_extend_fields()
 	{
@@ -308,7 +320,6 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Saves one extend field definition based on $_POST data
-	 *
 	 */
 	function save()
 	{
@@ -333,9 +344,17 @@ class Extend_field extends MY_admin
 			// Save data
 			$this->id = $this->extend_field_model->save($this->data, $this->lang_data);
 
+			// Extend fields of parent 'article' only: save type of parent kind (article type)
+			if($this->input->post('parent') === 'article') {
+				$articleTypeIDs = explode(',', $this->input->post('article_types'));
+				$this->extend_field_model->save_multiple_links(
+					'extend_field', $this->id, 'article_type', $articleTypeIDs
+				);
+			}
+
 			$this->update[] = array(
-				'element' => 'extend_fields',
-				'url' =>  'extend_field/get_extend_fields'
+				'element'	=> 'extend_fields',
+				'url'		=> 'extend_field/get_extend_fields'
 			);
 
 			$this->success(lang('ionize_message_extend_field_saved'));
@@ -391,9 +410,7 @@ class Extend_field extends MY_admin
 	 * Saves extending fields ordering
 	 * 
 	 * @param	String		Parent type
-	 *
 	 * @return	String		Success or error message
-	 * 
 	 */
 	function save_ordering()
 	{
@@ -450,7 +467,6 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Get Extend Definitions linked to one parent type
-	 *
 	 */
 	public function get_parent_list()
 	{
@@ -464,7 +480,9 @@ class Extend_field extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * @param	string	[$mode]		eg: 'json'
+	 */
 	public function get_extend_instance($mode=NULL)
 	{
 		$id_extend = $this->input->post('id_extend');
@@ -485,9 +503,9 @@ class Extend_field extends MY_admin
 
 
 	/**
-	 * Get Parent's extends instances
+	 * Get Parent's extends instances (= actual extend fields assigned to the parent)
 	 *
-	 * @param null $mode
+	 * @param	string [$mode]	eg: 'json'
 	 */
 	public function get_instances_list($mode=NULL)
 	{
@@ -510,7 +528,7 @@ class Extend_field extends MY_admin
 	/**
 	 * Get Context's extends instances
 	 *
-	 * @param null $mode
+	 * @param	string [$mode]	eg: 'json'
 	 */
 	public function get_context_instances_list($mode=NULL)
 	{
@@ -535,7 +553,6 @@ class Extend_field extends MY_admin
 	 * Links one extend field to one logical parent element
 	 * (ex : page, article, company)
 	 * This extend field will then only be available in the context of its parent element
-	 *
 	 */
 	public function link_to_context()
 	{
@@ -596,7 +613,9 @@ class Extend_field extends MY_admin
 
 	// ------------------------------------------------------------------------
 
-
+	/**
+	 * @param	string [$mode]	eg: 'json'
+	 */
 	public function get_extend_link_list($mode=NULL)
 	{
 		$id_extend = $this->input->post('id_extend');
@@ -653,7 +672,6 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Saves media order for one parent
-	 *
 	 */
 	public function save_extend_ordering()
 	{
@@ -683,7 +701,6 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Prepare data before saving
-	 * 
 	 */
 	function _prepare_data() 
 	{

@@ -12,12 +12,11 @@
 $mimes = Settings::get_mimes_types();
 $pictures = array_keys($mimes['picture']);
 
+echo lang('ionize_text_unused_media_files')
 ?>
-
-<?php echo lang('ionize_text_unused_media_files') ?>
 <hr/>
-<?php echo lang('ionize_title_medias') ?> : <b><?php echo count($files) ?></b><br/>
-<?php echo lang('ionize_label_media_size') ?> : <b><?php echo $size ?></b><br/>
+<?php echo lang('ionize_title_medias') ?>: <b><?php echo count($files) ?></b><br/>
+<?php echo lang('ionize_label_media_size') ?>: <b><?php echo $size ?></b><br/>
 
 <hr />
 <p class="30">

@@ -484,7 +484,7 @@ if ( ! function_exists('word_wrap'))
 		{
 			foreach ($unwrap as $key => $val)
 			{
-				$output = str_replace("{{unwrapped".$key."}}", $val, $output);
+				$output = str_replace('{{unwrapped'.$key.'}}', $val, $output);
 			}
 		}
 

@@ -4,7 +4,7 @@
  *
  * @package MCFileManager.filesystems
  * @author Moxiecode
- * @copyright Copyright © 2005, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright ï¿½ 2005, Moxiecode Systems AB, All rights reserved.
  */
 
 // File type contstants
@@ -19,6 +19,7 @@ define('MC_LOGGER_FATAL', 40);
  * designed to be compact but still powerful and flexible.
  */
 class Moxiecode_Logger {
+
 	// Private fields
 	var $_path;
 	var $_filename;
@@ -32,12 +33,12 @@ class Moxiecode_Logger {
 	 * Constructs a new logger instance.
 	 */
 	function Moxiecode_Logger() {
-		$this->_path = "";
-		$this->_filename = "{level}.log";
-		$this->setMaxSize("100k");
+		$this->_path = '';
+		$this->_filename = '{level}.log';
+		$this->setMaxSize('100k');
 		$this->_maxFiles = 10;
 		$this->_level = MC_LOGGER_DEBUG;
-		$this->_format = "[{time}] [{level}] {message}";
+		$this->_format = '[{time}] [{level}] {message}';
 	}
 
 	/**
@@ -48,24 +49,24 @@ class Moxiecode_Logger {
 	function setLevel($level) {
 		if (is_string($level)) {
 			switch (strtolower($level)) {
-				case "debug":
+				case 'debug':
 					$level = MC_LOGGER_DEBUG;
 					break;
 
-				case "info":
+				case 'info':
 					$level = MC_LOGGER_INFO;
 					break;
 
-				case "warn":
-				case "warning":
+				case 'warn':
+				case 'warning':
 					$level = MC_LOGGER_WARN;
 					break;
 
-				case "error":
+				case 'error':
 					$level = MC_LOGGER_ERROR;
 					break;
 
-				case "fatal":
+				case 'fatal':
 					$level = MC_LOGGER_FATAL;
 					break;
 
@@ -258,10 +259,11 @@ class Moxiecode_Logger {
 	/**
 	 * Converts a Unix path to OS specific path.
 	 *
-	 * @param String $path Unix path to convert.
+	 * @param	string	$path	Unix path to convert.
+	 * @return	string
 	 */
 	function toOSPath($path) {
-		return str_replace("/", DIRECTORY_SEPARATOR, $path);
+		return str_replace('/', DIRECTORY_SEPARATOR, $path);
 	}
 }
 

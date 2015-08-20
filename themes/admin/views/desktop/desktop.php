@@ -98,9 +98,9 @@ $c = '?v='.$v;
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/360player.js<?php echo $c ?>"></script>
 <script type="text/javascript">
 	soundManager.setup({
-		url: '<?php echo theme_url() ?>javascript/soundmanager/swf/',
-		preferFlash: false,
-		allowScriptAccess: 'always'
+		url					: '<?php echo theme_url() ?>javascript/soundmanager/swf/',
+		preferFlash			: false,
+		allowScriptAccess	: 'always'
 	});
 	if (window.location.href.match(/html5/i)) {
 		// for testing IE 9, etc.
@@ -222,15 +222,15 @@ $c = '?v='.$v;
 	// Global MediaManager
 	var mediaManager = new IonizeMediaManager(
 	{
-		baseUrl: base_url,
-		adminUrl: admin_url,
-		container:'mediaContainer',
-		fileButton:'.fmButton',
-		wait:'waitPicture',
-        resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
-        uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
-        uploadMode: '<?php echo Settings::get('upload_mode'); ?>',
-		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>
+		baseUrl			: base_url,
+		adminUrl		: admin_url,
+		container		: 'mediaContainer',
+		fileButton		: '.fmButton',
+		wait			: 'waitPicture',
+        resizeOnUpload	: '<?php echo Settings::get('resize_on_upload'); ?>',
+        uploadAutostart	: '<?php echo Settings::get('upload_autostart'); ?>',
+        uploadMode		: '<?php echo Settings::get('upload_mode'); ?>',
+		thumbSize		: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>
 	});
 
 	var extendManager =  new ION.ExtendManager();
@@ -252,7 +252,6 @@ $c = '?v='.$v;
 	var smallTinyButtons2 = '<?php echo Settings::get('smalltinybuttons2'); ?>';
 	var smallTinyButtons3 = '<?php echo Settings::get('smalltinybuttons3'); ?>';
 	var tinyBlockFormats = '<?php echo Settings::get('tinyblockformats'); ?>';
-
 </script>
 
 <!-- Module's CSS / JS files -->
@@ -265,16 +264,16 @@ $c = '?v='.$v;
 	<?php endif;?>
 <?php endforeach; ?>
 
-</head><?php $fontScale = (int) Settings::get('backend_font_scale'); ?>
-<body<?php if($fontScale > 0) { ?> class="seizePlus<?php echo $fontScale; ?>"<?php } ?>>
+</head>
+<body<?php $fontScale = (int) Settings::get('backend_font_scale'); if($fontScale > 0) { ?> class="seizePlus<?php echo $fontScale; ?>"<?php } ?>>
 
 <div id="desktop" class="desktop"></div>
 
 <?php if (Settings::get('enable_backend_tracker') == '1') :?>
 	<script type="text/javascript">
 		Ionize.Tracker.initialize({
-			'parent':'desktop',
-			'updateDelay':10000
+			'parent'		: 'desktop',
+			'updateDelay'	: 10000
 		});
 		Ionize.Tracker.startTracking();
 	</script>
