@@ -479,11 +479,16 @@ a.button i{
     float: left;
     margin-right:8px;
 	margin-top: 1px;
-    background:transparent url(../images/icons_16.png) no-repeat 0 0;
 }
 a.button span{
 	line-height: 18px;
 }
+i.icon,
+.button i,
+a.button i{
+	background:transparent url(../images/icons_16.png) no-repeat 0 0;
+}
+
 
 /* Special buttons */
 .button.yes,

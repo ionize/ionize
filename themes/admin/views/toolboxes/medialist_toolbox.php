@@ -23,6 +23,7 @@
 </div>
 
 <div class="right mr10">
+	<i class="icon icon filter floatleft" style="cursor:default;"> </i>
 	<select class="select" id="mediaListFilter">
 		<option value="0"><?php echo lang('ionize_medialist_filter_by') ?></option>
 		<option value="1"><?php echo lang('ionize_medialist_filter_by_alt_missing') ?></option>

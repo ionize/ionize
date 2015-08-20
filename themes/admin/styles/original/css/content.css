@@ -31,6 +31,7 @@ License:
 .clearfix { zoom: 1; }
 .nowrap { white-space: nowrap; }
 
+.floatleft { float: left; }
 
 /* Correct the standard .pad class from Mocha 
    so the #sidecolumn doesn't superimpose on #maincolumn
@@ -209,106 +210,103 @@ li.offline { opacity:0.7; }
 }
 .icon.absolute.right,
 .icon a.absolute.right {
-	right:0px;
+	right:0;
 }
 .icon.inactive {opacity: .5}
-.icon.empty, 		.button i.icon-empty		{background-position: 1000px 1000px; }
-.icon.files, 		.button i.icon-files		{background-position: -240px -16px; }
-.icon.pictures, 	.button i.icon-pictures		{background-position:	0 -48px; }
-.icon.picture, 		.button i.icon-picture		{background-position: -16px -48px; }
-.icon.picture.broken,.button i.icon-picture.broken {background-position: -80px -112px; }
-.icon.music, 		.button i.icon-music		{background-position: -32px -48px; }
-.icon.video, 		.button i.icon-video		{background-position: -48px -48px; }
-.icon.save, 		.button i.icon-save			{background-position: -96px -80px; }
-.icon.back, 		.button i.icon-back			{background-position: -48px -32px; }
-.icon.online, 		.button i.icon-online		{background-position: -64px -32px; }
-.icon.offline, 		.button i.icon-offline		{background-position: -80px -32px;}
-.icon.link,		    .button i.icon-link 		{background-position: -208px -32px;}
-.icon.unlink,		.button i.icon-unlink 		{background-position: -128px -32px;}
-.icon.delete,		.button i.icon-delete 		{background-position: -160px -64px;}
-.icon.article,		.button i.icon-article		{background-position: -144px -16px;}
-.icon.article.add,	.button i.icon-article.add	{background-position: -208px -16px;}
-.icon.page.add,	    .button i.icon-page.add	    {background-position: -224px -16px;}
-.icon.drag, 		.button i.icon-drag			{background-position: 0 -64px;}
-.icon.duplicate, 	.button i.icon-duplicate	{background-position: -16px -80px;}
-.icon.clearfield,	.button i.icon-clearfield	{background-position: -192px -32px;}
-.icon.clear,	    .button i.icon-clear	    {background-position: -192px -32px;}
-.icon.close.white,	.button i.icon-close.white	{background-position: -224px -64px;}
-.icon.remove,	    .button i.icon-remove	{background-position: -192px -32px;}
-.icon.edit,			.button i.icon-edit			{background-position: 0 -80px;}
-.icon.edit_article,	.button i.icon-edit_article {background-position: -80px -80px;}
-.icon.refresh,		.button i.icon-refresh		{background-position: -176px -32px;}
-.icon.plus,			.button i.icon-plus			{background-position: -96px -32px;}
-.icon.add_page, 	.button i.icon-add_page		{background-position: -224px -16px;}
-.icon.type_edit, 	.button i.icon-type_edit	{background-position: 0 -80px;}
-.icon.info, 		.button i.icon-info			{background-position: -48px -64px;}
-.icon.database, 	.button i.icon-database		{background-position: -192px -48px;}
-.icon.drag,			.button i.icon-drag			{background-position: -0 -64px;}
-.icon.drag.horiz,	.button i.icon-drag.horiz	{background-position: -176px -112px;}
-.icon.ordering,		.button i.icon-ordering		{background-position: -0 -64px;cursor: move;}
-.icon.helpme, 		.button i.icon-helpme		{background-position: -80px -64px;}
-.icon.copy,			.button i.icon-copy			{background-position: -160px -32px;}
-.icon.ok, 			.button i.icon-ok			{background-position: -144px -64px;}
-.icon.nok, 			.button i.icon-nok			{background-position: -208px -64px;}
-.icon.search, 		.button i.icon-search		{background-position: -64px -48px;}
-.icon.calendar, 	.button i.icon-calendar		{background-position: -48px -80px;}
-.icon.flag.green, 	.button i.icon-flag.green	{background-position: -96px -64px;}
-.icon.flag.yellow, 	.button i.icon-flag.yellow	{background-position: -112px -64px;}
-.icon.flag.red, 	.button i.icon-flag.red		{background-position: -128px -64px;}
+
+.icon.add_page, 	.button i.icon-add_page			{background-position: -224px -16px;}
+.icon.alert,		.button i.icon-alert			{background-position: -32px -64px;}
+.icon.arrow-bottom,	.button i.icon-arrow-bottom		{background-position: -32px -32px;}
+.icon.arrow-left, 	.button i.icon-arrow-left		{background-position: -48px -32px;}
+.icon.arrow-right, 	.button i.icon-arrow-right		{background-position: -16px -32px;}
+.icon.article,		.button i.icon-article			{background-position: -144px -16px;}
+.icon.article.add,	.button i.icon-article.add		{background-position: -208px -16px;}
+.icon.back, 		.button i.icon-back				{background-position: -48px -32px; }
+.icon.calendar,		.button i.icon-calendar			{background-position: -48px -80px;}
+.icon.calendar, 	.button i.icon-calendar			{background-position: -48px -80px;}
+.icon.card,		    .button i.icon-card		    	{background-position: -128px -112px;}
+.icon.clear,	    .button i.icon-clear	    	{background-position: -192px -32px;}
+.icon.clearfield,	.button i.icon-clearfield		{background-position: -192px -32px;}
+.icon.clock,        .button i.icon-clock        	{background-position: -176px -96px;}
+.icon.close.white,	.button i.icon-close.white		{background-position: -224px -64px;}
+.icon.copy,			.button i.icon-copy				{background-position: -160px -32px;}
+.icon.crop,		    .button i.icon-crop		    	{background-position: -96px -112px;}
+.icon.database, 	.button i.icon-database			{background-position: -192px -48px;}
+.icon.delete,		.button i.icon-delete 			{background-position: -160px -64px;}
+.icon.download,		.button i.icon-download			{background-position: -32px -32px;}
+.icon.drag,			.button i.icon-drag				{background-position: -0 -64px;}
+.icon.drag, 		.button i.icon-drag				{background-position: 0 -64px;}
+.icon.drag.horiz,	.button i.icon-drag.horiz		{background-position: -176px -112px;}
+.icon.duplicate, 	.button i.icon-duplicate		{background-position: -16px -80px;}
+.icon.edit,			.button i.icon-edit				{background-position: 0 -80px;}
+.icon.edit_article,	.button i.icon-edit_article 	{background-position: -80px -80px;}
+.icon.editable,     .button i.icon-editable     	{background-position: -64px -128px;}
+.icon.element,		.button i.icon-element			{background-position: -112px -48px;margin-top:0;}
+.icon.empty, 		.button i.icon-empty			{background-position: 1000px 1000px; }
+.icon.enlarge,		.button i.enlarge				{background-position: -144px -112px;}
+.icon.expand,		.button i.icon-expand			{background-position: -128px -80px;}
+.icon.files, 		.button i.icon-files			{background-position: -240px -16px; }
+.icon.filter, 		.button i.icon-filter			{background-position: -192px -112px; }
+.icon.flag.green, 	.button i.icon-flag.green		{background-position: -96px -64px;}
+.icon.flag.red, 	.button i.icon-flag.red			{background-position: -128px -64px;}
+.icon.flag.yellow, 	.button i.icon-flag.yellow		{background-position: -112px -64px;}
+.icon.folder,				.button i.icon-folder				{background-position: 0 -16px;}
+.icon.folder.hidden,		.button i.icon-folder.hidden		{background-position: -32px -16px;}
+.icon.folder.hidden.open,	.button i.icon-folder.hidden.open	{background-position: -48px -16px;}
+.icon.folder.open,			.button i.icon-folder.open			{background-position: -16px -16px;}
+.icon.helpme, 		.button i.icon-helpme			{background-position: -80px -64px;}
+.icon.info, 		.button i.icon-info				{background-position: -48px -64px;}
+.icon.items,        .button i.icon-items        	{background-position: -160px -96px;}
+.icon.lang,			.button i.icon-lang				{background-position: -48px -112px;}
+.icon.link,		    .button i.icon-link 			{background-position: -208px -32px;}
+.icon.list,		    .button i.icon-list		    	{background-position: -112px -112px;}
+.icon.magic,        .button i.icon-magic        	{background-position: -192px -80px;}
+.icon.mail,		    .button i.icon-mail		    	{background-position: -144px -80px;}
+.icon.minus-gray,   .button i.icon-minus-gray   	{background-position: -240px -64px;}
+.icon.music, 		.button i.icon-music			{background-position: -32px -48px; }
+.icon.nok, 			.button i.icon-nok				{background-position: -208px -64px;}
+.icon.not-editable, .button i.icon-not-editable 	{background-position: 0 -128px;}
+.icon.offline, 		.button i.icon-offline			{background-position: -80px -32px;}
+.icon.ok, 			.button i.icon-ok				{background-position: -144px -64px;}
+.icon.online, 		.button i.icon-online			{background-position: -64px -32px; }
+.icon.options,		.button i.icon-options			{background-position: -208px -48px;}
+.icon.ordering,		.button i.icon-ordering			{background-position: -0 -64px;cursor: move;}
+.icon.page.add,	    .button i.icon-page.add	    	{background-position: -224px -16px;}
+.icon.paperclip,    .button i.icon-paperclip    	{background-position: -176px -80px;}
+.icon.path,         .button i.icon-path         	{background-position: -240px -96px;}
+.icon.picture, 		.button i.icon-picture			{background-position: -16px -48px; }
+.icon.picture.broken,.button i.icon-picture.broken	{background-position: -80px -112px; }
+.icon.pictures, 	.button i.icon-pictures			{background-position:	0 -48px; }
+.icon.plus,			.button i.icon-plus				{background-position: -96px -32px;}
+.icon.plus-gray,    .button i.icon-plus-gray    	{background-position: -224px -64px;}
+.icon.print,		.button i.icon-print			{background-position: -144px -32px;}
+.icon.process,		.button i.icon-process			{background-position: -112px -80px;}
+.icon.protected,    .button i.icon-protected    	{background-position: -160px -80px;}
+.icon.reduce,				.button i.reduce		{background-position: -160px -112px;}
+.icon.refresh,		.button i.icon-refresh			{background-position: -176px -32px;}
+.icon.remove,	    .button i.icon-remove			{background-position: -192px -32px;}
+.icon.save, 		.button i.icon-save				{background-position: -96px -80px; }
+.icon.screen, 				.button i.screen	 	{background-position: -16px -64px}
+.icon.search, 		.button i.icon-search			{background-position: -64px -48px;}
+.icon.stat,         .button i.icon-stat         	{background-position: -208px -96px;}
+.icon.tab.delete       								{background-position: 0 -144px;}
+.icon.table,		.button i.icon-table			{background-position: -144px -96px;}
+.icon.timer,        .button i.icon-timer        	{background-position: -192px -96px;}
+.icon.tool,         .button i.icon-tool         	{background-position: -224px -32px;}
+.icon.tools,        .button i.icon-tools        	{background-position: -224px -48px;}
+.icon.trash,        .button i.icon-trash        	{background-position: -240px -48px;}
+.icon.truck,        .button i.icon-truck        	{background-position: -64px -96px;}
+.icon.type_edit, 	.button i.icon-type_edit		{background-position: 0 -80px;}
+.icon.unlink,		.button i.icon-unlink 			{background-position: -128px -32px;}
 .icon.up,
-.icon.arrow-up,		.button i.icon-arrow-up		{background-position: 0 -32px;}
-.icon.arrow-right, 	.button i.icon-arrow-right	{background-position: -16px -32px;}
-.icon.arrow-bottom,	.button i.icon-arrow-bottom	{background-position: -32px -32px;}
-.icon.arrow-left, 	.button i.icon-arrow-left	{background-position: -48px -32px;}
-.icon.process,		.button i.icon-process		{background-position: -112px -80px;}
-.icon.calendar,		.button i.icon-calendar		{background-position: -48px -80px;}
-.icon.element,		.button i.icon-element		{background-position: -112px -48px;margin-top:0;}
-.icon.print,		.button i.icon-print		{background-position: -144px -32px;}
-.icon.alert,		.button i.icon-alert		{background-position: -32px -64px;}
-.icon.expand,		.button i.icon-expand		{background-position: -128px -80px;}
-.icon.options,		.button i.icon-options		{background-position: -208px -48px;}
-.icon.zoomin,		.button i.icon-zoomin		{background-position: -96px -48px;}
-.icon.zoomout,		.button i.icon-zoomout		{background-position: -80px -48px;}
-.icon.lang,			.button i.icon-lang			{background-position: -48px -112px;}
-.icon.urls,			.button i.icon-urls			{background-position: -64px -112px;}
-.icon.table,		.button i.icon-table		{background-position: -144px -96px;}
-.icon.crop,		    .button i.icon-crop		    {background-position: -96px -112px;}
-.icon.list,		    .button i.icon-list		    {background-position: -112px -112px;}
-.icon.card,		    .button i.icon-card		    {background-position: -128px -112px;}
-.icon.upload,		.button i.icon-upload		{background-position: 0 -32px;}
-.icon.download,		.button i.icon-download		{background-position: -32px -32px;}
-.icon.mail,		    .button i.icon-mail		    {background-position: -144px -80px;}
-.icon.protected,    .button i.icon-protected    {background-position: -160px -80px;}
-.icon.tool,         .button i.icon-tool         {background-position: -224px -32px;}
-.icon.tools,        .button i.icon-tools        {background-position: -224px -48px;}
-.icon.paperclip,    .button i.icon-paperclip    {background-position: -176px -80px;}
-.icon.items,        .button i.icon-items        {background-position: -160px -96px;}
-.icon.user,         .button i.icon-user         {background-position: -144px -48px;}
-.icon.users,        .button i.icon-users        {background-position: -176px -48px;}
-.icon.clock,        .button i.icon-clock        {background-position: -176px -96px;}
-.icon.timer,        .button i.icon-timer        {background-position: -192px -96px;}
-.icon.magic,        .button i.icon-magic        {background-position: -192px -80px;}
-.icon.stat,         .button i.icon-stat         {background-position: -208px -96px;}
-.icon.trash,        .button i.icon-trash        {background-position: -240px -48px;}
-.icon.truck,        .button i.icon-truck        {background-position: -64px -96px;}
-.icon.path,         .button i.icon-path         {background-position: -240px -96px;}
-.icon.plus-gray,    .button i.icon-plus-gray    {background-position: -224px -64px;}
-.icon.minus-gray,   .button i.icon-minus-gray   {background-position: -240px -64px;}
-.icon.editable,     .button i.icon-editable     {background-position: -64px -128px;}
-.icon.not-editable, .button i.icon-not-editable {background-position: 0 -128px;}
-
-.icon.folder,			.button i.icon-folder			{background-position: 0 -16px;}
-.icon.folder.open,		.button i.icon-folder.open			{background-position: -16px -16px;}
-.icon.folder.hidden,		.button i.icon-folder.hidden			{background-position: -32px -16px;}
-.icon.folder.hidden.open,		.button i.icon-folder.hidden.open			{background-position: -48px -16px;}
-
-.icon.enlarge,	.button i.enlarge	{background-position: -144px -112px;}
-.icon.reduce,	.button i.reduce	{background-position: -160px -112px;}
-.icon.screen, .button i.screen {background-position: -16px -64px}
-
-.icon.tab.delete       {background-position: 0 -144px;}
-
-
+.icon.arrow-up,		.button i.icon-arrow-up			{background-position: 0 -32px;}
+.icon.upload,		.button i.icon-upload			{background-position: 0 -32px;}
+.icon.urls,			.button i.icon-urls				{background-position: -64px -112px;}
+.icon.user,         .button i.icon-user         	{background-position: -144px -48px;}
+.icon.users,        .button i.icon-users        	{background-position: -176px -48px;}
+.icon.video, 		.button i.icon-video			{background-position: -48px -48px; }
+.icon.zoomin,		.button i.icon-zoomin			{background-position: -96px -48px;}
+.icon.zoomout,		.button i.icon-zoomout			{background-position: -80px -48px;}
 
 .toolbardock div.panel-enlarge,
 .toolbardock div.panel-reduce{padding:0 }
@@ -945,7 +943,7 @@ table.list.transparent tr {
 .mainTabs .tab-menu li {
 	position: relative;
 	float: left;
-	margin:	0 2px 0px 2px;
+	margin:	0 2px 0 2px;
 	cursor: pointer;
 	line-height: 16px;
 	display: block;
