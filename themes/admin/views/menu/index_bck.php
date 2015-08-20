@@ -124,12 +124,10 @@
 
 	</form>
 
-
 </div> <!-- /maincolumn -->
 
 
 <script type="text/javascript">
-	
 	// Toolbox
 	ION.initToolbox('menu_toolbox');
 
@@ -141,9 +139,4 @@
 	});
 	
 	menuManager.makeSortable();
-
-
 </script>
-
-
-
