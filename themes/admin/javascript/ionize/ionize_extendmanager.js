@@ -890,9 +890,13 @@ ION.ExtendManager = new Class({
 			var formField = new ION.FormField({container: container, label: {text: field.label}}),
 				ffc = formField.getContainer()
 				;
-
-			// Add Help : Description as Title
-			if (field.description) formField.getLabel().set('title', field.description);
+				
+			formField.label.title = 
+				  'Extend Field Key: ' + field.name // Add help title: extendfield key
+				+ (field.description 
+					? "\nDescription: " + field.description // Add description to help
+					: ""
+				);	
 
 			// Get the Field (Only the field), and send it to the FormField container
 			self.getExtendField(field, {container: ffc});
