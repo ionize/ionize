@@ -337,8 +337,8 @@ var Filemanager = new Class({
 				createFolderButton.addEvent('click', this['create_on_click'].bind(this));
 		}
 		if (this.options.download) this.addMenuButton('download', 'download');
-		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
 		if (this.options.selectable) this.addMenuButton('open_all', 'ionize_label_select_all_files');
+		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
 
 		this.info = new Element('div', {'class': 'filemanager-infos'});
 
