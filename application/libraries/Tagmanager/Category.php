@@ -116,7 +116,7 @@ class TagManager_Category extends TagManager
 
 				// Active category ?
 				$categories[$key]['active_class'] = ($category['name'] == $asked_category_name) ? $active_class : '';
-				$categories[$key]['is_active'] = ! empty($categories[$key]['active_class']) ? TRUE : FALSE;
+				$categories[$key]['is_active'] = ! empty($categories[$key]['active_class']);
 			}
 
 			self::$categories[$lsk] = array_values($categories);

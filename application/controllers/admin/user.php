@@ -420,7 +420,7 @@ class User extends My_Admin
 	 */
 	public function _filter_roles($row)
 	{
-		return ($row['role_level'] <= $this->current_role['role_level']) ? true : false;
+		return ($row['role_level'] <= $this->current_role['role_level']);
 	}
 
 

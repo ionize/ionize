@@ -255,7 +255,7 @@ class Role extends MY_Admin
 	 */
 	public function _filter_roles($row)
 	{
-		return ($row['role_level'] <= $this->current_role['role_level']) ? TRUE : FALSE;
+		return ($row['role_level'] <= $this->current_role['role_level']);
 	}
 
 

@@ -189,7 +189,7 @@ class TagManager_Tag extends TagManager
 
 				// Active tag ?
 				$tags[$key]['active_class'] = ($t['tag_name'] == $asked_tag_name) ? $active_class : '';
-				$tags[$key]['is_active'] = 	($t['tag_name'] == $asked_tag_name) ? TRUE : FALSE;
+				$tags[$key]['is_active'] = 	($t['tag_name'] == $asked_tag_name);
 			}
 
 			self::$tags[$lsk] = array_values($tags);

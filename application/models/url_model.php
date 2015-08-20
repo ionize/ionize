@@ -306,7 +306,7 @@ class Url_model extends Base_model
 	{
 		self::$ci->load->model('page_model', '', TRUE);
 
-		$short_url_mode = config_item('url_mode') == 'short' ? TRUE : FALSE;
+		$short_url_mode = config_item('url_mode') == 'short';
 
 		$current = array();
 
