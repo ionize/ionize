@@ -138,14 +138,17 @@ ION.Authority = new Class({
 
 	resourceHasRule: function(resource)
 	{
+		var has = false;
+
 		Object.each(ION.Authority.all_rules, function(rule)
 		{
 			if (resource == rule.resource)
 			{
-				return true;
+				has = true;
+				return;
 			}
 		});
 
-		return false;
+		return has;
 	}
 });
