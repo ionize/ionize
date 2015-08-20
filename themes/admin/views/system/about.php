@@ -11,4 +11,4 @@
 
 <p><strong><?php echo lang('ionize_label_about_us_thanks_to'); ?>: </strong> <a href="http://ellislab.com/">EllisLab</a>, <a href="http://greghoustondesign.com/">Greg Houston</a>
 
-<p><strong>License : </strong> MIT License</p>
+<p><strong>License: </strong> MIT License</p>

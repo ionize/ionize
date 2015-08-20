@@ -1,9 +1,6 @@
-
 <h2 class="main help mb20"><?php echo html_entity_decode($title); ?></h2>
 
-
 <?php foreach($data as $d): ?>
-
 	<?php
 		$title = '';
 		$fields = array('name', 'title', 'type');
@@ -21,7 +18,6 @@
 	<h2 class="mb0"><?php echo $title; ?></h2>
 
 	<p><?php echo $d['description']; ?></p>
-
 <?php endforeach ;?>
 
 <div class="buttons">
@@ -29,7 +25,6 @@
 </div>
 
 <script type="text/javascript">
-
 	// Event on btn No : Simply close the window
 	$('bClose<?php echo $UNIQ; ?>').addEvent('click', function()
 	{
@@ -37,5 +32,3 @@
 	}.bind(this));
 
 </script>
-
-

@@ -9,7 +9,6 @@
 
     <h2 class="main tree" id="main-title"><?php echo lang('ionize_menu_menu') ?></h2>
 
-
 	<!-- Sortable UL -->
 	<ul id="menuContainer" class="sortable">
 
@@ -132,7 +131,6 @@
 
 
 <script type="text/javascript">
-	
 	// Toolbox
 	ION.initToolbox('menu_toolbox');
 
@@ -154,9 +152,4 @@
 			$('formMenu' + id)
 		)
 	});
-
-
 </script>
-
-
-

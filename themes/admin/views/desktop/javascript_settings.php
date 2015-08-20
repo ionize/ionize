@@ -16,8 +16,6 @@
  *
  */
 
-?>
-<?php
 	$settings = json_encode(Settings::get_settings());
 	$languages = json_encode(Settings::get_languages());
 ?>

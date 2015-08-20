@@ -63,8 +63,6 @@ $c = '?v='.$v;
 <!-- Color Picker -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/jscolor/jscolor.js<?php echo $c ?>"></script>
 
-
-
 <!-- Tab Swapper -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TabSwapper.js<?php echo $c ?>"></script>
 
@@ -106,10 +104,8 @@ $c = '?v='.$v;
 		// for testing IE 9, etc.
 		soundManager.useHTML5Audio = true;
 	}
-</script>
 
-<!-- Base URL & languages translations available for javascript -->
-<script type="text/javascript">
+	// Base URL & languages translations available for javascript
 	
 	/** 
 	 * Global JS variables.
@@ -218,7 +214,6 @@ $c = '?v='.$v;
 <?php endif ;?>
 
 <script type="text/javascript">
-
 	// Global MediaManager
 	var mediaManager = new IonizeMediaManager(
 	{
@@ -280,4 +275,3 @@ $c = '?v='.$v;
 <?php endif; ?>
 </body>
 </html>
-

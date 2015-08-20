@@ -32,4 +32,3 @@
 	<button id="bSavemenu" type="button" class="button yes right"><?php echo lang('ionize_button_save_close'); ?></button>
 	<button id="bCancelmenu"  type="button" class="button no right"><?php echo lang('ionize_button_cancel'); ?></button>
 </div>
-
