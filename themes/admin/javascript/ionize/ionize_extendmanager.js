@@ -1054,7 +1054,10 @@ ION.ExtendManager = new Class({
 			{
 				var id = input_name;
 				input_name += '[]';
+				
+				if (typeOf(content) == 'null') content = '';
 				content = content.split(',');
+				
 				get_input_field(input_name, id+1, content[0]);
 				get_input_field(input_name, id+2, content[1]);
 			}
@@ -1069,6 +1072,7 @@ ION.ExtendManager = new Class({
 		{
 			field = new Element('div');
 
+			if (typeOf(content) == 'null') content = '';
 			content = content.split(',');
 
 			var values = 		(extend.value).split('\n'),
@@ -1124,7 +1128,6 @@ ION.ExtendManager = new Class({
 		if (['select','select-multiple'].contains(dom_type))
 		{
 			if (typeOf(content) == 'null') content = '';
-			
 			content = content.split(',');
 
 			var values = (extend.value).split('\n');
@@ -1198,7 +1201,10 @@ ION.ExtendManager = new Class({
 			{
 				var id = input_name;
 				input_name += '[]';
+				
+				if (typeOf(content) == 'null') content = '';
 				content = content.split(',');
+				
 				get_date_field(input_name, id+1, content[0]);
 				get_date_field(input_name, id+2, content[1]);
 			}
@@ -1271,7 +1277,10 @@ ION.ExtendManager = new Class({
 			{
 				var id = input_name;
 				input_name += '[]';
+				
+				if (typeOf(content) == 'null') content = '';
 				content = content.split(',');
+				
 				get_color_field(input_name, id+1, content[0]);
 				get_color_field(input_name, id+2, content[1]);
 			}
