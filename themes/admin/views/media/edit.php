@@ -368,19 +368,49 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 	function getTabContextIdentifier() {
 		return $('articleTabContent') === null ? 'page' : 'article';
 	}
+
 	function closeEditPopup(mediaID) {
 		$('wmedia' + mediaID + '_controls_button2').fireEvent('click');
 	}
+
+	function findFirstMediaID(mediaID) {
+		var previousID = mediaID;
+		while(previousID != null) {
+			previousID = findPreviousMediaID(mediaID);
+
+			if(previousID != null) {
+				mediaID = previousID;
+			}
+		}
+
+		return mediaID;
+	}
+
+	function findLastMediaID(mediaID) {
+		var lastID = mediaID;
+		while(lastID != null) {
+			lastID = findNextMediaID(mediaID);
+
+			if(lastID != null) {
+				mediaID = lastID;
+			}
+		}
+
+		return mediaID;
+	}
+
 	function findPreviousMediaID(mediaID) {
 		var elCurrent = $$('#' + getTabContextIdentifier() + 'TabContent .picture[data-id="' + mediaID + '"]')[0];
 		var elPrevious = $(elCurrent).getPrevious();
 		return elPrevious ? elPrevious.get('data-id') : null;
 	}
+
 	function findNextMediaID(mediaID) {
 		var elCurrent = $$('#' + getTabContextIdentifier() + 'TabContent .picture[data-id="' + mediaID + '"]')[0];
 		var elNext = $(elCurrent).getNext();
 		return elNext ? elNext.get('data-id') : null;
 	}
+
 	function editMediaByID(mediaID) {
 		if( mediaID != null ) {
 			var anchors = $$('#' + getTabContextIdentifier() + 'TabContent .picture[data-id="' + mediaID + '"] a.edit');
@@ -389,24 +419,38 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 			}
 		}
 	}
+
 	$('imagePreviousLink').addEvent('click', function () {
-		var clickedID = parseInt( $('imagePreviousLink').get('data-id'), 10);
-		closeEditPopup(clickedID);
-		editMediaByID( findPreviousMediaID(clickedID) );
+		var clickedMediaID = parseInt( $('imagePreviousLink').get('data-id'), 10);
+		closeEditPopup(clickedMediaID);
+
+		var previousMediaID = findPreviousMediaID(clickedMediaID);
+		if(previousMediaID != null) {
+			editMediaByID(previousMediaID);
+		} else {
+			editMediaByID(findLastMediaID(clickedMediaID));
+		}
 	});
+
 	$('imageNextLink').addEvent('click', function () {
-		var clickedID = parseInt( $('imagePreviousLink').get('data-id'), 10);
-		closeEditPopup(clickedID);
-		editMediaByID( findNextMediaID(clickedID) );
+		var clickedMediaID = parseInt( $('imagePreviousLink').get('data-id'), 10);
+		closeEditPopup(clickedMediaID);
+
+		var nextMediaID = findNextMediaID(clickedMediaID);
+		if(nextMediaID != null) {
+			editMediaByID(nextMediaID);
+		} else {
+			editMediaByID(findFirstMediaID(clickedMediaID))
+		}
 	});
 
 	// Extend Fields
 	var mediaExtendManager<?php echo $id_media; ?> = new ION.ExtendManager({
-		parent: 'media',
-		id_parent: id_media,
-		destination: 'mediaTab' + id_media,
-		destinationTitle: Lang.get('ionize_title_extend_fields'),
-		onLoaded: function(extendManager)
+		parent				: 'media',
+		id_parent			: id_media,
+		destination			: 'mediaTab' + id_media,
+		destinationTitle	: Lang.get('ionize_title_extend_fields'),
+		onLoaded			: function(extendManager)
 		{
 			extendManager.getParentInstances();
 		}
