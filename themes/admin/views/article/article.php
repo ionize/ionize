@@ -201,7 +201,7 @@ if ($tracker_title == '')
 									<label for="url_<?php echo $lang; ?>"><?php echo lang('ionize_label_url'); ?></label>
 								</dt>
 								<dd>
-									<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>"/>
+									<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>" onblur="this.value=this.value.replace(new RegExp('\\s', 'g'), '').toLowerCase()" />
 								</dd>
 							</dl>
 
