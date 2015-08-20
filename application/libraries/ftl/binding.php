@@ -590,7 +590,7 @@ class FTL_Binding
 			'php_data' => $php_data
 		));
 
-		$str = $parser->parse($string, $php_data);
+		$str = $parser->parse($string, $php_data); //@todo check: code smell - $php_data is not used by parse() method
 		
 		// reset
 		$this->context->parser = $tmp;
