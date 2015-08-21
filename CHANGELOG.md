@@ -2,9 +2,29 @@ Ionize CMS - Changelog
 ======================
 
 * Version 1.0.8 - Not released yet
+ * Added: autocorrection on blur to url field of page and article
+ * Added: Extend field key is suggested from label
+ * Improved: FTL parser performance
+ * Changed: Database driver - removed usage of deprecated mysql_escape_string
+ * Added: Accordion to Element Definition List
+ * Bugfix: Extend Lists inside Content Elements were not sortable
+ * Bugfix: Prevent Content Element from crashing Item Manager
+ * Changed: Made content element edit popup generic sized, using more of the available screen size
+ * Added: Extend Fields show their key via title
+ * Added: Extend field key is suggested from label
+ * Bugfix: Added missing refresh after delete extend field
+ * Bugfix: Tagmanager - PHP error handling for 'expression' attribute evaluation
+ * Bugfix: Naming home-page different to 'home' caused "undefined index" notice
+ * Bugfix: Save orphan article: undefined index notice
+ * Bugfix: fixed extend field type integrity
+ * Bugfix: install directory detection on case sensitive systems
+ * Bugfix: Navigation helper - class attribute generation for navigation submenus
+ * Bugfix: Permissions list in backend - the lock symbols in the menu are now displayed again
+ * Improved: Media browsing: made previous/next media button wrap-around
+ * Improved: Media list filter styles
+ * Bugfix: extend field model: fixed fatal typo in unlink_from_context()
  * Added: Emails (contact, info, technical) of website settings are now preset from administrator during fresh installation
  * Added: Optional article type relation on extend fields of articles
- * Changed: Info tooltips (shown on hover) in page, article, media list now use Mootools Tip() tooltip (like mediamanager already before)
  * Added: Number.formatMoney()
  * Added: Backend font size can now be changed in settings (helpful on large screen)
  * Added: New watermark function
