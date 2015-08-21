@@ -1865,6 +1865,19 @@ class TagManager
 			$parent = $tag->getParent();
 			$value = $parent->getValue('absolute_url');
 		}
+		
+		// 3. Check for internal page links: get URL of first linked page
+		if( is_null($value))
+		{
+			$pages = self::tag_extend_field_value($tag);
+			if(substr($pages, 0, 5) === 'page:') {
+				$pages = explode(',', $pages);
+				$idPage	= substr($pages[0], strpos($pages[0], ':')+1); // get ID of first page
+				$page = self::$ci->page_model->get_by_id($idPage);
+
+				$value = base_url() . ($page['home'] === '1' ? '' : $page['path']);
+			}
+		}
 
 		if ( ! is_null($type) && ! is_null($value))
 		{
