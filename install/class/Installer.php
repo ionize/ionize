@@ -351,6 +351,7 @@ class Installer
 
 			if ( ! empty($migration_files))
 			{
+				if (in_array('migration_1.0.7.1_1.0.8.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.7.1</b>';
 				if (in_array('migration_1.0.6.1_1.0.7.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.6.1</b>';
 				if (in_array('migration_1.0.6_1.0.6.1.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.6</b>';
 				if (in_array('migration_1.0.5_1.0.6.xml', $migration_files)) $this->template['database_migration_from'] = lang('database_migration_from') . '<b class="highlight2">1.0.5</b>';
@@ -594,6 +595,15 @@ class Installer
 			if (in_array('migration_1.0.6.1_1.0.7.xml', $migration_files))
 			{
 				$this->_execute_migration_file('migration_1.0.6.1_1.0.7.xml');
+			}
+			
+			/*
+			 * Migration to 1.0.8
+			 *
+			 */
+			if (in_array('migration_1.0.7.1_1.0.8.xml', $migration_files))
+			{
+				$this->_execute_migration_file('migration_1.0.7.1_1.0.8.xml');
 			}
 
 
@@ -1305,6 +1315,7 @@ class Installer
 				$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 				$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 				$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+				$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 			}
 
 			// From Ionize 0.92
@@ -1337,6 +1348,7 @@ class Installer
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 			}
 
@@ -1369,6 +1381,7 @@ class Installer
 						$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 						$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 						$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+						$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 					}
 				}
 			}
@@ -1398,6 +1411,7 @@ class Installer
 						$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 						$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 						$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+						$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 					}
 				}
 			}
@@ -1424,6 +1438,7 @@ class Installer
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 			}
 
@@ -1456,6 +1471,7 @@ class Installer
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 			}
 
@@ -1473,6 +1489,7 @@ class Installer
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 			}
 
@@ -1492,6 +1509,7 @@ class Installer
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 			}
 
@@ -1510,6 +1528,7 @@ class Installer
 					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 			}
 
@@ -1523,10 +1542,29 @@ class Installer
 				{
 					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 				else if (version_compare($version, '1.0.7', '<'))
 				{
 					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
+				}
+			}
+			
+			// From 1.0.7
+			if (empty($migration_xml))
+			{
+				$version = $this->db->query("select content from setting where name='ionize_version'")->row_array();
+				$version = isset($version['content']) ? $version['content'] : '';
+
+				if (version_compare($version, '1.0.7.1', '<'))
+				{
+					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
+				}
+				else if (version_compare($version, '1.0.8', '<'))
+				{
+					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
 				}
 			}
 		}
