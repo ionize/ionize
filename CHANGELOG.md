@@ -2,6 +2,7 @@ Ionize CMS - Changelog
 ======================
 
 * Version 1.0.8 - Not released yet
+ * Bugfix: Tagmanager - parse URL of internal link item in extend field failed (was returning empty string) 
  * Added: autocorrection on blur to url field of page and article
  * Added: Extend field key is suggested from label
  * Improved: FTL parser performance
