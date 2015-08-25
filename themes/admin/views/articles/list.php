@@ -133,6 +133,12 @@
 		item.addEvent('click', function(e)
 		{
 			e.stop();
+			$$('#structurePanel .tree a.selected').removeClass('selected');
+			var el = $$('[data-id=' + id_page + '.' + id_article +']');
+			if(el) {
+				el.addClass('selected');
+			}
+
 			ION.splitPanel({
 				'urlMain': ION.adminUrl + 'article/edit/' + id_page + '.' + id_article,
 				'urlOptions': ION.adminUrl + 'article/get_options/' + id_page + '.' + id_article,
