@@ -34,6 +34,8 @@ if ( ! function_exists('glob_recursive'))
 	}
 }
 
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('mb_pathinfo'))
 {
 	function mb_pathinfo($filepath)

@@ -88,6 +88,10 @@ if (file_exists('./class/Installer.php'))
 		case 'finish' :
 			$installer->finish();
 			break;
+
+		case 'deleteinstaller':
+			$installer->delete_installer();
+			break;
 			
 		case 'migrate' :
 			$installer->migrate();
