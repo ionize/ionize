@@ -350,6 +350,7 @@ $width = (100 / $nbLang);
 	{
 		ION.initListToggler(el, $('def_' + el.getProperty('data-id')));
 	});
+	$('def_<?php echo $id_definition; ?>').getParent('div').style.width="100%";
 	<?php endif ;?>
 
 	// Edit on each element
