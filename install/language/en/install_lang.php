@@ -136,6 +136,6 @@ $lang['username'] = 'Login (min. 4 chars)';
 $lang['button_go_to_admin'] = 'Go to admin';
 $lang['button_go_to_site'] = 'Go to website';
 $lang['data_install_intro'] = '<p>If this is the first time you use Ionize, it is strongly recommended to install the sample website.<br/>This website includes: </p><ul><li>A complete set of data, useful to test Ionize,</li><li>1 working example theme</li></ul>';
-$lang['finish_text'] = '<b>IMPORTANT</b>: <br/>You have to delete the "<b>/install</b>" folder manually before accessing the website or the administration backend.';
 $lang['title_finish'] = 'Installation completed';
+$lang['finish_text'] = '<b>NOTE</b>: <br/>For security reasons, the "<b>/install</b>" folder will be deleted before accessing the website or the admin backend.';
 $lang['title_skip_this_step'] = 'Skip this step';
