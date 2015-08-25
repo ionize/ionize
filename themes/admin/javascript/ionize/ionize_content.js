@@ -957,7 +957,7 @@ ION.append({
 	{
 		// tabSwapper elements
 		var tabSwapper = $('desktop').retrieve('tabSwapper');
-		var tabs = 		tabSwapper.tabs;
+		var tabs = 		tabSwapper ? tabSwapper.tabs : [];
 		
 		// DOM elements
 		var tabsContainer = $(tabSwapper.options.tabsContainer);
@@ -984,7 +984,11 @@ ION.append({
 					var found = false;
 					index = tabs.length;
 					
-					tabs.each(function(tab) { if (tab.hasClass('tab' + id)) { found = tab; } });
+					tabs.each(function(tab) { 
+						if (tab.hasClass('tab' + id)) { 
+							found = tab; 
+						}
+					});
 
 					// Not found ? Build it !
 					if (found == false)
@@ -1059,7 +1063,7 @@ ION.append({
 	deleteTab: function(id)
 	{
 		var tabSwapper = $('desktop').retrieve('tabSwapper');
-		var tabs = tabSwapper.tabs;
+		var tabs = tabSwapper ? tabSwapper.tabs : [];
 
 		tabs.each(function(tab, idx)
 		{

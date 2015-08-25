@@ -164,6 +164,7 @@ $lang['ionize_title_existing_menu'] = 'Existing menu';
 |--------------------------------------------------------------------------
 */
 $lang['ionize_button_save_element'] = 'Save this Element';
+$lang['ionize_button_usage'] = 'Usages';
 $lang['ionize_label_add_content_element'] = 'Add Element';
 $lang['ionize_label_back_to_element_list'] = 'Back to Elements';
 $lang['ionize_label_content_element'] = 'Content Element';
@@ -392,6 +393,7 @@ $lang['ionize_button_yes'] = 'Yes';
 $lang['button_delete_installer_done_admin'] = 'Done! Go to Admin panel';
 $lang['button_delete_installer_done_site'] = 'Done! Go to website';
 $lang['ionize_confirm_element_delete'] = 'Do you want to definitely delete this element?';
+$lang['ionize_confirm_element_delete_usage'] = 'Do you want to definitely delete this element usage?';
 $lang['ionize_message_delete_installer'] = 'IMPORTANT: <br/>For security reasons, please delete the <b>"/install"</b> folder. Ionize will not be available until this folder is deleted.';
 $lang['ionize_message_element_not_found'] = 'This element wasn\'t found!';
 $lang['ionize_message_form_validation_error'] = 'Some data are missing or incorrect';
