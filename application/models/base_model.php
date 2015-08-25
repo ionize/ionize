@@ -1330,9 +1330,12 @@ class Base_model extends CI_Model
 		$this->{$this->db_group}->select($items_table_pk);
 		$query = $this->{$this->db_group}->get($link_table);
 
-		foreach($query->result() as $row)
+		if($query != FALSE)
 		{
-			$data[] = $row->$items_table_pk;
+			foreach($query->result() as $row)
+			{
+				$data[] = $row->$items_table_pk;
+			}
 		}
 
 		return $data;

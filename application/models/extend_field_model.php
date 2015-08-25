@@ -472,9 +472,12 @@ class Extend_field_model extends Base_model
 				 WHERE id_type = ' . $article['id_type']
 			);
 
-			foreach ($query->result_array() as $row)
+			if($query != FALSE)
 			{
-				$ids[]= $row['id_extend_field'];
+				foreach ($query->result_array() as $row)
+				{
+					$ids[]= $row['id_extend_field'];
+				}
 			}
 		}
 
@@ -502,9 +505,13 @@ class Extend_field_model extends Base_model
 		$query = $this->{$this->db_group}->query(
 			'SELECT id_extend_field FROM extend_field_article_type WHERE 1'
 		);
-		foreach ($query->result_array() as $row)
+		
+		if($query != FALSE)
 		{
-			$allLinkedExtendFieldIds[]= $row['id_extend_field'];
+			foreach ($query->result_array() as $row)
+			{
+				$allLinkedExtendFieldIds[]= $row['id_extend_field'];
+			}
 		}
 
 		return array_unique(array_diff($allExtendFieldIds, $allLinkedExtendFieldIds));
