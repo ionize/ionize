@@ -60,6 +60,8 @@ $route['user(/.*)?'] = 'user/$1';
 $route['picture'] = "picture/get/$1";
 $route['picture(/.*)?'] = 'picture/$1';
 
+$route['media(/.*)?'] = 'media/$1';
+
 /*
  * Route to default controller
  */

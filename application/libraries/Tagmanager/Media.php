@@ -52,6 +52,8 @@ class TagManager_Media extends TagManager
 		'medias:type' => 		'tag_simple_value',
 		'medias:provider' => 	'tag_simple_value',
 		'medias:mime' => 		'tag_simple_value',
+		
+		'media:download'	=> 'tag_media_download',
 	);
 
 
@@ -500,6 +502,38 @@ class TagManager_Media extends TagManager
 			}
 		}
 		return '';
+	}
+	
+	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param FTL_Binding $tag
+	 *
+	 * @usage	<ion:media:download class="download" />
+	 *
+	 * @return string
+	 */
+	public function tag_media_download(FTL_Binding $tag)
+	{
+		// get media attributes
+		$media = $tag->locals->media;
+		$mediaTitle = empty($media['title']) ? $media['file_name'] : $media['title'];
+
+		// get CSS classname (optional)
+		$class = trim($tag->getAttribute('class'));
+
+		// generate SHA-1 hash to verify valid (= intentionally public) downloads
+		$hash = urlencode( sha1( $media['id_media'] . config_item('encryption_key') ) );
+
+		// render output
+		$url = base_url() . 'media/download/' . $media['id_media'] . '/' . $hash;
+
+		return
+			'<a' . (empty($class) ? '' : ' class="' . $class . '"') . ' href="' . $url . '">'
+		  . $mediaTitle
+		  . '</a>';
 	}
 	
 	
