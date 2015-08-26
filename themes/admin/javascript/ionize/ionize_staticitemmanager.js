@@ -624,13 +624,13 @@ ION.StaticItemManager = new Class({
 					url: ION.adminUrl + 'item/save_ordering'
 				},
 				elements:[
-					{element: 'span', 'class': 'icon drag left absolute ml5'}, // Sort
+					{element: 'span', 'class': 'icon drag left ml5'}, // Sort
 					// {element: 'span', 'class': 'lite drag left', text: 'id_item'}, // Item ID
 					// Edit
 
 					{
 						element: 'a',
-						'class': 'icon edit left absolute ml30',
+						'class': 'icon edit left',
 						onClick: function(item)
 						{
 							self.editItem(item.id_item);
@@ -640,7 +640,7 @@ ION.StaticItemManager = new Class({
 					// Delete
 					{
 						element: 'a',
-						'class': 'icon delete right absolute mr10',
+						'class': 'icon delete right mr10',
 						onClick: function(item)
 						{
 							self.deleteItem(item);
