@@ -24,3 +24,6 @@ CREATE TABLE IF NOT EXISTS page_tag (
   id_tag int(11) UNSIGNED NOT NULL,
   PRIMARY KEY  (id_page, id_tag)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE page_lang change subtitle subtitle text;
+ALTER TABLE article_lang change subtitle subtitle text;
