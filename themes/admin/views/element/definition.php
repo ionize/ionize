@@ -113,7 +113,7 @@ $id = $id_element_definition;
 										<?php } ?>
 									</td>
 									<td class="pr10">
-										<a data-id="<?php echo $elementUsage['id_element'] ?>" class="delete-usage icon right"></a>
+										<a data-id="<?php echo $elementUsage['id_element'] ?>" class="delete usage icon right"></a>
 									</td>
 								</tr>
 							<?php } ?>
@@ -196,7 +196,7 @@ $id = $id_element_definition;
 		sections: 'div.tabcontent'
 	});
 
-	$$('.delete-usage').each(function(el){
+	$$('.delete.usage').each(function(el){
 		el.addEvent('click', function() {
 			ION.initRequestEvent(
 				el,

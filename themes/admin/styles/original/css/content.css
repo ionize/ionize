@@ -232,8 +232,7 @@ li.offline { opacity:0.7; }
 .icon.copy,			.button i.icon-copy				{background-position: -160px -32px;}
 .icon.crop,		    .button i.icon-crop		    	{background-position: -96px -112px;}
 .icon.database, 	.button i.icon-database			{background-position: -192px -48px;}
-.icon.delete,		.button i.icon-delete,
-.icon.delete-usage, .button i.icon-delete-usage		{background-position: -160px -64px;}
+.icon.delete,		.button i.icon-delete			{background-position: -160px -64px;}
 .icon.download,		.button i.icon-download			{background-position: -32px -32px;}
 .icon.drag,			.button i.icon-drag				{background-position: -0 -64px;}
 .icon.drag, 		.button i.icon-drag				{background-position: 0 -64px;}
