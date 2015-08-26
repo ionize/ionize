@@ -50,25 +50,20 @@ table {
 */
 
 /* Structure */
+html {
+	font-size: 62.5%;
+}
+html.sizePlus1{font-size: 80%}
+html.sizePlus2{font-size: 90%}
+html.sizePlus3{font-size: 100%}
+
 body {
 	text-align: left;
 	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-	font-size: 11px;
+	font-size: 1.1rem;
 	line-height: 18px;
 	color: #3f3f3f;
 	overflow: hidden;
-}
-
-body.seizePlus1 {
-	font-size: 12px;
-}
-
-body.seizePlus2 {
-	font-size: 13px;
-}
-
-body.seizePlus3 {
-	font-size: 15px;
 }
 
 /* Typography */
@@ -79,16 +74,16 @@ h2, h3, h4 {
 }
 
 h2 {
-	font-size: 0.825rem;
+	font-size: 2.4rem;
 }
 
 h3 {
-	font-size: 0.925rem;
+	font-size: 1.2rem;
 	color: #7c98a8;
 }
 
 h4 {
-	font-size: 0.8rem;
+	font-size: 1.1rem;
 }
 
 a {
@@ -133,7 +128,6 @@ dd {
 input,
 textarea {
 	font-family: inherit;
-	font-size: inherit;
 }
 
 /* Menus */
@@ -149,7 +143,7 @@ pre {
 	color: #060;
 	display: block;
 	font-family: 'Courier New', Courier, monospace;
-	font-size: 11px;
+	font-size: 1.1rem;
 	max-height: 250px;
 	overflow: auto;
 	margin: 0 0 10px 0;

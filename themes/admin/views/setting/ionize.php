@@ -110,17 +110,17 @@
 							);
 						?>
 						<br />
-						<label for="font_scale_default" style="font-size: 0.75rem">Abc</label>
 						<input type="radio"<?php echo $fontScaleChecked[0]; ?> name="backend_font_scale" id="font_scale_default" value="0"/>
+						<label for="font_scale_default" style="font-size: 11px">Abc</label><br/>
 
-						<label for="font_scale_plus1" style="font-size: 1.0rem">Abc</label>
 						<input type="radio"<?php echo $fontScaleChecked[1]; ?> name="backend_font_scale" id="font_scale_plus1" value="1"/>
+						<label for="font_scale_plus1" style="font-size: 13px">Abc</label><br/>
 
-						<label for="font_scale_plus2" style="font-size: 1.15rem">Abc</label>
 						<input type="radio"<?php echo $fontScaleChecked[2]; ?> name="backend_font_scale" id="font_scale_plus2" value="2"/>
+						<label for="font_scale_plus2" style="font-size: 16px">Abc</label><br/>
 
-						<label for="font_scale_plus3" style="font-size: 1.2rem">Abc</label>
 						<input type="radio"<?php echo $fontScaleChecked[3]; ?> name="backend_font_scale" id="font_scale_plus3" value="3"/>
+						<label for="font_scale_plus3" style="font-size: 21px">Abc</label>
 					</dd>
 				</dl>
 
@@ -250,13 +250,13 @@
 	 * Font Scaling Options
 	 */
 	$$("#font_scale_default, #font_scale_plus1, #font_scale_plus2, #font_scale_plus3").addEvent('change', function (e) {
-		var elBody = $$('body')[0];
+		var elBody = $$('html')[0];
 		for( var size = 1; size < 4; size++) {
-			elBody.removeClass('seizePlus' + size);
+			elBody.removeClass('sizePlus' + size);
 		}
 
 		if( e.target.id !== 'font_scale_default' ) {
-			elBody.addClass('seizePlus' + (e.target.id.replace('font_scale_plus', '')) );
+			elBody.addClass('sizePlus' + (e.target.id.replace('font_scale_plus', '')) );
 		}
 	});
 

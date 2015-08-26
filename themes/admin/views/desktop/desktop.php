@@ -3,7 +3,7 @@ $v = Settings::get('ionize_version');
 $c = '?v='.$v;
 ?>
 <!DOCTYPE html>
-<html>
+<html<?php $fontScale = (int) Settings::get('backend_font_scale'); if($fontScale > 0) { ?> class="sizePlus<?php echo $fontScale; ?>"<?php } ?>>
 <head>
 <meta charset='utf-8' />
 <title><?php echo lang('ionize_administration') . ' | ' . (Settings::get('site_title') ? Settings::get('site_title') : ''); ?></title>
@@ -260,7 +260,7 @@ $c = '?v='.$v;
 <?php endforeach; ?>
 
 </head>
-<body<?php $fontScale = (int) Settings::get('backend_font_scale'); if($fontScale > 0) { ?> class="seizePlus<?php echo $fontScale; ?>"<?php } ?>>
+<body>
 
 <div id="desktop" class="desktop"></div>
 

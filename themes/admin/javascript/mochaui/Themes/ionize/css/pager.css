@@ -37,7 +37,7 @@
 	position: relative;
 	top: 5px;
 	overflow: visible;
-	font-size: 10px;
+	font-size: 1rem;
 	color: #777777;
 }
 
@@ -84,7 +84,7 @@
 
 /* Form Elements */
 .pager select {
-	font-size: 10px;
+	font-size: 1rem;
 	margin-top: 2px;
 }
 
@@ -92,5 +92,5 @@
 	vertical-align: text-top;
 	position: relative;
 	top: -2px;
-	font-size: 10px;
+	font-size: 1rem;
 }

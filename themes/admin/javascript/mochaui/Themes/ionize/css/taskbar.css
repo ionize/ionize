@@ -34,13 +34,10 @@
 	height: 30px; /* Used for IE 6.0 since it does not support min-height */
 }
 
-/*
-.taskbarTab { float: left; position: relative; font-size: 11px; width: 150px; height: 24px; margin: 0 3px 2px 0; overflow: hidden; cursor: pointer; background: url(../images/taskbar-tabs.gif) left top no-repeat; }
-*/
 .taskbarTab {
 	float: left;
 	position: relative;
-	font-size: 11px;
+	font-size: 1.1rem;
 	width: 150px;
 	height: 24px;
 	margin: 0 3px 2px 0;

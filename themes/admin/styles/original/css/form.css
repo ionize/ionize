@@ -21,7 +21,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 input, textarea, select {
-    font-size: 11px;
+	font-size: 1.1rem;
 }
 
 /* Form layout
@@ -191,8 +191,6 @@ label.toggler {
 }
 label[title]
 {
-	background: url("../images/icon_12_label_help.png") no-repeat scroll right top transparent;
-	padding-right: 14px;
 	border-bottom: dotted 1px #94aec9;
 }
 table thead tr td label[title],
@@ -223,7 +221,6 @@ textarea{
 .select {
 	border:1px solid #bbb;
 	padding:3px;
-	font-size: 0.85rem;
 }
 optgroup:before {
 	content: attr(label);
@@ -246,8 +243,7 @@ dl.small .select {
 .inputtext {
 	border: 1px solid #bbb;
 	padding: 4px;
-	font-size: 0.75rem;
-
+	font-size: 1.1rem;
 }
 input[type="text"],
 input[type="password"],
@@ -391,7 +387,7 @@ input.submit{
 	border:1px solid #fff;
 	color:#333;
 	cursor:pointer;
-	font-size: 0.8rem;
+	font-size: 1.1rem;
 	line-height: 20px;
 	vertical-align: middle;
 }

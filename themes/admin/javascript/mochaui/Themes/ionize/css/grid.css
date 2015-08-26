@@ -16,7 +16,7 @@
 
 .grid {
 	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 11px;
+	font-size: 1.1rem;
 	position: relative;
 	border: 0 solid #eee;
 	overflow: hidden; /* to exclude debug */
