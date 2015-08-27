@@ -203,7 +203,7 @@
 					
 					<div class="summary r10">
 					
-						<p><?php echo lang('ionize_text_sitemaps_url_list'); ?> :</p>
+						<p><?php echo lang('ionize_text_sitemaps_url_list'); ?>:</p>
 						<p><textarea class="w400 h80" name="setting_value"><?php echo implode("\n", config_item('sitemaps_search_engines')); ?></textarea></p>
 						<input id="submit_sitemap_url" type="submit" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
 						
@@ -219,11 +219,9 @@
 					<input type="hidden" name="type" value="permalink_ping" />
 
 					<div class="summary r10">
-
-						<p><?php echo lang('ionize_text_ping_url_list'); ?> :</p>
-						<p><textarea class="w400 h80" name="urls"><?php echo str_replace("|", "\n", Settings::get('permalink_ping_urls')); ?></textarea></p>
+						<p><?php echo lang('ionize_text_ping_url_list'); ?>:</p>
+						<p><textarea class="w400 h80" name="urls"><?php echo str_replace('|', "\n", Settings::get('permalink_ping_urls')); ?></textarea></p>
 						<input id="submit_ping_url" type="submit" class="submit" value="<?php echo lang('ionize_button_save'); ?>" />
-						
 					</div>
 				</form>
 

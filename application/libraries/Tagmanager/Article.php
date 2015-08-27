@@ -83,7 +83,7 @@ class TagManager_Article extends TagManager
 		}
 
 		// Set by Page::get_current_page()
-		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
+		$is_current_page = isset($page['__current__']);
 
 		// Pagination
 		$tag_pagination = $tag->getAttribute('pagination');
@@ -232,7 +232,7 @@ class TagManager_Article extends TagManager
 		if (empty($page)) $page = self::registry('page');
 
 		// Set by Page::get_current_page()
-		$is_current_page = isset($page['__current__']) ? TRUE : FALSE;
+		$is_current_page = isset($page['__current__']);
 
 		$special_uri_array = self::get_special_uri_array();
 

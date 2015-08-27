@@ -6,7 +6,7 @@
     }
     else
     {
-        echo '<h1>Nice server !</h1>';
+        echo '<h1>Nice server!</h1>';
     }
 
 ?>

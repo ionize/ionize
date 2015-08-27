@@ -24,7 +24,7 @@ div.accordion div h3.toggler {
 	margin: 0;
 	padding: 6px 10px;
 	background: #f1f1f1 url(../images/bg-panel-header.gif) repeat-x;
-	font-size: 12px;
+	font-size: 1.2rem;
 	cursor: pointer;
 	border-top: 1px solid #e3e3e3;
 }

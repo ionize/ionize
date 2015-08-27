@@ -41,7 +41,7 @@ class FTL_VarStack
 			return $this->hash[$property];
 		}
 		
-		if($this->object == null)
+		if($this->object === null)
 		{
 			$null = null;
 			return $null;

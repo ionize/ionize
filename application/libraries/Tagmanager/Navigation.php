@@ -118,7 +118,7 @@ class TagManager_Navigation extends TagManager
 			$page['title'] = $page['nav_title'] !='' ? $page['nav_title'] : $page['title'];
 			// Add the active_class key
 			$page['active_class'] = in_array($page['id_page'], $active_pages) ? $active_class : '';
-			$page['is_active'] = in_array($page['id_page'], $active_pages) ? TRUE : FALSE;
+			$page['is_active'] = in_array($page['id_page'], $active_pages);
 			$page['id_navigation'] = $page['id_page'];
 		}
 

@@ -3,7 +3,7 @@ $v = Settings::get('ionize_version');
 $c = '?v='.$v;
 ?>
 <!DOCTYPE html>
-<html>
+<html<?php $fontScale = (int) Settings::get('backend_font_scale'); if($fontScale > 0) { ?> class="sizePlus<?php echo $fontScale; ?>"<?php } ?>>
 <head>
 <meta charset='utf-8' />
 <title><?php echo lang('ionize_administration') . ' | ' . (Settings::get('site_title') ? Settings::get('site_title') : ''); ?></title>
@@ -63,8 +63,6 @@ $c = '?v='.$v;
 <!-- Color Picker -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/jscolor/jscolor.js<?php echo $c ?>"></script>
 
-
-
 <!-- Tab Swapper -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/TabSwapper.js<?php echo $c ?>"></script>
 
@@ -98,18 +96,16 @@ $c = '?v='.$v;
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/soundmanager/script/360player.js<?php echo $c ?>"></script>
 <script type="text/javascript">
 	soundManager.setup({
-		url: '<?php echo theme_url() ?>javascript/soundmanager/swf/',
-		preferFlash: false,
-		allowScriptAccess: 'always'
+		url					: '<?php echo theme_url() ?>javascript/soundmanager/swf/',
+		preferFlash			: false,
+		allowScriptAccess	: 'always'
 	});
 	if (window.location.href.match(/html5/i)) {
 		// for testing IE 9, etc.
 		soundManager.useHTML5Audio = true;
 	}
-</script>
 
-<!-- Base URL & languages translations available for javascript -->
-<script type="text/javascript">
+	// Base URL & languages translations available for javascript
 	
 	/** 
 	 * Global JS variables.
@@ -218,19 +214,18 @@ $c = '?v='.$v;
 <?php endif ;?>
 
 <script type="text/javascript">
-
 	// Global MediaManager
 	var mediaManager = new IonizeMediaManager(
 	{
-		baseUrl: base_url,
-		adminUrl: admin_url,
-		container:'mediaContainer',
-		fileButton:'.fmButton',
-		wait:'waitPicture',
-        resizeOnUpload: '<?php echo Settings::get('resize_on_upload'); ?>',
-        uploadAutostart: '<?php echo Settings::get('upload_autostart'); ?>',
-        uploadMode: '<?php echo Settings::get('upload_mode'); ?>',
-		thumbSize: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>
+		baseUrl			: base_url,
+		adminUrl		: admin_url,
+		container		: 'mediaContainer',
+		fileButton		: '.fmButton',
+		wait			: 'waitPicture',
+        resizeOnUpload	: '<?php echo Settings::get('resize_on_upload'); ?>',
+        uploadAutostart	: '<?php echo Settings::get('upload_autostart'); ?>',
+        uploadMode		: '<?php echo Settings::get('upload_mode'); ?>',
+		thumbSize		: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>
 	});
 
 	var extendManager =  new ION.ExtendManager();
@@ -252,7 +247,6 @@ $c = '?v='.$v;
 	var smallTinyButtons2 = '<?php echo Settings::get('smalltinybuttons2'); ?>';
 	var smallTinyButtons3 = '<?php echo Settings::get('smalltinybuttons3'); ?>';
 	var tinyBlockFormats = '<?php echo Settings::get('tinyblockformats'); ?>';
-
 </script>
 
 <!-- Module's CSS / JS files -->
@@ -265,20 +259,19 @@ $c = '?v='.$v;
 	<?php endif;?>
 <?php endforeach; ?>
 
-</head><?php $fontScale = (int) Settings::get('backend_font_scale'); ?>
-<body<?php if($fontScale > 0) { ?> class="seizePlus<?php echo $fontScale; ?>"<?php } ?>>
+</head>
+<body>
 
 <div id="desktop" class="desktop"></div>
 
 <?php if (Settings::get('enable_backend_tracker') == '1') :?>
 	<script type="text/javascript">
 		Ionize.Tracker.initialize({
-			'parent':'desktop',
-			'updateDelay':10000
+			'parent'		: 'desktop',
+			'updateDelay'	: 10000
 		});
 		Ionize.Tracker.startTracking();
 	</script>
 <?php endif; ?>
 </body>
 </html>
-

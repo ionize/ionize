@@ -9,7 +9,6 @@
 				<?php echo strtoupper(ENVIRONMENT); ?>
 			</span>
 	</div>
-
 <?php endif; ?>
 
 <a id="logoAnchor" class="navlink" href="dashboard"></a>
@@ -32,9 +31,7 @@
 </div>
 
 <div id="desktopNav" class="desktopNav">
-
 	<div class="toolMenu left">
-
 		<ul>
 			<li><a class="navlink" href="dashboard" title="<?php echo lang('ionize_title_welcome'); ?>"><?php echo lang('ionize_menu_dashboard'); ?></a></li>
 			<li><a class="returnFalse"><?php echo lang('ionize_menu_content'); ?></a>

@@ -80,14 +80,14 @@ div.list tr.head td {
 	line-height: 20px;
 	font-family: Sans-Serif;
 	font-weight: bold;
-	font-size: 9pt;
+	font-size: 0.9rem;
 }
 
 div.list tr.head td {
 	line-height: 18px;
 	color: #444444;
 	font-family: Sans-Serif;
-	font-size: 13px;
+	font-size: 1.3rem;
 	font-weight: bold;
 }
 

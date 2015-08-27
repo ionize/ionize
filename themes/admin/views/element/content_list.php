@@ -350,6 +350,7 @@ $width = (100 / $nbLang);
 	{
 		ION.initListToggler(el, $('def_' + el.getProperty('data-id')));
 	});
+	$('def_<?php echo $id_definition; ?>').getParent('div').style.width="100%";
 	<?php endif ;?>
 
 	// Edit on each element
@@ -362,7 +363,9 @@ $width = (100 / $nbLang);
 				'contentElement' + id,
 				'ionize_title_edit_content_element',
 				'element/edit',
-				{width:500, height:350},
+				{ width:ION.getPopupDefaultWidth(),
+				  height:ION.getPopupDefaultHeight()
+				},
 				{'id_element': id}
 			);
 		});

@@ -43,8 +43,8 @@ class Article_model extends Base_model
 	 *
 	 */
 	private $filter_field_ref = array(
-		'title' => 'article_lang',
-		'view' => 'page_article'
+		'title'	=> 'article_lang',
+		'view'	=> 'page_article'
 	);
 
 	/**

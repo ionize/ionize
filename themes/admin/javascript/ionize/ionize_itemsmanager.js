@@ -246,7 +246,11 @@ ION.ItemManager = new Class({
 			{
 				if (element.id != '')
 				{
-					var rel = (element.getProperty('data-id')).split(".");
+					var dataID = element.getProperty('data-id');
+					if(dataID == null) {
+						return null;
+					}
+					var rel = dataID.split(".");
 					var id = rel[0];
 					if (rel.length > 1) { id = rel[1]; }
 					return id;

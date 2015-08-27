@@ -306,7 +306,7 @@ class Url_model extends Base_model
 	{
 		self::$ci->load->model('page_model', '', TRUE);
 
-		$short_url_mode = config_item('url_mode') == 'short' ? TRUE : FALSE;
+		$short_url_mode = config_item('url_mode') == 'short';
 
 		$current = array();
 
@@ -351,7 +351,7 @@ class Url_model extends Base_model
 			// Define the URL
 			$page = self::$ci->page_model->get_by_id($id_page, Settings::get_lang());
 
-			if ($page['home'] == 1)
+			if (array_key_exists('home', $page) && $page['home'] == 1)
 				$base_url = $this->get_home_url();
 			else
 				$base_url = $this->get_base_url();

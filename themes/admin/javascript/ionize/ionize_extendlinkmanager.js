@@ -98,6 +98,11 @@ ION.ExtendLinkManager = new Class({
 	},
 
 
+	/**
+	 * Initialize UL > LI list - options: drag'n'drop, sortable, unlink. Init styles, icons and titles
+	 *
+	 * @param	{JSON}	json
+	 */
 	completeLoadList: function(json)
 	{
 		var self = this;
@@ -109,6 +114,7 @@ ION.ExtendLinkManager = new Class({
 				container: this.ul,
 				buildUl: false,
 				items: json,
+				sortable: true,
 				sort: {
 					handler: '.drag',
 					id_key: 'extend_value',
@@ -124,7 +130,8 @@ ION.ExtendLinkManager = new Class({
 				[
 					// Sort
 					{
-						element: 'span', 'class': 'icon drag left'
+						element: 'span',			// Sort Drag icon must be span
+						'class': 'icon drag sort left'
 					},
 					// Type Icon
 					{

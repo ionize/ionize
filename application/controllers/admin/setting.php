@@ -1375,7 +1375,7 @@ class Setting extends MY_admin
 
 		/* Lang settings to Settings
 		 */
-		$callback = create_function('$v', 'return ($v["lang"]!="") ? true : false;');
+		$callback = create_function('$v', 'return ($v["lang"]!="");');
 		$lang_settings = array_filter($settings, $callback );
 
 		Settings::set_lang_settings($lang_settings, 'name', 'content');

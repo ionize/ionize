@@ -1428,7 +1428,7 @@ class FileManager
 
 		$resize = (bool) ! empty($headers['X-Resize']) ? $headers['X-Resize'] : FALSE;
 		$resume_flag = ! empty($headers['X-File-Resume']) ? FILE_APPEND : 0;
-		$replace = (! empty($headers['X-Replace']) && $headers['X-Replace'] == 1 ) ? TRUE : FALSE;
+		$replace = (! empty($headers['X-Replace']) && $headers['X-Replace'] == 1 );
 
 		// Prepare the response
 		$response = array(

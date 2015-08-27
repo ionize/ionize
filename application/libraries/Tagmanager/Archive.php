@@ -119,7 +119,7 @@ class TagManager_Archive extends TagManager
 				$row['active_class'] = ($year == $_archive_string) ? $active_class : '';
 			}
 
-			$row['is_active'] = ! empty($row['active_class']) ? TRUE : FALSE;
+			$row['is_active'] = ! empty($row['active_class']);
 		}
 
 		return $archives;

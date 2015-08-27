@@ -47,33 +47,18 @@ class Article extends MY_admin
 	 */
 	protected $lang_data = array();
 
-	/**
-	 * Boolean data (checkboxes)
-	 *
-	 * @var array
-	 */
+	/** @var	array	Boolean data (checkboxes)*/
 	protected $boolean_data = array();
 
-	/**
-	 * Boolean options (checkboxes)
-	 *
-	 * @var array
-	 */
+	/** @var 	array	Boolean options (checkboxes) */
 	protected $boolean_options = array();
 
-
-	/**
-	 * Frontend / Backend Authority actions
-	 * @var array
-	 */
+	/** @var	array	Frontend / Backend Authority actions */
 	protected static $_AUTHORITY_BACKEND_ACTIONS = array('edit','delete','status','unlink');
+
 	protected static $_AUTHORITY_FRONTEND_ACTIONS = NULL;
 
-
-	/**
-	 * Nb of articles by pagination page
-	 * @var int
-	 */
+	/** @var	int	Nb of articles by pagination page */
 	protected static $_NB_ARTICLES_PAGINATION = 20;
 
 	/** @var  Menu_model */
@@ -667,7 +652,7 @@ class Article extends MY_admin
 	public function edit($rel)
 	{
 		// IDs
-		$rel = explode(".", $rel);
+		$rel = explode('.', $rel);
 		$id_page = ( !empty($rel[1] )) ? $rel[0] : '0';
 		$id_article = ( !empty($rel[1] )) ? $rel[1] : NULL;
 
@@ -2029,7 +2014,9 @@ class Article extends MY_admin
 	protected function _reload_panel($id_page, $id_article)
 	{
 		$page = $this->page_model->get_by_id($id_page);
-		$page['menu'] = $this->menu_model->get($page['id_menu']);
+		
+		$id_menu = array_key_exists('id_menu', $page) ? (int) $page['id_menu'] : 0;
+		$page['menu'] = $this->menu_model->get($id_menu);
 
 		// Main data
 		$article = $this->article_model->get_by_id($id_article);
@@ -2049,7 +2036,7 @@ class Article extends MY_admin
 			)
 		);
 		$this->callback[] = array(
-			'fn' => $page['menu']['name'].'Tree.updateElement',
+			'fn'	=> array_key_exists('name', $page['menu']) ? $page['menu']['name'].'Tree.updateElement' : '',
 			'args' => array($article_lang, 'article')
 		);
 	}

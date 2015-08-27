@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset='utf-8' />
-	<title><?php echo  Settings::get('site_title') ?> : Log</title>
+	<title><?php echo  Settings::get('site_title') ?>: Log</title>
 	<link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/log.css" type="text/css" />
 	<link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/content.css" type="text/css" />
 	<link rel="stylesheet" href="<?php echo theme_url() ?>styles/<?php echo Settings::get('backend_ui_style') ?>/css/form.css" type="text/css" />

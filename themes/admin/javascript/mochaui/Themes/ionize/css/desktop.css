@@ -50,13 +50,13 @@
 }
 
 #about_contentWrapper p.version {
-	font-size: 0.9em;
+	font-size: 0.9rem;
 	margin-bottom: 5px;
 	color: #777;
 }
 
 #about_contentWrapper p {
-	font-size: 0.9em;
+	font-size: 0.9rem;
 	padding-bottom: 6px;
 	line-height: 15px;
 }
@@ -91,7 +91,7 @@
 	display: none;
 	margin: 0;
 	padding: 0 5px 0 0;
-	font-size: 20px;
+	font-size: 2rem;
 	line-height: 25px;
 	font-weight: bold;
 	color: #fff;
@@ -100,7 +100,7 @@
 .desktopTitlebar h2.tagline {
 	padding: 7px 0 0 0;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 1rem;
 	color: #d4dce4;
 	font-weight: bold;
 	text-align: center;
@@ -114,7 +114,7 @@
 
 .desktopTitlebar div.topNav {
 	font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-	font-size: 0.70rem;
+	font-size: 1.1rem;
 	position: absolute;
 	right: 0;
 	top: 0;
@@ -220,7 +220,7 @@ li.divider {
 .panel-header h2 {
 	border: none;
 	display: inline-block;
-	font-size: 0.75rem;
+	font-size: 1.2rem;
 	margin: 0;
 	padding: 3px 8px 0 8px;
 	height: 22px;

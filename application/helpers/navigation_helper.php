@@ -29,19 +29,19 @@ if( ! function_exists('get_navigation'))
 	function get_navigation($items)
 	{
 		$nav = '';
-		
+
 		foreach($items as $key => $page)
 		{
 			$active = ( ! empty($page['active_class'])) ? ' class="'.$page['active_class'].'" ' : '';
-			
+
 			$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
-			
+
 			// Adds the suffix if defined in /application/config.php
 			// if ( config_item('url_suffix') != '' ) $url .= config_item('url_suffix');
 
 			$nav .= '<li' . $active . '><a ' . $active . 'href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a></li>';
 		}
-		
+
 		return $nav;
 	}
 }
@@ -74,36 +74,42 @@ if( ! function_exists('get_tree_navigation'))
 				if (( ! empty($page['active_class']))) $class[] = $page['active_class'];
 				if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
 				if ($key == (count($items) - 1) && ! is_null($last_class)) $class[] = $last_class;
-				
+
+				$li_class = $class;
+				if ( ! empty($page['children'])) {
+					$li_class[] = 'has-dropdown';
+					$li_class[] = 'not-click';
+				}
+
 				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
-				$li_class = ( ! empty($page['children'])) ? ' class="has-dropdown not-click'.implode(' ', $class).'"' : $class;
+				$li_class = ( ! empty($li_class)) ? ' class="'.implode(' ', $li_class).'"' : '';
 
 				$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
-				
+
 				$tree .= '<li'.$li_class.'><a'.$class.' href="' . (($page['has_url'] != 0) ? $page['absolute_url'] : '#') . '">'.$title. '</a>';
-		
+
 				if (!empty($page['children']))
 					$tree .= get_tree_navigation($page['children'], NULL, 'dropdown');
 
 				if (!empty($page['articles']))
 				{
 					$tree .= '<ul' . $id . $class . '>';
-					
+
 					foreach($page['articles'] as $article)
 					{
 						$class = array();
 						if (( ! empty($article['active_class']))) $class[] = $article['active_class'];
 						if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
 						if ($key == (count($page['articles']) - 1) && ! is_null($last_class)) $class[] = $last_class;
-						
+
 						$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
 
 						$tree .= '<li'.$class.'><a'.$class.' href="' . $article['url'] . '">'.$article['title']. '</a></li>';
 					}
 					$tree .= '</ul>';
 				}
-				
-				
+
+
 				$tree .= '</li>';
 			}
 		}
@@ -116,13 +122,13 @@ if( ! function_exists('get_tree_navigation'))
 				if (( ! empty($article['active_class']))) $class[] = $article['active_class'];
 				if ($key == 0 && ! is_null($first_class)) $class[] = $first_class;
 				if ($key == (count($items['articles']) - 1) && ! is_null($last_class)) $class[] = $last_class;
-						
+
 				$class = ( ! empty($class)) ? ' class="'.implode(' ', $class).'"' : '';
 
 				$tree .= '<li'.$class.'><a'.$class.' href="' . $article['url'] . '">'.$article['title']. '</a></li>';
 			}
 		}
-		
+
 		$tree .= '</ul>';
 
 		return $tree;
@@ -150,10 +156,10 @@ if( ! function_exists('get_language_navigation'))
 		foreach($items as $lang)
 		{
 			$active = ( ! empty($lang['active_class'])) ? ' class="'.$lang['active_class'].'" ' : '';
-			
+
 			$nav .= '<li' . $active . '><a ' . $active . 'href="' . $lang['url'] . '">' . $lang['name']. '</a></li>';
 		}
-		
+
 		return $nav;
 	}
 }
@@ -174,11 +180,11 @@ if( ! function_exists('get_next_prev_page'))
 	function get_next_prev_page($page, $prefix)
 	{
 		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
-		
+
 		$title = ($page['nav_title'] != '') ? $page['nav_title'] : $page['title'];
 
 		$link = $prefix. '<a href="' . $page['absolute_url'] . '">' . $title . '</a>';
-		
+
 		return $link;
 	}
 }
@@ -195,9 +201,9 @@ if( ! function_exists('get_next_prev_article'))
 	function get_next_prev_article($article, $prefix)
 	{
 		$prefix = (lang($prefix) != '#'.$prefix ) ? lang($prefix) : $prefix;
-		
+
 		$link = $prefix. '<a href="' . $article['absolute_url'] . '">' . $article['title']. '</a>';
-		
+
 		return $link;
 	}
 }

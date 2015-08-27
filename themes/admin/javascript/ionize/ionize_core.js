@@ -413,6 +413,30 @@ ION.append({
 	},
 
 	/**
+	 * Returns default width for popup windows, calculated from window size bearing reasonable minimum/maximum scale
+	 *
+	 * @returns {number}
+	 */
+	getPopupDefaultWidth: function()
+	{
+		var width = window.innerWidth * 0.7;
+
+		return width < 500 ? 500 : ( width > 1000 ? 1000 : width );
+	},
+
+	/**
+	 * Returns default height for popup windows
+	 *
+	 * @returns {number}
+	 */
+	getPopupDefaultHeight: function()
+	{
+		var height = window.innerHeight * 0.7;
+
+		return height < 350 ? 350 : ( height > 750 ? 750 : height );
+	},
+	
+	/**
 	 * Returns the FileManager window options
 	 *
 	 */

@@ -25,4 +25,19 @@
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     </query>
 
+    <query>
+        CREATE TABLE IF NOT EXISTS extend_field_article_type (
+            id_extend_field INT(11) UNSIGNED NOT NULL,
+            id_type int(11) UNSIGNED NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>
+        ALTER TABLE page_lang change subtitle subtitle text;
+    </query>
+
+    <query>
+        ALTER TABLE article_lang change subtitle subtitle text;
+    </query>
+
 </sql>
