@@ -1266,7 +1266,7 @@ ION.ExtendManager = new Class({
 				var color_container = new Element('div', {'class':'relative mr30 mb5'}).inject(field);
 
 				new Element(dom_tag, {
-					type	: dom_type,
+					type	: 'text', 		// dom_type,
 					'class'	: extend.html_element_class + cssClass,
 					name	: input_name,
 					id		: id,

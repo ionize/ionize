@@ -1,29 +1,86 @@
 /** Ionize Style
  *  Login view
  */
- 
+*,
+*:before,
+*:after {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+html{
+	font-size: 62.5%;
+}
 body {
 	margin:0;
 	font-family:  "lucida grande",tahoma,verdana,arial,sans-serif;
-	font-size:1em;
+	font-size:1.1rem;
+    /*
 	background: url(../images/background/squairy_light.png);
+    */
+	background-color: #aaa;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+body::after{
+	position: absolute;
+	bottom:10px;
+	color:#fff;
+	left:10px;
+	display:block;
+	z-index:100;
+	opacity:.4
+}
+body.bg-1{background-image: url(https://farm9.staticflickr.com/8009/7487457582_de7a92330b_b.jpg)}
+body.bg-1::after{content:"Golden Cathedral - John Fowler - https://www.flickr.com/photos/snowpeak/"}
+body.bg-2{background-image: url(https://farm6.staticflickr.com/5334/7115844463_bb67f0ce3d_b.jpg)}
+body.bg-2::after{content:"John Fowler - https://www.flickr.com/photos/snowpeak/"}
+body.bg-3{background-image: url(https://farm9.staticflickr.com/8028/7270885770_a2b56716c4_b.jpg)}
+body.bg-3::after{content:"Héctor García - https://www.flickr.com/photos/torek/"}
+body.bg-4{background-image: url(https://farm6.staticflickr.com/5531/9638435181_7e3e44c2b8_b.jpg)}
+body.bg-4::after{content:"William Warby - https://www.flickr.com/photos/wwarby/"}
+body.bg-5{background-image: url(https://farm9.staticflickr.com/8063/8178276684_136cb3ccee_b.jpg)}
+body.bg-5::after{content:"Vinoth Chandar - https://www.flickr.com/photos/vinothchandar/"}
+body.bg-6{background-image: url(http://www.pierre-olivier-photo.com/files/.thumbs/Reportage/Lost_in_Tokyo1/800/Lost_in_Tokyo1_002.jpg)}
+body.bg-6::after{content:"Pierre-Olivier Photographe - https://www.pierre-olivier-photo.com"}
 
+.bg-overlay  {
+	position:fixed;
+	width:100%;
+	height:100%;
+}
+.bg-overlay.grid-10 {background:transparent url(../images/background/grid-10.png) top center repeat}
+.bg-overlay.grid-20 {background:transparent url(../images/background/grid-20.png) top center repeat}
+.bg-overlay.grid-30 {background:transparent url(../images/background/grid-30.png) top center repeat}
+.bg-overlay.grid-10-white {background:transparent url(../images/background/grid-10-white.png) top center repeat}
+.bg-overlay.grid-20-white {background:transparent url(../images/background/grid-20-white.png) top center repeat}
+.bg-overlay.grid-30-white {background:transparent url(../images/background/grid-30-white.png) top center repeat}
+
+.bg-login {
+	position:absolute;
+	width:100%;
+	height:100%;
+	background-color: #fff;
+	opacity: 0.7;
 }
 .content {
 	position:relative;
+	width: 100%;
+	height: 100%;
+	display: block;
 }
 #footer p {
 	text-align: center !important;
 }
 #loginWindow {
-	margin:100px auto 0 auto;
-	width:466px;
-	height:250px;
-	position: relative;
-	background:url(../images/application_login_window_bg.jpg) no-repeat top left;
-	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
-	-moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
-	-webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15), 0 0 0 7px #fff inset;
+	margin:-130px 0 0 -230px;
+	width:500px;
+	height:270px;
+	left:50%;
+	top:43%;
+	position: absolute;
 }
 #loginWindow #logo{
 	width: 160px;
@@ -38,7 +95,7 @@ body {
 	font-size: 11px;
 }
 #version {
-	color:#c2d0e0;
+	color:#63778F;
 	font-size: 10px;
 	position: absolute;
 	bottom:20px;
@@ -52,20 +109,22 @@ label {
 	color:#fff;
 }
 form {
-	padding: 95px 0 0 30px;
-	margin: 0 0 0 220px;
+	position: absolute;
+	top:100px;
+	left:230px;
 	width: auto !important;
 }
 form .inputtext {
 	text-align: left;
 	border:1px solid #fff;
-	padding: 2px 6px;
-	width:160px;
-	font-size: 12px;
+	padding:8px;
+	width:100%;
+	font-size: 13px;
+	height: auto !important;
 }
 form .inputtext:focus {
 	background:#f5f5f5;
-	border:1px solid #fff;
+	border:1px solid #F5F5F5;
 }
 input[type="text"], input[type="password"] {
 	outline: none;
@@ -74,9 +133,9 @@ input[type="text"], input[type="password"] {
 }
 :focus { background-color: #fff; }
 
-form div {margin-bottom:5px;width: 168px;}
-form div.action {margin-bottom:15px}
-form div.action input{padding:3px 10px;height: 27px;margin:0}
+form div {margin-bottom:5px;width: 220px;}
+form div.action {}
+form div.action input{padding:6px 20px;font-size: 13px;width: 100%}
 
 form input.checkbox {
 	width:auto;
@@ -84,12 +143,13 @@ form input.checkbox {
 }
 .error {
 	position:absolute;
-	width:200px;
+	width:190px;
 	margin-top:16px;
 	left:32px;
-	color:#fad864;
-	font-size: 0.83em;
-	top:90px;
+	color:#c00;
+	font-size: 0.7em;
+	top:92px;
+	line-height: 15px;
 }
 small {
 	font-size:10px;

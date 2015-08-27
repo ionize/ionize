@@ -19,7 +19,7 @@
 		function doSubmit(e) 
 		{
 			var code;
-			if (!e) e = window.event;
+			if (!e) var e = window.event;
 			if (e.keyCode) code = e.keyCode;
 			else if (e.which) code = e.which;
 			var character = String.fromCharCode(code);
@@ -39,7 +39,7 @@
 
 		// Reload top window if #desktop object exists
 		// Prevents from having a login window in a panel
-		if (document.getElementById('desktop'))
+		if ($('desktop'))
 		{
 			$('desktop').setStyle('display', 'none');
 			window.top.location.reload(true);
@@ -48,6 +48,8 @@
         window.addEvent('domready', function()
 		{
 			document.getElementById('username').focus();
+
+			$(document.body).addClass('bg-' + Math.floor(Math.random()*(6-1+1)+1));
 
 			// fix chrome forcing yellow background of input
 			window.setTimeout(function() {
@@ -66,58 +68,56 @@
 	</script>
 </head>
 
-<body>
+<body onKeyPress="doSubmit(event);">
+	<div class="bg-overlay grid-20"></div>
+
 	<?php if (ENVIRONMENT != 'production'): ?>
 		<div id="preprod-flag">
 			<?php echo strtoupper(ENVIRONMENT); ?>
 		</div>
 	<?php endif; ?>
 
-	<div id="content" class="content" onKeyPress="doSubmit(event);">
-	
-		<div id="loginWindow" class=" clearfix">
 
-			<div id="logo"></div>
+	<div id="loginWindow" class=" clearfix">
+		<div class="bg-login"></div>
+		<div id="logo"></div>
+		<div id="version"><?php echo $this->config->item('version'); ?> - Ionize CMS - MIT licence</div>
 
-			<div id="version"><?php echo $this->config->item('version'); ?> - Ionize CMS - MIT licence</div>
-
-			<?php if(validation_errors() OR isset($this->login_errors)):?>
-				<div class="error">
-					<?php echo validation_errors(); ?>
-					<?php echo isset($this->login_errors) ? $this->form_validation->_error_prefix.$this->login_errors.$this->form_validation->_error_suffix : ''; ?>
-				</div>
-			<?php endif; ?>
+		<?php if( ! empty($error)):?>
+			<div class="error">
+					<?php echo $error ?>
+			</div>
+		<?php endif; ?>
 
 
-			<?php echo form_open(current_url(), array('id' => 'login', 'class' => 'login')); ?>
-		
-				<div>
-					<?php echo form_input(array(
-						'name' 		=> 'username',
-						'id' 		=> 'username',
-						'value' 	=> set_value('username'),
-						'class' => 'inputtext',
-						'placeholder' => lang('ionize_login_name')
-					)); ?>
-				</div>
-		
-				<div>
-					<?php echo form_password(array(
-						'name' 		=> 'password',
-						'id' 		=> 'password',
-						'value' 	=> set_value('password'),
-						'class' => 'inputtext',
-						'placeholder' => lang('ionize_login_password')
-					)); ?>
-				</div>
-		
-				<div class="action">
-					<input type="submit" class="submit" value="<?php echo lang('ionize_login'); ?>" />
-				</div>
-		
-			<?php echo form_close(); ?>
+		<?php echo form_open(current_url(), array('id' => 'login', 'class' => 'login')); ?>
 
-		</div>
+			<div>
+				<?php echo form_input(array(
+					'name' 		=> 'username',
+					'id' 		=> 'username',
+					'value' 	=> set_value('username'),
+					'class' => 'inputtext',
+					'placeholder' => lang('ionize_login_name')
+				)); ?>
+			</div>
+
+			<div>
+				<?php echo form_password(array(
+					'name' 		=> 'password',
+					'id' 		=> 'password',
+					'value' 	=> set_value('password'),
+					'class' => 'inputtext',
+					'placeholder' => lang('ionize_login_password')
+				)); ?>
+			</div>
+
+			<div class="action">
+				<input type="submit" class="submit" value="<?php echo lang('ionize_login'); ?>" />
+			</div>
+
+		<?php echo form_close(); ?>
+
 	</div>
 </body>
 </html>
