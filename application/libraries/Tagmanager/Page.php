@@ -37,13 +37,15 @@ class TagManager_Page extends TagManager
 
 	public static $tag_definitions = array
 	(
-		'pages'		=> 	'tag_pages',
-		'page'		=> 	'tag_page',
-		'page:view' => 	'tag_page_view',
-		'page:next' =>	'tag_next_page',
-		'page:prev' =>	'tag_prev_page',
-		'breadcrumb'=>	'tag_breadcrumb',
-		'id_parent' => 	'tag_simple_value'
+		'pages'		=> 'tag_pages',
+		'page'		=> 'tag_page',
+		'page:view'	=> 'tag_page_view',
+		'page:next'	=> 'tag_next_page',
+		'page:prev'	=> 'tag_prev_page',
+		'breadcrumb'	=> 'tag_breadcrumb',
+		'id_parent'	=> 'tag_simple_value',
+		
+		'if_in_rootline'=> 'tag_if_in_rootline'
 	);
 
 
@@ -707,6 +709,35 @@ class TagManager_Page extends TagManager
 			self::set_cache($tag, $str);
 		}
 		return $str;
+	}
+	
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Expands the tag content if the page is a descendant of the given ancestor page
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	In views :
+	 * 			<ion:page:if_in_rootline id="3">
+	 * 				This will be displayed if given id (3) is an id_page of an ancestor of the page
+	 * 			</ion:page:if_in_rootline>
+	 */
+	public static function tag_if_in_rootline(FTL_Binding $tag)
+	{
+		$page = self::$context->registry('page');
+		$id_page = (int) $page['id'];
+
+		$id_page_ancestor = (int) $tag->getAttribute('id');
+
+		if (self::$ci->page_model->is_id_in_rootline($id_page, $id_page_ancestor))
+			return $tag->expand();
+
+		return '';
 	}
 
 

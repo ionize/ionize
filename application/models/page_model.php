@@ -501,6 +501,25 @@ class Page_model extends Base_model
 
 		return $ids;
 	}
+	
+	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param	int	$id_page
+	 * @param	int	$id_page_ancestor
+	 * @return	bool	Is given page a descendant of given ancestor?
+	 */
+	public function is_id_in_rootline($id_page, $id_page_ancestor)
+	{
+		$ids_in_rootline = $this->get_children_ids($id_page_ancestor);
+
+		return in_array($id_page, $ids_in_rootline);
+	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
