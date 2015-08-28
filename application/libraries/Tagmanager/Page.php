@@ -725,7 +725,7 @@ class TagManager_Page extends TagManager
 	 * @usage	In views :
 	 * 			<ion:page:if_in_rootline id="3">
 	 * 				This will be displayed if given id (3) is an id_page of an ancestor of the page
-	 * 			</ion:my_tag:is_active>
+	 * 			</ion:page:if_in_rootline>
 	 */
 	public static function tag_if_in_rootline(FTL_Binding $tag)
 	{
