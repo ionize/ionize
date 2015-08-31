@@ -464,18 +464,19 @@ class Page_model extends Base_model
 
 
 	/**
-	 * Returns one page children array
+	 * Returns one page children array (by default infinitely recursive: including all children of children)
 	 *
-	 * @param	int		$id_page
+	 * @param	int	$id_page
 	 * @param	array	$data		Empty data array.
 	 * @param	string	$lang		Lang code
+	 * @param	bool	$recursive	Get also children of children? infinitely recursive
 	 * @return	array	Children pages array
 	 */
-	public function get_children_array($id_page, $data = array(), $lang = NULL)
+	public function get_children_array($id_page, $data = array(), $lang = NULL, $recursive = TRUE)
 	{
 		$children = $this->get_lang_list(array('id_parent' => $id_page), $lang);
 
-		if ( ! empty($children))
+		if ( $recursive && ! empty($children) )
 		{
 			foreach($children as $page)
 			{
@@ -490,17 +491,90 @@ class Page_model extends Base_model
 	}
 
 
-	public function get_children_ids($id_page, $including_id_page=FALSE)
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param	int		$id_page
+	 * @param	bool	$including_id_page
+	 * @param	bool	$recursive
+	 * @return	array
+	 */
+	public function get_children_ids($id_page, $including_id_page=FALSE, $recursive = TRUE)
 	{
 		$ids = $including_id_page == TRUE ? array($id_page) : array();
 
-		$children = $this->get_children_array($id_page);
+		$children = $this->get_children_array($id_page, array(), NULL, $recursive);
 
 		foreach($children as $page)
 			$ids[] = $page['id_page'];
 
 		return $ids;
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get page IDs of descendant pages of given page,
+	 * returns array of page IDs, optionally including the ID of the given page,
+	 * traversal depth can be limited / max_levels: 0 = infinite
+	 *
+	 * @param	int		$id_page			Predecessor page ID
+	 * @param	bool 	$include_id_page	Include predecessor page ID?
+	 * @param	int 	$current_level
+	 * @param	int 	$max_levels			How many ancestry page levels to go down? 0= infinite
+	 * @return	array	page IDs
+	 */
+	public function get_descendant_ids($id_page, $include_id_page=FALSE, $current_level, $max_levels = 0, $lang = NULL)
+	{
+		$ids = $include_id_page ? array($id_page) : array();
+
+		$child_ids = $this->get_children_ids($id_page, FALSE, FALSE);
+
+		if($max_levels === 0 || $current_level <= $max_levels) {
+			$current_level++;
+
+			foreach ($child_ids as $id_child) {
+				$ids[] = $id_child;
+
+				if($max_levels === 0 || $current_level < $max_levels) {
+					$ids = array_merge($ids, $this->get_descendant_ids($id_child, FALSE, $current_level, $max_levels, $lang, $current_level));
+				}
+			}
+		}
+
+		return array_unique($ids);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param	array	$ancestor_ids 	array of (int) page IDs
+	 * @param	int	$id_page
+	 * @param	bool	$include_page_id
+	 * @param	int	$max_levels
+	 * @return	bool	Is given page a descendant of given ancestor?
+	 */
+	public function is_ancestor_of($ancestor_ids, $id_page, $include_page_id = FALSE, $max_levels = 0)
+	{
+		if( $include_page_id && in_array($id_page, $ancestor_ids, FALSE) )
+			return true;
+
+		foreach($ancestor_ids as $id_page_ancestor) {
+			if( in_array($id_page, $this->get_descendant_ids($id_page_ancestor, $include_page_id, $max_levels)) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
