@@ -43,7 +43,9 @@ class TagManager_Page extends TagManager
 		'page:next' =>	'tag_next_page',
 		'page:prev' =>	'tag_prev_page',
 		'breadcrumb'=>	'tag_breadcrumb',
-		'id_parent' => 	'tag_simple_value'
+		'id_parent' => 	'tag_simple_value',
+		
+		'if_is_descendant_of'	=> 'tag_if_is_descendant_of'
 	);
 
 
@@ -1001,6 +1003,56 @@ class TagManager_Page extends TagManager
 		$return = self::prefix_suffix_process($return, $tag->getAttribute('prefix'));
 
 		return self::wrap($tag, $return);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Expands the tag content if the page is a descendant of the given ancestor page
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @return 	string
+	 *
+	 * @usage	In views :
+	 *
+	 * 			<ion:page:tag_if_is_descendant_of id="3">
+	 * 				This will be displayed if given id (3) is an id_page of any ancestor of the page, but not the id of the page
+	 * 			</ion:page:tag_if_is_descendant_of>
+	 *
+	 * 			<ion:page:tag_if_is_descendant_of id="3" include_page="true">
+	 * 				This will be displayed if given id (3) is an id_page of any ancestor of the page, or the id of the page
+	 * 			</ion:page:tag_if_is_descendant_of>
+	 *
+	 * 			<ion:page:tag_if_is_descendant_of id="3" include_page="true" max_levels="1">
+	 * 				This will be displayed if given id (3) is an id_page of a 1st level ancestor (parent actually) of the page, or the id of the page
+	 * 			</ion:page:tag_if_is_descendant_of>
+	 *
+	 * 			<ion:page:tag_if_is_descendant_of ids="3,18">
+	 * 				This will be displayed if one of the given ids (3,18) is an id_page of an ancestor of the page, but not the id of the page
+	 * 			</ion:page:tag_if_is_descendant_of>
+	 */
+	public static function tag_if_is_descendant_of(FTL_Binding $tag)
+	{
+		$page = self::$context->registry('page');
+		$id_page = (int) $page['id'];
+
+		$ancestor_id = (int) $tag->getAttribute('id');
+		if( $ancestor_id === 0 ) {
+			$ancestor_ids = explode(',', $tag->getAttribute('ids'));
+		} else {
+			$ancestor_ids = array($ancestor_id);
+		}
+
+		$include_page_id = (bool) $tag->getAttribute('include_page_id');
+		$max_levels = (int) $tag->getAttribute('max_levels');
+
+		if (self::$ci->page_model->is_ancestor_of($ancestor_ids, $id_page, $include_page_id, $max_levels))
+			return $tag->expand();
+
+		return '';
 	}
 
 
