@@ -1018,21 +1018,21 @@ class TagManager_Page extends TagManager
 	 *
 	 * @usage	In views :
 	 *
-	 * 			<ion:page:tag_if_is_descendant_of id="3">
+	 * 			<ion:page:if_is_descendant_of id="3">
 	 * 				This will be displayed if given id (3) is an id_page of any ancestor of the page, but not the id of the page
-	 * 			</ion:page:tag_if_is_descendant_of>
+	 * 			</ion:page:if_is_descendant_of>
 	 *
-	 * 			<ion:page:tag_if_is_descendant_of id="3" include_page="true">
+	 * 			<ion:page:if_is_descendant_of id="3" include_page="true">
 	 * 				This will be displayed if given id (3) is an id_page of any ancestor of the page, or the id of the page
-	 * 			</ion:page:tag_if_is_descendant_of>
+	 * 			</ion:page:if_is_descendant_of>
 	 *
-	 * 			<ion:page:tag_if_is_descendant_of id="3" include_page="true" max_levels="1">
+	 * 			<ion:page:if_is_descendant_of id="3" include_page="true" max_levels="1">
 	 * 				This will be displayed if given id (3) is an id_page of a 1st level ancestor (parent actually) of the page, or the id of the page
-	 * 			</ion:page:tag_if_is_descendant_of>
+	 * 			</ion:page:if_is_descendant_of>
 	 *
-	 * 			<ion:page:tag_if_is_descendant_of ids="3,18">
+	 * 			<ion:page:if_is_descendant_of ids="3,18">
 	 * 				This will be displayed if one of the given ids (3,18) is an id_page of an ancestor of the page, but not the id of the page
-	 * 			</ion:page:tag_if_is_descendant_of>
+	 * 			</ion:page:if_is_descendant_of>
 	 */
 	public static function tag_if_is_descendant_of(FTL_Binding $tag)
 	{
