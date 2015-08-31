@@ -517,6 +517,67 @@ class Page_model extends Base_model
 
 
 	/**
+	 * Get page IDs of descendant pages of given page,
+	 * returns array of page IDs, optionally including the ID of the given page,
+	 * traversal depth can be limited / max_levels: 0 = infinite
+	 *
+	 * @param	int		$id_page			Predecessor page ID
+	 * @param	bool 	$include_id_page	Include predecessor page ID?
+	 * @param	int 	$current_level
+	 * @param	int 	$max_levels			How many ancestry page levels to go down? 0= infinite
+	 * @return	array	page IDs
+	 */
+	public function get_descendant_ids($id_page, $include_id_page=FALSE, $current_level, $max_levels = 0, $lang = NULL)
+	{
+		$ids = $include_id_page ? array($id_page) : array();
+
+		$child_ids = $this->get_children_ids($id_page, FALSE, FALSE);
+
+		if($max_levels === 0 || $current_level <= $max_levels) {
+			$current_level++;
+
+			foreach ($child_ids as $id_child) {
+				$ids[] = $id_child;
+
+				if($max_levels === 0 || $current_level < $max_levels) {
+					$ids = array_merge($ids, $this->get_descendant_ids($id_child, FALSE, $current_level, $max_levels, $lang, $current_level));
+				}
+			}
+		}
+
+		return array_unique($ids);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param	array	$ancestor_ids 	array of (int) page IDs
+	 * @param	int	$id_page
+	 * @param	bool	$include_page_id
+	 * @param	int	$max_levels
+	 * @return	bool	Is given page a descendant of given ancestor?
+	 */
+	public function is_ancestor_of($ancestor_ids, $id_page, $include_page_id = FALSE, $max_levels = 0)
+	{
+		if( $include_page_id && in_array($id_page, $ancestor_ids, FALSE) )
+			return true;
+
+		foreach($ancestor_ids as $id_page_ancestor) {
+			if( in_array($id_page, $this->get_descendant_ids($id_page_ancestor, $include_page_id, $max_levels)) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * @param        $id_page
 	 * @param string $separator
 	 * @param null   $lang
