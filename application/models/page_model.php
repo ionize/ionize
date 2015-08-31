@@ -464,18 +464,19 @@ class Page_model extends Base_model
 
 
 	/**
-	 * Returns one page children array
+	 * Returns one page children array (by default infinitely recursive: including all children of children)
 	 *
-	 * @param	int		$id_page
+	 * @param	int	$id_page
 	 * @param	array	$data		Empty data array.
 	 * @param	string	$lang		Lang code
+	 * @param	bool	$recursive	Get also children of children? infinitely recursive
 	 * @return	array	Children pages array
 	 */
-	public function get_children_array($id_page, $data = array(), $lang = NULL)
+	public function get_children_array($id_page, $data = array(), $lang = NULL, $recursive = TRUE)
 	{
 		$children = $this->get_lang_list(array('id_parent' => $id_page), $lang);
 
-		if ( ! empty($children))
+		if ( $recursive && ! empty($children) )
 		{
 			foreach($children as $page)
 			{
@@ -490,17 +491,29 @@ class Page_model extends Base_model
 	}
 
 
-	public function get_children_ids($id_page, $including_id_page=FALSE)
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param	int		$id_page
+	 * @param	bool	$including_id_page
+	 * @param	bool	$recursive
+	 * @return	array
+	 */
+	public function get_children_ids($id_page, $including_id_page=FALSE, $recursive = TRUE)
 	{
 		$ids = $including_id_page == TRUE ? array($id_page) : array();
 
-		$children = $this->get_children_array($id_page);
+		$children = $this->get_children_array($id_page, array(), NULL, $recursive);
 
 		foreach($children as $page)
 			$ids[] = $page['id_page'];
 
 		return $ids;
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	/**
