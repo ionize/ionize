@@ -173,7 +173,9 @@ class TagManager_Article extends TagManager
 			}
 		}
 
-		// Get only articles from the detected page
+		// Get only (online) articles from the detected page
+		$where['page_article.online'] = 1;
+		
 		if ( ! empty($page))
 			$where['id_page'] = $page['id_page'];
 
