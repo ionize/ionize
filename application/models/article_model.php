@@ -258,6 +258,7 @@ class Article_model extends Base_model
 			$this->parent_table.'.id_article = ' .$this->table.'.id_article',
 			'left'
 		);
+		$where[$this->parent_table.'.online'] = 1; // only online articles
 
 		// Page table
 		$this->{$this->db_group}->select('article_list_view, article_view');
