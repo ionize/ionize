@@ -34,7 +34,7 @@ Official website: http://www.ionizecms.com
 IMPORTANT: Before any update, make a backup of your database.
 We will not be responsible for any loss of data.
 
-These instruction take into account that this version is in developement.
+These instructions take into account that this version is in developement.
 
 * From Ionize 0.9.x
   * Copy your database, you will start working with this copy,
