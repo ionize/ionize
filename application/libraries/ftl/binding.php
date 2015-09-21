@@ -87,7 +87,9 @@ class FTL_Binding
 	function __construct($context, $locals, $name, $attr, $block)
 	{
 		list($this->context, $this->locals, $this->name, $this->attr, $this->block) = array($context, $locals, $name, $attr, $block);
-		$this->globals = $context->globals;
+		if( is_object($context) ) {
+			$this->globals = $context->globals;
+		}
 	}
 	
 	/**
