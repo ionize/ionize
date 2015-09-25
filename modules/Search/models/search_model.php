@@ -93,6 +93,9 @@ class Search_model extends Base_model
 		// Published filter
 		$this->filter_on_published(self::$publish_filter, $lang);
 
+		// Limit to specific area (descendant pages of ancestor)
+//		$this->filter_on_ancestor($idAncestor);
+		
 		// Add the 'date' field to the query
 		$this->{$this->db_group}->select('IF(article.logical_date !=0, article.logical_date, IF(article.publish_on !=0, article.publish_on, article.created )) AS date');
 
@@ -145,6 +148,20 @@ class Search_model extends Base_model
 			$this->{$this->db_group}->where('(article.publish_on < ', 'now()', FALSE);
 			$this->{$this->db_group}->or_where('article.publish_on = ', '0))' , FALSE);
 		}
+	}
+	
+	
+	/**
+	 * Filter for descendants of given ancestor
+	 *
+	 * @param	int		$idAncestor
+	 */
+	protected function filter_on_ancestor($idAncestor)
+	{
+		$pageModel = new Page_model();
+		$documentationPageIDs = $pageModel->get_descendant_ids($idAncestor, false, 0, 99, null);
+
+		$this->{$this->db_group}->where_in($this->parent_table.'.id_page', $documentationPageIDs);
 	}
 
 }
