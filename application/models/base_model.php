@@ -674,7 +674,7 @@ class Base_model extends CI_Model
 
 		$query = $this->{$this->db_group}->get($this->table);
 
-		if($query->num_rows() > 0)
+		if($query && $query->num_rows() > 0)
 		{
 			$data = $query->result_array();
 			$query->free_result();
