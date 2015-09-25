@@ -159,9 +159,9 @@ class Search_model extends Base_model
 	protected function filter_on_ancestor($idAncestor)
 	{
 		$pageModel = new Page_model();
-		$documentationPageIDs = $pageModel->get_descendant_ids($idAncestor, false, 0, 99, null);
+		$pageIDs = $pageModel->get_descendant_ids($idAncestor, false, 0, 99, null);
 
-		$this->{$this->db_group}->where_in($this->parent_table.'.id_page', $documentationPageIDs);
+		$this->{$this->db_group}->where_in($this->parent_table.'.id_page', $pageIDs);
 	}
 
 }
