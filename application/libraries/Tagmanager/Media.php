@@ -509,10 +509,13 @@ class TagManager_Media extends TagManager
 
 
 	/**
-	 * @param FTL_Binding $tag
+	 * Renders a link (or other HTML tag, eg. button) for downloading a file (the download file must be added as media to the article)
 	 *
 	 * @usage	<ion:media:download class="download" />
+	 * @usage	<ion:media:download tag="button" class="download" />
+	 * @usage	<ion:media:download label="Download Now" tag="button" class="download" />
 	 *
+	 * @param FTL_Binding $tag
 	 * @return string
 	 */
 	public function tag_media_download(FTL_Binding $tag)
@@ -521,8 +524,33 @@ class TagManager_Media extends TagManager
 		$media = $tag->locals->media;
 		$mediaTitle = empty($media['title']) ? $media['file_name'] : $media['title'];
 
+		if( empty($mediaTitle) && array_key_exists('content', $media)) {
+			// Fallback to get media attached e.g. to content element
+			self::load_model('media_model');
+
+			$where	= array('id_media' => (int) $media['content']);
+			$medias = self::$ci->media_model->get_lang_list( $where, Settings::get_lang() );
+
+			$fileInfo = array_shift($medias);
+			$mediaTitle	= $fileInfo['file_name'];
+
+			$media['id_media']	= $fileInfo['id_media'];
+		}
+
 		// get CSS classname (optional)
 		$class = trim($tag->getAttribute('class'));
+
+		// get link text (optional, default: filename)
+		$label = trim($tag->getAttribute('label'));
+		if( empty($label) ) {
+			$label = $mediaTitle;
+		}
+
+		// get HTML tag (optional, default: <a>)
+		$tagName = $tag->getAttribute('tag_name');
+		if( empty($tagName) ) {
+			$tagName = 'a';
+		}
 
 		// generate SHA-1 hash to verify valid (= intentionally public) downloads
 		$hash = urlencode( sha1( $media['id_media'] . config_item('encryption_key') ) );
@@ -530,10 +558,16 @@ class TagManager_Media extends TagManager
 		// render output
 		$url = base_url() . 'media/download/' . $media['id_media'] . '/' . $hash;
 
-		return
-			'<a' . (empty($class) ? '' : ' class="' . $class . '"') . ' href="' . $url . '">'
-		  . $mediaTitle
-		  . '</a>';
+		// prepare attributes output
+		$attributeClass = empty($class)
+			? ''
+			: ' class="' . $class . '"';
+
+		$href = $tagName === 'a'
+			? 'href="' . $url . '"'
+			: 'onclick="document.location.href=\'' . $url . '\'"';
+
+		return '<' . $tagName . $attributeClass . ' ' . $href . ' title="' . $mediaTitle . '">' . $label . '</' . $tagName . '>';
 	}
 	
 	
