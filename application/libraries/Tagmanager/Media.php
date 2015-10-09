@@ -512,8 +512,8 @@ class TagManager_Media extends TagManager
 	 * Renders a link (or other HTML tag, eg. button) for downloading a file (the download file must be added as media to the article)
 	 *
 	 * @usage	<ion:media:download class="download" />
-	 * @usage	<ion:media:download tag="button" class="download" />
-	 * @usage	<ion:media:download label="Download Now" tag="button" class="download" />
+	 * @usage	<ion:media:download tag_name="button" class="download" />
+	 * @usage	<ion:media:download label="Download Now" tag_name="button" class="download" />
 	 *
 	 * @param FTL_Binding $tag
 	 * @return string
