@@ -1332,6 +1332,8 @@ class TagManager
 		if ( $autolink)
 			$value = auto_link($value);
 
+		$value = replace_last('<p>', '<p class="last">', $value);
+
 		return self::output_value($tag, $value);
 	}
 
