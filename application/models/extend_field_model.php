@@ -463,7 +463,7 @@ class Extend_field_model extends Base_model
 		$ids = array();
 
 		$article = self::$ci->article_model->get_all_context($id_article_type);
-		if( ! empty($article) ) {
+		if( ! empty($article['id_type']) ) {
 			$article = array_pop($article);
 
 			/** @var	CI_DB_result	$query */
