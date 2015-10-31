@@ -449,7 +449,7 @@ class Base_Controller extends MY_Controller
 		// Check for empty lang URL
 		if ( ! $this->router->is_home())
 		{
-			if ($this->router->get_raw_key() != Settings::get_lang() && (Settings::get('force_lang_urls') OR count($online_lang_codes) > 1))
+			if ($this->router->get_raw_key() != Settings::get_lang() && Settings::get('force_lang_urls'))
 			{
 				redirect(current_url(), 'location', 301);
 			}
