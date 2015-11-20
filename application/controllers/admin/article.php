@@ -1768,14 +1768,24 @@ class Article extends MY_admin
 			}
 		}
 
+		// URLs : Feed the other languages URL with the default one if the URL is missing
+		$urls = $this->_get_urls(TRUE);
+
 		// Page ID : Only on creation
 		if ($this->input->post('id_page'))
 		{
 			$this->data['id_page'] = $this->input->post('id_page');
 		
-			// Ordering : Only done for a new article, else, don't touch
+			// Only done for a new article
 			if ( ! $this->input->post('id_article'))
+			{
+				// Ordering
 				$this->data['ordering'] = $this->_get_ordering($this->input->post('ordering_select'), $this->data['id_page'], $this->input->post('ordering_after'));
+
+				// Update the name (not used anymore in the frontend, but used in the backend)
+				$this->data['name'] = $urls[Settings::get_lang('default')];
+				$this->data['name'] = $this->article_model->get_unique_name($this->data['name'], $this->input->post('id_article'));
+			}
 		}
 		
 		// Author & updater
@@ -1784,14 +1794,6 @@ class Article extends MY_admin
 			$this->data['updater'] = $user['username'];
 		else
 			$this->data['author'] =  $user['username'];
-
-
-		// URLs : Feed the other languages URL with the default one if the URL is missing
-		$urls = $this->_get_urls(TRUE);
-
-		// Update the name (not used anymore in the frontend, but used in the backend)
-		$this->data['name'] = $urls[Settings::get_lang('default')];
-		$this->data['name'] = $this->article_model->get_unique_name($this->data['name'], $this->input->post('id_article'));
 
 		/*
 		 * Lang data
