@@ -2468,6 +2468,10 @@ class TagManager
 
 			if ( ! $autolink)
 				return self::wrap($tag, $line);
+			
+			// Process helpers, functions etc.
+    			if($line != '#'.$key)
+                		$line = self::process_value($tag, $line);
 
 			return self::wrap($tag, auto_link($line, 'both', TRUE));
 		}
