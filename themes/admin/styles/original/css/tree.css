@@ -40,7 +40,6 @@ h3.treetitle {
 .tree {
 	line-height: 16px;
 	margin: 0 12px 10px 0;
-	overflow: hidden;
 	position: relative;
 }
 .tree ul {
