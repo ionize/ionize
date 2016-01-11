@@ -469,7 +469,7 @@ class Extend_field_model extends Base_model
 			/** @var	CI_DB_result	$query */
 			$query = $this->{$this->db_group}->query(
 				'SELECT id_extend_field FROM ' . self::$_LINKED_ARTICLE_TYPE_TABLE . '
-				 WHERE id_type = ' . $article['id_type']
+				 WHERE id_type = "' . $article['id_type'] . '"'
 			);
 
 			if($query != FALSE)
