@@ -420,6 +420,7 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 		}
 	}
 
+	<?php if($provider == '') : ?>
 	$('imagePreviousLink').addEvent('click', function () {
 		var clickedMediaID = parseInt( $('imagePreviousLink').get('data-id'), 10);
 		closeEditPopup(clickedMediaID);
@@ -443,6 +444,7 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 			editMediaByID(findFirstMediaID(clickedMediaID))
 		}
 	});
+	<?php endif; ?>
 
 	// Extend Fields
 	var mediaExtendManager<?php echo $id_media; ?> = new ION.ExtendManager({

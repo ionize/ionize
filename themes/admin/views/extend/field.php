@@ -286,12 +286,14 @@
 	});
 	display_value_block(elTypeById.value);
 
+	<?php if (!$limit_to_parent) :?>
 	// Install parent kind select observer: show article type select only for article
 	$('parent<?php echo $id_extend_field; ?>').addEvent('change', function()
 	{
 		var parent_type = $('parent<?php echo $id_extend_field; ?>').value;
 		$('dl_article_type_<?php echo $id_extend_field; ?>')[parent_type === 'article' ? 'show' : 'hide']();
 	});
+	<?php endif; ?>
 
 	// Install article type change observer: select all when none selected, update IDs value field
 	var elArticleTypeSelect = $('article_type_<?php echo $id_extend_field; ?>');
@@ -390,6 +392,7 @@
 		});
 	}
 
+	<?php if (!$limit_to_parent) :?>
 	updateArticleTypes();
-
+	<?php endif; ?>
 </script>

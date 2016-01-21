@@ -277,7 +277,7 @@ class Article extends MY_admin
 			}
 			else
 			{
-				$this->template['all_article_views'] = NULL;
+				$this->template['all_article_views'] = array();
 			}
 
 			// All articles type to template
@@ -289,7 +289,7 @@ class Article extends MY_admin
 			}
 			else
 			{
-				$this->template['all_article_types'] = NULL;
+				$this->template['all_article_types'] = array();
 			}
 			
 			// Article's all pages contexts
@@ -758,7 +758,7 @@ class Article extends MY_admin
 					}
 					else
 					{
-						$this->template['all_article_types'] = NULL;
+						$this->template['all_article_types'] = array();
 					}
 
 					$this->template['article_type_current'] = $article['id_type'];
