@@ -117,4 +117,49 @@
         PRIMARY KEY (id_content_type_group,id_extend_field)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     </query>
+
+    <query>
+        insert into content_type(name, type, view, view_single)
+        (
+            select
+                distinct '',
+                'page',
+                view,
+                view_single
+            from page
+            where
+                view is not null and view!='0' and view != ''
+        );
+    </query>
+
+    <query>
+        update content_type set name=concat('Content Type ', id_content_type);
+    </query>
+
+    <query>
+        update page, content_type
+        set page.id_content_type = content_type.id_content_type
+        where concat(page.view, page.view_single) = concat(content_type.view, content_type.view_single)
+        and page.view is not null and page.view!='0' and page.view != '';
+    </query>
+
+    <query>
+        update page set id_content_type = NULL where id_content_type=0;
+    </query>
+
+    <query>
+        alter table page drop column view;
+    </query>
+
+    <query>
+        alter table page drop column view_single;
+    </query>
+
+    <query>
+        alter table page drop column article_list_view;
+    </query>
+
+    <query>
+        alter table page drop column article_view;
+    </query>
 </sql>
