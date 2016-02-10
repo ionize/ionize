@@ -645,6 +645,17 @@ class Medias
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	public function get_base_64($media=array())
+	{
+		$handle = fopen($media['src'], "rb");
+		$data = stream_get_contents($handle);
+		return 'data:' . $media['mime'] . ';base64,' . base64_encode($data);
+	}
+
+
 	//-------------------------------------------------------------------------
 
 

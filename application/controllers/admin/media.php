@@ -200,27 +200,13 @@ class Media extends MY_admin
 
 		$items = $this->media_model->get_list($parent, $id_parent);
 
-		if (empty($items))
-		{
-			$this->notice(lang('ionize_message_no_medias'));
-		}
-		else
-		{
-			// Basic template vars
-			$this->template['parent'] = $parent;
-			$this->template['id_parent'] = $id_parent;
+		$result = array(
+			'parent' => $parent,
+			'id_parent' => $id_parent,
+			'items' => $items
+		);
 
-			$this->template['file_path'] = Settings::get('files_path').'/';
-			$this->template['thumb_base_url'] = base_url().$this->template['file_path'].'.thumbs/';
-			$this->template['thumb_size'] = (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : '120';
-
-			$this->template['items'] = $items;
-
-			$view = $this->load->view('media/list', $this->template, TRUE);
-			$output_data = array('content' => $view);
-
-			$this->success(NULL, $output_data);
-		}
+		$this->xhr_output($result);
 	}
 
 
@@ -957,35 +943,47 @@ class Media extends MY_admin
 	/**
 	 * @param	int		$id_media
 	 */
-	public function get_thumb($id_media)
+	public function get_thumb($id_media, $size=120)
 	{
 		// Pictures data from database
 		$picture = $id_media ? $this->media_model->get($id_media) : FALSE;
+
+		$size = is_null($size) ? (Settings::get('media_thumb_size') != '' ? Settings::get('media_thumb_size') : 120) : $size;
 
 		// Path to the picture
 		if ($picture && file_exists($picture_path = DOCPATH.$picture['path']))
 		{
 			$thumb_path = DOCPATH . Settings::get('files_path'). str_replace(Settings::get('files_path').'/', '/.thumbs/', $picture['base_path']);
-			
-			$return_thumb_path = $thumb_path.$picture['file_name'];
+			$extension = pathinfo($picture_path, PATHINFO_EXTENSION);
 
-			// If no thumb, try to create it
-			if ( ! file_exists($thumb_path.$picture['file_name']))
+			if ($extension != 'svg')
 			{
-				$settings = array(
-					'size' => (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120,
-					'unsharpmask' => false
-				);
-				
-				try
+				$return_thumb_path = $thumb_path.$picture['file_name'];
+
+				// If no thumb, try to create it
+				if ( ! file_exists($thumb_path.$picture['file_name']))
 				{
-					$return_thumb_path = $this->medias->create_thumb(DOCPATH . $picture['path'], $thumb_path.$picture['file_name'], $settings);
-				}
-				catch(Exception $e)
-				{
-					$return_thumb_path = FCPATH.'themes/'.Settings::get('theme_admin').'/styles/'.Settings::get('backend_ui_style').'/images/icon_48_no_folder_rights.png';
+					$settings = array(
+						'size' => $size,
+						'unsharpmask' => false
+					);
+
+					try
+					{
+						$return_thumb_path = $this->medias->create_thumb(DOCPATH . $picture['path'], $thumb_path.$picture['file_name'], $settings);
+					}
+					catch(Exception $e)
+					{
+						$return_thumb_path = FCPATH.'themes/'.Settings::get('theme_admin').'/styles/'.Settings::get('backend_ui_style').'/images/icon_48_no_folder_rights.png';
+					}
 				}
 			}
+			// SVG files
+			else
+			{
+				$return_thumb_path = $picture_path;
+			}
+
 			$mime = get_mime_by_extension($return_thumb_path);
 			$content = read_file($return_thumb_path);
 			self::push_thumb($content, $mime, 0);
@@ -1109,10 +1107,10 @@ class Media extends MY_admin
 		}
 
 		// Vimeo
-		if ( in_array($base_path, array('http://vimeo.com/', 'http://player.vimeo.com/video/')))
+		if ( in_array($base_path, array('https://vimeo.com/', 'https://player.vimeo.com/video/')))
 		{
 			$service = array(
-				'path' => 'http://player.vimeo.com/video/' . $file_name,
+				'path' => 'https://player.vimeo.com/video/' . $file_name,
 				'provider' => 'vimeo'
 			);
 			return $service;

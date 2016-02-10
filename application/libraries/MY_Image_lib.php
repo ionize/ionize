@@ -88,7 +88,12 @@ class MY_Image_lib extends CI_Image_lib {
 			return false;
 		}
 
-		//  Create the image handle
+		// Create the image handle
+		// To avoid error with truncated JPEG files, we could add this :
+		// ini_set("gd.jpeg_ignore_warning", 1);
+		// and silently call @$this->image_create_gd()
+		// The thumb will then be created.
+		// But we prefer let the error, so the user see that there is a problem with its picture
 		if ( ! ($src_img = $this->image_create_gd()))
 		{
 			// $this->set_error('imglib_image_process_failed');
@@ -140,6 +145,10 @@ class MY_Image_lib extends CI_Image_lib {
 			// Or save it
 			if ( ! $this->image_save_gd($dst_img))
 			{
+				//  Kill the file handles
+				imagedestroy($dst_img);
+				imagedestroy($src_img);
+
 				return FALSE;
 			}
 		}

@@ -104,3 +104,7 @@ window.addEvent('load', function()
 //	document.addEvent('click', function(){$$('.btn-group').removeClass('open')});
 
 });
+
+window.onbeforeunload = function () {
+	return "This session is expired and the history altered.";
+};

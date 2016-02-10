@@ -4,10 +4,12 @@
  * Used by article's option panel
  *
  */
+?>
 
-echo $categories; ?>
+<?php echo $categories; ?>
 
 <script type="text/javascript">
+
 	// Categories
 	var el_categories = $('categories');
 	var categoriesSelect = el_categories.getFirst('select');
@@ -27,4 +29,5 @@ echo $categories; ?>
 			'height': (nbCategories * 15) + 'px'
 		});
 	}
+
 </script>

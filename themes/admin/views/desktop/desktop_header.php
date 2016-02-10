@@ -9,6 +9,7 @@
 				<?php echo strtoupper(ENVIRONMENT); ?>
 			</span>
 	</div>
+
 <?php endif; ?>
 
 <a id="logoAnchor" class="navlink" href="dashboard"></a>
@@ -17,7 +18,7 @@
 		<h1 class="applicationTitle">ionize <?php echo($this->config->item('version')) ;?></h1>
 		<div class="topNav">
 			<ul class="menu-right">
-				<li><?php echo lang('ionize_logged_as'); ?>: <?php echo User()->get('screen_name'); ?> (<?php echo User()->get('role_name'); ?>)</li>
+				<li><?php echo lang('ionize_logged_as'); ?> : <?php echo User()->get('screen_name'); ?> (<?php echo User()->get('role_name'); ?>)</li>
 				<li><a href="<?php echo base_url(); ?>" target="_blank"><?php echo lang('ionize_website'); ?></a></li>
 				<li><a href="<?php echo base_url().Settings::get_lang('current').'/'.config_item('admin_url'); ?>/auth/logout"><?php echo lang('ionize_logout'); ?></a></li>
 				<li>
@@ -31,7 +32,9 @@
 </div>
 
 <div id="desktopNav" class="desktopNav">
+
 	<div class="toolMenu left">
+
 		<ul>
 			<li><a class="navlink" href="dashboard" title="<?php echo lang('ionize_title_welcome'); ?>"><?php echo lang('ionize_menu_dashboard'); ?></a></li>
 			<li><a class="returnFalse"><?php echo lang('ionize_menu_content'); ?></a>
@@ -68,6 +71,10 @@
 						<li><a id="mediamanagerlink" href="media/get_media_manager" title="<?php echo lang('ionize_menu_media_manager'); ?>"><?php echo lang('ionize_menu_media_manager'); ?></a></li>
 					<?php endif ;?>
 
+					<?php if(Authority::can('access', 'admin/content/type')) :?>
+						<li class="divider"><a class="jnavlink" data-object="contentTypeManager" data-class="ContentTypeManager" title="<?php echo lang('ionize_menu_contenttypes'); ?>"><?php echo lang('ionize_menu_contenttypes'); ?></a></li>
+					<?php endif ;?>
+
 					<?php if(Authority::can('access', 'admin/article/type')) :?>
 						<li class="divider"><a class="navlink" href="article_type/index" title="<?php echo lang('ionize_menu_types'); ?>"><?php echo lang('ionize_menu_types'); ?></a></li>
 					<?php endif ;?>
@@ -97,7 +104,17 @@
 								&& $module['has_admin']
 							)
 							:?>
-								<li><a class="navlink" id="<?php echo $module['uri']; ?>ModuleLink" href="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" title="<?php echo $module['name']; ?>"><?php echo $module['name']; ?></a></li>
+								<?php
+
+								// Old way
+								$data = 'data-url="module/' . $module['uri'] .'/' . $module['uri'] . '/index"';
+
+								// New way : JS class (config.php : 'js_main_class' => 'MYCLASS')
+								if (isset($module['js_main_class']))
+									$data = 'data-class="'.$module['js_main_class'].'"';
+								?>
+
+								<li><a class="navlink" <?php echo $data ?> id="<?php echo $module['uri']; ?>ModuleLink" href="module/<?php echo $module['uri']; ?>/<?php echo $module['uri']; ?>/index" title="<?php echo $module['name']; ?>"><?php echo $module['name']; ?></a></li>
 							<?php endif ;?>
 
 						<?php endforeach ;?>
@@ -170,16 +187,51 @@
 	// Init of all main menu links
 	$$('.navlink').each(function(item)
 	{
-		item.addEvent('click', function(event)
-		{
-			event.preventDefault();
+		var className = item.getProperty('data-class');
 
-			ION.contentUpdate({
-            	element : 'mainPanel',
-                url: this.getProperty('href'),
-				title: this.getProperty('title')
+		// New way
+		if (className)
+		{
+			var obj = ION.registry(className);
+
+			if ( ! obj)
+			{
+				eval("var exist = typeOf(" + className + ")");
+				if (exist != 'null') {
+					eval("obj = " + className + ";");
+					ION.register(className, obj);
+				}
+			}
+
+			if (typeOf(obj) != 'null' && typeOf(obj.getMainPanel) == 'function')
+			{
+				item.addEvent('click', function(e)
+				{
+					e.stop();
+					MUI.Windows.closeAll();
+					obj.getMainPanel();
+				});
+			}
+			else
+			{
+				console.log('ERROR in desktop_header.php : ' + className + ' has no getMainPanel() method.');
+			}
+		}
+		else
+		{
+			item.addEvent('click', function(event)
+			{
+				event.preventDefault();
+
+				MUI.Windows.closeAll();
+
+				ION.contentUpdate({
+					element : 'mainPanel',
+					url: this.getProperty('href'),
+					title: this.getProperty('title')
+				});
 			});
-		});
+		}
 	});
 
 	// Init of new pure JS menu links
@@ -238,3 +290,4 @@
 	});
 	
 </script>
+

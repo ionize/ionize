@@ -111,7 +111,8 @@ class Article extends MY_admin
                 'extend_field_model',
                 'url_model',
                 'resource_model',
-                'rule_model'
+                'rule_model',
+                'content_type_model'
             ), '', TRUE);
 
 		$this->load->library('structure');
@@ -350,7 +351,19 @@ class Article extends MY_admin
 		
 		// All other pages articles
 		$this->template['articles'] = $this->article_model->get_lang_list(array('id_page'=>$id_page), Settings::get_lang('default'));
-		
+
+		// Content Types
+		$types = $this->content_type_model->get_select('article');
+		if (count($types) > 1)
+		{
+			$this->template['content_types'] = form_dropdown(
+				'id_content_type',
+				$types,
+				$this->template['id_content_type'],
+				'class="select"'
+			);
+		}
+
 		// Dropdown menus
 		$data = $this->menu_model->get_select();
 		$this->template['menus'] =	form_dropdown('id_menu', $data, $page['id_menu'], 'id="id_menu" class="select"');
@@ -761,7 +774,20 @@ class Article extends MY_admin
 						$this->template['all_article_types'] = NULL;
 					}
 
-					$this->template['article_type_current'] = $article['id_type'];
+/*					$this->template['article_type_current'] = $article['id_type'];*/
+
+					// Content Types
+					$types = $this->content_type_model->get_select('article');
+					if (count($types) > 1)
+					{
+						$this->template['content_types'] = form_dropdown(
+							'id_content_type',
+							$types,
+							$this->template['id_content_type'],
+							'class="select"'
+						);
+					}
+
 
 					// Linked pages list
 					$this->template['pages_list'] = $this->article_model->get_pages_list($id_article);

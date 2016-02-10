@@ -69,6 +69,9 @@ ION.StaticItemManager = new Class({
 	{
 		var self = this;
 
+		// Close all windows
+		MUI.Windows.closeAll();
+
 		// Empty toolbox
 		ION.getToolbox();
 
@@ -624,8 +627,8 @@ ION.StaticItemManager = new Class({
 					url: ION.adminUrl + 'item/save_ordering'
 				},
 				elements:[
-					{element: 'span', 'class': 'icon drag left ml5'}, // Sort
-					// {element: 'span', 'class': 'lite drag left', text: 'id_item'}, // Item ID
+					{element: 'span', 'class': 'icon drag left'},                          // Sort
+					// {element: 'span', 'class': 'lite drag left', text: 'id_item'},    // Item ID
 					// Edit
 
 					{
@@ -640,7 +643,7 @@ ION.StaticItemManager = new Class({
 					// Delete
 					{
 						element: 'a',
-						'class': 'icon delete right mr10',
+						'class': 'icon delete right absolute mr10',
 						onClick: function(item)
 						{
 							self.deleteItem(item);
@@ -660,21 +663,19 @@ ION.StaticItemManager = new Class({
 									if (f.translated == 1) {
 										var w = 100 / Object.getLength(f.lang_data);
 
-										var outerdiv = new Element('div', {'class': 'ml60 mr30'}).inject(container);
-
 										// Each lang div
 										Object.each(f.lang_data, function (data, lang_code) {
-											var div = new Element('div', {'class': 'left'}).inject(outerdiv);
+											var div = new Element('div', {'class': 'left'}).inject(container);
 											div.setStyle('width', w + '%');
 
 											var divImg = new Element('div', {'class': 'left w20'}).inject(div);
-											var img = new Element('img', {'class': 'mt3 mb3'}).inject(divImg);
+											var img = new Element('img', {'class': 'mt3'}).inject(divImg);
 											img.setProperty('src', ION.themeUrl + 'styles/original/images/world_flags/flag_' + lang_code + '.gif');
 
-											var content = data.content.length > 20 ? data.content.substring(0, 35) + '...' : data.content;
+											var content = data.content.length > 20 ? data.content.substring(0, 25) + '...' : data.content;
 
 											new Element('div', {
-												'class': 'ml30',
+												'class': '',
 												text: content
 											}).inject(div);
 										})
@@ -682,7 +683,7 @@ ION.StaticItemManager = new Class({
 									else {
 										var content = f.content.split("\n");
 										content = content[0];
-										content = content.length > 20 ? content.substring(0, 30) + '...' : content;
+										content = content.length > 20 ? content.substring(0, 20) + '...' : content;
 										var a = new Element('a', {text: content});
 										a.addEvent('click', function(){
 											self.editItem(item.id_item);
@@ -1011,6 +1012,26 @@ ION.StaticItemManager = new Class({
 					var tw = new Element('div', {
 						'class':'element element-items'
 					}).inject(self.wContainer, 'bottom');
+
+					// Button New instance
+					var buttonContainer = new Element('div', {class:'h30'}).inject(tw);
+
+					new ION.Button({
+						container: buttonContainer,
+						title: Lang.get('ionize_label_item_add_item'),
+						'class': 'light right',
+						icon: 'icon-plus',
+						onClick: function()
+						{
+							self.getDefinition({
+								id_definition: definition.id_item_definition,
+								onSuccess: function()
+								{
+									self.createItem();
+								}
+							});
+						}
+					});
 
 					// UL
 					var ul = new Element('ul', {

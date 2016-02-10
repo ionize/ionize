@@ -47,21 +47,33 @@
 
 			<?php endif ;?>
 
+			<!-- Content Types -->
+			<?php if (isset($content_types)) :?>
+				<dl class="small">
+					<dt>
+						<label for="id_content_type"><?php echo lang('ionize_label_content_type'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $content_types; ?>
+					</dd>
+				</dl>
+			<?php endif ;?>
+
 
 			<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
-				<dl class="small compact">
+				<dl class="not-editable small compact">
 					<dt><label><?php echo lang('ionize_label_date'); ?></label></dt>
 					<dd><?php echo humanize_mdate($logical_date, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($logical_date, '%H:%i:%s'); ?></span></dd>
 				</dl>
 			<?php endif ;?>
 
-			<dl class="compact small">
+			<dl class="not-editable compact small">
 				<dt><label><?php echo lang('ionize_label_created'); ?></label></dt>
 				<dd><?php echo humanize_mdate($created, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($created, '%H:%i:%s'); ?></span></dd>
 			</dl>
 
 			<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
-				<dl class="compact small">
+				<dl class="not-editable compact small">
 					<dt><label><?php echo lang('ionize_label_updated'); ?></label></dt>
 					<dd><?php echo humanize_mdate($updated, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($updated, '%H:%i:%s'); ?></span></dd>
 				</dl>
@@ -83,8 +95,8 @@
 		<?php endif ;?>
 
 		<!-- Options -->
-		<h3 class="toggler"><?php echo lang('ionize_title_attributes'); ?></h3>
-		<div class="element">
+		<h3 class="toggler toggler-page-options"><?php echo lang('ionize_title_attributes'); ?></h3>
+		<div class="element-page-options">
 
 			<!-- Existing page -->
 			<?php if ($id_page != '') :?>
@@ -92,7 +104,7 @@
 				<!-- Appears as menu item in menu ? -->
 				<dl class="small">
 					<dt>
-						<label for="appears" class="nowrap" title="<?php echo lang('ionize_help_appears'); ?>"><?php echo lang('ionize_label_appears'); ?></label>
+						<label for="appears" title="<?php echo lang('ionize_help_appears'); ?>"><?php echo lang('ionize_label_appears'); ?></label>
 					</dt>
 					<dd>
 						<input id="appears" name="appears" type="checkbox" class="inputcheckbox" <?php if ($appears == 1):?> checked="checked" <?php endif;?> value="1" />
@@ -111,19 +123,10 @@
 				</dd>
 			</dl>
 
-			<!-- Type of page -->
-			<?php if ( ! empty($types)) :?>
-				<dl class="small">
-					<dt>
-						<label for="id_type" title="<?php echo lang('ionize_help_page_type'); ?>"><?php echo lang('ionize_label_type'); ?></label>
-					</dt>
-					<dd>
-						<?php echo $types; ?>
-					</dd>
-				</dl>
-			<?php endif ;?>
 
 			<!-- Page view -->
+			<?php
+			/*
 			<?php if ($id_page !='' && isset($views)) :?>
 				<dl class="small">
 					<dt>
@@ -170,6 +173,8 @@
 					</dd>
 				</dl>
 			<?php endif ;?>
+			*/
+			?>
 
 			<!-- Categories & Tags -->
 			<div class="element-options-content">
@@ -197,8 +202,8 @@
 		<!-- Parent -->
 		<?php if ($id_page != '') :?>
 
-			<h3 class="toggler"><?php echo lang('ionize_title_page_parent'); ?></h3>
-			<div class="element">
+			<h3 class="toggler toggler-page-options"><?php echo lang('ionize_title_page_parent'); ?></h3>
+			<div class="element-page-options">
 
 				<!-- Menu -->
 				<dl class="small">
@@ -225,8 +230,8 @@
 		<?php endif ;?>
 
 		<!-- Dates -->
-		<h3 class="toggler"><?php echo lang('ionize_title_dates'); ?></h3>
-		<div class="element">
+		<h3 class="toggler toggler-page-options"><?php echo lang('ionize_title_dates'); ?></h3>
+		<div class="element-page-options">
 			<dl class="small">
 				<dt>
 					<label for="logical_date"><?php echo lang('ionize_label_date'); ?></label>
@@ -259,12 +264,12 @@
 
 		<!-- Permissions -->
 		<?php if(Authority::can('access', 'admin/page/permissions')) :?>
-			<h3 class="toggler"><?php echo lang('ionize_title_permissions'); ?>
+			<h3 class="toggler toggler-page-options"><?php echo lang('ionize_title_permissions'); ?>
 				<?php if ( ! empty($frontend_role_ids) OR ! empty($backend_role_ids)) : ?>
 					<a class="icon protected right mr5" ></a>
 				<?php endif ;?>
 			</h3>
-			<div class="element">
+			<div class="element-page-options">
 
 				<?php if(Authority::can('access', 'admin/page/permissions/frontend')) :?>
 					<?php if ( ! empty($frontend_roles_resources)): ?>
@@ -308,8 +313,8 @@
 		<?php endif ;?>
 
 		<!-- SEO -->
-		<h3 class="toggler"><?php echo lang('ionize_title_seo'); ?></h3>
-		<div class="element">
+		<h3 class="toggler toggler-page-options"><?php echo lang('ionize_title_seo'); ?></h3>
+		<div class="element-page-options">
 
 			<!-- Priority -->
 			<dl class="small">
@@ -368,8 +373,8 @@
 		</div>
 
 		<!-- Advanced Options -->
-		<h3 class="toggler"><?php echo lang('ionize_title_advanced'); ?></h3>
-		<div class="element">
+		<h3 class="toggler toggler-page-options"><?php echo lang('ionize_title_advanced'); ?></h3>
+		<div class="element-page-options">
 
 			<!-- Home page -->
 			<dl class="small">
@@ -400,23 +405,11 @@
 					<input id="pagination" name="pagination" type="text" class="inputtext w40" value="<?php echo $pagination; ?>" />
 				</dd>
 			</dl>
-
-			<!-- Default Article Order
-			<dl class="small last">
-				<dt>
-					<label for="drop_article_order" title="<?php echo lang('ionize_help_drop_article_order'); ?>"><?php echo lang('ionize_label_drop_article_order'); ?></label>
-				</dt>
-				<dd>
-					<input id="drop_article_order" name="drop_article_order" type="text" class="inputtext w40" value="<?php echo ''; ?>" />
-				</dd>
-			</dl>
-			-->
-
 		</div>
 
 		<!-- Operations on Page -->
-		<h3 class="toggler"><?php echo lang('ionize_title_operation'); ?></h3>
-		<div class="element">
+		<h3 class="toggler toggler-page-options"><?php echo lang('ionize_title_operation'); ?></h3>
+		<div class="element-page-options">
 
 			<!-- Copy Content -->
 			<dl class="small">
@@ -633,14 +626,14 @@
 	frontRoleCheck();
 
 	// Options Accordion
-	ION.initAccordion('.toggler', 'div.element', true, 'pageAccordion');
+	ION.initAccordion('.toggler-page-options', 'div.element-page-options', true, 'pageAccordion');
 
 	// Droppables init
 	ION.initDroppable();
 
 	// Calendars
 	ION.initDatepicker('<?php echo Settings::get('date_format'); ?>');
-	ION.initClearField('#pageOptionsForm');
+	ION.initClearField('pageOptionsForm');
 
 	// Current & parent page ID
 	var el_id_page = $('id_page');

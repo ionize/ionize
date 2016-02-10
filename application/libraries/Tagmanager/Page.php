@@ -122,7 +122,7 @@ class TagManager_Page extends TagManager
 		{
 			$article = self::$ci->article_model->get_by_id($entity['id_entity'], Settings::get_lang());
 			$articles = array($article);
-			TagManager_Article::init_articles_urls($articles);
+			$articles = self::$ci->article_model->init_articles_urls($articles);
 			$article = $articles[0];
 		}
 
@@ -204,8 +204,15 @@ class TagManager_Page extends TagManager
 		}
 		if (is_null($page) OR empty($page))
 		{
-			$page = self::get_page_by_code('404');
-			self::set_400_output(404);
+			$page = Event::fire('Page.get.404', $uri);
+
+			if ( ! empty($page) && ! empty($page[0]))
+				$page = $page[0];
+			else
+			{
+				$page = self::get_page_by_code('404');
+				self::set_400_output(404);
+			}
 		}
 		else
 		{
@@ -767,7 +774,12 @@ class TagManager_Page extends TagManager
 			else if(substr($parent, 0, 1) == '-')
 				$parent_page = self::get_relative_parent_page(self::registry('page'), $parent, $display_hidden);
 			else if($parent == 'this')
-				$parent_page = self::registry('page');
+			{
+				if ($tag->get('page'))
+					$parent_page = $tag->get('page');
+				else
+					$parent_page = self::registry('page');
+			}
 			else
 				$parent_page = self::get_page_by_code($parent);
 		}

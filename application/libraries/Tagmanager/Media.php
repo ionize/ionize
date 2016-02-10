@@ -277,7 +277,6 @@ class TagManager_Media extends TagManager
 				$where['type'] = $type;
 			}
 		}
-		// if ( ! is_null($type)) $where['type'] = 'picture';
 
 		if ( $limit ) $where['limit'] = $limit;
 
@@ -386,7 +385,7 @@ class TagManager_Media extends TagManager
 				if ($media['provider'] !='')
 					$src = $media['path'];
 				else
-				$src = base_url() . $media['path'];
+					$src = base_url() . $media['path'];
 
 				if ($media['type'] === 'picture')
 				{
@@ -432,6 +431,8 @@ class TagManager_Media extends TagManager
 	public static function tag_media_src(FTL_Binding $tag)
 	{
 		$media = $tag->get('media');
+		$base_64 = $tag->getAttribute('base_64');
+		$src = '';
 
 		if ( ! empty($media))
 		{
@@ -440,11 +441,21 @@ class TagManager_Media extends TagManager
 				$settings = self::get_src_settings($tag);
 
 				if (empty($settings['size']))
-					return base_url() . $media['path'];
+				{
+					$src = base_url() . $media['path'];
+				}
+				else
+				{
+					self::$ci->load->library('medias');
+					$src = self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
+				}
 
-				self::$ci->load->library('medias');
-				
-				return self::$ci->medias->get_src($media, $settings, Settings::get('no_source_picture'));
+				if ( ! is_null($base_64))
+				{
+					$src = self::$ci->medias->get_base_64($media);
+				}
+
+				return $src;
 			}
 
 			if ($media['provider'] !='')

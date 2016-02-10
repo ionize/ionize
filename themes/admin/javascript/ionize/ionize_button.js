@@ -276,6 +276,11 @@ ION.Button = new Class({
 			});
 	},
 
+	click: function()
+	{
+		this.fireEvent('click', [this, this.button]);
+	},
+
 	addListElements: function(elements)
 	{
 		var ul = this.btnGroup.getElement('ul.dropdown-menu');

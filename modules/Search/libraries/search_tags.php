@@ -35,6 +35,7 @@ class Search_Tags extends TagManager
 		'search:results' => 			'tag_search_results',
 		'search:realm' =>				'tag_simple_value',
 		'search:results:result' => 		'tag_expand',
+		'search:results:result:page_title' => 		'tag_page_title',
 		'search:results:count' => 		'tag_search_results_count',
 
 		// title, subtitle are common tags, set by TagManager.
@@ -86,9 +87,14 @@ class Search_Tags extends TagManager
 		// $tag->locals->result_page = $searchForm_action;
 		
 		$tag->expand();
-			
+
+		$theme_view = FCPATH . Theme::get_theme_path() . 'views/search/form.php';
+
+		if (is_file($theme_view))
+			return $tag->parse_as_nested(file_get_contents($theme_view));
+
 		// the tag returns the content of this view :
-		return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search_form'.EXT));
+		return $tag->parse_as_nested(file_get_contents(MODPATH.'Search/views/search/form.php'));
 	}
 
 	
@@ -171,7 +177,7 @@ class Search_Tags extends TagManager
 				}
 
 				// Init the articles URLs
-				TagManager_Article::init_articles_urls($articles);
+				$articles = self::$ci->article_model->init_articles_urls($articles);
 
 				// Adds the page URL to each article
 				self::init_pages_urls($articles);
@@ -184,7 +190,6 @@ class Search_Tags extends TagManager
 
 			$tag->set('count', $count);
 			$tag->set('results', self::$_articles);
-
 
 			foreach(self::$_articles as $key => $_article)
 			{
@@ -210,6 +215,19 @@ class Search_Tags extends TagManager
 			$str .= $tag->expand();
 
 		return $str;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function tag_page_title(FTL_Binding $tag)
+	{
+		$result = $tag->get('result');
+
+		$str = !empty($result['page_title']) ? $result['page_title'] : '';
+
+		return self::output_value($tag, $str);
 	}
 
 

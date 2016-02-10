@@ -43,6 +43,15 @@ h3.treetitle {
 	overflow: hidden;
 	position: relative;
 }
+.tree label,
+.panel dd .tree label{
+	min-height: 0;
+	line-height: normal;
+}
+dd .tree input[type="checkbox"]{
+	margin-top:0;
+}
+
 .tree ul {
 	margin: 0;
 	display:block;
@@ -304,3 +313,4 @@ h3.treetitle .locked:after{
 #maincolumn .tree {
 	margin: 0;
 }
+

@@ -85,6 +85,7 @@ var DatePicker = new Class({
 		}
 		this.formatMinMaxDates();
 		document.addEvent('mousedown', this.close.bind(this));
+		return this;
 	},
 	
 	formatMinMaxDates: function() {

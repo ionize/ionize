@@ -24,7 +24,7 @@ var Autocompleter = new Class({
 		onFocus: $empty,*/
 		minLength: 1,
 		markQuery: true,
-		width: 'inherit',
+		width: 'auto',
 		maxChoices: 10,
 		injectChoice: null,
 		customChoices: null,
@@ -334,7 +334,7 @@ var Autocompleter = new Class({
 	 */
 	markQueryValue: function(str) {
 		return (!this.options.markQuery || !this.queryValue) ? str
-			: str.replace(new RegExp('(' + ((this.options.filterSubset) ? '' : '^') + this.queryValue.escapeRegExp() + ')', (this.options.filterCase) ? '' : 'i'), '<span class="autocompleter-queried">$1</span>');
+			: str.replace(new RegExp('(' + ((this.options.filterSubset) ? '' : '^') + this.queryValue.escapeRegExp() + ')', (this.options.filterCase) ? '' : 'ig'), '<span class="autocompleter-queried">$1</span>');
 	},
 
 	/**

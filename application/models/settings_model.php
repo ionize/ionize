@@ -31,7 +31,7 @@ class Settings_Model extends Base_model
 		$this->set_table('setting');
 		$this->set_pk_name('id_setting');
 		
-		$this->load->helper('path_helper');
+		self::$ci->load->helper('path_helper');
 	}
 
 
@@ -60,7 +60,7 @@ class Settings_Model extends Base_model
 	 *
 	 * @return mixed
 	 */
-	function get_setting($name, $lang=NULL)
+	public function get_setting($name, $lang=NULL)
 	{
 		$this->{$this->db_group}->where('name', $name);
 
@@ -96,7 +96,7 @@ class Settings_Model extends Base_model
 	 *
 	 * @return	The settings array
 	 */
-	function get_settings()
+	public function get_settings()
 	{
 		$this->{$this->db_group}->where("(lang is null or lang='')");
 		$query = $this->{$this->db_group}->get($this->table);
@@ -117,7 +117,7 @@ class Settings_Model extends Base_model
 	 *
 	 * @return	The settings array
 	 */
-	function get_lang_settings($lang)
+	public function get_lang_settings($lang)
 	{
 		$this->{$this->db_group}->where('lang', $lang);
 		$query = $this->{$this->db_group}->get($this->table);
@@ -135,7 +135,7 @@ class Settings_Model extends Base_model
 	 * @return	array	Array of lang code
 	 *
 	 */
-	function get_admin_langs()
+	public function get_admin_langs()
 	{
 		$path = set_realpath(APPPATH.'language/');
 		$lang_dirs = array();
@@ -161,7 +161,7 @@ class Settings_Model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	function set_setting($name, $content, $lang=NULL)
+	public function set_setting($name, $content, $lang=NULL)
 	{
 		// Check the setting
 		$this->{$this->db_group}->from($this->table);
@@ -198,7 +198,7 @@ class Settings_Model extends Base_model
 	 * @param $data
 	 *
 	 */
-	function save_setting($data)
+	public function save_setting($data)
 	{
 		// Check the setting
 		$this->{$this->db_group}->from($this->table);
@@ -226,13 +226,21 @@ class Settings_Model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function delete_by_name($name)
+	{
+		$this->{$this->db_group}->delete($this->table, array('name' => $name));
+	}
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Updates the media table
 	 * Replaces the old path by the new one in columns "path" and "base_path"
 	 * @param $old_path
 	 * @param $new_path
 	 */
-	function update_media_path($old_path, $new_path)
+	public function update_media_path($old_path, $new_path)
 	{
 		// Example of query :
 		// update media set path = replace(path, 'files/', 'files_new_folder/');
@@ -261,7 +269,7 @@ class Settings_Model extends Base_model
 	 *
 	 * @return	Int	number of rows deleted
 	 */
-	function clean_lang_settings()
+	public function clean_lang_settings()
 	{
 		// Get the existing languages
 		$languages = Settings::get_languages();

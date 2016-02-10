@@ -127,6 +127,21 @@ class Role extends MY_Admin
 
 	// ------------------------------------------------------------------------
 
+	/**
+	 * List
+	 *
+	 */
+	public function get_list2()
+	{
+		$roles = $this->role_model->get_list();
+		$roles = array_values(array_filter($roles, array($this, '_filter_roles')));
+
+		$this->xhr_output($roles);
+	}
+
+
+	// ------------------------------------------------------------------------
+
 
 	/**
 	 * Save

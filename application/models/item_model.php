@@ -304,6 +304,26 @@ class Item_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function get_list_from_definition_code($definition_code, $lang=NULL)
+	{
+		self::$ci->load->model('item_definition_model');
+
+		$lang = is_null($lang) ? Settings::get_lang() : $lang;
+
+		$definition = self::$ci->item_definition_model->get_row_array(array('name' => $definition_code));
+
+		if ( ! empty($definition))
+		{
+			return $this->get_list_from_definition($definition['id_item_definition'], $lang);
+		}
+
+		return NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Get item definitions with nested fields
 	 *

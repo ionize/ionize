@@ -23,12 +23,12 @@ switch ($_SERVER['HTTP_HOST'])
 {
 	case 'localhost':
 	case '127.0.0.1':
-		define('ENVIRONMENT','development');
+		define('ENVIRONMENT','local');
 		break;
 
 	case "x.x.x.x":
 	case "your.dev.server.tld":
-		define('ENVIRONMENT','testing');
+		define('ENVIRONMENT','development');
 		break;
 
 	case "y.y.y.y":
@@ -39,11 +39,20 @@ switch ($_SERVER['HTTP_HOST'])
 		define('ENVIRONMENT','production');
 }
 */
-define('ENVIRONMENT','development');
+define('ENVIRONMENT','local');
+
+/*
+ *---------------------------------------------------------------
+ * TIMEZONE
+ *---------------------------------------------------------------
+ *
+ * By default, gentle with the php.ini
+ * If the app needs it, uncomment the not gentle version
+ */
 
 if( ! ini_get('date.timezone') )
 {
-	date_default_timezone_set('GMT');
+	if ( ! date_default_timezone_set('GMT')) date_default_timezone_set('UTC');
 }
 
 /*
@@ -59,6 +68,7 @@ if (defined('ENVIRONMENT'))
 {
 	switch (ENVIRONMENT)
 	{
+		case 'local':
 		case 'development':
 		case 'testing':
 			error_reporting(E_ALL);

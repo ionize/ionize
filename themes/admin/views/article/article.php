@@ -48,7 +48,7 @@ if ($tracker_title == '')
 						</a>
 
 						<?php if( ! empty($breadcrump)) :?>
-							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?>: </span><?php echo$breadcrump?>
+							| <span class="lite"><?php echo lang('ionize_label_article_context_edition'); ?> : </span><?php echo$breadcrump?>
 						<?php endif ;?>
 					</p>
 				</div>
@@ -61,7 +61,7 @@ if ($tracker_title == '')
 				<input type="hidden" name="id_page" id="id_page" value="<?php echo $id_page; ?>" />
 
 				<!-- Where is the article ? -->
-				<dl>
+				<dl class="not-editable">
 					<dt><label><?php echo lang('ionize_label_article_in'); ?></label></dt>
 					<dd class="lite"><?php echo $menu; ?>
 						<?php foreach ($breadcrumbs as $breadcrumb) :?>
@@ -70,13 +70,27 @@ if ($tracker_title == '')
 					</dd>
 				</dl>
 
+
+				<!-- Content Types -->
+				<?php if (isset($content_types)) :?>
+					<dl>
+						<dt>
+							<label for="id_content_type"><?php echo lang('ionize_label_type'); ?></label>
+						</dt>
+						<dd>
+							<?php echo $content_types; ?>
+						</dd>
+					</dl>
+				<?php endif ;?>
+
+
 				<!-- Ordering -->
 				<dl>
-					<dt >
+					<dt>
 						<label for="ordering_select"><?php echo lang('ionize_label_ordering'); ?></label>
 					</dt>
 					<dd>
-						<select name="ordering_select" id="ordering_select" class="select">
+						<select name="ordering_select" id="ordering_select" class="select left ">
 							<?php if($id_article) :?>
 								<option value="<?php echo $ordering; ?>"><?php echo $ordering; ?></option>
 							<?php endif ;?>
@@ -84,12 +98,10 @@ if ($tracker_title == '')
 							<option value="last"><?php echo lang('ionize_label_ordering_last'); ?></option>
 							<option id="ordering_select_after" value="after" <?php if( empty($articles)) :?>style="display:none"<?php endif ;?>><?php echo lang('ionize_label_ordering_after'); ?></option>
 						</select>
-					</dd>
-					<dd>
-						<select name="ordering_after" id="ordering_after" style="display:none;" class="select w140 mt5">
+						<select name="ordering_after"   id="ordering_after" style="display:none;" class="left select w140 ml10">
 							<?php foreach($articles as $article) :?>
 								<?php
-									$title = ($article['title'] != '') ? $article['title'] : $article['name'];
+								$title = ($article['title'] != '') ? $article['title'] : $article['name'];
 								?>
 								<option value="<?php echo $article['id_article']; ?>"><?php echo $title; ?></option>
 							<?php endforeach ;?>
@@ -144,125 +156,113 @@ if ($tracker_title == '')
 			<div id="articleTabContent">
 
 				<!-- Text block -->
-				<?php
-				foreach(Settings::get_languages() as $language) {
-					$lang = $language['lang'];
-				?>
-					<div class="tabcontent <?php echo $lang; ?>">
+				<?php foreach(Settings::get_languages() as $language) :?>
+					
+				<?php $lang = $language['lang']; ?>
 
-						<!-- Copy data -->
-						<p class="clear h25">
-							<a class="button light right copyLang"rel="<?php echo $lang; ?>" title="<?php echo lang('ionize_label_copy_to_other_languages'); ?>">
-								<i class="icon copy"></i>
-								<?php echo lang('ionize_label_copy_to_other_languages') ?>
-							</a>
-						</p>
+				<div class="tabcontent <?php echo $lang; ?>">
 
-						<div class="article-header">
+					<!-- Copy data -->
+					<p class="clear h25">
+						<a class="button light right copyLang"rel="<?php echo $lang; ?>" title="<?php echo lang('ionize_label_copy_to_other_languages'); ?>">
+							<i class="icon copy"></i>
+							<?php echo lang('ionize_label_copy_to_other_languages') ?>
+						</a>
+					</p>
 
-							<!-- Online -->
-							<?php if(count(Settings::get_languages()) > 1) { ?>
-								<dl>
-									<dt>
-										<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_content_online'); ?>"><?php echo lang('ionize_label_online'); ?></label>
-									</dt>
-									<dd>
-										<input id="online_<?php echo $lang; ?>" <?php if ($languages[$lang]['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?php echo $lang; ?>" class="inputcheckbox" type="checkbox" value="1"/>
-									</dd>
-								</dl>
-							<?php } else { ?>
-								<input id="online_<?php echo $lang; ?>" name="online_<?php echo $lang; ?>" type="hidden" value="1"/>
-							<?php } ?>
+					<div class="article-header">
 
-							<!-- title -->
-							<dl class="first">
-								<dt>
-									<label for="title_<?php echo $lang; ?>"><?php echo lang('ionize_label_title'); ?></label>
-								</dt>
-								<dd>
-									<textarea id="title_<?php echo $lang; ?>" name="title_<?php echo $lang; ?>" class="textarea title autogrow" type="text"><?php echo $languages[$lang]['title']; ?></textarea>
-								</dd>
-							</dl>
+						<!-- Online -->
+						<?php if(count(Settings::get_languages()) > 1) :?>
 
-							<!-- sub title -->
 							<dl>
 								<dt>
-									<label for="subtitle_<?php echo $lang; ?>"><?php echo lang('ionize_label_subtitle'); ?></label>
+									<label for="online_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_content_online'); ?>"><?php echo lang('ionize_label_online'); ?></label>
 								</dt>
 								<dd>
-									<textarea id="subtitle_<?php echo $lang; ?>" name="subtitle_<?php echo $lang; ?>" class="textarea text autogrow" type="text"><?php echo $languages[$lang]['subtitle']; ?></textarea>
-									<!-- <a class="icon edit subtitle"></a> -->
+									<input id="online_<?php echo $lang; ?>" <?php if ($languages[$lang]['online'] == 1):?> checked="checked" <?php endif;?> name="online_<?php echo $lang; ?>" class="inputcheckbox" type="checkbox" value="1"/>
 								</dd>
 							</dl>
 
-							<!-- URL -->
-							<dl>
-								<dt>
-									<label for="url_<?php echo $lang; ?>"><?php echo lang('ionize_label_url'); ?></label>
-								</dt>
-								<dd>
-									<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>" onblur="this.value=this.value.replace(new RegExp('\\s', 'g'), '').toLowerCase()" />
-								</dd>
-							</dl>
+						<?php else :?>
 
-							<!-- Meta Title : Browser window title -->
-							<dl>
-								<dt>
-									<label for="meta_title_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_window_title'); ?>"><?php echo lang('ionize_label_meta_title'); ?></label>
-								</dt>
-								<dd>
-									<input id="meta_title_<?php echo $lang; ?>" name="meta_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['meta_title']; ?>"/>
-								</dd>
-							</dl>
+							<input id="online_<?php echo $lang; ?>" name="online_<?php echo $lang; ?>" type="hidden" value="1"/>
 
-						</div>
+						<?php endif ;?>
 
-						<!-- Text -->
-						<h3 class="toggler-<?php echo $lang; ?> article-header"><?php echo lang('ionize_label_text'); ?></h3>
+						<!-- title -->
+						<dl class="first">
+							<dt>
+								<label for="title_<?php echo $lang; ?>"><?php echo lang('ionize_label_title'); ?></label>
+							</dt>
+							<dd>
+								<textarea id="title_<?php echo $lang; ?>" name="title_<?php echo $lang; ?>" class="textarea title autogrow" type="text"><?php echo $languages[$lang]['title']; ?></textarea>
+							</dd>
+						</dl>
 
-						<div class="element-<?php echo $lang; ?> mb40">
-							<div>
-								<textarea id="content_<?php echo $lang; ?>" name="content_<?php echo $lang; ?>" class="tinyTextarea h260 w100p" rel="<?php echo $lang; ?>"><?php echo htmlentities($languages[$lang]['content'], ENT_QUOTES, 'utf-8'); ?></textarea>
-								<p class="mt5">
-									<a class="btnToggleEditor block" data-editor="content_<?php echo $lang; ?>">
-										<?php echo lang('ionize_label_toggle_editor'); ?>
-									</a>
-								</p>
-							</div>
-						</div>
+						<!-- sub title -->
+						<dl>
+							<dt>
+								<label for="subtitle_<?php echo $lang; ?>"><?php echo lang('ionize_label_subtitle'); ?></label>
+							</dt>
+							<dd>
+								<textarea id="subtitle_<?php echo $lang; ?>" name="subtitle_<?php echo $lang; ?>" class="textarea text autogrow" type="text"><?php echo $languages[$lang]['subtitle']; ?></textarea>
+								<!-- <a class="icon edit subtitle"></a> -->
+							</dd>
+						</dl>
+
+						<!-- URL -->
+						<dl>
+							<dt>
+								<label for="url_<?php echo $lang; ?>"><?php echo lang('ionize_label_url'); ?></label>
+							</dt>
+							<dd>
+								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>"/>
+							</dd>
+						</dl>
+
+						<!-- Meta Title : Browser window title -->
+						<dl>
+							<dt>
+								<label for="meta_title_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_article_window_title'); ?>"><?php echo lang('ionize_label_meta_title'); ?></label>
+							</dt>
+							<dd>
+								<input id="meta_title_<?php echo $lang; ?>" name="meta_title_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['meta_title']; ?>"/>
+							</dd>
+						</dl>
 
 					</div>
-				<?php
-				}
 
-				if(Authority::can('access', 'admin/article/media')) {?>
+					<!-- Text -->
+					<h3 class="toggler-<?php echo $lang; ?> article-header"><?php echo lang('ionize_label_text'); ?></h3>
+		
+					<div class="element-<?php echo $lang; ?> mb40">
+						<div>
+							<textarea id="content_<?php echo $lang; ?>" name="content_<?php echo $lang; ?>" class="tinyTextarea h260 w100p" rel="<?php echo $lang; ?>"><?php echo htmlentities($languages[$lang]['content'], ENT_QUOTES, 'utf-8'); ?></textarea>
+							<p class="mt5"><a class="btnToggleEditor block" data-editor="content_<?php echo $lang; ?>">Toggle Editor</a></p>
+						</div>
+					</div>
+
+				</div>
+				<?php endforeach ;?>
+
+				<?php if(Authority::can('access', 'admin/article/media')) :?>
 
 					<!-- Medias -->
 					<div class="tabcontent">
-						<p class="h30">
-							<a id="addMedia" class="fmButton button light right">
-								<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
-							</a>
-							<a id="btnAddVideoUrl" class="right light button">
-								<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
-							</a>
-							<a class="left light button" onclick="mediaManager.loadMediaList();return false;">
-								<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-							</a>
-							<a class="left light button unlink" onclick="mediaManager.detachAllMedia();return false;">
-								<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all'); ?>
-							</a>
-                        </p>
-						<div id="mediaContainer" class="sortable-container"></div>
+						<div id="mediaContainer"></div>
 					</div>
-				<?php } ?>
+
+				<?php endif;?>
 			</div>
 		</fieldset>
 
-		<?php if ($id_article != '') {?>
+		<?php if ($id_article != '') :?>
+
 			<!-- Modules PlaceHolder -->
 			<?php echo get_modules_addons('article', 'main_bottom'); ?>
-		<?php } ?>
+
+		<?php endif ;?>
 
 	</div>
 </form>
@@ -288,7 +288,7 @@ if ($tracker_title == '')
 	ION.initDroppable();
 	 
 	// Calendars init
-	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
+	// ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
     ION.initClearField('#articleForm');
 
 
@@ -312,12 +312,11 @@ if ($tracker_title == '')
 	});
 
 	// Auto-generates URL
-	<?php if ($id_article == '') {?>
-		<?php foreach (Settings::get_languages() as $lang) { ?>
+	<?php if ($id_article == '') :?>
+		<?php foreach (Settings::get_languages() as $lang) :?>
 			ION.initCorrectUrl('title_<?php echo $lang['lang']; ?>', 'url_<?php echo $lang['lang']; ?>');
-		<?php }
-		}
-	?>
+		<?php endforeach ;?>
+	<?php endif; ?>
 
 	var el_ordering_select = $('ordering_select');
 
@@ -370,28 +369,27 @@ if ($tracker_title == '')
 	// TinyEditors. Must be called after tabs init.
 	ION.initTinyEditors('.tab_article', '#articleTabContent .tinyTextarea');
 
-	<?php if ( ! empty($id_article)) {?>
+	<?php if ( ! empty($id_article)) :?>
 
-		var id_article = '<?php echo $id_article; ?>';
+		var id_article = '<?php echo $id_article; ?>',
+			id_content_type = '<?php echo $id_content_type; ?>';
 
 		// Get Content Elements Tabs & Elements
 		$('desktop').store('tabSwapper', articleTab);
 		ION.getContentElements('article', id_article);
 
-    	// Media Manager & tabs events
-		mediaManager.initParent('article', id_article);
-
 		<?php if(Authority::can('access', 'admin/article/media')) :?>
-        	mediaManager.loadMediaList();
-		<?php endif ;?>
 
-		// Add Media button
-		$('addMedia').addEvent('click', function(e)
-		{
-			e.stop();
-			mediaManager.initParent('article', id_article);
-			mediaManager.toggleFileManager();
-		});
+			var mediaManager = new IonizeMediaManager({
+				parent :'article',
+				id_parent: id_article,
+				container: 'mediaContainer',
+				tab: 'mediaTab'
+			});
+
+        	mediaManager.loadList();
+
+		<?php endif ;?>
 
 		// Init the staticItemManager
 		staticItemManager.init({
@@ -403,31 +401,28 @@ if ($tracker_title == '')
 		// Get Static Items
 		staticItemManager.getParentItemList();
 
-		// Add video button
-		<?php if(Authority::can('link', 'admin/page/media')) { ?>
-			$('btnAddVideoUrl').addEvent('click', function()
-			{
-				ION.dataWindow(
-					'addExternalMedia',
-					'ionize_label_add_video',
-					'media/add_external_media_window',
-					{width:600, height:150},
-					{
-						'parent': 'article',
-						'id_parent': id_article
-					}
-				)
-			});
-		<?php } ?>
-
 		// Extend Fields
+		/*
 		extendManager.init({
-			parent			: 'article',
-			id_parent		: id_article,
-			destination		: 'articleTab',
+			parent: 'article',
+			id_parent: id_article,
+			destination: 'articleTab',
 			destinationTitle: Lang.get('ionize_title_extend_fields')
 		});
 		extendManager.getParentInstances();
-	<?php } ?>
+		*/
+
+		// Content Type Extends
+		var contentTypeManager = new ION.ContentTypeManager({
+			type: 'article',
+			id_parent: id_article
+		});
+
+		contentTypeManager.displayInParent({
+			container:'articleTab',
+			id_content_type: id_content_type
+		});
+
+	<?php endif ;?>
 
 </script>

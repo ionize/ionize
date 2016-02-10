@@ -41,8 +41,6 @@ class System_check_model extends Base_model
 	public function get_todos()
 	{
 		$settings = Settings::get_settings();
-
-		log_message('app', print_r($settings, TRUE));
 	}
 
 

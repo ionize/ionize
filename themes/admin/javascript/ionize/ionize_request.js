@@ -180,9 +180,16 @@ ION.append({
 				onFailure: function(xhr)
 				{
 					MUI.hideSpinner();
-
-					// Error notification
-					ION.notification('error', xhr.responseJSON);
+					if(typeOf(xhr.response) != 'null')
+					{
+						var r = JSON.decode(xhr.response);
+						if(typeOf(r) != 'null' && typeOf(r.type) != 'null' && r.type == 'login')
+						{
+							new ION.Login().getInlineLoginWindow(xhr);
+						}
+					}
+					else
+						ION.error(xhr.status + ' ' + xhr.statusText);
 				},
 				onSuccess: function(responseJSON, responseText)
 				{
@@ -278,9 +285,16 @@ ION.append({
 			onFailure: function(xhr) 
 			{
 				MUI.hideSpinner();
-
-				// Error notification
-				ION.notification('error', xhr.responseJSON);
+				if(typeOf(xhr.response) != 'null')
+				{
+					var r = JSON.decode(xhr.response);
+					if(r.type == 'login')
+					{
+						new ION.Login().getInlineLoginWindow(xhr);
+					}
+				}
+				else
+					ION.error(xhr.status + ' ' + xhr.statusText);
 			},
 			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript)
 			{

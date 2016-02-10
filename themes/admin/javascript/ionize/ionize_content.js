@@ -437,27 +437,36 @@ ION.append({
 	 * Currently using this one : abidibo / mootools-datepicker
 	 *
 	 * @param	{String}	dateFormat		PHP Date format
-	 * @param	{Object}	options
-	 *
+	 * @param	{Object}	options			Optional options object
+	 * 										{
+	 * 											context: '' 				// optional, string of the date picker context
+	 * 											selector: 'class'			// CSS selector to use (without '.')
+	 * 											timePicker: false|true		// display or not the time picker
+	 *										}
 	 */
-	initDatepicker: function(dateFormat, options)
+	initDatepicker: function(dateFormat)
 	{
-		if (ION.datePicker)
+		if (typeOf(ION.datePickers) == 'null')
+			ION.datePickers = {};
+
+		var options = typeOf(arguments[1]) == 'null' ? {} : arguments[1],
+			context = typeOf(options.context) == 'null' ? 'global' : options.context,
+			selector = typeOf(options.selector) == 'null' ? 'date' : options.selector;
+
+		if (ION.datePickers[context])
 		{
-			ION.datePicker.close();
+			ION.datePickers[context].close();
 		}
 		else
 		{
-		if (typeOf(dateFormat) == 'null') dateFormat = '%d.%m.%Y';
+			if (typeOf(dateFormat) == 'null') dateFormat = '%Y.%m.%d';
 			var date_format = (dateFormat).replace(/%/g, '');
-
-			if (typeOf(options) == 'null') options = {};
 
 			var timePicker = (options.timePicker) ? options.timePicker : false;
 			var format = (timePicker == true) ? date_format + ' H:i:s' : date_format;
 			var inputOutputFormat = (timePicker == true) ? 'Y-m-d H:i:s' : 'Y-m-d';
 
-			ION.datePicker = new DatePicker('input.date', {
+			ION.datePickers[context] = new DatePicker('input.' + selector, {
 				pickerClass: 'datepicker_dashboard', 
 				timePicker: timePicker,
 				format: format,
@@ -474,7 +483,7 @@ ION.append({
 			});
 		}
 
-		ION.datePicker.attach($$('.date'));
+		ION.datePickers[context].attach($$('.' + selector));
 	},
 	
 	
@@ -651,6 +660,7 @@ ION.append({
 	 * @param	{Element} 	el 				Dom Element	Element to add the drag on.
 	 * @param	{String}	droppables		CSS classes which can drop the element, comma separated names.
 	 * @param	{String}	dropCallbacks	Callback function(s), comma separated names.
+	 * @param	{Object}	options			Drag'n'drop options
 	 *
 	 * @usage
 	 * 			ION.addDragDrop (item, '.dropcreators', 
@@ -662,6 +672,8 @@ ION.append({
 	 */
 	addDragDrop: function(el, droppables, dropCallbacks)
 	{
+		var options = typeOf(arguments[3]) != 'null' ? arguments[3] : {};
+
 		el.makeCloneDraggable(
 		{
 			droppables: droppables,
@@ -680,6 +692,9 @@ ION.append({
 
 				// ION.register('dragElement', el);
 				el.setProperty('dropClass', droppables.replace('.', ''));
+
+				if (options.onSnap)
+					options.onSnap(el, event);
 
 				// Register the dragged Element : No other way to get the dragged element
 				// when pseudo collision between a DOM element and a SVG parent node
@@ -856,7 +871,11 @@ ION.append({
 
 			elements.each(function(item)
 			{
-				if(item.hasClass('date'))
+				if(
+					item.hasClass('date')
+					|| item.hasClass('date-extend')
+					|| item.hasClass('datetime-extend')
+				)
 				{
 					var dataInput = $(item.getAttribute('data-id'));
 
@@ -864,7 +883,8 @@ ION.append({
 					{
 						var visibleInput = dataInput.getPrevious('input');
 
-						item.addEvent('click', function(e) {
+						item.addEvent('click', function(e)
+						{
 							e.stop();
 							if (visibleInput) visibleInput.value = '';
 							dataInput.value = '';
@@ -957,7 +977,7 @@ ION.append({
 	{
 		// tabSwapper elements
 		var tabSwapper = $('desktop').retrieve('tabSwapper');
-		var tabs = 		tabSwapper ? tabSwapper.tabs : [];
+		var tabs = 		tabSwapper.tabs;
 		
 		// DOM elements
 		var tabsContainer = $(tabSwapper.options.tabsContainer);
@@ -984,11 +1004,7 @@ ION.append({
 					var found = false;
 					index = tabs.length;
 					
-					tabs.each(function(tab) { 
-						if (tab.hasClass('tab' + id)) { 
-							found = tab; 
-						}
-					});
+					tabs.each(function(tab) { if (tab.hasClass('tab' + id)) { found = tab; } });
 
 					// Not found ? Build it !
 					if (found == false)
@@ -1063,7 +1079,7 @@ ION.append({
 	deleteTab: function(id)
 	{
 		var tabSwapper = $('desktop').retrieve('tabSwapper');
-		var tabs = tabSwapper ? tabSwapper.tabs : [];
+		var tabs = tabSwapper.tabs;
 
 		tabs.each(function(tab, idx)
 		{

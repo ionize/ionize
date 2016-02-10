@@ -65,7 +65,7 @@ class Search_model extends Base_model
 		);
 
 		// Page lang table
-		$this->{$this->db_group}->select('page_lang.lang');
+		$this->{$this->db_group}->select('page_lang.lang, page_lang.title as page_title');
 		$this->{$this->db_group}->join(
 			$this->page_lang_table,
 			$this->page_lang_table.'.id_page = ' .$this->page_table.'.id_page',

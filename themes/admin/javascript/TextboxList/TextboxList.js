@@ -337,10 +337,12 @@ var TextboxListBit = new Class({
 			}.bind(this),
 			mouseleave: function() {
 				this.bit.removeClass(this.prefix+'-hover').removeClass(this.typeprefix+'-hover');
-			}.bind(this),
-			'dblclick': function(){
+			}.bind(this)
+			/*
+			,'dblclick': function(){
 				this.editBit();
 			}.bind(this)
+			*/
 		});
 	},
 
@@ -545,13 +547,17 @@ GrowingInput = new Class({
 	options: {
 		min: 0,
 		max: null,
-		startWidth: 2,
+		startWidth: 10,
 		correction: 15
 	},
 
 	calculate: function(chars) {
 		this.calc.set('html', chars);
-		var width = this.calc.getStyle('width').toInt();
+		// var width = this.calc.getStyle('width').toInt();
+		var dim= this.calc.getComputedSize(),
+			width = dim.width;
+
+		if (Browser.name == 'chrome') this.options.correction = 30;
 		return (width ? width : this.options.startWidth) + this.options.correction;
 	},
 
@@ -588,10 +594,10 @@ GrowingInput = new Class({
 			if ($chk(this.lastvalue) && (this.lastvalue.length >= this.options.max)) return this;
 			value = this.value.substr(0, this.options.max);
 		}
+
 		this.element.setStyle('width', this.calculate(value));
 		return this;
 	}
-
 });
 
 var str_pad = function(self, length, str, dir) {

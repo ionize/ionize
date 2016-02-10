@@ -113,4 +113,64 @@ class MY_Email extends CI_Email
 			}
 		}
 	}
+
+
+	/**
+	 * @param string $type			'information', 'alert', 'success', 'error'
+	 * @param string $subject
+	 * @param null $to_email
+	 * @param null $view
+	 * @param array $data			array(
+	 * 									'title' => 'Email Title in message',
+	 * 									'message' => 'The message',
+	 *									'data' => array(
+	 *												'key_1' => 'Text'
+	 *									)
+	 *								)
+	 */
+	public function send_system($type='information', $subject='Information', $to_email=NULL, $view=NULL, $data=array())
+	{
+		$this->clear();
+
+		// Subject / From / To
+		$this->subject($subject);
+		$this->from(Settings::get('site_email'), Settings::get('site_title'));
+		$this->to($to_email);
+
+		$view_content = $this->get_system_email_content($type, $subject, $view, $data);
+
+		if ( ! is_null($view_content))
+		{
+			$this->message($view_content);
+
+			// Send silently
+			$result = @$this->send();
+
+			if ( ! $result)
+			{
+				log_message('error', 'Error : MY_Email::send_system() : Email was not sent');
+			}
+		}
+	}
+
+
+	public function get_system_email_content($type='information', $subject='Information', $view=NULL, $data=array())
+	{
+		$view_content = NULL;
+
+		if(is_null($view)) $view = 'mail/system/system';
+
+		if ( ! is_null($view))
+		{
+			if ( ! isset($data['type'])) $data['type'] = $type;
+			if ( ! isset($data['subject'])) $data['subject'] = $subject;
+
+			// View & Message content
+			$view_content = self::$ci->load->view($view, $data, TRUE);
+		}
+		else
+			log_message('error', 'Error : MY_Email::send_system() : Incorrect view');
+
+		return $view_content;
+	}
 }

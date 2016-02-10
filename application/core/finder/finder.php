@@ -137,7 +137,8 @@ class Finder{
 	{
 		// separate path and filename
 		$path = explode('/', $path);
-		$file = strtolower(array_pop($path));
+		$file_origin = array_pop($path);
+		$file = strtolower($file_origin);
 		$path = implode('/', $path);
 
 		// add slashes
@@ -147,7 +148,7 @@ class Finder{
 		$found_subclasses = 0;
 		$found = array();
 
-		$filenames = array(ucfirst($file), $file);
+		$filenames = array($file_origin, ucfirst($file), $file);
 
 		// check all the paths
 		foreach(self::$paths as $p)

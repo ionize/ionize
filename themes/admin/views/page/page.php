@@ -62,9 +62,22 @@ if ($tracker_title == '')
 		<?php else :?>
 			
 			<h2 class="main page" id="main-title"><?php echo lang('ionize_title_new_page'); ?></h2>
-			
+
+			<!-- Content Types -->
+			<?php if (isset($content_types)) :?>
+				<dl class="mt20">
+					<dt>
+						<label for="id_content_type"><?php echo lang('ionize_label_content_type'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $content_types; ?>
+					</dd>
+				</dl>
+			<?php endif ;?>
+
+
 			<!-- Menu -->
-			<dl class="mt20">
+			<dl>
 				<dt>
 					<label for="id_menu"><?php echo lang('ionize_label_menu'); ?></label>
 				</dt>
@@ -238,11 +251,11 @@ if ($tracker_title == '')
 								<label for="url_<?php echo $lang; ?>" title="<?php echo lang('ionize_help_page_url'); ?>"><?php echo lang('ionize_label_url'); ?></label>
 							</dt>
 							<dd>
-								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>" title="<?php echo lang('ionize_help_page_url'); ?>" onblur="this.value=this.value.replace(new RegExp('\\s', 'g'), '').toLowerCase()" />
+								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>" title="<?php echo lang('ionize_help_page_url'); ?>" />
 
 								<?php if( ! is_null($lang_url)) :?>
 									<br/>
-									<?php echo lang('ionize_label_full_url'); ?>: <i class="selectable">/<?php echo $lang_url; ?></i>
+									<?php echo lang('ionize_label_full_url'); ?> : <i class="selectable">/<?php echo $lang_url; ?></i>
 								<?php endif; ?>
 
 							</dd>
@@ -282,24 +295,6 @@ if ($tracker_title == '')
 
 						<!-- Medias -->
 						<div class="tabcontent">
-
-							<p class="h30">
-									<a id="addMedia" class="fmButton button light right">
-										<i class="icon-pictures"></i><?php echo lang('ionize_label_attach_media'); ?>
-									</a>
-									<a id="btnAddVideoUrl" class="right light button">
-										<i class="icon-video"></i><?php echo lang('ionize_label_add_video'); ?>
-									</a>
-
-								<a class="left light button" onclick="mediaManager.loadMediaList();return false;">
-									<i class="icon-refresh"></i><?php echo lang('ionize_label_reload_media_list'); ?>
-								</a>
-
-									<a class="left light button" onclick="mediaManager.detachAllMedia();return false;">
-										<i class="icon-unlink"></i><?php echo lang('ionize_label_detach_all_files'); ?>
-									</a>
-							</p>
-
 							<div id="mediaContainer" class="sortable-container"></div>
 						</div>
 
@@ -366,7 +361,7 @@ if ($tracker_title == '')
 	ION.initDroppable();
 
 	// Calendars init
-	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
+	// ION.initDatepicker('<?php echo Settings::get('date_format') ;?>');
     ION.initClearField('#pageForm');
 
 	// Copy Lang data to other languages dynamically
@@ -396,7 +391,8 @@ if ($tracker_title == '')
 
 	<?php if ( ! empty($id_page)) :?>
 
-		var id_page = '<?php echo $id_page; ?>';
+		var id_page = '<?php echo $id_page; ?>',
+			id_content_type = '<?php echo $id_content_type; ?>';
 
 		// Articles List
 		ION.HTML('article/get_list', {'id_page':id_page}, {'update': 'articleListContainer'});
@@ -411,19 +407,19 @@ if ($tracker_title == '')
 
 
 		// Media Manager & tabs events
-		mediaManager.initParent('page', id_page);
-
 		<?php if(Authority::can('access', 'admin/article/media')) :?>
-			mediaManager.loadMediaList();
+
+			var mediaManager = new IonizeMediaManager({
+				parent :'page',
+				id_parent: id_page,
+				container: 'mediaContainer',
+				tab: 'mediaTab'
+			});
+
+			mediaManager.loadList();
+
 		<?php endif ;?>
 
-		// Add Media button
-		$('addMedia').addEvent('click', function(e)
-		{
-			e.stop();
-			mediaManager.initParent('page', id_page);
-			mediaManager.toggleFileManager();
-		});
 
 		// Init the staticItemManager
 		staticItemManager.init({
@@ -436,6 +432,7 @@ if ($tracker_title == '')
 		staticItemManager.getParentItemList();
 
 		// Extend Fields
+		/*
 		extendManager.init({
 			parent: 'page',
 			id_parent: id_page,
@@ -443,27 +440,18 @@ if ($tracker_title == '')
 			destinationTitle: Lang.get('ionize_title_extend_fields')
 		});
 		extendManager.getParentInstances();
+		*/
 
+		// Content Type Extends
+		var contentTypeManager = new ION.ContentTypeManager({
+			type: 'page',
+			id_parent: id_page
+		});
 
-		// Add Video button
-		// @todo: rewrite
-		<?php if(Authority::can('link', 'admin/page/media')) :?>
-
-			$('btnAddVideoUrl').addEvent('click', function()
-			{
-				ION.dataWindow(
-					'addExternalMedia',
-					'ionize_label_add_video',
-					'media/add_external_media_window',
-					{width:600, height:150},
-					{
-						'parent': 'page',
-						'id_parent': id_page
-					}
-				)
-			});
-
-		<?php endif ;?>
+		contentTypeManager.displayInParent({
+			container:'pageTab',
+			id_content_type: id_content_type
+		});
 
 	<?php else: ?>
 

@@ -363,13 +363,15 @@ ION.FormField = new Class({
 	{
 		this.dl = new Element('dl');
 		if (options.class) this.dl.setProperty('class', options.class);
+		if (options.id) this.dl.setProperty('id', options.id);
 
 		var dt = new Element('dt').inject(this.dl);
 
 		// Label
 		if (options.label)
 		{
-			this.label = new Element('label', {text: options.label.text}).inject(dt);
+			var element = typeOf(options.label.element) != 'null' ? options.label.element : 'label';
+			this.label = new Element(element, {text: options.label.text}).inject(dt);
 			if (options.label.class) this.label.setProperty('class', options.label.class);
 			if (options.label.for) this.label.setProperty('for', options.label.for);
 			if (options.help) this.label.setProperty('title', options.help);
@@ -388,6 +390,14 @@ ION.FormField = new Class({
 	adopt: function(field)
 	{
 		this.fieldContainer.adopt(field);
+	},
+
+	inject: function(container, where)
+	{
+		if (this.dl)
+		{
+			this.dl.inject(container, where);
+		}
 	},
 
 	getContainer: function()
@@ -416,7 +426,73 @@ ION.FormField = new Class({
 	}
 });
 
-ION.Form = {};
+ION.Form = new Class({
+
+	Implements: [Events, Options],
+
+	options: {
+		container: null,        // Container ID or container DOM Element
+		name: null,            	// Name
+	},
+
+	form: null,
+
+	validator: null,
+
+	initialize: function()
+	{
+		var options = typeOf(arguments[0]) != 'null' ? arguments[0] : null;
+
+		if ( options != null && typeOf(options.name) != 'null')
+		{
+			this.form = new Element('form', {name:options.name, type:'post'});
+
+			if (typeOf(options.container) == 'element')
+				this.form.inject(options.container);
+
+			this.validator = new Form.Validator.Inline(this.form, {
+				errorPrefix: '',
+				showError: function(element) {
+					element.show();
+				}
+			});
+
+			this.form.store('validator', this.validator);
+		}
+	},
+
+	validate: function()
+	{
+		if (this.validator && ! this.validator.validate())
+		{
+			new ION.Notify(this.form, {type:'error'}).show('ionize_message_form_validation_please_correct');
+			return false;
+		}
+
+		return true;
+	},
+
+	getForm: function()
+	{
+		return this.form;
+	},
+
+
+	getDomElement: function()
+	{
+		return this.form;
+	},
+
+	getData: function()
+	{
+		return this.form.toJSON();
+	},
+
+	getJSON: function()
+	{
+		return this.form.toJSON();
+	}
+});
 
 ION.Form.Select = new Class({
 
@@ -425,7 +501,7 @@ ION.Form.Select = new Class({
 	options:
 	{
 		container:  null,           // Container ID or container DOM Element
-		'class':    'inputtext',    // CSS class,
+		baseClass:    'inputtext',  // CSS class,
 
 		name:       '',             // Name of the Select
 		id:         '',             // ID of the select
@@ -459,11 +535,12 @@ ION.Form.Select = new Class({
 		this.setOptions(options);
 
 		var self = this,
-			o = this.options
+			o = this.options,
+			cl = typeOf(o['class'] != 'null') ? this.options.baseClass + ' ' + o['class'] : this.options.baseClass
 		;
 
 		// Select
-		this.select = new Element('select', {name: o.name, 'class': o['class']});
+		this.select = new Element('select', {name: o.name, 'class': cl});
 		if (o.id != '')	this.select.setProperty('id', o.id);
 
 		if (o.multiple) this.select.setProperty('multiple', 'multiple');
@@ -479,6 +556,13 @@ ION.Form.Select = new Class({
 				// Store the selected value (in case of options refresh)
 				self.options.selected = this.value;
 				options.onChange(this.value, data, this.getSelected(), self.select, self);
+			});
+		}
+		else
+		{
+			this.select.addEvent('change', function()
+			{
+				self.options.selected = this.value;
 			});
 		}
 
@@ -566,6 +650,9 @@ ION.Form.Select = new Class({
 			).inject(this.select);
 		}
 
+		if (typeOf(data) == 'function')
+			data = data();
+
 		Object.each(data, function(row, idx)
 		{
 			// Group
@@ -587,7 +674,7 @@ ION.Form.Select = new Class({
 			{
 				var nb = Object.getLength(data);
 				if (nb < o.multiple_max_size)
-					this.select.setProperty('size', nb);
+					this.select.setProperty('size', nb + 1);
 				else
 					this.select.setProperty('size', o.multiple_max_size)
 			}
@@ -1097,7 +1184,7 @@ ION.Form.TextList = new Class({
 	{
 		container:  null,           // Container ID or container DOM Element
 		'class':    '',    			// CSS class,
-		empty:		true,			// Empty container on init
+		empty:		false,			// Empty container on init
 
 		name:       '',             // Form input Name (hidden field, will store the values)
 		id:         '',             // ID
@@ -1147,12 +1234,13 @@ ION.Form.TextList = new Class({
 
 	buildElement: function()
 	{
-		var o = this.options,
-			input_data = new Element('input', {name: o.name, 'type':'hidden'}).inject(this.container),
-			input_list = new Element('input').inject(this.container);
+		var self = this,
+			o = this.options;
+
+		this.input = new Element('input', {name: o.name, 'type':'hidden'}).inject(this.container);
 
 		var element = new TextboxList(
-			input_list,
+			this.input,
 			{
 				unique: o.unique,
 				plugins: {
@@ -1175,7 +1263,7 @@ ION.Form.TextList = new Class({
 				},
 				onUpdate: function(formatted_values)
 				{
-					input_data.setProperty('value', formatted_values);
+					self.input.setProperty('value', formatted_values);
 				}
 			}
 		);
@@ -1193,12 +1281,21 @@ ION.Form.TextList = new Class({
 				}
 			);
 		}
+		else if (o.data.data != null)
+		{
+			element.plugins['autocomplete'].setSelected(o.data.data);
+		}
 	},
 
 
 	getDomElement: function()
 	{
 		return this.container;
+	},
+
+	getValues: function()
+	{
+		return this.input.value;
 	}
 });
 

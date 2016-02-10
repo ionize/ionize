@@ -45,14 +45,16 @@ ION.TableList = new Class({
 					/*
 					[
 						{
-							key:            '',                 // Key of each item to display. Must be set
-							label:          '',                 // Label of the column, can be ''
-							type:           'string',           // Type of the column. Used for sorting
+							key:            '',                 	// Key of each item to display. Must be set
+							displayed_key:  '',                 	// Key displayed instead of "key" : Can be set to filter on a value and display another in the table's lines
+							label:          '',                 	// Label of the column, can be ''
+							type:           'string',           	// Type of the column. Used for sorting and filter (select, radio, checkbox)
+							data:           [{value:'', label:''}],	// Data to use as select in case the type is "select"
 
-							'class':        '',                 // optional. CSS Class of the TD
-							element:        'span',             // optional. If set, creates one HTML element of this type
-							elementClass:   '',                 // optional. CSS class of the element
-							onClick:        function(item){}    // optional
+							'class':        '',                 	// optional. CSS Class of the TD
+							element:        'span',             	// optional. If set, creates one HTML element of this type
+							elementClass:   '',                 	// optional. CSS class of the element
+							onClick:        function(item){}    	// optional
 						}
 					],
 					*/
@@ -194,16 +196,18 @@ ION.TableList = new Class({
 	 */
 	_getItem: function(item, c, idx)
 	{
-		var el = c.element ? new Element(c.element) : new Element('span');
+		var el = c.element ? new Element(c.element) : new Element('span'),
+			key = c.displayed_key ? c.displayed_key : c.key;
+
 		if (c.elementClass) el.addClass(c.elementClass);
 
 		// Content
 		// Date format
-		var value = (c.key == '-rownum-') ? parseInt(idx) + 1 :
+		var value = (key == '-rownum-') ? parseInt(idx) + 1 :
 					(
 						c.extend ? this._getExtendDisplayedValue(item, c.extend) :
 						(
-							item[c.key] ? item[c.key] :
+							item[key] ? item[key] :
 							(
 								c.content ? c.content : ''
 							)
@@ -213,7 +217,7 @@ ION.TableList = new Class({
 		if (c.type == 'date')
 			value = Date.formatFromMySql(value, Settings.get('date_format'));
 
-		if ( c.type != 'icon' && (typeOf(item[c.key]) != 'null' || (typeOf(c.content) != 'null' || value !='')))
+		if ( c.type != 'icon' && (typeOf(item[key]) != 'null' || (typeOf(c.content) != 'null' || value !='')))
 			el.set('html', value);
 
 		if(c.onClick)
@@ -267,7 +271,11 @@ ION.TableList = new Class({
 
 			var ckey = typeOf(column.extend) != 'null' ? column.extend.id_extend_field : (column.key ? column.key : null);
 
-			if (ckey)
+			var sort = typeOf(column.extend) == 'null' && (typeOf(column.sort) == 'null' || column.sort == true ) ? true : false;
+
+			// No Sort on Extend
+			// @todo : Find a solution
+			if (ckey && sort == true)
 			{
 				// dataSortable ?
 				if (Object.getLength(self.options.sort) > 0)
@@ -376,32 +384,83 @@ ION.TableList = new Class({
 				}
 				else
 				{
-					var i = new Element('input', {
-						type:    'text',
-						id: 	 column.key + '_' + hash,
-						name:    column.key,
-						'class': 'inputtext'
-					}).inject(th);
-
-					// Event
-					i.addEvent('keydown', function(event)
+					// If column.type is set : build one select
+					if (column.type && ['checkbox', 'radio', 'select'].contains(column.type) && column.data)
 					{
-						if(event.key == 'enter') self.submitFilter();
-					});
+						var i = new Element('select', {
+							'class': 'inputtext w100p',
+							id: 	 column.key + '_' + hash,
+							name: 	column.key + '[]',
+							multiple: 'multiple'
+						}).inject(th);
 
-					self.filter_inputs.push(i);
+						new Element('option', {value: '', text: Lang.get('ionize_select_all')}).inject(i);
 
-					// Restore previous filter value
-					Object.each(filters, function(val, key)
+						var opt_value_key = typeOf(column.type_value) != 'null' ? column.type_value : 'value';
+						var opt_label_key = typeOf(column.type_label) != 'null' ? column.type_label : 'label';
+
+						column.data.each(function(option){
+							new Element('option', {value: option[opt_value_key], text: option[opt_label_key]}).inject(i);
+						});
+
+						i.addEvent('change', function () {
+							self.submitFilter();
+						});
+
+						self.filter_inputs.push(i);
+
+						// Restore previous filter value
+						Object.each(filters, function(val, key)
+						{
+							if (key == column.key)
+							{
+								if (['checkbox', 'select'].contains(column.type))
+								{
+									var values = typeOf(val) != 'array' ? val.split(',') : val;
+
+									if (i.get('tag') == 'select')
+									{
+										i.getElements('option').each(function (option) {
+											if (values.contains(option.value)) {
+												option.setProperty('selected', 'selected');
+											}
+										});
+									}
+								}
+								else
+									i.getFormElement().setProperty('value', val);
+							}
+						});
+					}
+					else
 					{
-						if (key == column.key)
-							i.setProperty('value', val);
-					});
+						var i = new Element('input', {
+							type:    'text',
+							id: 	 column.key + '_' + hash,
+							name:    column.key,
+							'class': 'inputtext'
+						}).inject(th);
+
+						// Event
+						i.addEvent('keydown', function(event)
+						{
+							if(event.key == 'enter') self.submitFilter();
+						});
+
+						self.filter_inputs.push(i);
+
+						// Restore previous filter value
+						Object.each(filters, function(val, key)
+						{
+							if (key == column.key)
+								i.setProperty('value', val);
+						});
+					}
 				}
 
 				// Style
 				var s = self._getFilterStyle(column.key);
-				if (s != null)
+				if (s != null && ! ['checkbox', 'radio', 'select'].contains(column.type))
 					if (s['class']) i.addClass(s['class']);
 				else
 					if (column.type == 'number') i.addClass('w60');
@@ -561,13 +620,18 @@ ION.TableList = new Class({
 	{
 		var self = this,
 			o = this.options.pagination,
+			position = typeOf(this.options.pagination.position) == 'null' ? 'bottom' :
+				['top', 'bottom', 'both'].contains(this.options.pagination.position) ? this.options.pagination.position : 'bottom',
 			nb_pages = parseInt(o.nb) / parseInt(o.nb_by_page)
 		;
 
 		if (nb_pages > 0)
 		{
-			var ul = new Element('ul', {'class':'pagination'}).inject(this.table, 'after');
+			var ulTop = ['top', 'both'].contains(position) ? new Element('ul', {'class':'pagination'}).inject(this.table, 'before') : null,
+				ulBottom = ['bottom', 'both'].contains(position) ? new Element('ul', {'class':'pagination'}).inject(this.table, 'after') : null;
 
+			if (ulTop != null) self._buildPaginationUl(ulTop, nb_pages);
+			if (ulBottom != null) self._buildPaginationUl(ulBottom, nb_pages);
 /*
 			for(var i=0; i<nb_pages; i++)
 			{
@@ -588,74 +652,22 @@ ION.TableList = new Class({
 				}
 			}
 */
+		}
+	},
 
-			// @todo : 3 last pages
-			// @todo : 3 next pages
-			//
+	_buildPaginationUl: function(ul, nb_pages)
+	{
+		var self = this,
+			o = this.options.pagination;
 
-			// Previous button
-			if (o.current_page > 1)
+		// Previous button
+		if (o.current_page > 1)
+		{
+			// First page
+			if (o.current_page > 2)
 			{
-				// First page
-				if (o.current_page > 2)
-				{
-					var li = new Element('li').inject(ul),
-						a = new Element('a', {html:' << ', 'data-id':1, title:Lang.get('ionize_label_pagination_first_page')}).inject(li);
-
-					a.addEvent('click', function()
-					{
-						var post = self.getPostData(),
-							id = this.getProperty('data-id');
-
-						o.onClick(id, post, self, self.getDomElement(), self.container);
-					})
-				}
-
-
 				var li = new Element('li').inject(ul),
-					i_page = parseInt(o.current_page) - 1,
-					a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
-
-				if (typeOf(o.onClick) == 'function')
-				{
-					a.addEvent('click', function()
-					{
-						var post = self.getPostData(),
-							id = this.getProperty('data-id');
-
-						o.onClick(id, post, self, self.getDomElement(), self.container);
-					});
-				}
-
-			}
-
-			// Next button
-			if (o.current_page < nb_pages)
-			{
-				// ...
-				if (o.current_page > 1)
-					new Element('li', {'class': 'lite', text:' ... '}).inject(ul);
-
-
-				// Next
-				var li = new Element('li').inject(ul),
-					i_page = parseInt(o.current_page) + 1,
-					a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
-
-				if (typeOf(o.onClick) == 'function')
-				{
-					a.addEvent('click', function()
-					{
-						var post = self.getPostData(),
-							id = this.getProperty('data-id');
-
-						o.onClick(id, post, self, self.getDomElement(), self.container);
-					})
-				}
-
-				// Last Page
-				var li = new Element('li').inject(ul),
-					a = new Element('a', {html:' >> ', 'data-id':nb_pages, title:Lang.get('ionize_label_pagination_last_page')}).inject(li);
+					a = new Element('a', {html:' << ', 'data-id':1, title:Lang.get('ionize_label_pagination_first_page')}).inject(li);
 
 				a.addEvent('click', function()
 				{
@@ -664,8 +676,58 @@ ION.TableList = new Class({
 
 					o.onClick(id, post, self, self.getDomElement(), self.container);
 				})
-
 			}
+
+			var li = new Element('li').inject(ul),
+				i_page = parseInt(o.current_page) - 1,
+				a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
+
+			if (typeOf(o.onClick) == 'function')
+			{
+				a.addEvent('click', function()
+				{
+					var post = self.getPostData(),
+						id = this.getProperty('data-id');
+
+					o.onClick(id, post, self, self.getDomElement(), self.container);
+				});
+			}
+		}
+
+		// Next button
+		if (o.current_page < nb_pages)
+		{
+			// ...
+			if (o.current_page > 1)
+				new Element('li', {'class': 'lite', text:' ... '}).inject(ul);
+
+			// Next
+			var li = new Element('li').inject(ul),
+				i_page = parseInt(o.current_page) + 1,
+				a = new Element('a', {html:'Page ' + i_page, 'data-id':i_page}).inject(li);
+
+			if (typeOf(o.onClick) == 'function')
+			{
+				a.addEvent('click', function()
+				{
+					var post = self.getPostData(),
+						id = this.getProperty('data-id');
+
+					o.onClick(id, post, self, self.getDomElement(), self.container);
+				})
+			}
+
+			// Last Page
+			var li = new Element('li').inject(ul),
+				a = new Element('a', {html:' >> ', 'data-id':nb_pages, title:Lang.get('ionize_label_pagination_last_page')}).inject(li);
+
+			a.addEvent('click', function()
+			{
+				var post = self.getPostData(),
+					id = this.getProperty('data-id');
+
+				o.onClick(id, post, self, self.getDomElement(), self.container);
+			})
 		}
 	},
 
@@ -713,8 +775,9 @@ ION.List = new Class({
 		sort: {
 			handler:    '.drag',        	// Class of the icon used to sort elements by drag'n'drop
 			id_key:     null,           	// Key to use as ID for each element.
-			url:        null            	// URL of the sorting controller. Must be set to activate the sorting
+			url:        null            	// URL of the sorting controller.
 			// callback: function(serie)	// Callback function : Receives the ordered serie
+											// Either url OR callback must be set
 		},
 
 		// Elements composing each list item
@@ -754,7 +817,7 @@ ION.List = new Class({
 			}
 			/*
 			{
-				element: function(item, li){
+				element: function(item, li, index){
 					// Build DOM Element
 					// Return DOM Element
 				}
@@ -871,7 +934,7 @@ ION.List = new Class({
 					var part;
 					if (typeOf(el.element) == 'function')
 					{
-						part = el.element(item, li);
+						part = el.element(item, li, key);
 
 						if (typeOf(part) != 'null')
 						{
@@ -899,7 +962,7 @@ ION.List = new Class({
 						{
 							if (el.text && item[el.text])
 							{
-									part.set('html', item[el.text]);
+								part.set('html', item[el.text]);
 							}
 							else if((item[el.text] == '' || item[el.text] == null) && el['text-failover'])
 								part.set('html', item[el['text-failover']]);
@@ -932,8 +995,9 @@ ION.List = new Class({
 						// onClick : Send the item
 						if(el.onClick)
 						{
-							part.addEvent('click', function()
+							part.addEvent('click', function(e)
 							{
+								e.stop();
 								var data = this.getParent('li').retrieve('data');
 								el.onClick(data, li);
 							})
@@ -1003,11 +1067,11 @@ ION.List = new Class({
 				var serialized = this.serialize(0, function(item)
 				{
 					// Check for the not removed clone
-					if (item.id != '')
+					if ( ! item.hasClass('clone'))
 					{
 						var data = item.retrieve('data');
 						if (self.options.sort.id_key != null && data[self.options.sort.id_key])
-							return data[self.options.sort.id_key]
+							return data[self.options.sort.id_key];
 						else
 							return item.id;
 					}

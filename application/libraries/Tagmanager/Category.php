@@ -69,6 +69,9 @@ class TagManager_Category extends TagManager
 		// Get the local cache data
 		$element_name = $tag->getParentName();
 		$element = $tag->get($element_name);
+
+		if ( ! isset($element['name'])) return array();
+
 		if ( ! is_null($element)) $lsk = '__' . $element_name . '__' . $element['name'];
 
 		// Set the local cache data

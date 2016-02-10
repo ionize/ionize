@@ -145,6 +145,9 @@ namespace Ionize {
 
 		protected $role = NULL;
 
+		protected $user_model = NULL;
+		protected $role_model = NULL;
+
 		/**
 		 * Contains the User instance.
 		 *
@@ -317,9 +320,7 @@ namespace Ionize {
 				else
 				{
 					// no password, or not enough data
-					$this->error = $this->set_error_message('connect_missing_parameters', implode(' and ', array_diff(array('username', 'email'), array_keys($identification))));
-
-					return FALSE;
+					throw new \Exception($this->set_error_message('connect_missing_parameters', implode(' and ', array_diff(array('username', 'email'), array_keys($identification)))));
 				}
 			}
 
@@ -333,9 +334,7 @@ namespace Ionize {
 					list($key, $id) = each($identification);
 					$this->increment_failures($key, $id);
 
-					$this->error = $this->set_error_message('connect_blocked', (is_numeric($this->time_left()) ? 'in '.$this->time_left().' seconds.' : 'later.'));
-
-					return FALSE;
+					throw new \Exception($this->set_error_message('connect_blocked', (is_numeric($this->time_left()) ? 'in '.$this->time_left().' seconds.' : 'later.')));
 				}
 			}
 
@@ -386,9 +385,7 @@ namespace Ionize {
 				// Event
 				\Event::fire('User.login.error', $identification);
 
-				$this->error = $this->set_error_message('connect_login_failed');
-
-				return FALSE;
+				throw new \Exception($this->set_error_message('connect_login_failed'));
 			}
 		}
 
@@ -471,9 +468,7 @@ namespace Ionize {
 		 */
 		public function logged_in()
 		{
-			$pk = $this->model->getPkName();
-
-			return ($this->user != NULL && isset($this->user[$pk]) && $this->user[$pk] == $this->session->userdata($pk));
+			return ($this->user != NULL && isset($this->user[$this->model->getPkName()]));
 		}
 
 
@@ -561,22 +556,26 @@ namespace Ionize {
 		// --------------------------------------------------------------------
 
 
-		public function is_at_least($role)
+		public function is_at_least($role_code)
 		{
 			$user_role = $this->get_role();
 			$role_level = NULL;
 
-			if (is_array($role))
+			if (is_array($role_code))
 			{
-				if ( ! empty($role['role_level']))
-					$role_level = $role['role_level'];
+				if ( ! empty($role['id_role']))
+				{
+					$role = self::$ci->role_model->get_row_array(array('id_role' => $role['id_role']));
+				}
 				else
 					return FALSE;
 			}
 			else
 			{
-				log_message('app', print_r($user_role, TRUE));
+				$role = self::$ci->role_model->get_row_array(array('role_code' => $role_code));
 			}
+
+			return ($role['role_level'] <= $user_role['role_level']);
 		}
 
 
@@ -594,15 +593,23 @@ namespace Ionize {
 		{
 			if (is_array($role))
 			{
-				// @todo : Rewrite
+				$is = FALSE;
 
+				foreach($role as $role_code)
+				{
+					if ($this->has_role($role_code))
+					{
+						$is = TRUE;
+						break;
+					}
+				}
+				return $is;
 			}
 			else
 			{
 				return $this->has_role($role);
 			}
 		}
-
 
 		// --------------------------------------------------------------------
 
@@ -761,7 +768,8 @@ namespace Ionize {
 
 		public function delete($user_data = array())
 		{
-			$user = $this->model->find_user(array('id_user' =>$user_data['id_user']));
+			$user = $this->model->find_user($user_data);
+
 			if ($user)
 			{
 				return $this->model->delete($user['id_user']);
@@ -957,8 +965,16 @@ namespace Ionize {
 			// Role
 			if(isset($cond['role']))
 			{
-				if (in_array($this->role['role_code'], $cond['role']))
-					return TRUE;
+				if (is_array($cond['role']))
+				{
+					if (in_array($this->role['role_code'], $cond['role']))
+						return TRUE;
+				}
+				else
+				{
+					if ($this->role['role_code'] == $cond['role'])
+						return TRUE;
+				}
 			}
 
 			// deny access

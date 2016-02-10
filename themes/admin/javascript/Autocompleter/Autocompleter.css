@@ -4,13 +4,17 @@ ul.autocompleter-choices
 	margin:					0;
 	padding:				0;
 	list-style:				none;
+/*
 	border:					1px solid #7c7c7c;
-	border-top:none;
+*/
 	background-color:		#fff;
 	text-align:				left;
 	font-family:			Verdana, Geneva, Arial, Helvetica, sans-serif;
 	z-index:				50;
 	background-color:		#fff;
+	overflow:hidden; -webkit-box-shadow: 0 0 10px #777; -moz-box-shadow: 0 0 10px #777; box-shadow: 0 0 10px #777;
+	color:#098ED1;
+	min-width: 180px;
 }
 
 ul.autocompleter-choices li
@@ -18,19 +22,19 @@ ul.autocompleter-choices li
 	position:				relative;
 	margin:					-2px 0 0 0;
 	padding:				0.2em 1.5em 0.2em 1em;
+	padding: 5px;
 	display:				block;
 	float:					none !important; 
 	cursor:					pointer;
 	font-weight:			normal;
 	white-space:			nowrap;
 	font-size:				1em;
-	line-height:			1.5em;
 }
 
 ul.autocompleter-choices li.autocompleter-selected
 {
-	background-color:		#444;
-	color:					#fff;
+	background-color:		#edeceb;
+	color:					#098ED1;
 }
 
 ul.autocompleter-choices span.autocompleter-queried
@@ -40,11 +44,13 @@ ul.autocompleter-choices span.autocompleter-queried
 	font-weight:			bold;
 	margin:					0;
 	padding:				0;
+	background: #098ED1;background: #333; color:#fff;font-weight: bold; padding:2px 1px;
 }
 
 ul.autocompleter-choices li.autocompleter-selected span.autocompleter-queried
 {
 	color:					#9FCFFF;
+	background: #098ED1;background: #333; color:#fff;font-weight: bold; padding:2px 1px;
 }
 
 .autocompleter-loading

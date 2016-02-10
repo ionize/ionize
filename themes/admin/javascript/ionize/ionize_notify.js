@@ -55,6 +55,8 @@ ION.Notify = new Class({
 
 			this.box = new Element('div');
 			this.box.store('instance', this);
+
+			this.boxContent = new Element('div').inject(this.box);
 			this.setType(this.options.type);
 
 			// Close button
@@ -90,9 +92,9 @@ ION.Notify = new Class({
 	setType: function(type)
 	{
 		this.options.type = type;
-		this.box.removeProperty('class');
-		this.box.addClass(this.options.className + ' contentNotify mochaContentNotify ' + this.options.type);
-		this.box.setProperty('data-type', type);
+		this.boxContent.removeProperty('class');
+		this.boxContent.addClass(this.options.className + ' contentNotify mochaContentNotify ' + this.options.type);
+		this.boxContent.setProperty('data-type', type);
 	},
 
 	show: function(msg)
@@ -171,13 +173,13 @@ ION.Notify = new Class({
 	{
 		if (typeof(msg) == 'object')
 		{
-			this.box.empty().adopt(msg);
+			this.boxContent.empty().adopt(msg);
 		}
 		else
 		{
 			if (Lang.get(msg) != null ) msg = Lang.get(msg);
 			var div = new Element('div').set('html', msg);
-			this.box.empty().adopt(div);
+			this.boxContent.empty().adopt(div);
 		}
 	},
 
@@ -194,7 +196,7 @@ ION.Notify = new Class({
 			box = boxes[0];
 
 		return (box != null)
-			? box
+			? box.getParent('div')
 			: false;
 	},
 

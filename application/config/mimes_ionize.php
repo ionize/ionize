@@ -18,6 +18,7 @@ $mimes = array(
         'png'	=>	array('image/png',  'image/x-png'),
         'tiff'	=>	'image/tiff',
         'tif'	=>	'image/tiff',
+        'svg'   =>  'image/svg+xml',
 	),
 	'video'	=> array(
         'mpeg'	=>	'video/mpeg',

@@ -621,6 +621,22 @@ class Media_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function get_base_64($media=array())
+	{
+		log_message('error', print_r($media, TRUE));
+
+
+/*		if ($filename) {
+			$imgbinary = fread(fopen($filename, "r"), filesize($filename));
+			return 'data:image/' . $filetype
+			. ';base64,' . base64_encode($imgbinary);
+		}*/
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * @param $filename
 	 *
@@ -1044,6 +1060,11 @@ class Media_model extends Base_model
 			else
 			{
 				$_media['file_exists'] = FALSE;
+
+				if ( ! empty($_media['provider']) && $_media['type'] == 'video')
+					$_media['extension'] = 'mpg';
+
+
 			}
 		}
 

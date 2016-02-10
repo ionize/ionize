@@ -7,7 +7,7 @@
 |
 */
 $config['version'] = '1.0.8';
-$config['version_date'] = '2015.06.19';
+$config['version_date'] = '2016.02.10';
 
 
 /*
@@ -157,7 +157,7 @@ $config['compress_html_output'] = false;
 | To remove double whitespace lines and indent generated HTML correctly
 |
 */
-$config['beautify_html_output'] = true;
+$config['beautify_html_output'] = false;
 
 
 /*

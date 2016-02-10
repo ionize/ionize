@@ -29,6 +29,7 @@ $c = '?v='.$v;
 <!-- Mootools 1.4.5  -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.5.0-full-nocompat-yc.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.5.0-yc.js"></script>
+<script type="text/javascript" src="<?php echo theme_url() ?>javascript/ionize/ionize_mootools_enhance.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools_locale/eu.js"></script>
 
 <?php if (
@@ -42,6 +43,12 @@ $c = '?v='.$v;
 	google.load("visualization", "1", {packages:["corechart"], 'language': '<?php echo Settings::get_lang() ?>'});
 </script>
 <?php endif ;?>
+
+<?php /*  Autocompleter */ ?>
+<link type="text/css" rel="stylesheet" href="<?php echo theme_url() ?>javascript/Autocompleter/Autocompleter.css<?php echo $c ?>" />
+<script type="text/javascript" src="<?php echo theme_url() ?>javascript/Autocompleter/Observer.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url() ?>javascript/Autocompleter/Autocompleter.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url() ?>javascript/Autocompleter/Autocompleter.Request.js<?php echo $c ?>"></script>
 
 <!-- Upload -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/Request.File.js<?php echo $c ?>"></script>
@@ -164,6 +171,7 @@ $c = '?v='.$v;
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendlinkmanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmediamanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_staticitemmanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_contenttypemanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_itemsmanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tinymce.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree.js<?php echo $c ?>"></script>
@@ -175,6 +183,7 @@ $c = '?v='.$v;
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_select.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_button.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tabs.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_ui.js<?php echo $c ?>"></script>
 
 <!-- Authority -->
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_authority.js<?php echo $c ?>"></script>
@@ -214,22 +223,8 @@ $c = '?v='.$v;
 <?php endif ;?>
 
 <script type="text/javascript">
-	// Global MediaManager
-	var mediaManager = new IonizeMediaManager(
-	{
-		baseUrl			: base_url,
-		adminUrl		: admin_url,
-		container		: 'mediaContainer',
-		fileButton		: '.fmButton',
-		wait			: 'waitPicture',
-        resizeOnUpload	: '<?php echo Settings::get('resize_on_upload'); ?>',
-        uploadAutostart	: '<?php echo Settings::get('upload_autostart'); ?>',
-        uploadMode		: '<?php echo Settings::get('upload_mode'); ?>',
-		thumbSize		: <?php echo (Settings::get('media_thumb_size') != '') ? Settings::get('media_thumb_size') : 120 ;?>
-	});
 
 	var extendManager =  new ION.ExtendManager();
-//	var extendLinkManager =  new ION.ExtendLinkManager();
 	var staticItemManager =  new ION.StaticItemManager();
 
 	// If user's theme has a tinyMCE.css content CSS file, load it.

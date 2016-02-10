@@ -264,3 +264,236 @@ ION.UiElement = new Class({
 		);
 	}
 });
+
+
+ION.Ui.Panel = new Class({
+
+	Implements: [Events, Options],
+
+	el: {},
+
+	options: {
+
+		id:						null,			// id of the main div tag for the panel
+		container:				null,			// Mandatory
+
+		// header
+		header:					true,			// true to create a panel header when panel is created
+		title:					null,			// the title inserted into the panel's header
+
+		'min-height':			0,				// the desired min-height of the panel
+		height:					0,				// the desired height of the panel
+		'class':				'',				// css class to add to the main panel div
+		scrollbars:				true,			// true to allow scrollbars to be shown
+		padding:				8,				// default padding for the panel
+
+		// Other:
+		collapsible:			true,			// can the panel be collapsed
+		isCollapsed:			false,			// is the panel collapsed
+		collapseFooter:			true			// collapse footer when panel is collapsed
+	},
+
+	initialize: function(options)
+	{
+		this.setOptions(options);
+
+		// If panel has no ID, give it one.
+		this.id = this.options.id = this.options.id || 'panel' + (++MUI.idCount);
+		this.cookieName = this.id;
+
+		if (typeOf(options.container) == 'null') return;
+
+		this.container = typeOf(options.container) == 'string' ? $(options.container) : options.container;
+
+		return this.draw();
+	},
+
+	draw: function()
+	{
+		var o = this.options;
+
+		// Element
+		this.el.element = new Element('div', {
+			id: o.id,
+			'class': 'dashboard-panel ' + o['class']
+		}).inject(this.container).store('instance', this);
+
+		// Block
+		this.el.block = new Element('div', {
+			'class':'block'
+		}).inject(this.el.element);
+
+		// Wrapper
+		this.el.wrapper = new Element('div', {
+			id: o.id + '_wrapper',
+			'class': 'panelWrapper expanded'
+		}).inject(this.el.block).setStyle('min-height', o['min-height']);
+
+		// Content
+		this.el.panel = new Element('div', {
+			'id': o.id + '_content',
+			'class': 'content-panel-content'
+		}).inject(this.el.wrapper);
+
+		// Pad : Receives the final content
+		this.el.content = new Element('div', {
+			'id': o.id + '_pad',
+			'class': 'pad'
+		}).inject(this.el.panel).setStyle('padding', o.padding);
+
+		if (o.height > 0)
+			this.el.content.setStyle('height', o.height);
+
+		// Loading
+		if (o.loading)
+			this.el.wrapper.addClass('loading');
+
+		// Create one header
+		if (o.header)
+		{
+			var headerItems = [];
+
+			this.el.header = new Element('div', {
+				'id': o.id + '_header'
+			}).inject(this.el.panel, 'before');
+
+			if (o.collapsible){
+				this._collapseToggleInit();
+				headerItems.unshift({content:this.el.collapseToggle, divider:false});
+			}
+
+			if (o.title){
+				this.el.title = new Element('h2', {
+					'id': o.id + '_title',
+					'html': o.title
+				});
+				headerItems.push({id:o.id + 'headerContent',content:this.el.title,orientation:'left', divider:false});
+			}
+
+			MUI.create({
+				control: 'MUI.Dock',
+				container: this.el.panel,
+				element: this.el.header,
+				id: o.id + '_header',
+				cssClass: 'content-panel-header',
+				docked:headerItems
+			});
+		}
+
+		this._initCollapsed();
+
+		return this;
+	},
+
+	setHeight: function(height)
+	{
+		if (o.height > 0)
+			this.el.content.setStyle('height', height);
+	},
+
+	/**
+	 * Returns the DOM Element in which the content can be put
+	 * (by one external lib for example)
+	 *
+	 */
+	getContainer: function()
+	{
+		return this.el.content;
+	},
+
+	adopt: function(content)
+	{
+		this.el.content.empty();
+
+		if (typeOf(content) == 'string')
+			this.el.content.set('html', content);
+		else
+			this.el.content.adopt(content);
+	},
+
+	isLoaded: function()
+	{
+		this.el.wrapper.removeClass('loading');
+	},
+
+	collapse: function()
+	{
+		this.el.panel.hide();
+		this.isCollapsed = true;
+		this.el.element.addClass('collapsed').removeClass('expanded');
+
+		if (this.el.collapseToggle)
+		{
+			this.el.collapseToggle.removeClass('panel-collapsed')
+					.addClass('panel-expand')
+					.setProperty('title', 'Expand Panel');
+		}
+
+		this._saveCollapsed(true);
+
+		return this;
+	},
+
+	expand: function()
+	{
+		this.el.panel.show();
+		this.isCollapsed = false;
+
+		this.el.element.addClass('expanded').removeClass('collapsed');
+
+		if (this.el.collapseToggle)
+		{
+			this.el.collapseToggle.removeClass('panel-expand')
+					.addClass('panel-collapsed')
+					.setProperty('title', 'Collapse Panel');
+		}
+
+		this._saveCollapsed(false);
+
+		return this;
+	},
+
+	toggle: function()
+	{
+		if (this.isCollapsed)
+			this.expand();
+		else
+			this.collapse();
+		return this;
+	},
+
+	_saveCollapsed: function(status)
+	{
+		Cookie.write(this.cookieName, status, {duration:this.options.cookieDays});
+	},
+
+	_initCollapsed: function()
+	{
+		var status = ([Cookie.read(this.cookieName), false].pick());
+
+		if (typeOf(status) != 'null' && status == 'true')
+			this.collapse();
+		else
+		{
+			if (typeOf(status) == 'null' && this.options.isCollapsed)
+				this.collapse();
+			else
+				this.expand();
+		}
+	},
+
+	_collapseToggleInit: function(){
+		this.el.collapseToggle = new Element('div', {
+			'id': this.options.id + '_collapseToggle',
+			'class': 'panel-collapse icon16',
+			'styles': {
+				'width': 16,
+				'height': 16
+			},
+			'title': 'Collapse Panel'
+		}).addEvent('click', function(){
+			this.toggle();
+		}.bind(this));
+	}
+
+});

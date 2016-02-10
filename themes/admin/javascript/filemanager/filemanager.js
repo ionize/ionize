@@ -337,8 +337,8 @@ var Filemanager = new Class({
 				createFolderButton.addEvent('click', this['create_on_click'].bind(this));
 		}
 		if (this.options.download) this.addMenuButton('download', 'download');
-		if (this.options.selectable) this.addMenuButton('open_all', 'ionize_label_select_all_files');
 		if (this.options.selectable) this.addMenuButton('open', 'ionize_label_select_file');
+		if (this.options.selectable) this.addMenuButton('open_all', 'ionize_label_select_all_files');
 
 		this.info = new Element('div', {'class': 'filemanager-infos'});
 
@@ -597,7 +597,7 @@ var Filemanager = new Class({
 		var self = this;
 
 		// Overlay
-		this.uploadOverlay = new Element('div', {'class':'filemanager-upload-overlay'}).inject(document.body, 'top');
+		this.uploadOverlay = new Element('div', {'class':'filemanager-upload-overlay'}).inject(this.filemanager, 'top');
 
 		this.uploadOverlay.addEvents({
 			'mouseout': function(e)
@@ -770,13 +770,15 @@ var Filemanager = new Class({
 			// TODO
 			onItemProgress: function(item, perc)
 			{
-				if( ! item.getElement('.progress')) return;
+				if (item) {
+					if (!item.getElement('.progress')) return;
 
-				item.getElement('.progress').fade('show');
+					item.getElement('.progress').fade('show');
 
-				var dim = 80;
-				item.getElement('.progress-bar').tween('width', Math.round(dim * perc/100));
-				item.getElement('.progress-bar').innerHTML = Math.floor(perc) + '%';
+					var dim = 80;
+					item.getElement('.progress-bar').tween('width', Math.round(dim * perc / 100));
+					item.getElement('.progress-bar').innerHTML = Math.floor(perc) + '%';
+				}
 			},
 			onItemComplete: function(item, file, response)
 			{

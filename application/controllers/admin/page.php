@@ -75,8 +75,8 @@ class Page extends MY_admin
 	/** @var  Url_model */
 	public $url_model;
 
-	/** @var  Type_model */
-	public $type_model;
+	/** @var  Content Type_model */
+	public $content_type_model;
 
 	/** @var  Resource_model */
 	public $resource_model;
@@ -104,7 +104,7 @@ class Page extends MY_admin
 				'extend_field_model',
 				'system_check_model',
 				'url_model',
-				'type_model',
+				'content_type_model',
 				'resource_model',
 				'rule_model'
 			), '', TRUE);
@@ -137,6 +137,18 @@ class Page extends MY_admin
 		// Create blank data for this page
 		$this->page_model->feed_blank_template($this->template);
 		$this->page_model->feed_blank_lang_template($this->template);
+
+		// Content Types
+		$types = $this->content_type_model->get_select('page');
+		if (count($types) > 1)
+		{
+			$this->template['content_types'] = form_dropdown(
+				'id_content_type',
+				$types,
+				$this->template['id_content_type'],
+				'class="select"'
+			);
+		}
 
 		// Dropdown menus
 		$data = $this->menu_model->get_select();
@@ -328,14 +340,14 @@ class Page extends MY_admin
 				if (empty($page['deny_code']))
 					$this->template['deny_code'] = '404';
 
-				// Types
-				$types = $this->type_model->get_select('page', lang('ionize_select_no_type'));
+				// Content Types
+				$types = $this->content_type_model->get_select('page');
 				if (count($types) > 1)
 				{
-					$this->template['types'] = form_dropdown(
-						'id_type',
+					$this->template['content_types'] = form_dropdown(
+						'id_content_type',
 						$types,
-						$this->template['id_type'],
+						$this->template['id_content_type'],
 						'class="select"'
 					);
 				}
@@ -1075,6 +1087,50 @@ class Page extends MY_admin
 	protected function _get_resource_name($type, $element, $id)
 	{
 		return $type . '/' . $element . '/' . $id;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_views()
+	{
+		$optGroup = array();
+		$result = array();
+		$views = array();
+
+		if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
+			require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
+
+		if ( ! empty($views['page']))
+		{
+			foreach ($views['page'] as $file => $label)
+			{
+				$arr = explode('/', $file);
+
+				if (isset($arr[1]))
+				{
+					$group_name = ucwords(str_replace('_', ' ', $arr[0]));
+
+					if ( ! isset($optGroup[$group_name]))
+						$optGroup[$group_name] = array();
+
+					$optGroup[$group_name][] = array('key' => $file, 'label' => $label);
+				} else
+				{
+					$result[] = array('key' => $file, 'label' => $label);
+				}
+			}
+
+			if ( ! empty($optGroup))
+			{
+				$result = array_merge($result, $optGroup);
+			}
+		}
+
+		array_unshift($result, array('key' => '', 'label' => lang('ionize_select_default_view')));
+
+		$this->xhr_output($result);
 	}
 
 

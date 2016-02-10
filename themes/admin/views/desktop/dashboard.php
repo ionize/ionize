@@ -331,7 +331,7 @@ $user_role = User()->get_role();
 							<?php foreach ($orphan_articles as $article) :?>
 
 								<?php
-								$title = ($article['title'] != '') ? $article['title'] : $article['name'];
+								$title = ( ! empty($article['title'])) ? $article['title'] : $article['name'];
 								?>
 
 								<tr class="0x<?php echo $article['id_article']; ?>">

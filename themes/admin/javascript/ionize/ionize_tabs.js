@@ -51,6 +51,8 @@ ION.Tabs = new Class({
 	sections: [],
 	clickers: [],
 
+	recalled:false,
+
 	initialize: function(options)
 	{
 		var self = this;
@@ -62,12 +64,6 @@ ION.Tabs = new Class({
 
 		var prev = this.init();
 		if (prev) return prev;
-
-		// Recall or Show
-		var recallTab = this.recall();
-
-		if (this.options.cookieName && recallTab !== false) recallTab.retrieve('clicker').click();
-		else this.show(this.options.initPanel);
 
 		if (options.editable)
 		{
@@ -99,6 +95,7 @@ ION.Tabs = new Class({
 
 		// Additional CSS classes
 		if (this.options['class'] != null) this.tabParent.addClass(this.options['class']);
+		if (this.options['id'] != null) this.tabParent.setProperty('id', this.options['id']);
 
 		if (this.container)
 		{
@@ -111,8 +108,14 @@ ION.Tabs = new Class({
 			self.addTab(item, null);
 		});
 
-		this.fireEvent('onDraw', [this]);
+		if ( ! this.recalled && this.tabs.length > 0)
+			this.tabs[0].retrieve('clicker').click();
 
+
+		// Store the instance
+		if (this.tabParent) this.tabParent.store('tabsInstance', this);
+
+		this.fireEvent('onDraw', [this]);
 	},
 
 	addTab: function(item, index)
@@ -180,6 +183,14 @@ ION.Tabs = new Class({
 			item.onLoaded(tab, section, this);
 
 		this.hideSection(index);
+
+		// Recall
+		var recallTab = this.recall();
+		if (this.options.cookieName && recallTab !== false && recallTab == tab)
+		{
+			recallTab.retrieve('clicker').click();
+			this.recalled = true;
+		}
 
 		return tab;
 	},
@@ -259,8 +270,8 @@ ION.Tabs = new Class({
 			if (this.current != null) this.hideSection(this.tabs.indexOf(this.current));
 
 			sect.setStyles({
-				display:'block',
-				overflow: 'hidden'
+				display:'block'
+		//		overflow: 'hidden'
 			});
 
 			this.current = tab;
@@ -287,6 +298,18 @@ ION.Tabs = new Class({
 		}
 
 		return this;
+	},
+
+	isVisible: function(idx)
+	{
+		var tab = this.tabs[idx];
+		if (!tab) return null;
+
+		var sect = tab.retrieve('section');
+
+		if (sect.getStyle('display') != 'none') return true;
+
+		return false;
 	},
 
 	save: function(index)

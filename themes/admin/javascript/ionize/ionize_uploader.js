@@ -59,8 +59,11 @@ ION.Uploader = new Class({
 		previewListMode: 'auto',    // 'auto', list', 'card'
 		droparea: null,
 
-		uploadPost: null			// Object of {key:value}, added as POST data
+		uploadPost: null,			// Object of {key:value}, added as POST data
 
+		styles: {
+			'upload-list-item': 'list-item'
+		}
 		// Events
 		/*
 		 onItemComplete: function (item, file, response) {},
@@ -125,6 +128,8 @@ ION.Uploader = new Class({
 		this.initDomElements();
 		this.initDropZone();
 
+		this.fireEvent('loaded', [this]);
+
 		return this;
 	},
 
@@ -154,7 +159,7 @@ ION.Uploader = new Class({
 
 		// DropArea
 		if( typeOf(this.options.droparea ) == 'null')
-			this.uiDropArea = document.body
+			this.uiDropArea = document.body;
 		else
 			this.uiDropArea = $(this.options.droparea);
 
@@ -181,7 +186,6 @@ ION.Uploader = new Class({
 			onReset:function(method)
 			{
 				this.url = self.options.url;
-
 				self.fireEvent('reset', [this.method]);
 
 				// Useful to send the uploaded file directory
@@ -193,7 +197,7 @@ ION.Uploader = new Class({
 			{
 				var img_loaded = false;
 
-				item.addClass('list-item').adopt(
+				item.addClass(self.options.styles['upload-list-item']).adopt(
 					new Element('a', {'class': 'icon delete', 'style':'z-index:2'}).addEvent('click', function(e)
 					{
 						e.stop();
@@ -395,5 +399,15 @@ ION.Uploader = new Class({
 				self.dropZone.setVar(key, val);
 			});
 		}
+	},
+
+	getButton: function()
+	{
+		return this.uploadSelectButton;
+	},
+
+	getUploadList: function()
+	{
+		return this.uploadZoneList;
 	}
 });

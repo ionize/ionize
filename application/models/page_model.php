@@ -28,6 +28,9 @@ class Page_model extends Base_model
 	/** @var string */
 	public $url_table =			'url';
 
+	/** @var string */
+	public $content_type_table = 'content_type';
+
 
 	// ------------------------------------------------------------------------
 
@@ -109,6 +112,14 @@ class Page_model extends Base_model
 		// Add Url to the request
 		if ($lang == NULL)
 			$lang = Settings::get_lang('default');
+
+		// Content Type
+		$this->{$this->db_group}->select('content_type.view, content_type.view_single');
+		$this->{$this->db_group}->join(
+			$this->content_type_table. ' as content_type',
+			$this->table.'.id_content_type = content_type.id_content_type',
+			'left'
+		);
 
 		// URL paths
 		$this->{$this->db_group}->select('url.path, url.path_ids, url.full_path_ids');

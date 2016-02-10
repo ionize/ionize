@@ -42,18 +42,20 @@ class Dashboard extends MY_Admin {
 	function index()
 	{
 		// Articles
-		$articles = $this->article_model->get_lang_list(
-			array('order_by'=>'updated DESC'),
+		$db_last_articles = $this->article_model->get_lang_list(
+			array(
+				'order_by'=>'updated DESC',
+				'limit' => 10
+			),
 			Settings::get_lang('default')
 		);
 
+
 		// Last 10 articles
 		$last_articles = array();
-		$max = (count($articles) > 9) ? 10 : count($articles);
-		$count = 0;
-		if ( ! empty($articles))
+		if ( ! empty($db_last_articles))
 		{
-			foreach($articles as $article)
+			foreach($db_last_articles as $article)
 			{
 				if (
 					Authority::can('access', 'backend/menu/' . $article['id_menu'], NULL, TRUE)
@@ -62,27 +64,17 @@ class Dashboard extends MY_Admin {
 				)
 				{
 					$last_articles[] = $article;
-					$count++;
-					if ($count == $max)
-						break;
 				}
 			}
 		}
 
 		// Orphan articles
-		$orphan_articles = array();
-		foreach ($articles as $article)
-		{
-			if ( ! $article['id_page'])
-				$orphan_articles[] = $article;
-		}
+		$orphan_articles = $this->article_model->get_orphan_articles();
 
 		// Orphan pages
 		$orphan_pages = $this->page_model->get_lang_list(array('id_menu' => '0', 'order_by'=>'name ASC'), Settings::get_lang('default'));
 		
 		// Last connected /registered users
-		$logged_user_role = User()->get_role();
-
 		$users = $this->user_model->get_list_with_role(
 			array(
 				'limit'=>'10',
@@ -96,7 +88,6 @@ class Dashboard extends MY_Admin {
 			array(
 				'limit'=>'10',
 				'order_by' => 'join_date DESC',
-	//			'role_level <= ' => $logged_user_role['role_level']
 			)
 		);
 		
@@ -172,7 +163,6 @@ class Dashboard extends MY_Admin {
 		$this->template['orphan_articles'] = $orphan_articles;
 		$this->template['users'] = $users;	
 		$this->template['last_registered_users'] = $last_registered_users;	
-
 
 		$this->output('desktop/dashboard');
 	}

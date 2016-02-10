@@ -671,7 +671,8 @@ ION.MainPanel = new NamedClass('ION.MainPanel', {
 	options: {
 		title: {
 			text: 	null,
-			icon: 	null
+			icon: 	null,
+			attributes: {}
 		},
 		barTitle:	null,		// Panel's title
 		icon:		'',
@@ -690,7 +691,8 @@ ION.MainPanel = new NamedClass('ION.MainPanel', {
 		{
 			var options = {
 				container: this.mainColumn,
-				title: typeOf(o.title.text) != 'null' ? o.title.text : ''
+				title: typeOf(o.title.text) != 'null' ? o.title.text : '',
+				attributes: typeOf(o.title.attributes) != 'null' ? o.title.attributes : {}
 			};
 
 			if (typeOf(o.title.icon) != 'null') options['class'] = o.title.icon;

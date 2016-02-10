@@ -37,27 +37,43 @@
 
 			<?php endif ;?>
 
+			<!-- Content Types -->
+			<?php if (isset($content_types)) :?>
+				<dl class="small">
+					<dt>
+						<label for="id_content_type"><?php echo lang('ionize_label_content_type'); ?></label>
+					</dt>
+					<dd>
+						<?php echo $content_types; ?>
+					</dd>
+				</dl>
+			<?php endif ;?>
+
+
+
 			<?php if (humanize_mdate($logical_date, Settings::get('date_format')) != '') :?>
-				<dl class="small compact">
+				<dl class="not-editable small compact">
 					<dt><label><?php echo lang('ionize_label_date'); ?></label></dt>
 					<dd><?php echo humanize_mdate($logical_date, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($logical_date, '%H:%i:%s'); ?></span></dd>
 				</dl>
 			<?php endif ;?>
 
-			<dl class="small compact">
-				<dt><label><?php echo lang('ionize_label_created'); ?></label></dt>
-				<dd><?php echo humanize_mdate($created, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($created, '%H:%i:%s'); ?></span></dd>
-			</dl>
+			<?php if (humanize_mdate($created, Settings::get('date_format')) != '') :?>
+				<dl class="not-editable small compact">
+					<dt><label><?php echo lang('ionize_label_created'); ?></label></dt>
+					<dd><?php echo humanize_mdate($created, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($created, '%H:%i:%s'); ?></span></dd>
+				</dl>
+			<?php endif ;?>
 
 			<?php if (humanize_mdate($updated, Settings::get('date_format')) != '') :?>
-				<dl class="small compact">
+				<dl class="not-editable small compact">
 					<dt><label><?php echo lang('ionize_label_updated'); ?></label></dt>
 					<dd><?php echo humanize_mdate($updated, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($updated, '%H:%i:%s'); ?></span></dd>
 				</dl>
 			<?php endif ;?>
 
 			<?php if (humanize_mdate($publish_on, Settings::get('date_format')) != '') :?>
-				<dl class="small compact">
+				<dl class="not-editable small compact">
 					<dt><label><?php echo lang('ionize_label_publish_on'); ?></label></dt>
 					<dd><?php echo humanize_mdate($publish_on, Settings::get('date_format')); ?> <span class="lite"><?php echo humanize_mdate($publish_on, '%H:%i:%s'); ?></span></dd>
 				</dl>
@@ -86,8 +102,9 @@
 		<!-- Attributes -->
 		<h3 class="toggler toggler-options"><?php echo lang('ionize_title_attributes'); ?></h3>
 		<div class="element element-options">
-			
+
 			<!-- Type -->
+			<?php if ( ! empty($all_article_types)) :?>
 			<dl class="small">
 				<dt>
 					<label for="article_type<?php echo $id_article; ?>" title="<?php echo ucfirst(lang('ionize_label_type')); ?>">
@@ -95,13 +112,14 @@
 					</label>
 				</dt>
 				<dd>
-					<select id="article_type<?php echo $id_article; ?>" class="p1 select type left w100p" data-id="<?php echo $id_article; ?>">
+					<select id="article_type<?php echo $id_article; ?>" class="p1 inputtext type left w100p" data-id="<?php echo $id_article; ?>">
 						<?php foreach($all_article_types as $idx => $type) :?>
 							<option <?php if ($article_type_current == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
 						<?php endforeach ;?>
 					</select>
 				</dd>
-			</dl>			
+			</dl>
+			<?php endif ;?>
 
 			<!-- Indexed content -->
 			<dl class="small">
@@ -176,7 +194,7 @@
 					<label for="logical_date"><?php echo lang('ionize_label_date'); ?></label>
 				</dt>
 				<dd>
-					<input id="logical_date" name="logical_date" type="text" class="inputtext w120 date" value="<?php echo humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
+					<input id="logical_date" name="logical_date" type="text" class="inputtext w130 date" value="<?php echo humanize_mdate($logical_date, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="logical_date"></a>
 				</dd>
 			</dl>
@@ -185,7 +203,7 @@
 					<label for="publish_on"><?php echo lang('ionize_label_publish_on'); ?></label>
 				</dt>
 				<dd>
-					<input id="publish_on" name="publish_on" type="text" class="inputtext w120 date" value="<?php echo humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
+					<input id="publish_on" name="publish_on" type="text" class="inputtext w130 date" value="<?php echo humanize_mdate($publish_on, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="publish_on"></a>
 				</dd>
 			</dl>
@@ -195,7 +213,7 @@
 					<label for="publish_off"><?php echo lang('ionize_label_publish_off'); ?></label>
 				</dt>
 				<dd>
-					<input id="publish_off" name="publish_off" type="text" class="inputtext w120 date"  value="<?php echo humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
+					<input id="publish_off" name="publish_off" type="text" class="inputtext w130 date"  value="<?php echo humanize_mdate($publish_off, Settings::get('date_format'). ' %H:%i:%s'); ?>" />
 					<a class="icon clearfield date" data-id="publish_off"></a>
 				</dd>
 			</dl>
@@ -413,7 +431,7 @@
 	 *
 	 */
 	ION.initDatepicker('<?php echo Settings::get('date_format') ;?>', {timePicker:true});
-	ION.initClearField('#articleOptionsForm');
+	ION.initClearField('articleOptionsForm');
 
 	/**
 	 * Add links on each parent page
@@ -495,14 +513,16 @@
 		});
 
 		// Types
-		$('article_type<?php echo $id_article; ?>').addEvent('change', function(e)
-		{
-			ION.JSON('article/save_context', {
-				'id_article': <?php echo $id_article; ?>,
-				'id_page': $('rel').value.split('.')[0],
-				'id_type': $('article_type<?php echo $id_article; ?>').value
+		<?php if ( ! empty($all_article_types)) :?>
+			$('article_type<?php echo $id_article; ?>').addEvent('change', function(e)
+			{
+				ION.JSON('article/save_context', {
+					'id_article': <?php echo $id_article; ?>,
+					'id_page': $('rel').value.split('.')[0],
+					'id_type': $('article_type<?php echo $id_article; ?>').value
+				});
 			});
-		});
+		<?php endif; ?>
 
 		// Categories
 		var elCategories = $('categories');

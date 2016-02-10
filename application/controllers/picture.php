@@ -116,6 +116,27 @@ class Picture extends Base_Controller
 		die();
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_size($id_media)
+	{
+		$size = 0;
+		$media = $id_media ? $this->media_model->get($id_media) : FALSE;
+
+		if ($media)
+		{
+			$d = @getimagesize(base_url() . $media['path']);
+
+			$size = array(
+				'width' => $d['0'],
+				'height' => $d['1']
+			);
+		}
+
+		$this->xhr_output($size);
+	}
 }
 
 

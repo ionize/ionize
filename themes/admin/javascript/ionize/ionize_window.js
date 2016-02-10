@@ -281,6 +281,7 @@ ION.Window = new Class({
 						});
 					}
 
+					// Save and Reload
 					if (opt.form.reload)
 					{
 						self.saveReloadButton = new Element('button', {
@@ -300,18 +301,32 @@ ION.Window = new Class({
 							if (typeOf(opt.form.onBeforeSave) == 'function')
 								save = opt.form.onBeforeSave(self.form);
 
-							if (save == true) {
+							if (save == true)
+							{
+								var validator = self.form.retrieve('validator');
 
-								ION.JSON(
-									opt.form.action,
-									self.form,
-									{
-										onSuccess: function (json) {
-											w.close();
-											opt.form.reload(json);
+								if (validator && ! validator.validate())
+								{
+									new ION.Notify(self.form, {type:'error'}).show('ionize_message_form_validation_please_correct');
+								}
+								else
+								{
+									// tinyMCE and CKEditor trigerSave
+									ION.updateRichTextEditors();
+
+									ION.JSON(
+										opt.form.action,
+										self.form,
+										{
+											onSuccess: function (json) {
+												w.close();
+												opt.form.reload(json);
+												if (opt.form.onSuccess)
+													opt.form.onSuccess(json);
+											}
 										}
-									}
-								);
+									);
+								}
 							}
 						});
 					}
@@ -370,6 +385,7 @@ ION.WindowTitle = new Class({
 			...
 		*/
 		],
+		attributes: {},				// HTML attributes of the title
 		build: true                 // Build or not the title. If false, the title will need to be returned
 									// with getDomElement()
 	},
@@ -389,12 +405,19 @@ ION.WindowTitle = new Class({
 
 	buildTitle: function()
 	{
+		var self = this;
+
 		this.domElement = new Element('div');
 
 		this.h2 = new Element('h2', {
 			'class': 'main ' + this.options.class,
 			'html' : this.options.title
 		}).inject(this.domElement);
+
+		Object.each(this.options.attributes, function(value, idx)
+		{
+			self.h2.setProperty(idx, value);
+		});
 
 		// Subtitle is one array of objects
 		if (this.options.subtitle)
@@ -436,6 +459,9 @@ ION.WindowTitle = new Class({
 		this.getSubtitleDomElement().empty();
 
 		var p = new Element('p').inject(this.subTitleElement);
+
+		if (subtitle.class)
+			this.getSubtitleDomElement().addClass(subtitle.class);
 
 		if (typeOf(subtitle) == 'string')
 			var span = new Element('span', {'class': 'lite', 'html': subtitle  }).inject(p);

@@ -245,7 +245,7 @@
 					data.height = 350;
 					data.params.frameborder = '0';
 					data.type = 'iframe';
-					src = 'http://www.youtube.com/embed/' + src.match(/v=([^&]+)/)[1];
+					src = 'https://www.youtube.com/embed/' + src.match(/v=([^&]+)/)[1];
 					setVal('src', src);
 					setVal('media_type', data.type);
 				}

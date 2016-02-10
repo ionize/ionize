@@ -474,6 +474,17 @@ class FTL_Binding
 		if (is_null($key))
 			$key = $this->name;
 
+		$data_array = $this->getDataArray($data_array_name);
+
+		if (is_array($data_array) && isset($data_array[$key]))
+			return $data_array[$key];
+
+		return NULL;
+	}
+
+
+	public function getDataArray($data_array_name = NULL)
+	{
 		if (is_null($data_array_name))
 		{
 			$data_array_name = $this->getAttribute('from');
@@ -482,19 +493,20 @@ class FTL_Binding
 				$data_array_name = $this->getDataParentName();
 		}
 
-		if ( ! is_null($key) && ! is_null($data_array_name))
+		if ( ! is_null($data_array_name))
 		{
 			$data_array = $this->get($data_array_name);
 
 			if (is_null($data_array))
 				$data_array = $this->get('data');
 
-			if (is_array($data_array) && isset($data_array[$key]))
-				return $data_array[$key];
+			if (is_array($data_array))
+				return $data_array;
 		}
 
 		return NULL;
 	}
+
 
 	/**
 	 * Returns one local var

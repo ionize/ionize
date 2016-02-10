@@ -2,12 +2,21 @@
 <sql>
 
     <query>
-        update setting set content='1.0.8' where name = 'ionize_version';
+        update setting set content='1.0.8' where name='ionize_version';
     </query>
 
     <query>
-        INSERT INTO extend_field_type (id_extend_field_type, type_name, default_values, `values`, translated, active, validate, html_element, html_element_type, html_element_class, html_element_pattern)
-        VALUES (9,'Color',0,0,0,1,NULL,'input','color','color w120 inputtext',NULL);
+        INSERT IGNORE INTO extend_field_type (id_extend_field_type, type_name, default_values, `values`, translated, active, validate, html_element, html_element_type, html_element_class, html_element_pattern)
+        VALUES (9,'Color',0,0,0,1,NULL,'input','color','color w120 inputtext', NULL);
+    </query>
+
+    <query>
+        INSERT IGNORE INTO extend_field_type (id_extend_field_type, type_name, default_values, `values`, translated, active, validate, html_element, html_element_type, html_element_class, html_element_pattern)
+        VALUES (10,'Date & Time',0,0,0,1,NULL,'input','datetime','w130 inputtext', NULL);
+    </query>
+
+    <query>
+        update extend_field_type set html_element_class='w130 inputtext' where type_name='Date';
     </query>
 
     <query>
@@ -25,12 +34,6 @@
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     </query>
 
-    <query>
-        CREATE TABLE IF NOT EXISTS extend_field_article_type (
-            id_extend_field INT(11) UNSIGNED NOT NULL,
-            id_type int(11) UNSIGNED NOT NULL
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    </query>
 
     <query>
         ALTER TABLE page_lang change subtitle subtitle text;
@@ -40,4 +43,78 @@
         ALTER TABLE article_lang change subtitle subtitle text;
     </query>
 
+    <query>
+        ALTER TABLE page change publish_on publish_on datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        ALTER TABLE page change publish_off publish_off datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        ALTER TABLE page change updated updated datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        ALTER TABLE page change id_type id_content_type int(11) unsigned default NULL;
+    </query>
+
+    <query>
+        ALTER TABLE article add column id_content_type int(11) unsigned default NULL;
+    </query>
+
+    <query>
+        ALTER TABLE page change link_id link_id varchar(20) default NULL;
+    </query>
+
+    <query>
+        ALTER TABLE article change publish_on publish_on datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        ALTER TABLE article change publish_off publish_off datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        ALTER TABLE article change updated updated datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        ALTER TABLE article change logical_date logical_date datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        ALTER TABLE media change date date datetime default '0000-00-00 00:00:00';
+    </query>
+
+    <query>
+        CREATE TABLE `content_type` (
+        `id_content_type` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `name` varchar(50) DEFAULT NULL COMMENT 'Logical name',
+        `type` varchar(50) DEFAULT NULL COMMENT '''page'', ''article''',
+        `view` varchar(50) DEFAULT NULL COMMENT 'View',
+        `view_single` varchar(50) DEFAULT NULL COMMENT 'Page view for one single article',
+        PRIMARY KEY (`id_content_type`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>
+        CREATE TABLE `content_type_group` (
+        `id_content_type_group` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `id_content_type` int(11) unsigned NOT NULL,
+        `name` varchar(50) DEFAULT NULL,
+        `ordering` int(11) DEFAULT NULL,
+        PRIMARY KEY (`id_content_type_group`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>
+        CREATE TABLE `content_type_group_extend` (
+        `id_content_type_group` int(11) unsigned NOT NULL,
+        `id_extend_field` int(11) unsigned NOT NULL DEFAULT '0',
+        `ordering` int(11) DEFAULT NULL,
+        `group` varchar(50) DEFAULT NULL COMMENT 'Logical name of the group (tab)',
+        PRIMARY KEY (`id_content_type_group`,`id_extend_field`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </query>
 </sql>

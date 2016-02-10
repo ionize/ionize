@@ -240,7 +240,9 @@ class User_model extends Base_model
 		}
 		else
 		{
-			$id_user = $this->insert($user);
+            unset($user[$this->pk_name]);
+
+            $id_user = $this->insert($user);
 		}
 
 		// Set user's role
@@ -388,6 +390,34 @@ class User_model extends Base_model
 	public function user_with_same_email_exists($email, $id_user = NULL)
 	{
 		$user = $this->get(array('email' => $email));
+
+		if ( ! is_null($id_user) && $id_user != FALSE)
+		{
+			if ( ! empty($user) && $user['id_user'] != $id_user)
+				return TRUE;
+		}
+		else
+		{
+			if ( ! empty($user))
+				return TRUE;
+		}
+		return FALSE;
+	}
+
+
+	// --------------------------------------------------------------------
+
+
+	/**
+	 * @param      $username
+	 * @param null $id_user
+	 *
+	 * @return bool
+	 *
+	 */
+	public function check_username_exists($username, $id_user = NULL)
+	{
+		$user = $this->get(array('username' => $username));
 
 		if ( ! is_null($id_user) && $id_user != FALSE)
 		{

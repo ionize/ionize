@@ -98,7 +98,7 @@ class MY_Controller extends CI_Controller
 			Settings::set_all_languages_online();
 
 		// Try to find the installer class : No access if install folder is already there
-		$installer = glob(BASEPATH.'../*/class/Installer'.EXT);
+		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
 
 		// If installer class is already here, avoid site access
 		if ( ! empty($installer))
@@ -640,6 +640,8 @@ class MY_Admin extends MY_Controller
     {
         parent::__construct();
 
+		$this->db->cache_off();
+
 		$this->load->helper('module_helper');
 		
 		// Redirect the not authorized user to the login panel. See /application/config/user.php
@@ -649,6 +651,17 @@ class MY_Admin extends MY_Controller
 			'flash_use_lang' => FALSE,
 			'flash_var' => 'error'
 		);
+
+		if ( ! User()->logged_in() && $this->is_xhr() && $this->uri->uri_string() != '/auth/xhr_login')
+		{
+			header('HTTP/1.0 401 Unauthorized');
+			$response = array(
+				'message' => 'Please login',
+				'type' => 'login'
+			);
+			$this->xhr_output($response);
+			exit();
+		}
 
 		$this->output->enable_profiler(FALSE);
 
@@ -1016,6 +1029,10 @@ class MY_Admin extends MY_Controller
 		}
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Gets List data regarding the pagination
 	 * Prepares data for the template
@@ -1067,6 +1084,8 @@ class MY_Admin extends MY_Controller
 
 class MY_Module extends MY_Controller
 {
+	private $_URI_STRING = NULL;
+
 	/**
 	 * Constructor
 	 *
@@ -1185,6 +1204,29 @@ class MY_Module extends MY_Controller
 		}
 	}
 
+	public function get_uri_string()
+	{
+		if (is_null($this->_URI_STRING))
+		{
+			$aliases = array();
+			include APPPATH . 'config/modules.php';
+
+			$segments = explode('/', trim($this->uri->uri_string(), '/'));
+
+			$rmodule = array_shift($segments);
+
+			if(in_array($rmodule, array_keys($aliases)))
+			{
+				$rmodule = $aliases[$rmodule];
+			}
+			$this->_URI_STRING = implode('/', array_merge(array($rmodule),$segments));
+		}
+
+		return $this->_URI_STRING;
+	}
+
+
+
 	/**
 	 * Renders one view containing ionize tags
 	 *
@@ -1228,6 +1270,8 @@ abstract class Module_Admin extends MY_Admin
 	 * @var CI_Controller
 	 */
 	protected $parent;
+
+	static public $ci;
 	
 	/**
 	 * Constructor
@@ -1241,6 +1285,8 @@ abstract class Module_Admin extends MY_Admin
 
 		// Set Module's config
 		$ci =& get_instance();
+		self::$ci = $ci;
+
 		$config_items = Modules()->get_module_config($ci->uri->segment(3));
 
 		foreach($config_items as $item => $value)
@@ -1324,4 +1370,30 @@ abstract class Module_Admin extends MY_Admin
 
 		$this->output($args);
 	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * @param      $view
+	 * @param bool $limit_to_module_folder
+	 */
+	public function output($view, $limit_to_module_folder = TRUE)
+	{
+		// Unique ID, useful for DOM Element displayed in windows.
+		$this->template['UNIQ'] = (uniqid());
+
+		// Loads the view
+		if ($limit_to_module_folder)
+			$output = $this->load->module_view($this->config->item('folder'), $view, $this->template, true);
+		else
+			$output = $this->load->view($view, $this->template, true);
+
+		// Set character encoding
+		$this->output->set_header("Content-Type: text/html; charset=UTF-8");
+
+		$this->output->set_output($output);
+	}
+
 }

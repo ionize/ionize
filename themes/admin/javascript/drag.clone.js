@@ -206,6 +206,8 @@ Drag.Clone = new Class({
 		var data = element.retrieve('data');
 		if (data) clone.store('data', data);
 
+		clone.store('parent', element);
+
 		var cb = element.retrieve('dropCallbacks');
 		if (cb != '')
 		{

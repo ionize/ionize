@@ -97,6 +97,7 @@ $lang['ionize_menu_tools'] = 'Tools';
 $lang['ionize_menu_translation'] = 'Translations';
 $lang['ionize_menu_translations'] = 'Static Translation';
 $lang['ionize_menu_types'] = 'Article Types';
+$lang['ionize_menu_contenttypes'] = 'Content Types';
 $lang['ionize_menu_users'] = 'Users & Roles...';
 
 
@@ -227,6 +228,35 @@ $lang['ionize_title_new_definition'] = 'New Definition';
 $lang['ionize_title_static_item_intro'] = 'Define once, use everywhere!';
 $lang['ionize_title_static_items'] = 'Static Items';
 $lang['ionize_title_static_items_definitions'] = 'Definitions';
+
+
+/*
+|--------------------------------------------------------------------------
+| Content Type
+|--------------------------------------------------------------------------
+*/
+$lang['ionize_title_content_types'] = 'Content Types';
+$lang['ionize_title_content_types_intro'] = 'Manage your content types...';
+$lang['ionize_message_content_types_intro'] = '<p>Content types gives you the ability to link some extends to given pages or articles.</p><p>Each page or article of your website can then be form one content type.</p>';
+$lang['ionize_title_new_content_type'] = 'New Content Type';
+$lang['ionize_label_save_content_type'] = 'Save Content Type';
+$lang['ionize_label_content_type_groups'] = 'Fields Groups';
+$lang['ionize_label_content_type_add_new_group'] = 'Add';
+$lang['ionize_label_content_type_new_group'] = 'New Group';
+$lang['ionize_message_please_set_a_group_name'] = 'Please set a group name';
+$lang['ionize_message_please_set_a_content_type_name'] = 'Please set a Content Type name';
+$lang['ionize_message_content_type_add_one_group'] = 'Add at least one group';
+$lang['ionize_label_content_type_add_extend_to_group'] = 'Add Extends to group';
+$lang['ionize_confirm_content_type_delete'] = 'Are you really sure?<br/>All %ss linked to this content type will loose their content type';
+$lang['ionize_confirm_content_type_group_delete'] = 'Are you really sure?<br/>';
+$lang['ionize_label_select_no_type'] = '-- No Type --';
+$lang['ionize_label_content_type'] = 'Content Type';
+$lang['ionize_help_content_types'] = 'Content Types organize extend fields and make them available only for pages or articles which are from one Content Type.<br/><br/>For example, if one page "Services" needs some extends fields:<br/><ol><li>Create one Content Type called "Services"</li><li>Add at least one group, called "Service fields" (this group will become one tab containing the fields)</li><li>Add wished fields to this group</li></ol>';
+$lang['ionize_help_content_type_type'] = 'This content type will only be available for the selected parent.';
+$lang['ionize_help_content_type_name'] = 'Give it a name : The editor will create pages or article link and see this name.';
+$lang['ionize_help_content_type_new'] = 'Once saved, you will be able to link extend fields to this Content Type';
+$lang['ionize_help_content_type_view'] = 'Main view of this page';
+$lang['ionize_help_content_type_view_single'] = 'This view will be used to display one article (URL call on the article)';
 
 
 /*

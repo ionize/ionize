@@ -65,7 +65,11 @@ $id = $id_element_definition;
 							<li <?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><?php echo ucfirst($language['name']) ;?></a></li>
 						<?php endforeach ;?>
 
-						<li class="right" id="usageTab"><a><?php echo count($usages) . ' ' . lang('ionize_button_usage'); ?></a></li>
+						<?php
+						$nb_usages = ! empty($usages) ? count($usages) : 0;
+						?>
+
+						<li class="right" id="usageTab"><a><?php echo $nb_usages . ' ' . lang('ionize_button_usage'); ?></a></li>
 					</ul>
 					<div class="clear"></div>
 
@@ -86,6 +90,7 @@ $id = $id_element_definition;
 					<?php endforeach ;?>
 
 					<div class="tabcontent">
+						<?php if (! empty($usages)) :?>
 						<table class="list">
 							<thead>
 							<tr>
@@ -119,6 +124,7 @@ $id = $id_element_definition;
 							<?php } ?>
 							</tbody>
 						</table>
+						<?php endif ;?>
 					</div>
 				</div>
 

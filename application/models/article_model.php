@@ -43,8 +43,8 @@ class Article_model extends Base_model
 	 *
 	 */
 	private $filter_field_ref = array(
-		'title'	=> 'article_lang',
-		'view'	=> 'page_article'
+		'title' => 'article_lang',
+		'view' => 'page_article'
 	);
 
 	/**
@@ -330,7 +330,34 @@ class Article_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	/** 
+	public function get_orphan_articles($lang = NULL)
+	{
+		$data = array();
+		if (is_null($lang)) $lang = Settings::get_lang('default');
+
+		$sql = "
+			select
+				distinct a.*,
+				pa.id_page
+				from article a
+			 left join page_article pa on pa.id_article = a.id_article
+			 left join article_lang al on al.id_article = a.id_article and al.lang='".$lang."'
+			 where pa.id_page is null
+		";
+
+		$query = $this->db->query($sql);
+
+		if ( $query->num_rows() > 0)
+			$data = $query->result_array();
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Get one article parent pages list
 	 *
 	 * @param 	int		$id_article
@@ -1645,6 +1672,144 @@ class Article_model extends Base_model
 		$nb = $this->{$this->db_group}->count_all_results($this->table);
 
 		return $nb;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function init_article_urls($article, $lang=NULL)
+	{
+		$articles = $this->init_articles_urls(array($article), $lang);
+
+		return $articles[0];
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function init_articles_urls($articles, $lang=NULL)
+	{
+		self::$ci->load->model('page_model');
+
+		$lang = is_null($lang) ? Settings::get_lang('current') : $lang;
+
+		// Page URL key to use
+		$page_url_key = (config_item('url_mode') === 'short') ? 'url' : 'path';
+
+
+		// Array of all articles IDs
+		$articles_id = array();
+		foreach($articles as $article)
+			$articles_id[] = $article['id_article'];
+
+		// Articles contexts of all articles
+		$pages_context = self::$ci->page_model->get_lang_contexts($articles_id, $lang);
+
+		// Add pages contexts data to articles
+		foreach($articles as &$article)
+		{
+			$contexts = array();
+			foreach($pages_context as $context)
+			{
+				if ($context['id_article'] == $article['id_article'])
+					$contexts[] = $context;
+			}
+
+			$page = array_shift($contexts);
+
+			// Get the context of the Main Parent
+			if ( ! empty($contexts))
+			{
+				foreach($contexts as $context)
+				{
+					if ($context['main_parent'] == '1')
+						$page = $context;
+				}
+			}
+
+			// Basic article URL : its lang URL (without "http://")
+			$url = $article['url'];
+
+			// Link ?
+			if ($article['link_type'] != '' )
+			{
+				// External
+				if ($article['link_type'] === 'external')
+				{
+					$article['absolute_url'] = $article['link'];
+				}
+
+				// Email
+				else if ($article['link_type'] === 'email')
+				{
+					$article['absolute_url'] = auto_link($article['link'], 'both', TRUE);
+				}
+
+				// Internal
+				else
+				{
+					// Article
+					if($article['link_type'] === 'article')
+					{
+						// Get the article to which this page links
+						$rel = explode('.', $article['link_id']);
+						$target_article = $this->get_context($rel[1], $rel[0], Settings::get_lang('current'));
+
+						// Of course, only if not empty...
+						if ( ! empty($target_article))
+						{
+							// Get the article's parent page
+							$parent_page = self::$ci->page_model->get_by_id($rel[0], Settings::get_lang('current'));
+
+							if ( ! empty($parent_page))
+								$article['absolute_url'] = $parent_page[$page_url_key] . '/' . $target_article['url'];
+						}
+					}
+					// Page
+					else
+					{
+						$target_page = self::$ci->page_model->get_by_id($article['link_id'], Settings::get_lang('current'));
+
+						// If target page is offline, 'path' is not set
+						if ( isset($target_page[$page_url_key]))
+							$article['absolute_url'] = $target_page[$page_url_key];
+						else
+							$article['absolute_url'] = '#';
+					}
+
+					$article['relative_url'] = $article['absolute_url'];
+					$article['relative_lang_url'] = $article['absolute_url'];
+
+					// Correct the URL : Lang + Base URL
+					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+					{
+						$article['absolute_url'] =  Settings::get_lang('current'). '/' . $article['absolute_url'];
+						$article['relative_lang_url'] = $article['absolute_url'];
+					}
+
+					$article['absolute_url'] = base_url() . $article['absolute_url'];
+				}
+			}
+			// Standard URL
+			else
+			{
+				$article['relative_url'] = $article['relative_lang_url'] = $page[$page_url_key] . '/' . $url;;
+
+				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
+				{
+					$article['relative_lang_url'] = Settings::get_lang('current') . '/' . $article['relative_url'];
+					$article['absolute_url'] = base_url() . $article['relative_lang_url'];
+				}
+				else
+				{
+					$article['absolute_url'] = base_url() . $article['relative_url'];
+				}
+			}
+		}
+
+		return $articles;
 	}
 
 

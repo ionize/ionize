@@ -106,6 +106,14 @@ class TagManager
 	public static $_entity = NULL;
 
 	/**
+	 * Shutdown callback
+	 * Currently used if one expression evaluation hangs
+	 * @var null
+	 */
+	public static $shutdown_callback = NULL;
+	public static $shutdown_callback_args = NULL;
+
+	/**
 	 * Declared forms
 	 *
 	 * @var null
@@ -210,6 +218,8 @@ class TagManager
 		'request:get' =>		'tag_request_get',
 		'attr' =>				'tag_attr',
 		'partial:attr' =>		'tag_partial_attr',
+		'email' =>				'tag_email',
+		'asset' =>				'tag_asset',
 
 		// Development tags
 		'trace' =>				'tag_trace',
@@ -280,6 +290,10 @@ class TagManager
 		self::add_module_tags();
 
 		self::process_form();
+
+		register_shutdown_function(
+			array('TagManager', 'call_shutdown')
+		);
 	}
 
 
@@ -310,10 +324,24 @@ class TagManager
 
 			if ( !empty($forms[$f]['process']))
 			{
+				$process = $forms[$f]['process'];
+
 				// Create one dummy parent tag
 				$tag = new FTL_Binding(self::$context, self::$context->globals, 'init', array(), NULL);
 
-				call_user_func($forms[$f]['process'], $tag);
+				// Load the library
+				$arr = explode('::', $process);
+				$class_name = $arr[0];
+				$method_name = $arr[1];
+
+				if ( ! class_exists($class_name))
+					self::$ci->load->library($class_name);
+
+				// Execute the method
+				if (method_exists($class_name, $method_name))
+				{
+					call_user_func($process, $tag);
+				}
 			}
 		}
 	}
@@ -1344,7 +1372,8 @@ class TagManager
 		// Optional : data array from where to get the data
 		$from = $tag->getAttribute('from');
 
-		$value = $tag->getValue(NULL, $from);
+		$value = $tag->get('date');
+		if (empty($value)) $value = $tag->getValue(NULL, $from);
 
 		$value = self::format_date($tag, $value);
 
@@ -1396,11 +1425,13 @@ class TagManager
 	 * @return string
 	 *
 	 * @usage	<ion:extend:extend_name />
+	 * @usage	<ion:extend:extend_name is_empty="false" />
 	 *
 	 */
 	public static function tag_extend_field(FTL_Binding $tag)
 	{
 		$extend_field_name = $tag->getName();
+		$is_empty = $tag->getAttribute('is_empty');
 
 		if (isset(self::$extends_def[$extend_field_name]))
 		{
@@ -1408,7 +1439,17 @@ class TagManager
 
 			$tag->set('extend', $extend);
 
-			return $tag->expand();
+			if ($is_empty == FALSE || $is_empty == TRUE)
+			{
+				$value = $tag->getValue(self::$extend_field_prefix . $extend['name'], $extend['parent']);
+
+				if ( empty($value) == $is_empty)
+					return $tag->expand();
+			}
+			else
+			{
+				return $tag->expand();
+			}
 		}
 		return '';
 	}
@@ -1443,6 +1484,59 @@ class TagManager
 		}
 
 		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns one Extend Field value
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 * @return string
+	 */
+	public static function tag_extend_field_value_label(FTL_Binding $tag)
+	{
+		// Extend Field Definition, as set by self::create_extend_tags()
+		$extend = $tag->get('extend');
+		$key = $extend['name'];
+
+		$value = $tag->getValue(self::$extend_field_prefix . $key, $extend['parent']);
+
+		switch ($extend['type'])
+		{
+			// TextArea
+			case '2':
+			case '3':
+				$value = self::$ci->url_model->parse_internal_links(
+					$value,
+					$tag->getAttribute('link_key'),
+					$tag->getAttribute('link_title')
+				);
+				self::load_model('media_model');
+				$value = self::$ci->media_model->parse_content_media_url($value);
+				break;
+
+			case '4':
+			case '5':
+			case '6':
+				if ( ! empty($extend['options'][$value]))
+					$value = $extend['options'][$value];
+				break;
+
+			case '7':
+				$value = self::format_date($tag, $value);
+				break;
+
+			default:
+				break;
+		}
+
+		$tag->set($tag->getName(), $value);
+
+		return self::output_value($tag, $value);
 	}
 
 
@@ -1753,14 +1847,16 @@ class TagManager
 
 				foreach($links as $key => $link)
 				{
-					$target_uri = ! empty($link['target_url']) ? $link['target_url'] : $link['entity_url'];
-					$links[$key]['absolute_url'] = $base_url . $target_uri;
-
-					// Set medias
-					$links[$key]['medias'] = $link['data']['medias'];
-
-					// Set type
-					$links[$key][$link['type']] = $link['data'];
+					// External
+					if ( ! empty($link['data']['link_type']) && $link['data']['link_type'] === 'external')
+					{
+						$links[$key]['absolute_url'] = $link['data']['link'];
+					}
+					else
+					{
+						$target_uri = ! empty($link['target_url']) ? $link['target_url'] : $link['entity_url'];
+						$links[$key]['absolute_url'] = $base_url . $target_uri;
+					}
 				}
 
 				$tag->set('links', $links);
@@ -1777,6 +1873,11 @@ class TagManager
 					$link['medias'] = $link['data']['medias'];
 					$tag->set('links', $link);
 
+					foreach($link['data'] as $key => $value)
+					{
+						$tag->set($key, $value);
+					}
+
 					foreach($link as $key => $value)
 					{
 						$tag->set($key, $value);
@@ -1791,6 +1892,23 @@ class TagManager
 		}
 
 		return $str;
+	}
+
+
+	public static function tag_extend_field_links_url(FTL_Binding $tag)
+	{
+		$is_empty = $tag->getAttribute('is_empty');
+		$url = $tag->get('url');
+
+		if ($is_empty == FALSE || $is_empty == TRUE)
+		{
+			if ( empty($url) == $is_empty)
+				return $tag->expand();
+		}
+		else
+		{
+			return $tag->get('url');
+		}
 	}
 
 
@@ -2084,7 +2202,6 @@ class TagManager
 			$test_value = (is_string($value) OR is_null($value)) ? "'".$value."'" : $value;
 
 			$expression = str_replace($key, $test_value, $expression);
-
 		}
 
 		// If at least one tested value was not NULL
@@ -2474,6 +2591,7 @@ class TagManager
 
 		return '';
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -3073,6 +3191,95 @@ class TagManager
 				}
 			}
 		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Returns one website email
+	 *
+	 * @param 	FTL_Binding $tag
+	 *
+	 * @usage	<ion:email key="site" [encode="false"] />
+	 *
+	 * @return false|mixed|string
+	 */
+	public static function tag_email(FTL_Binding $tag)
+	{
+		$key = $tag->getAttribute('key');
+		$label = $tag->getAttribute('label');
+		$class = $tag->getAttribute('class');
+		$id = $tag->getAttribute('id');
+
+		$attributes = array();
+		if ( ! empty($class)) $attributes['class'] = $class;
+		if ( ! empty($id)) $attributes['id'] = $id;
+
+		if ( ! is_null($key))
+		{
+			if ($key == 'site') $key = 'site_email';
+
+			$email = Settings::get($key);
+
+			if (empty($email))
+				$email = Settings::get('email_' . $key);
+
+			if ( ! empty($email))
+			{
+				if ( ! is_null($label))
+				{
+					$email_label = lang($label);
+
+					if (empty($email_label)) $email_label = $label;
+				}
+				else
+					$email_label = $label;
+
+				if ($tag->getAttribute('key') != FALSE)
+					$email = safe_mailto($email, $email_label, $attributes);
+				else
+					$email = mailto($email, $email_label, $attributes	);
+
+				return self::output_value($tag, $email);
+			}
+		}
+
+		return '';
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public static function tag_asset(FTL_Binding $tag)
+	{
+		$str = '';
+		$src = $tag->getAttribute('src');
+
+		$extension = array_pop(explode('.', $src));
+		$filename = FCPATH.Theme::get_theme_path().$src;
+
+		if (is_file($filename))
+		{
+			$handle = fopen($filename, "rb");
+			$data = stream_get_contents($handle);
+			fclose($handle);
+
+			switch($extension)
+			{
+				case 'css':
+					$str = "<style>\n" . $data . "\n</style>";
+					break;
+
+				case 'js':
+					$str = "<script>\n" . $data . "\n</script>";
+					break;
+			}
+		}
+
+		return $str;
 	}
 
 
@@ -3734,6 +3941,12 @@ class TagManager
 	 */
 	protected static function eval_expression(FTL_Binding $tag, $expression)
 	{
+		// PHP error handling method
+		self::register_shutdown(
+			'self::handle_eval_shutdown',
+			$tag
+		);
+
 		// Result and return
 		$return = NULL;
 		$result = FALSE;
@@ -3750,6 +3963,7 @@ class TagManager
 		foreach($keys as $idx => $key)
 		{
 			$key = trim($key);
+
 			// 1. Try to get the value from tag's data array
 			$value = $tag->getValue($key);
 
@@ -3779,7 +3993,6 @@ class TagManager
 		if ( ! is_null($test_value))
 		{
 			$return = @eval("\$result = (".$expression.") ? TRUE : FALSE;");
-
 		}
 
 		if ($return === NULL OR is_null($test_value))
@@ -3803,35 +4016,39 @@ class TagManager
 	// ------------------------------------------------------------------------
 
 
-	public static function create_extend_tags(FTL_Binding $tag, $parent)
+	public static function create_extend_tags(FTL_Binding $tag, $parent, $parent_tag = NULL)
 	{
-		if ( ! isset(self::$has_extend_tags[$parent]))
+		$parent_tag = is_null($parent_tag) ? $parent : $parent_tag;
+
+		if ( ! isset(self::$has_extend_tags[$parent_tag]))
 		{
 			$extend_fields_definitions = self::$ci->base_model->get_extend_fields_definition($parent, Settings::get_lang('current'));
 
 			foreach ($extend_fields_definitions as $field)
 			{
 				self::$extends_def[$field['name']] = $field;
-				self::$context->define_tag($parent.':extend:'.$field['name'], array(__CLASS__, 'tag_extend_field'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':label', array(__CLASS__, 'tag_extend_field_definition_key'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':type', array(__CLASS__, 'tag_extend_field_definition_key'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':default_value', array(__CLASS__, 'tag_extend_field_definition_key'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':value', array(__CLASS__, 'tag_extend_field_value'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'], array(__CLASS__, 'tag_extend_field'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':label', array(__CLASS__, 'tag_extend_field_definition_key'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':type', array(__CLASS__, 'tag_extend_field_definition_key'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':default_value', array(__CLASS__, 'tag_extend_field_definition_key'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':value_label', array(__CLASS__, 'tag_extend_field_value_label'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':value', array(__CLASS__, 'tag_extend_field_value'));
 
-				self::$context->define_tag($parent.':extend:'.$field['name'].':options', array(__CLASS__, 'tag_extend_field_options'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':options:label', array(__CLASS__, 'tag_simple_value'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':options:value', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':options', array(__CLASS__, 'tag_extend_field_options'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':options:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':options:value', array(__CLASS__, 'tag_simple_value'));
 
-				self::$context->define_tag($parent.':extend:'.$field['name'].':values', array(__CLASS__, 'tag_extend_field_values'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':values', array(__CLASS__, 'tag_extend_field_values'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':values:label', array(__CLASS__, 'tag_simple_value'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':values:value', array(__CLASS__, 'tag_simple_value'));
 
-				self::$context->define_tag($parent.':extend:'.$field['name'].':medias', array(__CLASS__, 'tag_extend_field_medias'));
-				self::$context->define_tag($parent.':extend:'.$field['name'].':links', array(__CLASS__, 'tag_extend_field_links'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':medias', array(__CLASS__, 'tag_extend_field_medias'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':links', array(__CLASS__, 'tag_extend_field_links'));
+				self::$context->define_tag($parent_tag.':extend:'.$field['name'].':links:url', array(__CLASS__, 'tag_extend_field_links_url'));
 
 			}
 
-			self::$has_extend_tags[$parent] = TRUE;
+			self::$has_extend_tags[$parent_tag] = TRUE;
 		}
 	}
 
@@ -3862,6 +4079,91 @@ class TagManager
 					self::$context->define_tag($prefix.$key.':'.$name, array(__CLASS__, 'tag_simple_value'));
 				}
 			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Registers one method as shutdown function
+	 * Needed because register_shutdown_function() stacks functions
+	 *
+	 * @param $callback
+	 * @param $tag
+	 *
+	 */
+	private static function register_shutdown($callback, $tag)
+	{
+		if(is_callable($callback))
+		{
+			self::unregister_shutdown();
+			self::$shutdown_callback = $callback;
+			self::$shutdown_callback_args = $tag;
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Unregister the shutdown function
+	 *
+	 */
+	private static function unregister_shutdown()
+	{
+		self::$shutdown_callback = NULL;
+		self::$shutdown_callback_args = NULL;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Calls the registered shutdown method
+	 * This method is registered as "shutdown function" by self::init()
+	 *
+	 */
+	public static function call_shutdown()
+	{
+		if ( ! is_null(self::$shutdown_callback))
+		{
+			$callback = self::$shutdown_callback;
+			if(is_callable($callback))
+			{
+				call_user_func($callback, self::$shutdown_callback_args);
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Handles the eval_expression() PHP fatal error.
+	 * Called when the expression evaluation generates one fatal error
+	 *
+	 * @param FTL_Binding $tag
+	 *
+	 */
+	public static function handle_eval_shutdown(FTL_Binding $tag)
+	{
+		$error = error_get_last();
+		if($error !== NULL)
+		{
+			$msg = self::show_tag_error($tag,
+				'PHP error : ' . $error['message'] . '<br/>' .
+				'in expression : ' . $tag->getAttribute('expression') . '<br/>' .
+				'file : ' . $error['file']
+				//	. '<br/>PHP original error : <br/>'.
+				//	$error['message'] . ' in ' . $error['file']
+			);
+			echo $msg;
+			die();
 		}
 	}
 
@@ -3947,6 +4249,33 @@ class TagManager
 			}
 		}
 		return $swap;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected static function json_encode_for_html_attribute($data)
+	{
+		$str = json_encode($data);
+
+		$str = str_replace("'", "\u0027", $str);
+
+		$str = str_replace('"', "'", $str);
+
+		return $str;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected static function json_encode_base64($data)
+	{
+		$str = json_encode($data);
+		$str = base64_encode($str);
+
+		return $str;
 	}
 
 

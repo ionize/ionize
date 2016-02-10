@@ -95,30 +95,6 @@ class Extend_fields_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	public function _join_to_extend_types()
-	{
-		// Join to types
-		$this->{$this->db_group}->select(
-			self::$_TYPE_TABLE . '.type_name,'
-			.self::$_TYPE_TABLE . '.active,'
-			.self::$_TYPE_TABLE . '.validate,'
-			.self::$_TYPE_TABLE . '.html_element,'
-			.self::$_TYPE_TABLE . '.html_element_type,'
-			.self::$_TYPE_TABLE . '.html_element_class,'
-			.self::$_TYPE_TABLE . '.html_element_pattern'
-		);
-
-		$this->{$this->db_group}->join(
-			self::$_TYPE_TABLE,
-			self::$_TYPE_TABLE . '.id_extend_field_type = ' . self::$_EXTEND . '.type',
-			'inner'
-		);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
 	public function get_extend_link_list_from_content($content, $lang=NULL)
 	{
 		$data = array();
@@ -184,4 +160,36 @@ class Extend_fields_model extends Base_model
 		return $data;
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_parents_from_extend_where($parent, $extends)
+	{
+
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function _join_to_extend_types()
+	{
+		// Join to types
+		$this->{$this->db_group}->select(
+			self::$_TYPE_TABLE . '.type_name,'
+			.self::$_TYPE_TABLE . '.active,'
+			.self::$_TYPE_TABLE . '.validate,'
+			.self::$_TYPE_TABLE . '.html_element,'
+			.self::$_TYPE_TABLE . '.html_element_type,'
+			.self::$_TYPE_TABLE . '.html_element_class,'
+			.self::$_TYPE_TABLE . '.html_element_pattern'
+		);
+
+		$this->{$this->db_group}->join(
+			self::$_TYPE_TABLE,
+			self::$_TYPE_TABLE . '.id_extend_field_type = ' . self::$_EXTEND . '.type',
+			'inner'
+		);
+	}
 }

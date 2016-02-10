@@ -181,13 +181,23 @@ class Base_model extends CI_Model
 
 		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE);
 
+		self::$ci =& get_instance();
+		$segments = array_values(self::$ci->uri->segment_array());
+		$seg_0 = array_shift($segments);
+		$seg_1 = array_shift($segments);
+
+		if (($seg_0 == config_item('admin_url')) || ($seg_1 == config_item('admin_url')) )
+		{
+			$this->{$this->db_group}->cache_delete_all();
+			$this->{$this->db_group}->cache_off();
+		}
+
 		if(self::$_inited)
 		{
 			return;
 		}
-		self::$_inited = TRUE;
 
-		self::$ci =& get_instance();
+		self::$_inited = TRUE;
 
 		// Unlock the publish filter (filter on publish status of each item)
 		if (Authority::can('access', 'admin'))
@@ -278,10 +288,7 @@ class Base_model extends CI_Model
 
 		if ( is_array($where) )
 		{
-			foreach ($where as $key => $value)
-			{
-				$this->{$this->db_group}->where($this->table.'.'.$key, $value);
-			}
+			$this->_process_where($where);
 		}
 		else
 		{
@@ -320,7 +327,7 @@ class Base_model extends CI_Model
 
 				foreach(Settings::get_languages() as $language)
 				{
-					$data['languages'][$language['lang']] = $fields;
+					$data['languages'][$language['lang']] = array_fill_keys($fields, NULL);
 
 					foreach($lang_data as $row)
 					{
@@ -674,6 +681,8 @@ class Base_model extends CI_Model
 
 		$query = $this->{$this->db_group}->get($this->table);
 
+		// log_message('error', print_r($this->{$this->db_group}->last_query(), TRUE));
+
 		if($query->num_rows() > 0)
 		{
 			$data = $query->result_array();
@@ -699,16 +708,19 @@ class Base_model extends CI_Model
 	 * @param int   			$page
 	 * @param array 			$filter
 	 * @param int   			$nb_by_page
-	 * @param array 			$sort
+	 * @param array 			$sort		array(
+	 * 											key => 'DESC'
+	 * 										)
 	 * @return array			Array(
 	 *               				'items' => 	Array of filtered results, limited to the asked page
 	 *               				'nb' => 	Total Nb of filtered results
 	 *               			)
 	 */
-	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $sort=NULL)
+	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $sort=NULL, $addon=array())
 	{
 		if ( ! $filter) $filter = array();
-		$sql_filter = $sql_having = '';
+		$sql_having = '';
+		$sql_join = '';
 
 		if (isset($this->_table_definition))
 		{
@@ -722,6 +734,8 @@ class Base_model extends CI_Model
 			$type = $table;
 			$pk_table = 'id_' . $table;
 		}
+
+		$lang_table = $this->get_lang_table();
 
 		// Returned results
 		$result = array(
@@ -741,12 +755,11 @@ class Base_model extends CI_Model
 
 		$pk_table = is_null($pk_table) ? $table : $pk_table;
 
-		$flat_filter = $flat_filter_lang = array();
+		$flat_filter = $flat_filter_lang = $addon_filter = array();
 
 		// Tables fields
 		$fields = $this->list_fields($table);
 		$fields_lang = $this->list_fields($table.'_lang');
-
 
 		// Filter on flat fields
 		foreach($filter as $key => $val)
@@ -756,23 +769,28 @@ class Base_model extends CI_Model
 				$flat_filter[$key] = $filter[$key];
 				unset($filter[$key]);
 			}
-			else if (in_array($key, $fields_lang))
+			else if ( ! empty($fields_lang) && in_array($key, $fields_lang))
 			{
 				$flat_filter_lang[$key] = $filter[$key];
 				unset($filter[$key]);
 			}
 		}
 
-
 		// Items values
 		$sql = "
 			SELECT
 				t.*,
+		";
+		if ( ! is_null($lang_table))
+			$sql .= "
 				tl.*,
+			";
+
+		$sql .= "
 				CONCAT(
 					'{',
 					 GROUP_CONCAT(
-						CONCAT(
+						distinct CONCAT(
 							'\"',
 							ef.id_extend_field,
 							'\":\"',
@@ -796,57 +814,72 @@ class Base_model extends CI_Model
 			$sql .= ',' . $sql_test;
 		}
 
-		$sql .= '
+		if ( ! empty($addon['select']))
+		{
+			$sql .= "," . implode(', ', $addon['select']);
+		}
+
+		$sql .= "
 			FROM
-				'.$table.' t
-				LEFT JOIN '.$table.'_lang tl on tl.'.$pk_table.' = t.'.$pk_table." and tl.lang='" . Settings::get_lang() . "'
+				".$table." t
+		";
+
+		if ( ! is_null($lang_table))
+			$sql .= "
+				left join ".$table."_lang tl on tl.".$pk_table." = t.".$pk_table." and tl.lang='" . Settings::get_lang() . "'
+			";
+
+		$sql .="
 				LEFT JOIN extend_field ef on ef.parent='".$type."'
 				LEFT JOIN extend_fields efs
-					ON efs.id_extend_field = ef.id_extend_field AND efs.parent = '".$type."' and efs.id_parent = t.".$pk_table.'
-			WHERE
-				1 = 1
-		';
+					ON efs.id_extend_field = ef.id_extend_field AND efs.parent = '".$type."' and efs.id_parent = t.".$pk_table;
+
+		if ( ! empty($addon['join']))
+		{
+			foreach($addon['join'] as $key => $join)
+			{
+				$sql_join .= $join;
+
+				if (isset($addon['filter']) && ! empty($addon['filter'][$key]))
+				{
+					if ( ! empty($filter[$key]))
+					{
+						$sql_join .= ' and ' . $addon['filter'][$key] . " in (" . $filter[$key] . ")";
+						$addon_filter[] = " $key is not null ";
+						unset($filter[$key]);
+					}
+				}
+			}
+		}
+
+		$sql.= $sql_join;
+
+
+		$sql .=	" WHERE 1 = 1 ";
 
 		// Filter
-//		if ( ! empty($filter))
-//			$sql_filter .= $this->_get_flat_table_filters($pk_table, $filter, $flat_filter, $flat_filter_lang);
-		// $sql .= $sql_filter;
-
 		foreach($flat_filter as $key => $val)
 		{
-			$sql .= ' AND t.'.$key." like '%".$val."%' ";
+			if (is_array($val))
+			{
+				$sql .= " AND t.".$key." in('".implode("','", $val)."') ";
+			}
+			else
+				$sql .= " AND t.".$key." like '%".$val."%' ";
 		}
 		foreach($flat_filter_lang as $key => $val)
 		{
-			$sql .= ' AND tl.'.$key." like '%".$val."%'	";
+			$sql .= " AND tl.".$key." like '%".$val."%'	";
 		}
 
 		$sql .= "
 				GROUP BY t.".$pk_table."
 		";
 
-		// Sort
-		if ( ! empty($sort))
-		{
-			$sql .= ' ORDER BY ';
-
-			foreach($sort as $i => $s)
-			{
-				if ($i > 0) $sql .= ', ';
-				$sql .= in_array($s['key'], $fields) ?
-						't.'.$s['key'] . ' ' . $s['value'] :
-						(
-							in_array($s['key'], $fields_lang) ?
-							'tl.'.$s['key'] . ' ' . $s['value'] :
-							'ef_' . $s['key'] . ' ' . $s['value']
-						);
-			}
-		}
-
 		if ( ! empty($filter))
 		{
-			$sql_having = ' HAVING ';
-			$sql_having_and = '';
+			$sql_having = " HAVING ";
+			$sql_having_and = "";
 
 			$i = 0;
 
@@ -863,23 +896,52 @@ class Base_model extends CI_Model
 				else
 				{
 					$val = explode(',', $val);
+					$sql_having .= "(";
 
 					foreach($val as $idx => $v)
 					{
 						$sql_having .= $idx > 0 ? ' OR ' : '';
 						$sql_having .= " (SUBSTRING_INDEX(SUBSTRING_INDEX(test,'☼" . $key . "☼',-1),'♫',1) = '" . $v . "') ";
 					}
+
+					$sql_having .= ")";
 				}
 				$sql_having_and .= " AND test LIKE '%☼" . $key . "☼%' ";
 				$i++;
 			}
 			$sql_having .= $sql_having_and;
-			$sql .= $sql_having;
 		}
 
-		$sql .= ' LIMIT '.$nb_by_page.' OFFSET '.$offset;
+		foreach($addon_filter as $idx => $str)
+		{
+			if ( ! empty($sql_having)) $sql_having .= ' AND ';
+			if (empty($sql_having) && $idx == 0) $sql_having .= ' HAVING ';
+			$sql_having .= $str;
+		}
 
-	//	log_message('error', print_r($sql, TRUE));
+		$sql .= $sql_having;
+
+		// Sort
+		if ( ! empty($sort))
+		{
+			$sql .= ' ORDER BY ';
+
+			foreach($sort as $i => $s)
+			{
+				if ($i > 0) $sql .= ', ';
+				$sql .= in_array($s['key'], $fields) ?
+					't.'.$s['key'] . ' ' . $s['value'] :
+					(
+					in_array($s['key'], $fields_lang) ?
+						'tl.'.$s['key'] . ' ' . $s['value'] :
+						'ef_' . $s['key'] . ' ' . $s['value']
+					);
+			}
+		}
+
+		$sql .= " LIMIT ".$nb_by_page." OFFSET ".$offset;
+
+//		log_message('error', print_r($sql, TRUE));
 
 
 		$query = $this->{$this->db_group}->query($sql);
@@ -897,33 +959,58 @@ class Base_model extends CI_Model
 				SELECT
 					t.".$pk_table.",
 					".$sql_test."
+		";
+
+		if ( ! empty($addon['select']))
+		{
+			$sql_nb .= "," . implode(', ', $addon['select']);
+		}
+
+		$sql_nb .= "
 				FROM
 					".$table." t
+		";
+
+		if ( ! is_null($lang_table))
+			$sql_nb .= "
+					left join ".$table."_lang tl on tl.".$pk_table." = t.".$pk_table." and tl.lang='" . Settings::get_lang() . "'
+			";
+
+		$sql_nb .= "
 					left JOIN extend_field ef on ef.parent='".$type."'
 					left JOIN extend_fields efs
 						ON efs.id_extend_field = ef.id_extend_field AND efs.parent = '".$type."' and efs.id_parent = t.".$pk_table."
 		";
 
+		$sql_nb .= $sql_join;
+
 		if( ! empty($filter))
 		{
-			$sql_nb .= '
-				WHERE ef.id_extend_field IN ('.implode(',', array_keys($filter)).')
-			';
+			$sql_nb .= "
+				WHERE ef.id_extend_field IN (".implode(',', array_keys($filter)).")
+			";
 		}
 		else
 		{
-			$sql_nb .= ' WHERE 1 = 1 ';
+			$sql_nb .= " WHERE 1 = 1 ";
 		}
 
 		foreach($flat_filter as $key => $val)
-			$sql_nb .= ' AND t.'.$key." like '%".$val."%' ";
+		{
+			if (is_array($val))
+			{
+				$sql_nb .= " AND t.".$key." in('".implode("','", $val)."') ";
+			}
+			else
+				$sql_nb .= " AND t.".$key." like '%".$val."%' ";
+		}
 
 		foreach($flat_filter_lang as $key => $val)
-			$sql_nb .= ' AND tl.'.$key." like '%".$val."%'	";
+			$sql_nb .= " AND tl.".$key." like '%".$val."%'	";
 
-		$sql_nb .= 'GROUP BY t.'.$pk_table;
+		$sql_nb .= "GROUP BY t.".$pk_table;
 		$sql_nb .= $sql_having;
-		$sql_nb .= ' ) as test;';
+		$sql_nb .= " ) as test;";
 
 		$query = $this->{$this->db_group}->query($sql_nb);
 
@@ -1212,7 +1299,7 @@ class Base_model extends CI_Model
 				foreach($value as $val)
 				{
 					$extend_value[] = array(
-						'value_displayed' => $extend['options'][$val],
+						'value_displayed' => ! empty($extend['options'][$val]) ? $extend['options'][$val] : '',
 						'value' => $val,
 						'definition' => $extend
 					);
@@ -1712,7 +1799,7 @@ class Base_model extends CI_Model
 
 		$this->_process_where($where, $table);
 
-		$this->{$this->db_group}->select('group_concat('.$field." separator ',') as ids", FALSE);
+		$this->{$this->db_group}->select('group_concat('.$field." separator ';') as ids", FALSE);
 
 		$query = $this->{$this->db_group}->get($table);
 
@@ -1720,7 +1807,7 @@ class Base_model extends CI_Model
 
 		if ( ! empty($data['ids']))
 		{
-			$result = explode(',', $data['ids']);
+			$result = explode(';', $data['ids']);
 		}
 
 		return $result;
@@ -2242,10 +2329,24 @@ class Base_model extends CI_Model
 	 */
 	protected function add_linked_media(&$data, $parent, $lang = NULL)
 	{
+		if (empty($data)) return;
+
+		// Limit medias to parents
+		$ids = array();
+		foreach ($data as $d)
+		{
+			if ( ! empty($d[$this->pk_name]))
+				$ids[] = $d[$this->pk_name];
+		}
+
 		// Select medias
 		$this->{$this->db_group}->select('*, media.id_media, media.id_media as id');
 		$this->{$this->db_group}->from('media,'. $parent .'_media');
 		$this->{$this->db_group}->where('media.id_media', $parent.'_media.id_media', FALSE);
+
+		if ( ! empty($ids) && ! empty($this->pk_name))
+			$this->{$this->db_group}->where_in($parent . '_media.' . $this->pk_name, $ids);
+
 		$this->{$this->db_group}->order_by($parent.'_media.ordering');
 
 		if ( ! is_null($lang))
@@ -2258,11 +2359,8 @@ class Base_model extends CI_Model
 
 		$result = array();
 
-		// Feed each media array
-		if($query->num_rows() > 0)
-		{
+		if($query && $query->num_rows() > 0)
 			$result = $query->result_array();
-		}
 
 		// If the data array is one simple array
 		$data_is_simple_array = FALSE;
@@ -2292,6 +2390,27 @@ class Base_model extends CI_Model
 			{
 				$media['extension'] = pathinfo($media['file_name'], PATHINFO_EXTENSION);
 				$media['mime'] = get_mime_by_extension($media['file_name']);
+
+				if (in_array($media['extension'], array('jpg', 'jpeg', 'gif', 'png')))
+				{
+					if (file_exists($media['path']) && strpos($media['path'], ' ') === FALSE)
+					{
+						$d = @getimagesize(base_url() . $media['path']);
+						$media['size'] = array(
+							'width' => $d['0'],
+							'height' => $d['1'],
+						);
+					}
+					else
+					{
+						log_message('error', print_r('Size set to 0 : Spaces in picture path : ' . $media['path'], TRUE));
+
+						$media['size'] = array(
+							'width' => 0,
+							'height' => 0,
+						);
+					}
+				}
 			}
 		}
 
@@ -2424,7 +2543,7 @@ class Base_model extends CI_Model
 			if ( ! empty($ids))
 			{
 				// Get the extend fields details, filtered on parents ID
-				$this->{$this->db_group}->where(array('extend_fields.parent'=>$parent));
+				$this->{$this->db_group}->where(array('extend_fields.parent' => $parent));
 				$this->{$this->db_group}->where_in('extend_fields.id_parent', $ids);
 				$this->{$this->db_group}->join(
 					$this->extend_fields_table,
@@ -2446,6 +2565,7 @@ class Base_model extends CI_Model
 					if ($res['lang'] == $lang || $res['lang'] == '' )
 						$filtered_result[] = $res;
 				}
+
 				// Attach each extend field to the corresponding data array
 				foreach ($data as &$d)
 				{
@@ -2749,7 +2869,7 @@ class Base_model extends CI_Model
 	{
 		$data = array();
 
-//		$table = ( ! is_null($table)) ? $table : $this->lang_table;
+		$table = ( ! is_null($table)) ? $table : $this->lang_table;
 
 		if ( ! is_null($id))
 			$this->feed_lang_template($id, $data);
@@ -2808,6 +2928,9 @@ class Base_model extends CI_Model
 		
 		return $this->{$this->db_group}->insert_id();
 	}
+
+
+	// ------------------------------------------------------------------------
 
 
 	public function insert_ignore($data = NULL, $table = FALSE)
@@ -3381,6 +3504,8 @@ class Base_model extends CI_Model
 
 		if (isset($this->_list_fields[$this->db_group.'_'.$table]))
 			return $this->_list_fields[$this->db_group.'_'.$table];
+
+		if ( ! $this->table_exists($table)) return NULL;
 
 		$this->_list_fields[$this->db_group.'_'.$table] = $this->{$this->db_group}->list_fields($table);
 

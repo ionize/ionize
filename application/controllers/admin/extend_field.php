@@ -19,9 +19,6 @@ class Extend_field extends MY_admin
 	/** @var  Extend_field_type_model */
 	public $extend_field_type_model;
 
-	/** @var  Article_type_model */
-	public $article_type_model;
-
 	/**
 	 * Constructor
 	 *
@@ -35,7 +32,6 @@ class Extend_field extends MY_admin
 			array(
 				'extend_field_model',
 				'extend_field_type_model',
-				'article_type_model'
 			),
 			'',
 			TRUE
@@ -48,6 +44,7 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Index
+	 *
 	 */
 	function index()
 	{
@@ -124,10 +121,6 @@ class Extend_field extends MY_admin
 			'id=type'.$this->template['id_extend_field'].' class="select"'
 		);
 
-		// Available article types
-		$this->template['article_types'] = $this->article_type_model->get_all();
-		$this->template['_article_types']= $this->extend_field_model->get_article_types();
-
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
 		
@@ -192,10 +185,6 @@ class Extend_field extends MY_admin
 			$this->template['type'],
 			'id=type'.$this->template['id_extend_field'].' class="select"'
 		);
-
-		// Available article types
-		$this->template['article_types'] = $this->article_type_model->get_all();
-		$this->template['_article_types']= $this->extend_field_model->get_article_types($this->template['id_extend_field']);
 
 		// Extend Types details
 		$this->template['extend_types'] = json_encode($this->extend_field_type_model->get_list(), TRUE);
@@ -320,6 +309,7 @@ class Extend_field extends MY_admin
 
 	/**
 	 * Saves one extend field definition based on $_POST data
+	 *
 	 */
 	function save()
 	{
@@ -344,17 +334,9 @@ class Extend_field extends MY_admin
 			// Save data
 			$this->id = $this->extend_field_model->save($this->data, $this->lang_data);
 
-			// Extend fields of parent 'article' only: save type of parent kind (article type)
-			if($this->input->post('parent') === 'article') {
-				$articleTypeIDs = explode(',', $this->input->post('article_types'));
-				$this->extend_field_model->save_multiple_links(
-					'extend_field', $this->id, 'article_type', $articleTypeIDs
-				);
-			}
-
 			$this->update[] = array(
-				'element'	=> 'extend_fields',
-				'url'		=> 'extend_field/get_extend_fields'
+				'element' => 'extend_fields',
+				'url' =>  'extend_field/get_extend_fields'
 			);
 
 			$this->success(lang('ionize_message_extend_field_saved'));
@@ -391,19 +373,7 @@ class Extend_field extends MY_admin
 				if ( ! $result)
 					$this->error(lang('ionize_message_extend_field_not_deleted'));
 				else
-					$this->success(
-						lang('ionize_message_extend_field_deleted'),
-						array(
-							'callback'=> array(
-								'fn' => 'ION.contentUpdate',
-								'args' => array(
-									'element'	=> 'mainPanel',
-									'url'		=> 'extend_field/index',
-									'title'		=> lang('ionize_title_extend_fields')
-								)
-							)
-						)
-					);
+					$this->success(lang('ionize_message_extend_field_deleted'));
 			}
 			catch(Exception $e)
 			{
@@ -565,6 +535,7 @@ class Extend_field extends MY_admin
 	 * Links one extend field to one logical parent element
 	 * (ex : page, article, company)
 	 * This extend field will then only be available in the context of its parent element
+	 *
 	 */
 	public function link_to_context()
 	{

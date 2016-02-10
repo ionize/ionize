@@ -205,7 +205,7 @@ class TagManager_Article extends TagManager
 			$tag->set('nb_total_items', $nb_total_articles);
 		}
 
-		self::init_articles_urls($articles);
+		$articles = self::$ci->article_model->init_articles_urls($articles);
 
 		self::init_articles_views($articles);
 
@@ -354,135 +354,6 @@ class TagManager_Article extends TagManager
 
 		if ($year)
 			self::$ci->article_model->add_archives_filter($year, $month);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Inits articles URLs
-	 * Get the contexts of all given articles and define each article correct URL
-	 *
-	 * @param $articles
-	 *
-	 */
-	public function init_articles_urls(&$articles)
-	{
-		// Page URL key to use
-		$page_url_key = (config_item('url_mode') === 'short') ? 'url' : 'path';
-
-		// Array of all articles IDs
-		$articles_id = array();
-		foreach($articles as $article)
-			$articles_id[] = $article['id_article'];
-
-		// Articles contexts of all articles
-		$pages_context = self::$ci->page_model->get_lang_contexts($articles_id, Settings::get_lang('current'));
-
-		// Add pages contexts data to articles
-		foreach($articles as &$article)
-		{
-			$contexts = array();
-			foreach($pages_context as $context)
-			{
-				if ($context['id_article'] == $article['id_article'])
-					$contexts[] = $context;
-			}
-
-			$page = array_shift($contexts);
-
-			// Get the context of the Main Parent
-			if ( ! empty($contexts))
-			{
-				foreach($contexts as $context)
-				{
-					if ($context['main_parent'] == '1')
-						$page = $context;
-				}
-			}
-
-			// Basic article URL : its lang URL (without "http://")
-			$url = $article['url'];
-
-			// Link ?
-			if ($article['link_type'] != '' )
-			{
-				// External
-				if ($article['link_type'] === 'external')
-				{
-					$article['absolute_url'] = $article['link'];
-				}
-
-				// Email
-				else if ($article['link_type'] === 'email')
-				{
-					$article['absolute_url'] = auto_link($article['link'], 'both', TRUE);
-				}
-
-				// Internal
-				else
-				{
-					// Article
-					if($article['link_type'] === 'article')
-					{
-						// Get the article to which this page links
-						$rel = explode('.', $article['link_id']);
-						$target_article = self::$ci->article_model->get_context($rel[1], $rel[0], Settings::get_lang('current'));
-
-						// Of course, only if not empty...
-						if ( ! empty($target_article))
-						{
-							// Get the article's parent page
-							$parent_page = self::$ci->page_model->get_by_id($rel[0], Settings::get_lang('current'));
-
-							if ( ! empty($parent_page))
-								$article['absolute_url'] = $parent_page[$page_url_key] . '/' . $target_article['url'];
-						}
-					}
-					// Page
-					else
-					{
-						$target_page = self::$ci->page_model->get_by_id($article['link_id'], Settings::get_lang('current'));
-
-						// If target page is offline, 'path' is not set
-						if ( isset($target_page[$page_url_key]))
-							$article['absolute_url'] = $target_page[$page_url_key];
-						else
-							$article['absolute_url'] = '#';
-					}
-
-					$article['relative_url'] = $article['absolute_url'];
-					$article['relative_lang_url'] = $article['absolute_url'];
-
-					// Correct the URL : Lang + Base URL
-					if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
-					{
-						$article['absolute_url'] =  Settings::get_lang('current'). '/' . $article['absolute_url'];
-						$article['relative_lang_url'] = $article['absolute_url'];
-					}
-
-					$article['absolute_url'] = base_url() . $article['absolute_url'];
-
-				}
-			}
-			// Standard URL
-			else
-			{
-				$article['relative_url'] = $article['relative_lang_url'] = $page[$page_url_key] . '/' . $url;;
-
-				if ( count(Settings::get_online_languages()) > 1 OR Settings::get('force_lang_urls') == '1' )
-				{
-
-					$article['relative_lang_url'] = Settings::get_lang('current') . '/' . $article['relative_url'];
-					$article['absolute_url'] = base_url() . $article['relative_lang_url'];
-				}
-				else
-				{
-					$article['absolute_url'] = base_url() . $article['relative_url'];
-				}
-			}
-		}
 	}
 
 

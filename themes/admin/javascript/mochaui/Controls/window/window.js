@@ -205,10 +205,11 @@ MUI.Windows = Object.append((MUI.Windows || {}), {
 		 so that the cursor is not captured by iframes or other plugins (such as Flash)
 		 underneath the window.
 		 */
-		var windowUnderlay = new Element('div', {
+		var height = document.body.getCoordinates().height,
+			windowUnderlay = new Element('div', {
 			'id': 'windowUnderlay',
 			'styles': {
-				'height': parent.getCoordinates().height,
+				'height': height,
 				'opacity': .01,
 				'display': 'none'
 			}
@@ -1658,6 +1659,7 @@ Element.implement({
 		var instance = MUI.get(this.id);
 		if (instance == null || instance.minimize == null) return this;
 		instance.minimize();
+		instance.fireEvent('minimize', [instance]);
 		return this;
 	},
 
@@ -1665,6 +1667,7 @@ Element.implement({
 		var instance = MUI.get(this.id);
 		if (instance == null || instance.maximize == null) return this;
 		instance.maximize();
+		instance.fireEvent('maximize', [instance]);
 		return this;
 	},
 

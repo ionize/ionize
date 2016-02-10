@@ -42,7 +42,7 @@
 		{
 			var id = '<?php echo $link_id; ?>',
 				type = '<?php echo $link_type; ?>',
-				title = '<?php echo $link; ?>'
+				title = '<?php echo addslashes($link); ?>'
 			;
 
 			$('link_title').addEvent('click', function()

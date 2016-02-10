@@ -157,10 +157,12 @@ class Article_type extends MY_admin
 			}
 			else
 			{
-				$this->_prepare_data();
-	
+				$post = $this->input->post();
+
+				$post['type'] = url_title($post['type']);
+
 				// Save data
-				$this->id = $this->article_type_model->save($this->data);
+				$this->id = $this->article_type_model->save($post);
 
 				// Get data for answer
 //				$data = $this->article_type_model->get($this->id);
@@ -275,27 +277,5 @@ class Article_type extends MY_admin
 		{
 			$this->error(lang('ionize_message_operation_nok'));
 		}
-	}
-
-	
-	// ------------------------------------------------------------------------
-
-
-	/** 
-	 * Prepare data before saving
-	 *
-	 * @param	bool	[$xhr]
-	 */
-	function _prepare_data($xhr = FALSE)
-	{
-		// Standard fields
-		$fields = $this->db->list_fields('article_type');
-		
-		// Set the data to the posted value.
-		foreach ($fields as $field)
-			$this->data[$field] = $this->input->post($field);
-
-		// Some safe !
-		$this->data['type'] = url_title($this->data['type']);
 	}
 }

@@ -28,10 +28,15 @@ class Auth extends My_Admin
 		$this->disable_xhr_protection();
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
 	public function index()
 	{
 		$this->login();
 	}
+
 
 	// ------------------------------------------------------------------------
 
@@ -49,6 +54,8 @@ class Auth extends My_Admin
 		// - Remove / Rewrite Settings::get_uri_lang()
 		$uri_lang = Settings::get_uri_lang();
 
+		$error = NULL;
+
 		// If the user is already logged and if he is in the correct minimum group, go to Admin
 		if(User()->logged_in() && Authority::can('access', 'admin'))
 		{
@@ -57,66 +64,101 @@ class Auth extends My_Admin
 
 		if(User()->logged_in() && ! Authority::can('access', 'admin'))
 		{
-			redirect(base_url());
+			User()->logout();
+			$error = lang('ionize_login_error_no_access');
 		}
 
-		if( ! empty($_POST))
+		if (is_null($error))
 		{
-			unset($_POST['submit']);
-
-			if($this->_try_validate_login())
+			if( ! empty($_POST))
 			{
-				// User can log with email OR username
-				if (strpos($_POST['username'], '@') !== FALSE)
-				{
-					$email = $_POST['username'];
-					unset($_POST['username']);
-					$_POST['email'] = $email;
-				}
+				unset($_POST['submit']);
 
-				try
+				if($this->_try_validate_login())
 				{
-					User()->login($_POST);
-					redirect(base_url().$uri_lang.'/'.config_item('admin_url').'/auth/login');
+					// User can log with email OR username
+					if (strpos($_POST['username'], '@') !== FALSE)
+					{
+						$email = $_POST['username'];
+						unset($_POST['username']);
+						$_POST['email'] = $email;
+					}
+
+					try
+					{
+						User()->login($_POST);
+						redirect(base_url().$uri_lang.'/'.config_item('admin_url').'/auth/login');
+					}
+					catch (Exception $e)
+					{
+						$error = $e->getMessage();
+					}
 				}
-				catch(Exception $e)
+				else
 				{
-					$this->login_errors = $e->getMessage();
+					$error = lang('ionize_login_error');
 				}
 			}
 			else
 			{
-				$this->login_errors = lang('ionize_login_error');
+				if ($this->is_xhr())
+				{
+					$html = '
+						<script type="text/javascript">
+							var url = "'.config_item('admin_url').'";
+							top.location.href = url;
+						</script>';
+					echo $html;
+					exit();
+				}
+				else if (!in_array($uri_lang, Settings::get('displayed_admin_languages')) OR $uri_lang != $default_admin_lang)
+				{
+					redirect(base_url().$default_admin_lang.'/'.config_item('admin_url').'/auth/login');
+				}
+			}
+		}
+
+		$this->template['error'] = $error;
+		$this->template['background_pictures'] = $this->_get_login_background_pictures();
+
+		$this->output('auth/login');
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function xhr_login()
+	{
+		$user = $this->input->post('username');
+		$pass = $this->input->post('password');
+
+		if($this->_try_validate_login())
+		{
+			$data = array('password' => $pass);
+
+			// User can log with email OR username
+			if (strpos($user, '@') !== FALSE)
+				$data['email'] = $user;
+			else
+				$data['username'] = $user;
+
+			try
+			{
+				if (User()->login($data))
+					$this->success(lang('ionize_message_operation_ok'));
+				else
+					$this->error(lang('ionize_login_error'));
+			}
+			catch(Exception $e)
+			{
+				$this->error($e->getMessage());
 			}
 		}
 		else
 		{
-			if ($this->is_xhr())
-			{
-				$html = '
-					<script type="text/javascript">
-						var url = "'.config_item('admin_url').'";
-						top.location.href = url;
-					</script>'
-				;
-				echo $html;
-				exit();
-				/*
-				// Save options : as callback
-								$this->callback[] = array(
-					'fn' => 'ION.reload',
-					'args' => array('url'=> config_item('admin_url'))
-				);
-				$this->response();
-				*/
-			}
-			else if ( ! in_array($uri_lang, Settings::get('displayed_admin_languages')) OR $uri_lang != $default_admin_lang)
-			{
-				redirect(base_url().$default_admin_lang.'/'.config_item('admin_url').'/auth/login');
-			}
+			$this->error(lang('ionize_login_error'));
 		}
-
-		$this->output('auth/login');
 	}
 
 
@@ -133,7 +175,8 @@ class Auth extends My_Admin
 		{
 			// Delete the session
 			session_unset('isLoggedIn');
-			session_destroy();
+			if ($this->_is_session_started())
+				session_destroy();
 		}
 		unset($_SESSION);
 
@@ -161,7 +204,7 @@ class Auth extends My_Admin
 			array(
 				'field'   => 'username',
 				'label'   => 'Username',
-				'rules'   => 'trim|required|min_length[4]|xss_clean'
+				'rules'   => 'trim|required|xss_clean'
 			),
 			array(
 				'field'   => 'password',
@@ -173,5 +216,40 @@ class Auth extends My_Admin
 		$this->form_validation->set_rules($rules);
 
 		return ($this->form_validation->run() === TRUE);
+	}
+
+	private function _is_session_started()
+	{
+		if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+			return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+		} else {
+			return session_id() === '' ? FALSE : TRUE;
+		}
+
+		return FALSE;
+	}
+
+	private function _get_login_background_pictures()
+	{
+		if ( ! is_dir(DOCPATH.'files/login_background/'))
+			return array();
+
+		$files = @scandir(DOCPATH.'files/login_background/');
+		$files = is_array($files) ? array_diff($files, array('..', '.')) : array();
+
+		if ( ! empty($files))
+		{
+			array_walk($files, function(&$value, $key) {
+				$value = base_url(). 'files/login_background/' . $value;
+			});
+
+			$files = array_values($files);
+		}
+		else
+		{
+			$files = array();
+		}
+
+		return $files;
 	}
 }

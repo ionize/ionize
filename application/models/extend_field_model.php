@@ -29,10 +29,7 @@ class Extend_field_model extends Base_model
 	);
 
 	private static $_CONTEXT_TABLE = 'extend_field_context';
-
 	private static $_TYPE_TABLE = 'extend_field_type';
-
-	private static $_LINKED_ARTICLE_TYPE_TABLE = 'extend_field_article_type';
 
 	/**
 	 * Constructor
@@ -61,10 +58,10 @@ class Extend_field_model extends Base_model
 
 	public function get_types()
 	{
-		/** @var	CI_DB_result	$query */
 		$query = $this->{$this->db_group}->get(self::$_TYPE_TABLE);
+		$result = $query->result_array();
 
-		return $query->result_array();
+		return $result;
 	}
 
 
@@ -75,11 +72,23 @@ class Extend_field_model extends Base_model
 	{
 		$parents = self::$parents;
 
+		$modules = Modules()->get_installed_modules();
+
+		foreach($modules as $module)
+		{
+			if ( ! empty($module['extends']))
+			{
+				foreach($module['extends'] as $extend_code)
+				{
+					if ( ! in_array($extend_code, $parents))
+						$parents[] = $extend_code;
+				}
+			}
+		}
+
 		// Add parents found in extend table
 		$this->{$this->db_group}->select('parent');
 		$this->{$this->db_group}->distinct();
-
-		/** @var	CI_DB_result	$query */
 		$query = $this->{$this->db_group}->get($this->get_table());
 
 		$result = $query->result_array();
@@ -90,6 +99,7 @@ class Extend_field_model extends Base_model
 				$parents[] = $row['parent'];
 		}
 
+
 		return $parents;
 	}
 
@@ -98,46 +108,14 @@ class Extend_field_model extends Base_model
 
 
 	/**
-	 * @param	int		$id_extend_field
-	 * @return	array
-	 */
-	public function get_article_types($id_extend_field = 0) {
-		$id_extend_field = (int) $id_extend_field;
-
-		$typeIDs = array();
-		if( $id_extend_field > 0 )
-		{
-			$this->{$this->db_group}->select(self::$_LINKED_ARTICLE_TYPE_TABLE.'.id_type');
-			$this->{$this->db_group}->where('id_extend_field = ' . $id_extend_field);
-
-			/** @var	CI_DB_result	$query */
-			$query = $this->{$this->db_group}->get(self::$_LINKED_ARTICLE_TYPE_TABLE);
-
-			if ( $query && $query->num_rows() > 0 ) {
-				$data = $query->result_array();
-				foreach($data as $row) {
-					$typeIDs[] = $row['id_type'];
-				}
-				$query->free_result();
-			}
-		}
-
-		return $typeIDs;
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * @param	array 	$where
-	 * @param	string  [$lang]
-	 * @return	array
+	 * @param array $where
+	 * @param null  $lang
+	 *
+	 * @return array
 	 */
 	public function get_list($where = array(), $lang = NULL)
 	{
 		$where['order_by'] = 'ordering ASC';
-
 
 		$this->{$this->db_group}->select(
 			$this->get_table() . '.*,'
@@ -169,9 +147,10 @@ class Extend_field_model extends Base_model
 
 
 	/**
-	 * @param	array 	$where
-	 * @param	string	[$lang]
-	 * @return	array
+	 * @param array $where
+	 * @param null  $lang
+	 *
+	 * @return array
 	 */
 	public function get_lang_list($where = array(), $lang = NULL)
 	{
@@ -190,8 +169,9 @@ class Extend_field_model extends Base_model
 
 
 	/**
-	 * @param	string	$id_extend_field
-	 * @return	string
+	 * @param $id_extend_field
+	 *
+	 * @return string
 	 */
 	public function get_label($id_extend_field)
 	{
@@ -227,6 +207,7 @@ class Extend_field_model extends Base_model
 	 * @param      $id_context
 	 * @param      $parent
 	 * @param null $id_parent
+	 *
 	 * @return array
 	 */
 	public function get_context_instances_list($context, $id_context, $parent, $id_parent=NULL)
@@ -260,7 +241,7 @@ class Extend_field_model extends Base_model
 
 		$definitions = parent::get_list();
 
-		// Get the definitions extend IDs
+		// Get the definitions extend ids
 		$id_definitions = array();
 		foreach($definitions as $def)
 			$id_definitions[] = $def['id_extend_field'];
@@ -278,12 +259,12 @@ class Extend_field_model extends Base_model
 		}
 
 		// Prepare before filling with data
-		$languages = Settings::get_languages();
+		$langs = Settings::get_languages();
 		$instance_fields = $this->{$this->db_group}->list_fields($this->instances_table);
 
 		foreach($definitions as &$field)
 		{
-			// One not translated extend field...
+			// One not tranlated extend field...
 			if ($field['translated'] != '1')
 			{
 				// fill the base data with empty values
@@ -297,7 +278,7 @@ class Extend_field_model extends Base_model
 			}
 			else
 			{
-				foreach($languages as $language)
+				foreach($langs as $language)
 				{
 					// Lang code
 					$lang_code = $language['lang'];
@@ -326,37 +307,19 @@ class Extend_field_model extends Base_model
 	 * Get the current extend fields and their values for one parent element
 	 * Used by backend, as all the languages data are also get
 	 *
-	 * @param	string		$parent				Field & Field Definition parent name, eg: 'article'
-	 * @param	string		[$id_parent]		Field instance parent ID
-	 * @param	string		[$id_field_parent]	Field Definition parent ID
+	 * @param	string		Field & Field Definition parent name
+	 * @param	null		Field instance parent ID
+	 * @param	null		Field Definition parent ID
+	 *
 	 * @return 	array
+	 *
 	 */
 	public function get_element_extend_fields($parent, $id_parent=NULL, $id_field_parent=NULL)
 	{
 		// Definitions
 		$where = array('parent' => $parent);
 		if ($id_field_parent) $where['id_parent'] = $id_field_parent;
-
 		$definitions = $this->get_list($where);
-
-		if($parent === 'article') {
-			/**
-			 * Article:
-			 * Reduce extend fields to those linked to current article type +fields w/o article type
-			 */
-			$keepDefinitionIDs = array_merge(
-				$this->get_extend_field_ids_by_article_id($id_parent),
-				$this->get_extend_field_ids_without_article_id()
-			);
-
-			$keepDefinitions = array();
-			foreach($definitions as $definition) {
-				if(in_array($definition['id_extend_field'], $keepDefinitionIDs)) {
-					$keepDefinitions[] = $definition;
-				}
-			}
-			$definitions = $keepDefinitions;
-		}
 
 		// Fields Instances
 		$fields = array();
@@ -395,20 +358,19 @@ class Extend_field_model extends Base_model
 				'inner'
 			);
 
-			/** @var	CI_DB_result	$query */
 			$query = $this->{$this->db_group}->get($this->get_table());
 			if ( $query->num_rows() > 0) $fields = $query->result_array();
 		}
 
 		// Languages
-		$languages = Settings::get_languages();
+		$langs = Settings::get_languages();
 
 		// Instances table columns
 		$fields_columns = $this->{$this->db_group}->list_fields($this->instances_table);
 
 		foreach($definitions as $k => &$extend_field)
 		{
-			// One not translated extend field...
+			// One not tranlated extend field...
 			if ($extend_field['translated'] != '1')
 			{
 				// fill the base data with empty values
@@ -426,7 +388,7 @@ class Extend_field_model extends Base_model
 			{
 				$extend_field['lang_data'] = array();
 
-				foreach($languages as $language)
+				foreach($langs as $language)
 				{
 					// Lang code
 					$lang_code = $language['lang'];
@@ -449,73 +411,6 @@ class Extend_field_model extends Base_model
 		return $definitions;
 	}
 
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Get IDs of extend fields linked to given article ID
-	 *
-	 * @param	int		$id_article_type
-	 * @return	array
-	 */
-	public function get_extend_field_ids_by_article_id($id_article_type)
-	{
-		$ids = array();
-
-		$article = self::$ci->article_model->get_all_context($id_article_type);
-		if( ! empty($article) ) {
-			$article = array_pop($article);
-
-			/** @var	CI_DB_result	$query */
-			$query = $this->{$this->db_group}->query(
-				'SELECT id_extend_field FROM ' . self::$_LINKED_ARTICLE_TYPE_TABLE . '
-				 WHERE id_type = ' . $article['id_type']
-			);
-
-			if($query != FALSE)
-			{
-				foreach ($query->result_array() as $row)
-				{
-					$ids[]= $row['id_extend_field'];
-				}
-			}
-		}
-
-		return $ids;
-	}
-
-	/**
-	 * Get IDs of extend fields linked to no article type at all
-	 *
-	 * @return	array
-	 */
-	public function get_extend_field_ids_without_article_id()
-	{
-		$allExtendFieldIds = array();
-		/** @var	CI_DB_result	$query */
-		$query = $this->{$this->db_group}->query(
-			'SELECT id_extend_field FROM extend_field WHERE parent = \'article\' '
-		);
-		foreach ($query->result_array() as $row)
-		{
-			$allExtendFieldIds[]= $row['id_extend_field'];
-		}
-
-		$allLinkedExtendFieldIds = array();
-		$query = $this->{$this->db_group}->query(
-			'SELECT id_extend_field FROM extend_field_article_type WHERE 1'
-		);
-		
-		if($query != FALSE)
-		{
-			foreach ($query->result_array() as $row)
-			{
-				$allLinkedExtendFieldIds[]= $row['id_extend_field'];
-			}
-		}
-
-		return array_unique(array_diff($allExtendFieldIds, $allLinkedExtendFieldIds));
-	}
 
 	// ------------------------------------------------------------------------
 
@@ -701,7 +596,6 @@ class Extend_field_model extends Base_model
 
 			if ( ! empty($sql))
 			{
-				/** @var	CI_DB_result	$query */
 				$query = $this->{$this->db_group}->query($sql);
 
 				if ( $query->num_rows() > 0) $data = $query->result_array();
@@ -793,9 +687,7 @@ class Extend_field_model extends Base_model
 	public function save_data($parent, $id_parent, $post, $by_id = true)
 	{
 		// Get all extends fields with this element OR kind of parent
-		$extend_fields = (!empty($post['id_element_definition']))
-			? $this->get_list(array('id_element_definition' => $post['id_element_definition']))
-			: $this->get_list(array('parent' => $parent));
+		$extend_fields = (!empty($post['id_element_definition'])) ? $this->get_list(array('id_element_definition' => $post['id_element_definition'])) : $this->get_list(array('parent' => $parent));
 
 		foreach ($extend_fields as $extend_field)
 		{
@@ -804,7 +696,7 @@ class Extend_field_model extends Base_model
 			// Link between extend_field and the current parent
 			$where = array(
 				$this->get_pk_name() => $id_extend,
-				'id_parent' => $id_parent,
+				'id_parent' => empty($id_parent) ? '0' : $id_parent,
 				'parent' => $parent
 			);
 			
@@ -831,23 +723,23 @@ class Extend_field_model extends Base_model
 			// Get the value from _POST values and feed the data array
 			if ($by_id)
 			{
-				foreach ($post as $postedKey => $postedValue)
+				foreach ($post as $k => $value)
 				{
-					if (substr($postedKey, 0, 2) == 'cf')
+					if (substr($k, 0, 2) == 'cf')
 					{
 						// id of the extend field
-						$postedKeyParts = explode('_', $postedKey);
+						$key = explode('_', $k);
 
-						if (isset($postedKeyParts[1]) && $postedKeyParts[1] == $id_extend)
+						if (isset($key[1]) && $key[1] == $id_extend)
 						{
 							// if language code is set, use it in the query
 							$lang=NULL;
 
-							if (isset($postedKeyParts[2]))
-								$lang = $postedKeyParts[2];
+							if (isset($key[2]))
+								$lang = $key[2];
 
 							// Save Extend field data
-							$this->save_extend_field_value($id_extend, $parent, $id_parent, $postedValue, $lang);
+							$this->save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang);
 
 							// Save in other field
 						// @deprecated
@@ -866,21 +758,21 @@ class Extend_field_model extends Base_model
 			else
 			{
 				// Check the post
-				foreach ($post as $name => $postedValue)
+				foreach ($post as $name => $value)
 				{
 					if ($extend_field['name'] == $name)
 					{
 						// Lang array ?
-						if (is_array($postedValue))
+						if (is_array($value))
 						{
-							foreach($postedValue as $lang => $lang_val)
+							foreach($value as $lang => $lang_val)
 							{
 								$this->save_extend_field_value($id_extend, $parent, $id_parent, $lang_val, $lang);
 							}
 						}
 						else
 						{
-							$this->save_extend_field_value($id_extend, $parent, $id_parent, $postedValue);
+							$this->save_extend_field_value($id_extend, $parent, $id_parent, $value);
 						}
 					}
 				}
@@ -896,12 +788,13 @@ class Extend_field_model extends Base_model
 	 * Adds one value to one multiple values extend fields
 	 * Values are coma separated in DB
 	 *
-	 * @param	string	$id_extend
-	 * @param	string	$parent
-	 * @param	string	$id_parent
-	 * @param	string	$value
-	 * @param	string	[$lang]
-	 * @return	bool
+	 * @param $id_extend
+	 * @param $parent
+	 * @param $id_parent
+	 * @param $value
+	 * @param $lang
+	 *
+	 * @return bool
 	 */
 	public function add_value_to_extend_field($id_extend, $parent, $id_parent, $value, $lang=NULL)
 	{
@@ -980,11 +873,11 @@ class Extend_field_model extends Base_model
 	 * Removes one value from one multiple values extend field
 	 * Values are coma separated in DB
 	 *
-	 * @param   string  $id_extend
-	 * @param   string  $parent
-	 * @param   string	$id_parent
-	 * @param	string	$value
-	 * @param	string	[$lang]
+	 * @param $id_extend
+	 * @param $parent
+	 * @param $id_parent
+	 * @param $value
+	 * @param $lang
 	 */
 	public function delete_value_from_extend_field($id_extend, $parent, $id_parent, $value, $lang=NULL)
 	{
@@ -1009,14 +902,26 @@ class Extend_field_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
+	public function save($data, $dataLang = array())
+	{
+		if (isset($data['id_parent']) && empty($data['id_parent']))
+			$data['id_parent'] = '0';
+
+		return parent::save($data, $dataLang);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Save one extend field value
 	 *
-	 * @param   string  $id_extend
-	 * @param   string  $parent
-	 * @param   string	$id_parent
-	 * @param	string	$value
-	 * @param	string	[$lang]
+	 * @param      $id_extend
+	 * @param      $parent
+	 * @param      $id_parent
+	 * @param      $value
+	 * @param null $lang
 	 */
 	public function save_extend_field_value($id_extend, $parent, $id_parent, $value, $lang = NULL)
 	{
@@ -1026,7 +931,7 @@ class Extend_field_model extends Base_model
 
 		if ( ! $lang) $lang = NULL;
 
-		// Array?
+		// Array ?
 		if (is_array($value)) $value = trim(implode(',', $value), ',');
 
 		// Date or Datetime
@@ -1115,6 +1020,7 @@ class Extend_field_model extends Base_model
 	 * Can be very dangerous !
 	 *
 	 * @param $id
+	 *
 	 * @return mixed
 	 */
 	public function delete_extend_fields($id)
@@ -1200,7 +1106,7 @@ class Extend_field_model extends Base_model
 
 		if ( $this->exists($where, self::$_CONTEXT_TABLE))
 		{
-			parent::delete($where, self::$_CONTEXT_TABLE);
+			parrent::delete($where, self::$_CONTEXT_TABLE);
 		}
 	}
 
@@ -1210,14 +1116,14 @@ class Extend_field_model extends Base_model
 
 	public function check_context_existence($name, $context, $id_context, $id_extend = NULL)
 	{
-		$sql = '
+		$sql = "
 			SELECT e.id_extend_field
 			FROM extend_field e
 				JOIN extend_field_context c on c.id_extend_field = e.id_extend_field
 			WHERE
-				    e.name		 = \''.$name.'\'
-				AND c.context	 = \''.$context.'\'
-				AND c.id_context = '.$id_context;
+				e.name = '".$name."'
+				AND c.context='".$context."'
+				AND c.id_context = ".$id_context;
 
 		if ( ! is_null($id_extend))
 		{

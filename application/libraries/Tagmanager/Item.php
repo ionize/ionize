@@ -192,6 +192,8 @@ class TagManager_Item extends TagManager
 		// Returned string
 		$str = '';
 
+		$is_empty = $tag->getAttribute('is_empty');
+
 		// Contains also items as nested array
 		$definition = self::_get_definition_from_name($tag->name);
 
@@ -268,7 +270,15 @@ class TagManager_Item extends TagManager
 			$tag->set('count', 0);
 		}
 
-		return $str;
+		if ($is_empty == FALSE || $is_empty == TRUE)
+		{
+			if ( empty($items) == $is_empty)
+				return $tag->expand();
+		}
+		else
+			return $str;
+
+		return '';
 	}
 
 
@@ -434,6 +444,7 @@ class TagManager_Item extends TagManager
 					break;
 			}
 		}
+
 		return self::output_value($tag, $value);
 	}
 
