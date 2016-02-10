@@ -683,7 +683,7 @@ class Base_model extends CI_Model
 
 		// log_message('error', print_r($this->{$this->db_group}->last_query(), TRUE));
 
-		if($query->num_rows() > 0)
+		if($query && $query->num_rows() > 0)
 		{
 			$data = $query->result_array();
 			$query->free_result();
@@ -699,6 +699,12 @@ class Base_model extends CI_Model
 			if ($this->table == 'page' OR $this->table == 'article')
 				$this->add_lang_urls($data, $this->table, $lang);
 		}
+		else if ( ! $query)
+		{
+			log_message('error', print_r('Error in the query : ', TRUE));
+			log_message('error', print_r($this->last_query(), TRUE));
+		}
+
 
 		return $data;
 	}

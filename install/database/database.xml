@@ -39,6 +39,7 @@
         <query>
 			CREATE TABLE IF NOT EXISTS article (
 			  id_article int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+			  id_content_type int(11) UNSIGNED DEFAULT NULL,
 			  name varchar(255) DEFAULT NULL,
 			  author varchar(55) DEFAULT NULL,
 			  updater varchar(55) DEFAULT NULL,
@@ -159,6 +160,37 @@
 			  description text NOT NULL,
   			  PRIMARY KEY  (id_category, lang)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+		</query>
+
+		<query>
+			CREATE TABLE content_type (
+			id_content_type int(11) unsigned NOT NULL AUTO_INCREMENT,
+			name varchar(50) DEFAULT NULL COMMENT 'Logical name',
+			type varchar(50) DEFAULT NULL COMMENT '''page'', ''article''',
+			view varchar(50) DEFAULT NULL COMMENT 'View',
+			view_single varchar(50) DEFAULT NULL COMMENT 'Page view for one single article',
+			PRIMARY KEY (id_content_type)
+			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+		</query>
+
+		<query>
+			CREATE TABLE content_type_group (
+			id_content_type_group int(11) unsigned NOT NULL AUTO_INCREMENT,
+			id_content_type int(11) unsigned NOT NULL,
+			name varchar(50) DEFAULT NULL,
+			ordering int(11) DEFAULT NULL,
+			PRIMARY KEY (id_content_type_group)
+			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+		</query>
+
+		<query>
+			CREATE TABLE content_type_group_extend (
+			id_content_type_group int(11) unsigned NOT NULL,
+			id_extend_field int(11) unsigned NOT NULL DEFAULT '0',
+			ordering int(11) DEFAULT NULL,
+			group varchar(50) DEFAULT NULL COMMENT 'Logical name of the group (tab)',
+			PRIMARY KEY (id_content_type_group,id_extend_field)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</query>
 
 		<query>
@@ -449,7 +481,7 @@
 			  id_page int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			  id_parent int(11) UNSIGNED NOT NULL DEFAULT 0,
 			  id_menu int(11) UNSIGNED NOT NULL DEFAULT 0,
-              id_type smallint(2) NOT NULL DEFAULT 0,
+			  id_content_type int(11) UNSIGNED DEFAULT NULL,
               id_subnav int(11) UNSIGNED NOT NULL DEFAULT 0,
 			  name varchar(255) DEFAULT NULL,
 			  ordering int(11) UNSIGNED DEFAULT 0,
@@ -699,6 +731,7 @@
 		<query>TRUNCATE TABLE login_tracker;</query>
 		
         <query>
+			<![CDATA[
             INSERT INTO extend_field_type (id_extend_field_type, type_name, default_values, `values`, translated, active, validate, html_element, html_element_type, html_element_class, html_element_pattern)
             VALUES
             (1,'Input',1,0,1,1,NULL,'input','text','w95p inputtext',NULL),
@@ -715,6 +748,7 @@
             (110,'Email',0,0,0,1,'email','input','email','w95p inputtext',NULL),
             (120,'Phone',0,0,0,1,'digits','input','tel','w140 inputtext','^((\\+\\d{1,3}(-| )?\\(?\\d\\)?(-| )?\\d{1,5})|(\\(?\\d{2,6}\\)?))(-| )?(\\d{3,4})(-| )?(\\d{4})(( x| ext)\\d{1,5}){0,1}$'),
             (130,'Internal Link',0,0,1,1,NULL,'div','link','droppable',NULL);
+            ]]>
         </query>
         
 		<query>INSERT IGNORE INTO role VALUES (1, 10000, 'super-admin', 'Super Admin', '');</query>
