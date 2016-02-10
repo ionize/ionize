@@ -232,7 +232,7 @@ ION.ContentTypeManager = new Class({
 		});
 
 		var singleViewSelect = new ION.Form.Select({
-			name:'view',
+			name:'view_single',
 			container: div_view_single,
 			url: ION.adminUrl + 'page/get_views',
 			selected: item.view_single,
