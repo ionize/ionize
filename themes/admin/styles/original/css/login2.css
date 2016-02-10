@@ -1,0 +1,167 @@
+/** Ionize Style
+ *  Login view
+ */
+*,
+*:before,
+*:after {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+html{
+	font-size: 62.5%;
+	overflow-x: hidden;
+}
+body {
+	margin:0;
+	font-family:  "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 1.1rem;
+	overflow-x: hidden;
+	height: 100%;
+}
+*::-webkit-input-placeholder{color: #ccc}
+*:-moz-placeholder{color: #ccc}
+*::-moz-placeholder{color: #ccc}
+*:-ms-input-placeholder{color: #ccc}
+
+.bg {
+	background-size: cover;
+	background-position: 50% 0%;
+	transition: opacity 0.25s ease-out 0s;
+	left:0;
+	bottom:0;
+	position:fixed;
+	top: 0px;
+	right: 0px;
+	left: 446px;
+}
+
+.bg-overlay  {
+	position:fixed;
+	width:100%;
+	height:100%;
+}
+.bg-overlay.grid-10 {background:transparent url(../images/background/grid-10.png) top center repeat}
+.bg-overlay.grid-20 {background:transparent url(../images/background/grid-20.png) top center repeat}
+.bg-overlay.grid-30 {background:transparent url(../images/background/grid-30.png) top center repeat}
+.bg-overlay.grid-10-white {background:transparent url(../images/background/grid-10-white.png) top center repeat}
+.bg-overlay.grid-20-white {background:transparent url(../images/background/grid-20-white.png) top center repeat}
+.bg-overlay.grid-30-white {background:transparent url(../images/background/grid-30-white.png) top center repeat}
+
+.panel-login{
+	display: table;
+	overflow: scroll;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	height: 100%;
+}
+.panel-login-left {
+	height: auto;
+	min-height: 100%;
+	display: table-cell;
+	vertical-align: top;
+	overflow: hidden !important;
+	width: 50%;
+	min-width: 446px;
+	max-width: 39pc;
+	float: left;
+	z-index: 1;
+	position: relative;
+}
+
+.panel-login-right {
+	width: 100%;
+	height: 100%;
+	display: table-cell;
+	vertical-align: top;
+	overflow: hidden !important;
+	position: relative;
+}
+
+.logo-container {
+	height: 95px;
+}
+#logo{
+	width: 160px;
+	height: 85px;
+	background: url(../images/application_login_logo.png) no-repeat top left;
+	margin: 40px 0 0 38px;
+}
+#preprod-flag {
+	width:130px;background-color: #c00;color: #fff;position: absolute;top:0;right:20px;
+	z-index: 100000;margin-right: auto;margin-left: auto;padding:5px 5px;text-align: center;
+	font-size: 11px;
+}
+#version {
+	color: #c0cdd1;
+	font-size: 10px;
+	position: absolute;
+	bottom:10px;
+	left: 10px;
+}
+
+label {
+	display:none;
+	font-size: 12px !important;
+	margin:5px 0 2px 0 !important;
+	color:#fff;
+}
+form {
+	margin-top:20px;
+	margin-bottom: 40px;
+	padding:0 40px;
+}
+form .inputtext {
+	text-align: left;
+	border:1px solid #ddd;
+	padding:10px;
+	width:100%;
+	font-size: 15px;
+	height: auto !important;
+	width: 100%;
+}
+form .inputtext:focus {
+	border:1px solid #ddd;
+	background-color: #fff;
+}
+form p {
+	color:#bbb;
+}
+
+input[type="text"], input[type="password"] {
+	outline: none;
+	-webkit-appearance: none;
+	margin-bottom: 15px;
+}
+:focus { background-color: #fff; }
+
+form div.action {padding:0 80px;}
+form div.action input{padding:10px 20px;font-size: 15px;width: 100%}
+
+form input.checkbox {
+	width:auto;
+	margin:10px 8px 2px 0;
+}
+.error {
+	background: #c00;
+	color:#fff;
+	padding:20px;
+	line-height: 22px;
+	margin:0 40px;
+	font-size: 1.3rem;
+	font-weight: 100;
+}
+small {
+	font-size:10px;
+}
+a:link{
+	color:#fff;
+	text-decoration: none;
+}
+a:hover {
+	color:#fff;
+	text-decoration: underline;
+}
