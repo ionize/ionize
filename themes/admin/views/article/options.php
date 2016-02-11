@@ -114,7 +114,7 @@
 				<dd>
 					<select id="article_type<?php echo $id_article; ?>" class="p1 inputtext type left w100p" data-id="<?php echo $id_article; ?>">
 						<?php foreach($all_article_types as $idx => $type) :?>
-							<option <?php if ($article_type_current == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
+							<option <?php if ($id_type == $idx) :?>selected="selected"<?php endif; ?>  value="<?php echo $idx; ?>"><?php echo $type; ?></option>
 						<?php endforeach ;?>
 					</select>
 				</dd>
