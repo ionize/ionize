@@ -174,7 +174,6 @@ class FTL_Binding
 		return $this->process_tag;
 	}
 
-
 	/**
 	 * Returns the tag's name
 	 *
@@ -183,7 +182,6 @@ class FTL_Binding
 	{
 		return $this->name;
 	}
-
 
 	/**
 	 * Return all the attributes of the tag
@@ -253,7 +251,6 @@ class FTL_Binding
 		return $this;
 	}
 
-
 	public function removeAttribute($key)
 	{
 		if (isset($this->attr[$key]))
@@ -261,7 +258,6 @@ class FTL_Binding
 
 		return $this;
 	}
-
 
 	public function removeAttributes($attrs)
 	{
@@ -272,10 +268,6 @@ class FTL_Binding
 
 		return $this;
 	}
-
-
-
-
 
 	/**
 	 * Return the current FTL_Binding parent
@@ -335,7 +327,6 @@ class FTL_Binding
 
 		return $parent;
 	}
-
 
 	/**
 	 * @param $parent_name
@@ -399,10 +390,9 @@ class FTL_Binding
 			}
 		}
 
-		if ( ! empty($nesting))
-			return array_pop($nesting);
-
-		return NULL;
+		return (empty($nesting))
+			? NULL 
+			: array_pop($nesting);
 	}
 
 	/**
@@ -416,10 +406,9 @@ class FTL_Binding
 	{
 		$parent = $this->getParent($parent_name);
 
-		if ($parent)
-			return $parent->getAttribute($attribute);
-
-		return NULL;
+		return ($parent)
+			? $parent->getAttribute($attribute)
+			: NULL;
 	}
 
 	/**
@@ -444,7 +433,7 @@ class FTL_Binding
 	{
 		$tag_name = $this->getName();
 
-		return $data = $this->get($tag_name);
+		return $this->get($tag_name);
 	}
 
 
@@ -518,10 +507,9 @@ class FTL_Binding
 	 */
 	public function get($key, $scope='local')
 	{
-		if ($scope === 'global')
-			return $this->globals->{$key};
-		else
-			return $this->locals->{$key};
+		return $scope === 'global'
+			? $this->globals->{$key}
+			: $this->locals->{$key};
 	}
 	
 	/**
