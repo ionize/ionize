@@ -96,7 +96,7 @@ class FTL_ArrayContext extends FTL_Context
 	{
 		if ( ! is_null($array))
 		{
-			if ( ! isset($this->{$array}))
+			if ( ! isset($this->{'_registry_'.$array}))
 				$this->{'_registry_'.$array} = new FTL_VarStack();
 
 			$this->{'_registry_'.$array}->{$key} = $value;
