@@ -260,7 +260,7 @@ class Article_model extends Base_model
 		);
 
 		// Page table
-		$this->{$this->db_group}->select('article_list_view, article_view');
+		// $this->{$this->db_group}->select('article_list_view, article_view');
 		$this->{$this->db_group}->join(
 			$this->page_table,
 			$this->page_table.'.id_page = ' .$this->parent_table.'.id_page',

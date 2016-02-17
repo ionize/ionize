@@ -146,7 +146,7 @@ class Page extends MY_admin
 				'id_content_type',
 				$types,
 				$this->template['id_content_type'],
-				'class="select"'
+				'class="select w100p"'
 			);
 		}
 
@@ -155,28 +155,28 @@ class Page extends MY_admin
 		$this->template['menus'] =	form_dropdown('id_menu', $data, $id_menu, 'id="id_menu" class="select"');
 
 		// Dropdown Views : Get $view var from my_theme/config/views.php
-		$views = array();
+/*		$views = array();
 		if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
-			require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
+			require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');*/
 
 		// Dropdown Page views
-		$data = isset($views['page']) ? $views['page'] : array() ;
+/*		$data = isset($views['page']) ? $views['page'] : array() ;
 		if(count($data) > 0)
 		{
 			$data = $this->_get_views_dropdown_data($data, 'Page');
 			$data = array('0' => lang('ionize_select_default_view')) + $data;
 			$this->template['views'] = $this->template['single_views'] = form_dropdown('view', $data, FALSE, 'class="select w160"');
-		}
+		}*/
 
 		// Dropdown Article views
-		$data = isset($views['article']) ? $views['article'] : array() ;
+/*		$data = isset($views['article']) ? $views['article'] : array() ;
 		if(count($data) > 0)
 		{
 			$data = $this->_get_views_dropdown_data($data, 'Article');
 			$data = array('0' => lang('ionize_select_default_view')) + $data;
 			$this->template['article_views'] = form_dropdown('article_view', $data, FALSE, 'class="select w160"');
 			$this->template['article_list_views'] = form_dropdown('article_list_view', $data, FALSE, 'class="select w160"');
-		}
+		}*/
 
 		$this->template['priority'] = '5';
 		$this->template['has_url'] = '1';
@@ -291,6 +291,7 @@ class Page extends MY_admin
 				$this->template['subnav_menu'] = form_dropdown('id_subnav_menu', $data, $selected_subnav, 'id="id_subnav_menu" class="select"');
 
 				// Dropdown Views
+				/*
 				$views = array();
 				if (is_file(FCPATH.'themes/'.Settings::get('theme').'/config/views.php'))
 					require_once(FCPATH.'themes/'.Settings::get('theme').'/config/views.php');
@@ -314,6 +315,7 @@ class Page extends MY_admin
 					$this->template['article_list_views'] = form_dropdown('article_list_view', $data, $this->template['article_list_view'], 'class="select"');
 					$this->template['article_views'] = form_dropdown('article_view', $data, $this->template['article_view'], 'class="select"');
 				}
+				*/
 
 				// Roles & Rules
 				$frontend_roles_resources = $this->resource_model->get_element_roles_resources(
@@ -348,7 +350,7 @@ class Page extends MY_admin
 						'id_content_type',
 						$types,
 						$this->template['id_content_type'],
-						'class="select"'
+						'class="select w100p"'
 					);
 				}
 

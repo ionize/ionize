@@ -477,7 +477,10 @@ class FTL_Binding
 		$data_array = $this->getDataArray($data_array_name);
 
 		if (is_array($data_array) && isset($data_array[$key]))
-			return $data_array[$key];
+		{
+			// ensure single quotes do not break parser eval
+			return str_replace('\'', '&#39;', $data_array[$key]);
+		}
 
 		return NULL;
 	}

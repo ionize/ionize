@@ -420,29 +420,33 @@ $margin = ($type === 'video') ? '180px' : (($type === 'music') ? '130px' : '140p
 		}
 	}
 
-	$('imagePreviousLink').addEvent('click', function () {
-		var clickedMediaID = parseInt( $('imagePreviousLink').get('data-id'), 10);
-		closeEditPopup(clickedMediaID);
+	<?php if($provider == '') : ?>
 
-		var previousMediaID = findPreviousMediaID(clickedMediaID);
-		if(previousMediaID != null) {
-			editMediaByID(previousMediaID);
-		} else {
-			editMediaByID(findLastMediaID(clickedMediaID));
-		}
-	});
+		$('imagePreviousLink').addEvent('click', function () {
+			var clickedMediaID = parseInt( $('imagePreviousLink').get('data-id'), 10);
+			closeEditPopup(clickedMediaID);
 
-	$('imageNextLink').addEvent('click', function () {
-		var clickedMediaID = parseInt( $('imagePreviousLink').get('data-id'), 10);
-		closeEditPopup(clickedMediaID);
+			var previousMediaID = findPreviousMediaID(clickedMediaID);
+			if(previousMediaID != null) {
+				editMediaByID(previousMediaID);
+			} else {
+				editMediaByID(findLastMediaID(clickedMediaID));
+			}
+		});
 
-		var nextMediaID = findNextMediaID(clickedMediaID);
-		if(nextMediaID != null) {
-			editMediaByID(nextMediaID);
-		} else {
-			editMediaByID(findFirstMediaID(clickedMediaID))
-		}
-	});
+		$('imageNextLink').addEvent('click', function () {
+			var clickedMediaID = parseInt( $('imagePreviousLink').get('data-id'), 10);
+			closeEditPopup(clickedMediaID);
+
+			var nextMediaID = findNextMediaID(clickedMediaID);
+			if(nextMediaID != null) {
+				editMediaByID(nextMediaID);
+			} else {
+				editMediaByID(findFirstMediaID(clickedMediaID))
+			}
+		});
+
+	<?php endif ;?>
 
 	// Extend Fields
 	var mediaExtendManager<?php echo $id_media; ?> = new ION.ExtendManager({

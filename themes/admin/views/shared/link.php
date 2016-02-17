@@ -65,7 +65,7 @@
 			<br/>
 		</dt>
 		<dd>
-			<textarea id="link" class="inputtext h40 droppable" alt="<?php echo lang('ionize_label_drop_link_here'); ?>"></textarea>
+			<textarea id="link" class="inputtext h40 droppable w100p" alt="<?php echo lang('ionize_label_drop_link_here'); ?>"></textarea>
 			<br />
 			<a id="add_link"><?php echo lang('ionize_label_add_link'); ?></a>
 		</dd>

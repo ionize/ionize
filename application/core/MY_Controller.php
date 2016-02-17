@@ -451,7 +451,8 @@ class Base_Controller extends MY_Controller
 		{
 			if ($this->router->get_raw_key() != Settings::get_lang() && (Settings::get('force_lang_urls') OR count($online_lang_codes) > 1))
 			{
-				redirect(current_url(), 'location', 301);
+				// redirect(current_url(), 'location', 301);
+				redirect(current_url() . (!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : ''), 'location', 301);
 			}
 		}
 

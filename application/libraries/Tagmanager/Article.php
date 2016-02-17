@@ -207,7 +207,7 @@ class TagManager_Article extends TagManager
 
 		$articles = self::$ci->article_model->init_articles_urls($articles);
 
-		self::init_articles_views($articles);
+		// self::init_articles_views($articles);
 
 		return $articles;
 	}
@@ -378,7 +378,7 @@ class TagManager_Article extends TagManager
 				{
 					$articles[$k]['view'] = $article['article_list_view'];
 				}
-				else if (! empty($article['article_view']))
+				else if ( ! empty($article['article_view']))
 				{
 					$articles[$k]['view'] = $article['article_view'];
 				}
