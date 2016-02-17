@@ -11,12 +11,18 @@
     </query>
 
     <query>
+        <![CDATA[
         INSERT IGNORE INTO extend_field_type (id_extend_field_type, type_name, default_values, values, translated, active, validate, html_element, html_element_type, html_element_class, html_element_pattern)
         VALUES (10,'Date & Time',0,0,0,1,NULL,'input','datetime','w130 inputtext', NULL);
+        ]]>
     </query>
 
     <query>
-        update extend_field_type set html_element_class='w130 inputtext' where type_name='Date';
+        update extend_field_type set html_element_class='w130 inputtext' where id_extend_field_type=7;
+    </query>
+
+    <query>
+        update extend_field_type set type_name='Date' where id_extend_field_type=7;
     </query>
 
     <query>
