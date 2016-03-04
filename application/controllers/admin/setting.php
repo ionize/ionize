@@ -169,6 +169,16 @@ class Setting extends MY_admin
 		// Maintenance IPs
 		$this->template['maintenance_ips'] = implode("\n", config_item('maintenance_ips'));
 
+		// Log
+		$this->template['log_modes'] = array(
+			'0' => 'Disables logging, Error logging TURNED OFF',
+			'1' => 'Error Messages (including PHP errors)',
+			'2' => 'Debug Messages',
+			'3' => 'Informational Messages',
+			'4' => 'All Messages',
+		);
+		$this->template['log_nb_lines'] = config_item('log_nb_lines');
+		$this->template['log_threshold'] = config_item('log_threshold');
 
 		$this->output('setting/technical');
 	}

@@ -774,7 +774,7 @@ class Article extends MY_admin
 						$this->template['all_article_types'] = NULL;
 					}
 
-					$this->template['article_type_current'] = $article['id_type'];
+/*					$this->template['article_type_current'] = $article['id_type'];*/
 
 					// Content Types
 					$types = $this->content_type_model->get_select('article');
