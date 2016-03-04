@@ -1361,6 +1361,45 @@ class Setting extends MY_admin
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves Advanced Settings > Log settings in config.php and ionize.php
+	 */
+	function save_log_settings()
+	{
+		// Save log settings
+		$data = array(
+			'log_threshold' => $this->input->post('log_threshold'),
+			'log_nb_lines'  => $this->input->post('log_nb_lines')
+		);
+
+		// If data is missing : Show error message
+		if ($data['log_threshold'] == '' || $data['log_nb_lines'] == '')
+		{
+			$this->error(lang('ionize_message_log_settings_not_saved'));
+		}
+		else
+		{
+			// Everything OK : Saving data to config files
+			if ($this->config_model->change('config.php', 'log_threshold', $data['log_threshold']) == FALSE ||
+				$this->config_model->change('ionize.php', 'log_nb_lines', $data['log_nb_lines']) == FALSE)
+			{
+				$this->error(lang('ionize_message_log_settings_not_saved'));
+			}
+			else
+			{
+				// Set the reload CB
+				$this->success(lang('ionize_message_log_settings_saved'));
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	private function _callback_reload_backend($admin_url = NULL)
 	{
 		$admin_url = (is_null($admin_url)) ? config_item('admin_url') : $admin_url;
