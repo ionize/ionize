@@ -93,7 +93,7 @@ class Url_model extends Base_model
 			// Set the old link as inactive
 			$element['active'] = '0';
 			$this->update($where, $element);
-			$nb = $this->db->affected_rows();
+			$nb = $this->{$this->db_group}->affected_rows();
 			
 			// Insert the new link
 			$element['active'] = '1';

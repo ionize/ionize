@@ -33,7 +33,12 @@ class TagManager_Article extends TagManager
 		'article:deny' => 			'tag_article_deny',
 
 		'article:is_active' => 		'tag_is_active',
+
+		'article:articles' => 		'tag_articles',
 	);
+
+
+	protected static $_content_types = NULL;
 
 
 	// ------------------------------------------------------------------------
@@ -75,9 +80,13 @@ class TagManager_Article extends TagManager
 		// Page. 1. Local one, 2. Current page (should never arrived except if the tag is used without the 'page' parent tag)
 		$page = $tag->get('page');
 
+		// Get articles in which this article is linked through an link extend
+		$referenced_by_link_extend = $tag->getAttribute('referenced_by_link_extend');
+
+
 		// Only get all articles (no limit to one page) if asked.
 		// Filter by current page by default
-		if (empty($page) && $tag->getAttribute('all') == NULL)
+		if (empty($page) && $tag->getAttribute('all') == NULL && $referenced_by_link_extend == NULL)
 		{
 			$page = self::registry('page');
 		}
@@ -89,6 +98,9 @@ class TagManager_Article extends TagManager
 		$tag_pagination = $tag->getAttribute('pagination');
 		$ionize_pagination = $page['pagination'];
 
+		// Content Type
+		$content_type = $tag->getAttribute('content_type');
+
 		// Authorizations
 		$tag_authorization = $tag->getAttribute('authorization');
 
@@ -96,6 +108,9 @@ class TagManager_Article extends TagManager
 		$type = $tag->getAttribute('type');
 		$nb_to_display = $tag->getAttribute('limit', 0);
 		$filter = $tag->getAttribute('filter');
+
+		$extend_filter = $tag->getAttribute('extend_filter');
+
 
         if( ! is_null($filter) )
             $filter = self::process_filter($filter);
@@ -138,6 +153,8 @@ class TagManager_Article extends TagManager
 		$from_categories = $tag->getAttribute('from_categories');
 		$from_categories_condition = ($tag->getAttribute('from_categories_condition') != NULL && $tag->attr['from_categories_condition'] != 'or') ? 'and' : 'or';
 
+
+
 		/*
 		 * Preparing WHERE on articles
 		 * From where do we get the article : from a page, from the parent page or from the all website ?
@@ -173,9 +190,24 @@ class TagManager_Article extends TagManager
 			}
 		}
 
+		// Content Types
+		if ( ! is_null($content_type))
+		{
+			$_content_type = self::_get_content_type_by_name($content_type);
+
+			if ( ! is_null($_content_type))
+			{
+				$where['id_content_type'] = $_content_type['id_content_type'];
+			}
+		}
+
 		// Get only articles from the detected page
 		if ( ! empty($page))
 			$where['id_page'] = $page['id_page'];
+
+		$id_category = $tag->getAttribute('id_category');
+		if ($id_category)
+			$where['id_category'] = $id_category;
 
 		// Set Limit : First : pagination, Second : limit
 		$limit = $tag_pagination ? $tag_pagination : $ionize_pagination;
@@ -183,18 +215,35 @@ class TagManager_Article extends TagManager
 		if ( $limit ) $where['limit'] = $limit;
 
 		// Get from DB
-		$articles = self::$ci->article_model->get_lang_list(
-			$where,
-			$lang = Settings::get_lang(),
-			$filter
-		);
+		if ($referenced_by_link_extend)
+		{
+			$article = $tag->get('article');
+
+			$articles = self::$ci->article_model->get_referring_articles_in_link_extend(
+				$referenced_by_link_extend,
+				$article['id_article'],
+				$where,
+				$lang = Settings::get_lang(),
+				$filter,
+				$extend_filter
+			);
+		}
+		else
+		{
+			$articles = self::$ci->article_model->get_lang_list(
+				$where,
+				$lang = Settings::get_lang(),
+				$filter,
+				$extend_filter
+			);
+		}
 
 		$articles = self::filter_articles($tag, $articles);
 
 		// Filter on authorizations
 		if (User()->get('role_level') < 1000)
 		{
-			$articles = self::_filter_articles_authorization($articles, $tag_authorization);
+			$articles = self::filter_articles_authorization($articles, $tag_authorization);
 		}
 
 		// Pagination needs the total number of articles, without the pagination filter
@@ -206,8 +255,6 @@ class TagManager_Article extends TagManager
 		}
 
 		$articles = self::$ci->article_model->init_articles_urls($articles);
-
-		// self::init_articles_views($articles);
 
 		return $articles;
 	}
@@ -354,36 +401,6 @@ class TagManager_Article extends TagManager
 
 		if ($year)
 			self::$ci->article_model->add_archives_filter($year, $month);
-	}
-
-
-	// ------------------------------------------------------------------------
-
-
-	/**
-	 * Inits, for each article, the view to use.
-	 *
-	 * @param $articles
-	 *
-	 */
-	private function init_articles_views(&$articles)
-	{
-		$nb = count($articles);
-
-		foreach ($articles as $k=>$article)
-		{
-			if (empty($article['view']))
-			{
-				if ($nb > 1 && ! empty($article['article_list_view']))
-				{
-					$articles[$k]['view'] = $article['article_list_view'];
-				}
-				else if ( ! empty($article['article_view']))
-				{
-					$articles[$k]['view'] = $article['article_view'];
-				}
-			}
-		}
 	}
 
 
@@ -753,7 +770,7 @@ class TagManager_Article extends TagManager
 	 * @return	Array		Articles
 	 *
 	 */
-	private static function prepare_articles(FTL_Binding $tag, $articles)
+	public static function prepare_articles(FTL_Binding $tag, $articles)
 	{
 		// Articles index starts at 1.
 		$index = 1;
@@ -763,11 +780,6 @@ class TagManager_Article extends TagManager
 
 		// paragraph limit ?
 		$paragraph = $tag->getAttribute('paragraph');
-
-		// auto_link
-		// Removed because of double execution
-		// (also done by the Tagmanager)
-		// $auto_link = $tag->getAttribute('auto_link', TRUE);
 
 		// Last part of the URI
 		$uri_last_part = array_pop(explode('/', uri_string()));
@@ -795,10 +807,6 @@ class TagManager_Article extends TagManager
 			if ( ! is_null($paragraph))
 				$articles[$key]['content'] = tag_limiter($article['content'], 'p', (int) $paragraph);
 
-			// Autolink the content
-//			if ($auto_link)
-//				$articles[$key]['content'] = auto_link($articles[$key]['content'], 'both', TRUE);
-
 			// Article's index
 			$articles[$key]['index'] = $index++;
 
@@ -807,7 +815,6 @@ class TagManager_Article extends TagManager
 
 			// Article's ID
 			$articles[$key]['id'] = $articles[$key]['id_article'];
-
 		}
 
 		return $articles;
@@ -816,9 +823,13 @@ class TagManager_Article extends TagManager
 
 	// ------------------------------------------------------------------------
 
+
 	/**
 	 * Filters the articles regarding range.
 	 *
+	 * @param FTL_Binding $tag
+	 * @param $articles
+	 * @return array
 	 */
 	public static function filter_articles(FTL_Binding $tag, $articles)
 	{
@@ -862,7 +873,6 @@ class TagManager_Article extends TagManager
 				$articles = array_slice($articles, 0, $limit);
 			}
 
-
 			// Other filters
 			if ( ! empty($articles))
 			{
@@ -874,6 +884,7 @@ class TagManager_Article extends TagManager
 				{
 					$tmp_articles = $articles;
 					$filtered_articles = array();
+					$_added = array();
 
 					foreach($attributes as $attribute)
 					{
@@ -883,11 +894,18 @@ class TagManager_Article extends TagManager
 						{
 							if (isset($article[$attribute]))
 							{
+
 								if ($article[$attribute] == $attribute_value)
 									$filtered_articles[] = $article;
 							}
 							else
-								$filtered_articles[] = $article;
+							{
+								if ( ! in_array($article['id_article'], $_added))
+								{
+									$_added[] = $article['id_article'];
+									$filtered_articles[] = $article;
+								}
+							}
 						}
 					}
 
@@ -966,7 +984,7 @@ class TagManager_Article extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	private static function _filter_articles_authorization($articles, $filter_codes=NULL)
+	public static function filter_articles_authorization($articles, $filter_codes=NULL)
 	{
 		if ( is_string($filter_codes) ) $filter_codes = explode(',', $filter_codes);
 		$codes = array();
@@ -1005,6 +1023,46 @@ class TagManager_Article extends TagManager
 				else
 					$return[] = $article;
 			}
+		}
+
+		return $return;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected static function _get_content_types()
+	{
+		if (self::$_content_types == NULL)
+		{
+			self::$ci->load->model(
+				array(
+					'content_type_model',
+				),
+				'',
+				TRUE
+			);
+
+			self::$_content_types = self::$ci->content_type_model->get_list();
+		}
+
+		return self::$_content_types;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	protected static function _get_content_type_by_name($name)
+	{
+		$content_types = self::_get_content_types();
+		$return = NULL;
+
+		foreach($content_types as $_content_type)
+		{
+			if ($_content_type['name'] == $name)
+				$return = $_content_type;
 		}
 
 		return $return;

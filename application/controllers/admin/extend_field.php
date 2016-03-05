@@ -19,6 +19,9 @@ class Extend_field extends MY_admin
 	/** @var  Extend_field_type_model */
 	public $extend_field_type_model;
 
+	protected $_extend_field_definitions = NULL;
+
+
 	/**
 	 * Constructor
 	 *
@@ -416,6 +419,18 @@ class Extend_field extends MY_admin
 	// ------------------------------------------------------------------------
 
 
+	public function get_definitions()
+	{
+		if ( ! is_null($this->_extend_field_definitions))
+			return $this->_extend_field_definitions;
+
+		$this->_extend_field_definitions = $this->extend_field_model->get_list();
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/** 
 	 * Get Extend Definitions in the context of one parent
 	 *
@@ -454,6 +469,9 @@ class Extend_field extends MY_admin
 	{
 		$parent = $this->input->post('parent');
 
+		$definitions = $this->get_definitions();
+
+
 		$items = $this->extend_field_model->get_list(array('parent' => $parent));
 
 		$this->xhr_output($items);
@@ -461,6 +479,7 @@ class Extend_field extends MY_admin
 
 
 	// ------------------------------------------------------------------------
+
 
 	/**
 	 * @param	string	[$mode]		eg: 'json'

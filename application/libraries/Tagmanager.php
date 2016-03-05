@@ -311,9 +311,11 @@ class TagManager
 	 */
 	public static function process_form()
 	{
-		// Posting form name
-		if (self::$ci->input->post('form'))
-			self::$posting_form_name = self::$ci->input->post('form');
+		// Posted form name
+		$form_name = self::$ci->input->get_post('form');
+
+		if ($form_name)
+			self::$posting_form_name = $form_name;
 		else
 			return;
 
@@ -1441,6 +1443,8 @@ class TagManager
 
 			if ($is_empty == FALSE || $is_empty == TRUE)
 			{
+				$tag->removeAttribute('is_empty');
+
 				$value = $tag->getValue(self::$extend_field_prefix . $extend['name'], $extend['parent']);
 
 				if ( empty($value) == $is_empty)
@@ -1586,6 +1590,7 @@ class TagManager
 				break;
 
 			case '7':
+			case '10':
 				$value = self::format_date($tag, $value);
 				break;
 
@@ -1873,6 +1878,9 @@ class TagManager
 					$link['medias'] = $link['data']['medias'];
 					$tag->set('links', $link);
 
+					// Set 'article' or 'page' as the data, so we can get the link article's extends
+					$tag->set($link['type'], $link['data']);
+
 					foreach($link['data'] as $key => $value)
 					{
 						$tag->set($key, $value);
@@ -1900,7 +1908,7 @@ class TagManager
 		$is_empty = $tag->getAttribute('is_empty');
 		$url = $tag->get('url');
 
-		if ($is_empty == FALSE || $is_empty == TRUE)
+		if ($is_empty === FALSE || $is_empty === TRUE)
 		{
 			if ( empty($url) == $is_empty)
 				return $tag->expand();

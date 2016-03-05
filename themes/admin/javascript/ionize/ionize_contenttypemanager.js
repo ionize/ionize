@@ -13,6 +13,8 @@ ION.ContentTypeManager = new Class({
 
 	extendManager: null,
 
+	contentElementManager: null,
+
 
 	/**
 	 *
@@ -24,6 +26,7 @@ ION.ContentTypeManager = new Class({
 
 		// Extend Manager
 		this.extendManager = new ION.ExtendManager();
+		this.contentElementManager = new ION.ContentElementManager();
 	},
 
 
@@ -134,38 +137,52 @@ ION.ContentTypeManager = new Class({
 			{
 				onSuccess: function(json)
 				{
-					new ION.List(
+					var groups = self._getContentTypeByType(json);
+
+					Object.each(groups, function(group)
 					{
-						container: self.typeListContainer,
-						items: json,
-						elements:[
-							// Title
-							{
-								element: 'a',
-								'class': 'title left',
-								text: 'name',
-								onClick: function(item)
+						var h = new Element('h3', {
+							'class': 'toggler toggler-content-type mt0 mb5',
+							'text': group.title
+						}).inject(self.typeListContainer);
+
+						var container = new Element('div', {'class':'element element-content-type'}).inject(self.typeListContainer);
+
+						new ION.List(
+						{
+							container: container,
+							items: group.items,
+							'class': 'mb20',
+							elements:[
+								// Title
 								{
-									self.editType(item);
-								}
-							},
-							// Delete
-							{
-								element: 'a',
-								'class': 'icon delete right',
-								onClick: function(item)
+									element: 'a',
+									'class': 'title left',
+									text: 'name',
+									onClick: function(item)
+									{
+										self.editType(item);
+									}
+								},
+								// Delete
 								{
-									self.deleteType(item);
+									element: 'a',
+									'class': 'icon delete right',
+									onClick: function(item)
+									{
+										self.deleteType(item);
+									}
 								}
-							},
-							// Type
-							{
-								element: 'span',
-								'class': 'lite right',
-								text: 'type'
-							}
-						]
+							]
+						});
 					});
+
+					ION.initAccordion(
+						'.toggler.toggler-content-type',
+						'.element.element-content-type',
+						true,
+						'wContentTypesAccordion'
+					);
 				}
 			}
 		);
@@ -206,16 +223,20 @@ ION.ContentTypeManager = new Class({
 		var form = new Element('form', {class:'mt20'}).inject(container),
 			ff_name = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_name'), for:'content_type_name' + item.id_content_type}}),
 			ff_type = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_type')}}),
-			ff_view = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_view')}}),
+			div_views = new Element('div').inject(form),
+			div_views_intro = new Element('div', {class:'mb10'}).inject(div_views),
+			ff_view = new ION.FormField({container: div_views, label: {text: Lang.get('ionize_label_view')}}),
 			div_view = new Element('div').inject(ff_view.getContainer()),
-			ff_view_single = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_page_single_view')}}),
+			ff_view_single = new ION.FormField({container: div_views, label: {text: Lang.get('ionize_label_page_single_view')}}),
 			div_view_single = new Element('div').inject(ff_view_single.getContainer()),
 			ff_save = new ION.FormField({'class':'mt10', container: form}),
 			input_name = new Element('input', {id:'content_type_name' + item.id_content_type, class:'inputtext required w200', name:'name', value:item.name}).inject(ff_name.getContainer())
 		;
 
-		ff_view.hide();
-		ff_view_single.hide();
+		div_views.hide();
+
+		new Element('h3', {class:'mb0', html:Lang.get('ionize_title_content_types_views')}).inject(div_views_intro);
+		new Element('p', {class:'lite', html:Lang.get('ionize_help_content_types_views')}).inject(div_views_intro);
 
 		var viewSelect = new ION.Form.Select({
 			name:'view',
@@ -224,7 +245,7 @@ ION.ContentTypeManager = new Class({
 			selected: item.view,
 			key: 'key',
 			label: 'label',
-			fireOnInit: true,
+			// fireOnInit: true,
 			onChange: function(value, data, selected)
 			{
 				self.updateTypeField(item, 'view', value);
@@ -238,12 +259,15 @@ ION.ContentTypeManager = new Class({
 			selected: item.view_single,
 			key: 'key',
 			label: 'label',
-			fireOnInit: true,
+			// fireOnInit: true,
 			onChange: function(value, data, selected)
 			{
 				self.updateTypeField(item, 'view_single', value);
 			}
 		});
+
+		new Element('p', {'class': 'lite', html: Lang.get('ionize_help_content_type_view')}).inject(ff_view.getContainer());
+		new Element('p', {'class': 'lite', html: Lang.get('ionize_help_content_type_view_single')}).inject(ff_view_single.getContainer());
 
 
 		if (item.id_content_type == '')
@@ -262,13 +286,11 @@ ION.ContentTypeManager = new Class({
 				{
 					if (value == 'page')
 					{
-						ff_view.show();
-						ff_view_single.show();
+						div_views.show();
 					}
 					else
 					{
-						ff_view.hide();
-						ff_view_single.hide();
+						div_views.hide();
 					}
 				}
 			});
@@ -280,8 +302,6 @@ ION.ContentTypeManager = new Class({
 			// Help
 			new Element('p', {'class': 'lite', html: Lang.get('ionize_help_content_type_type')}).inject(ff_type.getContainer());
 			new Element('p', {'class': 'lite', html: Lang.get('ionize_help_content_type_name')}).inject(ff_name.getContainer());
-			new Element('p', {'class': 'lite', html: Lang.get('ionize_help_content_type_view')}).inject(ff_view.getContainer());
-			new Element('p', {'class': 'lite', html: Lang.get('ionize_help_content_type_view_single')}).inject(ff_view_single.getContainer());
 
 			var submitButton = new ION.Button({
 				title: Lang.get('ionize_label_save_content_type'),
@@ -333,10 +353,9 @@ ION.ContentTypeManager = new Class({
 			ff_view_single.show();
 
 			if (item.type != 'page')
-			{
-				ff_view.hide();
-				ff_view_single.hide();
-			}
+				div_views.hide();
+			else
+				div_views.show();
 
 			input_name.addEvent('blur', function()
 			{
@@ -359,8 +378,11 @@ ION.ContentTypeManager = new Class({
 				parent: item.type
 			});
 
-			var ff_groups = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_content_type_groups')}}),
-				ff_new_group = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_content_type_new_group')}}),
+			var cont_group = new Element('div', {class:''}).inject(form),
+				cont_group_intro = new Element('div', {class:''}).inject(cont_group),
+				cont_group_content = new Element('div', {class:''}).inject(cont_group),
+				ff_new_group = new ION.FormField({container: cont_group_content, label: {text: Lang.get('ionize_label_content_type_new_group')}}),
+				ff_groups = new ION.FormField({container: cont_group_content, label: {text: Lang.get('ionize_label_content_type_groups')}}),
 				div_groups = new Element('div', {class:'mt10'}).inject(ff_groups.getContainer()),
 				div_new_group = new Element('div', {class:'mt10 h30'}).inject(ff_new_group.getContainer()),
 				div_new_group_input = new Element('div', {class:'left mr15'}).inject(div_new_group),
@@ -370,7 +392,11 @@ ION.ContentTypeManager = new Class({
 
 			ff_groups.hide();
 
-			this.getGroupAndExtendsList(item, div_groups);
+			new Element('h3', {class:'mb0 mt20', html:Lang.get('ionize_label_title_type_groups')}).inject(cont_group_intro);
+			new Element('p', {class:'lite', html:Lang.get('ionize_help_content_types_groups')}).inject(cont_group_intro);
+
+
+			this.getGroupManagementList(item, div_groups);
 
 			new ION.Button({
 				title: Lang.get('ionize_label_content_type_add_new_group'),
@@ -399,6 +425,7 @@ ION.ContentTypeManager = new Class({
 			{
 				onSuccess: function()
 				{
+					ION.notification('success', Lang.get('ionize_message_operation_ok'));
 					self.getTypeList();
 				}
 			}
@@ -419,6 +446,7 @@ ION.ContentTypeManager = new Class({
 			{
 				onSuccess: function()
 				{
+					ION.notification('success', Lang.get('ionize_message_operation_ok'));
 					self.getTypeList();
 				}
 			}
@@ -467,35 +495,67 @@ ION.ContentTypeManager = new Class({
 	},
 
 
-	getGroupAndExtendsList: function(item, container)
+	/**
+	 *
+	 * @param item			Content Type
+	 * @param container
+	 */
+	getGroupManagementList: function(item, container)
 	{
 		var self = this;
 
 		container.empty();
 
-		this.getGroupAndExtends(
+		this.getGroupsWithItems(
 			item,
 			{
 				onSuccess: function(groups)
 				{
-					if (groups.length == 0)
-					{
-						// container.getParent('dl').destroy();
-					}
-					else
-					{
+					if (groups.length > 0)
+ 					{
 						container.getParent('dl').show();
 
+						// Groups
 						Array.each(groups, function(group)
 						{
-							var div = new Element('div', {class:'pt5 mb15'}).inject(container),
-								div_title = new Element('div', {class:''}).inject(div),
-								delGroupBtn = new Element('a', {class:'icon delete absolute right'}).inject(div_title),
-								h3 = new Element('h3', {class:'mt0 mb5 no-clear', html:group.name, contenteditable:true}).inject(div_title),
-								ul_container = new Element('div').inject(div),
-								add_extend_container = new Element('div', {class:'ml50 mt3'}).inject(div),
-								addBtn = new Element('a', {html:Lang.get('ionize_label_content_type_add_extend_to_group')}).inject(add_extend_container)
+							var div = new Element('div', {id:'contentTypeGroup'+group.id_content_type_group, 'data-id':group.id_content_type_group, 'class':'list pt5 mb15 clearfix'}).inject(container),
+								div_title = new Element('div', {class:'h30'}).inject(div),
+								delGroupBtn = new Element('a', {class:'icon delete absolute right mr5'}).inject(div_title),
+								btn_order = new Element('a', {class:'icon drag left mr10'}).inject(div_title),
+								h3 = new Element('h3', {class:'mt0 mb5 no-clear left', html:group.name, contenteditable:true}).inject(div_title),
+
+								ff_extends = new ION.FormField({container: div, 'class':'small', label: {text: Lang.get('ionize_label_extends')}}),
+								extend_container = new Element('div', {'class':''}).inject(ff_extends.getContainer()),
+								add_extend_container = new Element('div', {class:'mt3 clearfix'}).inject(ff_extends.getContainer()),
+
+								ff_content_elements = new ION.FormField({container: div, 'class':'mt10 small', label: {text: Lang.get('ionize_menu_content_elements')}}),
+								content_element_container = new Element('div', {'class':''}).inject(ff_content_elements.getContainer()),
+								add_content_element_container = new Element('div', {class:'mt3 clearfix'}).inject(ff_content_elements.getContainer())
 								;
+
+							// Add Extends
+							new ION.Button({
+								title: Lang.get('ionize_label_content_type_add_extend_to_group'),
+								container: add_extend_container,
+								icon: 'icon-plus',
+								'class': 'button light',
+								onClick: function()
+								{
+									self.extendManager.openListWindow();
+								}
+							});
+
+							// Add Content Elements
+							new ION.Button({
+								title: Lang.get('ionize_label_content_type_add_content_element_to_group'),
+								container: add_content_element_container,
+								icon: 'icon-plus',
+								'class': 'button light',
+								onClick: function()
+								{
+									self.contentElementManager.openDefinitionListWindow();
+								}
+							});
 
 							// DeleteGroup button
 							delGroupBtn.addEvent('click', function() {
@@ -507,21 +567,29 @@ ION.ContentTypeManager = new Class({
 								self.updateGroup(group, 'name', h3.get('text'));
 							});
 
-
-							// Open Extend window
-							addBtn.addEvent('click', function() {
-								self.extendManager.openListWindow();
-							});
-
-							var ul = new ION.List({
-								container: ul_container,
+							// Extends List
+							new ION.List({
+								container: extend_container,
 								items: group.fields,
 								sortable: true,
 								droppable: true,
 								dropOn: 'dropExtend',
 								onDrop: function(element)
 								{
-									self.linkExtendWithGroup(element.retrieve('data'), group, item, container);
+									var extend = element.retrieve('data');
+
+									self.linkItemWithGroup(
+										'extend_field',
+										extend.id_extend_field,
+										group,
+										groups,
+										{
+											onSuccess: function()
+											{
+												self.getGroupManagementList(item, container);
+											}
+										}
+									);
 								},
 								sort: {
 									handler: '.drag',
@@ -529,9 +597,10 @@ ION.ContentTypeManager = new Class({
 									callback: function(serie)
 									{
 										ION.JSON(
-											ION.adminUrl + 'content_type/save_extend_ordering',
+											ION.adminUrl + 'content_type/save_item_ordering',
 											{
 												order: serie,
+												item: 'extend_field',
 												id_content_type_group: group.id_content_type_group
 											},
 											{}
@@ -552,9 +621,17 @@ ION.ContentTypeManager = new Class({
 										element: 'a',
 										'class': 'title left',
 										text: 'name',
-										onClick: function(item)
+										onClick: function(extend)
 										{
-											self.editType(item);
+											self.extendManager.editExtend(
+												extend.id_extend_field,
+												{
+													onSuccess: function()
+													{
+														self.getGroupManagementList(item, container);
+													}
+												}
+											);
 										}
 									},
 									// Unlink
@@ -563,7 +640,17 @@ ION.ContentTypeManager = new Class({
 										'class': 'icon unlink right',
 										onClick: function(extend)
 										{
-											self.unlinkExtendFromGroup(extend, group, item, container);
+											self.unlinkItemFromGroup(
+												'extend_field',
+												extend.id_extend_field,
+												group,
+												{
+													onSuccess: function()
+													{
+														self.getGroupManagementList(item, container);
+													}
+												}
+											);
 										}
 									},
 									// Extend Type
@@ -574,6 +661,115 @@ ION.ContentTypeManager = new Class({
 									}
 								]
 							});
+
+							// Content Element List
+							new ION.List({
+								container: content_element_container,
+								items: group.elements,
+								sortable: true,
+								droppable: true,
+								dropOn: 'dropContentElement',
+								onDrop: function(element)
+								{
+									element = element.retrieve('data');
+
+									self.linkItemWithGroup(
+										'element',
+										element.id_element_definition,
+										group,
+										groups,
+										{
+											onSuccess: function()
+											{
+												self.getGroupManagementList(item, container);
+											}
+										}
+									);
+								},
+								sort: {
+									handler: '.drag',
+									id_key: 'id_element_definition',
+									callback: function(serie)
+									{
+										ION.JSON(
+											ION.adminUrl + 'content_type/save_item_ordering',
+											{
+												order: serie,
+												item:'element',
+												id_content_type_group: group.id_content_type_group
+											},
+											{}
+										);
+									}
+								},
+								post:{
+									id_content_group: group.id_content_group
+								},
+								elements: [
+									// Drag
+									{
+										element: 'a',
+										'class': 'icon drag left'
+									},
+									// Title
+									{
+										element: 'a',
+										'class': 'title left',
+										text: 'title'
+									},
+									// Unlink
+									{
+										element: 'a',
+										'class': 'icon unlink right',
+										onClick: function(element)
+										{
+											self.unlinkItemFromGroup(
+												'element',
+												element.id_element_definition,
+												group,
+												{
+													onSuccess: function()
+													{
+														self.getGroupManagementList(item, container);
+													}
+												}
+											);
+										}
+									}
+								]
+							});
+
+						});
+
+						// Order Groups
+						new Sortables(container,
+						{
+							revert: true,
+							handle: '.drag',
+							clone: true,
+							constrain: false,
+							opacity: 0.5,
+							onStart:function(el, clone)
+							{
+								clone.addClass('clone');
+							},
+							onComplete: function(item, clone)
+							{
+								// Hides the current sorted element (correct a Mocha bug on hidding modal window)
+								item.removeProperty('style');
+
+								// Get the new order
+								var serialized = this.serialize(0, function(item)
+								{
+									// Check for the not removed clone
+									if (item.id != '')
+										return item.getProperty('data-id');
+									return;
+								});
+
+								// Items sorting
+								self.sortGroups(serialized);
+							}
 						});
 					}
 				}
@@ -582,11 +778,27 @@ ION.ContentTypeManager = new Class({
 	},
 
 
+	sortGroups: function(serialized)
+	{
+		var serie = [];
+		serialized.each(function(item)
+		{
+			if (typeOf(item) != 'null')	serie.push(item);
+		});
+
+		ION.JSON(
+			ION.adminUrl + 'content_type/save_group_ordering',
+			{
+				order:serie
+			},
+			{}
+		);
+	},
+
+
 	deleteGroup: function(group, item, container)
 	{
 		var self = this;
-
-		console.log(group);
 
 		ION.confirmation(
 			'wContentTypeGroupDelete' + group.id_content_type_group,
@@ -600,7 +812,7 @@ ION.ContentTypeManager = new Class({
 					{
 						onSuccess: function()
 						{
-							self.getGroupAndExtendsList(item, container);
+							self.getGroupManagementList(item, container);
 						}
 					}
 				);
@@ -610,12 +822,12 @@ ION.ContentTypeManager = new Class({
 	},
 
 
-	getGroupAndExtends: function(item)
+	getGroupsWithItems: function(item)
 	{
 		var options = typeOf(arguments[1]) != 'null' ? arguments[1] : {};
 
 		ION.JSON(
-			ION.adminUrl + 'content_type/get_extends_by_groups',
+			ION.adminUrl + 'content_type/get_groups_with_items',
 			{
 				id_content_type: item.id_content_type
 			},
@@ -630,40 +842,84 @@ ION.ContentTypeManager = new Class({
 	},
 
 
-	linkExtendWithGroup: function(extend, group, item, container)
+	linkItemWithGroup: function(item, id_item, group, groups)
 	{
-		var self = this;
+		var self = this,
+			options = typeOf(arguments[4]) != 'null' ? arguments[4] : {},
+			isInOtherGroup = false;
 
-		ION.JSON(
-			ION.adminUrl + 'content_type/link_extend_with_group',
+		if (item == 'extend_field')
+		{
+			Array.each(groups, function(group)
 			{
-				id_extend_field: extend.id_extend_field,
-				id_content_type_group: group.id_content_type_group
-			},
-			{
-				onSuccess: function()
+				Array.each(group.fields, function(field)
 				{
-					self.getGroupAndExtendsList(item, container);
+					if (field.id_extend_field == id_item)
+					{
+						isInOtherGroup = true;
+					}
+				});
+			});
+		}
+
+		if (item == 'element')
+		{
+			Array.each(groups, function(group)
+			{
+				Array.each(group.elements, function(element)
+				{
+					if (element.id_element_definition == id_item)
+					{
+						isInOtherGroup = true;
+					}
+				});
+			});
+		}
+
+
+		if (isInOtherGroup == false)
+		{
+			ION.JSON(
+				ION.adminUrl + 'content_type/link_item_with_group',
+				{
+					item: item,
+					id_item: id_item,
+					id_content_type_group: group.id_content_type_group
+				},
+				{
+					onSuccess: function ()
+					{
+						if (options.onSuccess)
+							options.onSuccess();
+					}
 				}
-			}
-		);
+			);
+		}
+		else
+		{
+			ION.notification('error', Lang.get('ionize_message_content_type_item_already_linked_to_another_group'));
+		}
 	},
 
 
-	unlinkExtendFromGroup: function(extend, group, item, container)
+	unlinkItemFromGroup: function(item, id_item, group)
 	{
-		var self = this;
+		var self = this,
+			options = typeOf(arguments[3]) != 'null' ? arguments[3] : {};
+
 
 		ION.JSON(
-			ION.adminUrl + 'content_type/unlink_extend_from_group',
+			ION.adminUrl + 'content_type/unlink_item_from_group',
 			{
-				id_extend_field: extend.id_extend_field,
+				item: item,
+				id_item: id_item,
 				id_content_type_group: group.id_content_type_group
 			},
 			{
 				onSuccess: function()
 				{
-					self.getGroupAndExtendsList(item, container);
+					if (options.onSuccess)
+						options.onSuccess();
 				}
 			}
 		);
@@ -696,6 +952,26 @@ ION.ContentTypeManager = new Class({
 	},
 
 
+	_getContentTypeByType: function(list)
+	{
+		var data = {};
+
+		Object.each(list, function(item)
+		{
+			if (typeOf(data[item.type]) == 'null')
+			{
+				data[item.type] = {
+					title: String.capitalize(item.type),
+					items: []
+				};
+			}
+			data[item.type]['items'].push(item);
+		});
+
+		return data;
+	},
+
+
 	/*
 	 * Display on Page / Article Edition panel
 	 *
@@ -715,7 +991,7 @@ ION.ContentTypeManager = new Class({
 				id_parent: this.options.id_parent
 			});
 
-			this.getGroupAndExtends(
+			this.getGroupsWithItems(
 				{id_content_type: id_content_type},
 				{
 					onSuccess: function(groups)
@@ -733,9 +1009,7 @@ ION.ContentTypeManager = new Class({
 								{
 									Array.each(groups, function(group)
 									{
-										var _fields = [];
-
-										if (group.fields.length > 0)
+										if (group.fields.length > 0 || group.elements.length > 0)
 										{
 											section = tabSwapper.addNewTab(
 												group.name,
@@ -750,7 +1024,18 @@ ION.ContentTypeManager = new Class({
 
 											section.setProperty('id', 'tabSwapper' + self.options.type + self.options.id_type);
 
-											self.buildParentGroupExtendFields(group, extend_fields, section);
+											if (group.fields.length > 0)
+											{
+												var extend_container = new Element('div', {class:''}).inject(section);
+
+												self.buildParentGroupExtendFields(group, extend_fields, extend_container);
+											}
+
+											if (group.elements.length > 0)
+											{
+												var element_container = new Element('div', {class:''}).inject(section);
+												self.buildParentGroupElements(group, group.elements, element_container);
+											}
 										}
 									});
 								}
@@ -758,7 +1043,7 @@ ION.ContentTypeManager = new Class({
 								{
 									Array.each(groups, function(group)
 									{
-										if (group.fields.length > 0)
+										if (group.fields.length > 0 || group.elements.length > 0)
 										{
 											tabsInstance.addTab({
 												label: group.name,
@@ -767,7 +1052,17 @@ ION.ContentTypeManager = new Class({
 													var section = s;
 													section.addClass('pt15');
 
-													self.buildParentGroupExtendFields(group, extend_fields, section);
+													if (group.fields.length > 0)
+													{
+														var extend_container = new Element('div', {class: ''}).inject(section);
+														self.buildParentGroupExtendFields(group, extend_fields, extend_container);
+													}
+
+													if (group.elements.length > 0)
+													{
+														var element_container = new Element('div', {class: ''}).inject(section);
+														self.buildParentGroupElements(group, group.elements, element_container);
+													}
 												}
 											});
 										}
@@ -802,7 +1097,53 @@ ION.ContentTypeManager = new Class({
 			});
 		});
 
-		self.extendManager.buildInstancesList(_fields, container);
+		if (_fields.length > 0)
+			self.extendManager.buildInstancesList(_fields, container);
+	},
+
+
+	buildParentGroupElements: function(group, elements, container)
+	{
+		var self = this,
+			parent = this.options.type,
+			id_parent = this.options.id_parent
+		;
+
+		container.empty();
+
+		// Save Event
+		self.contentElementManager.addEvent('save', function(instance)
+		{
+			self.buildParentGroupElements(group, elements, container);
+		});
+
+		// Foreach Definition
+		Object.each(elements, function(element)
+		{
+			var div = new Element('div', {class:''}).inject(container),
+				div_buttons = new Element('div', {class:'clearfix mb5'}).inject(div),
+				div_title = new Element('h3', {'class': 'left m0 mt5', html:element.title}).inject(div_buttons),
+				elements_container = new Element('div', {class:''}).inject(container)
+			;
+
+			// Create New Content Element
+			new ION.Button({
+				container: div_buttons,
+				title: Lang.get('ionize_button_add') + ' ' + element.title,
+				'class': 'right light',
+				icon: 'icon-plus',
+				onClick: function()
+				{
+					self.contentElementManager.createInstance(
+						element.id_element_definition, parent, id_parent
+					);
+				}
+			});
+
+			self.contentElementManager.getParentElementsFromDefinition(
+				elements_container, parent, id_parent, element.id_element_definition
+			);
+		});
 	}
 
 });

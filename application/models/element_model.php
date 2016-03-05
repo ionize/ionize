@@ -247,7 +247,7 @@ class Element_model extends Base_model
 		}
 
 		$langs = Settings::get_languages();
-		$extend_fields_fields = $this->{$this->db_group}->list_fields('extend_fields');
+		$extend_fields_fields = $this->list_fields('extend_fields');
 		
 		foreach($definitions as $key => &$definition)
 		{

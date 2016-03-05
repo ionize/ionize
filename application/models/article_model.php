@@ -129,6 +129,9 @@ class Article_model extends Base_model
 	}
 
 
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns all articles with all lang data
 	 *
@@ -246,9 +249,11 @@ class Article_model extends Base_model
 	 * @param	array		$where
 	 * @param	string		$lang
 	 * @param	bool|string	$filter		SQL filter
+	 * @param null $extend_filter
 	 * @return	array					Array of articles
+	 *
 	 */
-	public function get_lang_list($where = array(), $lang = NULL, $filter = FALSE)
+	public function get_lang_list($where = array(), $lang = NULL, $filter = FALSE, $extend_filter=NULL)
 	{
 		// Page_Article table
 		$this->{$this->db_group}->select($this->parent_table.'.*', FALSE);
@@ -316,8 +321,18 @@ class Article_model extends Base_model
 			'left'
 		);
 
+		// Category
+		if ( ! empty($where['id_category']))
+		{
+			$this->_add_category_filter_to_query($where['id_category']);
+			unset($where['id_category']);
+		}
+
+		// Extend filters
+		$this->_add_extend_filter_to_query($extend_filter, $where);
+
 		// Base_model->get_lang_list()
-		$articles =  parent::get_lang_list($where, $lang);
+		$articles = parent::get_lang_list($where, $lang);
 
 		$this->add_categories($articles, $lang);
 
@@ -345,10 +360,51 @@ class Article_model extends Base_model
 			 where pa.id_page is null
 		";
 
-		$query = $this->db->query($sql);
+		$query = $this->{$this->db_group}->query($sql);
 
 		if ( $query->num_rows() > 0)
 			$data = $query->result_array();
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Get referring articles which have $id_article linked to them through the extend field $extend_name
+	 * (Reverse search)
+	 *
+	 * @param $extend_name
+	 * @param $id_article
+	 * @param array $where
+	 * @param null $lang
+	 * @param bool $filter
+	 * @param null $extend_filter
+	 * @return array
+	 */
+	public function get_referring_articles_in_link_extend($extend_name, $id_article, $where=array(), $lang = NULL, $filter = FALSE, $extend_filter=NULL)
+	{
+		$data = array();
+
+		$extend = self::$ci->extend_field_model->get_extend_definition_from_name(trim($extend_name), 'article');
+
+		if ( ! empty($extend))
+		{
+			// join extend_fields efs on efs.id_extend_field = 16 and efs.parent='article' and efs.id_parent = article.id_article
+			$this->{$this->db_group}->join(
+				'extend_fields efs_ref',
+				"efs_ref.id_extend_field = " . $extend['id_extend_field'] .
+				" AND efs_ref.parent = 'article'" .
+				" AND efs_ref.id_parent = article.id_article"
+			);
+
+			// where efs.content REGEXP '(article:(.*).1096)';
+			$this->{$this->db_group}->where("efs_ref.content REGEXP '(article:(.*).".$id_article.")'", '', false);
+
+			$data = $this->get_lang_list($where, $lang, $filter, $extend_filter);
+		}
 
 		return $data;
 	}
@@ -1895,4 +1951,181 @@ class Article_model extends Base_model
 		return $data;
 	}
 
+
+	protected function _add_extend_filter_to_query($filters, &$query_where=array())
+	{
+		$order_by = ! empty($query_where['order_by']) ? trim($query_where['order_by'], " ,") : NULL;
+		$json = json_decode($filters, TRUE);
+
+		if (empty($filters))
+		{
+			return;
+		}
+
+		// JSON filters
+		if ($json != FALSE)
+		{
+			if (isset($json['extends'])) $json = array($json);
+
+			foreach ($json as $idx_filter => $filter)
+			{
+				if ( ! empty($filter['extends']))
+				{
+					$where = str_replace('.gt', '>', $filter['expression']);
+					$where = str_replace('.lt', '<', $where);
+					$where = str_replace('.eq', '=', $where);
+					$where = str_replace('.neq', '!=', $where);
+
+					if (! is_array($filter['extends'])) $filter['extends'] = array($filter['extends']);
+
+					foreach($filter['extends'] as $idx_extend => $extend_name)
+					{
+						$idx = $idx_filter . $idx_extend;
+
+						$extend = self::$ci->extend_field_model->get_extend_definition_from_name(trim($extend_name));
+
+						if ( ! is_null($extend))
+						{
+							$where = str_replace($extend['name'], 'efs_' . $idx . '.content', $where);
+						}
+
+						$this->{$this->db_group}->select('efs_' . $idx . '.content as extend_' . $extend['id_extend_field']);
+
+						$this->{$this->db_group}->join(
+							'extend_fields efs_' . $idx,
+							"efs_" . $idx . ".id_extend_field = " . $extend['id_extend_field'] .
+							" AND efs_" . $idx . ".parent = 'article'" .
+							" AND efs_" . $idx . ".id_parent = article.id_article",
+							'left'
+						);
+
+						// Order by
+						if ( ! is_null($order_by))
+						{
+							$attrs = explode(',', $order_by);
+
+							foreach($attrs as $attr_i => $attr)
+							{
+								if ( ! empty($attr))
+								{
+									$arr = preg_split("/[\s*]/i", trim($attr));
+
+									if (trim(strtolower($arr[0])) === $extend['name'])
+									{
+										$_order = str_replace($arr[0], "efs_" . $idx . ".content", $attr);
+
+										$this->{$this->db_group}->order_by($_order, NULL, FALSE);
+										unset($attrs[$attr_i]);
+									}
+								}
+								else
+									unset($attrs[$attr_i]);
+							}
+
+							$order_by = implode(',', $attrs);
+						}
+
+						if (empty($order_by))
+							unset($query_where['order_by']);
+						else
+							$query_where['order_by'] = $order_by;
+					}
+
+					$this->{$this->db_group}->where($where, '', false);
+				}
+			}
+		}
+		else
+		{
+			// trace('WTF !!! ');
+			// trace($filters);
+
+			$filters = ! is_array($filters) ? explode(';', $filters) : $filters;
+
+			foreach ($filters as $idx => $filter)
+			{
+				$filter = str_replace('.gt', '>', $filter);
+				$filter = str_replace('.lt', '<', $filter);
+				$filter = str_replace('.eq', '=', $filter);
+				$filter = str_replace('.neq', '!=', $filter);
+
+				$matches = array();
+				$test = preg_match("/(.*)([=<>])(.*)/", $filter, $matches);
+
+				if ($test === 1)
+				{
+					$extend = self::$ci->extend_field_model->get_extend_definition_from_name(trim($matches[1]));
+
+					if ( ! is_null($extend))
+					{
+						$where = str_replace(trim($matches[1]), 'efs_' . $idx . '.content', $matches[0]);
+
+						$this->{$this->db_group}->select('efs_' . $idx . '.content as extend_' . $extend['id_extend_field']);
+
+						$this->{$this->db_group}->join(
+							'extend_fields efs_' . $idx,
+							"efs_" . $idx . ".id_extend_field = " . $extend['id_extend_field'] .
+							" AND efs_" . $idx . ".parent = 'article'" .
+							" AND efs_" . $idx . ".id_parent = article.id_article",
+							'left'
+						);
+
+						$this->{$this->db_group}->where($where, '', false);
+
+						// Query Where
+						if ( ! is_null($order_by))
+						{
+							$attrs = explode(',', $order_by);
+
+							foreach($attrs as $attr_i => $attr)
+							{
+								if ( ! empty($attr))
+								{
+									$arr = preg_split("/[\s*]/i", trim($attr));
+
+									if (trim(strtolower($arr[0])) === $extend['name'])
+									{
+										$_order = str_replace($arr[0], "efs_" . $idx . ".content", $attr);
+
+										$this->{$this->db_group}->order_by($_order, NULL, FALSE);
+										unset($attrs[$attr_i]);
+									}
+								}
+								else
+									unset($attrs[$attr_i]);
+							}
+
+							$order_by = implode(',', $attrs);
+						}
+
+						if (empty($order_by))
+							unset($query_where['order_by']);
+						else
+							$query_where['order_by'] = $order_by;
+					}
+					else
+					{
+						unset($query_where['order_by']);
+					}
+				}
+				else
+				{
+					// Savety : Remove order_by
+					unset($query_where['order_by']);
+				}
+			}
+		}
+	}
+
+
+	protected function _add_category_filter_to_query($id_category)
+	{
+		if ( ! empty($id_category))
+		{
+			$this->{$this->db_group}->join(
+				$this->article_category_table,
+				$this->article_category_table . '.id_article = ' . $this->table . '.id_article AND ' . $this->article_category_table . '.id_category =' . $id_category
+			);
+		}
+	}
 }

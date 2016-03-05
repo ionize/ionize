@@ -184,12 +184,12 @@
 		</query>
 
 		<query>
-			CREATE TABLE content_type_group_extend (
+			CREATE TABLE content_type_group_items (
 			id_content_type_group int(11) unsigned NOT NULL,
-			id_extend_field int(11) unsigned NOT NULL DEFAULT '0',
+			item varchar(50) NOT NULL,
+			id_item int(11) unsigned NOT NULL,
 			ordering int(11) DEFAULT NULL,
-			group varchar(50) DEFAULT NULL COMMENT 'Logical name of the group (tab)',
-			PRIMARY KEY (id_content_type_group,id_extend_field)
+			PRIMARY KEY (id_content_type_group,item,id_item)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		</query>
 

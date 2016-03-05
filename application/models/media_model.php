@@ -419,7 +419,7 @@ class Media_model extends Base_model
 		{
 			$data = array();
 			$link_table = $post['parent'].'_media';
-			$fields = $this->{$this->db_group}->list_fields($link_table);
+			$fields = $this->list_fields($link_table);
 			
 			foreach ($fields as $field)
 			{

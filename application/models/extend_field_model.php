@@ -31,6 +31,10 @@ class Extend_field_model extends Base_model
 	private static $_CONTEXT_TABLE = 'extend_field_context';
 	private static $_TYPE_TABLE = 'extend_field_type';
 
+
+	private $_extend_field_definitions = NULL;
+
+
 	/**
 	 * Constructor
 	 *
@@ -50,6 +54,26 @@ class Extend_field_model extends Base_model
 
 		self::$ci->load->model('page_model', '', TRUE);
 		self::$ci->load->model('article_model', '', TRUE);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_definitions()
+	{
+		if ( is_null($this->_extend_field_definitions))
+		{
+			$where['order_by'] = 'ordering ASC';
+
+			$this->{$this->db_group}->select($this->get_table() . '.*');
+
+			$this->_join_to_extend_types();
+
+			$this->_extend_field_definitions = parent::get_list($where);
+		}
+
+		return $this->_extend_field_definitions;
 	}
 
 
@@ -134,9 +158,37 @@ class Extend_field_model extends Base_model
 		$list = parent::get_list($where);
 
 		// Add languages definition on each field
-		foreach($list as &$field)
+		$lang_data = parent::get_list(array(), $this->get_lang_table());
+		$fields = $this->list_fields($this->get_lang_table());
+		$fields_data = $this->field_data($this->get_lang_table());
+
+		$extend_lang_data = array();
+		foreach($lang_data as $d)
 		{
-			$field['lang_definition'] = $this->get_lang(array('id_extend_field'=>$field['id_extend_field']));
+			$extend_lang_data[$d['id_extend_field']][$d['lang']] = $d;
+		}
+
+		foreach($list as &$extend)
+		{
+			$extend['lang_definition'] = array();
+
+			foreach(Settings::get_languages() as $language)
+			{
+				$lang = $language['lang'];
+
+				if ( ! empty($extend_lang_data[$d['id_extend_field']][$lang]))
+					$extend['lang_definition'][$lang] = $extend_lang_data[$d['id_extend_field']][$lang];
+				else
+				{
+					foreach ($fields as $field)
+					{
+						$field_data = array_values(array_filter($fields_data, create_function('$row', 'return $row["field"] == "'. $field .'";')));
+						$field_data = (isset($field_data[0])) ? $field_data[0] : FALSE;
+
+						$extend['lang_definition'][$lang][$field] = (isset($field_data['default'])) ? $field_data['default'] : '';
+					}
+				}
+			}
 		}
 
 		return $list;
@@ -260,7 +312,7 @@ class Extend_field_model extends Base_model
 
 		// Prepare before filling with data
 		$langs = Settings::get_languages();
-		$instance_fields = $this->{$this->db_group}->list_fields($this->instances_table);
+		$instance_fields = $this->list_fields($this->instances_table);
 
 		foreach($definitions as &$field)
 		{
@@ -366,7 +418,7 @@ class Extend_field_model extends Base_model
 		$langs = Settings::get_languages();
 
 		// Instances table columns
-		$fields_columns = $this->{$this->db_group}->list_fields($this->instances_table);
+		$fields_columns = $this->list_fields($this->instances_table);
 
 		foreach($definitions as $k => &$extend_field)
 		{
@@ -1134,6 +1186,75 @@ class Extend_field_model extends Base_model
 		$query = $this->{$this->db_group}->query($sql);
 
 		return ($query->num_rows() > 0);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function add_extend_filter_to_query($parent, $filters)
+	{
+		$filters = ! is_array($filters) ? explode(';', $filters) : $filters;
+
+		foreach ($filters as $idx => $filter)
+		{
+			$filter = str_replace('.gt', '>', $filter);
+			$filter = str_replace('.lt', '<', $filter);
+			$filter = str_replace('.eq', '=', $filter);
+			$filter = str_replace('.neq', '!=', $filter);
+
+			$matches = array();
+			$test = preg_match("/(.*)([=<>])(.*)/", $filter, $matches);
+
+			if ($test === 1)
+			{
+				$extend = $this->get_extend_definition_from_name(trim($matches[1]));
+
+				if ( ! is_null($extend))
+				{
+					$where = str_replace(trim($matches[1]), 'efs_' . $idx . '.content', $matches[0]);
+
+					$this->{$this->db_group}->join(
+						'extend_fields efs_' . $idx,
+						"efs_" . $idx . ".id_extend_field = " . $extend['id_extend_field'] .
+							" AND efs_" . $idx . ".parent = '".$parent."'" .
+							" AND efs_" . $idx . ".id_parent = ".$parent.".id_" . $parent,
+						'left'
+					);
+
+					$this->{$this->db_group}->where($where);
+				}
+
+				// log_message('app', print_r($this->{$this->db_group}->_compile_select() , TRUE));
+			}
+		}
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_extend_definition_from_name($name, $parent=NULL)
+	{
+		$extend = NULL;
+
+		$definitions = $this->get_definitions();
+
+		foreach($definitions as $definition)
+		{
+			if ($definition['name'] == $name)
+			{
+				if ($parent != NULL)
+				{
+					if ($definition['parent'] == $parent)
+						$extend = $definition;
+				}
+				else
+					$extend = $definition;
+			}
+		}
+
+		return $extend;
 	}
 
 

@@ -21,7 +21,7 @@
 class Content_type_model extends Base_model
 {
 	private static $_TBL_CONTENT_TYPE_GROUP = 'content_type_group';
-	private static $_TBL_CONTENT_TYPE_GROUP_EXTEND = 'content_type_group_extend';
+	private static $_TBL_CONTENT_TYPE_GROUP_ITEMS = 'content_type_group_items';
 
 
 	/**
@@ -92,6 +92,81 @@ class Content_type_model extends Base_model
 	}
 
 
+	public function get_groups_with_items($id_content_type)
+	{
+		$_extends = $_elements = array();
+
+		$groups = $this->get_groups($id_content_type);
+
+		// Extends
+		$sql = "
+			select
+				e.*,
+				et.type_name,
+			  	ctg.id_content_type_group,
+			  	ctg.name as content_type_group_name,
+			  	ct.name as content_type_name
+			from extend_field e
+			join extend_field_type et on e.type = et.id_extend_field_type
+			join content_type_group_items ctge on ctge.item='extend_field' and ctge.id_item = e.id_extend_field
+			join content_type_group ctg on ctg.id_content_type_group = ctge.id_content_type_group
+			join content_type ct on ct.id_content_type = ctg.id_content_type
+			where ct.id_content_type = " . $id_content_type ."
+			order by ctg.ordering ASC, ctge.ordering ASC
+		";
+
+		$query = $this->{$this->db_group}->query($sql);
+
+		if ($query && $query->num_rows() > 0)
+			$_extends = $query->result_array();
+
+		// Content Elements
+		$sql = "
+			select
+				e.*,
+				el.*,
+			  	ctg.id_content_type_group,
+			  	ctg.name as content_type_group_name,
+			  	ct.name as content_type_name
+			from element_definition e
+			join element_definition_lang el on el.id_element_definition = e.id_element_definition and el.lang='".Settings::get_lang('default')."'
+			join content_type_group_items ctge on ctge.item='element' and ctge.id_item = e.id_element_definition
+			join content_type_group ctg on ctg.id_content_type_group = ctge.id_content_type_group
+			join content_type ct on ct.id_content_type = ctg.id_content_type
+			where ct.id_content_type = " . $id_content_type ."
+			order by ctg.ordering ASC, ctge.ordering ASC
+		";
+
+		$query = $this->{$this->db_group}->query($sql);
+
+		if ($query && $query->num_rows() > 0)
+			$_elements = $query->result_array();
+
+		foreach($groups as $idx => $group)
+		{
+			$groups[$idx]['fields'] = array();
+			$groups[$idx]['elements'] = array();
+
+			foreach($_extends as $extend)
+			{
+				if ($group['id_content_type_group'] == $extend['id_content_type_group'])
+				{
+					$groups[$idx]['fields'][] = $extend;
+				}
+			}
+			foreach($_elements as $element)
+			{
+				if ($group['id_content_type_group'] == $element['id_content_type_group'])
+				{
+					$groups[$idx]['elements'][] = $element;
+				}
+			}
+		}
+
+		return $groups;
+	}
+
+
 	public function get_extends_by_groups($id_content_type)
 	{
 		$result = array();
@@ -107,12 +182,16 @@ class Content_type_model extends Base_model
 			  	ct.name as content_type_name
 			from extend_field e
 			join extend_field_type et on e.type = et.id_extend_field_type
-			join content_type_group_extend ctge on ctge.id_extend_field = e.id_extend_field
+			join content_type_group_items ctge on ctge.item='extend_field' and ctge.id_item = e.id_extend_field
 			join content_type_group ctg on ctg.id_content_type_group = ctge.id_content_type_group
 			join content_type ct on ct.id_content_type = ctg.id_content_type
 			where ct.id_content_type = " . $id_content_type ."
-			order by ctge.ordering ASC
+			order by ctg.ordering ASC, ctge.ordering ASC
 		";
+
+		log_message('error', print_r($sql, TRUE));
+
+
 
 		$query = $this->{$this->db_group}->query($sql);
 
@@ -139,7 +218,8 @@ class Content_type_model extends Base_model
 	public function get_groups($id_content_type)
 	{
 		$where = array(
-			'id_content_type' => $id_content_type
+			'id_content_type' => $id_content_type,
+			'order_by' => 'ordering ASC'
 		);
 
 		return parent::get_list($where, self::$_TBL_CONTENT_TYPE_GROUP);
@@ -151,6 +231,7 @@ class Content_type_model extends Base_model
 		$data = array(
 			'id_content_type' => $id_content_type,
 			'name' => $name,
+			'ordering' => 0
 		);
 
 		return $this->insert_ignore($data, self::$_TBL_CONTENT_TYPE_GROUP);
@@ -173,7 +254,7 @@ class Content_type_model extends Base_model
 			'id_content_type_group' => $id_content_type_group
 		);
 
-		parent::delete($where, self::$_TBL_CONTENT_TYPE_GROUP_EXTEND);
+		parent::delete($where, self::$_TBL_CONTENT_TYPE_GROUP_ITEMS);
 
 		parent::delete($where, self::$_TBL_CONTENT_TYPE_GROUP);
 	}
@@ -182,22 +263,57 @@ class Content_type_model extends Base_model
 	public function link_extend_with_group($id_extend_field, $id_content_type_group)
 	{
 		$data = array(
-			'id_extend_field' => $id_extend_field,
+			'item' => 'extend_field',
+			'id_item' => $id_extend_field,
 			'id_content_type_group' => $id_content_type_group,
 		);
 
-		return $this->insert_ignore($data, self::$_TBL_CONTENT_TYPE_GROUP_EXTEND);
+		return $this->insert_ignore($data, self::$_TBL_CONTENT_TYPE_GROUP_ITEMS);
 	}
 	
 
-	public function unlink_extend_from_group($id_extend_field, $id_content_type_group)
+	public function link_item_with_group($item, $id_item, $id_content_type_group)
 	{
-		$where = array(
-			'id_extend_field' => $id_extend_field,
+		$data = array(
+			'item' => $item,
+			'id_item' => $id_item,
 			'id_content_type_group' => $id_content_type_group,
 		);
 
-		return $this->delete($where, self::$_TBL_CONTENT_TYPE_GROUP_EXTEND);
+		return $this->insert_ignore($data, self::$_TBL_CONTENT_TYPE_GROUP_ITEMS);
+	}
+
+
+	public function unlink_item_from_group($item, $id_item, $id_content_type_group)
+	{
+		$where = array(
+			'item' => $item,
+			'id_item' => $id_item,
+			'id_content_type_group' => $id_content_type_group,
+		);
+
+		return parent::delete($where, self::$_TBL_CONTENT_TYPE_GROUP_ITEMS);
+	}
+
+
+	/**
+	 *
+	 * @param $order
+	 * @param $item			Can be 'extend_field' or 'element'
+	 * @param $id_content_type_group
+	 */
+	public function save_item_ordering($order, $item, $id_content_type_group)
+	{
+		foreach($order as $rank => $id_item)
+		{
+			$where = array(
+				'item' => $item,
+				'id_item' => $id_item,
+				'id_content_type_group' => $id_content_type_group
+			);
+
+			$this->update($where, array('ordering' => $rank), self::$_TBL_CONTENT_TYPE_GROUP_ITEMS);
+		}
 	}
 
 
@@ -206,11 +322,12 @@ class Content_type_model extends Base_model
 		foreach($order as $rank => $id_extend_field)
 		{
 			$where = array(
-				'id_extend_field' => $id_extend_field,
+				'item' => 'extend_field',
+				'id_item' => $id_extend_field,
 				'id_content_type_group' => $id_content_type_group
 			);
 
-			$this->update($where, array('ordering' => $rank), self::$_TBL_CONTENT_TYPE_GROUP_EXTEND);
+			$this->update($where, array('ordering' => $rank), self::$_TBL_CONTENT_TYPE_GROUP_ITEMS);
 		}
 	}
 }

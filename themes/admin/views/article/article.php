@@ -375,8 +375,8 @@ if ($tracker_title == '')
 			id_content_type = '<?php echo $id_content_type; ?>';
 
 		// Get Content Elements Tabs & Elements
-		$('desktop').store('tabSwapper', articleTab);
-		ION.getContentElements('article', id_article);
+		// $('desktop').store('tabSwapper', articleTab);
+		// ION.getContentElements('article', id_article);
 
 		<?php if(Authority::can('access', 'admin/article/media')) :?>
 
@@ -390,6 +390,18 @@ if ($tracker_title == '')
         	mediaManager.loadList();
 
 		<?php endif ;?>
+
+		// Content Elements
+/*
+		var contentElementManager = new ION.ContentElementManager();
+
+		contentElementManager.displayInParent({
+			container: 'articleTab',
+			parent: 'article',
+			id_parent: id_article
+		});
+*/
+
 
 		// Init the staticItemManager
 		staticItemManager.init({
@@ -413,6 +425,7 @@ if ($tracker_title == '')
 		*/
 
 		// Content Type Extends
+
 		var contentTypeManager = new ION.ContentTypeManager({
 			type: 'article',
 			id_parent: id_article
@@ -422,6 +435,7 @@ if ($tracker_title == '')
 			container:'articleTab',
 			id_content_type: id_content_type
 		});
+
 
 	<?php endif ;?>
 

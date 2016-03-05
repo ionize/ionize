@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<sql>
+
+    <query>
+        ALTER TABLE content_type CHANGE view view varchar(255) DEFAULT NULL COMMENT 'View';
+    </query>
+
+    <query>
+        ALTER TABLE content_type CHANGE view_single view_single varchar(255) DEFAULT NULL COMMENT 'Page view for one single article';
+    </query>
+
+    <query>
+        CREATE TABLE content_type_group_items (
+            id_content_type_group int(11) unsigned NOT NULL,
+            item varchar(50) NOT NULL,
+            id_item int(11) unsigned NOT NULL,
+            ordering int(11) DEFAULT NULL,
+            PRIMARY KEY (id_content_type_group,item,id_item)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    </query>
+
+    <query>
+        insert into content_type_group_items(id_content_type_group, item, id_item, ordering)
+        select id_content_type_group, 'extend_field', id_extend_field, ordering from content_type_group_extend;
+    </query>
+
+    <query>
+        drop table if exists content_type_group_extend;
+    </query>
+
+
+</sql>

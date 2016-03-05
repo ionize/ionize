@@ -78,18 +78,21 @@ class Element extends MY_Admin {
 		$parent = $this->input->post('parent');
 		$id_parent = $this->input->post('id_parent');
 		$id_element_definition = $this->input->post('id_element_definition');
-		
-		$this->template['definition'] = $this->element_model->get_fields_from_parent(
+
+		$definition = $this->element_model->get_fields_from_parent(
 			$parent,
 			$id_parent,
 			Settings::get_lang('default'),
 			$id_element_definition
 		);
 
+		$this->template['definition'] = $definition;
 		$this->template['parent'] = $parent;
 		$this->template['id_parent'] = $id_parent;
-		
-		$this->output('element/content_list');
+
+		$this->xhr_output($definition);
+
+		// $this->output('element/content_list');
 	}
 	
 
@@ -100,8 +103,10 @@ class Element extends MY_Admin {
 	 * Deletes one content element
 	 *
 	 */
-	function delete($id_element)
+	function delete()
 	{
+		$id_element = $this->input->post('id_element');
+
 		$element = $this->element_model->get($id_element);
 		
 		if ( ! empty($element))
@@ -111,7 +116,7 @@ class Element extends MY_Admin {
 			
 			if ($affected_rows > 0)
 			{
-				// Reload Elements definitions list
+/*				// Reload Elements definitions list
 				$this->callback = array
 				(
 					array(
@@ -143,7 +148,7 @@ class Element extends MY_Admin {
 							'args' => $element['id_element_definition']
 						)
 					);
-				}
+				}*/
 
 				$this->success(lang('ionize_message_operation_ok'));					
 			}
@@ -156,10 +161,10 @@ class Element extends MY_Admin {
 	// ------------------------------------------------------------------------
 	
 	
-	function save_ordering($parent, $id_parent)
+	function save_ordering()
 	{
 		$order = $this->input->post('order');
-		
+
 		if( $order !== FALSE )
 		{
 			// Clear the cache
@@ -167,18 +172,6 @@ class Element extends MY_Admin {
 
 			// Saves the new ordering
 			$this->element_model->save_ordering($order);
-
-			$this->callback = array
-			(
-				array(
-					'fn' => 'ION.updateContentTabs',
-					'args' => array
-					(
-						$parent,
-						$id_parent
-					)
-				),
-			);
 
 			// Answer
 			$this->success(lang('ionize_message_element_ordered'));
@@ -198,7 +191,7 @@ class Element extends MY_Admin {
 	 * Saves an element instance to a parent
 	 *
 	 */
-	function save()
+/*	function save()
 	{
 		$id_element = $this->input->post('id_element');
 		$parent = $this->input->post('parent');
@@ -245,9 +238,42 @@ class Element extends MY_Admin {
 			);
 		}
 		$this->response();
+	}*/
+	
+	
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves an element instance to a parent
+	 *
+	 */
+	function save()
+	{
+		$id_element = $this->input->post('id_element');
+		$parent = $this->input->post('parent');
+		$id_parent = $this->input->post('id_parent');
+
+		if (!empty($parent) && !empty($id_parent))
+		{
+			// Clear the cache
+			Cache()->clear_cache();
+
+			$id_element_definition = $this->input->post('id_element_definition');
+
+			// Save Element and extend fields
+			$id_element = $this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
+
+			$element = $this->element_model->get(array('id_element' => $id_element));
+
+            // Answer
+            $this->success(lang('ionize_message_content_element_saved'), $element);
+		}
+
+		$this->response();
 	}
-	
-	
+
+
 	// ------------------------------------------------------------------------
 	
 	
@@ -308,7 +334,6 @@ class Element extends MY_Admin {
 	 */
 	function add_element()
 	{
-		$this->template['parent'] = $this->input->post('parent');
 		$this->template['parent'] = $this->input->post('parent');
 		$this->template['id_parent'] = $this->input->post('id_parent');
 

@@ -45,6 +45,14 @@ class MY_Lang extends CI_Lang
 			}
 		}
 
+		// Modules folders
+		$modules = Modules()->get_installed_modules();
+		foreach($modules as $module)
+		{
+			Finder::add_path($module['path']);
+		}
+
+
 		// find the files to load, allow extended lang files
 		$files = Finder::find_file($idiom . '/' . $langfile, 'language', 99);
 		/*
@@ -55,7 +63,7 @@ class MY_Lang extends CI_Lang
 			$files = Finder::find_file($idiom . '/' . $langfile, 'language', 99);
 		}
 		*/
-		
+
 		// reverse the array, so we let the extending language files load last
 		foreach(array_reverse($files) as $f)
 		{

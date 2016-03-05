@@ -917,7 +917,10 @@ ION.ExtendManager = new Class({
 	 */
 	buildInstancesList: function(json, container)
 	{
-		var self = this;
+		var self = this,
+			options = typeOf(arguments[2]) != 'null' ? arguments[2] : {},
+			readOnly = options.readOnly ? options.readOnly : false,
+			help = options.help ? options.help : false;
 
 		var languages = Settings.get('languages');
 		
@@ -930,16 +933,25 @@ ION.ExtendManager = new Class({
 			var formField = new ION.FormField({container: container, label: {text: field.label}}),
 				ffc = formField.getContainer()
 			;
-				
-			formField.label.title = 
-				  'Extend Field Key: ' + field.name // Add help title: extendfield key
-				+ (field.description 
-					? "\nDescription: " + field.description // Add description to help
-					: ""
-				);	
+
+			if (help)
+			{
+				formField.label.title =
+					'Extend Field Key: ' + field.name // Add help title: extendfield key
+					+ (field.description
+							? "\nDescription: " + field.description // Add description to help
+							: ""
+					);
+			}
 
 			// Get the Field (Only the field), and send it to the FormField container
-			self.getExtendField(field, {container: ffc});
+			if (readOnly)
+			{
+				formField.getDomElement().addClass('not-editable');
+				self.getReadOnlyExtendField(field, {container: ffc});
+			}
+			else
+				self.getExtendField(field, {container: ffc});
 		});
 
 		// 2. Second pass : Translated extends
@@ -958,9 +970,16 @@ ION.ExtendManager = new Class({
 						;
 
 					// Add Help : Description as Title
-					if (field.description) formField.getLabel().set('title', field.description);
+					if (help && field.description)
+						formField.getLabel().set('title', field.description);
 
-					var el = self.getExtendField(field, {container:ffc, lang:lang.lang});
+					if (readOnly)
+					{
+						formField.getDomElement().addClass('not-editable');
+						var el = self.getReadOnlyExtendField(field, {container: ffc, lang: lang.lang});
+					}
+					else
+					 	var el = self.getExtendField(field, {container:ffc, lang:lang.lang});
 
 					// Add the
 					if (el != null)	self.addInstanceToLangTab(formField.getDomElement(), tabId, lang.lang);
@@ -969,7 +988,8 @@ ION.ExtendManager = new Class({
 		}
 
 		// Init some magic : Datepickers, Editors, etc.
-		this.initExtendFieldContainer(container);
+		if ( ! readOnly)
+			this.initExtendFieldContainer(container);
 	},
 
 	/**
@@ -993,6 +1013,126 @@ ION.ExtendManager = new Class({
 
 		return result;
 	},
+
+
+	getReadOnlyExtendField: function(extend, options)
+	{
+		var lang = 			options && options.lang ? options.lang : null,
+			content = 		options.lang
+				? extend['lang_data'][lang]['content'] :
+				(
+					extend.content == null ?
+						(options['setDefaultValue'] == true ? extend.default_value : extend.content) :
+						extend.content
+				),
+			input_name = 	options.name
+				?	options.name
+				: 'cf_' + extend.id_extend_field,
+			dom_type =		extend.html_element_type,
+			dom_tag = 		extend.html_element,
+			container =		options.container,
+			cssClass =		typeOf(options['class']) != 'null'
+				? ' ' + options['class']
+				: '',
+			renderAs = 		typeOf(options['renderAs']) != 'null'
+				? options['renderAs']
+				: null,
+			validateClass = typeOf(options['validateClass']) != 'null'
+				? options['validateClass']
+				: null,
+			// Produced field
+			field = null
+		;
+
+		//
+		// Input, Textarea
+		//
+		if (['text','textarea','editor','email','number','tel','date','date-multiple','datetime'].contains(dom_type))
+		{
+			field = new Element('span', {class:'strong', html:content});
+		}
+
+
+		//
+		// Checkbox / Radio / Select
+		//
+		if (['select','select-multiple','checkbox','radio'].contains(dom_type))
+		{
+			if (typeOf(content) == 'null') content = '';
+			content = content.split(',');
+
+			var values = (extend.value).split('\n'),
+				displayed_content = [];
+
+			field = new Element('span', {class:'strong'});
+
+			Array.each(values, function(value)
+			{
+				var val = value.split(':');
+
+				if (typeOf(val[0]) != 'null' && typeOf(val[1]) != 'null')
+				{
+					if (content.contains(val[0]))
+						displayed_content.push(val[1]);
+				}
+			});
+
+			field.set('html', displayed_content.join(", "));
+		}
+
+
+		//
+		// Media
+		//
+		if (dom_type == 'media')
+		{
+			field = this._getExtendFieldMedia(extend, {lang:options.lang});
+		}
+
+
+		//
+		// Color
+		//
+		if (['color','color-multiple'].contains(dom_type))
+		{
+			field = new Element('div');
+
+			content = content.split(',');
+
+			Array.each(content, function(color)
+			{
+				new Element('div', {class:'h20 w80 mr5', style:'background-color:#' + color}).inject(field);
+			});
+		}
+
+		//
+		// Internal Link
+		//
+		if (dom_type == 'link')
+		{
+			field = new Element('div');
+
+			if (this.id_parent)
+			{
+				// ExtendLinkManager
+				var extendLinkManager = new ION.ExtendLinkManager({
+					container: field,
+					id_extend: extend.id_extend_field,
+					parent: extend.parent,
+					id_parent: this.id_parent,
+					lang: lang
+				});
+				extendLinkManager.loadList();
+			}
+		}
+
+
+		if (container && field)
+			field.inject(container);
+
+		return field;
+	},
+
 
 	/**
 	 * Builds one Extend Field field
@@ -1265,7 +1405,7 @@ ION.ExtendManager = new Class({
 		//
 		if (dom_type == 'media')
 		{
-			field = new Element('div', {'class':'clearfix'});
+			field = new Element('div', {'class':'clearfix pt4'});
 
 			// Can be linked : The parent exists
 			if (this.id_parent)
@@ -1288,6 +1428,8 @@ ION.ExtendManager = new Class({
 			}
 			else
 			{
+				field.addClass('pt4');
+
 				new Element('i', {
 					'class': 'lite',
 					text: Lang.get('ionize_message_please_save_first')
@@ -1317,7 +1459,7 @@ ION.ExtendManager = new Class({
 				new Element('a', {'class': 'icon clearfield date', 'data-id': id}).inject(color_container);
 			};
 
-			// Multiple Dates
+			// Multiple Colors
 			if ((dom_type == 'color-multiple') || (renderAs == 'multiple'))
 			{
 				var id = input_name;
@@ -1357,6 +1499,8 @@ ION.ExtendManager = new Class({
 			}
 			else
 			{
+				field.addClass('pt4');
+
 				new Element('i', {
 					'class': 'lite',
 					text: Lang.get('ionize_message_please_save_first')
@@ -1421,6 +1565,46 @@ ION.ExtendManager = new Class({
 		return field;
 	},
 
+
+	_getExtendFieldMedia: function(extend)
+	{
+		var options = typeOf(arguments[1]) != 'null' ? arguments[1] : {},
+			field = new Element('div', {'class':'clearfix pt4'}),
+			lang = 	options && options.lang ? options.lang : null;
+
+		// Can be linked : The parent exists
+		if (this.id_parent)
+		{
+			// Extend Media Manager
+			var emOptions = {
+				container: 		field,
+				parent: 		extend.parent,
+				id_parent: 		this.id_parent,
+				id_extend: 		extend.id_extend_field,
+				extend_label: 	extend.label,
+				lang: 			lang
+			};
+
+			// ExtendMediaManager
+			var extendMediaManager = new ION.ExtendMediaManager(emOptions);
+
+			// Load existing media list
+			extendMediaManager.loadList();
+		}
+		else
+		{
+			field.addClass('pt4');
+
+			new Element('i', {
+				'class': 'lite',
+				text: Lang.get('ionize_message_please_save_first')
+			}).inject(field)
+		}
+
+		return field;
+	},
+
+
 	/**
 	 * Inits external lib on Extend Field instances of the container :
 	 * Datepickers, Editors, etc.
@@ -1436,6 +1620,13 @@ ION.ExtendManager = new Class({
 
 		// TinyMCE
 		var containerId = container.getProperty('id');
+
+		if ( ! containerId)
+		{
+			containerId = 'extendContainer' + ION.generateHash(8);
+			container.setProperty('id', containerId);
+		}
+
 		ION.initTinyEditors(null, '#' + containerId + ' .smallTinyTextarea', 'small', {'height':80});
 
 		// Date & Time

@@ -34,15 +34,7 @@ if(Authority::can('delete', 'admin/page') && Authority::can('delete', 'backend/p
 	</a>
 </div>
 
-<?php if( ! $is_element_empty && Authority::can('add', 'admin/page/element')) :?>
-
-	<div class="divider" id="tPageAddContentElement">
-		<a id="addContentElement" class="button light" >
-			<i class="icon-element"></i><?php echo lang('ionize_label_add_content_element'); ?>
-		</a>
-	</div>
-
-<?php endif;
+<?php
 if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 
 	<div class="divider" id="tPageAddItem">
@@ -82,7 +74,6 @@ if (
 	if ( ! id )
 	{
 		if ($('tPageDeleteButton')) $('tPageDeleteButton').hide();
-        if ($('tPageAddContentElement')) $('tPageAddContentElement').hide();
         if ($('tPageAddItem')) $('tPageAddItem').hide();
         if ($('tPageAddArticle')) $('tPageAddArticle').hide();
         if ($('tSideColumnSwitcher')) $('tSideColumnSwitcher').hide();
@@ -97,16 +88,7 @@ if (
 
 		<?php endif;?>
 
-
-		<?php if(! $is_element_empty && Authority::can('add', 'admin/page/element')) :?>
-
-			// Add Content Element button
-			$('addContentElement').addEvent('click', function()
-			{
-				ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'page', 'id_parent': id});
-			});
-
-		<?php endif;
+		<?php
 		if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 
 			$('btnAddItem').addEvent('click', function()

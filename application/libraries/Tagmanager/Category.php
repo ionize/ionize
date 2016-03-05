@@ -57,9 +57,6 @@ class TagManager_Category extends TagManager
 	 */
 	public static function get_categories(FTL_Binding $tag)
 	{
-		// Categories model
-		self::$ci->load->model('category_model');
-
 		// Current page
 		$page = $tag->get('page');
 
@@ -67,12 +64,17 @@ class TagManager_Category extends TagManager
 		$lsk = '__all__';
 
 		// Get the local cache data
-		$element_name = $tag->getParentName();
-		$element = $tag->get($element_name);
+		$element_tag_name = $tag->getParentName();
+		$element = $tag->get($element_tag_name);
 
-		if ( ! isset($element['name'])) return array();
+		// Be able to get the article name when the article is in one "links" extend
+		$element_name = isset($element['data']['name']) ? $element['data']['name'] :
+			(isset($element['name']) ? $element['name'] : NULL);
 
-		if ( ! is_null($element)) $lsk = '__' . $element_name . '__' . $element['name'];
+		// Exit if NULL
+		if (is_null($element_name)) return array();
+
+		if ( ! is_null($element)) $lsk = '__' . $element_tag_name . '__' . $element_name;
 
 		// Set the local cache data
 		if ( ! isset(self::$categories[$lsk]))
@@ -83,11 +85,14 @@ class TagManager_Category extends TagManager
 			// Asked category
 			$asked_category_name = self::get_asked_category_uri();
 
-			// Check if the element has one category array (eg. for Articles)
-			if (isset($element['categories']))
-			{
-				$categories = $element['categories'];
+			// Allow use of articles categories in case the articles are linked through a "links" extend
+			$categories = isset($element['categories']) ? $element['categories'] :
+				(isset($element['data']['categories']) ? $element['data']['categories'] : NULL);
 
+
+			// Check if the element has one category array (eg. for Articles)
+			if ( ! is_null($categories))
+			{
 				// Fix the 'nb' key (nb_articles using this category)
 				foreach($categories as $key=>$category)
 					$categories[$key]['nb'] = '1';
@@ -95,10 +100,13 @@ class TagManager_Category extends TagManager
 			// If no element categories, get page used categories
 			else
 			{
-				if($element_name == 'page')
+				if($element_tag_name == 'page')
 					$id_page = ! is_null($page) ? $page['id_page'] : NULL;
 				else
 					$id_page = NULL;
+
+				// Categories model
+				self::$ci->load->model('category_model');
 
 				$categories = self::$ci->category_model->get_categories_list(
 					$id_page,

@@ -172,6 +172,7 @@ $c = '?v='.$v;
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_extendmediamanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_staticitemmanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_contenttypemanager.js<?php echo $c ?>"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_contentelementmanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_itemsmanager.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tinymce.js<?php echo $c ?>"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/ionize/ionize_tree.js<?php echo $c ?>"></script>

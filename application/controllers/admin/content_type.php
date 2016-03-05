@@ -30,6 +30,7 @@ class Content_type extends MY_admin
 		$this->load->model(
 			array(
 				'content_type_model',
+				'content_type_group_model',
 				'extend_field_model'
 			),
 			'',
@@ -52,55 +53,59 @@ class Content_type extends MY_admin
 	// ------------------------------------------------------------------------
 
 
-	public function get_extends_by_groups()
+	public function get_groups_with_items()
 	{
 		$id_content_type = $this->input->post('id_content_type');
 
-		$data = $this->content_type_model->get_extends_by_groups($id_content_type);
+		$data = $this->content_type_model->get_groups_with_items($id_content_type);
 
 		$this->xhr_output($data);
 	}
 
 
+
 	// ------------------------------------------------------------------------
 
 
-	public function link_extend_with_group()
+	public function link_item_with_group()
 	{
-		$id_extend_field = $this->input->post('id_extend_field');
+		$item = $this->input->post('item');
+		$id_item = $this->input->post('id_item');
 		$id_content_type_group = $this->input->post('id_content_type_group');
 
-		$this->content_type_model->link_extend_with_group($id_extend_field, $id_content_type_group);
+		$this->content_type_model->link_item_with_group($item, $id_item, $id_content_type_group);
 
-		$this->response();
+		$this->success(lang('ionize_message_operation_ok'));
 	}
 
 
 	// ------------------------------------------------------------------------
 
 
-	public function unlink_extend_from_group()
+	public function unlink_item_from_group()
 	{
-		$id_extend_field = $this->input->post('id_extend_field');
+		$item = $this->input->post('item');
+		$id_item = $this->input->post('id_item');
 		$id_content_type_group = $this->input->post('id_content_type_group');
 
-		$this->content_type_model->unlink_extend_from_group($id_extend_field, $id_content_type_group);
+		$this->content_type_model->unlink_item_from_group($item, $id_item, $id_content_type_group);
 
-		$this->response();
+		$this->success(lang('ionize_message_operation_ok'));
 	}
 
 
 	// ------------------------------------------------------------------------
 
 
-	public function save_extend_ordering()
+	public function save_item_ordering()
 	{
 		$order = $this->input->post('order');
+		$item = $this->input->post('item');
 		$id_content_type_group = $this->input->post('id_content_type_group');
 
-		$this->content_type_model->save_extend_ordering($order, $id_content_type_group);
+		$this->content_type_model->save_item_ordering($order, $item, $id_content_type_group);
 
-		$this->response();
+		$this->success(lang('ionize_message_operation_ok'));
 	}
 
 
@@ -253,6 +258,35 @@ class Content_type extends MY_admin
 		}
 	}
 
+
+	// ------------------------------------------------------------------------
+
+
+	/**
+	 * Saves Group ordering
+	 *
+	 */
+	function save_group_ordering()
+	{
+		$order = $this->input->post('order');
+
+		if( $order !== FALSE )
+		{
+			// Clear the cache
+			Cache()->clear_cache();
+
+			// Saves the new ordering
+			$this->content_type_group_model->save_ordering($order);
+
+			// Answer
+			$this->success(lang('ionize_message_element_ordered'));
+		}
+		else
+		{
+			// Answer send
+			$this->error(lang('ionize_message_operation_nok'));
+		}
+	}
 
 
 	// ------------------------------------------------------------------------

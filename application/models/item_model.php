@@ -375,7 +375,7 @@ class Item_model extends Base_model
 		$query->free_result();
 
 		// Extend Fields DB fields
-		$extend_fields_fields = $this->{$this->db_group}->list_fields('extend_fields');
+		$extend_fields_fields = $this->list_fields('extend_fields');
 
 		// Languages
 		$langs = Settings::get_languages();

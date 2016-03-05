@@ -150,6 +150,12 @@ class Base_model extends CI_Model
 	 */
 	protected $_list_fields = array();
 
+	/**
+	 * Local store of SHOW FULL COLUMNS FROM results
+	 * @var array
+	 */
+	protected $_fields_data = array();
+
 
 	/**
 	 * Table definition
@@ -179,7 +185,7 @@ class Base_model extends CI_Model
 			$this->db_group = $active_group;
 		}
 
-		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE);
+		$this->{$this->db_group} = $this->load->database($this->db_group, TRUE, TRUE);
 
 		self::$ci =& get_instance();
 		$segments = array_values(self::$ci->uri->segment_array());
@@ -616,7 +622,7 @@ class Base_model extends CI_Model
 
 
 		// Safety against DB : Check if each existing language key has data
-		$fields = $this->{$this->db_group}->list_fields($table);
+		$fields = $this->list_fields($table);
 		$fields_data = $this->field_data($table);
 
 		foreach(Settings::get_languages() as $language)
@@ -705,6 +711,8 @@ class Base_model extends CI_Model
 			log_message('error', print_r($this->last_query(), TRUE));
 		}
 
+
+//			log_message('error', print_r($this->last_query(), TRUE));
 
 		return $data;
 	}
@@ -1412,11 +1420,11 @@ class Base_model extends CI_Model
 		$link_table = $prefix.$parent_table.'_'.$items_table;
 
 		// Items table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($items_table);
+		$fields = $this->list_fields($items_table);
 		$items_table_pk = $fields[0];
 
 		// Parent table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($parent_table);
+		$fields = $this->list_fields($parent_table);
 		$parent_table_pk = $fields[0];
 
 		$this->{$this->db_group}->where($parent_table_pk, $parent_id);
@@ -1576,7 +1584,7 @@ class Base_model extends CI_Model
 		}
 
 		// Items table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($items_table);
+		$fields = $this->list_fields($items_table);
 		$items_table_pk = $fields[0];
 
 		// ORDER BY
@@ -1668,11 +1676,11 @@ class Base_model extends CI_Model
 		}
 
 		// Items table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($items_table);
+		$fields = $this->list_fields($items_table);
 		$items_table_pk = $fields[0];
 
 		// Lang fields : Remove primary key in select
-		$lang_fields = $this->{$this->db_group}->list_fields($lang_table);
+		$lang_fields = $this->list_fields($lang_table);
 		foreach($lang_fields as $lf)
 		{
 			if ($lf != $items_table_pk)
@@ -2409,7 +2417,7 @@ class Base_model extends CI_Model
 					}
 					else
 					{
-						log_message('error', print_r('Size set to 0 : Spaces in picture path : ' . $media['path'], TRUE));
+						log_message('error', print_r('Size set to 0 : Spaces in picture path or file not found : ' . $media['path'], TRUE));
 
 						$media['size'] = array(
 							'width' => 0,
@@ -2635,11 +2643,11 @@ class Base_model extends CI_Model
 		$link_table = $parent_table.'_'.$items_table;
 
 		// Items table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($items_table);
+		$fields = $this->list_fields($items_table);
 		$items_table_pk = $fields[0];
 
 		// Parent table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($parent_table);
+		$fields = $this->list_fields($parent_table);
 		$parent_table_pk = $fields[0];
 
 		// Delete existing link between items table and parent table
@@ -2689,11 +2697,11 @@ class Base_model extends CI_Model
 		$link_table = $parent_table.'_'.$items_table;
 
 		// Items table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($items_table);
+		$fields = $this->list_fields($items_table);
 		$items_table_pk = $fields[0];
 
 		// Parent table primary key detection
-		$fields = $this->{$this->db_group}->list_fields($parent_table);
+		$fields = $this->list_fields($parent_table);
 		$parent_table_pk = $fields[0];
 
 		$this->{$this->db_group}->where(array(
@@ -2789,7 +2797,7 @@ class Base_model extends CI_Model
 			{
 				// Get lang_table fields if we don't already have them
 				if (is_null($fields))
-					$fields = $this->{$this->db_group}->list_fields($this->lang_table);
+					$fields = $this->list_fields($this->lang_table);
 
 				// If no fields here, no lang table exists, so feed nothing
 				if ($fields)
@@ -2818,7 +2826,7 @@ class Base_model extends CI_Model
 	 */
 	public function feed_blank_template(&$data = array())
 	{
-		$fields = $this->{$this->db_group}->list_fields($this->table);
+		$fields = $this->list_fields($this->table);
 
 		$fields_data = $this->field_data($this->table);
 
@@ -2846,7 +2854,7 @@ class Base_model extends CI_Model
 	{
 		if ($template == FALSE) $template = array();
 
-		$fields = $this->{$this->db_group}->list_fields($this->lang_table);
+		$fields = $this->list_fields($this->lang_table);
 
 		$fields_data = $this->field_data($this->lang_table);
 
@@ -3257,6 +3265,14 @@ class Base_model extends CI_Model
 
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 
+		$idx = $this->db_group.'_'.$table . ($with_pk ? '_1' : '');
+
+
+		if (isset($this->_fields_data[$idx]))
+			return $this->_fields_data[$idx];
+
+		if ( ! $this->table_exists($table)) return NULL;
+
 		$query = $this->{$this->db_group}->query('SHOW FULL COLUMNS FROM ' . $table);
 
 		$fields = $query->result_array();
@@ -3295,6 +3311,8 @@ class Base_model extends CI_Model
 			);
 		}
 
+		$this->_fields_data[$idx] = $data;
+
 		return $data;
 	}
 
@@ -3313,7 +3331,7 @@ class Base_model extends CI_Model
 	{
 		$table = ( ! is_null($table)) ? $table : $this->table ;
 
-		$fields = $this->{$this->db_group}->list_fields($table);
+		$fields = $this->list_fields($table);
 
 		if (in_array($field, $fields)) return TRUE;
 
@@ -3339,7 +3357,7 @@ class Base_model extends CI_Model
 		{
 			$table = ($table !== FALSE) ? $table : $this->table;
 
-			$fields = $this->{$this->db_group}->list_fields($table);
+			$fields = $this->list_fields($table);
 
 			$fields = array_fill_keys($fields,'');
 
@@ -3368,7 +3386,7 @@ class Base_model extends CI_Model
 	{
 		$table = ($table !== FALSE) ? $table : $this->lang_table;
 
-		$fields = $this->{$this->db_group}->list_fields($table);
+		$fields = $this->list_fields($table);
 
 		$cleaned_data = array();
 
@@ -3545,7 +3563,7 @@ class Base_model extends CI_Model
 
 			if (isset($where['order_by']))
 			{
-				$this->{$this->db_group}->order_by($where['order_by'], NULL, FALSE);
+				$this->{$this->db_group}->order_by(trim($where['order_by'], ','), NULL, FALSE);
 				unset($where['order_by']);
 			}
 
@@ -3621,4 +3639,5 @@ class Base_model extends CI_Model
 	{
 		return $this->{$this->db_group}->table_exists($table);
 	}
+
 }

@@ -64,12 +64,6 @@ $id = $id_element_definition;
 						<?php foreach(Settings::get_languages() as $language) :?>
 							<li <?php if($language['def'] == '1') :?> class="dl"<?php endif ;?>><a><?php echo ucfirst($language['name']) ;?></a></li>
 						<?php endforeach ;?>
-
-						<?php
-						$nb_usages = ! empty($usages) ? count($usages) : 0;
-						?>
-
-						<li class="right" id="usageTab"><a><?php echo $nb_usages . ' ' . lang('ionize_button_usage'); ?></a></li>
 					</ul>
 					<div class="clear"></div>
 
@@ -89,46 +83,7 @@ $id = $id_element_definition;
 
 					<?php endforeach ;?>
 
-					<div class="tabcontent">
-						<?php if (! empty($usages)) :?>
-						<table class="list">
-							<thead>
-							<tr>
-								<th><?php echo lang('ionize_title_pages'); ?></th>
-								<th><?php echo lang('ionize_title_articles'); ?></th>
-								<th style="width:70px;" class="right"></th>
-							</tr>
-							</thead>
-
-							<tbody>
-							<?php foreach($usages as $elementUsage) { ?>
-								<tr>
-									<td class="pl10">
-										<a title="<?php echo $elementUsage['page']['id_page'] ?>: <?php echo $elementUsage['page']['name'] ?>" onclick="$$('a.page<?php echo $elementUsage['page']['id_page'] ?>').getLast().fireEvent('click')" class="page-breadcrumb">
-											<?php echo $elementUsage['page']['name'] ?>
-										</a>
-									</td>
-									<td class="pl10">
-										<?php if( $elementUsage['article'] === null ) { ?>
-											-
-										<?php } else { ?>
-											<a title="<?php echo $elementUsage['page']['id_page'] ?>.<?php echo $elementUsage['article']['id_article'] ?>: <?php echo $elementUsage['article']['name'] ?>" onclick="$$('a.article<?php echo $elementUsage['page']['id_page'] ?>x<?php echo $elementUsage['article']['id_article'] ?>').getLast().fireEvent('click')" class="page-breadcrumb">
-												<?php echo $elementUsage['article']['name'] ?>
-											</a>
-										<?php } ?>
-									</td>
-									<td class="pr10">
-										<a data-id="<?php echo $elementUsage['id_element'] ?>" class="delete usage icon right"></a>
-									</td>
-								</tr>
-							<?php } ?>
-							</tbody>
-						</table>
-						<?php endif ;?>
-					</div>
 				</div>
-
-				<hr />
 
 				<!-- Fields -->
 				<div style="overflow:hidden;clear:both;">

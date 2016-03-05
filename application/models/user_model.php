@@ -76,7 +76,7 @@ class User_model extends Base_model
 		if( ! $this->num_conds($identification))
 			return FALSE;
 
-		$fields = $this->{$this->db_group}->list_fields($this->table);
+		$fields = $this->list_fields($this->table);
 
 		foreach($identification as $key => $data)
 		{
@@ -443,7 +443,7 @@ class User_model extends Base_model
 	 */
 	private function _clean_user_data($data)
 	{
-		$fields = $this->{$this->db_group}->list_fields($this->table);
+		$fields = $this->list_fields($this->table);
 
 		foreach($data as $key => $value)
 			if  (! in_array($key, $fields))

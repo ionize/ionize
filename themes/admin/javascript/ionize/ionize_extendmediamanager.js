@@ -12,7 +12,8 @@ ION.ExtendMediaManager = new Class({
 		resizeOnUpload:     false,
 		uploadAutostart:    false,
 		uploadMode:         '',
-		standalone:         false
+		standalone:         false,
+		readOnly:			false
 	},
 
 	/**
@@ -405,24 +406,6 @@ ION.ExtendMediaManager = new Class({
 		}
 	},
 
-	/*
-	 * Keep for future release
-	 *
-	getTab: function()
-	{
-		var selector = '.' + this.tab + '[data-id=' + this.id_extend + ']';
-
-		if(this.lang != null)
-			selector = selector + '[data-lang=' + this.lang + ']';
-
-		var tab = $$(selector);
-
-		if (tab.length > 0)
-			return tab[0];
-
-		return null;
-	},
-	*/
 
 	/**
 	 * On request fail

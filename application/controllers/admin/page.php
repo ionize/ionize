@@ -146,7 +146,7 @@ class Page extends MY_admin
 				'id_content_type',
 				$types,
 				$this->template['id_content_type'],
-				'class="select w100p"'
+				'class="select"'
 			);
 		}
 

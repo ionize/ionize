@@ -52,16 +52,9 @@ if(Authority::can('duplicate', 'admin/article')) :?>
 		<a class="icon duplicate" id="articleDuplicateButton" title="<?php echo lang('ionize_button_duplicate_article'); ?>"></a>
 	</div>
 
-<?php endif;
-if( ! $is_element_empty && Authority::can('add', 'admin/article/element')) :?>
+<?php endif; ?>
 
-	<div class="divider" id="tArticleAddContentElement">
-		<a id="addContentElement" class="button light" >
-			<i class="icon-element"></i><?php echo lang('ionize_label_add_content_element'); ?>
-		</a>
-	</div>
-
-<?php endif;
+<?php
 if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 
 	<div class="divider" id="tArticleAddItem">
@@ -88,7 +81,6 @@ if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 	{
 		if ($('tArticleDeleteButton')) $('tArticleDeleteButton').hide();
         if ($('tArticleDuplicateButton')) $('tArticleDuplicateButton').hide();
-        if ($('tArticleAddContentElement')) $('tArticleAddContentElement').hide();
         if ($('tArticleAddItem')) $('tArticleAddItem').hide();
         if ($('sideColumnSwitcher')) $('sideColumnSwitcher').hide();
 	}
@@ -124,16 +116,6 @@ if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 
 		<?php endif;?>
 
-
-		<?php if( ! $is_element_empty && Authority::can('add', 'admin/article/element')) :?>
-
-			// Add Content Element button
-			$('addContentElement').addEvent('click', function(e)
-			{
-				ION.dataWindow('contentElement', 'ionize_title_add_content_element', 'element/add_element', {width:500, height:350}, {'parent':'article', 'id_parent': id});
-			});
-
-		<?php endif;?>
 
 		<?php if( ! $is_item_empty && Authority::can('add', 'admin/item')) :?>
 

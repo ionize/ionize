@@ -115,8 +115,27 @@ class Element_definition extends MY_Admin {
 	
 	
 	// ------------------------------------------------------------------------
-	
-	
+
+
+	/**
+	 * Get definitions list
+	 * JSON output
+	 *
+	 */
+	public function get_definitions()
+	{
+		$elements = $this->element_definition_model->get_lang_list(
+			array('order_by'=>'ordering ASC'),
+			Settings::get_lang('default')
+		);
+
+		$this->xhr_output($elements);
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
 	/**
 	 * Returns the element definition list
 	 * Used to admin elements (elements_definition_list and element_definition views)
@@ -157,27 +176,6 @@ class Element_definition extends MY_Admin {
 				),
 				Settings::get_lang('default')
 			);
-			
-			// Element usages on pages, articles
-			$query = $this->db
-				->where('id_element_definition = ' . $element['id_element_definition'])
-				->from('element')
-				->get();
-
-			$usages= $query->result_array();
-			foreach($usages as $index => $usageElement) {
-				if( $usageElement['parent'] === 'page' ) {
-					// get page: parent page of element
-					$usages[$index]['page']	= $this->page_model->get_by_id($usageElement['id_parent']);
-					$usages[$index]['article']	= null;
-				} else {
-					// get page: parent page of article which is parent of element
-					$usages[$index]['article'] = $this->article_model->get_by_id($usageElement['id_parent']);
-					$usages[$index]['page']	= $this->page_model->get_by_id($usages[$index]['article']['id_page']);
-				}
-			}
-
-			$element['usages'] = $usages;
 		}
 
 		$this->template['elements'] = $elements;
