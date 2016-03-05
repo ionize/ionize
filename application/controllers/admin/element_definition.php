@@ -159,25 +159,7 @@ class Element_definition extends MY_Admin {
 			);
 			
 			// Element usages on pages, articles
-			$query = $this->db
-				->where('id_element_definition = ' . $element['id_element_definition'])
-				->from('element')
-				->get();
-
-			$usages= $query->result_array();
-			foreach($usages as $index => $usageElement) {
-				if( $usageElement['parent'] === 'page' ) {
-					// get page: parent page of element
-					$usages[$index]['page']	= $this->page_model->get_by_id($usageElement['id_parent']);
-					$usages[$index]['article']	= null;
-				} else {
-					// get page: parent page of article which is parent of element
-					$usages[$index]['article'] = $this->article_model->get_by_id($usageElement['id_parent']);
-					$usages[$index]['page']	= $this->page_model->get_by_id($usages[$index]['article']['id_page']);
-				}
-			}
-
-			$element['usages'] = $usages;
+			$element['usages'] = $this->element_model->getUsages($element['id_element_definition']);
 		}
 
 		$this->template['elements'] = $elements;
