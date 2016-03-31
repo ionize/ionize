@@ -2,6 +2,10 @@
 <sql>
 
     <query>
+        update setting set content='1.0.9' where name='ionize_version';
+    </query>
+
+    <query>
         ALTER TABLE content_type CHANGE view view varchar(255) DEFAULT NULL COMMENT 'View';
     </query>
 
