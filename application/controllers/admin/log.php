@@ -71,7 +71,7 @@ class Log extends MY_admin
 	{
 		if ($this->_enabled)
 		{
-			$str = $this->tailCustom($this->_file_path, 100);
+			$str = $this->tailCustom($this->_file_path, config_item('log_nb_lines'));
 
 			if (empty($str))
 			{

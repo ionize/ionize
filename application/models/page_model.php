@@ -186,7 +186,7 @@ class Page_model extends Base_model
 
 		// Clean meta data
 		$lang_data = $this->_clean_meta_data($lang_data);
-
+		
 		// Base model save method call
 		return parent::save($data, $lang_data);
 	}

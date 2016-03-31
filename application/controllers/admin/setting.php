@@ -915,7 +915,28 @@ class Setting extends MY_admin
 	
 	}
 	
+	/**
+	 * Saves Log Settings
+	 *
+	 */
+	function save_log()
+	{
+		if($this->input->post('log_threshold') != '')
+		{
+			if ($this->config_model->change('config.php', 'log_threshold', $this->input->post('log_threshold')) == FALSE)
+				$this->error(lang('ionize_message_error_writing_ionize_file'));
+		}
+		
+		if($this->input->post('log_nb_lines') != '')
+		{
+			if ($this->config_model->change('ionize.php', 'log_nb_lines', $this->input->post('log_nb_lines')) == FALSE)
+				$this->error(lang('ionize_message_error_writing_ionize_file'));
+		}
+	}
+
+
     // ------------------------------------------------------------------------
+
 
     /**
      * Saves HTML Output Setting: Default (unaltered) / Compressed / Beautified

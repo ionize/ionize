@@ -24,6 +24,8 @@
 class Url_model extends Base_model 
 {
 
+	private $_clean_table_done = FALSE;
+
 	/**
 	 * Model Constructor
 	 *
@@ -65,7 +67,7 @@ class Url_model extends Base_model
 
 		// Update the entity URL (page, article)
 		$this->update_entity_url($entity, $lang);
-		
+
 		$where = array(
 			'type' => $entity['type'],
 			'lang' => $lang,
@@ -487,21 +489,28 @@ class Url_model extends Base_model
 	 */
 	public function clean_table()
 	{
-		$sql = "
-			delete u from url u
-			left join page p on p.id_page = u.id_entity and u.type='page'
-			left join page_article pa on pa.id_article = u.id_entity and u.type = 'article'
-			where
-				p.id_page is null
-				and pa.id_article is null;
-		";
+		if ( ! $this->_clean_table_done)
+		{
+			$sql = "
+				delete u from url u
+				left join page p on p.id_page = u.id_entity and u.type='page'
+				left join page_article pa on pa.id_article = u.id_entity and u.type = 'article'
+				where
+					p.id_page is null
+					and pa.id_article is null;
+			";
 
-		$this->{$this->db_group}->query($sql);
+			$this->{$this->db_group}->query($sql);
 
-		// Returned : Number of deleted media rows
-		$nb_affected_rows = (int) $this->{$this->db_group}->affected_rows();
+			// Returned : Number of deleted media rows
+			$nb_affected_rows = (int) $this->{$this->db_group}->affected_rows();
 
-		return $nb_affected_rows;
+			$this->_clean_table_done = TRUE;
+
+			return $nb_affected_rows;
+		}
+
+		return 0;
 	}
 
 
@@ -598,8 +607,6 @@ class Url_model extends Base_model
 	 */
 	public function get_unique_url($entity, $lang, $id = 1)
 	{
-		$this->clean_table();
-
 		$existing_urls = $this->get_existing_urls($entity, $lang);
 
 		if ( ! empty($existing_urls))

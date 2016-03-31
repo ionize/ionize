@@ -819,7 +819,7 @@
 
 				<dl>
 					<dt>
-						<label for="smtp_port">Log Mode</label>
+						<label for="log_threshold">Log Mode</label>
 					</dt>
 					<dd>
 						<?php
@@ -833,7 +833,7 @@
 							'4' => 'All Messages',
 						)
 						?>
-						<select name="log_threshold" class="inputtext">
+						<select id="log_threshold" name="log_threshold" class="inputtext">
 							<?php foreach($log_modes as $id => $log_mode): ?>
 								<option value="<?php echo $id ?>" <?php if ($current_log_mode == $id) : ?>selected="selected"<?php endif;?>><?php echo $log_mode ?></option>
 							<?php endforeach; ?>
@@ -843,10 +843,10 @@
 
 				<dl>
 					<dt>
-						<label for="smtp_port">Nb Lines</label>
+						<label for="log_nb_lines">Nb Lines</label>
 					</dt>
 					<dd>
-						<input name="log_nb_lines" type="text" class="inputtext" value="<?php echo config_item('log_nb_lines') ?>" />
+						<input id="log_nb_lines" name="log_nb_lines" type="text" class="inputtext" value="<?php echo config_item('log_nb_lines') ?>" />
 					</dd>
 				</dl>
 				<dl>
@@ -894,7 +894,7 @@
 	ION.setFormSubmit('settingsMediasForm', 'settingsMediasFormSubmit', 'setting/save_medias');
 	ION.setFormSubmit('articleSettingsForm', 'articleSettingsFormSubmit', 'setting/save_article');
 	ION.setFormSubmit('keysSettingsForm', 'keysSettingsFormSubmit', 'setting/save_keys');
-	ION.setFormSubmit('logForm', 'submit_log', 'setting/save_log_settings/true', 'mainPanel', 'setting/technical');
+	ION.setFormSubmit('logForm', 'submit_log', 'setting/save_log', 'mainPanel', 'setting/technical');
 
 	ION.initRequestEvent($('clear_cache'), 'setting/clear_cache');
 

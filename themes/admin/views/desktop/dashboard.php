@@ -79,8 +79,6 @@ $user_role = User()->get_role();
 					<p><a><?php echo lang('ionize_dashboard_icon_google_analytics'); ?></a></p>
 				</div>
 			<?php endif ;?>
-			
-			<div style="clear: left;"></div>
 		</div>
 	<?php endif ;?>
 
@@ -89,7 +87,6 @@ $user_role = User()->get_role();
 	<?php if (Settings::get('enable_backend_tracker') == '1') :?>
 		<div id="trackerBloc" class="desktopBloc" data-title="<?php echo lang('ionize_dashboard_title_current_connected_users'); ?>">
 			<div class="pb15" id="trackerCurrentConnectedUsers"></div>
-			<div style="clear: left;"></div>
 		</div>
 	<?php endif; ?>
 

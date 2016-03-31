@@ -1710,12 +1710,15 @@ label.flag {
 	float:left;
 	margin:0 2px 0 0;
 	padding: 2px;
-	height: 22px;
-	width: 23px;
+	min-height: 22px !important;
+	min-width: 23px !important;
+	height: 22px !important;
+	width: 23px !important;
 	text-align: center;
 	border: solid 1px #f5f5f5;
 	-webkit-border-radius: 14px; -moz-border-radius: 14px; border-radius: 14px;
 	cursor: pointer;
+	line-height: inherit !important;
 }
 label.flag.small {
 	height: 12px;

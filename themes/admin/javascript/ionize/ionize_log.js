@@ -69,7 +69,7 @@ var LogWindowManager = new Class({
 					else
 					{
 						self.logContainer.set('html', json.lines);
-						window.scrollTo(0,document.body.scrollHeight);
+						// window.scrollTo(0,document.body.scrollHeight);
 					}
 
 					self.reloadTimer = setTimeout(function(){self.getLogs()}, 2000);
