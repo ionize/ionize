@@ -167,8 +167,8 @@
 			id_content_type int(11) unsigned NOT NULL AUTO_INCREMENT,
 			name varchar(50) DEFAULT NULL COMMENT 'Logical name',
 			type varchar(50) DEFAULT NULL COMMENT '''page'', ''article''',
-			view varchar(50) DEFAULT NULL COMMENT 'View',
-			view_single varchar(50) DEFAULT NULL COMMENT 'Page view for one single article',
+			view varchar(255) DEFAULT NULL COMMENT 'View',
+			view_single varchar(255) DEFAULT NULL COMMENT 'Page view for one single article',
 			PRIMARY KEY (id_content_type)
 			) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 		</query>
