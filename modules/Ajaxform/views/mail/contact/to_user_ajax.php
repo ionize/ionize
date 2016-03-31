@@ -5,7 +5,7 @@
  * Default Email template for : User Message
  * This email is send to the user from the contact form
  *
- * Copy this file to /themes/<your_theme>/mail/contact/to_user_ajax.php
+ * Copy this file to /themes/<your_theme>/views/mail/contact/to_user_ajax.php
  * to replace it by yours.
  *
  * IMPORTANT :

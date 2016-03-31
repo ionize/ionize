@@ -137,6 +137,8 @@ ION.ContentTypeManager = new Class({
 			{
 				onSuccess: function(json)
 				{
+					self.typeListContainer.empty();
+
 					var groups = self._getContentTypeByType(json);
 
 					Object.each(groups, function(group)
@@ -1135,7 +1137,7 @@ ION.ContentTypeManager = new Class({
 				onClick: function()
 				{
 					self.contentElementManager.createInstance(
-						element.id_element_definition, parent, id_parent
+						element, parent, id_parent
 					);
 				}
 			});

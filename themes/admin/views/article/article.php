@@ -391,18 +391,6 @@ if ($tracker_title == '')
 
 		<?php endif ;?>
 
-		// Content Elements
-/*
-		var contentElementManager = new ION.ContentElementManager();
-
-		contentElementManager.displayInParent({
-			container: 'articleTab',
-			parent: 'article',
-			id_parent: id_article
-		});
-*/
-
-
 		// Init the staticItemManager
 		staticItemManager.init({
 			'parent': 'article',
@@ -413,19 +401,7 @@ if ($tracker_title == '')
 		// Get Static Items
 		staticItemManager.getParentItemList();
 
-		// Extend Fields
-		/*
-		extendManager.init({
-			parent: 'article',
-			id_parent: id_article,
-			destination: 'articleTab',
-			destinationTitle: Lang.get('ionize_title_extend_fields')
-		});
-		extendManager.getParentInstances();
-		*/
-
 		// Content Type Extends
-
 		var contentTypeManager = new ION.ContentTypeManager({
 			type: 'article',
 			id_parent: id_article

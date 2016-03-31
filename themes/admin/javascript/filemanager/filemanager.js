@@ -225,7 +225,7 @@ var Filemanager = new Class({
 		}).inject(this.container);
 
 		this.header = new Element('div', {
-			'class': 'filemanager-header'
+			'class': 'filemanager-header ' + navigator.platform.toLowerCase()
 		}).inject(this.filemanager);
 
 		this.panel = new Element('div', {'class': 'filemanager-panel'}).inject(this.filemanager);

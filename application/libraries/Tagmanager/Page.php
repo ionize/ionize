@@ -115,7 +115,6 @@ class TagManager_Page extends TagManager
 			}
 		}
 
-
 		// Can we get one article from the URL ?
 		$entity = self::get_entity();
 		if ( $entity['type'] == 'article')

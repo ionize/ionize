@@ -555,7 +555,7 @@ class Page_model extends Base_model
 		$nb = 0;
 
 		// Clean old URL
-		$this->url_model->delete('page', $id_page);
+		// $this->url_model->delete('page', $id_page);
 
 		// Asked page process
 		foreach($this->get_languages() as $l)
@@ -583,13 +583,15 @@ class Page_model extends Base_model
 			
 			if ( ! empty($url))
 			{
-				$data = array(
+				$entity = array(
+					'type' => 'page',
+					'id_entity' => $id_page,
 					'url' => implode('/', $url),
 					'path_ids' => implode('/', $path_ids),
 					'full_path_ids' => implode('/', $full_path_ids)
 				);
-				
-				$nb = $CI->url_model->save_url('page', $l['lang'], $id_page, $data);
+
+				$nb = $CI->url_model->save_url($entity, $l['lang']);
 			}
 		}
 		
@@ -628,7 +630,7 @@ class Page_model extends Base_model
 		foreach($articles as $article)
 		{
 			// Clean old URL
-			$CI->url_model->delete('article', $article['id_article']);
+			// $CI->url_model->delete('article', $article['id_article']);
 
 			$CI->article_model->save_urls($article['id_article']);
 		}

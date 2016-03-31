@@ -1126,11 +1126,6 @@ MUI.Window.implement({
 						'left': 0
 					}
 				}).inject(this.el.windowEl);
-
-				if (MUI.ieSupport == 'excanvas'){
-					G_vmlCanvasManager.initElement(cache.canvas);
-					cache.canvas = this.el.windowEl.getElement('.mochaCanvas');
-				}
 			}
 		}
 
@@ -1238,11 +1233,6 @@ MUI.Window.implement({
 				'width': this.options.width,
 				'height': 26
 			}).inject(this.el.windowEl, 'bottom');
-
-			if (Browser.name=='ie' && MUI.ieSupport == 'excanvas'){
-				G_vmlCanvasManager.initElement(cache.canvasHeader);
-				cache.canvasHeader = this.el.windowEl.getElement('.mochaCanvasHeader');
-			}
 		}
 
 		if (Browser.name=='ie') cache.overlay.setStyle('zIndex', 2);

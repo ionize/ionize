@@ -65,14 +65,14 @@ class MY_Controller extends CI_Controller
 			die();
 		}
 
-		$this->load->database();
+/*		$this->load->database();
 
 		if ( ! $this->db->db_select())
 		{
 			$error =& load_class('Exceptions', 'core');
 			echo $error->show_error('Database Error', 'Unable to connect to the specified database : '. $this->db->database, 'error_db');
 			exit;
-		}
+		}*/
 
 		// Models
         $this->load->model(
@@ -84,7 +84,7 @@ class MY_Controller extends CI_Controller
 		// Helpers
 		$this->load->helper('file');
 		$this->load->helper('trace');
-		
+
 		// Get all the website languages from DB and store them into config file "languages" key
 		$languages = $this->settings_model->get_languages();
 		Settings::set_languages($languages);
@@ -391,7 +391,7 @@ class Base_Controller extends MY_Controller
     {
         parent::__construct();
 
-		// $this->output->enable_profiler(TRUE);
+		$this->output->enable_profiler(FALSE);
 		
 		// Libraries
 		$this->load->library('structure');	
@@ -641,7 +641,7 @@ class MY_Admin extends MY_Controller
     {
         parent::__construct();
 
-		$this->db->cache_off();
+		// $this->db->cache_off();
 
 		$this->load->helper('module_helper');
 		

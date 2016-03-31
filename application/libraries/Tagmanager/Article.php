@@ -77,16 +77,24 @@ class TagManager_Article extends TagManager
 	 */
 	public static function get_articles(FTL_Binding $tag)
 	{
+		$articles = [];
+
 		// Page. 1. Local one, 2. Current page (should never arrived except if the tag is used without the 'page' parent tag)
 		$page = $tag->get('page');
 
-		// Get articles in which this article is linked through an link extend
+		// Get articles for which this article is linked through an link extend
 		$referenced_by_link_extend = $tag->getAttribute('referenced_by_link_extend');
+
+		// Get articles for which this article is referenced in a content element's link extend
+		$referenced_by_content_element = $tag->getAttribute('referenced_by_content_element');
+		$link_extend = $tag->getAttribute('link_extend');
 
 
 		// Only get all articles (no limit to one page) if asked.
 		// Filter by current page by default
-		if (empty($page) && $tag->getAttribute('all') == NULL && $referenced_by_link_extend == NULL)
+		if (
+			empty($page) && $tag->getAttribute('all') == NULL
+			&& $referenced_by_link_extend == NULL && $referenced_by_content_element == NULL)
 		{
 			$page = self::registry('page');
 		}
@@ -219,14 +227,34 @@ class TagManager_Article extends TagManager
 		{
 			$article = $tag->get('article');
 
-			$articles = self::$ci->article_model->get_referring_articles_in_link_extend(
-				$referenced_by_link_extend,
-				$article['id_article'],
-				$where,
-				$lang = Settings::get_lang(),
-				$filter,
-				$extend_filter
-			);
+			if ( ! empty($article))
+			{
+				$articles = self::$ci->article_model->get_referring_articles_in_link_extend(
+					$referenced_by_link_extend,
+					$article['id_article'],
+					$where,
+					$lang = Settings::get_lang(),
+					$filter,
+					$extend_filter
+				);
+			}
+		}
+		else if ($referenced_by_content_element && $link_extend)
+		{
+			$article = $tag->get('article');
+
+			if ( ! empty($article))
+			{
+				$articles = self::$ci->article_model->get_referring_articles_in_content_element_link_extend(
+					$referenced_by_content_element,
+					$link_extend,
+					$article['id_article'],
+					$where,
+					$lang = Settings::get_lang(),
+					$filter,
+					$extend_filter
+				);
+			}
 		}
 		else
 		{

@@ -273,11 +273,6 @@ MUI.Taskbar.implement({
 				'height': '18',
 				'class' : css + 'Canvas'
 			}).inject(this.el.taskbar);
-
-			// Dynamically initialize canvas using excanvas. This is only required by IE
-			if (Browser.name=='ie' && MUI.ieSupport == 'excanvas'){
-				G_vmlCanvasManager.initElement(this.el.canvas);
-			}
 		}
 
 		// Position top or bottom selector

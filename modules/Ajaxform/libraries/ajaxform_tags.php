@@ -40,6 +40,8 @@ class Ajaxform_Tags extends TagManager_Form
 			$nojs = $tag->getAttribute('nojs');
 			$form_name = $tag->getAttribute('name');
 			$form_submit_id = $tag->getAttribute('submit');
+			$view = $tag->getAttribute('js', 'ajaxform_js');
+			
 			// $error_tag = $tag->getAttribute('error_tag');
 			// $error_tag_class = $tag->getAttribute('error_tag_class');
 
@@ -57,7 +59,7 @@ class Ajaxform_Tags extends TagManager_Form
 						'url' => base_url() . Settings::get_lang() . '/' . self::$config['uri'] . '/post'
 					);
 
-					$str .= self::$ci->load->view('ajaxform_js', $data, TRUE);
+					$str .= self::$ci->load->view('ajaxform/' . $view, $data, TRUE);
 				}
 				else
 				{

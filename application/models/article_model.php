@@ -334,6 +334,8 @@ class Article_model extends Base_model
 		// Base_model->get_lang_list()
 		$articles = parent::get_lang_list($where, $lang);
 
+		// log_message('error', print_r($this->last_query(), TRUE));
+
 		$this->add_categories($articles, $lang);
 
 		$this->add_tags($articles);
@@ -405,6 +407,51 @@ class Article_model extends Base_model
 
 			$data = $this->get_lang_list($where, $lang, $filter, $extend_filter);
 		}
+
+		return $data;
+	}
+
+
+	// ------------------------------------------------------------------------
+
+
+	public function get_referring_articles_in_content_element_link_extend(
+		$content_element_name, $extend_name, $id_article,
+		$where=array(), $lang = NULL, $filter = FALSE, $extend_filter=NULL
+	)
+	{
+		$data = array();
+
+		self::$ci->load->model('element_definition_model', '', TRUE);
+
+		$element = self::$ci->element_definition_model->get(array('name' => $content_element_name), $lang);
+		$extend = self::$ci->extend_field_model->get_extend_definition_from_name(trim($extend_name), 'element');
+
+		if ( ! empty($element) && ! empty($extend))
+		{
+			// join element e on e.id_parent = article.id_article and e.parent = 'article' and e.id_element_definition=2
+			$this->{$this->db_group}->join(
+				'element',
+				"element.id_parent = article.id_article" .
+				" and element.parent = 'article'" .
+				" and element.id_element_definition=" . $element['id_element_definition']
+			);
+
+			// join extend_fields efs on efs.id_extend_field = 16 and efs.parent='article' and efs.id_parent = article.id_article
+			$this->{$this->db_group}->join(
+				'extend_fields efs_ref',
+				"efs_ref.id_extend_field = " . $extend['id_extend_field'] .
+				" AND efs_ref.parent = 'element'" .
+				" AND efs_ref.id_parent = element.id_element"
+			);
+
+			// where efs.content REGEXP '(article:(.*).1096)';
+			$this->{$this->db_group}->where("efs_ref.content REGEXP '(article:(.*).".$id_article.")'", '', false);
+			$this->{$this->db_group}->where("page_article.main_parent = 1", '', false);
+
+			$data = $this->get_lang_list($where, $lang, $filter, $extend_filter);
+		}
+
 
 		return $data;
 	}
@@ -866,13 +913,15 @@ class Article_model extends Base_model
 					$path_ids[] = $id_article;
 					$full_path_ids[] = $id_article;
 					
-					$data = array(
+					$entity = array(
+						'type' => 'article',
+						'id_entity' => $id_article,
 						'url' => $url,
 						'path_ids' => implode('/', $path_ids),
 						'full_path_ids' => implode('/', $full_path_ids)
 					);
 					
-					$nb = $CI->url_model->save_url('article', $l['lang'], $id_article, $data);
+					$nb = $CI->url_model->save_url($entity, $l['lang']);
 				}
 			}
 		}		

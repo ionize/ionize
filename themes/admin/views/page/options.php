@@ -41,7 +41,7 @@
 				<dl class="compact small">
 					<dt><label><?php echo lang('ionize_label_name'); ?></label></dt>
 					<dd>
-						<a class="edit dynamic-input left" data-id="<?php echo $id_page; ?>" data-name="name" data-url="page/update_name"><?php echo $name; ?></a>
+						<a style="line-height: 26px;" class="edit dynamic-input left" data-id="<?php echo $id_page; ?>" data-name="name" data-url="page/update_name"><?php echo $name; ?></a>
 					</dd>
 				</dl>
 
@@ -178,10 +178,6 @@
 
 			<!-- Categories & Tags -->
 			<div class="element-options-content">
-				<!-- Tags -->
-				<h4><?php echo lang('ionize_label_tags'); ?></h4>
-				<dfn><?php echo lang('ionize_help_tag_new') ?></dfn>
-				<input type="text" name="tags" value="" id="tags" />
 
 				<!-- Categories -->
 				<h4><?php echo lang('ionize_label_categories'); ?></h4>
@@ -194,6 +190,12 @@
 					<i class="icon-plus"></i>
 					<?php echo lang('ionize_label_new_category'); ?>
 				</a>
+
+				<!-- Tags -->
+				<h4><?php echo lang('ionize_label_tags'); ?></h4>
+				<dfn><?php echo lang('ionize_help_tag_new') ?></dfn>
+				<input type="text" name="tags" value="" id="tags" />
+
 			</div>
 
 		</div>

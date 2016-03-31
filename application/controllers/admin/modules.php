@@ -315,4 +315,14 @@ class Modules extends MY_admin
 
 		return FALSE;
 	}
+
+
+	public function get_config()
+	{
+		$module = $this->input->post('module');
+
+		$config = Modules()->get_module_config(ucfirst($module));
+
+		$this->xhr_output($config);
+	}
 }

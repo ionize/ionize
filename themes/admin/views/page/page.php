@@ -255,7 +255,7 @@ if ($tracker_title == '')
 
 								<?php if( ! is_null($lang_url)) :?>
 									<br/>
-									<?php echo lang('ionize_label_full_url'); ?> : <i class="selectable">/<?php echo $lang_url; ?></i>
+									<?php echo lang('ionize_label_full_url'); ?> : <a href="<?php echo base_url(); ?><?php echo $lang_url; ?>" target="_blank" class="selectable"><?php echo $lang_url; ?></a>
 								<?php endif; ?>
 
 							</dd>
@@ -397,15 +397,6 @@ if ($tracker_title == '')
 		// Articles List
 		ION.HTML('article/get_list', {'id_page':id_page}, {'update': 'articleListContainer'});
 
-		/**
-		 * Get Content Tabs & Elements
-		 * 1. ION.getContentElements calls element_definition/get_definitions_from_parent : returns the elements definitions which have elements for the current parent.
-		 * 2. ION.getContentElements calls element/get_elements_from_definition : returns the elements for each definition
-		 */
-		$('desktop').store('tabSwapper', pageTab);
-		ION.getContentElements('page', id_page);
-
-
 		// Media Manager & tabs events
 		<?php if(Authority::can('access', 'admin/article/media')) :?>
 
@@ -431,16 +422,6 @@ if ($tracker_title == '')
 		// Get Static Items
 		staticItemManager.getParentItemList();
 
-		// Extend Fields
-		/*
-		extendManager.init({
-			parent: 'page',
-			id_parent: id_page,
-			destination: 'pageTab',
-			destinationTitle: Lang.get('ionize_title_extend_fields')
-		});
-		extendManager.getParentInstances();
-		*/
 
 		// Content Type Extends
 		var contentTypeManager = new ION.ContentTypeManager({

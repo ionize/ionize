@@ -111,7 +111,7 @@ class MY_Lang extends CI_Lang
 		// Because killer robots like unicorns!
 		if ($returned_line === FALSE)
 		{
-			log_message('error', 'Could not find the language key : "'.$line.'"');
+			log_message('debug', 'Could not find the language key : "'.$line.'"');
 		}
 		else
 		{

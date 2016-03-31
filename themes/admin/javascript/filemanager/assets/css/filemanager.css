@@ -98,13 +98,16 @@ div.filemanager-header {
 	top: -25px;
 	left: 0;
 	width: auto;
-	margin-left:55px;
 	height: 25px;
 	padding: 3px 0;
 	background: transparent;
 	overflow: hidden;
-}
+	margin-left:2px;
 
+}
+div.filemanager-header.macintel {
+	margin-left:55px;
+}
 /* filemanager-menu */
 div.filemanager div.filemanager-menu {
 	height: 32px;

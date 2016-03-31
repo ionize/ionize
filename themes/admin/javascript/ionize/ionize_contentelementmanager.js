@@ -9,6 +9,12 @@ ION.ContentElementManager = new Class({
 	extendManager: null,
 
 	/**
+	 * List of definition
+	 *
+	 */
+	definitions: null,
+
+	/**
 	 *
 	 * @param options
 	 */
@@ -59,19 +65,51 @@ ION.ContentElementManager = new Class({
 	 */
 	getDefinitions: function()
 	{
-		var options = typeOf(arguments[0]) != 'null' ? arguments[0] : {};
+		var self = this,
+			options = typeOf(arguments[0]) != 'null' ? arguments[0] : {};
 
-		ION.JSON(
-			ION.adminUrl + 'element_definition/get_definitions',
-			{},
-			{
-				onSuccess: function(json)
+		if (this.definitions == null || options.refresh == true)
+		{
+			ION.JSON(
+				ION.adminUrl + 'element_definition/get_definitions',
+				{},
 				{
-					if (options.onSuccess)
-						options.onSuccess(json);
+					onSuccess: function(json)
+					{
+						self.definitions = json;
+
+						if (options.onSuccess)
+							options.onSuccess(json);
+					}
 				}
+			);
+		}
+		else
+		{
+			if (options.onSuccess)
+				options.onSuccess(this.definitions);
+		}
+	},
+
+
+	getDefinitionFromId: function(id_element_definition)
+	{
+		var self = this,
+			options = typeOf(arguments[1]) != 'null' ? arguments[1] : {};
+
+		this.getDefinitions({
+			onSuccess: function(definitions)
+			{
+				Object.each(definitions, function(definition)
+				{
+					if (definition.id_element_definition == id_element_definition)
+					{
+						if (options.onSuccess)
+							options.onSuccess(definition);
+					}
+				});
 			}
-		);
+		})
 	},
 
 
@@ -400,11 +438,11 @@ ION.ContentElementManager = new Class({
 
 
 
-	createInstance: function(id_element_definition, parent, id_parent)
+	createInstance: function(element_definition, parent, id_parent)
 	{
 		var instance = {
 			id_element: '',
-			id_element_definition: id_element_definition,
+			id_element_definition: element_definition.id_element_definition,
 			parent: parent,
 			id_parent: id_parent
 		};
@@ -416,78 +454,89 @@ ION.ContentElementManager = new Class({
 	editInstance: function(instance)
 	{
 		var self = this,
-			subtitle = null;
+			subtitle = [];
 
 		if (instance.id_element)
 			subtitle = [
 				{key: 'ID', value:instance.id_element}
 			];
 
-		new ION.Window({
-			id: 'editElementInstance' + instance.id_element,
-			title: {
-				text: instance.id_element != '' ? Lang.get('ionize_label_content_element') : Lang.get('ionize_title_element_new'),
-				'class': 'elements'
-			},
-			subtitle: subtitle,
-			type: 'form',
-			form: {
-				id: 'elementForm' + instance.id_element,
-				action: ION.adminUrl + 'element/save',
-				reload: function(json)
-				{
-					self.editInstance(json);
-				},
-				onSuccess: function(json)
-				{
-					self.fireEvent('onSave', json);
-				}
-			},
-			width: 620,
-			height: 380,
-			onDraw: function(w)
+		this.getDefinitionFromId(
+			instance.id_element_definition,
 			{
-				var form = w.getForm();
-
-				form.addClass('mt20');
-
-				new Element('input', {type:'hidden', name:'id_element', value: instance.id_element}).inject(form);
-				new Element('input', {type:'hidden', name:'parent', value: instance.parent}).inject(form);
-				new Element('input', {type:'hidden', name:'id_parent', value: instance.id_parent}).inject(form);
-				new Element('input', {type:'hidden', name:'id_element_definition', value: instance.id_element_definition}).inject(form);
-
-				if( typeOf(instance.ordering) != 'null')
+				onSuccess: function(definition)
 				{
-					new Element('input', {type: 'hidden', name: 'ordering', value: instance.ordering}).inject(form);
-				}
-				else
-				{
-					var ff_order = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_ordering')}});
+					var titleText = instance.id_element != '' ? Lang.get('ionize_label_edit') + ' ' + definition.title : Lang.get('ionize_button_add') + ' ' + definition.title;
 
-					new ION.Form.Select(
-					{
-						container: ff_order.getContainer(),
-						name: 'ordering',
-						data: [
-							{value:'first', label:Lang.get('ionize_label_ordering_first')},
-							{value:'last', label:Lang.get('ionize_label_ordering_last')}
-						],
-						key: 'value',
-						label: 'label'
+					new ION.Window({
+						id: 'editElementInstance' + instance.id_element,
+						title: {
+						//	text: instance.id_element != '' ? Lang.get('ionize_label_content_element') : Lang.get('ionize_title_element_new'),
+							text: titleText,
+							'class': 'elements'
+						},
+						subtitle: subtitle,
+						type: 'form',
+						form: {
+							id: 'elementForm' + instance.id_element,
+							action: ION.adminUrl + 'element/save',
+							reload: function(json)
+							{
+								self.editInstance(json);
+							},
+							onSuccess: function(json)
+							{
+								self.fireEvent('onSave', json);
+							}
+						},
+						width: 620,
+						height: 380,
+						onDraw: function(w)
+						{
+							var form = w.getForm();
+
+							form.addClass('mt20');
+
+							new Element('input', {type:'hidden', name:'id_element', value: instance.id_element}).inject(form);
+							new Element('input', {type:'hidden', name:'parent', value: instance.parent}).inject(form);
+							new Element('input', {type:'hidden', name:'id_parent', value: instance.id_parent}).inject(form);
+							new Element('input', {type:'hidden', name:'id_element_definition', value: instance.id_element_definition}).inject(form);
+
+							if( typeOf(instance.ordering) != 'null')
+							{
+								new Element('input', {type: 'hidden', name: 'ordering', value: instance.ordering}).inject(form);
+							}
+							else
+							{
+								var ff_order = new ION.FormField({container: form, label: {text: Lang.get('ionize_label_ordering')}});
+
+								new ION.Form.Select(
+									{
+										container: ff_order.getContainer(),
+										name: 'ordering',
+										data: [
+											{value:'first', label:Lang.get('ionize_label_ordering_first')},
+											{value:'last', label:Lang.get('ionize_label_ordering_last')}
+										],
+										key: 'value',
+										label: 'label'
+									});
+							}
+
+							var fields_container = new Element('div', {class:''}).inject(form);
+
+							self.extendManager.init({
+								parent: 'element',
+								id_parent: instance.id_element,
+								id_field_parent: instance.id_element_definition,
+								destination: fields_container
+							});
+
+							self.extendManager.getParentInstances();
+						}
 					});
 				}
-
-				var fields_container = new Element('div', {class:''}).inject(form);
-
-				self.extendManager.init({
-					parent: 'element',
-					id_parent: instance.id_element,
-					id_field_parent: instance.id_element_definition,
-					destination: fields_container
-				});
-
-				self.extendManager.getParentInstances();
 			}
-		});
+		);
 	}
 });

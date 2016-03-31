@@ -8,8 +8,7 @@ $c = '?v='.$v;
 <meta charset='utf-8' />
 <title><?php echo lang('ionize_administration') . ' | ' . (Settings::get('site_title') ? Settings::get('site_title') : ''); ?></title>
 <meta http-equiv="imagetoolbar" content="no" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10">
 <link rel="shortcut icon" href="<?php echo admin_style_url(); ?>images/favicon.ico" type="image/x-icon" />
 
 <link type="text/css" rel="stylesheet" href="<?php echo theme_url(); ?>javascript/mochaui/Themes/ionize/css/core.css<?php echo $c ?>" />

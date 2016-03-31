@@ -5,7 +5,7 @@
  * Default Email template for Contact Form
  * This email is supposed to be send to the website's email
  *
- * Copy this file to /themes/<your_theme>/mail/contact/to_admin_ajax.php
+ * Copy this file to /themes/<your_theme>/views/mail/contact/to_admin_ajax.php
  * to replace it by yours.
  *
  * IMPORTANT :

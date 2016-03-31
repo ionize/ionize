@@ -26,8 +26,8 @@ $config['forms'] = array
 
 		// Messages Language index, as set in language/xx/form_lang.php
 		'messages' => array(
-			'success' => 'form_alert_error_message',
-			'error' => 'form_alert_success_message',
+			'success' => 'form_alert_success_message',
+			'error' => 'form_alert_error_message',
 		),
 		'emails' => array
 		(
@@ -47,7 +47,7 @@ $config['forms'] = array
 				// Translation item index
 				'subject' => 'mail_website_contact_subject',
 
-				// Used view : Located in /themes/your_theme/mail/contact.php
+				// Used view : Located in /themes/your_theme/views/mail/contact.php
 				'view' => 'mail/contact/to_admin_ajax',
 			),
 			// Send to user

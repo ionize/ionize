@@ -42,13 +42,12 @@ class Url_model extends Base_model
 
 
 	/**
-	 * Saves one URL
+	 * Saves one URL entity
 	 * 
-	 * @param	String		'page', 'article', etc.
-	 * @param	String		lang code
-	 * @param	int			ID of the entity.
 	 * @param	Array		Array of URL paths
 	 *							array(
+	 * 								'entity' =>			'page'
+	 * 								'id_entity' =>		'12'
 	 *								'url' => 			'/path/to/the/element',
 	 *								'path_ids' =>		'/1/8/12',
 	 *								'full_path_ids' =>	'/1/8/3/12'
@@ -57,26 +56,26 @@ class Url_model extends Base_model
 	 * @return	int			Number of inserted / updated URL;
 	 *
 	 */
-	public function save_url($type, $lang, $id_entity, $data)
+	public function save_url($entity, $lang)
 	{
 		$return = 0;
 
 		// Check / correct the URL
-		$data['url'] = $this->get_unique_url($type, $id_entity, $lang, $data['url']);
+		$entity['url'] = $this->get_unique_url($entity, $lang);
 
 		// Update the entity URL (page, article)
-		$this->update_entity_url($type, $id_entity, $lang, $data['url']);
+		$this->update_entity_url($entity, $lang);
 		
 		$where = array(
-			'type' => $type,
+			'type' => $entity['type'],
 			'lang' => $lang,
-			'id_entity' => $id_entity,
+			'id_entity' => $entity['id_entity'],
 			'active' => '1'
 		);
 		
 		$element = array(
-			'id_entity' => $id_entity,
-			'type' => $type,
+			'id_entity' => $entity['id_entity'],
+			'type' => $entity['type'],
 			'lang' => $lang,
 			'active' => '1',
 			'canonical' => '1'
@@ -88,7 +87,7 @@ class Url_model extends Base_model
 		// The URL already exists
 		if ( ! empty($db_url) && 
 			 ( time() - strtotime($db_url['creation_date'])) > 3600 &&
-			 $data['url'] != $db_url['path'] )
+			$entity['url'] != $db_url['path'] )
 		{
 			// Set the old link as inactive
 			$element['active'] = '0';
@@ -97,28 +96,28 @@ class Url_model extends Base_model
 			
 			// Insert the new link
 			$element['active'] = '1';
-			$element['path'] = $data['url'];
-			$element['path_ids'] = $data['path_ids'];
-			$element['full_path_ids'] = $data['full_path_ids'];
+			$element['path'] = $entity['url'];
+			$element['path_ids'] = $entity['path_ids'];
+			$element['full_path_ids'] = $entity['full_path_ids'];
 			$element['creation_date'] = date('Y-m-d H:i:s');
 			$this->insert($element);
 			$return = 1;
 		}
 		else if ( 
-			(! empty($db_url) && $data['url'] != $db_url['path'] )
-			OR (! empty($db_url) && ($data['path_ids'] != $db_url['path_ids'] OR $data['full_path_ids'] != $db_url['full_path_ids']))
+			(! empty($db_url) && $entity['url'] != $db_url['path'] )
+			OR (! empty($db_url) && ($entity['path_ids'] != $db_url['path_ids'] OR $entity['full_path_ids'] != $db_url['full_path_ids']))
 		)
 		{
-			$element['path'] = $data['url'];
-			$element['path_ids'] = $data['path_ids'];
-			$element['full_path_ids'] = $data['full_path_ids'];
+			$element['path'] = $entity['url'];
+			$element['path_ids'] = $entity['path_ids'];
+			$element['full_path_ids'] = $entity['full_path_ids'];
 			$return = $this->update($where, $element);
 		}
 		else if (empty($db_url))
 		{
-			$element['path'] = $data['url'];
-			$element['path_ids'] = $data['path_ids'];
-			$element['full_path_ids'] = $data['full_path_ids'];
+			$element['path'] = $entity['url'];
+			$element['path_ids'] = $entity['path_ids'];
+			$element['full_path_ids'] = $entity['full_path_ids'];
 			$element['creation_date'] = date('Y-m-d H:i:s');
 			
 			$this->insert($element);
@@ -397,15 +396,13 @@ class Url_model extends Base_model
 	/**
 	 * Update the entity lang table with one new URL
 	 *
-	 * @param	String		Entity type. 'article, 'page'
-	 * @param	Int			Entity ID
+	 * @param	String		Entity
 	 * @param	String		Lang code
-	 * @param	String		URL
-	 * 
+	 *
 	 */
-	public function update_entity_url($type, $id_entity, $lang, $url)
+	public function update_entity_url($entity, $lang)
 	{
-		$table = $type . '_lang';
+		$table = $entity['type'] . '_lang';
 
 		// If the table exists and has the URL field
 		if (
@@ -413,16 +410,34 @@ class Url_model extends Base_model
 			&& $this->has_field('url', $table)
 		)
 		{
-			// Get only the last URL part
-			$url = array_pop(explode('/', $url));
-			
-			$this->{$this->db_group}->where(
-				array(
-					'id_'.$type => $id_entity,
-					'lang' => $lang
-				)
-			);
-			$this->{$this->db_group}->update($table, array('url' => $url));
+			$has_url = TRUE;
+
+			// Do not update the lang table 'URL' if the entity has no URL : No need
+			if ($this->{$this->db_group}->table_exists($entity['type']))
+			{
+				$original_entity = $this->get_row_array(
+					array(
+						'id_'.$entity['type'] => $entity['id_entity']
+					),
+					$entity['type']
+				);
+				if ( isset($original_entity['has_url']) && $original_entity['has_url'] == 0)
+					$has_url = FALSE;
+			}
+
+			if ($has_url)
+			{
+				// Get only the last URL part
+				$url = array_pop(explode('/', $entity['url']));
+
+				$this->{$this->db_group}->where(
+					array(
+						'id_'.$entity['type'] => $entity['id_entity'],
+						'lang' => $lang
+					)
+				);
+				$this->{$this->db_group}->update($table, array('url' => $url));
+			}
 		}
 	}
 
@@ -496,17 +511,15 @@ class Url_model extends Base_model
 	/**
 	 * Return TRUE if one URL already exists (for another entity_id with the same type)
 	 *
-	 * @param	String		Entity type. 'article, 'page'
-	 * @param	Int			Entity ID to exclude
-	 * @param	String		URL
+	 * @param	Array		Entity array
 	 * @param	String		Lang code. 'all' for all languages (default)
 	 *
 	 * @return	boolean		TRUE if another entity URL exists
 	 *
 	 */
-	public function is_existing_url($type, $id_entity, $url, $lang='all')
+	public function is_existing_url($entity, $lang='all')
 	{
-		$urls = $this->get_existing_urls($type, $id_entity, $url, $lang);
+		$urls = $this->get_existing_urls($entity, $lang);
 
 		return ( ! empty($urls));
 	}
@@ -516,39 +529,56 @@ class Url_model extends Base_model
 
 
 	/**
-	 * @param        $type
-	 * @param        $id_entity
-	 * @param        $url
+	 * @param        $entity
 	 * @param string $lang
 	 *
 	 * @return array
 	 */
-	public function get_existing_urls($type, $id_entity, $url, $lang='all')
+	public function get_existing_urls($entity, $lang='all')
 	{
 		$urls = array();
 
-		// Get all the corresponding URL
-		$where = array(
-			'path' => $url,
-			'active' => 1
-		);
-		if ($lang != 'all')	$where['lang'] = $lang;
+		$entity_path_arr = explode('/', $entity['full_path_ids']);
+		array_pop($entity_path_arr);
+		$entity_parent_path = implode('/', $entity_path_arr);
 
-		$this->{$this->db_group}->where($where);
-		$query = $this->{$this->db_group}->get($this->table);
+		$sql = "
+			select u.* 
+			from " . $this->table . " u";
 
-		if ($query->num_rows() > 0)
+		if ($entity['type'] == 'page')
 		{
-			$urls = $query->result_array();
-
-			foreach($urls as $key => $url)
-			{
-				if ($url['type'] == $type && $url['id_entity'] == $id_entity)
-				{
-					unset($urls[$key]);
-				}
-			}
+			$sql .= "
+				join page p on p.id_page = u.id_entity and p.has_url = 1
+			";
 		}
+
+		$sql .= "
+			where 
+				u.type = '" . $entity['type'] . "'
+				and u.id_entity != " . $entity['id_entity'] . "
+				and u.active = 1
+				and u.path = '" . $entity['url'] . "'
+				and LEFT
+				(
+				   u.full_path_ids, 
+				   LENGTH(u.full_path_ids) - LENGTH(SUBSTRING_INDEX(u.full_path_ids,'/',-1))-1
+				) = '". $entity_parent_path ."'
+		";
+		if ($lang != 'all')
+			$sql .= "
+				and u.lang = '".$lang."'
+			";
+
+
+		$query = $this->{$this->db_group}->query($sql);
+
+		if ( $query ) {
+			if ( $query->num_rows() > 0)
+				$urls = $query->result_array();
+			$query->free_result();
+		}
+
 		return $urls;
 	}
 
@@ -559,31 +589,30 @@ class Url_model extends Base_model
 	/**
 	 * Return one unique URL
 	 *
-	 * @param     $type			Entity type. 'article, 'page'
-	 * @param     $id_entity	Entity ID
+	 * @param     $entity		Entity
 	 * @param     $lang			Lang code. 'all' for all languages
 	 * @param     $url			URL
 	 * @param int $id
 	 *
 	 * @return mixed
 	 */
-	public function get_unique_url($type, $id_entity, $lang, $url, $id = 1)
+	public function get_unique_url($entity, $lang, $id = 1)
 	{
 		$this->clean_table();
 
-		$existing_urls = $this->get_existing_urls($type, $id_entity, $url, $lang);
+		$existing_urls = $this->get_existing_urls($entity, $lang);
 
 		if ( ! empty($existing_urls))
 		{
-			if ($id > 1 OR (substr($url, -2, count($url) -2) && ((int) substr($url, -1)) != 0 ))
-				$url = substr($url, 0, -2);
+			if ($id > 1 OR (substr($entity['url'], -2, count($entity['url']) -2) && ((int) substr($entity['url'], -1)) != 0 ))
+				$entity['url'] = substr($entity['url'], 0, -2);
 
-			$url = $url . '-' . $id;
+			$entity['url'] = $entity['url'] . '-' . $id;
 
-			return $this->get_unique_url($type, $id_entity, $lang, $url, $id + 1);
+			return $this->get_unique_url($entity, $lang, $id + 1);
 		}
 
-		return $url;
+		return $entity['url'];
 	}
 
 

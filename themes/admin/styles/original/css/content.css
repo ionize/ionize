@@ -363,11 +363,10 @@ a.ondrag.enter {
 	background-color: #948d8a;
 	color:#fff;
 }
-/*
-.onenter {
-	background-color: #df8 !important;
+.treeContainer .onenter{
+	background-color: #d7dfe4;
 }
-*/
+
 /* Cursors */
 .pointer { cursor: pointer;}
 .hand { cursor: hand;}

@@ -5,17 +5,20 @@ $config['module']['sfs'] = array
 	'name' => "Stop Form Spam",
 	'description' => "Protect your forms against spam",
 	'author' => "Ionize Dev Team",
-	'version' => "1.0",
+	'version' => "1.1",
+	"release_date" => "2016-03-29",
 
 	'has_admin' => TRUE,
 
-	 // Module's config items
+	'js_main_class' => 'SFS_MODULE',
+
+	// Module's config items
 	'api_server' => 'http://www.stopforumspam.com',
 
-	'api_key' => '',
+	'api_key' => 'if4yrgwoqkd9ja',
 
 	// Send the email and IP of one spambot again to stopforumspam.com
-	'track' => true,
+	'track' => '1',
 
 	// Input / Textarea which contains the user's send message
 	'evidence_input' => 'message',
@@ -24,7 +27,7 @@ $config['module']['sfs'] = array
 	'username_input' => 'name',
 
 	// Registered events
-	'events' => 'Form.contact.check',
+	'events' => 'Form.contact.check,Form.newsletter.check',
 );
 
 return $config['module']['sfs'];
