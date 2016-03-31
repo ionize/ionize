@@ -396,7 +396,6 @@
 				date datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Medium date',
 				link varchar(255) DEFAULT NULL					COMMENT 'Link to a resource, attached to this medium',
 				square_crop enum('tl','m','br') NOT NULL DEFAULT 'm',
---                path_hash varchar(100) NOT NULL DEFAULT  '',
 				PRIMARY KEY  (id_media)
 			) ENGINE=InnoDB  DEFAULT CHARSET=utf8  AUTO_INCREMENT=1;
 		</query>
@@ -909,7 +908,7 @@
         <query>DELETE FROM setting WHERE name='filemanager';</query>
 
 
-        <query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.8', '');</query>
+        <query>INSERT IGNORE INTO setting VALUES ('', 'ionize_version', '1.0.9', '');</query>
         <query>INSERT IGNORE INTO setting VALUES ('', 'site_email', '', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'files_path', 'files', '');</query>
 		<query>INSERT IGNORE INTO setting VALUES ('', 'theme', 'DEFAULT', '');</query>
