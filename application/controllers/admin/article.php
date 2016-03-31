@@ -702,6 +702,8 @@ class Article extends MY_admin
 					// Link : Depending on the context
 					$context = $this->article_model->get_context($id_article, $id_page);
 
+
+
 					if ( ! empty($context))
 					{
 						$this->template['main_parent'] = $context['main_parent'];
@@ -713,6 +715,9 @@ class Article extends MY_admin
 						foreach($pages as $page)
 							$breadcrump[] = ( ! empty($page['title'])) ? $page['title'] : $page['name'];
 						$this->template['breadcrump'] = implode(' > ', $breadcrump);
+
+						// URL
+						$this->template['urls'] = $this->article_model->get_urls_in_context($id_article, $id_page);
 					}
 					else
 					{

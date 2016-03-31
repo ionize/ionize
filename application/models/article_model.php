@@ -541,6 +541,40 @@ class Article_model extends Base_model
 
 
 	/**
+	 * Returns all URLs of the article in the context of one parent page
+	 *
+	 * @param $id_article
+	 * @param $id_page
+	 *
+	 * @return array
+	 */
+	public function get_urls_in_context($id_article, $id_page)
+	{
+		$urls = [];
+
+		$collection = self::$ci->url_model->get_collection('article', $id_article);
+
+		foreach($collection as $entity)
+		{
+			$path = explode('/', $entity['full_path_ids']);
+			$entity_id_page = $path[count($path) -2];
+
+			if ($entity_id_page == $id_page)
+			{
+				$entity['url'] = base_url() . $entity['lang'] . '/' . $entity['path'];
+				$urls[$entity['lang']] = $entity;
+			}
+		}
+
+		return $urls;
+	}
+
+
+
+	// ------------------------------------------------------------------------
+
+
+	/**
 	 * Returns all contexts for one article
 	 *
 	 * @param	string|int		$id_article	ID of one article

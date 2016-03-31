@@ -194,12 +194,6 @@ if ($tracker_title == '')
 					<div class="tabcontent">
 
 						<p class="clear h25">
-							<?php if( ! is_null($lang_url)) :?>
-								<a class="button light right" href="<?php echo base_url(); ?><?php echo $lang_url; ?>" target="_blank" title="<?php echo lang('ionize_label_see_online'); ?>">
-									<i class="icon arrow-right"></i>
-									<?php echo lang('ionize_label_see_online') ?>
-								</a>
-							<?php endif; ?>
 							<a class="button light right copyLang"rel="<?php echo $lang; ?>" title="<?php echo lang('ionize_label_copy_to_other_languages'); ?>">
 								<i class="icon copy"></i>
 								<?php echo lang('ionize_label_copy_to_other_languages') ?>

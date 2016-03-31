@@ -218,6 +218,11 @@ if ($tracker_title == '')
 							</dt>
 							<dd>
 								<input id="url_<?php echo $lang; ?>" name="url_<?php echo $lang; ?>" class="inputtext" type="text" value="<?php echo $languages[$lang]['url']; ?>"/>
+								<?php if ( ! empty($urls[$lang])) :?>
+									<br/>
+									<?php echo lang('ionize_label_full_url'); ?> : <a href="<?php echo $urls[$lang]['url']; ?>" target="_blank" class="selectable"><?php echo $lang; ?>/<?php echo $urls[$lang]['path']; ?></a>
+
+								<?php endif ;?>
 							</dd>
 						</dl>
 
