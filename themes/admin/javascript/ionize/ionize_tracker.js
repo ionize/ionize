@@ -34,10 +34,21 @@ Ionize.Tracker.append(
 
 	startTracking: function()
 	{
-		this.user = ION.User.getUser();
-		clearInterval(this.updateInt);
-		this.updateTrackingData.delay(1000, this);
-		this.updateInt = this.updateTrackingData.periodical(this.updateDelay, this);
+		if( typeof ION.User == 'undefined' )
+		{
+			setTimeout(function()
+			{
+				Ionize.Tracker.startTracking();
+			},
+			1000);
+		}
+		else
+		{
+			this.user = ION.User.getUser();
+			clearInterval(this.updateInt);
+			this.updateTrackingData.delay(1000, this);
+			this.updateInt = this.updateTrackingData.periodical(this.updateDelay, this);
+		}
 	},
 
 	updateTrackingData: function()
