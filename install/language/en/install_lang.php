@@ -41,6 +41,7 @@ $lang['nav_data'] = 'Demo Data';
 $lang['config_check_errors'] = 	'Some base requirement are not OK.<br/>Please correct them to continue the installation.';
 $lang['file_uploads'] = 		'File Upload';
 $lang['gd_lib'] = 				'PHP GD Lib';
+$lang['curl_lib'] = 			'PHP cURL Lib';
 $lang['mcrypt'] = 				'PHP Mcrypt Lib';
 $lang['mysql_support'] = 		'MySQL Support';
 $lang['mysql_version_found'] = 	'MySQL Version';
