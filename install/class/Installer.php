@@ -121,6 +121,9 @@ class Installer
 		// GD lib
 		$this->template['gd_lib'] = function_exists('imagecreatetruecolor');
 
+		// cURL lib
+		$this->template['curl_lib'] = function_exists('curl_version');
+
 		// Check files rights
 		$files = array(
 			'application/config/config.php',
