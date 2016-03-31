@@ -819,23 +819,14 @@
 
 				<dl>
 					<dt>
-						<label for="smtp_port">Log Mode</label>
+						<label for="log_threshold">Log Mode</label>
 					</dt>
 					<dd>
-						<?php
-						$current_log_mode = config_item('log_threshold');
-
-						$log_modes = array(
-							'0' => 'Disables logging, Error logging TURNED OFF',
-							'1' => 'Error Messages (including PHP errors)',
-							'2' => 'Debug Messages',
-							'3' => 'Informational Messages',
-							'4' => 'All Messages',
-						)
-						?>
 						<select name="log_threshold" class="inputtext">
 							<?php foreach($log_modes as $id => $log_mode): ?>
-								<option value="<?php echo $id ?>" <?php if ($current_log_mode == $id) : ?>selected="selected"<?php endif;?>><?php echo $log_mode ?></option>
+								<option value="<?php echo $id ?>" <?php if ($log_threshold == $id) : ?>selected="selected"<?php endif; ?>>
+									<?php echo $log_mode ?>
+								</option>
 							<?php endforeach; ?>
 						</select>
 					</dd>
@@ -843,10 +834,10 @@
 
 				<dl>
 					<dt>
-						<label for="smtp_port">Nb Lines</label>
+						<label for="log_nb_lines">Nb Lines</label>
 					</dt>
 					<dd>
-						<input name="log_nb_lines" type="text" class="inputtext" value="<?php echo config_item('log_nb_lines') ?>" />
+						<input name="log_nb_lines" type="text" class="inputtext" value="<?php echo $log_nb_lines ?>" />
 					</dd>
 				</dl>
 				<dl>
