@@ -560,7 +560,11 @@ class TagManager_Page extends TagManager
 			}
 		}
 
-		$level = is_null($tag->getAttribute('level')) ? 0 : $tag->getAttribute('level');
+		/**
+		 * Fixing https://github.com/ionize/ionize/issues/354
+		 * Previous code: $level = is_null($tag->getAttribute('level')) ? 0 : $tag->getAttribute('level');
+		 */
+		$level = is_null($tag->getAttribute('level')) ? $current_page['level'] : $tag->getAttribute('level');
 
 		// Order the pages, because the are not.
 		if (is_null(self::$ordered_pages))
