@@ -123,6 +123,9 @@ class Installer
 
 		// cURL lib
 		$this->template['curl_lib'] = function_exists('curl_version');
+		
+		// SimpleXML
+		$this->template['simplexml_lib'] = function_exists('simplexml_load_file');
 
 		// Check files rights
 		$files = array(
@@ -261,7 +264,7 @@ class Installer
 
 			// Check if the DB was migrated : If yes, no sample data install
 			$query = $this->db->get('page');
-			if ($query->num_rows() > 2)
+			if ($query != FALSE && $query->num_rows() > 2)
 			{
 				header('Location: '.BASEURL.'install/?step=finish&lang='.$this->template['lang'], TRUE, 302);
 			}
@@ -1424,24 +1427,30 @@ class Installer
 			{
 				$migrate_from = true;
 
-				$fields = $this->db->field_data('article');
+				$fields = $this->db->list_fields('article');
 
-				foreach ($fields as $field)
+				if(count($fields) > 0)
 				{
-					if ($field->name == 'flag')
-						$migrate_from = false;
-				}
+					foreach ($fields as $field)
+					{
+						if ($field->name == 'flag')
+						{
+							$migrate_from = false;
+							break;
+						}	
+					}
 
-				if ($migrate_from == true)
-				{
-					$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
-					$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
-					$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
-					$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
-					$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
-					$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
-					$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
-					$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
+					if ($migrate_from == true)
+					{
+						$migration_xml[] = 'migration_0.9.5_0.9.6.xml';
+						$migration_xml[] = 'migration_0.9.6_0.9.7.xml';
+						$migration_xml[] = 'migration_0.9.7_0.9.9.xml';
+						$migration_xml[] = 'migration_0.9.9_1.0.0.xml';
+						$migration_xml[] = 'migration_1.0.5_1.0.6.xml';
+						$migration_xml[] = 'migration_1.0.6_1.0.6.1.xml';
+						$migration_xml[] = 'migration_1.0.6.1_1.0.7.xml';
+						$migration_xml[] = 'migration_1.0.7.1_1.0.8.xml';
+					}
 				}
 			}
 
@@ -1715,7 +1724,7 @@ class Installer
 	{
 		$query = $this->db->get_where($table, $where, FALSE);
 
-		if ($query->num_rows() > 0)
+		if ($query != FALSE && $query->num_rows() > 0)
 			return TRUE;
 		else
 			return FALSE;

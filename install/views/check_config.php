@@ -25,11 +25,15 @@
 	<!-- PHP Version -->
 	<ul class="check">
 		<li class="<?php if($php_version) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('php_version')?> (<b><?php echo phpversion() ?></b>)</li>
+		<li class="<?php if($gd_lib) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('gd_lib')?></li>
+		<li class="<?php if($curl_lib) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('curl_lib')?></li>
+		<li class="<?php if($simplexml_lib) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('simplexml_lib')?></li>
+	</ul>
+	
+	<ul class="check">	
 		<li class="<?php if($mysql_support) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('mysql_support')?> </li>
 		<li class="<?php if($safe_mode) :?>ok<?php else :?>fail<?php endif ;?>">Safe Mode Off </li>
 		<li class="<?php if($file_uploads) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('file_uploads')?></li>
-		<li class="<?php if($gd_lib) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('gd_lib')?></li>
-		<li class="<?php if($curl_lib) :?>ok<?php else :?>fail<?php endif ;?>"><?php echo lang('curl_lib')?></li>
 	</ul>
 
 	<h2><?php echo lang('title_folder_check') ?></h2>

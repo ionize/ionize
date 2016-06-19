@@ -40,11 +40,12 @@ $lang['nav_data'] = 'Demo Data';
 */
 $lang['config_check_errors'] = 	'Some base requirement are not OK.<br/>Please correct them to continue the installation.';
 $lang['file_uploads'] = 		'File Upload';
-$lang['gd_lib'] = 				'PHP GD Lib';
-$lang['curl_lib'] = 			'PHP cURL Lib';
-$lang['mcrypt'] = 				'PHP Mcrypt Lib';
-$lang['mysql_support'] = 		'MySQL Support';
-$lang['mysql_version_found'] = 	'MySQL Version';
+$lang['gd_lib'] = 				'PHP GD Library (php-gd)';
+$lang['curl_lib'] = 			'PHP cURL Library (php-curl)';
+$lang['mcrypt'] = 				'PHP Mcrypt Library (php-mcrypt)';
+$lang['simplexml_lib'] = 		'PHP SimpleXML Library (php-xml)';
+$lang['mysql_support'] = 		'MySQLi Support';
+$lang['mysql_version_found'] = 	'MySQLi Version';
 $lang['php_version'] = 			'PHP >= 5.3';
 $lang['php_version_found'] = 	'PHP Version';
 $lang['title_files_check'] = 	'These files need to be writable';

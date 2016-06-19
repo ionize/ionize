@@ -836,15 +836,18 @@ class CI_DB_driver {
 		$query = $this->query($sql);
 
 		$retval = array();
-		foreach ($query->result_array() as $row)
+		if($query != FALSE)
 		{
-			if (isset($row['COLUMN_NAME']))
+			foreach ($query->result_array() as $row)
 			{
-				$retval[] = $row['COLUMN_NAME'];
-			}
-			else
-			{
-				$retval[] = current($row);
+				if (isset($row['COLUMN_NAME']))
+				{
+					$retval[] = $row['COLUMN_NAME'];
+				}
+				else
+				{
+					$retval[] = current($row);
+				}
 			}
 		}
 
