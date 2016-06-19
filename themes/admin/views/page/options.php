@@ -124,9 +124,7 @@
 			</dl>
 
 
-			<!-- Page view -->
-			<?php
-			/*
+			<!-- Page view -->			
 			<?php if ($id_page !='' && isset($views)) :?>
 				<dl class="small">
 					<dt>
@@ -173,8 +171,6 @@
 					</dd>
 				</dl>
 			<?php endif ;?>
-			*/
-			?>
 
 			<!-- Categories & Tags -->
 			<div class="element-options-content">
