@@ -32,9 +32,9 @@ Official website: http://www.ionizecms.com
 ### Installation
 
 IMPORTANT: Before any update, make a backup of your database.
-We will not be responsible for any loose of data.
+We will not be responsible for any loss of data.
 
-These instruction takes in account that this version is in developement.
+These instructions take into account that this version is in developement.
 
 * From Ionize 0.9.x
   * Copy your database, you will start working with this copy,
@@ -50,6 +50,10 @@ These instruction takes in account that this version is in developement.
   * The installer will migrate the database (not the user accounts)
   * Launch ONE TIME ONLY: http://your_domain/install/?step=migrate_users_to_ci2
 
+### Translation packages: 
+* [Translations on ionizecms.com](http://ionizecms.com/en/support/translations/download-translations)
+* [Translation packages on github](https://github.com/ionize/ionize-translations)
+ 
 
 ### Code Migration
 
