@@ -76,7 +76,7 @@ class Translation extends MY_admin
 	{
         $this->output('translation/index');
 	}
-
+$
 	// ------------------------------------------------------------------------
 
     /**
@@ -130,7 +130,31 @@ class Translation extends MY_admin
             // $terms = self::_get_terms($path);
 
             // Read the template language directory
-            foreach(Settings::get_languages() as $language)
+            $languages = Settings::get_languages();
+            $amountLanguages = count($languages);
+
+            if( $amountLanguages === 1 ) {
+                // If there's only one language: check if it is another one than english...
+                $hasEn = false;
+                foreach ($languages as $language) {
+                    if ($language['lang'] === 'en') {
+                        $hasEn = true;
+                    }
+                }
+                if (!$hasEn) {
+                    // ...add dummy entry (offline) for english to enable rendering the translation mask
+                    $languages[] = array(
+                        'lang' => 'en',
+                        'name' => 'english',
+                        'online' => 0,
+                        'def' => 2,
+                        'ordering' => 2,
+                        'direction' => 1
+                    );
+                }
+            }
+            
+            foreach($languages as $language)
             {
                 $lang_code = $language['lang'];
                 $items[$lang_code] = array();
