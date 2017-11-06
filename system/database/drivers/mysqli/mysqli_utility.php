@@ -1,86 +1,87 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
 /**
  * CodeIgniter
  *
- * An open source application development framework for PHP 5.1.6 or newer
+ * An open source application development framework for PHP
  *
- * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
- * @license		http://codeigniter.com/user_guide/license.html
- * @link		http://codeigniter.com
- * @since		Version 1.0
+ * This content is released under the MIT License (MIT)
+ *
+ * Copyright (c) 2014 - 2017, British Columbia Institute of Technology
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @package	CodeIgniter
+ * @author	EllisLab Dev Team
+ * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
+ * @copyright	Copyright (c) 2014 - 2017, British Columbia Institute of Technology (http://bcit.ca/)
+ * @license	http://opensource.org/licenses/MIT	MIT License
+ * @link	https://codeigniter.com
+ * @since	Version 1.3.0
  * @filesource
  */
-
-// ------------------------------------------------------------------------
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * MySQLi Utility Class
  *
+ * @package		CodeIgniter
+ * @subpackage	Drivers
  * @category	Database
- * @author		ExpressionEngine Dev Team
- * @link		http://codeigniter.com/user_guide/database/
+ * @author		EllisLab Dev Team
+ * @link		https://codeigniter.com/user_guide/database/
  */
 class CI_DB_mysqli_utility extends CI_DB_utility {
 
 	/**
-	 * List databases
+	 * List databases statement
 	 *
-	 * @access	private
-	 * @return	bool
+	 * @var	string
 	 */
-	function _list_databases()
-	{
-		return "SHOW DATABASES";
-	}
+	protected $_list_databases	= 'SHOW DATABASES';
+
+	/**
+	 * OPTIMIZE TABLE statement
+	 *
+	 * @var	string
+	 */
+	protected $_optimize_table	= 'OPTIMIZE TABLE %s';
+
+	/**
+	 * REPAIR TABLE statement
+	 *
+	 * @var	string
+	 */
+	protected $_repair_table	= 'REPAIR TABLE %s';
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Optimize table query
+	 * Export
 	 *
-	 * Generates a platform-specific query so that a table can be optimized
-	 *
-	 * @access	private
-	 * @param	string	the table name
-	 * @return	object
-	 */
-	function _optimize_table($table)
-	{
-		return "OPTIMIZE TABLE ".$this->db->_escape_identifiers($table);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Repair table query
-	 *
-	 * Generates a platform-specific query so that a table can be repaired
-	 *
-	 * @access	private
-	 * @param	string	the table name
-	 * @return	object
-	 */
-	function _repair_table($table)
-	{
-		return "REPAIR TABLE ".$this->db->_escape_identifiers($table);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * MySQLi Export
-	 *
-	 * @access	private
-	 * @param	array	Preferences
+	 * @param	array	$params	Preferences
 	 * @return	mixed
 	 */
-	function _backup($params = array())
+	protected function _backup($params = array())
 	{
 		if (count($params) === 0)
 		{
-		  return FALSE;
+			return FALSE;
 		}
 
 		// Extract the prefs for simplicity
@@ -88,6 +89,13 @@ class CI_DB_mysqli_utility extends CI_DB_utility {
 
 		// Build the output
 		$output = '';
+
+		// Do we need to include a statement to disable foreign key checks?
+		if ($foreign_key_checks === FALSE)
+		{
+			$output .= 'SET foreign_key_checks = 0;'.$newline;
+		}
+
 		foreach ( (array) $tables as $table)
 		{
 			// Is the table in the "ignore" list?
@@ -97,7 +105,7 @@ class CI_DB_mysqli_utility extends CI_DB_utility {
 			}
 
 			// Get the table schema
-			$query = $this->db->query('SHOW CREATE TABLE '.$this->db->_escape_identifiers($this->db->database.'.'.$table));
+			$query = $this->db->query('SHOW CREATE TABLE '.$this->db->escape_identifiers($this->db->database.'.'.$table));
 
 			// No result means the table name was invalid
 			if ($query === FALSE)
@@ -119,7 +127,7 @@ class CI_DB_mysqli_utility extends CI_DB_utility {
 			{
 				if ($i++ % 2)
 				{
-				$output .= $val.';'.$newline.$newline;
+					$output .= $val.';'.$newline.$newline;
 				}
 			}
 
@@ -140,18 +148,17 @@ class CI_DB_mysqli_utility extends CI_DB_utility {
 			// Fetch the field names and determine if the field is an
 			// integer type. We use this info to decide whether to
 			// surround the data with quotes or not
+
 			$i = 0;
 			$field_str = '';
 			$is_int = array();
 			while ($field = $query->result_id->fetch_field())
 			{
 				// Most versions of MySQL store timestamp as a string
-				$is_int[$i] = in_array(strtolower($field->type),
-					array('tinyint', 'smallint', 'mediumint', 'int', 'bigint'), //, 'timestamp'),
-					TRUE);
+				$is_int[$i] = in_array($field->type, array(MYSQLI_TYPE_TINY, MYSQLI_TYPE_SHORT, MYSQLI_TYPE_INT24, MYSQLI_TYPE_LONG), TRUE);
 
 				// Create a string of field names
-				$field_str .= $this->db->_escape_identifiers($field->name).', ';
+				$field_str .= $this->db->escape_identifiers($field->name).', ';
 				$i++;
 			}
 
@@ -192,9 +199,13 @@ class CI_DB_mysqli_utility extends CI_DB_utility {
 			$output .= $newline.$newline;
 		}
 
+		// Do we need to include a statement to re-enable foreign key checks?
+		if ($foreign_key_checks === FALSE)
+		{
+			$output .= 'SET foreign_key_checks = 1;'.$newline;
+		}
+
 		return $output;
 	}
-}
 
-/* End of file mysqli_utility.php */
-/* Location: ./system/database/drivers/mysqli/mysqli_utility.php */
+}

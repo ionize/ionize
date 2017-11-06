@@ -10,27 +10,27 @@
  */
 
 /**
- * 
+ *
  */
 class MY_Config extends CI_Config
 {
 	static $router = FALSE;
-	
+
 	// ------------------------------------------------------------------------
 
 	/**
 	 * Modified version of the original site_url(), which adds the current language key.
-	 * 
+	 *
 	 * @param  string
 	 * @return string
 	 */
-	public function site_url($uri = '')
+	public function site_url($uri = '', $protocol = NULL)
 	{
 		if( ! self::$router)
 		{
 			self::$router = load_class('Router');
 		}
-		
+
 		if(is_array($uri))
 		{
 			$uri = implode('/', $uri);
@@ -54,12 +54,12 @@ class MY_Config extends CI_Config
 				   $suffix;
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 
 	/**
 	 * Creates an url to the specified uri for the specified language key.
-	 * 
+	 *
 	 * @param  string
 	 * @param  string
 	 * @return string
@@ -67,25 +67,25 @@ class MY_Config extends CI_Config
 	public function lang_url($lang_key, $uri = '')
 	{
 //		static $router;
-		
+
 //		if( ! $router)
 		if( ! self::$router)
 		{
 			self::$router = load_class('Router');
 		}
-		
+
 		$lkey = self::$router->validate_lang_key($lang_key);
-		
+
 		if( ! $lkey)
 		{
 			log_message('warning', 'Config: The language key "'.$lang_key.'" is not allowed or is not confgured.');
 		}
-		
+
 		if(is_array($uri))
 		{
 			$uri = implode('/', $uri);
 		}
-		
+
 		if($uri == '')
 		{
 			return $this->slash_item('base_url') .

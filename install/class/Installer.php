@@ -110,7 +110,7 @@ class Installer
 		$this->template['php_version'] = version_compare(substr(phpversion(), 0, 3), '5.3', '>=');
 
 		// MySQL support
-		$this->template['mysql_support']  = function_exists('mysql_connect');
+		$this->template['mysql_support']  = function_exists('mysql_connect') || function_exists('mysqli_connect');
 
 		// Safe Mode
 		$this->template['safe_mode']  = (ini_get('safe_mode')) ? FALSE : TRUE;
