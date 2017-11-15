@@ -73,7 +73,7 @@ class Media_model extends Base_model
 	 * @return	array		List of medias
 	 *
 	 */
-	public function get_list($parent, $id_parent, $type=NULL)
+	public function get_media_list($parent, $id_parent, $type=NULL)
 	{	
 		$data = array();
 		
@@ -394,7 +394,7 @@ class Media_model extends Base_model
 	 *
 	 * @return	string	Inserted / Updated media ID
 	 */
-	public function save($data, $lang_data)
+	public function save($data, $lang_data = array())
 	{
 		// Dates
 		$data['date'] = ($data['date']) ? getMysqlDatetime($data['date'], Settings::get('date_format')) : '0000-00-00';

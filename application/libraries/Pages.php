@@ -28,7 +28,7 @@ class Pages
 	static $ci;
 	
 
-	function init()
+	static function init()
 	{
 		if(self::$_inited)
 		{

@@ -129,7 +129,9 @@ switch (ENVIRONMENT)
  *
  * NO TRAILING SLASH!
  */
+	$modules_folder = 'modules';
 	$view_folder = '';
+	$themes_folder = 'themes';
 
 
 /*
@@ -226,6 +228,9 @@ switch (ENVIRONMENT)
 	// The name of THIS file
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
+	// The PHP file extension
+	define('EXT', '.php');
+
 	// Path to the system directory
 	define('BASEPATH', $system_path);
 
@@ -234,6 +239,9 @@ switch (ENVIRONMENT)
 
 	// Name of the "system" directory
 	define('SYSDIR', basename(BASEPATH));
+
+	// Path to the Ionize's modules folder
+	define('MODPATH', realpath(FCPATH.$modules_folder).'/');
 
 	// The path to the "application" directory
 	if (is_dir($application_folder))
@@ -304,6 +312,8 @@ switch (ENVIRONMENT)
 	}
 
 	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
+
+	define('THEMESPATH', $themes_folder.DIRECTORY_SEPARATOR);
 
 /*
  * --------------------------------------------------------------------

@@ -162,7 +162,7 @@ class Page_model extends Base_model
 	 * @param	array		$lang_data	Page Lang depending data table
 	 * @return	int			The inserted / updated page ID
 	 */
-	public function save($data, $lang_data)
+	public function save($data, $lang_data = array())
 	{
 		// Dates
 		$data = $this->_set_dates($data);
@@ -309,7 +309,7 @@ class Page_model extends Base_model
 	 * @param	int 	$id_page
 	 * @return 	int		Affected rows number
 	 */
-	public function delete($id_page)
+	public function delete_page($id_page)
 	{
 		$affected_rows = 0;
 		
@@ -555,7 +555,7 @@ class Page_model extends Base_model
 		$nb = 0;
 
 		// Clean old URL
-		// $this->url_model->delete('page', $id_page);
+		// $this->url_model->delete_url('page', $id_page);
 
 		// Asked page process
 		foreach($this->get_languages() as $l)
@@ -630,7 +630,7 @@ class Page_model extends Base_model
 		foreach($articles as $article)
 		{
 			// Clean old URL
-			// $CI->url_model->delete('article', $article['id_article']);
+			// $CI->url_model->delete_url('article', $article['id_article']);
 
 			$CI->article_model->save_urls($article['id_article']);
 		}

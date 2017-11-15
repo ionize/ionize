@@ -413,7 +413,7 @@ class TagManager_Page extends TagManager
 	 * @return array
 	 *
 	 */
-	public function get_module_page()
+	public static function get_module_page()
 	{
 		// Limit the array to not consider the first "page" segment.
 		$segments = self::get_uri_segments();
@@ -441,7 +441,7 @@ class TagManager_Page extends TagManager
 	 * @return void
 	 * @param int $code
 	 */
-	public function set_400_output($code = 404)
+	public static function set_400_output($code = 404)
 	{
 		self::$ci->output->set_header($_SERVER['SERVER_PROTOCOL']." $code ".self::$http_status_code[$code]);
 

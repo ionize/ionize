@@ -466,7 +466,7 @@ class Url_model extends Base_model
 	 *
 	 * @return int
 	 */
-	public function delete($type, $id_entity)
+	public function delete_url($type, $id_entity)
 	{
 		$where = array(
 			'type' => $type,

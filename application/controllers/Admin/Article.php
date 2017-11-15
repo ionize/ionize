@@ -1669,7 +1669,7 @@ class Article extends MY_admin
 			$this->error(lang('permission_denied'));
 		}
 
-		$affected_rows = $this->article_model->delete($id_article);
+		$affected_rows = $this->article_model->delete_article($id_article);
 		
 		// Delete was successful
 		if ($affected_rows > 0)
@@ -1723,7 +1723,7 @@ class Article extends MY_admin
 				case 'delete':
 					foreach($ids as $id_article)
 					{
-						$nb = $this->article_model->delete($id_article);
+						$nb = $this->article_model->delete_article($id_article);
 						if ($nb > 0) $returned_ids[] = $id_article;
 					}
 

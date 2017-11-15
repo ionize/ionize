@@ -1025,7 +1025,7 @@ class Page extends MY_admin
 	 */
 	public function delete($id_page)
 	{
-		$affected_rows = $this->page_model->delete($id_page);
+		$affected_rows = $this->page_model->delete_page($id_page);
 
 		// Delete was successful
 		if ($affected_rows > 0)

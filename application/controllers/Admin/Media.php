@@ -198,7 +198,7 @@ class Media extends MY_admin
 		$parent = $this->input->post('parent');
 		$id_parent = $this->input->post('id_parent');
 
-		$items = $this->media_model->get_list($parent, $id_parent);
+		$items = $this->media_model->get_media_list($parent, $id_parent);
 
 		$result = array(
 			'parent' => $parent,
@@ -558,7 +558,7 @@ class Media extends MY_admin
 	 */
 	public function init_thumbs_for_parent($parent, $id_parent)
 	{
-		$pictures =	$this->media_model->get_list($parent, $id_parent, 'picture');
+		$pictures =	$this->media_model->get_media_list($parent, $id_parent, 'picture');
 
 		foreach($pictures as $picture)
 		{

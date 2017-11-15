@@ -160,7 +160,7 @@ class User_model extends Base_model
 	 *
 	 * @return array
 	 */
-	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $where = array())
+	public function get_pagination_list($page=1, $filter = array(), $nb_by_page=50, $sort = NULL, $addon = array(), $where = array())
 	{
 		$page = $page - 1;
 		$offset = $page * $nb_by_page;
@@ -199,7 +199,7 @@ class User_model extends Base_model
 	 *
 	 * @return int
 	 */
-	public function count($where=array())
+	public function count($where=array(), $table = NULL)
 	{
 		unset($where['limit']);
 		unset($where['offset']);
@@ -289,7 +289,7 @@ class User_model extends Base_model
 	 *
 	 * @return int
 	 */
-	public function delete($id_user)
+	public function delete_user($id_user)
 	{
 		$this->{$this->db_group}->where($this->pk_name, $id_user);
 

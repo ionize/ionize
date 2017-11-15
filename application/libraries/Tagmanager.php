@@ -519,7 +519,7 @@ class TagManager
 	 * @return void
 	 *
 	 */
-	public final function add_tags()
+	public final static function add_tags()
 	{
 		foreach(self::$tag_definitions as $t => $m)
 		{
@@ -539,7 +539,7 @@ class TagManager
 	 * @return void
 	 *
 	 */
-	public function add_globals()
+	public static function add_globals()
 	{
 		// Global settings
 		self::$context->set_global('site_title', Settings::get('site_title'));
@@ -1230,7 +1230,7 @@ class TagManager
 	 * @return array
 	 *
 	 */
-	public function get_entity()
+	public static function get_entity()
 	{
 		if ( is_null(self::$_entity))
 		{
@@ -3767,7 +3767,7 @@ class TagManager
 	 * @usage	<ion:content />
 	 *
 	 */
-	public function process_string(FTL_Binding $tag, $value)
+	public static function process_string(FTL_Binding $tag, $value)
 	{
 		// paragraph & words limit ?
 		$paragraph = $tag->getAttribute('paragraph');

@@ -81,7 +81,7 @@ class Theme {
 	 */
 	public static function get_theme_path()
 	{
-		return self::$theme_base_path.self::$theme.'/';		
+		return FCPATH.self::$theme_base_path.self::$theme.'/';
 	}
 	
 	

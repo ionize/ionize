@@ -1,7 +1,7 @@
 RewriteEngine On
 
 # RewriteBase
-RewriteBase /
+RewriteBase /misc/ionize/
 
 # Only needed for some hosts, if the front returns 403.
 # Options +FollowSymlinks

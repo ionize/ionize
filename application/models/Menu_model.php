@@ -105,7 +105,7 @@ class Menu_model extends Base_model
 	 *
 	 * @return int|void
 	 */
-	public function save($data)
+	public function save($data, $dataLang = array())
 	{
 		if ($this->exists(array('name' => $data['name'])))
 		{

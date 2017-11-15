@@ -211,7 +211,7 @@ class CI_Router
 		else
 		{
 			// Fetch the complete URI string
-			$this->uri->uri_string();
+			//$this->uri->_fetch_uri_string();
 
 			// use the default controller
 			if(empty($this->uri->uri_string))
@@ -300,7 +300,11 @@ class CI_Router
 			}
 
 			// make them start with 1
-			$this->uri->_reindex_segments();
+			//$this->uri->_reindex_segments();
+			array_unshift($this->uri->segments, NULL);
+			array_unshift($this->uri->rsegments, NULL);
+			unset($this->uri->segments[0]);
+			unset($this->uri->rsegments[0]);
 		}
 	}
 
@@ -354,12 +358,14 @@ class CI_Router
 
 		foreach($files as $f)
 		{
-			include($f);
+			//if( !is_dir(APPPATH.'controllers/'.$f) ) {
+				include($f);
 
-			// merge the route : module's route overwrite other routes
-			$this->routes = ( ! isset($route) OR ! is_array($route)) ? $this->routes : array_merge($this->routes, $route);
+				// merge the route : module's route overwrite other routes
+				$this->routes = ( ! isset($route) OR ! is_array($route)) ? $this->routes : array_merge($this->routes, $route);
 
-			unset($route);
+				unset($route);
+			//}
 		}
 
 		// we may have an empty route here, because the first segment could have been a module

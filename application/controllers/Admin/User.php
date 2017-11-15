@@ -143,7 +143,7 @@ class User extends My_Admin
 		if ($post_where)
 			$where = array_merge($where, $post_where);
 
-		$data = $this->user_model->get_pagination_list($page, $filter, $nb_by_page, $where);
+		$data = $this->user_model->get_pagination_list($page, $filter, $nb_by_page, NULL, NULL, $where);
 
 		$result = array(
 			'items' => $data['items'],
@@ -314,7 +314,7 @@ class User extends My_Admin
 
 		if($id_user != $current_user_id)
 		{
-			$affected_rows = $this->user_model->delete($id_user);
+			$affected_rows = $this->user_model->delete_user($id_user);
 
 			if ($affected_rows > 0)
 			{

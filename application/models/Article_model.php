@@ -111,7 +111,7 @@ class Article_model extends Base_model
 	 * @return	array			Array of records
 	 *
 	 */
-	public function get_list($where = array())
+	public function get_list($where = array(), $table = NULL)
 	{
 		$this->{$this->db_group}->select($this->lang_table.'.*');
 		$this->{$this->db_group}->join($this->lang_table, $this->lang_table.'.id_'.$this->table.' = ' .$this->table.'.id_'.$this->table, 'inner');			
@@ -1029,7 +1029,7 @@ class Article_model extends Base_model
 	 * @param 	array	$lang_data	Lang depending data table
 	 * @return	int		Articles saved ID
 	 */
-	public function save($data, $lang_data)
+	public function save($data, $lang_data = array())
 	{
 		// New article : Created field
 		if( ! $data['id_article'] OR $data['id_article'] == '')
@@ -1255,7 +1255,7 @@ class Article_model extends Base_model
 	 * @param	int 	$id_article
 	 * @return 	int		Affected rows number
 	 */
-	public function delete($id_article)
+	private function delete_article($id_article)
 	{
 		$affected_rows = 0;
 		
@@ -1509,7 +1509,7 @@ class Article_model extends Base_model
 	 * @param	boolean		$new_status
 	 * @return 	boolean		New status
 	 */
-	public function switch_online($id_page, $id_article, $new_status=NULL)
+	public function switch_online($id_page, $id_article=NULL, $new_status=NULL)
 	{
 		// Current status
 		$article = $this->get_context($id_article, $id_page);
@@ -1987,7 +1987,7 @@ class Article_model extends Base_model
 	 *
 	 * @param array     $where
 	 */
-	protected function _process_where($where=array())
+	protected function _process_where($where=array(), $table = NULL)
 	{
 		if (isset($where['id_page']))
 		{
