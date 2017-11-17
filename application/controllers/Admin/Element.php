@@ -112,7 +112,7 @@ class Element extends MY_Admin {
 		if ( ! empty($element))
 		{
 			// Delete the element	
-			$affected_rows = $this->element_model->delete($id_element);
+			$affected_rows = $this->element_model->delete_element($id_element);
 			
 			if ($affected_rows > 0)
 			{
@@ -205,7 +205,7 @@ class Element extends MY_Admin {
 			$id_element_definition = $this->input->post('id_element_definition');
 
 			// Save Element and extend fields
-			$id_element = $this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
+			$id_element = $this->element_model->save_element($parent, $id_parent, $id_element, $id_element_definition, $_POST);
 			
 			// Get Elements
 			$this->callback = array
@@ -262,7 +262,7 @@ class Element extends MY_Admin {
 			$id_element_definition = $this->input->post('id_element_definition');
 
 			// Save Element and extend fields
-			$id_element = $this->element_model->save($parent, $id_parent, $id_element, $id_element_definition, $_POST);
+			$id_element = $this->element_model->save_element($parent, $id_parent, $id_element, $id_element_definition, $_POST);
 
 			$element = $this->element_model->get(array('id_element' => $id_element));
 

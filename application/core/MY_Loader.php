@@ -204,7 +204,6 @@ class MY_Loader extends CI_Loader{
 	 */
 	function view($view, $vars = array(), $return = FALSE)
 	{
-		//echo 'kjr: '.$view;
 		return View($view, $vars, $return);
 	}
 
@@ -248,7 +247,7 @@ class MY_Loader extends CI_Loader{
 
 	function _ci_load($_ci_data)
 	{
-		parent::_ci_load($_ci_data);
+		return parent::_ci_load($_ci_data);
 	}
 
 	// --------------------------------------------------------------------

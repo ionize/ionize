@@ -130,7 +130,7 @@ class Element_definition_model extends Base_model
 	 *
 	 * @return int
 	 */
-	function delete($id)
+	function delete_element_definition($id)
 	{
 		$affected_rows = 0;
 		

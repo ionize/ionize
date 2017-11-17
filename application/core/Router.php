@@ -358,14 +358,12 @@ class CI_Router
 
 		foreach($files as $f)
 		{
-			//if( !is_dir(APPPATH.'controllers/'.$f) ) {
-				include($f);
+			include($f);
 
-				// merge the route : module's route overwrite other routes
-				$this->routes = ( ! isset($route) OR ! is_array($route)) ? $this->routes : array_merge($this->routes, $route);
+			// merge the route : module's route overwrite other routes
+			$this->routes = ( ! isset($route) OR ! is_array($route)) ? $this->routes : array_merge($this->routes, $route);
 
-				unset($route);
-			//}
+			unset($route);
 		}
 
 		// we may have an empty route here, because the first segment could have been a module

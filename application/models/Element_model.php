@@ -345,7 +345,7 @@ class Element_model extends Base_model
 	 *
 	 * @return bool|int
 	 */
-	public function save($parent, $id_parent, $id_element = FALSE, $id_element_definition, $post)
+	public function save_element($parent, $id_parent, $id_element = FALSE, $id_element_definition, $post)
 	{
 		// Insert the element, if needed
 		if ( ! $id_element OR $this->exists(array('id_element' => $id_element), $this->table) == FALSE)
@@ -454,7 +454,7 @@ class Element_model extends Base_model
 	 * @param null $id
 	 * @return int
 	 */
-	public function delete($id)
+	public function delete_element($id)
 	{
 		$affected_rows = 0;
 

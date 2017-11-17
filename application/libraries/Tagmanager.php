@@ -2245,7 +2245,7 @@ class TagManager
 	 * @return	String
 	 *
 	 */
-	public function tag_else(FTL_Binding $tag)
+	public static function tag_else(FTL_Binding $tag)
 	{
 		// Set this tag as "process tag"
 		$tag->setAsProcessTag();
