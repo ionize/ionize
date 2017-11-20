@@ -1097,8 +1097,8 @@ namespace Ionize {
 		 */
 		public function encrypt($password, $user)
 		{
-			$hash 	= self::$ci->encrypt->sha1($user['username'] . $user['salt']);
-			$key 	= self::$ci->encrypt->sha1($this->encryption_key . $hash);
+			$hash 	= sha1($user['username'] . $user['salt']);
+			$key 	= sha1($this->encryption_key . $hash);
 
 			return self::$ci->encrypt->encode($password, substr($key, 0, 56));
 		}
@@ -1116,8 +1116,8 @@ namespace Ionize {
 		 */
 		public function decrypt($password, $user)
 		{
-			$hash 	= self::$ci->encrypt->sha1($user['username'] . $user['salt']);
-			$key 	= self::$ci->encrypt->sha1($this->encryption_key . $hash);
+			$hash 	= sha1($user['username'] . $user['salt']);
+			$key 	= sha1($this->encryption_key . $hash);
 
 			return self::$ci->encrypt->decode($password, substr($key, 0, 56));
 		}

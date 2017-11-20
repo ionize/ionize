@@ -109,7 +109,9 @@ class MY_Controller extends CI_Controller
 			if ( ! in_array(config_item('detected_lang_code'), $languages))
 				$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
 
-			$this->lang->load('admin', config_item('detected_lang_code'));
+			$lang_code = config_item('detected_lang_code');
+            $idiom = Settings::get_lang_idiom($lang_code);
+			$this->lang->load('admin', $idiom);
 
 			Theme::set_theme('admin');
 
@@ -684,8 +686,10 @@ class MY_Admin extends MY_Controller
 		Settings::set('current_lang', config_item('detected_lang_code'));
 
 		// Load the current language translations file
-		$this->lang->load('admin', Settings::get_lang());
-		// $this->lang->load('filemanager', Settings::get_lang());
+        $lang_code = Settings::get_lang();
+        $idiom = Settings::get_lang_idiom($lang_code);
+        $this->lang->load('admin', $idiom);
+		// $this->lang->load('filemanager', $idiom);
 
 		// Modules translation files
 		$modules = array();

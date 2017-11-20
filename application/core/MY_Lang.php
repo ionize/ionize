@@ -36,7 +36,8 @@ class MY_Lang extends CI_Lang
 			if (isset($CI->config))
 			{
 				$deft_lang = $CI->config->item('detected_lang_code');
-				$idiom = ($deft_lang == '') ? $CI->config->item('default_lang_code') : $deft_lang;
+                $deft_lang = ($deft_lang == '') ? $CI->config->item('default_lang_code') : $deft_lang;
+				$idiom = $CI->config->item('available_languages')[$deft_lang];
 			}
 			// So Installer can output CI errors through MY_Language
 			else

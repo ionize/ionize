@@ -144,7 +144,7 @@ class Content_type extends MY_admin
 
 		try
 		{
-			$this->content_type_model->delete($id_content_type);
+			$this->content_type_model->delete_content_type($id_content_type);
 
 			$this->success(lang('ionize_message_operation_ok'));
 		}

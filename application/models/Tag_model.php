@@ -131,7 +131,7 @@ class Tag_model extends Base_model
 	 * @param	string		$tag
 	 * @return	bool|int
 	 */
-	public function save($tag)
+	public function save_tag($tag)
 	{
 		$id_tag = $this->tag_exists($tag);
 

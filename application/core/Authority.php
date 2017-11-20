@@ -241,7 +241,7 @@ class Authority extends Authority\Ability {
 	 * Remove session rules on logout
 	 *
 	 */
-	public function on_logout()
+	public static function on_logout()
 	{
 		self::$ci->session->unset_userdata('authority_rules');
 	}

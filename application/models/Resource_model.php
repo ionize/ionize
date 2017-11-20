@@ -75,7 +75,7 @@ class resource_model extends Base_model
 	 *
 	 * @return int
 	 */
-	public function save($type, $element, $actions = array(), $id_element = NULL, $parent = NULL, $title = NULL, $description = NULL)
+	public function save_resource($type, $element, $actions = array(), $id_element = NULL, $parent = NULL, $title = NULL, $description = NULL)
 	{
 		$id_parent = NULL;
 

@@ -73,7 +73,9 @@ class Module extends MY_admin
 		// Loads module language file, if exists
 //		if (is_file($module_path.'language/'.$this->config->item('default_lang_code').'/'.$module_name.'_lang.php'))
 //		{
-			$this->lang->load($module_name, Settings::get_lang('current'));
+            $lang_code = Settings::get_lang('current');
+            $idiom = Settings::get_lang_idiom($lang_code);
+			$this->lang->load($module_name, $idiom);
 //		}
 //		else
 //		{

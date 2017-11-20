@@ -88,6 +88,13 @@ if ( ! function_exists('strip_html'))
 	}
 }
 
+if ( ! function_exists('sha1')) {
+    function sha1($data)
+    {
+        $key = config_item('encryption_key');
+        return hash_hmac('sha1', $data, $key);
+    }
+}
 
 /* End of file MY_string_helper.php */
 /* Location: ./application/helpers/MY_string_helper.php */

@@ -82,7 +82,7 @@ class Content_type_model extends Base_model
 	}
 
 
-	public function delete($id_content_type)
+	public function delete_content_type($id_content_type)
 	{
 		$where = array('id_content_type' => $id_content_type);
 

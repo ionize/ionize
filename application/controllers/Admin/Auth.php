@@ -204,12 +204,12 @@ class Auth extends My_Admin
 			array(
 				'field'   => 'username',
 				'label'   => 'Username',
-				'rules'   => 'trim|required|xss_clean'
+				'rules'   => 'trim|required'
 			),
 			array(
 				'field'   => 'password',
 				'label'   => 'Password',
-				'rules'   => 'trim|required|min_length[4]|xss_clean'
+				'rules'   => 'trim|required|min_length[4]'
 			)
 		);
 

@@ -89,7 +89,7 @@ class Tag extends MY_admin
 	{
 		$tag = $this->input->post('tag_name');
 
-		$this->tag_model->save($tag);
+		$this->tag_model->save_tag($tag);
 
 		$this->_reload_tag_panel();
 

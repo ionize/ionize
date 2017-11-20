@@ -76,6 +76,7 @@ class CI_Router
 		$this->config->load('ionize');
 
 		$this->uri = load_class('URI');
+		$this->uri->segments = array();
 
 		// default language abbreviation
 		$this->lang_key = $this->config->item('default_lang_code');

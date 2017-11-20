@@ -127,7 +127,7 @@ class User extends My_Admin
 	// ------------------------------------------------------------------------
 
 
-	public function get_pagination_list()
+	public function get_pagination_list($model, $page, $filters, $where = array(), $items_template_name = 'items')
 	{
 		$page = $this->input->post('page');
 		$filter = $this->input->post('filter');

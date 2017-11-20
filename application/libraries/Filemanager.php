@@ -656,64 +656,68 @@ class FileManager
 		$icon_d = $this->getIcon($iconspec_d, TRUE);
 		$icon_de = $this->rawurlencode_path($icon_d);
 
-		foreach ($coll['dirs'] as $filename)
-		{
-			$l_url = $legal_url . $filename;
+		if (isset($coll['dirs']) && is_array($coll['dirs'])) {
+			foreach ($coll['dirs'] as $filename)
+			{
+				$l_url = $legal_url . $filename;
 
-			$out[1][] = array(
-				'path' => $l_url,
-				'name' => $filename,
-				'mime' => $mime,
-				'icon48' => $icon48_de,
-				'icon' => $icon_de
-			);
-		}
-
-		// and now list the files in the directory
-		$idx = 0;
-		foreach ($coll['files'] as $filename)
-		{
-			$l_url = $legal_url . $filename;
-
-			// Do not allow the getFileInfo()/imageinfo() overhead per file for very large directories; just guess the mimetype from the filename alone.
-			// The real mimetype will show up in the 'details' view anyway as we'll have called getFileInfo() by then!
-			$mime = $this->getMimeFromExtension($filename);
-			$iconspec = $filename;
-
-			if ( ! $this->isAllowedExtension($filename))
-				continue;
-
-			if ($filename === $file_preselect_arg)
-				$file_preselect_index = $idx;
-
-			/*
-			 * offload the thumbnailing process to another event ('event=detail / mode=direct') to be fired by the client
-			 * when it's time to render the thumbnail: the offloading helps us tremendously in coping with large
-			 * directories:
-			 * WE simply assume the thumbnail will be there, so we don't even need to check for its existence
-			 * (which saves us one more file_exists() per item at the very least). And when it doesn't, that's
-			 * for the event=thumbnail handler to worry about (creating the thumbnail on demand or serving
-			 * a generic icon image instead).
-			 *
-			 * For now, simply assign a basic icon to any and all; the 'detail' event will replace this item in the frontend
-			 * when the time has arrives when that 'detail' request has been answered.
-			 */
-			$icon48 = $this->getIcon($iconspec, FALSE);
-			$icon48_e = $this->rawurlencode_path($icon48);
-
-			$icon = $this->getIcon($iconspec, TRUE);
-			$icon_e = $this->rawurlencode_path($icon);
-
-			$out[0][] = array(
+				$out[1][] = array(
 					'path' => $l_url,
 					'name' => $filename,
 					'mime' => $mime,
-					// we don't know the thumbnail paths yet, this will trigger deferred requests: (event=detail, mode=direct)
-					'thumbs_deferred' => TRUE,
-					'icon48' => $icon48_e,
-					'icon' => $icon_e
+					'icon48' => $icon48_de,
+					'icon' => $icon_de
 				);
-			$idx++;
+			}
+		}
+
+		// and now list the files in the directory
+		if (isset($coll['files']) && is_array($coll['files'])) {
+			$idx = 0;
+			foreach ($coll['files'] as $filename)
+			{
+				$l_url = $legal_url . $filename;
+
+				// Do not allow the getFileInfo()/imageinfo() overhead per file for very large directories; just guess the mimetype from the filename alone.
+				// The real mimetype will show up in the 'details' view anyway as we'll have called getFileInfo() by then!
+				$mime = $this->getMimeFromExtension($filename);
+				$iconspec = $filename;
+
+				if ( ! $this->isAllowedExtension($filename))
+					continue;
+
+				if ($filename === $file_preselect_arg)
+					$file_preselect_index = $idx;
+
+				/*
+				 * offload the thumbnailing process to another event ('event=detail / mode=direct') to be fired by the client
+				 * when it's time to render the thumbnail: the offloading helps us tremendously in coping with large
+				 * directories:
+				 * WE simply assume the thumbnail will be there, so we don't even need to check for its existence
+				 * (which saves us one more file_exists() per item at the very least). And when it doesn't, that's
+				 * for the event=thumbnail handler to worry about (creating the thumbnail on demand or serving
+				 * a generic icon image instead).
+				 *
+				 * For now, simply assign a basic icon to any and all; the 'detail' event will replace this item in the frontend
+				 * when the time has arrives when that 'detail' request has been answered.
+				 */
+				$icon48 = $this->getIcon($iconspec, FALSE);
+				$icon48_e = $this->rawurlencode_path($icon48);
+
+				$icon = $this->getIcon($iconspec, TRUE);
+				$icon_e = $this->rawurlencode_path($icon);
+
+				$out[0][] = array(
+						'path' => $l_url,
+						'name' => $filename,
+						'mime' => $mime,
+						// we don't know the thumbnail paths yet, this will trigger deferred requests: (event=detail, mode=direct)
+						'thumbs_deferred' => TRUE,
+						'icon48' => $icon48_e,
+						'icon' => $icon_e
+					);
+				$idx++;
+			}
 		}
 
 		return array_merge((is_array($json) ? $json : array()), array(
