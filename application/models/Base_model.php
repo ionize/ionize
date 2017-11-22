@@ -3041,6 +3041,9 @@ class Base_model extends CI_Model
 	{
 		$table = (!is_null($table)) ? $table : $this->table;
 
+		// only look at main table for count
+		$this->{$this->db_group}->select('`'.$table.'`.*');
+
 		// Perform conditions from the $where array
 		foreach(array('limit', 'offset', 'order_by', 'like') as $key)
 		{
@@ -3083,6 +3086,9 @@ class Base_model extends CI_Model
 	 */
 	public function count_all($results = FALSE)
 	{
+		// only look at main table for count
+		$this->{$this->db_group}->select('`'.$this->table.'`.*');
+
 		if($results !== FALSE)
 		{
 			$query = $this->{$this->db_group}->count_all_results($this->table);
@@ -3109,6 +3115,9 @@ class Base_model extends CI_Model
 	public function count_where($where = array(), $table =NULL)
 	{
 		$table = ( ! is_null($table)) ? $table : $this->get_table();
+
+		// only look at main table for count
+		$this->{$this->db_group}->select('`'.$table.'`.*');
 
 		if (isset($where['order_by']))
 			unset($where['order_by']);

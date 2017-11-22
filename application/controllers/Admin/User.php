@@ -243,7 +243,7 @@ class User extends My_Admin
 			}
 
 			// Save
-			$new_id_user = $this->user_model->save($post);
+			$new_id_user = $this->user_model->save_user($post);
 
 			// Send message to user if needed
 			$message = $this->input->post('message');

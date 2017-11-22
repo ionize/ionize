@@ -89,7 +89,7 @@ class Medialist extends MY_admin
 	{
 		$post = $this->input->post();
 
-		$this->medialist_model->save($post);
+		$this->medialist_model->save_medialist($post);
 
 		$this->callback[] = array(
 			'fn' => 'ION.notification',

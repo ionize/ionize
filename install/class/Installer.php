@@ -1899,6 +1899,11 @@ class Installer
 
 		include(APPPATH.'config/config.php');
 
+		if (!isset($config['encryption_key']) || $config['encryption_key'] == '')
+		{
+			$config['encryption_key'] = $_POST['encryption_key'];
+		}
+
 		$encryption = new ION_Encryption(
 			array(
 				'cipher' => 'aes-256',
@@ -1944,6 +1949,11 @@ class Installer
 		require_once('./class/Encryption.php');
 
 		include(APPPATH.'config/config.php');
+
+		if (!isset($config['encryption_key']) || $config['encryption_key'] == '')
+		{
+			$config['encryption_key'] = $_POST['encryption_key'];
+		}
 
 		$encryption = new ION_Encryption(
 			array(

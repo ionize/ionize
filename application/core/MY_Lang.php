@@ -36,14 +36,20 @@ class MY_Lang extends CI_Lang
 			if (isset($CI->config))
 			{
 				$deft_lang = $CI->config->item('detected_lang_code');
-                $deft_lang = ($deft_lang == '') ? $CI->config->item('default_lang_code') : $deft_lang;
+				$deft_lang = ($deft_lang == '') ? $CI->config->item('default_lang_code') : $deft_lang;
+				$lang_code = $deft_lang;
 				$idiom = $CI->config->item('available_languages')[$deft_lang];
 			}
 			// So Installer can output CI errors through MY_Language
 			else
 			{
+				$lang_code = 'en';
 				$idiom = 'english';
 			}
+		}
+		else
+		{
+			$lang_code = $idiom;
 		}
 
 		// Modules folders
@@ -53,9 +59,8 @@ class MY_Lang extends CI_Lang
 			Finder::add_path($module['path']);
 		}
 
-
 		// find the files to load, allow extended lang files
-		$files = Finder::find_file($idiom . '/' . $langfile, 'language', 99);
+		$files = Finder::find_file($lang_code . '/' . $langfile, 'language', 99);
 		/*
 		if(empty($files))
 		{

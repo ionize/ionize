@@ -221,7 +221,7 @@ class User_model extends Base_model
 	 *
 	 * @return int|null|the
 	 */
-	public function save($user, $role_code = NULL)
+	public function save_user($user, $role_code = NULL)
 	{
 		$user = $this->_clean_user_data($user);
 

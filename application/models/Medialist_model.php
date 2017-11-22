@@ -193,7 +193,7 @@ class Medialist_model extends Base_model
 	 *
 	 * @return int|void
 	 */
-	public function save($post)
+	public function save_medialist($post)
 	{
 		foreach($post as $key => $media)
 		{

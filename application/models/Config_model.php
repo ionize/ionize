@@ -200,7 +200,7 @@ class Config_model extends Base_model
 	 * @return bool
 	 *
 	 */
-	public function save()
+	public function save_config()
 	{
 		if ( ! is_null(self::$content))
 		{
