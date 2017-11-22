@@ -1846,7 +1846,20 @@ class Article extends MY_admin
 				if (in_array($field, $this->htmlspecialchars))
 					$content = htmlspecialchars($content, ENT_QUOTES, 'utf-8');
 
-				if ( $field != 'url' && $content !== FALSE)
+				if ( $field == 'id_article')
+				{
+					$this->lang_data[$language['lang']]['id_article'] = $this->data['id_article'];
+				}
+				else if ( $field == 'lang')
+				{
+					$this->lang_data[$language['lang']]['lang'] = $language['lang'];
+				}
+				// URL : Fill with the correct URLs array data
+				else if ($field === 'url')
+				{
+					$this->lang_data[$language['lang']]['url'] = $urls[$language['lang']];
+				}
+				else if ( $content !== FALSE)
 				{
 					// Allowed tags filter
 					$allowed_tags = explode(',', Settings::get('article_allowed_tags'));
@@ -1854,11 +1867,6 @@ class Article extends MY_admin
 
 					$content = strip_tags($content, $allowed_tags);
 					$this->lang_data[$language['lang']][$field] = $content;
-				}
-				// URL : Fill with the correct URLs array data
-				else if ($field === 'url')
-				{
-					$this->lang_data[$language['lang']]['url'] = $urls[$language['lang']];
 				}
 			}
 			

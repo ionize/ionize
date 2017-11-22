@@ -1038,6 +1038,16 @@ class Article_model extends Base_model
 		else
 			$data['updated'] = date('Y-m-d H:i:s');
 
+		// convert int values
+		$data['id_page'] = (int)$data['id_page'];
+		$data['id_article'] = (int)$data['id_article'];
+		$data['id_content_type'] = ((empty($data['id_content_type'])) ? NULL : (int)$data['id_content_type']);
+		$data['indexed'] = (int)$data['indexed'];
+		$data['id_category'] = ((empty($data['id_category'])) ? NULL : (int)$data['id_category']);
+		$data['flag'] = ((empty($data['flag'])) ? NULL : (int)$data['flag']);
+		$data['has_url'] = (int)$data['has_url'];
+		$data['priority'] = (int)$data['priority'];
+
 		// Dates
 		$data = $this->_set_dates($data);
 
