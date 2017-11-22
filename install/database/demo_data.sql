@@ -13,18 +13,21 @@
 -- Base data
 --
 UPDATE setting SET content='foundation5' WHERE name='theme';
---#--
+-- # --
 DELETE FROM setting WHERE name='site_title';
---#--
-INSERT INTO setting VALUES('', 'site_title', 'Ionize CMS Demo', 'en');
---#--
+-- # --
+
+INSERT INTO setting VALUES(NULL, 'site_title', 'Ionize CMS Demo', 'en');
+-- # --
+
 
 
 -- 
 -- Article
 -- 
-TRUNCATE article;
---#--
+TRUNCATE TABLE article;
+-- # --
+
 
 INSERT INTO article (id_article, name, author, updater, created, publish_on, publish_off, updated, logical_date, indexed, id_category, comment_allow, comment_autovalid, comment_expire, flag, has_url)
 VALUES
@@ -55,14 +58,16 @@ VALUES
 	(31,'hello','demo','demo','2012-12-22 11:15:04','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 11:42:04','0000-00-00 00:00:00',0,NULL,'0','0','0000-00-00 00:00:00',0,1),
 	(32,'401',NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,NULL,'0','0',NULL,0,1),
 	(33,'403',NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,NULL,'0','0',NULL,0,1);
---#--
+-- # --
+
 
 
 -- 
 -- Article_category
 -- 
-TRUNCATE article_category;
---#--
+TRUNCATE TABLE article_category;
+-- # --
+
 
 INSERT INTO article_category (id_article, id_category)
 VALUES
@@ -70,14 +75,16 @@ VALUES
 	(5,1),
 	(5,2),
 	(6,2);
---#--
+-- # --
+
 
 
 -- 
 -- Article_lang
 -- 
-TRUNCATE article_lang;
---#--
+TRUNCATE TABLE article_lang;
+-- # --
+
 
 INSERT INTO article_lang (id_article, lang, url, title, subtitle, meta_title, content, meta_keywords, meta_description, online)
 VALUES
@@ -108,14 +115,16 @@ VALUES
 	(31,'en','hello','Hello','','','<p>Welcome to your account management page.</p>','','',1),
 	(32,'en','401','401','Please login',NULL,'<p>Please login to see this content.</p>',NULL,NULL,1),
 	(33,'en','403','403','Forbidden',NULL,'<p>This content is forbidden.</p>',NULL,NULL,1);
---#--
+-- # --
+
 
 
 -- 
 -- Article_media
 -- 
-TRUNCATE article_media;
---#--
+TRUNCATE TABLE article_media;
+-- # --
+
 
 INSERT INTO article_media (id_article, id_media, online, ordering, url, lang_display)
 VALUES
@@ -130,13 +139,15 @@ VALUES
   (10,4,1,1,NULL,NULL),
   (15,5,1,2,NULL,NULL),
   (17,3,1,1,NULL,NULL);
---#--
+-- # --
+
 
 --
 -- Article Tag
 --
-TRUNCATE article_tag;
---#--
+TRUNCATE TABLE article_tag;
+-- # --
+
 
 INSERT INTO article_tag (id_article, id_tag)
 VALUES
@@ -149,140 +160,162 @@ VALUES
 	(9,4),
 	(10,1),
 	(14,0);
---#--
+-- # --
+
 
 -- 
 -- Article_type
 -- 
-TRUNCATE article_type;
---#--
+TRUNCATE TABLE article_type;
+-- # --
+
 
 INSERT INTO article_type (id_type, type, ordering, description, type_flag)
 VALUES
 	(4,'bloc',0,'',5),
 	(5,'not-logged-in',0,'',1),
 	(6,'logged-in',0,'',4);
---#--
+-- # --
+
 
 
 -- 
 -- Category
 -- 
-TRUNCATE category;
---#--
+TRUNCATE TABLE category;
+-- # --
+
 
 INSERT INTO category (id_category, name, ordering)
 VALUES
 	(1,'ionize',0),
 	(2,'website',0);
---#--
+-- # --
+
 
 
 --
 -- Category_lang
 -- 
-TRUNCATE category_lang;
---#--
+TRUNCATE TABLE category_lang;
+-- # --
+
 
 INSERT INTO category_lang (id_category, lang, title, subtitle, description)
 VALUES
 	(1,'en','Ionize CMS','',''),
 	(2,'en','Website','','');
---#--
+-- # --
+
 
 
 --
 -- Extend_field
 --
-TRUNCATE extend_field;
---#--
+TRUNCATE TABLE extend_field;
+-- # --
+
 
 INSERT INTO extend_field (id_extend_field, name, type, description, parent, id_parent, ordering, translated, value, default_value, global, main)
 VALUES
   (1,'title',1,'','item',1,0,'0','','',0,1),
   (2,'text',1,'','item',1,0,'0','','',0,0);
---#--
+-- # --
+
 
 
 --
 -- Extend_field lang
 --
-TRUNCATE extend_field_lang;
---#--
+TRUNCATE TABLE extend_field_lang;
+-- # --
+
 
 INSERT INTO extend_field_lang (id_extend_field, lang, label)
 VALUES
   (1,'en','Title'),
   (2,'en','Text');
---#--
+-- # --
+
 
 
 --
 -- Extend_field instances
 --
-TRUNCATE extend_fields;
---#--
+TRUNCATE TABLE extend_fields;
+-- # --
+
 
 INSERT INTO extend_fields (id_extend_fields, id_extend_field, parent, id_parent, lang, content, ordering)
 VALUES
   (1,1,'item',2,'','My first Flag',0),
   (2,2,'item',2,'','New !!!',0);
---#--
+-- # --
+
 
 
 --
 -- Static Items
 -- 
-TRUNCATE item;
---#--
+TRUNCATE TABLE item;
+-- # --
+
 
 INSERT INTO item (id_item, id_item_definition, name, description, ordering)
 VALUES
 	(2,1,NULL,NULL,1);
---#--
+-- # --
+
 
 
 --
 -- Static Items Definitions
 --
-TRUNCATE item_definition;
---#--
+TRUNCATE TABLE item_definition;
+-- # --
+
 
 INSERT INTO item_definition (id_item_definition, name, description)
 VALUES
 	(1,'flag','Article\'s Flags');
---#--
+-- # --
+
 
 
 --
 -- Static Items Definition Lang
 --
-TRUNCATE item_definition_lang;
---#--
+TRUNCATE TABLE item_definition_lang;
+-- # --
+
 
 INSERT INTO item_definition_lang (id_item_definition, lang, title_definition, title_item)
 VALUES
 	(1,'en','Flags','Flag');
---#--
+-- # --
+
 
 
 --
 -- Static Items
 --
-TRUNCATE items;
---#--
+TRUNCATE TABLE items;
+-- # --
+
 
 INSERT INTO items (id_item, parent, id_parent, ordering)
 VALUES
   (2,'article',5,1);
---#--
+-- # --
+
 
 
 --
 -- Media
 --
-TRUNCATE media;
---#--
+TRUNCATE TABLE media;
+-- # --
+
 
 INSERT INTO media (id_media, type, file_name, path, base_path, copyright, provider, date, link, square_crop)
 VALUES
@@ -292,15 +325,17 @@ VALUES
 	(6,'picture','IMG_8632.jpg','files/pictures/IMG_8632.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
 	(7,'picture','IMG_8645.jpg','files/pictures/IMG_8645.jpg','files/pictures/','',NULL,'0000-00-00 00:00:00','','m'),
 	(8,'picture','IMG_8963.jpg','files/pictures/IMG_8963.jpg','files/pictures/',NULL,NULL,'0000-00-00 00:00:00',NULL,'m'),
-  (9,'video','68203296','http://player.vimeo.com/video/68203296','http://player.vimeo.com/video/',NULL,'vimeo','0000-00-00 00:00:00',NULL,'m');
---#--
+  (9,'video','68203296','https://player.vimeo.com/video/68203296','https://player.vimeo.com/video/',NULL,'vimeo','0000-00-00 00:00:00',NULL,'m');
+-- # --
+
 
 
 -- 
 -- Media_lang
 -- 
-TRUNCATE media_lang;
---#--
+TRUNCATE TABLE media_lang;
+-- # --
+
 
 INSERT INTO media_lang (lang, id_media, title, alt, description)
 VALUES
@@ -308,29 +343,33 @@ VALUES
 	('en',5,'Mandalay','One working day in the historical capital of Burma.','One working day in the historical capital of Burma.'),
 	('en',6,'Monywa, Burma','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.','In the mountain of Monywa, more than two thousand caves were built in honor of Budha.'),
 	('en',7,'Monywa wall paints','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.','These 17th centruey wall painting are very well preserved because the caves were forgivven for centuries.');
---#--
+-- # --
+
 
 
 -- 
 -- Menu
 -- 
-TRUNCATE menu;
---#--
+TRUNCATE TABLE menu;
+-- # --
+
 
 INSERT INTO menu (id_menu, name, title, ordering)
 VALUES
 	(1,'main','Main menu',NULL),
 	(2,'system','System menu',NULL);
---#--
+-- # --
+
 
 
 --
 -- Page
 -- 
-TRUNCATE page;
---#--
+TRUNCATE TABLE page;
+-- # --
 
-INSERT INTO page (id_page, id_parent, id_menu, id_type, id_subnav, name, ordering, level, online, home, author, updater, created, publish_on, publish_off, updated, logical_date, appears, has_url, view, view_single, article_list_view, article_view, article_order, article_order_direction, link, link_type, link_id, pagination, priority, used_by_module, deny_code)
+
+INSERT INTO page (id_page, id_parent, id_menu, id_content_type, id_subnav, name, ordering, level, online, home, author, updater, created, publish_on, publish_off, updated, logical_date, appears, has_url, view, view_single, article_list_view, article_view, article_order, article_order_direction, link, link_type, link_id, pagination, priority, used_by_module, deny_code)
 VALUES
 	(1,0,2,0,0,'404',0,0,1,0,'demo','demo','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-21 14:42:05','0000-00-00 00:00:00',0,1,'','','','','ordering','ASC','',NULL,'',0,5,0,NULL),
 	(2,0,1,0,0,'welcome',1,0,1,1,'demo','michelange','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','2014-04-05 10:16:24','0000-00-00 00:00:00',1,1,'page_home','','','','ordering','ASC','',NULL,'',0,5,0,'404'),
@@ -342,14 +381,16 @@ VALUES
 	(10,0,1,0,0,'my-account',7,0,1,0,'demo','demo','2012-12-21 20:11:47','0000-00-00 00:00:00','0000-00-00 00:00:00','2012-12-22 10:53:57','0000-00-00 00:00:00',1,1,'page_my_account','',NULL,'','ordering','ASC','',NULL,'',0,5,0,NULL),
 	(11,0,2,0,0,'401',0,0,1,0,NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,1,NULL,NULL,NULL,NULL,'ordering','ASC','',NULL,'',0,5,NULL,NULL),
 	(12,0,2,0,0,'403',0,0,1,0,NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00',0,1,NULL,NULL,NULL,NULL,'ordering','ASC','',NULL,'',0,5,NULL,NULL);
---#--
+-- # --
+
 
 
 --
 -- Page_article
 --
-TRUNCATE page_article;
---#--
+TRUNCATE TABLE page_article;
+-- # --
+
 
 INSERT INTO page_article (id_page, id_article, online, view, ordering, id_type, link_type, link_id, link, main_parent)
 VALUES
@@ -379,15 +420,17 @@ VALUES
 	(10,31,1,NULL,1,6,'','','',1),
 	(11,32,1,NULL,0,NULL,'','','',0),
 	(12,33,1,NULL,0,NULL,'','','',0);
---#--
+-- # --
+
 
 
 -- 
 -- Page_lang
 -- 
 		
-TRUNCATE page_lang;
---#--
+TRUNCATE TABLE page_lang;
+-- # --
+
 
 INSERT INTO page_lang (lang, id_page, url, link, title, subtitle, nav_title, subnav_title, meta_title, meta_description, meta_keywords, online)
 VALUES
@@ -401,14 +444,16 @@ VALUES
 	('en',10,'my-account','','My account','','','','','','',1),
 	('en',11,'401','','401','Login needed','','',NULL,NULL,NULL,1),
 	('en',12,'403','','403','Forbidden','','',NULL,NULL,NULL,1);
---#--
+-- # --
+
 
 
 -- 
 -- Page_media
 -- 
-TRUNCATE page_media;
---#--
+TRUNCATE TABLE page_media;
+-- # --
+
 
 INSERT INTO page_media (id_page, id_media, online, ordering, lang_display)
 VALUES
@@ -417,14 +462,16 @@ VALUES
 	(2,6,1,1,NULL),
 	(2,7,1,11,NULL),
 	(2,8,1,12,NULL);
---#--
+-- # --
+
 
 
 --
 -- Tag
 --
-TRUNCATE tag;
---#--
+TRUNCATE TABLE tag;
+-- # --
+
 
 INSERT INTO tag (id_tag, tag_name)
 VALUES
@@ -432,14 +479,16 @@ VALUES
 	(2,'development'),
 	(3,'company'),
 	(4,'services');
---#--
+-- # --
+
 
 
 --
 -- URL
 --
-TRUNCATE url;
---#--
+TRUNCATE TABLE url;
+-- # --
+
 
 INSERT INTO url (id_url, id_entity, type, canonical, active, lang, path, path_ids, full_path_ids, creation_date)
 VALUES
@@ -476,4 +525,5 @@ VALUES
 	(630,10,'page',1,1,'en','my-account','10','10','2012-12-28 19:56:07'),
 	(631,30,'article',1,1,'en','my-account/not-logged-in','10/30','10/30','2012-12-28 19:56:07'),
 	(632,31,'article',1,1,'en','my-account/hello','10/31','10/31','2012-12-28 19:56:07');
---#--
+-- # --
+

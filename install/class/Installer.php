@@ -295,7 +295,7 @@ class Installer
 			{
 				$file = read_file('./database/demo_data.sql');
 
-				$requests = explode('--#--', $file);
+				$requests = explode('-- # --', $file);
 
 				foreach($requests as $request)
 				{
@@ -976,13 +976,13 @@ class Installer
 
 			// Checks the write rights of the MySQL user
 			// by insertion of dummy data in the settings table
-			if ($this->db->query("INSERT INTO setting ('name', 'content') values('test', 'test')"))
+			if (!$this->db->query("INSERT INTO `setting` VALUES (NULL, 'test', 'test', '')"))
 			{
 				$this->_send_error('database', lang('database_error_coud_not_write_database'), $_POST);
 			}
 			else
 			{
-				$this->db->query("DELETE FROM setting WHERE name='test'");
+				$this->db->query("DELETE FROM `setting` WHERE name='test'");
 			}
 
 			// Basis content insert
@@ -1772,7 +1772,6 @@ class Installer
 		$conf  = "<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');\n\n";
 
 		$conf .= "\$active_group = 'default';\n";
-		$conf .= "\$active_record = TRUE;\n\n";
 
 		$conf .= "\$db['default']['hostname'] = '".$data['db_hostname']."';\n";
 		$conf .= "\$db['default']['username'] = '".$data['db_username']."';\n";
@@ -1896,16 +1895,25 @@ class Installer
 
 	function _decrypt($str, $data)
 	{
-		require_once('./class/Encrypt.php');
+		require_once('./class/Encryption.php');
 
 		include(APPPATH.'config/config.php');
 
-		$encrypt = new ION_Encrypt($config);
+		$encryption = new ION_Encryption(
+			array(
+				'cipher' => 'aes-256',
+				'mode' => 'cbc',
+				'key' => $config['encryption_key']
+			)
+		);
 
-		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
-		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
+		//$hash 	= $encryption->encrypt($data['username'] . $data['salt']);
+		//$key 	= $encryption->encrypt($config['encryption_key'] . $hash);
 
-		return $encrypt->decode($str, substr($key, 0, 56));
+		//return $encryption->decode($str, substr($key, 0, 56));
+		//$decrypt = $encryption->decrypt($str);
+		//die($decrypt);
+		return $encryption->decrypt($str);
 	}
 
 	function _decrypt096($str, $data)
@@ -1933,16 +1941,25 @@ class Installer
 	 */
 	function _encrypt($str, $data)
 	{
-		require_once('./class/Encrypt.php');
+		require_once('./class/Encryption.php');
 
 		include(APPPATH.'config/config.php');
 
-		$encrypt = new ION_Encrypt($config);
+		$encryption = new ION_Encryption(
+			array(
+				'cipher' => 'aes-256',
+				'mode' => 'cbc',
+				'key' => $config['encryption_key']
+			)
+		);
 
-		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
-		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
+		//$hash 	= $encryption->encrypt($data['username'] . $data['salt']);
+		//$key 	= $encryption->encrypt($config['encryption_key'] . $hash);
 
-		return $encrypt->encode($str, substr($key, 0, 56));
+		//return $encryption->encode($str, substr($key, 0, 56));
+		//$encrypt = $encryption->encrypt($str);
+		//die($encrypt);
+		return $encryption->encrypt($str);
 	}
 
 

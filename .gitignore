@@ -2,3 +2,4 @@ Thumbs.db
 .DS_Store
 .idea
 application/logs/*.php
+files/.thumbs
