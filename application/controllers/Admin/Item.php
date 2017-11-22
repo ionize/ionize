@@ -239,7 +239,7 @@ class Item extends MY_admin
 	{
 		$id_item_definition = $this->input->post('id_item_definition');
 
-		$id_item = $this->item_model->save($id_item_definition, $_POST);
+		$id_item = $this->item_model->save_item($id_item_definition, $_POST);
 
 		$item = $this->item_model->get(array('id_item' => $id_item) );
 
@@ -261,7 +261,7 @@ class Item extends MY_admin
 		if ( ! empty($item))
 		{
 			// Delete the element
-			$affected_rows = $this->item_model->delete($id_item);
+			$affected_rows = $this->item_model->delete_item($id_item);
 
 			if ($affected_rows > 0)
 			{

@@ -164,6 +164,9 @@ namespace Ionize {
 		private static $ci;
 
 
+		private static $encryption;
+
+
 		private $tracker = NULL;
 
 
@@ -186,13 +189,13 @@ namespace Ionize {
 			// Get CodeIgniter instance and load necessary libraries and helpers
 			self::$ci =& get_instance();
 
-			self::$ci->load->library('encrypt');
+			self::$ci->load->library('encryption');
 
-			if (function_exists('mcrypt_encrypt'))
+			/*if (function_exists('mcrypt_encrypt'))
 			{
 				self::$ci->encrypt->set_cipher(MCRYPT_BLOWFISH);
 				self::$ci->encrypt->set_mode(MCRYPT_MODE_CFB);
-			}
+			}*/
 
 			// Session
 			self::$ci->load->library('session');
@@ -221,6 +224,14 @@ namespace Ionize {
 			}
 
 			$this->encryption_key = config_item('encryption_key');
+
+			self::$encryption = new self::$ci->encryption(
+				array(
+					'cipher' => 'aes-256',
+					'mode' => 'cbc',
+					'key' => $this->encryption_key
+				)
+			);
 
 			if($this->remember['on'])
 				self::$ci->load->helper('cookie');
@@ -1097,10 +1108,11 @@ namespace Ionize {
 		 */
 		public function encrypt($password, $user)
 		{
-			$hash 	= sha1($user['username'] . $user['salt']);
-			$key 	= sha1($this->encryption_key . $hash);
+			//$hash 	= sha1($user['username'] . $user['salt']);
+			//$key 	= sha1($this->encryption_key . $hash);
 
-			return self::$ci->encrypt->encode($password, substr($key, 0, 56));
+			//return self::$ci->encrypt->encode($password, substr($key, 0, 56));
+			return self::$encryption->encrypt($password);
 		}
 
 
@@ -1116,10 +1128,11 @@ namespace Ionize {
 		 */
 		public function decrypt($password, $user)
 		{
-			$hash 	= sha1($user['username'] . $user['salt']);
-			$key 	= sha1($this->encryption_key . $hash);
+			//$hash 	= sha1($user['username'] . $user['salt']);
+			//$key 	= sha1($this->encryption_key . $hash);
 
-			return self::$ci->encrypt->decode($password, substr($key, 0, 56));
+			//return self::$ci->encrypt->decode($password, substr($key, 0, 56));
+			return self::$encryption->decrypt($password);
 		}
 
 

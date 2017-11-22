@@ -1784,6 +1784,9 @@ class Article_model extends Base_model
 	 */
 	public function count_articles($where=array(), $lang=NULL, $filter=NULL)
 	{
+		// only look at main table for count
+		$this->{$this->db_group}->select('`'.$this->table.'`.*');
+
 		// Filter on published
 		$this->filter_on_published(self::$publish_filter, $lang);
 

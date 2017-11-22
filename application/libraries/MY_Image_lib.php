@@ -23,7 +23,7 @@ class MY_Image_lib extends CI_Image_lib {
 	// Unsharp properties
 	var $unsharpmask = '';
 
-    function MY_Image_lib($props = array())
+    function __construct($props = array())
     {
         parent::__construct($props);
     }

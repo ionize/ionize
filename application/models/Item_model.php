@@ -428,7 +428,7 @@ class Item_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	public function save($id_item_definition, $post)
+	public function save_item($id_item_definition, $post)
 	{
 		$id_item = $post['id_item'];
 
@@ -595,7 +595,7 @@ class Item_model extends Base_model
 	// ------------------------------------------------------------------------
 
 
-	public function delete($id_item)
+	public function delete_item($id_item)
 	{
 		$affected_rows = 0;
 

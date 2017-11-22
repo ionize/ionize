@@ -301,7 +301,7 @@ class TagManager_Article extends TagManager
 	 * @return int
 	 *
 	 */
-	function count_nb_total_articles(FTL_Binding $tag, $where = array(), $filter=NULL)
+	static function count_nb_total_articles(FTL_Binding $tag, $where = array(), $filter=NULL)
 	{
 		$page = $tag->get('page');
 		if (empty($page)) $page = self::registry('page');
@@ -323,6 +323,11 @@ class TagManager_Article extends TagManager
 						call_user_func(array(__CLASS__, 'add_articles_filter_'.$_callback), $tag, $args);
 				}
 			}
+		}
+
+		if (isset($where['limit']))
+		{
+			unset($where['limit']);
 		}
 
 		$nb_total_articles = self::$ci->article_model->count_articles(
@@ -369,7 +374,7 @@ class TagManager_Article extends TagManager
 	 * @param array       $args
 	 *
 	 */
-	function add_articles_filter_tag(FTL_Binding $tag, $args = array())
+	static function add_articles_filter_tag(FTL_Binding $tag, $args = array())
 	{
 		$tag_name = ( ! empty($args[0])) ? $args[0] : NULL;
 
@@ -391,7 +396,7 @@ class TagManager_Article extends TagManager
 	 *
 	 * @return null
 	 */
-	function add_articles_filter_pagination(FTL_Binding $tag, $args = array())
+	static function add_articles_filter_pagination(FTL_Binding $tag, $args = array())
 	{
 		// Page
 		$page = $tag->get('page');
@@ -421,7 +426,7 @@ class TagManager_Article extends TagManager
 	 * @param FTL_Binding $tag
 	 * @param array       $args
 	 */
-	function add_articles_filter_archives(FTL_Binding $tag, $args = array())
+	static function add_articles_filter_archives(FTL_Binding $tag, $args = array())
 	{
 		// Month / year
 		$year =  (! empty($args[0]) ) ?	$args[0] : FALSE;

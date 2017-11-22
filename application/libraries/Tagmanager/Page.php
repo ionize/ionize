@@ -241,7 +241,7 @@ class TagManager_Page extends TagManager
 	 * @return string
 	 *
 	 */
-	function get_page_path_from_special_uri()
+	static function get_page_path_from_special_uri()
 	{
 		$uri_config = array_flip(self::$ci->config->item('special_uri'));
 		$special_uri_array = self::get_special_uri_array();

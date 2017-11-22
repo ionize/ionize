@@ -135,6 +135,30 @@ switch (ENVIRONMENT)
 
 
 /*
+ *---------------------------------------------------------------
+ * PUBLIC DOC FOLDER
+ *---------------------------------------------------------------
+ *
+ * Website public documents folder.
+ *
+ * This folder is the root public documents folder of the website.
+ * Usefull only if the Ionize root folder is inside one other folder
+ * from the document root folder, in case of using Ionize with one
+ * other framework or CMS.
+ *
+ * Example :
+ * Main app folder : 	/public_html/
+ * Ionize folder : 		/public_html/ionize/
+ *
+ * If you want to store files (medias) outside from the ionize folder
+ * the public doc folder needs to be set and will be different from the
+ * FCPATH
+ *
+ */
+	$doc_folder = "";
+
+
+/*
  * --------------------------------------------------------------------
  * DEFAULT CONTROLLER
  * --------------------------------------------------------------------
@@ -275,6 +299,23 @@ switch (ENVIRONMENT)
 	}
 
 	define('APPPATH', $application_folder.DIRECTORY_SEPARATOR);
+
+	// Path to the public web folder
+	if (realpath(FCPATH.$doc_folder) !== FALSE)
+	{
+		$doc_path = realpath(FCPATH.$doc_folder);
+	}
+	else
+	{
+		$doc_path = FCPATH;
+	}
+
+	$doc_path = rtrim($doc_path, '/').'/';
+
+	if ( ! is_dir($doc_path))
+		exit("Your document root folder path does not appear to be set correctly. Please open the following file and correct this: ".SELF);
+
+	define('DOCPATH', $doc_path);
 
 	// The path to the "views" directory
 	if ( ! isset($view_folder[0]) && is_dir(APPPATH.'views'.DIRECTORY_SEPARATOR))

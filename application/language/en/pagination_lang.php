@@ -12,6 +12,10 @@
 |--------------------------------------------------------------------------
 */
 $lang['first_link'] = 'First page';
-$lang['last_link'] = 'Last page';
-$lang['next_link'] = 'Next page';
-$lang['prev_link'] = 'Previous page';
+$lang['next_link'] = 'Last page';
+$lang['prev_link'] = 'Next page';
+$lang['last_link'] = 'Previous page';
+$lang['pagination_first_link'] = '&lsaquo; First';
+$lang['pagination_next_link'] = '&gt;';
+$lang['pagination_prev_link'] = '&lt;';
+$lang['pagination_last_link'] = 'Last &rsaquo;';

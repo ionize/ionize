@@ -51,7 +51,7 @@ class TagManager_Item extends TagManager
 	 * @param	String	lang code
 	 * @return	Array	Extend fields definition array
 	 */
-	private function _get_definitions_with_items($lang)
+	private static function _get_definitions_with_items($lang)
 	{
 		// Get the extend fields definition if not already got
 		if (self::$_DEFINITIONS == NULL)
@@ -69,7 +69,7 @@ class TagManager_Item extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	private function _get_items_type_from_parent($definition, $parent, $id_parent, $lang=NULL)
+	private static function _get_items_type_from_parent($definition, $parent, $id_parent, $lang=NULL)
 	{
 		$result = array();
 
@@ -111,7 +111,7 @@ class TagManager_Item extends TagManager
 	// ------------------------------------------------------------------------
 
 
-	private function _get_item_field($item, $field_key)
+	private static function _get_item_field($item, $field_key)
 	{
 		foreach ($item['fields'] as $field)
 		{

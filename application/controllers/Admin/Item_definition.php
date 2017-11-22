@@ -132,7 +132,7 @@ class Item_definition extends MY_admin
 		$post = $this->input->post();
 
 		// Save data
-		$this->item_definition_model->save($post, $post);
+		$this->item_definition_model->save_item_definition($post, $post);
 
 		// Reload List
 		// $this->_reload_definition_list();
@@ -148,7 +148,7 @@ class Item_definition extends MY_admin
 	{
 		$id_item_definition = $this->input->post('id_item_definition');
 
-		$this->item_definition_model->delete($id_item_definition);
+		$this->item_definition_model->delete_item_definition($id_item_definition);
 
 		$this->success(lang('ionize_message_operation_ok'));
 	}

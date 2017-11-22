@@ -51,7 +51,7 @@ class Item_definition_model extends Base_model
 	 *
 	 * @return int
 	 */
-	public function save($data, $lang_data)
+	public function save_item_definition($data, $lang_data)
 	{
 		// Name
 		$data['name'] = url_title($data['name']);
@@ -74,7 +74,7 @@ class Item_definition_model extends Base_model
 	 *
 	 * @return int|void
 	 */
-	public function delete($id_item_definition)
+	public function delete_item_definition($id_item_definition)
 	{
 		// Items instances IDs
 		$item_ids = $this->get_keys_array(

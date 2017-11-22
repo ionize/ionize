@@ -300,7 +300,7 @@ class TagManager_Media extends TagManager
 	 * @return string
 	 *
 	 */
-	public function tag_media(FTL_Binding $tag)
+	public static function tag_media(FTL_Binding $tag)
 	{
 		$parentName = $tag->getDataParentName();
 

@@ -75,7 +75,7 @@ class Module extends MY_admin
 //		{
             $lang_code = Settings::get_lang('current');
             $idiom = Settings::get_lang_idiom($lang_code);
-			$this->lang->load($module_name, $idiom);
+			$this->lang->load($module_name, $lang_code);
 //		}
 //		else
 //		{
