@@ -1048,6 +1048,11 @@ class Article_model extends Base_model
 		$data['has_url'] = (int)$data['has_url'];
 		$data['priority'] = (int)$data['priority'];
 
+		foreach ($lang_data as $lang => $tmpary) {
+			$lang_data[$lang]['id_article'] = (int)$lang_data[$lang]['id_article'];
+			$lang_data[$lang]['online'] = (int)$lang_data[$lang]['online'];
+		}
+
 		// Dates
 		$data = $this->_set_dates($data);
 
