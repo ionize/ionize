@@ -73,7 +73,7 @@ class getID3_cached_dbm extends getID3
 {
 
 	// public: constructor - see top of this file for cache type and cache_options
-	function getID3_cached_dbm($cache_type, $dbm_filename, $lock_filename) {
+	function __construct($cache_type, $dbm_filename, $lock_filename) {
 
 		// Check for dba extension
 		if (!extension_loaded('dba')) {

@@ -19,7 +19,7 @@ class Version extends MY_Admin
 	 *
 	 * @access	public
 	 */
-	function Version()
+	function __construct()
 	{
 		parent::MY_Admin();
 	}
