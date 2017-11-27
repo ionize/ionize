@@ -350,7 +350,7 @@ class TagManager_Article extends TagManager
 	 * @param array       $args
 	 *
 	 */
-	function add_articles_filter_category(FTL_Binding $tag, $args = array())
+	static function add_articles_filter_category(FTL_Binding $tag, $args = array())
 	{
 		$category_name = ( ! empty($args[0])) ? $args[0] : NULL;
 

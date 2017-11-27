@@ -845,12 +845,11 @@ class TagManager_Form extends TagManager
 	 */
 	public static function check_additional_errors($form_name)
 	{
-		$_error_array = self::$ci->form_validation->error_array();
 		// Add Additional errors to the CI validation errors array
 		foreach (self::$additional_errors as $key => $val)
-			$_error_array[$key] = $val;
+			self::$ci->form_validation->_error_array[$key] = $val;
 
-		if (sizeof($_error_array) > 0)
+		if (sizeof(self::$ci->form_validation->_error_array) > 0)
 		{
 			// Reorder errors regarding the $config definition
 			// Additional errors does not respect the rules order...
@@ -859,11 +858,11 @@ class TagManager_Form extends TagManager
 			$result = array();
 			foreach ($fields as $field => $settings)
 			{
-				if (isset($_error_array[$field]))
-					$result[$field] = $_error_array[$field];
+				if (isset(self::$ci->form_validation->_error_array[$field]))
+					$result[$field] = self::$ci->form_validation->_error_array[$field];
 			}
 			// Add custom errors (not in form fields) at the end
-			foreach ($_error_array as $key => $value)
+			foreach (self::$ci->form_validation->_error_array as $key => $value)
 				if ( ! in_array($key, array_keys($result)))
 					$result[$key] = $value;
 
