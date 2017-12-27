@@ -75,11 +75,14 @@ class MY_Controller extends CI_Controller
 		}*/
 
 		// Models
-        $this->load->model(
-            array(
-                'base_model',
-                'settings_model'
-            ), '', TRUE);
+		$this->load->model(
+			array(
+				'base_model',
+				'settings_model'
+			),
+			'',
+			TRUE
+		);
 
 		// Helpers
 		$this->load->helper('file');
@@ -110,7 +113,7 @@ class MY_Controller extends CI_Controller
 				$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
 
 			$lang_code = config_item('detected_lang_code');
-            $idiom = Settings::get_lang_idiom($lang_code);
+			$idiom = Settings::get_lang_idiom($lang_code);
 			$this->lang->load('admin', $lang_code);
 
 			Theme::set_theme('admin');
@@ -686,9 +689,9 @@ class MY_Admin extends MY_Controller
 		Settings::set('current_lang', config_item('detected_lang_code'));
 
 		// Load the current language translations file
-        $lang_code = Settings::get_lang();
-        $idiom = Settings::get_lang_idiom($lang_code);
-        $this->lang->load('admin', $lang_code);
+		$lang_code = Settings::get_lang();
+		$idiom = Settings::get_lang_idiom($lang_code);
+		$this->lang->load('admin', $lang_code);
 		// $this->lang->load('filemanager', $lang_code);
 
 		// Modules translation files
@@ -934,11 +937,11 @@ class MY_Admin extends MY_Controller
 		
 			foreach($this->modules as $uri => $folder)
 			{
-				// Get the module Class modules/Module_Name/controllers/admin/module_name.php
-				if (file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) )
+				// Get the module Class modules/Module_Name/controllers/Admin/Module_name.php
+				if (file_exists(MODPATH.$folder.'/controllers/Admin/'.ucfirst($uri).EXT) )
 				{
 					if ( ! class_exists($folder) )
-						require_once(MODPATH.$folder.'/controllers/admin/'.$uri.EXT);
+						require_once(MODPATH.$folder.'/controllers/Admin/'.ucfirst($uri).EXT);
 					if (method_exists($folder, '_addons'))
 					{
 						// Module path

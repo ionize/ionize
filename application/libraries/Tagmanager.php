@@ -20,8 +20,8 @@
  * @category	TagManager Libraries
  *
  */
-require_once APPPATH.'libraries/ftl/parser.php';
-require_once APPPATH.'libraries/ftl/arraycontext.php';
+require_once APPPATH.'libraries/Ftl/Parser.php';
+require_once APPPATH.'libraries/Ftl/Arraycontext.php';
 
 class TagManager
 {

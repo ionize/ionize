@@ -20,10 +20,10 @@
 /////////////////////////////////////////////////////////////////
 
 if (!defined('GETID3_INCLUDEPATH')) {
-	throw new Exception('getid3.php MUST be included before calling getid3_writetags');
+	throw new Exception('Getid3.php MUST be included before calling getid3_writetags');
 }
-if (!include_once(GETID3_INCLUDEPATH.'getid3.lib.php')) {
-	throw new Exception('write.php depends on getid3.lib.php, which is missing.');
+if (!include_once(GETID3_INCLUDEPATH.'Getid3.lib.php')) {
+	throw new Exception('write.php depends on Getid3.lib.php, which is missing.');
 }
 
 
@@ -178,7 +178,7 @@ class getid3_writetags
 			switch ($tagformat) {
 				case 'ape':
 					$GETID3_ERRORARRAY = &$this->errors;
-					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.apetag.php', __FILE__, false)) {
+					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Write.apetag.php', __FILE__, false)) {
 						return false;
 					}
 					break;
@@ -189,7 +189,7 @@ class getid3_writetags
 				case 'metaflac':
 				case 'real':
 					$GETID3_ERRORARRAY = &$this->errors;
-					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.'.$tagformat.'.php', __FILE__, false)) {
+					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Write.'.$tagformat.'.php', __FILE__, false)) {
 						return false;
 					}
 					break;
@@ -199,7 +199,7 @@ class getid3_writetags
 				case 'id3v2.4':
 				case 'id3v2':
 					$GETID3_ERRORARRAY = &$this->errors;
-					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.id3v2.php', __FILE__, false)) {
+					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Write.id3v2.php', __FILE__, false)) {
 						return false;
 					}
 					break;

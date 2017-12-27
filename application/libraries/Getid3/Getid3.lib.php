@@ -605,7 +605,7 @@ class getid3_lib
 
 		if (empty($tempdir)) {
 			// yes this is ugly, feel free to suggest a better way
-			require_once(dirname(__FILE__).'/getid3.php');
+			require_once(dirname(__FILE__).'/Getid3.php');
 			$getid3_temp = new getID3();
 			$tempdir = $getid3_temp->tempdir;
 			unset($getid3_temp);
@@ -1140,7 +1140,7 @@ class getid3_lib
 		static $tempdir = '';
 		if (empty($tempdir)) {
 			// yes this is ugly, feel free to suggest a better way
-			require_once(dirname(__FILE__).'/getid3.php');
+			require_once(dirname(__FILE__).'/Getid3.php');
 			$getid3_temp = new getID3();
 			$tempdir = $getid3_temp->tempdir;
 			unset($getid3_temp);

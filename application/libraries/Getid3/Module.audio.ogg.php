@@ -7,13 +7,13 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio.ogg.php                                        //
+// Module.audio.ogg.php                                        //
 // module for analyzing Ogg Vorbis, OggFLAC and Speex files    //
-// dependencies: module.audio.flac.php                         //
+// dependencies: Module.audio.flac.php                         //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.flac.php', __FILE__, true);
+getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.flac.php', __FILE__, true);
 
 class getid3_ogg extends getid3_handler
 {

@@ -7,7 +7,7 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio.mpc.php                                        //
+// Module.audio.mpc.php                                        //
 // module for analyzing Musepack/MPEG+ Audio files             //
 // dependencies: NONE                                          //
 //                                                            ///

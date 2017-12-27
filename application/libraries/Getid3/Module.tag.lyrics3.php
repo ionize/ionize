@@ -7,9 +7,9 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 ///                                                            //
-// module.tag.lyrics3.php                                      //
+// Module.tag.lyrics3.php                                      //
 // module for analyzing Lyrics3 tags                           //
-// dependencies: module.tag.apetag.php (optional)              //
+// dependencies: Module.tag.apetag.php (optional)              //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
@@ -101,7 +101,7 @@ class getid3_lyrics3 extends getid3_handler
 
 			if (!isset($info['ape'])) {
 				$GETID3_ERRORARRAY = &$info['warning'];
-				if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.apetag.php', __FILE__, false)) {
+				if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.tag.apetag.php', __FILE__, false)) {
 					$getid3_temp = new getID3();
 					$getid3_temp->openfile($this->getid3->filename);
 					$getid3_apetag = new getid3_apetag($getid3_temp);

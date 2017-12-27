@@ -421,6 +421,7 @@ class CI_Router
 	 */
 	public function find_controller($segments)
 	{
+		$segments = array_map("ucfirst", $segments);
 		$params = array();
 
 		if( ! $this->module_path)

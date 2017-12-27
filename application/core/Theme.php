@@ -81,8 +81,7 @@ class Theme {
 	 */
 	public static function get_theme_path()
 	{
-		return self::$theme_base_path.self::$theme.'/';
-		//return FCPATH.self::$theme_base_path.self::$theme.'/';
+		return self::$theme_base_path.self::$theme.'/';		
 	}
 	
 	
@@ -158,7 +157,6 @@ class Theme {
 		
 		// Loads the view
 		$output = $ci->load->view($view, $data, true);
-		//$output = View($view, $data, true);
 		
 		// Set character encoding
 		$ci->output->set_header("Content-Type: text/html; charset=UTF-8");

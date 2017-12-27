@@ -7,10 +7,10 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.graphic.jpg.php                                      //
+// Module.graphic.jpg.php                                      //
 // module for analyzing JPEG Image files                       //
 // dependencies: PHP compiled with --enable-exif (optional)    //
-//               module.tag.xmp.php (optional)                 //
+//               Module.tag.xmp.php (optional)                 //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
@@ -144,7 +144,7 @@ class getid3_jpg extends getid3_handler
 		}
 
 
-		if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.xmp.php', __FILE__, false)) {
+		if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.tag.xmp.php', __FILE__, false)) {
 			if (isset($info['filenamepath'])) {
 				$image_xmp = new Image_XMP($info['filenamepath']);
 				$xmp_raw = $image_xmp->getAllTags();

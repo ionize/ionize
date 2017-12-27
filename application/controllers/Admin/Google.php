@@ -10,7 +10,7 @@
  * @since		Version 1.0.0
  */
 
-require_once APPPATH.'libraries/gapi.class.php';
+require_once APPPATH.'libraries/Gapi.class.php';
 
 class Google extends MY_admin
 {

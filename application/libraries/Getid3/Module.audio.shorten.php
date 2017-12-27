@@ -7,7 +7,7 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio.shorten.php                                    //
+// Module.audio.shorten.php                                    //
 // module for analyzing Shorten Audio files                    //
 // dependencies: NONE                                          //
 //                                                            ///
@@ -147,7 +147,7 @@ class getid3_shorten extends getid3_handler
 
 		if (!empty($output) && (substr($output, 12, 4) == 'fmt ')) {
 
-			getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, true);
+			getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.riff.php', __FILE__, true);
 
 			$fmt_size = getid3_lib::LittleEndian2Int(substr($output, 16, 4));
 			$DecodedWAVFORMATEX = getid3_riff::RIFFparseWAVEFORMATex(substr($output, 20, $fmt_size));

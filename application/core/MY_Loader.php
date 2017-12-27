@@ -149,7 +149,7 @@ class MY_Loader extends CI_Loader{
 
         foreach ($this->_ci_model_paths as $mod_path)
         {
-            if ( ! file_exists($mod_path.'models/'.$path.$model.'.php'))
+            if ( ! file_exists($mod_path.'models/'.$path.ucfirst($model).'.php'))
             {
                 continue;
             }
@@ -169,7 +169,7 @@ class MY_Loader extends CI_Loader{
                 load_class('Model', 'core');
             }
 
-            require_once($mod_path.'models/'.$path.$model.'.php');
+            require_once($mod_path.'models/'.$path.ucfirst($model).'.php');
 
             $model = ucfirst($model);
 

@@ -4,9 +4,9 @@
  * by Martin Wernstahl <m4rw3r@gmail.com>
  */
 
-require 'context.php';
-require 'binding.php';
-require 'varstack.php';
+require 'Context.php';
+require 'Binding.php';
+require 'Varstack.php';
 
 
 /**

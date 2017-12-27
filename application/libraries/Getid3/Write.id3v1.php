@@ -9,11 +9,11 @@
 //                                                             //
 // write.id3v1.php                                             //
 // module for writing ID3v1 tags                               //
-// dependencies: module.tag.id3v1.php                          //
+// dependencies: Module.tag.id3v1.php                          //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.id3v1.php', __FILE__, true);
+getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.tag.id3v1.php', __FILE__, true);
 
 class getid3_write_id3v1
 {

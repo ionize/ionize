@@ -64,7 +64,7 @@ if (!defined('GETID3_OS_ISWINDOWS')) {
 // Get base path of getID3() - ONCE
 if (!defined('GETID3_INCLUDEPATH')) {
 	foreach (get_included_files() as $key => $val) {
-		if (basename($val) == 'getid3.php') {
+		if (basename($val) == 'Getid3.php') {
 			define('GETID3_INCLUDEPATH', dirname($val).DIRECTORY_SEPARATOR);
 			break;
 		}
@@ -171,8 +171,8 @@ class getID3
 		}
 
 		// Load support library
-		if (!include_once(GETID3_INCLUDEPATH.'getid3.lib.php')) {
-			$this->startup_error .= 'getid3.lib.php is missing or corrupt';
+		if (!include_once(GETID3_INCLUDEPATH.'Getid3.lib.php')) {
+			$this->startup_error .= 'Getid3.lib.php is missing or corrupt';
 		}
 
 		if ($this->option_max_2gb_check === null) {
@@ -1113,7 +1113,7 @@ class getID3
 			// The /s switch on preg_match() forces preg_match() NOT to treat
 			// newline (0x0A) characters as special chars but do a binary match
 			if (!empty($info['pattern']) && preg_match('#'.$info['pattern'].'#s', $filedata)) {
-				$info['include'] = 'module.'.$info['group'].'.'.$info['module'].'.php';
+				$info['include'] = 'Module.'.$info['group'].'.'.$info['module'].'.php';
 				return $info;
 			}
 		}
@@ -1124,7 +1124,7 @@ class getID3
 			// use assume format on these if format detection failed
 			$GetFileFormatArray = $this->GetFileFormatArray();
 			$info = $GetFileFormatArray['mp3'];
-			$info['include'] = 'module.'.$info['group'].'.'.$info['module'].'.php';
+			$info['include'] = 'Module.'.$info['group'].'.'.$info['module'].'.php';
 			return $info;
 		} elseif (preg_match('/\.cue$/i', $filename) && preg_match('#FILE "[^"]+" (BINARY|MOTOROLA|AIFF|WAVE|MP3)#', $filedata)) {
 			// there's not really a useful consistent "magic" at the beginning of .cue files to identify them
@@ -1132,7 +1132,7 @@ class getID3
 			// and verify there's at least one instance of "TRACK xx AUDIO" in the file
 			$GetFileFormatArray = $this->GetFileFormatArray();
 			$info = $GetFileFormatArray['cue'];
-			$info['include']   = 'module.'.$info['group'].'.'.$info['module'].'.php';
+			$info['include']   = 'Module.'.$info['group'].'.'.$info['module'].'.php';
 			return $info;
 		}
 
@@ -1641,10 +1641,10 @@ class getID3
 
 	public function include_module($name) {
 		//if (!file_exists($this->include_path.'module.'.$name.'.php')) {
-		if (!file_exists(GETID3_INCLUDEPATH.'module.'.$name.'.php')) {
+		if (!file_exists(GETID3_INCLUDEPATH.'Module.'.$name.'.php')) {
 			throw new getid3_exception('Required module.'.$name.'.php is missing.');
 		}
-		include_once(GETID3_INCLUDEPATH.'module.'.$name.'.php');
+		include_once(GETID3_INCLUDEPATH.'Module.'.$name.'.php');
 		return true;
 	}
 

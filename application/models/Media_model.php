@@ -949,7 +949,7 @@ class Media_model extends Base_model
 
 		if ( is_file(DOCPATH.$path) )
 		{
-			require_once(APPPATH.'libraries/getid3/getid3.php');
+			require_once(APPPATH.'libraries/Getid3/Getid3.php');
 
 			// Initialize getID3 engine
 			$getID3 = new getID3;
@@ -980,7 +980,7 @@ class Media_model extends Base_model
 	{
 		if ( is_file(DOCPATH.$path) )
 		{
-			require_once(APPPATH.'libraries/getid3/getid3.php');
+			require_once(APPPATH.'libraries/Getid3/Getid3.php');
 
 			$getID3 = new getID3;
 			$getID3->setOption(array('encoding'=>'UTF-8'));

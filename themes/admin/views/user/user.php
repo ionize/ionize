@@ -152,7 +152,7 @@ $from = ! empty($from) ? $from : '';
             if (element.value.length > 0) {
                 var req = new Request({
                     url: admin_url + 'user/check_email_exists',
-                    async: false,
+                    async: true,
                     data: {
                         email: $('email<?php echo $user['id_user'] ?>').value,
                         id_user: $('email<?php echo $user['id_user'] ?>').getProperty('data-id-user')

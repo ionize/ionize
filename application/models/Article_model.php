@@ -1038,6 +1038,18 @@ class Article_model extends Base_model
 		else
 			$data['updated'] = date('Y-m-d H:i:s');
 
+		// ignore null values
+		foreach ($data as $key => $val) {
+			if (is_null($val)) {
+				unset($data[$key]);
+			} else {
+				//convert all int fields
+				/*if (in_array($key, ['id_page', 'id_article', 'online', 'ordering', 'id_type', 'main_parent', 'priority'])) {
+					$data[$key] = (int)$data[$key];
+				}*/
+			}
+		}
+
 		// convert int values
 		$data['id_page'] = (int)$data['id_page'];
 		$data['id_article'] = (int)$data['id_article'];
@@ -1049,8 +1061,16 @@ class Article_model extends Base_model
 		$data['priority'] = (int)$data['priority'];
 
 		foreach ($lang_data as $lang => $tmpary) {
+			$lang_data[$lang]['lang'] = $lang;
 			$lang_data[$lang]['id_article'] = (int)$lang_data[$lang]['id_article'];
-			$lang_data[$lang]['online'] = (int)$lang_data[$lang]['online'];
+			//$lang_data[$lang]['online'] = (int)$lang_data[$lang]['online'];
+			foreach ($tmpary as $key => $val) {
+				if (is_null($val)) {
+					unset($lang_data[$lang][$key]);
+				} else {
+					$lang_data[$lang][$key] = $val;
+				}
+			}
 		}
 
 		// Dates

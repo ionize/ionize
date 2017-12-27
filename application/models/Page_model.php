@@ -174,6 +174,29 @@ class Page_model extends Base_model
 			$data['level'] = count($parent_array);
 		}
 
+		// ignore null values
+		foreach ($data as $key => $val) {
+			if (is_null($val)) {
+				unset($data[$key]);
+			}
+		}
+
+		// convert int values
+		$data['link_id'] = (int)$data['link_id'];
+
+		foreach ($lang_data as $lang => $tmpary) {
+			$lang_data[$lang]['lang'] = $lang;
+			$lang_data[$lang]['id_page'] = $data['id_page'];
+			//$lang_data[$lang]['online'] = (int)$lang_data[$lang]['online'];
+			foreach ($lang_data[$lang] as $key => $val) {
+				if (is_null($val)) {
+					unset($lang_data[$lang][$key]);
+				} else {
+					$lang_data[$lang][$key] = $val;
+				}
+			}
+		}
+
 		// Correct child pages
 		if ( ! empty($data['id_page']))
 		{

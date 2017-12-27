@@ -1,7 +1,7 @@
 <?php
 require(strtr(dirname(__FILE__), '\\', '/') . '/Filemanager/Tooling.php');
 require(strtr(dirname(__FILE__), '\\', '/') . '/Filemanager/Image.class.php');
-require(strtr(dirname(__FILE__), '\\', '/') . '/getid3/getid3.php');
+require(strtr(dirname(__FILE__), '\\', '/') . '/Getid3/Getid3.php');
 
 //-------------------------------------------------------------------------------------------------------------
 

@@ -7,13 +7,13 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio.lpac.php                                       //
+// Module.audio.lpac.php                                       //
 // module for analyzing LPAC Audio files                       //
-// dependencies: module.audio-video.riff.php                   //
+// dependencies: Module.audio-video.riff.php                   //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, true);
+getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.riff.php', __FILE__, true);
 
 class getid3_lpac extends getid3_handler
 {

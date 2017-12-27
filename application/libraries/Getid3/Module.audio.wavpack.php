@@ -7,7 +7,7 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio.wavpack.php                                    //
+// Module.audio.wavpack.php                                    //
 // module for analyzing WavPack v4.0+ Audio files              //
 // dependencies: NONE                                          //
 //                                                            ///
@@ -214,7 +214,7 @@ class getid3_wavpack extends getid3_handler
 
 					switch ($metablock['function_id']) {
 						case 0x21: // ID_RIFF_HEADER
-							getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, true);
+							getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.riff.php', __FILE__, true);
 							$original_wav_filesize = getid3_lib::LittleEndian2Int(substr($metablock['data'], 4, 4));
 
 							$getid3_temp = new getID3();
@@ -236,7 +236,7 @@ class getid3_wavpack extends getid3_handler
 
 						case 0x22: // ID_RIFF_TRAILER
 							$metablockRIFFfooter = $metablockRIFFheader.$metablock['data'];
-							getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, true);
+							getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.riff.php', __FILE__, true);
 
 							$startoffset = $metablock['offset'] + ($metablock['large_block'] ? 4 : 2);
 							$getid3_temp = new getID3();

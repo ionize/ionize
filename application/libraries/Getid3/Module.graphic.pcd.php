@@ -7,7 +7,7 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.graphic.pcd.php                                      //
+// Module.graphic.pcd.php                                      //
 // module for analyzing PhotoCD (PCD) Image files              //
 // dependencies: NONE                                          //
 //                                                            ///
@@ -82,7 +82,7 @@ class getid3_pcd extends getid3_handler
 			}
 
 			// Example for plotting extracted data
-			//getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ac3.php', __FILE__, true);
+			//getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.ac3.php', __FILE__, true);
 			//if ($PCDisVertical) {
 			//	$BMPinfo['resolution_x'] = $PCD_height;
 			//	$BMPinfo['resolution_y'] = $PCD_width;

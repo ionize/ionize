@@ -7,14 +7,14 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio.flac.php                                       //
+// Module.audio.flac.php                                       //
 // module for analyzing FLAC and OggFLAC audio files           //
-// dependencies: module.audio.ogg.php                          //
+// dependencies: Module.audio.ogg.php                          //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ogg.php', __FILE__, true);
+getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.ogg.php', __FILE__, true);
 
 class getid3_flac extends getid3_handler
 {

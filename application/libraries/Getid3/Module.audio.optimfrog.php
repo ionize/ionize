@@ -7,13 +7,13 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio.optimfrog.php                                  //
+// Module.audio.optimfrog.php                                  //
 // module for analyzing OptimFROG audio files                  //
-// dependencies: module.audio.riff.php                         //
+// dependencies: Module.audio.riff.php                         //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, true);
+getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.riff.php', __FILE__, true);
 
 class getid3_optimfrog extends getid3_handler
 {

@@ -7,13 +7,13 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio-video.mpeg.php                                 //
+// Module.audio-video.mpeg.php                                 //
 // module for analyzing MPEG files                             //
-// dependencies: module.audio.mp3.php                          //
+// dependencies: Module.audio.mp3.php                          //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.mp3.php', __FILE__, true);
+getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.mp3.php', __FILE__, true);
 
 define('GETID3_MPEG_VIDEO_PICTURE_START',   "\x00\x00\x01\x00");
 define('GETID3_MPEG_VIDEO_USER_DATA_START', "\x00\x00\x01\xB2");

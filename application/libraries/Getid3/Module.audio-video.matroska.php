@@ -7,7 +7,7 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio-video.matriska.php                             //
+// Module.audio-video.matriska.php                             //
 // module for analyzing Matroska containers                    //
 // dependencies: NONE                                          //
 //                                                            ///
@@ -270,8 +270,8 @@ class getid3_matroska extends getid3_handler
 						
 						switch ($trackarray['CodecID']) {
 							case 'V_MS/VFW/FOURCC':
-								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, false)) {
-									$this->getid3->warning('Unable to parse codec private data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "module.audio-video.riff.php"');
+								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.riff.php', __FILE__, false)) {
+									$this->getid3->warning('Unable to parse codec private data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "Module.audio-video.riff.php"');
 									break;
 								}
 								$parsed = getid3_riff::ParseBITMAPINFOHEADER($trackarray['CodecPrivate']);
@@ -300,8 +300,8 @@ class getid3_matroska extends getid3_handler
 							case 'A_DTS':
 							case 'A_MPEG/L3':
 							//case 'A_FLAC':
-								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.'.$track_info['dataformat'].'.php', __FILE__, false)) {
-									$this->getid3->warning('Unable to parse audio data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "module.audio.'.$track_info['dataformat'].'.php"');
+								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.'.$track_info['dataformat'].'.php', __FILE__, false)) {
+									$this->getid3->warning('Unable to parse audio data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "Module.audio.'.$track_info['dataformat'].'.php"');
 									break;
 								}
 
@@ -381,8 +381,8 @@ class getid3_matroska extends getid3_handler
 								}
 								$vorbis_offset -= 1;
 
-								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ogg.php', __FILE__, false)) {
-									$this->getid3->warning('Unable to parse audio data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "module.audio.ogg.php"');
+								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.ogg.php', __FILE__, false)) {
+									$this->getid3->warning('Unable to parse audio data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "Module.audio.ogg.php"');
 								}
 
 								// create temp instance
@@ -421,8 +421,8 @@ class getid3_matroska extends getid3_handler
 								break;
 
 							case 'A_MS/ACM':
-								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.riff.php', __FILE__, false)) {
-									$this->getid3->warning('Unable to parse audio data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "module.audio-video.riff.php"');
+								if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.riff.php', __FILE__, false)) {
+									$this->getid3->warning('Unable to parse audio data ['.basename(__FILE__).':'.__LINE__.'] because cannot include "Module.audio-video.riff.php"');
 									break;
 								}
 								

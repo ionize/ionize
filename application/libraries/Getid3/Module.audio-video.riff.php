@@ -7,17 +7,17 @@
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
 //                                                             //
-// module.audio-video.riff.php                                 //
+// Module.audio-video.riff.php                                 //
 // module for analyzing RIFF files                             //
 // multiple formats supported by this module:                  //
 //    Wave, AVI, AIFF/AIFC, (MP3,AC3)/RIFF, Wavpack v3, 8SVX   //
-// dependencies: module.audio.mp3.php                          //
-//               module.audio.ac3.php (optional)               //
-//               module.audio.dts.php (optional)               //
+// dependencies: Module.audio.mp3.php                          //
+//               Module.audio.ac3.php (optional)               //
+//               Module.audio.dts.php (optional)               //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.mp3.php', __FILE__, true);
+getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.mp3.php', __FILE__, true);
 
 class getid3_riff extends getid3_handler
 {
@@ -971,7 +971,7 @@ class getid3_riff extends getid3_handler
 				}
 
 				if (isset($thisfile_riff[$RIFFsubtype]['ID3 '])) {
-					getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.id3v2.php', __FILE__, true);
+					getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.tag.id3v2.php', __FILE__, true);
 					$getid3_temp = new getID3();
 					$getid3_temp->openfile($this->getid3->filename);
 					$getid3_id3v2 = new getid3_id3v2($getid3_temp);
@@ -1067,7 +1067,7 @@ class getid3_riff extends getid3_handler
 			case 'CDXA':
 				$info['mime_type'] = 'video/mpeg';
 				if (!empty($thisfile_riff['CDXA']['data'][0]['size'])) {
-					if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio-video.mpeg.php', __FILE__, false)) {
+					if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio-video.mpeg.php', __FILE__, false)) {
 						$getid3_temp = new getID3();
 						$getid3_temp->openfile($this->getid3->filename);
 						$getid3_mpeg = new getid3_mpeg($getid3_temp);
@@ -1364,7 +1364,7 @@ class getid3_riff extends getid3_handler
 								} elseif (preg_match('/^\x0B\x77/s', $FirstFourBytes)) {
 
 									// AC3
-									if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ac3.php', __FILE__, false)) {
+									if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.ac3.php', __FILE__, false)) {
 										$getid3_temp = new getID3();
 										$getid3_temp->openfile($this->getid3->filename);
 										$getid3_temp->info['avdataoffset'] = ftell($this->getid3->fp) - 4;
@@ -1454,7 +1454,7 @@ class getid3_riff extends getid3_handler
 							} elseif ((strlen($RIFFdataChunkContentsTest) > 0) && (substr($RIFFdataChunkContentsTest, 0, 2) == "\x0B\x77")) {
 
 								// This is probably AC-3 data
-								if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ac3.php', __FILE__, false)) {
+								if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.ac3.php', __FILE__, false)) {
 									$getid3_temp = new getID3();
 									$getid3_temp->openfile($this->getid3->filename);
 									$getid3_temp->info['avdataoffset'] = $RIFFchunk[$chunkname][$thisindex]['offset'];
@@ -1475,7 +1475,7 @@ class getid3_riff extends getid3_handler
 								// AC-3 content, but not encoded in same format as normal AC-3 file
 								// For one thing, byte order is swapped
 
-								if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ac3.php', __FILE__, false)) {
+								if (getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'Module.audio.ac3.php', __FILE__, false)) {
 
 									// ok to use tmpfile here - only 56 bytes
 									if ($RIFFtempfilename = tempnam(GETID3_TEMP_DIR, 'id3')) {
