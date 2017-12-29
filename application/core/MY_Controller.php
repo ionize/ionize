@@ -101,7 +101,7 @@ class MY_Controller extends CI_Controller
 			Settings::set_all_languages_online();
 
 		// Try to find the installer class : No access if install folder is already there
-		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
+		$installer = glob(BASEPATH.'../*/class/Installer'.EXT);
 
 		// If installer class is already here, avoid site access
 		if ( ! empty($installer))

@@ -1290,7 +1290,7 @@ class Article_model extends Base_model
 	 * @param	int 	$id_article
 	 * @return 	int		Affected rows number
 	 */
-	private function delete_article($id_article)
+	public function delete_article($id_article)
 	{
 		$affected_rows = 0;
 		

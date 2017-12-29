@@ -315,7 +315,7 @@ ION.StaticItemManager = new Class({
 						if (element.value.length > 0) {
 							var req = new Request({
 								url: ION.adminUrl + 'item_definition/check_exists',
-								async: true,
+								async: false,
 								data: {
 									name: input_name.value,
 									id_item_definition: id

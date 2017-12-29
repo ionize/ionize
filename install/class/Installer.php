@@ -1895,30 +1895,16 @@ class Installer
 
 	function _decrypt($str, $data)
 	{
-		require_once('./class/Encryption.php');
+		require_once('./class/Encrypt.php');
 
 		include(APPPATH.'config/config.php');
 
-		if (!isset($config['encryption_key']) || $config['encryption_key'] == '')
-		{
-			$config['encryption_key'] = $_POST['encryption_key'];
-		}
+		$encrypt = new ION_Encrypt($config);
 
-		$encryption = new ION_Encryption(
-			array(
-				'cipher' => 'aes-256',
-				'mode' => 'cbc',
-				'key' => $config['encryption_key']
-			)
-		);
+		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
+		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
 
-		//$hash 	= $encryption->encrypt($data['username'] . $data['salt']);
-		//$key 	= $encryption->encrypt($config['encryption_key'] . $hash);
-
-		//return $encryption->decode($str, substr($key, 0, 56));
-		//$decrypt = $encryption->decrypt($str);
-		//die($decrypt);
-		return $encryption->decrypt($str);
+		return $encrypt->decode($str, substr($key, 0, 56));
 	}
 
 	function _decrypt096($str, $data)
@@ -1946,30 +1932,16 @@ class Installer
 	 */
 	function _encrypt($str, $data)
 	{
-		require_once('./class/Encryption.php');
+		require_once('./class/Encrypt.php');
 
 		include(APPPATH.'config/config.php');
 
-		if (!isset($config['encryption_key']) || $config['encryption_key'] == '')
-		{
-			$config['encryption_key'] = $_POST['encryption_key'];
-		}
+		$encrypt = new ION_Encrypt($config);
 
-		$encryption = new ION_Encryption(
-			array(
-				'cipher' => 'aes-256',
-				'mode' => 'cbc',
-				'key' => $config['encryption_key']
-			)
-		);
+		$hash 	= $encrypt->sha1($data['username'] . $data['salt']);
+		$key 	= $encrypt->sha1($config['encryption_key'] . $hash);
 
-		//$hash 	= $encryption->encrypt($data['username'] . $data['salt']);
-		//$key 	= $encryption->encrypt($config['encryption_key'] . $hash);
-
-		//return $encryption->encode($str, substr($key, 0, 56));
-		//$encrypt = $encryption->encrypt($str);
-		//die($encrypt);
-		return $encryption->encrypt($str);
+		return $encrypt->encode($str, substr($key, 0, 56));
 	}
 
 

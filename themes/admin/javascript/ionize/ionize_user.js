@@ -782,7 +782,7 @@ ION.UserManager = new Class({
 					{
 						var req = new Request({
 							url: ION.adminUrl + 'user/check_email_exists',
-							async: true,
+							async: false,
 							data: {
 								email: element.value,
 								id_user: user.id_user
@@ -804,7 +804,7 @@ ION.UserManager = new Class({
 					{
 						var req = new Request({
 							url: ION.adminUrl + 'user/check_username_exists',
-							async: true,
+							async: false,
 							data: {
 								username: element.value,
 								id_user: user.id_user
@@ -895,7 +895,7 @@ ION.UserClass = new Class({
 			url: ION.adminUrl + 'user/get_current_user',
 			method: 'post',
 			loadMethod: 'xhr',
-			async: true,
+			async: false,
 			onFailure: function()
 			{
 				return null;
