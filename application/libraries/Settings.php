@@ -328,6 +328,20 @@ class Settings
 	}
 
 
+	public static function get_lang_idiom($lang_code)
+    {
+        $languages = self::get('languages');
+
+        foreach($languages as $l)
+        {
+            if ($l['lang'] == $lang_code)
+                return $l['name'];
+        }
+
+ 		return false;
+	}
+
+
 	// ------------------------------------------------------------------------
 
 

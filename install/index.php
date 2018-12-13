@@ -1,8 +1,26 @@
 <?php
+/*
+ *---------------------------------------------------------------
+ * APPLICATION ENVIRONMENT
+ *---------------------------------------------------------------
+ *
+ * You can load different configurations depending on your
+ * current environment. Setting the environment also influences
+ * things like logging and error reporting.
+ *
+ * This can be set to anything, but default usage is:
+ *
+ *     development
+ *     testing
+ *     production
+ *
+ * NOTE: If you change these, also change the error_reporting() code below
+ */
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 
 $base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
 $base_url .= "://".$_SERVER['HTTP_HOST'];
-$base_url .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']); 
+$base_url .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 $base_url = str_replace('/install', '', $base_url);
 
 // CI base data
@@ -16,7 +34,7 @@ if (strpos($system_folder, '/') === FALSE)
 }
 else
 {
-	$system_folder = str_replace("\\", "/", $system_folder); 
+	$system_folder = str_replace("\\", "/", $system_folder);
 }
 
 // CI constants
@@ -59,44 +77,44 @@ if (file_exists('./class/Installer.php'))
 	require(BASEPATH.'helpers/email_helper.php');
 	require(APPPATH.'helpers/trace_helper.php');
 
-	
+
 	// Installer Step
 	$step = 'checkconfig';
-	
+
 	if (is_array($_GET) && isset($_GET['step']))
 		$step = ($_GET['step']) ? $_GET['step'] : 'checkconfig' ;
-	
+
 	// Actions
 	switch($step)
 	{
 		case 'checkconfig' :
 			$installer->check_config();
 			break;
-		
+
 		case 'database' :
 			$installer->configure_database();
 			break;
-			 
+
 		case 'user' :
 			$installer->configure_user();
 			break;
-			 
+
 		case 'data' :
 			$installer->install_data();
 			break;
-			 
+
 		case 'finish' :
 			$installer->finish();
 			break;
-			
+
 		case 'migrate' :
 			$installer->migrate();
 			break;
-		
+
 		case 'migrate_users_to_ci2' :
 			$installer->migrate_users_to_ci2();
 			break;
-			 
+
 		case 'settings' :
 			$installer->settings();
 			break;

@@ -1,6 +1,6 @@
-Copyright (c) 2009-2014 ionize team
+The MIT License (MIT)
 
-This software is released under the Open Source MIT license.
+Copyright (c) 2014 - 2017, British Columbia Institute of Technology
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -8,12 +8,9 @@ in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-1. The above copyright notice and this permission notice shall be included in
+
+The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-2. In the case ionize is used by a company for its own clients, it is not 
-permitted to suggest that ionize is the property of the company or to suggest 
-that Ionize has been created and developed by any other team than the official 
-Ionize team, (members listed on the website ionizecms.com).
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

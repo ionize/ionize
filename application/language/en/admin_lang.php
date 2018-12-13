@@ -37,7 +37,6 @@ $lang['ionize_dashboard_icon_mediamanager'] = 'Media';
 $lang['ionize_dashboard_icon_translation'] = 'Translations';
 $lang['ionize_dashboard_icon_users'] = 'Users & Roles';
 $lang['ionize_dashboard_title_content'] = 'Content';
-$lang['ionize_dashboard_title_content'] = 'Content';
 $lang['ionize_dashboard_title_current_connected_users'] = 'Backend connected users';
 $lang['ionize_dashboard_title_last_connected_users'] = 'Last connected';
 $lang['ionize_dashboard_title_last_modified_articles'] = 'Last updated articles';

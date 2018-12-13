@@ -26,8 +26,8 @@ $c = '?v='.$v;
 <!--[if lt IE 9]><script type="text/javascript" src="<?php echo theme_url(); ?>javascript/excanvas_r43_compressed.js<?php echo $c ?>"></script><![endif]-->
 
 <!-- Mootools 1.4.5  -->
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-core-1.5.0-full-nocompat-yc.js"></script>
-<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools-more-1.5.0-yc.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/MooTools-Core-1.6.0-compressed.js"></script>
+<script type="text/javascript" src="<?php echo theme_url(); ?>javascript/MooTools-More-1.6.0-compressed.js"></script>
 <script type="text/javascript" src="<?php echo theme_url() ?>javascript/ionize/ionize_mootools_enhance.js"></script>
 <script type="text/javascript" src="<?php echo theme_url(); ?>javascript/mootools_locale/eu.js"></script>
 

@@ -110,7 +110,7 @@ class Installer
 		$this->template['php_version'] = version_compare(substr(phpversion(), 0, 3), '5.3', '>=');
 
 		// MySQL support
-		$this->template['mysql_support']  = function_exists('mysql_connect');
+		$this->template['mysql_support']  = function_exists('mysql_connect') || function_exists('mysqli_connect');
 
 		// Safe Mode
 		$this->template['safe_mode']  = (ini_get('safe_mode')) ? FALSE : TRUE;
@@ -295,7 +295,7 @@ class Installer
 			{
 				$file = read_file('./database/demo_data.sql');
 
-				$requests = explode('--#--', $file);
+				$requests = explode('-- # --', $file);
 
 				foreach($requests as $request)
 				{
@@ -976,13 +976,13 @@ class Installer
 
 			// Checks the write rights of the MySQL user
 			// by insertion of dummy data in the settings table
-			if ($this->db->query("INSERT INTO setting ('name', 'content') values('test', 'test')"))
+			if (!$this->db->query("INSERT INTO `setting` VALUES (NULL, 'test', 'test', '')"))
 			{
 				$this->_send_error('database', lang('database_error_coud_not_write_database'), $_POST);
 			}
 			else
 			{
-				$this->db->query("DELETE FROM setting WHERE name='test'");
+				$this->db->query("DELETE FROM `setting` WHERE name='test'");
 			}
 
 			// Basis content insert
@@ -1772,7 +1772,6 @@ class Installer
 		$conf  = "<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');\n\n";
 
 		$conf .= "\$active_group = 'default';\n";
-		$conf .= "\$active_record = TRUE;\n\n";
 
 		$conf .= "\$db['default']['hostname'] = '".$data['db_hostname']."';\n";
 		$conf .= "\$db['default']['username'] = '".$data['db_username']."';\n";

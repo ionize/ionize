@@ -193,7 +193,7 @@ class Structure{
 	 *
 	 * @return array
 	 */
-	function get_tree_navigation($data, $id_parent, $startDepth=0, $maxDepth=-1, $articles=FALSE)
+	static function get_tree_navigation($data, $id_parent, $startDepth=0, $maxDepth=-1, $articles=FALSE)
 	{
 		// Pages array
 		$arr = array();
@@ -224,7 +224,7 @@ class Structure{
 	 *
 	 * @return array
 	 */
-	function get_active_pages($pages, $id_page)
+	static function get_active_pages($pages, $id_page)
 	{
 		$active_pages = array();
 		

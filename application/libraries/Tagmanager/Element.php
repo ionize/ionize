@@ -49,7 +49,7 @@ class TagManager_Element extends TagManager
 	 * @param	String	lang code
 	 * @return	Array	Extend fields definition array
 	 */
-	private function get_elements_definition($lang)
+	private static function get_elements_definition($lang)
 	{
 		// Get the extend fields definition if not already got
 		if (self::$elements_def == NULL)

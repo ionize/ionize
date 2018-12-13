@@ -75,11 +75,14 @@ class MY_Controller extends CI_Controller
 		}*/
 
 		// Models
-        $this->load->model(
-            array(
-                'base_model',
-                'settings_model'
-            ), '', TRUE);
+		$this->load->model(
+			array(
+				'base_model',
+				'settings_model'
+			),
+			'',
+			TRUE
+		);
 
 		// Helpers
 		$this->load->helper('file');
@@ -98,7 +101,7 @@ class MY_Controller extends CI_Controller
 			Settings::set_all_languages_online();
 
 		// Try to find the installer class : No access if install folder is already there
-		$installer = glob(BASEPATH.'../*/class/installer'.EXT);
+		$installer = glob(BASEPATH.'../*/class/Installer'.EXT);
 
 		// If installer class is already here, avoid site access
 		if ( ! empty($installer))
@@ -109,7 +112,9 @@ class MY_Controller extends CI_Controller
 			if ( ! in_array(config_item('detected_lang_code'), $languages))
 				$this->config->set_item('detected_lang_code', config_item('default_admin_lang'));
 
-			$this->lang->load('admin', config_item('detected_lang_code'));
+			$lang_code = config_item('detected_lang_code');
+			$idiom = Settings::get_lang_idiom($lang_code);
+			$this->lang->load('admin', $lang_code);
 
 			Theme::set_theme('admin');
 
@@ -684,8 +689,10 @@ class MY_Admin extends MY_Controller
 		Settings::set('current_lang', config_item('detected_lang_code'));
 
 		// Load the current language translations file
-		$this->lang->load('admin', Settings::get_lang());
-		// $this->lang->load('filemanager', Settings::get_lang());
+		$lang_code = Settings::get_lang();
+		$idiom = Settings::get_lang_idiom($lang_code);
+		$this->lang->load('admin', $lang_code);
+		// $this->lang->load('filemanager', $lang_code);
 
 		// Modules translation files
 		$modules = array();
@@ -930,11 +937,11 @@ class MY_Admin extends MY_Controller
 		
 			foreach($this->modules as $uri => $folder)
 			{
-				// Get the module Class modules/Module_Name/controllers/admin/module_name.php
-				if (file_exists(MODPATH.$folder.'/controllers/admin/'.$uri.EXT) )
+				// Get the module Class modules/Module_Name/controllers/Admin/Module_name.php
+				if (file_exists(MODPATH.$folder.'/controllers/Admin/'.ucfirst($uri).EXT) )
 				{
 					if ( ! class_exists($folder) )
-						require_once(MODPATH.$folder.'/controllers/admin/'.$uri.EXT);
+						require_once(MODPATH.$folder.'/controllers/Admin/'.ucfirst($uri).EXT);
 					if (method_exists($folder, '_addons'))
 					{
 						// Module path

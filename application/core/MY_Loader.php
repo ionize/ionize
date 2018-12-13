@@ -45,21 +45,21 @@ class MY_Loader extends CI_Loader{
 
 				$this->library($l, null, $n);
 			}
-		}
+		} else {
+			if(empty($name))
+				$name = isset($this->_ci_varmap[$library]) ? $this->_ci_varmap[$library] : $library;
 
-		if(empty($name))
-			$name = isset($this->_ci_varmap[$library]) ? $this->_ci_varmap[$library] : $library;
-
-		$CI =& get_instance();
-		if( ! isset($CI->$name))
-		{
-			$CI->$name = Lib($library, $params);
-			$CI->_ci_classes[strtolower($name)] = $CI->$name;
+			$CI =& get_instance();
+			if( ! isset($CI->$name))
+			{
+				$CI->$name = Lib($library, $params);
+				$CI->_ci_classes[strtolower($name)] = $CI->$name;
+			}
+			/*
+			else
+				log_message('error', 'The library name you are loading is the name of a resource that is already being used: '.$name);
+			*/
 		}
-		/*
-		else
-			log_message('error', 'The library name you are loading is the name of a resource that is already being used: '.$name);
-		*/
 	}
 
 	// --------------------------------------------------------------------
@@ -149,7 +149,7 @@ class MY_Loader extends CI_Loader{
 
         foreach ($this->_ci_model_paths as $mod_path)
         {
-            if ( ! file_exists($mod_path.'models/'.$path.$model.'.php'))
+            if ( ! file_exists($mod_path.'models/'.$path.ucfirst($model).'.php'))
             {
                 continue;
             }
@@ -169,7 +169,7 @@ class MY_Loader extends CI_Loader{
                 load_class('Model', 'core');
             }
 
-            require_once($mod_path.'models/'.$path.$model.'.php');
+            require_once($mod_path.'models/'.$path.ucfirst($model).'.php');
 
             $model = ucfirst($model);
 
@@ -245,6 +245,11 @@ class MY_Loader extends CI_Loader{
 		}
 	}
 
+	function _ci_load($_ci_data)
+	{
+		return parent::_ci_load($_ci_data);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -263,4 +268,17 @@ class MY_Loader extends CI_Loader{
 		parent::_ci_autoloader();
 	}
 
+	/**
+	 * Object to Array
+	 *
+	 * Takes an object as input and converts the class variables to array key/vals
+	 *
+	 * @access	private
+	 * @param	object
+	 * @return	array
+	 */
+	function _ci_object_to_array($object)
+	{
+		return (is_object($object)) ? get_object_vars($object) : $object;
+	}
 }

@@ -66,7 +66,7 @@ $from = ! empty($from) ? $from : '';
 			<label for="email<?php echo $user['id_user'] ?>" ><?php echo lang('ionize_label_email'); ?></label>
 		</dt>
 		<dd>
-			<input id="email<?php echo $user['id_user'] ?>" data-id-user="<?php echo $user['id_user'] ?>" name="email" class="inputtext required emailUnique" type="text" value="<?php echo $user['email'] ?>" />
+			<input id="email<?php echo $user['id_user'] ?>" data-id-user="<?php echo $user['id_user'] ?>" name="email" class="inputtext required emailUnique validate-email" type="text" value="<?php echo $user['email'] ?>" />
 			<br/><span class="lite"><?php echo lang('ionize_help_email_can_be_used_as_login') ?></span>
 		</dd>
 	</dl>
@@ -146,21 +146,41 @@ $from = ! empty($from) ? $from : '';
 
 	ION.initFormAutoGrow();
 
+	var emailUniqueOk = true;
+	var ajaxComplete = false;
+
     Form.Validator.add('emailUnique', {
         errorMsg: '<?php echo lang('ionize_message_email_already_registered') ?>',
         test: function(element, props) {
             if (element.value.length > 0) {
-                var req = new Request({
-                    url: admin_url + 'user/check_email_exists',
-                    async: false,
-                    data: {
-                        email: $('email<?php echo $user['id_user'] ?>').value,
-                        id_user: $('email<?php echo $user['id_user'] ?>').getProperty('data-id-user')
-                    }
-                }).send();
-                return (req.response.text != '1');
+            	if (!ajaxComplete) {
+	                var req = new Request({
+	                    url: admin_url + 'user/check_email_exists',
+	                    async: true,
+	                    data: {
+	                        email: $('email<?php echo $user['id_user'] ?>').value,
+	                        id_user: $('email<?php echo $user['id_user'] ?>').getProperty('data-id-user')
+	                    },
+	                    onSuccess: function(responseText) {
+	                    	ajaxComplete = true;
+	                    	if (responseText == '1') {
+	                    		emailUniqueOk = false;
+	                    	} else {
+	                    		emailUniqueOk = true;
+	                    	}
+
+	                    	//trigger validation again by switching focus
+	                    	var focusElm = document.activeElement;
+	                    	$('email<?php echo $user['id_user'] ?>').focus();
+	                    	setTimeout(function(){ focusElm.focus(); }, 200);
+	                    }
+	                }).send();
+            	} else {
+            		//reset the ajax status
+            		ajaxComplete = false;
+            	}
             }
-            return true;
+            return emailUniqueOk;
         }
     });
 
