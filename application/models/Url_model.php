@@ -167,8 +167,8 @@ class Url_model extends Base_model
 		if ($query->num_rows() > 0)
 		{
 			$result = $query->result_array();
-			
-			if (count($result >1))
+
+			if (count($result) >1)
 			{
 				foreach($result as $row)
 				{
